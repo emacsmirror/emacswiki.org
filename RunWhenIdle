@@ -15,3 +15,11 @@ The interface will probably be similar to that of timer.el, and the implementati
 [new]
 
 How probable it is run-with-idle-timer is deferred indefinitely? It can happen, of course, as lots of other things, but is it probable judging from your everyday Emacs usage?
+
+[new]
+
+I think the best answer to this is to just add things to auto-save-hook. It's what I've been doing.
+
+[new]
+
+So when you added stuff to auto-save-hook it was deferred indefinitely very often, that's why you want to reimplement this feature in a new function?

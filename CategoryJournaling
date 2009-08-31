@@ -44,7 +44,7 @@ depend on plain text.
 * mt.el: http://www.marginalia.org/code/mt.el - Moveable Type (This package works well enough, but it only gives access to ''title'', ''description'' i.e. Body, and the categories. It would be nice to have: ''mt_allow_comments'', ''mt_allow_pings'', ''mt_text_more'', ''mt_excerpt'', ''mt_keywords'', ''mt_tb_ping_urls''. Looking over mt.el, it would seem that it's relatively easy to add these, but I'm not a Lisp programmer.)
 * [[Identica-mode]] -- post to any laconi.ca server (similar to [[Twitter]] but free)
 * [[Twitter]] -- post to twitter.com using various modes
-* e-blog: http://e-blog.googlecode.com - provides an MUA-like interface for posting to Blogger using the new GData API.
+* [[Eblog]] - provides an MUA-like interface for posting to Blogger using the new GData API.
 * [[Tumbl]] -- Make posts to Tumblr from Emacs.
 
 == RSS readers ==
@@ -63,7 +63,7 @@ list here with the relevant URLs. ([[KamenNedev]])
 * EevMode -- e-script lets you keep an EXECUTABLE diary! VERY COOL!
 
 [new]
-/While I have no doubt whatsoever, that one can implement a diary within the e-script environment, using eev-mode or not, I feel inclined to state that neither on the EevMode page of this wiki, nor on the eev-mode or e-script project homepage there is anything written about such subject.  The same way one could add a link here to a perl script reposatory, saying there is a way to create a diary with perl somehow./  --QirbCameled 
+/While I have no doubt whatsoever, that one can implement a diary within the e-script environment, using eev-mode or not, I feel inclined to state that neither on the EevMode page of this wiki, nor on the eev-mode or e-script project homepage there is anything written about such subject.  The same way one could add a link here to a perl script reposatory, saying there is a way to create a diary with perl somehow./  --QirbCameled
 
 [new]
 Writing diary in e-script enables us to replay operations.

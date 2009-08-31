@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Mar 16 14:18:11 1999
 ;; Version: 20.0
-;; Last-Updated: Sat Dec 27 10:09:31 2008 (-0800)
+;; Last-Updated: Sun Aug 30 09:02:46 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 2091
+;;     Update #: 2093
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help+20.el
 ;; Keywords: help
 ;; Compatibility: GNU Emacs 20.x
@@ -90,6 +90,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2009/08/30 dadams
+;;     describe-keymap: Don't print nil if the map has no doc.
 ;; 2008/08/19 dadams
 ;;     describe-keymap: Use insert instead of princ for map part.  Thx to Chong Yidong.
 ;; 2008/05/20 dadams
@@ -952,12 +954,13 @@ Completion is available for the keymap name."
            t nil 'variable-name-history))))
   (unless (and (symbolp keymap) (boundp keymap) (keymapp (symbol-value keymap)))
     (error "`%S' is not a keymapp" keymap))
-  (let ((name (symbol-name keymap)))
+  (let ((name  (symbol-name keymap))
+        (doc   (documentation-property keymap 'variable-documentation)))
     (help-setup-xref (list #'describe-keymap keymap) (interactive-p))
     (with-output-to-temp-buffer "*Help*"
       (princ name) (terpri)
       (princ (make-string (length name) ?-)) (terpri) (terpri)
-      (princ (documentation-property keymap 'variable-documentation)) (terpri) (terpri)
+      (when doc (princ doc) (terpri) (terpri))
       ;; Use `insert' instead of `princ', so control chars (e.g. \377) insert correctly.
       (with-current-buffer "*Help*"
         (insert (substitute-command-keys (concat "\\{" name "}")))))))

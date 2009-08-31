@@ -5,7 +5,7 @@ I don't like that `##dired-(next|previous)-line##' moves to "not useful" lines i
  it"
    (interactive)
    (call-interactively 'dired-next-line)
-   (if (not (dired-move-to-filename))
+   (if (not (or (dired-move-to-filename) (eobp)))
        (dired-next-file-line)))
  
  (defun dired-previous-file-line ()
@@ -13,7 +13,7 @@ I don't like that `##dired-(next|previous)-line##' moves to "not useful" lines i
  on it"
    (interactive)
    (call-interactively 'dired-previous-line)
-   (if (not (dired-move-to-filename))
+   (if (not (or (dired-move-to-filename) (bobp)))
        (dired-previous-file-line)))
 
 [new:Agamestor:2009-08-16 18:57 UTC]

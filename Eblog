@@ -1,0 +1,24 @@
+== Description ==
+
+e-blog allows you to post, edit, label and delete posts on one or
+more blogs on http://www.blogger.com using new GData API. You must
+have curl installed <http://curl.haxx.se> to use the package.
+
+* http://code.google.com/p/e-blog
+
+== Install ==
+
+  ;; M-x e-blog-new-post to start interface to http://www.blogger.com
+  (autoload 'e-blog-new-post "e-blog" "" t)
+  (provide 'e-blog-install)
+
+== Configuration ==
+
+Add the following to your .emacs file:
+
+  ;; OPTIONAL
+  (setq e-blog-user "LoginName")
+  (setq e-blog-passwd "Pass")
+
+----
+CategoryDisplay | CategoryModes | CategoryJournaling

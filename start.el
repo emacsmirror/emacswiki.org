@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2009, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 21.1
-;; Last-Updated: Sat Aug  1 15:42:32 2009 (-0700)
+;; Last-Updated: Sun Aug 30 09:30:24 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 2783
+;;     Update #: 2787
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -86,6 +86,8 @@
 ;;
 ;; Change log:
 ;;
+;; 2009/08/30 dadams
+;;     Removed compile-time require of cl.el for when, unless.
 ;; 2009/06/17 dadams
 ;;     Soft-require face-remap+.el for Emacs 23.
 ;; 2009/06/11 dadams
@@ -327,8 +329,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;
 
-
-(and (< emacs-major-version 20) (eval-when-compile (require 'cl))) ;; when, unless
 
 ;;; Hack needed if you load `start-opt.el', because it does this:
 ;;;    (add-hook 'lisp-mode-hook             'auto-make-header)

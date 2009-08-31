@@ -38,6 +38,46 @@ Some more advanced commands:
 
 See also MoveLine.
 
+
+[new]
+I have some line functions in my .emacs that I thought I'd share:
+
+ ;;; Take the line from the cursor and move it up a line.
+ (defun move-line-up ()
+   (interactive)
+   (let ((beg (point)))
+     (previous-line)
+     (delete-region beg (point))))
+ (define-key global-map (kbd "\C-c p") 'move-line-up)
+
+
+ ;;; A line killing function vaguely similar to vim's dd.
+ (defun kill-line-retain-column ()
+   (interactive)
+   (let ((goal-column (truncate temporary-goal-column))
+         (column (current-column)))
+     ;; Are we on a blank line?
+     (if (= (line-beginning-position) (line-end-position))
+         (progn (if (= (point) (buffer-end 1))
+                    ;; Just delete the newline character.
+                    (backward-delete-char-untabify 1)
+                  (kill-line))
+                (move-to-column goal-column))
+       (progn
+         ;; Are we on the last line of the buffer?
+         (if (= (line-number-at-pos)
+                (line-number-at-pos (buffer-end 1)))
+             ;; We are, so delete the line and move up.
+             (kill-whole-line -1)
+           (kill-whole-line))
+         ;; Assign a new temporary goal column.
+         (setq temporary-goal-column column)
+         ;; Retain the column.
+         (move-to-column column)))))
+ (global-set-key [delete] 'kill-line-retain-column)
+
+
+
 ----
 CategoryCommands
 CategoryEditing

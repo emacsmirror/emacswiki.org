@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 22.1
-;; Last-Updated: Sat Aug  1 15:29:33 2009 (-0700)
+;; Last-Updated: Sun Aug 30 09:06:27 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 402
+;;     Update #: 404
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help-fns+.el
 ;; Keywords: help, faces
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -68,6 +68,8 @@
 ;; 
 ;;; Change log:
 ;;
+;; 2009/08/30 dadams
+;;     describe-keymap: Don't print nil if the map has no doc.
 ;; 2009/05/26 dadams
 ;;     describe-variable: Updated wrt latest Emacs 23:
 ;;       Added file-name-non-directory; removed substitute-command-keys.
@@ -1115,13 +1117,13 @@ Completion is available for the keymap name."
            t nil 'variable-name-history))))
   (unless (and (symbolp keymap) (boundp keymap) (keymapp (symbol-value keymap)))
     (error "`%S' is not a keymapp" keymap))
-  (let ((name (symbol-name keymap)))
-    (help-setup-xref (list #'describe-keymap keymap)
-                     (interactive-p))
+  (let ((name  (symbol-name keymap))
+        (doc   (documentation-property keymap 'variable-documentation)))
+    (help-setup-xref (list #'describe-keymap keymap) (interactive-p))
     (with-output-to-temp-buffer "*Help*"
       (princ name) (terpri)
       (princ (make-string (length name) ?-)) (terpri) (terpri)
-      (princ (documentation-property keymap 'variable-documentation)) (terpri) (terpri)
+      (when doc (princ doc) (terpri) (terpri))
       ;; Use `insert' instead of `princ', so control chars (e.g. \377) insert correctly.
       (with-current-buffer "*Help*"
         (insert (substitute-command-keys (concat "\\{" name "}")))))))

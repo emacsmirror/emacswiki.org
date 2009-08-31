@@ -61,10 +61,17 @@
 ;;    you will find in your email.
 ;;    Put the icons in the directory of your choice and set it in your .emacs:
 ;;    (setq xml-weather-default-icons-directory "path/to/your/icons/31x31")
-;;    Notes: I use the 31x31 directory but you can choose bigger icons if you want.
-;;           If `xml-weather-default-icons-directory' is nil or doesn't exist,
-;;           your builtin will be displayed with text only.
-;;           
+;;    NOTE: I use the 31x31 directory but you can choose bigger icons if you want.
+;;          If `xml-weather-default-icons-directory' is nil or doesn't exist,
+;;          your builtin will be displayed with text only.
+;;
+;; 5) (Facultative) Get the moon icons set:
+;;    http://mercurial.intuxication.org/hg/xml-weather/file/66f18bcb2ed8/moon-icons2
+;;    And
+;;    (setq xml-weather-moon-icons-directory "Path/to/moon/icons/31X31")
+;;    NOTE: If `xml-weather-moon-icons-directory' is not found, an empty image will be
+;;    displayed.
+;;
 ;; Usage:
 ;; =====
 ;; M-x xml-weather-today-at (you will have a button for forecast)
@@ -106,6 +113,14 @@
   "*m mean metric, you will have wind speed in km/h, temperature in °C and so on.")
 
 ;;;###autoload
+(defvar xml-weather-temperature-sigle (if (equal xml-weather-unit "m") "°C" "°F")
+  "*Temperature sigle to use depending you use metric or english system.")
+
+;;;###autoload
+(defvar xml-weather-wind-speed-sigle (if (equal xml-weather-unit "m") " Km/h" " Mp/h")
+  "*Wind speed sigle to use depending you use metric or english system.")
+
+;;;###autoload
 (defvar xml-weather-login nil
   "*Your xml-weather Login.
 You should not set this variable directly. See `xml-weather-authentify'.
@@ -145,6 +160,10 @@ Only used with ticker.")
   "/home/thierry/download/xml-weather-icons/icons/31x31"
   "Path to your icons directory given with the xml-weather kit.
 You will have errors if you use another icons set than the xml-weather one.")
+
+(defvar xml-weather-moon-icons-directory
+  "~/download/xml-weather-icons/moon-icons2/31X31/"
+  "The directory where your moon icons are.")
 
 ;;;###autoload
 (defvar xml-weather-mode-map
@@ -288,6 +307,14 @@ Each element is composed of a pair like \(\"Toulon, France\" . \"FRXX0098\"\)."
          (id (cdr (assoc id-name id-list))))
     (message "ID code for %s is %s" id-name id)))
 
+(defun xml-weather-set-number-file-name (arg)
+  "When `arg' < 10 add a 0 before it.
+`arg' can be a string or a number."
+  (let ((n (if (stringp arg) (string-to-number arg) arg)))
+    (if (and (< n 10) (> n 0))
+        (substring (int-to-string (/ (float n) 100)) 2)
+        (int-to-string n))))
+
 ;; Third step convert xml info to alist
 (defun xml-weather-get-alist ()
   "Parse the xml buffer and return an alist of all infos."
@@ -302,19 +329,23 @@ Each element is composed of a pair like \(\"Toulon, France\" . \"FRXX0098\"\)."
                              for lsup = (caddr (assoc 'lsup i))
                              for obst = (caddr (assoc 'obst i))
                              for tmp = (caddr (assoc 'tmp i))
+                             for flik = (caddr (assoc 'flik i))
                              for wea = (caddr (assoc 't i))
-                             for icon = (caddr (assoc 'icon i))
+                             for icon = (xml-weather-set-number-file-name (caddr (assoc 'icon i)))
                              for bar = (caddr (assoc 'r (assoc 'bar i)))
                              for wind-dir-d = (caddr (assoc 'd (assoc 'wind i)))
                              for wind-dir = (caddr (assoc 't (assoc 'wind i)))
                              for gust = (caddr (assoc 'gust (assoc 'wind i)))
+                             for moon = (caddr (assoc 't (assoc 'moon i)))
                              collect (list (cons "Date:" (or lsup ""))
                                            (cons "Observatory:" (or obst ""))
-                                           (cons "Temperature:" (concat (or tmp "") "°C"))
+                                           (cons "Temperature:" (concat (or tmp "") xml-weather-temperature-sigle))
+                                           (cons "Feel Like:" (concat (or flik "") xml-weather-temperature-sigle))
                                            (cons "Cond:" (or (list (concat icon ".png") wea) ""))
                                            (cons "Pression:" (or bar ""))
                                            (cons "Wind dir:" (or (concat wind-dir  "(" wind-dir-d "°)") ""))
-                                           (cons "Gust:" (or gust "")))))
+                                           (cons "Gust:" (or gust ""))
+                                           (cons "Moon:" (or moon "")))))
            (today-info    (loop for i in loc
                              for dnam = (caddr (assoc 'dnam i))
                              for tm = (caddr (assoc 'tm i))
@@ -342,14 +373,14 @@ Each element is composed of a pair like \(\"Toulon, France\" . \"FRXX0098\"\)."
                              for wind-dir = (caddr (assoc 't (assoc 'wind (assoc 'part (cdr i)))))
                              for wind-spd = (caddr (assoc 's (assoc 'wind (assoc 'part (cdr i)))))
                              for wea = (caddr (assoc 't (assoc 'part (cdr i))))
-                             for icon = (caddr (assoc 'icon (assoc 'part (cdr i))))
+                             for icon = (xml-weather-set-number-file-name (caddr (assoc 'icon (assoc 'part (cdr i)))))
                              for hmid = (caddr (assoc 'hmid (assoc 'part (cdr i))))
-                             collect (cons d (list (cons "maxi:" (or hi-temp ""))
-                                                   (cons "mini:" (or low-temp ""))
+                             collect (cons d (list (cons "maxi:" (concat (or hi-temp "") xml-weather-temperature-sigle))
+                                                   (cons "mini:" (concat (or low-temp "") xml-weather-temperature-sigle))
                                                    (cons "sunrise:" (or sunr ""))
                                                    (cons "sunset:" (or suns ""))
                                                    (cons "Wind direction:" (or wind-dir ""))
-                                                   (cons "Wind speed:" (or wind-spd ""))
+                                                   (cons "Wind speed:" (concat (or wind-spd "") xml-weather-wind-speed-sigle))
                                                    (cons "Cond:" (or (list (concat icon ".png") wea) ""))
                                                    (cons "Humidity:" (concat (or hmid "") "%"))))))
            (night-alist   (loop for i in day-list
@@ -363,14 +394,14 @@ Each element is composed of a pair like \(\"Toulon, France\" . \"FRXX0098\"\)."
                              for wind-dir = (caddr (assoc 't (assoc 'wind part2)))
                              for wind-spd = (caddr (assoc 's (assoc 'wind part2)))
                              for wea = (caddr (assoc 't part2))
-                             for icon = (caddr (assoc 'icon (assoc 'part (cdr i))))
+                             for icon = (xml-weather-set-number-file-name (caddr (assoc 'icon (assoc 'part (cdr i)))))
                              for hmid = (caddr (assoc 'hmid part2))
-                             collect (cons d (list (cons "maxi:" (or hi-temp ""))
-                                                   (cons "mini:" (or low-temp ""))
+                             collect (cons d (list (cons "maxi:" (concat (or hi-temp "") xml-weather-temperature-sigle))
+                                                   (cons "mini:" (concat (or low-temp "") xml-weather-temperature-sigle))
                                                    (cons "sunrise:" (or sunr ""))
                                                    (cons "sunset:" (or suns ""))
                                                    (cons "Wind direction:" (or wind-dir ""))
-                                                   (cons "Wind speed:" (or wind-spd ""))
+                                                   (cons "Wind speed:" (concat (or wind-spd "") xml-weather-wind-speed-sigle))
                                                    (cons "Cond:" (or (list (concat icon ".png") wea) ""))
                                                    (cons "Humidity:" (concat (or hmid "") "%")))))))
       (setq morning-alist (cons 'morning morning-alist))
@@ -402,29 +433,46 @@ Each element is composed of a pair like \(\"Toulon, France\" . \"FRXX0098\"\)."
   (insert-button "[New Search]"
                  'action 'xml-weather-button-func3
                  'face '((:background "green")))
+  (newline 2)
+  (insert-button "[Refresh]"
+                 'action 'xml-weather-button-func4
+                 'face '((:background "green")))
   (goto-char (point-min))
+  (save-excursion
+    (align-regexp (point-min) (point-max) "\\(:\\)" 1 1 nil))
   (xml-weather-mode))
+
 
 (defun xml-weather-insert-maybe-icons (elm)
   "Insert infos in all entries of an xml-weather builtin.
 Insert an icon in the Cond: entry only if `xml-weather-default-icons-directory' exists."
   (insert (concat "  " (car elm)))
-  (if (file-exists-p xml-weather-default-icons-directory)
-      (if (equal (car elm) "Cond:")
-          (let* ((fname (cadr elm))
-                 (img   (unless (equal fname ".png")
-                          (create-image (expand-file-name fname xml-weather-default-icons-directory)))))
-            (if img
-                (progn
-                  (insert-image img)
-                  (insert (propertize (car (last elm)) 'face '((:foreground "red"))) "\n"))
-                (insert "")))
-          (insert (propertize (cdr elm) 'face '((:foreground "red"))) "\n"))
-      (let ((info (if (eq (safe-length elm) 1)
-                      (cdr elm)
-                      (car (last elm)))))
-        (insert (propertize info 'face '((:foreground "red"))) "\n"))))
-  
+  (let ((info (if (eq (safe-length elm) 1)
+                  (cdr elm)
+                  (car (last elm)))))
+    (if info
+        (cond ((and (file-exists-p xml-weather-default-icons-directory) (equal (car elm) "Cond:"))
+               (let* ((fname (cadr elm))
+                      (img   (unless (equal fname ".png")
+                               (create-image (expand-file-name fname xml-weather-default-icons-directory)))))
+                 (if img
+                     (progn
+                       (insert-image img)
+                       (insert (propertize info 'face '((:foreground "red"))) "\n"))
+                     (insert ""))))
+              ((and (file-exists-p xml-weather-moon-icons-directory) (equal (car elm) "Moon:"))
+               (let* ((lsname (split-string info))
+                      (fname  (concat (downcase (car lsname)) "_" (downcase (cadr lsname)) ".jpg")) 
+                      (img    (unless (equal fname ".jpg")
+                                (create-image (expand-file-name fname xml-weather-moon-icons-directory)))))
+                 (if img
+                     (progn
+                       (insert-image img)
+                       (insert (propertize info 'face '((:foreground "red"))) "\n"))
+                     (insert ""))))
+              (t (insert (propertize info 'face '((:foreground "red"))) "\n")))
+        (insert ""))))
+    
 (defun xml-weather-pprint-forecast (station)
   "Print the xml-weather info of forecast for `station' in *xml-weather-meteo* buffer."
   (let ((data (xml-weather-get-alist)))
@@ -460,6 +508,8 @@ Insert an icon in the Cond: entry only if `xml-weather-default-icons-directory' 
                      'face '((:background "green"))))
     (switch-to-buffer "*xml-weather-meteo*")
     (goto-char (point-min))
+    (save-excursion
+      (align-regexp (point-min) (point-max) "\\(:\\)" 1 1 nil))
     (xml-weather-mode)))
 
 (defvar xml-weather-last-id nil
@@ -495,6 +545,10 @@ Insert an icon in the Cond: entry only if `xml-weather-default-icons-directory' 
   "Function used by the search button."
   (let ((place (read-string "CityName: ")))
     (xml-weather-today-at place)))
+
+(defun xml-weather-button-func4 (button)
+  "Function used by the refresh button."
+  (xml-weather-now xml-weather-last-id 'update))
 
 ;;;###autoload
 (defun xml-weather-today-at (place)

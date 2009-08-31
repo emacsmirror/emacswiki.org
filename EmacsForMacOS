@@ -23,7 +23,7 @@ See http://www.hoenn.net/blog/index.php?/archives/76-Die-Emacssituation-unter-OS
 These builds are based on a CVS version of GNU Emacs and do not contain any additional packages or patches. Popular Mac keyboard shortcuts are available, though (e.g. Command-O for opening a file using a file picker); these are mapped to the Super modifier.
 * EmacsApp -- Initially an independent GNU Emacs port to the OpenStep APIs, as implemented by Cocoa on OS X, with a more concerted attempt to follow OS X desktop and UI conventions, this code has been integrated into GNU Emacs CVS (as of July 2008) and serves as the foundation for common Mac builds. For instructions on building from source, see <tt>nextstep/INSTALL</tt> in the emacs source tree. Binary release candidate builds from the  [[http://emacs-app.sourceforge.net/ Emacs.app homepage]] are not directly relevant to Mac end users, because they have been superseded by more recent builds.
 
-* http://www.porkrind.org/emacs/ -- Emacs 22.0.92, using Carbon, Cocoa pretests, Nightly builds of Cocoa Emacs 23 from CVS
+* http://emacsformacosx.com/ -- Emacs releases (including 23.1), Pretests and Nightly builds of Cocoa Emacs from CVS
 
 * http://atomized.org/wp-content/cocoa-emacs-nightly/ -- Nightly builds of Cocoa Emacs 23 from CVS, provided by IanEure
 
