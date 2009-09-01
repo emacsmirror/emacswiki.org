@@ -7,7 +7,7 @@ The spec can be found at http://www.xmlrpc.com/.
 This is an implementation of XML-RPC in EmacsLisp. It allows Emacs to
 make asynchronous remote procedure calls over http.
 
-* http://savannah.nongnu.org/cgi-bin/viewcvs/emacsweblogs/weblogger/lisp/xml-rpc.el
+* http://bzr.savannah.gnu.org/lh/emacsweblogs/annotate/head%3A/lisp/xml-rpc.el
 
 To fix a bug in that causes double escaping of string parameters in Emacs 23, apply the patch from the following bug report: http://savannah.nongnu.org/bugs/?25314
 
@@ -34,8 +34,7 @@ ErikHollensbe
 
 (elisp.info should be updated as soon as I can move the weblog to my current weblog system. — MarkAHershberger)
 
-Currently maintained by [http://mah.everybody.org/ Mark
-A. Hershberger].
+Currently maintained by MarkHershberger.
 
 ----
 CategoryXML

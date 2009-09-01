@@ -1,0 +1,32 @@
+== Description ==
+
+[[http://www.methods.co.nz/asciidoc Asciidoc]] is set of document formatting rules for text documents. The documents can be converted into variety of formats , like HTML, manual pages etc with the <code>asciidoc</code> command line program (Python). To edit Asciidoc formatted text files in Emacs, use Lisp:asciidoc.el available at:
+
+* http://www.metaperl.com/asciidoc-el (2009-09-01 dead)
+
+== Install ==
+
+{{{
+(require 'asciidoc)
+}}}
+
+== Configuration ==
+
+To set regular half-tab indent:
+
+  (setq *asciidoc-indent-level* 4)
+
+The color support for Asciidoc files is included in DocMode. Add
+following to your ~/.emacs InitFile:
+
+  (autoload 'doc-mode "doc-mode" nil t)
+  (add-to-list 'auto-mode-alist '("\\.asciidoc$" . doc-mode))
+
+  (add-hook 'doc-mode-hook 'my-doc-mode-hook)
+
+  (defun my-doc-mode-hook ()
+    (turn-on-auto-fill)
+    (require 'asciidoc))
+
+----
+CategoryDoc

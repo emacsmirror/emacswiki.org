@@ -1437,8 +1437,8 @@ RedOnWhite ==> Directory."
      ;; buffer non--filename
      if (and (fboundp 'bookmarkp-get-buffer-name)
              bufp
-             (not (eq handlerp 'bookmarkp-jump-gnus))
-             (not pred))
+             (not (bookmark-get-handler i))
+             (if pred (not (file-exists-p pred)) (not pred)))
      collect (propertize i 'face '((:foreground "grey")))))
        
 
@@ -1556,7 +1556,7 @@ RedOnWhite ==> Directory."
   (defun anything-c-bookmark-su-files-setup-alist ()
     "Specialized filter function for bookmark+ su/sudo files."
     (loop
-       with l = (anything-c-bookmark+-filter-setup-alist 'bookmarkp-remote-alist-only)
+       with l = (anything-c-bookmark+-filter-setup-alist 'bookmarkp-remote-file-alist-only)
        for i in l
        for isfile = (bookmark-get-filename i)
        for istramp = (and isfile (boundp 'tramp-file-name-regexp)
@@ -1577,7 +1577,7 @@ RedOnWhite ==> Directory."
   (defun anything-c-bookmark-ssh-files-setup-alist ()
     "Specialized filter function for bookmark+ ssh files."
     (loop
-       with l = (anything-c-bookmark+-filter-setup-alist 'bookmarkp-remote-alist-only)
+       with l = (anything-c-bookmark+-filter-setup-alist 'bookmarkp-remote-file-alist-only)
        for i in l
        for isfile = (bookmark-get-filename i)
        for istramp = (and isfile (boundp 'tramp-file-name-regexp)

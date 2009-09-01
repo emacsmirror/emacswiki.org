@@ -1,0 +1,4 @@
+There is a number of facilities provided by Emacs to handle text based documents.
+
+* AsciiDoc - for [[http://www.methods.co.nz/asciidoc ASciidoc]] formatted plain text files.
+* TinyTf - from TinyTools package to edit "[[http://www.nongnu.org/emacs-tiny-tools/manual/index-body.html#372 Technical Text]]" formatted plain text files.

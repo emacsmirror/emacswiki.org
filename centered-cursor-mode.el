@@ -9,8 +9,8 @@
 
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/centered-cursor-mode.el
 ;; Compatibility: only tested with GNU Emacs 23.0
-;; Version: 0.5.1
-;; Last-Updated: 2009-02-23
+;; Version: 0.5.2
+;; Last-Updated: 2009-08-31
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -56,6 +56,11 @@
 ;; - more bugs?
 
 ;;; Change Log:
+;; 2009-08-31  andre-r
+;;   * replaced window-body-height with window-text-height
+;;     (partially visible lines are not counted in window-text-height)
+;;   * bug fixed in ccm-vpos-recenter
+;;     (some parentheses where wrong after the last update)
 ;; 2009-02-23  andre-r
 ;;   * some simplifications
 ;; 2009-02-22  andre-r
@@ -124,12 +129,12 @@ jumping to the center."
   :tag "Ignored commands"
   :type '(repeat (symbol :tag "Command")))
 
-(defcustom ccm-vpos-init '(1- (round (window-body-height) 2))
+(defcustom ccm-vpos-init '(round (window-text-height) 2)
   "This is the screen line position where the cursor initially stays."
   :group 'centered-cursor
   :tag "Vertical cursor position"
-  :type '(choice (const :tag "Center" (1- (round (window-body-height) 2)))
-                 (const :tag "Golden ratio" (round (* 21 (window-body-height)) 34))
+  :type '(choice (const :tag "Center" (round (window-text-height) 2))
+                 (const :tag "Golden ratio" (round (* 21 (window-text-height)) 34))
                  (integer :tag "Lines from top" :value 10)))
 (make-variable-buffer-local 'ccm-vpos-init)
 
@@ -209,7 +214,7 @@ behaviour with automatic recentering."
     ;;(message "%S" mods)
     (if amt
         (setq amt (or (cdr amt)
-                      (- (window-body-height)
+                      (- (window-text-height)
                          next-screen-context-lines)))
       (let ((list-elt mouse-wheel-scroll-amount))
         (while (consp (setq amt (pop list-elt))))))
@@ -232,7 +237,7 @@ buffer. This version actually moves the cursor with
 `previous-line'. Since with centered-cursor-mode the cursor is in
 a fixed position the movement appears as page up."
   (interactive "P")
-  (let ((amt (or arg (- (window-body-height)
+  (let ((amt (or arg (- (window-text-height)
                         next-screen-context-lines))))
     (forward-line (- amt))))
 
@@ -242,7 +247,7 @@ This version actually moves the cursor with `previous-line'.
 Since with centered-cursor-mode the cursor is in a fixed position
 the movement appears as page up."
   (interactive "P")
-  (let ((amt (or arg (- (window-body-height)
+  (let ((amt (or arg (- (window-text-height)
                         next-screen-context-lines))))
     (forward-line amt)))
 
@@ -259,9 +264,9 @@ is set."
         ;; see pos-visible-in-window-p
         (vpos-max (if (< ccm-vpos 0)
                       -1
-                    (- (window-body-height) 2)))
+                    (- (window-text-height) 1)))
         (vpos-min (if (< ccm-vpos 0)
-                      (- 1 (window-body-height))
+                      (- (window-text-height))
                     0)))
     (setq ccm-vpos
           (cond
@@ -284,8 +289,8 @@ the center. Just the variable ccm-vpos is set."
   (interactive)
   (if (equal (current-buffer)
              (window-buffer (selected-window)))
-      (setq ccm-vpos (* (eval ccm-vpos-init)))
-            ccm-vpos-inverted))
+      (setq ccm-vpos (* (eval ccm-vpos-init)
+                        ccm-vpos-inverted))))
 
 (defun ccm-position-cursor ()
   "Do the actual recentering at the position `ccm-vpos'."
@@ -316,7 +321,7 @@ the center. Just the variable ccm-vpos is set."
 
             (let* ((bottom-vpos (if (< ccm-vpos 0)
                                     (- ccm-vpos)
-                                  (- (window-body-height) ccm-vpos)))
+                                  (- (window-text-height) ccm-vpos)))
                    (correction (save-excursion
                                  (if (or (= (point) (point-max))
                                          (progn
@@ -360,7 +365,7 @@ the center. Just the variable ccm-vpos is set."
                                          (- bottom-lines)
                                          (if (< ccm-vpos 0)
                                              current-line
-                                           (- (- (window-body-height) current-line)))
+                                           (- (- (window-text-height) current-line)))
                                          (* (/ diff (abs diff)) (- step-size)))))
                         (cdr (reverse (number-sequence
                                        ccm-vpos

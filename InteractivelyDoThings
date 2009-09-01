@@ -142,6 +142,12 @@ You can also check out [[Smex]]. On top of a M-x Ido interface it features ranki
 Minor issue both with this solution and Smex: M-x commands are no longer recorded in the command history (see for yourself via M-x command-history or C-x ESC ESC).  M-p M-n still work in the minibuffer though, so you can access command history that way.
 -- LVA
 
+[new] Can one use IDO to complete symbols in text buffers? Currently whenever you press TAB twice a *completion* buffer pops up. I would like to replace this buffer with IDO in minibuffer, such that after pressing RET the current symbol is replaced with completion candidate. 
+Is it possible?  Thanks for any suggestion. -- RedBlue
+
+[new:DrewAdams:2009-08-31 23:23 UTC]
+: Dunno, for Ido. But if you would like to use [[Icicles]] instead, then `M-TAB' does what you want, in Icicle mode. -- DrewAdams
+
 [new]
 Sometimes I think it would be convenient to be able to bury buffer. I can use bury-buffer command,
 and it works with standard emacs C-xb, but ido seems to ignore it. Is there a way to bury buffer in ido?

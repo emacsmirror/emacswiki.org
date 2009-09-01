@@ -282,3 +282,8 @@ It would be nice if the standard Control-Command-D dictionary was supported. Thi
 [new]
 JesseAlama: The tabs feature of Aquamacs 1.7 looks great.  How about adding support for manipulating the left-to-right order of the tabs, either through the keyboard or with the mouse?  It would be great to be able to click on a tab and drag it to a better position, such as putting one tab next to a closely related one.
 DavidReitter: Jesse, this would be easy to do (for key commands at least), and I you could probably come up with an implementation.  Nathaniel Cunningham has looked into dragging tabs, but the underlying Emacs framework isn't quite there yet.  We can probably add that more easily now that we're on Cocoa with the new Aquamacs 2.0 branch.  
+
+
+[new
+EUR
+It would be great if Aquamacs was able to open frames in certain spaces of Apples Spaces.

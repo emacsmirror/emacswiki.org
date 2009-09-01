@@ -1,5 +1,4 @@
-The buffer menu presents a list of buffers. It is similar to how DiredMode operates with files.  Command `M-x buffer-menu' lists the buffers in the current window. This is an alternative to ListBuffers.
-
+The buffer menu presents a list of buffers. It is similar to how DiredMode operates with files.  Command `M-x buffer-menu' lists the buffers in the current window. This is an alternative to the default listing of buffers with ListBuffers.
 
 According to the EmacsManual:
 
@@ -12,29 +11,25 @@ them, for consistency with Dired), or display them.''
 
 Use ‘##?##’ (or `C-h m', as always) in the `##*Buffer List*##' window for more information about possible operations on the buffers listed.
 
-
-
 To bind `C-x C-b' to command `buffer-menu':
 
   (global-set-key (kbd "C-x C-b") 'buffer-menu)
 
-
 The relation between `list-buffers' and `buffer-menu' is a bit like that between `list-directories' (`C-x C-d') and `dired' (`C-x d'): one is for listing, the other is for listing and manipulating.  However, you can just select the window displayed by `list-buffers', to act on its listed buffers.
 
-See also BufferMenuSorting: sort the listing in buffer menu.
 
-
-== Enhancements to Buffer Menu ==
+Enhancements to vanilla buffer menu:
 
 [:BufferMenuPlus]
-* BufferMenuPlus -- Enhancements to vanilla buffer menu. Highlighting, more commands, better sorting, new columns,...
-[:buff-menu-other-frame]
-* smoke_ on #emacs provided the following code:
+* BufferMenuPlus -- Highlighting using local faces. More commands. Better sorting. New columns. Column width resizing.
+* BufferMenuHighlighting -- Highlighting using font-lock faces.
+* BufferMenuSorting -- Sorting the listing in buffer menu.
+* Open in a different frame (from smoke_ on #emacs):
 
         (defun Buffer-menu-other-frame ()
           (interactive)
           (switch-to-buffer-other-frame (Buffer-menu-buffer t)))
-
+    
         (define-key Buffer-menu-mode-map "5"
            'Buffer-menu-other-frame)
 

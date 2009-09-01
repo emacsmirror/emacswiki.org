@@ -10,8 +10,29 @@ I started to use Emacs in 2007. Now I use it for almost all my text editting tas
 
 == Elisp ==
 
-; IyGoToChar: go to char like "f" and "t" in vim
+ 
+* IyGoToChar, go to char like "f" and "t" in vim
+* Copy Date under the cursor in `calendar-mode'
 
+      (defvar iy/calendar-copy-date-format-history '("%Y-%m-%d"))
+      (defun iy/calendar-copy-date (arg)
+        "Copy date under the cursor      . Read format from minibuffer if ARG, 
+      use recently used format if no ARG . See the function `format-time-string' 
+      for the document of time format string"
+        (interactive "P")
+        (let ((date (calendar-cursor-to-date t))
+              (format (if arg
+                          (completing-read
+                           "Date Format:"
+                           iy/calendar-copy-date-format-history nil nil nil
+                           'iy/calendar-copy-date-format-history nil nil)
+                        (car iy/calendar-copy-date-format-history)))
+              string)
+          (setq date (encode-time 0 0 0 (cadr date) (car date) (nth 2 date)))
+          (setq string (format-time-string format date))
+          (if (eq last-command 'kill-region)
+              (kill-append string nil)
+            (kill-new string))))
 
 == Utilities ==
 
@@ -24,63 +45,10 @@ Start emacs smartly. I only have tested in Emacs 23.
 * If there's a X frame already, switch to it. Otherwise create a new
 frame.
 
-* Switch back to original desktop after finish the editing if any
-argument is given to the script..
+* Switch back to original active window after finish the editing if
+any argument is given to the script.
 
-File: emacs-dwim
-
-    #!/bin/bash
-    # Author: Ian Yang
-
-    _is_emacs_daemon_started () {
-        netstat -nlpx 2> /dev/null | awk '{print $NF}' | grep -qF "/tmp/emacs$UID/server"
-    }
-
-    _is_emacs_window_exist () {
-        wmctrl -lx 2> /dev/null | awk '{print $3}' | grep -qF 'emacs.Emacs'
-    }
-
-    main () {
-        if ! _is_emacs_daemon_started; then
-            echo -n 'starting emacs daemon'
-            if /usr/bin/emacs --daemon &> /tmp/emacs$UID.log; then
-                echo ' [sucess]'
-            else
-                echo ' [faild]'
-                return 1
-            fi
-        fi
-
-        if [ -n "$DISPLAY" ]; then
-            local desk=$(wmctrl -d 2> /dev/null |\
-                sed -n 's/^\([0-9]*\)[[:space:]]*\*.*/\1/p')
-            if _is_emacs_window_exist; then
-                wmctrl -x -a emacs.Emacs &> /dev/null
-                if [ -n "$1" ]; then
-                    /usr/bin/emacsclient "$@"
-                    [ -n "$desk" ] && wmctrl -s "$desk"
-                fi
-            else
-                if [ -n "$1" ]; then
-                    /usr/bin/emacsclient -c "$@" &
-                else
-                    /usr/bin/emacsclient -n -c &
-                fi
-                local -i tries=3
-                while ! wmctrl -x -a emacs.Emacs &> /dev/null &&\
-                        [ $tries -gt 0 ]; do
-                    sleep 1
-                    tries=tries-1
-                done
-                wait $!
-                [ -n "$1" -a -n "$desk" ] && wmctrl -s "$desk"
-            fi
-        else
-            /usr/bin/emacsclient "$@"
-        fi
-    }
-
-    main "$@"
+The source code: [[emacs-dwim]]
 
 [new:DrewAdams:2009-08-23 00:57 UTC]
 Welcome to the wiki. -- DrewAdams

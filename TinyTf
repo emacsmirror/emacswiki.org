@@ -1,0 +1,58 @@
+tinytf.el is part of the TinyTools.
+
+
+== Description ==
+
+Tinytf can be used to write plain text files that are in form of natural "Technical documentation": Headings are placed to the right and standard text paragraphs at tab column 8. The format predates 1997 and later somewhere 2000 the [[AsciiDoc]] was based on similar ideas.
+
+The design goal for  formatting syntax was to make it as natural as possible. The idea is that a document should be publishable as-is, as plain text, without looking like it’s been marked up with tags or formatting instructions.
+
+== Install ==
+
+{{{
+(autoload 'tinytf-mode "tinytf" "" t)
+(autoload 'turn-on-tinytf-mode-maybe "tinytf" "" t)
+(autoload 'tinytf-untabify-buffer "tinytf" "" t)
+(autoload 'turn-on-tinytf-mode-maybe "tinytf" "" t)
+
+(add-hook 'tinytf-:mode-define-keys-hook 'tinytf-mode-define-keys)
+
+}}}
+
+== Configuration ==
+
+Add the following to your ~/.emacs InitFile file:
+
+{{{
+;; OPTIONAL
+(setq tinytf-:mode-prefix-key "z")
+
+;; OPTIONAL: Define additional Function-key shortcuts
+(add-hook 'tinytf-:mode-define-keys-hook 'tinytf-mode-define-f-keys)
+
+;; OPTIONAL: Convert file to spaces on C-x C-s
+(add-hook 'write-file-hooks 'tinytf-untabify-buffer)
+
+;; OPTIONAL: Auto-detect TF formatted text files
+(add-hook 'find-file-hooks 'turn-on-tinytf-mode-maybe)
+}}}
+
+== Ideas ==
+
+To attach your own custom CSS style sheet while converting to HTML,
+add this line to the beginning of TF file. You write your own
+<code>index.css</code> by modifying the default output of
+`t2html.pl --help-css'.
+
+  #T2HTML-OPTION --css-file=index.css
+
+== Further reading ==
+
+To convert "Technical formatted" files into HTML, install:
+
+* http://freshmeat.net/projects/perl-text2html An example of TF
+  converted to HTML with custom CSS style sheet at
+  http://pm-doc.sourceforge.net/pm-tips.html
+
+----
+CategoryDisplay | CategoryModes | TinyTools

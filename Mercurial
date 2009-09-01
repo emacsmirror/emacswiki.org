@@ -9,6 +9,9 @@ Mercurial is available from http://www.selenic.com/mercurial/wiki/index.cgi/Merc
 * [[DVC]] -- supports Mercurial.
 * MercurialMode -- A user interface specific to Mercurial.
 
+[new]
+vc-hg-push and vc-hg-pull are broken in vc-hg.el (emacs23). vc-hg-command has to be called via an apply.
+
 == Emacs from Mercurial ==
 
 see EmacsFromMercurial

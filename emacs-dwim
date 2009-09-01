@@ -1,0 +1,64 @@
+{{{
+#!/bin/bash
+# Author: Ian Yang
+
+_is_emacs_daemon_started () {
+    netstat -nlpx 2> /dev/null | awk '{print $NF}' | grep -qF "/tmp/emacs$UID/server"
+}
+
+_is_emacs_window_exist () {
+    wmctrl -lx 2> /dev/null | awk '{print $3}' | grep -qF 'emacs.Emacs'
+}
+
+_active_window_id () {
+    xprop -root 2> /dev/null |\
+        sed -n 's/^_NET_ACTIVE_WINDOW(WINDOW): window id # //p;T;q'
+}
+
+main () {
+    if ! _is_emacs_daemon_started; then
+        echo -n 'starting emacs daemon'
+        if /usr/bin/emacs --daemon &> /tmp/emacs$UID.log; then
+            echo ' [sucess]'
+        else
+            echo ' [faild]'
+            return 1
+        fi
+    fi
+
+    if [ -n "$DISPLAY" ]; then
+        local cur=$(_active_window_id)
+        if _is_emacs_window_exist; then
+            wmctrl -x -a emacs.Emacs &> /dev/null
+            if [ -n "$1" ]; then
+                /usr/bin/emacsclient "$@"
+                [ -n "$cur" ] && wmctrl -i -a "$cur"
+            fi
+        else
+            if [ -n "$1" ]; then
+                /usr/bin/emacsclient -c "$@" &
+            else
+                /usr/bin/emacsclient -n -c &
+            fi
+            local -i tries=3
+            while ! wmctrl -x -a emacs.Emacs &> /dev/null &&\
+                    [ $tries -gt 0 ]; do
+                sleep 1
+                tries=tries-1
+            done
+            wait $!
+            [ -n "$1" -a -n "$cur" ] && wmctrl -i -a "$cur"
+        fi
+    else
+        /usr/bin/emacsclient -t "$@"
+    fi
+}
+
+kill_emacs () {
+    emacsclient -e -n '(progn (dolist (f (cdr-safe (reverse (frame-list)))) (delete-frame f t)) (kill-emacs))'
+}
+
+[ -n "$1" -a "$1" = "-q" ] \
+    && kill_emacs \
+    || main "$@"
+}}}

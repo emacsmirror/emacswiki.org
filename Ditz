@@ -1,0 +1,63 @@
+== Description ==
+
+Emacs ditz is KentaroKuribayashi<code>'</code>s interface to ruby based [[http://ditz.rubyforge.org/ Ditz distributed issue/bug tracking system]]. This package can be used to browse text files that contain ^L page feed markers, typically used for LPT printers. Select, cut, copy, renumber headings, create table of contents. Download package from git repository:
+
+* http://github.com/kentaro/emacs-ditz
+
+== Install ==
+
+{{{
+;; To initialize your ditz issues
+(autoload 'ditz-init "ditz" "" t)
+
+;; To add a new release
+(autoload 'ditz-add-release "ditz" "" t)
+
+;; To add a new issue
+(autoload 'ditz-add "ditz" "" t)
+
+;; To generate HTML files and their status
+(autoload 'ditz-html "ditz" "" t)
+
+;; To Browse
+(autoload 'ditz-status "ditz" "" t)
+(autoload 'ditz-log "ditz" "" t)
+
+;; To manage issues
+(autoload 'ditz-todo "ditz" t)
+
+}}}
+
+== Configuration ==
+
+Add the following to your ~/.emacs InitFile:
+
+{{{
+;; If you don't want to always set issue dir when you run commands,
+;; ditz.el provides automatic finding functionality. Add the
+;; settings below:
+
+;; Issue directory name (default: "bugs")
+(setq ditz-issue-directory "issues")
+
+;; Enable automatic finding functionality (default: nil)
+(setq ditz-find-issue-directory-automatically-flag t)
+}}}
+
+== Discussion ==
+
+With command <code>M-x ditz-todo</code> you can manage issues in separate buffer:
+
+  A: ditz-add          (Add issue)
+  D: ditz-drop         (Drop issue)
+  s: ditz-show         (Show issue's detail)
+  e: ditz-edit         (Edit issue's detail)
+  a: ditz-assign       (Assign/reassign issue to a release)
+  c: ditz-close        (Close issue)
+  r: ditz-release      (Mark release as done)
+  g: ditz-reload       (Reload status/todo/log buffer)
+  q: ditz-close-buffer (Close ditz-mode buffer)
+
+
+----
+CategoryVersionControl
