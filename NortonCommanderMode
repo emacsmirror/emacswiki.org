@@ -4,12 +4,10 @@ Download:
 
 * Lisp:nc.el
 
-Evening Commander mode:
+== Alternatives ==
 
-ec.el -- Not as complete as nc.el
-
-* http://levana.de/emacs/
-
+* [http://levana.de/emacs/ Evening Commander] (ec.el) – not as complete as nc.el
+* [[Sunrise Commander]]
 
 ----
 CategoryDirectories

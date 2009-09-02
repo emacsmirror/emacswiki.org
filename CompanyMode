@@ -45,6 +45,7 @@ RichardRiley : shoul this by (add-hook) ? Also in the current (4.3) css mode doe
 
    (add-hook 'css-mode-hook (lambda () (company-mode)))
 
+YHWong: IMHO, the loading mechanism of company-mode needs to be changed. Instead of asking the user to autoload directly from their .emacs, company-mode can provide a feature file, which looks at company-backends, and automatically adds hooks to company mode to the modes declared in the elements in the backend list? This will of course, makes naming any backend "company-<major-mode>.el a convention that affects real functionality. Company mode can still be autoloaded, but from the feature file instead. This way company mode can load faster and the user won't have to do anything besides requiring the company feature.
 
 ==== Can I complete by typing a key instead of waiting for the delay timer? ====
 

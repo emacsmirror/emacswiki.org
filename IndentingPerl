@@ -148,5 +148,33 @@ I found default string indentation for concatenated strings very irritating
 but solved it by setting cperl-continued-statement-offset to 0. 
 I'm not sure this is the best solution but at least now the result is readable. -- Peter
 
+[new]
+I made a little modification on latest CPerl Mode 6.2. It seems working for me.
+
+Around line 4541:
+
+		       (progn
+			 ;;(cperl-backward-to-start-of-continued-exp containing-sexp) ;; commented out.
+                         ;; added 3 lines.
+                         (goto-char containing-sexp)
+                         (forward-char 1)
+                         (skip-chars-forward " \t\n")
+			 (vector 'continuation (point) char-after is-block delim))
+
+Now I get:
+
+  my $test = "a string"
+    . "just"
+    . "for"
+    . "test";
+  sub routine {
+    my $test = "a string"
+      . "just"
+      . "for"
+      . "test";
+  }
+
+-- KukiYomanai
+
 ----
 CategoryIndentation

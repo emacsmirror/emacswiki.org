@@ -91,7 +91,7 @@ CALLED-BY: `mon-cln-parsed-xml.")
 
 ;;; ==============================
 ;;; CREATED: <Timestamp: 2009-08-03-W32-1T11:04:11-0400Z - by MON KEY>
-(defvar *regexp-symbol-defs* 'nil
+(defvar *regexp-symbol-defs* nil
   "*Regexp for finding lisp definition forms defun, defmacro, defvar. 
 CALLED-BY: `mon-insert-lisp-testme',`mon-insert-doc-help-tail'.")
 ;;
@@ -106,11 +106,12 @@ CALLED-BY: `mon-insert-lisp-testme',`mon-insert-doc-help-tail'.")
          ;;..3....................         
          "\\([A-Za-z0-9/><:*-]+\\)"      ;;grp 3 -> *some/-symbol:->name<-2*
          ;;...4........................
-         "\\(\\( (\\)\\|\\( '\\)\\)\\)" ;;grp 4 -> ` (' or ` ''
+         "\\(\\( (\\)\\|\\( '\\)\\|\\( `\\)\\)\\)" ;;grp 4 -> ` (' or ` ''
          )))
 
 ;;;test-me; *regexp-symbol-defs*
-;;(progn (makunbound '*regexp-symbol-defs*) (unintern '*regexp-symbol-defs*))
+;;
+;;;(progn (makunbound '*regexp-symbol-defs*) (unintern '*regexp-symbol-defs*))
 
 ;;;;;;;;;;;;CURRENT-REGEXP;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;   ...1..2..........................................................3.......................4........................

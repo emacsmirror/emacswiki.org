@@ -68,7 +68,7 @@ Note that if you have [[EmacsW32]] then nXhtml is already included, but you have
 
 == Libraries included in the package nXhtml ==
 
-**nXhtml** comes with some a lot of elisp libraries, some of which you can use separately.
+**nXhtml** comes with a lot of elisp libraries, some of which you can use separately.
 I used to have a list here, but I always forget to update that so I have removed it.
 Please download the whole library if you are interested in some special pieces.
 Or, pick them from the 

@@ -80,10 +80,6 @@ Add the following to your .emacs file (from ESS mailing list https://stat.ethz.c
 
 See also AutoPairs.
 
-== Let Emacs show a R-function's arguments and their default values when you are about to enter them ==
-
-I wrote a function that does it. Please see http://www.svenhartenstein.de/emacs-ess.php
-(Sven)
 
 == Outline mode for .R files ==
 

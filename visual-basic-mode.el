@@ -15,8 +15,8 @@
 ;;           : Kevin Whitefoot <kevin.whitefoot@nopow.abb.no>
 ;;           : Randolph Fritz <rfritz@u.washington.edu>
 ;;           : Vincent Belaiche (VB1) <vincentb1@users.sourceforge.net>
-;; Version: 1.4.5 (Jul 25, 2009)
-;; Serial Version: %Id: 14%
+;; Version: 1.4.6 (2009-09-02)
+;; Serial Version: %Id: 15%
 ;; Keywords: languages, basic, Evil
 
 
@@ -118,6 +118,7 @@
 ;;     3) new keywords Preserve and Explicit
 ;; 1.4.4 VB1 added function visual-basic-close-block
 ;; 1.4.5 VB1, (expand-abbrev) within (save-excusion...)
+;; 1.4.6 VB1 correct visual-basic-close-block
 
 ;;
 ;; Notes:
@@ -1017,12 +1018,16 @@ With' if the block is a `With ...', etc..."
 		(setq  end-statement "End"
 		       end-indent (current-indentation))
 		nil)
-	       ((or (looking-at visual-basic-if-regexp)
+	       ((or (visual-basic-if-not-on-single-line)
 		    (looking-at visual-basic-else-regexp))
 		(setq  end-statement "End If"
 		       end-indent (current-indentation))
 		nil)
 
+	       ((looking-at visual-basic-do-regexp)
+		(setq  end-statement "Loop"
+		       end-indent (current-indentation))
+		nil)
 	       ;; Cases where the current statement is an end-of-smthing statement
 	       ((or (looking-at visual-basic-else-regexp)
 		    (looking-at visual-basic-endif-regexp))

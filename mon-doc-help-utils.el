@@ -209,8 +209,8 @@ See also `mon-insert-doc-help-cookie'."
 ;;; ==============================
 ;;; CREATED: <Timestamp: 2009-08-03-W32-1T11:04:11-0400Z - by MON KEY>
 (defvar *regexp-symbol-defs* nil
-  "Default regexp for finding lisp definition forms defun, defmacro, defvar. 
-Used by: `mon-insert-lisp-testme',`mon-insert-doc-help-tail'.")
+  "*Regexp for finding lisp definition forms defun, defmacro, defvar. 
+CALLED-BY: `mon-insert-lisp-testme',`mon-insert-doc-help-tail'.")
 ;;
 (setq *regexp-symbol-defs*
       (concat 
@@ -218,11 +218,11 @@ Used by: `mon-insert-lisp-testme',`mon-insert-doc-help-tail'.")
        ;;...1..         
        "^\\("
        ;;..2.......................................................
-       "\\((\\(?:def\\(?:\\(?:macro\\*?\\|un\\*?\\|var\\) \\)\\)\\)"  ;;grp 2 -> `defun ', `defmacro ', `defvar '
+       "\\((\\(?:def\\(?:\\(?:macro\\*?\\|un\\*?\\|var\\) \\)\\)\\)" ;;grp 2 -> `defun ', `defmacro ', `defvar '
        ;;..3....................         
-       "\\([A-Za-z0-9/><:*-]+\\)"      ;;grp 3 -> *some/-symbol:->name<-2*
+       "\\([A-Za-z0-9/><:*-]+\\)" ;;grp 3 -> *some/-symbol:->name<-2*
        ;;...4........................
-       "\\(\\( (\\)\\|\\( '\\)\\)\\)" ;;grp 4 -> ` (' or ` ''
+       "\\(\\( (\\)\\|\\( '\\)\\|\\( `\\)\\)\\)" ;;grp 4 -> ` (' or ` ''
        ))
 ) ;CLOSE UNLESS BATP
 

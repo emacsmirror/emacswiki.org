@@ -18,7 +18,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `bookmark', `pp'.
+;;   `bookmark', `ffap', `pp'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -63,7 +63,8 @@
 ;;    `bookmarkp-bmenu-list-only-gnus-bookmarks',
 ;;    `bookmarkp-bmenu-list-only-info-bookmarks',
 ;;    `bookmarkp-bmenu-list-only-region-bookmarks',
-;;    `bookmarkp-bmenu-list-only-w3m-bookmarks', `bookmarkp-version'.
+;;    `bookmarkp-bmenu-list-only-w3m-bookmarks',
+;;    `bookmarkp-fix-bookmark-alist-and-save', `bookmarkp-version'.
 ;;
 ;;  * User options defined here:
 ;;
@@ -111,12 +112,13 @@
 ;;    `bookmarkp-remove-if-not', `bookmarkp-root-or-sudo-logged-p',
 ;;    `bookmarkp-save-new-region-location',
 ;;    `bookmarkp-w3m-alist-only', `bookmarkp-w3m-bookmark-p',
-;;    `bookmarkp-w3m-set-new-buffer-name', `bookmarkp-propertize-bmenu-item'.
+;;    `bookmarkp-w3m-set-new-buffer-name'.
 ;;
 ;;  * Internal variables defined here:
 ;;
 ;;    `bookmark-make-record-function' (Emacs 20-22),
-;;    `bookmarkp-jump-display-function', `bookmarkp-version-number'.
+;;    `bookmarkp-jump-display-function',
+;;    `bookmarkp-non-file-filename', `bookmarkp-version-number'.
 ;;
 ;;
 ;;  ***** NOTE: The following functions defined in `bookmark.el'
@@ -282,88 +284,12 @@
 
 ;;; Code:
 
-
-;; REPLACES ORIGINAL DOC STRING in `bookmark.el'.
-;;
-;; Doc string reflects Bookmark+ enhancements.
-;;
-(when (require 'bookmark)
-  (put 'bookmark-alist 'variable-documentation
-       "Association list of bookmarks and their records.
-Bookmark functions update the value automatically.
-You probably do not want to change the value yourself.
-
-The value is an alist with entries of the form
- (BOOKMARK-NAME . PARAM-ALIST)
-or the deprecated form (BOOKMARK-NAME PARAM-ALIST).
-
- BOOKMARK-NAME is the name you provided for the bookmark.
- PARAM-ALIST is an alist of bookmark information.  The order of the
-  entries in PARAM-ALIST is not important.  The possible entries are
-  described below.  A nil value means the entry is not used.
-
-Bookmarks created using vanilla Emacs (`bookmark.el'):
-
- (filename . FILENAME)
- (position . POS)
- (front-context-string . STR-AFTER-POS)
- (rear-context-string  . STR-BEFORE-POS)
- (annotation . ANNOTATION)
- (handler . HANDLER)
-
- FILENAME names the bookmarked file.
- POS is the bookmarked buffer position (position in the file).
- STR-AFTER-POS is buffer text that immediately follows POS.
- STR-BEFORE-POS is buffer text that immediately precedes POS.
- ANNOTATION is a string that you can provide to identify the bookmark.
-  See options `bookmark-use-annotations' and
-  `bookmark-automatically-show-annotations'.
- HANDLER is a function that provides the bookmark-jump behavior
-  for a specific kind of bookmark.  This is the case for Info
-  bookmarks, for instance (starting with Emacs 23).
-
-Bookmarks created using Bookmark+ are the same as for vanilla Emacs,
-except for the following differences.
-
-1. If no file is associated with the bookmark, then FILENAME is nil.
-
-2. The following additional entries are used.  Their values are
-non-nil when a region is bookmarked; they are nil otherwise.  When a
-region is bookmarked, POS represents the region start position.
-
- (buffer-name . BUFFER-NAME)
- (end-position . END-POS)
- (front-context-region-string . STR-BEFORE-END-POS)
- (rear-context-region-string . STR-AFTER-END-POS))
-
- BUFFER-NAME is the name of a bookmarked buffer, which might not be
-  associated with any file (see #1).
- END-POS is the region end position.
- STR-BEFORE-END-POS is buffer text that precedes END-POS.
- STR-AFTER-END-POS is buffer text that follows END-POS.
-
- NOTE: The relative locations of `front-context-region-string' and
- `rear-context-region-string' are reversed from those of
- `front-context-string' and `rear-context-string'.  For example,
- `front-context-string' is the text that *follows* `position', but
- `front-context-region-string' that *precedes* `end-position'.
-
-3. The following additional entries are used for a Gnus bookmark.
-
- (group . GNUS-GROUP-NAME)
- (article . GNUS-ARTICLE-NUMBER)
- (message-id . GNUS-MESSAGE-ID)
-
- GNUS-GROUP-NAME is the name of a Gnus group.
- GNUS-ARTICLE-NUMBER is the number of a Gnus article.
- GNUS-MESSAGE-ID is the identifier of a Gnus message.
-
-4. For a W3m bookmark, FILENAME is a W3m URL."))
-
+(require 'bookmark)
 (unless (fboundp 'file-remote-p) (require 'ffap))
 (eval-when-compile (require 'gnus))     ; mail-header-id (really in `nnheader.el')
+(eval-when-compile (require 'cl))       ; needed for `gensym'. 
 
-(defconst bookmarkp-version-number "2.2.3")
+(defconst bookmarkp-version-number "2.2.6")
 
 (defun bookmarkp-version ()
   "Show version number of library `bookmark+.el'."
@@ -529,7 +455,92 @@ If nil show only beginning of region."
 ;;; Other Code -------------------------------------------------------
 
 (defvar bookmarkp-jump-display-function nil
-  "Function used currently to display a bookmark.")'
+  "Function used currently to display a bookmark.")
+
+(defconst bookmarkp-non-file-filename "%%Bookmark+, NON-FILE BOOKMARK%%"
+  "Name to use for `filename' entry, for non-file bookmarks.")
+
+
+;; REPLACES ORIGINAL DOC STRING in `bookmark.el'.
+;;
+;; Doc string reflects Bookmark+ enhancements.
+;;
+
+;; Apparently, we need to add this `defvar' stump, in order to get the documentation
+;; to show up using `C-h v'.
+(defvar bookmark-alist)
+
+(put 'bookmark-alist 'variable-documentation
+     "Association list of bookmarks and their records.
+Bookmark functions update the value automatically.
+You probably do not want to change the value yourself.
+
+The value is an alist with entries of the form
+ (BOOKMARK-NAME . PARAM-ALIST)
+or the deprecated form (BOOKMARK-NAME PARAM-ALIST).
+
+ BOOKMARK-NAME is the name you provided for the bookmark.
+ PARAM-ALIST is an alist of bookmark information.  The order of the
+  entries in PARAM-ALIST is not important.  The possible entries are
+  described below.  A nil value means the entry is not used.
+
+Bookmarks created using vanilla Emacs (`bookmark.el'):
+
+ (filename . FILENAME)
+ (position . POS)
+ (front-context-string . STR-AFTER-POS)
+ (rear-context-string  . STR-BEFORE-POS)
+ (annotation . ANNOTATION)
+ (handler . HANDLER)
+
+ FILENAME names the bookmarked file.
+ POS is the bookmarked buffer position (position in the file).
+ STR-AFTER-POS is buffer text that immediately follows POS.
+ STR-BEFORE-POS is buffer text that immediately precedes POS.
+ ANNOTATION is a string that you can provide to identify the bookmark.
+  See options `bookmark-use-annotations' and
+  `bookmark-automatically-show-annotations'.
+ HANDLER is a function that provides the bookmark-jump behavior
+  for a specific kind of bookmark.  This is the case for Info
+  bookmarks, for instance (starting with Emacs 23).
+
+Bookmarks created using Bookmark+ are the same as for vanilla Emacs,
+except for the following differences.
+
+1. If no file is associated with the bookmark, then FILENAME is nil.
+
+2. The following additional entries are used.  Their values are
+non-nil when a region is bookmarked; they are nil otherwise.  When a
+region is bookmarked, POS represents the region start position.
+
+ (buffer-name . BUFFER-NAME)
+ (end-position . END-POS)
+ (front-context-region-string . STR-BEFORE-END-POS)
+ (rear-context-region-string . STR-AFTER-END-POS))
+
+ BUFFER-NAME is the name of a bookmarked buffer, which might not be
+  associated with any file (see #1).
+ END-POS is the region end position.
+ STR-BEFORE-END-POS is buffer text that precedes END-POS.
+ STR-AFTER-END-POS is buffer text that follows END-POS.
+
+ NOTE: The relative locations of `front-context-region-string' and
+ `rear-context-region-string' are reversed from those of
+ `front-context-string' and `rear-context-string'.  For example,
+ `front-context-string' is the text that *follows* `position', but
+ `front-context-region-string' that *precedes* `end-position'.
+
+3. The following additional entries are used for a Gnus bookmark.
+
+ (group . GNUS-GROUP-NAME)
+ (article . GNUS-ARTICLE-NUMBER)
+ (message-id . GNUS-MESSAGE-ID)
+
+ GNUS-GROUP-NAME is the name of a Gnus group.
+ GNUS-ARTICLE-NUMBER is the number of a Gnus article.
+ GNUS-MESSAGE-ID is the identifier of a Gnus message.
+
+4. For a W3m bookmark, FILENAME is a W3m URL.")
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -897,12 +908,12 @@ if you want to change the appearance.
        ;; If a bookmark has an annotation, prepend a "*" in the list of bookmarks.
        (let ((annotation (bookmark-get-annotation
                            (bookmark-name-from-full-record full-record)))
-             (start      (point))
+             start
              (name       (bookmark-name-from-full-record full-record))
-             end)
+             (end        (point)))
          (insert (if (and annotation (not (string-equal annotation "")))  " *"  "  "))
          (insert name)
-         (setq end (save-excursion (re-search-backward "[^ \t]") (1+ (point))))
+         (setq start (save-excursion (re-search-backward "[^ \t]") (1+ (point))))
          (bookmarkp-propertize-bmenu-item name start end)
          (insert "\n")))
      (bookmark-maybe-sort-alist))
@@ -984,15 +995,15 @@ if you want to change the appearance.
           (backward-word 1)
           (setq bookmark-bmenu-bookmark-column  (current-column)))
         (save-excursion
-          (let ((inhibit-read-only  t))
+          (let ((inhibit-read-only t))
             (while bookmark-bmenu-hidden-bookmarks
               (move-to-column bookmark-bmenu-bookmark-column t)
               (bookmark-kill-line)
-              (let ((start  (point))
-                    (name   (car bookmark-bmenu-hidden-bookmarks))
-                    end)
+              (let ((name (car bookmark-bmenu-hidden-bookmarks))
+                    start
+                    (end  (point)))
                 (insert name)
-                (setq end  (save-excursion (re-search-backward "[^ \t]") (1+ (point))))
+                (setq start (save-excursion (re-search-backward "[^ \t]") (1+ (point))))
                 (bookmarkp-propertize-bmenu-item name start end))
               (setq bookmark-bmenu-hidden-bookmarks  (cdr bookmark-bmenu-hidden-bookmarks))
               (forward-line 1))))))))
@@ -1553,7 +1564,7 @@ pertains to the location within the buffer."
     `(,@(unless point-only `((filename . ,(cond ((buffer-file-name (current-buffer))
                                                  (bookmark-buffer-file-name))
                                                 (isdired)
-                                                (t  "%%Bookmark+, NON-FILE BOOKMARK%%")))))
+                                                (t  bookmarkp-non-file-filename)))))
       (buffer-name . ,buf)
       (front-context-string . ,fcs)
       (rear-context-string . ,rcs)
@@ -1693,7 +1704,7 @@ Use multi-tabs in W3m if `bookmarkp-w3m-allow-multi-tabs' is non-nil."
          (head  (gnus-summary-article-header art))
          (id    (mail-header-id head)))
     `(,@(bookmark-make-record-default 'point-only)
-        (filename . "%%Bookmark+, NON-FILE BOOKMARK%%" )
+        (filename . ,bookmarkp-non-file-filename)
         (group . ,grp) (article . ,art)
         (message-id . ,id) (handler . bookmarkp-jump-gnus))))
 
@@ -1743,9 +1754,41 @@ See `bookmark-jump-other-window'."
     (dolist (x xs) (when (funcall pred x) (push x result)))
     (nreverse result)))
 
+;; You DO NOT NEED THIS, unless you used `bookmark+.el' in the summer
+;; of 2009 to create non-file bookmarks.  If you did that, then those
+;; bookmarks will cause vanilla Emacs (emacs -Q) to raise an error.
+;; You can use this command to fix this problem: it modifies your
+;; existing `bookmark-default-file' (`.emacs.bmk'), after backing up
+;; that file (suffixing the name with "_saveNUMBER").
+(defun bookmarkp-fix-bookmark-alist-and-save ()
+  "Format old bookmark-file created with `bookmark+.el' for compatibility with vanilla bookmark."
+  (interactive)
+  (if (not (yes-or-no-p "This will modify your bookmarks file, after backing it up.  OK? "))
+      (message "OK, nothing done")
+    (bookmark-maybe-load-default-file)
+    (let ((bkup-file  (concat bookmark-default-file "_" (symbol-name (gensym "save")))))
+      (when (condition-case err
+                (progn
+                  (with-current-buffer (find-file-noselect bookmark-default-file)
+                    (write-file bkup-file))
+                  (dolist (bmk  bookmark-alist)
+                    (let ((fn-tail (member '(filename) bmk))
+                          (hdlr    (bookmark-get-handler (car bmk))))
+                      (cond (fn-tail
+                             (setcar fn-tail (cons 'filename bookmarkp-non-file-filename)))
+                            ((and (eq hdlr 'bookmarkp-jump-gnus)
+                                  (not (assoc 'filename bmk)))
+                             (setcdr bmk (push `(filename . ,bookmarkp-non-file-filename)
+                                               (cdr bmk))))))))
+              (error (message "No changes made. %s" (error-message-string err)))))
+      (bookmark-save)
+      (message "Bookmarks file fixed.  Old version is `%s'" bkup-file))))
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;
 
 (provide 'bookmark+)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; bookmark+.el ends here
+
