@@ -51,6 +51,7 @@ HideShow works with:
 * Tcl
 * VHDL
 * Fortran
+* Python [https://code.launchpad.net/~freiksenet/python-mode/hide-show-support] (for python-mode that is NOT built in emacs)
 
 HideShow is included with Emacs 20 and later.  [The maintainer version, which is slightly more featureful (and perhaps slightly less stable) can be found at http://www.gnuvola.org/software/j/hideshow/ --ttn]
 
@@ -203,6 +204,8 @@ Is anyone working to add Python support?  I've been unable to find any evidence,
 [new]
 : See here: http://sourceforge.net/projects/python-mode/
 (Maybe by now this mode is popular enough to remove this question from here?)
+This implements hide-show support for python-mode.
+[https://code.launchpad.net/~freiksenet/python-mode/hide-show-support]
 [new]
 Is there a possibility to add some small "+" sign next to the sourcecode to toggle show/hide? E.g. like the one in the KDE editor component.
 [new]

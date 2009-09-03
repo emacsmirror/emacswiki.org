@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Aug 27 10:05:10 2009 (-0700)
+;; Last-Updated: Wed Sep  2 16:59:11 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 14690
+;;     Update #: 14696
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2851,7 +2851,8 @@ Optional argument WORD-P non-nil means complete only a word at a time."
              (icicle-transform-sole-candidate)
              (unless (boundp 'icicle-prefix-complete-and-exit-p)
                (icicle-highlight-complete-input)
-               (cond (icicle-top-level-when-sole-completion-flag
+               (cond ((and icicle-top-level-when-sole-completion-flag
+                           (sit-for icicle-top-level-when-sole-completion-delay))
                       (set minibuffer-history-variable
                            (cons (car icicle-completion-candidates)
                                  (symbol-value minibuffer-history-variable)))
@@ -3125,7 +3126,8 @@ message either.  NO-DISPLAY-P is passed to
            (icicle-transform-sole-candidate)
            (unless (boundp 'icicle-apropos-complete-and-exit-p)
              (icicle-highlight-complete-input)
-             (cond (icicle-top-level-when-sole-completion-flag
+             (cond ((and icicle-top-level-when-sole-completion-flag
+                         (sit-for icicle-top-level-when-sole-completion-delay))
                     (set minibuffer-history-variable (cons (car icicle-completion-candidates)
                                                            (symbol-value minibuffer-history-variable)))
                     (condition-case icicle-apropos-complete-1
@@ -4529,7 +4531,8 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
              "No completion candidates.  Did you use `\\<minibuffer-local-completion-map>\
 \\[icicle-prefix-complete]' or `\\[icicle-apropos-complete]'?")))
           ((null (cdr icicle-completion-candidates))
-           (if (not icicle-top-level-when-sole-completion-flag)
+           (if (not (and icicle-top-level-when-sole-completion-flag
+                         (sit-for icicle-top-level-when-sole-completion-delay)))
                (minibuffer-message "  [Sole completion]")
              (set minibuffer-history-variable (cons (car icicle-completion-candidates)
                                                     (symbol-value minibuffer-history-variable)))
@@ -4658,7 +4661,8 @@ When called from Lisp with non-nil arg PREDICATE, use that to narrow."
              "No completion candidates.  Did you use `\\<minibuffer-local-completion-map>\
 \\[icicle-prefix-complete]' or `\\[icicle-apropos-complete]'?")))
           ((null (cdr icicle-completion-candidates))
-           (if (not icicle-top-level-when-sole-completion-flag)
+           (if (not (and icicle-top-level-when-sole-completion-flag
+                         (sit-for icicle-top-level-when-sole-completion-delay)))
                (minibuffer-message "  [Sole completion]")
              (set minibuffer-history-variable (cons (car icicle-completion-candidates)
                                                     (symbol-value minibuffer-history-variable)))

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sat Aug 29 16:02:42 2009 (-0700)
+;; Last-Updated: Wed Sep  2 17:16:04 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 1022
+;;     Update #: 1033
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1823,21 +1823,24 @@ readable, then it is ignored."
   "`exchange-point-and-mark', save a region, or select a saved region.
 With no prefix arg: call `exchange-point-and-mark'.
 With a numeric prefix arg: save the active region.
-  If feature `bookmark+' is present, save it as a bookmark.
-  If not, save it to `icicle-region-alist'.
+  If option `icicle-region-bookmarks-flag' is non-nil and feature
+  `bookmark+' is present, then save the region as a bookmark.
+  Otherwise, save the region to `icicle-region-alist'.
 
 With a plain `C-u' prefix arg: select (activate) one or more saved
-regions.  If feature `bookmark+' is present, use
-`icicle-select-bookmarked-region' to choose from bookmarked regions.
-Otherwise, use `icicle-select-region' to choose from the regions saved
-in `icicle-region-alist'.
+regions.
+  If option `icicle-region-bookmarks-flag' is non-nil and feature
+  `bookmark+' is present, then use `icicle-select-bookmarked-region'
+  to choose from bookmarked regions.
+  Otherwise, use `icicle-select-region' to choose from the regions
+  saved in `icicle-region-alist'.
 
 By default, Icicle mode remaps all key sequences that are normally
 bound to `exchange-point-and-mark' to
 `icicle-exchange-point-and-mark'.  If you do not want this remapping,
 then customize option `icicle-top-level-key-bindings'."
   (interactive "P")
-  (let ((bplus  (featurep 'bookmark+)))
+  (let ((bplus  (and icicle-region-bookmarks-flag (featurep 'bookmark+))))
     (if arg
         (cond ((atom arg)
                (unless (and transient-mark-mode mark-active (not (eq (mark) (point))))
@@ -2152,8 +2155,9 @@ regions, as follows:
 region is in a buffer that does not exist, it is skipped.  You can
 always re-create the buffer (e.g. visit the file), and try again.
 
-Note: To search selected regions in `icicle-region-alist'
-individually, use multi-command `icicle-search-region'.
+Note: To search particular regions in `icicle-region-alist'
+individually, instead of searching them all, use multi-command
+`icicle-search-region'.
 
 - With a non-negative numeric prefix arg, search multiple buffers
 completely.  You are prompted for the buffers to search - all of each
@@ -2480,7 +2484,12 @@ The arguments are for use by `completing-read' to read the regexp.
 (defun icicle-search-where-arg ()
   "Return WHERE arg for `icicle-search*' commands, based on prefix arg."
   (cond ((consp current-prefix-arg)
-         (message "Searching saved regions") (sit-for 1) icicle-region-alist)
+         (message "Searching saved regions") (sit-for 1)
+         ;; @@@@@ NOT YET IMPLEMENTED
+;; @@@@@@   (if (and icicle-region-bookmarks-flag (featurep 'bookmark+))
+;;              (bookmarkp-region-alist-only)
+;;            icicle-region-alist))
+         icicle-region-alist)
         ((wholenump current-prefix-arg)
          (icicle-search-choose-buffers (= 99 (prefix-numeric-value current-prefix-arg))))
         (current-prefix-arg

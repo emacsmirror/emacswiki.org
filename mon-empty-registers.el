@@ -3,13 +3,15 @@
 ;;; this is mon-empty-registers.el
 ;;; ================================================================
 ;;; DESCRIPTION:
-;;; Some handy register locations with unfilled contents.
+;;; Some handy register locations with unfilled contents 
 ;;; Idea stolen from:
 ;;; Nelson H. F. Beebe <beebe@math.utah.edu> HIS: bibtex-regs.el
-;;;
-;;; FUNCTIONS:
+;;; 
+;;; FUNCTIONS:►►►
 ;;; `mon-reset-registers', `mon-set-all-registers-to-char'
-;;; `mon-coerce->char', `mon-decode-meta-key-event', `mon-catch-meta-key'
+;;; `mon-query-replace-register1<-reg2', `mon-coerce->char'
+;;; `mon-decode-meta-key-event', `mon-catch-meta-key'
+;;; FUNCTIONS:◄◄◄
 ;;;
 ;;; CONSTANTS or VARIABLES:
 ;;; `*mon-cntl-char-registers*', `*mon-cntl-char-registers*',
@@ -20,21 +22,26 @@
 ;;; MACROS:
 ;;;
 ;;; SUBST or ALIASES:
+;;; `mon-prin1-char->?char' -> `prin1-char'
 ;;;
-;;; DEPRECATED, RENAMED, OR MOVED:
+;;; DEPRECATED, or RENAMED:
+;;;
+;;; MOVED:
+;;; `mon-query-replace-register1<-reg2' <- ./naf-mode-replacements.el
+;;; `mon-coerce->char'                  <- ./mon-utils.el
+;;; `mon-decode-meta-key-event'         <- ./mon-utils.el
+;;; `mon-catch-meta-key'                <- ./mon-utils.el
 ;;;
 ;;; REQUIRES:
 ;;; 'cl -> `mon-reset-registers' uses `defun*', `pairlis', etc.
-;;; `mon-is-digit' , `mon-is-letter'
+;;; (optional mon-utils) -> `mon-is-digit', `mon-is-letter' 
 ;;;
 ;;; TODO:
 ;;;
 ;;; NOTES:
-;;;
+;;; Nothing in this file takes advantage of `prin1-char'. Can it?
 ;;;
 ;;; SNIPPETS:
-;;;
-;;;
 ;;;
 ;;; THIRD PARTY CODE:
 ;;;
@@ -42,104 +49,134 @@
 ;;; MAINTAINER: MON KEY
 ;;;
 ;;; FILE CREATED:
-;;; <Timestamp: #{2009-08-07T18:50:52-04:00Z}#{09325} - by MON KEY>
+;;; <Timestamp: Tuesday August 04, 2009 @ 07:31.09 PM - by MON KEY>
 ;;; ================================================================
-;;; This program is free software: you can redistribute it and/or modify
-;;; it under the terms of the GNU General Public License as published by
-;;; the Free Software Foundation, either version 3 of the License, or
+;;; This file is not part of GNU Emacs.
+;;;
+;;; This program is free software; you can redistribute it and/or
+;;; modify it under the terms of the GNU General Public License as
+;;; published by the Free Software Foundation; either version 3, or
 ;;; (at your option) any later version.
 ;;;
 ;;; This program is distributed in the hope that it will be useful,
 ;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;;; GNU General Public License for more details.
+;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;;; General Public License for more details.
 ;;;
 ;;; You should have received a copy of the GNU General Public License
-;;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+;;; along with this program; see the file COPYING.  If not, write to
+;;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
+;;; Floor, Boston, MA 02110-1301, USA.
 ;;; ================================================================
+;;; Copyright (C) 2009 MON KEY
+;;; ==========================
 ;;; CODE:
 
 ;;; ==============================
-;;; `mon-reset-registers' uses `defun*', `pairlis', etc.
+;;; `mon-reset-registers' uses defun*
 (eval-when-compile (require 'cl))
+;;; ==============================
 
-(evan-when-compile
- (unless (functionp 'mon-is-letter)
+;;; ==============================
+;;; For code posted to emacs-wiki, needed when mon-utils.el is not loaded. 
 ;;; COURTESY: Pascal J. Bourguignon HIS: pjb-strings.el WAS: `is-digit'
+(eval-when-compile
+ (unless (functionp 'mon-is-letter)
 (defun mon-is-digit (x)
 "t when X is a digit character.\n
 See also; `mon-is-letter'."
   (cond ((stringp x) (mon-is-digit (string-to-char x)))
         ((integerp x) (and (<= ?0 x) (<= x ?9)))
         (t nil)))
-
-;;;test-me;(mon-is-digit (char-after (point)))
-;;;test-me;(mon-is-digit (char-after (point)))
-
 ) ;unless1
 
-(unless (functionp 'mon-is-letter)
+;;;test-me;(mon-is-digit (char-after (point)))
+;;;test-me;(mon-is-digit (char-after (point)))
+
+;;; ==============================
+;;; For code posted to emacs-wiki, needed when mon-utils.el is not loaded. 
 ;;; COURTESY: Pascal J. Bourguignon HIS: pjb-strings.el WAS: `is-letter'
+(unless (functionp 'mon-is-letter)
 (defun mon-is-letter (x)
 "t when X is an alpha character.\n
 See also; `mon-is-digit'."
   (cond ((stringp x) (mon-is-letter (string-to-char x)))
         ((integerp x) (not (equal (downcase x) (upcase x))))
         (t nil)))
+) ;unless2
+) ;eval-when
+
 ;;;test-me;(mon-is-letter (char-after (point)))x
 ;;;test-me;(mon-is-letter (char-after (point)))8
 ;;;test-me;(mon-is-letter ?x)
 
-) ;unless2
-) ;eval-when
-
 ;;; ==============================
-;;; CREATED: <Timestamp: 2009-08-05-W32-3T16:12:00-0400Z - by MON KEY>>
-(defvar *mon-cntl-char-registers* 'nil
-  "List of character literals or Control Chars 'C-[a-z]' - ASCII chars 1-26. \n
-;;  1 \" \"   2 \" \"   3 \" \"   4 \" \"   5 \" \"   6 \" \" 
-;; \"?\\C-a\"  \"?\\C-b\"  \"?\\C-c\"  \"?\\C-d\"  \"?\\C-e\"  \"?\\C-f\" 
-;; 
-;;  7 \" \"   8 \" \"   9 TAB    10 LF   11 \" \"  12 \" \" 
-;; \"?\\C-g\"  \"?\\C-h\"  \"?\\C-i\"  \"\?\\C-j\"  \"?\\C-k\"  \"?\\C-l\" 
-;; 
-;; 13 \"
-\"  14 \" \"  15 \" \"  16 \" \"  17 \" \"  18 \" \" 
-;; \"?\\C-m\"  \"?\\C-n\"  \"?\\C-o\"  \"?\\C-p\"  \"\?\\C-q\"  \"?\\C-r\" 
-;; 
-;; 19 \" \"  20 \" \"  21 \" \"  22 \" \"  23 \" \"  24 \" \" 
-;; \"?\\C-s\"  \"?\\C-t\"  \"?\\C-u\"  \"?\\C-v\"  \"?\\C-w\"  \"?\\C-x\" 
-;; 
-;; 25 \" \"  26 \" \" 
-;; \"?\\C-y\"  \"?\\C-z\" \n
-NOTE: chars 9, 10, 17 e.g TAB and LF 'C-q' are not bound in the VARS list.
-They are included here for completeness.\n
-EXAMPLE:
-\(concat \"?\"\(mapconcat 'char-to-string *mon-cntl-char-registers*  \" ?\") 
-\(mapconcat 'char-to-string *mon-cntl-char-registers*  \" \") \n►►► \n
-See also: `*mon-digit-registers*',`*mon-digit-shifted-registers*',
-`*mon-symbol-registers*', `*mon-upper-case-registers*',
-`*mon-lower-case-registers*', `*register-of-registers*'.")
+;;; CREATED: <Timestamp: 2009-08-05-W32-3T16:12:00-0400Z - by MON KEY>
+(defvar *mon-cntl-char-registers* nil)
 ;;
 (when (not (bound-and-true-p  *mon-cntl-char-registers*))
   (setq *mon-cntl-char-registers*
+        ;;`(,@(number-sequence 1 8) ,@(number-sequence 11 26))
         '(?\C-a ?\C-b ?\C-c ?\C-d ?\C-e ?\C-f ?\C-g ?\C-h ?\C-k ?\C-l 
-         ?\C-m ?\C-n ?\C-o ?\C-p ?\C-r ?\C-s ?\C-t ?\C-u ?\C-v ?\C-w ?\C-x ?\C-y ?\C-z)))
-
-;;;test-me; *mon-cntl-char-registers* 
-;;;test-me;(concat "?" (mapconcat 'char-to-string *mon-cntl-char-registers*  " ?"))
-;;(concat "?" (mapconcat 'char-to-string *mon-cntl-char-registers*  " ?"))
-
-;;;test-me;(mapconcat 'char-to-string *mon-cntl-char-registers*  " ")
-
-;;;(progn (makunbound '*mon-cntl-char-registers*) (unintern '*mon-cntl-char-registers*))
+                ?\C-m ?\C-n ?\C-o ?\C-p ?\C-r ?\C-s ?\C-t ?\C-u ?\C-v ?\C-w ?\C-x ?\C-y ?\C-z)))
 
 ;;; ==============================
-;;; CREATED: <Timestamp: 2009-08-05-W32-3T15:49:10-0400Z - by MON KEY>>
+;;; Build vars documentation string. The 23 `nth' calls are prob. costlty...
+;;; But, character representations disappear when uploaded to emacs-wiki.
+;;; ("^A "^B "^C "^D" "^E" "^F" "^G" "^H" "^K" "^L" "^M" "^N"
+;;;   0    1   2   3    4    5    6    7    8    9   10   11 
+;;;  "^O" "^P" "^Q" "^R" "^S" "^T" "^U" "^V" "^W" "^X" "^Y" "^Z")
+;;;   12   13   14   15   16   17   18   19   20    21  22    23
+(eval-when-compile
+(let ((self-puke)
+      (char-rep (mapcar 'char-to-string `(,@(number-sequence 1 8) ,@(number-sequence 11 26)))))
+(setq self-puke
+        (format
+  "*List of character literals or Control Chars 'C-[a-z]' - ASCII chars 1-26. \n
+  1 \"%s\"    2 \"%s\"    3 \"%s\"   4 \"%s\"    5 \"%s\"    6 \"%s\"
+ \"?\\C-a\"   \"?\\C-b\"   \"?\\C-c\"  \"?\\C-d\"   \"?\\C-e\"   \"?\\C-f\"\n
+  7 \"%s\"    8 \"%s\"    9  TAB   10 LF    11 \"%s\"   12 \"%s\"
+ \"?\\C-g\"   \"?\\C-h\"   \"?\\C-i\"  \"\?\\C-j\"   \"?\\C-k\"   \"?\\C-l\"\n
+ 13 \"%s\"   14 \"%s\"   15 \"%s\"  16 \"%s\"   17 \"%s\"   18 \"%s\" 
+ \"?\\C-m\"   \"?\\C-n\"   \"?\\C-o\"  \"?\\C-p\"   \"\?\\C-q\"   \"?\\C-r\"\n 
+ 19 \"%s\"   20 \"%s\"   21 \"%s\"  22 \"%s\"   23 \"%s\"   24 \"%s\"
+ \"?\\C-s\"   \"?\\C-t\"   \"?\\C-u\"  \"?\\C-v\"   \"?\\C-w\"   \"?\\C-x\"\n 
+ 25 \"%s\"   26 \"%s\"
+ \"?\\C-y\"   \"?\\C-z\"\n
+NOTE: chars 9, 10, 17 e.g TAB and LF 'C-q' are not bound in the VARS list.
+They are included here for completeness.\n
+EXAMPLE:
+\(concat \"?\"\(mapconcat 'chanr-to-string *mon-cntl-char-registers*  \" ?\") 
+\(mapconcat 'char-to-string *mn-cntl-char-registers*  \" \")\n
+See also: `*mon-digit-registers*',`*mon-digit-shifted-registers*',
+`*mon-symbol-registers*', `*mon-upper-case-registers*',
+`*mon-lower-case-registers*', `*registr-of-registers*'.►►►"
+(nth 0 char-rep)(nth 1 char-rep)(nth 2 char-rep)(nth 3 char-rep)(nth 4 char-rep)(nth 5 char-rep) ;1-6
+(nth 6 char-rep)(nth 7 char-rep)(nth 8 char-rep)(nth 9 char-rep) ;7-12
+(nth 10 char-rep)(nth 11 char-rep)(nth 12 char-rep)(nth 13 char-rep)(nth 14 char-rep)(nth 15 char-rep) ;13-18
+(nth 16 char-rep)(nth 17 char-rep)(nth 18 char-rep)(nth 19 char-rep)(nth 20 char-rep)(nth 21 char-rep) ;19-24
+(nth 22 char-rep)(nth 23 char-rep) ;25-26
+))
+(put '*mon-cntl-char-registers* 'variable-documentation  self-puke)))
+
+;;;test-me; *mon-cntl-char-registers* 
+;;;test-me;(symbol-value '*mon-cntl-char-registers*)
+;;;test-me;(get '*mon-cntl-char-registers* 'variable-documentation)
+;;;test-me;(describe-variable '*mon-cntl-char-registers*)
+;;;
+;;;test-me;(concat "?" (mapconcat 'char-to-string *mon-cntl-char-registers*  " ?"))
+;;;test-me;(concat "?" (mapconcat 'char-to-string *mon-cntl-char-registers*  " ?"))
+;;;test-me;(mapconcat 'char-to-string *mon-cntl-char-registers*  " ")
+;;
+;;;(progn (makunbound '*mon-cntl-char-registers*) (unintern '*mon-cntl-char-registers*))
+
+
+;;; ==============================
+;;; CREATED: <Timestamp: 2009-08-05-W32-3T15:49:10-0400Z - by MON KEY>
 ;; Numbers ASCII 48-57
 ;;(48 49 50 51 52 53 54 55 56 57)
-(defvar *mon-digit-registers* 'nil
-  "Digit chars in 0-9. ASCII range 48-57.\n
+(defvar *mon-digit-registers* nil
+  "*Digit chars in 0-9. ASCII range 48-57.\n
 ;; 48 49 50 51 52 53 54 55 56 57
 ;; \?0 \?1 \?2 \?3 \?4 \?5 \?6 \?7 \?8 \?9 \n
 EXAMPLE:
@@ -147,20 +184,20 @@ EXAMPLE:
 \(mapconcat 'char-to-string *mon-digit-registers*  \" \") \n►►► \n
 See also: `*mon-cntl-char-registers*', `*mon-digit-shifted-registers*',
 `*mon-symbol-registers*', `*mon-upper-case-registers*',
-`*mon-lower-case-registers*', `*register-of-registers*'.")
+`*mon-lower-case-registers*', `*registr-of-registers*'.")
 ;;
 (when (not (bound-and-true-p  *mon-digit-registers*))
   (setq *mon-digit-registers*
         '(?0 ?1 ?2 ?3 ?4 ?5 ?6 ?7 ?8 ?9)))
 
 ;;;test-me; *mon-digit-registers*
-;;;test-me;(concat "?" (mapconcat 'char-to-string *mon-digit-registers*  " ?")))
+;;test-me;(concat "?" (mapconcat 'char-to-string *mon-digit-registers*  " ?")))
 ;;;test-me;(mapconcat 'char-to-string *mon-digit-registers*  "\" \"" )
 
 ;;;(progn (makunbound '*mon-digit-registers*) (unintern '*mon-digit-registers*))
 
 ;;; ==============================
-;;; CREATED: <Timestamp: 2009-08-05-W32-3T15:49:04-0400Z - by MON KEY>>
+;;; CREATED: <Timestamp: 2009-08-05-W32-3T15:49:04-0400Z - by MON KEY>
 (defvar *mon-digit-shifted-registers* 'nil
   "Symbols chars for shifted digits \(keyboard keys 1-0\).\n
 ;; 33  64  35  36  37  94  38  42   40   41 
@@ -194,7 +231,7 @@ EXAMPLE:
 \(mapconcat 'char-to-string *mon-symbol-registers*  \" \" ) \n►►► \n
 See also: `*mon-cntl-char-registers*', `*mon-cntl-char-registers*',
 `*mon-digit-registers*', `*mon-digit-shifted-registers*',
-`*mon-upper-case-registers*', `*mon-lower-case-registers*',
+`*mon-upper-case-registers*', `*mon-lower-case-registers*'
 `*registr-of-registers*'.")
 ;;
 (when (not (bound-and-true-p  *mon-symbol-registers*))
@@ -208,9 +245,9 @@ See also: `*mon-cntl-char-registers*', `*mon-cntl-char-registers*',
 ;;;(progn (makunbound '*mon-symbol-registers*) (unintern '*mon-symbol-registers*))
 
 ;;; ==============================
-;;; CREATED: <Timestamp: 2009-08-05-W32-3T15:48:54-0400Z - by MON KEY>
+;;; CREATED: <Timestamp: 2009-08-05-W32-3T15:48:54-0400Z - by MON KEY>;; 
 (defvar *mon-upper-case-registers* 'nil
-  "Uppercase Letters ASCII chars 65-90.\n
+  "*Uppercase Letters ASCII chars 65-90.\n
 ;; 65 66 67 68 69 70 71 72 73 74 75 76 77 
 ;; \?A \?B \?C \?D \?E \?F \?G \?H \?I \?J \?K \?L \?M \n;; 
 ;; 78 79 80 81 82 83 84 85 86 87 88 89 90   
@@ -238,7 +275,7 @@ See also: `*mon-cntl-char-registers*', `*mon-cntl-char-registers*',
 ;;; ==============================
 ;;; CREATED: <Timestamp: 2009-08-05-W32-3T15:48:49-0400Z - by MON KEY>
 (defvar *mon-lower-case-registers* 'nil
-  "Lowercase Letters ASCII chars 97-122.\n
+  "*Lowercase Letters ASCII chars 97-122.\n
 ;;  97  98  99 100 101 102 103 104 105 106 107 108 109 
 ;;  \?a  \?b  \?c  \?d  \?e  \?f  \?g  \?h  \?i  \?j  \?k  \?l  \?m \n;; 
 ;; 110 111 112 113 114 115 116 117 118 119 120 121 122
@@ -264,10 +301,11 @@ See also: `*mon-cntl-char-registers*', `*mon-cntl-char-registers*',
 
 ;;;(progn (makunbound '*mon-lower-case-registers*) (unintern '*mon-lower-case-registers*))  
 
+
 ;;; ==============================
 ;;; CREATED: <Timestamp: #{2009-08-07T19:20:57-04:00Z}#{09325} - by MON KEY>
-(defvar *registr-of-registers* 'nil
-   "alist mapping symbols to register vars.
+(defvar *registr-of-registers* nil
+   "*alist mapping symbols to register vars.
 cntrl    -> `*mon-cntl-char-registers*';
 digit    -> `*mon-digit-registers*';
 digit-s  -> `*mon-digit-shifted-registers*';
@@ -286,6 +324,17 @@ lower    -> `*mon-lower-case-registers*';.")
 
 ;;;test-me; *registr-of-registers*
 ;;(progn (makunbound '*registr-of-registers*)  (unintern '*registr-of-registers*))
+
+;;; ==============================
+;;; NOTE: To remember function exists. `prin1-char' is defined in lisp-mode.el
+;;; CREATED: <Timestamp: #{2009-09-02T10:49:12-04:00Z}#{09363} - by MON KEY>
+(defalias 'mon-prin1-char->?char 'prin1-char
+  "Return a string representing char as a character rather than as an integer.
+If char is not a character, return nil.\n
+EXAMPLE:\n\(prin1-char 32\) ;=>\"? \"\n\(prin1-char 63\) ;=>\"??\"
+\(prin1-char 10\) ;=>\"?\\\\C-j\"\n")
+
+;;;test-me;(mon-prin1-char->?char 32)
 
 ;;; ==============================
 ;;; CREATED: <Timestamp: 2009-08-03-W32-1T18:47:33-0400Z - by MON KEY>
@@ -319,7 +368,7 @@ If coercion of thing fails throw an error."
           (cond ((/= (string-to-number  thing) 0)
                  (mon-coerce->char (string-to-number thing)))
                 ;; MODIFICATIONS: <Timestamp: #{2009-08-26T15:31:55-04:00Z}#{09353} - by MON KEY>
-                ;; The logic on this was busted. Was throwing an error uncondtionally inside cond's truth.
+                ;; The logic on this was busted. we're throwing an error uncondtionally the truth.
                 ;; Most likely was transcribing an if and didn't close it
                 ;; ((= (length thing) 1)
                 ;;  (string-to-char thing)
@@ -375,7 +424,7 @@ e.g. \(- 134217779  134217728\) => 51"
 ;;; CREATED: <Timestamp: 2009-08-04-W32-2T19:26:05-0400Z - by MON KEY>
 (defun mon-catch-meta-key () ;(event-vect)
   "Return the first <meta>-? key prefix call to wrapper function.
-Can be called programatically within a wrapper functions."
+Can be alled programatically within a wrapper functions."
   (let ((key-seq (listify-key-sequence (this-command-keys-vector)));event-vect))
         (map-events))
     (setq map-events
@@ -416,6 +465,7 @@ Does not move point."
          (query-replace (get-register r1) (get-register r2)))
        ))))
 
+ 
 ;;; ==============================
 ;;; CREATED: <Timestamp: #{2009-08-08T17:04:24-04:00Z}#{09326} - by MON KEY>
 (defun* mon-reset-registers (&key intrp cntrl digit digit-S symbol upper lower all)
@@ -427,7 +477,7 @@ Does not move point."
 :UPPER    -> `*mon-upper-case-registers*';
 :LOWER    -> `*mon-lower-case-registers*';
 :ALL      ->  everything in `*registr-of-registers*'
-When called interactively or INTRP is non-nil resets all registers.
+When called interactively or INTRP is non-nil resets all registers.\n
 See also: `mon-set-all-registers-to-char', `*registr-of-registers*'."
   (interactive (list :intrp t))
 (let ((reg-keys `(,cntrl ,digit ,digit-S ,symbol ,upper ,lower))
@@ -458,6 +508,37 @@ See also: `mon-set-all-registers-to-char', `*registr-of-registers*'."
           popd))))
 (when intrp (message "All registers were emptied.")))
 
+;;; ==============================
+;;; set-register template;
+(defun* mon-with-register-lists (&key cntrl digit digit-S symbol upper lower all)
+  ":CNTRL :DIGIT :DIGIT-S :SYMBOL :UPPER :LOWER :ALL"
+  (let ((reg-keys `(,cntrl ,digit ,digit-S ,symbol ,upper ,lower))
+        (reg-lists  '(cntrl  digit  digit-S  symbol  upper lower))
+        (pairs)
+        (make-reg-list)
+        ;;(pop-registers)
+        )
+    (setq pairs (pairlis reg-keys reg-lists))
+    pairs
+    ))
+;;(mon-with-register-lists :cntrl t :digit t :digit-S t :symbol t :upper t :lower t)
+    (setq make-list '())
+    (if all ;;(or intrp all)
+        ;; (setq make-reg-list(mapcar (lambda (x) (symbol-value (cadr x))) *registr-of-registers*))
+        (progn
+          (mapc (lambda (x) 
+                  (setq make-reg-list (cons (symbol-value (cadr x)) make-reg-list))) 
+                *registr-of-registers*)
+      (setq make-reg-list (reverse make-reg-list)))
+      (progn
+        (mapc (lambda (x)
+                (when (car x)
+                  (setq make-reg-list (cons (symbol-value (cadr (assoc (cdr x) *registr-of-registers*))) make-reg-list))))
+              pairs)
+        (setq make-reg-list (reverse make-reg-list))))
+    make-reg-list))
+
+
 ;;;test-me: Evaluate following form to refill registers with non-nil val:
 ;;; (mon-set-all-registers-to-char)
 ;;;
@@ -477,6 +558,33 @@ See also: `mon-set-all-registers-to-char', `*registr-of-registers*'."
 ;;;test-me:(mon-reset-registers :intrp t)
 ;;; (mon-set-all-registers-to-char)
 ;;;(call-interactively 'mon-reset-registers)
+
+
+;;;test-me:
+;;(tree-equal
+;; (mon-reset-registers :all t)
+;; (mon-reset-registers :cntrl t :digit t :digit-S t :symbol t :upper t :lower t))
+;; (mon-reset-registers :all t)
+;; (mon-reset-registers :cntrl t :digit t :digit-S t :symbol t :upper t :lower t))
+;; (symbol-value (cadr (assoc 'cntrl *registr-of-registers*)))
+
+
+;;   (setq which-list '())
+;;   (if all ;gather map all values
+;;       (mapcar (lambda (x) 
+;;                 (setq which-list 
+;;                       (cons (symbol-value (car x  *registr-of-registers*)))
+;;                             which-list)))
+;; ;              *registr-of-registers*)
+;;   (mapcar reg-lists
+;;           (lambda (x) 
+;;             (setq which-list 
+;;                   (cons (symbol-value (car (assoc x  *registr-of-registers*)))
+;;                         which-list)))
+;;           *registr-of-registers*))
+
+
+;(mapconcat 'char-to-string *mon-digit-registers*  \"( \")
 
 ;;; ==============================
 ;;; CREATED: <Timestamp: #{2009-08-08T16:22:27-04:00Z}#{09326} - by MON KEY>
@@ -587,6 +695,7 @@ See also: `mon-reset-registers', `*registr-of-registers*'."
 ;;   (set-register ?v      "")  (set-register ?w      "")  (set-register ?x      "")
 ;;   (set-register ?y      "")
 ;;   (message "all registers set to empty-strings."))
+;;; ==============================
 
 ;;; ==============================
 (provide 'mon-empty-registers)

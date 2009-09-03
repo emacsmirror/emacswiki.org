@@ -59,6 +59,10 @@ Below, I've included a few ungelled ideas from my own "maybe-to-do" list, in hop
 The ''latest'' discussion entry is '''[[#LatestEntry|here]]'''.
 
 
+
+
+
+
 <pre>
 
 </pre>
@@ -561,7 +565,6 @@ HTH -- DrewAdams
 
 ----
 
-[:LatestEntry]
 
 [new:EthanGlasserCamp:2009-05-26 20:01 UTC]
 
@@ -668,6 +671,48 @@ You say "The fact that you are focused on buffer switching suggests that you hav
 7. Well, here's what happened. I bound TAB to be apropos completion (to be more iswitch-y). Then, when finding a file, I typed in "Play" and hit TAB (actually I probably hammered on the TAB key three or four times, a habit I've picked up over the years). Since I'm used to prefix completion in the shell, I expected it to complete "Play/". Instead it cycled to ".aplayrc" or something like that. So this item is sort of "Gosh, wouldn't it be nice if that didn't happen?". Item #8 was going to be that I wanted a pony, but I couldn't figure out how to word it ;).
 
 Icicles really appeals to me because I've never seen a more sophisticated interactive querying system. M-*, C-~ and deleting individual results blew me away when I first saw them. I have often wanted features like that in, say, Google or aptitude. So I'll probably play around a little more and see if I can't make icicles more like what I want, even if I've never wanted features like those in emacs. Thanks for all your time and work. -- EthanGlasserCamp
+
+
+
+[:LatestEntry]
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+[new:]
+Hello Drew,
+
+I have spent whole day on learning about Icicles completions. Absolutely marvelous. Thanks for the package!! 
+
+When during the typing a single candidate is found icicles automatically inserts it in original buffer. And each time I find myself continue typing by inertia and deleting characters back. Is there an option to deactivate that behavior (i.e. RET to be required)?
+
+Also thanks for automatic help navigation - the brightest idea ever!!
+I would like to implement the same facility in my ESS; is it possible? Is it  documented somewhere? The row code of icicle-help-on-previous-prefix-candidate
+unfortunately could not be decoded by my half-cooked e-lisp brain.
+
+Thanks a lot. -- RedBlue
+
+[new:DrewAdams:2009-09-03 02:09 UTC]
+Here's the story. Option '''`<tt>[[Icicles - Customization and General Tips#icicle-top-level-when-sole-completion-flag|icicle-top-level-when-sole-completion-flag]]</tt>'''' controls whether '''Icicles''' uses the sole completion without waiting for you to hit `RET'. The default value is `nil', meaning it does not do that -- you must hit `RET'. However, for a few commands, and symbol completion (`M-TAB') is one of them, the command binds the option to `t' to impose a no-`RET' policy. Generally, this is preferable.
+
+So my first suggestion would be to try to get used to the behavior. ;-)
+
+However, I've just added a new option, '''`<tt>[[Icicles - Customization and General Tips#icicle-top-level-when-sole-completion-delay|icicle-top-level-when-sole-completion-delay]]</tt>'''', that will give you a little more leeway. If you customize this to a non-zero number (the default is zero), then '''Icicles''' will wait that many seconds before automatically accepting the sole completion.
+
+If you edit (type or delete a character) before the delay expires, then the automatic acceptance is annulled. So you might want to give this a try: [[Customize|customize]] the option to some delay, say 0.8 sec, and then either wait to have '''Icicles''' accept the sole completion after that delay, or type or delete a char before that delay. If you change your mind, and want to accept the sole completion after all, just hit `TAB' again (and wait the delay).
+
+See [[Icicles - S-RET#icicle-top-level-when-sole-completion-delay|Icicles - S-RET]].
+
+You'll need to download the '''Icicles''' libraries again, to take advantage of this feature -- I just added it in response to your post. Thx -- DrewAdams
+
+
+
 
 ----
 

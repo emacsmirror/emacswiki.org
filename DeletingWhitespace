@@ -141,8 +141,21 @@ Backward:
       (let ((backward-delete-char-untabify-method 'hungry))
         (backward-delete-char-untabify arg killp)))
 
-[new]
 What is the difference between those two functions and the built-in <code>backward-delete-char-untabify-method</code> and <code>delete-horizontal-space</code>? -- c-7e5ae353.131-1-64736c10.cust.bredbandsbolaget.se
 
+'C-h f' for function reference clears this up.
+
+backward-delete-char-untabify:
+
+Delete characters backward, changing tabs into spaces.
+The exact behavior depends on `backward-delete-char-untabify-method'.
+
+delete-horizontal-space:
+
+Delete all spaces and tabs around point.
+If BACKWARD-ONLY is non-nil, only delete them before point.
+
+--CH
+[new]
 ----
 CategoryEditing

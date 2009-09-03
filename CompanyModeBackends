@@ -6,6 +6,10 @@ http://groups.google.com/group/gnu.emacs.sources/msg/844540d2ec531e0d?
 
 http://common-lisp.net/pipermail/slime-devel/attachments/20090328/91ce4004/attachment.asc
 
+= SlimeMode, extended to work with Clojure and the Slime-REPL =
+
+http://gist.github.com/179847
+
 = EmacsLispMode =
 
 === Keywords completions ===
@@ -21,3 +25,4 @@ http://common-lisp.net/pipermail/slime-devel/attachments/20090328/91ce4004/attac
       ('meta (cdr (assoc (intern arg) finder-known-keywords)))))
 
 -- [[nschum]]
+

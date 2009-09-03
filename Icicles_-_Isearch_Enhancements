@@ -26,14 +26,14 @@ described here.
 === Isearch Completion Against the Search History ===
 
 When you search incrementally (`C-s'), Emacs lets
-you use `M-TAB' to complete your input to a string that you have sought
+you use `M-TAB' (aka `C-M-i', aka `ESC-TAB') to complete your input to a string that you have sought
 previously, that is, a string in the current search history
 (`search-ring' or `regexp-search-ring').  In ''Icicle'' mode, this feature is enhanced so that you
 can use all of the completion enhancements provided by '''Icicles''': `M-TAB' is bound to `icicle-isearch-complete' during Isearch.
 
 On MS Windows, the operating system itself grabs `M-TAB' (by default), making it
-unavailable for Emacs.  For this reason, on Windows, '''Icicles''' binds
-'''`C-M-TAB'''' also to `icicle-isearch-complete'.  But note that
+unavailable for Emacs.  For this reason, on Windows, '''Icicles''' binds `icicle-isearch-complete' also to 
+'''`C-M-TAB''''.  But note that
 you can also use '''##(w32-register-hot-key [M-tab])##''' to enable Emacs to
 use `M-TAB'.
 

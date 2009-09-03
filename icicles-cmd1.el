@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Aug 29 15:33:57 2009 (-0700)
+;; Last-Updated: Wed Sep  2 16:31:36 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 19611
+;;     Update #: 19613
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1329,7 +1329,7 @@ control completion behaviour using `bbdb-completion-type'."
 (fset 'old-lisp-complete-symbol (symbol-function 'lisp-complete-symbol)))
 
 ;;;###autoload
-(defun icicle-lisp-complete-symbol (&optional predicate) ; Bound to `ESC TAB' globally.
+(defun icicle-lisp-complete-symbol (&optional predicate) ; `M-TAB' (`C-M-i', `ESC-TAB'), globally.
   "Complete the Lisp symbol preceding point against known Lisp symbols.
 If no characters can be completed, display a list of possible completions.
 Repeating the command at that point scrolls the list.

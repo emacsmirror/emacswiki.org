@@ -10,7 +10,7 @@ In addition to input [[completion]], you can use '''Icicles''' to complete
 words and [[symbol]]s in other [[buffer]]s, besides the [[minibuffer]].
 '''Icicles''' enhances this completion in these ways:
 
-# ''Lisp symbol'' completion via `ESC-TAB' (`lisp-complete-symbol').
+# ''Lisp symbol'' completion via `M-TAB' (`lisp-complete-symbol').  (This is also `ESC-TAB' and `C-M-i'.)
 
 # Word completion using the ''dynamic abbreviation'' of standard
 Emacs library `<code>dabbrev.el</code>', via `##C-M-/##'.

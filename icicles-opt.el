@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Aug 19 16:56:21 2009 (-0700)
+;; Last-Updated: Wed Sep  2 16:56:32 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 3207
+;;     Update #: 3237
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -140,9 +140,9 @@
 ;;    `icicle-redefine-standard-commands-flag',
 ;;    `icicle-regexp-quote-flag', `icicle-regexp-search-ring-max',
 ;;    `icicle-region-alist', `icicle-region-auto-open-files-flag',
-;;    `icicle-region-background', `icicle-regions-name-length-max',
-;;    `icicle-require-match-flag', `icicle-saved-completion-sets',
-;;    `icicle-search-cleanup-flag',
+;;    `icicle-region-background', `icicle-region-bookmarks-flag',
+;;    `icicle-regions-name-length-max', `icicle-require-match-flag',
+;;    `icicle-saved-completion-sets', `icicle-search-cleanup-flag',
 ;;    `icicle-search-context-match-predicate',
 ;;    `icicle-search-from-isearch-keys',
 ;;    `icicle-search-highlight-all-current-flag',
@@ -161,6 +161,7 @@
 ;;    `icicle-test-for-remote-files-flag',
 ;;    `icicle-thing-at-point-functions',
 ;;    `icicle-top-level-key-bindings',
+;;    `icicle-top-level-when-sole-completion-delay',
 ;;    `icicle-top-level-when-sole-completion-flag',
 ;;    `icicle-touche-pas-aux-menus-flag', `icicle-transform-function',
 ;;    `icicle-type-actions-alist',
@@ -222,8 +223,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Code:
-
-(eval-when-compile (when (< emacs-major-version 20) (require 'cl))) ;; when, unless
 
 (require 'hexrgb nil t)     ;; (no error if not found): hexrgb-color-values-to-hex,
                             ;; hexrgb-increment-(red|green|blue), hexrgb-rgb-to-hsv,
@@ -2090,7 +2089,11 @@ time using `C-`'."
 
 ;;;###autoload
 (defcustom icicle-region-alist ()
-  "*Alist of regions (in any buffers).
+  "*Alist of saved regions (in any buffers).
+If option `icicle-region-bookmarks-flag' is nil or you do not have
+library `bookmark+.el', then Icicles commands such as
+`icicle-exchange-point-and-mark' use the regions in this list.
+
 Use commands `icicle-add-region' and `icicle-remove-region' to define
 this list.
 
@@ -2107,7 +2110,7 @@ START and END are character positions that delimit the region."
                        (file    :tag "File name (absolute)")
                        (integer :tag "Region start")
                        (integer :tag "Region end")))
-  :group 'Icicles-Miscellaneous)
+  :group 'Icicles-Miscellaneous :group 'Icicles-Searching)
 
 ;;;###autoload
 (defcustom icicle-region-auto-open-files-flag nil
@@ -2140,7 +2143,7 @@ command `icicle-region-open-all-files'."
               (icicle-increment-color-hue bg 24)) ; Color - change bg hue slightly.
           (face-background 'region)))
     (face-background 'region))          ; Use normal region background.
-  "*Background color to use for region during minibuffer cycling.
+  "*Background color to use for the region during minibuffer cycling.
 This has no effect if `icicle-change-region-background-flag' is nil.
 If you do not define this explicitly, and if you have loaded library
 `hexrgb.el' (recommended), then this color will be slightly
@@ -2151,10 +2154,19 @@ easily read your minibuffer input."
   :group 'Icicles-Minibuffer-Display)
 
 ;;;###autoload
+(defcustom icicle-region-bookmarks-flag (featurep 'bookmark+)
+  "*Non-nil means some Icicles saved-region commands use bookmarks.
+If non-nil and library `bookmark+.el' is available, then commands such
+as `icicle-exchange-point-and-mark' use region bookmarks.  Otherwise,
+they use the regions saved in option `icicle-region-alist'."
+  :type 'boolean :group 'Icicles-Miscellaneous :group 'Icicles-Searching)
+
+;;;###autoload
 (defcustom icicle-regions-name-length-max 80
   "*Maximum number of characters used to name a region.
 This many characters, maximum, from the beginning of the region, is
-used to name the region."
+used to name the region. This is used for regions saved to
+option `icicle-region-alist'."
   :type 'integer :group 'Icicles-Miscellaneous)
 
 ;;;###autoload
@@ -2511,6 +2523,14 @@ reverses the meaning of `icicle-default-thing-insertion'."
      (const :tag "No function to successively grab more text" nil)
      (function :tag "Function to advance point one text thing")))
   :group 'Icicles-Miscellaneous)
+
+;;;###autoload
+(defcustom icicle-top-level-when-sole-completion-delay 0.0
+  "*Number of secs to wait to return to top level if only one completion.
+This has no effect if `icicle-top-level-when-sole-completion-flag' is
+nil.  Editing the completion (typing or deleting a character) before
+the delay expires prevents its automatic acceptance."
+  :type 'number :group 'Icicles-Matching)
 
 ;;;###autoload
 (defcustom icicle-top-level-when-sole-completion-flag nil

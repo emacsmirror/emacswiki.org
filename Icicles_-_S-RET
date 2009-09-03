@@ -52,6 +52,9 @@ to '''Icicles''' and uses [[apropos completion]].  For example, you can type
 prevent the rebinding of `C-x b' in ''Icicle'' mode.
 
 
+
+[:icicle-top-level-when-sole-completion-delay]
+[:icicle-top-level-when-sole-completion-flag]
 === Accepting Partial Matches by Default ===
 
 For those people who prefer that a partial match always be
@@ -60,7 +63,15 @@ is required or not) and without having to use `RET' or `S-RET', there is
 '''Icicles''' user option '''`<tt>[[Icicles - Customization and General Tips#icicle-top-level-when-sole-completion-flag|icicle-top-level-when-sole-completion-flag]]</tt>''''.
 If you set this to non-`nil', then, whenever your input matches only one
 candidate completion, that candidate is used immediately.  I don't
-recommend this practice, but some people might prefer it.
+recommend this practice generally, but some people might prefer it.
+
+Option '''`<tt>[[Icicles - Customization and General Tips#icicle-top-level-when-sole-completion-delay|icicle-top-level-when-sole-completion-delay]]</tt>'''' is the number
+of seconds '''Icicles''' waits, before returning to top level with the
+sole completion.  It has no effect if
+`icicle-top-level-when-sole-completion-flag' is `nil'.  The delay
+gives you a chance to forestall acceptance of the sole completion:
+editing the completion (typing or deleting a character) before the
+delay expires prevents its automatic acceptance.
 
 ----
 

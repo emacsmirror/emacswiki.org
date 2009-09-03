@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Aug 29 16:12:17 2009 (-0700)
+;; Last-Updated: Wed Sep  2 17:27:58 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 4293
+;;     Update #: 4309
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -119,6 +119,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2009/09/02 dadams
+;;     icicle-exchange-point-and-mark: Respect icicle-region-bookmarks-flag.
 ;; 2009/08/29 dadams
 ;;     Added: icicle-define-search-bookmark-command,
 ;;            icicle-search(-region|-info|-gnus|-w3m|(-non|-local|-remote)-file)-bookmark,
@@ -1549,6 +1551,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2009/09/02 dadams
+;;     icicle-(prefix|apropos)-complete-1, icicle-narrow-candidates(-with-predicate):
+;;       Impose icicle-top-level-when-sole-completion-delay when *-flag is non-nil.
 ;; 2009/08/27 dadams
 ;;     icicle-goto/kill-failed-input: Do nothing if the overlay is nowhere.
 ;;     icicle-mouse-yank-secondary: If yank-secondary is defined, then pass prefix arg also.
@@ -3271,6 +3276,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2009/09/02 dadams
+;;     Added: icicle-region-bookmarks-flag, icicle-top-level-when-sole-completion-delay.
+;;     icicle-region-alist: Updated doc string. Added :group Icicles-Searching.
 ;; 2009/08/19 dadams
 ;;     icicle-bookmark-name-length-max:
 ;;       Changed default value from 40 to 70.  It is now the total name length.  Updated doc.

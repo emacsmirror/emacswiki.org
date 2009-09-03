@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Aug 19 17:12:19 2009 (-0700)
+;; Last-Updated: Wed Sep  2 17:48:53 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 25844
+;;     Update #: 25853
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3514,7 +3514,8 @@
 ;;  words and symbols in other buffers, besides the minibuffer.
 ;;  Icicles enhances this completion in these ways:
 ;;
-;;  1. Lisp symbol completion via `ESC-TAB' (`lisp-complete-symbol').
+;;  1. Lisp symbol completion via `M-TAB' (`lisp-complete-symbol').
+;;     (This is also `ESC-TAB' and `C-M-i'.)
 ;;
 ;;  2. Word completion using the dynamic abbreviation of standard
 ;;     Emacs library `dabbrev.el', via `C-M-/'.
@@ -4037,6 +4038,15 @@
 ;;    means that whenever there is only one completion candidate that
 ;;    matches your input, that candidate is used immediately, without
 ;;    requiring you to hit `RET' or `S-RET'.
+;;
+;;  * When `icicle-top-level-when-sole-completion-flag' is nil, option
+;;    `icicle-top-level-when-sole-completion-delay' is the number of
+;;    seconds Icicles waits, before returning to top level with the
+;;    sole completion.  (It has no effect if the flag is nil.)  The
+;;    delay gives you a chance to forestall acceptance of the sole
+;;    completion: editing the completion (typing or deleting a
+;;    character) before the delay expires prevents its automatic
+;;    acceptance.  The default value is 0 seconds (no delay).
 ;;
 ;;  * Non-nil user option `icicle-TAB-shows-candidates-flag' means
 ;;    that hitting `TAB' for prefix completion immediately shows the

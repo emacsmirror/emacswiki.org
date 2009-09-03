@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Aug 29 14:50:18 2009 (-0700)
+;; Last-Updated: Wed Sep  2 17:02:39 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 22579
+;;     Update #: 22581
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -581,9 +581,9 @@
 ;;    `icicle-redefine-standard-commands-flag',
 ;;    `icicle-regexp-quote-flag', `icicle-regexp-search-ring-max',
 ;;    `icicle-region-alist', `icicle-region-auto-open-files-flag',
-;;    `icicle-region-background', `icicle-regions-name-length-max',
-;;    `icicle-require-match-flag', `icicle-saved-completion-sets',
-;;    `icicle-search-cleanup-flag',
+;;    `icicle-region-background', `icicle-region-bookmarks-flag',
+;;    `icicle-regions-name-length-max', `icicle-require-match-flag',
+;;    `icicle-saved-completion-sets', `icicle-search-cleanup-flag',
 ;;    `icicle-search-context-match-predicate',
 ;;    `icicle-search-from-isearch-keys',
 ;;    `icicle-search-highlight-all-current-flag',
@@ -602,6 +602,7 @@
 ;;    `icicle-test-for-remote-files-flag',
 ;;    `icicle-thing-at-point-functions',
 ;;    `icicle-top-level-key-bindings',
+;;    `icicle-top-level-when-sole-completion-delay',
 ;;    `icicle-top-level-when-sole-completion-flag',
 ;;    `icicle-touche-pas-aux-menus-flag', `icicle-transform-function',
 ;;    `icicle-type-actions-alist',

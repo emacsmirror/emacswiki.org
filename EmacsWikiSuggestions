@@ -341,6 +341,16 @@ Not currently no. If I find more I will report it here. -- Jonas
 
 == Drew Adams' Libraries == 
 Drew I respect your work and all that you've done with Emac and on EmacsWiki. However, PLEASE can a emacswiki pages be required by sanction to be limited to only 1 (One!) reference to instances of Drew's libraries, and then *ONLY* after other relevant examples, code, etc. pertinent to the a pages context. This site is *SERIOUSLY* limited by Drew's spam and suffers because of it to the extent that it is becoming unusable because of the superfluous `Icicles.*' references strewn about.  There is a point at which the entire Emacs community suffers because of Drew's insistence on xrefs to anything remotely related to his libraries.  
+
+== Jari Alto and lack of history == 
+
+Jari Alto has discovered emacswiki, and has taken over the [[TinyTools]] page.  Whatever critical remarks I've made there have been deleted only my complimentary remarks remain.  (1) we may need to think about a policy for dealing with egocentric people doing vanity edits (2) we could use a working diff to compare previous versions to the present.  -- [[Doom]]
+
+
 ----
 CategoryEmacsWikiSite
 
+
+
+
+ 

@@ -528,13 +528,23 @@ keys swapped are those defined by these user options:
 ** `<tt>[[#icicle-modal-cycle-up-keys]]</tt>'
 
 ----
+[:icicle-top-level-when-sole-completion-delay]
 [:icicle-top-level-when-sole-completion-flag]
-==== Option icicle-top-level-when-sole-completion-flag ====
+==== Options icicle-top-level-when-sole-completion-delay, icicle-top-level-when-sole-completion-flag ====
 
 Non-`nil' user option '''`icicle-top-level-when-sole-completion-flag'''' means that
 whenever there is only one completion candidate that matches
 your input, that candidate is used immediately, without
 requiring you to hit `RET' or `S-RET'.
+
+When `icicle-top-level-when-sole-completion-flag' is `nil', option
+'''`icicle-top-level-when-sole-completion-delay'''' is the number of
+seconds '''Icicles''' waits, before returning to top level with the
+sole completion.  (It has no effect if the flag is `nil'.)  The
+delay gives you a chance to forestall acceptance of the sole
+completion: editing the completion (typing or deleting a
+character) before the delay expires prevents its automatic
+acceptance.  The default value is 0 seconds (no delay).
 
 ----
 [:icicle-TAB-shows-candidates-flag]

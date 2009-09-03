@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Aug 11 16:36:05 2009 (-0700)
+;; Last-Updated: Wed Sep  2 16:56:54 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 24722
+;;     Update #: 24734
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2463,7 +2463,15 @@
 ;;  `icicle-top-level-when-sole-completion-flag'.  If you set this to
 ;;  non-nil, then, whenever your input matches only one candidate
 ;;  completion, that candidate is used immediately.  I don't recommend
-;;  this practice, but some people might prefer it.
+;;  this practice generally, but some people might prefer it.
+;;
+;;  Option `icicle-top-level-when-sole-completion-delay' is the number
+;;  of seconds Icicles waits, before returning to top level with the
+;;  sole completion.  It has no effect if
+;;  `icicle-top-level-when-sole-completion-flag' is nil.  The delay
+;;  gives you a chance to forestall acceptance of the sole completion:
+;;  editing the completion (typing or deleting a character) before the
+;;  delay expires prevents its automatic acceptance.
  
 ;;(@* "*Completions* Display")
 ;;
@@ -3483,7 +3491,7 @@
 ;;  action on it) using `C-RET' or `C-mouse-2'.
 ;;
 ;;  For lax (permissive) completion, you can act on any input text
-;;  with `C-RET' (but not with the other multi-command keys) -- you
+;;  with `C-RET' (but not with the other multi-command keys) - you
 ;;  need not choose one of the available candidates.  This means, for
 ;;  example, that you can create any number of new file buffers with a
 ;;  single `C-x C-f' invocation, as well as open any number of
@@ -3831,15 +3839,16 @@
 ;;  is the way commands such as `icicle-bookmark', `icicle-find-tag',
 ;;  `icicle-Info-goto-node', and `icicle-occur' work - you can use
 ;;  `next' and so on to move among candidates to choose them to act
-;;  on, but when you act on them Icicles takes you to the places they
-;;  name.
+;;  on, but when you do act on them, Icicles takes you to the places
+;;  they name.
 ;;
 ;;  So just holding down both the Control key and `next' takes you
 ;;  from one place to the next.  And `C-mouse-2' takes you directly to
 ;;  the location you click.  Typically, `C-g' aborts the trip and puts
-;;  you back at your starting point.
+;;  you back at your starting point, and `RET' ends the trip at the
+;;  chosen destination.
 ;;
-;;  There are many such Icicles tripping (aka navigation or browsing)
+;;  There are many such Icicles tripping (or navigation or browsing)
 ;;  commands, and they all work similarly.  They give you the normal
 ;;  cycling behavior provided by vanilla Emacs commands such as
 ;;  `find-tag' (via `M-.', `C-u M-.', `M-*' etc.) or
@@ -5151,7 +5160,7 @@
 ;;  toto, titi, or foobar.  Use this process-of-eliminiation technique
 ;;  to progressively pare down the set of possible candidates.  Note
 ;;  that such generalized complementing (as opposed to complementing a
-;;  character set) is not possible using a single regexp -- you cannot
+;;  character set) is not possible using a single regexp - you cannot
 ;;  use a regular expression to say "Show me everything that does
 ;;  *not* match this".  See (@> "Sets of Completion Candidates") and
 ;;  (@> "Progressive Completion").
@@ -6175,17 +6184,17 @@
 ;;  ** Isearch Completion Against the Search History **
 ;;
 ;;  When you search incrementally (`C-s'), Emacs lets you use `M-TAB'
-;;  to complete your input to a string that you have sought
-;;  previously, that is, a string in the current search history
-;;  (`search-ring' or `regexp-search-ring').  In Icicle mode, this
-;;  feature is enhanced so that you can use all of the completion
-;;  enhancements provided by Icicles: `M-TAB' is bound to
+;;  (aka `C-M-i', aka `ESC-TAB') to complete your input to a string
+;;  that you have sought previously, that is, a string in the current
+;;  search history (`search-ring' or `regexp-search-ring').  In Icicle
+;;  mode, this feature is enhanced so that you can use all of the
+;;  completion enhancements provided by Icicles: `M-TAB' is bound to
 ;;  `icicle-isearch-complete' during Isearch.
 ;;
 ;;  On MS Windows, the operating system itself grabs `M-TAB' (by
 ;;  default), making it unavailable for Emacs.  For this reason, on
-;;  Windows, Icicles binds `C-M-TAB' also to
-;;  `icicle-isearch-complete'.  But note that you can also use
+;;  Windows, Icicles binds `icicle-isearch-complete' also to
+;;  `C-M-TAB'.  But note that you can also use
 ;;  (w32-register-hot-key [M-tab]) to enable Emacs to use `M-TAB'.
 ;;
 ;;  Icicles users are in the habit of using `M-o' to complete the

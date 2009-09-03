@@ -9,6 +9,10 @@
 ;;; This file defines regexps and lookuplists for "./naf-mode-replacements.el"
 ;;; and is required by that library for it to function correctly. 
 ;;;
+;;; FUNCTIONS:►►►
+;;; `mon-test->*regexp-symbol-defs*'
+;;; FUNCTIONS:◄◄◄
+;;;
 ;;; CONSTANTS or VARIABLES:
 ;;; `regexp-abrv-dotted-month2canonical', `regexp-simple-abrv-month2canonical',
 ;;; `regexp-clean-ebay-time-chars', `regexp-clean-ebay-month2canonical',
@@ -90,6 +94,11 @@ CALLED-BY: `mon-cln-parsed-xml.")
 ;;;(progn (makunbound '*regexp-clean-xml-parse*) (unintern '*regexp-clean-xml-parse*))
 
 ;;; ==============================
+;;; NOTE: Currently not checking for:
+;;; defcustom, deftheme, defface, defgroup, 
+;;; defalias, defvaralias 
+;;; defsubst, defadvice, 
+;;; CL: defstruct defsubst*
 ;;; CREATED: <Timestamp: 2009-08-03-W32-1T11:04:11-0400Z - by MON KEY>
 (defvar *regexp-symbol-defs* nil
   "*Regexp for finding lisp definition forms defun, defmacro, defvar. 
@@ -100,9 +109,10 @@ CALLED-BY: `mon-insert-lisp-testme',`mon-insert-doc-help-tail'.")
         (concat 
          ;;FIXME: doesn't catch on cases where the lambda list is on the next line.
          ;;...1..         
-         "^\\("
-         ;;..2.......................................................
-         "\\((\\(?:def\\(?:\\(?:macro\\*?\\|un\\*?\\|var\\) \\)\\)\\)"  ;;grp 2 -> `defun ', `defmacro ', `defvar '
+         "^\\(("
+         ;;grp 2 -> `defun' `defmacro' `defvar' `defconst' `defun*' `defmacro*'
+         ;;..2................................................
+         "\\(def\\(?:const\\|macro\\*?\\|un\\*?\\|var\\)\\) " ;trailing whitepspace
          ;;..3....................         
          "\\([A-Za-z0-9/><:*-]+\\)"      ;;grp 3 -> *some/-symbol:->name<-2*
          ;;...4........................
@@ -114,9 +124,56 @@ CALLED-BY: `mon-insert-lisp-testme',`mon-insert-doc-help-tail'.")
 ;;;(progn (makunbound '*regexp-symbol-defs*) (unintern '*regexp-symbol-defs*))
 
 ;;;;;;;;;;;;CURRENT-REGEXP;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;   ...1..2..........................................................3.......................4........................
-;;; "^\\(\\((\\(?:def\\(?:\\(?:macro\\*?\\|un\\*?\\|var\\) \\)\\)\\)\\([A-Za-z0-9/><:*-]+\\)\\(\\( (\\)\\|\\( '\\)\\)\\)"
-;;; `(,(match-beginning 3) ,(match-end 3))
+;;;  ....1..2.................................................3.......................4........................
+;;; "^\\((\\(def\\(?:const\\|macro\\*?\\|un\\*?\\|var\\)\\)\\([A-Za-z0-9/><:*-]+\\)\\(\\( (\\)\\|\\( '\\)\\)\\)"
+;;
+;;;(concat "^\\((" (regexp-opt '("defun" "defvar" "defmacro" "defconst" "defmacro*" "defun*") t)
+;;;         "\\([A-Za-z0-9/><:*-]+\\)\\(\\( (\\)\\|\\( '\\)\\)\\)")
+;;
+;;;(regexp-opt '("defun" "defvar" "defmacro" "defconst" "defmacro*" "defun*") t)
+;;;(regexp-opt-depth "\\(def\\(?:const\\|macro\\*?\\|un\\*?\\|var\\)\\)")
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ==============================
+;;; CREATED: <Timestamp: #{2009-09-02T16:11:07-04:00Z}#{09363} - by MON KEY>
+(defun mon-test->*regexp-symbol-defs* (&optional insertp intrp)
+  "Test-function to ensure that the regexp in var `*regexp-symbol-defs*' works.
+See also; `mon-insert-lisp-testme',`mon-insert-doc-help-tail'."
+  (interactive "i\np")
+  (let ((find-def* *regexp-symbol-defs*)
+        (the-str))
+    (save-excursion  (search-backward-regexp find-def*))
+    (setq the-str
+          (concat "\nmatch-strin1: "(match-string-no-properties 2) " start2: " 
+                  (number-to-string (match-beginning 2)) " end2: " 
+                  (number-to-string (match-end 2)) "\nmatch-strin3: "
+                  (match-string-no-properties 3)" start3: " 
+                  (number-to-string (match-beginning 3))  " end3: " 
+                  (number-to-string (match-end 3))"\nmatch-strin4: "
+                  (match-string-no-properties 4) " start4: " 
+                  (number-to-string (match-beginning 4))  " end4: " 
+                  (number-to-string (match-end 4))))
+    (if (or insertp intrp)
+        (save-excursion (princ  the-str (current-buffer)))
+      (momentary-string-display the-str (point)))))
+
+;;;; UNCOMMENT TO TEST:
+;;;(defun some-function (&optional optional)
+;;;(defun some-function-22 (&optional optional)
+;;;(defun *some/-symbol:->name<-2* (somevar
+;;;(defmacro some-macro ()
+;;;(defmacro some-macro*:22 (&rest)
+;;;(defun *some/-symbol:->name<-2* (somevar
+;;;(defvar *some-var* 'var
+;;;(defun *some/-symbol:->name<-2* 'somevar
+;;;(defmacro some-macro*:22 (&rest)
+;;;(defun *some/-symbol:->name<-2* (somevar
+;;;(defvar *some-var* 'var
+;;;(defun *some/-symbol:->name<-2* 'somevar
+;;;(defmacro* some-macro*:22 (&rest)
+;;;(defun* *some/-symbol:->name<-2* (somevar
+;;;(defconst *some/-symbol:->name<-2* (somevar
+;;
+;;;test-me;(mon-test->*regexp-symbol-defs*)
 
 ;;; ==============================
 ;;; Catches short years at BOL in bib entries 'YY "^'\\([0-9]\\{2,2\\}\\) "YY".

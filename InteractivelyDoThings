@@ -147,6 +147,12 @@ Is it possible?  Thanks for any suggestion. -- RedBlue
 
 [new:DrewAdams:2009-08-31 23:23 UTC]
 : Dunno, for Ido. But if you would like to use [[Icicles]] instead, then `M-TAB' does what you want, in Icicle mode. -- DrewAdams
+[new]
+:: Thanks Drew. It works nicelly indeed, replaces too many thing at once. Can I make only this feature work without activating icy-mode? I need it for ESS; have tried to replace comint-dynamic-simple-complete in original code in ESS but it didn't work out. Thanks. -- RedBlue
+
+[new:DrewAdams:2009-09-02 17:42 UTC]
+::: Nope, sorry. But you can turn off Icicle mode at any time. ;-)  Alternatively, you can borrow and adapt the code for `icicle-lisp-complete-symbol' in file <tt>[[icicles-cmd1.el]]</tt>. Just remove the `let' bindings for the 3 Icicles variables. That will give you most of the functionality, but without Icicles completion features (e.g. different matching, cycling etc.). -- DrewAdams
+
 
 [new]
 Sometimes I think it would be convenient to be able to bury buffer. I can use bury-buffer command,
