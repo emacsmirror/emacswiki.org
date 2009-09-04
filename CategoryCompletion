@@ -2,6 +2,11 @@ Click the heading to search for pages in this category.
 
 '''[[Completion]]''' can mean different things in Emacs. In particular, it refers to completing input in the MiniBuffer and completing text in a [[Buffer]] other than the minibuffer.   Minibuffer input can be a command that you enter using `M-x' or text that you enter in response to a prompt in the minibuffer. File-name input is an example of the latter.  
 
+
+
+
+
+[:MinibufferCompletion]
 == Minibuffer Input Completion ==
 
 The standard Emacs behavior for minibuffer input completion is explained in the "Completion" section of the EmacsManual (`C-h i m Completion RET').
@@ -20,6 +25,12 @@ See also:
 * IcompleteMode's "Incremental completion" for interactive display of possible completion candidates based on what's typed so far.
 * MinibufferHistory
 
+
+
+
+
+
+[:BufferTextCompletion]
 == Text Completion in a Buffer ==
 
 These libraries provide completion of text in a buffer other than the minibuffer:
@@ -44,6 +55,8 @@ These libraries provide completion of text in a buffer other than the minibuffer
 * CaMode -- Ca2+ is based on CompanyMode, similar sources to AutoComplete, but with features you've never seen before :)
 Sources for dabbrev, filenames, yasnippet, elisp, gtags and semantic are included. Notable features are tab-cycling through available sources, subword matching, insertion of function arguments as ad-hoc generated yasnippet template (with semantic), sorting by occurrence of words in current buffer and C-h shows description for candidates while selecting (only for elisp currently). Code is hosted on github: [http://github.com/jeffdameth/ca2/tree/master Ca2+] 
 
+
+
 === Programming-Specific Completion ===
 
 * EmacsTags -- Command `complete-tag' (from `<code>etags.el</code>') -- Completes to a defined ''tag'' (that is, a defined name, such as function or variable name).
@@ -52,6 +65,11 @@ Sources for dabbrev, filenames, yasnippet, elisp, gtags and semantic are include
 * ProgrammableCompletion -- Command `pcomplete' (from `<code>pcomplete.el</code>') -- Completes function ''arguments''.
 * NxmlMode and its derivative nxhtml-mode in [NxhtmlMode nXhtml] provides context sensitive completion and validation for XML/XHTML.
 
+
+
+
+
+[:OtherCompletion]
 == Other Completion ==
 
 Some completions are available in modes that provide command interaction.
@@ -59,6 +77,13 @@ Some completions are available in modes that provide command interaction.
 * EshellCompletion -- Input filename completion.
 * SubprocessCompletion -- Handling completion by a subprocess such as a shell or a debugger, rather than by Emacs.
 
+
+
+
+
+
+
+[:Discussion]
 == Discussion ==
 
 [new:DrewAdams:2006-01-02 20:15 UTC]

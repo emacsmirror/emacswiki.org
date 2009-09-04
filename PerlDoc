@@ -1,12 +1,30 @@
+== Original code ==
+
 <code>perldoc.el</code> by SteveKemp looks up [PerlLanguage Perl] function documentation within Emacs, using Perl's [http://perldoc.perl.org/perldoc.html perldoc program].
 
 The package was posted to the <code>gnu-emacs-sources</code> list (<code>gnu.emacs.sources</code> newsgroup, see EmacsMailingLists and EmacsNewsgroups) in 2001 and can be found in the archives.
 
 : Groups:perldoc.el
 
-On a [[Debian]] system it can be found in DebianPackage:emacs-goodies-el, and the version there includes an enhancement to generate the list of functions dynamically.
+== Debian version ==
 
-See also,
+On a [[Debian]] system it can be found in DebianPackage:emacs-goodies-el, and the version there includes a few enhancements:
+
+* generate the list of functions dynamically
+
+Since 30.4-1, Debian ships the perldoc.el version that is available from intrigeri's Git repository:
+
+<code>
+git clone git://gaffer.ptitcanardnoir.org/lunar-mode-line.git
+</code>
+
+... with a few more features:
+
+* ability to have several uniquely-named perldoc buffers open at the same time
+* completion for Perl modules names
+
+
+== See also ==
 
 * CPerlMode -- has its own separate <code>M-x cperl-perldoc</code> doing a similar thing
 

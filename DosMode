@@ -8,6 +8,9 @@ You can get it here:
 
 DosScripts compares alternative Emacs modes available for editing Dos scripts, including Lisp:batch-mode.el and CmdMode.
 
+Indentation for DosMode can be added with DosIndent
+
 ----
 DosScripts
+DosIndent
 ProgrammingModes

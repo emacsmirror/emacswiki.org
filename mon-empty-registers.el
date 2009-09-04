@@ -34,7 +34,7 @@
 ;;;
 ;;; REQUIRES:
 ;;; 'cl -> `mon-reset-registers' uses `defun*', `pairlis', etc.
-;;; (optional mon-utils) -> `mon-is-digit', `mon-is-letter' 
+;;; (optional `mon-utils') -> `mon-is-digit', `mon-is-letter', `mon-string->symbol'
 ;;;
 ;;; TODO:
 ;;;
@@ -70,6 +70,7 @@
 ;;; ================================================================
 ;;; Copyright (C) 2009 MON KEY
 ;;; ==========================
+
 ;;; CODE:
 
 ;;; ==============================
@@ -79,22 +80,23 @@
 
 ;;; ==============================
 ;;; For code posted to emacs-wiki, needed when mon-utils.el is not loaded. 
-;;; COURTESY: Pascal J. Bourguignon HIS: pjb-strings.el WAS: `is-digit'
 (eval-when-compile
- (unless (functionp 'mon-is-letter)
+  (unless (featurep 'mon-utils)
+    (unless (functionp 'mon-is-digit)
+;;; ==============================
+;;; COURTESY: Pascal J. Bourguignon HIS: pjb-strings.el WAS: `is-digit'
 (defun mon-is-digit (x)
 "t when X is a digit character.\n
 See also; `mon-is-letter'."
   (cond ((stringp x) (mon-is-digit (string-to-char x)))
         ((integerp x) (and (<= ?0 x) (<= x ?9)))
         (t nil)))
-) ;unless1
-
+) ;; inner-unless1
+;;
 ;;;test-me;(mon-is-digit (char-after (point)))
 ;;;test-me;(mon-is-digit (char-after (point)))
 
 ;;; ==============================
-;;; For code posted to emacs-wiki, needed when mon-utils.el is not loaded. 
 ;;; COURTESY: Pascal J. Bourguignon HIS: pjb-strings.el WAS: `is-letter'
 (unless (functionp 'mon-is-letter)
 (defun mon-is-letter (x)
@@ -103,12 +105,24 @@ See also; `mon-is-digit'."
   (cond ((stringp x) (mon-is-letter (string-to-char x)))
         ((integerp x) (not (equal (downcase x) (upcase x))))
         (t nil)))
-) ;unless2
-) ;eval-when
-
+) ;; inner-unless2
+;;
 ;;;test-me;(mon-is-letter (char-after (point)))x
 ;;;test-me;(mon-is-letter (char-after (point)))8
 ;;;test-me;(mon-is-letter ?x)
+
+(unless (functionp 'mon-string-to-symbol)
+;;; ==============================
+;;; CREATED: <Timestamp: #{2009-08-26T17:08:02-04:00Z}#{09353} - by MON KEY>
+(defun mon-string-to-symbol (str)
+  "Return string STR as a symbol.\n
+EXAMPLE:\n\(mon-string-to-symbol \"Bubba\")"
+  (car (read-from-string str)))
+) ;; inner-unless3
+;;
+;;;test-me;(mon-string-to-symbol "Bubba")
+) ;; outur-unless
+) ;; eval-when
 
 ;;; ==============================
 ;;; CREATED: <Timestamp: 2009-08-05-W32-3T16:12:00-0400Z - by MON KEY>
@@ -406,40 +420,53 @@ If coercion of thing fails throw an error."
 \(expt 2 27) ;=> 134217728\n
 <Meta>-some-ASCII-key in range 1-127 is 2**27 + char\n
 So, to decode M-3 i.e. '<meta>-3' do this:\n
-\(- \(+ ?3 \(expt 2 27\)\) \(expt 2 27\)\) => 51 
-e.g. \(- 134217779  134217728\) => 51"
+\(- \(+ ?3 \(expt 2 27\)\) \(expt 2 27\)\) ;=> 51 
+e.g. \(- 134217779  134217728\) ;=> 51\n
+EXAMPLE\n`(mon-decode-meta-key-event 134217771\)\n
+See also; `mon-catch-meta-key' `mon-coerce->char', `mon-string-to-symbol'."
   (let ((M-key (expt 2 27)))
     ;; (event-key event))
-    (if (;(> event M-key)
-         (
-          (list
-          (car (event-modifiers event))
-         ;; (- event-key M-key))
-         (event-basic-type event)))
-    ))
-
+    (if (> event M-key)
+        (list (car (event-modifiers event))
+              ;; (- event-key M-key))
+              (mon-string-to-symbol (char-to-string (event-basic-type event)))))))
+              
 ;;;(mon-decode-meta-key-event 134217771)
 
 ;;; ==============================
 ;;; CREATED: <Timestamp: 2009-08-04-W32-2T19:26:05-0400Z - by MON KEY>
-(defun mon-catch-meta-key () ;(event-vect)
+(defun mon-catch-meta-key (&optional event->string) ;(event-vect)
   "Return the first <meta>-? key prefix call to wrapper function.
-Can be alled programatically within a wrapper functions."
+When optional arg EVENT->STRING is non-nil return a meta event as a string.
+When a meta-key event is not present return the first event modifer passed.
+Can be alled programatically within a wrapper functions.\n
+EXAMPLE:
+\(mon-catch-meta-key\)   ;<- M-3 C-x C-e ;=> (meta 51)
+\(mon-catch-meta-key t\) ;<- M-3 C-x C-e ;=>\"meta-3\"
+See also; `mon-decode-meta-key-event', `mon-catch-meta-key' `mon-coerce->char',
+`mon-string-to-symbol'."
   (let ((key-seq (listify-key-sequence (this-command-keys-vector)));event-vect))
         (map-events))
     (setq map-events
           (mapcar '(lambda (x) (car (event-modifiers x)))
                   key-seq))
     (if (equal (position 'meta map-events) 0)
-        (list
-         (car (event-modifiers (car key-seq)))
-         (event-basic-type (car key-seq)))
+        (cond (event->string
+               (format "%s-%s" 
+                       (car (event-modifiers (car key-seq)))
+                       (char-to-string (event-basic-type (car key-seq)))))
+               ;; (if (and (>= (event-basic-type (car key-seq)) 48)
+               ;;          (<= (event-basic-type (car key-seq)) 57))
+               ;;   (mon-string-to-symbol 
+               ;;  (event-basic-type (car key-seq))))
+              (t (list  (car (event-modifiers (car key-seq)))
+                        (event-basic-type (car key-seq)))))
       (car (event-modifiers (car key-seq))))))
-    
-;;;;test-me;(mon-catch-meta-key) M-3 C-x C-e
-;;;test-me;
-;; (let ((event (mon-catch-meta-key)))
-;;   (when (listp event)(cadr event)))
+
+;;;;test-me;(mon-catch-meta-key);<- M-3 C-x C-e ;=> (meta 51)
+;;;;test-me;(mon-catch-meta-key t) ;<- M-3 C-x C-e ;=>"meta-3"
+;;;test-me;(let ((event (mon-catch-meta-key)))
+;;;         (when (listp event)(cadr event)))
 
 ;;; ==============================
 ;;; COURTESY: Nelson H. F. Beebe HIS: bibtools.el WAS: `qr12' 
@@ -646,7 +673,7 @@ See also: `mon-reset-registers', `*registr-of-registers*'."
     (message "all registers set to char-represntation")))
 
 ;;; ==============================
-;;; uncomment and evaluate to indescriminately reseta ll registers to empty strings.
+;;; Uncomment and evaluate to indescriminately reset all registers to empty strings.
 ;; (progn
 ;;   ;; CONTROL-CHAR REGISTES
 ;;   (set-register ?\C-a   "")  (set-register ?\C-a   "")  (set-register ?\C-b   "")

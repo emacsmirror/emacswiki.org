@@ -49,7 +49,7 @@ For X Windows, add the following line to your ~/.Xresources file (if not exist, 
 
   Emacs.useXIM: off
 
-For MS Windows, you may need to use DisableImeforEmacs.
+For MS Windows, you may need to use DisableImeForEmacs.
 
 [new]
 *Question:*

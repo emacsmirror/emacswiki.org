@@ -5,11 +5,15 @@
 
 From the abstract:
 
-: ''It is possible to translate code written in Emacs Lisp or another Lisp dialect which uses dynamic scoping to a more modern programming language with lexical scoping while largely preserving structure and readability of the code.''
+: ''It is possible to translate code written in Emacs Lisp or another Lisp dialect which uses dynamic scoping to a more modern programming language with lexical scoping while largely preserving structure and readability of the code. The biggest obstacle to such an idiomatic translation from Emacs Lisp is the translation of dynamic binding into suitable instances of lexical binding: Many binding constructs in real programs in fact exhibit identical behavior under both dynamic and lexical binding. An idiomatic translation needs to detect as many of these binding constructs as possible and convert them into lexical binding constructs in the target language to achieve readability and efficiency of the target code.''
+
+: ''The basic prerequisite for such an idiomatic translation is thus a dynamic scope analysis which associates variable occurrences with binding constructs. We present such an analysis. It is an application of the Nielson/Nielson framework for flow analysis to a semantics for dynamic binding akin to Moreau's. Its implementation handles a substantial portion of Emacs Lisp, has been applied to realistic Emacs Lisp code, and is highly accurate and reasonably efficient in practice.''
 
 Automatically, that's it.
 
-See DynamicBindingVsLexicalBinding, EmacsLispLimitations.
+See DynamicBindingVsLexicalBinding,
+EmacsLispLimitations,
+GuileEmacs.
 
 ----
 CategoryCode

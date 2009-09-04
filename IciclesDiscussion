@@ -711,6 +711,23 @@ See [[Icicles - S-RET#icicle-top-level-when-sole-completion-delay|Icicles - S-RE
 
 You'll need to download the '''Icicles''' libraries again, to take advantage of this feature -- I just added it in response to your post. Thx -- DrewAdams
 
+[new:] 
+Thanks for the feature. I was actually thinking of a delay after the completion - user input is prohibited for a while after the candidate is inserted (may be with exception of a "space" or possibly symbols in general). This way users will most likely even not notice any delay, nor before nor after the completion. -- RedBlue
+
+[new:DrewAdams:2009-09-03 16:09 UTC]
+The delay does occur after completion. When there is only one completion of your input, that completion is put in the minibuffer (and highlighted dark green). If you don't edit it (type or delete something), then after the delay the input is accepted automatically, without your needing to hit `RET'. If you like what you see, and you don't want to wait for the delay, just hit `RET' immediately -- no delay. If you don't like what you see, edit it and continue -- no delay. The delay kicks in only if you do nothing. -- DrewAdams
+
+[new:]
+Sorry, I didn't put it in right words. I meant: after the completion  has already taken place and candidate has been inserted in the original buffer. So that if sole completion is found, it is immediately inserted in the buffer and all my additional input (except symbols and space) is ignored for a predefined delay say .8 secs.
+
+It's just a suggestion. Completion is almost perfect without that. Thanks a lot.  -- RedBlue
+
+[new:DrewAdams:2009-09-03 17:43 UTC]
+I see. No, that wouldn't be feasible. Once the completion is accepted, completion is finished. It is inserted by code that runs after completion, using the result of completion (the candidate you chose). The only possibility at that point would be to start over in some way -- e.g. use `##C-_##' to undo the change, and then re-complete. And you can do that anyway, after you mistakenly type a few extra chars. 
+
+My suggestion is to try the default behavior a little more. If you still don't like it, try it with the delay. If neither suits you, you could look into some other symbol-completion mechanism. The wiki has some: [[CategoryCompletion#BufferTextCompletion]]
+
+'''Icicles''' is mainly for minibuffer completion, not completion of text in buffers. `icicle-lisp-complete-symbol' (`M-TAB') is one of the exceptions. -- DrewAdams
 
 
 

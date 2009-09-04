@@ -2,8 +2,9 @@ Homepage with possibly more current information: https://gaffer.ptitcanardnoir.o
 
 Emacs-related work:
 * lunar-mode-line.el : LunarModeLine
+* perldoc.el : PerlDoc
 * verbiste.el : VerbisteEl
-* my [https://gaffer.ptitcanardnoir.org/darcs/pub/home/.emacs .emacs]
+* wikipediafs.el : WikipediaFs
 
 Emacs+SVK-related work:
 * see the page about Emacs on SVK wiki: http://svk.bestpractical.com/view/EmacsPSVK

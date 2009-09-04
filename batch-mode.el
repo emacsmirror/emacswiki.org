@@ -1,5 +1,7 @@
 ;;; batch-mode.el --- major mode for editing ESRI batch scrips
 ;;; Copyright (C) 2002, Agnar Renolen <agnar.renolen@emap.no>
+;;; Modified (c) 2009, Matthew Fidler <matthew.fidler at gmail.com>
+;;; Fixed indents (and labels)
 
 ;; batch-mode.el is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -56,7 +58,7 @@
      '( "\\<echo\\>[ \t]*\\(.*\\)" (1 font-lock-string-face t))
 
      ; the argument of the goto statement is a label
-     '( "\\<goto\\>[ \t]*\\([a-zA-Z0-9]+\\)" (1
+     '( "\\<goto\\>[ \t]*\\([a-zA-Z0-9_]+\\)" (1
 					      font-lock-constant-face))
      
      ; the keywords of batch (which are not built-in commands)
@@ -84,15 +86,15 @@
 	   'font-lock-builtin-face)
      
      ; variables are embeded in percent chars
-     '( "%[a-zA-Z0-9]+%?" . font-lock-variable-name-face)
+     '( "%[a-zA-Z0-9_]+%?" . font-lock-variable-name-face)
      ; labels are formatted as constants
-     '( ":[a-zA-Z0-9]+" . font-lock-constant-face)
+     '( ":[a-zA-Z0-9_]+" . font-lock-constant-face)
 
      ; command line switches are hilighted as type-face
-     '( "[-/][a-zA-Z0-9]+" . font-lock-type-face)
+     '( "[-/][a-zA-Z0-9_]+" . font-lock-type-face)
 
      ; variables set should also be hilighted with variable-name-face
-     '( "\\<set\\>[ \t]*\\([a-zA-Z0-9]+\\)" (1 font-lock-variable-name-face))
+     '( "\\<set\\>[ \t]*\\([a-zA-Z0-9_]+\\)" (1 font-lock-variable-name-face))
     )))
      
 
@@ -140,10 +142,14 @@
     (if (bobp)
 	0
       (if (re-search-backward "^[ \t]*[^ \t\n\r]" nil t)
-	  (if (looking-at "[ \t]*\\()[ \t]*else\\|for\\|if\\)\\>")
+	  (if (looking-at "[ \t]*\\()[ \t]*else\\|for\\|if\\)\\>[^(\n]*([^)\n]*")
 	      (+ (current-indentation) batch-indent-level)
-	    (current-indentation))
+	    (if (looking-at "[ \t]*[^(]*)[ \t]*")
+		(- (current-indentation) batch-indent-level)
+	      (current-indentation)))
 	0))))
+
+(add-to-list 'auto-mode-alist '("\\.bat\\'" . batch-mode))
   
 (provide 'batch-mode)
 

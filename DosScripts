@@ -25,6 +25,10 @@ But it does not seem to handle ##@rem## comments. Or am I missing something? (An
 
 [new]
 Fixed, thanks for the feedback! (Arni Magnusson)
+
+[new]
+I added indentation for dos-mode via the lisp file DosIndent (Matthew Fidler)
+
 ----
 == General discussion ==
 

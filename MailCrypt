@@ -25,9 +25,9 @@ enough to answer the first newbie questions as to why somebody else's
 signed or encrypted email to them didn't work seamlessly. -- CharlesSebold
 
 ----
-If anybody is using Gnus and MailCrypt with languages other than ASCII: there is a problem. If you encrypt a message and send it, Gnus will look at its contents and decide which charset to specify in the headers of the mail. Since the embedded ASCII-armored content is always pure and naked ASCII, it will choose a charset of "us-ascii" -- which certainly will annoy the reader at the other end if the decrypted message contains characters not covered by ASCII.
+If anybody is using Gnus and MailCrypt with languages other than ASCII: there is a problem. If you encrypt a message and send it, Gnus will look at its contents and decide which charset to specify in the message header. Since the embedded ASCII-armored content is always pure and naked ASCII, it will choose a charset of "us-ascii" -- which certainly will annoy the reader at the other end if the decrypted message contains characters not covered by ASCII.
 
-A solution would be to hook some code into mc-pre-encryption-hook that looks at the message, chooses an appropriate charset and adds the headers for Gnus. For completeness the same thing the other way round would be nice also: Hook something into mc-post-decryption-hook that decides which charset the message actually uses, adds the headers and makes Gnus redisplay the message. 
+A solution would be to hook some code into mc-pre-encryption-hook that looks at the message, chooses an appropriate charset and specifies it in the message header. For completeness the same thing the other way round would be nice also: Hook something into mc-post-decryption-hook that decides which charset the message actually uses, adds the appropriate fields to the header and makes Gnus redisplay the message. 
 
 ----
 Based on MailCrypt there is http://www.emacswiki.org/elisp/mc-gpg-file-mode.el which allows automatic decryption / encryption of files ending with '.gpg' at file open / save. This can e.g. be used to comfortably handle a gpg encrypted file with passwords or such 'secrets'.

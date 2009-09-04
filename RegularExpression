@@ -121,7 +121,7 @@ the expression to get it executed).
 
            M-x replace-regexp RET \([0-9]+\)\. RET \1, RET
           (while (re-search-forward "\\([0-9]+\\)\\." nil t)
-                        (replace-match "\1,"))
+                        (replace-match "\\1,"))
 
 == Some Regexp Examples ==
 
@@ -239,7 +239,7 @@ returns the regexp string ##"\\(?:[[:blank:]]+$\\)"##. See [[rx]].
 
 ** You can seach for a regexp, but limit the search context, used for further searching, to a particular subgroup match. For example, you can search for and highlight Lisp argument lists, by using a regexp subgroup that matches lists, placing that subgroup after `defun':  '''##(defun [^(]*\(([^(]*)\)##''', that is, ##defun##, followed by non-`##(##' character(s), followed by '''`##(##'''', possibly followed by non-`##)##' character(s), followed by '''`##)##''''.
 
-** You can search for a regexp without limiting the search context to a subgroup match. In this case, '''Icicles''' highlights each subgroup match in a different color. Here's an example, showing how each subgroup of the complex regexp ##(##'''##\(##'''##[-a-z]*]+##'''##\)##'''## *##'''##\(##'''##(##'''##\(##'''##([-a-z]+ *##'''##\(##'''##[^)]*##'''##\)##'''##)##'''##\)##'''##)##'''##\)##'''##.*## is matched:
+** You can search for a regexp without limiting the search context to a subgroup match. In this case, '''Icicles''' highlights each subgroup match in a different color. Here's an example, showing how each subgroup of the complex regexp ##(##'''##\(##'''##[-a-z*]+##'''##\)##'''## *##'''##\(##'''##(##'''##\(##'''##([-a-z]+ *##'''##\(##'''##[^)]*##'''##\)##'''##)##'''##\)##'''##)##'''##\)##'''##.*## is matched:
 
 ::: [[image:IciclesSearchContextLevelsScreenshot]]
 

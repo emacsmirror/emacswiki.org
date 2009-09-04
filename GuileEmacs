@@ -11,6 +11,8 @@ it with Guile.
 You can find more information at
 http://sourceforge.net/projects/gemacs/
 
+Matthias Neubauer and Michael Sperber studied the possibility of automatically translating Emacs Lisp Code into Scheme.  See DownWithEmacsLisp.
+
 On 2001-11-03, NeilJerram was working on an EmacsLisp reader.  A
 posting [http://mail.gnu.org/pipermail/guile-devel/2001-November/004136.html] to guile-devel@gnu.org on showed an elisp
 reader reading 3279 lines ("wc -l") of elisp code already.  He says: "I think progress beyond this point basically means implementing
@@ -25,12 +27,6 @@ On 2002-07-16, there was a discussion started on [[emacs-devel]] about [http://l
 By 2006-01-03, according to Ken "Some stuff does work, actually. Non-tty displays don't".  This was for reasons that "have less to do directly with Guile than with the fact that the Guile library isn't unexec-safe".  Consequently, Ken was not doing the unexec step.  Guile Emacs in a terminal window has a "shell mode, browses directories, does font-lock coloring of C source files, etc."
 
 As of 2009-06-11, Ken has provide an updated snapshot of the work.
-
-[http://www-pu.informatik.uni-tuebingen.de/users/sperber/papers/dynamic-scope-analysis.pdf Matthias Neubauer and Michael Sperber studied the possibility of automatically translating Emacs Lisp Code into Scheme]:
-
-: It is possible to translate code written in Emacs Lisp or another Lisp dialect which uses dynamic scoping to a more modern programming language with lexical scoping while largely preserving structure and readability of the code. The biggest obstacle to such an idiomatic translation from Emacs Lisp is the translation of dynamic binding into suitable instances of lexical binding: Many binding constructs in real programs in fact exhibit identical behavior under both dynamic and lexical binding. An idiomatic translation needs to detect as many of these binding constructs as possible and convert them into lexical binding constructs in the target language to achieve readability and eficiency of the target code.
-
-: The basic prerequisite for such an idiomatic translation is thus a dynamic scope analysis which associates variable occurrences with binding constructs. We present such an analysis. It is an application of the Nielson/Nielson framework for flow analysis to a semantics for dynamic binding akin to Moreau's. Its implementation handles a substantial portion of Emacs Lisp, has been applied to realistic Emacs Lisp code, and is highly accurate and reasonably eficient in practice.
 
 To subscribe to a mailing list about about Guile Emacs send a blank messsage to
 mailto:guile-emacs-subscribe@sources.redhat.com

@@ -1,0 +1,12 @@
+== Indenting Dos with Dos-Mode(batch files) ==
+
+Provides indentation for Dos-Mode
+
+You can get it here:
+
+* Lisp:dos-indent.el
+
+----
+DosScripts
+DosMode
+ProgrammingModes

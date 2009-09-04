@@ -27,3 +27,5 @@ All below option can customize by: M-x customize-group RET multi-scratch RET
 * "multi-scratch-try-create"
 : Whether try to create new scratch buffer when no scratch buffers exist.
 
+[new:PengLiu:2009-09-04 01:58 UTC]
+I believe here's a bug in Version 0.1: run multi-scratch-new twice (there should be two multi-scratch buffers: multi-scratch<1> and multi-scratch<2> ); kill multi-scratch<1>; run multi-scratch-new. The BUG is no multi-scratch buffer can be created. 

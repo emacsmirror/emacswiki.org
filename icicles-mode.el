@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Aug 29 08:55:37 2009 (-0700)
+;; Last-Updated: Thu Sep  3 14:10:29 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 6056
+;;     Update #: 6058
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -652,9 +652,11 @@ bindings are not available to you."
 (defun icicle-add-menu-item-to-cmd-history ()
   "Add `this-command' to command history, if it is a menu item.
 Used on `pre-command-hook'."
-  (when (and (> (length (this-command-keys-vector)) 0)
-             (equal '(menu-bar) (elt (this-command-keys-vector) 0)))
-    (pushnew (symbol-name this-command) extended-command-history)))
+  (condition-case nil                   ; Just in case, since this is on `pre-command-hook'.
+      (when (and (> (length (this-command-keys-vector)) 0)
+                 (equal '(menu-bar) (elt (this-command-keys-vector) 0)))
+        (pushnew (symbol-name this-command) extended-command-history))
+    (error nil)))
 
 (defun icicle-top-level-prep ()
   "Do top-level stuff.  Used in `pre-command-hook'."

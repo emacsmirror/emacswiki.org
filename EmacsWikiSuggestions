@@ -4,7 +4,7 @@ If you want to record or discuss problems with the Web site (not with Emacs), pl
 
 Make sure your suggestion doesn't exist already or that your question has already been answered by checking the HowTo and WikiQuestions pages, respectively.
 
-Discussion about the front page of the Wiki is at [[SiteMap_Discussion]].
+Discussion about the front page of the Wiki is at [[SiteMap Discussion]].
 
 Discussion about the table of contents at the top of each page is at TableOfContentsDiscussion.
 
@@ -14,7 +14,14 @@ Discussion about the TextFormattingRules used in contributing to pages  is at Te
 
 '''Add your suggestions below this line.'''
 
+== Jari Alto and lack of history == 
+[new]
+Jari Alto has discovered emacswiki, and has taken over the [[TinyTools]] page.  Whatever critical remarks I've made there have been deleted only my complimentary remarks remain.  (1) we may need to think about a policy for dealing with egocentric people doing vanity edits (2) we could use a working diff to compare previous versions to the present.  -- [[Doom]]
 
+[new]
+I don't know the nature of these deletes, but it's important to keep in mind that pages can be bogged down with discussion and attempts to clean them up shouldn't be frowned upon even if they are by individuals with a seeming "conflict of interest".  Currently, these are often the only people motivated for the task.
+
+Alex has built a Wiki with KeptPages, but they only go back 3 weeks.  So if you don't visit EmacsWiki for a month or two and no one notices material being deleted, then  the revision is no longer available from the Wiki.  This is why it is important to keep private backups or to WikiDownload backups of everything. -- AaronHawley
 
 == Elisp files status ==
 
@@ -342,15 +349,5 @@ Not currently no. If I find more I will report it here. -- Jonas
 == Drew Adams' Libraries == 
 Drew I respect your work and all that you've done with Emac and on EmacsWiki. However, PLEASE can a emacswiki pages be required by sanction to be limited to only 1 (One!) reference to instances of Drew's libraries, and then *ONLY* after other relevant examples, code, etc. pertinent to the a pages context. This site is *SERIOUSLY* limited by Drew's spam and suffers because of it to the extent that it is becoming unusable because of the superfluous `Icicles.*' references strewn about.  There is a point at which the entire Emacs community suffers because of Drew's insistence on xrefs to anything remotely related to his libraries.  
 
-== Jari Alto and lack of history == 
-
-Jari Alto has discovered emacswiki, and has taken over the [[TinyTools]] page.  Whatever critical remarks I've made there have been deleted only my complimentary remarks remain.  (1) we may need to think about a policy for dealing with egocentric people doing vanity edits (2) we could use a working diff to compare previous versions to the present.  -- [[Doom]]
-
-
 ----
 CategoryEmacsWikiSite
-
-
-
-
- 
