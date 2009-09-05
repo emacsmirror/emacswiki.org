@@ -462,8 +462,10 @@ Insert an icon in the Cond: entry only if `xml-weather-default-icons-directory' 
                      (insert ""))))
               ((and (file-exists-p xml-weather-moon-icons-directory) (equal (car elm) "Moon:"))
                (let* ((lsname (split-string info))
-                      (fname  (concat (downcase (car lsname)) "_" (downcase (cadr lsname)) ".jpg")) 
-                      (img    (unless (equal fname ".jpg")
+                      (fname  (if (< (length lsname) 2)
+                                  (concat (downcase (car lsname)) ".jpg")
+                                  (concat (downcase (car lsname)) "_" (downcase (cadr lsname)) ".jpg")))
+                      (img    (unless (or (not fname) (equal fname ".jpg"))
                                 (create-image (expand-file-name fname xml-weather-moon-icons-directory)))))
                  (if img
                      (progn

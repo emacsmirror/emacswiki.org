@@ -1,3 +1,15 @@
+Ignore the below; the best way to accomplish this seems to be to add a function to auto-save-hook, which runs on both an idle timer and a keystroke counter.
+
+In other words,
+
+{{{
+(defun run-every-once-in-a-while (fun)
+  "Run a command every once in a while, if possible when emacs is idle."
+  (add-hook 'auto-save-hook fun))
+}}}
+
+[new]
+
 I plan to implement a command, possibly called run-when-idle or run-every-once-in-a-while, that can be used to run background tasks, with the following requirements:
 
 * Should not run too often
@@ -6,7 +18,7 @@ I plan to implement a command, possibly called run-when-idle or run-every-once-i
 
 For example, you might want to autosave some data at least every five minutes, but not more often than every minute, and you don't want the saving to bother you if it can help it.
 
-I haven't found any current emacs command to do something like this. 
+I haven't found any current emacs command to do something like this.
 * run-with-timer -- Will not wait for idle
 * run-with-idle-timer -- Could potentially be deferred indefinitely
 

@@ -1,0 +1,33 @@
+    ' PRINT A WORD DOCUMENT (ARG 0) TO PRINTER (ARG 1), THEN DELETE IT
+
+    ' start Word
+    Set WordApp = CreateObject("Word.Application")
+
+    ' obtain command line arguments (file name and printer)
+    Dim oArgs
+    Dim doc
+    Dim prt
+    Set oArgs = Wscript.Arguments
+    doc = oArgs.Item(0)
+    prt = oArgs.Item(1)
+
+    ' open the document
+    WordApp.Documents.Open(doc)
+
+    ' set printer
+    WordApp.WordBasic.FilePrintSetup prt,,,1 
+
+    ' print
+    WordApp.ActiveDocument.PrintOut False
+
+    ' close the document, quit word
+    WordApp.ActiveDocument.Close False
+    WordApp.Quit
+    Set WordApp = Nothing
+
+    ' delete the document
+    Set fs = CreateObject("Scripting.FileSystemObject")
+    fs.DeleteFile doc
+    Set fs = Nothing
+
+'The parent page is PrintUsingWord.

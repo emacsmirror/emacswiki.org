@@ -25,6 +25,8 @@ Lisp:anything-include.el For C and C++. Anything-source made maintenance of hist
 
 Lisp:descbinds-anything.el Yet another describe bindings with anything.
 
+Lisp:anything-slime.el Anything-sources and some utilities for [[SlimeMode]]
+
 === Completion ===
 Lisp:anything-complete.el replaces various completion with anything (like [[Icicles]]). Use Anything power for normal completion. Lisp:anything-match-plugin.el is needed.
 

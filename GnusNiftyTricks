@@ -78,6 +78,64 @@ It scores up replies to my replies. =)
 
     (setq gnus-read-active-file 'some)
 
+-----
+= Correct message count in IMAP: =
+
+
+Gnus does not support correct message counts, but imap does.
+Here is a little code that fetches the number of messages in an
+imap mbox and caches it, until the next time gnus fetches new
+mail.
+
+In order to use it, put a "%ut" somewhere in your
+`gnus-group-line-format'.
+
+{{{
+(defun gnus-user-format-function-t (dummy)
+  (case (car gnus-tmp-method)
+    (nnimap
+     (let ((count (nnimap-request-message-count gnus-tmp-qualified-group)))
+       (if count
+           (format "%d" count)
+         "?")))
+    (t
+     gnus-tmp-number-total)))
+
+(defvar nnimap-message-count-cache-alist nil)
+
+(defun nnimap-message-count-cache-clear nil
+  (setq nnimap-message-count-cache-alist nil))
+
+(defun nnimap-message-count-cache-get (mbox &optional server)
+  (when (nnimap-possibly-change-server server)
+    (cadr (assoc (concat nnimap-current-server ":" mbox)
+                 nnimap-message-count-cache-alist))))
+
+(defun nnimap-message-count-cache-set (mbox count &optional server)
+  (when (nnimap-possibly-change-server server)
+    (push (list (concat nnimap-current-server ":" mbox)
+                count) nnimap-message-count-cache-alist))
+  count)
+
+
+
+(defun nnimap-request-message-count (mbox &optional server)
+  (let ((count (or (nnimap-message-count-cache-get mbox server)
+                   (and (nnimap-possibly-change-server server)
+                        (progn
+                          (message "Requesting message count for %s..."
+                                   mbox)
+                          (prog1
+                              (imap-mailbox-status
+                               mbox 'messages nnimap-server-buffer)
+                            (message "Requesting message count for %s...done"
+                                     mbox)))))))
+    (when count
+      (nnimap-message-count-cache-set mbox count server))
+    count))
+
+(add-hook 'gnus-after-getting-new-news-hook 'nnimap-message-count-cache-clear)
+}}}
 
 See also: EmacsNiftyTricks
 ----

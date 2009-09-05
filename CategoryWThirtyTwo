@@ -91,7 +91,7 @@ Printing:
 * From the FAQ, printing under MS-Windows: http://www.gnu.org/software/emacs/windows/faq6.html#printing - but this is not uptodate and all tips there does not work! There are only two ways to print from Emacs that always works on MS-Windows, and that are PrintWithWebBrowser and using Ghostscript/GSview.
 See also http://lists.gnu.org/archive/html/emacs-devel/2006-05/msg01022.html
 * From Explorer: PrintFromWindowsExplorer
-* From Word using RTF: PrintUsingWordRtf
+* From Word (as straight text or converting to RTF): PrintUsingWord
 
 W32 development:
 

@@ -585,6 +585,29 @@ If you try to visit a new file from the File menu command and then select a path
 
 
 
+=== C-y as redo ===
+For a Windows user is very common to use C-z for undo and C-y for redo.
+Why did you implement only C-z and not C-y?
+I know, C-y is for paste (yank) but if I enable C-v to paste, C-y becomes useless.
+Am I right?
+
+
+
+=== Emacs specific options cannot be saved ===
+If I go in Options/Customize EmacsW32/Set all to EmacsW32 style! and then I click on Save button to save the new settings
+everything seems ok.
+
+However if I go in "Customize EmacsW32 ...", and then under the Rebind Keys subsection, if I try to activate the key bindings C-o C-f C-s and then Save the options
+I receive the message: "custom-variable-mark-to-save: Saving rebind-keys: Symbol's function definition is void: edmacro-parse-keys"
+and the options are not saved.
+
+Thanks.
+
+Update: I found on this wiki the following comment for a customization. Maybe it can help.
+"If the above fails with “define-key: Symbol’s function definition is void: edmacro-parse-keys” you need to load the package defining edmacro with: (require ‘edmacro)"
+But I don't know how to do this...
+
+
 ----
 == Current Problems ==
 

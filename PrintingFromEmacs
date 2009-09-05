@@ -57,8 +57,8 @@ To test use ps-print-buffer.  TimOCallaghan
 === Emacs does not allow quotes in the printer command or switches. ===
 See PrintCommandQuotes for a work-around.
 
-=== Printing with Word on MS Windows using RTF. ===
-See PrintUsingWordRtf.
+=== Printing with Word on MS Windows. ===
+See PrintUsingWord.
 
 ----
 CategoryPrinting

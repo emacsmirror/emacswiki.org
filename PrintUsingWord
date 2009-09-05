@@ -1,0 +1,60 @@
+Parent is CategoryWThirtyTwo
+
+This set of pages describes how you can use Microsoft Word to print via Emacs.  The central idea is to use a VBScript program to interface with Microsoft Word.  In fact, this script (PrintUsingWordVbs) is used in both methods described below.  Copy this file to your PC, and create defvars similar to the following:
+
+ (defvar vbs-wrd "c:/path/to/script/wrd.vbs"
+   "The VBScript file to open Word, print the file, and delete the file.")
+
+ (defvar scratch-directory "C:/Documents and Settings/username/yada/yada/yada/scratch/"
+  "A scratch directory to write to and print from.")
+
+ (defvar printer-name "//shared/printer"
+  "Printer to print to (in this case a networked printer).")
+
+--------------------------------------
+
+Method 1: Print Emacs buffer data as straight text using Word.
+
+Define these two functions.  Then executing "print-buffer-with-word" (using M-x, for instance, or a defined key) will cause the current buffer to print out.
+
+ (defun pc-slash (fn)
+  "Change slash style from emacs/unix to \\pc"
+  (interactive)
+  (dired-replace-in-string "[/]" "\\" fn))
+
+
+
+ (defun print-buffer-with-word ()
+  "Print text from the current buffer using MS Word.
+   If region is active, print the region.  Else print the entire buffer."
+  (interactive)
+  (let* ((coding-system-for-write 'dos)  ; this adds the CR+LF to the file as required by dos.
+	 (filename (mapconcat '(lambda (x) x) (split-string (buffer-name) "[<>*]+") ""))
+	 (start nil)
+	 (end nil)
+	 (pname (pc-slash printer-name)))
+    (setq filename (pc-slash (concat scratch-directory filename ".txt")))
+
+    ;; if region is active, print the region.  Else print the whole buffer.
+    (if mark-active
+	(progn
+	  (setq start (point))
+	  (setq end (mark)))
+      (setq start (point-min))
+      (setq end (point-max)))
+    
+    ;; We create a new temporary buffer to assemble the text to print, and write the temp file.
+    (print-region-new-buffer start end)
+    (write-file filename)
+    (kill-buffer (current-buffer))
+
+    ;; Execute a VBS script to insert the text into Word and print it.
+    (w32-shell-execute 1 vbs-wrd (concat "\"" filename "\" \"" pname "\""))))
+
+------------------------------------------------
+
+Method 2: Convert buffer data to RTF and use Word to print it.
+
+See PrintUsingWordRtf.
+
+

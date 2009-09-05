@@ -1,3 +1,4 @@
+[[ru:EmacsWiki]]
 There are some PGP plugins for outlook which may be able to decrypt the message you send them with PGP/MIME, but encrypted attachments will show up in outlook with a random name and the file extension .dat.
 
 When searching the interweb for help I found lots of rants and just a few hints[http://article.gmane.org/gmane.emacs.gnus.general/35727/][http://article.gmane.org/gmane.emacs.gnus.general/56323], thus I will describe a workaround.

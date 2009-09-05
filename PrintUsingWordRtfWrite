@@ -1,0 +1,81 @@
+
+ (defun rtf-write-buffer (orient line1 line2 filename &optional start end)
+  "Convert buffer text into RTF, and write to an output file.
+
+   ORIENT is a string - \"P\" is portrait, any other string is landscape.
+   LINE1 and LINE2 are strings for the header on each page.
+   FILENAME is a string for the fully qualified output file name.
+   START and END are buffer positions if only part of the buffer is to be converted."
+
+  (let* ((coding-system-for-write 'dos)  ; this will add the CR+LF as required
+	 (paper "\\paperh12240\\paperw15840")
+	 (landscape "\\lndscpsxn"))
+
+    ;; print whole buffer if start and end aren't specified
+    (if (not start)
+	(progn
+	  (setq start (point-min))
+	  (setq end (point-max))))
+    
+    ;; since we need to insert text, create a new temporary buffer to assemble the text to print
+    (print-region-new-buffer start end)
+
+    (if (or (string= orient "P") (string= orient "p"))
+	(progn
+	  (setq paper "\\paperh15840\\paperw12240")
+	  (setq landscape "")))
+    (goto-char (point-min))
+    (while (search-forward "\\" nil t)
+      (backward-char)
+      (delete-char 1)
+      (insert "\\\\"))
+    (goto-char (point-min))
+    (while (search-forward "{" nil t)
+      (backward-char)
+      (delete-char 1)
+      (insert "\\{"))
+    (while (search-forward "}" nil t)
+      (backward-char)
+      (delete-char 1)
+      (insert "\\}"))
+    
+    (goto-char (point-min))
+    (while (search-forward (char-to-string 12) nil t)
+      (backward-char)
+      (delete-char 1)
+      (insert "\\page "))
+    (goto-char (point-min))
+    (while (search-forward (char-to-string 9) nil t)
+      (backward-char)
+      (delete-char 1)
+      (insert "\\tab "))
+    (goto-char (point-min))
+    (next-line 1)
+    (while (re-search-forward "^" nil t)
+      (beginning-of-line)
+      (insert "\\par "))
+    (goto-char (point-min))
+    (rtf-insert)
+    (goto-char (point-max))
+    (insert "\\par }}")
+    
+    (goto-char (point-min))
+    (search-forward "~~~~~paper~~~~~" nil t)
+    (beginning-of-line nil)
+    (kill-line)
+    (insert paper)
+		  
+    (search-forward "~~~~~landscape~~~~~" nil t)
+    (beginning-of-line nil)
+    (kill-line)
+    (insert landscape)
+    
+    (re-search-forward "~~~~~line 1~~~~~" nil t)
+    (replace-match line1)
+    (re-search-forward "~~~~~line 2~~~~~" nil t)
+    (replace-match line2)
+    
+    (write-file filename)
+    (kill-buffer (current-buffer))))
+
+Parent page is PrintUsingWordRtf.

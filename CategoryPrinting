@@ -19,7 +19,7 @@ This page is about printing from Emacs: files, buffers, regions... Click the pag
 * PrintWithWebBrowser -- convert an Emacs buffer to HTML and let your browser print it
 * PrintFromWindowsExplorer
 * PrintCommandQuotes -- dealing with problems using Windows Script Host (WSH)
-* PrintUsingWordRtf -- Print buffers by converting them to RTF and printing via Word using WSH
+* PrintUsingWord -- Print buffers via MS Word (using VBScript) 
 * CupsInEmacs -- print with CUPS
 * PageCommands -- `ps-nb-pages-region': report how many pages will be printed for the region
 

@@ -52,6 +52,7 @@ To ''remove trailing whitespace'' from the entire buffer, use any of the followi
             (if (not (bolp)) (forward-line 1))
             (delete-whitespace-rectangle (point) end nil)))
 
+* [ftp://ftp.lysator.liu.se/pub/emacs/ws-trim.el ws-trim.wl] - an old but still very, very good package.  Very configurable.  My only complaint is that it doesn't use the Custom library to set variables.
 
 == Show trailing whitespace ==
 
