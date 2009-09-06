@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Sep  3 14:14:44 2009 (-0700)
+;; Last-Updated: Sat Sep  5 20:22:07 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 4311
+;;     Update #: 4348
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -119,6 +119,16 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2009/09/05 dadams
+;;     icicle-search-replace-all-search-hits:
+;;       Bind to nil: icicle-minibuffer-message-ok-p, icicle-help-in-mode-line-flag.
+;;     icicle-search-action-1: Add condition-case to ignore disappearance of *Completions* win.
+;;     icicle-search-highlight-and-maybe-replace:
+;;       Apply renaming of icicle-acting-on-next/prev (no -p).
+;;       Use length of *-completion-candidates, not mct.
+;;       Fix assignment of new candidate nb, and for both directions.
+;;       Bind icicle-minibuffer-message-ok-p to inhibit no-candidates msg.
+;;       Wrap around to first only if not icicle-acting-on-next/prev.
 ;; 2009/09/02 dadams
 ;;     icicle-exchange-point-and-mark: Respect icicle-region-bookmarks-flag.
 ;; 2009/08/29 dadams
@@ -252,6 +262,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2009/09/05 dadams
+;;     icicle-msg-maybe-in-minibuffer: Do nothing if icicle-minibuffer-message-ok-p is nil.
 ;; 2009/08/19 dadams
 ;;     icicle-candidate-short-help: Return (possibly propertized) STRING.
 ;; 2009/08/09 dadams
@@ -1551,6 +1563,15 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2009/09/05 dadams
+;;     icicle-narrow-candidates: Don't raise an error if no candidates.  E.g. C-~.
+;;     Use backward and forward as the values of icicle-cycling-command prop for nav commands.
+;;     Apply renaming of icicle-acting-on-next/prev (removed -p).
+;;     icicle-successive-action: Bind it to value of icicle-cycling-command (nav direction).
+;;     icicle-all-candidates-list-alt-action: Raise error if null icicle-completion-candidates.
+;;     icicle-search-define-replacement: Prevent immediate incremental completion kicking in.
+;;     icicle-(widen|narrow)-candidates(-with-predicate):
+;;       Use literal text for (S-)TAB in error message, to avoid S-iso-*.
 ;; 2009/09/02 dadams
 ;;     icicle-(prefix|apropos)-complete-1, icicle-narrow-candidates(-with-predicate):
 ;;       Impose icicle-top-level-when-sole-completion-delay when *-flag is non-nil.
@@ -3278,6 +3299,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2009/09/05 dadams
+;;     icicle-keymaps-for-key-completion: Added facemenu-keymap.
+;;     icicle-search-replace-common-match-flag: Fixed doc string: C-M-| -> M-;.
+;;     icicle-expand-input-to-common-match-flag: Fixed doc string: C-| -> C-;.
 ;; 2009/09/02 dadams
 ;;     Added: icicle-region-bookmarks-flag, icicle-top-level-when-sole-completion-delay.
 ;;     icicle-region-alist: Updated doc string. Added :group Icicles-Searching.
@@ -3691,6 +3716,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2009/09/05 dadams
+;;     Added: icicle-minibuffer-message-ok-p.
+;;     Renamed icicle-acting-on-next/prev-p to icicle-acting-on-next/prev.
 ;; 2009/07/26 dadams
 ;;     Added: icicle-command-abbrev-history (belated), icicle-interactive-history.
 ;; 2009/05/17 dadams

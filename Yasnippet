@@ -1,50 +1,51 @@
-==Intro==
-YASnippet is a template system for emacs. It allows you to type a abbrevation and automatically expand the abbreviation into function templates.
+*YASnippet* is a template system for Emacs. It allows you to type an
+abbreviation and automatically expand it into function
+templates. Bundled language templates includes: C, C++, C#, Perl, Python, Ruby,
+SQL, LaTeX, HTML, CSS and more. The snippet syntax is inspired from [http://manual.macromates.com/en/snippets TextMate's] syntax, you can even
+[http://yasnippet.googlecode.com/svn/trunk/doc/snippet-development.html#importing-textmate-snippets import] most !TextMate templates to YASnippet. Watch [http://www.youtube.com/watch?v=vOj7btx3ATg Demo at YouTube].
+(download higher resolution:
+[http://yasnippet.googlecode.com/files/yasnippet.avi yasnippet.avi])
 
-Bundled language templates includes: C, C++, C#, Perl, Python, Ruby, SQL, LaTeX, HTML, CSS and more.
+====Install with yasnippet-bundle.el====
+To quickly tryout YASnippet, download the a simpler "bundle" version. 
+If you plan to work more with the bundled templates your own templates, 
+download the "normal" package.
+ 
+1. Download yasnippet-bundle.el tar gz and unpack it.
 
-Yasnippet system is inspired by [http://macromates.com/ TextMate]'s template system. You can use a [https://groups.google.com/group/smart-snippet/browse_thread/thread/691fbdd33412d86e?pli=1 tool] to import any [http://macromates.com/ TextMate] template you have to YASnippet.
+2. You'll get a file named `yasnippet-bundle.el`, put it in `~/.emacs.d/plugins/` (create that directory if not exists).
 
-==Video Demo==
+3. Open the file in Emacs, and type `Alt+x eval-buffer`.
 
-Watch Demo at [http://www.youtube.com/watch?v=vOj7btx3ATg YouTube]. (download higher resolution: [http://yasnippet.googlecode.com/files/yasnippet.avi yasnippet.avi])
-
-==Brief Install Instruction==
-
-There are two archives of YASnippet. One is a single file compiled “bundle”, and the other is normal. If all you need is to use the builtin templates,
-download the bundle one. If you want to add your own templates, download the normal one.
-
-===Bundle Install===
-
-# Download [http://code.google.com/p/yasnippet/downloads/list yasnippet-bundle] on the right sidebar and unpack it.
-# You'll get a file named yasnippet-bundle.el, put it in ~/.emacs.d/plugins/ (create that directory if not exists).
-# Open the file in Emacs, and type Alt+x eval-buffer.
-
-That's it.
-
-Now, open any one of your language file, you'll see a menu YASnippet. You can pull the menu to insert a template. Or, you can type the pre-defined abbrev
-and press TAB to expand it.
-
-To have emacs load YASnippet everytime it starts, put the following in your .emacs:
-
+That's it. Now, open any file, you'll see a menu "YASnippet".  You can
+pull the menu to insert a template. Or, you can type a pre-defined
+abbrev and press TAB to expand it!
+ 
+To have Emacs load YASnippet automatically when it starts, put the following in your ~/.emacs file:
 {{{
-   (add-to-list 'load-path "~/.emacs.d/plugins")
-   (require 'yasnippet-bundle)
+(add-to-list 'load-path
+             "~/.emacs.d/plugins")
+(require 'yasnippet-bundle)
 }}}
 
-===Normal Install===
-
-For full install of the normal archive, just download and unpack the latest [http://code.google.com/p/yasnippet/downloads/list yasnippet-x.y.z.tar.bz2]. You'll get a directory named `yasnippet, put it in
-~/.emacs.d/plugins/ and add the following in your .emacs:
-
+====Normal install====
+To install the normal archive, download and unpack the
+latest yasnippet-x.y.z.tar.bz2. You'll get a directory named
+yasnippet-x.y.z, put it in your ~/.emacs.d/plugins and add the following in
+your .emacs file:
 {{{
-    (add-to-list 'load-path "~/.emacs.d/plugins")
+    (add-to-list 'load-path
+                  "~/.emacs.d/plugins/yasnippet-x.y.z")
     (require 'yasnippet) ;; not yasnippet-bundle
     (yas/initialize)
-    (yas/load-directory "~/.emacs.d/plugins/yasnippet/snippets")
+    (yas/load-directory "~/.emacs.d/plugins/yasnippet-x.y.z/snippets")
 }}}
 
-For full customization, please refer to the document.
+====How-tos, Bugs, Contributions...====
+Please refer to the comprehensive
+[http://yasnippet.googlecode.com/svn/trunk/doc/index.html documentation] for full customization and support. If you found a bug, please report it at [http://code.google.com/p/yasnippet/issues/list issues list]. If you have a problem using YASnippet, or have template to contribute,
+please post at the discussion forum at:
+[http://groups.google.com/group/smart-snippet yasnippet google group]. Thank you very much for using YASnippet!
 
 ===Simplified Installation and Workarounds===
 For full install of the normal archive, just download and unpack the latest [http://code.google.com/p/yasnippet/downloads/list yasnippet-x.y.z.tar.bz2]. You'll get a directory named `yasnippet, put it in
@@ -59,13 +60,9 @@ Lisp:yasnippet-config.el simplifies installation and it has some workarounds.
 
 -- [[rubikitch]]
 
-==Bugs, Contribution, Support==
+YASnippet has recently entered version 0.6.x. For this version many of the tweaks in Lisp:yasnippet-config.el are probably invalid or unnecessary. See the [http://yasnippet.googlecode.com/svn/trunk/doc/changelog.html changelog]
 
-If you found a bug, please report it at [http://code.google.com/p/yasnippet/issues/list IssuesList].
-
-If you have a problem using YASnippet, or have template to contribute, please post at the discussion forum at: [http://groups.google.com/group/smart-snippet YasnippetGoogleGroup].
-
-Thank you very much for using YASnippet!
+-- JoaoTavora
 
 ==Comment==
 [http://www.emacswiki.org/emacs-en/AndyStewart_YasnippetTemplate Here] have some template code i wrote. -- AndyStewart

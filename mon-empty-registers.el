@@ -535,37 +535,6 @@ See also: `mon-set-all-registers-to-char', `*registr-of-registers*'."
           popd))))
 (when intrp (message "All registers were emptied.")))
 
-;;; ==============================
-;;; set-register template;
-(defun* mon-with-register-lists (&key cntrl digit digit-S symbol upper lower all)
-  ":CNTRL :DIGIT :DIGIT-S :SYMBOL :UPPER :LOWER :ALL"
-  (let ((reg-keys `(,cntrl ,digit ,digit-S ,symbol ,upper ,lower))
-        (reg-lists  '(cntrl  digit  digit-S  symbol  upper lower))
-        (pairs)
-        (make-reg-list)
-        ;;(pop-registers)
-        )
-    (setq pairs (pairlis reg-keys reg-lists))
-    pairs
-    ))
-;;(mon-with-register-lists :cntrl t :digit t :digit-S t :symbol t :upper t :lower t)
-    (setq make-list '())
-    (if all ;;(or intrp all)
-        ;; (setq make-reg-list(mapcar (lambda (x) (symbol-value (cadr x))) *registr-of-registers*))
-        (progn
-          (mapc (lambda (x) 
-                  (setq make-reg-list (cons (symbol-value (cadr x)) make-reg-list))) 
-                *registr-of-registers*)
-      (setq make-reg-list (reverse make-reg-list)))
-      (progn
-        (mapc (lambda (x)
-                (when (car x)
-                  (setq make-reg-list (cons (symbol-value (cadr (assoc (cdr x) *registr-of-registers*))) make-reg-list))))
-              pairs)
-        (setq make-reg-list (reverse make-reg-list))))
-    make-reg-list))
-
-
 ;;;test-me: Evaluate following form to refill registers with non-nil val:
 ;;; (mon-set-all-registers-to-char)
 ;;;

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Sep  2 16:56:54 2009 (-0700)
+;; Last-Updated: Sat Sep  5 20:28:43 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 24734
+;;     Update #: 24742
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2039,19 +2039,21 @@
 ;;  candidates, by providing an alternative pattern (regexp) to match.
 ;;  By analogy, I call this "regressive completion".
 ;;
-;;  The analogy is not exact, because of the nature of completion:
-;;  your current input always matches all candidates, by definition.
+;;  The analogy is not exact.  By definition, your current input is
+;;  always matched against all candidates in the domain of discourse.
 ;;  With progressive completion, a recursive minibuffer is entered for
 ;;  each new pattern to match.  The candidates that matched the
-;;  previous input of the progression become the domain of discourse
-;;  for the current completion.
+;;  previous input of the progression become the new domain of
+;;  discourse for the current act (recursive level) of completion.
 ;;
 ;;  That same technique is not applicable for widening.  Instead, you
 ;;  enter, using `RET', a new pattern to match as an alternative, and
 ;;  Icicles changes the current input to a regexp that matches either
 ;;  what the previous input matched or the alternative pattern.  In
 ;;  other words, it is just a short cut for typing a regexp that
-;;  matches a choice: \(...\|...\).
+;;  matches a choice: \(...\|...\).  The domain of discourse remains
+;;  the same - in particular, there is no way to widen the domain of
+;;  discourse like narrowing narrows it.
 ;;
 ;;  You use `M-+' (`icicle-widen-candidates') for regressive
 ;;  completion - think of the `+' as set union (OR), just as you think

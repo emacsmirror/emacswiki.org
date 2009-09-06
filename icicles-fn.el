@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Aug 19 15:52:56 2009 (-0700)
+;; Last-Updated: Fri Sep  4 16:45:54 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 10838
+;;     Update #: 10859
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4014,11 +4014,14 @@ Update display too, if already shown and NO-DISPLAY is nil."
 (defun icicle-msg-maybe-in-minibuffer (format-string &rest args)
   "Display FORMAT-STRING as a message.
 If called with the minibuffer inactive, use `message'.
-Otherwise, use `minibuffer-message'."
+Otherwise:
+ If `icicle-minibuffer-message-ok-p', then use `minibuffer-message'.
+ Else do nothing (no message display)."
   (if (active-minibuffer-window)
-      (save-selected-window
-        (select-window (minibuffer-window))
-        (minibuffer-message (apply #'format (concat "  [" format-string "]") args)))
+      (when icicle-minibuffer-message-ok-p
+        (save-selected-window
+          (select-window (minibuffer-window))
+          (minibuffer-message (apply #'format (concat "  [" format-string "]") args))))
     (apply #'message format-string args)))
 
 (defun icicle-delete-count (elt elts count)

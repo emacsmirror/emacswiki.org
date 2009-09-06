@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Aug  9 10:06:14 2009 (-0700)
+;; Last-Updated: Sat Sep  5 11:43:30 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 998
+;;     Update #: 1002
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -31,7 +31,7 @@
 ;;
 ;;  Internal variables defined here:
 ;;
-;;    `icicle-abs-file-candidates', `icicle-acting-on-next/prev-p',
+;;    `icicle-abs-file-candidates', `icicle-acting-on-next/prev',
 ;;    `icicle-all-candidates-action-p',
 ;;    `icicle-all-candidates-list-action-fn',
 ;;    `icicle-all-candidates-list-alt-action-fn',
@@ -87,9 +87,10 @@
 ;;    `icicle-last-completion-command', `icicle-last-input',
 ;;    `icicle-last-sort-function', `icicle-last-top-level-command',
 ;;    `icicle-last-transform-function', `icicle-list-use-nth-parts',
-;;    `icicle-menu-map', `icicle-minor-mode-map-entry',
-;;    `icicle-ms-windows-drive-hash', `icicle-must-match-regexp',
-;;    `icicle-must-not-match-regexp', `icicle-must-pass-predicate',
+;;    `icicle-menu-map', `icicle-minibuffer-message-ok-p',
+;;    `icicle-minor-mode-map-entry', `icicle-ms-windows-drive-hash',
+;;    `icicle-must-match-regexp', `icicle-must-not-match-regexp',
+;;    `icicle-must-pass-predicate',
 ;;    `icicle-nb-of-other-cycle-candidates',
 ;;    `icicle-next-apropos-complete-cycles-p',
 ;;    `icicle-next-prefix-complete-cycles-p',
@@ -194,8 +195,10 @@
 (defvar icicle-abs-file-candidates nil
   "Current list of absolute file-name candidates.")
 
-(defvar icicle-acting-on-next/prev-p nil
-  "Non-nil means this command acts on the previous or next candidate.")
+(defvar icicle-acting-on-next/prev nil
+  "Non-nil means this command acts on the previous or next candidate.
+The particular non-nil value indicates the navigation direction:
+`forward' or `backward'.")
 
 (defvar icicle-all-candidates-action-p nil
   "Non-nil means that we are acting on all candidates.
@@ -810,6 +813,10 @@ use the second part, first part, and second part again - you can use a
 given part any number of times.")
 
 (defvar icicle-menu-map nil "Icicles menu-bar menu keymap.")
+
+(defvar icicle-minibuffer-message-ok-p t
+  "Non-nil means we can show messages in minibuffer.
+This affects only `icicle-msg-maybe-in-minibuffer'.")
 
 (defvar icicle-minor-mode-map-entry nil "Icicles mode entry in `minor-mode-map-alist'.")
 

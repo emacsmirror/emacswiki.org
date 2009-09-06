@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Sep  2 17:48:53 2009 (-0700)
+;; Last-Updated: Sat Sep  5 15:48:31 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 25853
+;;     Update #: 25855
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -994,16 +994,20 @@
 ;;  - If `icicle-search-replace-whole-candidate-flag' is non-nil, then
 ;;    the granularity of replacement is a complete search context.  In
 ;;    this case, replacement behaves similarly to
-;;    `query-replace-regexp'.  You can still use minibuffer input to
-;;    filter the set of search contexts, but replacement is on a
-;;    whole-context basis.
+;;    `query-replace-regexp' (except that special replacement
+;;    constructs, such as `\#', are not treated as such).  You can
+;;    still use minibuffer input to filter the set of search contexts,
+;;    but replacement is on a whole-context basis.
 ;;
 ;;  - If `icicle-search-replace-whole-candidate-flag' is nil, then you
 ;;    can replace multiple input matches separately within a search
 ;;    context (using `C-S-RET').  This behavior is unique to Icicles.
 ;;    You cannot, however skip over one input match and replace the
 ;;    next one in the same context - `C-S-RET' always replaces the
-;;    first available match.
+;;    first available match in the context (repeated use changes which
+;;    is first).  When `icicle-search-replace-whole-candidate-flag' is
+;;    nil, you can also use special replacement constructs, such as
+;;    `\#'.
 ;;
 ;;  If `icicle-search-replace-whole-candidate-flag' is non-nil, then
 ;;  you can use the navigational alternative action keys, `C-S-next',

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Sep  2 16:59:11 2009 (-0700)
+;; Last-Updated: Sat Sep  5 20:21:29 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 14696
+;;     Update #: 14740
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1329,23 +1329,26 @@ Bound to `M-,' in the minibuffer."
   "Prompt user and set new value of `icicle-search-replacement'.
 Bound to `M-,' in the minibuffer."
   (interactive)
+  (icicle-remove-Completions-window)    ; Prevent incremental completion kicking in from the get-go.
   (setq icicle-search-replacement
-        (let ((enable-recursive-minibuffers  t)
-              (icicle-completion-candidates  icicle-completion-candidates)
-              (icicle-current-input          icicle-current-input)
-              (icicle-candidate-nb           icicle-candidate-nb)
-              (icicle-update-input-hook      nil))
+        (let ((enable-recursive-minibuffers        t)
+              (icicle-incremental-completion-flag  t) ; Override current upgrade to `always'.
+              (icicle-completion-candidates        icicle-completion-candidates)
+              (icicle-current-input                icicle-current-input)
+              (icicle-candidate-nb                 icicle-candidate-nb)
+              (icicle-update-input-hook            nil))
           (icicle-completing-read-history "Replace with: " 'icicle-search-replacement-history)))
   ;; Just a sanity check.  Cannot really test equivalence of two regexps.
   (while (if icicle-search-replace-whole-candidate-flag
              (equal icicle-search-replacement scan-fn-or-regexp)
            (equal icicle-search-replacement icicle-current-input))
     (setq icicle-search-replacement
-          (let ((enable-recursive-minibuffers  t)
-                (icicle-completion-candidates  icicle-completion-candidates)
-                (icicle-current-input          icicle-current-input)
-                (icicle-candidate-nb           icicle-candidate-nb)
-                (icicle-update-input-hook      nil))
+          (let ((enable-recursive-minibuffers        t)
+                (icicle-incremental-completion-flag  t) ; Override current upgrade to `always'.
+                (icicle-completion-candidates        icicle-completion-candidates)
+                (icicle-current-input                icicle-current-input)
+                (icicle-candidate-nb                 icicle-candidate-nb)
+                (icicle-update-input-hook            nil))
             (icicle-completing-read-history "Replacement = replaced.  Replace with: "
                                             'icicle-search-replacement-history)))))
 
@@ -2304,8 +2307,8 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   (icicle-next-candidate-per-mode (- (or nth 1))))
 
 
-(put 'icicle-previous-prefix-candidate 'icicle-cycling-command         t)
-(put 'icicle-previous-prefix-candidate 'icicle-prefix-cycling-command  t)
+(put 'icicle-previous-prefix-candidate 'icicle-cycling-command         'backward)
+(put 'icicle-previous-prefix-candidate 'icicle-prefix-cycling-command  'backward)
 ;;;###autoload
 (defun icicle-previous-prefix-candidate (&optional nth) ; Bound to `C-p', `up' in minibuffer.
   "Replace input by NTH previous prefix completion for an input.
@@ -2320,8 +2323,8 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   (icicle-next-prefix-candidate (- nth)))
 
 
-(put 'icicle-next-prefix-candidate 'icicle-cycling-command         t)
-(put 'icicle-next-prefix-candidate 'icicle-prefix-cycling-command  t)
+(put 'icicle-next-prefix-candidate 'icicle-cycling-command         'forward)
+(put 'icicle-next-prefix-candidate 'icicle-prefix-cycling-command  'forward)
 ;;;###autoload
 (defun icicle-next-prefix-candidate (&optional nth) ; Bound to `down', `C-n' in minibuffer.
   "Replace input by NTH next prefix completion for an input.
@@ -2339,8 +2342,8 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
                                'icicle-prefix-candidates)))
 
 
-(put 'icicle-previous-apropos-candidate 'icicle-cycling-command         t)
-(put 'icicle-previous-apropos-candidate 'icicle-apropos-cycling-command t)
+(put 'icicle-previous-apropos-candidate 'icicle-cycling-command         'backward)
+(put 'icicle-previous-apropos-candidate 'icicle-apropos-cycling-command 'backward)
 ;;;###autoload
 (defun icicle-previous-apropos-candidate (&optional nth) ; Bound to `prior', `M-v' in minibuffer.
   "Replace input by NTH previous apropos completion for an input.
@@ -2355,8 +2358,8 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   (icicle-next-apropos-candidate (- nth)))
 
 
-(put 'icicle-next-apropos-candidate 'icicle-cycling-command         t)
-(put 'icicle-next-apropos-candidate 'icicle-apropos-cycling-command t)
+(put 'icicle-next-apropos-candidate 'icicle-cycling-command         'forward)
+(put 'icicle-next-apropos-candidate 'icicle-apropos-cycling-command 'forward)
 ;;;###autoload
 (defun icicle-next-apropos-candidate (&optional nth) ; Bound to `next', `C-v' in minibuffer.
   "Replace input by NTH next apropos completion for an input.
@@ -2459,8 +2462,8 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   (icicle-successive-action #'icicle-next-candidate-per-mode #'icicle-help-on-candidate nth))
 
 
-(put 'icicle-previous-prefix-candidate-action 'icicle-cycling-command         t)
-(put 'icicle-previous-prefix-candidate-action 'icicle-prefix-cycling-command  t)
+(put 'icicle-previous-prefix-candidate-action 'icicle-cycling-command         'backward)
+(put 'icicle-previous-prefix-candidate-action 'icicle-prefix-cycling-command  'backward)
 ;;;###autoload
 (defun icicle-previous-prefix-candidate-action (&optional nth) ; Bound to `C-up', `M-{' in minibuf.
   "`icicle-previous-prefix-candidate' and `icicle-candidate-action'.
@@ -2475,8 +2478,8 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   (icicle-successive-action #'icicle-previous-prefix-candidate #'icicle-candidate-action nth))
 
 
-(put 'icicle-next-prefix-candidate-action 'icicle-cycling-command         t)
-(put 'icicle-next-prefix-candidate-action 'icicle-prefix-cycling-command  t)
+(put 'icicle-next-prefix-candidate-action 'icicle-cycling-command         'forward)
+(put 'icicle-next-prefix-candidate-action 'icicle-prefix-cycling-command  'forward)
 ;;;###autoload
 (defun icicle-next-prefix-candidate-action (&optional nth) ; Bound to `C-down', `M-}' in minibuf.
   "`icicle-next-prefix-candidate' and `icicle-candidate-action'.
@@ -2491,8 +2494,8 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   (icicle-successive-action #'icicle-next-prefix-candidate #'icicle-candidate-action nth))
 
 
-(put 'icicle-previous-apropos-candidate-action 'icicle-cycling-command         t)
-(put 'icicle-previous-apropos-candidate-action 'icicle-apropos-cycling-command t)
+(put 'icicle-previous-apropos-candidate-action 'icicle-cycling-command         'backward)
+(put 'icicle-previous-apropos-candidate-action 'icicle-apropos-cycling-command 'backward)
 ;;;###autoload
 (defun icicle-previous-apropos-candidate-action (&optional nth) ; Bound to `C-prior', `C-x >' in minib
   "`icicle-previous-apropos-candidate' and `icicle-candidate-action'.
@@ -2507,8 +2510,8 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   (icicle-successive-action #'icicle-previous-apropos-candidate #'icicle-candidate-action nth))
 
 
-(put 'icicle-next-apropos-candidate-action 'icicle-cycling-command         t)
-(put 'icicle-next-apropos-candidate-action 'icicle-apropos-cycling-command t)
+(put 'icicle-next-apropos-candidate-action 'icicle-cycling-command         'forward)
+(put 'icicle-next-apropos-candidate-action 'icicle-apropos-cycling-command 'forward)
 ;;;###autoload
 (defun icicle-next-apropos-candidate-action (&optional nth) ; Bound to `C-next', `C-x <' in minibuffer
   "`icicle-next-apropos-candidate' and `icicle-candidate-action'.
@@ -2523,8 +2526,8 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   (icicle-successive-action #'icicle-next-apropos-candidate #'icicle-candidate-action nth))
 
 
-(put 'icicle-previous-prefix-candidate-alt-action 'icicle-cycling-command         t)
-(put 'icicle-previous-prefix-candidate-alt-action 'icicle-prefix-cycling-command  t)
+(put 'icicle-previous-prefix-candidate-alt-action 'icicle-cycling-command         'backward)
+(put 'icicle-previous-prefix-candidate-alt-action 'icicle-prefix-cycling-command  'backward)
 ;;;###autoload
 (defun icicle-previous-prefix-candidate-alt-action (&optional nth) ; Bound to `C-S-up' in minibuffer.
   "`icicle-previous-prefix-candidate' and `icicle-candidate-alt-action'.
@@ -2539,8 +2542,8 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   (icicle-successive-action #'icicle-previous-prefix-candidate #'icicle-candidate-alt-action nth))
 
 
-(put 'icicle-next-prefix-candidate-alt-action 'icicle-cycling-command         t)
-(put 'icicle-next-prefix-candidate-alt-action 'icicle-prefix-cycling-command  t)
+(put 'icicle-next-prefix-candidate-alt-action 'icicle-cycling-command         'forward)
+(put 'icicle-next-prefix-candidate-alt-action 'icicle-prefix-cycling-command  'forward)
 ;;;###autoload
 (defun icicle-next-prefix-candidate-alt-action (&optional nth) ; Bound to `C-S-down' in minibuffer.
   "`icicle-next-prefix-candidate' and `icicle-candidate-alt-action'.
@@ -2555,8 +2558,8 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   (icicle-successive-action #'icicle-next-prefix-candidate #'icicle-candidate-alt-action nth))
 
 
-(put 'icicle-previous-apropos-candidate-alt-action 'icicle-cycling-command         t)
-(put 'icicle-previous-apropos-candidate-alt-action 'icicle-apropos-cycling-command t)
+(put 'icicle-previous-apropos-candidate-alt-action 'icicle-cycling-command         'backward)
+(put 'icicle-previous-apropos-candidate-alt-action 'icicle-apropos-cycling-command 'backward)
 ;;;###autoload
 (defun icicle-previous-apropos-candidate-alt-action (&optional nth) ; Bound to `C-S-prior' in minibuf.
   "`icicle-previous-apropos-candidate' and `icicle-candidate-alt-action'.
@@ -2571,8 +2574,8 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   (icicle-successive-action #'icicle-previous-apropos-candidate #'icicle-candidate-alt-action nth))
 
 
-(put 'icicle-next-apropos-candidate-alt-action 'icicle-cycling-command         t)
-(put 'icicle-next-apropos-candidate-alt-action 'icicle-apropos-cycling-command t)
+(put 'icicle-next-apropos-candidate-alt-action 'icicle-cycling-command         'forward)
+(put 'icicle-next-apropos-candidate-alt-action 'icicle-apropos-cycling-command 'forward)
 ;;;###autoload
 (defun icicle-next-apropos-candidate-alt-action (&optional nth) ; Bound to `C-S-next' in minibuffer.
   "`icicle-next-apropos-candidate' and `icicle-candidate-alt-action'.
@@ -2587,8 +2590,8 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   (icicle-successive-action #'icicle-next-apropos-candidate #'icicle-candidate-alt-action nth))
 
 
-(put 'icicle-help-on-previous-prefix-candidate 'icicle-cycling-command         t)
-(put 'icicle-help-on-previous-prefix-candidate 'icicle-prefix-cycling-command  t)
+(put 'icicle-help-on-previous-prefix-candidate 'icicle-cycling-command         'backward)
+(put 'icicle-help-on-previous-prefix-candidate 'icicle-prefix-cycling-command  'backward)
 ;;;###autoload
 (defun icicle-help-on-previous-prefix-candidate (&optional nth) ; Bound to `C-M-up' in minibuf.
   "`icicle-previous-prefix-candidate' and `icicle-help-on-candidate'.
@@ -2603,8 +2606,8 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   (icicle-successive-action #'icicle-previous-prefix-candidate #'icicle-help-on-candidate nth))
 
 
-(put 'icicle-help-on-next-prefix-candidate 'icicle-cycling-command         t)
-(put 'icicle-help-on-next-prefix-candidate 'icicle-prefix-cycling-command  t)
+(put 'icicle-help-on-next-prefix-candidate 'icicle-cycling-command         'forward)
+(put 'icicle-help-on-next-prefix-candidate 'icicle-prefix-cycling-command  'forward)
 ;;;###autoload
 (defun icicle-help-on-next-prefix-candidate (&optional nth) ; Bound to `C-M-down' in minibuf.
   "`icicle-next-prefix-candidate' and `icicle-help-on-candidate'.
@@ -2619,8 +2622,8 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   (icicle-successive-action #'icicle-next-prefix-candidate #'icicle-help-on-candidate nth))
 
 
-(put 'icicle-help-on-previous-apropos-candidate 'icicle-cycling-command         t)
-(put 'icicle-help-on-previous-apropos-candidate 'icicle-apropos-cycling-command t)
+(put 'icicle-help-on-previous-apropos-candidate 'icicle-cycling-command         'backward)
+(put 'icicle-help-on-previous-apropos-candidate 'icicle-apropos-cycling-command 'backward)
 ;;;###autoload
 (defun icicle-help-on-previous-apropos-candidate (&optional nth) ; Bound to `C-M-prior' in minibuf.
   "`icicle-previous-apropos-candidate' and `icicle-help-on-candidate'.
@@ -2635,8 +2638,8 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   (icicle-successive-action #'icicle-previous-apropos-candidate #'icicle-help-on-candidate nth))
 
 
-(put 'icicle-help-on-next-apropos-candidate 'icicle-cycling-command         t)
-(put 'icicle-help-on-next-apropos-candidate 'icicle-apropos-cycling-command t)
+(put 'icicle-help-on-next-apropos-candidate 'icicle-cycling-command         'forward)
+(put 'icicle-help-on-next-apropos-candidate 'icicle-apropos-cycling-command 'forward)
 ;;;###autoload
 (defun icicle-help-on-next-apropos-candidate (&optional nth) ; Bound to `C-M-next' in minibuf.
   "`icicle-next-apropos-candidate' and `icicle-help-on-candidate'.
@@ -2663,19 +2666,19 @@ The order between NAV-FN and ACTION-FN respects the value of
          (setq icicle-current-completion-mode         'prefix
                icicle-next-apropos-complete-cycles-p  nil)))
 
-  ;; We bind `icicle-acting-on-next/prev-p' to non-nil while calling the action function.
-  ;; This is used by Icicles search-and-replace (`icicle-search-highlight-and-maybe-replace')
-  ;; to get the candidate number correct for a series of replacements.
+  ;; We bind `icicle-acting-on-next/prev' to non-nil (and the direction) while calling the action
+  ;; function.  This is used by Icicles search-and-replace (`icicle-search-highlight-and-maybe-replace')
+  ;; to ensure the correct candidate number for a series of replacements.
   ;; (Not currently used for the `icicle-act-before-cycle-flag' case, but we do it there also, anyway.)
   (cond (icicle-act-before-cycle-flag
-         (let ((icicle-acting-on-next/prev-p  t))
+         (let ((icicle-acting-on-next/prev  (get nav-fn 'icicle-cycling-command)))
            (save-excursion (save-selected-window (funcall action-fn))))
          (funcall nav-fn nth))
         (t
          ;; Inhibit showing help in mode-line while moving to next/previous candidate
          ;; in *Completions*, because help sits for 10 sec.  Display the help after we do the action.
          (let ((icicle-help-in-mode-line-flag  nil)) (funcall nav-fn nth))
-         (let ((icicle-acting-on-next/prev-p  t))
+         (let ((icicle-acting-on-next/prev  (get nav-fn 'icicle-cycling-command)))
            (save-excursion (save-selected-window (funcall action-fn))))
          (when (stringp icicle-last-completion-candidate)
            (icicle-show-help-in-mode-line icicle-last-completion-candidate)))))
@@ -3587,6 +3590,8 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   (when (interactive-p) (icicle-barf-if-outside-Completions-and-minibuffer))
   (unless (or icicle-all-candidates-list-alt-action-fn icicle-candidate-alt-action-fn)
     (error "No alternative action defined."))
+  (unless icicle-completion-candidates
+    (error "No completion candidates.  Did you use `TAB' or `S-TAB'?"))
   (if icicle-all-candidates-list-alt-action-fn
       (icicle-all-candidates-action-1 icicle-all-candidates-list-alt-action-fn t)
     (icicle-all-candidates-action-1 icicle-candidate-alt-action-fn nil t))) ; ALTP flag
@@ -4488,12 +4493,10 @@ to toggle that option."
   (interactive)
   (when (interactive-p) (icicle-barf-if-outside-minibuffer))
   (unless icicle-completion-candidates
-    (error (substitute-command-keys
-            "No completion candidates.  Did you use `\\<minibuffer-local-completion-map>\
-\\[icicle-prefix-complete]' or `\\[icicle-apropos-complete]'?")))
+    (error "No completion candidates.  Did you use `TAB' or `S-TAB'?"))
   (let* ((raw-input                     icicle-current-raw-input)
          (enable-recursive-minibuffers  t)
-         (new-regexp                    (icicle-read-string "Or match alternative: "
+         (new-regexp                    (icicle-read-string "Or match alternative (use RET): "
                                                             nil regexp-history)))
     (setq icicle-current-raw-input
           (concat (if (< emacs-major-version 22) "\\(" "\\(?:") raw-input "\\|" new-regexp "\\)")
@@ -4525,12 +4528,7 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   (let (;; Restore match function, in case it was bound to nil, e.g., by `C-h C-o'.
         (icicle-apropos-complete-match-fn  icicle-last-apropos-complete-match-fn)
         (enable-recursive-minibuffers      t))
-    (cond ((null icicle-completion-candidates)
-           (error
-            (substitute-command-keys
-             "No completion candidates.  Did you use `\\<minibuffer-local-completion-map>\
-\\[icicle-prefix-complete]' or `\\[icicle-apropos-complete]'?")))
-          ((null (cdr icicle-completion-candidates))
+    (cond ((and icicle-completion-candidates (null (cdr icicle-completion-candidates)))
            (if (not (and icicle-top-level-when-sole-completion-flag
                          (sit-for icicle-top-level-when-sole-completion-delay)))
                (minibuffer-message "  [Sole completion]")
@@ -4656,10 +4654,7 @@ When called from Lisp with non-nil arg PREDICATE, use that to narrow."
         (last-completion-cmd               (or icicle-last-completion-command 'icicle-apropos-complete))
         (enable-recursive-minibuffers      t))
     (cond ((null icicle-completion-candidates)
-           (error
-            (substitute-command-keys
-             "No completion candidates.  Did you use `\\<minibuffer-local-completion-map>\
-\\[icicle-prefix-complete]' or `\\[icicle-apropos-complete]'?")))
+           (error "No completion candidates.  Did you use `TAB' or `S-TAB'?"))
           ((null (cdr icicle-completion-candidates))
            (if (not (and icicle-top-level-when-sole-completion-flag
                          (sit-for icicle-top-level-when-sole-completion-delay)))

@@ -9,7 +9,7 @@ A simple example :
        (interactive "r")
        (message "The current region is %s !" (buffer-substring start end)))
 
-Another example, a function I wrote that uses this, and might be of use to someone (I know I use it alot):
+Another example, a function I wrote that uses this, and might be of use to someone (I know I use it a lot):
 
     (defun find-next-occurance-of-region (start end)
       "Jump to the next occurance of region, and sets it as the current region"
@@ -22,7 +22,7 @@ Another example, a function I wrote that uses this, and might be of use to someo
 	      (setq mark-active t))
           (message "No more occurances of \"%s\" in buffer!" region-text))))
 
-It works in GNU Emacs, but I can't make any other garanties. I find it is most usefull with transient-mark-mode on, but it also works without that. What it does is simply to search for the next occurance of the region, jump to it, and mark it as the new region (so that it can be pressed multiple times to skip from one occurance to the next) -- TerryPatcher
+It works in GNU Emacs, but I can't make any other guaranties. I find it is most useful with transient-mark-mode on, but it also works without that. What it does is simply to search for the next occurrence of the region, jump to it, and mark it as the new region (so that it can be pressed multiple times to skip from one occurrence to the next) -- TerryPatcher
 
 ----
 CategoryCode

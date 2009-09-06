@@ -17,7 +17,7 @@ A chat can also be started using the keyboard:
 
  M-x jabber-chat-with
 
-If you want to, you can configure special-display-regexps to open chats in their own window:
+If you want to, you can configure special-display-regexps to open chats in their own frame:
 
  (setq 
   special-display-regexps 

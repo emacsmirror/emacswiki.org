@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Sep  2 16:56:32 2009 (-0700)
+;; Last-Updated: Sat Sep  5 18:04:30 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 3237
+;;     Update #: 3240
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1246,7 +1246,7 @@ If nil, Icicles sometimes signals you with a sound."
   :type 'boolean :group 'Icicles-Miscellaneous)
 
 ;;;###autoload
-(defcustom icicle-expand-input-to-common-match-flag t ; Toggle with `C-|'.
+(defcustom icicle-expand-input-to-common-match-flag t ; Toggle with `C-;'.
   "*Non-nil means `S-TAB' expands input, still matching all candidates.
 The expansion replaces your input in the minibuffer.
 
@@ -1262,7 +1262,7 @@ minibuffer for apropos completion - your regexp is then never replaced
 by the expanded common match.
 
 You can toggle this option at any time from the minibuffer using
-`C-|'."
+`C-;'."
   :type 'boolean :group 'Icicles-Matching)
 
 ;;;###autoload
@@ -1544,8 +1544,8 @@ they never use angle brackets."
 
 ;;;###autoload
 (defcustom icicle-keymaps-for-key-completion
-  '(calendar-mode-map dired-mode-map synonyms-mode-map vc-dired-mode-map
-    senator-mode-map srecode-mode-map jde-mode-map jde-jdb-mode-map)
+  '(calendar-mode-map dired-mode-map facemenu-keymap jde-mode-map jde-jdb-mode-map
+    senator-mode-map srecode-mode-map synonyms-mode-map vc-dired-mode-map)
   "*List of keymaps in which to bind `S-TAB' to `icicle-complete-keys'.
 List elements are symbols that are bound to keymaps.
 
@@ -2282,14 +2282,14 @@ This highlighting uses face `icicle-search-main-regexp-others'."
   :type 'hook :group 'Icicles-Searching)
 
 ;;;###autoload
-(defcustom icicle-search-replace-common-match-flag t ; Toggle with `C-M-|'.
+(defcustom icicle-search-replace-common-match-flag t ; Toggle with `M-;'.
   "*Non-nil means to replace the expanded common match of your input.
 This has no effect if either
 `icicle-search-highlight-all-current-flag' or
 `icicle-expand-input-to-common-match-flag' is nil.
 You can toggle those options from the minibuffer using `C-^' and
 `C-|', respectively.  You can toggle
-`icicle-search-replace-common-match-flag' using `C-M-|'."
+`icicle-search-replace-common-match-flag' using `M-;'."
   :type 'boolean :group 'Icicles-Searching)
 
 ;;;###autoload

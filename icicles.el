@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Sep  2 17:02:39 2009 (-0700)
+;; Last-Updated: Sat Sep  5 11:43:44 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 22581
+;;     Update #: 22583
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -905,7 +905,7 @@
 ;;
 ;;  Internal variables and constants defined in Icicles:
 ;;
-;;    `icicle-abs-file-candidates', `icicle-acting-on-next/prev-p',
+;;    `icicle-abs-file-candidates', `icicle-acting-on-next/prev',
 ;;    `icicle-all-candidates-action-p',
 ;;    `icicle-all-candidates-list-action-fn',
 ;;    `icicle-all-candidates-list-alt-action-fn',
@@ -964,10 +964,10 @@
 ;;    `icicle-last-completion-command', `icicle-last-input',
 ;;    `icicle-last-sort-function', `icicle-last-top-level-command',
 ;;    `icicle-last-transform-function', `icicle-list-use-nth-parts',
-;;    `icicle-menu-map', `icicle-minor-mode-map-entry',
-;;    `icicle-mode-map', `icicle-ms-windows-drive-hash',
-;;    `icicle-must-match-regexp', `icicle-must-not-match-regexp',
-;;    `icicle-must-pass-predicate',
+;;    `icicle-menu-map', `icicle-minibuffer-message-ok-p',
+;;    `icicle-minor-mode-map-entry', `icicle-mode-map',
+;;    `icicle-ms-windows-drive-hash', `icicle-must-match-regexp',
+;;    `icicle-must-not-match-regexp', `icicle-must-pass-predicate',
 ;;    `icicle-nb-of-other-cycle-candidates',
 ;;    `icicle-next-apropos-complete-cycles-p',
 ;;    `icicle-next-prefix-complete-cycles-p',
