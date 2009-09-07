@@ -9,7 +9,7 @@ EmacsNewsgroups:
 
 == Built In ==
 
-EmacsFromCVS has built-in support for directory-local variables.  Settings are stored as a specially formatted list in a file named .dir-locals.el.  See the manual in CVS to see how to use this.
+Emacs 23 onward has built-in support for directory-local variables.  Settings are stored as a specially formatted list in a file named .dir-locals.el.  See [http://www.gnu.org/software/emacs/manual/html_node/emacs/Directory-Variables.html#Directory-Variables the page in the Emacs Manual] to learn how to use this.
 
 There is also the function locate-dominating-file:
 

@@ -192,6 +192,21 @@ WcheckMode is a general interface for external checker programs. It can be used 
 === Checking multiple buffers/files ===
 [new] Question: Any easy way to spell-check multiple buffers/files ? Any integration with Dired ?
 
+[new] That can be done :
+{{{
+
+(defun dired-do-ispell (&optional arg)
+  (interactive "P")
+  (dolist (file (dired-get-marked-files
+                 nil arg
+                 #'(lambda (f)
+                     (not (file-directory-p f)))))
+    (save-window-excursion
+      (with-current-buffer (find-file file)
+        (ispell-buffer)))
+    (message nil)))
+
+}}}
 ----
 
 CategoryModes | CategorySpelling

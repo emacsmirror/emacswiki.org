@@ -7,7 +7,7 @@
 <parolang> See, this is the emacs spirit.  You use the editor to edit
 	   your editor, it's recursion, and that's why it needed
 	   lisp.
-<parolang> Even the name, Editing MACroS.  For what are macros for?
+<parolang> Even the name, Editing !MACroS.  For what are macros for?
 	   For editing.  So you use emacs to edit your macros that
 	   help you edit macros.
 <parolang> The secret is that there is no point to emacs outside of

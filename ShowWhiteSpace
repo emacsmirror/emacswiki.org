@@ -35,6 +35,11 @@ Here is a screenshot showing highlighting of trailing whitespace:
 
 [[image:DrewsEmacsShowWspace]]
 
+== Visible Whitespace Mode ==
+[[visws.el]] - Simple and very easy to use.  Shows you tabs, spaces and newlines:
+
+[[image:VisWS]]
+
 
 == Red Space ==
 

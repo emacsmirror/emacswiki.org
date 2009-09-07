@@ -99,6 +99,8 @@
 
 (require 'viper)
 
+(setq viper-want-ctl-h-help 't)
+
 ;; vimpulse
 
 (load-file "~/.emacs.d/vimpulse.el")

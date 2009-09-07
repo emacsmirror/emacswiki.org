@@ -1,9 +1,0 @@
-Looking for Emacs Help re: Indentations
-
-Hi all.  I am new to emacs, and when I type in text mode one tab in indents an entire paragraph.  So I have to go back with C-a C-d C-e to bring it back in line.  Unfortunately, by doing this, emacs brings the next tab stop on the next paragraph 1 column previous to that.  This continues through the document and gets to be a real pain.
-
-Since this is not addressed in the indentation section I was hoping somebody could e-mail me --  -- with an answer to my problem so I could add it to the page, or somebody could add it to the page and we could take this page down.  Or, just leave up the corrected version with a link.
-
-Thank you.
-
-: E-mail addresses is not well wikified text, please see HowTo before posting. And see documentation for what you bind to tab in text mode - C-h k TAB

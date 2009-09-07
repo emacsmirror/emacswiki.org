@@ -1,0 +1,20 @@
+From [[dired-efap.el]]:
+
+<pre>
+;; dired-efap.el allows the user to edit the filename at point, by
+;; hitting a key (like f2) or double-clicking it. The name is edited
+;; in the dired buffer, and the renaming takes effect when the user
+;; hit the RET key. Only the name of the file at point is tangible and
+;; editable, and it uses an special font.
+;;
+;; This package is an attempt to provide the same user interface to
+;; renaming files that some graphical file managers offer.
+;;
+;; Please, don't confuse dired-efap with wdired package, which I also
+;; wrote. Both "packages" provide alternative ways of renaming for
+;; dired users, but, while they are both compatible between them, they
+;; are oriented to different kind of users. wdired is for users who
+;; like the incredible flexibility and power of Emacs editing
+;; features. dired-efap is for users that are habituated to use other
+;; graphical file managers (or "explorers", however they are called).
+</pre>

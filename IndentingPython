@@ -1,14 +1,29 @@
+== Semantic indentation ==
+
 In Python, the indentation of code affects its meaning; some people love this (because it obviates the need for delimiting braces or keywords) and others hate it (because it's possible to munge your control structures without realizing it).  Tools for indenting Python code differ significantly from similar tools for other languages as a result.
 
-The fundamental thing to realize is that in a language like C, the braces and (normal) indentation are redundant; each can be generated from the other.  (Guido van Rossum presumably recognized this redundancy when choosing to forgo the braces.)  Any language that cared about both braces and indentation would have to decide what to do when they disagreed, so no one does that: C cares about the braces only.  Indenting C code is then a convenience for the human reader, and lots of tools exist (like CcMode) to do it automatically.  This is fundamentally impossible for Python: selecting indentation levels is part of the job of the programmer, and cannot (in non-trivial cases) be handled by a program.  Existing code like PythonMode handles this by providing indentation commands that guess at the correct indentation but may be used to override an incorrect guess.
+The fundamental thing to realize is that in a language like C, the braces and (normal) indentation are redundant; each can be generated from the other.  (Guido van Rossum presumably recognized this redundancy when choosing to forgo the braces.)
 
-For those who don't like to manage Python indentation themselves, or who want to protect their Python code from such whitespace damage as might occur in email or Web posting, there is PyIndent, which allows the use of C-like braces in Python comments. However, as someone said: once you're used to semantic indentation, it's hard to go back to
+Any language that cared about both braces and indentation would have to decide what to do when they disagreed, so no one does that: C cares about the braces only. Indenting C code is then a convenience for the human reader, and lots of tools exist (like CcMode) to do it automatically.
 
-         }
-       }
-     }
-   }
- }
+This is fundamentally impossible for Python: selecting indentation levels is part of the job of the programmer, and cannot (in non-trivial cases) be handled by a program.  Existing code like PythonMode handles this by providing indentation commands that guess at the correct indentation but may be used to override an incorrect guess.
+
+If you have not embraced semantic indentation yet PyIndent allows the use of C-like braces in comments.
+
+== Tabs or spaces ==
+
+The official [http://www.python.org/dev/peps/pep-0008/ Style Guide for Python Code] states that both spaces (preferably 4-space tabs) *or* spaces can be used to indent code. However for new projects spaces are recommended.
+
+To automatically guess the style use GuessStyle which automatically detects whether the current file uses tabs or spaces for indentation (among other things). For new files it seams to be using spaces, just as we want.
+
+Enable it like so:
+
+   (add-hook 'python-mode-hook guess-style-guess-tabs-mode)
+   (add-hook 'python-mode-hook (lambda ()
+                                  (when indent-tabs-mode
+                                    (guess-style-guess-tab-width)))
+
+If you add guess-style-guess-tab-width unconditionally you will get an error if indent-tabs-mode is not set.
 
 ----
 

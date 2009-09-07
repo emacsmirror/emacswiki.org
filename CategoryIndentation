@@ -14,6 +14,7 @@ Most people seem to be concerned about the following, though:
 ** IndentingPython -- Python source code, where it's syntactically significant
 ** IndentingHtml -- plain HTML mode does not do indentation
 ** IndentingXml -- using the new SgmlMode
+* GuessStyle -- guess variables like c-basic-offset, tab-width and indent-tabs-mode
 * GuessOffset -- guess the offset used in existing files and use it
 * ReformatBuffer -- marking the whole buffer and reindenting it
 ** CodeBeautifying -- how to wrap comments after reindenting the buffer
@@ -43,8 +44,6 @@ Aligning columns of text:
 Indentation implementation details:
 
 * TabStopList -- the fallback usually used when no other indentation seems to work
-
-NeedHelpWithIndentations -- I have a problem with indentation and I was hoping a guru could edit the page with the answer to my problem, which could then be appended to this page in an effort to make it better.
 
 Unrelated (but homonymous):
 

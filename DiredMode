@@ -45,6 +45,7 @@ permanently deleting files to a two stage system.
 * WThirtyTwoFindDired -- Light, w32-version of `find-dired'
 * DiredView -- Browse and select files using the first character of their names
 * DiredIsearch -- Run `isearch' in Dired, but match only file names
+* DiredEfap -- rename the file under `point'
 
 See CategoryDirectories for some other listing formats, besides what you get in Dired.
 

@@ -38,7 +38,7 @@ occasionally have problems with my data partition.
 Every time I edit a file and then discard the changes emacs saves a ~/#filename# file. The next time I run emacs it warns me about it and advises me to recover the file. How can I disable this "feature" ?
 
 [new]
-: That is really two features, "auto save"(1) and "find-file warning messages"(2). Auto-save is easy to disable, just add (auto-save-default nil) to your .emacs file.  The warning messages are a bit trickier to suppress. There's an optional parameter in find-file-noselect ..
+: That is really two features, "auto save"(1) and "find-file warning messages"(2). Auto-save is easy to disable, just add (setq auto-save-default nil) to your .emacs file.  The warning messages are a bit trickier to suppress. There's an optional parameter in find-file-noselect ..
 
 == Running save-buffer automatically ==
 [new]
