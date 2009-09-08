@@ -50,3 +50,6 @@ All below setup can customize by:
 
 [[image:MultiTermDedicatedShotPage]]
 
+----
+A bug/problem found: speedbar's frame doesn't react on window resize. It may become wider/narrower depending on when it was opened (small window resize to big window -> it becomes wider, big window resize to small window -> becomes narrow).
+Re-opening speedbar fixes the problem. Emacs 23.1.

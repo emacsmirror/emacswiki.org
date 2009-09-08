@@ -110,20 +110,32 @@
 ;;; User variables
 (defvar anything-c-traverse-func 'traverse-buffer-process-ext
   "*See `traverse-buffer-process-ext' in traverselisp.el.")
+
 (defvar anything-c-traverse-length-line 80
   "*Length of the line displayed in anything buffer.")
+
 (defvar anything-c-files-in-current-tree-ignore-files traverse-ignore-files
   "*See `traverse-ignore-files' in traverselisp.el.")
+
 (defvar anything-c-traverse-ignore-files traverse-ignore-files
   "*See `traverse-ignore-files' in traverselisp.el.")
+
 (defvar anything-c-traverse-fontify-buffer nil
   "*Fontify buffer before starting a search in a buffer.
 This have no effect on searching in files from dired.
 This can SLOW down search when non--nil.")
+
 (defvar anything-c-files-in-current-tree-allow-tagging t
   "*Allow create and use anything tags files for persistent data.")
+
 (defvar anything-c-files-in-current-tree-tag-file-name "ANYTHING-TAG-FILE"
   "*The name your anything tags files will have.")
+
+(defvar anything-c-traverse-browse-regexp-lisp "\(def\\(un\\|subst\\|macro\\|ine\\|var\\|custom\\|const\\)"
+  "*Regexp used to parse lisp buffer when browsing code.")
+
+(defvar anything-c-traverse-browse-regexp-python "\\<def\\>\\|\\<class\\>"
+  "*Regexp used to parse python buffer when browsing code.")
 
 ;;; Internals variables
 (defvar anything-traverse-current-buffer)
@@ -135,6 +147,7 @@ This can SLOW down search when non--nil.")
 (defvar anything-c-files-in-current-tree-table (make-hash-table :test 'eq))
 (defvar anything-traverse-buffer-positions-ring nil)
 (make-variable-buffer-local 'anything-traverse-buffer-positions-ring)
+(defvar anything-c-traverse-browse-regexp nil)
 
 ;;; Types
 (defface anything-traverse-overlay-face '((t (:background "IndianRed4" :underline t)))
@@ -272,23 +285,28 @@ with prefix arg refresh data base."
           (message "Record new marked position at line %s" line-number))
         (message "Position at line %s is already recorded" line-number))))
 
+
 (defun anything-traverse-position-relocate-maybe (elm)
   (let* ((elm-mod     (concat elm "\n"))
          (pos-in-list (position elm-mod anything-traverse-buffer-positions-ring :test 'equal))
          (new-pos     nil)
          (dry-elm     (replace-regexp-in-string "\\(^[0-9]+:\\)" "" elm)))
+    ;; Goto line position
     (anything-c-traverse-buffer-action elm)
+    ;; If line have changed, try to relocate it.
     (unless (string= dry-elm (buffer-substring (point-at-bol) (point-at-eol)))
-      (save-excursion
-        (when (or (search-backward dry-elm (point-min) t)
-                  (search-forward dry-elm (point-max) t))
-          (setq new-pos (point))
-          (setq anything-traverse-buffer-positions-ring
-                (remove elm-mod anything-traverse-buffer-positions-ring))))
+      (when (or (search-backward dry-elm (point-min) t)
+                (search-forward dry-elm (point-max) t))
+        (setq new-pos (point))
+        ;; If success, remove old elm.
+        (setq anything-traverse-buffer-positions-ring
+              (remove elm-mod anything-traverse-buffer-positions-ring)))
+      ;; Record new position.
       (when new-pos
         (goto-char new-pos)
         (forward-line 0)
         (anything-traverse-record-pos)))
+    ;; put this candidate at top of stack in ring.
     (unless new-pos
       (push (pop (nthcdr pos-in-list anything-traverse-buffer-positions-ring))
             anything-traverse-buffer-positions-ring))))
@@ -420,7 +438,7 @@ If current-buffer is a dired buffer search is performed on all files."
               (setq anything-traverse-current-buffer
                     (current-buffer))
               (let ((dired-buffer-name (find (rassoc anything-traverse-current-buffer
-                                                             dired-buffers)
+                                                     dired-buffers)
                                                      dired-buffers)))
                 (if dired-buffer-name
                     (setq anything-c-traverse-diredp-flag t)
@@ -457,10 +475,13 @@ If current-buffer is a dired buffer search is performed on all files."
               (let ((cand-list anything-traverse-buffer-positions-ring))
                 (with-current-buffer (anything-candidate-buffer 'local)
                   (dolist (i cand-list)
-                    (when (with-current-buffer anything-current-buffer
-                            (goto-char (point-min))
-                            (search-forward (replace-regexp-in-string "\\(^[0-9]+:\\)" "" i) (point-max) t))
-                      (insert i)))))))
+                    (if (with-current-buffer anything-current-buffer
+                          (goto-char (point-min))
+                          (search-forward (replace-regexp-in-string "\\(^[0-9]+:\\)" "" i) (point-max) t))
+                        (insert i)
+                        (insert
+                         (propertize i 'face '((:foreground "red"))
+                                     'help-echo "WARNING:Line has been modified, you should relocate it or remove it"))))))))
     (candidates-in-buffer)
     (action . (("Go to Line" . (lambda (elm)
                                  (anything-traverse-position-relocate-maybe elm)))
@@ -484,9 +505,46 @@ If current-buffer is a dired buffer search is performed on all files."
     (persistent-action . (lambda (elm)
                            (anything-traverse-position-relocate-maybe elm)
                            (anything-traverse-occur-color-current-line)))))
-    
 
 ;; (anything 'anything-traverse-c-source-record-positions)
+
+(defvar anything-c-source-traverse-browse-code 
+  '((name . "Browse code")
+    (init . (lambda ()
+              (when anything-c-traverse-fontify-buffer
+                (with-current-buffer anything-current-buffer
+                  (jit-lock-fontify-now)))
+              (cond ((eq major-mode 'emacs-lisp-mode)
+                     (setq anything-c-traverse-browse-regexp
+                           anything-c-traverse-browse-regexp-lisp))
+                    ((eq major-mode 'python-mode)
+                     (setq anything-c-traverse-browse-regexp
+                           anything-c-traverse-browse-regexp-python)))
+              (let ((lis (traverse-find-readlines anything-current-buffer
+                                                  anything-c-traverse-browse-regexp
+                                                  :insert-fn 'buffer)))
+                (with-current-buffer (anything-candidate-buffer 'local)
+                  (dolist (f lis)
+                    (let ((pos (number-to-string (car f))))
+                      (insert (concat  pos ": " (cadr f) "\n"))))))))
+    (candidates-in-buffer)
+    (action . (("GotoLine" . (lambda (elm)
+                               (let* ((lis-elm (split-string elm ":"))
+                                      (num (string-to-number (car lis-elm))))
+                                 (goto-line (1+ num)))))))
+    (get-line . buffer-substring)
+    (persistent-action . (lambda (elm)
+                           (let* ((lis-elm (split-string elm ":"))
+                                  (num (string-to-number (car lis-elm))))
+                             (goto-line (1+ num)))
+                           (anything-traverse-occur-color-current-line)))))
+                  
+
+;; (anything 'anything-c-source-traverse-browse-code)
+
+(defun anything-traverse-browse-code ()
+  (interactive)
+  (anything 'anything-c-source-traverse-browse-code))
 
 ;;; Provide
 (provide 'anything-traverse)

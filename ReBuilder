@@ -1,6 +1,6 @@
 This is a nice interactive tool for building regular expressions in emacs.  From the commentary:
 
-<pre>
+{{{
 ;; When I have to come up with regular expressions that are more
 ;; complex than simple string matchers, especially if they contain sub
 ;; expressions, I find myself spending quite some time in the
@@ -9,13 +9,11 @@ This is a nice interactive tool for building regular expressions in emacs.  From
 
 ;; With it you can have immediate visual feedback about how well the
 ;; regexp behaves to your expectations on the intended data.
-</pre>
+}}}
 
-Now that re-builder is included in GNU Emacs 21, you can download it from CVS here:
+Re-builder is included in GNU Emacs 21, you can download it from CVS here:
 
-* http://savannah.gnu.org/cgi-bin/viewcvs/*checkout*/emacs/emacs/lisp/emacs-lisp/re-builder.el
-
-Why is lisp-re.el included in Emacs? it's required by re-builder.
+* CVS:emacs-lisp/re-builder.el
 
 ----
 
@@ -32,7 +30,7 @@ there will be a re-builder XEmacs pre-release package soon. -- AdrianAichner
 
 In GnuEmacs 21.4, it needs slightly modifications.
 
-<pre>
+{{{
 --- /home/u/downloads/re-builder.el	2006-03-09 23:38:14.000000000 +0900
 +++ /home/u/emacs/lisp/re-builder.el	2006-03-09 23:19:17.000000000 +0900
 @@ -873,13 +873,16 @@
@@ -74,37 +72,24 @@ In GnuEmacs 21.4, it needs slightly modifications.
 +   (t (re-search-backward regexp limit noerror count ))))
  
  (provide 're-builder)
-</pre> 
+}}}
 
 ----
 
-[new]
-Is there a way to have regexp-replace behave somewhat like re-builder? That is, giving me visual feedback as to what I am matching.
+The command, `C-c C-w' can yank the current regular expression to the KillRing.  As of Emacs 23, it does so as a string, reglardless of the current syntax you are using to enter the regular expression.  This is suited for Emacs Lisp programming.  It is not helpful for those who use RE-Builder for building lots of complex searches with grouping and then want to prepare it for `query-replace-regexp'.  One solution is to use this command:
 
-[new]
-: Does using the same pattern in an isearch-forward-regexp work well enough?
 
-[new]
-:: Thanks -- now if there were a ireplace-forward-regexp... Hmmm... shouldn't be too hard to code.
+    (defun reb-query-replace (to-string)
+      "Replace current RE from point with `query-replace-regexp'."
+      (interactive
+       (progn (barf-if-buffer-read-only)
+              (list (query-replace-read-to (reb-target-binding reb-regexp)
+                                           "Query replace"  t))))
+      (with-current-buffer reb-target-buffer
+        (query-replace-regexp (reb-target-binding reb-regexp) to-string)))
 
 [new]
 : Lisp:re-builder+.el provides reb+regexp-replace that is 'regexp-replace like re-builder interface'. -- [[k1LoW]]
-
-----
-[new]
-Is there a way to get C-w to yank an expression usable, say, in query-replace-regexp? As it is, it escape-quotes one-level.
-
-[new]
-: In the %%*Re-builder*%% buffer press `C-c TAB' and use 'Select Syntax: *string*' . Then you can C-w the regex.
-
-[new]
-The expression in the kill-ring (copied with C-c C-w) looks like "\"example" (to match the text "example). What query-replace-regexp needs is plain \"example, i.e. without the double quotes. This is the same for read and string syntax mode. Am I doing something wrong or is this how it works?
-
-[new]
-: But why are you using RE-Builder for preparing `query-replace-regexp'?  RE-Builder seems more suited for Emacs Lisp programming.  Are your searches so complex that you prefer not to build them with just `C-M-s'?
-
-[new]
-:: RE-Builder is just so much nicer for more complex stuff. I want to do code refactoring/reformatting with regular expressions, e.g. '#define MY_DEFINE_1 1' into 'case MY_DEFINE_1:'. In RE-Builder I can interactively come up with '\(#define \)\([A-Z_0-9]+\)\( [0-9]+\)' and see, for example, the subgrouping happen right in the code. All I am looking for now is an easy way to get it into the kill-ring for use with `query-replace-regex'. Yes, I can enter the above regex in 'string syntax' mode and select and copy it to the kill ring manually, but I am just wondering if there is a native keybinding that does that (and what would be a reason NOT to have that, e.g. a better way of doing what I want to do ;) ). 
 
 ----
 CategoryRegexp

@@ -22,6 +22,12 @@ While flipping, the names of the most recent buffers are displayed in
 the minibuffer, and the currently visited buffer is surrounded by square
 brackets and marked with a bold face.
 
+A key thing to notice here is that *iflipb* displays the buffer contents
+after each step forward/backwards (in addition to displaying the buffer
+names), unlike for instance the buffer switching model of
+[[InteractivelyDoThings|ido-mode]] where only the buffer names are
+displayed.
+
 ##iflipb-previous-buffer## behaves like ##Alt-Shift-TAB##: it walks
 backwards in the buffer list.
 
@@ -45,6 +51,12 @@ Here is an illustration of what happens in a couple of different scenarios:
 ||*Forward flip*       ||A B [*C*] D E       ||C A B D E           ||
 ||'''[Edit buffer C]'''||                    ||C A B D E           ||
 ||*Forward flip*       ||C [*A*] B D E       ||A C B D E           ||
+
+*iflipb* by default ignores buffers whose names start with an asterix or
+space. You can give a prefix argument to ##iflipb-next-buffer## to make it flip
+between more buffers. See the documentation of the variables
+##iflipb-ignore-buffers## and ##iflipb-always-ignore-buffers## for how to change
+this.
 
 == Installation ==
 
@@ -78,10 +90,6 @@ Or perhaps use functions keys like ##F9## and ##F10##:
 
   (global-set-key (kbd "<f10>") 'iflipb-next-buffer)
   (global-set-key (kbd "<f9>")  'iflipb-previous-buffer)
-
-*iflipb* by default ignores buffers starting with an asterix or
-space. See the documentation of the variable
-##iflipb-boring-buffer-filter## for how to change this.
 
 == About ==
 

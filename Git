@@ -3,7 +3,7 @@ and DaRcs.  It was written for the linux kernel hackers but it is now used by ot
 
 Git is available from http://git-scm.com/. Documentation can be found at http://git-scm.com/documentation.
 
-== Modes ==
+== Emacs Standard Support ==
 
 Git is supported by
 VersionControl and
@@ -27,6 +27,8 @@ Clarification here: Git, as in "Git support", IS included in emacs 22 and 23. Ce
 In emacs 23 the command showing the repository status C-x v d has been rewritten, it supports checking in multiple files/directories at a time, and has fancy display.  It can be extended with git specific functions.
 vc-git-grep can be used and a UI for git grep.
 vc-git.el also includes support for git blame, in the vc-annotate command (C-x v g)
+
+== Other packages ==
 
 Magit is another interface to git.
 
@@ -58,7 +60,7 @@ git-emacs is yet another git mode on emacs for newbies.
 
 More information:
 
-* [http://xtalk.msk.su/~ott/en/writings/emacs-vcs/EmacsGit.html Work with Git from Emacs] is an article by AlexOtt that introduces the packages above.
+* [http://xtalk.msk.su/~ott/en/writings/emacs-vcs/EmacsGit.html Work with Git from Emacs] is an article by AlexOtt that provides more information about each of the mentioned packages.
 
 == Emacs from Git ==
 

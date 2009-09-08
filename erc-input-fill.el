@@ -1,6 +1,6 @@
 ;;;; Hack to get fill mode to work correctly for ERC input
 ;;;; This is very Quick'n'Dirty, so please report =any= strange
-;;;; behavior, preferably via IRC to Adlai on #emacs @ freenode.
+;;;; behavior, preferably via IRC to Adlai @ freenode
 
 (require 'erc)
 

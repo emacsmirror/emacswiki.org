@@ -1,4 +1,4 @@
-To set up FontLockMode for BufferMenu, use this:
+To set up FontLockMode for BufferMenu, use this bit of Emacs lisp.
 
     (setq buffer-menu-buffer-font-lock-keywords
       '(("^....[*]Man .*Man.*"   . font-lock-variable-name-face) ;Man page
@@ -7,7 +7,7 @@ To set up FontLockMode for BufferMenu, use this:
         (".*[*]scratch[*].*"     . font-lock-function-name-face) ; scratch buffer
         ("^....[*].*"            . font-lock-string-face)        ; "*" named buffers
         ("^..[*].*"              . font-lock-constant-face)      ; Modified
-        ("^.[%].*"               . font-lock-keyword-face)))    ; Read only
+        ("^.[%].*"               . font-lock-keyword-face)))     ; Read only
 
     (defun buffer-menu-custom-font-lock  ()
       (let ((font-lock-unfontify-region-function
@@ -20,17 +20,15 @@ To set up FontLockMode for BufferMenu, use this:
 
     (add-hook 'buffer-menu-mode-hook 'buffer-menu-custom-font-lock)
 
-If you use ElectricBufferList, then use this instead:
-
-    (add-hook 'electric-buffer-menu-mode-hook'buffer-menu-custom-font-lock)
-
-See also: BufferMenuPlus, which provides similar highlighting, and more. You can customize the faces used without affecting the font-lock faces.
-
-Here is a screen shot:
+Here is a graphic screen shot showing how the highlighting looks in Buffer menu.
 
 [[image:BufferMenuHighlightingScreenshot0.png]]
 
-Originally posted to ElectricBufferList.
+If you use ElectricBufferList, then simply use this instead for the last line:
+
+    (add-hook 'electric-buffer-menu-mode-hook 'buffer-menu-custom-font-lock)
+
+See also: BufferMenuPlus, which provides similar highlighting, and more. You can customize the faces used without affecting the font-lock faces.
 
 ----
 CategoryBufferSwitching
