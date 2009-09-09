@@ -1981,5 +1981,33 @@ For use with [[eproject]].
     (action ("Copy result to kill-ring" . kill-new))))
 </pre>
 
+==recoll (spotlight-style) text indexing engine==
+<pre>
+;;; Recoll (xapian) text indexing engine plugin, derived from anything-c-source-locate
+
+(defvar anything-c-recoll-options
+  '("recoll" "-t" "-b")
+  "A list where the `car' is the name of the recoll program followed by options.")
+
+(defvar anything-c-source-recoll
+  '((name . "Recoll")
+    (candidates . (lambda ()
+                    (apply 'start-process "recoll-process" nil
+                           (append anything-c-recoll-options
+                                   (list anything-pattern)))))
+    (candidate-transformer
+     . (lambda (cs)
+	 (mapcar (function (lambda (c)
+			     (replace-regexp-in-string "file://" "" c)))
+		 cs)))
+
+    (type . file)
+    (requires-pattern . 3)
+    (delayed))
+  "Source for retrieving files matching the current input pattern with recoll.")
+;; (anything 'anything-c-source-recoll)
+
+</pre>
+
 ----
 [[Anything]]

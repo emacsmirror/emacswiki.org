@@ -25,27 +25,25 @@ For some programming languages, e.g., Fortran, using ##reindent-then-newline-and
 [:SmartPaste]
 '''"In !TextMate, pasted lines are automatically indented, which is extremely time-saving. This should be fairly straightforward to implement in Emacs, but how?"'''
 
-I've [http://emacs.wordpress.com/2007/01/22/killing-yanking-and-copying-lines/ found] the following code, which accomplishes this beautifully:
+The following code (inspired by [http://emacs.wordpress.com/2007/01/22/killing-yanking-and-copying-lines/ this post]) accomplishes this beautifully:
 
-    (defadvice yank (after indent-region activate)
-      (if (member major-mode
-                  '(emacs-lisp-mode scheme-mode lisp-mode
-                                    c-mode c++-mode objc-mode
-                                    latex-mode plain-tex-mode))
-          (let ((mark-even-if-inactive t))
-            (indent-region (region-beginning) (region-end) nil))))
+    (dolist (command '(yank yank-pop))
+      (eval `(defadvice ,command
+               (after indent-region activate)
+               (if (member major-mode '(emacs-lisp-mode lisp-mode
+                                        clojure-mode    scheme-mode
+                                        haskell-mode    ruby-mode
+                                        rspec-mode      python-mode
+                                        c-mode          c++-mode
+                                        objc-mode       latex-mode
+                                        plain-tex-mode))
+                   (let ((mark-even-if-inactive transient-mark-mode))
+                     (unless current-prefix-arg
+                       (indent-region (region-beginning) (region-end) nil)))))))
 
-Just put the above in your ##.emacs## file and enjoy automatic indentation of yanked text in the listed programming modes. (To add your own modes, check the value of the ##major-mode## variable (##C-h v## or ##M-x describe-variable##) and add it to the list.)
 
-Note that for consistency, you should define the same advice for the ##yank-pop## command:
-
-    (defadvice yank-pop (after indent-region activate)
-      (if (member major-mode
-                  '(emacs-lisp-mode scheme-mode lisp-mode
-                                    c-mode c++-mode objc-mode
-                                    latex-mode plain-tex-mode))
-          (let ((mark-even-if-inactive t))
-            (indent-region (region-beginning) (region-end) nil))))
+Just put the above in your ##.emacs## file and enjoy automatic indentation of yanked text in the listed programming modes.
+Fall back to default, non-indented yanking by preceding the yanking commands with C-u. (To add your own modes, check the value of the ##major-mode## variable (##C-h v## or ##M-x describe-variable##) and add it to the list.)
 
 Alternatively, you may define a separate ##yank-and-indent## command as such:
 
@@ -57,17 +55,6 @@ Alternatively, you may define a separate ##yank-and-indent## command as such:
 
 and then bind it as you see fit, e.g., ##(global-set-key "\C-y" 'yank-and-indent)##. However, note that the ##defadvice## method is recommended if you use modes such as CuaMode.
 
-[new]
-Note that '''mark-even-if-inactive''' is only useful/necessary/possible when transient mark mode is on (which is now the default).
-The line:
-
-  (let ((mark-even-if-inactive t))
-
-would be better written:
-
-  (let ((mark-even-if-inactive transient-mark-mode))
-
-so these cool defadvices can also be used successfully by those who prefer to disable transient mark mode (even when they occasionally enable it temporarily).
 
 ----
 

@@ -131,10 +131,12 @@ This can SLOW down search when non--nil.")
 (defvar anything-c-files-in-current-tree-tag-file-name "ANYTHING-TAG-FILE"
   "*The name your anything tags files will have.")
 
-(defvar anything-c-traverse-browse-regexp-lisp "\(def\\(un\\|subst\\|macro\\|ine\\|var\\|custom\\|const\\)"
+(defvar anything-c-traverse-browse-regexp-lisp
+  "\(def\\(un\\|subst\\|macro\\|ine\\|face\\|alias\\|advice\\|struct\\|type\\|theme\\|var\\|group\\|custom\\|const\\)"
   "*Regexp used to parse lisp buffer when browsing code.")
 
-(defvar anything-c-traverse-browse-regexp-python "\\<def\\>\\|\\<class\\>"
+(defvar anything-c-traverse-browse-regexp-python
+  "\\<def\\>\\|\\<class\\>"
   "*Regexp used to parse python buffer when browsing code.")
 
 ;;; Internals variables

@@ -15,8 +15,8 @@
 ;;           : Kevin Whitefoot <kevin.whitefoot@nopow.abb.no>
 ;;           : Randolph Fritz <rfritz@u.washington.edu>
 ;;           : Vincent Belaiche (VB1) <vincentb1@users.sourceforge.net>
-;; Version: 1.4.6 (2009-09-02)
-;; Serial Version: %Id: 15%
+;; Version: 1.4.7 (2009-09-08)
+;; Serial Version: %Id: 16%
 ;; Keywords: languages, basic, Evil
 
 
@@ -118,7 +118,8 @@
 ;;     3) new keywords Preserve and Explicit
 ;; 1.4.4 VB1 added function visual-basic-close-block
 ;; 1.4.5 VB1, (expand-abbrev) within (save-excusion...)
-;; 1.4.6 VB1 correct visual-basic-close-block
+;; 1.4.6 VB1 correct visual-basic-close-block (single line If case)
+;; 1.4.7 VB1 correct visual-basic-close-block (For/Next)
 
 ;;
 ;; Notes:
@@ -740,51 +741,65 @@ changed files."
    (lambda () (looking-at open-regexp))
    (lambda () (looking-at close-regexp))))
 
+(defun visual-basic-get-complete-tail-of-line ()
+  "Return the tail of the current statement line, starting at
+  point and going up to end of statement line. If you want the
+  complete statement line, you have to call functions
+  `visual-basic-find-original-statement' and then
+  `beginning-of-line' before" 
+  (let* ((start-point (point)) 
+	 complete-line 
+	 (line-beg start-point) 
+	 line-end)
+    (while (null line-end)
+      (end-of-line)
+      (setq line-end (point))
+      (if (search-backward "_" line-beg t)
+	  (if (looking-at  "_[ \t]*$")
+	      ;; folded line
+	      (progn
+		(setq line-end (1- (point))
+		      complete-line (cons 
+				     (buffer-substring-no-properties 
+				      line-beg line-end) 
+				     complete-line)
+		      line-end nil)
+		(beginning-of-line 2)
+		(setq line-beg (point)))
+	    ;; _ found, but not a folded line (this is a syntax error)
+	    (setq complete-line 
+		  (cons (buffer-substring-no-properties line-beg line-end) complete-line)))
+	;; not a folded line
+	(setq complete-line 
+	      (cons (buffer-substring-no-properties line-beg line-end) 
+		    complete-line))))
+    (mapconcat 'identity (nreverse complete-line) " ")))
+
 (defun visual-basic-if-not-on-single-line ()
+  "Return non-`nil' when the If statement is not on a single statement
+line, i.e. requires a matching End if. Note that a statement line may
+be folded over several code lines."
   (if (looking-at visual-basic-if-regexp)
       (save-excursion
 	(beginning-of-line)
-	;; 1st reconstruct complete line
-	(let* ((start-point (point)) 
-	       (complete-line) 
-	       (line-beg start-point) 
-	       line-end)
-	  (while (null line-end)
-	    (end-of-line)
-	    (setq line-end (point))
-	    (if (search-backward "_" line-beg t)
-		(if (looking-at  "_[ \t]*$")
-		    ;; folded line
-		    (progn
-		      (setq line-end (1- (point))
-			    complete-line (cons 
-					   (buffer-substring-no-properties 
-					    line-beg line-end) 
-					   complete-line)
-			    line-end nil)
-		      (beginning-of-line 2)
-		      (setq line-beg (point)))
-		  ;; _ found, but not a folded line (this is a syntax error)
-		  (setq complete-line 
-			(cons (buffer-substring-no-properties line-beg line-end) complete-line)))
-	      ;; not a folded line
-	      (setq complete-line 
-		    (cons (buffer-substring-no-properties line-beg line-end) 
-			  complete-line))))
-	  (setq complete-line (mapconcat (lambda (x) x) (nreverse complete-line) " "))
-	  ;; not complete line has been reconstructed, drop confusing elements
-	  (let (p1 p2)
-	    ;; remove any VB string from complete line, as strings may disrupt : and ' detection
-	    (while (and (setq p1 (string-match "\"" complete-line))
-			(setq p2 (string-match "\"" complete-line (1+ p1))))
-	      (setq complete-line (concat (substring complete-line 0 p1)
-					  (substring complete-line (1+ p2)))))
-	    ;; now drop tailing comment if any
-	    (when (setq p1 (string-match "'" complete-line))
-	      (setq complete-line (substring complete-line p1)))
-	    ;; now drop 1st concatenated instruction is any
-	    (when (setq p1 (string-match ":" complete-line))
-	      (setq complete-line (substring complete-line p1))))
+	(let (p1 
+	      p2
+	      ;; 1st reconstruct complete line
+	      (complete-line (visual-basic-get-complete-tail-of-line)) )
+
+	  ;; now complete line has been reconstructed, drop confusing elements
+
+	  ;; remove any VB string from complete line, as strings may disrupt : and ' detection
+	  (while (and (setq p1 (string-match "\"" complete-line))
+		      (setq p2 (string-match "\"" complete-line (1+ p1))))
+	    (setq complete-line (concat (substring complete-line 0 p1)
+					(substring complete-line (1+ p2)))))
+	  ;; now drop tailing comment if any
+	  (when (setq p1 (string-match "'" complete-line))
+	    (setq complete-line (substring complete-line p1)))
+	  ;; now drop 1st concatenated instruction is any
+	  (when (setq p1 (string-match ":" complete-line))
+	    (setq complete-line (substring complete-line p1)))
 	  ;;
 	  (string-match "Then\\s-*$" complete-line))); end (save-excursion ...)
     ;; else, not a basic if
@@ -988,6 +1003,18 @@ In Abbrev mode, any abbrev before point will be expanded."
              (insert "_")
              (visual-basic-newline-and-indent)))))
 
+(defun visual-basic-detect-idom ()
+  "Detects whether this is a VBA or VBS script. Returns symbol
+  `vba' if it is VBA, `nil' otherwise" 
+  (let (ret)
+    (save-excursion
+      (save-restriction
+	(widen)
+	(goto-char (point-min))
+	(cond
+	 ((looking-at "^[ \t]*Attribute\\s-+VB_Name\\s-+= ") (setq ret 'vba)))
+	 ))
+    ret))
 
 (defun visual-basic-close-block ()
   "Insert `End If' is current block is a `If Then ...', `End
@@ -1027,6 +1054,18 @@ With' if the block is a `With ...', etc..."
 	       ((looking-at visual-basic-do-regexp)
 		(setq  end-statement "Loop"
 		       end-indent (current-indentation))
+		nil)
+
+	       ((looking-at visual-basic-for-regexp)
+		(goto-char (match-end 0))
+		(setq  end-statement "Next"
+		       end-indent (current-indentation))
+		(let ((vb-idom (visual-basic-detect-idom)))
+		  (cond
+		   ;; for VBA add the variable name after Next.
+		   ((eq vb-idom 'vba)
+		    (when (looking-at "\\s-+\\(Each\\s-+\\|\\)\\([^ \t\n\r]+\\)")
+		      (setq end-statement (concat end-statement " " (match-string 2)))))))
 		nil)
 	       ;; Cases where the current statement is an end-of-smthing statement
 	       ((or (looking-at visual-basic-else-regexp)

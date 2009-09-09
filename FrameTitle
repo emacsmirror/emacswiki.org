@@ -89,10 +89,20 @@ and the following snippet for your <code>.emacs</code>:
 
     (when (and (not window-system)
                (string-match "^xterm" (getenv "TERM")))
-      (require ´xterm-title)
+      (require 'xterm-title)
       (xterm-title-mode 1))
 
 Then modify the frame/icon frame title variables as you would in a window system.
+
+My Emacs insists that I have a "dumb" terminal. Even under xterm. This works for me:
+
+  (when (and
+         (not window-system)
+         (or
+          (string= (getenv "TERM") "dumb")
+          (string-match "^xterm" (getenv "TERM"))))
+    (require 'xterm-title)
+    (xterm-title-mode 1))
 
 ----
 CategoryFrames CategoryDisplay FrameModes

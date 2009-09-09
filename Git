@@ -61,6 +61,7 @@ git-emacs is yet another git mode on emacs for newbies.
 More information:
 
 * [http://xtalk.msk.su/~ott/en/writings/emacs-vcs/EmacsGit.html Work with Git from Emacs] is an article by AlexOtt that provides more information about each of the mentioned packages.
+* [http://tsgates.cafe24.com/git/git-emacs.html A Guided Tour of emacs-git] (by TSKim)
 
 == Emacs from Git ==
 

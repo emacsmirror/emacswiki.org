@@ -20,5 +20,8 @@ And also like EmacsLisp, PHP is completely lacking in namespaces. But perhaps th
 [new]
 Actually I think this entry should be removed. If we keep Drupal on this list, we'll end up listing _all_ extensible programs. I think the most important criterion should be "If you love Emacs, you may also like..." -- and I don't see the connection between Emacs and Drupal. It seems to me that all other items on the list use a Lisp system, be it CommonLisp or [[Scheme]], or something similar. If we add PHP we'll be adding Perl, Ruby, and Vim Script next... -- AlexSchroeder
 
+[new]
+Please don't remove Drupal from this list. Like Emacs, Drupal is the advanced, extensible, customizable, self-documenting system. "Customizable" means that you can easily alter its behavior in simple ways. "Extensible" means that you can go beyond simple customization and easily create new modules (like packages in Emacs) and implement new functionality using a set of predefined hooks and well-thought-out core API. The unfortunate fact of using PHP as its implementation language doesn't diminish the excellence of Drupal as a system. -- JuriLinkov
+
 ----
 CategoryRelated

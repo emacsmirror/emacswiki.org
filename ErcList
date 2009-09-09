@@ -9,6 +9,7 @@ channel list in a separate buffer.
 
 If point is at a channel name (at the # sign), you can join that channel by pressing `j' or `C-c C-j'. 
 Use `s' to sort alphabetically or according to the number of users in a channel.
+Type `t' to toggle display of details about each channel.
 Type `q' to hide the window and restore previous window configuration again.
 
 

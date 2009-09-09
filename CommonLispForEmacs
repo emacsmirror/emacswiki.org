@@ -16,13 +16,6 @@ you define your function with `defun*' and so on.  See the Info node
 (cl)Common Lisp Compatibility.
 
 [new]
-"Note that variables bound with lexical-let are never released, even if they are never used. Try
-
- (loop for i from 1 to 100000 collect (lexical-let ((x i)) '()))
-
-and watch it eat memory." (from http://c2.com/cgi/wiki?EmacsLisp )
-
-[new]
 Packages distributed within GNU Emacs don't use cl at runtime (on account of its size, and potential future namespace clashes), only via byte-compiled macros (see the introduction to the cl manual on this).  That doesn't mean you must avoid cl altogether if you aspire to get code into Emacs, indeed major packages like CcMode and [[Gnus]] happily use cl; just ensure it's only through macro forms (such as `push', `setf', `defun*', `loop').  The easiest way to do that is
 
   (eval-when-compile (require 'cl))

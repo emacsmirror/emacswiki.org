@@ -74,4 +74,21 @@ Here's a little hack to the first approach, it sorts out all server buffers, so 
 
 
 ----
+This function lets you choose an ERC buffer to switch to using InteractivelyDoThings.
+If ERC is not running it will start it.
+
+     (defun my-func-switch-to-erc-buffer nil
+       "Switch to ERC buffer using IDO to choose which one, or start ERC if not already started."
+       (interactive)
+       (let (final-list (list ))
+         (dolist (buf (buffer-list) final-list) 
+           (if (equal 'erc-mode (with-current-buffer buf major-mode))
+     	  (setq final-list (append (list (buffer-name buf)) final-list))))
+         (if final-list
+     	(switch-to-buffer (ido-completing-read "Buffer: " final-list))
+           (call-interactively 'erc))))
+     
+     
+
+----
 [[ERC]]
