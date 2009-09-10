@@ -81,6 +81,7 @@ For CPerlMode, add
 
     (smart-tabs-advice cperl-indent-line cperl-indent-level)
 
+[:Python]
 === Python ===
 
 For <tt>[PythonMode python.el]</tt>, add

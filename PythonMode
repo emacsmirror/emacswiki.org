@@ -535,6 +535,8 @@ xpdb is a fork of the standard library pdb, available here: https://code.launchp
 * More on completion: http://www.rwdev.eu/articles/emacspyeng
 * Yasnippet: http://code.google.com/p/yasnippet/ for Python, Django, django-templates snippets
 
+Note: In regard to Yasnippet, see [http://groups.google.com/group/smart-snippet/browse_thread/thread/d1eae085ceebf839 this post] if using Dave Love's python.el
+
 : For ##python-mode.el## or ##python.el##:
 
 * PyIndent

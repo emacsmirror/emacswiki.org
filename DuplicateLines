@@ -117,6 +117,21 @@ the Unix uniq command.
     (interactive)
     (uniquify-region-lines (point-min) (point-max)))
 
+It is important to note that functions which find duplicate lines don't always sort lines before looking for dups as this may or may not be what one expects or desires of a particular function. Where the lines of a file are presorted it can be convenient to use something like this:
+
+  (defun find-duplicate-lines (&optional insertp interp)
+    (interacitve "i\np")
+    (let ((max-pon (line-number-at-pos (point-max)))
+	  (gather-dups))
+      (while (< (line-number-at-pos) max-pon) (= (forward-line) 0)
+	     (let ((this-line (buffer-substring-no-properties (line-beginning-position 1) (line-end-position 1)))
+		   (next-line (buffer-substring-no-properties (line-beginning-position 2) (line-end-position 2))))
+	       (when  (equal this-line next-line)  (setq gather-dups (cons this-line gather-dups)))))
+      (if (or insertp interp)
+	  (save-excursion (new-line) (princ gather-dups (current-buffer)))
+	gather-dups)))
+
+This function, while inefficient (note cons in tail of while form) is quite handy for locating duplicates _before_ removing them, i.e. situations of type: `uniquify-maybe'. Extend `find-duplicate-lines' by comparing its result list with one or more of the list comparison procedures `set-difference', `union', `intersection', etc. from the CL package (require 'cl).
 
 ----
 CategoryEditing

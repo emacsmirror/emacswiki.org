@@ -22,43 +22,47 @@
 ;; Quickly switch between projects and perform operations on a
 ;; per-project basis. A 'project' in this sense is a directory of
 ;; related files, usually a directory of source files. Projects are
-;; defined in pure elisp with the 'project-def' function. See the
-;; documentation of the following project operation functions for
-;; more details.
+;; defined in pure elisp with the 'project-def' function. No
+;; mk-project-specific files are required in the project's base
+;; directory.
 ;;
-;; project-load        - set project variables, open files named in the
-;;                       open-files-cache, run startup hook
-;; project-unload      - save open files names to the open-files-cache,
-;;                       run shutdown hook, unset project variables
-;; project-status      - print values of project variables
-;; project-close-files - close all files in this project
-;; project-compile     - run the compile command
-;; project-grep        - run find-grep from the project's basedir
-;; project-ack         - run ack from the project's basedir
-;; project-find-file   - quickly open a file in basedir by regex
-;; project-index       - re-index the project files
-;; project-home        - cd to the project's basedir
-;; project-tags        - regenerate the project's TAGS file
-;; project-dired       - open 'dired' on the project's basedir
+;; The following functions constitute the public API of this file. See
+;; the doc-strings of each function for more details.
+;;
+;; project-load           - set project variables, open files named in the
+;;                          open-files-cache, run startup hook
+;; project-unload         - save open files names to the open-files-cache,
+;;                          run shutdown hook, unset project variables
+;; project-status         - print values of project variables
+;; project-close-files    - close all files in this project
+;; project-compile        - run the compile command
+;; project-grep           - run find-grep from the project's basedir
+;; project-ack            - run ack from the project's basedir
+;; project-find-file      - quickly open a file in basedir by regex
+;; project-find-file-ido  - quickly open a file in basedir using 'ido'
+;; project-index          - re-index the project files
+;; project-home           - cd to the project's basedir
+;; project-tags           - regenerate the project's TAGS file
+;; project-dired          - open 'dired' on the project's basedir
 
-;; Example use:
+;; Example configuration:
 ;;
 ;; (require 'mk-project)
 ;;
-;; (project-def "my-proj"
-;;       '((basedir          "/home/me/my-proj/")
+;; (project-def "my-java-project"
+;;       '((basedir          "/home/me/my-java-project/")
 ;;         (src-patterns     ("*.java" "*.jsp"))
 ;;         (ignore-patterns  ("*.class" "*.wsdl"))
-;;         (tags-file        "/home/me/my-proj/TAGS")
-;;         (file-list-cache  "/home/me/.my-proj-files")
-;;         (open-files-cache "/home/me/.my-proj-open-files")
+;;         (tags-file        "/home/me/.my-java-project/TAGS")
+;;         (file-list-cache  "/home/me/.my-java-project/files")
+;;         (open-files-cache "/home/me/.my-java-project/open-files")
 ;;         (vcs              git)
 ;;         (compile-cmd      "ant")
 ;;         (ack-args         "--java")
-;;         (startup-hook     myproj-startup-hook)
+;;         (startup-hook     my-java-project-startup)
 ;;         (shutdown-hook    nil)))
 ;;
-;; (defun myproj-startup-hook ()
+;; (defun my-java-project-startup ()
 ;;   (setq c-basic-offset 3))
 ;;
 ;; (global-set-key (kbd "C-c p c") 'project-compile)
@@ -66,7 +70,7 @@
 ;; (global-set-key (kbd "C-c p a") 'project-ack)
 ;; (global-set-key (kbd "C-c p l") 'project-load)
 ;; (global-set-key (kbd "C-c p u") 'project-unload)
-;; (global-set-key (kbd "C-c p f") 'project-find-file)
+;; (global-set-key (kbd "C-c p f") 'project-find-file) ; or project-find-file-ido
 ;; (global-set-key (kbd "C-c p i") 'project-index)
 ;; (global-set-key (kbd "C-c p s") 'project-status)
 ;; (global-set-key (kbd "C-c p h") 'project-home)
@@ -85,7 +89,7 @@
 (require 'thingatpt)
 (require 'cl)
 
-(defvar mk-proj-version "1.1"
+(defvar mk-proj-version "1.2"
   "As tagged at http://github.com/mattkeller/mk-project/tree/master")
 
 ;; ---------------------------------------------------------------------
@@ -176,6 +180,11 @@ paths when greping or indexing the project.")
   :type 'boolean
   :group 'mk-project)
 
+(defcustom mk-proj-use-ido-selection nil
+  "If ido-mode is available, use ido selection where appropriate."
+  :type 'boolean
+  :group 'mk-project)
+
 ;; ---------------------------------------------------------------------
 ;; Utils
 ;; ---------------------------------------------------------------------
@@ -200,6 +209,14 @@ paths when greping or indexing the project.")
 
 (defun mk-proj-has-univ-arg ()
   (eql (prefix-numeric-value current-prefix-arg) 4))
+
+(defun mk-proj-names ()
+  (let ((names nil))
+    (maphash (lambda (k v) (add-to-list 'names k)) mk-proj-list)
+    names))
+
+(defun mk-proj-use-ido ()
+  (and (boundp 'ido-mode) mk-proj-use-ido-selection))
 
 ;; ---------------------------------------------------------------------
 ;; Project Configuration
@@ -256,7 +273,9 @@ paths when greping or indexing the project.")
   (interactive)
   (catch 'project-load
     (let ((oldname mk-proj-name)
-          (name (completing-read "Project Name: " mk-proj-list)))
+          (name (if (mk-proj-use-ido)
+                    (ido-completing-read "Project Name (ido): " (mk-proj-names))
+                  (completing-read "Project Name: " (mk-proj-names)))))
       (unless (string= oldname name)
         (project-unload))
       (let ((proj-config (mk-proj-find-config name)))
@@ -573,9 +592,10 @@ With C-u prefix, start ack from the current directory."
 (defun* project-find-file (regex)
   "Find file in the current project matching the given regex.
 
-The file list in buffer *file-index* is scanned for regex matches. If only
-one match is found, the file is opened automatically. If more than one match
-is found, this prompts for completion. See also: project-index."
+The files listed in buffer *file-index* are scanned for regex
+matches. If only one match is found, the file is opened
+automatically. If more than one match is found, prompt for
+completion. See also: `project-index', `project-find-file-ido'."
   (interactive "sFind file in project matching: ")
   (mk-proj-assert-proj)
   (unless (get-buffer mk-proj-fib-name)
@@ -598,9 +618,32 @@ is found, this prompts for completion. See also: project-index."
          ((= 1 match-cnt )
           (find-file (car matches)))
          (t
-          (let ((file (completing-read "Multiple matches, pick one: " matches)))
+          (let ((file (if (mk-proj-use-ido)
+                          (ido-completing-read "Multiple matches, pick one (ido): " matches)
+                        (completing-read "Multiple matches, pick one: " matches))))
             (when file
               (find-file file)))))))))
+
+(defun project-find-file-ido ()
+  "Find file in the current project using 'ido'.
+
+Choose a file to open from among the files listed in buffer
+*file-index*.  The ordinary 'ido' methods allow advanced
+selection of the file. See also: `project-index',
+`project-find-file'."
+  (interactive)
+  (flet ((buffer-lines-to-list (b)
+            (let ((file-lines '()))
+              (with-current-buffer b
+                (goto-char (point-min))
+                (dotimes (i (count-lines (point-min) (point-max)))
+                  (add-to-list 'file-lines (buffer-substring (line-beginning-position) (line-end-position)))
+                  (forward-line)))
+              file-lines)))
+    (let ((file (ido-completing-read "Find file in project matching (ido): "
+                                     (buffer-lines-to-list mk-proj-fib-name))))
+      (when file
+        (find-file file)))))
 
 (provide 'mk-project)
 

@@ -226,9 +226,13 @@ Use the following to use imenu with ido completion instead of the default one.
         (addsymbols imenu--index-alist))
       (let* ((selected-symbol (ido-completing-read "Symbol? " symbol-names))
              (position (cdr (assoc selected-symbol name-and-pos))))
-        (goto-char position))))
- 
--- shjk
+        (cond
+         ((overlayp position)
+          (goto-char (overlay-start position)))
+         (t
+          (goto-char position))))))
+
+-- shjk (updated by MattKeller to handle overlays as 'positions')
 
 == Discussion ==
 

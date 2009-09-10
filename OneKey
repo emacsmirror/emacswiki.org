@@ -176,3 +176,6 @@ OneKey show help window for remember:
 :: Wow, i have never heard it, and looks have same design purpose for remember keystroke.
 :: At the beginning, i just want write a mode to help me remember keystroke and *free* my handy keystrokes for other extensions.
 :: So i write OneKey, just for lazy.  -- AndyStewart
+
+[new]
+ I have a problem when assigning, for example, `mark-paragraph' function to a key, the paragraph is not marked. While using `M-x mark-paragraph' works! Any idea what is wrong?

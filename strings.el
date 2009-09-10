@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 17:09:08 1996
 ;; Version: 21.0
-;; Last-Updated: Sat Aug  1 15:42:41 2009 (-0700)
+;; Last-Updated: Wed Sep  9 13:02:44 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 475
+;;     Update #: 481
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/strings.el
 ;; Keywords: internal, strings, text
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -64,6 +64,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2009/09/09 dadams
+;;     (non-)empty-name-p: Got rid of old-style backquote syntax.
 ;; 2008/05/12 dadams
 ;;     read-buffer: Don't use (buffer-alist t) - don't exclude hidden buffers.
 ;; 2007/04/20 dadams
@@ -147,12 +149,12 @@ M and N are the numbers."
 ;;;###autoload
 (defmacro empty-name-p (name)
   "Nil if NAME is nil or \"\", else t."
-  (`(or (null (, name))(string= "" (, name)))))
+  `(or (null ,name) (string= "" ,name)))
 
 ;;;###autoload
-(defmacro non-empty-name-p (name)       ; Error if NAME neither nil nor string.
+(defmacro non-empty-name-p (name)       ; Error if NAME is neither nil nor a string.
   "NAME if non-nil and not \"\", else nil."
-  (`(and (, name) (not (string= "" (, name))) (, name))))
+  `(and ,name (not (string= "" ,name)) ,name))
 
 ;; Stolen from `diary.el' (`diary-ordinal-suffix').
 ;;;###autoload

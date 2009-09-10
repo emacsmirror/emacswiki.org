@@ -674,8 +674,8 @@ Icicles really appeals to me because I've never seen a more sophisticated intera
 
 
 
-[:LatestEntry]
 
+[:LatestEntry]
 
 <pre>
 
@@ -728,12 +728,6 @@ I see. No, that wouldn't be feasible. Once the completion is accepted, completio
 My suggestion is to try the default behavior a little more. If you still don't like it, try it with the delay. If neither suits you, you could look into some other symbol-completion mechanism. The wiki has some: [[CategoryCompletion#BufferTextCompletion]]
 
 '''Icicles''' is mainly for minibuffer completion, not completion of text in buffers. `icicle-lisp-complete-symbol' (`M-TAB') is one of the exceptions. -- DrewAdams
-
-
-
-----
-
-
 
 
 

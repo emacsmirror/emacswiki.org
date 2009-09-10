@@ -41,3 +41,27 @@ Below are my edits:
 }}}
 
 -- StewartBryson
+
+----
+
+Here is a patch for wikipedia-mode that will make it prefer visual-line-mode over the deprecated longlines-mode in Emacs 23. -- UlrichMüller
+
+<pre>
+--- wikipedia-mode.el~
++++ wikipedia-mode.el
+@@ -945,9 +945,11 @@
+  ;;{{{ longlines-mode
+ 
+ (defun wikipedia-turn-on-longlines ()	;Version:1.58
+-  "Turn on longlines-mode if it is defined."
+-  (if (functionp 'longlines-mode)
+-      (longlines-mode 1)))
++  "Turn on visual-line-mode or longlines-mode if it is defined."
++  (cond ((functionp 'visual-line-mode)
++	 (visual-line-mode 1))
++	((functionp 'longlines-mode)
++	 (longlines-mode 1))))
+ (add-hook 'wikipedia-mode-hook 'wikipedia-turn-on-longlines)
+ (set (make-local-variable 'auto-fill-inhibit-regexp) "^[ *#:|;]")
+ 
+</pre>

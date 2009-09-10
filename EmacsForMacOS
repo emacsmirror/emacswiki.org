@@ -1,8 +1,4 @@
-'''Mac OS X comes with a terminal-only version of Emacs''' (21.2 on OS X 10.3, 22.1 on OS X 10.5) which is capable of async and network connections.
-
-'''Emacs 23 natively supports OS X.''' It can run as a Cocoa app that fully supports the OS X environment.
-
-MacOSTweaks has various small ways of fixing or improving the use of Emacs on Mac OS (9 and X). -- JesseWeinstein
+Emacs 23 natively supports OS X as a Cocoa application.  See below for available variants. Mac OS X comes with a terminal-only version of Emacs (21.2 on OS X 10.3, 22.1 on OS X 10.5). 
 
 == OS X Binaries ==
 
@@ -19,23 +15,23 @@ We should try pruning this list, giving clear recommendations, if at all possibl
 
 See http://www.hoenn.net/blog/index.php?/archives/76-Die-Emacssituation-unter-OS-X.html  for a commented list of ports (in german).
 
-=== Binary CVS builds ===
-These builds are based on a CVS version of GNU Emacs and do not contain any additional packages or patches. Popular Mac keyboard shortcuts are available, though (e.g. Command-O for opening a file using a file picker); these are mapped to the Super modifier.
-* EmacsApp -- Initially an independent GNU Emacs port to the OpenStep APIs, as implemented by Cocoa on OS X, with a more concerted attempt to follow OS X desktop and UI conventions, this code has been integrated into GNU Emacs CVS (as of July 2008) and serves as the foundation for common Mac builds. For instructions on building from source, see <tt>nextstep/INSTALL</tt> in the emacs source tree. Binary release candidate builds from the  [[http://emacs-app.sourceforge.net/ Emacs.app homepage]] are not directly relevant to Mac end users, because they have been superseded by more recent builds.
 
-* http://emacsformacosx.com/ -- Emacs releases (including 23.1), Pretests and Nightly builds of Cocoa Emacs from CVS
-
-* http://atomized.org/wp-content/cocoa-emacs-nightly/ -- Nightly builds of Cocoa Emacs 23 from CVS, provided by IanEure
-
-=== Custom distributions ===
+=== Full distributions ===
 Custom distributions contain startup routines and tweaks to make Emacs' UI behavior more "Mac-like". In addition to that, they typically include recent versions of popular packages.
-* http://aquamacs.org -- AquamacsEmacs is a convenient distribution based on GNU Emacs 22.3. Aquamacs  comes preconfigured with a large number for packages and differs from other Emacsen in that it feels more like an OS X application. OS X standard keyboard shortcuts are supported, files open in separate windows, nice fonts are available, and it has a convenient drag&drop installer. Hundreds of file types are supported (C, Java, HTML, Python, Ruby, AppleScript, XML, R (Splus), LaTeX (AUCTeX) etc.). All these extra modes come included and readily configured -- no InitFile hacking. Spell checking is easy to install (e.g., CocoAspell) and asian input methods are also supplied, and options to deal with the missing Meta key on Mac keyboards. A Universal App for PPC and Intel Macs that works well on Panther, Tiger and Leopard. Recommended for Mac users who want an Emacs that is tailored to the Mac.
+* http://aquamacs.org -- AquamacsEmacs is a convenient distribution based on GNU Emacs 22.3 and, in a preview version, GNU Emacs 23.1. Aquamacs  comes preconfigured with a large number for packages and differs from other Emacsen in that it feels more like an OS X application. OS X standard keyboard shortcuts are supported, files open in separate windows or tabs, nice fonts are available, and it has a convenient drag&drop installer. Hundreds of file types are supported (C, Java, HTML, Python, Ruby, AppleScript, XML, R (Splus), LaTeX (AUCTeX) etc.). All these extra modes come included and readily configured -- no InitFile hacking. Spell checking is easy to install (e.g., CocoAspell) and asian input methods are also supplied, and options to deal with the missing Meta key on Mac keyboards. A Universal App for PPC and Intel Macs that works well on Panther, Tiger and Leopard. Recommended for Mac users who want an Emacs that is tailored to the Mac.
 
 * CarbonEmacsPackage -- Carbon Emacs Package is a Mac-friendly distribution based on GNU Emacs 22.3.  Tons of extra packages (including AUCTeX, ColorTheme, EmacsMuse, EmacsSession, EmacsSpeaksStatistics, HaskellMode, HowmMode, [[Mew]], [NxhtmlMode nXhtml], PhpMode, PoMode, PsgmlMode, PythonMode, RubyMode etc.) come with it.  Several Mac-friendly features are added; window-opacity, OSX keyboard shortcuts (MacKeyMode), cocoa-stlye print dialog (MacPrintMode) and support for filenames with accent signs.  Actively developed by SeijiZenitani; recommended by AlexSchroeder and LuisFernandes.  A Universal Binary application is available Leopard. There are builds for older Mac OS variants, but nothing current.
 
 * http://members.shaw.ca/akochoi-xemacs/ -- XEmacs 21.5.18 *beta*, AndrewChoi.  Also available via !DarwinPorts.  Via patches from his home page, you can fix a number of issues, and the patches apply to XEmacs 21.5.22 (See AkochoiXEmacsGplCompliance).
 
-* NSPlatformSupport -- Not a distribution but a lisp package providing some moderate additional platform compliance for the Cocoa-based CVS build.
+
+=== Binary CVS builds ===
+These builds are based on a CVS version of GNU Emacs and do not contain any additional packages or patches. Popular Mac keyboard shortcuts are available, though (e.g. Command-O for opening a file using a file picker); these are mapped to the Super modifier.
+* EmacsApp -- Initially an independent GNU Emacs port to the OpenStep APIs, as implemented by Cocoa on OS X, with a more concerted attempt to follow OS X desktop and UI conventions, this code has been integrated into GNU Emacs CVS (as of July 2008) and serves as the foundation for common Mac builds. For instructions on building from source, see <tt>nextstep/INSTALL</tt> in the emacs source tree. Binary release candidate builds from the  [[http://emacs-app.sourceforge.net/ Emacs.app homepage]] are not directly relevant to Mac end users, because they have been superseded by more recent builds.  
+
+* http://emacsformacosx.com/ -- Emacs releases (including 23.1), Pretests and Nightly builds of Cocoa Emacs from CVS.  NSPlatformSupport is a lisp package providing some moderate additional platform compliance for the Cocoa-based CVS build. MacOSTweaks has various small ways of fixing or improving the use of Emacs on Mac OS (9 and X). 
+
+* http://atomized.org/wp-content/cocoa-emacs-nightly/ -- Nightly builds of Cocoa Emacs 23 from CVS, provided by IanEure
 
 
 == OS 9 ==

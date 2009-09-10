@@ -419,7 +419,11 @@ for this which comes with Emacs.
 
 should do the trick unless it requires authentification.
 
-FIXME: What to do if it does require authentification?
+If you are using authentication, you will need to use the following two variables as defined on this reference page: http://www.gnu.org/software/emacs/manual/html_node/smtpmail/index.html (Look in the 'Authentication' node).
+
+  (setq smtpmail-auth-credentials '(("hostname" "port" "username" "password")))
+
+  (setq smtpmail-starttls-credentials '(("hostname" "port" nil nil)))
 
 
 == Using Gnus ==
