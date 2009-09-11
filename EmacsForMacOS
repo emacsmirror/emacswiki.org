@@ -20,7 +20,7 @@ See http://www.hoenn.net/blog/index.php?/archives/76-Die-Emacssituation-unter-OS
 Custom distributions contain startup routines and tweaks to make Emacs' UI behavior more "Mac-like". In addition to that, they typically include recent versions of popular packages.
 * http://aquamacs.org -- AquamacsEmacs is a convenient distribution based on GNU Emacs 22.3 and, in a preview version, GNU Emacs 23.1. Aquamacs  comes preconfigured with a large number for packages and differs from other Emacsen in that it feels more like an OS X application. OS X standard keyboard shortcuts are supported, files open in separate windows or tabs, nice fonts are available, and it has a convenient drag&drop installer. Hundreds of file types are supported (C, Java, HTML, Python, Ruby, AppleScript, XML, R (Splus), LaTeX (AUCTeX) etc.). All these extra modes come included and readily configured -- no InitFile hacking. Spell checking is easy to install (e.g., CocoAspell) and asian input methods are also supplied, and options to deal with the missing Meta key on Mac keyboards. A Universal App for PPC and Intel Macs that works well on Panther, Tiger and Leopard. Recommended for Mac users who want an Emacs that is tailored to the Mac.
 
-* CarbonEmacsPackage -- Carbon Emacs Package is a Mac-friendly distribution based on GNU Emacs 22.3.  Tons of extra packages (including AUCTeX, ColorTheme, EmacsMuse, EmacsSession, EmacsSpeaksStatistics, HaskellMode, HowmMode, [[Mew]], [NxhtmlMode nXhtml], PhpMode, PoMode, PsgmlMode, PythonMode, RubyMode etc.) come with it.  Several Mac-friendly features are added; window-opacity, OSX keyboard shortcuts (MacKeyMode), cocoa-stlye print dialog (MacPrintMode) and support for filenames with accent signs.  Actively developed by SeijiZenitani; recommended by AlexSchroeder and LuisFernandes.  A Universal Binary application is available Leopard. There are builds for older Mac OS variants, but nothing current.
+* CarbonEmacsPackage -- Carbon Emacs Package is a Mac-friendly distribution based on GNU Emacs 22.3.  Tons of extra packages (including AUCTeX, ColorTheme, EmacsMuse, EmacsSession, EmacsSpeaksStatistics, HaskellMode, HowmMode, [[Mew]], [NxhtmlMode nXhtml], PhpMode, PoMode, PsgmlMode, PythonMode, RubyMode etc.) come with it.  Several Mac-friendly features are added; window-opacity, OSX keyboard shortcuts (MacKeyMode), cocoa-stlye print dialog (MacPrintMode) and support for filenames with accent signs.  Actively developed by SeijiZenitani; recommended by LuisFernandes.  A Universal Binary application is available Leopard. There are builds for older Mac OS variants, but nothing current.
 
 * http://members.shaw.ca/akochoi-xemacs/ -- XEmacs 21.5.18 *beta*, AndrewChoi.  Also available via !DarwinPorts.  Via patches from his home page, you can fix a number of issues, and the patches apply to XEmacs 21.5.22 (See AkochoiXEmacsGplCompliance).
 
@@ -122,10 +122,10 @@ The current option for OS X users appears to be building the nextstep/Cocoa vers
 
 Following those steps seems to have worked fine for me. Can anyone confirm?
 
-(Confirmed - BenMos - 15Mar2009 - Leopard 10.5.6)
-(Confirmed - ThomasKappler - February 2009 - Tiger 10.4.11)
-(Confirmed - EdwinBenavides - May 15, 2009 - Leopard 10.5.7)
-
+: (Confirmed - BenMos - 15Mar2009 - Leopard 10.5.6)
+: (Confirmed - ThomasKappler - February 2009 - Tiger 10.4.11)
+: (Confirmed - EdwinBenavides - May 15, 2009 - Leopard 10.5.7)
+: AlexSchroeder recommends building from source if you have 10.4 or better
 
 == Encoding for Terminal.app on OS X  ==
 

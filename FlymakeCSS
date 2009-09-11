@@ -39,3 +39,30 @@ If it works, add this to a suitable place loaded by emacs:
 
 ----
 FlyMake
+
+----
+
+Thanks for this concise and complete tutorial on *installing the W3 CSS Validator.*  It took me about 10 minutes to install it, following these instructions :)
+
+One note though: on *Windows,* I had trouble with
+
+   (defconst css-validator "java -jar ~/path/to/css-validator.jar")
+
+It appears that perhaps Java does not like all the arguments being passed as a single string[https://www.projectcaroline.net/main/index.php?q=node/208].  Maybe this is a Windows-specific thing?  
+
+Anyway I wound up leaving out the line above.  Instead, I changed the last line of the first stanza of the config as follows:
+
+    (defun flymake-css-init ()
+      (let* ((temp-file   (flymake-init-create-temp-buffer-copy
+                           'flymake-create-temp-inplace))
+             (local-file  (file-relative-name
+                           temp-file
+                           (file-name-directory buffer-file-name))))
+        ;; Edit this line
+        (list "java" (list "-jar" "c:/path/to/css-validator.jar" "-output" "gnu" (concat "file:" local-file)))))
+
+Otherwise everything worked perfectly, thanks again.  &mdash;[[NoahSussman]]
+
+[new:NoahSussman:2009-09-11 04:07 UTC]
+
+

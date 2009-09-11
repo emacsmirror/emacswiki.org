@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Sep  5 18:04:30 2009 (-0700)
+;; Last-Updated: Thu Sep 10 17:24:58 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 3240
+;;     Update #: 3243
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -819,6 +819,25 @@ Otherwise, an abbrev need match only a prefix of the command name."
   :type 'boolean :group 'Icicles-Matching)
 
 ;;;###autoload
+(defcustom icicle-complete-key-anyway-flag nil
+  "*Non-nil means bind `S-TAB' for key completion even if already
+bound.  If nil, then each of the keys in `icicle-key-complete-keys' is
+bound to `icicle-complete-keys' in each keymap of
+`icicle-keymaps-for-key-completion' only if `S-TAB' is not already
+bound in the keymap.
+
+Note: the keys in `icicle-key-complete-keys' are always bound to
+`icicle-complete-keys' in `icicle-mode-map'.  This option affects only
+the binding of those keys in `icicle-keymaps-for-key-completion'."
+  :type 'boolean :group 'Icicles-Key-Completion :group 'Icicles-Key-Bindings)
+
+;;;###autoload
+(defcustom icicle-complete-keys-self-insert-flag nil
+  "*Non-nil means `icicle-complete-keys' includes self-inserting keys.
+That means keys bound to `self-insert-command'."
+  :type 'boolean :group 'Icicles-Key-Completion)
+
+;;;###autoload
 (defcustom icicle-completing-read+insert-keys '([(control meta shift ?c)])
   "*Key sequences to invoke `icicle-completing-read+insert'.
 A list of values that each has the same form as a key-sequence
@@ -828,12 +847,6 @@ different keyboards.
 Such a key has no effect unless
 `icicle-completing-read+insert-candidates' is non-nil."
   :type '(repeat sexp) :group 'Icicles-Key-Bindings)
-
-;;;###autoload
-(defcustom icicle-complete-keys-self-insert-flag nil
-  "*Non-nil means `icicle-complete-keys' includes self-inserting keys.
-That means keys bound to `self-insert-command'."
-  :type 'boolean :group 'Icicles-Key-Completion)
 
 ;;;###autoload
 (defcustom icicle-completion-history-max-length (if icicle-C-l-uses-completion-flag 1000 100)
@@ -2423,19 +2436,6 @@ COMPARISON-FN is a function that compares two strings, returning
 The candidates are highlighted in buffer *Completions* using face
 `icicle-special-candidate'."
   :type '(choice (const :tag "None" nil) regexp) :group 'Icicles-Completions-Display)
-
-;;;###autoload
-(defcustom icicle-complete-key-anyway-flag nil
-  "*Non-nil means bind `S-TAB' for key completion even if already
-bound.  If nil, then each of the keys in `icicle-key-complete-keys' is
-bound to `icicle-complete-keys' in each keymap of
-`icicle-keymaps-for-key-completion' only if `S-TAB' is not already
-bound in the keymap.
-
-Note: the keys in `icicle-key-complete-keys' are always bound to
-`icicle-complete-keys' in `icicle-mode-map'.  This option affects only
-the binding of those keys in `icicle-keymaps-for-key-completion'."
-  :type 'boolean :group 'Icicles-Key-Completion :group 'Icicles-Key-Bindings)
 
 ;;;###autoload
 (defcustom icicle-TAB-shows-candidates-flag t

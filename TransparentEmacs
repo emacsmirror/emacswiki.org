@@ -34,6 +34,8 @@ I'd just like to add my ditto to the above error (Feb 20, 2009 ZacharyHamm)
 
 Does anyone know if this is still in development, or perhaps has been merged into EmacsFromCVS?
 
+The correct URL seems to be  http://arch.savannah.gnu.org/archives/emacs
+
 -----
 
 In order to enable transparent emacs, you have to add these lines in your InitFile:

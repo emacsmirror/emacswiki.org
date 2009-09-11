@@ -100,6 +100,13 @@ epg-decrypt-file: Wrong type argument: listp, exit
 '
 
  Any thoughts or comments would be much appreciated!!   
+
+== Documentation ==
+
+Being difficult to find it online I decided to extract and publish the EasyPG Assistant User's Manual found within the package of Emacs 23.1.
+
+You can find the manual here: http://virgo977virgo.blogspot.com/2009/09/easypg-assistant-users-manual-from.html
+
 ----
 CategoryCryptography
 CategoryInterface

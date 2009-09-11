@@ -163,6 +163,8 @@ library '''<tt>[[icicles.el]]</tt>''':
           (define-key map [f11] 'previous-history-element)
           (define-key map [f12] 'next-history-element))))
 
+
+
 '''Icicles''' does not change the standard Emacs
 minibuffer bindings for `M-p' and `M-n', so they are still
 `previous-history-element' and `next-history-element'.  You can

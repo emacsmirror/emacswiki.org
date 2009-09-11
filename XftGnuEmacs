@@ -31,6 +31,7 @@ See also EmacsCvsAndDebian
 For 2008 and 2009 releases of Ubuntu (Hardy Heron 8.04, Intrepid Ibex 8,10, Jaunty Jackalope 9.04) install the emacs-snapshot package:
 
   $ sudo apt-get install emacs-snapshot-gtk
+  $ echo "Emacs.FontBackend: xft" >> ~/.Xresources
   $ echo "Emacs.font: Monospace-10" >> ~/.Xresources
 
 From http://ubuntuforums.org/showpost.php?p=4737273&postcount=100

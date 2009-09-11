@@ -49,6 +49,19 @@ less important.
 
 I'm neither an EmacsLisp nor CommonLisp user or fan, just
 curious why.
+
+Common Lisp programmers aren't really interested in using
+Emacs Lisp programs such as Gnus or EMMS in a Common Lisp
+Emacs such as Climacs. That's because Emacs Lisp programs
+are generally inferior to C or Common Lisp programs, due
+Emacs' poor support for GUI programming, lack of support
+for C FFI and poor IO support. Just see how long Gnus
+takes to load a news group with 40k messages.
+
+Common Lisp Emacsen don't plan to incorporate
+non-text-editing-related functionality. This functionality
+is best implemented as other CLIM programs, of course
+running in the same image.
 [new]
 From <http://www.gnu.org/gnu/rms-lisp.html>:
 

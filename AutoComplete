@@ -189,6 +189,9 @@ AutoComplete stops working as soon as I enable Flymake. I'm using the developmen
 [new] 
 If I'm editing [[OrgMode]] files, I can start AutoComplete (using \M-/ and not auto start), but if I don't want to make any of the completions, ESC-ESC-ESC doesn't kill the menu. I don't see this problem in other emacs files. Any debugging hints?
 ----
+[new]
+AutoComplete version 0.3.0 alpha doesn't work with YASnippet 0.6.1b. Only solution I've found: disable yasnippet as source for completion.
+----
 CategoryCompletion
 
 

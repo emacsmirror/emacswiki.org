@@ -134,7 +134,8 @@ The screenshots above are all at the top level (in buffer `##*Buffer List*##'). 
 
 [[image:IciclesKeyCompletionsDotDot]]
 
-This feature means that you can navigate the key-binding hierachy just as you would navigate the file-system hierarchy (using, say, `C-x C-f') or the [[menu bar]] hierarchy (using library '''LaCarte'''). (In fact, since menu-bar  bindings are also [[key binding]]s, you can also use key completion to navigate the menu-bar hierarchy -- just complete the [[prefix key]] '''`menu-bar''''!) 
+This feature means that you can navigate the key-binding hierachy just as you would navigate the file-system hierarchy (using, say, `C-x C-f') or the [[menu bar]] hierarchy (using library '''LaCarte'''). (In fact, since menu-bar  bindings are also [[key binding]]s, you can also use key completion to navigate the menu-bar hierarchy -- just complete the [[prefix key]] '''`menu-bar''''!  Start with `S-TAB', choose
+`##menu-bar  =  ...##', then choose a menu, and so on.) 
 
 '''Icicles''' key completion thus provides a general ''browser for key bindings'', which you can also use to learn about keys and their associated comands, without necessarily executing them -- see [[#KeyCommandHelp|Key and Command Help]], below.
 
@@ -387,9 +388,9 @@ Actually, `S-TAB' is not bound to `icicle-complete-keys' in every keymap.  That 
 
 You've seen, above, how you can navigate through prefix keys, starting with the global map. In [[DiredMode|Dired]], for instance, you can use `S-TAB' at the top level, then choose the prefix key `##*##' in `*Completions*', then choose a key, such as `##/##' (to mark directories), in the `##*##' keymap.
 
-However, the act of binding of `S-TAB' in keymaps that are accessible from the global map does not bind it in the `##*##' prefix keymap itself. To handle this case, '''Icicles''' explicitly does for `dired-mode-map' what it does for the global map: it binds `S-TAB' in each (non-menu) keymap that is accessible from `dired-mode-map'.  (Menu maps are always skipped.)  Because of this, you can use `##* S-TAB##' to show all key completions of `##*##'.
+However, the act of binding of `S-TAB' in keymaps that are accessible from the global map does not bind it in the `##*##' prefix keymap itself. To handle this case, '''Icicles''' explicitly does for `dired-mode-map' what it does for the global map: it binds `S-TAB' in each keymap that is accessible from `dired-mode-map'.  Because of this, you can use `##* S-TAB##' to show all key completions of `##*##'.
 
-This treatment of `dired-mode-map' is done by default.  But you might have other keymaps that you would like to treat similarly -- keymaps that '''Icicles''' might be unaware of.  You do this by including them in the [[list]] value of user option '''`<tt>[[Icicles - Customization and General Tips#icicle-keymaps-for-key-completion|icicle-keymaps-for-key-completion]]</tt>''''.  The list entries are EmacsLisp [[symbol]]s that are bound to [[keymap]]s, each of which should define at least one [[prefix key]].  If you add a keymap [[variable]] to this list, then `S-TAB' will be bound so that you can use it to complete the prefix keys defined by that map.
+This treatment of `dired-mode-map' is done by default.  Similarly for a few other keymaps.  But you might have other keymaps that you would like to treat similarly -- keymaps that '''Icicles''' might be unaware of.  You do this by including them in the [[list]] value of user option '''`<tt>[[Icicles - Customization and General Tips#icicle-keymaps-for-key-completion|icicle-keymaps-for-key-completion]]</tt>'''', along with `dired-mode-map' and the others provided in the default value.  The list entries are EmacsLisp [[symbol]]s that are bound to [[keymap]]s, each of which should define at least one [[prefix key]].  If you add a keymap [[variable]] to this list, then `S-TAB' will be bound so that you can use it to complete the prefix keys defined by that map.
 
 Notice that there is no keymap variable that corresponds to prefix key `##*##' in DiredMode.  You need only provide a keymap (variable `dired-mode-map') from which the prefix key is accessible; it is not necessary to also provide a variable that corresponds to the prefix keymap itself.
 

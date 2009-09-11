@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Sep  3 14:10:29 2009 (-0700)
+;; Last-Updated: Thu Sep 10 14:37:09 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 6058
+;;     Update #: 6066
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1636,10 +1636,13 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
   "Bind keys in `icicle-key-complete-keys' to `icicle-complete-keys'.
 Each key in `icicle-complete-keys' is bound in all keymaps accessible
 from keymap MAP."
-  (dolist (key+map (accessible-keymaps map))
+  (dolist (key+map  (accessible-keymaps map))
     (let ((map  (cdr key+map)))
-      (when (and (keymapp map) (not (stringp (car-safe (last map))))) ; Try to exclude menu maps.
-        (dolist (key icicle-key-complete-keys)
+      ;; We could try to exclude menu maps, by testing (not (keymap-prompt map)).
+      ;; But we want to include at least some menu maps - those, such as `facemenu-keymap',
+      ;; that are bound to keyboard keys. (when (and (keymapp map) (not (keymap-prompt map)))...)
+      (when (keymapp map)
+        (dolist (key  icicle-key-complete-keys)
           (when (or icicle-complete-key-anyway-flag (not (lookup-key map key)))
             (condition-case nil (define-key map key 'icicle-complete-keys) (error nil))))))))
 

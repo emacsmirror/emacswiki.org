@@ -1,0 +1,6 @@
+It would be nice if Emacs was better at rendering tables.
+
+An example is w3m rendering html. There is no "rowspan" feature for emacs images, so 
+text flow gets broken when a large image comes along.
+
+TODO describe hacks and posible display engine modifications

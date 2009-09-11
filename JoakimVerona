@@ -34,7 +34,7 @@ I can already sucessfully load .djvu files.
 
 * dired-sequence.el, dired functions to handle sequentialy named files.
 
-* A patch for emacs to call the libmagic library for file info
+* A patch for emacs to call the libmagic library for file info(This seems to get rejected due to complexity)
 
 I've used Emacs since '88, but I only realised the potential of emacs nirvana in '04 when I migrated nearly all
 my applications to emacs, except multimedia. Slow learner I suppose. Recently I've even been interested in moving 
@@ -48,6 +48,7 @@ A TODO of some stuff I should fill in:
 * EmacsSvg
 * EmacsMemoryDebugging
 * EmacsOnFreerunner
+* EmacsTables
 
 [new]
 Welcome to the wiki! CEDET scared me when I started fiddling with it... :) -- AlexSchroeder

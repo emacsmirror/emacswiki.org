@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Sep  5 20:22:07 2009 (-0700)
+;; Last-Updated: Thu Sep 10 17:11:40 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 4348
+;;     Update #: 4351
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2468,6 +2468,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2009/09/10 dadams
+;;     icicle-bind-key-completion-keys-in-keymaps-from: Don't exclude menu maps.
 ;; 2009/09/03 dadams
 ;;     icicle-add-menu-item-to-cmd-history: Wrap in condition-case, since on pre-command-hook.
 ;; 2009/08/18 dadams

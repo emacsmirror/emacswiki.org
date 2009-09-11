@@ -21,6 +21,6 @@ It would be really cool, if the emacs display engine would support the drawing o
 ** Like buffer, window would share some existing fields (most), structurally share some (pointm, last_point, region_showing), and some would become specific to text (start, display_table, base_line_number, base_line_pos).
 ** C functions that now assume a buffer is a text-buffer would check buffer type before proceeding. Fset_window_buffer (I think, looking at window.c) would know to call a non-text buffer’s own display function. -- TomBreton
 
-
+* You can make SVG images with lisp and display them in Emacs buffers. See EmacsSvg.See EmacsXembed for work on embedding other applications inside Emacs -- JoakimVerona
 ----
 MinEmacs

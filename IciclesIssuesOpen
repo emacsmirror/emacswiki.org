@@ -118,6 +118,74 @@ In the latter case, however, you will lose '''Icicles''' completion also for oth
 HTH -- DrewAdams
 
 
+[new:]
+
+My post was deleted :(  Accidentally probably.
+
+There is clear inconsistency between `icicle-comint-dynamic-complete` and `icicle-lisp-complete-symbol`. 
+The latest jumps directly to minibufer even if there is a sole completion or common root. Say I have icy-mod in my buffer, then `icicle-lisp-complete-symbol' will just jump to minibuf for one single letter!! 
+
+My second part of the question was about popping \*completion\* buffer immediately after entering the minibuf (i.e. after second M-Tab). That for obviuous reasons - once one pressed M-TAB twice he defenitelly wants to see available completions.
+
+I really hope the point above could be sorted out. Iciles offers an unique feature for completion and it would be a pity if these minor inconsistencies spoiled the story. -- SpinuVit
+
+Many thanks.
+
+[new:DrewAdams:2009-09-10 16:45 UTC]
+1. No, your post was simply moved here, as the log said -- check RecentChanges to see changes.
+
+2. Yes, `icicle-comint-dynamic-complete' and `icicle-lisp-complete-symbol' act differently.
+
+3. Yes, if you hit `M-TAB' after `icy-mod', completion is done in the minibuffer. Just hist `TAB' or `RET' to complete to `icy-mode'. 
+
+4. There is no pressing of `M-TAB' twice. That simply doesn't exist. In vanilla Emacs, repeating `M-TAB' scrolls `*Completions*'. In '''Icicles''' it does not -- use `C-v' or `M-v' to scroll `*Completions*'.
+
+5. If you are asking why `M-TAB' doesn't show `*Completions*' initially, the answer is that that was the design choice. If you want to always show `*Completions*' initially, customize option `icicle-show-Completions-initially-flag'. You might also consider using <tt>[[icomplete+.el]]</tt>, to see the possible prefix completions in the minibuffer.
+
+6. As I said, you can return to the vanilla Lisp-symbol completion, if you prefer that, by simply customizing ‘icicle-redefine-standard-commands-flag’ to ‘nil’.
+
+HTH -- DrewAdams
+
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+[new:]
+
+[What's written at
+[[Icicles - Customizing Key Bindings#MinibufferBindings]]]
+does not work for  ##(define-key map [(meta space)] 'icicle-narrow-candidates)##. Meta-space is hard-coded somewhere. How can one change it? -- SpinuVit
+
+[new:DrewAdams:2009-09-10 17:16 UTC]
+`M-SPC' is not hard-coded; it is soft-coded. Customize `icicle-word-completion-keys' to something other than `M-SPC'. -- DrewAdams
+
+
+
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+[new:]
+
+Also modifying `C-h a'  to `icicle-apropos`  in `icicle-top-level-key-bindings' does not work :(. Any ideas. Thanks. -- SpinuVit
+
+[new:DrewAdams:2009-09-10 17:16 UTC]
+It works for me. But you need to remap the command that `C-h a' is bound to by default, `apropos-command'. In [[Customize]] , you click `INS' to add an entry, then choose `##Command to remap##' in the `##Value Menu##', then enter ##icicle-apropos## as the command to remap (under `Choice'), enter ##icicle-apropos## as the `Command', and enter ##t## as the value of `Condition'. Then set or save. It works for me. -- DrewAdams
+
 
 
 

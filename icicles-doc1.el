@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Sep  5 20:28:43 2009 (-0700)
+;; Last-Updated: Thu Sep 10 17:28:33 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 24742
+;;     Update #: 24747
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4124,10 +4124,11 @@
 ;;
 ;;  This feature means that you can navigate the key-binding hierachy
 ;;  just as you would navigate the file-system hierarchy (using, say,
-;;  `C-x C-f') or the menu-bar hierarchy (using library
-;;  `lacarte.el').  (In fact, since menu-bar bindings are also key
-;;  bindings, you can also use key completion to navigate the menu-bar
-;;  hierarchy - just complete the prefix key `menu-bar'!)
+;;  `C-x C-f') or the menu-bar hierarchy (using library `lacarte.el').
+;;  (In fact, since menu-bar bindings are also key bindings, you can
+;;  also use key completion to navigate the menu-bar hierarchy - just
+;;  complete the prefix key `menu-bar'!  Start with `S-TAB', choose
+;;  `menu-bar  =  ...', then choose a menu, and so on.)
 ;;
 ;;  Icicles key completion thus provides a general browser for key
 ;;  bindings, which you can also use to learn about keys and their
@@ -4434,19 +4435,19 @@
 ;;  accessible from the global map does not bind it in the `*' prefix
 ;;  keymap itself.  To handle this case, Icicles explicitly does for
 ;;  `dired-mode-map' what it does for the global map: it binds `S-TAB'
-;;  in each (non-menu) keymap that is accessible from
-;;  `dired-mode-map'.  (Menu maps are always skipped.)  Because of
-;;  this, you can use `* S-TAB' to show all key completions of `*'.
+;;  in each keymap that is accessible from `dired-mode-map'.  Because
+;;  of this, you can use `* S-TAB' to show all key completions of `*'.
 ;;
-;;  This treatment of `dired-mode-map' is done by default.  But you
-;;  might have other keymaps that you would like to treat similarly -
-;;  keymaps that Icicles might be unaware of.  You do this by
-;;  including them in the list value of user option
-;;  `icicle-keymaps-for-key-completion'.  The list entries are
-;;  Emacs-Lisp symbols that are bound to keymaps, each of which should
-;;  define at least one prefix key.  If you add a keymap variable to
-;;  this list, then `S-TAB' will be bound so that you can use it to
-;;  complete the prefix keys defined by that map.
+;;  This treatment of `dired-mode-map' is done by default.  Similarly
+;;  for a few other keymaps.  But you might have other keymaps that
+;;  you would like to treat similarly - keymaps that Icicles might be
+;;  unaware of.  You do this by including them in the list value of
+;;  user option `icicle-keymaps-for-key-completion', along with
+;;  `dired-mode-map' and the others provided in the default value.
+;;  The list entries are Emacs-Lisp symbols that are bound to keymaps,
+;;  each of which should define at least one prefix key.  If you add a
+;;  keymap variable to this list, then `S-TAB' will be bound so that
+;;  you can use it to complete the prefix keys defined by that map.
 ;;
 ;;  Notice that there is no keymap variable that corresponds to prefix
 ;;  key `*' in Dired mode.  You need only provide a keymap (variable

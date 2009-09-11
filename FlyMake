@@ -346,4 +346,15 @@ Here are instructions how to make flymake work with HTML:
 
 
 ----
+
+== XSL-Mode ==
+
+Use Flymake's XML syntax-checking on files with a .xsl extension.
+
+    (require 'flymake)
+    (push '(".+\\.xsl$" flymake-xml-init) flymake-allowed-file-name-masks)
+    (add-hook 'xsl-mode-hook
+	      (lambda () (flymake-mode t)))
+
+----
 CategoryProgrammerUtils CategoryModes
