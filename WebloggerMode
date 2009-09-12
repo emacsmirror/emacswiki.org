@@ -109,6 +109,14 @@ That said, I found this package to be quite functional after getting over those 
 
 I also fixed up handling of &lt;!--more--&gt; tag functionality (in WordPress) and added the Keywords header to new entries by default. You can find my changes over at [[weblogger.el]]. Feel free to drop me a line on whether they work for you. :) -- [[Tom Robinson]]
 
+[new]
+Tom, et al, I'm using ;; Version: 1.4.1 ;; Last Modified: <2009-09-09 21:08:45 mah> of weblogger.el.  For the most part, it works great!  I have a Wordpress blog, hosted on Wordpress.com.  Posting entries went fine, but when it came to fetching, weblogger-fetch-entries returned "Invalid Header: `Newsgroup'" in the minibuffer, and did not fetch the post.  I commented out 		    
+                    ;; (list "Newsgroup"
+		    ;; 	  (concat (weblogger-weblog-name-from-id 
+		    ;; 		   (weblogger-weblog-id))))
+
+from (weblogger-entry-setup-headers) but do not have time right now to debug.  It did fix my problem, at least for now :)  Thanks! --ErikIverson
+
 ----
 
 CategoryJournaling

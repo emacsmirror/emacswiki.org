@@ -27,20 +27,18 @@ For some programming languages, e.g., Fortran, using ##reindent-then-newline-and
 
 The following code (inspired by [http://emacs.wordpress.com/2007/01/22/killing-yanking-and-copying-lines/ this post]) accomplishes this beautifully:
 
-    (dolist (command '(yank yank-pop))
-      (eval `(defadvice ,command
-               (after indent-region activate)
-               (if (member major-mode '(emacs-lisp-mode lisp-mode
-                                        clojure-mode    scheme-mode
-                                        haskell-mode    ruby-mode
-                                        rspec-mode      python-mode
-                                        c-mode          c++-mode
-                                        objc-mode       latex-mode
-                                        plain-tex-mode))
-                   (let ((mark-even-if-inactive transient-mark-mode))
-                     (unless current-prefix-arg
-                       (indent-region (region-beginning) (region-end) nil)))))))
-
+     (dolist (command '(yank yank-pop))
+       (eval `(defadvice ,command (after indent-region activate)
+                (and (not current-prefix-arg)
+                     (member major-mode '(emacs-lisp-mode lisp-mode
+                                                          clojure-mode    scheme-mode
+                                                          haskell-mode    ruby-mode
+                                                          rspec-mode      python-mode
+                                                          c-mode          c++-mode
+                                                          objc-mode       latex-mode
+                                                          plain-tex-mode))
+                     (let ((mark-even-if-inactive transient-mark-mode))
+                       (indent-region (region-beginning) (region-end) nil))))))
 
 Just put the above in your ##.emacs## file and enjoy automatic indentation of yanked text in the listed programming modes.
 Fall back to default, non-indented yanking by preceding the yanking commands with C-u. (To add your own modes, check the value of the ##major-mode## variable (##C-h v## or ##M-x describe-variable##) and add it to the list.)

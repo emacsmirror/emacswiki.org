@@ -1,6 +1,6 @@
 EmacSpeak is a complete audio desktop environment for Emacs.
 
-What does this mean? Basicly, Emacspeak implements many modern techniques
+What does this mean? Basically, Emacspeak implements many modern techniques
 to read the content of Emacs buffer via a speech synthesizer to
 a blind or visually impaired user.
 

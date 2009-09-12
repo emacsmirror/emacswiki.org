@@ -26,15 +26,7 @@ You can get development version from:
 
 and some extensions:
 
-* http://www.cx4a.org/pub/auto-complete-cpp.el
-* http://www.cx4a.org/pub/auto-complete-css.el
-* http://www.cx4a.org/pub/auto-complete-emacs-lisp.el
-* http://www.cx4a.org/pub/auto-complete-gtags.el
-* http://www.cx4a.org/pub/auto-complete-python.el
-* http://www.cx4a.org/pub/auto-complete-ruby.el
-* http://www.cx4a.org/pub/auto-complete-semantic.el
-* http://www.cx4a.org/pub/auto-complete-yasnippet.el
-
+* http://www.cx4a.org/pub/auto-complete-config.el
 
 This version may include new features but it is in testing.
 
@@ -191,6 +183,10 @@ If I'm editing [[OrgMode]] files, I can start AutoComplete (using \M-/ and not a
 ----
 [new]
 AutoComplete version 0.3.0 alpha doesn't work with YASnippet 0.6.1b. Only solution I've found: disable yasnippet as source for completion.
+----
+[new]
+Sorry for inconvenience. Could you check update auto-complete.el and auto-complete-config.el?
+--[[Matsuyama]]
 ----
 CategoryCompletion
 
