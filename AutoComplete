@@ -188,6 +188,10 @@ AutoComplete version 0.3.0 alpha doesn't work with YASnippet 0.6.1b. Only soluti
 Sorry for inconvenience. Could you check update auto-complete.el and auto-complete-config.el?
 --[[Matsuyama]]
 ----
+[new]
+I can confirm it still doesnt work(updated version of auto-complete.el and auto-complete-config.el) with latest version of yasnippet. Plus setting it globally doesnt enable it even AC appearing in the mode line.
+--[[GlauberPrado]]
+----
 CategoryCompletion
 
 

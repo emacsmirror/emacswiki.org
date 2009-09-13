@@ -38,8 +38,7 @@ There are several libraries that let you cycle among buffers:
 * ControlTABbufferCycling -- Windows-style `C-TAB' cycling of buffers.
 * MTorus -- Regexp-filtered buffer cycling, with a second dimension: you can have various rings of markers. -- http://www.skamphausen.de/cgi-bin/ska/mtorus  
 * CycleBuffer -- Library Lisp:cycle-buffer.el: cycle among buffers with F11 and F12.
-
-
+* [[iflipb]] -- interactively flip between recently visited buffers
 
 [:SwitchingBetweenTwoBuffers]
 == Switching Between Two Recently Used Buffers ==

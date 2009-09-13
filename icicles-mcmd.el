@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Sep  5 20:21:29 2009 (-0700)
+;; Last-Updated: Sat Sep 12 10:53:42 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 14740
+;;     Update #: 14755
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3685,10 +3685,11 @@ Optional arg CAND non-nil means it is the candidate to act on."
                  last-command                      (if altp
                                                        'icicle-candidate-alt-action
                                                      'icicle-candidate-action))
-           (icicle-next-candidate 1 (if (eq icicle-current-completion-mode 'prefix)
-                                        'icicle-prefix-candidates
-                                      'icicle-apropos-candidates)
-                                  (not (eq icicle-current-completion-mode 'prefix))))
+           (let ((icicle-help-in-mode-line-flag   nil)) ; Avoid delay for candidate help.
+             (icicle-next-candidate 1 (if (eq icicle-current-completion-mode 'prefix)
+                                          'icicle-prefix-candidates
+                                        'icicle-apropos-candidates)
+                                    (not (eq icicle-current-completion-mode 'prefix)))))
 
          ;; NOTE: We no longer save and restore these things here.
          ;; We purposely allow an action function to modify these for subsequent actions.
@@ -3880,10 +3881,11 @@ occurrence."
   (unless (stringp icicle-last-completion-candidate)
     (setq icicle-last-completion-candidate  icicle-current-input
           last-command                      'icicle-delete-candidate-object)
-    (icicle-next-candidate 1 (if (eq icicle-current-completion-mode 'prefix)
-                                 'icicle-prefix-candidates
-                               'icicle-apropos-candidates)
-                           (not (eq icicle-current-completion-mode 'prefix))))
+    (let ((icicle-help-in-mode-line-flag   nil)) ; Avoid delay for candidate help.
+      (icicle-next-candidate 1 (if (eq icicle-current-completion-mode 'prefix)
+                                   'icicle-prefix-candidates
+                                 'icicle-apropos-candidates)
+                             (not (eq icicle-current-completion-mode 'prefix)))))
   (let ((maybe-mct-cand  (cond ((consp minibuffer-completion-table)
                                 (icicle-mctized-display-candidate icicle-last-completion-candidate))
                                ((arrayp minibuffer-completion-table)
@@ -3919,23 +3921,24 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   (interactive "P")
   (when (interactive-p) (icicle-barf-if-outside-minibuffer))
   (when icicle-deletion-action-flag
-    (if allp
-        (if (null icicle-completion-candidates)
-            (message "Nothing to delete - use `S-TAB', `TAB', or a cycle key")
+    (if (null icicle-completion-candidates)
+        (message "Nothing to delete - use `S-TAB', `TAB', or a cycle key")
+      (if allp
           (if (not (let ((icicle-completion-candidates  icicle-completion-candidates))
                      (yes-or-no-p "Are you SURE you want to DELETE ALL of the matching objects? ")))
               (message "OK, nothing deleted")
             (dolist (cand icicle-completion-candidates) (icicle-delete-candidate-object-1 cand t))
-            (icicle-erase-minibuffer)))
-      ;; If no last candidate, then reset to first candidate matching input.
-      (unless (stringp icicle-last-completion-candidate)
-        (setq icicle-last-completion-candidate  icicle-current-input
-              last-command                      'icicle-delete-candidate-object)
-        (icicle-next-candidate 1 (if (eq icicle-current-completion-mode 'prefix)
-                                     'icicle-prefix-candidates
-                                   'icicle-apropos-candidates)
-                               (not (eq icicle-current-completion-mode 'prefix))))
-      (icicle-delete-candidate-object-1 icicle-last-completion-candidate))))
+            (icicle-erase-minibuffer))
+        ;; If no last candidate, then reset to first candidate matching input.
+        (unless (stringp icicle-last-completion-candidate)
+          (setq icicle-last-completion-candidate  icicle-current-input
+                last-command                      'icicle-delete-candidate-object)
+          (let ((icicle-help-in-mode-line-flag   nil)) ; Avoid delay for candidate help.
+            (icicle-next-candidate 1 (if (eq icicle-current-completion-mode 'prefix)
+                                         'icicle-prefix-candidates
+                                       'icicle-apropos-candidates)
+                                   (not (eq icicle-current-completion-mode 'prefix)))))
+        (icicle-delete-candidate-object-1 icicle-last-completion-candidate)))))
 
 (defun icicle-delete-candidate-object-1 (cand &optional no-display-p)
   "Helper function for `icicle-delete-candidate-object'.
@@ -3947,9 +3950,10 @@ Optional arg NO-DISPLAY-P non-nil means don't update *Completions*."
                ((arrayp minibuffer-completion-table) (intern cand))
                (t cand))))
     (save-selected-window
-      (if (functionp icicle-delete-candidate-object)
-          (funcall icicle-delete-candidate-object cand)
-        (icicle-delete-current-candidate-object cand)))
+      (let ((icicle-completion-candidates  icicle-completion-candidates)) ; In case recursive minibuf.
+        (if (functionp icicle-delete-candidate-object)
+            (funcall icicle-delete-candidate-object cand)
+          (icicle-delete-current-candidate-object cand))))
     (icicle-remove-cand-from-lists display-cand maybe-mct-cand nil) ; Use local vars.
     (unless no-display-p (message "Deleted object named: `%s'" display-cand) (sit-for 1.0)))
   (unless no-display-p (icicle-update-and-next))
@@ -4052,7 +4056,8 @@ If any of these conditions is true, remove all occurrences of CAND:
 (defun icicle-update-and-next ()
   "Update *Completions* and make next candidate current.
 If we don't know which candidate number this is, just display."
-  (cond ((and icicle-completion-candidates (cdr icicle-completion-candidates)) ; > 1 candidates left.
+  (cond ((and icicle-completion-candidates (cdr icicle-completion-candidates) ; > 1 candidates left.
+              (not (input-pending-p)))  ; Do nothing if user hit another key.
          (icicle-maybe-sort-and-strip-candidates)
          (message "Displaying completion candidates...")
          (save-selected-window (icicle-display-candidates-in-Completions))
@@ -4134,10 +4139,11 @@ You can use this command only from the minibuffer or *Completions*
           ((not (stringp icicle-last-completion-candidate))
            (setq icicle-last-completion-candidate  icicle-current-input
                  last-command                      'icicle-help-on-candidate)
-           (icicle-next-candidate 1 (if (eq icicle-current-completion-mode 'prefix)
-                                        'icicle-prefix-candidates
-                                      'icicle-apropos-candidates)
-                                  (not (eq icicle-current-completion-mode 'prefix)))))
+           (let ((icicle-help-in-mode-line-flag   nil)) ; Avoid delay for candidate help.
+             (icicle-next-candidate 1 (if (eq icicle-current-completion-mode 'prefix)
+                                          'icicle-prefix-candidates
+                                        'icicle-apropos-candidates)
+                                    (not (eq icicle-current-completion-mode 'prefix))))))
     (cond (;; Use special help function.
            icicle-candidate-help-fn
            (funcall icicle-candidate-help-fn icicle-last-completion-candidate))
@@ -4262,10 +4268,11 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   (unless (stringp icicle-last-completion-candidate)
     (setq icicle-last-completion-candidate  icicle-current-input
           last-command                      'icicle-candidate-action)
-    (icicle-next-candidate 1 (if (eq icicle-current-completion-mode 'prefix)
-                                 'icicle-prefix-candidates
-                               'icicle-apropos-candidates)
-                           (not (eq icicle-current-completion-mode 'prefix))))
+    (let ((icicle-help-in-mode-line-flag   nil)) ; Avoid delay for candidate help.
+      (icicle-next-candidate 1 (if (eq icicle-current-completion-mode 'prefix)
+                                   'icicle-prefix-candidates
+                                 'icicle-apropos-candidates)
+                             (not (eq icicle-current-completion-mode 'prefix)))))
   (let ((icicle-whole-candidate-as-text-prop-p  nil)
         (enable-recursive-minibuffers           t)
         (icicle-saved-completion-candidate      icicle-last-completion-candidate)

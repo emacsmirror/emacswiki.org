@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Sep  4 16:45:54 2009 (-0700)
+;; Last-Updated: Sat Sep 12 10:19:14 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 10859
+;;     Update #: 10880
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2403,6 +2403,8 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
   ;;     ((t always) (setq icicle-incremental-completion-p  'always))
   ;;     ((nil) (setq icicle-incremental-completion-p  nil)))
 
+  ;; $$$$$ (unless (input-pending-p)             ; Do nothing if user hit a key.
+
   ;; Upgrade `icicle-incremental-completion-p' if we are redisplaying, so that completions will
   ;; be updated by `icicle-call-then-update-Completions' when you edit.
   (setq icicle-incremental-completion-p  icicle-incremental-completion-flag)
@@ -2451,42 +2453,43 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
              ;;
              ;; The symbol whose properties are used is the one in the current obarray that is named
              ;; by the string candidate to be transformed.  If there is no such symbol, then no
-             ;; transformation occurs.  Unless `minibuffer-completion-table' is an obarray, the global
-             ;; obarray is used to get the symbol.
+             ;; transformation occurs.  Unless `minibuffer-completion-table' is an obarray, the
+             ;; global obarray is used to get the symbol.
              ;;
              ;; 1. If the symbol has an `icicle-display-string' property, then that property value
              ;;    must be a string (possibly propertized).  We replace the candidate by that string.
              ;;
              ;; 2. If the symbol has an `icicle-special-candidate' property, then we transfer the
-             ;;    property to the candidate string as a set of text properties.  (If the value is not
-             ;;    a plist, and `icicle-special-candidate-regexp' is nil, then just apply face
+             ;;    property to the candidate string as a set of text properties.  (If the value is
+             ;;    not a plist, and `icicle-special-candidate-regexp' is nil, then just apply face
              ;;    `icicle-special-candidate'.)  The effect is similar to using
              ;;    `icicle-special-candidate-regexp', but the completion return value is also
              ;;    affected.
              (when icicle-fancy-cands-internal-p
                (setq icicle-completion-candidates
-                     (mapcar (lambda (cand)
-                               (let* ((symb          (intern-soft
-                                                      cand (and (arrayp minibuffer-completion-table)
-                                                                minibuffer-completion-table)))
-                                      (display-strg  (and symb
-                                                          (stringp (get symb 'icicle-display-string))
-                                                          (get symb 'icicle-display-string)))
-                                      (new-cand      (or display-strg cand))
-                                      (spec-prop     (and symb (get symb 'icicle-special-candidate))))
-                                 ;; Apply `icicle-special-candidate' property's value.
-                                 ;; If the value is a plist, then apply the properties as text props.
-                                 ;; Else (the value is t), apply face `icicle-special-candidate'.
-                                 (when spec-prop
-                                   (setq new-cand  (copy-sequence new-cand))
-                                   (if (consp spec-prop)
-                                       (add-text-properties 0 (length new-cand) spec-prop new-cand)
-                                     (unless icicle-special-candidate-regexp
-                                       (add-text-properties 0 (length new-cand)
-                                                            '(face icicle-special-candidate)
-                                                            new-cand))))
-                                 new-cand))
-                             icicle-completion-candidates)))
+                     (mapcar
+                      (lambda (cand)
+                        (let* ((symb          (intern-soft
+                                               cand (and (arrayp minibuffer-completion-table)
+                                                         minibuffer-completion-table)))
+                               (display-strg  (and symb
+                                                   (stringp (get symb 'icicle-display-string))
+                                                   (get symb 'icicle-display-string)))
+                               (new-cand      (or display-strg cand))
+                               (spec-prop     (and symb (get symb 'icicle-special-candidate))))
+                          ;; Apply `icicle-special-candidate' property's value.
+                          ;; If the value is a plist, then apply the properties as text props.
+                          ;; Else (the value is t), apply face `icicle-special-candidate'.
+                          (when spec-prop
+                            (setq new-cand  (copy-sequence new-cand))
+                            (if (consp spec-prop)
+                                (add-text-properties 0 (length new-cand) spec-prop new-cand)
+                              (unless icicle-special-candidate-regexp
+                                (add-text-properties 0 (length new-cand)
+                                                     '(face icicle-special-candidate)
+                                                     new-cand))))
+                          new-cand))
+                      icicle-completion-candidates)))
              ;; The `condition-case' shouldn't be needed, but it prevents an "End of buffer"
              ;; message from `display-completion-list' on Emacs 22.
              (condition-case nil
@@ -2504,7 +2507,7 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                                              (boundp minibuffer-history-variable)
                                              (symbol-value minibuffer-history-variable)))
                      (case-fold-search
-                      ;; Don't bother with buffer completion and `read-buffer-completion-ignore-case'.
+                      ;; Don't bother with buffer completion, `read-buffer-completion-ignore-case'.
                       (if (and (icicle-file-name-input-p)
                                (boundp 'read-file-name-completion-ignore-case))
                           read-file-name-completion-ignore-case
@@ -2548,7 +2551,7 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                              (add-text-properties (+ beg (match-beginning 0)) (+ beg (match-end 0))
                                                   (cons 'face (list faces)))))))
 
-                     ;; Highlight candidate (`*-historical-candidate') if it has been used previously.
+                     ;; Highlight candidate (`*-historical-candidate') if it was used previously.
                      (when icicle-highlight-historical-candidates-flag
                        (let ((candidate  (icicle-current-completion-in-Completions)))
                          (when dir (setq candidate  (expand-file-name candidate dir)))
@@ -2597,15 +2600,18 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                                         (case icicle-apropos-complete-match-fn
                                           (icicle-scatter-match
                                            (lambda (input bound noerror)
-                                             (re-search-forward (icicle-scatter input) bound noerror)))
+                                             (re-search-forward (icicle-scatter input)
+                                                                bound noerror)))
                                           (icicle-levenshtein-match
                                            (if (= icicle-levenshtein-distance 1)
                                                (lambda (input bound noerror)
                                                  (re-search-forward
-                                                  (icicle-levenshtein-one-regexp input) bound noerror))
+                                                  (icicle-levenshtein-one-regexp input)
+                                                  bound noerror))
                                              're-search-forward))
                                           (otherwise 're-search-forward)))))
-                             (when (funcall fn (icicle-minibuf-input-sans-dir icicle-current-raw-input)
+                             (when (funcall fn
+                                            (icicle-minibuf-input-sans-dir icicle-current-raw-input)
                                             nil t)
                                (setq faces  (cons 'icicle-match-highlight-Completions faces))
                                (put-text-property (match-beginning 0) (point) 'face faces))))))
@@ -2634,11 +2640,12 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                                   (len        (length candidate))
                                   notfirst)
                              (save-match-data
-                               (while (and (string-match join candidate
-                                                         (if (and notfirst (= end (match-beginning 0))
-                                                                  (< end (length candidate)))
-                                                             (1+ end)
-                                                           end))
+                               (while (and (string-match
+                                            join candidate
+                                            (if (and notfirst (= end (match-beginning 0))
+                                                     (< end (length candidate)))
+                                                (1+ end)
+                                              end))
                                            (< end len))
                                  (setq notfirst  t
                                        end       (or (match-beginning 0) len))
@@ -2651,7 +2658,8 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                                       (+ start orig-pt) (+ end orig-pt) properties))
                                    (when propertize-join-string
                                      (add-text-properties
-                                      (+ end orig-pt) (+ end orig-pt (length icicle-list-join-string))
+                                      (+ end orig-pt)
+                                      (+ end orig-pt (length icicle-list-join-string))
                                       properties)))
                                  (setq partnum  (1+ partnum)
                                        start    (match-end 0))))))))
@@ -2661,7 +2669,8 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
            (with-current-buffer (get-buffer "*Completions*")
              (set (make-local-variable 'mode-line-frame-identification)
                   (format "  %d candidates  " nb-cands))
-             (put-text-property 0 (length mode-line-frame-identification) 'face 'icicle-mode-line-help
+             (put-text-property 0 (length mode-line-frame-identification)
+                                'face 'icicle-mode-line-help
                                 mode-line-frame-identification)
              (goto-char (icicle-start-of-candidates-in-Completions))
              (set-window-point (get-buffer-window "*Completions*" 0) (point)))
@@ -5020,9 +5029,10 @@ Optional arg NOMSG non-nil means don't display an error message."
         (condition-case err
             (if (not (buffer-live-p buf))
                 (unless nomsg (message "Buffer already deleted: `%s'" buf))
-              (if (fboundp 'kill-buffer-and-its-windows)
-                  (kill-buffer-and-its-windows buf) ; Defined in `misc-cmds.el'.
-                (kill-buffer buf)))
+              (let ((enable-recursive-minibuffers  t)) ; In case called from minibuffer, and modified.
+                (if (fboundp 'kill-buffer-and-its-windows)
+                    (kill-buffer-and-its-windows buf) ; Defined in `misc-cmds.el'.
+                  (kill-buffer buf))))
           (error nil))
       (unless nomsg (message "No such live buffer: `%s'" buf)))))
 

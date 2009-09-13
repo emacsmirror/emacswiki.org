@@ -84,7 +84,7 @@ Another alternative is to use ##C-tab## and ##C-S-tab##:
   (global-set-key (kbd "<C-tab>") 'iflipb-next-buffer)
   (global-set-key
    (if (featurep 'xemacs) (kbd "<C-iso-left-tab>") (kbd "<C-S-iso-lefttab>"))
-    'iflipb-previous-buffer)
+   'iflipb-previous-buffer)
 
 Or perhaps use functions keys like ##F9## and ##F10##:
 

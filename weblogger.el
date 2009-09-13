@@ -9,9 +9,9 @@
 ;; Keywords: weblog blogger cms movable type openweblog blog
 ;; URL: http://emacswiki.org/emacs/weblogger.el
 ;; Maintained-at: http://savannah.nongnu.org/bzr/?group=emacsweblogs
-;; Version: 1.4.1
-;; Last Modified: <2009-09-09 21:08:45 mah>
-;; Package-Requires: xml-rpc
+;; Version: 1.4.3
+;; Last Modified: <2009-09-13 02:13:03 mah>
+;; Package-Requires: ((xml-rpc "1.6.5"))
 
 ;; This file is not yet part of GNU Emacs.
 
@@ -310,7 +310,7 @@ haven't set one.  Set to nil for no category.")
   "OBSOLETE. The appkey to send to weblog server.  Generally this
 shouldn't be changed.")
 
-(defconst weblogger-version "1.4.1"
+(defconst weblogger-version "1.4.3"
   "Current version of weblogger.el")
 
 (defconst weblogger-no-capabilities '(("wp.getUsersBlogs" . nil)
@@ -424,6 +424,7 @@ shouldn't be changed.")
       ["--" nil nil]
       ["Change Weblog"    weblogger-change-weblog t])))
 
+;;;###autoload
 (defun weblogger-select-configuration (&optional config)
   "Select a previously saved configuration."
   (interactive)
@@ -441,8 +442,10 @@ shouldn't be changed.")
     (setq weblogger-server-password (nth 2 conf))
     (setq weblogger-weblog-id       (nth 3 conf))
     (weblogger-determine-capabilities)
-    (weblogger-api-blogger-weblog-alist t)))
+    (weblogger-api-blogger-weblog-alist t)
+    (weblogger-fetch-entries)))
 
+;;;###autoload
 (defun weblogger-setup-weblog ()
   "Create a profile for a weblog."
   (interactive)
@@ -465,7 +468,8 @@ shouldn't be changed.")
 	  (add-to-list 'weblogger-config-alist
 		       (cons weblogger-config-name
 			     settings)))))
-    (weblogger-save-configuration)))
+    (weblogger-save-configuration)
+    (weblogger-fetch-entries)))
 
 (defun weblogger-save-configuration ()
   "Save the current configuration using the name from CONFIG in
@@ -540,6 +544,7 @@ the filename in weblogger-config-file."
   (interactive)
   (weblogger-api-blogger-edit-template "archive"))
 
+;;;###autoload
 (defun weblogger-start-entry (&optional prompt)
   "Start creating a weblog entry in the *weblogger-entry* buffer.
 With a prefix, it will check the available weblogs on the server
@@ -581,7 +586,7 @@ available."
 				    (url-host (url-generic-parse-url
                                                weblogger-server-url)))))
 		    (list "Date"
-                          (format-time-string "%d %b %Y, %H:%M:%S"
+                          (format-time-string "%d %b %Y %H:%M:%S %z"
                                               (caddr (assoc "dateCreated"
                                                             entry))))
 		    (list "In-Reply-To"
@@ -596,12 +601,10 @@ available."
 		    (list "X-TextType"
 			  (cdr (assoc "texttype" entry)))
 		    (list "Subject" title)
-		    (list "Keywords"
-                          (let ((cats (cdr (assoc "tags"  entry))))
-                            (when (> (length cats) 0)
-                              (mapconcat
-                               (lambda (p) p)
-                               cats ", "))))
+		    (list "Keywords" (cdr (assoc "tags" entry)))
+                                        ; Note that the blogger API on
+                                        ; blogger.com is depcrated and
+                                        ; broken on this element.
 		    (list "From"
 			  (or (cdr (assoc "authorName"  entry))
 			      weblogger-server-username))
@@ -869,7 +872,7 @@ is set, then add it to the current index and go to that entry."
   (interactive)
   (weblogger-goto-entry -1 t))
 
-(defun weblogger-prev-eantry ()
+(defun weblogger-prev-entry ()
   "Edit the contents of the previous entry."
   (interactive)
   (weblogger-goto-entry +1 t))
@@ -1133,7 +1136,7 @@ like."
 	(url         (cdr (assoc-string "link" response t)))
 	(description      (assoc-string "description" response))
 	(extended         (assoc-string "mt_text_more" response))
-	(tags        (cdr (assoc-string "mt_keywords" response t)))
+	(tags        (cdr (assoc-string "mt_tags" response t)))
         (categories  (cdr (assoc-string "categories" response t))))
     
     (cond (content
@@ -1154,9 +1157,8 @@ like."
 				  (with-temp-buffer
 				    (insert (cdr content))
 				    (goto-char (point-min))
-                                    (while (search-forward
-                                            (match-string 0 (cdr content))
-                                            nil t)
+                                    (while (and (not (string= "" (match-string 0 (cdr content))))
+                                                (search-forward (match-string 0 (cdr content)) nil t))
                                       (replace-match "" nil t))
 				    (buffer-string)))
 			  (cons "title" title)))
@@ -1190,7 +1192,7 @@ like."
 		      (when dateCreated
 			(cons "dateCreated"  dateCreated))
 		      (when tags
-			(cons "tags"   categories))
+			(cons "tags"   tags))
 		      (when categories
 			(cons "categories"   categories))
 		      (when textType
@@ -1206,7 +1208,7 @@ request."
 	 (assoc "title"        entry)
 	 (assoc "authorName"   entry)
 	 (assoc "userid"       entry)
-	 (assoc "dateCreated"  entry)
+         (assoc "dateCreated" entry)
          (when (cdr (assoc "trackbacks"  entry))
            (cons "mt_tb_ping_urls" (cdr (assoc "trackbacks"  entry))))
          (when (cdr (assoc "texttype" entry))
@@ -1217,7 +1219,7 @@ request."
          (when (cdr (assoc "content" entry))
            (cons "description" (cdr (assoc "content" entry))))
          (when (cdr (assoc "tags" entry))
-           (cons "mt_keywords" (cdr (assoc "tags" entry))))
+           (cons "mt_tags" (cdr (assoc "tags" entry))))
          (when (cdr (assoc "categories" entry))
            (cons "categories" (cdr (assoc "categories" entry)))))))
 
@@ -1301,10 +1303,7 @@ internally).  If BUFFER is not given, use the current buffer."
 	   (cons "url"           (message-fetch-field "X-Url"))
 	   (cons "title"     (or (message-fetch-field "Subject") 
 				 weblogger-default-title))
-	   (cons "tags"  (or 
-                          (message-tokenize-header 
-                           (message-fetch-field "Keywords") ", ")
-                          weblogger-default-categories))
+	   (cons "tags" (message-fetch-field "Keywords"))
 	   (when (message-fetch-field "In-Reply-To")
              (cons "trackbacks"
                    (or (message-tokenize-header 

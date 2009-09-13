@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Sep 10 17:11:40 2009 (-0700)
+;; Last-Updated: Sat Sep 12 11:01:38 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 4351
+;;     Update #: 4366
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -262,6 +262,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2009/09/12 dadams
+;;     icicle-kill-a-buffer: Bind enable-recursive-minibuffers, to confirm modified buffer.
 ;; 2009/09/05 dadams
 ;;     icicle-msg-maybe-in-minibuffer: Do nothing if icicle-minibuffer-message-ok-p is nil.
 ;; 2009/08/19 dadams
@@ -1563,6 +1565,14 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2009/09/12 dadams
+;;     icicle-delete-candidate-object: Message if no candidates, in non-ALLP case also.
+;;     icicle-delete-candidate-object-1: Bind icicle-completion-candidates to save & restore it.
+;;     icicle-candidate-action-1, icicle-remove-candidate-display-others,
+;;       icicle-delete-candidate-object, icicle-help-on-candidate,
+;;       icicle-candidate-read-fn-invoke:
+;;         Bind icicle-help-in-mode-line-flag to nil, to avoid help-display delay.
+;;     icicle-update-and-next: Do nothing if user hit another key and there are more candidates.
 ;; 2009/09/05 dadams
 ;;     icicle-narrow-candidates: Don't raise an error if no candidates.  E.g. C-~.
 ;;     Use backward and forward as the values of icicle-cycling-command prop for nav commands.

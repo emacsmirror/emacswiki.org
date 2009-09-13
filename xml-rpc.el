@@ -8,12 +8,12 @@
 
 ;; Author: Mark A. Hershberger <mah@everybody.org>
 ;; Original Author: Daniel Lundin <daniel@codefactory.se>
-;; Version: 1.6.5.1
+;; Version: 1.6.6
 ;; Created: May 13 2001
 ;; Keywords: xml rpc network
 ;; URL: http://emacswiki.org/emacs/xml-rpc.el
 ;; Maintained-at: http://savannah.nongnu.org/bzr/?group=emacsweblogs
-;; Last Modified: <2009-09-09 21:09:47 mah>
+;; Last Modified: <2009-09-13 01:58:08 mah>
 
 ;; This file is NOT (yet) part of GNU Emacs.
 
@@ -114,6 +114,8 @@
 
 ;;; History:
 
+;; 1.6.6   - Use the correct dateTime elements.  Fix bug in parsing null int.
+
 ;; 1.6.5.1 - Fix compile time warnings.
 
 ;; 1.6.5   - Made handling of dateTime elements more robust.
@@ -170,7 +172,7 @@
 (eval-when-compile
   (require 'cl))
 
-(defconst xml-rpc-version "1.6.5.1"
+(defconst xml-rpc-version "1.6.6"
   "Current Version of xml-rpc.el")
 
 (defcustom xml-rpc-load-hook nil
@@ -289,7 +291,7 @@ interpreting and simplifying it while retaining its structure."
         valvalue)
        ;; Integer
        ((or (eq valtype 'int) (eq valtype 'i4))
-        (string-to-number valvalue))
+        (string-to-number (or valvalue "0")))
        ;; Double/float
        ((eq valtype 'double)
         (string-to-number valvalue))
@@ -307,9 +309,8 @@ interpreting and simplifying it while retaining its structure."
                (fault-code (cdr (assoc "faultCode" struct))))
           (list 'fault fault-code fault-string)))
        ;; DateTime
-       ((eq valtype 'dateTime.iso8601)
-        (list :datetime (date-to-time valvalue)))
-       ((eq valtype 'dateTime)
+       ((or (eq valtype 'dateTime.iso8601)
+            (eq valtype 'dateTime))
         (list :datetime (date-to-time valvalue)))
        ;; Array
        ((eq valtype 'array)
@@ -326,7 +327,7 @@ interpreting and simplifying it while retaining its structure."
 
 (defun xml-rpc-datetime-to-string (value)
   "Convert a date time to a valid XML-RPC date"
-  (format-time-string "%Y%m%dT%H%M%S%z" (cadr value)))
+  (format-time-string "%Y%m%dT%H:%M:%S" (cadr value)))
 
 (defun xml-rpc-value-to-xml-list (value)
   "Return XML representation of VALUE properly formatted for use with the  \
@@ -338,7 +339,7 @@ functions in xml.el."
     `((value nil (boolean nil ,(xml-rpc-boolean-to-string value)))))
    ;; Date
    ((xml-rpc-value-datetimep value)
-    `((value nil (dateTime nil ,(xml-rpc-datetime-to-string value)))))
+    `((value nil (dateTime.iso8601 nil ,(xml-rpc-datetime-to-string value)))))
    ;; list
    ((xml-rpc-value-arrayp value)
     (let ((result nil)

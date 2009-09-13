@@ -93,23 +93,7 @@ subsystem; I don't know how to do that.
 
 === How do I use an antialiased font in Emacs? ===
 
-Emacs supports antialiased fonts in the Carbon and W32 UIs; Emacs does *not*
-support antialiased fonts under X11. You can get around this by running Emacs
-in a terminal emulator that supports antialiasing:
-
-        xterm -fa Monospace -e emacs -nw
-        urxvt -fn xft:Monospace -e emacs -nw
-        gnome-terminal -x emacs -nw
-        konsole -e emacs -nw
-        xfce4-terminal -e emacs\ -nw
-
-Alternatively XftGnuEmacs, a branch of CVS Emacs, supports antialiased fonts. 
-The main branch of XEmacs 21.5 also supports Xft at this time. 
-
-2007/01: Ubuntu users, see http://g33k.wordpress.com/2006/11/06/gnu-emacs-with-xft-goodness/
-and http://peadrop.com/blog/2007/01/06/pretty-emacs/
-
-2009/03: In Ubuntu using the 'emacs-snapshot-gtk' or 'emacs-snapshot' package gives nice fonts, which renders the two above links unnecessary.
+Use emacs version 23.1
 
 == Colour ==
 
@@ -176,6 +160,10 @@ says "Emacs.Font: fixed".  Then restart Xterm.
 
 Do M-: window-system RET.  If emacs prints `x', this fix should work.  Do M-x customize option RET x select enable clipboard RET.  To find out why this is necessary, see http://www.jwz.org/doc/x-cut-and-paste.html
 
+=== How do I align text? ===
+
+M-x align in most mode will do something useful. If it doesn’t work try M-x align-regexp
+
 === How do I show cursor's position in the modeline? ===
 
 M-x customize option RET line number mode RET and M-x customize option RET
@@ -208,6 +196,9 @@ Note that <code>C-o</code> in regexp replacement string inserts a newline withou
 as <code>C-q C-j</code>. This trick does not work with incremental search
 commands.
  
+=== How do I insert a character from its Unicode name? ===
+
+M-x ucs-insert
 
 == Shells ==
 

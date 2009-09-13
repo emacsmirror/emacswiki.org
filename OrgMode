@@ -1,8 +1,11 @@
-homepage (frequently updated): http://orgmode.org
+== Overview ==
 
-Worg - user-edited pages about org-mode (tutorials and more): http://orgmode.org/worg/
+An Emacs Mode for Notes, Project Planning, and Authoring. Org-mode is included with Emacs 22.1.
 
-Improves OutlineMode and much, much more.
+* Homepage: http://orgmode.org
+* Worg (user edited org) tutorials etc: http://orgmode.org/worg
+
+Features:
 
 * integrates with diary
 * set deadlines, todos, scheduled events
@@ -14,17 +17,13 @@ Improves OutlineMode and much, much more.
 * links to http, file, gnus, rmail, vm, news, wanderlust, bbdb
 * integrates with RememberMode
 
-== Getting org-mode ==
-
-Org-mode is included with Emacs 22.1.
-
-You can get the latest version at http://orgmode.org/.
+== Download and Install ==
 
 The develop version is obtained by
 
     git clone git://repo.or.cz/org-mode.git
 
-There's an Ubuntu repository with the latest for non-cvs Emacs.  Add the following to your sources.list:
+There's an Ubuntu repository with the latest for non-cvs Emacs.  Add the following to your <code>/etc/apt/sources.list</code>:
 
     deb http://ppa.launchpad.net/hexmode/ubuntu gutsy main
     deb-src http://ppa.launchpad.net/hexmode/ubuntu gutsy main
@@ -43,7 +42,7 @@ There's an Ubuntu repository with the latest for non-cvs Emacs.  Add the followi
 
 * [http://www.cognition.ens.fr/~guerry/u/org-registry.el org-registry.el] by BastienGuerry keeps a registry of all links that you have in your Org agenda files.
 
-* [http://www.cognition.ens.fr/~guerry/u/blorg.el blorg.el] by BastienGuerry 
+* [http://www.cognition.ens.fr/~guerry/u/blorg.el blorg.el] by BastienGuerry
   lets you blog from an Org file.
 
 * Lisp:org-mairix.el integrates Org mode with [http://www.rpcurnow.force9.co.uk/mairix/ mairix] email search.
@@ -86,15 +85,15 @@ Org Mode can be easily configured to help edit *Wikipedia* articles by changing 
 <pre>
 (add-hook 'org-mode-hook '(lambda () (setq outline-regexp "=+")))
 </pre>
-     
+
 If you use WThreeM, add the following instead:
 <pre>
 (setq w3m-form-textarea-edit-mode 'org-mode)
 (add-hook 'w3m-form-input-textarea-mode-hook
           '(lambda nil
                    (setq outline-regexp "=+")))
-</pre>		  
-  
+</pre>
+
 
 == Publishing ==
 
@@ -143,25 +142,25 @@ This function uses org-mode support for plain list to facilitate dragging URLs f
 	(cond
 	 ;; if this is the end of the line then just insert text here
 	 ((eolp)
-	  (skip-chars-backward " \t") 
+	  (skip-chars-backward " \t")
 	  (kill-region (point) (point-at-eol))
 	  (unless (looking-back ":") (insert ":"))
 	  (insert " "))
-	 
-	 ;; if this is the beginning of the line then insert before 
-	 ((and (looking-at " \\|\t")	
+
+	 ;; if this is the beginning of the line then insert before
+	 ((and (looking-at " \\|\t")
 	       (save-excursion
 		 (skip-chars-backward " \t") (bolp)))
-	  (beginning-of-line) 
+	  (beginning-of-line)
 	  (looking-at "[ \t]*")
 	  (open-line 1)
 	  (indent-to (- (match-end 0) (match-beginning 0)))
 	  (insert "+ "))
-	 
+
 	 ;; if this is a middle of the line, then insert after
-	 (t 
-	  (end-of-line) 
-	  (newline t) 
+	 (t
+	  (end-of-line)
+	  (newline t)
 	  (indent-relative)
 	  (insert "+ ")))
 	(insert text)
@@ -242,30 +241,30 @@ May be a better way to do this is to have special #+ICAL_EXCLUDE/#+ICAL_INCLUDE 
 Regards.
 -- DanielDehennin
 
-[new:StefanKamphausen:2007-10-11 12:21 UTC]  Are there any plans to integrate OrgMode with Oddmuse and OddmuseMode?  I'm planning to start planning using OrgMode but since I collaborate with co-workers I need something bidirectional.  The files in ~/org are not.  But since I'm also evaluating OddmuseMode I thought a combination might be a very good idea.  You immediately gain published plans.  One would have to write a modul for Oddmuse, obviously, to understand the special markup.  In this the user-defined keywords from OrgMode might be placed onto a specially named page.  
+[new:StefanKamphausen:2007-10-11 12:21 UTC]  Are there any plans to integrate OrgMode with Oddmuse and OddmuseMode?  I'm planning to start planning using OrgMode but since I collaborate with co-workers I need something bidirectional.  The files in ~/org are not.  But since I'm also evaluating OddmuseMode I thought a combination might be a very good idea.  You immediately gain published plans.  One would have to write a modul for Oddmuse, obviously, to understand the special markup.  In this the user-defined keywords from OrgMode might be placed onto a specially named page.
 
 Well, this is just brainstorming and since I didn't actually ''use'' OrgMode for anything yet I might be talking rubbish.  But it sounds good to me.  --StefanKamphausen
 
 [new]
 For somebody like me, it would be far easier to add Org Mode's markup rules to Oddmuse as a module. Then you could just use org-mode to write and oddmuse-mode to post. -- AlexSchroeder
 
-[new] 
+[new]
 I envision a work-cycle like this:
 
 * M-x oddmuse-edit (Wiki, Page) (instead of find-file)
 * auto-mode-alist decides to put this in OrgMode
 * OrgMode-editing
 * M-x oddmuse-post  (instead of save-buffer)
-* Then an oddmuse-org-mode-markup-Modul takes care of the rendering.  
+* Then an oddmuse-org-mode-markup-Modul takes care of the rendering.
 
 There are however some details, like the user-defined keywords in OrgMode and probably lots of other stuff that I don't know about yet.  Features like integration of OddMuse's blogging setup and calender-extension could be really neat. Ah, and HTML-checkboxes and JavaScript-Tree-Views and ... oh sorry ;-) -- StefanKamphausen
 
-[new] 
+[new]
 How does one implement this in Org? I have a library book that needs to be returned, but i don't want it showing up in my things to do until 3 days before it is due. In HowmMode (which I currently use) I would simply set the a deadline with advance notice to 3 and I'm done. -- PeterMielke
 
 [new]
 Is this what you want ?
-     
+
     You can specify a different lead time for warnings for a specific
     deadlines using the following syntax.  Here is an example with a
     warning period of 5 days `DEADLINE: <2004-02-29 Sun -5d>'
@@ -280,7 +279,7 @@ agenda files. Is there a todo list command which shows todo items only
 from the current file in the same agenda buffer format as the global
 todo list?
 
-[new] 
+[new]
 Yes. There are many ways to do this.
 
 1. You can use "<" to restrict the TODO list to the current buffer or

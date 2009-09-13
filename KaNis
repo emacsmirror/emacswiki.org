@@ -1,6 +1,6 @@
 I am Ivan [http://kanis.fr Kanis]
 
-I have used emacs around 1997, my girlfriend worked at Amazon and I got her the O'Reilly book. She didn't need it anymore so I used it and have used emacs since. In 2002 I got more proficient with elisp. 
+I have used emacs since around 1997, my girlfriend worked at Amazon and I got her the O'Reilly book. She didn't need it anymore so I used it and have used emacs since. In 2002 I got more proficient with elisp. 
 
 In 2007, I have declared .emacs bankruptcy like [http://www.emacsblog.org/2007/10/07/declaring-emacs-bankruptcy/ Ryan McGeary]. My configuration file grew so large it was unmaintainable. I took the time to split it up in small manageable chunks.
 
@@ -29,6 +29,11 @@ I use the following Wiki:
 [http://en.doc.centreon.com/User:Kanis Centreon]
 [http://kanis.pbworks.com/ Pbworks]
 [http://wiki.archlinux.org/index.php/User:Kanis ArchLinux]
+
+I lurk in IRC channel #emacs in freenode I have started the IrcFaq.
+
+[new]
+There is actually the EmacsChannelFaq, already.  It probably could use some loving.  Welcome to the Wiki. -- AaronHawley
 
 ----
 CategoryHomepage
