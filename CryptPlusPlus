@@ -1,23 +1,28 @@
+== Overview ==
 
-CryptPlusPlus can also be used with GPG to automatically encrypt and decrypt buffers.
+CryptPlusPlus by KarlBerry <karl@cs.umb.edu> can open and save encrypted files and buffers.It also supports many encryption programs, like GPG, bcrypt, openssl RC4 etc. The encrypted file is detected by group of magic characters at the beginning.
+
+The original pacgake is no longer developed. Please use crypt.el from XEmacs instead
+
+* '''Current''': http://cvs.xemacs.org/viewcvs.cgi/XEmacs/packages/xemacs-packages/os-utils/crypt.el
+* Old (author's official site): http://freefriends.org/~karl/crypt++/
+* Old: http://http.us.debian.org/debian/pool/main/c/crypt++el/
+
+== Install ==
 
 <pre>
-;; crypt++ with gpg backend
 (require 'crypt++)
+
+;; crypt++ with gpg backend
 (setq crypt-encryption-type 'gpg
       crypt-encryption-file-extension "\\(\\.gpg\\)$")
+
 (modify-coding-system-alist 'file "\\.gpg\\'" 'no-conversion)
 </pre>
 
-* http://http.us.debian.org/debian/pool/main/c/crypt++el/
-* Official repository of KarlBerry: http://freefriends.org/~karl/crypt++/
-
-[new]
-I would be very pleased if someone else would like to take over maintenance of crypt++.  I do not have the inclination or expertise to work on it as I'd like to.  Just mail me, karl@cs.umb.edu.
-
 == Encryption in emacs-wiki with crypt++ ==
 
-Another approach is to encrypt files transparently with emacs-wiki. Place something like this in your .emacs:
+To encrypt files transparently with emacs-wiki. Place something like this in your .emacs:
 
 <pre>
 ;; crypt++ - i use this in conjunction with emacs-wiki
@@ -29,7 +34,7 @@ Another approach is to encrypt files transparently with emacs-wiki. Place someth
 
 All wiki links named with Secure at the end will now be transparently encoded and decoded. <nowiki>You can also name a wiki link as "FooBar", and rename the file on the filesystem to "FooBar.enc". Following the link to "FooBar" will now check to see if there is a FooBar.enc file.</nowiki>
 
-I prefer to see whether a file is secured or not, though.
+I prefer to see whether a file is secured or not, though. --KarlBerry
 
 
 ----

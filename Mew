@@ -4,7 +4,7 @@ Homepage: http://www.mew.org/
 
 == Setup ==
 
-To install: download and unpack, run ./configure && make && make install. Initial setup is done in .emacs. Main configuration file for mew is ~/.mew.el, which is loaded //after// mew is started.
+To install: download and unpack, run ./configure && make && make install. Initial setup is done in .emacs. Main configuration file for mew is ~/.mew.el, which is loaded //after// mew is started.  If you use emacs 23, you should use at least Mew version 6.2.52 (beta).
 
 ~/.emacs:
 
@@ -77,7 +77,23 @@ So if you have such a problem, just add this to you .mew.el:
      ;;;(mew-delete-file buffer-auto-save-file-name)     ; delete draft too early?                  
      (set-buffer-modified-p nil)))                                                                
 
+== BBDB integration ==
 
+For Mew to make use of the [BbdbMode bbdb], you need to add [Lisp:bbdb-mew.el bbdb-mew.el] to emacs' load-path.  Then add the following code to your init-file:
+<pre>
+(autoload 'bbdb-insinuate-mew      "bbdb-mew"   "Hook BBDB into Mew")
+(add-hook 'mew-init-hook 'bbdb-insinuate-mew)
+(setq bbdb-send-mail-style 'mew)
+</pre>
+
+*The way bbdb-mew works:*
+
+From http://mew.iijlab.net/ml/mew-int-3.1/msg00140.html
+
+* In the bbdb buffer entering "m" in the address will open a mew draft with the To: field filled in.
+* Entering ";" in the summary should prompt to create a new bbdb record.
+
+If you also want bbdb to do the tab-completion of e-mail adresses in draft composition buffers, [CategoryCustomize customize] Mew's variables /mew-field-completion-switch/ (for "<tab>" completion) and/or /mew-field-expansion-switch/ (for "M-<tab>" completion).  You can replace all occurances of mew-complete-address by bbdb-complete-name.
 
 == Other stuff ==
 
@@ -121,14 +137,6 @@ To use different signature file for different Email address, include following l
 I create [http://zhangw.com/emacs/dotmewel.html a list of .mew.el] (i.e. the configuration file of Mew) on [http://zhangw.com/ my website]
 
 WenZhang
-
------
-<Strong>The way [http://t2100cdt.kippona.net/linux/emacs/mew/ bbdb-mew] works</Strong>
-
-From http://mew.iijlab.net/ml/mew-int-3.1/msg00140.html
-
-* In the bbdb buffer entering <b>m</b> in the address will open a mew draft with the To: field filled in.
-* Entering <b>;</b> in the summary should prompt to create a new bbdb record.
 
 -----
 <b>Fighting Spam: bogofilter in Mew</b>

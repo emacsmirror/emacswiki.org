@@ -2,23 +2,11 @@ Libraries providing multiple [[MajorMode]]s in a buffer. See also MinorMode.
 
 = mumamo.el =
 
-MuMaMo (short for multiple major modes) is written for Emacs 22. I believe this is the only one that can support NxmlMode/NxhtmlMode. It is distributed as part of [NxhtmlMode nXhtml]; thus if you do web development and need to mix HTML+CSS+JavaScript, Java+HTML (JSP), PHP, ... then [NxhtmlMode nXhtml] is an easy option. It is centered around web development modes and it is not clear how to add custom non-XHTML-ish multimodes, eg. C with embedded SQL.
-
-[new]
-Why do you think MuMaMo is centered around web development? nXhtml is, but I can't remember that there is anything in MuMaMo that is that.
-
-Please explain what you found unclear about how to add for example C with embedded SQL?
+MuMaMo (short for multiple major modes) is written for Emacs 22. It is distributed as part of [NxhtmlMode nXhtml] and can mix HTML+CSS+JavaScript, Java+HTML (JSP), PHP. It can also suport NxmlMode.
 
 = mmm-mode.el =
 
-Multiple Major Modes by MichaelAbrahamShulman.
-This one is used on the OracleProC page.
-It seems to have been the method of choice for combining major modes, but the latest version is now from 2004.
-You can find description of using it, together with psgml-mode, php-mode, javascript-mode and css-mode to edit HTML files at HtmlModeDeluxe.
-
-* http://mmm-mode.sourceforge.net/
-
-There has been some attempts to get it working with NxmlMode for XHTML, see NxmlModeForXHTML.
+* See MmmMode
 
 = multi-mode.el =
 
@@ -47,4 +35,4 @@ Just specify the start and end regular expressions for the second mode.
 See EmacsLispAndLaTeX for an example.
 
 ----
-CategoryCode
+CategoryModes

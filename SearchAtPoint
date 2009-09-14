@@ -39,6 +39,13 @@ This shouldn't be necessary.  Just set ''highlight-symbol-on-navigation-p'' and
 
 -- [[nschum]]
 
+[new]
+I guess this should be
+
+  (global-set-key (kbd "C-x *") 'highlight-symbol-next)
+  (global-set-key (kbd "C-*") 'highlight-symbol-prev)
+
+-- RichardRiley
 
 == Coding entire commands ==
 

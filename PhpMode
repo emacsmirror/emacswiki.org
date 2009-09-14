@@ -1,4 +1,8 @@
-There seem to be the following options:
+== Overview ==
+
+Major mode for editing PHP files
+
+== Download ==
 
 * http://php-mode.sourceforge.net -- maintained by AaronHawley that supports Emacs 22 (CcMode 5.31).
 ** This is included in [NxhtmlMode nXhtml] with only slight modifications, and seems to be the most popular. (However this is still version 1.4.1)
@@ -7,30 +11,24 @@ There seem to be the following options:
 * http://www.loveshack.ukfsn.org/emacs/index.html#cc-php-js -- patch for CC mode from Emacs 22.1, and files byte-compiled for Emacs 21/22.  See http://www.loveshack.ukfsn.org/emacs/index.html#html-php.el for PHP embedded in HTML.
 * http://deboutv.free.fr/lisp/php/index.php - Deboutv php-mode, originally for Xemacs
 * http://mewde.googlecode.com/files/php-mode-new.el -- Mewde Project php-mode maintained by AhmetUsal; updated 2008-10-07
-** Based on the Deboutv Xemacs and Sourceforge php-mode.This is mixed mode.  [http://mewde.blogspot.com/2008/10/new-update-for-emacs-php-mode.html Details here.] 
-Some big differences from Deboutv inheritance mode; code comments inserting Sourceforge php-mode style; php-templates doesn't automatic insert; Class-function templates has shortcuts; otherwise; M-x php-template-TAB list all options, then you can select and insert.  We don't have old "Sources" menu, etc.But we have natural Imenu and outline support with additional templates menu.
-Auto-completes PHP functions and handles indentation both Sourceforge php-mode and Deboutv php-mode style. It has templating support for class, functions, and loops. Plus; all Sourceforge php-mode features supporting.
-I tested with emacs23 environment; both vista and Ubuntu hardy; even works with yasnippet mode together; just disable abbrev-minor-mode, or if you are insert php template, function etc; after typing and tabbing completion; type M-Space then going on; it works fine...
+** Based on the Deboutv Xemacs and Sourceforge php-mode.This is mixed mode.  [http://mewde.blogspot.com/2008/10/new-update-for-emacs-php-mode.html Details here.] Some big differences from Deboutv inheritance mode; code comments inserting Sourceforge php-mode style; php-templates doesn't automatic insert; Class-function templates has shortcuts; otherwise; M-x php-template-TAB list all options, then you can select and insert.  We don't have old "Sources" menu, etc.But we have natural Imenu and outline support with additional templates menu.
+Auto-completes PHP functions and handles indentation both Sourceforge php-mode and Deboutv php-mode style. It has templating support for class, functions, and loops. Plus; all Sourceforge php-mode features supporting. I tested with emacs23 environment; both vista and Ubuntu hardy; even works with yasnippet mode together; just disable abbrev-minor-mode, or if you are insert php template, function etc; after typing and tabbing completion; type M-Space then going on; it works fine...
 
-For example; I don't use any multiple major mode for php; I put all yasnipet html snippets to inside php snippets; and I use with new php-mode for complex php-html code pages.
+== Related modes ==
 
-Beside those php-mode there are the following possibilities to mix them with better HTML support:
+Beside those php-mode there are the following possibilities to mix them with better HTML support. See also MultipleModes.
 
 * MuMaMo
-* mmm-mode
-* two-mode-mode
+* MmmMode
+* Lisp:two-mode-mode.el
 
-For the last two see MultipleModes.
-
-[new]
-I would like comments on both the single and multiple mode choices above. What strengths and weaknesses does the different versions have?
-Can they be merged?
--- LennartBorgman
+For example; I don't use any multiple major mode for php; I put all yasnipet html snippets to inside php snippets; and I use with new php-mode for complex php-html code pages.
 
 == Mewde php-mode ==
 
 [new]
 This, in comparison to the modes that primarily coerce CcMode to work nicely with PHP, has a great deal of features. Perhaps I overlooked something in the documentation, but it doesn't seem to handle comments that begin with two forward slashes. --ShadyTrees
+
 [new]
 : Looking through the php-mode.el file it looks like there is a mistake on line 2579. I just started learning elisp/how to make modes this morning though, so that's probably wrong. I fixed it in mine though, and it seems to be working. I uploaded my version of the file and more detail about what i /think/ is going on in [http://code.google.com/p/mewde/issues/detail?id=3 a bug I filed] on the mewde google code site. I have no reason to think it won't blow up, although if it does I'll comment here and at the bug -[http://blog.quodlibetor.com quodlibetor]
 
@@ -85,9 +83,8 @@ I found the following in the wayback machine from the site listed above. This mo
 
 - JamesKnight
 
-* Lisp:two-mode-mode.el
-
 == Easy Toggling between PHP & HTML modes ==
+
 I use the following lisp in my JonathanArnoldDotEmacs files:
 
 {{{
@@ -145,6 +142,14 @@ I didn't see such a feature in the php-mode I use so I whipped up a quick soluti
       (browse-url (concat "http://php.net/manual-lookup.php?pattern="
                           (symbol-name symbol))))))
 </pre>
+
+== Discussion ==
+
+[new]
+I would like comments on both the single and multiple mode choices above. What strengths and weaknesses does the different versions have?
+Can they be merged?
+-- LennartBorgman
+
 
 ----
 CategoryModes

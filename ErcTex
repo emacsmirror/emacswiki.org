@@ -1,0 +1,16 @@
+The module [[Lisp:erc-tex.el]] adds the ability of rendering LaTeX expression enclosed in $...$ in ERC chats. 
+
+== Requirements ==
+
+You will need the following external tools in order to use this module:
+
+* LaTeX
+* dvipng
+
+== Screenshot ==
+
+[[image:erc-tex-screenshot-1]]
+
+----
+
+[[ERC]]

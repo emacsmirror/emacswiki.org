@@ -1,9 +1,13 @@
+== Overview ==
+
 html-helper-mode is maintained by GianUbertoLauri.  It requires tempo.el (which comes with recent Emacs versions, see TempoMode).
 
 It supports JSP (with PaulKinnucan's JDE, see JavaDesktopEnvironment), PHP, and ASP (with VisualBasicMode installed).  Some people like the way this mode handles indentation by default better than PSGML and the built-in HtmlMode (although any of them can be customized to support your kind of indentation; this <em>is</em> Emacs, after all).
 
-Download html-helper-mode from http://www.nongnu.org/baol-hth/ and see the 
-project page http://savannah.nongnu.org/projects/baol-hth
+* Download: http://www.nongnu.org/baol-hth
+* Homepage: http://savannah.nongnu.org/projects/baol-hth
+
+== Install ==
 
 Installation -- add this line in your .emacs:
 
@@ -20,6 +24,8 @@ To invoke html-helper-mode automatically on .asp files, do this:
 To invoke html-helper-mode automatically on .phtml files, do this:
 
  (setq auto-mode-alist (cons '("\\.phtml$" . html-helper-mode)      auto-mode-alist))
+
+== Notes ==
 
 Note : with Emacs 22, autoload is useless and you will need to modify similarly magic-mode-alist. Try C-h v auto-mode-alist to learn more.
 
