@@ -231,6 +231,17 @@ After fixing all these, I still can't stop the daemon, <code>sudo /etc/init.d/em
              --alternate-editor (or environment variable ALTERNATE_EDITOR)
 </pre>
 
+*Fixed:* I was able to use <code>sudo /etc/init.d/emacs stop</code> to stop the daemon with the above init script after replacing
+<pre>
+$EMACSCLIENT --eval "$EVALEXIT"
+</pre>
+in the <code>do_stop()</code> function with
+<pre>
+su -c "$EMACSCLIENT --eval \"$EVALEXIT\"" $USERNAME
+</pre>
+The problem was that root didn't have an emacs server running.  It worked fine when running
+<code>/etc/init.d/emacs stop</code> as <code>$USERNAME</code>, but it would have failed during shutdown. --JasonBlevins
+
 == Gentoo ==
 
 Gentoo includes support for running Emacs as a daemon in the

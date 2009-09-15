@@ -372,6 +372,8 @@ string including the beginning and quotes.")
 
 * I'd like Emacs keybindings for OpenOffice, something like [http://www.rath.ca/Misc/VBacs/ VBacs] does for Ms Word.
 
+* There are indexed searchers like namazu, mairix, lucene, ... Some are a little bit out of date, unmantained, or their multiplatform capability is not there out of the box (having to deal with dependencies, compilation, ...). It would be nice to have an indexed searcher for fast searches within a project (documentation) or many org-mode files. One elisp based would be a good start (José M.)
+
 == Utopian Wishes ==
 
 This is the place for wishes, that would require a complete rewrite of

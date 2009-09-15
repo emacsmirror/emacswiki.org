@@ -27,6 +27,7 @@
 ;;; `*doc-cookie*', `*regexp-symbol-defs*'
 ;;;
 ;;; MACROS:
+;;; `mon-help-swap-var-doc-const-val'
 ;;;
 ;;; FUNCTIONS:►►►
 ;;; `mon-help-reference-sheet', `mon-help-regexp-syntax',
@@ -173,6 +174,109 @@ Set value of *doc-cookie* variable otherwise if this is not acceptable.
 Used-by: `mon-help-function-spit-doc' to find comment-begin of snarfed doc strings."
   (interactive)
   (insert "►►►"))
+
+;;; ==============================
+;;; CREATED: <Timestamp: #{2009-09-14T14:16:34-04:00Z}#{09381} - by MON KEY>
+(defmacro mon-help-swap-var-doc-const-val (var-name const-name xrefs &optional face-name)
+  "Swap the value variable-documentation property of VAR-NAME into the
+documentation-property of CONST-NAME's variable-documentation. After, put the
+symbol value of CONST-NAME at the head of VAR-NAME's variable-documentation
+property.
+XREFS is a symbol holding a list of symbol names which cross-reference one another.
+FACE-NAME is variable pointing bound to the symbol holding a face definintion.
+e.g. the variable `naf-mode-institution-fface' is bound to the face 
+`naf-mode-institution-face'. We do this because face documentation isn't accessible as in 
+*Help* buffers i.e. using \[`describe-variable']. 
+This procedure is implemented to extending *Help* documentation of `naf-mode'
+constants, variables, and faces but could be used to extend any derived mode generating its
+font-lock keywords from lists bound variables.\n
+EXAMPLE:
+\(mon-help-swap-var-doc-const-val
+    *naf-school-names-english* naf-mode-school-names-english
+    ;;^ VAR-NAME ^             ^ CONST-NAME ^
+    *naf-mode-institution-xrefs* naf-mode-institution-fface)
+    ;;^ XREV ^                   ^ FACE-NAME ^\n
+NOTE: When compiling defvar and defconst forms mut be made known at compile time.
+IOW wrap them _and_ the macro call in an `eval-and-compile'."
+  (declare (indent 1) (debug t))
+  (let ((v-doc (make-symbol "v-doc"))
+	(c-val (make-symbol "c-val"))
+        (x-ref (make-symbol "x-ref"))
+        (m-val (make-symbol "m-val"))
+        (f-nam (make-symbol "f-nam")))
+    `(let ((,v-doc ,(plist-get (symbol-plist var-name) 'variable-documentation))
+	   (,c-val ,(symbol-value const-name))
+           (,x-ref (remove ',var-name ,xrefs))
+           (,f-nam (when ,face-name 
+                     (concat "\n"
+			     "FONT-LOCKING-FACE:            `" ,(symbol-name face-name) "'\n"
+			     "                              (describe-face '"
+			     (replace-regexp-in-string "fface" "face" ,(symbol-name face-name)) ")\n")))
+           (,m-val))
+       (setq ,m-val (concat ,v-doc 
+                            "\n\nLIST-VALUE: held by VARIABLE: `" ,(symbol-name var-name) "'\n\n"
+                            "REGEXPS: held by CONSTANT:    `" ,(symbol-name const-name) "'\n"
+                            ,f-nam "\n"))
+       (setq ,x-ref (concat "\nSee also;\n`" (mapconcat 'symbol-name ,x-ref "'\n`") "'\n►►►"))
+       (setq ,v-doc (concat ,m-val
+                            "--------------------------\n"
+                            "REGEXP-VALUE: of CONSTANT: " ,(symbol-name const-name) " is:\n\n"
+                            ,c-val
+                            "\n\n--------"
+                            ,x-ref))
+       (plist-put (symbol-plist ',var-name) 'variable-documentation ,v-doc)
+       (setq ,c-val ,(format "%S" (symbol-value var-name)))
+       (setq ,v-doc (concat ,m-val
+                            "------------------------\n"
+                            "LIST-VALUE: of VARIABLE: " ,(symbol-name var-name) " is:\n\n"
+                            ,c-val
+                            "\n\n--------"
+			    ,x-ref))
+       (plist-put   (symbol-plist ',const-name) 'variable-documentation ,v-doc))))
+;;
+;;;(progn (fmakunbound 'mon-help-swap-var-doc-const-val) (unintern 'mon-help-swap-var-doc-const-val))
+;;;
+;;;; UNCOMMENT BELOW TO TEST:
+;;;; NOTE: When compiling defvar and defconst forms mut be made known at compile time.
+;;;; IOW wrap them _and_ the macro call in an `eval-and-compile'."
+;;;test-me; 
+;;;(defvar *test-swap-var-xrefs* 
+;;;  '(*test-swap-var->const* *test-swap-var->const2* *test-swap-var->const3* *test-swap-var-xrefs*)
+;;;  "List of symbol names of variables which xref each other in `test-swap-var-mode'.
+;;;See FILE: \"./test-swap-var-mode.el\".")
+;;;
+;;;(defvar *test-swap-var->const* '("list" "of" "keywords" "to" "fontlock")
+;;;  "Did this docstring get swapped to docstring of `test-swap-var->cons'?.
+;;;   Is its value at the top of docstring?")
+;;;
+;;;(defconst test-swap-var->const (regexp-opt *test-swap-var->const* 'paren))
+;;;
+;;;(defvar test-swap-var->const-fface 'test-swap-var->const-face
+;;;  "*Face for `naf-mode' font-locking of institution name keywords
+;;;KEYWORDS-IN: the regexp defined in: {See also; list of XREFD var names}.
+;;;Face definition in `test-swap-var->const-face'.")
+;;;
+;;;(defface test-swap-var->const-face 
+;;;   '((((class color) (background light)) (:foreground "CornflowerBlue"))
+;;;     (((class color) (background dark)) (:foreground "CornflowerBlue"))
+;;;     (t (:bold t :italic t)))
+;;;   "*Face fontlocking of institution name keywords in .naf files.
+;;;Additional documentation in var `test-swap-var->const-fface'")
+;;;
+;;;(mon-help-swap-var-doc-const-val *test-swap-var->const* test-swap-var->const)
+;;;
+;;;(mon-help-swap-var-doc-const-val
+;;;    *test-swap-var->const* test-swap-var->const
+;;;    ;;^ VAR-NAME ^         ^ CONST-NAME ^
+;;;    *test-swap-var-xrefs*  test-swap-var->const-fface)
+;;;    ;;^ XREF ^             ^ FACE-NAME ^
+;;;
+;;;; CLEANUP:
+;;;(progn (makunbound '*test-swap-var->const*)  (unintern '*test-swap-var->const*)
+;;;        (makunbound 'test-swap-var->const)  (unintern 'test-swap-var->const)
+;;;        (makunbound '*test-swap-var-xrefs*)  (unintern '*test-swap-var-xrefs*)
+;;;        (makunbound 'test-swap-var->const-face)  (unintern 'test-swap-var->const-face)
+;;;        (makunbound 'test-swap-var->const-fface)  (unintern 'test-swap-var->const-fface))
 
 ;;; ==============================
 ;;; CREATED: <Timestamp: Thursday July 02, 2009 @ 05:16.20 PM - by MON KEY>

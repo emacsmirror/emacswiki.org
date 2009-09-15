@@ -32,6 +32,7 @@
 ;; Install:
 ;; =======
 ;; Put this file in your load-path
+;; And Byte-compile it.(If you don't do that you will have error)
 ;; Add to your .emacs:
 ;;
 ;; (require 'traverselisp)
@@ -50,68 +51,97 @@
 ;; (define-key dired-mode-map (kbd "C-c t") 'traverse-dired-find-in-all-files)
 ;; (add-to-list 'traverse-ignore-files ".ledger-cache")
 
-;;; Commands:
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Below are complete command list:
-;;
-;;  `traverselisp-version'
-;;    Give version number of traverselisp
-;;  `traverse-quit'
-;;    Quit and kill traverse buffer
-;;  `traverse-find-in-file'
-;;    Traverse search regex in a single file
-;;  `traverse-deep-rfind'
-;;    Main function that call walk, if only is omitted it
-;;  `traverse-search-in-dired-dir-at-point'
-;;    Launch `traverse-deep-rfind' from `dired-mode'
-;;  `traverse-dired-browse-archive'
-;;    This function use AVFS and FUSE, so be sure
-;;  `traverse-dired-search-in-archive'
-;;    This function use AVFS and FUSE, so be sure
-;;  `traverse-dired-find-in-marked-files'
-;;    Traverse search regex in marked files
-;;  `traverse-dired-find-in-all-files'
-;;    Traverse search regex in all files of current dired buffer
-;;  `traverse-dired-search-regexp-in-anything-at-point'
-;;    Generic function for dired
-;;  `traverse-search-and-replace'
-;;    Replace regex with `str', replacement is
-;;  `traverse-search-and-replace-all'
-;;    Launch search and replace interactively on all occurences
-;;  `traverse-build-tags-in-project'
-;;    Build an etags file in current project.
-;;  `traverse-toggle-split-window-h-v'
-;;    From traverse buffer toggle split window
-;;  `traverse-count-files-in-dir'
-;;    Count files in `directory' and return a message
-;;  `traverse-pprint-tree'
-;;    PPrint all the content of `tree'.
-;;
-;;; Customizable Options:
-;;
-;; Below are customizable option list:
-;;
-;;  `traverse-ignore-files'
-;;    Files we want to ignore.
-;;    default = (quote (".elc" ".pyc" ".orig" ".bz2" ".gz" ...))
-;;  `traverse-ignore-dirs'
-;;    Directory we don't want to search in
-;;    default = (quote (".hg" ".svn" "RCS" ".bzr" ".git" ...))
-;;  `traverse-length-line'
-;;    Length of the line displayed
-;;    default = 45
-;;  `traverse-file-function'
-;;    Default function to use to process files
-;;    default = (quote traverse-file-process)
-;;  `traverse-use-avfs'
-;;    Enable support for avfs
-;;    default = nil
-;;  `traverse-avfs-default-directory'
-;;    Default directory for avfs
-;;    default = "~/.avfs"
+;;; * Commands defined here:
+;; [EVAL] (traverse-auto-document-lisp-buffer :type 'command)
+;; `traverselisp-version'
+;; `traverse-quit'
+;; `traverse-find-in-file'
+;; `traverse-occur-current-buffer'
+;; `traverse-deep-rfind'
+;; `traverse-search-in-dired-dir-at-point'
+;; `traverse-search-in-dired-file-at-point'
+;; `traverse-dired-browse-archive'
+;; `traverse-dired-search-in-archive'
+;; `traverse-dired-find-in-marked-files'
+;; `traverse-dired-find-in-all-files'
+;; `traverse-dired-search-regexp-in-anything-at-point'
+;; `traverse-go-forward'
+;; `traverse-go-backward'
+;; `traverse-scroll-down-other-window'
+;; `traverse-scroll-up-other-window'
+;; `traverse-search-and-replace'
+;; `traverse-search-and-replace-all'
+;; `traverse-cp-or-mv-extfiles-in-dir'
+;; `traverse-build-tags-in-project'
+;; `traverse-toggle-split-window-h-v'
+;; `traverse-count-files-in-dir'
+;; `traverse-pprint-tree'
 
-;; You can use customize to set some variables : (eval with C-x C-e)
-;; (customize-group "traversedir")
+;;========LIMIT=========(DONT REMOVE!)
+;;
+;;;  * Non--interactive functions defined here:
+;; [EVAL] (traverse-auto-document-lisp-buffer :type 'function :prefix "traverse")
+;; `traverse-list-directory'
+;; `traverse-walk-directory'
+;; `traverse-comp-str-to-list'
+;; `traverse-check-only-lists'
+;; `traverse-find-readlines'
+;; `traverse-file-process'
+;; `traverse-file-process-ext'
+;; `traverse-buffer-process-ext'
+;; `traverse-occur-color-current-line'
+;; `traverse-button-func'
+;; `traverse-prepare-buffer'
+;; `traverse-read-regexp'
+;; `traverse-dired-get-marked-files'
+;; `traverse-dired-has-marked-files'
+;; `traverse-go-forward-or-backward'
+;; `traverse-window-split-h-or-t'
+;; `traverse-list-directories-in-tree'
+;; `traverse-list-files-in-tree'
+;; `traverse-apply-func-on-files'
+;; `traverse-apply-func-on-dirs'
+
+;;========LIMIT=========(DONT REMOVE!)
+;;
+;;;  * Internal variables defined here:
+;; [EVAL] (traverse-auto-document-lisp-buffer :type 'internal-variable :prefix "traverse")
+;; `traversedir-mode-map'
+;; `traverse-match-overlay-face'
+;; `traverse-show-regexp-delay'
+;; `traverse-keep-indent'
+;; `traverse-occur-use-miniwindow'
+;; `traverse-miniwindow-width'
+;; `traverse-count-occurences'
+;; `traverse-occur-overlay'
+;; `traverse-last-regexp'
+;; `traverse-replace-auth'
+
+;;========LIMIT=========(DONT REMOVE!)
+;;
+;;;  * Faces defined here:
+;; [EVAL] (traverse-auto-document-lisp-buffer :type 'faces :prefix "traverse")
+;; `traverse-match-face'
+;; `traverse-regex-face'
+;; `traverse-path-face'
+;; `traverse-overlay-face'
+
+;;========LIMIT=========(DONT REMOVE!)
+;;
+;;;  * User variables defined here:
+;; [EVAL] (traverse-auto-document-lisp-buffer :type 'user-variable :prefix "^traverse")
+;; `traverse-ignore-files'
+;; `traverse-ignore-dirs'
+;; `traverse-length-line'
+;; `traverse-file-function'
+;; `traverse-use-avfs'
+;; `traverse-avfs-default-directory'
+
+;;========LIMIT=========(DONT REMOVE!)
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Usage:
 ;; =====
@@ -185,12 +215,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Version:
-(defconst traverse-version "1.1.9")
+(defconst traverse-version "1.1.12")
 
 ;;; Code:
 
 (require 'derived)
 (eval-when-compile (require 'cl))
+
 
 (defvar traversedir-mode-map
   (let ((map (make-sparse-keymap)))
@@ -1220,6 +1251,69 @@ If `ext' apply func only on files with .`ext'."
     (dolist (i dirs-list)
       (funcall fn i))))
 
+
+(defmacro* traverse-auto-document-lisp-buffer (&key type prefix)
+  "Auto document tool for lisp code."
+  `(let* ((boundary-regexp "^;;=*LIMIT.*")
+          (regexp          (case ,type
+                             ('nested "^ +\(def\\(un\\|subst\\|advice\\)")
+                             ('command "\(def\\(un\\|subst\\)")
+                             ('internal-variable "\(defvar")
+                             ('user-variable "\(defcustom")
+                             ('faces "\(defface")
+                             ('function "\(def\\(un\\|subst\\|advice\\)")
+                             (t (error "Unknow type"))))
+          (fn-list         (traverse-find-readlines
+                            (current-buffer)
+                            regexp
+                            :insert-fn 'buffer))
+          beg end)
+     (insert "\n") (setq beg (point))
+     (save-excursion (when (re-search-forward boundary-regexp)
+                       (forward-line -1) (setq end (point))))
+     (delete-region beg end)
+     (dolist (i fn-list)
+       (let* ((elm     (cadr i))
+              (elm1    (replace-regexp-in-string "\*" "" elm))
+              (elm-mod (replace-regexp-in-string regexp "" elm1))
+              (elm-fin (replace-regexp-in-string "\(\\|\)" ""(car (split-string elm-mod)))))
+         (cond ((eq ,type 'command)
+                (when (commandp (intern elm-fin))
+                  (if ,prefix
+                      (when (string-match ,prefix elm-fin)
+                        (insert (concat ";; \`" elm-fin "\'\n")))
+                      (insert (concat ";; \`" elm-fin "\'\n")))))
+               ((eq ,type 'function)
+                (when (not (commandp (intern elm-fin)))
+                  (if ,prefix
+                      (when (string-match ,prefix elm-fin)
+                        (insert (concat ";; \`" elm-fin "\'\n")))
+                      (insert (concat ";; \`" elm-fin "\'\n")))))
+               ((eq ,type 'internal-variable)
+                (if ,prefix
+                    (when (string-match ,prefix elm-fin)
+                      (insert (concat ";; \`" elm-fin "\'\n")))
+                    (insert (concat ";; \`" elm-fin "\'\n"))))
+               ((eq ,type 'user-variable)
+                (if ,prefix
+                    (when (string-match ,prefix elm-fin)
+                      (insert (concat ";; \`" elm-fin "\'\n")))
+                    (insert (concat ";; \`" elm-fin "\'\n"))))
+               ((eq ,type 'faces)
+                (if ,prefix
+                    (when (string-match ,prefix elm-fin)
+                      (insert (concat ";; \`" elm-fin "\'\n")))
+                    (insert (concat ";; \`" elm-fin "\'\n"))))
+               ((eq ,type 'nested)
+                (if ,prefix
+                    (when (string-match ,prefix elm-fin)
+                      (insert (concat ";; \`" elm-fin "\'\n")))
+                    (insert (concat ";; \`" elm-fin "\'\n"))))
+               (t
+                (insert (concat ";; \`" elm-fin "\'\n"))))))))
+
+
+;; TODO use align-regexp here that is now part of emacs.
 ;;;###autoload
 (defun traverse-pprint-tree (tree)
   "PPrint the content of `tree'.

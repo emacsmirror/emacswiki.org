@@ -54,6 +54,52 @@ Better yet, use this to separate threads (puts space before and after the horizo
 == (Closed) Issues ==
 
 
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+[new:]
+
+[What's written at
+[[Icicles - Customizing Key Bindings#MinibufferBindings]]]
+does not work for  ##(define-key map [(meta space)] 'icicle-narrow-candidates)##. Meta-space is hard-coded somewhere. How can one change it? -- SpinuVit
+
+[new:DrewAdams:2009-09-10 17:16 UTC]
+`M-SPC' is not hard-coded; it is soft-coded. Customize `icicle-word-completion-keys' to something other than `M-SPC'. -- DrewAdams
+
+[new:]
+works fine, thanks. -- SpinuVit
+
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+[new:]
+
+Also modifying `C-h a'  to `icicle-apropos`  in `icicle-top-level-key-bindings' does not work :(. Any ideas. Thanks. -- SpinuVit
+
+[new:DrewAdams:2009-09-10 17:16 UTC]
+It works for me. But you need to remap the command that `C-h a' is bound to by default, `apropos-command'. In [[Customize]] , you click `INS' to add an entry, then choose `##Command to remap##' in the `##Value Menu##', then enter ##icicle-apropos## as the command to remap (under `Choice'), enter ##icicle-apropos## as the `Command', and enter ##t## as the value of `Condition'. Then set or save. It works for me. -- DrewAdams
+
+[new:]
+Yap, works!! I tried with ##nil## initially, that was the wrong cook.
+Thanks. -- SpinuVit
+
+
+
+
 <pre>
 
 </pre>

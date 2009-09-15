@@ -47,4 +47,4 @@ Indentation implementation details:
 
 Unrelated (but homonymous):
 
-* TabBarMode -- add a tab-bar to emacs giving each buffer it's own tab
+* TabBarMode -- add a tab-bar to emacs giving each buffer its own tab

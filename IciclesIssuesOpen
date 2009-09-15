@@ -127,9 +127,10 @@ The latest jumps directly to minibufer even if there is a sole completion or com
 
 My second part of the question was about popping \*completion\* buffer immediately after entering the minibuf (i.e. after second M-Tab). That for obviuous reasons - once one pressed M-TAB twice he defenitelly wants to see available completions.
 
-I really hope the point above could be sorted out. Iciles offers an unique feature for completion and it would be a pity if these minor inconsistencies spoiled the story. -- SpinuVit
+I really hope the point above could be sorted out. Iciles offers an unique feature for completion and it would be a pity if these minor inconsistencies spoiled the story.
 
-Many thanks.
+Many thanks. -- SpinuVit
+
 
 [new:DrewAdams:2009-09-10 16:45 UTC]
 1. No, your post was simply moved here, as the log said -- check RecentChanges to see changes.
@@ -148,43 +149,29 @@ HTH -- DrewAdams
 
 
 
+[new:] 
+(#4) In vanilla Emacs, first M-Tab completes the symbol in place, second (if any) opens the `*Completion*' buffer. 
 
-<pre>
+In Icy-mode first M-Tab jumps to minibufer (without completing to common match). Next, `TAB' or `RET' will complete to common match, next RET (TAB) will place the candidate in original buffer,( will open the `*Completions*' and only next `TAB` will start cycling).
 
-</pre>
-----
-<pre>
+So Icicles adds 2-3 additional key strokes even in a trivial case when there is obvious one completion candidate.
 
-</pre>
+wouldn't it be nicer if when there is only one completion candidate or common root just to insert it in place (as vanilla Emacs does), then next `M-TAB' will jump to minibuf and activate `*Completions*'? Looks like a reasonable and very efficient behavior to me.
 
-[new:]
+(#5) Thanks for the tip of <tt>[[icomplete+.el]]</tt>. Setting `icicle-show-Completions-initially-flag' does not work for me. I remember it worked some time back, and it was rather annoying for M-x, buffer and file completion, so no way can usefully use it. For in-buffer completion, instead, it would be really useful to have a separate configuration flag. Don't you think? 
 
-[What's written at
-[[Icicles - Customizing Key Bindings#MinibufferBindings]]]
-does not work for  ##(define-key map [(meta space)] 'icicle-narrow-candidates)##. Meta-space is hard-coded somewhere. How can one change it? -- SpinuVit
+For in-buffer completion the number of candidates is usually small, and as I already said when you press second M-Tab you probably don't know that to type next and expect to see all available completions.
 
-[new:DrewAdams:2009-09-10 17:16 UTC]
-`M-SPC' is not hard-coded; it is soft-coded. Customize `icicle-word-completion-keys' to something other than `M-SPC'. -- DrewAdams
+(#6) This is not an option. I like icicle `*completion*'  and not willing to abandon it because of a couple of additional keys (however annoying they can be). -- SpinuVit
 
 
+[new:DrewAdams:2009-09-14 14:58 UTC]
+(#4) Yes, it would be nicer, but it is not feasible, given the current design. When there are multiple candidates, I just call `completing-read'. There is no way to tell `completing-read' to also complete: it just opens the minibuffer to read with completion. Yes, it could be done, using `try-completion', as I did for `icicle-dabbrev-completion', but I probably won't do it, at least not anytime soon. This is just not my priority, sorry. But I will add it to my maybe-to-do list. As you say, there are typically few candidates, so the use of '''Icicles''' completion here is not that big an advantage -- vanilla `M-TAB' is a reasonable alternative, which you might prefer.
 
+(#5) No, I don't think so. See #4.
 
+(#6) You don't need to abandon '''Icicles''' completion in general, just because you forego it for in-buffer symbol completion. In addition, you might find `##C-M-/##' (`icicle-dabbrev-completion') useful in this context. It generally behaves more like what you want, I think. Its domain of candidates is not the same as `M-TAB', but it often DTRT. -- DrewAdams
 
-
-<pre>
-
-</pre>
-----
-<pre>
-
-</pre>
-
-[new:]
-
-Also modifying `C-h a'  to `icicle-apropos`  in `icicle-top-level-key-bindings' does not work :(. Any ideas. Thanks. -- SpinuVit
-
-[new:DrewAdams:2009-09-10 17:16 UTC]
-It works for me. But you need to remap the command that `C-h a' is bound to by default, `apropos-command'. In [[Customize]] , you click `INS' to add an entry, then choose `##Command to remap##' in the `##Value Menu##', then enter ##icicle-apropos## as the command to remap (under `Choice'), enter ##icicle-apropos## as the `Command', and enter ##t## as the value of `Condition'. Then set or save. It works for me. -- DrewAdams
 
 
 

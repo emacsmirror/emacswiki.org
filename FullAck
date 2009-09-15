@@ -2,5 +2,11 @@
 
 http://nschum.de/src/emacs/full-ack/full-ack.png
 
+On Debian you probably want to add this :
+
+(setq ack-executable (executable-find "ack-grep"))
+
+to make it works since the executable is called ack-grep and not ack
+
 -----
 CategoryExternalUtilities CategoryRegexp

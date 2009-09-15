@@ -17,7 +17,7 @@ MarkusKnittig has planned to spawn an objective ComparisonOfMuas.
 * [[Gnus]] is a news and mail reader -- http://www.gnus.org/ and CategoryGnus (Last Release: ngnus 0.3 2005/05/01)
 * KaMail -- http://www1.mirai.ne.jp/~gyo/xyzzy/kamail.html (Japanese) (dead link?)
 * mailx.el is a front-end to mailx for Emacs -- http://www.sfu.ca/~sabetts/mailx.el (dead link? Local copy: Lisp:mailx.el)
-* [[Mew]] Messaging in the Emacs World -- http://www.mew.org (Last Release 6.1 2008/06/06)
+* [[Mew]] Messaging in the Emacs World -- http://www.mew.org (Last Release 6.2 2008/12/24)
 * [[MH-E]], Emacs interface to the MH mail system -- http://mh-e.sourceforge.net/ (Last Release: 8.0 2006/05/06)
 * [[Rmail]] GNU Emacs default mail reader.
 * SimpleIMAPClient -- for entertainment purposes only.  
