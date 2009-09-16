@@ -1,4 +1,4 @@
-==Installing Debian on G1/G2 phone==
+==Installing Debian and Emacs on G1/G2 phone==
 
 There is a lot of online information for hacking HTC mobile phones on the [http://www.xda-developers.com/ xda-developers website]. 
 This includes the G1 and G2 google phones.
@@ -17,6 +17,72 @@ Then have a look at these simple [http://www.androidfanatic.com/cms/community-fo
 
 Once you have Debian installed you can just "apt-get emacs" to install emacs 22.
 
+== Using emacs for making calls and sending texts ==
+
+To access the android api from emacs you need to first install the android scripting environment which you can get [http://code.google.com/p/android-scripting/downloads/list here] (see [http://www.brighthub.com/mobile/google-android/articles/37151.aspx here] for how to install apk files).
+Then get it working in your Debian installation: see [http://forum.xda-developers.com/showthread.php?p=3957997#post3957997 here]
+
+With this recipe you can make phone calls from your [BbdbMode bbdb buffer]:
+# Make sure you have the android scripting environment installed and working in your Debian installation (see previously mentioned links)
+# Save the following python code to 'dialnumber.py' and save it to '/root/android/' in your Debian installation (you will need to create this directory):
+
+    #!/usr/bin/env python
+    
+    import android
+    import sys
+    droid = android.Android()
+    droid.callNumber(sys.argv[1])
+# You can now use the following function from the bbdb buffer to call the phone number of the record at point (but you must have an ASE shell terminal running on Android):
+
+    (defun aleblanc/bbdb-android-dial (phone force-area-code)
+      "Dial the number at point.
+    If the point is at the beginning of a record, dial the first
+    phone number.  Does not dial the extension.  Does not apply the
+    transformations from bbdb-dial-local-prefix-alist if a prefix arg
+    is given."
+      (interactive (list (bbdb-current-field)
+    		     current-prefix-arg))
+      (if (eq (car-safe phone) 'name)
+          (setq phone (car (bbdb-record-phones (bbdb-current-record)))))
+      (if (eq (car-safe phone) 'phone)
+          (setq phone (car (cdr phone))))
+      (or (vectorp phone) (error "not on a phone field"))
+    
+      (let* ((number (bbdb-phone-string phone)) shortnumber)
+        (when (not force-area-code)
+          (let ((alist bbdb-dial-local-prefix-alist))
+    	(while alist
+    	  (if (string-match (concat "^" (eval (caar alist))) number)
+    	      (setq shortnumber (concat (car (cdar alist))
+    					(substring number (match-end 0)))
+    		    alist nil))
+    	  (setq alist (cdr alist)))))
+    
+        ;; cut off the extension
+        (if (string-match "x[0-9]+$" number)
+    	(setq number (substring number 0 (match-beginning 0))))
+    
+        ;; This is terrifically Americanized...
+        ;; Leading 0 => local number (?)
+        (if (and (not shortnumber) bbdb-dial-local-prefix
+    	     (string-match "^0" number))
+    	(setq number (concat bbdb-dial-local-prefix number)))
+    
+        ;; Leading + => long distance/international number
+        (if (and (not shortnumber) bbdb-dial-long-distance-prefix
+    	     (string-match "^\+" number))
+    	(setq number (concat bbdb-dial-long-distance-prefix " "
+    			     (substring number 1))))
+    
+        ;; use the short number if it's available
+        (setq number (or shortnumber number))
+        (if (not bbdb-silent-running)
+    	(message "Dialing %s" number))
+        (shell-command (concat "export AP_PORT=$(netstat -napt|sed -n 's/^tcp.*127.0.0.1:\\([0-9]*\\).*LISTEN.*ase$/\\1/gp');/root/android/dialnumber.py " number))))
+
+[new:aleblanc:2009-09-15 18:33 UTC]
+
+I am working on code for sending texts...
 
 ----
 CategoryPorts

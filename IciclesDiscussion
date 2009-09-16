@@ -730,49 +730,8 @@ My suggestion is to try the default behavior a little more. If you still don't l
 '''Icicles''' is mainly for minibuffer completion, not completion of text in buffers. `icicle-lisp-complete-symbol' (`M-TAB') is one of the exceptions. -- DrewAdams
 
 
-
-
 [:LatestEntry]
 
-<pre>
-
-</pre>
-----
-<pre>
-
-</pre>
-
-[new:]
-
-Have you built Icicle for yourself or for others to use? Why to delete reasonable questions? Is it difficult to give a two words answer? Takes the same amount of time as to delete the post. -- SpinuVit
-
-
-[new:DrewAdams:2009-09-11 21:47 UTC]
-Since you obviously do not read the replies I write as log comments (see RecentChanges, or view the `View other revisions' link on this page), I will reply here:
-
-I have replied to you several times now. As I said in the log comments, I moved your questions and the replies to IciclesIssuesOpen. You will find them all there. Soon, I will delete this from here as well.
-
-And to answer your [[http://www.thefreedictionary.com/snotty snotty]] question:
-
-I built '''Icicles''' for fun -- my own fun and possibly the fun of others. If others find it useful or interesting, so much the better. I don't owe you anything, and I'm not charging you anything. If you don't like '''Icicles''', then don't use it. It's as simple as that. Believe me, I don't get any pleasure from imposing '''Icicles''' on someone who doesn't appreciate it. It does not make me happy to make you miserable.
-
-I have been very supportive in helping '''Icicles''' users, as I think any of them will attest. I do that out of generosity, however, not obligation. It costs me time and energy, obviously, and the payback is just the positive feeling that comes from helping others and knowing that what you've done has helped someone.
-
-But the desire to come to the aid of users who harbor an attitude such as you've expressed is, well, somewhat diminished. Arrogant, impatient demands do not incite helpfulness on the part of others (at least not on my part).  HTH -- DrewAdams
-
-
-[new:] Sorry Drew, My bad indeed. Emacs wiki diff does not show summary of the questions - thanks for pointing to the log section - had not notice it before :( (it really blinded me, seeing all my questions (3) deleted, and I could not find any other explanation than pure ill-will). 
-
-It indeed was rather thoughtless of me to accuse you of deliberately deleting my posts - sorry if I managed to hurt you in any way, out of my ignorance.
-
-As to you time and energy , I (as many others) sincerely appreciate it; a guy who developed one of the biggest emacs projects and is one of the best maintainers, merits all the respect. I started recently using Icicle, and am already in love with it.  
-
-Thanks for Icicles and for answers indeed. Deeply appreciated, and please have mercy, don't take to seriously a temperamental saying due to fullish misunderstanding.
-
-Humble Icicle User, SpinuVit
-
-[new:DrewAdams:2009-09-14 14:28 UTC]
-No problem. I figured it was something like that. Hope the replies at IciclesIssuesOpen help. If you have no problem in that regard, I'll move that discussion to IciclesIssuesClosed. Thx -- DrewAdams
 
 
 

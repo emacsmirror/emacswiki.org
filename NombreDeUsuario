@@ -1,4 +1,4 @@
-== Si usted tan solo desea leer ==
+== Si usted tan sólo desea leer ==
 
 Si espera que sus visitas a este sitio sólo sean para realizar consultas, ¡bienvenido!
 
@@ -14,10 +14,10 @@ El nombre de usuario será usado para marcar en CambiosRecientes todas las edici
 
 Las cookies son específicas a la máquina y navegador que usted usa, de modo que la cookie se perderá tan pronto utilice otro navegador o se conecte desde otro equipo.
 
-== Problemas con Cookies ==
+== Problemas con las cookies ==
 
 Parece que algunas personas pierden sus cookies. Ciertamente éstas funcionan para un grupo grande de personas. Así que en el momento se sospecha que tiene que ver con el navegador utilizado. Si usted experimenta algún problema en este sentido, por favor indique la versión de su navegador y versión de sistema operativo a continuación. Tal vez podamos restringir los casos. Otras ideas para resolver el problema serán muy apreciadas. :)
 
-== Nota Histórica ==
+== Nota histórica ==
 
 El script <nowiki>UseMod</nowiki> original, versión 0.92, almacenaba las preferencias del usuario, incluyendo el nombre de usuario en el servidor e identificaba a los usuarios mediante un ID numérico. Esto ya no es necesario.

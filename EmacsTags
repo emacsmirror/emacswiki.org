@@ -101,6 +101,8 @@ two possible improvements:
 
 You can use EtagsStack to see the history of which tags you have visited (using, for example, `##M-.##') and retrace your visits chronologically.
 
+An alternative (similar functionality, but with support for multiple tags types such as gtags, and additional operations such as deleting spurious tags) is http://github.org/markhepburn/tags-view
+
 == Use Tags to Complete Symbols ==
 
 You can use `M-x complete-tag' to get simple

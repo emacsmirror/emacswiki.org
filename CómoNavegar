@@ -1,0 +1,27 @@
+Lo mejor de EmacsWiki es que todos podemos contribuir. Sin embargo, antes de que edites una página, debes aprender a navegar.
+
+== Categorías ==
+
+Las páginas de Emacs Wiki estan organizadas en '''categorías'''. El MapaDelSitio lista todas las categorías.
+La mayoría de las categorías contienen información resumida sobre Emacs y las extensiones más conocidas.
+
+== Navegación por los encabezados y pies de página ==
+
+Los siguientes enlaces se repiten por ''cada'' página Wiki:
+
+* MapaDelSitio -- La página principal del sitio. Enlaza a las categorías.
+* WikiCómo -- Cómo usar y contribuir en Emacs Wiki.
+* [[Search|Buscar]]  --  ''Busca'' en la wiki de varias formas diferentes.
+* [ElispArea ÁreaLisp] -- Comparte código Emacs Lisp para extender o personalizar Emacs.
+* CambiosRecientes -- Cambios recientes en páginas de la Wiki.
+* [[Noticias]] -- Blog cronológico sobre la wiki (en inglés).
+
+Hay un enlace '''Editar esta página''' al final de cada página. No tengas miedo en añadir contenido o modificar el ya existente.
+
+
+== Enlaces y enlaces inversos ==
+
+Crear nuevas páginas y enlazarlas es fácil. Haciendo click sobre una palabra o frase te dará información sobre ella. El proceso inverso también es posible: haz click sobre el título de una página para encontrar todas las páginas wikis que la mencionan. En el caso de las páginas de categorías, encontrarás todas las páginas que pertenecen a esta categoría.
+
+----
+WikiCómo
