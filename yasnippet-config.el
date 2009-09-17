@@ -1,5 +1,5 @@
 ;;;; yasnippet-config.el --- Configuration of yasnippet.el
-;; $Id: yasnippet-config.el,v 1.3 2009/07/21 17:14:26 rubikitch Exp rubikitch $
+;; $Id: yasnippet-config.el,v 1.5 2009/09/16 09:40:08 rubikitch Exp rubikitch $
 
 ;; Copyright (C) 2009  rubikitch
 
@@ -50,6 +50,7 @@
 ;;
 ;; And the following to your ~/.emacs startup file.
 ;;
+;; (setq yas/trigger-key "TAB")
 ;; (require 'yasnippet-config)
 ;; (yas/setup "~/.emacs.d/plugins/yasnippet")
 ;;
@@ -58,6 +59,14 @@
 ;;; History:
 
 ;; $Log: yasnippet-config.el,v $
+;; Revision 1.5  2009/09/16 09:40:08  rubikitch
+;; Adjust to yasnippet 0.6.1
+;;
+;; Revision 1.4  2009/09/15 02:06:08  rubikitch
+;; * backward compatibility for anything-c-yasnippet.el and auto-complete-yasnippet.el
+;; * sample configuration of dropdown-list
+;; * oneshot snippet
+;;
 ;; Revision 1.3  2009/07/21 17:14:26  rubikitch
 ;; `yas/snippet-file-p': ignore substring error
 ;;
@@ -70,17 +79,27 @@
 
 ;;; Code:
 
-(defvar yasnippet-config-version "$Id: yasnippet-config.el,v 1.3 2009/07/21 17:14:26 rubikitch Exp rubikitch $")
+(defvar yasnippet-config-version "$Id: yasnippet-config.el,v 1.5 2009/09/16 09:40:08 rubikitch Exp rubikitch $")
 (eval-when-compile (require 'cl))
+
+(require 'yasnippet) ;; not yasnippet-bundle
+
+;;; Backward compatibility
+(unless (fboundp 'yas/snippet-table) ;for auto-complete-yasnippet.el and anything-c-yasnippet.el
+  (defalias 'yas/snippet-table 'yas/snippet-table-get-create)
+  (defalias 'yas/snippet-table-parent 'yas/snippet-table-parents))
 
 ;;; Setup
 (defun yas/setup (package-directory)
   ;; Ensure to end with /
   (setq package-directory (file-name-as-directory package-directory))
   (add-to-list 'load-path package-directory)
-  (require 'yasnippet) ;; not yasnippet-bundle
   (yas/initialize)
   (yas/load-directory (concat package-directory "snippets")))
+
+;;; dropdown-list
+;; (require 'dropdown-list)
+;; (setq yas/prompt-functions '(yas/dropdown-prompt))
 
 ;;; With `skk-mode'
 (defadvice skk-j-mode-on (after yasnippet activate)
@@ -131,18 +150,34 @@
 
 
 ;;; Automatic reload after snippet modification
-(defun yas/snippet-file-p (filename)
-  "Return non-nil if FILENAME is yasnippet snippet file."
-  (when filename
-    (setq filename (expand-file-name filename))
-    (loop for dir in yas/root-directory
-          for edir = (expand-file-name dir)
-          for len = (length edir)
-          thereis (equal edir (ignore-errors (substring filename 0 len))))))
-(defun yas/after-save-hook ()
-  (when (yas/snippet-file-p buffer-file-name)
-    (yas/reload-all)))
-(add-hook 'after-save-hook 'yas/after-save-hook)
+;;; It is not needed since v0.6
+;; (defun yas/snippet-file-p (filename)
+;;   "Return non-nil if FILENAME is yasnippet snippet file."
+;;   (when filename
+;;     (setq filename (expand-file-name filename))
+;;     (loop for dir in yas/root-directory
+;;           for edir = (expand-file-name dir)
+;;           for len = (length edir)
+;;           thereis (equal edir (ignore-errors (substring filename 0 len))))))
+;; (defun yas/after-save-hook ()
+;;   (when (yas/snippet-file-p buffer-file-name)
+;;     (yas/reload-all)))
+;; (add-hook 'after-save-hook 'yas/after-save-hook)
+
+;;; oneshot snippet
+(defvar yas/oneshot-snippet nil)
+(defun yas/register-oneshot-snippet (s e)
+  (interactive "r")
+  (setq yas/oneshot-snippet (buffer-substring-no-properties s e))
+  (delete-region s e)
+  (yas/expand-oneshot-snippet)
+  (message "%s" (substitute-command-keys "Press \\[yas/expand-oneshot-snippet] to expand.")))
+
+(defun yas/expand-oneshot-snippet ()
+  (interactive)
+  (if (string< "0.6" yas/version)
+      (yas/expand-snippet yas/oneshot-snippet)
+    (yas/expand-snippet (point) (point) yas/oneshot-snippet)))
 
 (provide 'yasnippet-config)
 

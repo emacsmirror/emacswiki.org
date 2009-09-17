@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Aug  6 18:43:47 2009 (-0700)
+;; Last-Updated: Wed Sep 16 11:24:53 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 495
+;;     Update #: 511
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -29,9 +29,9 @@
 ;;
 ;;  Macros defined here:
 ;;
-;;    `icicle-define-add-to-alist-command', `icicle-define-command',
-;;    `icicle-define-file-command', `icicle-define-sort-command',
-;;    `icicle-with-selected-window'.
+;;    `icicle-buffer-bindings', `icicle-define-add-to-alist-command',
+;;    `icicle-define-command', `icicle-define-file-command',
+;;    `icicle-define-sort-command', `icicle-with-selected-window'.
 ;;
 ;;  Functions defined here:
 ;;
@@ -173,6 +173,44 @@ Optional arg DONT-SAVE non-nil means do not call
       ,(unless dont-save `(customize-save-variable ',alist-var ,alist-var))
       (message "Added to `%s': `%S'" ',alist-var new-item))))
 
+(defmacro icicle-buffer-bindings (&optional more-bindings)
+  "Bindings to use in multi-command definitions for buffers.
+MORE-BINDINGS is a list of additional bindings, which are created
+before the others."
+  `(,@more-bindings
+    (completion-ignore-case           (or (and (boundp 'read-buffer-completion-ignore-case)
+                                           read-buffer-completion-ignore-case)
+                                       completion-ignore-case))
+    (icicle-must-match-regexp         icicle-buffer-match-regexp)
+    (icicle-must-not-match-regexp     icicle-buffer-no-match-regexp)
+    (icicle-must-pass-predicate       icicle-buffer-predicate)
+    (icicle-extra-candidates          icicle-buffer-extras)
+    (icicle-transform-function        'icicle-remove-dups-if-extras)
+    (icicle-sort-function             (or icicle-buffer-sort icicle-sort-function))
+    (icicle-sort-functions-alist
+     (append (list
+              '("by last access")       ; Renamed from "turned OFF'.
+              '("*...* last" . icicle-buffer-sort-*...*-last)
+              '("by buffer size" . icicle-buffer-smaller-p)
+              '("by major mode name" . icicle-major-mode-name-less-p)
+              (and (fboundp 'icicle-mode-line-name-less-p)
+               '("by mode-line mode name" . icicle-mode-line-name-less-p))
+              '("by file/process name" . icicle-buffer-file/process-name-less-p))
+      (delete '("turned OFF") icicle-sort-functions-alist)))
+    (icicle-require-match-flag        icicle-buffer-require-match-flag)
+    (icicle-ignore-space-prefix-flag  icicle-buffer-ignore-space-prefix-flag)
+    (icicle-candidate-alt-action-fn
+     (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "buffer")))
+    (icicle-all-candidates-list-alt-action-fn
+     (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "buffer")))
+    (icicle-delete-candidate-object   'icicle-kill-a-buffer) ; `S-delete' kills current buffer.
+    (bufflist
+     (if current-prefix-arg
+         (if (wholenump (prefix-numeric-value current-prefix-arg))
+             (icicle-remove-if-not #'(lambda (bf) (buffer-file-name bf)) (buffer-list))
+           (cdr (assq 'buffer-list (frame-parameters))))
+       (buffer-list)))))
+
 (defmacro icicle-define-command
     (command doc-string function prompt collection &optional
      predicate require-match initial-input hist def inherit-input-method
@@ -195,6 +233,9 @@ BINDINGS is a list of `let*' bindings added around the command code.
 
   `orig-buff'   is bound to (current-buffer)
   `orig-window' is bound to (selected-window)
+BINDINGS is macroexpanded, so it can also be a macro call that expands
+to a list of bindings.  For example, you can use
+`icicle-buffer-bindings' here.
 
 In case of user quit (`C-g') or error, an attempt is made to restore
 the original buffer.
@@ -221,7 +262,7 @@ In order, the created command does this:
 
 The created command also binds `icicle-candidate-action-fn' to a
 function that calls FUNCTION on the current completion candidate.
-Note that BINDINGS are of course not in effect within
+Note that the BINDINGS are of course not in effect within
 `icicle-candidate-action-fn'."
   `(defun ,command ()
     ,(concat doc-string "\n\nRead input, then "
@@ -252,7 +293,7 @@ This is an Icicles command - see command `icicle-mode'.")
     ,(and (not not-interactive-p) '(interactive))
     (let* ((orig-buff    (current-buffer))
            (orig-window  (selected-window))
-           ,@bindings
+           ,@(macroexpand bindings)
            (icicle-candidate-action-fn
             (lambda (candidate)
               (let ((minibuffer-completion-table      minibuffer-completion-table)
@@ -329,6 +370,9 @@ BINDINGS is a list of `let*' bindings added around the command code.
 
   `orig-buff'   is bound to (current-buffer)
   `orig-window' is bound to (selected-window)
+BINDINGS is macroexpanded, so it can also be a macro call that expands
+to a list of bindings.  For example, you can use
+`icicle-buffer-bindings' here.
 
 In case of user quit (`C-g') or error, an attempt is made to restore
 the original buffer.
@@ -354,7 +398,7 @@ In order, the created command does this:
 
 The created command also binds `icicle-candidate-action-fn' to a
 function that calls FUNCTION on the current completion candidate.
-Note that BINDINGS are of course not in effect within
+Note that the BINDINGS are of course not in effect within
 `icicle-candidate-action-fn'."
   `(defun ,command ()
     ,(concat doc-string "\n\nRead input, then "
@@ -385,7 +429,7 @@ This is an Icicles command - see command `icicle-mode'.")
     ,(and (not not-interactive-p) '(interactive))
     (let* ((orig-buff    (current-buffer))
            (orig-window  (selected-window))
-           ,@bindings
+           ,@(macroexpand bindings)
            (icicle-candidate-action-fn
             (lambda (candidate)
               (let ((minibuffer-completion-table      minibuffer-completion-table)

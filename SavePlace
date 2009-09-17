@@ -1,7 +1,9 @@
 Purpose: When you visit a file, point goes to the last place
 where it was when you previously visited the same file.
 
-How to use it -- add the following to your InitFile:
+To use it, turn it on in the options menu - "Save place in files between Sessions"
+
+Alternatively, you could add the following to your InitFile:
 
     (require 'saveplace)
     (setq-default save-place t)

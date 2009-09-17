@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Sep  5 11:43:44 2009 (-0700)
+;; Last-Updated: Wed Sep 16 10:06:58 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 22583
+;;     Update #: 22585
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -92,7 +92,7 @@
 ;;
 ;;  Macros defined in Icicles:
 ;;
-;;    `icicle-define-add-to-alist-command',
+;;    `icicle-buffer-bindings', `icicle-define-add-to-alist-command',
 ;;    `icicle-define-bookmark-other-window-command',
 ;;    `icicle-define-command', `icicle-define-file-command',
 ;;    `icicle-define-search-bookmark-command',
@@ -176,8 +176,9 @@
 ;;    `icicle-Info-index', `icicle-Info-index-20',
 ;;    `icicle-Info-index-cmd', `icicle-Info-menu',
 ;;    `icicle-Info-menu-cmd', `icicle-Info-virtual-book',
-;;    `icicle-insert-char', `icicle-insert-thesaurus-entry',
-;;    `icicle-keyword-list', `icicle-kill-buffer', `icicle-kmacro',
+;;    `icicle-insert-buffer', `icicle-insert-char',
+;;    `icicle-insert-thesaurus-entry', `icicle-keyword-list',
+;;    `icicle-kill-buffer', `icicle-kmacro',
 ;;    `icicle-lisp-complete-symbol', `icicle-locate-file',
 ;;    `icicle-locate-file-other-window', `icicle-mode', `icy-mode',
 ;;    `icicle-object-action', `icicle-occur',

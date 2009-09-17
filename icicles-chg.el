@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Sep 12 11:01:38 2009 (-0700)
+;; Last-Updated: Wed Sep 16 11:37:15 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 4366
+;;     Update #: 4382
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2009/09/16 dadams
+;;     Added: icicle-insert-buffer.
+;;     icicle-kill-buffer, icicle-buffer(-other-window), icicle-add-buffer-candidate:
+;;       Use icicle-buffer-bindings (new macro).
 ;; 2009/08/29 dadams
 ;;     Added: icicle-define-bookmark-other-window-command, icicle-select-bookmarked-region,
 ;;            icicle-bookmark(-region|-info|-gnus|-w3m|(-non|-local|-remote)-file)-other-window.
@@ -1494,6 +1498,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mac.el'")
 ;;
+;; 2009/09/16 dadams
+;;     Added: icicle-buffer-bindings.
+;;     icicle-define(-file)-command: Macroexpand bindings, (e.g. to use icicle-buffer-bindings).
 ;; 2009/04/28 dadams
 ;;     Moved icicle-choose-action-for-type to icicles-fn.el and changed to a function.
 ;; 2009/04/26 dadams
@@ -2478,6 +2485,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2009/09/16 dadams
+;;     icy-mode: Add icicle-insert-buffer to doc string.
+;;     icicle-define-icicle-maps: Added icicle-insert-buffer to icicle-menu-map.
 ;; 2009/09/10 dadams
 ;;     icicle-bind-key-completion-keys-in-keymaps-from: Don't exclude menu maps.
 ;; 2009/09/03 dadams
@@ -3311,6 +3321,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2009/09/16 dadams
+;;     icicle-top-level-key-bindings: Added remap for icicle-insert-buffer.
 ;; 2009/09/05 dadams
 ;;     icicle-keymaps-for-key-completion: Added facemenu-keymap.
 ;;     icicle-search-replace-common-match-flag: Fixed doc string: C-M-| -> M-;.

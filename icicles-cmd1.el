@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Sep  2 16:31:36 2009 (-0700)
+;; Last-Updated: Wed Sep 16 11:34:11 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 19613
+;;     Update #: 19655
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -117,9 +117,10 @@
 ;;    (+)`icicle-find-file-other-window', (+)`icicle-find-first-tag',
 ;;    (+)`icicle-find-first-tag-other-window', (+)`icicle-find-tag',
 ;;    `icicle-grep-saved-file-candidates',
-;;    `icicle-gud-gdb-complete-command', (+)`icicle-kill-buffer',
-;;    (+)`icicle-kmacro', `icicle-lisp-complete-symbol',
-;;    (+)`icicle-locate-file', (+)`icicle-locate-file-other-window',
+;;    `icicle-gud-gdb-complete-command', (+)`icicle-insert-buffer',
+;;    (+)`icicle-kill-buffer', (+)`icicle-kmacro',
+;;    `icicle-lisp-complete-symbol', (+)`icicle-locate-file',
+;;    (+)`icicle-locate-file-other-window',
 ;;    (+)`icicle-other-window-or-frame', `icicle-pop-tag-mark',
 ;;    `icicle-pp-eval-expression', (+)`icicle-recent-file',
 ;;    (+)`icicle-recent-file-other-window',
@@ -982,8 +983,7 @@ if there is a suitable one already."
                    my-obarray
                    (or (eq dabbrev--last-completion-buffer (current-buffer))
                        (and (window-minibuffer-p (selected-window))
-                            (eq dabbrev--last-completion-buffer
-                                (dabbrev--minibuffer-origin))))
+                            (eq dabbrev--last-completion-buffer (dabbrev--minibuffer-origin))))
                    dabbrev--last-abbreviation
                    (>= (length abbrev) (length dabbrev--last-abbreviation))
                    (string= dabbrev--last-abbreviation
@@ -1262,45 +1262,46 @@ control completion behaviour using `bbdb-completion-type'."
          ;; Collect all the dwim-addresses for each completion, but only once for each record.
          ;; Add if the net is part of the completions.
          (bbdb-mapc #'(lambda (sym)
-                        (bbdb-mapc #'(lambda (rec)
-                                       (unless (member rec uniq)
-                                         (setq uniq  (cons rec uniq)
-                                               nets  (bbdb-record-net rec)
-                                               name  (downcase (or (bbdb-record-name rec) ""))
-                                               akas  (mapcar 'downcase (bbdb-record-aka rec)))
-                                         (while nets
-                                           (setq net  (car nets))
-                                           (when (cond
-                                                   ((and (member bbdb-completion-type ; Primary
-                                                                 '(primary primary-or-name))
-                                                         (member (intern-soft (downcase net) ht)
-                                                                 all-the-completions))
-                                                    (setq nets  ())
-                                                    t)
-                                                   ((and name (member bbdb-completion-type ; Name
-                                                                      '(nil name primary-or-name))
-                                                         (let ((cname  (symbol-name sym)))
-                                                           (or (string= cname name)
-                                                               (member cname akas))))
-                                                    (setq name  nil)
-                                                    t)
-                                                   ((and (member bbdb-completion-type '(nil net)) ; Net
-                                                         (member (intern-soft (downcase net) ht)
-                                                                 all-the-completions)))
-                                                   ;; (name-or-)primary
-                                                   ((and (member bbdb-completion-type
-                                                                 '(name-or-primary))
-                                                         (let ((cname  (symbol-name sym)))
-                                                           (or (string= cname name)
-                                                               (member cname akas))))
-                                                    (setq nets  ())
-                                                    t))
-                                             (setq dwim-completions
-                                                   (cons (bbdb-dwim-net-address rec net)
-                                                         dwim-completions))
-                                             (when exact-match (setq nets  ())))
-                                           (setq nets  (cdr nets)))))
-                                   (symbol-value sym)))
+                        (bbdb-mapc
+                         #'(lambda (rec)
+                             (unless (member rec uniq)
+                               (setq uniq  (cons rec uniq)
+                                     nets  (bbdb-record-net rec)
+                                     name  (downcase (or (bbdb-record-name rec) ""))
+                                     akas  (mapcar 'downcase (bbdb-record-aka rec)))
+                               (while nets
+                                 (setq net  (car nets))
+                                 (when (cond
+                                         ((and (member bbdb-completion-type ; Primary
+                                                       '(primary primary-or-name))
+                                               (member (intern-soft (downcase net) ht)
+                                                       all-the-completions))
+                                          (setq nets  ())
+                                          t)
+                                         ((and name (member bbdb-completion-type ; Name
+                                                            '(nil name primary-or-name))
+                                               (let ((cname  (symbol-name sym)))
+                                                 (or (string= cname name)
+                                                     (member cname akas))))
+                                          (setq name  nil)
+                                          t)
+                                         ((and (member bbdb-completion-type '(nil net)) ; Net
+                                               (member (intern-soft (downcase net) ht)
+                                                       all-the-completions)))
+                                         ;; (name-or-)primary
+                                         ((and (member bbdb-completion-type
+                                                       '(name-or-primary))
+                                               (let ((cname  (symbol-name sym)))
+                                                 (or (string= cname name)
+                                                     (member cname akas))))
+                                          (setq nets  ())
+                                          t))
+                                   (setq dwim-completions
+                                         (cons (bbdb-dwim-net-address rec net)
+                                               dwim-completions))
+                                   (when exact-match (setq nets  ())))
+                                 (setq nets  (cdr nets)))))
+                         (symbol-value sym)))
                     all-the-completions)
          (cond ((and dwim-completions (null (cdr dwim-completions))) ; Insert the unique match.
                 (delete-region beg end) (insert (car dwim-completions)) (message ""))
@@ -3521,37 +3522,10 @@ noninteractively.  Lisp code can bind `current-prefix-arg' to control
 the behavior."                          ; Doc string
   icicle-kill-a-buffer-and-update-completions ; Function to perform the action
   "Kill buffer: "                       ; `completing-read' args
-  (mapcar #'(lambda (buf) (list (buffer-name buf)))
-          (if current-prefix-arg
-              (if (wholenump (prefix-numeric-value current-prefix-arg))
-                  (icicle-remove-if-not #'(lambda (bf) (buffer-file-name bf)) (buffer-list))
-                (cdr (assq 'buffer-list (frame-parameters))))
-            (buffer-list)))
-  nil t nil 'buffer-name-history (buffer-name (current-buffer)) nil
-  ((completion-ignore-case           (or (and (boundp 'read-buffer-completion-ignore-case)
-                                              read-buffer-completion-ignore-case)
-                                         completion-ignore-case))
-   (icicle-must-match-regexp         icicle-buffer-match-regexp) ; Additional bindings
-   (icicle-must-not-match-regexp     icicle-buffer-no-match-regexp)
-   (icicle-must-pass-predicate       icicle-buffer-predicate)
-   (icicle-extra-candidates          icicle-buffer-extras)
-   (icicle-transform-function        'icicle-remove-dups-if-extras)
-   (icicle-sort-function             (or icicle-buffer-sort icicle-sort-function))
-   (icicle-sort-functions-alist
-    (append (list '("by last access")   ; Renamed from "turned OFF'.
-                  '("*...* last" . icicle-buffer-sort-*...*-last)
-                  '("by buffer size" . icicle-buffer-smaller-p)
-                  '("by major mode name" . icicle-major-mode-name-less-p)
-                  (and (fboundp 'icicle-mode-line-name-less-p)
-                       '("by mode-line mode name" . icicle-mode-line-name-less-p))
-                  '("by file/process name" . icicle-buffer-file/process-name-less-p))
-            (delete '("turned OFF") icicle-sort-functions-alist)))
-   (icicle-require-match-flag        icicle-buffer-require-match-flag)
-   (icicle-ignore-space-prefix-flag  icicle-buffer-ignore-space-prefix-flag)
-   (icicle-candidate-alt-action-fn
-    (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "buffer")))
-   (icicle-all-candidates-list-alt-action-fn
-    (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "buffer")))))
+  (mapcar #'(lambda (buf) (list (buffer-name buf))) bufflist) nil
+  (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ; Emacs23.
+  nil 'buffer-name-history (buffer-name (current-buffer)) nil
+  (icicle-buffer-bindings))             ; Bindings
 
 (defun icicle-kill-a-buffer-and-update-completions (buf)
   "Kill buffer BUF and update the set of completions."
@@ -3610,39 +3584,9 @@ the behavior."                          ; Doc string
   (mapcar #'(lambda (buf) (list (buffer-name buf))) bufflist) nil
   (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ; Emacs23.
   nil 'buffer-name-history (icicle-default-buffer-names) nil
-  ((completion-ignore-case           (or (and (boundp 'read-buffer-completion-ignore-case) ; Bindings
-                                              read-buffer-completion-ignore-case)
-                                         completion-ignore-case))
-   (icicle-must-match-regexp         icicle-buffer-match-regexp)
-   (icicle-must-not-match-regexp     icicle-buffer-no-match-regexp)
-   (icicle-must-pass-predicate       icicle-buffer-predicate)
-   (icicle-extra-candidates          icicle-buffer-extras)
-   (icicle-transform-function        'icicle-remove-dups-if-extras)
-   (icicle-sort-function             (or icicle-buffer-sort icicle-sort-function))
-   (icicle-sort-functions-alist
-    (append (list '("by last access")   ; Renamed from "turned OFF'.
-                  '("*...* last" . icicle-buffer-sort-*...*-last)
-                  '("by buffer size" . icicle-buffer-smaller-p)
-                  '("by major mode name" . icicle-major-mode-name-less-p)
-                  (and (fboundp 'icicle-mode-line-name-less-p)
-                       '("by mode-line mode name" . icicle-mode-line-name-less-p))
-                  '("by file/process name" . icicle-buffer-file/process-name-less-p))
-            (delete '("turned OFF") icicle-sort-functions-alist)))
-   (icicle-require-match-flag        icicle-buffer-require-match-flag)
-   (icicle-ignore-space-prefix-flag  icicle-buffer-ignore-space-prefix-flag)
-   (icicle-candidate-alt-action-fn
-    (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "buffer")))
-   (icicle-all-candidates-list-alt-action-fn
-    (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "buffer")))
-   (icicle-delete-candidate-object   'icicle-kill-a-buffer) ; `S-delete' kills current buffer.
-   (bufflist
-    (if current-prefix-arg
-        (if (wholenump (prefix-numeric-value current-prefix-arg))
-            (icicle-remove-if-not #'(lambda (bf) (buffer-file-name bf)) (buffer-list))
-          (cdr (assq 'buffer-list (frame-parameters))))
-      (buffer-list)))))
+  (icicle-buffer-bindings))              ; Bindings
 
-;; Free var here: `bufflist' is bound by `icicle-buffer*'.
+;; Free var here: `bufflist' is bound by `icicle-buffer-bindings'.
 (defun icicle-default-buffer-names ()
   "Default buffer names (Emacs 23+) or name (< Emacs 23)."
   (let ((bname  (buffer-name (if (fboundp 'another-buffer) ; In `misc-fns.el'.
@@ -3656,6 +3600,42 @@ the behavior."                          ; Doc string
       bname)))
 
 ;;;###autoload
+(icicle-define-command icicle-insert-buffer
+  "Multi-command version of `insert-buffer'.
+With a positive prefix arg, only buffers visiting files are candidates.
+With a negative prefix arg, only buffers associated with the selected
+frame are candidates.
+
+You can use `S-delete' during completion to kill a candidate buffer.
+
+These options, when non-nil, control candidate matching and filtering:
+
+ `icicle-buffer-ignore-space-prefix-flag' - Ignore space-prefix names
+ `icicle-buffer-extras'             - Extra buffers to display
+ `icicle-buffer-match-regexp'       - Regexp that buffers must match
+ `icicle-buffer-no-match-regexp'    - Regexp buffers must not match
+ `icicle-buffer-predicate'          - Predicate buffer must satisfy
+ `icicle-buffer-sort'               - Sort function for candidates
+
+For example, to show only buffers that are associated with files, set
+`icicle-buffer-predicate' to (lambda (buf) (buffer-file-name buf)).
+
+Option `icicle-buffer-require-match-flag' can be used to override
+option `icicle-require-match-flag'.
+
+See also command `icicle-buffer-config'.
+
+Note: The prefix arg is tested, even when this is called
+noninteractively.  Lisp code can bind `current-prefix-arg' to control
+the behavior."                          ; Doc string
+  insert-buffer                         ;  Function to perform the action
+  "Buffer: "                            ; `completing-read' args
+  (mapcar #'(lambda (buf) (list (buffer-name buf))) bufflist) nil
+  (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ; Emacs23.
+  nil 'buffer-name-history (icicle-default-buffer-names) nil
+  (icicle-buffer-bindings))             ; Bindings
+
+;;;###autoload
 (icicle-define-command icicle-buffer-other-window ; Bound to `C-x 4 b' in Icicle mode.
   "Switch to a different buffer in another window.
 Same as `icicle-buffer' except it uses a different window." ; Doc string
@@ -3664,37 +3644,7 @@ Same as `icicle-buffer' except it uses a different window." ; Doc string
   (mapcar #'(lambda (buf) (list (buffer-name buf))) bufflist) nil
   (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ; Emacs23.
   nil 'buffer-name-history (icicle-default-buffer-names) nil
-  ((completion-ignore-case           (or (and (boundp 'read-buffer-completion-ignore-case) ; Bindings
-                                              read-buffer-completion-ignore-case)
-                                         completion-ignore-case))
-   (icicle-must-match-regexp         icicle-buffer-match-regexp)
-   (icicle-must-not-match-regexp     icicle-buffer-no-match-regexp)
-   (icicle-must-pass-predicate       icicle-buffer-predicate)
-   (icicle-extra-candidates          icicle-buffer-extras)
-   (icicle-transform-function        'icicle-remove-dups-if-extras)
-   (icicle-sort-function             (or icicle-buffer-sort icicle-sort-function))
-   (icicle-sort-functions-alist
-    (append (list '("by last access")   ; Renamed from "turned OFF'.
-                  '("*...* last" . icicle-buffer-sort-*...*-last)
-                  '("by buffer size" . icicle-buffer-smaller-p)
-                  '("by major mode name" . icicle-major-mode-name-less-p)
-                  (and (fboundp 'icicle-mode-line-name-less-p)
-                       '("by mode-line mode name" . icicle-mode-line-name-less-p))
-                  '("by file/process name" . icicle-buffer-file/process-name-less-p))
-            (delete '("turned OFF") icicle-sort-functions-alist)))
-   (icicle-require-match-flag        icicle-buffer-require-match-flag)
-   (icicle-ignore-space-prefix-flag  icicle-buffer-ignore-space-prefix-flag)
-   (icicle-candidate-alt-action-fn
-    (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "buffer")))
-   (icicle-all-candidates-list-alt-action-fn
-    (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "buffer")))
-   (icicle-delete-candidate-object   'icicle-kill-a-buffer) ; `S-delete' kills current buffer.
-   (bufflist
-    (if current-prefix-arg
-        (if (wholenump (prefix-numeric-value current-prefix-arg))
-            (icicle-remove-if-not #'(lambda (bf) (buffer-file-name bf)) (buffer-list))
-          (cdr (assq 'buffer-list (frame-parameters))))
-      (buffer-list)))))
+  (icicle-buffer-bindings))              ; Bindings
 
 ;;;###autoload
 (icicle-define-command icicle-add-buffer-candidate ; Command name
@@ -3715,21 +3665,10 @@ the behavior."                          ; Doc string
     (funcall icicle-customize-save-variable-function 'icicle-buffer-extras icicle-buffer-extras)
     (message "Buffer `%s' added to always-show buffers" buf))
   "Buffer candidate to show always: "   ; `completing-read' args
-  (mapcar #'(lambda (buf) (list (buffer-name buf)))
-          (if current-prefix-arg
-              (if (wholenump (prefix-numeric-value current-prefix-arg))
-                  (icicle-remove-if-not #'(lambda (bf) (buffer-file-name bf)) (buffer-list))
-                (cdr (assq 'buffer-list (frame-parameters))))
-            (buffer-list)))
-  nil (and (fboundp 'confirm-nonexistent-file-or-buffer) ; Emacs23.
-           (confirm-nonexistent-file-or-buffer))
+  (mapcar #'(lambda (buf) (list (buffer-name buf))) bufflist) nil
+  (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ; Emacs23.
   nil 'buffer-name-history (icicle-default-buffer-names) nil
-  ((icicle-candidate-alt-action-fn      ; Bindings
-    (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "buffer")))
-   (icicle-all-candidates-list-alt-action-fn
-    (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "buffer")))
-   (icicle-delete-candidate-object        'icicle-remove-buffer-candidate-action)
-   (icicle-use-candidates-only-once-flag  t)))
+  (icicle-buffer-bindings ((icicle-use-candidates-only-once-flag  t)))) ; Bindings
 
 ;;;###autoload
 (icicle-define-command icicle-remove-buffer-candidate ; Command name

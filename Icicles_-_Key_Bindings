@@ -135,6 +135,7 @@ by '''Icicles''' commands:
 [:icicle-Info-goto-node]
 [:icicle-Info-index]
 [:icicle-Info-menu]
+[:icicle-insert-buffer]
 [:icicle-kill-buffer]
 [:icicle-lisp-complete-symbol]
 [:icicle-pop-tag-mark]
@@ -160,6 +161,7 @@ by '''Icicles''' commands:
  `Info-goto-node'...................`icicle-Info-goto-node'
  `Info-index'.......................`icicle-Info-index'
  `Info-menu'........................`icicle-Info-menu'
+ `insert-buffer'....................`icicle-insert-buffer'
  `kill-buffer'......................`icicle-kill-buffer'
  `lisp-complete-symbol'.............`icicle-lisp-complete-symbol'
  `other-frame'......................`icicle-select-frame'
@@ -235,7 +237,7 @@ to keys in ''Icicle'' mode -- they are ''not'' bound by '''Icicles''' (except to
 * `icicle-apropos-variable' -- Enhanced `apropos-variable'
 * `icicle-apropos-zippy' -- Show matching Zippy quotes
 * `icicle-bookmark'     -- Jump to a [[BookMarks|bookmark]]
-* `icicle-buffer-config' -- Pick `icicle-buffer' options
+* `icicle-buffer-config' -- Pick options for '''Icicles''' buffer commands
 * `icicle-buffer-list'  -- Choose a [[list]] of buffer names
 * `icicle-clear-history' -- Clear minibuffer histories
 * `icicle-color-theme'  -- Change color theme

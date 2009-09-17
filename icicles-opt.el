@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Sep 10 17:24:58 2009 (-0700)
+;; Last-Updated: Wed Sep 16 10:36:25 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 3243
+;;     Update #: 3249
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -564,11 +564,14 @@ whatever OLD is bound to in MAP, or in OLDMAP, if provided."
     ,@(and (require 'kmacro nil t)      ; (Emacs 22+)
            `((,(kbd "S-<f4>")    icicle-kmacro            t))) ; `S-f4'
     (abort-recursive-edit           icicle-abort-recursive-edit     t) ; `C-]'
-    (minibuffer-keyboard-quit     icicle-abort-recursive-edit ; `C-g' (minibuffer - `delsel.el')
+    (minibuffer-keyboard-quit      icicle-abort-recursive-edit ; `C-g' (minibuffer - `delsel.el')
      (fboundp 'minibuffer-keyboard-quit))
     (execute-extended-command       icicle-execute-extended-command t) ; `M-x'
     (switch-to-buffer               icicle-buffer                   t) ; `C-x b'
     (switch-to-buffer-other-window  icicle-buffer-other-window      t) ; `C-x 4 b'
+    ;; There are no key bindings in vanilla Emacs for `insert-buffer'.
+    ;; If you use `setup-keys.el', then these are its bindings: `C-S-insert', `M-S-f1'.
+    (insert-buffer                  icicle-insert-buffer            t)
     (find-file                      icicle-file                     t) ; `C-x C-f'
     (find-file-other-window         icicle-file-other-window        t) ; `C-x 4 f'
     (bookmark-set                   icicle-bookmark-cmd             t) ; `C-x r m'

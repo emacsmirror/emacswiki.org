@@ -314,11 +314,12 @@ If you would like emacs to prompt if there are unsaved buffers or existing clien
 {{{
     emacsclient -e '(client-save-kill-emacs)'
 }}}
+The display on which the the new frame should be opened can optionally be specified.
 
 Note: If a prompt is required this function will always open an frame as an x window.
 
 {{{
-(defun client-save-kill-emacs()
+(defun client-save-kill-emacs(&optional display)
   " This is a function that can bu used to shutdown save buffers and 
 shutdown the emacs daemon. It should be called using 
 emacsclient -e '(client-save-kill-emacs)'.  This function will
@@ -335,13 +336,13 @@ be prompted."
 				       ))  
 
     ; Create a new frame if prompts are needed.
-    (when (or modified-buffers active-clients-or-frames) 
-      (progn
-	(message "window-system: %s" (window-system))
-	(when (not (eq (window-system) "x"))
-	  (x-initialize-window-system))
-	(select-frame (make-frame-on-display (getenv "DISPLAY") '((window-system . x))))))   
-
+    (when (or modified-buffers active-clients-or-frames)
+      (when (not (eq window-system 'x))
+	(message "Initializing x windows system.")
+	(x-initialize-window-system))
+      (when (not display) (setq display (getenv "DISPLAY")))
+      (message "Opening frame on display: %s" display)
+      (select-frame (make-frame-on-display display '((window-system . x)))))
 
     ; Save the current frame.  
     (setq new-frame (selected-frame))

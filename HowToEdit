@@ -1,21 +1,26 @@
-[[es:ComoEditar]]
 [[fr:CommentEditer]]
-Una wiki es un sitio web colaboratibo, tu puedes contribuir  '''''You can contribute'''''. Before doing so, take a moment to visit WikiOrganization to learn how EmacsWiki is organized.
+A '''wiki''' is a collaborative web site.  '''''You can contribute'''''. Before doing so, take a moment to visit WikiOrganization to learn how EmacsWiki is organized.
 
-* Para editar una página existente, pincha '''Editar esta página''' al final de la página en cuestión.
-** En los navegadores más comunes '''''Alt-e''''' basta para entrar en el modo de edición.
-* OddmuseMode Te permite editar EmacsWiki desde emacs, Ver también [[Yaoddmuse]].
-* EdicionMenor sobre la caja "Este cambio es una edición menor"
-* NombreDeUsuario -- How to sign your wiki contributions with your user name.
-* ReglasDeFormato -- Cómo formatear una página, crear enlaces, etc... Emacs wiki usa el motor [http://www.oddmuse.org/ Oddmuse]
-* CreandoNuevasPaginas -- Cómo crear páginas. Un buen inicio es añadir tu NombreDeUsario. Un buen comienzo es añadir tu NombreDeUsuario a CategoryHomepage.
-* Area elisp -- Cómo subir un archivo elisp
+
+* To ''edit'' an existing wiki page, click the "'''Edit this page'''" link at the bottom of the page.
+** '''Shortcut:''' In common browsers, to edit a page, just use `'''<code>Alt e</code>'''', on Mac OS X + Firefox, it's `'''<code>Ctrl e</code>'''' (In some browsers, you will need to hit `RETURN' after that.)
+* OddmuseMode enables you to edit EmacsWiki in Emacs. (See also [[Yaoddmuse]]).
+* MinorEdit --  About the "This change is a minor edit." checkbox found on edit pages.
+* UserName -- How to sign your wiki contributions with your user name.
+* '''TextFormattingRules''' -- How to ''format'' a wiki page, ''create links'', and so on. The Emacs Wiki uses the [http://www.oddmuse.org/ Oddmuse] wiki engine, which defines the formatting rules.
+* CreateNewPages -- How to ''create new wiki pages''. A good way to start your first page is by adding your UserName to CategoryHomepage.
+* ElispArea -- How to ''upload'' an Emacs Lisp file.
 * UploadingImages -- How to add images to wiki pages.
-* UsandoAvatares -- Cómo usar un ávatar en las discusiones.
-* BorrandoPaginas -- Borrando páginas.
-* RedireccionDePaginas -- Redirigiendo unas páginas a otras.
-* AyudaDeTraduccion -- Cómo traducir páginas y enlazar a otras traducciones.
+* UsingPortraits -- How to use an image ("avatar") for discussion
+* DeletedPage -- Deleting pages.
+* PageRedirection -- Redirecting requests for a page to another page.
+* TranslationHelp -- How to translate pages, and how to link to translations
 
-== '''Netiquette''' ==
-* MediosApropiados -- Cuándo usar la wiki.
-* SiRenombrasOEliminasPaginas -- Que considerar cuando renombras o borras páginas en EmacsWiki.namely: You're responsible for fixing links that pointed to the page.
+== Netiquette ==
+
+* AppropriateMedia -- When to use the wiki.
+* CrossPosting -- When crossposting messages from Usenet.
+* IfYouRenameOrDeletePages -- What to keep in mind if you rename or delete an EmacsWiki page, namely: You're responsible for fixing links that pointed to the page.
+
+----
+HowTo

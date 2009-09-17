@@ -78,7 +78,7 @@ are defined as user options -- they are not really meant
 to be customized.  If you are not an Emacs-Lisp programmer, you
 will ''not'' use these variables, but some commands that you use might
 provide corresponding global-filter ''user options''.  '''Icicles'''
-provides customizable user options for command `icicle-buffer', for example:
+provides customizable user options for '''Icicles''' buffer commands, such as `icicle-buffer'.  For example:
 
 [:icicle-buffer-match-regexp]
 [:icicle-buffer-no-match-regexp]

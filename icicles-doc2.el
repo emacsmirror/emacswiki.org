@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Sep  5 15:48:31 2009 (-0700)
+;; Last-Updated: Wed Sep 16 13:18:57 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 25855
+;;     Update #: 25879
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4298,7 +4298,7 @@
 ;;    Option `icicle-buffer-ignore-space-prefix-flag' lets you
 ;;    override the value of `icicle-ignore-space-prefix-flag' for use
 ;;    with buffer-name completion (the names of internal buffers start
-;;    with a space).  It is provided mainly for binding in
+;;    with a space).  It is provided mainly for binding when using
 ;;    `icicle-define-command' (`icicle-buffer' does this).
 ;;
 ;;    You can toggle `icicle-ignore-space-prefix-flag' at any time
@@ -4307,7 +4307,7 @@
 ;;    that is changed.  For example, if
 ;;    `icicle-buffer-ignore-space-prefix-flag' is non-nil, then `M-_'
 ;;    toggles `icicle-ignore-space-prefix-flag' to nil only for the
-;;    duration of `icicle-buffer'.
+;;    duration of the buffer command (e.g. `icicle-buffer').
 ;;
 ;;  * Non-nil user option `icicle-test-for-remote-files-flag' means
 ;;    that Icicles tests for remote file names; nil means that it does
@@ -4508,8 +4508,8 @@
 ;;
 ;;  * User options `icicle-buffer-match-regexp',
 ;;    `icicle-buffer-no-match-regexp', `icicle-buffer-predicate', and
-;;    `icicle-buffer-extras' determine the behavior of commands
-;;    `icicle-buffer' and `icicle-buffer-other-window'.  They
+;;    `icicle-buffer-extras' determine the behavior of Icicles buffer
+;;    commands, such as `icicle-buffer' and `insert-buffer'.  They
 ;;    determine the set of buffer-name candidates initially available
 ;;    for completion.
 ;;
@@ -4557,11 +4557,12 @@
 ;;                   nil)))))
 ;;
 ;;  * User option `icicle-buffer-sort' is a predicate used to sort
-;;    buffer-name candidates in commands `icicle-buffer' and
-;;    `icicle-buffer-other-window'.  One possible value is
-;;    `icicle-buffer-sort-*...*-last', which sorts names of internal
-;;    buffers, which begin with `*', after other buffer names.  Option
-;;    `icicle-file-sort' acts similarly for file-name completion.
+;;    buffer-name candidates in Icicles buffer commands, such as
+;;    `icicle-buffer' and `icicle-insert-buffer'.  One possible value
+;;    is `icicle-buffer-sort-*...*-last', which sorts names of
+;;    internal buffers, which begin with `*', after other buffer
+;;    names.  Option `icicle-file-sort' acts similarly for file-name
+;;    completion.
 ;;
 ;;  * User option `icicle-buffer-configs' is a list of named
 ;;    configurations of options `icicle-buffer-match-regexp',
@@ -5194,6 +5195,7 @@
 ;;  `Info-goto-node'...................`icicle-Info-goto-node'
 ;;  `Info-index'.......................`icicle-Info-index'
 ;;  `Info-menu'........................`icicle-Info-menu'
+;;  `insert-buffer'....................`icicle-insert-buffer'
 ;;  `kill-buffer'......................`icicle-kill-buffer'
 ;;  `lisp-complete-symbol'.............`icicle-lisp-complete-symbol'
 ;;  `other-window'.....................`icicle-other-window-or-frame'
@@ -5229,7 +5231,7 @@
 ;;  `icicle-apropos-variable' - Enhanced `apropos-variable'
 ;;  `icicle-apropos-zippy' - Show matching Zippy quotes
 ;;  `icicle-bookmark'     - Jump to a bookmark
-;;  `icicle-buffer-config' - Pick `icicle-buffer' options
+;;  `icicle-buffer-config' - Pick options for Icicles buffer commands
 ;;  `icicle-buffer-list'  - Choose a list of buffer names
 ;;  `icicle-clear-history' - Clear minibuffer histories
 ;;  `icicle-color-theme'  - Change color theme
@@ -6531,6 +6533,26 @@
 ;;  it is appropriate for a user to possibly want to act on multiple
 ;;  objects, define a multi-command that does that.
 ;;
+;;  An anecdote, to make the point.  An Icicles user sent me an email
+;;  saying how much he appreciated Icicles multi-commands, and asking
+;;  if I would add a multi-command version of `insert-buffer'.  I did
+;;  so, but I replied to him that the definition is trivial: it is
+;;  identical to the definition of `icicle-buffer', except that the
+;;  action function is `insert-buffer' instead of `switch-to-buffer'.
+;;
+;;  The point is to not be afraid of defining multi-commands yourself.
+;;  You don't really need to have me add a multi-command to Icicles in
+;;  most cases; you can easily define it yourself.  Here is a simple
+;;  definition of `icicle-insert-buffer'.  You will understand it in
+;;  detail after reading the next section.
+;;
+;;   (icicle-define-command icicle-insert-buffer
+;;     "Multi-command version of `insert-buffer'." ; Doc string
+;;     insert-buffer                               ;  Action function
+;;     "Buffer: "                            ; `completing-read' args
+;;     (mapcar #'(lambda (buf) (list (buffer-name buf))) (buffer-list))
+;;     nil t nil 'buffer-name-history (icicle-default-buffer-names) nil)
+;;
 ;;  Macros `icicle-define-command' and `icicle-define-file-command'
 ;;  make it easy to define a multi-command.  Without them, it is
 ;;  sometimes not so easy, depending on the complexity of your action
@@ -6719,7 +6741,7 @@
 ;;  `icicle-add-buffer-config' - Add to `icicle-buffer-configs'
 ;;  `icicle-bookmark'     - Jump to a bookmark
 ;;  `icicle-buffer'       - Switch to another buffer
-;;  `icicle-buffer-config' - Choose a config for `icicle-buffer'
+;;  `icicle-buffer-config' - Choose a config for buffer commands
 ;;  `icicle-buffer-list'  - Choose a list of buffer names
 ;;  `icicle-clear-history' - Clear entries from minibuffer histories
 ;;  `icicle-clear-current-history' - Clear current history entries
@@ -6748,6 +6770,7 @@
 ;;  `icicle-frame-fg'     - Change the frame foreground color
 ;;  `icicle-fundoc'       - Display the doc of a function
 ;;  `icicle-Info-menu'    - Go to an Info menu node
+;;  `icicle-insert-buffer'- Insert a buffer
 ;;  `icicle-insert-thesaurus-entry' - Insert thesaurus entry
 ;;  `icicle-keyword-list' - Choose a list of keywords (regexps)
 ;;  `icicle-kill-buffer'  - Kill a buffer
@@ -7524,8 +7547,8 @@
 ;;  customized.  If you are not an Emacs-Lisp programmer, you will not
 ;;  use these variables, but some commands that you use might provide
 ;;  corresponding global-filter user options.  Icicles provides
-;;  customizable user options for command `icicle-buffer', for
-;;  example:
+;;  customizable user options for Icicles buffer commands, such as
+;;  `icicle-buffer'.  For example:
 ;;
 ;;    `icicle-buffer-match-regexp'    - Regexp buffer names must match
 ;;    `icicle-buffer-no-match-regexp' - Regexp buffers must not match

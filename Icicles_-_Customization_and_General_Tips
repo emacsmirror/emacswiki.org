@@ -872,7 +872,7 @@ is not affected by whether or not the input starts with a space.
 User option '''`icicle-buffer-ignore-space-prefix-flag'''' lets you
 override the value of `<tt>[[#icicle-ignore-space-prefix-flag]]</tt>' for use
 with buffer-name completion (the names of internal buffers start
-with a space).  It is provided mainly for binding in
+with a space).  It is provided mainly for binding when using
 `icicle-define-command' (`icicle-buffer' does this).
 
 You can ''toggle'' `<tt>[[#icicle-ignore-space-prefix-flag]]</tt>' at any time
@@ -881,7 +881,7 @@ this option locally, then it is the local, not the global, value
 that is changed.  For example, if
 `icicle-buffer-ignore-space-prefix-flag' is non-`nil', then `##M-_##'
 toggles `<tt>[[#icicle-ignore-space-prefix-flag]]</tt>' to `nil' only for the
-duration of `icicle-buffer'.
+duration of the buffer command (e.g. `icicle-buffer').
 
 ----
 [:icicle-test-for-remote-files-flag]
@@ -1172,8 +1172,8 @@ displayed by `C-M-mouse-2' and so on.
 
 User options '''`icicle-buffer-match-regexp'''',
 '''`icicle-buffer-no-match-regexp'''', '''`icicle-buffer-predicate'''', and
-'''`icicle-buffer-extras'''' determine the behavior of commands
-`icicle-buffer' and `icicle-buffer-other-window'.  They determine the set of ''buffer-name''
+'''`icicle-buffer-extras'''' determine the behavior of '''Icicles''' buffer commands, such as 
+`icicle-buffer' and `icicle-insert-buffer'.  They determine the set of ''buffer-name''
 candidates initially available for completion.
 
 The first three
@@ -1221,7 +1221,7 @@ Options '''`icicle-file-match-regexp'''',
 ==== Options icicle-buffer-sort, icicle-file-sort ====
 
 User option '''`icicle-buffer-sort'''' is a predicate used to sort
-buffer-name candidates in commands `icicle-buffer' and `icicle-buffer-other-window'.  One possible
+buffer-name candidates in '''Icicles''' buffer commands, such as `icicle-buffer' and `icicle-insert-buffer'.  One possible
 value is `##icicle-buffer-sort-*...*-last##', which sorts names of
 internal buffers, which begin with `*', after other buffer
 names.  Option '''`icicle-file-sort'''' acts similarly for file-name completion.

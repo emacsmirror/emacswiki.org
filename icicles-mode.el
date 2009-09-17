@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Sep 10 14:37:09 2009 (-0700)
+;; Last-Updated: Wed Sep 16 10:11:34 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 6066
+;;     Update #: 6070
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -325,6 +325,7 @@ The following top-level commands are also available in Icicle mode:
 `icicle-Info-index'                    - Multi-command `Info-index'
 `icicle-Info-menu'                     - Multi-command `Info-menu'
 `icicle-Info-virtual-book'             - Book of any nodes you want
+`icicle-insert-buffer'                 - Insert buffer
 `icicle-insert-thesaurus-entry'        - Insert thesaurus entry(s)
 `icicle-kill-buffer'                   - Kill buffer
 `icicle-kmacro'                        - Execute a keyboard macro
@@ -523,6 +524,7 @@ The following top-level commands are also available in Icicle mode:
 `icicle-Info-goto-node'                - Multi-cmd `Info-goto-node'
 `icicle-Info-index'                    - Multi-command `Info-index'
 `icicle-Info-menu'                     - Multi-command `Info-menu'
+`icicle-insert-buffer'                 - Insert buffer
 `icicle-insert-thesaurus-entry'        - Insert thesaurus entry(s)
 `icicle-kill-buffer'                   - Kill buffer
 `icicle-kmacro'                        - Execute a keyboard macro
@@ -1288,6 +1290,8 @@ Used on `pre-command-hook'."
       '(menu-item "+ Always Include Buffer..." icicle-add-buffer-candidate))
     (define-key icicle-menu-map [icicle-kill-buffer]
       '(menu-item "+ Kill Buffer..." icicle-kill-buffer))
+    (define-key icicle-menu-map [icicle-insert-buffer]
+      '(menu-item "+ Insert Buffer..." icicle-insert-buffer))
     (define-key icicle-menu-map [icicle-delete-windows]
       '(menu-item "+ Delete Windows on Buffer..." icicle-delete-windows :keys "C-u C-x 0"))
     (define-key icicle-menu-map [icicle-buffer-other-window]

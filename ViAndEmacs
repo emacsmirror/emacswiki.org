@@ -34,7 +34,7 @@ For a serious tip sheet for Vi users, see Google:grok2.
 
 == Getting the best parts of Vim and Emacs ==
 
-(sigh) I'd love to combine emacs and vim together. I love the power and sheer number of useful things in emacs, but some things about it drive me crazy - why oh why is emacs clone of vis setnu mode so appalling bad? Every editor I've ever used has done line numbers easily, so why does emacs do it slowly and frequently mess up the numbering? It can't be that hard. On the other hand, each time I've tried to use vim as my editor I've ran into problems, like tab completion not popping up a directory entry, or it's bizarre buffering system.
+(sigh) I'd love to combine emacs and vim together. I love the power and sheer number of useful things in emacs, but some things about it drive me crazy - why oh why is emacs clone of vis setnu mode so appalling bad? Every editor I've ever used has done LineNumbers easily, so why does emacs do it slowly and frequently mess up the numbering? It can't be that hard. On the other hand, each time I've tried to use vim as my editor I've ran into problems, like tab completion not popping up a directory entry, or it's bizarre buffering system.
 
 In short, emacs is cool because it does everything, and because you can normally guess or tab complete the name of a function, then bind it to whatever key you like... the online help is good too.
 
@@ -45,7 +45,7 @@ both. Btw, Viper has an analog of the * key in Vim both using a mouse and a key.
 ----------------------------
 
 [new]
-I don't mean to be facetious, but what do you need to use line numbers so often for?  With things like M-x grep and M-x compile combined with C-x `, as well as M-x occur, emacs will usually take you to the line you want automatically without any need for you to type in explicit line numbers.
+I don't mean to be facetious, but what do you need to use LineNumbers so often for?  With things like M-x grep and M-x compile combined with C-x `, as well as M-x occur, emacs will usually take you to the line you want automatically without any need for you to type in explicit line numbers.
 
 [new]
 Well, some people including myself just generally like line numbers. They make it easier to differentiate between similar yet different pieces of code.
@@ -76,5 +76,6 @@ I hope line numbers will be done in C code at some point ...
 As a vi user, I thought I'd pop in and point out that emacs' `M-g g 42' is only a single keypress more than either ##42G## or ##:42##, so perhaps the previous is not a very good argument.  Still, I keep line numbers on at all times and even resize my terminal to 88 cols so that I can have my sweet, sweet line numbers and keep 80 cols of editable space--they're kind of nice when you're used to them. 
 [new]
 You also have to press enter (2 keybpresses more than 42G). Furthermore the emacs binding is a Meta key chord, which makes it very uncomfortable (I think).
+
 ----
 CategoryHumor

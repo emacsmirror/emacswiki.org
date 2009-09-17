@@ -159,7 +159,7 @@ Caio Marcelo's blog post [http://cmarcelo.wordpress.com/2008/04/26/a-little-emac
 
 The SkeletonMode page explores skeletons more broadly.
 
-[ParEdit ParEdit] is a minor mode for Lisp languages, and provides enhanced [[sexp]] editing, navigating and manipulating. It does all of the above and more.
+[ParEdit ParEdit] is a minor mode for Lisp languages, and provides enhanced [[sexp]] editing, navigating and manipulating. It does all of the above and more (but targets Lisp).
 
 ----
 CategoryCode CategoryTemplates CategoryParentheses
