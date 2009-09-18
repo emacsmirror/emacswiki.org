@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Sep 16 10:06:58 2009 (-0700)
+;; Last-Updated: Thu Sep 17 13:55:09 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 22585
+;;     Update #: 22586
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -96,7 +96,8 @@
 ;;    `icicle-define-bookmark-other-window-command',
 ;;    `icicle-define-command', `icicle-define-file-command',
 ;;    `icicle-define-search-bookmark-command',
-;;    `icicle-define-sort-command', `icicle-with-selected-window'.
+;;    `icicle-define-sort-command', `icicle-file-bindings',
+;;    `icicle-with-selected-window'.
 ;;
 ;;  Commands defined in Icicles -
 ;;

@@ -1,21 +1,87 @@
-Lisp:twit.el
+== Description ==
 
 [[image:TwitElScreenShot]]
 
 Twit.el is a wrapper library for twitter.com, and a reasonably functional client.  You can post tweets, follow your friends tweets, list your friends and your followers, perform searches, retrieve @msgs and direct messages, and even use multiple accounts.
 
-Twit.el has a novel updating mechanism that works with AutoInstall:  every time twit.el is updated, I post a message with the twit_el account saying as much.  You can move your point to the text "twit.el" and hit "i", which should start the installation process. 
+Twit.el has a novel updating mechanism that works with AutoInstall:  every time twit.el is updated, I post a message with the twit_el account saying as much.  You can move your point to the text "twit.el" and hit "i", which should start the installation process.
 
 It was originally authored by TheronTlax. H Durer, and JonathanArkell have also made contributions.  Currently Jonathan Arkell is working with it.  The most recent version is posted to the wiki.  When Jonathan updates twit.el (or any other elisp library), he usually tweets about it, so feel free to follow him (http://www.twitter.com/jonnay).  You can also follow http://www.twitter.com/twit_el for a low-traffic announce only, when new verions are up.
 
 Additionally if you see something you want to add, or fix, feel free to change it and upload it to the wiki.  Just make sure to increment the version number, and mention in the changelog what you did.
 
-Lots of big changes have been happening recently, including:  direct tweets (view/send), images, multi-account handling and sophisticated filtering. 
+Lots of big changes have been happening recently, including:  direct tweets (view/send), images, multi-account handling and sophisticated filtering.
+
+== Download and install ==
+
+* Current: Lisp:twit.el
+* clone (0.1.1; old?): http://github.com/ieure/twit-el
+
+Save the file to a directory (suggestion: <code>~/.emacs.d/twit/</code>). Add the following autoload commands to your ~/.emacs
+InitFile:
+
+{{{
+(add-to-list 'load-path "~/.emacs.d/twit")  ; Save directory
+
+;; Define M-x commands
+
+(autoload 'twit-show-recent-tweets	"twit" "" t) ; most recent direct tweets (!)
+(autoload 'twit-show-at-tweets		"twit" "" t) ; directed to you
+(autoload 'twit-show-friends 		"twit" "" t) ; your friends
+(autoload 'twit-show-followers 		"twit" "" t) ; your followers
+
+(autoload 'twit-follow-recent-tweets	"twit" "" t) ; at idle, check at background
+
+(autoload 'twit-post			"twit" "" t)
+(autoload 'twit-post-region		"twit" "" t)
+(autoload 'twit-post-buffer		"twit" "" t)
+(autoload 'twit-direct			"twit" "" t) ; tweet to person
+
+(autoload 'twit-add-favorite		"twit" "" t) ; Add to favourite: (*) star
+(autoload 'twit-remove-favorite 	"twit" "" t)
+
+(autoload 'twit-add-friend  		"twit" "" t) ; follow a friend
+(autoload 'twit-remove-friend 		"twit" "" t) ; emove a frienda
+
+;; Customize twit-multi-accounts in order to use these: ((user . pass) ...)
+(autoload 'twit-switch-account 		"twit" "" t)
+(autoload 'twit-direct-with-account  	"twit" "" t)
+(autoload 'twit-post-with-account 	"twit" "" t)
+
+(autoload 'twit-show-direct-tweets-with-account "twit" "" t)
+(autoload 'twit-show-at-tweets-with-account 	"twit" "" t)
+
+}}}
+
+== Customizations ==
+
+{{{
+
+(setq twit-user "nick")
+(setq twit-pass "pass")
+
+;; Key bindings examples
+;; Requires that autoloads above have been added to ~/.emacs
+
+(global-set-key "\C-cTT"  'twit-follow-recent-tweets) ; (s)how (T)weets
+(global-set-key "\C-cTst" 'twit-follow-recent-tweets) ; (s)how (t)weets
+(global-set-key "\C-cTsa" 'twit-show-at-tweets)       ; (s)how (a)t
+(global-set-key "\C-cTsf" 'twit-show-at-tweets)       ; (s)how (f)riends
+(global-set-key "\C-cTsl" 'twit-show-at-tweets)       ; (s)how fo(l)lowers
+
+(global-set-key "\C-cTpp" 'twit-post)		      ; (p)ost
+(global-set-key "\C-cTpr" 'twit-post-region)	      ; (p)post (r)egion
+(global-set-key "\C-cTpb" 'twit-post-buffer)	      ; (p)post (b)uffer
+(global-set-key "\C-cTpr" 'twit-direct)		      ; (p)post (d)irect
+(global-set-key "\C-cTfa" 'twit-add-favorite)	      ; (f)avorite (a)dd
+(global-set-key "\C-cTfr" 'twit-remove-favorite)      ; (f)avorite (r)emove
+
+}}}
 
 == Help ==
 Make sure you customize the twit group, there are some interesting options there.
 
-=== Posting === 
+=== Posting ===
 
 M-x *twit-post* RET will prompt for you to type your post directly in the minibuffer.
 
@@ -23,7 +89,7 @@ M-x *twit-post-region* RET will post the region and
 
 M-x *twit-post-buffer* RET will post the entire contents of the current buffer.
 
-M-x *twit-direct* RET will prompt you for a person to tweet to, and a message. 
+M-x *twit-direct* RET will prompt you for a person to tweet to, and a message.
 
 === Showing and Following ===
 
@@ -79,7 +145,7 @@ M-x *twit-show-direct-tweets* RET Shows you the most recent direct tweets that c
 
 M-x *twit-show-at-tweets* RET shows you all the tweets directed to you.
 
-M-x *twit-add-favorite* RET add a particular tweet to your favorites.  You are prompted for the ID of the tweet, and if you are currently on a tweet, it will fill that in as a default.  
+M-x *twit-add-favorite* RET add a particular tweet to your favorites.  You are prompted for the ID of the tweet, and if you are currently on a tweet, it will fill that in as a default.
 
 M-x *twit-remove-favorite* RET remove a particular tweet from your favorites.  As with the previous command, you are prompted for an ID, and the default is the current tweet.
 
@@ -97,9 +163,9 @@ M-x *twit-show-followers* RET to list all your followers
 
 M-x *twit-add-friend* RET to add and follow a friend.
 
-M-x *twit-remove-friend* RET to remove a friend 
+M-x *twit-remove-friend* RET to remove a friend
 
-=== Multi-Account === 
+=== Multi-Account ===
 
 A really great featuer of twit.el is the ability to use multiple twitter accounts with it.  First off you need to customize the variable twit-multi-accounts.  It is a list of cons cells, with the car being the username, and cdr the password.  You should put your main account details in there, as well as your secondary accounts.
 
@@ -184,7 +250,7 @@ I'm using Aquamacs 1.7.  I've had to customize the colors and remove various :bo
 [new]
 FEATURE REQUESTS:
 I'm not a developer or anything, so I can't apply the following by myself. Tried out TwIt this evening and stumbled across some problems when using an url shortener: (with 157 chars in the minibuffer) This is just Text to show what I mean This is just Text to show what I mean This is just Text to show what I mean http://github.com/ieure/tw(striked out from here til end)it-el/tree/master
-If I shorten the tweet to fit into the 140 chars, it uses a link shortener. Would it be possible to shorten links and THEN check for the length of the tweet? 
+If I shorten the tweet to fit into the 140 chars, it uses a link shortener. Would it be possible to shorten links and THEN check for the length of the tweet?
 
 Default zebra striping methods should look good on any arbitrary background colour.  Current default zebra stripes look terrible on an otherwise black/dark background. -- busytoby
 
@@ -221,7 +287,7 @@ Also, a note: twitter.com has a problem (i think it's some kind of ham-fisted se
 
 Are you sure you are properly encoding your request entity? If you aren't doing that, it might explain why + and ; are getting dropped.  Btw, I LOVE twit.el.
 
-Thanks!  Well, in that case, maybe i ought to, you, know... work on it some.  Sigh.  So many things to do....  
+Thanks!  Well, in that case, maybe i ought to, you, know... work on it some.  Sigh.  So many things to do....
 
 As for being sure i'm encoding the requests properly, well, no, i'm not sure.  I did email twitter support and they said it was a known bug on their end.  Maybe it's changed by now.  Oy.  TheronTlax
 
@@ -234,6 +300,3 @@ Annoying behaviour: Twitit ignores my username and password setting so I have to
 
 ----
 CategoryJournaling
-
-
-

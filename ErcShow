@@ -27,6 +27,32 @@ Here's a version of erc-cmd-SHOW which ensures that the expression is evaluated 
               (format "Error: %s" error)))))
      (erc-send-message (format "%s => %S" form-string result))))
 
+[new]
+I didn't find the quoting to be satisfactory.  Take this example.
+
+    >>> /show (cons "foo" "bar")
+    (cons "foo" "bar") => (foo . bar)
+
+It would be better to use ##prin1## by using "##%S##" in the call to ##format##, rather than the ##princ## version and "##%s##".
+
+    >>> /show (cons "foo" "bar")
+    (cons "foo" "bar") => ("foo" . "bar")
+
+The following trivial patch fixes this.
+
+{{{
+--- erc-show.el	2005-09-20 09:52:36.000000000 -0400
++++ erc-show.el	2009-09-17 12:52:59.000000000 -0400
+@@ -55,7 +55,7 @@
+                           (eval form)
+                         (error
+                          (format "Error: %s" err)))))
+-             (insert (format " => %s" res)))
++             (insert (format " => %S" res)))
+            (buffer-substring-no-properties
+             (point-min) (1- (point-max))))))
+     (erc-send-message string)))
+}}}
 
 ----
 [[ERC]]

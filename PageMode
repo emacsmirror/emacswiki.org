@@ -1,4 +1,23 @@
+Page mode is a minor mode by BartMassey that shows only a page at a time of a file in the buffer by using [[Narrowing]] on PageBreaks.  The goal was to make an EmacsPresentation for talks and lectures using Emacs.  When using the mode's navigation commands between pages, the top of the page is shown. 
+
+* http://wiki.cs.pdx.edu/forge/page-mode
+
+Turn on Page mode with `M-x page-mode'.  Navigation and editing commands are on the `C-c' prefix key.
+
+||##C-c C-n##||Forward page||
+||##C-c C-p##||Backward page||
+||##C-c <##||First page||
+||##C-c >##||Last page||
+||##C-u N C-c g##||Go to page N||
+||##C-c s##||Start new page at point||
+||##C-c n##||New page after current||
+||##C-c i##||Insert page before current||
+||##C-c q##||Turn off page mode||
+
+Though, you can do much with Page mode as with the ExtendedPageHandling library, ##page-ext.el## library, shipped with Emacs for many years.  Additionally, it has support for sorting and searching of pages and also boasts a directory interface for navigating pages by their heading.
+
 To browse text files that contain ^L page feed markers, see TinyPage.
 
 ----
-CategoryDisplay | CategoryModes
+CategoryDisplay
+CategoryModes

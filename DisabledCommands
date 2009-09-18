@@ -11,5 +11,23 @@ InitFile.  This is not recommended for newbies.
 
  (setq disabled-command-hook nil)
 
+Another way to deal with disabled commands is to automatically enable them on the fly.
+
+    ; We hook up the enable-me using setq instead of add-hook. Thats because the
+    ; add-hook would cause the original hook to come after enable-me. Instead we
+    ; want only enable-me to execute.
+    
+    ; Thanks to Roland McGrath.
+    
+    (defun enable-me (&rest args)
+      "Called when a disabled command is executed. Enable it and reexecute it."
+      (put this-command 'disabled nil)
+      (message "You typed %s.  %s was disabled.  It ain't no more."
+               (key-description (this-command-keys)) this-command)
+      (sit-for 0)
+      (call-interactively this-command))
+    
+    (setq disabled-command-hook 'enable-me)
+
 ----
 CategoryCommands

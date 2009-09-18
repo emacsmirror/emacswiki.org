@@ -1,0 +1,22 @@
+[[en:HowToEdit]]
+[[fr:CommentEditer]]
+Una wiki es un sitio web colaboratibo, tu puedes contribuir, tómate un momento y lee WikiOrganization para aprender como EmacsWiki está organizada
+
+* Para editar una página existente, pincha '''Editar esta página''' al final de la página en cuestión.
+** En los navegadores más comunes '''''Alt-e''''' basta para entrar en el modo de edición.
+* OddmuseMode Te permite editar EmacsWiki desde emacs, Ver también [[Yaoddmuse]].
+* MinorEdit sobre la caja "Este cambio es una edición menor"
+* UserName -- Cómo firmar tus contribuciones con tu nombre de usuario.
+* TextFormattingRules -- Cómo formatear una página, crear enlaces, etc... Emacs wiki usa el motor [http://www.oddmuse.org/ Oddmuse]
+* CreateNewPages -- Cómo crear páginas. Un buen comienzo es añadir tu nombre de usuario (Véase [[UserName]]) a CategoryHomepage.
+* ElispArea -- Cómo subir un archivo elisp
+* UploadingImages -- Cómo incluir imágenes en las páginas.
+* UsingPortraits -- Cómo usar un ávatar en las discusiones.
+* DeletedPage -- Borrando páginas.
+* PageRedirection -- Redirigiendo unas páginas a otras.
+* TranslationHelp -- Cómo traducir páginas y enlazar a otras traducciones.
+UploadingImages
+
+== '''Netiquette''' ==
+* AppropriateMedia -- Cuándo usar la wiki.
+* IfYouRenameOrDeletePages -- Que considerar cuando renombras o borras páginas en EmacsWiki.namely: You're responsible for fixing links that pointed to the page.

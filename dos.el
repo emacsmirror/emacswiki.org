@@ -3,7 +3,7 @@
 ;; Copyright (C) 2003, 2008, 2009 Arni Magnusson
 
 ;; Author:   Arni Magnusson
-;; Version:  2.9
+;; Version:  2.10
 ;; Keywords: languages
 ;; URL:      http://emacswiki.org/emacs/dos.el
 
@@ -46,6 +46,7 @@
 
 ;;; History:
 ;;
+;; 18 Sep 2009  2.10 Improved highlighting of comments.
 ;; 27 May 2009  2.9  Improved documentation.
 ;; 26 May 2009  2.8  Added user function `dos-help-mode'. Renamed user function `dos-help' to `dos-help-cmd'. Added
 ;;                   internal variable `dos-menu', providing GUI menu.
@@ -108,12 +109,12 @@ that:
           (LINUX
            '("cat"      "cp"       "ls"       "mkdir"    "mv"       "rm"       "rmdir")))
       (list
-       '("^[ \t]*\\(@?rem\\>\\|::\\).*" (0 font-lock-comment-face t))
-       '("^:[^:].*" . font-lock-doc-face)
        '("\\<\\(call\\|goto\\)\\>[ \t]+%?\\([A-Za-z0-9-_\\:.]+\\)%?" (2 font-lock-constant-face t))
+       '("^[ \t]*\\(@?rem\\>\\|::\\).*"   (0 font-lock-comment-face t))
+       '("^:[^:].*" .                        font-lock-doc-face)
        '("\\<set\\>[ \t]*\\(\\w+\\)"      (1 font-lock-variable-name-face))
        '("%\\(\\w+\\)%?"                  (1 font-lock-variable-name-face))
-       '("[ =][-/]+\\(\\w+\\)"               (1 font-lock-type-face append))
+       '("[ =][-/]+\\(\\w+\\)"            (1 font-lock-type-face append))
        (cons (regexp-opt COMMANDS    'words) font-lock-builtin-face)
        (cons (regexp-opt CONTROLFLOW 'words) font-lock-keyword-face)
        (cons (regexp-opt LINUX       'words) font-lock-warning-face)))))

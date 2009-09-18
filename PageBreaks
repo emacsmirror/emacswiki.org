@@ -1,21 +1,22 @@
-Page breaks are characters (Octal 014, emacs \^L) that force printers
-to break apart documents into multiple pages.  To insert ^L, type C-q
-C-l.
+A '''[::page break]''', or '''[::form feed]''' character (ASCII ##^L##, which is decimal 12, octal 14, and hex c) causes many printers to break documents into pages, especially when printing plain-text files. See [[WikiPedia:Page break]].
 
-They can also be used for logical separation of source code, and emacs
-has handy functions and keybinding to jump around in them, such as
-<code>forward-page</code> and <code>backward-page</code>.  Some
-functions operate on pages like <code>mark-page</code>, and the
-BasicNarrowing can also be done by pages.
+To insert ##^L## in an Emacs buffer, hit `C-q C-l'. In EmacsLisp, the form-feed character is written `##?\f##', and `##\f##' represents it in strings. (`##\f##' is also used in C.)
 
-PrettyControlL lets you display page breaks in other ways. 
+A page break can also be used for a logical separation of source-code sections. Emacs has [[command]]s and [[key binding]]s that use page breaks, such as
+`forward-page' (`##C-]##'), `backward-page' (`##C-[##'), and `narrow-to-page (`C-x n p').  Other functions, such as `mark-page', operate on the content of a page.  See also PageMode.
 
-The rest of this page discusses other ways to display page breaks.
 
-Here is some code to make them display as long horizontal lines rather
-than the ugly "^L". :-)
+== Display Page Breaks in Alternative Ways ==
 
-<pre>
+You can show page breaks other than as the text ##^L##. 
+
+=== PrettyControlL ===
+
+You can use PrettyControlL to display a page break pretty much any way you want. PrettyControlL also provides a little more information about ##^L## and standard GnuEmacs options that affect it.
+
+=== Display as a horizontal line, using a display table ===
+
+{{{
 (defvar page-break-display-table
   (let ((table (make-display-table)))
     (aset table ?\^L "-------------------------------------------------------------------------------")
@@ -32,13 +33,17 @@ than the ugly "^L". :-)
                        nil
                      page-break-display-table)
                    (current-buffer))))
-</pre>
+}}}
 
+[new]
 This won't work on Emacs as is because speficier-instance is not defined. It should only work for XEmacs users. -- XavierMaillard
+[new]
 
-Here is one with facification for GNU Emacs.  This version computes the display table at run time, so that the horizontal line is always as wide as the current window.
+=== Display as a horizontal line, using a face ===
 
-<pre>
+This computes the display table at run time, so that the horizontal line is always as wide as the current window.
+
+{{{
 (defvar page-break-face 'bold)
 (defvar page-break-string-char ?-)
 
@@ -67,11 +72,11 @@ horizontal line of `page-break-string-char' characters."
 
 (defun turn-off-page-break-mode ()
   (page-break-mode -1))
-</pre>
+}}}
 
 You can even have a global page-break-mode which computes the length of the line automatically whenever you change of window configurations: -- MatthieuLemerre
 
-<pre>
+{{{
 (defvar page-break-face 'bold)
 (defvar page-break-string-char ?-)
 
@@ -114,9 +119,9 @@ horizontal line of `page-break-string-char' characters."
   (page-break-mode -1))
 
 (turn-on-page-break-mode)
-</pre>
+}}}
 
-The TinyTools also contains a PageMode. -- MarkusKnittig
+TinyTools also contains a PageMode. -- MarkusKnittig
 
 ----
 CategoryDisplay

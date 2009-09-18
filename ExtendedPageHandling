@@ -1,0 +1,21 @@
+Tthe ExtendedPageHandling library, ##page-ext.el## library, has shipped with Emacs for many years and can do many of the same things that the new minor mode, PageMode, can do.  Additionally, the former has support for sorting and searching of pages and also boasts a directory interface for navigating pages by their heading.
+
+Run `M-x load-library RET page-ext RET', or add ##(require 'page-ext)## to your InitFile.  To start browsing the buffer a page at a time, type `C-x n p'.  Navigation and editing commands are on a prefix of `C-x C-p', replacing the default binding for `mark-page'.
+
+||##C-x C-p C-n##||Forward page||
+||##C-x C-p C-p##||Backward page||
+||##C-x C-p C-a##||Add page before current||
+||##C-x n w##||Turn off page narrowing||
+
+There is no command for adding a page after the current.  It can be done by moving to the next page, then adding.  To split the current page in two, one can manually insert two page breaks with `C-q C-l' and narrowing in again on the new page with `C-x n p'.
+
+||##C-x C-p C-s##||Search across pages||
+||##C-x C-p s##||Sort pages||
+||##C-x C-p C-d##||Go to page directory in other buffer||
+
+Once inside the directory, visit an entry's page with `C-c C-c'.
+
+The basis for ##page-ext.el## library is to maintain an address book stored at ##~/addresses##.  Open a "directory" for this file with `C-x C-p d'.  Consider it an early and primitive PersonalInformationManager for Emacs.
+
+----
+CategoryModes

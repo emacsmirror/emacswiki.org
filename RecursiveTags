@@ -40,6 +40,11 @@ Create a [[tags file]] for all ##*.cpp *.h## files in current dir and all subdir
 
  find .   -name "*.cpp" -print   -or   -name "*.h" -print    | etags -
 
+[new]
+Here, the 5.7 version of etags don't have the - option. So I had to do it this way:
+
+ find .   -name "*.cpp" -print   -or   -name "*.h" -print    | xargs etags
+
 == recursive etags: the full blooded version ==
 
 This shell script will plough through a source tree and

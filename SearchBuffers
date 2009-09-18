@@ -1,5 +1,6 @@
 Search through multiple (possibly all) buffers.
 
+* [[#Multi-Occur]] -- batch search by regexp across any number of buffers, using a single [[regexp]]
 * [[#IciclesSearch]] -- incrementally search (and replace) across any number of [[buffer]]s or files, possibly using multiple [[regexp]]s
 * [http://cvs.xemacs.org/viewcvs.cgi/XEmacs/packages/xemacs-packages/edit-utils/search-buffers.el search-buffers] -- XEmacs only, included in edit-utils
 * [http://github.com/aemoncannon/far-search-mode/tree/master far-search-mode] -- incrementally search by regexp in all buffers
@@ -10,6 +11,22 @@ Search through multiple (possibly all) buffers.
 * igrep-visited-files -- [[igrep.el]]
 * GlobRep -- edit `grep' output to perform replacements on files
 
+== Multi-Occur ==
+[:Multi-Occur]
+
+Built into Emacs 23, this command can search any files or buffers matching a regexp for a particular regexp.
+
+To select buffers to search individually:
+
+  M-x multi-occur
+
+To select files to search by regexp:
+
+  M-x multi-occur-in-matching-buffers
+
+To select buffers to search by regexp:
+
+  C-u M-x multi-occur-in-matching-buffers
 
 [:IciclesSearch]
 == Search and Replace Using Icicles ==

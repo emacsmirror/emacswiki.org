@@ -61,4 +61,4 @@ Record format (field names and their types) can be arbitrarily complex.
 
 * [[Synonyms]] lets you search and browse comma-separated values (CSV) file as a hyperlinked "thesaurus". This could as well be a list of contacts or any other CSV data. For example, export your Outlook (or Fire Fox) Contacts as a CSV file, then use Emacs to browse and search them.
 
-
+* ExtendedPageHandling provides an early and primitive system to sort, search and navigate records separated by PageBreaks.

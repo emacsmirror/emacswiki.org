@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Sep 16 11:24:53 2009 (-0700)
+;; Last-Updated: Thu Sep 17 13:54:41 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 511
+;;     Update #: 516
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -31,7 +31,8 @@
 ;;
 ;;    `icicle-buffer-bindings', `icicle-define-add-to-alist-command',
 ;;    `icicle-define-command', `icicle-define-file-command',
-;;    `icicle-define-sort-command', `icicle-with-selected-window'.
+;;    `icicle-define-sort-command', `icicle-file-bindings',
+;;    `icicle-with-selected-window'.
 ;;
 ;;  Functions defined here:
 ;;
@@ -103,6 +104,8 @@
 
 ;; Quiet the byte-compiler.
 (defvar icicle-inhibit-try-switch-buffer)
+(defvar read-file-name-completion-ignore-case)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  
@@ -174,7 +177,7 @@ Optional arg DONT-SAVE non-nil means do not call
       (message "Added to `%s': `%S'" ',alist-var new-item))))
 
 (defmacro icicle-buffer-bindings (&optional more-bindings)
-  "Bindings to use in multi-command definitions for buffers.
+  "Bindings to use in multi-command definitions for buffer names.
 MORE-BINDINGS is a list of additional bindings, which are created
 before the others."
   `(,@more-bindings
@@ -184,6 +187,7 @@ before the others."
     (icicle-must-match-regexp         icicle-buffer-match-regexp)
     (icicle-must-not-match-regexp     icicle-buffer-no-match-regexp)
     (icicle-must-pass-predicate       icicle-buffer-predicate)
+    (icicle-require-match-flag        icicle-buffer-require-match-flag)
     (icicle-extra-candidates          icicle-buffer-extras)
     (icicle-transform-function        'icicle-remove-dups-if-extras)
     (icicle-sort-function             (or icicle-buffer-sort icicle-sort-function))
@@ -197,7 +201,6 @@ before the others."
                '("by mode-line mode name" . icicle-mode-line-name-less-p))
               '("by file/process name" . icicle-buffer-file/process-name-less-p))
       (delete '("turned OFF") icicle-sort-functions-alist)))
-    (icicle-require-match-flag        icicle-buffer-require-match-flag)
     (icicle-ignore-space-prefix-flag  icicle-buffer-ignore-space-prefix-flag)
     (icicle-candidate-alt-action-fn
      (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "buffer")))
@@ -210,6 +213,30 @@ before the others."
              (icicle-remove-if-not #'(lambda (bf) (buffer-file-name bf)) (buffer-list))
            (cdr (assq 'buffer-list (frame-parameters))))
        (buffer-list)))))
+
+(defmacro icicle-file-bindings (&optional more-bindings)
+  "Bindings to use in multi-command definitions for file names.
+MORE-BINDINGS is a list of additional bindings, which are created
+before the others."
+  `(,@more-bindings
+    (completion-ignore-case           (or (and (boundp 'read-file-name-completion-ignore-case)
+                                           read-file-name-completion-ignore-case)
+                                       completion-ignore-case))
+    (icicle-must-match-regexp         icicle-file-match-regexp)
+    (icicle-must-not-match-regexp     icicle-file-no-match-regexp)
+    (icicle-must-pass-predicate       icicle-file-predicate)
+    (icicle-require-match-flag        icicle-file-require-match-flag)
+    (icicle-extra-candidates          icicle-file-extras)
+    (icicle-transform-function        'icicle-remove-dups-if-extras)
+    (icicle-sort-function             (or icicle-file-sort icicle-sort-function))
+    (icicle-ignore-space-prefix-flag  icicle-buffer-ignore-space-prefix-flag)
+    (icicle-candidate-alt-action-fn
+     (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "file")))
+    (icicle-all-candidates-list-alt-action-fn
+     (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "file")))
+    (icicle-delete-candidate-object   'icicle-delete-file-or-directory) ; `S-delete' deletes file.
+    (icicle-default-value               ; Let user get default via `M-n', but don't insert it.
+     (and (memq icicle-default-value '(t nil)) icicle-default-value))))
 
 (defmacro icicle-define-command
     (command doc-string function prompt collection &optional

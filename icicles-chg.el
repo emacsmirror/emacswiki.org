@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Sep 16 11:37:15 2009 (-0700)
+;; Last-Updated: Thu Sep 17 14:22:38 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 4382
+;;     Update #: 4394
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2009/09/17 dadams
+;;     icicle-delete-file, icicle-(file|directory)-list,
+;;       icicle-find-file(-absolute)(-other-window),
+;;       icicle-(recent|locate)-file(-other-window),
+;;       icicle-find-file-in-tags-table(-other-window): Use icicle-file-bindings (new macro).
 ;; 2009/09/16 dadams
 ;;     Added: icicle-insert-buffer.
 ;;     icicle-kill-buffer, icicle-buffer(-other-window), icicle-add-buffer-candidate:
@@ -1498,6 +1503,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mac.el'")
 ;;
+;; 2009/09/17 dadams
+;;     Added: icicle-file-bindings.
 ;; 2009/09/16 dadams
 ;;     Added: icicle-buffer-bindings.
 ;;     icicle-define(-file)-command: Macroexpand bindings, (e.g. to use icicle-buffer-bindings).

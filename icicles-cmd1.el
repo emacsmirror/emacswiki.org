@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Sep 16 11:34:11 2009 (-0700)
+;; Last-Updated: Thu Sep 17 14:08:08 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 19655
+;;     Update #: 19675
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3906,11 +3906,7 @@ Otherwise:
   "Delete a file or directory."         ; Doc string
   icicle-delete-file-or-directory       ; Function to perform the action
   "Delete file or directory: " default-directory nil t nil nil ; `read-file-name' args
-  ((icicle-use-candidates-only-once-flag  t) ; Additional bindings
-   (icicle-candidate-alt-action-fn
-    (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "file")))
-   (icicle-all-candidates-list-alt-action-fn
-    (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "file")))))
+  (icicle-file-bindings))               ; Bindings
 
 (defun icicle-delete-file-or-directory (file)
   "Delete file or (empty) directory FILE."
@@ -3967,22 +3963,11 @@ option `icicle-require-match-flag'."    ; Doc string
   (lambda (name) (push name file-names)) ; Function to perform the action
   "Choose file (`RET' when done): "     ; `read-file-name' args
   nil nil t nil nil
-  ((file-names                         nil) ; Additional bindings
-   (icicle-must-match-regexp           icicle-file-match-regexp)
-   (icicle-must-not-match-regexp       icicle-file-no-match-regexp)
-   (icicle-must-pass-predicate         icicle-file-predicate)
-   (icicle-extra-candidates            icicle-file-extras)
-   (icicle-transform-function          'icicle-remove-dups-if-extras)
-   (icicle-sort-function               (or icicle-file-sort icicle-sort-function))
-   (icicle-require-match-flag          icicle-file-require-match-flag)
-   (icicle-candidate-alt-action-fn
-    (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "file")))
-   (icicle-all-candidates-list-alt-action-fn
-    (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "file")))
-   (icicle-delete-candidate-object     'icicle-delete-file-or-directory) ; `S-delete' deletes file.
-   (icicle-comp-base-is-default-dir-p  t)
-   ;; $$$$$ (icicle-dir-candidate-can-exit-p (not current-prefix-arg))
-   )
+  (icicle-file-bindings                 ; Bindings
+   ((file-names                         nil)
+    (icicle-comp-base-is-default-dir-p  t)
+    ;; $$$$$ (icicle-dir-candidate-can-exit-p (not current-prefix-arg))
+    ))
   nil nil                               ; First code, undo code
   (prog1 (setq file-names  (nreverse (delete "" file-names))) ; Last code - return list of files
     (when (interactive-p) (message "Files: %S" file-names))))
@@ -4013,25 +3998,14 @@ These options, when non-nil, control candidate matching and filtering:
 Option `icicle-file-require-match-flag' can be used to override
 option `icicle-require-match-flag'."    ; Doc string
     (lambda (name) (push name dir-names)) ; Function to perform the action
-    "Choose file (`RET' when done): "   ; `read-file-name' args
+    "Choose directory (`RET' when done): " ; `read-file-name' args
     ;; $$$$$$ nil nil t nil #'(lambda (file) (eq t (car (file-attributes file)))) ; PREDICATE
     nil nil t nil #'file-directory-p    ; PREDICATE
-    ((dir-names                          nil) ; Additional bindings
-     (icicle-must-match-regexp           icicle-file-match-regexp)
-     (icicle-must-not-match-regexp       icicle-file-no-match-regexp)
-     (icicle-must-pass-predicate         icicle-file-predicate)
-     (icicle-extra-candidates            icicle-file-extras)
-     (icicle-transform-function          'icicle-remove-dups-if-extras)
-     (icicle-sort-function               (or icicle-file-sort icicle-sort-function))
-     (icicle-require-match-flag          icicle-file-require-match-flag)
-     (icicle-candidate-alt-action-fn
-      (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "file")))
-     (icicle-all-candidates-list-alt-action-fn
-      (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "file")))
-     (icicle-delete-candidate-object     'icicle-delete-file-or-directory) ; `S-delete' deletes file
-     (icicle-comp-base-is-default-dir-p  t)
-     ;; $$$$$ (icicle-dir-candidate-can-exit-p (not current-prefix-arg))
-     )
+    (icicle-file-bindings               ; Bindings
+     ((dir-names                          nil)
+      (icicle-comp-base-is-default-dir-p  t)
+      ;; $$$$$ (icicle-dir-candidate-can-exit-p (not current-prefix-arg))
+      ))
     nil nil                             ; First code, undo code
     (prog1 (setq dir-names  (nreverse (delete "" dir-names))) ; Last code - return the list of dirs
       (when (interactive-p) (message "Directories: %S" dir-names)))))
@@ -4141,26 +4115,14 @@ option `icicle-require-match-flag'."    ; Doc string
   nil
   (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ;Emacs23.
   default-directory 'file-name-history default-directory nil
-  ;; Additional bindings
-  ((prompt                             "File or directory: ")
-   (icicle-abs-file-candidates
-    (mapcar #'(lambda (file) (if (file-directory-p file) (concat file "/") file))
-            (directory-files default-directory 'full nil 'nosort)))
-   (icicle-special-candidate-regexp    (or icicle-special-candidate-regexp ".+/$"))
-   (icicle-must-match-regexp           icicle-file-match-regexp)
-   (icicle-must-not-match-regexp       icicle-file-no-match-regexp)
-   (icicle-must-pass-predicate         icicle-file-predicate)
-   (icicle-extra-candidates            icicle-file-extras)
-   (icicle-transform-function          'icicle-remove-dups-if-extras)
-   (icicle-sort-function               (or icicle-file-sort icicle-sort-function))
-   (icicle-require-match-flag          icicle-file-require-match-flag)
-   (icicle-candidate-alt-action-fn
-    (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "file")))
-   (icicle-all-candidates-list-alt-action-fn
-    (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "file")))
-   (icicle-delete-candidate-object     'icicle-delete-file-or-directory) ; `S-delete' deletes file.
-   (icicle-candidate-properties-alist  (and current-prefix-arg '((1 (face icicle-candidate-part)))))
-   (icicle-list-use-nth-parts          (and current-prefix-arg '(1))))
+  (icicle-file-bindings                 ; Bindings
+   ((prompt                             "File or directory: ")
+    (icicle-abs-file-candidates
+     (mapcar #'(lambda (file) (if (file-directory-p file) (concat file "/") file))
+             (directory-files default-directory 'full nil 'nosort)))
+    (icicle-special-candidate-regexp    (or icicle-special-candidate-regexp ".+/$"))
+    (icicle-candidate-properties-alist  (and current-prefix-arg '((1 (face icicle-candidate-part)))))
+    (icicle-list-use-nth-parts          (and current-prefix-arg '(1)))))
   (progn                                ; First code
     (when current-prefix-arg (put-text-property 0 1 'icicle-fancy-candidates t prompt))
     (define-key minibuffer-local-completion-map [(control backspace)] 'icicle-up-directory)
@@ -4185,26 +4147,14 @@ Same as `icicle-find-file-absolute' except uses a different window." ; Doc strin
   nil
   (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ;Emacs23.
   default-directory 'file-name-history default-directory nil
-  ;; Additional bindings
-  ((prompt                             "File or directory: ")
-   (icicle-abs-file-candidates
-    (mapcar #'(lambda (file) (if (file-directory-p file) (concat file "/") file))
-            (directory-files default-directory 'full nil 'nosort)))
-   (icicle-special-candidate-regexp    (or icicle-special-candidate-regexp ".+/$"))
-   (icicle-must-match-regexp           icicle-file-match-regexp)
-   (icicle-must-not-match-regexp       icicle-file-no-match-regexp)
-   (icicle-must-pass-predicate         icicle-file-predicate)
-   (icicle-extra-candidates            icicle-file-extras)
-   (icicle-transform-function          'icicle-remove-dups-if-extras)
-   (icicle-sort-function               (or icicle-file-sort icicle-sort-function))
-   (icicle-require-match-flag          icicle-file-require-match-flag)
-   (icicle-candidate-alt-action-fn
-    (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "file")))
-   (icicle-all-candidates-list-alt-action-fn
-    (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "file")))
-   (icicle-delete-candidate-object     'icicle-delete-file-or-directory) ; `S-delete' deletes file.
-   (icicle-candidate-properties-alist  (and current-prefix-arg '((1 (face icicle-candidate-part)))))
-   (icicle-list-use-nth-parts          (and current-prefix-arg '(1))))
+  (icicle-file-bindings                 ; Bindings
+   ((prompt                             "File or directory: ")
+    (icicle-abs-file-candidates
+     (mapcar #'(lambda (file) (if (file-directory-p file) (concat file "/") file))
+             (directory-files default-directory 'full nil 'nosort)))
+    (icicle-special-candidate-regexp    (or icicle-special-candidate-regexp ".+/$"))
+    (icicle-candidate-properties-alist  (and current-prefix-arg '((1 (face icicle-candidate-part)))))
+    (icicle-list-use-nth-parts          (and current-prefix-arg '(1)))))
   (progn                                ; First code
     (when current-prefix-arg (put-text-property 0 1 'icicle-fancy-candidates t prompt))
     (define-key minibuffer-local-completion-map [(control backspace)] 'icicle-up-directory)
@@ -4246,21 +4196,7 @@ option `icicle-require-match-flag'."    ; Doc string
          (error nil)))
   (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ;Emacs23.
   nil nil
-  ;; Additional bindings
-  ((icicle-must-match-regexp           icicle-file-match-regexp)
-   (icicle-must-not-match-regexp       icicle-file-no-match-regexp)
-   (icicle-must-pass-predicate         icicle-file-predicate)
-   (icicle-extra-candidates            icicle-file-extras)
-   (icicle-transform-function          'icicle-remove-dups-if-extras)
-   (icicle-sort-function               (or icicle-file-sort icicle-sort-function))
-   (icicle-require-match-flag          icicle-file-require-match-flag)
-   (icicle-candidate-alt-action-fn
-    (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "file")))
-   (icicle-all-candidates-list-alt-action-fn
-    (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "file")))
-   (icicle-delete-candidate-object     'icicle-delete-file-or-directory) ; `S-delete' deletes file
-   (icicle-default-value                ; Let user get default via `M-n', but don't insert it.
-    (and (memq icicle-default-value '(t nil)) icicle-default-value))))
+  (icicle-file-bindings))               ; Bindings
 
 ;;;###autoload
 (icicle-define-file-command icicle-find-file-other-window
@@ -4285,21 +4221,7 @@ to visit the current directory."        ; Doc string
          (error nil)))
   (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ;Emacs23.
   nil nil
-  ;; Additional bindings
-  ((icicle-must-match-regexp           icicle-file-match-regexp)
-   (icicle-must-not-match-regexp       icicle-file-no-match-regexp)
-   (icicle-must-pass-predicate         icicle-file-predicate)
-   (icicle-extra-candidates            icicle-file-extras)
-   (icicle-transform-function          'icicle-remove-dups-if-extras)
-   (icicle-sort-function               (or icicle-file-sort icicle-sort-function))
-   (icicle-require-match-flag          icicle-file-require-match-flag)
-   (icicle-candidate-alt-action-fn
-    (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "file")))
-   (icicle-all-candidates-list-alt-action-fn
-    (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "file")))
-   (icicle-delete-candidate-object     'icicle-delete-file-or-directory) ; `S-delete' deletes file
-   (icicle-default-value                ; Let user get default via `M-n', but don't insert it.
-    (and (memq icicle-default-value '(t nil)) icicle-default-value))))
+  (icicle-file-bindings))               ; Bindings
 
 (put 'icicle-recent-file 'icicle-Completions-window-max-height 200)
 ;;;###autoload
@@ -4345,24 +4267,16 @@ option `icicle-require-match-flag'."    ; Doc string
   nil
   (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ;Emacs23.
   nil 'file-name-history (car recentf-list) nil
-  ((prompt                             "Recent file: ") ; Additional bindings
-   (icicle-abs-file-candidates         (progn (unless (boundp 'recentf-list) (require 'recentf))
-                                              (when (fboundp 'recentf-mode) (recentf-mode 99))
-                                              (unless (consp recentf-list)
-                                                (error "No recently accessed files"))
-                                              recentf-list))
-   (icicle-must-match-regexp           icicle-file-match-regexp)
-   (icicle-must-not-match-regexp       icicle-file-no-match-regexp)
-   (icicle-must-pass-predicate         icicle-file-predicate)
-   (icicle-extra-candidates            icicle-file-extras)
-   (icicle-transform-function          'icicle-remove-dups-if-extras)
-   (icicle-sort-function               (or icicle-file-sort icicle-sort-function))
-   (icicle-require-match-flag          icicle-file-require-match-flag)
-   (icicle-delete-candidate-object     'icicle-delete-file-or-directory) ; `S-delete' deletes file.
-   (icicle-candidate-alt-action-fn     'icicle-remove-from-recentf-candidate-action)
-   (icicle-use-candidates-only-once-alt-p  t)
-   (icicle-candidate-properties-alist  (and current-prefix-arg '((1 (face icicle-candidate-part)))))
-   (icicle-list-use-nth-parts          (and current-prefix-arg '(1))))
+  (icicle-file-bindings                 ; Bindings
+   ((prompt                                 "Recent file: ") ; Additional bindings
+    (icicle-abs-file-candidates             (progn (unless (boundp 'recentf-list) (require 'recentf))
+                                                   (when (fboundp 'recentf-mode) (recentf-mode 99))
+                                                   (unless (consp recentf-list)
+                                                     (error "No recently accessed files"))
+                                                   recentf-list))
+    (icicle-use-candidates-only-once-alt-p  t)
+    (icicle-candidate-properties-alist      (and current-prefix-arg '((1 (face icicle-candidate-part)))))
+    (icicle-list-use-nth-parts              (and current-prefix-arg '(1)))))
   (progn                                ; First code
     (when current-prefix-arg (put-text-property 0 1 'icicle-fancy-candidates t prompt))
     (define-key minibuffer-local-completion-map [(control backspace)] 'icicle-up-directory)
@@ -4385,24 +4299,16 @@ Same as `icicle-recent-file' except it uses a different window." ; Doc string
   nil
   (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ;Emacs23.
   nil 'file-name-history (car recentf-list) nil
-  ((prompt                             "Recent file: ") ; Additional bindings
-   (icicle-abs-file-candidates         (progn (unless (boundp 'recentf-list) (require 'recentf))
-                                              (when (fboundp 'recentf-mode) (recentf-mode 99))
-                                              (unless (consp recentf-list)
-                                                (error "No recently accessed files"))
-                                              recentf-list))
-   (icicle-must-match-regexp           icicle-file-match-regexp)
-   (icicle-must-not-match-regexp       icicle-file-no-match-regexp)
-   (icicle-must-pass-predicate         icicle-file-predicate)
-   (icicle-extra-candidates            icicle-file-extras)
-   (icicle-transform-function          'icicle-remove-dups-if-extras)
-   (icicle-sort-function               (or icicle-file-sort icicle-sort-function))
-   (icicle-require-match-flag          icicle-file-require-match-flag)
-   (icicle-delete-candidate-object     'icicle-delete-file-or-directory) ; `S-delete' deletes file.
-   (icicle-candidate-alt-action-fn     'icicle-remove-from-recentf-candidate-action)
-   (icicle-use-candidates-only-once-alt-p  t)
-   (icicle-candidate-properties-alist  (and current-prefix-arg '((1 (face icicle-candidate-part)))))
-   (icicle-list-use-nth-parts          (and current-prefix-arg '(1))))
+  (icicle-file-bindings                 ; Bindings
+   ((prompt                                 "Recent file: ") ; Additional bindings
+    (icicle-abs-file-candidates             (progn (unless (boundp 'recentf-list) (require 'recentf))
+                                                   (when (fboundp 'recentf-mode) (recentf-mode 99))
+                                                   (unless (consp recentf-list)
+                                                     (error "No recently accessed files"))
+                                                   recentf-list))
+    (icicle-use-candidates-only-once-alt-p  t)
+    (icicle-candidate-properties-alist      (and current-prefix-arg '((1 (face icicle-candidate-part)))))
+    (icicle-list-use-nth-parts              (and current-prefix-arg '(1)))))
   (progn                                ; First code
     (when current-prefix-arg (put-text-property 0 1 'icicle-fancy-candidates t prompt))
     (define-key minibuffer-local-completion-map [(control backspace)] 'icicle-up-directory)
@@ -4493,35 +4399,24 @@ option `icicle-require-match-flag'."    ; Doc string
   nil
   (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ;Emacs23.
   nil 'file-name-history nil nil
-  ((prompt                             "File: ") ; Bindings
-   (dir                                (if (and current-prefix-arg
-                                                (wholenump (prefix-numeric-value
-                                                            current-prefix-arg)))
-                                           (read-file-name "Locate under which directory: " nil
-                                                           default-directory nil)
-                                         default-directory))
-   (IGNORE--FOR-SIDE-EFFECT            (progn
-                                         (icicle-highlight-lighter)
-                                         (message "Gathering files within `%s' (this could take \
+  (icicle-file-bindings                 ; Bindings
+   ((prompt                             "File: ") ; Bindings
+    (dir                                (if (and current-prefix-arg
+                                                 (wholenump (prefix-numeric-value
+                                                             current-prefix-arg)))
+                                            (read-file-name "Locate under which directory: " nil
+                                                            default-directory nil)
+                                          default-directory))
+    (IGNORED--FOR-SIDE-EFFECT           (progn
+                                          (icicle-highlight-lighter)
+                                          (message "Gathering files within `%s' (this could take \
 a while)..." dir)))
-   (icicle-abs-file-candidates         (icicle-files-within (directory-files dir 'full
-                                                                             icicle-re-no-dot) nil))
-   (icicle-must-match-regexp           icicle-file-match-regexp)
-   (icicle-must-not-match-regexp       icicle-file-no-match-regexp)
-   (icicle-must-pass-predicate         icicle-file-predicate)
-   (icicle-extra-candidates            icicle-file-extras)
-   (icicle-transform-function          'icicle-remove-dups-if-extras)
-   (icicle-sort-function               (or icicle-file-sort icicle-sort-function))
-   (icicle-require-match-flag          icicle-file-require-match-flag)
-   (icicle-candidate-alt-action-fn
-    (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "file")))
-   (icicle-all-candidates-list-alt-action-fn
-    (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "file")))
-   (icicle-delete-candidate-object     'icicle-delete-file-or-directory) ; `S-delete' deletes file.
-   (use-dialog-box                     nil)
-   (icicle-candidate-properties-alist  (and (<= (prefix-numeric-value current-prefix-arg) 0)
-                                            '((1 (face icicle-candidate-part)))))
-   (icicle-list-use-nth-parts          '(1)))
+    (icicle-abs-file-candidates         (icicle-files-within (directory-files dir 'full
+                                                                              icicle-re-no-dot) nil))
+    (use-dialog-box                     nil)
+    (icicle-candidate-properties-alist  (and (<= (prefix-numeric-value current-prefix-arg) 0)
+                                             '((1 (face icicle-candidate-part)))))
+    (icicle-list-use-nth-parts          '(1))))
   (progn                                ; First code
     (when (<= (prefix-numeric-value current-prefix-arg) 0)
       (put-text-property 0 1 'icicle-fancy-candidates t prompt))
@@ -4546,35 +4441,24 @@ a while)..." dir)))
   nil
   (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ;Emacs23.
   nil 'file-name-history nil nil
-  ((prompt                             "File: ") ; Bindings
-   (dir                                (if (and current-prefix-arg
-                                                (wholenump (prefix-numeric-value
-                                                            current-prefix-arg)))
-                                           (read-file-name "Locate under which directory: " nil
-                                                           default-directory nil)
-                                         default-directory))
-   (IGNORED--FOR-SIDE-EFFECT           (progn
-                                         (icicle-highlight-lighter)
-                                         (message "Gathering files within `%s' (this could take \
+  (icicle-file-bindings                 ; Bindings
+   ((prompt                             "File: ") ; Bindings
+    (dir                                (if (and current-prefix-arg
+                                                 (wholenump (prefix-numeric-value
+                                                             current-prefix-arg)))
+                                            (read-file-name "Locate under which directory: " nil
+                                                            default-directory nil)
+                                          default-directory))
+    (IGNORED--FOR-SIDE-EFFECT           (progn
+                                          (icicle-highlight-lighter)
+                                          (message "Gathering files within `%s' (this could take \
 a while)..." dir)))
-   (icicle-abs-file-candidates         (icicle-files-within (directory-files dir 'full ; Bindings
-                                                                             icicle-re-no-dot) nil))
-   (icicle-must-match-regexp           icicle-file-match-regexp)
-   (icicle-must-not-match-regexp       icicle-file-no-match-regexp)
-   (icicle-must-pass-predicate         icicle-file-predicate)
-   (icicle-extra-candidates            icicle-file-extras)
-   (icicle-transform-function          'icicle-remove-dups-if-extras)
-   (icicle-sort-function               (or icicle-file-sort icicle-sort-function))
-   (icicle-require-match-flag          icicle-file-require-match-flag)
-   (icicle-candidate-alt-action-fn
-    (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "file")))
-   (icicle-all-candidates-list-alt-action-fn
-    (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "file")))
-   (icicle-delete-candidate-object     'icicle-delete-file-or-directory) ; `S-delete' deletes file.
-   (use-dialog-box                     nil)
-   (icicle-candidate-properties-alist  (and (<= (prefix-numeric-value current-prefix-arg) 0)
-                                            '((1 (face icicle-candidate-part)))))
-   (icicle-list-use-nth-parts          '(1)))
+    (icicle-abs-file-candidates         (icicle-files-within (directory-files dir 'full
+                                                                              icicle-re-no-dot) nil))
+    (use-dialog-box                     nil)
+    (icicle-candidate-properties-alist  (and (<= (prefix-numeric-value current-prefix-arg) 0)
+                                             '((1 (face icicle-candidate-part)))))
+    (icicle-list-use-nth-parts          '(1))))
   (progn                                ; First code
     (when (<= (prefix-numeric-value current-prefix-arg) 0)
       (put-text-property 0 1 'icicle-fancy-candidates t prompt))
@@ -4636,23 +4520,11 @@ option `icicle-require-match-flag'."    ; Doc string
   nil
   (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ;Emacs23.
   nil 'file-name-history nil nil
-  ;; Additional bindings
-  ((prompt                             "File (in tags table): ")
-   (icicle-special-candidate-regexp    (or icicle-special-candidate-regexp ".+/$"))
-   (icicle-must-match-regexp           icicle-file-match-regexp)
-   (icicle-must-not-match-regexp       icicle-file-no-match-regexp)
-   (icicle-must-pass-predicate         icicle-file-predicate)
-   (icicle-extra-candidates            icicle-file-extras)
-   (icicle-transform-function          'icicle-remove-dups-if-extras)
-   (icicle-sort-function               (or icicle-file-sort icicle-sort-function))
-   (icicle-require-match-flag          icicle-file-require-match-flag)
-   (icicle-candidate-alt-action-fn
-    (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "file")))
-   (icicle-all-candidates-list-alt-action-fn
-    (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "file")))
-   (icicle-delete-candidate-object     'icicle-delete-file-or-directory) ; `S-delete' deletes file.
-   (icicle-candidate-properties-alist  (and current-prefix-arg '((1 (face icicle-candidate-part)))))
-   (icicle-list-use-nth-parts          (and current-prefix-arg '(1))))
+  (icicle-file-bindings                 ; Bindings
+   ((prompt                             "File (in tags table): ")
+    (icicle-special-candidate-regexp    (or icicle-special-candidate-regexp ".+/$"))
+    (icicle-candidate-properties-alist  (and current-prefix-arg '((1 (face icicle-candidate-part)))))
+    (icicle-list-use-nth-parts          (and current-prefix-arg '(1)))))
   (progn                                ; First code
     (when current-prefix-arg (put-text-property 0 1 'icicle-fancy-candidates t prompt))
     (define-key minibuffer-local-completion-map [(control backspace)] 'icicle-up-directory)
@@ -4679,23 +4551,11 @@ Same as `icicle-find-file-in-tags-table', but uses a different window." ; Doc st
   nil
   (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ;Emacs23.
   nil 'file-name-history nil nil
-  ;; Additional bindings
-  ((prompt                             "File (in tags table): ")
-   (icicle-special-candidate-regexp    (or icicle-special-candidate-regexp ".+/$"))
-   (icicle-must-match-regexp           icicle-file-match-regexp)
-   (icicle-must-not-match-regexp       icicle-file-no-match-regexp)
-   (icicle-must-pass-predicate         icicle-file-predicate)
-   (icicle-extra-candidates            icicle-file-extras)
-   (icicle-transform-function          'icicle-remove-dups-if-extras)
-   (icicle-sort-function               (or icicle-file-sort icicle-sort-function))
-   (icicle-require-match-flag          icicle-file-require-match-flag)
-   (icicle-candidate-alt-action-fn
-    (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "file")))
-   (icicle-all-candidates-list-alt-action-fn
-    (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "file")))
-   (icicle-delete-candidate-object     'icicle-delete-file-or-directory) ; `S-delete' deletes file.
-   (icicle-candidate-properties-alist  (and current-prefix-arg '((1 (face icicle-candidate-part)))))
-   (icicle-list-use-nth-parts          (and current-prefix-arg '(1))))
+  (icicle-file-bindings                 ; Bindings
+   ((prompt                             "File (in tags table): ")
+    (icicle-special-candidate-regexp    (or icicle-special-candidate-regexp ".+/$"))
+    (icicle-candidate-properties-alist  (and current-prefix-arg '((1 (face icicle-candidate-part)))))
+    (icicle-list-use-nth-parts          (and current-prefix-arg '(1)))))
   (progn                                ; First code
     (when current-prefix-arg (put-text-property 0 1 'icicle-fancy-candidates t prompt))
     (define-key minibuffer-local-completion-map [(control backspace)] 'icicle-up-directory)
