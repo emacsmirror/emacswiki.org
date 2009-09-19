@@ -12,11 +12,8 @@
 '''WikiEmacs''' está dedicado a ofrecer material sobre EmacsYXEmacs. Siéntase libre de agregar contenido y modificar el material existente. Para obtener más información visite la [MissionStatement Declaración de principios] original o el WikiCómo.
 
 * CómoNavegar -- Ayuda en la navegación por la página (EmacsWiki) 
-
 * ElispArea -- Añadir y descargar código fuente EmacsLisp 
-
-* [HowToEdit Cómo editar] -- Cómo puedes colaborar con la página (''en inglés'')
-
+* [ComoEditar Cómo editar] -- Cómo puedes colaborar con la página
 * [EmacsWikiAdministrators Administración] -- Control del vandalismo y el spam
 
 [:AcercaEmacs]
@@ -28,8 +25,8 @@ Acerca de Emacs:
 Aprendiendo a usar Emacs:
 * PrincipianteEmacs -- conceptos basicos, vocabulario, anotacion usada en la documentación
 * [http://www.gnu.org/software/emacs/tour/ TourGuiado] -- Introducción rápida en Inglés.
-* [English:CategoryDocumentation Documentation] -- Emacs incluye documentacion de gran ayuda
-* [English:CategoryHelp Help] -- ayuda online de Emacs y sus usuarios
+* [CategoriaDocumentacion Documentación] -- Emacs es autodocumentado y útil
+* [CategoríaAyuda Ayuda] -- Ayuda de Emacs y de la comunidad
 * [English:CategoryGlossary Glossary] -- Terminologia usada en Emacs
 * EmacsNiftyTricks -- trucos diversos
 * RandomPage -- prueba tu suerte

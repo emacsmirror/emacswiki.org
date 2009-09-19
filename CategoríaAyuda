@@ -1,12 +1,15 @@
+[[en:CategoryHelp]]
+
 Pulse sobre el título de esta página para encontrar una lista de todas las páginas relacionadas con ayuda y depuración en este wiki.
 
 * DocumentaciónPropia -- cómo encontrar ayuda dentro de Emacs
 * RecursosEnLínea -- cómo encontrar ayuda en Internet
 ** GruposDeNoticiasEmacs -- USENET, grupos de noticias
 ** ListasDeCorreoEmacs -- listas de correo
+** CanalEmacsEs -- Ayuda en IRC de usuarios hispanohablantes de Emacs
 ** CanalEmacs -- InternetRelayChat, IRC
 ** PreguntasAbiertas -- publicando inquietudes al wiki
-* MacroEmacs -- EMacro es un archivo .emacs inmenso que se encarga de la mayoría de problemas de los principiantes
+* EmacsMacro -- EMacro es un archivo .emacs inmenso que se encarga de la mayoría de problemas de los principiantes
 
 Ayuda para problemas específicos:
 

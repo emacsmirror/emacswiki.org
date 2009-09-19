@@ -1,4 +1,6 @@
-Emacs 23 natively supports OS X as a Cocoa application.  See below for available variants. Mac OS X comes with a terminal-only version of Emacs (21.2 on OS X 10.3, 22.1 on OS X 10.5). 
+Emacs 23 natively supports OS X as a Cocoa application.  See below for available variants. Mac OS X comes with a terminal-only version of Emacs (21.2 on OS X 10.3, 22.1 on OS X 10.5).
+
+Emacs will no longer support Mac OS 10.3 unless someone steps up to write the alternative code, according to Adrian Robert.
 
 == OS X Binaries ==
 

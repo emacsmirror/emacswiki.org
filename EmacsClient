@@ -51,6 +51,9 @@ For current cvs version, I have write a [[EmacsdInitScript]] to put in /etc/init
 
 
 === Microsoft Windows (in Emacs often called w32) ===
+
+'''Note: On Windows, GnuClient works better than %%EmacsClient%%. The instructions below apply to %%EmacsClient%%; head over to GnuClient for a less cumbersome solution.'''
+
 ==== Starting Emacs automatically from a context menu on w32 ====
 (A trivial version of this, not using %%EmacsClient%%, is at [MsWindowsGlobalContextMenu MsWindowsGlobalContextMenu].)
 

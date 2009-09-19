@@ -1,0 +1,17 @@
+[[en:CategoryDocumentation]]
+
+Esta página es sobre la documentación de '''''Emacs'''''. Consulta también la categoría de ayuda CategoryHelp.
+
+Si buscas una introducción a Emacs, ve a EmacsNewbie.
+
+Emacs viene con un tutorial que puede ser invocado con <tt>C-h t</tt> o desde el menú de ayuda. Este tutorial te guiará, paso por paso, a través de una sesión de edición en la cual aprenderás los fundamentos del uso de Emacs como un editor.
+
+Además, Emacs viene con un completo manual, llamado EmacsManual.
+
+Si lo que deseas es extender Emacs, puedes hacerlo usando el lenguaje de EmacsLisp. Emacs también incluye una introducción a EmacsLisp y un completo manual de referencia, disponible en EmacsLispReference.
+
+También podría ser útil para el nuevo usuario las ReferenceCards, que sirven como recordatorio de las KeyStrokes más comunes.
+Aunque las ReferenceCards son útiles, no olvides que emacs es conocido por ser un editor [SelfDocumenting autodocumentado], no dudes
+en consultar la documentación con el modo ÏnfoMode para características más avanzadas.
+
+Además de la documentación propia de Emacs, puedes leer documentación de otras partes del sistema con los modos WoMan, ManMode e InfoMode.

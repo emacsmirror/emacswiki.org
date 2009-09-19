@@ -3,3 +3,41 @@ Collecting features which other editors have and Emacs doesn't can be good inspi
 I'll start the list:
 
 * [http://www.sublimetext.com/ Minimap] of Sublime editor. See the left side of the screenshots.
+
+
+[new:DavidEngster:2009-09-18]
+Actually, it's pretty easy to implement this, using indirect buffers. I created a proof-of-concept implementation, which you can download at
+
+http://www.randomsample.de/minimap.el
+
+The main problem is to make the minimap sidebar stick to the main edit buffer. This is currently not really possible with Emacs, but people are working on such a 'window groups' feature.
+
+Here's a screenshot: 
+
+http://randomsample.de/minimap-example.jpg
+
+
+[new]
+
+Looks nice! Though display is one thing. The main feature is the user should be able to move the viewport in the minimap window with the mouse to an other location and the main buffer content should follow it.
+
+[new:]
+Nice. Suggestion: make the highlight color lighter for light backgrounds. -- DrewAdams
+
+
+[new]
+OK, version 0.2 is out. :-) You can now move the highlighted region with the mouse which scrolls the corresponding edit buffer. Also, it automatically recenters, the minimap is read-only and is automatically reused by 'minimap-create' if its buffer isn't currently visible. Just get the new version from the above link.
+I'm not yet sure how to automatically deal with different background colors. For now, you can change it manually in minimap-active-overlay-background.
+
+[new:DrewAdams:2009-09-19 01:27 UTC]
+Suggestions for defining the background color:
+
+* Either use `defface' or `defcustom', not `defvar' -- options and faces are customizable.
+* With `defface', you can easily provide a default for light backgrounds and a default for dark backgrounds. E.g.:
+
+    (defface foo '((((background dark)) (:background "#4517305D0000"))
+                   (t (:background "#C847D8FEFFFF")))
+      "Face used to...")
+
+----
+CategoryWishList

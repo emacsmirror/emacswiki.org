@@ -14,6 +14,7 @@
 (setenv "ODD" "/Users/Shared/Oddmuse")
 (setenv "CVS_RSH" "ssh")
 (setenv "WikiDataDir" "/Users/alex/oddmuse/test-data")
+(server-start)
 
 ;; (when (> (display-color-cells) 100)
 ;;   (require 'pink-bliss)
@@ -29,6 +30,12 @@
 (column-number-mode 1)
 (blink-cursor-mode -1)
 (auto-image-file-mode 1)
+
+;; no longer treat SVG like an image
+(dolist (elt file-name-handler-alist)
+  (when (string-match "svg" (car elt))
+    (setcar elt (replace-regexp-in-string
+		 "\\\\|SVG" "" (car elt)))))
 
 (when (require 'mac-print-mode nil t)
   (mac-print-mode 1)
@@ -111,6 +118,32 @@
 ;; (require 'pink-bliss)
 ;; (color-theme-pink-bliss)
 
+(define-generic-mode 'venus-feed-mode
+  '(?#)
+  '("name")
+  '(("\\[\\(.*\\)\\]" 1 font-lock-type-face)
+    ("=\\(.*\\)" 1 font-lock-function-name-face))
+  nil
+  nil
+  "Mode for the ini file to determine the feeds")  
+
+(defun venus-feed-sort-buffer (start end)
+  "Sort the region.
+Note that comments between URL and name will stay where they are."
+  (interactive "r")
+  (goto-char start)
+  (let (items)
+    (while (re-search-forward "^\\[http://.*\nname ?= ?\\(.*\\)" end t)
+      (setq items (cons (cons (match-string 1)
+			      (match-string 0))
+			items)))
+    (delete-region start end)
+    (dolist (item (sort items (lambda (a b)
+				(string< (upcase (car a))
+					 (upcase (car b))))))
+      (insert (cdr item) "\n"))))
+
+
 (define-generic-mode 'htaccess-mode
   '(?#)
   '( ;; core
@@ -160,18 +193,11 @@
 
 (setq ispell-program-name "aspell"
       ispell-dictionary "english"
-      ispell-dictionary-alist
-      (let ((default '("[A-Za-z]" "[^A-Za-z]" "[']" nil
-		       ("-B" "-d" "english" "--dict-dir"
-			"/Library/Application Support/cocoAspell/aspell6-en-6.0-0")
-		       nil iso-8859-1)))
-	`((nil ,@default)
-	  ("english" ,@default)
-	  ("swiss" "[a-zA-Z\304\326\334\344\366\337\374]"
-	   "[^a-zA-Z\304\326\334\344\366\337\374]" "[']" t
-	   ("-C" "-d" "swiss" "--dict-dir"
-	    "/Library/Application Support/cocoAspell/aspell6-de-20030222-1")
-	   "~latin1" iso-8859-1))))
+      ispell-local-dictionary-alist
+      '(("pt_PT"
+	 "[a-zA-Z\301\302\311\323\340\341\342\351\352\355\363\343\372]"
+	 "[^a-zA-Z\301\302\311\323\340\341\342\351\352\355\363\343\372]"
+	 "[']" t ("-C") "~latin1" iso-8859-1)))
 
 ;;; dired mode
 
@@ -324,8 +350,8 @@
 		  (rcirc nil)))
 
 (setq rcirc-prompt "%n> "; list nick
-      rcirc-fill-prefix "      "
-      rcirc-fill-column 65; side-by-side on my laptop
+      rcirc-fill-prefix "    "
+      rcirc-fill-column 79; side-by-side on my laptop
       rcirc-default-nick "kensanata"
       rcirc-keywords '("ken" "kens" "kensa")
       rcirc-server-alist
@@ -333,11 +359,12 @@
 	 ("#emacs" "#rcirc" "#wiki" "#oddmuse" "#epfarms"
 	  "#hcoop" "#clojure"))
 	("irc.datacomm.ch" :channels ("#drsrm"))
+	;; ("irc.lugs.ch" :channels ("#hackerfunk"))
 	("irc.perl.org" :channels ("#perlde")))
       rcirc-decode-coding-system 'undecided
       rcirc-coding-system-alist
       '(("#nihongo" undecided . iso-2022-jp))
-      rcirc-ignore-list '()
+      rcirc-ignore-list '("gaby")
       rcirc-log-flag t
       rcirc-authinfo (with-temp-buffer
 		       (insert-file-contents-literally "~/.rcirc-authinfo")
@@ -358,6 +385,7 @@
 	candidates))
 
 (eval-after-load 'rcirc '(require 'rcirc-color))
+(eval-after-load 'rcirc '(require 'rcirc-controls))
 
 (eval-after-load 'rcirc
   '(defun-rcirc-command encoding (arg)
@@ -374,6 +402,15 @@
 	  (lambda ()
 	    (rcirc-track-minor-mode 1)
 	    (local-set-key (kbd "M-q") 'rcirc-unfill)))
+
+;; rcirc-ding
+
+;; got play from http://www.hieper.nl/
+;; got sound from http://adium.im/
+(setq rcirc-ding-this
+      (lambda (&rest ignore)
+	(call-process "play" nil nil nil 
+		      "/Applications/Adium.app/Contents/Resources/Sounds/TokyoTrainStation.AdiumSoundset/Message_Received.m4a")))
 
 ;; define faces
 
@@ -397,6 +434,10 @@
   (let ((process ad-return-value)
 	(nick (or nick rcirc-default-nick)))
     (rcirc-send-string process (concat "MODE " nick " +i"))))
+
+;;; ELIM
+(add-to-list 'load-path "~/elisp/elim")
+(autoload 'garak "garak" nil t)
 
 ;;; debugging hashmaps
 
@@ -446,6 +487,10 @@
 (setq oddmuse-wikis
       '(("TestWiki" "http://www.emacswiki.org/cgi-bin/test" utf-8)
 	("EmacsWiki" "http://www.emacswiki.org/cgi-bin/emacs" utf-8)
+	("CampaignWiki" "http://www.campaignwiki.org/wiki" utf-8)
+	("HagfishTavern" "http://www.campaignwiki.org/wiki/HagfishTavern" utf-8)
+	("AlderKing" "http://www.campaignwiki.org/wiki/TheAlderKing" utf-8)
+	("GoldenLanterns" "http://www.campaignwiki.org/wiki/GoldenLanterns" utf-8)
 	("CommunityWiki" "http://www.communitywiki.org/cw" utf-8)
 	("OddmuseWiki" "http://www.oddmuse.org/cgi-bin/oddmuse" utf-8)
 	("Alex" "http://www.emacswiki.org/cgi-bin/alex" utf-8)))
@@ -515,31 +560,7 @@ cells by columns first."
 The region must contain one cell content per line,
 cells by rows first."
   (interactive "r\nnHow many rows? ")
-  (let* ((cells (split-string (buffer-substring start end) " *\n *" t))
-	 (m (length cells)))
-    (unless (= 0 (mod m rows))
-      (error "Cannot fit %d cells into %d rows"
-	     m rows))
-    (unless cells
-      (error "No cells in the region"))
-    (let ((columns (/ m rows))
-	  (row 0)
-	  result)
-      (while cells
-	(setq result cells
-	      cells (nthcdr columns cells))
-	(setcdr (nthcdr (1- columns) result) nil)
-      	(let ((sep (if (= row 0) "||~" "||")))
-	  (insert sep (mapconcat (lambda (s)
-				   (if (and (> row 0)
-					    (string-match "[a-z]" s))
-				       s; headers are always centered
-				     (concat " " s)))
-				 result
-				 (concat " " sep))
-		  " ||\n"))
-	(setq row (1+ row)))))
-  (delete-region start end))
+  (wiki-transpose-table start end rows "||~" "||"))
 
 (defun wikidot-bold-intro ()
   "Find a sentence ending with a colon,
@@ -621,6 +642,44 @@ The particular markup mix is specific to my preferences.")
   '((lambda () (require 'info) (require 'goto-addr))); function-list
   "Campaign Wiki stuff including Creole Markup and BBCode.")
 
+(defun oddmuse-creole-table (start end rows)
+  "Transpose cells into a table.
+The region must contain one cell content per line,
+cells by rows first."
+  (interactive "r\nnHow many rows? ")
+  (wiki-transpose-table start end rows "|=" "|"))
+
+(defun wiki-transpose-table (start end rows title-separator cell-separator)
+  "Transpose cells into a table.
+The region must contain one cell content per line,
+cells by rows first."
+  (interactive "r\nnHow many rows? ")
+  (let* ((cells (split-string (buffer-substring start end) " *\n *" t))
+	 (m (length cells)))
+    (unless (= 0 (mod m rows))
+      (error "Cannot fit %d cells into %d rows"
+	     m rows))
+    (unless cells
+      (error "No cells in the region"))
+    (let ((columns (/ m rows))
+	  (row 0)
+	  result)
+      (while cells
+	(setq result cells
+	      cells (nthcdr columns cells))
+	(setcdr (nthcdr (1- columns) result) nil)
+      	(let ((sep (if (= row 0) title-separator cell-separator)))
+	  (insert sep (mapconcat (lambda (s)
+				   (if (and (> row 0)
+					    (string-match "[a-z]" s))
+				       s; headers are always centered
+				     (concat " " s)))
+				 result
+				 (concat " " sep))
+		  " " cell-separator "\n"))
+	(setq row (1+ row)))))
+  (delete-region start end))
+
 ;;; isearch & occur
 
 (defun isearch-occur ()
@@ -630,6 +689,8 @@ The particular markup mix is specific to my preferences.")
     (occur (if isearch-regexp isearch-string (regexp-quote isearch-string)))))
 
 (define-key isearch-mode-map (kbd "C-o") 'isearch-occur)
+
+(global-set-key (kbd "C-o") 'occur)
 
 ;;; org
 
@@ -751,6 +812,14 @@ The particular markup mix is specific to my preferences.")
 
 (autoload 'clojure-mode "clojure-mode" nil t)
 (add-to-list 'auto-mode-alist '("\\.clj\\'" . clojure-mode))
+
+;;; Sunrise Commander
+
+(autoload 'sunrise "sunrise-commander" nil t)
+(eval-after-load 'sunrise-commander
+  '(sunrise-mc-keys))
+(add-to-list 'auto-mode-alist '("\\.srvm\\'" . sr-virtual-mode))
+(autoload 'sr-virtual-mode "sunrise-commander")
 
 ;;; automatic additions
 

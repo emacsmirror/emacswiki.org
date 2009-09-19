@@ -398,6 +398,16 @@ CLIPBOARD is always in sync with the head of the kill ring, that is, yank will e
 
 Enjoy.
 
+
+== Interfacing with ClipX on Windows ==
+
+[http://bluemars.org/clipx/ Clipx] uses C-v to insert clipboard contents, so if you don't use standard Emacs keys for scrolling then you can remap C-v to `yank' and this makes Clipx interaction seamless:
+
+<pre>
+    (global-set-key (kbd "C-v") 'yank)
+</pre>
+
+
 ----
 CategoryEmulation
 CategoryKeys

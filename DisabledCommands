@@ -29,5 +29,19 @@ Another way to deal with disabled commands is to automatically enable them on th
     
     (setq disabled-command-hook 'enable-me)
 
+Alternatively, if you want to be told which commands were disabled (which are therefore likely to be powerful and interesting), you can use this function:
+
+ (defun enable-all-commands ()
+   "Enable all commands, reporting on which were disabled."
+   (interactive)
+   (with-output-to-temp-buffer "*Commands that were disabled*"
+    (mapatoms
+     (function
+      (lambda (symbol)
+        (when (get symbol 'disabled)
+	  (put symbol 'disabled nil)
+	  (prin1 symbol)
+	  (princ "\n")))))))
+
 ----
 CategoryCommands

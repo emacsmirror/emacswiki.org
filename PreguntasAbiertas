@@ -5,6 +5,12 @@
 
 :: :-O Me he quedado de piedra. ¿¿Cómo es posible que un programa con 30 años que se usa en todo el mundo no esté traducido?? Nunca entenderé a los informáticos. Programan mil códigos de idioma y no son capaces de traducir «File-Open». En fin. Voy a mandar un mensaje a la lista de desarrollo a ver si la cosa es difícil de hacer. Gracias por la respuesta. Antonio. 
 
+::: Traducir los menus principales sería sencillo pero que utilidad tendría si
+los submenus (añadidos desde EmacsLisp) estarían en inglés)? ¿Y la documentación para cada comando? Traducir todo sería un esfuerzo monumental.
+Lo más que podemos hacer es facilitar la vida al usuario traduciendo los manuales de referencia, tutoriales, y ofreciendo ayuda en Internet, un uso
+más avanzado del editor requerirá tener un mínimo manejo del Inglés.
+
 
 ¿Cómo hago para escribir Ñ's y palabras con acentos como "camión, lápiz y café"?
 
+: Emacs debería reconocer la distribución de teclado que usa las X, si corre en modo gráfico. De cualquier forma también dispone de varios métodos de entrada (InputMethods) que permiten definir este comportamiento internamente a Emacs y cambiarlo al vuelo. Esto trabaja especialmente bien para los que usan una distribución de teclado extranjera, por ejemplo.
