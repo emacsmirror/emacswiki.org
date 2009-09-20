@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Sep 16 10:36:25 2009 (-0700)
+;; Last-Updated: Sat Sep 19 08:37:14 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 3249
+;;     Update #: 3253
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2760,7 +2760,11 @@ There is no doubt that the default value could be improved.]"
   "*Non-nil means strip text properties from the completion result.
 Set this option to non-nil only if you need to ensure, for some other
 library, that the string returned by `completing-read' and (starting
-with Emacs 23) `read-file-name' has no text properties."
+with Emacs 23) `read-file-name' has no text properties.
+
+Typically, you will not use a non-nil value.  Internal text properties
+added by Icicles are always removed anyway.  A non-nil value lets you
+also remove properties such as `face'."
   :type 'boolean :group 'Icicles-Miscellaneous)
 
 ;;;###autoload

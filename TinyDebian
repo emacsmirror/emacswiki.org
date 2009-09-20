@@ -6,20 +6,20 @@ The package was originally developed to be a control interface to
 [http://www.debian.org/Bugs/ Debian Bug Tracking System]. The package contains two minor modes:
 one for Gnus Summary buffer and one for standard mail modes (message-mode, mail-mode). From
 each interface, complete bug management and manipulation can be done with few keystrokes and
-menu commmands.
-
-Late in 2008, Emacs development team decided to evaluate and install Debian BTS (debbugs)
-[http://emacsbugs.donarmstrong.com/ Emacs BTS].
+menu commmands. Late in 2008, Emacs development team decided to evaluate and install Debian BTS (debbugs)
+[http://emacsbugs.donarmstrong.com/ Emacs BTS], so the inetrface was extended to support multiple BTSs.
 
 The  supported Bug tracking systems include:
 
-* Debian BTS
-* Emacs BTS
-* Savannah Site Request trackers (Savannah admin requests)
-* Savannah bug reports (from projects)
-* Sourceforge bugs (from packages)
+* Debian BTS (full support)
+* Emacs BTS (full support)
+* Savannah trackers (only: jump to tracker)
+* Savannah trackers (only: jump to tracker)
+* Sourceforge bugs (only: jump to tracker)
+* Gnome bugs (only: jump to tracker)
+* Sourceware aka RedHat where various GNU projects like GDB are hosted (only: jump to tracker)
 
-The interface in integrated to Gnus:
+The interface is integrated to Gnus:
 
   M-x gnus
   <... as a Developer, go to your INBOX ...>
@@ -34,10 +34,34 @@ Alternatively, start composing mail with `C-x m' and see menu "Tbts".
 
 = Configuration =
 
-Put the following in your .emacs file:
+Put the following in your ~/.emacs InitFile:
 
- (setq tinydebian-:load-hook 'tinydebian-install)
- (require 'tinydebian)
+{{{
+(setq tinydebian-:load-hook 'tinydebian-install)
+(require 'tinydebian)
+}}}
+
+Instead of <code>require</code>, it is possisble to autoloads the code on demand:
+
+{{{
+(autoload 'turn-on-tinydebian-mail-mode "tinydebian")
+(autoload 'tinydebian-find-file-hooks "tinydebian")
+(autoload 'tinydebian-bts-mode-gnus-summary-maybe-turn-on "tinydebian")
+(autoload 'tinydebian-bts-mode-maybe-turn-on "tinydebian")
+
+(setq tinydebian-:load-hook 'tinydebian-install)
+
+(add-hook 'message-mode-hook
+          'turn-on-tinydebian-mail-mode)
+(add-hook 'mail-mode-hook
+          'turn-on-tinydebian-mail-mode)
+(add-hook 'find-file-hooks
+          'tinydebian-find-file-hooks)
+(add-hook 'gnus-summary-prepare-hook
+          'tinydebian-bts-mode-gnus-summary-maybe-turn-on)
+(add-hook 'gnus-article-prepare-hook
+          'tinydebian-bts-mode-maybe-turn-on)
+}}}
 
 ----
 EmacsForDebian | TinyTools

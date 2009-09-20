@@ -138,5 +138,14 @@ I do realise that hippie-expand also defines methods of gathering completions, a
 [new:rubikitch:2009-04-14 00:54 UTC]
 AutoInstall now supports *Batch install files*, installing packages with multiple lisp files like [[Icicles]] and AutoComplete. If each completion-ui*.el has its own URL, installing process is much simpler. Only executing #M-x auto-install-batch completion-ui#. -- [[rubikitch]]
 
+completion-cycle-backwards seems to be broken at version 0.11.6. Should the definition be as follows? (n -> (or n 1)) -- leque
+
+<pre>
+(defun completion-cycle-backwards (&optional n)
+  "..."
+  (interactive "P")
+  (completion-cycle (- (or n 1))))
+</pre>
+
 ----
 CategoryCode | CategoryCompletion

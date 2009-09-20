@@ -1,0 +1,52 @@
+[http://www.sublimetext.com/ Minimap] is a feature provided by the Sublime editor. It shows a smaller, "minibar", display of the current buffer alongside the main editing window.
+
+This page is about a minimap implementation for Emacs. In the minibar window, it highlights the portion of the buffer that is currently visible in the main window. This highlight position is updated automatically, as you navigate in the main window. You can scroll the main window by dragging the
+highlighted area in the minibar.
+
+Here's a screenshot showing the minimap in action:
+
+http://randomsample.de/minimap-ex2.jpg
+
+Get the latest version from http://randomsample.de/minimap.el
+
+Usage:
+
+* Put ##minimap.el## in your load path.
+* ##(require 'minimap)##
+* Use `M-x minimap-create' in a buffer you're currently editing.
+* Use `M-x minimap-kill' to kill the minimap.
+* Use `M-x customize-group RET minimap RET' to adapt minimap to your needs.
+
+KNOWN BUGS:
+
+* Currently cannot deal with images.
+* Display/movement can be a bit erratic at times.
+
+TODO:
+
+* Fix known bugs.
+* Make sidebar permanently visible. This requires something like a
+   'window group' feature in Emacs, which is currently being worked on (for the EmacsCodeBrowser).
+* Moving the active region with the keyboard / mouse-wheel ?
+* Somehow make the minimap more compact -- maybe the line spacing can still be reduced? For now, you can choose another, more condensed fonts.
+
+
+== Discussion ==
+
+Nice. I found two issues:
+
+The movement of the very small cursor is visible in the minimap windows when the viewport is dragged with the mouse. The cursor should be hidden in that window with `cursor-type'.
+
+The other thing is an interaction bug. When I finish dragging the viewport I get the following backtrace:
+
+<pre>
+Debugger entered--Lisp error: (error "The mark is not set now, so there is no region")
+  call-interactively(copy-region-as-kill-nomark nil nil)
+</pre>
+
+
+I use pc-selection mode, copy-region-as-kill-nomark is a function in that package. pc-selection allows the user to copy text by simply selecting text and releasing the mouse button. Apparently, this feature clashes with viewport dragging. pc-selection mode should be deactivated in the minimap buffer, if it's possible.
+
+
+----
+CategoryWindows

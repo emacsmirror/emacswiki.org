@@ -61,6 +61,9 @@
 ;;; `mon-unbind-function', `mon-unbind-command', `mon-unbind-variable',
 ;;; `mon-byte-compile-and-load', `mon-compile-when-needed',
 ;;; `mon-load-or-alert', `mon-cmd', `mon-terminal', `mon-string-to-symbol'
+;;; `mon-line-find-duplicates', `mon-test-keypresses'
+;;; `mon-line-strings-to-list', `mon-line-strings-to-list-*test*'
+;;; `mon-line-string-rotate-name', `mon-sublist', `mon-sublist-gutted'
 ;;; FUNCTIONS:◄◄◄
 ;;; FUNCTIONS:###
 ;;; 
@@ -117,24 +120,28 @@
 ;;; CODE:
 
 ;;; ==============================
-;; `mon-word-iterate-over', `mon-loop', etc.
+;; `mon-word-iterate-over', `mon-loop', etc. 
 (eval-when-compile (require 'cl)) 
 
 ;;; ==============================
-;;; Enable 'em if you got 'em.
+;;; EMACSWIKI: Enable 'em if you got 'em.
 ;;; ==============================
 ;;; (require 'mon-regexp-symbols)
 ;;; (require 'mon-time-utils)
-;;; (require 'naf-mode-replacements) ;before dir-utils
+;;; (require 'naf-mode-replacements) ;;BEFORE mon-dir-utils, BEFORE: naf-mode-insertion-utils
 ;;; (require 'mon-dir-locals-alist)
 ;;; (require 'mon-dir-utils)
 ;;; (require 'mon-insertion-utils)
 ;;; (require 'naf-mode-insertion-utils)
+;;; (require 'naf-url-utils)
 ;;; (require 'mon-hash-utils)
 ;;; (require 'mon-doc-help-utils)
 ;;; (require 'mon-doc-help-CL)
 ;;; (require 'naf-skeletons)
 ;;; (require 'naf-mode)
+;;; (require 'ebay-template-mode)
+;;; (require 'mon-empty-registers)
+;;; (require 'mon-regexp-symbols)
 ;;; ==============================
 
 ;;; ==============================
@@ -390,6 +397,34 @@ See also; `mon-word-reverse-region'."
        "truncating lines (... $)"
      "wrapping lines (...\\)")
    (redraw-display)))
+
+;;; ==============================
+;;; NOTES: consider macrology?
+;;; Working-but BUGGGY as of:
+;;; CREATED: <Timestamp: #{2009-09-09T12:29:52-04:00Z}#{09373} - by MON>
+(defun mon-test-keypresses (&optional first second third)
+  "Used to test if additioanl optional Prefix args have been passed to interactive.\n
+EXAMPLE:\nM-34 M-x mon-test-keypresses\n
+=> \(\(meta . 51\) \(meta . 52\) \(meta . 120\) mon-test-keypresses\)"
+  (interactive "P\nP\np")
+  (let ((accum-string '())
+	(accum-event '())
+	(self 'mon-test-keypresses))
+    (mapc (lambda (x) 
+            (cond ((= x 13) nil)
+                  ((or (eql (car (event-modifiers x)) 'meta)
+                       (eql (car (event-modifiers x)) 'control))
+                   (setq accum-event (cons (cons (car (event-modifiers x)) (event-basic-type x)) accum-event)))
+                  (t (setq accum-string (cons (char-to-string (event-basic-type x)) accum-string)))))
+          (this-command-keys-vector))
+    (setq accum-event (reverse accum-event))
+    (setq accum-string (reverse accum-string))
+    (setq accum-string (apply 'concat accum-string))
+    (setq accum-string `(,@accum-event ,(if (string= accum-string self) self accum-string)))
+        (prin1 accum-string)))
+
+;;;test-me;(mon-test-keypresses 1 2 3) ;->("cj")("cj")
+;;;test-me;(call-interactively 'mon-test-keypresses);-> ("cj")("cj")
 
 ;;; ==============================
 (defun mon-inhibit-read-only (func-arg)
@@ -769,7 +804,7 @@ See also: `mon-spacep-is-bol', `mon-spacep-not-bol',
 ;;; CREATED: <Timestamp: Friday May 08, 2009 @ 05:58.27 PM - by MON KEY>
 (defun mon-line-eol-is-eob (&optional intrp)
   "t if point EOL is also EOB \(point-max\).
-Note:does not test for narrwoing!
+NOTE: Does not test for narrowing!
 See also: `mon-spacep-is-bol', `mon-spacep-not-bol',
 `mon-spacep', `mon-line-bol-is-eol', `mon-line-next-bol-is-eol',
 `mon-line-previous-bol-is-eol', `mon-line-eol-is-eob'
@@ -812,6 +847,12 @@ comment starters like // or /*.  Such will not be skipped."
             (backward-char))
           (skip-chars-backward " \t"))))))
 
+;;; ==============================
+;;; TODO: Wrap in a function and install under bol/eol funcs in mon-utils.el
+;;; COURTESY: thing-at-point.el
+;;; CREATED: <Timestamp: #{2009-09-14T15:15:57-04:00Z}#{09381} - by MON KEY>
+;;; (funcall (lambda () (if (bolp) (forward-line -1) (beginning-of-line))))
+
 ;;; ============================== *
 ;;; COURTESY: Nelson H. F. Beebe HIS: clsc.el VERSION: 1.53 of May 27, 2001
 ;;; WAS: `get-next-line' -> `mon-line-get-next'
@@ -826,6 +867,27 @@ See also; `mon-string-ify-current-line', ."
     (if (equal start (point))
 	nil
       (buffer-substring-no-properties start (point)))))
+
+;;; ==============================
+;;; CREATED: <Timestamp: #{2009-09-08T15:18:51-04:00Z}#{09372} - by MON>
+(defun mon-line-find-duplicates (&optional insertp interp)
+  "Locate adjacent duplicate lines in buffer.
+Functions which find duplicate lines don't always sort lines.
+Where  lines of a file are presorted, use to locate duplicates before removing.
+i.e. situations of type: `uniquify-maybe'. Extend `find-duplicate-lines' by
+comparing its result list with one or more of the list comparison procedures
+`set-difference', `union', `intersection', etc.
+See also; `mon-line-get-next', `mon-cln-blank-lines', `mon-cln-uniq-lines',
+`uniq', `uniq-region'."
+  (let ((max-pon (line-number-at-pos (point-max)))
+	(gather-dups))
+    (while (< (line-number-at-pos) max-pon) (= (forward-line) 0)
+	   (let ((this-line (buffer-substring-no-properties (line-beginning-position 1) (line-end-position 1)))
+		 (next-line (buffer-substring-no-properties (line-beginning-position 2) (line-end-position 2))))
+	     (when  (equal this-line next-line)  (setq gather-dups (cons this-line gather-dups)))))
+    (if (or insertp interp)
+	(save-excursion (new-line) (princ gather-dups (current-buffer)))
+      gather-dups)))
 
 ;;; ==============================
 (defun mon-line-count-region (start end)
@@ -1030,7 +1092,6 @@ NOTE:   The default width is 72 characters, the default left-margin is 0.
         (setq justified (concat justified (make-string (- width col) 32))))
     justified))
 
-
 ;;; ==============================
 ;;; NOTE: I Alias these so I don't forget to use them!
 ;;; CREATED: <Timestamp: Wednesday July 01, 2009 @ 06:32.08 PM - by MON KEY>
@@ -1039,11 +1100,44 @@ NOTE:   The default width is 72 characters, the default left-margin is 0.
 (defalias 'mon-string-split-and-unquote 'split-string-and-unquote)
 
 ;;; ==============================
+;;; CREATED: <Timestamp: #{2009-09-12T14:07:56-04:00Z}#{09376} - by MON KEY>
+(defun mon-string-read-match-string (&optional match-subexp)
+  "Make `match-string' return more than just the last string matched.
+Strip the # char from the side-effect value returned by match-string.
+When MATCH-SUBEXP is non-nil return match-string of nth subexp.
+The function match-string carries more data than just the string it returns.
+These datum include:
+from-idx to-idx of subexp match location;
+if match string is fontified and the face used @ from-sub-idx to-sub-idx;
+if match string carries text properties and if so the stickiness
+of these props @ from-sub-idx to-sub-idx;
+However, this data is not accessible to read because match-string returns as an
+unreadable object with the '#' prefix so we strip it.
+EXAMPLE: 
+> \(search-forward-regexp \"\\\\\(\\\\\(\\=[\\\\\)\\\\\([0-9\\=]\\\\\\={8,10\\\\}\\\\\)\\\\\(]\\\\\)\\\\\)\" nil t\)
+\"[500006383]\"
+> (match-string 0)\n; => #\(\"[500006383]\" 0 11 \(fontified t face font-lock-string-face\)\)
+> \(search-forward-regexp \"\\\\\(\\\\\(\\=[\\\\\)\\\\\([0-9\\=]\\\\\\={8,10\\\\}\\\\\)\\\\\(]\\\\\)\\\\\)\" nil t\)
+\"[500006383]\"
+> (mon-string-read-match-string)
+; => \(\"[500006383]\" 0 11 \(fontified t face font-lock-string-face\)\)"
+  (let ((matched (if (and (= (match-beginning 0) 1)(> (point) (point-min))) 
+		     nil ;last search didn't move point was a dud don't proceed
+		   (car (read-from-string 
+			 (substring (format "%S" (match-string (if match-subexp match-subexp 0))) 1))))))
+    matched))
+;;;test-me;(search-forward-regexp "\\(\\(\\[\\)\\([0-9]\\{8,10\\}\\)\\(]\\)\\)" nil t)
+;;;        [500006383]
+;;;test-me;(mon-string-read-match-string)
+;;;test-me;(mon-string-read-match-string 4)
+
+;;; ==============================
 ;;; I hope this isn't reinventing the wheel here... 
 ;;; If not, WTF? why isn't this in Emacs already?
 ;;; CREATED: <Timestamp: #{2009-08-26T17:08:02-04:00Z}#{09353} - by MON KEY>
 (defun mon-string-to-symbol (str)
   "Return string STR as a symbol.\n
+EXAMPLE:\n\(mon-string-to-symbol \"Bubba\")\n
 See also; `mon-string-to-sequence', `mon-string-from-sequence',
 `mon-string-alpha-list', `mon-string-index', `mon-string-has-suffix'."
   (car (read-from-string str)))
@@ -1062,12 +1156,13 @@ See also; `mon-string-from-sequence', `mon-string-index',
   (mapcar (lambda (l) l) str))
 
 ;;;test-me;(mon-string-to-chars " string")
+
+
 ;;; ==============================
 ;;; CREATED: <Timestamp: Wednesday June 24, 2009 @ 11:50.11 AM - by MON KEY>
 (defun mon-string-from-sequence (seq)
   "Return SEQ - a sequence of character integers - as a string.\n
-EXAMPLE:
-\(mon-string-from-sequence \(number-sequence 0 127\)\)
+EXAMPLE:\n\(mon-string-from-sequence \(number-sequence 0 127\)\)\n
            	
      
                    !\"#$%&'()*+,-./0123456789:;<=>?@
@@ -1219,60 +1314,6 @@ string S and return it."
 ;;;test-me;(mon-string-sub-old->new"old" "new" "old old new")
 
 ;;; ==============================
-;;; COURTESY: Drew Adams HIS: strings.el
-;;; RENAMED: `mon-split-string-line' -> `mon-string-split-line'
-(defun mon-string-split-line (&optional buffer)
-  "Return current line of text in BUFFER as a string.\n
-See also; `mon-stringify-list' ,`mon-insert-string-ify', 
-`mon-string-ify-current-line', `mon-get-word-list-buffer'."
-  (setq buffer (or buffer (current-buffer)))
-  (save-excursion
-    (set-buffer buffer)
-    (buffer-substring-no-properties (progn (end-of-line 1) (point))
-                      (progn (beginning-of-line 1) (point)))))
-
-;;; ==============================
-;;; CREATED: <Timestamp: Sunday May 31, 2009 @ 03:08.46 PM - by MON KEY>
-(defun mon-string-ify-current-line (&optional intrp split-on delim)
-  "Return line at point as a list of strings.
-When non-nil split-on is a string which should be split on.
-When non-nil delim is a delimter to be concatenated to _front_ of each string. 
-Called interacively kills current line replacing with string per-word
-unless in an unreadable buffer where just retruns.
-Neither SPLIT-ON nor DELIM have an effect when Invoked interactively.\nEXAMPLE:
-\(mon-string-ify-current-line\) split me to a list of strings
-\(mon-string-ify-current-line nil \"s\" \"S\"\) split me to a list of strings
-\(mon-string-ify-current-line nil nil \"|\"\) split me to a list of strings\n\n
-See also; `mon-stringify-list' ,`mon-insert-string-ify', `mon-string-split-line'
-`mon-get-word-list-buffer'."
-  (interactive "p")
-  (let* ((sp (if split-on " "))
-	 (dlm (cond (delim delim)
-		    ((not delim)
-		     (if intrp  "\""  ""))))
-	 (ss (split-string (mon-string-split-line) split-on t)))
-    (cond ((and intrp (not buffer-read-only))
-	   (save-excursion
-	     (progn 
-	       (kill-line)
-	       (mapcar '(lambda (x) (princ (format "%s%s%s " dlm x dlm) (current-buffer))) ss)
-	       (delete-char -1)))ss)
-	  ((and intrp buffer-read-only)
-	   (progn
-	     (kill-new (format "%S" ss))
-	     (message "Buffer is read only is in kill ring\n %S"  ss)))
-	  ((and (not intrp) dlm)
-	   (let (ss2)
-	   (setq ss2 nil)
-	     (mapcar '(lambda (x) (setq ss2 (cons (format "%s%s" dlm x) ss2)))ss)
-	     ss2))
-	  (t ss))))
-
-;\(mon-string-ify-current-line\) split me to a list of strings
-;\(mon-string-ify-current-line nil \"s\" \"S\"\) split me to a list of strings
-;\(mon-string-ify-current-line nil nil \"|\"\) split me to a list of strings
-
-;;; ==============================
 ;;; COURTESY: Jared D. WAS: `string-repeat'
 ;;; (URL `http://curiousprogrammer.wordpress.com/2009/07/26/emacs-utility-functions/')
 ;;; MODIFICATIONS: <Timestamp: #{2009-08-19T20:13:32-04:00Z}#{09344} - by MON KEY>
@@ -1307,14 +1348,181 @@ See also; `mon-insert-string-ify', `mon-insert-string-incr',
 ;;;test-me;(call-interactively 'mon-string-repeat) 
 
 ;;; ==============================
+;;; COURTESY: Drew Adams HIS: strings.el
+;;; RENAMED: `mon-split-string-line' -> `mon-string-split-line'
+(defun mon-string-split-line (&optional buffer)
+  "Return current line of text in BUFFER as a string.\n
+See also; `mon-line-strings-to-list', `mon-stringify-list',
+`mon-insert-string-ify', `mon-line-drop-in-words', `mon-string-ify-current-line',
+`mon-get-word-list-buffer'."
+  (setq buffer (or buffer (current-buffer)))
+  (save-excursion
+    (set-buffer buffer)
+    (buffer-substring-no-properties (progn (end-of-line 1) (point))
+                      (progn (beginning-of-line 1) (point)))))
+
+;;; ==============================
+;;; CREATED: <Timestamp: Sunday May 31, 2009 @ 03:08.46 PM - by MON KEY>
+(defun mon-string-ify-current-line (&optional intrp split-on delim)
+  "Return line at point as a list of strings.
+When non-nil split-on is a string which should be split on.
+When non-nil delim is a delimter to be concatenated to _front_ of each string. 
+Called interacively kills current line replacing with string per-word
+unless in an unreadable buffer where just retruns.
+Neither SPLIT-ON nor DELIM have an effect when Invoked interactively.\nEXAMPLE:
+\(mon-string-ify-current-line\) split me to a list of strings
+\(mon-string-ify-current-line nil \"s\" \"S\"\) split me to a list of strings
+\(mon-string-ify-current-line nil nil \"|\"\) split me to a list of strings\n\n
+See also; `mon-line-strings-to-list', `mon-string-ify-list' ,`mon-insert-string-ify',
+`mon-string-split-line', `mon-line-drop-in-words', `mon-get-word-list-buffer'."
+  (interactive "p")
+  (let* ((sp (if split-on " "))
+	 (dlm (cond (delim delim)
+		    ((not delim)
+		     (if intrp  "\""  ""))))
+	 (ss (split-string (mon-string-split-line) split-on t)))
+    (cond ((and intrp (not buffer-read-only))
+	   (save-excursion
+	     (progn 
+	       (kill-line)
+	       (mapcar '(lambda (x) (princ (format "%s%s%s " dlm x dlm) (current-buffer))) ss)
+	       (delete-char -1)))ss)
+	  ((and intrp buffer-read-only)
+	   (progn
+	     (kill-new (format "%S" ss))
+	     (message "Buffer is read only is in kill ring\n %S"  ss)))
+	  ((and (not intrp) dlm)
+	   (let (ss2)
+	   (setq ss2 nil)
+	     (mapcar '(lambda (x) (setq ss2 (cons (format "%s%s" dlm x) ss2)))ss)
+	     ss2))
+	  (t ss))))
+
+;;;test-me;(mon-string-ify-current-line\) ;split me to a list of strings
+;;;test-me;(mon-string-ify-current-line nil \"s\" \"S\"\) split me to a list of strings
+;;;test-me;(mon-string-ify-current-line nil nil \"|\"\) split me to a list of strings
+
+;;; ==============================
+;;; CREATED: <Timestamp: #{2009-09-13T09:30:42-04:00Z}#{09377} - by MON>
+(defun mon-line-strings-to-list (start end &optional w-cdr w-wrap insertp intrp)
+  "Return region lines as list, each list elt contains string content of line.
+Region between START END should be passed as a line per string/symbol.
+Strips trailing whitespace. Does not preseve tabs converts them to spaces.
+When W-CDR is non-nil or called-interactively with prefix-arg return each
+element of list with an empty string as cdr.\n\nEXAMPLE:\n
+Mon Key\nMON\nMon\nMON KEY\n\n;; When W-CDR nil:
+=>\((\"Mon Key\"\)\n   \(\"MON\"\)\n   \(\"Mon\"\)\n   \(\"MON KEY\"\)\)\n
+;; When W-CDR non-nil:\n=>\(\(\"Mon Key\" \"\"\)\n   \(\"MON\" \"\"\)
+   (\"Mon\" \"\"\)\n   \(\"MON KEY\" \"\"\)\)\n
+\(mon-line-strings-to-list-*test* t nil\)\n
+\(mon-line-strings-to-list-*test*\)\n
+See also; `mon-line-string-rotate-name', `mon-line-strings-to-list-*test*',
+`mon-string-ify-current-line', `mon-string-ify-list', 
+`mon-string-split-line', `mon-line-drop-in-words'."
+  (interactive "r\ni\nP\ni\np") ;  (interactive "r\nP\ni\ni\np") make w-cdr the pref arg
+  (let ((start-reg start)
+        (end-reg end)
+        (rgn-l))
+    (setq rgn-l (buffer-substring-no-properties start end))
+    (save-excursion
+      (setq rgn-l (with-temp-buffer
+                    (insert rgn-l) 
+                    (untabify (point-min) (point-max))
+                    (mon-cln-trail-whitespace) ;; (point-min) (point-max))
+                    (goto-char (point-min))
+                    (while (search-forward-regexp "^\\(.*\\)$" nil t)
+                      (if w-cdr 
+                          (replace-match "(\"\\1\" \"\")")
+                        (replace-match "(\"\\1\")")))
+		    (goto-char (point-max)) 
+		    (if w-wrap (insert "))") (insert ")"))
+		    (goto-char (point-min))
+		    (if w-wrap
+			(save-excursion 
+			  (insert "(;; defvar defconst let let* setq\n'("))
+		      (indent-pp-sexp 1)
+		      (insert "("))
+			(buffer-substring-no-properties (point-min) (point-max)))))
+      (if (or insertp intrp)
+	  (save-excursion (delete-region start-reg end-reg)(insert rgn-l))
+	rgn-l)))
+
+;;; ==============================
+;;; CREATED: <Timestamp: #{2009-09-13T09:28:46-04:00Z}#{09377} - by MON>
+(defun mon-line-strings-to-list-*test* (&optional with-cdr with-wrap insertp)
+"Test function for `mon-line-strings-to-list'."
+(let ((st01 (make-marker))
+      (en01 (make-marker))
+      (t-str (concat "hendr erit\norci\nultrices\naugue\nAliquam\n"
+                     "odio\nNam\ne ros\nurna\naliquam\nvitae\nlacinia")))
+  (cond ((not insertp)
+         (with-temp-buffer
+           (insert t-str)
+           (mon-line-strings-to-list (point-min) (point-max) with-cdr with-wrap)))
+        (insertp 
+         (set-marker st01 (point))
+         (insert t-str)
+         (set-marker en01 (point))
+         (goto-char st01)
+         (mon-line-strings-to-list st01 en01 with-cdr with-wrap t)))))
+
+;;;test-me;(mon-line-strings-to-list-*test*)
+;;;test-me;(mon-line-strings-to-list-*test* t nil)
+;;;test-me;(mon-line-strings-to-list-*test* t t)
+;;;test-me;(mon-line-strings-to-list-*test* t nil t)
+;;;test-me;(mon-line-strings-to-list-*test* t t t)
+;;;(progn (newline) (mon-line-strings-to-list-*test* t t))
+;;;(progn (newline) (mon-line-strings-to-list-*test* nil t))
+
+;;; ==============================
+;;; CREATED: <Timestamp: #{2009-09-19T13:53:29-04:00Z}#{09386} - by MON>
+(defun mon-line-string-rotate-name (name-str-or-elt &optional as-list)
+  "Rotate the namestring NAME-STR-OR-ELT. 
+Return the last whitespace delimited name in string at head top of string.
+Remaining names in string returned inside a parenthetical group.
+NAME-STR-OR-ELT is a string containing one nameform or one elt listsame 
+holing a string containing one nameform.
+EXAMPLE:
+\(mon-line-string-rotate-name \"István Tisza\")
+\(mon-line-string-rotate-name '(\"Stanisław Marcin Ulam\"))
+\(mon-line-string-rotate-name '(\"Dmitri Pavlovich Romanov\"))\n
+See also; `mon-line-strings-to-list'."
+  (let* ((nm-or-elt (if (atom name-str-or-elt)
+			name-str-or-elt
+		      (let ((get-head name-str-or-elt))
+			(while (consp get-head)
+			  (setq get-head (car get-head)))
+			get-head)))
+	 (the-split (split-string nm-or-elt))
+	 (split-len (length the-split))
+	 (last-in (cond ((= split-len 1) (format "%s" (car the-split)))
+			((> split-len 1) 
+			 (let ((rot-split (append (subseq the-split -1)
+						  (subseq the-split 0 (1- split-len)))))
+			   (format "%s %s" (car rot-split) (cdr rot-split))))
+			((= split-len 0) nil))))
+    (if as-list (list last-in) last-in)))
+
+;;;test-me;(mon-line-string-rotate-name "Elvis")
+;;;test-me;(mon-line-string-rotate-name "István Tisza")
+;;;test-me;(mon-line-string-rotate-name "Thomas Pollock Anshutz")
+;;;test-me;(mon-line-string-rotate-name "Thomas Pollock Anshutz" t)
+;;;test-me;(mon-line-string-rotate-name '("Thomas Pollock Anshutz") t)
+;;;test-me;(mapc (lambda (x) (princ (concat "\n" (mon-line-string-rotate-name x)) (current-buffer)))
+;;;        '(("George Charles Aid")("Thomas Pollock Anshutz")("Cecilia Beaux")("Frank Weston Benson")
+;;;          ("Thomas Hart Benton")("Saul Bernstein")("George Biddle")("Gutzon Borglum")))
+
+
+;;; ==============================
 ;;; COURTESY: Nelson H. F. Beebe HIS: clsc.el VERSION: 1.53 of 2001-05-27
 (defun mon-get-word-list-buffer ()
   "Convert the entire buffer to a list of `newline' separated ``words''
 in a new buffer *Word List*, where a word is defined by `forward-word'
 according to the syntax-table settings.  You can apply `sort-lines' and
 unique-lines to this to obtain a list of all the unique words in a
-document.\n\nSee also; `mon-string-ify-current-line', `mon-stringify-list',
-`mon-insert-string-ify', `mon-word-count-analysis' `mon-word-count-occurrences', 
+document.\n\nSee also; `mon-line-strings-to-list', `mon-string-ify-current-line',
+`mon-stringify-list', `mon-dropin-line-word', `mon-insert-string-ify',
+`mon-word-count-analysis' `mon-word-count-occurrences', 
 `mon-word-count-region', `mon-word-count-chars-region'."
   (interactive)
   (let (word)
@@ -1383,7 +1591,6 @@ Extract one word at a time by calling (funcall next-word).
                   (setq result (buffer-substring-no-properties pos pt))
                   (setq pos pt))))
           (switch-to-buffer cur) result)))))
-
 
 ;;; =======================
 (defun mon-word-count-analysis (start end)
@@ -1885,6 +2092,51 @@ See also; `mon-remove-single-text-property', `mon-remove-text-property'
 ;;; ==============================
 
 ;;; ==============================
+;;; COURTESY: Jean-Marie Chauvet HIS: ncloseemacs-ml-dataset.el WAS: `sublist'
+;;; CREATED: <Timestamp: #{2009-09-19T19:10:14-04:00Z}#{09386} - by MON>
+(defun mon-sublist (skip-n return-n in-list)
+  "RETURN-N elements IN-LIST skipping the first SKIP-N.\n
+EXAMPLE:
+\(let \(\(piece-work
+       '\(A B \(C D\) E \(F G\) \(Q \(H I\)\) K\)\)\)
+        ;0 1   2   3  4     5        6
+  \(mon-sublist 4 2 piece-work\)\)
+;=> \((F G) (Q (H I)))
+     ;4     5\n
+See also; `mon-sublist-gutted'."
+  (let* ((sub (nthcdr skip-n in-list)) 
+	 (q (length sub)))
+    (reverse (nthcdr (- q return-n) (reverse sub)))))
+
+;;;test-me;(mon-sublist 0 1 '(A B (C D) E (F G) (Q (H I)) K))
+;;;test-me;(mon-sublist 3 3 '(A B (C D) E (F G) (Q (H I)) K))
+;;;test-me;(mon-sublist 5 2 '(A B (C D) E (F G) (Q (H I)) K))
+;;;test-me;(mon-sublist 1 2 '(A B (C D) E (F G) (Q (H I)) K))  
+;;;test-me;(mon-sublist 6 1 '(A B (C D) E (F G) (Q (H I)) K))  
+
+;;; ==============================
+;;; COURTESY: Jean-Marie Chauvet HIS: ncloseemacs-ml-dataset.el WAS: `sublist-rest'
+;;; CREATED: <Timestamp: #{2009-09-19T18:55:37-04:00Z}#{09386} - by MON>
+(defun mon-sublist-gutted (gut-from-n to-n-ards gut-list)
+  "Return GUT-LIST with GUTS-FROM-N TO-N-ARDS extracted.\n
+EXAMPLE:
+\(let \(\(eviscerate-me 
+       '\(A B \(C D\) E \(F G\) \(Q \(H I\)\) K\)\)\)
+        ;0 1   2   3  4     5        6
+  \(mon-sublist-gutted 4 2 eviscerate-me\)\)
+;=> \(A B \(C D\) E K\)
+     ;0 1   2   3 6\n
+See also; `mon-sublist'."
+  (let* ((pre-guts (nthcdr (length (nthcdr gut-from-n gut-list)) (reverse gut-list))) ;; pre-guts reversed
+	 (post-guts (nthcdr (+ to-n-ards (length pre-guts)) gut-list)))
+    (append (reverse pre-guts) post-guts))) ;;WAS: (append prefix postfix)
+
+;;;test-me;(mon-sublist-gutted 3 1 '(A B (C D) E (F G) (Q (H I)) K))
+;;;test-me;(mon-sublist-gutted 5 2 '(A B (C D) E (F G) (Q (H I)) K))
+;;;test-me;(mon-sublist-gutted 5 1 '(A B (C D) E (F G) (Q (H I)) K))
+;;;test-me;(mon-sublist-gutted 0 6 '(A B (C D) E (F G) (Q (H I)) K))
+
+;;; ==============================
 ;;; COURTESY: Jared D. WAS: `assoc-replace'
 ;;; (URL `http://curiousprogrammer.wordpress.com/2009/07/26/emacs-utility-functions/')
 ;;; CREATED: <Timestamp: #{2009-08-19T20:00:51-04:00Z}#{09344} - by MON KEY>
@@ -2346,5 +2598,3 @@ load-warning buffer in case of failure."
 ;;; ==============================
 ;;; mon-utils.el ends here
 ;;; EOF
-
-   

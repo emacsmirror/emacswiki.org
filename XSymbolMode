@@ -9,7 +9,7 @@ It also offers a symbol picker similar to that of LaTeXSymbols ("M-x x-symbol-gr
 
 * http://x-symbol.sourceforge.net/grid.png
 
-Among other things, s-symbol offers what it calls "electric input method", which replaces some character sequences by other characters. For example, typing an apostrophe and an e ( "'e" ) will give you an acute-accented e ( when inputting TeX "{\'e}", which will be displayed as "é" ). If this behaviour annoys you, add the following in your '~/.emacs' file (see CategoryDotEmacs):
+Among other things, x-symbol offers what it calls "electric input method", which replaces some character sequences by other characters. For example, typing an apostrophe and an e ( "'e" ) will give you an acute-accented e ( when inputting TeX "{\'e}", which will be displayed as "é" ). If this behaviour annoys you, add the following in your '~/.emacs' file (see CategoryDotEmacs):
 
     (setq x-symbol-electric-ignore "[ \t]\\|[A-Za-z][~`]\\|[:'][A-Za-z]")
 

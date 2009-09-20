@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Sep 16 13:18:57 2009 (-0700)
+;; Last-Updated: Sat Sep 19 09:27:23 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 25879
+;;     Update #: 25885
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4858,7 +4858,12 @@
 ;;  * Non-nil user option `icicle-unpropertize-completion-result-flag'
 ;;    means that `completing-read' and (starting with Emacs 23)
 ;;    `read-file-name' will strip all text properties from the result
-;;    they return.  The default value is nil.  It is not likely that
+;;    they return.  Regardless of the option value, Icicles strips
+;;    text properties that it adds for its internal use.  See the doc
+;;    string of function `icicle-unpropertize' for more information
+;;    about this.
+;;
+;;    The default value of the option is nil.  It is not likely that
 ;;    you will need to change this, but you might if you use some
 ;;    other library that cannot accept a propertized string as the
 ;;    result of completion.

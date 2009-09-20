@@ -1,3 +1,4 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; this is mon-regexp-symbols.el
 ;;; ==============================
 ;;; DESCRIPTION:
@@ -23,7 +24,7 @@
 ;;; `philsp-location', `philsp-swap-location', `philsp-fix-month-dates',
 ;;; `regexp-clean-wikipedia', `regexp-clean-whitespace',
 ;;; `regexp-clean-big-whitespace', `regexp-clean-imdb', `regexp-clean-loc',
-;;; `*regexp-clean-ulan*', `*regexp-clean-ulan-fields*',
+;;; `*regexp-clean-ulan*', `*regexp-clean-ulan-fields*', `*regexp-ulan-contribs*'
 ;;; `*regexp-clean-ulan-diacritics*', `*regexp-clean-ulan-dispatch-chars*'
 ;;; `*regexp-ital-to-eng*', `*regexp-defranc-dates*', `*regexp-defranc-places*',
 ;;; `*regexp-defranc-benezit*', `*regexp-german-to-eng*', `*regexp-clean-bib*',
@@ -31,8 +32,8 @@
 ;;; `regexp-percent-encoding-reserved-chars', 
 ;;; `*regexp-cp1252-to-latin1*', `regexp-clean-url-utf-escape',
 ;;; `regexp-clean-html-escape', `*regexp-clean-xml-parse*',
-;;; `*regexp-cln-gilt-group*',  `regexp-constance-make-great',
-;;;
+;;; `*regexp-clean-gilt-group*',`*regexp-clean-benezit-fields*'
+;;
 ;;; SUBST or ALIASES:
 ;;; `regexp-version-alist' -> `version-regexp-alist'
 ;;;
@@ -40,19 +41,20 @@
 ;;; _DON'T_ Modify alists w/out looking at their calling functions there first.
 ;;;
 ;;; TODO:
-;;;
+;;; 
 ;;; THIRD-PARTY-SOURCES:
 ;;; Regexps of alists contained herein were sourced from publicly accessible 
 ;;; data made available at getty.edu. The digital version of the ULAN is 
 ;;; Copyright © J. Paul Getty Trust.  Code presented or contained of following file
 ;;; does not in any way represent the ULAN, J. Paul Getty Trust, www.getty.edu, nor
-;;; their associates or affiliates.
-;;; 
+;;; their assocates or affiliatets.
+;;;
 ;;; AUTHOR: MON KEY
 ;;; MAINTAINER: MON KEY
 ;;;
 ;;; FILE-CREATED:
 ;;; <Timestamp: Summer 2008 - by MON KEY>
+;;; HEADER-ADDED: <Timestamp: #{2009-09-15T11:02:46-04:00Z}#{09382} - by MON KEY>
 ;;; ================================================================
 ;;; This file is not part of GNU Emacs.
 ;;;
@@ -88,51 +90,51 @@
                                  (" nil " " ")
                                  (" nil" " "))
 "*Regexp to clean strings generated with `xml-parse-file'
-CALLED-BY: `mon-cln-parsed-xml.")
+CALLED-BY: `mon-cln-parsed-xml'.")
 
 ;;;test-me; *regexp-clean-xml-parse*
 ;;;(progn (makunbound '*regexp-clean-xml-parse*) (unintern '*regexp-clean-xml-parse*))
 
 ;;; ==============================
 ;;; NOTE: Currently not checking for:
-;;; defcustom, deftheme, defface, defgroup, 
-;;; defalias, defvaralias 
-;;; defsubst, defadvice, 
-;;; CL: defstruct defsubst*
+;;; defalias, defvaralias, defadvice or CL's: defstruct  
 ;;; CREATED: <Timestamp: 2009-08-03-W32-1T11:04:11-0400Z - by MON KEY>
 (defvar *regexp-symbol-defs* nil
   "*Regexp for finding lisp definition forms defun, defmacro, defvar. 
-CALLED-BY: `mon-insert-lisp-testme',`mon-insert-doc-help-tail'.")
+CALLED-BY: `mon-insert-lisp-testme',`mon-insert-doc-help-tail',
+`mon-test->*regexp-symbol-defs*'.")
 ;;
 (when (not (bound-and-true-p *regexp-symbol-defs*))
   (setq *regexp-symbol-defs*
         (concat 
          ;;FIXME: doesn't catch on cases where the lambda list is on the next line.
          ;;...1..         
-         "^\\(("
-         ;;grp 2 -> `defun' `defmacro' `defvar' `defconst' `defun*' `defmacro*'
+         "^\\((" ;;opening paren
+         ;;grp 2 -> `defun' `defun*' `defmacro' `defmacro*' `defsubst' `defsubst*' 
+         ;;`defvar' `defconst' `defcustom' `deftheme'
          ;;..2................................................
-         "\\(def\\(?:const\\|macro\\*?\\|un\\*?\\|var\\)\\) " ;trailing whitepspace
-         ;;..3....................         
-         "\\([A-Za-z0-9/><:*-]+\\)"      ;;grp 3 -> *some/-symbol:->name<-2*
+         "\\(def\\(?:c\\(?:onst\\|ustom\\)\\|face\\|macro\\*?\\|subst\\*?\\|theme\\|un\\*?\\|var\\)\\)"  
+         ;;. .3....................     ;; note: leading whitepspace           
+         " \\([A-Za-z0-9/><:*-]+\\)"      ;; grp 3 -> *some/-symbol:->name<-2*
          ;;...4........................
          "\\(\\( (\\)\\|\\( '\\)\\|\\( `\\)\\)\\)" ;;grp 4 -> ` (' or ` ''
          )))
-
+;;
 ;;;test-me; *regexp-symbol-defs*
+;;; SEE-BELOW-FOR-ADDITIONAL-TESTS-WITH: `mon-test->*regexp-symbol-defs*'
 ;;
 ;;;(progn (makunbound '*regexp-symbol-defs*) (unintern '*regexp-symbol-defs*))
-
+;;
 ;;;;;;;;;;;;CURRENT-REGEXP;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;  ....1..2.................................................3.......................4........................
-;;; "^\\((\\(def\\(?:const\\|macro\\*?\\|un\\*?\\|var\\)\\)\\([A-Za-z0-9/><:*-]+\\)\\(\\( (\\)\\|\\( '\\)\\)\\)"
+;;;  "\\(def\\(?:c\\(?:onst\\|ustom\\)\\|face\\|macro\\*?\\|subst\\*?\\|theme\\|un\\*?\\|var\\)\\)"
 ;;
-;;;(concat "^\\((" (regexp-opt '("defun" "defvar" "defmacro" "defconst" "defmacro*" "defun*") t)
-;;;         "\\([A-Za-z0-9/><:*-]+\\)\\(\\( (\\)\\|\\( '\\)\\)\\)")
-;;
-;;;(regexp-opt '("defun" "defvar" "defmacro" "defconst" "defmacro*" "defun*") t)
-;;;(regexp-opt-depth "\\(def\\(?:const\\|macro\\*?\\|un\\*?\\|var\\)\\)")
+;;;(concat "^\\((" 
+;;; (regexp-opt '("defun" "defun*" "defmacro" "defmacro*" "defsubst" "defsubst*"
+;;;  "defconst" "defvar"  "defcustom" "defface" "deftheme" ) t)
+;;;(regexp-opt-depth "\\(def\\(?:c\\(?:onst\\|ustom\\)\\|face\\|macro\\*?\\|subst\\*?\\|theme\\|un\\*?\\|var\\)\\)")
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; ==============================
 ;;; CREATED: <Timestamp: #{2009-09-02T16:11:07-04:00Z}#{09363} - by MON KEY>
 (defun mon-test->*regexp-symbol-defs* (&optional insertp intrp)
@@ -143,12 +145,12 @@ See also; `mon-insert-lisp-testme',`mon-insert-doc-help-tail'."
         (the-str))
     (save-excursion  (search-backward-regexp find-def*))
     (setq the-str
-          (concat "\nmatch-strin1: "(match-string-no-properties 2) " start2: " 
+          (concat "\nmatch-string1: "(match-string-no-properties 2) " start2: " 
                   (number-to-string (match-beginning 2)) " end2: " 
-                  (number-to-string (match-end 2)) "\nmatch-strin3: "
+                  (number-to-string (match-end 2)) "\nmatch-string3: "
                   (match-string-no-properties 3)" start3: " 
                   (number-to-string (match-beginning 3))  " end3: " 
-                  (number-to-string (match-end 3))"\nmatch-strin4: "
+                  (number-to-string (match-end 3))"\nmatch-string4: "
                   (match-string-no-properties 4) " start4: " 
                   (number-to-string (match-beginning 4))  " end4: " 
                   (number-to-string (match-end 4))))
@@ -156,6 +158,7 @@ See also; `mon-insert-lisp-testme',`mon-insert-doc-help-tail'."
         (save-excursion (princ  the-str (current-buffer)))
       (momentary-string-display the-str (point)))))
 
+;;
 ;;;; UNCOMMENT TO TEST:
 ;;;(defun some-function (&optional optional)
 ;;;(defun some-function-22 (&optional optional)
@@ -171,7 +174,13 @@ See also; `mon-insert-lisp-testme',`mon-insert-doc-help-tail'."
 ;;;(defun *some/-symbol:->name<-2* 'somevar
 ;;;(defmacro* some-macro*:22 (&rest)
 ;;;(defun* *some/-symbol:->name<-2* (somevar
-;;;(defconst *some/-symbol:->name<-2* (somevar
+;;;(defsubst *some/subtst-symbol:->name<-2* (
+;;;(defsubst* *some/subtst-symbol:->name<-2* (
+;;;(defcustom *some/-custom-symbol:->name<-2* 'somecustom
+;;;(defconst *some/-symbol:->name<-2* (someconst
+;;;(defface *some/-face-symbol:->name<-2* (someface
+;;;(defgroup *some/-group-symbol:->name<-2* (somegroup
+;;;(deftheme *some/-theme-symbol:->name<-2* (sometheme
 ;;
 ;;;test-me;(mon-test->*regexp-symbol-defs*)
 
@@ -313,25 +322,27 @@ See also: `regexp-clean-ebay-time-chars',
                 (Mmm-))
             (setq Mmm- '())
             (mapcar (lambda (x)
-                      (let* ((bld-rgxp (concat "\\("     ; 1 
-                                               "\\(%s\\)" ; 2 -> Mmm-
-                                               "\\([0-9]\\{2,2\\}\\)" ; 3 -> DD
-                                               "\\(-\\)" ; 4 -> hyphen post DD
-                                               "\\(%s\\)" ; 5 -> sub-yr
-                                               "\\( [0-9]\\{2,2\\}:[0-9]\\{2,2\\}:[0-9]\\{2,2\\} \\)" ; 6 -> " HH:MM:SS "
-                                               "\\(.*\\)" ; 7 -> TimeZone/ whatevers left 
-                                               "\\)"))
+                      (let* ((bld-rgxp 
+			      (concat 
+			       "\\("			     ; 1 
+			       "\\(%s\\)"		     ; 2 -> Mmm-
+			       "\\([0-9]\\{2,2\\}\\)"	     ; 3 -> DD
+			       "\\(-\\)"	 ; 4 -> hyphen post DD
+			       "\\(%s\\)"	 ; 5 -> sub-yr
+			       "\\( [0-9]\\{2,2\\}:[0-9]\\{2,2\\}:[0-9]\\{2,2\\} \\)" ; 6 -> " HH:MM:SS "
+			       "\\(.*\\)" ; 7 -> TimeZone/ whatevers left 
+			       "\\)"))
                              (splc-rgxp (format bld-rgxp (car x) sub-yr)))
                         (setq Mmm- 
                               (cons (list splc-rgxp (cadr x)) Mmm-))))
                     from-style2)
           (nreverse Mmm-)))))
 
-;;;testme; regexp-clean-ebay-month2canonical-style3
-;;;testme;(car regexp-clean-ebay-month2canonical-style3) 
-;;;testme;(caar regexp-clean-ebay-month2canonical-style3) 
-;;;testme;(cdar regexp-clean-ebay-month2canonical-style3) 
-
+;;;test-me; regexp-clean-ebay-month2canonical-style3
+;;;test-me;(car regexp-clean-ebay-month2canonical-style3) 
+;;;test-me;(caar regexp-clean-ebay-month2canonical-style3) 
+;;;test-me;(cdar regexp-clean-ebay-month2canonical-style3) 
+;;
 ;;;(progn (makunbound 'regexp-clean-ebay-month2canonical-style3) 
 ;;; (unintern 'regexp-clean-ebay-month2canonical-style3))
 
@@ -350,6 +361,7 @@ Other date related variables used in `naf-mode' include:
 `philsp-fix-month-dates', `philsp-months'.")
 
 ;;;test-me; regexp-bound-month2canonical
+;;
 ;;;(progn (makunbound 'regexp-bound-month2canonical) 
 ;;;  (unintern 'regexp-bound-month2canonical))
 
@@ -594,39 +606,67 @@ Other date related variables used in `naf-mode' include:
 ;;; ==============================
 (defvar regexp-clean-wikipedia ;; *regexp-clean-wikipedia*
   '(("\[[0-9]+\]" "")
-    ("^Key people" "Key-people:")
-    ("^Type" "Type:")
+    ("Aller à : Navigation, rechercher" "") ;; WIKI-FRANCE
+    ("Collection privée" "Private Collection") ;; WIKI-FRANCE
+    ("^Divisions" "Divisions:")
+    ("^Employees" "Employees:")
     ("^Founded" "Founded:")
     ("^Headquarters" "Headquarters:")
     ("^Industry" "Industry:")
-    ("^Products" "Products:")
-    ("^Revenue" "Revenue:")
+    ("^Key people" "Key-people:")
+    (" Liens externes" "")  ;; WIKI-FRANCE
+    ("Notes et références" "Notes and references:") ;; WIKI-FRANCE
+    ("Portail de la peinture" "")  ;; WIKI-FRANCE
     ("^Operating income" "Operating-income:")
+    ("^Products" "Products:")
     ("^Profit" "Profit:")
-    ("^Employees" "Employees:")
-    ("^Divisions" "Divisions:")
+    ("(Redirigé depuis .*)" "") ;; WIKI-FRANCE
+    ("^References\n" "Wikipedia-Sources:\n")
+    ("^Références \\[modifier\\]\n" "Wikipedia-References:\n") ;; WIKI-FRANCE
+    ("^Références \n" "Wikipedia-References:\n") ;; WIKI-FRANCE
+    ("^Revenue" "Revenue:")
+    ("^See also\n" "See also:\n")
+    ("^Sommaire" "")
+    ("^Sources \\[modifier\\]" "Wikipedia-Sources: ")
     ("^Subsidiaries" "Subsidiaries:")
+    ("^Type" "Type:")
+    ("^Un article de Wikipédia, l'encyclopédie libre." "") ;; WIKI-FRANCE
+    ("^Voir aussi" "See also:") ;; WIKI-FRANCE
     ("^Website" "Website::")
+    (" ↑ " " ")
     ("▲" "")
     ("€" "(Euro)")
     ("Main article: " "")
+    ("^Flag of " "")
+    (" .*\.svg" "")
+    ("^[A-z0-9]+.*\.svg" "")
+    ("\\[View Article\\]" "")
+    ("\\[archive\\]" "")
+    ("\\[masquer\\]" "") ;; WIKI-FRANCE
     ("\\[edit\\]" "")
     ("\\[hide\\]" "")
     ("\\[show\\]" "")
     ("\\[original research?\\]" "")
     ("\([:.:]*?\\[citation needed\\]\)" ".")
     ("\\[citation needed\\]" "")
-    ("\\[modifier\\]" "")
-    ("…" "...")
-    ("–" "-")
-    ("′" "'")   ;   name: PRIME code point: 0x2032 - used in GeoHack coords
-    ("″" "\"") ;   name: DOUBLE PRIME code point: 0x2033 - used in GeoHack coords
-    ("—" "-")  ;   name: EM DASH code point: 0x2014
+    ("\\[modifier\\]" "") ;; WIKI-FRANCE
+    ("′" "'")  ;; Name: PRIME code point: 0x2032 - used in GeoHack coords
+    ("’" "'")  ;; Name: RIGHT SINGLE QUOTATION MARK - code-point: 0x2019 
+    ("“" "\"") ;; Name: LEFT DOUBLE QUOTATION MARK - code-point: 0x201C
+    ("”" "\"") ;; Name: RIGHT DOUBLE QUOTATION MARK - code-point: 0x201D
+    ("″" "\"") ;; Name: DOUBLE PRIME code-point: 0x2033 - used in GeoHack coords
+    ("…" "...") ;; Name: HORIZONTAL ELLIPSIS - code-point: 0x2026
+    ("–" "-")  ;; Name: EN DASH - code-point: 0x2013
+    ("—" "-")  ;; Name: EM DASH - code-point: 0x2014
     ("œ" "oe")
     ("æ" "ae")
-    ("^    \\* " "- " )
-    ("n°" "No.")  ;;numbering
-    ("N°" "No.")  ;;numbering
+    ("n°" "No.")  ;; numbering
+    ("N°" "No.")  ;; numbering
+    ("^    \* " "- " )
+    ("^- \\* \\([0-9.]+ \\)" "- o \\1")
+    ("^- \\*[\\[:blank:]]+$" "")
+    ;; <-fall through case should come after `("^    \* " "- " )'
+    ;; for when there is nothing to enumerate.
     )
   "*Regexps used by `mon-cln-wiki'. Catches *some* wikipedia formatting
 useful for straightening up the multiple-encodings and diacritic problems
@@ -692,17 +732,17 @@ See URL:\n\(URL `http://www.imdb.com').\nUsed in `naf-mode'.")
    ("ç" "ç") ;; name: COMBINING ACUTE ACCENT - code point: 0x0301
    ("ç" "ç") ;; name: COMBINING CEDILLA - code point: 0x0327
    ("æ" "ae") ;; name: LATIN SMALL LETTER AE
-   ("œ" "oe")
-   ("’" "'") ;; name Righe Singe Quatation code point: 0x2019
-   ("″" "'") ;; name: DOUBLE PRIME code point: 0x2033
+   ("œ" "oe") ;;
    ("—" "-") ;; name: EM DASH code point: 0x2014
    ("–" "-") ;; name: EN DASH code point: 0x2013
    ("«" "\"") ;; name: LEFT-POINTING DOUBLE ANGLE QUOTATION MARK code point: 0xAB
    ("»" "\"") ;;   name: RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK code point: 0xBB
-   ("“" "\"") ;;  name: LEFT DOUBLE QUOTATION MARK code point: 0x201C
-   ("’" "\'") ;;; name: RIGHT SINGLE QUOTATION MARK code point: 0x2019
-   ("”" "\"")  ;;; name: RIGHT DOUBLE QUOTATION MARK code point: 0x201D
-   ("‘" "'") ;;; name: LEFT SINGLE QUOTATION MARK code point: 
+   ("′" "'")  ;; Name: PRIME code point: 0x2032 - used in GeoHack coords
+   ("’" "'")  ;; Name: RIGHT SINGLE QUOTATION MARK - code-point: 0x2019 
+   ("“" "\"") ;; Name: LEFT DOUBLE QUOTATION MARK - code-point: 0x201C
+   ("”" "\"") ;; Name: RIGHT DOUBLE QUOTATION MARK - code-point: 0x201D
+   ("″" "\"") ;; Name: DOUBLE PRIME code-point: 0x2033 - used in GeoHack coords
+   ("″" "'") ;; name: DOUBLE PRIME code point: 0x2033
    ("ẞ" "ß") ;; name: LATIN SMALL LETTER SHARP S
    ("…" "...") ;; name: HORIZONTAL ELLIPSIS code point: 0x2026
    (" " " ") ;; name: NO-BREAK SPACE code point: 0xA0
@@ -716,24 +756,26 @@ Other junk found when scraping is added to this list first before dedicated VAR.
 See also; `mon-cln-wiki', `mon-cln-imdb',`regexp-ulan-diacritics',
 `mon-trans_cp1252_to_latin1'.\nUsed in `naf-mode'.")
 
-;;;testme; 'regexp-clean-loc
+;;;test-me; regexp-clean-loc
 ;;;(progn (makunbound 'regexp-clean-loc) '(unintern 'regexp-clean-loc))
 
 ;;; ==============================
-(defvar *regexp-cln-gilt-group* 
+(defvar *regexp-clean-gilt-group* 
 	 '(("\\([: :]\\{50,58\\}'\\)" "")
 	   ("fl\.Product\.MetaImage\.*," "")
 	   ("\\?.*',$" "")
 	   ("\\?.*;$" ""))
- "*Regexps for use with `bug-cln-gilt-group'. 
+ "*Regexps to clean image links from gilt.com
 Cleans image links from html source at: (URL `http://www.gilt.com').
-Use to get a working list to pass to a useable wget include file.")
-
+Use to get a working list to pass to a useable wget include file.
+CALLED-BY:`bug-cln-gilt-group'.")
+;;
 ;;;test-me; regexp-cln-gilt-group
+;;
 ;;;(progn (makunbound 'regexp-cln-gilt-group)(unintnern 'regexp-cln-gilt-group))
 
 ;;; ==============================
-(defvar *regexp-ital-to-eng*
+(defvar *regexp-ital-to-eng* 
   '(;; ITALIAN-MONTHS-OF-YEAR
     ("gennaio" "January")      ("febbraio" "February")
     ("marzo" "March")          ("aprile" "April")
@@ -818,7 +860,7 @@ See also; `naf-mode-french-months', `mon-ital-date-to-eng'.\nUsed in `naf-mode'.
     ("GENÈVE" "Geneva")
     ("BRUXELLES" "Brussels")
     ("VIENNE" "Vienna")
-    ;;CITY-NAMES:
+    ;; CITY-NAMES:
     ("Anvers" "Antwerp")
     ("Assise" "Assisi")
     ("Athènes" "Athens")
@@ -927,6 +969,11 @@ uppercase styled names -for Bénézit auctions.")
 ;;;(progn (makunbound '*regexp-defranc-places*) (unintern '*regexp-defranc-places*)
 
 ;;; ==============================
+;;; NOTES: Needs to be fleshed out into a dedicated benezit.el
+;;;        Not ready to flag away à -> a).
+;;; RENAMED: `regexp-defranc-benezit' -> `*regexp-defranc-benezit*'
+;;; REMOVED: Benezit specific field s to `*regexp-clean-benezit-fields*'
+;;; MODIFICATIONS: <Timestamp: #{2009-09-18T15:07:44-04:00Z}#{09385} - by MON KEY>
 (defvar *regexp-defranc-benezit*
   '(;; BENEZIT-HEADERS
     ("Actif à" "Active in") 
@@ -943,10 +990,7 @@ uppercase styled names -for Bénézit auctions.")
     ("Née le" "Born")
     ("æ" "ae")
     ("œ" "oe")
-    ("Voir aussi" "See;")
-    ("Ventes Publiques" "Auction Records")
-    ("Musées :" "Museums:")
-    ("Musées:" "Museums:")
+    ("Voir aussi" "See also;")
     ("Il exposa au" "Exhibited at the")
     ("Il exposa à" "Exhibited in")
     ("Roi" "King")
@@ -988,14 +1032,39 @@ uppercase styled names -for Bénézit auctions.")
     ("Peintre Verrier" "glass painter")
     ("Peintre" "Painter")
     ("peintre" "painter"))
-"*Regexps for `mon-defranc-benezit'. 
-Convert French Bénézit terms to equivalent English terms. 
+"*Regexps for convert French Bénézit terms to equivalent English terms. 
 Try to conservatively catch on terms with diacrtics.
-NOTES: Needs to be fleshed out into a dedicated benezit.el
-Not ready to flag away à -> a).")
+CALLED-BY: `mon-defranc-benezit'. 
+See also; `*regexp-clean-benezit-fields*', `mon-cln-benezit-fields'.")
 
-;;;test-me; regexp-defranc-benezit
+;;;test-me; *regexp-defranc-benezit*
 ;;;(progn (makunbound '*regexp-defranc-benezit*) (unintern '*regexp-defranc-benezit*))
+
+
+;;; ==============================
+;;; CREATED: <Timestamp: #{2009-09-18T15:11:27-04:00Z}#{09385} - by MON KEY>
+(defvar *regexp-clean-benezit-fields*
+  '(("^Musées :" "BENEZIT-MUSEUMS:") 
+    ("^Musees:" "BENEZIT-MUSEUMS:") 
+    ("^Musees :" "BENEZIT-MUSEUMS:") 
+    ("^Musees:" "BENEZIT-MUSEUMS:") 
+    ("^MUSÉES:" "BENEZIT-MUSEUMS:") 
+    ("^MUSÉES :" "BENEZIT-MUSEUMS:") 
+    ("^Bibliogr.:"  "BENEZIT-BIBLIOGRAPHY:") 
+    ("^Bibliogr. :" "BENEZIT-BIBLIOGRAPHY:") 
+    ("^BIBLIOGR.:" "BENEZIT-BIBLIOGRAPHY:") 
+    ("^BIBLIOGR. :" "BENEZIT-BIBLIOGRAPHY:") 
+    ("^Ventes Publiques" "BENEZIT-AUCTION-RECORDS:") 
+    ("^VENTES PUBLIQUES :" "BENEZIT-AUCTION-RECORDS:") 
+    ("^VENTES PUBLIQUES:" "BENEZIT-AUCTION-RECORDS:") 
+    )
+  "*Regexp alist to clean and normalize commonly encountered Benezit fields.
+CALLED-BY: `mon-cln-benezit-fields'. 
+Fontlocked with `naf-mode-benezit-section-flag'.\n
+See also; `*regexp-defranc-benezit*', `mon-defranc-benezit'.\nUsed in `naf-mode'.")
+;;
+;;;test-me; *regexp-clean-benezit-fields*
+;;;(progn (makunbound '*regexp-clean-benezit-fields*) (unintern '*regexp-clean-benezit-fields*))
 
 ;;; ==============================
 (defvar *regexp-german-to-eng* ;; *regexp-german-to-eng*
@@ -1015,17 +1084,18 @@ Not ready to flag away à -> a).")
 ;;; ==============================
 (defvar *regexp-clean-bib*
    '(("n°" "No.")  ;;numbering
-   ("N°" "No.") ;;numbering
-   ("no\\." "No.") ;;numbering
-   ("pp\\." "pages")
-   ("§" "sections") ; Name: SECTION-SIGN ;code point: 0xA7
-   ("vol" "Volume")
-   ("vol\\." "Volume")
-   ("vols" "Volumes")
-   ("Vol" "Volume")
-   ("Vols" "Volumes")
-   ("Vol\\." "Volume"))
- "Regexps for `mon-cln-bib'. Replaces common bibliography abbreviations.")
+     ("N°" "No.") ;;numbering
+     ("no\\." "No.") ;;numbering
+     ("pp\\." "pages")
+     ("§" "sections") ; Name: SECTION-SIGN ;code point: 0xA7
+     ("vol" "Volume")
+     ("vol\\." "Volume")
+     ("vols" "Volumes")
+     ("Vol" "Volume")
+     ("Vols" "Volumes")
+     ("Vol\\." "Volume"))
+   "Regexps for normalizing common bibliography abbreviations.
+CALLED-BY:  `mon-cln-bib'.")
 
 ;;;test-me; *regexp-clean-bib* 
 ;;;(progn (makunboudn '*regexp-clean-bib*) (unintern '*regexp-clean-bib*)
@@ -1074,12 +1144,12 @@ Not ready to flag away à -> a).")
     ("\\( yrs\\. \\)" " years ")
     ("\\( vols\\. \\)" " volumes ")
     ("\\( tchr\\. \\)" " teacher "))
- "Regexps for `mon-replace-common-abbrevs'.Replace common abbreviations.
+ "Regexps to replace common abbreviations.
 Especially useful for those with `.' at end of string.
-Used in `naf-mode'. See also; `mon-cln-wiki', `mon-cln-imdb',
-`mon-trans_cp1252_to_latin1',`mon-abr-to-month', `mon-num-to-month'.
-Notes: Function first designed for used to search replace in:
-The Etude Bios Composers Musicians Bios - Etude July 1933 p 434.")
+CALLED-BY: `mon-replace-common-abbrevs'.\n
+NOTES: Function first designed for used to search replace in:
+The Etude Bios Composers Musicians Bios - Etude July 1933 p 434.\n
+Used in `naf-mode'.")
 
 ;;;test-me; *regexp-common-abbrevs*
 ;;;(progn (makunbound '*regexp-common-abbrevs*) (unintern '*regexp-common-abbrevs*))
@@ -1150,7 +1220,7 @@ Needs to be adjusted for UTF-8.\nUsed by `mon-trans-cp1252-to-latin1'.")
 ;;; WAS: `*google-define-html-entry-table*'.
 ;;; Conversion code-slide for `naf-mode' related code remains (unfinished) in:
 ;;; "./naf-mode/notes/naf-url-googl-code-slide.el"
-;;; MOVED: <- naf-url-utils.el <Timestamp: Tuesday February 17, 2009>
+;;; MOVED: <- mon-url-utils.el <Timestamp: Tuesday February 17, 2009>
 ;;; ==============================
 (defvar regexp-clean-url-utf-escape ;;*regexp-clean-url-utf-escape*
   '(("&#34;"   "\"") ("&#38;"    "&") ("&#39;"    "'") ("&#60;"    "<")
@@ -1336,8 +1406,16 @@ For additional specs see:
 ;;;(progn (makunbound '*regexp-clean-ulan*) (unintern '*regexp-clean-ulan*))
 
 ;;; ==============================
+;;; NOTE: Not in current list:
+;;; ^Display Date for Role: = ^Display-Date-for-Role:
+;;; ^Display Date for the related person or corporate body: => Display-Date-for-the-related-person-or-corporate-body:
+;;; ^Display Date for the parent: => Display-Date-for-the-parent:
+;;; ^Start and End Places: => Start-and-End-Places:
+;;; ^Start: 
+;;; ^location: => Location:
+;;; ^active => Active:  ;date-active-face-ulan
 ;;; MODIFICATIONS: <Timestamp: #{2009-08-31T14:50:10-04:00Z}#{09361} - by MON KEY>
-(defvar *regexp-clean-ulan-fields*                 ;;; WAS:                                             
+(defvar *regexp-clean-ulan-fields*
  '(("^apprentice of "       ":APPRENTICE-OF ")     ;;; '(("^apprentice of "      "apprentice-of: ")     
    ("^apprentice was "      ":APPRENTICE-WAS ")    ;;;   ("^apprentice was "     "apprentice-was: ")    
    ("^assisted by "         ":ASSISTED-BY ")       ;;;   ("^assisted by "        "assisted-by: ")       
@@ -1369,7 +1447,63 @@ For additional spec see:
 \(URL `http://www.getty.edu/research/conducting_research/vocabularies/ulan/').
 ULAN is ©J. Paul Getty Trust.")
 
-;;;testme; *regexp-clean-ulan-fields*
+;;; ==============================
+;;; ADD-ME:
+;; "nephew of"
+;; "uncle of"
+;; "partner of"
+;; "partner in"
+;; "child by marriage (in-law) of"
+;; "sibling by marriage (in-law) of"
+;; "cousin of"
+;; "worked with"
+;; colleague of 
+;; ;;;	"member of" 	
+;; ;;;     "court artist to" 
+;; ;;;     "employee was"
+;; ;;;     "patron was"
+;; ;;      "collaborated with"
+;; "partner was/is (firm to person)"
+;; "founded by"
+;; "assistant of"
+;; "partner in"
+;; "employee of"
+;; "employee was"
+;; "great-grandchild of"
+;; "court artist to"
+;; "patron was"
+;; "related to" 
+;; "collaborated with"
+;; "sibling of"
+;; "nephew of"
+;; "uncle of"
+;; "partner of"
+;; "partner in"
+;; "child by marriage (in-law) of"
+;; "sibling by marriage (in-law) of"
+;; "cousin of"
+;; "worked with"
+;; "apprentice of"
+;; "apprentice was"
+;; "assisted by"
+;; "associate of"
+;; "child of"
+;; "founder of"
+;; "grandchild of"
+;; "grandparent of"
+;; "grandparent was"
+;; "influence"
+;; "member of"
+;; "parent of"
+;; "partner of"
+;; "sibling of"
+;; "spouse of"
+;; "student of"
+;; "student was"
+;; "teacher of"
+;; "teacher was"
+;; "worked with"
+;;;test-me; *regexp-clean-ulan-fields*
 ;;;(progn (makunbound '*regexp-clean-ulan-fields*) (unintern '*regexp-clean-ulan-fields*))
 
 ;;; ==============================
@@ -1393,7 +1527,7 @@ ULAN is ©J. Paul Getty Trust.")
                             "\\)[: :]\\([A-z,. ].*\\)[: :]\\{2,2\\}\n\(\\(.*\\)\) \\[\\([0-9]\\{9,9\\}\\)\\]\\)"))
                  *regexp-clean-ulan-fields*))
     regexp-clean-ulan-dispatch-chars)
-  "*Regexp invoked after evaluatinng `*regexp-clean-ulan-fields*' in `mon-cln-ulan'. 
+  "*Regexp invoked after evaluating `*regexp-clean-ulan-fields*' in `mon-cln-ulan'. 
 EXAMPLE: 
 Converts from following:\n
 :TEACHER-OF Schoonover, Frank Earle
@@ -1581,7 +1715,7 @@ Lists have the form: \(Brief_Name Full_Name Contributor_ID\)\n
 See also; `*regexp-clean-ulan*', `*regexp-clean-ulan-fields*',
 `*regexp-clean-ulan-diacritics*',`*regexp-clean-ulan-dispatch-chars*',
 `mon-cln-ulan'.\nUsed in `naf-mode'.\n
-For additioanl specs see:
+For additioanl specs SEE:
 \(URL `http://www.getty.edu/research/conducting_research/vocabularies/ulan/'\).
 ULAN is ©J. Paul Getty Trust.")
 
@@ -1696,41 +1830,6 @@ ULAN is ©J. Paul Getty Trust.")
 ;; <!ENTITY yacute CDATA "&#253;" -- latin small letter y with acute, U+00FD ISOlat1 -->
 ;; <!ENTITY thorn  CDATA "&#254;" -- latin small letter thorn, U+00FE ISOlat1 -->
 ;; <!ENTITY yuml   CDATA "&#255;" -- latin small letter y with diaeresis, U+00FF ISOlat1 -->
-                                  
-;;; ==============================
-;;; Regexp template for finding nameforms in regions. 
-;;; Template has also been pasted into "naf-name-utils.el" Used in `mon-cln-ulan'.
-;;; WORKING-AS-OF: <Timestamp: Friday February 13, 2009 @ 09:18.35 PM - by MON KEY>
-;;; ==============================
-;;;        (region-name (when (and transient-mark-mode mark-active)
-;;; 	      (buffer-substring-no-properties (region-beginning) (region-end))))
-;;;              (test-name (when (and region-name)
-;;; 	       (cond
-;;; 		((string-match "\\(\\([A-Z][a-z]+\\)\\([: :](\\)\\([A-Z][a-z]+\\)\\()\\)\\)" region-name) 
-;;; 		 (concat (match-string 2 region-name) "%2C+"  (match-string 4 region-name)))
-;;; 		((string-match "\\(\\([A-Z][a-z]+\\)\\(,[: :]\\)\\([A-Z][a-z]+\\)\\)" region-name)
-;;; 		 (concat (match-string 2 region-name) "%2C+" (match-string 4 region-name)))
-;;; 		((string-match "\\(\\([A-Z][a-z]+\\)\\([: :]\\)\\([A-Z][a-z]+\\)\\)" region-name)
-;;; 		 (concat (match-string 4 region-name) "%2C+" (match-string 2 region-name))))))
-;;; ==============================
-;;; ==============================
-
-;;; ==============================
-;;;  regexp for year (YYYY) searching
-;;;  \([0-9]\{4\}\)
-;;; ==============================
-
-;;; ==============================
-;;; 'YY \"^'\\([0-9]\\{2,2\\}\\) -> \"YY\"
-;;; Catches short years at BOL in bib entries.\n
-;;; EXAMPLE:\n
-;;; 'YY \"^'\\\\([0-9]\\\\\\={2,2\\\\\\=}\\\\) \"YY\"
-;;; ==============================
-
-;;; ==============================
-;;; regexp for: capitalizing-region
-;;; ^\([A-Z-: :]*\)$ \#(capitalize-region)
-;;; ==============================
 
 ;;; ==============================
 ;;; TODO:
@@ -1795,11 +1894,116 @@ ULAN is ©J. Paul Getty Trust.")
 ;; wrapper wrap
 
 ;;; ==============================
+;;; Regexp template for finding nameforms in regions. 
+;;; Template has also been pasted into "naf-name-utils.el" Used in `mon-cln-ulan'.
+;;; WORKING-AS-OF: <Timestamp: Friday February 13, 2009 @ 09:18.35 PM - by MON KEY>
+;;; ==============================
+;;;        (region-name (when (and transient-mark-mode mark-active)
+;;; 	      (buffer-substring-no-properties (region-beginning) (region-end))))
+;;;              (test-name (when (and region-name)
+;;; 	       (cond
+;;; 		((string-match "\\(\\([A-Z][a-z]+\\)\\([: :](\\)\\([A-Z][a-z]+\\)\\()\\)\\)" region-name) 
+;;; 		 (concat (match-string 2 region-name) "%2C+"  (match-string 4 region-name)))
+;;; 		((string-match "\\(\\([A-Z][a-z]+\\)\\(,[: :]\\)\\([A-Z][a-z]+\\)\\)" region-name)
+;;; 		 (concat (match-string 2 region-name) "%2C+" (match-string 4 region-name)))
+;;; 		((string-match "\\(\\([A-Z][a-z]+\\)\\([: :]\\)\\([A-Z][a-z]+\\)\\)" region-name)
+;;; 		 (concat (match-string 4 region-name) "%2C+" (match-string 2 region-name))))))
+
+;;; ==============================
+;;; lowercaseUPPERCASE -> "lowercase UPPERCASE"
+;;; EXAMPLE: find occurences of "somstreetCityname" -> "somestreet Cityname"
+;;
+;; (let ((case-fold-search nil))
+;;   (while (search-forward-regexp 
+;; 	  "\\(SOME-SAFE-BUT-GREEDY-BOUNDS*\\)\\([\\[:lower:]]\\)\\([\\[:upper:]]\\)" nil t)
+;;            ;;1^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^2^^^^^^^^^^^^^^^^^^3^^^^^^^^^^^^^^^^^^^^^^
+;;     (replace-match "\\1\\2 \\3")))
+
+;;; ==============================
+;;; 0-9UPPERCASE -> "N UPPERCASE"
+;;; EXAMPLE: find occurences of "625Paris" -> "625 Paris"
+;;
+;; (let ((case-fold-search nil))
+;;   (while (search-forward-regexp 
+;;     "\\([0-9]\\)\\([\\[:upper:]]\\)" nil t)
+;;      ^^1^^^^^^^^^^2^^^^^^^^^^^^^^^
+;;     (replace-match "\\1 \\2")))
+
+;;; ==============================
 ;;; CREATED: <Timestamp: #{2009-08-17T16:52:12-04:00Z}#{09341} - by MON KEY>
-;;; REGEXP: Quick and dirty  to rotate artist names. 
+;;; ROTATE-LASTNAME-TO-FRONT
+;;; Quick and dirty to rotate artist names. 
 ;;; Both First and Last name _must be_ without hyphens, periods or other punct.
 ;;;     ;;...1...2...........3................4.........
 ;;;  '(("^\\(\\([A-z]+\\)\\([[:space:]]\\)\\(.*\\)\\)"   "\\4 (\\2)"))
+
+;;; ==============================
+;;; CAPITALIZING-REGION
+;;; ^\([A-Z-: :]*\)$ \#(capitalize-region)
+
+;;; ==============================
+;;; TIMESTAMPS of form: `YYYY-MM-DD HH:MM:SS'
+;;; "\\([0-9-]+ [0-9:]+\\)" 
+
+;;; ==============================
+;;; SIMPLE-YEAR
+;;; \_<[0-9]\{4\}\_>
+
+;;; ==============================
+;;; YEAR-RANGE:
+;;; "\\(\\((\\)\\([0-9]\\{4\\}?\\)\\(-?\\)\\([0-9]\\{4\\}?\\)\\()\\)\\)"
+
+;;; ==============================
+;;; DATE-STRINGS of form: 03-15-1917 03-15-1944 1922/15/03 1493-15-03
+;;; \\([0-9]\\{2,4\\}\\(-\\|/\\)[0-9]?+\\(-\\|/\\)[0-9]\\{2,4\\}\\)"
+
+;;; ==============================
+;;; YEARS-IN-PARENS regexp finds strings of form: (YYYY)
+;;;  \([0-9]\{4\}\)
+
+;;; ==============================
+;;; SHORT-YEARS-BOL in bib entries of form `'YY'
+;;; "^'\\([0-9]\\{2,2\\}\\)
+
+;;; ==============================
+;;; ENGLISH-MONTHS
+;;; "\\(A\\(pr\\(\\.\\|il\\)\\|ug\\(\\.\\|ust\\)\\)\\|Dec\\(\\.\\|ember\\)\\|Feb\\(\\.\\|ruary\\)\\|J\\(an\\(\\.\\|uary\\)\\|u\\(l[.y]\\|n[.e]\\)\\)\\|Ma\\(r\\(\\.\\|ch\\)\\|y\\)\\|Nov\\(\\.\\|ember\\)\\|Oct\\(\\.\\|ober\\)\\|Sep\\(\\.\\|t\\(\\.\\|ember\\)\\)\\)"
+
+;;; ==============================
+;;; ENGLISH-DATES:
+;;; "\\(A\\(pr\\(\\.\\|il\\)\\|ug\\(\\.\\|ust\\)\\)\\|Dec\\(\\.\\|ember\\)\\|Feb\\(\\.\\|ruary\\)\\|J\\(an\\(\\.\\|uary\\)\\|u\\(l[.y]\\|n[.e]\\)\\)\\|Ma\\(r\\(\\.\\|ch\\)\\|y\\)\\|Nov\\(\\.\\|ember\\)\\|Oct\\(\\.\\|ober\\)\\|Sep\\(\\.\\|t\\(\\.\\|ember\\)\\)\\) \\([0-3]?+[0-9]\\)\\(:?[rd\|th\|st\|,]+\\) \\<[0-9]\\{4\\}\\>"
+
+;;; ==============================
+;;; ENGLISH-DAYS:
+;;; "\\<[MTWFS]\\(on\\|ues\\|ednes\\|hurs\\|ri\\|atur\\|un\\)\\(day\\)\\>"
+
+;;; ==============================
+;;; ENGLISH-WEEKDAYS:
+;;; "\\<\\(Friday\\|Monday\\|S\\(aturday\\|unday\\)\\|T\\(hursday\\|uesday\\)\\|Wednesday\\)\\>"
+
+;;; ==============================
+;;; FRENCH-MONTHS:
+;;; "[A-Za-z]\\(\\(\\(oût\\|vril\\|ai\\|ars\\)\\)\\|\\(\\(anv\\|évr\\)\\(ier\\)\\)\\|\\(\\(cto\\|epte\\|ove\\|éce\\)\\(m?+bre\\)\\)\\|\\(\\(ui\\)\\(n\\|l+et\\)\\)\\)"
+
+;;; ==============================
+;;; FRENCH-WEEKDAYS:
+;;;"\\<\\(Dimanche\\|Jeudi\\|Lundi\\|M\\(ardi\\|ercredi\\)\\|Samedi\\|Vendredi\\)\\>")
+
+;;; ==============================
+;;; FRENCH-DATES:
+;;;; "\\<[0-9]\\{1,2\\}\\> \\(A\\(o\\(ut\\|ût\\)\\|vr\\(\\.\\|il\\)\\)\\|Déc\\(\\.\\|embre\\)\\|Fév\\(\\.\\|rier\\)\\|J\\(an\\(\\.\\|vier\\)\\|ui\\(l\\(\\.\\|let\\)\\|n\\)\\)\\|Ma\\(i\\|rs\\)\\|Novembre\\|Octobre\\|Sep\\(\\.\\|tembre\\)\\|a\\(o\\(ut\\(\\)?\\|ût\\(\\)?\\)\\|vr\\(\\.\\|il\\)\\)\\|déc\\(\\.\\|embre\\)\\|fév\\(\\.\\|rier\\)\\|j\\(an\\(\\.\\|vier\\)\\|ui\\(l\\(\\.\\|let\\)\\|[n]\\)\\)\\|ma\\(rs\\(\\)?\\|[i]\\)\\|nov\\(\\.\\|embre\\)\\|oct\\(\\.\\|obre\\)\\|sep\\(\\.\\|tembre\\)\\) \\<[0-9]\\{4\\}\\>"
+
+;;; ==============================
+;;; LIFESPAN with word boundaries of form: (1899-1946)
+;;;   '"\\(\\<[(]?+[0-9]\\{4\\}-[0-9]\\{4\\}[)]?+\\>\\)" )
+
+;;; ==============================
+;;; LIFESPAN without word boundaries 
+;;;  '"\\([(]?+[0-9]\\{4\\}-[0-9]\\{4\\}[)]?+\\)" )
+
+;;; ==============================
+;;; ACTIVE-CIRCA:
+;;; \\<\\(active ca\\.\\|b\\.\\|c\\(a\\.\\|irca\\)\\|d\\.\\) [0-9]\\{4\\}\\>
 
 
 ;;; ==============================

@@ -1,10 +1,16 @@
 [[fr:CréerPages]]
 See WikiOrganization for some info on how the pages are organised amongst each other.
 
-# Find the appropriate category on the SiteMap.
+# Find the appropriate category on the SiteMap. Note: The category names are abbreviated in the links used on the SiteMap page -- for example, CategoryKeys is abbreviated as [[CategoryKeys|Keys]]. It is the full name that you must add to a wiki page (see #4, below) to add it to a category.
 # Edit the category page and add a link to the new page.  See NamingNewPages for more.
 # Follow the newly created link to the edit page.
 # Enter the text, add a link back to the category page, and save.
+
+#2 and #4 help readers find your new page when they look through a category page:
+* #2 provides a direct link to your page.
+* #4 lists your page when a user clicks the title on the category page to see all pages in that category.
+
+
 
 You can also create a new page by ''URL munging''.
 Just edit the current URL to point to a new page which doesn't exist.

@@ -327,6 +327,8 @@ sudo apt-get install w3mmee w3mmee-img
 
 Load w3m in the normal manner. Thanks to Andy Stewart for help via email and in the #emacs irc channel.
 
+If you use debian sid or testing you will not have w3mmee and w3mee-img but you can install w3m-el-snapshot.
+
 = W3M, HTML articles and org-mode =
 
 RichardRiley

@@ -10,6 +10,30 @@ Here's what SiteMap does:
 
 == Open Issues ==
 
+
+=== Mention Wiki Organization by Categories ===
+
+Categories are important to discovery and navigation. The SiteMap page is the canonical listing of all categories. It is there that you look, to see what categories are available for classifying your new page. However, the category names are abbreviated on the %%SiteMap%%. That helps readability, but it obscures the list of categories for editing purposes. The %%SiteMap%% should contain a brief mention such as the following:
+
+: Note: The category names are abbreviated in the links used on this page -- for example, CategoryKeys is abbreviated as [[CategoryKeys|Keys]]. It is the full name that you must add to a wiki page to add it to a given category: just add the prefix ##Category##.
+
+-- DrewAdams
+
+[new]
+Don't we have a page like HowToEdit or something similar? Maybe that would be a better place? -- AlexSchroeder
+
+[new:DrewAdams:2009-09-20 00:10 UTC]
+Yes, it's CreateNewPages, and I already added it there. I still think it's needed also on the SiteMap. Many people will create pages without passing through %%CreateNewPages%%. They are, however, likely to stumble upon the explanation at %%SiteMap%%. -- DrewAdams
+
+=== "Customize" Pseudo-Heading Is Misguided ===
+
+Most of the categories under the pseudo-heading "Customize" are general and not necessarily about customizing at all. It was quite misguided to group things this way. Just look at those category pages ([[CategoryWindows|Windows]], [[CategoryKeys|Keys]], [[CategoryMouse|Mouse]], [[CategoryDisplay|Display]]...) -- you will find general information and lots of other material that has nothing to do with customization. [[CategoryKeys|Keys]] is not more about customization than is [[CategoryMenus|Menus]], for instance.
+
+This category organization is incorrect, misleading, and unhelpful. "Customize" should be removed altogether. Customization of different kinds of things (keys, faces, frames, etc.) is found within the categories for those features. Customization is everywhere in Emacs, and nearly everything is customizable. List the features here; users will look for their customization within their categories. -- DrewAdams
+
+[new]
+Well said -- indeed "nearly everything is customizable." I agree that the category is not selective enough. -- AlexSchroeder
+
 === Headings ===
 
 In my last edit of the SiteMap, I accidentally removed the headings when I was only trying to change the link format for all the categories.
@@ -28,6 +52,9 @@ My opinion ''before'' comparing: It doesn't make much difference; it's OK as it 
 My opinion ''after'' comparing: the TOC helps, and should be restored. Especially because the categories are numerous and not always well-defined. A TOC helps you see at a glance how the page is organized and what the "categories of categories" are.
 
 Yes, people will often scroll the page, regardless. That does not mean that it isn't helpful to let them know what super-category a given category is in. And no, this does not "ease scrolling". It simply makes a global view more difficult. Being obliged to skim the entire page does not imply "easing scrolling". Just one opinion. -- DrewAdams
+
+[new:DrewAdams:2009-09-19 17:09 UTC]
+Aaron's "accidental" change should have been reverted, pending discussion and a consensus. Instead, the previous version is now lost (so you cannot even compare). So much for site-map "discussion". -- DrewAdams
 
 
 

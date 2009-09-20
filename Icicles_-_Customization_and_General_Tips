@@ -1624,7 +1624,10 @@ Here are screen shots of face-name candidates for `icicle-WYSIWYG-Completions-fl
 Non-`nil' user option '''`icicle-unpropertize-completion-result-flag''''
 means that `completing-read' and (starting with Emacs 23)
 `read-file-name' will strip all text properties from the result they
-return.  The default value is `nil'.  It is not likely that you
+return. Regardless of the option value, '''Icicles''' strips text properties
+that it adds for its internal use.  See the doc string of function `icicle-unpropertize' for more information about this.
+
+The default value of the option is `nil'.  It is not likely that you
 will need to change this, but you might if you use some other
 library that cannot accept a propertized string as the result of
 completion.

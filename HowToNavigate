@@ -3,7 +3,11 @@ The coolest thing about the Emacs Wiki is the ability for anyone to contribute. 
 
 == Categories ==
 
-The pages of Emacs Wiki are organized into '''categories'''. This SiteMap page lists all of the categories.  Most categories contain information about Emacs or user-contributed Emacs libraries.  There is one category, however, that contains information about the site itself: '''CategoryEmacsWikiSite'''.
+The pages of Emacs Wiki are organized into '''categories'''. This SiteMap page lists all of the categories -- they appear as links to the individual category pages.
+
+When you create a wiki page, put one or more category names at the bottom, to add the page to those categories. Note: The category names are abbreviated in the links used on the SiteMap page -- for example, CategoryKeys is abbreviated as [[CategoryKeys|Keys]]. It is the full name that you must add to a wiki page to add it to a category.
+
+Most categories contain information about Emacs or user-contributed Emacs libraries.  There is one category, however, that contains information about the site itself: '''CategoryEmacsWikiSite'''.
 
 == Header and footer navigation ==
 

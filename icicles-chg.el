@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Sep 17 14:22:38 2009 (-0700)
+;; Last-Updated: Sat Sep 19 08:47:42 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 4394
+;;     Update #: 4400
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -271,6 +271,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2009/09/19 dadams
+;;     icicle-unpropertize: Remove the internal text properties added by Icicles.
+;;     icicle-completing-read, icicle-read-file-name: Call icicle-unpropertize unconditionally.
 ;; 2009/09/12 dadams
 ;;     icicle-kill-a-buffer: Bind enable-recursive-minibuffers, to confirm modified buffer.
 ;; 2009/09/05 dadams
