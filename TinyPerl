@@ -1,5 +1,11 @@
-tinyperl.el is part of the TinyTools. It can access and show documentation of Perl's manual pages (POD) and
+tinyperl.el is part of the TinyTools.
+
+== Description ==
+
+It can access and show documentation of Perl's manual pages (POD) and
 help to acceess code or documentation of installed libraries (.pm) installed along Perl ''@INC'' variable.
+
+Features
 
 * Instant function help: See documentation of `shift', `pop'...
 * Show Perl manual pages in <code>*pod*</code> buffer
@@ -8,6 +14,16 @@ help to acceess code or documentation of installed libraries (.pm) installed alo
 * Follow POD manpage references to next pod page (requires TinyUrl)
 * Colored pod pages with `font-lock'
 * Update Perl programs's `$VERSION' variable with YYYY.MMDD on save.
+* Upload code to personal Perl [[http://en.wikipedia.org/wiki/CPAN#Uploading_distributions_with_PAUSE PAUSE]] account directory; the repository of by [[http://en.wikipedia.org/wiki/CPAN CPAN]].
+
+''Picture below: Preview of POD documentation from a *.pl file being edited''
+
+[[image:TinyPerlImagePodFromBuffer]]
+
+''Picture below: Accessing Perl Module documentation''
+
+[[image:TinyPerlImagePodByModuleName]]
+
 
 == Install ==
 
@@ -25,7 +41,7 @@ Add following to the ~/.emacs InitFile:
 == Customization ==
 
 After new Perl version install, new library package (*.pm) install or modification of @INC, the POD cache
-needs to be rebuilt with {{{C-u M-x tinyperl-install}}}.
+needs to be rebuilt with `C-u M-x tinyperl-install'.
 
 ----
 CategoryDisplay | CategoryModes | TinyTools

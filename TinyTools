@@ -48,7 +48,7 @@ This is only an excerpt:
 * TinyPerl -- Accessing Perl documentationa and dealing with POD documentation in general.
 * TinyEat -- Deleting text easily.
 * TinyURL -- Buttonize line for URLs automatically in any buffer.
-  Library local lines in programming modes, like Emacs Lisp: <code>(require 'font-lock)</code>,
+  Library load calls in programming modes, like Emacs Lisp: <code>(require 'font-lock)</code>,
   are buttonized too.
 * TinyTf -- Write plain text documents easily. Can also convert to HTML with the help of separate utility.
 

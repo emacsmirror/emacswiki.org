@@ -9,6 +9,13 @@ http://randomsample.de/minimap-ex2.jpg
 
 Get the latest version from http://randomsample.de/minimap.el
 
+Alternatively, you can clone from the git repo:
+<pre>
+git://randomsample.de/minimap.git
+or
+http://randomsample.de/minimap.git
+</pre>
+
 Usage:
 
 * Put ##minimap.el## in your load path.
@@ -48,5 +55,24 @@ Debugger entered--Lisp error: (error "The mark is not set now, so there is no re
 I use pc-selection mode, copy-region-as-kill-nomark is a function in that package. pc-selection allows the user to copy text by simply selecting text and releasing the mouse button. Apparently, this feature clashes with viewport dragging. pc-selection mode should be deactivated in the minimap buffer, if it's possible.
 
 
+[new]
+Thanks, I think I fixed those two in the latest version.
+
+[new]
+
+I suggest hiding the vertical scrollbars in the minimap buffer. They are not really needed if the viewport can be dragged.
+
+<pre>
+   You can enable or disable scroll bars for a particular buffer, by
+setting the variable `vertical-scroll-bar'.  This variable
+automatically becomes buffer-local when set.  The possible values are
+`left', `right', `t', which means to use the frame's default, and `nil'
+for no scroll bar.
+
+   You can also control this for individual windows.  Call the function
+`set-window-scroll-bars' to specify what to do for a specific window:
+
+</pre>
+
 ----
-CategoryWindows
+CategoryWindows   CategoryDisplay

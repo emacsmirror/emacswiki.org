@@ -1,5 +1,17 @@
 The tinyprocmail.el is part of the TinyTools.
 
+== Description ==
+
+A minor mode for writing procmail recipes. Can [[http://en.wikipedia.org/wiki/Lint_(software) Lint]] i.e. check code in a batch mode or interactively where user can auto-correct recipes.
+
+''Picture below: Linting procmail code interactively''
+
+[[image:TinyProcmailImageLintBufferInteractive]]
+
+''Picture below: Lint batch results shown in separate buffer''
+
+[[image:TinyProcmailImageLintBufferBatch]]
+
 == Install ==
 
 Put the following in your ~/.emacs InitFile:
@@ -12,7 +24,7 @@ Put the following in your ~/.emacs InitFile:
       "\\.procmailrc\\|pm-.*\\.rc$"
       'turn-on-tinyprocmail-mode)
 
-== Documentation ==
+== Procmail Documentation ==
 
 You may want to check out JariAalto<code>'</code>s excellent procmail tips page 
 at http://pm-doc.sourceforge.net/pm-tips.html

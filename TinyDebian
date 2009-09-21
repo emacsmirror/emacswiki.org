@@ -9,15 +9,19 @@ each interface, complete bug management and manipulation can be done with few ke
 menu commmands. Late in 2008, Emacs development team decided to evaluate and install Debian BTS (debbugs)
 [http://emacsbugs.donarmstrong.com/ Emacs BTS], so the inetrface was extended to support multiple BTSs.
 
-The  supported Bug tracking systems include:
+''Picture below: An example from Emacs '''Gnus''' Summary buffer''
+
+[[image:TinyDebianImageMenuDebianControlFixed]]
+
+The supported bug tracking systems include:
 
 * Debian BTS (full support)
 * Emacs BTS (full support)
-* Savannah trackers (only: jump to tracker)
-* Savannah trackers (only: jump to tracker)
-* Sourceforge bugs (only: jump to tracker)
-* Gnome bugs (only: jump to tracker)
-* Sourceware aka RedHat where various GNU projects like GDB are hosted (only: jump to tracker)
+* Savannah trackers (only: jump to tracker; "Goto URL by bug number")
+* Savannah trackers (only: jump to tracker; "Goto URL by bug number")
+* Sourceforge bugs (only: jump to tracker; "Goto URL by bug number")
+* Gnome bugs (only: jump to tracker; "Goto URL by bug number")
+* Sourceware aka RedHat where various GNU projects like GDB are hosted (only: jump to tracker; "Goto URL by bug number")
 
 The interface is integrated to Gnus:
 
@@ -27,6 +31,11 @@ The interface is integrated to Gnus:
 
 Select desired management command from menu "Tdeb", or from prefix `C-c - C-h'.
 Alternatively, start composing mail with `C-x m' and see menu "Tbts".
+
+''Picture below: An example from '''mail mode''' to control bugs'''
+
+[[image:TinyDebianImageMenuMailMode]]
+
 
 == Planned features ==
 

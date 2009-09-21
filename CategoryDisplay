@@ -25,6 +25,7 @@ that colors and [[Face]]s belong in CategoryFaces.
 * HighlightTemporarily -- highlight parts of a buffer
 * WorkSpaces - an implementation based on registers
 * FullScreen - how to switch to fullscreen (with F11 for example)
+* MiniMap - A sidebar showing a small version of your buffer with highlighted viewport, which can be dragged with the mouse.
 
 == Managing Frames within Emacs ==
 

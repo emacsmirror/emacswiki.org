@@ -1,5 +1,6 @@
 Click on the header to find all parenthesis related pages. In Emacs-jargon, parentheses are often called "parens".
 
+* ShowParenMode -- highlight matching parentheses
 * NavigatingParentheses -- navigating between paretheses
 * DebuggingParentheses -- find "unbalanced parentheses" errors in files
 * ParenthesisMatching -- how to turn two characters into matching parentheses and bounce between matching parenthesis.

@@ -17,7 +17,7 @@ Skeletons also work with selections -- typing the opening character will wrap th
 
 <tt>[http://code.google.com/p/emacs-textmate/ textmate.el]</tt> extends the pairing behavior: the cursor "moves over" closing characters instead of inserting new ones, and empty pairs like '##()##' are deleted with a single keypress. ParEdit, a minor mode for Lisp-like languages, also provides both these features.
 
-'''Alternatively, place the (more general) code below in <tt>[InitFile .emacs]</tt>:'''
+'''As a fall-back, you may place the (more general) code below in <tt>[InitFile .emacs]</tt>:'''
 
     (setq skeleton-pair t)
     (setq skeleton-pair-alist

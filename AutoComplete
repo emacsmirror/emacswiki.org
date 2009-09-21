@@ -192,6 +192,67 @@ Sorry for inconvenience. Could you check update auto-complete.el and auto-comple
 I can confirm it still doesnt work(updated version of auto-complete.el and auto-complete-config.el) with latest version of yasnippet. Plus setting it globally doesnt enable it even AC appearing in the mode line.
 --[[GlauberPrado]]
 ----
+[new]
+With latest version of AutoComplete and YASnippet problem still exists. Solution I've made:
+for auto-complete-yasnippet.el:
+
+<pre>
+--- auto-complete/auto-complete-yasnippet.el	2009-03-19 08:19:13.000000000 +0200
++++ auto-complete/auto-complete-yasnippet.el	2009-09-20 03:34:40.000000000 +0300
+@@ -2,20 +2,15 @@
+ (require 'yasnippet)
+ 
+ (defun ac-yasnippet-candidate-1 (table)
+-  (let ((hashtab (yas/snippet-table-hash table))
+-        (parent (yas/snippet-table-parent table))
+-        candidates)
+-    (maphash (lambda (key value)
+-               (push key candidates))
+-             hashtab)
+-    (setq candidates (all-completions ac-prefix (nreverse candidates)))
+-    (if parent
+-        (setq candidates
+-              (append candidates (ac-yasnippet-candidate-1 parent))))
+-    candidates))
++  (let (candidates (list)))
++  (mapcar (lambda (mode)
++            (maphash (lambda (key value)
++                       (push key candidates))
++        (yas/snippet-table-hash mode))) table)
++  (setq candidates (all-completions ac-prefix candidates)))
+ 
+ (defun ac-yasnippet-candidate ()
+-  (let ((table (yas/snippet-table major-mode)))
++  (let ((table (yas/get-snippet-tables major-mode)))
+     (if table
+         (ac-yasnippet-candidate-1 table))))
+ 
+
+</pre>
+
+YASnippet function names got changed and structure changed too.
+But yas/expand is not called even after this path.
+The problem is in (delete-dups) function.
+I don't know why, but after doing it on cadidates all properties
+are missing. Replacing (delete-dups) with (remove-duplicates) solves
+the problem.
+
+for auto-complete.el:
+<pre>
+--- auto-complete/auto-complete.el	2009-09-11 18:50:53.000000000 +0300
++++ auto-complete/auto-complete.el	2009-09-20 03:24:36.000000000 +0300
+@@ -957,7 +957,7 @@
+                  (> (length cand) ac-limit))
+             (setcdr (nthcdr (1- ac-limit) (copy-sequence cand)) nil))
+         (setq candidates (append candidates cand))))
+-    (delete-dups candidates)))
++        (remove-duplicates candidates)))
+ 
+ (defun ac-get-source-property (property source)
+   (if (symbolp source)
+
+</pre>
+----
 CategoryCompletion
 
 

@@ -3,6 +3,8 @@
 [[http://www.methods.co.nz/asciidoc Asciidoc]] is set of document formatting rules for text documents. The documents can be converted into variety of formats , like HTML, manual pages etc with the <code>asciidoc</code> command line program (Python). To edit Asciidoc formatted text files in Emacs, use Lisp:asciidoc.el available at:
 
 * http://www.metaperl.com/asciidoc-el (2009-09-01 dead)
+* http://static.livingcosmos.org/domains/com/metaperl/www/asciidoc-el/
+* http://bitbucket.org/metaperl/asciidoc-el/
 
 == Install ==
 

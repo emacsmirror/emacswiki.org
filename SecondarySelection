@@ -21,7 +21,11 @@ You can also use the secondary selection as another way to do what you do with `
 # Paste the secondary selection.
 # Kill the primary selection.
 
+[new]
+the above doesn't works on Linux (Ubuntu) because most meta mouse stuff is intercepted by X (Meta drag moves the window, for example) Is there a way to use secondary selection with Windows key instead of Meta key? -- Anon
 
+[new]
+Is the secondary selection in emacs speak the same thing as the secondary selection in X Windows speak? -- Anon
 
 [:secondary-sel.el]
 == Library secondary-sel.el - Secondary Selection Enhancements ==

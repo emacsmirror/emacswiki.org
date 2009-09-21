@@ -2,14 +2,14 @@
 
 The package <tt>[[typopunct.el]]</tt> provides a minor mode to enter typographical punctuation marks in a DWIM (DoWhatIMean) manner.
 
-When ##typopunct-mode## is on, hitting '##-##' two times will insert an en-dash (&ndash;); hitting '##-##' once more will change that to an em-dash (&mdash;). Also, hitting '##"##' and '##'##' will insert typographical quotation marks (AKA "smart quotes") depending on context and various national typographical conventions. By default, the following quotation styles are supported:
+When ##typopunct-mode## is on, pressing '##-##' two times will insert an en-dash (&ndash;); pressing '##-##' once more will change that to an em-dash (&mdash;). Also, pressing '##"##' and '##'##' will insert typographical quotation marks (AKA "smart quotes") depending on context and various national typographical conventions. By default, the following quotation styles are supported ([[#OtherStyles|other styles]] below):
 
 * ##deutsch## -- for German „quotation marks“ and ‚single quotation marks‘ (default)
 * ##francais## -- for French «double quotation marks» and ‹single quotation marks›
 * ##deutsch-2## -- for an alternative style of German »double« and ›single quotation marks‹
 * ##english## -- for English “double” and ‘single quotation marks’
 
-Hit '##C-q "##' and '##C-q '##' to insert literal ASCII double and single quotation marks.
+Type '##C-q "##' and '##C-q '##' to insert literal ASCII double and single quotation marks.
 
 == Setting it up ==
 
@@ -127,6 +127,7 @@ To insert a single prime, type '##^'##'. To insert a double prime, type '##^''##
 
 There exists a "quadriple prime" at Unicode position U+2057. I haven't found a font that contains it, but adding it to the above code is trivial.
 
+[:OtherStyles]
 == Polish quotation marks ==
 
 To use Polish-style quotation marks, use the following code:
@@ -151,7 +152,7 @@ To use [http://www.typografi.org/sitat/sitatart.html Norwegian-style] quotation 
 
 == Wrapping the region in quotes ==
 
-We may use [SkeletonMode skeletons] to wrap any [TransientMarkMode selected text] in quotes when we hit '##"##' and '##'##'. All we need to do is [AdvisingFunctions advice] ##typopunct-insert-quotation-mark##:
+We may use [SkeletonMode skeletons] to wrap any [TransientMarkMode selected text] in quotes when we press '##"##' and '##'##'. All we need to do is [AdvisingFunctions advice] ##typopunct-insert-quotation-mark##:
 
     (defadvice typopunct-insert-quotation-mark (around wrap-region activate)
       (let* ((lang (or (get-text-property (point) 'typopunct-language)
@@ -184,15 +185,15 @@ This does a number of things. If we have selected a word,
 
     this [word] is quoted
 
-where '##[##' and '##]##' are the start and end of the region, hitting '##"##' gives
+where '##[##' and '##]##' are the start and end of the region, pressing '##"##' gives
 
     this “word” is quoted
 
-If we now select the whole sentence and hit '##"##' again, the inner quotation marks are automatically converted to single marks:
+If we now select the whole sentence and press '##"##' again, the inner quotation marks are automatically converted to single marks:
 
     “this ‘word’ is quoted”
 
-Furthermore, the '##"##' and '##'##' keys will “move over” any existing quotation marks, so that if the point is at the beginning of ##“word”##, hitting '##"##' places it at the first letter.
+Furthermore, the '##"##' and '##'##' keys will "move over" any existing quotation marks, so that if the point is at the beginning of ##“word”##, pressing '##"##' places it at the first letter.
 
 == Other symbols ==
 
