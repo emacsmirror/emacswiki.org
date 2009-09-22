@@ -144,6 +144,7 @@ For in-buffer completion the number of candidates is usually small, and as I alr
 (#6) This is not an option. I like icicle `*completion*'  and not willing to abandon it because of a couple of additional keys (however annoying they can be). -- SpinuVit
 
 
+
 [new:DrewAdams:2009-09-14 14:58 UTC]
 (#4) Yes, it would be nicer, but it is not feasible, given the current design. When there are multiple candidates, I just call `completing-read'. There is no way to tell `completing-read' to also complete: it just opens the minibuffer to read with completion. Yes, it could be done, using `try-completion', as I did for `icicle-dabbrev-completion', but I probably won't do it, at least not anytime soon. This is just not my priority, sorry. But I will add it to my maybe-to-do list. As you say, there are typically few candidates, so the use of '''Icicles''' completion here is not that big an advantage -- vanilla `M-TAB' is a reasonable alternative, which you might prefer.
 
@@ -153,6 +154,9 @@ For in-buffer completion the number of candidates is usually small, and as I alr
 
 
 
+
+[new:DrewAdams:2009-09-21 22:37 UTC]
+I implemented it. I think it does what you requested now. Please take a look. Thx -- DrewAdams
 
 
 

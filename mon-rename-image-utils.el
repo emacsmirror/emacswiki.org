@@ -1,3 +1,5 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;-*- mode: EMACS-LISP; -*-
 ;;; This is mon-rename-image-utils.el
 ;;; ================================================================
 ;;; DESCRIPTION:
@@ -50,15 +52,34 @@
 ;;; DEPRECATED, RENAMED
 ;;;
 ;;; MOVED:
-;;; `mon-get-image-dimensions'    <- ./naf-url-utils.el
-;;; `mon-get-image-dimensions-im' <- ./naf-url-utils.el
-;;; `mon-get-image-md5'           <- ./naf-url-utils.el
+;;; `mon-get-image-dimensions'           <- mon-url-utils.el
+;;; `mon-get-image-dimensions-im'        <- mon-url-utils.el
+;;; `mon-get-image-md5'                  <- mon-url-utils.el
+;;; `mon-get-ebay-bmps-in-dir'           <- ebay-template-tools.el
+;;; `mon-get-nefs-in-dir'                <- ebay-template-tools.el
+;;; `mon-get-ebay-jpgs-list'             <- ebay-template-tools.el
+;;; `mon-insert-ebay-jpgs-in-file'       <- ebay-template-tools.el
+;;; `mon-get-ebay-jpgs-count'            <- ebay-template-tools.el
+;;; `mon-get-ebay-bmps-count'            <- ebay-template-tools.el
+;;; `mon-get-ebay-img-count-verify'      <- ebay-template-tools.el
+;;; `mon-cln-img-magic-hex'              <- ebay-template-tools.el
+;;; `mon-get-ebay-img-css'               <- ebay-template-tools.el
+;;; `mon-get-ebay-img-name-to-col'       <- ebay-template-tools.el
+;;; `mon-get-ebay-css-pp-region-to-file' <- ebay-template-tools.el	
+;;; `mon-get-ebay-css-pp'                <- ebay-template-tools.el
+;;; `mon-insert-css-colors'              <- ebay-template-tools.el
 ;;;
 ;;; REQUIRES:
+;;; css-color.el 
+;;; (URL `http://www.emacswiki.org/emacs/CssColor')
+;;; css-color is distributed with nXhtml which is locked up in bazaar @:
+;;; 
+;;; image-magik binary
 ;;;
 ;;; TODO:
 ;;;
 ;;; NOTES:
+;;; On MON machines gets loaded from mon-dir-utils package.
 ;;;
 ;;; SNIPPETS:
 ;;;
@@ -66,6 +87,9 @@
 ;;;
 ;;; AUTHOR: MON KEY
 ;;; MAINTAINER: MON KEY
+;;;
+;;; PUBLIC-LINK: 
+;;; FILE-PUBLISHED: <Timestamp: #{2009-09-20} - by MON KEY>
 ;;;
 ;;; FILE-CREATED:
 ;;; <Timestamp: Wednesday June 24, 2009 @ 07:43.55 PM - by MON KEY>
@@ -95,11 +119,228 @@
 (unless (featurep 'mon-css-color)
   (require 'css-color))
 
-;;; ===========================
+
+
+
+;;; ==============================
+;;; TODO: needs to take an interactive arg with `mon-get-imgs-in-dir-int' see below.
+;;; CREATED: <Timestamp: Wednesday April 29, 2009 @ 04:03.46 PM - by MON KEY>
+(defun mon-get-ebay-bmps-in-dir (&optional full-path alt-path)
+  "Returns a list of .bmps in files directory.
+When FULL-PATH is non-nil, return absolute file names. 
+When ALT-PATH is non-nil use dir-path as value instead of current-buffers.
+CALLED-BY: `mon-insert-ebay-bmps-in-file' to build a .bmp insertion list.
+See also; `mon-get-ebay-nefs-in-dir', `mon-insert-ebay-bmps-in-file', 
+`mon-get-ebay-jpgs-list', `mon-insert-ebay-jpgs-in-file', 
+`mon-get-ebay-bmps-count', `mon-get-ebay-jpgs-count', 
+`mon-get-ebay-bmps-in-dir'."
+  (let (this-dir get-files)
+    (if (and alt-path
+	(file-exists-p alt-path))
+	(setq this-dir (file-name-as-directory alt-path));(file-name-directory alt-path))
+      (setq this-dir (file-name-directory buffer-file-name)))
+    (setq get-files (directory-files this-dir full-path "\\.bmp"))
+    get-files))
+;;
+(defalias 'get-bmps-in-dir 'mon-get-ebay-bmps-in-dir)
+;;
+(defalias 'mon-get-ebay-bmps-list 'mon-get-ebay-bmps-in-dir)
+;;
+;;;test-me; (mon-get-ebay-bmps-in-dir)
+;;;test-me; (mon-get-ebay-bmps-in-dir t)
+
+;;; ==============================
+;;; TODO: Needs to take an interactive arg with `mon-get-imgs-in-dir-int' see below.
+;;; CREATED: <Timestamp: Wednesday May 06, 2009 @ 04:32.45 PM - by MON KEY>
+(defun mon-get-nefs-in-dir (&optional full-path alt-path)
+  "Return a list of .nefs in buffers' directory.
+When FULL-PATH is non-nil, return absolute file names. 
+When ALT-PATH is non-nil use dir-path as value instead of current-buffers.
+CALLED-BY: `mon-insert-ebay-bmps-in-file' to build a .nef insertion list.
+See also; `mon-get-ebay-bmps-in-dir', `mon-insert-ebay-bmps-in-file', 
+`mon-get-ebay-jpgs-list', `mon-insert-ebay-jpgs-in-file', `mon-get-ebay-bmps-count', 
+`mon-get-ebay-jpgs-count', `mon-get-ebay-bmps-in-dir'."
+  (let (this-dir get-files)
+    (if (and alt-path
+	(file-exists-p alt-path))	
+	(setq this-dir (file-name-as-directory alt-path));(file-name-directory alt-path))
+    (setq this-dir (file-name-directory buffer-file-name)))
+    (setq get-files (directory-files this-dir full-path "\\.nef"))
+    get-files))
+;;
+(defalias 'get-nefs-in-dir 'mon-get-nefs-in-dir)
+
+;;; ==============================
+;;; TODO: finish below so `mon-get-nefs-in-dir' and `mon-get-ebay-bmps-in-dir'
+;;; can take an interactive arg. The definition below is different than the one
+;;; provided in ebay-template.el
+;; (defun mon-get-imgs-in-dir-int (bmp-or-nef fll-pth &optional alt-pth intp)
+;;   "Helper function for retrieving imgs in dir.
+;;  CALLED-BY: `get-bmps-in-dir' and `get-nefs-in-dir'."
+;; (interactive 
+;;  (list 
+;;   (let ((choice '("bmp" "nef")))
+;;     (completing-read "get img of type [bmp|nef]: " choice nil t "bmp"))
+;;   (yes-or-no-p "with full path:")
+;;   (yes-or-no-p "Use an alt path: ")
+;;   t))
+;;   (let* ((was-int intp)
+;; 	 (fp fll-pth)
+;; 	 (altp alt-pth)
+;; 	 (bmpORnef bmp-or-nef)
+;; 	 (def-dir (if (string= bmp-or-nef "bmp")
+;; 		     *ebay-images-bmp-path*
+;; 		    *nef-scan-nefs-path*))
+;; 	 (alt (cond ((and altp was-int)
+;; 		     (read-directory-name "Find in this path:" def-dir default-directory))
+;; 		    ((and (not intp) (not altp)) 
+;; 		     (
+;; 		      default-directory
+;; 			      )))
+;;
+;; (let* ((img-check  '("\\.bmp" "\\.nef"))
+;;        (path-check `(,default-directory ,*ebay-images-bmp-path* ,*nef-scan-nefs-path* ))
+;;        (test-imgp 
+;; 	(setq path-check (car patch-check)
+;; 	(setq img-check  (car img-check) ;(setq img-check (cdr img-check)
+;; 	(while (not (directory-files path-check nil img-check))
+;;      (setq path-check (lambda (img-check) 
+;; 	  (unless (directory-files default-directory nil img-check))
+;;
+;; ;(and  was-int altp))
+;; ;(mon-get-imgs-in-dir-int "bmp" nil nil)
+;; ;(concat *ebay-images-bmp-path* "/e1072/") t)
+;; ;
+;;
+;; 	 (alt (if (and altp was-int)
+;; 		     (read-directory-name "Find in this path:" def-dir default-directory)
+;; 		    altp))
+;; 	 (img-type
+;; 	  (if (string= bmp-or-nef "bmp")
+;; 	      (get-bmps-in-dir fp alt)
+;; 	    (get-nefs-in-dir fp alt)))
+;; 	 (vals-rtrn))
+;;     (setq vals-rtrn SOME_VAL)
+;;     (message "get imgs of type: %s | show full-path %s | in this path: %s" bmpORnef fp alt)
+;;   vals-rtrn))
+;;;
+;; (defalias 'get-imgs-in-dir 'mon-get-imgs-in-dir-int)
+;;
+;;;test-me;(mon-get-imgs-in-dir-int "bmp" t (concat *ebay-images-bmp-path* "/e1072/"))
+;;;test-me;(mon-get-imgs-in-dir-int "bmp" nil (concat *ebay-images-bmp-path* "/e1072/"))
+;;;test-me;(mon-get-imgs-in-dir-int "bmp" t nil)
+;;;test-me;(call-interacively 'mon-get-imgs-in-dir-int)
+
+;;; ==============================
+;;; CREATED: <Timestamp: Wednesday April 29, 2009 @ 04:12.25 PM - by MON KEY>
+(defun mon-insert-ebay-bmps-in-file (&optional full-path)
+  "Insert in buffer names of .bmp files in buffers' directory.
+When FULL-PATH non-nil insert full-path of .bmp files.
+See also; `*insert-ebay-template*', `mon-insert-ebay-dirs', 
+`mon-insert-ebay-photo-per-scan-descr', `mon-get-ebay-bmps-in-dir'."
+  (interactive "p")
+  (let ((bmp-files (if full-path
+		       (mon-get-ebay-bmps-in-dir t)
+		     (mon-get-ebay-bmps-in-dir nil))))
+    (while bmp-files 
+      (insert (format "\n%s" (car bmp-files)))
+	(setq bmp-files (cdr bmp-files)))))
+
+;;;test-me;(mon-insert-ebay-bmps-in-file)
+;;;test-me;(mon-insert-ebay-bmps-in-file t)
+
+;;; ==============================
+;;; CREATED: <Timestamp: Wednesday April 29, 2009 @ 03:14.36 PM - by MON KEY>
+(defun mon-get-ebay-jpgs-list (&optional full-path) 
+  "Called from an ebay-template file, find items' .jpg path from relative dir.
+See also; `mon-insert-ebay-bmps-in-file', `mon-get-ebay-jpgs-list', 
+`mon-insert-ebay-jpgs-in-file', `mon-get-ebay-bmps-count', 
+`mon-get-ebay-jpgs-count', `mon-get-ebay-bmps-in-dir'."
+  (let ((jpg-path (concat (expand-file-name "../../") "BIG-cropped-jpg/" 
+		   (file-name-nondirectory (directory-file-name default-directory))))	
+	(this-dir (file-name-nondirectory (directory-file-name default-directory)))
+	(collect-jpg-path))
+    (if (file-exists-p jpg-path)
+	(let ((in-path (directory-files jpg-path full-path ".jpg"))
+	      (walk-files))
+	  (setq walk-files in-path)
+	  (while walk-files
+	    (add-to-list 'collect-jpg-path (car walk-files))
+	    (setq walk-files (cdr walk-files))))
+      nil)
+    collect-jpg-path))
+
+;;;test-me;(mon-get-ebay-jpgs-list t)
+;;;test-me;(mon-get-ebay-jpgs-list)
+
+;;; ==============================
+;;; MODIFICATIONS: <Timestamp: #{2009-09-05T15:51:57-04:00Z}#{09366} - by MON>
+;;; CREATED: <Timestamp: Wednesday April 29, 2009 @ 03:14.41 PM - by MON KEY>
+(defun mon-insert-ebay-jpgs-in-file ()
+  "Called from an ebay-template file insert the items' jpg path from relative dir.
+Return error message if items jpg path doesn't exist.
+See also; `mon-insert-ebay-bmps-in-file', `mon-get-ebay-jpgs-list'."
+  (interactive)
+  (let ((find-jpgs (nreverse (mon-get-ebay-jpgs-list)))
+	(jpg-dir (concat *ebay-images-jpg-path* "/"
+			 ;;WAS: (expand-file-name "../../")  "BIG-cropped-jpg/" 
+			 (file-name-nondirectory (directory-file-name default-directory)) "/"))
+	(gather-jpgs))
+    (while find-jpgs
+      (princ
+       (format "\n%s%s" jpg-dir (car find-jpgs))
+       (current-buffer))
+      (setq find-jpgs (cdr find-jpgs)))))
+    
+;;;test-me;(mon-insert-ebay-jpgs-in-file)  
+
+;;; ==============================
+(defun mon-get-ebay-jpgs-count ()
+  "Returns count of jpgs associated with ebay templates' buffer.
+See also; `mon-insert-ebay-bmps-in-file', `mon-get-ebay-jpgs-list', 
+`mon-insert-ebay-jpgs-in-file', `mon-get-ebay-bmps-count', 
+`mon-get-ebay-bmps-in-dir'."
+  (interactive)
+  (let ((jpg-count  (length (mon-get-ebay-jpgs-list t))))
+    (message "%d" jpg-count)))
+
+;;;test-me;(mon-get-ebay-jpgs-count)
+
+;;; ==============================
+(defun mon-get-ebay-bmps-count ()
+  "Return count of bmps associated with ebay templates' buffer.
+See also; `mon-insert-ebay-bmps-in-file', `mon-get-ebay-jpgs-list', 
+`mon-insert-ebay-jpgs-in-file', `mon-get-ebay-jpgs-count', 
+`mon-get-ebay-bmps-in-dir'."
+  (interactive)
+  (let ((bmp-count  (length (mon-get-ebay-bmps-in-dir))))
+    (message "%d" bmp-count)))
+
+;;;test-me;(mon-get-ebay-bmp-count)
+
+;;; ==============================
+(defun mon-get-ebay-img-count-verify ()
+  "Return message, and t or nil for image counts (bmp|jpg) of ebay buffers' dir.
+See also; `mon-insert-ebay-bmps-in-file', `mon-get-ebay-jpgs-list', 
+`mon-insert-ebay-jpgs-in-file', `mon-get-ebay-bmps-count', 
+`mon-get-ebay-jpgs-count'."
+  (interactive)
+  (if (equal (mon-get-ebay-bmps-count) (mon-get-ebay-jpgs-count))
+      (prog1
+	  (message "Counts match. There are %s .bmps, and %s .jpg files."  
+		   (mon-get-ebay-bmps-count) (mon-get-ebay-jpgs-count))
+	t)
+    (prog1
+	(message "Counts _DO NOT_ match. There are %s .bmps, and %s .jpg files."  
+		 (mon-get-ebay-bmps-count) (mon-get-ebay-jpgs-count))
+      nil)))
+
+;;; ==============================
+;;; BUGGY-AS-OF:
 ;;; CREATED: <Timestamp: Thursday April 30, 2009 @ 05:38.49 PM - by MON KEY>
 (defun mon-cln-img-magic-hex ()
-  "Clean the formatting of ImageMagick color analysis script.
-Returns only hex color vals.
+  "Clean the formatting from outpu of ImageMagick color analysis script.
+Return only hex color valuess.
 See also: `mon-get-ebay-img-name-to-col', `mon-get-ebay-img-css', 
 `mon-get-ebay-css-pp-region-to-file', `mon-get-ebay-bmps-count', 
 `mon-get-ebay-bmps-in-dir', `mon-insert-css-colors'."
@@ -121,7 +362,7 @@ See also: `mon-get-ebay-img-name-to-col', `mon-get-ebay-img-css',
 ;;; ================================================================
 ;;; CREATED: <Timestamp: Friday May 01, 2009 @ 04:24.15 PM - by MON KEY>
 (defun mon-get-ebay-img-css ()          ;(img-list)
-  "Reutrns css hex colors from .bmps in current directory.
+  "Return CSS hex colors of .bmps in current directory.
 See also: `mon-get-ebay-img-name-to-col', `mon-get-ebay-css-pp-region-to-file',
 `mon-get-ebay-bmps-count', `mon-get-ebay-bmps-in-dir', `mon-insert-css-colors',
 `mon-cln-img-magic-hex'."
@@ -135,13 +376,16 @@ See also: `mon-get-ebay-img-name-to-col', `mon-get-ebay-css-pp-region-to-file',
 	     (img-png (replace-regexp-in-string "\.bmp" "\.png" img-bmp t t)))
 	(message (format "%s %s" img-bmp img-png))
 	(with-temp-buffer ;;(switch-to-buffer "*css-img*")
-          (call-process-shell-command "imconvert" nil t t (concat "\"./"img-bmp"\"  +dither -resize 100 -modulate 105,120 -posterize 6 " "\"./"img-png"\""))
-          (call-process-shell-command "imconvert" nil t t (concat "\""img-png"\" -colors 16 +dither +matte -unique-colors txt:-"))
-          (goto-char (point-min))
-          (mon-cln-img-magic-hex)
-          (kill-line)
-          (setq in-buf (split-string (buffer-substring (point-min) (point-max))))
-          (kill-buffer))
+	  (call-process-shell-command (concat "\"imconvert\" nil t t \"./" img-bmp
+					      "\"  +dither -resize 100 -modulate 105,120 -posterize 6 " 
+					      "\"./" img-png "\""))
+	(call-process-shell-command (concat "\"imconvert\" nil t t \"" img-png "\"" img-png
+					    "\" -colors 16 +dither +matte -unique-colors txt:-"))
+	(goto-char (point-min))
+	(mon-cln-img-magic-hex)
+	(kill-line)
+	(setq in-buf (split-string (buffer-substring (point-min) (point-max))))
+	(kill-buffer))
         (setq buf-string (cons `(,img-bmp ,in-buf) buf-string))
         (setq imgs (cdr imgs))))
     buf-string))
@@ -190,9 +434,8 @@ See also: `mon-get-ebay-img-name-to-col', `mon-get-ebay-img-css',
 	  (atload ";;; -*- mode: html;  mode: css-color; -*-")
 	  (splt "/************************************************************/\n")
 	  (css-stamp (format "/* Timestamp: %s %s" (format-time-string "%A %B %d, %Y @ %I:%M.%S %p")
-			     (cond
-			      ((equal user-real-login-name "Bug") " - by Constance */\n")
-			      ((equal user-real-login-name "sp") " - by Stan */\n"))))
+			     (cond (IS-BUG-P " - by BUG */\n")
+				   (IS-MON-P " - by MON */\n"))))
 	  (css-name) (in-buffer))	  
       (setq css-name 
 	    (concat (file-name-nondirectory (directory-file-name default-directory)) "-hex-colors"))
@@ -266,11 +509,12 @@ See also: `mon-get-ebay-img-name-to-col', `mon-get-ebay-img-css',
       (mon-get-ebay-css-pp-region-to-file))))
 
 ;;; ==============================
-;;; <Timestamp: Thursday April 30, 2009 @ 07:39.25 PM - by MON KEY>
+;;; CREATED: <Timestamp: Thursday April 30, 2009 @ 07:39.25 PM - by MON KEY>
 (defun mon-insert-css-colors (css)
-"Inserts css hex colors bound to CSS.\nExample:\n
-\(setq some-css '(\"#222220\" \"#663122\" \"#666631\" \"#576061\" \"#996631\" \"#ac5341\"))\n
-\(mon-insert-css-colors some-css) ;=> #222220 #663122 #666631 #576061 #996631 #ac5341\n
+"Inserts css hex colors bound to CSS.\n
+EXAMPLE:\n
+\(setq some-css\n'(\"#222220\" \"#663122\" \"#666631\" \"#576061\" \"#996631\" \"#ac5341\"))\n
+\(mon-insert-css-colors some-css)\n;=> #222220 #663122 #666631 #576061 #996631 #ac5341\n
 See also: `mon-get-ebay-css-pp'."
 (interactive "X symbol holding list of css hex colors :")
 (let (my-css-insert)
@@ -278,7 +522,6 @@ See also: `mon-get-ebay-css-pp'."
   (while my-css-insert
     (princ (concat " " (car my-css-insert)) (current-buffer))
     (setq my-css-insert (cdr my-css-insert)))))
-
 
 ;;; ==============================
 ;;; COURTESY: Xah Lee (URL `http://xahlee.org/emacs/elisp_image_tag.html')
@@ -288,9 +531,8 @@ See also: `mon-get-ebay-css-pp'."
 Se also; `mon-get-image-dimensions-im' for ImageMagick version that does same."
   (let (tmp dimen)
     (clear-image-cache)
-    (setq tmp
-	  ;;(create-image (concat default-directory img-file-relative-path)))
-          (create-image img-file-path))
+    (setq tmp (create-image img-file-path))
+    ;; WAS: (create-image (concat default-directory img-file-relative-path)))
     (setq dimen (image-size tmp t))
     (list (car dimen) (cdr dimen))))
 ;;

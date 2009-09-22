@@ -45,10 +45,12 @@ I also use:
 
 == New contributions ==
 
-* ProjectBufferMode
-* ProjectBufferModePlus
-* SlnMode
-* FsProject
+* ProjectBufferMode     - A generic project mode
+* ProjectBufferModePlus - Extension which allow to run user command from files belonging to a project-buffer-mode buffer
+* ProjectBufferOccur    - Search in project files functionality
+* SlnMode               - Mode to open sln file
+* FsProject             - Create projects based on the file system
+* [[IProject]]          - Interactive project mode
 
 == Messages ==
 

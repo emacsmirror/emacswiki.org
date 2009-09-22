@@ -193,7 +193,8 @@ I can confirm it still doesnt work(updated version of auto-complete.el and auto-
 --[[GlauberPrado]]
 ----
 [new]
-With latest version of AutoComplete and YASnippet problem still exists. Solution I've made:
+With latest versions of AutoComplete and YASnippet problem still exists. Solution I've made:
+
 for auto-complete-yasnippet.el:
 
 <pre>
@@ -230,8 +231,8 @@ for auto-complete-yasnippet.el:
 
 </pre>
 
-YASnippet function names got changed and structure changed too.
-But yas/expand is not called even after this path.
+YASnippet functions names got changed and structure changed too.
+But yas/expand is not called even after this patch.
 The problem is in (delete-dups) function.
 I don't know why, but after doing it on cadidates all properties
 are missing. Replacing (delete-dups) with (remove-duplicates) solves

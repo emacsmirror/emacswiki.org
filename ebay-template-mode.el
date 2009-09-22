@@ -9,17 +9,29 @@
 ;;; 
 ;;; FUNCTIONS:◄◄◄
 ;;;
-;;; CONSTANTS or VARIABLES:
-;;; `*ebay-template-font-lock-keywords*', `*ebay-field-entry*',
-;;; `*ebay-field-delims*', `*ebay-line-delims*'
-;;;
 ;;; MACROS:
 ;;;
-;;; SUBST or ALIASES:
+;;; CONSTANTS:
+;;; `ebay-template-mode-version'
 ;;;
-;;; DEPRECATED, RENAMED, OR MOVED:
+;;; VARIABLES:
+;;; `*ebay-template-font-lock-keywords*', `*ebay-field-entry*',
+;;; `*ebay-field-delims*', `*ebay-line-delims*'
+;;; `ebay-template-mode-map', `ebay-template-mode-hook'
+;;; `ebay-template-mode-syntax-table'
+;;;
+;;; ALIASED/ADVISED/SUBST'D:
+;;;
+;;; DEPRECATED:
+;;;
+;;; RENAMED: 
+;;;
+;;; MOVED:
 ;;;
 ;;; REQUIRES:
+;;; `ebay-template-tools', 
+;;; If `ebay-template-html-utils' isn't installed then you will need:
+;;; `html-lite', and eventually `xml-gen' (we are transitioning from html-lite)
 ;;;
 ;;; TODO:
 ;;; Incorporate button code per Jared D.'s discussion of file-editor @:
@@ -41,9 +53,17 @@
 ;;; SNIPPETS:
 ;;;
 ;;; THIRD PARTY CODE:
+;;; `xml-gen' 
+;;; (URL `http://www.shellarchive.co.uk/content/emacs.html')
+;;; `html-lite'
+;;; (URL `http://www.emacswiki.org/cgi-bin/wiki/download/html-lite.el')
 ;;;
 ;;; AUTHOR: MON KEY
 ;;; MAINTAINER: MON KEY
+;;;
+;;; PUBLIC-LINK: 
+;;; (URL `http://www.emacswiki.org/emacs/ebay-template-mode.el')
+;;; FILE-PUBLISHED: <Timestamp: #{2009-09-20} - by MON KEY>
 ;;;
 ;;; FILE-CREATED:
 ;;; <Timestamp: #{2009-08-19T15:11:11-04:00Z}#{09343} - by MON>
@@ -72,10 +92,20 @@
 ;;; ==============================
 (eval-when-compile (require 'cl))
 ;;
-(require 'ebay-template-html-utils)
 (require 'ebay-template-tools)
-(require 'mon-css-color)
-(require 'smith-poster-utils)
+;;
+(if (or IS-MON-P IS-BUG-P)
+      (require 'ebay-template-html-utils)
+      (require 'smith-poster-utils)
+      ;; EMACS-WIKI:
+      ;; If `ebay-template-html-utils' isn't installed then you will need:
+      ;; `html-lite', `xml-gen'
+      (unless (featurep 'ebay-template-html-utils)
+	(unless (featurep 'xmlgen) (require 'xmlgen))
+	;;(URL `http://www.shellarchive.co.uk/content/emacs.html')
+	;;(URL `http://repo.or.cz/w/ShellArchive.git?a=blob_plain;hb=HEAD;f=xmlgen.el')
+	(unless (featurep 'html-lite) (require 'html-lite))))
+	;; (URL `http://www.emacswiki.org/cgi-bin/wiki/download/html-lite.el')
 
 ;;; ==============================
 ;;; CREATED: <Timestamp: #{2009-08-07T12:46:08-04:00Z}#{09325} - by MON KEY>
@@ -95,7 +125,7 @@
 
 ;;; ==============================
 ;;; CREATED: <Timestamp: #{2009-08-07T12:46:00-04:00Z}#{09325} - by MON KEY>
-(defconst ebay-template-mode-version "August 2009"
+(defconst ebay-template-mode-version "September 2009"
   "Return current version of `ebay-template-mode'.")
 
 ;;; ==============================
@@ -235,18 +265,17 @@ See also; `*ebay-field-entry*', `*ebay-field-delims*', `*ebay-line-delims*'.")
 
 ;;;(progn (makunbound '*ebay-template-font-lock-keywords*)(unintern '*ebay-template-font-lock-keywords*))
 
-;;; (keymap-parent ebay-template-mode-map)
-;;; (define-key ebay-template-mode-map "\C-c\M-sre" (function (lambda () (mon-set-smith-poster-register-e t))))
-
 ;;; ==============================
-;;; copy the map then modifity it with:
+;;; Copy the map then modify it with:
 ;;; (let ebay-template-map (copy-keymap naf-mode-map)) 
+;;; (let ((ebay-template-map (make-sparse-keymap)))
+;;; (set-keymap-parent ebay-template-map naf-mode-map)
+;;; (keymap-parent ebay-template-mode-map)
 ;;; CREATED: <Timestamp: #{2009-08-07T12:40:59-04:00Z}#{09325} - by MON KEY>
 (defvar ebay-template-mode-map
-  (let ((ebay-template-map (copy-keymap naf-mode-map))) 
-  ;; (let ((ebay-template-map (make-sparse-keymap)))
-  ;; (set-keymap-parent ebay-template-map naf-mode-map)
-  ;; Add keybinding.
+  (let ((ebay-template-map (if (bound-and-true-p naf-mode-map) ;;EMACS-WIKI
+			       (copy-keymap naf-mode-map))))
+  ;; ADD KEYBINDING:
     (define-key ebay-template-map "\C-c\M-cet" 'mon-cln-ebay-time-string)
     (define-key ebay-template-map "\C-c\M-lr"  'mon-insert-ebay-field-trigger-l-and-r)
     (define-key ebay-template-map "\C-c\M-lf"  'mon-insert-ebay-field-trigger-l)
@@ -257,8 +286,8 @@ See also; `*ebay-field-entry*', `*ebay-field-delims*', `*ebay-line-delims*'.")
 Some keys bound also global in `mon-keybindings'.
 Globals are included here in order that `describe-mode' in `*Help*'
 buffers can show the global-bindings too as they are still used most by naf-mode.
-Typically naf-mode binds ``\C-c\\M-##\''.")
-
+Typically `naf-mode' binds ``\C-c\\M-##\''.")
+;;
 ;;;(progn (makunbound 'ebay-template-mode-map) (unintern 'ebay-template-mode-map))
 
 ;;; ==============================

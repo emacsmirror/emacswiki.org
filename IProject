@@ -1,0 +1,32 @@
+Lisp:iproject.el
+
+
+/This is an add-on library for/ ProjectBufferMode.
+
+iproject stands for Interactive Project; based on the
+project-buffer-mode; it provides an interactive way to create
+projects.
+
+== Quick Start ==
+
+Simply creates a new project using `iproject-new' (C-x p n); then
+add new projects using `iproject-add-project' (C-c n).
+
+Once the project is created it is possible to add extra files to
+the current project using `iproject-add-files-to-current-project'
+(C-c +).
+
+iproject will ask the user for command lines (with default values
+based on the selected project type) to run each user action which
+are: build/clean/run/debug and update.  These command lines will be
+stored in the project but also saved with the project.
+
+== To install it ==
+
+Add the following line to your .emacs:
+
+{{{
+(require 'iproject)
+(iproject-key-binding)
+}}}
+

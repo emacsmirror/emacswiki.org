@@ -1,7 +1,7 @@
 ;;; project-buffer-mode.el --- Generic mode to browse project file
 ;;
 ;; Author:      Cedric Lallain <kandjar76@hotmail.com>
-;; Version:     1.20
+;; Version:     1.22
 ;; Keywords:    project mode buffer viewer generic
 ;; Description: Generic mode to handle projects.
 ;; Tested with: GNU Emacs 22.x and GNU Emacs 23.x
@@ -31,15 +31,19 @@
 ;; projects with in one buffer.
 ;;
 ;;
-;; Two extensions already exist for this mode:
+;; Three project implementation uses this mode:
 ;; - fsproject  - which creates a project based on the file system
 ;; - sln-mode   - which parses a sln files and create a project representing it
+;; - iproject   - which stands for Interactive Project allowing the user to easily add/remove projects.
 ;;
+;; Two generic extensions are also available:
+;; - project-buffer-mode+ - which allow to run user actions such as build/clean.. commands from the project files
+;; - project-buffer-occur - which provides a function to search in project files and list all occurrences
 ;;
 ;; Key features:
-;; - find file based on regular expression
-;; - four different view mode
-;; - advance 'search in files' system
+;; - find files based on regular expression
+;; - four different view modes
+;; - advanced 'search in files' system
 ;; - notion of master project to launch build/clean/run/debug and update.
 ;; - intuitive key bindings (at least I hope)
 ;; - full save/load of a project including hooks and local configuration.
@@ -102,7 +106,7 @@
 ;; or this project.
 ;;
 ;;
-;; ADVANCE SEARCH IN FILES SYSTEM:
+;; ADVANCED SEARCH IN FILES SYSTEM:
 ;;
 ;; The search in files functionality comes with three different behaviors:
 ;; - Narrow the marked files (<default>)
@@ -149,7 +153,7 @@
 ;; value.
 ;;
 ;; This value allows to take quick actions for the master project:
-;; build/clean/run/debug/update (keys: 'B' 'C' 'R' 'D' 'U')
+;; build/clean/run/debug/update (keys: 'B' 'C' 'R' 'D' 'G')
 ;;
 ;;
 ;; KEY BINDINGS:
@@ -163,6 +167,7 @@
 ;;    U    -> unmark all
 ;;    f    -> open marked files
 ;;    q    -> cancel file search or bury project-buffer
+;;    g    -> refresh the display / the projects (C-u g: refresh the current project only)
 ;;    ?    -> show brief help!!
 ;;    /    -> search file name matching regexp
 ;;    n    -> next file matching regexp
@@ -192,7 +197,7 @@
 ;;    C    -> launch clean
 ;;    D    -> launch run/with debugger
 ;;    R    -> launch run/without debugger
-;;    U    -> launch the update command (useful to regenerate some makefile/vcproj... from cmake for example); can also be consider a user command.
+;;    G    -> launch the update command (useful to regenerate some makefile/vcproj... from cmake for example); can also be consider a user command.
 ;;    1    -> Switch to folder-view mode
 ;;    2    -> Switch to flat-view mode
 ;;    3    -> Switch to folder-hidden-view mode
@@ -238,26 +243,33 @@
 ;;
 ;;
 ;; List of user functions available to handle your own project:
-;; - `project-buffer-mode'                     which initialize the project-buffer mode
-;; - `project-buffer-insert'                   to insert a file or project to the view
-;; - `project-buffer-delete-file'              to remove a file
-;; - `project-buffer-delete-folder'            to remove a folder and all its files
-;; - `project-buffer-delete-project'           to remove a project and all its files
-;; - `project-buffer-set-project-platforms'    to set the platform configuration for a particular project
-;; - `project-buffer-set-build-configurations' to set the build configurations for a particular project
-;; - `project-buffer-raw-save'                 to save a project into a file
-;; - `project-buffer-raw-load'                 to load a project from a file
-;; - `project-buffer-set-project-user-data'    to set user data to a project node
-;; - `project-buffer-get-project-user-data'    to get user data from a project node
-;; - `project-buffer-set-file-user-data'       to set user data to a file node
-;; - `project-buffer-get-file-user-data'       to get user data from a file node
-;; - `project-buffer-get-current-project-name' to get the nane of the current project the cursor is on
-;; - `project-buffer-get-current-file-data'    to get data about the current file the cursor is on; nil if it's on a folder or a project
-;; - `project-buffer-exists-p'                 to check if a node exists (file or folder) inside a project
-;; - `project-buffer-project-exists-p'         to check if a project exists
-;; - `project-buffer-get-file-path'            to get the path of a file of the project
-;; - `project-buffer-get-current-node-type'    to get the type of the current node (including folder)
-;; - `project-buffer-get-current-node-name'    to get the name  of the current node (including folder)
+;; - `project-buffer-mode'                      which initialize the project-buffer mode
+;; - `project-buffer-insert'                    to insert a file or project to the view
+;; - `project-buffer-delete-file'               to remove a file
+;; - `project-buffer-delete-folder'             to remove a folder and all its files
+;; - `project-buffer-delete-project'            to remove a project and all its files
+;; - `project-buffer-set-project-platforms'     to set the platform configuration for a particular project
+;; - `project-buffer-set-build-configurations'  to set the build configurations for a particular project
+;; - `project-buffer-raw-save'                  to save a project into a file
+;; - `project-buffer-raw-load'                  to load a project from a file
+;; - `project-buffer-set-project-user-data'     to set user data to a project node
+;; - `project-buffer-get-project-user-data'     to get user data from a project node
+;; - `project-buffer-set-file-user-data'        to set user data to a file node
+;; - `project-buffer-get-file-user-data'        to get user data from a file node
+;; - `project-buffer-get-current-project-name'  to get the nane of the current project the cursor is on
+;; - `project-buffer-get-current-file-data'     to get data about the current file the cursor is on; nil if it's on a folder or a project
+;; - `project-buffer-exists-p'                  to check if a node exists (file or folder) inside a project
+;; - `project-buffer-project-exists-p'          to check if a project exists
+;; - `project-buffer-get-project-path'          to get a project's path
+;; - `project-buffer-get-file-path'             to get the path of a file of the project
+;; - `project-buffer-get-current-node-type'     to get the type of the current node (including folder)
+;; - `project-buffer-get-current-node-name'     to get the name  of the current node (including folder)
+;; - `project-buffer-get-marked-node-list'      to get the list of marked files
+;; - `project-buffer-set-project-settings-data' to set user project settings data
+;; - `project-buffer-get-project-settings-data' to retrive the user project settings data
+;; - `project-buffer-apply-to-each-file'        to perform a function call on every file node
+;; - `project-buffer-apply-to-marked-files'     to perform a function call on eveyr marked files; the function returns nil if no marked files were found
+;; - `project-buffer-apply-to-project-files'    to perform a function call on every files belonging to a specified project
 ;;
 ;; If you need to have some local variables to be saved; register them in `project-buffer-locals-to-save'.
 ;; The same way, if there is need to save extra hooks: register them in `project-buffer-hooks-to-save'.
@@ -269,12 +281,9 @@
 ;;  - show project dependencies
 ;;     e.g: [+] ProjName1           <deps: ProjName3, ProjName2>
 ;;  - add collapsed all / expand all commands
-;;  - grayed out exclude from build files??
-;;  - different color for files referenced in the proj but don't exist?
 ;;  - provide a touch marked files command
 ;;  - provide a compile/build marked files command
 ;;  - add a command to easily find the corresponding header/source for the current file (or specified file)
-;;  - add 'g' to refresh the display
 ;;  - disable project which doesn't have the current selected platform/build-configuration in their list ???
 
 
@@ -309,7 +318,22 @@
 ;;        - `project-buffer-delete-folder' to remove a folder and all its files
 ;;        - `project-buffer-exists-p' to check if a node exists (file or folder) inside a project
 ;;        - `project-buffer-project-exists-p' to check if a project exists
-;;        
+;; v1.21: Remap the update action to G; to remove the key conflict with the 'unmark all' command.
+;;        Added the following user function:
+;;        - `project-buffer-get-marked-node-list' to get the list of marked files
+;;        Fix bug when deleting the cached folder.
+;;        Added the refresh command bound to 'g'.
+;;        The non-existing files are now 'grayed' out (can be disabled
+;;          setting `project-buffer-check-file-existence' to nil)
+;; v1.22: Added the following user functions:
+;;        - `project-buffer-set-project-settings-data' to set user project settings data
+;;        - `project-buffer-get-project-settings-data' to retrieve the user project settings data
+;;        - `project-buffer-apply-to-each-file'        to perform a function call on every file node
+;;        - `project-buffer-apply-to-marked-files'     to perform a function call on eveyr marked files; the function returns nil if no marked files were found
+;;        - `project-buffer-apply-to-project-files'    to perform a function call on every files belonging to a specified project
+;;        - `project-buffer-get-project-path'          to get a project's path
+;;        Refresh hooks now receive the current project or the project list as argument.
+;;        It is now possible to refresh the current project only using the prefix argument
 
 (require 'cl)
 (require 'ewoc)
@@ -334,7 +358,7 @@
 ;; Constants:
 ;;
 
-(defconst project-buffer-mode-version "1.20"
+(defconst project-buffer-mode-version "1.22"
   "Version numbers of this version of `project-buffer-mode'.")
 
 
@@ -377,6 +401,20 @@ no files got marked/unmarked)."
   :type '(radio function
                 (function-item yes-or-no-p)
                 (function-item y-or-n-p))
+  :group 'project-buffer)
+
+(defcustom project-buffer-cleanup-empty-projects nil
+  "When set, deleting the last file of a project will result in
+deleting the project itself."
+  :type 'boolean
+  :group 'project-buffer)
+
+
+(defcustom project-buffer-check-file-existence t
+  "When set, the displayed files will be displayed with
+'project-buffer-file-doesnt-exist' font if the file doesn't
+exists."
+  :type 'boolean
   :group 'project-buffer)
 
 
@@ -439,6 +477,13 @@ no files got marked/unmarked)."
   :group 'project-buffer)
 
 
+(defface project-buffer-file-doesnt-exist
+  '((((class color) (background light)) (:foreground "dark gray"))
+    (((class color) (background dark)) (:foreground "dim gray")))
+  "Project buffer mode face used to highlight non-existing file nodes."
+  :group 'project-buffer)
+
+
 
 ;;
 ;;  User hook:
@@ -480,6 +525,18 @@ The function should follow the prototype:
   (lambda (project-buffer file-buffer))
 Where PROJECT-BUFFER is the buffer of the project, and
 FILE-BUFFER is the buffer of the file.")
+
+
+(defcustom project-buffer-refresh-hook nil
+  "Hook to run before refreshing every node..
+
+The function should follow the prototype:
+  (lambda (project-list content))
+Where PROJECT-LIST is a list of project names (can be nil), 
+and CONTENT can either be 'current or 'all.
+
+This is the place to add functions which reload the project file,
+check if any files should be added or remove from the proejct.")
 
 
 ;;
@@ -534,7 +591,7 @@ FILE-BUFFER is the buffer of the file.")
 
   matched			;; the file matches the regexp search
 
-  filename			;; full path to the filename
+  filename			;; path to the filename
   project			;; name of the project the file belongs to
   parent			;; parent node (parent folder or project or nil)
 
@@ -542,6 +599,7 @@ FILE-BUFFER is the buffer of the file.")
   build-configurations-list	;; list of build configuration avalailable for the project (valid in project node only)
 
   user-data                     ;; user data could be set (mainly useful to store something per project)
+  project-settings              ;; user data field used to store the project settings
 )
 
 
@@ -590,12 +648,13 @@ FILE-BUFFER is the buffer of the file.")
     (define-key project-buffer-mode-map [(control down)] 'project-buffer-go-to-next-folder-or-project)
     (define-key project-buffer-mode-map [??] 'project-buffer-help)
     (define-key project-buffer-mode-map [?q] 'project-buffer-quit)
+    (define-key project-buffer-mode-map [?g] 'project-buffer-refresh)
 
     (define-key project-buffer-mode-map [?B] 'project-buffer-perform-build-action)
     (define-key project-buffer-mode-map [?C] 'project-buffer-perform-clean-action)
     (define-key project-buffer-mode-map [?R] 'project-buffer-perform-run-action)
     (define-key project-buffer-mode-map [?D] 'project-buffer-perform-debug-action)
-    (define-key project-buffer-mode-map [?U] 'project-buffer-perform-update-action)
+    (define-key project-buffer-mode-map [?G] 'project-buffer-perform-update-action)
     (define-key project-buffer-mode-map [?s] 'project-buffer-mark-files-containing-regexp)
 
     (define-key project-buffer-mode-map [?1] 'project-buffer-set-folder-view-mode)
@@ -679,7 +738,13 @@ FILE-BUFFER is the buffer of the file.")
 (defun project-buffer-convert-name-for-display(node-data)
   "Convert the node name into the displayed string depending on the project-buffer-view-mode."
   (let* ((node-name   (project-buffer-node->name node-data))
-	 (file-color  (if (project-buffer-node->matched node-data) 'project-buffer-matching-file-face 'project-buffer-file-face))
+	 (file-color  (if (project-buffer-node->matched node-data) 
+			  'project-buffer-matching-file-face 
+			  (if (and project-buffer-check-file-existence
+				   (eq (project-buffer-node->type node-data) 'file)
+				   (not (file-exists-p (project-buffer-node->filename node-data))))
+			      'project-buffer-file-doesnt-exist
+			      'project-buffer-file-face)))
 	 (node-color  (if (eq (project-buffer-node->type node-data) 'file) file-color 'project-buffer-folder-face))
 	 (file-help   (concat "mouse-1: find file other window: " (project-buffer-node->filename node-data)))
 	 (folder-help (concat "mouse-1: "
@@ -1101,13 +1166,16 @@ This may change depending on the view mode."
 ))
 
 
-(defun project-buffer-delete-node(status node)
+(defun project-buffer-delete-node(status node &optional dont-delete-project)
   "Delete a specific node.
 Also cleanup with empty folder/project resulting of the deletion."
   (let ((parent-node       (project-buffer-node->parent (ewoc-data node)))
 	(project           (project-buffer-node->project (ewoc-data node)))
 	(inhibit-read-only t))
     ;; Delete the found node:
+    (when (and project-buffer-cache-subdirectory
+	       (eq node (cdr project-buffer-cache-subdirectory)))
+      (setq project-buffer-cache-subdirectory nil))
     (ewoc-delete status node)
 
     ;; Now it's time to check the parent node the file belong to:
@@ -1120,23 +1188,27 @@ Also cleanup with empty folder/project resulting of the deletion."
 	    (let ((new-parent-node (and (not (eq (project-buffer-node->type parent-data) 'project))
 					(project-buffer-node->parent parent-data))))
 	      (if (not new-parent-node)
-		  (project-buffer-delete-project-node status project parent-node)
-		  (ewoc-delete status parent-node))
+		  (unless dont-delete-project
+		    (project-buffer-delete-project-node status project parent-node))
+		  (progn (when (and project-buffer-cache-subdirectory
+				    (eq parent-node (cdr project-buffer-cache-subdirectory)))
+			   (setq project-buffer-cache-subdirectory nil))
+			 (ewoc-delete status parent-node)))
 	      (setq parent-node new-parent-node))
 	    )))
     ))
 
 
-(defun project-buffer-delete-file-node(status name project)
+(defun project-buffer-delete-file-node(status name project &optional dont-delete-project)
   "Delete the node named NAME which belongs to PROJECT.
 Empty folder node will also be cleared up."
   (let* ((node (project-buffer-search-node status name project)))
     (when node
-      (project-buffer-delete-node status node))
+      (project-buffer-delete-node status node dont-delete-project))
     ))
 
 
-(defun project-buffer-delete-folder-node(status folder-node)
+(defun project-buffer-delete-folder-node(status folder-node &optional dont-delete-project)
   "Delete the folder FOLDER-NODE and all it's files.
 Empty parent folder node will also be cleared up."
   (let* ((folder (and folder-node (project-buffer-node->name (ewoc-data folder-node)))))
@@ -1151,11 +1223,13 @@ Empty parent folder node will also be cleared up."
 			(not (eq (project-buffer-node->type node-data) 'project))
 			(project-buffer-parent-of-p (project-buffer-node->name node-data) folder))
 	      (setq next-node (ewoc-next status node))
+	      (when (and project-buffer-cache-subdirectory (eq node (cdr project-buffer-cache-subdirectory)))
+		(setq project-buffer-cache-subdirectory nil))
 	      (ewoc-delete status node)
 	      (setq node next-node
 		    node-data (and node (ewoc-data node)))))))
       ;; Now let's delete the node:
-      (project-buffer-delete-node status folder-node)
+      (project-buffer-delete-node status folder-node dont-delete-project)
       )))
 
 
@@ -1397,14 +1471,15 @@ project-buffer context."
 			   (eq (car block-line) 'end)
 			   (eq (nth 1 block-line) 'node-list))))
       (if (and (listp block-line)
-	       (= (length block-line) 7))
+	       (> (length block-line) 5))
 	  (let ((name                      (nth 0 block-line))
 		(type                      (nth 1 block-line))
 		(filename                  (nth 2 block-line))
 		(project                   (nth 3 block-line))
 		(platform-list             (nth 4 block-line))
 		(build-configurations-list (nth 5 block-line))
-		(user-data                 (nth 6 block-line)))
+		(user-data                 (and (> (length block-line) 6) (nth 6 block-line)))
+		(project-settings          (and (> (length block-line) 7) (nth 7 block-line))))
 	    (let ((data (project-buffer-create-node name type filename project)))
 	      (project-buffer-insert-node status data)
 	      (when platform-list
@@ -1412,7 +1487,10 @@ project-buffer context."
 	      (when build-configurations-list
 		(project-buffer-set-project-build-configurations-data status project build-configurations-list))
 	      (when user-data
-		(setf (project-buffer-node->user-data data) user-data)))  )
+		(setf (project-buffer-node->user-data data) user-data))
+	      (when project-settings
+		(setf (project-buffer-node->project-settings data) project-settings))
+	      ))
 	  (error "Unknown node-list line: %s" block-line))
       (setq block-line (read data-buffer)))))
 
@@ -1508,8 +1586,16 @@ variable."
 	(folder-found   nil)
 	(node-data      nil))
 
+    ;; Before checking the cache; let's check the current node:
+    (let* ((cur-node (ewoc-locate status))
+	   (cur-data (and cur-node (ewoc-data cur-node))))
+      (setq found (and cur-node
+		       (string-equal (project-buffer-node->project cur-data) project)
+		       (string-equal (project-buffer-node->name cur-data) name)
+		       cur-node)))
+
     ;; Cache check: <no cache update>
-    (when project-buffer-cache-project
+    (when (and (not found) project-buffer-cache-project)
       (cond
        ;; cache-project < current-project -> we can start the search from here (at least).
        ((string-lessp (car project-buffer-cache-project) proj-data)
@@ -1598,7 +1684,7 @@ Commands:
       (setq project-buffer-projects-list nil)
       (setq project-buffer-file-name nil)
       (setq project-buffer-locals-to-save '(project-buffer-view-mode project-buffer-current-platform project-buffer-current-build-configuration))
-      (setq project-buffer-hooks-to-save '(project-buffer-mode-hook project-buffer-action-hook project-buffer-post-load-hook project-buffer-post-find-file-hook))
+      (setq project-buffer-hooks-to-save '(project-buffer-mode-hook project-buffer-action-hook project-buffer-post-load-hook project-buffer-post-find-file-hook project-buffer-refresh-hook))
 
       (project-buffer-refresh-ewoc-hf status)
 
@@ -1621,18 +1707,21 @@ note: regarding the project node, it's recommended to have NAME = PROJECT"
   (project-buffer-insert-node project-buffer-status
 			      (project-buffer-create-node name type filename project)))
 
-(defun project-buffer-delete-file (name project)
+(defun project-buffer-delete-file (name project &optional dont-delete-project)
   "Delete the node named NAME which belongs to PROJECT.
-Empty folder node will also be cleared up."
+Empty folder node will also be cleared up.  If no more file
+remain in the project; the project will also be deleted unless
+DONT-DELETE-PROJECT is set."
   (unless project-buffer-status (error "Not in project-buffer buffer"))
-  (project-buffer-delete-file-node project-buffer-status name project))
+  (project-buffer-delete-file-node project-buffer-status name project dont-delete-project))
 
 
-(defun project-buffer-delete-folder (name project)
+(defun project-buffer-delete-folder (name project &optional dont-delete-project)
   "Delete the node named NAME which belongs to PROJECT."
   (unless project-buffer-status (error "Not in project-buffer buffer"))
   (project-buffer-delete-folder-node project-buffer-status
-				     (project-buffer-search-node project-buffer-status name project)))
+				     (project-buffer-search-node project-buffer-status name project)
+				     dont-delete-project))
 
 
 (defun project-buffer-delete-project (project)
@@ -1665,10 +1754,6 @@ reloaded through `project-buffer-raw-load' function."
   (unless project-buffer-status (error "Not in project-buffer buffer"))
   (let* ((status                  project-buffer-status)
 	 (node                    (ewoc-nth status 0))
-	 (pbm-mode-hook           (and (local-variable-p 'project-buffer-mode-hook) project-buffer-mode-hook))
-	 (pbm-action-hook         (and (local-variable-p 'project-buffer-action-hook) project-buffer-action-hook))
-	 (pbm-post-load-hook      (and (local-variable-p 'project-buffer-post-load-hook) project-buffer-post-load-hook))
-	 (pbm-post-find-file-hook (and (local-variable-p 'project-buffer-post-find-file-hook) project-buffer-post-find-file-hook))
 	 (buf-name                (buffer-name))
 	 (buf-dir                 default-directory)
 	 (project-buffer          (current-buffer))
@@ -1699,7 +1784,8 @@ reloaded through `project-buffer-raw-load' function."
 			 (project-buffer-node->project data)
 			 (project-buffer-node->platform-list data)
 			 (project-buffer-node->build-configurations-list data)
-			 (project-buffer-node->user-data data))
+			 (project-buffer-node->user-data data)
+			 (project-buffer-node->project-settings data))
 		   (current-buffer))))
 	(setq node (ewoc-next status node)))
       (print (list 'end 'node-list) (current-buffer))
@@ -1779,7 +1865,7 @@ nodes either."
   "Retrieve data about the current file the cursor is on.
 Return nil if the cursor is not on a file.
 If non-nil the return value is a list containing:
-  '(project-file-name full-path project-name)"
+  '(project-file-name file-path project-name)"
   (unless project-buffer-status (error "Not in project-buffer buffer"))
   (let* ((node (ewoc-locate project-buffer-status))
 	 (data (and node (ewoc-data node))))
@@ -1787,6 +1873,22 @@ If non-nil the return value is a list containing:
       (list (project-buffer-node->name data)
 	    (project-buffer-node->filename data)
 	    (project-buffer-node->project data)))))
+
+
+(defun project-buffer-set-project-settings-data (project settings-data)
+  "Attach SETTINGS-DATA to the project node named PROJECT."
+  (unless project-buffer-status (error "Not in project-buffer buffer"))
+  (let ((node (project-buffer-search-project-node project-buffer-status project)))
+    (when node
+      (setf (project-buffer-node->project-settings (ewoc-data node)) settings-data))))
+
+
+(defun project-buffer-get-project-settings-data (project)
+  "Retrieve the project settings from PROJECT."
+  (unless project-buffer-status (error "Not in project-buffer buffer"))
+  (let ((node (project-buffer-search-project-node project-buffer-status project)))
+    (when node
+      (project-buffer-node->project-settings (ewoc-data node)))))
 
 
 (defun project-buffer-exists-p (name project)
@@ -1801,6 +1903,13 @@ If non-nil the return value is a list containing:
   (unless project-buffer-status (error "Not in project-buffer buffer"))
   (let ((node (project-buffer-search-project-node project-buffer-status project)))
     (and node t)))
+
+
+(defun project-buffer-get-project-path (project)
+  "Return the path/file attached to the project PROJECT."
+  (unless project-buffer-status (error "Not in project-buffer buffer"))
+  (let ((node (project-buffer-search-project-node project-buffer-status project)))
+    (and node (project-buffer-node->filename (ewoc-data node)))))
 
 
 (defun project-buffer-get-file-path (name project)
@@ -1825,6 +1934,86 @@ If non-nil the return value is a list containing:
   (let ((node (ewoc-locate project-buffer-status)))
     (when node
       (project-buffer-node->name (ewoc-data node)))))
+
+
+(defun project-buffer-get-marked-node-list ()
+  "Retrieve the list of marked files.
+Each node of the returned list are also list as:
+  '(project-file-name file-path project-name)"
+  (unless project-buffer-status (error "Not in project-buffer buffer"))
+  (let* ((status project-buffer-status)
+	 (node (ewoc-nth status 0))
+	 marked-node-list)
+    (while node
+      (let ((node-data (ewoc-data node)))
+	(when (and (eq (project-buffer-node->type node-data) 'file)
+		   (project-buffer-node->marked node-data))
+	  (setq marked-node-list (cons (list (project-buffer-node->name node-data)
+					     (project-buffer-node->filename node-data)
+					     (project-buffer-node->project node-data))
+				       marked-node-list))))
+      (setq node (ewoc-next status node)))
+    (reverse marked-node-list)
+))
+
+
+(defun project-buffer-apply-to-each-file(func &rest args)
+  "Call FUNC for each existing file nodes.
+FUNC's prototype must be: 
+  (lambda (project-file-name file-path project-name &rest ARGS) ...)"
+  (unless project-buffer-status (error "Not in project-buffer buffer"))
+  (let* ((status project-buffer-status)
+	 (node (ewoc-nth status 0)))
+    (while node
+      (let ((node-data (ewoc-data node)))
+	(when (eq (project-buffer-node->type node-data) 'file)
+	  (apply func
+		 (project-buffer-node->name node-data)
+		 (project-buffer-node->filename node-data)
+		 (project-buffer-node->project node-data)
+		 args))
+	(setq node (ewoc-next status node))))))
+
+
+(defun project-buffer-apply-to-marked-files(func &rest args)
+  "Call FUNC for each marked file nodes.
+FUNC's prototype must be:
+  (lambda (project-file-name file-path project-name &rest ARGS) ...)"
+  (unless project-buffer-status (error "Not in project-buffer buffer"))
+  (let* ((status project-buffer-status)
+	 (node (ewoc-nth status 0))
+	 found-marked-files)
+    (while node
+      (let ((node-data (ewoc-data node)))
+	(when (and (eq (project-buffer-node->type node-data) 'file)
+		   (project-buffer-node->marked node-data))
+	  (setq found-marked-files t)
+	  (apply func
+		 (project-buffer-node->name node-data)
+		 (project-buffer-node->filename node-data)
+		 (project-buffer-node->project node-data)
+		 args))
+	(setq node (ewoc-next status node))))
+    found-marked-files))
+
+
+(defun project-buffer-apply-to-project-files(project func &rest args)
+  "Call FUNC for each file nodes in PROJECT.
+FUNC's prototype must be:
+  (lambda (project-file-name file-path project-name &rest ARGS) ...)"
+  (unless project-buffer-status (error "Not in project-buffer buffer"))
+  (let* ((status project-buffer-status)
+	 (node (project-buffer-search-project-node status project)))
+    (while (and node
+		(string= (project-buffer-node->project (ewoc-data node)) project))
+      (let ((node-data (ewoc-data node)))
+	(when (eq (project-buffer-node->type node-data) 'file)
+	  (apply func
+		 (project-buffer-node->name node-data)
+		 (project-buffer-node->filename node-data)
+		 (project-buffer-node->project node-data)
+		 args))
+	(setq node (ewoc-next status node))))))
 
 
 
@@ -2437,8 +2626,7 @@ If the cursor is on a file - nothing will be done."
   "Run the user hook to perform the build action."
   (interactive)
   (unless project-buffer-status (error "Not in project-buffer buffer"))
-  (when (funcall project-buffer-confirm-function "Clean the master project ")
-    (project-buffer-perform-action-hook 'clean)))
+  (project-buffer-perform-action-hook 'clean))
 
 
 (defun project-buffer-perform-run-action ()
@@ -2552,9 +2740,9 @@ If the cursor is on a file - nothing will be done."
 		       (concat (format "Delete %s%s " name (if (eq type 'file) "" " and its content"))))
 	  (message "Deleting %s..." name)
 	  (cond ((eq type 'file)
-		 (project-buffer-delete-node status node))
+		 (project-buffer-delete-node status node (not project-buffer-cleanup-empty-projects)))
 		((eq type 'folder)
-		 (project-buffer-delete-folder-node status node))
+		 (project-buffer-delete-folder-node status node (not project-buffer-cleanup-empty-projects)))
 		((eq type 'project)
 		 (project-buffer-delete-project-node project-buffer-status name node))
 		(t (error "Unknown data type"))))))))
@@ -2583,7 +2771,7 @@ If the cursor is on a file - nothing will be done."
 	     (result-str  (format "%i deletion%s done" lgt (if (> lgt 1) "s" ""))))
 	(when (funcall project-buffer-confirm-function confirm-str)
 	  (while node-list
-	    (project-buffer-delete-node status (pop node-list)))
+	    (project-buffer-delete-node status (pop node-list) (not project-buffer-cleanup-empty-projects)))
 	  (message result-str))))))
 
 
@@ -2601,6 +2789,18 @@ will get deleted."
 	       (project-buffer-node->marked (ewoc-data node)))
 	  (project-buffer-delete-marked-files)
 	  (project-buffer-delete-current-node)))))
+
+
+(defun project-buffer-refresh(current-project-only)
+  "Call the `project-buffer-refresh-hook' then redisplay every nodes."
+  (interactive "P")
+  (unless project-buffer-status (error "Not in project-buffer buffer"))
+  (save-excursion
+    (if current-project-only
+	(run-hook-with-args 'project-buffer-refresh-hook (list (project-buffer-get-current-project-name)) 'current)
+	(run-hook-with-args 'project-buffer-refresh-hook project-buffer-projects-list 'all))
+    (project-buffer-refresh-all-items project-buffer-status)
+    (project-buffer-refresh-ewoc-hf project-buffer-status)))
 
 
 ;;

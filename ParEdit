@@ -56,7 +56,7 @@ The following code (from the AutoPairs page) accomplishes this:
             (save-excursion (newline-and-indent))))
         (newline arg)
         (indent-according-to-mode)))
-    (eldoc-add-command 'autopairs-ret)
+    (eldoc-add-command 'autopairs-ret) ; if using ElDoc
     (global-set-key (kbd "RET") 'autopairs-ret)
 
 == Discussion ==

@@ -4,12 +4,14 @@ Lisp:project-buffer-mode.el
 project-buffer-mode is a generic mode to handle projects.  It provides
 an easy and intuitive way to interact with the multiple projects within one buffer.
 
-Two project implementations already exist for this mode:
+Three project implementations uses this mode:
 * FsProject  - which creates a project based on the file system
 * SlnMode    - which parses a sln files and create a project representing it
+* [[IProject]]   - which stands for Interactive Project allowing the user to easily add/remove projects.
 
-An generic extension is also available:
-* ProjectBufferModePlus
+Two generic extensions are also available:
+* ProjectBufferModePlus - which allow to run user actions such as build, clean, run, ... from files belonging to the project
+* ProjectBufferOccur - which provides a function to search in project files and list all occurrences in a separate buffer
 
 *Key features*:
 * find files based on regular expression
@@ -24,18 +26,20 @@ An generic extension is also available:
 
 == Introduction ==
 
-I always wanted a browse a of a directory of source+makefiles or to be
-able to view the sln files within emacs...
+I always wanted a have global of directories containing source files,
+makefiles... or to be able to view sln files within emacs...
 
-Well, regarding the sln support, I found nada! Not a single script to
-browse the containt of sln files.  Sure you can find ways to link
-emacs with visual studios... mmm... it didn't work out of the box for
-me...
+Regarding the sln files, I couldn't find a single script to be able to
+easily list the files belonging to the different projects.
 
-And also regarding the tree of source code + makefile, what I found
-was: speedbar and to be honest: I couldn't do all I wanted with it
-(filter files, mark files, search in files, launch build...) and I'm
-not really keen on having a extra framework.  I wanted something
+Some will say that you coul link visual studios and emacs... well..
+it didn't work out of the box for me... Furthermore; I sometimes want
+to open sln files on a linux machine.
+
+And regarding the tree of source code + makefile, what I found was:
+speedbar and to be honest: I couldn't do all I wanted with it (filter
+files, mark files, search in files, launch build...) and I'm not
+really keen on having an extra framework.  I wanted something
 intuitive, a view mode you can easily switch to using C-x b.
 
 This is why I started working on this project-buffer-mode.
@@ -48,27 +52,34 @@ handle multiple projects in a buffer.
 
 A Project is defined by:
 * its name
-* its main file (Makefile, Jam, Scons, VcProj...)
-* a build configuration list (Debug, Release, ...)
-* a platform list (Win32, Win64, Linux...)
+* its main file or main folder (Makefile, Jam, Scons, VcProj...)
+* a list of build configurations (Debug, Release, ...)
+* a list of platforms (Win32, Win64, Linux...)
 * and obviously a list of files.
+
+
+== How to use this mode? ==
+
+This mode is not meant to be used as it.  Please check the project
+implementation pages.
 
 
 == Project-buffer-mode main features ==
 
 === Quick access to the files == 
 
-Opening the current is a simple as pressing <enter> or
-'o' to open it in another window.
-Press 'f' if you want to open all marked files.
+Opening the current file (defined by the position of the cursor) is a
+simple as pressing <return> or 'o' to open it in another window.  
 
-Pressing 'v' will enter the file using the view-mode.
+But you can also mark N files, and use 'f' to open them.
+
+'v' will enter the file using the view-mode.
 
 
 === Quick find file using regular expression ===
 
-The project-buffer mode provides an
-very easy and intuitive way to search for a particular files.
+The project-buffer mode provides an very easy and intuitive way to
+search for a particular files.
 
 By pressing the '/' key; you can enter a regular expression; the
 matching files will then appears in bold.  You can navigate between
@@ -88,12 +99,12 @@ Files can be marked/unmarked individually, but you can also easily
 mark all files whose names are matching a regular expression ('/'
 then 'm'). 
 
-Note: using the mark/unmark command in front of a folder of a project
+Note: using the mark/unmark commands in front of a folder of a project
 results in marking each files which belong to this folder or this
 project.
 
 
-=== Four different view-mode ===
+=== Four different view-modes ===
 
 Four different view-modes are currently supported:
 * folder-view <default>
@@ -117,7 +128,7 @@ files, prefixed by their project and folders.
 
 [[image:ProjectBufferMarkedMode]]
 
-=== Advance Search in files System ===
+=== Advanced Search in files System ===
 
 The search in files functionality comes with three different behaviors:
 * Narrow the marked files <default>
@@ -198,7 +209,14 @@ It will save:
 * the values of the local variables which are registered in
   `project-buffer-locals-to-save';
 * the local value of hooks variables which are registered in
-  `project-buffer-hooks-to-save'.  
+  `project-buffer-hooks-to-save'.
+
+=== Refresh Command ===
+
+The user can refresh the display using 'g'; it is advised while
+implementing a project mode to add a refresh function to
+`project-buffer-refresh-hook' in order to refresh the file and project
+lists.
 
 
 === Sample Code ===
@@ -229,26 +247,33 @@ Here is a sample code which shows how to create a new project:
 === Script Functions ==
 
 List of user functions available to handle your own project:
-* `project-buffer-mode'                     to initialize the project-buffer mode
-* `project-buffer-insert'                   to insert a file or project to the view
-* `project-buffer-delete-file'              to remove a file
-* `project-buffer-delete-folder'            to remove a folder and all its files
-* `project-buffer-delete-project'           to remove a project and all its files
-* `project-buffer-set-project-platforms'    to set the platform configuration for a particular project
-* `project-buffer-set-build-configurations' to set the build configurations for a particular project
-* `project-buffer-raw-save'                 to save a project into a file
-* `project-buffer-raw-load'                 to load a project from a file
-* `project-buffer-set-project-user-data'    to set user data to a project node
-* `project-buffer-get-project-user-data'    to get user data from a project node
-* `project-buffer-set-file-user-data'       to set user data to a file node
-* `project-buffer-get-file-user-data'       to get user data from a file node
-* `project-buffer-get-current-project-name' to get the nane of the current project the cursor is on
-* `project-buffer-get-current-file-data'    to get data about the current file the cursor is on; nil if it's on a folder or a project
-* `project-buffer-exists-p'                 to check if a node exists (file or folder) inside a project
-* `project-buffer-project-exists-p'         to check if a project exists
-* `project-buffer-get-file-path'            to get the path of a file of the project
-* `project-buffer-get-current-node-type'    to get the type of the current node (including folder)
-* `project-buffer-get-current-node-name'    to get the name  of the current node (including folder)
+* `project-buffer-mode'                      to initialize the project-buffer mode
+* `project-buffer-insert'                    to insert a file or project to the view
+* `project-buffer-delete-file'               to remove a file
+* `project-buffer-delete-folder'             to remove a folder and all its files
+* `project-buffer-delete-project'            to remove a project and all its files
+* `project-buffer-set-project-platforms'     to set the platform configuration for a particular project
+* `project-buffer-set-build-configurations'  to set the build configurations for a particular project
+* `project-buffer-raw-save'                  to save a project into a file
+* `project-buffer-raw-load'                  to load a project from a file
+* `project-buffer-set-project-user-data'     to set user data to a project node
+* `project-buffer-get-project-user-data'     to get user data from a project node
+* `project-buffer-set-file-user-data'        to set user data to a file node
+* `project-buffer-get-file-user-data'        to get user data from a file node
+* `project-buffer-get-current-project-name'  to get the nane of the current project the cursor is on
+* `project-buffer-get-current-file-data'     to get data about the current file the cursor is on; nil if it's on a folder or a project
+* `project-buffer-exists-p'                  to check if a node exists (file or folder) inside a project
+* `project-buffer-project-exists-p'          to check if a project exists
+* `project-buffer-get-project-path'          to get a project's path
+* `project-buffer-get-file-path'             to get the path of a file of the project
+* `project-buffer-get-current-node-type'     to get the type of the current node (including folder)
+* `project-buffer-get-current-node-name'     to get the name  of the current node (including folder)
+* `project-buffer-get-marked-node-list'      to get the list of marked files
+* `project-buffer-set-project-settings-data' to set user project settings data
+* `project-buffer-get-project-settings-data' to retrive the user project settings data
+* `project-buffer-apply-to-each-file'        to perform a function call on every file node
+* `project-buffer-apply-to-marked-files'     to perform a function call on eveyr marked files; the function returns nil if no marked files were found
+* `project-buffer-apply-to-project-files'    to perform a function call on every files belonging to a specified project
 
 If you need to have some local variables to be saved; register them in
 `project-buffer-locals-to-save'.  The same way, if there is need to

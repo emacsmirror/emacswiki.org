@@ -62,17 +62,13 @@ Thanks, I think I fixed those two in the latest version.
 
 I suggest hiding the vertical scrollbars in the minimap buffer. They are not really needed if the viewport can be dragged.
 
-<pre>
-   You can enable or disable scroll bars for a particular buffer, by
-setting the variable `vertical-scroll-bar'.  This variable
-automatically becomes buffer-local when set.  The possible values are
-`left', `right', `t', which means to use the frame's default, and `nil'
-for no scroll bar.
+[new]
 
-   You can also control this for individual windows.  Call the function
-`set-window-scroll-bars' to specify what to do for a specific window:
+I agree. I added a new option for that. The default is to hide the scroll-bar.
 
-</pre>
+[new]
+
+You could create a new screenshot with the toolbars hidden. I assume it looks better too!
 
 ----
 CategoryWindows   CategoryDisplay

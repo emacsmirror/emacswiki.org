@@ -390,6 +390,23 @@ I use [InteractivelyDoThings ido], it's very handy. So I always open the file us
 	     buffer-file-name))))
 (global-set-key (kbd "C-x C-r") 'find-alternative-file-with-sudo)
 }}}
+
+[new:jpkotta:2009-09-22 02:16 UTC]
+I really like the above.  It doesn't work when you run it more than once on a buffer, so made it toggle.  Also it works on dired buffers.
+{{{
+(defun find-alternative-file-with-sudo ()
+  (interactive)
+  (let ((fname (or buffer-file-name
+                   dired-directory)))
+    (when fname
+      (if (string-match "^/sudo:root@localhost:" fname)
+          (setq fname (replace-regexp-in-string 
+                       "^/sudo:root@localhost:" "" 
+                       fname))
+        (setq fname (concat "/sudo:root@localhost:" fname)))
+      (find-alternate-file fname))))
+}}}
+
 ----
 
 '''Tramp on NTEmacs with cygwin ssh'''

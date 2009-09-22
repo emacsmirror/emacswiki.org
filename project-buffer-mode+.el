@@ -1,7 +1,7 @@
 ;;; project-buffer-mode+.el --- Extension for project-buffer-mode
 ;;
 ;; Author:      Cedric Lallain <kandjar76@hotmail.com>
-;; Version:     1.00
+;; Version:     1.10
 ;; Keywords:    project mode buffer viewer extension
 ;; Description: Extension for project-buffer-mode.
 ;; Tested with: GNU Emacs 22.x and GNU Emacs 23.x
@@ -68,6 +68,8 @@
 ;;; History:
 ;;
 ;; v1.0: First official release.
+;; v1.1: Added a function to the project-buffer's refresh-hook which
+;;       check if visited file buffers belongs to the current project.
 ;;
 
 
@@ -162,6 +164,28 @@ This will allow to retrieve the buffer."
   (project-buffer-mode-p-attach-project-buffer project-buffer file-buffer))
 
 
+(defun project-buffer-mode-p-link-buffers-to-current-project(project-list content)
+  "Check the different opened file buffer to see if they belong to the project.
+
+Note: technically it's possible to also limit the research to the
+current project or to the projects in the list. I don't see why
+someone would wanna do that!?"
+  (let ((project-buffer (current-buffer))
+	(buffers-assoc (remq nil (mapcar (lambda (cur-buf) 
+				     (let ((file (buffer-file-name cur-buf))) 
+				       (and file (cons (expand-file-name file) cur-buf))))
+				   (buffer-list))))
+	(count 0))
+    (project-buffer-apply-to-each-file (lambda (project-file-name file-path project-name buffers)
+					 (let ((assoc-data (assoc (expand-file-name file-path) buffers)))
+					   (when assoc-data
+					     (project-buffer-mode-p-attach-project-buffer project-buffer (cdr assoc-data))
+					     (setq count (1+ count)))))
+				       buffers-assoc)
+    (message "%i buffer%s attached to this project" count (if (> count 1) "s" ""))
+    ))
+
+
 ;;
 ;;  Setup function:
 ;;
@@ -169,6 +193,7 @@ This will allow to retrieve the buffer."
 (defun project-buffer-mode-p-setup(&optional no-key-bindings)
   "Setup the hook and the global keuys if KEY-BINDINGS is set to t."
   (add-hook 'project-buffer-post-find-file-hook 'project-buffer-mode-p-register-project-to-file)
+  (add-hook 'project-buffer-refresh-hook 'project-buffer-mode-p-link-buffers-to-current-project)
   (unless no-key-bindings
     (define-key global-map [(control x) (?p) (?s)] 'project-buffer-mode-p-go-to-attached-project-buffer)
     (define-key global-map [(control x) (?p) (?B)] 'project-buffer-mode-p-run-project-buffer-build-action)

@@ -84,3 +84,19 @@ Here is a reformulation of the above. It is simpler to hack, and allows you to s
 
 (add-hook 'erc-insert-modify-hook 'erc-put-color-on-nick)
 </pre>
+
+
+To get a bit more variety:
+<pre>
+(defun erc-set-colors-list ()                                                   
+  (setq erc-colors-list	nil)                                                    
+  (dolist (color (defined-colors))                                              
+    (or (string-match-p "black" color)                                
+	(add-to-list 'erc-colors-list color))))
+</pre>
+add extra substrings to exclude as needed, and, if you're like me and run one emacs daemon to rule them all (including both tty and X clients):
+<pre>
+(add-hook 'after-make-frame-functions '(lambda (frame) (erc-set-colors-list)))
+</pre>
+Problems: 
+* The change isn't frame local, so you'll get less colors in your X frame after starting a tty frame.

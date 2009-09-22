@@ -1,0 +1,23 @@
+Lisp:project-buffer-occur.el
+
+
+/This is an extension library for ProjectBufferMode./
+
+== Summary ==
+
+It provides commands to search and list all occurrences of a regexp in
+all marked files or in all files of the current project if no files
+are marked.
+
+Also: using the prefix argument; the search will occur in all files
+listed in the buffer.
+
+== To install it: ==
+
+Put the following lines in your .emacs:
+{{{
+ (eval-after-load "project-buffer-mode"
+  '(progn
+    (require 'project-buffer-occur)
+    (define-key project-buffer-mode-map [(control ?f)] 'project-buffer-occur)))
+}}}

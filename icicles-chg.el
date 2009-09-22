@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Sep 19 08:47:42 2009 (-0700)
+;; Last-Updated: Mon Sep 21 15:14:47 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 4400
+;;     Update #: 4402
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2009/09/21 dadams
+;;     icicle-lisp-complete-symbol:
+;;       Complete symbol in buffer as far as possible first.  Show completions initially.
 ;; 2009/09/17 dadams
 ;;     icicle-delete-file, icicle-(file|directory)-list,
 ;;       icicle-find-file(-absolute)(-other-window),

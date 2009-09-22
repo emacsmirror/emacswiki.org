@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Sep 17 14:08:08 2009 (-0700)
+;; Last-Updated: Mon Sep 21 15:11:58 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 19675
+;;     Update #: 19679
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1332,8 +1332,7 @@ control completion behaviour using `bbdb-completion-type'."
 ;;;###autoload
 (defun icicle-lisp-complete-symbol (&optional predicate) ; `M-TAB' (`C-M-i', `ESC-TAB'), globally.
   "Complete the Lisp symbol preceding point against known Lisp symbols.
-If no characters can be completed, display a list of possible completions.
-Repeating the command at that point scrolls the list.
+If there is more than one completion, use the minibuffer to complete.
 
 When called from a program, optional arg PREDICATE is a predicate
 determining which symbols are considered, e.g. `commandp'.
@@ -1344,43 +1343,52 @@ symbols with function definitions are considered.  Otherwise, all
 symbols with function definitions, values or properties are
 considered."
   (interactive)
-  (let* ((end                                         (point))
-         (buffer-syntax                               (syntax-table))
-         (beg
-          (unwind-protect
-               (save-excursion
-                 (set-syntax-table emacs-lisp-mode-syntax-table)
-                 (backward-sexp 1)
-                 (while (= (char-syntax (following-char)) ?\') (forward-char 1))
-                 (point))
-            (set-syntax-table buffer-syntax)))
-         (pattern                                     (buffer-substring beg end))
-         (predicate
-          (or predicate
-              (save-excursion
-                (goto-char beg)
-                (if (not (eq (char-before) ?\())
-                    #'(lambda (sym)	;why not just nil ?   -sm
-                        (or (boundp sym) (fboundp sym) (symbol-plist sym)))
-                  ;; If first element of parent list is not an open paren, assume that this is a
-                  ;; funcall position: use `fboundp'.  If not, then maybe this is a variable in
-                  ;; a `let' binding, so no predicate: use nil.
-                  (and (not (condition-case nil
-                                (progn (up-list -2) (forward-char 1) (eq (char-after) ?\())
-                              (error nil)))
-                       'fboundp)))))
-         (enable-recursive-minibuffers                (active-minibuffer-window))
-         (icicle-top-level-when-sole-completion-flag  t)
-         (orig-window                                 (selected-window)) ; For alt actions.
-         (alt-fn                                      nil)
-         (icicle-candidate-alt-action-fn
-          (or icicle-candidate-alt-action-fn (setq alt-fn  (icicle-alt-act-fn-for-type "symbol"))))
-         (icicle-all-candidates-list-alt-action-fn
-          (or icicle-all-candidates-list-alt-action-fn alt-fn (icicle-alt-act-fn-for-type "symbol")))
-         (completion
-          (save-excursion (completing-read "Complete Lisp symbol: " obarray predicate t pattern))))
+  (let* ((end            (point))
+         (buffer-syntax  (syntax-table))
+         (beg            (unwind-protect
+                              (save-excursion
+                                (set-syntax-table emacs-lisp-mode-syntax-table)
+                                (backward-sexp 1)
+                                (while (= (char-syntax (following-char)) ?\') (forward-char 1))
+                                (point))
+                           (set-syntax-table buffer-syntax)))
+         (pattern       (buffer-substring beg end))
+         (new           (try-completion pattern obarray)))
+    (unless (stringp new) (setq new  pattern))
     (delete-region beg end)
-    (insert completion)))
+    (insert new)
+    (setq end  (+ beg (length new)))
+    (if (and (not (string= new "")) (not (string= (downcase new) (downcase pattern)))
+             (< (length (all-completions new obarray)) 2))
+        (message "Completed (no other completions)")
+      ;; Use minibuffer to choose a completion.
+      (let* ((enable-recursive-minibuffers                (active-minibuffer-window))
+             (icicle-top-level-when-sole-completion-flag  t)
+             (orig-window                                 (selected-window)) ; For alt actions.
+             (alt-fn                                      nil)
+             (icicle-show-Completions-initially-flag      t)
+             (icicle-candidate-alt-action-fn
+              (or icicle-candidate-alt-action-fn (setq alt-fn  (icicle-alt-act-fn-for-type "symbol"))))
+             (icicle-all-candidates-list-alt-action-fn
+              (or icicle-all-candidates-list-alt-action-fn alt-fn (icicle-alt-act-fn-for-type "symbol")))
+             (predicate
+              (or predicate
+                  (save-excursion
+                    (goto-char beg)
+                    (if (not (eq (char-before) ?\( ))
+                        #'(lambda (sym)	;why not just nil ?   -sm
+                            (or (boundp sym) (fboundp sym) (symbol-plist sym)))
+                      ;; If first element of parent list is not an open paren, assume that this is a
+                      ;; funcall position: use `fboundp'.  If not, then maybe this is a variable in
+                      ;; a `let' binding, so no predicate: use nil.
+                      (and (not (condition-case nil
+                                    (progn (up-list -2) (forward-char 1) (eq (char-after) ?\( ))
+                                  (error nil)))
+                           'fboundp))))))
+        (setq new  (save-excursion (completing-read "Complete Lisp symbol: "
+                                                    obarray predicate t new)))))
+    (delete-region beg end)
+    (insert new)))
 
 ;;;###autoload
 (defun icicle-customize-icicles-group ()
@@ -4275,7 +4283,8 @@ option `icicle-require-match-flag'."    ; Doc string
                                                      (error "No recently accessed files"))
                                                    recentf-list))
     (icicle-use-candidates-only-once-alt-p  t)
-    (icicle-candidate-properties-alist      (and current-prefix-arg '((1 (face icicle-candidate-part)))))
+    (icicle-candidate-properties-alist      (and current-prefix-arg
+                                                 '((1 (face icicle-candidate-part)))))
     (icicle-list-use-nth-parts              (and current-prefix-arg '(1)))))
   (progn                                ; First code
     (when current-prefix-arg (put-text-property 0 1 'icicle-fancy-candidates t prompt))
@@ -4307,7 +4316,8 @@ Same as `icicle-recent-file' except it uses a different window." ; Doc string
                                                      (error "No recently accessed files"))
                                                    recentf-list))
     (icicle-use-candidates-only-once-alt-p  t)
-    (icicle-candidate-properties-alist      (and current-prefix-arg '((1 (face icicle-candidate-part)))))
+    (icicle-candidate-properties-alist      (and current-prefix-arg
+                                                 '((1 (face icicle-candidate-part)))))
     (icicle-list-use-nth-parts              (and current-prefix-arg '(1)))))
   (progn                                ; First code
     (when current-prefix-arg (put-text-property 0 1 'icicle-fancy-candidates t prompt))
