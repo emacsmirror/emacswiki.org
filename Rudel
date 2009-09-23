@@ -32,6 +32,27 @@ Sourceforge. Use the
 instructions] to obtain a copy of the source tree or
 [http://rudel.svn.sourceforge.net/viewvc/rudel/ just browse the code].
 
+Since CEDET can be difficult to install, (and unfortunately is not in ELPA due to the maintainer's uncooperativeness) here's some help:
+
+<pre>
+(defun load-rudel ()
+  (interactive)
+  ;; Do these in a shell in ~/src:
+  ;; cvs -d:pserver:anonymous@cedet.cvs.sourceforge.net:/cvsroot/cedet login 
+  ;; cvs -z3 -d:pserver:anonymous@cedet.cvs.sourceforge.net:/cvsroot/cedet co -P cedet
+  ;; svn co https://rudel.svn.sourceforge.net/svnroot/rudel/rudel/trunk rudel
+  (add-to-list 'load-path "~/src/cedet/eieio")
+  (add-to-list 'load-path "~/src/cedet/common")
+  (add-to-list 'load-path "~/src/rudel/")
+  (add-to-list 'load-path "~/src/rudel/jupiter")
+  (add-to-list 'load-path "~/src/rudel/obby")
+  (require 'rudel-mode)
+  (require 'rudel-obby)
+  (global-rudel-minor-mode))
+</pre>
+
+Autoloads and byte-compilation don't work for me due to a strange cedet dependency problem, but this should get you in a working state.
+
 == Installation ==
 
 /This section is a verbatim copy of the INSTALL file./

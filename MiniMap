@@ -70,5 +70,13 @@ I agree. I added a new option for that. The default is to hide the scroll-bar.
 
 You could create a new screenshot with the toolbars hidden. I assume it looks better too!
 
+[new]
+
+Some actions seem to steal the minimap window for their own output.  What about adding
+<pre>
+(set-window-dedicated-p nil t)
+</pre>
+in the mode setup to try and minimize that.
+
 ----
 CategoryWindows   CategoryDisplay

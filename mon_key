@@ -6,14 +6,18 @@
 * Lisp:mon-utils.el
 * Lisp:mon-dir-locals-alist.el
 * Lisp:mon-dir-utils.el
+* Lisp:mon-hash-utils.el
 * Lisp:mon-rename-image-utils.el
 * Lisp:mon-rename-image-utils-supplemental.el
 * Lisp:mon-regexp-symbols.el
 * Lisp:mon-time-utils.el (EbayTime)
 * Lisp:mon-url-utils.el 
 * Lisp:mon-insertion-utils.el
+* Lisp:mon-color-utils.el
+* Lisp:naf-mode.el
 * Lisp:naf-mode-faces.el
 * Lisp:naf-mode-replacements.el
+* Lisp:naf-name-utils.el
 * Lisp:ebay-template-mode.el
 * Lisp:ebay-template-tools.el
 * Lisp:perlisisms.el (Perlisisms)

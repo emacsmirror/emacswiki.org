@@ -1,7 +1,8 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; This is mon-insertion-utils.el
 ;;; ================================================================
 ;;; DESCRIPTION:
-;;; mon-insertion-utils.el Provides Insertion related utilities. 
+;;; mon-insertion-utils provide -you guessed it- insertion related utilities.
 ;;; These are templates and string building utilities that insert into
 ;;; a buffer and which have become to unwieldly or are otherwise to large
 ;;; to maintain in the calling file(s).
@@ -15,16 +16,16 @@
 ;;;
 ;;; FUNCTIONS:►►►
 ;;; `mon-insert-string-n-fancy-times', `mon-number-lines-region',
-;;; `mon-insert-numbers-padded', `mon-insert-string-incr', `mon-dropin-line-words',
+;;; `mon-insert-numbers-padded', `mon-insert-string-incr', `mon-line-drop-in-words',
 ;;; `mon-string-ify-interactively', `mon-insert-test-cases', 
 ;;; `mon-insert-string-n-times', `mon-lisp-evald', `comment-divider',
 ;;; `comment-divider-to-col-four', `php-comment-divider', `mon-insert-copyright',
-;;; `mon-insert-file-in-dirs', `mon-insert-naf-file-in-dirs'
-;;; `mon-insert-dirs-in-path', `mon-insert-naf-mode-constant-template',
-;;; `mon-insert-wht-spc', `mon-insert-newlines', `mon-build-copyright-string'
-;;; `mon-insert-naf-mode-file-template', `mon-insert-CL-file-template',
-;;; `mon-insert-CL-package-template', `mon-insert-user-name-cond', 
-;;; `mon-insert-system-type-cond', `mon-insert-gnu-licence'
+;;; `mon-insert-file-in-dirs', `mon-insert-dirs-in-path', `mon-insert-wht-spc',
+;;; `mon-insert-newlines', `mon-build-copyright-string'
+;;; `mon-insert-CL-file-template', `mon-insert-CL-package-template',
+;;; `mon-insert-user-name-cond', `mon-insert-system-type-cond',
+;;; `mon-insert-gnu-licence', `mon-insert-regexp-template-yyyy'
+;;; `mon-insert-regexp-template'
 ;;; FUNCTIONS:◄◄◄
 ;;;
 ;;; ALIASES:
@@ -43,11 +44,12 @@
 ;;;
 ;;; `mon-interactively-stringify' -> `mon-insert-string-ify'
 ;;; `php-comment-divider' -> `mon-insert-php-comment-divider'
-;;; `mon-insert-naf-mode-file-template' ->`mon-insert-file-template'
+;;; `mon-insert-naf-mode-file-template' -> `mon-insert-file-template'
 ;;;
 ;;; MOVED: 
 ;;; `mon-insert-user-name-cond'   <- ../mon-w32-load.el
 ;;; `mon-insert-system-type-cond' <- ../mon-w32-load.el
+;;; `mon-insert-regexp-template-yyyy' <- ./naf-mode-replacement-utils.el
 ;;;
 ;;; `mon-accessed-stamp'          -> ./mon-time-utils.el
 ;;; `mon-stamp'                   -> ./mon-time-utils.el
@@ -63,11 +65,14 @@
 ;;; Build a wget template.
 ;;; (defun mon-wget-url (extension url put-in)
 ;;; wget -nd -r -l1 --noparent -A."file-extension" "url"
-;;; See; Stefan Reichor's defun in `naf-url-utils' (commented - not active)
+;;; See; Stefan Reichor's defun in `mon-url-utils' (commented - not active)
 ;;;
-;;; Build a progn makunbound unintern template e.g.:
+;;; Build a progn makunbound unintern template, e.g.:
 ;;; ;;;(progn (makunbound 'VAR-OR-FUNCTION) 
 ;;; ;;; (unintern 'VAR-OR-FUNCTION))
+;;; 
+;;; PUBLIC-LINK:
+;;; (URL `http://www.emacswiki.org/emacs/mon-insertion-utils.el')
 ;;;
 ;;; FILE-CREATED: 
 ;;; <Timestamp: Wednesday April 08, 2009 @ 12:37.06 PM - by MON KEY>
@@ -98,6 +103,7 @@
 ;;; ==============================
 
 ;;; ==============================
+;;; LINK: (URL `http://www.emacswiki.org/emacs/mon-time-utils.el')
 (require 'mon-time-utils) ;anything that uses a time-stamp
 ;;; ==============================
 
@@ -155,7 +161,7 @@ EXAMPLE:\nAssuming buffer's default directory is \"c:/home/my-dirs\"
 Invoking the form with args make-my-dirs my-insert-text \".dbc\":\n
 \(mon-insert-file-in-dirs make-my-dirs my-insert-text \".dbc\")\n
 Or, interactively; M-x mon-insert-naf-file-in-dirs\n
-=> minibuffer-prompt: Give Symbol holing dir/file list : make-my-dirs
+=> minibuffer-prompt: Give Symbol holind dir/file list : make-my-dirs
 => minibuffer-prompt: Give Symbol holing insert-text : my-insert-text
 => minibuffer-prompt: File extenison :dbc \n
 Creates the following directors and files in c:/home/my-dirs :
@@ -300,7 +306,7 @@ See also; `mon-insert-string-n-fancy-times', `mon-insert-string-incr', `mon-re-n
 ;;; CREATED: <Timestamp: Monday February 09, 2009 @ 09:41.37 PM - by MON KEY>
 (defun mon-insert-string-n-times (put-count string-to-put)
 "Inserts the string provided n times.
-Prompts for: How many puts? <-- number of times to put string.
+Prompt for: How many puts? <-- number of times to put string.
              String to put: <--- String  to insert.\n
 See also; `mon-insert-string-n-fancy-times', `mon-insert-string-incr', `mon-re-number-region',
 `mon-insert-wht-spc', `mon-insert-newlines', `mon-insert-unicode'."
@@ -310,8 +316,6 @@ See also; `mon-insert-string-n-fancy-times', `mon-insert-string-incr', `mon-re-n
 	      put-count
 	      t)
       (insert string-to-put)))
-
-;(info "(elisp)documentation")
 
 ;;; ==============================
 (defun mon-number-lines-region (start end &optional beg)
@@ -363,9 +367,9 @@ See also; `mon-insert-string-incr',`mon-number-lines-region', `mon-re-number-reg
       (insert (if fmt (format fmt i) (int-to-string i)) "\n")
       (setq i (funcall add-func i)))))
 
-;;;=========================
+;;; ==============================
 ;;; CREATED: <Timestamp: Tuesday February 03, 2009 @ 03:41.17 PM - by MON KEY>
-;;; RENAMED: was: `mon-incr' -> `mon-insert-string-incr'
+;;; RENAMED: WAS: `mon-incr' -> `mon-insert-string-incr'
 (defun mon-insert-string-incr ()
   "Inserts to current buffer the range of number provided. 
 Prompts for; \"Increment from number:\", \"Increment to number:\",
@@ -425,9 +429,11 @@ See also; `mon-insert-numbers-padded', `mon-number-lines-region',
 ;;; ==============================
 ;;; CREATED: <Timestamp: Thursday February 19, 2009 @ 06:31.47 PM - by MON KEY>
 ;;; MODIFICATIONS-OF: Drew Adams' strings.el
-(defun mon-dropin-line-words (&optional buffer) 
+(defun mon-line-drop-in-words (&optional buffer) 
  "Split current line of text in BUFFER into single words.
-Split line is inserted with each word on a new line."
+Split line is inserted with each word on a new line.\n
+See also; `mon-line-strings-to-list', `mon-string-ify-list',
+`mon-insert-string-ify',`mon-string-split-line', `mon-get-word-list-buffer'."
   (interactive)
   (let ((buffer (or buffer (current-buffer))))
     (save-excursion
@@ -466,10 +472,9 @@ See also; `mon-string-ify-list'."
 ;; prompt collection &optional predicate require-match initial-input hist def inherit-input-method)
 (defun mon-insert-unicode (char &optional insertp intrp)
   "Reads a unicode code point for CHAR and insert CHAR at point.\n
-EXAMPLE:\n(mon-insert-unicode #x25ba)\n
+EXAMPLE:\n(mon-insert-unicode \"25BA\")\n
 Uses `read-quoted-char-radix' with val set to 16. This allows easy coping of
 values from Unicode charts e.g. (URL `http://www.decodeunicode.org/u+2019').\n
-See also; `mon-insert-wht-spc', `mon-insert-newlines'.\n
 For access/alteration to encoding/coding information see:
 `encode-coding-region', `describe-coding-system', `unicode-insert'."
   (interactive `(,@(let* ((rd-types (list "1 Unicode char in radix 16 e.g. '25BA'"
@@ -480,7 +485,7 @@ For access/alteration to encoding/coding information see:
                                             (char-to-string (read-quoted-char "Char :"))))
                                          ((string= (substring rd-type 0 1) "2")
                                           (let (the-char)
-                                            (setq (the-char (read-char-by-name "Char (tab completes) :")))
+                                            (setq the-char (read-char-by-name "Char (tab completes) :"))
                                             (cond ((not (integerp the-char))
                                                    (error "Not a Unicode character code: %S" the-char))
                                                   ((or (< arg 0) (> arg #x10FFFF))
@@ -493,39 +498,54 @@ For access/alteration to encoding/coding information see:
                 ((cdr (assoc-string char (ucs-names) t)))
                 ((stringp char) 
                  (cond ((numberp (mon-string-to-symbol char))
-                        (mon-string-to-symbol char))
-                                        ; ((string-to-number char 16))
+                        (mon-string-to-symbol char)) ;; ((string-to-number char 16))
                        ((not (integerp char))
                         (error "Not a Unicode character code: %S" char))
                        ((or (< char 0) (>= char 65536)) ;;(or (< 9658 0) (> 9658 65536))
                         (error "Not a Unicode character code: %d" char))
                        ((or (< char 0) (> char #x10FFFF)) ;;(or (< #x25ba 0) (> #x25ba #x10FFFF))
-                        (error "Not a Unicode character code: 0x%X" char))))
-                ;;(t (setq t-char (char-to-string t-char))))
-                ))
+                        (error "Not a Unicode character code: 0x%X" char))
+                       ;;(t (setq t-char (char-to-string t-char))))
+                       ))))
     (setq t-char (char-to-string t-char))
     (if (or insertp intrp)
         (save-excursion (insert-and-inherit t-char))
       t-char)
     t-char))
 
-;;;(mon-insert-unicode "#o22672" t)►
-;;;(mon-insert-unicode #o22672 t)►
-;;;(mon-insert-unicode "#x25ba" t)►
-;;;(mon-insert-unicode 9658 t)►
-;;;(mon-insert-unicode #x25ba t)►
-;;;(mon-insert-unicode "BLACK RIGHT-POINTING POINTER" t)►►
-;;;(mon-insert-unicode "bubba" t)
-;;;(mon-insert-unicode "#o22672" )
-;;;(mon-insert-unicode #o22672 )
-;;;(mon-insert-unicode "#x25ba" )
-;;;(mon-insert-unicode 9658)
-;;;(mon-insert-unicode #x25ba)
-;;;(mon-insert-unicode "BLACK RIGHT-POINTING POINTER")
-;;;(mon-insert-unicode "bubba" )
-;;;(mon-insert-unicode "bubba" t)
-;;; ==============================
 
+;;;test-me;(mon-insert-unicode "#o22672" t)►
+;;;test-me;(mon-insert-unicode #o22672 t)►
+;;;test-me;(mon-insert-unicode "#x25ba" t)►
+;;;test-me;(mon-insert-unicode 9658 t)►
+;;;test-me;(mon-insert-unicode "#x25ba" t)►
+;;;test-me;(mon-insert-unicode "BLACK RIGHT-POINTING POINTER" t)►►
+;;;test-me;(mon-insert-unicode "bubba" t)
+;;;test-me;(mon-insert-unicode "#o22672")
+;;;test-me;(mon-insert-unicode #o22672)
+;;;test-me;(mon-insert-unicode "#x25ba")
+;;;test-me;(mon-insert-unicode 9658)
+;;;test-me;(mon-insert-unicode #x25ba)
+;;;test-me;(mon-insert-unicode "BLACK RIGHT-POINTING POINTER")
+;;;test-me;(mon-insert-unicode "bubba")
+;;;test-me;(mon-insert-unicode "bubba" t)
+
+;;; ==============================
+;;; MODIFICATIONS: <Timestamp: #{2009-08-25T13:57:43-04:00Z}#{09352} - by MON KEY>
+(defun split-designator (&optional insertp intrp)
+  "Return string \"---\\n\". 
+When INSERTP is non-nil or called-interactively inserts at point. 
+Does not move point.\n\nEXAMPLE:\n\(split-designator\)\n
+See also; `non-posting-source', `non-posting-ebay-source', `naf-comment-prefix'.
+`non-posting-wiki-source', `npps', `benezit-naf-template'.\nUsed in `naf-mode'."
+  (interactive "i\np")
+  (if (or insertp intrp)
+      (save-excursion
+      (insert "---\n"))
+    "---\n"))
+
+;;;test-me;(split-designator)
+;;;test-me;(call-interactively 'split-designator)
 
 ;;; ==============================
 ;;; MODIFICATIONS: <Timestamp: #{2009-08-25T14:09:37-04:00Z}#{09352} - by MON KEY>
@@ -720,6 +740,65 @@ that return t or nil."
 ;;;test-me;(call-interactively 'mon-insert-system-type-cond)
 
 ;;; ==============================
+;;; CREATED: <Timestamp: #{2009-09-18T13:56:27-04:00Z}#{09385} - by MON>
+(defun mon-insert-regexp-template (&optional insertp intrp)
+  "Returna template for quickly writing regexp routine.
+When INSERTP or called-interactively inserts template at point.\n
+EXAMPLE:
+;; (while\n(progn\n  (search-forward-regexp \"\")\n  (replace-match \"\"))\n
+See also; `mon-insert-regexp-template-yyyy'. ►►►"
+  (interactive "i\np")
+  (let ((regxp-t
+	 ";; (while\n(progn\n  (search-forward-regexp \"\")\n  (replace-match \"\"))"))
+    (if (or insertp intrp)
+	(save-excursion (newline) (insert regxp-t))
+      regxp-t)))
+
+;;;test-me; (mon-insert-regexp-template t)
+;;;test-me; (call-interactively 'mon-insert-regexp-template)
+
+;;; ==============================
+;;; MODIFICATIONS: <Timestamp: #{2009-09-18T15:41:36-04:00Z}#{09385} - by MON KEY>
+(defun mon-insert-regexp-template-yyyy (&optional query-rep insertp intrp)
+  "Insert at point regexps for searching whitespace delimited years 20thC.
+Regexps are specific to the range 1900-1999. Returned regexp template
+includes \\nth numbered capture groups. Regexps defaults to insertion
+for  programattic elisp. When INSERTP in non-nil or called-interactively 
+insert a second line beneath the regexp indicating  grouping sections. 
+When QUERY-REP is non-nil returns a regexp to the kill-ring. 
+This regexp will be in the kill ring and is ready formatted for yanking into 
+the minibuffer of a query-replace-regexp prompt. When query-rep argument is
+non-nil no regexp is inserted into buffer at point. 
+Yank it back from the kill-ring if that is what you want.
+See also; `mon-insert-regexp-template'."
+  (interactive "P\ni\np")
+  (let* ((dbl-slash
+	  (concat
+	   ";(while\n(progn\n  (search-forward-regexp\n"
+	   "   \"\\\\_<\\\\(19\\\\)\\\\([0-9]\\\\{2,2\\\\}\\\\)\\\\_>\" nil t)\n"
+	   "   ;;^^^^^^1^^^^^^^2^^^^^^^^^^^^^^^^^^^^^\n"
+	   "  (replace-match \"\\\\1\\\\2\"))"))
+	 (sngl-slash 
+	  (concat "\\_<\\(19\\)\\([0-9]\\{2,2\\}\\)\\_> \\1\\2")))
+	 (cond ((and intrp query-rep)
+		(kill-new sngl-slash)
+		(message "regexp is in the kill ring. Yank it back."))
+	       (intrp (save-excursion (newline) (insert dbl-slash)))
+	       ((and insertp query-rep)
+		(prog1 (beginning-of-line 2)
+		  (save-excursion (insert sngl-slash))))
+	       ((or insertp intrp)
+		(save-excursion (newline) (insert dbl-slash)))
+	       (query-rep sngl-slash)
+	       (t dbl-slash))))
+
+;;;test-me;(mon-insert-regexp-template-yyyy)
+;;;test-me;(mon-insert-regexp-template-yyyy t)
+;;;test-me;(mon-insert-regexp-template-yyyy t nil t)
+;;;test-me;(mon-insert-regexp-template-yyyy nil nil t)
+;;;test-me;(call-interactively 'mon-insert-regexp-template-yyyy)
+
+;;; ==============================
 ;;; CREATED: <Timestamp: Saturday July 11, 2009 @ 12:15.02 PM - by MON KEY>
 ;;; MODIFICATIONS: <Timestamp: 2009-08-01-W31-6T16:11:16-0400Z - by MON KEY>
 (defun mon-insert-lisp-CL-file-template (&optional insertp intrp)
@@ -833,7 +912,7 @@ See also; `mon-lisp-stamp',`mon-file-stamp', `mon-insert-copyright',
 ;;;test-me;(call-interactively 'mon-insert-lisp-stamp)
 
 ;;; ==============================
-;;; working on this as of 7 18 2009
+;;; WORKING-ON-THIS: AS-OF: 2009-07-18
 ;;  (defun mon-insert-lisp-evald (&optional gthrp semicolons-p nlp intrp)
 ;; "GTHRP -> gather-line-p; NLP -> new-lines-p;"
 ;;  (interactive "i\ni\ni\p")
@@ -916,11 +995,36 @@ See also; `mon-lisp-stamp',`mon-file-stamp', `mon-insert-copyright',
 ;;; ==============================
 ;;; ==============================
 
+;; (setq (str-len-b (length my-str))
+;; (setq my-str
+;; "Phasellus porta auctor urna sed elementum. Etiam vel aliquam magna. Nam posuere, quam eu rhoncus tempus, tellus metus vulputate lacus, ac mattis arcu felis ut enim. Suspendisse potenti. Fusce massa diam, semper ut tempus sit amet, feugiat a arcu. Maecenas quis arcu eu felis porttitor interdum sit amet sed ipsum. Cras semper nunc enim, et iaculis urna. Nunc at purus eros, sit amet vulputate lectus. Proin viverra ante vel mi rutrum in posuere tortor mattis. Aenean quis quam sapien. Fusce sed erat leo, vitae feugiat dolor. Ut id mi massa. Curabitur sollicitudin tristique tortor, tincidunt vulputate nibh sagittis a. Proin turpis leo, fringilla sit amet sodales at, malesuada vitae diam. Cras facilisis, odio a elementum varius, nunc dolor porttitor massa, at condimentum metus purus vel ligula. Ut quam est, ornare at congue eu, hendrerit id nulla. Nunc id ligula sapien. Integer non tortor id mauris consectetur accumsan. Donec in orci vel purus pharetra pulvinar ut nec nunc.")
 
 
-
+;; (let*  (;temporary
+;;         ;;my-str ;evald-string
+;;         ;;stre-len-b strn-len
+;;         (str-len-b (length my-str))
+;;         (split-at fill-column)
+;;         (split-times (/ str-len-b split-at))
+;;         (remn (mod str-len-b fill-column))
+;;         (l)
+;;         (split-on))
+;;   (setq l
+;;         (do ((i 0 (+ i 1))
+;;              (j 0 (+ fill-column j))
+;;              (k '() (cons j k)))
+;;             ((= split-times (1- i)) k)))
+;;   (setq l (cons (+ (car l) remn) l))
+;;   (setq l (nreverse l)) ;=>(0 80 160 240 320 400 480 560 579)
+;;   (while l
+;;     (push (substring my-str (car l) (cadr l)) split-on)
+;;     (pop l))
+;;   (setq split-on (reverse split-on))
+;;   (mapconcat (lambda (x) (concat ";;; " x)) split-on  "\n"))
+;;; ==============================
 
 ;;; ==============================
+;;; beginning-of-defun
 ;;; FIXME: REGEXP doesn't catch on cases where the lambda list is on the next line.
 ;;; FIXME: Insertion of defvar test-me's should either:
 ;;;        use a (symbol-value VAR), or; 
@@ -934,12 +1038,12 @@ See also; `mon-lisp-stamp',`mon-file-stamp', `mon-insert-copyright',
 ;;; (progn
 ;;; (makunbound 'some-func-or-var)
 ;;; (unintern 'some-func-or-var))
-
 ;;; ==============================
+;;; NOT WORKING AS OF:
 ;;; CREATED: <Timestamp: 2009-07-31-W31-5T13:53:52-0400Z - by MON KEY>
-(defun mon-insert-lisp-testme (&optional with-func test-me-count insertp intrp)
+(defun mon-insert-lisp-testme-fancy (&optional search-func test-me-count insertp intrp)
   "Insert at point a newline and commented test-me string.
-When non-nil WITH-FUNC will search backward for a function name and include it 
+When non-nil SEARCH-FUNC will search backward for a function name and include it 
 in the test-me string.
 When non-nil TEST-ME-COUNT insert test-me string N times. Default is 1\(one\).
 When prefix arg TEST-ME-COUNT is non-nil inerts N number of ';;;test-me' strings 
@@ -947,7 +1051,8 @@ and prompts y-or-n-p if we want to include the function name in insertions.
 When INSERTP is non-nil insert the test-me string(s) in current buffer at point.
 Use at the end of newly created elisp functions to provide example test cases.
 Regexp held by global var `*regexp-symbol-defs*'.\n
-See also; mon-doc-help `mon-insert-lisp-stamp', `mon-insert-copyright',
+See also; `mon-insert-doc-help-tail', `mon-test->*regexp-symbol-defs*'
+`mon-insert-doc-help-tail', `mon-insert-lisp-stamp', `mon-insert-copyright',
 `mon-insert-lisp-CL-file-template', `comment-divider',
 `comment-divider-to-col-four', `mon-insert-lisp-evald'."
   (interactive "i\np\ni\np")
@@ -958,12 +1063,47 @@ See also; mon-doc-help `mon-insert-lisp-stamp', `mon-insert-copyright',
                         (progn (setq get-func nil) test-me-count)))
                     ((not test-me-count) 1)
                     (t  test-me-count)))
-         (func (if (or with-func get-func)
+         (sym-nm (if (or search-func get-func)
                    (save-excursion 
                      (search-backward-regexp  *regexp-symbol-defs*)
                      (buffer-substring-no-properties (match-beginning 3) (match-end 3)))))
-         (test-me-string (if (or with-func get-func)
-                             (format ";;;test-me;(%s )" func)
+         (sym-typ (match-string-no-properties 2))
+         (fun-syms '("defun" "defun*" "defmacro" "defmacro*" "defsubst" "defsubst*"))
+         (var-syms '("defvar" "defconst" "defcustom"))
+         ;;(sym-name &key :alt-cookie :do-var :insertp :do-face :do-group :do-theme
+         (sym-typ-cond (cond ((car (member found fun-syms))
+                              (concat 
+                               ";;;test-me;(%s)"
+                               (when (car (assoc 'interactive (symbol-function sym-nm)))
+                                 "\n;;;test-me;\(call-interactively '%s\)")
+                               ;; ==============================
+                               ;;Working on this- So finish it then already... 
+                               (let ((tst-intrp-l (mon-get-func-args sym-nm))
+                                     (intrp-posn (car (intersection 
+                                                       '(insertp insert-p insrtp insrt-p 
+                                                         :insertp :insert-p :insrtp :insrt-p)
+                                                       tst-intrp)))
+				     ;;; NOT WORKING AS OF:
+				     ;; <Timestamp: #{2009-09-22T19:57:39-04:00Z}#{09392} - by MON KEY>
+                                     )
+                                     (if intrp-posn
+                                     (position inrp-posn (mon-get-func-args sym-nm)))
+                                     )
+                               )) ;close first cond
+                             ;;
+                             ((car (member found var-syms)) 
+                              ";;;test-me; %s")
+                             ((string= found "defface")
+                              (concat ";;;test-me;\(facep '%s\)\n"
+                                      ";;;test-me;\(face-default-spec '%s\)"))
+                             ((string= found "defgroup")
+                              ";;;test-me; %s")
+                             ((string= found "deftheme")
+                              ";;;test-me;\(custom-theme-p '%s\)")
+                             (t ";;;test-me; %s")))
+         (test-me-string (if (or search-func get-func)
+                             ;;  (format  ";;;test-me;(%s )" sym-nm)
+                             (format sym-typ-cond sym-nm)
                            ";;;test-me;"))
          (limit (make-marker))
          (cnt tmc)
@@ -982,28 +1122,92 @@ See also; mon-doc-help `mon-insert-lisp-stamp', `mon-insert-copyright',
            (format "%s$" test-me-string) (marker-position limit) t) 
           t) ; t needed here to prevent returning buffer position when called externally?
         return-tms)))
-
-;;;Uncomment to test:
-;;;(defun some-function (&optional optional)
-;;;(defun some-function-22 (&optional optional)
-;;;(defun *some/-symbol:->name<-2* (somevar
-;;;(defmacro some-macro ()
-;;;(defmacro some-macro*:22 (&rest)
-;;;(defun *some/-symbol:->name<-2* (somevar
-;;;(defvar *some-var* 'var
-;;;(defun *some/-symbol:->name<-2* 'somevar
-
-;;;test-me;
-;;(let ((find-def* *regexp-symbol-defs*))
-;; (search-backward-regexp find-def*))
-
+;;;
+;;; ==============================
+;;; TEMPLATE FOR GATHERING data re: previous function:
+;;; ==============================
+;; (search-backward-regexp *regexp-symbol-defs*)
+;; (sym (match-string-no-properties 3)) ;symbol name
+;; (found (match-string-no-properties 2)) ;symbol type
 ;;
-;;;test-me;`(,(match-beginning 3) ,(match-end 3))
-;;;test-me;(match-sring 1) ;grp 1=>"(defun* some-func:name* ("
-;;;test-me;(match-sring 2) ;grp 2=>"(defun* "
-;;;test-me;(match-string 3) ;grp 3=>"some-macro*:22"
-;;;test-me;(match-sring 4) ;grp 4=>" (" 
-    
+;; (cond ((functionp sym-name)
+;;        (or (documentation sym-name)
+;;            (when (stringp (caddr (symbol-function 'mon-help-function-spit-doc)))
+;;              (stringp (caddr (symbol-function 'mon-help-function-spit-doc)))))) ;funcs, macros
+;;       (do-var (or (plist-get (symbol-plist sym-name) 'variable-documentation)
+;;                   (documentation-property sym-name 'variable-documentation))) ;var, const, customs
+;;       (do-face (or (face-documentation sym-name)
+;;                    (plist-get (symbol-plist sym-name) 'face-documentation)
+;;                    (documentation-property sym-name 'face-documentation))) ;; faces
+;;       (do-group (or (plist-get (symbol-plist sym-name) 'group-documentation)
+;;                     (documentation-property sym-name 'group-documentation))) ;; groups
+;;       (do-theme (or (plist-get (symbol-plist sym-name) 'theme-documentation)
+;;                     (documentation-property sym-name 'theme-documentation))) ;; consider 'theme-settings
+;;       (t (documentation sym-name)))
+;;
+;; ;;(mon-help-function-spit-doc (sym-name &key :alt-cookie :do-var :insertp :do-face :do-group :do-theme)
+;; (sym-str-cond (cond ((car (member found '("defun" "defun*" "defmacro" "defmacro*")))
+;;                           "      (mon-help-function-spit-doc '%s :insertp t)\n")
+;;                      ((car (member found '("defvar" "defconst" "defcustom")))
+;;                      "      (mon-help-function-spit-doc '%s :do-var t :insertp t)\n")
+;;                      ((string= found "defface")
+;;                      "      (mon-help-function-spit-doc '%s :do-face t :insertp t)\n")
+;;                      ((string= found "defgroup")
+;;                       "      (mon-help-function-spit-doc '%s :do-group t :insertp t)\n")
+;;                      ((string= found "deftheme")
+;;                       "      (mon-help-function-spit-doc '%s :do-theme t :insertp t)\n")
+;;                      (t "      (mon-help-function-spit-doc '%s :insertp t)\n")))
+;;; ==============================
+
+;;; ==============================
+;;; CREATED: <Timestamp: 2009-07-31-W31-5T13:53:52-0400Z - by MON KEY>
+(defun mon-insert-lisp-testme (&optional search-func test-me-count insertp intrp)
+  "Insert at point a newline and commented test-me string.
+When non-nil SEARCH-FUNC will search backward for a function name and include it
+in the test-me string.
+When non-nil TEST-ME-COUNT insert test-me string N times. Default is 1\(one\).
+When prefix arg TEST-ME-COUNT is non-nil inerts N number of ';;;test-me' strings
+and prompts y-or-n-p if we want to include the function name in insertions.
+When INSERTP is non-nil insert the test-me string(s) in current buffer at point.
+Use at the end of newly created elisp functions to provide example test cases.
+Regexp held by global var `*regexp-symbol-defs*'.\n
+See also; `mon-insert-doc-help-tail', `mon-test->*regexp-symbol-defs*'
+`mon-insert-doc-help-tail', `mon-insert-lisp-stamp', `mon-insert-copyright',
+`mon-insert-lisp-CL-file-template', `comment-divider',
+`comment-divider-to-col-four', `mon-insert-lisp-evald'. ►►►"
+  (interactive "i\np\ni\np")
+  (let* ((get-func)
+         (tmc (cond ((and intrp (> test-me-count 1))
+                      (if ((lambda () (yes-or-no-p "Search-function-name? :")))
+                          (progn (setq get-func t) test-me-count)
+                        (progn (setq get-func nil) test-me-count)))
+                    ((not test-me-count) 1)
+                    (t  test-me-count)))
+         (func (if (or search-func get-func)
+                   (save-excursion
+                     (search-backward-regexp  *regexp-symbol-defs*)
+                     (buffer-substring-no-properties (match-beginning 3) (match-end 3)))))
+         (test-me-string (if (or search-func get-func)
+                             (format ";;;test-me;(%s )" func)
+                           ";;;test-me;"))
+         (limit (make-marker))
+         (cnt tmc)
+         (return-tms))
+    (while (>= cnt 1)
+      (setq return-tms (concat test-me-string "\n" return-tms))
+      (setq cnt (1- cnt)))
+    (if (or intrp insertp)
+          (progn
+            (save-excursion
+              (when insertp (newline))
+              (when (not (bolp))(beginning-of-line))
+              (princ return-tms (current-buffer))
+              (set-marker limit (point)))
+          (search-forward-regexp
+           (format "%s$" test-me-string) (marker-position limit) t)
+          t) ; t needed here to prevent returning buffer position when called externally?
+        return-tms)))
+
 ;;;test-me;(mon-insert-lisp-testme)
 ;;;test-me;(mon-insert-lisp-testme t 3 )
 ;;;test-me;(mon-insert-lisp-testme nil 3)
@@ -1070,20 +1274,28 @@ use \"MON KEY\". See also; `mon-insert-copyright'."
 ;;test-me;(mon-build-copyright-string nil nil t t nil t)
 ;;test-me;(call-interactively 'mon-build-copyright-string)
 
-
 ;;; ==============================
 ;;; CREATED: <Timestamp: Saturday July 11, 2009 @ 12:35.37 PM - by MON KEY>
 ;;; DEPRECATED: USE: (mon-build-copyright-string t)
 (defun mon-insert-copyright (&optional monkey)
-  "Insert copyright with relevant details, conditional on user's system name.
+  "Insert copyright with relevant details.
+Conditional on user's system name.
 See also; `mon-build-copyright-string'.\nUsed in `naf-mode'." 
   (interactive "P")
   (mon-build-copyright-string t nil monkey))
+;;
+(defalias 'bug-insert-copyright 'mon-insert-copyright
+"Inserts a copyright string with relevant details.
+Conditional upon `IS-BUG-P' returning t.
+See also; `mon-build-copyright-string'.\nUsed in `naf-mode'.")
 
 ;;test-me;(mon-insert-copyright)
 ;;test-me;(mon-insert-copyright t)
 ;;test-me;(call-interactively 'mon-insert-copyright)
+;;test-me;(bug-insert-copyright)
 
+
+;;;(mon-insert-unicode "25C4")
 ;;; ==============================
 ;;; CREATED: <Timestamp: Thursday April 09, 2009 @ 05:52.10 PM - by MON KEY>
 ;;; RENAMED: `mon-insert-naf-mode-file-template' ->`mon-insert-file-template'
@@ -1106,19 +1318,24 @@ See also; `mon-insert-lisp-CL-file-template', `mon-file-stamp'."
 ;;; this is %s
 ;;; ================================================================
 ;;; DESCRIPTION:
-;;; %s {description here}.\n;;;
-;;; FUNCTIONS:\n;;;
-;;; CONSTANTS or VARIABLES:\n;;;
+;;; %s provides {description here}.\n;;;
+;;; FUNCTIONS:►►►\n;;;\n;;; FUNCTIONS:◄◄◄\n;;;
 ;;; MACROS:\n;;;
-;;; SUBST or ALIASES:\n;;;
-;;; DEPRECATED, RENAMED, OR MOVED:\n;;;
-;;; REQUIRES:\n;;;
+;;; CONSTANTS:\n;;;
+;;; VARIABLES:\n;;;
+;;; ALIASED/ADVISED/SUBST'D:\n;;;
+;;; DEPRECATED:\n;;;
+;;; RENAMED:\n;;;
+;;; MOVED:\n;;;
 ;;; TODO:\n;;;
 ;;; NOTES:\n;;;
 ;;; SNIPPETS:\n;;;
+;;; REQUIRES:\n;;;
 ;;; THIRD PARTY CODE:\n;;;
 ;;; AUTHOR: MON KEY
 ;;; MAINTAINER: MON KEY\n;;;
+;;; PUBLIC-LINK: (URL `http://www.emacswiki.org/emacs/%s)
+;;; FIRST-PUBLISHED:\n;;;
 ;;; FILE-CREATED:\n%s
 ;;; ================================================================
 %s
@@ -1132,7 +1349,8 @@ See also; `mon-insert-lisp-CL-file-template', `mon-file-stamp'."
 ;;; %s ends here\n;;; EOF"
 fname
 fname-sans
-(concat ";;; <Timestamp: " (mon-timestamp :naf t)) ;(format-time-string "%A %B %d, %Y @ %I:%M.%S %p")
+fname
+(concat ";;; <Timestamp: " (mon-timestamp :naf t)) 
 *mon-gnu-license-header* 
 (mon-build-copyright-string nil nil t t nil t)
 fname-sans
@@ -1163,11 +1381,12 @@ Try to DTRT when buffer is not visiting file and prompts for filename to write
 buffer to before proceeding with insertion.\n
 See also; `mon-file-stamp', `mon-insert-file-template', `mon-insert-gnu-licence',
 `mon-insert-ebay-dbc-template',`mon-insert-CL-package-template'."
-  (intractive "\i\n\i\n\i\nP")
+  (interactive "\i\n\i\n\i\nP")
   (let ((mail-addr (cadr (assoc 9 *DCP-NAME*))) ;WAS: `user-mail-address'
         (organization (getenv "ORGANIZATION"))
-        (u-name (cadr (assoc 6 *MON-NAME*));;WAS: `user-full-name' 
+        (u-name (cadr (assoc 6 *MON-NAME*))) ;;WAS: `user-full-name' 
         (this-year (substring (current-time-string) -4))
+      
         (title (when intrp (read-string "set @title to: ")))
         (shrt-desc (when intrp (read-string "Short description :")))
         (top (when intrp (read-string "set @top (master menu) to :")))

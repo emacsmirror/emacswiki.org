@@ -17,8 +17,8 @@ Start it using `M-x rmail'.  This moves all your mail from your local
 spool file and save it in the Rmail primary file pointed by
 `rmail-file-name' (default to ##~/RMAIL##)
 
-In Emacs versions <=22, files are saved in a special format called 
-[[Babyl]]. In Emacs 23 (currently in development), [[Rmail]] switched to mbox.
+In Emacs versions previous to 23, files are saved in a special format called 
+[[Babyl]]. Starting with Emacs 23, [[Rmail]] uses the standard mbox format.
 
 == Reading mail ==
 
@@ -104,18 +104,18 @@ then press `C-c C-c' to save them and return to reading mode.
 
 == Converting Babyl files to mbox format ==
 
-If you decide that Rmail is not for you, you can later read mail from this
+If you tried Rmail with an Emacs version prior to 23 and
+you decide that Rmail is not for you, you can later read mail from the Babyl
 file if you are using [[Gnus]].  For all other mail readers, you'll have
 to move the mails back into mbox format.  Use `M-x unrmail' to convert the mail file.
-You can also use the command-line tool ##b2m## to do it.
+You can also use the command-line tool ##b2m## to do it.  Starting with version 23,
+Emacs converts Babyl files back into mbox when it first reads them.
 
 == Rmail Libraries ==
 
 Read mail from remote inboxes using ange-ftp with rmail-extras
 http://bmrc.berkeley.edu/~trey/emacs/src/rmail-extras.el (dead link? Local
 copy: Lisp:rmail-extras.el).
-* Might this have been written when there was no pop3 retrieval in Rmail
-(it's from 1993)?
 
 Thread messages with
 [http://ftp.ccs.neu.edu/pub/people/ratinox/emacs-lisp/trmail.el trmail].

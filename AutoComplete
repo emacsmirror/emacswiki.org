@@ -254,6 +254,12 @@ for auto-complete.el:
 
 </pre>
 ----
+Notes on the patches above:
+The changes to auto-complete-yasnippet should *not* use the variable 'candidates', since this will clobber the internal candidates variable inside
+ac-sources-candidate() and lead to all sorts of pain.
+----
+Original ac-yasnippet used this variable. You can see this in download links above.
+
 CategoryCompletion
 
 

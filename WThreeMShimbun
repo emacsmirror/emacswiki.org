@@ -142,8 +142,8 @@ While there is great power in writing your own shimbun, the
 development version of emacs-w3m comes with "generic" shimbun
 that parse rss and atom feeds:
 
-* rss-hash.el: http://cvs.namazu.org/emacs-w3m/shimbun/sb-rss-hash.el?rev=1.6&view=log
-* atom-hash.el: http://cvs.namazu.org/emacs-w3m/shimbun/sb-atom-hash.el?rev=1.8&view=log
+* rss-hash.el: http://cvs.namazu.org/emacs-w3m/shimbun/sb-rss-hash.el?rev=HEAD
+* atom-hash.el: http://cvs.namazu.org/emacs-w3m/shimbun/sb-atom-hash.el?rev=HEAD
 
 You can add feeds for reading in [[Gnus]], [[Wanderlust]], and [[Mew]]
 by using the variables shimbun-rss-hash-group-path-alist and
@@ -155,7 +155,7 @@ shimbun module performs automatic html filtering on Wordpress,
 Blogger, and TypePad Blogs. Or, one can specify regular expressions
 that mark the beginning and end of the content.
 
- ----
+----
 
 See Also: GnusRss
 

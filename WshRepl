@@ -4,11 +4,8 @@ Right now it offers VERY simple functionality, giving you a console into the win
 
 It lives as 2 separate files, the first is the comint interaction mode wsh-repl.el, and the second is a simple Javascript (JSript) file to actually handle REPL interaction.
 
-The Emacs Lisp Library is here: Lisp:wsh-repl.el
+WshRepl is now available on GitHub: http://github.com/jonnay/wsh-repl
 
-The Javascript Library is here: http://bunny.jonnay.net/sites/bunny.jonnay.net/files/wsh-repl.js.txt  (you will need to rename the file when you save it)
-
-[new]
 With version 0.2 there have been some new changes:
 * Wrapped the REPL inside of a try/catch
 * Multiline Mode
