@@ -130,6 +130,12 @@ each time they start X.
 
 == Editing ==
 
+=== How do I change the variable tab-width for the current buffer? ===
+	     
+Write the following in your .emacs
+
+    (setq-default tab-width 4)
+
 === Why doesn't my Backspace key work? ===
 
 See http://www.ibb.net/~anne/keyboard.html for the full story.

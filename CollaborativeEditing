@@ -3,7 +3,7 @@
 ** Anyone have a more detailed description of how to set this up?
 * SubEthaEmacs is a (dead?) attempt to get Emacs to grok [http://www.emacswiki.org/cgi-bin/wiki/SubEthaEditProtocol SubEthaEdit's closed collaborative editing protocol].
 * [http://docsynch.sourceforge.net/ Docsynch] is an open cross-editor collaborative editing protocol that runs over IRC. Plugins exist for JEdit, vim and a few other editors, but only the JEdit version seems to be complete. Development seems stalled. (Last news item was dated 2004.)
-* [http://gobby.0x539.de/trac/ Obby] is another open protocol. Currently there is only one editor that specifically supports it, called [http://gobby.0x539.de/trac/ Gobby], that is a cross-platform GTK editor. An implementation of the protocol is being developed in EmacsLisp, as [http://dev.technomancy.us/ebby ebby]
+* [http://gobby.0x539.de/trac/ Obby] is another open protocol. Currently there is only one editor that specifically supports it, called [http://gobby.0x539.de/trac/ Gobby], that is a cross-platform GTK editor. An implementation of the protocol is being developed in EmacsLisp, as [http://dev.technomancy.us/ebby ebby], [[Rudel]] (mentioned below) also uses Obby.
 * [[Egret]] -- An extension to XEmacs.
 * [http://csdl.ics.hawaii.edu/Tools/Shemacs/ Shemacs] is a tool implementing synchronous multi-user support for the Emacs editor using Egret, a client-server-agent framework for implementation of domain-specific, collaborative, hypertext systems.
 * [http://github.com/technomancy/conspire/tree/master Conspire mode] achieves realtime, collaborative editing using git as a backend.

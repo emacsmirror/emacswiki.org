@@ -311,3 +311,22 @@ To compile Elisp sources, call /Applications/Aquamacs\ Emacs.app/Contents/MacOS/
 == How to cleanly uninstall Aquamacs? ==
 
 I'd recommend [http://www.freemacsoft.net/AppCleaner/ AppCleaner], just as I would for uninstalling any other application on OS X.
+
+== Ringing the bell, visible bell, sound, etc. ==
+
+By default, Aquamacs won't make a sound when a search fails or when you try to move beyond the top or bottom of the buffer.  To cause Aquamacs to make a sound, put the following in ~/Library/Preferences/Aquamacs Emacs/Preferences.el or your .emacs file:
+
+##(setq ring-bell-function nil)##
+
+If you find an audible bell to be irritating, consider using a "visible bell", which is a momentary flash on the screen to notify you that something happened.  Aquamacs implements a visible bell as a large white square that appears in the center of the screen.  To turn on the visible bell, use
+
+##(setq visible-bell t)##
+
+The two variables interact in a way that may be confusing.  For example, you can't have a visible bell and an audible bell at the same time.  Here's a table that shows some settings the variables can take, and the resulting effect.
+
+|| || *default value* || || || ||
+||''##ring-bell-function##''||##(lambda nil (message ""))##||##nil##||##(lambda nil (message ""))##||##nil##||
+||''##visible-bell##''||##nil##||##nil##||##t##||##t##||
+||||||||||||
+||*resulting effect*||no sound, no flash||sound, no flash||no sound, no flash||no sound, flash||
+

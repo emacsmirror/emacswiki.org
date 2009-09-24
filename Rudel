@@ -40,6 +40,7 @@ Since CEDET can be difficult to install, (and unfortunately is not in ELPA due t
   ;; Do these in a shell in ~/src:
   ;; cvs -d:pserver:anonymous@cedet.cvs.sourceforge.net:/cvsroot/cedet login 
   ;; cvs -z3 -d:pserver:anonymous@cedet.cvs.sourceforge.net:/cvsroot/cedet co -P cedet
+  ;; cd cedet && make && cd ..
   ;; svn co https://rudel.svn.sourceforge.net/svnroot/rudel/rudel/trunk rudel
   (add-to-list 'load-path "~/src/cedet/eieio")
   (add-to-list 'load-path "~/src/cedet/common")

@@ -11,12 +11,12 @@ Where to get it:
 *** http://alpha.gnu.org/gnu/emacs/pretest/windows/
 
 * Unofficial/CVS Emacs (which means the Emacs currently in development, it is however very stable now):
+** **2009-09-23** -- http://ntemacs.sourceforge.net/ -- **CVS Emacs 23.1.50.1 Win32**
 ** **2009-06-30** -- [[EmacsW32]] -- **CVS Emacs 23.1.50.1**
 *** Does some extra setup to work better on w32 (MS-Windows) and includes some unix programs (grep etc) from gnuwin32. It is also slightly patched for the same reason.
 *** For other reasons the packages also includes [NxmlMode nXhtml].
 *** There is also an unpatched version of Emacs available and a zip file with just the unpatched Emacs. (But please see above for official release and pretest binaries.)
 ** **2007-10-08** -- http://www.crasseux.com/emacs/
-** **2007-08-19** -- http://ntemacs.sourceforge.net/ -- CVS Emacs 22.x and 23.x for Win32
 ** or build it yourself BuildingOnWindowsTableofContents.
 
 * Emacs 22

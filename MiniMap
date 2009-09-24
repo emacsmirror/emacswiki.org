@@ -3,9 +3,15 @@
 This page is about a minimap implementation for Emacs. In the minibar window, it highlights the portion of the buffer that is currently visible in the main window. This highlight position is updated automatically, as you navigate in the main window. You can scroll the main window by dragging the
 highlighted area in the minibar.
 
-Here's a screenshot showing the minimap in action:
+You can configure the size/readability of the sidebar freely by specifying the font familiy and height. Here are two screenshots of the minibar in action:
 
-http://randomsample.de/minimap-ex2.jpg
+With Bitstream Vera Sans, Height 40:
+
+http://randomsample.de/minimap1.jpg 
+
+With Proggyfont Tiny, Height 20:
+
+http://randomsample.de/minimap2.jpg
 
 Get the latest version from http://randomsample.de/minimap.el
 
@@ -72,11 +78,31 @@ You could create a new screenshot with the toolbars hidden. I assume it looks be
 
 [new]
 
+Done.
+
+----
+
+[new]
+
 Some actions seem to steal the minimap window for their own output.  What about adding
 <pre>
 (set-window-dedicated-p nil t)
 </pre>
 in the mode setup to try and minimize that.
+
+[new]
+
+Added a new option for that. It defaults to 'nil' though, because dedicated windows tend to confuse users since they behave unexpectedly.
+
+----
+
+[new]
+
+Really nice! How can you set up emacs so it creates a minimap for every buffer (or, for buffers of a certain type)? A problem I encounter is that when you create minimaps for 2 buffers, you get two minimap windows side-by-side. And so on. Could the minimap frame be reused when you switch buffer in a window? (On Carbon Emacs Fall 2008: Emacs 22.3.1) Thanks!
+
+[new]
+
+Well, that's in the TODO list. Currently, you can't really do that in Emacs without heaviliy using 'defadvice' on all the functions that switch or change buffers (thats what EmacsCodeBrowser does at the moment). There is some work going on to make this kind of fixed 'window grouping' possible in Emacs proper, so I rather just wait for that. At the moment, I'd suggest to bind 'minimap-create' to a key, then just maximize the buffer you're currently editing and use the key combination for 'minimap-create'. Existing minimaps which are currently hidden will then be reused.
 
 ----
 CategoryWindows   CategoryDisplay

@@ -1,5 +1,11 @@
 ==Mon Packages==
 
+* Lisp:monDOTemacs.el
+* Lisp:mon-site-local-defaults.el
+* Lisp:mon-default-loads.el
+* Lisp:mon-default-start-loads.el
+* Lisp:mon-w32-load.el
+* Lisp:mon-keybindings.el
 * Lisp:mon-empty-registers.el (EmptyRegisters);
 * Lisp:mon-doc-help-utils.el (ReferenceSheetHelpUtils);
 * Lisp:mon-doc-help-CL.el

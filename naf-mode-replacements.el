@@ -81,6 +81,10 @@
 ;;; AUTHOR: MON KEY
 ;;; MAINTAINER: MON KEY
 ;;;
+;;; PUBLIC-LINK:
+;;; (URL `http://www.emacswiki.org/emacs/naf-mode-replacements.el')
+;;; FIRST-PUBLISHED: <Timestamp: #{2009-09-20} - by MON KEY>
+;;;
 ;;; FILE-CREATED:
 ;;; <Timestamp: Wednesday April 08, 2009 @ 01:16.02 PM - by MON KEY>
 ;;; ================================================================
