@@ -1,5 +1,9 @@
 Auto completion with popup menu.
 
+Project page:
+
+http://code.google.com/p/auto-complete/
+
 Lisp:auto-complete.el (0.2.0 stable)
 
 Lisp:auto-complete-extension.el is some enhancement by AndyStewart.
@@ -193,106 +197,29 @@ I can confirm it still doesnt work(updated version of auto-complete.el and auto-
 --[[GlauberPrado]]
 ----
 [new]
-With latest versions of AutoComplete and YASnippet problem still exists. Solution I've made:
+Final version of auto-complete-yasnippet.el, tested in both 23.0 and 23.1:
 
-for auto-complete-yasnippet.el:
-
-<pre>
---- auto-complete/auto-complete-yasnippet.el	2009-03-19 08:19:13.000000000 +0200
-+++ auto-complete/auto-complete-yasnippet.el	2009-09-20 03:34:40.000000000 +0300
-@@ -2,20 +2,15 @@
- (require 'yasnippet)
- 
- (defun ac-yasnippet-candidate-1 (table)
--  (let ((hashtab (yas/snippet-table-hash table))
--        (parent (yas/snippet-table-parent table))
--        candidates)
--    (maphash (lambda (key value)
--               (push key candidates))
--             hashtab)
--    (setq candidates (all-completions ac-prefix (nreverse candidates)))
--    (if parent
--        (setq candidates
--              (append candidates (ac-yasnippet-candidate-1 parent))))
--    candidates))
-+  (let (candidates (list)))
-+  (mapcar (lambda (mode)
-+            (maphash (lambda (key value)
-+                       (push key candidates))
-+        (yas/snippet-table-hash mode))) table)
-+  (setq candidates (all-completions ac-prefix candidates)))
- 
- (defun ac-yasnippet-candidate ()
--  (let ((table (yas/snippet-table major-mode)))
-+  (let ((table (yas/get-snippet-tables major-mode)))
-     (if table
-         (ac-yasnippet-candidate-1 table))))
- 
-
-</pre>
-
-YASnippet functions names got changed and structure changed too.
-But yas/expand is not called even after this patch.
-The problem is in (delete-dups) function.
-I don't know why, but after doing it on cadidates all properties
-are missing. Replacing (delete-dups) with (remove-duplicates) solves
-the problem.
-
-for auto-complete.el:
-<pre>
---- auto-complete/auto-complete.el	2009-09-11 18:50:53.000000000 +0300
-+++ auto-complete/auto-complete.el	2009-09-20 03:24:36.000000000 +0300
-@@ -957,7 +957,7 @@
-                  (> (length cand) ac-limit))
-             (setcdr (nthcdr (1- ac-limit) (copy-sequence cand)) nil))
-         (setq candidates (append candidates cand))))
--    (delete-dups candidates)))
-+        (remove-duplicates candidates)))
- 
- (defun ac-get-source-property (property source)
-   (if (symbolp source)
-
-</pre>
-----
-Notes on the patches above:
-The changes to auto-complete-yasnippet should *not* use the variable 'candidates', since this will clobber the internal candidates variable inside
-ac-sources-candidate() and lead to all sorts of pain.
-----
-Original ac-yasnippet used this variable. You can see this in download links above.
-----
-[new:shabble:2009-09-23 10:45 UTC]
-That's true, but I spent a while tracking down  a strange bug where a duplicate of the yasnippet candidate (with no styling or action) was appearing in the menu when triggered.  I finally tracked it down to the candidates var in ac-sources-candidate being modified from within the ac-yasnippet-candidate-1 function, before the properties had been applied to it.  This also seems to be the cause of issue with delete-dups, since it leaves the first (non-propertized) candidate and nukes the correct one.  After renaming, delete-dups works as expected.
-
-Simply renaming the 'candidates' var in either ac-sources-candidate or ac-yasnippet-candidate-1 solves these issues, so I thought I'd mention it here.
-----
-[new]
-Very strange. I didn't expirience such problems after patching. Could you please paste your version of auto-complete-yasnippet.el and auto-complete.el, if you modified it too?
-----
-[new]
-auto-complete.el Version: 0.3.0 alpha, auto-complete-yasnippet doesn't appear to have a version header, but is copied below:
 <pre>
 (require 'auto-complete)
 (require 'yasnippet)
 
-(defun ac-yasnippet-candidate-1 (table)
- (let (candidates (list)))
-  (mapcar (lambda (mode)
-            (maphash (lambda (key value)
-                       (push key candidates))
-        (yas/snippet-table-hash mode))) table)
-  (setq candidates (all-completions ac-prefix candidates)))
- 
 (defun ac-yasnippet-candidate ()
   (let ((table (yas/get-snippet-tables major-mode)))
     (if table
-      (ac-yasnippet-candidate-1 table))))
+      (let (candidates (list))
+            (mapcar (lambda (mode)          
+              (maphash (lambda (key value)    
+                (push key candidates))          
+              (yas/snippet-table-hash mode))) 
+            table)
+        (all-completions ac-prefix candidates)))))
 
 (defface ac-yasnippet-candidate-face
   '((t (:background "sandybrown" :foreground "black")))
   "Face for yasnippet candidate.")
 
 (defface ac-yasnippet-selection-face
-  '((t (:background "coral3" :foreground "white")))
+  '((t (:background "coral3" :foreground "white"))) 
   "Face for the yasnippet selected candidate.")
 
 (defvar ac-source-yasnippet
@@ -300,13 +227,13 @@ auto-complete.el Version: 0.3.0 alpha, auto-complete-yasnippet doesn't appear to
     (action . yas/expand)
     (limit . 3)
     (candidate-face . ac-yasnippet-candidate-face)
-    (selection-face . ac-yasnippet-selection-face))
+    (selection-face . ac-yasnippet-selection-face)) 
   "Source for Yasnippet.")
 
 (provide 'auto-complete-yasnippet)
 
+P.S. I apologize for extra patch on auto-complete.el, it wasn't required. To those who patched: please use original version.
 </pre>
-Both of them have been patched as per the diffs above, with the additional renaming of 'candidates' in ac-sources-candidate to 'candidates-shab' to avoid collisions.
 
 ----
 CategoryCompletion

@@ -132,4 +132,9 @@ I'm using sqlplus with ide-skel on Windows Emacs version 22.0.92.1.  Works great
 [new]
 Hi! Really like sqlplus. Using it on windows XP with emacs 22.1. Best regards -- Pierre
 ----
+[new]
+Hi.  I've been using this for a few days and really like it.  However, I'm experiencing some bugs with plsql.el.  It throws a RegEx error when trying to format PL/SQL Functions, also it doesn't capitalize keywords.  Has anyone experienced this and/or found a fix?
+
+Cheers!  -- LaurenceRochfort
+
 CategorySql

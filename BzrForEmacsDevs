@@ -1,34 +1,34 @@
-= Bazaar for Emacs Developers =
+== Bazaar for Emacs Developers ==
 
 This is a quick-start guide to using [http://bazaar-vcs.org Bazaar] for Emacs development.  It assumes familiarity with the old CVS ways.
 
-== What Version of Bazaar to Use ==
+=== What Version of Bazaar to Use ===
 
 As Emacs needs some of the improvements provided by 1.17 release, it
 is higly recommended to use GNU Bazaar 1.17 or higher to develop
 Emacs.
 
 [:WhereIsEmacs]
-== Where is Emacs? ==
+=== Where is Emacs? ===
 
 A test repository has been set up (see the thread starting at [http://lists.gnu.org/archive/html/emacs-devel/2009-09/msg00428.html this message]) here:
 
- * Repository: sftp://bzr.sv.gnu.org/srv/bzr/emacs/emacs-merges
+* Repository: ##sftp://bzr.sv.gnu.org/srv/bzr/emacs/emacs-merges##
 
- * Trunk (master) branch: sftp://bzr.sv.gnu.org/srv/bzr/emacs/emacs-merges/master
+* Trunk (master) branch: ##sftp://bzr.sv.gnu.org/srv/bzr/emacs/emacs-merges/master##
 
 Since branching that is likely to take a long time, you should just download a tarball of the repository:
 
-[http://bzr.notengoamigos.org/emacs-merges.tar.gz http://bzr.notengoamigos.org/emacs-merges.tar.gz]
+* http://bzr.notengoamigos.org/emacs-merges.tar.gz
 
 You can browse the repository on the web:
 
-[http://bzr.savannah.gnu.org/lh/emacs/ http://bzr.savannah.gnu.org/lh/emacs/]
+* http://bzr.savannah.gnu.org/lh/emacs/
 
 ''Note: Remember this is still just a test repository.  The final conversion has not yet been done.''
 
 [:RegularContributors]
-== How Regular Contributors Should Use Bazaar ==
+=== How Regular Contributors Should Use Bazaar ===
 
 This section describes how to set things up if you plan on making repeated contributions to Emacs (whether or not you're one of the Emacs maintainers).  It's based on [http://bazaar-vcs.org/Scenarios/RepeatedContributions this scenario].
 
@@ -164,7 +164,7 @@ When you decide to work on the next bugfix, create a new task branch:
 ...and you know what to do from here.
 
 [:PatchContributors]
-== How One-Time Patch Contributors Should Use Bazaar ==
+=== How One-Time Patch Contributors Should Use Bazaar ===
 
 If you just want to contribute a quick fix to Emacs, and don't anticipate making repeated contributions, then follow the instructions in this section (which is based on [http://bazaar-vcs.org/Scenarios/OneOffContribution this scenario]).  
 
@@ -173,20 +173,20 @@ However, if you think you might make more than one contribution, or even if you'
 TODO: TBD
 
 [:BleedingEdgeBuilds]
-== How To Follow Bleeding-Edge Emacs ==
+=== How To Follow Bleeding-Edge Emacs ===
 
 If you just want to run bleeding-edge code (perhaps so you can report bugs against the latest development sources), and are not planning to make code changes to Emacs, then just follow the instructions for [[#PatchContributors]] but don't make any commits and don't send any patches :-).
 
 [:PackageMerging]
-== Merging Upstream Packages (e.g., Gnus) Into Emacs With Bazaar ==
+=== Merging Upstream Packages (e.g., Gnus) Into Emacs With Bazaar ===
 
 TODO: TBD (but frankly, this should be easy, as it fits perfectly with the DVCS/Bazaar model anyway)
 
 [:Releases]
-== Doing Emacs Releases With Bazaar ==
+=== Doing Emacs Releases With Bazaar ===
 
 TODO: TBD
 
-== Other Resources ==
+=== Other Resources ===
 
 * [http://doc.bazaar-vcs.org/bzr.dev/en/user-guide/index.html Bzr Users Guide]

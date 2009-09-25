@@ -116,7 +116,6 @@
                                        (set-buffer buf)))
                                    (erase-buffer)
                                    (insert (cadr status))
-                                   (insert "\n")
                                    (goto-char (point-min))
                                    (copy-region-as-kill (point-min) (point-max))))))))
 

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2009, Drew Adams, all rights reserved.
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 21.0
-;; Last-Updated: Sun Aug  2 15:10:07 2009 (-0700)
+;; Last-Updated: Thu Sep 24 10:06:51 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 2533
+;;     Update #: 2539
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/highlight.el
 ;; Keywords: faces, help, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -104,7 +104,7 @@
 ;;    `hlt-flat-list', `hlt-highlight-faces-in-buffer',
 ;;    `hlt-listify-invisibility-spec',
 ;;    `hlt-mouse-toggle-link-highlighting',
-;;    `hlt-mouse-toggle-property-highlighting', `hlt-no-op',
+;;    `hlt-mouse-toggle-property-highlighting',
 ;;    `hlt-region-or-buffer-limits', `hlt-set-intersection',
 ;;    `hlt-set-union'.
 ;;
@@ -457,6 +457,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2009/09/24 dadams
+;;     Removed hlt-no-op - use function ignore instead.
 ;; 2009/08/02 dadams
 ;;     Added: hlt(-mouse)-toggle-(link|property)-highlighting, hlt-(un)highlight-all-prop,
 ;;            hlt-property-highlight, hlt-prop-highlighting-state.
@@ -740,7 +742,7 @@ You can use command `hlt-choose-default-face' to choose a different face."
             (overlay                            (and hlt-use-overlays-flag
                                                      (make-overlay start-point start-point)))
             ;; Otherwise, `put-text-property' calls this, which removes highlight.
-            (font-lock-fontify-region-function  'hlt-no-op)
+            (font-lock-fontify-region-function  'ignore)
             event)
         (setq buffer-read-only  nil)
         (track-mouse
@@ -791,7 +793,7 @@ no way to erase only part of it."
             (modified-p                         (buffer-modified-p))
             (inhibit-modification-hooks         t)
             ;; Otherwise, `put-text-property' calls this, which removes highlight.
-            (font-lock-fontify-region-function  'hlt-no-op)
+            (font-lock-fontify-region-function  'ignore)
             event)
         (setq buffer-read-only  nil)
         (track-mouse
@@ -871,7 +873,7 @@ If the region is not active or it is empty, then:
         (modified-p                          (buffer-modified-p))
         (inhibit-modification-hooks          t)
         ;; Otherwise, `put-text-property' calls this, which removes highlight.
-        (font-lock-fontify-region-function  'hlt-no-op)
+        (font-lock-fontify-region-function  'ignore)
         overlay)
     (setq buffer-read-only  nil)
     (cond (hlt-use-overlays-flag
@@ -1810,9 +1812,6 @@ If the region is empty or not active, then bob and eob are used."
   (if (or (not mark-active) (null (mark)) (= (point) (mark)))
       (list (point-min) (point-max))
     (if (< (point) (mark)) (list (point) (mark)) (list (mark) (point)))))
-
-;;; Function that does nothing and returns nil.  Any arguments are ignored.
-(unless (fboundp 'hlt-no-op) (defun hlt-no-op (&rest args) (interactive)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 

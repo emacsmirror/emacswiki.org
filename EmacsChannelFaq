@@ -130,6 +130,14 @@ each time they start X.
 
 == Editing ==
 
+=== How can I change the encoding of a text file ? ===
+								        [16:44]
+Open the file and run the following command:
+								        [16:47]
+    C-x RET f
+
+Select the coding you want and save the file.
+
 === How do I change the variable tab-width for the current buffer? ===
 	     
 Write the following in your .emacs

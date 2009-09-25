@@ -71,5 +71,7 @@ The executable binary is already there: Emacs.app/Contents/MacOS/Emacs. -- Untit
 in the middle of the window? That's beyond unusable and completely
 preventing me from upgrading from 22 to 23. -- RyanDavis
 
+* These build directions fail under 10.6.1 (Snow Leopard).  Does anyone know when a fix is planned?
+
 ----
 CategoryPorts

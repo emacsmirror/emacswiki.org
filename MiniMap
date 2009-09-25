@@ -105,4 +105,11 @@ Really nice! How can you set up emacs so it creates a minimap for every buffer (
 Well, that's in the TODO list. Currently, you can't really do that in Emacs without heaviliy using 'defadvice' on all the functions that switch or change buffers (thats what EmacsCodeBrowser does at the moment). There is some work going on to make this kind of fixed 'window grouping' possible in Emacs proper, so I rather just wait for that. At the moment, I'd suggest to bind 'minimap-create' to a key, then just maximize the buffer you're currently editing and use the key combination for 'minimap-create'. Existing minimaps which are currently hidden will then be reused.
 
 ----
+
+It seems linum-mode displays line numbers at normal size and thus only displays the normal number of lines in the minimap, you should probably check for it and disable it in the minimap buffer.
+
+[new]
+Done. I also changed the overlay-syncing, so that only the 'face and 'invisible property will be synced - otherwise, linum-mode would still change the line spacing in the minimap buffer.
+
+----
 CategoryWindows   CategoryDisplay

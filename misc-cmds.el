@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 21.1
-;; Last-Updated: Wed Aug 26 14:39:51 2009 (-0700)
+;; Last-Updated: Thu Sep 24 10:11:46 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 2883
+;;     Update #: 2887
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -34,7 +34,7 @@
 ;;    `forward-char-same-line', `forward-overlay',
 ;;    `goto-previous-mark', `indirect-buffer',
 ;;    `kill-buffer-and-its-windows', `mark-buffer-after-point',
-;;    `mark-buffer-before-point', `no-op', `recenter-top-bottom',
+;;    `mark-buffer-before-point', `recenter-top-bottom',
 ;;    `recenter-top-bottom-1', `recenter-top-bottom-2',
 ;;    `region-length', `region-to-buffer', `region-to-file',
 ;;    `revert-buffer-no-confirm', `selection-length',
@@ -63,6 +63,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2009/09/24 dadams
+;;     Removed no-op - use predefined function ignore instead.
 ;; 2009/06/02 dadams
 ;;     revert-buffer-no-confirm: Redefined using existing args (duh).
 ;; 2009/04/26 dadams
@@ -248,10 +250,6 @@
 (require 'misc-cmds)                 ; Ensure loaded before compile this.
 
 ;;;;;;;;;;;;;;;;;;;;;;;
-
-(defun no-op (&rest arguments)
-  "Do nothing and return nil.  All ARGUMENTS are ignored."
-  (interactive))
 
 (defun view-X11-colors ()
   "View file `/usr/lib/X11/rgb.txt', which lists available X11 colors."
@@ -468,7 +466,7 @@ Interactively, a message displays this information.
 
 If there is only one line in the active region, then the region is
 deactivated after this command, and the message mentions only LINE and
-LINE-LENGTH.  
+LINE-LENGTH.
 
 If this command is repeated, it checks for the longest line after the
 cursor.  That is *not* necessarily the longest line other than the

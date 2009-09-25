@@ -63,7 +63,10 @@
 ;;; `mon-load-or-alert', `mon-cmd', `mon-terminal', `mon-string-to-symbol'
 ;;; `mon-line-find-duplicates', `mon-test-keypresses'
 ;;; `mon-line-strings-to-list', `mon-line-strings-to-list-*test*'
-;;; `mon-line-string-rotate-name', `mon-sublist', `mon-sublist-gutted'
+;;; `mon-line-string-rotate-name', `mon-line-string-rotate-namestrings'
+;;; `mon-line-string-unrotate-namestrings', 
+;;; `mon-line-string-rotate-namestrings-combine'
+;;; `mon-sublist', `mon-sublist-gutted', `mon-map-append'
 ;;; FUNCTIONS:◄◄◄
 ;;; FUNCTIONS:###
 ;;; 
@@ -95,6 +98,8 @@
 ;;; AUTHOR: MON KEY
 ;;; MAINTAINER: MON KEY
 ;;;
+;;; PUBLIC-LINK: (URL `http://www.emacswiki.org/emacs/mon-utils.el')
+;;;
 ;;; FILE-CREATED:
 ;;; <Timestamp: Autumn 2008 - by MON KEY>
 ;;; ================================================================
@@ -124,24 +129,39 @@
 (eval-when-compile (require 'cl)) 
 
 ;;; ==============================
+(require 'mon-regexp-symbols)
+(require 'mon-time-utils)
+(require 'naf-mode-replacements) ;;BEFORE mon-dir-utils, BEFORE: naf-mode-insertion-utils
+(require 'mon-dir-locals-alist)
+(require 'mon-dir-utils)
+(require 'mon-insertion-utils)
+(require 'naf-mode-insertion-utils)
+(require 'mon-url-utils)
+(require 'mon-hash-utils)
+(require 'mon-doc-help-utils)
+(require 'mon-doc-help-CL)
+(require 'naf-skeletons)
+(require 'naf-mode)
+(require 'ebay-template-mode)
+(require 'mon-empty-registers)
+
+;;; ==============================
 ;;; EMACSWIKI: Enable 'em if you got 'em.
 ;;; ==============================
 ;;; (require 'mon-regexp-symbols)
 ;;; (require 'mon-time-utils)
-;;; (require 'naf-mode-replacements) ;;BEFORE mon-dir-utils, BEFORE: naf-mode-insertion-utils
+;;; (require 'naf-mode-replacements) ;before dir-utils
 ;;; (require 'mon-dir-locals-alist)
 ;;; (require 'mon-dir-utils)
 ;;; (require 'mon-insertion-utils)
 ;;; (require 'naf-mode-insertion-utils)
-;;; (require 'naf-url-utils)
 ;;; (require 'mon-hash-utils)
 ;;; (require 'mon-doc-help-utils)
 ;;; (require 'mon-doc-help-CL)
 ;;; (require 'naf-skeletons)
 ;;; (require 'naf-mode)
-;;; (require 'ebay-template-mode)
-;;; (require 'mon-empty-registers)
-;;; (require 'mon-regexp-symbols)
+;;; ==============================
+
 ;;; ==============================
 
 ;;; ==============================
@@ -1093,11 +1113,13 @@ NOTE:   The default width is 72 characters, the default left-margin is 0.
     justified))
 
 ;;; ==============================
-;;; NOTE: I Alias these so I don't forget to use them!
+;;; NOTE: Alias these and don't forget to use them!
 ;;; CREATED: <Timestamp: Wednesday July 01, 2009 @ 06:32.08 PM - by MON KEY>
 (defalias 'mon-string-combine-and-quote 'combine-and-quote-strings)
 ;;
 (defalias 'mon-string-split-and-unquote 'split-string-and-unquote)
+;;
+(defalias 'mon-replace-char-in-region 'subst-char-in-region)
 
 ;;; ==============================
 ;;; CREATED: <Timestamp: #{2009-09-12T14:07:56-04:00Z}#{09376} - by MON KEY>
@@ -1350,16 +1372,27 @@ See also; `mon-insert-string-ify', `mon-insert-string-incr',
 ;;; ==============================
 ;;; COURTESY: Drew Adams HIS: strings.el
 ;;; RENAMED: `mon-split-string-line' -> `mon-string-split-line'
-(defun mon-string-split-line (&optional buffer)
-  "Return current line of text in BUFFER as a string.\n
+;;; MODIFICATIONS: <Timestamp: #{2009-09-23T18:49:22-04:00Z}#{09393} - by MON KEY>
+(defun mon-string-split-line (&optional buffer insrtp intrp)
+  "Return current line of text in BUFFER as a string.
+When INSRTP is non-nil or called interactively insert return string at point. 
+Does not move-point.\n
 See also; `mon-line-strings-to-list', `mon-stringify-list',
 `mon-insert-string-ify', `mon-line-drop-in-words', `mon-string-ify-current-line',
 `mon-get-word-list-buffer'."
+(interactive "i\ni\np")
+(let ((splt-str-s)
+      (splt-str-e)
+      (splt-str))  
   (setq buffer (or buffer (current-buffer)))
   (save-excursion
     (set-buffer buffer)
-    (buffer-substring-no-properties (progn (end-of-line 1) (point))
-                      (progn (beginning-of-line 1) (point)))))
+    (setq splt-str
+          (buffer-substring-no-properties (progn (end-of-line 1) (setq splt-str-e (point)))
+                                          (progn (beginning-of-line 1) (setq splt-str-s (point))))))
+  (if (or insrtp intrp)
+      (save-excursion (prin1 splt-str (current-buffer)))
+    splt-str)))
 
 ;;; ==============================
 ;;; CREATED: <Timestamp: Sunday May 31, 2009 @ 03:08.46 PM - by MON KEY>
@@ -1405,7 +1438,7 @@ See also; `mon-line-strings-to-list', `mon-string-ify-list' ,`mon-insert-string-
 ;;; ==============================
 ;;; CREATED: <Timestamp: #{2009-09-13T09:30:42-04:00Z}#{09377} - by MON>
 (defun mon-line-strings-to-list (start end &optional w-cdr w-wrap insertp intrp)
-  "Return region lines as list, each list elt contains string content of line.
+  "Return region's lines as list, each list elt contains string content of line.
 Region between START END should be passed as a line per string/symbol.
 Strips trailing whitespace. Does not preseve tabs converts them to spaces.
 When W-CDR is non-nil or called-interactively with prefix-arg return each
@@ -1417,8 +1450,10 @@ Mon Key\nMON\nMon\nMON KEY\n\n;; When W-CDR nil:
 \(mon-line-strings-to-list-*test* t nil\)\n
 \(mon-line-strings-to-list-*test*\)\n
 See also; `mon-line-string-rotate-name', `mon-line-strings-to-list-*test*',
-`mon-string-ify-current-line', `mon-string-ify-list', 
-`mon-string-split-line', `mon-line-drop-in-words'."
+`mon-line-string-rotate-namestrings', `mon-line-string-unrotate-namestrings'
+`mon-line-string-rotate-namestrings-combine', `mon-make-lastname-firstname', 
+`naf-make-name-for-lisp', `mon-make-names-list',`mon-string-ify-current-line', 
+`mon-string-ify-list', `mon-string-split-line', `mon-line-drop-in-words'.\n►►►"
   (interactive "r\ni\nP\ni\np") ;  (interactive "r\nP\ni\ni\np") make w-cdr the pref arg
   (let ((start-reg start)
         (end-reg end)
@@ -1450,7 +1485,7 @@ See also; `mon-line-string-rotate-name', `mon-line-strings-to-list-*test*',
 ;;; ==============================
 ;;; CREATED: <Timestamp: #{2009-09-13T09:28:46-04:00Z}#{09377} - by MON>
 (defun mon-line-strings-to-list-*test* (&optional with-cdr with-wrap insertp)
-"Test function for `mon-line-strings-to-list'."
+"Test function for `mon-line-strings-to-list'.\n►►►"
 (let ((st01 (make-marker))
       (en01 (make-marker))
       (t-str (concat "hendr erit\norci\nultrices\naugue\nAliquam\n"
@@ -1486,7 +1521,9 @@ EXAMPLE:
 \(mon-line-string-rotate-name \"István Tisza\")
 \(mon-line-string-rotate-name '(\"Stanisław Marcin Ulam\"))
 \(mon-line-string-rotate-name '(\"Dmitri Pavlovich Romanov\"))\n
-See also; `mon-line-strings-to-list'."
+See also; `mon-line-strings-to-list', `mon-line-string-rotate-namestrings'
+`mon-line-string-unrotate-namestrings', `mon-line-string-rotate-namestrings-combine'
+`mon-make-lastname-firstname', `naf-make-name-for-lisp', `mon-make-names-list'.\n►►►"
   (let* ((nm-or-elt (if (atom name-str-or-elt)
 			name-str-or-elt
 		      (let ((get-head name-str-or-elt))
@@ -1512,6 +1549,174 @@ See also; `mon-line-strings-to-list'."
 ;;;        '(("George Charles Aid")("Thomas Pollock Anshutz")("Cecilia Beaux")("Frank Weston Benson")
 ;;;          ("Thomas Hart Benton")("Saul Bernstein")("George Biddle")("Gutzon Borglum")))
 
+;;; ==============================
+;;; CREATED: <Timestamp: #{2009-09-22T16:39:59-04:00Z}#{09392} - by MON KEY>
+(defun mon-line-string-rotate-namestrings (start end &optional as-strings insrtp intrp)
+  "Rotate namestrings in region. Namestring are formatted one name per line
+Firstname Middlenames Lastname. Return Lastname (Firstname Middlename).
+When AS-STRINGS is non-nil retrun namestrings as strings as with prin1.
+When INSRTP is non-nil or called-interactively insert rotated names at point.
+Does not move point.\n
+See also; `mon-line-string-unrotate-namestrings', `mon-line-string-rotate-name', 
+`mon-line-string-rotate-namestrings-combine', `mon-line-strings-to-list',
+`mon-make-lastname-firstname', `mon-make-names-list', `naf-make-name-for-lisp'.\n►►►"
+  (interactive "r\nP\ni\np")
+  (let ((r-nms-strt start)
+	(r-nms-end  end)
+	(get-namestrings))
+    (setq get-namestrings 
+	  (mapconcat (lambda (x) (mon-line-string-rotate-name (car x))) 
+     		     (read (mon-line-strings-to-list r-nms-strt r-nms-end)) "\n"))
+    (if (or insrtp intrp)
+        (progn
+          (save-excursion
+	  (delete-region r-nms-strt r-nms-end)
+	  (if as-strings
+              (mapc (lambda (x) (newline) (prin1 x (current-buffer)))
+                    (split-string get-namestrings "\n"))
+              (insert get-namestrings)))
+          (when as-strings (delete-char 1)))
+      (if as-strings 
+          (split-string get-namestrings "\n") 
+        get-namestrings))))
+;;
+;;;test-me;
+;;; (mon-line-string-rotate-namestrings 
+;;;    (1+ (search-forward-regexp "►")) (- (search-forward-regexp "►") 2))
+;;; (mon-line-string-rotate-namestrings 
+;;;    (1+ (search-forward-regexp "►")) (- (search-forward-regexp "►") 2) t)
+;;
+;;,----UNCOMMENT-TO-TEST:
+;;|►
+;;|George Charles Aid
+;;|Thomas Pollock Anshutz
+;;|Cecilia Beaux
+;;|Frank Weston Benson
+;;|Thomas Hart Benton
+;;|Saul Bernstein
+;;|George Biddle
+;;|Gutzon Borglum
+;;|►
+;;`----
+
+;; ==============================
+;;; CREATED: <Timestamp: #{2009-09-23T20:12:26-04:00Z}#{09394} - by MON KEY>
+(defun mon-line-string-unrotate-namestrings (start end &optional as-strings insrtp intrp)
+  "Unrotate namestrings in region. 
+Namestrings are formatted name per line e.g. `Lastname (Firstname Middlenames)'
+Return `Firstname Middlename Lastname'
+When INSRTP is non-nil or Called-interactively insert rotated names at point.
+Does not move point. When AS-STRINGS is non-nil return rotated names as strings.\n
+EXAMPLE:\n\(mon-line-string-unrotate-namestrings 
+   (1+ \(search-forward-regexp \"►\"\)) \(- \(search-forward-regexp \"►\"\) 2\)\)\n
+►\nKennan (George Frost)\nAlbert (Lukács János)\nAchesonn (Dean Gooderham)
+Harriman (William Averell)\nMcCloy (John Jay)\nBohlen (Charles Eustis)
+Lovett (Robert Abercrombie)\n►\n
+See also; `mon-line-string-rotate-name', `mon-line-string-rotate-namestrings'
+`mon-line-string-rotate-namestrings-combine' `mon-line-strings-to-list',
+`mon-make-lastname-firstname', `naf-make-name-for-lisp', `mon-make-names-list'.\n►►►"
+  (interactive "r\nP\ni\np")
+  (let ((s-r start)
+        (e-r end)
+        (go-temp))
+    (setq go-temp (buffer-substring-no-properties s-r e-r))
+    (save-excursion
+      (setq go-temp
+            (with-temp-buffer
+              (insert go-temp)
+              (whitespace-cleanup)
+              (goto-char (buffer-end 0))
+              (while (search-forward-regexp  
+                      "^\\([A-z-]+\\) \\((\\)\\(.*\\)\\()\\)$" (buffer-end 1) t)
+                ;;..1.............2.......3......4....
+                (replace-match  "\\3 \\1"))
+              (if as-strings
+                  (mon-line-strings-to-list (buffer-end 0) (buffer-end 1))
+                (buffer-substring-no-properties (buffer-end 0) (buffer-end 1))))))
+    (if (or insrtp intrp)
+        (progn
+          (save-excursion 
+            (delete-region s-r e-r)
+            (if as-strings
+                (let ((as-str (read go-temp)))
+                  (mapc (lambda (x) (newline)(prin1 (car x) (current-buffer))) as-str))
+              (insert go-temp)))
+          (when as-strings (delete-char 1)))
+      ;; elseif
+      (if as-strings
+          (let ((as-str (read go-temp))
+                (rtn-str))
+            (setq rtn-str (mapcar (lambda (x) (car x)) as-str))
+            rtn-str)
+        go-temp))))
+
+;;;test-me;
+;;; (mon-line-string-unrotate-namestrings 
+;;;    (1+ (search-forward-regexp "►")) (- (search-forward-regexp "►") 2))
+;;
+;;,----UNCOMMENT-REGION-TO-TEST:
+;;|►
+;;|George Frost Kennan
+;;|Dean Gooderham Acheson
+;;|William Averell Harriman
+;;|Lukács János Albert 
+;;|John Jay McCloy
+;;|Charles Eustis Bohlen 
+;;|Robert Abercrombie Lovett
+;;|►
+;;`----
+
+;;; ==============================
+;;; CREATED: <Timestamp: #{2009-09-24T14:18:44-04:00Z}#{09394} - by MON>
+(defun mon-line-string-rotate-namestrings-combine (start end &optional insertp intrp)
+  "Return lists of namestrings rotated and normal. 
+Elements of list returned have the form:
+\(\"Fname Lname\" \"Lname \(Fname\)\"\)\n
+EXAMPLE:\n\(mon-line-string-rotate-namestrings-combine
+   (1+ \(search-forward-regexp \"►\"\)) \(- \(search-forward-regexp \"►\"\) 2\)\)\n
+►\nEmil Max Hödel\nJohn Wilkes Booth\nLeon Frank Czolgosz\nLee Harvey Oswald
+Dmitry Grigoriyevich Bogrov\nPaul Gorguloff\nJohn Bellingham
+Charles Julius Guiteau\n►\n
+See also;
+`mon-line-string-rotate-namestrings' `mon-line-string-unrotate-namestrings',
+`mon-line-string-rotate-name', `mon-line-strings-to-list'.
+`mon-make-lastname-firstname', `naf-make-name-for-lisp', `mon-make-names-list'.
+►►►"
+  (interactive "r\ni\np")
+  (let ((rotd-nms (mon-line-string-rotate-namestrings start end t))
+        (unrotd-nms)
+        (combined))
+    (with-temp-buffer
+      (progn
+        (save-excursion
+          (mapc (lambda (x) (newline) (princ x (current-buffer))) rotd-nms))
+        (delete-char 1))
+      (setq unrotd-nms
+            (mon-line-string-unrotate-namestrings (point-min) (point-max) t)))
+    (mapc (lambda (x)
+            (let ((orig (pop rotd-nms)))
+              (setq combined (cons `(,x ,orig) combined))))
+          unrotd-nms)
+    (if (or insertp intrp)
+        (prin1 combined (current-buffer))
+      combined)))
+;;
+;;;test-me;
+;;; (mon-line-string-rotate-namestrings-combine
+;;;    (1+ (search-forward-regexp "►")) (- (search-forward-regexp "►") 2))
+;;
+;;,----UNCOMMENT-REGION-TO-TEST:
+;;|►
+;;|Emil Max Hödel
+;;|John Wilkes Booth
+;;|Leon Frank Czolgosz
+;;|Lee Harvey Oswald
+;;|Dmitry Grigoriyevich Bogrov
+;;|Paul Gorguloff
+;;|John Bellingham
+;;|Charles Julius Guiteau
+;;|►
+;;`----
 
 ;;; ==============================
 ;;; COURTESY: Nelson H. F. Beebe HIS: clsc.el VERSION: 1.53 of 2001-05-27
@@ -2135,6 +2340,15 @@ See also; `mon-sublist'."
 ;;;test-me;(mon-sublist-gutted 5 2 '(A B (C D) E (F G) (Q (H I)) K))
 ;;;test-me;(mon-sublist-gutted 5 1 '(A B (C D) E (F G) (Q (H I)) K))
 ;;;test-me;(mon-sublist-gutted 0 6 '(A B (C D) E (F G) (Q (H I)) K))
+
+;;; ==============================
+;;; COURTESY: JMC HIS: nclose-eieio.el WAS: `map-append'
+;;; CREATED: <Timestamp: #{2009-09-21T15:26:14-04:00Z}#{09391} - by MON KEY>
+(defun mon-map-append (mapping-l)
+  "Appends all sublists in list."
+  (cond ((null mapping-l) nil)
+	(t (append (car mapping-l) (map-append (cdr mapping-l))))))
+
 
 ;;; ==============================
 ;;; COURTESY: Jared D. WAS: `assoc-replace'

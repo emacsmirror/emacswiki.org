@@ -2,8 +2,8 @@ Gdb User Interface
 
 By NickRoberts
 
-This mode acts as a graphical user interface to GDB and is part of the
-recently released Emacs 22 (04-06-07).  You can interact with
+This mode acts as a graphical user interface to GDB and was introduced in
+Emacs 22.1 (04-06-07).  You can interact with
 GDB through the GUD buffer in the usual way, but there are also further
 buffers which control the execution and describe the state of your program.
 It separates the input/output of your program from that of GDB, if
@@ -11,8 +11,8 @@ required, and watches expressions in the speedbar.  It also uses features of
 Emacs 21 such as the fringe/display margin for breakpoints, and the toolbar
 (see the GDB Graphical Interface section in the EmacsManual).
 
-By default, M-x gdb will start the debugger. However, if you have customised
-gud-gdb-command-name, then start it with M-x gdba.
+M-x gdb will start the debugger. M-x gud-gdb will start the old text mode
+debugger that existed prior to Emacs 22.1.
 
 This file has evolved from gdba.el that was included with GDB 5.0 andwritten
 by Tom Lord and Jim Kingdon.  It uses GDB's annotation interface.
@@ -22,28 +22,13 @@ Annotations section in the GDB info manual.
 
 GDB developers plan to make the annotation interface obsolete.  A new
 interface called GDB/MI (machine interface) has been designed to replace it.
-Some GDB/MI commands are used in this file through the CLI command
-'interpreter mi <mi-command>'.  To help with the process of fully migrating
-Emacs from annotations to GDB/MI, there is an experimental package called
-gdb-mi in the [http://tromey.com/elpa/ Emacs Lisp Package Archive].  It
-comprises of modified gud.el and a file called gdb-mi.el which replaces
-gdb-ui.el.  When installed, this overrides the current files and invoking
-M-x gdb will use GDB/MI directly (starts with "gdb -i=mi").  When deleted
-('d' followed by 'x' in Package Menu mode), the files are deleted and old
-functionality restored.  This provides a convenient way to review the
-current status/contribute to its improvement.  For someone who just wants to
-use GDB, however, the current mode in Emacs 22 is a much better option.
+The mode in CVS Emacs in the repository at  savannah.gnu.org now fully uses GDB/MI.
+If you are interested in its development please use it and report any bugs you find
+to emacs-devel@gnu.org. This mode will eventually be much better than the current mode
+but, for someone who just wants to use GDB, the current mode in released Emacs 23.1
+is probably a better option.
 
-There is also a file, also called gdb-mi.el, a version of which is included
-the GDB distribution.  This will probably only work with versions
-distributed with GDB 6.5 or later.  Unlike the version in ELPA it works on
-top of gdb-ui.el and you can only start it with M-x gdbmi.
-
-This mode SHOULD WORK WITH GDB 5.0 onwards but you will NEED GDB 6.0 onwards
-to use watch expressions.  It WORKS BEST WITH GDB 6.4, or later, where watch
-expressions will update more quickly.
-
-This [http://www.inet.net.nz/~nickrob/gdb-ui.png screenshot] shows what it
+This [http://users.snap.net.nz/~nickrob/multi-threaded.png screenshot] shows what it
 looks like debugging Emacs.
  
 ----

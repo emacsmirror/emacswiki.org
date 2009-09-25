@@ -10,9 +10,9 @@
 ;; Copyright (C) 1988 Lynn Randolph Slater, Jr.
 ;; Created: Tue Aug  4 17:06:46 1987
 ;; Version: 21.0
-;; Last-Updated: Sat Aug  1 15:28:37 2009 (-0700)
+;; Last-Updated: Thu Sep 24 15:37:38 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 1675
+;;     Update #: 1700
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/header2.el
 ;; Keywords: tools, docs, maint, abbrev, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -163,6 +163,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2009/09/24 dadams
+;;     header-multiline: Use a marker for END, and go to it after insert multiline.
+;;     header-eof: Go to point-max and insert newline.
 ;; 2008/09/06 dadams
 ;;     update-write-count: Keep rest of line, after number.  Thx to Johan Vromans.
 ;;     Added update-VCS-version, commented out.
@@ -586,7 +589,7 @@ Without this, `make-revision' inserts `header-history-label' after the header."
 
 ;; Variable `comment-end-p' is free here.  It is bound in `make-header'.
 (defun header-multiline ()
-  "Insert multiline comment.  The comment text is in header-multiline."
+  "Insert multiline comment.  The comment text is in `header-multiline'."
   (let ((lineno 1)
         beg end nb-lines)
     (beginning-of-line)
@@ -596,7 +599,7 @@ Without this, `make-revision' inserts `header-history-label' after the header."
       (insert header-prefix-string))
     (setq beg (point))
     (insert header-multiline)
-    (setq end (point))
+    (setq end (point-marker))
     (setq nb-lines (count-lines beg end))
     (goto-char beg)
     (forward-line 1)
@@ -604,6 +607,7 @@ Without this, `make-revision' inserts `header-history-label' after the header."
       (insert header-prefix-string)
       (forward-line 1)
       (setq lineno (1+ lineno)))
+    (goto-char end)
     (when comment-end-p (insert "\n"))
     (insert comment-end)
     (insert "\n")
@@ -615,11 +619,13 @@ Without this, `make-revision' inserts `header-history-label' after the header."
 (defsubst header-code ()
   "Insert \"Code: \" line."
   (insert (concat (section-comment-start) "Code:" (and comment-end-p comment-end)
-                  "\n\n\n\n\n")))
+                  "\n\n\n")))
 
 ;; Variable `comment-end-p' is free here.  It is bound in `make-header'.
 (defsubst header-eof ()
   "Insert comment indicating end of file."
+  (goto-char (point-max))
+  (insert "\n")
   (unless comment-end-p (header-end-line))
   (insert comment-start
           (concat (and (= 1 (length comment-start)) header-prefix-string)
@@ -1110,7 +1116,7 @@ result of `update-lib-requires'."
 ;(defun touch-headers ()
 ;  (if (or (string= argi "-touch") (string= argi "-touch-headers"))
 ;      (let ((trim-versions-without-asking t)
-;            ;; Next line should have a Control-G char before `true', not a space.
+;            ;; Next line should have a Control-G char, not a space, before `true'.
 ;            (executing-macro " true"));; suppress "Mark Set" messages
 ;        ;; Consume all following arguments until one starts with a "-"
 ;        (while (and command-line-args-left
@@ -1130,7 +1136,7 @@ result of `update-lib-requires'."
 ;(defun make-headers ()
 ;  (if (or (string= argi "-make-headers") (string= argi "-make"))
 ;      (let ((trim-versions-without-asking t)
-;            ;; Next line should have a Control-G char before `true', not a space.
+;            ;; Next line should have a Control-G char, not a space, before `true'.
 ;            (executing-macro " true"));; suppress "Mark Set" messages
 ;        ;; Consume all following arguments until one starts with a "-"
 ;        (while (and command-line-args-left
@@ -1154,7 +1160,7 @@ result of `update-lib-requires'."
 ;  (if (or (string= argi "-default-mode")
 ;          (string= argi "-default"))
 ;      (let ((trim-versions-without-asking t)
-;            ;; Next line should have a Control-G char before `true', not a space.
+;            ;; Next line should have a Control-G char, not a space, before `true'.
 ;            (executing-macro " true");; suppress "Mark Set" messages
 ;            (mode (intern (car command-line-args-left))))
 ;        (if (memq mode (mapcar 'cdr auto-mode-alist))
@@ -1174,7 +1180,7 @@ result of `update-lib-requires'."
 ;  (if (or (string= argi "-required-mode")
 ;          (string= argi "-mode"))
 ;      (let ((trim-versions-without-asking t)
-;            ;; Next line should have a Control-G char before `true', not a space.
+;            ;; Next line should have a Control-G, not a space, char before `true'.
 ;            (executing-macro " true");; suppress "Mark Set" messages
 ;            (mode (intern (car command-line-args-left))))
 ;        (if (memq mode (mapcar 'cdr auto-mode-alist))

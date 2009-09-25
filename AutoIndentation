@@ -138,6 +138,23 @@ I modified ##kill-and-join-forward## command a little -- it work almost as the o
 [new]
 That's indeed more elegant :) (I've edited the docstring a little so that the first line stands on its own when calling ##M-x apropos##.) How does it differ from the original behavior?
 
+[new]
+I did this to it:
+
+     (defun kill-and-join-forward (&optional arg)
+       "If at end of line, join with following; otherwise kill line.
+     Deletes whitespace at join."
+       (interactive "P")
+       (if (and (eolp) (not (bolp)))
+           (progn
+     	(delete-indentation t)
+     	(if (looking-at " $")
+     	    (delete-char 1)))
+         (kill-line arg)))
+
+so that when you're killing a whole bunch of lines you don't have to switch between C-k and C-d. I'm kind of lousy with elisp, though, and it seems really hacky compared to some of the other ways of doing things on this page. Is there something better I should have done instead of that progn?
+
+
 [new:DrewAdams:2009-05-12 16:03 UTC]
 If you don't have a non-`nil' `fill-prefix', then just `C-k M-SPC'. -- DrewAdams
 
