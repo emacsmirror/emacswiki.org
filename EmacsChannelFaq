@@ -138,9 +138,23 @@ Open the file and run the following command:
 
 Select the coding you want and save the file.
 
+=== How do I input accented character with an english keyboard? ===
+
+Hit <code>C-\</code> It will switch the input method to latin-1-prefix.
+Typing ' folowed by e will give é. To see al the possible combinations
+right click on the 1> at the bottom left on the mode line.
+
+There are many other input modes, to list them all run 
+<code>M-x list-input-methods</code>. To use a different input method
+you need to customize the variable <code>default-input-method</code>. 
+For example if you wanted to use japanese
+you would add the following in your <code>.emacs</code>
+
+    (setq default-input-method "japanese")
+
 === How do I change the variable tab-width for the current buffer? ===
 	     
-Write the following in your .emacs
+Write the following in your <code>.emacs</code>
 
     (setq-default tab-width 4)
 

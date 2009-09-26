@@ -133,6 +133,7 @@ The file will be read when you start wl.
 * WlWithBeagle -- searching your email with Beagle and Wanderlust
 * WlHooks -- A list of Wanderlust hooks
 * WlPgg -- using the PGG package with WanderLust
+* WlEmacsTwentyThree
 
 ----
 CategoryMail

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Sep 19 08:28:29 2009 (-0700)
+;; Last-Updated: Fri Sep 25 17:54:43 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 11096
+;;     Update #: 11125
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -114,6 +114,7 @@
 ;;    `icicle-minibuffer-prompt-end', `icicle-mode-line-name-less-p',
 ;;    `icicle-most-recent-first-p', `icicle-msg-maybe-in-minibuffer',
 ;;    `icicle-ms-windows-NET-USE', `icicle-next-candidate',
+;;    `icicle-not-basic-prefix-completion-p',
 ;;    `icicle-part-1-cdr-lessp', `icicle-part-1-lessp',
 ;;    `icicle-part-2-lessp', `icicle-part-3-lessp',
 ;;    `icicle-part-4-lessp', `icicle-part-N-lessp',
@@ -2853,7 +2854,7 @@ this also sets `icicle-common-match-string' to the expanded common
 prefix over all candidates."
   (condition-case nil
       (let* ((candidates
-              (if (and (fboundp 'completion-all-completions) icicle-respect-completion-styles-p)
+              (if (icicle-not-basic-prefix-completion-p)
                   (icicle-completion-all-completions input minibuffer-completion-table
                                                      minibuffer-completion-predicate
                                                      (- (point) (field-beginning)))
@@ -2878,7 +2879,7 @@ prefix over all candidates."
                                              candidates)))))
         (when (consp filtered-candidates)
           (let ((common-prefix
-                 (if (and (fboundp 'completion-try-completion) icicle-respect-completion-styles-p)
+                 (if (icicle-not-basic-prefix-completion-p)
                      (icicle-completion-try-completion input minibuffer-completion-table
                                                        minibuffer-completion-predicate
                                                        (- (point) (field-beginning)))
@@ -2893,10 +2894,10 @@ prefix over all candidates."
 INPUT is a string.
 Candidates can be directories.  Each candidate is a string."
   (setq icicle-candidate-nb  nil)
-  (let ((default-directory  (icicle-file-name-directory-w-default input)))
-    (icicle-strip-ignored-files-and-sort
-     (icicle-unsorted-file-name-prefix-candidates (or (icicle-file-name-nondirectory input) "")))))
-
+  ;; $$$$$$ (let ((default-directory  (icicle-file-name-directory-w-default input)))
+  ;; $$$$$$   (icicle-unsorted-file-name-prefix-candidates
+  ;; $$$$$$     (or (icicle-file-name-nondirectory input) ""))))
+  (icicle-strip-ignored-files-and-sort (icicle-unsorted-file-name-prefix-candidates input)))
 
 (defun icicle-unsorted-file-name-prefix-candidates (input)
   "Unsorted list of prefix completions for the current file-name INPUT.
@@ -2906,8 +2907,7 @@ prefix over all candidates."
       (let ((slashed-p  (and (> (length input) 0) (eq ?/ (aref input 0)))))
         (when slashed-p (setq input  (substring input 1)))
         (let* ((candidates
-                (if (and (fboundp 'completion-all-completions)
-                         icicle-respect-completion-styles-p)
+                (if (icicle-not-basic-prefix-completion-p)
                     (icicle-completion-all-completions input minibuffer-completion-table
                                                        minibuffer-completion-predicate (length input))
                   (all-completions input minibuffer-completion-table
@@ -2943,8 +2943,7 @@ prefix over all candidates."
                           candidates)))))
           (when (consp filtered-candidates)
             (let ((common-prefix
-                   (if (and (fboundp 'completion-try-completion)
-                            icicle-respect-completion-styles-p)
+                   (if (icicle-not-basic-prefix-completion-p)
                        (icicle-completion-try-completion input minibuffer-completion-table
                                                          minibuffer-completion-predicate
                                                          (length input))
@@ -3324,7 +3323,7 @@ current candidate is shown in the mode line."
 
 (defun icicle-insert-cand-in-minibuffer (candidate regexp-p)
   "Insert CANDIDATE in minibuffer.  Highlight root and initial whitespace.
-REGEXP-P non-nil means that use regexp matching to highlight root."
+REGEXP-P non-nil means use regexp matching to highlight root."
   ;; Highlight any initial whitespace (probably a user typo).
   (icicle-highlight-initial-whitespace (if regexp-p icicle-current-raw-input icicle-current-input))
 
@@ -4504,7 +4503,7 @@ defined)."
   "Return non-nil if current partial INPUT has prefix completions."
   (let ((minibuffer-completion-table      minibuffer-completion-table)
         (minibuffer-completion-predicate  minibuffer-completion-predicate))
-    (if (and (fboundp 'completion-try-completion) icicle-respect-completion-styles-p)
+    (if (icicle-not-basic-prefix-completion-p)
         (icicle-completion-try-completion input minibuffer-completion-table
                                           minibuffer-completion-predicate
                                           (- (point) (field-beginning)))
@@ -4516,7 +4515,7 @@ defined)."
          (minibuffer-completion-predicate  minibuffer-completion-predicate)
          (slashed-p                        (and (> (length input) 0) (eq ?/ (aref input 0)))))
     (when slashed-p (setq input  (substring input 1)))
-    (if (and (fboundp 'completion-try-completion) icicle-respect-completion-styles-p)
+    (if (icicle-not-basic-prefix-completion-p)
         (icicle-completion-try-completion input minibuffer-completion-table
                                           minibuffer-completion-predicate
                                           (length input))
@@ -5247,6 +5246,10 @@ current before user input is read from the minibuffer."
   ;; Just a convenience function, to avoid Emacs warning about calling `icy-mode' with no arg.
   (let ((curr  (if (and (boundp 'icicle-mode) icicle-mode) 1 -1)))
     (icy-mode (- curr))  (icy-mode curr)))
+
+(defun icicle-not-basic-prefix-completion-p ()
+  "Emacs > release 22, and not `icicle-prefix-completion-is-basic-flag'."
+  (and (fboundp 'completion-try-completion) (not icicle-prefix-completion-is-basic-flag)))
  
 ;;(@* "Icicles functions - sort functions")
 

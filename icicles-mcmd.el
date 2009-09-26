@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Sep 12 10:53:42 2009 (-0700)
+;; Last-Updated: Fri Sep 25 13:48:49 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 14755
+;;     Update #: 14805
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2838,7 +2838,8 @@ Optional argument WORD-P non-nil means complete only a word at a time."
              (setq icicle-nb-of-other-cycle-candidates  0)
              (unless icicle-edit-update-p
                (icicle-clear-minibuffer)
-               (setq icicle-last-completion-candidate  (car icicle-completion-candidates))
+               ;; $$$$$$ (setq icicle-last-completion-candidate  (car icicle-completion-candidates))
+               (setq icicle-last-completion-candidate  icicle-current-input)
                (let ((inserted  (if (and (icicle-file-name-input-p) insert-default-directory
                                          (or (not (member icicle-last-completion-candidate
                                                           icicle-extra-candidates))
@@ -2857,33 +2858,41 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                (cond ((and icicle-top-level-when-sole-completion-flag
                            (sit-for icicle-top-level-when-sole-completion-delay))
                       (set minibuffer-history-variable
-                           (cons (car icicle-completion-candidates)
+                           ;; $$$$$$ (cons (car icicle-completion-candidates)
+                           (cons icicle-current-input
                                  (symbol-value minibuffer-history-variable)))
                       (condition-case icicle-prefix-complete-1
                           (throw 'icicle-read-top
                             (if (and (icicle-file-name-input-p) insert-default-directory
-                                     (or (not (member (car icicle-completion-candidates)
+                                     ;; $$$$$$ (or (not (member (car icicle-completion-candidates)
+                                     (or (not (member icicle-current-input
                                                       icicle-extra-candidates))
                                          icicle-extra-candidates-dir-insert-p))
-                                (expand-file-name (car icicle-completion-candidates))
-                              (car icicle-completion-candidates)))
-                        (no-catch (setq icicle-current-input  (car icicle-completion-candidates))
-                                  (icicle-retrieve-last-input)
-                                  icicle-current-input)
+                                ;; $$$$$$ (expand-file-name (car icicle-completion-candidates))
+                                (expand-file-name icicle-current-input)
+                              ;; $$$$$$ (car icicle-completion-candidates)))
+                              icicle-current-input))
+                        (no-catch
+                         ;; $$$$$$ (setq icicle-current-input  (car icicle-completion-candidates))
+                         (icicle-retrieve-last-input)
+                         icicle-current-input)
                         (error (message (error-message-string icicle-prefix-complete-1)))))
                      ((and icicle-edit-update-p (not (eq no-display-p 'no-msg)))
                       (minibuffer-message
                        (format (if (and icicle-fuzzy-completion-flag (featurep 'fuzzy-match))
                                    "  [One fuzzy completion: %s]"
                                  "  [One prefix completion: %s]")
-                               (car icicle-completion-candidates)))
-                      (setq mode-line-help  (car icicle-completion-candidates)))
+                               ;; $$$$$$ (car icicle-completion-candidates)))
+                               icicle-current-input))
+                      ;; $$$$$$ (setq mode-line-help  (car icicle-completion-candidates)))
+                      (setq mode-line-help  icicle-current-input))
                      ((not (eq no-display-p 'no-msg))
                       (minibuffer-message
                        (if (and icicle-fuzzy-completion-flag (featurep 'fuzzy-match))
                            "  [Sole fuzzy completion]"
                          "  [Sole prefix completion]"))
-                      (setq mode-line-help  (car icicle-completion-candidates))))
+                      ;; $$$$$$ (setq mode-line-help  (car icicle-completion-candidates))))
+                      (setq mode-line-help  icicle-current-input)))
                (save-selected-window (icicle-remove-Completions-window))))
             (t                          ; Multiple candidates.
              (if icicle-edit-update-p
@@ -2907,6 +2916,7 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                  (setq icicle-default-directory  (icicle-abbreviate-or-expand-file-name
                                                   icicle-last-completion-candidate)))
                (let ((input-sans-dir  (icicle-minibuf-input-sans-dir icicle-current-input)))
+                 ;; $$$$$$ Does not work for env vars as part of file-name completion (Emacs 23+).
                  (when (and (member (icicle-upcase-if-ignore-case input-sans-dir)
                                     (mapcar #'icicle-upcase-if-ignore-case
                                             icicle-completion-candidates))
@@ -2967,6 +2977,7 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                                                      'icicle-file-name-prefix-candidates
                                                    'icicle-prefix-candidates))))
                      ;; Vanilla Emacs.  Input is complete, but exist other candidates with same prefix.
+                     ;; $$$$$$ Does not work for env vars as part of file-name completion (Emacs 23+).
                      ((and (member icicle-current-input icicle-completion-candidates)
                            (not (eq no-display-p 'no-msg)))
                       (minibuffer-message "  [Complete, but not unique]"))))))
@@ -3209,7 +3220,8 @@ message either.  NO-DISPLAY-P is passed to
 (defun icicle-transform-sole-candidate ()
   "Transform matching candidate according to `icicle-list-use-nth-parts'."
   (when icicle-list-use-nth-parts
-    (let ((newcand  (icicle-transform-multi-completion (car icicle-completion-candidates))))
+    ;; $$$$$$ (let ((newcand  (icicle-transform-multi-completion (car icicle-completion-candidates))))
+    (let ((newcand  (icicle-transform-multi-completion icicle-current-input)))
       (icicle-clear-minibuffer)
       (insert newcand)
       (setq icicle-completion-candidates      (list newcand)
@@ -4541,6 +4553,8 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
                (minibuffer-message "  [Sole completion]")
              (set minibuffer-history-variable (cons (car icicle-completion-candidates)
                                                     (symbol-value minibuffer-history-variable)))
+             ;; $$$$$$ Should this now use `icicle-current-input'
+             ;;        instead of (car icicle-completion-candidates), for PCM?
              (condition-case i-narrow-candidates
                  (throw 'icicle-read-top
                    (if (and (icicle-file-name-input-p) insert-default-directory
@@ -4668,6 +4682,8 @@ When called from Lisp with non-nil arg PREDICATE, use that to narrow."
                (minibuffer-message "  [Sole completion]")
              (set minibuffer-history-variable (cons (car icicle-completion-candidates)
                                                     (symbol-value minibuffer-history-variable)))
+             ;; $$$$$$ Should this now use `icicle-current-input'
+             ;;        instead of (car icicle-completion-candidates), for PCM?
              (condition-case i-narrow-candidates
                  (throw 'icicle-read-top
                    (if (and (icicle-file-name-input-p) insert-default-directory
@@ -4974,6 +4990,8 @@ MOREP non-nil means add the saved candidates, don't replace existing."
                      (mapcar #'file-name-nondirectory saved-cands)
                    saved-cands))
            (cond ((and (consp icicle-completion-candidates) (null (cdr icicle-completion-candidates)))
+                  ;; $$$$$$ Should this now use `icicle-current-input'
+                  ;;        instead of (car icicle-completion-candidates), for PCM?
                   (icicle-remove-Completions-window)
                   (icicle-insert-completion (car icicle-completion-candidates)) ; Insert sole cand.
                   (minibuffer-message "  [Sole candidate restored]")

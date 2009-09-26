@@ -8,6 +8,7 @@ Click on the heading above to list '''all''' pages related to ''regions''.
 * TransientMarkMode -- Highlights the region whenever it is active (you can activate it using `C-x C-x').
 * DeleteSelectionMode -- Replaces the region with what you type. Backspace (DEL) deletes the region.
 * PcSelectionMode -- Treats the region like MS Windows and Motif.
+* ShiftSelectMode -- Expand regions with Shift and a navigation command.
 * CuaMode -- Use key bindings compatible with the Common User Access (CUA) system
 * BasicNarrowing -- Isolates the region, so you can limit operations to region text.  See also [[Narrowing]].
 * SelectiveUndo -- Undoes stuff in the region only.

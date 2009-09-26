@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Thu Sep 17 13:55:09 2009 (-0700)
+;; Last-Updated: Fri Sep 25 17:55:45 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 22586
+;;     Update #: 22592
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -569,6 +569,7 @@
 ;;    `icicle-pp-eval-expression-print-level',
 ;;    `icicle-prefix-complete-keys',
 ;;    `icicle-prefix-complete-no-display-keys',
+;;    `icicle-prefix-completion-is-basic-flag',
 ;;    `icicle-prefix-cycle-next-keys',
 ;;    `icicle-prefix-cycle-next-action-keys',
 ;;    `icicle-prefix-cycle-next-alt-action-keys',
@@ -795,11 +796,13 @@
 ;;    `icicle-nb-of-candidate-in-Completions',
 ;;    `icicle-next-candidate',
 ;;    `icicle-next-single-char-property-change',
-;;    `icicle-non-whitespace-string-p', `icicle-part-1-cdr-lessp',
-;;    `icicle-part-1-lessp', `icicle-part-2-lessp',
-;;    `icicle-part-3-lessp', `icicle-part-4-lessp',
-;;    `icicle-part-N-lessp', `icicle-place-cursor',
-;;    `icicle-place-overlay', `icicle-prefix-any-candidates-p',
+;;    `icicle-non-whitespace-string-p',
+;;    `icicle-not-basic-prefix-completion-p',
+;;    `icicle-part-1-cdr-lessp', `icicle-part-1-lessp',
+;;    `icicle-part-2-lessp', `icicle-part-3-lessp',
+;;    `icicle-part-4-lessp', `icicle-part-N-lessp',
+;;    `icicle-place-cursor', `icicle-place-overlay',
+;;    `icicle-prefix-any-candidates-p',
 ;;    `icicle-prefix-any-file-name-candidates-p',
 ;;    `icicle-prefix-candidates', `icicle-prefix-complete-1',
 ;;    `icicle-prefix-keys-first-p', `icicle-proxy-candidate-first-p',
@@ -981,8 +984,8 @@
 ;;    `icicle-previous-raw-non-file-name-inputs',
 ;;    `icicle-proxy-candidate-regexp', `icicle-proxy-candidates',
 ;;    `icicle-read-expression-map', `icicle-re-no-dot',
-;;    `icicle-require-match-p', `icicle-respect-completion-styles-p',
-;;    `icicle-reverse-sort-p', `icicle-saved-candidate-overlays',
+;;    `icicle-require-match-p', `icicle-reverse-sort-p',
+;;    `icicle-saved-candidate-overlays',
 ;;    `icicle-saved-candidates-variables-obarray',
 ;;    `icicle-saved-completion-candidate',
 ;;    `icicle-saved-completion-candidates',

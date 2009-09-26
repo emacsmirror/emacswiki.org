@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Sep 19 08:37:14 2009 (-0700)
+;; Last-Updated: Fri Sep 25 18:57:55 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 3253
+;;     Update #: 3318
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -126,6 +126,7 @@
 ;;    `icicle-pp-eval-expression-print-level',
 ;;    `icicle-prefix-complete-keys',
 ;;    `icicle-prefix-complete-no-display-keys',
+;;    `icicle-prefix-completion-is-basic-flag',
 ;;    `icicle-prefix-cycle-next-keys',
 ;;    `icicle-prefix-cycle-next-action-keys',
 ;;    `icicle-prefix-cycle-next-alt-action-keys',
@@ -726,7 +727,7 @@ Examples of sort functions are `icicle-buffer-sort-*...*-last' and
   :group 'Icicles-Buffers :group 'Icicles-Completions-Display)
 
 ;;;###autoload
-(defcustom icicle-candidate-width-factor 70
+(defcustom icicle-candidate-width-factor 80
   "*Percentage of widest candidate width to use for calculating columns.
 The number of columns of candidates displayed in *Completions* is no
 more than the window width divided by this percentage of the maximum
@@ -747,7 +748,10 @@ If you use Do Re Mi (library `doremi.el'), then you can modify this
 option incrementally during completion, seeing the effect as it
 changes.  Use `C-x w' from the minibuffer, then use the `right' and
 `left' arrow keys or the mouse wheel to increment and decrement the
-value.  WYSIWYG."
+value.  WYSIWYG.
+
+See also option `icicle-inter-candidates-min-spaces' and (starting
+with Emacs 23) option `icicle-Completions-text-scale-decrease'."
   :type 'integer :group 'Icicles-Completions-Display)
 
 ;;;###autoload
@@ -877,10 +881,15 @@ This can be useful to make *Completions* more visible."
 
 ;;;###autoload
 (when (fboundp 'text-scale-decrease)    ; Emacs 23+
-  (defcustom icicle-Completions-text-scale-decrease 0.8
+  (defcustom icicle-Completions-text-scale-decrease 0.66
     "*Initial height decrease for text in buffer `*Completions*'.
+A value of 0.0 means the height is not decreased at all.
+This is used as the argument to function `text-scale-decrease'.
 If you use library `doremi-frm.el', you can use `C-x -' to
-incrementally resize the text in `*Completions*'."
+incrementally resize the text during completion.
+
+See also options `icicle-candidate-width-factor' and
+`icicle-inter-candidates-min-spaces'."
     :type 'number :group 'Icicles-Completions-Display))
 
 ;;;###autoload
@@ -1502,7 +1511,10 @@ option incrementally during completion, seeing the effect as it
 changes.  Use `\\<minibuffer-local-completion-map>\
 \\[icicle-doremi-inter-candidates-min-spaces]' from the minibuffer, then use the `up' and
 `down' arrow keys or the mouse wheel to increment and decrement the
-value.  WYSIWYG."
+value.  WYSIWYG.
+
+See also option `icicle-candidate-width-factor' and (starting with
+Emacs 23) option `icicle-Completions-text-scale-decrease'."
   :type 'integer :group 'Icicles-Completions-Display)
 
 ;;;###autoload
@@ -2439,6 +2451,24 @@ COMPARISON-FN is a function that compares two strings, returning
 The candidates are highlighted in buffer *Completions* using face
 `icicle-special-candidate'."
   :type '(choice (const :tag "None" nil) regexp) :group 'Icicles-Completions-Display)
+
+;;;###autoload
+(when (boundp 'completion-styles)       ; Emacs 23+
+  (defcustom icicle-prefix-completion-is-basic-flag nil
+    "Non-nil means that `TAB' performs only basic prefix completion.
+A nil value means Icicles prefix completion respects option
+`completion-styles' (new in Emacs 23), so that `TAB' behaves similarly
+in Icicles to what it does in vanilla Emacs.
+
+A nil value also means that `TAB' completes environment variables
+during file-name completion and in shell commands.  A non-nil value
+inhibits this completion, but it does not inhibit the expansion of the
+variables to their values when you hit `RET'.
+
+The effect of a non-nil value is to provide the `TAB' completion that
+was available prior to Emacs 23.  In releases prior to Emacs 23, this
+option has no effect: Icicles acts as if the value is nil."
+    :type 'boolean :group 'Icicles-Matching))
 
 ;;;###autoload
 (defcustom icicle-TAB-shows-candidates-flag t

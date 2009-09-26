@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Sep  5 11:43:30 2009 (-0700)
+;; Last-Updated: Fri Sep 25 10:49:21 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 1002
+;;     Update #: 1006
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -102,8 +102,8 @@
 ;;    `icicle-previous-raw-non-file-name-inputs',
 ;;    `icicle-proxy-candidate-regexp', `icicle-proxy-candidates',
 ;;    `icicle-read-expression-map', `icicle-re-no-dot',
-;;    `icicle-require-match-p', `icicle-respect-completion-styles-p',
-;;    `icicle-reverse-sort-p', `icicle-saved-candidate-overlays',
+;;    `icicle-require-match-p', `icicle-reverse-sort-p',
+;;    `icicle-saved-candidate-overlays',
 ;;    `icicle-saved-candidates-variables-obarray',
 ;;    `icicle-saved-completion-candidate',
 ;;    `icicle-saved-completion-candidates',
@@ -950,12 +950,6 @@ Several Emacs-Lisp mode key bindings are used.")
   "Current REQUIRE-MATCH arg to `completing-read' or `read-file-name'.
 Starting with Emacs 23, this is no longer enough to tell whether a
 match is required - use function `icicle-require-match-p' instead.")
-
-(defvar icicle-respect-completion-styles-p nil
-  "Non-nil means Icicles respects `completion-styles'.
-Otherwise, only `basic' style (more or less) is used.
-This variable is used starting with Emacs 23, which introduced
-`completion-styles'.")
 
 (defvar icicle-reverse-sort-p nil
   "Non-nil means that candidates are being sorted in the reverse order.")

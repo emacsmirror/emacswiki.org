@@ -18,16 +18,9 @@ apply: Symbol's value as variable is void: «
 When I find the file in question, and eval the buffer, I do not get these errors. Also byte compiled files always fail to load.
 Thanks.
 
-
 [new]
 == Making the GDB/perldb marker more visible ==
 I have a large emacs window with multiple buffers.  During a perl debug session, the marker, =>, will move to a new window/buffer and I will need to search for it.  I could use a marker that is more visible.  Perhaps one that is rendered in red or one which blinks.  I would really love to have a different background color for the entire buffer line with which the marker is associated.  Thanks for your help!
-
-[new]
-== Shift selection and page up/down ==
-
-I'm trying to replace pc-selection-mode with the new shift-select-mode with emacs 23. It works generally well, only the shift+pgup/down keys don't create a selected region and I can't find a confguration setting where I could tell emacs I want these keys too shift translated. Are the supported keys hardcoded? It would be so unlike emacs, so there must be some setting somewhere which I overlook. Any ideas?
-
 
 [new]
 == Smart yanking of leading and trailing whitespace ==

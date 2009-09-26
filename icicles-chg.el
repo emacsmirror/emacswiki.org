@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Sep 21 15:14:47 2009 (-0700)
+;; Last-Updated: Fri Sep 25 19:05:16 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 4402
+;;     Update #: 4417
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -274,6 +274,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2009/09/25 dadams
+;;     icicle-file-name-prefix-candidates: Use whole input, not just nondirectory.
+;;     Added: icicle-not-basic-prefix-completion-p.  Use where appropriate.
 ;; 2009/09/19 dadams
 ;;     icicle-unpropertize: Remove the internal text properties added by Icicles.
 ;;     icicle-completing-read, icicle-read-file-name: Call icicle-unpropertize unconditionally.
@@ -1585,6 +1588,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2009/09/25 dadams
+;;     icicle-prefix-complete-1, icicle-transform-sole-candidate:
+;;       Use icicle-current-input, not (car icicle-completion-candidates).
+;;       Don't set icicle-current-input to (car icicle-completion-candidates) if no-catch.
 ;; 2009/09/12 dadams
 ;;     icicle-delete-candidate-object: Message if no candidates, in non-ALLP case also.
 ;;     icicle-delete-candidate-object-1: Bind icicle-completion-candidates to save & restore it.
@@ -3334,6 +3341,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2009/09/25 dadams
+;;     Added: icicle-prefix-completion-is-basic-flag.
+;;     Changed default value of:
+;;       icicle-candidate-width-factor          from 70  to 80
+;;       icicle-Completions-text-scale-decrease from 0.8 to 0.66.
 ;; 2009/09/16 dadams
 ;;     icicle-top-level-key-bindings: Added remap for icicle-insert-buffer.
 ;; 2009/09/05 dadams
@@ -3753,6 +3765,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2009/09/25 dadams
+;;     Removed: icicle-respect-completion-styles-p.  See option *-TAB-respects-*-styles-flag.
 ;; 2009/09/05 dadams
 ;;     Added: icicle-minibuffer-message-ok-p.
 ;;     Renamed icicle-acting-on-next/prev-p to icicle-acting-on-next/prev.

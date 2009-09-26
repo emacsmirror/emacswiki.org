@@ -1,0 +1,9 @@
+Starting with Emacs 23, "When Shift Select mode is on, shift-translated
+motion keys (e.g. S-left and S-down) activate and extend a temporary
+region, similar to mouse-selection." (Emacs 23.1 News file [http://www.gnu.org/software/emacs/NEWS.23.1])
+
+[new]
+I'm trying to replace pc-selection-mode with the new shift-select-mode with emacs 23. It works generally well, only the shift+pgup/down keys don't create a selected region and I can't find a confguration setting where I could tell emacs I want these keys too shift translated. Are the supported keys hardcoded? It would be so unlike emacs, so there must be some setting somewhere which I overlook. Any ideas?
+
+----
+CategoryRegion

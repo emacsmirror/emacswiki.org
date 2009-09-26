@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2009, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 11 10:40:32 2004
 ;; Version: 22.0
-;; Last-Updated: Wed Aug  5 11:14:33 2009 (-0700)
+;; Last-Updated: Fri Sep 25 16:32:54 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 2398
+;;     Update #: 2400
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/doremi-frm.el
 ;; Keywords: frames, extensions, convenience, keys, repeat, cycle
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -614,8 +614,8 @@ Optional FRAME parameter defaults to current frame."
           increment
           t))
 
-;; This command uses an incremental growth function, `enlarge-font',
-;; which is defined in `frame-cmds.el'.
+;; This command uses an incremental growth function, `text-scale-increase',
+;; which is defined in `face-remap.el' or (enhanced) in `face-remap+.el'.
 ;;;###autoload
 (when (fboundp 'text-scale-increase)    ; Emacs 23+.
   (defun doremi-buffer-font-size (&optional increment)
