@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Thu Sep 10 17:28:33 2009 (-0700)
+;; Last-Updated: Sat Sep 26 10:55:03 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 24747
+;;     Update #: 24772
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -479,12 +479,16 @@
 ;;  this case.  Just hit `RET' (Return) when you get to the command
 ;;  you want.
 ;;
+;;  (Note: The particular candidates shown here and in other examples
+;;  might be different from what you see, depending on your version of
+;;  Emacs and what other libraries you might have loaded.)
+;;
 ;;  You can use a regular expression, to narrow the field of matching
 ;;  inputs:
 ;;
-;;   M-x  i s e . + c h a r   next
-;;   M-x isearch-*-char       next
-;;   M-x isearch-delete-char  next
+;;   M-x  i s e . + c h a r          next
+;;   M-x isearch-delete-char         next
+;;   M-x isearch-other-control-char  next
 ;;   ...
 ;;
 ;;  See (@> "Cycling Completions") for more about cycling completion
@@ -514,7 +518,7 @@
 ;;  can cycle prefix-completion candidates by using the `down' and
 ;;  `up' arrow keys instead of `next' and `prior'.
 ;;
-;;  Some people prefer to always cycle with the same keys, for
+;;  Some people prefer to always cycle using the same keys, for
 ;;  example, `down' and `up', regardless of the completion mode
 ;;  (prefix or apropos).  You can get that behavior by customizing
 ;;  user option `icicle-cycling-respects-completion-mode'.
@@ -1382,12 +1386,11 @@
 ;;  Be aware that standard Emacs terminology does not refer to such a
 ;;  set of default values as "default values"; they are called
 ;;  "completions".  By "default value", standard Emacs terminology
-;;  means only the single value that you can access via `M-n'.
-;;  Icicles refers to all such potential inputs indifferently as
-;;  "default values", "completions", "completion candidates", and
-;;  "candidates".  Whenever completion is not requiring you to pick
-;;  one of the available candidates, they are effectively only default
-;;  choices.
+;;  means only the values that you can access via `M-n'.  Icicles
+;;  refers to all such potential inputs indifferently as "default
+;;  values", "completions", "completion candidates", and "candidates".
+;;  Whenever completion is not requiring you to pick one of the
+;;  available candidates, they are effectively only default choices.
 ;;
 ;;  So, how do you get access to the default values that the
 ;;  programmer has made available to you, in order to choose one?  You
@@ -1571,8 +1574,9 @@
 ;;  Icicles offers a new way to complete your partial input in the
 ;;  minibuffer.  Instead of considering the string of input characters
 ;;  to be the prefix of various complete names, you can look for names
-;;  that match that string anywhere.  This is the single most
-;;  important feature that Icicles offers.
+;;  that match that string anywhere.
+;;
+;;  This is the single most important feature that Icicles offers.
 ;;
 ;;  This is similar in effect to using command `apropos' to find
 ;;  "apropos completions" of a string (except it works also for file
@@ -2191,8 +2195,10 @@
 ;;  Another way of inserting a string into the minibuffer is to use a
 ;;  negative prefix arg with `M-:' (e.g. `M-- M-:') during minibuffer
 ;;  input.  With this method, you can type not only a string-valued
-;;  variable name but any Emacs-Lisp expression that evaluates to a
-;;  string.
+;;  variable name but any Emacs-Lisp expression.  The expression need
+;;  not evaluate to a string - whatever the result of evaluation is,
+;;  it is pretty-printed in the minibuffer, to be used as part of your
+;;  input text.
 ;;
 ;;  These shortcut features are especially convenient for use with
 ;;  command `icicle-search' - you can use it to search text for
@@ -2299,6 +2305,12 @@
 ;;  regexp special character that matches at the end of a line.  When
 ;;  using environment variables, you can also enclose them in braces:
 ;;  `${HOME}', for example.
+;;
+;;  Note: Starting with Emacs 23, if option
+;;  `icicle-prefix-completion-is-basic-flag' is nil, Icicles prefix
+;;  completion (`TAB') will complete an environment variable during
+;;  file-name completion.  This is in addition to the traditional
+;;  shell expansion of a variable when you hit `RET'.
 ;;
 ;;  Tip: Because slash (`/') is about the only non-word syntax
 ;;       character that is likely to appear in file-name completions,
@@ -2514,7 +2526,9 @@
 ;;
 ;;  * You can choose multiple candidates during completion, by
 ;;    clicking them with `mouse-2' while holding the Control key
-;;    pressed.  See (@> "Multi-Commands").
+;;    pressed.  See (@> "Multi-Commands").  You can choose a set of
+;;    candidates in additional ways, and then act on all of them - see
+;;    (@> "Sets of Completion Candidates").
 ;;
 ;;  * Icicles dynamically resizes the `*Completions*' window
 ;;    vertically, to fit the current set of completion candidates.
@@ -2560,7 +2574,7 @@
 ;;    default appearance.
 ;;
 ;;    You typically use these features to make the `*Completions*'
-;;    text smaller and thus save screen real estate - show more
+;;    text a bit smaller and thus save screen real estate - show more
 ;;    candidates in less space.  However, Emacs 23 text-scaling does
 ;;    not by itself let you recuperate the saved window space - it
 ;;    shrinks the text, but it does not shrink the window accordingly.
@@ -5203,10 +5217,13 @@
 ;;  Function `read-file-name' is specialized for file-name input with
 ;;  completion.  It knows about files and file names for your current
 ;;  platform.  It knows about Emacs remote file name syntax (Tramp,
-;;  ange-ftp).  Using `read-file-name' is the most flexible way to
-;;  read a file name in Emacs, and it is the traditional way.  Unless
-;;  stated otherwise, "file-name completion", even in the Icicles doc,
-;;  refers to `read-file-name' completion.
+;;  Ange FTP).  And starting with Emacs 23, `TAB' also completes
+;;  environment variables during `read-file-name' completion.
+;;
+;;  Using `read-file-name' is the most flexible way to read a file
+;;  name in Emacs, and it is the traditional way.  Unless stated
+;;  otherwise, "file-name completion", even in the Icicles doc, refers
+;;  to `read-file-name' completion.
 ;;
 ;;  When `read-file-name' reads input, only the file name itself, not
 ;;  the directory portion, is used for matching.  The directory is

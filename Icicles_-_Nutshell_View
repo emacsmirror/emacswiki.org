@@ -111,11 +111,15 @@ replaces it in the [[minibuffer]]:
 
 Keys `next' and `prior' ('''Page Up''') cycle among all of the [[command]]s that contain (match) the minibuffer input pattern -- `tool', in this case. Just hit `RET' (Return) when you get to the command you want.
 
+(Note: The particular candidates shown here and in other examples
+might be different from what you see, depending on your version of
+Emacs and what other libraries you might have loaded.)
+
 You can use a ''regular expression'' ([[regexp]]) to narrow the field of matching inputs:
 
 : ##M-x ##<u>'''## i s e . + c h a r ##'''</u> ##next## -> 
-: ##M-x isearch-*-char next## -> 
-: ##M-x isearch-delete-char next## ...
+: ##M-x isearch-delete-char         next## -> 
+: ##M-x isearch-other-control-char  next## ...
 
 See [[Icicles - Cycling Completions]] for more about cycling completion candidates.
 
@@ -152,7 +156,7 @@ this ''[[apropos completion]]'', by using `TAB' instead of `S-TAB'.  You
 can ''cycle'' prefix-completion candidates by using the `down' and
 `up' arrow keys instead of `next' and `prior'.
 
-Some people prefer to always cycle with the same keys, for
+Some people prefer to always cycle using the same keys, for
 example, `down' and `up', regardless of the completion mode
 (prefix or apropos).  You can get that behavior by customizing
 user option '''`<tt>[[Icicles - Customization and General Tips#icicle-cycling-respects-completion-mode|icicle-cycling-respects-completion-mode]]</tt>''''

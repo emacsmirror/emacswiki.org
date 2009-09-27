@@ -38,7 +38,10 @@ Function '''`read-file-name'''' uses '''[::relative file-name completion]'''.
 It is specialized for file-name input with
 completion.  It knows about files and file names for your current
 platform.  It knows about Emacs remote file name syntax ([[TrampMode|Tramp]],
-ange-ftp).  Using `read-file-name' is the most flexible way to
+Ange FTP).  And starting with Emacs 23, `TAB' also completes
+environment variables during `read-file-name' completion.
+
+Using `read-file-name' is the most flexible way to
 read a file name in Emacs, and it is the traditional way.  Unless
 stated otherwise, "''file-name completion''", even in the
 '''Icicles''' doc, refers to `read-file-name' completion.

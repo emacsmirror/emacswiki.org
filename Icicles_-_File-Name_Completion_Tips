@@ -106,6 +106,19 @@ You can use '''`<code>$</code>'''' for both environment variables and as a regex
 special character.  For example, you can use a pattern such as
 `##$HOME.*t$##' to match the files in your home directory (`##$HOME##') whose names end in `t'.  See [[Icicles - Special Characters in Input Patterns]].
 
+
+----
+[:EnvVarCompletion]
+==== Completion of Environment Variables ====
+
+Starting with Emacs 23, and provided that option '''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-completion-is-basic-flag|icicle-prefix-completion-is-basic-flag]]</tt>'''' is `nil', you can
+complete environment variables during file-name completion,
+using `TAB'.  So you can, for example, complete `##$HO##' to any of
+the candidates `HOME', `HOMEDRIVE', `HOMEPATH'.  This is in
+addition to the expansion of complete environment variables
+(e.g. `##$HOME##' to `/my/home/dir/') when you use `S-TAB' or `RET'.
+
+
 ----
 [:BackslashWDollarMatchesDirectories]
 ==== \W$ Matches Directories ====

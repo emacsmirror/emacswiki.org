@@ -145,6 +145,18 @@ In the X Window System, you can also swap Control and Caps Lock with the xkb opt
   setxkbmap -option ctrl:swapcaps     # Swap Left Control and Caps Lock
   setxkbmap -option ctrl:nocaps       # Make Caps Lock a Control key
 </pre>
+
+Note that the above will change your keyboard layout to a us keyboard layout. If it is not a US keyboard layout, you need to add a switch with your layout, like:
+
+<pre>
+  setxkbmap -layout gb -option ctrl:nocaps # Caps Lock is Control on a GB keyboard
+</pre>
+
+If you don't know your keyboard layout name, I think it is always the second value inside the xkb_symbols include line if you setxkbmap -print, so this command should preserve it for you:
+<pre>
+  setxkbmap -layout "$(setxkbmap -print | awk -F + '/xkb_symbols/ {print $2}')" -option ctrl:nocaps
+</pre>
+
 You can put this command in your <code>~/.xsession</code>, <code>~/.gnomerc</code> or whatever.  If you can edit the X configuration file, you might do it system-wide:
 <pre>
   Section "InputDevice"

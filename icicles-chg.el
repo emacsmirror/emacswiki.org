@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Sep 25 19:05:16 2009 (-0700)
+;; Last-Updated: Sat Sep 26 14:33:14 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 4417
+;;     Update #: 4422
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1588,6 +1588,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2009/09/26 dadams
+;;     icicle-narrow-candidates(-with-predicate): Bind icicle-progressive-completing-p to t.
 ;; 2009/09/25 dadams
 ;;     icicle-prefix-complete-1, icicle-transform-sole-candidate:
 ;;       Use icicle-current-input, not (car icicle-completion-candidates).
@@ -2505,6 +2507,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2009/09/26 dadams
+;;     icicle-minibuffer-setup: Don't complete if icicle-progressive-completing-p.
 ;; 2009/09/16 dadams
 ;;     icy-mode: Add icicle-insert-buffer to doc string.
 ;;     icicle-define-icicle-maps: Added icicle-insert-buffer to icicle-menu-map.
@@ -3765,6 +3769,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2009/09/26 dadams
+;;     Added: icicle-progressive-completing-p.
 ;; 2009/09/25 dadams
 ;;     Removed: icicle-respect-completion-styles-p.  See option *-TAB-respects-*-styles-flag.
 ;; 2009/09/05 dadams

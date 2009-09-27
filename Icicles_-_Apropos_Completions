@@ -9,7 +9,11 @@
 '''Icicles''' offers a new way to complete your
 partial input in the [[minibuffer]].  Instead of considering the
 string of input characters to be the ''prefix'' of various complete
-names, you can look for names that ''match'' that string ''anywhere''. This is the single most important feature that '''Icicles''' offers.
+names, you can look for names that ''match'' that string ''anywhere''.
+
+[new:DrewAdams:2009-09-26 16:55 UTC]
+This is the single most important feature that '''Icicles''' offers.
+[new]
 
 This is similar in effect to using command `apropos' to find
 "apropos completions" of a string (except it  works also for file and

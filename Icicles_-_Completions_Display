@@ -40,11 +40,14 @@ after you hit `C-insert' the current input in the minibuffer is
 
 `*Completions*' can also serve as apropos icompletion help -- see [[Icicles - Icompletion]].
 
+
 === Choose Multiple Candidates ===
 
 You can choose multiple candidates during completion, by
 clicking them with `mouse-2' while holding the Control key
-pressed.  See [[Icicles - Multi-Commands]].
+pressed.  See [[Icicles - Multi-Commands]].  You can choose a set of
+candidates in additional ways, and then act on all of them -- see [[Icicles - Candidate Sets]]).
+
 
 === *Completions* Window Resized to Fit ===
 
@@ -80,6 +83,7 @@ of the height for command `bar'. If you use such code, evaluate it after you loa
 [:text-scale-resize-window']
 [:1on1-completions-frame-zoom-font-difference]
 
+
 === Smaller Text in *Completions* ===
 Starting with Emacs 23, if you also use '''DoReMi''' library <tt>[[doremi-frm.el]]</tt>, then you can use '''`##C-x -##'''' in the minibuffer to
 zoom the `*Completions*' buffer text, shrinking or enlarging it
@@ -92,7 +96,7 @@ for the `*Completions*' text, by customizing option
 '''`<tt>[[Icicles - Customization and General Tips#icicle-Completions-text-scale-decrease|icicle-Completions-text-scale-decrease]]</tt>''''.  This controls the
 default appearance.
 
-You typically use these features to make the `*Completions*' text
+You typically use these features to make the `*Completions*' text a bit 
 smaller and thus save screen real estate -- show more candidates
 in less space.  However, Emacs 23 text-scaling does ''not'' by
 itself let you recuperate the saved window space -- it shrinks

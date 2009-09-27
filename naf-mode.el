@@ -66,7 +66,8 @@
 ;;; naf-mode-group-period-styles
 ;;; naf-mode-benezit-flags
 ;;; naf-mode-sql-skeletons
-;;; naf-mode-awards-prizes, 
+;;; naf-mode-students-of-julian-french
+;;; naf-mode-awards-prizes 
 ;;; easymenu
 ;;;
 ;;; TODO:
@@ -81,7 +82,7 @@
 ;;; MAINTAINER: MON KEY
 ;;;
 ;;; PUBLIC-LINK: (URL `http://www.emacswiki.org/emacs/naf-mode.el')
-;;; FIRST-PUBLISHED: <Timestamp: #{2009-09-22T18:04:57-04:00Z}#{09392} - by MON KEY>
+;;; FIRST-PUBLISHED: <Timestamp: #{2009-09-22T18:04:57-04:00Z}#{09392} - by MON>
 ;;;
 ;;; FILE CREATED: SPRING 2008
 ;;; HEADER-ADDED: <Timestamp: #{2009-08-13T11:05:02-04:00Z}#{09334} - by MON KEY>
@@ -143,6 +144,7 @@
 (require 'naf-mode-benezit-flags)
 (require 'naf-mode-sql-skeletons)
 (require 'naf-mode-awards-prizes)
+(require 'naf-mode-students-of-julian)
 (require 'easymenu)
 ;;; COMMENTED: <Timestamp: #{2009-09-17T15:30:05-04:00Z}#{09384} - by MON KEY>
 ;; (require 'naf-mode-faces)
@@ -185,7 +187,11 @@ Used in `naf-mode'."
     *naf-mode-benezit-flags-xrefs*
     *naf-mode-group-period-styles-xrefs*
     *naf-mode-dates-xrefs*
-    *naf-mode-events-xrefs*)
+    *naf-mode-events-xrefs*
+    *naf-mode-students-of-julian-xrefs*
+    *naf-mode-nation-french-xrefs*
+    *naf-mode-nation-english-xrefs*
+    )
 "*List of symbol names of variables holding package level xrefs lists.")
 
 ;;;test-me; *naf-mode-xref-of-xrefs*
@@ -299,7 +305,19 @@ Used in `naf-mode'."
     (,naf-mode-intnl-city-names           0 naf-mode-place-fface)
     (,naf-mode-region-names-french        0 naf-mode-place-fface)
     (,naf-mode-region-names-other         0 naf-mode-place-fface)
-    (,naf-mode-intnl-auction-city-names   0 naf-mode-place-fface))
+    (,naf-mode-intnl-auction-city-names   0 naf-mode-place-fface)
+    ;; =========STUDENTS of Rodolphe Julian's Académie Julian ===================
+    (,naf-mode-students-of-julian-french        0 naf-mode-artist-student-of-julian-fface)
+    (,naf-mode-students-of-julian-us            0 naf-mode-artist-student-of-julian-fface)
+    (,naf-mode-students-of-julian-misc          0 naf-mode-artist-student-of-julian-fface)
+    (,naf-mode-students-of-julian-brazil        0 naf-mode-artist-student-of-julian-fface)
+    (,naf-mode-students-of-julian-canada        0 naf-mode-artist-student-of-julian-fface)
+    (,naf-mode-students-of-julian-finland       0 naf-mode-artist-student-of-julian-fface) 
+    (,naf-mode-students-of-julian-germany       0 naf-mode-artist-student-of-julian-fface)
+    (,naf-mode-students-of-julian-norway        0 naf-mode-artist-student-of-julian-fface)
+    (,naf-mode-students-of-julian-russia        0 naf-mode-artist-student-of-julian-fface)
+    (,naf-mode-students-of-julian-switzerland   0 naf-mode-artist-student-of-julian-fface)
+    (,naf-mode-students-of-julian-uk            0 naf-mode-artist-student-of-julian-fface))
   "*Collect `naf-mode-keywords' into a single place.
 Variables and Constants of this list loaded by `naf-mode' require statments.
 They are encapsulated here for easy modification.")
@@ -387,7 +405,7 @@ They are encapsulated here for easy modification.")
     (define-key naf-map "\C-c\M-inbr"   'brand-naf)
     (define-key naf-map "\C-c\M-inpp"   'people-naf)
     (define-key naf-map "\C-c\M-inbz"   'benezit-naf-template)
-    (define-key naf-map "\C-c\M-inim"   'item-naf)
+    (define-key naf-map "\C-c\M-inm"    'item-naf)
     (define-key naf-map "\C-c\M-icd"    'comment-divider) ;!!"\C-c\C-di"
     (define-key naf-map "\C-c\M-ic4"    'comment-divider-to-col-four) ;!!"\C-c\C-dn"
     (define-key naf-map "\C-c\M-icp"    'mon-insert-copyright) ;!! "\C-c\C-cp"
@@ -459,7 +477,9 @@ They are encapsulated here for easy modification.")
     (define-key naf-map "\C-c\M-rfb"    'mon-defranc-benezit)
     (define-key naf-map "\C-c\M-rht"    'mon-make-html-table)
     (define-key naf-map "\C-c\M-rit"    'mon-ital-date-to-eng)
-    (define-key naf-map "\C-c\M-ron"    'mon-line-string-rotate-namestrings)
+    (define-key naf-map "\C-c\M-rot"    'mon-line-string-rotate-namestrings)
+    (define-key naf-map "\C-c\M-rut"    'mon-line-string-unrotate-namestrings)
+    (define-key naf-map "\C-c\M-roc"    'mon-line-string-rotate-namestrings-combine)
     (define-key naf-map "\C-c\M-rol"    'mon-line-strings-to-list)
     (define-key naf-map "\C-c\M-rnr"    'mon-re-number-region)
     (define-key naf-map "\C-c\M-rpl"    'mon-pipe-list)
@@ -577,8 +597,10 @@ Typically naf-mode binds \"\C-c\M-##\".")
     "---"                               ;; M-r__ FOR REPLACING:
     ("Replacing"
      ("Names Rotate/Replace"
-      ["Fname Lname -> Lnane (Fname)"  mon-line-string-rotate-namestrings :help ""]
-      ["Lines-of-Names -> List-of-Names" mon-line-strings-to-list :help ""])
+      ["Fname Lname -> Lnane (Fname)"  mon-line-string-rotate-namestrings :help "Rotate namestrings in region"]
+      ["Lname (Fname) -> Fname Lname"  mon-line-string-unrotate-namestrings :help "Unrotate namestrings in region"]
+      ["Fname Lname & Lnane (Fname)" mon-line-string-rotate-namestrings-combine :help "list of un & rotated namestrings"]
+      ["Lines-of-Names -> List-of-Names" mon-line-strings-to-list :help "Return region's lines as lisp list"])
      "---"
      ("Date/Number Replace"
       ["Numbers -> Month - mon-num-to-month"  mon-num-to-month :help " "]
@@ -588,10 +610,10 @@ Typically naf-mode binds \"\C-c\M-##\".")
       ["mon-re-number-region" mon-re-number-region :help "Sequential renumber numbers in region"])
      "---"
      ("Translating Replace"
-      ["mon-defranc-places"    mon-defranc-places   :help "French place names -> Engrish place names"]
-      ["mon-defranc-dates"     mon-defranc-dates    :help "French dates -> Engrish dates"]
-      ["mon-defranc-benezit"   mon-defranc-benezit  :help "Benezit French => Benezit Engrish"]
-      ["mon-ital-date-to-eng"  mon-ital-date-to-eng :help "Italian dates -> Engrish dates"])
+      ["mon-defranc-places"      mon-defranc-places      :help "French place names -> Engrish place names"]
+      ["mon-defranc-dates"       mon-defranc-dates       :help "French dates -> Engrish dates"]
+      ["mon-defranc-benezit"     mon-defranc-benezit     :help "Benezit French => Benezit Engrish"]
+      ["mon-ital-date-to-eng"    mon-ital-date-to-eng    :help "Italian dates -> Engrish dates"])
      "---"
      ["mon-make-html-table"      mon-make-html-table     :help "Convert Region -> html table"]
      ["mon-pipe-list"            mon-pipe-list           :help "Convert region -> piped list \(Used-fors\)"]

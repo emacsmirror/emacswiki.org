@@ -37,8 +37,10 @@ Another way of inserting a string into the minibuffer is to use a
 negative prefix arg with `##M-:##'
 (e.g. `##M-- M-:##') during minibuffer
 input.  With this method, you can type not only a string-valued
-variable name but any EmacsLisp expression that evaluates to a
-string.
+variable name but any EmacsLisp expression. The expression need
+not evaluate to a string -- whatever the result of evaluation is,
+it is pretty-printed in the minibuffer, to be used as part of your
+input text.
 
 These shortcut features are especially convenient for use with
 command `icicle-search' -- you can use it to search text for

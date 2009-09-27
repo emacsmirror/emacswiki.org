@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Sep 16 10:11:34 2009 (-0700)
+;; Last-Updated: Sat Sep 26 14:25:29 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 6070
+;;     Update #: 6072
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2765,6 +2765,7 @@ Usually run by inclusion in `minibuffer-setup-hook'."
     (when (memq icicle-default-value '(preselect-start preselect-end))
       (icicle-select-minibuffer-contents))
     (when (and icicle-show-Completions-initially-flag
+               (not icicle-progressive-completing-p) ; If narrowed, then we have already completed.
                (icicle-completing-p)    ; Function initializes variable `icicle-completing-p'.
                (sit-for icicle-incremental-completion-delay)) ; Let user interrupt.
       (case icicle-cycling-respects-completion-mode

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Sep 25 13:48:49 2009 (-0700)
+;; Last-Updated: Sat Sep 26 14:29:10 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 14805
+;;     Update #: 14807
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4546,6 +4546,7 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   (when (interactive-p) (icicle-barf-if-outside-minibuffer))
   (let (;; Restore match function, in case it was bound to nil, e.g., by `C-h C-o'.
         (icicle-apropos-complete-match-fn  icicle-last-apropos-complete-match-fn)
+        (icicle-progressive-completing-p   t) ; Inhibit completion by `icicle-minibuffer-setup'.
         (enable-recursive-minibuffers      t))
     (cond ((and icicle-completion-candidates (null (cdr icicle-completion-candidates)))
            (if (not (and icicle-top-level-when-sole-completion-flag
@@ -4672,6 +4673,7 @@ When called from Lisp with non-nil arg PREDICATE, use that to narrow."
   (when (interactive-p) (icicle-barf-if-outside-minibuffer))
   (let (;; Restore match function, in case it was bound to nil, e.g., by `C-h C-o'.
         (icicle-apropos-complete-match-fn  icicle-last-apropos-complete-match-fn)
+        (icicle-progressive-completing-p   t) ; Inhibit completion by `icicle-minibuffer-setup'.
         (last-completion-cmd               (or icicle-last-completion-command 'icicle-apropos-complete))
         (enable-recursive-minibuffers      t))
     (cond ((null icicle-completion-candidates)

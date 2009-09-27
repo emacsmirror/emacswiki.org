@@ -42,6 +42,46 @@ characters escaped, `S-TAB' does literal substring completion.
 
 
 
+
+
+[:PartialCompletion]
+=== Partial Completion ===
+
+This section pertains to Emacs releases starting with Emacs 23.
+
+Provided that [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-completion-is-basic-flag|icicle-prefix-completion-is-basic-flag]]</tt>'''' is
+`nil', '''Icicles''' prefix completion respects the standard Emacs option
+`completion-styles', so the behavior of `TAB' is similar to what
+it is in vanilla Emacs.
+
+Emacs includes `partial-completion' in the default value of
+`completion-styles'.  This means that by default '''Icicles''' too makes
+use of partial completion when you use `TAB'.  ('''Icicles''' makes no
+use of `completion-styles' when you use `S-TAB'.)
+
+Partial completion is not really a kind of fuzzy completion, but
+its effect can sometimes be similar.  In some ways, it is similar
+to [[#ScatterMatchCompletion|scatter-match]] completion, but it requires you to
+explicitly mark where to skip ahead (using `##*##', `## ##' (space), or `##-##').
+
+'''Icicles''' does not support using the mode `partial-completion-mode',
+and Emacs itself is in the process of deprecating it, now that the
+partial-completion style is active by default.
+
+I do not necessarily recommend including `partial-completion' as
+an entry in `completion-styles', because its effect is often
+counter-intuitive or confusing.  But it is included by default in
+Emacs, and '''Icicles''' supports it.  You might find it useful in
+file-name completion, to be able to complete directory components,
+for instance.
+
+Note: The same Emacs mechanism allows for completion of
+environment variables during file-name completion, and this too is
+inhibited if you set `icicle-prefix-completion-is-basic-flag' to
+`nil'.
+
+
+
 [:ScatterMatchCompletion]
 === Scatter-Match Completion ===
 
@@ -61,7 +101,7 @@ apropos (regexp) matching.  Unlike the case of fuzzy completion
 [:icicle-next-apropos-match-function]
 [:icicle-apropos-match-fns-alist]
 The type of completion matching that is used when you hit `S-TAB'
-is controlled by [[user option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-match-fns-alist|icicle-apropos-match-fns-alist]]</tt>''''.  By
+is controlled by user option '''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-match-fns-alist|icicle-apropos-match-fns-alist]]</tt>''''.  By
 default, the first method in this list is used for matching.  You
 can use '''`##M-(##'''' (command `icicle-next-apropos-match-function') in
 the minibuffer to cycle among the matching methods, which by

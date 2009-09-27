@@ -27,7 +27,7 @@ you will be '''''required''''' to pick one of the default values or you will be
 free to enter something else.  The programmer might also have told
 the input-completing function to require that your input pass some special test (''predicate'').
 
-Be aware that standard Emacs terminology does not refer to such a set of default values as "default values"; they are called "completions". By "default value", standard Emacs terminology means only the single value that you can access via `M-n'. '''Icicles''' refers to all such potential inputs indifferently as "'''default values'''", "'''completions'''", "'''completion candidates'''", and "'''candidates'''". Whenever completion is not ''requiring'' you to pick one of the available candidates, they are effectively only ''default'' choices.
+Be aware that standard Emacs terminology does not refer to such a set of default values as "default values"; they are called "completions". By "default value", standard Emacs terminology means only the values that you can access via `M-n'. '''Icicles''' refers to all such potential inputs indifferently as "'''default values'''", "'''completions'''", "'''completion candidates'''", and "'''candidates'''". Whenever completion is not ''requiring'' you to pick one of the available candidates, they are effectively only ''default'' choices.
 
 So, how do you get access to the default values that the programmer has made available to you, in order to choose
 one?  You hit certain keys to ''complete'' the current

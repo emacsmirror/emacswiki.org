@@ -1,8 +1,10 @@
 Auto completion with popup menu.
 
-Project page:
+Project page: http://code.google.com/p/auto-complete/
 
-http://code.google.com/p/auto-complete/
+Please go to the project page to get latest version of auto-complete.el.
+
+The following files are very stable but they are also obsolete. I suggest you to use latest one :)
 
 Lisp:auto-complete.el (0.2.0 stable)
 
@@ -24,15 +26,7 @@ Lisp:auto-complete-verilog.el   is some enhancement by Yen-Chin,Lee.
 
 == Development version ==
 
-You can get development version from:
-
-* http://www.cx4a.org/pub/auto-complete.el
-
-and some extensions:
-
-* http://www.cx4a.org/pub/auto-complete-config.el
-
-This version may include new features but it is in testing.
+Please go to the project page and browse the source code.
 
 : You can use Lisp:auto-install.el install all above packages, just:
 ## M-x auto-install-batch RET
@@ -234,6 +228,13 @@ Final version of auto-complete-yasnippet.el, tested in both 23.0 and 23.1:
 
 P.S. I apologize for extra patch on auto-complete.el, it wasn't required. To those who patched: please use original version.
 </pre>
+
+----
+[new]
+Thanks so much! I fixed the problem and commit to the repository. Please check it in the project page.
+--[[Matsuyama]]
+
+
 
 ----
 CategoryCompletion

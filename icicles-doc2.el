@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Sep 19 09:27:23 2009 (-0700)
+;; Last-Updated: Sat Sep 26 12:54:48 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 25885
+;;     Update #: 25973
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -240,6 +240,7 @@
 ;;
 ;;  (@> "Dot, Dot, Dot")
 ;;  (@> "Fuzzy Completion")
+;;    (@> "Partial Completion")
 ;;    (@> "Scatter-Match Completion")
 ;;    (@> "Fuzzy-Match Completion")
 ;;
@@ -3284,6 +3285,43 @@
 ;;  (toggle) escaping of regexp special characters.  With special
 ;;  characters escaped, `S-TAB' does literal substring completion.
 ;;
+;;(@* "Partial Completion")
+;;  ** Partial Completion **
+;;
+;;  This section pertains to Emacs releases starting with Emacs 23.
+;;
+;;  Provided that option `icicle-prefix-completion-is-basic-flag' is
+;;  nil, Icicles prefix completion respects the standard Emacs option
+;;  `completion-styles', so the behavior of `TAB' is similar to what
+;;  it is in vanilla Emacs.
+;;
+;;  Emacs includes `partial-completion' in the default value of
+;;  `completion-styles'.  This means that by default Icicles too makes
+;;  use of partial completion when you use `TAB'.  (Icicles makes no
+;;  use of `completion-styles' when you use `S-TAB'.)
+;;
+;;  Partial completion is not really a kind of fuzzy completion, but
+;;  its effect can sometimes be similar.  In some ways, it is similar
+;;  to scatter-match completion (see next), but it requires you to
+;;  explicitly mark where to skip ahead (using `*', ` ' (space), or
+;;  `-').
+;;
+;;  Icicles does not support using the mode `partial-completion-mode',
+;;  and Emacs itself is in the process of deprecating it, now that the
+;;  partial-completion style is active by default.
+;;
+;;  I do not necessarily recommend including `partial-completion' as
+;;  an entry in `completion-styles', because its effect is often
+;;  counter-intuitive or confusing.  But it is included by default in
+;;  Emacs, and Icicles supports it.  You might find it useful in
+;;  file-name completion, to be able to complete directory components,
+;;  for instance.
+;;
+;;  Note: The same Emacs mechanism allows for completion of
+;;  environment variables during file-name completion, and this too is
+;;  inhibited if you set `icicle-prefix-completion-is-basic-flag' to
+;;  nil.
+;;
 ;;(@* "Scatter-Match Completion")
 ;;  ** Scatter-Match Completion **
 ;;
@@ -4170,7 +4208,7 @@
 ;;    percentage, and the window width is divided by that figure.
 ;;    Other things are taken into account also, but this gives you a
 ;;    way to tweak the number of columns: the larger this number, the
-;;    fewer the columns.  The default value is 70.
+;;    fewer the columns.
 ;;
 ;;    If you use Do Re Mi (library `doremi.el'), then you can modify
 ;;    `icicle-candidate-width-factor' incrementally during completion,
@@ -4363,6 +4401,22 @@
 ;;    differ by at most this many character operations (insertion,
 ;;    deletion, replacement).  This option is used only if you have
 ;;    library `levenshtein.el'.  See (@> "Fuzzy Completion").
+;;
+;;  * A nil value of option `icicle-prefix-completion-is-basic-flag'
+;;    means that Icicles prefix completion respects the standard
+;;    option `completion-styles' (new in Emacs 23), so that `TAB'
+;;    behaves similarly to what it does in vanilla Emacs.  Otherwise
+;;    (value non-nil or with Emacs prior to Emacs 23), `TAB' performs
+;;    only basic prefix completion.
+;;
+;;    A nil value also means that `TAB' completes environment
+;;    variables during file-name completion and in shell commands.  A
+;;    non-nil value inhibits this completion, but it does not inhibit
+;;    the expansion of complete environment variables to their values
+;;    when you hit `S-TAB' or `RET'.
+;;
+;;    In releases prior to Emacs 23, this option has no effect:
+;;    Icicles acts as if the value is nil.
 ;;
 ;;  * Top-level command `icicle-search' uses several faces to
 ;;    highlight found text that matches your input.  Faces
@@ -5046,6 +5100,14 @@
 ;;    `$HOME.*t$' to match the files in your home directory (`$HOME')
 ;;    whose names end in `t'.  See
 ;;    (@file :file-name "icicles-doc1.el" :to "What About Special-Character Conflicts?").
+;;
+;;  * Starting with Emacs 23, and provided that option
+;;    `icicle-prefix-completion-is-basic-flag' is nil, you can
+;;    complete environment variables during file-name completion,
+;;    using `TAB'.  So you can, for example, complete `$HO' to any of
+;;    the candidates `HOME', `HOMEDRIVE', `HOMEPATH'.  This is in
+;;    addition to the expansion of complete environment variables
+;;    (e.g. `$HOME' to `/my/home/dir/') when you use `S-TAB' or `RET'.
 ;;
 ;;  * You can use the idiom `\W$' as input to match only directories,
 ;;    when a command asks for a file or directory name.  The `\W' says

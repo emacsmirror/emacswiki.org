@@ -22,7 +22,9 @@
 * Lisp:mon-color-utils.el
 * Lisp:naf-mode.el
 * Lisp:naf-mode-faces.el
+* Lisp:naf-mode-insertion-utils.el
 * Lisp:naf-mode-replacements.el
+* Lisp:naf-mode-students-of-julian.el
 * Lisp:naf-name-utils.el
 * Lisp:ebay-template-mode.el
 * Lisp:ebay-template-tools.el
