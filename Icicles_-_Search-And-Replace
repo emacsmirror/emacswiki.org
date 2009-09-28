@@ -114,6 +114,8 @@ by repeating `C-S-RET' (provided the
 replacement text does not also match your input -- see below).  At
 the buffer limits, repeating `C-S-RET' wraps around too.
 
+
+[:C-S-RET-gotchas]
 `C-S-RET' always replaces the first input match in the current
 search context or, if there are no matches, then the first input
 match in the next context.  This behavior has these important

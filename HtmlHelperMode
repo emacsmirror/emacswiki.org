@@ -27,7 +27,7 @@ To invoke html-helper-mode automatically on .phtml files, do this:
 
 == Notes ==
 
-Note : with Emacs 22, autoload is useless and you will need to modify similarly magic-mode-alist. Try C-h v auto-mode-alist to learn more.
+Note : with Emacs 22, auto-mode-alist is useless and you will need to modify similarly magic-mode-alist. Try C-h v auto-mode-alist to learn more.
 
 ... or you can disable magic-mode-alist with (setq magic-mode-alist ()) before the autoload line, then auto-mode-alist works -- SewerynKokot.
 

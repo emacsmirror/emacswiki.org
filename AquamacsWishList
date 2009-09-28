@@ -36,6 +36,8 @@ When using aquamacs-toggle-full-frame, I can mouse up to see the time and menu b
 [new]
 Noah: I would love to be able to use the mouse to do rectangular selection (this is one of the few things I prefer to do in TextMate).
 
+Jeff: For reference: Xcode uses Opt-click and drag for this. And yes, this would be nifty. 
+
 [new]
 DennisGroves: It would be brilliant to add in some of the big well known packages such as planner-mode, org-mode, bbdb, and [GoogleClient g-client] that way out of the box emacs on mac replace mail.app, ical, and address book. The humiliation of permanent record haunts me now...  org-mode is built in... <hangs head in shame> 
 

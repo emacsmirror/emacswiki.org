@@ -6,25 +6,17 @@ templates. Bundled language templates includes: C, C++, [CSharpMode C#], [PerlMo
 [SqlMode SQL], LaTeX, [NxhtmlMode HTML], [CascadingStyleSheetMode CSS] and more. The snippet syntax is inspired from [http://manual.macromates.com/en/snippets TextMate's] syntax, you can even
 [http://yasnippet.googlecode.com/svn/trunk/doc/snippet-development.html#importing-textmate-snippets import] most !TextMate templates to YASnippet.
 
-* Homepage: http://pluskid.lifegoo.com/upload/project/yasnippet/doc/index.html Homepage
-* Documentation: [http://yasnippet.googlecode.com/svn/trunk/doc/index.html
-* [http://www.youtube.com/watch?v=vOj7btx3ATg YouTube demo] and [http://yasnippet.googlecode.com/files/yasnippet.avi high resolution demo]
+* Download at http://yasnippet.googlecode.com
+* Browse the [http://yasnippet.googlecode.com/svn/trunk/doc/index.htm documentation]
+* Watch a [http://www.youtube.com/watch?v=76Ygeg9miao screencast] or download [http://yasnippet.googlecode.com/files/yas_demo.avi a higher resolution version]
+* Report bugs to http://code.google.com/p/yasnippet/issues/list
+* Discuss and suggest features at http://groups.google.com/group/smart-snippet
 
-Report bugs or contribute code to:
-
-* Bugs: http://code.google.com/p/yasnippet/issues/list
-* Feature suggestions: http://groups.google.com/group/smart-snippet
-
-== Download ==
-
-* Project page: http://code.google.com/p/yasnippet
-* Configuration Repository: http://coderepos.org/share/browser/config/yasnippet
-
-== Install ==
+== Installation instructions ==
 
 === Standard install ===
 
-To install the normal archive, download and unpack the latest yasnippet-*.tar.bz2. to a suitable directory like ~/.emacs.d/packages/ and add the following in your ~/.emacs InitFile:
+To install the normal archive, download and unpack the latest <code>yasnippet-*.tar.bz2</code>. to a suitable directory like <code>~/.emacs.d/packages/</code> and add the following in your <code>~/.emacs</code> InitFile:
 
 {{{
     (add-to-list 'load-path "~/.emacs.d/packages/yasnippet-x.y.z")
@@ -40,27 +32,28 @@ To quickly tryout Yasnippet, download the a simpler "bundle" version.
 If you plan to work more with the bundled templates your own templates,
 download the "normal" package.
 
-1. Download yasnippet-bundle.el tar gz and unpack it.
+1. Download <code>yasnippet-bundle-*.el tar gz</code> and unpack it.
 
-2. You'll get a file named `yasnippet-bundle.el`, put it in `~/.emacs.d/packages/` (create that directory if not exists).
+2. You'll get a file named <code>yasnippet-bundle.el</code>, put it in <code>~/.emacs.d/packages/</code> (create that directory if not exists).
 
-3. Open the file in Emacs, and type `Alt+x eval-buffer`.
+3. Open the file in Emacs, and type <code>Alt+x eval-buffer</code>.
 
 That's it. Now, open any file, you'll see a menu "YASnippet".  You can
 pull the menu to insert a template. Or, you can type a pre-defined
-abbrev and press TAB to expand it!
-
-To have Emacs load YASnippet automatically when it starts, put the following in your ~/.emacs file:
+abbrev and press TAB to expand it! To have Emacs load YASnippet automatically 
+when it starts, put the following in your <code>~/.emacs</code> file:
 
 {{{
 (add-to-list 'load-path "~/.emacs.d/packages")
 (require 'yasnippet-bundle)
 }}}
 
-== Configuration ==
+== User contributed templates ==
 
 See [http://www.emacswiki.org/emacs-en/AndyStewart_YasnippetTemplate few  templates] I wrote.
 -- AndyStewart
+
+See http://coderepos.org/share/browser/config/yasnippet for another repository.
 
 == Simpler installation ==
 

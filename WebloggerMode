@@ -117,6 +117,9 @@ Tom, et al, I'm using ;; Version: 1.4.1 ;; Last Modified: <2009-09-09 21:08:45 m
 
 from (weblogger-entry-setup-headers) but do not have time right now to debug.  It did fix my problem, at least for now :)  Thanks! --ErikIverson
 
+[new]
+I tried to post a message, but I had HTML code in my text, and I received the error message "parse error. not well formed" when I tried to post. without the HTML code it worked fine. Switching to emacs 23.1 from 22 fixed it. --NicolauWerneck
+
 ----
 
 CategoryJournaling

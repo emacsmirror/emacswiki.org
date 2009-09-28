@@ -48,6 +48,7 @@ a function `moccur-regexp-read-from-minibuf' is defined (it is in
 library Lisp:color-moccur.el), and your input to `C-h f' is
 `##min[^-]*buf##', then only `minibuf' is highlighted in red.
 
+[:C-l]
 Expanded-common-match completion is convenient, but when
 apropos-completing you often need to try variants of a regexp,
 editing it and observing which candidates match in `*Completions*',

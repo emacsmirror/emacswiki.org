@@ -60,6 +60,7 @@ Don't become a cycling drone! '''''Input some text to narrow the set of candidat
 ''Cycling'' and ''filtering'' work hand in hand. If 
 the set of candidates is small to begin with, then just cycling might be quick enough -- that is the case if you move among a small set of [[buffer]]s, for instance. But with '''Icicles''' you can profitably use cycling on even a very large set of candidates -- by filtering the set first. The reason this is often not very practical with vanilla Emacs is that filtering by a ''prefix'' only is not that potent -- '''Icicles''' regexp filtering changes this game.
 
+[:C-l]
 '''''Tip:''''' Whenever you type or delete text in the minibuffer, your partial input is remembered. When you cycle completion candidates, your input is replaced by each candidate, but you can at any time ''refresh the minibuffer'' to retrieve what you last typed. You do this with '''`C-l'''', which is bound in the minibuffer to command `icicle-retrieve-previous-input'. Editing a completion candidate that you have cycled into the minibuffer counts as input. Editing tells '''Icicles''' to remember what is in the minibuffer as your last real input. If you want to replace the candidate and go back to editing the input you had already typed before cycling, then use `C-l' -- don't just delete characters from the candidate.  See [[Icicles - History Enhancements]].
 
 You can change the [[key]]s that are bound to completion-candidate cycling.  And if you prefer to use the same key for cycling both
