@@ -13,7 +13,7 @@
 * Lisp:mon-dir-locals-alist.el
 * Lisp:mon-dir-utils.el
 * Lisp:mon-hash-utils.el
-* Lisp:mon-rename-image-utils.el
+* Lisp:mon-rename-image-utils.el (RenameImageUtils);
 * Lisp:mon-rename-image-utils-supplemental.el
 * Lisp:mon-regexp-symbols.el
 * Lisp:mon-time-utils.el (EbayTime)

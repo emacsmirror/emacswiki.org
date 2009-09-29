@@ -80,11 +80,11 @@ So if you have such a problem, just add this to you .mew.el:
 == BBDB integration ==
 
 For Mew to make use of the [BbdbMode bbdb], you need to add [Lisp:bbdb-mew.el bbdb-mew.el] to emacs' load-path.  Then add the following code to your init-file:
-<pre>
+{{{
 (autoload 'bbdb-insinuate-mew      "bbdb-mew"   "Hook BBDB into Mew")
 (add-hook 'mew-init-hook 'bbdb-insinuate-mew)
 (setq bbdb-send-mail-style 'mew)
-</pre>
+}}}
 
 *The way bbdb-mew works:*
 

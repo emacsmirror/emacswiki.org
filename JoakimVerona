@@ -36,6 +36,8 @@ I can already sucessfully load .djvu files.
 
 * A patch for emacs to call the libmagic library for file info(This seems to get rejected due to complexity)
 
+* dragbox.el -- draw a bounding box interactively in an image, and have it ocr:d
+
 I've used Emacs since '88, but I only realised the potential of emacs nirvana in '04 when I migrated nearly all
 my applications to emacs, except multimedia. Slow learner I suppose. Recently I've even been interested in moving 
 musical and graphical workflows to Emacs.

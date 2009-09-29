@@ -143,6 +143,9 @@ etags.el can correct me, I would appreciate it. -- Anonymous
 
 See EtagsTable
 
+== Updating TAGS on file save ==
+
+[http://github.com/mattkeller/etags-update etags-update.el] is a global minor mode that will update your TAGS when you save a file. It can also offer to add a file to your TAGS if it is not already indexed.
 
 ----
 CategoryProgrammerUtils

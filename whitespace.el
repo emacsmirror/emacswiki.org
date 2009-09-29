@@ -1,12 +1,12 @@
 ;;; whitespace.el --- minor mode to visualize TAB, (HARD) SPACE, NEWLINE
 
-;; Copyright (C) 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008
+;; Copyright (C) 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009
 ;;   Free Software Foundation, Inc.
 
 ;; Author: Vinicius Jose Latorre <viniciusjl@ig.com.br>
 ;; Maintainer: Vinicius Jose Latorre <viniciusjl@ig.com.br>
 ;; Keywords: data, wp
-;; Version: 11.2.2
+;; Version: 12.0
 ;; X-URL: http://www.emacswiki.org/cgi-bin/wiki/ViniciusJoseLatorre
 
 ;; This file is part of GNU Emacs.
@@ -381,7 +381,7 @@
   '(tabs spaces trailing lines space-before-tab newline
 	 indentation empty space-after-tab
 	 space-mark tab-mark newline-mark)
-  "*Specify which kind of blank is visualized.
+  "Specify which kind of blank is visualized.
 
 It's a list containing some or all of the following values:
 
@@ -426,8 +426,8 @@ It's a list containing some or all of the following values:
    space-after-tab::tab		8 or more SPACEs after a TAB are
 				visualized via faces.
 
-   space-after-tab::space	TABs are visualized when occurs 8 or
-				more SPACEs after a TAB via faces.
+   space-after-tab::space	TABs are visualized when 8 or more
+				SPACEs occur after a TAB, via faces.
 
    space-after-tab		8 or more SPACEs after a TAB are
 				visualized, if `indent-tabs-mode'
@@ -437,8 +437,8 @@ It's a list containing some or all of the following values:
    space-before-tab::tab	SPACEs before TAB are visualized via
 				faces.
 
-   space-before-tab::space	TABs are visualized when occurs SPACEs
-				before TAB via faces.
+   space-before-tab::space	TABs are visualized when SPACEs occur
+				before TAB, via faces.
 
    space-before-tab		SPACEs before TAB are visualized, if
 				`indent-tabs-mode' (which see) is
@@ -508,7 +508,7 @@ See also `whitespace-display-mappings' for documentation."
 
 
 (defcustom whitespace-space 'whitespace-space
-  "*Symbol face used to visualize SPACE.
+  "Symbol face used to visualize SPACE.
 
 Used when `whitespace-style' includes the value `spaces'."
   :type 'face
@@ -526,7 +526,7 @@ Used when `whitespace-style' includes the value `spaces'."
 
 
 (defcustom whitespace-hspace 'whitespace-hspace
-  "*Symbol face used to visualize HARD SPACE.
+  "Symbol face used to visualize HARD SPACE.
 
 Used when `whitespace-style' includes the value `spaces'."
   :type 'face
@@ -544,7 +544,7 @@ Used when `whitespace-style' includes the value `spaces'."
 
 
 (defcustom whitespace-tab 'whitespace-tab
-  "*Symbol face used to visualize TAB.
+  "Symbol face used to visualize TAB.
 
 Used when `whitespace-style' includes the value `tabs'."
   :type 'face
@@ -562,7 +562,7 @@ Used when `whitespace-style' includes the value `tabs'."
 
 
 (defcustom whitespace-newline 'whitespace-newline
-  "*Symbol face used to visualize NEWLINE char mapping.
+  "Symbol face used to visualize NEWLINE char mapping.
 
 See `whitespace-display-mappings'.
 
@@ -585,7 +585,7 @@ See `whitespace-display-mappings'."
 
 
 (defcustom whitespace-trailing 'whitespace-trailing
-  "*Symbol face used to visualize trailing blanks.
+  "Symbol face used to visualize trailing blanks.
 
 Used when `whitespace-style' includes the value `trailing'."
   :type 'face
@@ -600,7 +600,7 @@ Used when `whitespace-style' includes the value `trailing'."
 
 
 (defcustom whitespace-line 'whitespace-line
-  "*Symbol face used to visualize \"long\" lines.
+  "Symbol face used to visualize \"long\" lines.
 
 See `whitespace-line-column'.
 
@@ -619,7 +619,7 @@ See `whitespace-line-column'."
 
 
 (defcustom whitespace-space-before-tab 'whitespace-space-before-tab
-  "*Symbol face used to visualize SPACEs before TAB.
+  "Symbol face used to visualize SPACEs before TAB.
 
 Used when `whitespace-style' includes the value `space-before-tab'."
   :type 'face
@@ -634,7 +634,7 @@ Used when `whitespace-style' includes the value `space-before-tab'."
 
 
 (defcustom whitespace-indentation 'whitespace-indentation
-  "*Symbol face used to visualize 8 or more SPACEs at beginning of line.
+  "Symbol face used to visualize 8 or more SPACEs at beginning of line.
 
 Used when `whitespace-style' includes the value `indentation'."
   :type 'face
@@ -649,7 +649,7 @@ Used when `whitespace-style' includes the value `indentation'."
 
 
 (defcustom whitespace-empty 'whitespace-empty
-  "*Symbol face used to visualize empty lines at beginning and/or end of buffer.
+  "Symbol face used to visualize empty lines at beginning and/or end of buffer.
 
 Used when `whitespace-style' includes the value `empty'."
   :type 'face
@@ -664,7 +664,7 @@ Used when `whitespace-style' includes the value `empty'."
 
 
 (defcustom whitespace-space-after-tab 'whitespace-space-after-tab
-  "*Symbol face used to visualize 8 or more SPACEs after TAB.
+  "Symbol face used to visualize 8 or more SPACEs after TAB.
 
 Used when `whitespace-style' includes the value `space-after-tab'."
   :type 'face
@@ -680,7 +680,7 @@ Used when `whitespace-style' includes the value `space-after-tab'."
 
 (defcustom whitespace-hspace-regexp
   "\\(\\(\xA0\\|\x8A0\\|\x920\\|\xE20\\|\xF20\\)+\\)"
-  "*Specify HARD SPACE characters regexp.
+  "Specify HARD SPACE characters regexp.
 
 If you're using `mule' package, there may be other characters besides:
 
@@ -708,7 +708,7 @@ Used when `whitespace-style' includes `spaces'."
 
 
 (defcustom whitespace-space-regexp "\\( +\\)"
-  "*Specify SPACE characters regexp.
+  "Specify SPACE characters regexp.
 
 If you're using `mule' package, there may be other characters
 besides \" \" that should be considered SPACE.
@@ -730,7 +730,7 @@ Used when `whitespace-style' includes `spaces'."
 
 
 (defcustom whitespace-tab-regexp "\\(\t+\\)"
-  "*Specify TAB characters regexp.
+  "Specify TAB characters regexp.
 
 If you're using `mule' package, there may be other characters
 besides \"\\t\" that should be considered TAB.
@@ -753,7 +753,7 @@ Used when `whitespace-style' includes `tabs'."
 
 (defcustom whitespace-trailing-regexp
   "\\(\\(\t\\| \\|\xA0\\|\x8A0\\|\x920\\|\xE20\\|\xF20\\)+\\)$"
-  "*Specify trailing characters regexp.
+  "Specify trailing characters regexp.
 
 If you're using `mule' package, there may be other characters besides:
 
@@ -771,7 +771,7 @@ Used when `whitespace-style' includes `trailing'."
 
 
 (defcustom whitespace-space-before-tab-regexp "\\( +\\)\\(\t+\\)"
-  "*Specify SPACEs before TAB regexp.
+  "Specify SPACEs before TAB regexp.
 
 If you're using `mule' package, there may be other characters besides:
 
@@ -789,7 +789,7 @@ Used when `whitespace-style' includes `space-before-tab',
 (defcustom whitespace-indentation-regexp
   '("^\t*\\(\\( \\{%d\\}\\)+\\)[^\n\t]"
     . "^ *\\(\t+\\)[^\n]")
-  "*Specify regexp for 8 or more SPACEs at beginning of line.
+  "Specify regexp for 8 or more SPACEs at beginning of line.
 
 It is a cons where the cons car is used for SPACEs visualization
 and the cons cdr is used for TABs visualization.
@@ -809,7 +809,7 @@ Used when `whitespace-style' includes `indentation',
 
 
 (defcustom whitespace-empty-at-bob-regexp "\\`\\(\\([ \t]*\n\\)+\\)"
-  "*Specify regexp for empty lines at beginning of buffer.
+  "Specify regexp for empty lines at beginning of buffer.
 
 If you're using `mule' package, there may be other characters besides:
 
@@ -824,7 +824,7 @@ Used when `whitespace-style' includes `empty'."
 
 
 (defcustom whitespace-empty-at-eob-regexp "^\\([ \t\n]+\\)\\'"
-  "*Specify regexp for empty lines at end of buffer.
+  "Specify regexp for empty lines at end of buffer.
 
 If you're using `mule' package, there may be other characters besides:
 
@@ -841,7 +841,7 @@ Used when `whitespace-style' includes `empty'."
 (defcustom whitespace-space-after-tab-regexp
   '("\t+\\(\\( \\{%d\\}\\)+\\)"
     . "\\(\t+\\) +")
-  "*Specify regexp for 8 or more SPACEs after TAB.
+  "Specify regexp for 8 or more SPACEs after TAB.
 
 It is a cons where the cons car is used for SPACEs visualization
 and the cons cdr is used for TABs visualization.
@@ -860,7 +860,7 @@ Used when `whitespace-style' includes `space-after-tab',
 
 
 (defcustom whitespace-line-column 80
-  "*Specify column beyond which the line is highlighted.
+  "Specify column beyond which the line is highlighted.
 
 Used when `whitespace-style' includes `lines' or `lines-tail'."
   :type '(integer :tag "Line Length")
@@ -872,8 +872,8 @@ Used when `whitespace-style' includes `lines' or `lines-tail'."
   (if (>= emacs-major-version 23)
       ;; Emacs 23 and higher:
       '(
-	(space-mark   ?\     [?\xB7]       [?.]) ; space - centered dot
-	(space-mark   ?\xA0  [?\xA4]       [?_]) ; hard space - currency
+	(space-mark   ?\     [?\u00B7]     [?.]) ; space - centered dot
+	(space-mark   ?\xA0  [?\u00A4]     [?_]) ; hard space - currency
 	(space-mark   ?\x8A0 [?\x8A4]      [?_]) ; hard space - currency
 	(space-mark   ?\x920 [?\x924]      [?_]) ; hard space - currency
 	(space-mark   ?\xE20 [?\xE24]      [?_]) ; hard space - currency
@@ -881,7 +881,7 @@ Used when `whitespace-style' includes `lines' or `lines-tail'."
 	;; NEWLINE is displayed using the face `whitespace-newline'
 	(newline-mark ?\n    [?$ ?\n])	; eol - dollar sign
 	;; (newline-mark ?\n    [?\u21B5 ?\n] [?$ ?\n])	; eol - downwards arrow
-	;; (newline-mark ?\n    [?\xB6 ?\n]   [?$ ?\n])	; eol - pilcrow
+	;; (newline-mark ?\n    [?\u00B6 ?\n] [?$ ?\n])	; eol - pilcrow
 	;; (newline-mark ?\n    [?\x8AF ?\n]  [?$ ?\n])	; eol - overscore
 	;; (newline-mark ?\n    [?\x8AC ?\n]  [?$ ?\n])	; eol - negation
 	;; (newline-mark ?\n    [?\x8B0 ?\n]  [?$ ?\n])	; eol - grade
@@ -891,7 +891,7 @@ Used when `whitespace-style' includes `lines' or `lines-tail'."
 	;; character ?\xBB at that column followed by a TAB which goes to
 	;; the next TAB column.
 	;; If this is a problem for you, please, comment the line below.
-	(tab-mark     ?\t    [?\xBB ?\t]   [?\\ ?\t]) ; tab - left quote mark
+	(tab-mark     ?\t    [?\u00BB ?\t] [?\\ ?\t]) ; tab - left quote mark
 	)
     ;; Emacs 21 and 22:
     ;; Due to limitations of glyph representation, the char code can not
@@ -919,7 +919,7 @@ Used when `whitespace-style' includes `lines' or `lines-tail'."
       ;; If this is a problem for you, please, comment the line below.
       (tab-mark     ?\t    [?\xBB ?\t]   [?\\ ?\t]) ; tab - left quote mark
       ))
-  "*Specify an alist of mappings for displaying characters.
+  "Specify an alist of mappings for displaying characters.
 
 Each element has the following form:
 
@@ -964,7 +964,7 @@ Used when `whitespace-style' includes `tab-mark', `space-mark' or
 
 
 (defcustom whitespace-global-modes t
-  "*Modes for which global `whitespace-mode' is automagically turned on.
+  "Modes for which global `whitespace-mode' is automagically turned on.
 
 Global `whitespace-mode' is controlled by the command
 `global-whitespace-mode'.
@@ -995,7 +995,7 @@ C++ modes only."
 
 
 (defcustom whitespace-action nil
-  "*Specify which action is taken when a buffer is visited or written.
+  "Specify which action is taken when a buffer is visited or written.
 
 It's a list containing some or all of the following values:
 
@@ -1253,6 +1253,14 @@ SYMBOL	is a valid symbol associated with CHAR.
 
 (defvar whitespace-tab-width tab-width
   "Used to save locally `tab-width' value.")
+
+(defvar whitespace-point (point)
+  "Used to save locally current point value.
+Used by `whitespace-trailing-regexp' function (which see).")
+
+(defvar whitespace-font-lock-refontify nil
+  "Used to save locally the font-lock refontify state.
+Used by `whitespace-post-command-hook' function (which see).")
 
 
 ;;;###autoload
@@ -2173,6 +2181,12 @@ resultant list will be returned."
       (setq whitespace-font-lock t
 	    whitespace-font-lock-keywords
 	    (copy-sequence font-lock-keywords)))
+    ;; save current point and refontify when necessary
+    (set (make-local-variable 'whitespace-point)
+	 (point))
+    (set (make-local-variable 'whitespace-font-lock-refontify)
+	 nil)
+    (add-hook 'post-command-hook #'whitespace-post-command-hook nil t)
     ;; turn off font lock
     (set (make-local-variable 'whitespace-font-lock-mode)
 	 font-lock-mode)
@@ -2183,7 +2197,7 @@ resultant list will be returned."
        nil
        (list
 	;; Show SPACEs
-	(list whitespace-space-regexp  1 whitespace-space  t)
+	(list #'whitespace-space-regexp  1 whitespace-space  t)
 	;; Show HARD SPACEs
 	(list whitespace-hspace-regexp 1 whitespace-hspace t))
        t))
@@ -2192,14 +2206,14 @@ resultant list will be returned."
        nil
        (list
 	;; Show TABs
-	(list whitespace-tab-regexp 1 whitespace-tab t))
+	(list #'whitespace-tab-regexp 1 whitespace-tab t))
        t))
     (when (memq 'trailing whitespace-active-style)
       (font-lock-add-keywords
        nil
        (list
 	;; Show trailing blanks
-	(list whitespace-trailing-regexp 1 whitespace-trailing t))
+	(list #'whitespace-trailing-regexp 1 whitespace-trailing t))
        t))
     (when (or (memq 'lines      whitespace-active-style)
 	      (memq 'lines-tail whitespace-active-style))
@@ -2211,7 +2225,7 @@ resultant list will be returned."
 	 (format
 	  "^\\([^\t\n]\\{%s\\}\\|[^\t\n]\\{0,%s\\}\t\\)\\{%d\\}%s\\(.+\\)$"
 	  whitespace-tab-width (1- whitespace-tab-width)
-	  (/ whitespace-line-column tab-width)
+	  (/ whitespace-line-column whitespace-tab-width)
 	  (let ((rem (% whitespace-line-column whitespace-tab-width)))
 	    (if (zerop rem)
 		""
@@ -2277,14 +2291,14 @@ resultant list will be returned."
        nil
        (list
 	;; Show empty lines at beginning of buffer
-	(list whitespace-empty-at-bob-regexp
+	(list #'whitespace-empty-at-bob-regexp
 	      1 whitespace-empty t))
        t)
       (font-lock-add-keywords
        nil
        (list
 	;; Show empty lines at end of buffer
-	(list whitespace-empty-at-eob-regexp
+	(list #'whitespace-empty-at-eob-regexp
 	      1 whitespace-empty t))
        t))
     (cond
@@ -2321,11 +2335,59 @@ resultant list will be returned."
   ;; turn off font lock
   (when (whitespace-style-face-p)
     (font-lock-mode 0)
+    (remove-hook 'post-command-hook #'whitespace-post-command-hook)
     (when whitespace-font-lock
       (setq whitespace-font-lock nil
 	    font-lock-keywords   whitespace-font-lock-keywords))
     ;; restore original font lock state
     (font-lock-mode whitespace-font-lock-mode)))
+
+
+(defun whitespace-trailing-regexp (limit)
+  "Match trailing spaces which do not contain the point at end of line."
+  (let ((status t))
+    (while (if (re-search-forward whitespace-trailing-regexp limit t)
+	       (save-match-data
+		 (= whitespace-point (match-end 1))) ;; loop if point at eol
+	     (setq status nil)))		     ;; end of buffer
+    status))
+
+
+(defun whitespace-empty-at-bob-regexp (limit)
+  "Match spaces at beginning of buffer which do not contain the point at \
+beginning of buffer."
+  (and (/= whitespace-point 1)
+       (re-search-forward whitespace-empty-at-bob-regexp limit t)))
+
+
+(defun whitespace-empty-at-eob-regexp (limit)
+  "Match spaces at end of buffer which do not contain the point at end of \
+buffer."
+  (and (/= whitespace-point (1+ (buffer-size)))
+       (re-search-forward whitespace-empty-at-eob-regexp limit t)))
+
+
+(defun whitespace-space-regexp (limit)
+  "Match spaces."
+  (setq whitespace-font-lock-refontify t)
+  (re-search-forward whitespace-space-regexp limit t))
+
+
+(defun whitespace-tab-regexp (limit)
+  "Match tabs."
+  (setq whitespace-font-lock-refontify t)
+  (re-search-forward whitespace-tab-regexp limit t))
+
+
+(defun whitespace-post-command-hook ()
+  "Save current point into `whitespace-point' variable.
+Also refontify when necessary."
+  (setq whitespace-point (point))
+  (let ((refontify (or (eolp)			 ; end of line
+		       (= whitespace-point 1)))) ; beginning of buffer
+    (when (or whitespace-font-lock-refontify refontify)
+      (setq whitespace-font-lock-refontify refontify)
+      (jit-lock-refontify))))
 
  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2392,8 +2454,8 @@ resultant list will be returned."
 	      (dotimes (i (length vec))
 		;; Only for Emacs 21 and 22:
 		;; Due to limitations of glyph representation, the char
-		;; code can not be above ?\x1FFFF.  Probably, this will
-		;; be fixed after Emacs unicode merging.
+		;; code can not be above ?\x1FFFF.  This is already
+		;; fixed in Emacs 23.
 		(or (eq (aref vec i) ?\n)
 		    (and (< emacs-major-version 23)
 			 (> (aref vec i) #x1FFFF))

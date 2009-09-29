@@ -384,6 +384,9 @@ Any update available such as full import/export ? webcal support ?
 Oh and I have a problem with imported data. Events imported are shown on every diary page not taking into account the date field...
 : Send me a bug report -- UlfJasper (2005-09-19)
 
+[new:BrandonWMaister:2009-09-28 22:50 UTC]
+I've created a simple-and-probably-broken script that uses a conf file to download urls to destination directories and automatically creates a "calendars.el" file (at a path you specify) that will use the icalendar-import functionality that seems to have made it into mainline sometime between 2005 and 2009. It's available at [http://svn.quodlibetor.com/wsvn/Hacks/py/ical-in-emacs/#_py_ical-in-emacs_ my svn repo]. Bugs, rants, and features welcome.
+
 === Importing from CSV files ===
 You can import diary data from CSV (comma separated value) files
 with ''lookout.el''. This package allows for importing calendar 

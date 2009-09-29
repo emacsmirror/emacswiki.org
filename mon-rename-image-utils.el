@@ -1,22 +1,232 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;-*- mode: EMACS-LISP; -*-
+;;-*- mode: EMACS-LISP; -*-
 ;;; This is mon-rename-image-utils.el
 ;;; ================================================================
 ;;; DESCRIPTION:
-;;; mon-rename-image-utils.el  
-;;; Some utility functions for working with images. 
-;;; All routines aren't completed (yet). 
-;;; Specifically, the text-property parsing of `mon-build-rename-buffer'
-;;; This should be trivial but haven't gotten around to it yet.
-;;; Building the padding routine winded me :(.
-;;; See the discussion in mon-rename-image-utils-supplemental.el
-;;; for additional usage notes.
-;;; 
-;;; !!!NOTE:!!! 
+;;; mon-rename-image-utils.elprovides utility functions for working with images
+;;; and EmacsImageManipulation.
 ;;;
-;;; Use of this package is requires mon-rename-image-utils-supplemental.el
-;;; (URL `http://www.emacswiki.org/emacs/mon-rename-image-utils-supplemental.el')
-;;; Or, in the alternative the litany of other `mon-*.el' packages.
+;;; EXTRACT CSS COLOR FROM IMAGES:
+;;;  The Image-Color->CSS Extraction routines in this file are:
+;;; `mon-cln-img-magic-hex'
+;;; `mon-get-ebay-img-css'
+;;; `mon-get-ebay-img-name-to-col'
+;;; `mon-get-ebay-css-pp-region-to-file'
+;;; `mon-get-ebay-css-pp'
+;;; `mon-insert-css-colors'
+;;;
+;;; This is a novel series of procedures which extract the most common colors in
+;;; an image and spit those out to a new buffer as CSS hex values. They are
+;;; useful (for example) for generation of per page CSS color schemes according
+;;; to a particular image or set of images.  For example, I have a set of three
+;;; images that I would like to use in an eBay auction listing and I would like
+;;; to build a one time color scheme/style for that listing according the colors
+;;; common to those three images.
+;;;
+;;; Another use for these routines, is for identifying an appropriate color for
+;;; watermarking an image(s).
+;;;
+;;; USE OF THE PROVIDED UTILITY:
+;;; The bulk of this work is performed with `mon-get-ebay-img-css'.  This is
+;;; essentially inlined elisp image-magik  script which analyzes the images by: 
+;;; Reducing-image-size -> Posterizing-image -> Extracting-image-colors
+;;;
+;;; The basic routine is as follows: Evaluating: (mon-get-ebay-css-pp)
+;;;
+;;; In the directory or buffer in directory for example:
+;;; "/NEFS_PHOTOS/Nef_Drive2/EBAY/BMP-Scans/e1002/BMP"
+;;;
+;;; Where that directory originally contained following .bmps: 
+;;; e1002-0.bmp
+;;; e1002-1.bmp
+;;; e1002-2.bmp
+;;; e1002-3.bmp 
+;;; e1002-4.bmp
+;;; e1002-5.bmp
+;;;
+;;; These are converted to low resolution .pngs: e1002-0.bmp -> e1002-0.png
+;;; e1002-1.bmp -> e1002-1.png
+;;; e1002-2.bmp -> e1002-2.png
+;;; e1002-3.bmp -> e1002-3.png
+;;; e1002-4.bmp -> e1002-4.png
+;;; e1002-5.bmp -> e1002-5.png
+;;;
+;;; Don't worry, the .bmps aren't destroyed! The .png's are _new_ file
+;;; instances.
+;;;
+;;; Next, an image-magick posterization routine is performed on the .png's.  The
+;;; output of this posterization is uniquified to 16 colors and returned as
+;;; text.  The uniquified text output is then cleaned up in a temp buffer.  This
+;;; is written to a file "BMP-hex-colors" in the current directory.  A new
+;;; buffer is opened which displays the 16 most common colors for each of the
+;;; .bmps->.png conversions.  The display presented is as as a per image
+;;; columnized display and leverages [[css-color.el]] for additional
+;;; functionality to allow tweaking the CSS values.
+;;;
+;;; CSS-EXTRACTION SCREENSHOTS: 
+;;; (URL `http://www.emacswiki.org/emacs/BMP-hex-colors-screenshot')
+;;; [picture: css color extraction buffer using `mon-get-ebay-css-pp' function.]
+;;; (URL `http://www.emacs-wiki/directory-and-hex-colors-annotated')
+;;; [picture: annotated image of css color extraction buffer and dired buffer
+;;; showing `mon-get-ebay-css-pp' function in use.]
+;;;
+;;; CSS-EXTRACTION REQUIREMENTS:
+;;;  I use a local copy of cssolor.elnamed mon-css-color.el. css-color.el was
+;;; originally made available at emacs-wiki but is now bundled with nXthml-mode.
+;;; See (URL `http://www.emacs-wiki/emacs/NxhtmlMode')
+;;; See (URL `http://ourcomments.org/Emacs/nXhtml/doc/nxhtml.html')
+;;;
+;;; The file can be acquired from that project's bazaar
+;;; repository. 
+;;; See (URL `http://bazaar.launchpad.net/~nxhtml/nxhtml/main/files/head%3A/')
+;;; I am not including a direct link to that library because I find the
+;;; mechanism unclear/unclean. Bazaar repos aren't particularly permalink
+;;; friendly and it isn't immediately obvious which revision should be linked
+;;; to. Use, incorporation, and requirement of css-color.el should change in a
+;;; future version of mon-rename-image-utils. Stay tuned :)
+;;;
+;;; You will also need a current Image Magick binary.  See (URL
+;;; `http://www.imagemagick.org/')
+;;;
+;;; CAVEATS USING IMAGE-MAGICK ON W32:
+;;;  Note, the `mon-get-ebay-img-css' function calls out to ImageMagick's
+;;; convert command using the alias `imconvert' (as per the recommendations by
+;;; the Image-Magick distributors).
+;;;
+;;; It is strongly recommended that W32 users of Image Magick adopt this
+;;; practice.
+;;;
+;;; This is for W32 compatibility as convert.exe is a system level command
+;;; gnu-linux systems should substitute `convert' for `imconvert'. Likewise, on
+;;; W32 running Image Magick's `convert' as a shell-process (synchronous or
+;;; otherwise) is much more difficult to configure when this renaming isn't
+;;; provided on.
+;;;
+;;; To wit, this is needed because on a W32 system:
+;;;
+;;; (executable-find "convert") 
+;;;  => "c:/WINDOWS/system32/convert.exe"
+;;;
+;;; (executable-find "imconvert") 
+;;;  => "c:/Program Files/imagemagick-6.5.1-q8/imconvert.exe"
+;;;
+;;; For those that think this aliasing is unnecessary _PLEASE-NOTE_ "convert" is
+;;; a W32 command in the W32 system directory. It is used for converting FAT32
+;;; to NTFS. It is suggested you rename the IM convert command to
+;;; "imconvert.exe" to distinguish the two commands. You can't rename the system
+;;; command, as a windows service pack would just restore it, ignoring the
+;;; renamed version. see additional discussion here:
+;;;
+;;; (URL `http://www.imagemagick.org/Usage/windows/index.html')
+;;;
+;;; !!!You've now been warned three times!!! :)
+;;;
+;;; RENAMING FACILITIES:
+;;; The image renaming facilities for generating an image renaming buffer are:
+;;;
+;;;   `mon-image-rename-propertize' `mon-rename-imgs-in-dir'
+;;;   `mon-parse-rename-lengths' `mon-parse-rename-images'
+;;;   `mon-pad-rename-lengths' `mon-build-rename-buffer'
+;;;   `mon-shorten-rename-image-path' `mon-check-image-type'
+;;;   `mon-ebay-image-directory-not-ok' `mon-ebay-image-directory-ok-p'
+;;;
+;;; All renaming routines aren't completed (yet).  Specifically, the
+;;; text-property parsing of `mon-build-rename-buffer'.  This should be trivial
+;;; but haven't gotten around to it yet.  Building the padding routine winded me
+;;; :(.
+;;;
+;;; RENAMING UTILITY SCREENSHOT: 
+;;; (URL `http://www.emacswiki.org/emacs/rename-utility-screenshot')
+;;; [picture: 4 window split showing output of (mon-build-rename-buffer ".bmp")]
+;;;
+;;; RENAME UTILITY USE:
+;;; Basically, you set up your vars for an image directory tree, then assuming
+;;; you are in a buffer-or-filename within that tree you can call:
+;;;   (mon-build-rename-buffer ".bmp") 
+;;;   (mon-build-rename-buffer ".jpg")
+;;;   (mon-build-rename-buffer ".nef")
+;;;
+;;; And Emacs will either prompt for a better directory in the tree, or snarf
+;;; the image file names from the current directory and return them in a pretty
+;;; *rename-buffer* buffer full of text properties for futher processing the
+;;; images.
+;;; As an example, say you are in the buffer-or-file:
+;;;  "<DRIVE-OR-ROOT:>/NEFS_PHOTOS/Nef_Drive2/EBAY/BMP-Scans/e1143/e1143.dbc"
+;;; and you want to rename all of the ".jpg" files associated with the '.bmps" in
+;;; the current buffer-or-file's current directory e.g.  
+;;;   .bmp's are in => "<DRIVE-OR-ROOT:>/NEFS_PHOTOS/Nef_Drive2/EBAY/BMP-Scans/e1143/ 
+;;;   .jpg's are in => "<DRIVE-OR-ROOT:>/NEFS_PHOTOS/Nef_Drive2/EBAY/BIG-cropped-jpg/e1143"
+;;;
+;;; If you call: 
+;;;   (mon-build-rename-buffer ".jpg") 
+;;; The procedure will return a 'rename-buffer' of all the .jpgs in the 'matching'
+;;; directory.  If there aren't any .jpgs in that file it prompts for a new
+;;; directory within that tree.
+;;;;
+;;; However, should you instead call:
+;;;  (mon-build-rename-buffer ".bmp") 
+;;; Assuming there are .bmps in the current dir Emacs will instead return a
+;;; '*rename-images*' buffer with all the .bmp's in the 'current' directory ready
+;;; for marking/further processing.
+;;;
+;;; To get an idea of the types of follow up actions which might be taken
+;;; checkout the myriad text properties in the *rename-buffer* presentation to
+;;; get an idea of the types of processing that can be accomplished. i.e. call
+;;; the `describe-text-properties' command with point at different places in the
+;;; buffer. If you have mon-utils.el 
+;;; See; (URL `http://www.emacswiki.org/emacs/mon-utils.el')
+;;; in you load-path you can look at the read-only buffer positions as well by
+;;; evaluating the `mon-toggle-read-only-point-motion' command.
+;;;
+;;; Currently `mon-build-rename-buffer' is only taking an IMAGE-TYPE arg.  
+;;; The helper function `mon-rename-imgs-in-dir' takes an alternate path arg
+;;; ALT-PATH that will soon allow you to do:
+;;;  (mon-build-rename-buffer ".bmp" (expand-file-name "../e1214/")
+;;; i.e. build a *rename-images* buffer from files in some other dir.
+;;;
+;;; Assuming your var paths are set right the functions have fairly intelligent
+;;; heuristics for how they navigate the paths and include completion facilities
+;;; and nice prompts which attemtp to DWIM.
+;;; I am particularly proud of the *rename-images* buffer generation code which
+;;; is smart about presentation padding according to the filename length of
+;;; images. Emacs-lisp `format' is not nearly as extensive a the format spec of
+;;; Common Lisp...
+;;;
+;;; CONFIGURE LOCAL SYSTEMS PATH VARS FOR RENAME UTILS:
+;;; Starting with `*nef-scan-drive*' the variables below will need to be
+;;; adjusted according to your local path and directory tree.  Ideally one would
+;;; mirrors those below. On MON local system these map out as follows:
+;;;
+;;; `*nef-scan-drive*' -> "<DRIVE-OR-ROOT:>" ;Optional, will be used if/when defcustom'd
+;;; `*nef-scan-path*' -> "<DRIVE-OR-ROOT:>/NEFS_PHOTOS"
+;;; `*nef-scan-nefs-path*' -> "<DRIVE-OR-ROOT:>/NEFS_PHOTOS/NEFS"
+;;; `*nef-scan-nef2-path*' -> "<DRIVE-OR-ROOT:>/NEFS_PHOTOS/Nef_Drive2"
+;;; `*ebay-images-path*' -> "<DRIVE-OR-ROOT:>/NEFS_PHOTOS/Nef_Drive2/EBAY"
+;;; `*ebay-images-bmp-path*' -> "<DRIVE-OR-ROOT:>/NEFS_PHOTOS/Nef_Drive2/EBAY/BMP-Scans"
+;;; `*ebay-images-jpg-path*' -> "<DRIVE-OR-ROOT:>/NEFS_PHOTOS/Nef_Drive2/EBAY/BIG-cropped-jpg"
+;;;
+;;; For additional discussion, see: 
+;;; (URL `http://www.emacswiki.org/downloads/mon-dir-locals-alist.el')
+;;;
+;;; That package has the above variable definitions ready made.  The vars there
+;;; are not (yet) defined as `defcustom's b/c I default these vars across
+;;; multiple systems but a defcustom interface for mon-rename-image-uitls ought
+;;; to be made available once developments of this package is no longer in flux.
+;;;
+;;; REQUIRED/RECOMMENDED PACKAGES:
+;;; Additional discussion for and usage notes re:
+;;; integration of this package into a local system is available in the header
+;;; of the following file: 
+;;; (URL `http://www.emacswiki.org/downloads/mon-rename-image-utils-supplemental.el')
+;;;
+;;; This `supplemental' package provides additional functions which may be
+;;; needed when using the current package (e.g. mon-rename-image-utils.el). 
+;;; The procedures of the supplemental package are esp. recommended if you aren't
+;;; already using the the litany of other `mon-*.el' packages e.g. those
+;;; packages made avaiable here:
+;;; (URL `http://www.emacswiki.org/emacs/mon_key')
+;;; ==============================
 ;;;
 ;;; FUNCTIONS:►►►
 ;;; `mon-check-image-type', `mon-rename-imgs-in-dir', `mon-check-image-type',
@@ -49,7 +259,8 @@
 ;;;
 ;;; SUBST or ALIASES:
 ;;;
-;;; DEPRECATED, RENAMED
+;;; DEPRECATED:
+;;; RENAMED:
 ;;;
 ;;; MOVED:
 ;;; `mon-get-image-dimensions'           <- mon-url-utils.el
@@ -89,6 +300,9 @@
 ;;; MAINTAINER: MON KEY
 ;;;
 ;;; PUBLIC-LINK: 
+;;; (URL `http://www.emacswiki.org/emacs/RenameImageUtils')
+;;; FILE-PUBLISHED: <Timestamp: #{2009-09-28} - by MON KEY>
+;;; (URL `http://www.emacswiki.org/emacs/mon-rename-image-utils.el')
 ;;; FILE-PUBLISHED: <Timestamp: #{2009-09-20} - by MON KEY>
 ;;;
 ;;; FILE-CREATED:
@@ -118,9 +332,6 @@
 ;;; EMACS-WIKI:
 (unless (featurep 'mon-css-color)
   (require 'css-color))
-
-
-
 
 ;;; ==============================
 ;;; TODO: needs to take an interactive arg with `mon-get-imgs-in-dir-int' see below.
@@ -339,14 +550,14 @@ See also; `mon-insert-ebay-bmps-in-file', `mon-get-ebay-jpgs-list',
 ;;; BUGGY-AS-OF:
 ;;; CREATED: <Timestamp: Thursday April 30, 2009 @ 05:38.49 PM - by MON KEY>
 (defun mon-cln-img-magic-hex ()
-  "Clean the formatting from outpu of ImageMagick color analysis script.
-Return only hex color valuess.
+  "Clean the formatting from output of ImageMagick color analysis script.
+Return only hex color values.
 See also: `mon-get-ebay-img-name-to-col', `mon-get-ebay-img-css', 
 `mon-get-ebay-css-pp-region-to-file', `mon-get-ebay-bmps-count', 
 `mon-get-ebay-bmps-in-dir', `mon-insert-css-colors'."
   (interactive)
   (let ((count 4))
-    (search-forward-regexp "\\(^# Image\\)")
+    (search-forward-regexp "^\\(# Image\\)") ;"\\(^# Image\\)")
     (let* ((start-m (match-beginning 1))
 	   (hld-mark (make-marker))
 	   (rep-mark (set-marker hld-mark start-m))
@@ -360,6 +571,14 @@ See also: `mon-get-ebay-img-name-to-col', `mon-get-ebay-img-css',
 	(setq count (- count 1))))))
 
 ;;; ================================================================
+;;; NOTE: the `mon-get-ebay-img-css' function calls image-magick's `convert'
+;;; command using the alias `imconvert'. 
+;;; (this is for W32 compatibility as convert.exe is a system level command
+;;; gnu-linux systems should substitute `convert' for `imconvert').
+;;; This is needed because on a W32 system:
+;;; (executable-find "convert") ;=> "c:/WINDOWS/system32/convert.exe"
+;;; (executable-find "imconvert") 
+;;; ;=> "c:/Program Files/imagemagick-6.5.1-q8/imconvert.exe"
 ;;; CREATED: <Timestamp: Friday May 01, 2009 @ 04:24.15 PM - by MON KEY>
 (defun mon-get-ebay-img-css ()          ;(img-list)
   "Return CSS hex colors of .bmps in current directory.
@@ -376,11 +595,17 @@ See also: `mon-get-ebay-img-name-to-col', `mon-get-ebay-css-pp-region-to-file',
 	     (img-png (replace-regexp-in-string "\.bmp" "\.png" img-bmp t t)))
 	(message (format "%s %s" img-bmp img-png))
 	(with-temp-buffer ;;(switch-to-buffer "*css-img*")
-	  (call-process-shell-command (concat "\"imconvert\" nil t t \"./" img-bmp
-					      "\"  +dither -resize 100 -modulate 105,120 -posterize 6 " 
-					      "\"./" img-png "\""))
-	(call-process-shell-command (concat "\"imconvert\" nil t t \"" img-png "\"" img-png
-					    "\" -colors 16 +dither +matte -unique-colors txt:-"))
+	  (call-process-shell-command 
+           (concat 
+            "\"imconvert\" \"./" img-bmp
+            "\" +dither -resize 100 -modulate 105,120 -posterize 6 " 
+            "\"./" img-png "\"") nil t t)
+          (call-process-shell-command 
+           (concat 
+            "\"imconvert\" "
+            "\"" img-png "\""
+            " \"" img-png "\""
+            " -colors 16 +dither +matte -unique-colors txt:-") nil t t)
 	(goto-char (point-min))
 	(mon-cln-img-magic-hex)
 	(kill-line)
@@ -433,10 +658,12 @@ See also: `mon-get-ebay-img-name-to-col', `mon-get-ebay-img-css',
 	  (css-end end-pnt)
 	  (atload ";;; -*- mode: html;  mode: css-color; -*-")
 	  (splt "/************************************************************/\n")
-	  (css-stamp (format "/* Timestamp: %s %s" (format-time-string "%A %B %d, %Y @ %I:%M.%S %p")
+	  (css-stamp (format "/* Timestamp: %s %s" 
+                             (format-time-string "%A %B %d, %Y @ %I:%M.%S %p")
 			     (cond (IS-BUG-P " - by BUG */\n")
-				   (IS-MON-P " - by MON */\n"))))
-	  (css-name) (in-buffer))	  
+				   (IS-MON-P " - by MON */\n")
+                                   (t (concat " - by " (upcase (user-login-name)) " */\n")))))
+          (css-name) (in-buffer))
       (setq css-name 
 	    (concat (file-name-nondirectory (directory-file-name default-directory)) "-hex-colors"))
       (setq in-buffer (buffer-substring css-start css-end))
