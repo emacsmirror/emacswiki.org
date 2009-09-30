@@ -264,6 +264,7 @@ Or use Muse to launch your favorite file-browser!  Add this function in your dot
         (start-process-shell-command 
          "browse" 
          "*scratch*" 
+         ;(concat "/usr/bin/rox-filer --new " dir-as-string)
          (concat "/usr/bin/nautilus --no-desktop " dir-as-string)))
 </pre>
 

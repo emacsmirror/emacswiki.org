@@ -96,29 +96,44 @@ Normally hitting ##TAB## a second time after a completion will take you to a sug
   (let ((candidates (mapcar 'car pabbrev-expansion-suggestions)))
     (add-hook 'pre-command-hook 'pabbrevx-ac-on-pre-command nil t)
     (add-hook 'post-command-hook 'pabbrevx-ac-on-post-command nil t)
+    ;; ripped straight from ac-start
     (let* ((point (save-excursion (funcall ac-prefix-function)))
-           (reposition (not (equal ac-point point))))
+           (reposition (or (not (equal ac-point point))
+                           ;; If menu direction is positive and next visual line belongs
+                           ;; to same buffer line, then need reposition
+                           (and (> ac-menu-direction 0)
+                                (ac-menu-at-wrapped-line)))))
       (if (null point)
           (ac-abort)
+        (setq ac-buffer (current-buffer))
         (setq ac-point point)
         (when (not (equal ac-point ac-old-point))
           (setq ac-old-point point))
         (setq ac-prefix (buffer-substring-no-properties point (point)))
-        (setq ac-limit ac-candidate-max)
+        (setq ac-limit ac-candidate-limit)
         (if (or reposition (null ac-menu))
             (save-excursion
               (funcall ac-init-function)))
-        (let* ((current-width (if ac-menu (ac-menu-width ac-menu) 0))
-               (width (let ((w '(0)) s)
+        (let (;;candidates
+              width
+              (current-width (if ac-menu (ac-menu-width ac-menu) 0)))
+          ;; (setq candidates (if (or ac-completing
+          ;;                          (not (integerp ac-auto-start))
+          ;;                          (>= (length ac-prefix) ac-auto-start))
+          ;;                      (save-excursion
+          ;;                        (funcall ac-candidate-function))))
+          ;;(if ac-candidate-filter-function
+          ;;    (setq candidates (funcall ac-candidate-filter-function candidates)))
+          (setq width (let ((w '(0)) s)
                         (dotimes (i ac-candidate-menu-height)
                           (setq s (nth i candidates))
                           (if (stringp s) (push (string-width s) w)))
-                        (apply 'max w))))
+                        (apply 'max w)))
           (if (or reposition
                   (null ac-menu)
                   (> width current-width)
-                  (< width (- current-width 20)))
-              (ac-setup point (* (ceiling (/ width 20.0)) 20)))
+                  (< width (- current-width 10)))
+              (ac-setup (* (ceiling (/ width 10.0)) 10)))
           (ac-update-candidates candidates))))))
 
 (defun pabbrevx-suggestions-goto-buffer (suggestions)

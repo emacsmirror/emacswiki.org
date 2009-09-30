@@ -68,7 +68,7 @@ And you can use show-all (C-c C-a) to redisplay everything and get back to where
 
 You can also customize `outline-regexp' which indicates which lines are considered heading.  It is a regular expression to match the beginning of a heading.  The smaller the match, the higher the level of the heading.
 
-The default value matches asterixes and page breaks:
+The default value matches asterisks and page breaks:
 
  "[*\f]+"
 

@@ -202,5 +202,31 @@ used. To make Emacs use a dialog box following C-o proceed as follows:
 # Edit the ##.emacs## file, add the line ##(load "dlgopen")## near the beginning, and let 
   the keystroke ##"\C-o"## do ##'dlgopen-open-files## instead of ##'find-file##
 
+==Make C-o Open Files in KDE==
+
+If you want this page because you use KDE and are used to using windows-style key bindings with it, you may want to make a graphical box for KDE too. It's not normally as efficient as typing for 1 file, but it looks pretty, feels nice and gave me a reason to write my second ever lisp function (hello world!!!). The last line binds it to C-o which will clobber the open-line command. I never use that, but if you do then put it somewhere else! Code:
+
+  ; Inspired by the windows version. Also used call-process here because
+  ; shell-command-to-string gave me 100% CPU usage by lisp.run until
+  ; kdialog returned. 
+  (defun kde-open-file ()
+    (interactive)
+    (let
+        ((buffer (generate-new-buffer "*opening-files*"))
+         (file-to-open ""))
+      (if (call-process "kdialog" nil buffer nil "--title"
+                        "Open File -Emacs" "--getopenfilename" ".")
+          (save-excursion
+            (set-buffer buffer)
+            (goto-line 1)
+            (setq file-to-open
+                  (buffer-substring
+                   (save-excursion (beginning-of-line) (point))
+                   (save-excursion (end-of-line) (point))))
+            (if (> (length file-to-open) 0)
+                (find-file file-to-open))))
+      (kill-buffer buffer)))
+  (define-key global-map "\C-o" 'kde-open-file)
+
 ----
 CategoryWThirtyTwo

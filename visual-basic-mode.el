@@ -15,8 +15,8 @@
 ;;           : Kevin Whitefoot <kevin.whitefoot@nopow.abb.no>
 ;;           : Randolph Fritz <rfritz@u.washington.edu>
 ;;           : Vincent Belaiche (VB1) <vincentb1@users.sourceforge.net>
-;; Version: 1.4.7 (2009-09-08)
-;; Serial Version: %Id: 16%
+;; Version: 1.4.8 (2009-09-29)
+;; Serial Version: %Id: 17%
 ;; Keywords: languages, basic, Evil
 
 
@@ -120,6 +120,8 @@
 ;; 1.4.5 VB1, (expand-abbrev) within (save-excusion...)
 ;; 1.4.6 VB1 correct visual-basic-close-block (single line If case)
 ;; 1.4.7 VB1 correct visual-basic-close-block (For/Next)
+;; 1.4.8 VB1 correct visual-basic-close-block (Property, + add With /End With)
+;;           add command visual-basic-insert-item
 
 ;;
 ;; Notes:
@@ -229,6 +231,8 @@
   (setq visual-basic-mode-map (make-sparse-keymap))
   (define-key visual-basic-mode-map "\t" 'visual-basic-indent-line)
   (define-key visual-basic-mode-map "\r" 'visual-basic-newline-and-indent)
+  (define-key visual-basic-mode-map "\M-\r" 'visual-basic-insert-item)
+  (define-key visual-basic-mode-map "\C-c\C-j" 'visual-basic-insert-item)
   (define-key visual-basic-mode-map "\M-\C-a" 'visual-basic-beginning-of-defun)
   (define-key visual-basic-mode-map "\M-\C-e" 'visual-basic-end-of-defun)
   (define-key visual-basic-mode-map "\M-\C-h" 'visual-basic-mark-defun)
@@ -266,6 +270,9 @@
 (defconst visual-basic-defun-end-regexp
   "^[ \t]*[Ee]nd \\([Ss]ub\\|[Ff]unction\\|[Pp]roperty\\|[Tt]ype\\|[Ee]num\\|[Cc]lass\\)")
 
+(defconst visual-basic-dim-regexp
+  "^[ \t]*\\([Cc]onst\\|[Dd]im\\|[Pp]rivate\\|[Pp]ublic\\)\\_>"  )
+
 
 ;; Includes the compile-time #if variation.
 ;; KJW fixed if to require a whitespace so as to avoid matching, for
@@ -286,9 +293,12 @@
 (defconst visual-basic-else-regexp "^[ \t]*#?[Ee]lse\\([Ii]f\\)?")
 (defconst visual-basic-endif-regexp "[ \t]*#?[Ee]nd[ \t]*[Ii]f")
 
-(defconst visual-basic-continuation-regexp "^.*\_[ \t]*$")
-(eval-and-compile
-  (defconst visual-basic-label-regexp "^[ \t]*[a-zA-Z0-9_]+:$"))
+(defconst visual-basic-looked-at-continuation-regexp   "_[ \t]*$")
+
+(defconst visual-basic-continuation-regexp 
+  (concat "^.*" visual-basic-looked-at-continuation-regexp))
+
+(defconst visual-basic-label-regexp "^[ \t]*[a-zA-Z0-9_]+:$")
 
 (defconst visual-basic-select-regexp "^[ \t]*[Ss]elect[ \t]+[Cc]ase")
 (defconst visual-basic-case-regexp "^[ \t]*[Cc]ase")
@@ -755,7 +765,7 @@ changed files."
       (end-of-line)
       (setq line-end (point))
       (if (search-backward "_" line-beg t)
-	  (if (looking-at  "_[ \t]*$")
+	  (if (looking-at  visual-basic-looked-at-continuation-regexp)
 	      ;; folded line
 	      (progn
 		(setq line-end (1- (point))
@@ -1030,11 +1040,18 @@ With' if the block is a `With ...', etc..."
 	      (cond
 	       ;; Cases where the current statement is a start-of-smthing statement
 	       ((looking-at visual-basic-defun-start-regexp)
-		(setq end-statement (concat "End " (match-string 2))
-		      end-indent 0)
+		(let ((smt (match-string 2)))
+		  (when (string-match "\\`Prop" smt)
+		    (setq smt "Property"))
+		  (setq end-statement (concat "End " smt)
+			end-indent 0))
 		nil)
 	       ((looking-at visual-basic-select-regexp)
 		(setq  end-statement "End Select"
+		       end-indent (current-indentation))
+		nil)
+	       ((looking-at visual-basic-with-regexp)
+		(setq  end-statement "End With"
 		       end-indent (current-indentation))
 		nil)
 	       ((looking-at visual-basic-case-regexp)
@@ -1094,6 +1111,109 @@ With' if the block is a `With ...', etc..."
     (when end-statement
       (insert end-statement)
       (visual-basic-indent-to-column end-indent))))
+
+(defun visual-basic-insert-item ()
+  "Insert a new item in a block. 
+
+This function is under developement, and for the time being only Dim items are handled.
+
+Interting an item means:
+
+* Add a `Case' or `Case Else' into a `Select ... End Select'
+  block. Pressing again toggles between `Case' and `Case
+  Else'. `Case Else' is possible only if there is not already a `Case Else'.
+
+* split a Dim declaration over several lines.
+
+* Add an `Else' or `ElseIf ... Then' into an `If ... Then ... End
+  If' block. Pressing again toggles between `Else' and `ElseIf
+  ... Then'. `Else' is possible only if therei s not already an
+  `Else'.
+"
+  (interactive)
+  ;; possible cases are
+  ;; dim-split-before => split before variable name
+  ;; dim-split-after => split after type name if any
+  ;; if-with-else
+  ;; if-without-else
+  ;; select-with-else
+  ;; select-without-else
+  ;; not-itemizable
+  (let (item-case 
+	item-ident
+	split-point
+	cur-point-mark
+	prefix
+	tentative-split-point
+	block-stack (cur-point (point)) previous-line-of-code)
+    (save-excursion
+      (save-match-data
+	(beginning-of-line)
+	(while 
+	    (progn
+	      (visual-basic-find-original-statement)	      
+	      (cond
+	       ;; dim case
+	       ;;--------------------------------------------------------------
+	       ((and (null previous-line-of-code)
+		     (looking-at visual-basic-dim-regexp)
+		     (null (save-match-data (looking-at visual-basic-defun-start-regexp))))
+		(setq prefix (buffer-substring-no-properties
+			      (point)
+			      (goto-char (setq split-point (match-end 0)))))
+		(while 
+		    (progn
+		      (if
+			  (looking-at "\\s-*\\sw+\\s-*")
+			  (progn
+			    (goto-char (setq tentative-split-point (match-end 0)))
+			    (if (>= tentative-split-point cur-point)
+				  nil
+			      (while (or 
+				      (looking-at "([^)\n]+)\\s-*")
+				      (looking-at visual-basic-looked-at-continuation-regexp))
+				(goto-char (setq tentative-split-point (match-end 0))))
+			      (when (looking-at "As\\s-+\\sw+\\s-*")
+				(goto-char (setq tentative-split-point (match-end 0))))
+			      (when (looking-at visual-basic-looked-at-continuation-regexp)
+				(beginning-of-line 2))
+			      (if (looking-at ",")
+				  (goto-char (setq split-point (match-end 0)))
+				(setq split-point (point))
+				nil)))
+			nil)))
+		(goto-char split-point)
+		(setq item-case (if (<= split-point cur-point) 'dim-split-before 'dim-split-after)
+		      delta-split-to-cur-point (- split-point cur-point))
+		(setq cur-point-mark (make-marker))
+		(set-marker cur-point-mark cur-point)
+		(looking-at "\\s-*")
+		(setq delta-split-to-cur-point (- delta-split-to-cur-point
+						  (- (match-end 0) (match-beginning 0))))
+		(delete-region (point) (match-end 0))
+		(when (looking-back ",")
+		  (delete-region split-point (1- split-point)))
+		(insert "\n" prefix " ")
+		(setq cur-point (marker-position cur-point-mark))
+		(set-marker cur-point-mark nil)
+		nil)
+	       ;; next
+	       ((looking-at visual-basic-next-regexp)
+		(push (list 'next) block-stack))
+	       ;; default
+	       ;;--------------------------------------------------------------
+	       (t (if (bobp) 
+		      (setq item-case 'not-itemizable)))
+	       )
+	      (when (null item-case)
+		(visual-basic-previous-line-of-code)
+		(setq previous-line-of-code t))
+	      (null item-case)))))
+    (cond
+     ((eq item-case 'dim-split-after)
+      (goto-char cur-point))
+    )
+    ))
 
 ;;; Some experimental functions
 

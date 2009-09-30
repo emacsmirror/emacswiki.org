@@ -136,7 +136,7 @@ frustration on my part over the years.  In early 1990's I started
 using the XEmacs version of etags.el and grew very fond of it's
 configurability especially with regards to specifying which TAGS file
 to use based on regexp of file names, major modes, etc.  It seems like
-to me that etags.el in GNU/Emacs lacks such configurability. Hence, I
+to me that etags.el in GNU Emacs lacks such configurability. Hence, I
 still use etags.el, lifted from Lucid emacs, that I hacked up to work
 with Emacs many years ago. Again, if someone knowledgable with Emacs
 etags.el can correct me, I would appreciate it. -- Anonymous

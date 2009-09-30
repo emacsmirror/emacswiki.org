@@ -11,7 +11,7 @@ There are several packages for driving Emacs through voice input, including:
 * ShortTalk
 * JohnWiegley has http://www.gci-net.com/users/j/johnw/Emacs/obsolete/dictation.el
 * http://www.codevox.com/alsopbvkit.phtml - with a downloadable kit [returns 404, right now, 9. okt. 2005]
-* http://www.speech.cs.cmu.edu/sphinx
+* http://www.speech.cs.cmu.edu/sphinx (http://sourceforge.net/projects/voicekey/ is a voice-controlled keyboard for GNU/Linux built on sphinx)
 * http://home.hetnet.nl/~vandamhans/commander/commanderindex.htm
 * VoiceCode
 

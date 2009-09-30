@@ -3,7 +3,7 @@
 ;; Copyright (C) 2003, 2008, 2009 Arni Magnusson
 
 ;; Author:   Arni Magnusson
-;; Version:  2.10
+;; Version:  2.11
 ;; Keywords: languages
 ;; URL:      http://emacswiki.org/emacs/dos.el
 
@@ -46,6 +46,7 @@
 
 ;;; History:
 ;;
+;; 29 Sep 2009  2.11 Improved highlighting of strings.
 ;; 18 Sep 2009  2.10 Improved highlighting of comments.
 ;; 27 May 2009  2.9  Improved documentation.
 ;; 26 May 2009  2.8  Added user function `dos-help-mode'. Renamed user function `dos-help' to `dos-help-cmd'. Added
@@ -145,12 +146,13 @@ that:
     map))
 (defvar dos-mode-syntax-table
   (let ((table (make-syntax-table)))
-    (modify-syntax-entry ?~ "w" table)
-    (modify-syntax-entry ?% "." table)
-    (modify-syntax-entry ?- "w" table)
-    (modify-syntax-entry ?_ "w" table)
-    (modify-syntax-entry ?{ "w" table)
-    (modify-syntax-entry ?} "w" table)
+    (modify-syntax-entry ?~  "w" table)
+    (modify-syntax-entry ?%  "." table)
+    (modify-syntax-entry ?-  "w" table)
+    (modify-syntax-entry ?_  "w" table)
+    (modify-syntax-entry ?{  "w" table)
+    (modify-syntax-entry ?}  "w" table)
+    (modify-syntax-entry ?\\ "." table)
     table))
 
 ;; 4  User functions

@@ -5,14 +5,17 @@
 ;;; 
 ;;; FUNCTIONS:►►►
 ;;; `mon-help-CL:LOCAL-TIME', `mon-help-CL:LOOP', `mon-help-CL:TIME'
-;;; `mon-help-slime-keys'
+;;; `mon-help-slime-keys', `mon-help-swank-functions'
 ;;; FUNCTIONS:◄◄◄
 ;;;
-;;; CONSTANTS or VARIABLES:
-;;; 
 ;;; MACROS:
+;;;
+;;; CONSTANTS:
+;;;
+;;; VARIABLES:
 ;;; 
-;;; SUBST or ALIASES:
+;;; 
+;;; ALIASED/ADVISED/SUBST'D:
 ;;; 
 ;;; MOVED:
 ;;; `mon-help-CL-time', `mon-help-CL-loop', `mon-help-slime-keys' -> mon-doc-help-CL.el
@@ -47,8 +50,32 @@
 ;;; AUTHOR: MON KEY
 ;;; MAINTAINER: MON KEY
 ;;; 
+;;; PUBLIC-LINK: 
+;;; (URL `http://www.emacswiki.org/emacs-en/ReferenceSheetHelpUtils')
+;;; FILE-PUBLISHED: <Timestamp: #{2009-08-24}
+;;; PUBLIC-LINK: (URL `http://www.emacswiki.org/emacs/mon-doc-help-CL.el')
+;;; FILE-PUBLISHED: <Timestamp: #{2009-08-25} - by MON KEY>
+;;;
+;;; 
 ;;; FILE-CREATED:
 ;;; <Timestamp: Thursday July 16, 2009 @ 10:56.13 AM - by MON KEY>
+;;; ================================================================
+;;; This file is not part of GNU Emacs.
+;;;
+;;; This program is free software; you can redistribute it and/or
+;;; modify it under the terms of the GNU General Public License as
+;;; published by the Free Software Foundation; either version 3, or
+;;; (at your option) any later version.
+;;;
+;;; This program is distributed in the hope that it will be useful,
+;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;;; General Public License for more details.
+;;;
+;;; You should have received a copy of the GNU General Public License
+;;; along with this program; see the file COPYING.  If not, write to
+;;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
+;;; Floor, Boston, MA 02110-1301, USA.
 ;;; ================================================================
 ;;; Copyright (C) 2009 MON KEY
 ;;; ==========================
@@ -58,9 +85,10 @@
 ;;; COURTESY: Pascal Bourguignon HIS: `pjb-cl.el' WAS: `loop-doc'
 ;;; ADDED: <Timestamp: Tuesday June 23, 2009 @ 03:22.54 PM - by MON KEY>
 ;;; MODIFICATIONS: REPLACED: empty lines with '\n' escaped lisp forms in docstring
-(defun mon-help-CL:LOOP (&optional intrp)
-  "(loop CLAUSE...): The Common Lisp `loop' macro.
+(defun mon-help-CL:LOOP (&optional insertp intrp)
+  "The Common Lisp `loop' macro.
 See info node `(cl)Loop Facility'\n
+\(loop CLAUSE...):
 Valid clauses are:\n
     for VAR from/upfrom/downfrom NUM to/upto/downto/above/below NUM by NUM
     for VAR in LIST by FUNC
@@ -106,42 +134,41 @@ Valid clauses are:\n
 ;;;       do \(printf \\\"%d \\\" i\)
 ;;;       return \(progn \(printf \\\"\\n\\\" i\)
 ;;;                     \(values col app nco sum cnt max min\)\)\)"
-(interactive "P")
-(if intrp 
-    (mon-help-function-spit-doc 'mon-help-CL:LOOP)
+(interactive "i\nP")
+(if (or insertp intrp)
+    (mon-help-function-spit-doc 'mon-help-CL:LOOP :insertp t)
   (message "pass non-nil for optional arg INTRP")))
 
 ;;;test-me;(describe-function 'mon-help-CL:LOOP)
 
 ;;; ==============================
-(defun mon-help-CL:DO (&optional intrp)
-(interactive "P")
-"DO
+(defun mon-help-CL:DO (&optional insertp intrp)
+"The common lisp do loop.\n
+\(do \(\(var init [step]\)...\) \(end-test [result...]\) body...\)\n
+DO 
 {VARIABLE*} 
 DO's variable bindings are like LET's with a twist. 
-With LET you set up vars eg \(let \(\(i 0\) \(j 1\) \(k 2\)\) {...} \)
-With DO you set initial values of VAR\(s\) _and_ dynamic 'step-values' e.g.
-\(do \(\(i 0 \(+ i 1\)\) \(j 1 \(+ j 5\)\) {...} \)
+With LET you set up vars e.g.\n \(let \(\(i 0\) \(j 1\) \(k 2\)\) {...} \)\n
+With DO you set initial values of VAR\(s\) _and_ dynamic 'step-values' e.g.\n
+\(do \(\(i 0 \(+ i 1\)\) \(j 1 \(+ j 5\)\) {...} \)\n
 As with LET, DO's return values accumulate within the body except, DO 
 includes built-in support for iterative testing and returning within the 
 DO form itself. Basically what you would otherwise do inside the body of 
 LET get's DOne in the test-form result-form section \(which is why it looks
-so much like the body of a LET and why it is in it's own list \(smacks head!\)
-
+so much like the body of a LET and why it is in it's own list \(smacks head!\)\n
 {TEST-FORM RESULT-FORM*}
 `DO' has a step test with each pass. This is like Elisp's `while' but the test 
 is for NIL rather than T. i.e. a while form which loops if TEST-FORM yields NIL.
-IOW, "While it don't test true - keep on DOing what needs to get DOne!".
-The RESULT-FORM\(s\) are the DOings to be DOne. 
-RESULT-FORM\(s\) are given after the TEST-FORM.
-
-{STATEMENT*} 
+IOW, \"While it don't test true - keep on DOing what needs to get DOne!`\".
+The RESULT-FORM\(s\) are the DOings to be DOne.
+RESULT-FORM\(s\) are given after the TEST-FORM.\n
+{STATEMENT*}
 This is the return phase. With LET you would do TEST-FORM RESULT-FORM
 mojo here as well - instead DO allows for multiple statements to occur here 
 this is cool because we can reflect back into the DO bindings without needing to 
 bind additional values just to pass around our results. This is also why DO
-often doesn't have a statement body - all the work is already finished.►►►\n
-\(let \(k\)
+often doesn't have a statement body - all the work is already finished.\n
+EXAMPLE:\n\(let \(k\)\n
   \(do \(\(i 0 \(+ i 1\)\)
        \(j 0 \(+ 80 j\)\)\)
       \(\(> i 7\) j\)
@@ -161,16 +188,18 @@ often doesn't have a statement body - all the work is already finished.►►►
   \(setq k \(cons j k\)\)\)
 ;; DOne DOing
 ;; Now LET us destructively reverse the list that DO built :P
-\(nreverse k\)\)"
-(mon-help-function-spit-doc 'mon-help-CL:DO)
-           (message "pass non-nil for optional arg INTRP"))
-
-;;;test-me;(mon-help-CL:DO )
-
+\(nreverse k\)\)\n►►►"
+(interactive "i\nP")
+(if (or insertp intrp)
+    (mon-help-function-spit-doc 'mon-help-CL:DO :insertp t)
+  (message "pass non-nil for optional arg INTRP")))
+;;
+;;;test-me;(mon-help-CL:DO)
+;;;test-me;(mon-help-CL:DO t)
 
 ;;; ==============================
 ;;; CREATED: <Timestamp: Wednesday July 15, 2009 @ 12:50.16 PM - by MON KEY>
-(defun mon-help-CL:TIME (&optional intrp)
+(defun mon-help-CL:TIME (&optional insertp intrp)
 "CL: `GET-DECODED-TIME' 
 Return nine values specifying the current time as follows:
 second, minute, hour, date, month, year, day of week \(0 = Monday\), T
@@ -178,11 +207,11 @@ second, minute, hour, date, month, year, day of week \(0 = Monday\), T
 \(get-decoded-time\) =>
 14     ;second\n44     ;minute\n12     ;hour\n15     ;date\n7      ;month
 2009   ;year\n2      ;day\nT      ;dayligt-p\n5      ;zone"
-(interactive "P")
-(if intrp 
-    (mon-help-function-spit-doc 'mon-help-CL:TIME)
+(interactive "i\nP")
+(if (or insertp intrp)
+    (mon-help-function-spit-doc 'mon-help-CL:TIME :insertp t)
     (message "pass non-nil for optional arg INTRP")))
-
+;;;
 ;;;test-me;(describe-function 'mon-help-CL:TIME)
 
 ;;; ==============================
@@ -192,7 +221,7 @@ second, minute, hour, date, month, year, day of week \(0 = Monday\), T
 ;;  (replace-match "\\2`\\3'"))
 ;;; ==============================
 ;;; CRATED: <Timestamp: Wednesday July 08, 2009 @ 06:11.12 PM - by MON KEY>
-(defun mon-help-slime-keys (&optional intrp)
+(defun mon-help-slime-keys (&optional insertp intrp)
   "See also; `slime-cheat-sheet' ►►►
 SLIME REPL mode keys: 
 key              binding
@@ -292,17 +321,50 @@ C-c C-x c	`slime-list-connections'
 C-c C-x t	`slime-list-threads'
 C-x 5 .		`slime-edit-definition-other-frame'
 C-x 4 .		`slime-edit-definition-other-window'"
-  (interactive "P")
-  (if intrp 
-      (mon-help-function-spit-doc 'mon-help-slime-keys)
+(interactive "i\nP")
+  (if (or insertp intrp)
+      (mon-help-function-spit-doc 'mon-help-slime-keys :insertp t)
     (message "pass non-nil for optional arg INTRP")))
-
+;;;
 ;;;test-me;(mon-help-slime-keys)
 ;;;test-me;(mon-help-slime-keys t)
 
 ;;; ==============================
-(defun mon-help-CL:LOCAL-TIME (&optional intrp)
-(interactive "P")
+;;; CREATED: <Timestamp: #{2009-09-06T05:29:03-04:00Z}#{09367} - by MON KEY>
+(defun mon-help-swank-functions (&optional insertp intrp)
+ ";;CL-LISP-SWANK-SIDE
+`*connections*'
+`*emacs-connection*'
+`*swank-state-stack*'
+`*swank-wire-protocol-version*'
+`*readtable-alist*'
+`*swank-pprint-bindings*'
+`*echo-area-prefix*'
+`*find-module*'
+`*coding-system*'
+`*listener-sockets*'
+`*communication-style*'
+`*pending-continuations*'
+`swank:load-file'
+`swank:swank-require'
+`swank:eval-and-grab-output'
+`swank:interactive-eval'
+`swank:slime-default-connection'
+`swank:slime-current-connection'
+`swank:describe-symbol-for-emacs'
+\(slime-compute-connection-state 'slime-current-connection\)
+\(swank:connection-info\)
+\(swank:list-all-package-names\)\n►►►"
+(interactive "i\nP")
+  (if (or insertp intrp)
+    	(mon-help-function-spit-doc 'mon-help-swank-functions :insertp t)
+        (message "pass non-nil for optional arg INTRP")))
+;;
+;;;test-me;(mon-help-swank-functions)
+;;;test-me;(mon-help-swank-functions t)
+
+;;; ==============================
+(defun mon-help-CL:LOCAL-TIME (&optional insertp intrp)
 "LOCAL-TIME:*DEFAULT-TIMEZONE*
  Variable: \(not documented\)
 LOCAL-TIME:+ASCTIME-FORMAT+
@@ -471,9 +533,9 @@ LOCAL-TIME:WITH-DECODED-TIMESTAMP
  Macro: This macro binds variables to the decoded elements of TIMESTAMP.
 The TIMEZONE argument is used for decoding the timestamp, and is not bound by
 the macro.  The value of DAY-OF-WEEK starts from 0 which means Sunday."
-(interactive "P")
-(if intrp
-   (mon-help-function-spit-doc 'mon-help-CL-loop)
+(interactive "i\nP")
+(if (or insertp intrp)
+   (mon-help-function-spit-doc 'mon-help-CL-loop :insertp t)
  (message "pass non-nil for optional arg INTRP")))
 
 ;;; ==============================
