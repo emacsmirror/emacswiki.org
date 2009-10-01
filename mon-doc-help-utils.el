@@ -1,4 +1,3 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; This is mon-doc-help-utils.el
 ;;; ================================================================
 ;;; DESCRIPTION:
@@ -19,20 +18,13 @@
 ;;; |    It should not make more than one suggestion per 10 minutes.
 ;;; `----
 ;;;
-;;; CONSTANTS or VARIABLES:
-;;; `*reference-sheet-help-A-HAWLEY*', `*w32-env-variables-alist*',
-;;; `*doc-cookie*', `*regexp-symbol-defs*'
-;;;
-;;; MACROS:
-;;; `mon-help-swap-var-doc-const-val'
-;;;
 ;;; FUNCTIONS:►►►
 ;;; `mon-help-reference-sheet', `mon-help-regexp-syntax',
 ;;; `mon-help-search-functions', `mon-help-info-incantation',
 ;;; `mon-help-tar-incantation', `mon-help-rename-incantation',
 ;;; `mon-help-install-info-incantation', `mon-help-format-width',
 ;;; `mon-help-file-dir-functions', `mon-help-process-functions',
-;;; `mon-help-w32-env', `mon-insert-documentation', `mon-get-func-args',
+;;; `mon-help-w32-env', `mon-help-insert-documentation', `mon-help-function-args',
 ;;; `mon-insert-doc-help-tail', `mon-insert-doc-help-cookie',
 ;;; `mon-help-function-spit-doc', `mon-tags-apropos', `mon-tags-naf-apropos'
 ;;; `mon-index-elisp-symbol', `mon-help-buffer-functions'
@@ -43,7 +35,21 @@
 ;;; `mon-help-text-property-stickyness', `mon-help-xml-functions'
 ;;; `mon-help-plist-functions', `mon-help-text-property-functions'
 ;;; `mon-help-emacs-introspect', `mon-help-make-faces'
+;;; `mon-help-xref-symbol-value'
 ;;; FUNCTIONS:◄◄◄
+;;;
+;;; MACROS:
+;;; `mon-help-swap-var-doc-const-val'
+;;;
+;;; CONSTANTS: or VARIABLES:
+;;; `*reference-sheet-help-A-HAWLEY*', `*w32-env-variables-alist*',
+;;; `*doc-cookie*', `*regexp-symbol-defs*', `*mon-help-interactive-spec-alist*'
+;;;
+;;; ALIASED/ADVISED/SUBST'D
+;;; `mon-insert-documentation' -> `mon-help-insert-documentation' 
+;;;
+;;; RENAMED:
+;;; `*emacs-reference-sheet-A-HAWLEY*' -> `*reference-sheet-help-A-HAWLEY*'
 ;;;
 ;;; MOVED:
 ;;; `mon-help-CL-time', `mon-help-CL-loop', `mon-help-slime-keys' -> mon-doc-help-CL.el
@@ -56,9 +62,6 @@
 ;;; `mon-insert-tar-incantation' -> `mon-help-tar-incantation'
 ;;; `mon-insert-info-incantation' -> `mon-help-info-incantation'
 ;;; `mon-insert-diacritics' -> `mon-help-diacritics'
-;;;
-;;; RENAMED:
-;;; `*emacs-reference-sheet-A-HAWLEY*' -> `*reference-sheet-help-A-HAWLEY*'
 ;;;
 ;;; REQUIRES:
 ;;; cl.el `intersection' in `mon-help-function-spit-doc'
@@ -278,6 +281,26 @@ IOW wrap them _and_ the macro call in an `eval-and-compile'. ►►►"
 ;;;        (makunbound 'test-swap-var->const-fface)  (unintern 'test-swap-var->const-fface))
 
 ;;; ==============================
+;;; CREATED: <Timestamp: #{2009-09-30T16:44:24-04:00Z}#{09403} - by MON KEY>
+(defun mon-help-xref-symbol-value (sym)
+  "Return the value of symbol SYM. 
+When SYM is a function return `symbol-function' of symbol.
+When SYM is a variable return `symbol-value' of symbol.
+value returned is of the form:
+\(\(SYMBOL <FUNCTION>|<VARIABLE>\) \(VALUE-OF-FUNICTION-OR-VARIABLE\)\n
+EXAMPLE:\n(mon-help-xref-symbol-value 'mon-help-xref-symbol-value)\n
+\(mon-help-xref-symbol-value '*w32-env-variables-alist*\)
+See also; `mon-help-function-spit-doc', `mon-help-function-args',
+`mon-help-swap-var-doc-const-val', `mon-help-parse-interactive-spec'
+►►►"
+  (let* ((is-sym (intern-soft sym))
+         (sym-type-val (cond ((and(fboundp is-sym)(functionp is-sym))
+                              `((,is-sym ,'<FUNCTION>),(symbol-function is-sym)))
+                             ((bound-and-true-p is-sym)
+                              `((,is-sym '<VARIABLE>) ,(symbol-value is-sym))))))
+    sym-type-val))
+
+;;; ==============================
 ;;; CREATED: <Timestamp: Thursday July 02, 2009 @ 05:16.20 PM - by MON KEY>
 (defun* mon-help-function-spit-doc (sym-name &key alt-cookie do-var insertp do-face do-group do-theme)
   "Return documentation for function with SYM-NAME.
@@ -305,7 +328,9 @@ EXAMPLE:
 \(mon-help-function-spit-doc 'completions-merging-modes :do-var t\) ;defcustom
 \(mon-help-function-spit-doc 'font-lock-keyword-face :do-face t\) ;defface
 \(mon-help-function-spit-doc 'apropos :do-group t\) ;defgroup\n
-See also; `mon-insert-doc-help-cookie', `mon-insert-doc-help-tail'. ►►►"
+See also; `mon-insert-doc-help-cookie', `mon-insert-doc-help-tail'
+`mon-help-xref-symbol-value', `mon-help-function-args'
+`mon-help-insert-documentation'. ►►►"
   (let (mk-docstr)
     (save-excursion
       (setq mk-docstr
@@ -662,11 +687,13 @@ See also; `mon-insert-lisp-testme', `mon-test->*regexp-symbol-defs*'. ►►►"
 ;;; MODIFICATIONS: <Timestamp: #{2009-09-07T19:54:58-04:00Z}#{09371} - by MON KEY>
 ;;; FIXES:  CL &key &aux args in the tail of Elisp &rest e.g. this-> ``&rest --cl-rest--''
 ;;; CREATED: <Timestamp: #{2009-08-20T21:24:31-04:00Z}#{09345} - by MON>
-(defun mon-get-func-args (func)
+(defun mon-help-function-args (func)
   "Return arg list of FUNC.\n
-EXAMPLE:\n\(mon-get-func-args 'mon-get-func-args\)
-\(mon-get-func-args 'mon-help-function-spit-doc\) ;CL arg-list with &key
-CALLED-BY: `mon-insert-documentation'. ►►►"
+EXAMPLE:\n\(mon-help-function-args 'mon-help-function-args\)
+\(mon-help-function-args 'mon-help-function-spit-doc\) ;CL arg-list with &key
+CALLED-BY: `mon-help-insert-documentation'.\n
+See also; `mon-help-xref-symbol-value', `mon-help-parse-interactive-spec'
+`mon-help-function-spit-doc'.\n►►►"
   (let* ((def (if (symbolp func)
                  (symbol-function func)
                nil))
@@ -685,47 +712,63 @@ CALLED-BY: `mon-insert-documentation'. ►►►"
       (setq get-args (car (read-from-string (downcase get-args))))
       (setq get-args (delete 'fn get-args)))
     (help-function-arglist def))))
-
-;;;test-me;(mon-get-func-args 'mon-get-func-args)
-;;;test-me;(mon-get-func-args 'mon-help-function-spit-doc)
+;;
+;;;test-me;(mon-help-function-args 'mon-help-function-args)
+;;;test-me;(mon-help-function-args 'mon-help-function-spit-doc)
 
 ;;; ==============================
-;;; (mon-get-func-args 'mon-insert-string-n-times)
-;;: (mon-get-func-args 'mon-insert-file-in-dirs)
-;;; (stringp (cadr (interactive-form  'mon-insert-file-in-dirs)))
+;;; CREATED: <Timestamp: #{2009-09-30T17:22:54-04:00Z}#{09403} - by MON KEY>
+(defvar *mon-help-interactive-spec-alist* nil
+  "alist of interactive spec arguments and values.
+Alist key (an intereractive spec letter) maps to shortform spec-type.
+spec-type is a string delimited by `<' and `>'.
+CALLED-BY: FUNCTION: `mon-help-parse-interactive-spec'
+See also; `mon-help-xref-symbol-value', `mon-help-insert-documentation'
+`mon-help-function-spit-doc'.\n►►►")
+;;
+(unless (bound-and-true-p *mon-help-interactive-spec-alist*)
+  (setq *mon-help-interactive-spec-alist* 
+        '((a "<FUNCTION-NAME>")
+          (b "<EXISTING-BUFFER-NAME>")
+          (B "<BUFFER-NAME-OR-NON-EXISTING>")
+          (c "<CHARACTER-NO-INPUT-METHOD>")
+          (C "<COMMAND-NAME>")
+          (d "<VALUE-POINT-AS-NUMBER-NO-I/O>")
+          (D "<DIRECTORY-NAME>")
+          (E "<PARAMETRIZED-EVENT>")
+          (f "<EXISTING-FILE-NAME>")
+          (F "<FILE-NAME-OR-NON-EXISTING>")
+          (G "<FILE-NAME-OR-NON-EXISTING-W/DIR-NAME>") 
+          (i "<IGNORED-NOOP>")       ;; NO-I/O
+          (K "<KEY-SEQUENCE-DOWNCASE-MAYBE>") ;; (downcase the last event if needed to get a definition).
+          (K "<KEY-SEQUENCE-REDEFINE-NO-DOWNCASE>") ;; (do not downcase the last event).
+          (m "<VALUE-MARK-AS-NUMBER>")              ;; NO-I/O
+          (M "<ANY-STRING-W/INPUT-METHOD>")
+          (N "<NUMBER<-MINIBUFFER>")
+          (N "<NUMERIC-PREFIX-ARG>")
+          (p "<PREFIX-ARG->NUMBER>") ;; NO-I/O
+          (P "<PREFIX-ARG-RAW>")     ;; Does not do I/O. NO-I/O
+          (r "<REGION>")             ;; NO-I/O
+          (s "<ANY-STRING>")         ;; Does not inherit the current input method.
+          (S "<ANY-SYMBOL>")         ;; NO-INPUT-METHOD
+          (U "<MOUSE-UP-EVENT>")     ;; discarded by a previous k or K argument.
+          (v "<VARIABLE-NAME>")
+          (x "<READ-LISP-EXPRESSION-NO-EVALUATE>")
+          (X "<READ-LISP-EXPRESSION-EVALUATE>")
+          (z "<CODING-SYSTEM>")
+          (Z "<CODING-SYSTEM-NIL-NO-PREFIX>"))))
+;;
+;;;test-me; *mon-help-interactive-spec-alist*
+;;;test-me;(assoc 'z *mon-help-interactive-spec-alist*)
+;;
+;;; (progn (makunbound '*mon-help-interactive-spec-alist*) 
+;;;       (unintern '*mon-help-interactive-spec-alist*))
+
+;;; ==============================
 ;;; CREATED: <Timestamp: #{2009-09-07T20:04:57-04:00Z}#{09372} - by MON KEY>
-(defun mon-parse-interactive-spec (fname)
-  "Code letters available are: ►►►"
-  (let* ((int-spec '((a "<FUNCTION-NAME>")
-                     (b "<EXISTING-BUFFER-NAME>")
-                     (B "<BUFFER-NAME-OR-NON-EXISTING>")
-                     (c "<CHARACTER-NO-INPUT-METHOD>")
-                     (C "<COMMAND-NAME>")
-                     (d "<VALUE-POINT-AS-NUMBER-NO-I/O>")
-                     (D "<DIRECTORY-NAME>")
-                     (E "<PARAMETRIZED-EVENT>")
-                     (f "<EXISTING-FILE-NAME>")
-                     (F "<FILE-NAME-OR-NON-EXISTING>")
-                     (G "<FILE-NAME-OR-NON-EXISTING-W/DIR-NAME>") 
-                     (i "<IGNORED-NOOP>") ;; NO-I/O
-                     (K "<KEY-SEQUENCE-DOWNCASE-MAYBE>") ;; (downcase the last event if needed to get a definition).
-                     (K "<KEY-SEQUENCE-REDEFINE-NO-DOWNCASE>") ;; (do not downcase the last event).
-                     (m "<VALUE-MARK-AS-NUMBER">)              ;; NO-I/O
-                     (M "<ANY-STRING-W/INPUT-METHOD>")
-                     (N "<NUMBER<-MINIBUFFER>")
-                     (N "<NUMERIC-PREFIX-ARG>")
-                     (p "<PREFIX-ARG->NUMBER>") ;; NO-I/O
-                     (P "<PREFIX-ARG-RAW>")     ;; Does not do I/O. NO-I/O
-                     (r "<REGION>")             ;; NO-I/O
-                     (s "<ANY-STRING>") ;; Does not inherit the current input method.
-                     (S "<ANY-SYMBOL>") ;; NO-INPUT-METHOD
-                     (U "<MOUSE-UP-EVENT>") ;; discarded by a previous k or K argument.
-                     (v "<VARIABLE-NAME>")
-                     (x "<READ-LISP-EXPRESSION-NO-EVALUATE>")
-                     (X "<READ-LISP-EXPRESSION-EVALUATE>")
-                     (Z "<CODING-SYSTEM>")
-                     (Z "<CODING-SYSTEM-NIL-NO-PREFIX>")))
-         ;;         )(assoc 'Z int-spec))
+;;; MODIFICATIONS: <Timestamp: #{2009-09-30T17:29:53-04:00Z}#{09403} - by MON KEY>
+(defun mon-help-parse-interactive-spec (fname)
+  (let* ((int-spec *mon-help-interactive-spec-alist*)
          (int-t (interactive-form fname))
          (int-has-spec (when int-t
                          (cond ((stringp (cadr int-t)) 
@@ -734,20 +777,45 @@ CALLED-BY: `mon-insert-documentation'. ►►►"
                                  (mapconcat 
                                   (lambda (x)
                                     (concat (cadr (assoc-string (subseq x 0 1) int-spec))" " (subseq x 1)))
-                                  (split-string (cadr int-t) "\n") "\n;;; "))
-                                )
-                               ;;NOTE: Leave the trailing line for `mon-insert-dcoumentation'.
-                             ((listp (cadr int-t)) "<INTERACTIVE-SPEC-IS-LIST>"))))) 
+                                  (split-string (cadr int-t) "\n") "\n;;; ")))
+                               ;; NOTE: Leave the trailing line for `mon-insert-dcoumentation'.
+                               ((listp (cadr int-t)) "<INTERACTIVE-SPEC-IS-LIST>")))))
     int-has-spec))
+;;
+;;;test-me;(mon-help-parse-interactive-spec  'mon-insert-file-in-dirs)
+;;;test-me;(mon-help-parse-interactive-spec 'mon-help-reference-sheet)
+;;;test-me;(mon-help-parse-interactive-spec 'mon-insert-string-n-times)
+;;;test-me;(mon-help-parse-interactive-spec 'mon-insert-string-n-fancy-times)
+;;;test-me;(listp (cadr (interactive-form  'mon-insert-file-in-dirs)))
+;;;test-me;(listp (cadr (interactive-form 'mon-insert-string-n-times)))
 
-;;(cadr (interactive-form 'mon-insert-file-in-dirs))
-;;;(interactive-form 'mon-insert-documentation)
-;;;(mon-parse-interactive-spec  'mon-insert-file-in-dirs)
-;;;(mon-parse-interactive-spec 'mon-help-reference-sheet)
-;;;(mon-parse-interactive-spec 'mon-insert-string-n-times)
-;;;(mon-parse-interactive-spec 'mon-insert-string-n-fancy-times)
-;;; (listp (cadr (interactive-form  'mon-insert-file-in-dirs)))
-;;; (listp (cadr (interactive-form 'mon-insert-string-n-times)))
+;;; ==============================
+;;; CREATED: <Timestamp: #{2009-09-30T19:23:06-04:00Z}#{09403} - by MON KEY>
+;;; Now put a doc-string on `mon-help-parse-interactive-spec'
+;;; using value & docstring of var `*mon-help-parse-interactive-spec-alist*'.
+(put 'mon-help-parse-interactive-spec 'function-documentation
+     (let* ((chop-var
+             (split-string 
+              (plist-get (symbol-plist '*mon-help-interactive-spec-alist*) 'variable-documentation)
+              "CALLED-BY: FUNCTION: `mon-help-parse-interactive-spec'"))
+            (hd-chop (car chop-var))
+            (tl-chop (cadr chop-var))
+            (splc-chop)
+            (out-chop))
+       (setq splc-chop
+             (with-temp-buffer 
+               (insert-char 32 1)
+               (save-excursion (pp *mon-help-interactive-spec-alist* (current-buffer)))
+               (indent-pp-sexp)
+               (buffer-substring-no-properties (buffer-end 0) (buffer-end 1))))
+       (setq splc-chop 
+             (concat 
+              hd-chop 
+              "\nAlist is held by the variable `*mon-help-interactive-spec-alist*'\n\n"
+              splc-chop 
+              tl-chop))))
+;;
+;;;test-me;(describe-function 'mon-help-parse-interactive-spec)
 
 ;;; ==============================
 ;;; TODO:
@@ -755,10 +823,11 @@ CALLED-BY: `mon-insert-documentation'. ►►►"
 ;;; (interactive-form 'mon-insert-file-in-dirs)
 ;;; (interactive-form 'mon-insert-file-in-dirs)
 ;;; CREATED: <Timestamp: #{2009-08-20T21:30:15-04:00Z}#{09345} - by MON>
-(defun mon-insert-documentation (&optional func-list var-list face-list alt-cookie)
+(defun mon-help-insert-documentation (&optional func-list var-list face-list alt-cookie)
   "Return documentation of symbols held by lists FUNC-LIST VAR-LIST FACE-LIST.
 When non-nil ALT-COOKIE is a doc-cookie per `mon-help-function-spit-doc' spec.
-Default is `*doc-cookie*'.\nSee also; `mon-get-func-args'. ►►►"
+Default is `*doc-cookie*'.
+See also; `mon-help-function-args', `mon-help-xref-symbol-value'.\n►►►"
   (let ((fl func-list)
         (vl var-list)
         (fc-l face-list)
@@ -778,11 +847,11 @@ Default is `*doc-cookie*'.\nSee also; `mon-get-func-args'. ►►►"
               (when fl
                 (dolist (i fl)
                   (let ((f-dlim (format (car dlims) i))
-                        (int-specs (if (mon-parse-interactive-spec i)
-                                       (concat "\n;;; " (mon-parse-interactive-spec i))
+                        (int-specs (if (mon-help-parse-interactive-spec i)
+                                       (concat "\n;;; " (mon-help-parse-interactive-spec i))
                                                ""))
-                        (args-lst (if (mon-get-func-args i) 
-                                      (concat ";;; <ARG-LIST>\n;;; " (format "%S" (mon-get-func-args i)))
+                        (args-lst (if (mon-help-function-args i) 
+                                      (concat ";;; <ARG-LIST>\n;;; " (format "%S" (mon-help-function-args i)))
                                     ""))
                         (alt-ck (if alt-c
                                     (mon-help-function-spit-doc i alt-c)
@@ -804,13 +873,15 @@ Default is `*doc-cookie*'.\nSee also; `mon-get-func-args'. ►►►"
                      (current-buffer)))))
               (buffer-string)))
       (insert the-docstrings))))
-
+;;
+(defalias 'mon-insert-documentation 'mon-help-insert-documentation)
+;;
 ;;;test-me;
 ;; (setq mon-tmp-func-l (list 'mon-insert-string-n-times 'mon-help-reference-sheet
-;;                           'mon-insert-file-in-dirs 'mon-insert-documentation 
+;;                           'mon-insert-file-in-dirs 'mon-help-insert-documentation 
 ;;                           'mon-insert-string-n-times))
-
-;;;test-me;(mon-insert-documentation mon-tmp-func-l)
+;;
+;;;test-me;(mon-help-insert-documentation mon-tmp-func-l)
 ;;
 ;;(progn (makunbound 'mon-tmp-func-l) (unintern 'mon-tmp-func-l))
 
@@ -872,10 +943,12 @@ Why not! :) ►►►
 `mon-help-w32-env'
 `mon-index-elisp-symbol'
 `references-sheet-help-emacs-introspect'
-`mon-help-function-spit-doc'
+`mon-help-function-args'
+`mon-help-parse-interactive-spec'
+`mon-help-xref-symbol-value'
 `mon-help-swap-var-doc-const-val'
-`mon-get-func-args'
-`mon-insert-documentation'
+`mon-help-function-spit-doc'
+`mon-help-insert-documentation'
 `mon-insert-doc-help-tail'
 `mon-insert-doc-help-cookie'
 `emacs-wiki-escape-lisp-string-region'
@@ -951,8 +1024,9 @@ Unless indicated as a '<FUNCTION>' items listed are '<VARIABLE>'. ►►►\n
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-emacs-introspect :insertp t)
     (message "pass non-nil for optional arg INTRP")))
-
+;;
 ;;;test-me;(mon-help-emacs-introspect t)
+
 ;;; ==============================
 ;;; (dolist (i 
 ;;;          (list 'abbrev 'alloc 'applications 'auto-save 'bib 'c 'calendar 'comm
@@ -1028,7 +1102,7 @@ tools         Programming tools.
 unix          Front-ends/assistants for, or emulators of, UNIX-like features.
 windows       Windows within a frame.
 wp            Word processing.
-x 	      The X Window system.\n ►►►"
+x 	      The X Window system.\n►►►"
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-package-keywords :insertp t)
@@ -1045,7 +1119,7 @@ x 	      The X Window system.\n ►►►"
   "Regexp Syntax overview.
 SIMPLIFIED! See info node `(elisp)Syntax of Regexps' for discussion.
                         or \(info \"\(elisp\)Syntax of Regexps\")
-See also; `mon-help-search-functions'. ►►► \n
+See also; `mon-help-search-functions'.\n►►►\n
 ;; SPECIAL CHARS
 \.          --> match ANY
 \*          --> match Preceeding - ALL
@@ -1332,7 +1406,8 @@ See also `mon-help-regexp-syntax'. ►►► \n
 `buffer-local-value'
 `buffer-local-variables'
 `buffer-modified-p'
-`buffer-modified-tick'\n
+`buffer-modified-tick'
+`list-buffers-directory'\n
 ;; BUFFER FORMAT & CODING:
 `format-encode-buffer'
 `format-decode-buffer'
@@ -1493,7 +1568,7 @@ Unless indicated as a 'variable' items listed are functions.\n►►►\n
 ;;; TODO: add other xml related material from xml-rpc, and ./lisp/nxml
 ;;; CREATED: <Timestamp: #{2009-09-17T12:06:53-04:00Z}#{09384} - by MON KEY>
 (defun mon-help-xml-functions (&optional insertp intrp)
-  "XML related functions. 
+  "XML related functions.\n►►►
 ;; From FILE: `./lisp/xml.el'
 `xml-get-children'
 `xml-parse-attlist'
@@ -1516,8 +1591,7 @@ Unless indicated as a 'variable' items listed are functions.\n►►►\n
 `xmltok-forward-prolog'
 `xmltok-forward-special'
 ;; FILE: ./nxml/nxml-parse.el
-`nxml-parse-file'
-►►►"
+`nxml-parse-file'"
   (interactive "i\np")
     (mon-help-function-spit-doc 'mon-help-xml-functions :insertp t)
   (message "pass non-nil for optional arg INTRP"))
@@ -2771,14 +2845,66 @@ as a reference for finding which characters match which codes. ►►►\n
 ;;;test-me;(describe-function 'mon-help-cntl->hex->ecma-35)
 
 ;;; ==============================
+;;; CREATED: <Timestamp: #{2009-09-27T06:39:21-04:00Z}#{09397} - by MON>
+;;;###autoload
+(defun mon-help-nclose-functions (&optional insertp intrp)
+  "Functions for working with nclosemacs.
+See info node `(nclosemacs)Top'►►►\n
+;; KNOWCESSING:
+`*nclose-suggest*'
+`*nclose-volunteer*'
+`*nclose-knowcess*'
+`*nclose-reset-session*'
+`*nclose-reset-globales*'
+`*nclose-reset-signs*'\n
+;; PRINT NCLOSE OBJECTS/ENCYCLOPAEDIA:
+`*nclose-print-wm*'
+`*nclose-print-hypos*'
+`*nclose-print-object*'
+nn`*nclose-print-instances*'\n
+;; THE ADD-TO-KB MACRO:
+ (`add-to-kb'                                                         
+   (`@LHS'= <PATTERN-LISP-FORM>)                                         
+   (`@hypo' <HYPOTHESIS>)                                                
+  [(`@RHS'= [*RHS-lisp-form*]+) *string-documentation*])               \n
+<PATTERN-LISP-FORM> - (form which yields a boolean)                   
+  ,---------.
+  |`all-in' |                                                         
+  |`some-in'|>----<'CLASS-NAME INTEGER 'AND-OR-ELISP-FORM>               
+  |`oone-in'|                           |  ,-------------------------.                       
+  |`none-in'|                           |  | string= string< string> | 
+  `---------'                           `--| eq eql equal            | 
+                                           | < > = /= >= <= + - * /  | 
+                                           | and or not null '()     | 
+                                           | memq memql member       | 
+                                           | yes no                  | 
+                                           `------------------------70
+<HYPOTHESIS> - an hypothesis for the rule.\n
+<RHS-LISP-FORM> - right-hand side actions+
+  ,----
+  | `@SET'
+  |  |--+ `prop-in'
+  |  |    (OBJECT-NAME PROPERTY-NAME [SCALAR-VALUE|LISP-FORM])
+  |  |
+  |  |--+ `member-in'
+  |       (CLASS-NAME INTEGER PROPERTY-NAME [SCALAR-VALUE|LISP-FORM]) 
+  `----\n
+<STRING-DOCUMENTATION>\n"
+  (interactive "i\nP")
+  (if (or insertp intrp)
+      (mon-help-function-spit-doc 'mon-help-nclose-functions :insertp t)
+    (message "pass non-nil for optional arg INTRP")))
+;;
+;;;test-me;(mon-help-nclose-functions)
+;;;test-me;(mon-help-nclose-functions t)
+;;;test-me;(describe-function 'mon-help-nclose-functions)
+
+;;; ==============================
 ;;; CREATED: <Timestamp: Wednesday July 29, 2009 @ 11:57.11 AM - by MON KEY>
 (defun mon-help-iso-8601 (&optional insertp intrp)
-  "The full, extended format of ISO 8601 is as follows:
-
-    1999-10-11T11:10:30,5-07:00
-
-The elements are, in order:
-
+  "The full, extended format of ISO 8601 is as follows:\n
+    1999-10-11T11:10:30,5-07:00\n
+The elements are, in order:\n
    1. the year with four digits
    2. a hyphen \(omitted in the basic format\)
    3. the month with two digits
@@ -2795,8 +2921,7 @@ The elements are, in order:
   14. a plus sign or hyphen \(minus\) to indicate sign of time zone
   15. the hours of the time zone with two digits
   16. a colon \(omitted in the basic format\)
-  17. the minutes of the time zone with two digits
-
+  17. the minutes of the time zone with two digits\n
 ------------------------------
       2  4  6  8 10 12 14 16
       |  |  |  |  |  | |  |
@@ -2805,8 +2930,7 @@ The elements are, in order:
    |    |  |  |  |  | |  |  |
    |    |  |  |  |  | |  |  |
    1    3  5  7  9 1113  15 17
-------------------------------
-
+------------------------------\n
 The rules for omission of elements are quite simple. Elements from the time of
 day may be omitted from the right and take their immediately preceding delimiter
 with them. Elements from the date may be omitted from the left, but leave the
@@ -2818,19 +2942,14 @@ the whole of the date are omitted. If an element is omitted from the left, it is
 assumed to be the current value. \(In other words, omitting the century is really
 dangerous, so I have even omitted the possibility of doing so.\) If an element is
 omitted from the right, it is assumed to cover the whole range of values and
-thus be indeterminate.
-
+thus be indeterminate.\n
 Every element in the time specification needs to be within the normal
 bounds. There is no special consideration for leap seconds, although some might
-want to express them using this standard.
-
-A duration of time has a separate notation entirely, as follows:
-
+want to express them using this standard.\n
+A duration of time has a separate notation entirely, as follows:\n
     P1Y2M3DT4H5M6S>
-    P7W
-
-The elements are, in order:
-
+    P7W\n
+The elements are, in order:\n
    1. the letter P to indicate a duration
    2. the number of years
    3. the letter Y to indicate years
@@ -2844,41 +2963,34 @@ The elements are, in order:
   11. the number of minutes
   12. the letter M to indicate minutes
   13. the number of seconds
-  14. the letter S to indicate seconds
-
-or for the second form, usually used alone
-
+  14. the letter S to indicate seconds\n
+or for the second form, usually used alone\n
    1. the letter P to indicate a duration
    2. the number of weeks
-   3. the letter W to indicate weeks
-
+   3. the letter W to indicate weeks\n
 Any element \(number\) may be omitted from this specification and if so takes its
 following delimited with it. Unlike the absolute time format, there is no
-requirement on the number of digits, and thus no requirement for leading zeros.
-
+requirement on the number of digits, and thus no requirement for leading zeros.\n
 A period of time is indicated by two time specifications, at least one of which
 has to be absolute, separated by a single solidus \(slash\), and has the general
-forms as follows:
-
+forms as follows:\n
     start/end
     start/duration
-    duration/end
-
+    duration/end\n
 the end form may have elements of the date omitted from the left with the
 assumption that the default is the corresponding value of the element from the
-start form. Omissions in the start form follow the normal rules.
-
+start form. Omissions in the start form follow the normal rules.\n
 The standard also has specifications for weeks of the year and days of the week,
 but these are used so rarely and are aesthetically displeasing so are gracefully
 elided from the presentation.\n
 ---
 Source: Erik Naggum's \"The Long, Painful History of Time\"
-;; \(URL `http://naggum.no/lugm-time.html'\).\n ►►►"
+\(URL `http://naggum.no/lugm-time.html'\).\n►►►"
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-iso-8601 :insertp t)
-           (message "pass non-nil for optional arg INTRP")))
-
+    (message "pass non-nil for optional arg INTRP")))
+;;
 ;;;test-me;(mon-help-iso-8601)
 ;;;test-me;(mon-help-iso-8601 t)
 ;;;test-me;(call-interactively 'mon-help-iso-8601)
@@ -4460,7 +4572,7 @@ See; \(URL `http://www.emacswiki.org/emacs/Reference_Sheet_by_Aaron_Hawley')\n
            (plist-get
             (symbol-plist '*reference-sheet-help-A-HAWLEY*)
             'variable-documentation)))
-
+;;
 ;;;test-me:(mon-help-keys t)
 ;;
 ;;(progn (makunbound 'mon-help-keys)
