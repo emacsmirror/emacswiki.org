@@ -39,7 +39,7 @@
 ;;; FUNCTIONS:◄◄◄
 ;;;
 ;;; MACROS:
-;;; `mon-help-swap-var-doc-const-val'
+;;; `mon-help-swap-var-doc-const-val', `mon-help-put-var-doc-val->func'
 ;;;
 ;;; CONSTANTS: or VARIABLES:
 ;;; `*reference-sheet-help-A-HAWLEY*', `*w32-env-variables-alist*',
@@ -133,8 +133,22 @@
 (eval-when-compile (require 'cl))
 ;; USED-BY: `emacs-wiki-fy-reference-sheet'
 (require 'regexpl)
-(require 'mon-regexp-symbols) ;-> `*regexp-symbol-defs*'
-(require 'mon-insertion-utils) ;->`mon-insert-lisp-testme'
+
+;;; ==============================
+;; EMACS-WIKI - so we don't require more than you want/need.
+;;
+;; `mon-string-index', `mon-string-upto-index', `mon-string-after-index'
+(if (locate-library "mon-utils")
+    (require 'mon-utils)) 
+;;
+;; `*regexp-symbol-defs*'
+(if (locate-library "mon-regexp-symbols")
+    (require 'mon-regexp-symbols)) 
+;;
+;; `mon-insert-lisp-testme'
+(if (locate-library "mon-insertion-utils")
+    (require 'mon-insertion-utils)) 
+
 ;;; ==============================
 
 ;;; ==============================
@@ -178,6 +192,54 @@ strings. ►►►"
   (insert "►►►"))
 
 ;;; ==============================
+;;; CREATED: <Timestamp: #{2009-10-01T18:57:13-04:00Z}#{09404} - by MON KEY>
+(defmacro mon-help-put-var-doc-val->func (var-name func-name &optional pre-v-str cut-v-str pst-v-str)
+  "VAR-NAME is a variable whose value and docstring will be put on FUNC-NAME.
+CUT-V-STR is a string on which to split the variable documentation of VAR-NAME.
+When non-nil cut-v-str is removed from variables documentation with substring up
+to CUT-V-STR at head of docstring, var-name's value is inserted, followed by the
+substring occuring after CUT-V-STR. The substring CUT-V-STR is not placed on
+func-name's documentation-property.
+When non-nil PRE-V-STR is a string to insert before value string of var-name.
+When non-nil PST-V-STR is a string to insert after value string of var-name.\n
+EXAMPLE-INVOCATION(S):
+\(mon-help-put-var-doc-val->func '<VAR-NAME> '<FUNC-NAME>
+  \"\\nThis is a PRE-V-STR\\n\" 
+  \"content of CUT-V-STR removed\"
+  \"\\nThis ia PST-V-STR\\n\"\)\n\n
+\(mon-help-put-var-doc-val->func '<VAR-NAME> '<FUNC-NAME> 
+  nil \"content of CUT-V-STR removed\" nil\)\n\n
+\(mon-help-put-var-doc-val->func '<VAR-NAME> '<FUNC-NAME> 
+\"\\nPRE-V-STR\\n\" nil \"PST-V-STR\"\)\n
+See also; `mon-help-swap-var-doc-const-val'\n►►►"
+(declare (indent 2) (debug t))
+(let ((putf-doc (make-symbol "putf-doc"))
+        (getv-doc (make-symbol "getv-doc"))
+        (getv-val (make-symbol "getv-val")))
+    `(let ((,getv-val (symbol-value ,var-name))
+           (,getv-doc (if ,cut-v-str
+                          `(,(mon-string-upto-index 
+                              (plist-get (symbol-plist ,var-name) 'variable-documentation)
+                              ,cut-v-str)
+                             ,(mon-string-after-index                               
+                               (plist-get (symbol-plist ,var-name) 'variable-documentation)
+                               ,cut-v-str))
+                          (plist-get (symbol-plist ,var-name) 'variable-documentation)))
+           (,putf-doc))
+       (when (listp ,getv-val)
+         (setq ,getv-val
+               (with-temp-buffer
+                 (insert-char 32 1)
+                 (save-excursion (pp ,getv-val (current-buffer)))
+                 (indent-pp-sexp)
+                 (buffer-substring-no-properties (buffer-end 0) (buffer-end 1)))))
+    (setq ,putf-doc 
+          (if (stringp ,getv-doc)
+              (concat ,getv-doc ,pre-v-str ,getv-val ,pst-v-str)
+              (concat (car ,getv-doc) ,pre-v-str ,getv-val ,pst-v-str (cadr ,getv-doc))))
+    (put ,func-name 'function-documentation ,putf-doc))))
+
+;;; ==============================
 ;;; CREATED: <Timestamp: #{2009-09-14T14:16:34-04:00Z}#{09381} - by MON KEY>
 (defmacro mon-help-swap-var-doc-const-val (var-name const-name xrefs &optional face-name)
   "Swap the value variable-documentation property of VAR-NAME into the
@@ -199,7 +261,8 @@ EXAMPLE:
     *naf-mode-institution-xrefs* naf-mode-institution-fface)
     ;;^ XREV ^                   ^ FACE-NAME ^\n
 NOTE: When compiling defvar and defconst forms mut be made known at compile time.
-IOW wrap them _and_ the macro call in an `eval-and-compile'. ►►►"
+IOW wrap them _and_ the macro call in an `eval-and-compile'.
+See also; `mon-help-put-var-doc-val->func'.\n►►►"
   (declare (indent 1) (debug t))
   (let ((v-doc (make-symbol "v-doc"))
 	(c-val (make-symbol "c-val"))
@@ -382,7 +445,7 @@ See also; `mon-insert-doc-help-cookie', `mon-insert-doc-help-tail'
                 ret-str))))
     (when insertp (save-excursion (newline) (princ mk-docstr (current-buffer))))
     mk-docstr))
-
+;;
 ;;;test-me;(mon-help-function-spit-doc 'mon-help-function-spit-doc :alt-cookie nil :do-var nil :insertp t)
 ;;;test-me;(mon-help-function-spit-doc '*doc-cookie* :do-var t :insertp t)
 ;;;test-me;(mon-help-function-spit-doc 'font-lock-keyword-face :do-face t :insertp t)
@@ -391,12 +454,11 @@ See also; `mon-insert-doc-help-cookie', `mon-insert-doc-help-tail'
 
 
 ;;; ==============================
-;;; REQUIRED FEATURES
-;;; `comment-divider' -> `mon-insertion-utils.el'
-;;; ==============================
-
+;;; LOAD SPECIFIC PROCEDURES IF-NOT-FEATURE-P `mon-insertion-utils.el'
+;;; `comment-divider'
+;;
 (unless (and (featurep 'mon-insertion-uitls) (fboundp 'comment-divider))
-;;; ==============================
+;;
 ;;; MODIFICATIONS: <Timestamp: #{2009-08-25T14:09:37-04:00Z}#{09352} - by MON KEY>
 (defun comment-divider (&optional not-insert intrp)
   "Insert default comment divider at point.
@@ -417,16 +479,11 @@ See also; `mon-comment-divide->col', `mon-lisp-comment-to-col'
 ;;;test-me;(call-interactively 'comment-divider)
 
 ;;; ==============================
-;;; REQUIRED FEATURES
+;;; LOAD SPECIFIC PROCEDURES IF-NOT-FEATURE-P `mon-insertion-utils.el'
 ;;; `*regexp-symbol-defs*' -> `mon-regexp-symbols.el'
-;;; `mon-insert-lisp-testme' -> `mon-insertion-utils.el'
-
-;;; ==============================
+;;
 (unless (and (featurep 'mon-regexp-symbols)
              (bound-and-true-p *regexp-symbol-defs*))
-;;; ==============================
-;;; NOTE: Currently not checking for:
-;;; defalias, defvaralias, defadvice or CL's: defstruct
 ;;; CREATED: <Timestamp: 2009-08-03-W32-1T11:04:11-0400Z - by MON KEY>
 (defvar *regexp-symbol-defs* nil
   "*Regexp for finding lisp definition forms defun, defmacro, defvar.
@@ -490,7 +547,7 @@ See also; `mon-insert-lisp-testme',`mon-insert-doc-help-tail'. ►►►"
 
 ;;;test-me; *regexp-symbol-defs*
 ;;(progn (makunbound '*regexp-symbol-defs*) (unintern '*regexp-symbol-defs*))
-
+;;
 ;;;; UNCOMMENT TO TEST:
 ;;;(defun some-function (&optional optional)
 ;;;(defun some-function-22 (&optional optional)
@@ -518,13 +575,10 @@ See also; `mon-insert-lisp-testme',`mon-insert-doc-help-tail'. ►►►"
 ;;;test-me;(mon-test->*regexp-symbol-defs*)
 
 ;;; ==============================
-
-;;; ==============================
-;;; REQUIRED FEATURES
+;;; LOAD SPECIFIC PROCEDURES IF-NOT-FEATURE-P `mon-insertion-utils.el'
 ;;; `mon-insert-lisp-testme'
-
+;;
 (unless (and (featurep 'mon-insertion-utils) (fboundp 'mon-insert-lisp-testme))
-;;; ==============================
 ;;; CREATED: <Timestamp: 2009-07-31-W31-5T13:53:52-0400Z - by MON KEY>
 (defun mon-insert-lisp-testme (&optional search-func test-me-count insertp intrp)
   "Insert at point a newline and commented test-me string.
@@ -573,8 +627,7 @@ See also; `mon-insert-doc-help-tail', `mon-test->*regexp-symbol-defs*'
           t) ; t needed here to prevent returning buffer position when called externally?
         return-tms)))
  ) ;CLOSE UNLESS FBOUNDP
-
-;;; ==============================
+;;
 ;;; UNCOMMENT TO TEST:
 ;;;(defun some-function (&optional optional)
 ;;;(defun some-function-22 (&optional optional)
@@ -584,17 +637,17 @@ See also; `mon-insert-doc-help-tail', `mon-test->*regexp-symbol-defs*'
 ;;;(defun *some/-symbol:->name<-2* (somevar
 ;;;(defvar *some-var* 'var
 ;;;(defun *some/-symbol:->name<-2* 'somevar
-
+;;
 ;;;test-me;
 ;;(let ((find-def* *regexp-symbol-defs*))
 ;; (search-backward-regexp find-def*))
-
+;;
 ;;;test-me;`(,(match-beginning 3) ,(match-end 3))
 ;;;test-me;(match-sring 1) ;grp 1=>"(defun* some-func:name* ("
 ;;;test-me;(match-sring 2) ;grp 2=>"(defun* "
 ;;;test-me;(match-string 3) ;grp 3=>"some-macro*:22"
 ;;;test-me;(match-sring 4) ;grp 4=>" ("
-
+;;
 ;;;test-me;(mon-insert-lisp-testme)
 ;;;test-me;(mon-insert-lisp-testme t 3 )
 ;;;test-me;(mon-insert-lisp-testme nil 3)
@@ -605,6 +658,53 @@ See also; `mon-insert-doc-help-tail', `mon-test->*regexp-symbol-defs*'
 ;;;test-me;(mon-insert-lisp-testme nil nil nil)
 
 ;;; ==============================
+;;; LOAD SPECIFIC PROCEDURES IF-NOT-FEATURE-P `mon-utils.el'
+;;; `mon-string-index', `mon-string-upto-index', `mon-string-after-index'
+;;
+(unless (featurep 'mon-utils)
+  (unless (fboundp 'mon-string-index)
+;;; COURTESY: Pascal J. Bourguignon HIS: pjb-strings.el WAS: `string-index'
+(defun mon-string-index (string-to-idx needle &optional frompos)
+  "Return the position in STRING of the beginning of first occurence of NEEDLE.
+Return nil if needle is not found. NEEDLE is a char, number, or string.
+When FROMPOS is non-nil begin search for needle from position. 
+Default is to search from start of string.\n
+EXAMPLE:\n\(mon-string-index \"string before ### string after\" \"###\"\)
+See also; `mon-string-upto-index', `mon-string-after-index',
+`mon-string-position', `mon-string-has-suffix', `mon-string-chop-spaces'.\n►►►"
+  (string-match 
+   (regexp-quote 
+    (cond ((or (characterp needle) (numberp needle)) (format "%c" needle))
+          ((stringp needle) needle)
+          (t (error "string-index expects a needle, number or string as 2nd argument."))))
+   string-to-idx frompos))
+) ;close 1st mon-util's unless
+(unless (fboundp 'mon-string-upto-index)
+;;; CREATED: <Timestamp: #{2009-10-01T15:16:26-04:00Z}#{09404} - by MON KEY>
+(defun mon-string-upto-index (in-string upto-string)
+  "Return substring of IN-STRING UPTO-STRING.
+UPTO-STRING is a simple string. No regexps, chars, numbers, lists, etc.\n
+EXAMPLE:\n\(mon-string-upto-index \"string before ### string after\" \"###\"\)\n
+See also; `mon-string-index', `mon-string-after-index'
+`mon-string-position', `mon-string-has-suffix', `mon-string-chop-spaces'.\n►►►"
+  (substring in-string 0
+             (mon-string-index in-string upto-string)))
+) ;close 2nd mon-util's unless
+(unless (fboundp 'mon-string-after-index)
+;;; CREATED: <Timestamp: #{2009-10-01T15:16:29-04:00Z}#{09404} - by MON KEY>
+(defun mon-string-after-index (in-string after-string)
+  "Return substring of IN-STRING UPTO-STRING.
+UPTO-STRING is a simple string. No regexps, chars, numbers, lists, etc.\n
+EXAMPLE:\n\(mon-string-after-index \"string before ### string after\" \"###\"\)\n
+See also; `mon-string-index', `mon-string-upto-index',
+ `mon-string-position', `mon-string-has-suffix', `mon-string-chop-spaces'.\n►►►"
+(substring in-string 
+           (+ (mon-string-index in-string after-string) (length after-string))))
+)) ;close 3rd mon-util's unless and outer unless
+;;
+;;;test-me;(mon-string-upto-index "string before ### string after" "###")
+;;;test-me;(mon-string-index "string before ### string after" "###")
+;;;test-me;(mon-string-after-index "string before ### string after" "###")
 
 ;;; ==============================
 ;;; TODO:
@@ -632,7 +732,7 @@ Default test-me-cnt is 3 'test-me's.
 When called programmatically INSERTP is non-nil or if called interactively insert
 code template in buffer at point; does not move point.
 Regexp held by global var `*regexp-symbol-defs*'.\n
-See also; `mon-insert-lisp-testme', `mon-test->*regexp-symbol-defs*'. ►►►"
+See also; `mon-insert-lisp-testme', `mon-test->*regexp-symbol-defs*'.\n►►►"
   (interactive "i\ni\ni\np")
   (let* ((the-sym (if fname
                    fname
@@ -671,7 +771,7 @@ See also; `mon-insert-lisp-testme', `mon-test->*regexp-symbol-defs*'. ►►►"
     (if (or intrp insertp)
         (save-excursion (newline) (princ fstring (current-buffer)))
       fstring)))
-
+;;
 ;;;test-me;(mon-insert-doc-help-tail)
 ;;;test-me;(mon-insert-doc-help-tail nil 3)
 ;;;test-me;(mon-insert-doc-help-tail nil nil t)
@@ -718,45 +818,43 @@ See also; `mon-help-xref-symbol-value', `mon-help-parse-interactive-spec'
 
 ;;; ==============================
 ;;; CREATED: <Timestamp: #{2009-09-30T17:22:54-04:00Z}#{09403} - by MON KEY>
-(defvar *mon-help-interactive-spec-alist* nil
+(eval-when-compile
+(defvar *mon-help-interactive-spec-alist*
+  '((a "<FUNCTION-NAME>")
+    (b "<EXISTING-BUFFER-NAME>")
+    (B "<BUFFER-NAME-OR-NON-EXISTING>")
+    (c "<CHARACTER-NO-INPUT-METHOD>")
+    (C "<COMMAND-NAME>")
+    (d "<VALUE-POINT-AS-NUMBER-NO-I/O>")
+    (D "<DIRECTORY-NAME>")
+    (E "<PARAMETRIZED-EVENT>")
+    (f "<EXISTING-FILE-NAME>")
+    (F "<FILE-NAME-OR-NON-EXISTING>")
+    (G "<FILE-NAME-OR-NON-EXISTING-W/DIR-NAME>") 
+    (i "<IGNORED-NOOP>") ;; NO-I/O
+    (K "<KEY-SEQUENCE-DOWNCASE-MAYBE>") ;; (downcase the last event if needed to get a definition).
+    (K "<KEY-SEQUENCE-REDEFINE-NO-DOWNCASE>") ;; (do not downcase the last event).
+    (m "<VALUE-MARK-AS-NUMBER>")              ;; NO-I/O
+    (M "<ANY-STRING-W/INPUT-METHOD>")
+    (N "<NUMBER<-MINIBUFFER>")
+    (N "<NUMERIC-PREFIX-ARG>")
+    (p "<PREFIX-ARG->NUMBER>") ;; NO-I/O
+    (P "<PREFIX-ARG-RAW>")     ;; Does not do I/O. NO-I/O
+    (r "<REGION>")             ;; NO-I/O
+    (s "<ANY-STRING>")         ;; Does not inherit the current input method.
+    (S "<ANY-SYMBOL>")         ;; NO-INPUT-METHOD
+    (U "<MOUSE-UP-EVENT>")     ;; discarded by a previous k or K argument.
+    (v "<VARIABLE-NAME>")
+    (x "<READ-LISP-EXPRESSION-NO-EVALUATE>")
+    (X "<READ-LISP-EXPRESSION-EVALUATE>")
+    (z "<CODING-SYSTEM>")
+    (Z "<CODING-SYSTEM-NIL-NO-PREFIX>"))
   "alist of interactive spec arguments and values.
 Alist key (an intereractive spec letter) maps to shortform spec-type.
 spec-type is a string delimited by `<' and `>'.
 CALLED-BY: FUNCTION: `mon-help-parse-interactive-spec'
 See also; `mon-help-xref-symbol-value', `mon-help-insert-documentation'
-`mon-help-function-spit-doc'.\n►►►")
-;;
-(unless (bound-and-true-p *mon-help-interactive-spec-alist*)
-  (setq *mon-help-interactive-spec-alist* 
-        '((a "<FUNCTION-NAME>")
-          (b "<EXISTING-BUFFER-NAME>")
-          (B "<BUFFER-NAME-OR-NON-EXISTING>")
-          (c "<CHARACTER-NO-INPUT-METHOD>")
-          (C "<COMMAND-NAME>")
-          (d "<VALUE-POINT-AS-NUMBER-NO-I/O>")
-          (D "<DIRECTORY-NAME>")
-          (E "<PARAMETRIZED-EVENT>")
-          (f "<EXISTING-FILE-NAME>")
-          (F "<FILE-NAME-OR-NON-EXISTING>")
-          (G "<FILE-NAME-OR-NON-EXISTING-W/DIR-NAME>") 
-          (i "<IGNORED-NOOP>")       ;; NO-I/O
-          (K "<KEY-SEQUENCE-DOWNCASE-MAYBE>") ;; (downcase the last event if needed to get a definition).
-          (K "<KEY-SEQUENCE-REDEFINE-NO-DOWNCASE>") ;; (do not downcase the last event).
-          (m "<VALUE-MARK-AS-NUMBER>")              ;; NO-I/O
-          (M "<ANY-STRING-W/INPUT-METHOD>")
-          (N "<NUMBER<-MINIBUFFER>")
-          (N "<NUMERIC-PREFIX-ARG>")
-          (p "<PREFIX-ARG->NUMBER>") ;; NO-I/O
-          (P "<PREFIX-ARG-RAW>")     ;; Does not do I/O. NO-I/O
-          (r "<REGION>")             ;; NO-I/O
-          (s "<ANY-STRING>")         ;; Does not inherit the current input method.
-          (S "<ANY-SYMBOL>")         ;; NO-INPUT-METHOD
-          (U "<MOUSE-UP-EVENT>")     ;; discarded by a previous k or K argument.
-          (v "<VARIABLE-NAME>")
-          (x "<READ-LISP-EXPRESSION-NO-EVALUATE>")
-          (X "<READ-LISP-EXPRESSION-EVALUATE>")
-          (z "<CODING-SYSTEM>")
-          (Z "<CODING-SYSTEM-NIL-NO-PREFIX>"))))
+`mon-help-function-spit-doc'.\n►►►"))
 ;;
 ;;;test-me; *mon-help-interactive-spec-alist*
 ;;;test-me;(assoc 'z *mon-help-interactive-spec-alist*)
@@ -782,40 +880,27 @@ See also; `mon-help-xref-symbol-value', `mon-help-insert-documentation'
                                ((listp (cadr int-t)) "<INTERACTIVE-SPEC-IS-LIST>")))))
     int-has-spec))
 ;;
+;; Now put a doc-string on `mon-help-parse-interactive-spec'
+;; using value & docstring of var `*mon-help-parse-interactive-spec-alist*'.
+(eval-and-compile
+(mon-help-put-var-doc-val->func 
+    '*mon-help-interactive-spec-alist*
+    'mon-help-parse-interactive-spec  
+  "\nFNAME is a function name with an interactive spec.
+Spec of fname is return from a value in var `*mon-help-interactive-spec-alist*':\n\n" 
+  "CALLED-BY: FUNCTION: `mon-help-parse-interactive-spec'"
+"\nEXAMPLE:\n\(mon-help-parse-interactive-spec 'mon-insert-lisp-testme\)\n"))
+;;
+;;;test-me;(describe-function 'mon-help-parse-interactive-spec)
 ;;;test-me;(mon-help-parse-interactive-spec  'mon-insert-file-in-dirs)
 ;;;test-me;(mon-help-parse-interactive-spec 'mon-help-reference-sheet)
 ;;;test-me;(mon-help-parse-interactive-spec 'mon-insert-string-n-times)
 ;;;test-me;(mon-help-parse-interactive-spec 'mon-insert-string-n-fancy-times)
 ;;;test-me;(listp (cadr (interactive-form  'mon-insert-file-in-dirs)))
 ;;;test-me;(listp (cadr (interactive-form 'mon-insert-string-n-times)))
-
-;;; ==============================
-;;; CREATED: <Timestamp: #{2009-09-30T19:23:06-04:00Z}#{09403} - by MON KEY>
-;;; Now put a doc-string on `mon-help-parse-interactive-spec'
-;;; using value & docstring of var `*mon-help-parse-interactive-spec-alist*'.
-(put 'mon-help-parse-interactive-spec 'function-documentation
-     (let* ((chop-var
-             (split-string 
-              (plist-get (symbol-plist '*mon-help-interactive-spec-alist*) 'variable-documentation)
-              "CALLED-BY: FUNCTION: `mon-help-parse-interactive-spec'"))
-            (hd-chop (car chop-var))
-            (tl-chop (cadr chop-var))
-            (splc-chop)
-            (out-chop))
-       (setq splc-chop
-             (with-temp-buffer 
-               (insert-char 32 1)
-               (save-excursion (pp *mon-help-interactive-spec-alist* (current-buffer)))
-               (indent-pp-sexp)
-               (buffer-substring-no-properties (buffer-end 0) (buffer-end 1))))
-       (setq splc-chop 
-             (concat 
-              hd-chop 
-              "\nAlist is held by the variable `*mon-help-interactive-spec-alist*'\n\n"
-              splc-chop 
-              tl-chop))))
 ;;
-;;;test-me;(describe-function 'mon-help-parse-interactive-spec)
+;;;(progn (fmakunbound 'mon-help-parse-interactive-spec) 
+;;;       (unintern 'mon-help-parse-interactive-spec))
 
 ;;; ==============================
 ;;; TODO:
@@ -1302,7 +1387,7 @@ See also `mon-help-regexp-syntax'. ►►► \n
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-search-functions :insertp t)
     (message "pass non-nil for optional arg INTRP")))
-
+;;
 ;;;test-me;(mon-help-search-functions)
 ;;;test-me;(mon-help-search-functions t)
 ;;;test-me;(call-interactively 'mon-help-search-functions)
@@ -1417,8 +1502,9 @@ See also `mon-help-regexp-syntax'. ►►► \n
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-buffer-functions :insertp t)
     (message "pass non-nil for optional arg INTRP")))
-
+;;
 ;;;test-me;(describe-function 'mon-help-buffer-functions)
+
 ;;; ==============================
 ;;; File/directory name functions.
 ;;; CREATED: <Timestamp: Wednesday May 06, 2009 @ 01:13.41 PM - by MON KEY>
@@ -1495,7 +1581,7 @@ See also `mon-help-regexp-syntax'. ►►► \n
 (if (or insertp intrp)
     (mon-help-function-spit-doc 'mon-help-file-dir-functions :insertp t)
   (message "pass non-nil for optional arg INTRP")))
-
+;;
 ;;;test-me;(mon-help-file-dir-functions)
 ;;;test-me;(mon-help-file-dir-functions t)
 ;;;test-me;(call-interactively 'mon-help-file-dir-functions)
@@ -1595,7 +1681,7 @@ Unless indicated as a 'variable' items listed are functions.\n►►►\n
   (interactive "i\np")
     (mon-help-function-spit-doc 'mon-help-xml-functions :insertp t)
   (message "pass non-nil for optional arg INTRP"))
-
+;;
 ;;;test-me;(mon-help-xml-functions t)
 
 ;;; ==============================
@@ -1681,7 +1767,7 @@ See info node `(elisp)Read and Print'. ►►►\n
   (if (or insrtp intrp)
       (mon-help-function-spit-doc 'mon-help-read-functions :insertp t)
     (message "pass non-nil for optional arg INTRP")))
-
+;;
 ;;;test-me;(mon-help-read-functions)
 ;;;test-me;(mon-help-read-functions t)
 ;;;test-me;(describe-function 'mon-help-read-functions)
@@ -1836,7 +1922,7 @@ EXAMPLE-THEME:\n
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-faces :insertp t)
     (message "pass non-nil for optional arg INTRP")))
-
+;;
 ;;;test-me(mon-help-faces-themes t)
 
 ;;; ==============================
@@ -2001,7 +2087,7 @@ from one of the basic-faces this practice is encouraged. See for example;
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-basic-faces :insertp t)
     (message "pass non-nil for optional arg INTRP")))
-
+;;
 ;;;test-me(mon-help-basic-faces t)
 ;;;test-me(describe-function 'mon-help-basic-faces)
 
@@ -2059,7 +2145,7 @@ cases of text, and how to highlight those cases:
 (if (or insertp intrp)
     (mon-help-function-spit-doc 'mon-help-font-lock :insertp t)
   (message "pass non-nil for optional arg INTRP")))
-
+;;
 ;;;test-me;(mon-help-font-lock)
 ;;;test-me;(mon-help-font-lock t)
 ;;;test-me;(call-interactively 'mon-help-font-lock)
@@ -2111,7 +2197,7 @@ See info node `(elisp)Text Properties' and FILE: textprop.c ►►►
   (if (or insrtp intrp)
       (mon-help-function-spit-doc 'mon-help-text-property-functions :insertp t)
     (message "pass non-nil for optional arg INTRP")))
-
+;;
 ;;;test-me;(mon-help-text-property-functions)
 ;;;test-me;(mon-help-text-property-functions t)
 ;;;test-me;(describe-function 'mon-help-text-property-functions)
@@ -2159,7 +2245,7 @@ The optimizable special cases are:
       (save-excursion
         (mon-help-function-spit-doc 'mon-help-text-property-stickyness :insertp t))
     (message "pass non-nil for optional arg INTRP")))
-
+;;
 ;;;test-me;(mon-help-text-property-stickyness)
 ;;;test-me;(mon-help-text-property-stickyness t)
 ;;;test-me;(call-interactively 'mon-help-text-property-stickyness)
@@ -2194,7 +2280,7 @@ The optimizable special cases are:
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-color-functions :insertp t)
     (message "pass non-nil for optional arg INTRP")))
-
+;;
 ;;;test-me(mon-help-color-functions t)
 ;;;test-me(describe-function 'mon-help-color-functions)
 
@@ -2348,7 +2434,7 @@ Chart prepared by Tay Vaughan, July, 1996. Timestream, Inc. ►►►\n
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-color-chart :insertp t)
     (message "pass non-nil for optional arg INTRP")))
-
+;;
 ;;;test-me;(mon-help-color-chart)
 ;;;test-me;(mon-help-color-chart t)
 ;;;test-me;(call-interactively 'mon-help-color-chart)
@@ -2391,7 +2477,7 @@ Chart prepared by Tay Vaughan, July, 1996. Timestream, Inc. ►►►\n
 (if (or insertp intrp)
     (mon-help-function-spit-doc 'mon-help-easy-menu :insertp t)
   (message "pass non-nil for optional arg INTRP")))
-
+;;
 ;;;test-me;(mon-help-easy-menu)
 ;;;test-me;(mon-help-easy-menu t)
 ;;;test-me;(call-interactively 'mon-help-easy-menu)
@@ -2498,7 +2584,7 @@ Chart prepared by Tay Vaughan, July, 1996. Timestream, Inc. ►►►\n
 (if (or insertp intrp)
     (mon-help-function-spit-doc 'mon-help-widgets :insertp t)
   (message "pass non-nil for optional arg INTRP")))
-
+;;
 ;;;test-me;(mon-help-widgets)
 ;;;test-me;(mon-help-widgets t)
 ;;;test-me;(call-interactively 'mon-help-widgets)
@@ -2516,9 +2602,7 @@ U+0180 - U+024F -> Latin Extended-B;\n\(URL `http://www.decodeunicode.org/en/lat
 Character table for reverting ISO_8859-1 bytes -> UTF-8\n
 \(URL `http://en.wikipedia.org/wiki/ISO_8859-1'\)
 \(URL `http://en.wikipedia.org/wiki/ISO/IEC_8859'\)\n
-See also; (URL `http://unicode.coeurlumiere.com/')\n
-ECMA-094 code-tables:\n\(find-file \(concat mon-naf-mode-notes
-                   \"/Ecma-094-8bit-single-byte-chars-iso-latin-1thru4.pdf\"\)\) ►►► \n
+See also; (URL `http://unicode.coeurlumiere.com/')\n►►►\n
 ================
 à À - C-x 8 ` a
 á Á - C-x 8 ' a
@@ -2631,7 +2715,7 @@ ECMA-094 code-tables:\n\(find-file \(concat mon-naf-mode-notes
 		 (longlines-mode t)	;
 	       (setq test-llm nil)))))))
       (message "pass non-nil for optional arg INTRP")))
-
+;;
 ;;;test-me;(mon-help-diacritics)
 ;;;test-me;(mon-help-diacritics t)
 ;;;test-me;(describe-function 'mon-help-diacritics)
@@ -3044,12 +3128,12 @@ tar -czvf dir-name.tar.gz dir-name \n ►►►"
 for f in *.html.tmp; do
  base=`basename $f .html.tmp`
  mv $f $base.html
-done \n ►►►"
+done \n►►►"
 (interactive "i\nP")
 (if (or insertp intrp)
     (mon-help-function-spit-doc 'mon-help-rename-incantation :insertp t)
   (message "pass non-nil for optional arg INTRP")))
-
+;;
 ;;;test-me(mon-help-rename-incantation t)
 ;;;test-me(mon-help-rename-incantation)
 ;;;test-me;(call-interactively 'mon-help-rename-incantation)
@@ -3076,7 +3160,7 @@ M-x shell\install-info  info-file  \"/usr/info/dir\". ►►►"
           (t "\nM-x shell\install-info  info-file  \"/path/to/info/dir\""))))
       (princ info-incantation (current-buffer)))
     (message "pass non-nil for optional arg INTRP")))
-
+;;
 ;;;test-me;(mon-help-install-info-incantation t)
 ;;;test-me;(mon-help-install-info-incantation t)
 ;;;test-me;(call-interactively 'mon-help-tar-incantation)
@@ -3092,12 +3176,12 @@ EXAMPLE:
      \(format \"This is a %-9s.\\nThis is a %9s.\\nThis is a %s %4s.\" x x x y\)\)
 ;; =>This is a test     .
 ;;   This is a      test.
-;;   This is a test     .\n ►►►"
+;;   This is a test     .\n►►►"
 (interactive "i\nP")
 (if (or insertp intrp)
     (mon-help-function-spit-doc 'mon-help-format-width :insertp t)
   (message "pass non-nil for optional arg INTRP")))
-
+;;
 ;;;test-me;(mon-help-format-width t)
 ;;;test-me;(mon-help-format-width)
 ;;;test-me;(call-interactively 'mon-help-format-width)
@@ -3111,154 +3195,159 @@ EXAMPLE:
 ;;; MODIFICATIONS: <Timestamp: #{2009-08-26T17:36:47-04:00Z}#{09353} - by MON KEY>
 (defun mon-index-elisp-symbol ()
   "Find TOPIC in the indices of the Emacs Lisp Reference Manual.\n
-EXAMPLE:\n\(elisp-index-search \"setq\") ►►►"
+EXAMPLE:\n\(elisp-index-search \"setq\")\n►►►"
   (interactive)
   (let ((topic (symbol-name (symbol-at-point))))
     (setq topic (read-string (format "Subject to look up <%s>: " topic) nil nil topic))
     (info "elisp")
     (Info-index topic)))
-
+;;
 ;;;test-me;(elisp-index-search "setq")
 
 ;;; ==============================
+;;; MODIFICATIONS: <Timestamp: #{2009-10-01T22:22:37-04:00Z}#{09405} - by MON KEY>
 ;;; CREATED: <Timestamp: Thursday July 02, 2009 @ 11:50.50 AM - by MON KEY>
-(defvar *w32-env-variables-alist* nil
+(eval-when-compile
+(defvar *w32-env-variables-alist* 
+  '((ALLUSERSPROFILE %ALLUSERSPROFILE%
+     "Local returns the location of the All Users Profile.")
+    (APPDATA %APPDATA%
+     "Local returns the location where applications store data by default.")
+    (CD %CD%
+     "Local returns the current directory string.")
+    (CMDCMDLINE %CMDCMDLINE%
+     "Local returns the exact command line used to start the current cmd.exe")
+    (CMDEXTVERSION %CMDEXTVERSION%
+     "System returns the version number of the current Command Processor Extensions.")
+    (COMPUTERNAME %COMPUTERNAME%
+     "System returns the name of the computer.")
+    (COMSPEC %COMSPEC%
+     "System returns the exact path to the command shell executable.")
+    (DATE %DATE%
+     "System returns the current date. This variable uses the same format as the date /t command. Cmd.exe generates this variable. For more information about the date command, see the Date command.")
+    (ERRORLEVEL %ERRORLEVEL%
+     "System returns the error code of the most recently used command. A non-0 value usually indicates an error.")
+    (HOMEDRIVE %HOMEDRIVE%
+     "System returns which local workstation drive letter is connected to the user's home directory. This variable is set based on the value of the home directory. The user's home directory is specified in Local Users and Groups.")
+    (HOMEPATH %HOMEPATH%
+     "System returns the full path of the user's home directory. This variable is set based on the value of the home directory. The user's home directory is specified in Local Users and Groups.")
+    (HOMESHARE %HOMESHARE%
+     "System returns the network path to the user's shared home directory. This variable is set based on the value of the home directory. The user's home directory is specified in Local Users and Groups.")
+    (LOGONSERVER %LOGONSERVER%
+     "Local returns the name of the domain controller that validated the current logon session.")
+    (NUMBER_OF_PROCESSORS %NUMBER_OF_PROCESSORS%
+     "System specifies the number of processors installed on the computer.")
+    (OS %OS%
+     "System returns the OS name. Windows XP and Windows 2000 display the OS as Windows_NT.")
+    (PATH %PATH%
+     "System specifies the search path for executable files")
+    (PATHEXT %PATHEXT%
+     "System returns a list of the file extensions that the OS considers to be executable.")
+    (PROCESSOR_ARCHITECTURE %PROCESSOR_ARCHITECTURE%
+     "System returns the processor's chip architecture. Values: x86, IA64.")
+    (PROCESSOR_IDENTIFIER %PROCESSOR_IDENTIFIER%
+     "System returns a description of the processor.")
+    (PROCESSOR_LEVEL %PROCESSOR_LEVEL%
+     "System returns the model number of the computer's processor.")
+    (PROCESSOR_REVISION %PROCESSOR_REVISION%
+     "System returns the revision number of the processor.")
+    (PROMPT %PROMPT%
+     "Local returns the command-prompt settings for the current interpreter. Cmd.exe generates this variable.")
+    (RANDOM %RANDOM%
+     "System returns a random decimal number between 0 and 32767. Cmd.exe generates this variable.")
+    (SYSTEMDRIVE %SYSTEMDRIVE%
+     "System returns the drive containing the Windows root directory (i.e., the system root.")
+    (SYSTEMROOT %SYSTEMROOT%
+     "System returns the location of the Windows root directory.")
+    (TEMP %TEMP%
+     "System and User return the default temporary directories for applications that are available to users who are currently logged on. Some applications require TEMP and others require TMP.")
+    (TMP %TMP%
+     "System and User return the default temporary directories for applications that are available to users who are currently logged on. Some applications require TEMP and others require TMP.")
+    (TIME %TIME%
+     "System returns the current time. This variable uses the same format as the time /t command. Cmd.exe generates this variable. For more information about the time command. See also; the Time command.")
+    (USERDOMAIN %USERDOMAIN%
+     "Local returns the name of the domain that contains the user's account.")
+    (USERNAME %USERNAME%
+     "Local returns the name of the user currently logged on.")
+    (USERPROFILE %USERPROFILE%
+     "Local returns the location of the profile for the current user.")
+    (WINDIR %WINDIR%
+     "System returns the location of the OS directory.")
+    ("Program Files" %PROGRAMFILES%
+     "Returns the location of the default install directory for applications."))
   "*List of environment variables available in w32.
-CALLED-BY: `mon-help-w32-env'.")
+CALLED-BY: `mon-help-w32-env'."))
 ;;
-(when (not (bound-and-true-p *w32-env-variables-alist*))
-  (setq *w32-env-variables-alist*
- '((ALLUSERSPROFILE %ALLUSERSPROFILE%
-    "Local returns the location of the All Users Profile.")
-   (APPDATA %APPDATA%
-    "Local returns the location where applications store data by default.")
-   (CD %CD%
-    "Local returns the current directory string.")
-   (CMDCMDLINE %CMDCMDLINE%
-    "Local returns the exact command line used to start the current cmd.exe")
-   (CMDEXTVERSION %CMDEXTVERSION%
-    "System returns the version number of the current Command Processor Extensions.")
-   (COMPUTERNAME %COMPUTERNAME%
-    "System returns the name of the computer.")
-   (COMSPEC %COMSPEC%
-    "System returns the exact path to the command shell executable.")
-   (DATE %DATE%
-    "System returns the current date. This variable uses the same format as the date
-/t command. Cmd.exe generates this variable. For more information about the date
-command, see the Date command.")
-   (ERRORLEVEL %ERRORLEVEL%
-    "System returns the error code of the most recently used command. A non-0 value
-usually indicates an error.")
-   (HOMEDRIVE %HOMEDRIVE%
-    "System returns which local workstation drive letter is connected to the user's
-home directory. This variable is set based on the value of the home
-directory. The user's home directory is specified in Local Users and Groups.")
-   (HOMEPATH %HOMEPATH%
-    "System returns the full path of the user's home directory. This variable is set
-based on the value of the home directory. The user's home directory is specified
-in Local Users and Groups.")
-   (HOMESHARE %HOMESHARE%
-    "System returns the network path to the user's shared home directory. This
-variable is set based on the value of the home directory. The user's home
-directory is specified in Local Users and Groups.")
-   (LOGONSERVER %LOGONSERVER%
-    "Local returns the name of the domain controller that validated the current logon
-session.")
-   (NUMBER_OF_PROCESSORS %NUMBER_OF_PROCESSORS%
-    "System specifies the number of processors installed on the computer.")
-   (OS %OS%
-    "System returns the OS name. Windows XP and Windows 2000 display the OS as
-Windows_NT.")
-   (PATH %PATH%
-    "System specifies the search path for executable files")
-   (PATHEXT %PATHEXT%
-    "System returns a list of the file extensions that the OS considers to be
-executable.")
-   (PROCESSOR_ARCHITECTURE %PROCESSOR_ARCHITECTURE%
-    "System returns the processor's chip architecture. Values: x86, IA64.")
-   (PROCESSOR_IDENTIFIER %PROCESSOR_IDENTIFIER%
-    "System returns a description of the processor.")
-   (PROCESSOR_LEVEL %PROCESSOR_LEVEL%
-    "System returns the model number of the computer's processor.")
-   (PROCESSOR_REVISION %PROCESSOR_REVISION%
-    "System returns the revision number of the processor.")
-   (PROMPT %PROMPT%
-    "Local returns the command-prompt settings for the current interpreter. Cmd.exe
-generates this variable.")
-   (RANDOM %RANDOM%
-    "System returns a random decimal number between 0 and 32767. Cmd.exe generates
-this variable.")
-   (SYSTEMDRIVE %SYSTEMDRIVE%
-    "System returns the drive containing the Windows root directory (i.e., the system
-root.")
-   (SYSTEMROOT %SYSTEMROOT%
-    "System returns the location of the Windows root directory.")
-   (TEMP %TEMP%
-    "System and User return the default temporary directories for applications that
-are available to users who are currently logged on. Some applications require
-TEMP and others require TMP.")
-   (TMP %TMP%
-    "System and User return the default temporary directories for applications that
-are available to users who are currently logged on. Some applications require
-TEMP and others require TMP.")
-   (TIME %TIME%
-    "System returns the current time. This variable uses the same format as the time
-/t command. Cmd.exe generates this variable. For more information about the time
-command. See also; the Time command.")
-   (USERDOMAIN %USERDOMAIN%
-    "Local returns the name of the domain that contains the user's account.")
-   (USERNAME %USERNAME%
-    "Local returns the name of the user currently logged on.")
-   (USERPROFILE %USERPROFILE%
-    "Local returns the location of the profile for the current user.")
-   (WINDIR %WINDIR%
-    "System returns the location of the OS directory.")
-   ("Program Files" %PROGRAMFILES%
-    "Returns the location of the default install directory for applications."))))
-
 ;;;test-me;(assoc 'TMP *w32-env-variables-alist*)
 ;;;test-me;(car (assoc 'TMP *w32-env-variables-alist*))
 ;;;test-me;(cadr (assoc 'TMP *w32-env-variables-alist*))
 ;;;test-me;(caddr (assoc 'TMP *w32-env-variables-alist*))
 ;;;test-me;(assoc "Program Files" *w32-env-variables-alist*)
 ;;;test-me;(mapcar (lambda (x) (car x))*w32-env-variables-alist*)
-;;;(unintern '*w32-env-variables-alist*)
+;;
+;;;(progn (makunbound '*w32-env-variables-alist*)(unintern '*w32-env-variables-alist*))
 
 ;;; ==============================
+;;; MODIFICATIONS: <Timestamp: #{2009-10-01T22:22:37-04:00Z}#{09405} - by MON KEY>
 ;;; CREATED: <Timestamp: Thursday July 02, 2009 @ 11:50.50 AM - by MON KEY>
 (defun mon-help-w32-env (&optional insertp intrp)
   (interactive "i\nP")
-(let ((print-var-list
-       (mapconcat
-        (lambda (x)
-          (let* ((k (car x))
-                 (v (cdr (assoc k *w32-env-variables-alist*)))
-                 (v-var (car v))
-                 (v-doc (cadr v)))
-            (format "-\n%s %s \n%s" k v-var v-doc)))
-        *w32-env-variables-alist* "\n")))
-  (plist-put
-   (symbol-plist 'mon-help-w32-env)
-   'function-documentation
-   (concat
-    "Environment variables available in w32.
-Environmental variables accessible as alist in var `*w32-env-variables-alist*'.
-Called interactively with Prefix arg non-nil prints to current-buffer.
-List of the environment variables callable in w32.\n
-Sourced from: \(URL `http://windowsitpro.com/article/articleid/23873/')\n
-and \(URL `http://technet.microsoft.com/en-us/library/bb490954.aspx'\)\n
-EXAMPLE: Open a cmd prompt and type echo %appdata% which should return
-the full path to your profile's Application Data directory.
-If calling from a batch file remember to quote the thusly %variable%
-or set VARIABLE=value. ►►►"
-    print-var-list)))
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-w32-env :insertp t)
     (message "pass non-nil for optional arg INTRP")))
-
-;To see the current value of a particular variable, use:
-
+;; Now we tack on a docstring using.
+(eval-and-compile
+(mon-help-put-var-doc-val->func 
+   '*w32-env-variables-alist*
+    'mon-help-w32-env
+  ;; PRE-V-STR
+"Environment variables available in w32.
+Called interactively with Prefix arg non-nil prints to current-buffer.\n\n---
+alist of W32 Environmental variables in var `*w32-env-variables-alist*':\n\n"
+;; CUT-V-STR
+"\*List of environment variables available in w32.
+CALLED-BY: `mon-help-w32-env'."
+;; PST-V-STR
+"\n\nEXAMPLE:\n(assoc 'WINDIR *w32-env-variables-alist*)\n
+EXAMPLE-INVOCATION:
+Open a cmd prompt and type echo %appdata% which should return
+the full path to your profile's Application Data directory.
+If calling from a batch file remember to quote the thusly %variable%
+or set VARIABLE=value.\n
+SOURCE:\n\(URL `http://windowsitpro.com/article/articleid/23873/')
+\(URL `http://technet.microsoft.com/en-us/library/bb490954.aspx'\)\n►►►"))
+;;
 ;;;test-me;(mon-help-w32-env t)
+;;
+;;;(progn (fmakunbound 'mon-help-w32-env)(unintern 'mon-help-w32-env))
+;;;       
+
+;;; ==============================
+;;; WAS:
+;;; (let ((print-var-list
+;;;        (mapconcat
+;;;         (lambda (x)
+;;;           (let* ((k (car x))
+;;;                  (v (cdr (assoc k *w32-env-variables-alist*)))
+;;;                  (v-var (car v))
+;;;                  (v-doc (cadr v)))
+;;;             (format "-\n%s %s \n%s" k v-var v-doc)))
+;;;         *w32-env-variables-alist* "\n")))
+;;;   (plist-put
+;;;    (symbol-plist 'mon-help-w32-env)
+;;;    'function-documentation
+;;;    (concat
+;;;     "Environment variables available in w32.
+;;; Environmental variables accessible as alist in var `*w32-env-variables-alist*'.
+;;; Called interactively with Prefix arg non-nil prints to current-buffer.
+;;; List of the environment variables callable in w32.\n
+;;; Sourced from: \(URL `http://windowsitpro.com/article/articleid/23873/')\n
+;;; and \(URL `http://technet.microsoft.com/en-us/library/bb490954.aspx'\)\n
+;;; EXAMPLE: Open a cmd prompt and type echo %appdata% which should return
+;;; the full path to your profile's Application Data directory.
+;;; If calling from a batch file remember to quote the thusly %variable%
+;;; or set VARIABLE=value.\n►►►\n\n"
+;;;     print-var-list)))
 
 ;;; ==============================
 ;;; COURTESY: Aaaron Hawley  HIS:

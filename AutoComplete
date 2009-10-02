@@ -233,8 +233,9 @@ P.S. I apologize for extra patch on auto-complete.el, it wasn't required. To tho
 [new]
 Thanks so much! I fixed the problem and commit to the repository. Please check it in the project page.
 --[[Matsuyama]]
-
-
+----
+[new]
+What about completion with candidates from other buffers? I've tried to add ac-source-words-in-all-buffer to ac-sources, but that didn't give any effect :(
 
 ----
 CategoryCompletion

@@ -70,5 +70,7 @@ The efforts of `clean-buffer-list' are logged in the ##*Messages*## buffer.  It 
     [2009-07-23 12:36:32] `*info*' [136 3600]
     [2009-07-23 12:36:32] `*Help*' [1 3600]
 
+As of 2009-10-02, DeskTop mode does not preserve the value of `buffer-display-time' for buffers, so the buffer's "age" is effectively restarted.  This means that buffers restored by a Desktop sessions are considered "new" by `clean-buffer-list', even though they would probably be considered "old" by the user.  Probably the best solution would only keep preserve the age -- difference from the current -- and not the actual date.  A solution that kept track of the absolute values of `buffer-display-time' would be hazardous because a Desktop session restored even only a day later would produce buffers that seem very old to `clean-buffer-list'.
+
 ----
 CategoryBufferSwitching

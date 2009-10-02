@@ -3,6 +3,9 @@ It works well with Emacs 21+ and will be included in Emacs 23; unfortunately it
 won't run on Emacs 20 or XEmacs [http://www.thaiopensource.com/nxml-mode/] as
 it currently requires some specific features of the recent GNU Emacsen (however
 this is being worked on, see for instance [http://permalink.gmane.org/gmane.emacs.devel/97623]).
+
+As of 2009-09-18, the next release of Emacs will make nXML the default mode for XML files instead of XmlMode.[http://lists.gnu.org/archive/html/emacs-devel/2009-09/msg00533.html]
+
 Please send bug reports to the Emacs maintainers
 (possibly first discussing the problem on the emacs-nxml-mode mailing lists
 where you can find people who know this mode very well).
@@ -10,9 +13,10 @@ where you can find people who know this mode very well).
 Note that nxml-mode is incompatible with MuleUCS.
 This is not a problem if you are using Emacs 22 where mule-ucs is not necessary.
 
-Note: NxhtmlMode is a mode derived from nxml-mode,
+* NxmlModeForXHTML
+* UsingNxmlModeWithDocBook
+* NxhtmlMode is a mode derived from nxml-mode,
 specialized for editing XHTML and template languages like php, genshi etc.
-
 
 External links:
 * [http://www.thaiopensource.com/nxml-mode/ nxml-mode home page]
@@ -23,13 +27,7 @@ Comments:
 
 : "It's a milestone in that it's the first open-source editing application to enable context-sensitive validated editing against Relax NG schemas. It also provides a clever mechanism for real-time, automatic visual identification of validity errors, along with flexible syntax-highlighting capabilities -- and many other features planned for future releases." -- Michael Smith [http://www.xmlhack.com/read.php?item=2061]
 
-The Text Encoding Initiative distribution of emacs will be of interest to (among others) Windows users who don't want to compile a recent release of emacs just to get %%NxmlMode%% to run: 
-
-
-* http://wiki.tei-c.org/index.php/TEIEmacs
-
 ''''Note'''' the colorization (font-lock) won't work if you change the emacs colors.
-
 
 == Finding Schemas ==
 
@@ -66,9 +64,7 @@ and add
 }}}
 if you would like to edit html files in nxml-mode.
 
-
-=== Discussion  ===
-
+[new]
 If you have xml files for which the first element is html, you end up in html mode instead of nxml mode.  This is because of the default magic-mode-alist.
 
 I don't know how to write elisp to remove html-mode from magic-mode-alist, but
@@ -76,7 +72,7 @@ I don't know how to write elisp to remove html-mode from magic-mode-alist, but
    (fset 'html-mode 'nxml-mode)
 }}}
 does the job.  This works if you never edit html in emacs with anything other than nxml-mode. -- DougRansom
-
+[new]
 This 
 
     ;;; Use nxml-mode instead of sgml, xml or html mode.
@@ -177,9 +173,6 @@ I found this to be a bit of a problem so I wrote '''fmode.el'''.
 This changes auto-mode-alist and magic-mode-alist in a simple way.
 It is available as a part of NxhtmlMode.
 
-
-
-
 == Additions ==
 
 === Editing rnc Schemas ===
@@ -190,17 +183,12 @@ On emacs-nxml-mode@yahoogroups.com mailing list Paul Brown wrote about rnc-mode:
 I have been using rnc-mode (see http://www.pantor.com/download.html) to edit the (.rnc) files (highlighting, mostly)
 and the nxml-mode to load and validate the RNC.
 
-=== Edit XML Fragments ==
+=== Edit XML Fragments ===
 
 If you want to edit XML fragments and still use the validation in nxml-mode you can try NxhtmlMode.
 This is used for example when editing PHP.
 The framework for this is general, but it requires a bit elisp skill to use it for fragment of other XML DTDs than XHTML.
 
-
-
-
-
-== Problems ==
 === Spelling ===
 
 Switch to XmlMode and use the tools menu.
@@ -214,7 +202,7 @@ Spelling is not a problem anymore: to use flyspell, add the following to your .e
 ...and use flyspell-prog-mode, not flyspell-mode.
 
 
-=== Variable binding depth exceeds max-specpdl-size on nxml-mode-20041004 ===
+== Variable binding depth exceeds max-specpdl-size on nxml-mode-20041004 ==
 
 I'm getting the following backtrace when opening any nxml-mode file:
 
@@ -263,17 +251,13 @@ Labels and inputs in forms are incorrectly flagged as invalid.  In this valid sa
 </html>
 </pre>
 
-Lucas
-
+-- Lucas
+[new]
 This is an error in nxml-mode, which doesn't have a schema to validate XHTML Transitional.  It can be fixed with a custom schema.  The workaround is documented at http://tech.groups.yahoo.com/group/emacs-nxml-mode/message/1887
 
-Lucas
+-- Lucas
+[new]
 
 ----
-See also: 
-NxhtmlMode,
-NxmlModeForXHTML,
-UsingNxmlModeWithDocBook,
-XmlMode,
-MarkupModes,
+MarkupModes
 CategoryXML

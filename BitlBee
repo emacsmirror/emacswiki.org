@@ -163,5 +163,7 @@ I know it really is an ugly hack, because it supposes that you make all your con
 
 : At least in BitlBee 1.0.1, another way to get SSL-encrypted Jabber is to add the account like <tt>account add username@server.net password server.net:ssl</tt>. I used this to access Google Talk which IIRC requires SSL. ~[http://ipo.iki.fi Ilkka]
 
+:: BitlBee 1.2: use <tt>account set</tt>
+
 ----
 CategoryChatClient

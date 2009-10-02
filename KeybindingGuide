@@ -3,9 +3,11 @@ keybinding than you ever wanted to know.
 
 * http://www.nongnu.org/emacs-tiny-tools/keybindings/
 
-: "<b>Very easy way: just go and use <tt>M-x global-set-key</tt></b>
-
-: ...and hit the keys you want. Then go back and recall that previous command with <tt>C-x ESC ESC</tt> and copy the output you see, and there is the full lisp command which does the binding.
+Very easy way:
+* use <tt>M-x global-set-key</tt></b>
+* hit the '''[[key sequence]]''' you want do bind
+* type the command to be bound to the key sequence
+* recall that previous command with <tt>C-x ESC ESC</tt> and copy the output you see, and there is the full lisp command which does the binding.
 
 : This will show you <tt>[C-c C-S-f1]</tt> when you bind the key.but when you recall the command it may shrink to <tt>[3 C-S-f1]</tt>, so this method is not completely perfect."
 

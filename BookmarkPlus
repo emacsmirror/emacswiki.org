@@ -1,0 +1,96 @@
+== Bookmark+ ==
+
+
+This page is about library '''<tt>[[bookmark+.el]]</tt>''', which enhances vanilla Emacs [[bookmark]]s in several ways. 
+
+The internal bookmark format (data structure) used by '''Bookmark+''' is compatible with that of vanilla GnuEmacs. It extends that structure in new ways, to accommodate new bookmark types.
+
+
+
+=== Bookmark Any Buffer, Not Just a File ===
+
+In vanilla Emacs, you can bookmark a position in any file, including files of special types, such as [[InfoMode|Info]], DocView (PDF), an image, or a [[Gnus]] article.
+
+With '''Bookmark+''', you can also bookmark a position (or a region -- see [[#BookmarkRegion]], below) in ''any'' buffer. When you jump to such a non-file bookmark, an attempt is made to re-create the buffer if it is not already open.
+
+
+
+[:BookmarkRegion]
+=== Regions, Not Just Single Positions ===
+
+A vanilla Emacs bookmark records a single position somewhere. With '''Bookmark+''', you can record a [[region]], that is, two positions (in the same document). If the region is active (and non-empty) when you set a bookmark, then the region information is automatically saved as part of the bookmark.
+
+When you then jump to a bookmark that records a region, the region is activated automatically, provided user option '''`bookmark-use-region-flag'''' is non-`nil' (which it is by default). You can also flip the option value temporarily when you visit a bookmark, by using a [[prefix argument]].
+
+
+
+=== Better Bookmark Relocation, Saving Updated Location ===
+
+Just as is the case for vanilla Emacs bookmarks, '''Bookmark+''' relocates bookmark positions when you visit them, if they have moved because the surrounding text has changed since they were recorded. This applies also to bookmarks with regions (two positions).
+
+This relocation is more robust than the relocation for vanilla Emacs bookmarks: the new location is found correctly more often. In the case of a bookmark with a region, the region text, like the surrounding text, can be modified and the bookmark will typically be relocated correctly. 
+
+By default, when you visit a bookmark that requires relocation, the bookmark is then saved with the new, relocated position information. If you want to turn off this automatic saving, just customize user option '''`bookmark-save-new-location-flag'''' to `nil'.
+
+
+
+=== Highlighting of Different Bookmark Types ===
+
+In '''Bookmark+'''', different types of bookmarks are highlighted differently in the bookmark list (`bookmark-bmenu-list', `C-x r l'). Highlighting is different for each of the following bookmark types, to help you distinguish them:
+
+* non-file buffers
+* local files with regions
+* local files without regions
+* local directories
+* remote files or directories
+* remote files or directories that must be accessed by `su' or `sudo' (`root')
+* w3m URLs
+* Info nodes
+* Gnus articles
+
+Bookmarked remote files or directories that must be accessed using `su' or `sudo' are highlighted specially (red, by default) before you access them. After they are accessed, they are highlighted like other remote files or directories.
+
+
+
+=== Bookmark List Filtering ===
+
+In the bookmark list (`C-x r l'), you can selectively show only bookmarks of different types, using these keys:
+
+* `F' -- Show only file bookmarks. With a prefix argument, hide bookmarked remote files and directories that must be accessed using `su' or `sudo'.
+
+* `R' -- Show only bookmarks with region information.
+
+* `I' -- Show only Info bookmarks.
+
+* `G' -- Show only Gnus bookmarks.
+
+* `W' -- Show only W3M bookmarks.
+
+* `A' -- Show all bookmarks (all types).
+
+
+
+=== Use Any Emacs Version ===
+
+'''Bookmark+''' fixes things so you can use bookmarks that were created with any Emacs version in any other Emacs version. In particular, it lets you use Emacs prior to release 23 with bookmarks created using Emacs 23 (or created using any older version).
+
+
+=== Gnus, W3M ===
+
+* '''Bookmark+''' lets you use the normal bookmarking commands to bookmark Gnus articles -- no need for special Gnus-specific key bindings. Also, the same bookmark data structure (in ##.emacs.bmk##) is used to store Gnus bookmarks. Note: Gnus article bookmarks do not record region information.
+
+* '''Bookmark+''' lets you bookmark URLs when you use W3M. By default, a new tab is opened for each such bookmark you visit, but you can alternatively open a separate W3M session for each visited bookmark.
+
+
+=== Take Advantage of Icicles ===
+
+If you also use '''[[Icicles]]''', then '''Bookmark+''' lets you use `S-delete' during completion to ''delete'' selected bookmarks on the fly.  That is, whenever you are asked for a bookmark name by any bookmark command, you can cycle among the completion candidates and hit `S-delete' to delete the bookmark whose name is the current candidate.  You can delete any number of bookmarks this way, during a single invocation of a bookmark command.
+
+See also '''Icicles''' command `icicle-bookmark', which lets you navigate among bookmarks.  It too lets you use `S-delete' to delete bookmarks on the fly.
+
+
+----
+CategoryHypermedia CategoryPersistence
+
+
+

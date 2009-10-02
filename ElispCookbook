@@ -14,10 +14,9 @@ There's going to be some overlap with CategoryCode, obviously. Just
 link to more elaborate pages when appropriate. Should this page grow
 too large, we'll split it up later.
 
-
 == Strings ==
 
-=== Strings vs Buffer Content ===
+=== Strings vs buffer content ===
 
 While it is quite common in other programming languages to work on
 strings contained in variables in Emacs it is even more idiomatic to
@@ -43,7 +42,7 @@ Buffers:
       (buffer-substring 2 4))
     ==> "bc"
 
-=== Processing Characters ===
+=== Processing characters ===
 
 Reversing a string:
 
@@ -66,7 +65,7 @@ Looking at characters in buffers:
       (point))
     ==> 2
 
-=== Trim Whitespace ===
+=== Trim whitespace ===
 
 Trim whitespace from the end of a string:
 
@@ -81,13 +80,13 @@ Trim whitespace from a string with a perl-like chomp function:
      (let ((s (if (symbolp str)(symbol-name str) str)))
         (save-excursion
           (while (and
-	          (not (null (string-match "^\\( \\|\f\\|\t\\|\n\\)" s)))
-	          (> (length s) (string-match "^\\( \\|\f\\|\t\\|\n\\)" s)))
-	    (setq s (replace-match "" t nil s)))
+                  (not (null (string-match "^\\( \\|\f\\|\t\\|\n\\)" s)))
+                  (> (length s) (string-match "^\\( \\|\f\\|\t\\|\n\\)" s)))
+            (setq s (replace-match "" t nil s)))
           (while (and
-	          (not (null (string-match "\\( \\|\f\\|\t\\|\n\\)$" s)))
-	          (> (length s) (string-match "\\( \\|\f\\|\t\\|\n\\)$" s)))
-	    (setq s (replace-match "" t nil s))))
+                  (not (null (string-match "\\( \\|\f\\|\t\\|\n\\)$" s)))
+                  (> (length s) (string-match "\\( \\|\f\\|\t\\|\n\\)$" s)))
+            (setq s (replace-match "" t nil s))))
         s))
 
 === Splitting strings ===
@@ -186,7 +185,7 @@ Alternatively, replacing the `let' with `save-excursion'.
 The equivalent of `kill-whole-line' (`C-S-DEL') but without kill ring side effects:
 
  (let ((beg (progn (forward-line 0)
-		   (point))))
+                   (point))))
    (forward-line 1)
    (delete-region beg (point)))
 
@@ -231,7 +230,7 @@ Alternatively, replacing the `let' with `save-excursion'.
 
 == Numbers ==
 
-=== check if string is a valid number ===
+=== String a number? ===
 
  (defun string-integer-p (string)
    (if (string-match "\\`-?[0-9]+\\'" string)
@@ -244,12 +243,12 @@ Alternatively, replacing the `let' with `save-excursion'.
  (string-integer-p "x1234")
    ==> nil
 
-=== random numbers ===
+=== Random numbers ===
 
   (random 2)  ;coin toss (0 or 1)
   (+ (random 6) 1)  ;dice
 
-=== put commas in numbers ===
+=== Put commas in numbers ===
 
 Using the Common Lisp package:
 
@@ -257,7 +256,7 @@ Using the Common Lisp package:
   (let ((number (/ (random) (expt 2.0 28))))
     (substitute ?\, ?\. (format "%g" number)))
 
-=== break up large numbers with commas ===
+=== Break up large numbers with commas ===
 
 (This does what I expected the previous recipe to do.)
 
@@ -265,31 +264,29 @@ Using the Common Lisp package:
     (defun commafy (n)
       "Put commas in an integer"
       (let ((chunks ()))
-	(do ((chunk (mod (abs n) 1000) (mod rest 1000))
-	     (rest (floor (abs n) 1000) (floor rest 1000)))
-	    ((and (zerop chunk) (zerop rest)))
-	  (push (number-to-string chunk) chunks)
-	  (when (< chunk 100) (push "0" chunks))
-	  (when (< chunk 10) (push "0" chunks))
-	  (when (plusp rest) (push "," chunks)))
-	(while (string= (first chunks) "0") (pop chunks))
-	(when (minusp n) (push "-" chunks))
-	(apply 'concat chunks)))
+        (do ((chunk (mod (abs n) 1000) (mod rest 1000))
+             (rest (floor (abs n) 1000) (floor rest 1000)))
+            ((and (zerop chunk) (zerop rest)))
+          (push (number-to-string chunk) chunks)
+          (when (< chunk 100) (push "0" chunks))
+          (when (< chunk 10) (push "0" chunks))
+          (when (plusp rest) (push "," chunks)))
+        (while (string= (first chunks) "0") (pop chunks))
+        (when (minusp n) (push "-" chunks))
+        (apply 'concat chunks)))
     (commafy (random)))
 
-
-
-=== incrementing numbers ===
+=== Incrementing numbers ===
 
 See IncrementNumber.
 
 == Dates and Times ==
 
-=== get today's date ===
+=== Get today's date ===
 
 See InsertingTodaysDate.
 
-=== conversions ===
+=== Conversions ===
 
 See StrPTime.
 
@@ -306,7 +303,7 @@ Use the function <code>format-time-string</code> which is a build in function in
 
 See [[IdleTimers]]
 
-== Pattern Matching ==
+== Pattern matching ==
 
 "Patterns" refers to RegularExpression""s.
 
@@ -331,7 +328,7 @@ Alternative without regular expressions: `search-forward'.
 Note that the functions working on buffers move point to the end of the occurrence found and return it.
 That's why the result is 10 instead of 6!
 
-=== Search and Replace ===
+=== Search and replace ===
 
     (replace-regexp-in-string "foo*" "fu" "Fight foo for food!")
     ==> "Fight fu fur fud!"
@@ -392,7 +389,7 @@ Use `nth' to access an element of the list.
 
     (let ((words '("fight" "foo" "for" "food!")))
       (when (string= "foo" (nth 1 words))
-	(setq words (cons "bar" words)))
+        (setq words (cons "bar" words)))
       words)
     ==> ("bar" "fight" "foo" "for" "food!")
 
@@ -419,7 +416,7 @@ Emacs Lisp doesn't come with a `filter' function to keep elements that satisfy a
 
   (defun my-filter (condp lst)
     (delq nil
-	  (mapcar (lambda (x) (and (funcall condp x) x)) lst)))
+          (mapcar (lambda (x) (and (funcall condp x) x)) lst)))
 
 Therefore,
 
@@ -467,7 +464,7 @@ Vectors are fixed in size but elements can be accessed in constant time.
 
     (let ((words ["fight" "foo" "for" "food!"]))
       (when (string= "foo" (aref words 1))
-	(aset words 1 "bar"))
+        (aset words 1 "bar"))
       words)
     ==> ["fight" "bar" "for" "food!"]
 
@@ -501,7 +498,7 @@ Iterate:
       nicks)
       ==> ("pjb" "e1f" "kensanata")
 
-=== Sorting Keys  ===
+=== Sorting keys  ===
 
 Use `maphash' to build up a list of keys, sort it, and then loop through
 the list:
@@ -561,7 +558,8 @@ An interface to the kernel's stat(2) is provided by the function file-attributes
 
 === Deleting ===
 
-(delete-file filename)  ;The file needs to exist
+  (if (file-exists-p filename)
+      (delete-file filename))
 
 === Copy, move and rename ===
 
@@ -643,13 +641,13 @@ Again you have to make a difference between capturing the output in a string var
 
 == Sockets ==
 
-=== TCP client ===
+=== Tcp client ===
 
-=== TCP server ===
+=== Tcp server ===
 
 Perhaps EmacsEchoServer and EmacsDaytimeServer can be useful here.
 
-== Keyboard Events ==
+== Keyboard events ==
 
 * Call function bound to key
   
@@ -659,6 +657,5 @@ Perhaps EmacsEchoServer and EmacsDaytimeServer can be useful here.
 
   (call-interactively (key-binding (kbd "M-TAB")))
 
-
-
-
+----
+CategoryCode
