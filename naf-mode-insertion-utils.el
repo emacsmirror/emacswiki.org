@@ -15,7 +15,7 @@
 ;;; `mon-insert-naf-mode-face-template', `mon-insert-face-as-displayed',
 ;;; `mon-insert-naf-file-in-dirs',
 ;;; `mon-insert-naf-mode-xref-template', `mon-build-naf-mode-xref'
-;;; `naf-mode-variable-constant-template'
+;;; `mon-insert-naf-mode-var-const-templt'
 ;;; FUNCTIONS:◄◄◄
 ;;;
 ;;; MACROS:
@@ -26,7 +26,7 @@
 ;;;
 ;;; ALIASED/ADVISED/SUBST'D:
 ;;; `npes' -> `non-posting-ebay-source'
-;;; `non-posting-philsp-source' ->  `npps'
+;;; `npps' -> `non-posting-philsp-source' 
 ;;; `npws' -> `non-posting-wiki-src'
 ;;; `constance-insert-copyright' -> `mon-insert-copyright'
 ;;; `mon-insert-naf-mode-file-template' -> `mon-insert-file-template'
@@ -34,7 +34,7 @@
 ;;; DEPRECATED:
 ;;; `npps' -> `mon-cln-philsp'
 ;;; `mon-insert-naf-mode-constant-template' 
-;;;   -> `mon-insert-naf-mode-variable-constant-template'
+;;;   -> `mon-insert-mon-insert-naf-mode-var-const-templt'
 ;;;
 ;;; RENAMED: 
 ;;;
@@ -93,23 +93,67 @@
 ;;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
 ;;; Floor, Boston, MA 02110-1301, USA.
 ;;; ================================================================
-;;; ©opyright (C) - MON KEY - 2009
+;;; Permission is granted to copy, distribute and/or modify this
+;;; document under the terms of the GNU Free Documentation License,
+;;; Version 1.3 or any later version published by the Free Software
+;;; Foundation; with no Invariant Sections, no Front-Cover Texts,
+;;; and no Back-Cover Texts. A copy of the license is included in
+;;; the section entitled "GNU Free Documentation License".
+;;; ==============================
+;;; Copyright © 2009 MON KEY
 ;;; ==============================
 ;;; CODE:
 
 ;;; ==============================
+;;; CREATED: <Timestamp: #{2009-09-29T20:02:37-04:00Z}#{09403} - by MON KEY>
+(defvar *naf-mode-insertion-utils-xrefs* nil
+"*Xrefing list of functions and variables defined in file naf-mode-insertion-utils.el\n
+EXAMPLE:\n\*naf-mode-insertion-utils-xrefs*\n
+\(nth 3 *naf-mode-insertion-utils-xrefs*\)\n
+See also; `*naf-mode-xref-of-xrefs*'\n►►►.")
+;;
+(unless (bound-and-true-p *naf-mode-insertion-utils-xrefs*)
+  (setq *naf-mode-insertion-utils-xrefs*
+        '(naf-tab-region
+          naf-comment-line
+          naf-uncomment-line
+          naf-comment-region
+          naf-uncomment-region
+          non-posting-source
+          non-posting-wiki-source
+          non-posting-ebay-source
+          non-posting-philsp-source
+          non-posting-imdb-source
+          non-posting-benezit-source
+          non-posting-internet-source
+          mon-insert-naf-file-in-dirs
+          mon-build-naf-mode-xref
+          mon-insert-naf-mode-xref-template
+          mon-insert-naf-mode-var-const-templ
+          mon-insert-naf-mode-constant-template
+          mon-insert-naf-mode-face-template
+          mon-insert-face-as-displayed
+          *naf-mode-faces-as-displayed* 
+          *naf-mode-insertion-utils-xrefs*)))
+;;
+;;;test-me;(symbol-value '*naf-mode-insertion-utils-xrefs*)
+;;;test-me;(nth 3 *naf-mode-insertion-utils-xrefs*)
+;;
+;;;(progn (makunbound '*naf-mode-insertion-utils-xrefs*)
+;;;       (unintern '*naf-mode-insertion-utils-xrefs*))
+
+;;; ==============================
 (defun naf-tab-region (beg end &optional arg)   
-  "Indent a region by one tab in a NAF buffer.\n
-Used in `naf-mode'."
+  "Indent region by one tab in a `naf-mode' buffer.\n►►►"
   (interactive "r\nP")
   (indent-rigidly beg end tab-width)
   (exchange-point-and-mark))
 
 ;;; =======================
 (defun naf-comment-line ()
-  "Comment out line in a NAF file.\n
+  "Comment line in a NAF file.\n
 See also; `naf-uncomment-line', `naf-comment-prefix', `naf-uncomment-region',
-`naf-comment-region'.\nUsed in `naf-mode'."
+`naf-comment-region'.\nUsed in `naf-mode'.\n►►►"
   (interactive)
   (save-excursion
     (back-to-indentation)
@@ -119,7 +163,7 @@ See also; `naf-uncomment-line', `naf-comment-prefix', `naf-uncomment-region',
 (defun naf-uncomment-line ()
   "Uncomment line in a NAF file.\n
 See also; `naf-comment-prefix',`naf-uncomment-line', `naf-uncomment-region',
-`naf-comment-region'.\nUsed in `naf-mode'."
+`naf-comment-region'.\nUsed in `naf-mode'.\n►►►"
   (interactive)
   (save-excursion
     (back-to-indentation)
@@ -129,7 +173,7 @@ See also; `naf-comment-prefix',`naf-uncomment-line', `naf-uncomment-region',
 (defun naf-comment-region (beg end &optional arg)
   "Comment out region in a NAF file.\n
 See also;`naf-comment-prefix', `naf-uncomment-region',`naf-comment-line',
-`naf-uncomment-line'.\nUsed in `naf-mode'."
+`naf-uncomment-line'.\nUsed in `naf-mode'.\n►►►"
   (interactive "r\nP")
   (let ((comment-start naf-comment-prefix))
     (comment-region beg end arg)))
@@ -138,7 +182,7 @@ See also;`naf-comment-prefix', `naf-uncomment-region',`naf-comment-line',
 (defun naf-uncomment-region (beg end &optional arg)
   "Uncomment region in a NAF file.\n
 See also; `naf-comment-prefix',`naf-comment-region',
-`naf-comment-line',`naf-uncomment-line'.\nUsed in `naf-mode'."
+`naf-comment-line',`naf-uncomment-line'.\nUsed in `naf-mode'.\n►►►"
   (interactive "r\nP")
   (let ((comment-start naf-comment-prefix))
     (comment-region beg end -1)))
@@ -146,12 +190,12 @@ See also; `naf-comment-prefix',`naf-comment-region',
 ;;; ==============================
 ;;; MODIFICATIONS: <Timestamp: 2009-08-01-W31-6T12:53:18-0400Z - by MON KEY>
 (defun non-posting-source (&optional insertp intrp)
-  "Inserts the vanilla non-posting-source flag.
-Inserts newline after :(colon)\nEXAMPLE:
-\"-\nnon-posting-source:\"\n 
+  "Insert vanilla non-posting-source flag.
+When INSERTP is non-nin or called-interactively insert w/ newline after :(colon).
+EXAMPLE:\n\(non-posting-source\)\n
 See also; `nps', `non-posting-internet-source', `non-posting-wiki-source',
 `non-posting-ebay-source', `non-posting-imdb-source', `non-posting-philsp-source',
-`non-posting-benezit-source',`benezit-naf-template'.\nUsed in `naf-mode'. "
+`non-posting-benezit-source',`benezit-naf-template'.\nUsed in `naf-mode'.\n►►►"
   (interactive "i\np")
 (mon-naf-mode-toggle-restore-llm
  (let* ((non-ps (format "\n-\nnon-posting-source:\n")))
@@ -165,10 +209,9 @@ See also; `nps', `non-posting-internet-source', `non-posting-wiki-source',
      ;;(when llm-off (longlines-mode 1) (setq llm-off 'nil)))
      non-ps))))
 ;;
-;; This defalias is probably better as an abbrev.
-;;
+;; NOTE: This defalias is probably better as an abbrev.
 (defalias 'nps 'non-posting-source)
-
+;;
 ;;;test-me;(non-posting-source)
 ;;;test-me;(non-posting-source t)
 ;;;test-me;(call-interactively 'non-posting-source)
@@ -177,12 +220,12 @@ See also; `nps', `non-posting-internet-source', `non-posting-wiki-source',
 ;;; CREATED: <Timestamp: Monday March 30, 2009 @ 04:32.15 PM - by MON KEY>
 ;;; MODIFICATIONS: <Timestamp: 2009-08-01-W31-6T13:00:15-0400Z - by MON KEY>
 (defun non-posting-ebay-source (&optional insertp intrp)
-  "Inserts the non-posting ebay stamp into a NAF buffer. 
-\"-\nnon-posting-ebay-source:\nebay-item-number:\nebay-item-seller:\nebay-item-realized:
-ebay-item-ended:\naccessed: Tuesday April 01, 2009\"\n
-Used in `naf-mode'. See also; `non-posting-source', `non-posting-internet-source',
-`non-posting-wiki-source', `non-posting-imdb-source', `non-posting-philsp-source',
-`non-posting-benezit-source',`benezit-naf-template'."
+  "Insert non-posting ebay stamp into a NAF buffer.\n
+EXAMPLE:\n(non-posting-ebay-source)\n
+See also; `non-posting-source', `non-posting-internet-source',
+`non-posting-wiki-source', `non-posting-imdb-source',
+`non-posting-philsp-source',`non-posting-benezit-source',
+`benezit-naf-template'.\n\nUsed in `naf-mode'.\n►►►"
   (interactive "i\np")
 (mon-naf-mode-toggle-restore-llm
 (let* ((non-pes 
@@ -208,7 +251,7 @@ Used in `naf-mode'. See also; `non-posting-source', `non-posting-internet-source
 ;;
 ;; This defalias is probably better as an abbrev.
 (defalias 'npes 'non-posting-ebay-source)
-
+;;
 ;;;test-me:(non-posting-ebay-source)
 ;;;test-me:(non-posting-ebay-source t)
 ;;;test-me:(call-interactively 'non-posting-ebay-source)
@@ -216,13 +259,12 @@ Used in `naf-mode'. See also; `non-posting-source', `non-posting-internet-source
 ;;; ==============================
 ;;; MODIFICATIONS: <Timestamp: 2009-08-01-W31-6T13:04:43-0400Z - by MON KEY>
 (defun non-posting-wiki-source (&optional insertp intrp)
-  "Inserts the non-posting-wiki-source timestamp in a NAF buffer. e.g.\n
-\"-\nnon-posting-wiki-source:
-accessed:  Saturday January 10, 2009 - by MON\n---\"\n
+  "Inserts the non-posting-wiki-source timestamp in a NAF buffer.\n
+EXAMPLE:\n(non-posting-wiki-source)\n
 See also; `non-posting-source', `non-posting-internet-source',
 `non-posting-ebay-source', `non-posting-imdb-source', `non-posting-philsp-source',
-`non-posting-benezit-source', `non-posting-philsp-source',`benezit-naf-template'.\n
-Used in `naf-mode'."
+`non-posting-benezit-source',`non-posting-philsp-source',`benezit-naf-template'.\n
+Used in `naf-mode'.\n►►►"
   (interactive "i\np") 
 (mon-naf-mode-toggle-restore-llm
 (let* ((non-pws 
@@ -243,23 +285,22 @@ Used in `naf-mode'."
 ;;
 ;; This defalias is probably better as an abbrev. 
 (defalias 'npws 'non-posting-wiki-src)
-
+;;
 ;;;test-me;(non-posting-wiki-source)
 ;;;test-me;(non-posting-wiki-source t)
 ;;;test-me;(call-interactively 'non-posting-wiki-source)
 
 ;;; ==============================
+;;; WAS: `npps'
 ;;; MODIFICATIONS: <Timestamp: 2009-08-01-W31-6T13:09:26-0400Z - by MON KEY>
-(defun npps (&optional insertp intrp)
-  "Insert philsp non-posting-source timestamp.\n
-EXAMPLE:\n\(non-posting-philsp-source\)\n-\n non-posting-philsp-source:\n
-\(URL `http://www.philsp.com/homeville/FMI/a7.htm')
-accessed:  Saturday January 10, 2009 - by MON\n ---\n
-Use is deprecated in lieu of `mon-cln-philsp'. Used only for manual cleaning.\n
+(defun non-posting-philsp-source (&optional insertp intrp)
+  "DEPRECATED: use `mon-cln-philsp'. Used only after manual cleansing.
+Insert philsp non-posting-source timestamp.\n
+EXAMPLE:\n(non-posting-philsp-source\)\n
 See also; `non-posting-source', `non-posting-wiki-source',
 `non-posting-internet-source', `non-posting-ebay-source',
 `non-posting-benezit-source', `benezit-naf-template' 
- `non-posting-imdb-source'\nUsed in `naf-mode'."
+`non-posting-imdb-source'\nUsed in `naf-mode'.\n►►►"
   (interactive "i\np") 
   (mon-naf-mode-toggle-restore-llm
    (let* ((non-pps  (concat 
@@ -286,13 +327,9 @@ See also; `non-posting-source', `non-posting-wiki-source',
        ;;(when llm-off (longlines-mode 1) (setq llm-off 'nil)))
        non-pps))))
 ;;
-;; This aliasing scheme is backwards headed. 
-;; However, I'm not sure if there was a kbd-macro somewhere that used `npps'
-;; `non-posting-philsp-source' should be the base function with `npps' taking the alias.
-;; Moreover, in either case the defalias is probably better as an abbrev.
+;; NOTE: This defalias is probably better as an abbrev.
+(defalias 'npps 'non-posting-philsp-source)
 ;;
-(defalias 'non-posting-philsp-source 'npps)
-
 ;;;test-me;(non-posting-philsp-source) 
 ;;;test-me;(non-posting-philsp-source t) 
 ;;;test-me;(call-interactively 'non-posting-philsp-source) 
@@ -306,7 +343,7 @@ EXAMPLE:\n(non-posting-imdb-source)\n -\n non-posting-imdb-source:
 See also; `non-posting-source', `non-posting-wiki-source',
 `non-posting-internet-source', `non-posting-ebay-source',
 `non-posting-benezit-source', `benezit-naf-template'
-`non-posting-philsp-source'.\nUsed in `naf-mode'."
+`non-posting-philsp-source'.\nUsed in `naf-mode'.\n►►►"
   (interactive "i\np")
   (mon-naf-mode-toggle-restore-llm
    (let* ((npis (concat
@@ -333,13 +370,13 @@ See also; `non-posting-source', `non-posting-wiki-source',
 ;;; CREATED: <Timestamp: Monday March 30, 2009 @ 04:32.15 PM - by MON KEY>
 ;;; MODIFICATIONS: <Timestamp: 2009-08-01-W31-6T13:18:40-0400Z - by MON KEY>
 (defun non-posting-benezit-source (benezit-name volume page &optional insertp intrp)
-  "Inserts the non-posting-benezit-source stamp.\n
+  "Insert the non-posting-benezit-source stamp.\n
 EXAMPLE:\n\(non-posting-benezit-source \"Cappiello, Leonetto\" \"3\" \"444\" t\)
 \n-\nnon-posting-benezit-source:
 Cappiello, Leonetto - Benezit Volume 3 page 210\naccessed: Wednsday April 1, 2009 - MON\n
 See also; `non-posting-source', `non-posting-wiki-source', `non-posting-internet-source',
 `non-posting-ebay-source', `non-posting-imdb-source', `benezit-naf-template'.
-Used in `naf-mode'."
+Used in `naf-mode'.\n►►►"
   (interactive "sArtist Name (Lastname, Firstname):\nnVolume number:\nnPage number: \ni\np")
   (mon-naf-mode-toggle-restore-llm
    (let* ((non-pbs
@@ -363,7 +400,7 @@ Used in `naf-mode'."
            (insert non-pbs))
        ;;(when llm-off (longlines-mode 1) (setq llm-off 'nil)))
        non-pbs))))
-
+;;
 ;;;test-me;(non-posting-benezit-source "Cappiello, Leonetto" 3 444 t)
 ;;;test-me;(non-posting-benezit-source "Cappiello, Leonetto" "3" "444" t)
 ;;;test-me;(call-interactively 'non-posting-benezit-source)
@@ -372,17 +409,16 @@ Used in `naf-mode'."
 ;;; CREATED: <Timestamp: Monday March 30, 2009 @ 04:32.15 PM - by MON KEY>
 ;;; MODIFICATIONS: <Timestamp: 2009-08-01-W31-6T13:59:43-0400Z - by MON KEY>
 (defun non-posting-internet-source (&optional non-posting-url insertp intrp)
-  "Returns a timestamped Emacs style url reference. 
+  "Return a timestamped Emacs style url reference. 
 Called interactively prompts for a URL name to wrap. 
 When NON-POSTING-URL is non-nil wraps URL name.
 When INSERTP is non-nil or when called interactively inserts the wrapped url.
 When NON-POSTING-URL is nil defaults to \"(URL `')\".\n
-EXAMPLE:
-\(non-posting-internet-source \"http://www.emacswiki.com\")
+EXAMPLE:\n\(non-posting-internet-source \"http://www.emacswiki.com\")\n
 \(non-posting-internet-source)\n
 See also; `non-posting-source', `non-posting-wiki-source', `non-posting-imdb-source',
 `non-posting-benezit-source', `non-posting-ebay-source', `benezit-naf-template'.\n
-Used in `naf-mode'."
+Used in `naf-mode'.\n►►►"
   (interactive "sURL:\ni\np")
   (mon-naf-mode-toggle-restore-llm
    (let* ((non-pis (concat 
@@ -406,7 +442,7 @@ Used in `naf-mode'."
 	   (insert non-pis))
        ;;(when llm-off (longlines-mode 1) (setq llm-off 'nil)))
        non-pis))))
-
+;;
 ;;;test-me;(non-posting-internet-source)
 ;;;test-me;(non-posting-internet-source nil t)
 ;;;test-me;(non-posting-internet-source "http://www.derbycityprints.com")
@@ -445,7 +481,7 @@ Creates the following directors and files in c:/home/my-dirs\n
   |-- Lastname3 (Firstname3 Middlename3 Other3)
   |   `-- Lastname3, Firstname3 Middlename3 Other3.naf
   `-- Lastname4 (Firstname4 Middlename4 Other4)
-    `-- Lastname4, Firstname4 Middlename4 Other4.naf"
+    `-- Lastname4, Firstname4 Middlename4 Other4.naf\n►►►"
   (interactive "XGive Symbol holind dir/file list :")
   (while make-dir-list 
     (let* ((file-dir make-dir-list)
@@ -465,21 +501,18 @@ Creates the following directors and files in c:/home/my-dirs\n
         (insert (format ";; -*- mode: NAF; -*-\n\n%s\n---\n;;; naf EOF" naf-name))))
     (pop make-dir-list)))
 
-;;;(dired "c:\\Documents and Settings\\")
-;;;(dired "c:/Documents and Settings/All Users/Start Menu")
-
 ;;; ==============================
 ;;; CREATED: <Timestamp: #{2009-09-26T20:00:09-04:00Z}#{09397} - by MON KEY>
 (defun mon-build-naf-mode-xref ()
   "Return a list suitable for naf-mode variable xref template creation.
 variable name is generated from current naf-mode filename.
-Signals an error if filename is void or not a 'naf-mode-' prefixed filename.
+Signals an error if filename is void or not a filename with 'naf-mode-' prefix.
 Elements of list are returned as three strings:
 \(\"*naf-mode-insertion-utils-xrefs*\"  ;xref-name
- \"naf-mode-insertion-utils\"          ;pkg-name
+ \"naf-mode-insertion-utils\"           ;pkg-name
  \"naf-mode-insertion-utils.el\"\)      ;filename
 CALLED-BY: `mon-insert-naf-mode-xref-template'
-           `naf-mode-variable-constant-template'."
+           `mon-insert-naf-mode-var-const-templt'.\n►►►"
   (if (buffer-file-name)
     (let* ((nm-match-str (file-name-nondirectory (file-name-sans-extension (buffer-file-name))))
            (nm-match-on  (string-match "naf-mode-" nm-match-str))
@@ -497,7 +530,7 @@ CALLED-BY: `mon-insert-naf-mode-xref-template'
                   );; (test-xref-no-bnd (read xref-concat)))
              `(,xref-var ,xref-pkg ,xref-fname)))
     (error "not a naf-mode-file")))
-
+;;
 ;;;test-me;(mon-build-naf-mode-xref)
 ;;=> ("*naf-mode-insertion-utils-xrefs*" 
 ;;    "naf-mode-insertion-utils" 
@@ -506,9 +539,9 @@ CALLED-BY: `mon-insert-naf-mode-xref-template'
 ;;; ==============================
 ;;; CREATED: <Timestamp: #{2009-09-26T20:59:14-04:00Z}#{09397} - by MON KEY>
 (defun mon-insert-naf-mode-xref-template (&optional insertp intrp)
-  "Return a naf-mode variable template for xrefing
-variable names in current naf-mode file.\n
-See also; `mon-build-naf-mode-xref', `mon-insert-naf-mode-xref-template'."
+  "Return a naf-mode variable template for xrefing variable names in current
+`naf-mode' file.\n
+See also; `mon-build-naf-mode-xref', `mon-insert-naf-mode-xref-template'.\n►►►"
   (interactive "i\np")
   (let* ((xref-l (mon-build-naf-mode-xref))
          (xref-sym (car xref-l))
@@ -537,14 +570,14 @@ See also; `mon-build-naf-mode-xref', `mon-insert-naf-mode-xref-template'."
 ;;; ==============================
 ;;; TODO: Add subr to search backward for xref-name to see if it already exists.
 ;;; CREATED: <Timestamp: #{2009-09-26T21:27:46-04:00Z}#{09397} - by MON KEY>
-(defun naf-mode-variable-constant-template (naf-symbol-name &optional insertp intrp)
+(defun mon-insert-naf-mode-var-const-templt (naf-symbol-name &optional insertp intrp)
   "Return code building template for variable and constant with NAF-SYMBOL-NAME.
 NAF-SYMBOL-NAME - a string - should be suitable for concatenation as:
 *naf-<NAF-SYMBOL-NAME>*    ;VARIABLE\nnaf-mode-<NAF-SYMBOL-NAME> ;CONSTANT
 Do not include `-', `*', etc. This function does not check the value given.
 When INSERTP is non-nil or called-interactively insert templates at point.
 Does not move point. 
-See also; `mon-build-naf-mode-xref', `mon-insert-naf-mode-xref-template'."
+See also; `mon-build-naf-mode-xref', `mon-insert-naf-mode-xref-template'.\n►►►"
   (interactive "sSymbol name for template do not prefix with -, *, etc. :\np")
   (let* ((v-name (concat "*naf-" naf-symbol-name "*"))
          (c-name (concat "naf-mode-" naf-symbol-name))
@@ -576,18 +609,18 @@ See also; `mon-build-naf-mode-xref', `mon-insert-naf-mode-xref-template'."
           (princ v-c-template (current-buffer)))
       v-c-template)))
 ;;
-;;;test-me;(naf-mode-variable-constant-template "test-template")
-;;;test-me;(naf-mode-variable-constant-template "test-template" t)
+;;;test-me;(mon-insert-naf-mode-var-const-templt "test-template")
+;;;test-me;(mon-insert-naf-mode-var-const-templt "test-template" t)
 
 ;;; ==============================
 ;;; CREATED: <Timestamp: Thursday April 09, 2009 @ 05:52.20 PM - by MON KEY>
 ;;; MODIFICATIONS: <Timestamp: 2009-08-01-W31-6T14:36:47-0400Z - by MON KEY>
-;;; DEPRECATED: USE: `naf-mode-variable-constant-template'
+;;; DEPRECATED: USE: `mon-insert-naf-mode-var-const-templt'
 (defun mon-insert-naf-mode-constant-template (&optional constant-name insertp intrp)
   "Insert Elisp template for defining new font-lock constants for `naf-mode'.\n
 EXAMPLE:\n(mon-insert-naf-mode-constant-template \"some-constant\")\n
 See also; `*naf-mode-faces-as-displayed*', `mon-insert-face-as-displayed',
-`mon-insert-naf-mode-face-template'."
+`mon-insert-naf-mode-face-template'.\n►►►"
   (interactive "sGive the value for * naf-mode-*-flags: \ni\np")
   (let* ((cnst (if constant-name constant-name "!CONSTANT!"))
          (lcl (replace-regexp-in-string  " " "-" (concat "naf-" cnst "-flags")))
@@ -614,7 +647,7 @@ See also; `*naf-mode-faces-as-displayed*', `mon-insert-face-as-displayed',
           ";;; ==============================")))
     (when (or insertp intrp) (save-excursion (insert put-temp)))
     put-temp))
-
+;;
 ;;;test-me;(mon-insert-naf-mode-constant-template "some-constant")
 ;;;test-me;(mon-insert-naf-mode-constant-template "some-constant" t)
 ;;;test-me;(mon-insert-naf-mode-constant-template nil)
@@ -627,7 +660,7 @@ See also; `*naf-mode-faces-as-displayed*', `mon-insert-face-as-displayed',
 Used to make face templates for fontlocking `naf-mode' keywords.\n
 EXAMPLE:\n\(mon-insert-naf-mode-face-template \"some-face-name\")
 See also; `*naf-mode-faces-as-displayed*',`mon-insert-face-as-displayed' 
-`mon-insert-naf-mode-constant-template'."
+`mon-insert-naf-mode-constant-template'.\n►►►"
   (interactive "sGive the value for * in naf-mode-*-face: \ni\np")
   (let* ((fc-nme   (if face-name face-name "!FACE-NAME!"))
         (the-face  (concat "naf-mode-" fc-nme "-face"))
@@ -642,13 +675,15 @@ See also; `*naf-mode-faces-as-displayed*',`mon-insert-face-as-displayed'
           "    ;; \(\(\(class color\) \(background dark\)\) \(:foreground \"SOME-COLOR\"\)\)\n"
           "    ;;   \(t \(:bold t :italic t\)\)\)\n"
           "    \"*Face for font-locking of {DESCRIBE} in .naf files.\n"
-	  "KEYWORDS-IN: the regexp(s) defined in `NAF-MODE-CONSTANT-NAME' constant.\n"
+	  "KEYWORD-REGEXPS-IN:\n"
+          "KEYWORD-LISTS-IN:\n"
           "FACE-DOCUMENTED-IN: `" the-fface"'.\nSee also;\nUsed in `naf-mode'.\"\n"
           "  	    :group \'naf-mode\n"
           "  	    :group \'naf-mode-faces\)\n;;\n"
           "(defvar " the-fface " '" the-face "\n"
           "    \"*Face for font-locking of {DESCRIBE} in `naf-mode'.\n"
-	  "KEYWORDS-IN: the regexp(s) defined in `NAF-MODE-CONSTANT-NAME' constant.\n"
+	  "KEYWORD-REGEXPS-IN:\n"
+          "KEYWORD-LISTS-IN:\n"
           "FACE-DEFINED-IN: `" the-face "'.\nSee also;\n.\")\n\n"
           ";;;test-me;(describe-face '" the-face ")\n\n"
           ";;(progn (makunbound \'" the-face "\)\n" 
@@ -658,7 +693,7 @@ See also; `*naf-mode-faces-as-displayed*',`mon-insert-face-as-displayed'
           ";;; ==============================")))
     (when (or insertp intrp) (save-excursion (insert put-fc-temp)))
     put-fc-temp))
-
+;;
 ;;;test-me;(mon-insert-naf-mode-face-template "some-face-name" t)
 ;;;test-me;(mon-insert-naf-mode-face-template  nil t)
 ;;;test-me;(call-interactively 'mon-insert-naf-mode-face-template)
@@ -667,9 +702,9 @@ See also; `*naf-mode-faces-as-displayed*',`mon-insert-face-as-displayed'
 ;;; ==============================
 ;;; MODIFICATIONS: <Timestamp: #{2009-09-01T15:47:05-04:00Z}#{09362} - by MON KEY>
 (defun mon-insert-face-as-displayed (&optional insertp intrp)
-  "Insert fontlocked keywords to test fruitsaladness `naf-mode' face/constants.
+  "Insert font-locked keywords to test fruitsaladness `naf-mode' face/constants.
 See also; `*naf-mode-faces-as-displayed*',`mon-insert-naf-mode-face-template',
-`mon-insert-naf-mode-constant-template'."
+`mon-insert-naf-mode-constant-template'.\n►►►"
  (interactive "i\np")
  (let* ((i-fad *naf-mode-faces-as-displayed*)
 	(is-on (mon-is-naf-mode-and-llm-p))
@@ -715,7 +750,6 @@ See also; `*naf-mode-faces-as-displayed*',`mon-insert-naf-mode-face-template',
     "(URL `http://authorities.loc.gov/')"
     "(URL `http://catalogue.bnf.fr/ark:/12148/cb123349648/PUBLIC')"
     "accessed:"
-    "---"
     "---"
     "`naf-mode-field-names' using ;`naf-mode-db-entry-face'"
     "---"
@@ -1112,11 +1146,12 @@ See also; `*naf-mode-faces-as-displayed*',`mon-insert-naf-mode-face-template',
     "  cca. "
     "  ca. ")
   "List of `naf-mode' keywords. 
-CALLED-BY: `mon-insert-face-as-displayed'.
 List includes the vars that define them or hold regexps that do.
 List also identifies the type of field and and faces that light them up.
-Use to test naf-mode font-locking.\nSee also: `mon-insert-naf-mode-face-template',
-`mon-insert-naf-mode-constant-template'."))
+Use to test naf-mode font-locking.
+CALLED-BY: `mon-insert-face-as-displayed'.
+See also;
+`mon-insert-naf-mode-face-template',`mon-insert-naf-mode-constant-template'.\n►►►"))
 ;;
 ;;;test-me; *naf-mode-faces-as-displayed* 
 ;;;(progn (makunbound '*naf-mode-faces-as-displayed*) (unintern '*naf-mode-faces-as-displayed*)) 

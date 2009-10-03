@@ -73,5 +73,9 @@ preventing me from upgrading from 22 to 23. -- RyanDavis
 
 * These build directions fail under 10.6.1 (Snow Leopard).  Does anyone know when a fix is planned?
 
+* Snow Leopard (10.6.1) has to be 32bit. 
+$CC='gcc -arch i386' ./configure --with-ns
+$make bootstrap
+
 ----
 CategoryPorts

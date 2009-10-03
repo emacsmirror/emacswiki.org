@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 21.0
-;; Last-Updated: Mon Aug  3 11:17:30 2009 (-0700)
+;; Last-Updated: Fri Oct  2 11:04:14 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 2475
+;;     Update #: 2495
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/frame-cmds.el
 ;; Keywords: internal, extensions, mouse, frames, windows, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -125,6 +125,7 @@
 ;;     1) Reads buffer differently.  Only buffers showing windows are candidates.
 ;;     2) Calls `delete-window', so this also deletes frames where
 ;;        window showing the BUFFER is the only window.
+;;        (That's true also for vanilla Emacs 23+, but not before.)
 ;;
 ;;
 ;;  Suggested key bindings:
@@ -206,6 +207,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2009/10/02 dadams
+;;     delete-windows-on: Return nil.  Make BUFFER optional: default is current buffer.
 ;; 2009/08/03 dadams
 ;;     delete-window: Wrap with save-current-buffer.  Thx to Larry Denenberg.
 ;; 2009/05/17 dadams
@@ -635,12 +638,14 @@ With a prefix arg, prompt for a buffer and delete all windows, on any
 
 
 ;; REPLACES ORIGINAL (built-in):
-;; 1) Uses `read-buffer' in interactive spec.
-;; 2) Calls `delete-window', so if use my `delete-window' this also deletes
+;; 1) Use `read-buffer' in interactive spec.
+;; 2) Do not raise an error if BUFFER is a string that does not name a buffer.
+;; 3) Call `delete-window', so if you use my `delete-window' then this also deletes
 ;;    frames where window showing the BUFFER is the only window.
 ;;;###autoload
-(defun delete-windows-on (buffer &optional frame)
+(defun delete-windows-on (&optional buffer frame)
   "Delete windows showing BUFFER.
+Optional arg BUFFER defaults to the current buffer.
 
 Optional second arg FRAME controls which frames are considered.
   If nil or omitted, delete all windows showing BUFFER in any frame.
@@ -657,21 +662,25 @@ Interactively, FRAME depends on the prefix arg, as follows:
          (and current-prefix-arg
               (or (natnump (prefix-numeric-value current-prefix-arg))
                   'visible))))
+  (unless buffer (setq buffer  (current-buffer))) ; Like Emacs 23+ - unlike Emacs 21-22.
+
   ;; `get-buffer-window' interprets FRAME oppositely for t and nil, so switch.
   (setq frame (if (eq t frame) nil (if (eq nil frame) t frame)))
   (let (win)
-    ;; Apparently, the original returns nil if buffer is nil (!).
-    (and buffer
+    ;; Vanilla Emacs version raises an error if BUFFER is a string that does not name a buffer.
+    ;; We do not raise an error - we do nothing.
+    (and (get-buffer buffer)
          (while (setq win (get-buffer-window buffer frame))
-           (delete-window win)))))
+           (delete-window win))
+         nil)))                         ; Return nil always, like vanilla Emacs.
 
 (defun read-buffer-for-delete-windows ()
   "Read buffer name for delete-windows commands.
 Only displayed buffers are completion candidates."
   (completing-read "Delete windows on buffer: "
-                   (let ((all-bufs (buffer-list))
-                         (cand-bufs nil))
-                     (dolist (buf all-bufs)
+                   (let ((all-bufs   (buffer-list))
+                         (cand-bufs  ()))
+                     (dolist (buf  all-bufs)
                        (when (get-buffer-window buf t)
                          (push (list (buffer-name buf)) cand-bufs)))
                      cand-bufs)

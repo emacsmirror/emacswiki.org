@@ -9,9 +9,9 @@
 ;; Copyright (C) 2000-2009, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Oct  1 15:17:37 2009 (-0700)
+;; Last-Updated: Fri Oct  2 18:23:19 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 3917
+;;     Update #: 4042
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -119,6 +119,7 @@
 ;;  Non-interactive functions defined here:
 ;;
 ;;    `bookmarkp-add-or-update-time', `bookmarkp-assoc-delete-all',
+;;    `bookmarkp-bmenu-goto-bookmark-named',
 ;;    `bookmarkp-bmenu-propertize-item',
 ;;    `bookmarkp-bookmark-marked-p', `bookmarkp-current-sec-time',
 ;;    `bookmarkp-edit-bookmark', `bookmarkp-face-prop',
@@ -180,8 +181,8 @@
 ;;    `bookmarkp-bookmark-marked-alist',
 ;;    `bookmarkp-jump-display-function',
 ;;    `bookmarkp-latest-bookmark-alist',
-;;    `bookmarkp-non-file-filename', `bookmarkp-reverse-sort-p',
-;;    `bookmarkp-version-number'.
+;;    `bookmarkp-latest-sorted-alist', `bookmarkp-non-file-filename',
+;;    `bookmarkp-reverse-sort-p', `bookmarkp-version-number'.
 ;;
 ;;  ***** NOTE: The following functions defined in `bookmark.el'
 ;;              have been REDEFINED OR ADVISED HERE for Emacs versions < 23:
@@ -239,15 +240,15 @@
 ;;    - Faces to distinguish bookmarks of different types.
 ;;    - You can edit a bookmark.
 ;;
+;;  If you also use Icicles, then you can use `S-delete' during
+;;  completion for a bookmark name, to delete the current bookmark
+;;  candidate.  See http://www.emacswiki.org/cgi-bin/wiki/Icicles.
+;;
 ;;(@* "How To Use Bookmark+")
 ;;  ** How To Use Bookmark+ **
 ;;
 ;;  Put this library in your `load-path'.
 ;;  Add this to your init file (~/.emacs) : (require 'bookmark+)
-;;
-;;  Some of the commands defined here bind `S-delete', to delete the
-;;  current bookmark candidate during completion in Icicle mode (see
-;;  Icicles: http://www.emacswiki.org/cgi-bin/wiki/Icicles).
 ;;
 ;;(@* "Bookmark Compatibility with Vanilla Emacs (`bookmark.el')")
 ;;  ** Bookmark Compatibility with Vanilla Emacs (`bookmark.el') **
@@ -316,7 +317,19 @@
 ;;
 ;;(@* "Change log")
 ;;
-;; 2009/10/01 dradams
+;; 2009/10/02 dadams
+;;     Added: bookmarkp-bmenu-goto-bookmark-named, bookmarkp-latest-sorted-alist.
+;;     *-sort-and-remove-dups: Set *-latest-sorted-alist (not used yet).
+;;     *-define-sort-command, *-bmenu-change-sort-order, *-reverse-sort-order:
+;;       Bind *-bmenu-called-from-inside-p to t, to prevent losing marks.
+;;       Restore cursor position to same bookmark after sorting - use *-goto-bookmark-named.
+;;     *-bmenu-surreptitiously-rebuild-list, *-bmenu-list: Added arg DONT-TOGGLE-FILENAMES-P.
+;;     *-bmenu-execute-deletions, *-bmenu-toggle-show-only-(un)marked:
+;;       Call *-surreptitiously-* with arg DONT-TOGGLE-FILENAMES-P.
+;;     *-bmenu-hide-filenames: Simplify - don't get to position by searching backward.
+;;     *-handle-region-default: Use forward-line, not goto-line.
+;;     Thx to Thierry V.
+;; 2009/10/01 dadams
 ;;     Added: bookmarkp-some-unmarked-p.
 ;;     Renamed: *-bmenu-toggle-show-only-<TYPE> to *-bmenu-show-only-<TYPE>,
 ;;              *-bmenu-called-from-inside-flag to *-bmenu-called-from-inside-p.
@@ -374,7 +387,7 @@
 ;;     Redefined faces, esp. for a light background.
 ;;     Use font-lock-face or face property, depending on Emacs version.
 ;;
-;; 2009-06-09 to 2009-09-27 Thierry Volpiatto and dradams
+;; 2009-06-09 to 2009-09-27 Thierry Volpiatto and dadams
 ;;     New features, as follows.
 ;;       See also the change log at
 ;;         http://mercurial.intuxication.org/hg/bookmark-icicle-region/.
@@ -641,7 +654,7 @@
 (eval-when-compile (require 'cl)) ;; gensym, case, (plus, for Emacs 20: push, pop, dolist)
 
 
-(defconst bookmarkp-version-number "2.6.0")
+(defconst bookmarkp-version-number "2.6.1")
 
 (defun bookmarkp-version ()
   "Show version number of library `bookmark+.el'."
@@ -696,9 +709,16 @@ DOC-STRING is the doc string of the new command."
                      bookmarkp-reverse-sort-p  t))
               (t;; This sort order - reverse it.
                (setq bookmarkp-reverse-sort-p  t)))
-        (message "Sorting %s%s" (if bookmarkp-sort-function ,sort-order "turned OFF")
-                 (if (and bookmarkp-sort-function bookmarkp-reverse-sort-p) ", REVERSED" ""))
-        (bookmark-bmenu-surreptitiously-rebuild-list)))))
+        (message "Sorting...")
+        (bookmark-bmenu-check-position)
+        (let ((bookmarkp-bmenu-called-from-inside-p  t) ; Prevent removing marks.
+              (current-bmk                           (bookmark-bmenu-bookmark)))
+          (bookmark-bmenu-surreptitiously-rebuild-list)
+          (bookmarkp-bmenu-goto-bookmark-named current-bmk)) ; Put cursor back on right line.
+        (message
+         "%s%s"
+         (if bookmarkp-sort-function (concat "Sorted " ,sort-order) "Sorting TURNED OFF")
+         (if (and bookmarkp-sort-function bookmarkp-reverse-sort-p) ", REVERSED" ""))))))
   
 ;;(@* "Keymaps")
 ;;; Keymaps ----------------------------------------------------------
@@ -996,6 +1016,9 @@ COMPARISON-FN is a function that compares two bookmarks, returning
 
 (defvar bookmarkp-latest-bookmark-alist ()
   "Copy of `bookmark-alist' as last filtered.")
+
+(defvar bookmarkp-latest-sorted-alist ()
+  "Copy of `bookmark-alist' as last sorted.")
 
 (defvar bookmarkp-bookmark-marked-alist ()
   "Copy of `bookmark-alist' that contains the marked bookmarks.")
@@ -1810,8 +1833,10 @@ candidate.  In this way, you can delete multiple bookmarks."
 ;; 1. Rebuild `bookmark-alist' using the last filtered alist in use.
 ;; 2. Update the menu-list title.
 ;;
-(defun bookmark-bmenu-surreptitiously-rebuild-list ()
-  "Rebuild the bookmarks list, if it exists."
+(defun bookmark-bmenu-surreptitiously-rebuild-list (&optional dont-toggle-filenames-p)
+  "Rebuild the bookmarks list, if it exists.
+Optional arg DONT-TOGGLE-FILENAMES-P is passed to
+`bookmark-bmenu-list'."
   (when (get-buffer "*Bookmark List*")
     (save-excursion
       (save-window-excursion
@@ -1820,16 +1845,17 @@ candidate.  In this way, you can delete multiple bookmarks."
                                  (goto-char (point-min))
                                  (buffer-substring (line-beginning-position)
                                                    (line-end-position)))
-                               'filteredp))))))
+                               'filteredp
+                               dont-toggle-filenames-p))))))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; 1. Added optional arguments TITLE and FILTER-ON.
+;; 1. Added args TITLE, FILTEREDP, DONT-TOGGLE-FILENAMES-P.
 ;; 2. Handles also region bookmarks and buffer (non-file) bookmarks.
 ;;
 ;;;###autoload
-(defun bookmark-bmenu-list (&optional title filteredp) ; `C-x r l'
+(defun bookmark-bmenu-list (&optional title filteredp dont-toggle-filenames-p) ; `C-x r l'
   "Display a list of existing bookmarks, in buffer `*Bookmark List*'.
 The leftmost column of a bookmark entry shows `D' if the bookmark is
  flagged for deletion, or `>' if it is marked normally.
@@ -1846,8 +1872,10 @@ Use `customize-face' if you want to change the appearance.
 The optional arguments are for non-interactive use.
 TITLE is a string to be used as the title. (default: `% Bookmarks').
 Non-nil FILTEREDP indicates that `bookmark-alist' has been filtered
-\(e.g gnus, w3m, info, files, or regions).  In that case,
-`bookmarkp-latest-bookmark-alist' is not reset to `bookmark-alist'."
+ (e.g gnus, w3m, info, files, or regions).  In that case,
+ `bookmarkp-latest-bookmark-alist' is not reset to `bookmark-alist'.
+Non-nil DONT-TOGGLE-FILENAMES-P means do not call
+ `bookmark-bmenu-toggle-filenames'."
   (interactive)
   (bookmark-maybe-load-default-file)
   (unless bookmarkp-bmenu-called-from-inside-p (setq bookmarkp-bookmark-marked-alist  ()))
@@ -1883,7 +1911,8 @@ Non-nil FILTEREDP indicates that `bookmark-alist' has been filtered
             (bookmarkp-sort-and-remove-dups bookmark-alist))
     (goto-char (point-min))  (forward-line 2)
     (bookmark-bmenu-mode)
-    (when bookmark-bmenu-toggle-filenames (bookmark-bmenu-toggle-filenames t))
+    (unless (or dont-toggle-filenames-p (not bookmark-bmenu-toggle-filenames))
+      (bookmark-bmenu-toggle-filenames t))
     (when (fboundp 'fit-frame-if-one-window) (fit-frame-if-one-window))))
 
 
@@ -1901,6 +1930,16 @@ Non-nil FILTEREDP indicates that `bookmark-alist' has been filtered
       (move-to-column 2 t)
       (prog1 (buffer-substring-no-properties (point) (save-excursion (end-of-line) (point)))
         (when bookmark-bmenu-toggle-filenames (bookmark-bmenu-toggle-filenames t))))))
+
+
+;;; $$$$$$ NOT TESTED YET ;; REPLACES ORIGINAL in `bookmark.el'.
+;;; ;;
+;;; ;; Redefined.  Get name of the current bookmark from `bookmarkp-latest-sorted-alist'.
+;;; ;;
+;;; (defun bookmark-bmenu-bookmark ()
+;;;   "Return the name of the bookmark on this line."
+;;;   (let ((pos  (- (line-number-at-pos) 3)))
+;;;     (car (nth pos bookmarkp-latest-sorted-alist))))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -1923,11 +1962,11 @@ non-nil, then do nothing."
             (while bookmark-bmenu-hidden-bookmarks
               (move-to-column 2 t)
               (bookmark-kill-line)
-              (let ((name  (car bookmark-bmenu-hidden-bookmarks))
-                    start
-                    (end   (point)))
+              (let ((name   (car bookmark-bmenu-hidden-bookmarks))
+                    (start  (point))
+                    end)
                 (insert name)
-                (setq start  (save-excursion (re-search-backward "[^ \t]") (1+ (point))))
+                (setq end  (point))
                 (bookmarkp-bmenu-propertize-item name start end))
               (setq bookmark-bmenu-hidden-bookmarks  (cdr bookmark-bmenu-hidden-bookmarks))
               (forward-line 1))))))))
@@ -1975,7 +2014,7 @@ non-nil, then do nothing."
         (setq bookmarkp-latest-bookmark-alist
               (delete (assoc bmk bookmarkp-latest-bookmark-alist)
                       bookmarkp-latest-bookmark-alist))))
-    (bookmark-bmenu-surreptitiously-rebuild-list)
+    (bookmark-bmenu-surreptitiously-rebuild-list 'dont-toggle-filenames-p)
     (setq bookmark-bmenu-toggle-filenames  hiding-file-names-p)
     (when bookmark-bmenu-toggle-filenames (bookmark-bmenu-toggle-filenames 'show))
     (if (not o-str)
@@ -2220,7 +2259,7 @@ With a prefix argument, do not include remote files or directories."
                 bookmark-alist                            (bookmarkp-non-marked-bookmarks-only)
                 bookmarkp-latest-bookmark-alist           bookmark-alist
                 status                                    'hidden))
-        (bookmark-bmenu-surreptitiously-rebuild-list)
+        (bookmark-bmenu-surreptitiously-rebuild-list 'dont-toggle-filenames-p)
         (cond ((eq status 'hidden)
                (bookmark-bmenu-check-position)
                (message "Marked bookmarks are hidden"))
@@ -2254,7 +2293,7 @@ With a prefix argument, do not include remote files or directories."
                 bookmark-alist                              (bookmarkp-marked-bookmarks-only)
                 bookmarkp-latest-bookmark-alist             bookmark-alist
                 status                                      'hidden))
-        (bookmark-bmenu-surreptitiously-rebuild-list)
+        (bookmark-bmenu-surreptitiously-rebuild-list 'dont-toggle-filenames-p)
         (cond ((eq status 'hidden)
                (bookmark-bmenu-check-position)
                (message "Unmarked bookmarks are hidden"))
@@ -2589,6 +2628,19 @@ binary data (weird chars)."
         (replace-match rep nil nil string)
       string)))
 
+(defun bookmarkp-bmenu-goto-bookmark-named (name)
+  "Go to the first bookmark whose name (visible portion) matches NAME."
+  (goto-char (point-min))
+  (if (not bookmark-bmenu-toggle-filenames)
+      (re-search-forward (concat (regexp-quote name) "$"))
+    (let ((len   (length name))
+          (limit (- bookmark-bmenu-file-column 2)))
+      (setq name  (if (>= len limit)
+                      (substring name 0 (min (length name) limit))
+                    (format (format "%%-%ds" limit) name))))
+    (search-forward name nil t))
+  (forward-line 0))
+
 (defun bookmarkp-face-prop (value)
   "Return a list with elements `face' or `font-lock-face' and VALUE.
 Starting with Emacs 22, the first element is `font-lock-face'."
@@ -2669,7 +2721,7 @@ If `bookmarkp-reverse-sort-p' is non-nil, then reverse the sort order."
             (sort newlist (if bookmarkp-reverse-sort-p
                               (lambda (a b) (not (funcall bookmarkp-sort-function a b)))
                             bookmarkp-sort-function))))
-    newlist))
+    (setq bookmarkp-latest-sorted-alist  newlist)))
 
 ;; Sort Commands
 
@@ -2720,14 +2772,18 @@ With a prefix arg, reverse the current sort order."
   (setq bookmarkp-sort-functions-alist  (delq nil bookmarkp-sort-functions-alist))
   (if arg
       (bookmarkp-reverse-sort-order)
-    (let (next-order)
+    (let ((bookmarkp-bmenu-called-from-inside-p  t) ; Prevent removing marks.
+          (current-bmk                           (bookmark-bmenu-bookmark))
+          next-order)
       (let ((orders  (mapcar #'car bookmarkp-sort-functions-alist)))
         (setq next-order  (or (cadr (memq (bookmarkp-current-sort-order) orders))
                               (car orders))
               bookmarkp-sort-function  (cdr (assoc next-order
                                                    bookmarkp-sort-functions-alist))))
       (bookmark-bmenu-surreptitiously-rebuild-list)
-      (message "Sorting %s%s" next-order
+      (bookmarkp-bmenu-goto-bookmark-named current-bmk) ; Put cursor back on right line.
+      (message "%s%s"
+               (if bookmarkp-sort-function (concat "Sorted " next-order) "Sorting TURNED OFF")
                (if (and bookmarkp-sort-function bookmarkp-reverse-sort-p) ", REVERSED" "")))))
 
 (defun bookmarkp-current-sort-order ()
@@ -2738,8 +2794,14 @@ With a prefix arg, reverse the current sort order."
   "Reverse the current sort order."
   (interactive)
   (setq bookmarkp-reverse-sort-p  (not bookmarkp-reverse-sort-p))
-  (bookmark-bmenu-surreptitiously-rebuild-list)
-  (message "Sorting %s%s" (bookmarkp-current-sort-order)
+  (let ((bookmarkp-bmenu-called-from-inside-p  t) ; Prevent removing marks.
+        (current-bmk                           (bookmark-bmenu-bookmark)))
+    (bookmark-bmenu-surreptitiously-rebuild-list)
+    (bookmarkp-bmenu-goto-bookmark-named current-bmk)) ; Put cursor back on right line.
+  (message "%s%s"
+           (if bookmarkp-sort-function
+               (concat "Sorted " (bookmarkp-current-sort-order))
+             "Sorting TURNED OFF")
            (if (and bookmarkp-sort-function bookmarkp-reverse-sort-p) ", REVERSED" "")))
 
 
@@ -2920,9 +2982,8 @@ If region was relocated, save it if user confirms saving."
            (push-mark end-pos 'nomsg 'activate)
            (setq deactivate-mark  nil)
            (when bookmarkp-show-end-of-region
-             (let ((end-win  (save-excursion
-                               (goto-line (+ (bookmarkp-line-number-at-pos) (window-height)))
-                               (end-of-line) (point))))
+             (let ((end-win  (save-excursion (forward-line (window-height))
+                                             (end-of-line) (point))))
                ;; Bounce point and mark.
                (save-excursion (sit-for 0.6) (exchange-point-and-mark) (sit-for 1))
                ;; Recenter if region end is not visible.

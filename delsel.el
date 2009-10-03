@@ -8,9 +8,9 @@
 ;; Copyright (C) 1992 Free Software Foundation, Inc.
 ;; Created: Fri Dec  1 13:51:31 1995
 ;; Version: 21.0
-;; Last-Updated: Sat Aug  1 15:15:03 2009 (-0700)
+;; Last-Updated: Fri Oct  2 09:29:12 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 319
+;;     Update #: 322
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/delsel.el
 ;; Keywords: abbrev, emulations, local, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -88,6 +88,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2009/10/02 dadams
+;;     minibuffer-keyboard-quit:
+;;       Don't call delete-windows-on if no buffer.  Thx to Tetzlaff.
 ;; 2008/05/03 dadams
 ;;     delete-selection-pre-hook: defun, not defsubst.
 ;; 2007/09/04 dadams
@@ -334,7 +337,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (interactive)
   (if (and delete-selection-mode transient-mark-mode mark-active)
       (setq deactivate-mark t)
-    (delete-windows-on "*Completions*")
+    (when (get-buffer "*Completions*") (delete-windows-on "*Completions*"))
     (abort-recursive-edit)))
 
 (define-key minibuffer-local-map "\C-g" 'minibuffer-keyboard-quit)

@@ -24,7 +24,16 @@
 * Lisp:naf-mode-faces.el
 * Lisp:naf-mode-insertion-utils.el
 * Lisp:naf-mode-replacements.el
+* Lisp:naf-mode-nation-english.el
+* Lisp:naf-mode-nation-french.el
+* Lisp:naf-mode-nationality-english.el
+* Lisp:naf-mode-nationality-french.el
+* Lisp:naf-mode-publications-periodicals-english.el
+* Lisp:naf-mode-publications-periodicals-french.el
+* Lisp:naf-mode-publications-periodicals-intnl.el
+* Lisp:naf-mode-institution.el
 * Lisp:naf-mode-students-of-julian.el
+* Lisp:naf-mode-xrefs.el
 * Lisp:naf-name-utils.el
 * Lisp:ebay-template-mode.el
 * Lisp:ebay-template-tools.el

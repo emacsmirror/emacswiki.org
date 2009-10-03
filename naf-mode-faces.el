@@ -406,26 +406,26 @@ Following are standard naf-mode template keywords:
 ,---- (describe-face 'naf-mode-db-entry-face)
 |
 | `naf-mode-db-entry-fface'*
-|  KEYWORDS-IN:
+|  KEYWORD-REGEXPS-IN:
 | `naf-mode-db-entry'
 |
 `----\n
 ,---- (describe-face 'naf-mode-timestamp-face)
 | 
 | `naf-mode-timestamp-fface'*        
-|  |  KEYWORDS-IN:
+|  |  KEYWORD-REGEXPS-IN:
 |  | `naf-mode-timestamp-flag'
 |  | 
 |  |--+ (describe-face 'naf-mode-accessed-by-face)
 |    `naf-mode-accessed-by-fface'*
-|     KEYWORDS-IN:
+|     KEYWORD-REGEXPS-IN:
 |    `naf-mode-accessed-by-flag'
 |
 `----\n
 ,---- (describe-face 'naf-mode-delim-face)
 |
 | `naf-mode-delim-fface'*
-|  KEYWORDS-IN:
+|  KEYWORD-REGEXPS-IN:
 | `naf-mode-delim'
 | `naf-mode-comment-delim'
 |
@@ -433,20 +433,20 @@ Following are standard naf-mode template keywords:
 ,---- (describe-face 'naf-mode-field-url-flag-face)
 |
 | `naf-mode-field-url-flag-fface'*
-|  | KEYWORDS-IN:
+|  | KEYWORD-REGEXPS-IN:
 |  | `naf-mode-timestamp-flag'
 |  | `naf-mode-url-flag'
 |  | 
 |  |--+ (describe-face 'naf-mode-delimit-url-flag-face)
 |    `naf-mode-delimit-url-flag-fface'*
-|     KEYWORDS-IN:
+|     KEYWORD-REGEXPS-IN:
 |    `naf-mode-url-wrapper-flag'
 |
 `----\n
 ,---- (describe-face 'naf-mode-name-divider-face)
 | 
 | `naf-mode-name-divider-fface'*
-|  KEYWORDS-IN:
+|  KEYWORD-REGEXPS-IN:
 | `naf-mode-name-divider'
 |
 `----\n
@@ -456,22 +456,22 @@ Following are base faces with inheriting faces:
 ,---- (describe-face 'naf-mode-field-face)
 | 
 |  `naf-mode-field-fface'*
-|   |  KEYWORDS-IN:
+|   |  KEYWORD-REGEXPS-IN:
 |   | `naf-mode-field-names'.
 |   | 
 |   |--+ (describe-face 'naf-mode-field-bnf-face)
 |   | `naf-mode-field-bnf-fface'*
-|   |  KEYWORDS-IN:
+|   |  KEYWORD-REGEXPS-IN:
 |   | `naf-mode-field-names-bnf'
 |   | 
 |   |--+ (describe-face 'naf-mode-field-ulan-face)
 |     `naf-mode-field-ulan-fface'*
-|      | KEYWORDS-IN: 
+|      | KEYWORD-REGEXPS-IN: 
 |      | 
 |      | 
 |      |--+ (describe-face 'naf-mode-ulan-ppl-corp-face)
 |        `naf-mode-ulan-ppl-corp-fface'*
-|         KEYWORDS-IN:
+|         KEYWORD-REGEXPS-IN:
 |        `*naf-mode-ulan-rltd-ppl-corp*'
 |        `*naf-mode-x-of-ulan-bol*'
 |
@@ -479,24 +479,24 @@ Following are base faces with inheriting faces:
 ,----(describe-face 'naf-mode-db-field-entry-face)
 | 
 |  `naf-mode-db-field-entry-fface'*    
-|   |  KEYWORDS-IN:
+|   |  KEYWORD-REGEXPS-IN:
 |   | `naf-mode-db-numbers-flag'
 |   | 
 |   |--+ (describe-face 'naf-mode-db-field-entry-ulan-face)
 |   | `naf-mode-db-field-entry-ulan-fface'*
-|   |  KEYWORDS-IN:
+|   |  KEYWORD-REGEXPS-IN:
 |   | `naf-mode-db-field-flags-ulan-paren' 
 |   |
 |   ---+ (describe-face 'naf-mode-db-field-entry-bnf-face)
 |     `naf-mode-db-field-entry-bnf-fface'*  
-|      KEYWORDS-IN:
+|      KEYWORD-REGEXPS-IN:
 |     `naf-mode-db-field-flags-bnf'      
 |
 `----\n
 ,---- (describe-face 'naf-mode-date-face)
 |
 |  `naf-mode-date-fface'*
-|   |  KEYWORDS-IN: 
+|   |  KEYWORD-REGEXPS-IN: 
 |   |  `naf-mode-active-date'
 |   |  `naf-mode-active-date-flags-solo'
 |   |  `naf-mode-active-date-flags-paren'
@@ -513,22 +513,21 @@ Following are base faces with inheriting faces:
 |   |    
 |   |--+ (describe-face 'naf-mode-date-active-face) 
 |     `naf-mode-date-active-fface'*
-|      KEYWORDS-IN:
+|      KEYWORD-REGEXPS-IN:
 |     `naf-mode-active-date'
 |
 `----\n
 ,---- (describe-face 'naf-mode-artist-face)
 | 
 | `naf-mode-artist-fface'
-|  |  KEYWORDS-IN:
+|  |  KEYWORD-REGEXPS-IN:
 |  |
 |  |--+ (describe-face 'naf-mode-artist-student-of-face)
 |    `naf-mode-artist-student-of-fface'
-|     |  KEYWORDS-IN:
+|     |  KEYWORD-REGEXPS-IN:
 |     |
 |     |--+`naf-mode-artist-student-of-julian-face'
-|          |  KEYWORDS-IN:
-|          |  VARIABLES HOLDING LISTS:
+|          |  KEYWORD-LISTS-IN:
 |          |  `*naf-students-julian-us*'
 |          |  `*naf-students-of-julian-brazil*'
 |          |  `*naf-students-of-julian-canada*'
@@ -540,7 +539,7 @@ Following are base faces with inheriting faces:
 |          |  `*naf-students-of-julian-russia*'
 |          |  `*naf-students-of-julian-switzerland*'
 |          |  `*naf-students-of-julian-uk*'
-|          |  CONSTANTS HOLDING REGEXPS:
+|          |  KEYWORD-REGEXPS-IN:
 |          |  `naf-mode-students-julian-us'
 |          |  `naf-mode-students-of-julian-brazil'
 |          |  `naf-mode-students-of-julian-canada'
@@ -560,7 +559,7 @@ Following are base faces with inheriting faces:
 ,---- (describe-face 'naf-mode-benezit-face)
 | 
 | `naf-mode-benezit-fface'*          
-|  KEYWORDS-IN:
+|  KEYWORD-REGEXPS-IN:
 | `naf-mode-benezit-section-flag'
 | `naf-mode-benezit-currency-acronym'
 |
@@ -568,7 +567,7 @@ Following are base faces with inheriting faces:
 ,---- (describe-face 'naf-mode-place-face)
 | 
 | `naf-mode-place-fface'*
-|  KEYWORDS-IN:
+|  KEYWORD-REGEXPS-IN:
 | `naf-mode-nation-english'
 | `naf-mode-nation-french'
 | `naf-mode-state-names'
@@ -582,7 +581,7 @@ Following are base faces with inheriting faces:
 ,---- (describe-face 'naf-mode-event-face)
 | 
 | `naf-mode-event-fface'*
-|  KEYWORDS-IN:
+|  KEYWORD-REGEXPS-IN:
 | `naf-mode-world-events'
 | `naf-mode-art-events'
 |
@@ -590,14 +589,14 @@ Following are base faces with inheriting faces:
 ,---- (describe-face 'naf-mode-group-period-style-face)
 | 
 | `naf-mode-group-period-style-fface'*
-| KEYWORDS-IN:
+| KEYWORD-REGEXPS-IN:
 | `naf-mode-group-period-styles'
 |
 `----\n
 ,---- (describe-face 'naf-mode-institution-face)
 | 
 | `naf-mode-institution-fface'*
-|  KEYWORDS-IN:
+|  KEYWORD-REGEXPS-IN:
 | `naf-mode-institution-museum-names'
 | `naf-mode-academy-names'
 | `naf-mode-school-names-intnl'
@@ -610,7 +609,7 @@ Following are base faces with inheriting faces:
 ,---- (describe-face 'naf-mode-alternate-name-face)
 | 
 | `naf-mode-alternate-name-fface'*
-|  KEYWORDS-IN:
+|  KEYWORD-REGEXPS-IN:
 | `naf-mode-alternate-name-flags'
 | `*naf-mode-x-of*'
 |
@@ -618,7 +617,7 @@ Following are base faces with inheriting faces:
 ,---- (describe-face 'naf-mode-nationality-face)
 | 
 | `naf-mode-nationality-fface'*
-|  KEYWORDS-IN: 
+|  KEYWORD-REGEXPS-IN: 
 | `naf-mode-nationality-english'
 | `naf-mode-nationality-french'.
 |
@@ -626,7 +625,7 @@ Following are base faces with inheriting faces:
 ,---- (describe-face 'naf-mode-primary-role-face)
 | 
 | `naf-mode-primary-role-fface'*
-|  KEYWORDS-IN: 
+|  KEYWORD-REGEXPS-IN: 
 | `naf-mode-english-roles-primary'
 | `naf-mode-french-roles-primary'
 |
@@ -634,7 +633,7 @@ Following are base faces with inheriting faces:
 ,---- (describe-face 'naf-mode-secondary-role-face)
 | 
 | `naf-mode-secondary-role-fface'*
-| KEYWORDS-IN:
+| KEYWORD-REGEXPS-IN:
 | `naf-mode-english-roles-secondary'
 | `naf-mode-french-roles-secondary'                                   
 |
@@ -642,25 +641,25 @@ Following are base faces with inheriting faces:
 ,---- (describe-face 'naf-mode-art-keywords-role-face)
 | 
 | `naf-mode-art-keywords-role-fface'*
-|  KEYWORDS-IN:
+|  KEYWORD-REGEXPS-IN:
 | `naf-mode-art-keywords'
 |
 `----\n
 ,---- (describe-face 'naf-mode-awards-prizes-face)
 | 
 | `naf-mode-awards-prizes-fface'*     
-|  KEYWORDS-IN:
+|  KEYWORD-REGEXPS-IN:
 |  `naf-mode-awards-prizes-names' 
 |
 `----\n
 ,---- (describe-face 'naf-mode-publication-periodical-face)
 |
 | `naf-mode-publication-periodical-fface'*
-|  KEYWORDS-IN: 
-| `naf-mode-publications-periodicals-english'
-| `naf-mode-publications-periodicals-english-one-word'
-| `naf-mode-publications-periodicals-french'
-| `naf-mode-publications-periodicals-intnl'
+|  KEYWORD-REGEXPS-IN: 
+| `*naf-publications-periodicals-english*'
+| `*naf-publications-periodicals-english-one-word*'
+| `*naf-publications-periodicals-french*'
+| `*naf-naf-publications-periodicals-intnl*'
 |
 `----\n
 See also; `mon-help-faces-themes', `mon-help-basic-faces', `mon-help-font-lock'
@@ -686,20 +685,20 @@ See also; `mon-help-faces-themes', `mon-help-basic-faces', `mon-help-font-lock'
     (((class color) (background dark)) (:foreground "Red3"))
     (t (:bold t :italic t)))
   "*Face for font-locking National db authority keyword entries in .naf files.
-KEYWORDS-IN: the regexp(s) defined in `naf-mode-db-entry'.
+KEYWORD-REGEXPS-IN: `naf-mode-db-entry'.
 These are standard `naf-mode' template keywords.
 FACE-DOCUMENTED-IN: `naf-mode-db-entry-face'.
-See also; .\nUsed in `naf-mode'."
+See also; .\nUsed in `naf-mode'.\n►►►"
   :group 'naf-mode
   :group 'naf-mode-faces)
 ;;
 (defvar naf-mode-db-entry-fface 'naf-mode-db-entry-face
   "*Face for `naf-mode' font-locking of National db authority keyword entries.
-KEYWORDS-IN: the regexp(s) defined in `naf-mode-db-entry'.
+KEYWORD-REGEXPS-IN: `naf-mode-db-entry'.
 These are standard `naf-mode' template keywords.
 FACE-DEFINED-IN: `naf-mode-db-entry-face'
-See also; .")
-
+See also; .\n►►►")
+;;
 ;;;test-me;(describe-face 'naf-mode-db-entry-face)
 ;;
 ;;;(progn (makunbound 'naf-mode-db-entry-fface) (unintern 'naf-mode-db-entry-fface))
@@ -710,20 +709,20 @@ See also; .")
     (((class color) (background dark)) (:foreground "DarkKhaki"))
     (t (:bold t :italic t)))
   "*Face for font-locking of keyword delimiter ranges in .naf files.
-KEYWORDS-IN: the regexp(s) defined in `naf-mode-delim' and `naf-mode-comment-delim'.
 These are standard `naf-mode' template keywords.
-This face is documented in `naf-mode-delim-fface'.
-See also; .\nUsed in `naf-mode'."
+KEYWORD-REGEXPS-IN: `naf-mode-delim', `naf-mode-comment-delim'.
+FACE-DOCUMENTED-IN: `naf-mode-delim-fface'.
+See also; .\nUsed in `naf-mode'.\n►►►"
   :group 'naf-mode
   :group 'naf-mode-faces)
 ;;
 (defvar naf-mode-delim-fface 'naf-mode-delim-face
   "*Face for `naf-mode' font-locking of the keyword delimiter ranges.
-KEYWORDS-IN: the regexp(s) defined in `naf-mode-delim' and `naf-mode-comment-delim'.
 These are standard `naf-mode' template keywords.
+KEYWORD-REGEXPS-IN: `naf-mode-delim' and `naf-mode-comment-delim'.
 FACE-DEFINED-IN: `naf-mode-delim-face'.\n
-See also; .")
-
+See also; .\n►►►")
+;;
 ;;;test-me;(describe-face 'naf-mode-delim-face)
 ;;
 ;;;(progn (makunbound 'naf-mode-delim-fface) (unintern 'naf-mode-delim-fface))
@@ -734,20 +733,20 @@ See also; .")
     (((class color) (background dark)) (:foreground "firebrick4"))
     (t (:bold t :italic t)))
   "*Face for font-locking of dividing chars of entity name forms in .naf files.
-KEYWORDS-IN: the regexp(s) defined in `naf-mode-name-divider'.
 These are standard `naf-mode' template keywords.
+KEYWORD-REGEXPS-IN: `naf-mode-name-divider'.
 FACE-DOCUMENTED-IN: `naf-mode-name-divider-fface'.
-See also; .\nUsed in `naf-mode'."
+See also; .\nUsed in `naf-mode'.\n►►►"
   :group 'naf-mode
   :group 'naf-mode-faces)
 ;;
 (defvar naf-mode-name-divider-fface 'naf-mode-name-divider-face
   "*Face for `naf-mode' font-locking of dividing entity name forms.
-KEYWORDS-IN: the regexp(s) defined in `naf-mode-name-divider'.
 These are standard `naf-mode' template keywords.
+KEYWORD-REGEXPS-IN: `naf-mode-name-divider'.
 FACE-DEFINED-IN: `naf-mode-name-divider-face'.
-See also; .")
-
+See also; .\n►►►")
+;;
 ;;;test-me;(describe-face 'naf-mode-name-divider-face)
 ;;
 ;;;(progn (makunbound 'naf-mode-name-divider-fface) (unintern 'naf-mode-name-divider-fface))
@@ -758,20 +757,20 @@ See also; .")
     (((class color) (background dark)) (:foreground "orangered1"))
     (t (:bold t :italic t)))
   "Face font-locking of URL refs appearing in db-URL refs in .naf files.
-KEYWORDS-IN: the regexp(s) defined in `naf-mode-url-flag'.
 These are standard `naf-mode' template keywords.
+KEYWORD-REGEXPS-IN: `naf-mode-url-flag'.
 FACE-DOCUMENTED-IN: `naf-mode-field-url-flag-face'.
-See also; .\nUsed in `naf-mode'."
+See also; .\nUsed in `naf-mode'.\n►►►"
   :group 'naf-mode
   :group 'naf-mode-faces)
 ;;
 (defvar naf-mode-field-url-flag-fface 'naf-mode-field-url-flag-face
   "*Face for `naf-mode' font-locking of .naf db-field URL refs. 
-KEYWORDS-IN: the regexp(s) defined in `naf-mode-url-flag'.
 These are standard `naf-mode' template keywords.
+KEYWORD-REGEXPS-IN: `naf-mode-url-flag'.
 FACE-DEFINED-IN: `naf-mode-field-url-flag-face'.
-See also; ")
-
+See also; .\n►►►")
+;;
 ;;;test-me;(describe-face 'naf-mode-field-url-flag-face)
 ;;
 ;;;(progn (makunbound 'naf-mode-field-url-flag-fface)
@@ -782,22 +781,22 @@ See also; ")
 (defface naf-mode-delimit-url-flag-face
     '((t (:inherit naf-mode-field-url-flag-face)))
     "*Face for font-locking URLs delimited by (URL `.*') in .naf files.
-KEYWORDS-IN: the delimeter regexp defined in `naf-mode-url-wrapper-flag'.
 These are standard `naf-mode' template keywords.
+KEYWORD-REGEXPS-IN: `naf-mode-url-wrapper-flag'.
 This face INHERITS-FROM: `naf-mode-field-url-flag-fface'.
 FACE-DOCUMENTED-IN: `naf-mode-delimit-url-flag-fface'.
-See also; .\nUsed in `naf-mode'."
+See also; .\nUsed in `naf-mode'.\n►►►"
     :group 'naf-mode
     :group 'naf-mode-faces)
 ;;
 (defvar naf-mode-delimit-url-flag-fface 'naf-mode-delimit-url-flag-face
   "*Face provides font-locking of `naf-mode' URLs delimited by (URL `.*').
-KEYWORDS-IN: the delimeter regexp defined in `naf-mode-url-wrapper-flag'.
 These are standard `naf-mode' template keywords.
+KEYWORD-REGEXPS-IN: `naf-mode-url-wrapper-flag'.
 This face INHERITS-FROM: `naf-mode-field-url-flag-fface'.
 FACE-DEFINED-IN: `naf-mode-delimit-url-flag-face'.
-See also; .")
-
+See also; .\n►►►")
+;;
 ;;;test-me;(describe-face 'naf-mode-delimit-url-flag-face)
 ;;
 ;;;(progn (makunbound 'naf-mode-delimit-url-flag-fface)
@@ -809,60 +808,60 @@ See also; .")
     (((class color) (background dark)) (:foreground "orangered1"))
     (t (:bold t :italic t)))
   "Face for `naf-mode' timestamp fontlocking in .naf files.
-Fontlock timestamps generated with: `mon-timestamp', `mon-accessed-stamp',
-`mon-accessed-time-stamp'. 
-KEYWORDS-IN: the regexp(s) defined in `naf-mode-timestamp-flag'.
+Fontlock timestamps generated with FUNCTION(S):
+`mon-timestamp', `mon-accessed-stamp', `mon-accessed-time-stamp'. 
 These are standard `naf-mode' template keywords.
-Documentation in var `naf-mode-timestamp-fface'.
-See also; .\nUsed in `naf-mode'."
+KEYWORD-REGEXPS-IN: `naf-mode-timestamp-flag'.
+FACE-DOCUMENTED-IN: `naf-mode-timestamp-fface'.
+See also; .\nUsed in `naf-mode'.\n►►►"
   :group 'naf-mode
   :group 'naf-mode-faces)
 ;;
 (defvar naf-mode-timestamp-fface 'naf-mode-timestamp-face
   "*Face for `naf-mode' timestamp fontlocking.
-Fontlocks timestamps generated with: `mon-timestamp', `mon-accessed-stamp',
-`mon-accessed-time-stamp'. 
-KEYWORDS-IN: the regexp(s) defined in `naf-mode-timestamp-flag'.
+Fontlocks timestamps generated with FUNCION(S):
+`mon-timestamp', `mon-accessed-stamp',`mon-accessed-time-stamp'.
 These are standard `naf-mode' template keywords.
+KEYWORD-REGEXPS-IN: `naf-mode-timestamp-flag'.
 FACE-DEFINED-IN: `naf-mode-timestamp-face'.
-See also; ")
-
+See also; .\n►►►")
+;;
 ;;;test-me;(describe-face 'naf-mode-timestamp-face)
 ;;
 ;;;(progn (makunbound 'naf-mode-timestamp-fface)
-;;;   (unintern 'naf-mode-timestamp-fface))
+;;;       (unintern 'naf-mode-timestamp-fface))
 
 ;;; ==============================
 (defface naf-mode-accessed-by-face
   '((t (:inherit naf-mode-timestamp-face)))
   "*Face for font-locking of user names in timestamps in .naf files.
-Fontlocking of timestamps generated with: `mon-timestamp', `mon-accessed-stamp',
-`mon-accessed-time-stamp'. 
-KEYWORDS-IN: the regexp(s) defined in `naf-mode-accessed-by-flag'.
+Fontlocking of timestamps generated with FUNCION(S):
+`mon-timestamp', `mon-accessed-stamp',`mon-accessed-time-stamp'.
 These are standard `naf-mode' template keywords.
-This face inherits `naf-mode-timestamp-face'.
+KEYWORD-REGEXPS-IN: `naf-mode-accessed-by-flag'.
+This face INHERITS-FROM: `naf-mode-timestamp-face'.
 FACE-DOCUMENTED-IN: `naf-mode-accessed-by-fface'.
-See also; .\nUsed in `naf-mode'."
+See also; .\nUsed in `naf-mode'.\n►►►"
   :group 'naf-mode
   :group 'naf-mode-faces)
 ;;
 (defvar naf-mode-accessed-by-fface 'naf-mode-accessed-by-face
   "*Face for `naf-mode' font-locking of user names in timestamps.
-Fontlocking of timestamps generated with: `mon-timestamp', `mon-accessed-stamp',
-`mon-accessed-time-stamp'. 
-KEYWORDS-IN: the regexp(s) defined in `naf-mode-accessed-by-flag'.
+Fontlocking of timestamps generated with FUNCTION(S):
+`mon-timestamp', `mon-accessed-stamp', `mon-accessed-time-stamp'. 
 These are standard `naf-mode' template keywords.
-This face inherits `naf-mode-timestamp-face'.
+KEYWORD-REGEXPS-IN: `naf-mode-accessed-by-flag'.
+This face INHERITS-FROM: `naf-mode-timestamp-face'.
 FACE-DEFINED-IN: `naf-mode-accessed-by-face'.
-See also; .")
-
+See also; .\n►►►")
+;;
 ;;;test-me;(describe-face 'naf-mode-accessed-by-face)
 ;;
-;;;(progn (makunbound 'naf-mode-accessed-by-fface)
-;;;  (unintern 'naf-mode-accessed-by-fface))
+;;(progn (makunbound 'naf-mode-accessed-by-fface)
+;;       (unintern 'naf-mode-accessed-by-fface))
 
 ;;; ==============================
-;;; START naf-mode 'Field' faces
+;;; START 'FIELD' FACES:
 ;;; ==============================
 
 ;;; ==============================
@@ -871,18 +870,18 @@ See also; .")
     (((class color) (background dark)) (:foreground "orange"))
     (t (:bold t :italic t)))
   "*Face font-locking of primary National db entries fields in .naf files.
-KEYWORDS-IN: the regexp(s) defined in `naf-mode-field-names'.
+KEYWORD-REGEXPS-IN: `naf-mode-field-names'.
 FACE-DOCUMENTED-IN: `naf-mode-field-fface'.
-See also; .\nUsed in `naf-mode'."
+See also; .\nUsed in `naf-mode'.\n►►►"
   :group 'naf-mode
   :group 'naf-mode-faces)
 ;;
 (defvar naf-mode-field-fface  'naf-mode-field-face
   "*Face for `naf-mode' font-locking of National db entries.
-KEYWORDS-IN: the regexp(s) defined in `naf-mode-field-names'.
+KEYWORD-REGEXPS-IN: `naf-mode-field-names'.
 FACE-DEFINED-IN: `naf-mode-field-face'.
-See also; .")
-
+See also; .\n►►►")
+;;
 ;;;test-me;(describe-face 'naf-mode-field-face)
 ;;
 ;;;(progn (makunbound 'naf-mode-field-fface) (unintern 'naf-mode-field-fface))
@@ -895,19 +894,21 @@ See also; .")
     (((class color) (background dark)) (:foreground "chocolate2"))
     (t (:bold t :italic t)))
   "*Face for font-locking of db-field entries in .naf files.
-KEYWORDS-IN: the regexp(s) defined in `naf-mode-db-numbers-flag'.
-Documentation held in var `naf-mode-db-field-entry-fface'.
-See also; `naf-mode-db-field-entry-ulan-fface', `naf-mode-db-field-entry-bnf-fface'.
-Used in `naf-mode'."
+KEYWORD-REGEXPS-IN: `naf-mode-db-numbers-flag'.
+FACE-DOCUMENTED-IN: `naf-mode-db-field-entry-fface'.
+See also;
+`naf-mode-db-field-entry-ulan-fface', `naf-mode-db-field-entry-bnf-fface'.\n
+Used in `naf-mode'.\n►►►"
   :group 'naf-mode
   :group 'naf-mode-faces)
 ;;
 (defvar naf-mode-db-field-entry-fface  'naf-mode-db-field-entry-face
   "*Face for `naf-mode' font-locking of db-field entries.
-KEYWORDS-IN: the regexp(s) defined in `naf-mode-db-numbers-flag'.
+KEYWORD-REGEXPS-IN: `naf-mode-db-numbers-flag'.
 FACE-DEFINED-IN: `naf-mode-db-field-entry-face'.
-See also; `naf-mode-db-field-entry-ulan-fface', `naf-mode-db-field-entry-bnf-fface'.")
-
+See also; 
+`naf-mode-db-field-entry-ulan-fface', `naf-mode-db-field-entry-bnf-fface'.\n►►►")
+;;
 ;;;test-me;(describe-face 'naf-mode-db-field-entry-face)
 ;;
 ;;;(progn (makunbound 'naf-mode-db-field-entry-fface) (unintern 'naf-mode-db-field-entry-fface))
@@ -918,20 +919,20 @@ See also; `naf-mode-db-field-entry-ulan-fface', `naf-mode-db-field-entry-bnf-ffa
 (defface naf-mode-field-bnf-face 
   '((t (:inherit naf-mode-field-face)))
   "Face for font-locking of BNF db-field entries in .naf files.
-KEYWORDS-IN: the regexp(s) defined in `naf-mode-field-names-bnf'.
+KEYWORD-REGEXPS-IN: `naf-mode-field-names-bnf'.
 This face INHERITS-FROM: `naf-mode-field-face'.
 FACE-DOCUMENTED-IN: `naf-mode-field-bnf-fface'.
-See also; `naf-mode-db-field-entry-bnf-fface'.\nUsed in `naf-mode'."
+See also; `naf-mode-db-field-entry-bnf-fface'.\nUsed in `naf-mode'.\n►►►"
   :group 'naf-mode
   :group 'naf-mode-faces)
 ;;
 (defvar naf-mode-field-bnf-fface 'naf-mode-field-bnf-face
   "*Face for `naf-mode' font-locking of BNF db-field entries.
-KEYWORDS-IN: the regexp(s) defined in `naf-mode-field-names-bnf'.
+KEYWORD-REGEXPS-IN: `naf-mode-field-names-bnf'.
 FACE-DEFINED-IN:  `naf-mode-field-bnf-face'.
 This face INHERITS-FROM: `naf-mode-field-face'.
-See also; `naf-mode-db-field-entry-bnf-fface'..")
-
+See also; `naf-mode-db-field-entry-bnf-fface'.\n►►►")
+;;
 ;;;test-me;(describe-face 'naf-mode-field-bnf-face)
 ;;
 ;;;(progn (makunbound 'naf-mode-field-bnf-fface) 
@@ -942,77 +943,75 @@ See also; `naf-mode-db-field-entry-bnf-fface'..")
 (defface naf-mode-db-field-entry-bnf-face
   '((t (:inherit naf-mode-db-field-entry-face)))
     "*Face for font-locking of BNF secondary field entries in .naf files.
-KEYWORDS-IN: the regexp(s) defined in `naf-mode-db-field-flags-bnf'.
+KEYWORD-REGEXPS-IN: `naf-mode-db-field-flags-bnf'.
 Face documentation in var `naf-mode-db-field-entry-bnf-fface'.
 This face INHERITS-FROM: `naf-mode-db-field-entry-face'.
 See also; `naf-mode-db-field-entry-fface', `naf-mode-field-bnf-fface',
-`naf-mode-db-field-entry-ulan-fface'.\nUsed in `naf-mode'."
+`naf-mode-db-field-entry-ulan-fface'.\nUsed in `naf-mode'.\n►►►"
   	    :group 'naf-mode
   	    :group 'naf-mode-faces)
 ;;
 (defvar naf-mode-db-field-entry-bnf-fface 'naf-mode-db-field-entry-bnf-face
     "*Face for font-locking of BNF secondary field entries in `naf-mode'.
-KEYWORDS-IN: the regexp(s) defined in `naf-mode-db-field-flags-bnf'.
+KEYWORD-REGEXPS-IN: `naf-mode-db-field-flags-bnf'.
 FACE-DEFINED-IN: `naf-mode-db-field-entry-bnf-face'.
 This face INHERITS-FROM: `naf-mode-db-field-entry-face'.
 See also; `naf-mode-db-field-entry-fface', `naf-mode-field-bnf-fface',
-`naf-mode-db-field-entry-ulan-fface'.")
-
+`naf-mode-db-field-entry-ulan-fface'.\n►►►")
+;;
 ;;;test-me;(describe-face 'naf-mode-db-field-entry-bnf-face)
-;;;
+;;
 ;;(progn (makunbound 'naf-mode-db-field-entry-bnf-face)
-;;  (makunbound 'naf-mode-db-field-entry-bnf-fface)
-;;  (unintern 'naf-mode-db-field-entry-bnf-face)
-;;  (unintern 'naf-mode-db-field-entry-bnf-fface))
+;;       (unintern 'naf-mode-db-field-entry-bnf-face)
+;;       (makunbound 'naf-mode-db-field-entry-bnf-fface)
+;;       (unintern 'naf-mode-db-field-entry-bnf-fface))
 
 ;;; ==============================
 ;;; CREATED: <Timestamp: #{2009-09-10T12:19:36-04:00Z}#{09374} - by MON KEY>
 (defface naf-mode-field-ulan-face
   '((t (:inherit naf-mode-field-face)))
     "*BASE face for font-locking of primary ULAN fields in .naf files.
-KEYWORDS-IN: the regexp(s) defined in .
+KEYWORD-REGEXPS-IN:.
 This face INHERITS-FROM: `naf-mode-field-face'.
-Face documentation in var `naf-mode-field-ulan-fface'.
-See also; `naf-mode-ulan-ppl-corp-face-fface'.\nUsed in `naf-mode'."
+FACE-DOCUMENTED-IN: `naf-mode-field-ulan-fface'.
+See also; `naf-mode-ulan-ppl-corp-face-fface'.\nUsed in `naf-mode'.\n►►►"
     :group 'naf-mode
     :group 'naf-mode-faces)
 ;;
 (defvar naf-mode-field-ulan-fface 'naf-mode-field-ulan-face
     "*BASE face for font-locking of primary ULAN fields in `naf-mode'.
-KEYWORDS-IN: the regexp(s) defined in .
+KEYWORD-REGEXPS-IN:.
 This face INHERITS-FROM: `naf-mode-field-face'.
 FACE-DEFINED-IN: `naf-mode-field-ulan-face'.
-See also; `naf-mode-ulan-ppl-corp-face-fface'.")
-
+See also; `naf-mode-ulan-ppl-corp-face-fface'.\n►►►")
+;;
 ;;;test-me;(describe-face 'naf-mode-field-ulan-face)
-
-;;(progn (makunbound 'naf-mode-field-ulan-face)
-;;  (makunbound 'naf-mode-field-ulan-fface)
-;;  (unintern 'naf-mode-field-ulan-face)
-;;  (unintern 'naf-mode-field-ulan-fface))
-
+;;
+;;(progn 
+;; (makunbound 'naf-mode-field-ulan-face)(unintern 'naf-mode-field-ulan-face)
+;;  (makunbound 'naf-mode-field-ulan-fface)(unintern 'naf-mode-field-ulan-fface))
 
 ;;; ==============================
 ;;; CREATED: <Timestamp: #{2009-09-10T14:23:24-04:00Z}#{09374} - by MON KEY>
 (defface naf-mode-db-field-entry-ulan-face
   '((t (:inherit naf-mode-db-field-entry-face)))
   "*Face font-locking of secondary ULAN fields \(inside parens\ ) in .naf files.
-KEYWORDS-IN: `naf-mode-db-field-flags-ulan-paren'.
+KEYWORD-REGEXPS-IN: `naf-mode-db-field-flags-ulan-paren'.
 This face INHERITS-FROM: `naf-mode-field-entry-face'.
-Face documentation in var `naf-mode-db-field-entry-ulan-fface'.
-See also; `naf-mode-ulan-ppl-corp-fface'.\nUsed in `naf-mode'."
+FACE-DOCUMENTED-IN: `naf-mode-db-field-entry-ulan-fface'.
+See also; `naf-mode-ulan-ppl-corp-fface'.\nUsed in `naf-mode'.\n►►►"
   	    :group 'naf-mode
   	    :group 'naf-mode-faces)
 ;;
 (defvar naf-mode-db-field-entry-ulan-fface 'naf-mode-db-field-entry-ulan-face
     "*Face for `naf-mode' font-locking secondary ULAN fields \(inside parens\ ).
-KEYWORDS-IN: `naf-mode-db-field-flags-ulan-paren'.
+KEYWORD-REGEXPS-IN: `naf-mode-db-field-flags-ulan-paren'.
 This face INHERITS-FROM: `naf-mode-field-entry-face'.
-FACE-DEFINED-IN: `naf-mode-db-field-entry-ulan-face'.
-See also; `naf-mode-ulan-ppl-corp-fface'.")
-
+FACE-DEFINED-IN: `naf-mode-db-field-entry-ulan-face'.\n
+See also; `naf-mode-ulan-ppl-corp-fface'.\n►►►")
+;;
 ;;;test-me;(describe-face 'naf-mode-db-field-entry-ulan-face)
-
+;;
 ;;(progn (makunbound 'naf-mode-db-field-entry-ulan-face)
 ;;  (makunbound 'naf-mode-db-field-entry-ulan-fface)
 ;;  (unintern 'naf-mode-db-field-entry-ulan-face)
@@ -1023,23 +1022,22 @@ See also; `naf-mode-ulan-ppl-corp-fface'.")
 (defface naf-mode-ulan-ppl-corp-face
   '((t (:inherit naf-mode-field-ulan-face))) 
     "*Face for font-locking of ULAN 'type-of' fields in `naf-mode' files.
-KEYWORDS-IN: the regexp(s) defined in `*naf-mode-ulan-rltd-ppl-corp*', 
-`*naf-mode-x-of-ulan-bol*'.
-This face inherits `naf-mode-db-field-ulan-face'.
-For documentated in `naf-mode-ulan-ppl-corp-fface'.
-See also; `*naf-mode-x-of*',`naf-mode-field-face', ."
+KEYWORD-REGEXPS-IN:
+`*naf-mode-ulan-rltd-ppl-corp*', `*naf-mode-x-of-ulan-bol*'.
+This face INHERITS-FROM: `naf-mode-db-field-ulan-face'.
+FACE-DOCUMENTED-IN: `naf-mode-ulan-ppl-corp-fface'.\n
+See also; `*naf-mode-x-of*',`naf-mode-field-face'.\n►►►"
     :group 'naf-mode
     :group 'naf-mode-faces)
 ;;
 (defvar naf-mode-ulan-ppl-corp-fface 'naf-mode-ulan-ppl-corp-face
     "*Face for font-locking of ULAN 'type-of' fields in .naf files.
-KEYWORDS-IN: the regexp(s) defined in `*naf-mode-ulan-rltd-ppl-corp*', 
-`*naf-mode-x-of-ulan-bol*'.
-This face inherits `naf-mode-db-field-ulan-face'.
-FACE-DEFINED-IN: `naf-mode-ulan-ppl-corp-face'.
-See also; `*naf-mode-x-of', `naf-mode-field-face'.
-Used in `naf-mode'.")
-
+KEYWORD-REGEXPS-IN:
+`*naf-mode-ulan-rltd-ppl-corp*' `*naf-mode-x-of-ulan-bol*'.
+This face INHERITS-FROM: `naf-mode-db-field-ulan-face'
+FACE-DEFINED-IN: `naf-mode-ulan-ppl-corp-face'
+See also; `*naf-mode-x-of', `naf-mode-field-face'\nUsed in `naf-mode'.\n►►►")
+;;
 ;;;test-me;(describe-face 'naf-mode-naf-mode-ulan-ppl-corp-face)
 ;;
 ;;;(progn (makunbound 'naf-mode-naf-mode-ulan-ppl-corp-face-face)
@@ -1053,28 +1051,28 @@ Used in `naf-mode'.")
     (((class color) (background dark)) (:foreground "forest green"))
     (t (:bold t :italic t)))
   "Face for font-locking Date related keyword flags in .naf files.
-KEYWORDS-IN: the regexp(s) defined in:
+KEYWORD-REGEXPS-IN:
 `naf-mode-active-date', `naf-mode-active-date-flags-solo'
 `naf-mode-active-date-flags-paren', `naf-mode-lifespan'
 `naf-mode-date-string', `naf-mode-english-dates', `naf-mode-french-dates'
 `naf-mode-benezit-date', `naf-mode-circa-dates', `naf-mode-year-range'
 `naf-mode-english-days', `naf-mode-french-days', `naf-mode-simple-date'
-Face documentation in `naf-mode-date-fface'.
-See also; .\nUsed in `naf-mode'."
+FACE-DOCUMENTED-IN: `naf-mode-date-fface'.
+See also; .\nUsed in `naf-mode'.\n►►►"
   :group 'naf-mode
   :group 'naf-mode-faces)
 ;;
 (defvar naf-mode-date-fface 'naf-mode-date-face
   "*Face for `naf-mode' font-locking of date related keyword flags.
-KEYWORDS-IN: the regexp(s) defined in:
+KEYWORD-REGEXPS-IN:
 `naf-mode-active-date', `naf-mode-active-date-flags-solo'
 `naf-mode-active-date-flags-paren', `naf-mode-lifespan'
 `naf-mode-date-string', `naf-mode-english-dates', `naf-mode-french-dates'
 `naf-mode-benezit-date', `naf-mode-circa-dates', `naf-mode-year-range'
 `naf-mode-english-days', `naf-mode-french-days', `naf-mode-simple-date'
 FACE-DEFINED-IN: `naf-mode-date-face'.
-See also; .")
-
+See also; .\n►►►")
+;;
 ;;;test-me;(describe-face 'naf-mode-date-face)
 ;;
 ;;;(progn (makunbound 'naf-mode-date-fface) (unintern 'naf-mode-date-fface))
@@ -1084,23 +1082,24 @@ See also; .")
 (defface naf-mode-date-active-face
   '((t (:inherit naf-mode-date-face)))
     "*Face for font-locking of active period \(circas, ca. etc.\) in .naf files.
-KEYWORDS-IN: the regexp(s) defined in `naf-mode-active-date'.
-This face inherits `naf-mode-date-face'.
-Documentation in var `naf-mode-date-active-fface'.
-See also; .\nUsed in `naf-mode'."
+KEYWORD-REGEXPS-IN: `naf-mode-active-date'.
+This face INHERITS-FROM: `naf-mode-date-face'.
+FACE-DOCUMENTED-IN: `naf-mode-date-active-fface'.
+See also; .\nUsed in `naf-mode'.\n►►►"
   :group 'naf-mode
   :group 'naf-mode-faces)
 ;;
 (defvar naf-mode-date-active-fface 'naf-mode-date-active-face
   "*Face for `naf-mode' font-locking of active period (circas) keywords.
-KEYWORDS-IN: the regexp(s) defined in `naf-mode-active-date'.
-This face inherits `naf-mode-date-face'.
+KEYWORD-REGEXPS-IN: `naf-mode-active-date'.
+This face INHERITS-FROM: `naf-mode-date-face'.
 FACE-DEFINED-IN: `naf-mode-date-active-face'.
-See also; .")
-
+See also; .\n►►►")
+;;
 ;;;test-me;(describe-face 'naf-mode-date-active-face)
 ;;
-;;;(progn (makunbound 'naf-mode-date-active-fface) (unintern 'naf-mode-date-active-fface))
+;;(progn (makunbound 'naf-mode-date-active-fface) 
+;;       (unintern 'naf-mode-date-active-fface))
 
 ;;; ==============================
 (defface naf-mode-benezit-face
@@ -1109,19 +1108,21 @@ See also; .")
     (t (:bold t :italic t)))
   "*Face name for font-locking of Benezit entries in .naf files.
 Typically comprise auction price flags and auction related infos.
-KEYWORDS-IN: the Benezit keyword regexp in `naf-mode-benezit-section-flag' and
-`naf-mode-benezit-currency-acronym'.\nFACE-DOCUMENTED-IN: `naf-mode-benezit-face'.
-See also; `naf-mode-benezit-currency-acronym'.\nUsed in `naf-mode'."
+KEYWORD-REGEXPS-IN:
+`naf-mode-benezit-section-flag', `naf-mode-benezit-currency-acronym'.
+FACE-DOCUMENTED-IN: `naf-mode-benezit-face'.
+See also; `naf-mode-benezit-currency-acronym'.\nUsed in `naf-mode'.\n►►►"
   :group 'naf-mode
   :group 'naf-mode-faces)
 ;;
 (defvar naf-mode-benezit-fface 'naf-mode-benezit-face
   "*Face name for `naf-mode' font-locking of Benezit entries.
 Typically thes are comprised fo auction price flags and auction related infos.
-KEYWORDS-IN: the Benezit keyword regexp in `naf-mode-benezit-section-flag' and
-`naf-mode-benezit-currency-acronym'.\nFACE-DOCUMENTED-IN: `naf-mode-benezit-face'.
-See also; `naf-mode-benezit-currency-acronym'.")
-
+KEYWORD-REGEXPS-IN:
+`naf-mode-benezit-section-flag', `naf-mode-benezit-currency-acronym'.
+FACE-DOCUMENTED-IN: `naf-mode-benezit-face'.
+See also; `naf-mode-benezit-currency-acronym'.\n►►►")
+;;
 ;;;test-me;(describe-face 'naf-mode-benezit-face)
 ;;;
 ;;;(progn (makunbound 'naf-mode-benezit-fface)(unintern 'naf-mode-benezit-fface))
@@ -1131,27 +1132,27 @@ See also; `naf-mode-benezit-currency-acronym'.")
    '((((class color) (background light)) (:foreground "yellow4"))
      (((class color) (background dark)) (:foreground "yellow4"))
      (t (:bold t :italic t)))
-   "*Face name for font-locking of Nation/Region/State/Place names in .naf files.
-KEYWORDS-IN: the regexp(s) defined in:
+   "*Face name for font-locking of Nation/Region/State/Place names in naf files.
+KEYWORD-REGEXPS-IN:
 `naf-mode-nation-english',`naf-mode-nation-french'
 `naf-mode-state-names',`naf-mode-city-names-us'
 `naf-mode-intnl-auction-city-names',`naf-mode-intnl-city-names'
 `naf-mode-region-names-french',`naf-mode-region-names-other'
 FACE-DOCUMENTED-IN: `naf-mode-place-fface'.
-See also; `naf-mode-city-names-us'.\nUsed in `naf-mode'."
+See also; `naf-mode-city-names-us'.\nUsed in `naf-mode'.\n►►►"
     :group 'naf-mode
     :group 'naf-mode-faces)
 ;;
 (defvar naf-mode-place-fface 'naf-mode-place-face
   "*Face name for `naf-mode' font-locking of Nation/Region/State/Place names.\n
-KEYWORDS-IN: the regexp(s) defined in:
+KEYWORD-REGEXPS-IN:
 `naf-mode-nation-english',`naf-mode-nation-french'
 `naf-mode-state-names',`naf-mode-city-names-us'
 `naf-mode-intnl-auction-city-names',`naf-mode-intnl-city-names'
 `naf-mode-region-names-french',`naf-mode-region-names-other'
 FACE-DEFINED-IN: `naf-mode-place-face'.
-See also `naf-mode-city-names-us'.")
-
+See also `naf-mode-city-names-us'.\n►►►")
+;;
 ;;;test-me;(describe-face 'naf-mode-place-face)
 ;;
 ;;;(progn (makunbound 'naf-mode-place-fface) (unintern 'naf-mode-place-fface))
@@ -1162,50 +1163,67 @@ See also `naf-mode-city-names-us'.")
     (((class color) (background dark)) (:foreground "yellow3"))
     (t (:bold t :italic t)))
   "*Face name for font-locking of nationality keywords .naf files.
-KEYWORDS-IN: the regexp(s) defined in `naf-mode-nationality-english', 
-`naf-mode-nationality-french'.
+KEYWORD-REGEXPS-IN:
+`naf-mode-nationality-english', `naf-mode-nationality-french'.
 FACE-DOCUMENTED-IN: `naf-mode-nationality-fface'.
-See also; .\nUsed in `naf-mode'."
+See also; .\nUsed in `naf-mode'.\n►►►"
   :group 'naf-mode
   :group 'naf-mode-faces)
 ;;;
 (defvar naf-mode-nationality-fface  'naf-mode-nationality-face
   "*Face name for `naf-mode' font-locking of nationality keywords.
-KEYWORDS-IN: the regexp(s) defined in `naf-mode-nationality-english', 
-`naf-mode-nationality-french'.
+KEYWORD-REGEXPS-IN:
+`naf-mode-nationality-english', `naf-mode-nationality-french'.
 FACE-DEFINED-IN: `naf-mode-nationality-face'.
-See also; ." )
-
+See also; .\n►►►")
+;;
 ;;;test-me;(describe-face 'naf-mode-nationality-face)
 ;;
-;;;(progn (makunbound 'naf-mode-nationality-fface)(unintern 'naf-mode-nationality-fface))
+;;;(progn (makunbound 'naf-mode-nationality-fface)
+;;;       (unintern 'naf-mode-nationality-fface))
 
 ;;; ==============================
+;; TODO: 
+;;; MODIFICATIONS: <Timestamp: #{2009-10-02T19:00:53-04:00Z}#{09405} - by MON KEY>
 (defface naf-mode-publication-periodical-face
   '((((class color) (background light)) (:foreground "CadetBlue3"))
     (((class color) (background dark)) (:foreground "CadetBlue3"))
     (t (:bold t :italic t)))
   "*Face for font-locking of periodial publications names in .naf files.
-KEYWORDS-IN: the regexp(s) defined in:
-`naf-mode-publications-periodicals-english',
-`naf-mode-publications-periodicals-english-one-word',
-`naf-mode-publications-periodicals-french',
-`naf-mode-publications-periodicals-intnl',
+KEYWORD-REGEXPS-IN:
+`naf-mode-publications-periodicals-english'
+`naf-mode-publications-periodicals-english-one-word'
+`naf-mode-publications-periodicals-french'
+`naf-mode-publications-periodicals-intnl'
+KEYWORD-LISTS-IN:
+`*naf-publications-periodicals-english*'
+`*naf-publications-periodicals-english-one-word*'
+`*naf-publications-periodicals-french*'
+`*naf-naf-publications-periodicals-intnl*'
 FACE-DOCUMENTED-IN: `naf-mode-publication-periodical-fface'.
-See also; \nUsed in `naf-mode'."
+See also;\n`*naf-publications-periodicals-french-xrefs*'
+`*naf-mode-publications-periodicals-english-xrefs*'
+`*naf-mode-publications-periodicals-intnl-xrefs*'\nUsed in `naf-mode'.\n►►►"
     :group 'naf-mode
     :group 'naf-mode-faces)
 ;;
 (defvar naf-mode-publication-periodical-fface 'naf-mode-publication-periodical-face
   "*Face for font-locking  periodical/publication keyword titles in `naf-mode'.
-KEYWORDS-IN: the regexp(s) defined in:
-`naf-mode-publications-periodicals-english',
-`naf-mode-publications-periodicals-english-one-word',
-`naf-mode-publications-periodicals-french',
-`naf-mode-publications-periodicals-intnl',
-FACE-DEFINED-IN: `naf-mode-publication-periodical-face'.
-See also; .")
-
+KEYWORD-REGEXPS-IN:
+`naf-mode-publications-periodicals-english'
+`naf-mode-publications-periodicals-english-one-word'
+`naf-mode-publications-periodicals-french'
+`naf-mode-publications-periodicals-intnl'
+KEYWORD-LISTS-IN:
+`*naf-publications-periodicals-english*'
+`*naf-publications-periodicals-english-one-word*'
+`*naf-publications-periodicals-french*'
+`*naf-naf-publications-periodicals-intnl*'
+FACE-DOCUMENTED-IN: `naf-mode-publication-periodical-fface'.
+See also;\n`*naf-publications-periodicals-french-xrefs*'
+`*naf-mode-publications-periodicals-english-xrefs*'
+`*naf-mode-publications-periodicals-intnl-xrefs*'.\n►►►")
+;;
 ;;;test-me;(describe-face 'naf-mode-publication-periodical-face)
 ;;
 ;;; (progn (makunbound 'naf-mode-publication-periodical-fface)
@@ -1217,18 +1235,20 @@ See also; .")
     (((class color) (background dark)) (:foreground "LightSkyBlue"))
     (t (:bold t :italic t)))
   "*Face font-locking events of artistic importance/signifigance in .naf files.
-KEYWORDS-IN: regexps defined in `naf-mode-world-events', `naf-mode-art-events'.
+KEYWORD-REGEXPS-IN:
+`naf-mode-world-events', `naf-mode-art-events'.
 FACE-DOCUMENTED-IN: `naf-mode-event-fface'.
-See also; .\nUsed in `naf-mode'."
+See also; .\nUsed in `naf-mode'\n►►►."
   :group 'naf-mode
   :group 'naf-mode-faces)
 ;;
 (defvar naf-mode-event-fface 'naf-mode-event-face
   "*Face font-locking events of artistic importance/signifigance in `naf-mode'.
-KEYWORDS-IN: regexps defined in `naf-mode-world-events', `naf-mode-art-events'.
+KEYWORD-REGEXPS-IN:
+`naf-mode-world-events', `naf-mode-art-events'.
 FACE-DEFINED-IN: `naf-mode-event-face'.
-See also; .\nUsed in `naf-mode'.")
-
+See also; .\nUsed in `naf-mode'.\n►►►")
+;;
 ;;;test-me;(describe-face 'naf-mode-event-face)
 ;;
 ;;;(progn (makunbound 'naf-mode-event-fface) (unintern 'naf-mode-event-fface))
@@ -1239,22 +1259,22 @@ See also; .\nUsed in `naf-mode'.")
     (((class color) (background dark)) (:foreground "LightSteelBlue"))
     (t (:bold t :italic t)))
   "*Face for font-locking Group Period Style or artistic names in .naf files.
-KEYWORDS-IN: the regexp(s) defined in `naf-mode-group-period-styles'.
+KEYWORD-REGEXPS-IN: `naf-mode-group-period-styles'.
 FACE-DOCUMENTED-IN: `naf-mode-group-period-style-fface'.
-See also; .\nUsed in `naf-mode'."
+See also; .\nUsed in `naf-mode'.\n►►►"
   :group 'naf-mode
   :group 'naf-mode-faces)
 ;;
 (defvar naf-mode-group-period-style-fface 'naf-mode-group-period-style-face
   "*Face for `naf-mode' font-locking of Group Period Style or artistic names.
-KEYWORDS-IN: the regexp(s) defined in `naf-mode-group-period-styles'.
+KEYWORD-REGEXPS-IN: `naf-mode-group-period-styles'.
 FACE-DEFINED-IN: `naf-mode-group-period-style-face'.
-See also; .")
-
+See also; .\n►►►")
+;;
 ;;;test-me;(describe-face 'naf-mode-group-period-style-face)
 ;;
 ;;;(progn (makunbound 'naf-mode-group-period-style-fface)
-;;;  (unintern 'naf-mode-group-period-style-fface))
+;;;       (unintern 'naf-mode-group-period-style-fface))
 
 ;;; ==============================
 (defface naf-mode-institution-face
@@ -1262,29 +1282,30 @@ See also; .")
     (((class color) (background dark)) (:foreground "CornflowerBlue"))
     (t (:bold t :italic t)))
    "*Face fontlocking of institution name keywords in .naf files.
-KEYWORDS-IN: the regexp(s) defined in:
+KEYWORD-REGEXPS-IN:
 `naf-mode-institution-museum-names', `naf-mode-institution-museum-names'
 `naf-mode-academy-names', `naf-mode-school-names-intnl'
 `naf-mode-school-names-english', `naf-mode-institution-names-generic'
 `naf-mode-benezit-museum-short',`naf-mode-inst-names-anchored'
 FACE-DOCUMENTED-IN: `naf-mode-institution-fface'.
-See also; .\nUsed in `naf-mode'."
+See also; .\nUsed in `naf-mode'.\n►►►"
     :group 'naf-mode
     :group 'naf-mode-faces)
 ;;
 (defvar naf-mode-institution-fface 'naf-mode-institution-face
   "*Face for `naf-mode' font-locking of institution name keywords
-KEYWORDS-IN: the regexp(s) defined in:
+KEYWORD-REGEXPS-IN:
 `naf-mode-institution-museum-names', `naf-mode-institution-museum-names'
 `naf-mode-academy-names', `naf-mode-school-names-intnl'
 `naf-mode-school-names-english', `naf-mode-institution-names-generic'
 `naf-mode-benezit-museum-short',`naf-mode-inst-names-anchored'
-FACE-DEFINED-IN: See `naf-mode-institution-face'.
-See also; .")
-
+FACE-DEFINED-IN: `naf-mode-institution-face'.
+See also; .\n►►►")
+;;
 ;;;test-me;(describe-face 'naf-mode-institution-face)
 ;;
-;;;(progn (makunbound 'naf-mode-institution-fface) (unintern 'naf-mode-institution-fface))
+;;(progn (makunbound 'naf-mode-institution-fface)
+;;       (unintern 'naf-mode-institution-fface))
 
 ;;; ==============================
 (defface naf-mode-alternate-name-face
@@ -1292,23 +1313,25 @@ See also; .")
     (((class color) (background dark)) (:foreground "CadetBlue"))
     (t (:bold t :italic t)))
    "Face for font-locking of alternate name keywords in .naf files.
-KEYWORDS-IN: the regexp(s) defined in `naf-mode-alternate-name-flags',
-`*naf-mode-x-of*'.\nFACE-DOCUMENTED-IN: `naf-mode-alternate-name-fface'.
+KEYWORD-REGEXPS-IN:
+`naf-mode-alternate-name-flags', `*naf-mode-x-of*'.
+FACE-DOCUMENTED-IN: `naf-mode-alternate-name-fface'.
 See also; `*naf-mode-x-of-ulan-bol*', `*naf-mode-ulan-rltd-ppl-corp*'.
-Used in `naf-mode'."
+Used in `naf-mode'.\n►►►"
     :group 'naf-mode
     :group 'naf-mode-faces)
 ;;
 (defvar naf-mode-alternate-name-fface 'naf-mode-alternate-name-face
   "*Face for font-locking of alternate name keywords in .naf files.
-KEYWORDS-IN: the regexp(s) defined in `naf-mode-alternate-name-flags',
-`*naf-mode-x-of*'.\nFACE-DEFINED-IN: `naf-mode-alternate-name-face'.
-See also; `*naf-mode-x-of-ulan-bol*',`*naf-mode-ulan-rltd-ppl-corp*'.")
-
+KEYWORD-REGEXPS-IN:
+`naf-mode-alternate-name-flags',`*naf-mode-x-of*'.
+FACE-DEFINED-IN: `naf-mode-alternate-name-face'.
+See also; `*naf-mode-x-of-ulan-bol*',`*naf-mode-ulan-rltd-ppl-corp*'.\n►►►")
+;;
 ;;;test-me;(describe-face 'naf-mode-alternate-name-face)
 ;;
-;;;(progn (makunbound 'naf-mode-alternate-name-fface) (unintern 'naf-mode-alternate-name-fface))
-
+;;(progn (makunbound 'naf-mode-alternate-name-fface) 
+;;       (unintern 'naf-mode-alternate-name-fface))
 
 ;;; ==============================
 (defface naf-mode-primary-role-face
@@ -1316,20 +1339,20 @@ See also; `*naf-mode-x-of-ulan-bol*',`*naf-mode-ulan-rltd-ppl-corp*'.")
     (((class color) (background dark)) (:foreground "orchid3"))
     (t (:bold t :italic t)))
   "*Face for fontlocking primary Artist roles in .naf files.
-KEYWORDS-IN: the regexp(s) defined in `naf-mode-english-roles-primary',
-`naf-mode-french-roles-primary'.
+KEYWORD-REGEXPS-IN:
+`naf-mode-english-roles-primary', `naf-mode-french-roles-primary'.
 FACE-DOCUMENTED-IN: `naf-mode-primary-role-face'.
-See also; .\nUsed in `naf-mode'."
+See also; .\nUsed in `naf-mode'.\n►►►"
   :group 'naf-mode
   :group 'naf-mode-faces)
 ;;
 (defvar naf-mode-primary-role-fface 'naf-mode-primary-role-face
   "*Face for fontlocking primary Artist roles in `naf-mode'.
-KEYWORDS-IN: the regexp(s) defined in `naf-mode-english-roles-primary',
-`naf-mode-french-roles-primary'.
+KEYWORD-REGEXPS-IN:
+`naf-mode-english-roles-primary', `naf-mode-french-roles-primary'.
 FACE-DEFINED-IN: `naf-mode-primary-role-face'.
-See also; .")
-
+See also; .\n►►►")
+;;
 ;;;test-me;(describe-face 'naf-mode-primary-role-face)
 ;;
 ;;;(progn (makunbound 'naf-mode-primary-role-fface)
@@ -1341,20 +1364,20 @@ See also; .")
     (((class color) (background dark)) (:foreground "plum4"))
     (t (:bold t :italic t)))
   "*Face for font-locking of artist 'secondary role' keywords in .naf files.
-KEYWORDS-IN: the regexp(s) defined in `naf-mode-english-roles-secondary',
-`naf-mode-french-roles-secondary'.
+KEYWORD-REGEXPS-IN:
+`naf-mode-english-roles-secondary', `naf-mode-french-roles-secondary'.
 FACE-DOCUMENTED-IN: `naf-mode-secondary-role-fface'.
-See also; .\nUsed in `naf-mode'."
+See also; .\nUsed in `naf-mode'.\n►►►"
   :group 'naf-mode
   :group 'naf-mode-faces)
 ;;
 (defvar naf-mode-secondary-role-fface 'naf-mode-secondary-role-face
   "*Face for `naf-mode' font-locking of artist 'secondary role' keywords.
-KEYWORDS-IN: the regexp(s) defined in `naf-mode-english-roles-secondary',
-`naf-mode-french-roles-secondary'.
+KEYWORD-REGEXPS-IN:
+`naf-mode-english-roles-secondary', `naf-mode-french-roles-secondary'.
 FACE-DEFINED-IN: `naf-mode-secondary-role-face'.
-See also; .")
-
+See also; .\n►►►")
+;;
 ;;;test-me;(describe-face 'naf-mode-secondary-role-face)
 ;;
 ;;;(progn (makunbound 'naf-mode-secondary-role-fface)
@@ -1366,20 +1389,18 @@ See also; .")
     (((class color) (background dark)) (:foreground "MediumPurple4"))
     (t (:bold t :italic t)))
   "*Face for font-locking art keywords indicating artistic 'role' in .naf files.
-KEYWORDS-IN: the regexp(s) defined in `naf-mode-art-keywords' indicate an 
-individuals 'role' in producing artistic works.
+KEYWORD-REGEXPS-IN: `naf-mode-art-keywords'.
 FACE-DOCUMENTED-IN: `naf-mode-art-keywords-role-fface'.
-See also; .\nUsed in `naf-mode'."
+See also; .\nUsed in `naf-mode'.\n►►►"
   :group 'naf-mode
   :group 'naf-mode-faces)
 ;;
 (defvar naf-mode-art-keywords-role-fface 'naf-mode-art-keywords-role-face
   "*Face for `naf-mode' font-locking of `roles' in art related artistic production.
-KEYWORDS-IN: the regexp(s) defined in `naf-mode-art-keywords' indicate an 
-individuals 'role' in producing artistic works.
+KEYWORD-REGEXPS-IN: `naf-mode-art-keywords'.
 FACE-DEFINED-IN: `naf-mode-art-keywords-role-face'.
-See also; .")
-
+See also; .\n►►►")
+;;
 ;;;test-me;(describe-face 'naf-mode-art-keywords-role-face)
 ;;
 ;;;(progn (makunbound 'naf-mode-art-keywords-role-fface)
@@ -1391,22 +1412,22 @@ See also; .")
     (((class color) (background dark)) (:foreground "slate blue"))
     (t (:bold t :italic t)))
   "*Face for font-locking of awards and prizes keywords in .naf files.
-KEYWORDS-IN: the regexp(s) defined in `naf-mode-awards-prizes-names'.
+KEYWORD-REGEXPS-IN: `naf-mode-awards-prizes-names'.
 FACE-DOCUMENTED-IN: `naf-mode-awards-prizes-fface'.
-See also; .\nUsed in `naf-mode'."
+See also; .\nUsed in `naf-mode'.\n►►►"
   :group 'naf-mode
   :group 'naf-mode-faces)
 ;;
 (defvar naf-mode-awards-prizes-fface 'naf-mode-awards-prizes-face
   "*Face for `naf-mode' font-locking of awards and prizes keywords.
-KEYWORDS-IN: the regexp(s) defined in `naf-mode-awards-prizes-names'.
+KEYWORD-REGEXPS-IN: `naf-mode-awards-prizes-names'.
 FACE-DEFINED-IN: `naf-mode-awards-prizes-face'.
-See also; .")
-
+See also; .\n►►►")
+;;
 ;;;test-me;(describe-face 'naf-mode-awards-prizes-face)
 ;;
-;;;(progn (makunbound 'naf-mode-awards-prizes-face)
-;;; (unintern 'naf-mode-awards-prizes-face))
+;;(progn (makunbound 'naf-mode-awards-prizes-face)
+;;       (unintern 'naf-mode-awards-prizes-face))
 
 ;;; ==============================
 ;;; NOTE:
@@ -1426,21 +1447,21 @@ See also; .")
      (:foreground "OliveDrab3"))
     (t (:bold t :italic t)))
   "*Face for font-locking of artist names as keywords in .naf files.
-KEYWORDS-IN: the regexp(s) defined in `'.
+KEYWORD-REGEXPS-IN: `'.
 FACE-DOCUMENTED-IN: `naf-mode-artist-fface'.
 This face is INHERITED-BY:
-`naf-mode-artist-student-of-fface'\n`naf-mode-artist-student-of-julian-fface'.
-See also; .\nUsed in `naf-mode'."
+`naf-mode-artist-student-of-fface',`naf-mode-artist-student-of-julian-fface'.
+See also; .\nUsed in `naf-mode'.\n►►►"
    :group 'naf-mode
    :group 'naf-mode-faces)
 ;;
 (defvar naf-mode-artist-fface 'naf-mode-artist-face
   "*Face for `naf-mode' font-locking of artist names as keywords.
-KEYWORDS-IN: the regexp(s) defined in `'.
+KEYWORD-REGEXPS-IN: `'.
 FACE-DEFINED-IN: `naf-mode-awards-artist-fface'.
 This face is INHERITED-BY:
 `naf-mode-artist-student-of-fface'\n`naf-mode-artist-student-of-julian-fface'.
-See also; .")
+See also; .\n►►►")
 ;;
 ;;;test-me;(describe-face 'naf-mode-artist-face)
 ;;
@@ -1455,22 +1476,22 @@ See also; .")
   '((t (:inherit naf-mode-artist-face
         :box (:line-width 1 :color "sienna" :style "released-button"))))  
   "*Face for font-locking of artists who studied under another artist. 
-KEYWORDS-IN: the regexp(s) defined in `'.
+KEYWORD-REGEXPS-IN: `'.
 FACE-DOCUMENTED-IN: `naf-mode-artist-student-of-fface'.
 This face INHERITS-FROM: `naf-mode-artist-fface'
 This face is INHERITED-BY: `naf-mode-artist-student-of-julian-fface'
-See also; .\nUsed in `naf-mode'."
+See also; .\nUsed in `naf-mode'.\n►►►"
    :group 'naf-mode
    :group 'naf-mode-faces)
 ;;
 (defvar naf-mode-artist-student-of-fface 'naf-mode-artist-student-of-face
   "*Face for `naf-mode' font-locking of artists who studied under another artist.
-KEYWORDS-IN: the regexp(s) defined in: `'.
+KEYWORD-REGEXPS-IN: `'.
 FACE-DEFINED-IN:: `naf-mode-awards-artist-student-of-face'.
 This face INHERITS-FROM: `naf-mode-artist-student-of-fface'
 This face is INHERITED-BY: `naf-mode-artist-student-of-julian-fface'
-See also;.")
-
+See also;.\n►►►")
+;;
 ;;;test-me;(describe-face 'naf-mode-artist-student-of-face)
 ;;
 ;;;(progn (makunbound 'naf-mode-artist-student-of-face)
@@ -1478,28 +1499,26 @@ See also;.")
 ;;;        (makunbound 'naf-mode-artist-student-of-fface)
 ;;;        (unintern 'naf-mode-artist-student-of-fface))
 
+
 ;;;    (:inherit default 
 ;;;     :foreground "yellow" 
 ;;;     :box (:line-width 2 :color "grey75" :style released-button)))))
-
 ;;; ==============================
 ;;; CREATED: <Timestamp: #{2009-09-25T12:52:57-04:00Z}#{09395} - by MON KEY>
 (defface naf-mode-artist-student-of-julian-face
   '((t (:inherit naf-mode-artist-student-of-face
         :box (:line-width 1 :color "dark khaki" :style: "released-button"))))
   "*Face for font-locking names of artists who attended the Académie Julian.
-KEYWORDS-IN: the regexp(s) defined in `'.
+KEYWORD-REGEXPS-IN: `'.
 FACE-DOCUMENTED-IN: `naf-mode-artist-student-of-julian-fface'.
 This face INHERITS-FROM: `naf-mode-artist-student-of-fface'
-See also; .\nUsed in `naf-mode'."
+See also; .\nUsed in `naf-mode'.\n►►►"
    :group 'naf-mode
    :group 'naf-mode-faces)
 ;;
 (defvar naf-mode-artist-student-of-julian-fface 'naf-mode-artist-student-of-julian-face
   "*Face for `naf-mode' font-locking of artists who attended Academie Julian.
-FACE-DEFINED-IN: `naf-mode-awards-artist-student-of-julian-face'.\n
-This face INHERITS-FROM: `naf-mode-artist-student-of-fface'\n
-KEYWORDS-IN: the regexps defined in:
+KEYWORD-REGEXPS-IN:
 `naf-mode-students-of-julian-french'
 `naf-mode-students-julian-us'
 `naf-mode-students-of-julian-misc'
@@ -1510,9 +1529,8 @@ KEYWORDS-IN: the regexps defined in:
 `naf-mode-students-of-julian-norway'
 `naf-mode-students-of-julian-russia'
 `naf-mode-students-of-julian-switzerland'
-`naf-mode-students-of-julian-uk'\n
-REGEXPS-BUILT-WITH: the lists in vars:\n
-`*naf-students-of-julian-xrefs-french*'
+`naf-mode-students-of-julian-uk'
+KEYWORD-LISTS-IN:
 `*naf-students-julian-us*'
 `*naf-students-of-julian-misc*'
 `*naf-students-of-julian-brazil*'
@@ -1522,15 +1540,18 @@ REGEXPS-BUILT-WITH: the lists in vars:\n
 `*naf-students-of-julian-norway*'
 `*naf-students-of-julian-russia*'
 `*naf-students-of-julian-switzerland*'
-`*naf-students-of-julian-uk*'\n
-See also; `*naf-mode-students-of-julian-xrefs*'.")
-
+`*naf-students-of-julian-uk*'
+FACE-DEFINED-IN: `naf-mode-awards-artist-student-of-julian-face'.
+This face INHERITS-FROM: `naf-mode-artist-student-of-fface'
+See also; `*naf-mode-students-of-julian-xrefs*'.\n►►►")
+;;
 ;;;test-me;(describe-face 'naf-mode-artist-student-of-julian-face)
 ;;
 ;;;(progn (makunbound 'naf-mode-artist-student-of-julian-face)
 ;;;        (unintern 'naf-mode-artist-student-of-julian-face)
 ;;;        (makunbound 'naf-mode-artist-student-of-julian-fface)
 ;;;        (unintern 'naf-mode-artist-student-of-julian-fface))
+
 ;;; ==============================
 
 ;;; ==============================

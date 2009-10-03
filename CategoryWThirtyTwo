@@ -70,7 +70,7 @@ MS Tips and Tricks:
 * WThirtyTwoSendMAPI -- Use MAPI to send mail from emacs <nowiki>*mail*</nowiki> buffers
 * WThirtyTwoTelnetPlink -- Use Plink (the command-line interface to PuTTY) as an emacs telnet client.
 * WThirtyTwoSendSysCommand -- list of commands to use with `w32-send-sys-command'
-* WThirtyTwoToggleLockKey -- toggle 'Caps Lock', 'Scroll Lock' and 'Num Lock' keys from within elisp
+* w32-toggle-lock-key function (included in Emacs) -- toggle 'Caps Lock', 'Scroll Lock' and 'Num Lock' keys from within elisp
 
 MS applications:
 
