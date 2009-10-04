@@ -1,6 +1,6 @@
 == Introduction ==
 
-Rudel is a collaborative editing environment for GNU Emacs. It
+Rudel is a [CollaborativeEditing collaborative editing] environment for GNU Emacs. It
 supports multiple backends to enable communication with other
 collaborative editors using different protocols (most notably
 [http://gobby.0x539.de/trac/ Gobby]).
@@ -26,13 +26,26 @@ Archives of released versions can be downloaded from the
 download area] of the [http://sourceforge.net/projects/rudel
 Sourceforge project page].
 
-Development versions are available via the Subversion repository on
-Sourceforge. Use the
-[http://sourceforge.net/scm/?type=svn&group_id=249139 checkout
-instructions] to obtain a copy of the source tree or
-[http://rudel.svn.sourceforge.net/viewvc/rudel/ just browse the code].
+Development versions are available via the repository on
+Sourceforge:
 
-Since CEDET can be difficult to install, (and unfortunately is not in ELPA due to the maintainer's uncooperativeness) here's some help:
+{{{
+bzr branch bzr://rudel.bzr.sourceforge.net/bzrroot/rudel/trunk rudel
+}}}
+
+or
+
+{{{
+svn co https://rudel.svn.sourceforge.net/svnroot/rudel/trunk rudel
+}}}
+
+If you are using Emacs from trunk (as of October 2009), CEDET is
+included and doesn't need to be installed separately. Using Rudel from
+trunk will be much easier to install.
+
+On earlier versions of Emacs, CEDET can be difficult to install, (and
+unfortunately is not in ELPA due to the maintainer's
+uncooperativeness), so here's some help:
 
 <pre>
 (defun load-rudel ()

@@ -9,9 +9,9 @@
 ;; Copyright (C) 2000-2009, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Oct  2 18:23:19 2009 (-0700)
+;; Last-Updated: Sat Oct  3 19:02:01 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 4042
+;;     Update #: 4155
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -106,8 +106,9 @@
 ;;
 ;;  Faces defined here:
 ;;
-;;    `bookmarkp-bad-bookmark', `bookmarkp-gnus', `bookmarkp-info',
-;;    `bookmarkp-local-directory', `bookmarkp-local-file-with-region',
+;;    `bookmarkp-bad-bookmark', `bookmarkp-buffer', `bookmarkp-gnus',
+;;    `bookmarkp-info', `bookmarkp-local-directory',
+;;    `bookmarkp-local-file-with-region',
 ;;    `bookmarkp-local-file-without-region', `bookmarkp-non-file',
 ;;    `bookmarkp-remote-file', `bookmarkp-su-or-sudo',
 ;;    `bookmarkp-w3m'.
@@ -124,13 +125,14 @@
 ;;    `bookmarkp-bookmark-marked-p', `bookmarkp-current-sec-time',
 ;;    `bookmarkp-edit-bookmark', `bookmarkp-face-prop',
 ;;    `bookmarkp-file-alist-only', `bookmarkp-file-bookmark-p',
-;;    `bookmarkp-get-buffer-name', `bookmarkp-get-end-position',
-;;    `bookmarkp-get-visit-time', `bookmarkp-get-visits-count',
-;;    `bookmarkp-gnus-alist-only', `bookmarkp-gnus-bookmark-p',
-;;    `bookmarkp-goto-position', `bookmarkp-handle-region-default',
-;;    `bookmarkp-increment-visits', `bookmarkp-info-alist-only',
-;;    `bookmarkp-info-bookmark-p', `bookmarkp-jump-gnus',
-;;    `bookmarkp-jump-w3m', `bookmarkp-jump-w3m-new-session',
+;;    `bookmarkp-file-remote-p', `bookmarkp-get-buffer-name',
+;;    `bookmarkp-get-end-position', `bookmarkp-get-visit-time',
+;;    `bookmarkp-get-visits-count', `bookmarkp-gnus-alist-only',
+;;    `bookmarkp-gnus-bookmark-p', `bookmarkp-goto-position',
+;;    `bookmarkp-handle-region-default', `bookmarkp-increment-visits',
+;;    `bookmarkp-info-alist-only', `bookmarkp-info-bookmark-p',
+;;    `bookmarkp-jump-gnus', `bookmarkp-jump-w3m',
+;;    `bookmarkp-jump-w3m-new-session',
 ;;    `bookmarkp-jump-w3m-only-one-tab',
 ;;    `bookmarkp-line-number-at-pos',
 ;;    `bookmarkp-local-directory-bookmark-p',
@@ -166,8 +168,9 @@
 ;;    `bookmark-bmenu-hide-filenames', `bookmark-bmenu-mode',
 ;;    `bookmark-bmenu-surreptitiously-rebuild-list',
 ;;    `bookmark-completing-read', `bookmark-default-handler',
-;;    `bookmark-location', `bookmark-make-record-default',
-;;    `bookmark-prop-set', `bookmark-write-file'.
+;;    `bookmark-handle-bookmark', `bookmark-location',
+;;    `bookmark-make-record-default', `bookmark-prop-set',
+;;    `bookmark-write-file'.
 ;;
 ;;  Functions defined here for Emacs versions < 23
 ;;
@@ -188,9 +191,9 @@
 ;;              have been REDEFINED OR ADVISED HERE for Emacs versions < 23:
 ;;
 ;;    `bookmark-get-bookmark', `bookmark-get-bookmark-record',
-;;    `bookmark-get-handler', `bookmark-handle-bookmark',
-;;    `bookmark-jump-noselect', `bookmark-make-record',
-;;    `bookmark-maybe-message', `bookmark-prop-get', `bookmark-store'.
+;;    `bookmark-get-handler', `bookmark-jump-noselect',
+;;    `bookmark-make-record', `bookmark-maybe-message',
+;;    `bookmark-prop-get', `bookmark-store'.
 ;;
 ;;  ***** NOTE: The following functions defined in `info.el'
 ;;              have been REDEFINED HERE (Emacs 20-22):
@@ -317,6 +320,18 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2009/10/03 dadams
+;;     Added: bookmarkp-file-remote-p, bookmarkp-buffer (face).
+;;     bookmarkp-non-file (face): Changed to gray.
+;;     *-default-handler, *-bmenu-propertize-item, *-(info|file)-bookmark-p:
+;;       Support Emacs 20-21 Info-node bookmarks.
+;;     bookmarkp-bmenu-propertize-item: Use diff face for existing buffers.
+;;                                      Use bookmarkp-non-file-filename.
+;;     bookmarkp-non-file-bookmark-p: Include buffer bookmarks for nonexistent buffers.
+;;     bookmarkp-remote-file-bookmark-p: Use bookmarkp-file-remote-p.
+;;     bookmark-handle-bookmark:
+;;       Redefine for all Emacs versions.  Handle buffer (non-file) bookmarks.
+;;     Reordered some function definitions.
 ;; 2009/10/02 dadams
 ;;     Added: bookmarkp-bmenu-goto-bookmark-named, bookmarkp-latest-sorted-alist.
 ;;     *-sort-and-remove-dups: Set *-latest-sorted-alist (not used yet).
@@ -347,7 +362,7 @@
 ;;     bookmarkp-bmenu-toggle-show-only-(un)marked: Fit frame.
 ;;     bookmark-prop-set: Fixed, so it handles old bookmark format also.
 ;; 2009/10/01 Thierry Volpiatto
-;;     Removed: bookmarkp-bmenu-propertize-item.
+;;     Removed: bookmarkp-bmenu-restore-marks.
 ;;     bookmark-bmenu-list:
 ;;       Do the mark restoration in line, at the same time as the annotation * restoration.
 ;;       Simplify use of START and END.
@@ -878,10 +893,16 @@ Other Options:
   "*Face used for a bookmarked local file (without a region)."
   :group 'bookmarkp)
 
-(defface bookmarkp-non-file
-    '((((background dark)) (:foreground "grey"))
+(defface bookmarkp-buffer
+    '((((background dark)) (:foreground "green"))
       (t (:foreground "DarkGreen")))
-  "*Face used for a bookmarked buffer not associated with an existing file."
+  "*Face used for a bookmarked existing buffer not associated with a file."
+  :group 'bookmarkp)
+
+(defface bookmarkp-non-file
+    '((((background dark)) (:foreground "gray40"))
+      (t (:foreground "gray60")))
+  "*Face used for a bookmark not associated with an existing file or buffer."
   :group 'bookmarkp)
 
 (defface bookmarkp-remote-file
@@ -1234,38 +1255,7 @@ BOOKMARK is a bookmark name or a bookmark record."
 BOOKMARK is a bookmark name or a bookmark record.
 The return value has the form (BUFFER . POINT), where BUFFER is a
 buffer and POINT is the location within BUFFER."
-    (save-excursion (bookmark-handle-bookmark bookmark) (cons (current-buffer) (point))))
-
-  (defun bookmark-handle-bookmark (bookmark)
-    "Call BOOKMARK's handler, or `bookmark-default-handler' if it has none.
-Changes the current buffer and point.
-Returns nil or signals a `file-error'.
-BOOKMARK can be a bookmark record used internally by some Emacs-Lisp
- package, or the name of a bookmark in `bookmark-alist'."
-    (condition-case err
-        (funcall (or (bookmark-get-handler bookmark) 'bookmark-default-handler)
-                 (bookmark-get-bookmark bookmark))
-      (file-error
-       ;; We were unable to find the marked file, so ask if user wants to
-       ;; relocate the bookmark, else remind them to consider deletion.
-       (when (stringp bookmark)
-         ;; BOOKMARK can be either a bookmark name (found in `bookmark-alist') or a bookmark
-         ;; object.  If an object, assume it's a bookmark used internally by some other
-         ;; package.
-         (let ((file  (bookmark-get-filename bookmark)))
-           (when file                   ; Don't know how to relocate if file doesn't exist.
-             (setq file  (expand-file-name file)) (ding)
-             (cond ((y-or-n-p (concat (file-name-nondirectory file)
-                                      " nonexistent.  Relocate \""
-                                      bookmark "\"? "))
-                    (bookmark-relocate bookmark) ; Try again
-                    (funcall (or (bookmark-get-handler bookmark) 'bookmark-default-handler)
-                             (bookmark-get-bookmark bookmark)))
-                   (t
-                    (message "Bookmark not relocated \(%s\)." bookmark)
-                    (signal (car err) (cdr err)))))))))
-    (when (stringp bookmark) (setq bookmark-current-bookmark  bookmark))
-    nil))                               ; Return nil if no error.
+    (save-excursion (bookmark-handle-bookmark bookmark) (cons (current-buffer) (point)))))
 
 ;;;###autoload
 (when (< emacs-major-version 22)
@@ -1596,6 +1586,50 @@ See `bookmark-jump'."
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
+;; Different relocation message for non-file bookmark.
+;;
+(defun bookmark-handle-bookmark (bookmark)
+  "Call BOOKMARK's handler, or `bookmark-default-handler' if it has none.
+Changes the current buffer and point.
+Returns nil or signals a `file-error'.
+BOOKMARK can be a bookmark record used internally by some Emacs-Lisp
+ package, or the name of a bookmark in `bookmark-alist'."
+  (condition-case err
+      (funcall (or (bookmark-get-handler bookmark) 'bookmark-default-handler)
+               (bookmark-get-bookmark bookmark))
+    (file-error
+     ;; We were unable to find the marked file, so ask if user wants to
+     ;; relocate the bookmark, else remind them to consider deletion.
+     (when (stringp bookmark)
+       ;; BOOKMARK can be either a bookmark name (found in `bookmark-alist') or a bookmark
+       ;; object.  If an object, assume it's a bookmark used internally by some other package.
+       (let ((file  (bookmark-get-filename bookmark)))
+         (when file                     ; Don't know how to relocate if file doesn't exist.
+           (unless (string= file bookmarkp-non-file-filename)
+             (setq file  (expand-file-name file)))
+           (ding)
+           (cond ((y-or-n-p (if (and (string= file bookmarkp-non-file-filename)
+                                     (bookmarkp-get-buffer-name bookmark))
+                                "Bookmark's buffer doesn't exist.  Re-create it? "
+                              (concat (file-name-nondirectory file)
+                                      " nonexistent.  Relocate \"" bookmark "\"? ")))
+                  (if (string= file bookmarkp-non-file-filename)
+                      ;; This is not likely the right way to get the correct buffer, but it's
+                      ;; better than nothing, and it gives the user a chance to DTRT.
+                      (pop-to-buffer (bookmarkp-get-buffer-name bookmark)) ; Create buffer.
+                    (bookmark-relocate bookmark)) ; Relocate to file.
+                  (funcall (or (bookmark-get-handler bookmark) ; Try again
+                               'bookmark-default-handler)
+                           (bookmark-get-bookmark bookmark)))
+                 (t
+                  (message "Bookmark not relocated \(%s\)." bookmark)
+                  (signal (car err) (cdr err)))))))))
+  (when (stringp bookmark) (setq bookmark-current-bookmark  bookmark))
+  nil)                                  ; Return nil if no error.
+
+
+;; REPLACES ORIGINAL in `bookmark.el'.
+;;
 ;; Support regions and buffer names.
 ;;
 (defun bookmark-default-handler (bookmark)
@@ -1604,32 +1638,35 @@ BOOKMARK is a bookmark name or a bookmark record.
 If BOOKMARK records a nonempty region, and `bookmarkp-use-region-flag'
  is non-nil, then activate the region.
 Return nil or signal `file-error'."
-  (let* ((bmk      (bookmark-get-bookmark bookmark)) ; Get bookmark object once and for all.
-         (file     (bookmark-get-filename bmk))
-         (buf      (bookmark-prop-get bmk 'buffer))
-         (bufname  (bookmarkp-get-buffer-name bmk))
-         (pos      (bookmark-get-position bmk))
-         (end-pos  (bookmarkp-get-end-position bmk)))
-    (if (not (and bookmarkp-use-region-flag end-pos (/= pos end-pos)))
-        ;; Single-position bookmark (no region).  Go to it.
-        (bookmarkp-goto-position file buf bufname pos
-                                 (bookmark-get-front-context-string bmk)
-                                 (bookmark-get-rear-context-string bmk))
-      ;; Bookmark with a region.  Go to it and activate the region.
-      (if (and file (file-readable-p file) (not (buffer-live-p buf)))
-          (with-current-buffer (find-file-noselect file) (setq buf  (buffer-name)))
-        ;; No file found.  If no buffer either, then signal that file doesn't exist.
-        (unless (or (and buf (get-buffer buf))
-                    (and bufname (get-buffer bufname) (not (string= buf bufname))))
-          (signal 'file-error `("Jumping to bookmark" "No such file or directory"
-                                (bookmark-get-filename bmk)))))
-      (set-buffer (or buf bufname))
-      (save-current-buffer (funcall bookmarkp-jump-display-function (current-buffer)))
-      (raise-frame)
-      (goto-char (min pos (point-max)))
-      (when (> pos (point-max)) (error "Bookmark position is beyond buffer end"))
-      ;; Activate region.  Relocate it if it moved.  Save relocated bookmark if confirm.
-      (funcall bookmarkp-handle-region-function bmk))))
+  (let* ((bmk            (bookmark-get-bookmark bookmark))
+         (file           (bookmark-get-filename bmk))
+         (buf            (bookmark-prop-get bmk 'buffer))
+         (bufname        (bookmarkp-get-buffer-name bmk))
+         (pos            (bookmark-get-position bmk))
+         (end-pos        (bookmarkp-get-end-position bmk))
+         (old-info-node  (bookmark-prop-get bmk 'info-node)))
+    (if old-info-node                   ; Emacs 20-21 Info bookmarks - no handler entry.
+        (progn (require 'info) (Info-find-node file old-info-node))
+      (if (not (and bookmarkp-use-region-flag end-pos (/= pos end-pos)))
+          ;; Single-position bookmark (no region).  Go to it.
+          (bookmarkp-goto-position file buf bufname pos
+                                   (bookmark-get-front-context-string bmk)
+                                   (bookmark-get-rear-context-string bmk))
+        ;; Bookmark with a region.  Go to it and activate the region.
+        (if (and file (file-readable-p file) (not (buffer-live-p buf)))
+            (with-current-buffer (find-file-noselect file) (setq buf  (buffer-name)))
+          ;; No file found.  If no buffer either, then signal that file doesn't exist.
+          (unless (or (and buf (get-buffer buf))
+                      (and bufname (get-buffer bufname) (not (string= buf bufname))))
+            (signal 'file-error `("Jumping to bookmark" "No such file or directory"
+                                  (bookmark-get-filename bmk)))))
+        (set-buffer (or buf bufname))
+        (save-current-buffer (funcall bookmarkp-jump-display-function (current-buffer)))
+        (raise-frame)
+        (goto-char (min pos (point-max)))
+        (when (> pos (point-max)) (error "Bookmark position is beyond buffer end"))
+        ;; Activate region.  Relocate it if it moved.  Save relocated bookmark if confirm.
+        (funcall bookmarkp-handle-region-function bmk)))))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -2089,93 +2126,7 @@ If it has no time entry, then add one, using the current time in seconds."
   (bookmarkp-maybe-save-bookmark))
 
 
-;; Other Menu-List Commands
-
-;;;###autoload
-(defun bookmarkp-bmenu-edit-bookmark () ; `E' in menu list
-  "Edit the bookmark under the cursor."
-  (interactive)
-  (let* ((new-data  (bookmarkp-edit-bookmark (bookmark-bmenu-bookmark)))
-         (new-name  (car new-data)))
-    (if (not new-data)
-        (message "No changes made")
-      (bookmark-bmenu-surreptitiously-rebuild-list)
-      (goto-char (point-min))
-      (while (not (equal new-name (bookmark-bmenu-bookmark))) (forward-line 1))
-      (forward-line 0)
-      (bookmark-bmenu-check-position))))
-
-(defun bookmarkp-bmenu-propertize-item (bookmark-name start end)
-  "Add text properties to BOOKMARK-NAME, from START to END."
-  (let* ((isfile        (bookmark-get-filename bookmark-name))
-         (isremote      (and isfile  (if (fboundp 'file-remote-p)
-                                         (file-remote-p isfile)
-                                       (if (fboundp 'ffap-file-remote-p)
-                                           (ffap-file-remote-p isfile)))))
-         (istramp       (and isfile  (boundp 'tramp-file-name-regexp)
-                             (save-match-data (string-match tramp-file-name-regexp isfile))))
-         (isw3m         (bookmarkp-w3m-bookmark-p bookmark-name))
-         (issu          (and istramp (string-match bookmarkp-su-or-sudo-regexp isfile)))
-         (isregion      (bookmarkp-region-bookmark-p bookmark-name))
-         (isannotation  (bookmark-get-annotation bookmark-name))
-         (ishandler     (bookmark-get-handler bookmark-name))
-         (isgnus        (bookmarkp-gnus-bookmark-p bookmark-name))
-         (isbuf         (bookmarkp-get-buffer-name bookmark-name)))
-    (add-text-properties
-     start  end
-     (cond ((or (eq ishandler 'Info-bookmark-jump) (string= isbuf "*info*")) ; Info
-            (append (bookmarkp-face-prop 'bookmarkp-info)
-                    '(mouse-face highlight follow-link t
-                      help-echo "mouse-2: Go to this Info buffer")))
-           (isgnus                      ; Gnus
-            (append (bookmarkp-face-prop 'bookmarkp-gnus)
-                    '(mouse-face highlight follow-link t
-                      help-echo "mouse-2: Go to this Gnus buffer")))
-           (isw3m                       ; W3m
-            (append (bookmarkp-face-prop 'bookmarkp-w3m)
-                    `(mouse-face highlight follow-link t
-                      help-echo (format "mouse-2 Goto URL: `%s'" ,isfile))))
-           ((and issu (not (bookmarkp-root-or-sudo-logged-p))) ; Root/sudo not logged
-            (append (bookmarkp-face-prop 'bookmarkp-su-or-sudo)
-                    `(mouse-face highlight follow-link t
-                      help-echo (format "mouse-2 Goto file: `%s'" ,isfile))))
-           ((and isremote (not issu))   ; Remote file (ssh, ftp)
-            (append (bookmarkp-face-prop 'bookmarkp-remote-file)
-                    `(mouse-face highlight follow-link t
-                      help-echo (format "mouse-2 Goto remote file: `%s'" ,isfile))))
-           ((and isfile (file-directory-p isfile)) ; Local directory
-            (append (bookmarkp-face-prop 'bookmarkp-local-directory)
-                    `(mouse-face highlight follow-link t
-                      help-echo (format "mouse-2 Goto dired: `%s'" ,isfile))))
-           ((and isfile (file-exists-p isfile) isregion) ; Local file with region
-            (append (bookmarkp-face-prop 'bookmarkp-local-file-with-region)
-                    `(mouse-face highlight follow-link t
-                      help-echo (format "mouse-2 Find region in file: `%s'" ,isfile))))
-           ((and isfile (file-exists-p isfile)) ; Local file without region
-            (append (bookmarkp-face-prop 'bookmarkp-local-file-without-region)
-                    `(mouse-face highlight follow-link t
-                      help-echo (format "mouse-2 Goto file: `%s'" ,isfile))))
-           ((and isbuf (or (not isfile)
-                           (equal isfile "   - no file -")
-                           (not (file-exists-p isfile)))) ; Buffer
-            (append (bookmarkp-face-prop 'bookmarkp-non-file)
-                    `(mouse-face highlight follow-link t
-                      help-echo (format "mouse-2 Goto buffer: `%s'" ,isbuf))))
-           (t (append (bookmarkp-face-prop 'bookmarkp-bad-bookmark)
-                      `(mouse-face highlight follow-link t
-                        help-echo (format "mouse-2 BAD BOOKMARK (maybe): `%s'" ,isfile))))))))
-
-;;;###autoload
-(defun bookmarkp-bmenu-quit ()          ; `q' in menu list
-  "Reset the marked bookmark lists and quit."
-  (interactive)
-  (setq bookmarkp-bookmark-marked-alist             ()
-        bookmarkp-bmenu-before-hide-marked-alist    ()
-        bookmarkp-bmenu-before-hide-unmarked-alist  ())
-  (quit-window))
-
-
-;;; *-bmenu-* Filter Commands
+;;; Menu-List (`*-bmenu-*') Filter Commands
 
 ;;;###autoload
 (defun bookmarkp-bmenu-show-only-files (arg) ; `F' in menu list
@@ -2327,7 +2278,7 @@ This does not change the current filtering or sorting."
       (bookmark-bmenu-check-position))))
 
 
-;;; *-bmenu-* Commands and functions for marked bookmarks
+;;; Menu-List (`*-bmenu-*') Commands Involving Marks
 
 ;;;###autoload
 (defun bookmarkp-bmenu-mark-all ()      ; `M-m' in menu list
@@ -2429,6 +2380,107 @@ This affects only the `>' mark, not the `D' flag."
     (when bookmark-bmenu-toggle-filenames (bookmark-bmenu-toggle-filenames 'show))))
 
 
+;; Other Menu-List (`-*bmenu-*') Commands and Functions, Except Sorting
+
+;;;###autoload
+(defun bookmarkp-bmenu-edit-bookmark () ; `E' in menu list
+  "Edit the bookmark under the cursor."
+  (interactive)
+  (let* ((new-data  (bookmarkp-edit-bookmark (bookmark-bmenu-bookmark)))
+         (new-name  (car new-data)))
+    (if (not new-data)
+        (message "No changes made")
+      (bookmark-bmenu-surreptitiously-rebuild-list)
+      (goto-char (point-min))
+      (while (not (equal new-name (bookmark-bmenu-bookmark))) (forward-line 1))
+      (forward-line 0)
+      (bookmark-bmenu-check-position))))
+
+(defun bookmarkp-bmenu-propertize-item (bookmark-name start end)
+  "Add text properties to BOOKMARK-NAME, from START to END."
+  (let* ((isfile        (bookmark-get-filename bookmark-name))
+         (isremote      (and isfile  (bookmarkp-file-remote-p isfile)))
+         (istramp       (and isfile  (boundp 'tramp-file-name-regexp)
+                             (save-match-data (string-match tramp-file-name-regexp isfile))))
+         (isw3m         (bookmarkp-w3m-bookmark-p bookmark-name))
+         (issu          (and istramp (string-match bookmarkp-su-or-sudo-regexp isfile)))
+         (isregion      (bookmarkp-region-bookmark-p bookmark-name))
+         (isannotation  (bookmark-get-annotation bookmark-name))
+         (ishandler     (bookmark-get-handler bookmark-name))
+         (isgnus        (bookmarkp-gnus-bookmark-p bookmark-name))
+         (isbuf         (bookmarkp-get-buffer-name bookmark-name)))
+    (add-text-properties
+     start  end
+     (cond ((or (eq ishandler 'Info-bookmark-jump) (string= isbuf "*info*") ; Info
+                ;; Emacs 20-21 form - no handler (and no `buffer-name' entry).
+                (bookmark-prop-get bookmark-name 'info-node))
+            (append (bookmarkp-face-prop 'bookmarkp-info)
+                    '(mouse-face highlight follow-link t
+                      help-echo "mouse-2: Go to this Info buffer")))
+           (isgnus                      ; Gnus
+            (append (bookmarkp-face-prop 'bookmarkp-gnus)
+                    '(mouse-face highlight follow-link t
+                      help-echo "mouse-2: Go to this Gnus buffer")))
+           (isw3m                       ; W3m
+            (append (bookmarkp-face-prop 'bookmarkp-w3m)
+                    `(mouse-face highlight follow-link t
+                      help-echo (format "mouse-2 Goto URL: `%s'" ,isfile))))
+           ((and issu (not (bookmarkp-root-or-sudo-logged-p))) ; Root/sudo not logged
+            (append (bookmarkp-face-prop 'bookmarkp-su-or-sudo)
+                    `(mouse-face highlight follow-link t
+                      help-echo (format "mouse-2 Goto file: `%s'" ,isfile))))
+           ((and isremote (not issu))   ; Remote file (ssh, ftp)
+            (append (bookmarkp-face-prop 'bookmarkp-remote-file)
+                    `(mouse-face highlight follow-link t
+                      help-echo (format "mouse-2 Goto remote file: `%s'" ,isfile))))
+           ((and isfile (file-directory-p isfile)) ; Local directory
+            (append (bookmarkp-face-prop 'bookmarkp-local-directory)
+                    `(mouse-face highlight follow-link t
+                      help-echo (format "mouse-2 Goto dired: `%s'" ,isfile))))
+           ((and isfile (file-exists-p isfile) isregion) ; Local file with region
+            (append (bookmarkp-face-prop 'bookmarkp-local-file-with-region)
+                    `(mouse-face highlight follow-link t
+                      help-echo (format "mouse-2 Find region in file: `%s'" ,isfile))))
+           ((and isfile (file-exists-p isfile)) ; Local file without region
+            (append (bookmarkp-face-prop 'bookmarkp-local-file-without-region)
+                    `(mouse-face highlight follow-link t
+                      help-echo (format "mouse-2 Goto file: `%s'" ,isfile))))
+           ((and isbuf (get-buffer isbuf) (equal isfile bookmarkp-non-file-filename)) ; Buffer
+            (append (bookmarkp-face-prop 'bookmarkp-buffer)
+                    `(mouse-face highlight follow-link t
+                      help-echo (format "mouse-2 Goto buffer: `%s'" ,isbuf))))
+           ((and isbuf (or (not isfile) (equal isfile bookmarkp-non-file-filename)
+                           (not (file-exists-p isfile)))) ; Buffer bookmark, but no buffer.
+            (append (bookmarkp-face-prop 'bookmarkp-non-file)
+                    `(mouse-face highlight follow-link t
+                      help-echo (format "mouse-2 Goto buffer: `%s'" ,isbuf))))
+           (t (append (bookmarkp-face-prop 'bookmarkp-bad-bookmark)
+                      `(mouse-face highlight follow-link t
+                        help-echo (format "mouse-2 BAD BOOKMARK (maybe): `%s'" ,isfile))))))))
+
+;;;###autoload
+(defun bookmarkp-bmenu-quit ()          ; `q' in menu list
+  "Reset the marked bookmark lists and quit."
+  (interactive)
+  (setq bookmarkp-bookmark-marked-alist             ()
+        bookmarkp-bmenu-before-hide-marked-alist    ()
+        bookmarkp-bmenu-before-hide-unmarked-alist  ())
+  (quit-window))
+
+(defun bookmarkp-bmenu-goto-bookmark-named (name)
+  "Go to the first bookmark whose name (visible portion) matches NAME."
+  (goto-char (point-min))
+  (if (not bookmark-bmenu-toggle-filenames)
+      (re-search-forward (concat (regexp-quote name) "$"))
+    (let ((len   (length name))
+          (limit (- bookmark-bmenu-file-column 2)))
+      (setq name  (if (>= len limit)
+                      (substring name 0 (min (length name) limit))
+                    (format (format "%%-%ds" limit) name))))
+    (search-forward name nil t))
+  (forward-line 0))
+
+
 ;; Predicates --------------------------------------------------------
 
 (defun bookmarkp-region-bookmark-p (bookmark)
@@ -2451,7 +2503,8 @@ BOOKMARK is a bookmark name or a bookmark record."
 (defun bookmarkp-info-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK is an Info bookmark.
 BOOKMARK is a bookmark name or a bookmark record."
-  (eq (bookmark-get-handler bookmark) 'Info-bookmark-jump))
+  (or (eq (bookmark-get-handler bookmark) 'Info-bookmark-jump)
+      (bookmark-prop-get bookmark 'info-node))) ; Emacs 20-21 Info bookmark - no handler.
 
 (defun bookmarkp-file-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK bookmarks a file or directory.
@@ -2459,23 +2512,26 @@ BOOKMARK is a bookmark name or a bookmark record.
 This excludes bookmarks of a more specific kind (Info, Gnus, and W3m)."
   (let* ((filename   (bookmark-get-filename bookmark))
          (isnonfile  (equal filename bookmarkp-non-file-filename))) 
-    (and filename (not isnonfile) (not (bookmark-get-handler bookmark)))))
+    (and filename (not isnonfile)
+         (not (bookmark-get-handler bookmark))
+         (not (and (bookmark-prop-get bookmark 'info-node)))))) ; Emacs 20-21 Info: no handler.
 
 (defun bookmarkp-non-file-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK is a non-file bookmark (e.g *scratch*).
-This excludes bookmarks of a more specific kind (Info, Gnus, and W3m)."
+This excludes bookmarks of a more specific kind (Info, Gnus, and W3m).
+It includes bookmarks to existing buffers, as well as bookmarks
+defined for buffers that do not currently exist."
   (let* ((filename   (bookmark-get-filename bookmark))
          (isnonfile  (equal filename bookmarkp-non-file-filename))) 
-    (and isnonfile (not (bookmark-get-handler bookmark)))))
+    (and (bookmarkp-get-buffer-name bookmark)
+         (or (not filename) isnonfile (not (file-exists-p filename)))
+         (not (bookmark-get-handler bookmark)))))
 
 (defun bookmarkp-remote-file-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK bookmarks a remote file or directory.
 BOOKMARK is a bookmark name or a bookmark record."
   (let* ((file      (bookmark-get-filename bookmark))
-         (rem-file  (and file           ; Do not pass nil to `file-remote-p'
-                         (if (fboundp 'file-remote-p)
-                             (file-remote-p file)
-                           (and (fboundp 'ffap-file-remote-p) (ffap-file-remote-p file))))))
+         (rem-file  (and file  (bookmarkp-file-remote-p file))))
     (and rem-file  (not (bookmark-get-handler bookmark))  rem-file)))
 
 (defun bookmarkp-local-file-bookmark-p (bookmark)
@@ -2580,11 +2636,8 @@ A new list is returned (no side effects)."
   "Copy of ALIST with elements that have duplicate keys removed.
 Only the first element of those with the same key is kept.
 Keys are compared using `equal'."
-  (let ((tail  alist)
-        (new   ()))
-    (while tail
-      (unless (assoc (caar tail) new) (push (car tail) new))
-      (pop tail))
+  (let ((new   ()))
+    (dolist (ii alist) (unless (assoc (car ii) new) (push ii new)))
     (nreverse new)))
 
 (defun bookmarkp-remove-if (pred xs)
@@ -2619,6 +2672,12 @@ This works around an Emacs 20 problem that occurs if STRING contains
 binary data (weird chars)."
   (condition-case nil (upcase string) (error string)))
 
+(defun bookmarkp-file-remote-p (file-name)
+  "Returns non-nil if string FILE-NAME is likely to name a remote file."
+  (if (fboundp 'file-remote-p)
+      (file-remote-p file-name)
+    (and (fboundp 'ffap-file-remote-p) (ffap-file-remote-p file-name))))
+
 (defun bookmarkp-replace-regexp-in-string (regexp rep string
                                            &optional fixedcase literal subexp start)
   "Replace all matches for REGEXP with REP in STRING and return STRING."
@@ -2627,19 +2686,6 @@ binary data (weird chars)."
     (if (string-match regexp string)    ; Emacs 20
         (replace-match rep nil nil string)
       string)))
-
-(defun bookmarkp-bmenu-goto-bookmark-named (name)
-  "Go to the first bookmark whose name (visible portion) matches NAME."
-  (goto-char (point-min))
-  (if (not bookmark-bmenu-toggle-filenames)
-      (re-search-forward (concat (regexp-quote name) "$"))
-    (let ((len   (length name))
-          (limit (- bookmark-bmenu-file-column 2)))
-      (setq name  (if (>= len limit)
-                      (substring name 0 (min (length name) limit))
-                    (format (format "%%-%ds" limit) name))))
-    (search-forward name nil t))
-  (forward-line 0))
 
 (defun bookmarkp-face-prop (value)
   "Return a list with elements `face' or `font-lock-face' and VALUE.
@@ -2679,6 +2725,8 @@ Starting with Emacs 22, the first element is `font-lock-face'."
 ;;;               (error (error "No changes made. %s" (error-message-string err))))
 ;;;         (bookmark-save)
 ;;;         (message "Bookmarks file fixed.  Old version is `%s'" bkup-file)))))
+
+
 
 ;; Other Functions ---------------------------------------------------
 
@@ -2722,6 +2770,7 @@ If `bookmarkp-reverse-sort-p' is non-nil, then reverse the sort order."
                               (lambda (a b) (not (funcall bookmarkp-sort-function a b)))
                             bookmarkp-sort-function))))
     (setq bookmarkp-latest-sorted-alist  newlist)))
+
 
 ;; Sort Commands
 

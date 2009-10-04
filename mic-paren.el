@@ -1,25 +1,28 @@
-;;; mic-paren.el --- advanced highlighting of matching parentheses.
+;;; mic-paren.el --- advanced highlighting of matching parentheses
 
-;; Version: 3.7 - 2001-12-21
+;;; Copyright (C) 2008 Thien-Thi Nguyen
+;;; Copyright (C) 1997 Mikael Sjödin (mic@docs.uu.se)
+
+;; Version: 3.8
+;; Released: 2008-04-30
 ;; Author: Mikael Sjödin (mic@docs.uu.se)
 ;;         Klaus Berndl  <berndl@sdm.de>
+;; Maintainer: ttn
 ;; Keywords: languages, faces, parenthesis, matching
 ;;
-;; Additional info:
-;; Copyright (C) 1997 Mikael Sjödin (mic@docs.uu.se)
-;; Maintenance and development (since v2.1): Klaus Berndl <berndl@sdm.de>
-;; Original author: Mikael Sjödin  --  mic@docs.uu.se
-;; Additional code by: Vinicius Jose Latorre <vinicius@cpqd.br>
-;;                     Steven L Baur <steve@xemacs.org>
-;;                     Klaus Berndl  <berndl@sdm.de>
+;; This program contains additional code by:
+;; - Vinicius Jose Latorre <vinicius@cpqd.br>
+;; - Steven L Baur <steve@xemacs.org>
+;; - Klaus Berndl  <berndl@sdm.de>
+;; - ttn
 ;;
 ;; mic-paren.el is free software
-;; 
+;;
 ;; This file is *NOT* (yet?) part of GNU Emacs.
 ;;
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation; either version 2, or (at your option)
+;; the Free Software Foundation; either version 3, or (at your option)
 ;; any later version.
 ;;
 ;; This program is distributed in the hope that it will be useful,
@@ -32,79 +35,71 @@
 ;; Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 ;; Boston, MA 02111-1307, USA.
 
-;;; Commentary
+;;; Commentary:
 
 ;; ----------------------------------------------------------------------
 ;; Short Description:
 ;;
 ;; Load this file, activate it and Emacs will display highlighting on
 ;; whatever parenthesis (and paired delimiter if you like this) matches
-;; the one before or after point. This is an extension to the paren.el
-;; file distributed with Emacs. The default behaviour is similar to
-;; paren.el but more sophisticated. Normally you can try all default
+;; the one before or after point.  This is an extension to the paren.el
+;; file distributed with Emacs.  The default behaviour is similar to
+;; paren.el but more sophisticated.  Normally you can try all default
 ;; settings to enjoy mic-paren.
 ;;
-;; Or - if you are a LaTeX writer like the current maintainer - try the
-;; following additional setup in your .emacs:
+;; Some examples to try in your ~/.emacs:
 ;;
-;; ;; In LaTeX-mode we want this
 ;; (add-hook 'LaTeX-mode-hook
 ;;           (function (lambda ()
 ;;                       (paren-toggle-matching-quoted-paren 1)
 ;;                       (paren-toggle-matching-paired-delimiter 1))))
 ;;
-;; Or - if you are programming in C like languages - try also:
 ;; (add-hook 'c-mode-common-hook
 ;;           (function (lambda ()
 ;;                        (paren-toggle-open-paren-context 1))))
-;; ----------------------------------------------------------------------
-
+;;
 ;; ----------------------------------------------------------------------
 ;; Installation:
 ;;
 ;; o Place this file in a directory in your 'load-path and byte-compile
-;;   it. You can surely ignore the warnings.
+;;   it.  If there are warnings, please report them to ttn.
 ;; o Put the following in your .emacs file:
-;;   (GNU Emacs supports mic-paren only within a window-system but XEmacs
-;;   supports mic-paren also without X)
-;;   (when (or (string-match "XEmacs\\|Lucid" emacs-version) window-system)
 ;;      (require 'mic-paren) ; loading
 ;;      (paren-activate)     ; activating
 ;;      ;;; set here any of the customizable variables of mic-paren:
 ;;      ;;; ...
-;;   )
-;; o Restart your Emacs. mic-paren is now installed and activated!
-;; o To list the possible customizations enter `C-h f paren-activate' or
+;; o Restart your Emacs; mic-paren is now installed and activated!
+;; o To list the possible customizations type `C-h f paren-activate' or
 ;;   go to the customization group `mic-paren-matching'.
-
+;;
 ;; ----------------------------------------------------------------------
 ;; Long Description:
 ;;
 ;; mic-paren.el is an extension and replacement to the packages paren.el
-;; and stig-paren.el for Emacs. When mic-paren is active Emacs normal
-;; parenthesis matching is deactivated. Instead parenthesis matching will
-;; be performed as soon as the cursor is positioned at a parenthesis. The
-;; matching parenthesis (or the entire expression between the
+;; and stig-paren.el for Emacs.  When mic-paren is active Emacs normal
+;; parenthesis matching is deactivated.  Instead parenthesis matching will
+;; be performed as soon as the cursor is positioned at a parenthesis.  The
+;; matching parenthesis (or the entire structured expression between the
 ;; parentheses) is highlighted until the cursor is moved away from the
-;; parenthesis. Features include:
+;; parenthesis.  Features include:
 ;; o Both forward and backward parenthesis matching (simultaneously if
 ;;   cursor is between two expressions).
 ;; o Indication of mismatched parentheses.
 ;; o Recognition of "escaped" (also often called "quoted") parentheses.
 ;; o Option to match "escaped" parens too, especially in (La)TeX-mode
-;;   (e.g. matches expressions like "\(foo bar\)" properly).
-;; o Offers two functions as replacement for forward-sexp and
-;;   backward-sexp which handle properly quoted parens (s.a.). These new
-;;   functions can automatically be bounded to the original binding of
-;;   the standard forward-sexp and backward-sexp functions.
-;; o Option to activate matching of paired delimiter (i.e. characters with
-;;   syntax '$'). This is useful for writing in LaTeX-mode for example.
+;;   (e.g., matches expressions like "\(foo bar\)" properly).
+;; o Offers two functions as replacement for `forward-sexp' and
+;;   `backward-sexp' which handle properly quoted parens (s.a.).  These
+;;   new functions can automatically be bounded to the original binding
+;;   of the standard `forward-sexp' and `backward-sexp' functions.
+;; o Option to activate matching of paired delimiter (i.e., characters with
+;;   syntax '$').  This is useful for writing in LaTeX-mode for example.
 ;; o Option to select in which situations (always, never, if match, if
 ;;   mismatch) the entire expression should be highlighted or only the
 ;;   matching parenthesis.
 ;; o Message describing the match when the matching parenthesis is off-screen
-;;   (vertical and/or horizontal). Message contains either the linenumber or
-;;   the number of lines between the two matching parens. Option to select in
+;;   (vertical and/or horizontal).  Message contains either the linenumber or
+;;   the number of lines between the two matching parens.  Option to select in
 ;;   which cases this message should be displayed.
 ;; o Optional delayed highlighting (useful on slow systems),
 ;; o Functions to activate/deactivate mic-paren.el are provided.
@@ -112,16 +107,17 @@
 ;;   mic-paren.el.
 ;;
 ;; mic-paren.el was originally developed and tested under Emacs 19.28 -
-;; 20.3. It should work on earlier and forthcoming Emacs versions. XEmacs
+;; 20.3.  Since then, support for Emacs 19 and 20 has bit-rotted (not
+;; dropped completely, but not tested against changes, either), and
+;; will probably be removed without warning in a future version.  This
+;; version was developed and tested under Emacs 23.0.60 (wip).  XEmacs
 ;; compatibility has been provided by Steven L Baur <steve@xemacs.org>.
 ;; Jan Dubois (jaduboi@ibm.net) provided help to get mic-paren to work in
-;; OS/2. Mic-paren versions >= v2.1 are only tested with recent Emacsen
-;; (FSF Emacs >= 20.3.1 and XEmacs >= 21.1) but should also work with
-;; earlier versions of (X)Emacs.
+;; OS/2.
 ;;
-;; This file can be obtained from "The EmacsWiki" and here from the
-;; packages-site: http://www.emacswiki.org/elisp/index.html
-
+;; This file (and other wonderful stuff) can be obtained from
+;; the Emacs Wiki: <http://www.emacswiki.org/>
+;;
 ;; ----------------------------------------------------------------------
 ;; Available customizable options:
 ;; - `paren-priority'
@@ -154,23 +150,29 @@
 ;; - `paren-forward-sexp'
 ;; - `paren-backward-sexp'
 ;; ----------------------------------------------------------------------
-
+;;
 ;; IMPORTANT NOTES (important for people who have customized mic-paren
 ;;                  from within elisp):
 ;; - In version >= 3.3 the prefix "mic-" has been removed from the
-;;   command-names 'mic-paren-forward-sexp' and 'mic-paren-backward-sexp'.
+;;   command-names `mic-paren-forward-sexp' and `mic-paren-backward-sexp'.
 ;;   Now all user-functions and -options begin with the prefix "paren-"
 ;;   because this package should be a replacement of the other
 ;;   paren-packages like paren.el and stig-paren.el!
 ;; - In version >= 3.2 the prefix "mic-" has been removed from the
-;;   command-names 'mic-paren-toggle-matching-quoted-paren' and
-;;   'mic-paren-toggle-matching-paired-delimiter'.
-;; - In versions >= 3.1 mic-paren is NOT auto. activated after loading.
-;; - In versions >= 3.0 the variable 'paren-face' has been renamed to
+;;   command-names `mic-paren-toggle-matching-quoted-paren' and
+;;   `mic-paren-toggle-matching-paired-delimiter'.
+;; - In versions >= 3.1 mic-paren is NOT auto-activated after loading.
+;; - In versions >= 3.0 the variable `paren-face' has been renamed to
 ;;   `paren-match-face'.
-
+;;
 ;; ----------------------------------------------------------------------
 ;; Versions:
+;; v3.8    + Maintainership (crassly) grabbed by ttn.
+;;         + License now GPLv3+.
+;;         + Byte-compiler warnings eliminated; if you see one, tell me!
+;;         + Dropped funcs: mic-char-bytes, mic-char-before.
+;;         + Docstrings, messages, comments revamped.
+;;
 ;; v3.7    + Removed the message "You should be in LaTeX-mode!".
 ;;         + Fixed a bug in `paren-toggle-matching-quoted-paren'.
 ;;         + Fixed some misspellings in the comments and docs.
@@ -182,133 +184,132 @@
 ;;
 ;; v3.5    + No mic-paren-messages are displayed if we are in isearch-mode.
 ;;         + Matching quoted parens is switched on if entering a minibuffer.
-;;           This is useful for easier inserting regexps, e.g. with
-;;           `query-replace-regexp'. Now \(...\) will be highlighted in the
-;;           minibuffer.
-;;         + New option `paren-message-show-linenumber': You can determine the
-;;           computation of the offscreen-message-linenumber: Either the
+;;           This is useful for easier inserting regexps, e.g., with
+;;           `query-replace-regexp'.  Now \(...\) will be highlighted
+;;           in the minibuffer.
+;;         + New option `paren-message-show-linenumber': You can determine
+;;           the computation of the offscreen-message-linenumber.  Either the
 ;;           number of lines between the two matching parens or the absolute
-;;           linenumber (Thank you for the idea and a first implementation to
-;;           Eliyahu Barzilay <eli@cs.bgu.ac.il>).
+;;           linenumber.  (Thank you for the idea and a first implementation
+;;           to Eliyahu Barzilay <eli@cs.bgu.ac.il>.)
 ;;         + New option `paren-message-truncate-lines': If mic-paren messages
-;;           should be truncated ot not (has only an effect in GNU Emacs 21).
+;;           should be truncated or not (has only an effect in GNU Emacs 21).
 ;;           (Thank you for the idea and a first implementation to Eliyahu
-;;           Barzilay <eli@cs.bgu.ac.il>).
+;;           Barzilay <eli@cs.bgu.ac.il>.)
 ;;
 ;; v3.4    + Corrected some bugs in the backward-compatibility for older
-;;           Emacsen. Thanks to Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>.
+;;           Emacsen.  Thanks to Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>.
 ;;
 ;; v3.3    + Now the priority of the paren-overlays can be customized
-;;           (option `paren-overlay-priority'). For a description of the
+;;           (option `paren-overlay-priority').  For a description of the
 ;;           priority of an overlay see in the emacs-lisp-manual the node
-;;           "Overlays". This option is mainly useful for experienced
+;;           "Overlays".  This option is mainly useful for experienced
 ;;           users which use many packages using overlays to perform their
 ;;           tasks.
 ;;         + Now you can determine what line-context will be displayed if
-;;           the matching open paren is offscreen. In functional
+;;           the matching open paren is offscreen.  In functional
 ;;           programming languages like lisp it is useful to display the
 ;;           following line in the echo-area if the opening matching paren
 ;;           has no preceding text in the same line.
 ;;           But in procedural languages like C++ or Java it is convenient
 ;;           to display the first previous non empty line in this case
-;;           instead of the following line. Look at the new variable
+;;           instead of the following line.  Look at the new variable
 ;;           `paren-open-paren-context-backward' and the related toggling
 ;;           function `paren-toggle-open-paren-context' for a detailed
 ;;           description of this new feature.
 ;;         + In addition to the previous described new feature you can
-;;           specify how a linefeed in the message (e.g. if the matching
-;;           paren is offscreen) is displayed. This is mainly because the
+;;           specify how a linefeed in the message (e.g., if the matching
+;;           paren is offscreen) is displayed.  This is mainly because the
 ;;           standard echo-area display of a linefeed (^J) is bad to read.
 ;;           Look at the option `paren-message-linefeed-display'.
 ;;         + Solved a little bug in the compatibility-code for Emacsen
 ;;           not supporting current customize-feature.
 ;;         + Removed the prefix "mic-" from the commands
-;;           'mic-paren-forward-sexp' and 'mic-paren-backward-sexp'. For
-;;           an explanation look at comments for version v3.2.
+;;           `mic-paren-forward-sexp' and `mic-paren-backward-sexp'.
+;;           For an explanation look at comments for version v3.2.
 ;;
 ;; v3.2    + The prefix "mic-" has been removed from the commands
-;;           'mic-paren-toggle-matching-quoted-paren' and
-;;           'mic-paren-toggle-matching-paired-delimiter'. This is because
-;;           of consistency. Now all user-variables, -faces and -commands
-;;           begin with the prefix "paren-" and all internal functions and
-;;           variables begin with the prefix "mic-paren-".
+;;           `mic-paren-toggle-matching-quoted-paren' and
+;;           `mic-paren-toggle-matching-paired-delimiter'.  This is for
+;;           consistency.  Now all user-variables, -faces and -commands
+;;           begin with the prefix "paren-" and all internal functions
+;;           and variables begin with the prefix "mic-paren-".
 ;;         + Now you can exactly specify in which situations the whole
 ;;           sexp should be highlighted (option `paren-sexp-mode'):
-;;           Always, never, if match or if mismatch. Tested with Gnus
+;;           Always, never, if match or if mismatch.  Tested with Gnus
 ;;           Emacs >= 20.3.1 and XEmacs >= 21.1.
 ;;
-;; v3.1    + From this version on mic-paren is not auto. loaded. To
+;; v3.1    + From this version on mic-paren is not autoloaded.  To
 ;;           activate it you must call `paren-activate' (either in your
-;;           .emacs or manually with M-x). Therefore the variable
-;;           `paren-dont-activate-on-load' is obsolet and has been
+;;           .emacs or manually with M-x).  Therefore the variable
+;;           `paren-dont-activate-on-load' ise obsolet and has been
 ;;           removed.
 ;;         + Now mic-paren works also in older Emacsen without the
-;;           custom-feature. If the actual custom-library is provided
+;;           custom-feature.  If the actual custom-library is provided
 ;;           mic-paren use them and is full customizable otherwise normal
 ;;           defvars are used for the options.
 ;;         + Fix of a bug displaying a message if the matching paren is
 ;;           horizontal out of view.
-;;         + All new features are now tested with XEmacs >= 21.1.6
+;;         + All new features are now tested with XEmacs >= 21.1.6.
 ;;
-;; v3.0    + Checking if matching paren is horizontally offscreen (in case
-;;           of horizontal scrolling). In that case the message is
+;; v3.0    + Checking if matching paren is horizontally offscreen (in
+;;           case of horizontal scrolling).  In that case the message is
 ;;           displayed in the echo-area (anlogue to vertical offscreen).
 ;;           In case of horizontal offscreen closing parenthesis the
-;;           displayed message is probably wider than the frame/window. So
-;;           you can only read the whole message if you are using a
+;;           displayed message is probably wider than the frame/window.
+;;           So you can only read the whole message if you are using a
 ;;           package like mscroll.el (scrolling long messages) in GNU
 ;;           Emacs.
 ;;         + Now full customizable, means all user-options and -faces now
-;;           can be set with the custom-feature of Emacs. On the other
-;;           side this means this version of mic-paren only works with an
+;;           can be set with the custom-feature of Emacs.  On the other
+;;           hand, this means this version of mic-paren only works with an
 ;;           Emacs which provides the custom-package!
 ;;         + In case of the matching paren is offscreen now the displayed
 ;;           message contains the linenumber of the matching paren too.
 ;;         This version is only tested with Gnu Emacs >= 20.4 and not with
 ;;         any XEmacs!
-;;         Implemented by Klaus Berndl <berndl@sdm.de>
+;;         Implemented by Klaus Berndl <berndl@sdm.de>.
 ;;
-;; v2.3    No additional feature but replacing 'char-bytes and
-;;         'char-before with 'mic-char-bytes and 'mic-char-before to
-;;         prevent the global-namespace. Now the new features of v2.1
-;;         and v2.2 are also tested with XEmacs!
+;; v2.3    No additional feature but replacing `char-bytes' and
+;;         `char-before' with `mic-char-bytes' and `mic-char-before' to
+;;         prevent a clash in the global-namespace.  Now the new
+;;         features of v2.1 and v2.2 are also tested with XEmacs!
 ;;
-;; v2.2    Adding the new feature for matching paired delimiter. Not
-;;         tested with XEmacs. Implemented by Klaus Berndl <berndl@sdm.de>
+;; v2.2    Adding the new feature for matching paired delimiter.  Not
+;;         tested with XEmacs.  Implemented by Klaus Berndl <berndl@sdm.de>
 ;;
-;; v2.1    Adding the new feature for matching escaped parens too. Not
-;;         tested with XEmacs. Implemented by Klaus Berndl <berndl@sdm.de>
+;; v2.1    Adding the new feature for matching escaped parens too.  Not
+;;         tested with XEmacs.  Implemented by Klaus Berndl <berndl@sdm.de>.
 ;;
-;; v2.0    Support for MULE and Emacs 20 multibyte characters added. Inspired
-;;         by the suggestion and code of Saito Takaaki
-;;         <takaaki@is.s.u-tokyo.ac.jp>
+;; v2.0    Support for MULE and Emacs 20 multibyte characters added.
+;;         Inspired by the suggestion and code of Saito Takaaki
+;;         <takaaki@is.s.u-tokyo.ac.jp>.
 ;;
 ;; v1.9    Avoids multiple messages/dings when point has not moved.  Thus,
-;;	    mic-paren no longer overwrites messages in minibuffer.  Inspired by
-;;	    the suggestion and code of Barzilay Eliyahu <eli@cs.bgu.ac.il>.
+;;         mic-paren no longer overwrites messages in minibuffer.  Inspired by
+;;         the suggestion and code of Barzilay Eliyahu <eli@cs.bgu.ac.il>.
 ;;
 ;; v1.3.1  Some spelling corrected (from Vinicius Jose Latorre
-;;	    <vinicius@cpqd.br> and Steven L Baur <steve@xemacs.org>)
+;;         <vinicius@cpqd.br> and Steven L Baur <steve@xemacs.org>).
 ;;
 ;; v1.3    Added code from Vinicius Jose Latorre <vinicius@cpqd.br> to
-;;	    highlight unmatched parentheses (useful in minibuffer)
+;;         highlight unmatched parentheses (useful in minibuffer).
 ;;
-;; v1.2.1  Fixed stuff to work with OS/2 emx-emacs
-;;           - checks if x-display-colour-p is bound before calling it
-;;           - changed how X/Lucid Emacs is detected
-;;         Added automatic load of the timer-feature (+ variable to disable
-;;         the loading)
+;; v1.2.1  Fixed stuff to work with OS/2 emx-emacs:
+;;          - checks if `x-display-colour-p' is bound before calling it;
+;;          - changed how X/Lucid Emacs is detected.
+;;         Added automatic load of the timer-feature (plus variable to
+;;         disable the loading).
 
-;; TODO:
-;;
+;;; Code:
 
-;;; Code
+(defvar mic-paren-version "3.8"
+  "Version of mic-paren.")
 
-(defvar mic-paren-version "3.7"
-  "Version string for mic-paren.")
+(eval-when-compile (require 'cl))
 
 ;;; ======================================================================
-;; Compatibility stuff 
+;; Compatibility stuff
 ;; BLOB to make custom stuff work even without customize
 (eval-and-compile
   (condition-case ()
@@ -318,100 +319,94 @@
     (defmacro defgroup (&rest rest) nil))
   (unless (fboundp 'defcustom)
     (defmacro defcustom (sym val str &rest rest)
-      (` (defvar (, sym) (, val) (, str)))))
+      `(defvar ,sym ,val ,str)))
   (unless (fboundp 'defface)
     (defmacro defface (sym val str &rest rest)
-      (` (defvar (, sym) (make-face '(, sym)) (, str))))))
+      `(defvar ,sym (make-face ',sym) ,str))))
 
-  
 ;;; ======================================================================
 ;;; here begin the user options
 
 (defgroup mic-paren-matching nil
-  "Showing advanced (un)matching of parens and expressions."
+  "Enable advanced (un)matching of parens and expressions."
   :prefix "paren-"
   :group 'paren-matching)
 
 (defcustom paren-priority 'both
-  "*Defines the behaviour of mic-paren when point is between a
-closing and an opening parenthesis. This means what should be done in a
-situation like this: \(a b)\(c d)
+  "*Control behavior in a \"abutted close-open\" situation.
+This occurs when point is between a closing and an opening
+parenthesis, such as: (A B)(C D)
                            ^
                          point
-- 'close means highlight the parenthesis matching the close-parenthesis
-  before the point \(highlight opening paren before 'a').
-- 'open means highlight the parenthesis matching the open-parenthesis after
-  the point \(highlight closing paren after 'd').
-- 'both means highlight both parenthesis matching the parenthesis beside
-  the point \(highlight opening before 'a' and closing after 'd')."
+close -- highlight the parenthesis matching the close-parenthesis
+         before the point (highlight opening paren before A).
+open  -- highlight the parenthesis matching the open-parenthesis after
+         the point (highlight closing paren after D).
+both  -- highlight both parenthesis matching the parenthesis beside
+         the point (highlight opening before A and closing after D)."
   :type '(choice (const :tag "Match close" close)
                  (const :tag "Match open" open)
                  (const :tag "Match both" both))
   :group 'mic-paren-matching)
 
 (defcustom paren-overlay-priority 999
- "*Specify paren overlay priority \(Integer >= 0\). For a description of the
-priority of an overlay see in the emacs-lisp manual the node Overlays.
-Normally you don't want to change the default-value!"
- :set (function
-       (lambda (symbol value)
-        (set symbol (if (< value 0) (* -1 value) value))))
- :initialize 'custom-initialize-default
- :type 'integer
- :group 'mic-paren-matching)
+  "*Non-negative integer to specify paren overlay priority.
+For details, see info node `(elisp) Overlays'.
+Normally you don't want to change the default value!"
+  :set (function
+        (lambda (symbol value)
+          (set symbol (if (< value 0) (* -1 value) value))))
+  :initialize 'custom-initialize-default
+  :type 'integer
+  :group 'mic-paren-matching)
 
 (defcustom paren-sexp-mode nil
-  "*Defines in which situations the whole sexp should be highlighted.
-This means the whole s-expression between the matching parenthesis is
+  "*Control in which situations the whole sexp should be highlighted.
+This means the whole s-expression between the matching parentheses is
 highlighted instead of only the matching/mismatching parenthesis.
 
-- t: Always highlight the whole s-expression.
-- nil: Never highlight the whole s-expression.
-- 'match: Highlight the whole s-expression only if the parens match.
-- 'mismatch: Highlight the whole s-expression only if the parens don't match."
+t        -- Always highlight the whole s-expression.
+nil      -- Never highlight the whole s-expression.
+match    -- Highlight the whole s-expression only if the parens match.
+mismatch -- Highlight the whole s-expression only if the parens don't match."
   :type '(choice (const :tag "Never sexp-mode" nil)
                  (const :tag "Always sexp-mode" t)
                  (const :tag "If match" match)
                  (const :tag "If mismatch" mismatch))
   :group 'mic-paren-matching)
 
-
 (defcustom paren-highlight-at-point t
-  "*If non-nil and point is after a close parenthesis, both the close
-and open parenthesis is highlighted. If nil, only the open parenthesis is
-highlighted."
+  "*Non-nil highlights both parens when point is after the close-paren.
+If nil, only the open parenthesis is highlighted."
   :type '(choice (const :tag "Highlight both" t)
                  (const :tag "Highlight open" nil))
   :group 'mic-paren-matching)
 
-
 (defcustom paren-highlight-offscreen nil
-  "*If non-nil mic-paren will highlight text which is not visible in the
-current buffer.
+  "*Non-nil enables highlighting text not visible in the current buffer.
 
-This is useful if you regularly display the current buffer in multiple
-windows or frames. For instance if you use follow-mode \(by
-andersl@csd.uu.se), however it may slow down your Emacs.
+This is useful if you regularly display the current buffer in
+multiple windows or frames (e.g., if you use Follow mode, by
+andersl@csd.uu.se).  Note: this option may slow down your Emacs.
 
-\(This variable is ignored \(treated as non-nil) if you set paren-sexp-mode to
-non-nil.)"
+This variable is ignored (treated as non-nil) if you set
+`paren-sexp-mode' to non-nil."
   :type 'boolean
   :group 'mic-paren-matching)
-
 
 (defcustom paren-display-message 'only
   "*Display message if matching parenthesis is off-screen.
 Possible settings are:
-- 'always: message is always displayed regardless if offscreen or not
-- 'only:   message is only displayed when matching is offscreen
-- 'never:  never a message is displayed."
+always -- message is always displayed regardless if offscreen or not
+only   -- message is only displayed when matching is offscreen
+never  -- never a message is displayed."
   :type '(choice (const :tag "Display always" always)
                  (const :tag "Display if offscreen" only)
                  (const :tag "No Message display" never))
   :group 'mic-paren-matching)
 
 (defcustom paren-message-linefeed-display " RET "
-  "*How a linefeed in the matching paren context message is displayed.
+  "*String for displaying a linefeed in the matching paren context message.
 There are three predefined values:
 - Displays linefeeds with \" RET \" in the message.
 - Displays linefeeds with a SPACE in the message.
@@ -428,19 +423,21 @@ For further explanations about message displaying look at
 
 (defcustom paren-message-show-linenumber 'sexp
   "*Determine the computation of the offscreen-message-linenumber.
-If the matching paren is offscreen, then maybe a message with the context of
-the matching paren and it´s linenumber is displayed \(depends on the setting
-in `paren-display-message'). Here the computation of the linenumber can be
-determined:
-- 'sexp: Display the number of lines between the matching parens. Then the
-         number of lines is displayed as negativ number if the matching paren
-         is somewhere above. Otherwise the number has a positive sign.
-- 'absolute: Display the absolute linenumber of the machting paren computed
-             from the beginning of the buffer."
+
+If the matching paren is offscreen, then maybe a message with the
+context of the matching paren and it's linenumber is displayed
+\(depends on the setting in `paren-display-message').  Here the
+computation of the linenumber can be determined:
+
+sexp -- Display the number of lines between the matching parens.  Then the
+        number of lines is displayed as negative number if the matching paren
+        is somewhere above.  Otherwise the number has a positive sign.
+
+absolute -- Display the absolute linenumber of the machting paren computed
+            from the beginning of the buffer."
   :type '(choice (const :tag "Count accros sexp" sexp)
                  (const :tag "Absolute number" absolute))
   :group 'mic-paren-matching)
-
 
 (defcustom paren-message-no-match t
   "*Display message if no matching parenthesis is found."
@@ -448,21 +445,19 @@ determined:
                  (const :tag "No message" nil))
   :group 'mic-paren-matching)
 
-
 (defcustom paren-message-truncate-lines t
   "*Non nil means truncate lines for all messages mic-paren can display.
 This option has only an effect with GNU Emacs 21.x!"
   :type 'boolean
   :group 'mic-paren-matching)
 
-
 (defcustom paren-ding-unmatched nil
-  "*Non nil means make noise if the cursor is at an unmatched
+  "*Non-nil means make noise in unmatched situations.
+An unmatched situation occurs if the cursor is at an unmatched
 parenthesis or no matching parenthesis is found.
 Even if nil, typing an unmatched parenthesis produces a ding."
   :type 'boolean
   :group 'mic-paren-matching)
-
 
 (defcustom paren-delay nil
   "*This variable controls when highlighting is done.
@@ -473,14 +468,14 @@ In Emacs 19.29 and below:
 
 In Emacs 19.30:
   A value of nil will make highlighting happen immediately \(this may slow
-  down your Emacs if running on a slow system). Any non-nil value will
+  down your Emacs if running on a slow system).  Any non-nil value will
   delay highlighting for the time specified by post-command-idle-delay.
 
 In Emacs 19.31 and above:
   A value of nil will make highlighting happen immediately \(this may slow
-  down your Emacs if running on a slow system). If not nil, the value
+  down your Emacs if running on a slow system).  If not nil, the value
   should be a number \(possible a floating point number if your Emacs
-  support floating point numbers). The number is the delay in seconds
+  support floating point numbers).  The number is the delay in seconds
   before mic-paren performs highlighting.
 
 If you change this variable when mic-paren is active you have to
@@ -490,20 +485,17 @@ effect."
                  (const :tag "No delay" nil))
   :group 'mic-paren-matching)
 
-
 (defcustom paren-dont-touch-blink nil
-  "*Non-nil means not to change the value of blink-matching-paren
-when mic-paren is activated of deactivated.
-If nil mic-paren turns of blinking when activated and turns on blinking when
+  "*Non-nil means not to change the value of `blink-matching-paren'.
+This takes effect when mic-paren is activated or deactivated.  If nil
+mic-paren turns of blinking when activated and turns on blinking when
 deactivated."
   :type 'boolean
   :group 'mic-paren-matching)
 
-
 (defcustom paren-dont-load-timer (not (string-match "XEmacs\\|Lucid"
                                                     emacs-version))
-  "*If non-nil mic-paren will not try to load the timer-feature when
-loaded.
+  "*Non-nil inhibits loading `timer'.
 
 \(I have no idea why Emacs user ever want to set this to non-nil but I hate
 packages which loads/activates stuff I don't want to use so I provide this
@@ -511,17 +503,17 @@ way to prevent the loading if someone doesn't want timers to be loaded.)"
   :type 'boolean
   :group 'mic-paren-matching)
 
-
 (defcustom paren-bind-modified-sexp-functions t
   "*Automatic binding of the new sexp-functions to the old bindings.
 If non nil mic-paren checks at load-time the keybindings for the functions
 `forward-sexp' and `backward-sexp' and binds the modified sexp-functions
 `paren-forward-sexp' and `paren-backward-sexp' to exactly these
 bindings if and only if matching quoted/escaped parens is turned on by
-`paren-toggle-matching-quoted-paren'. These new binding is done only
-for the buffer local-key-map, therefore if you activate the quoted matching
-only in some modes from within a hook only in these buffers the new binding
-is active and 'in all other not.
+`paren-toggle-matching-quoted-paren'.  These new bindings are done only
+in a buffer-local keymap, therefore if you activate the quoted matching
+only in some modes from within a hook only in these buffers the new
+bindings are active and in all other not.
+
 If you deactivate the quoted matching feature by
 `paren-toggle-matching-quoted-paren' then `forward-sexp' and
 `backward-sexp' will be bound again to their original key-bindings!"
@@ -553,52 +545,49 @@ If you deactivate the quoted matching feature by
   :group 'faces
   :group 'mic-paren-matching)
 
-
 (defcustom paren-match-face 'paren-face-match
   "*Face to use for showing the matching parenthesis."
   :type 'face
   :group 'mic-paren-matching)
-
 
 (defcustom paren-mismatch-face 'paren-face-mismatch
   "*Face to use when highlighting a mismatched parenthesis."
   :type 'face
   :group 'mic-paren-matching)
 
-
 (defcustom paren-no-match-face 'paren-face-no-match
   "*Face to use when highlighting an unmatched parenthesis."
   :type 'face
   :group 'mic-paren-matching)
 
-
-;;; End of User Options:
+;;; End of User Options
 ;;; ======================================================================
 
 ;;; Below there are only variables and options which either should be not
-;;; set directly but with toggle-functions or pure internal variables
+;;; set directly but with toggle-functions or pure internal variables.
 
 (defvar paren-match-quoted-paren nil
-  "*Non-nil causes to match properly quoted \(or escaped\) parens \(e.g. in
-TeX-files, e.g. \"\\\(x-3y + z = 7\\\)\"\). FSF-Emacs can not match quoted
-parens, so we must temporally deactivate the quoting until emacs has done
-its sexp-parsing. Therefore emacs itself does not \(can not!\) take into
-consideration if either both matched parens are quoted or none. But
-nevertheless we do this! Only symmetric balanced parens are matched: means
-either both matching parens must we quoted or none, otherwise they we will
+  "*Non-nil enables matching properly quoted (or escaped) parens.
+E.g., \"\\\(x-3y + z = 7\\\)\"\) in a TeX file.  GNU Emacs can not match
+quoted parens, so we must temporally deactivate the quoting until emacs
+has done its sexp-parsing.  Therefore emacs itself does not \(can not!\)
+take into consideration if either both matched parens are quoted or none.
+But nevertheless we do this!  Only symmetric balanced parens are matched;
+either both matching parens must be quoted or none, otherwise they we will
 be highlighted as mismatched.
-This package offers also two slightly modified versions of forward-sexp
-\(resp. backward-sexp\):
-`paren-forward-sexp'\(`paren-backward-sexp'\). This versions can also
-jump to escaped/quoted parens.
-If this variable is not nil and `paren-bind-modified-sexp-functions' is set
-to non nil then `paren-toggle-matching-quoted-paren' will also toggle
-the original binding of `forward-sexp' \(resp. backward-sexp\) between the
+
+This package offers also two slightly modified versions of sexp traversal
+functions: `paren-forward-sexp' and `paren-backward-sexp'.  These versions
+can also jump to escaped/quoted parens.
+
+If this variable is not nil and `paren-bind-modified-sexp-functions' is
+set to non nil, then `paren-toggle-matching-quoted-paren' will also toggle
+the original binding of `forward-sexp' and `backward-sexp' between the
 original functions and the modified equivalents.
 
 Do NOT set this variable directly but use
 `paren-toggle-matching-quoted-paren' to activate/deactivate/toggle this
-feature!. The best method is to do this in a mode hook, e.g.:
+feature!  The best method is to do this in a mode hook, e.g.:
 \(add-hook \'LaTeX-mode-hook
           \(function \(lambda \(\)
                       \(paren-toggle-matching-quoted-paren 1\)\)\)\)")
@@ -606,14 +595,13 @@ feature!. The best method is to do this in a mode hook, e.g.:
 (make-variable-buffer-local 'paren-match-quoted-paren)
 
 (defvar paren-match-paired-delimiter nil
-"*If not nil then characters with syntax '$' \(means paired delimiter\)
-will be matched if possible (e.g. in LaTeX \"$...$\" is equal with
-\"\\(...\\)\"\) . Unlike to parens quoted/escaped paired delimiter will
-never match.
+  "*Non-nil enables matching of characters with syntax \"$\".
+E.g., in LaTeX \"$...$\" is equivalent to \"\\(...\\)\".
+Unlike to parens quoted/escaped paired delimiter will never match.
 
 Do NOT set this variable directly but use
 `paren-toggle-matching-paired-delimiter' to activate/deactivate/toggle
-this feature!. The best method is to do this in a mode hook, e.g.:
+this feature!  The best method is to do this in a mode hook, e.g.:
 \(add-hook \'LaTeX-mode-hook
           \(function \(lambda \(\)
                       \(paren-toggle-matching-paired-delimiter 1\)\)\)\)")
@@ -621,16 +609,16 @@ this feature!. The best method is to do this in a mode hook, e.g.:
 (make-variable-buffer-local 'paren-match-paired-delimiter)
 
 (defvar paren-open-paren-context-backward nil
-"*Determines which context of the matching open paren will be displayed
-if the matching open paren is offscreen or `paren-display-message' is
-'always \(look at the documentation of `paren-display-message'\) and the
-matching open paren has no previous text in the same line.
-Meaning of the setting:
-- nil: Contents of the **next** not empty and not whitespace-line will be
-  displayed. This value is useful for example in functional programming
-  languages like \(emacs\)lisp.
-- not nil: Contents of the first **previous** not empty and not only
-  whitespace-line will be displayed. This value is useful for example in
+  "*Controls which context of the matching open paren will be displayed.
+This takes effect if the matching open paren is offscreen or
+`paren-display-message' is `always' (see `paren-display-message')
+and the matching open paren has no previous text in the same line.
+Possible values:
+nil -- Contents of the **next** not empty and not whitespace-line will be
+  displayed.  This value is useful for example in functional programming
+  languages like (emacs)lisp.
+not-nil -- Contents of the first **previous** not empty and not only
+  whitespace-line will be displayed.  This value is useful for example in
   procedural programming languages like C, C++, Java etc.
 
 Lets take a look at a short example:
@@ -645,7 +633,7 @@ which would be in C++ lesser useful as the non nil version.
 \(The ^J stands for a newline in the buffer\).
 
 Do NOT set this variable directly but use `paren-toggle-open-paren-context'
-to change the value of this option!. The best method is to do this in a
+to change the value of this option!  The best method is to do this in a
 mode hook, e.g.:
 \(add-hook \'c-common-mode-hook
            \(function \(lambda \(\)
@@ -657,78 +645,84 @@ mode hook, e.g.:
   (list (car (where-is-internal 'forward-sexp))
         (car (where-is-internal 'backward-sexp))))
 
-
 ;;; Compatibility.
 ;;; Try to make mic-paren work in different Emacs flavours.
 
-;; XEmacs compatibility (mainly by Steven L Baur <steve@xemacs.org>)
+;; XEmacs compatibility (mainly by Steven L Baur <steve@xemacs.org>).
 (eval-and-compile
   (if (string-match "\\(Lucid\\|XEmacs\\)" emacs-version)
       (progn
         (fset 'mic-make-overlay 'make-extent)
         (fset 'mic-delete-overlay 'delete-extent)
         (fset 'mic-overlay-put 'set-extent-property)
-        (defun mic-cancel-timer (timer) (delete-itimer timer))
-        (fset 'mic-run-with-idle-timer 'start-itimer)
-        )
+        (fset 'mic-cancel-timer 'delete-itimer)
+        (fset 'mic-run-with-idle-timer 'start-itimer))
     (fset 'mic-make-overlay 'make-overlay)
     (fset 'mic-delete-overlay 'delete-overlay)
     (fset 'mic-overlay-put 'overlay-put)
     (fset 'mic-cancel-timer 'cancel-timer)
-    (fset 'mic-run-with-idle-timer 'run-with-idle-timer)
-    ))
+    (fset 'mic-run-with-idle-timer 'run-with-idle-timer)))
 
-;; MULE and Emacs 20 multibyte char compatibility.
-;; Implemented by defining dummys for functions which do not exist in vanilla
-;; Emacs.
+(eval-when-compile
+  (defmacro define-mic-paren-nolog-message (yes no)
+    `(defun mic-paren-nolog-message (&rest args)
+       "Work exactly like `message' but without logging."
+       (let ((msg (cond ((or (null args)
+                             (null (car args)))
+                         nil)
+                        ((null (cdr args))
+                         (car args))
+                        (t
+                         (apply 'format args)))))
+         (if msg ,yes ,no)
+         msg))))
 
-(if (fboundp 'char-bytes)
-    (fset 'mic-char-bytes 'char-bytes)
-  (defun mic-char-bytes (ch)
-    "Returns 1 for all input CH.
-Function defined by mic-paren to be compatible with multibyte Emacses."
-    1))
-
-(if (fboundp 'char-before)
-    (fset 'mic-char-before 'char-before)
-  (defun mic-char-before (pos)
-    "Return character in current buffer preceding position POS.
-POS is an integer or a buffer pointer.
-If POS is out of range, the value is nil.
-Function defined by mic-paren to be compatible with multibyte Emacses."
-    (char-after (1- pos))))
-
-(defun mic-paren-nolog-message (&rest args)
-  "Works exactly like `message' but does not log the message"
-  (let ((msg (cond ((or (null args)
-                        (null (car args)))
-                    nil)
-                   ((null (cdr args))
-                    (car args))
-                   (t
-                    (apply 'format args)))))
-    ;; Now message is either nil or the formated string.
-    (if (fboundp 'display-message)
-        ;; XEmacs way of preventing log messages.
-        (if msg
-            (display-message 'no-log msg)
-          (clear-message 'no-log))
-      ;; Emacs way of preventing log messages.
-      (let ((message-log-max nil))
-        (if msg
-            (message "%s" msg)
-          (message nil))))
-    msg))
-
+(eval-and-compile
+  (if (and (fboundp 'display-message)
+           (fboundp 'clear-message))
+      (define-mic-paren-nolog-message
+        (display-message 'no-log msg)
+        (clear-message 'no-log))
+    (define-mic-paren-nolog-message
+      (message "%s" msg)
+      (message nil))))
 
 ;;; ======================================================================
-;;; User Functions:
+;;; Pure Internal variables
+
+(defvar mic-paren-overlays (vector (mic-make-overlay 1 1)
+                                   (mic-make-overlay 1 1)
+                                   (mic-make-overlay 1 1))
+  "Vector of of the form [BACKW POINT FOREW].
+
+BACKW: Overlay for the open-paren which matches the close-paren
+       before point.  When in sexp-mode this is the overlay for
+       the expression before point.
+
+POINT: Overlay for the close-paren before point.
+       This is not used when is sexp-mode.
+
+FOREW: Overlay for the close-paren which matches the open-paren
+       after point.  When in sexp-mode this is the overlay for
+       the expression after point.")
+
+(defvar mic-paren-idle-timer nil
+  "Idle-timer.
+Used only in Emacs 19.31 and above (and if paren-delay is nil).")
+
+(defvar mic-paren-previous-location [nil nil nil]
+  "Where point was the last time mic-paren performed some action.
+This is is a vector of the form [POINT BUFFER WINDOW].")
+
+;;; ======================================================================
+;;; User Functions
 
 ;;;###autoload
 (defun paren-activate ()
-  "Activates mic-paren parenthesis highlighting.
-paren-activate deactivates the paren.el and stig-paren.el packages if they are
-active !
+  "Activate mic-paren parenthesis highlighting.
+Note: This also deactivates the paren.el
+and stig-paren.el packages if they are active!
+
 The following options are available via the customize-feature:
   `paren-priority'
   `paren-overlay-priority'
@@ -747,17 +741,18 @@ The following options are available via the customize-feature:
   `paren-mismatch-face'
   `paren-no-match-face'
   `paren-bind-modified-sexp-functions'
+
 The following options are settable via toggling functions \(look at the
 documentation of these options for the names of these functions\):
   `paren-match-quoted-paren'
   `paren-match-paired-delimiter'
   `paren-open-paren-context-backward'"
   (interactive)
-  ;; Deactivate mic-paren.el (To remove redundant hooks)
+  ;; Deactivate mic-paren.el (to remove redundant hooks).
   (paren-deactivate)
-  ;; Deactivate paren.el if loaded
-  (if (boundp 'post-command-idle-hook)
-      (remove-hook 'post-command-idle-hook 'show-paren-command-hook))
+  ;; Deactivate paren.el if loaded.
+  (when (boundp 'post-command-idle-hook)
+    (remove-hook 'post-command-idle-hook 'show-paren-command-hook))
   (remove-hook 'post-command-hook 'show-paren-command-hook)
   (and (boundp 'show-paren-overlay)
        show-paren-overlay
@@ -765,19 +760,19 @@ documentation of these options for the names of these functions\):
   (and (boundp 'show-paren-overlay-1)
        show-paren-overlay-1
        (mic-delete-overlay show-paren-overlay-1))
-  ;; Deactivate stig-paren.el if loaded
-  (if (boundp 'post-command-idle-hook)
-      (remove-hook 'post-command-idle-hook 'stig-paren-command-hook))
+  ;; Deactivate stig-paren.el if loaded.
+  (when (boundp 'post-command-idle-hook)
+    (remove-hook 'post-command-idle-hook 'stig-paren-command-hook))
   (remove-hook 'post-command-hook 'stig-paren-command-hook)
   (remove-hook 'post-command-hook 'stig-paren-safe-command-hook)
   (remove-hook 'pre-command-hook 'stig-paren-delete-overlay)
-  ;; Deactivate Emacs standard parenthesis blinking
+  ;; Deactivate Emacs standard parenthesis blinking.
   (or paren-dont-touch-blink
       (setq blink-matching-paren nil))
 
   (cond(
         ;; If timers are available use them
-        ;; (Emacs 19.31 and above)
+        ;; (Emacs 19.31 and above).
         (featurep 'timer)
         (if (numberp paren-delay)
             (setq mic-paren-idle-timer
@@ -785,110 +780,100 @@ documentation of these options for the names of these functions\):
                                            'mic-paren-command-idle-hook))
           (add-hook 'post-command-hook 'mic-paren-command-hook)))
        ;; If the idle hook exists assume it is functioning and use it
-       ;; (Emacs 19.30)
+       ;; (Emacs 19.30).
        ((and (boundp 'post-command-idle-hook)
              (boundp 'post-command-idle-delay))
         (if paren-delay
             (add-hook 'post-command-idle-hook 'mic-paren-command-idle-hook)
           (add-hook 'post-command-hook 'mic-paren-command-hook)))
-       ;; Check if we (at least) have a post-comand-hook, and use it
-       ;; (Emacs 19.29 and below)
+       ;; Check if we (at least) have `post-comand-hook', and use it
+       ;; (Emacs 19.29 and below).
        ((boundp 'post-command-hook)
         (add-hook 'post-command-hook 'mic-paren-command-hook))
        ;; Not possible to install mic-paren hooks
        (t (error "Cannot activate mic-paren in this Emacs version")))
-  ;; we want matching quoted parens is the minibuffer so easier inserting
-  ;; paren-expressions i a rexexp.
+  ;; We want matching quoted parens in the minibuffer to ease inserting
+  ;; paren-expressions in a regexp.
   (add-hook 'minibuffer-setup-hook
             'mic-paren-minibuffer-setup-hook)
   (add-hook 'minibuffer-exit-hook
             'mic-paren-minibuffer-exit-hook))
 
-
-
 ;;;###autoload
 (defun paren-deactivate ()
-  "Deactivates mic-paren parenthesis highlighting"
+  "Deactivate mic-paren parenthesis highlighting."
   (interactive)
   ;; Deactivate (don't bother to check where/if mic-paren is acivte, just
-  ;; delete all possible hooks and timers)
-  (if (boundp 'post-command-idle-hook)
-      (remove-hook 'post-command-idle-hook 'mic-paren-command-idle-hook))
-  (if mic-paren-idle-timer
-      (mic-cancel-timer mic-paren-idle-timer))
+  ;; delete all possible hooks and timers).
+  (when (boundp 'post-command-idle-hook)
+    (remove-hook 'post-command-idle-hook 'mic-paren-command-idle-hook))
+  (when mic-paren-idle-timer
+    (mic-cancel-timer mic-paren-idle-timer))
   (remove-hook 'post-command-hook 'mic-paren-command-hook)
   (remove-hook 'minibuffer-setup-hook
                'mic-paren-minibuffer-setup-hook)
   (remove-hook 'minibuffer-exit-hook
                'mic-paren-minibuffer-exit-hook)
-  ;; Remove any old highlighs
-  (mic-delete-overlay mic-paren-backw-overlay)
-  (mic-delete-overlay mic-paren-point-overlay)
-  (mic-delete-overlay mic-paren-forw-overlay)
+  ;; Remove any old highlight.
+  (mic-delete-overlay (aref mic-paren-overlays 0))
+  (mic-delete-overlay (aref mic-paren-overlays 1))
+  (mic-delete-overlay (aref mic-paren-overlays 2))
 
-  ;; Reactivate Emacs standard parenthesis blinking
+  ;; Reactivate Emacs standard parenthesis blinking.
   (or paren-dont-touch-blink
-      (setq blink-matching-paren t))
-  )
+      (setq blink-matching-paren t)))
 
 ;;;###autoload
 (defun paren-toggle-matching-paired-delimiter (arg &optional no-message)
-"Toggle matching paired delimiter, force on with positive arg. Use this in
-mode-hooks to activate or deactivate paired delimiter matching. If optional
-second argument NO-MESSAGE is not nil then no message is displayed about the
+  "Toggle matching paired delimiter.
+Force on with positive ARG.  Use this in mode hooks to activate or
+deactivate paired delimiter matching.  If optional second argument
+NO-MESSAGE is non-nil then don't display a message about the
 current activation state of the paired-delimiter-matching feature."
   (interactive "P")
   (setq paren-match-paired-delimiter (if (numberp arg)
                                          (> arg 0)
                                        (not paren-match-paired-delimiter)))
-  (if (not no-message)
-      (message "Matching paired delimiter is %s"
-               (if paren-match-paired-delimiter
-                   "ON."
-                 "OFF."))))
-
+  (unless no-message
+    (message "Matching paired delimiter is %s"
+             (if paren-match-paired-delimiter
+                 "ON"
+               "OFF"))))
 
 ;;;###autoload
 (defun paren-toggle-matching-quoted-paren (arg &optional no-message)
-  "Toggle matching quoted parens, force on with positive arg. Use this in
-mode-hooks to activate or deactivate quoted paren matching. If optional second
-argument NO-MESSAGE is not nil then no message is displayed about the current
-activation state of the quoted-paren-matching feature."
+  "Toggle matching quoted parens.
+Force on with positive ARG.  Use this in mode hooks to activate or
+deactivate quoted paren matching.  If optional second argument
+NO-MESSAGE is non-nil then don't display a message about the
+current activation state of the quoted-paren-matching feature."
   (interactive "P")
   (setq paren-match-quoted-paren (if (numberp arg)
-                                         (> arg 0)
-                                       (not paren-match-quoted-paren)))
-  ;; if matching quoted parens is active now bind the original binding of
-  ;; forward-sexp and backward-sexp to the modified
-  ;; versions paren-forward-sexp (resp. paren-backward-sexp)
-  ;; if not bind it back to the original forward-sexp (resp. backward-sexp).
-  (let ((key-forward-sexp (car
-                           mic-paren-original-keybinding-of-sexp-functions))
-        (key-backward-sexp (car
-                            (cdr
-                             mic-paren-original-keybinding-of-sexp-functions))))
-    (if (and paren-bind-modified-sexp-functions
-             key-backward-sexp
-             key-forward-sexp)
-        (if paren-match-quoted-paren
-            (progn
-              (local-set-key key-forward-sexp
-                             (quote paren-forward-sexp))
-              (local-set-key key-backward-sexp
-                             (quote paren-backward-sexp)))
-          (local-set-key key-forward-sexp (quote forward-sexp))
-          (local-set-key key-backward-sexp (quote backward-sexp)))))
-  (if (not no-message)
-      (message "Matching quoted parens is %s"
-               (if paren-match-quoted-paren
-                   "ON."
-                 "OFF."))))
+                                     (> arg 0)
+                                   (not paren-match-quoted-paren)))
+  ;; If matching quoted parens is active now bind the original binding
+  ;; of forward-sexp and backward-sexp to the modified versions
+  ;; `paren-forward-sexp' and `paren-backward-sexp'.  If not, bind
+  ;; it back to the original `forward-sexp' and `backward-sexp'.
+  (let ((f (car mic-paren-original-keybinding-of-sexp-functions))
+        (b (cadr mic-paren-original-keybinding-of-sexp-functions))
+        (funs (if paren-match-quoted-paren
+                  '(paren-forward-sexp . paren-backward-sexp)
+                '(forward-sexp . backward-sexp))))
+    (when (and paren-bind-modified-sexp-functions b f)
+      (local-set-key f (car funs))
+      (local-set-key b (cdr funs))))
+  (unless no-message
+    (message "Matching quoted parens is %s"
+             (if paren-match-quoted-paren
+                 "ON"
+               "OFF"))))
 
 ;;;###autoload
 (defun paren-toggle-open-paren-context (arg)
-  "Toggle the determining of the context to display of the matching
-open-paren, force backward context with positive arg. Use this in mode-hooks.
-For a description of the meaning look at `paren-open-paren-context-backward'."
+  "Toggle whether or not to determine context of the matching open-paren.
+Force backward context with positive ARG.  Use this in mode-hooks.
+See `paren-open-paren-context-backward'."
   (interactive "P")
   (setq paren-open-paren-context-backward
         (if (numberp arg)
@@ -897,15 +882,15 @@ For a description of the meaning look at `paren-open-paren-context-backward'."
 
 ;;;###autoload
 (defun paren-forward-sexp (&optional arg)
-  "Acts like forward-sexp but can also handle quoted parens. Look at
-`paren-match-quoted-paren' for a detailed comment."
+  "Act like `forward-sexp' but also handle quoted parens.
+See `paren-match-quoted-paren'."
   (interactive "p")
   (or arg (setq arg 1))
   (let* ((uncharquote-diff (if (< arg 0) 2 1))
          (match-check-diff (if (< arg 0) 1 2))
          (charquote (mic-paren-uncharquote (- (point) uncharquote-diff)))
          match-pos mismatch)
-    ;; we must encapsulate this in condition-case so we regain control
+    ;; We must encapsulate this in condition-case so we regain control
     ;; after error and we can undo our unquoting if any done before!
     (condition-case ()
         (setq match-pos (scan-sexps (point) arg))
@@ -913,81 +898,36 @@ For a description of the meaning look at `paren-open-paren-context-backward'."
     (mic-paren-recharquote charquote)
     (if (not match-pos)
         (buffer-end arg)
-      (setq mismatch (if charquote
-                         (not (mic-paren-is-following-char-quoted
-                               (- match-pos match-check-diff)))
-                       (mic-paren-is-following-char-quoted
-                        (- match-pos match-check-diff))))
-      (if (not mismatch)
-          (goto-char match-pos)
-        (forward-sexp arg)
-        ))))
+      (setq mismatch (mic-paren-fcq-mismatch (- match-pos match-check-diff)
+                                             charquote))
+      (if mismatch
+          (forward-sexp arg)
+        (goto-char match-pos)))))
 
 ;;;###autoload
 (defun paren-backward-sexp (&optional arg)
-  "Acts like backward-sexp but can also matching quoted parens. Look at
-`paren-match-quoted-paren' for a detailed comment"
+  "Act like `backward-sexp' but also match quoted parens.
+See `paren-match-quoted-paren'."
   (interactive "p")
   (or arg (setq arg 1))
   (paren-forward-sexp (- arg)))
 
-
 ;;; ======================================================================
-;;; Pure Internal variables:
-
-(defvar mic-paren-backw-overlay (mic-make-overlay (point-min) (point-min))
-  "Overlay for the open-paren which matches the close-paren before
-point. When in sexp-mode this is the overlay for the expression before point.")
-
-(defvar mic-paren-point-overlay (mic-make-overlay (point-min) (point-min))
-  "Overlay for the close-paren before point.
-\(Not used when is sexp-mode.)")
-
-(defvar mic-paren-forw-overlay (mic-make-overlay (point-min) (point-min))
-  "Overlay for the close-paren which matches the open-paren after
-point. When in sexp-mode this is the overlay for the expression after point.")
-
-(defvar mic-paren-idle-timer nil
-  "Idle-timer. Used only in Emacs 19.31 and above \(and if paren-delay is
-nil)")
-
-(defvar mic-paren-previous-location [nil nil nil]
-  "Records where point was the last time mic-paren performed some action.
-Format is [POINT BUFFER WINDOW]")
-
-
-;;; ======================================================================
-;;; Internal function:
-
-
-
-(defun mic-paren-command-hook ()
-  (or executing-kbd-macro
-      (input-pending-p)                 ;[This might cause trouble since the
-                                        ; function is unreliable]
-      (condition-case paren-error
-          (mic-paren-highlight)
-        (error
-         (if (not (window-minibuffer-p (selected-window)))
-             (message "mic-paren catched error (please report): %s"
-                      paren-error))))))
+;;; Internal functions
 
 (defun mic-paren-command-idle-hook ()
   (condition-case paren-error
       (mic-paren-highlight)
     (error
-     (if (not (window-minibuffer-p (selected-window)))
-         (message "mic-paren catched error (please report): %s"
-                  paren-error)))))
+     (unless (window-minibuffer-p (selected-window))
+       (message "mic-paren caught error (please report): %s"
+                paren-error)))))
 
-;; helper macro to set a FACE and the value of `paren-overlay-priority'
-;; to an OVERLAY.
-(defmacro mic-paren-overlay-set (overlay face)
-  (` (progn
-       (mic-overlay-put (, overlay)
-                        'face (, face))
-       (mic-overlay-put (, overlay)
-                        'priority paren-overlay-priority))))
+(defun mic-paren-command-hook ()
+  (or executing-kbd-macro
+      ;; NB: This might cause trouble since the function is unreliable.
+      (input-pending-p)
+      (mic-paren-command-idle-hook)))
 
 (defun mic-paren-minibuffer-setup-hook ()
   (paren-toggle-matching-quoted-paren 1 t))
@@ -995,332 +935,201 @@ Format is [POINT BUFFER WINDOW]")
 (defun mic-paren-minibuffer-exit-hook ()
   (paren-toggle-matching-quoted-paren -1 t))
 
+(defun mic-paren-fcq-mismatch (pos charquote)
+  (not (zerop (logxor (if (mic-paren-is-following-char-quoted pos) 1 0)
+                      (if charquote 1 0)))))
 
 (defun mic-paren-highlight ()
-  "The main-function of mic-paren. Does all highlighting, dinging, messages,
-cleaning-up."
-  ;; Remove any old highlighting
-  (mic-delete-overlay mic-paren-forw-overlay)
-  (mic-delete-overlay mic-paren-point-overlay)
-  (mic-delete-overlay mic-paren-backw-overlay)
+  "Do everything: highlighting, dinging, messages, cleaning-up.
+This is the main function of mic-paren."
+  ;; Remove any old highlighting.
+  (mic-delete-overlay (aref mic-paren-overlays 0))
+  (mic-delete-overlay (aref mic-paren-overlays 1))
+  (mic-delete-overlay (aref mic-paren-overlays 2))
 
-  ;; Handle backward highlighting (when after a close-paren or a paired
-  ;; delimiter):
-  ;; If (positioned after a close-paren, and
-  ;;    not before an open-paren when priority=open, and
-  ;;    (paren-match-quoted-paren is t or the close-paren is not escaped))
-  ;;    or
-  ;;    (positioned after a paired delimiter, and
-  ;;    not before a paired-delimiter when priority=open, and
-  ;;    the paired-delimiter is not escaped))
-  ;; then
-  ;;      perform highlighting
-  (if (or (and (eq (char-syntax (preceding-char)) ?\))
-               (not (and (eq (char-syntax (following-char)) ?\()
-                         (eq paren-priority 'open)))
-               (or paren-match-quoted-paren
-                   (not (mic-paren-is-following-char-quoted (- (point)
-                                                               2)))))
-          (and paren-match-paired-delimiter
-               (eq (char-syntax (preceding-char)) ?\$)
-               (not (and (eq (char-syntax (following-char)) ?\$)
-                         (eq paren-priority 'open)))
-               (not (mic-paren-is-following-char-quoted (- (point) 2)))))
-      (let (open matched-paren charquote)
-        ;; if we want to match quoted parens we must change the syntax of
-        ;; the escape or quote-char temporarily. This will be undone later.
+  (let ((loc mic-paren-previous-location)
+        charquote two opos matched-paren mismatch face visible)
+
+    (flet ((highlight-p
+            (pos prio which)
+            (let ((fcq (mic-paren-is-following-char-quoted pos))
+                  (right-prio (eq prio paren-priority))
+                  (get-c-0 (if which 'preceding-char 'following-char))
+                  (get-c-1 (if which 'following-char 'preceding-char)))
+              (or (and (eq (char-syntax (funcall get-c-0))
+                           (if which ?\) ?\())
+                       (not (and (eq (char-syntax (funcall get-c-1))
+                                     (if which ?\( ?\)))
+                                 right-prio))
+                       (or paren-match-quoted-paren
+                           (not fcq)))
+                  (and paren-match-paired-delimiter
+                       (eq (char-syntax (funcall get-c-0)) ?\$)
+                       (not (and (eq (char-syntax (funcall get-c-1)) ?\$)
+                                 right-prio))
+                       (not fcq)))))
+
+           (find-other-paren
+            (forwardp)
+            (let ((mult (if forwardp 1 -1)))
+              ;; Find the position of the other paren.
+              (save-excursion
+                (save-restriction
+                  (when blink-matching-paren-distance
+                    (let ((lim (+ (point) (* blink-matching-paren-distance
+                                             mult))))
+                      (narrow-to-region (if forwardp
+                                            (point-min)
+                                          (max lim (point-min)))
+                                        (if forwardp
+                                            (min lim (point-max))
+                                          (point-max)))))
+                  (condition-case ()
+                      (setq opos (scan-sexps (point) mult))
+                    (error nil))))
+              ;; We must call matching-paren because `scan-sexps' doesn't
+              ;; care about the kind of paren (e.g., matches '( and '}).
+              ;; However, `matching-paren' only returns the character
+              ;; displaying the matching paren in buffer's syntax-table
+              ;; (regardless of the buffer's current contents!).  Below we
+              ;; compare the results of `scan-sexps' and `matching-paren'
+              ;; and if different we display a mismatch.
+              (let ((c (funcall (if forwardp
+                                    'following-char
+                                  'preceding-char))))
+                (setq matched-paren (matching-paren c))
+                ;; matching-paren can only handle chars with syntax ) or (.
+                (when (eq (char-syntax c) ?\$)
+                  (setq matched-paren c)))
+              ;; If we have changed the syntax of the escape or quote-char
+              ;; we must undo this and we can do this first now.
+              (mic-paren-recharquote charquote)
+              opos))
+
+           (nov
+            (place b e face)
+            (let ((ov (mic-make-overlay b e)))
+              (mic-overlay-put ov 'face face)
+              (mic-overlay-put ov 'priority paren-overlay-priority)
+              (aset mic-paren-overlays
+                    (cdr (assq place '((backw . 0)
+                                       (point . 1)
+                                       (forew . 2))))
+                    ov)))
+
+           (new-location-p
+            ()
+            (not (and (eq (point)           (aref loc 0))
+                      (eq (current-buffer)  (aref loc 1))
+                      (eq (selected-window) (aref loc 2)))))
+
+           (ding-maybe
+            (ok)
+            (and ok paren-ding-unmatched
+                 (new-location-p)
+                 (ding)))
+
+           (sorry
+            (place b e)
+            ;; Highlight unmatched paren.
+            (nov place b e paren-no-match-face)
+            ;; Print no-match message.
+            (and paren-message-no-match
+                 (not (window-minibuffer-p (selected-window)))
+                 (not isearch-mode)
+                 (new-location-p)
+                 (mic-paren-nolog-message "No %sing parenthesis found"
+                                          (if (eq 'backw place)
+                                              "open"
+                                            "clos")))
+            (ding-maybe paren-message-no-match))
+
+           (set-mismatch/face/visible
+            (c-at ofs)
+            (setq mismatch (or (not matched-paren)
+                               (/= matched-paren (funcall c-at opos))
+                               (mic-paren-fcq-mismatch (+ opos ofs) charquote))
+                  face (if mismatch
+                           paren-mismatch-face
+                         paren-match-face)
+                  visible (when (pos-visible-in-window-p opos)
+                            (save-excursion
+                              (goto-char opos)
+                              (let ((hrel (- (current-column)
+                                             (window-hscroll))))
+                                (and (<             -1 hrel)
+                                     (> (window-width) hrel)))))))
+
+           (sexp-mode-p
+            ()
+            (case paren-sexp-mode
+              (match (not mismatch))
+              (mismatch mismatch)
+              ((nil t) paren-sexp-mode)))
+
+           (finish
+            (get-message)
+            ;; Print messages if match is offscreen.
+            (and (not (eq paren-display-message 'never))
+                 (or (not visible) (eq paren-display-message 'always))
+                 (not (window-minibuffer-p (selected-window)))
+                 (not isearch-mode)
+                 (new-location-p)
+                 (let ((message-truncate-lines paren-message-truncate-lines))
+                   (mic-paren-nolog-message
+                    "%s %s"
+                    (if mismatch "MISMATCH:" "Matches")
+                    (funcall get-message opos))))
+            ;; Ding if mismatch.
+            (ding-maybe mismatch)))
+
+      ;; Handle backward highlighting.
+      (when (highlight-p (- (point) 2) 'open t)
         (setq charquote (mic-paren-uncharquote (- (point) 2)))
-        ;; Find the position for the open-paren
-        (save-excursion
-          (save-restriction
-            (if blink-matching-paren-distance
-                (narrow-to-region
-                 (max (point-min)
-                      (- (point) blink-matching-paren-distance))
-                 (point-max)))
-            (condition-case ()
-                (setq open (scan-sexps (point) -1))
-              (error nil))))
+        (if (not (find-other-paren nil))
+            (sorry 'backw (point) (1- (point)))
+          (set-mismatch/face/visible 'char-after -1)
+          (when (or visible paren-highlight-offscreen paren-sexp-mode)
+            (let ((sexp-mismatch (sexp-mode-p)))
+              (nov 'backw opos (if sexp-mismatch
+                                   (point)
+                                 (1+ opos))
+                   face)
+              (when (and (not sexp-mismatch)
+                         paren-highlight-at-point)
+                (nov 'point (1- (point)) (point) face))))
+          (finish 'mic-paren-get-matching-open-text)))
 
-        ;; we must call matching-paren because scan-sexps don't care about
-        ;; the kind of paren (e.g. matches '( and '}). matching-paren only
-        ;; returns the character displaying the matching paren in buffer's
-        ;; syntax-table (regardless of the buffer's current contents!).
-        ;; Below we compare the results of scan-sexps and matching-paren
-        ;; and if different we display a mismatch.
-        (setq matched-paren (matching-paren (preceding-char)))
-        ;; matching-paren can only handle characters with syntax ) or (
-        (if (eq (char-syntax (preceding-char)) ?\$)
-            (setq matched-paren (preceding-char)))
-
-        ;; if we have changed the syntax of the escape or quote-char we
-        ;; must undo this and we can do this first now.
-        (mic-paren-recharquote charquote)
-
-        ;; If match found
-        ;;    highlight expression and/or print messages
-        ;; else
-        ;;    highlight unmatched paren
-        ;;    print no-match message
-        (if open
-            (let ((mismatch (or (not matched-paren)
-                                (/= matched-paren (char-after open))
-                                (if charquote
-                                    (not (mic-paren-is-following-char-quoted
-                                          (1- open)))
-                                  (mic-paren-is-following-char-quoted
-                                   (1- open)))))
-                  ;; check if match-pos is visible
-                  (visible (and (pos-visible-in-window-p open)
-                                (mic-paren-horizontal-pos-visible-p open))))
-              ;; If highlight is appropriate
-              ;;    highlight
-              ;; else
-              ;;    remove any old highlight
-              (if (or visible paren-highlight-offscreen paren-sexp-mode)
-                  ;; If sexp-mode
-                  ;;    highlight sexp
-                  ;; else
-                  ;;    highlight the two parens
-                  (if (mic-paren-sexp-mode-p mismatch)
-                      (progn
-                        (setq mic-paren-backw-overlay
-                              (mic-make-overlay open (point)))
-                        (if mismatch
-                            (mic-paren-overlay-set mic-paren-backw-overlay
-                                                   paren-mismatch-face)
-                          (mic-paren-overlay-set mic-paren-backw-overlay
-                                                 paren-match-face)))
-                    (setq mic-paren-backw-overlay
-                          (mic-make-overlay
-                           open
-                           (+ open
-                              (mic-char-bytes (char-after open)))))
-                    (and paren-highlight-at-point
-                         (setq mic-paren-point-overlay
-                               (mic-make-overlay
-                                (- (point)
-                                   (mic-char-bytes (preceding-char)))
-                                (point))))
-                    (if mismatch
-                        (progn
-                          (mic-paren-overlay-set mic-paren-backw-overlay
-                                                 paren-mismatch-face)
-                          (and paren-highlight-at-point
-                               (mic-paren-overlay-set mic-paren-point-overlay
-                                                      paren-mismatch-face)))
-                      (mic-paren-overlay-set mic-paren-backw-overlay
-                                             paren-match-face)
-                      (and paren-highlight-at-point
-                           (mic-paren-overlay-set mic-paren-point-overlay
-                                                  paren-match-face)))))
-              ;; Print messages if match is offscreen
-              (and (not (eq paren-display-message 'never))
-                   (or (not visible) (eq paren-display-message 'always))
-                   (not (window-minibuffer-p (selected-window)))
-                   (not isearch-mode)
-                   (mic-paren-is-new-location)
-                   (let ((message-truncate-lines paren-message-truncate-lines))
-                     (mic-paren-nolog-message "%s %s"
-                                              (if mismatch "MISMATCH:" "Matches")
-                                              (mic-paren-get-matching-open-text open))))
-              ;; Ding if mismatch
-              (and mismatch
-                   paren-ding-unmatched
-                   (mic-paren-is-new-location)
-                   (ding)))
-          (setq mic-paren-backw-overlay
-                (mic-make-overlay (point)
-                                  (- (point)
-                                     (mic-char-bytes (preceding-char)))))
-          (mic-paren-overlay-set mic-paren-backw-overlay
-                                 paren-no-match-face)
-          (and paren-message-no-match
-               (not (window-minibuffer-p (selected-window)))
-               (not isearch-mode)
-               (mic-paren-is-new-location)
-               (mic-paren-nolog-message "No opening parenthesis found"))
-          (and paren-message-no-match
-               paren-ding-unmatched
-               (mic-paren-is-new-location)
-               (ding)))))
-
-  ;; Handle forward highlighting (when before an open-paren or a paired
-  ;; delimiter):
-  ;; If (positioned before an open-paren, and
-  ;;    not after a close-paren when priority=close, and
-  ;;    (paren-match-quoted-paren is t or the open-paren is not escaped))
-  ;;    or
-  ;;    (positioned before a paired delimiter, and
-  ;;    not after a paired-delimiter when priority=close, and
-  ;;    the paired-delimiter is not escaped))
-  ;; then
-  ;;      perform highlighting
-  (if (or (and (eq (char-syntax (following-char)) ?\()
-               (not (and (eq (char-syntax (preceding-char)) ?\))
-                         (eq paren-priority 'close)))
-               (or paren-match-quoted-paren
-                   (not (mic-paren-is-following-char-quoted (1-
-                                                             (point))))))
-          (and paren-match-paired-delimiter
-               (eq (char-syntax (following-char)) ?\$)
-               (not (and (eq (char-syntax (preceding-char)) ?\$)
-                         (eq paren-priority 'close)))
-               (not (mic-paren-is-following-char-quoted (1- (point))))))
-      (let (close matched-paren charquote)
-        ;; if we want to match quoted parens we must change the syntax of
-        ;; the escape or quote-char temporarily. This will be undone later.
+      ;; Handle forward highlighting.
+      (when (highlight-p (1- (point)) 'close nil)
         (setq charquote (mic-paren-uncharquote (1- (point))))
-        ;; Find the position for the close-paren
-        (save-excursion
-          (save-restriction
-            (if blink-matching-paren-distance
-                (narrow-to-region
-                 (point-min)
-                 (min (point-max)
-                      (+ (point) blink-matching-paren-distance))))
-            (condition-case ()
-                (setq close (scan-sexps (point) 1))
-              (error nil))))
+        (if (not (find-other-paren t))
+            (sorry 'forew (point) (1+ (point)))
+          (set-mismatch/face/visible 'char-before -2)
+          (when (or visible paren-highlight-offscreen paren-sexp-mode)
+            (nov 'forew (if (sexp-mode-p)
+                            (point)
+                          (1- opos))
+                 opos face))
+          (finish 'mic-paren-get-matching-close-text))))
 
-        ;; for an explanation look above.
-        (setq matched-paren (matching-paren (following-char)))
-        (if (eq (char-syntax (following-char)) ?\$)
-            (setq matched-paren (following-char)))
-
-        ;; if we have changed the syntax of the escape or quote-char we
-        ;; must undo this and we can do this first now.
-        (mic-paren-recharquote charquote)
-
-        ;; If match found
-        ;;    highlight expression and/or print messages
-        ;; else
-        ;;    highlight unmatched paren
-        ;;    print no-match message
-        (if close
-            (let ((mismatch (or (not matched-paren)
-                                (/= matched-paren (mic-char-before close))
-                                (if charquote
-                                    (not (mic-paren-is-following-char-quoted
-                                          (- close 2)))
-                                  (mic-paren-is-following-char-quoted
-                                   (- close 2)))))
-                  ;; check if match-pos is visible
-                  (visible (and (pos-visible-in-window-p close)
-                                (mic-paren-horizontal-pos-visible-p close))))
-              ;; If highlight is appropriate
-              ;;    highlight
-              ;; else
-              ;;    remove any old highlight
-              (if (or visible paren-highlight-offscreen paren-sexp-mode)
-                  ;; If sexp-mode
-                  ;;    highlight sexp
-                  ;; else
-                  ;;    highlight the two parens
-                  (if (mic-paren-sexp-mode-p mismatch)
-                      (progn
-                        (setq mic-paren-forw-overlay
-                              (mic-make-overlay (point) close))
-                        (if mismatch
-                            (mic-paren-overlay-set mic-paren-forw-overlay
-                                                   paren-mismatch-face)
-                          (mic-paren-overlay-set mic-paren-forw-overlay
-                                                 paren-match-face)))
-                    (setq mic-paren-forw-overlay
-                          (mic-make-overlay
-                           (- close
-                              (mic-char-bytes (mic-char-before close)))
-                           close))
-                    (if mismatch
-                        (mic-paren-overlay-set mic-paren-forw-overlay
-                                               paren-mismatch-face)
-                      (mic-paren-overlay-set mic-paren-forw-overlay
-                                             paren-match-face))))
-
-              ;; Print messages if match is offscreen
-              (and (not (eq paren-display-message 'never))
-                   (or (not visible) (eq paren-display-message 'always))
-                   (not (window-minibuffer-p (selected-window)))
-                   (not isearch-mode)
-                   (mic-paren-is-new-location)
-                   (let ((message-truncate-lines paren-message-truncate-lines))
-                     (mic-paren-nolog-message "%s %s"
-                                              (if mismatch "MISMATCH:" "Matches")
-                                              (mic-paren-get-matching-close-text close))))
-              ;; Ding if mismatch
-              (and mismatch
-                   (mic-paren-is-new-location)
-                   paren-ding-unmatched
-                   (ding)))
-          (setq mic-paren-forw-overlay
-                (mic-make-overlay (point)
-                                  (+ (point)
-                                     (mic-char-bytes (following-char)))))
-          (mic-paren-overlay-set mic-paren-forw-overlay
-                                 paren-no-match-face)
-          (and paren-message-no-match
-               (not (window-minibuffer-p (selected-window)))
-               (not isearch-mode)
-               (mic-paren-is-new-location)
-               (mic-paren-nolog-message "No closing parenthesis found"))
-          (and paren-message-no-match
-               paren-ding-unmatched
-               (mic-paren-is-new-location)
-               (ding)))))
-
-  ;; Store the points position in mic-paren-previous-location
-  ;; Later used by mic-paren-is-new-location
-  (or (window-minibuffer-p (selected-window))
-      (progn
-        (aset mic-paren-previous-location 0 (point))
-        (aset mic-paren-previous-location 1 (current-buffer))
-        (aset mic-paren-previous-location 2 (selected-window))))
-  )
-
-;;; --------------------------------------------------
-
-(defun mic-paren-sexp-mode-p (mismatch)
-  "Check if we must highlight the whole sexp and return t if we must"
-  (cond ((eq paren-sexp-mode nil) nil)
-        ((eq paren-sexp-mode t) t)
-        ((eq paren-sexp-mode 'match) (not mismatch))
-        ((eq paren-sexp-mode 'mismatch) mismatch)))
-  
-;;; --------------------------------------------------
-
-(defun mic-paren-horizontal-pos-visible-p (match-pos)
-  "Returns non nil if the MATCH-POS is horizontal visible otherwise nil \(in
-case of horizontal scrolling)."
-  (let ((window (selected-window)))
-    (save-excursion
-      (goto-char match-pos)
-      (and (>= (- (current-column) (window-hscroll window)) 0)
-           (< (- (current-column) (window-hscroll window))
-              (window-width window))))))
-
-;; (defun mic-paren-horizontal-pos-visible-p (match-pos)
-;;   "Returns non nil if the MATCH-POS is horizontal visible otherwise nil \(in
-;; case of horizontal scrolling)."
-;;   (let ((match-column
-;;          (save-excursion
-;;            (goto-char match-pos)
-;;            (current-column))))
-;;     (if (> (window-hscroll) 0)
-;;         (and (>= match-column (window-hscroll))
-;;              (< match-column (+ (window-hscroll) (window-width))))
-;;       (< match-column (window-width)))))
+    ;; Store the point's position.
+    (unless (window-minibuffer-p (selected-window))
+      (aset loc 0 (point))
+      (aset loc 1 (current-buffer))
+      (aset loc 2 (selected-window)))))
 
 (defun mic-paren-get-matching-open-text (open)
-  "Returns a string with the context around OPEN-paren."
-  ;; If there's stuff on this line preceding the paren, then display text from
-  ;; beginning of line to paren.
-  ;;
-  ;; If, however, the paren is at the beginning of a line (means only
-  ;; whitespace before the paren), then skip whitespace forward and display
-  ;; text from paren to end of the next line containing non-space text. But
-  ;; if `paren-open-paren-context-backward' is non nil then skip
-  ;; whitespaces backward and display text from beginning of previous line
-  ;; to paren.
+  "Return a string with the context around OPEN-paren.
+If there's stuff on this line preceding the paren, then
+display text from beginning of line to paren.
+
+If, however, the paren is at the beginning of a line (means only
+whitespace before the paren), then skip whitespace forward and
+display text from paren to end of the next line containing
+non-space text.  But if `paren-open-paren-context-backward' is
+non-nil, then skip whitespaces backward and display text from
+beginning of previous line to paren."
   (let* ((loc (if (eq paren-message-show-linenumber 'sexp)
                   (point) (point-min)))
          (str (save-excursion
@@ -1341,10 +1150,12 @@ case of horizontal scrolling)."
                           (forward-char 1)
                           (skip-chars-forward "\n \t")
                           (end-of-line)
-                          (setq paren-context-string (buffer-substring open (point))))
+                          (setq paren-context-string
+                                (buffer-substring open (point))))
                       (skip-chars-backward "\n \t")
                       (beginning-of-line)
-                      (setq paren-context-string (buffer-substring (point) (1+ open))))
+                      (setq paren-context-string
+                            (buffer-substring (point) (1+ open))))
                     (format "%s [%s%d]"
                             paren-context-string
                             (if (eq paren-message-show-linenumber 'sexp)
@@ -1353,13 +1164,11 @@ case of horizontal scrolling)."
     (while (string-match "[\n]" str)
       (setq str (replace-match paren-message-linefeed-display nil t str)))
     str))
-    
-
 
 (defun mic-paren-get-matching-close-text (close)
-  "Returns a string with the context around CLOSE-paren."
-  ;; The whole line up until the close-paren with "..." appended if there are
-  ;; more text after the close-paren
+  "Return a string with the context around CLOSE-paren.
+The whole line up until the close-paren with \"...\"
+appended if there is more text after the close-paren."
   (let* ((loc (if (eq paren-message-show-linenumber 'sexp)
                   (point) (point-min)))
          (str (save-excursion
@@ -1375,64 +1184,44 @@ case of horizontal scrolling)."
                               ""
                             "..."))
                         (if (eq paren-message-show-linenumber 'sexp)
-                            "+" "")                       
+                            "+" "")
                         (count-lines loc close)))))
     (while (string-match "[\n]" str)
       (setq str (replace-match paren-message-linefeed-display nil t str)))
     str))
 
-
-
-(defun mic-paren-is-new-location ()
-  "Returns t if the points location is not the same as stored in
-`mic-paren-previous-location', nil otherwise.
-
-The variable `mic-paren-previous-location' is set by
-`mic-paren-highlight'."
-  (not (and (eq (point) (aref mic-paren-previous-location 0))
-            (eq (current-buffer) (aref mic-paren-previous-location 1))
-            (eq (selected-window) (aref mic-paren-previous-location 2)))))
-
-
-(defun mic-paren-is-following-char-quoted (pnt)
-  "returns true if character at point PNT escapes or quotes the following
-char."
+(defun mic-paren-is-following-char-quoted (pos)
+  "Return t if character at POS escapes or quotes the following char."
   (let ((n 0))
-    (while (and (>= pnt (point-min))
-                (or (eq (char-syntax (char-after pnt)) ?\\)
-                    (eq (char-syntax (char-after pnt)) ?/)))
-      (setq n (1+ n))
-      (setq pnt (1- pnt)))
-    (if (eq 0 (% n 2)) nil t)))
+    (while (and (<= (point-min) pos)
+                (memq (char-syntax (char-after pos)) '(?\\ ?/)))
+      (setq n (1+ n)
+            pos (1- pos)))
+    (not (zerop (% n 2)))))
 
-(defun mic-paren-uncharquote (pnt)
-  "if the syntax of character <c> at point PNT is escape or quote and if the
-character is not escaped or quoted itself then its syntax will be modified
-to punctuation and multiple values \(<c> \"<syntax-of-c>\") will be returned;
-otherwise nil."
-  (let (c cs)
-    (if (< pnt (point-min))
-        nil
-      (setq c (char-after pnt))
-      (setq cs (char-syntax c))
-      (if (not (and paren-match-quoted-paren
-                    (mic-paren-is-following-char-quoted pnt)))
-          nil
-        (modify-syntax-entry c ".")
-        (list c (char-to-string cs))))))
+(defun mic-paren-uncharquote (pos)
+  "Modify syntax of character at POS, maybe.
+If the syntax of character C at POS is escape or quote and if the
+character is not escaped or quoted itself then modify its syntax to
+punctuation and return the list (C SYNTAX-STRING-OF-C); otherwise nil."
+  (when (and (<= (point-min) pos)
+             paren-match-quoted-paren
+             (mic-paren-is-following-char-quoted pos))
+    (let ((c (char-after pos)))
+      (modify-syntax-entry c ".")
+      (list c (char-to-string (char-syntax c))))))
 
 (defun mic-paren-recharquote (charquote)
-  "CHARQUOTE is a 2-element-list: car is a character <c> and its cadr
-is a syntaxstring <s>. The syntax of character <c> will be set to syntax
-<s>. If CHARQUOTE is nil nothing will be done."
-  (if charquote
-      (modify-syntax-entry (car charquote) (car (cdr charquote)))))
-
+  "Modify syntax entry according to CHARQUOTE.
+If CHARQUOTE is nil, do nothing.  Otherwise, it
+should be a list of the form (CHAR SYNTAX-STRING)."
+  (when charquote
+    (apply 'modify-syntax-entry charquote)))
 
 ;;; ======================================================================
-;;; Initialisation when loading:
+;;; Initialization when loading
 
-;;; Try to load the timer feature if its not already loaded
+;;; Try to load the timer feature if it's not already loaded.
 (or paren-dont-load-timer
     (featurep 'timer)
     (condition-case ()
@@ -1442,4 +1231,7 @@ is a syntaxstring <s>. The syntax of character <c> will be set to syntax
 (provide 'mic-paren)
 (provide 'paren)
 
+;;; Local variables:
+;;; coding: utf-8
+;;; End:
 ;;; mic-paren.el ends here

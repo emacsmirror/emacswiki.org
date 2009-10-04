@@ -124,6 +124,30 @@
 ;;; FILE-CREATED:
 ;;; <Timestamp: Wednesday June 17, 2009 @ 11:29.15 AM - by MON KEY>
 ;;; ================================================================
+;;; This file is not part of GNU Emacs.
+;;;
+;;; This program is free software; you can redistribute it and/or
+;;; modify it under the terms of the GNU General Public License as
+;;; published by the Free Software Foundation; either version 3, or
+;;; (at your option) any later version.
+;;;
+;;; This program is distributed in the hope that it will be useful,
+;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;;; General Public License for more details.
+;;;
+;;; You should have received a copy of the GNU General Public License
+;;; along with this program; see the file COPYING.  If not, write to
+;;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
+;;; Floor, Boston, MA 02110-1301, USA.
+;;; ================================================================
+;;; Permission is granted to copy, distribute and/or modify this
+;;; document under the terms of the GNU Free Documentation License,
+;;; Version 1.3 or any later version published by the Free Software
+;;; Foundation; with no Invariant Sections, no Front-Cover Texts,
+;;; and no Back-Cover Texts. A copy of the license is included in
+;;; the section entitled "GNU Free Documentation License".
+;;; ==============================
 ;;; Copyright (C) 2009 - MON KEY
 ;;; ==============================
 ;;; CODE:
@@ -138,8 +162,10 @@
 ;; EMACS-WIKI - so we don't require more than you want/need.
 ;;
 ;; `mon-string-index', `mon-string-upto-index', `mon-string-after-index'
-(if (locate-library "mon-utils")
-    (require 'mon-utils)) 
+;;; (when (locate-library "mon-utils")
+;;;   (unless (featurep 'mon-utils)
+;;;     (require 'mon-utils))
+
 ;;
 ;; `*regexp-symbol-defs*'
 (if (locate-library "mon-regexp-symbols")
@@ -240,20 +266,24 @@ See also; `mon-help-swap-var-doc-const-val'\n►►►"
     (put ,func-name 'function-documentation ,putf-doc))))
 
 ;;; ==============================
+;;; NOTE: When compiling, defvar and defconst forms must be made known at compile time.
+;;; Wrap them _and_ the macro call in an `eval-when-compile' and make sure that 
+;;; \(eval-when-compile \(require 'cl\)\) is at top of file. Otherwise, all of the 
+;;; args docstrings get doubled up at compile time.
+;;; MODIFICATIONS: <Timestamp: #{2009-10-03T14:31:54-04:00Z}#{09406} - by MON KEY>
 ;;; CREATED: <Timestamp: #{2009-09-14T14:16:34-04:00Z}#{09381} - by MON KEY>
 (defmacro mon-help-swap-var-doc-const-val (var-name const-name xrefs &optional face-name)
-  "Swap the value variable-documentation property of VAR-NAME into the
-documentation-property of CONST-NAME's variable-documentation. After, put the
-symbol value of CONST-NAME at the head of VAR-NAME's variable-documentation
-property.
-XREFS is a symbol holding a list of symbol names which cross-reference one another.
-FACE-NAME is variable pointing bound to the symbol holding a face definintion.
-e.g. the variable `naf-mode-institution-fface' is bound to the face 
-`naf-mode-institution-face'. We do this because face documentation isn't accessible as in 
-*Help* buffers i.e. using \[`describe-variable']. 
-This procedure is implemented to extending *Help* documentation of `naf-mode'
-constants, variables, and faces but could be used to extend any derived mode generating its
-font-lock keywords from lists bound variables.\n
+  "Swap the value of VAR-NAME's variable-documentation property onto 
+CONST-NAME's variable-documentation property. 
+Put the symbol value of CONST-NAME on VAR-NAME's variable-documentation property.
+Put the symbol value of VAR-NAME on CONST-NAME's variable-documentation property.
+Put XREFS of packages related variables on VAR-NAME and CONST-NAME's
+variable-documentation property. XREF's is  a symbol holding a list of related 
+symbol names which should have cross-reference to one another in documentation.
+FACE-NAME is variable pointing bound to the symbol holding a face definintion.\n
+For example, in `naf-mode' the variable `naf-mode-institution-fface' is bound to
+the face `naf-mode-institution-face'. This is because face documentation isn't 
+accessible as a variable in *Help* buffers i.e. using \[`describe-variable'].\n
 EXAMPLE:
 \(mon-help-swap-var-doc-const-val
     *naf-school-names-english* naf-mode-school-names-english
@@ -261,87 +291,106 @@ EXAMPLE:
     *naf-mode-institution-xrefs* naf-mode-institution-fface)
     ;;^ XREV ^                   ^ FACE-NAME ^\n
 NOTE: When compiling defvar and defconst forms mut be made known at compile time.
-IOW wrap them _and_ the macro call in an `eval-and-compile'.
+Wrap them _and_ the macro call in an `eval-when-compile' and make sure that 
+\(eval-when-compile \(require 'cl\)\) is at top of file. Otherwise, all of the 
+args docstrings get doubled up at compile time.\n
+This procedure is implemented as a means of extending *Help* documentation of
+`naf-mode' constants, variables, and faces. It is provided because naf-mode's
+core mechanism of keyword lookup and identification occurs via font-locking and
+`font-lock-extra-managed-props' manipulation of plists and text-properties.
+Currently we leverage these facilities with the simple inheritance provided by
+Emacs faces. In the future, as Emacs face implementation begins taking advantage
+of CEDET and EIEIO class properties naf-mode will use it's existing faces as a
+gateway towards OO manipulation of text.  As such, this macro might be used to
+similiar functionality to any derived mode which generates font-lock keywords
+from lists bound variables.\n
 See also; `mon-help-put-var-doc-val->func'.\n►►►"
-  (declare (indent 1) (debug t))
+  (declare (indent 2) (debug t))
   (let ((v-doc (make-symbol "v-doc"))
+        (v-val (make-symbol "v-val"))
 	(c-val (make-symbol "c-val"))
+	(c-doc (make-symbol "c-doc"))
         (x-ref (make-symbol "x-ref"))
-        (m-val (make-symbol "m-val"))
-        (f-nam (make-symbol "f-nam")))
-    `(let ((,v-doc ,(plist-get (symbol-plist var-name) 'variable-documentation))
-	   (,c-val ,(symbol-value const-name))
-           (,x-ref (remove ',var-name ,xrefs))
-           (,f-nam (when ,face-name 
-                     (concat "\n"
-			     "FONT-LOCKING-FACE:            `" ,(symbol-name face-name) "'\n"
-			     "                              (describe-face '"
-			     (replace-regexp-in-string "fface" "face" ,(symbol-name face-name)) ")\n")))
-           (,m-val))
-       (setq ,m-val (concat ,v-doc 
-                            "\n\nLIST-VALUE: held by VARIABLE: `" ,(symbol-name var-name) "'\n\n"
-                            "REGEXPS: held by CONSTANT:    `" ,(symbol-name const-name) "'\n"
-                            ,f-nam "\n"))
-       (setq ,x-ref (concat "\nSee also;\n`" (mapconcat 'symbol-name ,x-ref "'\n`") "'\n►►►"))
-       (setq ,v-doc (concat ,m-val
-                            "--------------------------\n"
-                            "REGEXP-VALUE: of CONSTANT: " ,(symbol-name const-name) " is:\n\n"
-                            ,c-val
-                            "\n\n--------"
-                            ,x-ref))
-       (plist-put (symbol-plist ',var-name) 'variable-documentation ,v-doc)
-       (setq ,c-val ,(format "%S" (symbol-value var-name)))
-       (setq ,v-doc (concat ,m-val
-                            "------------------------\n"
-                            "LIST-VALUE: of VARIABLE: " ,(symbol-name var-name) " is:\n\n"
-                            ,c-val
-                            "\n\n--------"
-			    ,x-ref))
-       (plist-put   (symbol-plist ',const-name) 'variable-documentation ,v-doc))))
+        (f-nam (make-symbol "f-nam"))
+        (f-doc (make-symbol "f-doc")))
+    `(let (,v-doc ,v-val ,c-val ,c-doc ,x-ref ,f-nam ,f-doc)
+       (setq ,v-doc ,(plist-get (symbol-plist var-name) 'variable-documentation))
+       (setq ,v-val ,(format "%S" (symbol-value var-name)))
+       (setq ,c-doc ,(plist-get (symbol-plist var-name) 'variable-documentation))
+       (setq ,c-val ,(format "%S" (symbol-value const-name)))
+       (setq ,f-nam (when ,face-name 
+                      (list ,(symbol-name face-name)
+                            (replace-regexp-in-string "fface" "face" ,(symbol-name face-name)))))
+       (setq ,f-doc (when ,f-nam
+                      (concat 
+                       "\n\n--------------------------\n"                            
+                       "The keywords and regexps are font-locked with:\n"
+                       "FACE-DOCUMENTED-IN: `" (car ,f-nam) "'\n"
+                       "FACE-DEFINED-IN:    `" (cadr ,f-nam) "'\n"
+                       "                    (describe-face '" (cadr ,f-nam) ")\n")))
+     (setq ,x-ref (remove ',var-name ,xrefs))
+     (setq ,x-ref (concat "\nSee also;\n`" (mapconcat 'symbol-name ,x-ref "'\n`") "'\n►►►"))
+     (setq ,v-doc ;put the constant's properties
+           (concat 
+              ,v-doc 
+              "\n--------------------------\n"
+              "KEYWORD-REGEXPS-IN: `" ,(symbol-name const-name) "' a <CONSTANT> with value:\n\n"
+              ,c-val 
+              ,f-doc
+              "\n--------"
+              ,x-ref))
+     (setq ,c-doc ;put the constant's properties
+           (concat 
+            ,c-doc
+            "\n\n--------------------------\n"
+            "KEYWORD-LISTS-IN: `" ,(symbol-name var-name) "' a <VARBIABLE> with value:\n\n"
+            ,v-val
+            ,f-doc
+            "\n--------"
+            ,x-ref))
+     (plist-put (symbol-plist ',const-name) 'variable-documentation ,c-doc)
+     (plist-put (symbol-plist ',var-name) 'variable-documentation ,v-doc))))
 ;;
 ;;;(progn (fmakunbound 'mon-help-swap-var-doc-const-val) (unintern 'mon-help-swap-var-doc-const-val))
 ;;;
-;;;; UNCOMMENT BELOW TO TEST:
-;;;; NOTE: When compiling defvar and defconst forms mut be made known at compile time.
-;;;; IOW wrap them _and_ the macro call in an `eval-and-compile'."
-;;;test-me; 
-;;;(defvar *test-swap-var-xrefs* 
-;;;  '(*test-swap-var->const* *test-swap-var->const2* *test-swap-var->const3* *test-swap-var-xrefs*)
-;;;  "List of symbol names of variables which xref each other in `test-swap-var-mode'.
-;;;See FILE: \"./test-swap-var-mode.el\".")
+;;; NOTE: When compiling defvar and defconst forms mut be made known at compile time.
+;;; Wrap them _and_ the macro call in an `eval-when-compile'.
+;;; When compiling make sure that the following is present at head of files:
+;;; (eval-when-compile (require 'cl)
 ;;;
-;;;(defvar *test-swap-var->const* '("list" "of" "keywords" "to" "fontlock")
-;;;  "Did this docstring get swapped to docstring of `test-swap-var->cons'?.
+;;; UNCOMMENT BELOW TO TEST:
+;;; ==============================
+;;; (progn
+;;;   (defface test-swap-var->const-face 
+;;;             '((((class color) (background light)) (:foreground "CornflowerBlue"))
+;;;               (((class color) (background dark)) (:foreground "CornflowerBlue"))
+;;;               (t (:bold t :italic t)))
+;;;           "*Face fontlocking of institution name keywords in .naf files.
+;;; Additional documentation in var `test-swap-var->const-fface'")
+;;; (defvar test-swap-var->const-fface 'test-swap-var->const-face
+;;;            "*Face for `naf-mode' font-locking of institution name keywords
+;;; KEYWORDS-IN: the regexp defined in: {See also; list of XREFD var names}.
+;;; Face definition in `test-swap-var->const-face'.")
+;;; (defvar *test-swap-var-xrefs* 
+;;;   '(*test-swap-var->const* *test-swap-var->const2* *test-swap-var->const3* *test-swap-var-xrefs*)
+;;;   "List of symbol names of variables which xref each other in `test-swap-var-mode'.
+;;; See FILE: \"./test-swap-var-mode.el\".")
+;;; (defvar *test-swap-var->const* '("list" "of" "keywords" "to" "fontlock")
+;;;           "Did this docstring get swapped to docstring of `test-swap-var->cons'?.
 ;;;   Is its value at the top of docstring?")
-;;;
-;;;(defconst test-swap-var->const (regexp-opt *test-swap-var->const* 'paren))
-;;;
-;;;(defvar test-swap-var->const-fface 'test-swap-var->const-face
-;;;  "*Face for `naf-mode' font-locking of institution name keywords
-;;;KEYWORDS-IN: the regexp defined in: {See also; list of XREFD var names}.
-;;;Face definition in `test-swap-var->const-face'.")
-;;;
-;;;(defface test-swap-var->const-face 
-;;;   '((((class color) (background light)) (:foreground "CornflowerBlue"))
-;;;     (((class color) (background dark)) (:foreground "CornflowerBlue"))
-;;;     (t (:bold t :italic t)))
-;;;   "*Face fontlocking of institution name keywords in .naf files.
-;;;Additional documentation in var `test-swap-var->const-fface'")
-;;;
-;;;(mon-help-swap-var-doc-const-val *test-swap-var->const* test-swap-var->const)
-;;;
-;;;(mon-help-swap-var-doc-const-val
-;;;    *test-swap-var->const* test-swap-var->const
-;;;    ;;^ VAR-NAME ^         ^ CONST-NAME ^
-;;;    *test-swap-var-xrefs*  test-swap-var->const-fface)
-;;;    ;;^ XREF ^             ^ FACE-NAME ^
-;;;
-;;;; CLEANUP:
-;;;(progn (makunbound '*test-swap-var->const*)  (unintern '*test-swap-var->const*)
+;;; (defconst test-swap-var->const (regexp-opt *test-swap-var->const* 'paren)))
+;;; ;; CLEANUP:
+;;; (progn (makunbound '*test-swap-var->const*)  (unintern '*test-swap-var->const*)
 ;;;        (makunbound 'test-swap-var->const)  (unintern 'test-swap-var->const)
 ;;;        (makunbound '*test-swap-var-xrefs*)  (unintern '*test-swap-var-xrefs*)
 ;;;        (makunbound 'test-swap-var->const-face)  (unintern 'test-swap-var->const-face)
-;;;        (makunbound 'test-swap-var->const-fface)  (unintern 'test-swap-var->const-fface))
+;;;        (makunbound 'test-swap-var->const-fface)  (unintern 'test-swap-var->const-fface)))
+;;
+;;; EVAL BELOW TO TEST:
+;;; (mon-help-swap-var-doc-const-val *test-swap-var->const* test-swap-var->const)
+;;; (mon-help-swap-var-doc-const-val 
+;;;     *test-swap-var->const* test-swap-var->const
+;;;     *test-swap-var-xrefs*  test-swap-var->const-fface)
 
 ;;; ==============================
 ;;; CREATED: <Timestamp: #{2009-09-30T16:44:24-04:00Z}#{09403} - by MON KEY>
