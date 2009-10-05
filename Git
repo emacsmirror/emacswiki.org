@@ -56,12 +56,12 @@ git-emacs is yet another git mode on emacs for newbies.
 
 * Hompage: http://github.com/tsgates/git-emacs/tree/master
 * Repository: ##git clone git://github.com/tsgates/git-emacs.git##
-* Documentation: http://tsgates.cafe24.com/git/git-emacs.html
+* Documentation: http://files.taesoo.org/git-emacs/git-emacs.html
 
 More information:
 
 * [http://xtalk.msk.su/~ott/en/writings/emacs-vcs/EmacsGit.html Work with Git from Emacs] is an article by AlexOtt that provides more information about each of the mentioned packages.
-* [http://tsgates.cafe24.com/git/git-emacs.html A Guided Tour of emacs-git] (by TSKim)
+* [http://files.taesoo.org/git-emacs/git-emacs.html A Guided Tour of emacs-git] (by TSKim)
 
 == Emacs from Git ==
 

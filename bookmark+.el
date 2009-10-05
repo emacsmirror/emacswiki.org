@@ -9,9 +9,9 @@
 ;; Copyright (C) 2000-2009, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Oct  3 19:02:01 2009 (-0700)
+;; Last-Updated: Mon Oct  5 00:33:26 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 4155
+;;     Update #: 4194
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -65,6 +65,7 @@
 ;;
 ;;  Commands defined here:
 ;;
+;;    `bookmarkp-bmenu-change-sort-order-repeat',
 ;;    `bookmarkp-bmenu-edit-bookmark', `bookmarkp-bmenu-mark-all',
 ;;    `bookmarkp-bmenu-quit', `bookmarkp-bmenu-refresh-menu-list',
 ;;    `bookmarkp-bmenu-regexp-mark', `bookmarkp-bmenu-show-all',
@@ -80,9 +81,9 @@
 ;;    `bookmarkp-bmenu-toggle-marks',
 ;;    `bookmarkp-bmenu-toggle-show-only-marked',
 ;;    `bookmarkp-bmenu-toggle-show-only-unmarked',
-;;    `bookmarkp-bmenu-unmark-all', `bookmarkp-version',
-;;    `old-bookmark-insert', `old-bookmark-insert-location',
-;;    `old-bookmark-relocate'.
+;;    `bookmarkp-bmenu-unmark-all', `bookmarkp-reverse-sort-order',
+;;    `bookmarkp-version', `old-bookmark-insert',
+;;    `old-bookmark-insert-location', `old-bookmark-relocate'.
 ;;
 ;;  Commands redefined here (from `bookmark.el'):
 ;;
@@ -122,10 +123,10 @@
 ;;    `bookmarkp-add-or-update-time', `bookmarkp-assoc-delete-all',
 ;;    `bookmarkp-bmenu-goto-bookmark-named',
 ;;    `bookmarkp-bmenu-propertize-item',
-;;    `bookmarkp-bookmark-marked-p', `bookmarkp-current-sec-time',
-;;    `bookmarkp-edit-bookmark', `bookmarkp-face-prop',
-;;    `bookmarkp-file-alist-only', `bookmarkp-file-bookmark-p',
-;;    `bookmarkp-file-remote-p', `bookmarkp-get-buffer-name',
+;;    `bookmarkp-bookmark-marked-p', `bookmarkp-edit-bookmark',
+;;    `bookmarkp-face-prop', `bookmarkp-file-alist-only',
+;;    `bookmarkp-file-bookmark-p', `bookmarkp-file-remote-p',
+;;    `bookmarkp-float-time', `bookmarkp-get-buffer-name',
 ;;    `bookmarkp-get-end-position', `bookmarkp-get-visit-time',
 ;;    `bookmarkp-get-visits-count', `bookmarkp-gnus-alist-only',
 ;;    `bookmarkp-gnus-bookmark-p', `bookmarkp-goto-position',
@@ -320,6 +321,13 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2009/10/04 dadams
+;;     *-bmenu-change-sort-order-repeat: Require repeat.el.
+;;     Renamed: bookmarkp-current-sec-time to bookmarkp-float-time.
+;;     *-float-time: Added arg, so it's the same as float-time (for Emacs 20).
+;;     Bind *-reverse-sort-order to `S R'.
+;;     *-remote-file-bookmark-p: Removed extra rem-file in last and.
+;;     *-non-file-bookmark-p: Ensure it's not a remote file, before calling file-exists-p.
 ;; 2009/10/03 dadams
 ;;     Added: bookmarkp-file-remote-p, bookmarkp-buffer (face).
 ;;     bookmarkp-non-file (face): Changed to gray.
@@ -718,7 +726,7 @@ DOC-STRING is the doc string of the new command."
                (not (eq bookmarkp-sort-function ',comparison-fn))
                (setq bookmarkp-sort-function   ',comparison-fn
                      bookmarkp-reverse-sort-p  nil))
-              (;; This sort order reversed - make it not reversed.
+              (;; This sort order reversed.  Change to unsorted.
                bookmarkp-reverse-sort-p
                (setq bookmarkp-sort-function   nil
                      bookmarkp-reverse-sort-p  t))
@@ -786,13 +794,15 @@ DOC-STRING is the doc string of the new command."
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "S" nil) ; For Emacs 20
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "SS" 'bookmarkp-bmenu-change-sort-order-repeat)
+(define-key bookmark-bmenu-mode-map "SA" 'bookmarkp-bmenu-sort-alphabetically)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "SV" 'bookmarkp-bmenu-sort-by-visit-frequency)
+(define-key bookmark-bmenu-mode-map "SR" 'bookmarkp-reverse-sort-order)
+;;;###autoload
+(define-key bookmark-bmenu-mode-map "SS" 'bookmarkp-bmenu-change-sort-order-repeat)
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "ST" 'bookmarkp-bmenu-sort-by-last-visit-time)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "SA" 'bookmarkp-bmenu-sort-alphabetically)
+(define-key bookmark-bmenu-mode-map "SV" 'bookmarkp-bmenu-sort-by-visit-frequency)
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "\M-r" 'bookmark-bmenu-relocate) ; `R' in Emacs
 ;;;###autoload
@@ -838,6 +848,7 @@ Sort bookmarks:
 \\[bookmarkp-bmenu-sort-by-last-visit-time]\t- Sort by last time visited (repeat: reverse/off)
 \\[bookmarkp-bmenu-sort-alphabetically]\t- Sort alphabetically (repeat: reverse/off)
 \\[bookmarkp-bmenu-change-sort-order-repeat]\t- Cycle sort orders (repeat)
+\\[bookmarkp-reverse-sort-order]\t- Reverse current sort direction
 
 Misc:
 
@@ -995,7 +1006,7 @@ If nil show only beginning of region."
 You probably do not want to customize this option.  Instead, use macro
 `bookmarkp-define-sort-command' to define a new sort function and add
 it to this alist.
-Each alist element has the form (SORT-ORDER . COMPARISON-FUNCTION).
+Each alist element has the form (SORT-ORDER . COMPARISON-FN).
 SORT-ORDER is a short string (or symbol) describing the sort order.
  Examples: \"by last access time\", \"alphabetically\".
 COMPARISON-FN is a function that compares two bookmarks, returning
@@ -1012,7 +1023,7 @@ COMPARISON-FN is a function that compares two bookmarks, returning
 You probably do not want to customize this option.  Instead, use macro
 `bookmarkp-define-sort-command' to define a new sort function and add
 it to this alist.
-Each alist element has the form (SORT-ORDER . COMPARISON-FUNCTION).
+Each alist element has the form (SORT-ORDER . COMPARISON-FN).
 SORT-ORDER is a short string (or symbol) describing the sort order.
  Examples: \"by last access time\", \"alphabetically\".
 COMPARISON-FN is a function that compares two bookmarks, returning
@@ -1335,7 +1346,7 @@ pertains to the location within the buffer."
                       (bookmarkp-record-rear-context-string beg)))
          (fcrs      (when isregion (bookmarkp-record-front-context-region-string beg end)))
          (ecrs      (when isregion (bookmarkp-record-end-context-region-string end)))
-         (ctime     (bookmarkp-current-sec-time)))
+         (ctime     (bookmarkp-float-time)))
     `(,@(unless point-only `((filename . ,(cond ((buffer-file-name (current-buffer))
                                                  (bookmark-buffer-file-name))
                                                 (isdired)
@@ -1533,7 +1544,7 @@ DISPLAY-FUNCTION is the function that displays the bookmark."
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
 ;; 1. Added optional arg USE-REGION-P.
-;; 2. Add note about Icicles `S-delete' to doc string.
+;; 2. Added note about Icicles `S-delete' to doc string.
 ;;
 ;;;###autoload
 (defun bookmark-jump (bookmark-name &optional use-region-p) ; `C-x r b', `C-x p g'
@@ -1671,8 +1682,8 @@ Return nil or signal `file-error'."
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; Add note about `S-delete' to doc string.
-;; Change arg name: BOOKMARK -> BOOKMARK-NAME.
+;; Added note about `S-delete' to doc string.
+;; Changed arg name: BOOKMARK -> BOOKMARK-NAME.
 ;;
 (or (fboundp 'old-bookmark-relocate)
 (fset 'old-bookmark-relocate (symbol-function 'bookmark-relocate)))
@@ -1693,8 +1704,8 @@ candidate."
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; Add note about `S-delete' to doc string.
-;; Change arg name: BOOKMARK -> BOOKMARK-NAME.
+;; Added note about `S-delete' to doc string.
+;; Changed arg name: BOOKMARK -> BOOKMARK-NAME.
 ;;
 (or (fboundp 'old-bookmark-insert-location)
 (fset 'old-bookmark-insert-location (symbol-function 'bookmark-insert-location)))
@@ -1774,8 +1785,8 @@ candidate."
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; Add note about `S-delete' to doc string.
-;; Change arg name: BOOKMARK -> BOOKMARK-NAME.
+;; Added note about `S-delete' to doc string.
+;; Changed arg name: BOOKMARK -> BOOKMARK-NAME.
 ;;
 (or (fboundp 'old-bookmark-insert)
 (fset 'old-bookmark-insert (symbol-function 'bookmark-insert)))
@@ -1797,8 +1808,8 @@ candidate."
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; Add note about `S-delete' to doc string.
-;; Change arg name: BOOKMARK -> BOOKMARK-NAME.
+;; Added note about `S-delete' to doc string.
+;; Changed arg name: BOOKMARK -> BOOKMARK-NAME.
 ;; Increment `bookmark-alist-modification-count' even when using `batch' arg.
 ;;
 ;;;###autoload
@@ -2024,8 +2035,8 @@ non-nil, then do nothing."
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; 1. Use  `bookmark-bmenu-surreptitiously-rebuild-list', instead of using
-;; `bookmark-bmenu-list', updating the modification count, and saving.
+;; 1. Use `bookmark-bmenu-surreptitiously-rebuild-list', instead of using
+;;    `bookmark-bmenu-list', updating the modification count, and saving.
 ;; 2. Update `bookmarkp-latest-bookmark-alist' to reflect the deletions.
 ;;
 ;;;###autoload
@@ -2110,18 +2121,19 @@ If bookmark has no `visits' entry, add one with a 0 count."
   (unless batch (bookmark-bmenu-surreptitiously-rebuild-list))
   (bookmarkp-maybe-save-bookmark))
 
-(defun bookmarkp-current-sec-time ()
-  "Return current time in seconds."
+(defun bookmarkp-float-time (&optional specified-time)
+  "Same as `float-time'.  (Needed for Emacs 20.)"
   (if (fboundp 'float-time)
-      (float-time)
-    (let ((ct   (current-time)))
-      (+ (* (float (nth 0 ct)) (expt 2 16)) (nth 1 ct)))))
+      (float-time specified-time)
+    (unless specified-time (setq specified-time  (current-time)))
+    (+ (* (float (nth 0 specified-time)) (expt 2 16))
+       (nth 1 specified-time))))
 
 (defun bookmarkp-add-or-update-time (bookmark &optional batch)
   "Update `time' entry of BOOKMARK.
 BOOKMARK is a bookmark name or a bookmark record.
 If it has no time entry, then add one, using the current time in seconds."
-  (bookmark-prop-set bookmark 'time (bookmarkp-current-sec-time))
+  (bookmark-prop-set bookmark 'time (bookmarkp-float-time))
   (unless batch (bookmark-bmenu-surreptitiously-rebuild-list))
   (bookmarkp-maybe-save-bookmark))
 
@@ -2429,6 +2441,8 @@ This affects only the `>' mark, not the `D' flag."
             (append (bookmarkp-face-prop 'bookmarkp-su-or-sudo)
                     `(mouse-face highlight follow-link t
                       help-echo (format "mouse-2 Goto file: `%s'" ,isfile))))
+           ;; Make sure we test for remoteness before any other tests of the file itself
+           ;; (e.g. `file-exists-p'). We don't want to prompt for a password etc.
            ((and isremote (not issu))   ; Remote file (ssh, ftp)
             (append (bookmarkp-face-prop 'bookmarkp-remote-file)
                     `(mouse-face highlight follow-link t
@@ -2524,7 +2538,10 @@ defined for buffers that do not currently exist."
   (let* ((filename   (bookmark-get-filename bookmark))
          (isnonfile  (equal filename bookmarkp-non-file-filename))) 
     (and (bookmarkp-get-buffer-name bookmark)
-         (or (not filename) isnonfile (not (file-exists-p filename)))
+         (or (not filename) isnonfile
+             ;; Ensure not remote before calling `file-exists-p'! (Don't prompt for password!)
+             (and (not (bookmarkp-file-remote-p filename))
+                  (not (file-exists-p filename))))
          (not (bookmark-get-handler bookmark)))))
 
 (defun bookmarkp-remote-file-bookmark-p (bookmark)
@@ -2532,7 +2549,7 @@ defined for buffers that do not currently exist."
 BOOKMARK is a bookmark name or a bookmark record."
   (let* ((file      (bookmark-get-filename bookmark))
          (rem-file  (and file  (bookmarkp-file-remote-p file))))
-    (and rem-file  (not (bookmark-get-handler bookmark))  rem-file)))
+    (and rem-file  (not (bookmark-get-handler bookmark)))))
 
 (defun bookmarkp-local-file-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK bookmarks a local file or directory.
@@ -2812,6 +2829,7 @@ A prefix arg reverses the sort direction.")
 With a prefix arg, reverse current sort order.
 This is a repeatable version of `bookmarkp-bmenu-change-sort-order'."
   (interactive "P")
+  (require 'repeat)
   (bookmarkp-repeat-command 'bookmarkp-bmenu-change-sort-order))
 
 (defun bookmarkp-bmenu-change-sort-order (&optional arg)
@@ -2839,7 +2857,7 @@ With a prefix arg, reverse the current sort order."
   "Current sort order, or nil if sorting is inactive."
   (car (rassq bookmarkp-sort-function bookmarkp-sort-functions-alist)))
 
-(defun bookmarkp-reverse-sort-order ()
+(defun bookmarkp-reverse-sort-order ()  ; `S R' in menu list
   "Reverse the current sort order."
   (interactive)
   (setq bookmarkp-reverse-sort-p  (not bookmarkp-reverse-sort-p))
@@ -2856,32 +2874,32 @@ With a prefix arg, reverse the current sort order."
 
 ;; Sort Predicates
 
-(defun bookmarkp-visited-more-p (s1 s2)
-  "Return non-nil if bookmark S1 was visited more often than S2.
-Also: S1 < S2 if S1 was visited but S2 was not.
-      S1 < S2 if S1 precedes S2 alphabetically and
+(defun bookmarkp-visited-more-p (b1 b2)
+  "Return non-nil if bookmark B1 was visited more often than B2.
+Also: B1 < B2 if B1 was visited but B2 was not.
+      B1 < B2 if B1 precedes B2 alphabetically and
               neither was visited or both were visited equally."
-  (let ((v1  (bookmarkp-get-visits-count s1))
-        (v2  (bookmarkp-get-visits-count s2)))
+  (let ((v1  (bookmarkp-get-visits-count b1))
+        (v2  (bookmarkp-get-visits-count b2)))
     (cond ((and v1 v2)
-           (or (> v1 v2)  (and (= v1 v2) (bookmarkp-alpha-p s1 s2))))
+           (or (> v1 v2)  (and (= v1 v2) (bookmarkp-alpha-p b1 b2))))
           (v1 t)
           (v2 nil)
-          (t (bookmarkp-alpha-p s1 s2)))))
+          (t (bookmarkp-alpha-p b1 b2)))))
 
-(defun bookmarkp-visited-more-recently-p (s1 s2)
-  "Return non-nil if bookmark S1 was visited more recently than S2.
-Also: S1 < S2 if S1 was visited but S2 was not.
-      S1 < S2 if S1 precedes S2 alphabetically and
+(defun bookmarkp-visited-more-recently-p (b1 b2)
+  "Return non-nil if bookmark B1 was visited more recently than B2.
+Also: B1 < B2 if B1 was visited but B2 was not.
+      B1 < B2 if B1 precedes B2 alphabetically and
               either neither was visited
               or the last visit of each was at the same time."
-  (let ((t1  (bookmarkp-get-visit-time s1))
-        (t2  (bookmarkp-get-visit-time s2)))
+  (let ((t1  (bookmarkp-get-visit-time b1))
+        (t2  (bookmarkp-get-visit-time b2)))
     (cond ((and t1 t2)
-           (or (> t1 t2)  (and (= t1 t2) (bookmarkp-alpha-p s1 s2))))
+           (or (> t1 t2)  (and (= t1 t2) (bookmarkp-alpha-p b1 b2))))
           (t1 t)
           (t2 nil)
-          (t (bookmarkp-alpha-p s1 s2)))))
+          (t (bookmarkp-alpha-p b1 b2)))))
 
 (defun bookmarkp-alpha-p (b1 b2)
   "Return non-nil if bookmark B1 sorts alphabetically before B2.

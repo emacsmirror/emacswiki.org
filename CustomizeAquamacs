@@ -241,11 +241,11 @@ for my $f (@ARGV)
  
 if ($pid) 
 {
-    system("open -a /Applications/Aquamacs\\ Emacs.app $args");
+    system("open -a /Applications/Aquamacs.app $args");
 } 
 else
 {
-    system("/Applications/Aquamacs\\ Emacs.app/Contents/MacOS/Aquamacs\\ Emacs $args &");
+    system("/Applications/Aquamacs.app/Contents/MacOS/Aquamacs $args &");
 }
 
 exit;
