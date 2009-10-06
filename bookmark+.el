@@ -9,9 +9,9 @@
 ;; Copyright (C) 2000-2009, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Oct  5 00:33:26 2009 (-0700)
+;; Last-Updated: Mon Oct  5 13:24:11 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 4194
+;;     Update #: 4219
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -321,6 +321,10 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2009/10/05 dadams
+;;     Swap keys s and S.  S is now bookmark-bmenu-save.  s is not the sorting prefix key.
+;;     bookmark-bmenu-mode: Mention S key explicitly here (even though it is also
+;;                          mentioned in the vanilla part of the doc string).
 ;; 2009/10/04 dadams
 ;;     *-bmenu-change-sort-order-repeat: Require repeat.el.
 ;;     Renamed: bookmarkp-current-sec-time to bookmarkp-float-time.
@@ -792,17 +796,19 @@ DOC-STRING is the doc string of the new command."
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "<" 'bookmarkp-bmenu-toggle-show-only-unmarked)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "S" nil) ; For Emacs 20
+(define-key bookmark-bmenu-mode-map "S" 'bookmark-bmenu-save) ; `s' in Emacs
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "SA" 'bookmarkp-bmenu-sort-alphabetically)
+(define-key bookmark-bmenu-mode-map "s" nil) ; For Emacs 20
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "SR" 'bookmarkp-reverse-sort-order)
+(define-key bookmark-bmenu-mode-map "sa" 'bookmarkp-bmenu-sort-alphabetically)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "SS" 'bookmarkp-bmenu-change-sort-order-repeat)
+(define-key bookmark-bmenu-mode-map "sr" 'bookmarkp-reverse-sort-order)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "ST" 'bookmarkp-bmenu-sort-by-last-visit-time)
+(define-key bookmark-bmenu-mode-map "ss" 'bookmarkp-bmenu-change-sort-order-repeat)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "SV" 'bookmarkp-bmenu-sort-by-visit-frequency)
+(define-key bookmark-bmenu-mode-map "st" 'bookmarkp-bmenu-sort-by-last-visit-time)
+;;;###autoload
+(define-key bookmark-bmenu-mode-map "sv" 'bookmarkp-bmenu-sort-by-visit-frequency)
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "\M-r" 'bookmark-bmenu-relocate) ; `R' in Emacs
 ;;;###autoload
@@ -854,6 +860,7 @@ Misc:
 
 \\[bookmarkp-bmenu-edit-bookmark]\t- Edit bookmark
 \\[bookmarkp-bmenu-refresh-menu-list]\t- Refresh (revert) to up-to-date bookmarks list
+\\[bookmark-bmenu-save]\t- Save bookmarks (`C-u': prompt for the bookmarks file to use)
 \\[bookmarkp-bmenu-quit]\t- Quit bookmarks list
 
 Options Affecting Bookmarks List (`\\[bookmark-bmenu-list]'):
@@ -2489,7 +2496,7 @@ This affects only the `>' mark, not the `D' flag."
     (let ((len   (length name))
           (limit (- bookmark-bmenu-file-column 2)))
       (setq name  (if (>= len limit)
-                      (substring name 0 (min (length name) limit))
+                      (substring name 0 limit)
                     (format (format "%%-%ds" limit) name))))
     (search-forward name nil t))
   (forward-line 0))
@@ -2793,21 +2800,21 @@ If `bookmarkp-reverse-sort-p' is non-nil, then reverse the sort order."
 
 ;; The order of the macro calls here defines the reverse order of
 ;; `bookmarkp-sort-functions-alist'.  The first here is also the default sort order.
-;; Entries are traversed by `S S', in `bookmarkp-sort-functions-alist' order.
+;; Entries are traversed by `s s'..., in `bookmarkp-sort-functions-alist' order.
 
-(bookmarkp-define-sort-command          ; `S A' in menu list
+(bookmarkp-define-sort-command          ; `s a' in menu list
  "alphabetically"                       ; `bookmarkp-bmenu-sort-alphabetically'
  bookmarkp-alpha-p
  "Toggle sorting of bookmarks alphabetically, respecting `case-fold-search'.
 A prefix arg reverses the sort direction.")
 
-(bookmarkp-define-sort-command          ; `S V' in menu list
+(bookmarkp-define-sort-command          ; `s v' in menu list
  "by visit frequency"                   ; `bookmarkp-bmenu-sort-by-visit-frequency'
  bookmarkp-visited-more-p
  "Toggle sorting of bookmarks by the number of times visited.
 A prefix arg reverses the sort direction.")
 
-(bookmarkp-define-sort-command          ; `S T' in menu list
+(bookmarkp-define-sort-command          ; `s t' in menu list
  "by last visit time"                   ; `bookmarkp-bmenu-sort-by-last-visit-time'
  bookmarkp-visited-more-recently-p
  "Toggle sorting of bookmarks by the time of their last visit.
@@ -2824,7 +2831,7 @@ A prefix arg reverses the sort direction.")
        (last-repeatable-command           'repeat))
    (repeat nil)))
 
-(defun bookmarkp-bmenu-change-sort-order-repeat (arg) ; `S S'... in menu list
+(defun bookmarkp-bmenu-change-sort-order-repeat (arg) ; `s s'... in menu list
   "Cycle to the next sort order.
 With a prefix arg, reverse current sort order.
 This is a repeatable version of `bookmarkp-bmenu-change-sort-order'."

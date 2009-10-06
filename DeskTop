@@ -171,6 +171,10 @@ in my .emacs. -- Randolf Schultz
 
 ----
 
+A simple example of moving the desktop file save locations ~/.emacs.desktop(.lock) to ~/.emacs.d/desktop/emacs.desktop(.lock) would be very helpful.
+
+----
+
 See SessionManagement for other similar packages.
 
 ----

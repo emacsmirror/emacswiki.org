@@ -58,13 +58,13 @@ Here's a example of tab group function that define all tabs to be one of 3 possi
    (list
     (cond
      ((string-equal "*" (substring (buffer-name) 0 1))
-      "Emacs Buffer"
+      '("Emacs Buffer")
       )
      ((eq major-mode 'dired-mode)
-      "Dired"
+      '("Dired")
       )
      (t
-      "User Buffer"
+      '("User Buffer")
       )
      ))) ;; from Xah Lee
 

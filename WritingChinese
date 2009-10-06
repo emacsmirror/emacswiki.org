@@ -2,7 +2,7 @@
 
 Emacs has built-in support for many chinese input methods, packaged in leim. You can switch input method with C-\
 
-Also Emacs supports the XIM protocol for X Windows applications and IME input method for M$ Windows apps, such as wineinput or minichinput for Linux, and pyjj or M$ pinyin for MS windows. Beware that you need to set the charset coding of your input method in the <tt>.emacs</tt> file to use windows IME input method, for example:
+Also Emacs supports the XIM protocol for X Windows applications and IME input method for MS Windows apps, such as wineinput or minichinput for Linux, and pyjj or MS pinyin for MS windows. Beware that you need to set the charset coding of your input method in the <tt>.emacs</tt> file to use windows IME input method, for example:
 <pre>
 (set-keyboard-coding-system 'chinese-iso-8bit)
 </pre>
