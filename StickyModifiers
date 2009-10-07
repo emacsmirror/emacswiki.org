@@ -55,7 +55,7 @@ After installation, run <code>xkbset h</code> to display help for all options, <
 Now, temporarily enable sticky keys for the current X.org session via:
 
   # Enable "sticky keys" for all modifier keys, while also enabling "latchlock"
-  # (i.e., pressing any modifier key twice in a row permanently locks that key
+  # (i.e., pressing any modifier key twice in a row locks that key
   # on) and disabling "twokey" (i.e., pressing any modifier key and another key
   # at the same time permanently disables "sticky keys"). Note that enabling
   # "sticky" automatically enables sticky keys for Apple- and Windows-specific

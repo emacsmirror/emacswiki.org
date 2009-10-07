@@ -33,5 +33,10 @@ And to deactivate this, call
     (ad-update 'message)
 
 ----
+== prin1 ==
+__message__ requires a string, but you can use __prin1__ to print a string representation of an object. See http://www.gnu.org/software/emacs/manual/html_node/elisp/Output-Functions.html
+
+----
+
 
 CategoryDebug

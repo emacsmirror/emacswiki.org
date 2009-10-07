@@ -4,7 +4,7 @@ This page describes package Lisp:whitespace.el, by ViniciusJoseLatorre.
 
 : It runs on Emacs 23.
 
-: **Note 1:** //The source here in EmacsWiki runs on Emacs 21, 22 and 23.//
+: **Note 1:** //The source here in EmacsWiki was modified to run on Emacs 21, 22 and 23.//
 : **Note 2:** //This package replaces// BlankMode.
 
 

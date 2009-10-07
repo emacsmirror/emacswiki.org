@@ -27,5 +27,7 @@ Directions to build and install may be found in the file newly downloaded to ema
 
 There are many options for building emacs (such as whether to build the X11 version), which are discussed in the INSTALL file. There is also a script (emacs/mac/make-package) to create a Mac OS X package for use by the installer.
 
+Emacs 23's should be configured with --with-ns to use the Cocoa frontend.
+
 ----
 CategoryBuilding

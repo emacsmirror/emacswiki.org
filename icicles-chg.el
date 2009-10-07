@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Sep 26 14:33:14 2009 (-0700)
+;; Last-Updated: Tue Oct  6 13:08:07 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 4422
+;;     Update #: 4426
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3345,6 +3345,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2009/10/06 dadams
+;;     icicle-keymaps-for-key-completion: Added bookmark-bmenu-mode-map to default value.
+;;     icicle-sort-functions-alist: Use a separate defcustom for Emacs 20, since no :type alist.
 ;; 2009/09/25 dadams
 ;;     Added: icicle-prefix-completion-is-basic-flag.
 ;;     Changed default value of:

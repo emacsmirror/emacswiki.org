@@ -36,6 +36,7 @@
 ;;; `mon-help-plist-functions', `mon-help-text-property-functions'
 ;;; `mon-help-emacs-introspect', `mon-help-make-faces'
 ;;; `mon-help-xref-symbol-value', `mon-help-eieio-defclass'
+;;; `mon-help-eieio-functions'
 ;;; FUNCTIONS:◄◄◄
 ;;;
 ;;; MACROS:
@@ -542,7 +543,7 @@ CALLED-BY: `mon-insert-lisp-testme',`mon-insert-doc-help-tail',
 (when (not (bound-and-true-p *regexp-symbol-defs*))
   (setq *regexp-symbol-defs*
         (concat
-         ;;FIXME: doesn't catch on cases where the lambda list is on the next line.
+         ;; :FIXME doesn't catch on cases where the lambda list is on the next line.
          ;;...1..
          "^\\((" ;;opening paren
          ;;grp 2 -> `defun' `defun*' `defmacro' `defmacro*' `defsubst' `defsubst*'
@@ -1028,6 +1029,7 @@ Why not! :) ►►►
 ;; :FUNCTION-LISTS
 `mon-help-buffer-functions'
 `mon-help-emacs-introspect'
+`mon-help-eieio-functions'
 `mon-help-eieio-defclass'
 `mon-help-file-dir-functions'
 `mon-help-plist-functions'
@@ -1708,7 +1710,7 @@ Unless indicated as a 'variable' items listed are functions.\n►►►\n
 ;;; :CREATED <Timestamp: #{2009-09-17T12:06:53-04:00Z}#{09384} - by MON KEY>
 (defun mon-help-xml-functions (&optional insertp intrp)
   "XML related functions.\n►►►
-;; From FILE: `./lisp/xml.el'
+;; :FILE `./lisp/xml.el'
 `xml-get-children'
 `xml-parse-attlist'
 `xml-parse-dtd'
@@ -1721,15 +1723,15 @@ Unless indicated as a 'variable' items listed are functions.\n►►►\n
 `xml-print'
 `xml-debug-print'
 `xml-escape-string'\n
-;; FILE: ./nxml/xsd-regexp.el
+;; :FILE ./nxml/xsd-regexp.el
 `xsdre-translate'
 `xsdre-parse-regexp'
-;; FILE: ./nxml/xmltok.el
+;; :FILE ./nxml/xmltok.el
 `xmltok-unicode-to-char'
 `xmltok-forward'
 `xmltok-forward-prolog'
 `xmltok-forward-special'
-;; FILE: ./nxml/nxml-parse.el
+;; :FILE ./nxml/nxml-parse.el
 `nxml-parse-file'"
   (interactive "i\np")
     (mon-help-function-spit-doc 'mon-help-xml-functions :insertp t)
@@ -1742,7 +1744,7 @@ Unless indicated as a 'variable' items listed are functions.\n►►►\n
 (defun mon-help-eieio-defclass (&optional insertp intrp)
   "Routine eieio functions, specs, args, etc.
 :SEE info node `(eieio)Top'
-:SEE file: ./cedet-cvs/ede/ede.el for examples of defining big classes.\n
+:SEE :FILE ./cedet-cvs/ede/ede.el for examples of defining big classes.\n
 ;; :EIEIO-CLASS-SLOT-KEYWORDS
 :initarg                 {tag, string}
 :initform                {expression}
@@ -1779,7 +1781,7 @@ Unless indicated as a 'variable' items listed are functions.\n►►►\n
 ;; :EIEIO-ADVISED-FUNCTIONS
 `eieio-describe-class' -> `describe-variable'
 `eieio-describe-generic' -> `describe-function'\n
-:SEE-ALSO `mon-insert-defclass-template'\n►►►"
+:SEE-ALSO `mon-insert-defclass-template', `mon-help-eieio-functions'\n►►►"
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-eieio-defclass :insertp t)
@@ -1791,12 +1793,98 @@ Unless indicated as a 'variable' items listed are functions.\n►►►\n
 ;;; :TEST-ME (call-interactively 'mon-help-eieio-defclass)
 
 ;;; ==============================
+;;; CREATED: <Timestamp: #{2009-10-06T16:41:17-04:00Z}#{09412} - by MON KEY>
+(defun mon-help-eieio-functions (&optional insertp intrp)
+  "Interface functions for working with EIEIO system of CEDET.\n
+:SEE info node `(eieio)Function Index'.
+:SEE-ALSO `mon-help-eieio-defclass'.\n►►►\n
+;; :MAKING-OBJECTS:
+`make-instance'           CLASS &rest INITARGS
+`<class-constructor>'     OBJECT-NAME &rest SLOTS
+`initialize-instance'     OBJ &rest SLOTS
+`shared-initialize'       OBJ &rest SLOTS\n
+;; :METHODS
+`defgeneric'              METHOD ARGLIST [DOC-STRING]
+`call-next-method'        &rest REPLACEMENT-ARGS\n
+`defmethod'               METHOD [:before|:primary|:after|:static] 
+                          ARGLIST [DOC-STRING] FORMS\n
+;; :BASIC-METHODS
+`clone'                   OBJ &rest PARAMS
+`object-print'            THIS &rest STRINGS
+`object-write'            OBJ &optional COMMENT
+`slot-missing'            AB &rest FOO
+`slot-unbound'            OBJECT CLASS SLOT-NAME FN
+`no-applicable-method'    OBJECT METHOD &rest ARGS
+`no-next-method'          OBJECT &rest ARGS\n
+;; :ACCESSING-SLOTS
+`oset'                    OBJECT SLOT VALUE
+`oset-default'            CLASS SLOT VALUE
+`oref'                    OBJ SLOT
+`oref-default'            OBJ SLOT
+`slot-value'              OBJECT SLOT
+`set-slot-value'          OBJECT SLOT VALUE
+`slot-makeunbound'        OBJECT SLOT
+`with-slots'              SPEC-LIST OBJECT &rest BODY
+`object-add-to-list'      OBJECT SLOT ITEM &optional APPEND
+`object-remove-from-list' OBJECT SLOT ITEM\n
+;; :ASSOCIATION-LISTS
+`object-assoc'            KEY SLOT LIST
+`object-assoc-list'       SLOT LIST
+`eieio-build-class-alist' &OPTIONAL BASE-CLASS\n
+;; :PREDICATES-AND-UTILS
+`find-class'              SYMBOL &optional ERRORP
+`class-p'                 CLASS
+`slot-exists-p'           OBJECT-OR-CLASS SLOT
+`slot-boundp'             OBJECT SLOT
+`class-name'              CLASS
+`class-option'            CLASS OPTION
+`class-constructor'       CLASS
+`object-name'             OBJ
+`object-class'            OBJ
+`class-of'                OBJ
+`object-class-fast'       OBJ
+`object-class-name'       OBJ
+`class-parent'            CLASS ; :DEPRECATED 
+`class-parents'           CLASS
+`class-parents-fast'      CLASS
+`class-children'          CLASS
+`class-children-fast'     CLASS
+`same-class-p'            OBJ CLASS
+`same-class-fast-p'       OBJ CLASS
+`object-of-class-p'       OBJ CLASS
+`child-of-class-p'        CHILD CLASS
+`generic-p'               METHOD-SYMBOL
+`next-method-p'\n
+;; :INTROSPECTION
+`object-slots'            OBJ
+`class-slot-initarg'      CLASS SLOT
+`eieio-browse'            ROOT-CLASS
+`eieiodoc-class'          CLASS INDEXSTRING &optional SKIPLIST
+`eieio-describe-class'    CLASS &OPTIONAL HEADERFCN
+`eieio-default-superclass' ;<VARIABLE\n
+;; :SIGNALS
+`invalid-slot-name'      OBJ-OR-CLASS SLOT
+`no-method-definition'   METHOD ARGUMENTS
+`no-next-method'         CLASS ARGUMENTS
+`invalid-slot-type'      SLOT SPEC VALUE
+`unbound-slot'           OBJECT CLASS SLOT\n"
+  (interactive "i\nP")
+  (if (or insertp intrp)
+      (mon-help-function-spit-doc 'mon-help-eieio-functions :insertp t)
+      (message "pass non-nil for optional arg INTRP")))
+;;
+;;; :TEST-ME (mon-help-eieio-functions)
+;;; :TEST-ME (mon-help-eieio-functions t)
+;;; :TEST-ME (describe-function 'mon-help-eieio-functions)
+;;; :TEST-ME (call-interactively 'mon-help-eieio-functions) 
+
+;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-09-20T13:26:27-04:00Z}#{09387} - by MON>
 (defun mon-help-read-functions (&optional insrtp intrp)
   "List of functions for reading.
 Unless indicated all items in list are functions.
-See FILE: `lread.c'                                               
-See info node `(elisp)Read and Print'. ►►►\n
+:SEE :FILE `lread.c'                                               
+:SEE info node `(elisp)Read and Print'.\n►►►\n
       _______                       ____________________    62.
      |       |                     |                    |     
      | :READ |                     | :STANDARD-READERS  |     
@@ -1883,7 +1971,7 @@ See info node `(elisp)Read and Print'. ►►►\n
 ;;; :CREATED <Timestamp: #{2009-09-19T17:02:02-04:00Z}#{09386} - by MON KEY>
 (defun mon-help-plist-functions (&optional insertp intrp)
   "plist or property list related functions.
-See info node `(elisp)Documentation Tips'. ►►►
+:SEE info node `(elisp)Documentation Tips'.\n►►►
 ;; :PLIST-FUNCTIONS
 `get'
 `plist-get'
@@ -1907,7 +1995,6 @@ See info node `(elisp)Documentation Tips'. ►►►
  |----+ `error-message'             ;; <PROPERTY>                  
  |	           
  |----+ `byte-compile-format-like'  ;; <PROPERTY>"
-
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-plist-functions :insertp t)
@@ -2200,7 +2287,7 @@ from one of the basic-faces this practice is encouraged. See for example;
 ;;; ==============================
 ;;; :CREATED <Timestamp: Wednesday June 17, 2009 @ 05:37.52 PM - by MON KEY>
 (defun mon-help-font-lock (&optional insertp intrp)
-"Each element of `font-lock-keywords' specifies how to find certain
+  "Each element of `font-lock-keywords' specifies how to find certain
 cases of text, and how to highlight those cases:\n►►►
  ___________________________________________________________________________79.
 |                                                                             |
@@ -2246,10 +2333,10 @@ cases of text, and how to highlight those cases:\n►►►
 |[eval . FORM]                                                                |
 |_____________________________________________________________________________|
                                                                             79^"
-(interactive "i\nP")
-(if (or insertp intrp)
-    (mon-help-function-spit-doc 'mon-help-font-lock :insertp t)
-  (message "pass non-nil for optional arg INTRP")))
+  (interactive "i\nP")
+  (if (or insertp intrp)
+      (mon-help-function-spit-doc 'mon-help-font-lock :insertp t)
+      (message "pass non-nil for optional arg INTRP")))
 ;;
 ;;; :TEST-ME (mon-help-font-lock)
 ;;; :TEST-ME (mon-help-font-lock t)
@@ -2259,8 +2346,8 @@ cases of text, and how to highlight those cases:\n►►►
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-09-20T13:46:12-04:00Z}#{09387} - by MON>
 (defun mon-help-text-property-functions (&optional insrtp intrp)
-  "list of text-property related functions.                                     
-See info node `(elisp)Text Properties' and FILE: textprop.c ►►►                 
+  "List of text-property related functions.                                     
+:SEE info node `(elisp)Text Properties' and :SEE :FILE textprop.c\n►►►
     ________________________              __________________________              
    |                        |            |                          |              
    | :TEXT-PROPERTY-GETTERS |            | :TEXT-PROPERTY-SEARCHING |              
@@ -2343,8 +2430,7 @@ result      = '\(front-sticky \(p6 p7 pa pb pc pd pe pf\)
 The optimizable special cases are:
     left rear-nonsticky = nil, right front-sticky = nil \(inherit left\)
     left rear-nonsticky = t,   right front-sticky = t   \(inherit right\)
-    left rear-nonsticky = t,   right front-sticky = nil \(inherit none\)
-►►►"
+    left rear-nonsticky = t,   right front-sticky = nil \(inherit none\)\n►►►"
   (interactive "i\nP")
   (if (or insertp intrp)
       (save-excursion
@@ -2550,7 +2636,7 @@ The optimizable special cases are:
 ;;; ==============================
 ;;; :CREATED <Timestamp: Wednesday June 17, 2009 @ 05:36.08 PM - by MON KEY>
 (defun mon-help-easy-menu (&optional insertp intrp)
-"Following is the mapping for building menus with easy-menu `easy-menu-define':\n
+"Following is the mapping for building menus with easy-menu `easy-menu-define'.
 ►►►
  ____________________________________________________________________________79.
 |                      ,-+ :MENU-ROOT                                          |
@@ -2594,10 +2680,9 @@ The optimizable special cases are:
 ;;; ==============================
 ;;; :CREATED <Timestamp: Friday June 19, 2009 @ 02:20.35 PM - by MON KEY>
 (defun mon-help-widgets (&optional insertp intrp)
-"Help table for the widget interface.\n
-►►►
+"Help table for the widget interface.\n►►►\n
  __________________________
-|                          | See info node `(elisp)Documentation Tips'.
+|                          | :SEE info node `(elisp)Documentation Tips'.
 | :WIDGET-TYPE-SYNTAX-OF   |
 |__________________________|______________________________________________77.
 |                                                                           |
@@ -2701,16 +2786,7 @@ The optimizable special cases are:
 ;;; ==============================
 ;;; Map mon-insert-uniccode to -> (ucs-insert "12C")
 (defun mon-help-diacritics (&optional insertp intrp)
-  "Insert commonly used diacritics and their keymaps at point.\n
-The Unicode latin scripts are found in several Unicode-Blocks, namely:\n
-U+0000 - U+007F -> Controls and Basic Latin;\n\(URL `http://www.decodeunicode.org/en/basic_latin'\)\n
-U+0080 - U+009F -> Controls and Latin-1;\n\(URL `http://www.decodeunicode.org/en/latin-1_supplement'\)\n
-U+0100 - U+017F -> Latin Extended-A;\n\(URL `http://www.decodeunicode.org/en/latin_extended-a'\)\n
-U+0180 - U+024F -> Latin Extended-B;\n\(URL `http://www.decodeunicode.org/en/latin_extended-b'\)\n
-Character table for reverting ISO_8859-1 bytes -> UTF-8\n
-\(URL `http://en.wikipedia.org/wiki/ISO_8859-1'\)
-\(URL `http://en.wikipedia.org/wiki/ISO/IEC_8859'\)\n
-:SEE-ALSO (URL `http://unicode.coeurlumiere.com/')\n►►►\n
+  "Insert commonly used diacritics and their keymaps at point.\n►►►\n
 ;; :CX8-DIACRITIC-SYMBOLS-E\n
 à À - C-x 8 ` a
 á Á - C-x 8 ' a
@@ -2801,7 +2877,20 @@ Character table for reverting ISO_8859-1 bytes -> UTF-8\n
 ¨ - C-x 8 \" \"
 ¸ - C-x 8 , ,
   - C-x 8 * SPC
-► - (ucs-insert \"25BA\")"
+► - (ucs-insert \"25BA\")\n\n;;; ==============================\n
+;;; The Unicode latin scripts are found in several Unicode-Blocks, namely:
+;;; U+0000 - U+007F -> Controls and Basic Latin;
+;;; \(URL `http://www.decodeunicode.org/en/basic_latin'\)\n
+;;; U+0080 - U+009F -> Controls and Latin-1;
+;;; \(URL `http://www.decodeunicode.org/en/latin-1_supplement'\)\n
+;;; U+0100 - U+017F -> Latin Extended-A;
+;;; \(URL `http://www.decodeunicode.org/en/latin_extended-a'\)\n
+;;; U+0180 - U+024F -> Latin Extended-B;
+;;; \(URL `http://www.decodeunicode.org/en/latin_extended-b'\)\n
+;;; Character table for reverting ISO_8859-1 bytes -> UTF-8
+;;; \(URL `http://en.wikipedia.org/wiki/ISO_8859-1'\)\n
+;;; \(URL `http://en.wikipedia.org/wiki/ISO/IEC_8859'\)\n
+;;; :SEE-ALSO (URL `http://unicode.coeurlumiere.com/')."
 (interactive "i\nP")
 (if (or insertp intrp)
   (save-excursion
@@ -2830,7 +2919,7 @@ Character table for reverting ISO_8859-1 bytes -> UTF-8\n
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-09-01T17:34:29-04:00Z}#{09362} - by MON KEY>
 (defun mon-help-ASCII-chars (&optional insertp intrp)
-  "ASCII Character Tables: ►►►\n
+  "ASCII Character Tables.\n►►►\n
  _______________________________________________________________67.
 |                                                                 |
 | 000 NUL|001 SOH|002 STX|003 ETX|004 EOT|005 ENQ|006 ACK|007 BEL |
@@ -2890,7 +2979,7 @@ Character table for reverting ISO_8859-1 bytes -> UTF-8\n
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-ASCII-chars  :insertp t)
     (message "pass non-nil for optional arg INTRP")))
-
+;;
 ;;; :TEST-ME (mon-help-ASCII-chars)
 ;;; :TEST-ME (mon-help-ASCII-chars t)
 ;;; :TEST-ME (call-interactively 'mon-help-ASCII-chars)
@@ -2942,7 +3031,7 @@ Character table for reverting ISO_8859-1 bytes -> UTF-8\n
   (if (or insertp intrp)
         (mon-help-function-spit-doc 'mon-help-ISO-8859-1-chars :insertp t)
     (message "pass non-nil for optional arg INTRP")))
-
+;;
 ;;; :TEST-ME (mon-help-ISO-8859-1-chars)
 ;;; :TEST-ME (mon-help-ISO-8859-1-chars t)
 ;;; :TEST-ME (call-interactively 'mon-help-ISO-8859-1-chars)
@@ -2956,7 +3045,7 @@ Character table for reverting ISO_8859-1 bytes -> UTF-8\n
 (defun mon-help-cntl->hex->ecma-48 (&optional insertp intrp)
   "For reference, here's a table of the control characters (plus DEL). It
 is based on the information from Table 1 of Ecma-48 / ISO/IEC 6429 (the
-control-key representation has been added). ►►►\n
+control-key representation has been added).\n►►►\n
  __________________________________________________53.
 |                                                    |
 | :HEX   :KEY    :NAME          :HEX    :KEY   :NAME |
@@ -2984,7 +3073,7 @@ control-key representation has been added). ►►►\n
   (if (or insertp intrp)
         (mon-help-function-spit-doc 'mon-help-cntl->hex->ecma-48 :insertp t)
     (message "pass non-nil for optional arg INTRP")))
-
+;;
 ;;; :TEST-ME (mon-help-cntl->hex->ecma-48)
 ;;; :TEST-ME (mon-help-cntl->hex->ecma-48 t)
 ;;; :TEST-ME (call-interactively 'mon-help-cntl->hex->ecma-48)
@@ -2994,13 +3083,13 @@ control-key representation has been added). ►►►\n
 
 ;;; ==============================
 ;;; :COURTESY Micah Cowan :HIS teseq.info of GNU Teseq :VERSION 1.0.0
-;;; :CREATED <Timestamp: 2009-08-13-W33-4T16:30:22-0400Z - by Stan>
+;;; :CREATED <Timestamp: 2009-08-13-W33-4T16:30:22-0400Z - by MON>
 (defun mon-help-cntl->hex->ecma-35 (&optional insertp intrp)
   "The Ecma-35 / ISO/IEC 2200 standard defines an escape sequence to be a
 sequence of characters beginning with ESC, with a final byte in the
 range 'x30'-'x7E', and any number (including zero) of intermediate
 bytes in the range 'x20'-'x2F'.  The following table has been provided
-as a reference for finding which characters match which codes. ►►►\n
+as a reference for finding which characters match which codes.\n►►►\n
  __________________________________________45.
 |      |                                     |
 |      |  x2X   x3X   x4X   x5X   x6X   x7X  |
@@ -3027,7 +3116,7 @@ as a reference for finding which characters match which codes. ►►►\n
   (if (or insertp intrp)
     	(mon-help-function-spit-doc 'stan-help-cntl->hex->ecma-35 :insertp t)
     (message "pass non-nil for optional arg INTRP")))
-
+;;
 ;;; :TEST-ME (mon-help-cntl->hex->ecma-35)
 ;;; :TEST-ME (mon-help-cntl->hex->ecma-35 t)
 ;;; :TEST-ME (call-interactively 'mon-help-cntl->hex->ecma-35)
@@ -3040,7 +3129,7 @@ as a reference for finding which characters match which codes. ►►►\n
 ;;;###autoload
 (defun mon-help-nclose-functions (&optional insertp intrp)
   "Functions for working with nclosemacs.
-See info node `(nclosemacs)Top'►►►\n
+:SEE info node `(nclosemacs)Top'\n►►►\n
 ;; :KNOWCESSING
 `*nclose-suggest*'
 `*nclose-volunteer*'
@@ -3198,7 +3287,7 @@ To jump to an info node with an elisp expression:
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-info-incantation :insertp t)
     (message "pass non-nil for optional arg INTRP")))
-
+;;
 ;;; :TEST-ME (mon-help-info-incantation t)
 ;;; :TEST-ME (mon-help-info-incantation)
 ;;; :TEST-ME (call-interactively 'mon-help-info-incantation)
@@ -3208,7 +3297,7 @@ To jump to an info node with an elisp expression:
 (defun mon-help-tar-incantation (&optional insertp intrp)
   "To help me remember how to do a tar.gz on a directory.
 Because I never can remember tar's flags.
-w32 NOTE(s):\nOn w32 with gnuwin32 to unzip use `gzip.exe -d'
+:NOTE(s)\nOn w32 with gnuwin32 to unzip use `gzip.exe -d'
 On w32 with gnuwin32 to pipe a tar to gz on w32 use `bsdtar.exe xvzf'.\n
 :INCANTATION
 tar -czvf dir-name.tar.gz dir-name \n ►►►"
@@ -3216,7 +3305,7 @@ tar -czvf dir-name.tar.gz dir-name \n ►►►"
 (if (or insertp intrp)
     (mon-help-function-spit-doc 'mon-help-tar-incantation :insertp t)
   (message "pass non-nil for optional arg INTRP")))
-
+;;
 ;;; :TEST-ME (mon-help-tar-incantation t)
 ;;; :TEST-ME (mon-help-tar-incantation)
 ;;; :TEST-ME (call-interactively 'mon-help-tar-incantation)
@@ -3277,7 +3366,7 @@ M-x shell\install-info  info-file  \"/usr/info/dir\". ►►►"
 ;;; :CREATED <Timestamp: Tuesday June 23, 2009 @ 11:37.05 AM - by MON KEY>
 (defun mon-help-format-width (&optional insertp intrp)
   "Idiom for `format' control string to specify padding using the width flag.\n
-See info node `(elisp)Formatting Strings'\n
+:SEE info node `(elisp)Formatting Strings'\n
 :EXAMPLE
   \(let \(\(x 'test\) \(y \"\"\)\)
      \(format \"This is a %-9s.\\nThis is a %9s.\\nThis is a %s %4s.\" x x x y\)\)
@@ -3383,7 +3472,7 @@ See info node `(elisp)Formatting Strings'\n
     ("Program Files" %PROGRAMFILES%
      "Returns the location of the default install directory for applications."))
   "*List of environment variables available in w32.
-CALLED-BY: `mon-help-w32-env'."))
+:CALLED-BY `mon-help-w32-env'."))
 ;;
 ;;; :TEST-ME (assoc 'TMP *w32-env-variables-alist*)
 ;;; :TEST-ME (car (assoc 'TMP *w32-env-variables-alist*))
@@ -3414,15 +3503,15 @@ Called interactively with Prefix arg non-nil prints to current-buffer.\n\n---
 alist of W32 Environmental variables in var `*w32-env-variables-alist*':\n\n"
 ;; CUT-V-STR
 "\*List of environment variables available in w32.
-CALLED-BY: `mon-help-w32-env'."
+:CALLED-BY `mon-help-w32-env'."
 ;; PST-V-STR
 "\n\n:EXAMPLE\n(assoc 'WINDIR *w32-env-variables-alist*)\n
-EXAMPLE-INVOCATION:
+:EXAMPLE-INVOCATION
 Open a cmd prompt and type echo %appdata% which should return
 the full path to your profile's Application Data directory.
 If calling from a batch file remember to quote the thusly %variable%
 or set VARIABLE=value.\n
-SOURCE:\n\(URL `http://windowsitpro.com/article/articleid/23873/')
+:SOURCE\n\(URL `http://windowsitpro.com/article/articleid/23873/')
 \(URL `http://technet.microsoft.com/en-us/library/bb490954.aspx'\)\n►►►"))
 ;;
 ;;; :TEST-ME (mon-help-w32-env t)
@@ -3458,7 +3547,7 @@ SOURCE:\n\(URL `http://windowsitpro.com/article/articleid/23873/')
 ;;;     print-var-list)))
 
 ;;; ==============================
-;;; :COURTESY Aaaron Hawley  :HIS
+;;; :COURTESY Aaaron Hawley :HIS
 ;;; (URL `http://www.emacswiki.org/emacs/Reference_Sheet_by_Aaron_Hawley_source')
 ;;; :MODIFICATIONS <Timestamp: Wednesday June 17, 2009 @ 11:31.47 AM - by MON KEY>
 (defvar *reference-sheet-help-A-HAWLEY* nil)
@@ -4747,7 +4836,7 @@ See; \(URL `http://www.emacswiki.org/emacs/Reference_Sheet_by_Aaron_Hawley')\n
      self-puke))
 
 ;;(symbol-value '*reference-sheet-help-A-HAWLEY*)))
-
+;;
 ;;(progn (makunbound '*reference-sheet-help-A-HAWLEY*)
 ;;  (unintern '*reference-sheet-help-A-HAWLEY*))
 
@@ -4770,10 +4859,10 @@ See; \(URL `http://www.emacswiki.org/emacs/Reference_Sheet_by_Aaron_Hawley')\n
             (symbol-plist '*reference-sheet-help-A-HAWLEY*)
             'variable-documentation)))
 ;;
-;;;test-me:(mon-help-keys t)
+;;; :TEST-ME (mon-help-keys t)
 ;;
 ;;(progn (makunbound 'mon-help-keys)
-;;   (unintern 'mon-help-keys))
+;;       (unintern 'mon-help-keys))
 
 ;;; ==============================
 ;;; :COURTESY Aaaron Hawley :HIS
@@ -4824,7 +4913,7 @@ When optional arg INSERTP is non-nil insert wikified reference sheet at point.\n
 
 ;;; :TEST-ME (progn(mon-help-keys t)(emacs-wiki-fy-reference-sheet))
 ;;; :TEST-ME (progn(mon-help-keys t)(emacs-wiki-fy-reference-sheet nil t))
-;;;test-me(emacs-wiki-fy-reference-sheet t t)
+;;; :TEST-ME (emacs-wiki-fy-reference-sheet t t)
 
 ;;; ==============================
 ;;; I think I remember stealing this from Pascal Bourguignon?
@@ -4916,3 +5005,4 @@ without the surrounding quotes.\n:SEE-ALSO `emacs-wiki-escape-lisp-string-region
 ;;; ================================================================
 ;;; mon-doc-help-utils.el ends here
 ;;; EOF
+

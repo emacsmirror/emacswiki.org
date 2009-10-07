@@ -100,6 +100,7 @@ W32 development:
 * CygWin -- using Emacs with (or within) Cygwin
 * MinGW -- using GCC directly without the Cygwin library
 * CmdMode -- editing cmd and bat files
+* SlnMode -- open sln projects inside emacs
 
 Reading proprietary file formats:
 

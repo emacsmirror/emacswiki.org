@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Sep 25 18:57:55 2009 (-0700)
+;; Last-Updated: Tue Oct  6 13:04:20 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 3318
+;;     Update #: 3321
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1572,8 +1572,9 @@ they never use angle brackets."
 
 ;;;###autoload
 (defcustom icicle-keymaps-for-key-completion
-  '(calendar-mode-map dired-mode-map facemenu-keymap jde-mode-map jde-jdb-mode-map
-    senator-mode-map srecode-mode-map synonyms-mode-map vc-dired-mode-map)
+  '(bookmark-bmenu-mode-map calendar-mode-map dired-mode-map facemenu-keymap
+    jde-mode-map jde-jdb-mode-map senator-mode-map srecode-mode-map synonyms-mode-map
+    vc-dired-mode-map)
   "*List of keymaps in which to bind `S-TAB' to `icicle-complete-keys'.
 List elements are symbols that are bound to keymaps.
 
@@ -2428,9 +2429,9 @@ completion and their order."
         (and (string-match "^\\*" b2) (string< b1 b2))
       (or (string-match "^\\*" b2) (string< b1 b2)))))
 
-
-(defcustom icicle-sort-functions-alist () ; Emacs 21+
-  "*Alist of sort functions.
+(when (> emacs-major-version 20)
+  (defcustom icicle-sort-functions-alist ()
+    "*Alist of sort functions.
 You probably do not want to customize this option.  Instead, use macro
 `icicle-define-sort-command' to define a new sort function and add it
 to this alist.
@@ -2439,11 +2440,28 @@ SORT-ORDER is a short string (or symbol) describing the sort order.
  Examples: \"by date\", \"alphabetically\", \"directories first\".
 COMPARISON-FN is a function that compares two strings, returning
  non-nil if and only if the first string sorts before the second."
-  :type '(alist
-          :key-type (choice :tag "Sort order" string symbol)
-          :value-type
-          (choice (function :tag "Comparison function") (const :tag "Do not sort" nil)))
-  :group 'Icicles-Completions-Display :group 'Icicles-Matching)
+    :type '(alist
+            :key-type (choice :tag "Sort order" string symbol)
+            :value-type
+            (choice (function :tag "Comparison function") (const :tag "Do not sort" nil)))
+    :group 'Icicles-Completions-Display :group 'Icicles-Matching))
+
+(unless (> emacs-major-version 20)      ; Emacs 20 version - type `alist' doesn't exist.
+  (defcustom icicle-sort-functions-alist ()
+    "*Alist of sort functions.
+You probably do not want to customize this option.  Instead, use macro
+`icicle-define-sort-command' to define a new sort function and add it
+to this alist.
+Each alist element has the form (SORT-ORDER . COMPARISON-FUNCTION).
+SORT-ORDER is a short string (or symbol) describing the sort order.
+ Examples: \"by date\", \"alphabetically\", \"directories first\".
+COMPARISON-FN is a function that compares two strings, returning
+ non-nil if and only if the first string sorts before the second."
+    :type '(repeat
+            (cons
+             (choice :tag "Sort order" string symbol)
+             (choice (function :tag "Comparison function") (const :tag "Do not sort" nil))))
+    :group 'Icicles-Completions-Display :group 'Icicles-Matching))
 
 ;;;###autoload
 (defcustom icicle-special-candidate-regexp nil

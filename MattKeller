@@ -1,14 +1,20 @@
 = Matt Keller = 
 
-I use Emacs on Linux. I am a former vimmer who initially moved to Emacs to hack Common Lisp. 
+I use Emacs on Linux. I am a former vimmer who initially moved to Emacs to hack Common Lisp. Now I live in Emacs.
 
 For the dot-file peepers, I keep my emacs configuration in a [http://www.littleredbat.net/mk/cgi-bin/gitweb/gitweb.cgi?p=elisp.git;a=blob;f=dotemacs;hb=HEAD public git repository].
 
-== mk-project.el ==
+== Code ==
 
-I've recently written a library called mk-project.el to manage emacs "projects" (see [[CategoryProgrammerUtils#ProjectSupport]]). 
+=== mk-project.el ===
+
+I've written a library called mk-project.el to manage emacs "projects" (see [[CategoryProgrammerUtils#ProjectSupport]]). 
 
 Details are on the [http://www.littleredbat.net/mk/code/mk-project.html mk-project.el homepage]; see Lisp:mk-project.el for the source. 
+
+=== etags-update.el ===
+
+A global minor mode that updates your EmacsTags when you save a file. The code is [http://github.com/mattkeller/etags-update available on github].
 
 [new]
 Welcome to the wiki! -- AlexSchroeder
