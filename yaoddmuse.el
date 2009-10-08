@@ -6,9 +6,9 @@
 ;; Maintainer: Andy Stewart lazycat.manatee@gmail.com
 ;; Copyright (C) 2009, Andy Stewart, all rights reserved.
 ;; Created: 2009-01-06 12:41:17
-;; Version: 0.1.0
-;; Last-Updated: 2009-03-29 11:35:17
-;;           By: Andy Stewart
+;; Version: 0.1.1
+;; Last-Updated: 2009-10-08 00:28:09
+;;           By: rubikitch
 ;; URL: http://www.emacswiki.org/emacs/download/yaoddmuse.el
 ;; Keywords: yaoddmuse, oddmuse
 ;; Compatibility: GNU Emacs 22 ~ 23
@@ -156,6 +156,129 @@
 ;;      image status for view different content.
 ;;
 
+;;; Commands:
+;;
+;; Below are complete command list:
+;;
+;;  `yaoddmuse-mode'
+;;    Yet another mode to edit Oddmuse wiki pages.
+;;  `yaoddmuse-edit'
+;;    Edit a page on a wiki.
+;;  `yaoddmuse-edit-default'
+;;    Edit a page with default wiki `yaoddmuse-default-wiki'.
+;;  `yaoddmuse-follow'
+;;    Figure out what page we need to visit and call `yaoddmuse-edit' on it.
+;;  `yaoddmuse-post-buffer'
+;;    Post the BUFFER to the current wiki.
+;;  `yaoddmuse-post-current-buffer'
+;;    Post current buffer to current wiki.
+;;  `yaoddmuse-post-file'
+;;    Post file to current wiki.
+;;  `yaoddmuse-post-file-default'
+;;    Post file to default wiki.
+;;  `yaoddmuse-post-library'
+;;    Post library to current wiki.
+;;  `yaoddmuse-post-library-default'
+;;    Post library to default wiki.
+;;  `yaoddmuse-post-dired'
+;;    Post dired marked files to current wiki.
+;;  `yaoddmuse-post-dired-default'
+;;    Post dired marked files to default wiki.
+;;  `yaoddmuse-post-screenshot'
+;;    Post screenshot to current wiki.
+;;  `yaoddmuse-post-screenshot-default'
+;;    Post screenshot to default wiki.
+;;  `yaoddmuse-revert'
+;;    Reload current edit page.
+;;  `yaoddmuse-browse-page'
+;;    Browse special page in wiki.
+;;  `yaoddmuse-browse-page-default'
+;;    Brose special page with `yaoddmuse-default-wiki'.
+;;  `yaoddmuse-browse-page-diff'
+;;    Browse special page diff in wiki.
+;;  `yaoddmuse-browse-page-default-diff'
+;;    Brose special page with `yaoddmuse-default-wiki'.
+;;  `yaoddmuse-browse-current-page'
+;;    Browse current page.
+;;  `yaoddmuse-navi-next-heading'
+;;    Goto next heading.
+;;  `yaoddmuse-navi-prev-heading'
+;;    Goto previous heading.
+;;  `yaoddmuse-insert-pagename'
+;;    Insert a PAGENAME of current wiki with completion.
+;;  `yaoddmuse-insert-file-content'
+;;    Insert FILE content.
+;;  `yaoddmuse-kill-url'
+;;    Make the URL of current oddmuse page the latest kill in the kill ring.
+;;  `yaoddmuse-update-pagename'
+;;    Update all page name match in `yaoddmuse-wikis'.
+;;  `yaoddmuse-toggle-minor'
+;;    Toggle minor mode state.
+;;  `yaoddmuse-redirect'
+;;    Redirect page.
+;;  `yaoddmuse-delete'
+;;    Delete page.
+;;  `yaoddmuse-toggle-image-status'
+;;    Toggle image status.
+;;  `yaoddmuse-save-as'
+;;    Save as file.
+;;
+;;; Customizable Options:
+;;
+;; Below are customizable option list:
+;;
+;;  `yaoddmuse-directory'
+;;    Directory to storage oddmuse pages.
+;;    default = "~/.yaoddmuse"
+;;  `yaoddmuse-assoc-mode'
+;;    Whether assoc files in `yaoddmuse-directory' with `yaoddmuse-mode'.
+;;    default = t
+;;  `yaoddmuse-wikis'
+;;    Alist mapping wiki names to URLs.
+;;    default = (quote (("TestWiki" "http://www.emacswiki.org/cgi-bin/test" utf-8 "uihnscuskc=1;") ("EmacsWiki" "http://www.emacswiki.org/cgi-bin/emacs" utf-8 "uihnscuskc=1;") ("CommunityWiki" "http://www.communitywiki.org/cw" utf-8 "uihnscuskc=1;") ("RatpoisonWiki" "http://ratpoison.antidesktop.net/cgi-bin/wiki" utf-8 "uihnscuskc=1;") ("StumpwmWiki" "http://stumpwm.antidesktop.net/cgi-bin/wiki" utf-8 "uihnscuskc=1;") ...))
+;;  `yaoddmuse-default-wiki'
+;;    The default wiki name for edit.
+;;    default = "EmacsWiki"
+;;  `yaoddmuse-username'
+;;    Username to use when posting.
+;;    default = user-full-name
+;;  `yaoddmuse-password'
+;;    Password to use when posting.
+;;    default = ""
+;;  `yaoddmuse-transform-image'
+;;    Whether transform image content.
+;;    default = t
+;;  `yaoddmuse-display-after-get'
+;;    Whether display `yaoddmuse-mode' buffer after GET.
+;;    default = t
+;;  `yaoddmuse-close-after-post'
+;;    Whether close `yaoddmuse-mode' buffer after POST.
+;;    default = nil
+;;  `yaoddmuse-post-dired-confirm'
+;;    Whether confirmation is needed to post mark dired files.
+;;    default = t
+;;  `yaoddmuse-edit-protect'
+;;    This option is make user can post wiki page without text captcha.
+;;    default = t
+;;  `yaoddmuse-use-always-minor'
+;;    When t, set all the minor mode bit to all editions.
+;;    default = nil
+;;  `yaoddmuse-browse-function'
+;;    The browse function use in `yaoddmuse-handle-browse'.
+;;    default = (quote browse-url)
+;;  `yaoddmuse-notify-function'
+;;    Notify function for getting and posting.
+;;    default = (quote yaoddmuse-notify-default)
+;;  `yaoddmuse-highlight-elisp-page'
+;;    Whether use syntax highlight elisp page.
+;;    default = t
+;;  `yaoddmuse-screenshot-program'
+;;    The default tool for screenshot.
+;;    default = "import"
+;;  `yaoddmuse-screenshot-filename'
+;;    The default file for save screenshot.
+;;    default = "/tmp/yaoddmuse-screenshot.png"
+
 ;;; Installation:
 ;;
 ;; Put yaoddmuse.el to your load-path.
@@ -246,6 +369,9 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2009/10/08
+;;      * imenu support.
 ;;
 ;; 2009/03/29
 ;;      * Add commands:
@@ -739,6 +865,10 @@ It must print the page to stdout.
     (".png"  . "image/png"))
   "An alist of file extensions and corresponding MIME content-types.")
 
+(defvar yaoddmuse-imenu-regexp "^\\(=+\\)\\s-*\\(.*?\\)\\s-*\\1"
+ "A regular expression for headings to be added to an index menu.")
+
+
 (defvar yaoddmuse-mode-map
   (let ((map (make-sparse-keymap)))
     ;; Edit.
@@ -822,6 +952,7 @@ It must print the page to stdout.
          ("pre" \n) ("tt") ("u")))
   (set (make-local-variable 'skeleton-transformation) 'identity)
   ;; Wiki and page name setup.
+  (setq imenu-generic-expression (list (list nil yaoddmuse-imenu-regexp 2)))
   (and buffer-file-name
        ;; Setup wiki name.
        (setq yaoddmuse-wikiname

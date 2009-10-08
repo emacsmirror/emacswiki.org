@@ -45,5 +45,9 @@ Usually additions to <code>compilation-error-regexp-alist</code> (etc) can only 
 
 -- KevinRyde
 
+[new]
+a <code>(require 'compile) </code>, just beffor the <code> (add-hook ... </code> works fine
+
+
 ----
 CompilationMode

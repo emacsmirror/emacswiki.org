@@ -12,4 +12,6 @@ http://github.com/nonsequitur/smex/blob/master/smex.el?raw=true
 http://github.com/nonsequitur/smex/
 
 == Discussion ==
+Does anyone know how to modify smex so that typing a space will insert a hyphen '-' like in normal M-x?
+
 /Wicked cool./ Is it inspired by this [http://www.vimeo.com/1013263 video]? :)
