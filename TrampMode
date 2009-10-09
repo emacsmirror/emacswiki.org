@@ -14,7 +14,7 @@ You can get it from here:
 
 * http://savannah.gnu.org/projects/tramp
 
-Or from recent Emacs CVS HEAD.  TrampMode will be a part of Emacs starting with version 22.1.
+Or from recent Emacs CVS HEAD.  TrampMode is a part of Emacs starting with version 22.1.
 
 Tramp Documentation:
 

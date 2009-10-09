@@ -10,7 +10,7 @@ Here are some BbdbMode related pages:
 * BbdbFoaf -- BBDB and Friend Of A Friend interaction
 * CategorizingInformationManager -- provides ee-bbdb to browse bbdb records
 * [[Icicles - Completion in Other Buffers | Icicles - BBDB Completion]] -- enhanced completion for BBDB
-
+* Lisp:bbdb-sms.el -- Use BBDB for sending text messages
 
 Custom Address Formats
 

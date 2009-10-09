@@ -1,6 +1,8 @@
 I use Emacs.. alot.
 
-Elisp I have written coming soon...
+Here is an elisp major-mode I wrote for composing and sending text messages: Lisp:sms.el
+
+and here is a library containing functions for using [CategoryBbdb BBDB] with [[sms.el]]: Lisp:bbdb-sms.el
 
 
 [new:DrewAdams:2009-10-06 06:45 UTC]

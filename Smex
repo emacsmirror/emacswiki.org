@@ -13,5 +13,6 @@ http://github.com/nonsequitur/smex/
 
 == Discussion ==
 Does anyone know how to modify smex so that typing a space will insert a hyphen '-' like in normal M-x?
+: Space already has the function of paging through the list of possible completions. But what's even better than typing a space is not typing anything; I see that in smex you can just type the function name as one word without hyphens, and it still works, including auto-completion. BTW, I think smex is very cool! -- ThomasKappler
 
 /Wicked cool./ Is it inspired by this [http://www.vimeo.com/1013263 video]? :)

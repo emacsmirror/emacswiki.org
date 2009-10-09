@@ -25,9 +25,14 @@ The default usability of emacs on a tablet like device is indeed somewhat lackin
 default event bindings not being entirely suitable. This is fixable, for instance with tool-bars(Ive contributed patches for emms and planner)
 and with the "symbol chooser" described above(i have some code for this also) --JoakimVerona
 
+[new]
+I have written a couple of libraries for sending SMS text messages in emacs: Lisp:sms.el and Lisp:bbdb-sms.el.
+I use them on my Android phone, but you just need to alter a single function to get it working on other devices -- JoeBloggs
+
 == Modes ==
 
 * PlannerModeMobile
+* [[sms.el]]
 
 ----
 CategoryPorts

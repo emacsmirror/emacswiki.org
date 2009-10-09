@@ -19,6 +19,13 @@ When I find the file in question, and eval the buffer, I do not get these errors
 Thanks.
 
 [new]
+== Customizing Two-Mode-Mode to ignore delimiter when indenting and/or fontifying ==
+At work we are using our own preprocessor to allow Perl embedded inside Verilog HDL source files.  Each Perl line must be prepended with a '@@' marker.  I have succesfully customized two-mode-mode.el such that is recognizes this start-marker (and end-of-line as the end-marker).  Now a problem comes with indenting.  Outside these lines, while in verilog-mode, the indenter breaks because of the '@@'.  Inside a Perl line, the indenter also breaks because of '@@'.  In other words, neither of the two major modes accept the '@@' as valid syntax, and thus indentation & fontification breaks for both modes.
+
+How can I customize the elisp such that both verilog-mode and cperl-mode ignore our '@@' symbols, yet two-mode-mode.el still recognizes it as the delimited between the two modes ?
+
+
+[new]
 == Making the GDB/perldb marker more visible ==
 I have a large emacs window with multiple buffers.  During a perl debug session, the marker, =>, will move to a new window/buffer and I will need to search for it.  I could use a marker that is more visible.  Perhaps one that is rendered in red or one which blinks.  I would really love to have a different background color for the entire buffer line with which the marker is associated.  Thanks for your help!
 

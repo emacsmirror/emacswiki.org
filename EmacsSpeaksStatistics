@@ -62,6 +62,9 @@ This is quite useful, saves many keystrokes, especially starting R.
 
 -- FelipeCsaszar
 
+== Show a tooltip summarizing the object at point ==
+
+I wrote a blog entry showing how to get a tooltip to show a summary of the object at point in an R source buffer.  I use this a lot for interactive data analysis. You can read about it and watch a screencast at http://blogisticreflections.wordpress.com/2009/10/01/r-object-tooltips-in-ess/
 
 == How can I get Emacs to automatically close brackets and parentheses? ==
 

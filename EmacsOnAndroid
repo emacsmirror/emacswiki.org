@@ -22,6 +22,7 @@ Once you have Debian installed you can just "apt-get emacs" to install emacs 22.
 To access the android api from emacs you need to first install the android scripting environment which you can get [http://code.google.com/p/android-scripting/downloads/list here] (see [http://www.brighthub.com/mobile/google-android/articles/37151.aspx here] for how to install apk files).
 Then get it working in your Debian installation: see [http://forum.xda-developers.com/showthread.php?p=3957997#post3957997 here]
 
+=== Making phone calls ===
 With this recipe you can make phone calls from your [BbdbMode bbdb buffer]:
 # Make sure you have the android scripting environment installed and working in your Debian installation (see previously mentioned links)
 # Save the following python code to 'dialnumber.py' and save it to '/root/android/' in your Debian installation (you will need to create this directory):
@@ -34,7 +35,7 @@ With this recipe you can make phone calls from your [BbdbMode bbdb buffer]:
     droid.callNumber(sys.argv[1])
 # You can now use the following function from the bbdb buffer to call the phone number of the record at point (but you must have an ASE shell terminal running on Android):
 
-    (defun aleblanc/bbdb-android-dial (phone force-area-code)
+    (defun joebloggs/bbdb-android-dial (phone force-area-code)
       "Dial the number at point.
     If the point is at the beginning of a record, dial the first
     phone number.  Does not dial the extension.  Does not apply the
@@ -80,9 +81,19 @@ With this recipe you can make phone calls from your [BbdbMode bbdb buffer]:
     	(message "Dialing %s" number))
         (shell-command (concat "export AP_PORT=$(netstat -napt|sed -n 's/^tcp.*127.0.0.1:\\([0-9]*\\).*LISTEN.*ase$/\\1/gp');/root/android/dialnumber.py " number))))
 
-[new:aleblanc:2009-09-15 18:33 UTC]
+=== Sending SMS text messages ===
+With this recipe you can send text messages from emacs:
+# Make sure you have the android scripting environment installed and working in your Debian installation (see previously mentioned links)
+# Save the following python code to 'sendtext.py' and save it to '/root/android/' in your Debian installation:
 
-I am working on code for sending texts...
+    #!/usr/bin/env python
+    
+    import android
+    import sys
+    droid = android.Android()
+    droid.sendTextMessage(sys.argv[1], sys.argv[2])
 
+# install Lisp:sms.el and read the instructions
+# if you want to use your [CategoryBbdb BBDB] with [[sms.el]] install Lisp:bbdb-sms.el and read the instructions
 ----
 CategoryPorts

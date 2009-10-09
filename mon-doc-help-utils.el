@@ -36,17 +36,21 @@
 ;;; `mon-help-plist-functions', `mon-help-text-property-functions'
 ;;; `mon-help-emacs-introspect', `mon-help-make-faces'
 ;;; `mon-help-xref-symbol-value', `mon-help-eieio-defclass'
-;;; `mon-help-eieio-functions'
+;;; `mon-help-eieio-functions', `mon-help-eieio-methods'
 ;;; FUNCTIONS:◄◄◄
 ;;;
 ;;; MACROS:
 ;;; `mon-help-swap-var-doc-const-val', `mon-help-put-var-doc-val->func'
 ;;;
+;;; METHODS:
+;;;
+;;; CLASSES:
+;;;
 ;;; CONSTANTS: or VARIABLES:
 ;;; `*reference-sheet-help-A-HAWLEY*', `*w32-env-variables-alist*',
 ;;; `*doc-cookie*', `*regexp-symbol-defs*', `*mon-help-interactive-spec-alist*'
 ;;;
-;;; ALIASED/ADVISED/SUBST'D
+;;; ALIASED/ADVISED/SUBST'D:
 ;;; `mon-insert-documentation' -> `mon-help-insert-documentation' 
 ;;; `mon-help-mon-help' -> `mon-help-reference-sheet'
 ;;;
@@ -635,15 +639,15 @@ CALLED-BY: `mon-insert-lisp-testme',`mon-insert-doc-help-tail',
 When non-nil SEARCH-FUNC will search backward for a function name and include it
 in the test-me string.
 When non-nil TEST-ME-COUNT insert test-me string N times. Default is 1\(one\).
-When prefix arg TEST-ME-COUNT is non-nil inerts N number of ';;;test-me' strings
-and prompts y-or-n-p if we want to include the function name in insertions.
+When prefix arg TEST-ME-COUNT is non-nil inerts N number of ';;; :TEST-ME '
+strings prompting y-or-n-p if we want to include the function name in insertion.
 When INSERTP is non-nil insert the test-me string(s) in current buffer at point.
 Use at the end of newly created elisp functions to provide example test cases.
 Regexp held by global var `*regexp-symbol-defs*'.\n
 :SEE-ALSO `mon-insert-doc-help-tail', `mon-test->*regexp-symbol-defs*'
 `mon-insert-doc-help-tail', `mon-insert-lisp-stamp', `mon-insert-copyright',
 `mon-insert-lisp-CL-file-template', `comment-divider',
-`comment-divider-to-col-four', `mon-insert-lisp-evald'. ►►►"
+`comment-divider-to-col-four', `mon-insert-lisp-evald'.\n►►►"
   (interactive "i\np\ni\np")
   (let* ((get-func)
          (tmc (cond ((and intrp (> test-me-count 1))
@@ -657,8 +661,8 @@ Regexp held by global var `*regexp-symbol-defs*'.\n
                      (search-backward-regexp  *regexp-symbol-defs*)
                      (buffer-substring-no-properties (match-beginning 3) (match-end 3)))))
          (test-me-string (if (or search-func get-func)
-                             (format ";;;test-me;(%s )" func)
-                           ";;;test-me;"))
+                             (format ";;; :TEST-ME (%s )" func)
+                           ";;; :TEST-ME "))
          (limit (make-marker))
          (cnt tmc)
          (return-tms))
@@ -761,14 +765,14 @@ UPTO-STRING is a simple string. No regexps, chars, numbers, lists, etc.\n
 ;;; - This function _should_ test if it found a variable.
 ;;;   If so, it should change the fomrat spec of 'fstrings'  to:
 ;;;   "\n(mon-help-function-spit-doc '%s nil t t)
-;;; - The test-me subr should insert 4 'test-me's for functions
-;;;   "test-me;(<FNAME>)"
-;;;   "test-me;(<FNAME> t)"
-;;;   "test-me;(describe-function '<FNAME>)"
-;;;   "test-me;;(call-interactively '<FNAME>)"
-;;;   When a variable is found: should insert:
-;;;   "test-me; <VARNAME>"
-;;;   "test-me;(describe-variable '<VARNAME>)"
+;;; - The test-me subr should insert 4 ':TEST-ME's for functions as:
+;;;   ":TEST-ME (<FNAME>)"
+;;;   ":TEST-ME (<FNAME> t)"
+;;;   ":TEST-ME (describe-function '<FNAME>)"
+;;;   ":TEST-ME (call-interactively '<FNAME>)"
+;;;   When a variable is found should insert:
+;;;   ":TEST-ME <VARNAME>"
+;;;   ":TEST-ME (describe-variable '<VARNAME>)"
 ;;; 
 ;;; :NOTE Use (beginning-of-defun 2) w/ *regexp-symbol-defs*
 ;;; :CREATED <Timestamp: Thursday July 16, 2009 @ 11:38.10 AM - by MON KEY>
@@ -841,7 +845,7 @@ Regexp held by global var `*regexp-symbol-defs*'.\n
   "Return arg list of FUNC.\n
 :EXAMPLE\n\(mon-help-function-args 'mon-help-function-args\)
 \(mon-help-function-args 'mon-help-function-spit-doc\) ;CL arg-list with &key
-CALLED-BY: `mon-help-insert-documentation'.\n
+:CALLED-BY: `mon-help-insert-documentation'.\n
 :SEE-ALSO `mon-help-xref-symbol-value', `mon-help-parse-interactive-spec'
 `mon-help-function-spit-doc'.\n►►►"
   (let* ((def (if (symbolp func)
@@ -902,7 +906,7 @@ CALLED-BY: `mon-help-insert-documentation'.\n
   "*alist of interactive spec arguments and values.
 Alist key (an intereractive spec letter) maps to shortform spec-type.
 spec-type is a string delimited by `<' and `>'.
-CALLED-BY: FUNCTION: `mon-help-parse-interactive-spec'
+:CALLED-BY `mon-help-parse-interactive-spec'.
 :SEE-ALSO `mon-help-xref-symbol-value', `mon-help-insert-documentation'
 `mon-help-function-spit-doc'.\n►►►"))
 ;;
@@ -910,7 +914,7 @@ CALLED-BY: FUNCTION: `mon-help-parse-interactive-spec'
 ;;; :TEST-ME (assoc 'z *mon-help-interactive-spec-alist*)
 ;;
 ;;;(progn (makunbound '*mon-help-interactive-spec-alist*) 
-;;;      (unintern '*mon-help-interactive-spec-alist*))
+;;;       (unintern '*mon-help-interactive-spec-alist*))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-09-07T20:04:57-04:00Z}#{09372} - by MON KEY>
@@ -939,7 +943,7 @@ CALLED-BY: FUNCTION: `mon-help-parse-interactive-spec'
     'mon-help-parse-interactive-spec  
   "\nFNAME is a function name with an interactive spec.
 Spec of fname is return from a value in var `*mon-help-interactive-spec-alist*':\n\n" 
-  "CALLED-BY: FUNCTION: `mon-help-parse-interactive-spec'"
+  ":CALLED-BY `mon-help-parse-interactive-spec'."
 "\n:EXAMPLE\n\(mon-help-parse-interactive-spec 'mon-insert-lisp-testme\)\n"))
 ;;
 ;;; :TEST-ME (describe-function 'mon-help-parse-interactive-spec)
@@ -1029,8 +1033,6 @@ Why not! :) ►►►
 ;; :FUNCTION-LISTS
 `mon-help-buffer-functions'
 `mon-help-emacs-introspect'
-`mon-help-eieio-functions'
-`mon-help-eieio-defclass'
 `mon-help-file-dir-functions'
 `mon-help-plist-functions'
 `mon-help-process-functions'
@@ -1046,6 +1048,10 @@ Why not! :) ►►►
 `mon-help-package-keywords'
 ;; :TIME
 `mon-help-iso-8601'\n
+;; :EIEIO
+`mon-help-eieio-defclass'
+`mon-help-eieio-functions'
+`mon-help-eieio-methods'
 ;; :CL
 `mon-help-CL:TIME'                        ;-> \"mon-doc-help-CL.el\"
 `mon-help-CL:LOCAL-TIME'                  ;-> \"mon-doc-help-CL.el\"
@@ -1366,7 +1372,7 @@ Syntax class: generic string delimiter; \(designated by `|'\)\n ►►►"
 ;;; :CREATED <Timestamp: #{2009-08-07T18:16:16-04:00Z}#{09325} - by MON KEY>
 (defun mon-help-search-functions (&optional insertp intrp)
   "Common functions, vars, commands for searching, replacing, substituting.
-See also `mon-help-regexp-syntax'. ►►► \n
+:SEE-ALSO `mon-help-regexp-syntax'.\n►►►\n
 ;; :MON-LOCAL
 `replace-in-string-mon'
 `replace-char-in-string-mon'
@@ -1379,8 +1385,8 @@ See also `mon-help-regexp-syntax'. ►►► \n
 ;; :SEARCHING
 `serach-forward'
 `search-backward'
-`search-forward-regexp'  ;-> `re-search-forward' ;:SEE-ALSO `posix-search-forward'
-`search-backward-regexp' ;-> `re-search-backward' ;:SEE-ALSO `posix-search-backward'
+`search-forward-regexp'  ;-> `re-search-forward' :SEE-ALSO `posix-search-forward'
+`search-backward-regexp' ;-> `re-search-backward' :SEE-ALSO `posix-search-backward'
 `word-search-forward'
 `word-search-backward'\n
 ;; :INTERROGATE-SEARCH
@@ -1450,7 +1456,7 @@ See also `mon-help-regexp-syntax'. ►►► \n
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-09-02T10:22:56-04:00Z}#{09363} - by MON KEY>
 (defun mon-help-buffer-functions (&optional insertp intrp)
-  "Buffer related functions. ►►► \n
+  "Buffer related functions.\n►►►\n
 ;; :BUFFFER-POSITIONS
 `mark-whole-buffer'
 `beginning-of-buffer'
@@ -1565,7 +1571,7 @@ See also `mon-help-regexp-syntax'. ►►► \n
 ;;; :CREATED <Timestamp: Wednesday May 06, 2009 @ 01:13.41 PM - by MON KEY>
 (defun mon-help-file-dir-functions (&optional insertp intrp)
 "Litany of file/directory name functions. e.g.\n
-\(Note: backquoted functions for help-view xrefs are not inserted.).
+:NOTE Backquoted functions for help-view xrefs are not inserted.
 -
 `convert-standard-filename' - \(convert-standard-filename \"c:/Documents and Settings/All Users/Start Menu\"\)
 `clear-visited-file-modtime'
@@ -1748,9 +1754,10 @@ Unless indicated as a 'variable' items listed are functions.\n►►►\n
 ;; :EIEIO-CLASS-SLOT-KEYWORDS
 :initarg                 {tag, string}
 :initform                {expression}
-:type                    {t, null, symbol, list, function, 
-                          string, character, string-char
-                          integer, fixnum, number, real, float}
+:type                    {t, null, symbol, list, function, string, character,
+                          integer, fixnum, number, real, float, boolean}
+                         :SEE `typep' `type-of' `deftype' `typecase' `check-type'
+                         info node `(cl)Type Predicates'
 :allocation              {:instance, :class}
 :documentation           {string}\n
 ;; :CLOS-NON-COMPLIANT
@@ -1781,7 +1788,8 @@ Unless indicated as a 'variable' items listed are functions.\n►►►\n
 ;; :EIEIO-ADVISED-FUNCTIONS
 `eieio-describe-class' -> `describe-variable'
 `eieio-describe-generic' -> `describe-function'\n
-:SEE-ALSO `mon-insert-defclass-template', `mon-help-eieio-functions'\n►►►"
+:SEE-ALSO `mon-insert-defclass-template', `mon-help-eieio-functions',
+`mon-help-eieio-methods'.\n►►►"
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-eieio-defclass :insertp t)
@@ -1791,83 +1799,110 @@ Unless indicated as a 'variable' items listed are functions.\n►►►\n
 ;;; :TEST-ME (mon-help-eieio-defclass t)
 ;;; :TEST-ME (describe-function 'mon-help-eieio-defclass)
 ;;; :TEST-ME (call-interactively 'mon-help-eieio-defclass)
-
 ;;; ==============================
 ;;; CREATED: <Timestamp: #{2009-10-06T16:41:17-04:00Z}#{09412} - by MON KEY>
 (defun mon-help-eieio-functions (&optional insertp intrp)
   "Interface functions for working with EIEIO system of CEDET.\n
 :SEE info node `(eieio)Function Index'.
-:SEE-ALSO `mon-help-eieio-defclass'.\n►►►\n
+:SEE-ALSO `mon-help-eieio-defclass', `mon-help-eieio-methods'.\n►►►\n
 ;; :MAKING-OBJECTS:
-`make-instance'           CLASS &rest INITARGS
-`<class-constructor>'     OBJECT-NAME &rest SLOTS
-`initialize-instance'     OBJ &rest SLOTS
-`shared-initialize'       OBJ &rest SLOTS\n
+`make-instance'             CLASS &rest INITARGS
+`<class-constructor>'       OBJECT-NAME &rest SLOTS
+`initialize-instance'       OBJ &rest SLOTS
+`shared-initialize'         OBJ &rest SLOTS\n
 ;; :METHODS
-`defgeneric'              METHOD ARGLIST [DOC-STRING]
-`call-next-method'        &rest REPLACEMENT-ARGS\n
-`defmethod'               METHOD [:before|:primary|:after|:static] 
-                          ARGLIST [DOC-STRING] FORMS\n
+`defgeneric'                METHOD ARGLIST [DOC-STRING]
+`call-next-method'          &rest REPLACEMENT-ARGS
+`defmethod'                 METHOD [:before|:primary|:after|:static] 
+`eieiomt-install'           METHOD-NAME\n
 ;; :BASIC-METHODS
-`clone'                   OBJ &rest PARAMS
-`object-print'            THIS &rest STRINGS
-`object-write'            OBJ &optional COMMENT
-`slot-missing'            AB &rest FOO
-`slot-unbound'            OBJECT CLASS SLOT-NAME FN
-`no-applicable-method'    OBJECT METHOD &rest ARGS
-`no-next-method'          OBJECT &rest ARGS\n
+`clone'                     OBJ &rest PARAMS
+`object-print'              THIS &rest STRINGS
+`object-write'              OBJ &optional COMMENT
+`slot-missing'              AB &rest FOO
+`slot-unbound'              OBJECT CLASS SLOT-NAME FN
+`no-applicable-method'      OBJECT METHOD &rest ARGS
+`no-next-method'            OBJECT &rest ARGS\n
 ;; :ACCESSING-SLOTS
-`oset'                    OBJECT SLOT VALUE
-`oset-default'            CLASS SLOT VALUE
-`oref'                    OBJ SLOT
-`oref-default'            OBJ SLOT
-`slot-value'              OBJECT SLOT
-`set-slot-value'          OBJECT SLOT VALUE
-`slot-makeunbound'        OBJECT SLOT
-`with-slots'              SPEC-LIST OBJECT &rest BODY
-`object-add-to-list'      OBJECT SLOT ITEM &optional APPEND
-`object-remove-from-list' OBJECT SLOT ITEM\n
+`oset'                      OBJECT SLOT VALUE ;-> `eieio-oset'
+`slot-value'                OBJECT SLOT       ;-> `oref' -> `eieio-oref'
+`set-slot-value'            OBJECT SLOT VALUE ;-> `eieio-oset'
+`oset-default'              CLASS SLOT VALUE  ;-> `eieio-oset-default'
+`oref-default'              OBJ SLOT          ;-> `eieio-oref-default'
+`slot-makeunbound'          OBJECT SLOT       ;-> is `slot-makunbound'
+`with-slots'                SPEC-LIST OBJECT &rest BODY
+`object-add-to-list'        OBJECT SLOT ITEM &optional APPEND
+`object-remove-from-list'   OBJECT SLOT ITEM\n
 ;; :ASSOCIATION-LISTS
-`object-assoc'            KEY SLOT LIST
-`object-assoc-list'       SLOT LIST
-`eieio-build-class-alist' &OPTIONAL BASE-CLASS\n
+`object-assoc'              KEY SLOT LIST
+`object-assoc-list'         SLOT LIST
+`eieio-build-class-alist'   &OPTIONAL BASE-CLASS\n
 ;; :PREDICATES-AND-UTILS
-`find-class'              SYMBOL &optional ERRORP
-`class-p'                 CLASS
-`slot-exists-p'           OBJECT-OR-CLASS SLOT
-`slot-boundp'             OBJECT SLOT
-`class-name'              CLASS
-`class-option'            CLASS OPTION
-`class-constructor'       CLASS
-`object-name'             OBJ
-`object-class'            OBJ
-`class-of'                OBJ
-`object-class-fast'       OBJ
-`object-class-name'       OBJ
-`class-parent'            CLASS ; :DEPRECATED 
-`class-parents'           CLASS
-`class-parents-fast'      CLASS
-`class-children'          CLASS
-`class-children-fast'     CLASS
-`same-class-p'            OBJ CLASS
-`same-class-fast-p'       OBJ CLASS
-`object-of-class-p'       OBJ CLASS
-`child-of-class-p'        CHILD CLASS
-`generic-p'               METHOD-SYMBOL
+`find-class'                SYMBOL &optional ERRORP
+`class-p'                   CLASS
+`slot-exists-p'             OBJECT-OR-CLASS SLOT
+`slot-boundp'               OBJECT SLOT
+`class-name'                CLASS
+`class-option'              CLASS OPTION
+`class-constructor'         CLASS
+`object-name'               OBJ
+`object-class'              OBJ
+`eieio-object-p'            OBJ
+`class-of'                  OBJ   ;alias for CLOS
+`object-class-fast'         OBJ
+`object-class-name'         OBJ
+`class-parents-fast'        CLASS
+`class-parent'              CLASS ; :DEPRECATED 
+`class-parents'             CLASS
+`class-direct-superclasses' CLASS ;alias for CLOS
+`class-children'            CLASS ;alias for CLOS
+`class-direct-subclasses'   CLASS
+`class-children-fast'       CLASS
+`same-class-p'              OBJ CLASS
+`same-class-fast-p'         OBJ CLASS
+`object-of-class-p'         OBJ CLASS
+`child-of-class-p'          CHILD CLASS
+`generic-p'                 METHOD-SYMBOL
 `next-method-p'\n
 ;; :INTROSPECTION
-`object-slots'            OBJ
-`class-slot-initarg'      CLASS SLOT
-`eieio-browse'            ROOT-CLASS
-`eieiodoc-class'          CLASS INDEXSTRING &optional SKIPLIST
-`eieio-describe-class'    CLASS &OPTIONAL HEADERFCN
-`eieio-default-superclass' ;<VARIABLE\n
+`object-slots'                 OBJ
+`class-slot-initarg'           CLASS SLOT
+`eieio-browse'                 ROOT-CLASS
+`eieiodoc-class'               CLASS INDEXSTRING &optional SKIPLIST
+`describe-class'               CLASS &optional HEADERFCN >`eieio-describe-class'
+`describe-object'              ;<CLOS-UNINMPLEMENTED>
+`describe-generic'             GENERIC ;-> `eieio-describe-generic'
+`describe-method'              GENERIC ;-> `eieio-describe-generic'
+`eieio-describe-method'        GENERIC ;-> `eieio-describe-generic'
+`eieio-describe-class-slots'   CLASS
+`eieio-describe-constructor'   FCN
+`eieio-lambda-arglist'         FUNC
+`eieio-method-documentation'   GENERIC CLASS
+`eieio-all-generic-functions'  &optional CLASS
+`eieio-class-tree'             
+`eieio-default-superclass'    ;<VARIABLE>  ;-> `standard-class'\n
 ;; :SIGNALS
-`invalid-slot-name'      OBJ-OR-CLASS SLOT
-`no-method-definition'   METHOD ARGUMENTS
-`no-next-method'         CLASS ARGUMENTS
-`invalid-slot-type'      SLOT SPEC VALUE
-`unbound-slot'           OBJECT CLASS SLOT\n"
+`invalid-slot-name'            OBJ-OR-CLASS SLOT
+`no-method-definition'         METHOD ARGUMENTS
+`no-next-method'               CLASS ARGUMENTS
+`invalid-slot-type'            SLOT SPEC VALUE
+`unbound-slot'                 OBJECT CLASS SLOT\n
+;; :EIEIO-PRINTERS
+`object-print'                 THIS &rest STRINGS    ;<METHOD>
+`object-write'                 OBJ &optional COMMENT ;<METHOD>
+`eieio-override-prin1'         THING
+`eieio-list-prin1'
+`eieio-xml-override-prin1'     THING
+`eieio-xml-list-prin1'         LIST
+`eieio-edebug-prin1-to-string'
+`eieio-display-method-list'
+`object-write-xml'             <METHOD>\n
+;; :CLOS-UNIMPLEMENTED
+`change-class'
+`describe-object'             :SEE `object-write'\n
+;; :UNINMPLEMENTED
+`destructor'
+`eieio-read-xml'\n"
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-eieio-functions :insertp t)
@@ -1877,6 +1912,157 @@ Unless indicated as a 'variable' items listed are functions.\n►►►\n
 ;;; :TEST-ME (mon-help-eieio-functions t)
 ;;; :TEST-ME (describe-function 'mon-help-eieio-functions)
 ;;; :TEST-ME (call-interactively 'mon-help-eieio-functions) 
+
+;;; ==============================
+;;; CREATED: <Timestamp: #{2009-10-08T21:20:46-04:00Z}#{09415} - by MON>
+(defun mon-help-eieio-methods (&optional insertp intrp)
+  "Help interrogating eieio's generic functions and methods.
+Provides examples for examining the underlying vector and 'obarray' structures.
+\n TO RUN EXAMPLES EVALUATE BELOW:
+ ==============================\n
+  CREATE TWO CLASSES:\n  =====================\n
+\(defclass tt--367 \(\)\n  \(\(s-367-0\n    :initarg  :s-367-0
+    :initform nil\n    :accessor acc-s367-0\)\n   \(s-367-1
+    :initarg  :s-367-1\n    :initform nil
+    :documentation \"doc s-367-1\"\)\)\n  \"Dummy class tt--367\"\)\n
+\(defclass tt--367-sub \(tt--367\)\n  \(\(s-367-sub-0
+    :initarg  :s-367-sub-0\n    :initform nil
+    :accessor acc-s367-sub-0\)\n   \(s-367-sub-1\n    :initarg  :s-367-sub-1
+    :initform nil\n    :type list
+    :documentation \"s-367-sub-1 w/ type 'list.\"\)\)
+  \"Dummy class tt--367-sub\"\)\n
+ INSTANTIATE OBJECTS & SLOTS\n ===========================\n
+\(setq test-tt--367
+      \(tt--367 \"test-tt--367\" :s-367-1 '\(a list on second slot s-367-1\)\)\)\n
+\(setf \(acc-s367-0 test-tt--367\) \"slot-value on s-367\"\)\n
+\(acc-s367-0 test-tt--367\)\n;=> \"slot-value on s-367\"\n
+\(slot-value test-tt--367 :s-367-0\)\n;=> \"slot-value on s-367\"\n
+\(setq test-tt--367-sub \(tt--367-sub \"test-tt--367-sub\"\)\)
+test-tt--367-sub\n;=> [object tt--367-sub \"test-tt--367-sub\" nil nil nil]\n
+\(set-slot-value test-tt--367-sub :s-367-sub-0 [vec on vec]\)
+\(acc-s367-sub-0 test-tt--367-sub\)\n;=> [vec on vec]\n
+\(setf \(slot-value test-tt--367-sub :s-367-sub-1\) \"This list should fail\"\) \n
+\(setf \(slot-value test-tt--367-sub :s-367-sub-1\) '\(this-list should pass\)\) \n
+\(slot-value test-tt--367-sub :s-367-sub-1\)\n;=> \(this-list should pass\)\n
+ CLASS VECTORS
+ =============\n
+By default an eieio class is instantiated as a vector. 
+To Access this vector use `class-v':\n
+:IDIOM \(class-v '<SOME-CLASS>\)\n:EXAMPLE\n\(class-v 'tt--367\)\n
+Class vectors are intialized w/ respect to `eieio-default-superclass' when
+defined without a parent class :SSE info node `(eieio)Default Superclass'.
+The init value of eieio-default-superclass is hardwired at eieio build time as
+a vector of 26 elements. It is bootstrapped from the values of 26 constants.
+The 26th of these constants `class-num-slots' sets the vector size of eieio's
+default superlass and the default vector size of all classes derived thereof.\n
+:EXAMPLE\n\(length \(class-v 'eieio-default-superclass\)\)
+\(length \(class-v 'tt--367\)\)\n
+25 other constants are also evaluated to generate eieio-default-superclass.
+This happens at build time so that the default superclass has a value while it
+is _itself_ being built.\n
+Because present eieio sytems derive all other classes from eieio's default 
+superclass current standard eieio systems allow direct access to the individual
+elements of a class using the values of those same constants defined to build
+eieio's default superclass.\n
+Access these elements with the macro `class-v' with expressions of the form:\n
+:IDIOM \(aref \(class-v '<SOME-CLASS>\) <CONSTANT>\)
+:EXAMPLE\n\(aref \(class-v 'tt--367\) class-symbol\)\n
+Assuming the example class above the full class vector deconstructs as follows:\n
+:EXAMPLE\n(class-v 'tt--367)\n
+\[defclass               ;; 0  ; This determines if `class-p'                   
+ tt--367                ;; 1  `class-symbol' ; This is the `class-constructor'
+ nil                    ;; 2  `class-parent'                                 
+ \(tt--367-sub\)          ;; 3  `class-children'                           
+ [0 s-367-0 s-367-1]    ;; 4  `class-symbol-obarray'
+ \(s-367-0 s-367-1\)      ;; 5  `class-public-a'            
+ \(nil nil\)              ;; 6  `class-public-d'          
+ \(nil \"doc :s-367-1\"\)   ;; 7  `class-public-doc'          
+ [t t]                  ;; 7  `class-public-doc'         
+ \(nil nil\)              ;; 8  `class-public-type'       
+ \(nil nil\)              ;; 9  `class-public-custom' 
+ \(\(default\) \(default\)\)  ;; 10 `class-public-custom-label' 
+ \(nil nil\)              ;; 11 `class-public-custom-group'
+ \(nil nil\)              ;; 12 `class-public-printer'\n
+ \(\(:s-367-0 . s-367-0\) 
+  \(:s-367-1 . s-367-1\)\) ;; 14 `class-initarg-tuples'\n
+ nil                    ;; 15 `class-class-allocation-a'          
+ nil                    ;; 16 `class-class-allocation-doc'         
+ []                     ;; 17 `class-class-allocation-type'       
+ nil                    ;; 18 `class-class-allocation-custom' 
+ nil                    ;; 19 `class-class-allocation-custom-label'
+ nil                    ;; 20 `class-class-allocation-custom-group'
+ nil                    ;; 21 `class-class-allocation-printer'   
+ nil                    ;; 22 `class-class-allocation-protection'
+ []                     ;; 23 `class-class-allocation-values'\n
+ [object tt--367 default-cache-object nil nil] ;; 24 `class-default-object-cache'\n
+ \(:custom-groups \(default\) 
+  :documentation \"Dummy class tt-367\"\)]        ;; 25 `class-options'\n
+ :EIEIO-METHOD-TREE\n ==================\n
+eieio stores a generic function's methods in an eieio-method-tree. This is a 
+kind of property on the generic's 'base' method. It has the form:\n
+\(eieio-method-tree . \n                   [BEFORE PRIMARY AFTER
+                   genericBEFORE genericPRIMARY genericAFTER]\)\n
+Examine a generic function's method-tree with its eieio-method-tree property.\n
+:IDIOM (get <METHOD> 'eieio-method-tree)
+:EXAMPLE\n(get 'acc-s367-0 'eieio-method-tree)\n
+\[nil\n nil    ;<- :BEFORE\n \(\(tt--367 lambda \(this\) 
+           \"Retrieves the slot `s-367-0' from an object of class `tt--367'\"
+           \(if \(slot-boundp this \(quote s-367-0\)\)
+               \(eieio-oref this \(quote s-367-0\)\) nil\)\)\)
+        ;^- :PRIMARY
+ nil    ;<- :AFTER\n nil    ;<- genericBEFORE \n nil    ;<- genericPRIMARY
+ nil]   ;<- genericAFTER\n
+ :EIEIO-METHOD-OBARRAY\n  ====================\n
+eieio-method-obarray's are stored as a property of a generic function as it's
+`eieio-method-obarray'. This property contains a list of method bindings.\n
+An generic function's eieio-method-obarray has the form:\n
+\(eieio-method-obarray . [BEFORE PRIMARY AFTER
+                        genericBEFORE genericPRIMARY genericAFTER]\)\n
+:IDIOM \(get <METHOD> 'eieio-method-obarray\)
+:EXAMPLE\n\(get 'acc-s367-0 'eieio-method-obarray\)\n
+\[[0 0 0 0 0 0 0 0 0 0 0]     aref 0 - all static methods.
+ [0 0 0 0 0 0 0 0 0 0 0]     aref 1 - all methods classified as :before  
+ [0 0 0 0 0 0 0 0 tt--367    aref 2 - all methods classified as :primary 
+  0 0 0 0 0 0 0 0 0                   aref 2 is a vector of length 41
+  0 0 0 0 0 0 0 0 0          \n  0 0 0 0 0 0 0 0 0          \n  0 0 0 0 0]
+ [0 0 0 0 0 0 0 0 0 0 0]     aref 3 - all methods classified as :after   
+ nil                         aref 4 -   a generic classified as :before    
+ nil                         aref 5 -   a generic classified as :primary   
+ nil]                        aref 6 -   a generic classified as :after\n
+Examine a particular type or group of methods with a key lookup into 
+the 'obarray' (a vector) of a generic function.
+To find primary methods of a generic function get the 2nd index of it's obarray.\n
+:IDIOM \(get <METHOD> 'eieio-method-tree\)
+:EXAMPLE\n\(aref \(get 'acc-s367-sub-0 'eieio-method-obarray\) 2\)\n
+\(aref \(get 'acc-s367-0 'eieio-method-obarray\) 2\)\n
+A generic form can be interrogated with `eieio-generic-form':\n
+:IDIOM \(eieio-generic-form <METHOD> <KEY> <CLASS>\)
+:EXAMPLE\n\(eieio-generic-form 'acc-s367 2 tt--367-sub\)\n
+\(tt--367 . tt--367\) ;key 2\n\(tt--367 . tt--367\) ;key 4
+\(tt--367 . tt--367\) ;key 5\n\(tt--367 . tt--367\) ;key 6\n
+:SEE-ALSO\n         `eieiomt-install' ;<METHOD-NAME>
+         `eieiomt-optimizing-obarray' ;<VARIABLE>\n
+ :EXAMINING-METHODS-AND-GENERICS
+  ==============================\n
+:IDIOMATIC-EXAMPLE(S)\n
+\(eieio-describe-constructor 'tt--367\) ; A `constructor' is a 'static' method.\n
+\(describe-variable 'test-tt--367\)\n
+\(describe-function 'acc-s367\)\n
+\(eieio-describe-generic 'acc-s367\)\n
+\(describe-method 'acc-s367-0\)\n
+\(eieio-describe-generic 'acc-s367-sub-0\)\n
+\(eieio-describe-method 'acc-s367-sub-0\)\n
+\(eieio-describe-method 'acc-s367-0\)\n
+\(describe-function 'acc-s367-sub-0\)\n\n
+:SEE-ALSO `mon-help-eieio-defclass', `mon-help-eieio-functions'.\n►►►"
+  (interactive "i\nP")
+  (if (or insertp intrp)
+      (mon-help-function-spit-doc 'mon-help-eieio-methods :insertp t)
+      (message "pass non-nil for optional arg INTRP")))
+;;
+;;;test-me;(mon-help-eieio-methods)
+;;;test-me;(mon-help-eieio-methods t)
+;;;test-me;(describe-function 'mon-help-eieio-methods)
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-09-20T13:26:27-04:00Z}#{09387} - by MON>
@@ -2013,7 +2199,7 @@ Unless indicated all items in list are functions.
 ;;; (URL `http://lists.gnu.org/archive/html/emacs-devel/2009-08/msg00356.html')
 ;;; :CREATED <Timestamp: #{2009-08-24T18:30:56-04:00Z}#{09351} - by MON KEY>
 (defun mon-help-faces-themes (&optional insertp intrp)
-  "Functions for handling themes and their faces. ►►►\n
+  "Functions for handling themes and their faces.\n►►►\n
 `custom-set-faces'
 `custom-reset-faces'
 `custom-declare-face'
@@ -5005,4 +5191,3 @@ without the surrounding quotes.\n:SEE-ALSO `emacs-wiki-escape-lisp-string-region
 ;;; ================================================================
 ;;; mon-doc-help-utils.el ends here
 ;;; EOF
-

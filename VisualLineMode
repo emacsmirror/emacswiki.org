@@ -1,4 +1,6 @@
-Visual line mode is a new mode in Emacs 23 that is on by default.  According to the ##NEWS## file,
+Visual line mode is a new mode in Emacs 23 that is on by default. 
+[new] Actually, it is not "on" by default at all, you have to activate it.  It is available though.
+[new]  According to the ##NEWS## file,
 
     Visual Line mode provides support for editing by visual lines.
     It turns on word-wrapping in the current buffer, and rebinds C-a, C-e,
