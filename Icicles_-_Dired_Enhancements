@@ -48,7 +48,7 @@ Dired X, that is, standard library `##dired-x.el##')
 Prior to Emacs 23, MIME types are not used.  In the example of a PDF
 file, candidates `##gv -safer##' and `##pdftotext ? -##' are provided by
 MIME-type associations, and candidate `##xpdf##' is provided by the
-Dired X rules.  Note that you can customize the rules.
+[[Dired X]] rules.  Note that you can customize the rules.
 
 Any candidates that are specific to the marked files are '''Icicles''' ''extra'' candidates -- see
 [[Icicles - Global Filters]].  These

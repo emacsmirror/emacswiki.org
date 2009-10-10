@@ -14,9 +14,9 @@ Note also there are options to recursively find files into a dired buffer for ma
 * `find-dired' allows you to specify freeform arguments to find
 
 ----
-As far as I can see, what is below adds no further information to that above.  If you disagree, please edit.  Dired-X doesn't seem to be necessary.
+As far as I can see, what is below adds no further information to that above.  If you disagree, please edit.  [[Dired X]] doesn't seem to be necessary.
 
-= Dired-X =
+= Dired X =
 
 Put <code>(require 'dired-x)</code> in your <code>~/.emacs</code>.
 
@@ -28,7 +28,7 @@ Then, mark all the files you want to mark with `m' (or any of the various other 
 
 Use the `Q' key to query replace in marked files.
 
-: This sounds cool, but I can't find dired-x.el on my XEmacs installation.  Also a google search doesn't turn it up.  The closest I came was ftp://roebling.poly.edu:/pub/packages/dired-x.tar.gz.  Unfortunately, roebling.poly.edu isn't a valid hostname any longer. -- LathI
+: This sounds cool, but I can't find ##dired-x.el## on my XEmacs installation.  Also a google search doesn't turn it up.  The closest I came was ftp://roebling.poly.edu:/pub/packages/dired-x.tar.gz.  Unfortunately, roebling.poly.edu isn't a valid hostname any longer. -- LathI
 
 Hm, it is part of Emacs.  Maybe you can get it from an Emacs distro and see wether it works out of the box?  This might be a good thing to adapt and put into the fsf-compat package, what do you think? -- AlexSchroeder
 

@@ -9,9 +9,9 @@
 ;; Copyright (C) 2000-2009, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Oct  5 13:24:11 2009 (-0700)
+;; Last-Updated: Fri Oct  9 14:12:50 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 4219
+;;     Update #: 5223
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -43,10 +43,13 @@
 ;;  (@> "Things Defined Here")
 ;;  (@> "Documentation")
 ;;    (@> "Bookmark+ Features")
-;;    (@> "How To Use Bookmark+")
+;;    (@> "Installing Bookmark+")
+;;    (@> "Bookmarks Menu List")
+;;      (@> "Marking and Unmarking Bookmarks")
+;;      (@> "Hiding and Showing Bookmarks")
+;;      (@> "Sorting Bookmarks")
 ;;    (@> "Bookmark Compatibility with Vanilla Emacs (`bookmark.el')")
 ;;    (@> "New Bookmark Structure")
-;;    (@> "Bookmarks Menu List")
 ;;  (@> "Change log")
 ;;  (@> "Macros")
 ;;  (@> "Keymaps")
@@ -65,7 +68,9 @@
 ;;
 ;;  Commands defined here:
 ;;
+;;    `bookmarkp-bmenu-change-sort-order',
 ;;    `bookmarkp-bmenu-change-sort-order-repeat',
+;;    `bookmarkp-bmenu-delete-marked',
 ;;    `bookmarkp-bmenu-edit-bookmark', `bookmarkp-bmenu-mark-all',
 ;;    `bookmarkp-bmenu-quit', `bookmarkp-bmenu-refresh-menu-list',
 ;;    `bookmarkp-bmenu-regexp-mark', `bookmarkp-bmenu-show-all',
@@ -75,25 +80,26 @@
 ;;    `bookmarkp-bmenu-show-only-non-files',
 ;;    `bookmarkp-bmenu-show-only-regions',
 ;;    `bookmarkp-bmenu-show-only-w3m-urls',
-;;    `bookmarkp-bmenu-sort-alphabetically',
-;;    `bookmarkp-bmenu-sort-by-last-visit-time',
-;;    `bookmarkp-bmenu-sort-by-visit-frequency',
+;;    `bookmarkp-bmenu-sort-by-bookmark-name',
+;;    `bookmarkp-bmenu-sort-by-bookmark-visit-frequency',
+;;    `bookmarkp-bmenu-sort-by-file-name',
+;;    `bookmarkp-bmenu-sort-by-gnus-thread',
+;;    `bookmarkp-bmenu-sort-by-Info-location',
+;;    `bookmarkp-bmenu-sort-by-last-bookmark-access',
+;;    `bookmarkp-bmenu-sort-by-last-buffer-or-file-access',
+;;    `bookmarkp-bmenu-sort-by-last-local-file-access',
+;;    `bookmarkp-bmenu-sort-by-last-local-file-update',
+;;    `bookmarkp-bmenu-sort-by-local-file-size',
+;;    `bookmarkp-bmenu-sort-by-local-file-type',
+;;    `bookmarkp-bmenu-sort-by-w3m-url',
 ;;    `bookmarkp-bmenu-toggle-marks',
 ;;    `bookmarkp-bmenu-toggle-show-only-marked',
 ;;    `bookmarkp-bmenu-toggle-show-only-unmarked',
-;;    `bookmarkp-bmenu-unmark-all', `bookmarkp-reverse-sort-order',
-;;    `bookmarkp-version', `old-bookmark-insert',
-;;    `old-bookmark-insert-location', `old-bookmark-relocate'.
-;;
-;;  Commands redefined here (from `bookmark.el'):
-;;
-;;    `bookmark-bmenu-execute-deletions', `bookmark-bmenu-list',
-;;    `bookmark-bmenu-mark', `bookmark-bmenu-other-window',
-;;    `bookmark-bmenu-rename', `bookmark-bmenu-unmark',
-;;    `bookmark-delete', `bookmark-insert',
-;;    `bookmark-insert-location', `bookmark-jump',
-;;    `bookmark-jump-other-window', `bookmark-relocate',
-;;    `bookmark-rename', `bookmark-set', `bookmark-yank-word'.
+;;    `bookmarkp-bmenu-unmark-all', `bookmarkp-menu-jump-other-window'
+;;    (Emacs 20,21), `bookmarkp-reverse-multi-sort-order',
+;;    `bookmarkp-reverse-sort-order', `bookmarkp-version',
+;;    `old-bookmark-insert', `old-bookmark-insert-location',
+;;    `old-bookmark-relocate'.
 ;;
 ;;  User options defined here:
 ;;
@@ -101,9 +107,11 @@
 ;;    `bookmarkp-handle-region-function',
 ;;    `bookmarkp-region-search-size',
 ;;    `bookmarkp-save-new-location-flag',
-;;    `bookmarkp-show-end-of-region', `bookmarkp-sort-function',
-;;    `bookmarkp-sort-functions-alist', `bookmarkp-su-or-sudo-regexp',
-;;    `bookmarkp-use-region-flag', `bookmarkp-w3m-allow-multi-tabs'.
+;;    `bookmarkp-show-end-of-region', `bookmarkp-sort-comparer',
+;;    `bookmarkp-sort-orders-alist',
+;;    `bookmarkp-sort-orders-for-cycling-alist',
+;;    `bookmarkp-su-or-sudo-regexp', `bookmarkp-use-region-flag',
+;;    `bookmarkp-w3m-allow-multi-tabs'.
 ;;
 ;;  Faces defined here:
 ;;
@@ -116,31 +124,53 @@
 ;;
 ;;  Macros defined here:
 ;;
+;;    `bookmarkp-define-file-sort-predicate',
 ;;    `bookmarkp-define-sort-command'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `bookmarkp-add-or-update-time', `bookmarkp-assoc-delete-all',
+;;    `bookmarkp-add-or-update-time', `bookmarkp-alpha-cp',
+;;    `bookmarkp-alpha-p', `bookmarkp-assoc-delete-all',
 ;;    `bookmarkp-bmenu-goto-bookmark-named',
 ;;    `bookmarkp-bmenu-propertize-item',
-;;    `bookmarkp-bookmark-marked-p', `bookmarkp-edit-bookmark',
+;;    `bookmarkp-bookmark-last-access-cp',
+;;    `bookmarkp-bookmark-marked-p',
+;;    `bookmarkp-buffer-last-access-cp', `bookmarkp-cp-not',
+;;    `bookmarkp-current-sort-order', `bookmarkp-edit-bookmark',
 ;;    `bookmarkp-face-prop', `bookmarkp-file-alist-only',
-;;    `bookmarkp-file-bookmark-p', `bookmarkp-file-remote-p',
-;;    `bookmarkp-float-time', `bookmarkp-get-buffer-name',
-;;    `bookmarkp-get-end-position', `bookmarkp-get-visit-time',
-;;    `bookmarkp-get-visits-count', `bookmarkp-gnus-alist-only',
-;;    `bookmarkp-gnus-bookmark-p', `bookmarkp-goto-position',
+;;    `bookmarkp-file-alpha-cp', `bookmarkp-file-attribute-0-cp',
+;;    `bookmarkp-file-attribute-1-cp',
+;;    `bookmarkp-file-attribute-2-cp',
+;;    `bookmarkp-file-attribute-3-cp',
+;;    `bookmarkp-file-attribute-4-cp',
+;;    `bookmarkp-file-attribute-5-cp',
+;;    `bookmarkp-file-attribute-6-cp',
+;;    `bookmarkp-file-attribute-7-cp',
+;;    `bookmarkp-file-attribute-8-cp',
+;;    `bookmarkp-file-attribute-9-cp',
+;;    `bookmarkp-file-attribute-10-cp',
+;;    `bookmarkp-file-attribute-11-cp', `bookmarkp-file-bookmark-p',
+;;    `bookmarkp-file-remote-p', `bookmarkp-float-time',
+;;    `bookmarkp-get-buffer-name', `bookmarkp-get-end-position',
+;;    `bookmarkp-get-visit-time', `bookmarkp-get-visits-count',
+;;    `bookmarkp-gnus-alist-only', `bookmarkp-gnus-bookmark-p',
+;;    `bookmarkp-gnus-cp', `bookmarkp-goto-position',
 ;;    `bookmarkp-handle-region-default', `bookmarkp-increment-visits',
 ;;    `bookmarkp-info-alist-only', `bookmarkp-info-bookmark-p',
-;;    `bookmarkp-jump-gnus', `bookmarkp-jump-w3m',
+;;    `bookmarkp-info-cp',`bookmarkp-jump-gnus', `bookmarkp-jump-w3m',
 ;;    `bookmarkp-jump-w3m-new-session',
 ;;    `bookmarkp-jump-w3m-only-one-tab',
 ;;    `bookmarkp-line-number-at-pos',
 ;;    `bookmarkp-local-directory-bookmark-p',
+;;    `bookmarkp-local-file-accessed-more-recently-cp',
 ;;    `bookmarkp-local-file-alist-only',
-;;    `bookmarkp-local-file-bookmark-p', `bookmarkp-make-gnus-record',
+;;    `bookmarkp-local-file-bookmark-p',
+;;    `bookmarkp-local-file-size-cp', `bookmarkp-local-file-type-cp',
+;;    `bookmarkp-local-file-updated-more-recently-cp',
+;;    `bookmarkp-make-gnus-record', `bookmarkp-make-plain-predicate',
 ;;    `bookmarkp-make-w3m-record', `bookmarkp-marked-bookmarks-only',
 ;;    `bookmarkp-maybe-save-bookmark',
+;;    `bookmarkp-msg-about-sort-order', `bookmarkp-multi-sort',
 ;;    `bookmarkp-non-file-alist-only',
 ;;    `bookmarkp-non-file-bookmark-p',
 ;;    `bookmarkp-non-marked-bookmarks-only',
@@ -156,26 +186,14 @@
 ;;    `bookmarkp-remote-file-alist-only',
 ;;    `bookmarkp-remote-file-bookmark-p',
 ;;    `bookmarkp-remove-assoc-dups', `bookmarkp-remove-if',
-;;    `bookmarkp-remove-if-not', `bookmarkp-replace-regexp-in-string',
+;;    `bookmarkp-remove-if-not', `bookmarkp-repeat-command',
+;;    `bookmarkp-replace-regexp-in-string',
 ;;    `bookmarkp-root-or-sudo-logged-p',
 ;;    `bookmarkp-save-new-region-location', `bookmarkp-some-marked-p',
 ;;    `bookmarkp-some-unmarked-p' `bookmarkp-sort-and-remove-dups',
-;;    `bookmarkp-upcase', `bookmarkp-w3m-alist-only',
-;;    `bookmarkp-w3m-bookmark-p', `bookmarkp-w3m-set-new-buffer-name'.
-;;
-;;  Non-interactive functions redefined here (from `bookmark.el'):
-;;
-;;    `bookmark--jump-via', `bookmark-bmenu-bookmark',
-;;    `bookmark-bmenu-hide-filenames', `bookmark-bmenu-mode',
-;;    `bookmark-bmenu-surreptitiously-rebuild-list',
-;;    `bookmark-completing-read', `bookmark-default-handler',
-;;    `bookmark-handle-bookmark', `bookmark-location',
-;;    `bookmark-make-record-default', `bookmark-prop-set',
-;;    `bookmark-write-file'.
-;;
-;;  Functions defined here for Emacs versions < 23
-;;
-;;    `bookmarkp-menu-jump-other-window'.
+;;    `bookmarkp-upcase', `bookmarkp-visited-more-cp',
+;;    `bookmarkp-w3m-alist-only', `bookmarkp-w3m-bookmark-p',
+;;    `bookmarkp-w3m-cp', `bookmarkp-w3m-set-new-buffer-name'.
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -186,31 +204,53 @@
 ;;    `bookmarkp-jump-display-function',
 ;;    `bookmarkp-latest-bookmark-alist',
 ;;    `bookmarkp-latest-sorted-alist', `bookmarkp-non-file-filename',
-;;    `bookmarkp-reverse-sort-p', `bookmarkp-version-number'.
+;;    `bookmarkp-reverse-multi-sort-p', `bookmarkp-reverse-sort-p',
+;;    `bookmarkp-version-number'.
 ;;
-;;  ***** NOTE: The following functions defined in `bookmark.el'
-;;              have been REDEFINED OR ADVISED HERE for Emacs versions < 23:
 ;;
-;;    `bookmark-get-bookmark', `bookmark-get-bookmark-record',
-;;    `bookmark-get-handler', `bookmark-jump-noselect',
-;;    `bookmark-make-record', `bookmark-maybe-message',
-;;    `bookmark-prop-get', `bookmark-store'.
+;;  ***** NOTE: The following commands defined in `bookmark.el'
+;;              have been REDEFINED HERE:
+;;
+;;    `bookmark-bmenu-execute-deletions', `bookmark-bmenu-list',
+;;    `bookmark-bmenu-mark', `bookmark-bmenu-other-window',
+;;    `bookmark-bmenu-rename', `bookmark-bmenu-unmark',
+;;    `bookmark-delete', `bookmark-insert',
+;;    `bookmark-insert-location', `bookmark-jump',
+;;    `bookmark-jump-other-window' (Emacs 20-21), `bookmark-relocate',
+;;    `bookmark-rename', `bookmark-set', `bookmark-yank-word'.
+;;
+;;
+;;  ***** NOTE: The following non-interactive functions defined in
+;;              `bookmark.el' have been REDEFINED HERE:
+;;
+;;    `bookmark--jump-via', `bookmark-bmenu-bookmark',
+;;    `bookmark-bmenu-hide-filenames', `bookmark-bmenu-mode' (advised,
+;;    for doc string), `bookmark-bmenu-surreptitiously-rebuild-list',
+;;    `bookmark-completing-read', `bookmark-default-handler',
+;;    `bookmark-get-bookmark' (Emacs 20-22),
+;;    `bookmark-get-bookmark-record' (Emacs 20-22),
+;;    `bookmark-get-handler' (Emacs 20-22),
+;;    `bookmark-handle-bookmark', `bookmark-jump-noselect' (Emacs
+;;    20-22), `bookmark-location', `bookmark-make-record' (Emacs
+;;    20-22), `bookmark-make-record-default', `bookmark-maybe-message'
+;;    (Emacs 20-21), `bookmark-prop-get' (Emacs 20-22),
+;;    `bookmark-prop-set', `bookmark-store' (Emacs 20-22),
+;;    `bookmark-write-file'.
+;;
+;;
+;;  ***** NOTE: The following variables defined in `bookmark.el'
+;;              have been REDEFINED HERE:
+;;
+;;    `bookmark-alist' (doc string only),
+;;    `bookmark-make-record-function' (Emacs 20-22).
+;;
 ;;
 ;;  ***** NOTE: The following functions defined in `info.el'
-;;              have been REDEFINED HERE (Emacs 20-22):
+;;              have been REDEFINED HERE:
 ;;
-;;    `Info-bookmark-jump', `Info-bookmark-make-record'.
+;;    `Info-bookmark-jump' (Emacs 20-22), `Info-bookmark-make-record'
+;;    (Emacs 20-22).
 ;;
-;;  ***** NOTE: The following variables defined in `bookmark.el'
-;;              have been REDEFINED HERE for Emacs versions < 23
-;;
-;;    `bookmark-make-record-function'.
-;;
-;;  ***** NOTE: The following variables defined in `bookmark.el'
-;;              have been REDEFINED HERE.
-;;
-;;    `bookmark-alist', `bookmark-make-record-function'.
-;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  
 ;;(@* "Documentation")
@@ -248,11 +288,105 @@
 ;;  completion for a bookmark name, to delete the current bookmark
 ;;  candidate.  See http://www.emacswiki.org/cgi-bin/wiki/Icicles.
 ;;
-;;(@* "How To Use Bookmark+")
-;;  ** How To Use Bookmark+ **
+;;(@* "Installing Bookmark+")
+;;  ** Installing Bookmark+ **
 ;;
 ;;  Put this library in your `load-path'.
 ;;  Add this to your init file (~/.emacs) : (require 'bookmark+)
+;;
+;;(@* "Bookmarks Menu List")
+;;  ** Bookmarks Menu List **
+;;
+;;  Bookmark+ enhances the bookmarks list (the "menu list") that is
+;;  displayed in buffer `*Bookmark List*' when you use `C-x r l'
+;;  (`bookmark-bmenu-list').  Bookmarks are highlighted to indicate
+;;  their type. You can show or hide bookmarks of particular types,
+;;  mark and unmark bookmarks, and much more.  Use `C-h m' in buffer
+;;  `*Bookmark List*' for more information.
+;;
+;;  (Note: Bookmark+ uses option `bookmarkp-sort-comparer'; it ignores
+;;  vanilla Emacs option `bookmark-sort-flag'.)
+;;
+;;(@* "Marking and Unmarking Bookmarks")
+;;  *** Marking and Unmarking Bookmarks ***
+;;
+;;  Bookmark+ enhances marking and unmarking of bookmarks in several
+;;  ways.  In general, these enhancements are similar to features
+;;  offered by Dired and Dired-X.
+;;
+;;  * You can use `%m' to mark bookmarks whose names match a regexp.
+;;
+;;  * You can use `M-DEL' (or `U') to unmark all bookmarks or all that
+;;    are marked `>' or all that are flagged `D'.
+;;
+;;  * You can use `t' to toggle (swap) marked and unmarked bookmarks:
+;;    the marked become unmarked, and vice versa.
+;;
+;;  * You can use `>' to show only the marked bookmarks or `<' to show
+;;    only the unmarked bookmarks.  Repeat to show all again.
+;;
+;;(@* "Hiding and Showing Bookmarks")
+;;  *** Hiding and Showing Bookmarks ***
+;;
+;;  You can hide and show different sets of bookmarks in the menu
+;;  list.  There are commands to show only bookmarks of a particular
+;;  type (e.g. `I' to show only Info bookmarks).  And, again, you can
+;;  show only the marked or only the unmarked bookmarks (using `>' and
+;;  `<').
+;;
+;;  Commands that operate on the current bookmark or on the marked or
+;;  the unmarked bookmarks act only on bookmarks that are displayed
+;;  (not hidden).  This includes the commands that mark or unmark
+;;  bookmarks.  This means that you can easily define any given set of
+;;  bookmarks.
+;;
+;;  For example:
+;;
+;;    Use `F' to show only bookmarks associated with files.
+;;    Use `%m' to mark those whose names match a particular regexp.
+;;    Use `R' to show only bookmarks that have regions.
+;;    Use `m' to mark some of those region bookmarks.
+;;    Use `.' to show all bookmarks.
+;;    Use `t' to swap marked and unmarked (so unmarked are now marked)
+;;    Use `D' to delete all of the marked bookmarks (after confirming)
+;;
+;;  That deletes all file bookmarks that match the regexp and all
+;;  region bookmarks that you selectively marked.
+;;
+;;(@* "Sorting Bookmarks")
+;;  *** Sorting Bookmarks ***
+;;
+;;  Bookmarks shown in the menu list are sorted using the current
+;;  value of option `bookmark-sort-function'.  (If nil, they are
+;;  unsorted.)
+;;
+;;  You can use `s s'... (repeat hitting the `s' key) to cycle among
+;;  the various sort orders possible.  By default, all available sort
+;;  orders are cycled, but you can shorten the cycling list by
+;;  customizing option `bookmarkp-sort-orders-for-cycling-alist'.
+;;
+;;  You can also change directly to one of the main sort orders
+;;  (without cycling) using `s n', `s f n', etc. - use `C-h m' for
+;;  more info.
+;;
+;;  You can reverse the current sort direction (ascending/descending)
+;;  using `s r'.
+;;
+;;  For a complex sort, which involves composing several sorting
+;;  conditions, you can also use `s C-r' to reverse the order of
+;;  bookmark sorting groups or the order within each group (depending
+;;  on whether `s r' is also used).  Be aware that this can be a bit
+;;  unintuitive.  If it does not do what you expect or want, or if it
+;;  confuses you, then don't use it. ;-) (`s C-r' has no noticeable
+;;  effect on simple sorting.)
+;;
+;;  Remember that you can combine sorting with hiding/showing
+;;  different sets of bookmarks - bookmarks of different kinds
+;;  (e.g. Info) or bookmarks that are marked or unmarked.
+;;
+;;  Finally, you can easily define your own sorting commands and sort
+;;  orders.  See macro `bookmarkp-define-sort-command' and the
+;;  documentation for option `bookmarkp-sort-comparer'.
 ;;
 ;;(@* "Bookmark Compatibility with Vanilla Emacs (`bookmark.el')")
 ;;  ** Bookmark Compatibility with Vanilla Emacs (`bookmark.el') **
@@ -272,26 +406,26 @@
 ;;     bookmark types are simply ignored by vanilla Emacs.  For
 ;;     example:
 ;;
-;;    - A bookmark with a region is treated like a simple position
-;;      bookmark: the destination is the region start position.
+;;     - A bookmark with a region is treated like a simple position
+;;       bookmark: the destination is the region start position.
 ;;
-;;    - A Gnus bookmark does not work; it is simply ignored.
+;;     - A Gnus bookmark does not work; it is simply ignored.
 ;;
-;;  However, there are two cases in which `bookmark+.el' bookmarks
-;;  will raise an error in vanilla Emacs:
+;;     However, there are two cases in which `bookmark+.el' bookmarks
+;;     will raise an error in vanilla Emacs:
 ;;
-;;  * You cannot use non-file bookmarks with any version of vanilla
-;;    Emacs.
+;;     * You cannot use non-file (e.g. buffer-only) bookmarks with any
+;;       version of vanilla Emacs.
 ;;
-;;  * You cannot use any bookmarks created using `bookmark+.el' with
-;;    vanilla Emacs 20.
+;;     * You cannot use any bookmarks created using `bookmark+.el'
+;;       with vanilla Emacs 20.
 ;;
-;;    The Emacs bookmark data structure has changed from version to
-;;    version.  Library `bookmark+.el' always creates bookmarks that
-;;    have the most recent structure (Emacs 23).  As is the case for
-;;    any bookmarks that have the Emacs 23 structure, these bookmarks
-;;    will not work in vanilla Emacs 20 (that is, without
-;;    `bookmark+.el').
+;;     The Emacs bookmark data structure has changed from version to
+;;     version.  Library `bookmark+.el' always creates bookmarks that
+;;     have the most recent structure (Emacs 23).  As is the case for
+;;     any bookmarks that have the Emacs 23 structure, these bookmarks
+;;     will not work in vanilla Emacs 20 (that is, without
+;;     `bookmark+.el').
 ;;
 ;;  Bottom line: Use `bookmark+.el' to access bookmarks created using
 ;;  `bookmark+.el'.
@@ -300,20 +434,8 @@
 ;;  ** New Bookmark Structure **
 ;;
 ;;  The bookmark data structure, variable `bookmark-alist', has been
-;;  enhanced to support the new bookmark types.  For a description of
-;;  this enhanced structure, use `C-h v bookmark-alist'.
-;;
-;;(@* "Bookmarks Menu List")
-;;  ** Bookmarks Menu List **
-;;
-;;  Bookmark+ enhances the bookmarks list (the "menu list") that is
-;;  displayed when you use `bookmark-bmenu-list' (`C-x r l'), in many
-;;  ways.  You can show or hide bookmarks of particular types, mark
-;;  and unmark bookmarks, and so forth.  Use `C-h m' in buffer
-;;  `*Bookmark List*' for more information.
-;;
-;;  (Note: Bookmark+ uses option `bookmarkp-sort-function'; it does
-;;  not use vanilla Emacs option `bookmark-sort-flag'.)
+;;  enhanced to support new bookmark types.  For a description of this
+;;  enhanced structure, use `C-h v bookmark-alist'.
  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -321,7 +443,42 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2009/10/09 dadams
+;;     Added: bookmarkp-bmenu-delete-marked.  Bound it to D.
+;;            bookmarkp-sort-orders-for-cycling-alist.
+;;     Renamed: bookmarkp-sort-functions-alist to bookmarkp-sort-orders-alist,
+;;     bookmark-bmenu-execute-deletions: Added optional arg, for *-bmenu-delete-marked.
+;;     *-sort-function: Changed default value to sorting by bookmark type (`s k').
+;;     *-bmenu-change-sort-order: Use *-sort-orders-for-cycling-alist, not all sort orders.
+;;     Updated Commentary and doc string (bookmark-bmenu-mode).
+;; 2009/10/08 dadams
+;;     Added: *-bmenu-sort-by-(w3m-url|gnus-thread), *-(gnus|w3m)-cp, *-cp-not,
+;;            *-local-file-(accessed|updated)-more-recently-cp, *-bmenu-sort-by-bookmark-type.
+;;     Renamed: *-bmenu-sort-by(-last)-file-(size|type|access|update) to
+;;              *-bmenu-sort-by(-last)-local-file-(size|typeaccess|update),
+;;              *-file-visited-more-recently-cp to *-local-file-accessed-more-recently-cp,
+;;              *-file-(size|type)-cp to *-local-file-(size|type)-cp.
+;;     Removed: *-file-(device|gid(-chg)|inode|last-(access|update|status-change)|links|modes
+;;                            |uid)-cp.
+;;     Bound *-bmenu-sort-by-bookmark-type to `s k'.
+;;     *-define-file-sort-predicate: Use *-file-bookmark-p, not *-local-file-bookmark-p.
+;;     *-msg-about-sort-order: Added optional arg PREFIX-ARG.  Use in: *-show-(all|only-*).
+;; 2009/10/07 dadams
+;;     Renamed: *-bmenu-sort-by-last-visit-time to *-bmenu-sort-by-last-bookmark-access,
+;;              *-bmenu-sort-by-visit-frequency to *-bmenu-sort-by-bookmark-visit-frequency,
+;;              *-visited-more-recently-cp to *-bookmark-last-access-cp.
+;; 2009/10/06 dadams
+;;     Added: bookmarkp-msg-about-sort-order.
+;;     bookmark-completing-read: Simple sort when use menu-bar menu.
 ;; 2009/10/05 dadams
+;;     Added: *-make-plain-predicate, *-reverse-multi-sort-order, *-multi-sort,
+;;            *-define-file-sort-predicate, *-bmenu-sort-by-file-*, *-file-attribute-*-cp,
+;;            and aliases *-file-*-cp, *-current-sort-order.
+;;     Redefined sorting to allow multi-predicates:
+;;       Redefined: *-sort-function, *-sort-and-remove-dups, *-define-sort-command,
+;;                  *-sort-functions-alist.
+;;     Bound keys with `s f' prefix to file-sorting commands
+;;     *-current-sort-order: Use rassoc instead of rassq now.
 ;;     Swap keys s and S.  S is now bookmark-bmenu-save.  s is not the sorting prefix key.
 ;;     bookmark-bmenu-mode: Mention S key explicitly here (even though it is also
 ;;                          mentioned in the vanilla part of the doc string).
@@ -703,16 +860,21 @@
 ;;(@* "Macros")
 ;;; Macros -----------------------------------------------------------
 
-(defmacro bookmarkp-define-sort-command (sort-order comparison-fn doc-string)
+(defmacro bookmarkp-define-sort-command (sort-order comparer doc-string)
   "Define a command to sort bookmarks in the menu list by SORT-ORDER.
-SORT-ORDER is a short string (or symbol) describing the sort order.
- Examples: \"by last access time\", \"alphabetically\".
+SORT-ORDER is a short string or symbol describing the sorting method.
+Examples: \"by last access time\", \"by bookmark name\".
 
 The new command is named by replacing any spaces in SORT-ORDER with
 hyphens (`-') and then adding the prefix `bookmarkp-bmenu-sort-'.
+Example: `bookmarkp-bmenu-sort-by-bookmark-name', for SORT-ORDER `by
+bookmark name'.
 
-COMPARISON-FN is a function that compares two bookmarks, returning
- non-nil if and only if the first bookmark sorts before the second.
+COMPARER compares two bookmarks, returning non-nil if and only if the
+first bookmark sorts before the second.  It must be acceptable as a
+value of `bookmarkp-sort-comparer'.  That is, it is either nil, a
+predicate, or a list ((PRED...) FINAL-PRED).  See the doc for
+`bookmarkp-sort-comparer'.
 
 DOC-STRING is the doc string of the new command."
   (unless (stringp sort-order) (setq sort-order  (symbol-name sort-order)))
@@ -720,19 +882,20 @@ DOC-STRING is the doc string of the new command."
                                   (bookmarkp-replace-regexp-in-string
                                    "\\s-+" "-" sort-order)))))
     `(progn
-      (setq bookmarkp-sort-functions-alist  (bookmarkp-assoc-delete-all
-                                             ,sort-order bookmarkp-sort-functions-alist))
-      (push (cons ,sort-order ',comparison-fn) bookmarkp-sort-functions-alist)
-      (defun ,command (&optional reversep)
-        ,doc-string
+      (setq bookmarkp-sort-orders-alist  (bookmarkp-assoc-delete-all
+                                          ,sort-order bookmarkp-sort-orders-alist))
+      (push (cons ,sort-order ',comparer) bookmarkp-sort-orders-alist)
+      (defun ,command ()
+        ,(concat doc-string "\nRepeating this command cycles among normal sort, reversed \
+sort, and unsorted.")
         (interactive)
         (cond (;; Not this sort order - make it this sort order.
-               (not (eq bookmarkp-sort-function ',comparison-fn))
-               (setq bookmarkp-sort-function   ',comparison-fn
+               (not (equal bookmarkp-sort-comparer ',comparer))
+               (setq bookmarkp-sort-comparer   ',comparer
                      bookmarkp-reverse-sort-p  nil))
               (;; This sort order reversed.  Change to unsorted.
                bookmarkp-reverse-sort-p
-               (setq bookmarkp-sort-function   nil
+               (setq bookmarkp-sort-comparer   nil
                      bookmarkp-reverse-sort-p  t))
               (t;; This sort order - reverse it.
                (setq bookmarkp-reverse-sort-p  t)))
@@ -742,10 +905,83 @@ DOC-STRING is the doc string of the new command."
               (current-bmk                           (bookmark-bmenu-bookmark)))
           (bookmark-bmenu-surreptitiously-rebuild-list)
           (bookmarkp-bmenu-goto-bookmark-named current-bmk)) ; Put cursor back on right line.
-        (message
-         "%s%s"
-         (if bookmarkp-sort-function (concat "Sorted " ,sort-order) "Sorting TURNED OFF")
-         (if (and bookmarkp-sort-function bookmarkp-reverse-sort-p) ", REVERSED" ""))))))
+        (bookmarkp-msg-about-sort-order ,sort-order)))))
+
+(defmacro bookmarkp-define-file-sort-predicate (att-nb)
+  "Define a predicate for sorting bookmarks by file attribute ATT-NB.
+See function `file-attributes' for the meanings of the various file
+attribute numbers.
+
+String attribute values sort alphabetically; numerical values sort
+numerically; nil sorts before t.
+
+For ATT-NB 0 (file type), a file sorts before a symlink, which sorts
+before a directory.
+
+For ATT-NB 2 or 3 (uid, gid), a numerical value sorts before a string
+value.
+
+A bookmark that has file attributes sorts before a bookmark that does
+not.  A file bookmark sorts before a non-file bookmark.  Only local
+files are tested for attributes - remote-file bookmarks are treated
+here like non-file bookmarks."
+  `(defun ,(intern (format "bookmarkp-file-attribute-%d-cp" att-nb)) (b1 b2)
+    ,(format "Sort files by attribute %d, then file names with no files, \
+then the rest."
+             att-nb)
+    (let (a1 a2)
+      (cond (;; Both are file bookmarks.
+             (and (bookmarkp-file-bookmark-p b1)
+                  (bookmarkp-file-bookmark-p b2))
+             (setq a1  (file-attributes (bookmark-get-filename b1))
+                   a2  (file-attributes (bookmark-get-filename b2)))
+             (cond (;; Both have attributes.
+                    (and a1 a2)
+                    (setq a1  (nth ,att-nb a1)
+                          a2  (nth ,att-nb a2))
+                    ;; Convert times and maybe inode number to floats.
+                    ;; The inode conversion is kludgy, but is probably OK in practice.
+                    (when (consp a1) (setq a1  (bookmarkp-float-time a1)))
+                    (when (consp a2) (setq a2  (bookmarkp-float-time a2)))
+                    (cond (;; (1) links, (2) maybe uid, (3) maybe gid, (4, 5, 6) times
+                           ;; (7) size, (10) inode, (11) device.
+                           (numberp a1)
+                           (cond ((< a1 a2) '(t))
+                                 ((> a1 a2) '(nil))
+                                 (t nil)))
+                          ((= 0 ,att-nb) ; (0) file (nil) < symlink (string) < dir (t)
+                           (cond ((and a2 (not a1)) '(t)) ; file vs (symlink or dir)
+                                 ((and a1 (not a2)) '(nil))
+                                 ((and (eq t a2) (not (eq t a1))) '(t)) ; symlink vs dir
+                                 ((and (eq t a1) (not (eq t a2))) '(t))
+                                 ((and (stringp a1) (stringp a2))
+                                  (if (string< a1 a2) '(t) '(nil)))
+                                 (t nil)))
+                          ((stringp a1) ; (2, 3) string uid/gid, (8) modes
+                           (cond ((string< a1 a2) '(t))
+                                 ((string< a2 a1) '(nil))
+                                 (t nil)))
+                          ((eq ,att-nb 9) ; (9) gid would change if re-created. nil < t
+                           (cond ((and a2 (not a1)) '(t))
+                                 ((and a1 (not a2)) '(nil))
+                                 (t nil)))))
+                   (;; First has attributes, but not second.
+                    a1
+                    '(t))
+                   (;; Second has attributes, but not first.
+                    a2
+                    '(nil))
+                   (;; Neither has attributes.
+                    t
+                    nil)))
+            (;; First is a file, second is not.
+             (bookmarkp-local-file-bookmark-p b1)
+             '(t))
+            (;; Second is a file, first is not.
+             (bookmarkp-local-file-bookmark-p b2)
+             '(nil))
+            (t;; Neither is a file.
+             nil)))))
   
 ;;(@* "Keymaps")
 ;;; Keymaps ----------------------------------------------------------
@@ -778,6 +1014,8 @@ DOC-STRING is the doc string of the new command."
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "q" 'bookmarkp-bmenu-quit)
 ;;;###autoload
+(define-key bookmark-bmenu-mode-map "D" 'bookmarkp-bmenu-delete-marked)
+;;;###autoload
 (define-key bookmark-bmenu-mode-map "E" 'bookmarkp-bmenu-edit-bookmark)
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "F" 'bookmarkp-bmenu-show-only-files)
@@ -800,15 +1038,37 @@ DOC-STRING is the doc string of the new command."
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "s" nil) ; For Emacs 20
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "sa" 'bookmarkp-bmenu-sort-alphabetically)
+(define-key bookmark-bmenu-mode-map "sb" 'bookmarkp-bmenu-sort-by-last-buffer-or-file-access)
+;;;###autoload
+(define-key bookmark-bmenu-mode-map "sfd" 'bookmarkp-bmenu-sort-by-local-file-type)
+;;;###autoload
+(define-key bookmark-bmenu-mode-map "sfn" 'bookmarkp-bmenu-sort-by-file-name)
+;;;###autoload
+(define-key bookmark-bmenu-mode-map "sfs" 'bookmarkp-bmenu-sort-by-local-file-size)
+;;;###autoload
+(define-key bookmark-bmenu-mode-map "sft" 'bookmarkp-bmenu-sort-by-last-local-file-access)
+;;;###autoload
+(define-key bookmark-bmenu-mode-map "sfu" 'bookmarkp-bmenu-sort-by-last-local-file-update)
+;;;###autoload
+(define-key bookmark-bmenu-mode-map "sg" 'bookmarkp-bmenu-sort-by-gnus-thread)
+;;;###autoload
+(define-key bookmark-bmenu-mode-map "si" 'bookmarkp-bmenu-sort-by-Info-location)
+;;;###autoload
+(define-key bookmark-bmenu-mode-map "sk" 'bookmarkp-bmenu-sort-by-bookmark-type)
+;;;###autoload
+(define-key bookmark-bmenu-mode-map "sn" 'bookmarkp-bmenu-sort-by-bookmark-name)
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "sr" 'bookmarkp-reverse-sort-order)
 ;;;###autoload
+(define-key bookmark-bmenu-mode-map "s\C-r" 'bookmarkp-reverse-multi-sort-order)
+;;;###autoload
 (define-key bookmark-bmenu-mode-map "ss" 'bookmarkp-bmenu-change-sort-order-repeat)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "st" 'bookmarkp-bmenu-sort-by-last-visit-time)
+(define-key bookmark-bmenu-mode-map "st" 'bookmarkp-bmenu-sort-by-last-bookmark-access)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "sv" 'bookmarkp-bmenu-sort-by-visit-frequency)
+(define-key bookmark-bmenu-mode-map "sv" 'bookmarkp-bmenu-sort-by-bookmark-visit-frequency)
+;;;###autoload
+(define-key bookmark-bmenu-mode-map "sw" 'bookmarkp-bmenu-sort-by-w3m-url)
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "\M-r" 'bookmark-bmenu-relocate) ; `R' in Emacs
 ;;;###autoload
@@ -832,8 +1092,8 @@ DOC-STRING is the doc string of the new command."
 Hide/show bookmarks:
 
 \\[bookmarkp-bmenu-show-all]\t- Show all bookmarks
-\\[bookmarkp-bmenu-show-only-files]\t- Show only file & directory bookmarks (`C-u': local only)
 \\[bookmarkp-bmenu-show-only-non-files]\t- Show only non-file bookmarks
+\\[bookmarkp-bmenu-show-only-files]\t- Show only file & directory bookmarks (`C-u': local only)
 \\[bookmarkp-bmenu-show-only-gnus]\t- Show only Gnus bookmarks
 \\[bookmarkp-bmenu-show-only-info-nodes]\t- Show only Info bookmarks
 \\[bookmarkp-bmenu-show-only-regions]\t- Show only region bookmarks
@@ -848,26 +1108,47 @@ Mark/unmark bookmarks:
 \\[bookmarkp-bmenu-unmark-all]\t- Unmark all (`C-u': interactive query)
 \\[bookmarkp-bmenu-toggle-marks]\t- Toggle marks: unmark marked and mark unmarked
 
-Sort bookmarks:
+Sort bookmarks (repeat to cycle normal/reversed/off, except as noted):
 
-\\[bookmarkp-bmenu-sort-by-visit-frequency]\t- Sort by visit frequency (repeat: reverse/off)
-\\[bookmarkp-bmenu-sort-by-last-visit-time]\t- Sort by last time visited (repeat: reverse/off)
-\\[bookmarkp-bmenu-sort-alphabetically]\t- Sort alphabetically (repeat: reverse/off)
-\\[bookmarkp-bmenu-change-sort-order-repeat]\t- Cycle sort orders (repeat)
-\\[bookmarkp-reverse-sort-order]\t- Reverse current sort direction
+\\[bookmarkp-bmenu-sort-by-last-buffer-or-file-access]\t- Sort by last buffer or file \
+access
+\\[bookmarkp-bmenu-sort-by-gnus-thread]\t- Sort by Gnus thread: group, article, message
+\\[bookmarkp-bmenu-sort-by-Info-location]\t- Sort by Info manual, node, position
+\\[bookmarkp-bmenu-sort-by-bookmark-type]\t- Sort by bookmark type
+\\[bookmarkp-bmenu-sort-by-bookmark-name]\t- Sort by bookmark name
+\\[bookmarkp-bmenu-sort-by-last-bookmark-access]\t- Sort by last bookmark access time
+\\[bookmarkp-bmenu-sort-by-bookmark-visit-frequency]\t- Sort by bookmark visit frequency
+\\[bookmarkp-bmenu-sort-by-w3m-url]\t- Sort by W3M URL
+
+\\[bookmarkp-bmenu-sort-by-local-file-type]\t- Sort by local file type: file, symlink, dir
+\\[bookmarkp-bmenu-sort-by-file-name]\t- Sort by file name
+\\[bookmarkp-bmenu-sort-by-local-file-size]\t- Sort by local file size
+\\[bookmarkp-bmenu-sort-by-last-local-file-access]\t- Sort by last local file access
+\\[bookmarkp-bmenu-sort-by-last-local-file-update]\t- Sort by last local file update (edit)
+
+\\[bookmarkp-reverse-sort-order]\t- Reverse current sort direction       (repeat to toggle)
+\\[bookmarkp-reverse-multi-sort-order]\t- Complement sort predicate decisions  (repeat \
+to toggle)
+\\[bookmarkp-bmenu-change-sort-order-repeat]\t- Cycle sort orders                    (repeat \
+to cycle)
+
 
 Misc:
 
-\\[bookmarkp-bmenu-edit-bookmark]\t- Edit bookmark
 \\[bookmarkp-bmenu-refresh-menu-list]\t- Refresh (revert) to up-to-date bookmarks list
+\\[bookmarkp-bmenu-delete-marked]\t- Delete visible bookmarks marked `>' (not `D')
+\\[bookmarkp-bmenu-edit-bookmark]\t- Edit bookmark
 \\[bookmark-bmenu-save]\t- Save bookmarks (`C-u': prompt for the bookmarks file to use)
 \\[bookmarkp-bmenu-quit]\t- Quit bookmarks list
 
 Options Affecting Bookmarks List (`\\[bookmark-bmenu-list]'):
 
-`bookmarkp-sort-function'          - Initial sort
+`bookmarkp-sort-comparer'          - Initial sort
+`bookmarkp-sort-orders-for-cycling-alist' -
+                                   - Sort orders that \
+`\\[bookmarkp-bmenu-change-sort-order-repeat]'... cycles
 `bookmark-bmenu-toggle-filenames'  - Show filenames initially?
-`bookmark-bmenu-file-column'       - Bookmark width if files shown
+`bookmark-bmenu-file-column'       - Bookmark width if files are shown
 
 Other Options:
 
@@ -991,7 +1272,7 @@ as part of the bookmark definition."
   :type 'regexp :group 'bookmarkp)
 
 (defcustom bookmarkp-w3m-allow-multi-tabs t
-  "*Non-nil means jump to W3m bookmarks in a new session."
+  "*Non-nil means jump to W3M bookmarks in a new session."
   :type 'boolean :group 'bookmarkp)
 
 (defcustom bookmarkp-show-end-of-region t
@@ -1003,42 +1284,213 @@ If nil show only beginning of region."
   "*Max number of chars for default name for a bookmark with a region."
   :type 'integer :group 'bookmarkp)
 
-(defcustom bookmarkp-sort-function 'bookmarkp-alpha-p
-  "*Predicate for sorting (comparing) bookmarks."
-  :type '(choice (const :tag "None" nil) function) :group 'bookmarkp)
+(defcustom bookmarkp-sort-comparer '((bookmarkp-info-cp bookmarkp-gnus-cp
+                                      bookmarkp-w3m-cp bookmarkp-local-file-type-cp)
+                                     bookmarkp-alpha-p) ; This corresponds to `s k'.
+  ;; $$$$$$ An alternative default value: `bookmarkp-alpha-p', which corresponds to `s n'.
+  "*Predicate or predicates for sorting (comparing) bookmarks.
+This defines the default sort for bookmarks in the menu list.
+
+Various sorting commands, such as \\<bookmark-bmenu-mode-map>\
+`\\[bookmarkp-bmenu-sort-by-bookmark-visit-frequency]', change the value of this
+option dynamically (but they do not save the changed value).
+
+The value must be one of the following:
+
+* nil, meaning do not sort
+
+* a predicate that takes two bookmarks as args
+
+* a list of the form ((PRED...) FINAL-PRED), where each PRED and
+  FINAL-PRED are predicates that take two bookmarks as args
+
+If the value is a list of predicates, then each PRED is tried in turn
+until one returns a non-nil value.  In that case, the result is the
+car of that value.  If no non-nil value is returned by any PRED, then
+FINAL-PRED is used and its value is the result.
+
+Each PRED should return `(t)' for true, `(nil)' for false, or nil for
+undecided.  A nil value means that the next PRED decides (or
+FINAL-PRED, if there is no next PRED).
+
+Thus, a PRED is a special kind of predicate that indicates either a
+boolean value (as a singleton list) or \"I cannot decide - let the
+next guy else decide\".  (Essentially, each PRED is a hook function
+that is run using `run-hook-with-args-until-success'.)
+
+Examples:
+
+ nil           - No sorting.
+
+ string-lessp  - Single predicate that returns nil or non-nil.
+
+ ((p1 p2))     - Two predicates `p1' and `p2', which each return
+                 (t) for true, (nil) for false, or nil for undecided.
+
+ ((p1 p2) string-lessp)
+               - Same as previous, except if both `p1' and `p2' return
+                 nil, then the return value of `string-lessp' is used.
+
+Note that these two values are generally equivalent, in terms of their
+effect (*):
+
+ ((p1 p2))
+ ((p1) p2-plain) where p2-plain is (bookmarkp-make-plain-predicate p2)
+
+Likewise, these three values generally act equivalently (*):
+
+ ((p1))
+ (() p1-plain)
+ p1-plain        where p1-plain is (bookmarkp-make-plain-predicate p1)
+
+The PRED form lets you easily combine predicates: use `p1' unless it
+cannot decide, in which case try `p2', and so on.  The value ((p2 p1))
+tries the predicates in the opposite order: first `p2', then `p1' if
+`p2' returns nil.
+
+Using a single predicate or FINAL-PRED makes it easy to reuse an
+existing predicate that returns nil or non-nil.
+
+You can also convert a PRED-type predicate (which returns (t), (nil),
+or nil) into an ordinary predicate, by using function
+`bookmarkp-make-plain-predicate'.  That lets you reuse elsewhere, as
+ordinary predicates, any PRED-type predicates you define.
+
+For example, this defines a plain predicate to compare bookmark names:
+ (defalias 'bookmarkp-alpha-p
+           (bookmarkp-make-plain-predicate 'bookmarkp-alpha-cp))
+
+Note: As a convention, predefined Bookmark+ PRED-type predicate names
+have the suffix `-cp' (for \"component predicate\") instead of `-p'.
+
+--
+* If you use `\\[bookmarkp-reverse-multi-sort-order]', then there is a difference in \
+behavior between
+
+   (a) using a plain predicate as FINAL-PRED and
+   (b) using the analogous PRED-type predicate (and no FINAL-PRED).
+
+  In the latter case, `\\[bookmarkp-reverse-multi-sort-order]' affects when the predicate \
+is tried and
+  its return value.  See `bookmarkp-reverse-multi-sort-order'."
+  :type '(choice
+          (const :tag "None (do not sort)" nil)
+          (function :tag "Sorting Predicate")
+          (list :tag "Sorting Multi-Predicate"
+           (repeat (function :tag "Component Predicate"))
+           (choice
+            (const :tag "None" nil)
+            (function :tag "Final Predicate"))))
+  :group 'bookmarkp)
 
 (when (> emacs-major-version 20)
-  (defcustom bookmarkp-sort-functions-alist ()
-    "*Alist of sort functions.
-You probably do not want to customize this option.  Instead, use macro
-`bookmarkp-define-sort-command' to define a new sort function and add
-it to this alist.
-Each alist element has the form (SORT-ORDER . COMPARISON-FN).
-SORT-ORDER is a short string (or symbol) describing the sort order.
- Examples: \"by last access time\", \"alphabetically\".
-COMPARISON-FN is a function that compares two bookmarks, returning
- non-nil if and only if the first bookmark sorts before the second."
+  (defcustom bookmarkp-sort-orders-alist ()
+    "*Alist of all available sort functions.
+This is a pseudo option - you probably do NOT want to customize this.
+Instead:
+
+ * To add a new sort function to this list, use macro
+   `bookmarkp-define-sort-command'.  It defines a new sort function
+   and automatically adds it to this list.
+
+ * To have fewer sort orders available for cycling by \\<bookmark-bmenu-mode-map>\
+`\\[bookmarkp-bmenu-change-sort-order-repeat]'...,
+   customize option `bookmarkp-sort-orders-for-cycling-alist'.
+
+Each alist element has the form (SORT-ORDER . COMPARER):
+
+ SORT-ORDER is a short string or symbol describing the sort order.
+ Examples: \"by last access time\", \"by bookmark name\".
+
+ COMPARER compares two bookmarks.  It must be acceptable as a value of
+ `bookmarkp-sort-comparer'."
     :type '(alist
             :key-type (choice :tag "Sort order" string symbol)
-            :value-type
-            (choice (function :tag "Comparison function") (const :tag "Do not sort" nil)))
+            :value-type (choice
+                         (const :tag "None (do not sort)" nil)
+                         (function :tag "Sorting Predicate")
+                         (list :tag "Sorting Multi-Predicate"
+                          (repeat (function :tag "Component Predicate"))
+                          (choice
+                           (const :tag "None" nil)
+                           (function :tag "Final Predicate")))))
     :group 'bookmarkp))
 
 (unless (> emacs-major-version 20)      ; Emacs 20: custom type `alist' doesn't exist.
-  (defcustom bookmarkp-sort-functions-alist ()
-    "*Alist of sort functions.
-You probably do not want to customize this option.  Instead, use macro
-`bookmarkp-define-sort-command' to define a new sort function and add
-it to this alist.
-Each alist element has the form (SORT-ORDER . COMPARISON-FN).
-SORT-ORDER is a short string (or symbol) describing the sort order.
- Examples: \"by last access time\", \"alphabetically\".
-COMPARISON-FN is a function that compares two bookmarks, returning
- non-nil if and only if the first bookmark sorts before the second."
+  (defcustom bookmarkp-sort-orders-alist ()
+    "*Alist of all available sort functions.
+This is a pseudo option - you probably do NOT want to customize this.
+Instead:
+
+ * To add a new sort function to this list, use macro
+   `bookmarkp-define-sort-command'.  It defines a new sort function
+   and automatically adds it to this list.
+
+ * To have fewer sort orders available for cycling by \\<bookmark-bmenu-mode-map>\
+`\\[bookmarkp-bmenu-change-sort-order-repeat]'...,
+   customize option `bookmarkp-sort-orders-for-cycling-alist'.
+
+Each alist element has the form (SORT-ORDER . COMPARER):
+
+ SORT-ORDER is a short string or symbol describing the sort order.
+ Examples: \"by last access time\", \"by bookmark name\".
+
+ COMPARER compares two bookmarks.  It must be acceptable as a value of
+ `bookmarkp-sort-comparer'."
     :type '(repeat
             (cons
              (choice :tag "Sort order" string symbol)
-             (choice (function :tag "Comparison function") (const :tag "Do not sort" nil))))
+             (choice
+              (const :tag "None (do not sort)" nil)
+              (function :tag "Sorting Predicate")
+              (list :tag "Sorting Multi-Predicate"
+               (repeat (function :tag "Component Predicate"))
+               (choice
+                (const :tag "None" nil)
+                (function :tag "Final Predicate"))))))
+    :group 'bookmarkp))
+
+(when (> emacs-major-version 20)
+  (defcustom bookmarkp-sort-orders-for-cycling-alist bookmarkp-sort-orders-alist
+    "*Alist of sort orders used for cycling via `s s'...
+This is a subset of the complete list of available sort orders,
+`bookmarkp-sort-orders-alist'.  This lets you cycle among fewer sort
+orders, if there are some that you do not use often.
+
+See the doc for `bookmarkp-sort-orders-alist', for the structure of
+this value."
+    :type '(alist
+            :key-type (choice :tag "Sort order" string symbol)
+            :value-type (choice
+                         (const :tag "None (do not sort)" nil)
+                         (function :tag "Sorting Predicate")
+                         (list :tag "Sorting Multi-Predicate"
+                          (repeat (function :tag "Component Predicate"))
+                          (choice
+                           (const :tag "None" nil)
+                           (function :tag "Final Predicate")))))
+    :group 'bookmarkp))
+
+(unless (> emacs-major-version 20)      ; Emacs 20: custom type `alist' doesn't exist.
+  (defcustom bookmarkp-sort-orders-for-cycling-alist bookmarkp-sort-orders-alist
+    "*Alist of sort orders used for cycling via `s s'...
+This is a subset of the complete list of available sort orders,
+`bookmarkp-sort-orders-alist'.  This lets you cycle among fewer sort
+orders, if there are some that you do not use often.
+
+See the doc for `bookmarkp-sort-orders-alist', for the structure of
+this value."
+    :type '(repeat
+            (cons
+             (choice :tag "Sort order" string symbol)
+             (choice
+              (const :tag "None (do not sort)" nil)
+              (function :tag "Sorting Predicate")
+              (list :tag "Sorting Multi-Predicate"
+               (repeat (function :tag "Component Predicate"))
+               (choice
+                (const :tag "None" nil)
+                (function :tag "Final Predicate"))))))
     :group 'bookmarkp))
  
 ;;(@* "Internal Variables")
@@ -1052,6 +1504,12 @@ COMPARISON-FN is a function that compares two bookmarks, returning
 
 (defvar bookmarkp-reverse-sort-p nil
   "Non-nil means the sort direction is reversed.")
+
+(defvar bookmarkp-reverse-multi-sort-p nil
+  "Non-nil means the truth values returned by predicates are complemented.
+This changes the order of the sorting groups, but it does not in
+general reverse that order.  The order within each group is unchanged
+\(not reversed).")
 
 (defvar bookmarkp-latest-bookmark-alist ()
   "Copy of `bookmark-alist' as last filtered.")
@@ -1113,7 +1571,8 @@ Bookmarks created using vanilla Emacs (`bookmark.el'):
 Bookmarks created using Bookmark+ are the same as for vanilla Emacs,
 except for the following differences.
 
-1. If no file is associated with the bookmark, then FILENAME is nil.
+1. If no file is associated with the bookmark, then FILENAME is
+   `   - no file -'.
 
 2. The following additional entries are used.  Their values are
 non-nil when a region is bookmarked; they are nil otherwise.  When a
@@ -1146,7 +1605,7 @@ region is bookmarked, POS represents the region start position.
  GNUS-ARTICLE-NUMBER is the number of a Gnus article.
  GNUS-MESSAGE-ID is the identifier of a Gnus message.
 
-4. For a W3m bookmark, FILENAME is a W3m URL.")
+4. For a W3M bookmark, FILENAME is a W3M URL.")
  
 ;;(@* "Compatibility Code for Older Emacs Versions")
 ;;; Compatibility Code for Older Emacs Versions ----------------------
@@ -1310,9 +1769,13 @@ the empty string.
 If you use Icicles, then you can use `S-delete' during completion of a
 bookmark name to delete the bookmark named by the current completion
 candidate."
-  (bookmark-maybe-load-default-file)    ; paranoia
+  (bookmark-maybe-load-default-file)
   (if (listp last-nonmenu-event)
-      (bookmark-menu-popup-paned-menu t prompt (bookmark-all-names))
+      (bookmark-menu-popup-paned-menu
+       t prompt
+       (if bookmarkp-sort-comparer      ; Test whether to sort, but always use `string-lessp'.
+           (sort (bookmark-all-names) 'string-lessp)
+         (bookmark-all-names)))
     (let* ((icicle-delete-candidate-object  'bookmark-delete) ; For `S-delete'.
            (completion-ignore-case          bookmark-completion-ignore-case)
            (default                         default)
@@ -1372,7 +1835,7 @@ pertains to the location within the buffer."
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
 ;; Use `bookmark-make-record'.
-;; Use special default prompts for active region, W3m, and Gnus.
+;; Use special default prompts for active region, W3M, and Gnus.
 ;;
 (defun bookmark-set (&optional name parg) ; `C-x r m'
   "Set a bookmark named NAME.
@@ -1386,7 +1849,7 @@ for prompting is as follows (in order of priority):
    by \": \" and the region prefix (up to
    `bookmarkp-bookmark-name-length-max' chars).
 
- * If in W3m mode, then the current W3m title.
+ * If in W3M mode, then the current W3M title.
 
  * If in Gnus Summary mode, then the Gnus summary article header.
 
@@ -1662,9 +2125,10 @@ Return nil or signal `file-error'."
          (bufname        (bookmarkp-get-buffer-name bmk))
          (pos            (bookmark-get-position bmk))
          (end-pos        (bookmarkp-get-end-position bmk))
-         (old-info-node  (bookmark-prop-get bmk 'info-node)))
+         (old-info-node  (and (not (bookmark-get-handler bookmark))
+                              (bookmark-prop-get bmk 'info-node))))
     (if old-info-node                   ; Emacs 20-21 Info bookmarks - no handler entry.
-        (progn (require 'info) (Info-find-node file old-info-node))
+        (progn (require 'info) (Info-find-node file old-info-node) (goto-char pos))
       (if (not (and bookmarkp-use-region-flag end-pos (/= pos end-pos)))
           ;; Single-position bookmark (no region).  Go to it.
           (bookmarkp-goto-position file buf bufname pos
@@ -1968,7 +2432,9 @@ Non-nil DONT-TOGGLE-FILENAMES-P means do not call
     (bookmark-bmenu-mode)
     (unless (or dont-toggle-filenames-p (not bookmark-bmenu-toggle-filenames))
       (bookmark-bmenu-toggle-filenames t))
-    (when (fboundp 'fit-frame-if-one-window) (fit-frame-if-one-window))))
+    (when (fboundp 'fit-frame-if-one-window) (fit-frame-if-one-window)))
+  (when bookmarkp-sort-comparer
+    (bookmarkp-msg-about-sort-order (bookmarkp-current-sort-order))))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -2042,44 +2508,49 @@ non-nil, then do nothing."
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; 1. Use `bookmark-bmenu-surreptitiously-rebuild-list', instead of using
+;; 1. Added optional arg: handle bookmarks marked `>', not just those flagged `D'.
+;; 2. Use `bookmark-bmenu-surreptitiously-rebuild-list', instead of using
 ;;    `bookmark-bmenu-list', updating the modification count, and saving.
-;; 2. Update `bookmarkp-latest-bookmark-alist' to reflect the deletions.
+;; 3. Update `bookmarkp-latest-bookmark-alist' to reflect the deletions.
 ;;
 ;;;###autoload
-(defun bookmark-bmenu-execute-deletions () ; `x' in menu list
-  "Delete bookmarks marked with \\<Buffer-menu-mode-map>\\[Buffer-menu-delete] commands."
-  (interactive)
-  (message "Deleting bookmarks...")
-  (let ((hiding-file-names-p  bookmark-bmenu-toggle-filenames)
-        (o-point              (point))
-        (o-str                (save-excursion
-                                (beginning-of-line)
-                                (if (looking-at "^D")
-                                    nil
-                                  (buffer-substring (point) (progn (end-of-line) (point))))))
-        (o-col                (current-column)))
-    (when hiding-file-names-p (bookmark-bmenu-hide-filenames))
-    (setq bookmark-bmenu-toggle-filenames  nil)
-    (goto-char (point-min))
-    (forward-line 1)
-    (while (re-search-forward "^D" (point-max) t)
-      (let ((bmk  (bookmark-bmenu-bookmark))) 
-        (bookmark-delete bmk 'batch)    ; pass BATCH arg
-        (setq bookmarkp-latest-bookmark-alist
-              (delete (assoc bmk bookmarkp-latest-bookmark-alist)
-                      bookmarkp-latest-bookmark-alist))))
-    (bookmark-bmenu-surreptitiously-rebuild-list 'dont-toggle-filenames-p)
-    (setq bookmark-bmenu-toggle-filenames  hiding-file-names-p)
-    (when bookmark-bmenu-toggle-filenames (bookmark-bmenu-toggle-filenames 'show))
-    (if (not o-str)
-        (goto-char o-point)
-      (goto-char (point-min))
-      (search-forward o-str)
-      (beginning-of-line)
-      (forward-char o-col))
-    (beginning-of-line)
-    (message "Deleting bookmarks...done")))
+(defun bookmark-bmenu-execute-deletions (&optional markedp) ; `x' in menu list
+  "Delete (visible) bookmarks flagged `D'.
+With a prefix argument, delete the bookmarks marked `>' instead, after
+confirmation."
+  (interactive "P")
+  (if (or (not markedp) (yes-or-no-p "Delete bookmarks marked `>' (not `D') "))
+      (let ((hiding-file-names-p  bookmark-bmenu-toggle-filenames)
+            (o-point              (point))
+            (o-str                (save-excursion
+                                    (beginning-of-line)
+                                    (and (not (looking-at (if markedp "^>" "^D")))
+                                         (buffer-substring
+                                          (point) (progn (end-of-line) (point))))))
+            (o-col                (current-column)))
+        (message "Deleting bookmarks...")
+        (when hiding-file-names-p (bookmark-bmenu-hide-filenames))
+        (setq bookmark-bmenu-toggle-filenames  nil)
+        (goto-char (point-min))
+        (forward-line 1)
+        (while (re-search-forward (if markedp "^>" "^D") (point-max) t)
+          (let ((bmk  (bookmark-bmenu-bookmark))) 
+            (bookmark-delete bmk 'batch) ; pass BATCH arg
+            (setq bookmarkp-latest-bookmark-alist
+                  (delete (assoc bmk bookmarkp-latest-bookmark-alist)
+                          bookmarkp-latest-bookmark-alist))))
+        (bookmark-bmenu-surreptitiously-rebuild-list 'dont-toggle-filenames-p)
+        (setq bookmark-bmenu-toggle-filenames  hiding-file-names-p)
+        (when bookmark-bmenu-toggle-filenames (bookmark-bmenu-toggle-filenames 'show))
+        (if (not o-str)
+            (goto-char o-point)
+          (goto-char (point-min))
+          (search-forward o-str)
+          (beginning-of-line)
+          (forward-char o-col))
+        (beginning-of-line)
+        (message "Deleting bookmarks...done"))
+    (message "OK, nothing deleted")))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -2156,7 +2627,8 @@ With a prefix argument, do not include remote files or directories."
         (bookmarkp-bmenu-called-from-inside-p  t))
     (setq bookmarkp-latest-bookmark-alist  bookmark-alist)
     (bookmark-bmenu-list "% File and Directory Bookmarks" 'filteredp))
-  (message "Only file bookmarks are shown"))
+  (bookmarkp-msg-about-sort-order (bookmarkp-current-sort-order)
+                                  "Only file bookmarks are shown"))
 
 ;;;###autoload
 (defun bookmarkp-bmenu-show-only-non-files () ; `B' in menu list
@@ -2166,7 +2638,8 @@ With a prefix argument, do not include remote files or directories."
         (bookmarkp-bmenu-called-from-inside-p  t))
     (setq bookmarkp-latest-bookmark-alist  bookmark-alist)
     (bookmark-bmenu-list "% Non-File Bookmarks" 'filteredp))
-  (message "Only non-file bookmarks are shown"))
+  (bookmarkp-msg-about-sort-order (bookmarkp-current-sort-order)
+                                  "Only non-file bookmarks are shown"))
     
 ;;;###autoload
 (defun bookmarkp-bmenu-show-only-info-nodes () ; `I' in menu list
@@ -2176,7 +2649,8 @@ With a prefix argument, do not include remote files or directories."
         (bookmarkp-bmenu-called-from-inside-p  t))
     (setq bookmarkp-latest-bookmark-alist  bookmark-alist)
     (bookmark-bmenu-list "% Info Bookmarks" 'filteredp))
-  (message "Only Info bookmarks are shown"))
+  (bookmarkp-msg-about-sort-order (bookmarkp-current-sort-order)
+                                  "Only Info bookmarks are shown"))
 
 ;;;###autoload
 (defun bookmarkp-bmenu-show-only-w3m-urls () ; `W' in menu list
@@ -2186,7 +2660,8 @@ With a prefix argument, do not include remote files or directories."
         (bookmarkp-bmenu-called-from-inside-p  t))
     (setq bookmarkp-latest-bookmark-alist  bookmark-alist)
     (bookmark-bmenu-list "% W3M Bookmarks" 'filteredp))
-  (message "Only W3m bookmarks are shown"))
+  (bookmarkp-msg-about-sort-order (bookmarkp-current-sort-order)
+                                  "Only W3M bookmarks are shown"))
 
 ;;;###autoload
 (defun bookmarkp-bmenu-show-only-gnus () ; `G' in menu list
@@ -2196,7 +2671,8 @@ With a prefix argument, do not include remote files or directories."
         (bookmarkp-bmenu-called-from-inside-p  t))
     (setq bookmarkp-latest-bookmark-alist  bookmark-alist)
     (bookmark-bmenu-list "% Gnus Bookmarks" 'filteredp))
-  (message "Only Gnus bookmarks are shown"))
+  (bookmarkp-msg-about-sort-order (bookmarkp-current-sort-order)
+                                  "Only Gnus bookmarks are shown"))
 
 ;;;###autoload
 (defun bookmarkp-bmenu-show-only-regions () ; `R' in menu list
@@ -2206,11 +2682,12 @@ With a prefix argument, do not include remote files or directories."
         (bookmarkp-bmenu-called-from-inside-p  t))
     (setq bookmarkp-latest-bookmark-alist  bookmark-alist)
     (bookmark-bmenu-list "% Region Bookmarks" 'filteredp))
-  (message "Only bookmarks with regions are shown"))
+  (bookmarkp-msg-about-sort-order (bookmarkp-current-sort-order)
+                                  "Only bookmarks with regions are shown"))
 
 ;;;###autoload
 (defun bookmarkp-bmenu-toggle-show-only-unmarked () ; `<' in menu list
-  "Hide all marked bookmarks."
+  "Hide all marked bookmarks.  Repeat to toggle, showing all."
   (interactive)
   (if (or (bookmarkp-some-marked-p bookmarkp-latest-bookmark-alist)
           (bookmarkp-some-marked-p bookmarkp-bmenu-before-hide-marked-alist))
@@ -2244,7 +2721,7 @@ With a prefix argument, do not include remote files or directories."
 
 ;;;###autoload
 (defun bookmarkp-bmenu-toggle-show-only-marked () ; `>' in menu list
-  "Hide all unmarked bookmarks."
+  "Hide all unmarked bookmarks.  Repeat to toggle, showing all."
   (interactive)
   (if (or (bookmarkp-some-unmarked-p bookmarkp-latest-bookmark-alist)
           (bookmarkp-some-unmarked-p bookmarkp-bmenu-before-hide-unmarked-alist))
@@ -2284,7 +2761,7 @@ To revert the list, use `\\<bookmark-bmenu-mode-map>\\[bookmarkp-bmenu-refresh-m
   (interactive)
   (let ((bookmarkp-bmenu-called-from-inside-p  t))
     (bookmark-bmenu-list))
-  (message "All bookmarks are shown"))
+  (bookmarkp-msg-about-sort-order (bookmarkp-current-sort-order) "All bookmarks are shown"))
 
 ;;;###autoload
 (defun bookmarkp-bmenu-refresh-menu-list () ; `g' in menu list
@@ -2402,6 +2879,12 @@ This affects only the `>' mark, not the `D' flag."
 ;; Other Menu-List (`-*bmenu-*') Commands and Functions, Except Sorting
 
 ;;;###autoload
+(defun bookmarkp-bmenu-delete-marked () ; `D' in menu list
+  "Delete all (visible) bookmarks that are marked `>', after confirmation."
+  (interactive)
+  (bookmark-bmenu-execute-deletions 'marked))
+
+;;;###autoload
 (defun bookmarkp-bmenu-edit-bookmark () ; `E' in menu list
   "Edit the bookmark under the cursor."
   (interactive)
@@ -2440,7 +2923,7 @@ This affects only the `>' mark, not the `D' flag."
             (append (bookmarkp-face-prop 'bookmarkp-gnus)
                     '(mouse-face highlight follow-link t
                       help-echo "mouse-2: Go to this Gnus buffer")))
-           (isw3m                       ; W3m
+           (isw3m                       ; W3M
             (append (bookmarkp-face-prop 'bookmarkp-w3m)
                     `(mouse-face highlight follow-link t
                       help-echo (format "mouse-2 Goto URL: `%s'" ,isfile))))
@@ -2517,7 +3000,7 @@ BOOKMARK is a bookmark name or a bookmark record."
   (eq (bookmark-get-handler bookmark) 'bookmarkp-jump-gnus))
 
 (defun bookmarkp-w3m-bookmark-p (bookmark)
-  "Return non-nil if BOOKMARK is a W3m bookmark.
+  "Return non-nil if BOOKMARK is a W3M bookmark.
 BOOKMARK is a bookmark name or a bookmark record."
   (eq (bookmark-get-handler bookmark) 'bookmarkp-jump-w3m))
 
@@ -2530,7 +3013,7 @@ BOOKMARK is a bookmark name or a bookmark record."
 (defun bookmarkp-file-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK bookmarks a file or directory.
 BOOKMARK is a bookmark name or a bookmark record.
-This excludes bookmarks of a more specific kind (Info, Gnus, and W3m)."
+This excludes bookmarks of a more specific kind (Info, Gnus, and W3M)."
   (let* ((filename   (bookmark-get-filename bookmark))
          (isnonfile  (equal filename bookmarkp-non-file-filename))) 
     (and filename (not isnonfile)
@@ -2539,7 +3022,7 @@ This excludes bookmarks of a more specific kind (Info, Gnus, and W3m)."
 
 (defun bookmarkp-non-file-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK is a non-file bookmark (e.g *scratch*).
-This excludes bookmarks of a more specific kind (Info, Gnus, and W3m).
+This excludes bookmarks of a more specific kind (Info, Gnus, and W3M).
 It includes bookmarks to existing buffers, as well as bookmarks
 defined for buffers that do not currently exist."
   (let* ((filename   (bookmark-get-filename bookmark))
@@ -2561,7 +3044,7 @@ BOOKMARK is a bookmark name or a bookmark record."
 (defun bookmarkp-local-file-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK bookmarks a local file or directory.
 BOOKMARK is a bookmark name or a bookmark record.
-This excludes bookmarks of a more specific kind (Info, Gnus, and W3m)."
+This excludes bookmarks of a more specific kind (Info, Gnus, and W3M)."
   (and (bookmarkp-file-bookmark-p bookmark)
        (not (bookmarkp-remote-file-bookmark-p bookmark))))
 
@@ -2589,7 +3072,7 @@ A new list is returned (no side effects)."
   (bookmarkp-remove-if-not #'bookmarkp-gnus-bookmark-p bookmark-alist))
 
 (defun bookmarkp-w3m-alist-only ()
-  "`bookmark-alist', filtered to retain only W3m bookmarks.
+  "`bookmark-alist', filtered to retain only W3M bookmarks.
 A new list is returned (no side effects)."
   (bookmarkp-remove-if-not #'bookmarkp-w3m-bookmark-p bookmark-alist))
 
@@ -2716,6 +3199,23 @@ binary data (weird chars)."
 Starting with Emacs 22, the first element is `font-lock-face'."
   (list (if (> emacs-major-version 21) 'font-lock-face 'face) value))  
 
+(defun bookmarkp-make-plain-predicate (pred &optional final-pred)
+  "Return a plain predicate that corresponds to component-predicate PRED.
+PRED and FINAL-PRED correspond to their namesakes in
+`bookmarkp-sort-comparer' (which see).
+
+PRED should return `(t)', `(nil)', or nil.
+
+Optional arg FINAL-PRED is the final predicate to use if PRED cannot
+decide (returns nil).  If FINAL-PRED is nil, then `bookmarkp-alpha-p',
+the plain-predicate equivalent of `bookmarkp-alpha-cp' is used as the
+final predicate."
+  `(lambda (b1 b2)
+    (let ((res  (funcall ',pred b1 b2)))
+      (if res
+          (car res)
+        (funcall ',(or final-pred 'bookmarkp-alpha-p) b1 b2)))))
+
 ;;; If you need this for some reason, uncomment it.
 ;;; (defun bookmarkp-fix-bookmark-alist-and-save ()
 ;;;   "Update format of `bookmark-default-file' created in summer of 2009.
@@ -2784,45 +3284,95 @@ BOOKMARK is a bookmark name or a bookmark record."
   "Return a copy of LIST, sorted and with no duplicate keys.
 Only the first element with a given key is kept.
 Keys are compared using `equal'.
-Sorting is done using using `bookmarkp-sort-function'.
-Do nothing if `bookmarkp-sort-function' is nil.
+Sorting is done using using `bookmarkp-sort-comparer'.
+Do nothing if `bookmarkp-sort-comparer' is nil.
 If `bookmarkp-reverse-sort-p' is non-nil, then reverse the sort order."
-  (let ((newlist  (bookmarkp-remove-assoc-dups list)))
-    (when bookmarkp-sort-function
-      (setq newlist
-            (sort newlist (if bookmarkp-reverse-sort-p
-                              (lambda (a b) (not (funcall bookmarkp-sort-function a b)))
-                            bookmarkp-sort-function))))
+  (let ((newlist  (bookmarkp-remove-assoc-dups list))
+        (sort-fn  (and bookmarkp-sort-comparer
+                       (if (and (not (functionp bookmarkp-sort-comparer))
+                                (consp bookmarkp-sort-comparer))
+                           'bookmarkp-multi-sort
+                         bookmarkp-sort-comparer))))
+    (when sort-fn
+      (setq newlist  (sort newlist (if bookmarkp-reverse-sort-p
+                                       (lambda (a b) (not (funcall sort-fn a b)))
+                                     sort-fn))))
     (setq bookmarkp-latest-sorted-alist  newlist)))
 
+;;; KEEP this simpler version also.  This uses `run-hook-with-args-until-success', but it
+;;; does not respect `bookmarkp-reverse-multi-sort-p'.
+;;; (defun bookmarkp-multi-sort (b1 b2)
+;;;   "Try predicates in `bookmarkp-sort-comparer', in order, until one decides.
+;;; See the description of `bookmarkp-sort-comparer'."
+;;;   (let* ((preds   (append (car bookmarkp-sort-comparer) (cdr bookmarkp-sort-comparer)))
+;;;          (result  (run-hook-with-args-until-success 'preds b1 b2)))
+;;;     (if (consp result)
+;;;         (car result)
+;;;       result)))
+
+;; This Lisp definition respects `bookmarkp-reverse-multi-sort-p', and can be extended.
+(defun bookmarkp-multi-sort (b1 b2)
+  "Try predicates in `bookmarkp-sort-comparer', in order, until one decides.
+See the description of `bookmarkp-sort-comparer'.
+If `bookmarkp-reverse-multi-sort-p' is non-nil, then reverse the order
+for using multi-sorting predicates."
+  (let ((preds       (car bookmarkp-sort-comparer))
+        (final-pred  (cadr bookmarkp-sort-comparer))
+        (result      nil))
+    (when bookmarkp-reverse-multi-sort-p (setq preds  (reverse preds)))
+    (catch 'bookmarkp-multi-sort
+      (dolist (pred  preds)
+        (setq result  (funcall pred b1 b2))
+        (when (consp result)
+          (when bookmarkp-reverse-multi-sort-p (setq result  (list (not (car result)))))
+          (throw 'bookmarkp-multi-sort (car result))))
+      (and final-pred  (if bookmarkp-reverse-multi-sort-p
+                           (not (funcall final-pred b1 b2))
+                         (funcall final-pred b1 b2))))))
+
+;; The message is only approximate.  The effect of `bookmarkp-reverse-multi-sort-p' is not
+;; always intuitive, but it can often be useful.  What's not always intuitive is the placement
+;; (the order) of bookmarks that are not sorted by the PREDs.
+;; 
+(defun bookmarkp-msg-about-sort-order (order &optional prefix-msg)
+  "Display a message mentioning the current sort ORDER and direction.
+Optional arg PREFIX-MSG is prepended to the constructed message, and
+terminated with a period."
+  (let ((msg
+         (if (not bookmarkp-sort-comparer)
+             "Bookmarks not sorted"
+           (format
+            "%s%s" (concat "Sorted " order)
+            (if (not (and (consp bookmarkp-sort-comparer) ; Ordinary single predicate.
+                          (consp (car bookmarkp-sort-comparer))))
+                (if bookmarkp-reverse-sort-p "; reversed" "")
+              (if (not (cadr (car bookmarkp-sort-comparer)))
+                  ;; Single PRED.
+                  (if (or (and bookmarkp-reverse-sort-p (not bookmarkp-reverse-multi-sort-p))
+                          (and bookmarkp-reverse-multi-sort-p (not bookmarkp-reverse-sort-p)))
+                      "; reversed"
+                    "")
+
+                ;; In case we want to distinguish:
+                ;; (if (and bookmarkp-reverse-sort-p (not bookmarkp-reverse-multi-sort-p))
+                ;;     "; reversed"
+                ;;   (if (and bookmarkp-reverse-multi-sort-p (not bookmarkp-reverse-sort-p))
+                ;;       "; reversed +"
+                ;;     ""))
+
+                ;; At least two PREDs.
+                (cond ((and bookmarkp-reverse-sort-p (not bookmarkp-reverse-multi-sort-p))
+                       "; reversed")
+                      ((and bookmarkp-reverse-multi-sort-p (not bookmarkp-reverse-sort-p))
+                       "; each predicate group reversed")
+                      ((and bookmarkp-reverse-multi-sort-p bookmarkp-reverse-sort-p)
+                       "; order of predicate groups reversed")
+                      (t ""))))))))
+    (when prefix-msg (setq msg  (concat prefix-msg ".  " msg)))
+    (message msg)))
+               
 
 ;; Sort Commands
-
-;; The order of the macro calls here defines the reverse order of
-;; `bookmarkp-sort-functions-alist'.  The first here is also the default sort order.
-;; Entries are traversed by `s s'..., in `bookmarkp-sort-functions-alist' order.
-
-(bookmarkp-define-sort-command          ; `s a' in menu list
- "alphabetically"                       ; `bookmarkp-bmenu-sort-alphabetically'
- bookmarkp-alpha-p
- "Toggle sorting of bookmarks alphabetically, respecting `case-fold-search'.
-A prefix arg reverses the sort direction.")
-
-(bookmarkp-define-sort-command          ; `s v' in menu list
- "by visit frequency"                   ; `bookmarkp-bmenu-sort-by-visit-frequency'
- bookmarkp-visited-more-p
- "Toggle sorting of bookmarks by the number of times visited.
-A prefix arg reverses the sort direction.")
-
-(bookmarkp-define-sort-command          ; `s t' in menu list
- "by last visit time"                   ; `bookmarkp-bmenu-sort-by-last-visit-time'
- bookmarkp-visited-more-recently-p
- "Toggle sorting of bookmarks by the time of their last visit.
-A prefix arg reverses the sort direction.")
-
-(bookmarkp-define-sort-command
- "turned OFF" nil                       ; `bookmarkp-bmenu-sort-turned-OFF'
-  "Do not sort bookmarks.")
 
 (defun bookmarkp-repeat-command (command)
   "Repeat COMMAND."
@@ -2843,80 +3393,477 @@ This is a repeatable version of `bookmarkp-bmenu-change-sort-order'."
   "Cycle to the next sort order.
 With a prefix arg, reverse the current sort order."
   (interactive "P")
-  (setq bookmarkp-sort-functions-alist  (delq nil bookmarkp-sort-functions-alist))
+  (setq bookmarkp-sort-orders-for-cycling-alist
+        (delq nil bookmarkp-sort-orders-for-cycling-alist))
   (if arg
       (bookmarkp-reverse-sort-order)
     (let ((bookmarkp-bmenu-called-from-inside-p  t) ; Prevent removing marks.
           (current-bmk                           (bookmark-bmenu-bookmark))
           next-order)
-      (let ((orders  (mapcar #'car bookmarkp-sort-functions-alist)))
+      (let ((orders  (mapcar #'car bookmarkp-sort-orders-for-cycling-alist)))
         (setq next-order  (or (cadr (memq (bookmarkp-current-sort-order) orders))
                               (car orders))
-              bookmarkp-sort-function  (cdr (assoc next-order
-                                                   bookmarkp-sort-functions-alist))))
+              bookmarkp-sort-comparer  (cdr (assoc next-order
+                                                   bookmarkp-sort-orders-for-cycling-alist))))
       (bookmark-bmenu-surreptitiously-rebuild-list)
-      (bookmarkp-bmenu-goto-bookmark-named current-bmk) ; Put cursor back on right line.
-      (message "%s%s"
-               (if bookmarkp-sort-function (concat "Sorted " next-order) "Sorting TURNED OFF")
-               (if (and bookmarkp-sort-function bookmarkp-reverse-sort-p) ", REVERSED" "")))))
+      (bookmarkp-bmenu-goto-bookmark-named current-bmk) ; Put cursor back on the right line.
+      (bookmarkp-msg-about-sort-order next-order))))
 
 (defun bookmarkp-current-sort-order ()
-  "Current sort order, or nil if sorting is inactive."
-  (car (rassq bookmarkp-sort-function bookmarkp-sort-functions-alist)))
+  "Current sort order or sort function, as a string suitable in a message."
+  (or (car (rassoc bookmarkp-sort-comparer bookmarkp-sort-orders-alist))
+      (format "%s" bookmarkp-sort-comparer)))
 
-(defun bookmarkp-reverse-sort-order ()  ; `S R' in menu list
-  "Reverse the current sort order."
+(defun bookmarkp-reverse-sort-order ()  ; `s r' in menu list
+  "Reverse the current sort order.
+If you combine this with \\<bookmark-bmenu-mode-map>\
+`\\[bookmarkp-reverse-multi-sort-order]', then see the doc for that command."
   (interactive)
   (setq bookmarkp-reverse-sort-p  (not bookmarkp-reverse-sort-p))
   (let ((bookmarkp-bmenu-called-from-inside-p  t) ; Prevent removing marks.
         (current-bmk                           (bookmark-bmenu-bookmark)))
     (bookmark-bmenu-surreptitiously-rebuild-list)
-    (bookmarkp-bmenu-goto-bookmark-named current-bmk)) ; Put cursor back on right line.
-  (message "%s%s"
-           (if bookmarkp-sort-function
-               (concat "Sorted " (bookmarkp-current-sort-order))
-             "Sorting TURNED OFF")
-           (if (and bookmarkp-sort-function bookmarkp-reverse-sort-p) ", REVERSED" "")))
+    (bookmarkp-bmenu-goto-bookmark-named current-bmk)) ; Put cursor back on the right line.
+  (bookmarkp-msg-about-sort-order (bookmarkp-current-sort-order)))
+
+(defun bookmarkp-reverse-multi-sort-order ()  ; `s C-r' in menu list
+  "Reverse the application of multi-sorting predicates.
+These are the PRED predicates described for option
+`bookmark-sort-function'.
+
+This reverses the order in which the predicates are tried, and it
+also complements the truth value returned by each predicate.
+
+For example, if the list of multi-sorting predicates is (p1 p2 p3),
+then the predicates are tried in the order: p3, p2, p1.  And if a
+predicate returns true, `(t)', then the effect is as if it returned
+false, `(nil)', and vice versa.
+
+The use of multi-sorting predicates tends to group bookmarks, with the
+first predicate corresponding to the first bookmark group etc.
+
+The effect of \\<bookmark-bmenu-mode-map>`\\[bookmarkp-reverse-multi-sort-order]' is \
+roughly as follows:
+
+ - without also `\\[bookmarkp-reverse-sort-order]', it reverses the bookmark order in each \
+group
+
+ - combined with `\\[bookmarkp-reverse-sort-order]', it reverses the order of the bookmark
+   groups, but not the bookmarks within a group
+
+This is a rough description.  The actual behavior can be complex,
+because of how each predicate is defined.  If this description helps
+you, fine.  If not, just experiment and see what happens. \;-)
+
+Remember that ordinary `\\[bookmarkp-reverse-sort-order]' reversal on its own is \
+straightforward.
+If you find `\\[bookmarkp-reverse-multi-sort-order]' confusing or not helpful, then do not \
+use it."
+  (interactive)
+  (setq bookmarkp-reverse-multi-sort-p  (not bookmarkp-reverse-multi-sort-p))
+  (let ((bookmarkp-bmenu-called-from-inside-p  t) ; Prevent removing marks.
+        (current-bmk                           (bookmark-bmenu-bookmark)))
+    (bookmark-bmenu-surreptitiously-rebuild-list)
+    (bookmarkp-bmenu-goto-bookmark-named current-bmk)) ; Put cursor back on the right line.
+  (bookmarkp-msg-about-sort-order (bookmarkp-current-sort-order)))
+
+
+;; The order of the macro calls here defines the REVERSE order of
+;; `bookmarkp-sort-orders-alist'.  The first here is thus also the default sort order.
+;; Entries are traversed by `s s'..., in `bookmarkp-sort-orders-alist' order.
+
+(bookmarkp-define-sort-command          ; `s k' in menu list (`k' for "kind")
+ "by bookmark type"                     ; `bookmarkp-bmenu-sort-by-bookmark-type'
+ ((bookmarkp-info-cp bookmarkp-gnus-cp bookmarkp-w3m-cp bookmarkp-local-file-type-cp)
+  bookmarkp-alpha-p)
+ "Sort bookmarks by type: Info, Gnus, W3M, files, other.")
+
+(bookmarkp-define-sort-command          ; `s w' in menu list
+ "by w3m url"                           ; `bookmarkp-bmenu-sort-by-w3m-url'
+ ((bookmarkp-w3m-cp) bookmarkp-alpha-p)
+ "Sort W3M bookmarks alphabetically by their URL/filename.
+When two bookmarks are not comparable this way, compare them by
+bookmark name.")
+
+(bookmarkp-define-sort-command          ; `s g' in menu list
+ "by gnus thread"                       ; `bookmarkp-bmenu-sort-by-gnus-thread'
+ ((bookmarkp-gnus-cp) bookmarkp-alpha-p)
+ "Sort Gnus bookmarks by group, then by article, then by message.
+When two bookmarks are not comparable this way, compare them by
+bookmark name.")
+
+(bookmarkp-define-sort-command          ; `s i' in menu list
+ "by Info location"                     ; `bookmarkp-bmenu-sort-by-Info-location'
+ ((bookmarkp-info-cp) bookmarkp-alpha-p)
+ "Sort Info bookmarks by file name, then node name, then position.
+When two bookmarks are not comparable this way, compare them by
+bookmark name.")
+
+(bookmarkp-define-sort-command          ; `s f u' in menu list
+ "by last local file update"            ; `bookmarkp-bmenu-sort-by-last-local-file-update'
+ ((bookmarkp-local-file-updated-more-recently-cp) bookmarkp-alpha-p)
+ "Sort bookmarks by last local file update time.
+Sort a local file before a remote file, and a remote file before other
+bookmarks.  Otherwise, sort by bookmark name.")
+
+(bookmarkp-define-sort-command          ; `s f t' in menu list
+ "by last local file access"            ; `bookmarkp-bmenu-sort-by-last-local-file-access'
+ ((bookmarkp-local-file-accessed-more-recently-cp) bookmarkp-alpha-p)
+ "Sort bookmarks by last local file access time.
+A local file sorts before a remote file, which sorts before other
+bookmarks.  Otherwise, sort by bookmark name.")
+
+(bookmarkp-define-sort-command          ; `s f s' in menu list
+ "by local file size"                   ; `bookmarkp-bmenu-sort-by-local-file-size'
+ ((bookmarkp-local-file-size-cp) bookmarkp-alpha-p)
+ "Sort bookmarks by local file size.
+A local file sorts before a remote file, which sorts before other
+bookmarks.  Otherwise, sort by bookmark name.")
+
+(bookmarkp-define-sort-command          ; `s f n' in menu list
+ "by file name"                         ; `bookmarkp-bmenu-sort-by-file-name'
+ ((bookmarkp-file-alpha-cp) bookmarkp-alpha-p)
+ "Sort bookmarks by file name.
+When two bookmarks are not comparable by file name, compare them by
+bookmark name.")
+
+(bookmarkp-define-sort-command          ; `s f d' in menu list (`d' for "directory")
+ "by local file type"                   ; `bookmarkp-bmenu-sort-by-local-file-type'
+ ((bookmarkp-local-file-type-cp) bookmarkp-alpha-p)
+ "Sort bookmarks by local file type: file, symlink, directory.
+A local file sorts before a remote file, which sorts before other
+bookmarks.  Otherwise, sort by bookmark name.")
+
+(bookmarkp-define-sort-command          ; `s b' in menu list
+ "by last buffer or file access"        ; `bookmarkp-bmenu-sort-by-last-buffer-or-file-access'
+ ((bookmarkp-buffer-last-access-cp bookmarkp-local-file-accessed-more-recently-cp)
+  bookmarkp-alpha-p)
+ "Sort bookmarks by last buffer access or last local file access.
+Sort a bookmark accessed more recently before one accessed less
+recently or not accessed.  Sort a bookmark to an existing buffer
+before a local file bookmark.  When two bookmarks are not comparable
+by such critera, sort them by bookmark name.  (In particular, sort
+remote-file bookmarks by bookmark name.")
+
+(bookmarkp-define-sort-command          ; `s v' in menu list
+ "by bookmark visit frequency"          ; `bookmarkp-bmenu-sort-by-bookmark-visit-frequency'
+ ((bookmarkp-visited-more-cp) bookmarkp-alpha-p)
+ "Sort bookmarks by the number of times they were visited as bookmarks.
+When two bookmarks are not comparable by visit frequency, compare them
+by bookmark name.")
+
+(bookmarkp-define-sort-command          ; `s t' in menu list
+ "by last bookmark access"              ; `bookmarkp-bmenu-sort-by-last-bookmark-access'
+ ((bookmarkp-bookmark-last-access-cp) bookmarkp-alpha-p)
+ "Sort bookmarks by the time of their last visit as bookmarks.
+When two bookmarks are not comparable by visit time, compare them
+by bookmark name.")
+
+(bookmarkp-define-sort-command          ; `s n' in menu list
+ "by bookmark name"                     ; `bookmarkp-bmenu-sort-by-bookmark-name'
+ bookmarkp-alpha-p
+ "Sort bookmarks by bookmark name, respecting `case-fold-search'.")
 
 
 ;; Sort Predicates
 
-(defun bookmarkp-visited-more-p (b1 b2)
-  "Return non-nil if bookmark B1 was visited more often than B2.
-Also: B1 < B2 if B1 was visited but B2 was not.
-      B1 < B2 if B1 precedes B2 alphabetically and
-              neither was visited or both were visited equally."
+(defun bookmarkp-visited-more-cp (b1 b2)
+  "True if bookmark B1 was visited more often than B2.
+True also if B1 was visited but B2 was not.
+Reverse the roles of B1 and B2 for a false value.
+A true value is returned as `(t)', a false value as `(nil)'.
+Return nil if incomparable as described."
   (let ((v1  (bookmarkp-get-visits-count b1))
         (v2  (bookmarkp-get-visits-count b2)))
     (cond ((and v1 v2)
-           (or (> v1 v2)  (and (= v1 v2) (bookmarkp-alpha-p b1 b2))))
-          (v1 t)
-          (v2 nil)
-          (t (bookmarkp-alpha-p b1 b2)))))
+           (cond ((> v1 v2) '(t))
+                 ((> v2 v1) '(nil))
+                 (t nil)))
+          (v1 '(t))
+          (v2 '(nil))
+          (t nil))))
 
-(defun bookmarkp-visited-more-recently-p (b1 b2)
-  "Return non-nil if bookmark B1 was visited more recently than B2.
-Also: B1 < B2 if B1 was visited but B2 was not.
-      B1 < B2 if B1 precedes B2 alphabetically and
-              either neither was visited
-              or the last visit of each was at the same time."
+(defun bookmarkp-bookmark-last-access-cp (b1 b2)
+  "True if bookmark B1 was visited more recently than B2.
+True also if B1 was visited but B2 was not.
+Reverse the roles of B1 and B2 for a false value.
+A true value is returned as `(t)', a false value as `(nil)'.
+Return nil if incomparable as described."
   (let ((t1  (bookmarkp-get-visit-time b1))
         (t2  (bookmarkp-get-visit-time b2)))
     (cond ((and t1 t2)
-           (or (> t1 t2)  (and (= t1 t2) (bookmarkp-alpha-p b1 b2))))
-          (t1 t)
-          (t2 nil)
-          (t (bookmarkp-alpha-p b1 b2)))))
+           (cond ((> t1 t2) '(t))
+                 ((> t2 t1) '(nil))
+                 (t nil)))
+          (t1 '(t))
+          (t2 '(nil))
+          (t nil))))
 
-(defun bookmarkp-alpha-p (b1 b2)
-  "Return non-nil if bookmark B1 sorts alphabetically before B2.
-The bookmark names that are compared, respecting `case-fold-search'."
+(defun bookmarkp-buffer-last-access-cp (b1 b2)
+  "True if bookmark B1's buffer or file was visited more recently than B2's.
+A bookmark to an existing buffer sorts before a file bookmark, even if
+the buffer has not been visited during this session.
+
+True also if B1 has a buffer but B2 does not.
+Reverse the roles of B1 and B2 for a false value.
+A true value is returned as `(t)', a false value as `(nil)'.
+Return nil if incomparable as described."
+  (let ((buf1  (bookmarkp-get-buffer-name b1))
+        (buf2  (bookmarkp-get-buffer-name b2))
+        f1 f2 t1 t2)
+    (setq buf1  (and buf1 (get-buffer buf1))
+          buf2  (and buf2 (get-buffer buf2)))
+    (cond ((and buf1 buf2)              ; Both buffers exist.   See whether they were accessed.
+           (when buf1 (setq buf1  (member buf1 (buffer-list))
+                            buf1  (length buf1)))
+           (when buf2 (setq buf2  (member buf2 (buffer-list))
+                            buf2  (length buf2)))
+           (cond ((and buf1 buf2)       ; Both were accessed.  Priority to most recent access.
+                  (cond ((< buf1 buf2) '(t))
+                        ((< buf2 buf1) '(nil))
+                        (t nil)))
+                 (buf1 '(t))            ; Only buf1 was accessed.
+                 (buf2 '(nil))          ; Only buf2 was accessed.
+                 (t nil)))              ; Neither was accessed.
+
+          (buf1 '(t))                   ; Only buf1 exists.
+          (buf2 '(nil))                 ; Only buf2 exists.
+          (t nil))))                    ; Neither buffer exists
+
+(defun bookmarkp-info-cp (b1 b2)
+  "True if bookmark B1 sorts as an Info bookmark before B2.
+Two Info bookmarks are compared first by file name (corresponding to
+the manual), then by node name, then by position.
+True also if B1 is an Info bookmark but B2 is not.
+Reverse the roles of B1 and B2 for a false value.
+A true value is returned as `(t)', a false value as `(nil)'.
+Return nil if neither sorts before the other."
+  (let ((i1  (bookmarkp-info-bookmark-p b1))
+        (i2  (bookmarkp-info-bookmark-p b2)))
+    (cond ((and i1 i2)
+           (setq i1  (abbreviate-file-name (bookmark-get-filename b1))
+                 i2  (abbreviate-file-name (bookmark-get-filename b2)))
+           (when case-fold-search
+             (setq i1  (bookmarkp-upcase i1)
+                   i2  (bookmarkp-upcase i2)))
+           (cond ((string-lessp i1 i2) '(t)) ; Compare manuals (file names).
+                 ((string-lessp i2 i1) '(nil))
+                 (t                     ; Compare node names.
+                  (setq i1  (bookmark-prop-get b1 'info-node)
+                        i2  (bookmark-prop-get b2 'info-node))
+                  (cond ((string-lessp i1 i2) '(t))
+                        ((string-lessp i2 i1) '(nil))
+                        (t
+                         (setq i1  (bookmark-get-position b1)
+                               i2  (bookmark-get-position b2))
+                         (cond ((or (not i1) (not i2)) '(t)) ; Fallback if no `position' entry.
+                               ((<= i1 i2) '(t))
+                               ((< i2 i1) '(nil))))))))
+          (i1 '(t))
+          (i2 '(nil))
+          (t nil))))
+
+(defun bookmarkp-gnus-cp (b1 b2)
+  "True if bookmark B1 sorts as a Gnus bookmark before B2.
+Two Gnus bookmarks are compared first by Gnus group name, then by
+article number, then by message ID.
+True also if B1 is a Gnus bookmark but B2 is not.
+Reverse the roles of B1 and B2 for a false value.
+A true value is returned as `(t)', a false value as `(nil)'.
+Return nil if neither sorts before the other."
+  (let ((g1  (bookmarkp-gnus-bookmark-p b1))
+        (g2  (bookmarkp-gnus-bookmark-p b2)))
+    (cond ((and g1 g2)
+           (setq g1  (bookmark-prop-get b1 'group)
+                 g2  (bookmark-prop-get b2 'group))
+           (cond ((string-lessp g1 g2) '(t)) ; Compare groups.
+                 ((string-lessp g2 g1) '(nil))
+                 (t                     ; Compare article numbers.
+                  (setq g1  (bookmark-prop-get b1 'article)
+                        g2  (bookmark-prop-get b2 'article))
+                  (cond ((< g1 g2) '(t))
+                        ((< g2 g1) '(nil))
+                        (t
+                         (setq g1  (bookmark-prop-get b1 'message-id)
+                               g2  (bookmark-prop-get b2 'message-id))
+                         (cond ((string-lessp g1 g2) '(t)) ; Compare message IDs.
+                               ((string-lessp g2 g1) '(nil))
+                               (t nil)))))))   
+          (g1 '(t))
+          (g2 '(nil))
+          (t nil))))
+
+(defun bookmarkp-w3m-cp (b1 b2)
+  "True if bookmark B1 sorts as a W3M URL bookmark before B2.
+Two W3M URL bookmarks are compared alphabetically, by their URLs.
+True also if B1 is a Gnus bookmark but B2 is not.
+Reverse the roles of B1 and B2 for a false value.
+A true value is returned as `(t)', a false value as `(nil)'.
+Return nil if neither sorts before the other."
+  (let ((w1  (bookmarkp-w3m-bookmark-p b1))
+        (w2  (bookmarkp-w3m-bookmark-p b2)))
+    (cond ((and w1 w2)
+           (setq w1  (bookmark-get-filename b1)
+                 w2  (bookmark-get-filename b2))
+           (cond ((string-lessp w1 w2) '(t))
+                 ((string-lessp w2 w1) '(nil))
+                 (t nil)))
+          (w1 '(t))
+          (w2 '(nil))
+          (t nil))))
+
+(defun bookmarkp-alpha-cp (b1 b2)
+  "True if bookmark B1's name sorts alphabetically before B2's.
+The bookmark names are compared, respecting `case-fold-search'.
+Reverse the roles of B1 and B2 for a false value.
+A true value is returned as `(t)', a false value as `(nil)'.
+Return nil if neither sorts before the other."
   (let ((s1  (car b1))
         (s2  (car b2)))
     (when case-fold-search
       (setq s1  (bookmarkp-upcase s1)
             s2  (bookmarkp-upcase s2)))
-    (string-lessp s1 s2)))
+    (cond ((string-lessp s1 s2) '(t))
+          ((string-lessp s2 s1) '(nil))
+          (t nil))))
+
+(defalias 'bookmarkp-alpha-p (bookmarkp-make-plain-predicate 'bookmarkp-alpha-cp))
+
+
+;; File Sort Predicates
+
+(defun bookmarkp-file-alpha-cp (b1 b2)
+  "True if bookmark B1's file name sorts alphabetically before B2's.
+The file names are shortened using `abbreviate-file-name', then they
+are compared respecting `case-fold-search'.
+
+Reverse the roles of B1 and B2 for a false value.
+A true value is returned as `(t)', a false value as `(nil)'.
+Return nil if neither sorts before the other."
+  (let ((f1  (bookmarkp-file-bookmark-p b1))
+        (f2  (bookmarkp-file-bookmark-p b2)))
+    (cond ((and f1 f2)
+           ;; Call `abbreviate-file-name' mainly to get letter case right per platform.
+           (setq f1  (abbreviate-file-name (bookmark-get-filename b1))
+                 f2  (abbreviate-file-name (bookmark-get-filename b2)))
+           (when case-fold-search
+             (setq f1  (bookmarkp-upcase f1)
+                   f2  (bookmarkp-upcase f2)))
+           (cond ((string-lessp f1 f2) '(t))
+                 ((string-lessp f2 f1) '(nil))
+                 (t nil)))
+          (f1 '(t))
+          (f2 '(nil))
+          (t nil))))
+
+;; We define all file-attribute predicates, in case you want to use them.
+;;
+;; `bookmarkp-file-attribute-0-cp'  - type
+;; `bookmarkp-file-attribute-1-cp'  - links
+;; `bookmarkp-file-attribute-2-cp'  - uid
+;; `bookmarkp-file-attribute-3-cp'  - gid
+;; `bookmarkp-file-attribute-4-cp'  - last access time
+;; `bookmarkp-file-attribute-5-cp'  - last update time
+;; `bookmarkp-file-attribute-6-cp'  - last status change
+;; `bookmarkp-file-attribute-7-cp'  - size
+;; `bookmarkp-file-attribute-8-cp'  - modes
+;; `bookmarkp-file-attribute-9-cp'  - gid change
+;; `bookmarkp-file-attribute-10-cp' - inode
+;; `bookmarkp-file-attribute-11-cp' - device
+;;
+(bookmarkp-define-file-sort-predicate 0) ; Type: file, symlink, dir
+(bookmarkp-define-file-sort-predicate 1) ; Links
+(bookmarkp-define-file-sort-predicate 2) ; Uid
+(bookmarkp-define-file-sort-predicate 3) ; Gid
+(bookmarkp-define-file-sort-predicate 4) ; Last access time
+(bookmarkp-define-file-sort-predicate 5) ; Last modification time
+(bookmarkp-define-file-sort-predicate 6) ; Last status-change time
+(bookmarkp-define-file-sort-predicate 7) ; Size
+(bookmarkp-define-file-sort-predicate 8) ; Modes
+(bookmarkp-define-file-sort-predicate 9) ; Gid would change if re-created
+(bookmarkp-define-file-sort-predicate 10) ; Inode
+(bookmarkp-define-file-sort-predicate 11) ; Device
+
+(defun bookmarkp-local-file-accessed-more-recently-cp (b1 b2)
+  "True if bookmark B1's local file was accessed more recently than B2's.
+A local file sorts before a remote file, which sorts before other
+bookmarks.  Two remote files are considered incomparable - their
+access times are not examined.
+
+Reverse the roles of B1 and B2 for a false value.
+A true value is returned as `(t)', a false value as `(nil)'.
+Return nil if neither sorts before the other."
+  (cond ((and (bookmarkp-local-file-bookmark-p b1) (bookmarkp-local-file-bookmark-p b2))
+         (bookmarkp-cp-not (bookmarkp-file-attribute-4-cp b1 b2)))
+        ((bookmarkp-local-file-bookmark-p b1) '(t))
+        ((bookmarkp-local-file-bookmark-p b2) '(nil))
+        ((and (bookmarkp-remote-file-bookmark-p b1) (bookmarkp-remote-file-bookmark-p b2)) nil)
+        ((bookmarkp-remote-file-bookmark-p b1) '(t))
+        ((bookmarkp-remote-file-bookmark-p b2) '(nil))
+        (t nil)))
+
+(defun bookmarkp-local-file-updated-more-recently-cp (b1 b2)
+  "True if bookmark B1's local file was updated more recently than B2's.
+A local file sorts before a remote file, which sorts before other
+bookmarks.  Two remote files are considered incomparable - their
+update times are not examined.
+
+Reverse the roles of B1 and B2 for a false value.
+A true value is returned as `(t)', a false value as `(nil)'.
+Return nil if neither sorts before the other."
+  (cond ((and (bookmarkp-local-file-bookmark-p b1) (bookmarkp-local-file-bookmark-p b2))
+         (bookmarkp-cp-not (bookmarkp-file-attribute-5-cp b1 b2)))
+        ((bookmarkp-local-file-bookmark-p b1) '(t))
+        ((bookmarkp-local-file-bookmark-p b2) '(nil))
+        ((and (bookmarkp-remote-file-bookmark-p b1) (bookmarkp-remote-file-bookmark-p b2)) nil)
+        ((bookmarkp-remote-file-bookmark-p b1) '(t))
+        ((bookmarkp-remote-file-bookmark-p b2) '(nil))
+        (t nil)))
+
+(defun bookmarkp-local-file-size-cp (b1 b2)
+  "True if bookmark B1's local file is larger than B2's.
+A local file sorts before a remote file, which sorts before other
+bookmarks.  Two remote files are considered incomparable - their
+sizes are not examined.
+
+Reverse the roles of B1 and B2 for a false value.
+A true value is returned as `(t)', a false value as `(nil)'.
+Return nil if neither sorts before the other."
+  (cond ((and (bookmarkp-local-file-bookmark-p b1) (bookmarkp-local-file-bookmark-p b2))
+         (bookmarkp-cp-not (bookmarkp-file-attribute-7-cp b1 b2)))
+        ((bookmarkp-local-file-bookmark-p b1) '(t))
+        ((bookmarkp-local-file-bookmark-p b2) '(nil))
+        ((and (bookmarkp-remote-file-bookmark-p b1) (bookmarkp-remote-file-bookmark-p b2)) nil)
+        ((bookmarkp-remote-file-bookmark-p b1) '(t))
+        ((bookmarkp-remote-file-bookmark-p b2) '(nil))
+        (t nil)))
+
+(defun bookmarkp-local-file-type-cp (b1 b2)
+  "True if bookmark B1 sorts by local file type before B2.
+For two local files, a file sorts before a symlink, which sorts before
+a directory.
+
+A local file sorts before a remote file, which sorts before other
+bookmarks.  Two remote files are considered incomparable - their file
+types are not examined.
+
+Reverse the roles of B1 and B2 for a false value.
+A true value is returned as `(t)', a false value as `(nil)'.
+Return nil if neither sorts before the other."
+  (cond ((and (bookmarkp-local-file-bookmark-p b1) (bookmarkp-local-file-bookmark-p b2))
+         (bookmarkp-file-attribute-0-cp b1 b2))
+        ((bookmarkp-local-file-bookmark-p b1) '(t))
+        ((bookmarkp-local-file-bookmark-p b2) '(nil))
+        ((and (bookmarkp-remote-file-bookmark-p b1) (bookmarkp-remote-file-bookmark-p b2)) nil)
+        ((bookmarkp-remote-file-bookmark-p b1) '(t))
+        ((bookmarkp-remote-file-bookmark-p b2) '(nil))
+        (t nil)))
+
+(defun bookmarkp-cp-not (truth)
+  "Return the negation of boolean value TRUTH.
+If TRUTH is (t), return (nil), and vice versa.
+If TRUTH is nil, return nil."
+  (and truth (if (car truth) '(nil) '(t))))
 
 
 ;; Menu-List Functions (`bookmarkp-bmenu-*') -------------------------
@@ -3122,10 +4069,10 @@ position, and the context strings for the position."
     (if (eq len 0)  "*w3m*"  (format "*w3m*<%d>" (1+ len)))))
 
 (defun bookmarkp-jump-w3m-new-session (bookmark)
-  "Jump to W3m bookmark BOOKMARK, setting a new tab."
+  "Jump to W3M bookmark BOOKMARK, setting a new tab."
   (let ((buf   (bookmarkp-w3m-set-new-buffer-name)))
     (w3m-browse-url (bookmark-prop-get bookmark 'filename) 'newsession)
-    (while (not (get-buffer buf)) (sit-for 1)) ; Be sure we have the W3m buffer.
+    (while (not (get-buffer buf)) (sit-for 1)) ; Be sure we have the W3M buffer.
     (with-current-buffer buf
       (goto-char (point-min))
       ;; Wait until data arrives in buffer, before setting region.
@@ -3134,8 +4081,8 @@ position, and the context strings for the position."
      `("" (buffer . ,buf) . ,(bookmark-get-bookmark-record bookmark)))))
 
 (defun bookmarkp-jump-w3m-only-one-tab (bookmark)
-  "Close all W3m sessions and jump to BOOKMARK in a new W3m buffer."
-  (w3m-quit 'force)                     ; Be sure we start with an empty W3m buffer.
+  "Close all W3M sessions and jump to BOOKMARK in a new W3M buffer."
+  (w3m-quit 'force)                     ; Be sure we start with an empty W3M buffer.
   (w3m-browse-url (bookmark-prop-get bookmark 'filename))
   (with-current-buffer "*w3m*" (while (eq (point-min) (point-max)) (sit-for 1)))
   (bookmark-default-handler `("" (buffer . ,(buffer-name (current-buffer))) .
@@ -3144,7 +4091,7 @@ position, and the context strings for the position."
 (defun bookmarkp-jump-w3m (bookmark)
   "Handler function for record returned by `bookmarkp-make-w3m-record'.
 BOOKMARK is a bookmark name or a bookmark record.
-Use multi-tabs in W3m if `bookmarkp-w3m-allow-multi-tabs' is non-nil."
+Use multi-tabs in W3M if `bookmarkp-w3m-allow-multi-tabs' is non-nil."
   (if bookmarkp-w3m-allow-multi-tabs
       (bookmarkp-jump-w3m-new-session bookmark)
     (bookmarkp-jump-w3m-only-one-tab bookmark)))

@@ -1,5 +1,5 @@
 [new]
-Going to release a new version now, please try the latest beta 1.94.
+Just released version 1.95 after all beta 1.94.
 
 [new]
 http://ourcomments.org/Emacs/nXhtml/doc/img/use-nXhtml-trans2.png
@@ -12,7 +12,7 @@ http://ourcomments.org/Emacs/nXhtml/doc/img/use-nXhtml-trans2.png
 : To report a bug go to https://bugs.launchpad.net/nxhtml.
 
 [new]
-**Newest features**:
+**Newest features** (see [http://ourcomments.org/Emacs/nXhtml/doc/nxhtml-changes.html#latest changelog]):
 * Chunks in chunks
 * Inline images for html, org-mode, css-mode etc.
 * Preview as you type in Firefox (but rather slow - additions are welcome), find out where an element is in Firefox

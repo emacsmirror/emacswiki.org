@@ -9,7 +9,7 @@ You can read more about Dired mode by using `C-h m' in a Dired buffer. The mode 
 Here are pages about DiredMode
 
 * [[WDired]] -- Lets you rename files by editing the dired buffer.
-* DiredExtra -- dired-x.el provides extra functionality for Dired
+* [[Dired X]] -- Library ##dired-x.el## provides extra functionality for Dired
 ** DiredOmitMode
 * DiredModeScreenshots
 * [[Tumme]] -- navigate through image files, in dired, with thumbnail previews and more

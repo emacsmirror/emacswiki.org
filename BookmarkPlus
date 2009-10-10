@@ -1,7 +1,7 @@
 == Bookmark+ ==
 
 
-This page is about library '''<tt>[[bookmark+.el]]</tt>''', which enhances vanilla Emacs [[bookmark]]s in several ways. 
+This page is about library '''<tt>[[bookmark+.el]]</tt>''', which enhances vanilla Emacs [[bookmark]]s in many ways. 
 
 The internal bookmark format (data structure) used by '''Bookmark+''' is compatible with that of vanilla GnuEmacs. It extends that structure in new ways, to accommodate new bookmark types.
 
@@ -11,14 +11,14 @@ The internal bookmark format (data structure) used by '''Bookmark+''' is compati
 
 In vanilla Emacs, you can bookmark a position in any file, including files of special types, such as [[InfoMode|Info]], DocView (PDF), an image, or a [[Gnus]] article.
 
-With '''Bookmark+''', you can also bookmark a position (or a region -- see [[#BookmarkRegion]], below) in ''any'' buffer. When you jump to such a non-file bookmark, an attempt is made to re-create the buffer if it is not already open.
+With '''Bookmark+''', you can also bookmark a position (or a [[region]] -- see [[#BookmarkRegion]], below) in ''any'' buffer. When you jump to such a non-file bookmark, an attempt is made to re-create the buffer if it is not already open.
 
 
 
 [:BookmarkRegion]
 === Regions, Not Just Single Positions ===
 
-A vanilla Emacs bookmark records a single position somewhere. With '''Bookmark+''', you can record a [[region]], that is, two positions (in the same document). If the region is active (and non-empty) when you set a bookmark, then the region information is automatically saved as part of the bookmark.
+A vanilla Emacs bookmark records a single position somewhere. With '''Bookmark+''', you can record a region, that is, two positions (in the same document). If the region is active (and non-empty) when you set a bookmark, then the region information is automatically saved as part of the bookmark.
 
 When you then jump to a bookmark that records a region, the region is activated automatically, provided user option '''`bookmark-use-region-flag'''' is non-`nil' (which it is by default). You can also flip the option value temporarily when you visit a bookmark, by using a [[prefix argument]].
 
@@ -36,7 +36,7 @@ By default, when you visit a bookmark that requires relocation, the bookmark is 
 
 === Highlighting of Different Bookmark Types ===
 
-In '''Bookmark+'''', different types of bookmarks are highlighted differently in the bookmark list (`bookmark-bmenu-list', `C-x r l'). Highlighting is different for each of the following bookmark types, to help you distinguish them:
+In '''Bookmark+'''', bookmarks are highlighted in the bookmark list (`bookmark-bmenu-list', `C-x r l'), to indicate their type:
 
 * non-file buffers
 * local files with regions
@@ -48,25 +48,127 @@ In '''Bookmark+'''', different types of bookmarks are highlighted differently in
 * Info nodes
 * Gnus articles
 
-Bookmarked remote files or directories that must be accessed using `su' or `sudo' are highlighted specially (red, by default) before you access them. After they are accessed, they are highlighted like other remote files or directories.
+Bookmarked remote files or directories that must be accessed using `su' or `sudo' are highlighted differently before you access them. After they are accessed, they are highlighted like other remote files or directories.
 
 
 
-=== Bookmark List Filtering ===
 
-In the bookmark list (`C-x r l'), you can selectively show only bookmarks of different types, using these keys:
+=== Marking and Unmarking ===
 
-* `F' -- Show only file bookmarks. With a prefix argument, hide bookmarked remote files and directories that must be accessed using `su' or `sudo'.
+'''Bookmark+''' enhances marking and unmarking in several ways.  In
+general, these enhancements are similar to features offered by
+[[DiredMode|Dired]] and [[Dired X]].
 
-* `R' -- Show only bookmarks with region information.
+* You can use '''`##%m##'''' to mark bookmarks whose names match a regexp.
 
-* `I' -- Show only Info bookmarks.
+* You can use '''`M-DEL'''' (or '''`U'''') to unmark all bookmarks or all that
+   are marked `##>##' or all that are flagged `D'.
+
+* You can use '''`t'''' to toggle (swap) marked and unmarked bookmarks:
+   the marked become unmarked, and vice versa.
+
+* You can use '''`##>##'''' to show only the marked bookmarks or '''`##<##'''' to show
+   only the unmarked bookmarks.  Repeat to show all again.
+
+
+
+
+=== Hiding and Showing Bookmarks ===
+
+You can hide and show different sets of bookmarks in the menu
+list (`C-x r l').  There are commands to show only bookmarks of a particular
+type (e.g. `I' to show only Info bookmarks).  And you can
+show only the marked or only the unmarked bookmarks (using `##>##' and
+`##<##').
+
+Commands that operate on the current bookmark or on the marked or
+the unmarked bookmarks act only on bookmarks that are displayed
+(not hidden).  This includes the commands that mark or unmark
+bookmarks.  This means that you can easily define any given set of
+bookmarks.
+
+For example:
+
+# Use `F' to show only bookmarks associated with files.
+# Use `%m' to mark those whose names match a particular [[regexp]].
+# Use `R' to show only bookmarks that have regions.
+# Use `m' to mark some of those region bookmarks.
+# Use `##.##' to show all bookmarks.
+# Use `t' to swap marked and unmarked (so unmarked are now marked)
+# Use `D' to delete all of the marked bookmarks (after confirming)
+
+That deletes all file bookmarks that match the regexp and all
+region bookmarks that you selectively marked.
+
+These are the keys for hiding or showing bookmarks:
+
+* '''`##.##'''' -- Show all bookmarks.
+
+* `B' -- Show only non-file (e.g. buffer) bookmarks.
+
+* `F' -- Show only file (including directory) bookmarks. With a [[prefix argument]], hide remote-file bookmarks.
 
 * `G' -- Show only Gnus bookmarks.
 
+* `I' -- Show only Info bookmarks.
+
+* `R' -- Show only bookmarks with region information.
+
 * `W' -- Show only W3M bookmarks.
 
-* `A' -- Show all bookmarks (all types).
+* '''`##>##'''' -- Toggle showing only marked bookmarks
+
+* '''`##<##'''' -- Toggle showing only unmarked bookmarks
+
+
+
+
+
+
+=== Sorting Bookmarks ===
+
+Bookmarks shown in the menu list (`C-x r l') are sorted using the current
+value of option '''`bookmark-sort-function''''.  (If `nil', they are
+unsorted.)
+
+You can use '''`##s s##''''... (repeat hitting the `s' key) to cycle among
+the various sort orders possible.  By default, all available sort
+orders are cycled, but you can shorten the cycling list by
+customizing option '''`bookmarkp-sort-orders-for-cycling-alist''''.
+
+You can also change directly to one of the main sort orders
+(without cycling) using '''`##s n##'''', '''`##s f n##'''', etc.:
+
+* '''`##s b##'''' -- Sort by last buffer or file access.
+* '''`##s g##'''' -- Sort by Gnus thread: group, article, message.
+* '''`##s i##'''' -- Sort by Sort by Info manual, node, position
+* '''`##s k##'''' -- Sort by bookmark type
+* '''`##s n##'''' -- Sort by bookmark name
+* '''`##s t##'''' -- Sort by last bookmark access time
+* '''`##s v##'''' -- Sort by visit frequency
+* '''`##s w##'''' -- Sort by W3M URL
+* '''`##s f d##'''' -- Sort by local file type: file, symlink, dir
+* '''`##s f n##'''' -- Sort by file name
+* '''`##s f s##'''' -- Sort by local file size
+* '''`##s f t##'''' -- Sort by last local file access
+* '''`##s f u##'''' -- Sort by last local file update (edit)
+
+
+You can reverse the current sort direction (ascending/descending)
+using '''`##s r##''''.
+
+Remember that you can combine sorting with hiding/showing
+different sets of bookmarks -- bookmarks of different kinds
+(e.g. Info) or bookmarks that are marked or unmarked.
+
+Finally, you can easily define your own sorting commands and sort
+orders.  See macro '''`bookmarkp-define-sort-command'''' and the
+documentation for option `bookmarkp-sort-comparer'.
+
+
+
+
+
 
 
 

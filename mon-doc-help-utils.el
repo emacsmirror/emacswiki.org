@@ -1799,108 +1799,123 @@ Unless indicated as a 'variable' items listed are functions.\n►►►\n
 ;;; :TEST-ME (mon-help-eieio-defclass t)
 ;;; :TEST-ME (describe-function 'mon-help-eieio-defclass)
 ;;; :TEST-ME (call-interactively 'mon-help-eieio-defclass)
+
 ;;; ==============================
 ;;; CREATED: <Timestamp: #{2009-10-06T16:41:17-04:00Z}#{09412} - by MON KEY>
 (defun mon-help-eieio-functions (&optional insertp intrp)
   "Interface functions for working with EIEIO system of CEDET.\n
-:SEE info node `(eieio)Function Index'.
-:SEE-ALSO `mon-help-eieio-defclass', `mon-help-eieio-methods'.\n►►►\n
+:SEE info node `(eieio)Function Index'.\n►►►\n
+;; :CLASSES                     :SEE-ALSO `mon-help-eieio-defclass'
+`defclass'                       NAME SUPERCLASS SLOTS &rest OPTIONS-AND-DOC
+`eieio-hook'                    ;<VARIABLE>
 ;; :MAKING-OBJECTS:
-`make-instance'             CLASS &rest INITARGS
-`<class-constructor>'       OBJECT-NAME &rest SLOTS
-`initialize-instance'       OBJ &rest SLOTS
-`shared-initialize'         OBJ &rest SLOTS\n
-;; :METHODS
-`defgeneric'                METHOD ARGLIST [DOC-STRING]
-`call-next-method'          &rest REPLACEMENT-ARGS
-`defmethod'                 METHOD [:before|:primary|:after|:static] 
-`eieiomt-install'           METHOD-NAME\n
-;; :BASIC-METHODS
-`clone'                     OBJ &rest PARAMS
-`object-print'              THIS &rest STRINGS
-`object-write'              OBJ &optional COMMENT
-`slot-missing'              AB &rest FOO
-`slot-unbound'              OBJECT CLASS SLOT-NAME FN
-`no-applicable-method'      OBJECT METHOD &rest ARGS
-`no-next-method'            OBJECT &rest ARGS\n
+`make-instance'                  CLASS &rest INITARGS
+`class-constructor'              OBJECT-NAME &rest SLOTS
+`initialize-instance'            OBJ &rest SLOTS
+`shared-initialize'              OBJ &rest SLOTS\n
+;; :METHODS                     :SEE-ALSO `mon-help-eieio-methods'
+`defgeneric'                     METHOD ARGLIST [DOC-STRING]
+`call-next-method'               &rest REPLACEMENT-ARGS
+`defmethod'                      METHOD [:before|:primary|:after|:static]\n
+;; :BASIC-METHODS             
+`clone'                          OBJ &rest PARAMS
+`constructor'                   ;<GENERIC-FUNCTION :STATIC>
+`object-print'                   THIS &rest STRINGS
+`object-write'                   OBJ &optional COMMENT
+`slot-missing'                   AB &rest FOO
+`slot-unbound'                   OBJECT CLASS SLOT-NAME FN
+`no-applicable-method'           OBJECT METHOD &rest ARGS
+`no-next-method'                 OBJECT &rest ARGS\n
+`eieio-generic-call-arglst'        ;<VARIABLE>
+`eieio-pre-method-execution-hooks' ;<VARIABLE>\n
 ;; :ACCESSING-SLOTS
-`oset'                      OBJECT SLOT VALUE ;-> `eieio-oset'
-`slot-value'                OBJECT SLOT       ;-> `oref' -> `eieio-oref'
-`set-slot-value'            OBJECT SLOT VALUE ;-> `eieio-oset'
-`oset-default'              CLASS SLOT VALUE  ;-> `eieio-oset-default'
-`oref-default'              OBJ SLOT          ;-> `eieio-oref-default'
-`slot-makeunbound'          OBJECT SLOT       ;-> is `slot-makunbound'
-`with-slots'                SPEC-LIST OBJECT &rest BODY
-`object-add-to-list'        OBJECT SLOT ITEM &optional APPEND
-`object-remove-from-list'   OBJECT SLOT ITEM\n
+`oset'                           OBJECT SLOT VALUE ;-> `eieio-oset'
+`slot-value'                     OBJECT SLOT       ;-> `oref' -> `eieio-oref'
+`set-slot-value'                 OBJECT SLOT VALUE ;-> `eieio-oset'
+`oset-default'                   CLASS SLOT VALUE  ;-> `eieio-oset-default'
+`oref-default'                   OBJ SLOT          ;-> `eieio-oref-default'
+`slot-makeunbound'               OBJECT SLOT       ;-> is `slot-makunbound'
+`with-slots'                     SPEC-LIST OBJECT &rest BODY
+`object-add-to-list'             OBJECT SLOT ITEM &optional APPEND
+`object-remove-from-list'        OBJECT SLOT ITEM\n
 ;; :ASSOCIATION-LISTS
-`object-assoc'              KEY SLOT LIST
-`object-assoc-list'         SLOT LIST
-`eieio-build-class-alist'   &OPTIONAL BASE-CLASS\n
-;; :PREDICATES-AND-UTILS
-`find-class'                SYMBOL &optional ERRORP
-`class-p'                   CLASS
-`slot-exists-p'             OBJECT-OR-CLASS SLOT
-`slot-boundp'               OBJECT SLOT
-`class-name'                CLASS
-`class-option'              CLASS OPTION
-`class-constructor'         CLASS
-`object-name'               OBJ
-`object-class'              OBJ
-`eieio-object-p'            OBJ
-`class-of'                  OBJ   ;alias for CLOS
-`object-class-fast'         OBJ
-`object-class-name'         OBJ
-`class-parents-fast'        CLASS
-`class-parent'              CLASS ; :DEPRECATED 
-`class-parents'             CLASS
-`class-direct-superclasses' CLASS ;alias for CLOS
-`class-children'            CLASS ;alias for CLOS
-`class-direct-subclasses'   CLASS
-`class-children-fast'       CLASS
-`same-class-p'              OBJ CLASS
-`same-class-fast-p'         OBJ CLASS
-`object-of-class-p'         OBJ CLASS
-`child-of-class-p'          CHILD CLASS
-`generic-p'                 METHOD-SYMBOL
-`next-method-p'\n
+`object-assoc'                   KEY SLOT LIST
+`object-assoc-list'              SLOT LIST
+`eieio-build-class-alist'        &optional BASE-CLASS\n
+;; :PREDICATES
+`child-of-class-p'               CHILD CLASS
+`class-abstract-p'               CLASS
+`class-p'                        CLASS
+`eieio-slot-originating-class-p' START-CLASS SLOT
+`generic-p'                      METHOD-SYMBOL
+`generic-primary-only-p'         METHOD 
+`generic-primary-only-one-p'     METHOD
+`next-method-p'                
+`object-of-class-p'              OBJ CLASS
+`object-p'                       OBJ    ;-> `eieio-object-p'
+`same-class-fast-p'              OBJ CLASS
+`same-class-p'                   OBJ CLASS
+`slot-boundp'                    OBJECT SLOT
+`slot-exists-p'                  OBJECT-OR-CLASS SLOT\n
+;; :UTILITY
+`class-v'                        CLASS
+`class-constructor'              CLASS
+`class-direct-superclasses'      CLASS  ;-> `class-parents'
+`class-direct-subclasses'        CLASS  ;-> `class-children'
+`class-children-fast'            CLASS
+`class-name'                     CLASS
+`class-method-invocation-order'  CLSSS
+`class-option'                   CLASS OPTION
+`class-option-assoc'             LIST OPTION
+`class-parents-fast'             CLASS
+`class-parent'                   CLASS  ;-> :DEPRECATED 
+`class-slot-initarg'             CLASS SLOT
+`eieio-set-defaults'             OBJ &optional SET-ALL
+`eieio-initarg-to-attribute'     CLASS INITARG
+`find-class'                     SYMBOL &optional ERRORP
+`object-class'                   OBJ    ;->`class-of'
+`object-class-fast'              OBJ
+`object-class-name'              OBJ
+`object-name'                    OBJ &optional EXTRA
+`object-slots'                   OBJ
+`object-name-string'             OBJ
+`object-set-name-string'         OBJ NAME\n
 ;; :INTROSPECTION
-`object-slots'                 OBJ
-`class-slot-initarg'           CLASS SLOT
-`eieio-browse'                 ROOT-CLASS
-`eieiodoc-class'               CLASS INDEXSTRING &optional SKIPLIST
-`describe-class'               CLASS &optional HEADERFCN >`eieio-describe-class'
-`describe-object'              ;<CLOS-UNINMPLEMENTED>
-`describe-generic'             GENERIC ;-> `eieio-describe-generic'
-`describe-method'              GENERIC ;-> `eieio-describe-generic'
-`eieio-describe-method'        GENERIC ;-> `eieio-describe-generic'
-`eieio-describe-class-slots'   CLASS
-`eieio-describe-constructor'   FCN
-`eieio-lambda-arglist'         FUNC
-`eieio-method-documentation'   GENERIC CLASS
-`eieio-all-generic-functions'  &optional CLASS
-`eieio-class-tree'             
-`eieio-default-superclass'    ;<VARIABLE>  ;-> `standard-class'\n
-;; :SIGNALS
-`invalid-slot-name'            OBJ-OR-CLASS SLOT
-`no-method-definition'         METHOD ARGUMENTS
-`no-next-method'               CLASS ARGUMENTS
-`invalid-slot-type'            SLOT SPEC VALUE
-`unbound-slot'                 OBJECT CLASS SLOT\n
-;; :EIEIO-PRINTERS
-`object-print'                 THIS &rest STRINGS    ;<METHOD>
-`object-write'                 OBJ &optional COMMENT ;<METHOD>
-`eieio-override-prin1'         THING
-`eieio-list-prin1'
-`eieio-xml-override-prin1'     THING
-`eieio-xml-list-prin1'         LIST
-`eieio-edebug-prin1-to-string'
+`describe-class'                 CLASS   ;-> `eieio-describe-class'
+`describe-generic'               GENERIC ;-> `eieio-describe-generic'
+`describe-method'                GENERIC ;-> `eieio-describe-generic'
+`eieiodoc-class'                 CLASS INDEXSTRING &optional SKIPLIST
+`eieio-all-generic-functions'    &optional CLASS
+`eieio-browse'                   ROOT-CLASS
+`eieio-class-tree'               &optional ROOT-CLAS
+`eieio-class-slot-name-index'    CLASS SLOT
+`eieio-slot-name-index'          CLASS OBJ SLOT
+`eieio-default-superclass'      ;<VARIABLE> ;<-:ALIASED-BY `standard-class'
+`eieio-describe-class-slots'     CLASS
+`eieio-describe-constructor'     FCN
+`eieio-lambda-arglist'           FUNC
+`eieio-method-documentation'     GENERIC CLASS
+`eieio-version'                 ;<VARIABLE> & <FUNCTION>\n
+;; :SIGNALS                     
+`invalid-slot-name'              OBJ-OR-CLASS SLOT
+`no-method-definition'           METHOD ARGUMENTS
+`no-next-method'                 CLASS ARGUMENTS
+`invalid-slot-type'              SLOT SPEC VALUE
+`unbound-slot'                   OBJECT CLASS SLOT\n
+;; :EIEIO-PRINTERS               
+`object-print'                   THIS &rest STRINGS    ;<METHOD>
+`object-write'                   OBJ &optional COMMENT ;<METHOD>
+`eieio-override-prin1'           THING
+`eieio-list-prin1'               
+`eieio-xml-override-prin1'       THING
+`eieio-xml-list-prin1'           LIST
+`eieio-edebug-prin1-to-string'   OBJECT &optional NOESCAPE
 `eieio-display-method-list'
-`object-write-xml'             <METHOD>\n
-;; :CLOS-UNIMPLEMENTED
+`object-write-xml'              ;<METHOD>\n
+;; :CLOS-UNIMPLEMENTED          :SEE info node `(eieio)CLOS compatibility'
 `change-class'
-`describe-object'             :SEE `object-write'\n
-;; :UNINMPLEMENTED
+`describe-object'               :SEE `object-write'\n
+;; :EIEIO-UNINMPLEMENTED
 `destructor'
 `eieio-read-xml'\n"
   (interactive "i\nP")
@@ -1920,7 +1935,7 @@ Unless indicated as a 'variable' items listed are functions.\n►►►\n
 Provides examples for examining the underlying vector and 'obarray' structures.
 \n TO RUN EXAMPLES EVALUATE BELOW:
  ==============================\n
-  CREATE TWO CLASSES:\n  =====================\n
+  CREATE TWO CLASSES:\n  ===================\n
 \(defclass tt--367 \(\)\n  \(\(s-367-0\n    :initarg  :s-367-0
     :initform nil\n    :accessor acc-s367-0\)\n   \(s-367-1
     :initarg  :s-367-1\n    :initform nil
@@ -1947,14 +1962,14 @@ test-tt--367-sub\n;=> [object tt--367-sub \"test-tt--367-sub\" nil nil nil]\n
  CLASS VECTORS
  =============\n
 By default an eieio class is instantiated as a vector. 
-To Access this vector use `class-v':\n
+To access this vector use `class-v':\n
 :IDIOM \(class-v '<SOME-CLASS>\)\n:EXAMPLE\n\(class-v 'tt--367\)\n
 Class vectors are intialized w/ respect to `eieio-default-superclass' when
-defined without a parent class :SSE info node `(eieio)Default Superclass'.
+defined without a parent class :SEE info node `(eieio)Default Superclass'.
 The init value of eieio-default-superclass is hardwired at eieio build time as
 a vector of 26 elements. It is bootstrapped from the values of 26 constants.
 The 26th of these constants `class-num-slots' sets the vector size of eieio's
-default superlass and the default vector size of all classes derived thereof.\n
+default superclass and the default vector size of all classes derived thereof.\n
 :EXAMPLE\n\(length \(class-v 'eieio-default-superclass\)\)
 \(length \(class-v 'tt--367\)\)\n
 25 other constants are also evaluated to generate eieio-default-superclass.
@@ -1967,7 +1982,8 @@ eieio's default superclass.\n
 Access these elements with the macro `class-v' with expressions of the form:\n
 :IDIOM \(aref \(class-v '<SOME-CLASS>\) <CONSTANT>\)
 :EXAMPLE\n\(aref \(class-v 'tt--367\) class-symbol\)\n
-Assuming the example class above the full class vector deconstructs as follows:\n
+Assuming the two example classes and instances above are initialized a full
+class vector deconstructs as follows:\n
 :EXAMPLE\n(class-v 'tt--367)\n
 \[defclass               ;; 0  ; This determines if `class-p'                   
  tt--367                ;; 1  `class-symbol' ; This is the `class-constructor'
@@ -2013,9 +2029,9 @@ Examine a generic function's method-tree with its eieio-method-tree property.\n
  nil    ;<- :AFTER\n nil    ;<- genericBEFORE \n nil    ;<- genericPRIMARY
  nil]   ;<- genericAFTER\n
  :EIEIO-METHOD-OBARRAY\n  ====================\n
-eieio-method-obarray's are stored as a property of a generic function as it's
-`eieio-method-obarray'. This property contains a list of method bindings.\n
-An generic function's eieio-method-obarray has the form:\n
+eieio's method obarrays are stored as a property of a generic function on its
+`eieio-method-obarray' property. This property is a vector which contains a list
+of method bindings.\n A generic function's eieio-method-obarray has the form:\n
 \(eieio-method-obarray . [BEFORE PRIMARY AFTER
                         genericBEFORE genericPRIMARY genericAFTER]\)\n
 :IDIOM \(get <METHOD> 'eieio-method-obarray\)
@@ -2030,7 +2046,7 @@ An generic function's eieio-method-obarray has the form:\n
  nil                         aref 5 -   a generic classified as :primary   
  nil]                        aref 6 -   a generic classified as :after\n
 Examine a particular type or group of methods with a key lookup into 
-the 'obarray' (a vector) of a generic function.
+the 'obarray' (a vector) of a generic function.\n
 To find primary methods of a generic function get the 2nd index of it's obarray.\n
 :IDIOM \(get <METHOD> 'eieio-method-tree\)
 :EXAMPLE\n\(aref \(get 'acc-s367-sub-0 'eieio-method-obarray\) 2\)\n
@@ -2040,8 +2056,15 @@ A generic form can be interrogated with `eieio-generic-form':\n
 :EXAMPLE\n\(eieio-generic-form 'acc-s367 2 tt--367-sub\)\n
 \(tt--367 . tt--367\) ;key 2\n\(tt--367 . tt--367\) ;key 4
 \(tt--367 . tt--367\) ;key 5\n\(tt--367 . tt--367\) ;key 6\n
-:SEE-ALSO\n         `eieiomt-install' ;<METHOD-NAME>
-         `eieiomt-optimizing-obarray' ;<VARIABLE>\n
+:SEE-ALSO
+`eieiomt-method-list'                  METHOD KEY CLASS
+`eieiomt-install'                      METHOD-NAME
+`eieiomt-add'                          METHOD-NAME METHOD KEY CLASS
+`eieiomt-next'                         CLASS
+`eieiomt-method-list'                  METHOD KEY CLASS
+`eieiomt-sym-optimize'                 S
+`eieio-unbind-method-implementations'  METHOD
+`eieiomt-optimizing-obarray'          ;<VARIABLE>\n
  :EXAMINING-METHODS-AND-GENERICS
   ==============================\n
 :IDIOMATIC-EXAMPLE(S)\n

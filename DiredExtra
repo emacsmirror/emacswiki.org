@@ -1,20 +1,9 @@
-The Emacs library [::dired-x] provides extra functionality for DiredMode.
-
-It comes with Emacs.
-
-* CVS:dired-x.el
+'''[::Dired X]''' is the GnuEmacs library ##dired-x.el##. It provides extra functionality for [[DiredMode|Dired]]. It comes with Emacs.
 
 To use this mode run `M-x load-library RET dired-x RET' or add the following to your InitFile.
 
-  (add-hook 'dired-load-hook
-	  (function (lambda () (load "dired-x"))))
+  (add-hook 'dired-load-hook (function (lambda () (load "dired-x"))))
 
-A manual that comes with Emacs the _extra_ features for Dired Mode for GNU Emacs.  It
-is derived from version 1.191 of Sebastian Kremer's `dired-x.el'.
-
-
-
-See also DiredPower
 
 ----
 CategoryDirectories
