@@ -9,9 +9,9 @@
 ;; Copyright (C) 2000-2009, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Oct  9 14:12:50 2009 (-0700)
+;; Last-Updated: Sat Oct 10 11:53:14 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 5223
+;;     Update #: 5226
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1543,10 +1543,11 @@ The value is an alist with entries of the form
  (BOOKMARK-NAME . PARAM-ALIST)
 or the deprecated form (BOOKMARK-NAME PARAM-ALIST).
 
- BOOKMARK-NAME is the name you provided for the bookmark.
+ BOOKMARK-NAME is the name you gave to the bookmark when creating it.
  PARAM-ALIST is an alist of bookmark information.  The order of the
   entries in PARAM-ALIST is not important.  The possible entries are
-  described below.  A nil value means the entry is not used.
+  described below.  An entry with a key but null value means the entry
+  is not used.
 
 Bookmarks created using vanilla Emacs (`bookmark.el'):
 
@@ -1554,8 +1555,8 @@ Bookmarks created using vanilla Emacs (`bookmark.el'):
  (position . POS)
  (front-context-string . STR-AFTER-POS)
  (rear-context-string  . STR-BEFORE-POS)
- (annotation . ANNOTATION)
  (handler . HANDLER)
+ (annotation . ANNOTATION)
 
  FILENAME names the bookmarked file.
  POS is the bookmarked buffer position (position in the file).

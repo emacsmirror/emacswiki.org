@@ -196,6 +196,17 @@ http://joseito.republika.pl/sunrise-x-popviewer.el.gz  --  if  you have the same
 itch, you can scratch it too :)
 
 [new]
+Here is a new usability enhancement I’ve just released for the Sunrise Commander
+window manager: sunrise‐x‐modeline ‐‐ a minor mode that puts the directory  path
+of  each  Sunrise  pane on the mode line of its respective window, so it remains
+always visible. This spares the need to scroll up long sunrise buffers  just  to
+check where exactly you are in the file system.
+
+To  get  a  copy  of the Sunrise Mode Line extension (including installation and
+usage notes) go to:
+    http://joseito.republika.pl/sunrise‐x‐modeline.el.gz
+
+[new]
 I  have some  problems  with sunrise  commander.   Is there  some mailing  list,
 project page or  other way to report bugs?  It seems  the devadvice usage breaks
 some  other stuff.  For example  listing  the files  in a  debian package  using

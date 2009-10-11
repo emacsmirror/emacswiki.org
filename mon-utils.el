@@ -1250,30 +1250,38 @@ unreadable object with the '#' prefix so we strip it.\n
 ;;; :TEST-ME (apply 'string (mon-string-to-sequence " string"))
 
 ;;; ==============================
-
-;;; ==============================
-;;; :MODIFICATIONS <Timestamp: #{2009-10-09T16:07:57-04:00Z}#{09415} - by MON>
-;;; :CREATED <Timestamp: #{2009-09-30T13:31:42-04:00Z}#{09403} - by MON KEY>
 (defun mon-string-from-sequence (seq &rest seqs)
   "Return SEQ - a sequence of character integers - as a string.
-When SEQS is one or more quoted lists concatenate these to return string.\n
+WHEN SEQS is non-nil these can be lists (quoted), vectors, or strings in any
+combination concatenate these also.\n
 :EXAMPLE(S)\n\(mon-string-from-sequence '(115 116 114 105 110 103))\n
 \(mon-string-from-sequence\n '(115 116 114 105 110 103 48)
  '\(115 116 114 105 110 103 115 49\)\n '\(115 116 114 50\)\)\n
 \(mon-string-from-sequence \(number-sequence 0 127\)\)\n
+\(mon-string-from-sequence\n '(98 117 98 98 97)\n \"string0\"
+ [98 117 98 98 97 115 97]\n \'(115 116 114 105 110 103\)
+ [98 117 98 98 97 115 97]\)\n
 :SEE-ALSO `mon-string-index',`mon-string-position', `mon-string-alpha-list',
 `mon-is-alphanum',`mon-is-digit',`mon-is-letter'.\n►►►"
   (let ((g-str (lambda (x) (apply 'string x)))
+        (chk-seqs (when (and seqs (sequencep seqs))
+                    (mapcar #'(lambda (x) (cond ((vectorp x) (append x nil))
+                                                ((stringp x) (mon-string-to-sequence x))
+                                                ((listp  x) x)))
+                                                 seqs)))
         (seq-seqs))
-    (while seqs (push (funcall g-str (pop seqs)) seq-seqs))
-    (setq seq-seqs (nreverse seq-seqs))
-    (push (funcall g-str seq) seq-seqs)
-    (apply 'concat (car seq-seqs) (cdr seq-seqs))))
-;;
+    (while chk-seqs 
+      (push (funcall g-str (pop chk-seqs)) seq-seqs))
+     (setq seq-seqs (nreverse seq-seqs))
+     (push (funcall g-str seq) seq-seqs)
+     (apply 'concat (car seq-seqs) (cdr seq-seqs))))
+;;;
 ;;; :TEST-ME (mon-string-from-sequence '(98 117 98 98 97))
 ;;; :TEST-ME (mon-string-from-sequence (string-to-list "bubba"))
 ;;; :TEST-ME (mon-string-from-sequence '(98 117 98 98 97 115 97) (string-to-list "bubba"))
-;;; :TEST-ME (mon-string-from-sequence '(98 117 98 98 97) (arrayp [98 117 98 98 97 115 97])
+;;; :TEST-ME (mon-string-from-sequence '(98 117 98 98 97) (arrayp [98 117 98 98 97 115 97]))
+;;; :TEST-ME (mon-string-from-sequence '(98 117 98 98 97) 
+;;;          "string0" [98 117 98 98 97 115 97]  "string" [98 117 98 98 97 115 97])
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: Thursday June 25, 2009 @ 11:17.43 AM - by MON KEY>

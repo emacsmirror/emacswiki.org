@@ -1,5 +1,5 @@
 ;;; el-expectations.el --- minimalist unit testing framework
-;; $Id: el-expectations.el,v 1.47 2008/08/28 19:28:37 rubikitch Exp $
+;; $Id: el-expectations.el,v 1.49 2009/10/10 09:19:40 rubikitch Exp rubikitch $
 
 ;; Copyright (C) 2008  rubikitch
 
@@ -26,6 +26,27 @@
 
 ;; Emacs Lisp Expectations framework is a minimalist unit testing
 ;; framework in Emacs Lisp.
+
+;;; Commands:
+;;
+;; Below are complete command list:
+;;
+;;  `expectations-execute'
+;;    Execute last-defined `expectations' test.
+;;  `exps-next-error'
+;;    Move to the Nth (default 1) next failure/error in *expectations result* buffer.
+;;  `expectations-eval-defun'
+;;    Do `eval-defun'.
+;;  `batch-expectations-in-emacs'
+;;    Execute expectations in current file with batch mode.
+;;
+;;; Customizable Options:
+;;
+;; Below are customizable option list:
+;;
+;;  `expectations-execute-at-once'
+;;    If non-nil, execute selected expectation when pressing C-M-x
+;;    default = t
 
 ;; I love Jay Fields' expectations unit testing framework in Ruby. It
 ;; provides one syntax and can define various assertions. So I created
@@ -97,6 +118,12 @@
 ;;; History:
 
 ;; $Log: el-expectations.el,v $
+;; Revision 1.49  2009/10/10 09:19:40  rubikitch
+;; Fixed a displabug of `exps-display'
+;;
+;; Revision 1.48  2008/12/22 16:44:54  rubikitch
+;; `expr-desc': replace padding with highlight face.
+;;
 ;; Revision 1.47  2008/08/28 19:28:37  rubikitch
 ;; not-called assertion
 ;;
@@ -610,16 +637,8 @@ With prefix argument, do `batch-expectations-in-emacs'."
   (define-key exps-display-mode-map "\C-m" 'exps-goto-expect)
   (define-key exps-display-mode-map "\C-c\C-c" 'exps-goto-expect))
 
-(defun exps-padding (desc &optional default-width)
-  (let ((width
-         (if noninteractive
-             (or default-width (string-to-number (or (getenv "WIDTH") "60")))
-           (window-width (get-buffer-window (current-buffer) t)))))
-    (make-string (floor (/ (- width 8 (length desc)) 2)) ?=)))
-
-(defun exps-desc (desc &optional default-width)
-  (let ((padding (exps-padding desc default-width)))
-    (format "%s %s %s" padding desc padding)))
+(defun exps-desc (desc)
+  (propertize desc 'face 'highlight))
 
 (defface expectations-red
   '((t (:foreground "Red" :bold t)))
@@ -642,41 +661,41 @@ With prefix argument, do `batch-expectations-in-emacs'."
     (concat msg1 msg2)))
 
 (defun exps-display (results)
-  (set-buffer (get-buffer-create expectations-result-buffer))
-  (erase-buffer)
-  (display-buffer (current-buffer))
-  (exps-display-mode)
-  (insert (format "Executing expectations in %s...\n" exps-last-filename))
-  (loop for result in results
-        for i from 1
-        do (insert
-            (format
-             "%-3d:%s\n" i
-             (if (consp result)
-                 (case (car result)
-                   (pass "OK")
-                   (fail (cdr result))
-                   (error (format "ERROR: %s" (cdr result)))
-                   (desc (exps-desc (cdr result)))                    
-                   (t "not happened!"))
-               result))))
-  (insert "\n")
-  (loop for result in results
-        for status = (car result)
-        when (eq 'pass status) collecting result into successes
-        when (eq 'fail status) collecting result into failures
-        when (eq 'error status) collecting result into errors
-        with summary
-        finally
-        (destructuring-bind (s f e)
-            (mapcar #'length (list successes failures errors))
-          (setq summary (exps-result-string s f e))
-          (insert summary)
-          (goto-char (point-min))
-          (forward-line 1)
-          (insert summary)
-          (goto-char (point-min))
-          (return (+ f e)))))
+  (with-current-buffer (get-buffer-create expectations-result-buffer)
+    (erase-buffer)
+    (exps-display-mode)
+    (insert (format "Executing expectations in %s...\n" exps-last-filename))
+    (loop for result in results
+          for i from 1
+          do (insert
+              (format
+               "%-3d:%s\n" i
+               (if (consp result)
+                   (case (car result)
+                     (pass "OK")
+                     (fail (cdr result))
+                     (error (format "ERROR: %s" (cdr result)))
+                     (desc (exps-desc (cdr result)))                    
+                     (t "not happened!"))
+                 result))))
+    (insert "\n")
+    (loop for result in results
+          for status = (car result)
+          when (eq 'pass status) collecting result into successes
+          when (eq 'fail status) collecting result into failures
+          when (eq 'error status) collecting result into errors
+          with summary
+          finally
+          (destructuring-bind (s f e)
+              (mapcar #'length (list successes failures errors))
+            (setq summary (exps-result-string s f e))
+            (insert summary)
+            (goto-char (point-min))
+            (forward-line 1)
+            (insert summary)
+            (goto-char (point-min))
+            (return (+ f e))))
+    (display-buffer (current-buffer))))
 
 (defun exps-goto-expect ()
   (interactive)

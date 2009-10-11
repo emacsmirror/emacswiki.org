@@ -200,70 +200,10 @@ Note that mouse functions will differ from is described in the Aquamacs document
 
 
 == Replacing your /usr/bin/emacs with Aquamacs == 
-(from version 0.9.5) 
 
-To be able to launch files in Aquamacs from the command line, create the following script in your favorite script storage place, for example as /usr/local/bin/e
-I use the file name "e" so I can still call up the OS X standard terminal-based Emacs with 'emacs'.
+To be able to launch files in Aquamacs from the command line, just select "Install Command Line Tools" from the Tools menu and follow through with the installation.  It will ask for the password of a user with administrator privileges.  You can then use the command `aquamacs' from a shell to start Aquamacs.  Use the `alias' command of your shell to map it to something shorter such as `a'.
 
-<pre>
-#!/usr/bin/perl
-
-$pid = 0;
-
-open I, "ps -axww -U $ENV{'USER'} |";
- 
-while (<I>)
-{
-     if (/Aquamacs Emacs/ && !/grep/)
-     {
- 	 if (/^\s*([0-9]+)\s/)
- 	 {
- 	     $pid = $1;
- 	 }
-     }
-}
- 
-close I;
-$args = "";
-for my $f (@ARGV)
-{
-    if (! -e $f)
-    {
-         system("touch \"$f\"");
-    }
-    $args .= "\"$f\" ";
-}
- 
-# there is still an issue:
-# if the sudo emacs is still open, it will 
-# call 'open' and open the files in the wrong
-# emacs process.
- 
-if ($pid) 
-{
-    system("open -a /Applications/Aquamacs.app $args");
-} 
-else
-{
-    system("/Applications/Aquamacs.app/Contents/MacOS/Aquamacs $args &");
-}
-
-exit;
-</pre>
-
-Make sure to change the permissions:
-
- chmod u+x /path/to/script/e
-
-If you save it somewhere besides /usr/local/bin (or some other directory in your PATH), modify .bashrc (or modify as appropriate for your preferred shell):
-
- alias e='/path/to/script/e '
-
-That space at the end is important.
-This script will work on paths with spaces, and you may call "sudo emacs" (probably not with the alias solution). Please feel free to improve upon it.
-
-
-Some users have not had good luck with this Perl script. An alternative is create an alias in your shell's *rc file. For example, in .bash_profile or .tcshrc
+Some users have not had good luck with the script that is being installed this way. An alternative is create an alias in your shell's *rc file. For example, in .bash_profile or .tcshrc
 
  alias aquamacs 'open /Applications/Aquamacs\ Emacs.app/'
 

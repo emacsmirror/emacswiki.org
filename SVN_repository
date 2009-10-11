@@ -1,6 +1,6 @@
 The SVN repository is run by [[kensanata]] and hosted by [http://savannah.gnu.org/ Savannah].
 It contains the raw text of all wiki pages.
-A cron job updates the repository every 24h.
+A cron job updates the repository every 24h. Check it out: [https://savannah.nongnu.org/projects/emacswiki Emacs Wiki at Savannah].
 
     svn co svn://svn.sv.gnu.org/emacswiki/emacswikipages
 

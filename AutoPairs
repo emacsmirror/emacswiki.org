@@ -90,6 +90,8 @@ The ##autopair-insert## command is bound to both the opening and closing keys. T
 
 and bind ##autopair-insert## to the necessary key(s).
 
+The above code has been made into a package [http://github.com/ramblex/emacs-textmate here]. It has a few neat little extras such as being able to turn off the pairing of some characters in some modes.
+
 === CC Mode ===
 
 To use these commands in [CcMode CC Mode]:

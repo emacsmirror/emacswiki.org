@@ -2088,6 +2088,77 @@ A generic form can be interrogated with `eieio-generic-form':\n
 ;;;test-me;(describe-function 'mon-help-eieio-methods)
 
 ;;; ==============================
+;;; CREATED: <Timestamp: #{2009-10-10T21:36:01-04:00Z}#{09417} - by MON>
+(defun mon-help-type-predicates (&optional insertp intrp)
+"List of predicat functions for interrogating elisp types.
+
+     `functionp' `keywordp' `commandp'
+
+ _________________________________________
+|                               --------  |
+| `sequencep'                  |`listp' |-|--+`consp'
+|              __________      |`nlistp'| | `-+`atom'
+|             |          |      --------  |
+|  ___________| `arrayp' |______________  |
+| |   _________           _________     | |
+| |  |         |         |         |    | |
+| |  |`vectorp'|         |`stringp'|----|-|--|`string-or-null-p'
+| |  |_________|         |_________|    | |  |`char-or-string-p'
+| |  ______________     ______________  | |
+| | |              |   |              | | |
+| | |`char-table-p'|   |`bool-vectorp'| | |
+| | |_|____________|   |______________| | |  ___________________       
+| |___|_________________________________| | |                   |      
+|_____|___________________________________| | :NUMERICAL-SHOWER |      
+      |                                  ___|___________________|_____     
+      |-+`keymapp'                      |                             |    
+      |--+`case-table-p'                |       `zerop'               |    
+      |--+`syntax-table-p'              |          |     `booleanp'   |    
+      |--+`display-table-p'             |      `numberp'              |    
+            ____________                |          |                  |    
+           |            |               |        +-|-+                |    
+           | `type-of'  |               | `float'| | |`natnump'       |    
+   ________|____________|___________    |          |  -+`wholenump'   |    
+  |                                 |   |          |  --+`integerp'-. |    
+  | bool-vector  <- `bool-vector-p' |   |          |  ---+`oddp'    | |    
+  | buffer       <- `bufferp'       |   |          |  ---+`evenp'   | |    
+  | char-table   <- `char-table-p'  |   |          |                | |    
+  | cons         <- `consp'         |   |  `plusp'-+-`minusp'       | |    
+  | float        <- `floatp'        |   |___________________________|_|    
+  | font-entity  <- `fontp'         |                               |  
+  | font-object  <- `fontp'         |         `number-or-marker-p'+-|  
+  | font-spec    <- `fontp'         |        `integer-or-marker-p'+-|  
+  | frame        <- `framep'        |                                 
+  | hash-table   <- `hash-table-p'  |                                 
+  | integer      <- `integerp',     |                                 
+  | marker       <- `markerp',      |                                 
+  | overlay      <- `overlayp'      |                                 
+  | process      <- `processp'      |                                 
+  | STRING       <- `stringp'       |                                 
+  | subr         <- `subrp'         |                                 
+  | symbol       <- `symbolp'       |                                 
+  | vector       <- `vectorp'       |                                 
+  | window       <- `windowp'       |                                 
+  |                                 |                                 
+  |   compiled-function             |        `window-live-p'          
+  |  `byte-code-function-p'         |       `user-variable-p'         
+  |                                 |     `frame-configuration-p'     
+  |   window-configuration          |        `frame-live-p'           
+  | `window-configuration-p'        |                                 
+  |_________________________________|                               70.
+\n►►►"
+
+(interactive "i\nP")
+  (if (or insertp intrp)
+      (mon-help-function-spit-doc 'mon-help-type-predicates :insertp t)
+    (message "pass non-nil for optional arg INTRP")))
+;;
+;;; :TEST-ME (mon-help-type-predicates)
+;;: :TEST-ME (mon-help-type-predicates t)
+;;; :TEST-ME (describe-function 'mon-help-type-predicates)
+;;; :TEST-ME (call-interactively 'mon-help-type-predicates)
+
+;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-09-20T13:26:27-04:00Z}#{09387} - by MON>
 (defun mon-help-read-functions (&optional insrtp intrp)
   "List of functions for reading.

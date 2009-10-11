@@ -5,7 +5,8 @@ Tabbar is an emacs minor mode that displays a tab bar at the top, similar to the
 Tabbar is a package originally written by David Ponce from 2003 to 2005, and now maintained by others.
 
 The download location is originally at: http://sourceforge.net/projects/emhacks/
- (Note: the version on sourceforge is outdated by a few years. For the latest version, check with GNU emacs CVS)
+Note: the version on sourceforge is outdated by a few years. For the latest version, check with GNU emacs CVS.
+Debian also includes tabbar.el in the [[http://packages.debian.org/search?keywords=emacs-goodies-el emacs-goodies-el]] package.
 
 The tabbar.el is extensively modified and used by AquamacsEmacs to be
 as close to modern UI's tab bar as possible. (see AquamacsEmacs's [[http://aquamacs.org/images/smaller-home-ss.png official
