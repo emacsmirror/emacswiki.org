@@ -1,7 +1,7 @@
 This category is about Emacs menus of any kind, including menubar menus and popup menus. Click the header above to find all pages in category Menus.
 
 * MenuBar -- How to customize menu-bar menus.
-* [[MenuBar#MenuBarPlus|Menu Bar+]] -- Enhancements to the standard menu-bar menus.
+* [[MenuBarPlus|Menu Bar+]] -- Enhancements to the standard menu-bar menus.
 ** HelpMenuBarPlus -- Enhancements to the menu-bar '''Help''' menu.
 ** DiredPlus -- Enhancements to the menu-bar menus in [[DiredMode]].
 * MenusAsKeymaps -- explanation of the structure of Emacs menus

@@ -9,7 +9,7 @@
 (add-to-list 'load-path (expand-file-name "elisp" (getenv "HOME")))
 (setq exec-path (split-string "/Users/alex/bin:/opt/local/bin:/bin:/sbin:/usr/bin:/usr/local/bin:/usr/sbin" path-separator))
 (setenv "PATH" (mapconcat 'identity exec-path ":"))
-(setenv "MANPATH" "/opt/local/share/man:/usr/share/man:/usr/X11R6/man:/man")
+(setenv "MANPATH" "/usr/local/man:/usr/share/man:/usr/X11R6/man:/man")
 (setenv "PERL5LIB" "/Library/Perl/5.8.1")
 (setenv "ODD" "/Users/Shared/Oddmuse")
 (setenv "CVS_RSH" "ssh")
@@ -272,7 +272,10 @@ Note that comments between URL and name will stay where they are."
 
 (setq change-log-default-name "ChangeLog"
       user-full-name "Alex Schroeder"
-      user-mail-address "alex@gnu.org")
+      ;; for ChangeLog, I want my GNU address
+      add-log-mailing-address "alex@gnu.org"
+      ;; for Gnus, I want my Gmail address
+      user-mail-address "kensanata@gmail.com")
 
 ;; (global-set-key (kbd "M-SPC") 'just-one-space)
 ;; (global-set-key (kbd "C-v") 'goto-line)
@@ -334,12 +337,9 @@ Note that comments between URL and name will stay where they are."
 
 ;; (find-file ":http://www.emacswiki.org/cgi-bin/emacs/dav/ElDav")
 
-(defun rcirc-unfill ()
-  (interactive)
-  (save-excursion
-    (goto-char rcirc-prompt-end-marker)
-    (while (re-search-forward "\\s-+" nil t)
-      (replace-match " "))))
+;;; bitlbee
+(autoload 'bitlbee-start "bitlbee" t)
+(setq bitlbee-executable "/usr/local/sbin/bitlbee")
 
 ;;; rcirc, write such as not to require rcirc at startup
 (autoload 'rcirc "rcirc" t)
@@ -347,7 +347,8 @@ Note that comments between URL and name will stay where they are."
 (global-set-key (kbd "C-c e")
 		(lambda ()
 		  (interactive)
-		  (rcirc nil)))
+		  (bitlbee-start); needs time to start up
+		  (run-with-idle-timer 1 nil 'rcirc nil)))
 
 (setq rcirc-prompt "%n> "; list nick
       rcirc-fill-prefix "    "
@@ -358,7 +359,8 @@ Note that comments between URL and name will stay where they are."
       '(("irc.freenode.net" :channels
 	 ("#emacs" "#rcirc" "#wiki" "#oddmuse" "#epfarms"
 	  "#hcoop" "#clojure"))
-	("irc.datacomm.ch" :channels ("#drsrm"))
+	("localhost" :channels ("&bitlbee"))
+	("ircnet.ipng.ch" :channels ("#drsrm"))
 	;; ("irc.lugs.ch" :channels ("#hackerfunk"))
 	("irc.perl.org" :channels ("#perlde")))
       rcirc-decode-coding-system 'undecided
@@ -397,6 +399,13 @@ Note that comments between URL and name will stay where they are."
 		      (symbol-name rcirc-encode-coding-system))
        (set (make-local-variable 'rcirc-encode-coding-system)
 	    (intern-soft arg)))))
+
+(defun rcirc-unfill ()
+  (interactive)
+  (save-excursion
+    (goto-char rcirc-prompt-end-marker)
+    (while (re-search-forward "\\s-+" nil t)
+      (replace-match " "))))
 
 (add-hook 'rcirc-mode-hook
 	  (lambda ()
@@ -489,6 +498,7 @@ Note that comments between URL and name will stay where they are."
 	("EmacsWiki" "http://www.emacswiki.org/cgi-bin/emacs" utf-8)
 	("CampaignWiki" "http://www.campaignwiki.org/wiki" utf-8)
 	("HagfishTavern" "http://www.campaignwiki.org/wiki/HagfishTavern" utf-8)
+	("Kaylash" "http://www.campaignwiki.org/wiki/Kaylash" utf-8)
 	("AlderKing" "http://www.campaignwiki.org/wiki/TheAlderKing" utf-8)
 	("GoldenLanterns" "http://www.campaignwiki.org/wiki/GoldenLanterns" utf-8)
 	("CommunityWiki" "http://www.communitywiki.org/cw" utf-8)
@@ -597,6 +607,7 @@ add an empty line before it and make it italic."
     (newline)
     (forward-char 1)))
     
+(require 'goto-addr)
 (define-generic-mode 'alex-oddmuse-mode
   nil; comments
   nil; keywords
@@ -615,7 +626,7 @@ add an empty line before it and make it italic."
     ("__.*?__" . 'italic)
     ("_.*?_" . 'underline)); font-lock list
   '(".oddmuse\\'"); auto-mode-alist
-  '((lambda () (require 'info) (require 'goto-addr))); function-list
+  '((lambda () (require 'info))); function-list
   "Major mode for editing Oddmuse wiki files.
 The particular markup mix is specific to my preferences.")
 
@@ -820,6 +831,57 @@ cells by rows first."
   '(sunrise-mc-keys))
 (add-to-list 'auto-mode-alist '("\\.srvm\\'" . sr-virtual-mode))
 (autoload 'sr-virtual-mode "sunrise-commander")
+
+;;; Gnus
+
+(setq gnus-select-method '(nntp "news.hispeed.ch")
+      gnus-secondary-select-methods
+      '((nnimap "gmail"
+		(nnimap-address "imap.gmail.com")
+		(nnimap-authinfo-file "~/.netrc")
+		(nnimap-server-port 993)
+		(nnimap-stream ssl)
+		(nnmail-expiry-target "nnimap+gmail:[Gmail]/Trash")
+		(nnmail-expiry-wait immediate)))
+      gnus-treat-display-smileys nil)
+(add-hook 'gnus-summary-mode-hook 'my-gnus-summary-keys)
+
+(defun my-gnus-summary-keys ()
+  (local-set-key "y" 'gmail-archive)
+  (local-set-key "$" 'gmail-report-spam))
+
+(defun gmail-archive ()
+  "Archive the current or marked mails.
+This moves them into the All Mail folder."
+  (interactive)
+  (gnus-summary-move-article nil "nnimap+gmail:[Gmail]/All Mail"))
+
+(defun gmail-report-spam ()
+  "Report the current or marked mails as spam.
+This moves them into the Spam folder."
+  (interactive)
+  (gnus-summary-move-article nil "nnimap+gmail:[Gmail]/Spam"))
+
+;;; Writing mail, message-mode
+(setq mail-user-agent 'gnus-user-agent
+      gnus-outgoing-message-group "nnimap+gmail:[Gmail]/Sent Mail")
+
+;; override the simple defun provided
+(defadvice message-expand-name (after or-complete-alias activate)
+  "Complete alias at point if it could not be expanded."
+  (unless ad-return-value
+    (mail-abbrev-complete-alias)))
+
+;;; Mail sending, SMTP
+(setq send-mail-function 'smtpmail-send-it
+      message-send-mail-function 'smtpmail-send-it
+      smtpmail-smtp-server "smtp.gmail.com"
+      smtpmail-smtp-service 587
+      smtpmail-starttls-credentials
+      `((,smtpmail-smtp-server
+	 ,smtpmail-smtp-service
+	 nil nil))
+      smtpmail-auth-credentials "~/.netrc")
 
 ;;; automatic additions
 

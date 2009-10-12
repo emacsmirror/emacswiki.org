@@ -1,0 +1,34 @@
+I am Bao Haojun. I'm from China. I mainly use Windows XP and cygwin (1.7 version). The Emacs I use is <code>GNU Emacs 23.1.1 (i686-pc-cygwin, X toolkit, Xaw3d scroll bars) of 2009-07-30 on laptop</code>.
+
+I have put all software I wrote/borrowed, all my configuration files such as <code>.bashrc/.inputrc/.emacs</code> etc. online under version control at http://windows-config.googlecode.com/svn/trunk
+
+I have written a grepall.py, which is intended mainly for use under Emacs for reading source code. It will do a ##find##, prune the files in .svn etc., save the result of the find for cache, then do a ##grep##, then save the result for cache again. Next time you grep for the same regexp, in the same folder, with the same pattern of filenames to find, the cached contents will be displayed, which saves you time. But *wait*, that is not all! What if some files have been deleted? changed? Don't worry, when displaying the cached grepped lines, it will check whether it's valid first (has the file been changed? is it gone?), then it will search the folder for files with the filename pattern that is newer then our cache file, it will grep them again. Check it out at [[http://windows-config.googlecode.com/svn/trunk/bin/grepall.py]].
+
+I have also written a vccompile (a PERL script). You can use it to compile Visual Studio solutions (.dsw/.sln), all version of VS from 6.0 to 9.0 (VS2008) are supported. It works by processing the VS compile output so that it looks like output from the ##make(1)## program, with those _Entering ..._ and _Leaving ..._ added at the correct place, and the filenames transformed into posix format (for cygwin emacs only understands posix format pathnames). Get it at [[http://windows-config.googlecode.com/svn/trunk/bin/windows/vccompile]].
+
+Also I wrote a helpEmacs.py, after it's running (I put it in my
+startup folder, so that it's started when I login Windows), you can
+get MSDN help from within Emacs. You need the native Win32 Python,
+pywin32 installed. Get my script from
+[[http://windows-config.googlecode.com/svn/trunk/bin/windows/helpEmacs.py]].
+
+And this lisp snippet:
+
+<pre>
+  ;;press F2 to get MSDN help
+  (global-set-key[(f2)](lambda()(interactive)(call-process "/bin/bash" nil nil nil "/q/bin/windows/ehelp" (current-word))))
+</pre>
+
+Also some other stuff that is not Emacs particular. It's rather all my
+personal stuff, but I hope there's a chance that others might find it
+useful too. So here's the way to use it:
+
+# Download and install cygwin1.7. Full install is highly recommended.
+# start bash
+# svn co http://windows-config.googlecode.com/svn/trunk windows-config
+# cd ./windows-config/bin/windows
+# ./after-check-out.sh
+# ./startup.sh
+
+[new:AndyStewart:2009-10-12 00:32 UTC]
+Welcome to wiki! :) -- AndyStewart

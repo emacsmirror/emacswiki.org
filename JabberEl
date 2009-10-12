@@ -268,9 +268,7 @@ With emacs-jabber-0.7.92 put
                             ))
 </pre>
 
-in your .emacs in order to connect to gtalk. And press "C-x C-j C-c"!
-
--- gavenkoa
+in your .emacs in order to connect to gtalk. And press "C-x C-j C-c"! -- [[gavenkoa]]
 
 [new]
 Setting urgency hint for Emacs frame (only for X Window System).

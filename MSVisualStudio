@@ -1,3 +1,64 @@
+== vccompile written in perl ==
+
+I have written a perl script which can compile all versions of Visual
+Studio from VS6 to VS2008 (AKA VS9). It requires no hacking of lisp
+code, the default compile mode will do the job.
+
+The trick is to make the devenv or msdev (for VS6) output look like the output from make(1). 
+
+Caveat: you must be using cygwin version of Emacs, not the native
+win32 Emacs (that will require you to change the script, for the
+filename is converted to posix format, no longer win32 format). That
+said, you'd also need the cygwin (1.7 is preferred, which is in beta
+now), and perl and emacs23 is included in it.
+
+Also, you need make the different versions of devenv.com/msdev.com
+availabe in your ##PATH##, by the name of vcN.com, where N is the
+version number; a softlink will do, as this is my setup:
+
+<pre>
+$l ~/bin/windows/vc*.com
+lrwxrwxrwx 1 bhj None 78 2009-10-11 10:04 /q/bin/windows/vc6.com -> /cygdrive/c/Program Files/Microsoft Visual Studio/Common/MSDev98/Bin/MSDEV.COM*
+lrwxrwxrwx 1 bhj None 82 2009-10-11 10:04 /q/bin/windows/vc7.com -> /cygdrive/c/Program Files/Microsoft Visual Studio .NET 2003/Common7/IDE/devenv.com
+lrwxrwxrwx 1 bhj None 74 2009-10-11 10:04 /q/bin/windows/vc8.com -> /cygdrive/c/Program Files/Microsoft Visual Studio 8/Common7/IDE/devenv.com*
+lrwxrwxrwx 1 bhj None 76 2009-10-11 10:04 /q/bin/windows/vc9.com -> /cygdrive/c/Program Files/Microsoft Visual Studio 9.0/Common7/IDE/devenv.com*
+</pre>
+
+(<code>~/bin/windows</code> is in my PATH).
+=== Where to download it ===
+
+[[http://windows-config.googlecode.com/svn/trunk/bin/windows/vccompile]]
+
+There are other stuff in [[http://windows-config.googlecode.com]], you
+might find interesting. For e.g., you can also find my .emacs file,
+and msdn-help from Emacs, etc. Essentially it's everything from my
+.bashrc/.inputrc to everything. For e.g., those <code>vcN.com</code>
+softlinks are also in the svn, so that I don't need to <code>ln
+-s</code> on a new computer, I only need make sure the Visual Studio
+is installed at its default location.
+
+=== Usage: ===
+
+<code>M-x compile <Enter> vccompile all all <Enter> </code>
+
+The above will compile all the projects (.dsp/.vcproj/.csproj) in your solution (.sln/.dsw) with both ##release## and ##debug## configuations.
+
+It will seek for .dsw/.sln file in the pwd, if not found, look in the
+parent folder, and so on, so you don't need to worry about the correct
+.dsw/.sln file most of the time, because you currect buffer most
+likely will be already editting the correct .c/.cpp/.cs etc. file,
+which means the path is also already correct.
+
+<pre>
+vccompile project/all/'' release/debug/OTHER-CONFIG/all/'' (/clean) 
+</pre>
+
+The above is the whole SYNOPSIS for invoking ##vccompile##. The first argument is the project name, you can also specify /all/ to mean all projects, or <code>''</code> (empty) to mean the first project listed in the .sln/.dsw. The second is what configuration to do the compile. The optional 3rd argument will allow you to do what is like <code>make clean</code>.
+
+Contact information can be found on the googlecode page.
+
+-- BaoHaojun 
+
 == Working with MS Visual Studio devenv command line. ==
 
 The environment has to be set up before devenv will build from the command line. Here's the code I have in my .emacs for this (the cmd-shell function needs [[EmacsW32]]), and this is for VisualStudio 2005 - obviously for 2003 and VS6 it will be different (look for your vcvars32.bat for clues).

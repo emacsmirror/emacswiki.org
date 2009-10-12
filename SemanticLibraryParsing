@@ -1,0 +1,76 @@
+If Semantic does not give you correct completions for a certain library, this is often due to some special preprocessor macros or some other trickery which Semantic cannot parse.
+This can often be overcome by giving Semantic some additional information. This page is intended to gather those special configuration options for parsing certain libraries.
+
+== wxWidget ==
+
+The wxWidget library uses some preprocessor macros in its class definitions, which currently cannot be correctly dereferenced by Semantic. You have to set these macros manually through
+
+<pre>
+(add-to-list 'semantic-lex-c-preprocessor-symbol-map '("WXDLLIMPEXP_CORE" . ""))
+(add-to-list 'semantic-lex-c-preprocessor-symbol-map '("WXDLLIMPEXP_FWD_CORE" . ""))
+(add-to-list 'semantic-lex-c-preprocessor-symbol-map '("WXDLLIMPEXP_BASE" . ""))
+(add-to-list 'semantic-lex-c-preprocessor-symbol-map '("WXDLLIMPEXP_FWD_BASE" . ""))
+(add-to-list 'semantic-lex-c-preprocessor-symbol-map '("WXDLLIMPEXP_FWD_XML" . ""))
+(add-to-list 'semantic-lex-c-preprocessor-symbol-map '("WXDLLIMPEXP_ADV" . ""))
+</pre>
+
+This applies to the current development version 2.90 of wxWidget. Older versions only need
+
+<pre>
+(add-to-list 'semantic-lex-c-preprocessor-symbol-map '("WXDLLEXPORT" . ""))
+</pre>
+
+Another problem with wxWidget is that it can use different toolkits, and most of the classes are defined in the toolkit header files, which are not included manually in the C++ files.
+However, you can include those header files through a Semantic feature called "implied includes". You can use the following helper function:
+
+<pre>
+ (defun DE-imply-includes-in-directory (dir)
+  "Add all header files in DIR to `semanticdb-implied-include-tags'."
+  (let ((files (directory-files dir t "^.+\\.h[hp]*$" t)))
+    (defvar-mode-local c++-mode semanticdb-implied-include-tags
+      (mapcar (lambda (header)
+		(semantic-tag-new-include
+		 header
+		 nil
+		 :filename header))
+	      files))))
+</pre>
+
+Now you can simply do
+
+<pre>
+(DE-imply-includes-in-directory "/YOUR-INCLUDE-PATH/wx/gtk")
+</pre>
+
+to implicitly include all header files from the GTK toolkit files. This should give Semantic all the information it needs to correctly parse the classes.
+
+== Qt ==
+
+Qt is using some preprocessor symbols in its class definitions. You need to set them manually via
+
+<pre>
+(add-to-list 'semantic-lex-c-preprocessor-symbol-map '("Q_GUI_EXPORT" . ""))
+(add-to-list 'semantic-lex-c-preprocessor-symbol-map '("Q_CORE_EXPORT" . ""))
+</pre>
+
+AlexOtt: This setup also should work for Qt:
+
+<pre>
+(setq qt4-base-dir "/usr/include/qt4")
+(setq qt4-gui-dir (concat qt4-base-dir "/QtGui"))
+(semantic-add-system-include qt4-base-dir 'c++-mode)
+(semantic-add-system-include qt4-gui-dir 'c++-mode)
+(add-to-list 'auto-mode-alist (cons qt4-base-dir 'c++-mode))
+(add-to-list 'semantic-lex-c-preprocessor-symbol-file (concat qt4-base-dir "/Qt/qconfig.h"))
+(add-to-list 'semantic-lex-c-preprocessor-symbol-file (concat qt4-base-dir "/Qt/qconfig-large.h"))
+(add-to-list 'semantic-lex-c-preprocessor-symbol-file (concat qt4-base-dir "/Qt/qglobal.h"))
+</pre>
+
+== GlibC (STL) ==
+
+Uses namespace macros, but special support for that is implemented in Semantic. Most stuff should work out of the box. However, Semantic has problems parsing template specializations; those are used in allocator.h, for instance. This leads to wrong dereferencing of objects; for example, consider 'v' to be a vector like 'vector<someClass>', then 'v[0].' won't complete from 'someClass' but from 'vector'.
+
+== Visual C++ STL ==
+
+Also uses namespace macros, but support for those is implemented in latest CEDET from CVS.
+

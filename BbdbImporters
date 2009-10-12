@@ -194,3 +194,8 @@ i was switching from mutt/abook to wanderlust/bbdb, so i came up with this code.
     	   notes)))
           (message "abook's addressbook successfully imported."))))
     (provide 'bbdb-snarf-abook)
+
+=== Importing from OS X system Address Book ===
+
+I use Gnus as my mailer, but I live on a Macintosh.  To get the system AddressBook data into the BBDB, I've written a [http://www.homonculus.net/blog/by_name/bbdb_os_x_hackery.html short python script] that uses the PyObjC bridge to pull the relevant data directly.    Share and enjoy!
+

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2009, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 21.1
-;; Last-Updated: Sun Aug 30 09:30:24 2009 (-0700)
+;; Last-Updated: Sun Oct 11 10:30:50 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 2787
+;;     Update #: 2801
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -86,6 +86,8 @@
 ;;
 ;; Change log:
 ;;
+;; 2009/10/11 dadams
+;;     Autoload wdired.el and bind to C-x C-q.
 ;; 2009/08/30 dadams
 ;;     Removed compile-time require of cl.el for when, unless.
 ;; 2009/06/17 dadams
@@ -352,6 +354,10 @@
 (require 'frame-cmds nil t)             ; Frame and window commands.
 (when (if (fboundp 'display-graphic-p) (display-graphic-p) window-system)
   (require 'autofit-frame nil t))       ; Automatically fit frames to sole window.
+(unless (> emacs-major-version 22)
+  (autoload 'wdired-change-to-wdired-mode "wdired") ; Easily rename files etc.
+  (add-hook 'dired-load-hook '(lambda ()
+                               (define-key dired-mode-map "\C-x\C-q" 'wdired-change-to-wdired-mode))))
 (when (fboundp 'text-scale-increase)    ; Emacs 23+
   (require 'face-remap+ nil t))         ; Resize window/frame when scale text.
 ;; Use Francis Wright's version of `ls-lisp.el', if available.
