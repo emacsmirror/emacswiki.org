@@ -2,6 +2,10 @@
 
 The source can be found [[jira.el|here]].
 
+*New in 0.3.3*
+
+Issue keys, project keys, and filter ID's are now "links" that can be loaded by pressing return while the cursor is on the word. Mouse clicking is not available, yet.
+
 == What is Jira? ==
 
 Jira is a bug and issue tracking program. More information can be found on [[http://www.atlassian.com/software/jira/|the Atlassian website]].
@@ -34,6 +38,8 @@ In order to run jira-mode you will need:
 == How do I use `jira-mode'? ==
 
 When `jira-mode' loads, it creates a new buffer called *Jira*. Once you are in `jira-mode', you use simple key strokes to perform actions. For instance, to quit `jira-mode', press 'Q'. To view an issue, press 'i' then give the project key (i.e. MYPROJ-1). To make reading the comments for a ticket easier, you can press 'n' and 'p' which will place the next or previous (respectively) comment at the top of the buffer. There are many  other functions that can be used. For a full list of key-bindings an functions, type `C-h m' from within `jira-mode'.
+
+When you search for issues, list issues or projects, and the like, issue keys, project names, etc. will be underlined links that, if return is pressed while the cursor is on an underlined key, will load the issue/project/etc.
 
 == Known Issues and Problems ==
 

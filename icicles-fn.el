@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Sep 25 17:54:43 2009 (-0700)
+;; Last-Updated: Mon Oct 12 11:32:35 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 11125
+;;     Update #: 11172
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2857,7 +2857,8 @@ prefix over all candidates."
               (if (icicle-not-basic-prefix-completion-p)
                   (icicle-completion-all-completions input minibuffer-completion-table
                                                      minibuffer-completion-predicate
-                                                     (- (point) (field-beginning)))
+                                                     ;; $$$$$$ (- (point) (field-beginning)))
+                                                     (length input))
                 (all-completions input minibuffer-completion-table minibuffer-completion-predicate
                                  icicle-ignore-space-prefix-flag)))
              (icicle-extra-candidates
@@ -2882,7 +2883,8 @@ prefix over all candidates."
                  (if (icicle-not-basic-prefix-completion-p)
                      (icicle-completion-try-completion input minibuffer-completion-table
                                                        minibuffer-completion-predicate
-                                                       (- (point) (field-beginning)))
+                                                       ;; $$$$$$ (- (point) (field-beginning)))
+                                                       (length input))
                    (try-completion input minibuffer-completion-table
                                    minibuffer-completion-predicate))))
             (setq icicle-common-match-string  (if (eq t common-prefix) input common-prefix))))
@@ -3260,7 +3262,7 @@ current candidate is shown in the mode line."
       (setq icicle-last-completion-candidate  icicle-initial-value))
     (setq nth                   (or nth 1)
           icicle-current-input  (if (icicle-file-name-input-p)
-                                    (abbreviate-file-name (icicle-input-from-minibuffer))
+                                    (abbreviate-file-name (icicle-input-from-minibuffer 'leave-envar))
                                   (icicle-input-from-minibuffer))
           icicle-cycling-p      t)
     (unless (and (symbolp this-command) (get this-command 'icicle-apropos-cycling-command)
@@ -3793,11 +3795,12 @@ This does not do all of the file-handler processing that
   "Return the user minibuffer input as a string, without text-properties."
   (save-selected-window (select-window (minibuffer-window)) (icicle-input-from-minibuffer)))
 
-;;$$$$$ Do we need to double all $'s in output from `icicle-subst-envvar-in-file-name',
+;;$$$ Do we need to double all $'s in output from `icicle-subst-envvar-in-file-name',
 ;;      before calling `substitute-in-file-name'?
-(defun icicle-input-from-minibuffer ()
+(defun icicle-input-from-minibuffer (&optional leave-envvars-p)
   "Return the minibuffer input as a string, without text-properties.
-Substitute any environment vars by their values.
+Unless optional arg LEAVE-ENVVARS-P is non-nil, substitute any
+environment vars by their values.
 The current buffer must be a minibuffer."
   (let ((input  (if (fboundp 'minibuffer-contents)
                     (minibuffer-contents) ; e.g. Emacs 22
@@ -3806,9 +3809,10 @@ The current buffer must be a minibuffer."
     ;;              (minibuffer-contents-no-properties) ; e.g. Emacs 22
     ;;            (buffer-substring-no-properties (point-min) (point-max))))) ; e.g. Emacs 20
     (when (and (icicle-file-name-input-p)
-               (not (string= "" input))) ; Do nothing if user deleted everything in minibuffer.
+               (not (string= "" input)) ; Do nothing if user deleted everything in minibuffer.
+               (not leave-envvars-p))
       (let ((last-char  ""))
-        (when (string= "$" (substring input (1- (length input)) (length input)))
+        (when (eq ?\$ (aref input (1- (length input))))
           (setq last-char  "$"
                 input      (substring input 0 (1- (length input)))))
         (setq input
@@ -4271,7 +4275,9 @@ unless it exists."
       (goto-char (icicle-minibuffer-prompt-end))
       (setq input-start-position  (point))
       (when (and (icicle-file-name-input-p) insert-default-directory)
-        (search-forward (icicle-file-name-directory-w-default (icicle-input-from-minibuffer)) nil t)
+        (search-forward (icicle-file-name-directory-w-default
+                         (icicle-input-from-minibuffer 'leave-envvars))
+                        nil t)
         (setq input-start-position  (point))) ; Skip directory.
       (if icicle-complete-input-overlay ; Don't recreate if exists.
           (move-overlay icicle-complete-input-overlay
@@ -4506,7 +4512,8 @@ defined)."
     (if (icicle-not-basic-prefix-completion-p)
         (icicle-completion-try-completion input minibuffer-completion-table
                                           minibuffer-completion-predicate
-                                          (- (point) (field-beginning)))
+                                          ;; $$$$$$ (- (point) (field-beginning)))
+                                          (length input))
       (try-completion input minibuffer-completion-table minibuffer-completion-predicate))))
 
 (defun icicle-prefix-any-file-name-candidates-p (input)
@@ -5000,11 +5007,17 @@ Otherwise:
 
 (defun icicle-completion-all-completions (string table pred point)
   "Icicles version of `completion-all-completions'.
-Removes the last cdr, which might hold the base size."
+Append `$' to each candidate, if current input ends in `$'.
+Also removes the last cdr, which might hold the base size."
   (let ((res  (completion-all-completions string table pred point)))
     (when (consp res)
       (let ((last  (last res)))
         (when last (setcdr last nil))))
+    (let* ((input-sans-dir  (icicle-minibuf-input-sans-dir icicle-current-input))
+           (env-var-p       (and (icicle-not-basic-prefix-completion-p)
+                                 (> (length input-sans-dir) 0)
+                                 (eq ?\$ (aref input-sans-dir 0)))))
+      (when env-var-p (setq res  (mapcar #'(lambda (cand) (concat "$" cand)) res))))
     res))
 
 (defun icicle-completion-try-completion (string table pred point)
@@ -5249,7 +5262,8 @@ current before user input is read from the minibuffer."
 
 (defun icicle-not-basic-prefix-completion-p ()
   "Emacs > release 22, and not `icicle-prefix-completion-is-basic-flag'."
-  (and (fboundp 'completion-try-completion) (not icicle-prefix-completion-is-basic-flag)))
+  (and (fboundp 'completion-try-completion)
+       (not icicle-prefix-completion-is-basic-flag)))
  
 ;;(@* "Icicles functions - sort functions")
 

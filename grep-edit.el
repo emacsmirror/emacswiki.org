@@ -383,7 +383,6 @@ commands.  This advice only has effect in grep-edit mode."
         (kill-buffer (concat "*" (downcase mode) "*"))))
     ad-do-it))
 
-[http://superiorpapers.com term paper]
 (provide 'grep-edit)
 ;;; end
 ;;; grep-edit.el ends here

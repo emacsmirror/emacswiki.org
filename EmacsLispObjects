@@ -1,6 +1,10 @@
 An implementation of the CommonLisp object orientation standard (CLOS) in EmacsLisp,
 called [::EIEIO], which is part of [[CEDET]].
 
+For a little introduction, see
+
+http://www.randomsample.de/dru5/node/65
+
 ----
 CategoryCode,
 CategoryExtensionLanguage

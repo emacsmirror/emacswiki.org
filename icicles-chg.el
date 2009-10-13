@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Oct  6 13:08:07 2009 (-0700)
+;; Last-Updated: Mon Oct 12 15:53:45 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 4426
+;;     Update #: 4458
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -274,6 +274,14 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2009/10/12 dadams
+;;     icicle-unsorted-prefix-candidates, icicle-prefix-any-candidates-p:
+;;       Use length of INPUT, not length from point backward to field-beginning.
+;;     icicle-input-from-minibuffer: Added optional LEAVE-ENVVARS-P arg.
+;;     icicle-next-candidate, icicle-highlight-complete-input:
+;;       Call icicle-input-from-minibuffer with LEAVE-ENVVARS-P arg.
+;;     icicle-completion-all-completions:
+;;       If not basic completion (Emacs 23) and input ends in $, then append $ to cands also.
 ;; 2009/09/25 dadams
 ;;     icicle-file-name-prefix-candidates: Use whole input, not just nondirectory.
 ;;     Added: icicle-not-basic-prefix-completion-p.  Use where appropriate.
@@ -1588,6 +1596,13 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2009/10/12 dadams
+;;     Added: icicle-input-is-a-completion-p.
+;;     icicle-minibuffer-complete-and-exit, icicle-input-is-a-completion-p:
+;;       Use icicle-input-is-a-completion-p.
+;;     icicle-prefix-complete-1:
+;;       For file-name input: Set, and use, current input without substituting env vars.
+;;                            When sole candidate ends in /, add a / to current input also.
 ;; 2009/09/26 dadams
 ;;     icicle-narrow-candidates(-with-predicate): Bind icicle-progressive-completing-p to t.
 ;; 2009/09/25 dadams
@@ -3345,6 +3360,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2009/10/12 dadams
+;;     icicle-top-level-key-bindings: Added bindings for icicle-bookmark(-other-window).
+;;     icicle-prefix-completion-is-basic-flag: Make it a constant for pre-Emacs 23.
 ;; 2009/10/06 dadams
 ;;     icicle-keymaps-for-key-completion: Added bookmark-bmenu-mode-map to default value.
 ;;     icicle-sort-functions-alist: Use a separate defcustom for Emacs 20, since no :type alist.

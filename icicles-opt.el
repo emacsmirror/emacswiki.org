@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Oct  6 13:04:20 2009 (-0700)
+;; Last-Updated: Mon Oct 12 15:39:13 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 3321
+;;     Update #: 3334
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -576,6 +576,8 @@ whatever OLD is bound to in MAP, or in OLDMAP, if provided."
     (find-file                      icicle-file                     t) ; `C-x C-f'
     (find-file-other-window         icicle-file-other-window        t) ; `C-x 4 f'
     (bookmark-set                   icicle-bookmark-cmd             t) ; `C-x r m'
+    (bookmark-jump                  icicle-bookmark                 t) ; `C-x r b'
+    (bookmark-jump-other-window     icicle-bookmark-other-window    t)
     ;; Don't let Emacs 20 or 21 use `substitute-key-definition' on `M-.' or `M-*', since we need
     ;; these keys for the minibuffer.  Leave them unbound in `icicle-mode-map' until Emacs 22+.
     (pop-tag-mark        icicle-pop-tag-mark          (fboundp 'command-remapping)) ; `M-*'
@@ -2471,9 +2473,9 @@ The candidates are highlighted in buffer *Completions* using face
   :type '(choice (const :tag "None" nil) regexp) :group 'Icicles-Completions-Display)
 
 ;;;###autoload
-(when (boundp 'completion-styles)       ; Emacs 23+
-  (defcustom icicle-prefix-completion-is-basic-flag nil
-    "Non-nil means that `TAB' performs only basic prefix completion.
+(if (boundp 'completion-styles)         ; Emacs 23+
+    (defcustom icicle-prefix-completion-is-basic-flag nil
+      "Non-nil means that `TAB' performs only basic prefix completion.
 A nil value means Icicles prefix completion respects option
 `completion-styles' (new in Emacs 23), so that `TAB' behaves similarly
 in Icicles to what it does in vanilla Emacs.
@@ -2485,8 +2487,11 @@ variables to their values when you hit `RET'.
 
 The effect of a non-nil value is to provide the `TAB' completion that
 was available prior to Emacs 23.  In releases prior to Emacs 23, this
-option has no effect: Icicles acts as if the value is nil."
-    :type 'boolean :group 'Icicles-Matching))
+option has no effect: the value should always be nil."
+      :type 'boolean :group 'Icicles-Matching)
+  (defconst icicle-prefix-completion-is-basic-flag t
+    "This is intended as a constant - DO NOT change its value.
+This is not a user option in this Emacs version."))
 
 ;;;###autoload
 (defcustom icicle-TAB-shows-candidates-flag t

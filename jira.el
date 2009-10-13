@@ -1,13 +1,13 @@
 ;;; jira.el --- Connect to JIRA issue tracking software
 
-
 ;; Copyright (C) 2009 Brian Zwahr
 ;; original Copyright (C) 2007  Dave Benjamin
 
 ;; Authors: 
 ;; Brian Zwahr <echosa@gmail.com>
 ;; Dave Benjamin <dave@ramenlabs.com>
-;; Version: 0.3.2
+;; Version: 0.3.3
+;; Last modified: October 12, 2009
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -138,6 +138,21 @@
   "Base face for comment headers."
   :group 'jira-faces)
 
+(defface jira-link-issue-face
+  '((t (:underline t)))
+  "Face for linked issues."
+  :group 'jira-faces)
+
+(defface jira-link-project-face
+  '((t (:underline t)))
+  "Face for linked projects"
+  :group 'jira-faces)
+
+(defface jira-link-filter-face
+  '((t (:underline t)))
+  "Face for linked filters"
+  :group 'jira-faces)
+
 (defvar jira-mode-hook nil)
 
 (defvar jira-mode-map nil)
@@ -160,25 +175,30 @@
     (define-key jira-mode-map "p" 'jira-previous-comment)
     (define-key jira-mode-map "jl" 'jira-login)
     (define-key jira-mode-map "jL" 'jira-logout)
-    (define-key jira-mode-map "Q" 'jira-mode-quit)))
+    (define-key jira-mode-map "Q" 'jira-mode-quit)
+    (define-key jira-mode-map [return] 'jira-return)))
 
 (defun jira-mode ()
   "A mode for working with the Jira ticketing system. XMLRPC is used via xmlrpc.el. Things run a bit slow, though sometimes they seems to run faster when doing multiple things at once to the same ticket: i.e. retrieve a ticket, its slow, comment the tickets, its faster, refresh the ticket its faster, wait a while then refresh and its slow again. 
 
 \\{jira-mode-map}"
   (interactive)
-  (switch-to-buffer "*Jira*")
-  (kill-all-local-variables)
-  (setq major-mode 'jira-mode)
-  (setq mode-name "Jira")
-  (use-local-map jira-mode-map)
-  (run-hooks 'jira-mode-hook)
-  (jira-store-projects)
-  (jira-store-priorities)
-  (jira-store-statuses)
-  (jira-store-types)
-  (insert "Welcome to jira-mode!")
-  (message "jira mode loaded!"))
+  (if (or (equal jira-url nil)
+          (equal jira-url ""))
+      (message "jira-url not set! Please use 'M-x customize-variable RET jira-url RET'!")
+    (progn
+      (switch-to-buffer "*Jira*")
+      (kill-all-local-variables)
+      (setq major-mode 'jira-mode)
+      (setq mode-name "Jira")
+      (use-local-map jira-mode-map)
+      (run-hooks 'jira-mode-hook)
+      (jira-store-projects)
+      (jira-store-priorities)
+      (jira-store-statuses)
+      (jira-store-types)
+      (insert "Welcome to jira-mode!")
+      (message "jira mode loaded!"))))
 
 (defvar jira-current-issue nil
   "This holds the currently selected issue.")
@@ -325,6 +345,25 @@
         (beginning-of-line))
     (goto-char 0)))
 
+(defun jira-return ()
+  (interactive)
+  (if (equal (face-at-point) 'jira-link-issue-face)
+      (jira-show-issue (thing-at-point 'sexp)))
+  (if (equal (face-at-point) 'jira-link-project-face)
+      (jira-search-project-issues (thing-at-point 'sexp) "" 20))
+  (if (equal (face-at-point) 'jira-link-filter-face)
+      (jira-list-issues (thing-at-point 'sexp))))
+
+(defun point-on-issue-p ()
+  (save-excursion
+    (search-backward " ")))
+
+(defun delete-eob-whitespace ()
+  (end-of-buffer)
+  (delete-horizontal-space)
+  (delete-char -1)
+  (beginning-of-buffer))
+
 ;; ***********************************
 ;; original functions by Dave Benjamin
 ;; modifications by Brian Zwahr noted
@@ -352,9 +391,20 @@
     (jira-with-jira-buffer
      (insert (number-to-string (length projects)) " JIRA projects found:\n\n")
      (dolist (project projects)
-       (insert (format "%-12s %s\n"
-                       (cdr (assoc "key" project))
-                       (cdr (assoc "name" project))))))))
+       (insert (format "%-12s" " "))
+       (beginning-of-line)
+       (add-text-properties
+        (point)
+        (save-excursion
+          (insert 
+           (cdr (assoc "key" project)))
+          (point))
+        '(face jira-link-project-face))
+       (beginning-of-line)
+       (forward-char 12)
+       (insert (format "%s\n"
+                       (cdr (assoc "name" project)))))))
+  (delete-eob-whitespace))
 
 (defun jira-list-filters ()
   "Displays a list of all saved JIRA filters"
@@ -363,9 +413,19 @@
     (jira-with-jira-buffer
      (insert (number-to-string (length filters)) " JIRA filters found:\n\n")
      (dolist (filter filters)
-       (insert (format "%-8s %s\n"
-                       (cdr (assoc "id" filter))
-                       (cdr (assoc "name" filter))))))))
+       (insert (format "%-8s" " "))
+       (beginning-of-line)
+       (add-text-properties
+        (point)
+        (save-excursion
+          (insert (cdr (assoc "id" filter)))
+          (point))
+        '(face jira-link-filter-face))
+       (beginning-of-line)
+       (forward-char 8)
+       (insert (format " %s\n"
+                       (cdr (assoc "name" filter)))))))
+  (delete-eob-whitespace))
 
 (defun jira-list-issues (filter-id)
   "Displays a list of issues matching a filter"
@@ -520,6 +580,7 @@
              (put-text-property 0 (length s) 'face 'jira-comment-header-face s)
              (insert s "\n"))
            (let ((c (jira-strip-cr (cdr (assoc "body" comment)))))
+             
              (put-text-property 0 (length c) 'face 'jira-comment-face c)
              (insert c "\n\n"))
            (setf count (1+ count))))))))
@@ -564,15 +625,26 @@
         (when (not (equal last-status status))
           (setq last-status status)
           (insert "\n"))
-        (insert (format "%-16s %-10s %s %5s %s\n"
-                        (cdr (assoc "key" issue))
+        (insert (format "%-16s" " "))
+        (beginning-of-line)
+        (add-text-properties
+         (point)
+         (save-excursion
+           (insert 
+            (cdr (assoc "key" issue)))
+           (point))
+         '(face jira-link-issue-face))
+        (beginning-of-line)
+        (forward-char 16)
+        (insert (format "%-10s %s %5s %s\n"
                         (cdr (assoc "assignee" issue))
                         (cdr (assoc status status-abbrevs))
                         (if priority
                             (make-string (- 6 (string-to-number priority))
                                          ?*)
                           "")
-                        (cdr (assoc "summary" issue))))))))
+                        (cdr (assoc "summary" issue)))))))
+  (delete-eob-whitespace))
 
 (defun jira-add-comment (issue-key comment)
   "Adds a comment to an issue"
@@ -616,7 +688,7 @@
   "Returns all priorities in the system"
   (jira-call 'jira1.getPriorities))
 
-;; Modified by Brian Zwahr to use getProjectsNoschemes instead of getProjects
+;; Modified by Brian Zwahr to use getProjectsNoSchemes instead of getProjects
 (defun jira-get-projects ()
   "Returns a list of projects available to the user"
   (jira-call 'jira1.getProjectsNoSchemes))

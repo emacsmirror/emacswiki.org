@@ -5,7 +5,7 @@
 ;; Author: Taiki SUGAWARA <buzz.taiki@gmail.com>
 ;; Keywords: faces
 ;; Version: 1.0.2
-;; Time-stamp: <2009-04-05 03:10:57 UTC taiki>
+;; Time-stamp: <2009-10-12 17:27:45 UTC taiki>
 ;; URL: http://www.emacswiki.org/emacs/highlight-cl.el
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -31,7 +31,7 @@
 ;;; Installation:
 ;; Run followings to byte compile this package:
 ;;
-;;   $ emacs -q -batch -f batch-byte-compile highlight-cl.el
+;;   $ emacs -Q -batch -f batch-byte-compile highlight-cl.el
 ;;
 ;; Put followings to your .emacs:
 ;;

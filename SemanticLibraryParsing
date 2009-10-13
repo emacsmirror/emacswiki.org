@@ -1,5 +1,44 @@
 If Semantic does not give you correct completions for a certain library, this is often due to some special preprocessor macros or some other trickery which Semantic cannot parse.
-This can often be overcome by giving Semantic some additional information. This page is intended to gather those special configuration options for parsing certain libraries.
+This can often be overcome by giving Semantic some additional information. This page is intended to gather those special configuration options for parsing certain libraries. Also, please add libraries that work / don't work. This page is currently focused on C/C++, but do not hesitate to add remarks for other languages as well.
+
+== Some general hints on parsing problems with C++ libraries ==
+
+First of all, make sure that CEDET is correctly set up, and that you get completions for your own stuff. Create some silly test classes und try some completions - if this doesn't work, there's probably something wrong with your setup, and you'll have to fix this first.
+
+While the C/C++ support in CEDET is pretty good, there are still some areas where Semantic has problems. Most of those areas are related to preprocessor macros, so this is usually the first thing you should look for.
+
+For example, some libraries use preprocessor symbols in class definitions, like
+
+<pre>
+class SOMESYMBOL someClass {
+ ....
+};
+</pre>
+
+where SOMESYMBOL is often expanded to some gcc attribute or similar. If SOMESYMBOL is defined in some other header file, Semantic will not be able to parse this. The reason for this is that Semantic does not parse every #define'd symbol out there - this would simply make parsing too slow. The easiest way to deal with this problem is to simply give Semantic a definition for SOMESYMBOL:
+
+<pre>
+(add-to-list 'semantic-lex-c-preprocessor-symbol-map '("SOMESYMBOL" . ""))
+</pre>
+
+This command will just set SOMESYMBOL to the empty string, and Semantic will therefore just ignore it. Another possibility is to find out in which header file SOMESYMBOL is defined, and add this one to the list of files which are explicitly parsed for symbol definitions:
+
+<pre>
+(add-to-list 'semantic-lex-c-preprocessor-symbol-file '"/PATH/someheader.h")
+</pre>
+
+Another problem are namespace macros, e.g., 
+
+<pre>
+#define BEGIN_STD namespace std {
+#define END_STD }
+
+BEGIN_STD
+  class someClass { ... };
+END_STD
+</pre>
+
+Currently, Semantic cannot deal with this. However, there's some explicit support implemented for this, at least for the STL implementations from the GlibC and from Visual C++.
 
 == wxWidget ==
 
@@ -44,6 +83,8 @@ Now you can simply do
 
 to implicitly include all header files from the GTK toolkit files. This should give Semantic all the information it needs to correctly parse the classes.
 
+For a detailed explanation see http://navaneethkn.wordpress.com/2009/10/11/getting-smart-completion-wxwidgets-cedet-emacs
+
 == Qt ==
 
 Qt is using some preprocessor symbols in its class definitions. You need to set them manually via
@@ -68,9 +109,13 @@ AlexOtt: This setup also should work for Qt:
 
 == GlibC (STL) ==
 
-Uses namespace macros, but special support for that is implemented in Semantic. Most stuff should work out of the box. However, Semantic has problems parsing template specializations; those are used in allocator.h, for instance. This leads to wrong dereferencing of objects; for example, consider 'v' to be a vector like 'vector<someClass>', then 'v[0].' won't complete from 'someClass' but from 'vector'.
+Uses namespace macros, but special support for that is implemented in Semantic. Most stuff should work out of the box. However, Semantic has problems parsing template specializations; those are used in allocator.h, for instance. This sometimes leads to wrong dereferencing of templated objects; for example, consider 'v' to be a vector like 'vector<someClass>', then 'v[0].' won't complete from 'someClass' but from 'vector'.
 
 == Visual C++ STL ==
 
-Also uses namespace macros, but support for those is implemented in latest CEDET from CVS.
+Also uses namespace macros, but support for those in VC++ are implemented in latest CEDET from CVS.
+
+== Vmime ==
+
+The vmime library uses lots of namespace aliasing, which is supported in the latest CEDET from CVS. However, there are still some problems with completing namespace aliases in the scope operator; this is a problem currently being worked on. Also, vmime uses its own kind of "smart" pointers, which might lead to problems. But basically, completions should still work.
 

@@ -119,7 +119,9 @@ following standard commands have their bindings co-opted this way
 by '''Icicles''' commands:
 
 [:icicle-abort-recursive-edit]
+[:icicle-bookmark]
 [:icicle-bookmark-cmd]
+[:icicle-bookmark-other-window]
 [:icicle-buffer]
 [:icicle-buffer-other-window]
 [:icicle-dabbrev-completion]
@@ -148,6 +150,8 @@ by '''Icicles''' commands:
  Standard Command                   Icicles Command
 
  `abort-recursive-edit'.............`icicle-abort-recursive-edit'
+ `bookmark-jump'....................`icicle-bookmark'
+ `bookmark-jump-other-window'.......`icicle-bookmark-other-window'
  `bookmark-set'.....................`icicle-bookmark-cmd'
  `dabbrev-completion'...............`icicle-dabbrev-completion'
  `delete-window'....................`icicle-delete-window'
@@ -192,7 +196,6 @@ to keys in ''Icicle'' mode -- they are ''not'' bound by '''Icicles''' (except to
 [:icicle-apropos-command]
 [:icicle-apropos-variable]
 [:icicle-apropos-zippy]
-[:icicle-bookmark]
 [:icicle-buffer-config]
 [:icicle-buffer-list]
 [:icicle-clear-history]
@@ -236,7 +239,6 @@ to keys in ''Icicle'' mode -- they are ''not'' bound by '''Icicles''' (except to
 * `icicle-apropos-command' -- Enhanced `apropos-command'
 * `icicle-apropos-variable' -- Enhanced `apropos-variable'
 * `icicle-apropos-zippy' -- Show matching Zippy quotes
-* `icicle-bookmark'     -- Jump to a [[BookMarks|bookmark]]
 * `icicle-buffer-config' -- Pick options for '''Icicles''' buffer commands
 * `icicle-buffer-list'  -- Choose a [[list]] of buffer names
 * `icicle-clear-history' -- Clear minibuffer histories

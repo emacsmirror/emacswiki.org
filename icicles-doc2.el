@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Sep 26 12:54:48 2009 (-0700)
+;; Last-Updated: Mon Oct 12 15:49:34 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 25973
+;;     Update #: 25976
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5249,6 +5249,8 @@
 ;;  Standard Command                   Icicles Command
 ;;
 ;;  `abort-recursive-edit'.............`icicle-abort-recursive-edit'
+;;  `bookmark-jump'....................`icicle-bookmark'
+;;  `bookmark-jump-other-window'.......`icicle-bookmark-other-window'
 ;;  `bookmark-set'.....................`icicle-bookmark-cmd'
 ;;  `dabbrev-completion'...............`icicle-dabbrev-completion'
 ;;  `delete-window'....................`icicle-delete-window'
@@ -5297,7 +5299,6 @@
 ;;  `icicle-apropos-command' - Enhanced `apropos-command'
 ;;  `icicle-apropos-variable' - Enhanced `apropos-variable'
 ;;  `icicle-apropos-zippy' - Show matching Zippy quotes
-;;  `icicle-bookmark'     - Jump to a bookmark
 ;;  `icicle-buffer-config' - Pick options for Icicles buffer commands
 ;;  `icicle-buffer-list'  - Choose a list of buffer names
 ;;  `icicle-clear-history' - Clear minibuffer histories

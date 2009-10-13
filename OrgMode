@@ -19,11 +19,11 @@ Features:
 
 == Download and Install ==
 
-The develop version is obtained by
+The development version is at:
 
     git clone git://repo.or.cz/org-mode.git
 
-There's an Ubuntu repository with the latest for non-cvs Emacs.  Add the following to your <code>/etc/apt/sources.list</code>:
+There is a Ubuntu repository with the latest for non-cvs Emacs.  Add the following to your <code>/etc/apt/sources.list</code>:
 
     deb http://ppa.launchpad.net/hexmode/ubuntu gutsy main
     deb-src http://ppa.launchpad.net/hexmode/ubuntu gutsy main

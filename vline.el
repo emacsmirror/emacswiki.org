@@ -1,11 +1,11 @@
-;;; vline.el --- show vertical line mode.
+;;; vline.el --- show vertical line (column highlighting) mode.
 
 ;; Copyright (C) 2002, 2008, 2009 by Taiki SUGAWARA <buzz.taiki@gmail.com>
 
 ;; Author: Taiki SUGAWARA <buzz.taiki@gmail.com>
 ;; Keywords: faces, editing, emulating
-;; Version: 1.08
-;; Time-stamp: <2009-08-18 14:01:19 UTC taiki>
+;; Version: 1.09
+;; Time-stamp: <2009-10-12 16:55:13 UTC taiki>
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/vline.el
 
 ;; This file is free software; you can redistribute it and/or modify
@@ -39,6 +39,9 @@
 ;; if you don't want to visual line highlighting (ex. for performance issue), please to set `vline-visual' to nil.
 
 ;;; Changes
+;; 2009-08-26 taiki
+;; support org-mode, outline-mode
+
 ;; 2009-08-18 taiki
 ;; add autoload cookies.
 
@@ -69,8 +72,8 @@
 
 ;;; TODO:
 ;; - track window-scroll-functions, window-size-change-functions.
-;; - consider invisible property.
 ;; - consider other minor modes (using {after,before}-string overlay).
+;; - don't use {post,after}-command-hook for performance??
 
 ;;; Code:
 
@@ -124,8 +127,13 @@ in the currently selected window."
   :group 'vline)
 
 (defcustom vline-visual t
-  "*If non-nil then show column in visual lines."
-  :type 'boolean
+  "*If non-nil then show column in visual lines.
+If you specified `force' then use force visual line highlighting even
+if `truncate-lines' is non-nil."
+  :type '(radio
+	  (const nil)
+	  (const t)
+	  (const force))
   :group 'vline)
 
 ;;;###autoload
@@ -180,9 +188,13 @@ in the currently selected window."
 (defsubst vline-into-fringe-p ()
   (eq (nth 1 (posn-at-point)) 'right-fringe))
 
+(defsubst vline-visual-p ()
+  (or (eq vline-visual 'force)
+      (and (not truncate-lines)
+	   vline-visual)))
+  
 (defsubst vline-current-column ()
-  (if (or truncate-lines
-	  (not vline-visual)
+  (if (or (not (vline-visual-p))
 	  ;; margin for full-width char
 	  (< (1+ (current-column)) (window-width)))
       (current-column)
@@ -193,8 +205,7 @@ in the currently selected window."
 	 (current-column)))))
 
 (defsubst vline-move-to-column (col &optional bol-p)
-  (if (or truncate-lines
-	  (not vline-visual)
+  (if (or (not (vline-visual-p))
 	  ;; margin for full-width char
 	  (< (1+ (current-column)) (window-width)))
       (move-to-column col)
@@ -205,9 +216,22 @@ in the currently selected window."
 	 bol-col))))
 
 (defsubst vline-forward (n)
-  (if (or truncate-lines
-	  (not vline-visual))
-      (forward-line n)
+  (unless (memq n '(-1 0 1))
+    (error "n(%s) must be 0 or 1" n))
+  (if (not (vline-visual-p))
+      (progn
+	(forward-line n)
+	;; take care of org-mode, outline-mode
+	(when (and (not (bobp))
+		   (invisible-p (1- (point))))
+	  (goto-char (1- (point))))
+	(when (invisible-p (point))
+	  (if (< n 0)
+	      (while (and (not (bobp)) (invisible-p (point)))
+		(goto-char (previous-char-property-change (point))))
+	    (while (and (not (bobp)) (invisible-p (point)))
+	      (goto-char (next-char-property-change (point))))
+	    (forward-line 1))))
     (vertical-motion n)))
 
 (defun vline-face (visual-p)

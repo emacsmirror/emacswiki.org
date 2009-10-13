@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Sep 26 14:29:10 2009 (-0700)
+;; Last-Updated: Mon Oct 12 11:00:02 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 14807
+;;     Update #: 14878
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -228,7 +228,8 @@
 ;;    `icicle-delete-candidate-object-1', `icicle-delete-char-dots',
 ;;    `icicle-delete-current-candidate-object',
 ;;    `icicle-ensure-overriding-map-is-bound',
-;;    `icicle-help-on-candidate-symbol', `icicle-insert-dot',
+;;    `icicle-help-on-candidate-symbol',
+;;    `icicle-input-is-a-completion-p', `icicle-insert-dot',
 ;;    `icicle-insert-input', `icicle-insert-thing',
 ;;    `icicle-looking-at-anychar-regexp-p',
 ;;    `icicle-looking-back-at-anychar-regexp-p',
@@ -464,9 +465,7 @@ Otherwise try to complete it."
           ;; If you want to get the original candidate back, you'll need to search the obarray for a
           ;; symbol that has this `icicle-display-string' value.  Or put the symbol on the display
           ;; string as a text property.
-          ((member (icicle-upcase-if-ignore-case (icicle-minibuf-input-sans-dir))
-                   (mapcar #'icicle-upcase-if-ignore-case icicle-completion-candidates))
-           (icicle-exit-minibuffer))
+          ((icicle-input-is-a-completion-p) (icicle-exit-minibuffer))
           ((eq minibuffer-completion-confirm 'confirm) ; User wants it anyway? - Emacs 23+.
            (if (eq last-cmd this-command)
                (icicle-exit-minibuffer)
@@ -501,8 +500,7 @@ Otherwise try to complete it."
                          (icicle-prefix-complete-no-display 'nomsg))
                      (icicle-filter-alist icicle-candidates-alist (list icicle-current-input)))))
              (cond ((and (eq icicle-require-match-p t) ; Don't exit if non-nil and non-t.
-                         (member (icicle-upcase-if-ignore-case (icicle-minibuf-input-sans-dir))
-                                 (mapcar #'icicle-upcase-if-ignore-case icicle-completion-candidates)))
+                         (icicle-input-is-a-completion-p))
                     (icicle-exit-minibuffer))
                    (t
                     (icicle-display-candidates-in-Completions))))))))
@@ -2765,15 +2763,15 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                                                               (get last-command 'icicle-action-command))
                                                           icicle-completion-candidates)
                                                      icicle-last-input
-                                                   (icicle-input-from-minibuffer))
+                                                   (if (icicle-file-name-input-p)
+                                                       (abbreviate-file-name
+                                                        (icicle-input-from-minibuffer 'leave-envar))
+                                                     (icicle-input-from-minibuffer)))
           icicle-current-completion-mode         'prefix
           icicle-next-apropos-complete-cycles-p  nil
           icicle-input-fail-pos                  nil
           icicle-cycling-p                       nil)
     (when icicle-edit-update-p (setq icicle-next-prefix-complete-cycles-p  nil))
-    (when (icicle-file-name-input-p)
-      (setq icicle-current-input  (abbreviate-file-name (substitute-in-file-name
-                                                         icicle-current-input))))
     (let ((word-complete-input      "")
           (input-before-completion  icicle-current-input)
           return-value)
@@ -2838,7 +2836,10 @@ Optional argument WORD-P non-nil means complete only a word at a time."
              (setq icicle-nb-of-other-cycle-candidates  0)
              (unless icicle-edit-update-p
                (icicle-clear-minibuffer)
-               ;; $$$$$$ (setq icicle-last-completion-candidate  (car icicle-completion-candidates))
+               (when (icicle-file-name-input-p) ; Append `/' to directory cands, so cycling expands them.
+                 (let ((cand  (car icicle-completion-candidates)))
+                   (when (eq ?\/  (aref cand (1- (length cand))))
+                     (setq icicle-current-input  (concat icicle-current-input "/")))))
                (setq icicle-last-completion-candidate  icicle-current-input)
                (let ((inserted  (if (and (icicle-file-name-input-p) insert-default-directory
                                          (or (not (member icicle-last-completion-candidate
@@ -2915,14 +2916,10 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                           (icicle-file-directory-p icicle-last-completion-candidate))
                  (setq icicle-default-directory  (icicle-abbreviate-or-expand-file-name
                                                   icicle-last-completion-candidate)))
-               (let ((input-sans-dir  (icicle-minibuf-input-sans-dir icicle-current-input)))
-                 ;; $$$$$$ Does not work for env vars as part of file-name completion (Emacs 23+).
-                 (when (and (member (icicle-upcase-if-ignore-case input-sans-dir)
-                                    (mapcar #'icicle-upcase-if-ignore-case
-                                            icicle-completion-candidates))
-                            (not (boundp 'icicle-prefix-complete-and-exit-p)))
-                   (icicle-highlight-complete-input)
-                   (setq mode-line-help  input-sans-dir)))
+               (when (and (icicle-input-is-a-completion-p icicle-current-input)
+                          (not (boundp 'icicle-prefix-complete-and-exit-p)))
+                 (icicle-highlight-complete-input)
+                 (setq mode-line-help  (icicle-minibuf-input-sans-dir icicle-current-input)))
                (cond (;; Candidates visible.  If second prefix complete, cycle, else update candidates.
                       (get-buffer-window "*Completions*" 0)
                       (if (and (or ipc1-was-cycling-p icicle-next-prefix-complete-cycles-p)
@@ -2976,8 +2973,7 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                         (icicle-next-candidate 1 (if (icicle-file-name-input-p)
                                                      'icicle-file-name-prefix-candidates
                                                    'icicle-prefix-candidates))))
-                     ;; Vanilla Emacs.  Input is complete, but exist other candidates with same prefix.
-                     ;; $$$$$$ Does not work for env vars as part of file-name completion (Emacs 23+).
+                     ;; Input is complete, but exist other candidates with same prefix.
                      ((and (member icicle-current-input icicle-completion-candidates)
                            (not (eq no-display-p 'no-msg)))
                       (minibuffer-message "  [Complete, but not unique]"))))))
@@ -2987,9 +2983,22 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                                                         'icicle-prefix-complete-no-display
                                                       'icicle-prefix-complete))
             icicle-next-prefix-complete-cycles-p  (equal input-before-completion
-                                                         (icicle-input-from-minibuffer)))
+                                                         (icicle-input-from-minibuffer 'leave-envvars)))
       (when mode-line-help (icicle-show-help-in-mode-line mode-line-help))
       return-value)))
+
+(defun icicle-input-is-a-completion-p (&optional input)
+  "Return non-nil if the input is a valid completion.
+Optional arg INPUT is passed to `icicle-minibuffer-input-sans-dir'.
+This is essentially a `member' test, except for environment vars, for
+which the initial `$' is ignored."
+  (let* ((input-sans-dir  (icicle-minibuf-input-sans-dir input))
+         (env-var-name    (and (icicle-not-basic-prefix-completion-p)
+                               (> (length input-sans-dir) 0)
+                               (eq ?\$ (aref input-sans-dir 0))
+                               (substring input-sans-dir 1))))
+    (member (icicle-upcase-if-ignore-case (or env-var-name input-sans-dir))
+            (mapcar #'icicle-upcase-if-ignore-case icicle-completion-candidates))))
 
 
 (put 'icicle-apropos-complete 'icicle-cycling-command t)

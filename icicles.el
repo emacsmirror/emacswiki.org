@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Sep 26 14:25:00 2009 (-0700)
+;; Last-Updated: Mon Oct 12 09:57:32 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 22593
+;;     Update #: 22596
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -762,7 +762,8 @@
 ;;    `icicle-Info-build-node-completions-1',
 ;;    `icicle-Info-goto-node-1', `icicle-Info-goto-node-action',
 ;;    `icicle-Info-index-action', `icicle-Info-read-node-name',
-;;    `icicle-input-from-minibuffer', `icicle-insert-candidates',
+;;    `icicle-input-from-minibuffer',
+;;    `icicle-input-is-a-completion-p', `icicle-insert-candidates',
 ;;    `icicle-insert-cand-in-minibuffer',
 ;;    `icicle-insert-Completions-help-string', `icicle-insert-dot',
 ;;    `icicle-insert-for-yank', `icicle-insert-input',

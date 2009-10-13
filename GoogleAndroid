@@ -1,0 +1,8 @@
+Google Android is a mobile phone operating system based loosely on Linux with a custom Java stack.
+
+In the context of Emacs you are probally interested in either developing applications within Emacs or possibly running EmacsOnAndroid.
+
+For development there are currently only a few approaches:
+
+* EmDroid
+* RemVee's [http://github.com/remvee/android-mode/blob/master/android-mode.el android-mode]
