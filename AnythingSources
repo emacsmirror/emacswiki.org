@@ -2009,5 +2009,13 @@ For use with [[eproject]].
 
 </pre>
 
+==aspell/ispell==
+
+For use with just an "aspell/ispell -a".
+
+[[anything-c-aspell-interactively.el]]
+
+-- TakeshiBanse
+
 ----
 [[Anything]]

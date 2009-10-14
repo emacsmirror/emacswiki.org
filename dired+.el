@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2009, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Sun Oct 11 17:19:10 2009 (-0700)
+;; Last-Updated: Tue Oct 13 21:47:18 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 2207
+;;     Update #: 2260
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -78,11 +78,12 @@
 ;;
 ;;  Commands defined here:
 ;;
-;;    `diredp-byte-compile-this-file', `diredp-capitalize',
-;;    `diredp-capitalize-this-file', `diredp-chgrp-this-file',
-;;    `diredp-chmod-this-file', `diredp-chown-this-file',
-;;    `diredp-compress-this-file', `diredp-copy-this-file',
-;;    `diredp-delete-this-file', `diredp-do-grep',
+;;    `diredp-bookmark', `diredp-byte-compile-this-file',
+;;    `diredp-capitalize', `diredp-capitalize-this-file',
+;;    `diredp-chgrp-this-file', `diredp-chmod-this-file',
+;;    `diredp-chown-this-file', `diredp-compress-this-file',
+;;    `diredp-copy-this-file', `diredp-delete-this-file',
+;;    `diredp-do-bookmark', `diredp-do-grep',
 ;;    `diredp-downcase-this-file', `diredp-ediff', `diredp-fileset',
 ;;    `diredp-find-a-file', `diredp-find-a-file-other-frame',
 ;;    `diredp-find-a-file-other-window',
@@ -176,6 +177,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2009/10/13 dadams
+;;     Added: direp(-do)-bookmark.  Added to Multiple menu, and bound to M-b.
 ;; 2009/10/11 dadams
 ;;     diredp-menu-bar-immediate-menu: 
 ;;       Added items: image display items, dired-maybe-insert-subdir.
@@ -528,9 +531,7 @@ return (t FILENAME) instead of (FILENAME).
 Don't use that together with FILTER."
   (let* ((all-of-them
 	  (save-excursion
-	    (dired-map-over-marks
-	     (dired-get-filename localp)
-	     arg nil distinguish-one-marked)))
+	    (dired-map-over-marks (dired-get-filename localp) arg nil distinguish-one-marked)))
 	 result)
     (if (not filter)
 	(if (and distinguish-one-marked (eq (car all-of-them) t))
@@ -546,35 +547,34 @@ Don't use that together with FILTER."
 ;;; Stuff from `dired-aux.el'.
 
 (defun dired-map-over-marks-check (fun arg op-symbol &optional show-progress)
-;  "Map FUN over marked files (with second ARG like in dired-map-over-marks)
-; and display failures.
+  "Map FUN over marked files and display failures.
+FUN takes zero args.  It returns non-nil (the offending object, e.g.
+the short form of the filename) for a failure and probably logs a
+detailed error explanation using function `dired-log'.
 
-; FUN takes zero args.  It returns non-nil (the offending object, e.g.
-; the short form of the filename) for a failure and probably logs a
-; detailed error explanation using function `dired-log'.
+ARG is as in `dired-map-over-marks'.
 
-; OP-SYMBOL is a symbol describing the operation performed (e.g.
-; `compress').  It is used with `dired-mark-pop-up' to prompt the user
-; (e.g. with `Compress * [2 files]? ') and to display errors (e.g.
-; `Failed to compress 1 of 2 files - type W to see why ("foo")')
+OP-SYMBOL is a symbol describing the operation performed (e.g.
+`compress').  It is used with `dired-mark-pop-up' to prompt the user
+\(e.g. with `Compress * [2 files]? ') and to display errors (e.g.
+`Failed to compress 1 of 2 files - type W to see why (\"foo\")')
 
-; SHOW-PROGRESS if non-nil means redisplay dired after each file."
-  (if (dired-mark-confirm op-symbol arg)
-      (let* ((total-list;; all of FUN's return values
-	      (dired-map-over-marks (funcall fun) arg show-progress))
-	     (total (length total-list))
-	     (failures (delq nil total-list))
-	     (count (length failures))
-	     (string (if (eq op-symbol 'compress) "Compress or uncompress"
-		       (capitalize (symbol-name op-symbol)))))
-	(if (not failures)
-	    (message "%s: %d file%s."
-		     string total (dired-plural-s total))
-	  ;; end this bunch of errors:
-	  (dired-log-summary
-	   (format "Failed to %s %d of %d file%s"
-		   (downcase string) count total (dired-plural-s total))
-	   failures)))))
+SHOW-PROGRESS if non-nil means redisplay dired after each file."
+  (and (dired-mark-confirm op-symbol arg)
+       (let* ((total-list               ; All of FUN's return values
+               (dired-map-over-marks (funcall fun) arg show-progress))
+              (total (length total-list))
+              (failures (delq nil total-list))
+              (count (length failures))
+              (string (if (eq op-symbol 'compress) "Compress or uncompress"
+                        (capitalize (symbol-name op-symbol)))))
+         (if (not failures)
+             (message "%s: %d file%s." string total (dired-plural-s total))
+           ;; end this bunch of errors:
+           (dired-log-summary
+            (format "Failed to %s %d of %d file%s"
+                    (downcase string) count total (dired-plural-s total))
+            failures)))))
 
 (when (boundp 'dired-subdir-switches)   ; Emacs 22+
   (defun dired-do-redisplay (&optional arg test-for-subdir)
@@ -868,6 +868,8 @@ a prefix arg lets you edit the `ls' switches used for the new listing."
     :help "Compress/uncompress marked files"))
 (define-key diredp-menu-bar-operate-menu [print]
   '(menu-item "Print..." dired-do-print :help "Print marked files, supplying print command"))
+(define-key diredp-menu-bar-operate-menu [bookmark]
+  '(menu-item "Bookmark..." diredp-do-bookmark :help "Bookmark the marked or next N files"))
 (when (fboundp 'mkhtml-dired-files)
   (define-key diredp-menu-bar-operate-menu [mkhtml-dired-files]
     '(menu-item "Create HTML" mkhtml-dired-files
@@ -1155,6 +1157,7 @@ a prefix arg lets you edit the `ls' switches used for the new listing."
 (define-key dired-mode-map "\C-\M-o" 'dired-display-file) ; Was `C-o'.
 (define-key dired-mode-map [(control meta ?*)] 'diredp-marked-other-window)
 (define-key dired-mode-map "\C-o" 'diredp-find-file-other-frame)
+(define-key dired-mode-map "\M-b" 'diredp-do-bookmark)
 (define-key dired-mode-map "\M-g" 'diredp-do-grep)
 (define-key dired-mode-map "U" 'dired-unmark-all-marks)
 (define-key dired-mode-map "=" 'diredp-ediff)
@@ -1513,6 +1516,36 @@ Non-nil prefix argument UNMARK-P means unmark instead of mark."
                                    "\\)$")
    (and current-prefix-arg ?\040)))
 
+(defun diredp-do-bookmark (prefix &optional arg)
+  "Bookmark marked (or next prefix ARG) files.
+Each bookmark name is PREFIX followed by the relative file name.
+Interactively, you are prompted for the PREFIX.
+The bookmarked position is the beginning of the file."
+  (interactive
+   (progn (unless (eq major-mode 'dired-mode)
+            (error "You must be in a Dired buffer to use this command"))
+          (list (read-string "Prefix for bookmark name: " nil nil
+                             (expand-file-name (if (consp dired-directory)
+                                                   (car dired-directory)
+                                                 dired-directory)))
+                current-prefix-arg)))
+  (dired-map-over-marks-check #'(lambda () (diredp-bookmark prefix)) arg 'bookmark
+                              (diredp-fewer-than-2-files-p arg)))
+
+(defun diredp-bookmark (prefix)
+  "Bookmark the current file.
+Each bookmark name is PREFIX followed by the relative file name.
+Return nil for success, file name of unsuccessful operation otherwise."
+  (let ((file  (dired-get-file-for-visit))
+        failure)
+    (condition-case err
+        (with-current-buffer (find-file-noselect file) (bookmark-set (concat prefix file)))
+      (error (setq failure  err)))
+    (if (not failure)
+	nil
+      (dired-log "Failed to create bookmark for %s:\n%s\n" file failure)
+      (dired-make-relative file))))
+
 
 ;;; REPLACE ORIGINAL in `dired.el'.
 ;;; Allows for consp `dired-directory' too.
@@ -1720,8 +1753,7 @@ files are marked, or ARG is -1, 0 or 1."
 (defun dired-do-compress (&optional arg)
   "Compress or uncompress marked (or next prefix ARG) files."
   (interactive "P")
-  (dired-map-over-marks-check (function dired-compress) arg 'compress
-                              (diredp-fewer-than-2-files-p arg)))
+  (dired-map-over-marks-check #'dired-compress arg 'compress (diredp-fewer-than-2-files-p arg)))
 
 
 ;;; REPLACE ORIGINAL in `dired-aux.el':
@@ -1731,7 +1763,7 @@ files are marked, or ARG is -1, 0 or 1."
 (defun dired-do-byte-compile (&optional arg)
   "Byte compile marked (or next prefix ARG) Emacs Lisp files."
   (interactive "P")
-  (dired-map-over-marks-check (function dired-byte-compile) arg 'byte-compile
+  (dired-map-over-marks-check #'dired-byte-compile arg 'byte-compile
                               (diredp-fewer-than-2-files-p arg)))
 
 
@@ -1742,8 +1774,7 @@ files are marked, or ARG is -1, 0 or 1."
 (defun dired-do-load (&optional arg)
   "Load the marked (or next prefix ARG) Emacs Lisp files."
   (interactive "P")
-  (dired-map-over-marks-check (function dired-load) arg 'load
-                              (diredp-fewer-than-2-files-p arg)))
+  (dired-map-over-marks-check #'dired-load arg 'load (diredp-fewer-than-2-files-p arg)))
 
 ;;;###autoload
 (when (< emacs-major-version 22)
@@ -2269,7 +2300,7 @@ non-empty directories is allowed."
 This gives the file name(s) a first character in upper case and the
 rest lower case."
   (interactive "P")
-  (dired-rename-non-directory (function capitalize) "Rename by capitalizing:" arg))
+  (dired-rename-non-directory #'capitalize "Rename by capitalizing:" arg))
 
 
 ;;; Versions of `dired-do-*' commands for just this line's file.
@@ -2737,9 +2768,7 @@ and \\[dired-unmark] on a subdir to remove the marks in this subdir."
   (if (and (cdr dired-subdir-alist) (dired-get-subdir))
       (save-excursion (dired-mark-subdir-files))
     (let (buffer-read-only)
-      (dired-repeat-over-lines 1 (function (lambda ()
-                                             (delete-char 1)
-                                             (insert dired-marker-char))))
+      (dired-repeat-over-lines 1 #'(lambda () (delete-char 1) (insert dired-marker-char)))
       (dired-previous-line 1))))
 
 ;;;###autoload
@@ -2831,7 +2860,7 @@ This normally preserves the last-modified date when copying."
   (let ((mouse-pos (event-start event)))
     (select-window (posn-window mouse-pos))
     (goto-char (posn-point mouse-pos)))
-  (dired-do-create-files 'copy (function dired-copy-file)
+  (dired-do-create-files 'copy #'dired-copy-file
                          (if dired-copy-preserve-time "Copy [-p]" "Copy")
                          1 dired-keep-marker-copy))
 
@@ -2842,8 +2871,7 @@ This normally preserves the last-modified date when copying."
   (let ((mouse-pos (event-start event)))
     (select-window (posn-window mouse-pos))
     (goto-char (posn-point mouse-pos)))
-  (dired-do-create-files 'move (function dired-rename-file)
-                         "Move" 1 dired-keep-marker-rename "Rename"))
+  (dired-do-create-files 'move #'dired-rename-file "Move" 1 dired-keep-marker-rename "Rename"))
 
 ;;;###autoload
 (defun diredp-mouse-upcase (event)
@@ -2852,7 +2880,7 @@ This normally preserves the last-modified date when copying."
   (let ((mouse-pos (event-start event)))
     (select-window (posn-window mouse-pos))
     (goto-char (posn-point mouse-pos)))
-  (dired-rename-non-directory (function upcase) "Rename to uppercase:" nil))
+  (dired-rename-non-directory #'upcase "Rename to uppercase:" nil))
 
 ;;;###autoload
 (defun diredp-mouse-downcase (event)
@@ -2861,7 +2889,7 @@ This normally preserves the last-modified date when copying."
   (let ((mouse-pos (event-start event)))
     (select-window (posn-window mouse-pos))
     (goto-char (posn-point mouse-pos)))
-  (dired-rename-non-directory (function downcase) "Rename to lowercase:" nil))
+  (dired-rename-non-directory #'downcase "Rename to lowercase:" nil))
 
 ;;;###autoload
 (defun diredp-mouse-do-delete (event)
@@ -2886,8 +2914,8 @@ telling what files the command may have changed.  Type
 
 The shell command has the top level directory as working directory, so
 output files usually are created there instead of in a subdir."
-;;Functions dired-run-shell-command and dired-shell-stuff-it do the
-;;actual work and can be redefined for customization.
+  ;;Functions dired-run-shell-command and dired-shell-stuff-it do the
+  ;;actual work and can be redefined for customization.
   (interactive "e")
   (let ((mouse-pos (event-start event))
         (command   (dired-read-shell-command "! on %s: " nil
@@ -2895,9 +2923,8 @@ output files usually are created there instead of in a subdir."
     (select-window (posn-window mouse-pos))
     (goto-char (posn-point mouse-pos))
     (dired-bunch-files (- 10000 (length command))
-                       (function (lambda (&rest files)
-                                   (dired-run-shell-command
-                                    (dired-shell-stuff-it command files t 1))))
+                       #'(lambda (&rest files)
+                           (dired-run-shell-command (dired-shell-stuff-it command files t 1)))
                        nil
                        (dired-get-marked-files t 1))))
 
@@ -2908,8 +2935,7 @@ output files usually are created there instead of in a subdir."
   (let ((mouse-pos (event-start event)))
     (select-window (posn-window mouse-pos))
     (goto-char (posn-point mouse-pos)))
-  (dired-do-create-files 'symlink (function make-symbolic-link)
-                         "Symlink" 1 dired-keep-marker-symlink))
+  (dired-do-create-files 'symlink #'make-symbolic-link "Symlink" 1 dired-keep-marker-symlink))
 
 ;;;###autoload
 (defun diredp-mouse-do-hardlink (event)
@@ -2918,8 +2944,7 @@ output files usually are created there instead of in a subdir."
   (let ((mouse-pos (event-start event)))
     (select-window (posn-window mouse-pos))
     (goto-char (posn-point mouse-pos)))
-  (dired-do-create-files 'hardlink (function add-name-to-file)
-                         "Hardlink" 1 dired-keep-marker-hardlink))
+  (dired-do-create-files 'hardlink #'add-name-to-file "Hardlink" 1 dired-keep-marker-hardlink))
 
 ;;;###autoload
 (defun diredp-mouse-do-print (event)
@@ -2954,7 +2979,7 @@ Uses the shell command coming from variables `lpr-command' and
         (dired-no-confirm t))
     (select-window (posn-window mouse-pos))
     (goto-char (posn-point mouse-pos))
-    (dired-map-over-marks-check (function dired-compress) 1 'compress t))
+    (dired-map-over-marks-check #'dired-compress 1 'compress t))
   (dired-previous-line 1))
 
 ;;;###autoload
@@ -2965,7 +2990,7 @@ Uses the shell command coming from variables `lpr-command' and
         (dired-no-confirm t))
     (select-window (posn-window mouse-pos))
     (goto-char (posn-point mouse-pos))
-    (dired-map-over-marks-check (function dired-byte-compile) 1 'byte-compile t))
+    (dired-map-over-marks-check #'dired-byte-compile 1 'byte-compile t))
   (dired-previous-line 1))
 
 ;;;###autoload
@@ -2976,7 +3001,7 @@ Uses the shell command coming from variables `lpr-command' and
         (dired-no-confirm t))
     (select-window (posn-window mouse-pos))
     (goto-char (posn-point mouse-pos))
-    (dired-map-over-marks-check (function dired-load) 1 'load t))
+    (dired-map-over-marks-check #'dired-load 1 'load t))
   (dired-previous-line 1))
 
 ;;;###autoload

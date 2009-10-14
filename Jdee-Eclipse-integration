@@ -59,6 +59,9 @@ They've built some server that runs a headless eclipse instance and communicates
 [new]
 A front-end project has been started at http://repo.or.cz/w/eclim-emacs.git and CompanyMode already brings eclim completion to Emacs. --[[nschum]]
 
+==== emacs-eclim ====
+The EmacsEclim project is targeting complete eclipse integration into emacs. The project is now living on github at: http://github.com/senny/emacs-eclim. If you are interested in contributing, feel free to fork the project and send me a pull request. --[[senny]]
+
 ----
 [[JavaDevelopmentEnvironment]]
 

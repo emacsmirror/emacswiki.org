@@ -128,6 +128,7 @@ Following those steps seems to have worked fine for me. Can anyone confirm?
 : (Confirmed - ThomasKappler - February 2009 - Tiger 10.4.11)
 : (Confirmed - EdwinBenavides - May 15, 2009 - Leopard 10.5.7)
 : AlexSchroeder recommends building from source if you have 10.4 or better
+: What worked for me on Snow Leopard 10.6.1 is to use <tt>configure --with-ns CFLAGS=-m32 LDFLAGS=-m32</tt>, using the CVS source as of last night. - StephanBergmann, October 13, 2009.
 
 == Encoding for Terminal.app on OS X  ==
 

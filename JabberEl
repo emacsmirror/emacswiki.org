@@ -163,7 +163,8 @@ My main Jabber server and its transport goes down from time to time so I also ha
       (jabber-connect))))
 </pre>
 
-=== Announcing about new message with xosd ===
+=== Announcing about new message ===
+
 This code will alert about incoming message through xosd. Obviously, it requires xosd.
 <pre>
 (setq jabber-xosd-display-time 5)
@@ -181,6 +182,8 @@ This code will alert about incoming message through xosd. Obviously, it requires
 (add-to-list 'jabber-alert-message-hooks
     	     'jabber-message-xosd)
 </pre>
+
+If you would like to use Growl, see http://philgroce.com/static/growl-with-emacs-1.  It should be easy to adapt this to use ToDoChiKu for a more general solution.
 
 === Preventing messages in the echo area from clobbering the mini buffer ===
 

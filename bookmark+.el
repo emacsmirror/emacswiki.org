@@ -9,9 +9,9 @@
 ;; Copyright (C) 2000-2009, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Oct 10 11:53:14 2009 (-0700)
+;; Last-Updated: Tue Oct 13 19:46:41 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 5226
+;;     Update #: 5339
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -74,6 +74,7 @@
 ;;    `bookmarkp-bmenu-edit-bookmark', `bookmarkp-bmenu-mark-all',
 ;;    `bookmarkp-bmenu-quit', `bookmarkp-bmenu-refresh-menu-list',
 ;;    `bookmarkp-bmenu-regexp-mark', `bookmarkp-bmenu-show-all',
+;;    `bookmarkp-bmenu-show-only-dired',
 ;;    `bookmarkp-bmenu-show-only-files',
 ;;    `bookmarkp-bmenu-show-only-gnus',
 ;;    `bookmarkp-bmenu-show-only-info-nodes',
@@ -136,7 +137,8 @@
 ;;    `bookmarkp-bookmark-last-access-cp',
 ;;    `bookmarkp-bookmark-marked-p',
 ;;    `bookmarkp-buffer-last-access-cp', `bookmarkp-cp-not',
-;;    `bookmarkp-current-sort-order', `bookmarkp-edit-bookmark',
+;;    `bookmarkp-current-sort-order', `bookmarkp-dired-alist-only',
+;;    `bookmarkp-dired-bookmark-p', `bookmarkp-edit-bookmark',
 ;;    `bookmarkp-face-prop', `bookmarkp-file-alist-only',
 ;;    `bookmarkp-file-alpha-cp', `bookmarkp-file-attribute-0-cp',
 ;;    `bookmarkp-file-attribute-1-cp',
@@ -157,7 +159,8 @@
 ;;    `bookmarkp-gnus-cp', `bookmarkp-goto-position',
 ;;    `bookmarkp-handle-region-default', `bookmarkp-increment-visits',
 ;;    `bookmarkp-info-alist-only', `bookmarkp-info-bookmark-p',
-;;    `bookmarkp-info-cp',`bookmarkp-jump-gnus', `bookmarkp-jump-w3m',
+;;    `bookmarkp-info-cp', `bookmarkp-jump-dired',
+;;    `bookmarkp-jump-gnus', `bookmarkp-jump-w3m',
 ;;    `bookmarkp-jump-w3m-new-session',
 ;;    `bookmarkp-jump-w3m-only-one-tab',
 ;;    `bookmarkp-line-number-at-pos',
@@ -167,8 +170,9 @@
 ;;    `bookmarkp-local-file-bookmark-p',
 ;;    `bookmarkp-local-file-size-cp', `bookmarkp-local-file-type-cp',
 ;;    `bookmarkp-local-file-updated-more-recently-cp',
-;;    `bookmarkp-make-gnus-record', `bookmarkp-make-plain-predicate',
-;;    `bookmarkp-make-w3m-record', `bookmarkp-marked-bookmarks-only',
+;;    `bookmarkp-make-dired-record', `bookmarkp-make-gnus-record',
+;;    `bookmarkp-make-plain-predicate', `bookmarkp-make-w3m-record',
+;;    `bookmarkp-marked-bookmarks-only',
 ;;    `bookmarkp-maybe-save-bookmark',
 ;;    `bookmarkp-msg-about-sort-order', `bookmarkp-multi-sort',
 ;;    `bookmarkp-non-file-alist-only',
@@ -265,6 +269,11 @@
 ;;
 ;;    - You can bookmark a buffer that is not associated with a file.
 ;;
+;;    - You can bookmark a Gnus article.
+;;
+;;    - You can bookmark a Dired buffer, recording and restoring its
+;;      switches and marked files.
+;;
 ;;    - For any bookmark (except Gnus), you can bookmark a region of
 ;;      text, not just a position.  By default, when you jump to a
 ;;      bookmark that records a region, the region is activated.  See
@@ -274,7 +283,8 @@
 ;;    - Bookmarks can record the number of visits and the time of last
 ;;      visit.
 ;;
-;;  Better bookmark relocation, if the contextual text changes.
+;;  Bookmark relocation when the contextual text changes is better
+;;  than for vanilla Emacs.
 ;;
 ;;  Improvements for the menu list (buffer `*Bookmark List*'):
 ;;
@@ -443,6 +453,14 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2009/10/13 dadams
+;;     Added: *-make-dired-record, *-jump-dired, *-dired-bookmark-p, *-dired-alist-only,
+;;            *-bmenu-show-only-dired.  Bound *-bmenu-show-only-dired to M-d.
+;;     bookmarkp-file-bookmark-p: Include bookmarks that have the Dired handler.
+;;     Moved *-sort-orders-for-cycling-alist defcustoms after *-define-sort-command calls.
+;;     Call bookmarkp-msg-about-sort-order only when interactive.
+;;     *-add-or-update-time, *-increment-visits: Do not save each time we access a bookmark.
+;;     Updated doc string of bookmark-alist and Commentary.
 ;; 2009/10/09 dadams
 ;;     Added: bookmarkp-bmenu-delete-marked.  Bound it to D.
 ;;            bookmarkp-sort-orders-for-cycling-alist.
@@ -494,7 +512,7 @@
 ;;     bookmarkp-non-file (face): Changed to gray.
 ;;     *-default-handler, *-bmenu-propertize-item, *-(info|file)-bookmark-p:
 ;;       Support Emacs 20-21 Info-node bookmarks.
-;;     bookmarkp-bmenu-propertize-item: Use diff face for existing buffers.
+;;     bookmarkp-bmenu-propertize-item: Use different face for existing buffers.
 ;;                                      Use bookmarkp-non-file-filename.
 ;;     bookmarkp-non-file-bookmark-p: Include buffer bookmarks for nonexistent buffers.
 ;;     bookmarkp-remote-file-bookmark-p: Use bookmarkp-file-remote-p.
@@ -838,7 +856,7 @@
 (eval-when-compile (require 'cl)) ;; gensym, case, (plus, for Emacs 20: push, pop, dolist)
 
 
-(defconst bookmarkp-version-number "2.6.1")
+(defconst bookmarkp-version-number "2.6.2")
 
 (defun bookmarkp-version ()
   "Show version number of library `bookmark+.el'."
@@ -905,7 +923,7 @@ sort, and unsorted.")
               (current-bmk                           (bookmark-bmenu-bookmark)))
           (bookmark-bmenu-surreptitiously-rebuild-list)
           (bookmarkp-bmenu-goto-bookmark-named current-bmk)) ; Put cursor back on right line.
-        (bookmarkp-msg-about-sort-order ,sort-order)))))
+        (when (interactive-p) (bookmarkp-msg-about-sort-order ,sort-order))))))
 
 (defmacro bookmarkp-define-file-sort-predicate (att-nb)
   "Define a predicate for sorting bookmarks by file attribute ATT-NB.
@@ -1016,6 +1034,8 @@ then the rest."
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "D" 'bookmarkp-bmenu-delete-marked)
 ;;;###autoload
+(define-key bookmark-bmenu-mode-map "\M-d" 'bookmarkp-bmenu-show-only-dired)
+;;;###autoload
 (define-key bookmark-bmenu-mode-map "E" 'bookmarkp-bmenu-edit-bookmark)
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "F" 'bookmarkp-bmenu-show-only-files)
@@ -1092,14 +1112,15 @@ then the rest."
 Hide/show bookmarks:
 
 \\[bookmarkp-bmenu-show-all]\t- Show all bookmarks
+\\[bookmarkp-bmenu-toggle-show-only-marked]\t- Toggle showing only marked bookmarks
+\\[bookmarkp-bmenu-toggle-show-only-unmarked]\t- Toggle showing only unmarked bookmarks
 \\[bookmarkp-bmenu-show-only-non-files]\t- Show only non-file bookmarks
 \\[bookmarkp-bmenu-show-only-files]\t- Show only file & directory bookmarks (`C-u': local only)
+\\[bookmarkp-bmenu-show-only-dired]\t- Show only Dired bookmarks
 \\[bookmarkp-bmenu-show-only-gnus]\t- Show only Gnus bookmarks
 \\[bookmarkp-bmenu-show-only-info-nodes]\t- Show only Info bookmarks
 \\[bookmarkp-bmenu-show-only-regions]\t- Show only region bookmarks
 \\[bookmarkp-bmenu-show-only-w3m-urls]\t- Show only W3M bookmarks
-\\[bookmarkp-bmenu-toggle-show-only-marked]\t- Toggle showing only marked bookmarks
-\\[bookmarkp-bmenu-toggle-show-only-unmarked]\t- Toggle showing only unmarked bookmarks
 
 Mark/unmark bookmarks:
 
@@ -1449,49 +1470,6 @@ Each alist element has the form (SORT-ORDER . COMPARER):
                 (const :tag "None" nil)
                 (function :tag "Final Predicate"))))))
     :group 'bookmarkp))
-
-(when (> emacs-major-version 20)
-  (defcustom bookmarkp-sort-orders-for-cycling-alist bookmarkp-sort-orders-alist
-    "*Alist of sort orders used for cycling via `s s'...
-This is a subset of the complete list of available sort orders,
-`bookmarkp-sort-orders-alist'.  This lets you cycle among fewer sort
-orders, if there are some that you do not use often.
-
-See the doc for `bookmarkp-sort-orders-alist', for the structure of
-this value."
-    :type '(alist
-            :key-type (choice :tag "Sort order" string symbol)
-            :value-type (choice
-                         (const :tag "None (do not sort)" nil)
-                         (function :tag "Sorting Predicate")
-                         (list :tag "Sorting Multi-Predicate"
-                          (repeat (function :tag "Component Predicate"))
-                          (choice
-                           (const :tag "None" nil)
-                           (function :tag "Final Predicate")))))
-    :group 'bookmarkp))
-
-(unless (> emacs-major-version 20)      ; Emacs 20: custom type `alist' doesn't exist.
-  (defcustom bookmarkp-sort-orders-for-cycling-alist bookmarkp-sort-orders-alist
-    "*Alist of sort orders used for cycling via `s s'...
-This is a subset of the complete list of available sort orders,
-`bookmarkp-sort-orders-alist'.  This lets you cycle among fewer sort
-orders, if there are some that you do not use often.
-
-See the doc for `bookmarkp-sort-orders-alist', for the structure of
-this value."
-    :type '(repeat
-            (cons
-             (choice :tag "Sort order" string symbol)
-             (choice
-              (const :tag "None (do not sort)" nil)
-              (function :tag "Sorting Predicate")
-              (list :tag "Sorting Multi-Predicate"
-               (repeat (function :tag "Component Predicate"))
-               (choice
-                (const :tag "None" nil)
-                (function :tag "Final Predicate"))))))
-    :group 'bookmarkp))
  
 ;;(@* "Internal Variables")
 ;;; Internal Variables --------------------------------------------------
@@ -1596,7 +1574,15 @@ region is bookmarked, POS represents the region start position.
  `front-context-string' is the text that *follows* `position', but
  `front-context-region-string' that *precedes* `end-position'.
 
-3. The following additional entries are used for a Gnus bookmark.
+3. The following additional entries are used for a Dired bookmark.
+
+ (dired-marked . MARKED-FILES)
+ (dired-switches . SWITCHES)
+
+ MARKED-FILES is the list of files that were marked.
+ SWITCHES is the string of `dired-listing-switches'.
+
+4. The following additional entries are used for a Gnus bookmark.
 
  (group . GNUS-GROUP-NAME)
  (article . GNUS-ARTICLE-NUMBER)
@@ -1606,7 +1592,7 @@ region is bookmarked, POS represents the region start position.
  GNUS-ARTICLE-NUMBER is the number of a Gnus article.
  GNUS-MESSAGE-ID is the identifier of a Gnus message.
 
-4. For a W3M bookmark, FILENAME is a W3M URL.")
+5. For a W3M bookmark, FILENAME is a W3M URL.")
  
 ;;(@* "Compatibility Code for Older Emacs Versions")
 ;;; Compatibility Code for Older Emacs Versions ----------------------
@@ -1992,8 +1978,7 @@ DISPLAY-FUNCTION is the function that displays the bookmark."
   ;; VANILLA EMACS FIXME: we used to only run `bookmark-after-jump-hook' in
   ;; `bookmark-jump' itself, but in none of the other commands.
   (run-hooks 'bookmark-after-jump-hook)
-  (when bookmark-automatically-show-annotations
-    (bookmark-show-annotation bookmark)))
+  (when bookmark-automatically-show-annotations (bookmark-show-annotation bookmark)))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -2434,7 +2419,7 @@ Non-nil DONT-TOGGLE-FILENAMES-P means do not call
     (unless (or dont-toggle-filenames-p (not bookmark-bmenu-toggle-filenames))
       (bookmark-bmenu-toggle-filenames t))
     (when (fboundp 'fit-frame-if-one-window) (fit-frame-if-one-window)))
-  (when bookmarkp-sort-comparer
+  (when (and (interactive-p) bookmarkp-sort-comparer)
     (bookmarkp-msg-about-sort-order (bookmarkp-current-sort-order))))
 
 
@@ -2598,7 +2583,8 @@ If bookmark has no `visits' entry, add one with a 0 count."
         (bookmark-prop-set bookmark 'visits (1+ cur-val))
       (bookmark-prop-set bookmark 'visits 0)))
   (unless batch (bookmark-bmenu-surreptitiously-rebuild-list))
-  (bookmarkp-maybe-save-bookmark))
+  (let ((bookmark-save-flag  nil))
+    (bookmarkp-maybe-save-bookmark)))
 
 (defun bookmarkp-float-time (&optional specified-time)
   "Same as `float-time'.  (Needed for Emacs 20.)"
@@ -2614,7 +2600,8 @@ BOOKMARK is a bookmark name or a bookmark record.
 If it has no time entry, then add one, using the current time in seconds."
   (bookmark-prop-set bookmark 'time (bookmarkp-float-time))
   (unless batch (bookmark-bmenu-surreptitiously-rebuild-list))
-  (bookmarkp-maybe-save-bookmark))
+  (let ((bookmark-save-flag  nil))
+    (bookmarkp-maybe-save-bookmark)))
 
 
 ;;; Menu-List (`*-bmenu-*') Filter Commands
@@ -2628,8 +2615,8 @@ With a prefix argument, do not include remote files or directories."
         (bookmarkp-bmenu-called-from-inside-p  t))
     (setq bookmarkp-latest-bookmark-alist  bookmark-alist)
     (bookmark-bmenu-list "% File and Directory Bookmarks" 'filteredp))
-  (bookmarkp-msg-about-sort-order (bookmarkp-current-sort-order)
-                                  "Only file bookmarks are shown"))
+  (when (interactive-p) (bookmarkp-msg-about-sort-order (bookmarkp-current-sort-order)
+                                                        "Only file bookmarks are shown")))
 
 ;;;###autoload
 (defun bookmarkp-bmenu-show-only-non-files () ; `B' in menu list
@@ -2639,8 +2626,8 @@ With a prefix argument, do not include remote files or directories."
         (bookmarkp-bmenu-called-from-inside-p  t))
     (setq bookmarkp-latest-bookmark-alist  bookmark-alist)
     (bookmark-bmenu-list "% Non-File Bookmarks" 'filteredp))
-  (bookmarkp-msg-about-sort-order (bookmarkp-current-sort-order)
-                                  "Only non-file bookmarks are shown"))
+  (when (interactive-p) (bookmarkp-msg-about-sort-order (bookmarkp-current-sort-order)
+                                                        "Only non-file bookmarks are shown")))
     
 ;;;###autoload
 (defun bookmarkp-bmenu-show-only-info-nodes () ; `I' in menu list
@@ -2650,8 +2637,19 @@ With a prefix argument, do not include remote files or directories."
         (bookmarkp-bmenu-called-from-inside-p  t))
     (setq bookmarkp-latest-bookmark-alist  bookmark-alist)
     (bookmark-bmenu-list "% Info Bookmarks" 'filteredp))
-  (bookmarkp-msg-about-sort-order (bookmarkp-current-sort-order)
-                                  "Only Info bookmarks are shown"))
+  (when (interactive-p) (bookmarkp-msg-about-sort-order (bookmarkp-current-sort-order)
+                                                        "Only Info bookmarks are shown")))
+
+;;;###autoload
+(defun bookmarkp-bmenu-show-only-dired () ; No key binding
+  "Display (only) the Dired bookmarks."
+  (interactive)
+  (let ((bookmark-alist                        (bookmarkp-dired-alist-only))
+        (bookmarkp-bmenu-called-from-inside-p  t))
+    (setq bookmarkp-latest-bookmark-alist  bookmark-alist)
+    (bookmark-bmenu-list "% Dired Bookmarks" 'filteredp))
+  (when (interactive-p) (bookmarkp-msg-about-sort-order (bookmarkp-current-sort-order)
+                                                        "Only Dired bookmarks are shown")))
 
 ;;;###autoload
 (defun bookmarkp-bmenu-show-only-w3m-urls () ; `W' in menu list
@@ -2661,8 +2659,8 @@ With a prefix argument, do not include remote files or directories."
         (bookmarkp-bmenu-called-from-inside-p  t))
     (setq bookmarkp-latest-bookmark-alist  bookmark-alist)
     (bookmark-bmenu-list "% W3M Bookmarks" 'filteredp))
-  (bookmarkp-msg-about-sort-order (bookmarkp-current-sort-order)
-                                  "Only W3M bookmarks are shown"))
+  (when (interactive-p) (bookmarkp-msg-about-sort-order (bookmarkp-current-sort-order)
+                                                        "Only W3M bookmarks are shown")))
 
 ;;;###autoload
 (defun bookmarkp-bmenu-show-only-gnus () ; `G' in menu list
@@ -2672,8 +2670,8 @@ With a prefix argument, do not include remote files or directories."
         (bookmarkp-bmenu-called-from-inside-p  t))
     (setq bookmarkp-latest-bookmark-alist  bookmark-alist)
     (bookmark-bmenu-list "% Gnus Bookmarks" 'filteredp))
-  (bookmarkp-msg-about-sort-order (bookmarkp-current-sort-order)
-                                  "Only Gnus bookmarks are shown"))
+  (when (interactive-p) (bookmarkp-msg-about-sort-order (bookmarkp-current-sort-order)
+                                                        "Only Gnus bookmarks are shown")))
 
 ;;;###autoload
 (defun bookmarkp-bmenu-show-only-regions () ; `R' in menu list
@@ -2683,8 +2681,9 @@ With a prefix argument, do not include remote files or directories."
         (bookmarkp-bmenu-called-from-inside-p  t))
     (setq bookmarkp-latest-bookmark-alist  bookmark-alist)
     (bookmark-bmenu-list "% Region Bookmarks" 'filteredp))
-  (bookmarkp-msg-about-sort-order (bookmarkp-current-sort-order)
-                                  "Only bookmarks with regions are shown"))
+  (when (interactive-p)
+    (bookmarkp-msg-about-sort-order (bookmarkp-current-sort-order)
+                                    "Only bookmarks with regions are shown")))
 
 ;;;###autoload
 (defun bookmarkp-bmenu-toggle-show-only-unmarked () ; `<' in menu list
@@ -2762,7 +2761,8 @@ To revert the list, use `\\<bookmark-bmenu-mode-map>\\[bookmarkp-bmenu-refresh-m
   (interactive)
   (let ((bookmarkp-bmenu-called-from-inside-p  t))
     (bookmark-bmenu-list))
-  (bookmarkp-msg-about-sort-order (bookmarkp-current-sort-order) "All bookmarks are shown"))
+  (when (interactive-p)
+    (bookmarkp-msg-about-sort-order (bookmarkp-current-sort-order) "All bookmarks are shown")))
 
 ;;;###autoload
 (defun bookmarkp-bmenu-refresh-menu-list () ; `g' in menu list
@@ -3011,14 +3011,24 @@ BOOKMARK is a bookmark name or a bookmark record."
   (or (eq (bookmark-get-handler bookmark) 'Info-bookmark-jump)
       (bookmark-prop-get bookmark 'info-node))) ; Emacs 20-21 Info bookmark - no handler.
 
+;; Note: To avoid remote access, if bookmark does not have the Dired handler, then we insist
+;; that it be for a local directory.  IOW, we do not include remote directories that were not
+;; bookmarked by Bookmark+ (and so do not have the Dired handler).
+(defun bookmarkp-dired-bookmark-p (bookmark)
+  "Return non-nil if BOOKMARK is a Dired bookmark.
+BOOKMARK is a bookmark name or a bookmark record."
+  (or (eq (bookmark-get-handler bookmark) 'bookmarkp-jump-dired)
+      (bookmarkp-local-directory-bookmark-p bookmark)))
+
 (defun bookmarkp-file-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK bookmarks a file or directory.
 BOOKMARK is a bookmark name or a bookmark record.
 This excludes bookmarks of a more specific kind (Info, Gnus, and W3M)."
   (let* ((filename   (bookmark-get-filename bookmark))
-         (isnonfile  (equal filename bookmarkp-non-file-filename))) 
+         (isnonfile  (equal filename bookmarkp-non-file-filename))
+         (handler    (bookmark-get-handler bookmark)))
     (and filename (not isnonfile)
-         (not (bookmark-get-handler bookmark))
+         (or (not handler) (eq handler 'bookmarkp-jump-dired))
          (not (and (bookmark-prop-get bookmark 'info-node)))))) ; Emacs 20-21 Info: no handler.
 
 (defun bookmarkp-non-file-bookmark-p (bookmark)
@@ -3081,6 +3091,11 @@ A new list is returned (no side effects)."
   "`bookmark-alist', filtered to retain only Info bookmarks.
 A new list is returned (no side effects)."
   (bookmarkp-remove-if-not #'bookmarkp-info-bookmark-p bookmark-alist))
+
+(defun bookmarkp-dired-alist-only ()
+  "`bookmark-alist', filtered to retain only Dired bookmarks.
+A new list is returned (no side effects)."
+  (bookmarkp-remove-if-not #'bookmarkp-dired-bookmark-p bookmark-alist))
 
 (defun bookmarkp-remote-file-alist-only ()
   "`bookmark-alist', filtered to retain only remote-file bookmarks.
@@ -3408,7 +3423,7 @@ With a prefix arg, reverse the current sort order."
                                                    bookmarkp-sort-orders-for-cycling-alist))))
       (bookmark-bmenu-surreptitiously-rebuild-list)
       (bookmarkp-bmenu-goto-bookmark-named current-bmk) ; Put cursor back on the right line.
-      (bookmarkp-msg-about-sort-order next-order))))
+      (when (interactive-p) (bookmarkp-msg-about-sort-order next-order)))))
 
 (defun bookmarkp-current-sort-order ()
   "Current sort order or sort function, as a string suitable in a message."
@@ -3425,9 +3440,9 @@ If you combine this with \\<bookmark-bmenu-mode-map>\
         (current-bmk                           (bookmark-bmenu-bookmark)))
     (bookmark-bmenu-surreptitiously-rebuild-list)
     (bookmarkp-bmenu-goto-bookmark-named current-bmk)) ; Put cursor back on the right line.
-  (bookmarkp-msg-about-sort-order (bookmarkp-current-sort-order)))
+  (when (interactive-p) (bookmarkp-msg-about-sort-order (bookmarkp-current-sort-order))))
 
-(defun bookmarkp-reverse-multi-sort-order ()  ; `s C-r' in menu list
+(defun bookmarkp-reverse-multi-sort-order () ; `s C-r' in menu list
   "Reverse the application of multi-sorting predicates.
 These are the PRED predicates described for option
 `bookmark-sort-function'.
@@ -3466,7 +3481,7 @@ use it."
         (current-bmk                           (bookmark-bmenu-bookmark)))
     (bookmark-bmenu-surreptitiously-rebuild-list)
     (bookmarkp-bmenu-goto-bookmark-named current-bmk)) ; Put cursor back on the right line.
-  (bookmarkp-msg-about-sort-order (bookmarkp-current-sort-order)))
+  (when (interactive-p) (bookmarkp-msg-about-sort-order (bookmarkp-current-sort-order))))
 
 
 ;; The order of the macro calls here defines the REVERSE order of
@@ -3564,6 +3579,52 @@ by bookmark name.")
  "by bookmark name"                     ; `bookmarkp-bmenu-sort-by-bookmark-name'
  bookmarkp-alpha-p
  "Sort bookmarks by bookmark name, respecting `case-fold-search'.")
+
+
+;; These definitions MUST COME AFTER the calls to macro `bookmarkp-define-sort-command'.
+;; Otherwise, they won't pick up a populated `bookmarkp-sort-orders-alist'.
+(when (> emacs-major-version 20)
+  (defcustom bookmarkp-sort-orders-for-cycling-alist bookmarkp-sort-orders-alist
+    "*Alist of sort orders used for cycling via `s s'...
+This is a subset of the complete list of available sort orders,
+`bookmarkp-sort-orders-alist'.  This lets you cycle among fewer sort
+orders, if there are some that you do not use often.
+
+See the doc for `bookmarkp-sort-orders-alist', for the structure of
+this value."
+    :type '(alist
+            :key-type (choice :tag "Sort order" string symbol)
+            :value-type (choice
+                         (const :tag "None (do not sort)" nil)
+                         (function :tag "Sorting Predicate")
+                         (list :tag "Sorting Multi-Predicate"
+                          (repeat (function :tag "Component Predicate"))
+                          (choice
+                           (const :tag "None" nil)
+                           (function :tag "Final Predicate")))))
+    :group 'bookmarkp))
+
+(unless (> emacs-major-version 20)      ; Emacs 20: custom type `alist' doesn't exist.
+  (defcustom bookmarkp-sort-orders-for-cycling-alist bookmarkp-sort-orders-alist
+    "*Alist of sort orders used for cycling via `s s'...
+This is a subset of the complete list of available sort orders,
+`bookmarkp-sort-orders-alist'.  This lets you cycle among fewer sort
+orders, if there are some that you do not use often.
+
+See the doc for `bookmarkp-sort-orders-alist', for the structure of
+this value."
+    :type '(repeat
+            (cons
+             (choice :tag "Sort order" string symbol)
+             (choice
+              (const :tag "None (do not sort)" nil)
+              (function :tag "Sorting Predicate")
+              (list :tag "Sorting Multi-Predicate"
+               (repeat (function :tag "Component Predicate"))
+               (choice
+                (const :tag "None" nil)
+                (function :tag "Final Predicate"))))))
+    :group 'bookmarkp))
 
 
 ;; Sort Predicates
@@ -4133,6 +4194,36 @@ BOOKMARK is a bookmark name or a bookmark record."
     (gnus-summary-goto-article id nil 'force)
     (bookmark-default-handler
      `("" (buffer . ,buf) . ,(bookmark-get-bookmark-record bookmark)))))
+
+(defun bookmarkp-make-dired-record ()
+  "Create and return a Dired bookmark record."
+  (let ((dir       (expand-file-name (if (consp dired-directory)
+                                         (car dired-directory)
+                                       dired-directory)))
+        (mfiles    (dired-get-marked-files 'relative nil nil 'distinguish-one-marked)))
+    (when (null (cadr mfiles)) (setq mfiles nil)) ; Don't count unmarked current file.
+    `(,dir
+      ,@(bookmark-make-record-default 'point-only)
+      (filename . ,dir)
+      (dired-marked . ,mfiles)
+      (dired-switches . ,dired-actual-switches)
+      (handler . bookmarkp-jump-dired))))
+    
+(add-hook 'dired-mode-hook
+          #'(lambda () (set (make-local-variable 'bookmark-make-record-function)
+                            'bookmarkp-make-dired-record)))
+
+(defun bookmarkp-jump-dired (bookmark)
+  "Jump to Dired bookmark BOOKMARK.
+BOOKMARK is a bookmark name or a bookmark record.
+Handler function for record returned by `bookmarkp-make-dired-record'."
+  (let ((dir       (bookmark-prop-get bookmark 'filename))
+        (mfiles    (bookmark-prop-get bookmark 'dired-marked))
+        (switches  (bookmark-prop-get bookmark 'dired-switches)))
+    (dired dir switches)
+    (let ((inhibit-read-only  t))
+      (dired-mark-remembered (mapcar #'(lambda (mf) (cons (concat dir mf) 42)) mfiles)))
+    (goto-char (bookmark-get-position bookmark))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 

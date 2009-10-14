@@ -8,6 +8,7 @@ Language-specific:
 * DProgrammingLanguage -- D specific programming.
 * EcmaScript -- Programming in Javascript, Jscript, and !ActionScript.
 * JavaDevelopmentEnvironment -- a great set of tools for Java programmers.
+* EmacsEclim -- tight eclipse integration for emacs.
 * MozillaDevelopmentEnvironmentforEmacs -- support for Mozilla technologies in Emacs.
 * PerlLanguage -- Perl specific programming.
 * RubyLanguage -- Ruby specific programming.

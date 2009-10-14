@@ -151,8 +151,9 @@ When editing a multifile document, it is necessary to set the ##TeX-master## var
 
 Of course, you also need to define this ##guess-TeX-master## function, for example with the following snippet:
 
+
     (defun guess-TeX-master (filename)
-      "Based on currently open .tex files, try to guess the master file for FILENAME."
+      "Based on currently open .tex files, try to guess the master file for FILENAME"
       (let ((candidate nil)
             (filename (file-name-nondirectory filename)))
         (save-excursion
@@ -164,12 +165,26 @@ Of course, you also need to define this ##guess-TeX-master## function, for examp
                     (progn
                       (goto-char (point-min))
                       (if (re-search-forward (concat "\\\\input{" filename "}") nil t)
-                          (setq candidate file))))))))
+                          (setq candidate file)
+                        )
+                      (if (re-search-forward (concat "\\\\include{" (file-name-sans-extension filename) "}") nil t)
+                          (setq candidate file)
+                        )
+                      
+                      )
+                  )
+                )
+              )
+            )
+          )
         (if candidate
-            (message "TeX master file: %s" (file-name-nondirectory candidate)))
-        candidate))
+            (message "TeX master document: %s" (file-name-nondirectory candidate))
+          )
+        candidate
+        )
+      )
 
-Feel free to improve this function to suit your needs (for example by adding support for the "##include##" syntax), but it works quite well for me. Note that it will return ##nil## for files that do not get included in other files, which is the case for single file documents, or for the master files themselves. In this case, the ##TeX-master## variable gets set to ##nil##, which works.
+Feel free to improve this function to suit your needs (for example by adding support for other forms of the the "##include##" syntax), but it works quite well for me. Note that it will return ##nil## for files that do not get included in other files, which is the case for single file documents, or for the master files themselves. In this case, the ##TeX-master## variable gets set to ##nil##, which works.
 
 
 ----
