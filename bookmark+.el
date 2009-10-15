@@ -9,9 +9,9 @@
 ;; Copyright (C) 2000-2009, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Oct 13 19:46:41 2009 (-0700)
+;; Last-Updated: Thu Oct 15 00:00:20 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 5339
+;;     Update #: 5428
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -71,8 +71,11 @@
 ;;    `bookmarkp-bmenu-change-sort-order',
 ;;    `bookmarkp-bmenu-change-sort-order-repeat',
 ;;    `bookmarkp-bmenu-delete-marked',
-;;    `bookmarkp-bmenu-edit-bookmark', `bookmarkp-bmenu-mark-all',
-;;    `bookmarkp-bmenu-quit', `bookmarkp-bmenu-refresh-menu-list',
+;;    `bookmarkp-bmenu-edit-bookmark',
+;;    `bookmarkp-bmenu-isearch-marked-bookmarks' (Emacs 23+),
+;;    `bookmarkp-bmenu-isearch-marked-bookmarks-regexp' (Emacs 23+),
+;;    `bookmarkp-bmenu-mark-all', `bookmarkp-bmenu-quit',
+;;    `bookmarkp-bmenu-refresh-menu-list',
 ;;    `bookmarkp-bmenu-regexp-mark', `bookmarkp-bmenu-show-all',
 ;;    `bookmarkp-bmenu-show-only-dired',
 ;;    `bookmarkp-bmenu-show-only-files',
@@ -159,9 +162,11 @@
 ;;    `bookmarkp-gnus-cp', `bookmarkp-goto-position',
 ;;    `bookmarkp-handle-region-default', `bookmarkp-increment-visits',
 ;;    `bookmarkp-info-alist-only', `bookmarkp-info-bookmark-p',
-;;    `bookmarkp-info-cp', `bookmarkp-jump-dired',
-;;    `bookmarkp-jump-gnus', `bookmarkp-jump-w3m',
-;;    `bookmarkp-jump-w3m-new-session',
+;;    `bookmarkp-info-cp', `bookmarkp-isearch-bookmarks' (Emacs 23+),
+;;    `bookmarkp-isearch-bookmarks-regexp' (Emacs 23+),
+;;    `bookmarkp-isearch-next-bookmark-buffer' (Emacs 23+),
+;;    `bookmarkp-jump-dired', `bookmarkp-jump-gnus',
+;;    `bookmarkp-jump-w3m', `bookmarkp-jump-w3m-new-session',
 ;;    `bookmarkp-jump-w3m-only-one-tab',
 ;;    `bookmarkp-line-number-at-pos',
 ;;    `bookmarkp-local-directory-bookmark-p',
@@ -204,8 +209,8 @@
 ;;    `bookmarkp-bmenu-before-hide-marked-alist',
 ;;    `bookmarkp-bmenu-before-hide-unmarked-alist',
 ;;    `bookmarkp-bmenu-called-from-inside-p',
-;;    `bookmarkp-bookmark-marked-alist',
-;;    `bookmarkp-jump-display-function',
+;;    `bookmarkp-bookmark-marked-alist', `bookmarkp-isearch-bookmarks'
+;;    (Emacs 23+), `bookmarkp-jump-display-function',
 ;;    `bookmarkp-latest-bookmark-alist',
 ;;    `bookmarkp-latest-sorted-alist', `bookmarkp-non-file-filename',
 ;;    `bookmarkp-reverse-multi-sort-p', `bookmarkp-reverse-sort-p',
@@ -228,8 +233,9 @@
 ;;              `bookmark.el' have been REDEFINED HERE:
 ;;
 ;;    `bookmark--jump-via', `bookmark-bmenu-bookmark',
-;;    `bookmark-bmenu-hide-filenames', `bookmark-bmenu-mode' (advised,
-;;    for doc string), `bookmark-bmenu-surreptitiously-rebuild-list',
+;;    `bookmark-bmenu-delete', `bookmark-bmenu-hide-filenames',
+;;    `bookmark-bmenu-mode' (advised, for doc string),
+;;    `bookmark-bmenu-surreptitiously-rebuild-list',
 ;;    `bookmark-completing-read', `bookmark-default-handler',
 ;;    `bookmark-get-bookmark' (Emacs 20-22),
 ;;    `bookmark-get-bookmark-record' (Emacs 20-22),
@@ -293,6 +299,8 @@
 ;;    - Enhanced marking/unmarking, similar to that in Dired.
 ;;    - Faces to distinguish bookmarks of different types.
 ;;    - You can edit a bookmark.
+;;    - You can incrementally multi-search the marked bookmarks, in
+;;      the current bookmark sort order.  (Emacs 23+ only)
 ;;
 ;;  If you also use Icicles, then you can use `S-delete' during
 ;;  completion for a bookmark name, to delete the current bookmark
@@ -453,6 +461,10 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2009/10/14 dadams
+;;     Added: *-bmenu-delete (redefinition), *-isearch-bookmarks,
+;;            *-bmenu-isearch(-marked)-bookmarks(-regexp), *-isearch-next-bookmark-buffer.
+;;            Bound multi-isearch commands to to M-s a C(-M)-s.
 ;; 2009/10/13 dadams
 ;;     Added: *-make-dired-record, *-jump-dired, *-dired-bookmark-p, *-dired-alist-only,
 ;;            *-bmenu-show-only-dired.  Bound *-bmenu-show-only-dired to M-d.
@@ -1100,6 +1112,12 @@ then the rest."
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "*" nil) ; For Emacs20
 ;;;###autoload
+(when (> emacs-major-version 22)        ; Emacs 23+
+ (define-key bookmark-bmenu-mode-map (kbd "M-s a C-s")
+   'bookmarkp-bmenu-isearch-marked-bookmarks)
+ (define-key bookmark-bmenu-mode-map (kbd "M-s a M-C-s")
+   'bookmarkp-bmenu-isearch-marked-bookmarks-regexp))
+;;;###autoload
 (when (< emacs-major-version 21)
   (define-key bookmark-bmenu-mode-map (kbd "RET") 'bookmark-bmenu-this-window)
   (define-key bookmark-bmenu-mode-map (kbd "*m") 'bookmark-bmenu-mark))
@@ -1160,7 +1178,9 @@ Misc:
 \\[bookmarkp-bmenu-delete-marked]\t- Delete visible bookmarks marked `>' (not `D')
 \\[bookmarkp-bmenu-edit-bookmark]\t- Edit bookmark
 \\[bookmark-bmenu-save]\t- Save bookmarks (`C-u': prompt for the bookmarks file to use)
-\\[bookmarkp-bmenu-quit]\t- Quit bookmarks list
+\\[bookmarkp-bmenu-quit]\t- Quit (the bookmarks list)
+M-x a C-s\t- Isearch the marked bookmarks, in sort order (Emacs 23+)
+M-x a C-M-s\t- Regexp Isearch the marked bookmarks (Emacs 23+)
 
 Options Affecting Bookmarks List (`\\[bookmark-bmenu-list]'):
 
@@ -1244,7 +1264,8 @@ Other Options:
 
 (defface bookmarkp-bad-bookmark
     '((t (:foreground "Red" :background "Chartreuse1")))
-  "*Face used for a bookmark that seems to be bad: e.g., nonexistent file."
+  "*Face used for a bookmark that seems to be bad: e.g., nonexistent file.
+Also used for `D' (deletion) flags."
   :group 'bookmarkp)
 
 (when (< emacs-major-version 22)
@@ -1264,10 +1285,8 @@ Other Options:
 bookmark+.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
-  :link '(url-link :tag "Download"
-          "http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el")
-  :link '(url-link :tag "Description"
-          "http://www.emacswiki.org/cgi-bin/wiki/BookMarks#BookmarkPlus")
+  :link '(url-link :tag "Download" "http://www.emacswiki.org/bookmark+.el")
+  :link '(url-link :tag "Description" "http://www.emacswiki.org/BookmarkPlus")
   :link '(emacs-commentary-link :tag "Commentary" "bookmark+"))
 
 (defcustom bookmarkp-use-region-flag t
@@ -1733,7 +1752,7 @@ buffer and POINT is the location within BUFFER."
 See `bookmark-jump-other-window'."
     (interactive "e")
     (bookmark-popup-menu-and-apply-function 'bookmark-jump-other-window
-                                            "Jump to Bookmark (in another window)" event))
+                                            "Jump to Bookmark (Other Window)" event))
 
   (defun bookmark-maybe-message (fmt &rest args)
     "Apply `message' to FMT and ARGS, but only if the display is fast enough."
@@ -2089,7 +2108,7 @@ BOOKMARK can be a bookmark record used internally by some Emacs-Lisp
                                'bookmark-default-handler)
                            (bookmark-get-bookmark bookmark)))
                  (t
-                  (message "Bookmark not relocated \(%s\)." bookmark)
+                  (message "Bookmark not relocated \(%s\)" bookmark)
                   (signal (car err) (cdr err)))))))))
   (when (stringp bookmark) (setq bookmark-current-bookmark  bookmark))
   nil)                                  ; Return nil if no error.
@@ -2328,6 +2347,25 @@ candidate.  In this way, you can delete multiple bookmarks."
           (file-error (message "Cannot write file `%s'" file)))
         (kill-buffer (current-buffer))
         (bookmark-maybe-message "Saving bookmarks to file `%s'...done" file)))))
+
+;; REPLACES ORIGINAL in `bookmark.el'.
+;;
+;; Don't use `bookmark-bmenu-check-position' as a test - it always returns non-nil anyway.
+;; Use face `bookmarkp-bad-bookmark' on the `D' flag.
+;;
+(defun bookmark-bmenu-delete ()
+  "Flag this bookmark for deletion, using mark `D'.
+Use `\\<bookmark-bmenu-mode-map>\\[bookmark-bmenu-execute-deletions]' to carry out \
+the deletions."
+  (interactive)
+  (beginning-of-line)
+  (bookmark-bmenu-check-position)
+  (let ((inhibit-read-only  t))
+    (delete-char 1)
+    (insert ?D)
+    (put-text-property (1- (point)) (point) 'face 'bookmarkp-bad-bookmark)
+    (forward-line 1)
+    (bookmark-bmenu-check-position)))
  
 ;;(@* "Menu List Replacements (`bookmark-bmenu-*')")
 ;;; Menu List Replacements (`bookmark-bmenu-*') ----------------------
@@ -2876,14 +2914,79 @@ This affects only the `>' mark, not the `D' flag."
     (setq bookmark-bmenu-toggle-filenames  hiding-file-names-p)
     (when bookmark-bmenu-toggle-filenames (bookmark-bmenu-toggle-filenames 'show))))
 
-
-;; Other Menu-List (`-*bmenu-*') Commands and Functions, Except Sorting
-
 ;;;###autoload
 (defun bookmarkp-bmenu-delete-marked () ; `D' in menu list
   "Delete all (visible) bookmarks that are marked `>', after confirmation."
   (interactive)
   (bookmark-bmenu-execute-deletions 'marked))
+
+
+;; Multi-Isearch marked bookmarks (Emacs 23+)
+
+;;;###autoload
+(when (> emacs-major-version 22)
+
+  (defvar bookmarkp-isearch-bookmarks nil)
+
+  (defun bookmarkp-isearch-next-bookmark-buffer (&optional bookmark wrap)
+    "Return the next buffer in a series of bookmark buffers.
+Used as a value for `multi-isearch-next-buffer-function', for Isearch
+of multiple bookmarks.
+
+Variable `bookmarkp-isearch-bookmarks' is a list of bookmark names.
+Each bookmark in that list is visited by `bookmark--jump-via', and the
+corresponding bookmark buffer is returned."
+    (let ((bookmarks  (if isearch-forward
+                          bookmarkp-isearch-bookmarks
+                        (reverse bookmarkp-isearch-bookmarks))))
+      (bookmark--jump-via
+       (if wrap
+           (car bookmarks)
+         (let ((this-bmk  (catch 'foo
+                            (dolist (bmk  bookmarks)
+                              (when (if (bookmarkp-get-buffer-name bmk)
+                                        (equal (bookmarkp-get-buffer-name bmk) (buffer-name))
+                                      (equal (bookmark-get-filename bmk) (buffer-file-name)))
+                                (throw 'foo bmk)))
+                            (car bookmarks))))
+           (cadr (member this-bmk bookmarks))))
+       'ignore)
+      (current-buffer)))
+
+  (defun bookmarkp-isearch-bookmarks (bookmarks)
+    "Start multi-bookmark Isearch on BOOKMARKS."
+    (let ((multi-isearch-next-buffer-function  'bookmarkp-isearch-next-bookmark-buffer)
+          (bookmarkp-isearch-bookmarks         bookmarks))
+      (bookmark-jump (car bookmarks))
+      (goto-char (if isearch-forward (point-min) (point-max)))
+      (isearch-forward)))
+
+  (defun bookmarkp-isearch-bookmarks-regexp (bookmarks)
+    "Start multi-bookmark regexp Isearch on BOOKMARKS."
+    (let ((multi-isearch-next-buffer-function  'bookmarkp-isearch-next-bookmark-buffer)
+          (bookmarkp-isearch-bookmarks         bookmarks))
+      (bookmark-jump (car bookmarks))
+      (goto-char (if isearch-forward (point-min) (point-max)))
+      (isearch-forward-regexp)))
+
+  (defun bookmarkp-bmenu-isearch-marked-bookmarks ()
+    "Isearch the marked bookmark locations, in their current order."
+    (interactive)
+    (let ((bookmarks                  (mapcar #'car (bookmarkp-sort-and-remove-dups
+                                                     (bookmarkp-marked-bookmarks-only))))
+          (bookmarkp-use-region-flag  nil)) ; Suppress region handling.
+      (bookmarkp-isearch-bookmarks bookmarks)))
+
+  (defun bookmarkp-bmenu-isearch-marked-bookmarks-regexp ()
+    "Regexp-Isearch the marked bookmark locations, in their current order."
+    (interactive)
+    (let ((bookmarks                  (mapcar #'car (bookmarkp-sort-and-remove-dups
+                                                     (bookmarkp-marked-bookmarks-only))))
+          (bookmarkp-use-region-flag  nil)) ; Suppress region handling.
+      (bookmarkp-isearch-bookmarks-regexp bookmarks))))
+
+
+;; Other Menu-List (`-*bmenu-*') Commands and Functions, Except Sorting
 
 ;;;###autoload
 (defun bookmarkp-bmenu-edit-bookmark () ; `E' in menu list
@@ -2977,8 +3080,8 @@ This affects only the `>' mark, not the `D' flag."
   (goto-char (point-min))
   (if (not bookmark-bmenu-toggle-filenames)
       (re-search-forward (concat (regexp-quote name) "$"))
-    (let ((len   (length name))
-          (limit (- bookmark-bmenu-file-column 2)))
+    (let ((len    (length name))
+          (limit  (- bookmark-bmenu-file-column 2)))
       (setq name  (if (>= len limit)
                       (substring name 0 limit)
                     (format (format "%%-%ds" limit) name))))

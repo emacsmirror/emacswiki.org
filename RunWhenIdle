@@ -32,6 +32,14 @@ How probable it is run-with-idle-timer is deferred indefinitely? It can happen, 
 
 I think the best answer to this is to just add things to auto-save-hook. It's what I've been doing.
 
+-RyanThompson
+
 [new]
 
 So when you added stuff to auto-save-hook it was deferred indefinitely very often, that's why you want to reimplement this feature in a new function?
+
+[new]
+
+No, I didn't find auto-save-hook until after I started working on this. I decided that auto-save-hook is close enough to what I want and requires much less effort to use, rather than come up with a completely new system. So to be clear, auto-save-hook does not implement all of the above features, but it is almost as good.
+
+-RyanThompson

@@ -1,0 +1,1 @@
+I use ELScreen, and I wanted each of my screens to have independent buffer lists (i.e. most recently used buffer orders). So I took a few pages out of escreen.el and paraphrased them to work with ELScreen. Here's the result: Lisp:elscreen-buffer-list.el

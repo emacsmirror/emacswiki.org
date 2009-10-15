@@ -10,6 +10,7 @@ Until I understand the organization of files around here, I'll just link to all 
 
 I have written or (more likely) contributed customizations to the following.
 
+* ElscreenSeparateBufferLists -- A bit of code to add screen-specific buffer-lists to ELScreen.
 * ProtBufByName -- ProtectingBuffers with certain names from being killed.
 * DeskTop -- Overriding Stale Locks
 * SystemTrash -- Make Emacs interoperate with GNOME and KDE's trash directories.

@@ -38,4 +38,9 @@ When not in dired, I use this:
 Very handy.
 
 ----
+I couldn't get the solution above to work on 64-bit Vista or Windows 7 so I decided to code up a small utility of my own. 
+
+The resulting project can be found on Github http://github.com/bkz/w32context
+
+----
 CategoryWThirtyTwo

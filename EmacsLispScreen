@@ -131,6 +131,10 @@ V. Oleynik).
  
  (eval-after-load "elscreen"
    '(add-hook 'elscreen-screen-update-hook 'elscreen-frame-title-update))
+
+=== How to give each screen its own buffer-list ===
+
+If you would like each of your elscreens to have independent most-recently-used-buffer-lists, try ElscreenSeparateBufferLists.
  
 == ElScreen Addons ==
 

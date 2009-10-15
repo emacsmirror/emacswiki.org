@@ -117,7 +117,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 3 $Rev: 196 $ of the Sunrise Commander.
+;; This is version 3 $Rev: 206 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.  I  have  also  received
@@ -348,6 +348,12 @@
   "Been coding all night? Enjoy the Sunrise! (or press q to quit)"
   "Message to display when `sr' is started.")
 
+(defvar sr-panes-height nil
+  "Current hight of the pane windows. Initial value is 2/3 the viewport height")
+
+(defconst sr-side-lookup (list '(left . right) '(right . left))
+  "Trivial alist used by the Sunrise Commander to lookup its own passive side.")
+
 (defface sr-active-path-face
   '((t (:background "#ace6ac" :foreground "yellow" :bold t :height 120)))
   "Face of the directory path in the active pane"
@@ -434,6 +440,9 @@ substitution may be about to happen."
         C-c C-s ....... change panes layout (vertical/horizontal/top-only)
         [ ............. enlarges the right pane by 5 columns
         ] ............. enlarges the left pane by 5 columns
+        } ............. enlarges both panes vertically by 1 row
+        { ............. shrinks both panes vertically by 1 row
+        \\ ............. sets vertical size of both panes back to «normal»
         C-c C-z ....... enable/disable synchronized navigation
 
         C-= ........... smart compare files (ediff)
@@ -639,6 +648,16 @@ automatically:
     ad-do-it))
 (ad-activate 'revert-buffer)
 
+;; selects the correct (selected) pane when switching from other windows:
+(defadvice other-window
+  (around sr-advice-other-window (count &optional all-frames))
+  (let ((from-window (selected-window)))
+    ad-do-it
+    (unless (member from-window (list sr-left-window sr-right-window))
+      (if (member (selected-window) (list sr-left-window sr-right-window))
+          (sr-select-window sr-selected-window)))))
+(ad-activate 'other-window)
+
 ;;; ============================================================================
 ;;; Sunrise Commander keybindings:
 
@@ -662,6 +681,9 @@ automatically:
 (define-key sr-mode-map "\M-t"                'sr-transpose-panes)
 (define-key sr-mode-map "]"                   'sr-enlarge-left-pane)
 (define-key sr-mode-map "["                   'sr-enlarge-right-pane)
+(define-key sr-mode-map "}"                   'sr-enlarge-panes)
+(define-key sr-mode-map "{"                   'sr-shrink-panes)
+(define-key sr-mode-map "\\"                  'sr-normalsize-panes)
 (define-key sr-mode-map "\M-o"                'sr-synchronize-panes)
 (define-key sr-mode-map "\C-o"                'sr-omit-mode)
 (define-key sr-mode-map "b"                   'sr-browse-file)
@@ -671,6 +693,8 @@ automatically:
 (define-key sr-mode-map "\M-l"                'sr-toggle-truncate-lines)
 (define-key sr-mode-map "s"                   'sr-interactive-sort)
 (define-key sr-mode-map "\C-c\C-z"            'sr-sync)
+(define-key sr-mode-map "\C-e"                'sr-scroll-up)
+(define-key sr-mode-map "\C-y"                'sr-scroll-down)
 
 (define-key sr-mode-map "C"                   'sr-do-copy)
 (define-key sr-mode-map "R"                   'sr-do-rename)
@@ -796,6 +820,15 @@ automatically:
     "Synthesizes Sunrise symbols (sr-left-buffer, sr-right-window, etc.)"
     (intern (concat "sr-" (symbol-name side) "-" (symbol-name context)))))
 
+(defun sr-other (&optional context)
+  "Without  any  arguments  returns  the  symbol that corresponds to the current
+  passive side of the manager ('left or 'right). If the  optional  argument  has
+  value 'buffer or 'window returns the current passive buffer / window."
+  (let ((side (cdr (assoc sr-selected-window sr-side-lookup))))
+    (or
+     (and (null context) side)
+     (symbol-value (sr-symbol side context)))))
+
 (defun sunrise-cd ()
   "Run Sunrise but give it the current directory to use."
   (interactive)
@@ -844,7 +877,9 @@ automatically:
   (delete-other-windows)
 
   ;;now create the viewer window
-  (split-window (selected-window) (* 2 (/ (window-height) 3)))
+  (unless sr-panes-height
+    (setq sr-panes-height (* 2 (/ (window-height) 3))))
+  (split-window (selected-window) sr-panes-height)
 
   (cond
    ((equal sr-window-split-style 'horizontal) (split-window-horizontally))
@@ -874,8 +909,7 @@ automatically:
       (save-selected-window
         (select-window sr-left-window)
         (let* ((my-style-factor (if (equal sr-window-split-style 'horizontal) 2 1))
-               (my-pane-height (* my-style-factor (/ (frame-height) 3)))
-               (my-delta (- my-pane-height (window-height))))
+               (my-delta (- sr-panes-height (window-height))))
           (enlarge-window my-delta)))))
 
 ;; This keeps the size of the Sunrise panes constant:
@@ -938,14 +972,11 @@ automatically:
   "Sets  up  the graphical path line in the passive pane. With optional argument
   'revert' executes sr-revert-buffer on the passive buffer."
   (if (and (window-live-p sr-left-window) (window-live-p sr-right-window))
-      (let ((my-window (if (equal sr-selected-window 'left)
-                           sr-right-window
-                         sr-left-window)))
-        (save-window-excursion
-          (select-window my-window)
-          (if revert (sr-revert-buffer))
-          (sr-graphical-highlight 'sr-passive-path-face)
-          (hl-line-mode 0)))))
+      (save-window-excursion
+        (select-window (sr-other 'window))
+        (if revert (sr-revert-buffer))
+        (sr-graphical-highlight 'sr-passive-path-face)
+        (hl-line-mode 0))))
 
 (defun sr-hide-avfs-root ()
   "Hides the AVFS virtual filesystem root (if any) on the path line."
@@ -1024,6 +1055,31 @@ automatically:
   "Enlarges the right pane by 5 columns."
   (interactive)
   (sr-resize-panes t))
+
+(defun sr-enlarge-panes ()
+  "Enlarges both panes vertically."
+  (interactive)
+  (if (< 10 (- (frame-height) (window-height)))
+      (progn
+        (setq sr-windows-locked nil)
+        (shrink-window -1)
+        (setq sr-panes-height (window-height)))))
+
+(defun sr-shrink-panes ()
+  "Shinks both panes vertically."
+  (interactive)
+  (if (< 10 (window-height))
+      (progn
+        (setq sr-windows-locked nil)
+        (shrink-window 1)
+        (setq sr-panes-height (window-height)))))
+
+(defun sr-normalsize-panes ()
+  "Resets vertical size of both panes to normal."
+  (interactive)
+  (setq sr-panes-height (* 2 (/ (frame-height) 3)))
+  (setq sr-windows-locked t)
+  (sr-revert-buffer))
 
 ;;; ============================================================================
 ;;; File system navigation functions:
@@ -1266,9 +1322,7 @@ automatically:
       (let ((here sr-this-directory))
         (setq sr-this-directory sr-other-directory)
         (setq sr-other-directory here)
-        (if (equal (selected-window) sr-right-window)
-            (sr-select-window 'left)
-          (sr-select-window 'right)))))
+        (sr-select-window (sr-other)))))
 
 (defun sr-beginning-of-buffer()
   "Go to the first directory/file in dired."
@@ -1519,6 +1573,24 @@ automatically:
           (t  (sort-fields 8 beg end)))
     (toggle-read-only 1)))
 
+(defun sr-scroll-up ()
+  "Scrolls the current pane or (if active) the viewer pane 1 line up."
+  (interactive)
+  (if (buffer-live-p other-window-scroll-buffer)
+      (save-selected-window
+        (sr-select-viewer-window)
+        (scroll-up 1))
+    (scroll-up 1)))
+
+(defun sr-scroll-down ()
+  "Scrolls the current pane or (if active) the viewer pane 1 line down."
+  (interactive)
+  (if (buffer-live-p other-window-scroll-buffer)
+      (save-selected-window
+        (sr-select-viewer-window)
+        (scroll-down 1))
+    (scroll-down 1)))
+
 ;;; ============================================================================
 ;;; Passive & synchronized navigation functions:
 
@@ -1651,58 +1723,61 @@ automatically:
 (defun sr-do-copy ()
   "Copies recursively selected files and directories from one pane to the other."
   (interactive)
-  (save-excursion
-    (let* (
-           (selected-files (dired-get-marked-files nil))
-           (files-count (length selected-files))
-           (files-count-str (int-to-string files-count))
-           (vtarget (sr-virtual-target))
-           (target (or vtarget sr-other-directory))
-           )
-      (if (> files-count 0)
-          (if (and (not vtarget)
-                   (sr-equal-dirs default-directory sr-other-directory))
-              (dired-do-copy)
-            (when (y-or-n-p (concat "Copy " files-count-str " files to " target "? "))
-              (if vtarget
-                  (sr-copy-virtual)
-                (progn
-                  (dired-unmark-all-marks)
-                  (sr-change-window)
-                  (sr-copy-files selected-files default-directory)
-                  (sr-revert-buffer)
-                  (sr-change-window)))
-              (message "%s" (concat "Done: "
-                                    (int-to-string (length selected-files))
-                                    " file(s) dispatched"))))
-        (message "Empty selection. Nothing done.")))))
+  (let* (
+         (selected-files (dired-get-marked-files nil))
+         (files-count (length selected-files))
+         (files-count-str (int-to-string files-count))
+         (vtarget (sr-virtual-target))
+         (target (or vtarget sr-other-directory))
+         )
+    (if (> files-count 0)
+        (if (and (not vtarget) (sr-equal-dirs default-directory sr-other-directory))
+            (dired-do-copy)
+          (when (y-or-n-p (concat "Copy " files-count-str " files to " target "? "))
+            (if vtarget
+                (sr-copy-virtual)
+              (let ((names (mapcar #'file-name-nondirectory selected-files))
+                    (inhibit-read-only t))
+                (with-current-buffer (sr-other 'buffer)
+                  (sr-copy-files selected-files target)
+                  (sr-force-passive-highlight t)
+                  (dired-mark-remembered
+                   (mapcar (lambda (x) (cons (expand-file-name x) ?C)) names)))
+                (save-selected-window
+                  (select-window (sr-other 'window))
+                  (sr-focus-filename (car names)))))
+            (dired-unmark-all-marks)
+            (message "%s" (concat "Done: " files-count-str " file(s) dispatched"))))
+      (message "Empty selection. Nothing done."))))
 
 (defun sr-do-rename ()
   "Moves recursively selected files and directories from one pane to the other."
   (interactive)
   (if (sr-virtual-target)
       (error "Cannot move files to a VIRTUAL buffer, try (C)opying instead."))
-  (save-excursion
-    (let* (
-           (selected-files (dired-get-marked-files nil))
-           (files-count (length selected-files))
-           (files-count-str (int-to-string files-count))
-          )
-      (if (> files-count 0)
-          (if (sr-equal-dirs default-directory sr-other-directory)
-              (dired-do-rename)
-            (when (y-or-n-p (concat "Move " files-count-str
-                                  " files to " sr-other-directory "? "))
-              (sr-change-window)
-              (sr-move-files selected-files default-directory)
-              (sr-revert-buffer)
-              (sr-change-window)
-              (message "%s" (concat "Done: "
-                                    (int-to-string (length selected-files))
-                                    " file(s) dispatched"))))
-
-        (message "Empty selection. Nothing done."))))
-  (sr-revert-buffer))
+  (let* (
+         (selected-files (dired-get-marked-files nil))
+         (files-count (length selected-files))
+         (files-count-str (int-to-string files-count))
+         (target sr-other-directory)
+         )
+    (if (> files-count 0)
+        (if (sr-equal-dirs default-directory sr-other-directory)
+            (dired-do-rename)
+          (when (y-or-n-p (concat "Move " files-count-str " files to " target "? "))
+            (let ((names (mapcar #'file-name-nondirectory selected-files))
+                  (inhibit-read-only t))
+              (with-current-buffer (sr-other 'buffer)
+                (sr-move-files selected-files default-directory)
+                (revert-buffer)
+                (dired-mark-remembered
+                 (mapcar (lambda (x) (cons (expand-file-name x) ?R)) names)))
+              (save-selected-window
+                (select-window (sr-other 'window))
+                (sr-focus-filename (car names))))
+            (message "%s" (concat "Done: " files-count-str " file(s) dispatched"))
+            (sr-revert-buffer)))
+      (message "Empty selection. Nothing done."))))
 
 (defun sr-do-symlink ()
   "Creates  symbolic  links  in  the  passive pane to all the currently selected
@@ -1739,7 +1814,7 @@ automatically:
 (defun sr-copy-files (file-path-list target-dir &optional do-overwrite)
   "Copies all files in file-path-list (list of full paths) to target dir."
   (setq target-dir (replace-regexp-in-string "/?$" "/" target-dir))
-  (mapcar
+  (mapc
    (function
     (lambda (f)
       (if (file-directory-p f)
@@ -1838,9 +1913,7 @@ the original one."
   "If the passive pane is in VIRTUAL mode returns its name as a string,
    otherwise returns nil."
   (save-window-excursion
-    (if (equal sr-selected-window 'left)
-        (switch-to-buffer sr-right-buffer)
-      (switch-to-buffer sr-left-buffer))
+    (switch-to-buffer (sr-other 'buffer))
     (if (equal major-mode 'sr-virtual-mode)
         (or (buffer-file-name) "Sunrise VIRTUAL buffer")
       nil)))
@@ -2438,7 +2511,7 @@ or (c)ontents? "))
   "Sets the other-window-scroll-buffer variable to the given buffer (or nil)."
   (setq other-window-scroll-buffer buffer)
   (if buffer
-      (message "QUICK VIEW: Press C-M-v, S-C-M-v to scroll up/down and C-u v (or C-u o) to dismiss")))
+      (message "QUICK VIEW: Press C-e/C-y to scroll, C-M-v/S-C-M-v to page, and C-u v (or C-u o) to dismiss")))
 
 (defun sr-describe-mode ()
   "Calls describe-mode and makes the resulting buffer C-M-v scrollable."

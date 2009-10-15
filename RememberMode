@@ -98,11 +98,24 @@ tar -xzf remember-latest.zip
 
 === Setting up ===
 
+[new]
+Now that RememberMode is included in Emacs (as of Emacs 23), activation is as simple as:
+    (require 'remember)
+[new]
+
 After unpacking, install Remember by copying the directory "remember" to a nice spot on the hard drive, say ##~/elisp/remember##.  Add to your .emacs the following statements:
 
     (add-to-list 'load-path "~/elisp/remember")
 
 ==== Setting up for OrgMode ====
+
+[new]
+Now that OrgMode and RememberMode are included in Emacs (as of Emacs 23), activation is as simple as:
+    (org-remember-insinuate)
+
+Note that there is no need for:
+    (require 'remember)
+[new]
 
 Basically you should follow the instructions in the org-mode info file. However this currently forgets that you also need something like this in your .emacs:
 
@@ -114,7 +127,38 @@ If you are, like me, missing the function org-remember-insinuate, try the follow
     (setq remember-handler-functions '(org-remember-handler))
     (add-hook 'remember-mode-hook 'org-remember-apply-template)
 
+===== Quick note-taking =====
+
+When you have started your emacs server (<tt>emacs --daemon</tt> in Emacs 23 or above), you can open a new frame for quick note-taking with:
+
+    $ emacsclient -e "(remember-other-frame)"
+
+If you also want that frame like a pop-up for temporal editing add this code to your init file:
+
+    (defadvice remember-other-frame (around remember-frame-parameters activate)
+      "Set some frame parameters for the remember frame."
+      (let ((default-frame-alist (append
+    			      '(
+    				(name . "*Remember*")
+    				(width . 80)
+    				(height . 10)
+    				(vertical-scroll-bars . nil)
+    				(menu-bar-lines . 0)
+    				(tool-bar-lines . 0)
+    				)
+    			      default-frame-alist)))
+        ad-do-it
+        ))
+
+Note that <tt>-c</tt> is not passed to <tt>emacsclient</tt> such that finishing your note or cancelling it leaves your desktop just as it was, but this will only work if you already have an already started <tt>emacsclient</tt>, as otherwise Emacs does not know which terminal type to use.
+
 ==== Setting up for PlannerMode ====
+
+[new]
+PlannerMode is somewhat obsoleted by OrgMode, specially since the former is now included in Emacs (as of Emacs 23).
+
+See http://www.asynchronous.org/blog/archives/2006/11/24/org-mode-vs-planner-mode for a comparison.
+[new]
 
 Add this to your .emacs:
 
