@@ -227,6 +227,58 @@ Here's another example of quoted sexps that might be more useful.
 
 The quoted sexps provide proper HTML characters by running sgml-quote on the region, by first marking the point with ##-## and using `skeleton-point' in the sexp.  Once you start using ##-##, you can't use ##_## as the "interesting point".  This example also shows how you need to use ##>## at the end of lines before a newline is inserted in case indentation needs to go backwards because of a closing element.
 
+== Webforum skeletons ==
+
+A collection of skeletons for the common "BB code" of webforums. Use together with VisualLineMode to effectively write forum posts in Emacs.
+
+    (setq skeleton-end-newline nil)
+    (define-skeleton bb-italic
+      "Make italic text."
+      nil "[i]" _ "[/i]")
+    (define-skeleton bb-bold
+      "Make bold text."
+      nil "[b]" _ "[/b]")
+    (define-skeleton bb-underline
+      "Make underlined text."
+      nil "[u]" _ "[/u]")
+    (define-skeleton bb-tt
+      "Typewriter font."
+      nil "[font=\"Courier New\"]" _ "[/font]")
+    (define-skeleton bb-url
+      "Prompt for URL and insert link."
+      "URL: "
+       "[url=\"" str "\"]" _ "[/url]")
+    (define-skeleton bb-list
+      "Start an unordered list."
+      nil "[list][*] " _ "\n[/list]")
+    (define-skeleton bb-point
+      "Make a new list point."
+      nil (unless (bolp) "\n") "[*] " _)
+    (define-skeleton bb-img
+      "Insert [img] ... [/img] tags."
+      nil "[img]" _ "[/img]")
+    (define-skeleton bb-indent
+      "Insert [indent] ... [/indent] tags."
+      nil "[indent]" _ "[/indent]")
+    (define-skeleton bb-youtube
+      "Insert [youtube] ... [/youtube] tags."
+      nil "[youtube]" _ "[/youtube]")
+
+As for key bindings, the following code matches AUCTeX's scheme:
+
+    (global-set-key "\C-c\C-f\C-e" 'bb-italic)
+    (global-set-key "\C-c\C-f\C-u" 'bb-underline)
+    (global-set-key "\C-c\C-f\C-b" 'bb-bold)
+    (global-set-key "\C-c\C-f\C-t" 'bb-tt)
+    (global-set-key "\C-c\C-fu"    'bb-url)
+    (global-set-key "\C-c\C-f\C-l" 'bb-list)
+    (global-set-key "\C-cj"        'bb-point)
+    (global-set-key "\C-c\C-j"     'bb-point)
+    (global-set-key "\C-c\C-fi"    'bb-img)
+    (global-set-key "\C-c\C-f\C-i" 'bb-indent)
+    (global-set-key "\C-c\C-f\C-y" 'bb-youtube)
+    (global-set-key "\C-c\C-fy"    'bb-youtube)
+
 [:PairInsertion]
 == Pair Insertion ==
 

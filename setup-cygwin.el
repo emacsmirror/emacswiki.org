@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2009, Drew Adams, all rights reserved.
 ;; Created: Thu Jan 15 11:13:38 2004
 ;; Version: 21.0
-;; Last-Updated: Sat Aug  1 15:41:38 2009 (-0700)
+;; Last-Updated: Thu Oct 15 13:39:31 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 86
+;;     Update #: 94
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/setup-cygwin.el
 ;; Keywords: os, unix, cygwin
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -29,6 +29,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2009/10-15 dadams
+;;     Set ediff-shell to shell-file-name.
 ;; 2007/12/08 dadams
 ;;     Use absolute file name for shell-file-name.
 ;; 2006/11/16 dadams
@@ -63,7 +65,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
 ;;; Make Cygwin paths accessible
 (cygwin-mount-activate)
 
@@ -90,7 +91,6 @@ loaded as such.)"
       )))
 (add-hook 'find-file-hooks 'follow-cygwin-symlink)
 
-
 ;;; Use Unix-style line endings.
 (setq-default buffer-file-coding-system 'undecided-unix)
 
@@ -105,6 +105,7 @@ loaded as such.)"
 (setenv "SHELL" shell-file-name)
 (setenv "PATH" (concat (getenv "PATH") ";C:\\cygwin\\bin"))
 (setq explicit-shell-file-name shell-file-name) ; Interactive shell
+(setq ediff-shell shell-file-name)      ; Ediff shell
 (setq explicit-shell-args '("--login" "-i"))
 ;;;;; (setq shell-command-switch "-ic") ; SHOULD THIS BE "-c" or "-ic"?
 (setq w32-quote-process-args ?\") ;; " @@@ IS THIS BETTER? ;@@@ WAS THIS BEFORE: (setq w32-quote-process-args t)

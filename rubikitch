@@ -272,7 +272,18 @@ Can we steal from emacs-w3m or something?
 [new:rubikitch:2009-05-20 10:20 UTC]
 Set `url-proxy-services'. For example: (setq url-proxy-services '(("http" . "localhost:8339"))) -- [[rubikitch]]
 
+----
+
+[new:BlueDian:2009-10-15 21:02 UTC]
+Did you plan making a batch install with AutoInstall for org-mode ?
+- BlueDian
+
+-- Please list up URLs of org-mode component. Then I'll add them to AutoInstall. -- [[rubikitch]]
+
+--- Here the URL of org-mode (download section)
+http://orgmode.org/index.html#sec-3.1 ---[[BlueDian]]
 
 ----
+
 CategoryHomepage
 

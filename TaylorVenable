@@ -1,6 +1,6 @@
-I'm a student of computing science getting my degree from Purdue University at IPFW in Fort Wayne, Indiana.  I also work for !TrustBearer Labs, a multifactor authentication software shop.  I've been using GNU Emacs since Fall 2003 when I started at Purdue and was exposed to Unix for the first time (specifically, Solaris).  I know enough now to do quite a bit, as Emacs is my preferred time sink when I'm bored and have nothing else to do, but there's still plenty I've yet to learn.
+I'm a computing scientist interested in programming languages, theory of computation, secure algorithms, and digital typesetting.  I work for !TrustBearer Labs, a multifactor authentication software shop.  I've been using GNU Emacs since Fall 2003 when I started at Purdue and was exposed to Unix for the first time (specifically, Solaris).  I know enough now to do quite a bit, as Emacs is my preferred time sink when I'm bored and have nothing else to do, but there's still plenty I've yet to learn.
 
-My website is at http://real.metasyntax.net:2357/ and since I'm one of those guys that tries to do *everything* in Emacs, I've collected some [http://real.metasyntax.net:2357/emacs.html tips, tricks, and howtos] from my various Emacs adventures.  There's also an [http://real.metasyntax.net:2357/rss.yaws RSS feed] for the things that I publish in blog form on my site.
+My website is at http://real.metasyntax.net:2357/ and since I'm one of those guys that tries to do *everything* in Emacs, I've collected some [http://metasyntax.net/guides/emacs.html tips, tricks, and howtos] from my various Emacs adventures.
 
 I go by [::metasyntax] on IRC, usually !FreeNode.
 

@@ -1,8 +1,10 @@
-*Project Information*
+== Wave Client for Emacs ==
+
+=== Project Information ===
 
 This project was created by several Google engineers working on this in their 20% time as an open-source project.  Please see the [http://code.google.com/p/wave-client-for-emacs/ wave-client-for-emacs] project page for the official location.
 
-*Pre-project discussion*
+=== Pre-project discussion ===
 
 
 As of this writing, a Wave client for Emacs is complete vapourware. But wouldn't it be awesome?
@@ -54,7 +56,7 @@ Having used the Wave developer preview for a couple of weeks, I strongly suggest
 
 Note that currently the wave client-server protocol is *not documented*.  At the moment, it's merely programmed using GWT RPC with a likely smattering of protocol buffers.  For a full diagram of the protocols check out: http://cubiclemuses.com/cm/articles/2009/08/09/waves-web-of-protocols/  - farra
 
-== Related ==
+=== Related ===
 
 Loosely related info: there is already an existing system similar to Wave and it has an emacs lisp client: [http://www.lysator.liu.se/lyskom/index-en.html LysKOM]
 
@@ -65,3 +67,11 @@ Does %%LysKOM%% work in CVS Emacs 23?
 Wave might be even more awesome than LysKOM. As far as I've always understood it (I might be wrong about this), LysKOM's discussions are chained to a particular server, much like phpBB works. Another thing I'm not sure about wrt LysKOM is whether or not you can edit stuff. What I like about Wave is it's wiki-like properties. I hate trawling through overly redundant BB-based threads looking for information. A wiki page has the interesting information early. Don't get me wrong, I've long admired LysKOM but I've never been a member of Lysator.
 
 If the real thing lives up to what the demo video promises, and if I can find a client and a server, Wave might replace most of my other forms of communication.
+
+
+== Wave Robot for EmacsWiki ==
+
+An other Emacs-related project could be the development of a [http://code.google.com/apis/wave/extensions/robots/ Google Wave robot] for reading and editing EmacsWiki.
+
+[new]
+Feel free to contact me regarding alternatives to HTML scraping. I'd also be willing to add server-side code. -- AlexSchroeder

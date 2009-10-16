@@ -10,6 +10,20 @@ Note that this page is not about EmacsWikiMode.
 
 ----
 
+== Cannot Download Previous Versions of a File ==
+
+At this page, I click the `Download' link, and I get this message:
+
+  This page does not exist, but you can [Self:action=edit;id=bookmark%20.el create it now].
+
+That's not very helpful. And I don't know how to do what it suggests. I had to click `##Edit this page##' to get to the source code. -- DrewAdams
+
+[new]
+Indeed. This seems to be an encoding problem. I curse the person that convinced me to allow plus signs in page names! :P
+
+Under certain circumstances the plus sign is apparently not encoded correctly, and without encoding the + itself encodes a space. Thus asking for revision 74 of ##bookmark+.el## will result in an URL that tries to show revision 74 of ##bookmark .el## (the + being replaced with a space).
+I'll take a look. -- Alex
+
 [:StalePagesServed]
 == Browser Cache Not Refreshed - Stale Pages Served ==
 
