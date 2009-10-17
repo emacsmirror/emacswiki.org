@@ -1,5 +1,4 @@
-A very simple but effective thing, eldoc-mode is a MinorMode which shows you the argument
-list of the function call you are currently writing in the echo area. Very handy. By NoahFriedman.  Part of Emacs.
+A very simple but effective thing, eldoc-mode is a MinorMode which shows you the argument list of the function call you are currently writing in the echo area. Very handy. By NoahFriedman. Part of Emacs.
 
 ElDoc works for EmacsLisp and certain other language modes that implement support for ElDoc.  These include
 
@@ -29,6 +28,13 @@ highlighted in <tt>font-lock-variable-name-face</tt>? Just do something like thi
 
 (You need Emacs 21 or later for function `propertize'. For Emacs 20, use `put-text-property' instead.)
 
+== Installing ElDoc ==
+
+One useful way to enable this minor mode is to put the following in your <tt>[InitFile .emacs]</tt>:
+
+     (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
+     (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
+     (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
 
 == How to implement support ==
 

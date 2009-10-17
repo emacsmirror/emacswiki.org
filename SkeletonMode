@@ -229,7 +229,7 @@ The quoted sexps provide proper HTML characters by running sgml-quote on the reg
 
 == Webforum skeletons ==
 
-A collection of skeletons for the common "BB code" of webforums. Use together with VisualLineMode to effectively write forum posts in Emacs.
+A collection of skeletons for the common "BB code" of webforums. Bind to appropriate keys (below) and use together with VisualLineMode to conveniently write forum posts in Emacs.
 
     (setq skeleton-end-newline nil)
     (define-skeleton bb-italic
@@ -264,7 +264,7 @@ A collection of skeletons for the common "BB code" of webforums. Use together wi
       "Insert [youtube] ... [/youtube] tags."
       nil "[youtube]" _ "[/youtube]")
 
-As for key bindings, the following code matches AUCTeX's scheme:
+As for key bindings, the following matches AUCTeX's scheme:
 
     (global-set-key "\C-c\C-f\C-e" 'bb-italic)
     (global-set-key "\C-c\C-f\C-u" 'bb-underline)

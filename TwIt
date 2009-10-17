@@ -278,6 +278,9 @@ Figuring out how to have it work well with images displayed is an exercise for t
 [new]
 Here is such method to use twitpic.com for images posting: [http://sites.google.com/a/vyazovoi.info/main/articles/twitpic.el?attredirects=0 twitpic.el] --VyazovoiPavel
 
+[new:HaroldGutierrez:2009-10-17 01:00 UTC]
+What about something for "following" direct tweets?
+
 == Archived Discussion ==
 I don't personally do the cell phone thing (it sounds irritating), but anyway, they got slashdotted yesterday.  I had never heard of them.  But it looked cool, so i joined and wrote twit.el.  I think i would like to broaden it--generalize it a bit and let users read friend's posts.  I am working on that....
 

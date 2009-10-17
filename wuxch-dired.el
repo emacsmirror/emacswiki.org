@@ -1,7 +1,12 @@
 ;;; wuxch-dired.el
 
-(require 'w32-symlinks)
-(require 'w32-browser)
+(if (equal 'windows-nt system-type)
+    (progn
+      (require 'w32-symlinks)
+      (require 'w32-browser)
+      )
+  )
+
 (require 'dired-aux)
 (require 'dired+)
 ;; use '(' key or  ')' key to toogle detail display mode
@@ -14,17 +19,18 @@
 (define-key dired-mode-map "r" 'wuxch-wdired-change-to-wdired-mode)
 (define-key wdired-mode-map [return]   'ignore)
 (define-key wdired-mode-map [return]   'wuxch-wdired-finish-edit)
-(define-key wdired-mode-map "\C-g"    'wuxch-wdired-abort-changes)
+(define-key wdired-mode-map [(control g)]    'wuxch-wdired-abort-changes)
 
 ;; 以下三个函数：在调用真正的函数之前改变光标样式
 (defun wuxch-set-cursor-wdired-mode ()
   (bar-cursor-mode -1)
-  (set-cursor-color "red")
+  ;; (set-cursor-color "red")
   )
 
 (defun wuxch-reset-cursor-wdired-mode ()
   (bar-cursor-mode 1)
-  (set-cursor-color "black")
+  ;; (set-cursor-color "black")
+  (wuxch-set-default-theme)
   )
 
 
@@ -77,7 +83,9 @@
 ;; 这个命令好像有问题。
 ;; (define-key dired-mode-map (kbd "C-s") 'dired-isearch-forward-regexp)
 ;; (define-key dired-mode-map (kbd "C-r") 'dired-isearch-backward-regexp)
-;; 当目录内容改变之后需要重新计算最大行，after-revert-hook好像没有在dired里面起作用，干脆自己写了一个revert，强制加上更新最大行变量的操作。
+
+;; 当目录内容改变之后需要重新计算最大行，after-revert-hook好像没有在dired里面起作用，干脆自己写了一个
+;; revert，强制加上更新最大行变量的操作。
 (define-key dired-mode-map "g" 'ignore)
 (define-key dired-mode-map "g" 'wuxch-dired-revert-and-goto-marked-file)
 ;; (define-key dired-mode-map [(control o)] 'ignore)
@@ -246,8 +254,8 @@ If no application is associated with file, then `find-file'."
   )
 
 (defun wuxch-dired-open-ie ()
-  "open directory by IE. If cursor is on some sub-directory, open this sub-directory, else open the current directory.
-06/11/2007 10:54:28 wuxch"
+  "open directory by IE. If cursor is on some sub-directory, open this sub-directory,
+else open the current directory.06/11/2007 10:54:28 wuxch"
   (interactive)
   (let ((directory-path (dired-current-directory)))
     ;; 如果当前光标没有任何内容，则直接使用当前的目录
@@ -325,10 +333,15 @@ If no application is associated with file, then `find-file'."
 
 (add-hook 'dired-mode-hook 'wuxch-dired-mode-hook-fun)
 
+(defface wuxch-dired-doc-face   '((t (:inherit font-lock-warning-face))) "doc files")
+(defface wuxch-dired-elisp-face '((t (:inherit font-lock-keyword-face))) "elisp files")
+(defface wuxch-dired-exe-face   '((t (:inherit font-lock-function-name-face))) "exe files")
+(defface wuxch-dired-avi-face   '((t (:inherit font-lock-variable-name-face))) "avi files")
+
 (defun wuxch-dired-set-doc-face ()
   "wuxch-dired-set-doc-face:"
   (font-lock-add-keywords
-   nil '(("^  .*\\.\\(pdf\\|doc\\|xls\\|txt\\|ppt\\)$"
+   nil '(("^  .*\\.\\(tex\\|doc\\|xls\\|txt\\|org\\|ppt\\|html\\)$"
           (".+"
            (dired-move-to-filename)
            nil
@@ -358,7 +371,7 @@ If no application is associated with file, then `find-file'."
 (defun wuxch-dired-set-avi-face ()
   "wuxch-dired-set-avi-face:"
   (font-lock-add-keywords
-   nil '(("^  .*\\.\\(avi\\|mkv\\|rmvb\\|rm\\|mp4\\|mp3\\)$"
+   nil '(("^  .*\\.\\(pdf\\|avi\\|mkv\\|rmvb\\|rm\\|mp4\\|mp3\\|MP3\\|wmv\\|wma\\|m4v\\|mov\\)$"
           (".+"
            (dired-move-to-filename)
            nil
@@ -389,7 +402,8 @@ If no application is associated with file, then `find-file'."
 (global-set-key [(control x)(d)] 'ignore)
 (global-set-key [(control x)(d)] 'wuxch-dired)
 
-;; 这个参数比较重要，当同时打开2个buffer时，复制的缺省路径就是另一个buffer的dired路径。使用起来有些像totalcommand
+;; 这个参数比较重要，当同时打开2个buffer时，复制的缺省路径就是另一个buffer的dired路径。使用起来有些像
+;; totalcommand
 (setq dired-dwim-target t)
 
 (defun do-wuxch-get-file-name (with-full-path only-path)
@@ -421,9 +435,17 @@ If no application is associated with file, then `find-file'."
             ;; 不包括路径的文件名（或者是目录名）
             (progn
               (if (file-directory-p file)
+                  (progn
+                    (setq clipboard (file-name-nondirectory file))
+                    )
+                (progn
+;;;                 ;; 如果是普通文件名，那么不需要扩展名
+;;;                 (setq clipboard (file-name-sans-extension (file-name-nondirectory file))))))
                   (setq clipboard (file-name-nondirectory file))
-                ;; 如果是普通文件名，那么不需要扩展名
-                (setq clipboard (file-name-sans-extension (file-name-nondirectory file))))))
+                  )
+                )
+              )
+            )
           )
         )
       )
@@ -644,13 +666,13 @@ If no application is associated with file, then `find-file'."
 ;;     )
 ;;   )
 
-(defun xt ()
-  ""
-  (interactive)
-  (let ((dest-file "d:\\wuxch\\xt.xlsx"))
-    (w32-browser (dired-replace-in-string "/" "\\" dest-file))
-    )
-  )
+;; (defun xt ()
+;;   ""
+;;   (interactive)
+;;   (let ((dest-file "d:\\wuxch\\xt.xlsx"))
+;;     (w32-browser (dired-replace-in-string "/" "\\" dest-file))
+;;     )
+;;   )
 
 ;; (defun change-ftp-coding-system (coding)
 ;;   (interactive "zFtp Coding System: ")
@@ -873,7 +895,8 @@ changing into DIR) is
 
   (interactive (list (read-string "Search for: " w32-find-dired-pattern
                                   '(w32-find-dired-pattern-history . 1))))
-  (let ((dir (dired-current-directory))(dired-buffers dired-buffers)(pattern_around_star (concat "*" pattern "*")))
+  (let ((dir (dired-current-directory))
+        (dired-buffers dired-buffers)(pattern_around_star (concat "*" pattern "*")))
 
     ;; Expand DIR ("" means default-directory)
     (setq dir (abbreviate-file-name
@@ -957,5 +980,5 @@ changing into DIR) is
     )
   )
 
-(provide 'wuxch-dired)
 
+(provide 'wuxch-dired)

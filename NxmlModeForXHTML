@@ -1,7 +1,7 @@
 I looked at a number of different modes for authoring HTML, including HtmlMode,  
 PsgmlMode, HtmlHelperMode, HtmlModeDeluxe, but I decided to use the wonderful NxmlMode instead.  This has the advantage of providing validation as you type and excellent auto-completion facilities.  There is a catch, though, and that is that you have to write XHTML (HTML expressed as a dialect of XML) rather than SGML or HTML).  This is not really a big deal, but I thought I'd record my experience here.
 
-To make it even more simple I wrote a new mode nxhtml-mode (which is now part of [NxhtmlMode nXhtml]). nxhtml-mode is derived from nxhtml-mode (NxmlMode).
+To make it even more simple I wrote a new mode nxhtml-mode (which is now part of [NxhtmlMode nXhtml]). nxhtml-mode is derived from nxml-mode (NxmlMode).
 It adds a lot of things useful for XHTML.
 Among other things it adds some way of handling multiple modes, folding, an improved interface to Tidy etc.
 However, it requires Emacs22, while NxmlMode works in Emacs21 as well.

@@ -28,6 +28,7 @@ To use %%ParEdit%% with Emacs' Lisp modes, add the following to <tt>[InitFile .e
 
 To use %%ParEdit%% with ElDoc, you should make !ElDoc aware of %%ParEdit%%'s most used commands:
 
+    (require 'eldoc) ; if not already loaded
     (eldoc-add-command
      'paredit-backward-delete
      'paredit-close-round)

@@ -204,7 +204,7 @@ The ##iso-transl.el## library, included with Emacs, defines keyboard bindings fo
 * '##C-x 8 ~ ~##' gives ¬.
 * '##C-x 8 1 / 2##' gives ½.
 * '##C-x 8 * C##' gives ©.
-* '##C-x 8 ^ 1##' gives ¹, '##C-x 8 ^ 2##' gives ², and '##C-x 8 ^ 3##' gives ³.
+* '##C-x 8 ^ 1##' gives superscript ¹, '##C-x 8 ^ 2##' gives superscript ², and '##C-x 8 ^ 3##' gives superscript ³.
 
 The rest of the superscripts are not found in Latin-1, but we may extend the bindings as such:
 
@@ -238,7 +238,7 @@ The rest of the superscripts are not found in Latin-1, but we may extend the bin
        ("_(" . ,(vector (decode-char 'ucs #x208D)))
        ("_)" . ,(vector (decode-char 'ucs #x208E)))))
 
-Now, '<tt>C-x 8 ^ <i>number</i></tt>' gives any numerical superscript and '<tt>C-x 8 _ <i>number</i></tt>' any numerical subscript. There are also bindings for plus, minus and equal signs, and parentheses.
+Now, '<tt>C-x 8 ^ <i>number</i></tt>' gives any numerical superscript (from Unicode when not found in Latin-1) and '<tt>C-x 8 _ <i>number</i></tt>' any numerical subscript. There are also bindings for plus, minus and equal signs, and parentheses.
 
 ----
 

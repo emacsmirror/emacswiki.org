@@ -10,7 +10,7 @@ backends are available:
 * the Apertium FOSS MT service, see http://apertium.org
 * the Transparent Language motor at FreeTranslation.com    
 
-BabelMode requires, the (X)Emacs web browser. It is written originally by EricMarsden and is now maintained by Jürgen Hötzel. the file can be download here :
+BabelMode requires the (X)Emacs editor. It is written originally by EricMarsden and is now maintained by Jürgen Hötzel. the file can be download here :
 
 http://github.com/juergenhoetzel/babel/tree/STABLE
 

@@ -1,0 +1,63 @@
+'''プログラミング''' ではEmacs上でのプログラミングを扱います。EmacsLispは[[CategoryCode]]へどうぞ。
+
+言語:
+
+* [[アセンブリ]] / AssemblyProgramming -- Programming with the assembler.
+* [[C言語]] / CProgrammingLanguage -- C specific programming.
+* [[C++言語]] / CPlusPlus -- C++ specific programming.
+* [[D言語]] / DProgrammingLanguage -- D specific programming.
+* [[ECMAScript言語]] / EcmaScript -- Programming in Javascript, Jscript, and !ActionScript.
+* [[Javaの開発環境]] / JavaDevelopmentEnvironment -- a great set of tools for Java programmers.
+* EmacsEclim -- tight eclipse integration for emacs.
+* MozillaDevelopmentEnvironmentforEmacs -- support for Mozilla technologies in Emacs.
+* [[Perl言語]] / PerlLanguage -- Perl specific programming.
+* [[Ruby言語]] / RubyLanguage -- Ruby specific programming.
+
+コーディングスタイル:
+
+* [[カテゴリ・インデント]] / CategoryIndentation
+* [[コメント付け]] / CommentingCode
+* [[Typedefの消去]] / DeletingTypedefs -- adapt your coding style and convert typedefs to plain structs
+* AutomaticFileHeaders -- automatic insertion and update of file headers for different types of file (C, shell, EmacsLisp, and so on). 
+
+コードナビゲーションとインフォメーション:
+
+* ElDoc -- echos the argument list of functions in the echo area
+* [[ESense]] - ESense - Erlang "IntelliSense" for Emacs
+* [[EAssist]] - Offers rapid method/function navigation for C++, C, Java, Lisp...
+* Lisp:tooltip-help.el --- show help as tooltip
+
+開発環境:
+
+* ProjectBufferMode -- generic mode to handle projects
+* CollectionOfEmacsDevelopmentEnvironmentTools -- complete development environment
+* ObjectOrientedBrowser -- supports C++, Java, Python, and a few other languages
+* EmacsBrowse -- simpler than ObjectOrientedBrowser, but comes with Emacs
+* EmacsForDevStudioUsers-- will make your MSVC-using friend envious of your comfortable development environment
+* IdeSkel -- simple environment for svn/cvs projects, with embedded "speedbars"
+* MultiTerm -- Use multiple terminals in Emacs, support dedicated window for debug program.
+* [[eproject]] - project workspaces for emacs
+
+ファイルマネージメント:
+
+* ChangeLog -- Log the changes to your source files.
+* ProjectSettings -- Configuration settings for an entire project (directory).
+* ProjectWizard -- simple, customizable project wizard
+* SimpleProjectManagment -- A simple project managment
+* ProjmanMode -- move between different projects (directories) maintaining options and open buffers for each
+* [http://www.littleredbat.net/mk/code/mk-project.html mk-project] -- Quickly switch between projects and perform operations on a per-project basis
+* SpeedBar -- provides alternate views into individual source files
+* SrSpeedbar -- Display speedbar in same frame, very handy!
+* EmacsCodeBrowser -- provides views of directories and files that go one step beyond what SpeedBar does
+* AutomaticFileHeaders -- automatic insertion and update of file headers for different types of file (C, shell, EmacsLisp, and so on). 
+* VersionControl -- Manage revisions to your source files.
+
+'''See also:'''
+
+* CategoryCode for information on '''EmacsLisp''' programming.
+* CategoryShell for pages about shell scripting.
+* [[EmacsNiftyTricks#Programming]]
+* ProgrammingModes for language-specific programming modes.
+* CategoryProgrammerUtils for information on using external programming tools with Emacs.  
+* CategoryExternalUtilities for use of other, non-programming external tools.
+

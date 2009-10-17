@@ -171,6 +171,8 @@ In CarbonEmacsPackage, you can set the variable mac-option-modifier to 'meta whe
 
 Make sure you aren't mapping meta to send another modifier key.  Under System Panel -> Keyboard & Mouse -> Keyboard -> Modifier Keys - make sure Option Key is set to Option.
 
+If you want to use your option key as meta in your terminal on the mac, under Terminal -> Preferences -> Settings -> Keyboard check off the check box "Option as meta key" 
+
 Best option in Emacs 23 is to revert to Emacs 22 settings (alt is alt, cmd is meta) with this snippet:
 
     (setq mac-option-key-is-meta nil)

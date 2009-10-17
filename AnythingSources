@@ -4,6 +4,7 @@ It is starting to bulk up, perhaps we should consider splitting it into a few di
 
 RubikitchAnythingConfiguration may contain newer version of [[rubikitch]]'s sources.
 
+To create your own anything sources, read `anything-sources' docstring. [http://d.hatena.ne.jp/sirocco634/20091012/1255336649 Japanese translation] is available.
 
 == Discussion ==
 What do you think about collecting those anything sources into one elisp file, such as anything-sources-emacswiki.el, which is publicly editable? Doing this enables us to use sources by installing elisp by InstallElisp or AutoInstall. -- [[rubikitch]]

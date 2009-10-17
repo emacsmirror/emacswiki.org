@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Oct 12 11:32:35 2009 (-0700)
+;; Last-Updated: Sat Oct 17 00:38:41 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 11172
+;;     Update #: 11176
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5020,11 +5020,16 @@ Also removes the last cdr, which might hold the base size."
       (when env-var-p (setq res  (mapcar #'(lambda (cand) (concat "$" cand)) res))))
     res))
 
+;; @@@@@@@@ Filed Emacs BUG #4708.  `completion-try-completion' does not return nil when it should.
+;; E.g. (completion-try-completion "c:/some-dir/$HOMj" nil 17) returns: ("c:/some-dir/$$HOMj" . 18)
+;;
+;; This causes `icicle-highlight-input-noncompletion' not to highlight the `j' in the above example.
 (defun icicle-completion-try-completion (string table pred point)
   "Icicles version of `completion-try-completion'.
 Removes the last cdr, which might hold the base size."
   (let ((res  (completion-try-completion string table pred point)))
-    (when (consp res) (setq res (car res)))))
+    (when (consp res) (setq res (car res)))
+    res))
 
 (defun icicle-require-match-p ()
   "Non-nil means completion is strict.

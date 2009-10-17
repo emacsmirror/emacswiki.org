@@ -1,7 +1,7 @@
 ;;; point-undo.el --- undo/redo position
 
 ;;  Copyright (C) 2006,2008 rubikitch <rubikitch@ruby-lang.org>
-;;  Version: $Id: point-undo.el,v 1.5 2008/12/27 15:21:03 rubikitch Exp $
+;;  Version: $Id: point-undo.el,v 1.6 2009/10/16 20:37:37 rubikitch Exp rubikitch $
 
 ;;  This program is free software; you can redistribute it and/or modify
 ;;  it under the terms of the GNU General Public License as published by
@@ -20,6 +20,20 @@
 ;; This package allows you to undo/redo point and window-start.
 ;; It is like w3m's UNDO/REDO commands.
 
+;;; Commands:
+;;
+;; Below are complete command list:
+;;
+;;  `point-undo'
+;;    Undo position.
+;;  `point-redo'
+;;    Redo position.
+;;
+;;; Customizable Options:
+;;
+;; Below are customizable option list:
+;;
+
 ;;; Setup:
 
 ;; (require 'point-undo)
@@ -30,6 +44,9 @@
 ;;; History:
 ;; 
 ;; $Log: point-undo.el,v $
+;; Revision 1.6  2009/10/16 20:37:37  rubikitch
+;; point-undo-list records position info only when point is moved.
+;;
 ;; Revision 1.5  2008/12/27 15:21:03  rubikitch
 ;; *** empty log message ***
 ;;
@@ -58,7 +75,10 @@
   "Save positions before command."
   (unless (or (eq this-command 'point-undo)
               (eq this-command 'point-redo))
-    (setq point-undo-list (cons (cons (point) (window-start)) point-undo-list))
+    
+    (let ((cell (cons (point) (window-start))))
+      (unless (equal cell (car point-undo-list))
+       (setq point-undo-list (cons cell point-undo-list))))
     (setq point-redo-list nil)))
 (add-hook 'pre-command-hook 'point-undo-pre-command-hook)
 

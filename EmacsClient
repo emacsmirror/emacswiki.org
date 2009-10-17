@@ -668,6 +668,8 @@ This is similar to the C-x k binding above, but uses C-c C-c -- which makes it s
 
 I wanted to use emacsclient as my editor to svn in Windows, but when I used emacsclientw.exe or emacsclient.exe, the return value when I was done editing was always 1, which made svn to reject my edit. How it is with emacsclient and return values? Is my copy just broken?
 
+A: This is known to be broken currently (16-Oct-09); it always returns 1.  There's some discussion in the help-emacs-windows mailing list about fixing it.
+
 == Emacsclient vs. gnuclient ==
 
 Is emacs-server protocol compatible with gnuclient or are they totally different implementations? I would like to use an utility in Windows designed for gnuclient (visemacs), but it only supports gnuclient at the moment. I would like to know, how big effor it would be to patch it to support emacs client protocol. All pointers to relevant documentation is gladly accepted too!  

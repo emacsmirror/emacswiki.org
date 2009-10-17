@@ -72,26 +72,26 @@ Emacs をテキストエディタとして使うには？
 * [[ディレクトリ]] / CategoryDirectories -- Working with directories, otherwise known as dired.
 
 その他の機能
-* [[電卓]] / CategoryCalculators -- interactive math
-* [[カレンダー]] / CategoryCalendar -- calendar, diary, tasks
-** [[TODO]] / CategoryTodo -- maintaining todo lists
-* [[チャット]] / CategoryChatClient -- socializing while sitting alone in front of the monitor
-* [[ゲーム]] / CategoryGames -- less useful ways to waste your time with Emacs
-* [[インタフェース]] / CategoryInterface -- Emacs interface to online utilities
-* [[プログラマ向けユーティリティ]] / CategoryProgrammerUtils -- tools that help programmers, e.g., code browsers
-* [[リモートEmacs]] / CategoryRemoteEmacs -- running Emacs on a host far, far away
-* [[外部プログラム]] / CategoryExternalUtilities -- calling external programs to do stuff from Emacs
-* [[メール]] / CategoryMail -- simple mail handling things, not Gnus related
-* [Gnus ニュース・メールリーダ] / CategoryGnus -- powerful news and mail reading
-* [[BBDB（連絡帳）]] / CategoryBbdb -- Big Brother Database: maintain phone numbers, mail addresses, and more
-* [[バージョン管理]] / CategoryVersionControl -- interfacing to CVS, RCS, etc.
-* [[日記]] / CategoryJournaling -- Emacs interfaces to web logs
-* [[PIM]] / CategoryPersonalInformationManager -- various packages to cover particular aspects of a PIM
+* [[電卓]] / CategoryCalculators -- 対話式計算機
+* [[カレンダー]] / CategoryCalendar -- カレンダー, 日記, タスク管理
+** [[TODO]] / CategoryTodo -- ToDoリストの管理
+* [[チャット]] / CategoryChatClient -- PCに向かって
+* [[ゲーム]] / CategoryGames -- Emacsで時間つぶし
+* [[インタフェース]] / CategoryInterface -- オンラインサービスへのインターフェース
+* [[プログラマ向けユーティリティ]] / CategoryProgrammerUtils -- コードブラウザ等、プログラマのためのツール
+* [[リモートEmacs]] / CategoryRemoteEmacs -- 遠くのホストでEmacsを動かす
+* [[外部プログラム]] / CategoryExternalUtilities -- 外部のプログラムを呼ぶ
+* [[メール]] / CategoryMail -- メールの運用関連、Gnusは[[Gnus ニュース・メールリーダ]]へ
+* [[Gnus ニュース・メールリーダ]] / CategoryGnus -- 高機能なニュース・メールリーダ
+* [[BBDB（連絡帳）]] / CategoryBbdb -- 電話番号、メールアドレス等のデータベース
+* [[バージョン管理]] / CategoryVersionControl -- CVSやRCSへのインターフェース
+* [[日記]] / CategoryJournaling -- ブログへのインターフェース
+* [[PIM]] / CategoryPersonalInformationManager -- いろいろなPIM用パッケージ
 
 Emacs をカスタマイズするには
-* CategoryKeys -- customizing your keys; usability
-* CategoryDotEmacs -- stuff to put in your InitFile, for Elisp newbies
-* CategoryProgramming -- customizations people use for programming
+* [[キーバインド]] / CategoryKeys -- キーバインドのカスタマイズ
+* [[DotEmacs（設定ファイル）]] / CategoryDotEmacs -- 設定ファイルのもと（初心者向け）
+* [[プログラミング]] / CategoryProgramming -- プログラマ向けのカスタマイズ
 * CategoryFaces -- syntax highlighting, colors, font-lock
 ** CategoryDisplay -- things related to the display (X-Window pointer shapes, [[Frame]]s, ...)
 ** CategoryWindows -- managing several [[Window]]s within one frame

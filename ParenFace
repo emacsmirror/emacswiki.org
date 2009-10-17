@@ -1,4 +1,4 @@
-parenface.el, written by DavePearson, is an Emacs hack that lets you define a [[Face]] in which parens should appear. It's nice to "tone down" parens in Lisp source, for instance.
+parenface.el, written by DavePearson, is an Emacs hack that lets you define a [[Face]] in which parens should appear -- e.g., colored parentheses. It's nice to "tone down" parens in Lisp source, for instance.
 
 == Link ==
 

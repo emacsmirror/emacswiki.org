@@ -4,6 +4,8 @@ Traditionally, Unix uses the ^H keystroke to send a backspace from or to a termi
 
 : Personally, I prefer <tt>(keyboard-translate ?\C-h ?\C-?)</tt>; that way, the key does whatever it is supposed to do regardless of mode.
 
+: <tt>(define-key key-translation-map [?\C-h] [?\C-?])</tt> is usually a better solution than <tt>keyboard-translate</tt>.  That latter is local to "terminals" so that it doesn't work well with emacs daemon. -- Ryo
+
 If you do this, you probably also want to remap the the help function, too:
 
   (global-set-key [(hyper h)] 'help-command)

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Oct 12 15:53:45 2009 (-0700)
+;; Last-Updated: Sat Oct 17 00:41:37 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 4458
+;;     Update #: 4460
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -274,6 +274,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2009/10/17 dadams
+;;     icicle-completion-try-completion: Return RES.
 ;; 2009/10/12 dadams
 ;;     icicle-unsorted-prefix-candidates, icicle-prefix-any-candidates-p:
 ;;       Use length of INPUT, not length from point backward to field-beginning.
