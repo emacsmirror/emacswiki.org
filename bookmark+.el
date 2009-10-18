@@ -9,9 +9,9 @@
 ;; Copyright (C) 2000-2009, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Oct 17 00:14:39 2009 (-0700)
+;; Last-Updated: Sat Oct 17 23:45:15 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 5998
+;;     Update #: 6217
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -86,6 +86,7 @@
 ;;    `bookmarkp-bmenu-change-sort-order',
 ;;    `bookmarkp-bmenu-change-sort-order-repeat',
 ;;    `bookmarkp-bmenu-delete-marked',
+;;    `bookmarkp-bmenu-describe-this-bookmark',
 ;;    `bookmarkp-bmenu-edit-bookmark',
 ;;    `bookmarkp-bmenu-isearch-marked-bookmarks' (Emacs 23+),
 ;;    `bookmarkp-bmenu-isearch-marked-bookmarks-regexp' (Emacs 23+),
@@ -125,13 +126,13 @@
 ;;    `bookmarkp-bmenu-unmark-bookmarks-tagged-none',
 ;;    `bookmarkp-bmenu-unmark-bookmarks-tagged-not-all',
 ;;    `bookmarkp-bmenu-unmark-bookmarks-tagged-some',
+;;    `bookmarkp-describe-bookmark',
 ;;    `bookmarkp-menu-jump-other-window' (Emacs 20,21),
 ;;    `bookmarkp-remove-all-tags', `bookmarkp-remove-tags',
 ;;    `bookmarkp-remove-tags-from-all', `bookmarkp-rename-tag',
 ;;    `bookmarkp-reverse-multi-sort-order',
 ;;    `bookmarkp-reverse-sort-order', `bookmarkp-version',
-;;    `old-bookmark-insert', `old-bookmark-insert-location',
-;;    `old-bookmark-relocate'.
+;;    `old-bookmark-insert', `old-bookmark-relocate'.
 ;;
 ;;  User options defined here:
 ;;
@@ -269,6 +270,7 @@
 ;;    `bookmark--jump-via', `bookmark-bmenu-bookmark',
 ;;    `bookmark-bmenu-delete', `bookmark-bmenu-hide-filenames',
 ;;    `bookmark-bmenu-mode' (advised, for doc string),
+;;    `bookmark-bmenu-show-filenames',
 ;;    `bookmark-bmenu-surreptitiously-rebuild-list',
 ;;    `bookmark-completing-read', `bookmark-default-handler',
 ;;    `bookmark-get-bookmark' (Emacs 20-22),
@@ -614,7 +616,26 @@
 ;;(@* "Change log")
 ;;
 ;; 2009/10/17 dadams
-;;     Added: *-read-tags-completing, *-set-union, *-tag-history.  Use instead of *-read-tags.
+;;     Added: *-read-tags-completing, *-set-union, *-tag-history, *-describe-bookmark,
+;;            *-bmenu-describe-this-bookmark.  Bound *-bmenu-describe-this-bookmark to C-h RET.
+;;     Use *-read-tags-completing instead of *-read-tags.
+;;     *-sort-orders-for-cycling-alist: Use copy-sequence.
+;;     *-bmenu-change-sort-order: Use member, not memq.
+;;     *-get-bookmark: Handle case of non-string, non-cons. Document NOERROR in doc string.
+;;     *-bmenu-execute-deletions: Fix so marks aren't removed if when delete.  Thx to Thierry.
+;;     Convert recorded time to an Emacs time spec:
+;;       *-make-record-default, -add-or-update-time: Use current-time, not bookmark-float-time.
+;;       *-get-visit-time: Convert a deprecated time entry to an Emacs time spec.
+;;       *-bookmark-last-access-cp: Convert recorded time to a number for comparison.
+;;     Added: *-bmenu-show-filenames (redef of vanilla: put props on whole line, fit frame).
+;;     Removed: old-bookmark-insert-location.
+;;     *-insert-location: Do not call original.  Redefined: do not add text properties.
+;;     *-bmenu-list, *-bmenu-hide-filenames: Put properties on line up to max width.
+;;     *-bmenu-goto-bookmark-named: Allow trailing whitespace, since we use the whole line now.
+;;     *-bmenu-list: Use pop-to-buffer, not switch-to-buffer.  Use do-list, not mapcar.
+;;     *-bmenu-hide-filenames: fit-frame-if-one-window.
+;;     *-bmenu-propertize-item: Better help-echo text.
+;;     Updated bookmark-alist doc string to mention visits, time, and tags entries.
 ;; 2009/10/16 dadams
 ;;     Added tags feature.
 ;;       Added: *-(get|read)-tags, *-has-tag-p, *-remove(-all)-tags(-from-all),
@@ -1243,6 +1264,8 @@ then the rest."
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "g" 'bookmarkp-bmenu-refresh-menu-list)
 ;;;###autoload
+(define-key bookmark-bmenu-mode-map (kbd "C-h RET") 'bookmarkp-bmenu-describe-this-bookmark)
+;;;###autoload
 (define-key bookmark-bmenu-mode-map "G" 'bookmarkp-bmenu-show-only-gnus)
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "I" 'bookmarkp-bmenu-show-only-info-nodes)
@@ -1439,6 +1462,7 @@ in a set     (NOT OR)
 Miscellaneous
 -------------
 
+\\[bookmarkp-describe-bookmark]\t- Show information about this bookmark
 \\[bookmarkp-bmenu-refresh-menu-list]\t- Refresh (revert) to up-to-date bookmarks list
 \\[bookmarkp-bmenu-delete-marked]\t- Delete visible bookmarks marked `>' (not `D')
 \\[bookmarkp-bmenu-edit-bookmark]\t- Edit bookmark
@@ -1839,12 +1863,29 @@ Bookmarks created using vanilla Emacs (`bookmark.el'):
 Bookmarks created using Bookmark+ are the same as for vanilla Emacs,
 except for the following differences.
 
-1. If no file is associated with the bookmark, then FILENAME is
+1. Visit information is recorded, using entries `visits' and `time':
+
+ (visits . NUMBER-OF-VISITS)
+ (time . TIME-LAST-VISITED)
+
+ NUMBER-OF-VISITS is a whole-number counter.
+
+ TIME-LAST-VISITED is an Emacs time representation, such as is
+ returned by function `current-time'.
+
+2. Bookmarks can be tagged by users.  The tag information is recorded
+using entry `tags':
+
+ (tags . TAGS-LIST)
+
+ TAGS-LIST is a list of strings, the tags.
+
+3. If no file is associated with the bookmark, then FILENAME is
    `   - no file -'.
 
-2. The following additional entries are used.  Their values are
-non-nil when a region is bookmarked; they are nil otherwise.  When a
-region is bookmarked, POS represents the region start position.
+4. The following additional entries are used to record region
+information.  The values are non-nil only when a region is bookmarked.
+When a region is bookmarked, POS represents the region start position.
 
  (buffer-name . BUFFER-NAME)
  (end-position . END-POS)
@@ -1863,7 +1904,7 @@ region is bookmarked, POS represents the region start position.
  `front-context-string' is the text that *follows* `position', but
  `front-context-region-string' that *precedes* `end-position'.
 
-3. The following additional entries are used for a Dired bookmark.
+5. The following additional entries are used for a Dired bookmark.
 
  (dired-marked . MARKED-FILES)
  (dired-switches . SWITCHES)
@@ -1871,7 +1912,7 @@ region is bookmarked, POS represents the region start position.
  MARKED-FILES is the list of files that were marked.
  SWITCHES is the string of `dired-listing-switches'.
 
-4. The following additional entries are used for a Gnus bookmark.
+6. The following additional entries are used for a Gnus bookmark.
 
  (group . GNUS-GROUP-NAME)
  (article . GNUS-ARTICLE-NUMBER)
@@ -1881,7 +1922,7 @@ region is bookmarked, POS represents the region start position.
  GNUS-ARTICLE-NUMBER is the number of a Gnus article.
  GNUS-MESSAGE-ID is the identifier of a Gnus message.
 
-5. For a W3M bookmark, FILENAME is a W3M URL.")
+7. For a W3M bookmark, FILENAME is a W3M URL.")
  
 ;;(@* "Compatibility Code for Older Emacs Versions")
 ;;; Compatibility Code for Older Emacs Versions ----------------------
@@ -1893,18 +1934,23 @@ region is bookmarked, POS represents the region start position.
   ;; They are the same as the vanilla Emacs 23+ definitions, except as noted.
   ;; They let older versions of Emacs handle bookmarks created with Emacs 23.
 
+  ;; 1. Handle shouldn't-happen case of non-string, non-cons.
+  ;; 2. Document NOERROR in doc string.
   (defun bookmark-get-bookmark (bookmark &optional noerror)
     "Return the bookmark record corresponding to BOOKMARK.
 BOOKMARK is a bookmark name or a bookmark record.
-If BOOKMARK is already a bookmark record, just return it,
-Otherwise look for the corresponding bookmark in `bookmark-alist'."
-    (cond
-      ((consp bookmark) bookmark)
-      ((stringp bookmark)
-       (or (if (fboundp 'assoc-string)  ; Emacs 22+.
-               (assoc-string bookmark bookmark-alist bookmark-completion-ignore-case)
-             (assoc bookmark bookmark-alist))
-           (unless noerror (error "Invalid bookmark: `%s'" bookmark))))))
+If BOOKMARK is already a bookmark record, just return it.
+Otherwise look for the corresponding bookmark in `bookmark-alist'.
+
+Non-nil optional arg NOERROR means do not raise an error if BOOKMARK
+is not a valid bookmark."
+    (cond ((consp bookmark) bookmark)
+          ((stringp bookmark)
+           (or (if (fboundp 'assoc-string)  ; Emacs 22+.
+                   (assoc-string bookmark bookmark-alist bookmark-completion-ignore-case)
+                 (assoc bookmark bookmark-alist))
+               (unless noerror (error "Invalid bookmark: `%s'" bookmark))))
+          (t (unless noerror (error "Invalid bookmark: `%s'" bookmark)))))
 
   (defun bookmark-get-bookmark-record (bookmark)
     "Return the guts of the entry for BOOKMARK in `bookmark-alist'.
@@ -2092,7 +2138,7 @@ pertains to the location within the buffer."
                       (bookmarkp-record-rear-context-string beg)))
          (fcrs      (when isregion (bookmarkp-record-front-context-region-string beg end)))
          (ecrs      (when isregion (bookmarkp-record-end-context-region-string end)))
-         (ctime     (bookmarkp-float-time)))
+         (ctime     (current-time)))
     `(,@(unless point-only `((filename . ,(cond ((buffer-file-name (current-buffer))
                                                  (bookmark-buffer-file-name))
                                                 (isdired)
@@ -2459,12 +2505,10 @@ candidate."
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; 1. Added note about `S-delete' to doc string.
-;; 2. Changed arg name: BOOKMARK -> BOOKMARK-NAME.
+;; 1. Do not add any text properties here.  That's done in `bookmarkp-bmenu-propertize-item'.
+;; 2. Added note about `S-delete' to doc string.
+;; 3. Changed arg name: BOOKMARK -> BOOKMARK-NAME.
 ;;
-(or (fboundp 'old-bookmark-insert-location)
-(fset 'old-bookmark-insert-location (symbol-function 'bookmark-insert-location)))
-
 ;;;###autoload
 (defun bookmark-insert-location (bookmark-name &optional no-history) ; `C-x p f'
   "Insert file or buffer name for the bookmark named BOOKMARK-NAME.
@@ -2480,7 +2524,8 @@ candidate."
   (interactive (if (> emacs-major-version 21)
                    (list (bookmark-completing-read "Insert bookmark location"))
                  (bookmark-completing-read "Insert bookmark location")))
-  (old-bookmark-insert-location bookmark-name no-history))
+  (or no-history (bookmark-maybe-historicize-string bookmark-name))
+  (insert (bookmark-location bookmark-name))) ; Return the line inserted.
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -2674,10 +2719,13 @@ Optional arg DONT-TOGGLE-FILENAMES-P is passed to
                                                    (line-end-position)))
                                'filteredp))))))
 
+
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
 ;; 1. Added args TITLE, FILTEREDP, DONT-TOGGLE-FILENAMES-P.
 ;; 2. Handles also region bookmarks and buffer (non-file) bookmarks.
+;; 3. Uses `pop-to-buffer', not `switch-to-buffer', so we respect `special-display-*'
+;;    (but keep `one-window-p' if that's the case).
 ;;
 ;;;###autoload
 (defun bookmark-bmenu-list (&optional title filteredp) ; `C-x r l'
@@ -2706,7 +2754,9 @@ Non-nil DONT-TOGGLE-FILENAMES-P means do not call
   (unless bookmarkp-bmenu-called-from-inside-p (setq bookmarkp-bmenu-marked-bookmarks  ()))
   (unless filteredp (setq bookmarkp-latest-bookmark-alist  bookmark-alist))
   (if (interactive-p)
-      (switch-to-buffer (get-buffer-create "*Bookmark List*"))
+      (let ((one-win-p  (one-window-p)))
+        (pop-to-buffer (get-buffer-create "*Bookmark List*"))
+        (when one-win-p (delete-other-windows)))
     (set-buffer (get-buffer-create "*Bookmark List*")))
   (let* ((inhibit-read-only  t)
          (alternate-title    (if title title "% Bookmarks"))
@@ -2714,26 +2764,25 @@ Non-nil DONT-TOGGLE-FILENAMES-P means do not call
     (erase-buffer)
     (insert (format "%s\n- %s\n" alternate-title (make-string len-alt-title ?-)))
     (add-text-properties (point-min) (point) (bookmarkp-face-prop 'bookmark-menu-heading))
-    (mapcar (lambda (full-record)
-              ;; If a bookmark has an annotation, prepend a "*" in the list of bookmarks.
-              (let ((name        (bookmark-name-from-full-record full-record))
-                    (annotation  (bookmark-get-annotation full-record))
-                    (marked      (bookmarkp-bookmark-marked-p full-record))
-                    (start       (+ 2 (point))) ; + 2 to skip marks area
-                    end)
-                (insert (cond ((and annotation (not (string-equal annotation "")) marked)
-                               ">*")
-                              ((and annotation (not (string-equal annotation "")))
-                               " *")
-                              (marked
-                               "> ")
-                              (t
-                               "  "))
-                        name)
-                (setq end  (point))
-                (bookmarkp-bmenu-propertize-item name start end)
-                (insert "\n")))
-            (bookmarkp-sort-and-remove-dups bookmark-alist))
+    (let ((max-width     0)
+          (sorted-alist  (bookmarkp-sort-and-remove-dups bookmark-alist))
+          name annotation markedp start)
+      (dolist (bmk  sorted-alist)
+        (setq max-width  (max max-width (length (bookmark-name-from-full-record bmk)))))
+      (setq max-width  (+ 2 max-width))
+      (dolist (bmk  sorted-alist)
+        (setq name        (bookmark-name-from-full-record bmk)
+              annotation  (bookmark-get-annotation bmk)
+              markedp     (bookmarkp-bookmark-marked-p bmk)
+              start       (point))
+        (insert (cond ((and annotation (not (string-equal annotation "")) markedp)  ">*")
+                      ((and annotation (not (string-equal annotation "")))          " *")
+                      (markedp                                                      "> ")
+                      (t                                                            "  "))
+                name)
+        (move-to-column max-width t)
+        (bookmarkp-bmenu-propertize-item name start (point))
+        (insert "\n")))
     (goto-char (point-min))  (forward-line 2)
     (bookmark-bmenu-mode)
     (when bookmark-bmenu-toggle-filenames (bookmark-bmenu-toggle-filenames t))
@@ -2756,6 +2805,8 @@ Non-nil DONT-TOGGLE-FILENAMES-P means do not call
 ;;
 ;; 1. Add text properties when hiding filenames.
 ;; 2. Do not set or use `bookmark-bmenu-bookmark-column' - use column 2 always.
+;; 3. Fit one-window frame.
+;; 4. Added doc string.
 ;;
 (defun bookmark-bmenu-hide-filenames (&optional force)
   "Hide filenames in bookmark-list buffer.
@@ -2767,19 +2818,63 @@ non-nil, then do nothing."
         (goto-char (point-min))
         (forward-line 2)
         (setq bookmark-bmenu-hidden-bookmarks  (nreverse bookmark-bmenu-hidden-bookmarks))
-        (save-excursion
-          (let ((inhibit-read-only  t))
-            (while bookmark-bmenu-hidden-bookmarks
-              (move-to-column 2 t)
-              (bookmark-kill-line)
-              (let ((name   (car bookmark-bmenu-hidden-bookmarks))
-                    (start  (point))
-                    end)
-                (insert name)
-                (setq end  (point))
-                (bookmarkp-bmenu-propertize-item name start end))
-              (setq bookmark-bmenu-hidden-bookmarks  (cdr bookmark-bmenu-hidden-bookmarks))
-              (forward-line 1))))))))
+        (let ((max-width  0))
+          (dolist (name  bookmark-bmenu-hidden-bookmarks)
+            (setq max-width  (max max-width (length name))))
+          (setq max-width  (+ 2 max-width))
+          (save-excursion
+            (let ((inhibit-read-only  t))
+              (while bookmark-bmenu-hidden-bookmarks
+                (move-to-column 2 t)
+                (bookmark-kill-line)
+                (let ((name   (car bookmark-bmenu-hidden-bookmarks))
+                      (start  (point))
+                      end)
+                  (insert name)
+                  (move-to-column max-width t)
+                  (setq end  (point))
+                  (bookmarkp-bmenu-propertize-item name start end))
+                (setq bookmark-bmenu-hidden-bookmarks  (cdr bookmark-bmenu-hidden-bookmarks))
+                (forward-line 1)))))))
+    (when (fboundp 'fit-frame-if-one-window) (fit-frame-if-one-window))))
+
+
+;; REPLACES ORIGINAL in `bookmark.el'.
+;;
+;; 1. Put `mouse-face' on whole line, with the same help-echo as for the bookmark name.
+;; 2. Fit one-window frame.
+;; 3. Added doc string.
+;;
+(defun bookmark-bmenu-show-filenames (&optional force)
+  "Show file names."
+  (if (and (not force) bookmark-bmenu-toggle-filenames)
+      nil                               ; Already shown, so do nothing.
+    (save-excursion
+      (save-window-excursion
+        (goto-char (point-min))
+        (forward-line 2)
+        (setq bookmark-bmenu-hidden-bookmarks  ())
+        (let ((inhibit-read-only  t))
+          (while (< (point) (point-max))
+            (let ((bmrk  (bookmark-bmenu-bookmark)))
+              (setq bookmark-bmenu-hidden-bookmarks
+                    (cons bmrk bookmark-bmenu-hidden-bookmarks))
+	      (let ((start  (save-excursion (end-of-line) (point))))
+		(move-to-column bookmark-bmenu-file-column t))
+	      (delete-region (point) (progn (end-of-line) (point)))
+              (insert "  ")
+              (bookmark-insert-location bmrk t) ; Pass the NO-HISTORY arg.
+              (when (if (fboundp 'display-color-p) ; Emacs 21+.
+                        (and (display-color-p) (display-mouse-p))
+                      window-system)
+                (let ((help  (get-text-property (+ 2 (line-beginning-position)) 'help-echo)))
+                  (put-text-property (+ 2 (line-beginning-position)) (point)
+                                     'mouse-face 'highlight)
+                  (when help
+                    (put-text-property (+ 2 (line-beginning-position)) (point)
+                                       'help-echo help))))
+              (forward-line 1))))))
+    (when (fboundp 'fit-frame-if-one-window) (fit-frame-if-one-window))))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -2800,11 +2895,13 @@ non-nil, then do nothing."
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; 1. Added optional arg: handle bookmarks marked `>', not just those flagged `D'.
+;; 1. Added optional arg MARKEDP: handle bookmarks marked `>', not just those flagged `D'.
 ;; 2. Use `bookmark-bmenu-surreptitiously-rebuild-list', instead of using
 ;;    `bookmark-bmenu-list', updating the modification count, and saving.
 ;; 3. Update `bookmarkp-latest-bookmark-alist' to reflect the deletions.
-;; 4. Raise error if not in buffer `*Bookmark List*'.
+;; 4. Use `bookmarkp-bmenu-goto-bookmark-named'.
+;; 5. Added status messages.
+;; 6. Raise error if not in buffer `*Bookmark List*'.
 ;;
 ;;;###autoload
 (defun bookmark-bmenu-execute-deletions (&optional markedp) ; `x' in menu list
@@ -2815,31 +2912,29 @@ confirmation."
   (unless (equal (buffer-name (current-buffer)) "*Bookmark List*")
     (error "Use this command only in buffer `*Bookmark List*'"))
   (if (or (not markedp) (yes-or-no-p "Delete bookmarks marked `>' (not `D') "))
-      (let ((o-point              (point))
-            (o-str                (save-excursion
-                                    (beginning-of-line)
-                                    (and (not (looking-at (if markedp "^>" "^D")))
-                                         (buffer-substring
-                                          (point) (progn (end-of-line) (point))))))
-            (o-col                (current-column)))
+      (let* ((mark-type  (if markedp "^>" "^D"))
+             (o-str      (and (not (looking-at mark-type)) (bookmark-bmenu-bookmark)))
+             (o-point    (point))
+             (count      0))
         (message "Deleting bookmarks...")
         (goto-char (point-min))
-        (forward-line 1)
-        (while (re-search-forward (if markedp "^>" "^D") (point-max) t)
-          (let ((bmk  (bookmark-bmenu-bookmark))) 
-            (bookmark-delete bmk 'batch) ; pass BATCH arg
-            (setq bookmarkp-latest-bookmark-alist
-                  (delete (assoc bmk bookmarkp-latest-bookmark-alist)
-                          bookmarkp-latest-bookmark-alist))))
+        (forward-line 2)
+        (while (re-search-forward mark-type (point-max) t)
+          (let ((bmk  (bookmark-bmenu-bookmark)))
+            (bookmark-delete bmk 'batch)
+            (setq count                            (1+ count)
+                  bookmarkp-latest-bookmark-alist  (delete
+                                                    (assoc bmk bookmarkp-latest-bookmark-alist)
+                                                    bookmarkp-latest-bookmark-alist))))
+        (setq bookmarkp-bmenu-called-from-inside-p  t)
         (bookmark-bmenu-surreptitiously-rebuild-list)
-        (if (not o-str)
-            (goto-char o-point)
-          (goto-char (point-min))
-          (search-forward o-str)
-          (beginning-of-line)
-          (forward-char o-col))
-        (beginning-of-line)
-        (message "Deleting bookmarks...done"))
+        (if o-str
+            (bookmarkp-bmenu-goto-bookmark-named o-str)
+          (goto-char o-point)
+          (beginning-of-line))
+        (if (> count 0)
+            (message "Deleting %s bookmarks...done" count)
+          (message (if markedp "No marked bookmarks" "No bookmarks flagged for deletion"))))
     (message "OK, nothing deleted")))
 
 
@@ -2876,7 +2971,7 @@ BOOKMARK-NAME is the current (old) name of the bookmark."
          (new-filename       (read-from-minibuffer "New file name: " nil nil nil nil
                                                    bookmark-filename)))
     (when (and (not (equal new-bmk-name "")) (not (equal new-filename ""))
-               (y-or-n-p "Save changes?"))
+               (y-or-n-p "Save changes? "))
       (bookmark-rename bookmark-name new-bmk-name 'batch)
       (bookmark-set-filename new-bmk-name new-filename)
       (bookmarkp-maybe-save-bookmarks)
@@ -2900,20 +2995,12 @@ If bookmark has no `visits' entry, add one with a 0 count."
   "Update `time' entry of BOOKMARK.
 BOOKMARK is a bookmark name or a bookmark record.
 If it has no time entry, then add one, using the current time in seconds."
-  (bookmark-prop-set bookmark 'time (bookmarkp-float-time))
+  (bookmark-prop-set bookmark 'time (current-time))
   (unless batch
     (setq bookmarkp-bmenu-called-from-inside-p  t)
     (bookmark-bmenu-surreptitiously-rebuild-list))
   (let ((bookmark-save-flag  nil))
     (bookmarkp-maybe-save-bookmarks)))
-
-(defun bookmarkp-float-time (&optional specified-time)
-  "Same as `float-time'.  (Needed for Emacs 20.)"
-  (if (fboundp 'float-time)
-      (float-time specified-time)
-    (unless specified-time (setq specified-time  (current-time)))
-    (+ (* (float (nth 0 specified-time)) (expt 2 16))
-       (nth 1 specified-time))))
 
 (defun bookmarkp-default-bookmark-name ()
   "Default bookmark name.
@@ -3716,49 +3803,49 @@ unmark those that have no tags at all."
                 (bookmark-prop-get bookmark-name 'info-node))
             (append (bookmarkp-face-prop 'bookmarkp-info)
                     '(mouse-face highlight follow-link t
-                      help-echo "mouse-2: Go to this Info buffer")))
+                      help-echo "mouse-2: Visit this Info bookmark")))
            (isgnus                      ; Gnus
             (append (bookmarkp-face-prop 'bookmarkp-gnus)
                     '(mouse-face highlight follow-link t
-                      help-echo "mouse-2: Go to this Gnus buffer")))
+                      help-echo "mouse-2: Visit this Gnus bookmark")))
            (isw3m                       ; W3M
             (append (bookmarkp-face-prop 'bookmarkp-w3m)
                     `(mouse-face highlight follow-link t
-                      help-echo (format "mouse-2 Goto URL: `%s'" ,isfile))))
+                      help-echo (format "mouse-2: Visit URL `%s'" ,isfile))))
            ((and issu (not (bookmarkp-root-or-sudo-logged-p))) ; Root/sudo not logged
             (append (bookmarkp-face-prop 'bookmarkp-su-or-sudo)
                     `(mouse-face highlight follow-link t
-                      help-echo (format "mouse-2 Goto file: `%s'" ,isfile))))
+                      help-echo (format "mouse-2: Visit file `%s'" ,isfile))))
            ;; Make sure we test for remoteness before any other tests of the file itself
            ;; (e.g. `file-exists-p'). We don't want to prompt for a password etc.
            ((and isremote (not issu))   ; Remote file (ssh, ftp)
             (append (bookmarkp-face-prop 'bookmarkp-remote-file)
                     `(mouse-face highlight follow-link t
-                      help-echo (format "mouse-2 Goto remote file: `%s'" ,isfile))))
+                      help-echo (format "mouse-2: Visit remote file `%s'" ,isfile))))
            ((and isfile (file-directory-p isfile)) ; Local directory
             (append (bookmarkp-face-prop 'bookmarkp-local-directory)
                     `(mouse-face highlight follow-link t
-                      help-echo (format "mouse-2 Goto dired: `%s'" ,isfile))))
+                      help-echo (format "mouse-2: Dired directory `%s'" ,isfile))))
            ((and isfile (file-exists-p isfile) isregion) ; Local file with region
             (append (bookmarkp-face-prop 'bookmarkp-local-file-with-region)
                     `(mouse-face highlight follow-link t
-                      help-echo (format "mouse-2 Find region in file: `%s'" ,isfile))))
+                      help-echo (format "mouse-2: Activate region in file `%s'" ,isfile))))
            ((and isfile (file-exists-p isfile)) ; Local file without region
             (append (bookmarkp-face-prop 'bookmarkp-local-file-without-region)
                     `(mouse-face highlight follow-link t
-                      help-echo (format "mouse-2 Goto file: `%s'" ,isfile))))
+                      help-echo (format "mouse-2: Visit file `%s'" ,isfile))))
            ((and isbuf (get-buffer isbuf) (equal isfile bookmarkp-non-file-filename)) ; Buffer
             (append (bookmarkp-face-prop 'bookmarkp-buffer)
                     `(mouse-face highlight follow-link t
-                      help-echo (format "mouse-2 Goto buffer: `%s'" ,isbuf))))
+                      help-echo (format "mouse-2: Visit buffer `%s'" ,isbuf))))
            ((and isbuf (or (not isfile) (equal isfile bookmarkp-non-file-filename)
                            (not (file-exists-p isfile)))) ; Buffer bookmark, but no buffer.
             (append (bookmarkp-face-prop 'bookmarkp-non-file)
                     `(mouse-face highlight follow-link t
-                      help-echo (format "mouse-2 Goto buffer: `%s'" ,isbuf))))
+                      help-echo (format "mouse-2: Visit buffer `%s'" ,isbuf))))
            (t (append (bookmarkp-face-prop 'bookmarkp-bad-bookmark)
                       `(mouse-face highlight follow-link t
-                        help-echo (format "mouse-2 BAD BOOKMARK (maybe): `%s'" ,isfile))))))))
+                        help-echo (format "BAD BOOKMARK (maybe): `%s'" ,isfile))))))))
 
 ;;;###autoload
 (defun bookmarkp-bmenu-quit ()          ; `q' in menu list
@@ -3775,7 +3862,7 @@ unmark those that have no tags at all."
   "Go to the first bookmark whose name (visible portion) matches NAME."
   (goto-char (point-min))
   (if (not bookmark-bmenu-toggle-filenames)
-      (re-search-forward (concat (regexp-quote name) "$"))
+      (re-search-forward (concat (regexp-quote name) "\\s-*$"))
     (let ((len    (length name))
           (limit  (- bookmark-bmenu-file-column 2)))
       (setq name  (if (>= len limit)
@@ -4030,6 +4117,14 @@ binary data (weird chars)."
         (replace-match rep nil nil string)
       string)))
 
+(defun bookmarkp-float-time (&optional specified-time)
+  "Same as `float-time'.  (Needed for Emacs 20.)"
+  (if (fboundp 'float-time)
+      (float-time specified-time)
+    (unless specified-time (setq specified-time  (current-time)))
+    (+ (* (float (nth 0 specified-time)) (expt 2 16))
+       (nth 1 specified-time))))
+
 (defun bookmarkp-face-prop (value)
   "Return a list with elements `face' or `font-lock-face' and VALUE.
 Starting with Emacs 22, the first element is `font-lock-face'."
@@ -4108,7 +4203,16 @@ BOOKMARK is a bookmark name or a bookmark record."
 (defun bookmarkp-get-visit-time (bookmark)
   "Return the `time' value for BOOKMARK.
 BOOKMARK is a bookmark name or a bookmark record."
-  (bookmark-prop-get bookmark 'time))
+  ;; Should just be a prop-get, but when first implemented, we used a float
+  ;; instead of a time cons, so we need to convert any such obsolete recorded times.
+  (let ((vt  (bookmark-prop-get bookmark 'time)))
+    (when (numberp vt)                  ; Convert mid-2009 time values (floats) to cons form.
+      (setq vt  (if (boundp 'seconds-to-time)
+                    (seconds-to-time vt)
+                  (list (floor vt 65536) ; Inlined `seconds-to-time', for Emacs 20-21.
+                        (floor (mod vt 65536))
+                        (floor (* (- vt (ffloor vt)) 1000000))))))
+    vt))
 
 
 ;;(@* "Sorting - General Functions")
@@ -4238,7 +4342,7 @@ With a prefix arg, reverse the current sort order."
           (current-bmk                           (bookmark-bmenu-bookmark))
           next-order)
       (let ((orders  (mapcar #'car bookmarkp-sort-orders-for-cycling-alist)))
-        (setq next-order  (or (cadr (memq (bookmarkp-current-sort-order) orders))
+        (setq next-order  (or (cadr (member (bookmarkp-current-sort-order) orders))
                               (car orders))
               bookmarkp-sort-comparer  (cdr (assoc next-order
                                                    bookmarkp-sort-orders-for-cycling-alist))))
@@ -4409,7 +4513,8 @@ by bookmark name.")
 ;; These definitions MUST COME AFTER the calls to macro `bookmarkp-define-sort-command'.
 ;; Otherwise, they won't pick up a populated `bookmarkp-sort-orders-alist'.
 (when (> emacs-major-version 20)
-  (defcustom bookmarkp-sort-orders-for-cycling-alist bookmarkp-sort-orders-alist
+  (defcustom bookmarkp-sort-orders-for-cycling-alist (copy-sequence
+                                                      bookmarkp-sort-orders-alist)
     "*Alist of sort orders used for cycling via `s s'...
 This is a subset of the complete list of available sort orders,
 `bookmarkp-sort-orders-alist'.  This lets you cycle among fewer sort
@@ -4430,7 +4535,8 @@ this value."
     :group 'bookmarkp))
 
 (unless (> emacs-major-version 20)      ; Emacs 20: custom type `alist' doesn't exist.
-  (defcustom bookmarkp-sort-orders-for-cycling-alist bookmarkp-sort-orders-alist
+  (defcustom bookmarkp-sort-orders-for-cycling-alist (copy-sequence
+                                                      bookmarkp-sort-orders-alist)
     "*Alist of sort orders used for cycling via `s s'...
 This is a subset of the complete list of available sort orders,
 `bookmarkp-sort-orders-alist'.  This lets you cycle among fewer sort
@@ -4480,6 +4586,8 @@ Return nil if incomparable as described."
   (let ((t1  (bookmarkp-get-visit-time b1))
         (t2  (bookmarkp-get-visit-time b2)))
     (cond ((and t1 t2)
+           (setq t1  (bookmarkp-float-time t1)
+                 t2  (bookmarkp-float-time t2))
            (cond ((> t1 t2) '(t))
                  ((> t2 t1) '(nil))
                  (t nil)))
@@ -4757,6 +4865,66 @@ If TRUTH is nil, return nil."
 
 ;;(@* "Other Bookmark+ Functions (`bookmarkp-*')")
 ;;  *** Other Bookmark+ Functions (`bookmarkp-*') ***
+
+;;;###autoload
+(defun bookmarkp-bmenu-describe-this-bookmark ()
+  "Describe bookmark of current line."
+  (interactive)
+  (bookmarkp-describe-bookmark (bookmark-bmenu-bookmark)))
+
+;;;###autoload
+(defun bookmarkp-describe-bookmark (bookmark)
+  "Describe BOOKMARK.
+BOOKMARK is a bookmark name or a bookmark record."
+  (interactive
+   (list (bookmark-completing-read "Describe bookmark" (bookmarkp-default-bookmark-name))))
+  (setq bookmark  (bookmark-get-bookmark bookmark))
+  (let ((bname     (bookmark-name-from-full-record bookmark))
+        (buf       (bookmarkp-get-buffer-name bookmark))
+        (file      (bookmark-get-filename bookmark))
+        (start     (bookmark-get-position bookmark))
+        (end       (bookmarkp-get-end-position bookmark))
+        (time      (bookmarkp-get-visit-time bookmark))
+        (visits    (bookmarkp-get-visits-count bookmark))
+        (tags      (bookmarkp-get-tags bookmark))
+        (diredp    (bookmarkp-dired-bookmark-p bookmark))
+        (gnusp     (bookmarkp-gnus-bookmark-p bookmark))
+        (infop     (bookmarkp-info-bookmark-p bookmark))
+        (w3mp      (bookmarkp-w3m-bookmark-p bookmark))
+        (tags      (bookmarkp-get-tags bookmark))
+        (annot     (bookmark-get-annotation bookmark)))
+
+    (help-setup-xref (list #'bookmarkp-describe-bookmark bookmark) (interactive-p))
+    (let* ((help-text
+            (concat
+             (format "%s\n%s\n\n" bname (make-string (length bname) ?-))
+             (cond (diredp
+                    (let ((switches  (bookmark-prop-get bookmark 'dired-switches)))
+                      (format "Dired%s:\t\t%s\n"
+                              (if switches (format " `%s'" switches) "")
+                              (expand-file-name file))))
+                   (gnusp  (format "Gnus, group:\t%s, article: %s, message-id: %s\n"
+                                   (bookmark-prop-get bookmark 'group)
+                                   (bookmark-prop-get bookmark 'article)
+                                   (bookmark-prop-get bookmark 'message-id)))
+                   (infop  (format
+                            "Info node:\t(%s) %s\n"
+                            (file-name-nondirectory (bookmark-get-filename bookmark))
+                            (bookmark-prop-get bookmark 'info-node)))
+                   (w3mp   (format "W3M URL:\t%s\n" (bookmark-get-filename bookmark)))
+                   ((equal file bookmarkp-non-file-filename)
+                    (format "Buffer:\t\t%s\n" (bookmarkp-get-buffer-name bookmark)))
+                   (file   (format "File:\t\t%s\n" (expand-file-name file)))
+                   (t      "Unknown\n"))
+             (if (bookmarkp-region-bookmark-p bookmark)
+                 (format "Region:\t\t%d to %d (%d chars)\n" start end (- end start))
+               (format "Position:\t%d\n" start))
+             (if visits (format "Visits:\t\t%d\n" visits) "")
+             (if time (format "Last visit:\t%s\n" (format-time-string "%c" time)) "")
+             (if tags (format "Tags:\t\t%S\n" tags) "")
+             (if annot (format "\nAnnotation:\n%s" annot)))))
+      (with-output-to-temp-buffer "*Help*" (princ help-text))
+      help-text)))
 
 (defun bookmarkp-root-or-sudo-logged-p ()
   "Return t if the user logged in using Tramp as `root' or `sudo'.

@@ -1686,7 +1686,10 @@ Neither SPLIT-ON nor DELIM have an effect when Invoked interactively.\n:EXAMPLE
 ;;; :TEST-ME (mon-string-ify-current-line nil \"s\" \"S\"\) split me to a list of strings
 ;;; :TEST-ME (mon-string-ify-current-line nil nil \"|\"\) split me to a list of strings
 
+
 ;;; ==============================
+;;; :MODIFICATIONS <Timestamp: #{2009-10-16T14:30:28-04:00Z}#{09425} - by MON KEY>
+;;; Updated to find with trailing symbols or (and EOL (not WSP)).
 ;;; :CREATED <Timestamp: #{2009-10-06T14:45:00-04:00Z}#{09412} - by MON KEY>
 (defun mon-line-strings-bq-qt-sym-bol (start end &optional insertp intrp)
   "Return symbols at BOL in region wrapped in backquote and quote.
@@ -1709,6 +1712,15 @@ call-next-method' &rest replacement-args\n►\n
     (setq rtn-v
           (with-temp-buffer 
             (insert rtn-v)
+            (goto-char (buffer-end 0))
+            (while (not (= (line-end-position) (buffer-end 1)))
+              (beginning-of-line)            
+              (when (looking-at "^\\([^;,.()<>`'#►]\\)[\\[:graph:]]+$")
+                (replace-match (concat "`" (match-string-no-properties 0) "'")))
+              (forward-line 1)
+              (when (and (= (line-end-position) (buffer-end 1))
+                         (looking-at "^\\([^;,.()<>`'#►]\\)[\\[:graph:]]+$")
+                         (replace-match  (concat "`" (match-string-no-properties 0) "'")))))
             (goto-char (buffer-end 0))
             (while (search-forward-regexp 
                     "^\\([^;,.()<>`'#►\|\\[:blank:]][\\[:graph:]]+[^'\\[:blank:]]+\\)\\( \\)\\(.*\\)$" nil t)

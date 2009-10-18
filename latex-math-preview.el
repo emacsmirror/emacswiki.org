@@ -2,8 +2,8 @@
 
 ;; Author: Takayuki YAMAGUCHI <d@ytak.info>
 ;; Keywords: LaTeX TeX
-;; Version: 0.3.10
-;; Created: Wed Sep 16 02:56:44 2009
+;; Version: 0.3.11
+;; Created: Sun Oct 18 16:50:02 2009
 ;; URL: http://www.emacswiki.org/latex-math-preview.el
 ;; Site: http://www.emacswiki.org/LaTeXMathPreview
 
@@ -227,6 +227,9 @@
 ;;       "cache directory in your system")
 
 ;; ChangeLog:
+;; 2009/10/18 version 0.3.11 yamaguchi
+;;     Change function latex-math-preview-bounds-of-latex-math
+;;     to distingush '$$ ... $$' from '$ ... $'.
 ;; 2009/09/16 version 0.3.10 yamaguchi
 ;;     Add new functions latex-math-preview-insert-isearch-forward and
 ;;     latex-math-preview-insert-isearch-backward.
@@ -763,7 +766,9 @@ no recognised expression at or surrounding point."
     (save-excursion
       (while (and (search-backward "$" nil t) ;; $ not preceded by \
                   (eq ?\\ (char-before))))
-      (when (looking-at "\\(\\$+\\(?:\\\\\\$\\|[^$]\\)+?\\$\\)")
+      (skip-chars-backward "$")
+      (when (or (looking-at "\\(\\$\\$\\(?:\\\\\\$\\|[^$]\\)+?\\$\\$\\)")
+		(looking-at "\\(\\$\\(?:\\\\\\$\\|[^$]\\)+?\\$\\)"))
         (setq beg (match-beginning 1) end (match-end 1))))
 
     (dolist (elem latex-math-preview-match-expression)

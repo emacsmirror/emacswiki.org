@@ -1,0 +1,15 @@
+I use Emacs.
+
+Not new to Emacs in general - used MicroEmacs in the 80's and 90's, and GNU Emacs off and on since then.  Now am converting to using it full time, for all text work, especially coding.
+
+Right now, I am fighting with mingw and msys to get compilation and such to work.  For me, the magic was this:
+
+##(setenv "PATH" (concat "C:\\msys\\mingw\\bin;c:\\msys\\bin;" (getenv "PATH")))##
+
+
+[new:DrewAdams:2009-10-18 00:29 UTC]
+Welcome to the wiki. -- DrewAdams
+
+
+----
+CategoryHomepage
