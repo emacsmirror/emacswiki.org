@@ -9,9 +9,9 @@
 ;; Copyright (C) 2000-2009, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Oct 17 23:45:15 2009 (-0700)
+;; Last-Updated: Sun Oct 18 17:37:25 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 6217
+;;     Update #: 6331
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -46,7 +46,7 @@
 ;;    (@> "Installing Bookmark+")
 ;;    (@> "Bookmarks Menu List")
 ;;      (@> "Marking and Unmarking Bookmarks")
-;;      (@> "Hiding and Showing Bookmarks")
+;;      (@> "Filtering: Hiding and Showing Bookmarks")
 ;;      (@> "Sorting Bookmarks")
 ;;    (@> "Bookmark Compatibility with Vanilla Emacs (`bookmark.el')")
 ;;    (@> "New Bookmark Structure")
@@ -88,6 +88,7 @@
 ;;    `bookmarkp-bmenu-delete-marked',
 ;;    `bookmarkp-bmenu-describe-this-bookmark',
 ;;    `bookmarkp-bmenu-edit-bookmark',
+;;    `bookmarkp-bmenu-filter-incrementally',
 ;;    `bookmarkp-bmenu-isearch-marked-bookmarks' (Emacs 23+),
 ;;    `bookmarkp-bmenu-isearch-marked-bookmarks-regexp' (Emacs 23+),
 ;;    `bookmarkp-bmenu-mark-all',
@@ -118,6 +119,7 @@
 ;;    `bookmarkp-bmenu-sort-by-local-file-size',
 ;;    `bookmarkp-bmenu-sort-by-local-file-type',
 ;;    `bookmarkp-bmenu-sort-by-w3m-url',
+;;    `bookmarkp-bmenu-sort-marked-before-unmarked',
 ;;    `bookmarkp-bmenu-toggle-marks',
 ;;    `bookmarkp-bmenu-toggle-show-only-marked',
 ;;    `bookmarkp-bmenu-toggle-show-only-unmarked',
@@ -138,6 +140,7 @@
 ;;
 ;;    `bookmarkp-bookmark-name-length-max',
 ;;    `bookmarkp-handle-region-function',
+;;    `bookmarkp-incremental-filter-delay',
 ;;    `bookmarkp-region-search-size',
 ;;    `bookmarkp-save-new-location-flag',
 ;;    `bookmarkp-show-end-of-region', `bookmarkp-sort-comparer',
@@ -164,10 +167,13 @@
 ;;
 ;;    `bookmarkp-add-or-update-time', `bookmarkp-alpha-cp',
 ;;    `bookmarkp-alpha-p', `bookmarkp-assoc-delete-all',
+;;    `bookmarkp-bmenu-cancel-incremental-filtering',
+;;    `bookmarkp-bmenu-filter-alist-by-regexp',
 ;;    `bookmarkp-bmenu-goto-bookmark-named',
 ;;    `bookmarkp-bmenu-mark/unmark-bookmarks-tagged-all/none',
 ;;    `bookmarkp-bmenu-mark/unmark-bookmarks-tagged-some/not-all',
 ;;    `bookmarkp-bmenu-propertize-item',
+;;    `bookmarkp-bmenu-read-filter-input',
 ;;    `bookmarkp-bookmark-last-access-cp',
 ;;    `bookmarkp-bookmark-marked-p',
 ;;    `bookmarkp-buffer-last-access-cp', `bookmarkp-cp-not',
@@ -209,7 +215,7 @@
 ;;    `bookmarkp-local-file-updated-more-recently-cp',
 ;;    `bookmarkp-make-dired-record', `bookmarkp-make-gnus-record',
 ;;    `bookmarkp-make-plain-predicate', `bookmarkp-make-w3m-record',
-;;    `bookmarkp-marked-bookmarks-only',
+;;    `bookmarkp-marked-bookmarks-only', `bookmarkp-marked-cp',
 ;;    `bookmarkp-maybe-save-bookmarks',
 ;;    `bookmarkp-msg-about-sort-order', `bookmarkp-multi-sort',
 ;;    `bookmarkp-non-file-alist-only',
@@ -221,6 +227,7 @@
 ;;    `bookmarkp-record-front-context-region-string',
 ;;    `bookmarkp-record-front-context-string',
 ;;    `bookmarkp-record-rear-context-string',
+;;    `bookmarkp-regexp-filtered-alist-only',
 ;;    `bookmarkp-region-alist-only', `bookmarkp-region-bookmark-p',
 ;;    `bookmarkp-region-record-front-context-string',
 ;;    `bookmarkp-region-record-rear-context-string',
@@ -243,6 +250,8 @@
 ;;    `bookmarkp-bmenu-before-hide-marked-alist',
 ;;    `bookmarkp-bmenu-before-hide-unmarked-alist',
 ;;    `bookmarkp-bmenu-called-from-inside-p',
+;;    `bookmarkp-bmenu-filter-pattern',
+;;    `bookmarkp-bmenu-filter-prompt', `bookmarkp-bmenu-filter-timer',
 ;;    `bookmarkp-bmenu-marked-bookmarks',
 ;;    `bookmarkp-isearch-bookmarks' (Emacs 23+),
 ;;    `bookmarkp-jump-display-function',
@@ -383,14 +392,27 @@
 ;;  * You can use `>' to show only the marked bookmarks or `<' to show
 ;;    only the unmarked bookmarks.  Repeat to show all again.
 ;;
-;;(@* "Hiding and Showing Bookmarks")
-;;  *** Hiding and Showing Bookmarks ***
+;;(@* "Filtering: Hiding and Showing Bookmarks")
+;;  *** Filtering: Hiding and Showing Bookmarks ***
 ;;
 ;;  You can hide and show different sets of bookmarks in the menu
 ;;  list.  There are commands to show only bookmarks of a particular
 ;;  type (e.g. `I' to show only Info bookmarks).  And, again, you can
 ;;  show only the marked or only the unmarked bookmarks (using `>' and
 ;;  `<').
+;;
+;;  You can also filter to show only the bookmarks that match a
+;;  regexp.  There are two ways to do this:
+;;
+;;    * Just as in Dired, use `% m' to mark the bookmarks whose names
+;;      match a regexp.  Then use `>' to show only those bookmarks.
+;;      This method has the advantage that you can show the
+;;      complement: the bookmarks that do *not* match the regexp, by
+;;      using `<' instead of `>'.
+;;
+;;    * Use `P' (for "pattern") and type a regexp.  The bookmarks are
+;;      filtered incrementally, as you type.  Hit any non-inserting
+;;      key, such as `RET', to stop defining the pattern.
 ;;
 ;;  Commands that operate on the current bookmark or on the marked or
 ;;  the unmarked bookmarks act only on bookmarks that are displayed
@@ -414,9 +436,15 @@
 ;;(@* "Sorting Bookmarks")
 ;;  *** Sorting Bookmarks ***
 ;;
+;;  Filtering hides certain kinds of bookmarks.  Sometimes, you want
+;;  to see bookmarks of various kinds, but you want them to be grouped
+;;  or sorted in different ways, for easy recognition, comparison, and
+;;  access.
+;;
 ;;  Bookmarks shown in the menu list are sorted using the current
-;;  value of option `bookmark-sort-function'.  (If nil, they are
-;;  unsorted.)
+;;  value of option `bookmark-sort-function'.  (If that is nil, they
+;;  are unsorted, which means they appear in reverse chronological
+;;  order of their creation.)
 ;;
 ;;  You can use `s s'... (repeat hitting the `s' key) to cycle among
 ;;  the various sort orders possible.  By default, all available sort
@@ -449,10 +477,14 @@
 ;;(@* Bookmark Tags)
 ;; ** Bookmark Tags **
 ;;
-;;  Bookmarks record locations.  They can also record annotations:
-;;  general free-text descriptions of your choosing.  Bookmark+
-;;  bookmarks can also be tagged, in del.icio.us style, as a way to
-;;  organize them.  A bookmark tag is a string that contains no
+;;  With Bookmark+ you can bookmark several kinds of Emacs object.
+;;  Bookmarks record locations - that is their primary purpose.  They
+;;  can also record annotations: general free-text descriptions of
+;;  your choosing.
+;;
+;;  Bookmark+ bookmarks can also be tagged, in del.icio.us style, as a
+;;  way to organize them, which also means as a way to organize the
+;;  objects bookmarked.  A bookmark tag is a string that contains no
 ;;  newline characters.
 ;;
 ;;  You can add as many tags as you like to any bookmark, and multiple
@@ -615,6 +647,15 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2009/10/18 dadams
+;;     Added: *-bmenu-filter-(incrementally|delay|prompt|pattern|timer|alist-by-regexp),
+;;            *-bmenu-read-filter-input, *-regexp-filtered-alist-only,
+;;            *-bmenu-cancel-incremental-filtering.
+;;     *-bmenu-execute-deletions: Don't update menu list if this is a no-op.
+;;     Updated Commentary.
+;;     Thx to Thierry Volpiatto.
+;;     Added: *-marked-cp, *-bmenu-sort-marked-before-unmarked.  Bound to s >.
+;;     *-define-sort-command: Use copy-sequence for default value.
 ;; 2009/10/17 dadams
 ;;     Added: *-read-tags-completing, *-set-union, *-tag-history, *-describe-bookmark,
 ;;            *-bmenu-describe-this-bookmark.  Bound *-bmenu-describe-this-bookmark to C-h RET.
@@ -1110,8 +1151,8 @@ DOC-STRING is the doc string of the new command."
                                   (bookmarkp-replace-regexp-in-string
                                    "\\s-+" "-" sort-order)))))
     `(progn
-      (setq bookmarkp-sort-orders-alist  (bookmarkp-assoc-delete-all
-                                          ,sort-order bookmarkp-sort-orders-alist))
+      (setq bookmarkp-sort-orders-alist
+       (bookmarkp-assoc-delete-all ,sort-order (copy-sequence bookmarkp-sort-orders-alist)))
       (push (cons ,sort-order ',comparer) bookmarkp-sort-orders-alist)
       (defun ,command ()
         ,(concat doc-string "\nRepeating this command cycles among normal sort, reversed \
@@ -1264,9 +1305,11 @@ then the rest."
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "g" 'bookmarkp-bmenu-refresh-menu-list)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map (kbd "C-h RET") 'bookmarkp-bmenu-describe-this-bookmark)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "G" 'bookmarkp-bmenu-show-only-gnus)
+;;;###autoload
+(define-key bookmark-bmenu-mode-map "P" 'bookmarkp-bmenu-filter-incrementally)
+;;;###autoload
+(define-key bookmark-bmenu-mode-map (kbd "C-h RET") 'bookmarkp-bmenu-describe-this-bookmark)
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "I" 'bookmarkp-bmenu-show-only-info-nodes)
 ;;;###autoload
@@ -1284,6 +1327,8 @@ then the rest."
 (define-key bookmark-bmenu-mode-map "S" 'bookmark-bmenu-save) ; `s' in Emacs
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "s" nil) ; For Emacs 20
+;;;###autoload
+(define-key bookmark-bmenu-mode-map "s>" 'bookmarkp-bmenu-sort-marked-before-unmarked)
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "sb" 'bookmarkp-bmenu-sort-by-last-buffer-or-file-access)
 ;;;###autoload
@@ -1363,6 +1408,7 @@ then the rest."
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "W" 'bookmarkp-bmenu-show-only-w3m-urls)
 
+
 (defadvice bookmark-bmenu-mode (before bookmark+-add-keymap () activate)
   "
 ***************************** Bookmark+ *****************************\
@@ -1381,20 +1427,23 @@ Hide/show bookmarks
 \\[bookmarkp-bmenu-show-only-info-nodes]\t- Show only Info bookmarks
 \\[bookmarkp-bmenu-show-only-regions]\t- Show only region bookmarks
 \\[bookmarkp-bmenu-show-only-w3m-urls]\t- Show only W3M bookmarks
+\\[bookmarkp-bmenu-filter-incrementally]\t- Incrementally show only bookmarks whose names \
+match a regexp
 
 
 Mark/unmark bookmarks (see also `Tags', below)
 ----------------------------------------------
 
-\\[bookmarkp-bmenu-mark-all]\t- Mark all
-\\[bookmarkp-bmenu-regexp-mark]\t- Mark all that match a regexp
-\\[bookmarkp-bmenu-unmark-all]\t- Unmark all (`C-u': interactive query)
+\\[bookmarkp-bmenu-mark-all]\t- Mark all bookmarks
+\\[bookmarkp-bmenu-regexp-mark]\t- Mark all bookmarks whose names match a regexp
+\\[bookmarkp-bmenu-unmark-all]\t- Unmark all bookmarks (`C-u': interactive query)
 \\[bookmarkp-bmenu-toggle-marks]\t- Toggle marks: unmark marked and mark unmarked
 
 
 Sort bookmarks (repeat to cycle normal/reversed/off, except as noted)
 ---------------------------------------------------------------------
 
+\\[bookmarkp-bmenu-sort-marked-before-unmarked]\t- Sort marked bookmarks first
 \\[bookmarkp-bmenu-sort-by-last-buffer-or-file-access]\t- Sort by last buffer or file \
 access
 \\[bookmarkp-bmenu-sort-by-gnus-thread]\t- Sort by Gnus thread: group, article, message
@@ -1615,6 +1664,10 @@ If nil show only beginning of region."
   "*Max number of chars for default name for a bookmark with a region."
   :type 'integer :group 'bookmarkp)
 
+(defcustom bookmarkp-incremental-filter-delay 0.6
+  "*Seconds to wait before updating display when filtering bookmarks."
+  :type 'integer :group 'bookmarkp)
+
 (defcustom bookmarkp-sort-comparer '((bookmarkp-info-cp bookmarkp-gnus-cp
                                       bookmarkp-w3m-cp bookmarkp-local-file-type-cp)
                                      bookmarkp-alpha-p) ; This corresponds to `s k'.
@@ -1820,6 +1873,15 @@ general reverse that order.  The order within each group is unchanged
 (defvar bookmarkp-tag-history ()
   "History of tags read from the user.")
 
+(defvar bookmarkp-bmenu-filter-pattern ""
+  "Regexp for incremental filtering.")
+
+(defvar bookmarkp-bmenu-filter-prompt "Pattern: "
+  "Prompt for `bookmarkp-bmenu-filter-incrementally'.")
+
+(defvar bookmarkp-bmenu-filter-timer nil
+  "Timer used for incremental filtering.")
+ 
 
 ;; REPLACES ORIGINAL DOC STRING in `bookmark.el'.
 ;;
@@ -2926,15 +2988,15 @@ confirmation."
                   bookmarkp-latest-bookmark-alist  (delete
                                                     (assoc bmk bookmarkp-latest-bookmark-alist)
                                                     bookmarkp-latest-bookmark-alist))))
-        (setq bookmarkp-bmenu-called-from-inside-p  t)
-        (bookmark-bmenu-surreptitiously-rebuild-list)
+        (if (<= count 0)
+            (message (if markedp "No marked bookmarks" "No bookmarks flagged for deletion"))
+          (setq bookmarkp-bmenu-called-from-inside-p  t)
+          (bookmark-bmenu-surreptitiously-rebuild-list)
+          (message "Deleted %d bookmarks" count))
         (if o-str
             (bookmarkp-bmenu-goto-bookmark-named o-str)
           (goto-char o-point)
-          (beginning-of-line))
-        (if (> count 0)
-            (message "Deleting %s bookmarks...done" count)
-          (message (if markedp "No marked bookmarks" "No bookmarks flagged for deletion"))))
+          (beginning-of-line)))
     (message "OK, nothing deleted")))
 
 
@@ -3192,6 +3254,62 @@ This does not change the current filtering or sorting."
   (let ((bookmarkp-bmenu-called-from-inside-p  t))
     (bookmark-bmenu-surreptitiously-rebuild-list)
     (bookmark-bmenu-check-position)))
+
+(defun bookmarkp-regexp-filtered-alist-only (regexp)
+  "`bookmark-alist', filtered to retain only bookmarks that match REGEXP."
+  (loop for ii in bookmark-alist
+        when (string-match regexp (car ii)) collect ii into new
+        finally return new))
+
+(defun bookmarkp-bmenu-read-filter-input ()
+  "Read input and add it to `bookmarkp-bmenu-filter-pattern'."
+  (setq bookmarkp-bmenu-filter-pattern  "")
+  (let ((tmp-list  ())
+        char)
+    (catch 'bookmarkp-bmenu-read-filter-input-1
+      (while t
+        (catch 'bookmarkp-bmenu-read-filter-input-2
+          (condition-case nil
+              (setq char  (read-char (concat bookmarkp-bmenu-filter-prompt
+                                             bookmarkp-bmenu-filter-pattern)))
+            (error (throw 'bookmarkp-bmenu-read-filter-input-1 nil)))
+          (case char
+            ((?\e ?\r)
+             (throw 'bookmarkp-bmenu-read-filter-input-1 nil)) ; RET or ESC break and exit.
+            (?\d
+             (pop tmp-list)             ; Delete last char of `bookmarkp-bmenu-filter-pattern'.
+             (setq bookmarkp-bmenu-filter-pattern  (mapconcat 'identity (reverse tmp-list) ""))
+             (throw 'bookmarkp-bmenu-read-filter-input-2 nil))
+            (t
+             (push (text-char-description char) tmp-list)
+             (setq bookmarkp-bmenu-filter-pattern  (mapconcat 'identity (reverse tmp-list) ""))
+             (throw 'bookmarkp-bmenu-read-filter-input-2 nil))))))))
+
+(defun bookmarkp-bmenu-filter-alist-by-regexp (regexp)
+  "Filter `bookmark-alist' using REGEXP, then refresh the menu list."
+  (let ((bookmark-alist                        (bookmarkp-regexp-filtered-alist-only regexp))
+        (bookmarkp-bmenu-called-from-inside-p  t)) ; Preserve any marks.
+    (setq bookmarkp-latest-bookmark-alist  bookmark-alist)
+    (bookmark-bmenu-list (format "%% Bookmarks Matching Regexp `%s'" regexp) 'filteredp)))
+
+;;;###autoload
+(defun bookmarkp-bmenu-filter-incrementally ()
+  "Incrementally filter bookmarks to match `bookmarkp-bmenu-filter-pattern'."
+  (interactive)
+  (unwind-protect
+       (progn
+         (setq bookmarkp-bmenu-filter-timer
+               (run-with-timer
+                0 bookmarkp-incremental-filter-delay
+                #'(lambda ()
+                    (bookmarkp-bmenu-filter-alist-by-regexp bookmarkp-bmenu-filter-pattern))))
+         (bookmarkp-bmenu-read-filter-input))
+    (bookmarkp-bmenu-cancel-incremental-filtering)))
+
+(defun bookmarkp-bmenu-cancel-incremental-filtering ()
+  "Cancel timer used for incrementally filtering bookmarks."
+  (cancel-timer bookmarkp-bmenu-filter-timer)
+  (setq bookmarkp-bmenu-filter-timer  nil))
 
 
 ;;(@* "Menu-List (`*-bmenu-*') Commands Involving Marks")
@@ -4413,8 +4531,8 @@ use it."
   (when (interactive-p) (bookmarkp-msg-about-sort-order (bookmarkp-current-sort-order))))
 
 
-;; The order of the macro calls here defines the REVERSE order of
-;; `bookmarkp-sort-orders-alist'.  The first here is thus also the default sort order.
+;; The ORDER of the macro calls here defines the REVERSE ORDER of
+;; `bookmarkp-sort-orders-alist'.  The first here is thus also the DEFAULT sort order.
 ;; Entries are traversed by `s s'..., in `bookmarkp-sort-orders-alist' order.
 
 (bookmarkp-define-sort-command          ; `s k' in menu list (`k' for "kind")
@@ -4478,6 +4596,12 @@ bookmark name.")
  "Sort bookmarks by local file type: file, symlink, directory.
 A local file sorts before a remote file, which sorts before other
 bookmarks.  Otherwise, sort by bookmark name.")
+
+(bookmarkp-define-sort-command          ; `s >' in menu list
+ "marked before unmarked"               ; `bookmarkp-bmenu-sort-marked-before-unmarked'
+ ((bookmarkp-marked-cp) bookmarkp-alpha-p)
+ "Sort bookmarks by putting marked before unmarked.
+Otherwise alphabetize by bookmark name.")
 
 (bookmarkp-define-sort-command          ; `s b' in menu list
  "by last buffer or file access"        ; `bookmarkp-bmenu-sort-by-last-buffer-or-file-access'
@@ -4560,6 +4684,18 @@ this value."
 
 ;;(@* "Sorting - General Predicates")
 ;;  *** Sorting - General Predicates ***
+
+(defun bookmarkp-marked-cp (b1 b2)
+  "True if bookmark B1 is marked and bookmark B2 is not.
+Reverse the roles of B1 and B2 for a false value.
+A true value is returned as `(t)', a false value as `(nil)'.
+Return nil if incomparable as described."
+  (let ((m1  (bookmarkp-bookmark-marked-p b1))
+        (m2  (bookmarkp-bookmark-marked-p b2)))
+    (cond ((and m1 m2) nil)
+          (m1 '(t))
+          (m2 '(nil))
+          (t nil))))
 
 (defun bookmarkp-visited-more-cp (b1 b2)
   "True if bookmark B1 was visited more often than B2.

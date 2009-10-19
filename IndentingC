@@ -47,8 +47,6 @@ Casi allows you to tune the behavior of many keystrokes for every specified styl
 
 == Tabs Instead of Spaces ==
 
-Page alias: [::TabsInsteadOfSpaces]
-
 If you want to have it look like an "ordinary" editor in Emacs, use 8
 instead of 4:
 
@@ -56,7 +54,7 @@ instead of 4:
                   tab-width 8
                   indent-tabs-mode t)
 
-But Emacs can do better!  You can have Emacs save it using tabs, and on
+But Emacs can do better!  Emacs can save it with [::TabsInsteadOfSpaces], and on
 an ordinary editor the file will look as above, and still have Emacs show
 every tab as four spaces:
 
@@ -65,7 +63,7 @@ every tab as four spaces:
                   indent-tabs-mode t)
 
 This works because Emacs will indent something by four, and since a tab
-is four wide, Emacs will use a tab to do it.
+is four wide, Emacs will use a tab to do it.  To convert existing code that uses spaces to using tabs use `M-x tabify'.
 
 For the opposite, see NoTabs.  For a discussion of this, see
 TabsAreEvil or [http://web.archive.org/web/20051124145441/http://my.erinet.com/~tschaef/cc-mode/description.html http://my.erinet.com/~tschaef/cc-mode/description.html].

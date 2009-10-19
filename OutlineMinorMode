@@ -3,25 +3,16 @@ A MinorMode version of OutlineMode.
 
 == Keys And Functions Summary ==
 
-M-x outline-minor-mode (enable Outline minor mode)
-
-C-c @ C-t / M-x hide-body (hide all of buffer except headings)
-
-C-c @ C-a / M-x show-all (show all of the text in the buffer)
-
-C-c @ C-q / M-x hide-sublevels (hide everything but top levels headers)
-
-C-c @ TAB / M-x show-children (show all direct subheadings of this heading)
-
-C-c @ C-k / M-x show-branches (show all subheadings, but not bodies)
-
-M-x outline-previous-heading (go to previous heading)
-
-M-x outline-next-heading (go to next heading)
-
-C-c @ C-p / M-x outline-previous-visible-heading (go to previous visible heading)
-
-C-c @ C-n / M-x outline-next-visible-heading (go to next visible heading)
+||M-x outline-minor-mode||enable Outline minor mode||
+||C-c @ C-t||hide all of buffer except headings||
+||C-c @ C-a||show all of the text in the buffer||
+||C-c @ C-q||hide everything but top levels headers||
+||C-c @ TAB||show all direct subheadings of this heading||
+||C-c @ C-k||show all subheadings, but not bodies||
+||M-x outline-previous-heading||go to previous heading||
+||M-x outline-next-heading||go to next heading||
+||C-c @ C-p||go to previous visible heading||
+||C-c @ C-n||go to next visible heading||
 
 == Cumbersome Key-Bindings  ==
 
@@ -29,9 +20,11 @@ I use outline-minor-mode  to see the skeleton of programs.
 To navigate between headings i rebound all the commands to 1-event long keys.
 Something like M-P/N  (meta and uppercase letters). Otherwise it's too long for my taste.
 
-: I second this. I find the prefix C-c @ (i.e., C-c Shift-2) too cumbersome. Any other suggestions for alternative key-bindings? - ShaiHirsch
+[new]
+I second this. I find the prefix C-c @ (i.e., C-c Shift-2) too cumbersome. Any other suggestions for alternative key-bindings? - ShaiHirsch
 
-:: I use M-o, because that is not bound to anything by default, and "o" stands for "outline".  Here is a quote from my .emacs file:
+[new]
+I use `M-o', because that is not bound to anything by default, and "o" stands for "outline".  Here is a quote from my .emacs file:
 
  ; Outline-minor-mode key map
  (define-prefix-command 'cm-map nil "Outline-")
@@ -58,10 +51,22 @@ Something like M-P/N  (meta and uppercase letters). Otherwise it's too long for 
 
 - Sue D. Nymme
 
+[new]
+Pseudonym,
+
+Another solution is to just define a hook for the minor mode that just
+defines an additional prefix key.
+
+    (add-hook 'outline-minor-mode-hook
+              (lambda () (local-set-key "\C-c\C-c"
+                                        outline-mode-prefix-map)))))
+
+Using `C-c C-c' was suggested by [[JesseW]] on the EmacsChannel. -- AaronHawley
+
+
 == Explorer like Key-Bindings ==
 
-
-<pre>
+{{{
 (defun body-p ()
   (save-excursion
     (outline-back-to-heading)
@@ -117,13 +122,13 @@ Something like M-P/N  (meta and uppercase letters). Otherwise it's too long for 
 (define-key outline-mode-map '[right] 'outline-do-open)
 (define-key outline-minor-mode-map '[left] 'outline-do-close)
 (define-key outline-minor-mode-map '[right] 'outline-do-open)
-</pre>
+}}}
 --
 ovr
 
 === Variation of Explorer-like bindings
 
-<pre>
+{{{
 ;; outline-mode-easy-bindings.el
 ;;
 ;; You can control outline entirely with Meta+<cursor> keys
@@ -203,13 +208,13 @@ ovr
 (define-key outline-minor-mode-map (kbd "M-<down>") 'outline-next-visible-heading)
 
 (provide 'outline-mode-easy-bindings)
-</pre>
+}}}
 
 == Another Outline Binding To Cursor Keys ==
 
 My bindings use ALT + arrows and CTRL + ALT + arrows to navigate outlines:
 
-<pre>
+{{{
 (global-set-key [M-left] 'hide-body)
 (global-set-key [M-right] 'show-all)
 (global-set-key [M-up] 'outline-previous-heading)
@@ -218,13 +223,13 @@ My bindings use ALT + arrows and CTRL + ALT + arrows to navigate outlines:
 (global-set-key [C-M-right] 'show-children)
 (global-set-key [C-M-up] 'outline-previous-visible-heading)
 (global-set-key [C-M-down] 'outline-next-visible-heading)
-</pre>
+}}}
 
 == Code Editing ==
 
 For _years_ i wanted to modify outline-minor-mode, so that comments starting at the beginning of line  were left visible.  Now I add the condition that they don't get marked as headers. Here's the code:
 
-<pre>
+{{{
 (defun outline-flag-region-make-overlay (from to) ;mmc
   (let ((o (make-overlay from to)))
     (overlay-put o 'invisible 'outline)
@@ -253,18 +258,18 @@ If FLAG is nil then text is shown, while if FLAG is t the text is hidden."
             (setq beginning (point)))
           (outline-flag-region-make-overlay beginning to)))
     (run-hooks 'outline-view-change-hook)))
-</pre>
+}}}
 --
 mmc
 
 
 == Vim-type outline marker ==
 
-Vim editor has several different outlining (called folding) options. One of them is manual outlining in which user inserts predefined markers to the text and the outline level is determined by the markers. The default markers are <code>{{{</code> and <code>}}}</code> for starting and ending a fold. A number after the marker determines the outline level (e.g., <code>{{{1</code>, <code>{{{2</code>, <code>{{{3</code> and so on).
+Vim editor has several different outlining (called folding) options. One of them is manual outlining in which user inserts predefined markers to the text and the outline level is determined by the markers. The default markers are ##{{{## and ##}}}## for starting and ending a fold. A number after the marker determines the outline level (e.g., ##{{{1##, ##{{{2##, ##{{{3## and so on).
 
 The following code adds an interactive function `set-vim-foldmarker' which can be used to set Vim-type opening outline marker for the current buffer.
 
-<pre>
+{{{
 (defun set-vim-foldmarker (fmr)
   "Set Vim-type foldmarkers for the current buffer"
   (interactive "sSet local Vim foldmarker: ")
@@ -279,11 +284,15 @@ The following code adds an interactive function `set-vim-foldmarker' which can b
               (re-search-forward
                ,(concat fmr "\\([0-9]+\\)") nil t)
               (string-to-number (match-string 1)))))))
-</pre>
+}}}
 
 While in outline-mode or outline-minor-mode you can call this interactively with `M-x set-vim-foldmarker' and enter the opening marker when asked. If you use outline-minor-mode and Vim-type outlining always with certain major mode you can add the following lines to the appropriate major mode hook:
 
-<pre>
+{{{
 (outline-minor-mode 1)
 (set-vim-foldmarker "{{{")
-</pre>
+}}}
+
+----
+CategoryModes
+CategoryOutline

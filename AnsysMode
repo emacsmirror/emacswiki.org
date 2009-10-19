@@ -33,6 +33,10 @@ implemented for files with a '.mac' extension.
 
 == Features ==
 
+The screen-shot below shows an Emacs frame with an APDL file in a window with the help overlay (in yellow) for the "rectng" command.  The window below is displaying the "variables buffer" of this APDL file and on the right hand side the identical APDL file in "outline" mode, i. e. where uninteresting parts are hidden from view.
+
+http://www.duenenhof-wilhelm.de/dieter/ansys-mode.jpg
+
 * Process management (viewing error files, license status, etc.)
 
 * Solver control and comunication (UNIX only)

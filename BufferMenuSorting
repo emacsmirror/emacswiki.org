@@ -8,8 +8,10 @@ What the manual fails to mention is that you can change the sorting with `M-x Bu
 ; `M-3 M-x Buffer-menu-sort': Sort by buffer ''size'' (ascending).
 ; `M-4 M-x Buffer-menu-sort': Sort by buffer ''mode'' name.
 ; `M-5 M-x Buffer-menu-sort': Sort by buffer ''file'' name.
+; `M-x Buffer-menu-sort': Sort by ''display time'' (default).
 
-To permanently customize the listing order of buffer menu, set `Buffer-menu-sort-column'.  For example, use the following to automatically sort by column Mode.
+
+To permanently customize the default listing order of buffer menu, set `Buffer-menu-sort-column'.  For example, use the following to automatically sort by column Mode.
 
    (setq Buffer-menu-sort-column 4)
 

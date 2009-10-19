@@ -79,6 +79,9 @@ Here is a example where all tabs is just one group
 
 == Discussions ==
 
+The first function only works if I change '("User Buffer") to just "User Buffer",
+and the same for the other strings?! --CH
+
 === Windows-style behaviour and key bindings ===
 
 The following will provide windows style (shift-)control tab behaviour and autoload tabbar-mode. Use a prefix to change groups and no prefix to change the buffer.

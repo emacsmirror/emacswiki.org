@@ -1,6 +1,6 @@
 The SlickEdit editor has clever line-wise behavior: if no text is selected, the copy and cut commands act on the current line instead. (TextMate and VisualStudio are purported to do this also.)
 
-MacChan came up with a couple of ways to get the same behavior in Emacs. (It is assumed that [TransientMarkMode Transient Mark Mode] is enabled globally -- that is, ##(transient-mark-mode t)##.)
+MacChan came up with a couple of ways to get the same behavior in Emacs. (It is assumed that [TransientMarkMode Transient Mark Mode] is enabled globally -- that is, ##(transient-mark-mode t)## -- which is the default in Emacs 23 and onwards.)
 
 == Advice ==
 

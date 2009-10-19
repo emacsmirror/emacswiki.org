@@ -24,6 +24,10 @@ A bit of cool stuff ...
 (global-set-key [?\C-<] 'other-window-minimizing)
 <code>
 
+----
+I wish a wisent parser for Objective-C, we can write it.
+The great tools CollectionOfEmacsDevelopmentEnvironmentTools
+
 Good Life ...
 
 -----

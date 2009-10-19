@@ -32,6 +32,7 @@ To get through reading the Emacs manual, you could make Emacs turn the pages in 
     (cancel-function-timers 'speed-read-the-manual))
 
 See also IncrementalReading
+and IdleScrolling
 
 ----
 CategoryDocumentation

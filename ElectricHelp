@@ -2,15 +2,22 @@ You might prefer to use electric help instead of help, via:
 
     (global-set-key "\C-h" 'ehelp-command)
 
+Electric help mode does the following.
+
+# It will automatically switch to the help buffer when called, saving you from pressing `C-x o'.
+# Will shrink the window to fit the contents of the help buffer.
+# Displays key binding information about using the mode in the EchoArea.
+# Upon quit returns the window configuration to the way it was.  Regular HelpMode has the habit of changing the window configuration, even after quiting help.
+
 == Stuck in Electric help? ==
 
 If you use electric help often, you will find that Emacs often gets
-'stuck' in Electric Help.  viz. you keep seeing the message: "Press
-Space to bury the help buffer, Press R to retain it >>>" or "Press
-h for help ..." in the modeline, long after the electric buffer is dead.
+'stuck' in Electric Help.  viz. you keep seeing the message: "##Press
+Space to bury the help buffer, Press R to retain it >>>##" or "##Press
+h for help ...##" in the echo area, long after the electric buffer is dead.
 
 To get rid of this, simply invoke electric help again, say by
-<code>C-h f endp</code> and press 'r' to retain the buffer.
+`C-h f endp' and press `r' to retain the buffer.
 
 ----
 CategoryHelp

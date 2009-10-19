@@ -3,7 +3,7 @@ is a collection of tools written with the end goal of creating
 an advanced development environment.  Emacs already is a great
 environment for writing software, but there are additional areas that
 need improvement. Many new ideas for integrated environments have been
-developed in newer products, such as Microsoft's Visual
+developed in newer products, such as Microsoft's Visual Studio
 environment. CEDET is a new project which brings together the various
 tools built to replicate these features.
 
