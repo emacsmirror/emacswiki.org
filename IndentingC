@@ -5,10 +5,9 @@ See also: TurnAllIndentingOff
 
 == CC mode for C, C++, Java ==
 
-The CC modes (C, C++, Java, etc.) have their own manual, the CC mode
-manual.  Read it.  It's good for you.
+The CC modes (C, C++, Java, etc.) have their own manual, the CC mode manual. Read it. It's good for you.
 
-If you just want to change the indent levels, set `c-basic-offset'.  Here is an example for your ~/.emacs:
+If you just want to change the indent levels, set `c-basic-offset'. Here is an example for your ~/.emacs:
 
     (setq-default c-basic-offset 3)
 
@@ -18,68 +17,52 @@ You can also set it within emacs: Options->Customize Emacs->Top-level Customizat
 
 == Different Styles ==
 
-Instead of just changing the basic offset, consider switching to a
-particular /style/.  A style definies much more than just the basic
-offset.  There are a number of predefined styles.  Take
-a look at the variable `c-style-alist', if you want to see a list of
-them.
+Instead of just changing the basic offset, consider switching to a particular /style/. A style definies much more than just the basic offset. There are a number of predefined styles. Take a look at the variable `c-style-alist', if you want to see a list of them.
 
-Here's how to switch to a particular style:
-Set `c-default-style' to one of the entries in `c-style-alist'.
-Add something like the following to your ~/.emacs:
+Here's how to switch to a particular style: Set `c-default-style' to one of the entries in `c-style-alist'. Add something like the following to your ~/.emacs:
 
     (setq c-default-style "linux")
 
 A partial list of the better known styles:
 
-; "gnu": The default style for GNU projects
-; "k&r": What Kernighan and Ritchie, the authors of C used in their book
-; "bsd": What BSD developers use, aka "Allman style" after Eric Allman.
-; "stroustrup": What Stroustrup, the author of C++ used in his book
-; "linux": What the Linux developers use for kernel development
-; "python": What Python developers use for extension modules
-; "java": The default style for java-mode (see below)
-; "user": When you want to define your own style
+* "gnu": The default style for GNU projects
+* "k&r": What Kernighan and Ritchie, the authors of C used in their book
+* "bsd": What BSD developers use, aka "Allman style" after Eric Allman.
+* "stroustrup": What Stroustrup, the author of C++ used in his book
+* "linux": What the Linux developers use for kernel development
+* "python": What Python developers use for extension modules
+* "java": The default style for java-mode (see below)
+* "user": When you want to define your own style
 
 == C-like Automatic Style Input (casi) ==
 
-Casi allows you to tune the behavior of many keystrokes for every specified style in CC mode.  For example, you can tell Emacs to insert a space (" ") when you type '(', and delete this space when you type DEL while point is after a '(', in a CC mode buffer and the style of the buffer is "gnu", but keep the default behavior when the style is not "gnu".  This is useful for some cases, e.g. when you are used to "bsd" style, but have to write programs in "gnu" style, and you don't want to change your key-pressing habit.  Plus "c-auto-newline", casi makes Emacs a more convenient tool of writing C/C++ programs, since it allows one to keep a single key-pressing habit to write programs in many different styles.  For more information about casi, see http://sourceforge.net/projects/casi-mode.
+Casi allows you to tune the behavior of many keystrokes for every specified style in CC mode. For example, you can tell Emacs to insert a space (" ") when you type '(', and delete this space when you type DEL while point is after a '(', in a CC mode buffer and the style of the buffer is "gnu", but keep the default behavior when the style is not "gnu". This is useful for some cases, e.g. when you are used to "bsd" style, but have to write programs in "gnu" style, and you don't want to change your key-pressing habit. Plus "c-auto-newline", casi makes Emacs a more convenient tool of writing C/C++ programs, since it allows one to keep a single key-pressing habit to write programs in many different styles. For more information about casi, see http://sourceforge.net/projects/casi-mode.
 
 == Tabs Instead of Spaces ==
 
-If you want to have it look like an "ordinary" editor in Emacs, use 8
-instead of 4:
+If you want to have it look like an "ordinary" editor in Emacs, use 8 instead of 4:
 
     (setq-default c-basic-offset 8
                   tab-width 8
                   indent-tabs-mode t)
 
-But Emacs can do better!  Emacs can save it with [::TabsInsteadOfSpaces], and on
-an ordinary editor the file will look as above, and still have Emacs show
-every tab as four spaces:
+But Emacs can do better! Emacs can save it with [::TabsInsteadOfSpaces], and on an ordinary editor the file will look as above, and still have Emacs show every tab as four spaces:
 
     (setq-default c-basic-offset 4
                   tab-width 4
                   indent-tabs-mode t)
 
-This works because Emacs will indent something by four, and since a tab
-is four wide, Emacs will use a tab to do it.  To convert existing code that uses spaces to using tabs use `M-x tabify'.
+This works because Emacs will indent something by four, and since a tab is four wide, Emacs will use a tab to do it. To convert existing code that uses spaces to using tabs, use ##M-x tabify## or reindent the entire file (##C-x h C-M-\##). (However, see [[SmartTabs#Retab|SmartTabs]] for a better way to do this.)
 
-For the opposite, see NoTabs.  For a discussion of this, see
-TabsAreEvil or [http://web.archive.org/web/20051124145441/http://my.erinet.com/~tschaef/cc-mode/description.html http://my.erinet.com/~tschaef/cc-mode/description.html].
-To use tabs for indentation and spaces for alignment, see SmartTabs.
+For the opposite, see NoTabs. For a discussion of this, see TabsAreEvil or [http://web.archive.org/web/20051124145441/http://my.erinet.com/~tschaef/cc-mode/description.html http://my.erinet.com/~tschaef/cc-mode/description.html]. To use tabs for indentation and spaces for alignment, see SmartTabs.
 
 == Automatic Indentation ==
 
-Add the following to your ~/.emacs file.  Whenever you type certain
-characters, a newline will be inserted automatically.  Some like it,
-some hate it.
+Add the following to your ~/.emacs file. Whenever you type certain characters, a newline will be inserted automatically. Some like it, some hate it.
 
     (add-hook 'c-mode-common-hook '(lambda () (c-toggle-auto-state 1)))
 
-If you like this you might also be interested in `c-toggle-hungry-state',
-which will delete all characters until next non-whitespace when you delete
-whitespace.
+If you like this you might also be interested in `c-toggle-hungry-state', which will delete all characters until next non-whitespace when you delete whitespace.
 
 == Another form of Automatic Indentation ==
 
@@ -87,31 +70,28 @@ For people who don't like automatic indentation, but don't want to hit tab on ev
 
     (define-key c-mode-base-map (kbd "RET") 'newline-and-indent)
 
-This maps newline-and-indent (normally C-j) to the return key.  It's exactly equivalent to hitting tab after every time you hit return.  
+This maps newline-and-indent (normally C-j) to the return key. It's exactly equivalent to hitting tab after every time you hit return.
 
 Note: In order to add this to your .emacs you must add `(require 'cc-mode)' if you don't have it already.
 
 == No Indentation ==
 
     (require 'cc-mode)
-    (add-to-list 'c-mode-common-hook 
+    (add-to-list 'c-mode-common-hook
       (lambda () (setq c-syntactic-indentation nil)))
 
-It only works in version 5.27 or later.  The effect: Every line is
-just indented to the same level as the previous one, and TAB adjusts
-the indentation in steps specified by `c-basic-offset'.
+It only works in version 5.27 or later. The effect: Every line is just indented to the same level as the previous one, and TAB adjusts the indentation in steps specified by `c-basic-offset'.
 
 == Long names ==
 
-When you have a long method name with long arguments, you would like to 
-lay it out as follows:
+When you have a long method name with long arguments, you would like to lay it out as follows:
 
   public void veryLongMethodNameHereWithArgs(
           String arg1,
           String arg2,
           int arg3)
 
-Here's how to do it thanks to KnutForkalsrud and KaiGrossjohann:
+Here's how to do it, thanks to KnutForkalsrud and KaiGrossjohann:
 
     (defun my-indent-setup ()
       (c-set-offset 'arglist-intro '+))
@@ -138,18 +118,11 @@ A very cool thing to do is automatically switching to that behavior for long lin
 
 -- [[nschum]]
 
-
-
-
 == Automatic Offset Detection ==
 
-To have Emacs transparently and non-intrusively choose the proper 
-`c-basic-offset' for every visited C source file, use `guess-offset.el'
-from the ElispArea (Lisp:guess-offset.el). 
-Works for C++ and Java code as well.
+To have Emacs transparently and non-intrusively choose the proper `c-basic-offset' for every visited C source file, use `guess-offset.el' from the ElispArea (Lisp:guess-offset.el). Works for C++ and Java code as well.
 
-This is especially useful if you occasionally edit source files written 
-by other people.
+This is especially useful if you occasionally edit source files written by other people.
 
 More information in the source commentary and the GuessOffset topic.
 
@@ -165,28 +138,23 @@ The following sets Linux style only if the filename (or the directory) contains 
 
     (defun maybe-linux-style ()
       (when (and buffer-file-name
-		 (string-match "linux" buffer-file-name))
-	(c-set-style "Linux")))
-    
+                 (string-match "linux" buffer-file-name))
+        (c-set-style "Linux")))
+
     (add-hook 'c-mode-hook 'maybe-linux-style)
 
 Metacity uses a `c-basic-offset' of 2, instead of the 8 that the linux style uses. The following sets c-basic-offset to 2 if the filename has "metacity" in it somewhere:
 
    (defun maybe-metacity-offset ()
      (if (string-match "metacity" buffer-file-name)
-       (setq c-basic-offset 2)
-       ()
-     )
-   )
+       (setq c-basic-offset 2)))
    (add-hook 'c-mode-hook 'maybe-metacity-offset)
-   
- 
+
 Or, if you prefer local file variables, then use a LocalVariables section in your source files.
 
 Example:
 
     /* -*- c-file-style: "linux" -*- */
-
 
 See also trick on CcMode (currently) to set the style according to the directory location.
 
@@ -196,17 +164,15 @@ You can try PpIndent if you want to indent your C Preprocessor (#ifdef, #else, e
 
 == More Complex Issues ==
 
-Read the node ''Interactive Customization'' in the CC mode manual that came with Emacs.  Here is a summary:
+Read the node ''Interactive Customization'' in the CC mode manual that came with Emacs. Here is a summary:
 
-To change the indentation of a line, we need to see which syntactic components affect the offset calculations for that line.  Hit `C-c C-s' on the offending line.  This yields something like this:
+To change the indentation of a line, we need to see which syntactic components affect the offset calculations for that line. Hit `C-c C-s' on the offending line. This yields something like this:
 
     ((substatement-open . 44))
 
-so we know that to change the offset, we need to change the indentation for the `substatement-open' syntactic symbol. To do this interactively, just hit `C-c C-o' (`c-set-offset').  This
-prompts you for the syntactic symbol to change, providing a reasonable default.  In this case, the default is `substatement-open', which is just the syntactic symbol we want to change!
+so we know that to change the offset, we need to change the indentation for the `substatement-open' syntactic symbol. To do this interactively, just hit `C-c C-o' (`c-set-offset'). This prompts you for the syntactic symbol to change, providing a reasonable default. In this case, the default is `substatement-open', which is just the syntactic symbol we want to change!
 
-After you hit return, CC Mode will then prompt you for the new
-offset value, with the old value as the default.  Use the following symbols:
+After you hit return, CC Mode will then prompt you for the new offset value, with the old value as the default. Use the following symbols:
 
  +   `c-basic-offset' times 1
  -   `c-basic-offset' times -1
@@ -217,7 +183,7 @@ offset value, with the old value as the default.  Use the following symbols:
 
 To check your changes quickly, just hit `C-c C-q' (`c-indent-defun') to reindent the entire function.
 
-For more complicated examples, this may not always work.  The general approach to take is to always start adjusting offsets for lines higher up in the file, then re-indent and see if any following lines need further adjustments.
+For more complicated examples, this may not always work. The general approach to take is to always start adjusting offsets for lines higher up in the file, then re-indent and see if any following lines need further adjustments.
 
 The node ''Permanent Customization'' in the CC mode manual tells you how to make these changes permanent.
 
@@ -266,23 +232,23 @@ Here is a style that pretty much matches the observed style of Microsoft (R)'s C
 Style for OpenBSD source code, also valid for OpenSSH and other BSD based OSs source.
 
  (c-add-style "openbsd"
-             '("bsd"
-               (indent-tabs-mode . t)
-               (defun-block-intro . 8)
-               (statement-block-intro . 8)
-               (statement-case-intro . 8)
-               (substatement-open . 4)
-               (substatement . 8)
-               (arglist-cont-nonempty . 4)
-               (inclass . 8)
-               (knr-argdecl-intro . 8)))
+              '("bsd"
+                (indent-tabs-mode . t)
+                (defun-block-intro . 8)
+                (statement-block-intro . 8)
+                (statement-case-intro . 8)
+                (substatement-open . 4)
+                (substatement . 8)
+                (arglist-cont-nonempty . 4)
+                (inclass . 8)
+                (knr-argdecl-intro . 8)))
 
 
 ----
 
-I've had a very hard time trying to customize indentation.  I like the Java style overall, but there are a few things I really don't like about it.  One is that it wants to hang 'if' braces, another is that when I tell it not to, it wants to indent them, instead of keeping them in line with the 'if' statement.
+I've had a very hard time trying to customize indentation. I like the Java style overall, but there are a few things I really don't like about it. One is that it wants to hang 'if' braces, another is that when I tell it not to, it wants to indent them, instead of keeping them in line with the 'if' statement.
 
-I knew that c-add-style had a means of creating one style based on another one, but it was so poorly documented, I had no idea how to use it.  Through trial and error (lots of error), I finally found the trick:
+I knew that c-add-style had a means of creating one style based on another one, but it was so poorly documented, I had no idea how to use it. Through trial and error (lots of error), I finally found the trick:
 
   (defun my-c-common-hook ()
     (progn
@@ -304,10 +270,10 @@ I knew that c-add-style had a means of creating one style based on another one, 
 The errors I encountered getting to this point:
 * (set-variable c-default-style "mine") doesn't work.  You have to use 'setq'.  Why?  I don't know.
 :: (set-variable 'c-default-style "mine"). Anyway, why not setq?
-* If using 'customize', you can't set the default style to yours if you define yours in a hook, since yours isn't known at the time the default style is used.  The hook is called later.
-* Despite how things look, the variables you set when defining your style only override existing styles.  This means you don't have to define every offset if you just want to change one.
+* If using 'customize', you can't set the default style to yours if you define yours in a hook, since yours isn't known at the time the default style is used. The hook is called later.
+* Despite how things look, the variables you set when defining your style only override existing styles. This means you don't have to define every offset if you just want to change one.
 
-I hope this helps save someone some hair-out-pullage.  It would have been handy for me if it had been documented somewhere.
+I hope this helps save someone some hair-out-pullage. It would have been handy for me if it had been documented somewhere.
 
 ----
 
@@ -330,11 +296,9 @@ to this:
 
 ???
 
-: No.  As the name says, it only changes the indention.
+: No. As the name says, it only changes the indention.
 
-I wanted Tab to call indent-region if anything is selected, and c-indent-command if not.
-So, after a late irc.freenode.net#emacs session.
-Here's what fledermaus, cgray and _sprintf came up with:
+I wanted Tab to call indent-region if anything is selected, and c-indent-command if not. So, after a late irc.freenode.net#emacs session. Here's what fledermaus, cgray and _sprintf came up with:
 
     ;;Setting Tab to indent region if anything is selected
     (defun tab-indents-region () (local-set-key [(tab)] 'fledermaus-maybe-tab))
@@ -346,7 +310,7 @@ Here's what fledermaus, cgray and _sprintf came up with:
     (indent-region (region-beginning) (region-end) nil)
     (c-indent-command)))
 
-transient-mark-mode is needed as you see, works very well :)
+transient-mark-mode is needed, as you see. Works very well :)
 
   - lurwas
 
@@ -375,13 +339,14 @@ You can also do indentation (and much more) with the indent program that almost 
   (define-key c-mode-base-map [f7] 'c-reformat-buffer)
 
 -----
-Unfortunately when I use the function above I've got and '''stdin: is not a tty''' on the saved buffer :(
-LeslieHarlleyWatter
+
+Unfortunately, when I use the function above I've got and '''stdin: is not a tty''' on the saved buffer :( -- LeslieHarlleyWatter
+
 
 ----
+
 [new]
-I'd like Emacs(21) to do automagic reformatting/indenting of source code (C, C++, Perl). And it does,
-using 'align-mode-rules-list" etc.), which contains:
+I'd like Emacs(21) to do automagic reformatting/indenting of source code (C, C++, Perl). And it does, using 'align-mode-rules-list" etc.), which contains:
 
   (c-assignment
          (regexp   . ,(concat "[^-=!^&*+<>/| \t\n]\\(\\s-*[-=!^&*+<>/|]*\\)"
@@ -395,15 +360,14 @@ However,  if I write some C++ like this:
  for (std::vector<int>::const_iterator iter = foo.begin(); iter != foo.end(); ++iter)
          int j = 3;
 
-this will be reformatted as:  
+this will be reformatted as:
 
 
-  for (std::vector<int>::const_iterator iter = foo.begin(); iter != foo.end(); ++iter) 
+  for (std::vector<int>::const_iterator iter = foo.begin(); iter != foo.end(); ++iter)
                         int     j                                = 3;
 
 
-Not what I want! Does any have the magic code to do the right thing with C++ as well?
-Thanks!
+Not what I want! Does any have the magic code to do the right thing with C++ as well? Thanks!
 
 ----
 CategoryIndentation

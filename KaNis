@@ -8,33 +8,7 @@ The [http://kanis.fr/hg/lisp/ result] was well worth the time invested. I have p
 
 The start up files are in [http://kanis.fr/hg/lisp/emacs.d emacs.d]. I have split files amongst different functionality groups. I compile all elisp files myself. A warning message will help me find my mistakes
 
-[new:AndyStewart:2009-08-14 15:59 UTC]
-Welcome to wiki! :), BTW, your function `ivan-keymap-define` is similar my `lazy-set-key` and `lazy-unset-key`, look LazySetKey and Lisp:lazy-set-key.el . -- AndyStewart
-
-[new]
-I can be found on the following Web 2.0 site
-
-[http://www.volcreole.com/forum/profil-membre-41557.html volcreole]
-[http://commentcava.com/profiles.php?a=view&nick=kanis_2 CommentCaVa]
-[http://http://www.123people.fr/s/ivan+kanis 123people]
-[http://www.chartsinfrance.net/communaute/index.php?/user/43811-kanis/ chartsinfrance]
-[http://www.prx.org/users/82201-kanis prx]
-[http://forum.reggaefrance.com/membre20965.html Reggae France]
-[http://fr.wikipedia.org/wiki/Utilisateur:Kanis Wikipedia]
-[http://forum.dofus.com/en/user/kanis-a.html Dofus]
-
-I use the following Wiki:
-
-[https://wiki.ubuntu.com/Kanis Launchpad]
-[http://en.doc.centreon.com/User:Kanis Centreon]
-[http://kanis.pbworks.com/ Pbworks]
-[http://wiki.archlinux.org/index.php/User:Kanis ArchLinux]
-
-I lurk in IRC channel #emacs in freenode I have started the IrcFaq.
-
-[new]
-There is actually the EmacsChannelFaq, already.  It probably could use some loving.  Welcome to the Wiki. -- AaronHawley
-
+I wrote the mercurial backend and a world clock that are now part of emacs. I have also written a NewTerminal called nterm.
 ----
 CategoryHomepage
 

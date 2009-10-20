@@ -27,14 +27,15 @@ Tabkey2 steals the TAB key and tries to call the function you tell it to call.
 == Smart Tab ==
 
 Here's what I use every day:
-* it's minibuffer compliant, so you can set it globally and not worry about what modes need it
-* it calls `indent-region' if mark is active.
-* otherwise it expands if at the end of a symbol, or indents the current line.
-* prefixed by C-u, always smart indent without completing.
 
-It feels very natural (to me at least), tab always do what I mean.
+* It's minibuffer compliant, so you can set it globally and not worry about what modes need it.
+* It calls `indent-region' if mark is active ('''so, to reindent the whole file, you would do ##C-x h <tab>##''').
+* Otherwise it expands if at the end of a symbol, or indents the current line.
+* Prefixed by ##C-u##, always smart indent without completing.
 
-Note the use of "\\_>" instead of "\\>": this allows to tab-expand symbols, according to the major mode. Like "(goto-...", or "BOOST_..." (usefull when coding in Lisp or C).
+It feels very natural (to me at least), ##<tab>## always do what I mean.
+
+Note the use of "##\\_>##" instead of "##\\>##": this allows to tab-expand symbols, according to the major mode. Like "##(goto-##...", or "##BOOST_##..." (useful when coding in Lisp or C).
 
 {{{
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

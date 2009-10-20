@@ -13,14 +13,15 @@ There is a "safe" way of using tabs in source code: '''tabs for indentation, spa
 The approach can be summed up in two points:
 
 # Tabs are only used at the '''beginning of lines'''. Everything else, like ASCII art or tables, should be formatted with spaces.
-# Tabs are only used for '''expressing the indentation level'''. Any ''alignment'', whether at the beginning of lines or in the middle of them, should consist of spaces.
+# Tabs are only used for '''expressing the indentation level'''. One tab per "block" -- the rest is spaces only.
 
 But isn't this difficult and tedious to carry out in practice? Well, not if the editor handles it for you.
 
 [:Implementations]
 == Code ==
 
-Add the following code (explained [[#SimpleAlgorithm|below]]) to <tt>[InitFile .emacs]</tt> to make Emacs insert the "right" amount of tabs and spaces automatically. Then, to indent ''and'' align, just press '##<tab>##' for the current line, '<tt>[AutoIndentation C-j]</tt>' for a new line, etc.
+[:Retab]
+Add the following code (explained [[#SimpleAlgorithm|below]]) to <tt>[InitFile .emacs]</tt> to make Emacs insert the "right" amount of tabs and spaces automatically. Then, to indent ''and'' align, just press '##<tab>##' for the current line, '<tt>[AutoIndentation C-j]</tt>' for a new line, etc. To retab the entire file, press '##C-x h C-M-\##' (or see [[TabCompletion#SmartTab|TabCompletion]] for a shorter binding).
 
 [:CImplementations]
 === C-like languages ===
@@ -151,7 +152,7 @@ When we change the values back -- say to ##4## -- we have
     --->.........y);
     }
 
-which is indeed tab size-invariant.
+which is indeed tab size-independent.
 
 This works because (1) setting the tab size and indentation offset to the same value ensures that all "instances" of the offset are encoded as tabs, (2) using a value that is larger than any amount of alignment forces spaces to be used for the rest. (A good value is probably a multiple of the maximum line length.)
 

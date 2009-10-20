@@ -2,10 +2,9 @@
 
 ;; Copyright (C) 2009  David Shilvock
 
-;; Author: David Shilvock <davels@telus.net>
+;; Author: David Shilvock <davels@shaw.ca>
 ;; Keywords: tools
-
-;; $Id: $
+;; $Id: mirror-mode.el 289 2009-10-20 05:43:51Z dave $
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -25,11 +24,13 @@
 ;;; Commentary:
 
 ;; Provides a simple minor mode to insert parens and string quotes in pairs.  It
-;; can mirror the following keys: { } ( ) [ ] " '
+;; can mirror the following keys: { } ( ) [ ] < > " '
 ;;
 ;; Set `mirror-keys-to-bind' if you want to limit which keys are setup as mirror
 ;; keys.  In most cases you'll also want to make this a local variable first.
-;; Use (mirror-mode) to toggle the mode.
+;; Use (mirror-mode) to toggle the mode.  If `mirror-wrap-region' is non-nil
+;; (the default) then typing a mirror key when the region is active will wrap
+;; the region in the appropriate characters.
 ;;
 ;; Much of this code is ripped from js2-mode.
 
@@ -42,30 +43,33 @@
   "Control automatic indentation after closing parens.")
 
 (defvar mirror-escape-quotes t
-  "Non-nil to disable automatic quote-escaping inside strings.")
+  "Non-nil to enable automatic quote-escaping inside strings.")
 
 (defvar mirror-triple-quote-modes
   '(python-mode)
   "Major modes that use triple quote strings")
 
-;; { } ( ) [ ] " '
-(defvar mirror-keys-to-bind nil
-  "List of mirror keys to activate.  Bind all mirror keys if nil.")
+;; { } ( ) [ ] < > " '
+(defvar mirror-keys-to-bind '( ?{ ?} ?\( ?\) ?[ ?] ?\" ?\' )
+  "List of mirror keys to activate.
+Can be any of { } ( ) [ ] < > \" \'")
 
+(defvar mirror-wrap-region t
+  "Non-nil to enable warpping the active region when typing miror keys.")
 
 ;; === Internals
 
 (defvar mirror-mode-string " {}")
 
 (defun mirror-call-default-key-binding (keychar)
+  "Call the binding normally associated with KEYCHAR."
   (let ((mirror-mode nil)
-        (last-command-char keychar))
+        (last-command-event keychar))
     (call-interactively (key-binding (string keychar)))))
 
 (defun mirror-key-binding (keychar binding)
   "Call a mirror key binding or the default binding."
-  (if (or (null mirror-keys-to-bind)
-          (memq keychar mirror-keys-to-bind))
+  (if (memq keychar mirror-keys-to-bind)
       (call-interactively binding)
     (mirror-call-default-key-binding keychar)))
 
@@ -84,6 +88,8 @@
     (mirror-create-binding map ")" 'mirror-magic-close-paren)
     (mirror-create-binding map "[" 'mirror-match-bracket)
     (mirror-create-binding map "]" 'mirror-magic-close-paren)
+    (mirror-create-binding map "<" 'mirror-match-angle)
+    (mirror-create-binding map ">" 'mirror-magic-close-paren)    
     (mirror-create-binding map "\"" 'mirror-match-double-quote)
     (mirror-create-binding map "'" 'mirror-match-single-quote)
     map))
@@ -127,53 +133,91 @@ Actually returns the quote character that begins the string."
      (or (nth 3 parse-state)
          (nth 4 parse-state)))))
 
+(defsubst mirror-region-marked ()
+  (and transient-mark-mode mark-active))
+
+(defun mirror-wrap-region (wrap-char)
+  "If region is active wrap it with WRAP-CHAR.
+If WRAP-CHAR is a cons wrap with car/cdr of WRAP-CHAR on left/right. Returns
+  non-nil if the region was wrapped."
+  (if (and mirror-wrap-region
+           (mirror-region-marked))
+      (let ((leftpos (region-beginning))
+            (rightpos (region-end))
+            leftch rightch)
+        (if (consp wrap-char)
+            (setq leftch (car wrap-char)
+                  rightch (cdr wrap-char))
+          (setq leftch wrap-char
+                rightch wrap-char))
+        (save-excursion
+          (goto-char rightpos)
+          (insert rightch)
+          (goto-char leftpos)
+          (insert leftch))
+        t)))
 
 (defun mirror-match-curly ()
   "Insert matching curly-brace."
   (interactive)
-  (mirror-call-default-key-binding ?\{)
-  (unless (or (not (looking-at "\\s-*$"))
-              (mirror-inside-comment-or-string))
-;;    (undo-boundary)
-    ;; absolutely mystifying bug:  when inserting the next "\n",
-    ;; the buffer-undo-list is given two new entries:  the inserted range,
-    ;; and the incorrect position of the point.  It's recorded incorrectly
-    ;; as being before the opening "{", not after it.  But it's recorded
-    ;; as the correct value if you're debugging `mirror-match-curly'
-    ;; in edebug.  I have no idea why it's doing this, but incrementing
-    ;; the inserted position fixes the problem, so that the undo takes us
-    ;; back to just after the user-inserted "{".
-    (insert "\n")
-;;     (ignore-errors
-;;       (incf (cadr buffer-undo-list)))
-    (indent-according-to-mode)
-    (save-excursion
+  (unless (mirror-wrap-region (cons ?\{ ?\}))
+    (mirror-call-default-key-binding ?\{)
+    (unless (or (not (looking-at "\\s-*$"))
+                (mirror-inside-comment-or-string))
+      ;;    (undo-boundary)
+      ;; absolutely mystifying bug:  when inserting the next "\n",
+      ;; the buffer-undo-list is given two new entries:  the inserted range,
+      ;; and the incorrect position of the point.  It's recorded incorrectly
+      ;; as being before the opening "{", not after it.  But it's recorded
+      ;; as the correct value if you're debugging `mirror-match-curly'
+      ;; in edebug.  I have no idea why it's doing this, but incrementing
+      ;; the inserted position fixes the problem, so that the undo takes us
+      ;; back to just after the user-inserted "{".
       (insert "\n")
-      (mirror-call-default-key-binding ?\})
+      ;;     (ignore-errors
+      ;;       (incf (cadr buffer-undo-list)))
+      (indent-according-to-mode)
+      (save-excursion
+        (insert "\n")
+        (mirror-call-default-key-binding ?\})
       (if mirror-auto-indent
-          (indent-according-to-mode)))))
-
+          (indent-according-to-mode))))))
+  
 (defun mirror-match-bracket ()
   "Insert matching bracket."
   (interactive)
-  (mirror-call-default-key-binding ?\[)
-  (unless (or (not (looking-at "\\s-*$"))
-              (mirror-inside-comment-or-string))
-    (save-excursion
-      (mirror-call-default-key-binding ?\]))
-    (if mirror-auto-indent
-      (indent-according-to-mode))))
+  (unless (mirror-wrap-region (cons ?\[ ?\]))
+    (mirror-call-default-key-binding ?\[)
+    (unless (or (not (looking-at "\\s-*$"))
+                (mirror-inside-comment-or-string))
+      (save-excursion
+        (mirror-call-default-key-binding ?\]))
+      (if mirror-auto-indent
+          (indent-according-to-mode)))))
+
+(defun mirror-match-angle ()
+  "Insert matching angle bracket."
+  (interactive)
+  (unless (mirror-wrap-region (cons ?\< ?\>))
+    (mirror-call-default-key-binding ?\<)
+    (unless (or (not (looking-at "\\s-*$"))
+                (mirror-inside-comment-or-string))
+      (save-excursion
+        (mirror-call-default-key-binding ?\>))
+      (if mirror-auto-indent
+          (indent-according-to-mode)))))
 
 (defun mirror-match-paren ()
   "Insert matching paren unless already inserted."
   (interactive)
-  (mirror-call-default-key-binding ?\()
-  (unless (or (not (looking-at "\\s-*$"))
-              (mirror-inside-comment-or-string))
-    (save-excursion
-      (mirror-call-default-key-binding ?\)))
-    (if mirror-auto-indent
-        (indent-according-to-mode))))
+  (unless (mirror-wrap-region (cons ?\( ?\)))
+    (mirror-call-default-key-binding ?\()
+    (unless (or (not (looking-at "\\s-*$"))
+                (mirror-inside-comment-or-string))
+      (save-excursion
+        (mirror-call-default-key-binding ?\)))
+      (if mirror-auto-indent
+          (indent-according-to-mode)))))
 
 (defun mirror-match-quote (quote-string)
   (cond
@@ -187,17 +231,18 @@ Actually returns the quote character that begins the string."
     ;; 2b. exception:  if we're just before a word, don't double it.
     (unless (looking-at "[^][(){} \t\r\n]")
       (save-excursion
+        ;; check for triple quote start
+        (if (and (memq major-mode mirror-triple-quote-modes)
+                 (looking-back (concat "[^" quote-string "]"
+                                       quote-string
+                                       quote-string
+                                       quote-string)))
+            (insert quote-string quote-string))
         (insert quote-string))))
    ;; 3. maybe insert another quote or step over closing quote
    ((looking-at quote-string)
     (cond ((looking-back "[^\\]\\\\")
            (insert quote-string))
-          ((and (memq major-mode mirror-triple-quote-modes)
-                (save-excursion
-                  (and (memq (skip-chars-backward quote-string) '(-1 -2))
-                       (or (bobp) (not (mirror-inside-string))))))
-           (insert quote-string)
-           (save-excursion (insert quote-string)))
           (t
            (forward-char 1))))
    ;; 4. inside terminated string, escape quote (unless already escaped)
@@ -215,16 +260,18 @@ Actually returns the quote character that begins the string."
 (defun mirror-match-single-quote ()
   "Insert matching single-quote."
   (interactive)
-  (let ((parse-status (parse-partial-sexp (point-min) (point))))
-    ;; don't match inside comments, since apostrophe is more common
-    (if (nth 4 parse-status)
-        (insert "'")
-      (mirror-match-quote "'"))))
+  (unless (mirror-wrap-region "'")
+    (let ((parse-status (parse-partial-sexp (point-min) (point))))
+      ;; don't match inside comments, since apostrophe is more common
+      (if (nth 4 parse-status)
+          (insert "'")
+        (mirror-match-quote "'")))))
 
 (defun mirror-match-double-quote ()
   "Insert matching double-quote."
   (interactive)
-  (mirror-match-quote "\""))
+  (unless (mirror-wrap-region "\"")
+    (mirror-match-quote "\"")))
 
 (defun mirror-magic-close-paren ()
   "Skip over close-paren rather than inserting, where appropriate.
@@ -232,12 +279,14 @@ Uses some heuristics to try to figure out the right thing to do."
   (interactive)
   (let* ((parse-status (parse-partial-sexp (point-min) (point)))
          (open-pos (nth 1 parse-status))
-         (close last-input-char)
+         (close last-input-event)
          (open (cond
                 ((eq close ?\))
                  ?\()
                 ((eq close ?\])
                  ?\[)
+                ((eq close ?\>)
+                 ?\<)
                 ((eq close ?})
                  ?{)
                 (t nil))))

@@ -25,6 +25,8 @@ If you want to customize the behavior you can play with a few variables (check t
 
             (set (make-local-variable 'mirror-escape-quotes) nil)
 
+* ##mirror-wrap-region## : non-nil (the default), to enable wrapping the active region when typing mirror keys.
+
 == Discussion ==
 [new:rubikitch:2009-03-01 10:22 UTC]
 Do you know ParEdit? -- [[rubikitch]]
