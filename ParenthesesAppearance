@@ -1,7 +1,7 @@
 ==Matching==
 
 When editing Lisp code it is often useful to highlight matching
-parentheses eigther when point is on or near a parenthese or when it
+parentheses either when point is on or near a parenthesis or when it
 is not even close to one.
 
 The following packages all provide such highlighting but differ in

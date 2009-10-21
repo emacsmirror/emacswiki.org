@@ -27,7 +27,15 @@ Yes, very nice. I use it differently from ##bookmark.el##, not more or less. In 
 [new]
 I have written an extension for this that adds a listing of all bookmarks in all buffers. See here: [[bm-ext.el]]  -- [[DanMcKinley]
 
-
+[new:TomFeist:2009-10-20 20:19 UTC]
+If you want to be able to toggle bookmarks by clicking in the fringe, this works for me:
+<pre>
+(global-set-key (kbd "<left-fringe> <mouse-1>") #'(lambda(event)
+                                                    (interactive "e")
+                                                    (save-excursion
+                                                      (mouse-set-point event)
+                                                      (bm-toggle))))
+</pre>
 
 == See Also ==
 

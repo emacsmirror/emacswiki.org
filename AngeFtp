@@ -197,5 +197,10 @@ or if you installed the [[EmacsW32]] version, it comes with the gnu ftp client a
 : For some time I have been nagged by timeout problems using the ftp program above. I have therefore included a patch with [[EmacsW32]] to take care of this.
 -- LennartBorgman
 
+[new]
+: There's some problem when user's default temporary directory contain international char(such as chinese) in Windows XP system.
+-- Wu Xiaochun
+
+
 ----
 CategoryHistory CategoryRemoteEmacs
