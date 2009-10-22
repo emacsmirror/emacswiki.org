@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Oct 17 00:41:37 2009 (-0700)
+;; Last-Updated: Wed Oct 21 22:54:23 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 4460
+;;     Update #: 4464
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1598,6 +1598,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2009/10/21 dadams
+;;     icicle-prefix-complete-1:
+;;       For empty dir we use "" as pseudo-cand.  Ensure not "" when later test for / last char.
 ;; 2009/10/12 dadams
 ;;     Added: icicle-input-is-a-completion-p.
 ;;     icicle-minibuffer-complete-and-exit, icicle-input-is-a-completion-p:

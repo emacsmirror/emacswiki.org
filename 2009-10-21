@@ -1,0 +1,14 @@
+[new:AlexSchroeder:2009-10-21 10:51 UTC]
+Do we need *email subscriptions to wiki pages*? I found that I use email subscriptions a lot when commenting on blogs. I hardly ever subscribe to comment feeds for a particular post. Apparently I am unable to treat feed subscription like email subscription -- I forget to unsubscribe, and for ever and always my feed reader will keep polling those useless feeds.
+
+The current implementation has [http://www.oddmuse.org/cgi-bin/oddmuse/Mail_Extension a major drawback]: As the software maintains no protected accounts, *it is trivial to get and change the subscription list of other people if you know their email address*. Just tell the wiki that you’re using their email address, and there you go. This can be exploited to annoy your fellow human beings by automatically subscribing them to every single page of a huge wiki.
+
+What do you think?
+
+# Forget it, nobody needs it.
+# Use the current implementation as soon as possible and worry about problems if and only if they actually come up.
+# We should use it eventually, but only if there's an actual subscription confirmation email process in place.
+
+I'm using the current implementation as-is on three sites, and it seems to be working fine…
+
+[new]

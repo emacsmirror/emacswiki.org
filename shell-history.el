@@ -1,5 +1,5 @@
 ;;; shell-history.el --- integration with shell history
-;; $Id: shell-history.el,v 1.1 2008/09/01 02:46:48 rubikitch Exp $
+;; $Id: shell-history.el,v 1.3 2009/10/21 09:43:55 rubikitch Exp rubikitch $
 
 ;; Copyright (C) 2008  rubikitch
 
@@ -28,16 +28,40 @@
 ;; `compile', `grep', and `background' to shell history file,
 ;; eg. ~/.zsh_history.
 
+;;; Commands:
+;;
+;; Below are complete command list:
+;;
+;;  `shell-add-to-history'
+;;    Add this command line to shell history in `shell-mode'.
+;;
+;;; Customizable Options:
+;;
+;; Below are customizable option list:
+;;
+
+;; `shell-add-to-history' adds current command line in *shell* buffer
+;; into shell history file.
+
+;; (require 'shell-history)
+;; (define-key shell-mode-map "\M-m" 'shell-add-to-history)
+
 ;;; History:
 
 ;; $Log: shell-history.el,v $
+;; Revision 1.3  2009/10/21 09:43:55  rubikitch
+;; New command: `shell-add-to-history'
+;;
+;; Revision 1.2  2009/02/20 06:11:23  rubikitch
+;; New variable: `shell-history-add-ascii-only'
+;;
 ;; Revision 1.1  2008/09/01 02:46:48  rubikitch
 ;; Initial revision
 ;;
 
 ;;; Code:
 
-(defvar shell-history-version "$Id: shell-history.el,v 1.1 2008/09/01 02:46:48 rubikitch Exp $")
+(defvar shell-history-version "$Id: shell-history.el,v 1.3 2009/10/21 09:43:55 rubikitch Exp rubikitch $")
 (eval-when-compile (require 'cl))
 
 (defvar shell-history-file
@@ -45,6 +69,9 @@
       "~/.zsh_history"
     "~/.bash_history")
   "Shell history file name.")
+
+(defvar shell-history-add-ascii-only t
+  "If non-nil, add shell history only when the command line is ascii-only.")
 
 (defun shell-history-buffer ()
   (or (get-file-buffer shell-history-file)
@@ -57,16 +84,18 @@
                   (re-search-forward "^: [0-9]+:" (point-at-eol) t)))
 
 (defun add-to-shell-history (entry)
-  (with-current-buffer (shell-history-buffer)
-    (revert-buffer t t)
-    (goto-char (point-max))
-    (when (shell-history-zsh-extended-history-p)
-      (insert (format-time-string ": %s:0;" (current-time))))
-    (insert entry "\n")
-    ;; prevent from displaying message.
-    (write-region (point-min) (point-max) shell-history-file nil 'silently)
-    (set-visited-file-modtime (current-time))
-    (set-buffer-modified-p nil)))
+  (when (or (not shell-history-add-ascii-only)
+            (string-match "^[\000-\177]+$" entry))
+    (with-current-buffer (shell-history-buffer)
+      (revert-buffer t t)
+      (goto-char (point-max))
+      (when (shell-history-zsh-extended-history-p)
+        (insert (format-time-string ": %s:0;" (current-time))))
+      (insert entry "\n")
+      ;; prevent from displaying message.
+      (write-region (point-min) (point-max) shell-history-file nil 'silently)
+      (set-visited-file-modtime (current-time))
+      (set-buffer-modified-p nil))))
 
 ;; (add-to-shell-history "test")
 ;; (let ((shell-history-file "~/.bash_history")) (add-to-shell-history "test"))
@@ -80,6 +109,15 @@
 (defadvice compilation-start (after add-to-shell-history activate)
   (add-to-shell-history command))
 ;; (progn (ad-disable-advice 'compilation-start 'after 'add-to-shell-history) (ad-update 'compilation-start)) 
+
+(defun shell-add-to-history ()
+  "Add this command line to shell history in `shell-mode'."
+  (interactive)
+  (beginning-of-line)
+  (add-to-shell-history (buffer-substring (point) (point-at-eol)))
+  (delete-region (point) (point-at-eol))
+  (message "Added to shell history"))
+
 
 (provide 'shell-history)
 

@@ -281,6 +281,12 @@ Here is such method to use twitpic.com for images posting: [http://sites.google.
 [new:HaroldGutierrez:2009-10-17 01:00 UTC]
 What about something for "following" direct tweets?
 
+[new]
+It seems that pictures of twitter users can have different sizes (though most of them are about 75x75).  Is there a way to resize the pictures and display them with a standard size?  Inconsistent image sizes make the buffer harder to read.  -- BaoqiuCui
+
+[new]
+I'd like to have a key binding (e.g. "o") in twit-status-mode-map to open the first URL in the current tweet if there is one.  This is similar to "v" (twit-visit-link) but the cursor does not have to be on the URL link: as long as the cursor is somewhere at the current tweet, it should be fine.  If there are more than one URLs in the tweet, just open the first one.  If there is no URL in the tweet, do nothing.  This key can save a lot of cursor movement if a lot of tweets contain URLs. -- BaoqiuCui
+
 == Archived Discussion ==
 I don't personally do the cell phone thing (it sounds irritating), but anyway, they got slashdotted yesterday.  I had never heard of them.  But it looked cool, so i joined and wrote twit.el.  I think i would like to broaden it--generalize it a bit and let users read friend's posts.  I am working on that....
 

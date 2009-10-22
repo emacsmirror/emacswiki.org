@@ -104,7 +104,11 @@ Normally hitting ##TAB## a second time after a completion will take you to a sug
                            (and (> ac-menu-direction 0)
                                 (ac-menu-at-wrapped-line)))))
       (if (null point)
-          (ac-abort)
+          (progn
+            ;; need to nil this so pabbrev-expand-maybe-full we won't try
+            ;; pabbrev expansion if user hits another TAB after ac aborts
+            (setq pabbrev-last-expansion-suggestions nil)
+            (ac-abort))          
         (setq ac-buffer (current-buffer))
         (setq ac-point point)
         (when (not (equal ac-point ac-old-point))

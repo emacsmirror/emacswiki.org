@@ -4,7 +4,7 @@
 
 ;; Author: David Shilvock <davels@shaw.ca>
 ;; Keywords: tools
-;; $Id: mirror-mode.el 289 2009-10-20 05:43:51Z dave $
+;; $Id: mirror-mode.el 291 2009-10-21 21:48:21Z dave $
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -233,7 +233,7 @@ If WRAP-CHAR is a cons wrap with car/cdr of WRAP-CHAR on left/right. Returns
       (save-excursion
         ;; check for triple quote start
         (if (and (memq major-mode mirror-triple-quote-modes)
-                 (looking-back (concat "[^" quote-string "]"
+                 (looking-back (concat "\\([^" quote-string "]\\|\\`\\)"
                                        quote-string
                                        quote-string
                                        quote-string)))

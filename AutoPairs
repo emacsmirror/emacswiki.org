@@ -90,7 +90,8 @@ The ##autopair-insert## command is bound to both the opening and closing keys. T
 
 and bind ##autopair-insert## to the necessary key(s).
 
-The above code has been made into a package [http://github.com/ramblex/emacs-textmate here]. It has a few neat little extras such as being able to turn off the pairing of some characters in some modes.
+[new]
+The above code has been made into a package [http://github.com/ramblex/emacs-textmate here]. It has a few neat little extras such as being able to turn off the pairing of some characters in some modes. -- ramblex
 
 === CC Mode ===
 
@@ -131,7 +132,9 @@ Similar to the "electric" behavior of [CcMode CC Mode], ##RET## can be made to p
 
     (global-set-key (kbd "RET") 'autopairs-ret)
 
+Why is this useful? Watch the little screencast below. The ##RET## key "opens" parenthetical expressions while editing; the ##)## key "closes" them. This is particularly convenient when writing Lisp code, as it facilitates line-wise editing without violating good code style.
 
+: '''[http://img8.imageshack.us/img8/9479/openparen.gif Short video demonstration]'''
 
 == Filtering ==
 

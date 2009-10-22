@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Oct 12 11:00:02 2009 (-0700)
+;; Last-Updated: Wed Oct 21 22:47:09 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 14878
+;;     Update #: 14879
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2838,7 +2838,7 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                (icicle-clear-minibuffer)
                (when (icicle-file-name-input-p) ; Append `/' to directory cands, so cycling expands them.
                  (let ((cand  (car icicle-completion-candidates)))
-                   (when (eq ?\/  (aref cand (1- (length cand))))
+                   (when (and (not (string= "" cand)) (eq ?\/  (aref cand (1- (length cand)))))
                      (setq icicle-current-input  (concat icicle-current-input "/")))))
                (setq icicle-last-completion-candidate  icicle-current-input)
                (let ((inserted  (if (and (icicle-file-name-input-p) insert-default-directory
