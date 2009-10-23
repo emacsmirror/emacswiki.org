@@ -72,6 +72,10 @@ Incidentally, the above was for long time on my TODO, and with finite resources 
 -- MaciejKatafiasz
 
 ''I want something like SlimeMode for Python, Haskell, or Erlang. At a minimum it would need to integrate with docstrings, dir() and/or type inference, as well as hook into debugging, profiling and other existing tools.''
+[new]
+For Erlang, take a look at [[DistributedEmacsLisp]] (Distel) - doesn't do docstrings AFAIK, but it does support debugging profiling etc.
+
+-- JoostDiepenmaat
 
 = Better scripting language =
 It doesn't matter if it is guile, clisp or whatever but, please, something standard!

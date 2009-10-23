@@ -12,5 +12,26 @@ To install, put it in your LoadPath and add the following to your InitFile:
 
 Redefine `my-rcirc-notify-message`. Use %s for where you want the name of the person calling your name to go.
 
+== Strange notifications? ==
+
+You might see a message saying "X is calling your name" but when you check your active rcirc buffers, you see nothing.
+What happened?
+
+I found the following to be useful:
+
+{{{
+(defun occur-irc (regexp)
+  "Run `multi-occur' for all buffers in `rcirc-mode'."
+  (interactive "sList lines matching regexp: ")
+  (multi-occur (let (result)
+		 (dolist (buf (buffer-list))
+		   (with-current-buffer buf
+		     (when (eq major-mode 'rcirc-mode)
+		       (setq result (cons buf result)))))
+		 result) regexp))
+}}}
+
+Use it to find X in all your rcirc buffers. I discovered what had happened: ##*** X MODE +oooo kensanata## -- aaaah! :)
+
 ----
 CategoryChatClient [[rcirc]]

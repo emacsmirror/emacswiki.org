@@ -1,10 +1,10 @@
 ;;; arxiv-reader.el --- an interface for reading and sorting arXiv abstracts.
 ;;; Inspired by Hubert Chen's java "reader."
 
-;; Copyright (C) 2008 Peter H. Mao
+;; Copyright (C) 2008,2009 Peter H. Mao
 
 ;; Author: Peter H. Mao <peter.mao@gmail.com> <peterm@srl.caltech.edu>
-;; Version %Id: 7%
+;; Version %Id: 8%
 
 ;; arxiv-reader.el is free software; you can redistribute it and/or modify it
 ;; under the terms of the GNU General Public License as published by
@@ -15,6 +15,24 @@
 ;; WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 ;; General Public License for more details.
+
+;;; change log
+;;
+;; 2009-10-16: re-introduce doc-view, as it is now part of emacs-23.
+;; arxiv-get-pdf ('P') now downloads the pdf and displays it.
+;;
+;; 2009-08-27: minor change: use switch-to-buffer instead of
+;; set-buffer after look-at-this-file
+;;
+;; 2009-08-21: BUG FIX -- previously, if the first abstract was an
+;; update, the look-buffer contents would still hold that file, even
+;; though it was moved to the arxiv-b-list.  The solution was to use a
+;; new look-mode function called look-at-this-file, which refreshes
+;; the contents of the buffer based on the present state of the file
+;; list.
+;;
+;; 2009-03-24: added increment/decrement subdir list, removed cyclic
+;; permutation subroutines
 
 ;;; Commentary:  this documentation is getting insane.
 ;;
@@ -117,10 +135,6 @@
   "A list of regexp keywords to highlight in arXiv abstracts."
   :group 'arxiv
   :type '(repeat regexp))
-;(defcustom arxiv-permute-on-move-p t
-;  "Set to 'nil', to suppress directory permutation when moving abstracts"
-;  :group 'arxiv
-;  :type 'boolean)
 (defvar arxiv-keyword-matches-only nil
   "When set to 't', only abstracts that match a keyword appear")
 (defvar arxiv-b-list nil
@@ -143,6 +157,8 @@
     (define-key map (kbd "H") 'arxiv-toggle-keyword-matches-only)
     (define-key map (kbd ".") 'arxiv-look-at-next-file)
     (define-key map (kbd ",") 'arxiv-look-at-previous-file)
+    (define-key map (kbd ">") 'arxiv-increment-default-subdir)
+    (define-key map (kbd "<") 'arxiv-decrement-default-subdir)
     (define-key map (kbd "C-c k") 
       (lambda ()
         (interactive)
@@ -168,6 +184,9 @@
   :init-value nil ; maybe make this t?
   :lighter (:eval (if arxiv-keyword-matches-only " arXiv:H" " arXiv"))
   :keymap arxiv-minor-mode-map
+  (dolist (arxiv-re arxiv-keyword-list)
+    (highlight-regexp arxiv-re))
+  (goto-address)
   )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -194,7 +213,7 @@ have already been split from the mail file."
   (add-to-list 'look-skip-file-list "^[#\\.,]")
   (add-to-list 'look-skip-directory-list "^[\\.,]")
   (look-at-files "")
-  (arxiv-start-arxiv-mode)
+  (arxiv-mode t)
   (pop look-skip-file-list)
   (pop look-skip-file-list)
   (pop look-skip-directory-list)
@@ -202,14 +221,16 @@ have already been split from the mail file."
       (progn
         (set-buffer look-buffer)
         (look-update-header-line)
-        (set-buffer arxiv-updates)
+        (look-at-this-file) (arxiv-mode t) ; takes care of bug when 1st abstract is an update
+        (switch-to-buffer arxiv-updates)
         )
     (switch-to-buffer look-buffer)
     (kill-buffer arxiv-updates))
-  ) 
+  )
 
 (defun arxiv-look-at-next-file ()
-  "calls look-at-next-file.  will have some addons in the future"
+  "calls look-at-next-file.  If arxiv-keyword-matches-only is
+true, then skip over non-matching files."
   (interactive)
   (look-at-next-file)
   (if arxiv-keyword-matches-only
@@ -220,11 +241,12 @@ have already been split from the mail file."
                     look-current-file)
           (look-at-next-file))
         (look-no-more)))
-  (arxiv-start-arxiv-mode)
+  (arxiv-mode t)
   )
 
 (defun arxiv-look-at-previous-file ()
-  "calls look-at-previous-file.  will have some addons in the future"
+  "calls look-at-previous-file.  If arxiv-keyword-matches-only is
+true, then skip over non-matching files."
   (interactive)
   (look-at-previous-file)
   (if arxiv-keyword-matches-only
@@ -235,8 +257,30 @@ have already been split from the mail file."
                     look-current-file)
           (look-at-previous-file))
         (look-no-more)))
-  (arxiv-start-arxiv-mode)
+  (arxiv-mode t)
   )
+
+(defun arxiv-increment-default-subdir ()
+  "increment the default subdirectory"
+  (interactive)
+  (let ((n-subdirs (1- (length look-subdir-list))))
+    (if (equal arxiv-default-subdir n-subdirs)
+        (setq arxiv-default-subdir 1)
+      (setq arxiv-default-subdir (1+ arxiv-default-subdir)))
+    (setq look-hilight-subdir-index arxiv-default-subdir)
+    (look-update-header-line)
+    ) )
+
+(defun arxiv-decrement-default-subdir ()
+  "decrement the default subdirectory"
+  (interactive)
+  (let ((n-subdirs (1- (length look-subdir-list))))
+    (if (equal arxiv-default-subdir 1)
+        (setq arxiv-default-subdir n-subdirs)
+      (setq arxiv-default-subdir (1- arxiv-default-subdir)))
+    (setq look-hilight-subdir-index arxiv-default-subdir)
+    (look-update-header-line)
+    ) )
 
 (defun arxiv-toggle-keyword-matches-only ()
   "toggles the state of arxiv-keyword-matches-only"
@@ -258,9 +302,6 @@ have already been split from the mail file."
             (setq look-hilight-subdir-index arxiv-default-subdir)
             ))
     (setq subdir-number arxiv-default-subdir))
-;  (if (and arxiv-permute-on-move-p
-;           (arxiv-permute-subdirectories subdir-number))
-;      (setq subdir-number 1))
   (let* ((arxiv-target-dir (nth subdir-number look-subdir-list))
          (arxiv-new-filename 
           (concat
@@ -279,6 +320,19 @@ have already been split from the mail file."
          )
     (if (not (file-exists-p arxiv-new-filename))
         (progn 
+          ; increment category counts if saving from 0 to >0
+          ; decrement category counts if saving from >0 to 0
+          ;;; not yet implemented
+          ; (if (and  (> subdir-number 0) (equal (file-name-directory look-current-file) look-pwd))
+          ;    increment category counts)
+          ; (if (and (= subdir-number 0) (not (equal (file-name-directory look-current-file) look-pwd)))
+          ;     decrement category counts )
+          ;;;
+          ; incr/decr cats function needs: 
+          ; current buffer (maybe better to put file into temp buffer to extract cats and then dump it)
+          ;;;
+
+          ; move the file to its new location
           (rename-file look-current-file arxiv-new-filename)
           ; move the pdf to the same dir if it exists
           (if arxiv-current-pdf
@@ -334,7 +388,7 @@ have already been split from the mail file."
           (abstract-number (replace-regexp-in-string 
                             "\\(^arXiv:\\|\\.x$\\)" "" 
                             (file-name-nondirectory look-current-file)))
-          (arxiv-url (concat "http://xxx.lanl.gov/pdf/" 
+          (arxiv-url (concat "http://arxiv.org/pdf/" 
                              (replace-regexp-in-string
                               "\\([a-z]\\)\\([0-9]\\)" "\\1/\\2" ;reinsert the slash
                               abstract-number)))
@@ -361,9 +415,9 @@ have already been split from the mail file."
       (shell-command (concat "curl -o " output-file " " arxiv-url))
       )
     ; (princ (concat last-name first-initial))
-    ; (doc-view nil output-file-deslashed) ; or make a shell-command to your favorite pdf reader.
-    ; doc-view fails if the filename arg has a ~ AND the file is not in the cache!
-    ; need to wait for doc-view installed in emacs 23.
+    (if (string-match "Emacs 23" (emacs-version))    
+        (find-file-read-only output-file-deslashed))
+    ; in emacs 22, doc-view fails if the filename arg has a ~ AND the file is not in the cache!
     )
   )
 
@@ -509,27 +563,6 @@ Returns a string indicating the outcome of the function"
     (kill-buffer "*arxiv-temp*")
     return-value
     )
-  )
-
-(defun arxiv-permute-subdirectories (index)
-  "Permute the subdirectories circularly, bringing <index> into
-the 1 position."
-  (if (> index 0)
-      (let ( (tail (nthcdr index look-subdir-list)) )
-        (setcdr (nthcdr (1- index) look-subdir-list) nil)
-        (setq look-subdir-list (nconc (list (car look-subdir-list))
-                                      tail
-                                      (cdr look-subdir-list)))
-        (look-update-header-line)
-        )
-    )
-  )
-
-(defun arxiv-start-arxiv-mode ()
-  "starts arxiv minor mode and highlights keywords"
-  (arxiv-mode t)
-  (dolist (arxiv-re arxiv-keyword-list)
-    (highlight-regexp arxiv-re))
   )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

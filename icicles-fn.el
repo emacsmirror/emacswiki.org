@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Oct 17 00:38:41 2009 (-0700)
+;; Last-Updated: Thu Oct 22 09:38:33 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 11176
+;;     Update #: 11198
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,7 @@
 ;;    `icicle-extra-candidates-first-p',
 ;;    `icicle-face-valid-attribute-values', `icicle-file-directory-p',
 ;;    `icicle-file-name-apropos-candidates',
+;;    `icicle-file-name-directory',
 ;;    `icicle-file-name-directory-w-default',
 ;;    `icicle-file-name-input-p', `icicle-file-name-nondirectory',
 ;;    `icicle-file-name-prefix-candidates', `icicle-file-readable-p',
@@ -521,7 +522,7 @@ so it is called after completion-list buffer text is written."
              (mbuf-contents  (icicle-input-from-minibuffer))
              ;; $$$$$ Should we `expand-file-name' mbuf-contents first?
              (dir-of-input   (and minibuffer-completing-file-name
-                                  (file-name-directory mbuf-contents))))
+                                  (icicle-file-name-directory mbuf-contents))))
         ;; If reading file name and either `icicle-comp-base-is-default-dir-p' is nil or this is a
         ;; completion command, then set `default-directory' so it will be copied into *Completions*.
         (when (and dir-of-input
@@ -555,7 +556,8 @@ so it is called after completion-list buffer text is written."
       (let* ((mainbuf        (current-buffer))
              (mbuf-contents  (minibuffer-completion-contents)) ; Get contents only up to point.
              ;; $$$$$ Should we `expand-file-name' mbuf-contents first?  Vanilla Emacs does that.
-             (dir-of-input   (and minibuffer-completing-file-name (file-name-directory mbuf-contents)))
+             (dir-of-input   (and minibuffer-completing-file-name
+                                  (icicle-file-name-directory mbuf-contents)))
              common-string-length)
         ;; If reading file name and either `icicle-comp-base-is-default-dir-p' is nil or this is a
         ;; completion command, then set `default-directory' so it will be copied into *Completions*.
@@ -2463,7 +2465,7 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                (let ((buffer-read-only  nil)
                      (eob               (point-max))
                      (dir               (and (icicle-file-name-input-p) icicle-last-input
-                                             (file-name-directory icicle-last-input)))
+                                             (icicle-file-name-directory icicle-last-input)))
                      (hist              (and (symbolp minibuffer-history-variable)
                                              (boundp minibuffer-history-variable)
                                              (symbol-value minibuffer-history-variable)))
@@ -3545,10 +3547,10 @@ the code."
         ;; Expand current input to expanded common match, after saving it for `C-l'.
         (let ((common  (if (and (icicle-file-name-input-p) insert-default-directory)
                            (if (string= "" icicle-common-match-string)
-                               (or (file-name-directory icicle-current-input) "")
+                               (or (icicle-file-name-directory icicle-current-input) "")
                              (directory-file-name (icicle-abbreviate-or-expand-file-name
                                                    icicle-common-match-string
-                                                   (file-name-directory icicle-current-input))))
+                                                   (icicle-file-name-directory icicle-current-input))))
                          icicle-common-match-string)))
             
           ;; Save current input for `C-l', then save common match as current input.
@@ -3755,11 +3757,18 @@ Return the possibly transformed candidate."
         ;; Multi-completion, but no joining specified.  Reconstitute the display candidate.
         (concat (mapconcat #'identity parts icicle-list-join-string) icicle-list-end-string)))))
 
+(defun icicle-file-name-directory (file)
+  "Like `file-name-directory', but backslash is not a directory separator.
+Do not treat backslash as a directory separator, even on MS Windows.
+Escape any backslashes, then call `file-name-directory' and return
+what it returns."
+  (let* ((escaped-file  (subst-char-in-string ?\\ ?\a file))
+         (dir           (file-name-directory escaped-file)))
+    (and dir (subst-char-in-string ?\a ?\\ dir))))
+
 (defun icicle-file-name-directory-w-default (file)
-  "Like `file-name-directory', but return `default-directory', not nil.
-Does not treat backslash as a directory separator, even on MS Windows."
-  (let ((escaped-file  (subst-char-in-string ?\\ ?\a file)))
-    (or (file-name-directory escaped-file) default-directory)))
+  "`icicle-file-name-directory', or `default-directory' if that is nil."
+  (or (icicle-file-name-directory file) default-directory))
 
 (defun icicle-file-name-nondirectory (file)
   "Like `file-name-nondirectory', but does not treat backslash specially.
@@ -5289,8 +5298,8 @@ inputs, followed by matching candidates that have not yet been used."
   (let ((hist  (and (symbolp minibuffer-history-variable) (boundp minibuffer-history-variable)
                     (symbol-value minibuffer-history-variable)))
         (dir   (and (icicle-file-name-input-p)
-                    (or (file-name-directory (or icicle-last-input icicle-current-input))
-                        default-directory))))
+                    (icicle-file-name-directory-w-default
+                     (or icicle-last-input icicle-current-input)))))
     (if (not (consp hist))
         (icicle-case-string-less-p s1 s2)
       (when dir (setq s1  (expand-file-name s1 dir)
@@ -5313,8 +5322,8 @@ inputs, followed by matching candidates that have not yet been used."
 ;;   (let ((hist  (and (symbolp minibuffer-history-variable)
 ;;                     (symbol-value minibuffer-history-variable)))
 ;;         (dir   (and (icicle-file-name-input-p)
-;;                     (or (file-name-directory (or icicle-last-input icicle-current-input))
-;;                         default-directory)))
+;;                     (icicle-file-name-directory-w-default
+;;                      (or icicle-last-input icicle-current-input))))
 ;;         (s1-in-hist nil)
 ;;         (s2-in-hist nil))
 ;;     (if (not (consp hist))
@@ -5336,8 +5345,8 @@ Also:
   (let ((hist     (and (symbolp minibuffer-history-variable) (boundp minibuffer-history-variable)
                        (symbol-value minibuffer-history-variable)))
         (dir      (and (icicle-file-name-input-p)
-                       (or (file-name-directory (or icicle-last-input icicle-current-input))
-                           default-directory)))
+                       (icicle-file-name-directory-w-default
+                        (or icicle-last-input icicle-current-input))))
         (s1-tail  ())
         (s2-tail  ()))
     (if (not (consp hist))

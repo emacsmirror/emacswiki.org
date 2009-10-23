@@ -1,5 +1,7 @@
 There are two implementations of a Python mode for Emacs. 
 
+(RichardRiley : this is a very, very confusing page. It's hard to make head nor tail of what could and should be used in emacs 23 and I will try to annotate/clip this page when I know more. The whole python.el v python-mode.el thing is really messy)
+
 == python-mode.el ===
 
 python-mode.el is part of the Python distribution.  You can also download it from launchpad:
@@ -15,7 +17,7 @@ The relevant page also has installation instructions.  The following was enough 
  (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
  (add-to-list 'interpreter-mode-alist '("python" . python-mode))
 
-this could be useful:
+this could be useful: (RichardRiley : why?)
 
  (add-hook 'python-mode-hook
            (lambda ()
@@ -28,6 +30,7 @@ Fixes for deficiencies and problems with it in Emacs are at
 
 They were submitted, but I don't think they got used.  I don't know of
 any reason to use it (as opposed to python.el) with Emacs.
+
 
 == python.el ===
 

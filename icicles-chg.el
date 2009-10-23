@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Oct 21 22:54:23 2009 (-0700)
+;; Last-Updated: Thu Oct 22 10:03:59 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 4464
+;;     Update #: 4479
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -274,6 +274,12 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2009/10/22 dadams
+;;     Added: icicle-file-name-directory.
+;;     icicle-completion-setup-function, icicle-display-candidates-in-Completions,
+;;       icicle-save-or-restore-input, icicle-file-name-directory-w-default,
+;;       icicle-historical-alphabetic-p:
+;;         Use icicle-file-name-directory, not file-name-directory.
 ;; 2009/10/17 dadams
 ;;     icicle-completion-try-completion: Return RES.
 ;; 2009/10/12 dadams
@@ -1522,6 +1528,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mac.el'")
 ;;
+;; 2009/10/22 dadams
+;;     icicle-define-file-command: Use icicle-file-name-directory, not file-name-directory.
 ;; 2009/09/17 dadams
 ;;     Added: icicle-file-bindings.
 ;; 2009/09/16 dadams
@@ -1598,6 +1606,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2009/10/22 dadams
+;;     icicle-insert-input, icicle-candidate-action-1, icicle-keep-only-past-inputs,
+;;       icicle-apropos-complete-and-(narrow|widen):
+;;         Use icicle-file-name-directory, not file-name-directory.
 ;; 2009/10/21 dadams
 ;;     icicle-prefix-complete-1:
 ;;       For empty dir we use "" as pseudo-cand.  Ensure not "" when later test for / last char.

@@ -16,7 +16,7 @@
 ==Install==
 * Load multi-term.el:
 
-: Put Lisp:multi-term.el in your load-path, then add
+: Put [http://www.emacswiki.org/emacs/download/multi-term.el Lisp:multi-term.el] in your load-path, then add
 {{{
         (require 'multi-term)
 }}}

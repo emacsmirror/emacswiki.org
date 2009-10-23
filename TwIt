@@ -287,6 +287,23 @@ It seems that pictures of twitter users can have different sizes (though most of
 [new]
 I'd like to have a key binding (e.g. "o") in twit-status-mode-map to open the first URL in the current tweet if there is one.  This is similar to "v" (twit-visit-link) but the cursor does not have to be on the URL link: as long as the cursor is somewhere at the current tweet, it should be fine.  If there are more than one URLs in the tweet, just open the first one.  If there is no URL in the tweet, do nothing.  This key can save a lot of cursor movement if a lot of tweets contain URLs. -- BaoqiuCui
 
+Just wrote a quick function to demonstrate what I would like to do with key binding "o".  Hopefully this function can be enhanced and put into twit.el:
+
+{{{
+(defun bcui-twit-open-link ()
+  "Open first URL in current tweet if it exists."
+  (interactive)
+  (when (save-excursion
+	  (beginning-of-line)
+	  (looking-at ".+http://"))
+    (search-forward "http://")
+    (twit-visit-link)))
+
+(define-key twit-status-mode-map "o" 'bcui-twit-open-link)
+}}}
+
+-- BaoqiuCui
+
 == Archived Discussion ==
 I don't personally do the cell phone thing (it sounds irritating), but anyway, they got slashdotted yesterday.  I had never heard of them.  But it looked cool, so i joined and wrote twit.el.  I think i would like to broaden it--generalize it a bit and let users read friend's posts.  I am working on that....
 

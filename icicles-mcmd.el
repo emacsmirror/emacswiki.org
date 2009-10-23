@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Oct 21 22:47:09 2009 (-0700)
+;; Last-Updated: Thu Oct 22 10:04:42 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 14879
+;;     Update #: 14890
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1960,7 +1960,7 @@ minibuffer."
   (insert (if (and (icicle-file-name-input-p) insert-default-directory
                    (or (not (member input icicle-extra-candidates))
                        icicle-extra-candidates-dir-insert-p))
-              (icicle-expand-file-name input (file-name-directory input))
+              (icicle-expand-file-name input (icicle-file-name-directory input))
             input)))
 
 ;;;###autoload
@@ -2836,7 +2836,7 @@ Optional argument WORD-P non-nil means complete only a word at a time."
              (setq icicle-nb-of-other-cycle-candidates  0)
              (unless icicle-edit-update-p
                (icicle-clear-minibuffer)
-               (when (icicle-file-name-input-p) ; Append `/' to directory cands, so cycling expands them.
+               (when (icicle-file-name-input-p) ; Append `/' to dir cands, so cycling expands them.
                  (let ((cand  (car icicle-completion-candidates)))
                    (when (and (not (string= "" cand)) (eq ?\/  (aref cand (1- (length cand)))))
                      (setq icicle-current-input  (concat icicle-current-input "/")))))
@@ -3749,7 +3749,7 @@ Optional arg CAND non-nil means it is the candidate to act on."
                       (equal icicle-last-input
                              (if (icicle-file-name-input-p)
                                  (expand-file-name icicle-last-completion-candidate
-                                                   (file-name-directory icicle-last-input))
+                                                   (icicle-file-name-directory icicle-last-input))
                                icicle-last-completion-candidate)))
              (icicle-remove-candidate-display-others 'all))
            (icicle-raise-Completions-frame)))))
@@ -4632,13 +4632,13 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   ;; $$$$$ (let ((icicle-top-level-when-sole-completion-flag  t))
   (when (eq icicle-current-completion-mode 'prefix)
     (let ((icicle-incremental-completion-p  nil)
-          (escaped-input                    (regexp-quote icicle-last-input)))
-      (setq escaped-input  (if (icicle-file-name-input-p)
-                               (concat (file-name-directory escaped-input) "^"
-                                       (file-name-nondirectory escaped-input))
-                             (concat "^" escaped-input)))
+          (regexp-quoted-input              (regexp-quote icicle-last-input)))
+      (setq regexp-quoted-input  (if (icicle-file-name-input-p)
+                                     (concat (icicle-file-name-directory regexp-quoted-input) "^"
+                                             (file-name-nondirectory regexp-quoted-input))
+                                   (concat "^" regexp-quoted-input)))
       (icicle-erase-minibuffer)
-      (insert escaped-input)))
+      (insert regexp-quoted-input)))
   (if (eq icicle-last-completion-command 'icicle-apropos-complete-no-display)
       (icicle-apropos-complete-no-display)
     (icicle-apropos-complete))
@@ -4655,13 +4655,13 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   ;; $$$$$ (let ((icicle-top-level-when-sole-completion-flag  t))
   (when (eq icicle-current-completion-mode 'prefix)
     (let ((icicle-incremental-completion-p  nil)
-          (escaped-input                    (regexp-quote icicle-last-input)))
-      (setq escaped-input  (if (icicle-file-name-input-p)
-                               (concat (file-name-directory escaped-input) "^"
-                                       (file-name-nondirectory escaped-input))
-                             (concat "^" escaped-input)))
+          (regexp-quoted-input              (regexp-quote icicle-last-input)))
+      (setq regexp-quoted-input  (if (icicle-file-name-input-p)
+                                     (concat (icicle-file-name-directory regexp-quoted-input) "^"
+                                             (file-name-nondirectory regexp-quoted-input))
+                                   (concat "^" regexp-quoted-input)))
       (icicle-erase-minibuffer)
-      (insert escaped-input)))
+      (insert regexp-quoted-input)))
   (setq icicle-next-apropos-complete-cycles-p  nil)
   (if (eq icicle-last-completion-command 'icicle-apropos-complete-no-display)
       (icicle-apropos-complete-no-display)
@@ -5529,8 +5529,8 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
                 (icicle-remove-if-not
                  (lambda (candidate)
                    (when (icicle-file-name-input-p)
-                     (setq candidate  (expand-file-name candidate
-                                                        (file-name-directory icicle-last-input))))
+                     (setq candidate  (expand-file-name
+                                       candidate (icicle-file-name-directory icicle-last-input))))
                    (member candidate (symbol-value minibuffer-history-variable)))
                  icicle-completion-candidates))
           (cond ((null icicle-completion-candidates)

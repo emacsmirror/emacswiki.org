@@ -75,7 +75,7 @@ Use the following:
 * M-x swc-emacswiki-browse RET <nowiki>PageName</nowiki>RET
   (this is the completion-enabled method)
 
-When editing, type:
+When editing [http://www.bestessays.com/ custom papers], type:
 * C-c C-m to label your change as minor, type again to undo that.
 * C-c C-c to upload your change to the wiki.
 * C-c C-/ or C-/ to pcomplete a word a wiki page, ie if there is a page <nowiki>CamelCase</nowiki> on your wiki then typing Came follow by C-/ then Came will be completed <nowiki>CamelCase</nowiki>

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon Oct 12 09:57:32 2009 (-0700)
+;; Last-Updated: Thu Oct 22 09:20:02 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 22596
+;;     Update #: 22597
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -715,6 +715,7 @@
 ;;    `icicle-extra-candidates-first-p',
 ;;    `icicle-face-valid-attribute-values', `icicle-file-directory-p',
 ;;    `icicle-file-name-apropos-candidates',
+;;    `icicle-file-name-directory',
 ;;    `icicle-file-name-directory-w-default',
 ;;    `icicle-file-name-input-p', `icicle-file-name-nondirectory',
 ;;    `icicle-file-name-prefix-candidates', `icicle-file-readable-p',

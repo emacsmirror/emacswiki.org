@@ -10,6 +10,10 @@ The list of updated abstracts is stored as a separate file list which can be swi
 
 If one only wishes to see abstracts that contain matching keywords, one may toggle into this state with "H".
 
+== vaporware/wish list ==
+
+highlighting of the title and author fields (bold?), a database to track authors, categories and keywords/phrases.
+
 == why? ==
 I always found it intimidating to sift through the mountain of abstracts that come in on astro-ph.  Then my friend, Hubert Chen, wrote a java program that made it fun and easy to skim and sort the abstracts.  The only problem with his program is that it didn't run on my OS (emacs!) so I ported it.
 
@@ -20,6 +24,7 @@ You'll also want to edit the temporary additions to look-skip-file-list in the f
 
 == download ==
 Lisp:arxiv-reader.el
+Lisp:look-mode.el
 
 == Interactive functions ==
 * ##arxiv-read-abstracts## ("r" on email file from dired)

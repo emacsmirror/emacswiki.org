@@ -1,9 +1,9 @@
 ;;; look-mode.el --- quick file viewer for image and text file browsing
 
-;;; Copyright (C) 2008 Peter H. Mao
+;;; Copyright (C) 2008,2009 Peter H. Mao
 
 ;; Author: Peter H. Mao <peter.mao@gmail.com> <peterm@srl.caltech.edu>
-;; Version %Id: 9%
+;; Version %Id: 10%
 
 ;; look-mode.el is free software; you can redistribute it and/or modify it
 ;; under the terms of the GNU General Public License as published by
@@ -14,6 +14,14 @@
 ;; WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 ;; General Public License for more details.
+
+;;; Change log:
+;;
+;; 2009-10-02: fixed look-pwd to properly handle dirs with spaces
+;;
+;; 2009-08-21: added function look-at-this-file to fix bug in arxiv-reader
+;;
+;; 2009-01-08: fixed regexp in list-subdirectories-recursively
 
 ;;; Commentary:
 ;;
@@ -171,8 +179,10 @@ it to look-at-next-file"
   (setq look-subdir-list (list "./"));nil)
   (setq look-reverse-file-list nil)
   (setq look-current-file nil)
-  (setq look-pwd (replace-regexp-in-string "~" (getenv "HOME")
-                                           (cadr (split-string (pwd)))))
+  (setq look-pwd (replace-regexp-in-string 
+                  "~" (getenv "HOME")
+                  (replace-regexp-in-string 
+                   "^Directory " "" (pwd))))
   (let ((look-file-list (file-expand-wildcards look-wildcard))
         (fullpath-dir-list nil))
   ; use relative file names to prevent weird side effects with skip lists
@@ -270,6 +280,26 @@ list if it is not a regular file or symlink to one."
         )
     (look-no-more)
     )
+  (look-mode); assert look mode
+  (if (and look-current-file (featurep 'eimp)
+           (string-match "[Jj][Pp][Ee]?[Gg]" 
+                         (or (file-name-extension look-current-file) "")))
+      (eimp-fit-image-to-window nil) ; scale to window if its a jpeg
+    )
+  )
+
+(defun look-at-this-file ()
+  "reloads current file in the buffer"
+  (interactive); pass no args on interactive call
+  (kill-buffer look-buffer); clear the look-buffer
+  (switch-to-buffer look-buffer); reopen the look-buffer
+  (if look-current-file
+      (progn 
+        (insert-file-contents look-current-file) ; insert it into the *look* buffer
+        (if (eq major-mode default-major-mode)
+            (look-set-mode-with-auto-mode-alist t))
+        (look-update-header-line))
+    (look-no-more))
   (look-mode); assert look mode
   (if (and look-current-file (featurep 'eimp)
            (string-match "[Jj][Pp][Ee]?[Gg]" 

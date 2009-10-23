@@ -19,11 +19,9 @@ mailto="mailto:${mailto#mailto:}"
 mailto=$(printf '%s\n' "$mailto" | sed -e 's/[\"]/\\&/g')
 elisp_expr="(mailto-compose-mail \"$mailto\")"
 
-emacsclient -c -n --eval "$elisp_expr" \
+emacsclient -a "" -c -n --eval "$elisp_expr" \
 	'(set-window-dedicated-p (selected-window) t)'
 </pre>
-
-RichardRiley: 'emacsclient --alternate-editor="" -c' might be a better option here for some as it automatically starts the daemon and retries if not already running.
 
 == Emacs Lisp code : no gnus-posting-styles ==
 

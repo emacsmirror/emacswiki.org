@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Sep 17 13:54:41 2009 (-0700)
+;; Last-Updated: Thu Oct 22 09:43:17 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 516
+;;     Update #: 517
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -477,8 +477,8 @@ This is an Icicles command - see command `icicle-mode'.")
                                                            minibuffer-prompt-properties))
                     (minibuffer-setup-hook            minibuffer-setup-hook)
                     (minibuffer-text-before-history   minibuffer-text-before-history))
-                (setq candidate  (expand-file-name candidate
-                                                   (file-name-directory icicle-last-input)))
+                (setq candidate  (expand-file-name
+                                  candidate (icicle-file-name-directory icicle-last-input)))
                 (condition-case in-action-fn
                     ;; Treat 3 cases, because previous use of `icicle-candidate-action-fn'
                     ;; might have deleted the file or the window.
