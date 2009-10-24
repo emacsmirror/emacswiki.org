@@ -67,3 +67,7 @@ If the above code does not work for you reliably, or if you need some other lang
             guess-buffer-default)
         (kill-buffer)))))
 </pre>
+
+
+----
+CategorySpelling

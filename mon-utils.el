@@ -59,9 +59,11 @@
 ;;; `mon-string-chop-spaces', `mon-maptree', `mon-transpose', `plist-remove',
 ;;; `mon-dump-object-to-file'`mon-string-upto-index',
 ;;; `mon-string-after-index', `mon-line-strings-bq-qt-sym-bol',
-;;; `mon-kill-ring-save-w-props', `mon-generate-prand-id'
 ;;; `mon-get-env-variables', `mon-get-proc-w-name', 
 ;;; `mon-get-sys-proc-list', `mon-insert-sys-proc-list'
+;;; `mon-generate-prand-id', `mon-generate-prand-seed'
+;;; `mon-sha1-region', `mon-kill-ring-save-w-props', 
+;;; `mon-escape-string-for-cmd', `mon-line-strings-qt-region'
 ;;; FUNCTIONS:◄◄◄
 ;;; FUNCTIONS:###
 ;;; 
@@ -190,7 +192,24 @@
 ;;; (require 'mon-doc-help-CL)
 ;;; (require 'naf-skeletons)
 ;;; (require 'naf-mode)
+
 ;;; ==============================
+;;; :COURTESY Raphael Van Dyck :HIS km-frames.el :WAS `with-file-buffer'
+;;; :SEE (URL `http://www.algo.be/dev-logiciels.htm')
+;;; :CREATED <Timestamp: #{2009-10-23T15:17:35-04:00Z}#{09435} - by MON KEY>
+(defmacro mon-with-file-buffer (buffer-var file &rest body)
+  "Evaluate BODY with BUFFER-VAR bound to buffer visiting FILE.\n►►►"
+  (let ((file-var (make-symbol "file"))
+        (buffer-already-there-p-var (make-symbol "buffer-already-there-p")))
+    `(let* ((,file-var ,file)
+            (,buffer-var (get-file-buffer ,file-var))
+            (,buffer-already-there-p-var ,buffer-var))
+       (unless ,buffer-already-there-p-var
+         (setq ,buffer-var (find-file-noselect ,file-var)))
+       (unwind-protect
+            (progn ,@body)
+         (unless ,buffer-already-there-p-var
+           (kill-buffer ,buffer-var))))))
 
 ;;; ==============================
 ;;; :COURTESY `read-envvar-name' :FILE emacs/lisp/env.el
@@ -200,7 +219,7 @@
 When AS-STRINGS is non-nil or called with a prefix-arg return as strings.
 When insrtp or called-interactively insert returned vars at point.
 :SEE-ALSO `get-env', `process-environment', `initial-environment',
-`mon-help-emacs-introspect' \n►►►"
+`mon-help-emacs-introspect'.\n►►►"
   (interactive "P\ni\np")
   (let ((getenvs
          (mapcar (lambda (enventry)
@@ -250,31 +269,30 @@ Does not move point.\n
   (interactive)
   (save-excursion
     (newline)
-    (mapc
-     (lambda (x)
-       (princ 
-        (concat ";;;\n"
-                (pp x))
-        (current-buffer)))
+    (mapc (lambda (x)
+            (princ (concat ";;;\n" (pp x))(current-buffer)))
      (mon-get-sys-proc-list))))
 
 ;;; ==============================
 ;;; CREATED: <Timestamp: #{2009-10-16T16:34:48-04:00Z}#{09425} - by MON KEY>
 (defun mon-get-proc-w-name (comm)
-  "Return the `process-attributes' for Command name COMM.
+  "Return list of `process-attributes' lists for Command name COMM.
 COMM (a string) is an executable name. 
-On w32 it is not required give the .exe suffix.\n
+On w32 it is not required give the .exe suffix.
 :EXAMPLE\n\(mon-get-proc-w-name \"emacs\"\)\n
 :SEE-ALSO `mon-get-sys-proc-list',`mon-get-sys-proc-list'.\n►►►"
-  (let (fnd-proc)
-    (mapcar (lambda (x)
-              (let ((t-aso (assoc 'comm x)))
-                (if (string-match comm (cdr t-aso)) ;"emacs.exe"
-                    (setq fnd-proc x))))
+  (let (fnd-proc gthr)
+   (mapc (lambda (x)
+           (let ((t-aso (assoc 'comm x)))
+             (if (string-match comm (cdr t-aso)) ;"emacs.exe"
+                 (setq fnd-proc (cons x fnd-proc)))))
             (mon-get-sys-proc-list))
     fnd-proc))
 ;;
-;; :TEST-ME (mon-get-proc-w-name "emacs")
+;;; :TEST-ME (mon-get-proc-w-name "emacs")
+;;; :TEST-ME (mon-get-proc-w-name "svchost")
+;;; :TEST-ME (mon-get-proc-w-name "bubba")
+;;; (emacs-pid) 3064
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-10-06T16:04:09-04:00Z}#{09412} - by MON KEY>
@@ -1624,9 +1642,9 @@ When W/SPC is non-nil return string with whitespace interspersed.\n
   "Return current line of text in BUFFER as a string.
 When INSRTP is non-nil or called interactively insert return string at point. 
 Does not move-point.\n
-:SEE-ALSO `mon-line-strings-to-list', `mon-stringify-list',
-`mon-insert-string-ify', `mon-line-drop-in-words', `mon-string-ify-current-line',
-`mon-get-word-list-buffer'.\n►►►"
+:SEE-ALSO `mon-line-strings-qt-region', `mon-line-strings-to-list',
+`mon-stringify-list', `mon-insert-string-ify', `mon-line-drop-in-words',
+`mon-string-ify-current-line',`mon-get-word-list-buffer'.\n►►►"
 (interactive "i\ni\np")
 (let ((splt-str-s)
       (splt-str-e)
@@ -1655,8 +1673,9 @@ Neither SPLIT-ON nor DELIM have an effect when Invoked interactively.\n:EXAMPLE
 \(mon-string-ify-current-line\) split me to a list of strings
 \(mon-string-ify-current-line nil \"s\" \"S\"\) split me to a list of strings
 \(mon-string-ify-current-line nil nil \"|\"\) split me to a list of strings\n\n
-:SEE-ALSO `mon-line-strings-to-list', `mon-string-ify-list' ,`mon-insert-string-ify',
-`mon-string-split-line', `mon-line-drop-in-words', `mon-get-word-list-buffer'.\n►►►"
+:SEE-ALSO `mon-line-strings-qt-region', `mon-line-strings-to-list',
+`mon-string-ify-list', `mon-insert-string-ify', `mon-string-split-line',
+`mon-line-drop-in-words', `mon-get-word-list-buffer'.\n►►►"
   (interactive "p")
   (let* ((sp (if split-on " "))
 	 (dlm (cond (delim delim)
@@ -1686,8 +1705,59 @@ Neither SPLIT-ON nor DELIM have an effect when Invoked interactively.\n:EXAMPLE
 ;;; :TEST-ME (mon-string-ify-current-line nil \"s\" \"S\"\) split me to a list of strings
 ;;; :TEST-ME (mon-string-ify-current-line nil nil \"|\"\) split me to a list of strings
 
+;;; ==============================
+;;; CREATED: <Timestamp: #{2009-10-23T16:16:47-04:00Z}#{09435} - by MON KEY>
+(defun mon-line-strings-qt-region (start end &optional insertp intrp)
+  "Return symbols at each BOL in region wrapped in double-quotes `\"'.
+When INSERTP is non-nil or called-interactively replace active region and
+move point to region-beginning.
+Line's symbol should be without trailing whitespace.
+If whitespace is present at EOL it is destructively removed.
+When following characters are at BOL no replacement is peformed on symbol:
+  ;( ) ` ' \" Likewise, do not replace if \" or ' follows symbol.\n
+:NOTE will not quote symbols containing whitespace.
+:EXAMPLE\n\(princ (mon-line-strings-qt-region
+ \(1+ \(search-forward-regexp \"►\"\)\) \(- \(search-forward-regexp \"►\"\) 2\)\)\)
+\n►\nI-will-be-a-string\n\"I-am-almost-a-string\nI-am-a-half-string\"\n
+I-am-not-a-string'\n►\n 
+:SEE-ALSO `mon-line-strings-bq-qt-sym-bol', `mon-line-strings-to-list',
+`mon-string-ify-list', `mon-string-ify-current-line',
+`mon-string-split-line', `mon-line-drop-in-words'.\n►►►"
+  (interactive "r\ni\np")
+  (let (rtn-v)
+    (setq rtn-v (buffer-substring-no-properties start end))
+    (setq rtn-v
+          (with-temp-buffer 
+            (insert rtn-v)
+            (delete-trailing-whitespace)
+            (goto-char (buffer-end 0))
+            (while (not (= (line-end-position) (buffer-end 1)))
+              (beginning-of-line)            
+              (when (looking-at "^\\([^;`'()\"\\[:blank:]]\\)\\([\\[:graph:]]+[^\"']\\)$")
+                (replace-match (concat "\"" (match-string-no-properties 0) "\"")))
+              (forward-line 1)
+              (when (and (= (line-end-position) (buffer-end 1))
+                         (looking-at "^\\([^;`'()\\[:blank:]]\\)\\([\\[:graph:]]+\\([^\"']\\)\\)$"))
+                (replace-match (concat "\"" (match-string-no-properties 0) "\""))))
+            (buffer-substring-no-properties (buffer-end 0) (buffer-end 1))))
+    (if (or insertp intrp)
+        (save-excursion (delete-region start end) (insert rtn-v))
+        rtn-v)))
+;;
+;;; :TEST-ME
+;;; (princ (mon-line-strings-qt-region
+;;;  (1+ (search-forward-regexp "►")) (- (search-forward-regexp "►") 2)))
+;;,---- :UNCOMMENT-TO-TEST first case should pass, the rest fail
+;;|►
+;;|I-will-be-a-string
+;;|"I-am-almost-a-string
+;;|I-am-a-half-string"
+;;|I-am-not-a-string'
+;;|►
+;;`----
 
 ;;; ==============================
+;;; :MODIFICATIONS <Timestamp: #{2009-10-23T18:04:19-04:00Z}#{09435} - by MON KEY>
 ;;; :MODIFICATIONS <Timestamp: #{2009-10-16T14:30:28-04:00Z}#{09425} - by MON KEY>
 ;;; Updated to find with trailing symbols or (and EOL (not WSP)).
 ;;; :CREATED <Timestamp: #{2009-10-06T14:45:00-04:00Z}#{09412} - by MON KEY>
@@ -1703,9 +1773,9 @@ When following characters are at BOL no replacement is peformed on symbol:
 call-next-method &rest replacement-args
 `call-next-method &rest replacement-args
 call-next-method' &rest replacement-args\n►\n
-:SEE-ALSO `mon-line-strings-to-list', `mon-string-ify-list',
-`mon-string-ify-current-line', `mon-string-split-line',
-`mon-line-drop-in-words'.\n►►►"
+:SEE-ALSO `mon-line-strings-qt-region', `mon-line-strings-to-list',
+`mon-string-ify-list', `mon-string-ify-current-line',
+`mon-string-split-line', `mon-line-drop-in-words'.\n►►►"
   (interactive "r\ni\np")
   (let (rtn-v)
     (setq rtn-v (buffer-substring-no-properties start end))
@@ -1715,16 +1785,23 @@ call-next-method' &rest replacement-args\n►\n
             (goto-char (buffer-end 0))
             (while (not (= (line-end-position) (buffer-end 1)))
               (beginning-of-line)            
-              (when (looking-at "^\\([^;,.()<>`'#►]\\)[\\[:graph:]]+$")
+              (when (looking-at "^\\([^;,.()<>`'#► ]\\)[\\[:graph:]]+[^']$")
                 (replace-match (concat "`" (match-string-no-properties 0) "'")))
               (forward-line 1)
               (when (and (= (line-end-position) (buffer-end 1))
-                         (looking-at "^\\([^;,.()<>`'#►]\\)[\\[:graph:]]+$")
-                         (replace-match  (concat "`" (match-string-no-properties 0) "'")))))
+                         (or (looking-at "^\\([^;,.()<>`'#► ]\\)[\\[:graph:]]+[^' ]$")
+                             (looking-at "^\\([^;,.()<>`'#► ]\\)[\\[:graph:]]+[^' ]"))
+                (replace-match  (concat "`" (match-string-no-properties 0) "'")))))
             (goto-char (buffer-end 0))
-            (while (search-forward-regexp 
-                    "^\\([^;,.()<>`'#►\|\\[:blank:]][\\[:graph:]]+[^'\\[:blank:]]+\\)\\( \\)\\(.*\\)$" nil t)
-              (replace-match "`\\1'\\2\\3"))
+            ;; :WAS            
+            ;; (search-forward-regexp 
+            ;;  "^\\([^;,.()<>`'#►\|\\[:blank:]][\\[:graph:]]+[^'\\[:blank:]]+\\)\\( \\)\\(.*\\)$" nil t) 
+            ;;  (replace-match "`\\1'\\2\\3"))
+            (while 
+                (search-forward-regexp 
+                 "^\\([^;,.()<>`'#►\|\\[:blank:]]\\)\\([\\[:graph:]]+[^']\\)\\([^^']\\)\\([ ]\\{1,2\\}\\)\\(.*\\)$" nil t)
+              ;;^^^^^1^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^2^^^^^^^^^^^^^^^^^^^^^^^3^^^^^^^^^^4^^^^^^^^^^^^^^^^^5^^^^^^
+                 (replace-match "`\\1\\2' \\5"))
             (buffer-substring-no-properties (buffer-end 0) (buffer-end 1))))
     (if (or insertp intrp)
         (save-excursion (delete-region start end) (insert rtn-v))
@@ -1733,12 +1810,19 @@ call-next-method' &rest replacement-args\n►\n
 ;;; :TEST-ME
 ;;; (mon-line-strings-bq-qt-sym-bol 
 ;;;   (1+ (search-forward-regexp "►")) (- (search-forward-regexp "►") 2))
-;;,---- :UNCOMMENT-TO-TEST
+;;,---- :UNCOMMENT-TO-TEST (only the first 3 should succeed)
 ;;|►
-;;|call-next-method  &rest replacement-args
+;;|call-next-method
+;;|call-next-method &rest replacement-args
 ;;|call-next-method  &rest replacement-args
 ;;|`call-next-method  &rest replacement-args
 ;;|call-next-method' &rest replacement-args
+;;| call-next-method'  &rest replacement-args
+;;|`call-next-method
+;;|call-next-method'
+;;| call-next-method
+;;| call-next-method'
+;;| call-next-method
 ;;|►
 ;;`----
 
@@ -1760,7 +1844,8 @@ Mon Key\nMON\nMon\nMON KEY\n\n;; When W-CDR nil:
 `mon-line-string-rotate-namestrings', `mon-line-string-unrotate-namestrings'
 `mon-line-string-rotate-namestrings-combine', `mon-make-lastname-firstname', 
 `naf-make-name-for-lisp', `mon-make-names-list',`mon-string-ify-current-line', 
-`mon-string-ify-list', `mon-string-split-line', `mon-line-drop-in-words'.\n►►►"
+`mon-line-strings-qt-region', `mon-string-ify-list', `mon-string-split-line',
+`mon-line-drop-in-words'.\n►►►"
   (interactive "r\ni\nP\ni\np") ;; (interactive "r\nP\ni\ni\np") make w-cdr the pref arg
   (let ((start-reg start)
         (end-reg end)
@@ -1892,7 +1977,6 @@ Does not move point.\n
 ;;;    (1+ (search-forward-regexp "►")) (- (search-forward-regexp "►") 2))
 ;;; (mon-line-string-rotate-namestrings 
 ;;;    (1+ (search-forward-regexp "►")) (- (search-forward-regexp "►") 2) t)
-;;
 ;;,---- :UNCOMMENT-TO-TEST
 ;;|►
 ;;|George Charles Aid
@@ -1960,7 +2044,6 @@ Lovett (Robert Abercrombie)\n►\n
 ;;; :TEST-ME 
 ;;; (mon-line-string-unrotate-namestrings 
 ;;;    (1+ (search-forward-regexp "►")) (- (search-forward-regexp "►") 2))
-;;
 ;;,---- :UNCOMMENT-TO-TEST:
 ;;|►
 ;;|George Frost Kennan
@@ -2009,7 +2092,6 @@ Charles Julius Guiteau\n►\n:SEE-ALSO\n
 ;;; :TEST-ME 
 ;;; (mon-line-string-rotate-namestrings-combine
 ;;;    (1+ (search-forward-regexp "►")) (- (search-forward-regexp "►") 2))
-;;
 ;;,---- :UNCOMMENT-TO-TEST:
 ;;|►
 ;;|Emil Max Hödel
@@ -2310,6 +2392,20 @@ EXAMPLE:\n(mon-generate-prand-id)\n
 ;;;                 (setq i (1- i)))
 ;;;               (prin1 k))
 
+;;; ==============================
+;;; CREATED: <Timestamp: #{2009-10-21T14:27:09-04:00Z}#{09433} - by MON KEY>
+(defun mon-sha1-region (start end &optional insrtp intrp)
+  "Return the sha1sum for contents of region.
+When INSRTP is non-nil or called-interactively insert sha1 on newline.
+Does not move point.
+:SEE-ALSO `sha1-region', `sha1-string'.\n►►►."
+  (interactive "r\ni\np")
+  (eval-when-compile (require 'sha1))
+  (let ((sha1-r (sha1-region start end)))
+    ;; (sha1-string (buffer-substring-no-properties start end))))
+    (if (or insrtp intrp)
+        (save-excursion (newline)(princ sha1-r (current-buffer)))
+        sha1-r)))
 
 ;;; ==============================
 ;;; :RECTANGLE-RELATED-FUNCTIONS
@@ -2975,6 +3071,22 @@ to atom-func.\n
     `(loop ,@(car clauses) do (mon-loop ,(cdr clauses) ,@body))))
 
 ;;; ==============================
+;;; CREATED: <Timestamp: #{2009-10-22T17:58:11-04:00Z}#{09434} - by MON>
+(defun mon-escape-string-for-cmd (unescape a-string &rest more-strings)
+  "Return A-STRING escaped for passing to the w32 cmd.exe e.g `/' -> `\\\\'.
+When MORE-STRINGS is non-nil escape these also.
+When UNESCAPE is non-nil unescape A-STRING and/or MORE-STRINGS."
+  (let ((got-more-p (if more-strings
+                     (cons a-string more-strings)
+                     a-string))
+        (rgxp-rplc (if unescape
+                     #'(lambda (u)(replace-regexp-in-string  "\\\\" "/" u))
+                     #'(lambda (e)(replace-regexp-in-string "/" "\\\\" e)))))
+    (if (consp got-more-p)
+        (mapconcat rgxp-rplc got-more-p " ")
+        (funcall rgxp-rplc got-more-p))))
+
+;;; ==============================
 ;;; :MODIFICATIONS <Timestamp: Saturday May 30, 2009 @ 06:26.12 PM - by MON KEY>
 (defun mon-escape-lisp-string-region (start end)
   "Escape special characters in the region as if a lisp string.
@@ -2983,7 +3095,7 @@ Insert backslashes in front of special characters (namely  `\' backslash,
 requirements.\n\n:NOTE\n Don't run this on docstrings with regexps.\n
 Region should only contain the characters actually comprising the string
 supplied without the surrounding quotes.\n
-See also`mon-unescape-lisp-string-region'.\n►►►"
+:SEE-ALSO`mon-unescape-lisp-string-region', `mon-escape-string-for-cmd'.\n►►►"
   (interactive "*r")
   (save-excursion
     (save-restriction
@@ -3007,7 +3119,8 @@ See also`mon-unescape-lisp-string-region'.\n►►►"
   "Unescape special characters from the CL string specified by the region.
 This amounts to removing preceeding backslashes from characters they escape.\n
 :NOTE region should only contain the characters actually comprising the string
-without the surrounding quotes.\n:SEE-ALSO `mon-escape-lisp-string-region'.\n►►►"
+without the surrounding quotes.
+:SEE-ALSO `mon-escape-lisp-string-region',  `mon-escape-string-for-cmd'.\n►►►"
   (interactive "*r")
   (save-excursion
     (save-restriction

@@ -1,5 +1,8 @@
 This page collects some answers to questions asked on #emacs -- the EmacsChannel.
 
+[new]
+I never checked this page before, because I thought it was a FAQ about the Emacs channel which I don't visit. The content here should be moved to a more appropriate place on the wiki, because these are regular Emacs FAQs and they are not strictly related to the Emacs channel.
+
 == Installation ==
 
 Either get CVS GNU Emacs (a.k.a. Emacs 22) or XEmacs 21.  For new users, the differences between XEmacs and GNU Emacs are negligible.  Except where explicitly stated, this article applies equally to both.
@@ -227,6 +230,12 @@ commands.
 === How do I insert a character from its Unicode name? ===
 
 M-x ucs-insert
+
+== Buffers ==
+
+=== How can I display the full path to the current file in the mode line? ===
+
+See ModeLineDirtrack for a way to achieve this. If you just want to be able to discriminate files with the same file name [[uniquify]] offers a more elegant solution.
 
 == Shells ==
 

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2009, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Tue Oct 13 21:47:18 2009 (-0700)
+;; Last-Updated: Fri Oct 23 10:13:53 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 2260
+;;     Update #: 2265
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -177,6 +177,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2009/10/23 dadams
+;;     diredp-font-lock-keywords-1: Override `l' and `t' matches in headings with default face.
 ;; 2009/10/13 dadams
 ;;     Added: direp(-do)-bookmark.  Added to Multiple menu, and bound to M-b.
 ;; 2009/10/11 dadams
@@ -1361,6 +1363,8 @@ Don't forget to mention your Emacs and library versions."))
 (defvar diredp-font-lock-keywords-1
   (list
    '("^  \\(.+:\\)$" 1 diredp-dir-heading) ; Directory headers
+   '("^  wildcard.*$" 0 'default)       ; Override others, e.g. `l' for `diredp-other-priv'.
+   '("^  (No match).*$" 0 'default)     ; Override others, e.g. `t' for `diredp-other-priv'.
    '("[^ .]\\.\\([^. /]+\\)$" 1 diredp-file-suffix) ; Suffix
    '("\\([^ ]+\\) -> [^ ]+$" 1 diredp-symlink) ; Symbolic links
    ;; 1) Date/time and 2) filename w/o suffix:

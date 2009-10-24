@@ -7,9 +7,9 @@
 ;; Copyright (C) 2008-2009, Drew Adams, all rights reserved.
 ;; Created: Fri Feb 29 10:54:37 2008 (Pacific Standard Time)
 ;; Version: 20.0
-;; Last-Updated: Sat Aug  1 15:35:41 2009 (-0700)
+;; Last-Updated: Fri Oct 23 10:18:55 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 129
+;;     Update #: 132
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/ls-lisp+.el
 ;; Keywords: internal, extensions, local, files, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -52,6 +52,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2009/10/23 dadams
+;;     insert-directory: DTRT if count-dired-files returns 0.
 ;; 2009/04/26 dadams
 ;;     insert-directory: Bind inhibit-field-text-motion to t, just to be sure.
 ;; 2008/03/27 dadams
@@ -168,12 +170,14 @@ that work are: A a c i r S s t u U X g G B C R n and F partly."
 	  (goto-char (point-min))
           (while (re-search-forward "^total" nil t)
             (beginning-of-line)
-            (insert "files " (number-to-string (save-match-data
-                                                 (count-dired-files)))
-                    "/" (number-to-string
-                         (- (length (directory-files default-directory
-                                                     nil nil t)) 2))
-                    " ")
+            (let ((counted  (save-match-data (count-dired-files))))
+              (if (zerop counted)
+                  (insert "files 0/0 ")
+                (insert "files " (number-to-string counted)
+                        "/" (number-to-string
+                             (- (length (directory-files default-directory
+                                                         nil nil t)) 2))
+                        " ")))
             (goto-char (point-min))
             (re-search-forward "^files [0-9]+/[0-9]+ \\(total\\)" nil t)
             (replace-match "space used" nil nil nil 1)

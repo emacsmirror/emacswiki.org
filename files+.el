@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Fri Aug 11 14:24:13 1995
 ;; Version: 21.0
-;; Last-Updated: Sat Aug  1 15:24:45 2009 (-0700)
+;; Last-Updated: Fri Oct 23 10:16:43 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 545
+;;     Update #: 550
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/files+.el
 ;; Keywords: internal, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -54,6 +54,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2009/10/23 dadams
+;;     count-dired-files: Return 0 if search finds no file.
+;;     update-dired-files-count: DTRT if count-dired-files returns 0.
 ;; 2008/12/17 dadams
 ;;     Added defvar of directory-listing-before-filename-regexp, for Emacs 22.
 ;; 2008/03/04 dadams
@@ -611,23 +614,25 @@ and `..'."
   ;; $$$$ Should we skip `#' files also, as in `dired-trivial-filenames'?
   (save-excursion
     (re-search-backward "^$" nil 'to-bob)
-    (re-search-forward dired-move-to-filename-regexp nil t)
-    (let* ((beg (line-beginning-position))
-           (end (save-excursion (re-search-forward "^$" nil t)))
-           (dots-p (save-excursion      ; Is `..' present?
-                     (goto-char beg)
-                     (re-search-forward
-                      (concat directory-listing-before-filename-regexp
-                              "\\.\\./?$")
-                      end t))))
-      (if dots-p (- (count-lines beg end) 2) (count-lines beg end)))))
+    (if (not (re-search-forward dired-move-to-filename-regexp nil t))
+        0
+      (let* ((beg (line-beginning-position))
+             (end (save-excursion (re-search-forward "^$" nil t)))
+             (dots-p (save-excursion    ; Is `..' present?
+                       (goto-char beg)
+                       (re-search-forward
+                        (concat directory-listing-before-filename-regexp
+                                "\\.\\./?$")
+                        end t))))
+        (if dots-p (- (count-lines beg end) 2) (count-lines beg end))))))
 
 (add-hook 'dired-after-readin-hook 'update-dired-files-count)
 (defun update-dired-files-count ()
   "Update file count in Dired header for each directory listed."
   (save-restriction
     (widen)
-    (let ((num-files (number-to-string (count-dired-files))))
+    (let* ((num-files      (count-dired-files))
+           (str-num-files  (number-to-string num-files)))
       (save-excursion
         (goto-char (point-min))
         (while (re-search-forward "^  files \\([0-9]+\\)/\\([0-9]+\\)" nil t)
@@ -635,11 +640,12 @@ and `..'."
                 (map (make-sparse-keymap)))
             (define-key map [mouse-2] 'dired-mouse-describe-listed-directory)
             (define-key map "\r" 'dired-describe-listed-directory)
-            (replace-match (number-to-string (save-match-data (count-dired-files)))
-                           nil nil nil 1)
-            (replace-match (number-to-string
-                            (- (length (directory-files default-directory
-                                                        nil nil t)) 2))
+            (replace-match str-num-files nil nil nil 1)
+            (replace-match (if (zerop num-files)
+                               str-num-files
+                             (number-to-string
+                              (- (length (directory-files default-directory
+                                                          nil nil t)) 2)))
                            nil nil nil 2)
             (add-text-properties
              (save-excursion (beginning-of-line) (+ 2 (point))) (match-end 2)

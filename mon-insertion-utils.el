@@ -1,4 +1,3 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; This is mon-insertion-utils.el
 ;;; ================================================================
 ;;; DESCRIPTION:
@@ -19,7 +18,8 @@
 ;;; `mon-insert-CL-file-template', `mon-insert-CL-package-template',
 ;;; `mon-insert-user-name-cond', `mon-insert-system-type-cond',
 ;;; `mon-insert-gnu-licence', `mon-insert-gnu-licence-gfdl' 
-;;; `mon-build-copyright-string'
+;;; `mon-build-copyright-string', `mon-comput-33', `mon-comput-45'
+;;; `mon-insert-hgignore-template'
 ;;; FUNCTIONS:◄◄◄
 ;;;
 ;;; MACROS: 
@@ -31,6 +31,7 @@
 ;;; VARIABLES:
 ;;; `*mon-gnu-licences-header*'
 ;;; `*mon-gnu-license-header-gfdl*'
+;;; `*mon-hgignore-template*'
 ;;; 
 ;;; ALIASES:
 ;;;
@@ -1078,7 +1079,7 @@ Default is to return with 68 char length comment dividers.\n
     (mon-build-copyright-string nil nil monkey nil nil w-short-form)))
 ;;
 (defalias 'bug-insert-copyright 'mon-insert-copyright
-"Insert a copyright string with relevant details.
+  "Insert a copyright string with relevant details.
 Conditional upon `IS-BUG-P' returning t.
 :SEE-ALSO `mon-build-copyright-string'.\nUsed in `naf-mode'.\n►►►")
 ;;
@@ -1123,6 +1124,7 @@ GFDLv1.3 clause w/ Copyright <YYYY> <NAME> from: `*mon-gnu-license-header-gfdl*'
 ;;; %s provides {description here}.\n;;;
 ;;; FUNCTIONS:►►►\n;;;\n;;; FUNCTIONS:◄◄◄\n;;;
 ;;; MACROS:\n;;;
+;;; METHODS:\n;;;
 ;;; CLASSES:\n;;;
 ;;; CONSTANTS:\n;;;
 ;;; VARIABLES:\n;;;
@@ -1302,6 +1304,8 @@ Does not move point.\n:EXAMPLE\n(mon-insert-defclass-template nil 2)\n
           'identity 
           '("(%s%d>\n"
             "    :initarg :%s%d>\n"
+            ;; :SEE `typep', `type-of' 
+            ;; Also accepts: boolean, vector, hash-table, array, class-obj, sequence, etc.
             "    :type            ; {t, null, symbol, list, function, string ,integer, number, float}\n"
             "    :initform\n"
             "    :accessor        ; {generic-function-name}\n"
@@ -1458,6 +1462,65 @@ buffer to before proceeding with insertion.\n
 ;;
 ;;; :TEST-ME (call-interactively 'mon-insert-texi-template)
 
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-10-23T20:17:17-04:00Z}#{09436} - by MON KEY>
+(defvar *mon-hgignore-template* 
+  '("syntax: glob"
+    "**.7z"
+    "**.bmp"
+    "**.bz2"
+    "**.dvi"
+    "**.elc"
+    "**.eps"
+    "**.exe"
+    "**.gif"
+    "**.gz"
+    "**.jar"
+    "**.jpg"
+    "**.jpeg"
+    "**.last"
+    "**.msi"
+    "**.naf~"
+    "**.nosearch"
+    "**.pdf"
+    "**.png"
+    "**.ps"
+    "**.psd"
+    "**.rar"
+    "**.reg"
+    "**.tar"
+    "**.tgz"
+    "**.xbm"
+    "**.xpm"
+    "**.zip"
+    "**.Z"
+    "**#TAGS#"
+    "syntax: regexp"
+    "(.*\\~\\)"
+    "(.*\\#\\)")
+  "*List of strings containing glob and regexp patterns for insertion into .hgignore files.
+:CALLED-BY `mon-insert-hgignore-template'.")
+;;
+;;; :TEST-ME *mon-hgignore-template* 
+;;; (progn (makunbound '*mon-hgignore-template*) (unintern '*mon-hgignore-template*))
+
+;;; ==============================
+;;; CREATED: <Timestamp: #{2009-10-23T16:06:04-04:00Z}#{09435} - by MON KEY>
+(defun mon-insert-hgignore-template (&optional insrtp intrp)
+  "Insert MON standard list of patterns for .hgignore files.
+When INSERTP is non-nil or called-interactively insert at point.
+Does not move point. Patterns consist primarily of file extensions in glob and
+regexp formats.  Patterns held as a list of strings in variable
+`*mon-hgignore-template*'\n\n:EXAMPLE\n(mon-insert-hgignore-template)\n►►►"
+  (interactive "i\np")
+  (let ((hgignr (mapconcat 'identity *mon-hgignore-template* "\n")))
+    (if (or insrtp intrp)
+        (save-excursion (newline)(princ hgignr (current-buffer)))
+        hgignr)))
+;;
+;;; :TEST-ME (mon-insert-hgignore-template)
+
 ;;; ==============================
 ;;; :CREATED <Timestamp: Wednesday March 04, 2009 @ 06:16.40 PM - by MON KEY>
 ;;; :MODIFICATIONS <Timestamp: 2009-08-01-W31-6T16:03:23-0400Z - by MON KEY>
@@ -1489,6 +1552,65 @@ test-cases at point.\n
 ;;; :TEST-ME (mon-insert-test-cases t)
 ;;; :TEST-ME (mon-insert-test-cases)
 ;;; :TEST-ME (call-interactively 'mon-insert-test-cases)
+
+;;; ==============================
+;;; :NOTE (local-set-key "\C-c4" 'mon-comput-45)
+;;; CREATED: <Timestamp: #{2009-10-17T11:30:32-04:00Z}#{09426} - by MON>
+(defun mon-comput-45 (dollar &optional insrtp intrp)
+  "Given a DOLLAR amount compute 45% retained by DBC and Customer.
+When INSRTP is non-nil or called-interactively insert at point.
+Does not move-point.\n
+:EXAMPLE\n\(mon-comput-45 600 nil\)\n
+:RETURN
+:TO-PRICE-AT $600 (45% not-on-linen)
+:THEM-AT-LOW $330
+:OURS-AT-LOW $270\n
+:SEE-ALSO `mon-comput-33'\n►►►"
+  (interactive "nprice at low :\ni\np")
+  (let ((comp-45 
+         (format 
+          ":TO-PRICE-AT $%d (45%%)\n:THEM-AT-LOW $%d\n:OURS-AT-LOW $%d"
+          dollar
+          (abs (- (* dollar .45) dollar))
+          (abs (- (* dollar .55) dollar)))))
+    (if (or insrtp intrp)
+        (save-excursion (newline)
+                        (princ comp-45
+                               (current-buffer)))
+        comp-45)))
+;;
+;;; :TEST-ME (mon-comput-45 600)
+;;; :TEST-ME (mon-comput-33 600 t)
+;;
+
+;;; ==============================
+;;; :NOTE (local-set-key "\C-c3" mon-comput-33)
+;;; CREATED: <Timestamp: #{2009-10-17T11:30:06-04:00Z}#{09426} - by MON>
+(defun mon-comput-33 (dollar &optional insrtp intrp) 
+  "Given a DOLLAR amount compute 45% retained by DBC and Customer.
+When INSRTP is non-nil or called-interactively insert at point.
+Does not move-point.\n
+:EXAMPLE\n\(mon-comput-33 600 nil\)\n
+:RETURN
+:TO-PRICE-AT $750 (33%)
+:THEM-AT-HIGH $502
+:OURS-AT-HIGH $247\n
+:SEE-ALSO `mon-comput-45'\n►►►"
+  (interactive "nprice at high :\ni\np")
+  (let ((comp-33 
+         (format 
+          ":TO-PRICE-AT $%d (33%%)\n:THEM-AT-HIGH $%d\n:OURS-AT-HIGH $%d"
+          dollar
+          (abs (- (* dollar .33) dollar))
+          (abs (- (* dollar .67) dollar)))))
+    (if (or insrtp intrp)
+        (save-excursion (newline)
+                        (princ comp-33
+                               (current-buffer)))
+        comp-33)))
+;;
+;;; :TEST-ME (mon-comput-33 600)
+;;; :TEST-ME (mon-comput-33 600 t)
 
 ;;; ==============================
 ;;; WORKING-ON-THIS: AS-OF: 2009-07-18

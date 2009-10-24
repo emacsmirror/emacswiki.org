@@ -47,3 +47,6 @@ Now we need to tell ispell that wiki names must be skipped.  This is a little bi
           (setq case-fold-search nil))
         ad-do-it))
 </pre>
+
+----
+CategorySpelling

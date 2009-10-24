@@ -89,9 +89,10 @@ Here's how to use rfc2047.el that comes with Emacs:
 (autoload 'rfc2047-decode-region "rfc2047")
 (setq rmail-message-filter
       (lambda ()
-        (when (search-forward "\n\n" nil t)
-          (rfc2047-decode-region
-            (point-min) (match-beginning 0))))
+        (save-excursion
+          (when (search-forward "\n\n" nil t)
+            (rfc2047-decode-region
+              (point-min) (match-beginning 0)))))
       rmail-summary-line-decoder
       (function rfc2047-decode-string))
 </pre>

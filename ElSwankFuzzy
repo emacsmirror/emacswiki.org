@@ -1,0 +1,14 @@
+= Introduction =
+
+This program is based on the swank-fuzzy.lisp distributed SLIME itself.
+Thanks the CL implementation authors for that useful software.
+
+This file provides a single function, `el-swank-fuzzy-completions',
+which you can use for the SLIME/swank's FUZZY-COMPLETIONS alike completion function for Emacs Lisp.
+
+= Elisp =
+
+* Lisp:el-swank-fuzzy.el
+
+= Link =
+* [http://common-lisp.net/project/slime/doc/html/Fuzzy-Completion.html Fuzzy Completion - SLIME user Manual]

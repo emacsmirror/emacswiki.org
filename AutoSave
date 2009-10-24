@@ -68,5 +68,8 @@ Automatically save your changes after an customizable interval. Can be selective
 [new]
 What about to save file when emacs frame loose focus? -- VitalieLazu
 
+[new]
+To fix the problem of the buffer being considered out of date after an autosave to the file itself, you could put revert-buffer-no-confirm in auto-save-hook, assuming that this runs **after** the save itself. I accept no responsibility for list work. If this is wrong, someone please delete it. -RyanThompson
+
 ---- 
 CategoryFiles

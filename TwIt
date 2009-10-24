@@ -304,6 +304,8 @@ Just wrote a quick function to demonstrate what I would like to do with key bind
 
 -- BaoqiuCui
 
+I just added a function called twit-open-link to twit.el (and bumped the version number to 0.3.6).  The version I put in is different from the above quick & dirty bcui-twit-open-link.  Please let me know if you have any suggestions/questions.  -- BaoqiuCui
+
 == Archived Discussion ==
 I don't personally do the cell phone thing (it sounds irritating), but anyway, they got slashdotted yesterday.  I had never heard of them.  But it looked cool, so i joined and wrote twit.el.  I think i would like to broaden it--generalize it a bit and let users read friend's posts.  I am working on that....
 

@@ -1,9 +1,64 @@
 ;;; this is mon-time-utils.el
 ;;; ================================================================
 ;;; DESCRIPTION: 
-;;; Official my ass! (URL `http://viv.ebay.com/ws/eBayISAPI.dll?EbayTime')
-;;; Convert from 'eBay official time' to 'YOUR Official Time ®'
+;;; MON utilities for working with time. 
 ;;;
+;;; FUNCTIONS:►►►
+;;; `mon-get-current-year' `mon-format-iso-8601-time'
+;;; `mon-file-older-than-file-p' `mon-get-file-mod-times'
+;;; `mon-conv-time-flt-pnt' `mon-comp-times-flt-pnt'
+;;; `mon-accessed-time-stamp' `mon-stamp' `mon-accessed-stamp'
+;;; `mon-lisp-stamp' `mon-convert-ebay-time' `mon-convert-ebay-time-mvb'
+;;; `mon-cln-ebay-time-string' `mon-calculate-ebay-timezone-diff'
+;;; `mon-today'
+;;; FUNCTIONS:◄◄◄
+;;;
+;;; MACROS:
+;;;
+;;; METHODS
+;;;
+;;; CLASSES:
+;;; 
+;;; CONSTANTS:
+;;;
+;;; VARIABLES:
+;;; `*mon-timestamp-cond-alist*' 
+;;;
+;;; ALIASES/ADVISED/SUBST'D:
+;;;
+;;; MOVED:
+;;; `mon-comp-times-flt-pnt'     <- ./mon-dir-utils.el
+;;; `mon-conv-time-flt-pnt'      <- ./mon-dir-utils.el
+;;; `mon-file-older-than-file-p' <- ./mon-dir-utils.el
+;;; `mon-get-file-mod-times'     <- ./mon-dir-utils.el
+;;; `mon-accessed-stamp'         <- ./mon-insertion-utils.el
+;;; `mon-stamp'                  <- ./mon-insertion-utils.el
+;;; `mon-timestamp'              <- ./mon-insertion-utils.el
+;;; `mon-accessed-time-stamp'    <- ./mon-insertion-utils.el
+;;; `*mon-timestamp-cond-alist*' <- ./mon-dir-locals-alist.el
+;;;
+;;; DEPRECATED:
+;;; `mon-accessed-stamp' -> 
+;;;
+;;; RENAMED:
+;;;
+;;; REQUIRES:
+;;; mon-regexp-symbols.el -> 
+;;; `regexp-clean-ebay-month2canonical-style1'
+;;; `regexp-clean-ebay-month2canonical-style2'
+;;; `regexp-clean-ebay-month2canonical-style3'
+;;;
+;;; cl -> `mon-convert-ebay-time-mvb' -> `multiple-value-bind' 
+;;;
+;;; TODO:
+;;; Consider providing an optional arg `mon-cln-ebay-time-string'
+;;; to return the stamp without the call to `mon-convert-ebay-time'
+;;;
+;;; NOTES:
+;;; Originally motivated by a distaste 
+;;; for the promotion of EbayTime as `official' time - Official my ass!
+;;; Convert from 'eBay official time' to 'YOUR Official Time ®'
+;;; :SEE (URL `http://viv.ebay.com/ws/eBayISAPI.dll?EbayTime')
 ;;; There are at least three styles of ebay timestamp. 
 ;;; Apparently each is 'official'... 
 ;;; 
@@ -15,8 +70,8 @@
 ;;; None of these 3(three) styles can be processed with 'parse-time-string'
 ;;; without some cleaning. 
 ;;;
-;;; The function `mon-cln-ebay-time-string' returns an extended timestamp formatted
-;;; such as to allow multiple paths to further processing per ISO 8601 spec. 
+;;; The function `mon-cln-ebay-time-string' returns an extended timestamp 
+;;; formatted to allow further processing according to ISO 8601 spec. 
 ;;;
 ;;; The three ebay timestring styles are cleaned as follows:
 ;;;
@@ -29,59 +84,42 @@
 ;;; Aug-10-09 09:16:14 PDT       <-style3
 ;;; -> <Timestamp: #{2009-08-06T21:17:10-04:00Z}#{09325} - by Ebay>
 ;;;
+;;; If you don't like the default timestamp adjust 
+;;; format-time-string in tail of `mon-convert-ebay-time'
+;;;
 ;;; The form: `(put-tz (if (nth 7 (decode-time)) "PDT" "PST"))'
 ;;; in `mon-cln-ebay-time-string' assumes your Daylight-savings flag 
-;;; is in synch with the Northern Hemisphere. If it Summer in California
-;;; but Winter where you are you may want to swap PDT <-> PST
-;;; ...I hope i got that right :P
-;;;
-;;; FUNCTIONS:
-;;; `mon-get-current-year'
-;;; `mon-convert-ebay-time'
-;;; `mon-convert-ebay-time-mvb'
-;;; `mon-cln-ebay-time-string'
-;;; `mon-calculate-ebay-timezone-diff'
-;;; `mon-format-iso-8601-time'
-;;;
-;;; CONSTANTS or VARIABLES:
-;;; `regexp-clean-ebay-time-chars'
-;;; `regexp-clean-ebay-month2canonical-style1'
-;;; `regexp-clean-ebay-month2canonical-style2'
-;;; `regexp-clean-ebay-month2canonical-style3'
-;;;
-;;; MACROS:
-;;;
-;;; SUBST or ALIASES:
-;;;
-;;; DEPRECATED, RENAMED, OR MOVED:
-;;;
-;;; REQUIRES:
-;;; 'cl `mon-convert-ebay-time-mvb' -> `multiple-value-bind'
-;;;
-;;; TODO:
-;;; Consider providing an optional arg `mon-cln-ebay-time-string'
-;;; to return the stamp without the call to `mon-convert-ebay-time'
-;;;
-;;; NOTES:
-;;; If you should happen to find this code useful please drop eBay a line
-;;; and kindly request them to pry their Java loving heads out of their 
-;;; asses! What possible reason could there be to maintain at least 3(three)
-;;; different timestamp formats??? Also, consider appending a postscript 
-;;; requesting a reasonable explanation as to why in this _the 21st C_
-;;; (i.e. our glorious technological future) does eBay insist that the 
-;;; passage of time continue to be skewed towards PST and PDT... WTF!!!
+;;; is in synch with the Northern Hemisphere. 
+;;; If it is Summer in Califonria and Winter where you are you may want to
+;;; swap PDT <-> PST
 ;;;
 ;;; ==============================
+;;;
+;;; The timestamps generate by functions herein are of the form:
+;;;
+;;; <Timestamp: YYYY-MM-DD-Www-DTHH:MM:SS+/-HH:MMZ - by NAME>
+;;; <Timestamp: 2009-08-06-W32-4T19:41:42-04:00Z - by MON KEY>
+;;;
+;;; This format is not in keeping with RFC-3339 take on ISO-8601 
+;;; Specifically, it disregards the discussion presented in 
+;;; Section 5.4. Redundant Information:
+;;;
+;;;    If a date/time format includes redundant information, that introduces
+;;;    the possibility that the redundant information will not correlate.
+;;;    For example, including the day of the week in a date/time format
+;;;    introduces the possibility that the day of week is incorrect but the
+;;;    date is correct, or vice versa.  Since it is not difficult to compute
+;;;    the day of week from a date (see Appendix B), the day of week should
+;;;    not be included in a date/time format."
 ;;;
 ;;; The timestamps generate by functions herein are of the form:
 ;;;
 ;;; <Timestamp: #{YYYY-MM-DDTHH:MM:SS+/-HH:MMZ}#{yyWwD} - by NAME>
 ;;; <Timestamp: #{2009-08-06T21:17:10-04:00Z}#{09325} - by Ebay>
 ;;;
-;;; NOTE: `#{' is a reserved user dispatching macro char in CL
-;;;
-;;; This format is not at all in keeping with RFC-3339 or ISO-8601 w/re
-;;; the discussion presented in Section 5.4. Redundant Information:
+;;; This format is not in keeping with RFC-3339 take on ISO-8601 
+;;; Specifically, it disregards the discussion presented in 
+;;; Section 5.4. Redundant Information:
 ;;;
 ;;;   "If a date/time format includes redundant information, that introduces
 ;;;    the possibility that the redundant information will not correlate.
@@ -115,181 +153,156 @@
 ;;; a Tuesday... 
 ;;;
 ;;; SNIPPETS:
+;;; Other date & time related functions:
+;;; `mon-num-to-month'             -> ./naf-mode-replacements.el
+;;; `mon-abr-to-month'             -> ./naf-mode-replacements.el
+;;; `mon-month-to-num'             -> ./naf-mode-replacements.el
+;;; `mon-num-to-month-whitespace'  -> ./naf-mode-replacements.el
+;;; `mon-ital-date-to-eng'         -> ./naf-mode-replacements.el
+;;; `mon-defranc-dates'            -> ./naf-mode-replacements.el
 ;;;
 ;;; THIRD PARTY CODE:
 ;;;
 ;;; AUTHOR: MON KEY
 ;;; MAINTAINER: MON KEY
 ;;;
-;;; FILE CREATED:
+;;; PUBLIC-LINK: (URL `http://www.emacswiki.org/emacs/mon-time-utils.el')
+;;; FILE-PUBLISHED: <Timestamp: #{2009-08-06} - by MON KEY>
+;;;
+;;; FILE-CREATED:
 ;;; <Timestamp: Wednesday July 29, 2009 @ 07:46.54 PM - by MON KEY>
-;;;
-;;; KEYWORDS: time
-;;;
 ;;; ================================================================
-;; This file is free software; you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation; either version 2, or (at your option)
-;; any later version.
-;; This file is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; GNU General Public License for more details.
-;; You should have received a copy of the GNU General Public License
-;; along with GNU Emacs; see the file COPYING.  If not, write to the
-;; Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
-;; Boston, MA 02110-1301, USA.
+;;; This file is not part of GNU Emacs.
+;;;
+;;; This program is free software; you can redistribute it and/or
+;;; modify it under the terms of the GNU General Public License as
+;;; published by the Free Software Foundation; either version 3, or
+;;; (at your option) any later version.
+;;;
+;;; This program is distributed in the hope that it will be useful,
+;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;;; General Public License for more details.
+;;;
+;;; You should have received a copy of the GNU General Public License
+;;; along with this program; see the file COPYING.  If not, write to
+;;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
+;;; Floor, Boston, MA 02110-1301, USA.
 ;;; ================================================================
+;;; Permission is granted to copy, distribute and/or modify this
+;;; document under the terms of the GNU Free Documentation License,
+;;; Version 1.3 or any later version published by the Free Software
+;;; Foundation; with no Invariant Sections, no Front-Cover Texts,
+;;; and no Back-Cover Texts. A copy of the license is included in
+;;; the section entitled "GNU Free Documentation License".
+;;; A copy of the license is also available from the Free Software
+;;; Foundation Web site at:
+;;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
+;;; ================================================================
+;;; Copyright © 2009 MON KEY 
+;;; ==============================
 ;;; CODE:
 
-;;; ==============================
-;;; `mon-convert-ebay-time-mvb' -> `multiple-value-bind'
+;;;`mon-convert-ebay-time-mvb' -> `multiple-value-bind'
 (eval-when-compile (require 'cl)) 
+;;
+(require 'cl)
 
 ;;; ==============================
-;;; <Timestamp: Wednesday July 29, 2009 @ 06:19.33 PM - by MON KEY>
-(defvar regexp-clean-ebay-time-chars
-  '((44  32)
-    (40  32)
-    (41  32))
-  "Alist of chars to replace in ebay times.
-Used-by: `mon-cln-ebay-time-string'.
-Chars are all associated with char 32 SPC.
-44 -> ,\n40 -> (\n41 -> )\n
-EXAMPLE:
-\(August 07, 200913:52:24 PDT\) -> Aug 07  200913:52:24 PDT
-This type of string corresponds to the one corrected with regexps in:
-`regexp-clean-ebay-month2canonical-style1'.
-See also: `regexp-clean-ebay-month2canonical',`regexp-clean-ebay-month2canonical-style1',
-`regexp-clean-ebay-month2canonical-style2'.")
-
-;;test-me:
-;;(let ((pop-list))
-;;   (setq pop-list regexp-clean-ebay-time-chars)
-;;   (while pop-list
-;;     (princ (char-to-string (car (pop pop-list))) (current-buffer))))
-
-;;(progn (makunbound 'regexp-clean-ebay-time-chars)
-;; (unintern 'regexp-clean-ebay-time-chars))
+(require 'mon-regexp-symbols)
+;;; ==============================
 
 ;;; ==============================
-;;; <Timestamp: Wednesday July 29, 2009 @ 06:58.52 PM - by MON KEY>
-(defvar regexp-clean-ebay-month2canonical-style1
-  '(("(Jan " "January ") 
-    ("(Feb " "February ") 
-    ("(Mar " "March ") 
-    ("(Apr " "April ") 
-    ("(Jun " "June ") 
-    ("(Jul " "July ") 
-    ("(Aug " "August ") 
-    ("(Sep " "September ") 
-    ("(Sept " "September ") 
-    ("(Oct " "October ") 
-    ("(Nov " "November ")
-    ("(Dec " "December "))
-"Alist to clean ebay timestrings from eBay webpage.\n
-EXAMPLE:
-\(Aug 07, 200913:52:24 PDT\)\n
-Used-by: `mon-cln-ebay-time-string'.
-See also: `regexp-clean-ebay-time-chars' `regexp-clean-ebay-month2canonical',
-`regexp-clean-ebay-month2canonical-style2'.")
-
-;;;testme: regexp-clean-ebay-month2canonical-style1
-
-;;(progn (makunbound 'regexp-clean-ebay-month2canonical-style1) 
-;;       (unintern 'regexp-clean-ebay-month2canonical-style1))
+;;; :CREATED <Timestamp: Saturday July 18, 2009 @ 11:59.08 AM - by MON KEY>
+(defvar *mon-timestamp-cond-alist* nil
+  "*Alist of filenames which get alternative timestamp name strings.
+Value should be a string without whitespace, delemters or punctuation these will
+get added by the calling function according to heuristics there.\n
+Useful KEY VALUE pairs might include:
+ '\(\(\"Monkey-Related.fname\"  \"MON KEY\"\)
+ \(\"Mon-Related.fname\"  \"MON\"\)
+ \(\"Mon-Related.fname\"  \"Mon\"\)
+ \(\"Mon-Laptop.fname\"  \"Mon-Laptop\"\)
+ \(\"Bug-Related.fname\"  \"Bug\"\)\)\n
+Useful for file based conditional timestamping and obfuscationgs files/source posted
+to Internet.
+:SEE-ALSO `mon-timestamp', `mon-accessed-time-stamp',`mon-accessed-stamp'.\n►►►")
+;;
+(when (not (bound-and-true-p *mon-timestamp-cond-alist*))
+  (setq *mon-timestamp-cond-alist*
+        '(("emacs-load-files" "MON KEY")
+          ("naf-mode" "MON KEY")
+          ("reference-sheet-help-utils.el" "MON KEY")
+          ("mon-time-utils.el" "MON KEY"))))
+;;
+;;; :TEST-ME  *mon-timestamp-cond-alist*
+;;; :TEST-ME (assoc "reference-sheet-help-utils.el" *mon-timestamp-cond-alist*)
+;;;(progn (makunbound '*mon-timestamp-cond-alist*)
+;;;       (unintern '*mon-timestamp-cond-alist*) )
 
 ;;; ==============================
-;;; <Timestamp: Wednesday July 29, 2009 @ 06:58.46 PM - by MON KEY>
-(defvar regexp-clean-ebay-month2canonical-style2 
-  '(("Jan-" "January ") 
-    ("Feb-" "February ") 
-    ("Mar-" "March ") 
-    ("Apr-" "April ") 
-    ("Jun-" "June ") 
-    ("Jul-" "July ") 
-    ("Aug-" "August ") 
-    ("Sept-" "September ") 
-    ("Sep-" "September ") 
-    ("Oct-" "October ") 
-    ("Nov-" "November ") 
-    ("Dec-" "December "))
-"Alist to clean ebay timestrings from eBay.
-Style2 from eBay listing manager.
-
-EXAMPLE:
-Jul-29 11:05                 <-style2
-Used-by: `mon-cln-ebay-time-string'
-See also: `regexp-clean-ebay-time-chars' `regexp-clean-ebay-month2canonical-style3',
-`regexp-clean-ebay-month2canonical-style1'.")
-
-;;;testme: regexp-clean-ebay-month2canonical-style2 
-
-;;(progn (makunbound 'regexp-clean-ebay-month2canonical-style2) 
-;;       (unintern 'regexp-clean-ebay-month2canonical-style2))
+;;; :CREATED <Timestamp: #{2009-10-23T20:57:47-04:00Z}#{09436} - by MON KEY>
+(defun* mon-today (&key as-string as-symbol as-list-str as-list-num)
+  "Return today's date as YYYY-MM-DD
+When keyword AS-STRING is non-nil return date as a string.
+When keyword AS-SYMBOL is non-nil return date as a symbol.
+When keyword AS-LIST-STR is non-nil return date as a list of three strings.
+When keyword AS-LIST-NUM is non-nil return date as a list of three numbers.
+When keyword AS-VEC-STR is non-nil return date as a vector of three strings.
+When keyword AS-VEC-NUM is non-nil return date as a vector of three numbers.
+:EXAMPLE\n\(mon-today :as-string t\)\n\(mon-today :as-symbol t\)  
+\(mon-today :as-list-str t\)\n\(mon-today :as-list-num t\)
+\(mon-today :as-vec-str t\)\(mon-today :as-vec-num t\)
+:SEE-ALSO `mon-get-current-year', `mon-format-iso-8601-time'.\n►►►"
+  (let ((2day (format-time-string "%Y-%m-%d")))
+    (cond (as-string 2day)
+          (as-symbol (mon-string-to-symbol 2day))
+          (as-list-str  `(,(substring 2day 0 4)
+                           ,(substring 2day 5 7)
+                           ,(substring 2day 8 10)))
+          (as-list-num  (mapcar 'string-to-number
+                                (mon-today :as-list-str t)))
+          (as-vec-str (apply 'vector (mon-today :as-list-str t))
+          (as-vec-num (apply 'vector (mon-today :as-list-num t)))))))
+;;
+;;; :TEST-ME (mon-today :as-string t)
+;;; :TEST-ME (mon-today :as-symbol t)
+;;; :TEST-ME (mon-today :as-list-str t)
+;;; :TEST-ME (mon-today :as-list-num t)
+;;; :TEST-ME (mon-today :as-vec-str t)
+;;; :TEST-ME (mon-today :as-vec-num t)
 
 ;;; ==============================
 ;;; <Timestamp: Wednesday July 29, 2009 @ 06:24.19 PM - by MON KEY>
 (defun mon-get-current-year (&optional insertp intrp)
-(interactive "i\np")
+  "Return or insert current year at point.\n
+:SEE-ALSO `mon-today', `mon-format-iso-8601-time'.\n►►►"
+  (interactive "i\np")
   (let (cy)
     (setq cy (format "%s" (nth 5 (decode-time (current-time)))))
     (if (or insertp intrp)
         (princ cy (current-buffer))
       cy)))
-
-;;;test-me;(mon-get-current-year) 
-;;;test-me;(mon-get-current-year t)
-;;;test-me;(call-interactively 'mon-get-current-year)
+;;
+;;; :TEST-ME (mon-get-current-year) 
+;;; :TEST-ME (mon-get-current-year t)
+;;; :TEST-ME (call-interactively 'mon-get-current-year)
 
 ;;; ==============================
-;;; <Timestamp: Wednesday July 29, 2009 @ 05:12.02 PM - by MON KEY>
-(defvar regexp-clean-ebay-month2canonical-style3 'nil
-  "Alist to clean ebay timestrings from eBay.
-Used-by: `mon-cln-ebay-time-string'
-Style3 from eBay post listing email confirmations.\n
-Aug-10-09 09:16:14 PDT       <-style3
-See also: `regexp-clean-ebay-time-chars',`regexp-clean-ebay-month2canonical-style1',
-`regexp-clean-ebay-month2canonical-style2'.")
-;;
-(eval-when-compile ;;?needed?
-  (when (not (bound-and-true-p regexp-clean-ebay-month2canonical-style3))
-    (setq regexp-clean-ebay-month2canonical-style3
-          (let ((from-style2 regexp-clean-ebay-month2canonical-style2)
-                (sub-yr (subseq (mon-get-current-year) 2 4))
-                (Mmm-))
-            (setq Mmm- '())
-            (mapcar (lambda (x)
-                      (let* ((bld-rgxp (concat "\\("     ; 1 
-                                               "\\(%s\\)" ; 2 -> Mmm-
-                                               "\\([0-9]\\{2,2\\}\\)" ; 3 -> DD
-                                               "\\(-\\)" ; 4 -> hyphen post DD
-                                               "\\(%s\\)" ; 5 -> sub-yr
-                                               "\\( [0-9]\\{2,2\\}:[0-9]\\{2,2\\}:[0-9]\\{2,2\\} \\)" ; 6 -> " HH:MM:SS "
-                                               "\\(.*\\)" ; 7 -> TimeZone/ whatevers left 
-                                               "\\)"))
-                             (splc-rgxp (format bld-rgxp (car x) sub-yr)))
-                        (setq Mmm- 
-                              (cons (list splc-rgxp (cadr x)) Mmm-))))
-                    from-style2)
-          (nreverse Mmm-)))))
-
-
-;;;testme; regexp-clean-ebay-month2canonical-style3
-;;;testme;(car regexp-clean-ebay-month2canonical-style3) 
-;;;testme;(caar regexp-clean-ebay-month2canonical-style3) 
-;;;testme;(cdar regexp-clean-ebay-month2canonical-style3) 
-
-;;(progn (makunbound 'regexp-clean-ebay-month2canonical-style3) 
-;; (unintern 'regexp-clean-ebay-month2canonical-style3))
+;;; :CREATED <Timestamp: 2009-08-06-W32-4T14:55:01-0400Z - by MON KEY>
+;;; :COURTESY Edward O'Connor <hober0@gmail.com> 
+;;; SUBJECT: Re: Can `format-time-string' produce full/extended ISO 8601 times?
+;;; LIST: emacs-devel@gnu.org
+;;; DATE: 2009-08-06-W32-4T14:51:02-0400Z
 (defun mon-format-iso-8601-time (&optional time insertp intrp)
   "Returns ISO-8601 compliant timestring in 'Extended' format.
-EXAMPLE: \(mon-format-iso-8601-time\) 
-=> #{2009-08-06T21:17:10-04:00Z}#{09325}
+:EXAMPLE\n\(mon-format-iso-8601-time\)
+=> #{2009-08-06T21:27:13-04:00Z}#{09325}
+NOTE: `#{' is a reserved user dispatching macro char in CL
 When optional arg TIME is non-nil, it should have a format suitable for 
-processing with `format-time-string'.
+processing with `format-time-string'. 
 When INSERTP is non-nil or called interactively insert timestring at point.
-Vanilla format-time-string returns 'UTC offset/ZONE' in ISO-8601 'Basic format:\n
+Vanilla `format-time-string' returns 'UTC offset/ZONE' in ISO-8601 'Basic format:\n
  +/-time-hourtime-minute ->  +/- hhmm  -> \"-0500\"
 The standard's grammar spec is unclear w/re time-numoffset, and Emacs'
 has interpreted this as permiting mixtures of Extended/Basic format e.g.:\n
@@ -300,80 +313,346 @@ The current function extends Emacs' interpretation by colon delimiting the
 time-numoffset:
  +/-time-hour:time-minute ->  +/-hh:mm  -> \"-05:00\"\n
 Additionally, the \"Zulu\" or trailing Z of ISO-8601/rfc3339 appended to the UTC.\n
-See: 
+:SEE
 \(URL `http://isotc.iso.org/livelink/livelink/4021199/ISO_8601_2004_E.zip?func=doc.Fetch&nodeid=4021199')
 \(URL `http://www.ietf.org/rfc/rfc3339.txt') ;Date and Time on the Internet.
 \(URL `http://www.w3.org/TR/NOTE-datetime') ;W3C Specification about UTC Date and Time.
 \(URL `http://en.wikipedia.org/wiki/ISO-8601').
-\(URL `http://en.wikipedia.org/wiki/ISO_8601_usage')."
+\(URL `http://en.wikipedia.org/wiki/ISO_8601_usage').\n►►►"
   (interactive "i\ni\np")
   (let* ((colon-z-stamp 
           ;;(format-time-string "%Y-%m-%d-W%V-%uT%T%zZ" time))
-          ;;(format-time-string "%Y-%m-%dT%T%zZ" time))
-          ;; `#{' is a reserved user dispatching macro in CL      
+          ;;(format-time-string "%Y-%m-%d-W%V-%uT%T%zZ" time))
+          ;; NOTE: `#{' is a reserved user dispatching macro char in CL
            (format-time-string"#{%Y-%m-%dT%T%zZ}#{%y%V%u}" time)) 
-   (iso-8601-colon-stamp  
-          (format "%s:%s%s" 
+         (iso-8601-colon-stamp  
+          (format "%s:%s%s"  ;"%s:%s" 
                   (substring colon-z-stamp  0 -12) ;0 -3) 
                   (substring colon-z-stamp 24 28)
-                  (substring colon-z-stamp 28)
+                  (substring colon-z-stamp 28) ;-3)
                   )))
     (if (or insertp intrp)
         (insert iso-8601-colon-stamp)
       iso-8601-colon-stamp)))
+;;
+;;; :TEST-ME (mon-format-iso-8601-time)
+;;; :TEST-ME (mon-format-iso-8601-time nil t)
+;;; :TEST-ME (call-interactively 'mon-format-iso-8601-time)
 
-;;;test-me;(mon-format-iso-8601-time)
-;;;test-me;(mon-format-iso-8601-time nil t) 
-;;;test-me;(call-interactively 'mon-format-iso-8601-time)
-;;;#{2009-08-06T21:17:10-04:00Z}#{09325}
+;;; ==============================
+;;; Why this isn't already a default function I'll never know...
+;;; :CREATED <Timestamp: Wednesday June 03, 2009 @ 08:07.05 PM - by MON KEY>
+(defun mon-file-older-than-file-p (file1 file2)
+  "t when FILE1 is older than FILE2.\n
+:SEE-ALSO `file-newer-than-file-p'.\n►►►"
+  (let ((fepf1 (if (file-exists-p file1) t (error (format "file does not exist: %s" file1))))
+	(fepf2 (if (file-exists-p file1) t (error (format "file does not exist: %s" file1)))))
+    (not (file-newer-than-file-p file2 file2))))
+
+;;; ==============================
+;;; :CREATED <Timestamp: Friday May 15, 2009 @ 01:16.43 PM - by MON KEY>
+(defun mon-get-file-mod-times (file-or-dir)
+  "Return formatted string for file FILE-OR-DIR's modification and accessed time.
+Formatted string also informs if FILE-OR-DIR is a dir.\n
+:EXAMPLE\n\(mon-get-file-mod-times mon-user-emacsd\)\n
+\"file is directory: last-modified: Tue May 19 19:37:14 2009 last-accessed: Wed May 20 10:27:44 2009\"\n
+:SEE-ALSO `file-newer-than-file-p', `file-attributes', `current-time', 
+`decode-time', `encode-time', `with-decoded-time-value' `encode-time-value',
+`time-subtract', `current-time-string', `format-time-string',`format-seconds', 
+`float-time'.\n►►►"
+  (let* ((get-attr (file-attributes file-or-dir))
+	 (last-acc (nth 4 get-attr))
+	 (last-mod (nth 5 get-attr))
+	 (last-modified (current-time-string last-mod))
+	 (last-accessed (current-time-string last-acc))
+	 (f-type (if (nth 0 get-attr)
+		     "is directory"
+		   "not directory")))
+    (format "file %s: last-modified: %s last-accessed: %s" f-type last-modified last-accessed)))
+;;
+;;; :TEST-ME (mon-get-file-mod-times mon-user-emacsd)
+;;; :TEST-ME (mon-get-file-mod-times "u:/NEFS_PHOTOS/Nef_Drive2/EBAY/BMP-Scans/e1038/")
+;;; :TEST-ME (mon-get-file-mod-times "u:/NEFS_PHOTOS/Nef_Drive2/EBAY/BMP-Scans/e1038/e1038-0.bmp")
+;;; file-newer-than-file-p filename1 filename2
+
+;;; ==============================
+;;; :CREATED <Timestamp: Wednesday May 20, 2009 @ 04:54.25 PM - by MON KEY>
+(defun mon-conv-time-flt-pnt (&optional time)
+  "Time is a floating point number (fractions of 1 hour).
+e.g. \(/ (+ (* HIGH-bit  65536.0) LOW-bit) 3600.0)\n
+NOTE: Not acccurate to microsecond. Take care comparing object timestamps.
+Function lifted from `ido.el's `ido-time-stamp'.\n
+:EXAMPLE\n\(mon-conv-time-flt-pnt (nth 4 (file-attributes \"~/.emacs\")))
+  ;=>345113.5183333333\n►►►"
+  (let (op-time)
+    (setq op-time (or time (current-time)))
+    (/ (+ (* (car op-time) 65536.0)  (cadr op-time)) 3600.0)))
+;;
+;;; :TEST-ME (mon-conv-time-flt-pnt (current-time))=>345237.03194444446
+;;; :TEST-ME (mon-conv-time-flt-pnt)
+;;; :TEST-ME (mon-conv-time-flt-pnt (nth 4 (file-attributes "~/.emacs")))
+
+;;; ==============================
+;;; :CREATED <Timestamp: Wednesday May 20, 2009 @ 04:54.25 PM - by MON KEY>
+(defun mon-comp-times-flt-pnt (&optional t1 t2)
+  "Test if time T1 is greater than time T2.
+T indicates that T1 is more rerent than T2.
+When T1 or T2 is nil value defaults to `current-time'.\n
+T1 and T2 are the first _two_ integers of time-value list
+per three integer list returned from current-time e.g.\(18963 22549 531000).
+Where it is supplied the third integer  microsecond count (cddr) is dropped.\n
+:EXAMPLE
+\(mon-comp-times-flt-pnt 
+  (current-time) ;<--T1 is now!
+  '(18963 22549 531000)) ;<--T2 is in the past.\n; => t
+\(mon-comp-times-flt-pnt '(18963 22549 531000) (current-time)) ;=> nil 
+\(mon-comp-times-flt-pnt '(18963 22549 531000))
+\(current-time-string '(18963 22549 531000))
+ ;=>\"Tue May 19 21:08:37\" <--T2's value converted to human speak.\n►►►"
+(let ((got-t1 (if t1 t1	nil))
+      (got-t2 (if t2 t2	nil)))
+  (> (mon-conv-time-flt-pnt got-t1) (mon-conv-time-flt-pnt got-t2))))
+
+;;; =======================
+;;; :DEPRECATED
+(defun mon-accessed-time-stamp ()
+  ":DEPRECATED Build the function for inserting shortform time-stamps.\n
+:SEE-ALSO `mon-accessed-stamp', `mon-timestamp', `mon-stamp'.\n
+Used in `naf-mode'.\n►►►"
+  (insert (format-time-string "%A %B %d, %Y")))
+;;
+;;; :TEST-ME (mon-accessed-time-stamp)
+
+;;; ==============================
+;;; :CREATED <Timestamp: Saturday July 18, 2009 @ 05:35.09 PM - by MON KEY>
+(defun* mon-timestamp (&key intrp accessed naf insertp) 
+  "Core timestamp generating conditional timestamps for insertion from calling
+functions. Builds Extended ISO 8601 Timestamp using `mon-format-iso-8601-time'.\n
+When kewyord :ACCESSED is non-nil generates and accessed style timestamp.
+When kewyord :NAF is non-nil generates a naf-mode style timestamp.
+When kewyord :INSERTP is non-nil insert style of timestamp at point. Default 
+is used when called interactively: \"Saturday January 10, 2009 @ 06:43.25 PM\"\n
+Function is optimized to take advantage unique stamp NAME using file alist lookups to 
+`*mon-timestamp-cond-alist*'. When filename is a member of that list keyword args
+are still in effect but use the NAME value associated with buffer-filename.\n
+:SEE-ALSO `mon-accessed-time-stamp', `mon-timestamp', `mon-stamp'.\n►►►"
+  (interactive (list :intrp t))
+  (let* ((ts (cond 
+              (accessed (mon-format-iso-8601-time))
+              (naf (mon-format-iso-8601-time))
+              (t (mon-format-iso-8601-time))))
+         ;; If we are in a buffer with a filename to associate, does it associate?
+         (cond-name
+           (let (cn)
+             (when (mon-buffer-written-p)
+               (cond ((assoc (mon-get-buffers-parent-dir) *mon-timestamp-cond-alist*)
+                      (setq cn (cadr (assoc (mon-get-buffers-parent-dir) *mon-timestamp-cond-alist*))))
+                     ((assoc (file-name-nondirectory (buffer-file-name)) *mon-timestamp-cond-alist*)
+                      (setq cn (cadr (assoc (file-name-nondirectory (buffer-file-name)) *mon-timestamp-cond-alist*))))))
+             (unless (mon-buffer-written-p)
+               (cond  ((assoc (mon-get-buffers-parent-dir) *mon-timestamp-cond-alist*)
+                       (setq cn (cadr (assoc (mon-get-buffers-parent-dir) *mon-timestamp-cond-alist*))))
+                      ((assoc (buffer-name) *mon-timestamp-cond-alist*)
+                       (setq cn (cadr (assoc (buffer-name) *mon-timestamp-cond-alist*))))))
+             cn))
+         (name (cond
+                (cond-name
+                 (cond (accessed (concat " - " cond-name))
+                      (naf (concat " - by " cond-name ">"))
+                      (t (concat " - by " cond-name ">"))))
+                ((or IS-MON-P-W32 (equal user-real-login-name  (cadr (assoc 5 *MON-NAME*))))
+                 (cond (accessed " - MON") ;!dont replace me
+                       (naf " - by MON>") ;!dont replace me
+                       (t "")))
+                ((or IS-MON-P-GNU 
+                     (and (equal system-type 'gnu/linux)
+                      (equal user-real-login-name (cadr (assoc 5 *MON-NAME*)))))
+                 (cond (accessed " - MON-Laptop") 
+                       (naf " - by MON-Laptop>") 
+                       (t "")))
+                ((or IS-BUG-P 
+                     IS-BUG-P-REMOTE
+                     (equal user-real-login-name  (cadr (assoc 6 *BUG-NAME*))))
+                 (cond (accessed " - BUG")
+                       (naf " - by BUG>")
+                       (t "")))
+                (t (cond (accessed " - ANONYMOUS")
+                        (naf " - by ANONYMOUS>")
+                       (t "")))))
+        (put-stamp (concat ts name)))
+    (if (or intrp insertp) 
+        (insert put-stamp)
+      put-stamp)))
+;;
+;;; :TEST-ME (mon-timestamp)
+;;; :TEST-ME (mon-timestamp :insertp t)#{2009-08-24T15:43:45-04:00Z}#{09351} - by MON KEY>
+;;; :TEST-ME (mon-timestamp :accessed t)
+;;; :TEST-ME (mon-timestamp :accessed t :insertp t)#{2009-08-24T15:43:36-04:00Z}#{09351} - MON KEY
+;;; :TEST-ME (mon-timestamp :naf t)
+;;; :TEST-ME (mon-timestamp :naf t :insertp t) ;-> #{2009-08-24T15:43:21-04:00Z}#{09351} - by MON KEY>
+;;; :TEST-ME (mon-timestamp)
+;;; :TEST-ME (call-interactively 'mon-timestamp)
+;;; :TEST-ME (cadr (assoc "reference-sheet-help-utils.el" *mon-timestamp-cond-alist*))
+
+;;; =======================
+;;; :NOTE Use with (add-hook 'write-file-hooks 'mon-stamp) ??
+;;; :CREATED <Timestamp: Thursday February 19, 2009 @ 06:31.47 PM - by MON KEY>
+(defun mon-stamp (&optional insertp intrp)
+  "Return timestamp per a conditional test on user-name and/or system-type.
+Insert following formatted date/time at point:
+\"<Timestamp: #{2009-08-11T14:42:37-04:00Z}#{09332} - by by MON KEY>\"\n
+Stamp is fontlocked when invoked from a `naf-mode' buffer.\n
+:SEE-ALSO `mon-timestamp', `mon-accessed-time-stamp', `mon-accessed-stamp',
+`mon-file-stamp', `mon-lisp-stamp', `*mon-timestamp-cond-alist*'.\n►►►"
+  (interactive "i\np")
+  (let ((tstmp (format  "<Timestamp: %s" (mon-timestamp :naf t))))
+    (if (or insertp intrp)
+        (insert tstmp)
+      tstmp)))
+;;
+;;; :TEST-ME (mon-stamp) 
+;;; :TEST-ME (mon-stamp t)
+;;; :TEST-ME (call-interactively 'mon-stamp) 
+
+;;; ==============================
+;;; :CREATED <Timestamp: Saturday July 18, 2009 @ 05:23.47 PM - by MON KEY>
+;;; :NOTE adjust code that calls this programatically to use t
+(defun mon-accessed-stamp (&optional insertp commented intrp)
+  "Return an 'accessed date' timestamp string.
+When INSERTP or called interactively insert at accessed stamp at point.
+If COMMENTED is non-nil or called interactively with prefix arg returns with a 
+';;; ACCESSED: ' Prefix - default is 'accessed: '.
+Invoked from a `naf-mode' buffer acessed-stamp fontlocked by
+`naf-mode-accessed-by-flag'.\n
+:EXAMPLE\n\(mon-accessed-stamp\)\n\(mon-accessed-stamp nil t\)\n
+:SEE-ALSO `mon-accessed-time-stamp', `mon-timestamp', `mon-stamp',
+`mon-lisp-stamp', `mon-file-stamp'.\n►►►"
+  (interactive "i\nP\np")
+  (let ((tstmp (if commented
+                   (concat ";;; ACCESSED: " (mon-timestamp :accessed t))
+                 (concat "accessed: " (mon-timestamp :accessed t)))))
+    (if (or insertp intrp)
+        (insert tstmp)
+      tstmp)))
+;;
+;;; :TEST-ME (mon-accessed-stamp)
+;;; :TEST-ME (mon-accessed-stamp t)
+;;; :TEST-ME (mon-accessed-stamp t t)
+;;; :TEST-ME (mon-accessed-stamp nil t)
+;;; :TEST-ME (call-interactively 'mon-accessed-stamp)
+
+;;; ==============================
+;;; :MODIFICATIONS <Timestamp: #{2009-10-23T18:06:13-04:00Z}#{09435} - by MON KEY>
+;;; :CREATED <Timestamp: 2009-08-06-W32-4T15:18:23-0400Z - by MON KEY>
+(defun mon-lisp-stamp (&optional insertp intrp modifications)
+  "Return or insert at point a `comment-divider' newline and `mon-stamp'.
+When INSERTP is non-nil or called interactively timestap insert at point.
+When MODIFICATIONS is non-nil or called interactively with Prefix Arg.
+Returns with a ';;; MODIFICATIONS: ' prefix -default is ';;; CREATED: '
+Use after creating new elisp functions to delimit and date them.\n
+:EXAMPLE\n\(mon-insert-lisp-stamp\)\n\(mon-insert-lisp-stamp nil nil t\)\n
+:SEE-ALSO `mon-insert-lisp-stamp', `mon-file-stamp',  `mon-insert-copyright',
+`mon-insert-lisp-testme', `mon-insert-lisp-CL-file-template', `comment-divider',
+`comment-divider-to-col-four', `mon-insert-lisp-evald'.\n►►►"
+  (interactive "i\np\nP")
+  (let* ((tstmp 
+          (if modifications
+              (concat ";;; :MODIFICATIONS <Timestamp: "(mon-timestamp :naf t ))
+            (concat ";;; :CREATED <Timestamp: "(mon-timestamp :naf t ))))
+         (f-tstmp 
+          (if (or insertp intrp)
+              (concat "\n;;; ==============================\n"  tstmp)
+            (concat ";;; ==============================\n"  tstmp))))
+    (if (or insertp intrp)
+        (insert f-tstmp)
+      f-tstmp)))
+;;
+;;; :TEST-ME (mon-lisp-stamp)
+;;; :TEST-ME (mon-lisp-stamp t)
+;;; :TEST-ME (mon-lisp-stamp nil nil t)
+;;; :TEST-ME (mon-lisp-stamp t nil t)
+;;; :TEST-ME (call-interactively 'mon-lisp-stamp)
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-08-24T15:46:26-04:00Z}#{09351} - by MON KEY>
+(defun mon-file-stamp (&optional insertp intrp w/url)
+  "Return a file header with timestamp prepended with \";;; FILE-CREATED:\".
+When optional arg W/URL is non-nil wrap the URL with \(URL `'\) and include it 
+on a second line as: \";;; \(URL `http://some-url.com'\)\". When insertp is 
+non-nil or called interactively insert string(s) in buffer, don't move point.
+When inserting if point is not equal point-min prepends a newline prior to 
+inserting.\n:EXAMPLE\n\(mon-file-stamp nil nil \"http://emacswiki.com\")\n
+:SEE-ALSO `mon-lisp-stamp', `mon-timestamp', `mon-stamp', `mon-accessed-stamp'.
+►►►"
+  (interactive "i\np\nP")
+  (let* ((the-url (cond ((and intrp w/url)
+                         (concat "\n;;; SOURCE: (URL `" (read-string "URL to wrap :") "')"))
+                        ((and (not intrp) w/url) 
+                         (concat "\n;;; SOURCE: (URL `"  w/url "')"))
+                        (t "")))
+         (f-tstmp (concat ";;; FILE-CREATED: <Timestamp: "(mon-timestamp :naf t )
+                          the-url
+                          "\n;;; ==============================\n")))
+    (if (or intrp insertp) 
+        (save-excursion 
+          (if (= (point) (point-min))
+              (insert f-tstmp)
+            (progn            
+              (newline) (insert f-tstmp))))
+      f-tstmp)))
+;;
+;;; :TEST-ME (mon-file-stamp)
+;;; :TEST-ME (mon-file-stamp nil nil "http://wikipedia.com")
+;;; :TEST-ME (mon-file-stamp t)
+;;; :TEST-ME (mon-file-stamp nil t "http://wikipedia.com")
+;;; :TEST-ME (call-interactively 'mon-file-stamp)
 
 ;;; ==============================
 ;;; <Timestamp: 2009-07-30-W31-4T20:03:12-0400Z - by MON KEY>
 (defun mon-convert-ebay-time (time-string)
   "Parse an ebay-time-string encode -> decode it.
-Used as a helper function with `mon-cln-ebay-time-string'
+Used as a helper funcition with `mon-cln-ebay-time-string'
 to return an timestamp with a timestring appropriate to `current-time-zone'.\n
-EXAMPLE:
-\(mon-convert-ebay-time \"29 Jul 2009 Tuesday 11:05:27 PDT\")\n
-Background:
-`encode-time' wants time values as:
+:EXAMPLE\n\(mon-convert-ebay-time \"29 Jul 2009 Tuesday 11:05:27 PDT\")\n
+:NOTE(S) `encode-time' wants time values as:
 second, minute, hour, day, month, year, and optional zone
 but, `decode-time' and `parse-time-string' both return: 
-\(SEC MINUTE HOUR DAY MONTH YEAR DOW DST  ZONE\)
-\(37  9      15   29  7     2009  3   t   -14400\)"
+\(SEC MINUTE HOUR DAY MONTH YEAR DOW DST ZONE\)
+\(37  9      15   29  7     2009  3  t   -14400\)
+\(0   1       2    3  4        5  6  7   8\)\n►►►"
   (let* ((ts (parse-time-string time-string))
-         (sec (car ts)) ;SEC            ;
-         (min (cadr ts)) ;MINUTE        ;
-         (hr (caddr ts)) ;HOUR          ;
-         (day (cadddr ts)) ;DAY         ;
-         (mon (car (cddddr ts))) ;MONTH ;
-         (yr (cadr (cddddr ts))) ;YEAR  ;
-         (dow (caddr (cddddr ts))) ;DOW ;
-         (dst (cadddr (cddddr ts))) ;DST ;
-         (tz (car (last ts))) ;ZONE     ;
-         (et)
-         (dt))
+         (sec (nth 0 ts))               ;SEC
+         (min (nth 1 ts))               ;MINUTE
+         (hr  (nth 2 ts))               ;HOUR
+         (day (nth 3 ts))               ;DAY
+         (mon (nth 4 ts))               ;MONTH
+         (yr  (nth 5 ts))               ;YEAR
+         (dow (nth 6 ts))               ;DOW
+         (dst (nth 7 ts))               ;DST
+         (tz  (nth 8 ts))               ;TZ
+         (et)) ;;`(,sec ,min ,hr ,day ,mon ,yr ,dow ,dst ,tz))
     (setq et (encode-time sec min hr day mon yr dow tz))
     ;; (format-time-string "<Timestamp: %Y-%m-%d-W%V-%uT%T%zZ - by Ebay>" et)))
-    (concat "<Timestamp: " (mon-format-iso-8601-time et) " - by Ebay>")))
-            
-;;;test-me;(mon-convert-ebay-time "29 Jul 2009 Tuesday 11:05:27 PDT")
+    (concat "<Timestamp: "
+            (mon-format-iso-8601-time et)
+            " - by Ebay>")))
+;;
+;;; :TEST-ME (mon-convert-ebay-time "29 Jul 2009 Tuesday 11:05:27 PDT")
 
 ;;; ==============================
-;;; CREATED: <Timestamp: 2009-08-04-W32-2T12:43:38-0400Z - by MON KEY>
+;;; :CREATED <Timestamp: 2009-08-04-W32-2T11:58:14-0400Z - by MON KEY>
 (defun mon-convert-ebay-time-mvb (time-string)
-"Like `mon-convert-ebay-time' but uses CL's `multiple-value-bind'."
   (multiple-value-bind 
       (sec min hr day mon yr dow dst tz) 
       (parse-time-string time-string)
-    ;; (format-time-string "<Timestamp: %Y-%m-%d-W%V-%uT%T%zZ - by Ebay>"
-    ;; (encode-time sec min hr day mon yr dow tz)
-    ;; )))
+    ;; (format-time-string
+    ;;  "<Timestamp: %Y-%m-%d-W%V-%uT%T%zZ - by Ebay>"
+    ;;  (encode-time sec min hr day mon yr dow tz))))
     (concat "<Timestamp: " 
             (mon-format-iso-8601-time (encode-time sec min hr day mon yr dow tz))
             " - by Ebay>")))
-
-;;;test-me;(mon-convert-ebay-time-mvb "29 Jul 2009 Tuesday 11:05:27 PDT")
+;;
+;;; :TEST-ME (mon-convert-ebay-time-mvb "29 Jul 2009 Tuesday 11:05:27 PDT")
 
 ;;; ==============================
 ;;; <Timestamp: Wednesday July 29, 2009 @ 06:36.54 PM - by MON KEY>
@@ -409,12 +688,13 @@ United States!\)
 When optional ARG insertp is non-nil converted timestring is inserted at point.
 Called intereactively processes the ebay time-string in region as per above.
 Replaces existing time-string in region with converted form.\n
-EXAMPLE:
+:EXAMPLE
 \(mon-cln-ebay-time-string \"\(Jul 29, 200911:05 PDT\)   <-style1
 \(mon-cln-ebay-time-string \"Jul-29 11:05\"\)   <-style2
 \(mon-cln-ebay-time-string \"Aug-10-09 09:16:14 PDT\") <- style3
-See also: `regexp-clean-ebay-time-chars', `regexp-clean-ebay-month2canonical-style1',
-`regexp-clean-ebay-month2canonical-style2',`regexp-clean-ebay-month2canonical-style3'."
+:SEE-ALSO: `regexp-clean-ebay-time-chars', `regexp-clean-ebay-month2canonical-style1',
+`regexp-clean-ebay-month2canonical-style2',`regexp-clean-ebay-month2canonical-style3'.
+►►►"
 (interactive "\i\nr\ni\np")
   (let ((cln-ebay regexp-clean-ebay-month2canonical-style1)
         (curr-yr (mon-get-current-year))
@@ -518,13 +798,14 @@ See also: `regexp-clean-ebay-time-chars', `regexp-clean-ebay-month2canonical-sty
           ((and time-string insertp)
            (insert (mon-convert-ebay-time rep-str)))
           (t (mon-convert-ebay-time rep-str)))))
-
-;;;test-me;(mon-cln-ebay-time-string "(Jul 29, 200911:05 PDT)")
-;;;test-me;(mon-cln-ebay-time-string "(Jul 29, 200911:05 PDT)"  nil nil t)
-;;;test-me;(mon-cln-ebay-time-string "Jul-29 11:05")
-;;;test-me;(mon-cln-ebay-time-string "Jul-29 11:05" nil nil t)
-;;;test-me;(mon-cln-ebay-time-string "Jul-29-09 11:05:14 PDT")
-;;;test-me;(mon-cln-ebay-time-string "Jul-29-09 11:05:14 PDT" nil nil t)
+;;
+;;; :TEST-ME (mon-cln-ebay-time-string "(Jul 29, 200911:05 PDT)")
+;;; :TEST-ME (mon-cln-ebay-time-string "(Jul 29, 200911:05 PDT)"  nil nil t)
+;;; :TEST-ME (mon-cln-ebay-time-string "Jul-29 11:05")
+;;; :TEST-ME (mon-cln-ebay-time-string "Jul-29 11:05" nil nil t)
+;;; :TEST-ME (mon-cln-ebay-time-string "Jul-29-09 11:05:14 PDT")
+;;; :TEST-ME (mon-cln-ebay-time-string "Jul-29-09 11:05:14 PDT" nil nil t)
+;;;ebay-item-end-date:
 
 ;;; ==============================
 ;;; <Timestamp: Tuesday July 28, 2009 @ 08:28.46 PM - by MON KEY>
@@ -546,23 +827,25 @@ EDT    -> -14400     -> 4
 PST    -> -28800     -> 8 
 PDT    -> -25200     -> 7
 -----------------------------\n
-o Starting in 2007, most of the United States and Canada observe DST from the
+oStarting in 2007, most of the United States and Canada observe DST from the
 second Sunday in March to the first Sunday in November, almost two-thirds of the
 year. The 2007 U.S. change was part of the Energy Policy Act of 2005;
 previously, from 1987 through 2006, the start and end dates were the first
 Sunday in April and the last Sunday in October, and Congress retains the right
 to go back to the previous dates now that an energy-consumption study has been
-done. \(URL `http://en.wikipedia.org/wiki/Daylight_saving_time').
-\(URL `http://isotc.iso.org/livelink/livelink/4021199/ISO_8601_2004_E.zip?func=doc.Fetch&nodeid=4021199')."
+done. :SEE\n\(URL `http://en.wikipedia.org/wiki/Daylight_saving_time').
+\(URL `http://isotc.iso.org/livelink/livelink/4021199/ISO_8601_2004_E.zip?func=doc.Fetch&nodeid=4021199').
+►►►"
   (let ((ets ebay-time-string))
     (/ (- (abs (car (last (parse-time-string ets))))
           (abs (car (current-time-zone))))
        3600)))
+;;
+;;; :TEST-ME (mon-calculate-ebay-timezone-diff "28 July 2009 17:08:26 PST") ;-> 4
+;;; :TEST-ME (mon-calculate-ebay-timezone-diff "28 July 2009 17:08:26 PDT") ;-> 3
+;;; :TEST-ME (mon-calculate-ebay-timezone-diff "28 July 2009 17:08:26 EST") ;-> 1
+;;; :TEST-ME (mon-calculate-ebay-timezone-diff "28 July 2009 17:08:26 EDT") ;-> 0
 
-;;;test-me;(mon-calculate-ebay-timezone-diff "28 July 2009 17:08:26 PST") ;-> 4
-;;;test-me;(mon-calculate-ebay-timezone-diff "28 July 2009 17:08:26 PDT") ;-> 3
-;;;test-me;(mon-calculate-ebay-timezone-diff "28 July 2009 17:08:26 EST") ;-> 1
-;;;test-me;(mon-calculate-ebay-timezone-diff "28 July 2009 17:08:26 EDT") ;-> 0
 
 ;;; ==============================
 (provide 'mon-time-utils)

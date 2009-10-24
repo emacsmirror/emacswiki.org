@@ -23,9 +23,7 @@
   '(progn
      (add-to-list 'erc-nick-popup-alist '("BBDB" . (bbdb nick nil)))
      (add-to-list 'erc-nick-popup-alist
-		  '("Wiki" . (browse-url
-			      (concat "http://www.emacswiki.org/cgi-bin/wiki/"
-				      nick))))))
+                  '("EmacsWiki" . (erc-browse-emacswiki nick)))))
 
 (global-set-key (kbd "C-c e") 'switch-to-irc)
 
