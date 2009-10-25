@@ -16,7 +16,7 @@
 ;;           : Randolph Fritz <rfritz@u.washington.edu>
 ;;           : Vincent Belaiche (VB1) <vincentb1@users.sourceforge.net>
 ;; Version: 1.4.8 (2009-09-29)
-;; Serial Version: %Id: 17%
+;; Serial Version: %Id: 18%
 ;; Keywords: languages, basic, Evil
 
 
@@ -298,7 +298,8 @@
 (defconst visual-basic-continuation-regexp 
   (concat "^.*" visual-basic-looked-at-continuation-regexp))
 
-(defconst visual-basic-label-regexp "^[ \t]*[a-zA-Z0-9_]+:$")
+(eval-and-compile
+  (defconst visual-basic-label-regexp "^[ \t]*[a-zA-Z0-9_]+:$"))
 
 (defconst visual-basic-select-regexp "^[ \t]*[Ss]elect[ \t]+[Cc]ase")
 (defconst visual-basic-case-regexp "^[ \t]*[Cc]ase")

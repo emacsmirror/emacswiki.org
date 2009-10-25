@@ -2,6 +2,7 @@
 ;;; ================================================================
 ;;; DESCRIPTION: 
 ;;; MON utilities for working with time. 
+;;; Routines for converting from 'eBay official time' to 'YOUR Official Time ®'
 ;;;
 ;;; FUNCTIONS:►►►
 ;;; `mon-get-current-year' `mon-format-iso-8601-time'
@@ -10,7 +11,7 @@
 ;;; `mon-accessed-time-stamp' `mon-stamp' `mon-accessed-stamp'
 ;;; `mon-lisp-stamp' `mon-convert-ebay-time' `mon-convert-ebay-time-mvb'
 ;;; `mon-cln-ebay-time-string' `mon-calculate-ebay-timezone-diff'
-;;; `mon-today'
+;;; `mon-today', `mon-file-stamp-vrfy-put-eof', `mon-comment-divider-w-len'
 ;;; FUNCTIONS:◄◄◄
 ;;;
 ;;; MACROS:
@@ -22,6 +23,7 @@
 ;;; CONSTANTS:
 ;;;
 ;;; VARIABLES:
+;;; `*mon-default-comment-divider*', `*mon-default-comment-start*'
 ;;; `*mon-timestamp-cond-alist*' 
 ;;;
 ;;; ALIASES/ADVISED/SUBST'D:
@@ -43,22 +45,50 @@
 ;;; RENAMED:
 ;;;
 ;;; REQUIRES:
-;;; mon-regexp-symbols.el -> 
-;;; `regexp-clean-ebay-month2canonical-style1'
-;;; `regexp-clean-ebay-month2canonical-style2'
-;;; `regexp-clean-ebay-month2canonical-style3'
+;;; mon-regexp-symbols.el
+;;; |-> `regexp-clean-ebay-month2canonical-style1'
+;;; |-> `regexp-clean-ebay-month2canonical-style2'
+;;; |-> `regexp-clean-ebay-month2canonical-style3'
 ;;;
-;;; cl -> `mon-convert-ebay-time-mvb' -> `multiple-value-bind' 
+;;; `mon-convert-ebay-time-mvb' cl.el
+;;;                             |-> `multiple-value-bind' 
 ;;;
+;;; `mon-today' mon-utils.el 
+;;;             |-> `mon-string-to-symbol'
+;;; 
+;;; `mon-timestamp'-> mon-dir-utils.el
+;;;                   |-> `mon-get-buffers-parent-dir'
+;;;                   |-> `mon-buffer-written-p'
+;;;                                     
+;;; The variables and constants:
+;;; `IS-MON-P', `IS-MON-P-W32', `IS-MON-P-GNU' 
+;;; `IS-BUG-P',`IS-BUG-P-REMOTE'
+;;; 
+;;; Are provided in:
+;;; :FILE mon-default-loads.el
+;;; :LINK (URL `http://www.emacswiki.org/emacs/mon-default-loads.el')
+;;;
+;;; The value of the above vars and const are returned in lieu of:
+;;; :FUNCTION `mon-user-name-conditionals' which is defined in:
+;;; :FILE mon-site-local-defaults.el
+;;; :LINK (URL `http://www.emacswiki.org/emacs/mon-site-local-defaults.el')
+;;
+;;; That package also provides the constants: `*MON-NAME*', `*BUG-NAME*'
+;;; These hold alists of system conditional key value pairs.
+;;; These will need to be present on your system for this pkg to work properly.
+;;; The links to the files above provide filler slots that you can modify to 
+;;; fit your environment. I provide these as a solution for dealing with
+;;; defcustom silliness...
+;;; 
 ;;; TODO:
 ;;; Consider providing an optional arg `mon-cln-ebay-time-string'
 ;;; to return the stamp without the call to `mon-convert-ebay-time'
 ;;;
 ;;; NOTES:
-;;; Originally motivated by a distaste 
-;;; for the promotion of EbayTime as `official' time - Official my ass!
-;;; Convert from 'eBay official time' to 'YOUR Official Time ®'
+;;; Originally motivated by a distaste for Ebay's promotion of EbayTime as
+;;; `official' time - Official my ass! 
 ;;; :SEE (URL `http://viv.ebay.com/ws/eBayISAPI.dll?EbayTime')
+;;;
 ;;; There are at least three styles of ebay timestamp. 
 ;;; Apparently each is 'official'... 
 ;;; 
@@ -94,24 +124,6 @@
 ;;; swap PDT <-> PST
 ;;;
 ;;; ==============================
-;;;
-;;; The timestamps generate by functions herein are of the form:
-;;;
-;;; <Timestamp: YYYY-MM-DD-Www-DTHH:MM:SS+/-HH:MMZ - by NAME>
-;;; <Timestamp: 2009-08-06-W32-4T19:41:42-04:00Z - by MON KEY>
-;;;
-;;; This format is not in keeping with RFC-3339 take on ISO-8601 
-;;; Specifically, it disregards the discussion presented in 
-;;; Section 5.4. Redundant Information:
-;;;
-;;;    If a date/time format includes redundant information, that introduces
-;;;    the possibility that the redundant information will not correlate.
-;;;    For example, including the day of the week in a date/time format
-;;;    introduces the possibility that the day of week is incorrect but the
-;;;    date is correct, or vice versa.  Since it is not difficult to compute
-;;;    the day of week from a date (see Appendix B), the day of week should
-;;;    not be included in a date/time format."
-;;;
 ;;; The timestamps generate by functions herein are of the form:
 ;;;
 ;;; <Timestamp: #{YYYY-MM-DDTHH:MM:SS+/-HH:MMZ}#{yyWwD} - by NAME>
@@ -137,20 +149,20 @@
 ;;; stamp. It is not. Rather than assume that one or another of these data will
 ;;; become compromised it is safer to assume either that both are potentially
 ;;; compromised or that both are correct. In either case provision of this
-;;; 'redundancy' allows for a check against what would otherwise be uncorroborated
-;;; time. Moreover, so long as the information is presented according to the
-;;; standards specification it is quite legitimate to simply omit the redundancy via
-;;; heuristics (regexps for example). Doing so allows us the ability to calculate
-;;; multiple different types of date intervals in an adhoc 'loosey' manner whilst
-;;; retaining the ability to perform more targeted calculations where
-;;; necessary. This can be esp. important/useful for indicating and reasoning about
-;;; time/date ranges by field as opposed by duration. E.g. "Show me all date stamps
-;;; on a Tuesday." whether the date is _correct_ may be completely irrelevant to the
-;;; query and it is certainly the case that the heuristics/calculations needed for
-;;; locating such stamps under our regime will be quite a bit quicker and more
-;;; intelligible than those which would require numerous
-;;; encode->decode->calculate->encode operations just to find what may or may not be 
-;;; a Tuesday... 
+;;; 'redundancy' allows for a check against what would otherwise be
+;;; uncorroborated time. Moreover, so long as the information is presented
+;;; according to the standards specification it is quite legitimate to simply
+;;; omit the redundancy via heuristics (regexps for example). Doing so allows us
+;;; the ability to calculate multiple different types of date intervals in an
+;;; adhoc 'loosey' manner whilst retaining the ability to perform more targeted
+;;; calculations where necessary. This can be esp. important/useful for
+;;; indicating and reasoning about time/date ranges by field as opposed by
+;;; duration. E.g. "Show me all date stamps on a Tuesday." whether the date is
+;;; _correct_ may be completely irrelevant to the query and it is certainly the
+;;; case that the heuristics/calculations needed for locating such stamps under
+;;; our regime will be quite a bit quicker and more intelligible than those
+;;; which would require numerous encode->decode->calculate->encode operations
+;;; just to find what may or may not be a Tuesday... 
 ;;;
 ;;; SNIPPETS:
 ;;; Other date & time related functions:
@@ -204,13 +216,66 @@
 ;;; CODE:
 
 ;;;`mon-convert-ebay-time-mvb' -> `multiple-value-bind'
-(eval-when-compile (require 'cl)) 
-;;
-(require 'cl)
+(eval-when (compile load eval) 
+  (require 'cl))
 
 ;;; ==============================
 (require 'mon-regexp-symbols)
+;;
+(eval-when 
+    (unless (featurep 'mon-utils)
+      (require 'mon-dir-utils)
+      (message (concat 
+                "This :PACKAGE `mon-time-uitls' wants the :FUNCTION \n"
+                "`mon-string-to-symbol' from :PACKAGE `mon-utils' \n"
+                "Had that that package been loaded already, the :FUNCTIONS \n"
+                "`mon-get-buffers-parent-dir', `mon-buffer-written-p' \n"
+                "from :PACKAGE `mon-dir-utils' would have been loaded already \n" 
+                "In any event this :PACKAGE `mon-time-uitls' " 
+                ":REQUIRES `mon-dir-utils'\nSo, we are requiring it now."))))
+                
+
 ;;; ==============================
+;;; :CREATED <Timestamp: #{2009-10-24T14:12:12-04:00Z}#{09436} - by MON KEY>
+(defvar *mon-default-comment-start* ";;; "
+ "*Comment prefix for `mon-comment-divider-w-len'.
+ This is a cheap around so we don't have to deal with `comment-start' with 
+mon-comment-* functions which might rely on or calculate a string/substring
+inidex per the value of this var.
+:EXAMPLE\n*mon-default-comment-start*\n
+\(let \(\(*mon-default-comment-start* \"%% \"\)\)
+  *mon-default-comment-start*\)\n
+:CALLED-BY `mon-comment-divider-w-len', `comment-divider-to-col'
+:SEE-ALSO `*mon-default-comment-divider*'.\n►►►")
+;;
+;;; :TEST-ME *mon-default-comment-start*
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-10-24T12:51:14-04:00Z}#{09436} - by MON KEY>
+(defun mon-comment-divider-w-len (len)
+  "Return a comment-divider with LEN number of `=' prefixed with 
+value of `*mon-default-comment-start*'.\n
+:EXAMPLE\n(mon-comment-divider-w-len 30)\n(mon-comment-divider-w-len 40)\n
+:SEE-ALSO `*mon-default-comment-divider*', `comment-divider',
+`mon-lisp-comment-to-col',`comment-divider-to-col'.\n►►►"
+  (concat *mon-default-comment-start* (make-string len 61)))
+;;
+;;; :TEST-ME (mon-comment-divider-w-len 0)
+;;; :TEST-ME (mon-comment-divider-w-len 30)
+;;; :TEST-ME (mon-comment-divider-w-len 40)
+;;; :TEST-ME  (let ((*mon-default-comment-start* "%% "))
+;;;             (mon-comment-divider-w-len 30))         
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-10-24T12:07:10-04:00Z}#{09436} - by MON KEY>
+(defvar *mon-default-comment-divider* (mon-comment-divider-w-len 30)
+  "*Preferred comment-divider for lisp source sectioning.
+:CALLED-BY `comment-divider', `comment-divider-to-col'
+:SEE-ALSO `mon-comment-divider-w-len', `comment-divider-to-col'\n►►►")
+;;
+;;; :TEST-ME *mon-default-comment-divider*
+;;;(progn (makunbound '*mon-default-comment-divider*)
+;;;       (unintern '*mon-default-comment-divider*))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: Saturday July 18, 2009 @ 11:59.08 AM - by MON KEY>
@@ -232,7 +297,6 @@ to Internet.
   (setq *mon-timestamp-cond-alist*
         '(("emacs-load-files" "MON KEY")
           ("naf-mode" "MON KEY")
-          ("reference-sheet-help-utils.el" "MON KEY")
           ("mon-time-utils.el" "MON KEY"))))
 ;;
 ;;; :TEST-ME  *mon-timestamp-cond-alist*
@@ -242,7 +306,8 @@ to Internet.
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-10-23T20:57:47-04:00Z}#{09436} - by MON KEY>
-(defun* mon-today (&key as-string as-symbol as-list-str as-list-num)
+(defun* mon-today (&key as-string as-symbol as-list-str 
+                        as-list-num as-vec-str as-vec-num)
   "Return today's date as YYYY-MM-DD
 When keyword AS-STRING is non-nil return date as a string.
 When keyword AS-SYMBOL is non-nil return date as a symbol.
@@ -256,14 +321,18 @@ When keyword AS-VEC-NUM is non-nil return date as a vector of three numbers.
 :SEE-ALSO `mon-get-current-year', `mon-format-iso-8601-time'.\n►►►"
   (let ((2day (format-time-string "%Y-%m-%d")))
     (cond (as-string 2day)
-          (as-symbol (mon-string-to-symbol 2day))
+          (as-symbol 
+           (eval-when (compile load eval)
+             (if (fboundp 'mon-string-to-symbol)
+                 (mon-string-to-symbol 2day)
+                 (car (read-from-string str 2day)))))
           (as-list-str  `(,(substring 2day 0 4)
                            ,(substring 2day 5 7)
                            ,(substring 2day 8 10)))
           (as-list-num  (mapcar 'string-to-number
                                 (mon-today :as-list-str t)))
-          (as-vec-str (apply 'vector (mon-today :as-list-str t))
-          (as-vec-num (apply 'vector (mon-today :as-list-num t)))))))
+          (as-vec-str (apply 'vector (mon-today :as-list-str t)))
+          (as-vec-num (apply 'vector (mon-today :as-list-num t))))))
 ;;
 ;;; :TEST-ME (mon-today :as-string t)
 ;;; :TEST-ME (mon-today :as-symbol t)
@@ -551,21 +620,20 @@ When MODIFICATIONS is non-nil or called interactively with Prefix Arg.
 Returns with a ';;; MODIFICATIONS: ' prefix -default is ';;; CREATED: '
 Use after creating new elisp functions to delimit and date them.\n
 :EXAMPLE\n\(mon-insert-lisp-stamp\)\n\(mon-insert-lisp-stamp nil nil t\)\n
-:SEE-ALSO `mon-insert-lisp-stamp', `mon-file-stamp',  `mon-insert-copyright',
-`mon-insert-lisp-testme', `mon-insert-lisp-CL-file-template', `comment-divider',
-`comment-divider-to-col-four', `mon-insert-lisp-evald'.\n►►►"
+:SEE-ALSO `mon-insert-lisp-stamp', `mon-file-stamp', `mon-insert-copyright',
+`mon-insert-lisp-testme', `mon-insert-lisp-CL-file-template', 
+`*mon-default-comment-divider*',`comment-divider',`comment-divider-to-col-four'
+`mon-insert-lisp-evald'.\n►►►"
   (interactive "i\np\nP")
-  (let* ((tstmp 
-          (if modifications
-              (concat ";;; :MODIFICATIONS <Timestamp: "(mon-timestamp :naf t ))
-            (concat ";;; :CREATED <Timestamp: "(mon-timestamp :naf t ))))
-         (f-tstmp 
-          (if (or insertp intrp)
-              (concat "\n;;; ==============================\n"  tstmp)
-            (concat ";;; ==============================\n"  tstmp))))
-    (if (or insertp intrp)
-        (insert f-tstmp)
-      f-tstmp)))
+  (let* ((tstmp (if modifications
+                    (concat ";;; :MODIFICATIONS <Timestamp: "(mon-timestamp :naf t ))
+                    (concat ";;; :CREATED <Timestamp: "(mon-timestamp :naf t ))))
+         (f-tstmp (if (or insertp intrp)
+                      (concat "\n" *mon-default-comment-divider* "\n" tstmp)
+                      (concat *mon-default-comment-divider* "\n" tstmp))))
+    (if (or insertp intrp) 
+        (insert f-tstmp) 
+        f-tstmp)))
 ;;
 ;;; :TEST-ME (mon-lisp-stamp)
 ;;; :TEST-ME (mon-lisp-stamp t)
@@ -574,16 +642,53 @@ Use after creating new elisp functions to delimit and date them.\n
 ;;; :TEST-ME (call-interactively 'mon-lisp-stamp)
 
 ;;; ==============================
+;;; :CREATED <Timestamp: #{2009-10-24T11:52:41-04:00Z}#{09436} - by MON>
+(defun mon-file-stamp-vrfy-put-eof (insertp)
+  "Return the preferred EOF delimiter if not present in current-buffer
+When INSERTP is non-nil and the delimiter wasn't found insert it.
+Does not move point.\n
+:EXAMPLE\n\(mon-file-stamp-vrfy-put-eof nil\)\n
+:SEE-ALSO `mon-file-stamp', `*mon-default-comment-divider*'.\n►►►"
+  (let  ((end-of-dlm *mon-default-comment-divider*)
+         (end-of ";;; EOF")
+         (eof-dlm-mk (make-marker))
+         (eof-mk (make-marker)))
+    (save-excursion
+      (goto-char (buffer-end 1))
+      (set-marker eof-mk (point))
+      (set-marker eof-dlm-mk (point))
+      ;; We do these checks b/c there may newlines etc. after the EOF.
+      (search-backward-regexp (concat "^" end-of "$") nil t)
+      (unless
+          (when (looking-at-p (concat "^" end-of "$"))
+            ;; Make a bounds for next so we don't over-search.
+            (set-marker eof-mk (point)) 
+            (set-marker eof-dlm-mk (- eof-mk (1+ (length end-of-dlm))))
+            (search-backward-regexp (concat "^" end-of-dlm "$") eof-dlm-mk t)
+            (and (= eof-dlm-mk (point)) (not (= eof-mk eof-dlm-mk))))
+        (if insertp 
+            (princ (concat "\n" end-of-dlm "\n" end-of) (current-buffer))
+            (concat "\n" end-of-dlm "\n" end-of))))))
+;;
+;;; :TEST-ME (with-temp-buffer (mon-file-stamp-vrfy-put-eof nil))
+
+;;; ==============================
+;;; :MODIFICATIONS <Timestamp: #{2009-10-24T12:20:13-04:00Z}#{09436} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-08-24T15:46:26-04:00Z}#{09351} - by MON KEY>
 (defun mon-file-stamp (&optional insertp intrp w/url)
-  "Return a file header with timestamp prepended with \";;; FILE-CREATED:\".
+  "Return timestamped file header and EOF footer.
+Retrun value of header's timestamp prepended with \";;; FILE-CREATED:\".
+If a file footer is not present it is concatted to header as:\n
+ \";;; ==============================\n  ;;; EOF\"\n
 When optional arg W/URL is non-nil wrap the URL with \(URL `'\) and include it 
 on a second line as: \";;; \(URL `http://some-url.com'\)\". When insertp is 
 non-nil or called interactively insert string(s) in buffer, don't move point.
 When inserting if point is not equal point-min prepends a newline prior to 
-inserting.\n:EXAMPLE\n\(mon-file-stamp nil nil \"http://emacswiki.com\")\n
-:SEE-ALSO `mon-lisp-stamp', `mon-timestamp', `mon-stamp', `mon-accessed-stamp'.
-►►►"
+inserting.\n
+:EXAMPLE
+\(mon-file-stamp nil nil\)\n\(mon-file-stamp nil nil \"http://emacswiki.com\")\n
+:SEE-ALSO `mon-file-stamp-vrfy-put-eof' `*mon-default-comment-divider*'
+`mon-lisp-stamp', `mon-timestamp', `mon-stamp', `mon-accessed-stamp'.\n►►►"
   (interactive "i\np\nP")
   (let* ((the-url (cond ((and intrp w/url)
                          (concat "\n;;; SOURCE: (URL `" (read-string "URL to wrap :") "')"))
@@ -591,15 +696,14 @@ inserting.\n:EXAMPLE\n\(mon-file-stamp nil nil \"http://emacswiki.com\")\n
                          (concat "\n;;; SOURCE: (URL `"  w/url "')"))
                         (t "")))
          (f-tstmp (concat ";;; FILE-CREATED: <Timestamp: "(mon-timestamp :naf t )
-                          the-url
-                          "\n;;; ==============================\n")))
+                          the-url "\n" *mon-default-comment-divider* "\n")))
     (if (or intrp insertp) 
         (save-excursion 
           (if (= (point) (point-min))
               (insert f-tstmp)
-            (progn            
-              (newline) (insert f-tstmp))))
-      f-tstmp)))
+            (progn (newline) (insert f-tstmp)))
+          (mon-file-stamp-vrfy-put-eof t))
+        (concat f-tstmp (mon-file-stamp-vrfy-put-eof nil)))))
 ;;
 ;;; :TEST-ME (mon-file-stamp)
 ;;; :TEST-ME (mon-file-stamp nil nil "http://wikipedia.com")
@@ -787,7 +891,7 @@ Replaces existing time-string in region with converted form.\n
                                       (buffer-substring-no-properties start-marker end-marker))
                                     rep-match)))
       (setq found-match (format "Couldn't find match for: %s" rep-str)))
-    ;; consider providing an optional arg to return the stamp without the call to
+    ;; Consider providing an optional arg to return the stamp without the call to
     ;; `mon-convert-ebay-time'??? 
     (cond ((and start end (or insertp intrp))
            (progn    
@@ -805,7 +909,7 @@ Replaces existing time-string in region with converted form.\n
 ;;; :TEST-ME (mon-cln-ebay-time-string "Jul-29 11:05" nil nil t)
 ;;; :TEST-ME (mon-cln-ebay-time-string "Jul-29-09 11:05:14 PDT")
 ;;; :TEST-ME (mon-cln-ebay-time-string "Jul-29-09 11:05:14 PDT" nil nil t)
-;;;ebay-item-end-date:
+;;;
 
 ;;; ==============================
 ;;; <Timestamp: Tuesday July 28, 2009 @ 08:28.46 PM - by MON KEY>
@@ -845,7 +949,6 @@ done. :SEE\n\(URL `http://en.wikipedia.org/wiki/Daylight_saving_time').
 ;;; :TEST-ME (mon-calculate-ebay-timezone-diff "28 July 2009 17:08:26 PDT") ;-> 3
 ;;; :TEST-ME (mon-calculate-ebay-timezone-diff "28 July 2009 17:08:26 EST") ;-> 1
 ;;; :TEST-ME (mon-calculate-ebay-timezone-diff "28 July 2009 17:08:26 EDT") ;-> 0
-
 
 ;;; ==============================
 (provide 'mon-time-utils)

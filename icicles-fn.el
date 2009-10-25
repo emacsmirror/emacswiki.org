@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Oct 22 09:38:33 2009 (-0700)
+;; Last-Updated: Sat Oct 24 11:56:10 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 11198
+;;     Update #: 11255
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2908,57 +2908,53 @@ Candidates can be directories.  Each candidate is a string."
 This also sets `icicle-common-match-string' to the expanded common
 prefix over all candidates."
   (condition-case nil
-      (let ((slashed-p  (and (> (length input) 0) (eq ?/ (aref input 0)))))
-        (when slashed-p (setq input  (substring input 1)))
-        (let* ((candidates
-                (if (icicle-not-basic-prefix-completion-p)
-                    (icicle-completion-all-completions input minibuffer-completion-table
-                                                       minibuffer-completion-predicate (length input))
-                  (all-completions input minibuffer-completion-table
-                                   (if slashed-p "/" default-directory)
-                                   icicle-ignore-space-prefix-flag)))
-               (icicle-extra-candidates
-                (icicle-remove-if-not
-                 (lambda (cand)
-                   (save-match-data
-                     (string-match (concat "^" (regexp-quote input)) cand))) icicle-extra-candidates))
-               (icicle-proxy-candidates
-                (icicle-remove-if-not
-                 (lambda (cand)
-                   (save-match-data
-                     (string-match (concat "^" (regexp-quote input)) cand))) icicle-proxy-candidates))
-               (filtered-candidates
-                (icicle-transform-candidates
-                 (append icicle-extra-candidates icicle-proxy-candidates
-                         (icicle-remove-if-not
-                          (lambda (cand)
-                            (let ((case-fold-search
-                                   (if (boundp 'read-file-name-completion-ignore-case)
-                                       read-file-name-completion-ignore-case
-                                     completion-ignore-case)))
-                              (if (member cand '("../" "./"))
-                                  (member input '(".." ".")) ; Prevent "" from matching "../"
-                                (and
+      (let* ((candidates
+              (if (icicle-not-basic-prefix-completion-p)
+                  (icicle-completion-all-completions input minibuffer-completion-table
+                                                     minibuffer-completion-predicate (length input))
+                (all-completions input minibuffer-completion-table default-directory
+                                 icicle-ignore-space-prefix-flag)))
+             (icicle-extra-candidates
+              (icicle-remove-if-not
+               (lambda (cand)
+                 (save-match-data
+                   (string-match (concat "^" (regexp-quote input)) cand))) icicle-extra-candidates))
+             (icicle-proxy-candidates
+              (icicle-remove-if-not
+               (lambda (cand)
+                 (save-match-data
+                   (string-match (concat "^" (regexp-quote input)) cand))) icicle-proxy-candidates))
+             (filtered-candidates
+              (icicle-transform-candidates
+               (append icicle-extra-candidates icicle-proxy-candidates
+                       (icicle-remove-if-not
+                        (lambda (cand)
+                          (let ((case-fold-search
+                                 (if (boundp 'read-file-name-completion-ignore-case)
+                                     read-file-name-completion-ignore-case
+                                   completion-ignore-case)))
+                            (if (member cand '("../" "./"))
+                                (member input '(".." ".")) ; Prevent "" from matching "../"
+                              (and
 ;;; $$$$$$ REMOVED - This was no good for PCM - e.g. input `ic-o' and candidates `icicles-opt.el[c]'.
 ;;;                  We don't do it for non-file-name completion, anyway, and it doesn't seem needed.
 ;;;                                  (save-match-data
 ;;;                                    (string-match (concat "^" (regexp-quote input)) cand))
-                                 (icicle-filter-wo-input cand)))))
-                          candidates)))))
-          (when (consp filtered-candidates)
-            (let ((common-prefix
-                   (if (icicle-not-basic-prefix-completion-p)
-                       (icicle-completion-try-completion input minibuffer-completion-table
-                                                         minibuffer-completion-predicate
-                                                         (length input))
-                     (try-completion input minibuffer-completion-table
-                                     (if slashed-p "/" default-directory)))))
-              ;; If prefix matches an empty directory, use that directory as the sole completion.
-              (when (and (stringp common-prefix)
-                         (save-match-data (string-match "/\\.$" common-prefix)))
-                (setq common-prefix  (substring common-prefix 0 (- (length common-prefix) 2))))
-              (setq icicle-common-match-string  (if (eq t common-prefix) input common-prefix))))
-          filtered-candidates))
+                               (icicle-filter-wo-input cand)))))
+                        candidates)))))
+        (when (consp filtered-candidates)
+          (let ((common-prefix
+                 (if (icicle-not-basic-prefix-completion-p)
+                     (icicle-completion-try-completion input minibuffer-completion-table
+                                                       minibuffer-completion-predicate
+                                                       (length input))
+                   (try-completion input minibuffer-completion-table default-directory))))
+            ;; If common prefix matches an empty directory, use that dir as the sole completion.
+            (when (and (stringp common-prefix)
+                       (save-match-data (string-match "/\\.$" common-prefix))) ; Matches /., /..
+              (setq common-prefix  (substring common-prefix 0 (- (length common-prefix) 2))))
+            (setq icicle-common-match-string  (if (eq t common-prefix) input common-prefix))))
+        filtered-candidates)
     (quit (top-level))))                ; Let `C-g' stop it.
  
 ;;(@* "Icicles functions - apropos completion cycling")
@@ -3034,52 +3030,50 @@ input over all candidates."
   (condition-case nil
       (progn
         (when icicle-regexp-quote-flag (setq input  (regexp-quote input)))
-        (let ((slashed-p  (and (> (length input) 0) (eq ?/ (aref input 0)))))
-          (when slashed-p (setq input  (substring input 1)))
-          (let* ((candidates
-                  ;; $$$$$ Should we remove string test for Emacs 23?
-                  (if (and (not (stringp minibuffer-completion-predicate))
-                           (not icicle-apropos-complete-match-fn)
-                           (functionp minibuffer-completion-table))
-                      ;; Let the function do it all.
-                      (all-completions input minibuffer-completion-table
-                                       (if slashed-p "/" default-directory)
-                                       icicle-ignore-space-prefix-flag)
-                    (all-completions "" minibuffer-completion-table
-                                     (if slashed-p "/" default-directory)
-                                     icicle-ignore-space-prefix-flag)))
-                 (icicle-extra-candidates
-                  (icicle-remove-if-not
-                   (lambda (cand) (save-match-data (string-match input cand)))
-                   icicle-extra-candidates))
-                 (icicle-proxy-candidates
-                  (icicle-remove-if-not
-                   (lambda (cand) (save-match-data (string-match input cand)))
-                   icicle-proxy-candidates))
-                 (filtered-candidates
-                  (icicle-transform-candidates
-                   (append icicle-extra-candidates icicle-proxy-candidates
-                           (icicle-remove-if-not
-                            (lambda (cand)
-                              (let ((case-fold-search
-                                     (if (boundp 'read-file-name-completion-ignore-case)
-                                         read-file-name-completion-ignore-case
-                                       completion-ignore-case)))
-                                (if (member cand '("../" "./"))
-                                    (member input '(".." ".")) ; Prevent "" from matching "../"
-                                  (and (icicle-filter-wo-input cand)
-                                       (or (not icicle-apropos-complete-match-fn)
-                                           ;; Assume no match if error - e.g. due to `string-match'
-                                           ;; with binary data in Emacs 20.  Do this everywhere we
-                                           ;; call `icicle-apropos-complete-match-fn'.
-                                           (condition-case nil
-                                               (funcall icicle-apropos-complete-match-fn input cand)
-                                             (error nil)))))))
-                            candidates)))))
-            (when (and icicle-expand-input-to-common-match-flag (consp filtered-candidates))
-              (setq icicle-common-match-string  (icicle-expanded-common-match input
-                                                                              filtered-candidates)))
-            filtered-candidates)))      ; Return candidates.
+        (let* ((candidates
+                ;; $$$$$ Should we remove string test for Emacs 23?
+                (if (and (not (stringp minibuffer-completion-predicate))
+                         (not icicle-apropos-complete-match-fn)
+                         (functionp minibuffer-completion-table))
+                    ;; Let the function do it all.
+                    (all-completions input minibuffer-completion-table default-directory
+                                     icicle-ignore-space-prefix-flag)
+                  (all-completions "" minibuffer-completion-table default-directory
+                                   icicle-ignore-space-prefix-flag)))
+               (icicle-extra-candidates
+                (icicle-remove-if-not
+                 (lambda (cand) (save-match-data (string-match input cand)))
+                 icicle-extra-candidates))
+               (icicle-proxy-candidates
+                (icicle-remove-if-not
+                 (lambda (cand) (save-match-data (string-match input cand)))
+                 icicle-proxy-candidates))
+               (filtered-candidates
+                (icicle-transform-candidates
+                 (append icicle-extra-candidates icicle-proxy-candidates
+                         (icicle-remove-if-not
+                          (lambda (cand)
+                            (let ((case-fold-search
+                                   (if (boundp 'read-file-name-completion-ignore-case)
+                                       read-file-name-completion-ignore-case
+                                     completion-ignore-case)))
+                              (if (member cand '("../" "./"))
+                                  (member input '(".." ".")) ; Prevent "" from matching "../"
+                                (and (icicle-filter-wo-input cand)
+                                     (or (not icicle-apropos-complete-match-fn)
+                                         ;; Assume no match if error - e.g. due to `string-match'
+                                         ;; with binary data in Emacs 20.  Do this everywhere we
+                                         ;; call `icicle-apropos-complete-match-fn'.
+                                         (condition-case nil
+                                             (funcall icicle-apropos-complete-match-fn input cand)
+                                           (error nil)))))))
+                          candidates)))))
+          (when icicle-expand-input-to-common-match-flag
+            (setq icicle-common-match-string (if (consp filtered-candidates)
+                                                 (icicle-expanded-common-match
+                                                  input filtered-candidates)
+                                               nil)))
+          filtered-candidates))         ; Return candidates.
     (quit (top-level))))                ; Let `C-g' stop it.
 
 (defun icicle-expanded-common-match (input candidates)
@@ -4528,14 +4522,11 @@ defined)."
 (defun icicle-prefix-any-file-name-candidates-p (input)
   "Return non-nil if partial file-name INPUT has prefix completions."
   (let* ((minibuffer-completion-table      minibuffer-completion-table)
-         (minibuffer-completion-predicate  minibuffer-completion-predicate)
-         (slashed-p                        (and (> (length input) 0) (eq ?/ (aref input 0)))))
-    (when slashed-p (setq input  (substring input 1)))
+         (minibuffer-completion-predicate  minibuffer-completion-predicate))
     (if (icicle-not-basic-prefix-completion-p)
         (icicle-completion-try-completion input minibuffer-completion-table
-                                          minibuffer-completion-predicate
-                                          (length input))
-      (try-completion input minibuffer-completion-table (if slashed-p "/" default-directory)))))
+                                          minibuffer-completion-predicate (length input))
+      (try-completion input minibuffer-completion-table default-directory))))
 
 (defun icicle-apropos-any-candidates-p (input)
   "Return non-nil if current partial INPUT has apropos completions."
@@ -4555,30 +4546,32 @@ defined)."
 
 (defun icicle-apropos-any-file-name-candidates-p (input)
   "Return non-nil if partial file-name INPUT has apropos completions."
+  (when (and input (not (string= "" input)) (eq (aref input (1- (length input))) ?\/))
+    (setq input  (substring input 0 (1- (length input))))) ; So we don't non-match highlight the /.
   (let* ((default-directory                (icicle-file-name-directory-w-default input))
          (minibuffer-completion-table      minibuffer-completion-table)
          (minibuffer-completion-predicate  minibuffer-completion-predicate))
     (setq input  (or (icicle-file-name-nondirectory input)  ""))
     (condition-case nil
         (progn (when icicle-regexp-quote-flag (setq input  (regexp-quote input)))
-               (let ((slashed-p  (and (> (length input) 0) (eq ?/ (aref input 0)))))
-                 (when slashed-p (setq input  (substring input 1)))
-                 (let ((candidates (all-completions "" minibuffer-completion-table
-                                                    (if slashed-p "/" default-directory)
-                                                    icicle-ignore-space-prefix-flag)))
-                   (catch 'icicle-apropos-any-file-name-candidates-p
-                     (dolist (cand candidates)
-                       (when (if (member cand '("../" "./"))
-                                 (member input '(".." ".")) ; Prevent "" from matching "../"
-                               (and (or (not icicle-apropos-complete-match-fn)
-                                        ;; Assume no match if error - e.g. due to `string-match' with
-                                        ;; binary data in Emacs 20.  Do this everywhere we call
-                                        ;; `icicle-apropos-complete-match-fn'.
-                                        (condition-case nil
-                                            (funcall icicle-apropos-complete-match-fn input cand)
-                                          (error nil)))))
-                         (throw 'icicle-apropos-any-file-name-candidates-p cand)))
-                     nil))))
+               (let ((candidates (all-completions "" minibuffer-completion-table default-directory
+                                                  icicle-ignore-space-prefix-flag))
+                     (case-fold-search  (if (boundp 'read-file-name-completion-ignore-case)
+                                            read-file-name-completion-ignore-case
+                                          completion-ignore-case)))
+                 (catch 'icicle-apropos-any-file-name-candidates-p
+                   (dolist (cand candidates)
+                     (when (if (member cand '("../" "./"))
+                               (member input '(".." ".")) ; Prevent "" from matching "../"
+                             (and (or (not icicle-apropos-complete-match-fn)
+                                      ;; Assume no match if error - e.g. due to `string-match' with
+                                      ;; binary data in Emacs 20.  Do this everywhere we call
+                                      ;; `icicle-apropos-complete-match-fn'.
+                                      (condition-case nil
+                                          (funcall icicle-apropos-complete-match-fn input cand)
+                                        (error nil)))))
+                       (throw 'icicle-apropos-any-file-name-candidates-p cand)))
+                   nil)))
       (quit (top-level)))))             ; Let `C-g' stop it.
 
 (defun icicle-clear-minibuffer ()
@@ -4766,12 +4759,18 @@ Elements of ALIST that are not conses are ignored."
             list  (cdr list)))
     (setq firstN (nreverse firstN))))
 
-(defun icicle-abbreviate-or-expand-file-name (filename &optional default-dir)
-  "`abbreviate-file-name' if `icicle-use-~-for-home-dir-flag' is non-nil.
-`expand-file-name' if `icicle-use-~-for-home-dir-flag' is nil."
+(defun icicle-abbreviate-or-expand-file-name (filename &optional dir)
+  "Expand FILENAME, and abbreviate it if `icicle-use-~-for-home-dir-flag'.
+Call `expand-file-name' to make FILENAME absolute.
+Then, if `icicle-use-~-for-home-dir-flag' is non-nil, call
+`abbreviate-file-name'.
+
+If DIR is absolute, pass it to `expand-file-name'.  Otherwise, ignore
+it (treated it as nil)."
+  (when (and dir (not (file-name-absolute-p dir))) (setq dir  nil)) ; Don't use a relative dir.
   (if icicle-use-~-for-home-dir-flag
-      (abbreviate-file-name (expand-file-name filename default-dir))
-    (expand-file-name filename default-dir)))
+      (abbreviate-file-name (expand-file-name filename dir))
+    (expand-file-name filename dir)))
 
 (defun icicle-reversible-sort (list)
   "`sort' using `icicle-sort-function', or the reverse.
@@ -5029,7 +5028,7 @@ Also removes the last cdr, which might hold the base size."
       (when env-var-p (setq res  (mapcar #'(lambda (cand) (concat "$" cand)) res))))
     res))
 
-;; @@@@@@@@ Filed Emacs BUG #4708.  `completion-try-completion' does not return nil when it should.
+;; $$$$$$ Filed Emacs BUG #4708.  `completion-try-completion' does not return nil when it should.
 ;; E.g. (completion-try-completion "c:/some-dir/$HOMj" nil 17) returns: ("c:/some-dir/$$HOMj" . 18)
 ;;
 ;; This causes `icicle-highlight-input-noncompletion' not to highlight the `j' in the above example.

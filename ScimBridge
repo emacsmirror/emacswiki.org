@@ -38,7 +38,7 @@ scim-bridge.el can keep local input status of buffer, you can use it input vario
             ;; Use C-SPC for Set Mark command
             (scim-define-common-key (kbd "C-SPC") nil)
             ;; Use C-/ for Undo command
-            (scim-define-common-key (kbd "C-\\") nil)
+            (scim-define-common-key (kbd "C-/") nil)
             ;; Change cursor color depending on SCIM status
             (setq scim-cursor-color '("red" "blue" "limegreen"))
 }}}

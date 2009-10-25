@@ -24,6 +24,8 @@
 ;;;
 ;;; MACROS: 
 ;;;
+;;; METHODS:
+;;;
 ;;; CLASSES: 
 ;;;
 ;;; CONSTANTS:
@@ -33,9 +35,11 @@
 ;;; `*mon-gnu-license-header-gfdl*'
 ;;; `*mon-hgignore-template*'
 ;;; 
-;;; ALIASES:
+;;; ALIASED/ADIVISED/SUBST'D:
+;;; `mon-comment-divide->col' -> `comment-divider-to-col'
+;;; `bug-insert-copyright'    -> `mon-insert-copyright'
 ;;;
-;;; RENAMED OR MOVED:
+;;; RENAMED-AND-MOVED:
 ;;; Following moved to `mon-doc-help-utils.el' and renamed *insert* -> *help*
 ;;; `mon-insert-file-dir-functions'  -> `mon-help-file-dir-functions'
 ;;; `mon-insert-install-info-incantation' -> `mon-help-install-info-incantation'
@@ -64,12 +68,13 @@
 ;;; DEPRECATED:
 ;;;
 ;;; REQUIRES:
-;;; ./mon-time-utils.el  ;anything that uses a time-stamp
-;;; LINK: (URL `http://www.emacswiki.org/emacs/mon-time-utils.el')
-
-;;; ./mon-utils.el 
-;;; LINK: (URL `http://www.emacswiki.org/emacs/mon-utils.el')
-;;; `mon-sublist-gutted' :CALLED-BY `mon-insert-gnu-licence-gfdl' 
+;;; :FILE ./mon-time-utils.el  
+;;; :LINK (URL `http://www.emacswiki.org/emacs/mon-time-utils.el')
+;;; :CALLED-BY 'anything-that-uses-a-time-stamp'
+;;;
+;;; :FILE ./mon-utils.el 
+;;; :LINK (URL `http://www.emacswiki.org/emacs/mon-utils.el')
+;;; :FUNCTION `mon-sublist-gutted' :CALLED-BY `mon-insert-gnu-licence-gfdl' 
 ;;;
 ;;; TODO:
 ;;; Build a wget template.
@@ -121,13 +126,12 @@
 
 ;;; ==============================
 (eval-when-compile (require 'cl)) ;why not?
-;;; ==============================
+;;
+(require 'cl)
 
 ;;; ==============================
-;;; :LINK (URL `http://www.emacswiki.org/emacs/mon-time-utils.el')
-;;; Anything that uses a time-stamp.
+;;; :CALLED-BY 'Anything-that-uses-a-time-stamp.
 (require 'mon-time-utils) 
-
 
 ;;; ==============================
 (defun mon-insert-dirs-in-path (dir-list dir-path)
@@ -195,8 +199,10 @@ Creates the following directors and files in c:/home/my-dirs :
               |   `-- Name,_Part3.dbc
               `-- Name-Part4
                   `-- Name-Part4.dbc\n
- NOTE: dir & file names with 'flagged' characters are transformed where appropriate."
-  (interactive "XGive Symbol holding dir/file list :\nXGive Symbol holing insert-text :\nsFile extenison :")
+:NOTE dir & file names with 'flagged' characters are transformed where
+appropriate.\n►►►"
+  (interactive 
+   "XGive Symbol holding dir/file list :\nXGive Symbol holing insert-text :\nsFile extenison :")
   (while make-dir-list 
     (let* ((file-dir make-dir-list)
 	   (current-file (car make-dir-list))
@@ -232,9 +238,9 @@ Creates the following directors and files in c:/home/my-dirs :
 ;;; :CREATED <Timestamp: Thursday June 11, 2009 @ 02:23.20 PM - by MON KEY>
 (defun mon-insert-wht-spc (spc-cnt)
   "Insert a space char SPC-CNT times.
-Called interactively SPC-CNT is a prefix arg.
+When called-interactively SPC-CNT is a prefix arg.
 space is:\n- character: SPC (32, #o40, #x20);\n- code point: 0x20\n- name: SPACE\n
-Note: does not inherit stickiness of adjoining chars `text-properties-at'.\n
+:NOTE does not inherit stickiness of adjoining chars `text-properties-at'.\n
 :SEE-ALSO `mon-insert-newlines', `mon-insert-unicode',
 `mon-insert-string-n-times', `mon-insert-string-n-fancy-times'.\n►►►"
   (interactive "N")
@@ -246,9 +252,9 @@ Note: does not inherit stickiness of adjoining chars `text-properties-at'.\n
 ;;; :CREATED <Timestamp: Friday June 12, 2009 @ 11:18.21 AM - by MON KEY>
 (defun mon-insert-newlines (nl-cnt)
   "Insert a newline char NL-CNT times.
-Called interactively NL-CNT is a prefix arg.
+When called-interactively NL-CNT is a prefix arg.
 newline is:\n- code point: '0x0A';\n- character: C-j (10, #o12, #xa);\n- old-name: LINE FEED (LF);\n
-Note: does not inherit stickiness of adjoining chars `text-properties-at'\n
+:NOTE does not inherit stickiness of adjoining chars `text-properties-at'\n
 :SEE-ALSO `mon-insert-wht-spc', `mon-insert-unicode', 
 `mon-insert-string-n-times', `mon-insert-string-n-fancy-times'.\n►►►"
   (interactive "N")
@@ -268,7 +274,7 @@ WITH-DELIM interleave STRING-TO-PUT with the supplied delimiter. When WITH-DELIM
 is non-nil the arg to WHTSP-P is discarded so supply DELIM with with any
 required whitespace as part of the DELIMs arg if this is what you want. When NLP
 and WITH-DELIM are nil and WHTSP-P is non-nil interleave STRING-TO-PUT with
-whitespace.\nExamples:\n
+whitespace.\n:EXAMPLE
 \(mon-insert-string-n-fancy-times nil 4 \"bubba\" nil nil nil t)\n==> bubba bubba bubba bubba\n
 \(mon-insert-string-n-fancy-times nil 4 \"bubba\" t nil nil)\n==>bubba\nbubba\nbubba\nbubba\n
 \(mon-insert-string-n-fancy-times nil 3 \"bubba\" nil t \" | \")\n==>bubba | bubba | bubba |\n
@@ -326,7 +332,7 @@ whitespace.\nExamples:\n
 ;;; ==============================
 ;;; :CREATED <Timestamp: Monday February 09, 2009 @ 09:41.37 PM - by MON KEY>
 (defun mon-insert-string-n-times (put-count string-to-put)
-"Inserts the string provided n times.
+"Insert the string provided n times.
 Prompt for: How many puts? <-- number of times to put string.
              String to put: <--- String  to insert.\n
 :SEE-ALSO `mon-insert-string-n-fancy-times', `mon-insert-string-incr', `mon-re-number-region',
@@ -340,7 +346,7 @@ Prompt for: How many puts? <-- number of times to put string.
 
 ;;; ==============================
 (defun mon-number-lines-region (start end &optional beg)
-  "Numbers the lines in a region. The default value is 1.
+  "Number the lines in a region. The default value is 1.
 To begin at zero, type M-0 \\[mon-number-lines-region].
 Negative numbers are also supported. Numbers are right aligned followed by a
 period and a space. If point is at the beginning of the region, the lines
@@ -392,8 +398,8 @@ with sufficient leading zeros so they are the same width.\n
 ;;; :CREATED <Timestamp: Tuesday February 03, 2009 @ 03:41.17 PM - by MON KEY>
 ;;; :RENAMED :WAS `mon-incr' -> `mon-insert-string-incr'
 (defun mon-insert-string-incr ()
-  "Inserts to current buffer the range of number provided. 
-Prompts for; \"Increment from number:\", \"Increment to number:\",
+  "Insert to current buffer the range of number provided. 
+Prompt for; \"Increment from number:\", \"Increment to number:\",
 \"Step by increments of:\",\"With delimiter?\", \"Insert newlines?\".
 When the range will return over 1000 values throws an error.
 When \"With delimiter?\" is t, prompts \"Delimit range with:\".
@@ -449,10 +455,10 @@ When both \"With delimiter?\" and \"Insert newlines?\" are nil promts with,
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: Thursday February 19, 2009 @ 06:31.47 PM - by MON KEY>
-;;; MODIFICATIONS-OF: Drew Adams' :HIS strings.el
+;;; :MODIFICATIONS-OF Drew Adams' :HIS strings.el
 (defun mon-line-drop-in-words (&optional buffer) 
  "Split current line of text in BUFFER into single words.
-Split line is inserted with each word on a new line.\n
+The split line inserted with each word on a new line.\n
 :SEE-ALSO `mon-line-strings-to-list', `mon-string-ify-list',
 `mon-insert-string-ify',`mon-string-split-line', `mon-get-word-list-buffer'.\n►►►"
   (interactive)
@@ -494,10 +500,10 @@ space boundaries.\n\n:EXAMPLE
 (defun mon-insert-unicode (char &optional insertp intrp)
   "Reads a unicode code point for CHAR and insert CHAR at point.\n
 :EXAMPLE\n(mon-insert-unicode \"25BA\")\n
-Uses `read-quoted-char-radix' with val set to 16. This allows easy coping of
-values from Unicode charts e.g. (URL `http://www.decodeunicode.org/u+2019').\n
-For access/alteration to encoding/coding information :SEE
-`encode-coding-region', `describe-coding-system', `unicode-insert'.\n►►►"
+Invokes `read-quoted-char-radix' with val set to 16. This allows easy coping of
+values from Unicode charts, :SEE (URL `http://www.decodeunicode.org/u+2019').\n
+For access/alteration to encoding/coding information
+:SEE `encode-coding-region', `describe-coding-system', `unicode-insert'.\n►►►"
   (interactive `(,@(let* ((rd-types (list "1 Unicode char in radix 16 e.g. '25BA'"
                                           "2 Unicode char by name w/ completion (octal, hex, decimal)"))
                           (rd-type (completing-read "read Unicode as " rd-types nil t))
@@ -576,18 +582,27 @@ When called-interactively insert the following at point:\n
 ;;; ==============================\n
 When NOT-INSERT is non-nil return comment divider as string.\n
 :EXAMPLE\n\(comment-divider t\)\n
-:SEE-ALSO `mon-comment-divide->col', `mon-lisp-comment-to-col'
-`mon-insert-php-comment-divider', `mon-insert-lisp-stamp'.\n►►►"
+:SEE-ALSO `*mon-default-comment-divider*' `mon-comment-divide->col',
+`mon-lisp-comment-to-col' `mon-insert-php-comment-divider',
+`mon-insert-lisp-stamp'.\n►►►"
   (interactive "i\np")
-  (if (or (not not-insert) intrp) 
-      (insert ";;; ==============================")
-    ";;; =============================="))
+  (if (or (not not-insert) intrp)
+      (insert *mon-default-comment-divider*)
+      *mon-default-comment-divider*))
 ;;
 ;;; :TEST-ME (comment-divider t)
 ;;; :TEST-ME (comment-divider)
 ;;; :TEST-ME (call-interactively 'comment-divider)
 
 ;;; ==============================
+;; :TODO In lieu of the refactoring of commint-divider functions 
+;;; E.g. `*mon-default-comment-start*', `mon-comment-divider-w-len' 
+;;; `*mon-default-comment-divider*', etc. some of this funcs subrs can be
+;;; formulated differently and/or ommitted. For example, the local var `dvdr'
+;;; can now rebind temporarily `*mon-default-comment-start*' i.e.:
+;;; (let ((*mon-default-comment-start* "%% "))
+;;;             (mon-comment-divider-w-len 30))         
+;;; :MODIFICATIONS <Timestamp: #{2009-10-24T14:25:06-04:00Z}#{09436} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-08-25T19:03:44-04:00Z}#{09352} - by MON KEY>
 (defun comment-divider-to-col (to-col &optional start end op-prefix insertp intrp)
   "Return region or next line with `comment-divider' indented TO-COL.
@@ -602,8 +617,8 @@ Where the OP-PREFIX arg is non-nil for example using `*' comment divider is:\n
 `*** =============================='\n
 with subesequent line or region commented with `** '. 
 When INSERTP is non-nil insert commented region at point, doesn't move point.\n
-:SEE-ALSO `mon-lisp-comment-to-col' for a specifically lisp centric interactive
-implementation.\n►►►"
+:SEE `mon-lisp-comment-to-col' for a specifically lisp centric interactive
+implementation.\n:SEE-ALSO `*mon-default-comment-divider*'\n►►►"
   (interactive "i\nr\nP\ni\np")
   (let ((strt-frm   (make-marker))
         (s-ident-at (make-marker))
@@ -643,7 +658,15 @@ implementation.\n►►►"
     (setq cd2cN (with-temp-buffer
                   (let ((cln-wspc-s (make-marker))
                         (cln-wspc-e (make-marker))
-                        (dvdr (concat (substring prfx 0 1) prfx (substring (comment-divider t) 4)))
+                        (dvdr (concat 
+                               (substring prfx 0 1) 
+                               prfx 
+                               ;; :NOTE This was brittle.
+                               ;; Would break if user has prfx other than ";;; ".
+                               ;; Two new variables created which help lets us get around that.
+                               ;; `*mon-default-comment-start*', `*mon-default-comment-divider*'
+                               (substring *mon-default-comment-divider* (length *mon-default-comment-start*))))
+                                                 
                         (more t)
                         (pad)
                         (ssf))
@@ -688,7 +711,7 @@ implementation.\n►►►"
 COL-N is a prefix arg. When region is active indent and comment content of region 
 to COL-N else indent and comment next line. Comment prefix is `;; '.
 To provide an alternative comment prefix use `comment-divider-to-col'.
-:SEE-ALSO `comment-divider'.\n►►►"
+:SEE-ALSO `comment-divider', `*mon-default-comment-divider*'.\n►►►"
   (interactive "P")
   (comment-divider-to-col col-n nil nil alt-prefix nil t))
 
@@ -698,7 +721,8 @@ To provide an alternative comment prefix use `comment-divider-to-col'.
 (defun comment-divider-to-col-four () 
   ":DEPRECATED This function has been replaced by `comment-divider-to-col'.
 Insert `comment-divider' indentented to column 4(four).
-Move contents current line forward 1(one) line indent it to column 4(four).\n►►►"
+Move contents current line forward 1(one) line indent it to column 4(four).
+:SEE-ALSO `*mon-default-comment-divider*'\n►►►"
 (interactive)
 (save-excursion
   (open-line 1)
@@ -710,19 +734,22 @@ Move contents current line forward 1(one) line indent it to column 4(four).\n►
 
 ;;; ==============================
 ;;; :RENAMED `php-comment-divider' -> `mon-insert-php-comment-divider'
-(defun mon-insert-php-comment-divider ()
-  "Inserts a PHP(C style) comment divider at point. Inserts at point:\n
+(defun mon-insert-php-comment-divider (&optional insrtp intrp)
+  "Insert a PHP(C style) comment divider at point.
+Insert at point:\n
  //***************************//\n
-See; `comment-divider', `comment-divider-to-col-four'.\n►►►"
-  (interactive)
-  (insert "//***************************//"))
+:SEE-ALSO `comment-divider', `comment-divider-to-col-four'.\n►►►"
+  (interactive "i\np")
+  (if (or insrtp intrp))  
+  (insert "//***************************//")
+  "//***************************//")
 ;;
 ;;; :TEST-ME (call-interactively 'mon-insert-php-comment-divider)
 
 ;;; ==============================
 ;;; :MODIFICATIONS <Timestamp: 2009-08-04-W32-2T13:24:27-0400Z - by MON KEY>
 (defun mon-insert-user-name-cond (&optional insertp intrp)
-  "Inserts a cond template to evaluate user type of current system.
+  "Insert a cond template to evaluate user type of current system.
 Test for `IS-BUG-P' or `IS-MON-P'.\n
 :EXAMPLE\n(mon-insert-user-name-cond)\n►►►"
   (interactive "i\np")
@@ -743,10 +770,10 @@ Test for `IS-BUG-P' or `IS-MON-P'.\n
 ;;; ==============================
 ;;; :MODIFICATIONS <Timestamp: 2009-08-04-W32-2T13:24:13-0400Z - by MON KEY>
 (defun mon-insert-system-type-cond (&optional insertp intrp)
-  "Inserts a cond template to test for system type OS type. Curenlty tests for
+  "Insert a cond template to test for system type OS type. Curenlty tests for
 GNU/Linux and windows-nt only.\n
 :EXAMPLE\n\(mon-insert-system-type-cond\)\n
-See `win32p' and `gnu-linuxp' for constants that return t or nil.\n►►►"
+:SEE `win32p' and `gnu-linuxp' for constants that return t or nil.\n►►►"
   (interactive "i\np")
   (let ((stc (concat
               "\n(cond\n"
@@ -763,7 +790,7 @@ See `win32p' and `gnu-linuxp' for constants that return t or nil.\n►►►"
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-09-18T13:56:27-04:00Z}#{09385} - by MON>
 (defun mon-insert-regexp-template (&optional insertp intrp)
-  "Returna template for quickly writing regexp routine.
+  "Return template for quickly writing regexp routine.
 When INSERTP or called-interactively inserts template at point.\n
 :EXAMPLE
 ;; (while\n(progn\n  (search-forward-regexp \"\")\n  (replace-match \"\"))\n
@@ -838,18 +865,18 @@ Yank it back from the kill-ring if that is what you want.\n
          (copyright (mon-build-copyright-string nil nil t))
          (cl-template (concat
                        modeline "\n"
-                       ";;; ================================================================\n"
+                       (mon-comment-divider-w-len 54) "\n"
                        ";;; This is " fname "\n"
                        ";;; \n"
-                       ";;; FILE-CREATED:\n" 
-                       timestring 
-                       copyright
-                       ";;; CODE:\n"
+                       ";;; FILE-CREATED:\n;;; <Timestamp: " (mon-timestamp :naf t) "\n"
+                       (mon-comment-divider-w-len 64) "\n"
+                       *mon-gnu-license-header* "\n"
+                       (mon-insert-gnu-licence-gfdl t) "\n"
+                       ";;; CODE:\n\n"
                        ";;; \n"
                        ";;; {...}\n"
                        ";;;\n" 
-                       ";;; ==============================\n"
-                       ";;; EOF"))) ;modeline timestring copyright)))
+                       (mon-file-stamp-vrfy-put-eof  nil))))
          (when (or insertp intrp)
            (progn   
              (goto-char (point-min))
@@ -867,10 +894,11 @@ Yank it back from the kill-ring if that is what you want.\n
 ;;;               changed the buffer-file-name to check if we have a name.
 (defun mon-insert-CL-package-template (&optional insertp without-header intrp)
   "Return or insert a CL package-template a template. 
-Builds (with DEFPACKAGE and IN-PACKAGE forms) into the current buffer.
+Builds template with `DEFPACKAGE' and `IN-PACKAGE' forms for the current buffer.
 When called-interactively or INSERTP non-nil assumes current buffer is empty and
 insert a file template with `mon-insert-lisp-CL-file-template'.\n
-:EXAMPLE\n(mon-insert-CL-package-template)\n►►►"
+:EXAMPLE\n(mon-insert-CL-package-template)\n
+:SEE-ALSO `mon-insert-file-template'\n►►►"
   (interactive "i\nP\np")
   (let* ((file (if (not (buffer-file-name)) 
                    (buffer-name)
@@ -904,6 +932,37 @@ insert a file template with `mon-insert-lisp-CL-file-template'.\n
 ;;; :TEST-ME (mon-insert-CL-package-template)
 ;;; :TEST-ME (mon-insert-CL-package-template t)
 ;;; :TEST-ME (call-interactively 'mon-insert-CL-package-template)
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-10-24T18:33:41-04:00Z}#{09436} - by MON>
+(defun mon-insert-lisp-doc-eg-xref (&optional insrtp intrp as-kill)
+  "Return documentation keywords for insertion to dostrings.
+Default is to return with prin1.\n
+When INTRP is non-nil or called-interactively return as with princ.\n
+When INSERTP is non-nil return for as with prin1.\n
+When AS-KILL is non-nil or called-interactively with prefix arg also put return
+value on the kill-ring.\n
+:EXAMPLE\n\(mon-insert-lisp-doc-eg-xref\)\n
+ |=> :EXAMPLE\\\\n
+ |   :SEE-ALSO .\\\\n◄◄◄\\\" 
+                  ;^^^ Here the cookie is reversed! 
+                  ;    Actual value is returned per the cookie below.\n\n►►►"
+  (interactive "i\np\nP")
+  (cond (intrp
+         (save-excursion 
+           (newline)
+           (princ (concat ":EXAMPLE\\n"  "\n" ":SEE-ALSO .\\n►►►\"") (current-buffer))
+           (when as-kill (kill-new (concat ":EXAMPLE\\n"  "\n" ":SEE-ALSO .\\n►►►\"")))))
+        (insrtp
+         (prin1 (concat ":EXAMPLE\\n"  "\n" ":SEE-ALSO .\\n►►►\"") (current-buffer))
+         (when as-kill (kill-new (concat ":EXAMPLE\\n"  "\n" ":SEE-ALSO \\n►►►\""))))
+        (t (when as-kill (kill-new (concat ":EXAMPLE\\n"  "\n" ":SEE-ALSO .\\n►►►\"")))
+           ":EXAMPLE\\n\n:SEE-ALSO \\n►►►\"")))
+;;
+;;; :TEST-ME (mon-insert-lisp-doc-eg-xref)
+;;; :TEST-ME (mon-insert-lisp-doc-eg-xref nil nil t)
+;;; :TEST-ME (mon-insert-lisp-doc-eg-xref t)
+;;; :TEST-ME (mon-insert-lisp-doc-eg-xref nil t)
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: Friday June 12, 2009 @ 12:24.26 PM - by MON KEY>
@@ -992,6 +1051,7 @@ Regexp held by global var `*regexp-symbol-defs*'.\n
 ;;; :TEST-ME (mon-insert-lisp-testme nil nil nil)
 
 ;;; ==============================
+;;; :MODIFICATIONS <Timestamp: #{2009-10-24T13:05:47-04:00Z}#{09436} - by MON KEY>
 ;;; :MODIFICATIONS <Timestamp: #{2009-10-05T16:04:36-04:00Z}#{09411} - by MON KEY>
 ;;; :MODIFICATIONS <Timestamp: 2009-08-01-W31-6T13:44:23-0400Z - by MON KEY>
 ;;; :CREATED <Timestamp: Saturday July 11, 2009 @ 12:41.53 PM - by MON KEY>
@@ -1004,8 +1064,8 @@ When NO-NL is non-nil do not return with newlines.
 Default is with newline concatenated to head and tail of return string.
 When WITH-DCP is non-nil return with an institutional C/O string appended.
 When short form is non-nil do not pad the comment delim to col 68. 
-Returns with a padded comment delim of either 34, 44, 54 chars depending on the 
-value of preceding args MONKEY and WITH-DCP.\n
+Invokes `mon-comment-divider-w-len' to return with a padded comment delim of
+either 34, 44, or 54 chars depending value of arg MONKEY or WITH-DCP.\n
 :SEE-ALSO `mon-insert-copyright'.\n►►►"
   (interactive "i\np\nP") 
   (let ((name (cond (monkey 
@@ -1022,20 +1082,19 @@ value of preceding args MONKEY and WITH-DCP.\n
                      (t "")))
         (year (mon-get-current-year)) ;(format-time-string "%Y"))
         (cls-comment (cond ((and short-form (not monkey) (not with-dcp))
-                            ";;; ==============================")  ;; 34
+                            *mon-default-comment-divider*) ;; 34
                            ((and short-form monkey (not with-dcp))
-                            ";;; ==============================")  ;; 34
+                            *mon-default-comment-divider*) ;; 34
                            ((and short-form (not monkey) with-dcp) 
-                            ";;; ========================================") ;; 44
+                            (mon-comment-divider-w-len 40)) ;; 44
                            ((and short-form monkey with-dcp) 
-                            ";;; ==================================================") ;; 54
-                           (t ";;; ================================================================"))) ;; 68
+                            (mon-comment-divider-w-len 50)) ;; 54
+                           (t (mon-comment-divider-w-len 64)))) ;; 68
         (cpy))
     (setq cpy
           (if no-nl
               (concat
                cls-comment "\n"
-               ;; ";;; ================================================================\n"
                ";;; Copyright © " year " " name " "  w-dcp "\n"
                cls-comment)
               (concat
@@ -1046,7 +1105,7 @@ value of preceding args MONKEY and WITH-DCP.\n
       (save-excursion (insert cpy)))
     cpy))
 ;;
-;;;(&optional insertp intrp monkey no-nl with-dcp short-form)
+;;; &OPTIONAL insertp intrp monkey no-nl with-dcp short-form
 ;;
 ;;; :TEST-ME (mon-build-copyright-string)
 ;;; :TEST-ME (mon-build-copyright-string nil nil t nil nil t)
@@ -1058,7 +1117,7 @@ value of preceding args MONKEY and WITH-DCP.\n
 ;;; :TEST-ME (mon-build-copyright-string nil nil t t t t)
 ;;; :TEST-ME (mon-build-copyright-string nil nil nil t t t)
 ;;; :TEST-ME (mon-build-copyright-string nil nil t t nil t)
-;;; :TEST-ME (let ((IS-BUG-P t)) (mon-build-copyright-string nil nil t))
+;;; :TEST-ME (let ((IS-MON-P nil) (IS-BUG-P t)) (mon-build-copyright-string nil nil t))
 ;;; :TEST-ME (call-interactively 'mon-build-copyright-string)
 
 ;;; ==============================
@@ -1093,6 +1152,7 @@ Conditional upon `IS-BUG-P' returning t.
 ;;; :TEST-ME (let ((IS-BUG-P t)) (bug-insert-copyright))
 
 ;;; ==============================
+;;; :MODIFICATIONS <Timestamp: #{2009-10-24T13:49:28-04:00Z}#{09436} - by MON KEY>
 ;;; :MODIFICATIONS <Timestamp: #{2009-10-02T16:06:03-04:00Z}#{09405} - by MON KEY>
 ;;; :MODIFICATIONS <Timestamp: #{2009-10-05T15:53:51-04:00Z}#{09411} - by MON KEY>
 ;;; :CREATED <Timestamp: Thursday April 09, 2009 @ 05:52.10 PM - by MON KEY>
@@ -1116,54 +1176,45 @@ GFDLv1.3 clause w/ Copyright <YYYY> <NAME> from: `*mon-gnu-license-header-gfdl*'
                 cur-nm
               "<PKG-NAME>"))
            (fl-template
-            (format 
-";; -*- mode: EMACS-LISP; -*-
-;;; this is %s
-;;; ================================================================
-;;; DESCRIPTION:
-;;; %s provides {description here}.\n;;;
-;;; FUNCTIONS:►►►\n;;;\n;;; FUNCTIONS:◄◄◄\n;;;
-;;; MACROS:\n;;;
-;;; METHODS:\n;;;
-;;; CLASSES:\n;;;
-;;; CONSTANTS:\n;;;
-;;; VARIABLES:\n;;;
-;;; ALIASED/ADVISED/SUBST'D:\n;;;
-;;; DEPRECATED:\n;;;
-;;; RENAMED:\n;;;
-;;; MOVED:\n;;;
-;;; TODO:\n;;;
-;;; NOTES:\n;;;
-;;; SNIPPETS:\n;;;
-;;; REQUIRES:\n;;;
-;;; THIRD PARTY CODE:\n;;;
-;;; AUTHOR: MON KEY
-;;; MAINTAINER: MON KEY\n;;;
-;;; PUBLIC-LINK: (URL `http://www.emacswiki.org/emacs/%s)
-;;; FIRST-PUBLISHED:\n;;;
-;;; FILE-CREATED:\n%s
-;;; ================================================================
-%s
-%s
-;;; CODE:\n
-;   {...\n;   %s Contents here\n;   ...}\n
-;;; ==============================
-;;; (provide '%s)
-;;; ==============================\n
-;;; ================================================================
-;;; %s ends here\n;;; EOF"
-fname
-fname-sans
-fname
-(concat ";;; <Timestamp: " (mon-timestamp :naf t)) 
-*mon-gnu-license-header* 
-(mon-insert-gnu-licence-gfdl t)
-fname-sans
-fname-sans
-fname)))
-(if (or insertp intrp)
-    (insert fl-template)
-  fl-template)))
+            (concat
+             ";; -*- mode: EMACS-LISP; -*-\n"
+             ";;; this is " fname "\n"
+             (mon-comment-divider-w-len 64)"\n"
+             ";;; DESCRIPTION:\n"
+             ";;; " fname-sans " provides {description here}.\n;;;\n"
+             ";;; FUNCTIONS:►►►\n;;;\n;;; FUNCTIONS:◄◄◄\n;;;\n"
+             ";;; MACROS:\n;;;\n"
+             ";;; METHODS:\n;;;\n"
+             ";;; CLASSES:\n;;;\n"
+             ";;; CONSTANTS:\n;;;\n"
+             ";;; VARIABLES:\n;;;\n"
+             ";;; ALIASED/ADVISED/SUBST'D:\n;;;\n"
+             ";;; DEPRECATED:\n;;;\n"
+             ";;; RENAMED:\n;;;\n"
+             ";;; MOVED:\n;;;\n"
+             ";;; TODO:\n;;;\n"
+             ";;; NOTES:\n;;;\n"
+             ";;; SNIPPETS:\n;;;\n"
+             ";;; REQUIRES:\n;;;\n"
+             ";;; THIRD PARTY CODE:\n;;;\n" 
+             ";;; AUTHOR: MON KEY\n"
+             ";;; MAINTAINER: MON KEY\n;;;\n"
+             ";;; PUBLIC-LINK: (URL `http://www.emacswiki.org/emacs/" fname ")\n"
+             ";;; FIRST-PUBLISHED:\n;;;\n"
+             ";;; FILE-CREATED:\n;;; <Timestamp: " (mon-timestamp :naf t) "\n"
+             (mon-comment-divider-w-len 64) "\n"
+             *mon-gnu-license-header* "\n"
+             (mon-insert-gnu-licence-gfdl t) "\n"
+             ";;; CODE:\n\n"
+             ";   {...\n;   " fname-sans " Contents here\n;   ...}\n\n"
+             *mon-default-comment-divider* "\n" 
+             ";;; (provide '" fname-sans ")\n"
+             *mon-default-comment-divider* "\n\n"
+             (mon-comment-divider-w-len 64) "\n"
+             ";;; " fname " ends here\n;;; EOF")))
+             (if (or insertp intrp)
+                 (insert fl-template)
+                 fl-template)))
 ;;
 (defalias 'mon-insert-naf-mode-file-template 'mon-insert-file-template)
 ;;
@@ -1178,8 +1229,7 @@ fname)))
 Insertion provides GPLv3+ clause.\n
 :EXAMPLE\n*mon-gnu-license-header*\n
 :CALLED-BY `mon-insert-file-template',`mon-insert-gnu-licence'.\n
-:SEE `*mon-gnu-license-header-gfdl*',`mon-insert-gnu-licence-gfdl' GFDL clause.
-►►►")
+:SEE `*mon-gnu-license-header-gfdl*',`mon-insert-gnu-licence-gfdl'.\n►►►")
 ;;
 (when (not (bound-and-true-p *mon-gnu-license-header*))
            (setq *mon-gnu-license-header*
@@ -1201,7 +1251,8 @@ Insertion provides GPLv3+ clause.\n
 ;;; Floor, Boston, MA 02110-1301, USA."))
 ;;
 ;;; :TEST-ME *mon-gnu-license-header*
-;;;(progn (makunbound '*mon-gnu-lincense-header*)(unintern '*mon-gnu-license-header*))
+;;;(progn (makunbound '*mon-gnu-lincense-header*)
+;;;       (unintern '*mon-gnu-license-header*))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-10-02T12:01:00-04:00Z}#{09405} - by MON KEY>
@@ -1248,8 +1299,8 @@ does not move point.\n\n:EXAMPLE\n(mon-insert-gnu-licenceg-gfdl)\n
 ;;; :TEST-ME (call-interactively 'mon-insert-gnu-licence)
 
 ;;; ==============================
-;;; :CREATED <Timestamp: #{2009-10-02T12:01:00-04:00Z}#{09405} - by MON KEY>
 ;;; :MODIFICATIONS <Timestamp: #{2009-10-05T15:43:43-04:00Z}#{09411} - by MON KEY>
+;;; :CREATED <Timestamp: #{2009-10-02T12:01:00-04:00Z}#{09405} - by MON KEY>
 (defun mon-insert-gnu-licence-gfdl (&optional  w-divider insertp intrp)
   "Returns `*mon-gnu-license-header-gfdl*'. 
 When INSERTP non-nil or called-interactively insert GNU license at point, but
@@ -1260,9 +1311,9 @@ does not move point.\n
 (let ((bld-gfdl 
        (cond (w-divider
               (concat 
-               ";;; ================================================================\n"
-               *mon-gnu-license-header-gfdl*
-               "\n;;; ================================================================\n"
+               (mon-comment-divider-w-len 64) "\n"
+               *mon-gnu-license-header-gfdl*  "\n"
+               (mon-comment-divider-w-len 64) "\n"
                (mapconcat 'identity
                           (mon-sublist-gutted
                            0 1 
@@ -1351,8 +1402,8 @@ Does not move point.\n:EXAMPLE\n(mon-insert-defclass-template nil 2)\n
 
 ;;; ==============================
 ;;; :COURTESY Aaron S. Hawley 
-;;; (URL `http://www.emacswiki.org/emacs/AutoInsertForTexinfo')
-;;; Texinfo template. Based on "Emacs Lisp Header" in auto-insert.el
+;;; :SEE (URL `http://www.emacswiki.org/emacs/AutoInsertForTexinfo')
+;;; :NOTE Texinfo template. Based on "Emacs Lisp Header" in auto-insert.el
 ;;; :MODIFICATIONS <Timestamp: #{2009-08-24T11:38:35-04:00Z}#{09351} - by MON>
 ;;; Turned this into a function so now without reliance on autoinsertmode.
 ;;; ==============================
@@ -1391,9 +1442,10 @@ buffer to before proceeding with insertion.\n
                "@settitle " title "\n"
                "@c %**end of header
   @copying\n"
-               shrt-desc".\n\n"        ;WAS: (read-string "Short description :")
+               ;; :WAS (read-string "Short description :")
+               shrt-desc".\n\n"        
                "Copyright @copyright{} " this-year "  "
-               ;; WAS: ;;(getenv "ORGANIZATION") | (progn user-full-name) "
+               ;; :WAS ;;(getenv "ORGANIZATION") | (progn user-full-name) "
                organization " | " u-name
                "@quotation
   Permission is granted to copy, distribute and/or modify this document
@@ -1416,7 +1468,7 @@ buffer to before proceeding with insertion.\n
   @title " title "
   @subtitle " shrt-desc "
   @author " organization u-name   " |  <" mail-addr ">\n"
-  ;; WAS ;; (getenv "ORGANIZATION") | (progn user-full-name)  " <" (progn user-mail-address) ">
+  ;; :WAS ;; (getenv "ORGANIZATION") | (progn user-full-name)  " <" (progn user-mail-address) ">
                "@page
   @vskip 0pt plus 1filll
   @insertcopying
@@ -1462,7 +1514,6 @@ buffer to before proceeding with insertion.\n
 ;;
 ;;; :TEST-ME (call-interactively 'mon-insert-texi-template)
 
-
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-10-23T20:17:17-04:00Z}#{09436} - by MON KEY>
 (defvar *mon-hgignore-template* 
@@ -1503,7 +1554,8 @@ buffer to before proceeding with insertion.\n
 :CALLED-BY `mon-insert-hgignore-template'.")
 ;;
 ;;; :TEST-ME *mon-hgignore-template* 
-;;; (progn (makunbound '*mon-hgignore-template*) (unintern '*mon-hgignore-template*))
+;;; (progn (makunbound '*mon-hgignore-template*)
+;;;         (unintern '*mon-hgignore-template*))
 
 ;;; ==============================
 ;;; CREATED: <Timestamp: #{2009-10-23T16:06:04-04:00Z}#{09435} - by MON KEY>
@@ -1522,8 +1574,8 @@ regexp formats.  Patterns held as a list of strings in variable
 ;;; :TEST-ME (mon-insert-hgignore-template)
 
 ;;; ==============================
-;;; :CREATED <Timestamp: Wednesday March 04, 2009 @ 06:16.40 PM - by MON KEY>
 ;;; :MODIFICATIONS <Timestamp: 2009-08-01-W31-6T16:03:23-0400Z - by MON KEY>
+;;; :CREATED <Timestamp: Wednesday March 04, 2009 @ 06:16.40 PM - by MON KEY>
 (defun mon-insert-test-cases (&optional insertp intrp)
   "Easily identified tracing vars for debugging defuns mon-*- and naf-mode-*.
 Unbinds all previously bound variables:
@@ -1555,7 +1607,7 @@ test-cases at point.\n
 
 ;;; ==============================
 ;;; :NOTE (local-set-key "\C-c4" 'mon-comput-45)
-;;; CREATED: <Timestamp: #{2009-10-17T11:30:32-04:00Z}#{09426} - by MON>
+;;; :CREATED <Timestamp: #{2009-10-17T11:30:32-04:00Z}#{09426} - by MON>
 (defun mon-comput-45 (dollar &optional insrtp intrp)
   "Given a DOLLAR amount compute 45% retained by DBC and Customer.
 When INSRTP is non-nil or called-interactively insert at point.
@@ -1585,7 +1637,7 @@ Does not move-point.\n
 
 ;;; ==============================
 ;;; :NOTE (local-set-key "\C-c3" mon-comput-33)
-;;; CREATED: <Timestamp: #{2009-10-17T11:30:06-04:00Z}#{09426} - by MON>
+;;; :CREATED <Timestamp: #{2009-10-17T11:30:06-04:00Z}#{09426} - by MON>
 (defun mon-comput-33 (dollar &optional insrtp intrp) 
   "Given a DOLLAR amount compute 45% retained by DBC and Customer.
 When INSRTP is non-nil or called-interactively insert at point.
@@ -1611,9 +1663,57 @@ Does not move-point.\n
 ;;
 ;;; :TEST-ME (mon-comput-33 600)
 ;;; :TEST-ME (mon-comput-33 600 t)
+;;; ==============================
+;;; CREATED: <Timestamp: #{2009-10-22T16:29:10-04:00Z}#{09434} - by MON>
+(defun* mon-ps2ascii (pdf-fname &key out-fname in-buffer)
+  "PDF-FNAME is a pdf filename.
+OUT-FNAME a filename to write the conversion to.
+Keyword IN-BUFFER spits conversion out to current-buffer.
+When OUT-FNAME and IN-BUFFER are nil conversion is output to
+\"*Shell Command Output*\" buffer.\n►►►"
+   (cond (out-fname 
+          (shell-command (concat "ps2ascii " pdf-fname " " out-fname)))
+          (in-buffer
+           (shell-command (concat "ps2ascii " pdf-fname " ") t))
+          (t (shell-command (concat "ps2ascii " pdf-fname " ")))))
+
+
 
 ;;; ==============================
-;;; WORKING-ON-THIS: AS-OF: 2009-07-18
+(defun* mon-pdftotext (frm-pdf &key w-layout w-nopgbrk w-htmlmeta to-fname in-buffer)
+ (shell-command 
+  (concat "pdftotext "
+          (when w-layout   "-layout ")
+          (when w-nopgbrk  "-nopgbrk ")
+          (when w-htmlmeta "-htmlmeta ")
+          "-eol unix "
+           frm-pdf " "
+           (when to-fname (concat to-fname " ")))
+  in-buffer))
+
+
+;;; ==============================
+;;; CREATED: <Timestamp: #{2009-10-21T15:00:41-04:00Z}#{09433} - by MON>
+(defun* mon-pdfinfo (fname &key w-meta)
+  (princ (format "\n;;; Output of \"pdfinfo%s%s\"\n" 
+                 (if w-meta " -meta " " ")
+                 fname)
+         (current-buffer))
+           (call-process-shell-command 
+            (concat "pdfinfo "
+                    (if w-meta "-meta " "")
+                        fname ) nil t))
+
+;;; ==============================
+;;; CREATED: <Timestamp: #{2009-10-21T15:00:36-04:00Z}#{09433} - by MON>
+  (defun mon-get-ps-pdf ()
+    (prin1 
+     (mapconcat 'identity 
+                (directory-files default-directory t ".*\.ps\\|.*\.pdf") "\n")
+     (current-buffer)))
+
+;;; ==============================
+;;; :WORKING-ON-THIS AS-OF: 2009-07-18
 ;;  (defun mon-insert-lisp-evald (&optional gthrp semicolons-p nlp intrp)
 ;; "GTHRP -> gather-line-p; NLP -> new-lines-p;"
 ;;  (interactive "i\ni\ni\p")
@@ -1726,12 +1826,12 @@ Does not move-point.\n
 
 ;;; ==============================
 ;;; beginning-of-defun
-;;; FIXME: REGEXP doesn't catch on cases where the lambda list is on the next line.
-;;; FIXME: Insertion of defvar test-me's should either:
+;;; :FIXME REGEXP doesn't catch on cases where the lambda list is on the next line.
+;;; :FIXME Insertion of defvar test-me's should either:
 ;;;        use a (symbol-value VAR), or; 
 ;;;        not be placed in side a list form.
 ;;;
-;;; TODO: 
+;;; :TODO 
 ;;; - Consider use of defmacro/defvar/defun* .defvar will need to 
 ;;;   track on varnames with '*"
 ;;;
@@ -1750,9 +1850,9 @@ Does not move-point.\n
 ;;;   "test-me;(describe-variable '<VARNAME>)"
 ;;;   When a face is found: should insert:
 ;;;   "test-me;(describe-face '<FACENAME>)"
+
 ;;; ==============================
-;;; :UNFINISHED-AS-OF 
-;;; <Timestamp: #{2009-10-05T16:03:34-04:00Z}#{09411} - by MON KEY>
+;;; :UNFINISHED-AS-OF <Timestamp: #{2009-10-05T16:03:34-04:00Z}#{09411} - by MON KEY>
 ;;; :CREATED <Timestamp: 2009-07-31-W31-5T13:53:52-0400Z - by MON KEY>
 (defun mon-insert-lisp-testme-fancy (&optional search-func test-me-count insertp intrp)
   "Insert at point a newline and commented test-me string.

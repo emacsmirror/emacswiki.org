@@ -705,7 +705,10 @@ Display of centered dot, etc. did not work on my Unicode terminal until I replac
 : If someone test in those environments, please, write here the results.
 : Thanks -- ViniciusJoseLatorre
 
+[new]
+Hi Vinicius,
 
+I tested these settings no Mac OS X 10.4 and 10.6 and they seem ok.
 ----
 
 CategoryCode,

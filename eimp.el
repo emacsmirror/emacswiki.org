@@ -3,7 +3,7 @@
 ;;; Copyright (C) 2006, 2007 Matthew P. Hodges
 
 ;; Author: Matthew P. Hodges <MPHodges@member.fsf.org>
-;; Version: $Id: eimp.el,v 1.111 2007/03/14 08:12:06 mphodges-guest Exp $
+;; Version: $Id: eimp.el,v 1.113 2008-07-16 10:15:56 mphodges-guest Exp $
 
 ;; eimp.el is free software; you can redistribute it and/or modify it
 ;; under the terms of the GNU General Public License as published by
@@ -393,7 +393,7 @@ string).  Return the process, if any."
                      (args (cadr (member 'proc-args eimp-data)))
                      (image-type (cadr (member 'image-type eimp-data))))
                 (with-temp-file temp-file
-                  (insert (string-as-multibyte image-data)))
+                  (insert (string-to-multibyte image-data)))
                 (setq proc
                       (apply #'start-process id nil eimp-mogrify-program
                              ;; TODO: haven't understood why things
@@ -440,7 +440,7 @@ If ERROR, signal an error with this string."
           (setq posn (eimp-image-position-by-proc proc))
           (when posn
             (eimp-save-buffer-state nil
-              (remove-text-properties posn (1+ posn) proc)))))))
+              (remove-text-properties posn (1+ posn) (list proc))))))))
   (setq eimp-process-list nil))
 
 (defun eimp-clear-process-queue ()
@@ -480,39 +480,40 @@ Process PROC with message string MSG."
 Process PROC with message string MSG."
   (let ((buffer (process-buffer proc))
         error-message stopped)
-    (when (buffer-live-p buffer)
-      (save-excursion
-        (with-current-buffer buffer
-          (let* ((image-posn (eimp-image-position-by-proc proc))
-                 (display (and image-posn (eimp-get-display-property image-posn)))
-                 ;; Could be nil if no image
-                 (eimp-data (and image-posn (get-text-property image-posn 'eimp-proc)))
-                 (image-type (cadr (member 'image-type eimp-data)))
-                 (temp-file (cadr (member 'temp-file eimp-data))))
-            (cond
-             ((or (not display) (not eimp-data))
-              (setq error-message "EIMP image not found"))
-             ((string-equal msg "finished\n")
-              (goto-char image-posn)
-              (if eimp-enable-undo
-                  (eimp-replace-image image-type temp-file)
-                (eimp-save-buffer-state nil
-                  (eimp-replace-image image-type temp-file))
-                (when (eq major-mode 'image-mode)
-                  (set-buffer-modified-p t))))
-             ((string-equal msg "stopped (signal)\n")
-              (setq stopped t))
-             (t
-              (setq error-message (format "EIMP process exited with error: %s (exit status = %S)" msg
-                                          (process-exit-status proc)))))
-            (unless stopped
-              (when image-posn
-                (setq eimp-process-list (delq proc eimp-process-list))
-                (eimp-save-buffer-state nil
-                  (remove-text-properties
-                   image-posn (1+ image-posn) '(eimp-proc))))
-              (when (and temp-file (file-exists-p temp-file))
-                (delete-file temp-file)))))))
+    (if (buffer-live-p buffer)
+        (save-excursion
+          (with-current-buffer buffer
+            (let* ((image-posn (eimp-image-position-by-proc proc))
+                   (display (and image-posn (eimp-get-display-property image-posn)))
+                   ;; Could be nil if no image
+                   (eimp-data (and image-posn (get-text-property image-posn 'eimp-proc)))
+                   (image-type (cadr (member 'image-type eimp-data)))
+                   (temp-file (cadr (member 'temp-file eimp-data))))
+              (cond
+               ((or (not display) (not eimp-data))
+                (setq error-message "EIMP image not found"))
+               ((string-equal msg "finished\n")
+                (goto-char image-posn)
+                (if eimp-enable-undo
+                    (eimp-replace-image image-type temp-file)
+                  (eimp-save-buffer-state nil
+                    (eimp-replace-image image-type temp-file))
+                  (when (eq major-mode 'image-mode)
+                    (set-buffer-modified-p t))))
+               ((string-equal msg "stopped (signal)\n")
+                (setq stopped t))
+               (t
+                (setq error-message (format "EIMP process exited with error: %s (exit status = %S)" msg
+                                            (process-exit-status proc)))))
+              (unless stopped
+                (when image-posn
+                  (setq eimp-process-list (delq proc eimp-process-list))
+                  (eimp-save-buffer-state nil
+                    (remove-text-properties
+                     image-posn (1+ image-posn) '(eimp-proc))))
+                (when (and temp-file (file-exists-p temp-file))
+                  (delete-file temp-file))))))
+      (setq error-message "EIMP image buffer deleted"))
     ;; Run queued processes, if no error and there are any remaining
     (if error-message
         (progn

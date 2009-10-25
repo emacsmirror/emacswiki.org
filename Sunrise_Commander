@@ -207,6 +207,26 @@ usage notes) go to:
     http://joseito.republika.pl/sunrise-x-modeline.el.gz
 
 [new]
+Here is another one: the Tabs extension.
+
+This  extension brings tab‐based navigation to the Sunrise Commander. It adds to
+the list of optional mechanisms already available in Sunrise for  moving  around
+the   file   system   (like   regular  bookmarks,  checkpoints,  history  rings,
+materialized virtual buffers, navigable paths and file‐following) another way to
+maintain  a  list  of  selected  locations  one  wants to return later on, or to
+compose "breadcrumb trails" for complex repetitive operations.
+
+The  main difference between tabs and other mechanisms is that once a buffer has
+been assigned to a tab, it will not be killed automatically by Sunrise, so  it’s
+possible  to  keep  it  around as long as necessary with all its marks and state
+untouched. On the other hand, tabs are not persistent across  sessions;  if  you
+need  a  persistent  mechanism  consider  bookmarks,  checkpoints,  materialized
+virtual buffers or history listings.
+
+To get a copy of the Sunrise Tabs extension go to:
+    http://joseito.republika.pl/sunrise-x-tabs.el.gz
+
+[new]
 I  have some  problems  with sunrise  commander.   Is there  some mailing  list,
 project page or  other way to report bugs?  It seems  the devadvice usage breaks
 some  other stuff.  For example  listing  the files  in a  debian package  using
@@ -216,7 +236,7 @@ thanks!
 
 [new]
 Currently there is no project page (other than this wiki page). Please report any
-bugs you find to the comp.emacs newsgroup or directly to me: joseito@poczta.onet.pl
+bugs you find to the gnu.emacs.help newsgroup or directly to me: joseito@poczta.onet.pl
 
 ----
 CategoryDirectories

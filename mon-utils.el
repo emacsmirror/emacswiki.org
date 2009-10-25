@@ -64,6 +64,7 @@
 ;;; `mon-generate-prand-id', `mon-generate-prand-seed'
 ;;; `mon-sha1-region', `mon-kill-ring-save-w-props', 
 ;;; `mon-escape-string-for-cmd', `mon-line-strings-qt-region'
+;;; `mon-buffer-name->kill-ring', `mon-make-a-pp'
 ;;; FUNCTIONS:◄◄◄
 ;;; FUNCTIONS:###
 ;;; 
@@ -178,7 +179,7 @@
 (require 'mon-empty-registers)
 
 ;;; ==============================
-;;; EMACSWIKI: Enable 'em if you got 'em.
+;;; :EMACSWIKI Enable 'em if you got 'em.
 ;;; ==============================
 ;;; (require 'mon-regexp-symbols)
 ;;; (require 'mon-time-utils)
@@ -210,6 +211,21 @@
             (progn ,@body)
          (unless ,buffer-already-there-p-var
            (kill-buffer ,buffer-var))))))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-10-22T16:45:38-04:00Z}#{09434} - by MON>
+(defun mon-buffer-name->kill-ring (&optional or-buffer insrtp)
+  "Put buffer-name of current-buffer on kill-ring.
+When OR-BUFFER is non-nil put that buffer's name on kill ring instead.
+When INSRTP is non-nil or called-interactively with prefix arg insert 
+buffer-name at point. Does not move point.\n
+:EXAMPLE\n(mon-buffer-name->kill-ring)
+\(call-interactively 'mon-buffer-name->kill-ring)\n►►►"
+  (interactive "i\nP")
+  (let ((kn (kill-new (format "%S" (buffer-name or-buffer)))))
+    (if insrtp 
+        (save-excursion (newline) (princ kn (current-buffer)))
+        (princ kn))))
 
 ;;; ==============================
 ;;; :COURTESY `read-envvar-name' :FILE emacs/lisp/env.el
@@ -250,7 +266,7 @@ When insrtp or called-interactively insert returned vars at point.
 ;;; :TEST-ME (prin1 (mon-get-env-variables t) (current-buffer))
 
 ;;; ==============================
-;;; CREATED: <Timestamp: #{2009-10-16T15:49:07-04:00Z}#{09425} - by MON KEY>
+;;; :CREATED <Timestamp: #{2009-10-16T15:49:07-04:00Z}#{09425} - by MON KEY>
 (defun mon-get-sys-proc-list ()
   "Return a full lisp list of current system-proceses.\n
 :EXAMPLE:\n(mon-get-sys-proc-list)\n
@@ -274,7 +290,7 @@ Does not move point.\n
      (mon-get-sys-proc-list))))
 
 ;;; ==============================
-;;; CREATED: <Timestamp: #{2009-10-16T16:34:48-04:00Z}#{09425} - by MON KEY>
+;;; :CREATED <Timestamp: #{2009-10-16T16:34:48-04:00Z}#{09425} - by MON KEY>
 (defun mon-get-proc-w-name (comm)
   "Return list of `process-attributes' lists for Command name COMM.
 COMM (a string) is an executable name. 
@@ -430,7 +446,7 @@ Like `append-next-kill' but skips the C M-w M-w finger-chord hoop jump.\n►►�
 
 ;;; ==============================
 ;;; :COURTESY Francois Fleuret <fleuret@idiap.ch> :HIS fleuret.emacs.el
-;;; (URL `http://www.idiap.ch/~fleuret/files/fleuret.emacs.el')
+;;; :SEE (URL `http://www.idiap.ch/~fleuret/files/fleuret.emacs.el')
 ;;; :WAS `ff/twin-horizontal-current-buffer' -> `mon-twin-horizontal'
 (defun mon-twin-horizontal () 
   "Split current-buffer horizontally.
@@ -734,7 +750,7 @@ the tedium of building the entire scaffolding.
 
 ;;; ==============================
 ;;; :COURTESY Andy Stewart <lazycat.manatee@gmail.com> :WAS `match-at-point'
-;;; (URL `http://www.emacswiki.org/emacs/lazycat-toolkit.el')
+;;; :SEE (URL `http://www.emacswiki.org/emacs/lazycat-toolkit.el')
 ;;; :CREATED <Timestamp: Wednesday June 03, 2009 @ 06:18.14 PM - by MON KEY>
 (defun mon-match-at-point (regexp)
   "Return the buffer substring around point matching REGEXP.
@@ -811,7 +827,7 @@ If AFTER is non-nil return t when char after point is a 'space'.\n
 	     (message "Char after point at Beginning of Line _NOT_ whitespace.")
 	   (message "Char after point at Beginning of Line IS whitespace."))))
     not-space))
- 
+;; 
 ;;; :TEST-ME  (format "%s" (not-spacep-bol))
 
 ;;; ==============================
@@ -831,7 +847,7 @@ If AFTER is non-nil return t when char after point is a 'space'.\n
 	     (message "Char after point at Beginning of Line IS whitespace.")
 	   (message "Char after point at Beginning of Line _NOT_ whitespace."))))
     is-space))
- 
+;; 
 ;;; :TEST-ME  (format "%s" (mon-spacep-is-bol))
 
 ;;; ==============================
@@ -1402,7 +1418,7 @@ combination concatenate these also.\n
                               ((stringp seq) (mon-string-to-sequence seq)))
                         seq)) seq-seqs)
      (apply 'concat (car seq-seqs) (cdr seq-seqs))))
-;;;
+;;
 ;;; :TEST-ME (mon-string-from-sequence '(98 117 98 98 97))
 ;;; :TEST-ME (mon-string-from-sequence (string-to-list "bubba"))
 ;;; :TEST-ME (mon-string-from-sequence '(98 117 98 98 97 115 97) (string-to-list "bubba"))
@@ -2314,7 +2330,7 @@ Finally, return nil forever.\n►►►"
 ;;; ==============================
 
 ;;; ==============================
-;;; CREATED: <Timestamp: #{2009-10-13T17:40:20-04:00Z}#{09422} - by MON>
+;;; :CREATED <Timestamp: #{2009-10-13T17:40:20-04:00Z}#{09422} - by MON>
 (defun mon-generate-prand-id (&optional cnt)
   "Return a pseudo-rand UID.
 Return value is a 40 char hex string generated as sha1 sum from seed
@@ -2344,7 +2360,7 @@ This means:\n
 ;;;     (newline) (prin1 i (current-buffer))))
 
 ;;; ==============================
-;;; CREATED: <Timestamp: #{2009-10-12T15:07:02-04:00Z}#{09421} - by MON KEY>
+;;; :CREATED <Timestamp: #{2009-10-12T15:07:02-04:00Z}#{09421} - by MON KEY>
 (defun mon-generate-prand-seed ()
   "Generate a seed for 'unique random identifier' a 32 character hex string.
 Seed is only pseudo random/unique but it will suffice for our needs.
@@ -2478,11 +2494,11 @@ and `apply-on-rectangle' in `rect.el'.\n►►►"
       (setq endcol (current-column))
       (forward-line 1)
       (setq endpt (point-marker))
-      ;; ensure the start column is the left one.
+      ;; Ensure the start column is the left one.
       (if (< endcol startcol)
 	  (let ((col startcol))
 	    (setq startcol endcol endcol col)))
-      ;; start looping over lines
+      ;; Start looping over lines.
       (goto-char startpt)
       (while (< (point) endpt)
 	(apply function startcol endcol args)
@@ -2702,7 +2718,7 @@ Helper function for `mon-view-help-source'\n
 ;;; :COURTESY Pascal J. Bourguignon :HIS list.lisp :WAS PLIST-REMOVE
 ;;; :CREATED <Timestamp: #{2009-09-28T17:32:55-04:00Z}#{09401} - by MON>
 (defun plist-remove (plist prop)
-  ":DO      (remf plist prop)
+  ":DO      \(remf plist prop\)
 :RETURN  The modified PLIST.\n
 :SEE-ALSO `mon-plist-keys'\n►►►"
   (remf plist prop)
@@ -3129,6 +3145,46 @@ without the surrounding quotes.
       (while (search-forward "\\" nil t)
 	(replace-match "" nil t)
 	(forward-char)))))
+
+;;; ==============================
+;;; :CREATED: <Timestamp: #{2009-10-20T15:56:02-04:00Z}#{09432} - by MON>
+  (defun mon-make-a-pp (start end &optional CL->downcase)
+    "Pretty print the region in buffer. Do not move point.
+ When CL->DOWNCASE is non-nil it is used clean CL that is in ALL CAPS.
+:SEE-ALSO `mon-princ-cb', `mon-eval-sexp-at-point'\n►►►"
+    (interactive "r\nP")
+    (let ((fw  (if CL->downcase
+                   "(save-excursion (newline) (princ (downcase (pp '("
+                   "(save-excursion (newline) (princ (pp '("))
+          (bw  (if CL->downcase
+                   "))) (current-buffer)))"
+                   ")) (current-buffer)))"))
+          (mk1 (make-marker))
+          (mk2 (make-marker))
+          (mk3 (make-marker))
+          (mk4 (make-marker)))
+      (set-marker mk3 start)
+      (set-marker mk4 end)
+      (mon-wrap-with (concat fw "\n") (concat "\n" bw))
+      (search-forward-regexp (concat "\n" bw))
+      (set-marker mk2 (point))
+      (eval (preceding-sexp))
+      (search-backward-regexp (concat "\n" bw))
+      (set-marker mk1 (point))
+      (delete-region mk1 mk2)
+      (search-backward-regexp (concat fw "\n"))
+      (set-marker mk1 (point))
+      (search-forward-regexp (concat fw "\n"))
+      (set-marker mk2 (point))
+      (delete-region mk1 mk2)
+      (delete-region mk3 mk4)
+      (forward-sexp)
+      (set-marker mk2 (point))
+      (backward-sexp)
+      (set-marker mk1 (point))
+      (delete-region mk1 (1+ mk1))
+      (delete-region mk2 (1- mk2))
+      (backward-delete-char 1)))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: Wednesday May 20, 2009 @ 02:13.22 PM - by MON KEY>

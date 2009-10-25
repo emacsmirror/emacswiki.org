@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Oct 22 10:03:59 2009 (-0700)
+;; Last-Updated: Sat Oct 24 12:42:40 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 4479
+;;     Update #: 4510
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -274,6 +274,15 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2009/10/24 dadams
+;;     icicle-unsorted-file-name-*-candidates, icicle-*-any-file-name-candidates-p:
+;;       Got rid of slashed-p.
+;;     icicle-unsorted-file-name-apropos-candidates:
+;;       Set icicle-common-match-string to nil if there are no candidates.
+;;     icicle-apropos-any-file-name-candidates-p:
+;;       When input is a dir, remove final /, so we don't non-match highlight the / (empty dir).
+;;       Bind case-fold-search, for apropos matching.
+;;     icicle-abbreviate-or-expand-file-name: Set DIR to nil if it's relative.
 ;; 2009/10/22 dadams
 ;;     Added: icicle-file-name-directory.
 ;;     icicle-completion-setup-function, icicle-display-candidates-in-Completions,
@@ -1606,6 +1615,13 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2009/10/24 dadams
+;;     icicle-(apropos|prefix)-complete-1:
+;;       Removed code treating empty dir via *-any-*-p and ("").
+;;       When only one candidate, set *-last-completion-candidate to:
+;;         If file-name completion:
+;;           If empty input, the input; if dir candidate, input + /; else the sole candidate.
+;;         Else the sole candidate.
 ;; 2009/10/22 dadams
 ;;     icicle-insert-input, icicle-candidate-action-1, icicle-keep-only-past-inputs,
 ;;       icicle-apropos-complete-and-(narrow|widen):

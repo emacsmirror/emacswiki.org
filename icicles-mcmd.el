@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Oct 22 10:04:42 2009 (-0700)
+;; Last-Updated: Sat Oct 24 12:15:50 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 14890
+;;     Update #: 14940
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2813,11 +2813,6 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                                                       (icicle-prefix-candidates icicle-current-input))
                                                   (error icicle-completion-candidates)))))
         (message nil))                  ; Clear out "Computing completion candidates..." message.
-      ;; If input matches an empty directory, then use that directory as the sole completion.
-      (when (and (icicle-file-name-input-p) (null icicle-completion-candidates)
-                 (string-match "/$" icicle-current-input)
-                 (icicle-prefix-any-file-name-candidates-p (directory-file-name icicle-current-input)))
-        (setq icicle-completion-candidates  '("")))
       (unless word-p (setq return-value  icicle-completion-candidates)) ; Word returns special value.
       (icicle-save-or-restore-input)
       (cond ((null icicle-completion-candidates)
@@ -2836,11 +2831,17 @@ Optional argument WORD-P non-nil means complete only a word at a time."
              (setq icicle-nb-of-other-cycle-candidates  0)
              (unless icicle-edit-update-p
                (icicle-clear-minibuffer)
-               (when (icicle-file-name-input-p) ; Append `/' to dir cands, so cycling expands them.
-                 (let ((cand  (car icicle-completion-candidates)))
-                   (when (and (not (string= "" cand)) (eq ?\/  (aref cand (1- (length cand)))))
-                     (setq icicle-current-input  (concat icicle-current-input "/")))))
-               (setq icicle-last-completion-candidate  icicle-current-input)
+               (if (icicle-file-name-input-p)
+                   (let ((cand  (car icicle-completion-candidates)))
+                     (cond ((string= "" cand) ; This indicates an empty dir.
+                            (setq icicle-last-completion-candidate  icicle-current-input))
+                           ((eq ?\/  (aref cand (1- (length cand)))) ; Add `/', so cycling expands dir.
+                            (setq icicle-current-input              (concat icicle-current-input "/")
+                                  icicle-last-completion-candidate  icicle-current-input))
+                           (t           ; Non-dir - use the candidate file.
+                            (setq icicle-last-completion-candidate
+                                  (car icicle-completion-candidates)))))
+                 (setq icicle-last-completion-candidate  (car icicle-completion-candidates)))
                (let ((inserted  (if (and (icicle-file-name-input-p) insert-default-directory
                                          (or (not (member icicle-last-completion-candidate
                                                           icicle-extra-candidates))
@@ -3109,11 +3110,6 @@ message either.  NO-DISPLAY-P is passed to
                     (icicle-file-name-apropos-candidates icicle-current-input)
                   (icicle-apropos-candidates icicle-current-input))
               (error icicle-completion-candidates)))) ; No change if completion error.
-    ;; If input matches an empty directory, then use that directory as the sole completion.
-    (when (and (icicle-file-name-input-p) (null icicle-completion-candidates)
-               (string-match "/$" icicle-current-input)
-               (icicle-apropos-any-file-name-candidates-p (directory-file-name icicle-current-input)))
-      (setq icicle-completion-candidates  '("")))
     (icicle-save-or-restore-input)
     (cond ((null icicle-completion-candidates)
            (setq icicle-nb-of-other-cycle-candidates  0)
@@ -3131,7 +3127,16 @@ message either.  NO-DISPLAY-P is passed to
            (setq icicle-nb-of-other-cycle-candidates  0)
            (unless icicle-edit-update-p
              (icicle-clear-minibuffer)
-             (setq icicle-last-completion-candidate  (car icicle-completion-candidates))
+             (if (icicle-file-name-input-p)
+                 (let ((cand  (car icicle-completion-candidates)))
+                   (cond ((string= "" cand) ; This indicates an empty dir.
+                          (setq icicle-last-completion-candidate  icicle-current-input))
+                         ((eq ?\/  (aref cand (1- (length cand)))) ; Add `/', so cycling expands dir.
+                          (setq icicle-current-input              (concat icicle-current-input "/")
+                                icicle-last-completion-candidate  icicle-current-input))
+                         (t             ; Non-dir - use the candidate file.
+                          (setq icicle-last-completion-candidate  (car icicle-completion-candidates)))))
+               (setq icicle-last-completion-candidate  (car icicle-completion-candidates)))
              (let ((inserted  (if (and (icicle-file-name-input-p) insert-default-directory
                                        (or (not (member icicle-last-completion-candidate
                                                         icicle-extra-candidates))
@@ -3143,8 +3148,7 @@ message either.  NO-DISPLAY-P is passed to
                (insert inserted)
                (when (and (icicle-file-name-input-p)
                           (icicle-file-directory-p (icicle-abbreviate-or-expand-file-name inserted)))
-                 (setq icicle-default-directory  (icicle-abbreviate-or-expand-file-name
-                                                  inserted)))))
+                 (setq icicle-default-directory  (icicle-abbreviate-or-expand-file-name inserted)))))
            (save-selected-window (icicle-remove-Completions-window))
            (icicle-transform-sole-candidate)
            (unless (boundp 'icicle-apropos-complete-and-exit-p)
