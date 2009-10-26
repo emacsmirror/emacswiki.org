@@ -44,7 +44,7 @@ However, look closely at the ''third'' line (“##return## ...”), which has no
 [:TabsAndNoAlignment]
 === Tabs and no alignment ===
 
-VisualStudio takes this approach. When an expression spans multiple lines, the remaining lines are given one or two ''additional levels'' of indentation:
+VisualStudio takes this approach. When an expression spans multiple lines, the remaining lines are given one or two additional "levels" of indentation:
 
     int f(int x,
     --->int y) {
@@ -82,7 +82,7 @@ In Emacs, we may set ##indent-tabs-mode## to ##nil## and use spaces only:
     .............y);
     }
 
-This will look correct in ''any'' editor, regardless of tab settings.
+This will, of course, look correct in any editor, spaces being the same everywhere.
 
 One problem remains, however. Spaces ''lock'' the indentation offset -- we have to set up our editor's auto-indentation values to match the file's (see GuessOffset), and if we want a different offset, we have to reformat the whole file. Tabs were [[#TabsPurpose|supposed to]] address this problem, but failed unless we [[#TabsAndNoAlignment|disallowed alignment]]. Is there a better way to employ them?
 

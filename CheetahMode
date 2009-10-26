@@ -19,3 +19,9 @@ Here is a simple html derived mode for [http://www.cheetahtemplate.org/ Cheetah 
 
 
 I'd also like to set $Q(.*) to font-lock-string-face, but my attempts so far are only matching a fraction of them. ''-- keturn''
+
+To make comment-dwim etc. work add
+<pre>
+ (setq comment-start "##")  
+ (setq comment-end "")
+</pre>

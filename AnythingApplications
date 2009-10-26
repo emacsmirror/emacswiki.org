@@ -60,6 +60,7 @@ You can add support for comint completions as follows. This works well for ESS [
 Thank you. But please support other comint completion methods such as file name completion. After that I'll take in your patch. -- [[rubikitch]]
 
 [new] Lisp:anything-el-swank-fuzzy.el fuzzy symbol completion using ElSwankFuzzy.
+[new] How about provide a function named `anything-el-swank-fuzzy-complete-symbol' like `slime-indent-and-complete-symbol'? It is convenience to be bind.
 
 === Tag Search ===
 Sometimes TagsFile contains multiple entries, so selecting Search TagsFile with anything.

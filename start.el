@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2009, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 21.1
-;; Last-Updated: Sun Oct 11 10:30:50 2009 (-0700)
+;; Last-Updated: Sun Oct 25 09:16:52 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 2801
+;;     Update #: 2807
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -86,6 +86,8 @@
 ;;
 ;; Change log:
 ;;
+;; 2009/10/25 dadams
+;;     Renamings from lib-requires.el: libreq-(requires-(tree|list)|insert-lib-requires-as-comment).
 ;; 2009/10/11 dadams
 ;;     Autoload wdired.el and bind to C-x C-q.
 ;; 2009/08/30 dadams
@@ -345,11 +347,11 @@
 (require 'misc-fns nil t)               ; Miscellaneous non-interactive functions
 (require 'simple+ nil t)                ; Corrections, extensions.
 (require 'frame+ nil t)                 ; Corrections, extensions.
-(autoload 'lib-requires-tree "lib-requires" ; Track Emacs-Lisp library dependencies.
+(autoload 'libreq-requires-tree "lib-requires" ; Track Emacs-Lisp library dependencies.
   "The libraries `require'd by LIBRARY, as a tree." t)
-(autoload 'lib-requires "lib-requires"
+(autoload 'libreq-requires-list "lib-requires"
   "The libraries ultimately `require'd by LIBRARY, as a flat list." t)
-(autoload 'insert-lib-requires-as-comment "lib-requires"
+(autoload 'libreq-insert-lib-requires-as-comment "lib-requires"
   "Insert a comment listing all libraries ultimately required by LIBRARY." t)
 (require 'frame-cmds nil t)             ; Frame and window commands.
 (when (if (fboundp 'display-graphic-p) (display-graphic-p) window-system)

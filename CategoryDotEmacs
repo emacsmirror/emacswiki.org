@@ -54,6 +54,7 @@ Some complete [[InitFile]]s:
 * [http://ourcomments.org/Emacs/DL/elisp/dot-emacs/ Here] is a .emacs structure that helps you catch errors during startup of Emacs.
 * [http://github.com/mina86/dot-files/tree/master/dot-emacs mina86's .emacs] with almost 2k lines of elisp code. Tested mostly with GNU Emacs from CVS but should work with other versions.
 * ChrisForno's [http://jekor.com/emacs/dot-emacs.pdf .emacs] is a literate program written in Noweb.
+* [http://code.google.com/p/dea/ DEA] DEA stands for "Dot emacs of ahei", its target is provide powerful emacs profile for emacser. 
 
 .emacs on Windows: MsWindowsDotEmacs
 

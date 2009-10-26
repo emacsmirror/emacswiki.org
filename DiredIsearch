@@ -9,9 +9,17 @@ Recommended keybindings:
 
 Download: Lisp:dired-isearch.el.
 
+See also: DiredLis.
+
+[new:DrewAdams:2009-10-25 17:01 UTC]
+Emacs 23 has built-in [[IncrementalSearch|Isearch]] for [[Dired]]. You might want to mention how <tt>[[dired-lis.el]]</tt> differs. -- DrewAdams
+
 
 [new:DrewAdams:2006-08-20 19:44 UTC]
-Another way to find only file (and directory) names in DiredMode: Hide everything but the file names, using `dired-details-toggle' (in Lisp:dired-details+.el). When the details are hidden, search doesn't find them. -- DrewAdams
+Another way to find only file (and directory) names in Dired: Hide everything but the file names, using `dired-details-toggle' (in Lisp:dired-details+.el). When the details are hidden, search doesn't find them. See DiredDetails. -- DrewAdams
+
+
+
 
 ----
 CategoryDirectories

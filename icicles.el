@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Thu Oct 22 09:20:02 2009 (-0700)
+;; Last-Updated: Sun Oct 25 21:13:01 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 22597
+;;     Update #: 22608
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -237,9 +237,7 @@
 ;;    `icicle-toggle-~-for-home-dir',
 ;;    `icicle-toggle-alternative-sorting',
 ;;    `icicle-toggle-angle-brackets',
-;;    `icicle-toggle-apropos-match-function',
 ;;    `icicle-toggle-case-sensitivity', `icicle-toggle-C-for-actions',
-;;    `icicle-toggle-fuzzy-completion',
 ;;    `icicle-toggle-hiding-common-match',
 ;;    `icicle-toggle-highlight-all-current',
 ;;    `icicle-toggle-highlight-historical-candidates',
@@ -262,7 +260,6 @@
 ;;    `orig-read-file-name', `toggle', `toggle-icicle-~-for-home-dir',
 ;;    `toggle-icicle-alternative-sorting',
 ;;    `toggle-icicle-angle-brackets',
-;;    `toggle-icicle-apropos-match-function',
 ;;    `toggle-icicle-case-sensitivity', `toggle-icicle-C-for-actions',
 ;;    `toggle-icicle-fuzzy-completion',
 ;;    `toggle-icicle-highlight-all-current',
@@ -369,7 +366,6 @@
 ;;    `icicle-negative-argument', `icicle-next-apropos-candidate',
 ;;    `icicle-next-apropos-candidate-action',
 ;;    `icicle-next-apropos-candidate-alt-action',
-;;    `icicle-next-apropos-match-function',
 ;;    `icicle-next-candidate-per-mode',
 ;;    `icicle-next-candidate-per-mode-action',
 ;;    `icicle-next-candidate-per-mode-alt-action',
@@ -377,6 +373,7 @@
 ;;    `icicle-next-prefix-candidate',
 ;;    `icicle-next-prefix-candidate-action',
 ;;    `icicle-next-prefix-candidate-alt-action',
+;;    `icicle-next-S-TAB-completion-method',
 ;;    `icicle-other-history',
 ;;    `icicle-pp-eval-expression-in-minibuffer',
 ;;    `icicle-prefix-complete', `icicle-prefix-complete-no-display',
@@ -414,7 +411,6 @@
 ;;    `icicle-toggle-angle-brackets',
 ;;    `icicle-toggle-case-sensitivity', `icicle-toggle-dot',
 ;;    `icicle-toggle-expand-to-common-match',
-;;    `icicle-toggle-fuzzy-completion',
 ;;    `icicle-toggle-highlight-all-current',
 ;;    `icicle-toggle-highlight-historical-candidates',
 ;;    `icicle-toggle-ignored-extensions',
@@ -497,7 +493,6 @@
 ;;    `icicle-apropos-cycle-previous-action-keys',
 ;;    `icicle-apropos-cycle-previous-alt-action-keys',
 ;;    `icicle-apropos-cycle-previous-help-keys',
-;;    `icicle-apropos-match-fns-alist',
 ;;    `icicle-bookmark-name-length-max', `icicle-buffer-configs',
 ;;    `icicle-buffer-extras',
 ;;    `icicle-buffer-ignore-space-prefix-flag',
@@ -531,7 +526,7 @@
 ;;    `icicle-file-no-match-regexp', `icicle-file-predicate',
 ;;    `icicle-file-require-match-flag', `icicle-file-sort',
 ;;    `icicle-filesets-as-saved-completion-sets-flag',
-;;    `icicle-fuzzy-completion-flag', `icicle-guess-commands-in-path',
+;;    `icicle-guess-commands-in-path',
 ;;    `icicle-help-in-mode-line-flag',
 ;;    `icicle-hide-common-match-in-Completions-flag',
 ;;    `icicle-highlight-historical-candidates-flag',
@@ -569,7 +564,6 @@
 ;;    `icicle-pp-eval-expression-print-level',
 ;;    `icicle-prefix-complete-keys',
 ;;    `icicle-prefix-complete-no-display-keys',
-;;    `icicle-prefix-completion-is-basic-flag',
 ;;    `icicle-prefix-cycle-next-keys',
 ;;    `icicle-prefix-cycle-next-action-keys',
 ;;    `icicle-prefix-cycle-next-alt-action-keys',
@@ -601,6 +595,8 @@
 ;;    `icicle-show-Completions-initially-flag',
 ;;    `icicle-sort-function', `icicle-sort-functions-alist',
 ;;    `icicle-special-candidate-regexp',
+;;    `icicle-S-TAB-completion-methods-alist',
+;;    `icicle-TAB-completion-methods',
 ;;    `icicle-TAB-shows-candidates-flag',
 ;;    `icicle-test-for-remote-files-flag',
 ;;    `icicle-thing-at-point-functions',
@@ -701,7 +697,8 @@
 ;;    `icicle-describe-opt-action',
 ;;    `icicle-describe-opt-of-type-complete', `icicle-ding',
 ;;    `icicle-dired-read-shell-command',
-;;    `icicle-dired-smart-shell-command', `icicle-dirs-last-p',
+;;    `icicle-dired-smart-shell-command',
+;;    `icicle-dir-prefix-wo-wildcards', `icicle-dirs-last-p',
 ;;    `icicle-displayable-cand-from-saved-set',
 ;;    `icicle-display-cand-from-full-cand',
 ;;    `icicle-display-completion-list', `icicle-display-Completions',
@@ -938,8 +935,9 @@
 ;;    `icicle-crm-local-must-match-map',
 ;;    `icicle-current-completion-candidate-overlay',
 ;;    `icicle-current-completion-mode', `icicle-current-input',
-;;    `icicle-current-raw-input', `icicle-custom-menu-map',
-;;    `icicle-cycling-p', `icicle-default-directory',
+;;    `icicle-current-raw-input', `icicle-current-TAB-method',
+;;    `icicle-custom-menu-map', `icicle-cycling-p',
+;;    `icicle-default-directory',
 ;;    `icicle-default-thing-insertion-flipped-p',
 ;;    `icicle-delete-candidate-object', `icicle-describe-menu-map',
 ;;    `icicle-dictionary-history', `icicle-dir-candidate-can-exit-p',

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Oct 24 12:15:50 2009 (-0700)
+;; Last-Updated: Sun Oct 25 20:30:55 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 14940
+;;     Update #: 15035
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -119,7 +119,6 @@
 ;;    `icicle-negative-argument', `icicle-next-apropos-candidate',
 ;;    `icicle-next-apropos-candidate-action',
 ;;    `icicle-next-apropos-candidate-alt-action',
-;;    `icicle-next-apropos-match-function',
 ;;    `icicle-next-candidate-per-mode',
 ;;    `icicle-next-candidate-per-mode-action',
 ;;    `icicle-next-candidate-per-mode-alt-action',
@@ -127,7 +126,8 @@
 ;;    `icicle-next-prefix-candidate',
 ;;    `icicle-next-prefix-candidate-action',
 ;;    `icicle-next-prefix-candidate-alt-action',
-;;    `icicle-other-history',
+;;    `icicle-next-S-TAB-completion-method',
+;;    `icicle-next-TAB-completion-method', `icicle-other-history',
 ;;    `icicle-pp-eval-expression-in-minibuffer',
 ;;    `icicle-prefix-complete', `icicle-prefix-complete-no-display',
 ;;    `icicle-prefix-word-complete',
@@ -164,10 +164,8 @@
 ;;    `icicle-toggle-~-for-home-dir',
 ;;    `icicle-toggle-alternative-sorting',
 ;;    `icicle-toggle-angle-brackets',
-;;    `icicle-toggle-apropos-match-function',
 ;;    `icicle-toggle-case-sensitivity', `icicle-toggle-C-for-actions',
 ;;    `icicle-toggle-dot', `icicle-toggle-expand-to-common-match',
-;;    `icicle-toggle-fuzzy-completion',
 ;;    `icicle-toggle-hiding-common-match',
 ;;    `icicle-toggle-highlight-all-current',
 ;;    `icicle-toggle-highlight-historical-candidates',
@@ -194,11 +192,9 @@
 ;;    `old-switch-to-completions', `toggle-icicle-.',
 ;;    `toggle-icicle-~-for-home-dir',
 ;;    `toggle-icicle-alternative-sorting',
-;;    `toggle-icicle-apropos-match-function',
 ;;    `toggle-icicle-angle-brackets',
 ;;    `toggle-icicle-case-sensitivity', `toggle-icicle-C-for-actions',
 ;;    `toggle-icicle-dot', `toggle-icicle-expand-to-common-match',
-;;    `toggle-icicle-fuzzy-completion',
 ;;    `toggle-icicle-highlight-all-current',
 ;;    `toggle-icicle-highlight-historical-candidates',
 ;;    `toggle-icicle-ignored-extensions',
@@ -1237,6 +1233,49 @@ Optional arg PLAINP means convert to plain `.'.
               (replace-match (icicle-anychar-regexp) nil t))))))))
 
 ;;;###autoload
+(defun icicle-next-TAB-completion-method () ; Bound to `C-(' in the minibuffer.
+  "Cycle to the next `TAB' completion method.
+Bound to `C-(' in the minibuffer.
+Option `icicle-TAB-completion-methods' customizes the available TAB
+completion methods."
+  (interactive)
+  (let ((now  (member icicle-current-TAB-method icicle-TAB-completion-methods)))
+    (setq icicle-current-TAB-method  (if now
+                                         (or (cadr now) (car icicle-TAB-completion-methods))
+                                       'basic))
+    ;; Skip any method that is not currently supported.
+    (while (or (and (eq icicle-current-TAB-method 'fuzzy) (not (featurep 'fuzzy-match)))
+               (and (eq icicle-current-TAB-method 'vanilla) (not (boundp 'completion-styles))))
+      (setq now (member icicle-current-TAB-method icicle-TAB-completion-methods)
+            icicle-current-TAB-method  (if now
+                                           (or (cadr now) (car icicle-TAB-completion-methods))
+                                         'basic))))
+  (when (eq 'fuzzy icicle-current-TAB-method) (setq icicle-inhibit-sort-p  t))
+  (icicle-msg-maybe-in-minibuffer "TAB completion is now %s" icicle-current-TAB-method))
+
+;;;###autoload
+(defun icicle-next-S-TAB-completion-method () ; Bound to `M-(' in minibuffer.
+  "Cycle to the next `S-TAB' completion method.
+Bound to `M-(' in minibuffer.
+Option `icicle-S-TAB-completion-methods-alist' customizes the
+available TAB completion methods."
+  (interactive)
+  (let ((entry  (rassq icicle-apropos-complete-match-fn icicle-S-TAB-completion-methods-alist)))
+    (setq icicle-apropos-complete-match-fn
+          (or (cdadr (member entry icicle-S-TAB-completion-methods-alist))
+              (cdar icicle-S-TAB-completion-methods-alist))
+          icicle-last-apropos-complete-match-fn  icicle-apropos-complete-match-fn) ; Backup copy.
+    (icicle-msg-maybe-in-minibuffer
+     (format "S-TAB completion is now %s%s"
+             (icicle-upcase (car (rassq icicle-apropos-complete-match-fn
+                                        icicle-S-TAB-completion-methods-alist)))
+             (if (memq icicle-apropos-complete-match-fn
+                       '(icicle-levenshtein-match icicle-levenshtein-strict-match))
+                 (format " (%d)" icicle-levenshtein-distance)
+               "")))))
+    ;; (icicle-complete-again-update) ; No - too slow for some completion methods.
+
+;;;###autoload
 (defun icicle-change-sort-order (&optional arg alternativep) ; Bound to `C-,' in minibuffer.
   "Choose a sort order.
 With a numeric prefix arg, reverse the current sort order.
@@ -1467,7 +1506,7 @@ These are the main Icicles actions and their minibuffer key bindings:
        Complete partial input, then commit   \\<minibuffer-local-must-match-map>\
 \\[icicle-apropos-complete-and-exit]\\<minibuffer-local-completion-map>
 
- * Toggle Icicles options on the fly.        Key:   \tCurrently:
+ * Toggle/cycle Icicles options on the fly.  Key:   \tCurrently:
      Highlighting of past inputs             \\[icicle-toggle-highlight-historical-candidates]\t%S
      Removal of duplicate candidates         \\[icicle-toggle-transforming]\t%S
      Change sort order                       \\[icicle-dispatch-C-comma]\t%s
@@ -1479,8 +1518,8 @@ These are the main Icicles actions and their minibuffer key bindings:
      Incremental completion                  \\[icicle-toggle-incremental-completion]\t%S
      Input expansion to common match         \\[icicle-toggle-expand-to-common-match]\t%S
      Hiding common match in *Completions*    \\[icicle-toggle-hiding-common-match]\t%S
-     Change apropos match function           \\[icicle-next-apropos-match-function]\t%s
-     Fuzzy prefix completion                 \\[icicle-toggle-fuzzy-completion]\t%S
+     S-TAB completion method                 \\[icicle-next-S-TAB-completion-method]\t%s
+     TAB completion method                   \\[icicle-next-TAB-completion-method]\t%s
      Inclusion of proxy candidates           \\[icicle-toggle-proxy-candidates]\t%S
      Ignoring certain file extensions        \\[icicle-dispatch-C-.]\t%S
      Checking for remote file names          \\[icicle-dispatch-C-^]\t%S
@@ -1650,8 +1689,8 @@ editing."
              icicle-incremental-completion-flag
              icicle-expand-input-to-common-match-flag
              icicle-hide-common-match-in-Completions-flag
-             (car (rassq icicle-apropos-complete-match-fn icicle-apropos-match-fns-alist))
-             icicle-fuzzy-completion-flag
+             (car (rassq icicle-apropos-complete-match-fn icicle-S-TAB-completion-methods-alist))
+             icicle-current-TAB-method
              icicle-add-proxy-candidates-flag
              icicle-key-descriptions-use-<>-flag
              (and completion-ignored-extensions t)
@@ -2824,24 +2863,25 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                (icicle-highlight-input-noncompletion))
              (save-selected-window (icicle-remove-Completions-window))
              (unless (eq no-display-p 'no-msg)
-               (minibuffer-message (if (and icicle-fuzzy-completion-flag (featurep 'fuzzy-match))
-                                       "  [No fuzzy completions]"
-                                     "  [No prefix completions]"))))
+               (minibuffer-message (case icicle-current-TAB-method
+                                     (fuzzy   "  [No fuzzy completions]")
+                                     (vanilla "  [No vanilla completions]")
+                                     (t       "  [No prefix completions]")))))
             ((null (cdr icicle-completion-candidates)) ; Single candidate.  Update minibuffer.
              (setq icicle-nb-of-other-cycle-candidates  0)
              (unless icicle-edit-update-p
                (icicle-clear-minibuffer)
-               (if (icicle-file-name-input-p)
-                   (let ((cand  (car icicle-completion-candidates)))
+               (let ((cand  (car icicle-completion-candidates)))
+                 (if (icicle-file-name-input-p)
                      (cond ((string= "" cand) ; This indicates an empty dir.
                             (setq icicle-last-completion-candidate  icicle-current-input))
                            ((eq ?\/  (aref cand (1- (length cand)))) ; Add `/', so cycling expands dir.
-                            (setq icicle-current-input              (concat icicle-current-input "/")
+                            (setq icicle-current-input (concat icicle-current-input "/")
                                   icicle-last-completion-candidate  icicle-current-input))
-                           (t           ; Non-dir - use the candidate file.
+                           (t           ; Non-dir - use the candidate file, but without any dir.
                             (setq icicle-last-completion-candidate
-                                  (car icicle-completion-candidates)))))
-                 (setq icicle-last-completion-candidate  (car icicle-completion-candidates)))
+                                  (icicle-file-name-nondirectory cand))))
+                   (setq icicle-last-completion-candidate  cand)))
                (let ((inserted  (if (and (icicle-file-name-input-p) insert-default-directory
                                          (or (not (member icicle-last-completion-candidate
                                                           icicle-extra-candidates))
@@ -2860,40 +2900,33 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                (cond ((and icicle-top-level-when-sole-completion-flag
                            (sit-for icicle-top-level-when-sole-completion-delay))
                       (set minibuffer-history-variable
-                           ;; $$$$$$ (cons (car icicle-completion-candidates)
                            (cons icicle-current-input
                                  (symbol-value minibuffer-history-variable)))
                       (condition-case icicle-prefix-complete-1
                           (throw 'icicle-read-top
                             (if (and (icicle-file-name-input-p) insert-default-directory
-                                     ;; $$$$$$ (or (not (member (car icicle-completion-candidates)
                                      (or (not (member icicle-current-input
                                                       icicle-extra-candidates))
                                          icicle-extra-candidates-dir-insert-p))
-                                ;; $$$$$$ (expand-file-name (car icicle-completion-candidates))
                                 (expand-file-name icicle-current-input)
-                              ;; $$$$$$ (car icicle-completion-candidates)))
                               icicle-current-input))
                         (no-catch
-                         ;; $$$$$$ (setq icicle-current-input  (car icicle-completion-candidates))
                          (icicle-retrieve-last-input)
                          icicle-current-input)
                         (error (message (error-message-string icicle-prefix-complete-1)))))
                      ((and icicle-edit-update-p (not (eq no-display-p 'no-msg)))
                       (minibuffer-message
-                       (format (if (and icicle-fuzzy-completion-flag (featurep 'fuzzy-match))
-                                   "  [One fuzzy completion: %s]"
-                                 "  [One prefix completion: %s]")
-                               ;; $$$$$$ (car icicle-completion-candidates)))
+                       (format (case icicle-current-TAB-method
+                                 (fuzzy   "  [One fuzzy completion: %s]")
+                                 (vanilla "  [One vanilla completion: %s]")
+                                 (t       "  [One prefix completion: %s]"))
                                icicle-current-input))
-                      ;; $$$$$$ (setq mode-line-help  (car icicle-completion-candidates)))
                       (setq mode-line-help  icicle-current-input))
                      ((not (eq no-display-p 'no-msg))
-                      (minibuffer-message
-                       (if (and icicle-fuzzy-completion-flag (featurep 'fuzzy-match))
-                           "  [Sole fuzzy completion]"
-                         "  [Sole prefix completion]"))
-                      ;; $$$$$$ (setq mode-line-help  (car icicle-completion-candidates))))
+                      (minibuffer-message (case icicle-current-TAB-method
+                                            (fuzzy   "  [Sole fuzzy completion]")
+                                            (vanilla "  [Sole vanilla completion]")
+                                            (t       "  [Sole prefix completion]")))
                       (setq mode-line-help  icicle-current-input)))
                (save-selected-window (icicle-remove-Completions-window))))
             (t                          ; Multiple candidates.
@@ -3121,7 +3154,7 @@ message either.  NO-DISPLAY-P is passed to
            (save-selected-window (icicle-remove-Completions-window))
            (unless (eq no-display-p 'no-msg)
              (minibuffer-message (let ((typ  (car (rassq icicle-apropos-complete-match-fn
-                                                         icicle-apropos-match-fns-alist))))
+                                                         icicle-S-TAB-completion-methods-alist))))
                                    (concat "  [No " typ (and typ " ") "completion]")))))
           ((null (cdr icicle-completion-candidates)) ; Single candidate. Update minibuffer.
            (setq icicle-nb-of-other-cycle-candidates  0)
@@ -4477,8 +4510,8 @@ which can position mouse pointer on a standalone minibuffer frame."
              '("Toggle Incremental Completion  (`C-#')" . icicle-toggle-incremental-completion)
              '("Toggle Common Match Expansion  (`C-;')" . icicle-toggle-expand-to-common-match)
              '("Toggle Hiding Common Match (`C-x .')" . icicle-toggle-hiding-common-match)
-             '("Change Apropos Match Function  (`M-(')" . icicle-next-apropos-match-function)
-             '("Toggle Fuzzy Prefix Completion  (`C-(')" . icicle-toggle-fuzzy-completion)
+             '("Next S-TAB Completion Method  (`M-(')" . icicle-next-S-TAB-completion-method)
+             '("Next TAB Completion Method  (`C-(')" . icicle-next-TAB-completion-method)
              '("Toggle Including Proxy Candidates  (`C-M-_')" . icicle-toggle-proxy-candidates)
              '("Toggle WYSIWYG for *Completions*" . icicle-toggle-WYSIWYG-Completions)
              '("Toggle Angle Brackets" . icicle-toggle-angle-brackets)
@@ -5955,42 +5988,6 @@ Bound to `C-;' in the minibuffer."
   (icicle-msg-maybe-in-minibuffer (if icicle-expand-input-to-common-match-flag
                                       "Expanding input to common match is now ON"
                                     "Expanding input to common match is now OFF")))
-
-(defalias 'toggle-icicle-fuzzy-completion 'icicle-toggle-fuzzy-completion)
-;;;###autoload
-(defun icicle-toggle-fuzzy-completion () ; Bound to `C-(' in the minibuffer.
-  "Toggle the value of option `icicle-fuzzy-completion-flag'.
-Bound to `C-(' in the minibuffer."
-  (interactive)
-  ;; If not loaded, try to load `fuzzy-match.el'.
-  (when (and (not icicle-fuzzy-completion-flag) (not (featurep 'fuzzy-match))
-             (not (require 'fuzzy-match nil t)))
-    (error "You must load library `fuzzy-match.el' for fuzzy completion"))
-  (setq icicle-fuzzy-completion-flag  (not icicle-fuzzy-completion-flag)
-        icicle-inhibit-sort-p         icicle-fuzzy-completion-flag)
-  (icicle-msg-maybe-in-minibuffer (if icicle-fuzzy-completion-flag
-                                      "Fuzzy completion is now ON"
-                                    "Fuzzy completion is now OFF")))
-
-;; Aliases will be removed if there are ever more than two apropos match functions.
-(defalias 'toggle-icicle-apropos-match-function 'icicle-next-apropos-match-function)
-(defalias 'icicle-toggle-apropos-match-function 'icicle-next-apropos-match-function)
-;;;###autoload
-(defun icicle-next-apropos-match-function () ; Bound to `M-(' in minibuffer.
-  "Cycle to the next apropos completion match function."
-  (interactive)
-  (let ((entry  (rassq icicle-apropos-complete-match-fn icicle-apropos-match-fns-alist)))
-    (setq icicle-apropos-complete-match-fn
-          (or (cdadr (member entry icicle-apropos-match-fns-alist))
-              (cdar icicle-apropos-match-fns-alist))
-          icicle-last-apropos-complete-match-fn  icicle-apropos-complete-match-fn) ; Backup copy.
-    (message (format "%s%s completion now" (icicle-upcase (car (rassq icicle-apropos-complete-match-fn
-                                                                      icicle-apropos-match-fns-alist)))
-                     (if (memq icicle-apropos-complete-match-fn
-                               '(icicle-levenshtein-match icicle-levenshtein-strict-match))
-                         (format " (%d)" icicle-levenshtein-distance)
-                       "")))))
-    ;; (icicle-complete-again-update) ; No - too slow for some completion methods.
 
 ;;;###autoload
 (defun icicle-dispatch-C-^ ()           ; Bound to `C-^' in the minibuffer.

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Sep 26 14:25:29 2009 (-0700)
+;; Last-Updated: Sun Oct 25 19:49:29 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 6072
+;;     Update #: 6097
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -332,7 +332,8 @@ The following top-level commands are also available in Icicle mode:
 `icicle-locate-file'(`-other-window')  - Visit file(s) in a directory
 `icicle-minibuffer-help'               - Show Icicles minibuffer help
 `icy-mode' or `icicle-mode'            - Toggle Icicle mode
-`icicle-next-apropos-match-function'   - Change apropos match function
+`icicle-next-TAB-completion-method'    - Next TAB completion method
+`icicle-next-S-TAB-completion-method'  - Next S-TAB completion method
 `icicle-occur'                         - `occur' + apropos icompletion
 `icicle-other-window-or-frame'         - Other window/frame or select
 `icicle-plist'                         - Show symbols, property lists
@@ -360,7 +361,6 @@ The following top-level commands are also available in Icicle mode:
 `icicle-toggle-case-sensitivity'       - Toggle case sensitivity
 `icicle-toggle-dot'                    - Toggle `.' matching newlines
 `icicle-toggle-expand-to-common-match' - Toggle input expansion
-`icicle-toggle-fuzzy-completion'       - Toggle fuzzy completion
 `icicle-toggle-hiding-common-match'    - Toggle match in *Completions*
 `icicle-toggle-ignored-extensions'     - Toggle ignoring file suffixes
 `icicle-toggle-ignored-space-prefix'   - Toggle ignoring space prefix
@@ -531,7 +531,8 @@ The following top-level commands are also available in Icicle mode:
 `icicle-locate-file'(`-other-window')  - Visit file(s) in a directory
 `icicle-minibuffer-help'               - Show Icicles minibuffer help
 `icy-mode' or `icicle-mode'            - Toggle Icicle mode
-`icicle-next-apropos-match-function'   - Change apropos match function
+`icicle-next-TAB-completion-method'    - Next TAB completion method
+`icicle-next-S-TAB-completion-method'  - Next S-TAB completion method
 `icicle-occur'                         - `occur' + apropos icompletion
 `icicle-other-window-or-frame'         - Other window/frame or select
 `icicle-plist'                         - Show symbols, property lists
@@ -559,7 +560,6 @@ The following top-level commands are also available in Icicle mode:
 `icicle-toggle-case-sensitivity'       - Toggle case sensitivity
 `icicle-toggle-dot'                    - Toggle `.' matching newlines
 `icicle-toggle-expand-to-common-match' - Toggle input expansion
-`icicle-toggle-fuzzy-completion'       - Toggle fuzzy completion
 `icicle-toggle-hiding-common-match'    - Toggle match in *Completions*
 `icicle-toggle-ignored-extensions'     - Toggle ignoring file suffixes
 `icicle-toggle-ignored-space-prefix'   - Toggle ignoring space prefix
@@ -956,9 +956,6 @@ Used on `pre-command-hook'."
            (define-key icicle-options-menu-map [icicle-toggle-dot]
              '(menu-item "Toggle `.' Matching Newlines Too" icicle-toggle-dot
                :visible icicle-mode :keys "C-M-."))
-           (define-key icicle-options-menu-map [icicle-toggle-fuzzy-completion]
-             '(menu-item "Toggle Fuzzy Prefix Completion"
-               icicle-toggle-fuzzy-completion :visible icicle-mode :keys "C-("))
            (define-key icicle-options-menu-map [icicle-toggle-incremental-completion]
              '(menu-item "Toggle Incremental Completion"
                icicle-toggle-incremental-completion :visible icicle-mode :keys "C-#"))
@@ -1001,8 +998,11 @@ Used on `pre-command-hook'."
            (define-key icicle-options-menu-map [icicle-toggle-WYSIWYG-Completions]
              '(menu-item "Toggle WYSIWYG For *Completions*" icicle-toggle-WYSIWYG-Completions
                :visible icicle-mode))
-           (define-key icicle-options-menu-map [icicle-next-apropos-match-function]
-             '(menu-item "Change Apropos Match Function" icicle-next-apropos-match-function
+           (define-key icicle-options-menu-map [icicle-next-TAB-completion-method]
+             '(menu-item "Next `TAB' Completion Method"
+               icicle-next-TAB-completion-method :visible icicle-mode :keys "C-("))
+           (define-key icicle-options-menu-map [icicle-next-S-TAB-completion-method]
+             '(menu-item "Next `S-TAB' Completion Method" icicle-next-S-TAB-completion-method
                :visible icicle-mode :keys "M-("))
            (define-key icicle-options-menu-map [icicle-separator-options-sort] '("--"))
            (define-key icicle-options-menu-map [icicle-toggle-alternative-sorting]
@@ -1043,8 +1043,11 @@ Used on `pre-command-hook'."
              '(menu-item "Toggle Using `C-' for Actions" icicle-toggle-C-for-actions :keys "M-g"))
            (define-key icicle-menu-map [icicle-toggle-~-for-home-dir]
              '(menu-item "Toggle Using `~' for $HOME" icicle-toggle-~-for-home-dir :keys "M-~"))
-           (define-key icicle-menu-map [icicle-next-apropos-match-function]
-             '(menu-item "Change Apropos Match Function" icicle-next-apropos-match-function
+           (define-key icicle-menu-map [icicle-next-TAB-completion-method]
+             '(menu-item "Next `TAB' Completion Method" icicle-next-TAB-completion-method
+               :keys "C-("))
+           (define-key icicle-menu-map [icicle-next-S-TAB-completion-method]
+             '(menu-item "Next `S-TAB' Completion Method" icicle-next-S-TAB-completion-method
                :keys "M-("))
            (define-key icicle-menu-map [icicle-toggle-WYSIWYG-Completions]
              '(menu-item "Toggle WYSIWYG For *Completions*" icicle-toggle-WYSIWYG-Completions))
@@ -1066,9 +1069,6 @@ Used on `pre-command-hook'."
              '(menu-item "Toggle Escaping Special Chars" icicle-toggle-regexp-quote :keys "C-`"))
            (define-key icicle-menu-map [icicle-toggle-dot]
              '(menu-item "Toggle `.' Matching Newlines Too" icicle-toggle-dot :keys "C-M-."))
-           (define-key icicle-menu-map [icicle-toggle-fuzzy-completion]
-             '(menu-item "Toggle Fuzzy Prefix Completion" icicle-toggle-fuzzy-completion
-               :keys "C-("))
            (define-key icicle-menu-map [icicle-toggle-incremental-completion]
              '(menu-item "Toggle Incremental Completion" icicle-toggle-incremental-completion
                :keys "C-#"))
@@ -2412,8 +2412,8 @@ complete)"))
   (define-key map [(control ?*)]             'icicle-candidate-set-intersection) ; `C-*'
   (define-key map [(control ?>)]             'icicle-candidate-set-save-more) ; `C->'
   (define-key map [(control meta ?>)]        'icicle-candidate-set-save) ; `C-M->'
-  (define-key map [(control ?\()]            'icicle-toggle-fuzzy-completion) ; `C-('
-  (define-key map [(meta ?\()]               'icicle-next-apropos-match-function) ; `M-('
+  (define-key map [(control ?\()]            'icicle-next-TAB-completion-method) ; `C-('
+  (define-key map [(meta ?\()]               'icicle-next-S-TAB-completion-method) ; `M-('
   (define-key map [(control ?\))]            'icicle-candidate-set-save-more-selected) ; `C-)'
   (define-key map [(control meta ?\))]       'icicle-candidate-set-save-selected) ; `C-M-)'
   (define-key map [(control meta ?<)]        'icicle-candidate-set-retrieve) ; `C-M-<'

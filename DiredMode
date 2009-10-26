@@ -1,4 +1,4 @@
-DiredMode is the mode of a '''Dired''' buffer. It shows a directory (folder) listing that you can use to perform various operations on files and subdirectories in the directory and its subdirectories.  The operations you can perform are numerous, from creating subdirectories to byte-compiling files, searching files, and, of course, visiting (editing) files.
+DiredMode is the mode of a '''[::Dired]''' buffer. It shows a directory (folder) listing that you can use to perform various operations on files and subdirectories in the directory and its subdirectories.  The operations you can perform are numerous, from creating subdirectories to byte-compiling files, searching files, and, of course, visiting (editing) files.
 
 The closest thing to Dired in MS Windows is Windows Explorer.  In Emacs, we often speak of "editing" a directory, not "exploring" it, but the behavior is similar.
 
@@ -6,46 +6,47 @@ To edit a directory, use `C-x d' (`<tt>[::dired]</tt>') or `C-x 4 d' (`dired-oth
 
 You can read more about Dired mode by using `C-h m' in a Dired buffer. The mode is described, and available commands and key bindings are explained. Even more information about Dired mode is available in the EmacsManual: `C-h i', choose Emacs, then choose Dired under Advanced Features.
 
-Here are pages about DiredMode
+Here are pages about vanilla Dired, included with GnuEmacs:
 
-* [[WDired]] -- Lets you rename files by editing the dired buffer.
-* [[Dired X]] -- Library ##dired-x.el## provides extra functionality for Dired
-** DiredOmitMode
+* [[Dired X]] -- Built-in library ##dired-x.el## provides extra functionality for Dired
 * DiredModeScreenshots
-* [[Tumme]] -- navigate through image files, in dired, with thumbnail previews and more
-* DiredTweaks -- Small tweaks for this and that
+* DiredOmitMode
 * DiredPower -- Various packages and tips to improve Dired.
 * DiredSearchAndReplace -- Use Dired to search multiple files.
+* DiredTweaks -- Small tweaks for this and that
+* [[Tumme]] -- navigate through image files, in dired, with thumbnail previews and more
+* [[WDired]] -- Lets you rename files by editing the dired buffer.
 
 [:DiredEnhancements]
-These EmacsWiki pages describe enhancements to Dired:
+These pages describe enhancements to Dired:
 
-* DiredPlus -- Extends functionalities offered by standard Emacs libraries ##dired.el##, ##dired-aux.el##, and ##dired-x.el##. 
-* FilesPlus -- 
+* [[Dired+]] -- Extends functionalities offered by standard Emacs libraries ##dired.el##, ##dired-aux.el##, and ##dired-x.el##.
+* DiredDetails -- Lets you hide or show the file and directory details in a Dired listing, to save space and clutter. When details are hidden, all you see (and all IncrementalSearch sees) are the file names.
+* DiredDragAndDrop -- Lets you drag-and-drop files.
+* DiredEfap -- rename the file under `point'
+* DiredReuseDirectoryBuffer – Make Dired reuse the Dired buffer when you visit a directory
+* DiredSortMenu -- Lets you sort Dired listings in various ways. Provides a MenuBar menu and a popup menu for this.
+* DiredView -- Browse and select files using the first character of their names
+* [[Files+]] -- 
 ** Integrates `find-file' (`C-x C-f') and related commands with Dired
 ** Together with <tt>[[ls-lisp+.el]]</tt>, modifies `insert-directory' so that Dired's second header line lists the number of files:
  '''##files 691##''' ##space used 49439 available 56233408##
-
-* DiredSortMenu -- Lets you sort Dired listings in various ways. Provides a MenuBar menu and a popup menu for this.
-* DiredDetails -- Lets you hide or show the file and directory details in a Dired listing, to save space and clutter. When details are hidden, all you see (and all IncrementalSearch sees) are the file names.
 * [[Icicles - Dired Enhancements]] -- [[minibuffer]] [[regexp]] [[completion]] and completion-candidate [[Icicles - Cycling Completions|cycling]] to navigate directories and perform operations on files
 ** [[Icicles - Dired Enhancements#SearchAndReplace|Search-and-replace]] on the marked files.
 ** [[Icicles - Dired Enhancements#SaveFilesAsCandidates|Save marked file names]] as completion candidates for later reuse.
 ** [[Icicles - Dired Enhancements#OpenDiredOnSavedFiles|Open Dired on saved file names]] (`##C-M-<##'), that is, names that you previously saved as an Emacs [[fileset]] or as an Icicles completion candidates set.
-* DiredDragAndDrop -- Lets you drag-and-drop files.
+* Isearch
+** DiredIsearch -- Run `isearch' in Dired, but match only file names
+** DiredLis -- Letter `isearch' in dired mode, not nedd press some keys to active `isearch-mode'.
 * OperatingOnFilesInDired – Opening files in associated applications.
 ** MsShellExecute -- Open any file from dired on W32 systems
+* ThumbsMode -- Modify dired for automatic image previewing.
 * Lisp:trashcan.el -- Contains a recoverable file deletion system
 that behaves like the trash can or recycle bin that many operating
 systems, present and past, show on their screens.
 This system changes the behaviour of the <code>"x"</code> key in DiredMode from
 permanently deleting files to a two stage system.
-* ThumbsMode -- Modify dired for automatic image previewing.
-* DiredReuseDirectoryBuffer – Make Dired reuse the Dired buffer when you visit a directory
 * WThirtyTwoFindDired -- Light, w32-version of `find-dired'
-* DiredView -- Browse and select files using the first character of their names
-* DiredIsearch -- Run `isearch' in Dired, but match only file names
-* DiredEfap -- rename the file under `point'
 
 See CategoryDirectories for some other listing formats, besides what you get in Dired.
 

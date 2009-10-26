@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Sep 26 14:24:25 2009 (-0700)
+;; Last-Updated: Sun Oct 25 21:09:51 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 1008
+;;     Update #: 1028
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -54,8 +54,8 @@
 ;;    `icicle-completion-set-history', `icicle-confirm-exit-commands',
 ;;    `icicle-current-completion-candidate-overlay',
 ;;    `icicle-current-completion-mode', `icicle-current-input',
-;;    `icicle-current-raw-input', `icicle-cycling-p',
-;;    `icicle-default-directory',
+;;    `icicle-current-raw-input', `icicle-current-TAB-method',
+;;    `icicle-cycling-p', `icicle-default-directory',
 ;;    `icicle-default-thing-insertion-flipped-p',
 ;;    `icicle-delete-candidate-object', `icicle-dictionary-history',
 ;;    `icicle-dir-candidate-can-exit-p',
@@ -348,6 +348,10 @@ Effective starting with Emacs 23.")
 
 (defvar icicle-current-input "" "Current minibuffer input.")
 
+(defvar icicle-current-TAB-method 'basic
+  "*Current completion method for \
+`\\<minibuffer-local-completion-map>\\[icicle-prefix-complete]'.")
+
 (defvar icicle-current-raw-input "" "Current minibuffer raw (unexpanded) input.
 This can be different from `icicle-current-input' only when
 `icicle-expand-input-to-common-match-flag' is non-nil.")
@@ -459,7 +463,7 @@ Each name is a symbol name or a lambda form, as a string.")
 Customize Icicles: `M-x icicle-customize-icicles-group'.
 Summary of customizable options and faces (alphabetical order).
 
-Some of the binary options can be toggled - their toggle keys are
+Some of the options can be toggled or cycled - the keys for this are
 noted in parentheses.
 
 * `case-fold-search', `completion-ignore-case',
@@ -487,7 +491,6 @@ noted in parentheses.
 \\<minibuffer-local-completion-map>\\[icicle-insert-string-at-point]
 * `icicle-default-value'                 - How to treat default value
 * `icicle-expand-input-to-common-match-flag'- Expand input? (`C-;')
-* `icicle-fuzzy-completion-flag'         - Fuzzy completion? (`C-(')
 * `icicle-highlight-historical-candidates-flag'
                                          - Highlight past input?
 * `icicle-highlight-input-initial-whitespace-flag'
@@ -508,7 +511,8 @@ noted in parentheses.
 * `icicle-minibuffer-setup-hook'         - Functions run after setup
 * `icicle-modal-cycle-up-keys', `icicle-modal-cycle-down-keys'
                                          - Keys for modal cycling
-* `icicle-next-apropos-match-function'   - Change match func (`M-(')
+* `icicle-next-S-TAB-completion-method'  - Next `S-TAB' method (`M-(')
+* `icicle-next-TAB-completion-method'    - Next `TAB' method (`C-(')
 * `icicle-point-position-in-candidate'   - Cursor position in cycling
 * `icicle-redefine-standard-commands-flag'- Redefine std commands?
 * `icicle-regexp-quote-flag'             - Escape chars? (`C-`')
@@ -644,7 +648,8 @@ input prompt is prefixed by `+'.
 + `icicle-locate-file'(`-other-window') - Visit file in a directory
   `icicle-minibuffer-help'             - Show Icicles minibuffer help
   `icy-mode' or `icicle-mode'          - Toggle Icicle mode
-  `icicle-next-apropos-match-function' - Change match func (`M-(')
+  `icicle-next-S-TAB-completion-method' - Next `S-TAB' method (`M-(')
+  `icicle-next-TAB-completion-method'  - Next `TAB' method (`C-(')
 + `icicle-occur'                       - Enhanced `occur' (`C-c '')
 + `icicle-other-window-or-frame'       - Other window/frame (`C-x o')
 + `icicle-plist'                       - Show symbols, property lists
@@ -671,7 +676,6 @@ input prompt is prefixed by `+'.
   `icicle-toggle-case-sensitivity'     - Toggle case sensitivity
   `icicle-toggle-C-for-actions'        - Toggle using `C-' for actions
   `icicle-toggle-expand-to-common-match' - Toggle input ECM expansion
-  `icicle-toggle-fuzzy-completion'     - Toggle fuzzy completion
   `icicle-toggle-highlight-all-current' - Toggle max search highlight
   `icicle-toggle-highlight-historical-candidates'
                                        - Toggle past-input highlight

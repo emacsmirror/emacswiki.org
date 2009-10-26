@@ -9,9 +9,9 @@
 ;; Copyright (C) 2000-2009, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Oct 21 15:38:48 2009 (-0700)
+;; Last-Updated: Sun Oct 25 13:10:03 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 6709
+;;     Update #: 6722
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -264,9 +264,9 @@
 ;;    `bookmarkp-isearch-bookmarks' (Emacs 23+),
 ;;    `bookmarkp-jump-display-function',
 ;;    `bookmarkp-latest-bookmark-alist',
-;;    `bookmarkp-latest-sorted-alist', `bookmarkp-non-file-filename',
-;;    `bookmarkp-reverse-multi-sort-p', `bookmarkp-reverse-sort-p',
-;;    `bookmarkp-tag-history', `bookmarkp-version-number'.
+;;    `bookmarkp-non-file-filename', `bookmarkp-reverse-multi-sort-p',
+;;    `bookmarkp-reverse-sort-p', `bookmarkp-tag-history',
+;;    `bookmarkp-version-number'.
 ;;
 ;;
 ;;  ***** NOTE: The following commands defined in `bookmark.el'
@@ -666,6 +666,11 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2009/10/25 dadams
+;;     bookmarkp-bmenu-propertize-item: Put bookmark name on line as text property.
+;;     bookmark-bmenu-bookmark: Get bookmark name from text property bookmarkp-bookmark-name.
+;;     Removed: bookmarkp-latest-sorted-alist.
+;;     bookmark-bmenu-list: Use bookmarkp-bmenu-title only if defined.
 ;; 2009/10/21 dadams
 ;;     Added: bookmarkp-barf-if-not-in-menu-list.  Use in place of its body.
 ;;     Added: bookmarkp-bmenu-mark-bookmarks-tagged-regexp.  Bound to T m %.
@@ -1933,9 +1938,6 @@ general reverse that order.  The order within each group is unchanged
 (defvar bookmarkp-latest-bookmark-alist ()
   "Copy of `bookmark-alist' as last filtered.")
 
-(defvar bookmarkp-latest-sorted-alist ()
-  "Copy of `bookmark-alist' as last sorted.")
-
 (defvar bookmarkp-bmenu-marked-bookmarks ()
   "Names of the marked bookmarks.")
 
@@ -2889,7 +2891,10 @@ Non-nil FILTEREDP means the menu list has been filtered, so:
         (when one-win-p (delete-other-windows)))
     (set-buffer (get-buffer-create "*Bookmark List*")))
   (let* ((inhibit-read-only  t)
-         (real-title         (if filteredp bookmarkp-bmenu-title "% All Bookmarks"))
+         (real-title         (if (and filteredp bookmarkp-bmenu-title
+				      (> (length bookmarkp-bmenu-title) 2))
+				 bookmarkp-bmenu-title 
+			       "% All Bookmarks"))
          (len-title          (- (length real-title) 2)))
     (erase-buffer)
     (insert (format "%s\n- %s\n" real-title (make-string len-title ?-)))
@@ -2923,12 +2928,13 @@ Non-nil FILTEREDP means the menu list has been filtered, so:
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; Redefined.  Get name of the current bookmark from `bookmarkp-latest-sorted-alist'.
+;; Redefined.  Get name of the current bookmark from text property `bookmarkp-bookmark-name'.
 ;;
 (defun bookmark-bmenu-bookmark ()
   "Return the name of the bookmark on this line."
-  (let ((pos  (- (bookmarkp-line-number-at-pos) 3)))
-    (car (nth pos bookmarkp-latest-sorted-alist))))
+  (save-excursion
+    (forward-line 0) (forward-char 3)
+    (get-text-property (point) 'bookmarkp-bookmark-name)))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -4009,6 +4015,7 @@ unmark those that have no tags at all."
          (ishandler     (bookmark-get-handler bookmark-name))
          (isgnus        (bookmarkp-gnus-bookmark-p bookmark-name))
          (isbuf         (bookmarkp-get-buffer-name bookmark-name)))
+    (put-text-property start end 'bookmarkp-bookmark-name bookmark-name)
     (add-text-properties
      start  end
      (cond ((or (eq ishandler 'Info-bookmark-jump) (string= isbuf "*info*") ; Info
@@ -4485,8 +4492,7 @@ If `bookmarkp-reverse-sort-p' is non-nil, then reverse the sort order."
     (when sort-fn
       (setq newlist  (sort newlist (if bookmarkp-reverse-sort-p
                                        (lambda (a b) (not (funcall sort-fn a b)))
-                                     sort-fn))))
-    (setq bookmarkp-latest-sorted-alist  newlist)))
+                                     sort-fn))))))
 
 ;;; KEEP this simpler version also.  This uses `run-hook-with-args-until-success', but it
 ;;; does not respect `bookmarkp-reverse-multi-sort-p'.

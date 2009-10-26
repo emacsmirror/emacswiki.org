@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Oct 24 11:56:10 2009 (-0700)
+;; Last-Updated: Sun Oct 25 21:22:36 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 11255
+;;     Update #: 11380
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -64,7 +64,8 @@
 ;;    `icicle-define-crm-completion-map', `icicle-delete-count',
 ;;    `icicle-delete-whitespace-from-string',
 ;;    `icicle-dired-read-shell-command',
-;;    `icicle-dired-smart-shell-command', `icicle-dirs-last-p',
+;;    `icicle-dired-smart-shell-command',
+;;    `icicle-dir-prefix-wo-wildcards', `icicle-dirs-last-p',
 ;;    `icicle-displayable-cand-from-saved-set',
 ;;    `icicle-display-cand-from-full-cand',
 ;;    `icicle-display-completion-list', `icicle-display-Completions',
@@ -220,8 +221,8 @@
 ;;
 ;;  (@> "Redefined standard functions")
 ;;  (@> "Icicles functions - completion display (not cycling)")
-;;  (@> "Icicles functions - prefix completion cycling")
-;;  (@> "Icicles functions - apropos completion cycling")
+;;  (@> "Icicles functions - TAB completion cycling")
+;;  (@> "Icicles functions - S-TAB completion cycling")
 ;;  (@> "Icicles functions - common helper functions")
 ;;  (@> "Icicles functions - sort functions")
   
@@ -325,6 +326,7 @@
   (defvar tooltip-mode))
 
 (when (< emacs-major-version 23)
+  (defvar completion-styles)            ; Defined in `minibuffer.el'
   (defvar icicle-Completions-text-scale-decrease)) ; Defined in `icicles-opt.el' (for Emacs 23)
 
 (defvar filesets-data)                  ; Defined in `filesets.el'
@@ -2385,11 +2387,12 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
            (icicle-msg-maybe-in-minibuffer
             (if (eq 'apropos icicle-current-completion-mode)
                 (let ((typ  (car (rassq icicle-apropos-complete-match-fn
-                                        icicle-apropos-match-fns-alist))))
+                                        icicle-S-TAB-completion-methods-alist))))
                   (concat "No " typ (and typ " ") "completions"))
-              (if (and icicle-fuzzy-completion-flag (featurep 'fuzzy-match))
-                  "No fuzzy completions"
-                "No prefix completions"))))
+              (case icicle-current-TAB-method
+                (fuzzy   "No fuzzy completions")
+                (vanilla "No vanilla completions")
+                (t       "No prefix completions")))))
           (t
            (when (> nb-cands icicle-incremental-completion-threshold)
              (message "Displaying completion candidates..."))
@@ -2556,7 +2559,8 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                          (save-restriction
                            (narrow-to-region beg end) ; Restrict to the completion candidate.
                            (let ((fn  (if (and (eq 'prefix icicle-current-completion-mode)
-                                               (not icicle-fuzzy-completion-flag))
+                                               (not (eq 'fuzzy 'icicle-current-TAB-method)))
+                                          ;; $$$$$$ What is best for `vanilla' (Emacs 23) completion?
                                           'search-forward
                                         (case icicle-apropos-complete-match-fn
                                           (icicle-scatter-match
@@ -2811,17 +2815,15 @@ This must be called in the minibuffer."
 Version of `minibuffer-prompt-end' that works for Emacs 20 and later."
   (if (fboundp 'minibuffer-prompt-end) (minibuffer-prompt-end) (point-min)))
  
-;;(@* "Icicles functions - prefix completion cycling")
+;;(@* "Icicles functions - TAB completion cycling")
 
-;;; Icicles functions - prefix (and fuzzy) completion cycling --------------------
+;;; Icicles functions - TAB completion cycling --------------------
 
 (defun icicle-prefix-candidates (input)
   "List of prefix or fuzzy completions for the current partial INPUT.
-INPUT is a string.  Each candidate is a string.
-Non-nil `icicle-fuzzy-completion-flag' means use fuzzy matching for
-non-file-name completion."
+INPUT is a string.  Each candidate is a string."
   (setq icicle-candidate-nb  nil)
-  (if (and icicle-fuzzy-completion-flag (featurep 'fuzzy-match))
+  (if (and (eq 'fuzzy icicle-current-TAB-method) (featurep 'fuzzy-match))
       (condition-case nil
           (icicle-transform-candidates (append icicle-extra-candidates icicle-proxy-candidates
                                                (icicle-fuzzy-candidates input)))
@@ -2957,9 +2959,9 @@ prefix over all candidates."
         filtered-candidates)
     (quit (top-level))))                ; Let `C-g' stop it.
  
-;;(@* "Icicles functions - apropos completion cycling")
+;;(@* "Icicles functions - S-TAB completion cycling")
 
-;;; Icicles functions - apropos completion cycling -------------------
+;;; Icicles functions - S-TAB completion cycling -------------------
 
 (defun icicle-apropos-candidates (input)
   "List of candidate apropos completions for the current partial INPUT.
@@ -3339,14 +3341,25 @@ REGEXP-P non-nil means use regexp matching to highlight root."
       (when indx (put-text-property indx (match-end 0) 'face 'icicle-match-highlight-minibuffer
                                     icicle-last-completion-candidate))))
 
-  ;; Insert candidate in minibuffer.
+  ;; Insert candidate in minibuffer, and place cursor.
   (insert (if (and (icicle-file-name-input-p) insert-default-directory
                    (or (not (member icicle-last-completion-candidate icicle-extra-candidates))
                        icicle-extra-candidates-dir-insert-p))
-              (icicle-file-name-directory-w-default icicle-current-input)
+              (icicle-dir-prefix-wo-wildcards icicle-current-input)
             "")
           candidate)
   (icicle-place-cursor icicle-current-input))
+
+(defun icicle-dir-prefix-wo-wildcards (filename)
+  "Return the directory portion of FILENAME.
+If using partial completion, this is the portion before the first
+occurrence of `*'.  Otherwise, this is just `file-name-directory'."
+  (if (and (icicle-not-basic-prefix-completion-p) (boundp 'completion-styles)
+           (member 'partial-completion completion-styles)
+           (string-match "/[^/]*\\*" filename))
+      (substring filename 0 (1+ (match-beginning 0)))
+    (file-name-directory filename)))
+      
 
 (defun icicle-show-help-in-mode-line (candidate)
   "If short help for CANDIDATE is available, show it in the mode-line.
@@ -3490,33 +3503,16 @@ file name, or `icicle-previous-raw-non-file-name-inputs', otherwise."
 
 (defun icicle-save-or-restore-input ()
   "Save the current minibuffer input, or restore the last input.
-If there is a previous input, and we are cycling, and the current
-  input differs from the last cycling candidate (so the user has
-  edited it), then restore the last input.  (Cycled completions
-  don't count as input.)
+If there is a previous input and we are cycling, then restore the last
+ input.  (Cycled completions don't count as input.)
 Otherwise, save the current input for use by `C-l', and then compute
   the expanded common match.
 
 There are several particular cases that modulate the behavior - see
 the code."
-  ;; By "cycling command" is meant here a command that cycles but does NOT also complete.
-  ;; `icicle-next-prefix-candidate' is such a command, but `icicle-prefix-complete' is not.
   (cond
     ;; Restore last input, if there is some to restore and we are cycling.
-    ((and icicle-last-input icicle-cycling-p
-;;;           (symbolp this-command) (get this-command 'icicle-cycling-command)
-;;;           (not (get this-command 'icicle-completing-command)) ; Don't count `TAB' and `S-TAB'.
-          icicle-last-completion-candidate
-          ;; Current input = last completion candidate?
-          (string= (if (icicle-file-name-input-p)
-                       (directory-file-name (icicle-remove-dots icicle-last-completion-candidate))
-                     icicle-last-completion-candidate)
-                   (if (icicle-file-name-input-p)
-                       (if icicle-cycle-into-subdirs-flag
-                           (icicle-file-name-nondirectory icicle-current-input)
-                         (file-name-nondirectory
-                          (directory-file-name (icicle-remove-dots icicle-current-input))))
-                     icicle-current-input)))
+    ((and icicle-last-input icicle-cycling-p icicle-last-completion-candidate)
      (setq icicle-current-input  icicle-last-input)) ; Return `icicle-current-input'.
     (t
      (cond
@@ -4761,16 +4757,15 @@ Elements of ALIST that are not conses are ignored."
 
 (defun icicle-abbreviate-or-expand-file-name (filename &optional dir)
   "Expand FILENAME, and abbreviate it if `icicle-use-~-for-home-dir-flag'.
-Call `expand-file-name' to make FILENAME absolute.
-Then, if `icicle-use-~-for-home-dir-flag' is non-nil, call
-`abbreviate-file-name'.
+If FILENAME is not absolute, call `expand-file-name' to make it absolute.
+If `icicle-use-~-for-home-dir-flag', call `abbreviate-file-name'.
 
 If DIR is absolute, pass it to `expand-file-name'.  Otherwise, ignore
-it (treated it as nil)."
-  (when (and dir (not (file-name-absolute-p dir))) (setq dir  nil)) ; Don't use a relative dir.
-  (if icicle-use-~-for-home-dir-flag
-      (abbreviate-file-name (expand-file-name filename dir))
-    (expand-file-name filename dir)))
+it (treat it as nil)."
+  (unless (file-name-absolute-p filename)
+    (when (and dir (not (file-name-absolute-p dir))) (setq dir  nil)) ; Don't use a relative dir.
+    (setq filename (expand-file-name filename dir)))
+  (if icicle-use-~-for-home-dir-flag (abbreviate-file-name filename) filename))
 
 (defun icicle-reversible-sort (list)
   "`sort' using `icicle-sort-function', or the reverse.
@@ -5274,9 +5269,8 @@ current before user input is read from the minibuffer."
     (icy-mode (- curr))  (icy-mode curr)))
 
 (defun icicle-not-basic-prefix-completion-p ()
-  "Emacs > release 22, and not `icicle-prefix-completion-is-basic-flag'."
-  (and (fboundp 'completion-try-completion)
-       (not icicle-prefix-completion-is-basic-flag)))
+  "`icicle-current-TAB-method' is `vanilla', and Emacs > release 22."
+  (and (eq 'vanilla icicle-current-TAB-method) (boundp 'completion-styles)))
  
 ;;(@* "Icicles functions - sort functions")
 

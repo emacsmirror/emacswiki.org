@@ -69,6 +69,22 @@ The following line can be added to your .emacs
 (set-frame-parameter nil 'fullscreen 'fullboth)
 }}}
 
+The current CVS version of Emacs-23 does not support the above technique.
+Use [http://github.com/jmjeong/my-dot-emacs/blob/master/maxframe.el patched maxframe.el]. You can see the original version from [http://files.emacsblog.org/ryan/elisp/maxframe.el maxframe.el].
+
+{{{
+(defvar my-fullscreen-p t "Check if fullscreen is on or off")
+
+(defun my-toggle-fullscreen ()
+  (interactive)
+  (setq my-fullscreen-p (not my-fullscreen-p))
+  (if my-fullscreen-p
+	  (restore-frame)
+	(maximize-frame)))
+
+(global-set-key (kbd "M-RET") 'my-toggle-fullscreen)
+}}}
+
 == Toggle fullscreen - linux and windows ==
 
 {{{

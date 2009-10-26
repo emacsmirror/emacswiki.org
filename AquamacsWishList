@@ -289,6 +289,9 @@ JesseAlama: The tabs feature of Aquamacs 1.7 looks great.  How about adding supp
 DavidReitter: Jesse, this would be easy to do (for key commands at least), and I you could probably come up with an implementation.  Nathaniel Cunningham has looked into dragging tabs, but the underlying Emacs framework isn't quite there yet.  We can probably add that more easily now that we're on Cocoa with the new Aquamacs 2.0 branch.  
 
 
-[new
+[new]
 EUR
 It would be great if Aquamacs was able to open frames in certain spaces of Apples Spaces.
+
+[new]
+EricBrown: I love the LaTeX environment, but I would like to have a keyboard shortcut that makes Aquamacs Typeset, View, Preview, etc.  Sort of like Apple-T does in TeXShop.

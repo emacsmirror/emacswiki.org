@@ -113,13 +113,16 @@ For VhdlMode, add
 [:Toggling]
 === Toggling ===
 
-Smart tabs are only used when ##indent-tabs-mode## is non-##nil## (default). Type '##C-h v indent-tabs-mode RET##' to see the current value.
+Smart tabs are only used when ##indent-tabs-mode## is non-##nil## (default). Type '##C-h v indent-tabs-mode RET##' to see the current value. To change ##indent-tabs-mode## for the current buffer only, type '##M-x set-variable indent-tabs-mode RET##' or customize the [ModeHooks mode hook].
 
-To globally disable tabs and use spaces only, do
+''What you probably want to do:'' Disable tabs globally (spaces only) and reactivate them for modes with smart tabs handling. For CC Mode:
 
     (setq-default indent-tabs-mode nil)
 
-To change ##indent-tabs-mode## for the current buffer only, type '##M-x set-variable indent-tabs-mode RET##' or customize the [ModeHooks mode hook].
+    (add-hook 'c-mode-common-hook
+              (lambda () (setq indent-tabs-mode t)))
+
+See GuessStyle for a package which attempts to guess the proper values for ##indent-tabs-mode## and the indentation offset by analysing how the file is formatted. (Of course, since smart tabs are tab size-independent, such files do not ''have'' an offset.)
 
 [:SimpleAlgorithm]
 == Code explanation ==

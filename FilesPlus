@@ -1,4 +1,4 @@
-<tt>[[files+.el]]</tt> is a library by DrewAdams.
+'''[::Files+]''' (<tt>[[files+.el]]</tt>) is a library by DrewAdams.
 
 * It redefines `find-file-read-args', so that `find-file' (`C-x C-f') and related commands let you use `M-n' in [[DiredMode|Dired]] to retrieve the file name under the [[cursor]]. The advantage over `RET', `a', and so on: You can edit the file name. (DiredPlus also provides this behavior.)
 * Together with library <tt>[[ls-lisp+.el]]</tt>, it redefines `insert-directory', so that Dired's second header line lists the number of files in the directory, like this: 

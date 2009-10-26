@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Oct 12 15:39:13 2009 (-0700)
+;; Last-Updated: Sun Oct 25 21:00:30 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 3334
+;;     Update #: 3388
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -53,7 +53,6 @@
 ;;    `icicle-apropos-cycle-previous-action-keys',
 ;;    `icicle-apropos-cycle-previous-alt-action-keys',
 ;;    `icicle-apropos-cycle-previous-help-keys',
-;;    `icicle-apropos-match-fns-alist',
 ;;    `icicle-anything-transform-candidates-flag',
 ;;    `icicle-bookmark-name-length-max', `icicle-buffer-configs',
 ;;    `icicle-buffer-extras',
@@ -88,7 +87,7 @@
 ;;    `icicle-file-no-match-regexp', `icicle-file-predicate',
 ;;    `icicle-file-require-match-flag', `icicle-file-sort',
 ;;    `icicle-filesets-as-saved-completion-sets-flag',
-;;    `icicle-fuzzy-completion-flag', `icicle-guess-commands-in-path',
+;;    `icicle-guess-commands-in-path',
 ;;    `icicle-help-in-mode-line-flag',
 ;;    `icicle-hide-common-match-in-Completions-flag',
 ;;    `icicle-highlight-historical-candidates-flag',
@@ -126,7 +125,6 @@
 ;;    `icicle-pp-eval-expression-print-level',
 ;;    `icicle-prefix-complete-keys',
 ;;    `icicle-prefix-complete-no-display-keys',
-;;    `icicle-prefix-completion-is-basic-flag',
 ;;    `icicle-prefix-cycle-next-keys',
 ;;    `icicle-prefix-cycle-next-action-keys',
 ;;    `icicle-prefix-cycle-next-alt-action-keys',
@@ -158,6 +156,8 @@
 ;;    `icicle-show-Completions-initially-flag',
 ;;    `icicle-sort-function', `icicle-sort-functions-alist',
 ;;    `icicle-special-candidate-regexp',
+;;    `icicle-S-TAB-completion-methods-alist',
+;;    `icicle-TAB-completion-methods',
 ;;    `icicle-TAB-shows-candidates-flag',
 ;;    `icicle-test-for-remote-files-flag',
 ;;    `icicle-thing-at-point-functions',
@@ -454,25 +454,6 @@ A list of values that each has the same form as a key-sequence
 argument to `define-key'.  It is a list mainly in order to accommodate
 different keyboards."
   :type '(repeat sexp) :group 'Icicles-Key-Bindings)
-
-;;;###autoload
-(defcustom icicle-apropos-match-fns-alist
-  `(("apropos" . string-match)
-    ("scatter" . icicle-scatter-match)
-    ,@(and (require 'levenshtein nil t)
-           '(("Levenshtein" . icicle-levenshtein-match)
-             ("Levenshtein strict" . icicle-levenshtein-strict-match))))
-  "*Alist of string-matching functions used by `S-TAB'.
-Each element has the form (NAME . FUNCTION), where NAME is a string
-name and FUNCTION is the matching function.  NAME is used in messages
-to indicate the type of matching.
-
-By default, `S-TAB' is the key for this completion. The actual keys
-used are the value of `icicle-apropos-complete-keys'."
-  :type '(alist
-          :key-type   (string :tag "Name used in messages")
-          :value-type (symbol :tag "Matching function"))
-  :group 'Icicles-Matching)
 
 ;;;###autoload
 (defcustom icicle-bookmark-name-length-max 70
@@ -1293,25 +1274,6 @@ You can toggle this option at any time from the minibuffer using
   :type 'boolean :group 'Icicles-Matching)
 
 ;;;###autoload
-(defcustom icicle-fuzzy-completion-flag nil ; Toggle with `C-('.
-  "*Non-nil means use fuzzy prefix completion for \
-`\\<minibuffer-local-completion-map>\\[icicle-prefix-complete]'.
-This has no effect if library `fuzzy-match.el' is not used (loaded).
-If non-nil, then `TAB' completes non-filename input using fuzzy
-prefix matching as defined in `fuzzy-match.el'.  See `fuzzy-match.el'
-for details.
-
-This option has no effect on file-name completion.  Fuzzy prefix
-completion is always case-sensitive, and leading spaces are taken into
-account.  Completion candidates are always sorted by decreasing fuzzy
-match strength.  That is, fuzzy completion is not affected by
-`\\[icicle-toggle-case-sensitivity]', `C-^', or `C-,'.
-
-You can toggle this option from the minibuffer at any time with \
-`\\[icicle-toggle-fuzzy-completion]'."
-  :type 'boolean :group 'Icicles-Matching)
-
-;;;###autoload
 (defcustom icicle-help-in-mode-line-flag t
   "*Non-nil means show help in the mode-line for individual completions.
 If buffer *Completions* is displayed, then use its mode-line.
@@ -1335,7 +1297,7 @@ You can use `C-M-.' during completion to toggle this option.
 
 ;;;###autoload
 (defcustom icicle-highlight-historical-candidates-flag t ; Toggle with `C-pause'.
-  "*Non-nil means highlight  *Completions* candidates that have been used.
+  "*Non-nil means highlight *Completions* candidates that have been used.
 This is done using face `icicle-historical-candidate'.
 Historical candidates are those that you have entered (using `RET' or
 `S-RET') previously.  You can toggle this option from the minibuffer
@@ -1954,7 +1916,7 @@ A value of nil means no limit."
   :type '(choice (const :tag "No Limit" nil) integer) :group 'Icicles-Miscellaneous)
 
 ;;;###autoload
-(defcustom icicle-prefix-complete-keys '([tab] [(control ?i)])
+(defcustom icicle-prefix-complete-keys '([tab] [(control ?i)]) ; `C-i' is `TAB'.
   "*Key sequences to use for `icicle-prefix-complete'.
 A list of values that each has the same form as a key-sequence
 argument to `define-key'.  It is a list mainly in order to accommodate
@@ -2473,25 +2435,93 @@ The candidates are highlighted in buffer *Completions* using face
   :type '(choice (const :tag "None" nil) regexp) :group 'Icicles-Completions-Display)
 
 ;;;###autoload
-(if (boundp 'completion-styles)         ; Emacs 23+
-    (defcustom icicle-prefix-completion-is-basic-flag nil
-      "Non-nil means that `TAB' performs only basic prefix completion.
-A nil value means Icicles prefix completion respects option
-`completion-styles' (new in Emacs 23), so that `TAB' behaves similarly
-in Icicles to what it does in vanilla Emacs.
+(defcustom icicle-S-TAB-completion-methods-alist ; Cycle with `M-('.
+  `(("apropos" . string-match)
+    ("scatter" . icicle-scatter-match)
+    ,@(and (require 'levenshtein nil t)
+           '(("Levenshtein" . icicle-levenshtein-match)
+             ("Levenshtein strict" . icicle-levenshtein-strict-match))))
+  "*Alist of completion methods used by `S-TAB'.
+Each element has the form (NAME . FUNCTION), where NAME is a string
+name and FUNCTION is the completion match function.  NAME is used in
+messages to indicate the type of completion matching.
 
-A nil value also means that `TAB' completes environment variables
-during file-name completion and in shell commands.  A non-nil value
-inhibits this completion, but it does not inhibit the expansion of the
-variables to their values when you hit `RET'.
+By default, `S-TAB' is the key for this completion. The actual keys
+used are the value of option `icicle-apropos-complete-keys'.
 
-The effect of a non-nil value is to provide the `TAB' completion that
-was available prior to Emacs 23.  In releases prior to Emacs 23, this
-option has no effect: the value should always be nil."
-      :type 'boolean :group 'Icicles-Matching)
-  (defconst icicle-prefix-completion-is-basic-flag t
-    "This is intended as a constant - DO NOT change its value.
-This is not a user option in this Emacs version."))
+See also option `icicle-TAB-completion-methods'."
+  :type '(alist
+          :key-type   (string :tag "Name used in messages")
+          :value-type (symbol :tag "Completion matching function"))
+  :group 'Icicles-Matching)
+
+;;;###autoload
+(defcustom icicle-TAB-completion-methods ; Cycle with `C-('.
+  (cond ((and (boundp 'completion-styles) (require 'fuzzy-match nil t))
+         '(basic vanilla fuzzy))
+        ((boundp 'completion-styles) '(basic vanilla))
+        ((featurep 'fuzzy-match)     '(basic fuzzy))
+        (t '(basic)))
+  "*List of completion methods to use for \
+`\\<minibuffer-local-completion-map>\\[icicle-prefix-complete]'.
+The first method in the list is the default method.
+
+The available methods can include these:
+
+ `basic'
+ `vanilla' (provided you have Emacs 23 or later)
+ `fuzzy'   (provided you use library `fuzzy-match.el')
+
+Basic completion is prefix completion. It is the `basic' completion
+style of Emacs 23 or later, and it is essentially the completion style
+prior to Emacs 23 (Emacs 22 completion was slightly different - see
+Emacs 23 option `custom-styles' for more info).
+
+Vanilla completion respects option `completion-styles' (new in Emacs
+23), so that `TAB' behaves similarly in Icicles to what it does in
+vanilla Emacs.  The vanilla method also completes environment
+variables during file-name completion and in shell commands.  The
+non-vanilla methods do not complete environment variables, but the
+variables are expanded to their values when you hit `RET'.
+
+Fuzzy completion is a form of prefix completion in which matching
+finds the candidates that have the most characters in common with your
+input, in the same order, and with a minimum of non-matching
+characters.  It can skip over non-matching characters, as long as the
+number of characters skipped in the candidate is less that those
+following them that match.  After the matching candidates are found,
+they are sorted by skip length and then candidate length.
+
+Fuzzy completion is described in detail in the commentary of library
+`fuzzy-match.el'.  There is no fuzzy completion of file names - fuzzy
+completion is the same as basic for file names.  Fuzzy completion is
+always case-sensitive.
+
+If you do not customize this option, the default value will reflect
+your Emacs version and whether you have library `fuzzy-match.el'.
+
+By default, `TAB' is the key for this completion. The actual keys
+used are the value of option `icicle-prefix-complete-keys'.
+
+See also option `icicle-S-TAB-completion-methods-alist'."
+  :type (cond ((and (boundp 'completion-styles)
+                    (require 'fuzzy-match nil t))
+               '(repeat
+                 (choice
+                  (const :tag "Basic" basic)
+                  (const :tag "Vanilla `completion-styles'" vanilla)
+                  (const :tag "Fuzzy" fuzzy))))
+              ((boundp 'completion-styles)
+               '(repeat
+                 (choice
+                  (const :tag "Basic" basic)
+                  (const :tag "Vanilla `completion-styles'" vanilla))))
+              ((featurep 'fuzzy-match)
+               '(repeat
+                 (choice
+                  (const :tag "Basic" basic)
+                  (const :tag "Fuzzy" fuzzy)))))   
+  :group 'Icicles-Completions-Display)
 
 ;;;###autoload
 (defcustom icicle-TAB-shows-candidates-flag t

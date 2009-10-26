@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2009, Drew Adams, all rights reserved.
 ;; Created: Thu Dec 30 12:29:29 2004
 ;; Version: 21.0
-;; Last-Updated: Sat Aug  1 15:35:14 2009 (-0700)
+;; Last-Updated: Sun Oct 25 09:21:03 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 703
+;;     Update #: 731
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/lib-requires.el
 ;; Keywords: libraries, files
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -30,22 +30,27 @@
 ;;
 ;;  User options (variables) defined here:
 ;;
-;;    `lib-requires-header'.
+;;    `libreq-file-header'.
 ;; 
 ;;
 ;;  Functions defined here:
 ;;
-;;    `insert-lib-requires-as-comment', `lib-requires',
-;;    `lib-requires-tree', `lr-flatten', `lr-remove-duplicates'.
-;;
-;;
-;;  Acknowledgement: Thanks to Kevin Rodgers <ihs_4664@yahoo.com> for
-;;  feedback about the original version of `lib-requires-tree'.
+;;    `libreq-flatten', `libreq-insert-lib-requires-as-comment',
+;;    `libreq-remove-duplicates', `libreq-requires-list',
+;;    `libreq-requires-tree'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change log:
 ;;
+;; 2009/10/25 dadams
+;;     Use library prefix "libreq-" for everything.  Thx to Jari Aalto.
+;;       lib-requires-header -> libreq-file-header
+;;       lib-requires-tree -> libreq-requires-tree
+;;       lib-requires -> libreq-requires-list
+;;       insert-lib-requires-as-comment -> libreq-insert-lib-requires-as-comment
+;;       lr-flatten -> libreq-flatten
+;;       lr-remove-duplicates -> libreq-remove-duplicates
 ;; 2009/05/25 dadams
 ;;     insert-lib-requires-as-comment:
 ;;       Bound comment-style to 'plain, to workaround Emacs 23 change.
@@ -85,6 +90,9 @@
 ;; 2005/10/03 dadams
 ;;     require cl.el for Emacs 22 too, for remove-duplicates.
 ;;
+;;  Acknowledgement: Thanks to Kevin Rodgers <ihs_4664@yahoo.com> for
+;;  feedback about the original version of `libreq-requires-tree'.
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;; This program is free software; you can redistribute it and/or modify
@@ -116,6 +124,7 @@
 
 (defgroup Library-Dependencies nil
   "Commands to list Emacs-Lisp library dependencies."
+  :prefix "libreq-"
   :group 'tools :group 'files
   :link `(url-link :tag "Send Bug Report"
           ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
@@ -132,9 +141,9 @@ Don't forget to mention your Emacs and library versions."))
   )
 
 ;;;###autoload
-(defcustom lib-requires-header
+(defcustom libreq-file-header
   ";; Features that might be required by this library:\n;;\n"
-  "*Header inserted by `insert-lib-requires-as-comment'."
+  "*Header inserted by `libreq-insert-lib-requires-as-comment'."
   :type 'string
   :group 'Automatic-File-Header :group 'development :group 'programming)
 
@@ -143,7 +152,7 @@ Don't forget to mention your Emacs and library versions."))
 ;; commands on a library (file) that has not yet been loaded.
 
 ;;;###autoload
-(defun lib-requires-tree (library &optional cumul)
+(defun libreq-requires-tree (library &optional cumul)
   "The features `require'd by LIBRARY, as a tree.
 The tree structure shows library dependencies: Each feature is
 represented by its name or by a list of its name followed by the
@@ -154,7 +163,7 @@ extension.  This command loads LIBRARY before determining its
 dependencies.  This means that LIBRARY must contain (provide LIBRARY).
 If it does not, an error is raised.
 
-Function `lib-requires-tree' calls itself recursively on its
+Function `libreq-requires-tree' calls itself recursively on its
 dependencies, so an attempt is made to load all of them.
 
 Note: If a byte-compiled (`*.elc') version of a library is
@@ -163,7 +172,7 @@ this is the standard behavior of `load-library'.  This means that
 the tree of required features reflects the dependencies indicated
 in the byte-compiled file, not the source file.  If the
 byte-compiled file is out-of-date, so will be the result of
-`lib-requires-tree'.
+`libreq-requires-tree'.
 
 A required feature that was loaded successfully is represented by a
   string that names the required feature.
@@ -179,10 +188,10 @@ successfully loaded and `mwheel.el' is not, then the result is this:
 Argument CUMUL is used only for recursive calls, to accumulate the
 required features.
 
-See also command `lib-requires'.
+See also command `libreq-requires-list'.
 
-Note that `lib-requires-tree' and `lib-requires' are roughly the
-opposite of `file-dependents' in library `loadhist'."
+Note that `libreq-requires-tree' and `libreq-requires-list' are
+roughly the opposite of `file-dependents' in library `loadhist'."
   (interactive (list (file-name-sans-extension
                       (file-name-nondirectory (read-file-name "Library :")))))
   (if (not library)
@@ -203,7 +212,7 @@ opposite of `file-dependents' in library `loadhist'."
           (let ((reqd-lib-requires-tree
                  (and (not (eq library reqd-lib))
                       (not (member reqd-lib cumul))
-                      (lib-requires-tree reqd-lib (cons library cumul)))))
+                      (libreq-requires-tree reqd-lib (cons library cumul)))))
             (if reqd-lib-requires-tree
                 (push (cons (symbol-name reqd-lib) reqd-lib-requires-tree)
                       libraries)
@@ -212,38 +221,39 @@ opposite of `file-dependents' in library `loadhist'."
       libraries)))
 
 ;;;###autoload
-(defun lib-requires (library)
+(defun libreq-requires-list (library)
   "The libraries ultimately `require'd by LIBRARY, as a flat list.
 Each library (file or feature) is represented only once, and the list
 is sorted.
 
-A library is represented as for `lib-requires-tree': a file-name
+A library is represented as for `libreq-requires-tree': a file-name
 string for a successfully loaded required library, a feature-name
 symbol for an unsuccessfully loaded required feature.
 
 LIBRARY must contain (provide LIBRARY); otherwise, an error is raised.
 
-Note that `lib-requires-tree' and `lib-requires' are essentially the
-opposite of `file-dependents' in library `loadhist'."
+Note that `libreq-requires-tree' and `libreq-requires-list' are
+essentially the opposite of `file-dependents' in library `loadhist'."
   (interactive (list (file-name-sans-extension
                       (file-name-nondirectory (read-file-name "Library :")))))
   (let ((libraries
-         (sort (lr-remove-duplicates (lr-flatten (lib-requires-tree library)))
+         (sort (libreq-remove-duplicates
+                (libreq-flatten (libreq-requires-tree library)))
                #'string-lessp)))
     (when (interactive-p) (pp-eval-expression (quote libraries)))
     libraries))
 
 ;;;###autoload
-(defun insert-lib-requires-as-comment (library)
+(defun libreq-insert-lib-requires-as-comment (library)
   "Insert a comment listing all libraries ultimately required by LIBRARY.
-See also `lib-requires' and `lib-requires-tree'."
+See also `libreq-requires-list' and `libreq-requires-tree'."
   (interactive (list (file-name-sans-extension
                       (file-name-nondirectory (read-file-name "Library:")))))
-  (let ((requires       (lib-requires library))
+  (let ((requires       (libreq-requires-list library))
         (comment-style  'plain))
     (save-excursion
       (beginning-of-line)
-      (insert lib-requires-header)
+      (insert libreq-file-header)
       (if (not requires)
           (insert ";;   None\n;;\n")
         (let ((beg (point))
@@ -258,7 +268,7 @@ See also `lib-requires' and `lib-requires-tree'."
 
 ;;; Helper Functions ;;;;;;;;;
 
-(defun lr-flatten (list)                ; From `misc-fns.el'.
+(defun libreq-flatten (list)            ; From `misc-fns.el'.
   "Flatten LIST, returning a list with the atoms in LIST at any level.
 Also works for a consp whose cdr is non-nil."
   (cond ((null list) nil)
@@ -282,7 +292,7 @@ Also works for a consp whose cdr is non-nil."
            (reverse new)))))
 
 ;; Borrowed from `ps-print.el'
-(defun lr-remove-duplicates (list)
+(defun libreq-remove-duplicates (list)
   "Copy of LIST with duplicate elements removed.  Tested with `equal'."
   (let ((tail list)
         new)

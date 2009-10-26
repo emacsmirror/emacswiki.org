@@ -1,4 +1,4 @@
-Library <tt>[[dired+.el]]</tt> ('''Dired+''') extends functionalities provided by standard GNU Emacs libraries ##dired.el##, ##dired-aux.el##, and ##dired-x.el##. The standard functions are all available, plus more.
+Library <tt>[[dired+.el]]</tt> ('''[::Dired+]''') extends functionalities provided by standard GNU Emacs libraries ##dired.el##, ##dired-aux.el##, and ##dired-x.el##. The standard functions are all available, plus more.
 
 '''Dired+''' does this:
 

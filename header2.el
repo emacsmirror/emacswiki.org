@@ -10,9 +10,9 @@
 ;; Copyright (C) 1988 Lynn Randolph Slater, Jr.
 ;; Created: Tue Aug  4 17:06:46 1987
 ;; Version: 21.0
-;; Last-Updated: Thu Sep 24 15:37:38 2009 (-0700)
+;; Last-Updated: Sun Oct 25 09:23:39 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 1700
+;;     Update #: 1710
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/header2.el
 ;; Keywords: tools, docs, maint, abbrev, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -163,6 +163,10 @@
 ;;
 ;;; Change log:
 ;;
+;; 2009/10/25 dadams
+;;     Renamings from lib-require.el.  If you use that library, you must update it.
+;;       lib-requires-header -> libreq-file-header
+;;       insert-lib-requires-as-comment -> libreq-insert-lib-requires-as-comment
 ;; 2009/09/24 dadams
 ;;     header-multiline: Use a marker for END, and go to it after insert multiline.
 ;;     header-eof: Go to point-max and insert newline.
@@ -305,8 +309,10 @@
 ;;; Code:
 
 (and (< emacs-major-version 20) (eval-when-compile (require 'cl))) ;; when, unless
-(require 'lib-requires nil t) ;; (no error if not found):
-                              ;; insert-lib-requires-as-comment, lib-requires-header
+(require 'lib-requires nil t)
+  ;; (no error if not found):
+  ;; libreq-insert-lib-requires-as-comment, libreq-file-header
+
 ;;;;;;;;;;;;;;;;;;;;;;
 
 (provide 'header2)
@@ -663,8 +669,8 @@ This is normally overwritten with each file save."
 
 (defsubst header-lib-requires ()
   "Insert list of libraries required by this one."
-  (when (and (eq major-mode 'emacs-lisp-mode) (boundp 'lib-requires-header))
-    (insert lib-requires-header)        ; Defined in `lib-requires.el'.
+  (when (and (eq major-mode 'emacs-lisp-mode) (boundp 'libreq-file-header))
+    (insert libreq-file-header)         ; Defined in `lib-requires.el'.
     (insert ";;   None\n;;\n")))
 
 (defsubst header-status ()
@@ -767,8 +773,8 @@ with the same args overwrites the previous FUNCTION-TO-CALL."
 (register-file-header-action "Last-Updated[ \t]*: " 'update-last-modified-date)
 (register-file-header-action "          By[ \t]*: " 'update-last-modifier)
 (register-file-header-action "    Update #[ \t]*: " 'update-write-count)
-(when (boundp 'lib-requires-header)
-  (register-file-header-action lib-requires-header 'update-lib-requires))
+(when (boundp 'libreq-file-header)
+  (register-file-header-action libreq-file-header 'update-lib-requires))
 
 
 ;; Header and file division header creation code
@@ -1041,8 +1047,8 @@ read only then call `update-file-header."
 
 (defun update-lib-requires ()
   "Update the lines that show what libraries are required by this one.
-This uses function `insert-lib-requires-as-comment' from library
-`lib-requires.el'.
+This uses function `libreq-insert-lib-requires-as-comment' from
+library `lib-requires.el'.
 
 Note: If a byte-compiled (`*.el') of the library is available, it is
 used when determining library dependencies, in preference to the
@@ -1055,10 +1061,10 @@ result of `update-lib-requires'."
     (let ((lib (file-name-sans-extension
                 (file-name-nondirectory (buffer-file-name)))))
       (when (and (eq major-mode 'emacs-lisp-mode)
-                 (fboundp 'insert-lib-requires-as-comment)) ; In `lib-requires.el'.
+                 (fboundp 'libreq-insert-lib-requires-as-comment))
         (goto-char (match-beginning 0))
-        ;; Verify looking at `lib-requires-header'"
-        (when (looking-at (regexp-quote lib-requires-header))
+        ;; Verify looking at `libreq-file-header'"
+        (when (looking-at (regexp-quote libreq-file-header))
           (delete-and-forget-line) (delete-char 1)
           (delete-and-forget-line) (delete-char 1)
           (while (not (looking-at "^;;$")) (delete-and-forget-line) (delete-char 1))
@@ -1066,10 +1072,10 @@ result of `update-lib-requires'."
           (condition-case err
 ;;               (let ((load-path (cons (file-name-directory (buffer-file-name))
 ;;                                      load-path)))
-                (insert-lib-requires-as-comment lib) ; Tries to load the library.
+                (libreq-insert-lib-requires-as-comment lib) ; Tries to load LIB.
 ;;                )
             ;; Typically, user just now added `provide' and must load again.
-            (error (insert lib-requires-header (header-prefix-string) "  "
+            (error (insert libreq-file-header (header-prefix-string) "  "
                            (error-message-string err) ".\n;;\n"))))))))
 
 

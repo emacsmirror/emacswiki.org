@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Oct 24 12:42:40 2009 (-0700)
+;; Last-Updated: Sun Oct 25 21:32:13 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 4510
+;;     Update #: 4555
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -274,6 +274,13 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2009/10/25 dadams
+;;     Added: icicle-dir-prefix-wo-wildcards.  Use in icicle-insert-cand-in-minibuffer.
+;;     icicle-save-or-restore-input: Remove test comparing last completion with current input.
+;;     icicle-abbreviate-or-expand-file-name: If arg is absolute, do not expand.
+;;     icicle-display-candidates-in-Completions, icicle-prefix-candidates,
+;;       icicle-not-basic-prefix-completion-p:
+;;         Updated for new completion methods.  Use *-current-TAB-method, not old fuzzy flag.
 ;; 2009/10/24 dadams
 ;;     icicle-unsorted-file-name-*-candidates, icicle-*-any-file-name-candidates-p:
 ;;       Got rid of slashed-p.
@@ -1615,6 +1622,13 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2009/10/25 dadams
+;;     icicle-prefix-complete-1: When sole cand, use the candidate, but without any dir.
+;;     Renamed: icicle-next-apropos-match-function to icicle-next-S-TAB-completion-method,
+;;              icicle-toggle-fuzzy-completion to icicle-next-TAB-completion-method (rewrote).
+;;     icicle-(prefix|apropos)-complete-1: Updated no/sole msgs per new completion methods.
+;;     icicle-Completions-mouse-3-menu: Updated with the new command names.
+;;     Updated icicle-help-string-completion.
 ;; 2009/10/24 dadams
 ;;     icicle-(apropos|prefix)-complete-1:
 ;;       Removed code treating empty dir via *-any-*-p and ("").
@@ -2555,6 +2569,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2009/10/25 dadams
+;;     icicle-mode, icicle-define-icicle-maps, icicle-bind-completion-keys:
+;;       Updated doc string, menus, keys for completion-method command renamings.
 ;; 2009/09/26 dadams
 ;;     icicle-minibuffer-setup: Don't complete if icicle-progressive-completing-p.
 ;; 2009/09/16 dadams
@@ -3393,6 +3410,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2009/10/25 dadams
+;;     Added: icicle-TAB-completion-methods.
+;;     Removed: icicle-fuzzy-completion-flag, icicle-prefix-completion-is-basic-flag.
+;;     Renamed: icicle-apropos-match-fns-alist to icicle-S-TAB-completion-methods-alist.
 ;; 2009/10/12 dadams
 ;;     icicle-top-level-key-bindings: Added bindings for icicle-bookmark(-other-window).
 ;;     icicle-prefix-completion-is-basic-flag: Make it a constant for pre-Emacs 23.
@@ -3823,6 +3844,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2009/10/25 dadams
+;;     Added: icicle-current-TAB-method.
+;;     Updated icicle-general-help-string with new command names.
 ;; 2009/09/26 dadams
 ;;     Added: icicle-progressive-completing-p.
 ;; 2009/09/25 dadams
