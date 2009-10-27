@@ -11,5 +11,9 @@ The tracker integration into emacs can be found here: http://zanfishen.com/stori
 And what about the "tagging" feature of tracker?  Has anyone implemented adding/removing tags to/from a file and searching by tag?  If not, any hints on how to do it?  (I don't speak LISP, so I'm afraid I'll have to wait for someone to implement it anyway...)
 --mbork
 
+[new:DrewAdams:2009-10-26 22:51 UTC]
+Yes, see [[BookmarkPlus#BookmarkTags|Bookmark Tags]]. You can bookmark files and other kinds of Emacs objects, and you can associate any number of tags with any number of bookmarks. List objects by tag and tag combinations, sort them, search them,... -- DrewAdams
+
+
 [new:DrewAdams:2008-02-22 21:25 UTC]
 '''[[Icicles]]''' lets you tag regions in different buffers or files.  You can assign the same tag to multiple regions, whether they are in the same buffer or in different buffers, and you can assign multiple tags to the same region. See [[Icicles - Multiple Regions]]. -- DrewAdams

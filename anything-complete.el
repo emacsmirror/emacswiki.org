@@ -1,5 +1,5 @@
 ;;; anything-complete.el --- completion with anything
-;; $Id: anything-complete.el,v 1.64 2009/10/13 05:40:51 rubikitch Exp rubikitch $
+;; $Id: anything-complete.el,v 1.66 2009/10/26 09:38:39 rubikitch Exp rubikitch $
 
 ;; Copyright (C) 2008  rubikitch
 
@@ -96,6 +96,12 @@
 ;;; History:
 
 ;; $Log: anything-complete.el,v $
+;; Revision 1.66  2009/10/26 09:38:39  rubikitch
+;; `anything-completing-read': Show default source first when require-match and default is specified.
+;;
+;; Revision 1.65  2009/10/22 08:54:58  rubikitch
+;; `anything-complete-shell-history-setup-key': Use `minibuffer-local-shell-command-map' if any
+;;
 ;; Revision 1.64  2009/10/13 05:40:51  rubikitch
 ;; `anything-completing-read': Show completions first when require-match == t
 ;;
@@ -303,7 +309,7 @@
 
 ;;; Code:
 
-(defvar anything-complete-version "$Id: anything-complete.el,v 1.64 2009/10/13 05:40:51 rubikitch Exp rubikitch $")
+(defvar anything-complete-version "$Id: anything-complete.el,v 1.66 2009/10/26 09:38:39 rubikitch Exp rubikitch $")
 (require 'anything-match-plugin)
 (require 'thingatpt)
 
@@ -624,7 +630,9 @@ It accepts one argument, selected candidate.")
                         ,@additional-attrs
                         ,persistent-action
                         ,transformer-func)))
-    (cond (require-match
+    (cond ((and require-match default)
+           (list default-source main-source))
+          (require-match
            (list main-source default-source))
           (anything-completing-read-history-first
            (list default-source history-source main-source new-input-source))
@@ -632,6 +640,7 @@ It accepts one argument, selected candidate.")
            (list default-source main-source history-source new-input-source)))))
 ;; (anything-completing-read "Command: " obarray 'commandp t)
 ;; (anything-completing-read "Test: " '(("hoge")("foo")("bar")) nil t)
+;; (anything-completing-read "Test: " '(("hoge")("foo")("bar")) nil t nil nil "foo")
 ;; (let ((anything-complete-persistent-action 'message)) (anything-completing-read "Test: " '(("hoge")("foo")("bar")) nil t))
 ;; (anything-old-completing-read "Test: " '(("hoge")("foo")("bar")) nil t)
 ;; (anything-completing-read "Test: " '(("hoge")("foo")("bar")) nil nil "f" nil)
@@ -837,10 +846,16 @@ It accepts one argument, selected candidate.")
                       (or (word-at-point) "")
                       20)))
 (defun anything-complete-shell-history-setup-key (key)
-  (when (and (require 'shell-command nil t)
+  ;; for Emacs22
+  (when (and (not (boundp 'minibuffer-local-shell-command-map))
+             (require 'shell-command nil t)
              (boundp 'shell-command-minibuffer-map))
     (shell-command-completion-mode)
     (define-key shell-command-minibuffer-map key 'anything-complete-shell-history))
+  ;; for Emacs23
+  (when (boundp 'minibuffer-local-shell-command-map)
+    (define-key minibuffer-local-shell-command-map key 'anything-complete-shell-history))
+
   (when (require 'background nil t)
     (define-key background-minibuffer-map key 'anything-complete-shell-history))
   (require 'shell)

@@ -60,6 +60,11 @@ having the tag you searched for. The default directory for the Dired buffer will
 
 Since version 0.1.2 there is a new mode for editing both comment and tags. Mark a number of files in Dired and execute `file-props-dired-edit' and you will be presented with a buffer where you can edit the data.
 
+
+----
+
+See also [[BookmarkPlus#BookmarkTags|Bookmark Tags]].
+
 ----
 
 CategoryFiles CategoryDirectories CategorySearchAndReplace 

@@ -22,24 +22,25 @@
 
 ;;; Commentary:
 
-;; This library dired-lis (dired letter isearch) let you isearch in `dired-mode'.
-;; You only need press letter like in TC(Total commander), not need press some
-;; keys to active isearch(in dired-isearch, or in dired-aux in emacs23, you
-;; need call M-x dired-isearch-forward or M-x dired-isearch-filenames to
-;; active isearch, but in dired-lis minor mode, when you type 0..9, or a..z
-;; , or A..Z(which you can customize), the isearch mode active automatically,
-;; and the letter is insert into isearch input area automatically.
-;; If you do not need letter isearch in `dired-mode', you can call C-u M-x dired-lis-isearch-forward-always?,
-;; then isearch-mode active always even if you press enter in sub directory
-;; until you press C-g or other keys to abort isearch.
+;; This library dired-lis (dired letter isearch) let you isearch in
+;; `dired-mode'.  You only need press letter like in TC(Total commander), not
+;; need press some keys to active isearch(in dired-isearch, or in dired-aux in
+;; emacs23, you need call M-x dired-isearch-forward or M-x
+;; dired-isearch-filenames to active isearch, but in dired-lis minor mode, when
+;; you type 0..9, or a..z , or A..Z(which you can customize), the isearch mode
+;; active automatically, and the letter is insert into isearch input area
+;; automatically.  If you do not need letter isearch in `dired-mode', you can
+;; execute C-u M-x dired-lis-isearch-forward-always?, then isearch-mode active
+;; always even if you press enter in sub directory until you press C-g or other
+;; keys to abort isearch.
 
-;; Letter isearch in dired-mode.  Copy dired-lis.el to your
-;; load-path and add to your .emacs:
+;; Letter isearch in dired-mode.  Copy dired-lis.el to your load-path and add to
+;; your .emacs:
 
 ;; (require 'dired-lis)
 
-;; Then toggle letter isearch with M-x dired-lcs-mode.  To enable
-;; letter isearch in all dired-mode buffers, use M-x global-dired-lcs-mode.
+;; Then toggle letter isearch with M-x dired-lcs-mode.  To enable letter isearch
+;; in all dired-mode buffers, use M-x global-dired-lcs-mode.
 
 ;;; History:
 
@@ -52,11 +53,7 @@
 (defgroup dired-lis nil "Minor mode for making letter isearch in `dired-mode'.")
 
 (defcustom dired-lis-isearch-command 'dired-isearch-forward
-  "Default isearch command."
-  :type 'function
-  :group 'dired-lis)
-(defcustom dired-lis-isearch-command 'dired-isearch-forward
-  "Default isearch command."
+  "Default dired isearch command."
   :type 'function
   :group 'dired-lis)
 (defcustom dired-lis-find-file-command 'diredp-find-file-reuse-dir-buffer
@@ -64,12 +61,20 @@
   :type 'function
   :group 'dired-lis)
 (defcustom dired-lis-isearch-exit-command 'isearch-exit
-  "Command when press return in `isearch-mode'."
+  "Command when press return in function `isearch-mode'."
   :type 'function
   :group 'dired-lis)
-(defcustom dired-lis-isearch-up-directory-command 'c-electric-delete
-  "Command in function `isearch-mode' when press \\[c-electric-delete]."
+(defcustom dired-lis-default-isearch-up-directory-command 'c-electric-delete
+  "Default command in function `isearch-mode' when press \\[c-electric-delete]."
   :type 'function
+  :group 'dired-lis)
+(defcustom dired-lis-isearch-up-directory-command-alist '((Info-mode Info-up))
+  "Command alist in function `isearch-mode' when press \\[c-electric-delete]."
+  :type 'alist
+  :group 'dired-lis)
+(defcustom dired-lis-wrap-automatically t
+  "Automatically wrap isearch in function `dired-lis-mode' or not."
+  :type 'boolean
   :group 'dired-lis)
 
 (defcustom dired-lis-mode-hook nil
@@ -77,11 +82,13 @@
   :type 'hook
   :group 'dired-lis)
 
+(defvar dired-lis-letter-list nil "*Letter list which bind to `dired-lis-isearch-command'.")
+
 (defvar dired-lis-mode-map (make-keymap) "Keymap for letter isearch in `dired-mode'.")
 
-(defvar dired-lis-letter-list nil "Letter list which bind to `dired-lis-isearch-command'.")
 (defvar dired-lis-last-isearch-command nil "Last isearch command in `dired-mode'.")
 (defvar dired-lis-isearch-always nil "ISearch always in `dired-mode'.")
+(defvar dired-lis-point-isearch-start nil "Point when start isearch.")
 
 (defun dired-lis-get-letter-list()
   "Get letter list to bind to `isearch-command' in `dired-mode'."
@@ -98,11 +105,20 @@
     (while (<= i ?z)
       (setq dired-lis-letter-list (append dired-lis-letter-list (list i)))
       (setq i (1+ i)))))
+
+(defun dired-lis-isearch ()
+  "Call `dired-lis-isearch-command' and set `dired-lis-point-isearch-start'."
+  (interactive)
+  (when dired-lis-wrap-automatically
+    (setq dired-lis-point-isearch-start (point))
+    (goto-char (point-min)))
+  (call-interactively dired-lis-isearch-command))
+
 (defun dired-lis-bind-letter()
   "Bind letter to `isearch-command' in `dired-mode'."
   (let ((map dired-lis-mode-map))
     (dolist (i dired-lis-letter-list)
-      (define-key map (vector i) dired-lis-isearch-command))))
+      (define-key map (vector i) 'dired-lis-isearch))))
 
 (dired-lis-get-letter-list)
 (dired-lis-bind-letter)
@@ -110,8 +126,12 @@
 (defun dired-lis-yank-char ()
   "Insert char to isearch input area."
   (let ((letter last-command-event))
-    (if (and (equal major-mode 'dired-mode) (memq letter dired-lis-letter-list))
-        (isearch-yank-string (char-to-string letter)))))
+    (when (and (equal major-mode 'dired-mode) (memq letter dired-lis-letter-list))
+      (when dired-lis-wrap-automatically
+        (setq isearch-opoint dired-lis-point-isearch-start))
+      (let ((search-upper-case-bak search-upper-case))
+        (setq search-upper-case t)
+      (isearch-yank-string (char-to-string letter))))))
 
 ;;;###autoload
 (define-minor-mode dired-lis-mode
@@ -120,6 +140,7 @@
   \\{dired-lis-mode-map}
 Entry to this mode calls the value of `dired-lis-mode-hook'
 if that value is non-nil.  \\<dired-lis-mode-map>"
+  :group 'dired-lis
   :lighter " LIS"
   (unless (equal major-mode 'dired-mode)
     (error "Current major-mode is not dired-mode"))
@@ -127,7 +148,6 @@ if that value is non-nil.  \\<dired-lis-mode-map>"
       (setq hook-action 'add-hook)
     (setq hook-action 'remove-hook))
   (funcall hook-action 'isearch-mode-hook 'dired-lis-yank-char)
-  (dired-lis-bind-letter)
   (if dired-lis-mode
       (run-hooks 'dired-lis-mode-hook)))
 
@@ -140,7 +160,9 @@ if that value is non-nil.  \\<dired-lis-mode-map>"
 (define-globalized-minor-mode global-dired-lis-mode dired-lis-mode dired-lis-on)
 
 (defmacro dired-lis-def-isearch-command (fun-name isearch-command search-always)
-  "Make definition dired-lis-isearch command."
+  "Make dired-lis isearch command.
+The command's name is FUN-NAME, and ISEARCH-COMMAND, SEARCH-ALWAYS
+is its arguments."
   `(defun ,fun-name ()
      (interactive)
      (setq dired-lis-last-isearch-command ,isearch-command)
@@ -148,7 +170,8 @@ if that value is non-nil.  \\<dired-lis-mode-map>"
      (call-interactively ,isearch-command)))
 
 (defmacro dired-lis-def-isearch-command-with-arg (fun-name isearch-command)
-  "Make definition dired-lis-isearch command."
+  "Make dired-lis isearch command.
+The command's name is FUN-NAME, and ISEARCH-COMMAND is its arguments."
   `(defun ,fun-name (&optional search-always)
      (interactive "P")
      (setq dired-lis-last-isearch-command ,isearch-command)
@@ -164,9 +187,8 @@ if that value is non-nil.  \\<dired-lis-mode-map>"
 (dired-lis-def-isearch-command dired-lis-isearch-backward-temp 'dired-isearch-backward nil)
 (dired-lis-def-isearch-command dired-lis-isearch-backward-always 'dired-isearch-backward t)
 
-(defun dired-lis-isearch-exit-or-find-file ()
-  "According to current `major-mode' and `dired-lis-isearch-always',
-execute `isearch-abort' or `diredp-find-file-reuse-dir-buffer'."
+(defun dired-lis-isearch-find-file ()
+  "`find-file' in function `dired-lis-mode'."
   (interactive)
   (if (not (equal major-mode 'dired-mode))
       (call-interactively dired-lis-isearch-exit-command)
@@ -186,9 +208,8 @@ execute `isearch-abort' or `diredp-find-file-reuse-dir-buffer'."
             (call-interactively dired-lis-last-isearch-command))
         (isearch-abort)))))
 
-(defun dired-lis-isearch-done-del-or-up-directory ()
-  "According to current `major-mode' and `dired-lis-isearch-always',
-execute `isearch-done' or `dired-up-directory-same-buffer'."
+(defun dired-lis-isearch-up-directory ()
+  "`dired-up-directory' in function `dired-lis-mode'."
   (interactive)
   (if (equal major-mode 'dired-mode)
       (progn
@@ -197,12 +218,13 @@ execute `isearch-done' or `dired-up-directory-same-buffer'."
             (call-interactively dired-lis-last-isearch-command)
           (isearch-done)))
     (isearch-done)
-    (call-interactively dired-lis-isearch-up-directory-command)))
+    (let ((command (nth 1 (assoc major-mode dired-lis-isearch-up-directory-command-alist))))
+      (unless command
+        (setq command dired-lis-default-isearch-up-directory-command))
+      (call-interactively command))))
 
-(define-key isearch-mode-map (kbd "RET") 'dired-lis-isearch-exit-or-find-file)
-;; (define-key isearch-mode-map (kbd "C-h") 'dired-lis-isearch-done-del-or-up-directory)
-
-(provide 'dired-lis)
+(define-key isearch-mode-map (kbd "RET") 'dired-lis-isearch-find-file)
+;; (define-key isearch-mode-map (kbd "C-h") 'dired-lis-isearch-up-directory)
 
 (provide 'dired-lis)
 

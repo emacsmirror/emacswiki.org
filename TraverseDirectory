@@ -111,3 +111,25 @@ Report bugs here:
 
 
 
+The prompt of traverse-read-regexp is not unifying.
+----
+{{{
+(defun traverse-read-regexp (&rest args)
+  "For compatibility with emacs-22.
+Use `read-string' in emacs-22 instead of using `read-regexp'.
+Use the same args as `read-string' or `read-regexp'
+depending of what emacs version you use.
+NOTE:When using `read-string' some regexp (complex)
+may not be displayed correctly to traverselisp"
+  (apply #'funcall (if (fboundp 'read-regexp)
+                       'read-regexp
+                       'read-string)
+         args))
+}}}
+
+<pre>
+the argument "Regexp: " will be pass to `traverse-read-regexp' from caller `traverse-deep-rfind'. 
+To emacs23, `read-regexp' will take that argument, the Minibuffer will display "Regexp: : ". 
+
+It is not unifying with the prompt of `read-string'.
+</pre>

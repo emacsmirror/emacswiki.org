@@ -1,14 +1,15 @@
 <pre>
-This library dired-lis (dired letter isearch) let you isearch in `dired-mode' 
-when you press letter like in TC(Total commander), not need press some
-key to active isearch(in dired-isearch, or in dired-aux in emacs23, you 
-need call M-x dired-isearch-forward or M-x dired-isearch-filenames to 
-active isearch, but in dired-lis minor mode, when you type 0..9, or a..z
-, or A..Z(which you can customize), the isearch mode active automatically, 
-and the letter is in isearch mode automatically.
-If you do not need letter isearch in `dired-mode', you can call C-u M-x dired-lis-isearch-forward-always?,
-then isearch-mode active always even if you press enter in sub directory
-until you press C-g or other keys to abort isearch.
+This library dired-lis (dired letter isearch) let you isearch in
+`dired-mode'.  You only need press letter like in TC(Total commander), not
+need press some keys to active isearch(in dired-isearch, or in dired-aux in
+emacs23, you need call M-x dired-isearch-forward or M-x
+dired-isearch-filenames to active isearch, but in dired-lis minor mode, when
+you type 0..9, or a..z , or A..Z(which you can customize), the isearch mode
+active automatically, and the letter is insert into isearch input area
+automatically.  If you do not need letter isearch in `dired-mode', you can
+execute C-u M-x dired-lis-isearch-forward-always?, then isearch-mode active
+always even if you press enter in sub directory until you press C-g or other
+keys to abort isearch.
 </pre>
 
 Download: Lisp:dired-lis.el.

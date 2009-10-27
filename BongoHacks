@@ -51,6 +51,10 @@ If you use FileProps, you can use it to tag your songs in various ways. Here are
 
 </pre>
 
+See also [[BookmarkPlus#BookmarkTags|Bookmark Tags]].
+
+
+
 == Stop after playing a video ==
 
 Usually, after one track finishes playing, Bongo immediately plays the next track (`C-u C-c C-s' disables this for all tracks).  This can be annoying especially when playing videos, as you will not have a chance to stop the playback because Bongo keeps bringing up new videos.

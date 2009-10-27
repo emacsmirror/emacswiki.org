@@ -2,7 +2,7 @@ TodoListMode, by [http://www.lamberta.org/ William Lamberta], provides color hig
 
 It uses some regexp's to determine the font face of a line, so it's easy to jump in and define more numbers and different colors.
 
-* [http://cloud.github.com/downloads/biilly/todo-list-mode/todo-list-mode.el todo-list-mode.el]
+* [http://github.com/biilly/scripts/raw/master/emacs/lisp/todo-list-mode.el todo-list-mode.el]
 * [http://www.lamberta.org/blog/todo-list-mode/ Screenshot and release information]
 
 To include this mode automaticaly, add to your .emacs
@@ -30,4 +30,3 @@ Here is how I would have done it:
 
 With that, pressing C-x r j o RET would just open your file (you need
 to add a file header to make it "todo-list-mode" aware)
-
