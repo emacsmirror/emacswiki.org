@@ -407,7 +407,6 @@ I was able to fix a similar problem for gosh.el by simply removing the mess, but
 [new]
 The site expects elisp files to start with three semicolons (##;;;##). See [[Manual:Library Headers]] ("The very first line should have this format: ##;;; FILENAME --- DESCRIPTION##"). I will add the missing semicolon. -- AlexSchroeder
 
-
 == RSS for single-pages doesn't work in Google Reader ==
 
 I haven't figured out what the problem is yet, but I added http://www.emacswiki.org/emacs/?action=rss;rcidonly=IciclesDiscussion to Google Reader, and it didn't get a "new item" notification when the page was changed. -- EthanGlasserCamp

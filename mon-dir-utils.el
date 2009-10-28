@@ -414,19 +414,17 @@ machine and the BUG'd system.
   (dired-maybe-insert-subdir dirname "-laR"))
 
 ;;; ==============================
+;;; :NOTE
 ;;; pst2pdf.bat
 ;;; pstat.exe
 ;;; pstopdf.bat
 ;;; pstops.exe
 ;;; pstotext.exe
 ;;; ps2pdf13.cmd
-
-;;; C:\home\sp\gs\gs8.64\bin
-;;; C:\Program Files\gs\gs8.63\bin
-;;; C:\home\sp\gs\gs8.64\lib\ps2ascii.bat
-;;; C:\home\sp\gs\gs8.64\lib\pdf2ps.bat
-;;; C:\home\sp\gs\gs8.64\lib\pdf2ps.cmd
-
+;;; (concat (getenv "MON_BIN") "\\gs\\gs8.64\\bin")
+;;; (concat (getenv "MON_BIN") "\\gs\\gs8.64\\lib\\ps2ascii.bat")
+;;; (concat (getenv "MON_BIN") "\\gs\\gs8.64\\lib\\pdf2ps.bat")
+;;; (concat (getenv "MON_BIN") "\\gs\\gs8.64\\lib\\pdf2ps.cmd")
 ;;; CREATED: <Timestamp: #{2009-10-21T15:00:36-04:00Z}#{09433} - by MON>
 (defun mon-get-ps-pdf (&optional w-directory as-kill insrtp intrp)
   "Return a list of postscript or pdf files of buffers' default-directory `pwd'.
@@ -438,16 +436,6 @@ When INSERTP is non-nil or called-interactively
   (let (psdf 
         (mapconcat 'identity 
           (directory-files 
-           ;;(if w-directory
-           ;;   (if intrp (read-directory-name "Read .ps and .pdf files in directory :" nil nil t)
-           ;; (file-
-           ;; (and (file-directory-p
-           ;;      (file-exists-p
-           (directory-file-name 
-            (file-name-directory
-             ;;(file-name-absolute-p
-                                   "../HG-Repos/emacs-load-files/naf-mode/"))
-                                   )
            default-directory t ".*\.ps\\|.*\.pdf") "\n")
         (if (and (or insrtp intrp)
                  (not buffer-read-only))
@@ -552,19 +540,19 @@ output to `*Shell Command Output*'.
      (when this-buffer 
        (save-excursion
         (insert-buffer-substring (get-buffer "*Shell Command Output*")))))))
-           
-;;; frm-pdf &KEY w-layout w-nopgbrk w-htmlmeta to-fname in-buffer
-;;; :TEST-ME 
-;;(mon-get-pdftotext 
-;; "C:/home/sp/HG-Repos/manuals-docs-pdfs-HG/Lisp-Manuals-Papers/chi04.pdf"
-; :this-buffer t)
-; :in-buffer 9)
-; :in-buffer t)
-; :in-buffer "bubba")
-; :in-buffer "not a bubba")
-; :w-nopgbrk t)
-; :w-layout
-; :to-fname 
+;;;           
+;;; :ARGS FRM-PDF &key W-LAYOUT W-NOPGBRK W-HTMLMETA TO-FNAME IN-BUFFER
+;;; :TEST-ME (mon-get-pdftotext "<PATH/TO/A/file.pdf" :this-buffer t)
+;;; :TEST-ME (mon-get-pdftotext "<PATH/TO/A/file.pdf" :in-buffer 9)
+;;; :TEST-ME (mon-get-pdftotext "<PATH/TO/A/file.pdf" :in-buffer t)
+;;; :TEST-ME (progn (get-buffer-create "bubba")
+;;;                    (mon-get-pdftotext "<PATH/TO/A/>file.pdf" 
+;;;                                       :in-buffer "bubba"))
+;;; :TEST-ME (mon-get-pdftotext "<PATH/TO/A/>file.pdf" :in-buffer "not a bubba")
+;;; :TEST-ME (mon-get-pdftotext "<PATH/TO/A/>file.pdf" :w-nopgbrk t)
+;;; :TEST-ME (mon-get-pdftotext "<PATH/TO/A/>file.pdf" :w-layout t
+;;; :TEST-ME (mon-get-pdftotext "<PATH/TO/A/>file.pdf" 
+;;;                             :to-fname "<PATH/TO/A/>file.txt>")           
 
 ;;; ==============================
 ;;; CREATED: <Timestamp: #{2009-10-21T15:00:41-04:00Z}#{09433} - by MON>
@@ -1956,14 +1944,15 @@ Defaults to value of global variable `*img-hash*'.
 :SEE-ALSO `mon-try-comp-dir', `mon-complete-hashed-dir', `mon-build-dir-list',
 `mon-hash-img-dir'.\n►►►"
   (let* ((dir-list (mon-get-proc-buffers-directories nil dir-to-hash))
-         ;; For use with for the keyword arg to make-hash-table: `:size h-size'
+         ;; For use with for the keyword arg to make-hash-table: `:size h-size'.
 	 (h-size (length dir-list)) 
 	 (img-hash)
 	 (with-bmp)
 	 ;;(let (
 	 (last-hashed "last-hashed")
-	 (hashed-on (current-time))     ;=>(HIGH LOW MICRO)
-	 ;; )(unless (gethash "last-hashed" *temp-hash*)  (puthash last-hashed hashed-on *temp-hash*)))
+	 (hashed-on (current-time))     ;=> (HIGH LOW MICRO)
+	 ;; )(unless (gethash "last-hashed" *temp-hash*)
+         ;;          (puthash last-hashed hashed-on *temp-hash*)))
 	 )
     (setq img-hash *img-hash*) ;;(setq img-hash *temp-hash*) 
     (while dir-list
@@ -1973,13 +1962,15 @@ Defaults to value of global variable `*img-hash*'.
     (setq dir-list (mon-hash-all-keys *img-hash*)) ;*img-hash* ;*temp-hash*
     (while dir-list
       (let* ((in-dir (car dir-list))
-     	     (has-imgs (mon-get-ebay-bmps-in-dir t in-dir)) ;get partial-path of the .bmps in directory
-	     ;;(file-expand-wildcards (concat (file-name-as-directory in-dir "*.bmp")) 
-	     ;;(gethash 'last-hashed *img-hash*) ;*temp-hash*
-	     ;; check the file for modification since last
-	     ;;(file-attributes file-to-examine
+             ;; Get partial-path of the .bmps in directory.
+     	     (has-imgs (mon-get-ebay-bmps-in-dir t in-dir)) 
+	     ;; (file-expand-wildcards (concat (file-name-as-directory in-dir "*.bmp"))
+	     ;; (gethash 'last-hashed *img-hash*) ;*temp-hash*
+	     ;; Check the file for modification since last.
+	     ;; (file-attributes file-to-examine
 	     ;;		 (> mod-times now-time)
-	     ;; (decode-time (cadr (gethash "u:/NEFS_PHOTOS/Nef_Drive2/EBAY/BMP-Scans/e1140" *temp-hash*))) 
+	     ;; (decode-time (cadr 
+             ;;              (gethash (concat *ebay-images-bmp-path* "/e1140") *temp-hash*))) 
 	     ;; (decode-time (cadr (gethash SOME-HASH-ELT *temp-hash*))) 
 	     )
 	(if has-imgs

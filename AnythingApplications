@@ -61,6 +61,17 @@ Thank you. But please support other comint completion methods such as file name 
 
 [new] Lisp:anything-el-swank-fuzzy.el fuzzy symbol completion using ElSwankFuzzy.
 [new] How about provide a function named `anything-el-swank-fuzzy-complete-symbol' like `slime-indent-and-complete-symbol'? It is convenience to be bind.
+[new:TakeshiBanse:2009-10-27 15:37 UTC]
+: Thanks for the suggestion. Updated! -- TakeshiBanse
+[new] `anything-el-swank-fuzzy-complete-symbol' can not work and give "No buffer named *anything complete*". 
+If execute `anything-el-swank-fuzzy-complete-variables' and then execute `anything-el-swank-fuzzy-complete-symbol'
+it works.
+[new:TakeshiBanse:2009-10-27 17:02 UTC]
+: Sorry for the inconvenience, I'm looking into it. Thanks report. -- TakeshiBanse
+:: Updated. Should fix, I believe. -- TakeshiBanse
+[new] It works perfectly. Thanks for your job.
+[new:TakeshiBanse:2009-10-27 17:27 UTC]
+: Thank you very much for the report! -- TakeshiBanse
 
 === Tag Search ===
 Sometimes TagsFile contains multiple entries, so selecting Search TagsFile with anything.

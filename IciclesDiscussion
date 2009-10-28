@@ -503,6 +503,8 @@ Thanks for letting me know about ''Icicles now provides file-name completion for
 [new]
 I'm used to [InteractivelyDoThings IDO]: fuzzy matching; list of matches in the minibuffer; cycling with arrow keys; narrowing as I type; ##RET## selects the foremost match. Everything is automatically "there" when I hit ##C-x C-f## to find a file or ##C-x C-b## to switch buffer. How do I get similar behavior in Icicles? -- [[112.84-48-193.nextgentel.com]] 
 
+
+[:IdoAndIcicles]
 [new:DrewAdams:2009-05-02 05:13 UTC]
 Short answer:
 

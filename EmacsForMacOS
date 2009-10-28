@@ -81,7 +81,7 @@ Note: OS X 10.2.2 changed the unexec-mechanism used by Emacs, so the prepackaged
 
 * emacs -- version 22.3 command line only
 * emacs-app -- 23.0.0_NS-9.0rc3 aqua/NextStep
-* emacs-app-devel  -- same as emacs-app, but with a recent CVS development version
+* emacs-app-devel  -- same as emacs-app, but with a less old CVS development version (20090104 as of October 2009)
 * xemacs -- 21.4.21 X11
 
 !MacPorts homepage:

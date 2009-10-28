@@ -133,3 +133,16 @@ To emacs23, `read-regexp' will take that argument, the Minibuffer will display "
 
 It is not unifying with the prompt of `read-string'.
 </pre>
+
+[new]
+If you have something at point, it will be displayed in the prompt as (maybe) a default argument.
+
+To use this default argument, hit arrow down.
+
+Icicles users will have "Regexp: (default arg): ", if you have not icicles your prompt is probably empty:
+
+"Regexp: :".
+
+I will fix that as soon as possible. Waiting that fix, just hit arrow down to see default arg.
+
+-- ThierryVolpiatto

@@ -61,6 +61,9 @@ Does anyone know why newsticker uses so many CPU cycles just to download and ren
 [new]
 I use emacs without X, in the terminal exclusively (Ubuntu emacs-nox package). It doesn't have XPM support (obviously) and apparently newsticker chokes when it can't load its XPM icons ("Invalid image type `xpm'"). This is kinda annoying since I can't use emacs-gtk (no anti-aliasing support...) or emacs-snapshot (would solve the anti-aliasing problem I guess, but last time I tried emacs 23 apparently didn't handle yet some other packages I use routinely). Could there be an alternative text-only version of the XPM icons like there is for tabbar-mode ? FabriceGabolde
 
+[new]
+Is there any way to sort the *Newsticker Tree* buffer?
+
 ==Addons==
 
 * NewstickerNotify -- Display news number at mode-line when NewsTicker fetch news.
