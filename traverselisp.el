@@ -106,6 +106,7 @@
 ;; `traverse-list-files-in-tree'
 ;; `traverse-apply-func-on-files'
 ;; `traverse-apply-func-on-dirs'
+;; `traverse-auto-document-lisp-buffer'
 
 ;;  * Internal variables defined here:
 ;; [EVAL] (traverse-auto-document-lisp-buffer :type 'internal-variable :prefix "traverse")
@@ -206,12 +207,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change log:
-;; http://freehg.org/u/thiedlecques/traverselisp/ 
+;;  http://mercurial.intuxication.org/hg/traverselisp
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Version:
-(defconst traverse-version "1.1.12")
+(defconst traverse-version "1.1.16")
 
 ;;; Code:
 
@@ -420,7 +421,7 @@ elements of list `lis' are regexps."
       t
       nil))
 
-(defsubst* traverse-find-readlines (bfile regexp &key (insert-fn 'file) (stop-at-first nil))
+(defun* traverse-find-readlines (bfile regexp &key (insert-fn 'file) (stop-at-first nil))
   "Return all the lines of a file or buffer matching `regexp'.
 with the number of line in a list where each element is a list of the form:
 \\(\"number_of_line\" \"line\")"
@@ -527,7 +528,7 @@ with the number of line in a list where each element is a list of the form:
 (defun traverse-find-in-file (fname regexp &optional full-path)
   "Traverse search regex in a single file."
   (interactive (list (read-file-name "FileName: ")
-                     (traverse-read-regexp "Regexp: ")))
+                     (traverse-read-regexp (if (fboundp 'read-regexp) "Regexp" "Regexp: "))))
   (traverse-prepare-buffer)
   (let ((prefarg (not (null current-prefix-arg))))
     (if (and (not (bufferp fname))
@@ -580,7 +581,8 @@ with the number of line in a list where each element is a list of the form:
       (if (bufferp (get-buffer fname))
           (switch-to-buffer-other-window (get-buffer fname))
           (find-file-other-window fname))
-      (goto-line (string-to-number nline))
+      (let ((line (string-to-number nline)))
+        (goto-char (point-min)) (forward-line (1- line)))
       (setq case-fold-search t)
       (beginning-of-line)
       (when (re-search-forward regex nil nil)
@@ -609,16 +611,14 @@ Use the same args as `read-string' or `read-regexp'
 depending of what emacs version you use.
 NOTE:When using `read-string' some regexp (complex)
 may not be displayed correctly to traverselisp"
-  (apply #'funcall (if (fboundp 'read-regexp)
-                       'read-regexp
-                       'read-string)
+  (apply #'funcall (if (fboundp 'read-regexp) 'read-regexp 'read-string)
          args))
 
 ;;;###autoload
 (defun traverse-occur-current-buffer (regexp)
   "Search regexp in current buffer."
-  (interactive (list
-                (traverse-read-regexp "Regexp: ")))
+  (interactive
+   (list (traverse-read-regexp (if (fboundp 'read-regexp) "Regexp" "Regexp: "))))
   (let ((buf-fname (buffer-file-name (current-buffer))))
     (if traverse-occur-use-miniwindow
         (progn
@@ -640,7 +640,7 @@ except on files that are in `traverse-ignore-files'
 Called with prefix-argument (C-u) absolute path is displayed"
   (interactive
    (list (read-directory-name "Tree: ")
-         (traverse-read-regexp "Regexp: ")
+         (traverse-read-regexp (if (fboundp 'read-regexp) "Regexp" "Regexp: "))
          (read-string "CheckOnly: ")))
   (traverse-prepare-buffer)
   (let ((init-time (cadr (current-time)))
@@ -700,7 +700,7 @@ Called with prefix-argument (C-u) absolute path is displayed"
 ;;;###autoload
 (defun traverse-search-in-dired-dir-at-point (regex &optional only)
   "Search for regexp in all files of directory at point in a dired buffer."
-  (interactive (list (traverse-read-regexp "Regexp: ")
+  (interactive (list (traverse-read-regexp (if (fboundp 'read-regexp) "Regexp" "Regexp: "))
                      (read-string "CheckOnly: ")))
   (if (eq major-mode 'dired-mode)
       (let ((tree (dired-get-filename)))
@@ -712,7 +712,7 @@ Called with prefix-argument (C-u) absolute path is displayed"
 ;;;###autoload
 (defun traverse-search-in-dired-file-at-point (regex)
   "Search for regexp in file at point in a dired buffer."
-  (interactive (list (traverse-read-regexp "Regexp: ")))
+  (interactive (list (traverse-read-regexp (if (fboundp 'read-regexp) "Regexp" "Regexp: "))))
   (if (eq major-mode 'dired-mode)
       (let ((fname (dired-get-filename)))
         (if (file-regular-p fname)
@@ -743,7 +743,7 @@ to have these programs installed on your system and FUSE module
 enabled in your kernel.
 This function is disabled by default, enable it setting
 traverse-use-avfs to non--nil"
-  (interactive (list (traverse-read-regexp "Regexp: ")
+  (interactive (list (traverse-read-regexp (if (fboundp 'read-regexp) "Regexp" "Regexp: "))
                      (read-string "CheckOnly: ")))
   (when traverse-use-avfs
     (let ((file-at-point (dired-get-filename)))
@@ -761,7 +761,7 @@ traverse-use-avfs to non--nil"
   "Search for regexp in all marked files of a dired buffer.
 if some of the marked files are directories ignore them
 if no marked files use file at point."
-  (interactive (list (traverse-read-regexp "Regexp: ")))
+  (interactive (list (traverse-read-regexp (if (fboundp 'read-regexp) "Regexp" "Regexp: "))))
   (let ((prefarg (not (null current-prefix-arg)))
         (fname-list (traverse-dired-get-marked-files)))
     (traverse-prepare-buffer)
@@ -786,7 +786,7 @@ if no marked files use file at point."
 (defun traverse-dired-find-in-all-files (regexp only &optional full-path)
   "Search for regexp in all files of current dired buffer.
 except compressed files and symlinks"
-  (interactive (list (traverse-read-regexp "Regexp: ")
+  (interactive (list (traverse-read-regexp (if (fboundp 'read-regexp) "Regexp" "Regexp: "))
                      (read-string "CheckOnly: ")))
   (let ((prefarg (not (null current-prefix-arg)))
         (all-files (traverse-list-directory (dired-current-directory)))
@@ -856,11 +856,11 @@ in compressed archive at point if traverse-use-avfs is non--nil."
   (interactive
    (let ((f-or-d-name (dired-get-filename)))
      (cond ((traverse-dired-has-marked-files)
-            (list (traverse-read-regexp "Regexp: ")))
+            (list (traverse-read-regexp (if (fboundp 'read-regexp) "Regexp" "Regexp: "))))
            ((or (file-directory-p f-or-d-name)
                 (and (file-regular-p f-or-d-name)
                      (file-compressed-p f-or-d-name)))
-            (list (traverse-read-regexp "Regexp: ")
+            (list (traverse-read-regexp (if (fboundp 'read-regexp) "Regexp" "Regexp: "))
                   (read-string "CheckOnly: "))))))
   (let ((fname (dired-get-filename)))
     (cond ((traverse-dired-has-marked-files)
@@ -1248,10 +1248,10 @@ If `ext' apply func only on files with .`ext'."
       (funcall fn i))))
 
 
-(defmacro* traverse-auto-document-lisp-buffer (&key type prefix)
+(defun* traverse-auto-document-lisp-buffer (&key type prefix)
   "Auto document tool for lisp code."
-  `(let* ((boundary-regexp "^;; +\\*+ .*");"^;;=*LIMIT.*")
-          (regexp          (case ,type
+  (let* ((boundary-regexp "^;; +\\*+ .*");"^;;=*LIMIT.*")
+          (regexp          (case type
                              ('command           "^\(def\\(un\\|subst\\)")
                              ('nested-command    "^ +\(def\\(un\\|subst\\)")
                              ('function          "^\(def\\(un\\|subst\\|advice\\)")
@@ -1261,6 +1261,7 @@ If `ext' apply func only on files with .`ext'."
                              ('nested-variable   "^ +\(defvar")
                              ('user-variable     "\(defcustom")
                              ('faces             "\(defface")
+                             ('anything-source   "^\(defvar anything-c-source")
                              (t (error           "Unknow type"))))
           (fn-list         (traverse-find-readlines
                             (current-buffer)
@@ -1268,20 +1269,21 @@ If `ext' apply func only on files with .`ext'."
                             :insert-fn 'buffer))
           beg end)
      (flet ((maybe-insert-with-prefix (name)
-              (if ,prefix
-                  (when (string-match ,prefix name)
+              (if prefix
+                  (when (string-match prefix name)
                     (insert (concat ";; \`" name "\'\n")))
                   (insert (concat ";; \`" name "\'\n")))))
        (insert "\n") (setq beg (point))
        (save-excursion (when (re-search-forward boundary-regexp)
                          (forward-line -1) (setq end (point))))
        (delete-region beg end)
+       (when (eq type 'anything-source) (setq regexp "\(defvar"))
        (dolist (i fn-list)
          (let* ((elm     (cadr i))
                 (elm1    (replace-regexp-in-string "\*" "" elm))
                 (elm-mod (replace-regexp-in-string regexp "" elm1))
                 (elm-fin (replace-regexp-in-string "\(\\|\)" ""(car (split-string elm-mod)))))
-           (case ,type
+           (case type
              ('command
               (when (commandp (intern elm-fin))
                 (maybe-insert-with-prefix elm-fin)))
@@ -1294,9 +1296,12 @@ If `ext' apply func only on files with .`ext'."
              ('nested-function
               (when (not (commandp (intern elm-fin)))
                 (maybe-insert-with-prefix elm-fin)))
+             ('internal-variable
+              (unless (string-match "anything-c-source" elm-fin)
+                (maybe-insert-with-prefix elm-fin)))
              (t
               (maybe-insert-with-prefix elm-fin))))))))
-          
+
 ;;;###autoload
 (defun traverse-auto-update-documentation ()
   (interactive)
@@ -1311,7 +1316,8 @@ If `ext' apply func only on files with .`ext'."
   (let ((ttype (completing-read "Type: " '("command " "nested-command "
                                            "function " "nested-function "
                                            "macro " "internal-variable "
-                                           "nested-variable " "faces ") nil t)))
+                                           "nested-variable " "faces "
+                                           "anything-source ") nil t)))
     (insert (concat ";;  " (make-string nstar ?*) " " title "\n"
                     ";; [EVAL] (traverse-auto-document-lisp-buffer :type \'" ttype ":prefix \"\")"))))
 

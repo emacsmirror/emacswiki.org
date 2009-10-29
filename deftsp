@@ -1,0 +1,141 @@
+Hello all! I have been using Emacs since 2005 or so.
+
+= Here is some code snippets, prevent someone need them. =
+
+== switch ECB window layout conveniently ==
+
+{{{
+(defun winring-jump-to-ecb ()
+  (interactive)
+  (if (member "ECB" (winring+-names))
+      (if (string= winring-name "ECB")
+          (winring-prev-configuration)
+          (winring+-jump-to-configuration "ECB"))
+      (winring+-new-configuration "ECB")))
+
+(global-set-key (kbd "C-x E") 'winring-jump-to-ecb)
+}}}
+
+
+Similarly, I write a function named `winring-jump-to-gnus' and bind it to "C-c G". Switch different window layout is very convenient
+
+== Extension functions to winring.el ==
+Maybe I should put them into winring+.el
+
+{{{
+(defun winring+-names ()
+  "return a list of winring names"
+  (let* ((ring (winring-get-ring))
+         (n (1- (ring-length ring)))
+         (current (winring-name-of-current))
+         (table (list (cons current -1)))
+         name)
+    (while (<= 0 n)
+      (setq table (cons (cons (winring-name-of (ring-ref ring n)) n) table)
+            n (1- n)))
+    (mapcar #'car table)))
+
+(defun winring+-name-to-index (winring-name)
+  "return the index of the winring name"
+  (let* ((ring (winring-get-ring))
+         (n (1- (ring-length ring)))
+         (current (winring-name-of-current))
+         (table (list (cons current -1))))
+    ;; populate the completion table
+    (while (<= 0 n)
+      (setq table (cons (cons (winring-name-of (ring-ref ring n)) n) table)
+            n (1- n)))
+    (if (string-equal winring-name "")
+        (setq winring-name current))
+    (cdr (assoc winring-name table))))
+
+
+;; it cost me a 3 hours to fix the problem that I mistake use winring-name which is a frame-local variable as parameter.
+(defun winring+-jump-to-configuration (name)
+  "Go to the named window configuration, if it now exist create one."
+  (if (member name (winring+-names))
+      (let* ((ring (winring-get-ring))
+             (index (winring+-name-to-index name))
+             item)
+        ;; if the current configuration was chosen, winring-complete-name
+        ;; returns -1
+        (when (<= 0 index)
+          ;; item should be saved before `winring-save-current-configuration'
+          (setq item (ring-remove ring index))
+          (winring-save-current-configuration)
+          (winring-restore-configuration item)))
+      (winring+-new-configuration name)))
+
+(defun winring+-delete-configuration (name)
+  "Delete the current configuration and switch to the next one."
+  (let ((ring (winring-get-ring))
+        (index (winring+-name-to-index name)))
+    (winring-restore-configuration (ring-remove ring index))))
+
+(defun winring+-new-configuration (new-name)
+  "Save the current window configuration and create an empty new
+ one with the given name. If the winring configuration have been
+ created, just jump to it"
+  (if (string-equal new-name "")
+      (error "winring name should not be a empty string." ))
+  (let ((current-buffer (current-buffer)))
+    (winring-save-current-configuration)
+    (delete-other-windows)
+    ;; (switch-to-buffer winring-new-config-buffer-name)
+    (switch-to-buffer current-buffer)
+    (winring-set-name new-name)))
+}}}
+
+== diary-anniversary-lunar ==
+
+Though it ugly, it works.
+{{{
+;; To be called from diary-sexp-entry, where DATE, ENTRY are bound.
+(defun diary-anniversary-lunar (month-lunar day-lunar &optional year-lunar mark)
+  (let* ((current-chinese-date (calendar-chinese-from-absolute
+                                (calendar-absolute-from-gregorian
+                                 date)))
+         (ncycle (car current-chinese-date))
+         (nyear  (cadr current-chinese-date))
+         (ndate-chinese (list ncycle nyear month-lunar day-lunar))
+         (ddate (calendar-gregorian-from-absolute
+                 (calendar-chinese-to-absolute
+                  ndate-chinese)))
+
+         (cycle (if year-lunar
+                    (+ (floor year-lunar 60) 45)
+                    ncycle))
+         (year (if year-lunar
+                   (mod (- year-lunar 3) 60)
+                   nyear))
+         (date-chinese (list cycle year month-lunar day-lunar))
+         (gregorian-of-date-chinese (calendar-gregorian-from-absolute
+                                     (calendar-chinese-to-absolute date-chinese)))
+
+         (dd (calendar-extract-day ddate))
+         (mm (calendar-extract-month ddate))
+         (yy (calendar-extract-year ddate))
+         (diff (if year-lunar (- yy
+                                 (calendar-extract-year gregorian-of-date-chinese)) 100)))
+
+    (and (= mm 2) (= dd 29) (not (calendar-leap-year-p yy))
+       (setq mm 3 dd 1))
+    (and (> diff 0) (equal  (list month-lunar day-lunar) (list (nth 2 current-chinese-date)
+                                                             (nth 3 current-chinese-date)))
+       (cons mark (format entry diff (diary-ordinal-suffix diff))))))
+
+}}}
+
+
+----
+Contact me (concatenate 'string "S.P.Tseng " "<deftsp" '(?@) "gmail.com>")
+
+
+[new:DrewAdams:2009-10-29 05:20 UTC]
+Welcome to the wiki. -- DrewAdams
+
+
+
+----
+CategoryHomepage
+

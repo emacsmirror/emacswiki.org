@@ -51,7 +51,11 @@ I used to use MKHTML a lot, and it worked well for what it did. I no longer main
 I posted ##mkhtml-htmlize.el## only for use with MKHTML. It is simply an old version of ##htmlize.el##, the version that I believe I was using with <tt>[[mkhtml.el]]</tt>, back when I used that.  I thought I had posted it before (perhaps someone deleted it). Sorry for any confusion.  HTH.  -- DrewAdams
 
 [new]
-mkhtml does not wok well in emacs 22 and 23, but thank you all the way. -- ahei
+mkhtml does not wok well in emacs 22 and 23, but thank you all the way. -- [[ahei]]
+
+[new:DrewAdams:2009-10-28 13:37 UTC]
+
+OK, thanks for the info. I'm not surprised. It probably needs a little tweaking.  -- DrewAdams
 
 
 ----

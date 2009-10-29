@@ -1477,81 +1477,129 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:
 ;;; :TEST-ME (call-interactively 'mon-help-search-functions)
 
 ;;; ==============================
-;;; File/directory name functions.
+;;; :MODIFICATIONS <Timestamp: #{2009-10-28T14:44:24-04:00Z}#{09443} - by MON KEY>
 ;;; :CREATED <Timestamp: Wednesday May 06, 2009 @ 01:13.41 PM - by MON KEY>
 (defun mon-help-file-dir-functions (&optional insertp intrp)
-"Litany of file/directory name functions. e.g.\n
-:NOTE Backquoted functions for help-view xrefs are not inserted.
--
-`convert-standard-filename' - \(convert-standard-filename \"c:/Documents and Settings/All Users/Start Menu\"\)
-`clear-visited-file-modtime'
--
-`default-directory'
-`directory-files' - \(directory-files default-directory\)
-\(directory-files \(file-name-directory \(buffer-file-name\)\) nil \".jpg\"\) ;some extension
--
-`directory-file-name' - \(directory-file-name default-directory\)
-\(directory-file-name \(buffer-file-name\)\)
-`directory-files-and-attributes' - \(directory-files-and-attributes default-directory\) ;&optional full match nosort id-format
--
-\(concat \"../\" \(`buffer-file-name'\)\)
-\(`expand-file-name' \"../\"\)
-\(expand-file-name \"../../\"\)
-\(expand-file-name \"../../../\"\)
--
-\(`file-attributes' - (file-attributes (buffer-file-name)) ;&optional id-format
-`file-directory-p' - \(file-directory-p doc-directory\)
-`file-exists-p' - \(file-exists-p \(buffer-file-name\)\)
-`file-expand-wildcards' - \(file-expand-wildcards \(concat doc-directory\"/*.el\"\)\) ;&optional full\)
--
-`file-name-absolute-p' -\(file-name-absolute-p \(directory-file-name default-directory\)\)
-`file-name-directory' - \(file-name-directory \(buffer-file-name\)\)
-`file-name-nondirectory' - \(file-name-nondirectory \(directory-file-name default-directory\)\)
-`file-name-as-directory' - \(file-name-as-directory default-directory\)
-`file-name-nondirectory' - \(file-name-nondirectory \(buffer-file-name\)\)
-`file-name-sans-extension' - \(file-name-sans-extension \(buffer-file-name\)\)
--
-`file-newer-than-file-p' - \(file-newer-than-file-p \(buffer-file-name\) doc-directory\)
--
-`file-regular-p' - \(file-regular-p doc-directory\)
-\(file-regular-p \"~/.emacs\"\)
--
-`file-relative-name' - \(file-relative-name default-directory\)
-\(file-relative-name  \(buffer-file-name\)\)
--
-`find-buffer-visiting' - \(find-buffer-visiting \(filename\)  ;&optional predicate
-`find-file' - \(find-file \(buffer-file-name\)\) ; &optional wildcards
--
-`make-directory' - \(make-directory \(dir &optional parents\)\)
--
-`split-string' - \(split-string \(directory-file-name default-directory\) \"/\"\)
-`mon-toggle-dired-dwim-target' - \(mon-toggle-dired-dwim-target\)
-`mon-get-file-mod-times' - \(mon-get-file-mod-times mon-user-emacsd\)
-`mon-insert-dirs-in-path' - \(mon-insert-dirs-in-path symbol path\)
-`mon-insert-file-in-dirs' - \(mon-insert-file-in-dirs \(make-dir-list insert-text extension\)\)
-`mon-insert-naf-file-in-dirs' - \(mon-insert-naf-file-in-dirs \(make-dir-list\)\)
-`substitute-in-file-name' - \(substitute-in-file-name filename\) ;sub in environmental variables
--
-`thing-at-point' - \(thing-at-point 'filename\)\)
-`bounds-of-thing-at-point' - \(bounds-of-thing-at-point 'filename\)
--
-\(file-attributes default-directory)
- list-returned consists of 11 elements:
- t = directory; nth 0
- number of names file has; nth 1
- UID; nth 2
- GID; nth 3
- last accessed; nth 4 -> (current-time) ->(HIGH LOW MICROSEC) -(current-time-zone) (current-time)
- last modified; nth 5-> (current-time) ->(HIGH LOW MICROSEC)
- size in bytes; nth 6
- files' modes; nth 7
- t - GID changes if deleted; nth 8
- file's inode number; nth 9
- file system number; nth 10\n ►►►"
+"Litany of file/directory name related functions.\n►►►\n
+;; :FILE-BUFFER
+`buffer-file-name'               ;<&optional BUFFER>
+ (buffer-file-name)\n
+`find-buffer-visiting'           ;<FILENAME &optional PREDICATE>
+ \(find-buffer-visiting \(filename\)\n
+`set-visited-file-name'          ;<FILENAME &optional NO-QUERY ALONG-WITH-FILE>\n
+;; FILE-DIR-ACTIONS
+`find-file'                      ;<FILENAME &optional WILDCARDS>
+ \(find-file \(buffer-file-name\)\)\n
+`make-directory'                 ;<DIR &optional PARENTS>\n
+;; :DIR-INSPECTION
+`default-directory'              ;<VARIABLE>\n
+`directory-files'                ;<DIRECTORY &optional FULL MATCH NOSORT>
+ \(directory-files default-directory\)
+ \(directory-files \(file-name-directory \(buffer-file-name\)\) nil \".el\"\)\n
+`directory-file-name'            ;<DIRECTORY>
+ \(directory-file-name default-directory\)
+ \(directory-file-name \(buffer-file-name\)\)\n
+`directory-files-and-attributes' ;<DIRECTORY &optional FULL MATCH NOSORT ID-FORMAT>
+ \(directory-files-and-attributes default-directory\) \n
+;; :FILE-DIR-PREDICATES
+`file-directory-p'               ;<FILENAME>
+ \(file-directory-p doc-directory\)\n
+`file-executable-p'             ;<FILENAME>
+ \(file-executable-p \(executable-find \"emacs\"\)\)\n
+`file-exists-p'                  ;<FILENAME>
+ \(file-exists-p \(buffer-file-name\)\)\n
+`file-locked-p'                  ;<&rest IGNORE>
+ \(file-locked-p\)\n
+`file-name-absolute-p'           ;<FILENAME>
+ \(file-name-absolute-p \(directory-file-name default-directory\)\)\n
+`file-newer-than-file-p'         ;<FILE1 FILE2>
+ \(file-newer-than-file-p \(buffer-file-name\) doc-directory\)\n
+`file-regular-p'                 ;<FILENAME>
+ \(file-regular-p doc-directory\)\n \(file-regular-p \"~/.emacs\"\)\n
+`file-writable-p'                ;<FILENAME>
+ \(file-writable-p default-directory\)\n
+;; FILE-DIR-PATH-INSPECTION
+`expand-file-name'               ;<NAME &optional DEFAULT-DIRECTORY>
+ \(expand-file-name \"../\"\)
+ \(expand-file-name \"../../\"\)
+ \(expand-file-name \"../../../\"\)\n
+`file-relative-name'             ;<FILENAME &optional DIRECTORY>
+ \(file-relative-name default-directory\)
+ \(file-relative-name \(buffer-file-name\)\)\n
+`file-expand-wildcards'          ;<PATTERN &optional FULL>
+ \(file-expand-wildcards \(concat doc-directory\"/*.el\"\)\)\n
+`file-truename'                  ;<FILENAME &optional COUNTER PREV-DIRS>
+ \(file-truename \(getenv \"PROGRAMFILES\"\)\n
+`locate-dominating-file'         ;<FILE NAME>\n
+`substitute-in-file-name'        ;<FILENAME>
+ \(substitute-in-file-name \"$HOME\\.emacs\")\n
+;; :FILE-DIR-NAME-INSPECTION
+`file-name-directory'            ;<FILENAME>
+ \(file-name-directory \(buffer-file-name\)\)\n
+`file-name-nondirectory'         ;<FILENAME>
+ \(file-name-nondirectory \(directory-file-name default-directory\)\)\n
+`file-name-as-directory'         ;<FILE>
+ \(file-name-as-directory default-directory\)\n
+`file-name-nondirectory'         ;<FILENAME>
+ \(file-name-nondirectory \(buffer-file-name\)\)\n
+`file-name-sans-extension'       ;<FILENAME>
+ \(file-name-sans-extension \(buffer-file-name\)\)\n
+;; :FILE-PROPERTIES
+`set-visited-file-modtime'       ;<&optional TIME-LIST>\n
+`clear-visited-file-modtime'\n
+`file-attributes'                ;<FILENAME &optional ID-FORMAT>
+ \(file-attributes default-directory)
+  List-returned consists of 11 elements:
+  :IS-DIRECTORY-P  t|nil         ; nth 0
+  :NUM-NAMES-OF-FILE             ; nth 1
+  :UID                           ; nth 2
+  :GID                           ; nth 3
+  :LAST-ACCESSED                 ; nth 4 
+   |->\(current-time\)->\(HIGH LOW MICROSEC\)->\(current-time-zone\) \(current-time\)
+  :LAST-MODIFIED                 ; nth 5 
+   |->\(current-time\)->\(HIGH LOW MICROSEC\)
+  :SIZE-IN-BYTES                 ; nth 6
+  :FILES-MODES                   ; nth 7
+  GID t - changes if deleted     ; nth 8
+  :FILE-INODE-NUMBER             ; nth 9
+  :FILE-SYSTEM-NUMBER            ; nth 10\n
+;; :FILE-NAME-HANDLERS
+`find-file-name-handler'         ;<FILENAME OPERATION>\n
+`file-name-handler-alist'        ;<VARIABLE>\n
+`inhibit-file-name-handlers'     ;<VARIABLE>\n
+`inhibit-file-name-operation'    ;<VARIABLE>\n
+;; :W32-FILE-DIR
+`convert-standard-filename'      ;<FILENAME>
+ \(convert-standard-filename \(file-truename \(getenv \"PROGRAMFILES\"\)\)\n
+`w32-get-true-file-attributes'   ;<VARIABLE>\n
+`w32-long-file-name'             ;<FILENAME>
+ \(w32-long-file-name \(getenv \"HOME\"\)\)\n
+`w32-short-file-name'            ;<FILENAME>
+ \(w32-short-file-name \(getenv \"PROGRAMFILES\"\)\)\n
+;; FILE-DIR-OFTEN-USED
+`split-string'                   ;<STRING &optional SEPARATORS OMIT-NULLS>
+ \(split-string \(directory-file-name default-directory\) \"/\"\)
+`thing-at-point'                 ;<THING>
+ \(thing-at-point 'filename\)\)
+`bounds-of-thing-at-point'       ;<THING>
+ \(bounds-of-thing-at-point 'filename\)
+`ffap'                           ;<&optional FILENAME>\n
+ \(ffap\)~/.emacs
+;; :MON-KEY-DIR-FILE-FUNCTIONS
+`mon-toggle-dired-dwim-target'
+ \(mon-toggle-dired-dwim-target\)\n
+`mon-get-file-mod-times'         ;<FILE-OR-DIR>
+ \(mon-get-file-mod-times user-emacs-directory\)\n
+`mon-insert-dirs-in-path'        ;<DIR-LIST DIR-PATH>
+ \(mon-insert-dirs-in-path symbol path\)\n
+`mon-insert-file-in-dirs'        ;<MAKE-DIR-LIST INSERT-TEXT EXTENSION>
+ \(mon-insert-file-in-dirs \(make-dir-list insert-text extension\)\)\n
+`mon-insert-naf-file-in-dirs'    ;<MAKE-DIR-LIST>
+ \(mon-insert-naf-file-in-dirs \(make-dir-list\)\)\n"
 (interactive "i\nP")
 (if (or insertp intrp)
     (mon-help-function-spit-doc 'mon-help-file-dir-functions :insertp t)
-  (message "pass non-nil for optional arg INTRP")))
+  (message "Pass non-nil for optional arg INTRP")))
 ;;
 ;;; :TEST-ME (mon-help-file-dir-functions)
 ;;; :TEST-ME (mon-help-file-dir-functions t)
@@ -1561,66 +1609,72 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:
 ;;; ==============================
 ;;; :CREATED <Timestamp: Friday July 03, 2009 @ 04:45.34 PM - by MON KEY>
 (defun mon-help-process-functions (&optional insertp intrp)
-  "Process related functions.
-Unless indicated as a 'variable' items listed are functions.\n►►►\n
+  "Process related functions.\n►►►\n
+;; :PROCESS-ACTIONS
 `accept-process-output'
 `call-process'
 `call-process-shell-command'
 `continue-process'
 `delete-process'
-`list-system-processes'
-`list-processes'
 `make-network-process'
-`shell-quote-argument'
-`start-file-process-shell-command'
-`set-process-sentinel'
-`set-process-query-on-exit-flag'
-`set-advertised-calling-convention'
-`start-process-shell-command'
-`stop-process'
-`system-process-attributes'
-`waiting-for-user-input-p'
-;; :PROCESS-PRFXD
-`process-adaptive-read-buffering' ;<VARIABLE>
-`process-attributes'
 `process-buffer'
 `process-coding-system'
-`process-coding-system-alist'     ;<VARIABLE>
 `process-command'
-`process-connection-type'         ;<VARIABLE>
 `process-contact'
-`process-exit-status'
-`process-environment'             ;<VARIABLE>
 `process-file'
 `process-file-shell-command'
-`process-filter'
-`process-filter-multibyte-p'
 `process-get'
-`process-id'
-`process-inherit-coding-system-flag'
-`process-kill-without-query'
 `process-lines'
-`process-list'
-`process-mark'
-`process-name'
-`process-plist'
 `process-put'
-`process-query-on-exit-flag'
-`process-running-child-p'
 `process-send-eof'
 `process-send-region'
 `process-send-string'
+`set-process-sentinel'
+`shell-quote-argument'
+`signal-process'
+`start-file-process-shell-command'
+`start-process-shell-command'
+`stop-process'\n
+;; :PROCESS-INSPECTION
+`process-exit-status'
+`process-id'
+`process-filter'
+`process-plist'
+`process-mark'
+`process-name'
 `process-sentinel'
 `process-status'
 `process-tty-name'
-`process-type'
-`processp'"
+`process-type'\n
+;; :PROCESS-ENUMERATION
+`list-processes'
+`list-system-processes'
+`process-attributes'
+`process-list'
+`system-process-attributes'\n
+;; :PROCESS-FLAGS
+`set-process-query-on-exit-flag'
+`process-query-on-exit-flag'
+`process-inherit-coding-system-flag'\n
+;; :PROCESS-PREDICATES
+`waiting-for-user-input-p'
+`process-filter-multibyte-p'
+`process-running-child-p'
+`processp'\n
+;; :PROCESS-VARIABLES
+`process-adaptive-read-buffering' ;<VARIABLE>
+`process-connection-type'         ;<VARIABLE>
+`process-coding-system-alist'     ;<VARIABLE>
+`process-environment'             ;<VARIABLE>\n"
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-process-functions :insertp t)
-      (message "pass non-nil for optional arg INTRP")))
+      (message "Pass non-nil for optional arg INTRP")))
 ;;
+;;; :TEST-ME (mon-help-process-functions)
 ;;; :TEST-ME (mon-help-process-functions t)
+;;; :TEST-ME (describe-function 'mon-help-process-functions)
+;;; :TEST-ME (call-interactively 'mon-help-process-functions)
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-09-02T10:22:56-04:00Z}#{09363} - by MON KEY>

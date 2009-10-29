@@ -216,11 +216,27 @@ and, when icy-mode is active, ido-find-file's behavior is: I type C-x C-f, then 
 I get message in minibuffer, "Text is read-only".
 I run emacs with "-q", then active settings for ido and icicles, but behavior is same as above.
 
+[new:DrewAdams:2009-10-28 13:46 UTC]
+As I tried to say, Ido will not work with ''Icicle'' mode active, and '''Icicles''' will not work with Ido active. Each tries to use the minibuffer in its own way. '''Icicles''' uses the minibuffer the way vanilla Emacs does, for the most part. Ido does not.
 
+The problem is not the top-level binding for `C-x C-f' or `C-x b'. The problem is conflicts within the minibuffer (key bindings, faces, etc.).
+
+I'm sorry, but you will have to choose between the two. If you want ''everything'' to be Ido-like, then you will have to choose Ido and forego '''Icicles'''. If you just want some of Ido's behavior, then you can follow the links I pointed you to, to find out how to configure '''Icicles''' to give you similar behavior in various respects. And you can use [[IswitchBuffers|IswitchB]] with '''Icicles''' to give you Ido's buffer-switching behavior.
+
+That's the only help I can give you, I'm afraid. Again, to be clear, the problem is not any top-level bindings. You can get rid of all top-level '''Icicles''' bindings, and it will not help. The problem is minibuffer bindings, and minibuffer behavior in general. Ido just does not play well with the standard minibuffer. -- DrewAdams
+
+
+[new]
+OK, I see, thank you!
+
+<pre>
+
+</pre>
 ----
 <pre>
 
 </pre>
+
 
 
 ----

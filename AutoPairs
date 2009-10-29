@@ -93,6 +93,17 @@ and bind ##autopair-insert## to the necessary key(s).
 [new]
 The above code has been made into a package [http://github.com/ramblex/emacs-textmate here]. It has a few neat little extras such as being able to turn off the pairing of some characters in some modes.
 
+=== autopair.el ===
+
+Try out [http://autopair.googlecode.com/svn/trunk/autopair.el autopair.el] hosted in http://autopair.googlecode.com for yet another approach:
+
+* it's a little less intrusive than some other extensions since it preserves the original bindings for the keys it rebinds;
+* discovers which characters to pair based on the currently active syntax table;
+* tries to do autopairing/autoskipping in a way that will contribute to balancing out the parenthesis.
+
+[new]
+How does this work? Does it make use of command loop hooks?
+
 === CC Mode ===
 
 To use these commands in [CcMode CC Mode]:

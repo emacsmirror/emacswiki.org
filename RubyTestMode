@@ -52,6 +52,8 @@ rails applications(with rspec) as it runs the test after you save the file and
 even show the doom guy face :)?  -  Greboide 
 [http://www.nomedojogo.com/2008/06/17/autotest-notification-doom-edition/]
 
+Anybody care to adapt this for shoulda? -koops
+
 [new]
 Autotest is a test file watcher, which runs the tests once you edited something.
 That's not what I was after, even if that might be a good idea sometimes. ruby-test-mode
