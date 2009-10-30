@@ -84,5 +84,8 @@ That's a bug IMHO. The problem is that icons are downloaded while the timeline i
 [new]
 I'm just wondering if I have missed something obvious. The default is to see your friends tweets. But how do I tweet to my tweet account from there? Currently I have to  go to my timeline (C-c C-u)) and then hitting return : is there a quicker way? -- RichardRiley.
 
+[new]
+You can use the somewhat non-obvious keybinding of C-c C-s (twittering-update-status-interactive).
+
 ----
 See also: [[Twitter]] [[Identica-mode]]

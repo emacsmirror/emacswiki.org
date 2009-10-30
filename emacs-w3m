@@ -495,7 +495,7 @@ So if you do not use this code change the variables.
 
 -- ThierryVolpiatto
 
-= w3m in Emacs 23 (on Debian) =
+= w3m in Emacs 23 (on Debian and Ubuntu 9.10) =
 
 The `w3m-el' package is not fully compatible with Emacs 23. Installing `w3m-el-snapshot' instead worked for me. No additional setup like ##(require 'w3m-load)## was necessary.
 

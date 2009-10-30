@@ -347,7 +347,11 @@ Good URLs are critically important, thus the reason InterLinks are very useful o
 Not currently no. If I find more I will report it here. -- Jonas
 
 == Drew Adams' Libraries == 
-Drew I respect your work and all that you've done with Emac and on EmacsWiki. However, PLEASE can a emacswiki pages be required by sanction to be limited to only 1 (One!) reference to instances of Drew's libraries, and then *ONLY* after other relevant examples, code, etc. pertinent to the a pages context. This site is *SERIOUSLY* limited by Drew's spam and suffers because of it to the extent that it is becoming unusable because of the superfluous `Icicles.*' references strewn about.  There is a point at which the entire Emacs community suffers because of Drew's insistence on xrefs to anything remotely related to his libraries.  
+Drew I respect your work and all that you've done with Emac and on EmacsWiki. However, PLEASE can a emacswiki pages be required by sanction to be limited to only 1 (One!) reference to instances of Drew's libraries, and then *ONLY* after other relevant examples, code, etc. pertinent to the a pages context. This site is *SERIOUSLY* limited by Drew's spam and suffers because of it to the extent that it is becoming unusable because of the superfluous `Icicles.*' references strewn about.  There is a point at which the entire Emacs community suffers because of Drew's insistence on xrefs to anything remotely related to his libraries.
+
+== Wikia article about setting up Emacs ==
+
+Hi, I created an article about how to install and configure [http://setup.wikia.com/wiki/GNU_Emacs GNU Emacs] at [http://setup.wikia.com/wiki/Set_up_and_get_started_Wiki Set up and get started Wiki]. I've already covered quite much, including variables, the .emacs file and some different commands, but you can gladly add more to the article since it's a wiki. -- Kri
 
 ----
 CategoryEmacsWikiSite

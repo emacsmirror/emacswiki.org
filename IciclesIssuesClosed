@@ -66,6 +66,167 @@ Better yet, use this to separate threads (puts space before and after the horizo
 
 </pre>
 
+
+[new:ahei:2009-10-27 16:12 UTC]
+Your iciclies is conflict with ido, I remove    
+<pre>
+ (find-file icicle-file t) ; `C-x C-f'
+</pre>
+
+from icicle-top-level-key-bindings, but the keys I bind to ido still do not work, how can I fix this problem? -- [[ahei]]
+
+
+[new:DrewAdams:2009-10-27 17:09 UTC]
+
+1. Removing that binding means that `C-x C-f' will retain whatever top-level binding it would have normally, without '''Icicles'''. In `##emacs -Q##', that binding is command `find-file'. If you or some library that you use binds `C-x C-f' to some other command, then that binding will still be in effect in ''Icicle'' mode.  '''Icicles''' makes no top-level bindings, other than those defined by option `icicle-top-level-key-bindings'.
+
+2. This is about the top-level binding of `C-x C-f'. It has nothing to do with any minibuffer key bindings. ('''Icicles''' does not bind `C-x C-f' in the minibuffer, in any case.)
+
+3. Yes, '''Icicles''' is in conflict with [[Ido]], or, rather, Ido is in conflict with '''Icicles''' ;-). The '''Icicles''' minibuffer behavior and bindings are close to those of vanilla Emacs. Ido uses the minibuffer in incompatible, modal ways.
+
+If you just want the ''buffer-switching'' behavior of Ido, then you can use [[IswitchBuffers|IswitchB]] with '''Icicles'''. You cannot use Ido with '''Icicles'''.
+
+See the links listed here: [[IciclesDiscussion#IdoAndIcicles|Ido and Icicles]], as well as some of the ensuing discussion, for more information. -- DrewAdams
+
+
+[new]
+Thanks for your reply.
+I think ido is better for using find file or switch buffer, so, I want use you Icicles, I also want use ido, 
+I remove following statement from icicle-top-level-key-bindings
+<pre>
+    (switch-to-buffer               icicle-buffer                   t) ; `C-x b'
+ (find-file icicle-file t) ; `C-x C-f'
+</pre>
+and my icicle-top-level-key-bindings is configure to:
+<pre>
+(setq icicle-top-level-key-bindings
+        `((,(kbd "<pause>") icicle-switch-to/from-minibuffer    t) ; `pause'
+          (,(kbd "C-c `")   icicle-search-generic               t) ; `C-c `'
+          (,(kbd "C-c $")   icicle-search-word                  t) ; `C-c $'
+          (,(kbd "C-c ^")   icicle-search-keywords              t) ; `C-c ^'
+          (,(kbd "C-c '")   icicle-occur                        t) ; `C-c ''
+          (,(kbd "C-c =")   icicle-imenu                        t) ; `C-c ='
+          (,(kbd "C-c \"")  icicle-search-text-property         t) ; `C-c "'
+          (,(kbd "C-x M-e") icicle-execute-named-keyboard-macro t) ; `C-x M-e'
+          (,(kbd "C-x SPC") icicle-command-abbrev               t) ; `C-x SPC'
+          (,(kbd "C-x 5 o") icicle-select-frame                 t) ; `C-x 5 o'
+          ,@(and (require 'kmacro nil t) ; (Emacs 22+)
+                 `((,(kbd "S-<f4>")    icicle-kmacro            t))) ; `S-f4'
+          (abort-recursive-edit           icicle-abort-recursive-edit     t) ; `C-]'
+          (minibuffer-keyboard-quit      icicle-abort-recursive-edit ; `C-g' (minibuffer - `delsel.el')
+                                         (fboundp 'minibuffer-keyboard-quit))
+          (execute-extended-command       icicle-execute-extended-command t) ; `M-x'
+          ;; There are no key bindings in vanilla Emacs for `insert-buffer'.
+          ;; If you use `setup-keys.el', then these are its bindings: `C-S-insert', `M-S-f1'.
+          (insert-buffer                  icicle-insert-buffer            t)
+          (bookmark-set                   icicle-bookmark-cmd             t) ; `C-x r m'
+          (bookmark-jump                  icicle-bookmark                 t) ; `C-x r b'
+          (bookmark-jump-other-window     icicle-bookmark-other-window    t)
+          ;; Don't let Emacs 20 or 21 use `substitute-key-definition' on `M-.' or `M-*', since we need
+          ;; these keys for the minibuffer.  Leave them unbound in `icicle-mode-map' until Emacs 22+.
+          (pop-tag-mark        icicle-pop-tag-mark          (fboundp 'command-remapping)) ; `M-*'
+          (find-tag            icicle-find-tag              (fboundp 'command-remapping)) ; `M-.'
+          (eval-expression     icicle-pp-eval-expression    (fboundp 'command-remapping)) ; `M-:'
+          (pp-eval-expression icicle-pp-eval-expression (fboundp 'command-remapping)) ;`M-:' (`pp+.el')
+          (find-tag-other-window        icicle-find-first-tag-other-window t) ; `C-x 4 .'
+          (kill-buffer                  icicle-kill-buffer                 t) ; `C-x k'
+          (kill-buffer-and-its-windows  icicle-kill-buffer                t) ; `C-x k' (`misc-cmds.el')
+          (delete-window                icicle-delete-window               t) ; `C-x 0'
+          (delete-windows-for           icicle-delete-window             t) ; `C-x 0' (`frame-cmds.el')
+          (other-window-or-frame        icicle-other-window-or-frame     t) ; `C-x o' (`frame-cmds.el')
+          (other-window                 icicle-other-window-or-frame       t) ; `C-x o'
+          (exchange-point-and-mark      icicle-exchange-point-and-mark     t) ; `C-x C-x'
+          (where-is                     icicle-where-is                    t) ; `C-h w'
+          (,icicle-yank-function        icicle-yank-maybe-completing       t) ; `C-y'
+          (set-mark-command
+           icicle-goto-marker-or-set-mark-command                          t) ; `C-@', `C-SPC'
+          (pop-global-mark
+           icicle-goto-global-marker-or-pop-global-mark                    t) ; `C-x C-@', `C-x C-SPC'
+          ;; For La Carte (`lacarte.el'), not Icicles, but it's convenient to do this here.
+          (,(kbd "ESC M-x")      lacarte-execute-menu-command
+           (fboundp 'lacarte-execute-menu-command)) ; `ESC M-x'
+          (,(kbd "M-`")          lacarte-execute-menu-command
+           (fboundp 'lacarte-execute-menu-command)) ; `M-`' - replaces `tmm-menubar'.
+          (,(kbd "<f10>")        lacarte-execute-menu-command
+           (fboundp 'lacarte-execute-menu-command))) ; `f10' - replaces `menu-bar-open'.
+        )
+</pre>
+now, C-x b call `ido-switch-buffer', and C-x C-f call `ido-find-file', but when "C-x b"'s behavior is normally
+as without Icicles's top-level key binds, "C-x C-f"'s (now it really bind ido-find-file) behavior is not normally 
+as without Icicles's top-level key binds, it's behavior is same as when find-file is bind to icicle-file, 
+I call M-x ido-find-file, it's behavior is  same as when find-file is bind to icicle-file,
+and my settings for ido  is do not work, my settings for ido is:
+<pre>
+(if is-before-emacs-21
+    (progn
+      (load "ido-for-21")
+      (setq read-buffer-function 'ido-read-buffer))
+  (require 'ido)
+  (ido-everywhere t)
+  (setq ido-define-mode-map-hook 'ido-setup-hook))
+
+(add-hook ido-define-mode-map-hook 'ido-my-keys)
+
+(ido-mode t)
+(global-set-key (kbd "C-x C-f") 'ido-find-file)
+
+(defun ido-my-keys ()
+  (unless is-before-emacs-21
+    (setq ido-mode-map ido-completion-map))
+  (define-key ido-mode-map "\C-u" 'ido-prev-match)
+  (define-key ido-mode-map "\M-." 'ido-next-match-dir)
+  (define-key ido-mode-map "\M-," 'ido-prev-match-dir)
+  (define-key ido-mode-map "\C-h" 'ido-delete-backward-updir)
+  (define-key ido-mode-map "\C-w" 'ido-delete-backward-word-updir)
+  (define-key ido-mode-map (kbd "C-n") 'ido-next-macth))
+</pre>
+and my face settings for ido is also do not work, 
+<pre>
+;; ido face
+(if is-before-emacs-21
+    (progn
+      (if window-system
+          (custom-set-faces '(ido-first-match-face ((((class color)) (:bold nil :foreground "yellow")))))
+        (custom-set-faces '(ido-first-match-face ((((class color)) (:foreground "yellow"))))))
+      (custom-set-faces '(ido-only-match ((((class color)) (:bold nil :foreground "green"))))))
+  (require 'ido)
+  (if window-system
+      (custom-set-faces '(ido-first-match ((((class color)) (:bold nil :foreground "yellow")))))
+    (custom-set-faces '(ido-first-match ((((class color)) (:foreground "yellow"))))))
+  (custom-set-faces '(ido-only-match ((((class color)) (:bold nil :foreground "green"))))))
+</pre>
+I do not know the reason.
+and, when icy-mode is active, ido-find-file's behavior is: I type C-x C-f, then type Backspace key, 
+I get message in minibuffer, "Text is read-only".
+I run emacs with "-q", then active settings for ido and icicles, but behavior is same as above.
+
+[new:DrewAdams:2009-10-28 13:46 UTC]
+As I tried to say, Ido will not work with ''Icicle'' mode active, and '''Icicles''' will not work with Ido active. Each tries to use the minibuffer in its own way. '''Icicles''' uses the minibuffer the way vanilla Emacs does, for the most part. Ido does not.
+
+The problem is not the top-level binding for `C-x C-f' or `C-x b'. The problem is conflicts within the minibuffer (key bindings, faces, etc.).
+
+I'm sorry, but you will have to choose between the two. If you want ''everything'' to be Ido-like, then you will have to choose Ido and forego '''Icicles'''. If you just want some of Ido's behavior, then you can follow the links I pointed you to, to find out how to configure '''Icicles''' to give you similar behavior in various respects. And you can use [[IswitchBuffers|IswitchB]] with '''Icicles''' to give you Ido's buffer-switching behavior.
+
+That's the only help I can give you, I'm afraid. Again, to be clear, the problem is not any top-level bindings. You can get rid of all top-level '''Icicles''' bindings, and it will not help. The problem is minibuffer bindings, and minibuffer behavior in general. Ido just does not play well with the standard minibuffer. -- DrewAdams
+
+
+[new]
+OK, I see, thank you!
+
+
+
+
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
 [new:]
 
 Dear Drew,

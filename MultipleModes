@@ -2,7 +2,7 @@ Libraries providing multiple [[MajorMode]]s in a buffer. See also MinorMode.
 
 = mumamo.el =
 
-MuMaMo (short for multiple major modes) is written for Emacs 22. It is distributed as part of [NxhtmlMode nXhtml] and can mix HTML+CSS+JavaScript, Java+HTML (JSP), PHP. It can also suport NxmlMode.
+MuMaMo (short for multiple major modes) needs Emacs 22 or later. It is distributed as part of [NxhtmlMode nXhtml] and can mix HTML+CSS+JavaScript, Java+HTML (JSP), PHP. It can also support NxmlMode (however this works best with Emacs 23).
 
 = mmm-mode.el =
 

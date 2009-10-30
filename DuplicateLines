@@ -120,7 +120,7 @@ the Unix uniq command.
 It is important to note that functions which find duplicate lines don't always sort lines before looking for dups as this may or may not be what one expects or desires of a particular function. Where the lines of a file are presorted it can be convenient to use something like this:
 
   (defun find-duplicate-lines (&optional insertp interp)
-    (interacitve "i\np")
+    (interactive "i\np")
     (let ((max-pon (line-number-at-pos (point-max)))
 	  (gather-dups))
       (while (< (line-number-at-pos) max-pon) (= (forward-line) 0)

@@ -672,7 +672,45 @@ That works, thank you for the help! This is a very useful tool when dealing with
 
 [new]
 hi, thanks for your good tools - doremi. When I use M-x doremi-bg, COMPONENT can only be r/g/b/h/s/v, can it be
-rgb or hsv? I think rgb or hsv can make me select color I like more quickly. -- ahei
+rgb or hsv? I think rgb or hsv can make me select color I like more quickly. 
+another question, I found below statement in your many packages:
+<pre>
+;;  Commands defined here:
+;;
+;;    `facemenu-mouse-menu', `facemenup-change-bg-of-face-at-mouse',
+;;    `facemenup-change-bg-of-face-at-point',
+;;
+;;  Non-interactive functions defined here:
+;;
+;;    `facemenup-face-bg', `facemenup-face-fg',
+;;    `facemenup-set-face-attribute-at--1',
+;;    `facemenup-set-face-from-list'.
+;;
+;;  Internal variables defined here:
+;;
+;;    `facemenu-mouse-menu', `facemenup-err-mouse',
+;;    `facemenup-err-point', `facemenup-highlight-menu',
+;;    `facemenup-last-face-bg', `facemenup-last-face-changed',
+;;    `facemenup-last-face-fg'.
+;;
+;;  Button types defined here:
+;;
+;;    `help-facemenu-edit-color', `help-facemenu-set-face'.
+</pre>
+which package generate that? I could not find that.:)
+I have found a package auto-document, but It only generate
+command and variable.
+                                                -- [[ahei]]
+
+
+[new:DrewAdams:2009-10-29 16:54 UTC]
+1. It's unclear to me what you are asking -- could you rephrase it or give an example? What do you mean by "can it be rgb or hsv?" Do you mean that you would like to increment all of the R, G, and B components (or all of the H, S, V components) ''together'', in lock step? I don't see that as very useful, but please describe the use case you have in mind.
+
+I suppose you are aware that you can change the component you are incrementing at any time, without exiting the command. Just hit a different component indicator (`r', `g', `b', `h', `s', `v') to start incrementing that component immediately. The same command invocation thus serves for any combination of components. But yes, each incrementation is of only one component. 
+
+2. I update those lists of defined things by hand -- no big deal. ThierryVolpiatto has some code to do something similar automatically, but: (a) It is part of an unrelated library -- AFAIK, he doesn't want to break it out as a separate library, for some reason. (b) It clutters the Commentary (in a minor way) with begin...end indicators. (c) He doesn't want the lists to be alphabetical. I suggested to Thierry that he create a small standalone library for this, and that he let users optionally sort each group, but he wasn't interested.
+
+In my case, I don't mind updating the lists by hand -- I do that when I check my most recent changes with `ediff' to create a change-log entry. Doing it by hand is of course error prone, but it actually helps me wrt updating the change log. I do think a good tool would be helpful as an aid, however. -- DrewAdams
 
 
 

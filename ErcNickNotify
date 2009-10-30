@@ -21,7 +21,7 @@ ErcNickNotify is a mode that popup notify window when someone call you in [[ERC]
 : The file name of icon display.
 * `erc-nick-notify-timeout'
 : The timeout in milliseconds at which to expire the notification.
-* `erc-nick-notify'
+* `erc-nick-notify-urgency'
 : The urgency level.
 * `erc-nick-notify-category'
 : The notification category.

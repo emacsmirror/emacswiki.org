@@ -103,6 +103,18 @@ Try out [http://autopair.googlecode.com/svn/trunk/autopair.el autopair.el] hoste
 
 [new]
 How does this work? Does it make use of command loop hooks?
+[new]
+Well the answer to the question "how" is "read the source code", but in short, yes :), ##post-command-hook## is used. here's is a snippet of the binding for an opening brace/parenthesis/whatever
+
+   (defun autopair-insert-opening ()
+     (interactive)
+     (when (autopair-pair-p)
+       (setq autopair-action (list 'opening (autopair-find-pair) (point))))
+     (autopair-fallback))
+
+##autopair-fallback## takes care of running the original binding. When running the ##post-command-hook## one reads ##autopair-action## and decides what to do.
+-- JoaoTavora
+
 
 === CC Mode ===
 

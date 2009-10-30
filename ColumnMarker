@@ -20,7 +20,7 @@ highlighting is seen.  If that "topmost" highlighting is then
 turned off, the other highlighting for that column will show
 through.
 
-'''Examples''' -- 
+== Examples == 
 
 * `M-x column-marker-1' highlights the column where the cursor is, in
 `column-marker-1-face'.
@@ -42,7 +42,9 @@ highlighting (`font-lock-mode') must be turned on.  There might be
 a performance impact during refontification.
 
 
-'''Installation''' -- Place <tt>[[column-marker.el]]</tt> in your load path, and put this in
+== Installation ==
+
+Place <tt>[[column-marker.el]]</tt> in your load path, and put this in
 your init file (`##.emacs##'):
 
  (require 'column-marker)
@@ -57,14 +59,53 @@ Other init file suggestions (examples):
 
         (global-set-key [?\C-c ?m] 'column-marker-1)
 
-'''Defining Additional Column Markers''' -- This is all you need to do, to create an additional column marker:
+
+== Defining Additional Column Markers ==
+
+This is all you need to do, to create an additional column marker:
 
   (column-marker-create column-marker-4 my-favorite-face)
 
-'''Problems'''
+== Problems ==
+
+
+[new]
 
 Be careful when using, it slowed my Emacs down to unrecoverable levels.  -- [[nschum]]
-   
+
+----
+
+[new]
+Hey, I love column-marker.el, but it uses a lot of CPU when there are a lot of long lines.  It spews this to "*Messages*" every time I scroll with a long line in range:
+<pre>Invalid face reference: point
+Invalid face reference: start
+Invalid face reference: let*
+Invalid face reference: end
+Invalid face reference: lambda
+Invalid face reference: t
+Invalid face reference: prepend
+Invalid face reference: 0
+Invalid face reference: nil
+Invalid face reference: start
+Invalid face reference: goto-char
+Invalid face reference: t
+Invalid face reference: point [2 times]
+Invalid face reference: 1-
+Invalid face reference: list
+Invalid face reference: set-match-data
+Invalid face reference: progn
+Invalid face reference: start
+Invalid face reference: point
+Invalid face reference:
+</pre>
+-- JohnHarris
+
+[new:DrewAdams:2009-10-29 22:14 UTC]
+Please send a bug report to the author and maintainer of <tt>[[column-marker.el]]</tt>, [[Rick Bielawski]]. I am not the maintainer of that library. I did provide a few updates to the library, with Rick's permission, but he maintains the library.
+
+You will probably need to provide some more info, by debugging this a bit. And always provide a clear recipe to reproduce the problem, starting with ##emacs -Q##. And please specify what version of Emacs you use etc. -- DrewAdams
+
+----   
 
 '''See also:'''
 
