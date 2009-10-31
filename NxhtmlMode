@@ -87,8 +87,41 @@ w32-print.el.
 
 
 ----
+== Current Status and Bugs ==
 
-== YaSnippet, nXhtml, MuMaMo and TabKey2 ==
+=== The bug database ===
+
+The preferred way to report bugs are now https://bugs.launchpad.net/nxhtml.
+See that page for current bug status.
+(You may also enter bugs below under Unsolved problems, but it is much better if you use the bug database.)
+
+If you want to report a bug please use <i>M-x nxhtml-report-bug</i> to get instructions.
+
+See also https://answers.launchpad.net/nxhtml
+
+
+=== Old solved EmacsWiki bug reports ===
+
+Old solved bugs are here: NxhtmlOldBugs
+
+=== Some important notes ===
+
+==== Emacs 22 can't handle XML validation in MuMaMo ====
+
+There is problem with using multi major modes based on nxhtml-mode (or nxml-mode) in Emacs 22:
+
+|| || nxhtml-mode by itself || nxhtml-mode as part of a multi major mode ||
+|| Emacs 22 || OK || Not always good ||
+|| Emacs 23 || OK || OK ||
+
+Therefore in Emacs 22 the default is to use those based on html-mode instead.
+If you want XHTML validation and completion you can use nxhtml-mode.
+
+
+[new]
+I miss this feature in Emacs 22, indeed.
+
+==== YaSnippet, nXhtml, MuMaMo and TabKey2 ====
 
 If you are using YaSnippetMode you can use the snippets for html-mode in nxhtml-mode.
 To do that just create a subdirectory named nxhtml-mode under the html-mode in your snippets directory.
@@ -116,415 +149,7 @@ If you are using the yasnippet bundle version, and thus can not create a subdire
 (yas/define-snippets 'nxhtml-mode nil 'html-mode)
 
 
-
-----
-== Current Status and Bugs ==
-
-The preferred way to report bugs are now https://bugs.launchpad.net/nxhtml.
-See that page for current bug status.
-(You may also enter bugs below under Unsolved problems.)
-
-If you want to report a bug please use <i>M-x nxhtml-report-bug</i> to get instructions.
-
-
-Old solved bugs are here: NxhtmlOldBugs
-
-=== Emacs 22 can't handle XML validation in MuMaMo ===
-
-There is problem with using multi major modes based on nxhtml-mode (or nxml-mode) in Emacs 22:
-
-|| || nxhtml-mode by itself || nxhtml-mode as part of a multi major mode ||
-|| Emacs 22 || OK || Not always good ||
-|| Emacs 23 || OK || OK ||
-
-Therefore in Emacs 22 the default is to use those based on html-mode instead.
-If you want XHTML validation and completion you can use nxhtml-mode.
-
-
-[new]
-I miss this feature in Emacs 22, indeed.
-
-----
-== Comments and Questions ==
-
-See also https://answers.launchpad.net/nxhtml
-
-
-=== Unsolved problems ===
-
-==== Documentation look-up ====
-
-As you asked for over at LookUpHTMLDoc, I rewrote some of the functions in ##xhtml-help.el##. Any chance they'll be included in a future release?
-
-[new]
-Ah, yes of course!
-I have been quite busy looking at a core Emacs bug (3467) and forgot this.
-I will have a look at it as soon as I can.
-However it would be very good if you could sign papers for Emacs in case this code will be transformed there some day in the future.
-What do you think about that?
-
-[new]
-I am not sure I understand what you mean by "signing papers". If it's about code rights, then everything posted on !EmacsWiki is licensed under version 2 of the GNU General Public License.
-
-[new]
-I think that this is not enough for Emacs. But I wonder where I can show you some more information about that to show you.
-Anyway I can include your changes in nXhtml, but for the future it would be good to have your name.
-Is that a problem for you currently?
-
-[new]
-No, by no means. I just hadn't got around to make a user page yet. -- MariusAndersen
-
-=== Solved problems ===
-
-
-==== Error if xhtml-loader.rnc is read-only ====
-Nxhtml throws an error when xhtml-loader.rnc is read-only, however, please remember that elisp files are usually read-only when a root user installs them on multi-user systems (like Un*x).
-
-[new]
-This file is rewritten if needed when the user uses nxhtml-mode the first time.
-So I think all that is needed is that you from the root user loads nXhtml.
-
-
-----
-
-=== Conditional Loading ===
-[new]
-If you use emacs for everything (say using emacs-client with emacs as an alternative) you'll sometimes want to load emacs for something quick like a mail and you'll have to start a new one as you don't have a server running.  In situations like this you'll not want to wait for big modes like nxhtml to load.  This elisp (with an imperfect regex) will load nxhtml only when required:
-
-  ;; Conditional load of nxhtml because its really heavy, but really good.
-  (setq *nxhtml-autostart-file* (expand-file-name "~/.elisp/nxhtml/autostart.el"))
-  (defun load-nxhtml-if-required ()
-    (if (and (string-match ".+\\.\\(php\\|html\\)$" (buffer-file-name))
-             (not (featurep 'nxhtml-autostart)))
-        (progn 
-          (load *nxhtml-autostart-file*)
-          (nxhtml-mumamo-mode)))) ;; mumamo loads nxhtml-mode et al
-  (add-hook 'find-file-hook 'load-nxhtml-if-required)
-
-[new]
-After seeing this I did some work on autoloading things in nXhtml.
-Without doing anything except byte-compiling nXhtml (from the nXhtml menu) it now loads on my old pc in 0.3 seconds.
-
-[new:NoahFontes:2009-06-03 05:53 UTC]
-I use the following to autoload nXhtml, inspired by a snippet seen at NxmlMode:
-
-  (mapc (lambda (list)
-          (mapc (lambda (pair)
-                  (if (or (eq (cdr pair) 'html-mode)
-                          (eq (cdr pair) 'php-mode))
-                      (setcdr pair (lambda ()
-                                     (require 'nxhtml-mode "path/to/nxhtml/autostart")
-                                     (nxhtml-mumamo-mode)))))
-                list))
-        (list auto-mode-alist magic-mode-alist))
-
-[new]
-Oh, I never thought of adding autostart like that.
-Apart from that you can also use Major Mode Priorities in the nXhtml menu to choose when to use nXhtml multi major modes.
-
-
-----
-
-=== Symbol's function definition is void: < ===
-
-[new]
-I frequently experience this error and I suspect Nxhtml is responsible, because I didn't have a similar problem before I started using it.  It is very annoying, because I loose the definition of < (less-than) which breaks everything, so I can only restart emacs to fix it.
-
-Any idea what could cause it? Does Nxhtml redefine the meaning of <?
-
-I use 1.80 on Gnu Emacs 22.3.1, but this error also occured with previous Nxhtml versions too, so it must be some fundamental bug.
-
-[new]
-I also got this on 16.m10.2008 with nxhtml 1.60, but later not anymore, perhaps because I started using Emacs 23. --[[DanielClemente]]
-
-[new]
-Hm, a very strange bug. I can't even think of how it can happen.
-Could you who have this problem now please report it as a bug in the bug database on launchpad?
-And please try to reproduce the problem starting from "emacs -Q" and then just loading nXhtml.
-
-There is nothing in nXhtml that redefines <.
-Could you please try with
-
-  emacs -Q -l PATH-TO/nxhtml/autostart.el
-
-and see if < is defined then?
-
-[new]
-
-Yes, it's defined then, but this is not the problem. Nxhtml works well usually, so < is not undefined when it is loaded. It happens when I edit php files with Nxhtml and emacs is already running for a while. All of a sudden when I try to save a file or do something else the operation fails, because < became undefined.
-
-It's hard to debug, because it just happens and I can't really connect it to anything special. I do not even know how could I pinpoint what code is responsible for undefining a function.
-
-[new]
-Thanks. I wonder if this is a (severe) bug in Emacs. I have asked on Emacs Devel for some hints about how < could become void.
-
-Could you please do two things:
-
-* Move this to a bug report in launchpad (see above for URL) so we can keep it more structured.
-* Try to run under "emacs -Q -l PATH-TO/nxhtml/autostart.el" to see if it happens there too. Turn on debug-on-error too so the error gives a backtrace.
-
-[new]
-The only function that can make a function void is `fmakunbound'.  Try advising it to trap the culprit; I don't think the byte-compiler inlines it, so it will take effect everywhere.  --DavisHerring
-
-[new]
-Thanks Davis. Then dear anonymous could you please eval this defadvice and then edit with nXhtml as you normally do.
-When the problem occurs you will hopefully have a backtrace in *Messages* buffer that will tell us what has happened:
-
-  (defadvice fmakunbound (before
-                          test-ad-makunbound
-                          activate
-                          compile
-                          )
-    (message "fmakunbound %s, backtrace\n%s"
-             (ad-get-arg 0) (with-output-to-string (backtrace))))
-
-
-[new]
-
-Okay, I'll try it. I'd wait with the bugreport until we're sure it's nxhtml's fault. Regarding the running emacs with -Q idea: I have lots of customizations in emacs and as I said the problem occurs only after a while of extensive usage, so it's not an option, because using Emacs without my settings is unthinkable. So I skip this one. Let's hope the defadvice helps.
-
-[new]
-When I got the error, it was under the same circumstances you described: editing some multiple-major-mode file like PHP, and suddenly being broken. I have looked into my version control and the only places where I was using fmakeunbound were the following:
-*  .emacs.d/muse/muse.el:        (fmakunbound 'find-buffer-file-type)))))
-*  .emacs.d/cedet-1.0pre4/common/cedet-edebug.el:  (fmakunbound 'cedet-edebug-prin1-to-string-inner))
-*  .emacs.d/emacs-w3m-cvs/w3m-util.el:    (fmakunbound 'select-frame-set-input-focus)))
-*  .emacs.d/emacs-w3m-cvs/w3m.el:		      (fmakunbound ',fn)))
-*  .emacs.d/emacs-jabber-tla/fsm.el:  (fmakunbound (intern (format "start-%s" name)))
-*  .emacs.d/ecb-snap/ecb-layout.el:  (fmakunbound (intern (format "ecb-layout-function-%s" name)))
-*  .emacs.d/ecb-snap/ecb-layout.el:  (fmakunbound (intern (format "ecb-delete-window-ecb-windows-%s" name)))
-*  .emacs.d/ecb-snap/silentcomp.el:		    (fmakunbound fun)
-* and Emacs 22
-
-I can't reproduce the problem any more.
--- [[DanielClemente]]
-
-[new]
-
-An other possible culprit is [[DVC]], I think. I use mercurial and I see DVC invokes fmakunbound pretty frequently. Anyway, the problem haven't yet occured here since the advise is active, so the hunt is still on.
-
-[new]
-I don't think so; I have never used DVC and still got the error. -- [[DanielClemente]]
-
-[new]
-There is now a long thread about this on the Emacs Devel mailing list: http://lists.gnu.org/archive/html/emacs-devel/2009-06/msg00490.html -
-I think it might be good to defadvice also make-symbol and unintern as above.
-Adding a post-command function like Thien-Thi suggested is also a good idea, because then it is easier to notice when the bad thing happened.
-
-[new]
-Thanks, I'll add those too. Strangely, the bug didn't occur today, although I used nxhtml-mumamo-mode with php all day. Previously the error occured quite often, several times a day. I'm starting to think the defadvice fixed it. :D
-
-[new]
-I just released 1.84 of nXhtml but I do not think there is anything new concerning this problem (but it probably fixes another problem for Emacs 22).
-
-[new]
-The problem failed to occured since then. Not that I'm complaining. :P  I let the advice active anyway if it rears its ugly head again.
-
-[new]
-The bug is of course afraid since we are many that are hunting it...
-
-
-----
-
-=== Mumamo support for PHP heredoc? ===
-
-PHP [http://us2.php.net/manual/en/language.types.string.php#language.types.string.syntax.heredoc heredoc] can be used, for example, to store html code in a variable. Of course, Mumamo cannot know what kind of text is within the heredoc. Would it be possible to add support for a special kind of comment which when given on the line before the variable initialization would hint at the mode within the heredoc, so Mumamo can handle it as HTML?
-
-E.g.
-
-<pre>
-
-  // mumamo: html
-  $htmlstuff = <<<EOT
-
-     <p>some stuff</p>
-     <p>some other stuff</p>
-
-EOT;
-
-
-</pre>
-
-[new]
-Yes, that could be done. I did that before in perl, but no one reported that it was broken (which it currently is) so I did not care to fix it.
-But since you are asking for that in php I will think it over again.
-
-But the solution in perl was to use a special name for the tag instead, something like EOT-HTML. Would not that be easier to read? It is ceartinly a bit more easy to fix.
-
-[new]
-
-EOT-HTML is fine. It's the result that matters. :) Would it detect properly embedded Javascript too and switch to Javascript mode for that region if the HTML within the heredoc contains JS code in script tags?
-
-[new]
-
-Some corrections: EOT-HTML is not good, because the PHP parser does not accept it, so it should be EOTHTML instead. Furthermore, according to the specification quotes can be around the identifier, so these are all legal:
-
-<pre>
-
-  $htmlstuff = <<<EOTHTML
-
-     <p>some stuff</p>
-     <p>some other stuff</p>
-
-EOTHTML;
-
-  $htmlstuff = <<<"EOTHTML"
-
-     <p>some stuff</p>
-     <p>some other stuff</p>
-
-EOTHTML;
-
-
-  $htmlstuff = <<<'EOTHTML'
-
-     <p>some stuff</p>
-     <p>some other stuff</p>
-
-EOTHTML;
-
-
-</pre>
-
-[new]
-I have implemented support for heredocs.
-However it is yet only in multi major modes specialized for just this, see the realese notes for 1.87.
-
-[new]
-
-Cool, thanks! It seems to work well. Only the embedded Javacript sections are not recognized within the HTML heredoc, but if I understand you correctly it shouldn't work, because JS doesn't support heredocs?
-
-BTW, I had to fix a typo. My Emacs doesn't have a`string-match-p' function:
-
-<pre>
-(defun mumamo-mode-for-heredoc (marker)
-  "Return major mode associated with MARKER.
-Use first match in `mumamo-heredoc-modes'.
-If no match use `text-mode'."
-  (let ((mode (catch 'mode
-                (dolist (rec mumamo-heredoc-modes)
-                  (let ((regexp (nth 0 rec))
-                        (mode   (nth 1 rec)))
-                    (when (string-match-p regexp marker)
-                      (throw 'mode mode)))))))
-    (if mode
-        (mumamo-major-mode-from-modespec mode)
-      'text-mode)))
-</pre>
-
-[new]
-No, it is not a typo.
-It is a forgetto. I forgot that string-match-p does not exist in Emacs 22.
-Please try beta 1.88 which I just uploaded.
-It fixes this problems and also (finally) implements chunks in chunks.
-So now you could just use html-mumamo-mode (which is default for php files in nXhtml).
-
-[new]
-I tried it, but something is broken compared to the previous version. Normal heredoc works properly, but if I use EOTHTML it switches to HTML mode, but it fails to reocgnize the EOTHTML; end tag and the rest of the PHP file is treated as HTML. At one point it switched to Javacript mode after the end tag, so probably the chunk in chunk handling broke something.
-
-[new]
-Yes, you are right. I forgot to implement one part. Can you please try the new beta 1.88?
-
-One part that needs work is colors of the subchunks.
-I have only done that for light background.
-If someone who uses dark background want to suggest chunk colors for dark background that would be very nice.
-
-[new]
-Looks like this version recognizes the chunks correctly, but another strange regression occurred: if the HTML heredoc contains embedded javascript then the buffer after the heredoc closing tag is colored with an underline face (mumamo-border-face-in) until the next double quote, like when something is not right with the syntax in the buffer.
-
-[new]
-It would still be good with an example, but I fixed some bugs related to this.
-There are still minor bugs, but I think it is quite good and you might not notice those I am thinking of.
-
-[new]
-
-I managed to create an example. The code is underlined from the first EOTHTML end tag until the next EOT. If you delete the onclick attribute from the last heredoc the underlining disappears:
-
-<pre>
-$a = <<<EOTHTML
-
-<p>stuff</p>
-
-EOTHTML;
-
-
-$b = <<<EOT
-
-    <h2><a href="/">stuff</a></h2>
-
-EOT;
-
-$c = <<<EOT
-
-<button onclick="a()">test</button>
-
-
-EOT;
-</pre>
-
-[new]
-Thanks for the example.
-I couldn't reproduce that first but now I can.
-Yes, that is a last thing I have not implemented yet.
-Will do that now...
-
-If you want to you can report this as a bug on Launchpad, which makes it easier to send files.
-Since this is getting long the lack of structure here makes it a bit hard to read too.
-
-[new]
-
-This version behaves exactly the same as the previous one (the underline is there) with the above example, so the bug is still there. I tried the nxhtml-1.88-090711-20_54_25.zip version.
-
-I don't have a Launchpad account and don't want to register just for this bug, since we're close to solving it anyway. If I have further bugs to report then I'll register.
-
-[new]
-Please try the newest beta and see if you still have any problem.
-
-[new]
-
-I tried 1.89 with emacs 23.1. Looks like it doesn't handle the case properly when embedded HTML contains embedded Javascript. It recognizes the start of the embedded javascript and there it changes face (from mumamo-background-chunk-submode2 to mumamo-background-chunk-submode3), but it fails to recognize the closing EOTHTML, or more precisely, it doesn't recognize the end of the embedded Javascript section, so the whole rest of the buffer is colored with mumamo-background-chunk-submode3 face.
-
-1.88 handled this case better, aside from the other problems.
-
-: Some more info: Looks like if the embedded Javascript is simple and short then it recognizes its end correctly, but if the JS is more complicated (several pages long) then it gets confused by something. 
-
-
-Found the cause of the problem. If the embedded Javascript closing part is in the first column like the EOTHTML then it fails to notice the end of the js block:
-
-<pre>
-</script>
-
-EOTHTML;
-</pre>
-
-If the JS closing part is indented then it works well:
-
-<pre>
-   </script>
-
-EOTHTML;
-</pre>
-
-
-So I indented my JS block closings and now everything is OK. 
-
-[new]
-Thanks for telling us about the bug and how to work around it.
-Strange that no one has noticed it before.
-I have just installed a fix for it and released version 1.91.
-
-----
-[new]
-Could this EOTHTML metaphor work with other languages in heredocs? Say, I'd like to embed a query in an EOTSQL heredoc...
-
-[new]
-Yes, of course.
-But you have to write a multi major mode for it.
-Please see those that are already defined.
-It should not be very hard to do it.
-And please contribute what you write back to us all!
-
-----
-
+==== Chunk color complaints, please contribute! ====
 [new]
 
 The new default colors for the submodes are brutal on light background.  That pink, for example... :) It wasn't hard to change them, I just wanted to give you some user feedback. Maybe it's only me, though. :D
@@ -550,5 +175,84 @@ This lets you see how far down you are in the hierarchy of chunks and may help p
 
 The hard thing is then to choose good background colors.
 As I said: suggestions are welcome! ;-)
+
+
+
+----
+== Comments and Questions ==
+
+Please use the bug database if you can, see above.
+
+
+=== Unsolved problems ===
+
+==== Chunks in chunks - where does it end? ====
+
+I have chunk problems with 1.99. This works, it detects the PHP and JS chunks properly:
+
+<pre>
+<?
+
+
+$stuff = <<<EOTHTML
+
+    <script type="text/javascript">
+
+    //<![CDATA[
+
+    var stuff;
+
+    //]]>
+    </script>
+
+EOTHTML;
+
+</pre>
+
+
+However if I don't close the inner chunk before EOTHTML, because I want to add some conditional code after it in PHP then it thinks the part of the buffer after EOTHTML is still in JS mode which is not good: 
+
+<pre>
+
+<?
+
+
+$stuff = <<<EOTHTML
+
+    <script type="text/javascript">
+
+    //<![CDATA[
+
+    var stuff;
+
+EOTHTML;
+
+</pre>
+
+[new]
+Thanks for the thoughts.
+I can see what you mean, but I am not sure it can be solved easily.
+
+You want the inner chunk with javascript to end together with the heredoc chunk.
+It looks obvious here, but what would the general rule be?
+
+[new]
+What is the question exactly? All chunk modes should end at the end of the heredoc and NXHTML should switch back to PHP, shouldn't it? Is there any reason keeping the chunk mode beyond the EOT tag? It's clearly incorrect behavior.
+
+[new]
+Hm, so you mean that heredocs is a special case deserving attention?
+Yes, I think you are right.
+It is some work to do this of course.
+Contributions are welcome.
+
+In the mean time you can avoid using html in the heredoc.
+That will end the chunk where you want it (but will not provide the convenience of html syntax coloring and javascript dito).
+
+
+=== Solved problems ===
+
+For more see above, Old solved EmacsWiki bug reports.
+(And of course the bug database.)
+
 ----
 See also MultipleModes MuMaMo CategoryHypermedia HtmlMode

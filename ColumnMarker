@@ -105,6 +105,14 @@ Please send a bug report to the author and maintainer of <tt>[[column-marker.el]
 
 You will probably need to provide some more info, by debugging this a bit. And always provide a clear recipe to reproduce the problem, starting with ##emacs -Q##. And please specify what version of Emacs you use etc. -- DrewAdams
 
+
+[new]
+I contacted the author and got his latest version, which works fine.  I contacted you here, because I think your changes broke something.
+
+Using emacs 22.3.1 (x86_64-redhat-linux-gnu, GTK+ Version 2.14.7), start with -Q, then M-x load-file column-marker.el, then go a few spaces over in `*scratch*' and do M-x column-marker-1, then put some more spaces to cause the highlighting to happen, then look at the `*Messages*' buffer to see the output.  Just clicking in the `*Messages*' buffer itself causes tons more output (same kind of error) to spew.
+
+Hope this helps. -- JohnHarris
+
 ----   
 
 '''See also:'''

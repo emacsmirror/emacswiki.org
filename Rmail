@@ -97,6 +97,8 @@ Here's how to use rfc2047.el that comes with Emacs:
       (function rfc2047-decode-string))
 </pre>
 
+[MDL: The above only works for summary lines in Emacs 23 because rmail-message-filter is no longer used.  Anyone have a fix for this?]
+
 == Editing message text and headers ==
 
 Pressing `e' in an rmail buffer puts you in editing mode.  If you

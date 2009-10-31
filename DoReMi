@@ -712,8 +712,32 @@ I suppose you are aware that you can change the component you are incrementing a
 
 In my case, I don't mind updating the lists by hand -- I do that when I check my most recent changes with `ediff' to create a change-log entry. Doing it by hand is of course error prone, but it actually helps me wrt updating the change log. I do think a good tool would be helpful as an aid, however. -- DrewAdams
 
+[new]
+1.
+
+: Do you mean that you would like to increment all of the R, G, and B components (or all of the H, S, V components) ''together'', in lock step?
+
+Yeah, I do mean that.
+: Just hit a different component indicator (`r', `g', `b', `h', `s', `v') to start incrementing that component immediately. The same command invocation thus serves for any combination of components. 
+
+I think increment all of the R,G,B components (or all of the H, S, V components) together is useful as the way of you said above. :)
+
+2.
+:  I update those lists of defined things by hand 
+First, I surprised when I heard that,:), your package is so many.
+Second, but, I saw "lists of defined" in many packages on emacswiki, they all update it by hand? but those format so similar. -- [[ahei]]
 
 
+[new:DrewAdams:2009-10-30 19:11 UTC]
+1. I don't understand why you would want to increment all of H, S, V equally at the same time. What effect do you hope to get? What is the use case?
+
+Incrementing (decrementing) all of R, G, B equally at the same time is essentially the same thing as incrementing (decrementing) the V component. If you are increasing the red, blue, and green light equally, then you are increasing the brightness.
+
+I just don't see the use case for such equal incrementing. If you convince me of a use case, I'll consider it. Or you could define such a command yourself. Just look at the code defining `doremi-bg-blue' and `doremi-bg'. Essentially, the code would call, in a single command invocation, `doremi-increment-background-color' for each of the components you want to change.
+
+2. I can't speak for others. AFAIK, the only tool support for this is the code by ThierryVolpiatto that I mentioned. I believe I am the main one who includes such lists in EmacsLisp files. I was certainly the first, but perhaps there are some others now who have adopted the idea. In any case, I update the lists manually.
+
+But as I said, most source-code changes are incremental, meaning minor changes to the lists. And I need to note the change (addition, removal, renaming) in my change log anyway. Updating source code involves many such housekeeping tasks; updating these lists is only a minor part of what's involved. I do agree that this could be mechanized. Thierry made a good start, but he doesn't want to break that code out as a separate library. If you are interested in a tool to do this, I suggest contacting Thierry. -- DrewAdams
 
 ----
 [:SeeAlso]

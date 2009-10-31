@@ -100,101 +100,44 @@ to discover the problem.)
 
 I could go on...
 
+[new]
+In general, I think adding a bug tracker to the site and maintaining it is a chore I'm not looking forward to. Does anybody volunteer? I'd be willing to add code that will not only print a _Download_ link but also a bugtracking link for every source file.
 
-== Treat User Names Normally on RecentChanges Page ==
+I agree with Drew's sentiment, however. The individual files are not big projects. At least for my own files, I get about one or two emails per year, and most of them I no longer maintain anyway. I'd never check a bucktracking site, I'd never set up some sort of email notification, I wouldn't provide more support, work harder on bugs, or prioritize according to the needs of strangers on the Internet. I don't see myself in the target audience for a bug tracker.
 
-It would be good if user names were treated normally at RecentChanges, that is, to show a non-existant page not as if it were a link but with a [[SiteMap | ?]] link. Why? To encourage users to create a home page. I see changes by users with names such as thomas001, which appears as [[SiteMap | thomas100]] instead of as thomas001[[SiteMap | ?]], even though there is no such page yet.
-
-This makes me think such users might be following a habit from other sites that require some kind of sign-in (where `thomas' is already taken, so `thomas001', `thomas002'...). If RecentChanges used the normal link convention, then people would see the [[SiteMap | ?]] and might be encouraged to follow it and create a home page. Just a thought. 
-
-(Actually, it wouldn't be exactly the normal convention, which expects CamelCase. Instead, it would implicitly treat each user name entered as if enclosed in ##[[##...##]]##.) -- DrewAdams
-
-
-
-== Keep at least N (> 1) revisions of each page ==
-
-The history for a page should show at least N (> 1) revisions. Currently, IIUC, past revisions are removed if older than some date. This leads to an inability to see what the last changes were, if they were made a while ago. I wanted to compare the current SiteMap with older versions, for instance, and there are none (zero, nada). That's not helpful. Better to keep at least, say, 3 revisions, no matter how old. -- DrewAdams
+Now, if *somebody else* set up a bugtracker, and authors who want to use it add some sort of special token to their source files, and I automatically link to the appropriate bug tracker accounts -- that might be worth an experiment. -- AlexSchroeder
 
 [new]
-I never had a need for that, so I'm not very eager to add such a feature. The kept revision time window works very well for me. As for the SiteMap diff: I think that in this case the last edit was a trivial whitespace change. Consider the ElispArea instead.
+Maybe a common bugtracker for all elisp files hosted on Emacs Wiki?
+Then individual authors could add a token to those files for which they want to use that bugtracker.
+They should then of course subscribe themselves to this bug tracker.
 
-Self:action=history;id=ElispArea shows that there is also just one revision available.
+However I would like some structured bug handling including at least Emacs version.
+Is there any bugtracker that can handle this?
+(I suppose we should use one of the bugtrackers available and hosted on some good site like Launchpad.)
+-- LennartBorgman
 
-At the bottom of the page you'll find a note listing author, timestamp, and diff link to the last change:
+== User Names on RecentChanges Page ==
 
-Self:action=browse;diff=2;id=ElispArea is the last change. The diff is cached and thus does not need the old revision to be available. -- Alex
+It would be good if user names were treated normally at RecentChanges, that is, to show a non-existant page like a non-existant page is usually shown. People might be encouraged to follow it and create a home page.
 
-[new:DrewAdams:2008-06-25 00:27 UTC]
-OK. I guess you're saying that even if we don't always have two revisions available, we always have their diff available. So we in effect already have this feature, for N=2. That's better than N=1, at least, and good to know.
+[new]
+I haven't thought about this in a long time. Maybe you're right. -- AlexSchroeder
 
-However, wouldn't it be good to save the last non-empty diff, rather than just the last diff? The SiteMap case is a good example: the cached diff is not very helpful, because it is empty (whitespace only).
+== Keep more revisions of each page ==
 
-If it's important for some reason to also save the last (empty) diff, then perhaps you could cache two diffs when the last one is empty. Or combine them. Just a thought. -- DrewAdams
+The history for a page should show several revisions. Currently, past revisions are removed eventually. In the worst case, this leaves exactly one revision. Even if the _diff_ at the bottom of a page continues to show the diff between the no longer extant last revision and the current revision, some more information would be helpful.
+
+[new]
+I've never had a need for this. I'll leave the suggestion standing. Perhaps more people want to support this? On the other hand,
+I could add a link to the [[SVN repository]]. What do you think of that? Eg. the history for AlexSchroeder would also contain a link to
+http://svn.savannah.gnu.org/viewvc/emacswikipages/AlexSchroeder?root=emacswiki -- AlexSchroeder
 
 
 == Cross-Reference Alphabetical and Chronological Library Lists ==
 
 Please put a link to the chronological listing of libraries on page [http://www.emacswiki.org/elisp/ Alphabetical List], and put a link to the alphabetical listing on page [EmacsWiki:action=rc;match=%5C.%28el%7Ctar%29%28%5C.gz%29%3F%24;from=1117497600;showedit=1 Chronological List] -- preferably near the top of the page. -- DrewAdams
 
-
-== Marking code does not work in Emacs 22 ==
-(moved from SitemapDiscussion)
-
-[new]
-I wonder if everything pointed to from EmacsWiki works in Emacs 22.
-Maybe there should be some marks on the pages telling what runs on Emacs 22 and what runs on older Emacsen?
-
-[new:DrewAdams:2007-10-19 17:28 UTC]
-: Do you mean everything on the wiki or everything on the SiteMap? (This page is about SiteMap.) Pages that mention things that apply only to particular Emacs versions, platforms etc. should mention that, but I don't see any point in trying to have some general, conventional indicator to that effect. Typically, a page might discuss things that apply to a variety of Emacs versions, platforms etc. Your log message mentioned "##scripts etc##" -- what's that about? I'm probably missing what you're trying to say; please elaborate. -- DrewAdams
-
-[new]
-I meant elisp code, scripts etc. I found no better place than this page to ask the question. -- LennartBorgman
-
-[new:DrewAdams:2007-10-19 19:11 UTC]
-: So what do you propose, concretely? "Some marks on the pages" is pretty vague. I think that if a page mentions EmacsLisp code or a script that works only with some platforms or Emacs versions, then the text should say so. Are you proposing something more than that? -- DrewAdams
-
-[new]
-Nothing more than that. I think it is most important to tell if something does not work with Emacs 22. The reason I am mentioning this is that I suspect that some of the packages mentioned for HTML writing does not work for Emacs 22, but I am not sure. -- LennartBorgman
-
-[new:DrewAdams:2007-10-19 23:30 UTC]
-It's not practical to expect people who write something on a page to come back 3 years later and update it to mention whether or not it works with the latest version of Emacs. It would be good if they did, but it cannot be expected. 
-
-It is more important that people put a ##Compatibility## field in their file header. That way, an old library or script will still say something like ##Compatibility: GNU Emacs 20.x##, which doesn't imply but at least suggests that it might not work with Emacs 21 or later. Note the crucial difference, whether this info is in the library or on an explanation page: it should say that it works with X, Y, Z. That's better than expecting it to indicate all of the versions that it does ''not'' work with. Why is it better? Because it is still accurate even if it doesn't get updated. 
-
-BTW, I think this is the wrong place for this discussion. How about moving it to [[Suggestions]]? -- DrewAdams
-
-[new]
-Ok, I moved it.
-
-I think it would be nice if people put something like "Could not get this to work with Emacs 22" on a page describing a script/package if they discover that. It does not have to be the package owner that does that.
-
-[new:DrewAdams:2007-10-20 01:00 UTC]
-Yes, agreed. (And thanks for moving it to this page.) -- DrewAdams
-
-
-== Preventing accidental rollbacks ==
-
-Rollback links should pop up a question if Javascript is enabled (it usually is), so that pages are not rolled back instantly if someone accidentally clicks a rollback link. -- TamasPatrovics
-
-[new:DrewAdams:2007-08-26 19:31 UTC]
-I agree. -- DrewAdams
-[new]
-Hm. I have three arguments against it: 1. I think it's nice to ask for confirmation for irreversible changes. But it's even better if changes are not irreversible. And in this case, they are reversible. We have the better solution.  2. The people who use the rollback links most often are the same ones we'll be annoying the most. And people will get used to confirmation questions and start clicking through. 3. What I see on RecentChanges tells me that this mistake is _very_ rare. -- AlexSchroeder
-
-[new:DrewAdams:2007-08-27 05:34 UTC]
-I think the problem is accidentally hitting "rollback" when you mean to hit "Revision ##". The two links are adjacent, and one can easily hit the wrong one if one isn't paying attention. The revision link doesn't do anything important, but the rollback does.
-
-If the rollback link is the only one to ask for confirmation, then the confirmation would serve the purpose of letting you know if you hit the wrong link.
-
-While changes are reversible, that is only by adding additional revisions, and that can make understanding the history and history comparisons more difficult.
-
-If you don't like the idea of requiring confirmation for rollbacks, how about moving the rollback link, so that it is less likely to be hit accidentally? -- DrewAdams
-[new]
-
-What do you think of the buttons instead of links? Is this on the right track? I'll switch the delete link to a button as well. -- AlexSchroeder
-[new:DrewAdams:2007-10-24 23:10 UTC]
-
-Yes, I think it's better -- they are visually distinguished at least. It would still be better to separate them a bit. Thx -- DrewAdams
 
 == Downloading Elisp Files ==
 
@@ -245,14 +188,6 @@ Other than that, if you have a CSS-based suggestion, we can try it out.
 -- AlexSchroeder
 
 
-=== Font size of copying terms ===
-
-[new]
-I would like to suggest reducing the point-size (10pt perhaps) of the [[GPL]] License that appears in the footer of every page; i.e. the fine print. It should fit entirely within the height of the GNU GPL image, viewed in a ~900px-wide browser window. --e1f
-
-[new]
-When I tried ##div.footer p.legal { font-size:80%; }## I didn't like it from a typographical perspective. I think more changes are required to make it look good. If you have any suggestions, let me know. Now that I added a class to that paragraph, it should be even easier to come up a good alternative. -- Alex
-
 === Keys ===
 
 [new]
@@ -285,6 +220,10 @@ face="sans-serif">Click to Download</font></a></td></tr></table>
 
 -- JasonSpiro
 
+[new]
+How about using the button element? I implemented it but haven't flushed the HTML cache of any pages. Follow this link to see the effect:
+http://www.emacswiki.org/emacs/AlexSchroederErcConfig?cache=0 -- it's a bit subtler than what you've posted. Do we need it to be even more obvious? -- AlexSchroeder
+
 == Indexing Schemes ==
 
 [new:DrewAdams:2004-12-24 23:00 UTC]
@@ -311,6 +250,9 @@ Any reason not to write a script to just wikify the whole manual?  It might fost
 
 [new]
 Hmm. wget -r and elinks -dump or lynx -dump should make it easy to copy the manual. Also, EMacro http://www.emacswiki.org/cgi-bin/wiki?id=EmacsMacro as well as JDE, etc already launch local static html pages from Emacs help. Does anyone know an easy way to determine the current major and minor modes, and pass them as parameters to look up, in EmacsWiki? The major mode alone should not be hard, but I'm thinking an index of minor modes, built on-the-fly. -- BruceIngalls
+
+[new]
+I wonder who would contribute changes made to the wikified manual back upstream? -- AlexSchroeder
 
 == Please write a summary ==
 
@@ -348,6 +290,17 @@ Not currently no. If I find more I will report it here. -- Jonas
 
 == Drew Adams' Libraries == 
 Drew I respect your work and all that you've done with Emac and on EmacsWiki. However, PLEASE can a emacswiki pages be required by sanction to be limited to only 1 (One!) reference to instances of Drew's libraries, and then *ONLY* after other relevant examples, code, etc. pertinent to the a pages context. This site is *SERIOUSLY* limited by Drew's spam and suffers because of it to the extent that it is becoming unusable because of the superfluous `Icicles.*' references strewn about.  There is a point at which the entire Emacs community suffers because of Drew's insistence on xrefs to anything remotely related to his libraries.
+
+[new]
+The wiki encourages people to post their own code, and to cross-references pages, and by extension, people will cross reference their own code wherever it seems appropriate. If nobody else is as prolific, then that's hardly Drew's fault. On the contrary, *I wish other people would add more crossreferences.*
+
+There's also a philosophical point, here. How is Drew's code different from other people's code? The only thing I see is that his code is not part of Emacs. But the wiki was created to enable just that: *Hosting code and documentation that is not part of Emacs.* There will always be forces that move the wiki in some direction, and it's ok to support particular goals. In fact it's ok to not like Drew's contributions. But the correct response is to make something better. Add crossreferences to even better pages. Make the crossreferences themselves better by commenting them and saying what the referenced library does and whether it does it well. Be constructive. Help build a better wiki by integrating other people's work instead of preventing them from contributing just because you don't agree with their point of view.
+
+I have trouble understanding how this site is "bold-caps-seriously" limited by Drew's contributions, and how his contributions can in all honesty be called "spam". The tone of the complaint makes it hard for me to take it seriously, even though I tried to give as straight an answer as I could.
+
+Also, you might consider not complaining anonymously.
+
+-- AlexSchroeder
 
 == Wikia article about setting up Emacs ==
 

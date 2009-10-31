@@ -1,6 +1,6 @@
 Unless the concept of saving old conversations on disk creeps you out, you'll probably find useful the following code, which makes [[rcirc]] do just that.  Thanks to TrentBuck for writing it.
 
-If you are using Emacs 23, you'll find built-in support for logging -- see `rcirc-log-flag'.
+If you are using Emacs 23, you'll find built-in support for logging -- see `rcirc-log-flag' and `rcirc-log-directory'.
 
  ;;; Minimal logging to `~/.rcirc-logs/channel'
  ;;; by courtesy of Trent Buck.
