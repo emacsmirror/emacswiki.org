@@ -44,5 +44,21 @@ care of this.
 Thanks for pointing me to the flyspell-generic-check-word-predicate
 variable. -- MattLundin
 
+[new]
+As I often need to switch between English and German I use this function:
+
+      (defun fd-switch-dictionary()
+      (interactive)
+      (let* ((dic ispell-current-dictionary)
+    	 (change (if (string= dic "deutsch8") "english" "deutsch8")))
+        (ispell-change-dictionary change)
+        (message "Dictionary switched from %s to %s" dic change)
+        ))
+    
+      (global-set-key (kbd "<f8>")   'fd-switch-dictionary)
+    
+
+- [[diesch]] -
+
 ----
 CategoryModes | CategorySpelling

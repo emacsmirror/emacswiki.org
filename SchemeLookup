@@ -6,3 +6,5 @@ To get scheme-lookup do
   darcs get http://twb.ath.cx/~twb/canon/scheme-lookup/
 
 then follow the instructions at the top of scheme-lookup.el.  It should all be pretty self-explanatory.
+
+(But that site is a dead link as of 2009-10-31).

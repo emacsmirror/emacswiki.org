@@ -1,10 +1,8 @@
 With library Lisp:column-marker.el you can highlight a column (vertical line) of text. In fact, you can highlight any number of such columns -- 3 such highlight "'''column markers'''" are provided by default, but you can easily define more.
 
-This is especially useful for languages like COBOL or Fortran where certain columns have special meaning.  It is also handy for aligning text across long vertical distances. Multi-column characters, such as `TAB' are treated correctly.
+This is especially useful for languages like COBOL or Fortran where certain columns have special meaning. It is also handy for aligning text across long vertical distances. Multi-column characters, such as `TAB' are treated correctly.
 
-Commands `column-marker-1', `column-marker-2', and
-`column-marker-3' each highlight a given column (using different
-background colors, by default). The behavior of each command is the same, and depends on the prefix argument, as follows:
+Commands `column-marker-1', `column-marker-2', and `column-marker-3' each highlight a given column (using different background colors, by default). The behavior of each command is the same, and depends on the prefix argument, as follows:
 
 * With ''no'' prefix argument, each highlights the ''current'' column (where the TextCursor is).
 
@@ -14,70 +12,67 @@ background colors, by default). The behavior of each command is the same, and de
 
 * With `C-u C-u', each ''turns off all'' column highlighting.
 
-If two commands highlight the same column, the last-issued
-highlighting command shadows the other -- only the last-issued
-highlighting is seen.  If that "topmost" highlighting is then
-turned off, the other highlighting for that column will show
-through.
+If two commands highlight the same column, the last-issued highlighting command shadows the other -- only the last-issued highlighting is seen. If that "topmost" highlighting is then turned off, the other highlighting for that column will show through.
 
-== Examples == 
+== Examples ==
 
-* `M-x column-marker-1' highlights the column where the cursor is, in
-`column-marker-1-face'.
+* `M-x column-marker-1' highlights the column where the cursor is, in `column-marker-1-face'.
 
-* `C-u 70 M-x column-marker-2' highlights column 70 in
-`column-marker-2-face'.
+* `C-u 70 M-x column-marker-2' highlights column 70 in `column-marker-2-face'.
 
-* `C-u 70 M-x column-marker-3' highlights column 70 in
-`column-marker-3-face'.  The `column-marker-2-face' highlighting no
-longer shows, because it is now shadowed by the `column-marker-3-face' highlighting.
+* `C-u 70 M-x column-marker-3' highlights column 70 in `column-marker-3-face'. The `column-marker-2-face' highlighting no longer shows, because it is now shadowed by the `column-marker-3-face' highlighting.
 
-* `C-u M-x column-marker-3' turns off highlighting for `column-marker-3',
-so `column-marker-2-face' highlighting shows again for column 70.
+* `C-u M-x column-marker-3' turns off highlighting for `column-marker-3', so `column-marker-2-face' highlighting shows again for column 70.
 
 * `C-u C-u M-x column-marker-1' (or `-2' or `-3') erases ''all'' column highlighting.
 
-These commands use `font-lock-fontify-buffer', so syntax
-highlighting (`font-lock-mode') must be turned on.  There might be
-a performance impact during refontification.
-
+These commands use `font-lock-fontify-buffer', so syntax highlighting (`font-lock-mode') must be turned on. There might be a performance impact during refontification.
 
 == Installation ==
 
-Place <tt>[[column-marker.el]]</tt> in your load path, and put this in
-your init file (`##.emacs##'):
+Place <tt>[[column-marker.el]]</tt> in your load path, and put this in your init file (`##.emacs##'):
 
- (require 'column-marker)
+    (require 'column-marker)
 
 Other init file suggestions (examples):
 
 * Highlight column 80 in foo mode:
 
-        (add-hook 'foo-mode-hook (lambda () (interactive) (column-marker-1 80)))
+    (add-hook 'foo-mode-hook (lambda () (interactive) (column-marker-1 80)))
 
 * Use `C-c m' interactively to highlight with `column-marker-1-face':
 
-        (global-set-key [?\C-c ?m] 'column-marker-1)
-
+    (global-set-key [?\C-c ?m] 'column-marker-1)
 
 == Defining Additional Column Markers ==
 
 This is all you need to do, to create an additional column marker:
 
-  (column-marker-create column-marker-4 my-favorite-face)
+    (column-marker-create column-marker-4 my-favorite-face)
+
+
+
+== See also ==
+
+* HighlightCurrentColumn -- Highlight the current column when Emacs is idle, or momentarily, or in such a way that the highlighting tracks the cursor. An extension of <tt>[[column-marker.el]]</tt>.
+* ModeLinePosition for a way to highlight the column number in the mode-line when the cursor is past some limit column you set.
+* MarginMode
+* EightyColumnRule
+
+
 
 == Problems ==
 
-
 [new]
-
-Be careful when using, it slowed my Emacs down to unrecoverable levels.  -- [[nschum]]
+Be careful when using, it slowed my Emacs down to unrecoverable levels. -- [[nschum]]
 
 ----
 
 [new]
-Hey, I love column-marker.el, but it uses a lot of CPU when there are a lot of long lines.  It spews this to "*Messages*" every time I scroll with a long line in range:
-<pre>Invalid face reference: point
+Hey, I love column-marker.el, but it uses a lot of CPU when there are a lot of long lines. It spews this to "*Messages*" every time I scroll with a long line in range:
+
+<pre>
+Invalid face reference: point
 Invalid face reference: start
 Invalid face reference: let*
 Invalid face reference: end
@@ -101,31 +96,37 @@ Invalid face reference:
 -- JohnHarris
 
 [new:DrewAdams:2009-10-29 22:14 UTC]
-Please send a bug report to the author and maintainer of <tt>[[column-marker.el]]</tt>, [[Rick Bielawski]]. I am not the maintainer of that library. I did provide a few updates to the library, with Rick's permission, but he maintains the library.
+Please send a bug report to the author and maintainer of <tt>[[column-marker.el]]</tt>, [[Rick Bielawski]] (RGB). I am not the maintainer of that library. I did provide a few updates to the library, with Rick's permission, but he maintains the library.
 
 You will probably need to provide some more info, by debugging this a bit. And always provide a clear recipe to reproduce the problem, starting with ##emacs -Q##. And please specify what version of Emacs you use etc. -- DrewAdams
 
-
 [new]
-I contacted the author and got his latest version, which works fine.  I contacted you here, because I think your changes broke something.
+I contacted the author and got his latest version, which works fine. I contacted you here, because I think your changes broke something.
 
-Using emacs 22.3.1 (x86_64-redhat-linux-gnu, GTK+ Version 2.14.7), start with -Q, then M-x load-file column-marker.el, then go a few spaces over in `*scratch*' and do M-x column-marker-1, then put some more spaces to cause the highlighting to happen, then look at the `*Messages*' buffer to see the output.  Just clicking in the `*Messages*' buffer itself causes tons more output (same kind of error) to spew.
+Using emacs 22.3.1 (x86_64-redhat-linux-gnu, GTK+ Version 2.14.7), start with -Q, then M-x load-file column-marker.el, then go a few spaces over in `*scratch*' and do M-x column-marker-1, then put some more spaces to cause the highlighting to happen, then look at the `*Messages*' buffer to see the output. Just clicking in the `*Messages*' buffer itself causes tons more output (same kind of error) to spew.
 
 Hope this helps. -- JohnHarris
 
-----   
+[new:DrewAdams:2009-10-31 20:50 UTC]
+I'm trying to follow up on this, but it's not obvious. Dunno what [[Rick Bielawski|RGB]]'s latest version is (I emailed him, but have not gotten a reply), but his original version just used a [[regexp]] where the version I posted uses a function to move to the proper column. A regexp avoids the problem but is more limited -- a move-to function is needed for some of the features.
 
-'''See also:'''
-
-* HighlightCurrentColumn -- Highlight the current column when Emacs is idle, or momentarily, or in such a way that the highlighting tracks the cursor. An extension of <tt>[[column-marker.el]]</tt>.
-* ModeLinePosition for a way to highlight the column number in the mode-line when the cursor is past some limit column you set.
-* MarginMode
-* EightyColumnRule
+The problem appears to be an Emacs bug (see bug #4835, [http://emacsbugs.donarmstrong.com/cgi-bin/bugreport.cgi?bug=4835]). So far I haven't found a solution or a workaround. You are of course welcome to use the original version if it suits your needs. -- DrewAdams
 
 
 
+== Discussion (other than problems) == 
 
------
+=== Indentation guides? ===
+
+Could this be used to display [http://stackoverflow.com/questions/1587972/how-to-display-indentation-guides-in-emacs indentation guides]? -- [[m240j.studby.ntnu.no]]
+
+[new:DrewAdams:2009-10-31 20:53 UTC]
+Sure, why not? -- DrewAdams
+
+
+
+----
+
 CategoryEditing
 CategoryFilling
 CategoryDisplay

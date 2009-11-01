@@ -44,10 +44,28 @@ By default, when you visit a bookmark that requires relocation, the bookmark is 
 
 
 
+[:SaveMenuListState]
+== Menu-List State Is Saved ==
+
+'''Bookmark+''' greatly enhances the so-called "menu list", buffer `##*Bookmark List*##', which is displayed when you use command `bookmark-bmenu-list' (`C-x r l'). These enhancements are described in other sections, below.
+
+Many of the enhancements let you display, sort, and mark various subsets of your complete set of bookmarks. A major '''Bookmark+''' feature is that when you quit the menu list (using `q') or you quit Emacs, the current state is saved.
+
+So if, for example, when you quit the menu list you are showing only bookmarks to Info nodes and UNIX manual pages, sorted a particular way, and with some of them marked for particular processing, then the next time you open the list the same state is restored: the same set of bookmarks is shown, in the same order, with the same markings.
+
+One way to use this is as a way of configuring how you want the menu list to start out in a new Emacs session -- your bookmarks homepage, as it were.
+
+You can turn off this automatic state saving, if you want, by customizing option '''`bookmarkp-bmenu-state-file'''' to `nil'. And you can toggle this option at any time, using '''`C-t'''' in the menu list. In particular, if you want your next visit to the menu list to start out with a previously recorded state instead of the current state, just hit `C-t' before quitting the menu list or Emacs.
+
+
+
+
+
+
 [:BookmarkTypesHighlighted]
 == Bookmark Types Are Highlighted ==
 
-In '''Bookmark+'''', bookmarks are highlighted in the bookmark list (`bookmark-bmenu-list', `C-x r l'), to indicate their type:
+In '''Bookmark+'''', bookmarks are highlighted in the menu list, to indicate their type:
 
 * non-file buffers
 * local files with regions

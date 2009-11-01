@@ -117,6 +117,13 @@ Is there any bugtracker that can handle this?
 (I suppose we should use one of the bugtrackers available and hosted on some good site like Launchpad.)
 -- LennartBorgman
 
+[new]
+Will you set something up? I'm willing to write some code to connect elisp sources hosted on Emcs Wiki to link to an external bugtracker. -- Alex
+
+[new]
+I believe we maybe should think more about the structure needed first.
+And how we can lower the threshold for users to use it (or perhaps whether there are any benefits of lowering the threshold?).
+
 == User Names on RecentChanges Page ==
 
 It would be good if user names were treated normally at RecentChanges, that is, to show a non-existant page like a non-existant page is usually shown. People might be encouraged to follow it and create a home page.
