@@ -739,6 +739,21 @@ I just don't see the use case for such equal incrementing. If you convince me of
 
 But as I said, most source-code changes are incremental, meaning minor changes to the lists. And I need to note the change (addition, removal, renaming) in my change log anyway. Updating source code involves many such housekeeping tasks; updating these lists is only a minor part of what's involved. I do agree that this could be mechanized. Thierry made a good start, but he doesn't want to break that code out as a separate library. If you are interested in a tool to do this, I suggest contacting Thierry. -- DrewAdams
 
+
+[new]
+<pre>
+1.
+;; Incrementing (decrementing) all of R, G, B equally at the same time is essentially the same thing as incrementing (decrementing) the V component. If you are increasing the red, blue, and green light equally, then you are increasing the brightness.
+oh, I do not mean that, what I want is not increasing the red, blue, and green  equally，is not *equally*.
+Increasing of R,G,B is not mean increasing R,G,B equally, it like moving cursor on the colors square, iterate all colors.
+Sorry for my poor english, :(, could you understand my meaning?
+
+2. There have command doremi-bg-color-name and doremi-face-bg in doremi, but do not have doremi-fg-color-name, doremi-face-fg-color-name, 
+I think it's useful, could you add it to doremi?
+</pre>
+
+-- [[ahei]]
+
 ----
 [:SeeAlso]
 == See Also ==

@@ -654,15 +654,14 @@ If optional arg `id' is used refresh infos of this `id'."
 (defun xml-weather-start-ticker-timers ()
   "Start all timers used by `xml-weather-run-ticker'.
 `xml-weather-ticker-timer1' update xml-weather buffer all the `xml-weather-timer-delay'
-`xml-weather-ticker-timer2' run an idle timer every 65 sec."
+`xml-weather-ticker-timer2' run an idle timer every 120 sec."
   (setq xml-weather-ticker-timer1
         (run-with-timer 60
                         xml-weather-timer-delay
                         #'(lambda ()
                             (xml-weather-get-info-on-id xml-weather-default-id))))
   (setq xml-weather-ticker-timer2
-        (run-with-idle-timer 65
-                             xml-weather-timer-delay
+        (run-with-idle-timer 120 'repeat
                              #'(lambda ()
                                  (xml-weather-run-message-builtin)))))
   
@@ -691,3 +690,7 @@ A rolling message will be sent all the 65 sec and updated all the `xml-weather-t
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; xml-weather.el ends here
+
+
+[new]
+hi, can you provide some screenshots? 3x  -- [[ahei]]

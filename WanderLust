@@ -2,9 +2,9 @@ Wanderlust is a mail/news reader for Emacs(en) apparently written from the groun
 
 Homepage: http://www.gohome.org/wl/
 
-Download: ftp://ftp.gohome.org/wl/ (other mirrors: see website)
+Download%%/%%Snapshots: http://www.jpl.org/elips/wl/ (ftp://ftp.gohome.org/wl/ needs authentication)
 
-Snapshots: ftp://ftp.jpl.org/wl/snapshots/
+Current stable version is 2.14.0 and current unstable version is 2.15.7. The website is not up to date, but you can get information and help via the mailing list at wl-en@lists.airs.net.
 
 == Features ==
 

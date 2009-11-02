@@ -1,29 +1,6 @@
-Official site: [http://www.iro.umontreal.ca/~monnier/elisp/#haskell-mode Haskell Mode]
+Official site: [http://projects.haskell.org/haskellmode-emacs/]
 
-Older site: [http://www.haskell.org/haskell-mode/ Haskell Mode]
-
-haskell-mode 2.3 does not correctly indent else/then clauses. To let else/then be cycled,
-find ((looking-at "\\(?:in\\|of\\then\\|else\\)\\>")  which should be on or about line 1189
-and change it to ((looking-at "\\(?:in\\|of\\)\\>"). This isn't a true fix but it does keep else/then
-keyword from being flushed with the `if'.
-
-Some customisations to make the haskell editing experience a bit smoother:
-
- (add-hook 'haskell-mode-hook
-           #'(lambda ()
-               (setq comment-padding " ")
-               (setq comment-start "--")))
-
- (add-to-list 'auto-mode-alist '("\\.hs\\'" . haskell-mode))
-
-
-
-If you use FillAdapt:
-
- (add-to-list 'filladapt-token-table '("-- " haskell-comment))
- (add-to-list 'filladapt-token-match-table '(haskell-comment haskell-comment))
- (add-to-list 'filladapt-token-conversion-table '(haskell-comment . exact))
-
+Haskell-mode 2.7 has different setup from earlier versions. Make sure to read the README and check it against your .emacs.
 
 -- ClausBrunzema
 

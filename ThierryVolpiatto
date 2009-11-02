@@ -8,8 +8,6 @@ I am also one of the maintainers of
 
 * Lisp:anything-config.el
 
-* Lisp:bookmark+.el
-
 Here are some elisp codes i wrote:
 
 * Lisp:warn-mail.el Warn you when you have a new mail in your mail directory
@@ -26,6 +24,9 @@ Here are some elisp codes i wrote:
 
 * Lisp:traverselisp.el The complete elisp version of traverse. Nothing else is needed
 Look at TraverseDirectory for more info.
+
+* bookmark-extensions.el: Extensions for standard Emacs bookmarks.
+  Use hg clone http://mercurial.intuxication.org/hg/emacs-bookmark-extension
 
 * Lisp:anything-traverse.el Anything interface for some functionalities of traverse.
 

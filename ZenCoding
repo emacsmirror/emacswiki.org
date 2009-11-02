@@ -1,0 +1,86 @@
+== What it is ==
+Zen Coding refers to a neat way to write markup quickly.
+
+The following blogs provide sumary and examples:
+
+http://www.456bereastreet.com/archive/200909/write_html_and_css_quicker_with_with_zen_coding/
+
+http://mondaybynoon.com/2009/08/17/the-art-of-zen-coding-bringing-snippets-to-a-new-level/ (skip the cruft about snippets)
+
+I'll quote the blog:
+
+<i>zen-coding includes an entirely new angle to writing markup, and it facilitates the feature by letting you write HTML based on CSS selectors. It’s so simple it’s confusing at first. I think it’s best explained by doing a quick before and after. If you were to type:</i>
+
+    div#name.one.two
+
+<i> and follow that with the zen-coding plugin keystroke (CMD+E in TextMate), the plugin will reformat the line as:</i>
+
+    <div id="name" class="one two"></div>
+
+== A Haskell implementation ==
+
+I've implemented a program in Haskell to do what I've surmised from the examples: http://gist.github.com/223655
+
+Save it as zencoding.hs and compile it with ghc --make zencoding -O2 and pop the resulting program wherever you want.
+
+Here's an example:
+
+    chris@chrisamilo:~/Haskell$ zencoding
+    div#news.module>(div.header+div.body>ul>li#item-$*5)
+    <div id="news" class="module">
+       <div class="header">
+       </div>
+       <div class="body">
+          <ul>
+             <li id="item-1">
+             </li>
+             <li id="item-2">
+             </li>
+             <li id="item-3">
+             </li>
+             <li id="item-4">
+             </li>
+             <li id="item-5">
+             </li>
+          </ul>
+       </div>
+    </div>
+
+= Using it in Emacs =
+
+You can use it reasonably well from Emacs:
+
+    (defun zencode ()
+      "Zen Coding utility."
+      (interactive)
+      (shell-command-on-region
+       (line-beginning-position)
+       (line-end-position)
+       "/home/chris/Programs/bin/zencoding" ;; change to wherever yours is
+       t)
+       ;; if you want it to auto indent
+      (save-excursion
+        (mark-page)
+        (indent-for-tab-command)))
+    (define-key html-mode-map (kbd "\C-c \C-v") 'zencode)
+
+
+[[image:ZenCodeSample]]
+
+Any suggestions/helpful ideas please feel free.
+
+[new]
+Yes, please rewrite it in elisp ... ;-)
+
+Would that be hard for some reason?
+[new]
+Haha. Yes, I originally briefly considered writing it purely in elisp, but I had very little time and my elisp-fu is weak. Just knocked it up so I can use it at work. I think it would be pretty easy work for someone who's written a couple elisp parsers. Anyhoo, the idea's out there so if anyone wants to write some Zen Coding library in elisp that would be awesome! =) -- [[ChrisDone]]
+
+[new]
+Me too hope someone will write it.
+
+Does it require a complicated parser?
+Or is a simple recursive descent parser enough?
+
+[new]
+Nah, no complicated parser. A simple recursive descent parser is enough. All you need is operator precedence ('>' vs '+') and one or two bits for tag#id.class[prop=value,prop2=value2] syntax (though I added the [prop=value] -- I don't know if this is Zen Coding proper, but it's inspired by CSS selectors). Assuming we share an approximately similar definition of "simple". -- [[ChrisDone]]
