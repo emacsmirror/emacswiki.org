@@ -21,7 +21,7 @@
 ;; Boston, MA 02110-1301, USA.
 
 ;;; Commentary:
-
+;;
 ;; This library dired-lis (dired letter isearch) let you isearch in
 ;; `dired-mode'.  You only need press letter like in TC(Total commander), not
 ;; need press some keys to active isearch(in dired-isearch, or in dired-aux in
@@ -34,23 +34,30 @@
 ;; always even if you press enter in sub directory until you press C-g or other
 ;; keys to abort isearch.
 
-;; Letter isearch in dired-mode.  Copy dired-lis.el to your load-path and add to
-;; your .emacs:
-
+;;; Installation:
+;;
+;; Copy dired-lis.el to your load-path and add to your .emacs:
+;;
 ;; (require 'dired-lis)
-
+;;
 ;; Then toggle letter isearch with M-x dired-lcs-mode.  To enable letter isearch
 ;; in all dired-mode buffers, use M-x global-dired-lcs-mode.
 
 ;;; History:
-
-;; 25/10/2009 - initial version 1.0.
+;;
+;; 2009-11-2
+;;      * Add color for mode line `dired-lis-mode'
+;;
+;; 2009-10-25
+;;      * initial version 1.0.
 
 ;;; Code:
 
 (require 'dired-isearch)
 
-(defgroup dired-lis nil "Minor mode for making letter isearch in `dired-mode'.")
+(defgroup dired-lis nil
+  "Minor mode for making letter isearch in `dired-mode'."
+  :prefix "dired-lis-")
 
 (defcustom dired-lis-isearch-command 'dired-isearch-forward
   "Default dired isearch command."
@@ -76,19 +83,36 @@
   "Automatically wrap isearch in function `dired-lis-mode' or not."
   :type 'boolean
   :group 'dired-lis)
+(defcustom dired-lis-mode-line-format (propertize "LIS" 'face 'dired-lis-mode-line-face)
+  "Mode line format of function `dired-lis-mode'."
+  :group 'dired-lis)
+(defcustom dired-lis-letter-list nil
+  "Letter list which bind to `dired-lis-isearch-command'."
+  :group 'dired-lis)
+
+(defface dired-lis-mode-line-face
+  '((((type tty pc)) :foreground "yellow" :background "magenta")
+    (t (:background "dark slate blue" :foreground "yellow")))
+  "Face used highlight `dired-lis--mode-line-format'.")
 
 (defcustom dired-lis-mode-hook nil
   "*Hook called when dired-lis minor mode is activated."
   :type 'hook
   :group 'dired-lis)
 
-(defvar dired-lis-letter-list nil "*Letter list which bind to `dired-lis-isearch-command'.")
-
 (defvar dired-lis-mode-map (make-keymap) "Keymap for letter isearch in `dired-mode'.")
 
 (defvar dired-lis-last-isearch-command nil "Last isearch command in `dired-mode'.")
-(defvar dired-lis-isearch-always nil "ISearch always in `dired-mode'.")
-(defvar dired-lis-point-isearch-start nil "Point when start isearch.")
+(defvar dired-lis-isearch-always       nil "ISearch always in `dired-mode'.")
+(defvar dired-lis-point-isearch-start  nil "Point when start isearch.")
+
+;; must do this
+(put 'dired-lis-mode-line-format 'risky-local-variable t)
+
+(setq minor-mode-alist
+      (append
+       `((dired-lis-mode " ") (dired-lis-mode ,dired-lis-mode-line-format))
+       (delq (assq 'dired-lis-mode minor-mode-alist) minor-mode-alist)))
 
 (defun dired-lis-get-letter-list()
   "Get letter list to bind to `isearch-command' in `dired-mode'."
@@ -141,7 +165,6 @@
 Entry to this mode calls the value of `dired-lis-mode-hook'
 if that value is non-nil.  \\<dired-lis-mode-map>"
   :group 'dired-lis
-  :lighter " LIS"
   (unless (equal major-mode 'dired-mode)
     (error "Current major-mode is not dired-mode"))
   (if dired-lis-mode

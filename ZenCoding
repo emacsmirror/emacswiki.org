@@ -84,3 +84,13 @@ Or is a simple recursive descent parser enough?
 
 [new]
 Nah, no complicated parser. A simple recursive descent parser is enough. All you need is operator precedence ('>' vs '+') and one or two bits for tag#id.class[prop=value,prop2=value2] syntax (though I added the [prop=value] -- I don't know if this is Zen Coding proper, but it's inspired by CSS selectors). Assuming we share an approximately similar definition of "simple". -- [[ChrisDone]]
+
+[new]
+Whipped something up to get it started in elisp. http://gist.github.com/224572 My elisp is awful but it does the job... Hard part's over. Might pick this up again tomorrow to add class and identifer syntax, and properties. Anyone else wanna pick it up feel free. -- [[ChrisDone]]
+
+[new]
+How nice!
+May I suggest that you use a prefix "zencode-" on all defined symbols?
+
+[new]
+Ahh, I knew there was something missing! I'll do that on my next update. Thanks! -- [[ChrisDone]]

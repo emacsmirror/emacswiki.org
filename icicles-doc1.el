@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Sep 26 10:55:03 2009 (-0700)
+;; Last-Updated: Mon Nov  2 10:03:35 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 24772
+;;     Update #: 24776
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -324,6 +324,7 @@
 ;;
 ;;  (@file :file-name "icicles-doc2.el" :to "Dot, Dot, Dot")
 ;;  (@file :file-name "icicles-doc2.el" :to "Fuzzy Completion")
+;;    (@file :file-name "icicles-doc2.el" :to "Partial Completion")
 ;;    (@file :file-name "icicles-doc2.el" :to "Scatter-Match Completion")
 ;;    (@file :file-name "icicles-doc2.el" :to "Fuzzy-Match Completion")
 ;;
@@ -2307,10 +2308,13 @@
 ;;  `${HOME}', for example.
 ;;
 ;;  Note: Starting with Emacs 23, if option
-;;  `icicle-prefix-completion-is-basic-flag' is nil, Icicles prefix
-;;  completion (`TAB') will complete an environment variable during
-;;  file-name completion.  This is in addition to the traditional
-;;  shell expansion of a variable when you hit `RET'.
+;;  `icicle-TAB-completion-methods' includes `vanilla', and you choose
+;;  `vanilla' completion for `TAB' (by cycling using `C-(' or by
+;;  customizing `icicle-TAB-completion-methods' to use `vanilla' as
+;;  the default), then Icicles `TAB' completion will complete an
+;;  environment variable during file-name completion.  This is in
+;;  addition to the traditional shell expansion of a variable when you
+;;  hit `RET'.
 ;;
 ;;  Tip: Because slash (`/') is about the only non-word syntax
 ;;       character that is likely to appear in file-name completions,

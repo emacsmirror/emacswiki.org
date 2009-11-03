@@ -723,7 +723,8 @@ The following minibuffer bindings insert text in the minibuffer:
 
 The following minibuffer bindings let you ''toggle'' '''Icicles''' options or cycle among alternative Icicles behaviors.
 
-[:icicle-next-apropos-match-function]
+[:icicle-next-TAB-completion-method]
+[:icicle-next-S-TAB-completion-method]
 [:icicle-toggle-case-sensitivity]
 [:icicle-toggle-ignored-extensions]
 [:icicle-change-alternative-sort-order]
@@ -731,7 +732,6 @@ The following minibuffer bindings let you ''toggle'' '''Icicles''' options or cy
 [:icicle-toggle-C-for-actions]
 [:icicle-toggle-dot]
 [:icicle-toggle-expand-to-common-match]
-[:icicle-toggle-fuzzy-completion]
 [:icicle-toggle-hiding-common-match]
 [:icicle-toggle-highlight-all-current]
 [:icicle-toggle-highlight-historical-candidates]
@@ -760,14 +760,14 @@ The following minibuffer bindings let you ''toggle'' '''Icicles''' options or cy
 * '''`##C-^##'''' -- `icicle-toggle-remote-file-testing'
 * '''`##C-^##'''' -- `icicle-toggle-highlight-all-current' (search)
 * '''`<tt>C-#</tt>'''' -- `icicle-toggle-incremental-completion'
-* '''`##C-(##'''' -- `icicle-toggle-fuzzy-completion'
+* '''`##C-(##'''' -- `icicle-next-TAB-completion-method'
 * '''`##C-`##'''' -- `icicle-toggle-regexp-quote'
 * '''`##C-M-`##'''' -- `icicle-toggle-literal-replacement' (search)
 * '''`##C-$##'''' -- `icicle-toggle-transforming': removal of duplicates
 * '''`C-pause'''' -- `icicle-toggle-highlight-historical-candidates'
 * '''`M-g''''     -- `icicle-toggle-C-for-actions'
 * '''`M-q'''' -- `icicle-toggle-search-whole-word' (search)
-* '''`##M-(##'''' -- `icicle-next-apropos-match-function'
+* '''`##M-(##'''' -- `icicle-next-S-TAB-completion-method'
 * '''`##M-~##'''' -- `##icicle-toggle-~-for-home-dir##'
 * '''`##M-_##'''' -- `icicle-toggle-ignored-space-prefix'
 * '''`##C-M-_##'''' -- `icicle-toggle-proxy-candidates'

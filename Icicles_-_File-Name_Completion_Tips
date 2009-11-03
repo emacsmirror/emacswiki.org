@@ -29,7 +29,7 @@ subdirectories.
 
 * non-`nil' -- When this option is non-`nil', you might want to use a
 function such as `icicle-dirs-last-p' for option
-`icicle-sort-function', to prevent cycling depth first
+`icicle-sort-function', to prevent cycling depth-first
 into the subdirectories.
 
 * `nil' -- When this option is `nil', you can still choose to cycle

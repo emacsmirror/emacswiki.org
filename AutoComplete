@@ -237,6 +237,9 @@ Thanks so much! I fixed the problem and commit to the repository. Please check i
 [new]
 What about completion with candidates from other buffers? I've tried to add ac-source-words-in-all-buffer to ac-sources, but that didn't give any effect :(
 
+[new]
+hi, my enhancement of auto-complete, AutoCompletePlus, :) -- [[ahei]]
+
 ----
 CategoryCompletion
 

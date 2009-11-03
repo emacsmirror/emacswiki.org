@@ -1,27 +1,24 @@
 Because JSP is a mixture of Java and HTML, the options for editing JSP are tied up with the options for editing HTML.
 
-==Using nXhtml==
+==Using MultipleModes (recommended)==
 
-I have tried to add some support for JSP to [NxhtmlMode nXhtml].
+This is the approach that is usually recommended.
+The basic idea with this option is using a MultipleModes package (usually MuMaMo, previously mmm-mode) to automagically switch between an HTML editing mode (like HtmlMode or PsgmlMode) and a Java editing mode (like JavaDevelopmentEnvironment) as you move through a JSP buffer. 
+
+
+===Using nXhtml/MuMaMo===
+
+[NxhtmlMode nXhtml] has builtin support for JSP.
 This support uses java-mode inside <% ... %> and nxhtml-mode outside.
-Since I am not using JSP myself I would be glad for comments and suggestions.
---LennartBorgman
+(Other construct will be supported when someone asks for it.)
 
-==Using HtmlMode==
+All you have to do to use this is download nXhtml and add one line to your .emacs to load it.
+After this you can just do "M-x jsp-html-mumamo-mode" or "M-x jsp-nxhtml-mumamo-mode".
 
-The default HtmlMode in Emacs 20 doesn't know anything about JSP.
 
-==Using PsgmlMode=
+===Using MMM===
 
-The default html-mode in XEmacs 21 is based on PsgmlMode and also doesn't know anything about JSP.
-
-==Using HtmlHelperMode==
-
-Some people claim that HtmlHelperMode does indentation better than HtmlMode and also has built-in support for JSP. I haven't been able to verify either one of these claims. In my installation (XEmacs 21 on Debian), HtmlHelperMode just indents everything to the left. It does a poor job of colorizing even basic HTML. And it does not support JSP. Maybe somebody else has more info about how to use HtmlHelperMode properly to edit JSP?
-
-==Using MultipleModes==
-
-This is the approach that is usually recommended. The basic idea with this option is using a MultipleModes package (usually mmm-mode) to automagically switch between an HTML editing mode (like HtmlMode or PsgmlMode) and a Java editing mode (like JavaDevelopmentEnvironment) as you move through a JSP buffer. I have never been able to get it to work correctly. The HtmlModeDeluxe has good instructions about how to set up a 'fancy HTML' editing mode based on mmm-mode, but it does not include any specific support for editing the Java portion of JSP files. You can integrate the following code from http://mail.gnu.org/archive/html/help-emacs-windows/2002-09/msg00044.html into the HtmlModeDeluxe code to get JSP support:
+I have never been able to get it to work correctly. The HtmlModeDeluxe has good instructions about how to set up a 'fancy HTML' editing mode based on mmm-mode, but it does not include any specific support for editing the Java portion of JSP files. You can integrate the following code from http://mail.gnu.org/archive/html/help-emacs-windows/2002-09/msg00044.html into the HtmlModeDeluxe code to get JSP support:
 
     (mmm-add-group 'jsp
      `((jsp-code
@@ -82,7 +79,25 @@ Specifically, here's how I did it:
 
 This is helpful in the sense that it (1) highlights the non-HTML portions of the page, and (2) colorizes the Java portions correctly according to the JDE rules. However, the indentation is not perfect, apparently because MMM Mode only looks at one region at a time -- so Java constructs interspersed with HTML look funky. From reading the MMM Mode mailing list at http://sourceforge.net/mailarchive/forum.php?forum=mmm-mode-discuss, it seems that the authors are aware of this problem, but not quite sure how to handle it.
 
-==Using jsp-mode==
+
+==Using Single Major Modes (not recommended)==
+
+None of these are said to work very well with JSP.
+
+===Using HtmlMode===
+
+The default HtmlMode in Emacs 20 doesn't know anything about JSP.
+
+===Using PsgmlMode==
+
+The default html-mode in XEmacs 21 is based on PsgmlMode and also doesn't know anything about JSP.
+
+===Using HtmlHelperMode===
+
+Some people claim that HtmlHelperMode does indentation better than HtmlMode and also has built-in support for JSP. I haven't been able to verify either one of these claims. In my installation (XEmacs 21 on Debian), HtmlHelperMode just indents everything to the left. It does a poor job of colorizing even basic HTML. And it does not support JSP. Maybe somebody else has more info about how to use HtmlHelperMode properly to edit JSP?
+
+
+===Using jsp-mode===
 
 This is a mode written specifically for JSP files and based on xml-mode, which is itself derived from psgml-mode. You can get the source code from http://www.crossleys.org/~jim/work/jsp.el. You can get information about where to install such files from: Geocities:kensanata/emacs-pkg-install-howto.html. Once you have the code on your load path, you can configure it by adding the following lines to your .emacs:
 

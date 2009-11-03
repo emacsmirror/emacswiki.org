@@ -45,6 +45,14 @@ This is just an untested guess on what to also try, so no guarantees that it wil
 
 Tried your suggestion. Unfortunately, it doesn't help. The problem is the same.
 
+[new]
+
+A solution, or rather workaround, is to enable `visual-line-mode' for text-modes only:
+
+    (add-hook 'text-mode-hook 'turn-on-visual-line-mode)
+
+I find this superior to enabling `visual-line-mode' globally, because I prefer the old behavior when editing code or configuration files.
+
 ----
 CategoryEditing
 CategoryFilling

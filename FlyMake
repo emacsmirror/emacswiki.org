@@ -189,6 +189,21 @@ From the comment to this code:
 : error. This saves having to mouse over the error, which is a
 : keyboard user's annoyance
 
+RichardRiley: The solution below was from Dave Love on gnu.emacs.help:-
+
+<pre>
+
+ (defun my-flymake-show-help ()
+   (when (get-char-property (point) 'flymake-overlay)
+     (let ((help (get-char-property (point) 'help-echo)))
+       (if help (message "%s" help)))))
+
+ (add-hook 'post-command-hook 'my-flymake-show-help)
+
+
+</pre>
+
+
 == python-mode ==
 
 Is it possible to use pychecker with flymake? -- Anon.

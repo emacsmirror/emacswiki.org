@@ -741,18 +741,13 @@ But as I said, most source-code changes are incremental, meaning minor changes t
 
 
 [new]
-<pre>
-1.
-;; Incrementing (decrementing) all of R, G, B equally at the same time is essentially the same thing as incrementing (decrementing) the V component. If you are increasing the red, blue, and green light equally, then you are increasing the brightness.
+1. Incrementing (decrementing) all of R, G, B equally at the same time is essentially the same thing as incrementing (decrementing) the V component. If you are increasing the red, blue, and green light equally, then you are increasing the brightness.
 oh, I do not mean that, what I want is not increasing the red, blue, and green  equally，is not *equally*.
 Increasing of R,G,B is not mean increasing R,G,B equally, it like moving cursor on the colors square, iterate all colors.
 Sorry for my poor english, :(, could you understand my meaning?
 
 2. There have command doremi-bg-color-name and doremi-face-bg in doremi, but do not have doremi-fg-color-name, doremi-face-fg-color-name, 
-I think it's useful, could you add it to doremi?
-</pre>
-
--- [[ahei]]
+I think it's useful, could you add it to doremi? -- [[ahei]]
 
 ----
 [:SeeAlso]

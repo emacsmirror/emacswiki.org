@@ -1,19 +1,21 @@
 Sacha Chua
-sacha@free.net.ph
-http://sacha.free.net.ph
+sacha@sachachua.com
+http://sachachua.com
 
 * I am [::sachac] on EmacsChannel. 
-* I maintain PlannerMode, EmacsWikiMode, and RememberMode.
-* You can subscribe to my blog at http://sacha.free.net.ph/notebook/wiki/blog.rdf.
-* [http://sacha.free.net.ph/notebook/xml/foaf.rdf FOAF File]
+* I used to maintain PlannerMode, EmacsWikiMode, and RememberMode.
+* You can subscribe to my blog at http://sachachua.com
 
-<rss http://sacha.free.net.ph/notebook/wiki/blog.rdf>
+=== Blog ===
+
+<rss http://feeds.feedburner.com/sachac>
 
 How I use Emacs
 
 === Planning ===
 
-I use PlannerMode to an insane extent. You can see the results at http://sacha.free.net.ph and read my notes at http://sacha.free.net.ph/notebook/PlannerMode.php .
+-I use PlannerMode to an insane extent. You can see the results at http://sacha.free.net.ph and read my notes at http://sacha.free.net.ph/notebook/PlannerMode.php .-
+I used to use PlannerMode a lot. Then I switched my blog to Wordpress (http://sachachua.com) and started using Emacs Org + Toodledo for my task management.
 
 === Communication ===
 
@@ -25,12 +27,17 @@ Speaking of mail... Reportmail notifies me when I receive messages. It briefly f
 
 Mail is a somewhat dangerous thing to experiment with, of course. =) I had lost some outgoing mail due to masqmail silently failing if you specify the -f flag (evil!), but some debugging later turned up a message-sendmail-f-is-evil variable I could set to t. I have since then moved to postfix so that I could use + as an address separator, so I haven't needed that.
 
+(outdated)
 Ah, yes, text messaging. SMS is pretty big here in the Philippines. I am a lazy computer geek who would rather type than fish out my cellphone and start texting. Besides, I kinda like having all of my text messages stored on my laptop - search, store, reply, and even see threaded displays. =)
 I used to use gnokii, alamin, postfix, bbdb and gnus in order to have practically seamless SMS sending. =) Here's how it works. I've set up alamin (a GSM-SMS gateway that can talk to a gnokii-supported phone) to poll my cellphone for incoming text messages and convert any such to e-mail messages from alamin+<SOMENUMBER>@localhost to sacha@localhost. I receive those messages in Gnus in my mail.text group, and BBDB steps in to fill in the name from my contact database thanks to (gnus-summary-line-format "%U%-40,40uB %S\n"), (bbdb/gnus-summary-prefer-bbdb-data t) and (bbdb/gnus-summary-prefer-real-names 'bbdb) in the group parameters. My reply is processed by postfix and piped through email2sms, a short Perl script I wrote that just invokes alamin's client program. Alamin queues the message and tries to resend it at regular intervals until it is finally sent. No more dealing with "Message failed." or lack of signal, _and_ I get a full record of all of my text messages, _and_ I can text while in class.. ;) Unfortunately, I don't have a serial port any more, and my phone is not Linux-friendly. Can't pull off this neat hack these days.
+
+(I no longer send text messages from my computer. I'm in Canada now, and text messages are expensive!)
 
 === Taking notes ===
 
 I keep all of my notes in plain text files. I find that typing on my laptop encourages me to keep more complete notes because I can type faster than I handwrite (and it's much less tiring!). AllOut makes it easy to keep my notes in outline mode. During classes, I practically transcribe what the teacher says, occasionally doing some basic outlining if the lesson has a recognizable structure. I review by going over my old notes, using the time to also organize it into some semblance of an outline. I'm moving to keeping all of my notes in PlannerMode, because then I can easily wikify it with EmacsWikiMode. That will also allow me to use PlannerMode to schedule tasks, remind me of assignments, and use EmacsWikiMode-style references to bbdb, gnus, and other modules.
+
+(Update: Now using Org for my notes)
 
 === Internet relay chat ===
 

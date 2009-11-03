@@ -358,7 +358,8 @@ Note that comments between URL and name will stay where they are."
       rcirc-server-alist
       '(("irc.freenode.net" :channels
 	 ("#emacs" "#rcirc" "#wiki" "#oddmuse" "#epfarms"
-	  "#hcoop" "#clojure"))
+	  "#hcoop" "#clojure" "#biology"
+	  "#eclipse" "#eclipse-de" "#osgi"))
 	("localhost" :channels ("&bitlbee"))
 	("ircnet.ipng.ch" :channels ("#drsrm"))
 	;; ("irc.lugs.ch" :channels ("#hackerfunk"))
@@ -388,6 +389,7 @@ Note that comments between URL and name will stay where they are."
 
 (eval-after-load 'rcirc '(require 'rcirc-color))
 (eval-after-load 'rcirc '(require 'rcirc-controls))
+(eval-after-load 'rcirc '(require 'rcirc-notify))
 
 (eval-after-load 'rcirc
   '(defun-rcirc-command encoding (arg)
@@ -490,30 +492,45 @@ Note that comments between URL and name will stay where they are."
 (setq oddmuse-username "AlexSchroeder"
       oddmuse-directory "~/.emacs.d/oddmuse")
 (add-to-list 'auto-mode-alist '("/Users/alex/emacs/oddmuse" . oddmuse-mode))
-(autoload 'oddmuse-edit "oddmuse" "Edit a page on an Oddmuse wiki." t)
-(autoload 'oddmuse-post "oddmuse" "Post the current buffer to an Oddmuse wiki." t)
-(autoload 'oddmuse-mode "oddmuse" "Yadda yadda." t)
+(autoload 'oddmuse-edit "oddmuse-curl"
+  "Edit a page on an Oddmuse wiki." t)
+(autoload 'oddmuse-post "oddmuse-curl"
+  "Post the current buffer to an Oddmuse wiki." t)
+(autoload 'oddmuse-mode "oddmuse-curl"
+  "Yadda yadda." t)
+
 (setq oddmuse-wikis
-      '(("TestWiki" "http://www.emacswiki.org/cgi-bin/test" utf-8)
-	("EmacsWiki" "http://www.emacswiki.org/cgi-bin/emacs" utf-8)
-	("CampaignWiki" "http://www.campaignwiki.org/wiki" utf-8)
-	("HagfishTavern" "http://www.campaignwiki.org/wiki/HagfishTavern" utf-8)
-	("Kaylash" "http://www.campaignwiki.org/wiki/Kaylash" utf-8)
-	("AlderKing" "http://www.campaignwiki.org/wiki/TheAlderKing" utf-8)
-	("GoldenLanterns" "http://www.campaignwiki.org/wiki/GoldenLanterns" utf-8)
-	("CommunityWiki" "http://www.communitywiki.org/cw" utf-8)
-	("OddmuseWiki" "http://www.oddmuse.org/cgi-bin/oddmuse" utf-8)
-	("Alex" "http://www.emacswiki.org/cgi-bin/alex" utf-8)))
+      '(("Test Wiki" "http://www.emacswiki.org/cgi-bin/test" utf-8)
+	("Emacs Wiki" "http://www.emacswiki.org/cgi-bin/emacs"
+	 utf-8 "question")
+	("Campaign Wiki" "http://www.campaignwiki.org/wiki"
+ utf-8 "question")
+	("HagfishTavern" "http://www.campaignwiki.org/wiki/HagfishTavern"
+	 utf-8 "question")
+	("Kaylash" "http://www.campaignwiki.org/wiki/Kaylash"
+	 utf-8 "question")
+	("Montag in Zürich"
+	 "http://www.campaignwiki.org/wiki/MontagInZ%C3%BCrich"
+	 utf-8 "question")
+	("Alder King" "http://www.campaignwiki.org/wiki/TheAlderKing"
+	 utf-8 "question")
+	("Golden Lanterns" "http://www.campaignwiki.org/wiki/GoldenLanterns"
+	 utf-8 "question")
+	("Community Wiki" "http://www.communitywiki.org/cw"
+	 utf-8 "question")
+	("Oddmuse Wiki" "http://www.oddmuse.org/cgi-bin/oddmuse"
+	 utf-8 "question")
+	("Alex" "http://www.emacswiki.org/cgi-bin/alex"
+	 utf-8 "question")))
 
 (add-hook 'text-mode-hook
 	  (lambda ()
 	    (local-set-key (kbd "C-c =") 'oddmuse-section)
 	    (local-set-key (kbd "C-c -") 'oddmuse-subsection)))
 
-(add-hook 'oddmuse-hook
+(add-hook 'enriched-mode-hook
 	  (lambda ()
-	    (unless (string-match "question" oddmuse-post)
-	      (setq oddmuse-post (concat "question=1;" oddmuse-post)))))
+	    (font-lock-mode -1)))
 
 (defun oddmuse-section () (interactive) (oddmuse-header ?=))
 (defun oddmuse-subsection () (interactive) (oddmuse-header ?-))
@@ -702,6 +719,18 @@ cells by rows first."
 (define-key isearch-mode-map (kbd "C-o") 'isearch-occur)
 
 (global-set-key (kbd "C-o") 'occur)
+
+;;; rcirc & occur
+
+(defun occur-irc (regexp)
+  "Run `multi-occur' for all buffers in `rcirc-mode'."
+  (interactive "sList lines matching regexp: ")
+  (multi-occur (let (result)
+		 (dolist (buf (buffer-list))
+		   (with-current-buffer buf
+		     (when (eq major-mode 'rcirc-mode)
+		       (setq result (cons buf result)))))
+		 result) regexp))
 
 ;;; org
 

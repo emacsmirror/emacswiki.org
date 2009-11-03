@@ -79,10 +79,12 @@ cannot be an environment-variable prefix.  This means, for
 example, that you can use a pattern such as `##$HOME.*t$##' to match
 the files in your home directory whose names end in `t'. The first `##$##' here is not treated specially during regexp matching and cycling; the environment variable `##$HOME##' is expanded by the shell to a directory name. The second `##$##' is treated as the regexp special character that matches at the end of a line.  When using environment variables, you can also enclose them in braces: `##${HOME}##', for example.
 
-'''Note:''' Starting with Emacs 23, if [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-completion-is-basic-flag|icicle-prefix-completion-is-basic-flag]]</tt>'''' is `nil', '''Icicles''' prefix
-completion (`TAB') will complete an environment variable during
-file-name completion.  This is in addition to the traditional
-shell expansion of a variable when you hit `RET'.
+'''Note:''' Starting with Emacs 23, if [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-TAB-completion-methods|icicle-TAB-completion-methods]]</tt>'''' includes `vanilla', and you choose `vanilla' completion for `TAB' (by cycling using `##C-(##' or by
+customizing `icicle-TAB-completion-methods' to use `vanilla' as the
+default), then '''Icicles''' `TAB' completion will complete an
+environment variable during file-name completion.  This is in
+addition to the traditional shell expansion of a variable when you
+hit `RET'.
 
 '''Tip:''' Because slash (`<code>/</code>') is about the only non-word syntax character that is likely to appear in file-name completions, you can usually ''use'' '''`<tt>\W$</tt>'''' ''to match only directories'' (by matching the `<code>/</code>' at the end of their names). `##\W##' is the regexp pattern that matches any  character that does not appear in words.  For example, you can use `##${HOME}\W$##' to match all direct subdirectories in your home directory.
 

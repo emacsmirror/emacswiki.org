@@ -690,7 +690,3 @@ A rolling message will be sent all the 65 sec and updated all the `xml-weather-t
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; xml-weather.el ends here
-
-
-[new]
-hi, can you provide some screenshots? 3x  -- [[ahei]]

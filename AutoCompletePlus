@@ -1,0 +1,18 @@
+<pre>
+This library auto-complete+ extend library auto-complete with let users to
+define regexp to ignore files when they expand use
+ac-source-files-in-current-dir and ac-source-filename, and filter invalid
+symbol when they expand use ac-source-symbols, because there so many garbage
+in obarray.
+</pre>
+
+Download: Lisp:auto-complete+.el.
+
+
+See also: AutoComplete
+
+
+
+
+----
+CategoryCompletion
