@@ -749,6 +749,27 @@ Sorry for my poor english, :(, could you understand my meaning?
 2. There have command doremi-bg-color-name and doremi-face-bg in doremi, but do not have doremi-fg-color-name, doremi-face-fg-color-name, 
 I think it's useful, could you add it to doremi? -- [[ahei]]
 
+
+[new:DrewAdams:2009-11-03 19:20 UTC]
+1. Good idea. I'll do that.
+
+2. I did that. Try the latest. You'll also need the latest <tt>[[hexrgb.el]]</tt>. -- DrewAdams
+
+[new]
+1. Thanks for you understanding, thanks for you doremi. :)
+
+2. When use doremi select color, I type "C-g" to abort color selecting, but it does not work, I think it is useful, what do you think about it? -- [[ahei]]
+
+[new:DrewAdams:2009-11-04 05:15 UTC]
+
+(I moved your report about the Download link to EmacsWikiProblems. That page is reached by the `Problems' link at the top of each wiki page.)
+
+I'll think about `C-g'. It seems like there was a reason why I didn't do that, but I don't remember what it was. Anyway, you also have `doremi-undo-last-frame-color-change' and `doremi-undo-last-face-change', as ways to undo changes. They let you bounce back and forth between the changed appearance and the previous one, to compare. And `doremi-frame-configs' lets you repeatedly undo other kinds of frame changes.
+
+See above, on this page -- search for `undo'. For some frame changes, you also have `C-x 5 2', which will give you a copy of the frame without the changes. -- DrewAdams
+
+
+
 ----
 [:SeeAlso]
 == See Also ==

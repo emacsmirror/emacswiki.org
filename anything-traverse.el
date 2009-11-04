@@ -35,35 +35,70 @@
 ;;  You will be able to incremental search any regexp in current buffer
 ;;  or in all files of current dired buffer.
 ;;
-;;  Three sources are available:
-;;  `anything-c-source-traverse-occur'
-;;       Search for regexp in all files or marked files of a dired buffer
-;;       or for regexp in current buffer.
-;;  `anything-c-source-files-in-current-tree'
-;;       Display all files of current directory and his subdirectories.
-;;  `anything-traverse-c-source-record-positions'
-;;       Retrieve recorded position in current buffer.
-;;
 ;;  NOTE: You don't need this file to use traverselisp.el if you don't use
 ;;  Anything.
 
-;;; Commands:
-;;
-;; Below are complete command list:
-;;
-;;  `anything-files-in-current-tree'
-;;    Show files in current tree.
-;;  `anything-traverse-next-or-prec-file'
-;;    Go to next or precedent file in anything buffer.
-;;  `anything-traverse'
-;;    Launch anything with traverse separately.
-;;  `anything-traverse-positions-ring'
-;;    Preconfigured anything to retrieve positions in current-buffer.
-;;
-;;; Customizable Options:
-;;
-;; Below are customizable option list:
-;;
+;;; Auto documentation
+;;  ------------------
+
+;; [UPDATE ALL EVAL] (traverse-auto-update-documentation)
+
+;;  * Commands defined here:
+;; [EVAL] (traverse-auto-document-lisp-buffer :type 'command)
+;; `anything-files-in-current-tree'
+;; `anything-traverse-record-pos'
+;; `anything-traverse-positions-ring'
+;; `anything-traverse-next-or-prec-file'
+;; `anything-traverse'
+;; `anything-traverse-browse-code'
+
+;;  * Non--interactive functions defined here:
+;; [EVAL] (traverse-auto-document-lisp-buffer :type 'function)
+;; `anything-traverse-occur-color-current-line'
+;; `anything-c-traverse-buffer-action'
+;; `anything-c-traverse-dir-action'
+;; `anything-c-traverse-default-action'
+;; `anything-c-files-in-current-tree-create-db'
+;; `anything-files-in-current-tree-tag-tree'
+;; `anything-c-files-in-current-tree-init'
+;; `anything-traverse-position-relocate-maybe'
+;; `anything-traverse-at-point'
+;; `anything-traverse-init-search'
+
+;;  * Anything sources defined here:
+;; [EVAL] (traverse-auto-document-lisp-buffer :type 'anything-source :prefix "anything")
+;; `anything-c-source-traverse-occur'
+;; `anything-c-source-files-in-current-tree'
+;; `anything-c-source-traverse-record-positions'
+;; `anything-c-source-traverse-browse-code'
+
+;;  * Variables defined here:
+;; [EVAL] (traverse-auto-document-lisp-buffer :type 'internal-variable)
+;; `anything-c-traverse-func'
+;; `anything-c-traverse-length-line'
+;; `anything-c-files-in-current-tree-ignore-files'
+;; `anything-c-traverse-ignore-files'
+;; `anything-c-traverse-fontify-buffer'
+;; `anything-c-files-in-current-tree-allow-tagging'
+;; `anything-c-files-in-current-tree-tag-file-name'
+;; `anything-c-traverse-browse-regexp-lisp'
+;; `anything-c-traverse-browse-regexp-python'
+;; `anything-traverse-current-buffer'
+;; `anything-c-traverse-overlay-face'
+;; `anything-traverse-occur-overlay'
+;; `anything-c-traverse-diredp-flag'
+;; `anything-traverse-check-only'
+;; `anything-traverse-killed-pattern'
+;; `anything-c-files-in-current-tree-table'
+;; `anything-traverse-buffer-positions-ring'
+;; `anything-c-traverse-browse-regexp'
+
+;;  * Faces defined here:
+;; [EVAL] (traverse-auto-document-lisp-buffer :type 'faces :prefix "")
+;; `anything-traverse-overlay-face'
+
+;;  *** END auto-documentation
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Install:
 ;;  =======
@@ -132,7 +167,7 @@ This can SLOW down search when non--nil.")
   "*The name your anything tags files will have.")
 
 (defvar anything-c-traverse-browse-regexp-lisp
-  "\(def\\(un\\|subst\\|macro\\|ine\\|face\\|alias\\|advice\\|struct\\|type\\|theme\\|var\\|group\\|custom\\|const\\)"
+  "\(def\\(un\\|subst\\|macro\\|face\\|alias\\|advice\\|struct\\|type\\|theme\\|var\\|group\\|custom\\|const\\)"
   "*Regexp used to parse lisp buffer when browsing code.")
 
 (defvar anything-c-traverse-browse-regexp-python
@@ -317,7 +352,7 @@ with prefix arg refresh data base."
 (defun anything-traverse-positions-ring ()
   "Preconfigured anything to retrieve positions in current-buffer."
   (interactive)
-  (anything 'anything-traverse-c-source-record-positions))
+  (anything 'anything-c-source-traverse-record-positions))
 
 ;;; Anything traverse
 (defun* anything-traverse-next-or-prec-file (&optional (n 1))
@@ -334,21 +369,12 @@ If we are in another source just go to next/prec line."
                                          (point-at-bol)
                                          (point-at-eol))))  
                    (current-fname      (nth 0 current-line-list))
-                   ;; Don't use file names like "somename+.el"
-                   (current-fname-less (replace-regexp-in-string "\+"
-                                                                 ""
-                                                                 (file-name-sans-extension
-                                                                  current-fname)))
                    (fn-b-o-f           (if (eq n 1) 'eobp 'bobp))) ; func back or forward
               (catch 'break
                 (while (not (funcall fn-b-o-f))
                   (forward-line n)
                   (beginning-of-line)
-                  (when (not (or (re-search-forward current-fname
-                                                    (point-at-eol) t)
-                                 (when (string-match "\+" current-fname)
-                                   (re-search-forward current-fname-less
-                                                      (point-at-eol) t))))
+                  (when (not (search-forward current-fname (point-at-eol) t))
                     (anything-mark-current-line)
                     (throw 'break nil))))
               (if (eq n 1)
@@ -469,7 +495,7 @@ If current-buffer is a dired buffer search is performed on all files."
 
 ;; (anything 'anything-c-source-files-in-current-tree)
 
-(defvar anything-traverse-c-source-record-positions
+(defvar anything-c-source-traverse-record-positions
   '((name . "Traverse Mark Pos")
     (init . (lambda ()
               (setq anything-traverse-current-buffer
@@ -508,7 +534,7 @@ If current-buffer is a dired buffer search is performed on all files."
                            (anything-traverse-position-relocate-maybe elm)
                            (anything-traverse-occur-color-current-line)))))
 
-;; (anything 'anything-traverse-c-source-record-positions)
+;; (anything 'anything-c-source-traverse-record-positions)
 
 (defvar anything-c-source-traverse-browse-code 
   '((name . "Browse code")

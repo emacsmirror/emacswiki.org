@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Oct 25 21:32:13 2009 (-0700)
+;; Last-Updated: Tue Nov  3 12:00:15 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 4555
+;;     Update #: 4564
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -131,6 +131,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2009/11/03 dadams
+;;     icicle-frame-(bg|fg): Use named-colors, not x-defined-colors.
+;;     icicle-read-color: No need to bind icicle-transform-function, since we use hexrgb.el.
 ;; 2009/09/05 dadams
 ;;     icicle-search-replace-all-search-hits:
 ;;       Bind to nil: icicle-minibuffer-message-ok-p, icicle-help-in-mode-line-flag.
@@ -274,6 +277,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2009/11/03 dadams
+;;     icicle-color-completion-setup: Use hexrgb-defined-colors, not x-defined-colors.
+;;                                    No icicle-transform-function, since we use hexrgb.el.
 ;; 2009/10/25 dadams
 ;;     Added: icicle-dir-prefix-wo-wildcards.  Use in icicle-insert-cand-in-minibuffer.
 ;;     icicle-save-or-restore-input: Remove test comparing last completion with current input.

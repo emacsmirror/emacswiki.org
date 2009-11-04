@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Sep 20 22:58:45 2004
 ;; Version: 21.0
-;; Last-Updated: Thu Aug  6 18:26:27 2009 (-0700)
+;; Last-Updated: Tue Nov  3 11:47:11 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 586
+;;     Update #: 664
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/hexrgb.el
 ;; Keywords: number, hex, rgb, color, background, frames, display
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -39,7 +39,13 @@
 ;;
 ;;  Constants defined here:
 ;;
-;;    `hexrgb-defined-colors', `hexrgb-defined-colors-alist'.
+;;    `hexrgb-defined-colors', `hexrgb-defined-colors-alist',
+;;    `hexrgb-defined-colors-no-dups',
+;;    `hexrgb-defined-colors-no-dups-alist'.
+;;
+;;  Options defined here:
+;;
+;;    `hexrgb-canonicalize-defined-colors-flag'.
 ;;
 ;;  Commands defined here:
 ;;
@@ -49,8 +55,11 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `hexrgb-approx-equal', `hexrgb-color-name-to-hex',
-;;    `hexrgb-color-values-to-hex', `hexrgb-color-value-to-float',
+;;    `hexrgb-approx-equal', `hexrgb-canonicalize-defined-colors',
+;;    `hexrgb-color-name-to-hex', `hexrgb-color-values-to-hex',
+;;    `hexrgb-color-value-to-float', `hexrgb-defined-colors',
+;;    `hexrgb-defined-colors-alist',
+;;    `hexrgb-delete-whitespace-from-string',
 ;;    `hexrgb-float-to-color-value', `hexrgb-hex-char-to-integer',
 ;;    `hexrgb-hex-to-color-values', `hexrgb-hex-to-hsv',
 ;;    `hexrgb-hex-to-rgb', `hexrgb-hsv-to-hex', `hexrgb-hex-to-int',
@@ -72,6 +81,10 @@
 ;;
 ;;; Change log:
 ;;
+;; 2009/11/03 dadams
+;;    Added: hexrgb-delete-whitespace-from-string, hexrgb-canonicalize-defined-colors,
+;;           hexrgb-defined-colors(-no-dups)(-alist), hexrgb-canonicalize-defined-colors-flag.
+;;    hexrgb-read-color: Use function hexrgb-defined-colors-alist, not the constant.
 ;; 2008/12/25 dadams
 ;;    hexrgb-rgb-to-hsv:
 ;;      Replace (not (equal 0.0e+NaN saturation)) by standard test (= saturation saturation).
@@ -151,16 +164,93 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(eval-and-compile
+ (defun hexrgb-canonicalize-defined-colors (list)
+   "Copy of LIST with color names canonicalized.
+LIST is a list of color names (strings).
+Canonical names are lowercase, with no whitespace.
+There are no duplicate names."
+   (let ((tail  list)
+         this new)
+     (while tail
+       (setq this  (car tail)
+             this  (hexrgb-delete-whitespace-from-string (downcase this) 0 (length this)))
+       (unless (member this new) (push this new))
+       (pop tail))
+     (nreverse new)))
 
-;; Not used here, but put here to be available to libraries that use `hexrgb.el'.
+ (defun hexrgb-delete-whitespace-from-string (string &optional from to)
+   "Remove whitespace from substring of STRING from FROM to TO.
+If FROM is nil, then start at the beginning of STRING (FROM = 0).
+If TO is nil, then end at the end of STRING (TO = length of STRING).
+FROM and TO are zero-based indexes into STRING.
+Character FROM is affected (possibly deleted).  Character TO is not."
+   (setq from  (or from 0)
+         to    (or to (length string)))
+   (with-temp-buffer
+     (insert string)
+     (goto-char (+ from (point-min)))
+     (let ((count  from)
+           char)
+       (while (and (not (eobp))  (< count to))
+         (setq char  (char-after))
+         (if (memq char '(?\  ?\t ?\n))  (delete-char 1)  (forward-char 1))
+         (setq count  (1+ count)))
+       (buffer-string)))))
+
 ;;;###autoload
 (defconst hexrgb-defined-colors (eval-when-compile (and window-system (x-defined-colors)))
   "List of all supported colors.")
 
 ;;;###autoload
-(defconst hexrgb-defined-colors-alist (eval-when-compile
-                                       (and window-system (mapcar #'list (x-defined-colors))))
-  "Alist of all supported colors, for use in completion.")
+(defconst hexrgb-defined-colors-no-dups
+    (eval-when-compile
+     (and window-system (hexrgb-canonicalize-defined-colors (x-defined-colors))))
+  "List of all supported color names, with no duplicates.
+Names are all lowercase, without any spaces.")
+
+;;;###autoload
+(defconst hexrgb-defined-colors-alist
+    (eval-when-compile (and window-system (mapcar #'list (x-defined-colors))))
+  "Alist of all supported color names, for use in completion.
+See also `hexrgb-defined-colors-no-dups-alist', which is the same
+thing, but without any duplicates, such as \"light blue\" and
+\"LightBlue\".")
+
+;;;###autoload
+(defconst hexrgb-defined-colors-no-dups-alist
+    (eval-when-compile
+     (and window-system
+          (mapcar #'list (hexrgb-canonicalize-defined-colors (x-defined-colors)))))
+  "Alist of all supported color names, with no duplicates, for completion.
+Names are all lowercase, without any spaces.")
+
+;;;###autoload
+(defcustom hexrgb-canonicalize-defined-colors-flag t
+  "*Non-nil means remove duplicate color names.
+Names are considered duplicates if they are the same when abstracting
+from whitespace and letter case."
+  :type 'boolean
+  :group 'Icicles :group 'doremi-frame-commands :group 'faces :group 'convenience)
+
+;; You should use these two functions, not the constants, so users can change
+;; the behavior by customizing `hexrgb-canonicalize-defined-colors-flag'.
+
+(defun hexrgb-defined-colors ()
+  "List of supported color names.
+If `hexrgb-canonicalize-defined-colors-flag' is non-nil, then names
+are lowercased, whitespace is removed, and there are no duplicates."
+  (if hexrgb-canonicalize-defined-colors-flag
+      hexrgb-defined-colors-no-dups
+    hexrgb-defined-colors))
+
+(defun hexrgb-defined-colors-alist ()
+  "Alist of supported color names.  Usable for completion.
+If `hexrgb-canonicalize-defined-colors-flag' is non-nil, then names
+are lowercased, whitespace is removed, and there are no duplicates."
+  (if hexrgb-canonicalize-defined-colors-flag
+      hexrgb-defined-colors-no-dups-alist
+    hexrgb-defined-colors-alist))
 
 ;; RMS added this function to Emacs (23) as `read-color', with some feature loss.
 ;;;###autoload
@@ -171,6 +261,13 @@ If you input an RGB hex string, it must have the form #XXXXXXXXXXXX or
 XXXXXXXXXXXX, where each X is a hex digit.  The number of Xs must be a
 multiple of 3, with the same number of Xs for each of red, green, and
 blue.  The order is red, green, blue.
+
+Color names that are normally considered equivalent are canonicalized:
+They are lowercased, whitespace is removed, and duplicates are
+eliminated.  E.g. \"LightBlue\" and \"light blue\" are both replaced
+by \"lightblue\".  If you do not want this behavior, but want to
+choose names that might contain whitespace or uppercase letters, then
+customize option `hexrgb-canonicalize-defined-colors-flag' to nil.
 
 In addition to standard color names and RGB hex values, the following
 are available as color candidates.  In each case, the corresponding
@@ -210,8 +307,8 @@ Optional arg PROMPT is the prompt.  Nil means use a default prompt."
                              (and eyedrop-picked-background '(("*copied background*")))
                              '(("*mouse-2 foreground*") ("*mouse-2 background*")
                                ("*point foreground*") ("*point background*"))
-                             hexrgb-defined-colors-alist)
-                   hexrgb-defined-colors-alist))
+                             (hexrgb-defined-colors-alist))
+                   (hexrgb-defined-colors-alist)))
          (color (completing-read (or prompt "Color (name or #R+G+B+): ") colors))
          hex-string)
     (when (fboundp 'eyedrop-foreground-at-point)

@@ -10,6 +10,19 @@ Note that this page is not about EmacsWikiMode.
 
 ----
 
+
+== Problems with Download Link ==
+
+I found, now in lisp el page, e.g. http://www.emacswiki.org/emacs/tie-mode.el, there have a download button, not a download link, 
+but It does not work in IE and firefox browser, I have to first edit page, then copy it. also, I think a download link is better than 
+a download button, because we can copy link url easily, then use other download tool, e.g. wget. -- [[ahei]]
+
+[new:DrewAdams:2009-11-04 05:10 UTC]
+(Ahei reported this problem on page DoReMi. Dunno why he posted it there, but I moved it here. -- DrewAdams)
+
+
+
+
 == Cannot Download Previous Versions of a File ==
 
 At this page, I click the `Download' link, and I get this message:
@@ -41,6 +54,12 @@ This causes people to download the wrong version of a page (e.g. an Emacs Lisp l
 I know that some people have thought that the problem was that pages were not being locked properly for edits, so that two people editing at the same time could accidentally overwrite each other's edits. I don't know if that problem also exists, but I do know that this cache problem has caused people to think there is a locking problem for edits. The cache problem occurs however, even for an edit that is long after (days after) the last edit has been saved, so it is not a lock problem.
 
 Thanks for looking into this. -- DrewAdams
+
+
+[new:DrewAdams:2009-11-04 07:10 UTC]
+This is still happening, but I still cannot give a recipe for why or when it happens -- it happens sometimes. It just happened now. In the same browser session, I updated page DoReMi and saved. Then opened that page again from the link at RecentChanges, using browser's Open Link in New Window. Then clicked Edit the page and got the old page source, before my edit and save. HTH -- DrewAdams
+
+
 
 
 == Cannot save pages ==

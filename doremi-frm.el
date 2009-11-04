@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2009, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 11 10:40:32 2004
 ;; Version: 22.0
-;; Last-Updated: Fri Sep 25 16:32:54 2009 (-0700)
+;; Last-Updated: Tue Nov  3 12:18:24 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 2400
+;;     Update #: 2514
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/doremi-frm.el
 ;; Keywords: frames, extensions, convenience, keys, repeat, cycle
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -66,6 +66,17 @@
 ;;    `set-all-frame-alist-parameters-from-frame'.  Those commands are
 ;;    defined in library `frame-cmds.el'.
 ;;
+;;  Note on available color names:
+;;
+;;    Color names supported by your Emacs release and platform are
+;;    those returned by function `x-color-names'.  This often includes
+;;    names that are essentially the same, as duplicates,
+;;    e.g. "LightBlue" and "light blue".  By default, Do Re Mi
+;;    canonicalizes these names by lowercasing them and removing
+;;    whitespace.  Then it removes duplicates.  This behavior is
+;;    governed by option `hexrgb-canonicalize-defined-colors-flag'.
+;;    Customize that option to nil if you need the original, names.
+;;
 ;;
 ;;  User options defined here:
 ;;
@@ -84,11 +95,12 @@
 ;;    `doremi-bg-hue', `doremi-bg-magenta', `doremi-bg-purity',
 ;;    `doremi-bg-red', `doremi-bg-saturation', `doremi-bg-value',
 ;;    `doremi-bg-yellow', `doremi-buffer-font-size', `doremi-face-bg',
-;;    `doremi-face-fg', `doremi-fg', `doremi-fg-blue',
-;;    `doremi-fg-cyan', `doremi-fg-green', `doremi-fg-hue',
-;;    `doremi-fg-magenta', `doremi-fg-red', `doremi-fg-saturation',
-;;    `doremi-fg-value', `doremi-fg-yellow', `doremi-font',
-;;    `doremi-font-size', `doremi-frame-configs',
+;;    `doremi-face-bg-color-name', `doremi-face-fg',
+;;    `doremi-face-fg-color-name', `doremi-fg', `doremi-fg-blue',
+;;    `doremi-fg-color-name', `doremi-fg-cyan', `doremi-fg-green',
+;;    `doremi-fg-hue', `doremi-fg-magenta', `doremi-fg-red',
+;;    `doremi-fg-saturation', `doremi-fg-value', `doremi-fg-yellow',
+;;    `doremi-font', `doremi-font-size', `doremi-frame-configs',
 ;;    `doremi-frame-font-size', `doremi-frame-height',
 ;;    `doremi-frame-horizontally', `doremi-frame-vertically',
 ;;    `doremi-frame-width', `doremi-increment-background-color',
@@ -215,6 +227,13 @@
 ;;
 ;;; Change log:
 ;;
+;; 2009/11/02 dadams
+;;     Added: doremi-face-(bg|fg)-color-name, doremi-fg-color-name.  Thx to Ahei.
+;;     doremi-face-(bg|fg): Added unwind-protect, to delete sample buffer & window.
+;;                          Inhibit frame fitting.
+;;     doremi-(bg|fg)-color-name, doremi-increment-color-component:
+;;       Use function hexrgb-defined-colors(-alist), not constant.
+;;     doremi-face-set: Don't define it for Emacs 20.
 ;; 2009/08/05 dadams
 ;;     doremi-RGB-increment-factor: Changed default value to 1.
 ;;     doremi-increment-*ground-color: Back up doremi-last-frame-color if interactive.
@@ -453,7 +472,7 @@
                   ;; hexrgb-increment-blue, hexrgb-increment-green, hexrgb-increment-red,
                   ;; hexrgb-hsv-to-rgb, hexrgb-rgb-to-hsv
 (require 'ring+)  ;; ring-insert, ring-member, ring-next
-(require 'frame-fns) ;; frame-geom-spec-cons, frame-geom-value-cons
+(require 'frame-fns) ;; frame-geom-spec-cons, frame-geom-value-cons, get-a-frame
 (require 'faces+) ;; face-background-20+, face-foreground-20+, Emacs 20: read-face-name
 (if (fboundp 'defvaralias) ;; Emacs 22
     (require 'palette nil t) ;; eyedrop-picked-background, eyedrop-picked-foreground
@@ -658,22 +677,6 @@ Operates on the current frame. Cycled font list is (x-list-fonts \"*\")."
           'extend))
 
 
-;; This command uses an enumeration list, `hexrgb-defined-colors'. See also `doremi-bg'.
-;;;###autoload
-(defun doremi-bg-color-name ()
-  "Successively cycle among background colors, choosing by name.
-Operates on the current frame."
-  (interactive)
-  (let ((fr  (selected-frame)))
-    (doremi (lambda (newval) (set-background-color newval) newval)
-            (frame-parameter fr 'background-color)
-            nil                         ; ignored
-            nil                         ; ignored
-            hexrgb-defined-colors
-            t)                          ; Add current color, if not in list.
-    (frame-update-face-colors fr)))     ; Update the way faces display with new bg.
-
-
 ;; This command uses an absolute setting function.  It rebinds `doremi-up-keys'
 ;; and `doremi-down-keys' so they are more intuitive for width.
 ;;;###autoload
@@ -863,6 +866,20 @@ with \\[doremi-frame-configs]."
             t)))
  
 ;;; Background Frame Color Commands
+
+;;;###autoload
+(defun doremi-bg-color-name ()
+  "Successively cycle among background colors, choosing by name.
+Operates on the current frame."
+  (interactive)
+  (let ((fr  (selected-frame)))
+    (doremi (lambda (newval) (set-background-color newval) newval)
+            (frame-parameter fr 'background-color)
+            nil                         ; ignored
+            nil                         ; ignored
+            (hexrgb-defined-colors)     ; Enumeration list
+            t)                          ; Add current color, if not in list.
+    (frame-update-face-colors fr)))     ; Update the way faces display with new bg.
 
 ;;;###autoload
 (defun doremi-bg-red (&optional increment)
@@ -1064,6 +1081,20 @@ Optional arg FRAME defaults to the selected frame.  See `doremi-bg'."
   (cdr (assq 'background-color (frame-parameters frame)))) ; Return new value.
  
 ;;; Foreground Frame Color Commands
+
+;;;###autoload
+(defun doremi-fg-color-name ()
+  "Successively cycle among foreground colors, choosing by name.
+Operates on the current frame."
+  (interactive)
+  (let ((fr  (selected-frame)))
+    (doremi (lambda (newval) (set-foreground-color newval) newval)
+            (frame-parameter fr 'foreground-color)
+            nil                         ; ignored
+            nil                         ; ignored
+            (hexrgb-defined-colors)     ; Enumeration list
+            t)                          ; Add current color, if not in list.
+    (frame-update-face-colors fr)))     ; Update the way faces display with new bg.
 
 ;;;###autoload
 (defun doremi-fg-red (&optional increment)
@@ -1279,46 +1310,115 @@ and then use that as the initial value for `doremi-face-bg'."
   (interactive (doremi-increment-face-color-read-args))
   (unless (facep face)
     (error "Command `doremi-face-bg': FACE arg is not a face name: %s" face))
-  (let* ((special-display-regexps     nil)
-         (after-make-frame-functions  nil)
-         (sample-text                 (format "\n    Sample text in face `%s'\n" face))
-         (pop-up-frame-alist
-          (append '((name . "*Face Sample*") (height . 5) (auto-raise . t) (minibuffer)
-                    (tool-bar-lines . 0) (menu-bar-lines . 0) (vertical-scroll-bars))
-                  `((width ,@ (+ 4 (length sample-text))))
-                  (frame-parameters))))
-    (copy-face face 'doremi-last-face)
-    (setq doremi-last-face-value  (cons face 'doremi-last-face))
-    (when (and (or pickup-p (and (interactive-p) (or (consp current-prefix-arg))))
-               (boundp 'eyedrop-picked-background) eyedrop-picked-background)
-      (set-face-background face eyedrop-picked-background))
-    (with-temp-buffer (get-buffer-create "*Face Sample*")
-                      (pop-to-buffer "*Face Sample*")
-                      (insert sample-text)
-                      (goto-char 2)
-                      (put-text-property 6 (progn (goto-char (point-min))
-                                                  (forward-line 2) (point))
-                                         'face face)
-                      (save-excursion (insert (format "    Previous value of `%s'" face)))
-                      (put-text-property (point) (save-excursion (forward-line 1) (point))
-                                         'face 'doremi-last-face)
-                      (goto-char (point-min))
-                      (setq buffer-read-only  t)
-                      (doremi-face-bg-1 face component
-                                        (if (memq component '(?r ?g ?b))
-                                            (* increment doremi-RGB-increment-factor)
-                                          increment))
-                      (if (one-window-p t) (delete-frame) (delete-window))))
-  (when (get-buffer "*Face Sample*") (kill-buffer "*Face Sample*"))
-  (let ((new-background  (face-background-20+ face nil 'default)))
-    (if (fboundp 'set-face-attribute)
-        (set-face-attribute face nil ':background new-background)
-      (modify-face face nil new-background nil nil nil nil))
-    (put face 'customized-face (list (list 't (list ':background new-background)))))
-  (put face 'face-modified nil)
-  (message (substitute-command-keys
-            "Use `\\[doremi-undo-last-face-change]' to return to previous face \
+  (unwind-protect
+       (progn
+         (let* ((special-display-regexps         nil)
+                (after-make-frame-functions      nil)
+                (fit-frame-inhibit-fitting-flag  t)
+                (sample-text
+                 (format "\n    Sample text in face `%s'\n" face))
+                (pop-up-frame-alist
+                 (append '((name . "*Face Sample*") (height . 5) (auto-raise . t)
+                           (minibuffer) (tool-bar-lines . 0) (menu-bar-lines . 0)
+                           (vertical-scroll-bars))
+                         `((width ,@ (+ 4 (length sample-text))))
+                         (frame-parameters))))
+           (copy-face face 'doremi-last-face)
+           (setq doremi-last-face-value  (cons face 'doremi-last-face))
+           (when (and (or pickup-p (and (interactive-p) (or (consp current-prefix-arg))))
+                      (boundp 'eyedrop-picked-background) eyedrop-picked-background)
+             (set-face-background face eyedrop-picked-background))
+           (with-temp-buffer
+             (get-buffer-create "*Face Sample*")
+             (pop-to-buffer "*Face Sample*")
+             (insert sample-text)
+             (goto-char 2)
+             (put-text-property 6 (progn (goto-char (point-min)) (forward-line 2) (point))
+                                'face face)
+             (save-excursion (insert (format "    Previous value of `%s'" face)))
+             (put-text-property (point) (save-excursion (forward-line 1) (point))
+                                'face 'doremi-last-face)
+             (goto-char (point-min))
+             (setq buffer-read-only  t)
+             (doremi-face-bg-1 face component
+                               (if (memq component '(?r ?g ?b))
+                                   (* increment doremi-RGB-increment-factor)
+                                 increment))
+             (if (one-window-p t) (delete-frame) (delete-window))))
+         (when (get-buffer "*Face Sample*") (kill-buffer "*Face Sample*"))
+         (let ((new-background  (face-background-20+ face nil 'default)))
+           (if (fboundp 'set-face-attribute)
+               (set-face-attribute face nil ':background new-background)
+             (modify-face face nil new-background nil nil nil nil))
+           (put face 'customized-face
+                (list (list 't (list ':background new-background)))))
+         (put face 'face-modified nil)
+         (message (substitute-command-keys
+                   "Use `\\[doremi-undo-last-face-change]' to return to previous face \
 value. Use `\\[customize-face]' to revisit changes.")))
+    (when (get-buffer "*Face Sample*") (kill-buffer "*Face Sample*"))
+    (let ((fr  (get-a-frame "*Face Sample*"))) (when fr (delete-frame fr)))))
+
+;;;###autoload
+(defun doremi-face-bg-color-name (face)
+  "Successively cycle among background colors for FACE, choosing by name.
+The color is changed on all frames.
+You are prompted for the FACE.
+
+See command `doremi-bg-color-name'.  This command behaves the same,
+except that it is the background color of FACE that is changed, not
+the frame background color."
+  (interactive (list (read-face-name "Face to change: ")))
+  (unless (facep face)
+    (error "Command `doremi-face-bg-color-name': FACE arg is not a face name: %s" face))
+  (unwind-protect
+       (progn
+         (let* ((special-display-regexps         nil)
+                (after-make-frame-functions      nil)
+                (fit-frame-inhibit-fitting-flag  t)
+                (sample-text
+                 (format "\n    Sample text in face `%s'\n" face))
+                (pop-up-frame-alist
+                 (append '((name . "*Face Sample*") (height . 5) (auto-raise . t)
+                           (minibuffer) (tool-bar-lines . 0) (menu-bar-lines . 0)
+                           (vertical-scroll-bars))
+                         `((width ,@ (+ 4 (length sample-text))))
+                         (frame-parameters))))
+           (copy-face face 'doremi-last-face)
+           (setq doremi-last-face-value  (cons face 'doremi-last-face))
+           (with-temp-buffer
+             (get-buffer-create "*Face Sample*")
+             (pop-to-buffer "*Face Sample*")
+             (insert sample-text)
+             (goto-char 2)
+             (put-text-property 6 (progn (goto-char (point-min)) (forward-line 2) (point))
+                                'face face)
+             (save-excursion (insert (format "    Previous value of `%s'" face)))
+             (put-text-property (point) (save-excursion (forward-line 1) (point))
+                                'face 'doremi-last-face)
+             (goto-char (point-min))
+             (setq buffer-read-only  t)
+             (doremi (lambda (newval) (set-face-background face newval) newval)
+                     (or (face-background-20+ face nil 'default)
+                         (cdr (assq 'background-color (frame-parameters))))
+                     nil                ; ignored
+                     nil                ; ignored
+                     (hexrgb-defined-colors) ; Enumeration list
+                     t)
+             (if (one-window-p t) (delete-frame) (delete-window))))
+         (let ((new-background  (face-background-20+ face nil 'default)))
+           (if (fboundp 'set-face-attribute)
+               (set-face-attribute face nil ':background new-background)
+             (modify-face face nil new-background nil nil nil nil))
+           (put face 'customized-face
+                (list (list 't (list ':background new-background)))))
+         (put face 'face-modified nil)
+         (message (substitute-command-keys
+                   "Use `\\[doremi-undo-last-face-change]' to return to previous face \
+value. Use `\\[customize-face]' to revisit changes.")))
+    (when (get-buffer "*Face Sample*") (kill-buffer "*Face Sample*"))
+    (let ((fr  (get-a-frame "*Face Sample*"))) (when fr (delete-frame fr)))))
+   
 
 ;;;###autoload
 (defun doremi-all-faces-bg (component increment)
@@ -1397,46 +1497,115 @@ value for `doremi-face-fg'."
   (interactive (doremi-increment-face-color-read-args))
   (unless (facep face)
     (error "Command `doremi-face-fg': FACE arg is not a face name: %s" face))
-  (let* ((special-display-regexps     nil)
-         (after-make-frame-functions  nil)
-         (sample-text                 (format "\n    Sample text in face `%s'\n" face))
-         (pop-up-frame-alist
-          (append '((name . "*Face Sample*") (height . 5) (auto-raise . t) (minibuffer)
-                    (tool-bar-lines . 0) (menu-bar-lines . 0) (vertical-scroll-bars))
-                  `((width ,@ (+ 4 (length sample-text))))
-                  (frame-parameters))))
-    (copy-face face 'doremi-last-face)
-    (setq doremi-last-face-value  (cons face 'doremi-last-face))
-    (when (and (or pickup-p (and (interactive-p) (or (consp current-prefix-arg))))
-               (boundp 'eyedrop-picked-foreground) eyedrop-picked-foreground)
-      (set-face-foreground face eyedrop-picked-foreground))
-    (with-temp-buffer (get-buffer-create "*Face Sample*")
-                      (pop-to-buffer "*Face Sample*")
-                      (insert sample-text)
-                      (goto-char 2)
-                      (put-text-property 6 (progn (goto-char (point-min))
-                                                  (forward-line 2) (point))
-                                         'face face)
-                      (save-excursion (insert (format "    Previous value of `%s'" face)))
-                      (put-text-property (point) (save-excursion (forward-line 1) (point))
-                                         'face 'doremi-last-face)
-                      (goto-char (point-min))
-                      (setq buffer-read-only  t)
-                      (doremi-face-fg-1 face component
-                                        (if (memq component '(?r ?g ?b))
-                                            (* increment doremi-RGB-increment-factor)
-                                          increment))
-                      (if (one-window-p t) (delete-frame) (delete-window))))
-  (when (get-buffer "*Face Sample*") (kill-buffer "*Face Sample*"))
-  (let ((new-foreground  (face-foreground-20+ face nil 'default)))
-    (if (fboundp 'set-face-attribute)
-        (set-face-attribute face nil ':foreground new-foreground)
-      (modify-face face new-foreground nil nil nil nil nil))
-    (put face 'customized-face (list (list 't (list ':foreground new-foreground)))))
-  (put face 'face-modified nil)
-  (message (substitute-command-keys
-            "Use `\\[doremi-undo-last-face-change]' to return to previous face \
+  (unwind-protect
+       (progn
+         (let* ((special-display-regexps         nil)
+                (after-make-frame-functions      nil)
+                (fit-frame-inhibit-fitting-flag  t)
+                (sample-text
+                 (format "\n    Sample text in face `%s'\n" face))
+                (pop-up-frame-alist
+                 (append '((name . "*Face Sample*") (height . 5) (auto-raise . t)
+                           (minibuffer) (tool-bar-lines . 0) (menu-bar-lines . 0)
+                           (vertical-scroll-bars))
+                         `((width ,@ (+ 4 (length sample-text))))
+                         (frame-parameters))))
+           (copy-face face 'doremi-last-face)
+           (setq doremi-last-face-value  (cons face 'doremi-last-face))
+           (when (and (or pickup-p (and (interactive-p) (or (consp current-prefix-arg))))
+                      (boundp 'eyedrop-picked-foreground) eyedrop-picked-foreground)
+             (set-face-foreground face eyedrop-picked-foreground))
+           (with-temp-buffer
+             (get-buffer-create "*Face Sample*")
+             (pop-to-buffer "*Face Sample*")
+             (insert sample-text)
+             (goto-char 2)
+             (put-text-property 6 (progn (goto-char (point-min)) (forward-line 2) (point))
+                                'face face)
+             (save-excursion (insert (format "    Previous value of `%s'" face)))
+             (put-text-property (point) (save-excursion (forward-line 1) (point))
+                                'face 'doremi-last-face)
+             (goto-char (point-min))
+             (setq buffer-read-only  t)
+             (doremi-face-fg-1 face component
+                               (if (memq component '(?r ?g ?b))
+                                   (* increment doremi-RGB-increment-factor)
+                                 increment))
+             (if (one-window-p t) (delete-frame) (delete-window))))
+         (when (get-buffer "*Face Sample*") (kill-buffer "*Face Sample*"))
+         (let ((new-foreground  (face-foreground-20+ face nil 'default)))
+           (if (fboundp 'set-face-attribute)
+               (set-face-attribute face nil ':foreground new-foreground)
+             (modify-face face new-foreground nil nil nil nil nil))
+           (put face 'customized-face
+                (list (list 't (list ':foreground new-foreground)))))
+         (put face 'face-modified nil)
+         (message (substitute-command-keys
+                   "Use `\\[doremi-undo-last-face-change]' to return to previous face \
 value. Use `\\[customize-face]' to revisit changes.")))
+    (when (get-buffer "*Face Sample*") (kill-buffer "*Face Sample*"))
+    (let ((fr  (get-a-frame "*Face Sample*"))) (when fr (delete-frame fr)))))
+
+;;;###autoload
+(defun doremi-face-fg-color-name (face)
+  "Successively cycle among foreground colors for FACE, choosing by name.
+The color is changed on all frames.
+You are prompted for the FACE.
+
+See command `doremi-fg-color-name'.  This command behaves the same,
+except that it is the foreground color of FACE that is changed, not
+the frame foreground color."
+  (interactive (list (read-face-name "Face to change: ")))
+  (unless (facep face)
+    (error "Command `doremi-face-fg-color-name': FACE arg is not a face name: %s" face))
+  (unwind-protect
+       (progn
+         (let* ((special-display-regexps         nil)
+                (after-make-frame-functions      nil)
+                (fit-frame-inhibit-fitting-flag  t)
+                (sample-text
+                 (format "\n    Sample text in face `%s'\n" face))
+                (pop-up-frame-alist
+                 (append '((name . "*Face Sample*") (height . 5) (auto-raise . t)
+                           (minibuffer) (tool-bar-lines . 0) (menu-bar-lines . 0)
+                           (vertical-scroll-bars))
+                         `((width ,@ (+ 4 (length sample-text))))
+                         (frame-parameters))))
+           (copy-face face 'doremi-last-face)
+           (setq doremi-last-face-value  (cons face 'doremi-last-face))
+           (with-temp-buffer
+             (get-buffer-create "*Face Sample*")
+             (pop-to-buffer "*Face Sample*")
+             (insert sample-text)
+             (goto-char 2)
+             (put-text-property 6 (progn (goto-char (point-min)) (forward-line 2) (point))
+                                'face face)
+             (save-excursion (insert (format "    Previous value of `%s'" face)))
+             (put-text-property (point) (save-excursion (forward-line 1) (point))
+                                'face 'doremi-last-face)
+             (goto-char (point-min))
+             (setq buffer-read-only  t)
+             (doremi (lambda (newval) (set-face-foreground face newval) newval)
+                     (or (face-foreground-20+ face nil 'default)
+                         (cdr (assq 'foreground-color (frame-parameters))))
+                     nil                ; ignored
+                     nil                ; ignored
+                     (hexrgb-defined-colors) ; Enumeration list
+                     t)
+             (if (one-window-p t) (delete-frame) (delete-window))))
+         (when (get-buffer "*Face Sample*") (kill-buffer "*Face Sample*"))
+         (let ((new-foreground  (face-foreground-20+ face nil 'default)))
+           (if (fboundp 'set-face-attribute)
+               (set-face-attribute face nil ':foreground new-foreground)
+             (modify-face face new-foreground nil nil nil nil nil))
+           (put face 'customized-face
+                (list (list 't (list ':foreground new-foreground)))))
+         (put face 'face-modified nil)
+         (message (substitute-command-keys
+                   "Use `\\[doremi-undo-last-face-change]' to return to previous face \
+value. Use `\\[customize-face]' to revisit changes.")))
+    (when (get-buffer "*Face Sample*") (kill-buffer "*Face Sample*"))
+    (let ((fr  (get-a-frame "*Face Sample*"))) (when fr (delete-frame fr)))))
 
 ;;;###autoload
 (defun doremi-all-faces-fg (component increment)
@@ -1518,7 +1687,7 @@ INCREMENT is the increment to increase the value component of COLOR."
    (list (read-char-exclusive
           "Adjust red, green, blue, hue, saturation, or value? [rgbhsv]: ")
          ;; Cannot use `facemenu-read-color' here, because we allow "#...".
-         (completing-read "Color (name or #rrrrggggbbbb): " hexrgb-defined-colors-alist)
+         (completing-read "Color (name or #rrrrggggbbbb): " (hexrgb-defined-colors-alist))
          (doremi-number-arg)))      
   (setq color  (hexrgb-color-name-to-hex color))
   (let ((hlen  (/ (1- (length color)) 3)) ; length of one hex color, R, G, or B
@@ -1684,20 +1853,23 @@ Wrap around if `doremi-wrap-color-flag'."
   (setq doremi-wrap-color-flag  (not doremi-wrap-color-flag)))
 
 ;; A function like this should be available as part of the Customize
-;; code, but there is none.  This is OK for Emacs 22, but won't work for Emacs 20.
+;; code, but there is none.  
+;; This is OK for Emacs 22, but won't work for Emacs 20, because of `set-face-attribute'.
 ;; We don't bother to use this now.
-(defun doremi-face-set (face spec)
-  "Tell Customize that FACE has been set to value SPEC.
+(when (fboundp 'set-face-attribute)
+  (defun doremi-face-set (face spec)
+    "Tell Customize that FACE has been set to value SPEC.
 SPEC is as for `defface'."
-  (let ((attrs  (face-spec-choose spec)))
-    (while attrs
-      (let ((attribute  (car attrs))
-            (value      (cadr attrs)))
-        (when attribute (set-face-attribute face nil attribute value)))
-      (setq attrs  (cddr attrs))))
-  (put face 'customized-face spec)
-  (message (substitute-command-keys
-            "Use `\\[customize-face]' to revisit changes.")))
+    (let ((attrs  (face-spec-choose spec)))
+      (while attrs
+        (let ((attribute  (car attrs))
+              (value      (cadr attrs)))
+          (when attribute 
+            (set-face-attribute face nil attribute value)))
+        (setq attrs  (cddr attrs))))
+    (put face 'customized-face spec)
+    (message (substitute-command-keys
+              "Use `\\[customize-face]' to revisit changes."))))
 
 ;; A function like this should be available in Emacs.
 (defun doremi-set-background-color (color-name &optional frame)
@@ -1735,10 +1907,11 @@ FRAME parameter."
           '(doremi-bg doremi-bg-blue doremi-bg-brightness doremi-bg-color-name
             doremi-bg-cyan doremi-bg-green doremi-bg-hue doremi-bg-magenta
             doremi-bg-red doremi-bg-saturation doremi-bg-value doremi-bg-yellow
-            doremi-buffer-font-size doremi-fg doremi-fg-blue doremi-fg-brightness
-            doremi-fg-color-name doremi-fg-cyan doremi-fg-green doremi-fg-hue
-            doremi-fg-magenta doremi-fg-red doremi-fg-saturation doremi-fg-value
-            doremi-fg-yellow doremi-face-bg doremi-face-fg doremi-font
+            doremi-buffer-font-size doremi-face-bg doremi-face-bg-color-name
+            doremi-face-fg doremi-face-fg-color-name doremi-fg doremi-fg-blue
+            doremi-fg-brightness doremi-fg-color-name doremi-fg-cyan
+            doremi-fg-green doremi-fg-hue doremi-fg-magenta doremi-fg-red
+            doremi-fg-saturation doremi-fg-value doremi-fg-yellow doremi-font
             doremi-frame-font-size doremi-frame-height doremi-frame-width
             doremi-increment-background-color doremi-increment-face-bg-color
             doremi-increment-face-fg-color enlarge-font

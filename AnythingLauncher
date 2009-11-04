@@ -1,0 +1,63 @@
+= About =
+
+In the never-ending quest to use Emacs for everything, this is a hack
+to use Emacs together with [[Anything]] as a general purpose command
+launcher for my Ubuntu GNU/Linux desktop installation. The goal is to
+be able to use Anything to launch web pages, play movies, open certain
+folders etc *without* having to open a new Emacs instance or
+activating my normal Emacs instance first. Previously I have tried to
+make a habit of having Emacs always in front and using it to launch
+things, but I always seem to encounter hurdles with this approach.
+
+I have tried various tools like Gnome Do and the built-in Deskbar
+Applet, but Gnome Do forces me to write extensions in a
+language/environment I am not very familiar with (C# and Mono Develop)
+and while the Deskbar Applet can be controlled by Python code, I am
+not as fluent in that as with elisp. Hence this hack.
+
+Actually, Anything-wise there is nothing very special about this at
+all, I just use a mix of the currently available sources and actions
+and some I cooked up myself. What has been most work is to figure out
+how the heck I best integrate Emacs and Anything into the desktop, by
+putting together various pieces. I am placing this here in case it
+might be useful to someone else.
+
+= The pieces =
+
+AnythingLauncher consists of the following pieces:
+
+* anything-launcher.el - Elisp file. Contains my sources and actions for Anything as well as configuration of frame size, font and faces. Starts the Emacs server with a special name that emacsclient then talks to.
+* anything-launcher - Bash script. Starts a new special Emacs instance if not already running, loading anything-launcher.el. Hides the window when done so that it gets out of the way. This idea comes from `bashrun', another "launcher".
+* [http://www.semicomplete.com/projects/xdotool/ xdotool] - Program to automate window and mouse actions. Used to hide the special Emacs instance used.
+* emacsclient - Used to bring the special Emacs instance to life, executing Anything. Uses the -s option to pick the correct server to connect to.
+* Metacity/Gconf-editor - Used to map the Windows-q keyboard combination (in my case) to the bash script that launches Emacs and Anything.
+
+Details coming soon (needs to polish it up a bit), or faster if people are interested...
+
+= Does it work? =
+
+Yes, it seems so. The first time I activate AnythingLauncher it takes a few seconds for things to load but consecutive invocations are very quick.
+
+= Screenshot =
+
+This is how it currently looks after I activate AnythingLauncher. Colors and stuff will probably change depending on my mood...
+
+[[image:AnythingLauncherPic01]]
+
+= Problems =
+
+Although it works quite well, it can be a bit shaky and there are a few loose ends.
+
+Dummy cancel command: if I just do C-q in Anything, it will leave the Emacs window open, so I added a dummy command that does not do anything, just so that emacsclient will end happily.
+
+Not hiding quickly enough: After emacsclient has asked Emacs and Anything to do what it needs to do, the bash script will hide the Emacs window. For some reason this does not happen immediately. Why, I cannot say.
+
+Ugly startup wait loop: because I do not know when Emacs has loaded the .el file and because I need it to run asynchronously (otherwise the Emacs window cannot be hidden by xdotool afterwards) I need to use an ugly sleep-loop and wait until the .el script creates a certain file on disk.
+
+xdotool/Metacity troubles: Well, it seems window managers have all sorts of magic to stop me from doing what I want to do. Sometimes when a window is supposed to get focus and be brough to front it sits in the back and the name is flashing in the taskbar applet. The current bash script seems to work all the time though, but I do not trust it one bit...
+
+Any suggestions on how to get this hack feel more stable are welcome. The main requirements are quite few actually: bring Emacs to front, start Anything with a special configuration, and hide Emacs when done. Should be easy eh? Nah...
+
+To be continued...
+----
+[[Anything]]

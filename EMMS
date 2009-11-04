@@ -224,6 +224,23 @@ start it up. -- DanielBrockman''
 :: At least of my Debian EMMS (version 1.3), the correct require is
 (require 'emms-streams). -- LucaCapello
 
+RichardRiley: 3 Nov 2009
+
+Create or edit your emacs home directory file "emms-streams" and add/paste this in (editing appropriately) for BBC Radio streams around the world:-
+
+<pre>
+(("NDR Info" "http://ndr.ic.llnwd.net/stream/ndr_ndrinfo_hi_mp3" 1 url)
+ ("NDR Kultur" "http://ndr.ic.llnwd.net/stream/ndr_ndrkultur_hi_mp3" 1 url)
+ ("BBC Radio 1" "mms://wmlive.bbc.net.uk/wms/bbc_ami/radio1/radio1_bb_live_int_eq1_sl0?BBC-UID=e44a970b22ffbda06a4e058b91802eba1c90682640d091dff269e685b0547800&SSO2-UID=" 1 url)
+ ("BBC Radio 2" "mms://wmlive.bbc.net.uk/wms/bbc_ami/radio2/radio2_bb_live_int_eq1_sl0?BBC-UID=e44a970b22ffbda06a4e058b91802eba1c90682640d091dff269e685b0547800&SSO2-UID=" 1 url)
+ ("BBC Radio 3" "mms://wmlive.bbc.net.uk/wms/bbc_ami/radio3/radio3_bb_live_int_eq1_sl0?BBC-UID=e44a970b22ffbda06a4e058b91802eba1c90682640d091dff269e685b0547800&SSO2-UID=" 1 url)
+ ("BBC Radio 4" "mms://wmlive.bbc.net.uk/wms/bbc_ami/radio4/radio4_bb_live_int_eq1_sl0?BBC-UID=e44a970b22ffbda06a4e058b91802eba1c90682640d091dff269e685b0547800&SSO2-UID=" 1 url)
+ ("BBC Radio 5" "mms://wmlive.bbc.net.uk/wms/bbc_ami/radio5/radio5_bb_live_int_eq1_sl0?BBC-UID=e44a970b22ffbda06a4e058b91802eba1c90682640d091dff269e685b0547800&SSO2-UID=" 1 url)
+ ("Nectarine" "http://calcipher.verbrennung.org:8000/nectarine.ogg.m3u" 1 url))
+</pre>
+
+M-x emms-streams to reload
+
 === How about AlsaPlayer? ===
 
 AlsaPlayer is a generic command line (--interface text) music

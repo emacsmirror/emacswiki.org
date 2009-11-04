@@ -219,7 +219,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Version:
-(defconst traverse-version "1.1.18")
+(defconst traverse-version "1.1.19")
 
 ;;; Code:
 
@@ -373,20 +373,25 @@ If abs is non-nil use absolute path."
   (directory-files dirname abs "[^\\.]"))
 
 (defsubst* traverse-walk-directory (dirname &key file-fn dir-fn exclude-files exclude-dirs)
-  "Walk through dirname and use file-fn and/or dir-fn function on each file found.
-`dirname' ==> we start in this directory
+  "Walk through DIRNAME and use FILE-FN and/or DIR-FN function on each file/dir found.
+
+DIRNAME ==> we start in this directory
 
 Use keys to set args:
 
 You must specify at list one of these 2 functions:
-`:file-fn' ==> function to apply to FILES
-`:dir-fn' ==> function to apply on DIRECTORIES
+:FILE-FN ==> function to apply to FILES
+:DIR-FN ==> function to apply on DIRECTORIES
 
-Files or directories in these lists will be skipped:
-`:excludes-files' ==> list of .ext or files to ignore.  
-`:exclude-dirs' ==> list of directory to ignore.
-Look at `traverse-ignore-files' and `traverse-ignore-dirs'
-"
+Files or/and directories in these lists will be skipped:
+:EXCLUDES-FILES ==> list of .ext or files to ignore.  
+:EXCLUDE-DIRS ==> list of directory to ignore.
+
+Example of use:
+
+ (traverse-walk-directory \"~/foo\" :file-fn #'(lambda (x) (princ x) (terpri)))
+
+See `traverse-ignore-files' and `traverse-ignore-dirs'."
   (labels
       ((walk (name)
          (cond ((and (file-directory-p name) ;; DIR PROCESSING
@@ -414,42 +419,33 @@ Look at `traverse-ignore-files' and `traverse-ignore-dirs'
 
 
 (defun traverse-comp-str-to-list (str lis)
-  "Compare `str' with all elements of list `lis'.
-elements of list `lis' are regexps."
+  "Compare STR with all elements of list LIS.
+elements of list LIS are regexps."
   (catch 'break
     (dolist (i lis)
       (when (string-match i str)
         (throw 'break t)))))
 
 (defun traverse-check-only-lists (str lis)
-  "Check if `str' match one element of `lis'."
-  (if (or (member (file-name-extension str t) lis)
-          (traverse-comp-str-to-list str lis))
-      t
-      nil))
+  "Check if STR match one element of LIS'."
+  (or (member (file-name-extension str t) lis)
+      (traverse-comp-str-to-list str lis)))
 
-(defun* traverse-find-readlines (bfile regexp &key (insert-fn 'file) (stop-at-first nil))
-  "Return all the lines of a file or buffer matching `regexp'.
-with the number of line in a list where each element is a list of the form:
-\\(\"number_of_line\" \"line\")"
-  (let* ((matched-elm)
-         (fn (cond ((eq insert-fn 'file)
-                    'insert-file-contents)
-                   ((eq insert-fn 'buffer)
-                    'insert-buffer-substring))))
+(defun* traverse-find-readlines (bfile regexp &key (insert-fn 'file))
+  "Return an alist of all the (num-line line) of a file or buffer BFILE matching REGEXP."
+  (let ((count 0)
+        (fn    (case insert-fn
+                 ('file 'insert-file-contents)
+                 ('buffer 'insert-buffer-substring))))
     (with-temp-buffer
       (funcall fn bfile) ; call insert function
       (goto-char (point-min))
-      (let ((lines-list (split-string (buffer-string) "\n")))
-        (dolist (i lines-list)
-          (when (string-match regexp i)
-            (if stop-at-first
-                (return-from traverse-find-readlines (cons (position i lines-list)
-                                                           bfile))
-                (push (list (position i lines-list)
-                            (replace-regexp-in-string "\n" "" i))
-                      matched-elm))))))
-    (nreverse matched-elm)))
+      (loop
+         with lines-list = (split-string (buffer-string) "\n")
+         for i in lines-list when (string-match regexp i)
+         collect (list count (replace-regexp-in-string "\n" "" i)) into lis
+         do (incf count)
+         finally return lis))))
 
 
 (defun traverse-file-process (regex fname &optional full-path insert-fn)
@@ -1086,15 +1082,13 @@ commands provided here are: (n)ext (a)ll (s)kip (x)stop"
 ;;;; Utils
 
 (defun file-compressed-p (fname)
-  "Return t if fname is a compressed file."
+  "Return t if FNAME is a compressed file."
   (let ((ext (file-name-extension fname)))
-    (cond ((equal ext "gz")
-           t)
-          ((equal ext "bz2")
-           t)
-          ((equal ext "zip")
-           t)
-          (t nil))))
+    (case ext
+      ("gz"  t)
+      ("bz2" t)
+      ("zip" t)
+      (t     nil))))
 
 ;;;###autoload
 (defun* traverse-cp-or-mv-extfiles-in-dir (tree ext dir &optional (fn 'copy-file))
@@ -1206,8 +1200,8 @@ If `quiet' is non-nil don't send message."
 
 
 (defun traverse-list-directories-in-tree (tree &optional ignore-dirs)
-  "Return all directories and subdirectories of `tree'.
-`ignore-dirs' is a list of directories to ignore."
+  "Return all directories and subdirectories of TREE.
+IGNORE-DIRS is a list of directories to ignore."
   (let (list-dirs)
     (traverse-walk-directory
      tree
@@ -1218,11 +1212,10 @@ If `quiet' is non-nil don't send message."
     (nreverse list-dirs)))
 
 (defun* traverse-list-files-in-tree (tree &optional ignore-files (ignore-dirs traverse-ignore-dirs) only-ext)
-  "Return all files in `tree' without directories.
-`ignore-files' is a list of files(and/or).ext to ignore.
-`only-ext' will match only files with .ext or matching regexp that are in this list.
-NOTE: if both `ignore-files' and `only-ext' are set, `only-ext'
-will take precedence on `ignore-files'."
+  "Return all files in TREE without directories.
+IGNORE-FILES is a list of files(and/or).ext to ignore.
+ONLY-EXT will match only files with .ext or matching regexp that are in this list.
+NOTE: if both IGNORE-FILES and ONLY-EXT' are set, ONLY-EXT will take precedence on IGNORE-FILES."
   (let (list-files)
     (traverse-walk-directory
      tree
@@ -1238,8 +1231,8 @@ will take precedence on `ignore-files'."
     (nreverse list-files)))
 
 (defun traverse-apply-func-on-files (tree fn &optional ext)
-  "Exec `function' on all files of `tree'.
-If `ext' apply func only on files with .`ext'."
+  "Exec function FN on all files of TREE.
+If EXT apply func only on files with extension EXT."
   (let ((files-list (traverse-list-files-in-tree tree)))
     (dolist (i files-list)
       (if ext
@@ -1248,7 +1241,7 @@ If `ext' apply func only on files with .`ext'."
           (funcall fn i)))))
 
 (defun traverse-apply-func-on-dirs (tree fn &optional ignore-dirs)
-  "Exec `function' on all directories of `tree'.
+  "Exec function FN on all directories of TREE.
 `ignore-dirs' is a list of directories to ignore."
   (let ((dirs-list (traverse-list-directories-in-tree tree ignore-dirs)))
     (dolist (i dirs-list)
@@ -1273,58 +1266,79 @@ PRED is a function that take one arg."
      flist))
 
 (defun* traverse-auto-document-lisp-buffer (&key type prefix)
-  "Auto document tool for lisp code."
-  (let* ((boundary-regexp "^;; +\\*+ .*");"^;;=*LIMIT.*")
-          (regexp          (case type
-                             ('command           "^\(def\\(un\\|subst\\)")
-                             ('nested-command    "^ +\(def\\(un\\|subst\\)")
-                             ('function          "^\(def\\(un\\|subst\\|advice\\)")
-                             ('nested-function   "^ +\(def\\(un\\|subst\\|advice\\)")
-                             ('macro             "^\(defmacro")
-                             ('internal-variable "^\(defvar")
-                             ('nested-variable   "^ +\(defvar")
-                             ('user-variable     "\(defcustom")
-                             ('faces             "\(defface")
-                             ('anything-source   "^\(defvar anything-c-source")
-                             (t (error           "Unknow type"))))
-          (fn-list         (traverse-find-readlines
-                            (current-buffer)
-                            regexp
-                            :insert-fn 'buffer))
-          beg end)
-     (flet ((maybe-insert-with-prefix (name)
-              (if prefix
-                  (when (string-match prefix name)
-                    (insert (concat ";; \`" name "\'\n")))
-                  (insert (concat ";; \`" name "\'\n")))))
-       (insert "\n") (setq beg (point))
-       (save-excursion (when (re-search-forward boundary-regexp)
-                         (forward-line -1) (setq end (point))))
-       (delete-region beg end)
-       (when (eq type 'anything-source) (setq regexp "\(defvar"))
-       (dolist (i fn-list)
-         (let* ((elm     (cadr i))
-                (elm1    (replace-regexp-in-string "\*" "" elm))
-                (elm-mod (replace-regexp-in-string regexp "" elm1))
-                (elm-fin (replace-regexp-in-string "\(\\|\)" ""(car (split-string elm-mod)))))
-           (case type
-             ('command
-              (when (commandp (intern elm-fin))
-                (maybe-insert-with-prefix elm-fin)))
-             ('nested-command
-              (when (commandp (intern elm-fin))
-                (maybe-insert-with-prefix elm-fin)))
-             ('function
-              (when (not (commandp (intern elm-fin)))
-                (maybe-insert-with-prefix elm-fin)))
-             ('nested-function
-              (when (not (commandp (intern elm-fin)))
-                (maybe-insert-with-prefix elm-fin)))
-             ('internal-variable
-              (unless (string-match "anything-c-source" elm-fin)
-                (maybe-insert-with-prefix elm-fin)))
-             (t
-              (maybe-insert-with-prefix elm-fin))))))))
+  "Auto document tool for lisp code.
+TYPE can be one of:
+    - command           
+    - nested-command    
+    - function          
+    - nested-function   
+    - macro             
+    - internal-variable 
+    - nested-variable   
+    - user-variable     
+    - faces             
+    - anything-source
+PREFIX let you define a special name (e.g match only function with PREFIX \"^traverse-\")
+
+Example: (traverse-auto-document-lisp-buffer :type 'function :prefix \"traverse\").
+
+It's better to use `traverse-auto-documentation-insert-header' to setup your headers.
+Don't forget to add this line at the end of your traverse-auto-documentation:
+
+    ;;  *** END auto-documentation
+
+See headers of traverselisp.el for example."
+  (let* ((boundary-regexp "^;; +\\*+ .*")
+         (regexp          (case type
+                            ('command           "^\(def\\(un\\|subst\\)")
+                            ('nested-command    "^ +\(def\\(un\\|subst\\)")
+                            ('function          "^\(def\\(un\\|subst\\|advice\\)")
+                            ('nested-function   "^ +\(def\\(un\\|subst\\|advice\\)")
+                            ('macro             "^\(defmacro")
+                            ('internal-variable "^\(defvar")
+                            ('nested-variable   "^ +\(defvar")
+                            ('user-variable     "\(defcustom")
+                            ('faces             "\(defface")
+                            ('anything-source   "^\(defvar anything-c-source")
+                            (t (error           "Unknow type"))))
+         (fn-list         (traverse-find-readlines
+                           (current-buffer)
+                           regexp
+                           :insert-fn 'buffer))
+         beg end)
+    (flet ((maybe-insert-with-prefix (name)
+             (if prefix
+                 (when (string-match prefix name)
+                   (insert (concat ";; \`" name "\'\n")))
+                 (insert (concat ";; \`" name "\'\n")))))
+      (insert "\n") (setq beg (point))
+      (save-excursion (when (re-search-forward boundary-regexp)
+                        (forward-line -1) (setq end (point))))
+      (delete-region beg end)
+      (when (eq type 'anything-source) (setq regexp "\(defvar"))
+      (dolist (i fn-list)
+        (let* ((elm     (cadr i))
+               (elm1    (replace-regexp-in-string "\*" "" elm))
+               (elm-mod (replace-regexp-in-string regexp "" elm1))
+               (elm-fin (replace-regexp-in-string "\(\\|\)" ""(car (split-string elm-mod)))))
+          (case type
+            ('command
+             (when (commandp (intern elm-fin))
+               (maybe-insert-with-prefix elm-fin)))
+            ('nested-command
+             (when (commandp (intern elm-fin))
+               (maybe-insert-with-prefix elm-fin)))
+            ('function
+             (when (not (commandp (intern elm-fin)))
+               (maybe-insert-with-prefix elm-fin)))
+            ('nested-function
+             (when (not (commandp (intern elm-fin)))
+               (maybe-insert-with-prefix elm-fin)))
+            ('internal-variable
+             (unless (string-match "anything-c-source" elm-fin)
+               (maybe-insert-with-prefix elm-fin)))
+            (t
+             (maybe-insert-with-prefix elm-fin))))))))
 
 ;;;###autoload
 (defun traverse-auto-update-documentation ()

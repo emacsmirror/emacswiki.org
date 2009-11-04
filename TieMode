@@ -1,0 +1,1 @@
+[http://www.emacswiki.org/elisp/tie-mode.el tie-mode.el] provides support for editing Tensilica Instruction Extension (TIE) Language files used to describe instruction set extensions for the Xtensa family of processor cores.

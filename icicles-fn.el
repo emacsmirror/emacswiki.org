@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Oct 25 21:22:36 2009 (-0700)
+;; Last-Updated: Tue Nov  3 11:55:14 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 11380
+;;     Update #: 11388
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -251,9 +251,9 @@
                                   ;; plus, for Emacs < 21: dolist, push, pop
                                   ;; plus, for Emacs < 20: when, unless
 
-(require 'hexrgb nil t) ;; (no error if not found): hexrgb-color-name-to-hex, hexrgb-hex-to-rgb, 
-                        ;; hexrgb-(red|green|blue|hue|saturation|value), hexrgb-rgb-to-hsv,
-                        ;; hexrgb-value
+(require 'hexrgb nil t) ;; (no error if not found): hexrgb-color-name-to-hex, hexrgb-defined-colors,
+                        ;; hexrgb-hex-to-rgb, hexrgb-(red|green|blue|hue|saturation|value),
+                        ;; hexrgb-rgb-to-hsv, hexrgb-value
 (require 'wid-edit+ nil t) ;; (no error if not found):
                            ;; redefined color widget (for icicle-var-is-of-type-p)
 
@@ -5080,8 +5080,6 @@ Puts property `icicle-fancy-candidates' on string `prompt'."
   (icicle-highlight-lighter)
   (setq icicle-candidate-help-fn           'icicle-color-help
         completion-ignore-case             t
-        icicle-transform-function          'icicle-remove-color-duplicates
-
         icicle-sort-functions-alist
         '(("by color name" . icicle-part-1-lessp)
           ("by color hue"  . (lambda (s1 s2) (not (icicle-color-hue-lessp s1 s2))))
@@ -5104,7 +5102,7 @@ Puts property `icicle-fancy-candidates' on string `prompt'."
         icicle-proxy-candidate-regexp      "^[*'].+[*']"
 
         named-colors                       (mapcar #'icicle-make-color-candidate
-                                                   (x-defined-colors))
+                                                   (hexrgb-defined-colors))
         icicle-proxy-candidates
         (mapcar                         ; Convert multi-completions to strings.
          (lambda (entry)
@@ -5141,6 +5139,7 @@ Puts property `icicle-fancy-candidates' on string `prompt'."
                        ipc))))
             ipc)))))
 
+;; This is not used by Icicles, since the color functions require `hexrgb.el'.
 (defun icicle-remove-color-duplicates (list)
   "Copy of LIST with duplicate color candidates removed.
 Candidates are considered duplicates if they have the same color name,

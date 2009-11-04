@@ -50,7 +50,7 @@ Please also consider visiting these pages in order to getting started:
 
 ; [[rcircColoredNicks]]: Color each nick using a separate color and add the ##/color## command
 ; [[rcircColoredNickClasses]]: Alternative scheme where nicks can belong to classes such as pals or bots
-; [[rcircColors]]: Handle escape sequences that convey test colors
+; [[rcircColors]]: Handle escape sequences that convey text colors
 ; [[rcircRetake]]: Add the ##/retake## command to sind RECOVER and RELEASE messages to !NickServ and to switch your nick using a ##/nick## command.
 ; [[rcircReconnect]]: Add the ##/reconnect## command to quit and reconnect immediately for users waking their laptop from sleep after the server has closed the connection
 ; [[rcircAutoReconnect]]: Automatically reconnect when disconnected from the IRC server

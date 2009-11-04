@@ -29,6 +29,7 @@ User-facilitated search & replace (regexp and normal) (kind of like the dialog b
 
 [new]
 User-friendly blockedit. (maybe simply a menu-item that changes a selection into a blockedit region...
+YannickWurm: actually, selecting a region followed by 'Control-x r t'   to insert or 'Control-x r k' to delete stuff works great
 
 [new]
 When using aquamacs-toggle-full-frame, I can mouse up to see the time and menu bar, but moving the mouse down, I cannot access the Dock (I've set it to auto-hide). Would it be possible to have an option to let the Dock be accessible even in fullscreen mode?

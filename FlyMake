@@ -329,6 +329,21 @@ The following works with Gnat:
 
 By providing a makefile which invokes SCons/bjam. Not perfect but a viable alternative until Flymake has more configuration options
 
+Here is how I customized flymake to compile with scons :
+
+
+	(defun flymake-get-make-cmdline (source base-dir)
+	  (string-match "src/\\(.*\\)\\." source)
+	  (list "scons"
+	    (list "-u" 
+	          (concat "#obj/" 
+	                  (match-string 1 source)
+	                  ".o"))))
+
+This is the case if you put VariantDir(obj,src) in your SConstruct. 
+
+--Ounim
+
 ----
 
 == Mozart/Oz ==

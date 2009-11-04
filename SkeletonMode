@@ -6,7 +6,7 @@ TomBreton wrote a nice recipe for skeletons: RecipeForSkeletonMode.
 
 == Simple example ==
 
-Here is an example that sets up a general LaTeX letter. Most of the elements after the DocString are plain strings. These are inserted as is. The first string is the !DocString. The second string is the ''prompt string'', with which the minibuffer prompts for a value whenever the ##str## symbol occurs in the skeleton, using the entered value in place of the symbol. The construct ##str | " *** Empfänger *** "## means that "##*** Empfänger ***##" will be used as the default value if nothing was entered at the prompt. Finally, the ##_## symbol specifies the "wrap position", i.e., where the point will end up when the skeleton has been inserted. If any text is selected beforehand, the skeleton will wrap around it.
+Here is an example that sets up a general LaTeX letter, creating a skeleton with ##define-skeleton##. The first string is the DocString, a short textual description of the skeleton. Most of the elements after the !DocString are plain strings. These are inserted as is. However, the second string is the ''prompt string'', which the minibuffer uses for prompting for an user-entered value whenever the ##str## symbol occurs in the skeleton. The value entered is substituted in place of ##str##. The construct ##str | " *** Empfänger *** "## means that "##*** Empfänger ***##" will be used as the default value if nothing was entered at the prompt. Finally, the ##_## symbol specifies the "wrap position", i.e., where the point will end up when the skeleton has been inserted. If any text is selected beforehand, the skeleton will wrap around it.
 
 Place the code below in <tt>[InitFile .emacs]</tt>:
 
@@ -32,59 +32,7 @@ Then you can, for example, bind it to a key with:
 
 Very simple, right?
 
-Of course, the scheme is infinitely flexible. Instead of strings you can use Lisp expressions, whose return values will be used in the text. See the [http://www.gnu.org/software/emacs/manual/html_mono/autotype.html#Skeleton-Language Emacs Auto Type manual] for details.
-
-== Webforum skeletons ==
-
-A collection of skeletons for the common "BB code" of webforums. Bind to appropriate keys (below) and use together with VisualLineMode to conveniently write forum posts in Emacs.
-
-    (setq skeleton-end-newline nil)
-    (define-skeleton bb-italic
-      "Make italic text."
-      nil "[i]" _ "[/i]")
-    (define-skeleton bb-bold
-      "Make bold text."
-      nil "[b]" _ "[/b]")
-    (define-skeleton bb-underline
-      "Make underlined text."
-      nil "[u]" _ "[/u]")
-    (define-skeleton bb-tt
-      "Typewriter font."
-      nil "[font=\"Courier New\"]" _ "[/font]")
-    (define-skeleton bb-url
-      "Prompt for URL and insert link."
-      "URL: "
-       "[url=\"" str "\"]" _ "[/url]")
-    (define-skeleton bb-list
-      "Start an unordered list."
-      nil "[list][*] " _ "\n[/list]")
-    (define-skeleton bb-point
-      "Make a new list point."
-      nil (unless (bolp) "\n") "[*] " _)
-    (define-skeleton bb-img
-      "Insert [img] ... [/img] tags."
-      nil "[img]" _ "[/img]")
-    (define-skeleton bb-indent
-      "Insert [indent] ... [/indent] tags."
-      nil "[indent]" _ "[/indent]")
-    (define-skeleton bb-youtube
-      "Insert [youtube] ... [/youtube] tags."
-      nil "[youtube]" _ "[/youtube]")
-
-As for key bindings, the following roughly matches AUCTeX's scheme:
-
-    (global-set-key "\C-c\C-f\C-e" 'bb-italic)
-    (global-set-key "\C-c\C-f\C-u" 'bb-underline)
-    (global-set-key "\C-c\C-f\C-b" 'bb-bold)
-    (global-set-key "\C-c\C-f\C-t" 'bb-tt)
-    (global-set-key "\C-c\C-fu"    'bb-url)
-    (global-set-key "\C-c\C-f\C-l" 'bb-list)
-    (global-set-key "\C-cj"        'bb-point)
-    (global-set-key "\C-c\C-j"     'bb-point)
-    (global-set-key "\C-c\C-fi"    'bb-img)
-    (global-set-key "\C-c\C-f\C-i" 'bb-indent)
-    (global-set-key "\C-c\C-f\C-y" 'bb-youtube)
-    (global-set-key "\C-c\C-fy"    'bb-youtube)
+Of course, the scheme is infinitely flexible. Instead of strings you can use Lisp expressions, whose return values will be used in the text. See the [http://www.gnu.org/software/emacs/manual/html_mono/autotype.html#Skeleton-Language Emacs Auto Type manual] for details. More examples along the preceding lines [[#BBCode|below]].
 
 == Skeletons and abbrevs ==
 
@@ -348,6 +296,59 @@ Here follows an enhanced variant of ##skeleton-pair-insert-maybe##, that overcom
 
 ##myskeleton-pair-insert## recognizes two types of prefix, one is sereveral universal arguments (C-u) and the other numeric prefix argument. In the first case it will surround the current word N times (N is how much you press C-u), or just insert pair N times (N is numeric prefix argument).
 
+[:BBCode]
+== Webforum skeletons ==
+
+A collection of skeletons for the common "BB code" of webforums. Bind to appropriate keys (below) and use together with VisualLineMode to conveniently write forum posts in Emacs.
+
+    (setq skeleton-end-newline nil)
+    (define-skeleton bb-italic
+      "Make italic text."
+      nil "[i]" _ "[/i]")
+    (define-skeleton bb-bold
+      "Make bold text."
+      nil "[b]" _ "[/b]")
+    (define-skeleton bb-underline
+      "Make underlined text."
+      nil "[u]" _ "[/u]")
+    (define-skeleton bb-tt
+      "Typewriter font."
+      nil "[font=\"Courier New\"]" _ "[/font]")
+    (define-skeleton bb-url
+      "Prompt for URL and insert link."
+      "URL: "
+       "[url=\"" str "\"]" _ "[/url]")
+    (define-skeleton bb-list
+      "Start an unordered list."
+      nil "[list][*] " _ "\n[/list]")
+    (define-skeleton bb-point
+      "Make a new list point."
+      nil (unless (bolp) "\n") "[*] " _)
+    (define-skeleton bb-img
+      "Insert [img] ... [/img] tags."
+      nil "[img]" _ "[/img]")
+    (define-skeleton bb-indent
+      "Insert [indent] ... [/indent] tags."
+      nil "[indent]" _ "[/indent]")
+    (define-skeleton bb-youtube
+      "Insert [youtube] ... [/youtube] tags."
+      nil "[youtube]" _ "[/youtube]")
+
+As for key bindings, the following roughly matches AUCTeX's scheme:
+
+    (global-set-key "\C-c\C-f\C-e" 'bb-italic)
+    (global-set-key "\C-c\C-f\C-u" 'bb-underline)
+    (global-set-key "\C-c\C-f\C-b" 'bb-bold)
+    (global-set-key "\C-c\C-f\C-t" 'bb-tt)
+    (global-set-key "\C-c\C-fu"    'bb-url)
+    (global-set-key "\C-c\C-f\C-l" 'bb-list)
+    (global-set-key "\C-cj"        'bb-point)
+    (global-set-key "\C-c\C-j"     'bb-point)
+    (global-set-key "\C-c\C-fi"    'bb-img)
+    (global-set-key "\C-c\C-f\C-i" 'bb-indent)
+    (global-set-key "\C-c\C-f\C-y" 'bb-youtube)
+    (global-set-key "\C-c\C-fy"    'bb-youtube)
+
 [:PairInsertion]
 == Pair Insertion ==
 
@@ -387,7 +388,7 @@ However, we can also remove pairs that are /not/ empty:
 
 This modifies the behavior of ##backward-kill-word##, normally bound to ##<C-backspace>##. For example, if the cursor is at the '##w##' in '##((word))##', ##<C-backspace>## gives '##(word)##'. It only works for pairs listed in the [EmacsSyntaxTable syntax table], however.
 
-=== Regular Expressions ===
+== Regular Expressions ==
 
 The code above only deletes single-character pairs. To remove skeletons that consist of more characters, we can use regular expressions:
 
@@ -444,6 +445,8 @@ Now, if the cursor is at the '##t##' in '##[i]text[/i]##', ##<C-backspace>## giv
 == More Information ==
 
 Read the function documentation for ##skeleton-insert## to learn about creating more complex skeletons.
+
+If you want to write test for your skeletons see SkeletonModeTests.
 
 ----
 CategoryCode CategoryTemplates CategoryDotEmacs CategoryParentheses

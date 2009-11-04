@@ -1,0 +1,40 @@
+An implementation of Vi and Vim-like key bindings for emacs.
+
+== Usage ==
+
+Download the package and put the following in your .emacs file:
+{{{
+    (add-to-list 'load-path "/path/to/vim-mode")
+    (require 'vim)
+    (vim-mode 1)
+}}}
+
+== Features ==
+
+vim-mode currently supports the following aspects:
+
+* standard Vi key-bindings in normal-mode/operator-pending-mode
+* window-commands (Ctrl-W + ...)
+* character-wise, line-wise and block visual-mode
+* changable key-bindings
+* framework for easy definition of new commands and motions
+
+== TODO ==
+
+The following aspects are currently not implemented, but should be in future:
+
+* marks
+* registers
+* ex-mode
+* most of the text-object motions
+* ...
+
+== Downloads ==
+
+vim-mode is available from the bitbucket repository.
+
+[http://bitbucket.org/lyro/vim-mode http://bitbucket.org/lyro/vim-mode ]
+
+Archives can be downloaded from 
+
+[http://bitbucket.org/lyro/vim-mode/downloads http://bitbucket.org/lyro/vim-mode/downloads]

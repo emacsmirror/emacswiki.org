@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sat Sep  5 16:49:01 2009 (-0700)
+;; Last-Updated: Tue Nov  3 11:54:14 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 1155
+;;     Update #: 1159
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -404,7 +404,7 @@ This command is intended only for use in Icicle mode." ; Doc string
     (modify-frame-parameters
      orig-frame (list (cons 'background-color (icicle-transform-multi-completion color)))))
   prompt                                ; `completing-read' args
-  (mapcar #'icicle-make-color-candidate (x-defined-colors))
+  (mapcar #'icicle-make-color-candidate named-colors)
   nil t nil (if (boundp 'color-history) 'color-history 'icicle-color-history) nil nil
   ((orig-frame                         (selected-frame)) ; Additional bindings
    (orig-bg                            (frame-parameter nil 'background-color))
@@ -432,7 +432,7 @@ See `icicle-frame-bg' - but this is for foreground, not background." ; Doc strin
     (modify-frame-parameters
      orig-frame (list (cons 'foreground-color (icicle-transform-multi-completion color)))))
   prompt                                ; `completing-read' args
-  (mapcar #'icicle-make-color-candidate (x-defined-colors))
+  (mapcar #'icicle-make-color-candidate named-colors)
   nil t nil (if (boundp 'color-history) 'color-history 'icicle-color-history) nil nil
   ((orig-frame                         (selected-frame)) ; Additional bindings
    (orig-bg                            (frame-parameter nil 'foreground-color))
@@ -5196,8 +5196,7 @@ used with `C-u', with Icicle mode turned off)."
   (unless (featurep 'hexrgb) (error "`icicle-read-color' requires library `hexrgb.el'"))
   (let (color)
     (if (consp arg)                     ; Plain `C-u': complete against color name only,
-        (let ((icicle-transform-function  'icicle-remove-color-duplicates))
-          (setq color  (hexrgb-read-color t))) ; and be able to input any valid RGB string.
+        (setq color  (hexrgb-read-color t)) ; and be able to input any valid RGB string.
 
       ;; Complete against name+RGB pairs, but user can enter invalid value without completing.
       (let ((icicle-list-use-nth-parts
