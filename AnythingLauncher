@@ -32,7 +32,7 @@ AnythingLauncher consists of the following pieces:
 * emacsclient - Used to bring the special Emacs instance to life, executing Anything. Uses the -s option to pick the correct server to connect to.
 * Metacity/Gconf-editor - Used to map the Windows-q keyboard combination (in my case) to the bash script that launches Emacs and Anything.
 
-Details coming soon (needs to polish it up a bit), or faster if people are interested...
+Details coming soon-ish (need to polish it up a bit), or faster if people are interested...
 
 = Does it work? =
 
@@ -40,7 +40,16 @@ Yes, it seems so. The first time I activate AnythingLauncher it takes a few seco
 
 = Screenshot =
 
-This is how it currently looks after I activate AnythingLauncher. Colors and stuff will probably change depending on my mood...
+
+So, with my setup, typing this:
+
+[[image:AnythingLauncherPic02]]
+
+at the same time as this:
+
+[[image:AnythingLauncherPic03]]
+
+gives me this:
 
 [[image:AnythingLauncherPic01]]
 
@@ -59,5 +68,11 @@ xdotool/Metacity troubles: Well, it seems window managers have all sorts of magi
 Any suggestions on how to get this hack feel more stable are welcome. The main requirements are quite few actually: bring Emacs to front, start Anything with a special configuration, and hide Emacs when done. Should be easy eh? Nah...
 
 To be continued...
+
+
+= Discussion =
+
+You should announce it on gnu.emacs.sources too, even if it's not polished, because you can get ideas and contributors from there. Not everyone follows the recent changes of EmacsWiki.
+
 ----
 [[Anything]]

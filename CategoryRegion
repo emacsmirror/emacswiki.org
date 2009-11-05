@@ -3,8 +3,8 @@ The following category is concerned with regions and the different operations pe
 Click on the heading above to list '''all''' pages related to ''regions''.
 
 * [[Region]] -- The [[region]], [[point]], and [[mark]]. The [[active region]] is essentially what some other programs call the "selection".
-* DefaultKillingAndYanking -- The default Emacs behavior for copying, killing (cutting), and yanking (pasting).
-* CopyAndPaste -- Alternatives to DefaultKillingAndYanking for copying, killing, and yanking.
+* KillingAndYanking -- The default Emacs behavior for copying, killing (cutting), and yanking (pasting).
+* CopyAndPaste -- Alternatives to default KillingAndYanking for copying, killing, and yanking.
 * TransientMarkMode -- Highlights the region whenever it is active (you can activate it using `C-x C-x').
 * DeleteSelectionMode -- Replaces the region with what you type. Backspace (DEL) deletes the region.
 * PcSelectionMode -- Treats the region like MS Windows and Motif.

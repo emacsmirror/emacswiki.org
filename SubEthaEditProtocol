@@ -135,8 +135,7 @@ Content-Type: application/beep+xml
    ##212.204.60.78:65164##
 ** uid => UUID of... something.  Undetermined if this is the client
    install, the user, or what.  Normal hex, dash-separated format,
-   without curly braces.  (As specified in RFC 4122 or
-   http://www.ietf.org/internet-drafts/draft-mealling-uuid-urn-05.txt.)
+   without curly braces.  (As specified in RFC 4122)
    Example: ##c26bff50-3f16-b1f6-e60c-8858649bdc56##
 ** vers => the version of the protocol in use?  Only known value is '200'.
 ** uag => only present in the listening peer's response (?). Seems to

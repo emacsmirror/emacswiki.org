@@ -38,3 +38,9 @@ vim-mode is available from the bitbucket repository.
 Archives can be downloaded from 
 
 [http://bitbucket.org/lyro/vim-mode/downloads http://bitbucket.org/lyro/vim-mode/downloads]
+
+[new]
+Does this build on ViperMode, the current vi emulator in Emacs?
+
+----
+CategoryEmulation CategoryKeys ViperMode

@@ -3,7 +3,7 @@ This page is about some ways to [[completion|complete]] text in a [[buffer]] (ot
 
 == TabKey2 ==
 
-Lisp:tabkey2.el is a new little library that tries to generalize the ideas from Smart Tab.
+*tabkey2.el* (available from [NxhtmlMode nXhtml] repository at Launchpad) is a little library that tries to generalize the ideas from Smart Tab.
 However, it works a bit differently.
 In most major modes, the first Tab press will indent and following Tab presses will complete.
 Since there are many ways to complete you can also choose which function you want to use
@@ -28,50 +28,16 @@ Tabkey2 steals the TAB key and tries to call the function you tell it to call.
 
 Here's what I use every day:
 
+* [http://bitbucket.org/sroccaserra/emacs/src/tip/smart-tab.el smart-tab.el]
+
+It feels very natural (to me at least), ##<tab>## always do what I mean.
+
 * It's minibuffer compliant, so you can set it globally and not worry about what modes need it.
 * It calls `indent-region' if mark is active ('''so, to reindent the whole file, you would do ##C-x h <tab>##''').
 * Otherwise it expands if at the end of a symbol, or indents the current line.
 * Prefixed by ##C-u##, always smart indent without completing.
 
-It feels very natural (to me at least), ##<tab>## always do what I mean.
-
 Note the use of "##\\_>##" instead of "##\\>##": this allows to tab-expand symbols, according to the major mode. Like "##(goto-##...", or "##BOOST_##..." (useful when coding in Lisp or C).
-
-{{{
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Smart Tab
-
-(defvar smart-tab-using-hippie-expand t
-  "turn this on if you want to use hippie-expand completion.")
-
-(defun smart-tab (prefix)
-  "Needs `transient-mark-mode' to be on. This smart tab is
-  minibuffer compliant: it acts as usual in the minibuffer.
-
-  In all other buffers: if PREFIX is \\[universal-argument], calls
-  `smart-indent'. Else if point is at the end of a symbol,
-  expands it. Else calls `smart-indent'."
-  (interactive "P")
-  (labels ((smart-tab-must-expand (&optional prefix)
-                                  (unless (or (consp prefix)
-                                              mark-active)
-                                    (looking-at "\\_>"))))
-    (cond ((minibufferp)
-           (minibuffer-complete))
-          ((smart-tab-must-expand prefix)
-           (if smart-tab-using-hippie-expand
-               (hippie-expand nil)
-             (dabbrev-expand nil)))
-          ((smart-indent)))))
-
-(defun smart-indent ()
-  "Indents region if mark is active, or current line otherwise."
-  (interactive)
-  (if mark-active
-    (indent-region (region-beginning)
-                   (region-end))
-    (indent-for-tab-command)))
-}}}
 
 Note: to enable tab completion in the `eval-expression` minibuffer, I just bind the tab key to `hippie-expand` in the `read-expression-map`.
 {{{
@@ -80,7 +46,7 @@ Note: to enable tab completion in the `eval-expression` minibuffer, I just bind 
 }}}
 
 
-Cheers!
+I hope you like it, cheers!
 -- SebastienRoccaSerra
 
 [new]

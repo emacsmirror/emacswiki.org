@@ -158,7 +158,7 @@ Bookmarks are saved whenever you exit emacs or call `M-x bookmark-save' manually
 * <tt>[[wuxch-bookmark.el]]</tt> -- Extends [[#BookmarkPlus]] and VisibleBookmarks
 * [[BreadcrumbForEmacs]] Breadcrumb for Emacs.  Leaves breadcrumb bookmarks in file buffers.
 * GraphicalBookmarkJump
-
+* [http://mercurial.intuxication.org/hg/emacs-bookmark-extension bookmark-extensions] is a fork of bookmark+.el.
 
 ----
 CategoryHypermedia CategoryPersistence

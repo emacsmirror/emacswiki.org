@@ -1,0 +1,174 @@
+According to the Autotype manual.
+
+: ''Various characters usually appear in pairs.  When, for example, you
+insert an open parenthesis, no matter whether you are programming or
+writing prose, you will surely enter a closing one later.  By entering
+both at the same time and leaving the cursor inbetween, Emacs can
+guarantee you that such parentheses are always balanced.'' [...]
+
+: ''This is done by binding the first key of the pair to
+`skeleton-pair-insert-maybe' instead of `self-insert-command'.  The
+"maybe" comes from the fact that this at-first surprising behavior is
+initially turned off.  To enable it, you must set `skeleton-pair' to
+some non-`nil' value.''
+
+Here follows an enhanced variant of ##skeleton-pair-insert-maybe##, that overcomes some of its limitations.
+
+: ''(Please add an explanation of the limitations of ##skeleton-pair-insert-maybe## and how this enhaced version overcomes it.)''
+
+    (setq skeleton-end-hook nil) ; do not insert newline after skeleton insertation
+
+    (defvar myskeleton-pairs
+      '((?\" . (?\" ?\" ?\" _ ?\"))
+    	(?\( . (?\( ?\) ?\( _ ?\)))
+    	(?\[ . (?\[ ?\] ?\[ _ ?\]))
+    	(?\{ . (?\{ ?\} ?\{ _ ?\}))
+    	(?\' . (?\' ?\' ?\' _ ?\'))
+    	(?\` . (?\` ?\' ?\` _ ?\')))
+      "Table of skeletons pairs. Maybe local to buffer.")
+
+    (defun myskeleton-pair-insert (arg)
+      "Inserts pairs."
+      (interactive "*P")
+
+      (let* ((chr (event-key last-command-event))
+    	     (pair (assoc chr myskeleton-pairs)))
+    	(if (null pair)
+    	    (message "Character %s is not in `myskeleton-pairs'.")
+    	  (cond ((and (listp arg) (not (null arg)))
+    		 ;; Surraund current word with
+    		 (save-excursion
+    		   (when (not (looking-at "\\<"))
+    		     (backward-word 1))
+    		   (when (looking-at "\\sw")
+    		     (let ((pl 0)
+    			   (r (prefix-numeric-value arg)))
+    		       (while (> r 1)
+    			 (setq r (/ r 4))
+    			 (setq pl (1+ pl)))
+
+    		       (insert (make-string pl (nth 0 (cdr pair))))
+    		       (forward-word 1)
+    		       (insert (make-string pl (nth 1 (cdr pair))))))))
+    	      (t (mapcar (lambda (not-used)
+    			   (skeleton-insert
+    			    (cons nil (cdddr pair))))
+                         (make-list (prefix-numeric-value arg) 'not-used)))))))
+
+    (define-key global-map (kbd "C-M-{") 'backward-paragraph)
+    (define-key global-map (kbd "C-M-}") 'forward-paragraph)
+    (define-key global-map (kbd "C-M-'") 'abbrev-prefix-mark)
+
+    (define-key global-map (kbd "M-\"") 'myskeleton-pair-insert)
+    (define-key global-map (kbd "M-`") 'myskeleton-pair-insert)
+    (define-key global-map (kbd "M-'") 'myskeleton-pair-insert)
+    (define-key global-map (kbd "M-{") 'myskeleton-pair-insert)
+    (define-key global-map (kbd "M-(") 'myskeleton-pair-insert)
+    (define-key global-map (kbd "M-[") 'myskeleton-pair-insert)
+
+    ;; pairing for C-mode
+    (defun my-skelpair-cmode ()
+      (make-local-variable 'myskeleton-pairs)
+      (setq myskeleton-pairs (copy-alist myskeleton-pairs))
+      (remassoc ?\{ myskeleton-pairs)
+      (add-to-list 'myskeleton-pairs '(?{ . (?{ ?} ?{ '(progn (indent-according-to-mode) nil) \n _ \n ?} '(progn (indent-according-to-mode) nil)))))
+
+    (add-hook 'c-mode-hook 'my-skelpair-cmode)
+
+##myskeleton-pair-insert## recognizes two types of prefix, one is sereveral universal arguments (C-u) and the other numeric prefix argument. In the first case it will surround the current word N times (N is how much you press C-u), or just insert pair N times (N is numeric prefix argument).
+
+== Deletion ==
+
+To delete empty pairs like '##()##' with a single keypress, we can [AdvisingFunctions advice] ##delete-backward-char## with the following code (borrowed from [http://code.google.com/p/emacs-textmate/ textmate.el]):
+
+    (defvar skeletons-alist
+      '((?\( . ?\))
+        (?\' . ?\')
+        (?\" . ?\")
+        (?[  . ?])
+        (?{  . ?})
+        (?$  . ?$)))
+
+    (defadvice delete-backward-char (before delete-empty-pair activate)
+      (if (eq (cdr (assq (char-before) skeletons-alist)) (char-after))
+          (and (char-after) (delete-char 1))))
+
+If the cursor is between '##(##' and '##)##', pressing ##<backspace>## now deletes both characters. The variable ##skeletons-alist## is easily extended with more pairs, represented as single characters.
+
+However, we can also remove pairs that are /not/ empty:
+
+    (defadvice backward-kill-word (around delete-pair activate)
+      (if (eq (char-syntax (char-before)) ?\()
+          (progn
+            (backward-char 1)
+            (save-excursion
+              (forward-sexp 1)
+              (delete-char -1))
+            (forward-char 1)
+            (append-next-kill)
+            (kill-backward-chars 1))
+        ad-do-it))
+
+This modifies the behavior of ##backward-kill-word##, normally bound to ##<C-backspace>##. For example, if the cursor is at the '##w##' in '##((word))##', ##<C-backspace>## gives '##(word)##'. It only works for pairs listed in the [EmacsSyntaxTable syntax table], however.
+[new]
+The code above only deletes single-character pairs. To remove skeletons that consist of more characters, we can use regular expressions:
+
+    (defvar regexp-pairs-alist
+      '(("\\[i\]"         . "\\[/i\\]")
+        ("\\[b\]"         . "\\[/b\\]")
+        ("\\[u\]"         . "\\[/u\\]")
+        ("\\[font[^]]*\]" . "\\[/font\\]")
+        ("\\[url[^]]*\]"  . "\\[/url\\]")
+        ("\\[list\\]"     . "[\n ]*\\[/list\\]")
+        ("\\[\\*\\]"      . "")
+        ("\\[img\\]"      . "\\[/img\\]")
+        ("\\[indent\\]"   . "\\[/indent\\]")
+        ("\\[youtube\\]"  . "\\[/youtube\\]")))
+
+
+    (defadvice delete-backward-char (around delete-empty-regexp activate)
+      (unless (catch 'loop
+                (let (regexps start end)
+                  (dolist (regexps regexp-pairs-alist)
+                    (and (looking-at (setq end (cdr regexps)))
+                         (looking-back (setq start (car regexps)))
+                         (progn (replace-match "")
+                                (looking-at end)
+                                (replace-match "")
+                                (throw 'loop t))))))
+        ad-do-it))
+
+I use this code for BbCode tags in forum posts. With skeletons, I can wrap the point or region in '##[i][/i]##' with a single keystroke, and delete empty pairs with another -- ##<backspace>##.
+[new]
+But there's more! Remember when deleting nonempty pairs above, the pair had to be listed in the syntax table? Not with regular expressions:
+
+    (defadvice backward-kill-word (around delete-regexp activate)
+      (unless (catch 'loop
+                (let (regexps start end (level 1))
+                  (dolist (regexps regexp-pairs-alist)
+                    (when (looking-back (setq start (car regexps)))
+                      (replace-match "")
+                      (setq end (cdr regexps))
+                      (save-excursion
+                        (while (re-search-forward
+                                (concat "\\(" start
+                                        "\\)\\|\\("
+                                        end "\\)") nil t)
+                          (if (looking-back start)
+                              (setq level (1+ level))
+                            (when (= 0 (setq level (1- level)))
+                              (replace-match "")
+                              (throw 'loop t)))))
+                      (throw 'loop t)))))
+        ad-do-it))
+
+Now, if the cursor is at the '##t##' in '##[i]text[/i]##', ##<C-backspace>## gives '##text##'. The advice recognizes nested tags.
+
+----
+See also:
+
+* AutoPairs to insert parentheses, braces, quotes, etc. in matching pairs.
+
+----
+CategoryCode
+CategoryParentheses

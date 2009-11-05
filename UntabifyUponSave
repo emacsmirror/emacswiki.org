@@ -74,5 +74,21 @@ Alternately, <code>c++-mode-untabify</code> could check the current mode:
          (untabify (point-min) (point-max)))))
 
 Thanks to Boojum on StackOverflow for this answer. See http://stackoverflow.com/questions/318553/getting-emacs-to-untabify-when-saving-files.  --DanielMcPherson
+
+[new]
+I just have the following in my init file, which does nothing fancy at all and works exactly as you'd want it to:
+
+ ;; no tabs by default. modes that really need tabs should enable
+ ;; indent-tabs-mode explicitly. makefile-mode already does that, for
+ ;; example.
+ (setq-default indent-tabs-mode nil)
+
+ ;; if indent-tabs-mode is off, untabify before saving
+ (add-hook 'write-file-hooks 
+          (lambda () (if (not indent-tabs-mode)
+                         (untabify (point-min) (point-max)))))
+
+--JoostDiepenmaat
+
 ----
 CategoryIndentation

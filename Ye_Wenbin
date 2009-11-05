@@ -118,4 +118,11 @@ HTH -- DrewAdams
 Thanks. I update it in the elisp too.
 
 ----
+First thanks for all your work on emacs. I am a long-term user of your type-test extension and I recently switched to emacs23. Unfortunately, in that version of emacs, type-test does not behave as expected at end of lines in the \*type test\* buffer. To correct this misbehavior, I had to turn off line-move-visual. Putting the following in the type-test-mode definition in type-test.el solves the problem:
+
+  (when (> emacs-major-version 22)
+           (make-local-variable 'line-move-visual)
+           (setq line-move-visual nil))
+
+----
 CategoryHomepage
