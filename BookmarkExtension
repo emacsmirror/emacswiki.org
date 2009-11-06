@@ -1,0 +1,50 @@
+This page is about [http://mercurial.intuxication.org/hg/emacs-bookmark-extension/ bookmark-extensions]
+
+This is a fork of bookmark+.el, but simpler to use (less commands).
+
+Compatibilty: Only emacs23+.
+
+You can get it here with mercurial: 
+
+<pre>
+
+hg clone http://mercurial.intuxication.org/hg/emacs-bookmark-extension/
+
+</pre>
+
+To get the development branch:
+
+<pre>
+
+hg update -C development
+
+</pre>
+
+At the moment it provide support for bookmarking in W3m, Gnus, Woman, Man, Info with emacs standard bookmarks.
+
+The display is colorized to differency caregories of bookmarks.
+
+You will find filters to show only the category of bookmarks you want (e.g Gnus, W3m, etc...)
+
+You will find the support to use it in [[Anything]] in Lisp:anything-config.el
+
+It provide also an incremental searching of bookmarks ala [[Anything]].(no need to have [[Anything]] installed)
+
+Here some screenshots:
+
+http://farm3.static.flickr.com/2677/4079986668_065298b71d.jpg
+
+[http://farm3.static.flickr.com/2677/4079986668_d72675dd61_o.png Full screen]
+
+Searching in bookmarks:
+
+http://farm4.static.flickr.com/3520/4079996702_810752dbda.jpg
+
+[http://farm4.static.flickr.com/3520/4079996702_65588d83c1_o.png Full screen]
+
+
+[new]
+
+You should use an image host which allows full size images, so if you click on the thumbnall a new page is opened with the full size pictures. Or you could link the images to the full images on Flickr.
+
+These screenshots are pretty much useless, because you only see a very vague color outline of things. If a new user comes here they are not very helpful to present what these features actually look like during use.

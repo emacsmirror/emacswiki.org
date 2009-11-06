@@ -1,4 +1,4 @@
-A collection of SkeletonMode commands for the common "BB code" of web forums. Bind to appropriate keys (below) and use together with VisualLineMode to conveniently write forum posts in Emacs.
+A collection of SkeletonMode commands for the commonly encountered "BB code" of web forums. Bind to appropriate keys (below) and use together with VisualLineMode to conveniently write forum posts in Emacs!
 
     (setq skeleton-end-newline nil)
     (define-skeleton bb-italic
@@ -21,7 +21,7 @@ A collection of SkeletonMode commands for the common "BB code" of web forums. Bi
       nil "[list][*] " _ "\n[/list]")
     (define-skeleton bb-point
       "Make a new list point."
-      nil (unless (bolp) "\n") "[*] " _)
+      nil (unless (bolp) "\n") "[*] ")
     (define-skeleton bb-img
       "Insert [img] ... [/img] tags."
       nil "[img]" _ "[/img]")
@@ -46,6 +46,12 @@ As for key bindings, the following roughly matches AUCTeX's scheme:
     (global-set-key "\C-c\C-f\C-i" 'bb-indent)
     (global-set-key "\C-c\C-f\C-y" 'bb-youtube)
     (global-set-key "\C-c\C-fy"    'bb-youtube)
+
+You might want to piece together a [[minor mode]] if !AUCTeX's keys are foreign to you. Suggestions are welcome.
+
+== See also ==
+
+* TypographicalPunctuationMarks to adorn your posts with "smart quotes" -- en dashes -- ellipses ... an' so on.
 
 ----
 CategoryMarkup

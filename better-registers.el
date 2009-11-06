@@ -1,4 +1,4 @@
-;;; better-registers.el --- facilities for more powerful registers 
+;;; better-registers.el --- facilities for more powerful registers
 ;; -*- emacs-lisp -*-
 ;; Copyright (C) 2005 Sigurd Meldgaard
 
@@ -47,7 +47,7 @@
 ;; Note that this package is pretty harsh to your std shortcuts you
 ;; probably should edit them (or at least see them through this file
 ;; to suit your needs. I eg. personally never used backwards searches,
-;; so C-r was deemed in my hands. I can do with enter for indented
+;; so C-r was doomed in my hands. I use only enter for indented
 ;; linebreaks, so C-j also seemed as a nice candidate for something
 ;; more useful - you might want to bind:
 ;; (global-set-key "\r" 'newline-and-indent)
@@ -72,9 +72,10 @@
 
 ;; In modes which overwrite C-j C-xj should still be bound to the same.
 
-(defvar better-registers-version "0.57"
+(defvar better-registers-version "0.58"
   "The version of the package better-registers.
    Revision history:
+   from 0.57 to 0.58 Improved interactive argument handling of better-registers-save-registers. 
    from 0.57 to 0.57 Can now correctly save fontified strings, added convenient macro key (f1)
    from 0.55 to 0.56 No longer blocks enter in the minibuffer
    from 0.5 to 0.55 changed it to a minor mode
@@ -119,13 +120,11 @@
   'better-registers-put-buffer-filename-in-register)
 (define-key better-registers-r-map "b"
   'better-registers-put-buffer-in-register)
-(define-key better-registers-r-map "k" 'kill-rectangle)
-(define-key better-registers-r-map "d" 'delete-rectangle)
-(define-key better-registers-r-map "y" 'yank-rectangle)
-(define-key better-registers-r-map "o" 'open-rectangle)
-(define-key better-registers-r-map "t" 'string-rectangle)
-(global-set-key [S-f1] 'toggle-macro-recording)
-(global-set-key [f1] 'play-macro-if-not-playing)
+;(define-key better-registers-r-map "k" 'kill-rectangle)
+;(define-key better-registers-r-map "d" 'delete-rectangle)
+;(define-key better-registers-r-map "y" 'yank-rectangle)
+;(define-key better-registers-r-map "o" 'open-rectangle)
+;(define-key better-registers-r-map "t" 'string-rectangle)
 
 (define-minor-mode better-registers
   "A minor mode for easier and more powerful register commands"
@@ -140,12 +139,18 @@
             '(lambda ()
                (better-registers-save-registers))))
 
-(defun better-registers-save-registers (&optional filename)
+(defun better-registers-save-registers (&optional filename queryp)
   "Print the contents of all registers to a file as loadable data.
    Cannot save window/frame configuration.
    But it works with keyboard macros, text, buffernames,
-   filenames and rectangles."
-  (interactive "FTo which file?")
+   filenames and rectangles.
+
+   If filename is non-nil and queryp is nil, use that, otherwise
+   use the default filename.  If queryp is non-nil (a prefix
+   argument is given), query interactively for the file-name."
+  (interactive "i\nP")
+  (when queryp
+    (setq filename (read-file-name nil better-registers-save-file)))
   (let ((fn (or filename better-registers-save-file))
          (print-level nil) ;Let us write anything
          (print-length nil)
@@ -155,11 +160,11 @@
       (let ((char (car i))
             (contents (cdr i)))
         (cond
-	 ((stringp contents)
-	  (insert (format "%S\n"
-			 `(set-register
-			   ,char
-			   ,contents))))
+         ((stringp contents)
+          (insert (format "%S\n"
+                         `(set-register
+                           ,char
+                           ,contents))))
          ((numberp contents) ;numbers are printed non-quotes
           (insert (format "%S\n" `(set-register ,char ,contents))))
          ((markerp contents)
@@ -172,7 +177,7 @@
                       ,(marker-position contents))))))
          ((bufferp (cdr contents))
           (insert (format "%s\n"
-                          `(set-register ,char 
+                          `(set-register ,char
                                          ',(buffer-name (cdr contents))))))
          (t (when (and contents ; different from nil
                        (not (or (window-configuration-p (car contents))
@@ -181,7 +186,7 @@
                               `(set-register ,char (quote ,contents)))))))))
     (write-file fn)
     (kill-buffer b)))
-     
+
 
 (defun better-registers-put-buffer-in-register (register &optional delete)
   "Put current buffername in register - this would also work for
@@ -222,7 +227,7 @@
       (goto-char (cadr val)))
      ((markerp val)
       (or (marker-buffer val)
-	  (error "That register's buffer no longer exists"))
+          (error "That register's buffer no longer exists"))
       (switch-to-buffer (marker-buffer val))
       (goto-char val))
      ((and (consp val) (eq (car val) 'file))
@@ -234,14 +239,14 @@
       ;last-kbd-macro (named keyboard macros can only (as far as I
       ;know) be called interactively, but this works quite
       ;unproblematically).
-      (let ((old-macro last-kbd-macro)) 
+      (let ((old-macro last-kbd-macro))
         (setq last-kbd-macro (cdr val))
         (call-last-kbd-macro)
         (setq last-kbd-macro old-macro)))
      ((and (consp val) (eq (car val) 'file-query))
       (or (find-buffer-visiting (nth 1 val))
-	  (y-or-n-p (format "Visit file %s again? " (nth 1 val)))
-	  (error "Register access aborted"))
+          (y-or-n-p (format "Visit file %s again? " (nth 1 val)))
+          (error "Register access aborted"))
       (find-file (nth 1 val))
       (goto-char (nth 2 val)))
      ((or (stringp val)
@@ -262,6 +267,7 @@ Interactively, NUMBER is the prefix arg."
 
 (defun better-registers-toggle-macro-recording ()
   (interactive)
+  (message "hej")
   (if defining-kbd-macro
       (end-kbd-macro)
     (start-kbd-macro nil)))

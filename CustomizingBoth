@@ -3,6 +3,8 @@ your InitFile, then it will work in both of them.  Naturally,
 compiling the file will produce incompatible byte code, so don't do
 that.
 
+== Emacs vs. XEmacs ==
+
 Recently, [[XEmacs]] offers to migrate your ##.emacs## file to a ##.xemacs##
 file.  If you do that, however, a lot of code will be duplicated,
 unless you load the common stuff from both ##.emacs## and ##.xemacs## again.
@@ -11,33 +13,33 @@ Thus it depends on what you find easier to maintain.
 Many people suggest you take care writing one .emacs.  Here is how it
 might work:
 
-Use <code>(featurep 'xemacs)</code> to conditionalize code when the
-<em>interface</em> or the notation has changed.  This is rarely
+Use ##(featurep 'xemacs)## to conditionalize code when the
+''interface'' or the notation has changed.  This is rarely
 needed.
 
   (if (featurep 'xemacs)
       (blabla for xemacs)
     (blibli for emacs))
 
-You can also use the <code>window-system</code> variable, but that was
+You can also use the `window-system' variable, but that was
 never intended as a user level variable, so try to avoid it:
 
     (when (eq window-system 'x)
       (color-theme-robin-hood))
 
-This is better written using <code>display-color-cells</code>:
+This is better written using `display-color-cells':
 
     (when (> (display-color-cells) 16)
        (color-theme-robin-hood))
 
-Other things to test:
+== Other things to test ==
 
-; <code>(emacs-version, emacs-major-version, emacs-minor-version)</code>: the version of Emacs (string / numbers).  This is generally to be avoided.
-; <code>(system-name)</code>: hostname of the current machine
-; <code>(system-type)</code>: type of operating system you are using
-; <code>(getenv "TERM")</code>: the terminal used when Emacs was started
+; ##(emacs-version)##, `emacs-major-version', `emacs-minor-version': the version of Emacs (string / numbers).  This is generally to be avoided.
+; ##(system-name)##: hostname of the current machine
+; ##system-type##: type of operating system you are using
+; ##(getenv "TERM")##: the terminal used when Emacs was started
 
-----
+== Feature-specific ==
 
 If all you need is a certain function, it's better to test if that
 specific function is avalible, using fboundp:
@@ -55,7 +57,7 @@ function from AaronL's InitFile):
         (apply function args)
         t))
 
-Since it returns <code>t</code> if and only if the function did exist,
+Since it returns ##t## if and only if the function did exist,
 you can use it quite nicely like this:
 
     (or (call-if-fbound 'iswitchb-mode 1)
@@ -65,9 +67,9 @@ When setting variables that only exist in some version of Emacs,
 don't be afraid to always set them: they will just be ignored in the
 versions where they don't exist.
 
-= The custom command =
+== The custom command ==
 
-Using <code>custom</code> in both emacsen is confusing.  I suggest you
+Using ##custom## in both emacsen is confusing.  I suggest you
 only use custom in one of them, eg. Emacs, and disable the saving of
 customizations in the other (to prevent it from mangling your
 hand-crafted InitFile).  Here is how:
@@ -141,7 +143,7 @@ Then, in your InitFile, do a test like
       ...
     )
 
-= Discussion =
+== Discussion ==
 
 There was a bug in XEmacs 21.4.6 which ignored my custom-file setting
 and erased my custom-set-variables statement in my InitFile.  The bug
@@ -155,7 +157,7 @@ setting as a customization and thus replaced the customizations that
 where in place.
 
 : Hmm. I guess I would respond by asking, why use
-<code>custom-set-variables</code> in your InitFile if ##custom-file## /= ##.emacs##? Not
+`custom-set-variables' in your InitFile if ##custom-file## /= ##.emacs##? Not
 that there's any excuse for the bug, but still. I don't get it.
 
 That was just a trick to prevent me from ever saving customizations in
@@ -163,7 +165,7 @@ XEmacs.  If I ever did that, the settings should be saved into another
 file.  When running Emacs, `custom-file' was not changed and thus
 defaulted to ##.emacs##.
 
-= Three init.el files =
+== Three init.el files ==
 
 I swiped this idea from somewhere - sorry for not keeping track of who
 gave it to me.  I have three subdirectories: ##~/.gemacs##, ##~/.xemacs##, and
@@ -190,4 +192,5 @@ like:
 -- JodyKlymak
 
 ----
-ComparativeEmacsology CategoryCustomize
+CategoryCustomize
+ComparativeEmacsology

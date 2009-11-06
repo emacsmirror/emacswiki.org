@@ -16,6 +16,10 @@ For basic advice on how to install a neat new Emacs Lisp file you just found so 
 
 You can also have a separate CustomFile reserved strictly for customizations recorded by [[Customize]].
 
+Start Emacs with a specific init file:
+
+   emacs -q -l ~/my-init-file.el
+
 For more information about init files and custom files (Emacs 22 or later):
 
 : ##C-h r i init-file RET## or ##M-: (info "(emacs) Init File")## 

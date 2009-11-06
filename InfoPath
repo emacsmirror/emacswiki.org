@@ -29,7 +29,7 @@ As Emacs will always use INFOPATH if it exists, there is no point in
 trying to modify <code>Info-default-directory-list</code> on a system
 where INFOPATH is defined.  Even on a system that doesn't have an
 INFOPATH it will almost always be better to create INFOPATH than to
-try and configure Emacs through <code>Info-default-directory-list</code>.
+try to configure Emacs through <code>Info-default-directory-list</code>.
 
 The only exception is on a native Microsoft Windows installation that
 doesn't have any standalone Info readers installed.  Under Windows,

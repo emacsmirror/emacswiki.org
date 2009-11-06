@@ -102,6 +102,8 @@
 ;; 0.9.1: Updated date at the top of the file, added .svn filter
 ;; 0.9.2: Added support for skipping symlinks by attila.lendvai@gmail.com
 ;; 0.9.3: Smarter minibuffer handling by attila.lendvai@gmail.com
+;; 0.9.4: Better handle symlinks by levente.meszaros@gmail.com
+;; 0.9.5: Collect resolved files in the result by attila.lendvai@gmail.com
 
 (require 'cl)
 
@@ -189,15 +191,18 @@
 
 (defun findr-read-starting-directory (&optional prompt)
   (setq prompt (or prompt "Start in directory: "))
-  (apply 'read-directory-name
-         (append
-          (list prompt default-directory default-directory t nil)
-          (when (featurep 'xemacs)
-            (list 'findr-directory-history)))))
+  (if (and (fboundp 'ido-read-directory-name)
+           ido-mode)
+      (ido-read-directory-name prompt)
+      (apply 'read-directory-name
+             (append
+              (list prompt default-directory default-directory t nil)
+              (when (featurep 'xemacs)
+                (list 'findr-directory-history))))))
 
 ;;;; breadth-first file finder...
 
-(defun* findr (name dir &key (prompt-p (interactive-p)) (skip-symlinks t))
+(defun* findr (name dir &key (prompt-p (interactive-p)) (skip-symlinks nil) (resolve-symlinks t))
   "Search directory DIR breadth-first for files matching regexp NAME.
 If PROMPT-P is non-nil, or if called interactively, Prompts for visiting
 search result\(s\)."
@@ -211,13 +216,13 @@ search result\(s\)."
                      for fname = (file-relative-name file dir)
                      when (and (file-directory-p file)
                                (not (string-match findr-skip-directory-regexp fname))
-                               (and skip-symlinks
-                                    (not (file-symlink-p file))))
+                               (or (not skip-symlinks)
+                                   (not (file-symlink-p file))))
                      do (findr-enqueue file *dirs*)
                      when (and (string-match name fname)
                                (not (string-match findr-skip-file-regexp fname))
-                               (and skip-symlinks
-                                    (not (file-symlink-p file))))
+                               (or (not skip-symlinks)
+                                   (not (file-symlink-p file))))
                      do
                      ;; Don't return directory names when
                      ;; building list for `tags-query-replace' or `tags-search'
@@ -227,7 +232,10 @@ search result\(s\)."
 
                      ;; _never_ return directory names
                      (when (file-regular-p file)
-                       (push file *found-files*))
+                       (push (if resolve-symlinks
+                                 (file-truename file)
+                                 file)
+                             *found-files*))
                      (message file)
                      (when (and prompt-p
                                 (y-or-n-p (format "Find file %s? " file)))

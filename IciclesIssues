@@ -43,7 +43,14 @@ However, `icicle-execute-extended-command' has one disadvantage: an error backtr
   M-x set-variable debug-on-error t
 
 
+[new]
+1. Your recognition of info-quoted-name seems like is not right, e.g.
+<code>
+ `(a list of (+ 2 3) elements)
+</code>
+info-quoted-name highlight it.
 
+2. When I use your icicles in emacs22, I get a message "Symbol's function definition is void: icicle-shell-command".
 
 
 ----

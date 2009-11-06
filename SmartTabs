@@ -177,9 +177,13 @@ To be on the safe side, we see to that such spaces are weeded out before perform
 [:AdvisingEmacs]
 ''Advising Emacs''
 
-In Emacs, the tab size is controlled by the buffer-local variable ##tab-width##, while the indentation offset differs from mode to mode. The macro <tt>[[#CImplementations|smart-tabs-advice]]</tt> constructs a wrap-around [AdvisingFunctions advice] of the indentation function, which ''shadows'' these variables. That is, the original values of ##tab-width## and the indentation offset are temporarily overwritten by a large value (##fill-column##).
+In Emacs, the tab size is controlled by the buffer-local variable ##tab-width##, while the indentation offset differs from mode to mode. The macro <tt>[[#CImplementations|smart-tabs-advice]]</tt> constructs a wrap-around [AdvisingFunctions advice] of the indentation function, which ''shadows'' these variables. That is, the original values of ##tab-width## and the indentation offset are temporarily overwritten by a large value (##fill-column##). The advice also checks the beginning of the line for spaces preceding tabs; if any are found, they are deleted before indenting.
 
-The advice also checks the beginning of the line for spaces preceding tabs. If any are found, they are deleted before indenting.
+So, to add smart tabs support for a new language, all one has to do is investigate its [[major mode]], identify the indentation functions and the offset variable, and pass them to ##smart-tabs-advice## as such:
+
+    (smart-tabs-advice language-indent-line language-basic-offset)
+
+Also, ensure that the mode has tabs activated. Some modes, such as [[#VHDL|VhdlMode]], control this with their own variable rather than through Emacs' standard ##indent-tabs-mode##.
 
 [:TheNet]
 ''The Net''

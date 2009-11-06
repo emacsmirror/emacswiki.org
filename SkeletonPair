@@ -167,7 +167,7 @@ Now, if the cursor is at the '##t##' in '##[i]text[/i]##', ##<C-backspace>## giv
 ----
 See also:
 
-* AutoPairs to insert parentheses, braces, quotes, etc. in matching pairs.
+* AutoPairs to insert parentheses, braces, quotes, etc. in matching pairs, with pair deletion etc. to boot.
 
 ----
 CategoryCode

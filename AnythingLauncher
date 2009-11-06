@@ -5,9 +5,10 @@ to use Emacs together with [[Anything]] as a general purpose command
 launcher for my Ubuntu GNU/Linux desktop installation. The goal is to
 be able to use Anything to launch web pages, play movies, open certain
 folders etc *without* having to open a new Emacs instance or
-activating my normal Emacs instance first. Previously I have tried to
-make a habit of having Emacs always in front and using it to launch
-things, but I always seem to encounter hurdles with this approach.
+activating my normal Emacs instance (which might be busy doing something 
+else) first. Previously I have tried to make a habit of having Emacs 
+always in front and using it to launch things, but I always seem to 
+encounter hurdles with this approach.
 
 I have tried various tools like Gnome Do and the built-in Deskbar
 Applet, but Gnome Do forces me to write extensions in a
@@ -26,20 +27,32 @@ might be useful to someone else.
 
 AnythingLauncher consists of the following pieces:
 
-* anything-launcher.el - Elisp file. Contains my sources and actions for Anything as well as configuration of frame size, font and faces. Starts the Emacs server with a special name that emacsclient then talks to.
-* anything-launcher - Bash script. Starts a new special Emacs instance if not already running, loading anything-launcher.el. Hides the window when done so that it gets out of the way. This idea comes from `bashrun', another "launcher".
+* anything-launcher.el - Main elisp file. Contains my sources and actions for Anything as well as configuration of frame size, font and faces. Starts the Emacs server with a special name that emacsclient then talks to.
+* anything-load-launcher.el - Loads anything-launcher.el and touches "lock file" (don't know what to call it) when done, so that the bash script can continue.
+* anything-launcher - Bash script. Starts a new special Emacs instance if not already running, loading anything-load-launcher.el. Hides the window when done so that it gets out of the way. This idea comes from `bashrun', another "launcher".
 * [http://www.semicomplete.com/projects/xdotool/ xdotool] - Program to automate window and mouse actions. Used to hide the special Emacs instance used.
 * emacsclient - Used to bring the special Emacs instance to life, executing Anything. Uses the -s option to pick the correct server to connect to.
 * Metacity/Gconf-editor - Used to map the Windows-q keyboard combination (in my case) to the bash script that launches Emacs and Anything.
 
-Details coming soon-ish (need to polish it up a bit), or faster if people are interested...
+= Installation =
+
+First, get the three files from the repository (see below).
+
+Next, change paths in the bash script and anything-launcher.el to suit your setup. Some things are quite specific to my needs but it is not hard to understand what it does and how it works. At least the web sites source should work for most people.
+
+When you can run the anything-launcher script to get the launcher open, execute something, and hide itself, it's time to pick a key to bind this to. I chose the Windows key plus Q but you can of course any key you like:
+
+To map a command to a key, under Gnome, start gconf-edit. Go to /apps/metacity/global_keybindings in the tree. On the right hand side, pick a free run_command-entry and type a key name there. On my machine, Windows + Q is written <Mod4>q. 
+
+Next, go to /apps/metacity/keybinding_commands and identify the command for the run_command-entry you chose. Add this: /bin/bash -c /home/mathias/bin/anything-launcher. Change the path to suit your setup.
+
+At the moment you save the value the key binding should be active and you should be able to start the launcher with the chosen key.
 
 = Does it work? =
 
 Yes, it seems so. The first time I activate AnythingLauncher it takes a few seconds for things to load but consecutive invocations are very quick.
 
-= Screenshot =
-
+= Screenshots =
 
 So, with my setup, typing this:
 
@@ -67,12 +80,29 @@ xdotool/Metacity troubles: Well, it seems window managers have all sorts of magi
 
 Any suggestions on how to get this hack feel more stable are welcome. The main requirements are quite few actually: bring Emacs to front, start Anything with a special configuration, and hide Emacs when done. Should be easy eh? Nah...
 
-To be continued...
+= Ideas =
 
+It might be possible to have Emacs call xdotool to, for example, handle the situation where the user types C-q at the Anything prompt. As it is now, this makes the Emacs frame stay visible, which is kind of ugly.
+
+= Todo =
+
+Prefix everything in the code with anything-launcher or similar so not to interfere with other things. Yup, I should have done it properly to begin with but I did not think anyone would be interested :)
+
+= Repository =
+
+I just put up the files here: http://github.com/brakjoller/anything-launcher
+
+Warning! The code is quite okay but there is no special prefix to all defuns, so there might be name clashes with stuff you currently have (although if you run this as I do not many files are being loaded).
 
 = Discussion =
 
 You should announce it on gnu.emacs.sources too, even if it's not polished, because you can get ideas and contributors from there. Not everyone follows the recent changes of EmacsWiki.
+
+[new]
+Maybe. I have double posted stuff here and over at g.e.s before and there might be some benefit to it. We'll see... -- MaDa
+
+[new]
+Interesting! Where is the repository? -- [[rubikitch]]
 
 ----
 [[Anything]]

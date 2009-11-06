@@ -454,3 +454,8 @@ Here I bind a key to rgr/browse-url and the code works out if its an encoded url
   (rgr/browse url))
 }}}
 RichardRiley
+
+== Import/merge bookmarks from Firefox ==
+
+A Python script to transfer bookmarks exported from Firefox in the JSON format to the html format used by emacs-w3m, optionally merging them with an existing emacs-w3m bookmarks file (normally ~/.w3m/bookmark.html): http://jim.sdf-eu.org/etc/ffox2w3m.py . Written for my own purposes and not heavily tested, let me know if you have problems. 
+JimBurton

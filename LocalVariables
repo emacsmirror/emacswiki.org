@@ -19,7 +19,7 @@ The other way to do this is to add a "Local Variables" section to the end of the
      ;;; comment-end:"***" ***
      ;;; End: ***
 
-The prefix (";;;") and suffix ("***") are only necessary if they are necessary to make these into comments in your code.  Leave them out if you don't need one or the other or both.
+The prefix (";;;") and suffix ("***") can be whatever is needed to turn these lines into comments in the file. If one or the other is not needed, they can be omitted; but if used, they must be the same on each line so that Emacs knows which parts of each line to read.
 
 You can evaluate lisp code here, too:
 
