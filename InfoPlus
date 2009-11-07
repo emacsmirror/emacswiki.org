@@ -45,6 +45,23 @@ Library '''info+''' provides:
 '''See Also:''' [[Icicles - Info Enhancements]].
 
 
+
+== Discussion and Issues ==
+
+[new]
+Your recognition of info-quoted-name seems like is not right, e.g.
+<code>
+ `(a list of (+ 2 3) elements)
+</code>
+info-quoted-name highlight it. -- [[ahei]]
+
+
+[new:DrewAdams:2009-11-06 18:40 UTC]
+Only if it is followed (somewhere) by a normal single-quote: ##'##. But yes, otherwise, you are correct.
+
+Highlighting ##`...'## and ##"..."## strings is problematic. In general, the results are good, but there are several things that can throw it off. Fortunately, these things do not occur that commonly in manuals -- but they do occur. The more typical problem is an isolated ##"## character referred to as such in the manual (e.g. ##?"##). You'll just have to live with it or, if you think it's not worth it, customize `Info-fontify-quotations-flag' to nil. -- DrewAdams
+
+
 ----
 Lisp:info+.el
 

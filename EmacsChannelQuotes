@@ -869,4 +869,8 @@ I didn't learn to read and write, so that I could communicate using a crude syst
 <bojohan> mode-line-format
 <wraith0x2b> thanks
 %
+<quotemstr> #emacs, do you think it's crazy to implement parts of libc with C++?
+<QinGW1> ,libc++
+<fsbot> Noted, QinGW1.  One rms-point for libc!
+%
 </pre>

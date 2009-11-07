@@ -94,3 +94,44 @@ May I suggest that you use a prefix "zencode-" on all defined symbols?
 
 [new]
 Ahh, I knew there was something missing! I'll do that on my next update. Thanks! -- [[ChrisDone]]
+
+[new]
+Update! It's the weekend. https://gist.github.com/224572/7f3e0b16aa647e0e91c262a9847d7ef709efdc56 New stuff:
+
+    (transform (car (expr "body.sub-page>div#news.content.a+div#news.content.a")))
+    => [indentation added with xml-mode]
+    <body class="sub-page">
+      <div id="news" class="content a">
+      </div>
+      <div id="news" class="content a">
+      </div>
+    </body>
+
+-- [[ChrisDone]]
+
+[new]
+Now with multipliers (li*5>span), a mini test suite and qualified symbol names:
+
+http://gist.github.com/224572
+
+    ;; Multiplication
+    ("a*1"                    "<a></a>")
+    ("a*2"                    "<a></a><a></a>")
+    ("a*2+b*2"                "<a></a><a></a><b></b><b></b>")
+    ("a*2>b*2"                "<a><b></b><b></b></a><a><b></b><b></b></a>")
+    ("a>b*2"                  "<a><b></b><b></b></a>")
+    ("a#q.x>b#q.x*2"          "<a id=\"q\" class=\"x\"><b id=\"q\" class=\"x\"></b><b id=\"q\" class=\"x\"></b></a>")
+
+If you're hacking on the parser make sure to run the test cases (and add your own!).
+
+I want to set this up as a minor mode with shortcut C-TAB or something to replace a zencoding expression with the corresponding HTML. Anyone wants to do this for me please feel free. Otherwise I may attempt it tomorrow. I'm crashing for the night.
+
+-- [[ChrisDone]]
+
+[new]
+I sent you some changes, but I am not sure you recieved them.
+I used your github mail address, is that working?
+-- LennartBorgman
+
+[new]
+I received them but didn't check my mail last night! Thanks for the changes but I'm afraid I've already added zencoding- prefixes to all symbols on an updated version. I'll create a github project and add you as a project owner and then we can share push rights! It will appear under http://github.com/chrisdone/zencoding once I've set it up. -- [[ChrisDone]]

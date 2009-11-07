@@ -2409,6 +2409,57 @@ EXAMPLE:\n(mon-generate-prand-id)\n
 ;;;               (prin1 k))
 
 ;;; ==============================
+;;; :CREATED <Timestamp: #{2009-11-06T17:41:33-05:00Z}#{09455} - by MON>
+(defun* mon-string-to-hex-string (&key hxify-str w-dlim prand-hex-len)
+  "Return HXIFY-STR as a string of hex numbers.  When keyword W-DLIM is non-nil
+delimit hex numbers w-dlim.  When keyword PRAND-HEX-LEN (a number >= 80 ) is
+non-nil, return a pseudo-random string of length N generated with
+`mon-generate-prand-id'. Useful for generating throw-away WPA keys.\n
+:EXAMPLE\n\(mon-string-to-hex-string :hxify-str \"bubba\"\)
+\(mon-string-to-hex-string :hxify-str \"bubba\" :w-dlim \":\"\)
+\(mon-string-to-hex-string :hxify-str \"bubba\" :w-dlim \" \"\)
+\(mon-string-to-hex-string :prand-hex-len 64\)
+\(mon-string-to-hex-string :prand-hex-len 81\) ;<-Should Fail.\n
+:SEE-ALSO `mon-generate-WPA-key', `mon-generate-prand-seed'.\n►►►"
+  (let (xx)
+    (unless prand-hex-len
+      (mapc (lambda (x) (setq xx (cons x xx)))  hxify-str)
+      (setq xx (reverse xx))
+      (setq xx
+            (mapconcat (lambda (x) (format "%x" x))
+                       xx (if (and w-dlim (stringp w-dlim)) w-dlim ""))))
+    (when prand-hex-len 
+      (if (<= prand-hex-len 80)
+          (setq xx
+                (substring 
+                 (concat (car (mon-generate-prand-id))
+                         (car (mon-generate-prand-id))) 0 prand-hex-len))
+          (error "%s is too large or not a number" prand-hex-len)))
+    xx))
+;;
+;;; :TEST-ME (mon-string-to-hex-string :hxify-str "bubba")
+;;; :TEST-ME (mon-string-to-hex-string :hxify-str "bubba" :w-dlim ":")
+;;; :TEST-ME (mon-string-to-hex-string :hxify-str "bubba" :w-dlim " ")
+;;; :TEST-ME (mon-string-to-hex-string :prand-hex-len 64)
+;;; :TEST-ME (mon-string-to-hex-string :prand-hex-len 81) ;Should Fail.
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-11-06T17:49:43-05:00Z}#{09455} - by MON KEY>
+(defun mon-generate-WPA-key (&optional insrtp intrp)
+  "Return a 64 char pseudo-random hex-string.
+When INSRTP is non-nil or called-interactively insert string at point.
+Does not move point.\n:EXAMPLE\n(mon-generate-WPA-key)\n
+:SEE-ALSO `mon-string-to-hex-string', `mon-generate-prand-id'.\n►►►"
+  (interactive "i\np")
+  (let ((wk (mon-string-to-hex-string :prand-hex-len 64)))
+    (if (or insrtp intrp)
+        (save-excursion (princ (format " \"%s\" " wk) (current-buffer)))
+        wk)))
+;;
+;;; :TEST-ME (mon-generate-WPA-key)
+;;; :TEST-ME (call-interactively 'mon-generate-WPA-key)
+
+;;; ==============================
 ;;; CREATED: <Timestamp: #{2009-10-21T14:27:09-04:00Z}#{09433} - by MON KEY>
 (defun mon-sha1-region (start end &optional insrtp intrp)
   "Return the sha1sum for contents of region.

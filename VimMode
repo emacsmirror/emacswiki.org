@@ -65,6 +65,8 @@ Yes, you can of course not do anything you do not think is fun. I am however try
 
 * Other things: I am curious.
 
+-- LennartBorgman
+
 [new]
 It took me some time to understand your first sentence (and I'm still not sure). I won't answer ;)
 
@@ -89,6 +91,8 @@ If you do not think it is fun then you will not learn. And you will have a bad t
 
 Can you describe the extensibility you want a bit more?
 
+-- LennartBorgman
+
 [new]
 Because it's fun to code vim-mode, I do it. And I've already learned much about both, vim and emacs, from that.
 
@@ -111,11 +115,15 @@ Btw: I know there are many emacs-vim quirks which have good workarounds in viper
 
 Thanks for you good clarifications. I do not want to go into more technical details here, that is for someone who want to actually implement this in viper or vim-mode. My opinion is that the additions would perhaps fit best within ViperMode, but I can see it is fun writing a new emulator too.
 
+-- LennartBorgman
+
 [new]
 * Text objects: No, since those key-bindings are only active in operator-pending-mode and visual-mode. And in operator-pending-mode "i" is unbound in vi. And text-objects are usually not used for motion but for selection or range definition for commands. "iw" selects the word the cursor is currently on. Similar "ip" selects the current paragraph, and so on.
 
 [new]
 * Text objects: Ah, I never noticed that "i" could be used there. Interesting. I guess you are using thing-at-point etc for this in Emacs?
+
+-- LennartBorgman
 
 [new]
 * Text objects: Yes, I think so. I never used thing-at-point but perhaps it may be used to implement text-objects for vim-mode. I'm not sure since some text-objects are slightly different in vim and emacs.
@@ -135,10 +143,63 @@ The current code in Viper for this is not very easy to understand.
 
 Frank, how are you handling the keyboard parsing?
 
+-- LennartBorgman
+
 [new]
 In the newest version, vim-mode is only a very flat layer above emacs. vim-modes are emacs minor-modes, vim-keymaps are emacs keymaps which are arranged in some hierarchical order (via usual "parent" keymaps). The current minor-mode determines the current active "root" keymap. The only part of some magic is in the definition of commands and motions. Each command is a usual emacs function but if called interactively the call goes through a special layer (the body of the command is passed as lambda). This layer is a command-handler specific for each mode. The command-handler is responsible for the execution of commands and motions as well as the combination of both. The key-parsing stuff is really easy, because emacs provides everything you need out of the box. And since the key-handling is done in such a way, it does not infer with usual emacs key-handling, and even C-h b and the like work well.
 
 So in some sense, it's a state machine. Some states are Emacs prefix-keys, some states are modes (e.g. operator-pending-mode), and some states are internal variables (digit-argument, register, ...).
+
+[new]
+So all keyboard readings is done through keymaps in minor-modes?
+
+What makes ViperMode difficult to understand is perhaps that it does not do it this way.
+It also makes it difficult in my opinion to add new key bindings.
+Of course adding key bindings the normal way in Emacs is not what you want.
+I think a special function that takes the state and the key sequence is needed.
+What do you think?
+
+Could this part of the code easily be broken out and used by Viper?
+
+Note: In an emulator like vim-mode or viper *emulation-mode-map-alist* should be used.
+This overrides all normal minor mode maps and that is what you want.
+I believe that Viper current keyboard handling was written before that and that this is the reason that it is not written in the more simple way with a state machine.
+(This is just my guess, but it looks so to me.)
+
+-- LennartBorgman
+
+[new]
+Yes, exactly one minor-mode per vim-mode (normal-mode, operator-pending-mode, insert-mode, visual-mode) with an appropriate keymap. And the nice thing is that adding new key bindings in vim-mode is exactly adding emacs key bindings bound to a vim-command or vim-motion. There are some convenience functions similar to vim: vim:nmap, vim:omap, vim:imap and vim:vmap, but the map directly to define-key.
+
+Perhaps this part could be broken out - but together with the required infrastructure to combine motions and commands, this is almost all of the core of vim-mode. The rest is just definition of commands and motions. That's the reason why I said rewriting from scratch may be easier than changing viper.
+
+*emulation-mode-map-alist* - I didn't know this, maybe I use it in future. Thanks for pointing out.
+
+[new]
+But is not the rest of Viper doing a lot of things?
+(Among other things taking care of corner cases of different kinds, I guess.)
+
+I believe I would really want to see this keyboard handling integrated with Viper.
+Or of course all that Viper does integrated with your code, but that seems to be a longer road to me.
+And backward compatibility troubles + more of taking care of in Emacs core code.
+
+You have to use *emulation-mode-map-alist* to get it working correctly.
+Otherwise there will be a lot of small and hard to handle errors for some users.
+
+-- LennartBorgman
+
+[new]
+Certainly viper is doing a lot of things. But I don't know which things and why. So they are hard to integrate - no matter in which way. Changing the key-binding stuff and anything related and hoping the rest of viper still works may be a little too optimistic.
+
+[new]
+I mailed Michael Kifer and asked him. I think he agree with your view of this.
+So please go ahead, it sounds useful.
+
+So I just started testing vim-mode a bit.
+And reported some issues on bit-bucket.
+I guess that is the way to report bugs?
+
+-- LennartBorgman
 
 ----
 CategoryEmulation CategoryKeys ViperMode

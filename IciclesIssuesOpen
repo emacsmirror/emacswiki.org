@@ -75,6 +75,19 @@ Better yet, use this to separate threads (puts space before and after the horizo
 
 
 
+[new]
+When I use your icicles in emacs22, I get a message "Symbol's function definition is void: icicle-shell-command". -- [[ahei]]
+
+
+[new:DrewAdams:2009-11-06 18:46 UTC]
+Sorry, that doesn't help me enough. I don't see that problem in Emacs 22.1, 22.2, or 22.3. Perhaps something from your [[init file]] is interfering. 
+
+Please (always) provide a recipe to reproduce the problem, starting with ##emacs -Q##. It's probably easiest to correspond by email -- use `M-x icicle-send-bug-report'. -- DrewAdams
+
+
+
+
+[new]
 ''Enter your report below.''
 
 <pre>

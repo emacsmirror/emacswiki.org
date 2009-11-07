@@ -19,6 +19,7 @@
 * Lisp:mon-time-utils.el (EbayTime)
 * Lisp:mon-url-utils.el 
 * Lisp:mon-insertion-utils.el
+* Lisp:mon-boxcutter.el
 * Lisp:mon-color-utils.el
 * Lisp:naf-mode.el
 * Lisp:naf-mode-faces.el

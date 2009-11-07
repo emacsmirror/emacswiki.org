@@ -49,7 +49,7 @@ can link to your nickname from this page using
 * Sweden: bojohan (1980), lurwas, [[maDa]] (1973), [[phubuh]] (1988), [[shapr]] (1971), [[bkhl]] (1980)
 * Switzerland: [[kensanata]] (1973)
 * Uruguay: [[legumbre]] (1982)
-* USA: Nafai, [[bpalmer]], derekv (1978), davidmccabe, jordanb, franl, fnord, dort, hober (1979), keithr, [[mkennedy]], Mongoose (1977), [[dsmith]] (1959), getoo, [[offby1]], oknowton (1977), drewr (1977), dto (1978), schussat, smitty1e(1969), chandler, [[mwolson]] (1983), [[jfm3]] (1969), [[TTimo]] (1976), strlen (1983 in Belarus), [[johnsu01]] (1976), jessealama (1980), [[Xah_Lee]] (1968), gamename (1962), inkedmn (1978)
+* USA: Nafai, [[bpalmer]], derekv (1978), davidmccabe, jordanb, franl, fnord, dort, hober (1979), keithr, [[mkennedy]], Mongoose (1977), [[dsmith]] (1959), getoo, [[offby1]], oknowton (1977), drewr (1977), dto (1978), schussat, smitty1e(1969), chandler, [[mwolson]] (1983), [[jfm3]] (1969), [[TTimo]] (1976), strlen (1983 in Belarus), [[johnsu01]] (1976), jessealama (1980), [[Xah_Lee]] (1968), gamename (1962), inkedmn (1978), [[quotemstr]] (1985)
 
 * Turkey: fxr, koray, v0|d
 * Wales: [[lawrence]]
@@ -114,7 +114,8 @@ What topics are you confident answering questions in? What things interest you? 
 ; ott (AlexOtt): Programming (C/OCaml/Scheme/.....), Textprocessing with XML/LaTeX/Emacs etc. Speaking in russian, english & german
 ; [::padik]: FreeBSD fanatic; Emacs n00b; Perl wannabe; PHP woRm; Trading cards collector; loves KLD; can tie shoe laces; struggling to memorize the alphabets.
 ; pfote: Linux & Debian Lover, Emacs noob, quite good in php, somewhat python, know more about the flight business than most travel agents do
-; [[phubuh]]: Studies (or is supposed to study) science in high school; writes OCaml, Haskell, EmacsLisp, C, and Smalltalk, but knows many other languages; is fluent in English, Swedish; fails miserably in his Spanish classes; and listens to They Might Be Giants, Orbital, Boards of Canada, and Bach. 
+; [[phubuh]]: Studies (or is supposed to study) science in high school; writes OCaml, Haskell, EmacsLisp, C, and Smalltalk, but knows many other languages; is fluent in English, Swedish; fails miserably in his Spanish classes; and listens to They Might Be Giants, Orbital, Boards of Canada, and Bach.
+; [[quotemstr]]: Software developer and proud Buffalonian. Uses RedHat-derived Linux distributions and OpenBSD. Dico Latine. Und spreche Deutsch. Enjoys blues, jazz, and classical music. Passionate interest in science, history, and politics, often to the constanteration of EmacsChannel. Common Lisp is the state of grace from which other languages have fallen.
 ; [[Riastradh]]: Schemer.
 ; [[rw]]: Sports (bodybuilding, swimming & surf), music (Blues, Jazz, Rock, Reggae, Funk, Rap, MPB (Popular Brazilian Music), Ska, Classical, instrumentals of China, aborigine, Indonesia and India), Computer Programming (C, C++, Xlib, GTK+, XStep, Ncurses, Java, Pascal, ELisp, Scheme, Python, PL/SQL, Bash, Dialog, Sed, AWK, HTML, XML, Java Script, CSS, PHP, ASP, TeX and LaTeX), Operating System is definitely GNU/Linux, text editor only the true one GNU Emacs, books and finaly girls :)
 ; [[sachac]]: technology evangelist whose Emacs configuration is probably about to attain sentience. In a recent demonstration in Toronto, she wowed the audience with some of the crazy things you can do with Emacs. Then they realized that Emacs was talking to her and telling her what to do, which probably gave some of them the shivers. She occasionally uses vim for text editing and Lotus Notes for mail at work, but believes that ~ is where the .emacs is.

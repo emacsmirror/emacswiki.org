@@ -80,8 +80,8 @@ This tries to create a fullscreen frame, and sends the magic code on Windows to 
 			     (cursor-type . box)
 			     (menu-bar-lines . 0)
 			     (tool-bar-lines . 0)
-			     (mode-line-format . nil); dream on... has no effect
-			     (fullscreen . t); does not work on all systems
+			     (mode-line-format . nil) ; dream on... has no effect
+			     (fullscreen . fullboth)  ; this should work
 			     (unsplittable . t)))))
     (select-frame frame)
     (find-file "~/NOTES")
@@ -99,10 +99,11 @@ To get rid of the ModeLine in all buffers, try this:
 
 -- WilliamXu
 
-== In MS Windows ==
+== OS related things ==
+=== In MS Windows ===
 See [http://bitbucket.org/phromo/darkroom-mode/ darkroom-mode] for a slightly more advanced version with multi-monitor support, etc.
 
-== Using in Aquamacs ==
+=== Using in Aquamacs ===
 
 I used WriteRoom with the Firefox "It's all text!" add-in for wiki-editing, but I have now switched over to Aquamacs. I have it running fullscreen with Shift-CMD-A, and I've changed the default colors to a black background. But there are still some artifacts around the screen. Even without any buttons, the toolbar is still visible. The command pane at the bottom is also there. Would it be possible to have some sort just-the-text-ma'am mode, which could be a black fullscreen with either no-command pane (unless used) or one that auto-hides? I am a professional writer and the fewer distractions the better. -- DG
 

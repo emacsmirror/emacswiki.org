@@ -1,0 +1,6 @@
+Sometimes Emacs within Cygwin needs to handle Windows style path. 
+For example, drag a file into Emacs.
+
+Another scenario is using distel within Cygwin Emacs.  Distel needs to communicate with Windows native erlang node.  Windows style path names are returns from Eralng node.
+
+Lisp:windows-path.el is intended to solve this problem. 

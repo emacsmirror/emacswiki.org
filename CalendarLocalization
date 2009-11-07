@@ -53,8 +53,6 @@ and the 'terrestrial-branch' (地支) in Chinese:
           chinese-calendar-terrestrial-branch
           ["子" "丑" "寅" "卯" "辰" "巳" "午" "未" "申" "酉" "戌" "亥"])
 
-See also Lisp:cal-china-x.el.
-
 === Italian ===
 
     (setq calendar-week-start-day 1
@@ -115,3 +113,10 @@ Here is my calendar configuration. -- [[rubikitch]]
 (add-hook 'today-visible-calendar-hook 'calendar-mark-weekend)
 (add-hook 'today-invisible-calendar-hook 'calendar-mark-weekend)
 </pre>
+
+=== Chinese ===
+
+Localized, national holidays, lunar/solar term based holidays, highlight holidays based on priority, show horoscope/zodiac info, etc.
+
+http://xwl.appspot.com/ref/cal-china-x.el
+

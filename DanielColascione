@@ -1,3 +1,20 @@
-I'm just an ordinary Emacs user. I recently upgraded to 22.1, and I've been enjoying it. I code Emacs packages here and there.
+Hi. I'm Daniel, and "[::quotemstr]" in various places scattered across the
+Internet. I'm the lead developer of for the
+[http://censorshipresearch.org Haystack] anti-censorship system,
+consummate Unix geek, and general fan of the outdoors. I read far too
+much contemporary sociological non-fiction.
+
+I'm a proud Buffalonian (that is, Buffalo, N.Y.). Contrary to popular
+belief, we have quite a bit of culture and technology here, not to
+mention sublime food.
+
+I'm generally a fan of Common Lisp, Python, and C++ as far as
+programming languages go.
+
+I wrote [[byte-code-cache.el]] and
+[http://www.emacswiki.org/emacs/JavaScriptMode#toc1 espresso-mode],
+which will be the default Javascript mode in the next major version of
+Emacs.
+
 ----
 CategoryHomepage
