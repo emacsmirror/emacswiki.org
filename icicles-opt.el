@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Oct 25 21:00:30 2009 (-0700)
+;; Last-Updated: Sat Nov  7 15:04:46 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 3388
+;;     Update #: 3389
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1473,7 +1473,7 @@ Typically, this is a regexp or a portion of a regexp."
 If you use Do Re Mi (library `doremi.el'), then you can modify this
 option incrementally during completion, seeing the effect as it
 changes.  Use `\\<minibuffer-local-completion-map>\
-\\[icicle-doremi-inter-candidates-min-spaces]' from the minibuffer, then use the `up' and
+\\[icicle-doremi-inter-candidates-min-spaces+]' from the minibuffer, then use the `up' and
 `down' arrow keys or the mouse wheel to increment and decrement the
 value.  WYSIWYG.
 

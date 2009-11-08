@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Oct 25 19:49:29 2009 (-0700)
+;; Last-Updated: Sat Nov  7 14:58:36 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 6097
+;;     Update #: 6106
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -302,9 +302,9 @@ The following top-level commands are also available in Icicle mode:
 `icicle-delete-file'                   - Delete file(s)/directory(s)
 `icicle-delete-window'                 - Delete window (`C-u': buffer)
 `icicle-delete-windows-on'             - Delete all windows for buffer
-`icicle-doremi-candidate-width-factor' - +/- candidate column width
-`icicle-doremi-inter-candidates-min-spaces' - +/- candidate spacing
-`icicle-doremi-zoom-Completions'       - +/- *Completions* text size
+`icicle-doremi-candidate-width-factor+' - +/- candidate column width
+`icicle-doremi-inter-candidates-min-spaces+' - +/- candidate spacing
+`icicle-doremi-zoom-Completions+'      - +/- *Completions* text size
 `icicle-doc'                           - Show doc for fn, var, or face
 `icicle-execute-extended-command'      - Multi-command `M-x'
 `icicle-execute-named-keyboard-macro'  - Execute named keyboard macro
@@ -502,9 +502,9 @@ The following top-level commands are also available in Icicle mode:
 `icicle-delete-file'                   - Delete file(s)/directory(s)
 `icicle-delete-window'                 - Delete window (`C-u': buffer)
 `icicle-delete-windows-on'             - Delete all windows for buffer
-`icicle-doremi-candidate-width-factor' - +/- candidate column width
-`icicle-doremi-inter-candidates-min-spaces' - +/- candidate spacing
-`icicle-doremi-zoom-Completions'       - +/- *Completions* text size
+`icicle-doremi-candidate-width-factor+' - +/- candidate column width
+`icicle-doremi-inter-candidates-min-spaces+' - +/- candidate spacing
+`icicle-doremi-zoom-Completions+'      - +/- *Completions* text size
 `icicle-doc'                           - Show doc for fn, var, or face
 `icicle-execute-extended-command'      - Multi-command `M-x'
 `icicle-execute-named-keyboard-macro'  - Execute named keyboard macro
@@ -1017,19 +1017,19 @@ Used on `pre-command-hook'."
            (when (fboundp 'doremi)
              (define-key icicle-options-menu-map [icicle-separator-options-doremi] '("--"))
              (when (fboundp 'text-scale-increase)    ; Emacs 23+.
-               (define-key icicle-options-menu-map [icicle-doremi-zoom-Completions]
+               (define-key icicle-options-menu-map [icicle-doremi-zoom-Completions+]
                  '(menu-item "*Completions* Zoom Factor - Do Re Mi"
-                   icicle-doremi-zoom-Completions
+                   icicle-doremi-zoom-Completions+
                    :visible (and icicle-mode (get-buffer-window "*Completions*" 'visible))
                    :keys "C-x -")))
-             (define-key icicle-options-menu-map [icicle-doremi-inter-candidates-min-spaces]
+             (define-key icicle-options-menu-map [icicle-doremi-inter-candidates-min-spaces+]
                '(menu-item "Inter-Candidate Spacing - Do Re Mi"
-                 icicle-doremi-inter-candidates-min-spaces
+                 icicle-doremi-inter-candidates-min-spaces+
                  :visible (and icicle-mode (get-buffer-window "*Completions*" 'visible))
                  :keys "C-x |"))
-             (define-key icicle-options-menu-map [icicle-doremi-candidate-width-factor]
+             (define-key icicle-options-menu-map [icicle-doremi-candidate-width-factor+]
                '(menu-item "Candidate Column Width - Do Re Mi"
-                 icicle-doremi-candidate-width-factor
+                 icicle-doremi-candidate-width-factor+
                  :visible (and icicle-mode (get-buffer-window "*Completions*" 'visible))
                  :keys "C-x w"))))
           (t
@@ -1109,19 +1109,19 @@ Used on `pre-command-hook'."
                :enable (not icicle-inhibit-sort-p) :keys "C-,"))
            (when (fboundp 'doremi)
              (when (fboundp 'text-scale-increase)    ; Emacs 23+.
-               (define-key icicle-menu-map [icicle-doremi-zoom-Completions]
+               (define-key icicle-menu-map [icicle-doremi-zoom-Completions+]
                  '(menu-item "*Completions* Zoom Factor - Do Re Mi"
-                   icicle-doremi-zoom-Completions
+                   icicle-doremi-zoom-Completions+
                    :visible (and icicle-mode (get-buffer-window "*Completions*" 'visible))
                    :keys "C-x -")))
-             (define-key icicle-menu-map [icicle-doremi-inter-candidates-min-spaces]
+             (define-key icicle-menu-map [icicle-doremi-inter-candidates-min-spaces+]
                '(menu-item "Inter-Candidate Spacing - Do Re Mi"
-                 icicle-doremi-inter-candidates-min-spaces
+                 icicle-doremi-inter-candidates-min-spaces+
                  :visible (and icicle-mode (get-buffer-window "*Completions*" 'visible))
                  :keys "C-x |"))
-             (define-key icicle-menu-map [icicle-doremi-candidate-width-factor]
+             (define-key icicle-menu-map [icicle-doremi-candidate-width-factor+]
                '(menu-item "Candidate Column Width - Do Re Mi"
-                 icicle-doremi-candidate-width-factor
+                 icicle-doremi-candidate-width-factor+
                  :visible (and icicle-mode (get-buffer-window "*Completions*" 'visible))
                  :keys "C-x w")))
            (define-key icicle-menu-map [icicle-separator-toggle] '("--"))))
@@ -2457,10 +2457,10 @@ complete)"))
   (define-key map "."                        'icicle-insert-dot-command) ; `.'
   (define-key map "\C-x."                    'icicle-toggle-hiding-common-match) ; `C-x .'
   (when (fboundp 'doremi)
-    (define-key map "\C-xw"                  'icicle-doremi-candidate-width-factor) ; `C-x w'
-    (define-key map "\C-x|"                  'icicle-doremi-inter-candidates-min-spaces) ; `C-x |'
+    (define-key map "\C-xw"                  'icicle-doremi-candidate-width-factor+) ; `C-x w'
+    (define-key map "\C-x|"                  'icicle-doremi-inter-candidates-min-spaces+) ; `C-x |'
     (when (fboundp 'text-scale-increase) ; Emacs 23+.
-      (define-key map "\C-x-"                'icicle-doremi-zoom-Completions))) ; `C-x -'
+      (define-key map "\C-x-"                'icicle-doremi-zoom-Completions+))) ; `C-x -'
   ;; `minibuffer-completion-help' got wiped out by remap for self-insert.
   (define-key map "?"                        'icicle-self-insert) ; `?'
   (define-key map " "                        'icicle-self-insert) ; " "

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2009, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 10 16:44:55 2004
 ;; Version: 21.0
-;; Last-Updated: Sat Aug  1 15:44:43 2009 (-0700)
+;; Last-Updated: Sat Nov  7 14:02:08 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 1356
+;;     Update #: 1359
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thumb-frm.el
 ;; Keywords: frame, icon
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -79,10 +79,10 @@
 ;;  `thumfr-fisheye' to each in turn.  The first way is using commands
 ;;  `thumfr-fisheye-previous-frame' and `thumfr-fisheye-next-frame'
 ;;  (which you can bind to, for instance, `C-M-prior' and `C-m-next').
-;;  The second way is using command `thumfr-doremi-thumbnail-frames'
+;;  The second way is using command `thumfr-doremi-thumbnail-frames+'
 ;;  and the arrow keys or mouse wheel.
 ;;
-;;  To be able to use `thumfr-doremi-thumbnail-frames', you need
+;;  To be able to use `thumfr-doremi-thumbnail-frames+', you need
 ;;  library `doremi-frm.el' (which in turn requires libraries
 ;;  `hexrgb.el', `ring+.el', `faces+.el', and `doremi.el').  The only
 ;;  libraries strictly required by `thumb-frm.el' are `frame-fns.el'
@@ -135,7 +135,7 @@
 ;;    `thumfr-cull-thumbnail-frames',
 ;;    `thumfr-deiconify-thumbnail-frames',
 ;;    `thumfr-dethumbify-all-frames', `thumfr-dethumbify-frame',
-;;    `thumfr-doremi-thumbnail-frames', `thumfr-fisheye',
+;;    `thumfr-doremi-thumbnail-frames+', `thumfr-fisheye',
 ;;    `thumfr-fisheye-next-frame', `thumfr-fisheye-previous-frame',
 ;;    `thumfr-iconify-thumbnail-frames', `thumfr-only-raise-frame',
 ;;    `thumfr-next-stack-position', `thumfr-really-iconify-frame',
@@ -198,15 +198,15 @@
 ;;   (define-key special-event-map [iconify-frame]
 ;;               'thumfr-thumbify-frame-upon-event)
 ;;
-;;   ;; Add `thumfr-doremi-thumbnail-frames' to the Do Re Mi commands -
-;;   ;; see library `doremi-frm.el'.
+;;   ;; Add `thumfr-doremi-thumbnail-frames+' to the Do Re Mi commands
+;;   ;; - see library `doremi-frm.el'.
 ;;   (unless (fboundp 'doremi-prefix)
 ;;     (defalias 'doremi-prefix (make-sparse-keymap))
 ;;     (defvar doremi-map (symbol-function 'doremi-prefix)
 ;;       "Keymap for Do Re Mi commands."))
 ;;   (define-key global-map "\C-xt"  'doremi-prefix)
 ;;   (define-key global-map "\C-xte"
-;;               'thumfr-doremi-thumbnail-frames) ; "Eye"
+;;               'thumfr-doremi-thumbnail-frames+) ; "Eye"
 ;;
 ;;   Keep in mind also that if `thumfr-thumbify-dont-iconify-flag' is
 ;;   non-nil, keys bound to (de-)iconifying commands, such as `C-z',
@@ -245,6 +245,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2009/11/07 dadams
+;;     Renamed: thumfr-doremi-thumbnail-frames to thumfr-doremi-thumbnail-frames+.
 ;; 2009/05/17 dadams
 ;;     Added advice for: menu-bar-mode, tool-bar-mode, scroll-bar-mode, fringe-mode.
 ;;     Renamed everything to have prefix thumfr- (not thumbfrm-).
@@ -944,7 +946,7 @@ This includes dead and invisible frames."
          thumfr-thumbnail-frames)))
 
 ;;;###autoload
-(defun thumfr-doremi-thumbnail-frames ()
+(defun thumfr-doremi-thumbnail-frames+ ()
   "Successively cycle through frames with `thumfr-fisheye'."
   (interactive)
   (unless (require 'doremi-frm nil t)

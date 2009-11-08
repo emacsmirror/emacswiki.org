@@ -117,7 +117,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 3 $Rev: 206 $ of the Sunrise Commander.
+;; This is version 3 $Rev: 222 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.  I  have  also  received
@@ -263,6 +263,12 @@
 
 (defcustom sr-start-hook nil
   "List of functions to be called after the Sunrise panes are displayed"
+  :group 'sunrise
+  :type 'hook
+  :options '(auto-insert))
+
+(defcustom sr-refresh-hook nil
+  "List of functions to be called every time a pane is refreshed"
   :group 'sunrise
   :type 'hook
   :options '(auto-insert))
@@ -441,8 +447,12 @@ substitution may be about to happen."
         [ ............. enlarges the right pane by 5 columns
         ] ............. enlarges the left pane by 5 columns
         } ............. enlarges both panes vertically by 1 row
+        C-} ........... enlarges both panes vertically as much as it can
+        C-c } ......... enlarges both panes vertically as much as it can
         { ............. shrinks both panes vertically by 1 row
-        \\ ............. sets vertical size of both panes back to «normal»
+        C-{ ........... shrinks both panes vertically as much as it can
+        C-c { ......... shrinks both panes vertically as much as it can
+        \\ ............. sets size of all windows back to «normal»
         C-c C-z ....... enable/disable synchronized navigation
 
         C-= ........... smart compare files (ediff)
@@ -565,7 +575,8 @@ automatically:
      ,@body
      (if hidden-attrs
          (sr-hide-attributes))
-     (sr-omit-mode omit)))
+     (sr-omit-mode omit)
+     (sr-restore-point-if-same-buffer)))
 
 (defmacro sr-alternate-buffer (form)
   "Executes form in a new buffer, after killing the previous one."
@@ -576,7 +587,9 @@ automatically:
      ,form
      (setq sr-this-directory default-directory)
      (sr-keep-buffer)
-     (if dispose (kill-buffer dispose))))
+     (when dispose
+       (bury-buffer dispose)
+       (kill-buffer dispose))))
 
 (defun sr-dired-mode ()
   "Sets Sunrise mode in every Dired buffer opened in Sunrise (called in hook)."
@@ -683,7 +696,9 @@ automatically:
 (define-key sr-mode-map "["                   'sr-enlarge-right-pane)
 (define-key sr-mode-map "}"                   'sr-enlarge-panes)
 (define-key sr-mode-map "{"                   'sr-shrink-panes)
-(define-key sr-mode-map "\\"                  'sr-normalsize-panes)
+(define-key sr-mode-map "\\"                  'sr-lock-panes)
+(define-key sr-mode-map "\C-c}"               'sr-max-lock-panes)
+(define-key sr-mode-map "\C-c{"               'sr-min-lock-panes)
 (define-key sr-mode-map "\M-o"                'sr-synchronize-panes)
 (define-key sr-mode-map "\C-o"                'sr-omit-mode)
 (define-key sr-mode-map "b"                   'sr-browse-file)
@@ -763,7 +778,9 @@ automatically:
       (define-key sr-mode-map [(control tab)]       'sr-select-viewer-window)
       (define-key sr-mode-map [(control backspace)] 'sr-toggle-attributes)
       (define-key sr-mode-map [(control ?\=)]       'sr-ediff)
-      (define-key sr-mode-map [(control meta ?\=)]  'sr-compare-dirs)))
+      (define-key sr-mode-map [(control meta ?\=)]  'sr-compare-dirs)
+      (define-key sr-mode-map [(control })]         'sr-max-lock-panes)
+      (define-key sr-mode-map [(control {)]         'sr-min-lock-panes)))
 
 (defun sunrise-mc-keys ()
   "Binds the function keys F2 to F10 the traditional MC way."
@@ -833,12 +850,12 @@ automatically:
   "Run Sunrise but give it the current directory to use."
   (interactive)
   (if (not sr-running)
-      (let((to-focus (buffer-file-name))
-           (to-kill (symbol-value (sr-symbol sr-selected-window 'buffer))))
-        (if (buffer-live-p to-kill) (kill-buffer to-kill))
-        (if (equal sr-selected-window 'left)
-            (sunrise default-directory nil to-focus)
-          (sunrise nil default-directory to-focus)))
+      (let ((target-dir default-directory)
+            (target-file (sr-directory-name-proper (buffer-file-name))))
+        (sunrise)
+        (sr-goto-dir target-dir)
+        (if target-file
+            (sr-focus-filename target-file)))
     (progn
       (sr-quit t)
       (message "Hast thou a charm to stay the morning-star in his deep course?"))))
@@ -875,10 +892,12 @@ automatically:
   ;;get rid of all windows except one (not any of the panes!)
   (sr-select-viewer-window)
   (delete-other-windows)
+  (if (buffer-live-p other-window-scroll-buffer)
+      (switch-to-buffer other-window-scroll-buffer))
 
   ;;now create the viewer window
   (unless sr-panes-height
-    (setq sr-panes-height (* 2 (/ (window-height) 3))))
+    (setq sr-panes-height (sr-get-panes-size)))
   (split-window (selected-window) sr-panes-height)
 
   (cond
@@ -902,9 +921,12 @@ automatically:
 
 (defun sr-lock-window (frame)
   "Resize the left Sunrise pane to have the \"right\" size."
+  (if (> window-min-height (- (frame-height) (window-height sr-left-window)))
+      (setq sr-windows-locked nil))
   (if (and sr-running
            sr-windows-locked
            (not sr-ediff-on)
+           (not (equal sr-window-split-style 'vertical))
            (window-live-p sr-left-window))
       (save-selected-window
         (select-window sr-left-window)
@@ -937,7 +959,8 @@ automatically:
       (if window-system
           (progn
             (sr-graphical-highlight face)
-            (sr-force-passive-highlight))))
+            (sr-force-passive-highlight)))
+      (run-hooks 'sr-refresh-hook))
     (hl-line-mode 1)))
 
 (defun sr-graphical-highlight (&optional face)
@@ -976,7 +999,8 @@ automatically:
         (select-window (sr-other 'window))
         (if revert (sr-revert-buffer))
         (sr-graphical-highlight 'sr-passive-path-face)
-        (hl-line-mode 0))))
+        (unless (eq sr-left-buffer sr-right-buffer)
+          (hl-line-mode 0)))))
 
 (defun sr-hide-avfs-root ()
   "Hides the AVFS virtual filesystem root (if any) on the path line."
@@ -1049,37 +1073,52 @@ automatically:
 (defun sr-enlarge-left-pane ()
   "Enlarges the left pane by 5 columns."
   (interactive)
-  (sr-resize-panes))
+  (if (< (1+ window-min-width) (window-width sr-right-window))
+      (sr-resize-panes)))
 
 (defun sr-enlarge-right-pane ()
   "Enlarges the right pane by 5 columns."
   (interactive)
-  (sr-resize-panes t))
+  (if (< (1+ window-min-width) (window-width sr-left-window))
+      (sr-resize-panes t)))
+
+(defun sr-get-panes-size (&optional size)
+  "Tells what the maximal, minimal and normal sizes of the panes should be."
+  (let ((frame (frame-height)))
+    (cond ((eq size 'max) (max (- frame window-min-height 1) 5))
+          ((eq size 'min) (min (1+ window-min-height) 5))
+          (t  (/ (* 2 (frame-height)) 3)))))
 
 (defun sr-enlarge-panes ()
   "Enlarges both panes vertically."
   (interactive)
-  (if (< 10 (- (frame-height) (window-height)))
-      (progn
+  (if (> (sr-get-panes-size 'max) (window-height))
+      (let ((locked sr-windows-locked))
         (setq sr-windows-locked nil)
         (shrink-window -1)
-        (setq sr-panes-height (window-height)))))
+        (setq sr-panes-height (window-height))
+        (setq sr-windows-locked locked))))
 
 (defun sr-shrink-panes ()
   "Shinks both panes vertically."
   (interactive)
-  (if (< 10 (window-height))
-      (progn
+  (if (< (sr-get-panes-size 'min) (window-height))
+      (let ((locked sr-windows-locked))
         (setq sr-windows-locked nil)
         (shrink-window 1)
-        (setq sr-panes-height (window-height)))))
+        (setq sr-panes-height (window-height))
+        (setq sr-windows-locked locked))))
 
-(defun sr-normalsize-panes ()
-  "Resets vertical size of both panes to normal."
+(defun sr-lock-panes (&optional height)
+  "Resizes and locks the panes at some vertical position.  The optional argument
+  determines the height to lock the panes at. Valid values are  'min  and  'max;
+  given any other value locks the pane at normal position."
   (interactive)
-  (setq sr-panes-height (* 2 (/ (frame-height) 3)))
-  (setq sr-windows-locked t)
-  (sr-revert-buffer))
+  (setq sr-panes-height (sr-get-panes-size height))
+  (sr-setup-windows)
+  (setq sr-windows-locked t))
+(defun sr-max-lock-panes () (interactive) (sr-lock-panes 'max))
+(defun sr-min-lock-panes () (interactive) (sr-lock-panes 'min))
 
 ;;; ============================================================================
 ;;; File system navigation functions:
@@ -1514,14 +1553,14 @@ automatically:
 (defun sr-truncate-p nil
   "Returns  whether  truncate-partial-width-widows  is  set to truncate the long
   lines in the current pane. Used by sr-toggle-truncate-lines."
-  (if (equal "23.0.60" (substring emacs-version 0 -2))
+  (if (numberp truncate-partial-width-windows)
       (< 0 truncate-partial-width-windows)
     truncate-partial-width-windows))
 
 (defun sr-truncate-v (active)
   "Returns the right value to set for truncate-partial-width-widows depending on
   the emacs version being used. Used by sr-toggle-truncate-lines."
-  (or (and (equal "23.0.60" (substring emacs-version 0 -2))
+  (or (and (equal "23" (substring emacs-version 0 2))
            (or (and active 3000) 0))
       active))
 
@@ -1612,7 +1651,9 @@ automatically:
   (setq sr-synchronized (not sr-synchronized))
   (mapc 'sr-mark-sync (list sr-left-buffer sr-right-buffer))
   (message (concat "Sync navigation is now "
-                   (if sr-synchronized "ON" "OFF"))))
+                   (if sr-synchronized "ON" "OFF")))
+  (run-hooks 'sr-refresh-hook)
+  (sr-in-other (run-hooks 'sr-refresh-hook)))
 
 (defun sr-mark-sync (&optional buffer)
   "Changes  the  pretty  name  of  the sr major mode to 'Sunrise SYNC-LOCK' when
@@ -1689,7 +1730,8 @@ automatically:
 	 (major-mode 'dired-mode))
     (wdired-change-to-wdired-mode)
     (if was-virtual
-        (set (make-local-variable 'sr-virtual-buffer) t))))
+        (set (make-local-variable 'sr-virtual-buffer) t)))
+  (run-hooks 'sr-refresh-hook))
 
 (defun sr-readonly-pane (as-virtual)
   "Puts the current pane back in Sunrise mode."
@@ -2016,11 +2058,12 @@ the original one."
   "Takes  as  input  an absolute or relative, forward slash terminated path to a
   directory.  Return the proper name of the directory, without initial path. The
   remaining part of file-path can be accessed by the function parent-directory."
-  (let (
-        (file-path-1 (substring file-path 0 (- (length file-path) 1)))
-        (lastchar (substring file-path (- (length file-path) 1)))
-        )
-    (concat (file-name-nondirectory file-path-1) lastchar)))
+  (if file-path
+      (let (
+            (file-path-1 (substring file-path 0 (- (length file-path) 1)))
+            (lastchar (substring file-path (- (length file-path) 1)))
+            )
+        (concat (file-name-nondirectory file-path-1) lastchar))))
 
 ;;; ============================================================================
 ;;; Directory and file comparison functions:
@@ -2034,9 +2077,9 @@ the original one."
   "Prompts for the criterion to use for comparing two directories."
   (let (
         (resp -1)
-        (prompt "Compare by (d)ate, (s)ize, date_(a)nd_size or (c)ontents? ")
+        (prompt "Compare by (d)ate, (s)ize, date_(a)nd_size, (n)ame or (c)ontents? ")
        )
-    (while (not (memq resp '(?d ?D ?s ?S ?a ?A ?c ?C)))
+    (while (not (memq resp '(?d ?D ?s ?S ?a ?A ?n ?N ?c ?C)))
       (setq resp (read-event prompt))
       (setq prompt "Please select: Compare by (d)ate, (s)ize, date_(a)nd_size \
 or (c)ontents? "))
@@ -2046,6 +2089,8 @@ or (c)ontents? "))
            (list 'not (list '= 'mtime1 'mtime2)))
           ((eq resp ?S)
            (list 'not (list '= 'size1 'size2)))
+          ((eq resp ?N)
+           nil)
           ((eq resp ?C)
            (list 'not (list 'string=
                             (list 'sr-md5 'file1)
@@ -2529,6 +2574,18 @@ or (c)ontents? "))
   (dired-why)
   (message "C-opy, R-ename, D-elete, v-iew, q-uit, U-p, m-ark, u-nmark, h-elp"))
 
+(defun sr-restore-point-if-same-buffer ()
+  "Puts  the point in the same place of the same buffer, if it's being displayed
+  simultaneously in both panes."
+  (let ((this-win)(other-win)(point))
+    (when (and (eq sr-left-buffer sr-right-buffer)
+               (window-live-p (setq other-win (sr-other 'window))))
+      (setq this-win (selected-window))
+      (setq point (point))
+      (select-window other-win)
+      (goto-char point)
+      (select-window this-win))))
+
 ;;; ============================================================================
 ;;; Font-Lock colors & styles:
 
@@ -2556,4 +2613,5 @@ or (c)ontents? "))
 (provide 'sunrise-commander)
 
 ;;; sunrise-commander.el ends here
+
 </pre>

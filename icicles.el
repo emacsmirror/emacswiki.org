@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Oct 25 21:13:01 2009 (-0700)
+;; Last-Updated: Sat Nov  7 15:02:00 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 22608
+;;     Update #: 22609
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -327,7 +327,7 @@
 ;;    `icicle-dispatch-C-comma', `icicle-dispatch-M-comma',
 ;;    `icicle-dispatch-M-q', `icicle-doremi-candidate-width-factor',
 ;;    `icicle-doremi-inter-candidates-min-spaces',
-;;    `icicle-doremi-zoom-Completions', `icicle-end-of-line+',
+;;    `icicle-doremi-zoom-Completions+', `icicle-end-of-line+',
 ;;    `icicle-erase-minibuffer',
 ;;    `icicle-erase-minibuffer-or-history-element',
 ;;    `icicle-exit-minibuffer', `icicle-forward-char-dots',
@@ -373,8 +373,7 @@
 ;;    `icicle-next-prefix-candidate',
 ;;    `icicle-next-prefix-candidate-action',
 ;;    `icicle-next-prefix-candidate-alt-action',
-;;    `icicle-next-S-TAB-completion-method',
-;;    `icicle-other-history',
+;;    `icicle-next-S-TAB-completion-method', `icicle-other-history',
 ;;    `icicle-pp-eval-expression-in-minibuffer',
 ;;    `icicle-prefix-complete', `icicle-prefix-complete-no-display',
 ;;    `icicle-prefix-word-complete',

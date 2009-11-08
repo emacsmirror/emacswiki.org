@@ -14,7 +14,7 @@ I tried to handle 2nd level completions.
 
 <pre>
 (defvar anything-c-imenu-delimiter "/")
-cle(defvar anything-c-source-imenu
+(defvar anything-c-source-imenu
   '((name . "Imenu")
     (init . (lambda ()
               (setq anything-c-imenu-current-buffer

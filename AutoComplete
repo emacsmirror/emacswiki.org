@@ -240,6 +240,17 @@ What about completion with candidates from other buffers? I've tried to add ac-s
 [new]
 hi, my enhancement of auto-complete, AutoCompletePlus, :) -- [[ahei]]
 
+[new]
+In c++-mode, ac-source-filename can not work, because 
+<pre>
+(defun ac-sources-prefix-default ()
+  "Default implementation for `ac-sources-prefix-function'."
+  (require 'thingatpt)
+  (car-safe (bounds-of-thing-at-point 'symbol)))
+</pre>
+and thing-at-point is ahe when point after /home/ahe.
+I think auto-complete should have multiple ac-prefix, and then complete those all. -- [[ahei]]
+
 ----
 CategoryCompletion
 

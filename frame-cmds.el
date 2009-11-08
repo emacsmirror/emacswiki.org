@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 21.0
-;; Last-Updated: Fri Oct  2 11:04:14 2009 (-0700)
+;; Last-Updated: Sat Nov  7 15:29:46 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 2495
+;;     Update #: 2497
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/frame-cmds.el
 ;; Keywords: internal, extensions, mouse, frames, windows, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -155,8 +155,7 @@
 ;;   (define-key ctl-x-map "o" 'other-window-or-frame)
 ;;
 ;;   (defalias 'doremi-prefix (make-sparse-keymap))
-;;   (defvar doremi-map (symbol-function 'doremi-prefix)
-;;     "Keymap for Do Re Mi commands.")
+;;   (defvar doremi-map (symbol-function 'doremi-prefix) "Keymap for Do Re Mi commands.")
 ;;   (define-key global-map "\C-xt" 'doremi-prefix)
 ;;   (define-key doremi-map "." 'save-frame-config)
 ;;
@@ -183,7 +182,7 @@
 ;;   (defvar menu-bar-doremi-menu (make-sparse-keymap "Do Re Mi"))
 ;;   (define-key global-map [menu-bar doremi]
 ;;     (cons "Do Re Mi" menu-bar-doremi-menu))
-;;   (define-key menu-bar-doremi-menu [doremi-font]
+;;   (define-key menu-bar-doremi-menu [doremi-font+]
 ;;     '("Save Frame Configuration" . save-frame-config))
 ;;
 ;;  See also these files for other frame commands:

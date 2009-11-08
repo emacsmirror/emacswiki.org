@@ -84,11 +84,19 @@ Sorry, that doesn't help me enough. I don't see that problem in Emacs 22.1, 22.2
 
 Please (always) provide a recipe to reproduce the problem, starting with ##emacs -Q##. It's probably easiest to correspond by email -- use `M-x icicle-send-bug-report'. -- DrewAdams
 
-
-
-
 [new]
-''Enter your report below.''
+Oh, I'm sorry for that. I found the reason, kde-emacs is conflict icicles, I must load icicles before kde-emacs in emac22, otherwise will get that error message.
+and, MultiTerm is also conflict with icicles in emacs 22 and 23, must load icicles before multiterm, otherwise, when exit ediff, will get message "Lisp nesting exceeds `max-lisp-eval-depth'".  -- [[ahei]]
+
+[new:DrewAdams:2009-11-08 08:49 UTC]
+Could you maybe investigate a bit what the problem was? In general, '''Icicles''' does its best to not depend on the order of loading or on when ''Icicle'' mode is activated. But that can be tricky. It would be good to understand just what the problem was -- either to improve '''Icicles''' or to provide info to the maintainers of the other libraries, so they can fix things if appropriate.
+
+One thing you might try would be to use the load order that doesn't work correctly and then try to toggle `icy-mode' twice, to see if that fixes the problem. That might give us some info about it. 
+
+If you don't have the time to investigate, that's OK, but if you could, it would be helpful, either to '''Icicles''' or possibly to the other libraries. Anyway, I'm glad you found a workaround, and thanks for trying '''Icicles'''. -- DrewAdams
+
+
+
 
 <pre>
 

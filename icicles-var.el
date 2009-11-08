@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Oct 25 21:09:51 2009 (-0700)
+;; Last-Updated: Sat Nov  7 15:10:01 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 1028
+;;     Update #: 1030
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -623,8 +623,9 @@ input prompt is prefixed by `+'.
 + `icicle-delete-file'                 - Delete file/directory
 + `icicle-delete-windows'              - Delete windows (`C-u C-x 0')
 + `icicle-doc'                         - Show doc for fn, var, or face
-  `icicle-doremi-candidate-width-factor' - +/- candidate column width
-  `icicle-doremi-inter-candidates-min-spaces' - +/- candidate spacing
+  `icicle-doremi-candidate-width-factor+' - +/- candidate column width
+  `icicle-doremi-inter-candidates-min-spaces+' - +/- candidate spacing
+  `icicle-doremi-zoom-Completions+'    - +/- *Completions* text size
 + `icicle-execute-extended-command'    - Execute command - multi-`M-x'
 + `icicle-execute-named-keyboard-macro' - Execute named keyboard macro
 + `icicle-file'(`-other-window')       - Visit file/dir (`C-x C-f')

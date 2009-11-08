@@ -76,15 +76,14 @@
 ;; `traverse-go-backward'
 ;; `traverse-scroll-down-other-window'
 ;; `traverse-scroll-up-other-window'
-;; `traverse-search-and-replace'
-;; `traverse-search-and-replace-all'
-;; `traverse-cp-or-mv-extfiles-in-dir'
-;; `traverse-build-tags-in-project'
 ;; `traverse-toggle-split-window-h-v'
 ;; `traverse-count-files-in-dir'
 ;; `traverse-auto-update-documentation'
 ;; `traverse-auto-documentation-insert-header'
-;; `traverse-pprint-tree'
+;; `traverse-incremental-jump-and-quit'
+;; `traverse-incremental-scroll-down'
+;; `traverse-incremental-scroll-up'
+;; `traverse-incremental-occur'
 
 ;;  * Non--interactive functions defined here:
 ;; [EVAL] (traverse-auto-document-lisp-buffer :type 'function :prefix "traverse")
@@ -106,9 +105,13 @@
 ;; `traverse-window-split-h-or-t'
 ;; `traverse-list-directories-in-tree'
 ;; `traverse-list-files-in-tree'
-;; `traverse-apply-func-on-files'
-;; `traverse-apply-func-on-dirs'
 ;; `traverse-auto-document-lisp-buffer'
+;; `traverse-goto-line'
+;; `traverse-incremental-jump'
+;; `traverse-incremental-scroll'
+;; `traverse-incremental-read-search-input'
+;; `traverse-incremental-filter-alist-by-regexp'
+;; `traverse-incremental-cancel-search'
 
 ;;  * Macros defined here:
 ;; [EVAL] (traverse-auto-document-lisp-buffer :type 'macro :prefix "traverse")
@@ -125,8 +128,11 @@
 ;; `traverse-miniwindow-width'
 ;; `traverse-count-occurences'
 ;; `traverse-occur-overlay'
-;; `traverse-last-regexp'
-;; `traverse-replace-auth'
+;; `traverse-incremental-mode-map'
+;; `traverse-incremental-search-pattern'
+;; `traverse-incremental-search-timer'
+;; `traverse-incremental-quit-flag'
+;; `traverse-incremental-current-buffer'
 
 ;;  * Faces defined here:
 ;; [EVAL] (traverse-auto-document-lisp-buffer :type 'faces :prefix "traverse")
@@ -143,6 +149,8 @@
 ;; `traverse-file-function'
 ;; `traverse-use-avfs'
 ;; `traverse-avfs-default-directory'
+;; `traverse-incremental-search-delay'
+;; `traverse-incremental-search-prompt'
 
 ;;  *** END auto-documentation
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -151,7 +159,7 @@
 ;; =====
 ;; M-x `traverse-deep-rfind'
 ;; When searching is done and you are in traverse buffer
-;; some interactive actions are provided for navigate and for replacing regexps
+;; some interactive actions are provided for navigate
 ;; Use "C-h m" for more info while in traverse-buffer.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -162,8 +170,6 @@
 ;; ESC             Prefix Command
 ;; N               traverse-go-forward
 ;; P               traverse-go-backward
-;; R               traverse-search-and-replace-all ==> [interactive menu]
-;; S               traverse-search-and-replace
 ;; q               traverse-quit
 ;; <S-down>        traverse-scroll-down-other-window
 ;; <S-up>          traverse-scroll-up-other-window
@@ -219,7 +225,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Version:
-(defconst traverse-version "1.1.19")
+(defconst traverse-version "1.1.24")
 
 ;;; Code:
 
@@ -230,8 +236,6 @@
 (defvar traversedir-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map [?q] 'traverse-quit)
-    (define-key map [?S] 'traverse-search-and-replace)
-    (define-key map [?R] 'traverse-search-and-replace-all)
     (define-key map [?N] 'traverse-go-forward)
     (define-key map [?P] 'traverse-go-backward)
     (define-key map [(shift down)] 'traverse-scroll-down-other-window)
@@ -323,7 +327,7 @@ Are allowed:(examples)
 (defface traverse-path-face '((t (:foreground "green")))
   "TRAVERSEDIR face."
   :group 'traverse-faces)
-(defface traverse-overlay-face '((t (:background "MediumAquamarine" :underline t)))
+(defface traverse-overlay-face '((t (:background "Indianred4" :underline t)))
   "Face for highlight line in matched buffer."
   :group 'traverse-faces)
 
@@ -344,12 +348,7 @@ Are allowed:(examples)
 (defvar traverse-count-occurences 0
   "Simple variable to store the number of occurence found.")
 (defvar traverse-occur-overlay nil)
-(defvar traverse-last-regexp nil
-  "Used in `traverse-search-and-replace'.
-remember the regexp used in last search.")
-(defvar traverse-replace-auth nil
-  "Used in `traverse-search-and-replace'.
-Allow traverse to continue replacing operation.")
+
 
 (defun traverselisp-version ()
   "Give version number of traverselisp."
@@ -420,14 +419,15 @@ See `traverse-ignore-files' and `traverse-ignore-dirs'."
 
 (defun traverse-comp-str-to-list (str lis)
   "Compare STR with all elements of list LIS.
-elements of list LIS are regexps."
+All the elements of list LIS are regexps issued from prompt.
+Each element of LIS is compared with the filename STR."
   (catch 'break
     (dolist (i lis)
       (when (string-match i str)
         (throw 'break t)))))
 
 (defun traverse-check-only-lists (str lis)
-  "Check if STR match one element of LIS'."
+  "Check if STR match one element of LIS."
   (or (member (file-name-extension str t) lis)
       (traverse-comp-str-to-list str lis)))
 
@@ -467,27 +467,22 @@ elements of list LIS are regexps."
                       (insert-button (format "[%s]" (buffer-name fname))
                                      'action 'traverse-button-func
                                      'face "hi-green")))
-               (insert (concat " "
-                               (int-to-string (+ (first i) 1))
+               (insert (concat " " (int-to-string (+ (first i) 1))
                                ":"
-                               (if (> (length line-to-print)
-                                      traverse-length-line)
-                                   (substring line-to-print
-                                              0
-                                              traverse-length-line)
+                               (if (> (length line-to-print) traverse-length-line)
+                                   (substring line-to-print 0 traverse-length-line)
                                    line-to-print)
                                "\n"))))))
-    (setq traverse-count-occurences (+ traverse-count-occurences
-                                       (length matched-lines)))))
+    (setq traverse-count-occurences (+ traverse-count-occurences (length matched-lines)))))
 
 (defun traverse-file-process-ext (regex fname &optional insert-fn)
   "Function to process files in external program like anything."
   (let ((matched-lines (traverse-find-readlines fname regex :insert-fn (or insert-fn 'file))))
     (when matched-lines
       (dolist (i matched-lines) ;; each element is of the form '(key value)
-        (let ((line-to-print (if traverse-keep-indent
-                                 (second i)
-                                 (replace-regexp-in-string "\\(^ *\\)" "" (second i)))))
+        (let* ((ltp           (second i))
+               (new-ltp       (replace-regexp-in-string "\\(^ *\\)" "" ltp))
+               (line-to-print (if traverse-keep-indent ltp new-ltp)))
           (insert (concat (propertize (file-name-nondirectory fname)
                                       'face 'traverse-path-face
                                       'help-echo line-to-print)
@@ -495,11 +490,8 @@ elements of list LIS are regexps."
                           (propertize (int-to-string (+ (first i) 1))
                                       'face 'traverse-match-face)
                           ":"
-                          (if (> (length line-to-print)
-                                 traverse-length-line)
-                              (substring line-to-print
-                                         0
-                                         traverse-length-line)
+                          (if (> (length line-to-print) traverse-length-line)
+                              (substring line-to-print 0 traverse-length-line)
                               line-to-print)
                           "\n")))))))
 
@@ -508,22 +500,16 @@ elements of list LIS are regexps."
   (let ((matched-lines (traverse-find-readlines buffer regex :insert-fn 'buffer)))
     (when matched-lines 
       (dolist (i matched-lines) ;; each element is of the form '(key value)
-        (let ((line-to-print (if traverse-keep-indent
-                                 (second i)
-                                 (replace-regexp-in-string (if (string-match "^\t" (second i))
-                                                               "\\(^\t*\\)"
-                                                               "\\(^ *\\)")
-                                                           "" (second i)))))
-          (insert (concat " "
-                          (propertize (int-to-string (+ (first i) 1))
-                                      'face 'traverse-match-face
-                                      'help-echo line-to-print)
+        (let* ((ltp           (second i))
+               (replace-reg   (if (string-match "^\t" ltp) "\\(^\t*\\)" "\\(^ *\\)"))
+               (new-ltp       (replace-regexp-in-string replace-reg "" ltp)) 
+               (line-to-print (if traverse-keep-indent ltp new-ltp)))
+          (insert (concat " " (propertize (int-to-string (+ (first i) 1))
+                                          'face 'traverse-match-face
+                                          'help-echo line-to-print)
                           ":"
-                          (if (> (length line-to-print)
-                                 lline)
-                              (substring line-to-print
-                                         0
-                                         lline)
+                          (if (> (length line-to-print) lline)
+                              (substring line-to-print 0 lline)
                               line-to-print)
                           "\n")))))))
 
@@ -910,174 +896,6 @@ in compressed archive at point if traverse-use-avfs is non--nil."
                (get-buffer "*traverse-lisp*"))
     (scroll-other-window -1)))
 
-;;;; Replace functions
-;;;###autoload
-(defun traverse-search-and-replace (str &optional regex)
-  "Replace current regexp with `str', replacement is performed only on current line."
-  (interactive "sNewstring: ")
-  (if (eq (current-buffer) (get-buffer "*traverse-lisp*"))
-      (progn
-        (let ((pos (point)))
-          (goto-char (point-min))
-          (when (not regex)
-            (when (re-search-forward "for ")
-              (setq regex
-                    (buffer-substring (point)
-                                      (- (line-end-position) 1)))))
-          (goto-char pos)
-          (if (button-at (point))
-              (progn
-                (save-window-excursion
-                  (let ((fname (button-label (button-at (point))))
-                        (flag-w nil))
-                    (setq fname (replace-regexp-in-string "\\[" "" fname))
-                    (setq fname (replace-regexp-in-string "\\]" "" fname))
-                    (setq fname (expand-file-name fname))
-                    (push-button)
-                    ;; We are now in the file buffer
-                    (with-current-buffer (find-buffer-visiting fname) 
-                      (if (and (file-writable-p fname)
-                               (not (backup-file-name-p fname)))
-                          (when (re-search-forward regex)
-                            (setq traverse-last-regexp (match-string 0))
-                            (if (not traverse-replace-auth)
-                                (if (y-or-n-p (format "Replace all occurences of [%s] with [%s]? "
-                                                      (propertize traverse-last-regexp
-                                                                  'face 'traverse-match-face)
-                                                      (propertize str
-                                                                  'face 'traverse-match-face)))
-                                    (setq traverse-replace-auth t)
-                                    (throw 'break
-                                      (error "Operation Aborted"))))
-                            
-                            (let ((line (thing-at-point 'line))
-                                  (new-line))
-                              (delete-region (line-beginning-position)
-                                             (line-end-position))
-                              (setq new-line (replace-regexp-in-string regex str line))
-                              (insert new-line)
-                              (delete-blank-lines)
-                              (save-buffer)
-                              (highlight-regexp str 'hi-pink)
-                              (sit-for traverse-show-regexp-delay)
-                              (setq flag-w t))
-                            (kill-buffer (current-buffer)))))
-                    ;; We are back in traverse-buffer
-                    (beginning-of-line)
-                    (delete-region (point) (line-end-position))
-                    (delete-blank-lines)
-                    (forward-line 1)
-                    (if flag-w
-                        (message "<%s> Replaced by <%s> in [%s]"
-                                 (propertize regex
-                                             'face 'traverse-regex-face)
-                                 (propertize str
-                                             'face 'traverse-match-face)
-                                 fname)
-                        (message "Skipping: File not writable or under vc")))))
-              (message "We are not on a button!"))))
-      (error "You are not in a traverse-buffer, run first traverse-deep-rfind")))
-
-
-;;;###autoload
-(defun traverse-search-and-replace-all (str)
-  "Launch search and replace interactively on all occurences found in current traverse buffer.
-commands provided here are: (n)ext (a)ll (s)kip (x)stop"
-  (interactive "sNewstring: ")
-  (if (eq (current-buffer) (get-buffer "*traverse-lisp*"))
-      (progn
-        (goto-char (point-min))
-        (let ((mem-srd traverse-show-regexp-delay)
-              (action "")
-              (count 0)
-              (regex (when (re-search-forward "for ")
-                       (buffer-substring (point)
-                                         (- (line-end-position) 1)))))
-          (unwind-protect
-               (progn
-                 (setq traverse-show-regexp-delay 0)
-                 (when (not (button-at (point)))
-                   (goto-char (point-min))
-                   (forward-button 1))
-                 (catch 'break
-                   (while (button-at (point))
-                     (catch 'continue
-                       (if (eq action '?a)
-                           ;; replace all without asking
-                           (progn
-                             (traverse-search-and-replace str regex)
-                             (incf count))
-                           ;; ask for next action and set it
-                           (setq action (read-event (concat (propertize "Next("
-                                                                        'face 'traverse-match-face)
-                                                            (propertize "n "
-                                                                        'face 'traverse-path-face)
-                                                            (propertize ") All("
-                                                                        'face 'traverse-match-face)
-                                                            (propertize "a"
-                                                                        'face 'traverse-path-face)
-                                                            (propertize ") Skip("
-                                                                        'face 'traverse-match-face)
-                                                            (propertize "s"
-                                                                        'face 'traverse-path-face)
-                                                            (propertize ") Stop("
-                                                                        'face 'traverse-match-face)
-                                                            (propertize "x"
-                                                                        'face 'traverse-path-face)
-                                                            (propertize ") :"
-                                                                        'face 'traverse-match-face))))
-                           (case action
-                             ('?n (progn
-                                    (setq traverse-show-regexp-delay 1)
-                                    (traverse-search-and-replace str regex)
-                                    (incf count)
-                                    (throw 'continue nil)))
-                             ('?a (progn
-                                    (message "Replacing all, you can %s at any time with %s"
-                                             (propertize "STOP"
-                                                         'face 'traverse-match-face)
-                                             (propertize "<C-g>"
-                                                         'face 'traverse-match-face))
-                                    (setq traverse-show-regexp-delay 0.1)
-                                    (sit-for 3)
-                                    (traverse-search-and-replace str regex)
-                                    (incf count)
-                                    (throw 'continue nil)))
-                             ('?s (progn
-                                    (delete-region (point) (line-end-position))
-                                    (delete-blank-lines)
-                                    (forward-button 1)
-                                    (throw 'continue nil)))
-                             ('?x (progn
-                                    (throw 'break nil)))
-                             (t (progn
-                                  (error "Unknow command, operation Aborted")
-                                  (throw 'break nil)))))))))
-            (if (eq action '?x)
-                ;; action is stopped
-                (progn
-                  (setq traverse-show-regexp-delay mem-srd)
-                  (message "[%s] Occurences of %s replaced by <%s>"
-                           (propertize (int-to-string count)
-                                       'face 'traverse-match-face)
-                           (propertize regex
-                                       'face 'traverse-regex-face)
-                           (propertize str
-                                       'face 'traverse-path-face)))
-                ;; action is finish
-                (setq traverse-replace-auth nil)
-                (setq traverse-show-regexp-delay mem-srd)
-                (when (re-search-backward "^Found")
-                  (beginning-of-line)
-                  (delete-region (point) (line-end-position))
-                  (highlight-regexp str "hi-pink")
-                  (highlight-regexp "^\\[.\\]" "hi-green")
-                  (insert (format "[%s] Occurences of <%s> replaced by <%s>"
-                                  count
-                                  regex
-                                  str))))
-            (setq traverse-replace-auth nil))))
-      (error "You are not in a traverse-buffer, run first traverse-deep-rfind")))
 
 ;;;; Utils
 
@@ -1089,69 +907,6 @@ commands provided here are: (n)ext (a)ll (s)kip (x)stop"
       ("bz2" t)
       ("zip" t)
       (t     nil))))
-
-;;;###autoload
-(defun* traverse-cp-or-mv-extfiles-in-dir (tree ext dir &optional (fn 'copy-file))
-  "Recurse in `tree' and copy/move all files with `ext' in `dir'.
-Default is copying, called with prefix-arg (C-u) Move files with `ext' in `Dir'.
-`func' is a symbol when called non-interactively.
-
-Note: `dir' will be use as target and NO search inside it will be performed.
-If you want to move/copy files that are nested in subdir(s) of `dir'
-It will fail silently.==> So use another dir target
-
-If `dir' exists and is not empty, it will be synch with the newest files
-found in `tree'"
-  (interactive "DTree: \nsExt(with dot): \nGTargetDirectory: ")
-  (let ((igndir (file-name-nondirectory dir)))
-    (unless (file-directory-p dir)
-      (make-directory dir t))
-    (when current-prefix-arg
-      (setq fn 'rename-file))
-    (traverse-walk-directory
-     tree
-     :file-fn #'(lambda (x)
-                  (when (equal (file-name-extension x t) ext)
-                    ;; should i recurse in dir at this point ?
-                    ;; would implement synch completely.
-                    (if (file-exists-p (concat dir (file-name-nondirectory x)))
-                        (when (file-newer-than-file-p (expand-file-name x)
-                                                      (concat dir
-                                                              (file-name-nondirectory x)))
-                          (funcall fn (expand-file-name x) dir 'overwrite))
-                        (funcall fn (expand-file-name x) dir 'overwrite))))
-     :exclude-dirs `(,igndir))))
-
-
-;; Experimental ==> Huge projects not supported (Tags files become to big)
-;;;###autoload
-(defun traverse-build-tags-in-project (dir ext &optional new-file)
-  "Build an etags file at root of current project.
-If `new-file' is non-nil (do it with C-u) build a new file
-instead of appending to the current one.
-Many file extensions can be enter at `ext' prompt.
-Tag file will be build in `dir'"
-  (interactive "Ddir: \nsExt: ")
-  (let ((ext-list (split-string ext))
-        (count 0))
-    (when current-prefix-arg
-      (setq new-file t))
-    (when new-file
-      (delete-file (expand-file-name "TAGS" dir)))
-    (dolist (i ext-list)
-      (traverse-walk-directory
-       dir
-       :file-fn #'(lambda (x)
-                    (when (equal (file-name-extension x t) i)
-                      (message "Tagging [%s]" (propertize x
-                                                          'face 'traverse-path-face))
-                      (incf count)
-                      (call-process-shell-command (format "etags %s -a %s"
-                                                          x
-                                                          (expand-file-name "TAGS" dir)))))
-       :exclude-dirs traverse-ignore-dirs))
-    (message "%s Files tagged" (propertize (int-to-string count)
-                                           'face 'traverse-match-face))))
 
 
 (defun traverse-window-split-h-or-t ()
@@ -1180,7 +935,7 @@ Possible value are 'hor or 'ver"
 
 ;;;###autoload
 (defun traverse-count-files-in-dir (tree &optional quiet)
-  "Count files in `tree'.
+  "Count files in TREE.
 and return a message and the number of files.
 If `quiet' is non-nil don't send message."
   (interactive "DDirectory: ")
@@ -1211,7 +966,11 @@ IGNORE-DIRS is a list of directories to ignore."
                        ignore-dirs))
     (nreverse list-dirs)))
 
-(defun* traverse-list-files-in-tree (tree &optional ignore-files (ignore-dirs traverse-ignore-dirs) only-ext)
+(defun* traverse-list-files-in-tree (tree
+                                     &optional
+                                     (ignore-files traverse-ignore-files)
+                                     (ignore-dirs traverse-ignore-dirs)
+                                     only-ext)
   "Return all files in TREE without directories.
 IGNORE-FILES is a list of files(and/or).ext to ignore.
 ONLY-EXT will match only files with .ext or matching regexp that are in this list.
@@ -1230,27 +989,11 @@ NOTE: if both IGNORE-FILES and ONLY-EXT' are set, ONLY-EXT will take precedence 
      :exclude-dirs ignore-dirs)
     (nreverse list-files)))
 
-(defun traverse-apply-func-on-files (tree fn &optional ext)
-  "Exec function FN on all files of TREE.
-If EXT apply func only on files with extension EXT."
-  (let ((files-list (traverse-list-files-in-tree tree)))
-    (dolist (i files-list)
-      (if ext
-          (when (equal (file-name-extension i t) ext)
-            (funcall fn i))
-          (funcall fn i)))))
-
-(defun traverse-apply-func-on-dirs (tree fn &optional ignore-dirs)
-  "Exec function FN on all directories of TREE.
-`ignore-dirs' is a list of directories to ignore."
-  (let ((dirs-list (traverse-list-directories-in-tree tree ignore-dirs)))
-    (dolist (i dirs-list)
-      (funcall fn i))))
 
 (defmacro traverse-collect-files-in-tree-if (tree pred)
   "Return a list of files matching PRED in TREE.
 PRED is a function that take one arg."
-  `(lexical-let ((flist ()))
+  `(let ((flist ()))
      (traverse-walk-directory
       ,tree
       :file-fn #'(lambda (x) (when (funcall ,pred x) (push x flist))))
@@ -1259,7 +1002,7 @@ PRED is a function that take one arg."
 (defmacro traverse-collect-files-in-tree-if-not (tree pred)
   "Return a list of files not matching PRED in TREE.
 PRED is a function that take one arg."
-  `(lexical-let ((flist ()))
+  `(let ((flist ()))
      (traverse-walk-directory
       ,tree
       :file-fn #'(lambda (x) (unless (funcall ,pred x) (push x flist))))
@@ -1359,56 +1102,154 @@ See headers of traverselisp.el for example."
     (insert (concat ";;  " (make-string nstar ?*) " " title "\n"
                     ";; [EVAL] (traverse-auto-document-lisp-buffer :type \'" ttype ":prefix \"\")"))))
 
-;; TODO use align-regexp here that is now part of emacs.
-;;;###autoload
-(defun traverse-pprint-tree (tree)
-  "PPrint the content of `tree'.
-NOTE: for a better output, be sure to have
-http://www.emacswiki.org/emacs/align.el
-installed on your emacs even if that work without."
-  (interactive "DTree: ")
-  (switch-to-buffer "*traverse-ls*")
-  (erase-buffer)
-  (let ((dirs-list (traverse-list-directories-in-tree tree))
-        (beg)
-        (end))
-    (loop for i in dirs-list
-       do
-         (insert (propertize (format "%s\n" i)
-                             'face 'traverse-match-face))
-         (setq beg (point))
-         (loop for x in (traverse-list-directory i t) 
-            do
-              (let* ((attr (file-attributes x))
-                     (time-stamp (format-time-string "%Y-%m-%d %H:%M" (nth 6 attr)))
-                     (size (int-to-string (nth 7 attr)))
-                     (mode (nth 8 attr)))
-                (if (file-directory-p x)
-                    (insert (propertize (format "    %s %s %s %s\n"
-                                                mode
-                                                size
-                                                time-stamp
-                                                (file-name-nondirectory x))
-                                        'face 'traverse-regex-face))
-                    (insert (propertize (format "    %s %s %s %s\n"
-                                                mode
-                                                size
-                                                time-stamp
-                                                (file-name-nondirectory x))
-                                        'face 'traverse-path-face)))))
-         (setq end (point))
-         (unless (eq beg end)
-           (if (fboundp 'align-cols)
-               (align-cols beg end 4)))))
-  (goto-char (point-min))
-  (traversedir-mode))
 
+;;; Incremental occur
+
+(defvar traverse-incremental-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map [?q] 'traverse-quit)
+    (define-key map [return] 'traverse-incremental-jump-and-quit)
+    (define-key map [S-down] 'traverse-incremental-scroll-down)
+    (define-key map [S-up] 'traverse-incremental-scroll-up)
+    map)
+  "Keymap used for traversedir commands.")
+
+(define-derived-mode traverse-incremental-mode text-mode "traverse-incremental"
+                     "Major mode to search occurences of regexp in current buffer.
+
+Special commands:
+\\{traverse-incremental-mode-map}")
+
+
+(defcustom traverse-incremental-search-delay 0.2
+  "*During incremental searching display is updated all `traverse-incremental-search-delay' seconds."
+  :group 'traversedir
+  :type  'integer)
+
+(defcustom traverse-incremental-search-prompt "Pattern: "
+  "*Prompt used for `traverse-incremental-occur-incremental'."
+  :group 'traversedir
+  :type  'string)
+
+;;; Internal variables
+(defvar traverse-incremental-search-pattern "")
+(defvar traverse-incremental-search-timer nil)
+(defvar traverse-incremental-quit-flag nil)
+(defvar traverse-incremental-current-buffer nil)
+
+
+(defun traverse-goto-line (numline)
+  "Non--interactive version of `goto-line.'"
+  (goto-char (point-min)) (forward-line (1- numline)))
+
+(defun traverse-incremental-jump ()
+  "Jump to line in other buffer and put an overlay on it."
+  (let ((line (buffer-substring (point-at-bol) (point-at-eol)))
+        pos)
+    (unless (or (string= line "")
+                (string= line "Traverse Incremental occur"))
+      (when (string-match "[0-9]+" line)
+        (setq pos (string-to-number (match-string 0 line))))
+      (pop-to-buffer traverse-incremental-current-buffer)
+      (traverse-goto-line pos) (traverse-occur-color-current-line))))
+      
+
+(defun traverse-incremental-jump-and-quit ()
+  "Jump to line in other buffer and quit search buffer."
+  (interactive)
+  (when (traverse-incremental-jump)
+    (delete-other-windows)
+    (sit-for 0.3)
+    (when traverse-occur-overlay
+      (delete-overlay traverse-occur-overlay))))
+    
+(defun traverse-incremental-scroll (n)
+  "Scroll other buffer and move overlay accordingly."
+  (forward-line n)
+  (when (traverse-incremental-jump)
+    (other-window 1)))
+
+(defun traverse-incremental-scroll-down ()
+  "Scroll other buffer down."
+  (interactive)
+  (traverse-incremental-scroll 1))
+
+(defun traverse-incremental-scroll-up ()
+  "Scroll other buffer up."
+  (interactive)
+  (traverse-incremental-scroll -1))
+
+(defun traverse-incremental-read-search-input ()
+  "Read each keyboard input and add it to `traverse-incremental-search-pattern'."
+  (setq traverse-incremental-search-pattern "")    ; Always reset pattern to empty string
+  (let ((prompt       (propertize traverse-incremental-search-prompt 'face '((:foreground "cyan"))))
+        (inhibit-quit t)
+        (tmp-list     ())
+        char)
+    (catch 'break
+      (while 1
+        (catch 'continue
+          (condition-case nil
+              (setq char (read-char (concat prompt traverse-incremental-search-pattern)))
+            (error (throw 'break nil)))
+          (case char
+            ((or ?\e ?\r) (throw 'break nil))    ; RET or ESC break and exit code.
+            (?\d (pop tmp-list)         ; Delete last char of `traverse-incremental-search-pattern' with DEL
+                 (setq traverse-incremental-search-pattern (mapconcat 'identity (reverse tmp-list) ""))
+                 (throw 'continue nil))
+            (?\C-g (setq traverse-incremental-quit-flag t) (throw 'break nil))
+            (t
+             (push (text-char-description char) tmp-list)
+             (setq traverse-incremental-search-pattern (mapconcat 'identity (reverse tmp-list) ""))
+             (throw 'continue nil))))))))
+
+
+
+(defun traverse-incremental-filter-alist-by-regexp (regexp buffer-name)
+  "Print all lines matching REGEXP to buffer BUFFER-NAME."
+  (let ((title (propertize "Traverse Incremental occur" 'face '((:background "Dodgerblue4")))))
+    (if (string= regexp "")
+        (progn (erase-buffer) (insert (concat title "\n\n") (traverse-incremental-mode)))
+        (erase-buffer) (insert (concat title "\n\n"))
+        (traverse-buffer-process-ext regexp buffer-name) (goto-char (point-min)) (forward-line 2))))
+
+          
+;;;###autoload
+(defun traverse-incremental-occur ()
+  "Incremental search of lines in current buffer matching `traverse-incremental-search-pattern'."
+  (interactive)
+    (lexical-let ((buf (buffer-name (current-buffer))))
+      (setq traverse-incremental-current-buffer buf)
+      (with-current-buffer traverse-incremental-current-buffer
+        (jit-lock-fontify-now))
+      (pop-to-buffer (get-buffer-create "*traverse search*"))
+      (unwind-protect
+           (progn
+             (setq traverse-incremental-search-timer
+                   (run-with-idle-timer
+                    traverse-incremental-search-delay 'repeat
+                    #'(lambda ()
+                        (traverse-incremental-filter-alist-by-regexp traverse-incremental-search-pattern buf))))
+             (traverse-incremental-read-search-input))
+        (progn
+          (traverse-incremental-cancel-search)
+          (when (equal (buffer-substring (point-at-bol) (point-at-eol)) "")
+            (setq traverse-incremental-quit-flag t))
+          (if traverse-incremental-quit-flag
+              (progn
+                (kill-buffer "*traverse search*") (switch-to-buffer buf)
+                (delete-other-windows))
+              (traverse-incremental-jump) (other-window 1))
+          (setq traverse-incremental-quit-flag nil)))))
+
+(defun traverse-incremental-cancel-search ()
+  "Cancel timer used for traverse incremental searching."
+  (cancel-timer traverse-incremental-search-timer)
+  (setq traverse-incremental-search-timer nil))
+
+;; Provide
 (provide 'traverselisp)
 
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; (emacswiki-post "traverselisp.el")
 ;;; traverselisp.el ends here
 
 

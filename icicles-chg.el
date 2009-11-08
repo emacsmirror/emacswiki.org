@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Nov  3 12:00:15 2009 (-0700)
+;; Last-Updated: Sat Nov  7 18:41:29 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 4564
+;;     Update #: 4570
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1628,6 +1628,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2009/11/07 dadams
+;;     Renamed Icicles doremi cmds (added +).  Applied other doremi cmd renamings (added +).
 ;; 2009/10/25 dadams
 ;;     icicle-prefix-complete-1: When sole cand, use the candidate, but without any dir.
 ;;     Renamed: icicle-next-apropos-match-function to icicle-next-S-TAB-completion-method,
@@ -2575,6 +2577,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2009/11/07 dadams
+;;     Applied doremi cmd renamings (added +).
 ;; 2009/10/25 dadams
 ;;     icicle-mode, icicle-define-icicle-maps, icicle-bind-completion-keys:
 ;;       Updated doc string, menus, keys for completion-method command renamings.
@@ -3850,6 +3854,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2009/11/07 dadams
+;;     Applied doremi cmd renamings (added +) to help text.
 ;; 2009/10/25 dadams
 ;;     Added: icicle-current-TAB-method.
 ;;     Updated icicle-general-help-string with new command names.

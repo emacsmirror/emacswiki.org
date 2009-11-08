@@ -768,6 +768,23 @@ I'll think about `C-g'. It seems like there was a reason why I didn't do that, b
 
 See above, on this page -- search for `undo'. For some frame changes, you also have `C-x 5 2', which will give you a copy of the frame without the changes. -- DrewAdams
 
+[new:DrewAdams:2009-11-08 03:44 UTC]
+Well, it took a while, but I think I've done what you asked, both:
+* being able to increment more than one color component at a time, and 
+* being able to use `C-g' to cancel the current '''Do Re Mi''' command and return to the previous state.
+
+The latter is not available for the `##*-all-faces-*##' and `##*-all-frames-*##' commands, because there is no single face or frame color to save and then restore. But it is available for the other commands.
+
+Wrt multiple increments:
+
+* You can use `R' to increment red, green, blue together, and `H' to increment hue, saturation, value together. So the input choices are ##[rgbhsvRH]##. As always, you can change from one to another on the fly at any time. When you change, the original increment value you input is reused.
+
+* You can use either a number or a list of 3 numbers (red, green, blue or hue, saturation, value) as the increment argument. If you use a number and you choose `R' or `H', then the number is used for each of the 3 components (rgb or hsv). If you use a list and you choose a single component ##[rgbhsv]##, then the corresponding list element is used.
+
+Note: I renamed the commands that iterate, by appending a `##+##', so it's easier to distinguish them from the other commands in the library. I did the same thing in other libraries that define '''Do Re Mi''' commands: the suffix `##+##' will by convention always mean an iterative incrementing/cycling command.
+
+I also improved a few other things at the same time. Thanks for your suggestions. Hope the improvements help. -- DrewAdams
+
 
 
 ----

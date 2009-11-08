@@ -7,9 +7,9 @@
 ;; Copyright (C) 2009, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 17 14:26:21 2009 (-0700)
 ;; Version: 23.1
-;; Last-Updated: Mon Jun 22 13:37:26 2009 (-0700)
+;; Last-Updated: Sat Nov  7 14:44:15 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 151
+;;     Update #: 154
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/face-remap+.el
 ;; Keywords: window frame face font
 ;; Compatibility: GNU Emacs 23.x
@@ -52,7 +52,7 @@
 ;;    default font of the frame is enlarged or shrunk dynamically.
 ;;
 ;;  * Library `doremi-frm.el', which provides commands
-;;    `doremi-buffer-font-size' and `doremi-frame-font-size', which
+;;    `doremi-buffer-font-size+' and `doremi-frame-font-size+', which
 ;;    provide another way to zoom incrementally.
 ;;
 ;;  To use library `face-remap+.el', put it in your `load-path' and

@@ -61,6 +61,8 @@ Only if it is followed (somewhere) by a normal single-quote: ##'##. But yes, oth
 
 Highlighting ##`...'## and ##"..."## strings is problematic. In general, the results are good, but there are several things that can throw it off. Fortunately, these things do not occur that commonly in manuals -- but they do occur. The more typical problem is an isolated ##"## character referred to as such in the manual (e.g. ##?"##). You'll just have to live with it or, if you think it's not worth it, customize `Info-fontify-quotations-flag' to nil. -- DrewAdams
 
+[new]
+OK, I see -- [[ahei]]
 
 ----
 Lisp:info+.el

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Oct 25 20:30:55 2009 (-0700)
+;; Last-Updated: Sat Nov  7 15:00:56 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 15035
+;;     Update #: 15045
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -77,9 +77,9 @@
 ;;    `icicle-describe-file', `icicle-digit-argument',
 ;;    `icicle-dispatch-C-^', `icicle-dispatch-C-.',
 ;;    `icicle-dispatch-C-comma', `icicle-dispatch-M-comma',
-;;    `icicle-dispatch-M-q', `icicle-doremi-candidate-width-factor',
-;;    `icicle-doremi-inter-candidates-min-spaces',
-;;    `icicle-doremi-zoom-Completions', `icicle-end-of-line+',
+;;    `icicle-dispatch-M-q', `icicle-doremi-candidate-width-factor+',
+;;    `icicle-doremi-inter-candidates-min-spaces+',
+;;    `icicle-doremi-zoom-Completions+', `icicle-end-of-line+',
 ;;    `icicle-erase-minibuffer',
 ;;    `icicle-erase-minibuffer-or-history-element',
 ;;    `icicle-exit-minibuffer', `icicle-forward-char-dots',
@@ -1664,9 +1664,9 @@ with empty region
        Insert string variable as input       \\[icicle-insert-string-from-variable]
 
  * Adjust Icicles options incrementally on the fly (uses Do Re Mi).
-     `icicle-candidate-width-factor'         \\[icicle-doremi-candidate-width-factor]
-     `icicle-inter-candidates-min-spaces'    \\[icicle-doremi-inter-candidates-min-spaces]
-     `icicle-doremi-zoom-Completions'        C-x -   (Emacs 23)
+     `icicle-candidate-width-factor+'        \\[icicle-doremi-candidate-width-factor+]
+     `icicle-inter-candidates-min-spaces+'   \\[icicle-doremi-inter-candidates-min-spaces+]
+     `icicle-doremi-zoom-Completions+'       C-x -   (Emacs 23)
 
 Remember: You can always input any character (e.g. \\[icicle-prefix-complete]) that is bound
           to a command by preceding it with \\<global-map>\\[quoted-insert].
@@ -5764,7 +5764,7 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
          (isearch-edit-string))))
 
 (when (fboundp 'text-scale-increase)    ; Bound to `C-x -' in the minibuffer (Emacs 23+).
-  (defun icicle-doremi-zoom-Completions (&optional increment)
+  (defun icicle-doremi-zoom-Completions+ (&optional increment)
     "Zoom the text in buffer `*Completions*' incrementally.
 Use `=', `-', or the mouse wheel to increase or decrease text
 size.  You can use the `Meta' key (`M-=' or `M--') to increment in
@@ -5781,14 +5781,14 @@ larger steps."
                        (doremi-down-keys              '(?-))
                        (doremi-boost-up-keys          '(?\M-=))
                        (doremi-boost-down-keys        '(?\M--)))
-                   (doremi-buffer-font-size increment))
+                   (doremi-buffer-font-size+ increment))
                  (setq unread-command-events  ()))
             (unless mini (icicle-remove-Completions-window))))
       (if icicle-completion-candidates
           (icicle-display-candidates-in-Completions)
         (icicle-msg-maybe-in-minibuffer "Did you hit `TAB' or `S-TAB'?")))))
 
-(defun icicle-doremi-candidate-width-factor (&optional increment) ; Bound to `C-x w' in the minibuffer.
+(defun icicle-doremi-candidate-width-factor+ (&optional increment) ; Bound to `C-x w' in the minibuffer.
   "Change `icicle-candidate-width-factor' incrementally.
 Use `right', `left' or mouse wheel to increase or decrease.  You can
 use the `Meta' key (e.g. `M-right') to increment in larger steps.
@@ -5817,11 +5817,11 @@ Use `up', `down', or mouse wheel to adjust
            (when (member (car unread-command-events)
                          (append doremi-up-keys   doremi-boost-up-keys 
                                  doremi-down-keys doremi-boost-down-keys))
-             (icicle-doremi-inter-candidates-min-spaces increment))
+             (icicle-doremi-inter-candidates-min-spaces+ increment))
            (setq unread-command-events  ()))
       (unless mini (icicle-remove-Completions-window)))))
 
-(defun icicle-doremi-inter-candidates-min-spaces (&optional increment) ; Bound to `C-x |' in minibuffer.
+(defun icicle-doremi-inter-candidates-min-spaces+ (&optional increment) ; Bound to `C-x |' in minibuf.
   "Change `icicle-inter-candidates-min-spaces' incrementally.
 Use `up', `down' or mouse wheel to increase or decrease.  You can use
 the `Meta' key (e.g. `M-right') to increment in larger steps.
@@ -5844,7 +5844,7 @@ Use `left', `right', or mouse wheel to adjust
                      icicle-inter-candidates-min-spaces
                      increment))
            (when (member (car unread-command-events)'(left right M-left M-right))
-             (icicle-doremi-candidate-width-factor increment))
+             (icicle-doremi-candidate-width-factor+ increment))
            (setq unread-command-events  ()))
       (unless mini (icicle-remove-Completions-window)))))
 

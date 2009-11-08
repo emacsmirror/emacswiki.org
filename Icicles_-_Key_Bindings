@@ -777,19 +777,19 @@ The following minibuffer bindings let you ''toggle'' '''Icicles''' options or cy
 
 
 
-[:icicle-doremi-candidate-width-factor]
-[:icicle-doremi-inter-candidates-min-spaces]
-[:icicle-doremi-zoom-Completions]
+[:icicle-doremi-candidate-width-factor+]
+[:icicle-doremi-inter-candidates-min-spaces+]
+[:icicle-doremi-zoom-Completions+]
 The following minibuffer bindings let you incrementally change
 options that affect the `*Completions*' display columns and text
 size.  To take
 advantage of these, you must also use '''DoReMi'''.
 
-* '''`C-x w'''' -- `icicle-doremi-candidate-width-factor' (requires 
+* '''`C-x w'''' -- `##icicle-doremi-candidate-width-factor+##' (requires 
 <tt>[[doremi.el]]</tt>)
-* '''`##C-x |##'''' -- `icicle-doremi-inter-candidates-min-spaces' (requires 
+* '''`##C-x |##'''' -- `##icicle-doremi-inter-candidates-min-spaces+##' (requires 
 <tt>[[doremi.el]]</tt>)
-* '''`C-x -'''' -- `icicle-doremi-zoom-Completions' (requires 
+* '''`C-x -'''' -- `##icicle-doremi-zoom-Completions+##' (requires 
 <tt>[[doremi-frm.el]]</tt> and Emacs 23 or later)
 
 

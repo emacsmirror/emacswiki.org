@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 17 10:05:46 1995
 ;; Version: 21.1
-;; Last-Updated: Sat Aug  1 15:36:47 2009 (-0700)
+;; Last-Updated: Sat Nov  7 16:24:08 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 3251
+;;     Update #: 3305
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/menu-bar+.el
 ;; Keywords: internal, local, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -85,6 +85,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2009/11/07 dadams
+;;     Applied doremi cmd renamings (added +).
+;;     Added to Do Re Mi menu: *-all-frames-fg+, *(-face)-(bg|fg)-color-name+, *-all-faces-bg+.
 ;; 2009/06/25 dadams
 ;;     Use renaming: yank-secondary-or-swap-w-region to secondary-dwim.
 ;;     Added: secondary-swap-region (Swap Region and Secondary) to Edit menu.
@@ -448,79 +451,110 @@ submenu of the \"Help\" menu."))
 
 ;;; DO RE MI menu.
 (when (featurep 'doremi-cmd)
-  (define-key menu-bar-doremi-menu [doremi-global-marks]
-    '(menu-item "Global Marks" doremi-global-marks
+  (define-key menu-bar-doremi-menu [doremi-global-marks+]
+    '(menu-item "Global Marks" doremi-global-marks+
       :help "Successively cycle among global marks: `up'/`down'"))
-  (define-key menu-bar-doremi-menu [doremi-marks]
-    '(menu-item "Marks in Buffer" doremi-marks
+  (define-key menu-bar-doremi-menu [doremi-marks+]
+    '(menu-item "Marks in Buffer" doremi-marks+
       :help "Successively cycle among marks in this buffer: `up'/`down'"))
-  (define-key menu-bar-doremi-menu [doremi-bookmarks]
-    '(menu-item "Bookmarks" doremi-bookmarks
+  (define-key menu-bar-doremi-menu [doremi-bookmarks+]
+    '(menu-item "Bookmarks" doremi-bookmarks+
       :help "Successively cycle among bookmarks: `up'/`down'"))
-  (define-key menu-bar-doremi-menu [doremi-buffers]
-    '(menu-item "Buffers" doremi-buffers
+  (define-key menu-bar-doremi-menu [doremi-buffers+]
+    '(menu-item "Buffers" doremi-buffers+
       :help "Successively cycle among buffers: `up'/`down'")))
 (when (featurep 'thumb-frm)
-  (define-key menu-bar-doremi-menu [thumfr-doremi-thumbnail-frames]
-    '(menu-item "Fisheye Frame" thumfr-doremi-thumbnail-frames
+  (define-key menu-bar-doremi-menu [thumfr-doremi-thumbnail-frames+]
+    '(menu-item "Fisheye Frame" thumfr-doremi-thumbnail-frames+
       :help "Cycle among frames using fisheye: `up'/`down'")))
 (when (and (boundp 'menu-bar-doremi-menu) (featurep 'frame-cmds))
   (define-key menu-bar-doremi-menu [save-frame-config]
     '(menu-item "Save Frame Configuration" save-frame-config
       :help "Save current frame configuration (M-x jump-to-frame-config-register restores)")))
 (when (featurep 'doremi-frm)
-  (define-key menu-bar-doremi-menu [doremi-frame-configs]
-    '(menu-item "Frame Configurations" doremi-frame-configs
+  (define-key menu-bar-doremi-menu [doremi-frame-configs+]
+    '(menu-item "Frame Configurations" doremi-frame-configs+
       :help "Cycle among frame configurations recorded: `up'/`down'"))
-  (define-key menu-bar-doremi-menu [doremi-frame-configs-separator] '("--"))
-  (define-key menu-bar-doremi-menu [doremi-font]
-    '(menu-item "Font" doremi-font
+
+  (define-key menu-bar-doremi-menu [doremi-fonts-separator] '("--"))
+  (define-key menu-bar-doremi-menu [doremi-font+]
+    '(menu-item "Font" doremi-font+
       :help "Successively cycle among fonts, choosing by name: `up'/`down'"))
   (when (fboundp 'text-scale-increase)    ; Emacs 23+.
-    (define-key menu-bar-doremi-menu [doremi-buffer-font-size]
-      '(menu-item "Buffer Text Size (Zoom)" doremi-buffer-font-size
+    (define-key menu-bar-doremi-menu [doremi-buffer-font-size+]
+      '(menu-item "Buffer Text Size (Zoom)" doremi-buffer-font-size+
         :help "Change text size for buffer incrementally: `up'/`down'")))
-  (define-key menu-bar-doremi-menu [doremi-frame-font-size]
-    '(menu-item "Frame Font Size (Zoom)" doremi-frame-font-size
+  (define-key menu-bar-doremi-menu [doremi-frame-font-size+]
+    '(menu-item "Frame Font Size (Zoom)" doremi-frame-font-size+
       :help "Change font size for frame incrementally: `up'/`down'"))
-  (define-key menu-bar-doremi-menu [doremi-undo-last-face-change]
-    '(menu-item "Undo Face Color Change" doremi-undo-last-face-change
-      :enable (facep 'doremi-last-face)
-      :help "Undo the last face color change by Do Re Mi"))
-  (define-key menu-bar-doremi-menu [doremi-face-bg]
-    '(menu-item "Face Background..." doremi-face-bg
-      :help "Change background color of a face incrementally: `up'/`down'"))
-  (define-key menu-bar-doremi-menu [doremi-all-faces-fg]
-    '(menu-item "All Faces - Foreground..." doremi-all-faces-fg
-      :help "Change foreground color of all faces incrementally: `up'/`down'"))
-  (define-key menu-bar-doremi-menu [doremi-face-fg]
-    '(menu-item "Face Foreground..." doremi-face-fg
-      :help "Change foreground color of a face incrementally: `up'/`down'"))
-  (define-key menu-bar-doremi-menu [doremi-all-frames-bg]
-    '(menu-item "All Frame Backgrounds..." doremi-all-frames-bg
-      :help "Change background of all frames incrementally: `up'/`down'"))    
+
+  (define-key menu-bar-doremi-menu [doremi-all-frames-separator] '("--"))
+  (define-key menu-bar-doremi-menu [doremi-all-frames-fg+]
+    '(menu-item "All Frame Foregrounds..." doremi-all-frames-fg+
+      :help "Change foreground of all frames incrementally: `up'/`down' (no undo)"))
+  (define-key menu-bar-doremi-menu [doremi-all-frames-bg+]
+    '(menu-item "All Frame Backgrounds..." doremi-all-frames-bg+
+      :help "Change background of all frames incrementally: `up'/`down' (no undo)"))
+
+  (define-key menu-bar-doremi-menu [doremi-frame-colors-separator] '("--"))
   (define-key menu-bar-doremi-menu [doremi-undo-last-frame-color-change]
     '(menu-item "Undo Frame Color Change" doremi-undo-last-frame-color-change
       :enable doremi-last-frame-color
-      :help "Undo the last frame color change by `doremi-fg' or `doremi-bg'"))
-  (define-key menu-bar-doremi-menu [doremi-bg]
-    '(menu-item "Frame Background..." doremi-bg
-      :help "Change frame background color incrementally: `up'/`down'")))
+      :help "Undo the last frame color change by `doremi-fg+' or `doremi-bg+'"))
+  (define-key menu-bar-doremi-menu [doremi-fg-color-name+]
+    '(menu-item "Frame Foreground Name..." doremi-fg-color-name+
+      :help "Change frame foreground color incrementally: `up'/`down'"))
+  (define-key menu-bar-doremi-menu [doremi-fg+]
+    '(menu-item "Frame Foreground..." doremi-fg+
+      :help "Change frame foreground color incrementally: `up'/`down'"))
+  (define-key menu-bar-doremi-menu [doremi-bg-color-name+]
+    '(menu-item "Frame Background Name..." doremi-bg-color-name+
+      :help "Change frame background color incrementally: `up'/`down'"))
+  (define-key menu-bar-doremi-menu [doremi-bg+]
+    '(menu-item "Frame Background..." doremi-bg+
+      :help "Change frame background color incrementally: `up'/`down'"))
+
+  (define-key menu-bar-doremi-menu [doremi-all-faces-separator] '("--"))
+  (define-key menu-bar-doremi-menu [doremi-all-faces-fg+]
+    '(menu-item "All Faces - Foreground..." doremi-all-faces-fg+
+      :help "Change foreground color of all faces incrementally: `up'/`down' (no undo)"))
+  (define-key menu-bar-doremi-menu [doremi-all-faces-bg+]
+    '(menu-item "All Faces - Background..." doremi-all-faces-bg+
+      :help "Change background color of all faces incrementally: `up'/`down' (no undo)"))
+  (define-key menu-bar-doremi-menu [doremi-faces-separator] '("--"))
+  (define-key menu-bar-doremi-menu [doremi-undo-last-face-change]
+    '(menu-item "Undo Face Color Change" doremi-undo-last-face-change
+      :enable (facep 'doremi-last-face) ; Actually, it's always non-nil, so always enabled.
+      :help "Undo the last face color change by Do Re Mi"))
+  (define-key menu-bar-doremi-menu [doremi-face-fg-color-name+]
+    '(menu-item "Face Foreground Name..." doremi-face-fg-color-name+
+      :help "Change foreground color name of a face incrementally: `up'/`down'"))
+  (define-key menu-bar-doremi-menu [doremi-face-fg+]
+    '(menu-item "Face Foreground..." doremi-face-fg+
+      :help "Change foreground color of a face incrementally: `up'/`down'"))
+  (define-key menu-bar-doremi-menu [doremi-face-bg-color-name+]
+    '(menu-item "Face Background Name..." doremi-face-bg-color-name+
+      :help "Change background color name of a face incrementally: `up'/`down'"))
+  (define-key menu-bar-doremi-menu [doremi-face-bg+]
+    '(menu-item "Face Background..." doremi-face-bg+
+      :help "Change background color of a face incrementally: `up'/`down'"))
+  )
 (when (featurep 'doremi-cmd)
-  (define-key menu-bar-doremi-menu [doremi-color-themes]
-    '(menu-item "Color Themes" doremi-color-themes
+  (define-key menu-bar-doremi-menu [doremi-color-themes+]
+    '(menu-item "Color Themes" doremi-color-themes+
       :help "Successively cycle among color themes: `up'/`down'")))
+
 (when (featurep 'doremi-frm)
   (define-key menu-bar-doremi-menu [doremi-frame-params-separator] '("--"))
-  (define-key menu-bar-doremi-menu [doremi-frame-vertically]
-    '(menu-item "Move Frame" doremi-frame-vertically
+  (define-key menu-bar-doremi-menu [doremi-frame-vertically+]
+    '(menu-item "Move Frame" doremi-frame-vertically+
       :help "Move frame incrementally: `up'/`down'/`left'/`right'"))
-  (define-key menu-bar-doremi-menu [doremi-frame-height]
-    '(menu-item "Frame Size" doremi-frame-height
+  (define-key menu-bar-doremi-menu [doremi-frame-height+]
+    '(menu-item "Frame Size" doremi-frame-height+
       :help "Resize frame incrementally: `up'/`down'/`left'/`right'")))
 (when (featurep 'doremi-cmd)
-  (define-key menu-bar-doremi-menu [doremi-window-height]
-    '(menu-item "Window Size" doremi-window-height
+  (define-key menu-bar-doremi-menu [doremi-window-height+]
+    '(menu-item "Window Size" doremi-window-height+
       :help "Resize window incrementally: `up'/`down'/`left'/`right'"
       :enable (not (one-window-p)))))
 

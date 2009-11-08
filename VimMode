@@ -44,7 +44,9 @@ Archives can be downloaded from
 Does this build on ViperMode, the current vi emulator in Emacs?
 
 [new]
-No, this is a new implementation from scratch. -- Frank
+No, this is a new implementation from scratch. 
+
+-- Frank
 
 [new]
 What is the reason for that? What did you miss?
@@ -52,7 +54,9 @@ What is the reason for that? What did you miss?
 Enhancing the already very good ViperMode might save people a lot of work. Introducing another vi-emulator is in it self a possible burden. Just think of the work needed to merge what you already have done with the existing vi-emulators in Emacs.
 
 [new]
-I missed visual mode, repeating didn't work as I expected, no text objects and some other things. I looked at ViperMode's code to find out how I could add those features, but I failed. I looked at Vimpulse, but it seems to me extending ViperMode is not that easy. Propably I'm just too stupid to understand the code, so for me it was easier to start from scratch. And I do it just for fun, so it's no burden to me. I don't know how to merge ViperMode and VimMode, and, in fact, I don't care. If someone likes ViperMode or ViperMode + Vimpulse -- very good. Both are great, so just use them. I prefer VimMode, that's all. -- Frank
+I missed visual mode, repeating didn't work as I expected, no text objects and some other things. I looked at ViperMode's code to find out how I could add those features, but I failed. I looked at Vimpulse, but it seems to me extending ViperMode is not that easy. Propably I'm just too stupid to understand the code, so for me it was easier to start from scratch. And I do it just for fun, so it's no burden to me. I don't know how to merge ViperMode and VimMode, and, in fact, I don't care. If someone likes ViperMode or ViperMode + Vimpulse -- very good. Both are great, so just use them. I prefer VimMode, that's all. 
+
+-- Frank
 
 [new]
 Yes, you can of course not do anything you do not think is fun. I am however trying to understand what you are missing and if it is easy to add:
@@ -82,6 +86,8 @@ The main feature was extensibility. I want be able to write new commands, motion
 
 But the main reason is: I started with vim-mode because I wanted to do it, to see if it's possible to get my ideas work.
 
+-- Frank
+
 [new]
 If you do not think it is fun then you will not learn. And you will have a bad time. That is how our brains work. ;-)
 
@@ -106,6 +112,8 @@ I don't say that this is difficult. In fact, both macros are quite simple, but t
 
 Btw: I know there are many emacs-vim quirks which have good workarounds in viper. I would be happy to reuse them in vim-mode. But I've been using vim-mode for several months now, and I didn't run in something strange.
 
+-- Frank
+
 [new]
 * Visual mode: Block-visual mode seems a bit useful (especially for those who have used Vim before) even in Emacs (where you can do similar things and more complicated variants with keyboard macros).
 
@@ -119,6 +127,9 @@ Thanks for you good clarifications. I do not want to go into more technical deta
 
 [new]
 * Text objects: No, since those key-bindings are only active in operator-pending-mode and visual-mode. And in operator-pending-mode "i" is unbound in vi. And text-objects are usually not used for motion but for selection or range definition for commands. "iw" selects the word the cursor is currently on. Similar "ip" selects the current paragraph, and so on.
+
+
+-- Frank
 
 [new]
 * Text objects: Ah, I never noticed that "i" could be used there. Interesting. I guess you are using thing-at-point etc for this in Emacs?
@@ -150,6 +161,8 @@ In the newest version, vim-mode is only a very flat layer above emacs. vim-modes
 
 So in some sense, it's a state machine. Some states are Emacs prefix-keys, some states are modes (e.g. operator-pending-mode), and some states are internal variables (digit-argument, register, ...).
 
+-- Frank
+
 [new]
 So all keyboard readings is done through keymaps in minor-modes?
 
@@ -175,6 +188,8 @@ Perhaps this part could be broken out - but together with the required infrastru
 
 *emulation-mode-map-alist* - I didn't know this, maybe I use it in future. Thanks for pointing out.
 
+-- Frank
+
 [new]
 But is not the rest of Viper doing a lot of things?
 (Among other things taking care of corner cases of different kinds, I guess.)
@@ -191,6 +206,8 @@ Otherwise there will be a lot of small and hard to handle errors for some users.
 [new]
 Certainly viper is doing a lot of things. But I don't know which things and why. So they are hard to integrate - no matter in which way. Changing the key-binding stuff and anything related and hoping the rest of viper still works may be a little too optimistic.
 
+-- Frank
+
 [new]
 I mailed Michael Kifer and asked him. I think he agree with your view of this.
 So please go ahead, it sounds useful.
@@ -200,6 +217,11 @@ And reported some issues on bit-bucket.
 I guess that is the way to report bugs?
 
 -- LennartBorgman
+
+[new]
+Yes, bug-reports and anything related should go through bitbucket.
+
+-- Frank
 
 ----
 CategoryEmulation CategoryKeys ViperMode

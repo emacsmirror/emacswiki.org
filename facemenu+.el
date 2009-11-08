@@ -7,9 +7,9 @@
 ;; Copyright (C) 2005-2009, Drew Adams, all rights reserved.
 ;; Created: Sat Jun 25 14:42:07 2005
 ;; Version:
-;; Last-Updated: Tue Aug  4 20:00:05 2009 (-0700)
+;; Last-Updated: Sat Nov  7 16:27:52 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 1346
+;;     Update #: 1367
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/facemenu+.el
 ;; Keywords: faces, extensions, convenience, menus, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -44,8 +44,8 @@
 ;;  the mouse menu generally more convenient than the menubar menu -
 ;;  just point and click.
 ;;
-;;  Menu items "Do Re Mi - *" make use of commands `doremi-face-fg'
-;;  `doremi-face-bg', and `doremi-undo-last-face-change', which are
+;;  Menu items "Do Re Mi - *" make use of commands `doremi-face-fg+'
+;;  `doremi-face-bg+', and `doremi-undo-last-face-change', which are
 ;;  defined in library `doremi-frm.el'.  They let you change the face
 ;;  color incrementally, using the arrow keys or the mouse wheel, and
 ;;  undo such changes.  Menu items "Palette - *" make use of library
@@ -89,10 +89,10 @@
 ;;
 ;;  Commands defined here:
 ;;
-;;    `facemenu-mouse-menu', `facemenup-change-bg-of-face-at-mouse',
-;;    `facemenup-change-bg-of-face-at-point',
-;;    `facemenup-change-fg-of-face-at-mouse',
-;;    `facemenup-change-fg-of-face-at-point',
+;;    `facemenu-mouse-menu', `facemenup-change-bg-of-face-at-mouse+',
+;;    `facemenup-change-bg-of-face-at-point+',
+;;    `facemenup-change-fg-of-face-at-mouse+',
+;;    `facemenup-change-fg-of-face-at-point+',
 ;;    `facemenup-customize-face-at-mouse',
 ;;    `facemenup-customize-face-at-point',
 ;;    `facemenup-describe-text-properties-at-mouse',
@@ -170,6 +170,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2009/11/07 dadams
+;;     Renamed: *-change-(bg|fg)-*-at-(point|mouse) to *-change-(bg|fg)-*-at-(point|mouse)+.
+;;     Applied doremi cmd renamings (added +).
 ;; 2009/08/04 dadams
 ;;     Added: facemenu-rgb-format-for-display.
 ;;     list-faces-display: Use read-regexp in interactive spec for Emacs 23.
@@ -266,7 +269,7 @@
 
 (require 'facemenu)
 (require 'doremi-frm nil t) ;; (no error if not found)
-                            ;; doremi-face-fg, doremi-face-bg, doremi-undo-last-face-change
+                            ;; doremi-face-fg+, doremi-face-bg+, doremi-undo-last-face-change
 (if (fboundp 'defvaralias) ;; Emacs 22
     (require 'palette) ;; eyedrop-pick-*-at-*, eyedrop-face-at-point
   (require 'eyedropper)) ;; eyedrop-pick-*-at-*, eyedrop-face-at-point
@@ -386,12 +389,12 @@
        (easy-menu-add-item facemenu-mouse-menu ()
                            ["Eyedropper - Paste to Face Background"
                             facemenup-paste-to-face-bg-at-mouse t])))
-(when (fboundp 'doremi-face-fg)         ; Defined in `doremi-frm.el'.
+(when (fboundp 'doremi-face-fg+)        ; Defined in `doremi-frm.el'.
   (easy-menu-add-item facemenu-mouse-menu () "--")
   (easy-menu-add-item facemenu-mouse-menu () ["Do Re Mi - Edit Face Foreground"
-                                              facemenup-change-fg-of-face-at-mouse t])
+                                              facemenup-change-fg-of-face-at-mouse+ t])
   (easy-menu-add-item facemenu-mouse-menu () ["Do Re Mi - Edit Face Background"
-                                              facemenup-change-bg-of-face-at-mouse t])
+                                              facemenup-change-bg-of-face-at-mouse+ t])
   (easy-menu-add-item facemenu-mouse-menu () ["Do Re Mi - Undo Last Edit"
                                               doremi-undo-last-face-change t]))
 (easy-menu-add-item facemenu-mouse-menu () "--")
@@ -433,12 +436,12 @@
                                         facemenup-palette-face-fg-at-point t])
   (easy-menu-add-item facemenu-menu () ["Palette - Edit Face Background"
                                         facemenup-palette-face-bg-at-point t]))
-(when (fboundp 'doremi-face-fg)         ; Defined in `doremi-frm.el'.
+(when (fboundp 'doremi-face-fg+)        ; Defined in `doremi-frm.el'.
   (easy-menu-add-item facemenu-menu () "--")
   (easy-menu-add-item facemenu-menu () ["Do Re Mi - Edit Face Foreground"
-                                        facemenup-change-fg-of-face-at-point t])
+                                        facemenup-change-fg-of-face-at-point+ t])
   (easy-menu-add-item facemenu-menu () ["Do Re Mi - Edit Face Background"
-                                        facemenup-change-bg-of-face-at-point t])
+                                        facemenup-change-bg-of-face-at-point+ t])
   (easy-menu-add-item facemenu-menu () ["Do Re Mi - Undo Last Edit"
                                         doremi-undo-last-face-change t]))
 (easy-menu-add-item facemenu-menu () "--")
@@ -593,10 +596,10 @@ To quit the palette without effecting any change on the face, use `\\[palette-qu
         (setq facemenup-last-face-fg fg facemenup-last-face-changed face)
         (palette fg)))))
 
-(when (fboundp 'doremi-face-bg)
-  (defun facemenup-change-bg-of-face-at-mouse (event increment)
+(when (fboundp 'doremi-face-bg+)
+  (defun facemenup-change-bg-of-face-at-mouse+ (event increment)
     "Use Do Re Mi to edit background of face under the mouse pointer.
-This uses command `doremi-face-bg'; see that for more usage info.
+This uses command `doremi-face-bg+'; see that for more usage info.
 Prefix argument is the INCREMENT of change.
 
 If `eyedrop-picked-background' is non-nil and you use plain `C-u'
@@ -605,7 +608,8 @@ first set to the value of `eyedrop-picked-background'.  This happens
 only if library `eyedropper.el' or `palette.el' is loaded.  This lets
 you pick up a background color from somewhere, using \"Pick Up
 Background Color\" (`eyedrop-pick-background-at-mouse'), and then use
-that as the initial value for `facemenup-change-bg-of-face-at-mouse'."
+that as the initial value for
+`facemenup-change-bg-of-face-at-mouse+'."
     (interactive "e\np")
     (let ((echo-keystrokes 0)
           (face (save-excursion
@@ -615,15 +619,15 @@ that as the initial value for `facemenup-change-bg-of-face-at-mouse'."
       (unless face (setq face (read-face-name facemenup-err-mouse)))
       ;; Emacs bug on Windows: Get extra, pending <C-drag-mouse-2> event, so discard it.
       (while (input-pending-p) (discard-input))
-      (doremi-face-bg face
-                      (read-char-exclusive (format "Change background of `%s'. \
+      (doremi-face-bg+ face
+                       (read-char-exclusive (format "Change background of `%s'. \
 Adjust red, green, blue, hue, saturation, or value? [rgbhsv]: " face))
-                      increment (consp current-prefix-arg)))))
+                       increment (consp current-prefix-arg)))))
 
-(when (fboundp 'doremi-face-fg)
-  (defun facemenup-change-fg-of-face-at-mouse (event increment)
+(when (fboundp 'doremi-face-fg+)
+  (defun facemenup-change-fg-of-face-at-mouse+ (event increment)
     "Use Do Re Mi to edit foreground of face under the mouse pointer.
-This uses command `doremi-face-fg'; see that for more usage info.
+This uses command `doremi-face-fg+'; see that for more usage info.
 Prefix argument is the INCREMENT of change.
 
 If `eyedrop-picked-foreground' is non-nil and you use plain `C-u'
@@ -633,7 +637,7 @@ happens only if library `eyedropper.el' or `palette.el' is
 loaded.  This lets you pick up a foreground color from somewhere,
 using \"Pick Up Foreground Color\"
 \(`eyedrop-pick-foreground-at-mouse'), and then use that as the
-initial value for `facemenup-change-fg-of-face-at-mouse'."
+initial value for `facemenup-change-fg-of-face-at-mouse+'."
     (interactive "e\np")
     (let ((echo-keystrokes 0)
           (face (save-excursion
@@ -643,15 +647,15 @@ initial value for `facemenup-change-fg-of-face-at-mouse'."
       (unless face (setq face (read-face-name facemenup-err-mouse)))
       ;; Emacs bug on Windows: Get extra, pending <C-drag-mouse-2> event, so discard it.
       (while (input-pending-p) (discard-input))
-      (doremi-face-fg face
-                      (read-char-exclusive (format "Change foreground of `%s'. \
+      (doremi-face-fg+ face
+                       (read-char-exclusive (format "Change foreground of `%s'. \
 Adjust red, green, blue, hue, saturation, or value? [rgbhsv]: " face))
-                      increment (consp current-prefix-arg)))))
+                       increment (consp current-prefix-arg)))))
 
-(when (fboundp 'doremi-face-bg)
-  (defun facemenup-change-bg-of-face-at-point (increment)
+(when (fboundp 'doremi-face-bg+)
+  (defun facemenup-change-bg-of-face-at-point+ (increment)
     "Use Do Re Mi to edit background of face at the cursor (point).
-This uses command `doremi-face-bg'; see that for more usage info.
+This uses command `doremi-face-bg+'; see that for more usage info.
 Prefix argument is the INCREMENT of change.
 
 If `eyedrop-picked-background' is non-nil and you use plain `C-u'
@@ -661,19 +665,19 @@ happens only if library `eyedropper.el' or `palette.el' is
 loaded.  This lets you pick up a background color from somewhere,
 using \"Pick Up Background Color\"
 \(`eyedrop-pick-background-at-point'), and then use that as the
-initial value for `facemenup-change-bg-of-face-at-point'."
+initial value for `facemenup-change-bg-of-face-at-point+'."
     (interactive "p")
     (let ((echo-keystrokes 0)
           (face (eyedrop-face-at-point)))
       (unless face (read-face-name facemenup-err-point))
-      (doremi-face-bg face (read-char-exclusive (format "Change background of `%s'. \
+      (doremi-face-bg+ face (read-char-exclusive (format "Change background of `%s'. \
 Adjust red, green, blue, hue, saturation, or value? [rgbhsv]: " face))
-                      increment (consp current-prefix-arg)))))
+                       increment (consp current-prefix-arg)))))
 
-(when (fboundp 'doremi-face-fg)
-  (defun facemenup-change-fg-of-face-at-point (increment)
+(when (fboundp 'doremi-face-fg+)
+  (defun facemenup-change-fg-of-face-at-point+ (increment)
     "Use Do Re Mi to edit foreground of face at the cursor (point).
-This uses command `doremi-face-fg'; see that for more usage info.
+This uses command `doremi-face-fg+'; see that for more usage info.
 Prefix argument is the INCREMENT of change.
 
 If `eyedrop-picked-foreground' is non-nil and you use plain `C-u'
@@ -683,14 +687,14 @@ happens only if library `eyedropper.el' or `palette.el' is
 loaded.  This lets you pick up a foreground color from somewhere,
 using \"Pick Up Foreground Color\"
 \(`eyedrop-pick-foreground-at-point'), and then use that as the
-initial value for `facemenup-change-fg-of-face-at-point'."
+initial value for `facemenup-change-fg-of-face-at-point+'."
     (interactive "p")
     (let ((echo-keystrokes 0)
           (face (eyedrop-face-at-point)))
       (unless face (read-face-name facemenup-err-point))
-      (doremi-face-fg face (read-char-exclusive (format "Change foreground of `%s'. \
+      (doremi-face-fg+ face (read-char-exclusive (format "Change foreground of `%s'. \
 Adjust red, green, blue, hue, saturation, or value? [rgbhsv]: " face))
-                      increment (consp current-prefix-arg)))))
+                       increment (consp current-prefix-arg)))))
 
 (defun facemenup-set-face-bg-RGB-at-mouse (event)
   "Set RGB of background of face at character under the mouse pointer.

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2009, Drew Adams, all rights reserved.
 ;; Created: Sun Sep 12 17:13:58 2004
 ;; Version: 21.0
-;; Last-Updated: Sat Aug  1 15:20:59 2009 (-0700)
+;; Last-Updated: Sat Nov  7 11:54:42 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 207
+;;     Update #: 220
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/doremi-cmd.el
 ;; Keywords: keys, cycle, repeat
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -29,6 +29,11 @@
 ;;  key, or rotate the mouse wheel, to change face attributes or frame
 ;;  parameters.  For more info, see file `doremi.el' and the
 ;;  doc-string for function `doremi' in particular.
+;;
+;;  NOTE: Functions and variables in this library have the prefix
+;;        `doremi-'.  In order to more easily distinguish commands
+;;        that iterate in Do Re Mi fashion from other functions in the
+;;        library, the iterative commands are suffixed with `+'.
 ;;
 ;;  Note on saving changes made with the commands defined here:
 ;;
@@ -70,9 +75,9 @@
 ;;
 ;;  New commands defined here:
 ;;
-;;    `doremi-bookmarks', `doremi-buffers', `doremi-color-themes',
-;;    `doremi-global-marks', `doremi-marks', `doremi-window-height',
-;;    `doremi-window-width'.
+;;    `doremi-bookmarks+', `doremi-buffers+', `doremi-color-themes+',
+;;    `doremi-global-marks+', `doremi-marks+',
+;;    `doremi-window-height+', `doremi-window-width+'.
 ;;
 ;;
 ;;  Add this to your initialization file (~/.emacs or ~/_emacs):
@@ -94,12 +99,12 @@
 ;;   (defvar doremi-map (symbol-function 'doremi-prefix)
 ;;     "Keymap for Do Re Mi commands.")
 ;;   (define-key global-map "\C-xt" 'doremi-prefix)
-;;   (define-key doremi-map "b" 'doremi-buffers)
-;;   (define-key doremi-map "g" 'doremi-global-marks)
-;;   (define-key doremi-map "m" 'doremi-marks)
-;;   (define-key doremi-map "r" 'doremi-bookmarks) ; reading books?
-;;   (define-key doremi-map "s" 'doremi-color-themes) ; color schemes
-;;   (define-key doremi-map "w" 'doremi-window-height)
+;;   (define-key doremi-map "b" 'doremi-buffers+)
+;;   (define-key doremi-map "g" 'doremi-global-marks+)
+;;   (define-key doremi-map "m" 'doremi-marks+)
+;;   (define-key doremi-map "r" 'doremi-bookmarks+) ; reading books?
+;;   (define-key doremi-map "s" 'doremi-color-themes+) ; color schemes
+;;   (define-key doremi-map "w" 'doremi-window-height+)
 ;;
 ;;  Customize the menu. Uncomment this to try it out.
 ;;
@@ -107,22 +112,22 @@
 ;;   (define-key global-map [menu-bar doremi]
 ;;     (cons "Do Re Mi" menu-bar-doremi-menu))
 ;;   (define-key menu-bar-doremi-menu [doremi-color-themes]
-;;     '(menu-item "Color Themes" . doremi-color-themes
+;;     '(menu-item "Color Themes" . doremi-color-themes+
 ;;       :help "Successively cycle among color themes: `up'/`down'"))
 ;;   (define-key menu-bar-doremi-menu [doremi-global-marks]
-;;     '(menu-item "Global Marks" . doremi-global-marks
+;;     '(menu-item "Global Marks" . doremi-global-marks+
 ;;       :help "Successively cycle among global marks: `up'/`down'")))
 ;;   (define-key menu-bar-doremi-menu [doremi-marks]
-;;     '(menu-item "Marks in Buffer" . doremi-marks
+;;     '(menu-item "Marks in Buffer" . doremi-marks+
 ;;       :help "Successively cycle among marks in this buffer: `up'/`down'")))
 ;;   (define-key menu-bar-doremi-menu [doremi-bookmarks]
-;;     '(menu-item "Bookmarks" . doremi-bookmarks
+;;     '(menu-item "Bookmarks" . doremi-bookmarks+
 ;;       :help "Successively cycle among bookmarks: `up'/`down'")))
 ;;   (define-key menu-bar-doremi-menu [doremi-buffers]
-;;     '(menu-item "Buffers" . doremi-buffers
+;;     '(menu-item "Buffers" . doremi-buffers+
 ;;       :help "Successively cycle among buffers: `up'/`down'"))
 ;;   (define-key menu-bar-doremi-menu [doremi-window-height]
-;;     '(menu-item "Window Size" doremi-window-height
+;;     '(menu-item "Window Size" doremi-window-height+
 ;;       :help "Resize window incrementally: `up'/`down'/`left'/`right'"
 ;;       :enable (not (one-window-p)))))
 ;;
@@ -130,6 +135,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2009/11/07 dadams
+;;     Renamed all Do Re Mi iterative commands by appending +.
 ;; 2009/06/26 dadams
 ;;     doremi-window-width: Use new key-list options, doremi-...-keys (not -key).
 ;; 2007/11/01 dadams
@@ -208,14 +215,15 @@ Don't forget to mention your Emacs and library versions."))
 ;;;###autoload
 (defcustom doremi-color-themes (and (require 'color-theme nil t)
                                     (delq 'bury-buffer (mapcar 'car color-themes)))
-  "*List of color themes to cycle through using `doremi-color-themes'."
+  "*List of color themes to cycle through using `doremi-color-themes+'."
   :type 'hook :group 'doremi-misc-commands)
  
 ;;; Commands (Interactive Functions)
 
 ;;;###autoload
-(defun doremi-color-themes ()
-  "Successively cycle among color themes."
+(defun doremi-color-themes+ ()
+  "Successively cycle among color themes.
+The themes used for cycling are those in option `doremi-color-themes'."
   (interactive)
   (doremi (lambda (newval) (funcall newval) newval) ; update fn - just call theme
           (car (last doremi-color-themes)) ; start with last theme
@@ -224,7 +232,7 @@ Don't forget to mention your Emacs and library versions."))
           doremi-color-themes))         ; themes to cycle through
 
 ;;;###autoload
-(defun doremi-bookmarks ()
+(defun doremi-bookmarks+ ()
   "Successively cycle among all bookmarks."
   (interactive)
   (doremi (lambda (newval) (bookmark-jump newval) newval)
@@ -237,7 +245,7 @@ Don't forget to mention your Emacs and library versions."))
           t))
 
 ;;;###autoload
-(defun doremi-buffers ()
+(defun doremi-buffers+ ()
   "Successively cycle among all existing buffers."
   (interactive)
   (doremi (lambda (newval) (switch-to-buffer newval 'norecord) newval)
@@ -247,7 +255,7 @@ Don't forget to mention your Emacs and library versions."))
           (buffer-list)))
 
 ;;;###autoload
-(defun doremi-marks ()
+(defun doremi-marks+ ()
   "Successively cycle among all marks in the `mark-ring'."
   (interactive)
   (doremi (lambda (newval) (set-mark-command t) newval)
@@ -257,7 +265,7 @@ Don't forget to mention your Emacs and library versions."))
           mark-ring))
 
 ;;;###autoload
-(defun doremi-global-marks ()
+(defun doremi-global-marks+ ()
   "Successively cycle among all marks in the `global-mark-ring'."
   (interactive)
   (doremi (lambda (newval) (pop-global-mark) newval)
@@ -266,9 +274,9 @@ Don't forget to mention your Emacs and library versions."))
           nil                           ; ignored
           global-mark-ring))
 
-;; $$$ (defalias 'window-resize 'doremi-window-height)
+;; $$$ (defalias 'window-resize+ 'doremi-window-height+)
 ;;;###autoload
-(defun doremi-window-height (&optional increment window)
+(defun doremi-window-height+ (&optional increment window)
   "Change height of WINDOW incrementally.
 INCREMENT is the size increment.
 WINDOW is selected.  WINDOW defaults to the selected window."
@@ -278,11 +286,11 @@ WINDOW is selected.  WINDOW defaults to the selected window."
           (window-height) (- increment) t)
   (when (member (car unread-command-events)
                 '(left right M-left M-right))
-    (doremi-window-width increment window)))
+    (doremi-window-width+ increment window)))
 
-;; $$$ (defalias 'window-resize-horizontally 'doremi-window-width)
+;; $$$ (defalias 'window-resize-horizontally+ 'doremi-window-width+)
 ;;;###autoload
-(defun doremi-window-width (&optional increment window)
+(defun doremi-window-width+ (&optional increment window)
   "Change width of WINDOW incrementally.
 INCREMENT is the size increment.
 WINDOW is selected.  WINDOW defaults to the selected window."
@@ -298,7 +306,7 @@ WINDOW is selected.  WINDOW defaults to the selected window."
   (when (member (car unread-command-events)
                 (append doremi-up-keys   doremi-boost-up-keys 
                         doremi-down-keys doremi-boost-down-keys))
-    (doremi-window-height increment window)))
+    (doremi-window-height+ increment window)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
 

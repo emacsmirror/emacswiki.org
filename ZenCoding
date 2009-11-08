@@ -1,4 +1,4 @@
-== What it is ==
+= What it is =
 Zen Coding refers to a neat way to write markup quickly.
 
 The following blogs provide sumary and examples:
@@ -17,7 +17,81 @@ I'll quote the blog:
 
     <div id="name" class="one two"></div>
 
-== A Haskell implementation ==
+== Zencoding Mode ==
+
+=== Grab it ===
+
+I've made an implementation in elisp as a minor-mode.
+
+Latest raw file: http://github.com/chrisdone/zencoding/raw/master/zencoding-mode.el
+
+Github repo.: http://github.com/chrisdone/zencoding
+
+Please feel free to hack on it and I'll add you as a member of the github project so that you can push to it.
+
+=== Screenshot ===
+
+[[image:ZenCodingModeScreenshot]]
+
+=== How to use it ===
+
+Copy zencoding-mode.el to your load-path and add to your .emacs:
+
+    (add-to-list 'load-path "~/Emacs/zencoding/")
+    (require 'zencoding-mode)
+    (add-hook 'sgml-mode-hook 'zencoding-mode) ;; Auto-start on any markup modes
+
+At the moment zencoding-expand-line is bound to `C-<return>`, so you write your expression and just hit C-RET.
+
+E.g.
+
+    div#name.one.two
+
+C-RET
+
+    <div id="name" class="one two">
+    </div>
+
+=== Syntax ===
+
+==== Basic Tags ====
+||<code>a</code>||||<code><a></a></code>||
+||<code>a.x</code>||||<code><a class="x"></a></code>||
+||<code>a#q.x</code>||||<code><a id="q" class="x"></a></code>||
+||<code>a#q.x.y.z</code>||||<code><a id="q" class="x y z"></a></code>||
+==== Siblings ====
+||<code>a+b</code>||||<code><a></a><b></b></code>||
+||<code>a.x+b</code>||||<code><a class="x"></a><b></b></code>||
+||<code>a#q.x+b</code>||||<code><a id="q" class="x"></a><b></b></code>||
+||<code>a#q.x.y.z+b#p.l.m.n</code>||||<code><a id="q" class="x y z"></a><b id="p" class="l m n"></b></code>||
+==== Parent > child ====
+||<code>a>b</code>||||<code><a><b></b></a></code>||
+||<code>a>b>c</code>||||<code><a>< b><c></c></b></a></code>||
+||<code>a.x>b</code>||||<code><a class="x"><b></b></a></code>||
+||<code>a#q.x>b</code>||||<code><a id="q" class="x"><b></b></a></code>||
+||<code>a#q.x.y.z>b#p.l.m.n</code>||||<code><a id="q" class="x y z"><b id="p" class="l m n"></b></a></code>||
+||<code>a>b+c</code>||||<code><a><b></b><c></c></a></code>||
+||<code>a>b+c>d</code>||||<code><a><b></b><c><d></d></c></a></code>||
+==== Multiplication ====
+||<code>a*2</code>||||<code><a></a><a></a></code>||
+||<code>a*2+b*2</code>||||<code><a></a><a></a><b></b><b></b></code>||
+||<code>a*2>b*2</code>||||<code><a><b></b><b></b></a><a><b></b><b></b></a></code>||
+||<code>a>b*2</code>||||<code><a><b></b><b></b></a></code>||
+||<code>a#q.x>b#q.x*2</code>||||<code><a id="q" class="x"><b id="q" class="x"></b><b id="q" class="x"></b></a></code>||
+==== Properties ====
+||<code>a x=y</code>||||<code><a x="y"></a></code>||
+||<code>a#foo x=y m=l</code>||||<code><a id="foo" x="y" m="l"></a></code>||
+||<code>a#foo.bar.mu x=y m=l</code>||||<code><a id="foo" class="bar mu" x="y" m="l"></a></code>||
+||<code>a x=y+b</code>||||<code><a x="y"></a><b></b></code>||
+||<code>a x=y+b x=y</code>||||<code><a x="y"></a><b x="y"></b></code>||
+||<code>a x=y>b x=y+c x=y</code>||||<code><a x="y"><b x="y"></b><c x="y"></c></a></code>||
+==== Parentheses ====
+||<code>(a>b)+c</code>||||<code><a><b></b></a><c></c></code>||
+||<code>z+(a>b)+c+k</code>||||<code><z></z><a><b></b></a><c></c><k></k></code>||
+||<code>(a>b)*2</code>||||<code><a><b></b></a><a><b></b></a></code>||
+||<code>(a+b)*2</code>||||<code><a></a><b></b><a></a><b></b></code>||
+
+= A Haskell Implementation =
 
 I've implemented a program in Haskell to do what I've surmised from the examples: http://gist.github.com/223655
 
@@ -46,7 +120,7 @@ Here's an example:
        </div>
     </div>
 
-= Using it in Emacs =
+=== Using it in Emacs ===
 
 You can use it reasonably well from Emacs:
 
@@ -64,8 +138,9 @@ You can use it reasonably well from Emacs:
         (indent-for-tab-command)))
     (define-key html-mode-map (kbd "\C-c \C-v") 'zencode)
 
-
 [[image:ZenCodeSample]]
+
+= Discussion =
 
 Any suggestions/helpful ideas please feel free.
 
@@ -135,3 +210,6 @@ I used your github mail address, is that working?
 
 [new]
 I received them but didn't check my mail last night! Thanks for the changes but I'm afraid I've already added zencoding- prefixes to all symbols on an updated version. I'll create a github project and add you as a project owner and then we can share push rights! It will appear under http://github.com/chrisdone/zencoding once I've set it up. -- [[ChrisDone]]
+
+[new]
+I'd like to remove the Haskell sections and possibly the resulting irrelevant discussion. Is that a faux pas or can I do that?

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2009, Drew Adams, all rights reserved.
 ;; Created: Thu Sep 02 08:21:37 2004
 ;; Version: 21.1
-;; Last-Updated: Sat Aug  1 15:21:54 2009 (-0700)
+;; Last-Updated: Sat Nov  7 15:55:47 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 1505
+;;     Update #: 1547
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/doremi.el
 ;; Keywords: keys, cycle, repeat, higher-order
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -107,6 +107,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2009/11/07 dadams
+;;     doremi: Increment can now be a list of numbers.
+;;             Use >= 0, not natnump, since not necessarily an integer.
 ;; 2009/06/26 dadams
 ;;     Added: doremi-intersection.
 ;;     Renamed options doremi-...-key to doremi-...-keys, and made them lists.
@@ -310,6 +313,10 @@ INCR is an adjustment increment.
      calling the function.  If ENUM is non-nil, then INCR is ignored.
  For an incremental growth function, this is passed to the function.
 
+INCR can be a number or a list of numbers.  When it is a list of
+numbers, each is incremented or decremented (and possibly boosted by
+`doremi-boost-scale-factor' - see below).
+
 If GROWTH-FN is non-nil, then SETTER-FN is an incremental growth
   function (case #2), and it is called with INCR as its only argument.
 If GROWTH-FN is a function, then it is used as an alternative growth
@@ -362,18 +369,30 @@ For examples of using `doremi', see the source code of libraries
                              (member (event-basic-type (car evnt))
                                      '(switch-frame mouse-wheel mouse-2 wheel-up wheel-down)))))
         ;; Set up the proper increment value.
-        (cond ((member evnt doremi-up-keys)   (setq new-incr  incr)) ; +
-              ((member evnt doremi-down-keys) (setq new-incr  (- incr))) ; -
-              ((member evnt doremi-boost-up-keys)
-               (setq new-incr  (* doremi-boost-scale-factor incr))) ; ++
-              ((member evnt doremi-boost-down-keys)
-               (setq new-incr  (* doremi-boost-scale-factor (- incr)))) ; --
+        (cond ((member evnt doremi-up-keys) (setq new-incr  incr)) ; +
+              ((member evnt doremi-down-keys) ; -
+               (setq new-incr  (if (atom incr) (- incr) (mapcar #'- incr))))
+              ((member evnt doremi-boost-up-keys) ; ++
+               (setq new-incr
+                     (if (atom incr)
+                         (* doremi-boost-scale-factor incr)
+                       (mapcar #'(lambda (in) (* doremi-boost-scale-factor in)) incr))))
+              ((member evnt doremi-boost-down-keys) ; --
+               (setq new-incr
+                     (if (atom incr)
+                         (* doremi-boost-scale-factor (- incr))
+                       (mapcar #'(lambda (in) (* doremi-boost-scale-factor (- in))) incr))))
 
               ;; Emacs 20 mouse wheel.
               ((and (consp evnt) (equal 'mouse-wheel (event-basic-type (car evnt))))
-               (setq new-incr  (if (< 0 (nth 2 evnt)) incr (- incr)))
+               (setq new-incr  (if (< 0 (nth 2 evnt))
+                                   incr
+                                 (if (atom incr) (- incr) (mapcar #'- incr))))
                (when (event-modifiers evnt) ; Boost it
-                 (setq new-incr  (* doremi-boost-scale-factor new-incr))))
+                 (setq new-incr
+                       (if (atom new-incr)
+                           (* doremi-boost-scale-factor new-incr)
+                         (mapcar #'(lambda (in) (* doremi-boost-scale-factor in)) new-incr)))))
 
               ;; Emacs 21+ mouse wheel: `mwheel.el'
               ;; Free vars here: `mouse-wheel-down-event', `mouse-wheel-up-event'.
@@ -381,13 +400,17 @@ For examples of using `doremi', see the source code of libraries
               ((and (consp evnt) (member (event-basic-type (car evnt)) '(wheel-up wheel-down)))
                (let ((button  (mwheel-event-button evnt)))
                  (cond ((eq button mouse-wheel-down-event) (setq new-incr  incr))
-                       ((eq button mouse-wheel-up-event)   (setq new-incr  (- incr)))
+                       ((eq button mouse-wheel-up-event)
+                        (setq new-incr  (if (atom incr) (- incr) (mapcar #'- incr))))
                        (t (error "`doremi' - Bad binding in mwheel-scroll"))))
                (when (if (> emacs-major-version 22) ; Boost it
                          (doremi-intersection (event-modifiers evnt)
                                               '(shift control meta alt hyper super))
                        (event-modifiers evnt))
-                 (setq new-incr  (* doremi-boost-scale-factor new-incr)))))
+                 (setq new-incr
+                       (if (atom new-incr)
+                           (* doremi-boost-scale-factor new-incr)
+                         (mapcar #'(lambda (in) (* doremi-boost-scale-factor in)) new-incr))))))
         (if (and (consp evnt) (memq (event-basic-type (car evnt)) '(mouse-2 switch-frame)))
             (message save-prompt)       ; Just skip mouse-2 event (ignore while using wheel).
 
@@ -409,17 +432,21 @@ For examples of using `doremi', see the source code of libraries
                              (error "`doremi' - Need at least two alternatives: %s" enum))
                            (let* ((vec     (cdr (cdr enum)))
                                   (veclen  (length vec)))
-                             (if (natnump new-incr)
+                             (if (and (numberp new-incr) (>= new-incr 0))
                                  (doremi-set-new-value setter-fn (ring-next enum init-val))
                                (doremi-set-new-value setter-fn (ring-previous enum init-val)))))
 
-                          ;; 2) Two incremental growth functions.  Call one on INCR only.
+                          ;; 2) Two incremental growth functions.  Call one on (new) INCR only.
                           ((functionp growth-fn)
-                           (if (natnump new-incr)
-                               (doremi-set-new-value setter-fn new-incr)
-                             (doremi-set-new-value growth-fn (- new-incr))))
+                           (if (atom new-incr)
+                               (if (and (numberp new-incr) (>= new-incr 0))
+                                   (doremi-set-new-value setter-fn new-incr)
+                                 (doremi-set-new-value growth-fn (- new-incr)))
+                             (if (and (numberp (car new-incr)) (>= (car new-incr) 0))
+                                 (doremi-set-new-value setter-fn new-incr)
+                               (doremi-set-new-value growth-fn (mapcar #'- new-incr)))))
 
-                          ;; 3) Single incremental growth function.  Call it on INCR only.
+                          ;; 3) Single incremental growth function.  Call it on (new) INCR only.
                           (growth-fn (doremi-set-new-value setter-fn new-incr))
 
                           ;; 4) Otherwise.  Increment value.  Call setter function on new value.
@@ -475,7 +502,7 @@ MIN or MAX = nil means no such limit."
 
 
 ;; Uses an enumeration list, (buffer-list).
-;; (defun doremi-buffers ()
+;; (defun doremi-buffers+ ()
 ;;   "Successively cycle among existing buffers."
 ;;   (interactive)
 ;;   (doremi (lambda (newval) (switch-to-buffer newval 'norecord) newval)
@@ -486,7 +513,7 @@ MIN or MAX = nil means no such limit."
 
 ;; Test command that uses an enumeration list.
 ;; This command changes nothing.  It just echoes successive values.
-;; (defun test-list ()
+;; (defun test-list+ ()
 ;;   (interactive)
 ;;   (doremi (lambda (newval) newval) 'c 1 nil '(a b c d e f g)))
 
@@ -494,7 +521,7 @@ MIN or MAX = nil means no such limit."
 ;; In this test, the init-val is not a member of the enumeration list.
 ;; An error is raised.
 ;; This command changes nothing.  It just echoes successive values.
-;; (defun test-list-prohibit-nonmember ()
+;; (defun test-list-prohibit-nonmember+ ()
 ;;   (interactive)
 ;;   (doremi (lambda (newval) newval) 'c 1 nil '(a b)))
 
@@ -503,7 +530,7 @@ MIN or MAX = nil means no such limit."
 ;; Because of non-nil 6th arg ALLOW-NEW-P, the initial value 'c is added
 ;; to the enumeration.
 ;; This command changes nothing.  It just echoes successive values.
-;; (defun test-list-allow-nonmember ()
+;; (defun test-list-allow-nonmember+ ()
 ;;   (interactive)
 ;;   (doremi (lambda (newval) newval) 'c 1 nil '(a b) t))
 
@@ -512,7 +539,7 @@ MIN or MAX = nil means no such limit."
 ;; Because 6th arg ALLOW-NEW-P is 'extend, the enumeration is enlarged
 ;; to include the initial value 'c.
 ;; This command changes nothing.  It just echoes successive values.
-;; (defun test-list-allow-nonmember+extend ()
+;; (defun test-list-allow-nonmember+extend+ ()
 ;;   (interactive)
 ;;   (doremi (lambda (newval) newval) 'c 1 nil '(a b) 'extend))
 

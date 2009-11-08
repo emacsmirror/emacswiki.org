@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2009, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Wed Aug 26 14:42:04 2009 (-0700)
+;; Last-Updated: Sat Nov  7 16:16:16 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 945
+;;     Update #: 969
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -67,6 +67,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2009/11/07 dadams
+;;     Bound doremi-face-bg+ to k.  Applied doremi cmd renamings (added +).
 ;; 2009/08/26 dadams
 ;;     Changed binding of region-to-file from `C-x a' to C-x M-f, due to abbrev keys conflict.
 ;; 2009/07/26 dadams
@@ -290,12 +292,12 @@
 (require 'pp+ nil t) ;; (no error if not found): pp-eval-expression
 (require 'fit-frame nil t) ;; (no error if not found):
                            ;; fit-frame, fit-frame-or-mouse-drag-vertical-line
-(require 'doremi-frm nil t) ;; (no error if not found): doremi-bg, doremi-face-fg,
-                            ;; doremi-font, doremi-font-size, doremi-frame-configs,
-                            ;; doremi-frame-height, doremi-frame-horizontally,
-                            ;; doremi-frame-vertically, doremi-frame-width
-(require 'doremi-cmd nil t) ;; (no error if not found): doremi-buffers, doremi-bookmarks,
-                            ;; doremi-color-themes,
+(require 'doremi-frm nil t) ;; (no error if not found): doremi-bg+, doremi-face-fg+,
+                            ;; doremi-font+, doremi-frame-font-size+, doremi-frame-configs+,
+                            ;; doremi-frame-height+, doremi-frame-horizontally+,
+                            ;; doremi-frame-vertically+
+(require 'doremi-cmd nil t) ;; (no error if not found): doremi-buffers+, doremi-bookmarks+,
+                            ;; doremi-color-themes+,
 
 (when (< emacs-major-version 21)
   (require 'help+20 nil t) ;; (no error if not found): help-on-click/key
@@ -476,27 +478,28 @@
     (defvar doremi-map (symbol-function 'doremi-prefix)
       "Keymap for Do Re Mi commands."))
   (define-key global-map "\C-xt" 'doremi-prefix)
-  (define-key doremi-map "a" 'doremi-all-faces-fg) ; "All"
-  (define-key doremi-map "c" 'doremi-bg) ; "Color"
-  (define-key doremi-map "f" 'doremi-face-fg) ; Face"
-  (define-key doremi-map "h" 'doremi-frame-height)
-  (define-key doremi-map "t" 'doremi-font) ; "Typeface"
-  (define-key doremi-map "u" 'doremi-frame-configs) ; "Undo"
-  (define-key doremi-map "x" 'doremi-frame-horizontally)
-  (define-key doremi-map "y" 'doremi-frame-vertically)
-  (define-key doremi-map "z" 'doremi-font-size)) ; "Zoom"
+  (define-key doremi-map "a" 'doremi-all-faces-fg+) ; "All"
+  (define-key doremi-map "c" 'doremi-bg+) ; "Color"
+  (define-key doremi-map "f" 'doremi-face-fg+) ; Face"
+  (define-key doremi-map "h" 'doremi-frame-height+)
+  (define-key doremi-map "k" 'doremi-face-bg+) ; bacKground"
+  (define-key doremi-map "t" 'doremi-font+) ; "Typeface"
+  (define-key doremi-map "u" 'doremi-frame-configs+) ; "Undo"
+  (define-key doremi-map "x" 'doremi-frame-horizontally+)
+  (define-key doremi-map "y" 'doremi-frame-vertically+)
+  (define-key doremi-map "z" 'doremi-frame-font-size+)) ; "Zoom"
 (when (featurep 'doremi-cmd)
   (unless (fboundp 'doremi-prefix)
     (defalias 'doremi-prefix (make-sparse-keymap))
     (defvar doremi-map (symbol-function 'doremi-prefix)
       "Keymap for Do Re Mi commands."))
   (define-key global-map "\C-xt"  'doremi-prefix)
-  (define-key doremi-map "b" 'doremi-buffers)
-  (define-key doremi-map "g" 'doremi-global-marks)
-  (define-key doremi-map "m" 'doremi-marks)
-  (define-key doremi-map "r" 'doremi-bookmarks) ; `r' for reading books (?)
-  (define-key doremi-map "s" 'doremi-color-themes) ; `s' for schemes (color schemes)
-  (define-key doremi-map "w" 'doremi-window-height))
+  (define-key doremi-map "b" 'doremi-buffers+)
+  (define-key doremi-map "g" 'doremi-global-marks+)
+  (define-key doremi-map "m" 'doremi-marks+)
+  (define-key doremi-map "r" 'doremi-bookmarks+) ; `r' for Reading books
+  (define-key doremi-map "s" 'doremi-color-themes+) ; `s' for color Schemes
+  (define-key doremi-map "w" 'doremi-window-height+))
 
 (when (featurep 'frame-cmds)
   (unless (fboundp 'doremi-prefix)
@@ -512,7 +515,7 @@
   (global-set-key [(shift control ?n)]      'thumfr-fisheye-next-frame)
   (global-set-key [(shift control ?p)]      'thumfr-fisheye-previous-frame)
   (global-set-key [(control meta ?z)]       'thumfr-really-iconify-or-deiconify-frame)
-  (define-key global-map "\C-xte" 'thumfr-doremi-thumbnail-frames) ; `e' for eye (fisheye)
+  (define-key global-map "\C-xte" 'thumfr-doremi-thumbnail-frames+) ; `e' for eye (fisheye)
   ;; Make window-manager "minimize" button thumbify instead of iconify.
   ;; (define-key special-event-map [iconify-frame] 'thumfr-thumbify-frame-upon-event)
   )

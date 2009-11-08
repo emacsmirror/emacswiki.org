@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon Nov  2 12:33:37 2009 (-0700)
+;; Last-Updated: Sat Nov  7 15:02:29 2009 (-0700)
 ;;           By: dradams
-;;     Update #: 26026
+;;     Update #: 26028
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5757,9 +5757,9 @@
 ;;  (libraries `doremi.el' and `doremi-frm.el').  `C-x -' requires
 ;;  Emacs 23 or later.
 ;;
-;;    `C-x w'   - `icicle-doremi-candidate-width-factor'
-;;    `C-x |'   - `icicle-doremi-inter-candidates-min-spaces'
-;;    `C-x -'   - `icicle-doremi-zoom-Completions'
+;;    `C-x w'   - `icicle-doremi-candidate-width-factor+'
+;;    `C-x |'   - `icicle-doremi-inter-candidates-min-spaces+'
+;;    `C-x -'   - `icicle-doremi-zoom-Completions+'
 ;;
 ;;  When used in the minibuffer, the following Icicles global binding
 ;;  lets you remove the `*Completions*' window.

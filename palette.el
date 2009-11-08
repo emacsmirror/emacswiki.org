@@ -7,9 +7,9 @@
 ;; Copyright (C) 2006-2009, Drew Adams, all rights reserved.
 ;; Created: Sat May 20 07:56:06 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Aug  4 17:12:50 2009 (-0700)
+;; Last-Updated: Sat Nov  7 14:41:05 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 363 4
+;;     Update #: 386 4
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/palette.el
 ;; Keywords: color, rgb, hsv, hexadecimal, face, frame
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -90,6 +90,15 @@
 ;;  * Whenever you input a color name, you can use completion against
 ;;    the list of all recognized colors.  If you also use my library
 ;;    Icicles, then you can match any part(s) of the color name.
+;;
+;;  * Color names supported by your Emacs release and platform are
+;;    those returned by function `x-color-names'.  This often includes
+;;    names that are essentially the same, as duplicates,
+;;    e.g. "LightBlue" and "light blue".  By default, the Color
+;;    Palette canonicalizes these names by lowercasing them and
+;;    removing whitespace.  Then it removes duplicates.  This behavior
+;;    is governed by option `hexrgb-canonicalize-defined-colors-flag'.
+;;    Customize that option to nil if you need the original, names.
 ;;
 ;;  * You can at any time use an RGB hexadecimal color string in place
 ;;    of a recognized color name.  An RGB string has the form
@@ -320,6 +329,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2009/11/07 dadams
+;;     palette-pick-color-by-name, palette-pick-color-by-name-multi, palette,
+;;       palette-pick-by-name-action: Use function, not var, hexrgb-defined-colors.
 ;; 2009/08/04 dadams
 ;;     palette-mode-map: Added: palette-current-color (. and menu item).
 ;;     palette-background-at-point: Added Note to doc string.
@@ -416,10 +428,11 @@
 (eval-when-compile (require 'icicles nil t)) ;; icicle-define-command
 
 (require 'hexrgb) ;; hexrgb-approx-equal, hexrgb-blue, hexrgb-color-name-to-hex,
-                  ;; hexrgb-complement, hexrgb-defined-colors, hexrgb-defined-colors-alist,
-                  ;; hexrgb-green, hexrgb-hex-to-rgb, hexrgb-hex-to-hsv, hexrgb-hsv-to-hex,
-                  ;; hexrgb-hue, hexrgb-read-color, hexrgb-red, hexrgb-rgb-to-hex,
-                  ;; hexrgb-rgb-to-hsv, hexrgb-saturation, hexrgb-value
+                  ;; hexrgb-complement, hexrgb-defined-colors,
+                  ;; hexrgb-defined-colors-alist, hexrgb-green, hexrgb-hex-to-rgb,
+                  ;; hexrgb-hex-to-hsv, hexrgb-hsv-to-hex, hexrgb-hue, hexrgb-read-color,
+                  ;; hexrgb-red, hexrgb-rgb-to-hex, hexrgb-rgb-to-hsv, hexrgb-saturation,
+                  ;; hexrgb-value
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1184,9 +1197,10 @@ where each X is a hex digit.  The number of Xs must be a multiple of
 If you enter an empty color name, then a color is picked randomly.
 The new current color is returned."
   (interactive (list (hexrgb-read-color t t)))
-  (when (string= "" color) ; User doesn't care - why not use a random color?
-    (let ((rand  (random (length hexrgb-defined-colors))))
-      (setq color  (elt hexrgb-defined-colors rand))))
+  (when (string= "" color)              ; User doesn't care - why not use a random color?
+    (let* ((colors  (hexrgb-defined-colors))
+           (rand    (random (length colors))))
+      (setq color  (elt colors rand))))
   (setq palette-last-color  palette-current-color)
   (save-selected-window
     (setq color  (hexrgb-color-name-to-hex color)) ; Needed if not interactive.
@@ -1206,20 +1220,21 @@ If you enter an empty color name, then a color is picked randomly.
 The new current color is returned."     ; Doc string
     palette-pick-by-name-action         ; Action function
     "Color (name or #R+G+B+): "         ; `completing-read' arguments
-    hexrgb-defined-colors-alist nil nil nil nil nil nil
+    (hexrgb-defined-colors-alist) nil nil nil nil nil nil
     ((completion-ignore-case t))))
 
 (defun palette-pick-by-name-action (color)
   "Helper function for `palette-pick-color-by-name'.
 This is the action function, when `palette.el' is used with Icicles."
   (if (string= "" color)
-      (let ((rand  (random (length hexrgb-defined-colors))))
-        (setq color  (elt hexrgb-defined-colors rand))) ; Random color.
+      (let* ((colors  (hexrgb-defined-colors))
+             (rand    (random (length colors)))) ; Random color.
+        (setq color  (elt colors rand)))
     (let ((hex-string  (hexrgb-rgb-hex-string-p color t)))
       (when (and hex-string (not (eq 0 hex-string))) (setq color  (concat "#" color))) ; Add #.
       (if (not (or hex-string (if (fboundp 'test-completion) ; Not defined in Emacs 20.
-                                  (test-completion color hexrgb-defined-colors-alist)
-                                (try-completion color hexrgb-defined-colors-alist))))
+                                  (test-completion color (hexrgb-defined-colors-alist))
+                                (try-completion color (hexrgb-defined-colors-alist)))))
           (error "No such color: %S" color)
         (setq color  (hexrgb-color-name-to-hex color))))
     (setq palette-last-color  palette-current-color)
@@ -1606,9 +1621,10 @@ If you enter an empty color name, then a color is picked randomly.
 See `palette-mode' for more information."
   (interactive (list (hexrgb-read-color nil t)))
   (message "Loading palette...")
-  (when (string= "" color) ; User doesn't care - why not use a random color?
-    (let ((rand  (random (length hexrgb-defined-colors))))
-      (setq color  (elt hexrgb-defined-colors rand))))
+  (when (string= "" color)              ; User doesn't care - why not use a random color?
+    (let* ((colors  (hexrgb-defined-colors))
+           (rand    (random (length colors))))
+      (setq color  (elt colors rand))))
   (palette-set-current-color (hexrgb-color-name-to-hex color))
   (setq palette-old-color  palette-current-color)
   (unless palette-font (error "You must define `palette-font'.  `C-h v' for more information"))
@@ -1676,7 +1692,7 @@ See `palette-mode' for more information."
     (split-window (selected-window) 10 t)
     (palette-brightness-scale)
     (select-window (get-buffer-window "Palette (Hue x Saturation)" 'visible)))
-  (redisplay t)   ; Get rid of any header line from `tabbar-mode' etc.
+  (redisplay t)                         ; Get rid of any header line from `tabbar-mode' etc.
   (palette-color-message color)         ; Orig. name.
   palette-current-color)
 
