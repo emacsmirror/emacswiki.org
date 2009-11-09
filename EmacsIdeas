@@ -12,7 +12,7 @@ This is a page where people can put up emacs ideas. The gnu.emacs.* newsgroups m
 : 
 : But it's a tooltip and I'd like to use tooltips for supplying additional information about the current completion item. That's why I think a separate popup frame would be the perfect solution.
 : 
-: See this example: http://www.monodevelop.com/images/screenshots/macosx.jpg
+: See this example: http://monodevelop.com/Screenshots (!MonoDevelop Main Window, Integrated Debugger)
 : 
 : Has anyone done something similar?
 

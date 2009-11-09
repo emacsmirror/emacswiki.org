@@ -1,0 +1,46 @@
+[[es:EmacsLispReferencia]]
+'''El Manual de Referencia de Emacs Lisp''' (también conocido como el manual [::elisp] o [::lispref]), es documentación acerca del lenguaje empleado para extender Emacs, EmacsLisp.
+
+GnuEmacs tiene un EmacsManual, una EmacsLispIntro y un EmacsLispReference.  A partir de la versión 22 de Emacs, los tres manuales están incluidos en la distribución.
+
+XEmacs tiene un XEmacs User's Manual, un XEmacs Lisp Reference Manual, una introduction to XEmacs ("Getting Started With XEmacs"), una EmacsLisp introduction ("Programming in Emacs Lisp, an Introduction") y un XEmacs Internals Manual, distribuidos todos con XEmacs.
+
+La mejor vía es usar el manual desde dentro de Emacs.  Entonces el usuario podrá simplemente usar el menú de Ayuda o escribir <tt>C-h i</tt> para verlo, junto con el resto de documentación del sistema Info.  Si se está usando un Emacs que no viene con el Manual de Referencia de Emacs Lisp, éste habrá de descargarse.  Todos los manuales están disponibles en línea en varios formatos.
+
+Para GNU Emacs en español:
+
+* http://gnu.manticore.es/?q=node/167
+
+Para GNU Emacs en inglés:
+
+* http://www.gnu.org/manual/manual.html
+* http://www.gnu.org/software/emacs/elisp-manual/
+* Available in print from the GnuPress.
+
+Se puede enlazar a las entradas del índice en el manual empleando su prefijo.
+Las entradas de índice de comandos, variables y conceptos pueden enlazarse.
+Si las entradas contienen signos de puntuación o espacios en blanco, habrá
+que ponerlos entre corchetes dobles:
+
+* ##Manual:apropos## -> Manual:apropos
+* ##[[Manual:,@ (with Backquote)]]## -> [[Manual:,@ (with Backquote)]]
+
+El XEmacs Lisp Reference Manual y el resto de sus manuales están en:
+
+* http://www.xemacs.org/Documentation/
+* http://www.dk.xemacs.org/Documentation/
+
+==Cómo obtener el Manual en algunas distribuciones==
+===Debian GNU/Linux===
+Si no se puede ver una sección Elisp después de hacer M-x info  o si se obtiene 
+el error "Info file elisp does not exist", entonces será necesario:
+
+# Activar una sección *non-free* en /etc/apt/sources.list
+# Instalar el paquete *emacs22-common-non-dfsg* (o el apropiado para la versión de emacs que se esté usando)
+
+El manual tiene licencia GFDL con secciones invariantes, lo que nunca supuso
+un problema con las DFSG (Debian Free Software Guidelines) durante más de 10 años, 
+pero en 2006 decidieron cambiar esa percepción y lo declararon /no libre/.
+
+----
+CategoryDocumentation

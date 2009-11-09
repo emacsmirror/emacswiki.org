@@ -117,7 +117,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 3 $Rev: 222 $ of the Sunrise Commander.
+;; This is version 3 $Rev: 225 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.  I  have  also  received
@@ -921,18 +921,19 @@ automatically:
 
 (defun sr-lock-window (frame)
   "Resize the left Sunrise pane to have the \"right\" size."
-  (if (> window-min-height (- (frame-height) (window-height sr-left-window)))
-      (setq sr-windows-locked nil))
-  (if (and sr-running
-           sr-windows-locked
-           (not sr-ediff-on)
-           (not (equal sr-window-split-style 'vertical))
-           (window-live-p sr-left-window))
-      (save-selected-window
-        (select-window sr-left-window)
-        (let* ((my-style-factor (if (equal sr-window-split-style 'horizontal) 2 1))
-               (my-delta (- sr-panes-height (window-height))))
-          (enlarge-window my-delta)))))
+  (when sr-running
+    (if (> window-min-height (- (frame-height) (window-height sr-left-window)))
+        (setq sr-windows-locked nil))
+    (if (and sr-windows-locked
+             (not sr-ediff-on)
+             (not (equal sr-window-split-style 'vertical))
+             (window-live-p sr-left-window))
+        (save-selected-window
+          (select-window sr-left-window)
+          (let* ((my-style-factor
+                  (if (equal sr-window-split-style 'horizontal) 2 1))
+                 (my-delta (- sr-panes-height (window-height))))
+            (enlarge-window my-delta))))))
 
 ;; This keeps the size of the Sunrise panes constant:
 (add-hook 'window-size-change-functions 'sr-lock-window)
@@ -1209,15 +1210,19 @@ automatically:
     (sr-history-push default-directory)
     (sr-beginning-of-buffer)))
 
-(defun sr-dired-prev-subdir ()
-  "Go to the previous subdirectory."
-  (interactive)
-  (if (not (string= default-directory "/"))
-      (let ((here (sr-directory-name-proper (expand-file-name default-directory))))
-        (setq here (replace-regexp-in-string "#.*/?$" "" here))
-        (sr-goto-dir (expand-file-name "../"))
-        (sr-focus-filename here))
-    (error "ERROR: Already at root")))
+(defun sr-dired-prev-subdir (&optional count)
+  "Go to the parent directory, or [count] subdirectories upwards."
+  (interactive "P")
+  (unless (sr-equal-dirs default-directory "/")
+    (let* ((count (or count 1))
+           (to (replace-regexp-in-string "x" "../" (make-string count ?x)))
+           (from (expand-file-name (substring to 1)))
+           (from (sr-directory-name-proper from))
+           (from (replace-regexp-in-string "#.*/?$" "" from))
+           (to (replace-regexp-in-string "\\.\\./$" "" (expand-file-name to))))
+      (sr-goto-dir to)
+      (unless (sr-equal-dirs from to)
+        (sr-focus-filename from)))))
 
 (defun sr-follow-file (&optional target-path)
   "Go to the same directory where the selected file is. Very useful inside

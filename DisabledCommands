@@ -1,47 +1,45 @@
-To protect newbie users from lossage, some Emacs commands are disabled
-by default due to their potentially destructive nature.  When one tries
-to execute such a command, Emacs will ask you if you really want to do
-that and offer to un-disable it by putting a form like below in your
-InitFile.
+To protect newbie users from lossage, some Emacs commands are disabled by default due to their potentially destructive nature. When one tries to execute such a command, Emacs will ask you if you really want to do that and offer to un-disable it by putting a form like below in your <tt>[InitFile .emacs]</tt>:
 
- (put 'some-disabled-command 'disabled nil)
+    (put 'some-disabled-command 'disabled nil)
 
-To enable all disabled commands in one fell swoop, put this in your
-InitFile.  This is not recommended for newbies.
+To enable all disabled commands in one fell swoop, put this in ##.emacs## (not recommended for newbies):
 
- (setq disabled-command-hook nil)
+    (setq disabled-command-function nil)
+
+In older versions of Emacs, ##disabled-command-hook## is used in place of ##disabled-command-function##.
 
 Another way to deal with disabled commands is to automatically enable them on the fly.
 
-    ; We hook up the enable-me using setq instead of add-hook. Thats because the
-    ; add-hook would cause the original hook to come after enable-me. Instead we
-    ; want only enable-me to execute.
-    
-    ; Thanks to Roland McGrath.
-    
+    ;; We hook up the enable-me using setq instead of add-hook. That's because the
+    ;; add-hook would cause the original hook to come after enable-me. Instead we
+    ;; want only enable-me to execute.
+    ;;
+    ;; Thanks to Roland McGrath.
+
     (defun enable-me (&rest args)
-      "Called when a disabled command is executed. Enable it and reexecute it."
+      "Called when a disabled command is executed.
+    Enable it and reexecute it."
       (put this-command 'disabled nil)
       (message "You typed %s.  %s was disabled.  It ain't no more."
                (key-description (this-command-keys)) this-command)
       (sit-for 0)
       (call-interactively this-command))
-    
+
     (setq disabled-command-hook 'enable-me)
 
 Alternatively, if you want to be told which commands were disabled (which are therefore likely to be powerful and interesting), you can use this function:
 
- (defun enable-all-commands ()
-   "Enable all commands, reporting on which were disabled."
-   (interactive)
-   (with-output-to-temp-buffer "*Commands that were disabled*"
-    (mapatoms
-     (function
-      (lambda (symbol)
-        (when (get symbol 'disabled)
-	  (put symbol 'disabled nil)
-	  (prin1 symbol)
-	  (princ "\n")))))))
+    (defun enable-all-commands ()
+      "Enable all commands, reporting on which were disabled."
+      (interactive)
+      (with-output-to-temp-buffer "*Commands that were disabled*"
+        (mapatoms
+         (function
+          (lambda (symbol)
+            (when (get symbol 'disabled)
+              (put symbol 'disabled nil)
+              (prin1 symbol)
+              (princ "\n")))))))
 
 ----
 CategoryCommands

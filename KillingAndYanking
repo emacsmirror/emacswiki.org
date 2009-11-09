@@ -10,10 +10,10 @@ Yanking inserts the last killed item from the head of the list, but you can cycl
 
 `M-y' (`yank-pop') cycles backwards through the `kill-ring'. Here's a way to cycle in the reverse direction with `M-Y' (Meta-<i>Shift</i>-Y):
 
-    (defun yank-pop-backwards ()
-      (interactive)
-      (yank-pop -1))
-     
+    (defun yank-pop-backwards (arg)
+      (interactive "p")
+      (yank-pop (- arg)))
+
     (global-set-key "\M-Y" 'yank-pop-backwards) ; M-Y (Meta-Shift-Y)
 
 == Deleting word backwards ==
@@ -40,15 +40,21 @@ Could not agree more.  What if `transient-mark-mode' is not on?  This is a poor 
           (kill-region (region-beginning) (region-end))
         (backward-kill-word arg)))
 
+[new]
+I don't think this is a problem, since the advice is interactive. Thus it is not invoked in a regular function call.
+
+As it happens, the same principle is employed in SlickCopy, which copies the current line when the mark is inactive.
+
 -------------------
 
 See also:
+
 * EmacsNewbie
 * CategoryGlossary
 * [[Region]]
 * EmacsManual, chapter "Killing"
 * CopyAndPaste
-* Lisp:LRU-yank.el for a stacked based kill-ring manipulation package.  Think alt-tab for the kill-ring.
+* Lisp:LRU-yank.el for a stacked based kill-ring manipulation package. Think alt-tab for the kill-ring.
 
 ----
 

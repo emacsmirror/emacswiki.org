@@ -3,7 +3,7 @@ Kenichirou Oyama (Japan). [http://code.101000lab.org 101000code].
 * [[Cake]]
 * AnythingSources
 * Lisp:anything-etags.el (1.1.6 AnythingSources)
-* Lisp:ac-dabbrev.el (0.0.6 AutoCompleteSources)
+* Lisp:ac-dabbrev.el (0.0.7 AutoCompleteSources)
 * FuzzyFormat
 * DrillInstructor
 * Lisp:anything-c-shell-history.el (0.0.8 AnythingSources)
@@ -21,5 +21,6 @@ anything-etags.el is what I'm waiting for! Thank you! -- [[rubikitch]]
 
 ----
 CategoryHomepage
+
 
 

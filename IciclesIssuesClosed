@@ -56,6 +56,57 @@ Better yet, use this to separate threads (puts space before and after the horizo
 
 
 
+[new]
+When I use your icicles in emacs22, I get a message "Symbol's function definition is void: icicle-shell-command". -- [[ahei]]
+
+
+[new:DrewAdams:2009-11-06 18:46 UTC]
+Sorry, that doesn't help me enough. I don't see that problem in Emacs 22.1, 22.2, or 22.3. Perhaps something from your [[init file]] is interfering. 
+
+Please (always) provide a recipe to reproduce the problem, starting with ##emacs -Q##. It's probably easiest to correspond by email -- use `M-x icicle-send-bug-report'. -- DrewAdams
+
+[new]
+Oh, I'm sorry for that. I found the reason, kde-emacs is conflict icicles, I must load icicles before kde-emacs in emac22, otherwise will get that error message.
+and, MultiTerm is also conflict with icicles in emacs 22 and 23, must load icicles before multiterm, otherwise, when exit ediff, will get message "Lisp nesting exceeds `max-lisp-eval-depth'".  -- [[ahei]]
+
+[new:DrewAdams:2009-11-08 08:49 UTC]
+Could you maybe investigate a bit what the problem was? In general, '''Icicles''' does its best to not depend on the order of loading or on when ''Icicle'' mode is activated. But that can be tricky. It would be good to understand just what the problem was -- either to improve '''Icicles''' or to provide info to the maintainers of the other libraries, so they can fix things if appropriate.
+
+One thing you might try would be to use the load order that doesn't work correctly and then try to toggle `icy-mode' twice, to see if that fixes the problem. That might give us some info about it. 
+
+If you don't have the time to investigate, that's OK, but if you could, it would be helpful, either to '''Icicles''' or possibly to the other libraries. Anyway, I'm glad you found a workaround, and thanks for trying '''Icicles'''. -- DrewAdams
+
+[new]
+For those two problems I mentioned above, I all only load icicles (require 'icicles), not activate icicle mode.
+and for MultiTerm, you can reproduce the problem by using following instructions:
+<pre>
+emacs -Q
+(require 'multi-term)
+(require 'icicles)
+</pre>
+then you use ediff, you will get message "Lisp nesting exceeds `max-lisp-eval-depth'".
+multi-term advised command other-windows.
+and for kde-emacs, I'll investigte it, but I'm not familiar with elisp, :) -- [[ahei]]
+
+[new:DrewAdams:2009-11-08 15:27 UTC]
+OK, thanks. (Moved this to IciclesIssuesClosed.) -- DrewAdams
+
+[new:DrewAdams:2009-11-08 15:50 UTC]
+Actually, I don't see that error when I follow your instructions for MultiTerm. I did just what you said, but perhaps there is a missing step. I do see it, however, when I do `C-x 0'. The conflict is in fact with <tt>[[frame-cmds.el]]</tt>, not with '''Icicles'''. ('''Icicles''' soft-##require##s ##frame-cmds.el##, so it uses it if it is in your `load-path'.)
+
+As you suggested, the problem is that (1) ##multi-term.el## advises `other-window', and (2) ##frame-cmds.el## redefines `other-window'. Multi-term's advice finishes by calling an unadvised `other-window', and ##frame-cmds##'s redefinition finishes by calling the `other-window' definition that was in effect before it was loaded.
+
+If multi-term is loaded first, then its definition finishes by calling unadvised `other-window', which is the ##frame-cmds## redefinition, which finishes by calling the "original" definition, which was the advice... If ##frame-cmds## is loaded first, then the original `other-window' that it calls at the end is the original, unadvised `other-window', and ##multi-term##'s advice applies to the ##frame-cmds## definition.
+
+Function redefinition, which I tend to use more than advice, doesn't always play well with redefinition of the same function by another library, and it doesn't play well with advice. But advice has other problems (see AdviceVsHooks), so I often avoid it. I would probably use it more if it didn't complicate using the debugger.
+
+FWIW, the use of redefinition by '''Icicles''' itself should have no effect when ''Icicle'' mode is turned off -- '''Icicles''' is very clean in this respect. The same is not true of the redefinition in ##frame-cmds##, since there is no mode controlling its use.
+
+Anyway, I won't worry about this problem. But thanks for reporting it (and finding the workaround). -- DrewAdams
+
+
+[new]
+oh, great, you are right, I put frame-cmds.el in my load-path, after I remove it from load-path, ediff is work well when I load multi-term before load icicles.  -- [[ahei]]
 
 
 <pre>
