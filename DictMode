@@ -48,6 +48,12 @@ might be accustomed to:
 
 -- PhilJackson
 
+== Manuals ==
+The Texinfo source files and Info generated output, both for English and Spanish, are in http://gnu.manticore.es
+I added an Index (concepts, functions, variables, keys and programs) to the documentation.
+
+-- SuSo
+
 == Comments ==
 
 [new]

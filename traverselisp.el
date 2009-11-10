@@ -3,7 +3,7 @@
 ;; Copyright (C) 2008, 2009 Thierry Volpiatto
 ;; Author:     Thierry Volpiatto 
 ;; Maintainer: Thierry Volpiatto
-;; Keywords:   data
+;; Keywords:   data, regexp
 
 ;; X-URL: http://mercurial.intuxication.org/hg/traverselisp
 
@@ -25,32 +25,44 @@
 ;; Floor, Boston, MA 02110-1301, USA.
 
 ;;; Commentary:
+;;  ==========
 
 ;; Developped and tested on:
-;; GNU Emacs 23.0.91.1 (i686-pc-linux-gnu, GTK+ Version 2.14.7)
- 
+;; GNU Emacs 23.1.50.1 (i686-pc-linux-gnu, GTK+ Version 2.18.3) of 2009-11-07 on tux
+
+;; Compatibility: Emacs23.*
+;; =============
+
 ;; Install:
 ;; =======
-;; Put this file in your load-path
-;; And Byte-compile it.(If you don't do that you will have error)
+;;
+;; Put this file in your load-path And Byte-compile it.
+;; (If you don't do that you will have error as traverse
+;; use code that work only at compile time.)
+;;
 ;; Add to your .emacs:
 ;;
 ;; (require 'traverselisp)
 ;;
-;; Set up your prefered keys for dired and globals as usual
+;; Set up your prefered keys for dired and globals as usual.
 ;;
-;; Here is my config with version-1.16:
-;; ===================================
+;; Here is my config with version-1.1.31:
+;; =====================================
+;;
 ;; (require 'traverselisp)
 ;; (setq traverse-use-avfs t)
 ;; (global-set-key (kbd "<f5> f") 'traverse-deep-rfind)
-;; (global-set-key (kbd "<f5> u") 'traverse-build-tags-in-project)
-;; (global-set-key (kbd "C-c C-o") 'traverse-occur-current-buffer)
+;; (global-set-key (kbd "C-c o") 'traverse-incremental-occur)
 ;; (define-key dired-mode-map (kbd "A") 'traverse-dired-search-regexp-in-anything-at-point)
 ;; (define-key dired-mode-map (kbd "C-c C-z") 'traverse-dired-browse-archive)
 ;; (define-key dired-mode-map (kbd "C-c t") 'traverse-dired-find-in-all-files)
-;; (add-to-list 'traverse-ignore-files ".ledger-cache")
-
+;; (mapc #'(lambda (x)
+;;           (add-to-list 'traverse-ignore-files x))
+;;       '(".ledger-cache"  "ANYTHING-TAG-FILE"))
+;; (add-to-list 'traverse-ignore-dirs "emacs_backup")
+;; (global-set-key (kbd "C-c C-f") 'anything-traverse)
+;; (global-set-key (kbd "C-M-|") 'traverse-toggle-split-window-h-v)
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;  Traverse auto documentation
@@ -80,6 +92,8 @@
 ;; `traverse-count-files-in-dir'
 ;; `traverse-auto-update-documentation'
 ;; `traverse-auto-documentation-insert-header'
+;; `traverse-incremental-next-line'
+;; `traverse-incremental-precedent-line'
 ;; `traverse-incremental-jump-and-quit'
 ;; `traverse-incremental-scroll-down'
 ;; `traverse-incremental-scroll-up'
@@ -107,11 +121,14 @@
 ;; `traverse-list-files-in-tree'
 ;; `traverse-auto-document-lisp-buffer'
 ;; `traverse-goto-line'
+;; `traverse-incremental-forward-line'
 ;; `traverse-incremental-jump'
 ;; `traverse-incremental-scroll'
 ;; `traverse-incremental-read-search-input'
 ;; `traverse-incremental-filter-alist-by-regexp'
+;; `traverse-incremental-start-timer'
 ;; `traverse-incremental-cancel-search'
+;; `traverse-incremental-occur-color-current-line'
 
 ;;  * Macros defined here:
 ;; [EVAL] (traverse-auto-document-lisp-buffer :type 'macro :prefix "traverse")
@@ -133,6 +150,8 @@
 ;; `traverse-incremental-search-timer'
 ;; `traverse-incremental-quit-flag'
 ;; `traverse-incremental-current-buffer'
+;; `traverse-incremental-occur-overlay'
+;; `traverse-incremental-face'
 
 ;;  * Faces defined here:
 ;; [EVAL] (traverse-auto-document-lisp-buffer :type 'faces :prefix "traverse")
@@ -140,6 +159,7 @@
 ;; `traverse-regex-face'
 ;; `traverse-path-face'
 ;; `traverse-overlay-face'
+;; `traverse-incremental-overlay-face'
 
 ;;  * User variables defined here:
 ;; [EVAL] (traverse-auto-document-lisp-buffer :type 'user-variable :prefix "^traverse")
@@ -157,61 +177,61 @@
 
 ;; Usage:
 ;; =====
+;;
 ;; M-x `traverse-deep-rfind'
+;; That is the interactive recursive function of traverse.
+;; It will search for a regexp in all files of a directory
+;; tree and his subdirectories.
+;;
 ;; When searching is done and you are in traverse buffer
 ;; some interactive actions are provided for navigate
 ;; Use "C-h m" for more info while in traverse-buffer.
 ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Special commands:
-;; key             binding
-;; ---             -------
-
-;; ESC             Prefix Command
-;; N               traverse-go-forward
-;; P               traverse-go-backward
-;; q               traverse-quit
-;; <S-down>        traverse-scroll-down-other-window
-;; <S-up>          traverse-scroll-up-other-window
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 ;; You can also use traverse from DIRED:
 ;; M-x `traverse-dired-search-regexp-in-anything-at-point'
+;;
 ;; This function work on directory, files, (1)compressed files (AVFS)
 ;; and marked files:
-;; If you have marked files search will be performed on these files.
+;;
+;; If you have marked files search will be performed only on these files.
+;; (No recursion will be performed on marked directories, so don't mark directories.)
+;;
 ;; If no files are marked, traverse will search in element at point
 ;; with appropriate function.
+;;
 ;; However, you can use specialized functions, check this file to see all
 ;; the interactives functions.
 ;;
 ;; M-x `traverse-dired-find-in-all-files'
-;; Search in all regular files in the current dired buffer
+;; Search in all regular files in the current dired buffer (no recursion).
 ;;
 ;; M-x `traverse-occur-current-buffer'
-;; Just like occur but you can navigate and replace regexp.
+;; Just like occur but with traverse engine.
+;;
+;; M-x `traverse-incremental-occur'
+;; occur current buffer incrementally.(C-u to have thing-at-point as default prompt).
 ;;
 ;; M-x `traverse-dired-browse-archive'
 ;; This function use (1)AVFS to browse archive tar.gz, bz2 etc..
-;; Other functions are provided:
-;; `traverse-cp-or-mv-extfiles-in-dir'
-;; `traverse-build-tags-in-project'
 ;;
 ;; (1)NOTE: You have to install AVFS and enable fuse in your kernel if
 ;; you want to browse and search in archives.
-;; Please see the doc of your distrib.
-;; and the doc of AVFS
+;; Please see the doc of your DISTRIB and the doc of AVFS here:
 ;; http://sourceforge.net/projects/avf
-;; If you don't want to use AVFS in traverse, set `traverse-use-avfs'
-;; to nil (or do nothing because it's the default)
-;; 
-;; You can also use traverselisp.el in anything.el with the appropriate sources:
-;; http://www.emacswiki.org/emacs/AnythingSources
 ;;
-;; Contact:
+;; If you want to use AVFS in traverse, set `traverse-use-avfs' to non--nil.
+;;
+;; Traverse provide also diverses functions to use in your programs.
+;; (especially for recursion like `traverse-walk-directory'.)
+;;
+;; You will find also some functions to auto document list of functions,
+;; macros, commands, etc..., see headers above.
+;;
+;; Contact: thierry dot volpiatto hat gmail dot com
 ;; =======
-;; thierry dot volpiatto hat gmail dot com
+;;
 ;; You can get the developpement version of the file here with hg:
+;;
 ;; hg clone http://mercurial.intuxication.org/hg/traverselisp
 ;; For the current developpement branch:
 ;; hg update -C 1.1.0
@@ -225,7 +245,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Version:
-(defconst traverse-version "1.1.24")
+(defconst traverse-version "1.1.33")
 
 ;;; Code:
 
@@ -552,18 +572,18 @@ Each element of LIS is compared with the filename STR."
   (overlay-put traverse-occur-overlay
                'face traverse-match-overlay-face))
 
+
 (defun traverse-button-func (button)
   "The function called by buttons in traverse buffers."
   (let* ((list-line (split-string (thing-at-point 'line)))
-         (nline (nth 1 list-line))
-         (regex)
-         (fname (button-label (button-at (point)))))
+         (nline     (nth 1 list-line))
+         regex
+         (fname     (button-label (button-at (point)))))
     (save-excursion
       (goto-char (point-min))
       (when (re-search-forward "for ")
         (setq regex
-              (buffer-substring (point)
-                                (- (line-end-position) 1)))))
+              (buffer-substring (point) (- (line-end-position) 1)))))
     (save-excursion
       (setq fname (replace-regexp-in-string "\\[" "" fname))
       (setq fname (replace-regexp-in-string "\\]" "" fname))
@@ -571,7 +591,7 @@ Each element of LIS is compared with the filename STR."
           (switch-to-buffer-other-window (get-buffer fname))
           (find-file-other-window fname))
       (let ((line (string-to-number nline)))
-        (goto-char (point-min)) (forward-line (1- line)))
+        (traverse-goto-line line))
       (setq case-fold-search t)
       (beginning-of-line)
       (when (re-search-forward regex nil nil)
@@ -1111,6 +1131,10 @@ See headers of traverselisp.el for example."
     (define-key map [return] 'traverse-incremental-jump-and-quit)
     (define-key map [S-down] 'traverse-incremental-scroll-down)
     (define-key map [S-up] 'traverse-incremental-scroll-up)
+    (define-key map [down] 'traverse-incremental-next-line)
+    (define-key map [up] 'traverse-incremental-precedent-line)
+    (define-key map [?\C-n] 'traverse-incremental-next-line)
+    (define-key map [?\C-p] 'traverse-incremental-precedent-line)
     map)
   "Keymap used for traversedir commands.")
 
@@ -1127,20 +1151,42 @@ Special commands:
   :type  'integer)
 
 (defcustom traverse-incremental-search-prompt "Pattern: "
-  "*Prompt used for `traverse-incremental-occur-incremental'."
+  "*Prompt used for `traverse-incremental-occur'."
   :group 'traversedir
   :type  'string)
+
+(defcustom traverse-incremental-length-line 80
+  "*Length of the line dispalyed in traverse incremental buffer."
+  :group 'traversedir
+  :type 'integer)
 
 ;;; Internal variables
 (defvar traverse-incremental-search-pattern "")
 (defvar traverse-incremental-search-timer nil)
 (defvar traverse-incremental-quit-flag nil)
 (defvar traverse-incremental-current-buffer nil)
-
+(defvar traverse-incremental-occur-overlay nil)
 
 (defun traverse-goto-line (numline)
   "Non--interactive version of `goto-line.'"
   (goto-char (point-min)) (forward-line (1- numline)))
+
+(defun traverse-incremental-forward-line (n)
+  (let (pos)
+    (save-excursion
+      (forward-line n) (forward-line 0)
+      (when (looking-at "^ [0-9]+") (forward-line 0) (setq pos (point)))) 
+  (when pos (goto-char pos) (traverse-incremental-occur-color-current-line))))
+
+;;;###autoload
+(defun traverse-incremental-next-line ()
+  (interactive)
+  (traverse-incremental-forward-line 1))
+
+;;;###autoload
+(defun traverse-incremental-precedent-line ()
+  (interactive)
+  (traverse-incremental-forward-line -1))
 
 (defun traverse-incremental-jump ()
   "Jump to line in other buffer and put an overlay on it."
@@ -1154,6 +1200,7 @@ Special commands:
       (traverse-goto-line pos) (traverse-occur-color-current-line))))
       
 
+;;;###autoload
 (defun traverse-incremental-jump-and-quit ()
   "Jump to line in other buffer and quit search buffer."
   (interactive)
@@ -1165,87 +1212,148 @@ Special commands:
     
 (defun traverse-incremental-scroll (n)
   "Scroll other buffer and move overlay accordingly."
-  (forward-line n)
+  (traverse-incremental-forward-line n)
+  (traverse-incremental-occur-color-current-line)
   (when (traverse-incremental-jump)
     (other-window 1)))
 
+;;;###autoload
 (defun traverse-incremental-scroll-down ()
   "Scroll other buffer down."
   (interactive)
   (traverse-incremental-scroll 1))
 
+;;;###autoload
 (defun traverse-incremental-scroll-up ()
   "Scroll other buffer up."
   (interactive)
   (traverse-incremental-scroll -1))
 
-(defun traverse-incremental-read-search-input ()
+
+(defun traverse-incremental-read-search-input (initial-input)
   "Read each keyboard input and add it to `traverse-incremental-search-pattern'."
-  (setq traverse-incremental-search-pattern "")    ; Always reset pattern to empty string
-  (let ((prompt       (propertize traverse-incremental-search-prompt 'face '((:foreground "cyan"))))
-        (inhibit-quit t)
-        (tmp-list     ())
-        char)
+  (let* ((prompt       (propertize traverse-incremental-search-prompt 'face '((:foreground "cyan"))))
+         (inhibit-quit t)
+         (tmp-list     ())
+         char)
+    (unless (string= initial-input "")
+      (loop for char across initial-input
+         do (push (text-char-description char) tmp-list)))
+    (setq traverse-incremental-search-pattern initial-input)
     (catch 'break
       (while 1
         (catch 'continue
           (condition-case nil
-              (setq char (read-char (concat prompt traverse-incremental-search-pattern)))
+              (setq char (read-char (concat prompt traverse-incremental-search-pattern
+                                            "     [RET:exit, C-g:quit, C-z:Jump, C-n:next-line, C-p:prec-line]")))
             (error (throw 'break nil)))
           (case char
             ((or ?\e ?\r) (throw 'break nil))    ; RET or ESC break and exit code.
-            (?\d (pop tmp-list)         ; Delete last char of `traverse-incremental-search-pattern' with DEL
-                 (setq traverse-incremental-search-pattern (mapconcat 'identity (reverse tmp-list) ""))
-                 (throw 'continue nil))
-            (?\C-g (setq traverse-incremental-quit-flag t) (throw 'break nil))
+            (?\d ; Delete last char of `traverse-incremental-search-pattern' with DEL
+             (unless traverse-incremental-search-timer
+               (traverse-incremental-start-timer))
+             (pop tmp-list)         
+             (setq traverse-incremental-search-pattern (mapconcat 'identity (reverse tmp-list) ""))
+             (throw 'continue nil))
+            (?\C-g ; Quit and restore buffers.
+             (setq traverse-incremental-quit-flag t) (throw 'break nil))
+            (?\C-n ; Next line
+             (when traverse-incremental-search-timer
+               (traverse-incremental-cancel-search))
+             (traverse-incremental-next-line)
+             (traverse-incremental-occur-color-current-line)
+             (throw 'continue nil)) ; Is it needed?
+            (?\C-p ; precedent line
+             (when traverse-incremental-search-timer
+               (traverse-incremental-cancel-search))
+             (traverse-incremental-precedent-line)
+             (traverse-incremental-occur-color-current-line)
+             (throw 'continue nil)) ; Is it needed?
+            (?\C-z ; persistent action
+             (traverse-incremental-jump) (other-window 1))
             (t
+             (unless traverse-incremental-search-timer
+               (traverse-incremental-start-timer))
              (push (text-char-description char) tmp-list)
              (setq traverse-incremental-search-pattern (mapconcat 'identity (reverse tmp-list) ""))
              (throw 'continue nil))))))))
-
 
 
 (defun traverse-incremental-filter-alist-by-regexp (regexp buffer-name)
   "Print all lines matching REGEXP to buffer BUFFER-NAME."
   (let ((title (propertize "Traverse Incremental occur" 'face '((:background "Dodgerblue4")))))
     (if (string= regexp "")
-        (progn (erase-buffer) (insert (concat title "\n\n") (traverse-incremental-mode)))
+        (progn (erase-buffer) (insert (concat title "\n\n")))
         (erase-buffer) (insert (concat title "\n\n"))
-        (traverse-buffer-process-ext regexp buffer-name) (goto-char (point-min)) (forward-line 2))))
+        (traverse-buffer-process-ext regexp buffer-name :lline traverse-incremental-length-line)
+        (goto-char (point-min)) (forward-line 2)
+        (traverse-incremental-occur-color-current-line))))
+        
 
-          
+(defun traverse-incremental-start-timer ()
+  (setq traverse-incremental-search-timer
+        (run-with-idle-timer
+         traverse-incremental-search-delay 'repeat
+         #'(lambda ()
+             (traverse-incremental-filter-alist-by-regexp
+              traverse-incremental-search-pattern
+              traverse-incremental-current-buffer)))))
+
 ;;;###autoload
-(defun traverse-incremental-occur ()
+(defun traverse-incremental-occur (&optional initial-input)
   "Incremental search of lines in current buffer matching `traverse-incremental-search-pattern'."
-  (interactive)
-    (lexical-let ((buf (buffer-name (current-buffer))))
-      (setq traverse-incremental-current-buffer buf)
-      (with-current-buffer traverse-incremental-current-buffer
-        (jit-lock-fontify-now))
-      (pop-to-buffer (get-buffer-create "*traverse search*"))
-      (unwind-protect
-           (progn
-             (setq traverse-incremental-search-timer
-                   (run-with-idle-timer
-                    traverse-incremental-search-delay 'repeat
-                    #'(lambda ()
-                        (traverse-incremental-filter-alist-by-regexp traverse-incremental-search-pattern buf))))
-             (traverse-incremental-read-search-input))
-        (progn
-          (traverse-incremental-cancel-search)
-          (when (equal (buffer-substring (point-at-bol) (point-at-eol)) "")
-            (setq traverse-incremental-quit-flag t))
-          (if traverse-incremental-quit-flag
-              (progn
-                (kill-buffer "*traverse search*") (switch-to-buffer buf)
-                (delete-other-windows))
-              (traverse-incremental-jump) (other-window 1))
-          (setq traverse-incremental-quit-flag nil)))))
+  (interactive "P")
+  (setq traverse-incremental-current-buffer (buffer-name (current-buffer)))
+  (with-current-buffer traverse-incremental-current-buffer
+    (jit-lock-fontify-now))
+  (let* ((init-str (if initial-input (thing-at-point 'symbol) ""))
+         (len      (length init-str))
+         str-no-prop)
+    (set-text-properties 0 len nil init-str)
+    (setq str-no-prop init-str)
+    (pop-to-buffer (get-buffer-create "*traverse search*"))
+    (traverse-incremental-mode)
+    (unwind-protect
+         (progn
+           (traverse-incremental-start-timer)
+           (traverse-incremental-read-search-input str-no-prop))
+      (progn
+        (traverse-incremental-cancel-search)
+        (when (equal (buffer-substring (point-at-bol) (point-at-eol)) "")
+          (setq traverse-incremental-quit-flag t))
+        (if traverse-incremental-quit-flag
+            (progn
+              (kill-buffer "*traverse search*")
+              (switch-to-buffer traverse-incremental-current-buffer)
+              (when traverse-occur-overlay
+                (delete-overlay traverse-occur-overlay))
+              (delete-other-windows))
+            (traverse-incremental-jump) (other-window 1))
+        (setq traverse-incremental-quit-flag nil)))))
 
 (defun traverse-incremental-cancel-search ()
   "Cancel timer used for traverse incremental searching."
-  (cancel-timer traverse-incremental-search-timer)
-  (setq traverse-incremental-search-timer nil))
+  (when traverse-incremental-search-timer
+    (cancel-timer traverse-incremental-search-timer)
+    (setq traverse-incremental-search-timer nil)))
+
+(defface traverse-incremental-overlay-face '((t (:background "Green4" :underline t)))
+  "Face for highlight line in matched buffer."
+  :group 'traverse-faces)
+
+(defvar traverse-incremental-face 'traverse-incremental-overlay-face)
+
+;; TODO Make one generic overlay function for all traverse.
+(defun traverse-incremental-occur-color-current-line ()
+  "Highlight and underline current position."
+  (if (not traverse-incremental-occur-overlay)
+      (setq traverse-incremental-occur-overlay
+            (make-overlay
+             (line-beginning-position) (1+ (line-end-position))))
+      (move-overlay traverse-incremental-occur-overlay
+                    (line-beginning-position) (1+ (line-end-position))))
+  (overlay-put traverse-incremental-occur-overlay
+               'face traverse-incremental-face))
 
 ;; Provide
 (provide 'traverselisp)

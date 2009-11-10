@@ -3,11 +3,12 @@
 Rudel is a [CollaborativeEditing collaborative editing] environment for GNU Emacs. It
 supports multiple backends to enable communication with other
 collaborative editors using different protocols (most notably
-[http://gobby.0x539.de/trac/ Gobby]).
+[http://gobby.0x539.de/trac/ Gobby] and possibly 
+[http://www.codingmonkeys.de/subethaedit/ SubEthaEdit]).
 
 Rudel mostly works in the background to change the behavior of the set
 of Emacs buffers for which it has been activated. These do not even
-have to have a certain minor mode enabled.
+have to have a certain [MinorMode minor mode] enabled.
 
 The user interface of Rudel consists of a set of key bindings, a menu
 entry and some visual status indicators, which are added to the text
@@ -39,6 +40,10 @@ or
 svn co https://rudel.svn.sourceforge.net/svnroot/rudel/trunk rudel
 }}}
 
+
+== Installation ==
+
+[new]
 If you are using Emacs from trunk (as of October 2009), CEDET is
 included and doesn't need to be installed separately. Using Rudel from
 trunk will be much easier to install.
@@ -65,10 +70,10 @@ uncooperativeness), so here's some help:
   (global-rudel-minor-mode))
 </pre>
 
-Autoloads and byte-compilation don't work for me due to a strange cedet dependency problem, but this should get you in a working state.
+Autoloads and byte-compilation don't work for me due to a strange cedet 
+dependency problem, but this should get you in a working state.
 
-== Installation ==
-
+[new]
 /This section is a verbatim copy of the INSTALL file./
 
 === Requirements ===
@@ -129,29 +134,13 @@ permanently by executing
 
 in your .emacs file.
 
-=== Compiling ===
-
-In order to achieve better performance, Emacs can byte-compiled the
-Rudel code. This can be done by executing
-
-{{{
-make rudel obby jupiter
-}}}
-
-or just (which will also generate auto loading information)
-
-{{{
-make
-}}}
-
-in the `rudel' directory (or equivalent) mentioned above.
-
 == Development ==
 
 If you would like to contribute to Rudel by submitting patches or
 reporting bugs, use Feedback section below,
 [http://sourceforge.net/mail/?group_id=249139 the mailing list] or
 [http://sourceforge.net/tracker/?group_id=249139 the issue tracker].
+You can also try #rudel on freenode. 
 
 For long term contributions, becoming a member of the Sourceforge
 project is more appropriate.

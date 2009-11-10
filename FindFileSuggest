@@ -2,9 +2,13 @@ This is a very simple Emacs Lisp extension, intended to work as a 'find-file' al
 
 I also added 'ffs-grep', a function that performs a basic grep on the indexed files, using the same interface. It must be stated that this is a very crude and not terribly efficient function that is in no way meant to replace the real grep, as it simply tries to 'match-string' your query against the set of indexed files, no more. If the index does not contain too many files however this can be an acceptable and quick way to check for the occurrence of a certain string, and visit the retrieved files, using the same mechanism.
 
-*Update*: I modified the file index so that it's actually an associative list linking the files to the number of times that they've been visited. The list of matching files for a query can then be sorted in decreasing order of this value, thus making the ones that are used the most often percolate to the top.
+*Update 2009-10-16*: I modified the file index so that it's actually an associative list linking the files to the number of times that they've been visited. The list of matching files for a query can then be sorted in decreasing order of this value, thus making the ones that are used the most often percolate to the top.
+
+*Update 2009-11-09*: I added support for multiple file indexes, as well as a simpler mechanism for creating/refreshing them (and some minor bug fixes).
 
 You can get it from http://find-file-suggest.googlecode.com
 
 [new]
 Somewhat similar package: [[PushyCompletion]]
+
+

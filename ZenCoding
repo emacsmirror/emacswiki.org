@@ -213,3 +213,7 @@ I received them but didn't check my mail last night! Thanks for the changes but 
 
 [new]
 I'd like to remove the Haskell sections and possibly the resulting irrelevant discussion. Is that a faux pas or can I do that?
+
+[new]
+Please use the CSS syntax for properties/attribute selectors. I think this would also provide support for shorthand boolean attributes, e.g. "<video controls></video>". Currently I have to write such attributes as "video controls="
+— lazni

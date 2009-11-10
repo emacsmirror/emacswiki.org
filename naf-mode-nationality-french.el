@@ -1,4 +1,3 @@
-[[de:english]]
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; -*- mode: EMACS-LISP; -*-
 ;;; this is naf-mode-nationality-french.el

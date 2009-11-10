@@ -61,6 +61,10 @@ Unfortunately, there doesn't exist a built-in feature set to decide which SMTP s
 
  (add-hook 'message-send-hook 'change-smtp)
 
+--- Volkan YAZICI
+
+----
+
 This version is a bit simpler than the above because it only has two SMTP accounts and no SSL. --tzz
 
  (defun tzz-change-smtp ()

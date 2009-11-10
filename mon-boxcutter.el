@@ -5,7 +5,34 @@
 ;;; DESCRIPTION:
 ;;; For w32 screencaptures from emacs using Matthew D. Rasmussen's Boxcutter
 ;;; screen-capture program executables: boxcutter-fs.exe and boxcutter.exe
-;;; :NOTE this is a work in progress. Posting so i don't forget :)
+;;; :SEE below.
+;;;
+;;; mon-boxcutter.el provides features such as:
+;;;
+;;; * setting an arbitrary crop as X1,Y1,X2,Y2;
+;;; * capturing a specific window (w/ option for either inside/outside borders);
+;;; * capturing a specific frame;
+;;; * capturing fullscreen;
+;;; * capturing windows of external apps.
+;;;
+;;; My goal w/ boxcutter was to allow me to invoke an interactive Emacs command
+;;; to capture the windows of _other_ apps and the ability to specify
+;;; introspective captures of Emacs objects was an after thought. The primary
+;;; target was firefox - e.g. screen scraping -> OCR of content trapped in
+;;; images :)
+;;;
+;;; However, firefox windows needn't be the only target of capture. One might
+;;; just as easily capture a portion of a zoomed image.
+;;;
+;;; There is a pkg screenshot.el which also supports
+;;; screen-captures. Sreenshot.el was entirely w32 agnostic when I began
+;;; developing mon-boxcutter this was a primary motivation.
+;;;
+;;; boxcutter.exe is one of the few (perhaps only) screenshot utility that can
+;;; be called from the command line AND has a compatible license LGPL. This is
+;;; important, esp. on w32. Many w32 graphics apps lack FOSS licensing...
+;;;
+;;; :NOTE mon-boxcutter is a work in progress. Posting so I don't forget :)
 ;;;
 ;;; FUNCTIONS:►►►
 ;;; `boxcutter-gen-tstamp'
@@ -16,7 +43,6 @@
 ;;; `boxcutter-get-win-coords'
 ;;; `boxcutter-get-frame-coords'
 ;;; `boxcutter-capture'
-;;;
 ;;; FUNCTIONS:◄◄◄
 ;;;
 ;;; MACROS:
@@ -114,14 +140,14 @@
 ;;; to NTFS. It is suggested you rename the IM convert command to
 ;;; "imconvert.exe" to distinguish the two commands. You can't rename the system
 ;;; command, as a windows service pack would just restore it, ignoring the
-;;; renamed version. see additional discussion here:
-;;;
+;;; renamed version. :SEE additional discussion here:
 ;;; (URL `http://www.imagemagick.org/Usage/windows/index.html')
 ;;;
 ;;; !!!You've now been warned three times!!! :)
 ;;;
 ;;; (require 'cl)
 ;;; (require 'thumbs)  ;MAYBE
+;;; (reuquire 'mon-utils) ;Uses various procedures from that package.
 ;;;
 ;;; THIRD PARTY CODE:
 ;;; boxcutter executables
@@ -167,6 +193,11 @@
 ;;; ==============================
 ;;; CODE:
 
+;;; :NOTE mon-boxcutter.el utilizes procedures from :FILE mon-utils.el
+(unless (featurep 'mon-utils)
+  (eval-when-compile (require 'mon-utils)))
+;;
+(eval-when-compile (require 'cl))
 ;;
 (require 'thumbs)
       

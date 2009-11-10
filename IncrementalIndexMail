@@ -1,0 +1,197 @@
+All available mail indexing solutions generally operate on static data. (See IndexMail.) Here is yet another hack I used to utilize swish-e (actually Namazu, etc. might be used as well) for incremental mail indexing in gnus.
+
+== Setting up Swish-e and nnir ==
+
+We will use nnir.el backend by KaiGrossjohann. Copy below lines into your ##.gnus.el## file.
+
+    (require 'nnir)
+    (setq nnir-search-engine 'swish-e)
+
+== Generic Utility Scripts ==
+
+We will implement utility shell scripts to index, search and merge available indexed data.
+
+    ~$ mkdir -p ~/.swish-e/{bin,mail}
+
+Create ##~/.swish-e/bin/index.sh## as below.
+
+    #!/bin/sh
+    
+    set -e
+    
+    SWISH_DIR="${0%/*}"
+    INDEX_DIR="$SWISH_DIR/idx"
+    TIME_FILE="$SWISH_DIR/time"
+    CONF_FILE="$SWISH_DIR/config"
+    ARGS_FILE="$SWISH_DIR/args"
+    CURR_TIME="`date +%Y%m%d%H%M%S`"
+    
+    [ -e "$INDEX_DIR" ] || mkdir "$INDEX_DIR"
+    [ -e "$CONF_FILE" ] || touch "$CONF_FILE"
+    [ -e "$ARGS_FILE" ] || ( echo "Arguments file ($ARGS_FILE) is missing!"; exit 1; )
+    
+    if [ -e "$TIME_FILE" ]
+    then
+        touch "$TIME_FILE.$CURR_TIME"
+        swish-e -c "$CONF_FILE" -f "$INDEX_DIR/$CURR_TIME" -N "$TIME_FILE" $(<"$ARGS_FILE")
+        mv "$TIME_FILE.$CURR_TIME" "$TIME_FILE"
+    else
+        touch "$TIME_FILE"
+        swish-e -c "$CONF_FILE" -f "$INDEX_DIR/$CURR_TIME" $(<"$ARGS_FILE")
+    fi
+
+And here is ##~/.swish-e/bin/search.sh## script.
+
+    #!/bin/sh
+    
+    set -e
+    
+    SWISH_DIR="${0%/*}"
+    INDEX_DIR="$SWISH_DIR/idx"
+    
+    if [ ${#@} -lt 1 ]
+    then
+        echo "Usage: $0 <WORD> [<WORD> ...]"
+        exit 1
+    fi
+    
+    swish-e $(find "$INDEX_DIR" -type f -not -name '*.*' | while read IDX; do echo -n "-f $IDX "; done) -w $@
+
+The last script file ##~/.swish-e/bin/merge.sh## goes as below.
+
+    #!/bin/sh
+    
+    set -e
+    set -x
+    
+    SWISH_DIR="${0%/*}"
+    INDEX_DIR="$SWISH_DIR/idx"
+    CURR_TIME="`date +%Y%m%d%H%M%S`"
+    
+    if [ $(find "$INDEX_DIR" -type f -not -name '*.*' | wc -l) -gt 1 ]
+    then
+        INDEXES=$(find "$INDEX_DIR" -type f -not -name '*.*')
+        INDEXES_WITH_PROPS=$(find "$INDEX_DIR" -type f)
+        swish-e -M $INDEXES "$INDEX_DIR/$CURR_TIME"
+        rm $INDEXES_WITH_PROPS
+    fi
+
+== Deploying Utility Scripts for Mail Indexing ==
+
+First we will start with creating symbolic links to ##index.sh##, ##search.sh##, and ##merge.sh##. (These files operate by looking at the directory they are executed in.)
+
+    ~$ cd ~/.swish-e/mail
+    ~/.swish-e/mail$ ln -s ~/.swish-e/bin/{index,search,merge}.sh .
+
+After that we will need to set configuration and command line options for swish-e.
+
+    ~/.swish-e/mail$ cat >config <<EOF
+    FileRules filename contains /^active$/
+    FileRules filename contains /^Incoming/
+    FileRules filename contains /^\./
+    EOF
+
+    ~/.swish-e/mail$ echo "-i /home/vy/Mail -v 2" >args
+
+Pay attention that ##args## file requires a full path. (To be honest, this problem can be tackled with some messy ad-hoc shell scripting hacks, but anyway...)
+
+== Altering Available nnir Functions ==
+
+Now we will need to alter available nnir functions to work with utility scripts we just created. First, we will start with altering ##nnir-run-swish-e## function. Copy below lines into your ##.gnus.el## file.
+
+    (defun nnir-run-swish-e (query &optional group)
+      "Run given query against swish-e.
+    Returns a vector of (group name, file name) pairs (also vectors,
+    actually).
+    
+    Tested with swish-e-2.0.1 on Windows NT 4.0."
+      ;; swish-e crashes with empty parameter to "-w" on commandline...
+      (when group
+        (error "The swish-e backend cannot search specific groups."))
+      (save-excursion
+        (let ((qstring (cdr (assq 'query query)))
+              (artlist nil)
+              (score nil) (artno nil) (dirnam nil) (group nil) )
+          (when (equal "" qstring)
+            (error "swish-e: You didn't enter anything."))
+          (set-buffer (get-buffer-create nnir-tmp-buffer))
+          (erase-buffer)
+          (message "Doing swish-e query %s..." query)
+          (let* ((cp-list `(,(expand-file-name "~/.swish-e/mail/search.sh")
+    ;                       ,nnir-swish-e-program
+                            nil            ; input from /dev/null
+                            t              ; output
+                            nil            ; don't redisplay
+    ;                        "-f" ,nnir-swish-e-index-file
+    ;                        ,@nnir-swish-e-additional-switches
+    ;                        "-w"
+                            ,qstring       ; the query, in swish-e format
+                            ))
+                 (exitstatus
+                  (progn
+                    (message "%s args: %s" nnir-swish-e-program
+                             (mapconcat 'identity (cddddr cp-list) " "))
+                    (apply 'call-process cp-list))))
+            (unless (or (null exitstatus)
+                        (zerop exitstatus))
+              (nnheader-report 'nnir "Couldn't run swish-e: %s" exitstatus)
+              ;; swish-e failure reason is in this buffer, show it if
+              ;; the user wants it.
+              (when (> gnus-verbose 6)
+                (display-buffer nnir-tmp-buffer))))
+          ;; The results are output in the format of:
+          ;; rank path-name file-title file-size
+          (goto-char (point-min))
+          (while (re-search-forward
+                  "\\(^[0-9]+\\) \\([^ ]+\\) \"\\([^\"]+\\)\" [0-9]+$" nil t)
+            (setq score (match-string 1)
+                  artno (match-string 3)
+                  dirnam (file-name-directory (match-string 2)))
+            ;; don't match directories
+            (when (string-match "^[0-9]+$" artno)
+              (when (not (null dirnam))
+                ;; remove nnir-swish-e-remove-prefix from beginning of dirname
+                (when (string-match (concat "^" nnir-swish-e-remove-prefix)
+                                    dirnam)
+                  (setq dirnam (replace-match "" t t dirnam)))
+                (setq dirnam (substring dirnam 0 -1))
+                ;; eliminate all ".", "/", "\" from beginning. Always matches.
+                (string-match "^[./\\]*\\(.*\\)$" dirnam)
+                ;; "/" -> "."
+                (setq group (substitute ?. ?/ (match-string 1 dirnam)))
+                ;; Windows "\\" -> "."
+                (setq group (substitute ?. ?\\ group))
+                (push (vector group
+                              (string-to-int artno)
+                              (string-to-int score))
+                      artlist))))
+          (message "Massaging swish-e output...done")
+          ;; Sort by score
+          (apply 'vector
+                 (sort* artlist
+                        (function (lambda (x y)
+                                    (> (nnir-artitem-rsv x)
+                                       (nnir-artitem-rsv y)))))))))
+
+After that, we will make gnus to issue a re-indexing after receiving news. (In your first run, ofcourse this will take some time. But in subsequent calls, it will probably end in a second.)
+
+    (defun nnir-index-swish-e ()
+      (call-process (expand-file-name "~/.swish-e/mail/index.sh")))
+    
+    (add-to-list 'gnus-after-getting-new-news-hook 'nnir-index-swish-e)
+
+== Index Maintenance ==
+
+After some time, ##~/.swish-e/mail/idx## will be filled with incremental indexes. To solve this problem, we will periodically merge available available indexes. I do this via cron at my lunch hours. (You can also try hooking this into gnus exit or start up.)
+
+    ~$ crontab -l
+    # m h  dom mon dow   command
+    0 12   * * *   ~/.swish-e/mail/merge.sh
+
+Also note that, while ##merge.sh## is running, ##index.sh## and ##search.sh## mustn't be used.
+
+== Summarization ==
+
+In the groups buffer, ##G G## will call ##~/.swish-e/mail/search.sh## to issue a search in indexed messages. After receiving new mails (via ##g## or some other way) ##~/.swish-e/mail/index.sh## will be called to index freshly retrived messages. And as a last step, we will periodically merge available indexes collected under ##~/.swish-e/mail/idx## directory.
+
+--- Volkan YAZICI

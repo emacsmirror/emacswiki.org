@@ -74,6 +74,8 @@ Then merge the two indexes with
 
 This can lead to missed files if new files got added <u>while</u> index.swish was getting created (if it took a while to run). Look into documentation of swish-e on ways to avoid that.
 
+For an automatized ad-hoc incremental indexing solution using shell scripts, see IncrementalIndexMail.
+
 == Problems ==
 
 I have encountered big problems using swish++ search tools when trying to index my mails. It was working for hours without results so I am harmly recommending you not to use this tool if your are a DebianUser.

@@ -113,7 +113,7 @@ Above manual configurations didn't work for me. (Using GNU Emacs 22.2.1 (i486-pc
 
 *Feeding Spams into Bogofilter:* I marked some 300-500 spams I previously received via ##S x## to train bogofilter.
 
-*Feeding Hams into Bogofilter:* In the last step, I feed some ham messages to bogofilter using mail groups that don't have any spams. ([http://www.bogofilter.org/pipermail/bogofilter/2009-November/009731.html You _must_ train bogofilter with both spams and hams], otherwise it always returns 0.52 (/not-sure/ value) for any message you give it to test.
+*Feeding Hams into Bogofilter:* In the last step, I feed some ham messages to bogofilter using mail groups that don't have any spams. ([http://www.bogofilter.org/pipermail/bogofilter/2009-November/009731.html You must train bogofilter with both spams and hams], otherwise it always returns 0.52 (/not-sure/ value) for any message you give it to test.
 
     find ~/Mail/gmail -not -name '.*' | while read FILE; do bogofilter -n <"$FILE"; done
 

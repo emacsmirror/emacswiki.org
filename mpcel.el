@@ -1,10 +1,11 @@
 ;;; mpcel.el --- A mpd (Music Player Daemon) client
 
-;; Copyright (C)  2006  Jean-Baptiste Bourgoin <monsieur.camille@gmail.com>
+;; Copyleft (C)  2006-2009  Jean-Baptiste Bourgoin <monsieur.camille@gmail.com>
+;; GPLv3
 
 ;; Author: Jean-Baptiste Bourgoin <monsieur.camille@gmail.com>
 ;; Maintainer: Jean-Baptiste Bourgoin <monsieur.camille@gmail.com>
-;; Version: 1.1
+;; Version: 1.2
 ;; Keywords: music
 
 ;; This file is not part of GNU Emacs.
@@ -55,8 +56,12 @@
 ;; Kim F. Storm : who give me a lot of advice about LISP code 
 ;;                (defcustom ; call-process ; eq ...). He's the source of
 ;;                almost all the differences between v1.0 & v1.1
+;;
+;; Rene Borchers : the author of the mpcel-playlist-load function
+;;
 ;; Richard M. Stallman & Erwin David : who pointed out to me
 ;;                that my old project description was rather laconic.
+;;
 ;; John Sullivan : who pointed out to me that the adress of the FSF
 ;;                has changed ;)
 
@@ -173,6 +178,16 @@
 
 ;; Playlist control :
 
+;; load playlist -- THANKS TO RENE BORCHERS !
+
+(defun mpcel-playlist-load (playlist)
+ "mpcel : Loads playlist"
+ (interactive "MPlaylist name: ")
+ (if (eq 0 (call-process mpcel-mpc-program nil nil nil "load" playlist))
+     (message "Playlist %s loaded" playlist)
+  (message "Playlist %s not found" playlist))
+)
+
 ;; prints the playlist :
 (defun mpcel-playlist-print ()
   "Prins entire mpd's playlist"
@@ -234,5 +249,5 @@
 	       (shell-command-to-string "mpc status | head -1"))
     (message "no song is playing")))
 
-(provide 'mpcel)
+
 ;;; mpcel.el ends here

@@ -25,7 +25,7 @@ There are *many* different ways to find the files you want to open in Emacs. Her
 * EmacsClient, GnuClient -- open files from outside of Emacs (or even inside), without starting a new, separate Emacs session
 * [[Anything]] -- open anything
 * [[Gpicker]] – quickly pick a file in project by typing just few characters of it’s name
-* [[FindFileSuggest]] – create a file index under a certain directory, and then navigate it using a convenient autocompletion interface
+* [[FindFileSuggest]] – create file indexes under certain directories, and navigate them using a convenient autocompletion interface
 
 ----
 CategoryFiles

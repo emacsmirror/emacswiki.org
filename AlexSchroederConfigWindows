@@ -482,11 +482,11 @@ using `sql-replacments'."
       rcirc-keywords '("ken" "kens" "kensa")
       rcirc-server-alist
       '(("irc.freenode.net" :channels ("#rcirc" "#wiki" "#oddmuse" "#epfarms"
-	 "#emacs" "#sql" "#hcoop" "#scrum"))
+	 "#emacs" "#sql" "#hcoop" "#scrum" "#eclipse" "#eclipse-de" "#osgi"))
 	("irc.perl.org" :channels ("#perlde"))
-	("trondheim.no.eu.undernet.org" :channels ("#drsrm")))
-      ;; "#scheme" "#nethack" "#atom" "#microformats" "#barcamp" "#emacs-fu"
-      ;; "#haskell" "#openfire" "##jabber" "#tentacle"
+	("ircnet.eversible.com" :channels ("#drsrm")))
+      ;; "#scheme" "#nethack" "#atom" "#microformats" "#barcamp"
+      ;; "#emacs-fu" "#haskell" "#openfire" "##jabber" "#tentacle"
       rcirc-decode-coding-system 'undecided
       rcirc-ignore-list '()
       rcirc-authinfo (let ((file "~/.rcirc-authinfo"))
