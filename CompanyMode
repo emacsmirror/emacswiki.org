@@ -123,6 +123,8 @@ Why don't you add an other option to suppress preview visualization? I don't thi
 [new]
 Again, because of the way company is build that would mean throwing the standardized visualization interface overboard, or significantly amending it.  It's just not trivially done.  I have some ideas for this, but it'll have to wait.
 
+[new]
+Would it be possible to make the down-case feature of dabbrev backend customizable as it is counter intuitive for example in shell-mode where it completes in lowercase all environment variables ?
 
 ----
 

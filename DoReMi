@@ -785,8 +785,41 @@ Note: I renamed the commands that iterate, by appending a `##+##', so it's easie
 
 I also improved a few other things at the same time. Thanks for your suggestions. Hope the improvements help. -- DrewAdams
 
+[new]
+Thanks for you doremi.
+
+1. 
+increment all of the R,G,B components (or all of the H, S, V components) together, 
+that mean: select color use doremi like move point on color palette ground, from point to another point, iterate
+all color point on color palette ground.Your implemented is not my want, but I think that is also a good way to select
+color.I can not describe my meaning use my poor english clearly, you only use your wisdom to understand my meaning, :)
+
+2.
+C-g dose not work in doremi-bg-color-name+ and doremi-face-bg-color-name+.
+-- [[ahei]]
+
+[new:DrewAdams:2009-11-10 16:56 UTC]
+I moved your <tt>[[palette.el]]</tt> reports to ColorPalette. They don't belong here.
+
+1a. There is no sense in having '''Do Re Mi''' iterate on the palette itself. The idea of '''Do Re Mi''' is that of direct manipulation: directly manipulate objects in-place, rather than needing recourse to a separate interface (e.g. a color palette). Here, the objects are frame and face attributes.
+
+1b. You already have the ability to increment a color's HSV components using the palette (without '''Do Re Mi'''). Simply hold down the ##Shift## key while you move the cursor. The current color is then updated as you move. If you want to increment RGB components, then use `r' or `R', `g' or `G', `g' or `G', and then hit `RET' to update the current color. (For RGB incrementing, there is no ##Shift## shortcut to update the current-color swatch as you move, so just hit `RET' when you want to update it.)
+
+1c. You can pick up the starting color for a '''Do Re Mi''' command from anywhere, if you use <tt>[[palette.el]]</tt> or <tt>[[eyedropper.el]]</tt> -- in particular, you can pick it up from the ColorPalette.
+
+If you want to pick up a color from the palette to use as the starting point for a '''Do Re Mi''' background-color command, just hit `RET', which is `pick-background-color' (aka `palette-pick-background-at-point'). The '''Do Re Mi''' commands that increment a frame or face background color start with that picked-up color, if available. It is the value of variable `palette-picked-background'.
+
+Similarly, you can use command `pick-foreground-color' (it is not bound to a key) to pick up the foreground color, for use as the starting point in a '''Do Re Mi''' command that increments a frame or face foreground color. The color picked up is available as the value of `palette-picked-foreground'. -- DrewAdams
 
 
+2. Done. Thx. -- Drew
+
+[new]
+<pre>
+;; There is no sense in having '''Do Re Mi''' iterate on the palette itself.
+</pre>
+um, I see, however, how can I to iterate all colors? color palette can do it, but it too slow. -- [[ahei]]
+ 
 ----
 [:SeeAlso]
 == See Also ==

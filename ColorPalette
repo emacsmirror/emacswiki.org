@@ -78,6 +78,8 @@ You can call function `palette' from your EmacsLisp code to open the palette for
 
 ----
 == Issues with palette.el ==
+
+
 === Error: "X windows are not in use or not initialized" when running with "emacs -nw" ===
 The error says the truth. However, palette should not stop Emacs from loading, but rather raise the error when palette is actually invoked.
 
@@ -95,6 +97,50 @@ Debugger entered--Lisp error: (error "X windows are not in use or not initialize
 
 [new:DrewAdams:2008-10-17 21:06 UTC]
 OK, I've tried to take care of that. -- DrewAdams
+
+
+=== Performance ===
+
+I also use you color palette, it's a good tool to select color.But on my ubuntu 8.04 system, it took a little long time
+to execute M-x palette and palette-pick-background-at-point, when execute palette-pick-background-at-point, color palette
+first change to black, then display color palette, that behavior like M-x palette, on my xp system, the time is short than on 
+ubuntu, but hardware of my ubuntu system is better than my xp system. -- [[ahei]]
+
+[new:DrewAdams:2009-11-10 17:10 UTC]
+Yes, I'm afraid the performance is what it is.  The problem is that Emacs faces are '''''very''''' slow -- they were simply not designed to be used this way. As soon as you have a lot of faces, Emacs slows to a crawl.
+
+I created the palette partly as a proof-of-concept. I specifically wanted to use faces this way. A ''much'' more performant solution would be to just (a) make a screen-capture image of the palette body, and then use that, instead of zillions of tiny space characters, each in a different face. I haven't bothered to do that. Someone else might want to.
+
+For my own use, it's OK that the palette is slow -- I just go into it, use it a bit, and then quit it. Once I've quit, Emacs is no longer slow. I guess what I'm saying is that if the palette is too slow for your needs, then just don't use it. Or better yet, recode it to use an image etc. -- that would be a useful improvement. To do that, you will need to make a careful map from image locations to the corresponding color info, since the info won't be contained in faces. -- DrewAdams
+
+
+
+=== Vestigial Buffers ===
+ 
+When I close color palette's window, the buffer "Palette (Hue x Saturation)", "Brightness", "Current/Original" also exist, 
+can you kill them? I think user is not need them after they close color palette's window. -- [[ahei]]
+
+[new:DrewAdams:2009-11-10 17:13 UTC]
+How are you closing the window? You should use `q' or `x'. If you do that, all of the palette buffers are killed. Let me know if that doesn't work for you. -- DrewAdams
+
+[new]
+I close color palette just use mouse to click the system close button which at right top of color palette's frame. -- [[ahei]]
+
+=== facemenup-palette-face-fg-at-point ===
+
+When `hl-line-mode' is active, I use command `facemenup-palette-face-fg-at-point', but it get face color of hl-line-face, 
+when I select one color and save it, then exit (Update Action), It also change face color of hl-line-face. -- [[ahei]]
+
+[new:DrewAdams:2009-11-10 17:21 UTC]
+That's the expected behavior. But it doesn't "also" change the `hl-line' face; it ''only'' changes that face. That is the face that you edited.
+
+When you use `facemenup-palette-face-fg-at-point' you are asking to pick up the foreground color of the face at point, which is face `hl-line' in your case. And `facemenup-palette-face-fg-at-point' has as part of its behavior -- if you exit with `x' -- to update the face at point to the new color that results from your editing with the palette.
+
+This is the difference between exiting the palette using `x' and using `q'. If you look at the '''Palette''' menu you'll see that these exit commands are labeled '''Exit (__Update Action__)''' and '''Quit (Cancel)''', respectively. If you use `x' then you are saying that you want to save the new color that resulted from your editing using the palette. IOW, `x' really does edit the face; `q' does not (it cancels editing). -- DrewAdams
+
+
+[new]
+My meaning is: when hl-line mode is no and user call `facemenup-palette-face-fg-at-point', and then edit color on color palette and use `x' to update action, they do want to update color which cursor point to, not hl-line face, what do you think about it? -- [[ahei]]
 
 ----
 Lisp:palette.el, Lisp:facemenu+.el

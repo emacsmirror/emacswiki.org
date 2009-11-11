@@ -216,4 +216,7 @@ I'd like to remove the Haskell sections and possibly the resulting irrelevant di
 
 [new]
 Please use the CSS syntax for properties/attribute selectors. I think this would also provide support for shorthand boolean attributes, e.g. "<video controls></video>". Currently I have to write such attributes as "video controls="
+
+How can I produce <source src='video.ogv' type='video/ogg; codecs="theora, vorbis"'>?
+
 — lazni

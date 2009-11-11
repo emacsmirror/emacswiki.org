@@ -124,6 +124,7 @@
 ;; `traverse-incremental-forward-line'
 ;; `traverse-incremental-jump'
 ;; `traverse-incremental-scroll'
+;; `traverse-read-char-or-event'
 ;; `traverse-incremental-read-search-input'
 ;; `traverse-incremental-filter-alist-by-regexp'
 ;; `traverse-incremental-start-timer'
@@ -171,6 +172,7 @@
 ;; `traverse-avfs-default-directory'
 ;; `traverse-incremental-search-delay'
 ;; `traverse-incremental-search-prompt'
+;; `traverse-incremental-length-line'
 
 ;;  *** END auto-documentation
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -245,7 +247,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Version:
-(defconst traverse-version "1.1.33")
+(defconst traverse-version "1.1.38")
 
 ;;; Code:
 
@@ -590,8 +592,7 @@ Each element of LIS is compared with the filename STR."
       (if (bufferp (get-buffer fname))
           (switch-to-buffer-other-window (get-buffer fname))
           (find-file-other-window fname))
-      (let ((line (string-to-number nline)))
-        (traverse-goto-line line))
+      (traverse-goto-line (string-to-number nline))
       (setq case-fold-search t)
       (beginning-of-line)
       (when (re-search-forward regex nil nil)
@@ -1172,6 +1173,7 @@ Special commands:
   (goto-char (point-min)) (forward-line (1- numline)))
 
 (defun traverse-incremental-forward-line (n)
+  "Forward line only if it is not an empty line."
   (let (pos)
     (save-excursion
       (forward-line n) (forward-line 0)
@@ -1180,11 +1182,13 @@ Special commands:
 
 ;;;###autoload
 (defun traverse-incremental-next-line ()
+  "Goto next line if it is not an empty line."
   (interactive)
   (traverse-incremental-forward-line 1))
 
 ;;;###autoload
 (defun traverse-incremental-precedent-line ()
+  "Goto precedent line if it is not an empty line."
   (interactive)
   (traverse-incremental-forward-line -1))
 
@@ -1229,10 +1233,17 @@ Special commands:
   (interactive)
   (traverse-incremental-scroll -1))
 
+(defun traverse-read-char-or-event (prompt)
+  "Use `read-char' to read keyboard input, if input is not a char use `read-event' instead."
+  (let* ((chr (condition-case nil (read-char prompt) (error nil)))
+         (evt (unless chr (read-event))))
+    (or chr evt)))
+
 
 (defun traverse-incremental-read-search-input (initial-input)
   "Read each keyboard input and add it to `traverse-incremental-search-pattern'."
   (let* ((prompt       (propertize traverse-incremental-search-prompt 'face '((:foreground "cyan"))))
+         (doc          "     [RET:exit, C-g:quit, C-z:Jump, C-n:next-line, C-p:prec-line]")
          (inhibit-quit t)
          (tmp-list     ())
          char)
@@ -1243,13 +1254,23 @@ Special commands:
     (catch 'break
       (while 1
         (catch 'continue
-          (condition-case nil
-              (setq char (read-char (concat prompt traverse-incremental-search-pattern
-                                            "     [RET:exit, C-g:quit, C-z:Jump, C-n:next-line, C-p:prec-line]")))
-            (error (throw 'break nil)))
+          (setq char (traverse-read-char-or-event
+                      (concat prompt traverse-incremental-search-pattern doc)))
           (case char
+            ((or down ?\C-n) ; Next line
+             (when traverse-incremental-search-timer
+               (traverse-incremental-cancel-search))
+             (traverse-incremental-next-line)
+             (traverse-incremental-occur-color-current-line)
+             (throw 'continue nil)) ; Fix me: Is it needed?
+            ((or up ?\C-p) ; precedent line
+             (when traverse-incremental-search-timer
+               (traverse-incremental-cancel-search))
+             (traverse-incremental-precedent-line)
+             (traverse-incremental-occur-color-current-line)
+             (throw 'continue nil)) ; Fix me: Is it needed?
             ((or ?\e ?\r) (throw 'break nil))    ; RET or ESC break and exit code.
-            (?\d ; Delete last char of `traverse-incremental-search-pattern' with DEL
+            (?\d ; Delete last char of `traverse-incremental-search-pattern' with DEL.
              (unless traverse-incremental-search-timer
                (traverse-incremental-start-timer))
              (pop tmp-list)         
@@ -1257,30 +1278,22 @@ Special commands:
              (throw 'continue nil))
             (?\C-g ; Quit and restore buffers.
              (setq traverse-incremental-quit-flag t) (throw 'break nil))
-            (?\C-n ; Next line
-             (when traverse-incremental-search-timer
-               (traverse-incremental-cancel-search))
-             (traverse-incremental-next-line)
-             (traverse-incremental-occur-color-current-line)
-             (throw 'continue nil)) ; Is it needed?
-            (?\C-p ; precedent line
-             (when traverse-incremental-search-timer
-               (traverse-incremental-cancel-search))
-             (traverse-incremental-precedent-line)
-             (traverse-incremental-occur-color-current-line)
-             (throw 'continue nil)) ; Is it needed?
-            (?\C-z ; persistent action
+            ((or right ?\C-z) ; persistent action
              (traverse-incremental-jump) (other-window 1))
             (t
              (unless traverse-incremental-search-timer
                (traverse-incremental-start-timer))
-             (push (text-char-description char) tmp-list)
-             (setq traverse-incremental-search-pattern (mapconcat 'identity (reverse tmp-list) ""))
-             (throw 'continue nil))))))))
+             (condition-case nil ; If keyboard input is an event not listed above we exit.
+                 (progn
+                   (push (text-char-description char) tmp-list)
+                   (setq traverse-incremental-search-pattern (mapconcat 'identity (reverse tmp-list) ""))
+                   (throw 'continue nil))
+               (error (throw 'break nil))))))))))
+
 
 
 (defun traverse-incremental-filter-alist-by-regexp (regexp buffer-name)
-  "Print all lines matching REGEXP to buffer BUFFER-NAME."
+  "Print all lines matching REGEXP in current buffer to buffer BUFFER-NAME."
   (let ((title (propertize "Traverse Incremental occur" 'face '((:background "Dodgerblue4")))))
     (if (string= regexp "")
         (progn (erase-buffer) (insert (concat title "\n\n")))
@@ -1291,6 +1304,7 @@ Special commands:
         
 
 (defun traverse-incremental-start-timer ()
+  "Start traverse incremental timer and set it to `traverse-incremental-search-timer'."
   (setq traverse-incremental-search-timer
         (run-with-idle-timer
          traverse-incremental-search-delay 'repeat
@@ -1308,6 +1322,7 @@ Special commands:
     (jit-lock-fontify-now))
   (let* ((init-str (if initial-input (thing-at-point 'symbol) ""))
          (len      (length init-str))
+         (curpos      (point))
          str-no-prop)
     (set-text-properties 0 len nil init-str)
     (setq str-no-prop init-str)
@@ -1327,7 +1342,7 @@ Special commands:
               (switch-to-buffer traverse-incremental-current-buffer)
               (when traverse-occur-overlay
                 (delete-overlay traverse-occur-overlay))
-              (delete-other-windows))
+              (delete-other-windows) (goto-char curpos))
             (traverse-incremental-jump) (other-window 1))
         (setq traverse-incremental-quit-flag nil)))))
 

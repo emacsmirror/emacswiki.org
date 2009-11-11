@@ -165,7 +165,7 @@ My main Jabber server and its transport goes down from time to time so I also ha
 
 === Announcing about new message ===
 
-This code will alert about incoming message through xosd. Obviously, it requires xosd.
+This code will alert about incoming message through xosd. Obviously, it requires xosd (package xosd-bin on debian-like distros)
 <pre>
 (setq jabber-xosd-display-time 5)
 
@@ -179,8 +179,11 @@ This code will alert about incoming message through xosd. Obviously, it requires
 (defun jabber-message-xosd (from buffer text propsed-alert)
   (jabber-xosd-display-message "New message."))
 
-(add-to-list 'jabber-alert-message-hooks
-    	     'jabber-message-xosd)
+(add-to-list 'jabber-alert-message-hooks 'jabber-message-xosd)
+
+; Try this line rather than the add-to-list above 
+; if you experience problem on init
+;(add-hook 'jabber-alert-message-hooks 'jabber-message-xosd) 
 </pre>
 
 If you would like to use Growl, see http://philgroce.com/static/growl-with-emacs-1.  It should be easy to adapt this to use ToDoChiKu for a more general solution.

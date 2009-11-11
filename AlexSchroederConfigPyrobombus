@@ -359,10 +359,11 @@ Note that comments between URL and name will stay where they are."
       '(("irc.freenode.net" :channels
 	 ("#emacs" "#rcirc" "#wiki" "#oddmuse" "#epfarms"
 	  "#hcoop" "#clojure" "#biology"
-	  "#eclipse" "#eclipse-de" "#osgi"))
+	  "#eclipse" "#eclipse-de" "#osgi"
+	  "#googlewavebots" "#googlewave"))
 	("localhost" :channels ("&bitlbee"))
-	("ircnet.ipng.ch" :channels ("#drsrm"))
-	;; ("irc.lugs.ch" :channels ("#hackerfunk"))
+	("ircnet.eversible.com" :channels ("#drsrm"))
+	;; ("irc.lugs.ch"   :channels ("#hackerfunk"))
 	("irc.perl.org" :channels ("#perlde")))
       rcirc-decode-coding-system 'undecided
       rcirc-coding-system-alist

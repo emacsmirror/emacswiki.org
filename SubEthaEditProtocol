@@ -26,12 +26,11 @@ we're probably safe from the presumably less litigious codingmonkeys.
 
 == Introduction ==
 
-The SubEthaEdit protocol has a fair number of parts.
-
-You've probably heard that it uses Bonjour (AKA
-<nowiki>ZeroConf</nowiki>, Rendezvous).  While this is true, its use
-of Bonjour isn't interesting; it's only useful when you have multiple
-users on the same subnet.  In any case, it simply advertises
+The SubEthaEdit protocol has a fair number of parts. You've probably
+heard that it uses Bonjour (AKA <nowiki>ZeroConf</nowiki>,
+Rendezvous).  While this is true, its use of Bonjour isn't
+interesting; it's only useful when you have multiple users on the same
+subnet.  In any case, it simply advertises
 <nowiki><username>@<computername>._see</nowiki>, with no additional
 data that I can see.  I have no particular interest in supporting this
 part of the protocol: sessions will be initiated by giving the
@@ -42,21 +41,24 @@ the Galaxy] reference.)
 
 == The BEEP Protocol ==
 
-The actual conversations between SEE client and server are done under
-the BlocksExtensibleExchangeProtocol (RFC 3080 and RFC 3081), which is
-a generic, channel multiplexed, transport protocol that uses uses XML
-and MIME.  (Very simple versions of both -- the only MIME header used
-is Content-Type.)
+The actual conversations between SubEthaEdit client and server are
+done on top of the BlocksExtensibleExchangeProtocol (RFC 3080 and RFC
+3081), which is a generic, channel multiplexed, transport protocol
+that uses XML and MIME.  (Very simple versions of both in case of the
+SubEthaEdit protocol -- the only MIME header used is Content-Type.)
 
-Messages in the special channel 0 are fully specified in RFC 3080, all
-other channels are freely usable by application protocols. Each
-channel has an associated profile, identified by an URI, that defines
-the protocol for messages exchanged on that channel.
+The BEEP protocol manages multiple virtual channels for independent
+data streams over a single connection. Messages in the special channel
+0 are fully specified in RFC 3080, all other channels are freely
+usable by application protocols. Each channel has an associated
+profile, identified by an URI, that defines the protocol for messages
+exchanged on that channel.
 
-The authors of SEE decided to ignore the recommendation of the RFC
-authors to use MIME. Instead, the payload consists of a three-letter
-major command code, mostly followed by a three-letter minor command
-code, often followed by bencoded data.
+The authors of SubEthaEdit decided to ignore the recommendation of the
+RFC authors to use MIME. Instead, the payloads exchanged on the
+application channels consist of three-letter major command codes,
+mostly followed by three-letter minor command codes, often followed by
+bencoded data.
 
 [new]
 Note by a SEE author: we did this for the obvious reason that: a)
@@ -71,17 +73,68 @@ MSG 1 0 . 0 97
 GRTd3:url27:see://codingmonkeys.de:67423:uid36:770da15c-0cb0-10da-a8ba-4a773bbddd094:vers3:200e
 END
 }}}
-Here, the bencoded data starts immediately after 'GRT'.
-Bencoding is the data format used by bittorent; it is specified (very
-briefly) at http://www.bittorrent.com/protocol.html.  The dialect that
-SEE uses has a small extension: Strings may have a . (ASCII 0x2e)
-after the length instead of a ':'.  These dot-strings are used for
-user-identifiers, and other such things that are not human-readable
-strings, but rather a bunch of random bytes.  I suspect the correct
-interpretation is that '.' strings contain binary data without
-semantics, whereas ':' strings are always utf-8.  (Note that the
-length for strings of both types is in /bytes/, not logical
+Here, the bencoded data starts immediately after '##GRT##'.  Bencoding
+is the data format used by bittorent; it is specified (very briefly)
+at http://www.bittorrent.com/protocol.html.  The dialect that
+SubEthaEdit uses has a small extension: Strings may have a '.' (ASCII
+0x2e) after the length instead of a ':'.  These dot-strings are used
+for user-identifiers, and other such things that are not
+human-readable strings, but rather a bunch of random bytes.  I suspect
+the correct interpretation is that '.' strings contain binary data
+without semantics, whereas ':' strings are always UTF-8.  (Note that
+the length for strings of both types is in /bytes/, not logical
 characters.)
+
+== Structure of a Typical Session ==
+
+The following describes the structure of a typical session (with
+encryption disabled). The roles "Initiating" and "Listening" peer
+refer to the network connection. Although the description here
+distinguishes these roles, the protocol seems to be symmetrical.
+
+# BEEP Protocol Setup Sequence  
+  TODO
+# Handshake Protocol
+** Initiating => Listening
+### Initiating peer requests channel
+    (profile: ##http://www.codingmonkeys.de/BEEP/SubEthaEditHandshake##)
+### Initiating peer sends ##SubEthaEditHandshake## ##GRT## message
+### Listening peer replies with ##SubEthaEditHandshake## ##ACK##
+    message
+### Initiating peer closes the channel
+** Listening => Initiating (identical, but the channel remains open. why?)
+# Status Protocol
+** Initiating => Listening
+### Initiating peer requests status channel
+    (profile: ##http://www.codingmonkeys.de/BEEP/TCMMMStatus##)
+### Initiating peer sends ##TCMMMStatus## ##USRCHG##, ##FCAYES##,
+    ##STAVIS## and ##USRRCH## messages
+### Listening peer acknowledges all messages with empty replies
+** Listening => Initiating
+### Listening peer requests status channel
+    (profile: ##http://www.codingmonkeys.de/BEEP/TCMMMStatus##)
+### Listening peer sends ##TCMMMStatus## ##USRCHG##, ##FCAYESEND##,
+    ##STAVIS##, ##USRRCH##
+### Listening peer sends ##DOCANN## messages for its documents
+### Initiating peer acknowledges all messages with empty replies
+# Session Protocol
+  This exchange happens each time one of the peers wishes to
+  participate in an actual editing session. The content and structure
+  depends on the nature of the document, the number of participants and
+  possibly other parameters. //Note that the roles "Requesting" and
+  "Serving" do not correspond to the "Listening" and "Initiating"
+  roles above.//
+** Requesting => Serving
+### Requesting peer requests channel
+    (profile ##http://www.codingmonkeys.de/BEEP/SubEthaEditSession##)
+### Requesting peer sends ##SubEthaEditSession## ##JONJON## message
+### Serving peer sends empty reply
+### Serving peer replies with ##SubEthaEditSession## ##JONACK##
+    message
+### Requesting peer sends empty reply
+### Serving peer sends ##SubEthaEditSession## ##SESINF## message
+### Requesting peer sends ##SubEthaEditSession## ##USRREQ## reply
+### /to be continued/
 
 == BEEP Profiles used by SubEthaEdit ==
 
@@ -165,6 +218,12 @@ listening peer requests a TCMMMStatus channel after receiving the
 
 * STAVIS: Status Visible (?) - Not sure of the purpose of this one, no known content.
 
+* USRRCH: User Reachability (?)
+** uid => 36 byte id string; Seems to equal to the id used in the
+   ##GRT## message of the ##SubEthaEditHandshake## profile.
+** url => URL with ##see://## schema, IP address and port of the
+   initiating peer.
+
 * USRREQ: User Request (?) - Only see with an empty list as content, so far, maybe its supposed to be a list of users that the peer should send full information for?
 
 * USRFUL: User Full (?) - A longer user description, including:
@@ -221,7 +280,7 @@ Started by the client (either side?) to join a particular document.
 
 * SESCON: Session Connection (?) - Original document status ?
 ** TextStorage => dictionary containing:
-*** String => String containin document content
+*** String => String containing document content
 *** Encoding => Integer 30
 ** Attributes => dictionary containing:
 *** ChangedByUserID => list of dictionary containing:
