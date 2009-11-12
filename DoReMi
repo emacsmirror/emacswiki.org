@@ -815,11 +815,48 @@ Similarly, you can use command `pick-foreground-color' (it is not bound to a key
 2. Done. Thx. -- Drew
 
 [new]
-<pre>
-;; There is no sense in having '''Do Re Mi''' iterate on the palette itself.
-</pre>
+
+   There is no sense in having '''Do Re Mi''' iterate on the palette itself.
+
 um, I see, however, how can I to iterate all colors? color palette can do it, but it too slow. -- [[ahei]]
+
+[new:DrewAdams:2009-11-11 16:38 UTC]
+I don't know what you mean by "iterate all colors". Be specific. How do you want to iterate colors? By name? By a particular color component? By some combination of components? Please describe what you mean. Start at the top level: what is it that you really want to do? Maybe you can do it with the palette or '''Do Re Mi'''; maybe you can't. -- DrewAdams
+
+[new]
+I thought you have understood my meanning.
+
+increment all of the R,G,B components (or all of the H, S, V components) together, that mean: select color use doremi like move point on color palette ground, from point to another point, iterate all color point on color palette ground.That is my want.
+
+If everything else fails, do you understand chinese? :) -- [[ahei]]
+
+[new:DrewAdams:2009-11-12 04:05 UTC]
+No, sorry, wo bu dong zhong hua. ;-)
+
+I guess you're saying that you would like to, on the palette only, move from one color point to another, and have something (what?) change as you do that. Dunno if that's what you mean, but if so I don't see much point in it. As I said, the point of '''Do Re Mi''' is to act on something directly (and incrementally). I don't see any gain in introducing the palette as an intermediary.
+
+Unless you are interested only in seeing the current '''Do Re Mi''' color in the context of the palette, just to see where you are on it. Perhaps you mean that: show the current color's location on the palette while you increment using a '''Do Re Mi''' color command. That would be possible, but I don't know how interesting it would be.
+
+Keep in mind that if we're talking about '''Do Re Mi''' incrementing all components together, then the individual increment values must be communicated to the command. And that is done once and for all, up front, for a given command. So if you somehow mean driving that from the palette, I don't understand.
+
+I don't mean to cut you off. I liked your first idea about incrementing the components together. So I'm sure you have lots of good ideas. I haven't yet understood this one. It's of course also the case that even if it's a great idea I might not be interested or it might not be feasible or easy to implement. ;-) But if you want to try again to explain it, I'll try to understand. Feel free to email me. -- DrewAdams
+
+[new]
+:)
+let us number color point on color palette, now color palette like this:
+<pre>
+1  2  3  4  5
+6  7  8  9 10
+11 12 13 14 15
+16 17 18 19 20
+21 22 23 24 25
+</pre>
+my meaning is: how can I iterate colors on color palette from 1 to 25, increment with 1, that is 1,2,3,4,5,6,...,21,22,23,24,25. Use your color palette, I can do this, just put cursor to color point 1, and then hold down Shift key, then move cursor from 1 to 25, but, your color palette is slow when I start it every time, how can I do that in other way? Use doremi, I can iterate part of all colors, e.g. use doremi-bg+, then choose blue component, but It only iterate part color points, not all, maybe 2,7,12,17,22, also maybe 5,10,15 20,25, also may be 1,2,3,4,5 when use red component, also maybe 1,2,8,13,19,24,24 when use red,blue,green component together.
+
+In a word, what I want is iterate all colors from 1 to 25, increment with 1. -- [[ahei]]
  
+
+
 ----
 [:SeeAlso]
 == See Also ==

@@ -11,21 +11,7 @@ Emacs.
 [:WhereIsEmacs]
 === Where is Emacs? ===
 
-A test repository has been set up (see the thread starting at [http://lists.gnu.org/archive/html/emacs-devel/2009-09/msg00428.html this message]) here:
-
-* Repository: ##sftp://bzr.sv.gnu.org/srv/bzr/emacs/emacs-merges##
-
-* Trunk (master) branch: ##sftp://bzr.sv.gnu.org/srv/bzr/emacs/emacs-merges/master##
-
-Since branching that is likely to take a long time, you should just download a tarball of the repository:
-
-* http://bzr.notengoamigos.org/emacs-merges.tar.gz
-
-You can browse the repository on the web:
-
-* http://bzr.savannah.gnu.org/lh/emacs/
-
-''Note: Remember this is still just a test repository.  The final conversion has not yet been done.''
+See [[EmacsBzrSwitchover#Where]].
 
 [:RegularContributors]
 === How Regular Contributors Should Use Bazaar ===

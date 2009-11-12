@@ -35,6 +35,9 @@ Well after years of puzzling I finally found why in XEmacs <code>M-x term</code>
 
 [new]
 Has anybody succeded to run ansi-term (or term, or terminal-emulator for that matter) under Win32? I have Windows XP and trying any of these commands results in "Spawning child process: invalid argument" error. The default argument is cmdproxy in Emacs' bin directory; I have also tried cygwin's bash, well, any command, but to no avail. Every time I get that error. M-x shell and other child processes work fine.
+
+: Try just using Cygwin's Emacs.  It supports up to Emacs-23 which seems to run "ansi-term" and "term" quite well.  The errors you're describing kind of reminds me of trying to run telnet on Windows in Emacs.  You need a lot of special configuration (GIYF), and it's just a lot easier to run Emacs within Cygwin to begin with.  Everything's already properly configured.
+
 ----
 [new]
 Q: Is it possible to change the color palette for LS_COLORS? Inside a Gnome terminal, I like to switch to the "Tango" palette and since I use color-theme-tango it would be nice to have the same colors inside Emacs especially because the standard terminal colors don't go well with Tango's background color.

@@ -28,5 +28,35 @@ done things. Then come back here to experiment. Note that you need not save your
 
 ----
 
-Lisp:test.el
-EmacsWikiMainPackagesMantainersDiscussion
+##''<em>emph</em> with ital''## --> ''<em>emph</em> with ital''
+
+##//<em>emph</em> with ital//## --> //<em>emph</em> with ital//
+
+##<em>//emph// with ital</em>## --> <em>//emph// with ital</em> -- this one is interesting
+
+##<em>''emph'' with ital</em>## --> <em>''emph'' with ital</em> -- this one too
+
+##<em>''//emph//'' with ital</em>## --> <em>''//emph//'' with ital</em>
+
+
+##<em>//''emph''// with ital</em>## --> <em>//''emph''// with ital</em> --- this one is interesting
+
+##<em>//"emph"// with ital</em>## --> <em>//"emph"// with ital</em> -- this one too
+
+##<em>''emph'' with ital</em>## --> <em>''emph'' with ital</em> -- also interesting
+
+##<em>"emph" with ital</em>## --> <em>"emph" with ital</em> -- normal double quotes
+
+
+##<tt>[[test.el]]</tt>## --> <tt>[[test.el]]</tt>
+
+##<tt>''[[test.el]]''</tt>## --> <tt>''[[test.el]]''</tt>
+
+##<tt>"[[test.el]]"</tt>## --> <tt>"[[test.el]]"</tt> -- interesting - moves quotes outside
+
+##<tt>//[[test.el]]//</tt>## --> <tt>//[[test.el]]//</tt> -- loses link
+
+##<tt>//''[[test.el]]''//</tt>## --> <tt>//''[[test.el]]''//</tt> -- likewise
+
+##<tt>''"[[test.el]]"''</tt>## --> <tt>''"[[test.el]]"''</tt> -- quotes outside and italics
+

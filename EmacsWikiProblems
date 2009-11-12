@@ -11,6 +11,14 @@ Note that this page is not about EmacsWikiMode.
 ----
 
 
+== (Minor) Problem(?) with user names on RecentChanges ==
+
+Click the link for ##José Alfredo Romero L.## on RecentChanges ---e.g. for 2009-11-11, ##13:37 UTC (new) (history) sunrise-x-tabs.el . . . . José Alfredo Romero L. – Added source for the sunrise-x-tabs extension. [en]##
+
+You get to the normal "This page does not exist" page, but the link to create it has this text: <tt>This page does not exist, but you can __[Self:action=edit;id=Jos%c3%a9_Alfredo_Romero_L.__ create it now].</tt> I underlined the link part. -- DrewAdams
+
+
+
 == Problems with Download Link ==
 
 I found, now in lisp el page, e.g. http://www.emacswiki.org/emacs/tie-mode.el, there have a download button, not a download link, 

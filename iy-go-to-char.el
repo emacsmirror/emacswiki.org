@@ -62,9 +62,12 @@
 ;;    C-r -- start `isearch-backward' using char as initial search
 ;;           string
 ;;
-;;    C-w -- quit and kill region between start and current point
+;;    C-w -- quit and kill region between start and current point. If region is
+;;           activated before search, then use the original mark instead of the
+;;           start position.
 ;;
-;;    M-w -- quit and save region between start and current point
+;;    M-w -- quit and save region between start and current point. If region is
+;;           activated before search, use the mark instead of start position.
 ;;
 ;; All other keys will quit the search. Then the key event is
 ;; intepreted in the original environment before search.
@@ -112,14 +115,17 @@ Typing , will move to the previous occurence of CHAR.
 Typing C-g will quit and return to the original point.
 Typing C-s or C-r will start `isearch` using CHAR.
 Typing C-w or M-w will kill/copy between current point and the start point.
-Unless quit using C-g, the start point is set as mark.
+Unless quit using C-g or the region is activated before searching, the start
+ point is set as mark.
 "
   (interactive "p\ncGo to char: ")
   (let ((count (if (zerop n) 1 n))
         (cont t)
-        (orig (point))
+        (orig (if (region-active-p) (mark) (point)))
         (dir (if (< n 0) -1 1))
         ev pt)
+    (when (and (= char ?\C-z) iy-go-to-char-last-char)
+      (setq char iy-go-to-char-last-char))
     (save-excursion
       (search-forward (string char) nil nil count)
       (setq pt (match-end 0))
@@ -133,6 +139,9 @@ Unless quit using C-g, the start point is set as mark.
                (search-forward (string char) nil nil -1)
                (setq pt (match-end 0)))
               ((eq ev char)
+               (search-forward (string char) nil nil dir)
+               (setq pt (match-end 0)))
+              ((eq ev ?\C-z)
                (search-forward (string char) nil nil dir)
                (setq pt (match-end 0)))
               (t

@@ -109,6 +109,29 @@ Anyway, I won't worry about this problem. But thanks for reporting it (and findi
 oh, great, you are right, I put frame-cmds.el in my load-path, after I remove it from load-path, ediff is work well when I load multi-term before load icicles.  -- [[ahei]]
 
 
+[new]
+I have already investigated kde-emacs, but I'm not familiar with elisp and kde-emacs is a big package, and so not results for that，a　bit pity.-- [[ahei]]
+
+[new:DrewAdams:2009-11-11 16:46 UTC]
+
+I don't understand your reply. Please try to rephrase it. What does it have to do with '''Icicles'''?  Please keep messages here related to this specific bug. Report a new bug if you want to change the subject. -- DrewAdams
+
+
+[new]
+I found the reason, kde-emacs is conflict icicles, I must load icicles before kde-emacs in emac22, otherwise will get that error message. -- [[ahei]]
+
+Could you maybe investigate a bit what the problem was?  -- DrewAdams
+
+I have already investigated kde-emacs, but I'm not familiar with elisp and kde-emacs is a big package, and so not results for that，a　bit pity.-- [[ahei]]
+
+[new:DrewAdams:2009-11-12 03:51 UTC]
+I see. Sorry, I forgot that you had a problem with kde also; I was thinking about Multi Term. I don't have or use kde-emacs, so I think we'll just have to leave it there. At least you have the workaround that it works OK if you load '''Icicles''' first. -- DrewAdams
+
+
+
+
+
+
 <pre>
 
 </pre>

@@ -1,5 +1,5 @@
 ;;; ac-anything.el --- Auto Complete with Anything
-;; $Id: ac-anything.el,v 1.4 2009/04/18 21:08:49 rubikitch Exp rubikitch $
+;; $Id: ac-anything.el,v 1.6 2009/11/11 17:13:11 rubikitch Exp $
 
 ;; Copyright (C) 2009  rubikitch
 
@@ -58,6 +58,12 @@
 ;;; History:
 
 ;; $Log: ac-anything.el,v $
+;; Revision 1.6  2009/11/11 17:13:11  rubikitch
+;; Use pulldown.el if available
+;;
+;; Revision 1.5  2009/11/11 17:08:16  rubikitch
+;; Replace ac-prefix with (anything-attr 'ac-prefix)
+;;
 ;; Revision 1.4  2009/04/18 21:08:49  rubikitch
 ;; Remove attribute `ac-point'
 ;;
@@ -74,14 +80,15 @@
 
 ;;; Code:
 
-(defvar ac-anything-version "$Id: ac-anything.el,v 1.4 2009/04/18 21:08:49 rubikitch Exp rubikitch $")
+(defvar ac-anything-version "$Id: ac-anything.el,v 1.6 2009/11/11 17:13:11 rubikitch Exp $")
 (require 'anything)
 (require 'anything-match-plugin nil t)
 (require 'auto-complete)
+(require 'pulldown nil t)               ;for latest version of auto-complete
 
 (when (require 'anything-show-completion nil t)
   (use-anything-show-completion 'ac-complete-with-anything
-                                '(length ac-prefix)))
+                                '(length (anything-attr 'ac-prefix))))
 
 (defun ac-complete-with-anything ()
   "Select auto-complete candidates by `anything'.
@@ -93,11 +100,15 @@ It is useful to narrow candidates."
 
 (defun anything-c-auto-complete-init ()
   (anything-attrset 'ac-candidates ac-candidates)
-  (anything-attrset 'menu-width (ac-menu-width ac-menu))
+  (anything-attrset 'menu-width
+                    (if (fboundp 'pulldown-width)
+                        (pulldown-width ac-menu)
+                      (ac-menu-width ac-menu)))
+  (anything-attrset 'ac-prefix ac-prefix)
   (ac-abort))
 
 (defun anything-c-auto-complete-action (string)
-  (delete-backward-char (length ac-prefix))
+  (delete-backward-char (length (anything-attr 'ac-prefix)))
   (insert string)
   (prog1 (let ((action (ac-get-candidate-property 'action string)))
            (if action (funcall action)))

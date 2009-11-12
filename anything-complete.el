@@ -1,5 +1,5 @@
 ;;; anything-complete.el --- completion with anything
-;; $Id: anything-complete.el,v 1.66 2009/10/26 09:38:39 rubikitch Exp rubikitch $
+;; $Id: anything-complete.el,v 1.68 2009/11/11 19:01:09 rubikitch Exp $
 
 ;; Copyright (C) 2008  rubikitch
 
@@ -96,6 +96,12 @@
 ;;; History:
 
 ;; $Log: anything-complete.el,v $
+;; Revision 1.68  2009/11/11 19:01:09  rubikitch
+;; Bug fix when completing at right side
+;;
+;; Revision 1.67  2009/11/11 18:03:49  rubikitch
+;; New implementation of `alcs-current-physical-column'
+;;
 ;; Revision 1.66  2009/10/26 09:38:39  rubikitch
 ;; `anything-completing-read': Show default source first when require-match and default is specified.
 ;;
@@ -309,7 +315,7 @@
 
 ;;; Code:
 
-(defvar anything-complete-version "$Id: anything-complete.el,v 1.66 2009/10/26 09:38:39 rubikitch Exp rubikitch $")
+(defvar anything-complete-version "$Id: anything-complete.el,v 1.68 2009/11/11 19:01:09 rubikitch Exp $")
 (require 'anything-match-plugin)
 (require 'thingatpt)
 
@@ -390,8 +396,10 @@
 used by `anything-lisp-complete-symbol-set-timer' and `anything-apropos'"
   (run-with-idle-timer update-period t 'alcs-make-candidates))
 
+(defvar alcs-physical-column-at-startup nil)
 (defun alcs-init (bufname)
   (declare (special anything-dabbrev-last-target))
+  (setq alcs-physical-column-at-startup nil)
   (setq anything-complete-target
         (if (loop for src in (anything-get-sources)
                   thereis (string-match "^dabbrev" (assoc-default 'name src)))
@@ -409,19 +417,22 @@ used by `anything-lisp-complete-symbol-set-timer' and `anything-apropos'"
       (sort candidates #'string<)
     candidates))
 
-;;; borrowed from auto-complete.el
+;;; borrowed from pulldown.el
 (defun alcs-current-physical-column ()
   "Current physical column. (not logical column)"
-  (- (point) (save-excursion (vertical-motion 0) (point))))
+  ;; (- (point) (save-excursion (vertical-motion 0) (point)))
+  (car (posn-col-row (posn-at-point))))
 
 (defun alcs-transformer-prepend-spacer (candidates source)
   "Prepend spaces according to `current-column' for each CANDIDATES."
-  (let ((column (with-current-buffer anything-current-buffer
-                  (save-excursion
-                    (backward-char (string-width anything-complete-target))
-                    (alcs-current-physical-column)))))
-    (mapcar (lambda (cand) (cons (concat (make-string column ? ) cand) cand))
-            candidates)))
+  (setq alcs-physical-column-at-startup
+        (or alcs-physical-column-at-startup
+            (with-current-buffer anything-current-buffer
+              (save-excursion
+                (backward-char (string-width anything-complete-target))
+                (alcs-current-physical-column)))))
+  (mapcar (lambda (cand) (cons (concat (make-string alcs-physical-column-at-startup ? ) cand) cand))
+          candidates))
 
 (defun alcs-transformer-prepend-spacer-maybe (candidates source)
   ;; `anything-show-completion-activate' is defined in anything-show-completion.el

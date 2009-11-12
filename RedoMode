@@ -64,14 +64,6 @@ situation:
 With the new undo/redo system, the edit deletes the current redos, so
 when you undo A, there is no way to redo A later.
 [new]
-: Not quite.  Once you do the <code>edit B</code>, you get back A by
-: doing an /undo/.  The final operation in your sequence should be
-: an <code>undo A</code>, instead of <code>redo A</code>, to get
-: back the results of <code>edit A</code>.
-
-[new]
-I don't understand "not quite" ... if you only have two primitive commands
-/undo/ and /redo/, then how can you uniquely tell 
-emacs to recover <code>edit A</code> which has now been trampled by <code>edit B</code>?
+: There is, by using the normal emacs undo logic. This undo.el works so that it provides a redo (when possible), but otherwise undo behaves as emacs's undo, i.e. you can keep on undo'ing until you get back A.
 ----
 CategoryUndo

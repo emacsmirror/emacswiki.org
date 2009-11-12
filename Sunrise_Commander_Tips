@@ -1,0 +1,186 @@
+A few tips for effectively using the
+[http://www.emacswiki.org/emacs/Sunrise_Commander Sunrise Commander] file manager.
+If you can think of any other please share.
+
+[:GeneralUsage]
+==Any suggestions for someone wanting to learn to use sunrise?==(/Thanks rustom/)
+
+# Find two  good key  shortcuts and  assign them to  the sunrise  and sunrise-cd
+functions (e.g. mine are C-c x and C-c X).
+
+# To get acquainted  with the specific capabilities offered  by Sunrise, I think
+the   best  first   step  is   to  get   and  install   the   Buttons  extension
+(Lisp:sunrise-x-buttons.el), it'll  provide you with  a nice third pane  (at the
+bottom) with buttons  you can click to perform many  basic operations. The trick
+with those buttons  is that they're labeled with  their equivalent shortcuts, so
+in no time  you memorize them and  can use them directly from  the keyboard.  In
+general  the highest  productivity can  be achieved  when using  exclusively the
+keyboard -- use the mouse rather as  kind of side-wheels to learn the basics (or
+to work while eating a sandwich), then just drop it.
+
+# Once you know the buttons, go for the listing of bindings in the describe-mode
+message (just press h while in sunrise mode).
+
+#  You'll be best set off with Sunrise if you use some kind of Linux or MacOS X.
+On Windows there's unfortunately a heck lot of stuff you have to set up first to
+make all the emacs capabilities integrated in Sunrise work. In particular try to
+have AVFS running in your box -- it will allow to  transparently  navigate  into
+all  kinds  of  archives (zip, rar, jar, even mbox) -- great deal. Unfortunately
+AFAIK there's no AVFS for Windows. BTW Archlinux offers Sunrise  with  AVFS  and
+other goodies conveniently placed in one single package.
+
+# Explore all the configurable settings Sunrise offers by typing:
+            //M-x configure-group RET sunrise RET//
+
+# Master Emacs Dired. After all, Sunrise  is nothing more than a fancy front end
+for all  the amazing capabilities Dired  offers. One aspect of  dired I've found
+particularly useful is dired marks (m marks one file, t toggles all marks in the
+current directory,  u unmarks one file,  U removes all marks).  Most Sunrise and
+Dired commands can work on all marked files and directories at once.
+
+# Learn Emacs. The WDired mode (C-x C-q) puts you in a regular emacs buffer that
+gives  you  all  the possibilities  you  normally  have  while editing  text  to
+manipulate the  names of  your files and  directories -- query  replace, regular
+expressions, serial  numbering... your imagination  is the only limit.  Just one
+warning: be careful  and play a LOT with  it before using it for  real, so there
+are no surprises later and you don't shoot yourself in the foot.
+
+#  Don't  forget  a  OFM is just a semi-graphical extension of the command line.
+Learn when it's preferable to use the command line (CL) instead of the FM. Learn
+to  use the FM to move fast through your directory hierarchy (e.g. use C-c t and
+C-c T to activate the CL from Sunrise, and the sunrise and sunrise-cd methods to
+switch  to  fullscreen  CL  and  back  to Sunrise from there. If you're using an
+external shell for the CL (e.g. bash, or ksh, instead of eshell), learn when  to
+use  C-c C-j and C-c C-k to switch between line and character mode. Learn to use
+CLEX tags (%f, %F, %d, %D, %n, %N etc) to write fast your paths and  file  names
+in the CL.
+
+[:ExternalApps]
+==Opening files in external applications.==
+
+The  best  emacs  module I've seen for opening files in external applications is
+Markus Triska's OpenWith. On Linux it works perfectly. On Windows  you  need  to
+apply  the  following  patch,  so  it  knows  how to use the /w32-shell-execute/
+function:
+<pre>
+--- emacs/openwith.el	2009-01-19 10:26:09.000000000 +0100
++++ openwith.el	2009-03-18 15:44:30.000000000 +0100
+@@ -75,16 +75,19 @@
+         (setq oa (car assocs)
+               assocs (cdr assocs))
+         (when (save-match-data (string-match (car oa) file))
+-          (let ((params (mapcar (lambda (x) (if (eq x 'file) file x))
+-                                (nth 2 oa))))
+-            (when (or (not openwith-confirm-invocation)
+-                      (y-or-n-p (format "%s %s? " (cadr oa)
+-                                        (mapconcat #'identity params " "))))
+-              (apply #'start-process "openwith-process" nil (cadr oa) params)
+-              (kill-buffer nil)
+-              ;; inhibit further actions
+-              (error "Opened %s in external program"
+-                     (file-name-nondirectory file))))))))
++	  (let ((params (mapcar (lambda (x) (if (eq x 'file) file x))
++				(nth 2 oa))))
++	    (when (or (not openwith-confirm-invocation)
++		      (y-or-n-p (format "%s %s? " (cadr oa)
++					(mapconcat #'identity params " "))))
++	      (if (and (fboundp 'w32-shell-execute)
++		       (string= "open" (nth 1 oa)))
++		  (w32-shell-execute "open" file)
++		(apply #'start-process "openwith-process" nil (cadr oa) params))
++	      (kill-buffer nil)
++	      ;; inhibit further actions
++	      (error "Opened %s in external program"
++		     (file-name-nondirectory file))))))))
+   ;; when no association was found, relay the operation to other handlers
+   (let ((inhibit-file-name-handlers
+          (cons 'openwith-file-handler
+</pre>
+
+I have submitted this patch to  Mr Triska, hope it gets included in the official
+distribution soon.
+
+Once you've  installed OpenWith, customize  the /openwith-associations/ variable
+as needed.
+
+[:MouseSupport]
+==Better mouse support?==
+
+There  are  several  good  extensions  for enhancing the mouse support in Dired.
+Personally I like Seiichi Namba's dired-dd (DiredDragAndDrop). Unfortunately, it
+won't  work  out of the box with Sunrise, as it checks specifically for Dired as
+its only valid major mode. This can be easily fixed by  applying  the  following
+patch to the latest version (0.9.1.28):
+<pre>
+1569c1569
+<   (if (not (eq major-mode 'dired-mode))
+---
+>   (if (not (derived-mode-p 'dired-mode))
+1793c1793
+<     (if (eq 'dired-mode major-mode)
+---
+>     (if (derived-mode-p 'dired-mode)
+1836c1836
+<       (if (setq target-diredp (eq 'dired-mode major-mode))
+---
+>       (if (setq target-diredp (derived-mode-p 'dired-mode))
+</pre>
+I have been trying to contact Mr Seiichi to submit this patch, but unfortunately
+without success at the moment.
+
+Drew  Adams'  DiredPlus is another good alternative for better mouse support. It
+doesn't have additional D&D functions, but gives you a lot of psychedelic colors
+instead  :)  Besides,  Drag-n-drop is available even for vanilla Dired - no need
+for DiredPlus to add it. See the Emacs manual,  node  Drag  and  Drop
+(/Thanks Drew/).
+
+[:NavigationAndTracking]
+==Advanced navigation and location tracking.==
+
+Sunrise offers a few advanced mechanisms for moving around and keeping track of
+locations besides the traditional point-and-click. You can:
+
+*  Press  Return (or click) on any point of the directory path at the top of any
+of the panes to jump directly to that location in the file system.
+
+*  Install  the Lisp:sunrise-x-modeline.el extension to obtain a similar path on
+the mode line, where you can see it all the time, even when scrolling long dirs.
+
+* Use the listings of recent files (C-c C-r) and recent directories (C-c C-d) to
+reuse the paths to already visited  files  and  directories.  Recent  files  are
+managed by recentf and automatically persisted across emacs session. If you want
+the same for recent directories you can use the savehist persistence mechanism:
+
+            1. M-x customize-group RET savehist RET
+            2. Set savehist-mode to ON
+            3. Add sr-history-registry to ``Savehist Additional Variables''
+            4. Click on ``Save for future sessions''
+
+*  Use Sunrise checkpoints. Checkpoints are kind of bookmarks you can create for
+both panes simultaneously by pressing C-> (or C-c > in the console) and giving a
+name  for  the  checkpoint.  To  recall  it, press C-. (or C-c . in the console)
+Checkpoints can be persisted across emacs session the same way as the listing of
+recent  directories  (the  additional  variable  to  persist is in this case sr-
+checkpoint-registry). There's currently no way to view  the  list  of  currently
+defined  checkpoints  other  than  M-:  sr-checkpoint-registry  RET, but that'll
+probably change in the near future, since already a Sunrise  user  has  told  me
+he's working on a new extension for doing exactly that.
+
+*  Make  you own "favorites" virtual directories. Assign an extension to sunrise
+virtual buffers (there's an explanation of how to do it in the comments  to  the
+Sunrise  Commander)  and  press C-c C-v to create a pure virtual buffer. You can
+copy files and directories from the other pane to this one, and then save it  as
+a  file  with your extension. Whenever you open the file later, Sunrise will see
+it as a directory like any other, where  you  can  copy,  rename,  delete,  etc.
+<em>**CAREFUL!**</em>  what  you  delete  in a virtual dir gets removed from the
+file system too! to remove a line only from your virtual dir just mark  it  (m),
+kill  it (k) and save the file. You can create as many files like this for work,
+hobbies and whatnot and keep them at hand in you home directory.
+
+* Install the Lisp:sunrise-x-tabs.el extension to be able to put pane buffers in
+tabs and to keep them around with all their  marks  and  state  untouched  (tabs
+cannot be made persistent across sessions, though).
+
+----
+CategoryDirectories
+CategoryEmulation

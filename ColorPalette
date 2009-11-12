@@ -126,6 +126,12 @@ How are you closing the window? You should use `q' or `x'. If you do that, all o
 [new]
 I close color palette just use mouse to click the system close button which at right top of color palette's frame. -- [[ahei]]
 
+[new:DrewAdams:2009-11-11 16:35 UTC]
+That action doesn't go through Emacs. Use `q' or `x'. -- DrewAdams
+
+
+
+
 === facemenup-palette-face-fg-at-point ===
 
 When `hl-line-mode' is active, I use command `facemenup-palette-face-fg-at-point', but it get face color of hl-line-face, 
@@ -141,6 +147,9 @@ This is the difference between exiting the palette using `x' and using `q'. If y
 
 [new]
 My meaning is: when hl-line mode is no and user call `facemenup-palette-face-fg-at-point', and then edit color on color palette and use `x' to update action, they do want to update color which cursor point to, not hl-line face, what do you think about it? -- [[ahei]]
+
+[new:DrewAdams:2009-11-11 16:35 UTC]
+When hl-line mode is on, the face under the cursor '''''is''''' face `hl-line'. That's the point. If you want some other face, then turn off hl-line mode temporarily. The code just uses the first face at point, if there is more than one. I don't want to try special-casing things for unrelated modes (e.g. hl-line mode), picking the first face unless it is `hl-line' or the moon is full etc. You can always use `facemenup-palette-face-fg-at-mouse' instead - IOW, just click the place you want to pick up a face. -- DrewAdams
 
 ----
 Lisp:palette.el, Lisp:facemenu+.el
