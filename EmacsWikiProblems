@@ -17,7 +17,8 @@ Click the link for ##José Alfredo Romero L.## on RecentChanges ---e.g. for 2009
 
 You get to the normal "This page does not exist" page, but the link to create it has this text: <tt>This page does not exist, but you can __[Self:action=edit;id=Jos%c3%a9_Alfredo_Romero_L.__ create it now].</tt> I underlined the link part. -- DrewAdams
 
-
+[new]
+Indeed. Thanks for reporting it. Hopefully fixed. -- AlexSchroeder
 
 == Problems with Download Link ==
 

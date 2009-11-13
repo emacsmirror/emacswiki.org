@@ -1,6 +1,59 @@
 It can be useful to insert parentheses, braces, quotes and the like in matching pairs -- e.g., pressing "##(##" inserts '##()##', with the cursor in between. In the TextMate editor, this is called "auto-paired characters".
 
-== Simple auto-pairing ==
+== Implementations ==
+
+=== autopair.el ===
+
+Autopair.el (hosted here [http://autopair.googlecode.com/svn/trunk/autopair.el autopair.el] in http://autopair.googlecode.com) is a minor-mode that works with almost all major modes.  This is probably most likely the easiest (and best) way to achieve autopairs functionality in all your favorite modes.
+
+Key Points:
+
+* it's a little less intrusive than some other extensions since it preserves the original bindings for the keys it rebinds;
+* it's generic: discovers which characters to pair based on the currently active syntax table;
+* tries to do autopairing/autoskipping in a way that will contribute to balancing out the parenthesis.
+
+==== How does this work? ====
+
+Does it make use of command loop hooks?  Well the answer to the question "how" is "read the source code", but in short, yes :), ##post-command-hook## is used. Here's is a snippet of the binding for an opening brace/parenthesis/whatever
+
+   (defun autopair-insert-opening ()
+     (interactive)
+     (when (autopair-pair-p)
+       (setq autopair-action (list 'opening (autopair-find-pair) (point))))
+     (autopair-fallback))
+
+##autopair-fallback## takes care of running the original binding. When running the ##post-command-hook## one reads ##autopair-action## and decides what to do.
+-- JoaoTavora
+
+==== Conflicts with paredit-mode ====
+
+Autopair and paredit-mode don't play well together.  If you have set (autopair-global-mode 1), and paredit-mode is turned on, you will get '(()' when you type '('.
+
+Here is a code sample that turns on autopairs for the modes listed in autopair-modes, but disables it when paredit-mode is turned on:
+
+<pre>
+  (require 'autopair)
+
+  (defvar autopair-modes '(r-mode ruby-mode))
+  (defun turn-on-autopair-mode () (autopair-mode 1))
+  (dolist (mode autopair-modes) (add-hook (intern (concat (symbol-name mode) "-hook")) 'turn-on-autopair-mode))
+
+  (require 'paredit)
+  (defadvice paredit-mode (around disable-autopairs-around (arg))
+    "Disable autopairs mode if paredit-mode is turned on"
+    ad-do-it
+    (if (null ad-return-value)
+        (autopair-mode 1)
+      (autopair-mode 0)
+      ))
+
+  (ad-activate 'paredit-mode)
+
+</pre>
+
+-- TimCHarper
+
+=== SkeletonMode ===
 
 The [SkeletonMode Skeleton library] provides pair insertion via the ##skeleton-insert-maybe## command, which can be bound to the opening key:
 
@@ -13,7 +66,25 @@ The ##skeleton-pair## variable must be non-##nil## for pairing to occur. Pairing
 
 Skeletons also work with selections -- typing the opening character will wrap the selected text in the opening and closing characters.
 
-== Better pairing ==
+==== Filtering ====
+
+By default, pairing will not be done if the following character is part of a word (##skeleton-pair-on-word##). To limit pairing further, the variable ##skeleton-pair-filter-function## points to a function which determines whether pairing is appropriate. If the function returns ##nil##, paired insertion ''is'' attempted; otherwise, paired insertion will ''not'' be performed.
+
+For example,
+
+    (setq skeleton-pair-filter-function
+          '(lambda ()
+             (cond
+              ((eq last-command-char ?\")
+               (or (looking-at   (regexp-quote (string last-command-char)))
+                   (looking-back (regexp-quote (string last-command-char)))
+                   (looking-back "[[:graph:]]")))
+              (t
+               (looking-at (regexp-quote (string last-command-char)))))))
+
+The default clause above (##t##) means '##()##' will only be inserted if the cursor is not followed by '##(##' in the text. See the documentation of ##skeleton-pair-insert-maybe## (##C-h f skeleton-pair-insert-maybe##) for more information.
+
+=== TextMate.el ===
 
 <tt>[http://code.google.com/p/emacs-textmate/ textmate.el]</tt> extends the pairing behavior: the cursor "moves over" closing characters instead of inserting new ones, and empty pairs like '##()##' are deleted with a single keypress. ParEdit, a minor mode for Lisp-like languages, also provides both these features.
 
@@ -93,29 +164,6 @@ and bind ##autopair-insert## to the necessary key(s).
 [new]
 The above code has been made into a package [http://github.com/ramblex/emacs-textmate here]. It has a few neat little extras such as being able to turn off the pairing of some characters in some modes.
 
-=== autopair.el ===
-
-Try out [http://autopair.googlecode.com/svn/trunk/autopair.el autopair.el] hosted in http://autopair.googlecode.com for yet another approach:
-
-* it's a little less intrusive than some other extensions since it preserves the original bindings for the keys it rebinds;
-* discovers which characters to pair based on the currently active syntax table;
-* tries to do autopairing/autoskipping in a way that will contribute to balancing out the parenthesis.
-
-[new]
-How does this work? Does it make use of command loop hooks?
-[new]
-Well the answer to the question "how" is "read the source code", but in short, yes :), ##post-command-hook## is used. here's is a snippet of the binding for an opening brace/parenthesis/whatever
-
-   (defun autopair-insert-opening ()
-     (interactive)
-     (when (autopair-pair-p)
-       (setq autopair-action (list 'opening (autopair-find-pair) (point))))
-     (autopair-fallback))
-
-##autopair-fallback## takes care of running the original binding. When running the ##post-command-hook## one reads ##autopair-action## and decides what to do.
--- JoaoTavora
-
-
 === CC Mode ===
 
 To use these commands in [CcMode CC Mode]:
@@ -140,7 +188,7 @@ To use these commands in [CcMode CC Mode]:
 
 The ##autopair-close-block## command ensures that ##}##'s are placed on separate lines.
 
-== Electric RET ==
+=== Electric RET ===
 
 : '''[http://img8.imageshack.us/img8/9479/openparen.gif Short video demonstration]'''
 
@@ -159,24 +207,6 @@ Similar to the "electric" behavior of [CcMode CC Mode], ##RET## can be made to p
 
 Why is this useful? Watch the little screencast above. The ##RET## key "opens" parenthetical expressions while editing; the ##)## key "closes" them. This is particularly convenient when writing Lisp code, as it facilitates line-wise editing without violating good code style.
 
-== Filtering ==
-
-By default, pairing will not be done if the following character is part of a word (##skeleton-pair-on-word##). To limit pairing further, the variable ##skeleton-pair-filter-function## points to a function which determines whether pairing is appropriate. If the function returns ##nil##, paired insertion ''is'' attempted; otherwise, paired insertion will ''not'' be performed.
-
-For example,
-
-    (setq skeleton-pair-filter-function
-          '(lambda ()
-             (cond
-              ((eq last-command-char ?\")
-               (or (looking-at   (regexp-quote (string last-command-char)))
-                   (looking-back (regexp-quote (string last-command-char)))
-                   (looking-back "[[:graph:]]")))
-              (t
-               (looking-at (regexp-quote (string last-command-char)))))))
-
-The default clause above (##t##) means '##()##' will only be inserted if the cursor is not followed by '##(##' in the text. See the documentation of ##skeleton-pair-insert-maybe## (##C-h f skeleton-pair-insert-maybe##) for more information.
-
 == Tips and tricks ==
 
 To quickly "jump out of" a matched pair and to the end of the line, type '##C-e##'. See OpenNextLine to "jump" onto a new line.
@@ -189,5 +219,31 @@ The SkeletonMode page explores skeletons more broadly.
 
 [ParEdit ParEdit] is a minor mode for Lisp languages, and provides enhanced [[sexp]] editing, navigating and manipulating. It does all of the above and more (but targets Lisp).
 
+[new]
+hi, I use your AutoPairs, its a good tool.
+
+1. can you add pair "`'" in emacs-lisp-mode to AutoPairs, its so common in emacs-lisp-mode.
+
+2. After I bind "C-h"(I bind "C-x /" to help-command) to autopair-backspace, when I type "C-h", I get one error message "Lisp nesting exceeds `max-lisp-eval-depth'"
+
+3.
+<pre>
+ (setq a <cursor here> bcd")
+or
+ (setq a '<cursor here>abc))
+</pre>
+
+this example, when I type double quotes or paren, it became this:
+<pre>
+ (setq a ""bcd")
+or
+(setq a '()abc))
+</pre>
+
+do you have a good way to solve it?
+
+3x
+
 ----
 CategoryCode CategoryTemplates CategoryParentheses
+

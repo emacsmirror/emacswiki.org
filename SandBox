@@ -28,24 +28,6 @@ done things. Then come back here to experiment. Note that you need not save your
 
 ----
 
-##''<em>emph</em> with ital''## --> ''<em>emph</em> with ital''
-
-##//<em>emph</em> with ital//## --> //<em>emph</em> with ital//
-
-##<em>//emph// with ital</em>## --> <em>//emph// with ital</em> -- this one is interesting
-
-##<em>''emph'' with ital</em>## --> <em>''emph'' with ital</em> -- this one too
-
-##<em>''//emph//'' with ital</em>## --> <em>''//emph//'' with ital</em>
-
-
-##<em>//''emph''// with ital</em>## --> <em>//''emph''// with ital</em> --- this one is interesting
-
-##<em>//"emph"// with ital</em>## --> <em>//"emph"// with ital</em> -- this one too
-
-##<em>''emph'' with ital</em>## --> <em>''emph'' with ital</em> -- also interesting
-
-##<em>"emph" with ital</em>## --> <em>"emph" with ital</em> -- normal double quotes
 
 
 ##<tt>[[test.el]]</tt>## --> <tt>[[test.el]]</tt>
@@ -59,4 +41,15 @@ done things. Then come back here to experiment. Note that you need not save your
 ##<tt>//''[[test.el]]''//</tt>## --> <tt>//''[[test.el]]''//</tt> -- likewise
 
 ##<tt>''"[[test.el]]"''</tt>## --> <tt>''"[[test.el]]"''</tt> -- quotes outside and italics
+
+Test of yaoddmuse!
+
+Editing as a minor edit this time ^-^ sorry about that
+
+*** aaa
+**** bbb
+***** ccc
+## dddd
+### eee
+#### ffff
 

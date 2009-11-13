@@ -1,42 +1,37 @@
-Emacs 23 natively supports OS X as a Cocoa application.  See below for available variants. Mac OS X comes with a terminal-only version of Emacs (21.2 on OS X 10.3, 22.1 on OS X 10.5).
-
-Emacs will no longer support Mac OS 10.3 unless someone steps up to write the alternative code, according to Adrian Robert.
-
 == OS X Binaries ==
 
 Here are some Emacs and XEmacs binaries for OS X.
 
 Carbon is a C language API by Apple that is compatible with older Mac OS APIs.
 
-Cocoa is an objective C API by !NeXT used in newer Mac applications.
+Cocoa is an objective C API by !NeXT used in newer Mac applications (included in Emacs 23.1)
 
-Note: If you are a Mac user new to Emacs, then Aquamacs is the recommended choice. If you've used Emacs before and have your own .emacs file, then Carbon Emacs is the recommended choice (which will be superceded by Emacs.app when it's released.)
+Note: If you are a Mac user new to Emacs, then Aquamacs is the recommended choice. If you've used Emacs before and have your own .emacs file, then Emacs.app (GNU Emacs compiled with Cocoa support) is the recommended choice.
 
 If you recommend one package or another, just add your name to the list.
 We should try pruning this list, giving clear recommendations, if at all possible.
 
 See http://www.hoenn.net/blog/index.php?/archives/76-Die-Emacssituation-unter-OS-X.html  for a commented list of ports (in german).
 
+=== Binary Vanilla builds ===
 
-=== Full distributions ===
-Custom distributions contain startup routines and tweaks to make Emacs' UI behavior more "Mac-like". In addition to that, they typically include recent versions of popular packages.
-* http://aquamacs.org -- AquamacsEmacs is a convenient distribution based on GNU Emacs 22.3 and, in a preview version, GNU Emacs 23.1. Aquamacs  comes preconfigured with a large number for packages and differs from other Emacsen in that it feels more like an OS X application. OS X standard keyboard shortcuts are supported, files open in separate windows or tabs, nice fonts are available, and it has a convenient drag&drop installer. Hundreds of file types are supported (C, Java, HTML, Python, Ruby, AppleScript, XML, R (Splus), LaTeX (AUCTeX) etc.). All these extra modes come included and readily configured -- no InitFile hacking. Spell checking is easy to install (e.g., CocoAspell) and asian input methods are also supplied, and options to deal with the missing Meta key on Mac keyboards. A Universal App for PPC and Intel Macs that works well on Panther, Tiger and Leopard. Recommended for Mac users who want an Emacs that is tailored to the Mac.
-
-* CarbonEmacsPackage -- Carbon Emacs Package is a Mac-friendly distribution based on GNU Emacs 22.3.  Tons of extra packages (including AUCTeX, ColorTheme, EmacsMuse, EmacsSession, EmacsSpeaksStatistics, HaskellMode, HowmMode, [[Mew]], [NxhtmlMode nXhtml], PhpMode, PoMode, PsgmlMode, PythonMode, RubyMode etc.) come with it.  Several Mac-friendly features are added; window-opacity, OSX keyboard shortcuts (MacKeyMode), cocoa-stlye print dialog (MacPrintMode) and support for filenames with accent signs.  Actively developed by SeijiZenitani; recommended by LuisFernandes.  A Universal Binary application is available Leopard. There are builds for older Mac OS variants, but nothing current.
-
-* http://members.shaw.ca/akochoi-xemacs/ -- XEmacs 21.5.18 *beta*, AndrewChoi.  Also available via !DarwinPorts.  Via patches from his home page, you can fix a number of issues, and the patches apply to XEmacs 21.5.22 (See AkochoiXEmacsGplCompliance).
-
-
-=== Binary CVS builds ===
 These builds are based on a CVS version of GNU Emacs and do not contain any additional packages or patches. Popular Mac keyboard shortcuts are available, though (e.g. Command-O for opening a file using a file picker); these are mapped to the Super modifier.
-* EmacsApp -- Initially an independent GNU Emacs port to the OpenStep APIs, as implemented by Cocoa on OS X, with a more concerted attempt to follow OS X desktop and UI conventions, this code has been integrated into GNU Emacs CVS (as of July 2008) and serves as the foundation for common Mac builds. For instructions on building from source, see <tt>nextstep/INSTALL</tt> in the emacs source tree. Binary release candidate builds from the  [[http://emacs-app.sourceforge.net/ Emacs.app homepage]] are not directly relevant to Mac end users, because they have been superseded by more recent builds.  
 
-* http://emacsformacosx.com/ -- Emacs releases (including 23.1), Pretests and Nightly builds of Cocoa Emacs from CVS.  NSPlatformSupport is a lisp package providing some moderate additional platform compliance for the Cocoa-based CVS build. MacOSTweaks has various small ways of fixing or improving the use of Emacs on Mac OS (9 and X). 
+* http://emacsformacosx.com/ -- GNU Emacs 23.1 (Cocoa)
 
 * http://atomized.org/wp-content/cocoa-emacs-nightly/ -- Nightly builds of Cocoa Emacs 23 from CVS, provided by IanEure
 
+=== Distributions with extras ===
 
-== OS 9 ==
+Custom distributions contain startup routines and tweaks to make Emacs' UI behavior more "Mac-like". In addition to that, they typically include recent versions of popular packages.
+
+* http://aquamacs.org -- AquamacsEmacs is a convenient distribution based on GNU Emacs 22.3 and, in a preview version, GNU Emacs 23.1. Aquamacs  comes preconfigured with a large number for packages and differs from other Emacsen in that it feels more like an OS X application. OS X standard keyboard shortcuts are supported, files open in separate windows or tabs, nice fonts are available, and it has a convenient drag&drop installer. Hundreds of file types are supported (C, Java, HTML, Python, Ruby, AppleScript, XML, R (Splus), LaTeX (AUCTeX) etc.). All these extra modes come included and readily configured -- no InitFile hacking. Spell checking is easy to install (e.g., CocoAspell) and asian input methods are also supplied, and options to deal with the missing Meta key on Mac keyboards. A Universal App for PPC and Intel Macs that works well on Panther, Tiger and Leopard. Recommended for Mac users who want an Emacs that is tailored to the Mac.
+
+* CarbonEmacsPackage -- Carbon Emacs Package is a Mac-friendly distribution based on GNU Emacs 22.3.  Tons of extra packages (including AUCTeX, ColorTheme, EmacsMuse, EmacsSession, EmacsSpeaksStatistics, HaskellMode, HowmMode, [[Mew]], [NxhtmlMode nXhtml], PhpMode, PoMode, PsgmlMode, PythonMode, RubyMode etc.) come with it.  Several Mac-friendly features are added; window-opacity, OSX keyboard shortcuts (MacKeyMode), cocoa-stlye print dialog (MacPrintMode) and support for filenames with accent signs.  A Universal Binary application is available Leopard. There are builds for older Mac OS variants, but nothing current.
+
+* http://members.shaw.ca/akochoi-xemacs/ -- XEmacs 21.5.18 *beta*, AndrewChoi.  Also available via !DarwinPorts.  Via patches from his home page, you can fix a number of issues, and the patches apply to XEmacs 21.5.22 (See AkochoiXEmacsGplCompliance).
+
+=== OS 9 ===
 
 As far as GNU Emacs and Mac OS 9 or earlier is concerned, the current available version is 20.6.  It does not support asynchronous processes or network connections, so Gnus and ViewMail do not work.  A hack using AppleEvents has been used to make RMAIL interface with Eudora if it exists on the Macintosh.
 
@@ -44,19 +39,80 @@ The most recent available version of XEmacs is Pitts Jarvis's XEmacs 19.14: http
 
 Thanks to SebastienKirche a precompiled development release of GNU Emacs 21.3.50 is available for MacOS9 at http://sebastien.kirche.free.fr/emacs_stuff/en.html   The cut/copy/paste buffer is not shared with the OS, so no pasting from other applications.  Drag and drop is not supported on the command line, but draging a text file to the application icon is.  Also, it works when QuickTime 5.0.5 is installed, but not with 4.1.2   If you're missing QT5 you should be able to get it here [ http://docs.info.apple.com/article.html?artnum=120132 ]   --- SamGeorge 2009-06-18
 
+== Build From Source ==
 
-== X11 ==
+=== Getting the Source ===
 
-Apple's X11 seems to work better for me.
-I have XEmacs 21.4 running, and it is co-existing and performing well. Fink worked great for XEmacs.
+==== CVS ====
 
-* http://www.apple.com/downloads/macosx/apple/macosx_updates/x11formacosx.html
+Directions for accessing the emacs CVS are found at ##<http://savannah.gnu.org/cvs/?group=emacs>##. To download emacs, use the command:
 
--- Stephen Ryan 3/9/03
+   cvs -z3 -d:pserver:anonymous@cvs.savannah.gnu.org:/sources/emacs co emacs
+   (or `cvs -z3 up', if you already had checked it out)
 
-I've used XEmacs 21.4 and 21.5 with Fink XFree86 (version forgotten, up to late 2004), homebrew X.org 6.8.0, and !DarwinPorts X.org 6.8.1.  XFree86 wasn't very good, both X.org versions work fine except that XEmacs can't use the pasteboard to and from other apps. --- StephenTurnbull 2005/09/30
+==== Tarball ====
 
-== Fink ==
+See here: http://www.gnu.org/software/emacs/#Obtaining
+
+=== Mac OS 9 ===
+
+Emacs can be compiled on the classic MacOS using the Macintosh
+Programmer's Workshop.  MPW is a unix-like environment for the
+MacOS, which used to cost thousands $$$$ USD but is
+now freely available due to believed obsolescence.  Die hard
+MacOS9 aficiondos rejoice.
+
+MPW is available from:
+ftp://ftp.apple.com/developer/Tool_Chest/Core_Mac_OS_Tools/MPW_etc./
+
+Then, follow the instructions in the Emacs source, in the file $EMACS/mac/INSTALL .
+
+=== OS X ===
+
+There are many options for building emacs (such as whether to build the X11 version), which are discussed in the INSTALL file. There is also a script (emacs/mac/make-package) to create a Mac OS X package for use by the installer.
+
+==== Cocoa Emacs ====
+
+Emacs 23.1 ships with Cocoa support.  You can build it by running something like the following:
+
+<pre>
+  ./configure --with-ns
+  make
+  make install
+</pre>
+
+When the build is complete, you should see Emacs.app in ./nextstep/Emacs.app.  Simply copy it to your applications folder and open it to run.
+
+For more detailed instructions, see the <tt>nextstep/INSTALL</tt> [http://cvs.savannah.gnu.org/viewvc/emacs/nextstep/INSTALL?root=emacs&view=markup file].  Additionally, you may benefit from reading the build script here: http://github.com/ieure/emacs-nightly.  
+
+The build instructions have worked for these people: (add yourself here):
+
+: (Confirmed - BenMos - 15Mar2009 - Leopard 10.5.6)
+: (Confirmed - ThomasKappler - February 2009 - Tiger 10.4.11)
+: (Confirmed - EdwinBenavides - May 15, 2009 - Leopard 10.5.7)
+: AlexSchroeder recommends building from source if you have 10.4 or better
+: What worked for me on Snow Leopard 10.6.1 is to use <tt>configure --with-ns CFLAGS=-m32 LDFLAGS=-m32</tt>, using the CVS source as of last night. - StephanBergmann, October 13, 2009.
+
+==== Carbon Emacs (deprecated) ====
+
+Directions to build and install may be found in the file newly downloaded to emacs/mac/INSTALL. The basic build and installation of the carbon Emacs application uses the commands:
+
+    ./configure --enable-carbon-app
+    make
+    sudo make install
+
+Note: Carbon emacs has been replaced with Cocoa Emacs in Emacs 23.1.
+
+=== Misc Reports ===
+
+[new]
+I've been using the instructions from Andrew Choi with Panther and the new apple development kit (you must upgrade) and am tracking cvs. It's working fine, I'd recommend it to anyone. 
+
+The only problem I've had is that term and ansi-term don't behave properly when I ssh to solaris.
+
+== Packages ==
+
+=== Fink ===
 
 Fink includes the following packages:
 
@@ -75,7 +131,7 @@ and even AucTeX!
 
 Note: OS X 10.2.2 changed the unexec-mechanism used by Emacs, so the prepackaged Emacs cannot be used for 10.2.2.  You may want to either get the latest source from Emacs CVS and build it yourself (see Andrews page for the FAQ) or use XEmacs instead. -- ThorbjoernRavnAndersen
 
-== MacPorts ==
+=== MacPorts ===
 
 !MacPorts is another means of installing Emacs on OS X (and other unix-alikes for that matter). It provides the following packages:
 
@@ -99,38 +155,15 @@ or (if you prefer a more recent version)
 
 It's also possible to build the development version of GNU Emacs with ATSUI -- Apple Type Services for Unicode Imaging. 
 
-== Misc Reports ==
+== Tips ==
 
-I've been using the instructions from Andrew Choi with Panther and the new apple development kit (you must upgrade) and am tracking cvs. It's working fine, I'd recommend it to anyone. 
-
-The only problem I've had is that term and ansi-term don't behave properly when I ssh to solaris.
-
-== Call AppleScript from Emacs ==
+=== Call AppleScript from Emacs ===
 
 I use Andrew Choi's build of GNU Emacs at work every day on OS X. I keep some notes and some Lisp functions for calling AppleScript from Emacs in my advogato.org diary:
 
 http://advogato.org/person/wainstead/
 
-== Build From Source ==
-
-To build your own Carbon Emacs.app with installer from CVS you need to get the source:
-
-   cvs -z3 -d:pserver:anonymous@cvs.savannah.gnu.org:/sources/emacs co emacs
-   (or `cvs -z3 up', if you already had checked it out)
-
-then build (instructions due to CarlGroner):
-
-The current option for OS X users appears to be building the nextstep/Cocoa version as documented in the <tt>nextstep/INSTALL</tt> [http://cvs.savannah.gnu.org/viewvc/emacs/nextstep/INSTALL?root=emacs&view=markup file].
-
-Following those steps seems to have worked fine for me. Can anyone confirm?
-
-: (Confirmed - BenMos - 15Mar2009 - Leopard 10.5.6)
-: (Confirmed - ThomasKappler - February 2009 - Tiger 10.4.11)
-: (Confirmed - EdwinBenavides - May 15, 2009 - Leopard 10.5.7)
-: AlexSchroeder recommends building from source if you have 10.4 or better
-: What worked for me on Snow Leopard 10.6.1 is to use <tt>configure --with-ns CFLAGS=-m32 LDFLAGS=-m32</tt>, using the CVS source as of last night. - StephanBergmann, October 13, 2009.
-
-== Encoding for Terminal.app on OS X  ==
+=== Encoding for Terminal.app on OS X  ===
 
 * UTF-8
 
@@ -156,17 +189,13 @@ Preferences>>Settings>>Keyboard. Select the "+" button and you will see that you
 key with the "control" modifier. Select "send string to shell", and enter "ESCp", i.e., emacs M-p. Similarly,
 define control cursor up to send "ESCn" to the shell.
 
-== Extended platform support in Emacs 23 (NextStep / Cocoa port) ==
-
-Extended support for the Mac platform in Emacs 23 is available via the NSPlatformSupport package.  The functionality provided was available in Emacs.app, before it was merged into GNU Emacs.
-
-== Emacs keybindings in Cocoa Apps ==
+=== Emacs keybindings in Cocoa Apps ===
 
 This information does not regard the actual use of emacs, but I think many people will be happy to find out that some cursor movement / text editing keybindings can be used in Cocoa Apps. If you ever happen to use any other application on your Mac ... You can also set up additional keybindings as described in [http://developer.apple.com/documentation/Cocoa/Conceptual/EventOverview/TextDefaultsBindings/TextDefaultsBindings.html this document].
 
 http://www.lorax.com/FreeStuff/TextExtras.html provides additional Emacs like features to every Cocoa application like alt-/ completion
 
-== Emacs keybindings in Terminal ==
+=== Emacs keybindings in Terminal ===
 
 [new]
 So control-s is just beeping at me in emacs in the Mac OS X Terminal (10.4) on my home machine but works fine on 10.2 on my work machine -- what gives?  I've looked into the flow control tty issue and tried to disable it -- still emacs just sits there beeping.  M-x save-buffers and M-x isearch gets to be a pain.  Any hints for the Mac OS X Terminal?
@@ -191,11 +220,11 @@ http://andrewmcdermott.blogspot.com/2009/11/cmd-key-happy-swap-cmdalt-keys-in.ht
 [new]
 : C-M-f binding is processed properly in Leopard's Terminal.app. I filed a bug-report with Apple when running Tiger and actually received an email reply telling me this would be fixed in Leopard (which it was).
 
-== Emacs Keybindings under X11 ==
+=== Emacs Keybindings under X11 ===
 
 See the following blog post for using alt as your meta key:
 
 http://tylerkieft.com/archives/2006/10/05/redefine-the-x11-meta-key-in-mac-os-x/
 
 ------
-CategoryPorts
+CategoryPorts CategoryBuilding

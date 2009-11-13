@@ -247,7 +247,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Version:
-(defconst traverse-version "1.1.38")
+(defconst traverse-version "1.1.40")
 
 ;;; Code:
 
@@ -1128,14 +1128,14 @@ See headers of traverselisp.el for example."
 
 (defvar traverse-incremental-mode-map
   (let ((map (make-sparse-keymap)))
-    (define-key map [?q] 'traverse-quit)
-    (define-key map [return] 'traverse-incremental-jump-and-quit)
-    (define-key map [S-down] 'traverse-incremental-scroll-down)
-    (define-key map [S-up] 'traverse-incremental-scroll-up)
-    (define-key map [down] 'traverse-incremental-next-line)
-    (define-key map [up] 'traverse-incremental-precedent-line)
-    (define-key map [?\C-n] 'traverse-incremental-next-line)
-    (define-key map [?\C-p] 'traverse-incremental-precedent-line)
+    (define-key map (kbd "q") 'traverse-quit)
+    (define-key map (kbd "RET") 'traverse-incremental-jump-and-quit)
+    (define-key map (kbd "<S-down>") 'traverse-incremental-scroll-down)
+    (define-key map (kbd "<S-up>") 'traverse-incremental-scroll-up)
+    (define-key map (kbd "<down>") 'traverse-incremental-next-line)
+    (define-key map (kbd "<up>") 'traverse-incremental-precedent-line)
+    (define-key map (kbd "C-n") 'traverse-incremental-next-line)
+    (define-key map (kbd "C-p") 'traverse-incremental-precedent-line)
     map)
   "Keymap used for traversedir commands.")
 
@@ -1167,6 +1167,8 @@ Special commands:
 (defvar traverse-incremental-quit-flag nil)
 (defvar traverse-incremental-current-buffer nil)
 (defvar traverse-incremental-occur-overlay nil)
+(defvar traverse-incremental-read-fn
+  (if (fboundp 'read-key) 'read-key 'traverse-read-char-or-event))
 
 (defun traverse-goto-line (numline)
   "Non--interactive version of `goto-line.'"
@@ -1239,7 +1241,6 @@ Special commands:
          (evt (unless chr (read-event))))
     (or chr evt)))
 
-
 (defun traverse-incremental-read-search-input (initial-input)
   "Read each keyboard input and add it to `traverse-incremental-search-pattern'."
   (let* ((prompt       (propertize traverse-incremental-search-prompt 'face '((:foreground "cyan"))))
@@ -1254,7 +1255,7 @@ Special commands:
     (catch 'break
       (while 1
         (catch 'continue
-          (setq char (traverse-read-char-or-event
+          (setq char (funcall traverse-incremental-read-fn
                       (concat prompt traverse-incremental-search-pattern doc)))
           (case char
             ((or down ?\C-n) ; Next line
@@ -1269,7 +1270,8 @@ Special commands:
              (traverse-incremental-precedent-line)
              (traverse-incremental-occur-color-current-line)
              (throw 'continue nil)) ; Fix me: Is it needed?
-            ((or ?\e ?\r) (throw 'break nil))    ; RET or ESC break and exit code.
+            ((or ?\e ?\r) ; RET or ESC break and exit code.
+             (throw 'break (message "Incremental Search completed")))    
             (?\d ; Delete last char of `traverse-incremental-search-pattern' with DEL.
              (unless traverse-incremental-search-timer
                (traverse-incremental-start-timer))
@@ -1277,7 +1279,7 @@ Special commands:
              (setq traverse-incremental-search-pattern (mapconcat 'identity (reverse tmp-list) ""))
              (throw 'continue nil))
             (?\C-g ; Quit and restore buffers.
-             (setq traverse-incremental-quit-flag t) (throw 'break nil))
+             (setq traverse-incremental-quit-flag t) (throw 'break (message "Quit")))
             ((or right ?\C-z) ; persistent action
              (traverse-incremental-jump) (other-window 1))
             (t
@@ -1289,7 +1291,6 @@ Special commands:
                    (setq traverse-incremental-search-pattern (mapconcat 'identity (reverse tmp-list) ""))
                    (throw 'continue nil))
                (error (throw 'break nil))))))))))
-
 
 
 (defun traverse-incremental-filter-alist-by-regexp (regexp buffer-name)

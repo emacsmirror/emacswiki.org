@@ -58,6 +58,12 @@ git-emacs is yet another git mode on emacs for newbies.
 * Repository: ##git clone git://github.com/tsgates/git-emacs.git##
 * Documentation: http://files.taesoo.org/git-emacs/git-emacs.html
 
+mo-git-blame is an interactive and iterative major mode for git blame.
+
+* Homepage: http://www.bunkus.org/blog/2009/10/an-interactive-iterative-git-blame-mode-for-emacs/
+* Repository: ##git clone git://git.bunkus.org/mo-git-blame.git##
+* Documentation: http://www.bunkus.org/cgi-bin/gitweb.cgi?p=mo-git-blame.git;a=blob;f=README;hb=HEAD
+
 More information:
 
 * [http://xtalk.msk.su/~ott/en/writings/emacs-vcs/EmacsGit.html Work with Git from Emacs] is an article by AlexOtt that provides more information about each of the mentioned packages.

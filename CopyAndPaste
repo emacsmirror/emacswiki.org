@@ -408,6 +408,26 @@ Enjoy.
 </pre>
 
 
+== Separating the killring and the system pasteboard ==
+
+Emacs 23.1 joined the killring and the system pasteboard. I prefer the old behavior, when they were separate.  This will achieve just that (tested on OS X):
+
+<pre>
+  ;; (setq interprogram-cut-function 'x-select-text)
+  ;; (setq interprogram-paste-function x-cut-buffer-or-selection-value)
+  (setq interprogram-cut-function nil)
+  (setq interprogram-paste-function nil)
+  (defun paste-from-pasteboard () (interactive) (insert (ns-get-pasteboard)))
+  (defun copy-to-pasteboard (p1 p2) (interactive "r*") (ns-set-pasteboard (buffer-substring p1 p2)))
+  (defun cut-to-pasteboard (p1 p2) (interactive "r*") (ns-set-pasteboard (filter-buffer-substring p1 p2 t)) )
+  (global-set-key (kbd "s-v") 'paste-from-pasteboard)
+  (global-set-key (kbd "s-c") 'copy-to-pasteboard)
+  (global-set-key (kbd "s-x") 'cut-to-pasteboard)
+
+
+</pre>
+
+
 ----
 CategoryEmulation
 CategoryKeys

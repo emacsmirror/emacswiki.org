@@ -30,7 +30,6 @@ browsing [[command]]s described here.  See also [[Icicles - More About Multi-Com
 
 
 [:icicle-find-tag]
-[:icicle-find-tag-other-window]
 === `icicle-find-tag': Find Tags in All Tags Tables ===
 
 In vanilla Emacs, you use commands such as `find-tag' (`##M-.##') to

@@ -122,7 +122,7 @@ Smart tabs are only used when ##indent-tabs-mode## is non-##nil## (default). Typ
     (add-hook 'c-mode-common-hook
               (lambda () (setq indent-tabs-mode t)))
 
-See GuessStyle for a package which attempts to guess the proper values for ##indent-tabs-mode## and the indentation offset by analysing how the file is formatted. (Of course, since smart tabs are tab size-independent, such files do not ''have'' an offset.)
+See GuessStyle for a package which attempts to determine the proper values for ##indent-tabs-mode## and the indentation offset by analysing how the file is formatted. (Of course, since smart tabs are tab size-independent, such files do not ''have'' an offset.)
 
 [:SimpleAlgorithm]
 == Code explanation ==

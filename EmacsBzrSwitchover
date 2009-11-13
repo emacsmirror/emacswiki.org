@@ -1,12 +1,49 @@
 GNU Emacs development is switching from CVS to [http://bazaar-vcs.org Bzr].  This page is about making that switchover go smoothly.
 
 [:Where]
-== Latest Test Repository (2009-11-11) ==
+== Latest Test Repository (2009-11-12) ==
 
-Use http://bzr.notengoamigos.org/emacs-merges.tar.gz or 
-http://bzr.notengoamigos.org/emacs-merges.tar.lzma (latter is 2 megs smaller; otherwise they're the same).  See the [http://lists.gnu.org/archive/html/emacs-devel/2009-11/msg00314.html thread about it].
+Start browsing here: http://bzr.savannah.gnu.org/lh/emacs/ . To get a local copy of the repository, this is probably fastest:
 
-== Checklist ==
+<pre>
+$ scp -r yourusername@bzr.savannah.gnu.org:/srv/bzr/emacs/emacs emacs-bzr-repository
+</pre>
+
+That gets you the whole repository, but with empty dirs for the working trees.  You can "check out" (i.e., fill in) a working tree like this:
+
+<pre>
+$ cd emacs-bzr-repository
+$ ls
+Boehm-GC/	 emacs-unicode-2/   ILYA/		    ttn-vms-21-2-stash/
+Boehm-versions/  FLYSPELL/	    lexbind/		    ttn-vms-21-3-stash/
+branch-5_8/	 font-backend/	    master-UNNAMED-BRANCH/  unicode-xft/
+custom_themes/	 fx-branch/	    multi-tty/		    URL/
+DAVELOVE/	 gerd_big/	    NewVC-fileset/	    VENDOR/
+EMACS_21_1_RC/	 gerd_dbe/	    patches_21_0/	    XFT_JHD_BRANCH/
+EMACS_22_BASE/	 gerd_defvaralias/  rmail-mbox-branch/
+EMACS_23_1_RC/	 glibc-2_0_x/	    test2/
+emacs-bidi/	 gnus-5_10-branch/  trunk/
+$ cd trunk
+$ ls
+$ ls -Ca
+./  ../  .bzr/
+$ bzr checkout
+$ ls -Ca
+.		 config.guess	 .gitignore	 lwlib		 oldXMenu
+..		 config.sub	 info		 m4		 README
+admin		 configure	 INSTALL	 make-dist	 src
+.arch-inventory  configure.in	 INSTALL.CVS	 Makefile.in	 test
+autogen.sh	 COPYING	 install-sh	 mkinstalldirs	 update-subdirs
+BUGS		 .cvsignore	 kff-log-n0.out  move-if-change  vpath.sed
+.bzr		 .dir-locals.el  leim		 msdos
+ChangeLog	 doc		 lib-src	 nextstep
+config.bat	 etc		 lisp		 nt
+$ bzr log -n0
+  # See a bunch of changes fly by... hopefully some of them look familiar!
+$ 
+</pre>
+
+== Switchover Checklist ==
 
 * Test the conversion.
 
@@ -45,6 +82,8 @@ These things can be done after the switchover, we just shouldn't forget them:
 * [https://savannah.gnu.org/support/index.php?106951 Savannah ticket #106951] about upgrading Bazaar to 1.17 on Savannah.
 
 * [https://savannah.gnu.org/support/index.php?106531 Savannah ticket #106531] about bzr commit emails omitting large diffs.
+
+* [https://savannah.gnu.org/support/index.php?107118 Savannah ticket #107118] about fixing the bzr access instructions on Savannah project pages.
 
 * [http://lists.gnu.org/archive/html/emacs-devel/2009-01/msg00575.html Email with high-level plan].
 
