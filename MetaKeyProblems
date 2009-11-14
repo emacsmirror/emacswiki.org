@@ -180,10 +180,12 @@ Best option in Emacs 23 is to revert to Emacs 22 settings (alt is alt, cmd is me
     (setq mac-command-modifier 'meta)
     (setq mac-option-modifier nil)
 
-
+If you're running "emacs -nw" in Terminal.app you can swap the cmd and alt keys; see the following blog post:
+http://andrewmcdermott.blogspot.com/2009/11/cmd-key-happy-swap-cmdalt-keys-in.html.
 
 
 == Console and Terminal ==
+
 
 === NetBSD console ===
 

@@ -4,6 +4,7 @@ next time you start Emacs (and want to resume your previous session).
 
 * DeskTop -- saves and restores all open buffers
 * WcyDesktop -- similar to DeskTop, but faster by defering loading file.
+* DesktopMenu -- an extension of DeskTop that enables managing multiple desktops (possibly in a single directory)
 * Desktopaid -- saves and restores frames (http://desktopaid.sourceforge.net/)
 * WindowsMode -- comes with revive.el, which can save and restore window configurations
 * PolicySwitch -- Arranges window configurations in lists called policies.  Can save/restore the configurations.

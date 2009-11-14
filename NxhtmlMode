@@ -248,6 +248,13 @@ Contributions are welcome.
 In the mean time you can avoid using html in the heredoc.
 That will end the chunk where you want it (but will not provide the convenience of html syntax coloring and javascript dito).
 
+==== debug-on-error in autostart ====
+
+Since a few versions, `debug-on-error' is set to t in `nxhtml/autostart.el'.
+While this is useful for debugging it's not so great for production usage,
+especially because it's a global setting.  Is it really intended to be in
+the released package?
+
 
 === Solved problems ===
 

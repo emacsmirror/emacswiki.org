@@ -46,11 +46,14 @@ As you can see, keywords here include '''match''', '''complete''', '''input''', 
 
 See [[Icicles - Libraries]] for how to obtain the '''Icicles''' library files. Then:
 
-* Put those files in a directory that is in your `load-path'.
+* Put those files in a directory that is in your `load-path'. [[http://www.gnu.org/software/emacs/emacs-faq.html#Changing-load_002dpath FAQ on setting up `load-path']].
 * Load '''Icicles''': `M-x load library RET icicles RET'.
 * Turn on ''Icicle'' mode: `M-x icy-mode RET'.
 
 You’re good to go. You can use `M-x icy-mode RET' at any time to turn ''Icicle'' mode on and off.
+
+Suggestion for article:
+As a newbie, seems like doing this every time you start emacs is a completely ridiculous proposition. How about some commands to put in your init-file?
 
 
 

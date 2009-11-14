@@ -1,0 +1,11 @@
+This package extends the standard Emacs DeskTop functionality.
+It provides a %%*Desktop Menu*%% buffer for managing multiple desktops, possibly in a single directory.
+You can save, rename, delete and merge different desktops.
+
+Download the package:
+Lisp:desktop-menu.el
+
+See SessionManagement for other similar packages.
+
+----
+CategoryPersistence
