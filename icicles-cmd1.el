@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Sep 21 15:11:58 2009 (-0700)
+;; Last-Updated: Sat Nov 14 07:17:03 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 19679
+;;     Update #: 19898
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -343,6 +343,7 @@
 (defvar bbdb-complete-name-hooks)       ; In `bbdb-com.el'
 (defvar bbdb-completion-display-record) ; In `bbdb.el'
 (defvar bbdb-completion-type)           ; In `bbdb.el'
+(defvar bbdb-hashtable)                 ; In `bbdb.el'
 (defvar ess-current-process-name)       ; In `ess-inf.el'
 (defvar ess-mode-syntax-table)          ; In `ess-cust.el'
 (defvar ess-use-R-completion)           ; In `ess-cust.el'
@@ -411,14 +412,14 @@ customize option `icicle-top-level-key-bindings'."
       ;; Bind debug-on-error to something unique so that we can
       ;; detect when evaled code changes it.
       (let ((debug-on-error  old-value))
-	(setq values     (cons (eval expression) values)
+        (setq values     (cons (eval expression) values)
               new-value  debug-on-error))
       ;; If evaled code has changed the value of debug-on-error,
       ;; propagate that change to the global binding.
       (unless (eq old-value new-value)
-	(setq debug-on-error  new-value))))
+        (setq debug-on-error  new-value))))
   (let ((print-length  icicle-pp-eval-expression-print-length)
-	(print-level   icicle-pp-eval-expression-print-level))
+        (print-level   icicle-pp-eval-expression-print-level))
     (cond (insert-value
            (message "Evaluating...done. Value inserted.")
            (setq insert-value  (prefix-numeric-value insert-value))
@@ -545,32 +546,32 @@ Returns t if successful."
   (let* ((completion-ignore-case         (if (boundp 'read-file-name-completion-ignore-case)
                                              read-file-name-completion-ignore-case
                                            (memq system-type '(ms-dos windows-nt cygwin))))
-	 (completion-ignored-extensions  comint-completion-fignore)
-	 (minibuffer-p                   (window-minibuffer-p (selected-window)))
-	 (success                        t)
-	 (dirsuffix                      (cond ((not comint-completion-addsuffix)         "")
+         (completion-ignored-extensions  comint-completion-fignore)
+         (minibuffer-p                   (window-minibuffer-p (selected-window)))
+         (success                        t)
+         (dirsuffix                      (cond ((not comint-completion-addsuffix)         "")
                                                ((not (consp comint-completion-addsuffix)) "/")
                                                (t  (car comint-completion-addsuffix))))
-	 (filesuffix                     (cond ((not comint-completion-addsuffix)         "")
+         (filesuffix                     (cond ((not comint-completion-addsuffix)         "")
                                                ((not (consp comint-completion-addsuffix)) " ")
                                                (t  (cdr comint-completion-addsuffix))))
-	 (filename                       (comint-match-partial-filename))
-	 (filename-beg                   (if filename (match-beginning 0) (point)))
-	 (filename-end                   (if filename (match-end 0) (point)))
-	 (filename                       (or filename ""))
-	 (filedir                        (file-name-directory filename))
-	 (filenondir                     (file-name-nondirectory filename))
-	 (directory                      (if filedir (comint-directory filedir) default-directory))
-	 (completion                     (file-name-completion filenondir directory)))
+         (filename                       (comint-match-partial-filename))
+         (filename-beg                   (if filename (match-beginning 0) (point)))
+         (filename-end                   (if filename (match-end 0) (point)))
+         (filename                       (or filename ""))
+         (filedir                        (file-name-directory filename))
+         (filenondir                     (file-name-nondirectory filename))
+         (directory                      (if filedir (comint-directory filedir) default-directory))
+         (completion                     (file-name-completion filenondir directory)))
     (cond ((null completion)
-	   (if minibuffer-p
-	       (minibuffer-message (format " [No completions of `%s']" filename))
-	     (message "No completions of `%s'" filename))
-	   (setq success  nil))
-	  ((eq completion t)            ; Already completed: "the-file".
-	   (insert filesuffix)
-	   (unless minibuffer-p (message "Sole completion")))
-	  ((string-equal completion "") ; A directory: "dir/" - complete it.
+           (if minibuffer-p
+               (minibuffer-message (format " [No completions of `%s']" filename))
+             (message "No completions of `%s'" filename))
+           (setq success  nil))
+          ((eq completion t)            ; Already completed: "the-file".
+           (insert filesuffix)
+           (unless minibuffer-p (message "Sole completion")))
+          ((string-equal completion "") ; A directory: "dir/" - complete it.
            (condition-case nil
                (let* ((icicle-show-Completions-initially-flag      t)
                       (icicle-incremental-completion-p             'display)
@@ -583,25 +584,25 @@ Returns t if successful."
                             (file-name-nondirectory (directory-file-name choice))))
                    (insert (if (file-directory-p choice) dirsuffix filesuffix))))
              (error nil)))
-	  (t                            ; COMPLETION is the common prefix string.
-	   (let ((file            (concat (file-name-as-directory directory) completion))
+          (t                            ; COMPLETION is the common prefix string.
+           (let ((file            (concat (file-name-as-directory directory) completion))
                  (use-dialog-box  nil)) ; Inhibit use of open-file dialog box if called from menu.
-	     ;; Insert completion.  The completion string might have a different case from
+             ;; Insert completion.  The completion string might have a different case from
              ;; what's in the prompt, if `read-file-name-completion-ignore-case' is non-nil.
-	     (delete-region filename-beg filename-end)
-	     (if filedir (insert (comint-quote-filename filedir)))
-	     (insert (comint-quote-filename (directory-file-name completion)))
-	     (cond ((symbolp (file-name-completion completion directory))
-		    ;; We inserted a unique completion.  Add suffix.
-		    (insert (if (file-directory-p file) dirsuffix filesuffix))
-		    (unless minibuffer-p (message "Completed")))
-		   ((and comint-completion-recexact comint-completion-addsuffix
-			 (string-equal filenondir completion)
-			 (file-exists-p file))
-		    ;; It's not unique, but user wants shortest match.
-		    (insert (if (file-directory-p file) dirsuffix filesuffix))
-		    (unless minibuffer-p (message "Completed shortest")))
-		   ((or comint-completion-autolist (string-equal filenondir completion))
+             (delete-region filename-beg filename-end)
+             (if filedir (insert (comint-quote-filename filedir)))
+             (insert (comint-quote-filename (directory-file-name completion)))
+             (cond ((symbolp (file-name-completion completion directory))
+                    ;; We inserted a unique completion.  Add suffix.
+                    (insert (if (file-directory-p file) dirsuffix filesuffix))
+                    (unless minibuffer-p (message "Completed")))
+                   ((and comint-completion-recexact comint-completion-addsuffix
+                         (string-equal filenondir completion)
+                         (file-exists-p file))
+                    ;; It's not unique, but user wants shortest match.
+                    (insert (if (file-directory-p file) dirsuffix filesuffix))
+                    (unless minibuffer-p (message "Completed shortest")))
+                   ((or comint-completion-autolist (string-equal filenondir completion))
                     (condition-case nil ; It's not unique.  Let user choose a completion.
                         (let* ((icicle-show-Completions-initially-flag      t)
                                (icicle-incremental-completion-p             'display)
@@ -619,7 +620,7 @@ Returns t if successful."
                                      (file-name-nondirectory (directory-file-name choice))))
                             (insert (if (file-directory-p choice) dirsuffix filesuffix))))
                       (error nil)))
-		   (t (unless minibuffer-p (message "Partially completed")))))))
+                   (t (unless minibuffer-p (message "Partially completed")))))))
     success))
 
 ;;;###autoload
@@ -640,42 +641,42 @@ Uses Icicles completion."
   (interactive)
   (let ((filename  (comint-match-partial-filename)))
     (if (and filename
-	     (save-match-data (not (string-match "[~/]" filename)))
-	     (eq (match-beginning 0) (save-excursion (shell-backward-command 1) (point))))
-	(prog2 (unless (window-minibuffer-p (selected-window))
-		 (message "Completing command name..."))
-	    (icicle-shell-dynamic-complete-as-command)))))
+             (save-match-data (not (string-match "[~/]" filename)))
+             (eq (match-beginning 0) (save-excursion (shell-backward-command 1) (point))))
+        (prog2 (unless (window-minibuffer-p (selected-window))
+                 (message "Completing command name..."))
+            (icicle-shell-dynamic-complete-as-command)))))
 
 (defun icicle-shell-dynamic-complete-as-command ()
   "Dynamically complete text at point as a command.
 See `icicle-shell-dynamic-complete-filename'.
 Return t if successful."
   (let* ((filename       (or (comint-match-partial-filename) ""))
-	 (filenondir     (file-name-nondirectory filename))
-	 (path-dirs      (cdr (reverse exec-path)))
-	 (cwd            (file-name-as-directory (expand-file-name default-directory)))
-	 (ignored-extensions
-	  (and comint-completion-fignore
-	       (mapconcat #'(lambda (x) (concat (regexp-quote x) "$"))
-			  comint-completion-fignore "\\|")))
-	 (dir            "")
+         (filenondir     (file-name-nondirectory filename))
+         (path-dirs      (cdr (reverse exec-path)))
+         (cwd            (file-name-as-directory (expand-file-name default-directory)))
+         (ignored-extensions
+          (and comint-completion-fignore
+               (mapconcat #'(lambda (x) (concat (regexp-quote x) "$"))
+                          comint-completion-fignore "\\|")))
+         (dir            "")
          (comps-in-dir   ())
-	 (file           "")
+         (file           "")
          (abs-file-name  "")
          (completions    ()))
     (while path-dirs                    ; Go thru each dir in the search path, finding completions.
       (setq dir           (file-name-as-directory (comint-directory (or (car path-dirs) ".")))
-	    comps-in-dir  (and (file-accessible-directory-p dir)
-			       (file-name-all-completions filenondir dir)))
+            comps-in-dir  (and (file-accessible-directory-p dir)
+                               (file-name-all-completions filenondir dir)))
       (while comps-in-dir               ; Go thru each completion, to see whether it should be used.
-	(setq file           (car comps-in-dir)
-	      abs-file-name  (concat dir file))
-	(when (and (not (member file completions))
+        (setq file           (car comps-in-dir)
+              abs-file-name  (concat dir file))
+        (when (and (not (member file completions))
                    (not (and ignored-extensions (string-match ignored-extensions file)))
                    (or (string-equal dir cwd) (not (file-directory-p abs-file-name)))
                    (or (null shell-completion-execonly) (file-executable-p abs-file-name)))
           (setq completions  (cons file completions)))
-	(setq comps-in-dir  (cdr comps-in-dir)))
+        (setq comps-in-dir  (cdr comps-in-dir)))
       (setq path-dirs  (cdr path-dirs)))
     (let ((success  (let ((comint-completion-addsuffix  nil)
                           (icicle-candidate-help-fn
@@ -712,36 +713,36 @@ Returns `listed' if a completion listing was shown.
 
 See also `icicle-comint-dynamic-complete-filename'."
   (let* ((completion-ignore-case  (memq system-type '(ms-dos windows-nt cygwin)))
-	 (minibuffer-p            (window-minibuffer-p (selected-window)))
-	 (suffix                  (cond ((not comint-completion-addsuffix)         "")
+         (minibuffer-p            (window-minibuffer-p (selected-window)))
+         (suffix                  (cond ((not comint-completion-addsuffix)         "")
                                         ((not (consp comint-completion-addsuffix)) " ")
                                         (t  (cdr comint-completion-addsuffix))))
          (candidates              (mapcar #'list candidates))
-	 (completions             (all-completions stub candidates)))
+         (completions             (all-completions stub candidates)))
     (cond ((null completions)
-	   (if minibuffer-p
-	       (minibuffer-message (format " [No completions of `%s']" stub))
-	     (message "No completions of `%s'" stub))
-	   nil)
-	  ((= 1 (length completions))
-	   (let ((completion  (car completions)))
-	     (if (string-equal completion stub)
-		 (unless minibuffer-p (message "Sole completion"))
-	       (insert (substring completion (length stub)))
-	       (unless minibuffer-p (message "Completed")))
-	     (insert suffix)
-	     'sole))
-	  (t				; There's no unique completion.
-	   (let ((completion  (try-completion stub candidates)))
-	     ;; Insert the longest substring.
-	     (insert (substring completion (length stub)))
-	     (cond ((and comint-completion-recexact comint-completion-addsuffix
-			 (string-equal stub completion)
-			 (member completion completions))
-		    (insert suffix)     ; User wants shortest match.
-		    (unless minibuffer-p (message "Completed shortest"))
-		    'shortest)
-		   ((or comint-completion-autolist (string-equal stub completion))
+           (if minibuffer-p
+               (minibuffer-message (format " [No completions of `%s']" stub))
+             (message "No completions of `%s'" stub))
+           nil)
+          ((= 1 (length completions))
+           (let ((completion  (car completions)))
+             (if (string-equal completion stub)
+                 (unless minibuffer-p (message "Sole completion"))
+               (insert (substring completion (length stub)))
+               (unless minibuffer-p (message "Completed")))
+             (insert suffix)
+             'sole))
+          (t                            ; There's no unique completion.
+           (let ((completion  (try-completion stub candidates)))
+             ;; Insert the longest substring.
+             (insert (substring completion (length stub)))
+             (cond ((and comint-completion-recexact comint-completion-addsuffix
+                         (string-equal stub completion)
+                         (member completion completions))
+                    (insert suffix)     ; User wants shortest match.
+                    (unless minibuffer-p (message "Completed shortest"))
+                    'shortest)
+                   ((or comint-completion-autolist (string-equal stub completion))
                     (condition-case nil ;  Let user choose a completion.
                         (let* ((icicle-show-Completions-initially-flag      t)
                                (icicle-incremental-completion-p             'display)
@@ -753,10 +754,10 @@ See also `icicle-comint-dynamic-complete-filename'."
                             (delete-backward-char (length completion))
                             (insert choice suffix)))
                       (error nil))
-		    'listed)
-		   (t
-		    (unless minibuffer-p (message "Partially completed"))
-		    'partial)))))))
+                    'listed)
+                   (t
+                    (unless minibuffer-p (message "Partially completed"))
+                    'partial)))))))
 
 ;;;###autoload
 (defun icicle-shell-dynamic-complete-filename ()
@@ -765,10 +766,10 @@ Completes only if point is at a suitable position for a filename
 argument."
   (interactive)
   (let ((opoint  (point))
-	(beg     (comint-line-beginning-position)))
+        (beg     (comint-line-beginning-position)))
     (when (save-excursion
-	    (goto-char (if (re-search-backward "[;|&]" beg t) (match-end 0) beg))
-	    (re-search-forward "[^ \t][ \t]" opoint t))
+            (goto-char (if (re-search-backward "[;|&]" beg t) (match-end 0) beg))
+            (re-search-forward "[^ \t][ \t]" opoint t))
       (icicle-comint-dynamic-complete-as-filename))))
 
 ;;;###autoload
@@ -778,31 +779,31 @@ argument."
   (require 'shell)
   (let ((variable  (shell-match-partial-variable)))
     (if (and variable (string-match "^\\$" variable))
-	(prog2 (unless (window-minibuffer-p (selected-window))
-		 (message "Completing variable name..."))
-	    (icicle-shell-dynamic-complete-as-environment-variable)))))
+        (prog2 (unless (window-minibuffer-p (selected-window))
+                 (message "Completing variable name..."))
+            (icicle-shell-dynamic-complete-as-environment-variable)))))
 
 (defun icicle-shell-dynamic-complete-as-environment-variable ()
   "`shell-dynamic-complete-as-environment-variable' but uses Icicles completion."
   (require 'shell)
   (let* ((var                          (or (shell-match-partial-variable) ""))
-	 (variable                     (substring var (or (string-match "[^$({]\\|$" var) 0)))
-	 (variables                    (mapcar #'(lambda (x) (substring x 0 (string-match "=" x)))
+         (variable                     (substring var (or (string-match "[^$({]\\|$" var) 0)))
+         (variables                    (mapcar #'(lambda (x) (substring x 0 (string-match "=" x)))
                                                process-environment))
-	 (addsuffix                    comint-completion-addsuffix)
-	 (comint-completion-addsuffix  nil)
-	 (success                      (icicle-comint-dynamic-simple-complete variable variables)))
+         (addsuffix                    comint-completion-addsuffix)
+         (comint-completion-addsuffix  nil)
+         (success                      (icicle-comint-dynamic-simple-complete variable variables)))
     (if (memq success '(sole shortest))
-	(let* ((var           (shell-match-partial-variable))
-	       (variable      (substring var (string-match "[^$({]" var)))
-	       (protection    (cond ((string-match "{" var) "}")
+        (let* ((var           (shell-match-partial-variable))
+               (variable      (substring var (string-match "[^$({]" var)))
+               (protection    (cond ((string-match "{" var) "}")
                                     ((string-match "(" var) ")")
                                     (t "")))
-	       (suffix        (cond ((null addsuffix) "")
+               (suffix        (cond ((null addsuffix) "")
                                     ((file-directory-p
                                       (comint-directory (getenv variable))) "/")
                                     (t " "))))
-	  (insert protection  suffix)))
+          (insert protection  suffix)))
     success))
 
 ;;;###autoload
@@ -824,23 +825,23 @@ Complete `ess-language' object preceding point."
   (ess-make-buffer-current)
   (if (memq (char-syntax (preceding-char)) '(?w ?_))
       (let* ((comint-completion-addsuffix  nil)
-	     (end                          (point))
-	     (buffer-syntax                (syntax-table))
-	     (beg                          (unwind-protect
+             (end                          (point))
+             (buffer-syntax                (syntax-table))
+             (beg                          (unwind-protect
                                                 (save-excursion
                                                   (set-syntax-table ess-mode-syntax-table)
                                                   (backward-sexp 1)
                                                   (point))
                                              (set-syntax-table buffer-syntax)))
-	     (full-prefix                  (buffer-substring beg end))
-	     (pattern                      full-prefix)
-	     (listname                  ; See if we're indexing a list with `$'
+             (full-prefix                  (buffer-substring beg end))
+             (pattern                      full-prefix)
+             (listname                  ; See if we're indexing a list with `$'
               (and (string-match "\\(.+\\)\\$\\(\\(\\sw\\|\\s_\\)*\\)$" full-prefix)
                    (setq pattern  (if (not (match-beginning 2))
                                       ""
                                     (substring full-prefix (match-beginning 2) (match-end 2))))
                    (substring full-prefix (match-beginning 1) (match-end 1))))
-	     (classname                 ; Are we trying to get a slot via `@' ?
+             (classname                 ; Are we trying to get a slot via `@' ?
               (and (string-match "\\(.+\\)@\\(\\(\\sw\\|\\s_\\)*\\)$" full-prefix)
                    (setq pattern  (if (not (match-beginning 2))
                                       ""
@@ -848,15 +849,15 @@ Complete `ess-language' object preceding point."
                    (progn (ess-write-to-dribble-buffer (format "(ess-C-O-Name : slots..) : patt=%s"
                                                                pattern))
                           (substring full-prefix (match-beginning 1) (match-end 1)))))
-	     (components
+             (components
               (if listname
                   (ess-object-names listname)
                 (if classname
                     (ess-slot-names classname)
                   ;; Default case: It hangs here when options (error=recoves):
                   (ess-get-object-list ess-current-process-name)))))
-	;; Return non-nil to prevent history expansions
-	(or (icicle-comint-dynamic-simple-complete  pattern components) 'none))))
+        ;; Return non-nil to prevent history expansions
+        (or (icicle-comint-dynamic-simple-complete  pattern components) 'none))))
 
 (defun icicle-ess-complete-filename ()
   "`ess-complete-filename', but uses Icicles completion.
@@ -875,21 +876,21 @@ Completion in R."
   (interactive)
   (ess-make-buffer-current)
   (let* ((comint-completion-addsuffix  nil)
-	 (beg-of-line                  (save-excursion (comint-bol nil) (point)))
-	 (end-of-line                  (point-at-eol))
-	 (line-buffer                  (buffer-substring beg-of-line end-of-line))
-	 (NS                           (if (ess-current-R-at-least '2.7.0)
+         (beg-of-line                  (save-excursion (comint-bol nil) (point)))
+         (end-of-line                  (point-at-eol))
+         (line-buffer                  (buffer-substring beg-of-line end-of-line))
+         (NS                           (if (ess-current-R-at-least '2.7.0)
                                            "utils:::"
                                          "rcompgen:::"))
-	 (token-string                  ; Setup, including computation of the token
-	  (progn
-	    (ess-command (format (concat NS ".assignLinebuffer('%s')\n") line-buffer))
-	    (ess-command (format (concat NS ".assignEnd(%d)\n") (- (point) beg-of-line)))
-	    (car (ess-get-words-from-vector (concat NS ".guessTokenFromLine()\n")))))
-	 (possible-completions          ; Compute and retrieve possible completions
-	  (progn
-	    (ess-command (concat NS ".completeToken()\n"))
-	    (ess-get-words-from-vector (concat NS ".retrieveCompletions()\n")))))
+         (token-string                  ; Setup, including computation of the token
+          (progn
+            (ess-command (format (concat NS ".assignLinebuffer('%s')\n") line-buffer))
+            (ess-command (format (concat NS ".assignEnd(%d)\n") (- (point) beg-of-line)))
+            (car (ess-get-words-from-vector (concat NS ".guessTokenFromLine()\n")))))
+         (possible-completions          ; Compute and retrieve possible completions
+          (progn
+            (ess-command (concat NS ".completeToken()\n"))
+            (ess-get-words-from-vector (concat NS ".retrieveCompletions()\n")))))
     (or (icicle-comint-dynamic-simple-complete token-string possible-completions) 'none)))
 
 ;;;###autoload
@@ -902,39 +903,39 @@ Perform completion on the GDB command preceding point."
     (let ((end  (point)))               ; Used in GUD buffer.
       (setq command  (buffer-substring (comint-line-beginning-position) end))))
   (let* ((command-word
-	  ;; Find the word break.  This match will always succeed.
-	  (and (string-match "\\(\\`\\| \\)\\([^ ]*\\)\\'" command)
-	       (substring command (match-beginning 2))))
-	 (complete-list
-	  (gud-gdb-run-command-fetch-lines (concat "complete " command)
-					   (current-buffer)
-					   ;; From string-match above.
-					   (match-beginning 2))))
+          ;; Find the word break.  This match will always succeed.
+          (and (string-match "\\(\\`\\| \\)\\([^ ]*\\)\\'" command)
+               (substring command (match-beginning 2))))
+         (complete-list
+          (gud-gdb-run-command-fetch-lines (concat "complete " command)
+                                           (current-buffer)
+                                           ;; From string-match above.
+                                           (match-beginning 2))))
     ;; Protect against old versions of GDB.
     (and complete-list
-	 (string-match "^Undefined command: \"complete\"" (car complete-list))
-	 (error "This version of GDB doesn't support the `complete' command"))
+         (string-match "^Undefined command: \"complete\"" (car complete-list))
+         (error "This version of GDB doesn't support the `complete' command"))
     ;; Sort the list like readline.
     (setq complete-list  (sort complete-list (function string-lessp)))
     ;; Remove duplicates.
     (let ((first   complete-list)
-	  (second  (cdr complete-list)))
+          (second  (cdr complete-list)))
       (while second
-	(if (string-equal (car first) (car second))
-	    (setcdr first (setq second  (cdr second)))
-	  (setq first   second
-		second  (cdr second)))))
+        (if (string-equal (car first) (car second))
+            (setcdr first (setq second  (cdr second)))
+          (setq first   second
+                second  (cdr second)))))
     ;; Add a trailing single quote if there is a unique completion
     ;; and it contains an odd number of unquoted single quotes.
     (and (= (length complete-list) 1)
-	 (let ((str    (car complete-list))
-	       (pos    0)
-	       (count  0))
-	   (while (string-match "\\([^'\\]\\|\\\\'\\)*'" str pos)
-	     (setq count  (1+ count)
-		   pos    (match-end 0)))
-	   (and (= (mod count 2) 1)
-		(setq complete-list  (list (concat str "'"))))))
+         (let ((str    (car complete-list))
+               (pos    0)
+               (count  0))
+           (while (string-match "\\([^'\\]\\|\\\\'\\)*'" str pos)
+             (setq count  (1+ count)
+                   pos    (match-end 0)))
+           (and (= (mod count 2) 1)
+                (setq complete-list  (list (concat str "'"))))))
     ;; Let comint handle the rest.
     (icicle-comint-dynamic-simple-complete command-word complete-list)))
 
@@ -1102,22 +1103,23 @@ control completion behaviour using `bbdb-completion-type'."
          (orig                 (buffer-substring beg end))
          (typed                (downcase orig))
          (pattern              (bbdb-string-trim typed))
-         (ht                   (bbdb-hashtable))
+         ;; Just replace (bbdb-hashtable) by its expansion (bbdb-with-db-buffer ... bbdb-hashtable),
+         ;; to avoid the silly macro altogether and simplify user byte-compiling a little.
+         (ht                   (bbdb-with-db-buffer (bbdb-records nil t) bbdb-hashtable))
          ;; Make a list of possible completion strings (all-the-completions), and a flag to
-         ;; indicate if there's a single matching record or not (only-one-p)
+         ;; indicate if there's a single matching record or not (only-one-p).
          (only-one-p           t)
-         (all-the-completions  nil)
+         (all-the-completions  ())
          (pred
           #'(lambda (sym)
               (when (bbdb-completion-predicate sym)
                 (when (and only-one-p all-the-completions
                            (or
-                            ;; Not sure about this. more than one record
-                            ;; attached to the symbol? Does that happen?
+                            ;; Not sure about this. More than one record attached to the symbol?
+                            ;; Does that happen?
                             (> (length (symbol-value sym)) 1)
-                            ;; This is the doozy, though. Multiple syms
-                            ;; which all match the same record
-                            (delete t (mapcar #'(lambda(x)
+                            ;; This is the doozy. Multiple syms which all match the same record.
+                            (delete t (mapcar #'(lambda (x)
                                                   (equal (symbol-value x) (symbol-value sym)))
                                               all-the-completions))))
                   (setq only-one-p  nil))
@@ -1128,25 +1130,24 @@ control completion behaviour using `bbdb-completion-type'."
                                       (try-completion pattern ht)))
          (exact-match          (eq completion t)))
     (cond
-      ;; No matches found OR you're trying completion on an
-      ;; already-completed record. In the latter case, we might have to
-      ;; cycle through the nets for that record.
+      ;; No matches found OR you're trying completion on an already-completed record.
+      ;; In the latter case, we might have to cycle through the nets for that record.
       ((or (null completion)
            (and bbdb-complete-name-allow-cycling
                 exact-match             ; Which is a net of the record
                 (member orig (bbdb-record-net (car (symbol-value (intern-soft pattern ht)))))))
        (bbdb-complete-name-cleanup)     ; Clean up the completion buffer, if it exists
-       ;; Check for cycling
-       (unless (catch 'bbdb-cycling-exit
+       (unless (catch 'bbdb-cycling-exit ; Check for cycling
                  ;; Jump straight out if we're not cycling
                  (unless bbdb-complete-name-allow-cycling (throw 'bbdb-cycling-exit nil))
                  ;; Find the record we're working on.
                  (let* ((addr  (funcall bbdb-extract-address-components-func orig))
                         (rec  (and (listp addr)
-                                   ;; For now, we ignore the case where this returns more than one
-                                   ;; record. Ideally, the last expansion would be stored in a
-                                   ;; buffer-local variable, perhaps.
-                                   (car (bbdb-search-intertwingle (caar addr) (car (cdar addr)))))))
+                                   ;; For now, we ignore the case where this returns more than
+                                   ;; one record.  Ideally, the last expansion would be stored
+                                   ;; in a buffer-local variable, perhaps.
+                                   (car (bbdb-search-intertwingle (caar addr)
+                                                                  (car (cdar addr)))))))
                    (unless rec (throw 'bbdb-cycling-exit nil))
                    (if current-prefix-arg
                        ;; Use completion buffer
@@ -1175,6 +1176,7 @@ control completion behaviour using `bbdb-completion-type'."
          (when (and (or (not bbdb-expand-mail-aliases) (not (expand-abbrev)))
                     bbdb-complete-name-hooks)
            (message "No completion for `%s'" pattern) (icicle-ding)))) ; no matches
+
       ;; Match for a single record. If cycling is enabled then we don't
       ;; care too much about the exact-match part.
       ((and only-one-p (or exact-match bbdb-complete-name-allow-cycling))
@@ -1209,20 +1211,19 @@ control completion behaviour using `bbdb-completion-type'."
                                                  (min (length (downcase (car lst)))
                                                       (length pattern))))
                      (setq the-net     (car lst)
-                           lst         nil
+                           lst         ()
                            match-recs  (if primary
                                            (cons (car recs) match-recs)
                                          (append match-recs (list (car recs))))))
                  (setq lst      (cdr lst)
                        primary  nil))))
-           ;; loop to next rec
-           (setq recs     (cdr recs)
+           (setq recs     (cdr recs)    ; Next rec for loop.
                  matched  nil))
          (unless match-recs (error "Only exact matching record has net field"))
-         ;; now replace the text with the expansion
+         ;; Replace the text with the expansion
          (delete-region beg end)
          (insert (bbdb-dwim-net-address (car match-recs) the-net))
-         ;; if we're past fill-column, wrap at the previous comma.
+         ;; If we're past fill-column, wrap at the previous comma.
          (when (and (bbdb-auto-fill-function) (>= (current-column) fill-column))
            (let ((p  (point))
                  bol)
@@ -1239,9 +1240,9 @@ control completion behaviour using `bbdb-completion-type'."
          (bbdb-complete-name-cleanup)
          ;; Call the exact-completion hook
          (run-hooks 'bbdb-complete-name-hooks)))
-      ;; Partial match
-      ;; note, we can't use the trimmed version of the pattern here or
-      ;; we'll recurse infinitely on e.g. common first names
+
+      ;; Partial match.  Note: we can't use the trimmed version of the pattern here or
+      ;; we'll recurse infinitely on e.g. common first names.
       ((and (stringp completion) (not (string= typed completion)))
        (delete-region beg end)
        (insert completion)
@@ -1255,6 +1256,7 @@ control completion behaviour using `bbdb-completion-type'."
                                               (try-completion pattern ht))))
            (when (stringp completion) (delete-region beg end) (insert completion)))
          (bbdb-complete-name beg)))     ; RECURSE <================
+
       ;; Exact match, but more than one record
       (t
        (unless (eq (selected-window) (minibuffer-window)) (message "Making completion list..."))
@@ -1310,9 +1312,10 @@ control completion behaviour using `bbdb-completion-type'."
                     (let* ((icicle-show-Completions-initially-flag      t)
                            (icicle-incremental-completion-p             'display)
                            (icicle-top-level-when-sole-completion-flag  t)
-                           (choice (save-excursion
-                                     (completing-read "Complete: " (mapcar #'list dwim-completions)
-                                                      nil t pattern nil pattern))))
+                           (choice
+                            (save-excursion
+                              (completing-read "Complete: " (mapcar #'list dwim-completions)
+                                               nil t pattern nil pattern))))
                       (when choice
                         (delete-region beg end)
                         (insert choice)))
@@ -1368,15 +1371,17 @@ considered."
              (alt-fn                                      nil)
              (icicle-show-Completions-initially-flag      t)
              (icicle-candidate-alt-action-fn
-              (or icicle-candidate-alt-action-fn (setq alt-fn  (icicle-alt-act-fn-for-type "symbol"))))
+              (or icicle-candidate-alt-action-fn
+                  (setq alt-fn  (icicle-alt-act-fn-for-type "symbol"))))
              (icicle-all-candidates-list-alt-action-fn
-              (or icicle-all-candidates-list-alt-action-fn alt-fn (icicle-alt-act-fn-for-type "symbol")))
+              (or icicle-all-candidates-list-alt-action-fn alt-fn
+                  (icicle-alt-act-fn-for-type "symbol")))
              (predicate
               (or predicate
                   (save-excursion
                     (goto-char beg)
                     (if (not (eq (char-before) ?\( ))
-                        #'(lambda (sym)	;why not just nil ?   -sm
+                        #'(lambda (sym) ;why not just nil ?   -sm
                             (or (boundp sym) (fboundp sym) (symbol-plist sym)))
                       ;; If first element of parent list is not an open paren, assume that this is a
                       ;; funcall position: use `fboundp'.  If not, then maybe this is a variable in
@@ -1997,7 +2002,7 @@ Names that do not correspond to existing files are ignored.
 Existence of files with relative names is checked in the Dired
 directory (default directory)."
   (interactive "P")
-  ;; $$$$$$$ Maybe filter sets to get only file-name candidate sets? 
+  ;; $$$$$$$ Maybe filter sets to get only file-name candidate sets?
   (unless icicle-saved-completion-candidates
     (error (substitute-command-keys "No saved completion candidates.  \
 Use \\<minibuffer-local-completion-map>`\\[icicle-candidate-set-save]' to save candidates")))
@@ -2023,7 +2028,7 @@ Names that do not correspond to existing files are ignored.
 Existence of files with relative names is checked in the Dired
 directory (default directory)."
   (interactive "P")
-  ;; $$$$$$$ Maybe filter sets to get only file-name candidate sets? 
+  ;; $$$$$$$ Maybe filter sets to get only file-name candidate sets?
   (let* ((default-directory  (if prompt-for-dir-p
                                  (read-file-name "Directory: " nil default-directory nil)
                                default-directory))
@@ -2045,7 +2050,7 @@ Project file names that do not correspond to existing files are
 ignored.  Existence of files with relative names is checked in the
 directory."
   (interactive "P")
-  ;; $$$$$$$ Maybe filter sets to get only file-name candidate sets? 
+  ;; $$$$$$$ Maybe filter sets to get only file-name candidate sets?
   (let ((set-name  (completing-read "Project (saved file names): "
                                     (if (and icicle-filesets-as-saved-completion-sets-flag
                                              (featurep 'filesets) filesets-data)
@@ -2077,7 +2082,7 @@ Project file names that do not correspond to existing files are
 ignored.  Existence of files with relative names is checked in the
 directory."
   (interactive "P")
-  ;; $$$$$$$ Maybe filter sets to get only file-name candidate sets? 
+  ;; $$$$$$$ Maybe filter sets to get only file-name candidate sets?
   (let ((set-name  (completing-read "Project (saved file names): "
                                     (if (and icicle-filesets-as-saved-completion-sets-flag
                                              (featurep 'filesets) filesets-data)
@@ -2901,7 +2906,7 @@ Remove crosshairs highlighting and unbind filtering keys."
     (define-key minibuffer-local-must-match-map "\C-\M-b" nil)
     (define-key minibuffer-local-must-match-map "\C-\M-f" nil)
     (define-key minibuffer-local-must-match-map "\C-\M-@" nil)
-    (define-key minibuffer-local-must-match-map [(control meta ?F)] nil)))  
+    (define-key minibuffer-local-must-match-map [(control meta ?F)] nil)))
 
 (defun icicle-bookmark-cleanup-on-quit ()
   "Do `icicle-bookmark-cleanup', then return to original window."
@@ -2989,13 +2994,13 @@ Like `icicle-bookmark-other-window', but with %s bookmarks only." type type) ; D
     (icicle-bookmark-cleanup)))
 
 ;; The following sexps macro-expand to define these commands:
-;;  `icicle-bookmark-file-other-window', 
-;;  `icicle-bookmark-gnus-other-window', 
-;;  `icicle-bookmark-info-other-window', 
-;;  `icicle-bookmark-local-file-other-window', 
-;;  `icicle-bookmark-non-file-other-window', 
-;;  `icicle-bookmark-region-other-window', 
-;;  `icicle-bookmark-remote-file-other-window', 
+;;  `icicle-bookmark-file-other-window',
+;;  `icicle-bookmark-gnus-other-window',
+;;  `icicle-bookmark-info-other-window',
+;;  `icicle-bookmark-local-file-other-window',
+;;  `icicle-bookmark-non-file-other-window',
+;;  `icicle-bookmark-region-other-window',
+;;  `icicle-bookmark-remote-file-other-window',
 ;;  `icicle-bookmark-w3m-other-window'.
 (icicle-define-bookmark-other-window-command "file")
 (icicle-define-bookmark-other-window-command "gnus")
@@ -3133,7 +3138,7 @@ If `crosshairs.el' is loaded, then the target position is highlighted."
                                                         case-fold-search))
               (case-fold-search                       completion-ignore-case)
               (orig-pt-find-tag                       (point-marker)))
-         
+
          (ring-insert find-tag-marker-ring orig-pt-find-tag) ; Record starting point.
          (icicle-explore #'(lambda () (icicle-find-tag-define-candidates regexp arg))
                          #'icicle-find-tag-final-act #'icicle-find-tag-quit-or-error
@@ -3279,7 +3284,7 @@ Either LINE or POSITION can be nil.  POSITION is used if present."
        (find-file-noselect (nth 1 cand))))
     (widen)
     (funcall (nth 2 cand) (nth 0 cand)))) ; Go to text at TAG-INFO.
-  
+
 (defun icicle-find-tag-quit-or-error ()
   "Pop back to the last tag visited."
   (icicle-pop-tag-mark)

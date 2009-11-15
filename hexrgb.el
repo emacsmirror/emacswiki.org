@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Sep 20 22:58:45 2004
 ;; Version: 21.0
-;; Last-Updated: Tue Nov  3 11:47:11 2009 (-0700)
+;; Last-Updated: Sat Nov 14 15:55:15 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 664
+;;     Update #: 732
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/hexrgb.el
 ;; Keywords: number, hex, rgb, color, background, frames, display
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -81,6 +81,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2009/11/14 dadams
+;;    hexrgb-rgb-to-hsv: Corrected hue when > 1.0.  Use strict inequality for hue limit tests.
+;;    hexrgb-approx-equal: Convert RFUZZ and AFUZZ to their absolute values.
 ;; 2009/11/03 dadams
 ;;    Added: hexrgb-delete-whitespace-from-string, hexrgb-canonicalize-defined-colors,
 ;;           hexrgb-defined-colors(-no-dups)(-alist), hexrgb-canonicalize-defined-colors-flag.
@@ -299,45 +302,49 @@ empty input.
 
 Optional arg PROMPT is the prompt.  Nil means use a default prompt."
   (interactive "p")                     ; Always convert to RGB interactively.
-  (let* ((completion-ignore-case t)
+  (let* ((completion-ignore-case  t)
          ;; Free variables here: `eyedrop-picked-foreground', `eyedrop-picked-background'.
          ;; They are defined in library `palette.el' or library `eyedropper.el'.
-         (colors (if (fboundp 'eyedrop-foreground-at-point)
-                     (append (and eyedrop-picked-foreground '(("*copied foreground*")))
-                             (and eyedrop-picked-background '(("*copied background*")))
-                             '(("*mouse-2 foreground*") ("*mouse-2 background*")
-                               ("*point foreground*") ("*point background*"))
-                             (hexrgb-defined-colors-alist))
-                   (hexrgb-defined-colors-alist)))
-         (color (completing-read (or prompt "Color (name or #R+G+B+): ") colors))
+         (colors                  (if (fboundp 'eyedrop-foreground-at-point)
+                                      (append (and eyedrop-picked-foreground
+                                                   '(("*copied foreground*")))
+                                              (and eyedrop-picked-background
+                                                   '(("*copied background*")))
+                                              '(("*mouse-2 foreground*")
+                                                ("*mouse-2 background*")
+                                                ("*point foreground*") ("*point background*"))
+                                              (hexrgb-defined-colors-alist))
+                                    (hexrgb-defined-colors-alist)))
+         (color                   (completing-read (or prompt "Color (name or #R+G+B+): ")
+                                                   colors))
          hex-string)
     (when (fboundp 'eyedrop-foreground-at-point)
-      (cond ((string= "*copied foreground*" color) (setq color eyedrop-picked-foreground))
-            ((string= "*copied background*" color) (setq color eyedrop-picked-background))
-            ((string= "*point foreground*" color)  (setq color (eyedrop-foreground-at-point)))
-            ((string= "*point background*" color)  (setq color (eyedrop-background-at-point)))
+      (cond ((string= "*copied foreground*" color) (setq color  eyedrop-picked-foreground))
+            ((string= "*copied background*" color) (setq color  eyedrop-picked-background))
+            ((string= "*point foreground*" color)  (setq color  (eyedrop-foreground-at-point)))
+            ((string= "*point background*" color)  (setq color  (eyedrop-background-at-point)))
             ((string= "*mouse-2 foreground*" color)
-             (setq color (prog1 (eyedrop-foreground-at-mouse
-                                 (read-event "Click `mouse-2' to choose foreground color - "))
-                           (read-event)))) ; Discard mouse up event.
+             (setq color  (prog1 (eyedrop-foreground-at-mouse
+                                  (read-event "Click `mouse-2' to choose foreground color - "))
+                            (read-event)))) ; Discard mouse up event.
             ((string= "*mouse-2 background*" color)
-             (setq color (prog1 (eyedrop-background-at-mouse
-                                 (read-event "Click `mouse-2' to choose background color - "))
-                           (read-event)))))) ; Discard mouse up event.
-    (setq hex-string (or (string-match "^#\\([a-fA-F0-9][a-fA-F0-9][a-fA-F0-9]\\)+$" color)
-                         (and (string-match "^\\([a-fA-F0-9][a-fA-F0-9][a-fA-F0-9]\\)+$" color)
-                              t)))
+             (setq color  (prog1 (eyedrop-background-at-mouse
+                                  (read-event "Click `mouse-2' to choose background color - "))
+                            (read-event)))))) ; Discard mouse up event.
+    (setq hex-string  (or (string-match "^#\\([a-fA-F0-9][a-fA-F0-9][a-fA-F0-9]\\)+$" color)
+                          (and (string-match "^\\([a-fA-F0-9][a-fA-F0-9][a-fA-F0-9]\\)+$" color)
+                               t)))
     (if (and allow-empty-name-p (string= "" color))
         ""
       (when (and hex-string (not (eq 0 hex-string)))
-        (setq color (concat "#" color))) ; No #; add it.
+        (setq color  (concat "#" color))) ; No #; add it.
       (unless hex-string
         (when (or (string= "" color)
                   (not (if (fboundp 'test-completion) ; Not defined in Emacs 20.
                            (test-completion color colors)
                          (try-completion color colors))))
           (error "No such color: %S" color))
-        (when convert-to-RGB-p (setq color (hexrgb-color-name-to-hex color))))
+        (when convert-to-RGB-p (setq color  (hexrgb-color-name-to-hex color))))
       (when (interactive-p) (message "Color: `%s'" color))
       color)))
 
@@ -357,11 +364,11 @@ returned; otherwise, t is returned."
 (defun hexrgb-complement (color)
   "Return the color that is the complement of COLOR."
   (interactive (list (hexrgb-read-color)))
-  (setq color (hexrgb-color-name-to-hex color))
-  (let ((red (hexrgb-red color))
-        (green (hexrgb-green color))
-        (blue (hexrgb-blue color)))
-    (setq color (hexrgb-rgb-to-hex (- 1.0 red) (- 1.0 green) (- 1.0 blue))))
+  (setq color  (hexrgb-color-name-to-hex color))
+  (let ((red    (hexrgb-red color))
+        (green  (hexrgb-green color))
+        (blue   (hexrgb-blue color)))
+    (setq color  (hexrgb-rgb-to-hex (- 1.0 red) (- 1.0 green) (- 1.0 blue))))
   (when (interactive-p) (message "Complement: `%s'" color))
   color)
 
@@ -370,7 +377,7 @@ returned; otherwise, t is returned."
   "Return the hue component of COLOR, in range 0 to 1 inclusive.
 COLOR is a color name or hex RGB string that starts with \"#\"."
   (interactive (list (hexrgb-read-color)))
-  (setq color (hexrgb-color-name-to-hex color))
+  (setq color  (hexrgb-color-name-to-hex color))
   (car (hexrgb-rgb-to-hsv (hexrgb-red color) (hexrgb-green color) (hexrgb-blue color))))
 
 ;;;###autoload
@@ -378,7 +385,7 @@ COLOR is a color name or hex RGB string that starts with \"#\"."
   "Return the saturation component of COLOR, in range 0 to 1 inclusive.
 COLOR is a color name or hex RGB string that starts with \"#\"."
   (interactive (list (hexrgb-read-color)))
-  (setq color (hexrgb-color-name-to-hex color))
+  (setq color  (hexrgb-color-name-to-hex color))
   (cadr (hexrgb-rgb-to-hsv (hexrgb-red color) (hexrgb-green color) (hexrgb-blue color))))
 
 ;;;###autoload
@@ -386,7 +393,7 @@ COLOR is a color name or hex RGB string that starts with \"#\"."
   "Return the value component of COLOR, in range 0 to 1 inclusive.
 COLOR is a color name or hex RGB string that starts with \"#\"."
   (interactive (list (hexrgb-read-color)))
-  (setq color (hexrgb-color-name-to-hex color))
+  (setq color  (hexrgb-color-name-to-hex color))
   (caddr (hexrgb-rgb-to-hsv (hexrgb-red color) (hexrgb-green color) (hexrgb-blue color))))
 
 ;;;###autoload
@@ -394,7 +401,7 @@ COLOR is a color name or hex RGB string that starts with \"#\"."
   "Return the red component of COLOR, in range 0 to 1 inclusive.
 COLOR is a color name or hex RGB string that starts with \"#\"."
   (interactive (list (hexrgb-read-color)))
-  (setq color (hexrgb-color-name-to-hex color))
+  (setq color  (hexrgb-color-name-to-hex color))
   (/ (hexrgb-hex-to-int (substring color 1 (1+ (/ (1- (length color)) 3))))
      (expt 16.0 (/ (1- (length color)) 3.0))))
 
@@ -403,9 +410,9 @@ COLOR is a color name or hex RGB string that starts with \"#\"."
   "Return the green component of COLOR, in range 0 to 1 inclusive.
 COLOR is a color name or hex RGB string that starts with \"#\"."
   (interactive (list (hexrgb-read-color)))
-  (setq color (hexrgb-color-name-to-hex color))
-  (let* ((len (/ (1- (length color)) 3))
-         (start (1+ len)))
+  (setq color  (hexrgb-color-name-to-hex color))
+  (let* ((len    (/ (1- (length color)) 3))
+         (start  (1+ len)))
     (/ (hexrgb-hex-to-int (substring color start (+ start len)))
        (expt 16.0 (/ (1- (length color)) 3.0)))))
 
@@ -414,9 +421,9 @@ COLOR is a color name or hex RGB string that starts with \"#\"."
   "Return the blue component of COLOR, in range 0 to 1 inclusive.
 COLOR is a color name or hex RGB string that starts with \"#\"."
   (interactive (list (hexrgb-read-color)))
-  (setq color (hexrgb-color-name-to-hex color))
-  (let* ((len (/ (1- (length color)) 3))
-         (start (+ 1 len len)))
+  (setq color  (hexrgb-color-name-to-hex color))
+  (let* ((len    (/ (1- (length color)) 3))
+         (start  (+ 1 len len)))
     (/ (hexrgb-hex-to-int (substring color start (+ start len)))
        (expt 16.0 (/ (1- (length color)) 3.0)))))
 
@@ -425,30 +432,36 @@ COLOR is a color name or hex RGB string that starts with \"#\"."
   "Convert RED, GREEN, BLUE components to HSV (hue, saturation, value).
 Each input component is 0.0 to 1.0, inclusive.
 Returns a list of HSV components of value 0.0 to 1.0, inclusive."
-  (let* ((min (min red green blue))
-         (max (max red green blue))
-         (value max)
-         (delta (- max min))
+  (let* ((min    (min red green blue))
+         (max    (max red green blue))
+         (value  max)
+         (delta  (- max min))
          hue saturation)
     (if (hexrgb-approx-equal 0.0 delta)
-        (setq hue 0.0 saturation 0.0)   ; Gray scale - no color; only value.
+        (setq hue         0.0
+              saturation  0.0)          ; Gray scale - no color; only value.
       (if (and (condition-case nil
-                   (setq saturation (/ delta max))
+                   (setq saturation  (/ delta max))
                  (arith-error nil))
                ;; Must be a number, not a NaN.  The standard test for a NaN is (not (= N N)),
                ;; but an Emacs 20 bug makes (= N N) return t for a NaN also.
                (or (< emacs-major-version 21) (= saturation saturation)))                
           (if (hexrgb-approx-equal 0.0 saturation)
-              (setq hue 0.0 saturation 0.0) ; Again, no color; only value.
+              (setq hue         0.0
+                    saturation  0.0)    ; Again, no color; only value.
             ;; Color
-            (if (hexrgb-approx-equal red max)
-                (setq hue (/ (- green blue) delta)) ; Between yellow & magenta.
-              (if (hexrgb-approx-equal green max)
-                  (setq hue (+ 2.0 (/ (- blue red) delta))) ; Between cyan & yellow.
-                (setq hue (+ 4.0 (/ (- red green) delta))))) ; Between magenta & cyan.
-            (setq hue (/ hue 6.0))
-            (when (<= hue 0.0)(setq hue (+ hue 1.0))))
-        (setq saturation 0.0 hue 0.0))) ; Div by zero (max=0): H:=0, S:=0. (Hue undefined.)
+            (setq hue  (if (hexrgb-approx-equal red max)
+                           (/ (- green blue) delta) ; Between yellow & magenta.
+                         (if (hexrgb-approx-equal green max)
+                             (+ 2.0 (/ (- blue red) delta)) ; Between cyan & yellow.
+                           (+ 4.0 (/ (- red green) delta)))) ; Between magenta & cyan.
+                  hue  (/ hue 6.0))
+            ;; (when (<= hue 0.0) (setq hue  (+ hue 1.0)))  ; $$$$$$
+            ;; (when (>= hue 1.0) (setq hue  (- hue 1.0)))) ; $$$$$$
+            (when (< hue 0.0) (setq hue  (+ hue 1.0)))
+            (when (> hue 1.0) (setq hue  (- hue 1.0))))
+        (setq hue         0.0           ; Div by zero (max=0): H:=0, S:=0. (Hue undefined.)
+              saturation  0.0)))
     (list hue saturation value)))
 
 ;;;###autoload
@@ -458,20 +471,34 @@ Each input component is 0.0 to 1.0, inclusive.
 Returns a list of RGB components of value 0.0 to 1.0, inclusive."
   (let (red green blue int-hue fract pp qq tt ww)
     (if (hexrgb-approx-equal 0.0 saturation)
-        (setq red value green value blue value) ; Gray
-      (setq hue (* hue 6.0)             ; Sectors: 0 to 5
-            int-hue (floor hue)
-            fract (- hue int-hue)
-            pp (* value (- 1 saturation))
-            qq (* value (- 1 (* saturation fract)))
-            ww (* value (- 1 (* saturation (- 1 (- hue int-hue))))))
+        (setq red    value
+              green  value
+              blue   value)             ; Gray
+      (setq hue      (* hue 6.0)        ; Sectors: 0 to 5
+            int-hue  (floor hue)
+            fract    (- hue int-hue)
+            pp       (* value (- 1 saturation))
+            qq       (* value (- 1 (* saturation fract)))
+            ww       (* value (- 1 (* saturation (- 1 (- hue int-hue))))))
       (case int-hue
-        ((0 6) (setq red value green ww blue pp))
-        (1 (setq red qq green value blue pp))
-        (2 (setq red pp green value blue ww))
-        (3 (setq red pp green qq blue value))
-        (4 (setq red ww green pp blue value))
-        (otherwise (setq red value green pp blue qq))))
+        ((0 6) (setq red    value
+                     green  ww
+                     blue   pp))
+        (1 (setq red    qq
+                 green  value
+                 blue   pp))
+        (2 (setq red    pp
+                 green  value
+                 blue   ww))
+        (3 (setq red    pp
+                 green  qq
+                 blue   value))
+        (4 (setq red    ww
+                 green  pp
+                 blue   value))
+        (otherwise (setq red    value
+                         green  pp
+                         blue   qq))))
     (list red green blue)))
 
 ;;;###autoload
@@ -497,7 +524,7 @@ Each component is a value from 0.0 to 1.0, inclusive.
 COLOR is a color name or a hex RGB string that starts with \"#\" and
 is followed by an equal number of hex digits for red, green, and blue
 components."
-  (let ((rgb-components (hexrgb-hex-to-rgb color)))
+  (let ((rgb-components  (hexrgb-hex-to-rgb color)))
     (apply #'hexrgb-rgb-to-hsv rgb-components)))
 
 ;;;###autoload
@@ -507,8 +534,8 @@ Each component is a value from 0.0 to 1.0, inclusive.
 COLOR is a color name or a hex RGB string that starts with \"#\" and
 is followed by an equal number of hex digits for red, green, and blue
 components."
-  (unless (hexrgb-rgb-hex-string-p color) (setq color (hexrgb-color-name-to-hex color)))
-  (let ((len (/ (1- (length color)) 3)))
+  (unless (hexrgb-rgb-hex-string-p color) (setq color  (hexrgb-color-name-to-hex color)))
+  (let ((len  (/ (1- (length color)) 3)))
     (list (/ (hexrgb-hex-to-int (substring color 1 (1+ len))) 65535.0)
           (/ (hexrgb-hex-to-int (substring color (1+ len) (+ 1 len len))) 65535.0)
           (/ (hexrgb-hex-to-int (substring color (+ 1 len len))) 65535.0))))
@@ -517,10 +544,10 @@ components."
 (defun hexrgb-color-name-to-hex (color)
   "Return the RGB hex string for the COLOR name, starting with \"#\".
 If COLOR is already a string starting with \"#\", then just return it."
-  (let ((components (x-color-values color)))
+  (let ((components  (x-color-values color)))
     (unless components (error "No such color: %S" color))
     (unless (hexrgb-rgb-hex-string-p color)
-      (setq color (hexrgb-color-values-to-hex components))))
+      (setq color  (hexrgb-color-values-to-hex components))))
   color)
 
 ;; Just hard-code 4 as the number of hex digits, since `x-color-values'
@@ -534,8 +561,7 @@ If COLOR is already a string starting with \"#\", then just return it."
   "Convert list of rgb color VALUES to a hex string, #XXXXXXXXXXXX.
 Each X in the string is a hexadecimal digit.
 Input VALUES is as for the output of `x-color-values'."
-  (concat "#"
-          (hexrgb-int-to-hex (nth 0 values) 4) ; red
+  (concat "#" (hexrgb-int-to-hex (nth 0 values) 4) ; red
           (hexrgb-int-to-hex (nth 1 values) 4) ; green
           (hexrgb-int-to-hex (nth 2 values) 4))) ; blue
 
@@ -545,19 +571,19 @@ Input VALUES is as for the output of `x-color-values'."
 COLOR is a hex rgb color string, #XXXXXXXXXXXX
 Each X in the string is a hexadecimal digit.  There are 3N X's, N > 0.
 The output list is as for `x-color-values'."
-  (let* ((hex-strgp (string-match
-                     "^\\(#\\)?\\(\\([a-fA-F0-9][a-fA-F0-9][a-fA-F0-9]\\)+\\)$"
-                     color))
-         (ndigits (/ (if (eq (match-beginning 1) (match-end 1))
-                        (length color)
-                       (1- (length color)))
-                    3))
+  (let* ((hex-strgp  (string-match
+                      "^\\(#\\)?\\(\\([a-fA-F0-9][a-fA-F0-9][a-fA-F0-9]\\)+\\)$"
+                      color))
+         (ndigits    (/ (if (eq (match-beginning 1) (match-end 1))
+                            (length color)
+                          (1- (length color)))
+                        3))
          red green blue)
     (unless hex-strgp (error "Invalid RGB color string: %s" color))
-    (setq color (substring color (match-beginning 2) (match-end 2))
-          red   (hexrgb-hex-to-int (substring color 0 ndigits))
-          green (hexrgb-hex-to-int (substring color ndigits (* 2 ndigits)))
-          blue  (hexrgb-hex-to-int (substring color ndigits (* 3 ndigits))))
+    (setq color  (substring color (match-beginning 2) (match-end 2))
+          red    (hexrgb-hex-to-int (substring color 0 ndigits))
+          green  (hexrgb-hex-to-int (substring color ndigits (* 2 ndigits)))
+          blue   (hexrgb-hex-to-int (substring color ndigits (* 3 ndigits))))
     (list red green blue)))
     
 ;;;###autoload
@@ -617,27 +643,27 @@ around to \"#000000000\"."
   "Increment HEX number (a string NB-DIGITS long) by INCREMENT.
 For example, incrementing \"FFFFFFFFF\" by 1 will cause it to wrap
 around to \"000000000\"."
-  (let* ((int (hexrgb-hex-to-int hex))
-         (new-int (+ increment int)))
+  (let* ((int      (hexrgb-hex-to-int hex))
+         (new-int  (+ increment int)))
     (if (or wrap-p
             (and (>= int 0)             ; Not too large for the machine.
                  (>= new-int 0)         ; For the case where increment < 0.
                  (<= (length (format (concat "%X") new-int)) nb-digits))) ; Not too long.
         (hexrgb-int-to-hex new-int nb-digits) ; Use incremented number.
-      hex)))                                  ; Don't increment.
+      hex)))                            ; Don't increment.
 
 ;;;###autoload
 (defun hexrgb-hex-to-int (hex)
   "Convert HEX string argument to an integer.
 The characters of HEX must be hex characters."
-  (let* ((factor 1)
-         (len (length hex))
-         (indx (1- len))
-         (int 0))
+  (let* ((factor  1)
+         (len     (length hex))
+         (indx    (1- len))
+         (int     0))
     (while (>= indx 0)
-      (setq int (+ int (* factor (hexrgb-hex-char-to-integer (aref hex indx)))))
-      (setq indx (1- indx))
-      (setq factor (* 16 factor)))
+      (setq int     (+ int (* factor (hexrgb-hex-char-to-integer (aref hex indx))))
+            indx    (1- indx)
+            factor  (* 16 factor)))
     int))
 
 ;; From `hexl.el'.  This is the same as `hexl-hex-char-to-integer' defined there.
@@ -646,7 +672,7 @@ The characters of HEX must be hex characters."
   "Take a CHARACTER and return its value as if it were a hex digit."
   (if (and (>= character ?0) (<= character ?9))
       (- character ?0)
-    (let ((ch (logior character 32)))
+    (let ((ch  (logior character 32)))
       (if (and (>= ch ?a) (<= ch ?f))
           (- ch (- ?a 10))
         (error "Invalid hex digit `%c'" ch)))))
@@ -662,7 +688,7 @@ NB-DIGITS is the number of hex digits.  If INT is too large to be
 represented with NB-DIGITS, then the result is truncated from the
 left.  So, for example, INT=256 and NB-DIGITS=2 returns \"00\", since
 the hex equivalent of 256 decimal is 100, which is more than 2 digits."
-  (setq nb-digits (or nb-digits 4))
+  (setq nb-digits  (or nb-digits 4))
   (substring (format (concat "%0" (int-to-string nb-digits) "X") int) (- nb-digits)))
 
 ;; Inspired by Elisp Info manual, node "Comparison of Numbers".
@@ -671,9 +697,13 @@ the hex equivalent of 256 decimal is 100, which is more than 2 digits."
   "Return non-nil if numbers X and Y are approximately equal.
 RFUZZ is a relative fuzz factor.  AFUZZ is an absolute fuzz factor.
 RFUZZ defaults to 1.0e-8.  AFUZZ defaults to (/ RFUZZ 10).
+RFUZZ and AFUZZ are converted to their absolute values.
 The algorithm is:
  (< (abs (- X Y)) (+ AFUZZ (* RFUZZ (+ (abs X) (abs Y)))))."
-  (setq rfuzz (or rfuzz 1.0e-8) afuzz (or afuzz (/ rfuzz 10)))
+  (setq rfuzz  (or rfuzz 1.0e-8)
+        rfuzz  (abs rfuzz)
+        afuzz  (or afuzz (/ rfuzz 10))
+        afuzz  (abs afuzz))
   (< (abs (- x y)) (+ afuzz (* rfuzz (+ (abs x) (abs y))))))
 
 ;;;###autoload

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2009, Drew Adams, all rights reserved.
 ;; Created: Thu Sep 02 08:21:37 2004
 ;; Version: 21.1
-;; Last-Updated: Sat Nov  7 15:55:47 2009 (-0700)
+;; Last-Updated: Sat Nov 14 15:43:28 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 1547
+;;     Update #: 1559
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/doremi.el
 ;; Keywords: keys, cycle, repeat, higher-order
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -107,6 +107,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2009/11/14 dadams
+;;     doremi-wrap: Wrap value around, instead of just moving to the other limit.
 ;; 2009/11/07 dadams
 ;;     doremi: Increment can now be a list of numbers.
 ;;             Use >= 0, not natnump, since not necessarily an integer.
@@ -484,16 +486,29 @@ This is a non-destructive operation: it copies the data if necessary."
 
 (defun doremi-limit (value min max)
   "Limit VALUE to MIN or MAX limit if either is overshot.
-MIN or MAX = nil means no such limit."
+MIN or MAX = nil means no such limit.
+Return the new, possibly limited value."
   (cond ((and max (> value max)) max)
         ((and min (< value min)) min)
         (t value)))
 
+;; $$$$$
+;; (defun doremi-wrap (value min max)
+;;   "Wrap VALUE around if it overshoots MIN or MAX."
+;;   (cond ((> value max) min)
+;;         ((< value min) max)
+;;         (t value)))
+
 (defun doremi-wrap (value min max)
-  "Wrap VALUE around if it overshoots MIN or MAX."
-  (cond ((> value max) min)
-        ((< value min) max)
-        (t value)))
+  "Wrap VALUE around if it overshoots MIN or MAX.
+Return the new, wrapped value.
+MAX must be greater than min."
+  (let ((new  value)
+        (del  (- max min)))
+    (while (> new max) (setq new  (- new del)))
+    (while (< new min) (setq new  (+ new del)))
+    new))
+  
  
 ;;; Example Commands.  Uncomment these and try them to get the idea.
 ;;

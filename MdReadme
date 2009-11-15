@@ -1,0 +1,5 @@
+Generate Markdown-formatted READMEs from your Emacs Lisp file headers, for instance for display on github. Here is [http://jugglingbits.wordpress.com/2009/11/14/announcing-md-readme/ a blog post announcing it].
+
+The most current version is [http://github.com/thomas11/md-readme on github].
+
+Lisp:md-readme.el (MdReadme)

@@ -856,6 +856,21 @@ my meaning is: how can I iterate colors on color palette from 1 to 25, increment
 In a word, what I want is iterate all colors from 1 to 25, increment with 1. -- [[ahei]]
  
 
+[new:DrewAdams:2009-11-15 00:17 UTC]
+You say in effect that you want to increment hue, but move down to the next ColorPalette row when you get to the end of the current row. I implemented something that I think corresponds to that. It increments hue, until hue hits its limit, then it decrements saturation once, and then begins incrementing hue again -- and so on. This corresponds to moving across a ColorPalette row (hue) and doing that for each row in turn.
+
+I'm not convinced this is very useful, but you have it, in any case. See commands `##doremi-*-hue-stepping-saturation+##'.
+
+You need to be aware that hue, saturation, and value do not correspond in a simple way to the color coding that Emacs uses, which is RGB. In the ColorPalette, if you just increment red or just blue or just green, you will see how the cursor moves over the Hue x Saturation space --- the movement is in some ways surprising. The relation between the two color spaces is not simple and not very intuitive. See the commentary in file <tt>[[palette.el]]</tt> for more information. -- DrewAdams
+
+
+
+
+
+
+
+
+
 
 ----
 [:SeeAlso]

@@ -53,6 +53,33 @@ Here is a code sample that turns on autopairs for the modes listed in autopair-m
 
 -- TimCHarper
 
+[new]
+hi, I use your AutoPairs, its a good tool.
+
+1. can you add pair "`'" in emacs-lisp-mode to AutoPairs, its so common in emacs-lisp-mode.
+
+2. After I bind "C-h"(I bind "C-x /" to help-command) to autopair-backspace, when I type "C-h", I get one error message "Lisp nesting exceeds `max-lisp-eval-depth'"
+
+3.
+<pre>
+ (setq a <cursor here> bcd")
+or
+ (setq a '<cursor here>abc))
+</pre>
+
+this example, when I type double quotes or paren, it became this:
+<pre>
+ (setq a ""bcd")
+or
+(setq a '()abc))
+</pre>
+
+do you have a good way to solve it?
+
+3x -- [[ahei]]
+
+I don't think the wiki is the best place to ask questions.  However, why aren't you using paredit mode in common-lisp-mode?  I would disable autopairs and use paredit mode instead.
+
 === SkeletonMode ===
 
 The [SkeletonMode Skeleton library] provides pair insertion via the ##skeleton-insert-maybe## command, which can be bound to the opening key:
@@ -219,30 +246,6 @@ The SkeletonMode page explores skeletons more broadly.
 
 [ParEdit ParEdit] is a minor mode for Lisp languages, and provides enhanced [[sexp]] editing, navigating and manipulating. It does all of the above and more (but targets Lisp).
 
-[new]
-hi, I use your AutoPairs, its a good tool.
-
-1. can you add pair "`'" in emacs-lisp-mode to AutoPairs, its so common in emacs-lisp-mode.
-
-2. After I bind "C-h"(I bind "C-x /" to help-command) to autopair-backspace, when I type "C-h", I get one error message "Lisp nesting exceeds `max-lisp-eval-depth'"
-
-3.
-<pre>
- (setq a <cursor here> bcd")
-or
- (setq a '<cursor here>abc))
-</pre>
-
-this example, when I type double quotes or paren, it became this:
-<pre>
- (setq a ""bcd")
-or
-(setq a '()abc))
-</pre>
-
-do you have a good way to solve it?
-
-3x -- [[ahei]]
 
 ----
 CategoryCode CategoryTemplates CategoryParentheses

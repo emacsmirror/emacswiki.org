@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2009, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 11 10:40:32 2004
 ;; Version: 22.0
-;; Last-Updated: Tue Nov 10 08:43:39 2009 (-0800)
+;; Last-Updated: Sat Nov 14 15:38:28 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 2918
+;;     Update #: 2942
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/doremi-frm.el
 ;; Keywords: frames, extensions, convenience, keys, repeat, cycle
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -97,15 +97,19 @@
 ;;    `doremi-all-frames-bg+', `doremi-all-frames-fg+', `doremi-bg+',
 ;;    `doremi-bg-blue+', `doremi-bg-brightness+',
 ;;    `doremi-bg-color-name+', `doremi-bg-cyan+', `doremi-bg-green+',
-;;    `doremi-bg-hue+', `doremi-bg-magenta+', `doremi-bg-purity+',
-;;    `doremi-bg-red+', `doremi-bg-saturation+', `doremi-bg-value+',
+;;    `doremi-bg-hue+', `doremi-bg-hue-stepping-saturation+',
+;;    `doremi-bg-magenta+', `doremi-bg-purity+', `doremi-bg-red+',
+;;    `doremi-bg-saturation+', `doremi-bg-value+',
 ;;    `doremi-bg-yellow+', `doremi-buffer-font-size+',
 ;;    `doremi-face-bg+', `doremi-face-bg-color-name+',
-;;    `doremi-face-fg+', `doremi-face-fg-color-name+', `doremi-fg+',
+;;    `doremi-face-bg-hue-stepping-saturation+', `doremi-face-fg+',
+;;    `doremi-face-fg-color-name+',
+;;    `doremi-face-fg-hue-stepping-saturation+', `doremi-fg+',
 ;;    `doremi-fg-blue+', `doremi-fg-brightness+',
 ;;    `doremi-fg-color-name+', `doremi-fg-cyan+', `doremi-fg-green+',
-;;    `doremi-fg-hue+', `doremi-fg-magenta+', `doremi-fg-purity+',
-;;    `doremi-fg-red+', `doremi-fg-saturation+', `doremi-fg-value+',
+;;    `doremi-fg-hue+', `doremi-fg-hue-stepping-saturation+',
+;;    `doremi-fg-magenta+', `doremi-fg-purity+', `doremi-fg-red+',
+;;    `doremi-fg-saturation+', `doremi-fg-value+',
 ;;    `doremi-fg-yellow+', `doremi-font+', `doremi-font-size+',
 ;;    `doremi-frame-configs+', `doremi-frame-font-size+',
 ;;    `doremi-frame-height+', `doremi-frame-horizontally+',
@@ -127,9 +131,11 @@
 ;;    `doremi-all-faces-bg/fg-1', `doremi-all-frames-bg/fg-1',
 ;;    `doremi-bg-1', `doremi-bg/fg-color-name-1',
 ;;    `doremi-face-bg/fg-1', `doremi-face-bg/fg-color-name-1',
-;;    `doremi-face-color-component', `doremi-face-set', `doremi-fg-1',
-;;    `doremi-frame-color-component',
+;;    `doremi-face-color-component',
+;;    `doremi-face-hue-stepping-saturation', `doremi-face-set',
+;;    `doremi-fg-1', `doremi-frame-color-component',
 ;;    `doremi-frame-config-wo-parameters',
+;;    `doremi-frame-hue-stepping-saturation',
 ;;    `doremi-frame-new-position',
 ;;    `doremi-increment-background-color-1', `doremi-increment-color',
 ;;    `doremi-increment-face-color',
@@ -269,10 +275,13 @@
 ;;
 ;;; Change log:
 ;;
-;; 2009-11-10 dadams
+;; 2009/11/14 dadams
+;;     Added: doremi(-face)-(bg|fg)-hue-stepping-saturation+,
+;;            doremi-(face|frame)-hue-stepping-saturation.  (No keys bound.)  Thx to Ahei.
+;; 2009/11/10 dadams
 ;;     Added: doremi(-face)-bg/fg-color-name-1.  Thx to Ahei.
 ;;     doremi(-face)-(bg|fg)-color-name+: Use doremi(-face)-bg/fg-color-name-1.  Added args.
-;; 2009-11-07 dadams
+;; 2009/11/07 dadams
 ;;     Added: doremi-adjust-increment-for-color-component, doremi-face-bg/fg-1,
 ;;            doremi-face-color-component, doremi-increment-face-color
 ;;            doremi-face-default, doremi-increment-(blue|green|red),
@@ -287,7 +296,7 @@
 ;;     doremi-all-(frames|faces)-bg/fg-1 (new), doremi-(frame|face)-color-component:
 ;;       Use *-adjust-increment-for-color-component.
 ;;     doremi-increment-color: Use doremi-increment-(blue|green|red).
-;; 2009-11-05 dadams
+;; 2009/11/05 dadams
 ;;     Renamed all Do Re Mi iterative commands by appending +.
 ;; 2009/11/04 dadams
 ;;     Added: doremi-(bg|fg)-1, doremi-current-increment, doremi-frame-color-component,
@@ -1129,6 +1138,31 @@ faster than for `doremi-up-keys' and `doremi-down-keys'."
         (doremi-bg-1 component increment frame)
       (quit (modify-frame-parameters curr-frm (list curr-bg))))))
 
+;; Do not use this non-interactively - use `doremi-frame-hue-stepping-saturation'.
+;;;###autoload
+(defun doremi-bg-hue-stepping-saturation+ (&optional increment frame pickup-p
+                                           interactive-p)
+  "Increment frame background hue, stepping saturation down after each cycle.
+Repeatedly increment hue until it reaches its maximum.  Then increment
+saturation once.  Then repeatedly increment hue again - and so on.
+
+You can think of this as moving along a row of the hue x saturation
+color plane, then down to the next row and across, and so on.
+
+See `doremi-bg+' for more info (e.g. other args)."
+  (interactive (list (doremi-read-increment-arg 3 1) nil nil t))
+  (when interactive-p
+    (setq doremi-last-frame-color  (assq 'background-color (frame-parameters frame))))
+  (when (and (or pickup-p (and interactive-p (or (consp current-prefix-arg))))
+             (boundp 'eyedrop-picked-background) eyedrop-picked-background)
+    (doremi-set-background-color eyedrop-picked-background frame))
+  (unless increment (setq increment  1))
+  (let ((curr-bg   (assq 'background-color (frame-parameters frame)))
+        (curr-frm  frame))
+    (condition-case nil
+        (doremi-frame-hue-stepping-saturation 'background-color increment frame)
+      (quit (modify-frame-parameters curr-frm (list curr-bg))))))
+
 ;;;###autoload
 (defun doremi-all-frames-bg+ (component increment)
   "Change background color of all visible frames incrementally.
@@ -1267,6 +1301,27 @@ See `doremi-fg+'.  Prefix arg is the INCREMENT to change."
 (defalias 'doremi-fg-brightness+ 'doremi-fg-value+)
 (defalias 'doremi-fg-purity+ 'doremi-fg-saturation+)
 
+;; Do not use this non-interactively - use `doremi-frame-hue-stepping-saturation'.
+;;;###autoload
+(defun doremi-fg-hue-stepping-saturation+ (&optional increment frame pickup-p
+                                           interactive-p)
+  "Increment frame foreground hue, stepping saturation down after each cycle.
+See `doremi-bg-hue-stepping-saturation+'.
+`doremi-fg-hue-stepping-saturation+' is the same, with \"foreground\"
+substituted for \"background\"."
+  (interactive (list (doremi-read-increment-arg 3 1) nil nil t))
+  (when interactive-p
+    (setq doremi-last-frame-color  (assq 'foreground-color (frame-parameters frame))))
+  (when (and (or pickup-p (and interactive-p (or (consp current-prefix-arg))))
+             (boundp 'eyedrop-picked-foreground) eyedrop-picked-foreground)
+    (doremi-set-foreground-color eyedrop-picked-foreground frame))
+  (unless increment (setq increment  1))
+  (let ((curr-fg   (assq 'foreground-color (frame-parameters frame)))
+        (curr-frm  frame))
+    (condition-case nil
+        (doremi-frame-hue-stepping-saturation 'foreground-color increment frame)
+      (quit (modify-frame-parameters curr-frm (list curr-fg))))))
+
 ;;;###autoload
 (defun doremi-fg+ (component &optional increment frame pickup-p interactive-p)
   "Change FRAME's foreground color incrementally.
@@ -1404,6 +1459,36 @@ and then use that as the initial value for `doremi-face-bg+'."
         (doremi-face-bg/fg-1 'background-color face component increment)
       (quit (set-face-background face curr-bg)))))
 
+;; Do not use this non-interactively - use `doremi-face-hue-stepping-saturation'.
+;;;###autoload
+(defun doremi-face-bg-hue-stepping-saturation+ (face &optional increment pickup-p
+                                                interactive-p)
+  "Increment FACE background hue, stepping saturation down after each cycle.
+
+See command `doremi-bg-hue-stepping-saturation+'.  This command
+behaves the same, except that it is the background color of FACE that
+is changed, not the frame background color.
+See `doremi-face-bg+' for more info (e.g. other args)."
+  (interactive (list (if (< emacs-major-version 21)
+                         (read-face-name "Face to change: ")
+                       (read-face-name "Face to change"))
+                     (doremi-read-increment-arg 3 1)
+                     nil
+                     t))
+  (unless (facep face)
+    (error "Command `doremi-face-bg-hue-stepping-saturation+': \
+FACE arg is not a face name: %s" face))
+  (when interactive-p
+    (copy-face face 'doremi-last-face)
+    (setq doremi-last-face-value  (cons face 'doremi-last-face)))
+  (when (and (or pickup-p (and interactive-p (or (consp current-prefix-arg))))
+             (boundp 'eyedrop-picked-background) eyedrop-picked-background)
+    (set-face-background face eyedrop-picked-background))
+  (let ((curr-bg  (face-background-20+ face nil 'default)))
+    (condition-case nil
+        (doremi-face-hue-stepping-saturation 'background-color face increment)
+      (quit (set-face-background face curr-bg)))))
+
 ;; Do not use this non-interactively - use `doremi-bg-fg-color-name-1'.
 ;;;###autoload
 (defun doremi-face-bg-color-name+ (face &optional interactive-p)
@@ -1480,6 +1565,32 @@ See `doremi-face-bg+'; `doremi-face-fg+' is the same, with
   (let ((curr-fg  (face-foreground-20+ face nil 'default)))
     (condition-case nil
         (doremi-face-bg/fg-1 'foreground-color face component increment)
+      (quit (set-face-foreground face curr-fg)))))
+
+;; Do not use this non-interactively - use `doremi-face-hue-stepping-saturation'.
+;;;###autoload
+(defun doremi-face-fg-hue-stepping-saturation+ (face &optional increment pickup-p
+                                                interactive-p)
+  "Increment FACE background hue, stepping saturation down after each cycle.
+See `doremi-face-bg+' for info about the other args."
+  (interactive (list (if (< emacs-major-version 21)
+                         (read-face-name "Face to change: ")
+                       (read-face-name "Face to change"))
+                     (doremi-read-increment-arg 3 1)
+                     nil
+                     t))
+  (unless (facep face)
+    (error "Command `doremi-face-fg-hue-stepping-saturation+': \
+FACE arg is not a face name: %s" face))
+  (when interactive-p
+    (copy-face face 'doremi-last-face)
+    (setq doremi-last-face-value  (cons face 'doremi-last-face)))
+  (when (and (or pickup-p (and interactive-p (or (consp current-prefix-arg))))
+             (boundp 'eyedrop-picked-foreground) eyedrop-picked-foreground)
+    (set-face-foreground face eyedrop-picked-foreground))
+  (let ((curr-fg  (face-foreground-20+ face nil 'default)))
+    (condition-case nil
+        (doremi-face-hue-stepping-saturation 'foreground-color face increment)
       (quit (set-face-foreground face curr-fg)))))
 
 ;; Do not use this non-interactively - use `doremi-bg-fg-color-name-1'.
@@ -1763,7 +1874,28 @@ Optional arg FRAME defaults to the selected frame.  See `doremi-bg+'."
                               'doremi-set-background-color
                             'doremi-set-foreground-color)
                           (or frame (selected-frame)))
+  ;; $$$$$$ (frame-update-face-colors frame)    ; Update the way faces display
   (cdr (assq frame-parameter (frame-parameters frame)))) ; Return new value.
+
+(defun doremi-frame-hue-stepping-saturation (frame-parameter increment &optional frame)
+  "Increment frame hue for FRAME-PARAMETER, stepping saturation per cycle.
+See `doremi-bg+' for info about the other args."
+  (doremi (lambda (inc)
+            (let ((hue  (hexrgb-hue (or (cdr (assq frame-parameter
+                                                   (frame-parameters frame)))
+                                        (if (eq frame-parameter 'background-color)
+                                            "White"
+                                          "Black")))))
+              (when (or (> hue 0.99) (< hue 0.01))
+                (cond ((> hue 0.9999) (setq hue  0.0))
+                      ((< hue 0.0001) (setq hue  1.0)))
+                (doremi-increment-frame-color frame-parameter ?s (- inc) frame)
+                (doremi-increment-frame-color frame-parameter ?h inc frame)))
+            (doremi-increment-frame-color frame-parameter ?h inc frame)
+            (cdr (assq frame-parameter (frame-parameters frame))))
+          (cdr (assq frame-parameter (frame-parameters frame)))
+          increment
+          t))
 
 (defun doremi-bg/fg-color-name-1 (frame-parameter frame init-color)
   "Helper function for `doremi-bg-color-name+' and `doremi-fg-color-name+'."
@@ -1799,6 +1931,24 @@ The FACE's current FRAME-PARAMETER value or, if none, the frame's."
           (face-foreground-20+ face nil 'default)
         (face-background-20+ face nil 'default))
       (cdr (assq frame-parameter (frame-parameters)))))
+
+(defun doremi-face-hue-stepping-saturation (frame-parameter face increment)
+  "Increment FACE hue for FRAME-PARAMETER, stepping saturation per cycle.
+See `doremi-bg+' for info about the other args."
+  (doremi (lambda (inc)
+            (let ((hue  (hexrgb-hue (or (doremi-face-default frame-parameter face)
+                                        (if (eq frame-parameter 'background-color)
+                                            "White"
+                                          "Black")))))
+              (when (or (> hue (- 1.0 (/ inc 100.0))) (< hue (/ inc 100.0)))
+                (cond ((> hue (- 1.0 (/ inc 1000.0))) (setq hue  0.0))
+                      ((< hue (/ inc 1000.0)) (setq hue  1.0)))
+                (doremi-increment-face-color frame-parameter face ?s (- inc))))
+            (doremi-increment-face-color frame-parameter face ?h inc)
+            (doremi-face-default frame-parameter face))
+          (doremi-face-default frame-parameter face)
+          increment
+          t))
 
 (defun doremi-all-faces-bg/fg-1 (frame-parameter component increment)
   "Iteratively INCREMENT color FRAME-PARAMETER of all faces for COMPONENT.
@@ -2031,12 +2181,12 @@ See `doremi-increment-color' for the other args."
                                     doremi-wrap-color-flag))
                         (list frame))))
 
-(defun doremi-wrap-or-limit-color-component (component)
-  "Limit color COMPONENT between 0.0 and 1.0.
+(defun doremi-wrap-or-limit-color-component (value)
+  "Limit color component VALUE between 0.0 and 1.0.
 Wrap around if `doremi-wrap-color-flag'."
   (if doremi-wrap-color-flag
-      (doremi-wrap component  0.0  1.0)
-    (doremi-limit component  0.0  1.0)))
+      (doremi-wrap value  0.0  1.0)
+    (doremi-limit value  0.0  1.0)))
 
 (defun doremi-face-bg/fg-color-name-1 (frame-parameter face)
   "Helper for `doremi-face-bg-color-name+', `doremi-face-fg-color-name+'."

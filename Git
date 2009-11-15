@@ -54,7 +54,7 @@ Gitsum is a mode to do interactive partial commits with Emacs in the style of ##
 
 git-emacs is yet another git mode on emacs for newbies.
 
-* Hompage: http://github.com/tsgates/git-emacs/tree/master
+* Homepage: http://github.com/tsgates/git-emacs/tree/master
 * Repository: ##git clone git://github.com/tsgates/git-emacs.git##
 * Documentation: http://files.taesoo.org/git-emacs/git-emacs.html
 
@@ -63,6 +63,8 @@ mo-git-blame is an interactive and iterative major mode for git blame.
 * Homepage: http://www.bunkus.org/blog/2009/10/an-interactive-iterative-git-blame-mode-for-emacs/
 * Repository: ##git clone git://git.bunkus.org/mo-git-blame.git##
 * Documentation: http://www.bunkus.org/cgi-bin/gitweb.cgi?p=mo-git-blame.git;a=blob;f=README;hb=HEAD
+
+[MdReadme]
 
 More information:
 
@@ -90,6 +92,12 @@ using the Debian packages, adjust the path to suit):
             "Minor mode for incremental blame for Git." t)
 
 git.el will look into your git configuration for committer name and email address.  If that fails, it uses the Emacs defaults.  If you rely on environment variables for your configuration, beware. (And consider `git-committer-name' and `git-committer-email')
+
+== github ==
+
+[http://github.com github] is a popular website to host and browse git repositories. There are [http://github.com/languages/Emacs%20Lisp quite a few Emacs libraries] there now.
+
+MdReadme can auto-generate a README for display on a github repository page.
 
 == MS Windows ==
 

@@ -8,8 +8,6 @@ By far the easiest way to get this combination going is by downloading th latest
 
 == LatexMk as alternative to preview-latex ==
 
-PreviewLaTeX is very useful, but seems to be a little unstable in my installation (installed as described above). Emacs crashes occasionally when regenerating previews. Perhaps these bugs will dissapear with time. (Update 7/9/04 -- using the precompiled emacs http://nqmacs.sourceforge.net/ seems much more stable)
-
 As an alternative a useful perl program known as latexmk.pl works well under cygwin, and provides a dvi "preview window" which updates on every page save. This gives a more stable "realtime" preview of your Latex document. 
 
 latexmk -pvc yourdoc.tex      opens a preview window that continuously reflects changes to the tex source
@@ -32,11 +30,6 @@ You can incorporate some of the latexmk commands into the Auctex C-c C-c cycle /
 * XSymbolMode provides some kind of WYSIWYG by using real characters and thumbnails for included images and real super-/subscripts.
 * Newer versions of AUCTeX have pseudo super-/subscripts.
 * Compare with InverseDviSearch which allows jumping from editor to related place in DVI file and vice versa.
-
-== Emacs 22 & Emacs 23 mess up ?
-The layout of preview-latex mess up in both my emacs22 & emacs23 installation. 
-(emacs21 is fine) 
-Any idea?   --poppyer
 
 ----
 CategoryTex

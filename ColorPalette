@@ -32,6 +32,8 @@ And here is a screenshot of the palette `mouse-3' menu, showing some of the key 
 
 : [[image:ColorPaletteMenuScreenshot]]
 
+
+[:PaletteSize]
 The palette should appear as shown above, in its own, small frame.  If the palette appears much larger than what you see above, or if it looks weird, then your font is probably too large.  In that case, customize
 option '''`palette-font'''' -- see it for more information.  More generally, you can change the size of the palette by simply changing the size of its font: `palette-font'. Here is a screenshot with `palette-font' = ##"-outline-Courier-normal-i-normal-normal-3-37-96-96-c-*-iso8859-1"## instead of the default size-5 font:
 
@@ -75,6 +77,11 @@ You can call function `palette' from your EmacsLisp code to open the palette for
 
 
 -- DrewAdams
+
+
+
+
+
 
 ----
 == Issues with palette.el ==
@@ -129,6 +136,14 @@ I close color palette just use mouse to click the system close button which at r
 [new:DrewAdams:2009-11-11 16:35 UTC]
 That action doesn't go through Emacs. Use `q' or `x'. -- DrewAdams
 
+[new]
+You can add palette-quit to delete-frame-hook when major-mode is palette-mode. -- [[ahei]]
+
+[new:DrewAdams:2009-11-14 22:51 UTC]
+Sorry, I don't want to add to `delete-frame-hook'. You can do that easily enough as a user, if you like. I recommend you use `q' or `x' instead (or the equivalent menu items '''Quit''' or '''Exit''', if you really want to use the mouse). -- DrewAdams
+
+
+
 
 
 
@@ -150,6 +165,68 @@ My meaning is: when hl-line mode is no and user call `facemenup-palette-face-fg-
 
 [new:DrewAdams:2009-11-11 16:35 UTC]
 When hl-line mode is on, the face under the cursor '''''is''''' face `hl-line'. That's the point. If you want some other face, then turn off hl-line mode temporarily. The code just uses the first face at point, if there is more than one. I don't want to try special-casing things for unrelated modes (e.g. hl-line mode), picking the first face unless it is `hl-line' or the moon is full etc. You can always use `facemenup-palette-face-fg-at-mouse' instead - IOW, just click the place you want to pick up a face. -- DrewAdams
+
+[new]
+1. I think there have users use hl-line and your facemenup together, can you add another command
+to pick face at point which is not hl-line-face, e.g. palette-face-at-point-no-hl-line.
+
+2. How do I use `facemenup-palette-face-fg-at-mouse'.
+
+3. Why color palette frame on my winxp system is so narrow?
+
+4. How do I update action(x) but not need to close palette frame, then I can update face selection immediately, 
+if I'm dissatisfied the face I selected, I can select other face again but not need close palette, 
+and then select color use palette more conveniently. 
+
+5. Why I cannot see your reply in "Recent Changes" page some time? -- [[ahei]]
+
+
+[new:DrewAdams:2009-11-14 15:42 UTC]
+1. I don't want to add a command specially for that; sorry. You can write such a command if you really need it. Otherwise, turn off hl-line mode temporarily or use `facemenup-palette-face-fg-at-mouse'. Consider binding a key to `hl-line-mode' or `global-hl-line-mode'. (Personally, I bind `##C-+##' to <tt>[[CrosshairHighlighting|`crosshairs-mode']]</tt>.)
+
+2. `C-mouse-2' > '''Palette - Edit Face Foreground''' `RET'
+Change the color using the palette. Use `x' to save the edited color. The doc string says:
+
+  Use palette to edit foreground of face under the mouse pointer.
+  To change this face: edit the color in the palette, then save it
+  (`C-s'), and exit the palette using `x'.
+
+  To quit the palette without effecting any change on the face, use `q'.
+
+3. Dunno. I use Windows XP and it looks exactly like the screenshots on this page. See the explanation [[#PaletteSize|above]] about the size. The palette "pixels" are in fact space chars (`SPC'). Use a fixed-width font. Choose a font that gives the size you want. You might have to experiment a bit.
+
+4. You can use `##facemenu-face-(bg|fg)-restore##' to restore the last face color. They are on the same '''Text Properties''' menu (`C-mouse-2'), items '''Restore Last Foreground''' etc. 
+Or use `##facemenup-paste-to-face-(bg|fg)-at-mouse##' after `RET' or `mouse-2'. They are items '''Eyedropper - Paste to Face Foreground''' etc.
+
+5. Dunno. Perhaps I made a minor edit and you don't show minor edits? Dunno. -- DrewAdams
+
+
+[new]
+1. 
+About question 4 I mentioned above, I must use "Exit(Update Action) x", but this will close palette frame, my meaning is: how do I update action 
+but not need to close palette frame?
+
+2. I suggest you:
+<pre>
+ You can add palette-quit to delete-frame-hook when major-mode is palette-mode.
+</pre>
+after your reply:
+<pre>
+ That action doesn’t go through Emacs. Use ‘q’ or ‘x’. – DrewAdams
+</pre>
+have you seen that? 
+
+3. and, can you understand my explanation about my suggestion for your DoReMi? -- ahei
+
+[new:DrewAdams:2009-11-14 22:36 UTC]
+new1. I answered your #4 already: Don't use `x'. Don't close the palette. Use `##facemenup-paste-to-face-(bg|fg)-at-mouse##' after `RET' or `mouse-2' in the palette. Or if you do close the palette and you want to restore the color you had, then use `##facemenu-face-(bg|fg)-restore##'.
+
+new2. See above.
+
+new3. If you are asking whether I understand your last reply on page DoReMi, the answer is yes, I believe so. I'll try to come up with something, but I don't think this is a very useful use case. -- DrewAdams
+
+
+
 
 ----
 Lisp:palette.el, Lisp:facemenu+.el
