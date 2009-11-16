@@ -1,4 +1,4 @@
-Timestamp: Wed Aug 12 10:35:10 BST 2009
+Timestamp: Sun Nov 15 19:35:58 GMT 2009
 
 This page is based on the EmacsLispList by StephenEglen and updated automatically.
 
@@ -478,7 +478,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://lampwww.epfl.ch/~schinz/elisp/ desktop-kde-recent.el] --- [Interface Emacs and KDE desktops] (by Michel Schinz)
 
-[http://www.geekware.de/software/emacs/index.html#desktop-menu desktop-menu.el] --- menu for managing emacs desktops (by Olaf Sylvester)
+[http://www.emacswiki.org/emacs/desktop-menu.el desktop-menu.el] --- menu for managing emacs desktops (by Stepan Nemec)
 
 [http://groups.google.com/groups?selm=ye4ww2cbiry.fsf%40alpha4.bocal.cs.univ-paris8.fr df.el] --- Hack for displaying space left on device in the mode line (by Benjamin Drieu)
 

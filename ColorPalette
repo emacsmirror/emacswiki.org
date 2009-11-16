@@ -106,6 +106,9 @@ Debugger entered--Lisp error: (error "X windows are not in use or not initialize
 OK, I've tried to take care of that. -- DrewAdams
 
 
+
+
+
 === Performance ===
 
 I also use you color palette, it's a good tool to select color.But on my ubuntu 8.04 system, it took a little long time
@@ -119,6 +122,8 @@ Yes, I'm afraid the performance is what it is.  The problem is that Emacs faces 
 I created the palette partly as a proof-of-concept. I specifically wanted to use faces this way. A ''much'' more performant solution would be to just (a) make a screen-capture image of the palette body, and then use that, instead of zillions of tiny space characters, each in a different face. I haven't bothered to do that. Someone else might want to.
 
 For my own use, it's OK that the palette is slow -- I just go into it, use it a bit, and then quit it. Once I've quit, Emacs is no longer slow. I guess what I'm saying is that if the palette is too slow for your needs, then just don't use it. Or better yet, recode it to use an image etc. -- that would be a useful improvement. To do that, you will need to make a careful map from image locations to the corresponding color info, since the info won't be contained in faces. -- DrewAdams
+
+
 
 
 
@@ -142,7 +147,11 @@ You can add palette-quit to delete-frame-hook when major-mode is palette-mode. -
 [new:DrewAdams:2009-11-14 22:51 UTC]
 Sorry, I don't want to add to `delete-frame-hook'. You can do that easily enough as a user, if you like. I recommend you use `q' or `x' instead (or the equivalent menu items '''Quit''' or '''Exit''', if you really want to use the mouse). -- DrewAdams
 
+[new]
+can you tell me the reason you don't want to add palette-quit to `delete-frame-hook'? do that is easy for me, but I think a good tool shoud prevent user to make mistake, so I suggest you do that. -- [[ahei]]
 
+[new:DrewAdams:2009-11-15 15:07 UTC]
+It's not a question of a user mistake. Deleting a window or frame is deleting a window or frame; it is not killing a buffer. IOW, it is about user intention -- what is a mistake to you is intended by other users. Individual users can easily add a hook action to combine the behaviors, but they are logically distinct. You have plenty of ways to delete the palette windows, frame, and buffers all at once, both using the keyboard and the mouse. If you want more ways, you can easily add them. -- DrewAdams
 
 
 
@@ -216,7 +225,7 @@ after your reply:
 </pre>
 have you seen that? 
 
-3. and, can you understand my explanation about my suggestion for your DoReMi? -- ahei
+3. and, can you understand my explanation about my suggestion for your DoReMi? -- [[ahei]]
 
 [new:DrewAdams:2009-11-14 22:36 UTC]
 new1. I answered your #4 already: Don't use `x'. Don't close the palette. Use `##facemenup-paste-to-face-(bg|fg)-at-mouse##' after `RET' or `mouse-2' in the palette. Or if you do close the palette and you want to restore the color you had, then use `##facemenu-face-(bg|fg)-restore##'.
@@ -225,7 +234,41 @@ new2. See above.
 
 new3. If you are asking whether I understand your last reply on page DoReMi, the answer is yes, I believe so. I'll try to come up with something, but I don't think this is a very useful use case. -- DrewAdams
 
+[new]
+I use M-x facemenup-paste-to-face-fg-at-mouse after `RET', but I get one error message "execute-extended-command: facemenup-paste-to-face-fg-at-mouse must be bound to an event with parameters", and I use laptop, there no `mouse-2'. and my meaning is not restore the color I had, is how to update the face I selected and not need to close palette. -- [[ahei]]
 
+[new:DrewAdams:2009-11-15 17:50 UTC]
+You asked "How do I use `facemenup-palette-face-fg-at-mouse'." But you don't have a mouse? Note: If you have a mouse but no `mouse-2', you can use `mouse-1' and `mouse-3' together to paste.
+
+Anyway, if you're not using the mouse, then use `facemenup-paste-to-face-fg-at-point', not `-at-mouse'. This command is on the '''Text Properties''' menus (both under the [[menu bar]] '''Edit''' menu and on `C-mouse-2').
+
+The palette is just a bunch of faces. You can copy the foreground or background of any face, anywhere -- including in the palette, and then paste it to the foreground or background of any other face. Note: you can paste a color that you copied from a ''back''ground (e.g. in the palette, which doesn't even use the foreground) to another face's ''fore''ground. And vice versa.
+
+And whenever you change the current color in the palette, the new current color is automatically copied. So all you need to do is paste it. So, just `RET' in the palette, then use `facemenup-paste-to-face-fg-at-point' with [[point]] on a face anywhere.
+
+And you have `facemenup-face-fg-restore' (likewise `-bg-'), which is '''Restore Last Foreground''' on the menu, to undo the paste. 
+
+Note: I just fixed a bug in `##facemenup-paste-to-face-(bg|fg)-at-point##' that was preventing pasting a background to foreground and vice versa. And I fixed another bug in the palette. Be sure to get the latest <tt>[[palette.el]]</tt> and <tt>[[facemenu+.el]]</tt>. -- DrewAdams
+
+
+[new]
+I use pc when work, and I use laptop at home, there have only mouse-1 and mouse-3 on my laptop, no mouse-2.
+
+I use `facemenup-palette-face-fg-at-mouse' success, but I don't know why it need a bit long time to finish execute `facemenup-palette-face-fg-at-mouse' command. 
+
+I also tried `facemenup-paste-to-face-fg-at-point', but I get one message "Cannot paste. No color copied".
+Version of palette I using is:
+;; Version: 22.0
+;; Last-Updated: Sat Nov  7 14:41:05 2009 (-0800)
+;;           By: dradams
+;;     Update #: 386 4
+
+Just now, I try latest version of palette and facemenu+, `facemenup-paste-to-face-fg-at-point' can work, but It also
+need a bit long time to finish execute `facemenup-paste-to-face-fg-at-point', and I can not put cursor on palette when 
+execute `facemenup-paste-to-face-fg-at-point', how do I paste face but not need to leave palette, I think when users
+choose face, they will try many faces util choose one satisfying face, so if they paste face everty time, they must leave 
+palette, they will fell boring, how do you think about it?
+-- [[ahei]]
 
 
 ----

@@ -226,5 +226,48 @@ See the following blog post for using alt as your meta key:
 
 http://tylerkieft.com/archives/2006/10/05/redefine-the-x11-meta-key-in-mac-os-x/
 
+=== Command to Maximize Emacs 23.1 (vanilla) ===
+
+Fullscreen mode doesn't work in Vanilla Emacs 23.1.  You can use applescript to maximize the window, however:
+
+<pre>
+
+(defun maximize-window () 
+  (interactive)
+  (shell-command "sh <<EOF
+osascript <<OSA 1> /dev/null 2> /dev/null &
+set display_info to (do shell script \"system_profiler -detailLevel mini | grep -a 'Main Display:' -B 4 | grep -a 'Resolution:'\")
+
+set ws to every word of display_info
+set wc to the count of ws
+set w2 to wc - 2
+
+set screen_height to item wc of ws
+set screen_width to item w2 of ws
+
+tell application \"System Events\"
+	set frontmostApplication to name of the first process whose frontmost is true
+	set frontmostApplication to frontmostApplication as string
+	tell process frontmostApplication
+		tell window 1
+			set position to {0, 20}
+			set size to {screen_width, screen_height}
+		end tell
+	end tell
+end tell
+OSA
+EOF
+"))
+
+(global-set-key (kbd "<s-S-return>") 'maximize-window)
+
+</pre>
+
+I grabbed the AppleScript from here: http://mattmactricks.blogspot.com/2008/10/maximize-any-window.html
+
+If Emacs is busy waiting for AppleScript to return, and AppleScript is waiting for Emacs to become available so it can send the maximize window command, they get into a dead lock.  Wrapping it in a shell, firing off in the background, and redirecting the output streams to /dev/null effectively daemonizes the process, allowing this to work.
+
+-- [[timcharper]]
+
 ------
 CategoryPorts CategoryBuilding

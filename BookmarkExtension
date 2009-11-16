@@ -22,6 +22,8 @@ hg update -C development
 
 At the moment it provide support for bookmarking in W3m, Gnus, Woman, Man, Info with emacs standard bookmarks.
 
+You can now import your W3m bookmarks in your Emacs bookmarks. (Use M-x bmkext-import-or-sync-w3m-bmks).
+
 The display is colorized to differency caregories of bookmarks.
 
 You will find filters to show only the category of bookmarks you want (e.g Gnus, W3m, etc...)

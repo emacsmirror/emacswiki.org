@@ -80,6 +80,12 @@ do you have a good way to solve it?
 
 I don't think the wiki is the best place to ask questions.  However, why aren't you using paredit mode in common-lisp-mode?  I would disable autopairs and use paredit mode instead.
 
+[new]
+um, how do I report bug to you? email? I also tried paredit before tried autopairs, but I think autopairs is better than paredit, :), only I think, I think there are more bugs in paredit, so I choose autopairs. That's the bad news for me you'll disable autopairs, :(. -- [[ahei]]
+
+[new]
+hehehe, autopair.el also has bugs believe me... To submit a bug or track autopair.el development go to http://autopair.googlecode.com. Will try to implement your backtick-and-quote custom pairing, and a few other ideas  --JoaoTavora
+
 === SkeletonMode ===
 
 The [SkeletonMode Skeleton library] provides pair insertion via the ##skeleton-insert-maybe## command, which can be bound to the opening key:

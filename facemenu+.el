@@ -7,9 +7,9 @@
 ;; Copyright (C) 2005-2009, Drew Adams, all rights reserved.
 ;; Created: Sat Jun 25 14:42:07 2005
 ;; Version:
-;; Last-Updated: Sat Nov  7 16:27:52 2009 (-0700)
+;; Last-Updated: Sun Nov 15 09:40:48 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 1367
+;;     Update #: 1371
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/facemenu+.el
 ;; Keywords: faces, extensions, convenience, menus, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -170,6 +170,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2009/11/15 dadams
+;;     facemenup-paste-to-face-(bg|fg)-at-point:
+;;       Test eyedrop-last-picked-color, not eyedrop-picked-background, for error.
 ;; 2009/11/07 dadams
 ;;     Renamed: *-change-(bg|fg)-*-at-(point|mouse) to *-change-(bg|fg)-*-at-(point|mouse)+.
 ;;     Applied doremi cmd renamings (added +).
@@ -960,7 +963,7 @@ The last color copied is in `eyedrop-last-picked-color'."
   "Paste last color copied to background of face at cursor (point).
 The last color copied is in `eyedrop-last-picked-color'."
   (interactive)
-  (unless eyedrop-picked-background (error "Cannot paste. No color copied"))
+  (unless eyedrop-last-picked-color (error "Cannot paste. No color copied"))
   (let ((face (eyedrop-face-at-point)))
     (unless face (read-face-name facemenup-err-point))
     (let ((bg (facemenup-face-bg face)))
@@ -971,7 +974,7 @@ The last color copied is in `eyedrop-last-picked-color'."
   "Paste last color copied to foreground of face at cursor (point).
 The last color copied is in `eyedrop-last-picked-color'."
   (interactive)
-  (unless eyedrop-picked-foreground (error "Cannot paste. No color copied"))
+  (unless eyedrop-last-picked-color (error "Cannot paste. No color copied"))
   (let ((face (eyedrop-face-at-point)))
     (unless face (read-face-name facemenup-err-point))
     (let ((fg (facemenup-face-fg face)))

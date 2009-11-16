@@ -863,14 +863,35 @@ I'm not convinced this is very useful, but you have it, in any case. See command
 
 You need to be aware that hue, saturation, and value do not correspond in a simple way to the color coding that Emacs uses, which is RGB. In the ColorPalette, if you just increment red or just blue or just green, you will see how the cursor moves over the Hue x Saturation space --- the movement is in some ways surprising. The relation between the two color spaces is not simple and not very intuitive. See the commentary in file <tt>[[palette.el]]</tt> for more information. -- DrewAdams
 
+[new]
+It is a pity that you can not understand my meaning, I'll try to explain it to you when I belive that you can understand, :). -- [[ahei]]
+
+[new:DrewAdams:2009-11-15 18:09 UTC]
+Dunno what that means. It's a pity that you (apparently) cannot say what you mean. What you said seems clear enough -- clear diagram, no problem wrt English. But apparently it doesn't correspond to what you were thinking. 
+
+AFAIK, I implemented just what you requested: "iterate colors on color palette from 1 to 25, increment with 1, that is 1,2,3,4,5,6,...,21,22,23,24,25", where the numbers correspond to the palette colors as follows (your diagram):
+
+<pre>
+1  2  3  4  5
+6  7  8  9  10
+11 12 13 14 15
+16 17 18 19 20
+21 22 23 24 25
+</pre>
+
+1,2,3,4,5,6,...25 means incrementing hue (1,2,3...) until the end of a row (5), then incrementing saturation once to move to the next row (6), and then incrementing hue along that row (6,7,8...), and so on. That's what you said you wanted, and that's what I implemented. You can traverse all of the hue x saturation space in hue order first, saturation order second. You can do it forward or backward (25,24,23,...1). And you can use increments other than 1 (the default).
+
+This enhancement meant adding 6 non-trivial functions, giving you commands for both foreground and background and for both frame and face colors. Your "spec" seems quite clear. If what you specified was not in fact what you really wanted, the fault lies with the specifier, I'm afraid --- I don't see another interpretation for your request statement.
+
+You can implement the next [[http://en.wikipedia.org/wiki/You_ain't_gonna_need_it YAGNI]] you think you need, yourself. -- DrewAdams
 
 
+[new]
+1. 
+I tried `##doremi-*-hue-stepping-saturation+##', it is not traverse all of colors on palette, at least I can not get black and white color use 
+`##doremi-*-hue-stepping-saturation+##'. My meaning is traverse all of colors on palette. Anyway, thanks for `##doremi-*-hue-stepping-saturation+##'.
 
-
-
-
-
-
+2. If you think what I need is not mostly users need, at least is not you need, you  need not  to implement it, until you think it is useful or mostly users think it is userful.:)
 
 ----
 [:SeeAlso]

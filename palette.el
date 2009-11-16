@@ -7,9 +7,9 @@
 ;; Copyright (C) 2006-2009, Drew Adams, all rights reserved.
 ;; Created: Sat May 20 07:56:06 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Nov  7 14:41:05 2009 (-0800)
+;; Last-Updated: Sun Nov 15 09:29:47 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 386 4
+;;     Update #: 392 4
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/palette.el
 ;; Keywords: color, rgb, hsv, hexadecimal, face, frame
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -329,6 +329,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2009/11/15 dadams
+;;     palette-*-at-point: Fix for consp face value.  Fix for absent fg/bg value.
 ;; 2009/11/07 dadams
 ;;     palette-pick-color-by-name, palette-pick-color-by-name-multi, palette,
 ;;       palette-pick-by-name-action: Use function, not var, hexrgb-defined-colors.
@@ -1055,9 +1057,12 @@ NOTE: The cursor is positioned in each of the windows so that it
                          (error (or (face-background face) ; Emacs 20
                                     (cdr (assq 'background-color (frame-parameters)))))))
                       ((consp face)
-                       (cond ((memq 'background-color face)
+                       (cond ((eq 'background-color (car face)) (cdr face))
+                             ((and (consp (cdr face)) (memq 'background-color face))
                               (cdr (memq 'background-color face)))
-                             ((memq ':background face) (cadr (memq ':background face)))))
+                             ((and (consp (cdr face)) (memq ':background face))
+                              (cadr (memq ':background face)))
+                             (t (cdr (assq 'background-color (frame-parameters)))))) ; No bg.
                       (t nil))))        ; Invalid face value.
     (when msg-p (if bg (palette-color-message bg t) (message "No background color here")))
     bg))
@@ -1083,9 +1088,12 @@ Non-nil optional arg MSG-P means display an informative message."
                          (error (or (face-foreground face) ; Emacs 20
                                     (cdr (assq 'foreground-color (frame-parameters)))))))
                       ((consp face)
-                       (cond ((memq 'foreground-color face)
+                       (cond ((eq 'foreground-color (car face)) (cdr face))
+                             ((and (consp (cdr face)) (memq 'foreground-color face))
                               (cdr (memq 'foreground-color face)))
-                             ((memq ':foreground face) (cadr (memq ':foreground face)))))
+                             ((and (consp (cdr face)) (memq ':foreground face))
+                              (cadr (memq ':foreground face)))
+                             (t (cdr (assq 'foreground-color (frame-parameters)))))) ; No fg.
                       (t nil))))        ; Invalid face value.
     (when msg-p (if fg (palette-color-message fg t) (message "No foreground color here")))
     fg))
