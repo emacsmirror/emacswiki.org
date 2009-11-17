@@ -1,6 +1,6 @@
 Hi,
 
-I'm Francesc Rocher. I used Emacs in the late 80's at the university, under VMS. During some time I used Jed and other editors and IDE's. I lacked the power of Emacs, so I switched to XEmacs and finally again to Emacs.
+I'm Francesc Rocher. I used Emacs in the late 80's at the university, under VMS. During some time I used Jed and other editors and IDE's. I lacked the power of Emacs, so I switched back to XEmacs and finally again to Emacs.
 
 Things I use it for:
 
@@ -18,6 +18,72 @@ Things I use it for:
 
 [new]
 Welcome to the wiki! :) -- AlexSchroeder
+
+
+== Recent Work: QWE ==
+
+I'm about to make publicly available <tt>QWE</tt>, //QWE's not WEB for Emacs//, a proof of concept tool to introduce some format (or //visual elements// or //document structure//) in program documentation. <tt>QWE</tt> aims to be used as a kind of literate programming system based on a lightweight markup language with //quasi//-<tt>WYSIWYG</tt> support. I'm using it for many years in my own work, even <tt>QWE</tt> itself. Its development started back in 2004, but never has been made public, yet. I need more time to review some concepts, implement new functionality and to improve its overall implementation. But is time to publish a beta release ... soon.
+
+Technically, <tt>QWE</tt> is a Emacs minor mode to be used in conjunction with a major mode, usually a //programming-language// major mode (c-mode, c++-mode, Makefile, sh, Java, Ada, etc). <tt>QWE</tt> elements are independent of the programming language used. The only requirement is that the programming language must support [http://en.wikipedia.org/wiki/Inline_comment#Inline_comments inline comments], those that use a newline character to indicate the end of the comment, and a delimiter to indicate its beginning.
+
+<tt>QWE</tt> can be only tested under Emacs-23.1, and unfortunately it doesn't works for Xemacs, no version, no exception.
+
+Currently <tt>QWE</tt> is in its 0.9.5 version, quite stable and usable, but with a lot of work to do. There is no downloadable version, yet, but be sure I'll announce here as soon 
+
+I include here some screen-shots to show you how it looks like. The examples below are not concerned to a program, but to a document.
+
+
+=== First, The Presentation ===
+
+Two images used here: the logo and the first line.
+
+[[image:QWEScreenShotZero]]
+
+
+=== The Second Example ===
+
+This example summarizes <tt>QWE</tt> features:
+
+[[image:QWEScreenShotOne]]
+
+
+
+=== Different Views ===
+
+Here I include some screen-shots of the same Emacs buffer shown in different modes. The first one is //pure ASCII//:
+
+[[image:QWEScreenShotTwo]]
+
+
+
+As soon as you activate `qwe-mode' you get this view:
+
+[[image:QWEScreenShotThree]]
+
+
+
+Once in `qwe-mode', <tt>QWE</tt> elements can be shown as text:
+
+[[image:QWEScreenShotFour]]
+
+
+
+Or can be shown as little labels:
+
+[[image:QWEScreenShotFive]]
+
+
+
+Links and character-formatting elements can be shown as text, as well:
+
+[[image:QWEScreenShotSix]]
+
+
+That's all for now. Comments, suggestions and criticisms are welcome, as well as volunteers to test <tt>QWE</tt>.
+
+== Discussion ==
+
+Did you invent a new markup syntax? There are several established and well known textual markup syntaxes like Markdown, Textile, etc. It would be better if you used one of them as a base and extended it as appropriate. There is no need to reinvent the wheel.
 
 ----
 CategoryHomepage

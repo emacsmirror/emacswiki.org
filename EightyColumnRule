@@ -122,5 +122,8 @@ And occur:
 I'm currently using Emacs 23.0.91.1 with the GTK interface.  What I'd like is a minor mode that puts a vertical line at column 80.  I'm a bit of an Emacs newbie, so I don't know how to code this yet.  Can anyone help?
 
 -- Paul Miller
+
+[new]
+ColumnMarker. -- AlexSchroeder
 ----
 CategoryFilling

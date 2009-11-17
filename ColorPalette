@@ -256,20 +256,40 @@ I use pc when work, and I use laptop at home, there have only mouse-1 and mouse-
 
 I use `facemenup-palette-face-fg-at-mouse' success, but I don't know why it need a bit long time to finish execute `facemenup-palette-face-fg-at-mouse' command. 
 
-I also tried `facemenup-paste-to-face-fg-at-point', but I get one message "Cannot paste. No color copied".
-Version of palette I using is:
-;; Version: 22.0
-;; Last-Updated: Sat Nov  7 14:41:05 2009 (-0800)
-;;           By: dradams
-;;     Update #: 386 4
-
 Just now, I try latest version of palette and facemenu+, `facemenup-paste-to-face-fg-at-point' can work, but It also
 need a bit long time to finish execute `facemenup-paste-to-face-fg-at-point', and I can not put cursor on palette when 
 execute `facemenup-paste-to-face-fg-at-point', how do I paste face but not need to leave palette, I think when users
 choose face, they will try many faces util choose one satisfying face, so if they paste face everty time, they must leave 
-palette, they will fell boring, how do you think about it?
--- [[ahei]]
+palette, they will fell boring, how do you think about it? -- [[ahei]]
 
+[new:DrewAdams:2009-11-17 00:03 UTC]
+1. FYI -- As I said, you should be able to click `mouse-1' and `mouse-3' together, to get the effect of `mouse-2'. That can take a little practice, admittedly, and it's not as handy as using a real mouse. But it can be useful. YMMV.
+
+2. The time it takes is what it takes to update a face. Emacs faces are slow. Each frame is updated; face inheritance is checked, etc.
+
+3. It's a reasonable request to be able to have palette edits reflected immediately in a face change. So I've implemented that.
+
+However, in that case, there is no way to cancel the face change using `q' in the palette -- you will need to restore the previous color instead (e.g. `facemenup-face-fg-restore'). So I added an [[option]], '''`facemenup-palette-update-while-editing-flag'''', to let users choose the behavior they prefer. For the moment, the new behavior is the default. HTH. -- DrewAdams
+
+[new]
+1.
+For your 2: but why it's so fast to update face when I use doremi-bg-color-name+?
+
+2.
+For you 3: I provide a way: `q' to cancel the face updated, and `x' to update action users did, this way is same as ColorPalette did, also same as mostly modal dialog do. HTH. :) -- [[ahei]]
+
+[new:DrewAdams:2009-11-17 03:24 UTC]
+1. Dunno; you tell me.
+
+2. There is nothing modal about this. The palette is separate. Each edit there causes the face to be changed, as you requested. When function `palette' is called, all that does is open the palette -- the facemenu command does not in any way wait until you finish editing with the palette. You can use the palette as long as you like -- nothing is waiting on the palette to be closed. 
+
+If this is not good enough for you, please use an alternative, if you can find one -- or roll your own. -- DrewAdams
+
+[new]
+1.For your 1: Is it also slow like using facemenup-paste-to-face-fg-at-point when you use doremi-bg-color-name+ ?
+
+2.
+When users choose one satisfying face, they will close palette, I think mostly users will do this, not leave palette opened and continue working i emacs, so palette frame is like modal dialog, and so, I think you can use `q' to cancel the face updated, and `x' to update action users did, how do you think about it? -- [[ahei]]
 
 ----
 Lisp:palette.el, Lisp:facemenu+.el

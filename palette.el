@@ -7,9 +7,9 @@
 ;; Copyright (C) 2006-2009, Drew Adams, all rights reserved.
 ;; Created: Sat May 20 07:56:06 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Nov 15 09:29:47 2009 (-0800)
+;; Last-Updated: Mon Nov 16 15:55:41 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 392 4
+;;     Update #: 407 4
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/palette.el
 ;; Keywords: color, rgb, hsv, hexadecimal, face, frame
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -287,11 +287,11 @@
 ;;  Internal variables defined here:
 ;;
 ;;    `eyedrop-last-picked-color', `eyedrop-picked-background',
-;;    `eyedrop-picked-foreground', `palette-current-color',
-;;    `palette-last-color', `palette-last-picked-color',
-;;    `palette-mode-map', `palette-old-color',
-;;    `palette-picked-background', `palette-picked-foreground',
-;;    `palette-popup-map'.
+;;    `eyedrop-picked-foreground', `palette-action',
+;;    `palette-current-color', `palette-last-color',
+;;    `palette-last-picked-color', `palette-mode-map',
+;;    `palette-old-color', `palette-picked-background',
+;;    `palette-picked-foreground', `palette-popup-map'.
 ;;
 ;;  Do NOT try to use this library without a window manager.
 ;;  That is, do not try to use this with `emacs -nw'.
@@ -329,6 +329,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2009/11/16 dadams
+;;     Added: palette-action.
+;;     palette-pick-background-at-(mouse|point): Call palette-action.  Thx to Ahei.
 ;; 2009/11/15 dadams
 ;;     palette-*-at-point: Fix for consp face value.  Fix for absent fg/bg value.
 ;; 2009/11/07 dadams
@@ -531,6 +534,9 @@ by this hook."
 (defcustom palette-save-color-hook nil
   "*Functions to run at the end of `palette-save-new-color'."
   :type 'hook :group 'Color-Palette)
+
+(defvar palette-action nil
+  "Function called on the current palette color, whenever it changes.")
 
 (defvar palette-current-color "#000000000000"
   "Current (new) color.  Use `\\<palette-mode-map>\\[palette-save-new-color]' \
@@ -1119,6 +1125,8 @@ If called from the color palette, update the current color there."
            (palette-swatch))
           (show-p (palette bg)))
     (select-window win)
+    ;; If we are in the palette and `palette-action' is defined, then call it.
+    (when (and palette-action (eq major-mode 'palette-mode)) (funcall palette-action))
     bg))
 
 (defun palette-set-current-color (new-value)
@@ -1172,6 +1180,8 @@ If called from the color palette, update the current color there."
            (palette-brightness-scale)
            (palette-swatch))
           (show-p (palette palette-current-color))))
+  ;; If we are in the palette and `palette-action' is defined, then call it.
+  (when (and palette-action (eq major-mode 'palette-mode)) (funcall palette-action))
   palette-current-color)
 
 (defalias 'eyedropper-foreground 'palette-pick-foreground-at-point)

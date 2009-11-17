@@ -36,7 +36,8 @@ This is better written using `display-color-cells':
 
 ; ##(emacs-version)##, `emacs-major-version', `emacs-minor-version': the version of Emacs (string / numbers).  This is generally to be avoided.
 ; ##(system-name)##: hostname of the current machine
-; ##system-type##: type of operating system you are using
+; ##system-type##: symbol for the type of operating system you are using
+; ##system-configuration##; a string giving the OS and other info
 ; ##(getenv "TERM")##: the terminal used when Emacs was started
 
 == Feature-specific ==

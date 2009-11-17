@@ -119,7 +119,6 @@
 ;; `traverse-window-split-h-or-t'
 ;; `traverse-list-directories-in-tree'
 ;; `traverse-list-files-in-tree'
-;; `traverse-auto-document-lisp-buffer'
 ;; `traverse-goto-line'
 ;; `traverse-incremental-forward-line'
 ;; `traverse-incremental-jump'
@@ -135,6 +134,7 @@
 ;; [EVAL] (traverse-auto-document-lisp-buffer :type 'macro :prefix "traverse")
 ;; `traverse-collect-files-in-tree-if'
 ;; `traverse-collect-files-in-tree-if-not'
+;; `traverse-auto-document-lisp-buffer'
 
 ;;  * Internal variables defined here:
 ;; [EVAL] (traverse-auto-document-lisp-buffer :type 'internal-variable :prefix "traverse")
@@ -152,6 +152,7 @@
 ;; `traverse-incremental-quit-flag'
 ;; `traverse-incremental-current-buffer'
 ;; `traverse-incremental-occur-overlay'
+;; `traverse-incremental-read-fn'
 ;; `traverse-incremental-face'
 
 ;;  * Faces defined here:
@@ -247,7 +248,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Version:
-(defconst traverse-version "1.1.40")
+(defconst traverse-version "1.1.43")
 
 ;;; Code:
 
@@ -453,7 +454,7 @@ Each element of LIS is compared with the filename STR."
   (or (member (file-name-extension str t) lis)
       (traverse-comp-str-to-list str lis)))
 
-(defun* traverse-find-readlines (bfile regexp &key (insert-fn 'file))
+(defsubst* traverse-find-readlines (bfile regexp &key (insert-fn 'file))
   "Return an alist of all the (num-line line) of a file or buffer BFILE matching REGEXP."
   (let ((count 0)
         (fn    (case insert-fn
@@ -479,10 +480,10 @@ Each element of LIS is compared with the filename STR."
                                  (second i)
                                  (replace-regexp-in-string "\\(^ *\\)" "" (second i)))))
           (and (cond ((eq insert-fn 'file)
-                      (insert-button (format "[%s]" (if full-path
-                                                        fname
-                                                        (file-relative-name fname
-                                                                            default-directory)))
+                      (insert-button (format "[%s]"
+                                             (if full-path
+                                                 fname
+                                                 (file-relative-name fname default-directory)))
                                      'action 'traverse-button-func
                                      'face "hi-green"))
                      ((eq insert-fn 'buffer)
@@ -497,13 +498,14 @@ Each element of LIS is compared with the filename STR."
                                "\n"))))))
     (setq traverse-count-occurences (+ traverse-count-occurences (length matched-lines)))))
 
-(defun traverse-file-process-ext (regex fname &optional insert-fn)
+(defun* traverse-file-process-ext (regex fname &key (lline traverse-length-line))
   "Function to process files in external program like anything."
-  (let ((matched-lines (traverse-find-readlines fname regex :insert-fn (or insert-fn 'file))))
+  (let ((matched-lines (traverse-find-readlines fname regex :insert-fn 'file)))
     (when matched-lines
       (dolist (i matched-lines) ;; each element is of the form '(key value)
         (let* ((ltp           (second i))
-               (new-ltp       (replace-regexp-in-string "\\(^ *\\)" "" ltp))
+               (replace-reg   (if (string-match "^\t" ltp) "\\(^\t*\\)" "\\(^ *\\)"))
+               (new-ltp       (replace-regexp-in-string replace-reg "" ltp))
                (line-to-print (if traverse-keep-indent ltp new-ltp)))
           (insert (concat (propertize (file-name-nondirectory fname)
                                       'face 'traverse-path-face
@@ -512,8 +514,8 @@ Each element of LIS is compared with the filename STR."
                           (propertize (int-to-string (+ (first i) 1))
                                       'face 'traverse-match-face)
                           ":"
-                          (if (> (length line-to-print) traverse-length-line)
-                              (substring line-to-print 0 traverse-length-line)
+                          (if (> (length line-to-print) lline)
+                              (substring line-to-print 0 lline)
                               line-to-print)
                           "\n")))))))
 
@@ -1029,7 +1031,7 @@ PRED is a function that take one arg."
       :file-fn #'(lambda (x) (unless (funcall ,pred x) (push x flist))))
      flist))
 
-(defun* traverse-auto-document-lisp-buffer (&key type prefix)
+(defmacro* traverse-auto-document-lisp-buffer (&key type prefix)
   "Auto document tool for lisp code.
 TYPE can be one of:
     - command           
@@ -1052,8 +1054,8 @@ Don't forget to add this line at the end of your traverse-auto-documentation:
     ;;  *** END auto-documentation
 
 See headers of traverselisp.el for example."
-  (let* ((boundary-regexp "^;; +\\*+ .*")
-         (regexp          (case type
+  `(let* ((boundary-regexp "^;; +\\*+ .*")
+         (regexp          (case ,type
                             ('command           "^\(def\\(un\\|subst\\)")
                             ('nested-command    "^ +\(def\\(un\\|subst\\)")
                             ('function          "^\(def\\(un\\|subst\\|advice\\)")
@@ -1071,21 +1073,21 @@ See headers of traverselisp.el for example."
                            :insert-fn 'buffer))
          beg end)
     (flet ((maybe-insert-with-prefix (name)
-             (if prefix
-                 (when (string-match prefix name)
+             (if ,prefix
+                 (when (string-match ,prefix name)
                    (insert (concat ";; \`" name "\'\n")))
                  (insert (concat ";; \`" name "\'\n")))))
       (insert "\n") (setq beg (point))
       (save-excursion (when (re-search-forward boundary-regexp)
                         (forward-line -1) (setq end (point))))
       (delete-region beg end)
-      (when (eq type 'anything-source) (setq regexp "\(defvar"))
+      (when (eq ,type 'anything-source) (setq regexp "\(defvar"))
       (dolist (i fn-list)
         (let* ((elm     (cadr i))
                (elm1    (replace-regexp-in-string "\*" "" elm))
                (elm-mod (replace-regexp-in-string regexp "" elm1))
                (elm-fin (replace-regexp-in-string "\(\\|\)" ""(car (split-string elm-mod)))))
-          (case type
+          (case ,type
             ('command
              (when (commandp (intern elm-fin))
                (maybe-insert-with-prefix elm-fin)))
@@ -1169,6 +1171,7 @@ Special commands:
 (defvar traverse-incremental-occur-overlay nil)
 (defvar traverse-incremental-read-fn
   (if (fboundp 'read-key) 'read-key 'traverse-read-char-or-event))
+(defvar traverse-incremental-exit-and-quit-p nil)
 
 (defun traverse-goto-line (numline)
   "Non--interactive version of `goto-line.'"
@@ -1244,7 +1247,7 @@ Special commands:
 (defun traverse-incremental-read-search-input (initial-input)
   "Read each keyboard input and add it to `traverse-incremental-search-pattern'."
   (let* ((prompt       (propertize traverse-incremental-search-prompt 'face '((:foreground "cyan"))))
-         (doc          "     [RET:exit, C-g:quit, C-z:Jump, C-n:next-line, C-p:prec-line]")
+         (doc          "     [RET:exit, C-g:quit, C-z:Jump, C-j:Jump&quit, C-n/p:next/prec-line]")
          (inhibit-quit t)
          (tmp-list     ())
          char)
@@ -1282,6 +1285,13 @@ Special commands:
              (setq traverse-incremental-quit-flag t) (throw 'break (message "Quit")))
             ((or right ?\C-z) ; persistent action
              (traverse-incremental-jump) (other-window 1))
+            ((or left ?\C-j)
+             (setq traverse-incremental-exit-and-quit-p t)
+             (throw 'break (message "Incremental Search completed")))
+            (?\C-v ; Scroll down
+             (scroll-other-window 1))
+            (?\M-v ; Scroll up
+             (scroll-other-window -1))
             (t
              (unless traverse-incremental-search-timer
                (traverse-incremental-start-timer))
@@ -1316,8 +1326,21 @@ Special commands:
 
 ;;;###autoload
 (defun traverse-incremental-occur (&optional initial-input)
-  "Incremental search of lines in current buffer matching `traverse-incremental-search-pattern'."
+  "Incremental search of lines in current buffer matching `traverse-incremental-search-pattern'.
+With a prefix arg search symbol at point.
+While you are incremental searching, commands provided are:
+C-n or <down>:  next line.
+C-p or <up>:    precedent line.
+C-v and M-v:    scroll up and down.
+C-z or <right>: jump without quitting loop.
+C-j or <left>:  jump and exit search buffer.
+RET or ESC:     exit but don't quit search buffer.
+DEL:            remove last character entered.
+C-g:            quit and restore buffer.
+When you quit incremental search with RET or ESC, see `traverse-incremental-mode'
+for commands provided in the search buffer."
   (interactive "P")
+  (setq traverse-incremental-exit-and-quit-p nil)
   (setq traverse-incremental-current-buffer (buffer-name (current-buffer)))
   (with-current-buffer traverse-incremental-current-buffer
     (jit-lock-fontify-now))
@@ -1344,7 +1367,9 @@ Special commands:
               (when traverse-occur-overlay
                 (delete-overlay traverse-occur-overlay))
               (delete-other-windows) (goto-char curpos))
-            (traverse-incremental-jump) (other-window 1))
+            (if traverse-incremental-exit-and-quit-p
+                (traverse-incremental-jump-and-quit)
+                (traverse-incremental-jump) (other-window 1)))
         (setq traverse-incremental-quit-flag nil)))))
 
 (defun traverse-incremental-cancel-search ()

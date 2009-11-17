@@ -893,6 +893,31 @@ I tried `##doremi-*-hue-stepping-saturation+##', it is not traverse all of color
 
 2. If you think what I need is not mostly users need, at least is not you need, you  need not  to implement it, until you think it is useful or mostly users think it is userful.:)
 
+
+[new:DrewAdams:2009-11-16 16:55 UTC]
+Black and white are not in the hue x saturation palette -- they are not in the sequence 1,2,3...25 that you requested. There are 3 color components. A plane space covers two components only --- in this case, hue and saturation. Value (brightness) is covered in a separate panel of the ColorPalette. Wrt '''Do Re Mi''', you can use `##doremi-*-hue-stepping-saturation+##' to traverse the hue x saturation palette, as you requested, and you can use `##doremi-*-value##' to brighten or darken a color whose hue and saturation you have chosen. -- DrewAdams
+
+[new]
+oh, sorry, is my mistake, My meaning is traverse all of colors which include black and white color. You implement it use two commands, 
+can it be only one command which traverse all of colors? -- [[ahei]]
+
+[new:DrewAdams:2009-11-17 03:10 UTC]
+No. Already, this command not very useful, as I've said -- it makes little sense to iterate blindly through thousands of colors with little change and little direction (guidance). IOW, it makes little sense to traverse ''everything'', in sequence, instead of focusing and directing your color search intelligently.
+
+The current command that you requested iterates over the entire hue x saturation space. In palette terms, that's about 11500 colors. If you were to add saturation to that mix, then you would be iterating over well over a million colors --- in the palette alone. With your preferred increment of 1, the '''Do Re Mi''' iteration would be longer still. That's silly.
+
+Do yourself a favor and learn to use the regular '''Do Re Mi''' commands in a focused manner: drive toward and around the colors you are really interested in in a more direct fashion, using a combination of hue, saturation, and value or red, green, and blue or all 6 at once.
+
+In the palette, take advantage of the fact that colors are organized into separate spaces (palettes), and you have ''direct access'' to each individual color -- no need to consider them one at a time, sequentially. If you want a light purple color, then go directly to it. When you want to hear a song, do you start up a single, gigantic tape of every song in your collection and simply wait until it gets round to playing the song you wanted to hear? No, you go directly to the one you want.
+
+Guide your search for a particular color by using hue, saturation, and value separately and together in a coordinated way. It would be truly silly to simply increment blindly from 1,2,3...115000000. You can do better than that, and you already have the tools to do it. AFAICT, you are somehow missing the point. -- DrewAdams
+
+[new]
+1. Increment 1 is only one of my examples, not I preferred, users can iterate all of colors with increment they like.
+
+2. yeah, I also think palette is the best tools to choose color, is intuitive, but M-x palette and M-x facemenup-paste-to-face-fg-at-point is slow, and doremi-face-bg-color-name+ is fast, so I want use doremi to iterate all of colors.
+
+
 ----
 [:SeeAlso]
 == See Also ==

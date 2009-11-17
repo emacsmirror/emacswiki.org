@@ -55,6 +55,7 @@ use  C-c C-j and C-c C-k to switch between line and character mode. Learn to use
 CLEX tags (%f, %F, %d, %D, %n, %N etc) to write fast your paths and  file  names
 in the CL.
 
+
 [:ExternalApps]
 ==Opening files in external applications.==
 
@@ -103,6 +104,7 @@ distribution soon.
 Once you've  installed OpenWith, customize  the /openwith-associations/ variable
 as needed.
 
+
 [:MouseSupport]
 ==Better mouse support?==
 
@@ -134,6 +136,35 @@ instead  :)  Besides,  Drag-n-drop is available even for vanilla Dired - no need
 for DiredPlus to add it. See the Emacs manual,  node  Drag  and  Drop
 (/Thanks Drew/).
 
+
+[:HighlightingPermissions]
+==Highlighting files with inappropriate permissions==
+
+The  sr-rainbow  macro  allows to easily manipulate the font locking of file and
+directory names in Sunrise using
+[http://www.emacswiki.org/emacs/RegularExpression regular expressions].  For
+instance, in order to highlight  files  and  directories  that  have  read/write
+permissions  set  for  users other than their owner you could add to your .emacs
+file a snippet like the following:
+
+        (sr-rainbow sr-gorw-dir-face
+                    (:background "misty rose"
+                                 :foreground "blue1"
+                                 :bold t)
+                    "^..\\(d....\\(...\\)?w..*$\\)")
+
+        (sr-rainbow sr-gorw-face
+                    (:background "misty rose")
+            "^..\\(-....\\(...\\)?w..*$\\)")
+
+
+[:OpenDirInPassivePane]
+==How to open the directory under the cursor in the passive pane?==
+
+You need  to combine two commands: M-;  M-Return (follow file in  passive pane +
+visit selected file/directory in passive pane)
+
+
 [:NavigationAndTracking]
 ==Advanced navigation and location tracking.==
 
@@ -157,14 +188,14 @@ the same for recent directories you can use the savehist persistence mechanism:
             4. Click on ``Save for future sessions''
 
 *  Use Sunrise checkpoints. Checkpoints are kind of bookmarks you can create for
-both panes simultaneously by pressing C-> (or C-c > in the console) and giving a
-name  for  the  checkpoint.  To  recall  it, press C-. (or C-c . in the console)
-Checkpoints can be persisted across emacs session the same way as the listing of
-recent  directories  (the  additional  variable  to  persist is in this case sr-
-checkpoint-registry). There's currently no way to view  the  list  of  currently
-defined  checkpoints  other  than  M-:  sr-checkpoint-registry  RET, but that'll
-probably change in the near future, since already a Sunrise  user  has  told  me
-he's working on a new extension for doing exactly that.
+both panes simultaneously by pressing C-&gt; (or  C-c  >  in  the  console)  and
+giving  a  name  for  the  checkpoint.  To recall it, press C-. (or C-c . in the
+console) Checkpoints can be persisted across emacs session the same way  as  the
+listing  of  recent  directories  (the additional variable to persist is in this
+case sr-checkpoint-registry). There's currently no  way  to  view  the  list  of
+currently  defined  checkpoints  other  than M-: sr-checkpoint-registry RET, but
+that'll probably change in the near future, since already  a  Sunrise  user  has
+told me he's working on a new extension for doing exactly that.
 
 *  Make  you own "favorites" virtual directories. Assign an extension to sunrise
 virtual buffers (there's an explanation of how to do it in the comments  to  the

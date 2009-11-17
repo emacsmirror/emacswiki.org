@@ -38,7 +38,8 @@
 ;;; `mon-help-xref-symbol-value', `mon-help-eieio-defclass'
 ;;; `mon-help-eieio-functions', `mon-help-eieio-methods'
 ;;; `mon-help-type-predicates', `mon-help-frame-functions'
-;;; `mon-help-window-functions'
+;;; `mon-help-window-functions', `mon-help-hg-archive'
+;;; `mon-help-crontab', `mon-help-unix-commands', `mon-help-permissions'
 ;;; FUNCTIONS:◄◄◄
 ;;;
 ;;; MACROS:
@@ -3946,6 +3947,369 @@ M-x shell\install-info  info-file  \"/usr/info/dir\". ►►►"
 ;;; :TEST-ME (mon-help-install-info-incantation t)
 ;;; :TEST-ME (call-interactively 'mon-help-tar-incantation)
 ;;; :TEST-ME (describe-function 'mon-help-tar-incantation)
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-11-04T16:26:50-05:00Z}#{09453} - by MON KEY>
+(defun mon-help-hg-archive (insertp intrp)
+  "Idiom for creating an HG archive of a specific revision.
+Lifted straight from the `hg' man page.\n
+hg archive [OPTION]... DEST\n
+By default, the revision used is the parent of the working directory.
+Use -r/--rev to specify a different revision.\n
+To specify the type of archive to create, use -t/--type.\n
+Valid types are:\n
+\"files\" \(default\): a directory full of files
+\"tar\": tar archive, uncompressed
+\"tbz2\": tar archive, compressed using bzip2
+\"tgz\": tar archive, compressed using gzip
+\"uzip\": zip archive, uncompressed
+\"zip\": zip archive, compressed using deflate\n
+The exact name of the destination archive or directory is given using a format
+string; :SEE 'hg help export' for details.\n
+Each member added to an archive file has a directory prefix prepended.
+Use -p/--prefix to specify a format string for the prefix.
+The default is the basename of the archive, with suffixes removed.\n
+:OPTIONS
+--no-decode 	do not pass files through decoders
+-p, --prefix 	directory prefix for files in archive
+-r, --rev 	revision to distribute
+-t, --type 	type of distribution to create
+-I, --include 	include names matching the given patterns
+-X, --exclude 	exclude names matching the given patterns\n►►►"
+  (interactive "i\nP")
+  (if (or insertp intrp)
+      (mon-help-function-spit-doc 'mon-help-hg-archive :insertp t)
+      (message "Pass non-nil for optional arg INTRP")))
+;;
+;;; :TEST-ME (mon-help-hg-archive)
+;;; :TEST-ME (mon-help-hg-archive t)
+;;; :TEST-ME (describe-function 'mon-help-hg-archive)
+;;; :TEST-ME (call-interactively 'mon-help-hg-archive)
+
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-11-07T19:33:41-05:00Z}#{09457} - by MON KEY>
+(defun mon-help-crontab (&optional insertp intrp)
+  "MINUTE HOUR DOM MONTH DOW USER CMD\n
+minute  This controls what minute of the hour the command will run on,
+        and is between '0' and '59'\n
+hour    This controls what hour the command will run on, and is specified in
+        the 24 hour clock, values must be between 0 and 23 (0 is midnight)\n
+dom     This is the Day of Month, that you want the command run on, e.g. to
+        run a command on the 19th of each month, the dom would be 19.\n
+month   This is the month a specified command will run on, it may be specified
+        numerically (0-12), or as the name of the month (e.g. May)\n
+dow     This is the Day of Week that you want a command to be run on, it can
+        also be numeric (0-7) or as the name of the day (e.g. sun).\n
+user    This is the user who runs the command.
+        :NOTE User is not needed when editing your own user crontab.\n
+cmd     This is the command that you want run. This field may contain
+        multiple words or spaces.\n
+ __________________________
+|                          |
+|  :FIELD         :VALUES  |
+|  -----          -------  |
+|  minute          0-59    |
+|  hour            0-23    |
+|  day of month    0-31    |
+|  month           0-12    |
+|  day of week     0-7     |
+|__________________________|\n
+ _________________________________________________________________
+|                                                                 |
+|  *     *     *     *     *    command to be executed            |
+|  |     |     |     |     |                                      |
+|  |     |     |     |     `----- day of week (0 - 6) (Sunday=0)  |
+|  |     |     |     `------- month (1 - 12)                      |
+|  |     |     `--------- day of month (1 - 31)                   |
+|  |     `----------- hour (0 - 23)                               |
+|  `------------- min (0 - 59)                                    |
+|_________________________________________________________________|\n
+ _____________________________________________________________________________
+|                                                                             |
+| MIN   HR   DAY   DOM    DOW  -> EXECUTION-TIME                              |
+| 30    0    1     1,6,12 *    -> 00:30 Hrs on 1st of Jan, June & Dec.        |
+| 0     20   *     10     1-5  -> 8.00 PM weekdays (Mon-Fri) only in Oct.     |
+| 0     0    1,15  *      *    -> Midnight on 1st & 15th of month.            |
+| 5,10  0    10    *      1    -> At 12.05,12.10 every Mon & 10th each month. |
+|_____________________________________________________________________________|\n
+ _____________________________________________________________________________
+|                                                                             |
+|  $crontab -e  ;Edit your crontab file, or create if doesn't already exist.  |
+|  $crontab -l  ;Display your crontab file.                                   |
+|  $crontab -r  ;Remove your crontab file.                                    |
+|  $crontab -v  ;Display the last time you edited your crontab file.          |
+|_____________________________________________________________________________|\n\n
+:NOTE It is _VERY_IMPORTANT_ to make sure your .bashrc has the following:\n
+  export EDITOR=emacs\n
+Some users mistakenly put `export EDITOR=vi'. Never do this. It causes headaches,
+user-error, and may even make your CPU to stop working! (Hint just use `:q')\n►►►"
+  (interactive "i\nP")
+  (if (or insertp intrp)
+      (mon-help-function-spit-doc 'mon-help-crontab :insertp t)
+      (message "Pass non-nil for optional arg INTRP")))
+;;
+;;; :TEST-ME (mon-help-crontab)
+;;; :TEST-ME (mon-help-crontab t)
+;;; :TEST-ME (describe-function 'mon-help-crontab)
+;;; :TEST-ME (call-interactively 'mon-help-crontab)
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-11-16T14:03:44-05:00Z}#{09471} - by MON KEY>
+(defun mon-help-permissions (&optional insertp intrp)
+  "Tables for working with chown, chmod, chattr, umask, etc.\n
+ _____________________  __________________________________________________77.
+|                     ||                                                    | 
+|     :UGOA           ||              :TRIPLET                              |
+|_____________________||____________________________________________________|         
+|                     ||                                                    |
+| U - First  - Owner  || First        Second       Third                    |
+| G - Second - Group  || r: readable  w: writable  x: executable            |
+| O - Third  - Others ||                           s: executable + setuid   |
+| A -        - All    ||                           S: setuid not executable |
+|_____________________||____________________________________________________|
+                                                                             
+          _____________                      _________________________       
+         |             |                    |                         |      
+         | :OPERATORS  |                    | :TRIPLES-SYM->OCT->BIN  |      
+ ________|_____________|_____________   ____|_________________________|_____ 
+|                                    | |                                    |
+|  ugoa  :WHO   usr grp other all    | |  --- --- --- : 000 : 000 000 000   |
+|  +     :DO    Add permission       | |  --x --x --x : 111 : 001 001 001   |
+|  -     :DO    Remove permission    | |  -w- -w- -w- : 222 : 010 010 010   |
+|  =     :DO    Permission equal to  | |  -wx -wx -wx : 333 : 011 011 011   |
+|  r     :SET   Read                 | |  r-- r-- r-- : 444 : 100 100 100   |
+|  w     :SET   Write                | |  r-x r-x r-x : 555 : 101 101 101   |
+|  x     :SET   Exectute             | |  rw- rw- r-w : 666 : 110 110 110   |
+|  t     :SET   Sticky bit           | |  rwx rwx rwx : 777 : 111 111 111   |
+|  s     :SET   UID or GID           | |                                    |
+|____________________________________| |____________________________________|
+                                                                              
+             ___________________________________________________             
+            |                                                   |            
+            | :OCTAL       :SYMBOLIC                  :BINARY   |            
+            |___________________________________________________|            
+            |                                                   |            
+            |  0       --- no permission               0: 000   |            
+            |  1       --x execute                     1: 001   |            
+            |  2       -w- write                       2: 010   |            
+            |  3       -wx write and execute           3: 011   |            
+            |  4       r-- read                        4: 100   |            
+            |  5       r-x read and execute            5: 101   |            
+            |  6       rw- read and write              6: 110   |            
+            |  7       rwx read, write and execute     7: 111   |            
+            |___________________________________________________|            
+                                                                             
+                             _________________                               
+                            |                 |                              
+                            |  :USER-7-TABLE  |                              
+ ___________________________|_________________|____________________________ 
+|                                                                          | 
+|  rwx rwx rwx :777                                                        | 
+|  rwx rwx rw- :776  rwx rw- rw- :766                                      | 
+|  rwx rwx r-x :775  rwx rw- r-x :765  rwx r-x r-x :755                    | 
+|  rwx rwx r-- :774  rwx rwx r-- :764  rwx r-x r-- :754  rwx r-- r-- :744  | 
+|  rwx rwx -wx :773  rwx rwx -wx :763  rwx r-x -wx :753  rwx r-- -wx :743  | 
+|  rwx rwx -w- :772  rwx rwx -w- :762  rwx r-x -w- :752  rwx r-- -w- :742  | 
+|  rwx rwx --x :771  rwx rwx --x :761  rwx r-x --x :751  rwx r-- --x :741  | 
+|  rwx rwx --- :770  rwx rwx --- :760  rwx r-x --- :750  rwx r-- --- :740  | 
+|                                                                          | 
+|  rwx -wx -wx :733                                                        | 
+|  rwx -wx -w- :732  rwx -w- -w- :722                                      | 
+|  rwx -wx --x :731  rwx -w- --x :721  rwx --x --x :711                    | 
+|  rwx -wx --- :730  rwx -w- --- :720  rwx --x --- :710  rwx --- --- :700  | 
+|__________________________________________________________________________| 
+                                                                          77^
+:SEE info node `(coreutils)File permissions'\n►►►"
+(interactive "i\nP")
+  (if (or insertp intrp)
+      (mon-help-function-spit-doc 'mon-help-permissions :insertp t)
+    (message "Pass non-nil for optional arg INTRP")))
+;;
+;;; :TEST-ME (mon-help-permissions)
+;;; :TEST-ME (mon-help-permissions t)
+;;; :TEST-ME (describe-function 'mon-help-permissions)
+;;; :TEST-ME (call-interactively 'mon-help-permissions)
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-11-16T12:36:57-05:00Z}#{09471} - by MON KEY>
+(defun mon-help-unix-commands (&optional insertp intrp)
+  "Unix command line programs and builtins.
+;;;(coreutils)
+:FILE-SYSTEM
+cd        ; :SEE info node `(coreutils)cp invocation'
+chattr    ;
+cksum     ; :SEE info node `(coreutils)cksum invocation'
+cmp       ; :SEE info node `(coreutils) '
+cp        ; :SEE info node `(coreutils)cp invocation'
+cpio      ; :SEE info node `(cpio)'
+dd        ; :SEE info node `(coreutils)dd invocation'
+df        ; :SEE info node `(coreutils)df invocation'
+dir       ; :SEE info node `(coreutils)dir invocation'
+dircolors ; :SEE info node `(coreutils)dircolors invocation'
+du        ; :SEE info node `(coreutils)du invocation'
+find      ; :SEE info node `(find)'
+fsck      ; :SEE info node `(coreutils) '
+fuser     ; :SEE info node `(coreutils) '
+gzip      ; :SEE info node `(gzip)'
+install   ; :SEE info node `(coreutils)install invocation'
+ln        ; :SEE info node `(coreutils)ln invocation'
+ls        ; :SEE info node `(coreutils)'
+lsattr    ; :SEE info node `(coreutils) '
+lsof      ; :SEE info node `(coreutils) '
+md5sum    ; :SEE info node `(coreutils)md5sum invocation'
+mkdir     ; :SEE info node `(coreutils)mkdir invocation'
+mknod     ; :SEE info node `(coreutils)mknod invocation'
+mkfifo    ; :SEE info node `(coreutils)mkfifo invocation'
+mount     ; :SEE info node `(coreutils) '
+mv        ; :SEE info node `(coreutils)mv invocation'
+pwd       ; :SEE info node `(coreutils)pwd invocation'
+readlink  ; :SEE info node `(coreutils)readlink invocation'
+rm        ; :SEE info node `(coreutils)rm invocation'
+rmdir     ; :SEE info node `(coreutils)rmdir invocation'
+shred     ; :SEE info node `(coreutils)shred invocation'
+size      ; :SEE info node `(binutils)size'
+sync      ; :SEE info node `(coreutils)sync invocation'
+stat      ; :SEE info node `(coreutils)stat invocation'
+sum       ; :SEE info node `(coreutils)sum invocation'
+tar       ; :SEE info node `(tar)'
+touch     ; :SEE info node `(coreutils)touch invocation'
+unlink    ; :SEE info node `(coreutils)unlink invocation'
+umask     ; :SEE info node `(coreutils)'
+updatedb  ; :SEE info node `(find)Invoking updatedb'
+vdir      ; :SEE info node `(coreutils)vdir invocation'\n
+:PROCESSES
+at        ; (woman \"at\")
+chroot    ; :SEE info node `(coreutils)chroot invocation'
+cron      ; :SEE (woman \"crontab\") :SEE-ALSO `mon-help-crontab'
+exit      ; :SEE info node `(coreutils) '
+kill      ; :SEE info node `(coreutils)kill invocation'
+killall   ; :SEE info node `(coreutils) '
+nice      ; :SEE info node `(coreutils)nice invocation'
+nohup     ; :SEE info node `(coreutils)nohup invocation'
+tty       ; :SEE info node `(coreutils)tty invocation'
+ps        ; :SEE (woman \"ps\")
+sleep     ; :SEE info node `(coreutils)sleep invocation'
+stty      ; :SEE info node `(coreutils)stty invocation'
+tee       ; :SEE info node `(coreutils)tee invocation'
+time      ; :SEE info node `(coreutils)'
+top       ; :SEE (woman \"top\")
+wait\n
+:USER-ENVIRONMENT
+chmod     ; :SEE info node `(coreutils)chmod invocation' :SEE-ALSO `mon-help-permissions'
+chown     ; :SEE info node `(coreutils)chown invocation'
+chgrp     ; :SEE info node `(coreutils)chgrp invocation'
+env       ; :SEE info node `(coreutils)env invocation'
+finger
+hostid    ; :SEE info node `(coreutils)hostid invocation'
+id        ; :SEE info node `(coreutils)id invocation'
+logname   ; :SEE info node `(coreutils)logname invocation'
+printenv  ; :SEE info node `(coreutils)printenv invocation'
+mesg
+passwd
+su        ; :SEE info node `(coreutils) '
+sudo      ; :SEE (woman \"sudo\")
+uptime
+w
+wall
+write
+uname     ; :SEE info node `(coreutils)uname invocation'
+groups    ; :SEE info node `(coreutils)groups invocation'
+users     ; :SEE info node `(coreutils)users invocation'
+who       ; :SEE info node `(coreutils)who invocation'
+whoami    ; :SEE info node `(coreutils)whoami invocation'
+\n
+:TEXT-PROCESSING
+awk      ; :SEE info node `(gawk)Invoking Gawk'
+cmp      ; :SEE info node `(diff)Invoking cmp'
+comm     ; :SEE info node `(coreutils)comm invocation'
+cat      ; :SEE info node `(coreutils)cat invocation'
+cut      ; :SEE info node `(coreutils)cut invocation'
+csplit   ; :SEE info node `(coreutils)csplit invocation'
+diff     ; :SEE info node `(diff)'
+ex
+expand   ; :SEE info node `(coreutils)expand invocation'
+fmt      ; :SEE info node `(coreutils)fmt invocation'
+fold     ; :SEE info node `(coreutils)fold invocation'
+head     ; :SEE info node `(coreutils)head invocation'
+iconv    ; :SEE info node `() '
+join     ; :SEE info node `(coreutils)join invocation'
+less
+more
+nl       ; :SEE info node `(coreutils)nl invocation'
+objdump  ; :SEE info node `(binutils)objdump'
+od       ; :SEE info node `(coreutils)od invocation'
+patch    ; :SEE info node `(diff)Invoking patch'
+paste    ; :SEE info node `(coreutils)paste invocation'
+ptx      ; :SEE info node `(coreutils)ptx invocation'
+ed       ; :SEE info node `(ed)'
+sed      ; :SEE info node `(sed)'
+sort     ; :SEE info node `(coreutils)sort invocation'
+split    ; :SEE info node `(coreutils)split invocation'
+strings  ; :SEE info node `(binutils)strings'
+strip    ; :SEE info node `(binutils)strip'
+tsort    ; :SEE info node `(coreutils)tsort invocation'
+tac      ; :SEE info node `(coreutils)tac invocation'
+tail     ; :SEE info node `(coreutils)tail invocation'
+tr       ; :SEE info node `(coreutils)tr invocation'
+unexpand ; :SEE info node `(coreutils)unexpand'
+uniq     ; :SEE info node `(coreutils)uniq invocation'
+wc       ; :SEE info node `(coreutils)wc invocation'\n
+:SHELL-PROGRAMMING
+alias
+bash      ; :SEE info node `(bash)'
+basename  ; :SEE info node `(coreutils)basename invocation'
+dirname   ; :SEE info node `(coreutils)dirname invocation'
+pathchk   ; :SEE info node `(coreutils) pathchk invocation'
+unset     ; :SEE info node `(coreutils)'
+echo      ; :SEE info node `(coreutils)echo invocation'
+printf    ; :SEE info node `(coreutils)printf invocation'
+yes       ; :SEE info node `(coreutils)yes invocation'
+expr      ; :SEE info node `(coreutils)expr invocation'
+false     ; :SEE info node `(coreutils)false invocation'
+test      ; :SEE info node `(coreutils)test invocation'
+true      ; :SEE info node `(coreutils)true invocation'
+xargs     ; :SEE info node `(find)Multiple Files'\n
+:NETWORKING
+host
+netstat
+ping      ; :SEE (woman \"ping\")
+netcat    ; :SEE (woman \"netcat\")
+traceroute ; :SEE (woman \"traceroute\")
+:SEARCHING
+find      ; :SEE info node `(find)Invoking find'
+grep      ; :SEE info node `(grep)'
+locate    ; :SEE info node `(find)Invoking locate'
+whereis   ; :SEE (woman \"whereis\")
+which     ; :SEE (woman \"which\")\n
+:MISCELLANEOUS
+apropos   ; :SEE (woman \"apropos\")
+banner    ; :SEE (woman \"\")
+bc
+cal
+clear     ; :SEE (woman \"clear\")
+date      ; :SEE info node `(coreutils)date invocation'
+file
+help
+history   ; :SEE info node `(bash)Bash History Builtins'
+info      ; :SEE info node `(info)'
+lp
+man       ; :SEE (woman \"man\")
+pax
+size      ; :SEE (woman \"size\")
+tput
+type
+uname     ; :SEE info node `(coreutils)uname invocation'
+whatis\n►►►"
+  (interactive "i\nP")
+  (if (or insertp intrp)
+      (mon-help-function-spit-doc 'mon-help-unix-commands :insertp t)
+      (message "Pass non-nil for optional arg INTRP")))
+;;
+;;; :TEST-ME (mon-help-unix-commands)
+;;; :TEST-ME (mon-help-unix-commands t)
+;;; :TEST-ME (describe-function 'mon-help-unix-commands)
+;;; :TEST-ME (call-interactively 'mon-help-unix-commands)
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: Tuesday June 23, 2009 @ 11:37.05 AM - by MON KEY>

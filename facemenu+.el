@@ -7,9 +7,9 @@
 ;; Copyright (C) 2005-2009, Drew Adams, all rights reserved.
 ;; Created: Sat Jun 25 14:42:07 2005
 ;; Version:
-;; Last-Updated: Sun Nov 15 09:40:48 2009 (-0800)
+;; Last-Updated: Mon Nov 16 15:51:47 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 1371
+;;     Update #: 1527
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/facemenu+.el
 ;; Keywords: faces, extensions, convenience, menus, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -48,11 +48,26 @@
 ;;  `doremi-face-bg+', and `doremi-undo-last-face-change', which are
 ;;  defined in library `doremi-frm.el'.  They let you change the face
 ;;  color incrementally, using the arrow keys or the mouse wheel, and
-;;  undo such changes.  Menu items "Palette - *" make use of library
-;;  `palette.el'.  They let you use a color palette to change the
-;;  color.  Both Do Re Mi and the color palette let you change colors
-;;  by changing color components, whether RGB (red, green, blue) or
-;;  HSV (hue, saturation, value).
+;;  undo such changes.
+;;
+;;  Menu items "Palette - *" make use of library `palette.el' (which
+;;  is available only for Emacs 22 and later).  They let you use a
+;;  color palette to change the color.  You can restore the face color
+;;  before as it was before palette editing, by using command
+;;  `facemenup-face-bg-restore' or `facemenup-face-fg-restore'.
+;;
+;;  If option `facemenup-palette-update-while-editing-flag' is nil,
+;;  then quitting the palette using `q' cancels any color change you
+;;  made there, and exiting the palette using `x' effects the color
+;;  change.  If the option is non-nil (the default), then each time
+;;  you change the palette color the face color changes as well.  This
+;;  lets you see the effect immediately, without exiting the palette,
+;;  but you cannot then use `q' in the palette to cancel the edit.
+;;  But you can still restore the color as it was before the edit.
+;;
+;;  Both Do Re Mi and the color palette let you change colors by
+;;  changing color components, whether RGB (red, green, blue) or HSV
+;;  (hue, saturation, value).
 ;;
 ;;  In addition, standard commands `facemenu-set-face' (`M-o o') and
 ;;  `list-faces-display' have been enhanced to let you pick a face to
@@ -120,6 +135,10 @@
 ;;    `palette-for-background-at-point',
 ;;    `palette-for-foreground-at-point'.
 ;;
+;;  User options defined here:
+;;
+;;    `facemenup-palette-update-while-editing-flag'.
+;;
 ;;  Non-interactive functions defined here:
 ;;
 ;;    `facemenup-face-bg', `facemenup-face-fg',
@@ -170,6 +189,11 @@
 ;;
 ;;; Change log:
 ;;
+;; 2009/11/16 dadams
+;;     Added: facemenup-palette-update-while-editing-flag.  Thx to Ahei.
+;;     facemenup-palette-face-(bg|fg)-at-(mouse|point):
+;;       Respect facemenup-palette-update-while-editing-flag.
+;;       Use facemenup-face-(bg|fg), not face-(background|foreground) - bug fix.
 ;; 2009/11/15 dadams
 ;;     facemenup-paste-to-face-(bg|fg)-at-point:
 ;;       Test eyedrop-last-picked-color, not eyedrop-picked-background, for error.
@@ -284,7 +308,18 @@
 (when (< emacs-major-version 21) (require 'faces+ nil t)) ;; read-face-name
 (eval-when-compile (when (< emacs-major-version 21) (require 'cl))) ;; copy-tree
 
+;; Quiet the byte-compiler.
+(defvar palette-action) ;; Defined in `palette.el'.
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defcustom facemenup-palette-update-while-editing-flag t
+  "Non-nil means update the face whose color you're editing in the palette.
+The face is updated automatically each time you change the palette's
+current color, which is typically when you hit `RET' or click
+`mouse-2'.  If nil, then the face is updated only when you exit the
+palette using `x'."
+  :type 'boolean :group 'facemenu)
 
 (defconst facemenup-err-mouse "No defined face under mouse pointer. Face to change"
   "Error message for no defined face under mouse pointer.")
@@ -503,7 +538,7 @@
   "Restore background of last face changed by face menu to last color.
 This is not an undo: It always restores the previous color as
 the background of the last face changed.
-This does not work for face changes made by Do Re Mi or color palette."
+This does not work for face changes made by Do Re Mi."
   (interactive)
   (unless (stringp facemenup-last-face-bg) (error "No previous face background"))
   (unless (facep facemenup-last-face-changed) (error "No face change to restore"))
@@ -516,7 +551,7 @@ This does not work for face changes made by Do Re Mi or color palette."
   "Restore foreground of last face changed by face menu to last color.
 This is not an undo: It always restores the previous color as
 the foreground of the last face changed.
-This does not work for face changes made by Do Re Mi or color palette."
+This does not work for face changes made by Do Re Mi."
   (interactive)
   (unless (stringp facemenup-last-face-fg) (error "No previous face foreground"))
   (unless (facep facemenup-last-face-changed) (error "No face change to restore"))
@@ -528,76 +563,118 @@ This does not work for face changes made by Do Re Mi or color palette."
 (when (fboundp 'palette)
   (defun facemenup-palette-face-bg-at-mouse (event)
     "Use palette to edit background of face under the mouse pointer.
-To change this face: edit the color in the palette, then save it
-\(\\<palette-mode-map>`\\[palette-save-new-color]'), and exit the palette using \
-`\\[palette-exit]'.
+To change this face: edit the color in the palette, then exit the
+palette using \\<palette-mode-map>`\\[palette-exit]'.
 
-To quit the palette without effecting any change on the face, use `\\[palette-quit]'."
+To quit the palette without effecting any change on the face, use `\\[palette-quit]'.
+To restore the face color after you have changed it, use
+`\\[facemenup-face-bg-restore]'.
+
+If option `facemenup-palette-update-while-editing-flag' is non-nil,
+then the face is automatically updated each time you change the
+palette's current color, which is typically when you hit `RET' or
+click `mouse-2'.  In this case, quitting the palette with `\\[palette-quit]' will not
+undo any face changes you made.  Use `\\[facemenup-face-bg-restore]' to restore."
     (interactive "e")
-    (let ((face (save-excursion
-                  (set-buffer (window-buffer (posn-window (event-end event))))
-                  (goto-char (posn-point (event-end event)))
-                  (eyedrop-face-at-point))))
-      (unless face (setq face (read-face-name facemenup-err-mouse)))
-      (add-hook 'palette-exit-hook
-                `(lambda () (set-face-background ',face palette-current-color)))
-      (let ((bg (face-background face nil 'default)))
-        (setq facemenup-last-face-bg bg facemenup-last-face-changed face)
+    (let ((face  (save-excursion (set-buffer (window-buffer (posn-window (event-end event))))
+                                 (goto-char (posn-point (event-end event)))
+                                 (eyedrop-face-at-point))))
+      (unless face (setq face  (read-face-name facemenup-err-mouse)))
+      (add-hook 'palette-exit-hook `(lambda () (set-face-background ',face palette-current-color)))
+      (let ((bg  (facemenup-face-bg face)))
+        (setq facemenup-last-face-bg       bg
+              facemenup-last-face-changed  face)
+        (when facemenup-palette-update-while-editing-flag
+          (setq palette-action  `(lambda () (set-face-background ',face palette-current-color))))
         (palette bg)))))
 
 (when (fboundp 'palette)
   (defun facemenup-palette-face-fg-at-mouse (event)
     "Use palette to edit foreground of face under the mouse pointer.
-To change this face: edit the color in the palette, then save it
-\(\\<palette-mode-map>`\\[palette-save-new-color]'), and exit the palette using \
-`\\[palette-exit]'.
+To change this face: edit the color in the palette, then exit the
+palette using `\\[palette-exit]'.
 
-To quit the palette without effecting any change on the face, use `\\[palette-quit]'."
+To quit the palette without effecting any change on the face, use `\\[palette-quit]'.
+To restore the face color after you have changed it, use
+`\\[facemenup-face-fg-restore]'.
+
+If option `facemenup-palette-update-while-editing-flag' is non-nil,
+then the face is automatically updated each time you change the
+palette's current color, which is typically when you hit `RET' or
+click `mouse-2'.  In this case, quitting the palette with `\\[palette-quit]' will not
+undo any face changes you made.  Use `\\[facemenup-face-fg-restore]' to restore."
     (interactive "e")
-    (let ((face (save-excursion
-                  (set-buffer (window-buffer (posn-window (event-end event))))
-                  (goto-char (posn-point (event-end event)))
-                  (eyedrop-face-at-point))))
-      (unless face (setq face (read-face-name facemenup-err-mouse)))
-      (add-hook 'palette-exit-hook
-                `(lambda () (set-face-foreground ',face palette-current-color)))
-      (let ((fg (face-foreground face nil 'default)))
-        (setq facemenup-last-face-fg fg facemenup-last-face-changed face)
-        (palette fg)))))
+    (let ((face  (save-excursion (set-buffer (window-buffer (posn-window (event-end event))))
+                                 (goto-char (posn-point (event-end event)))
+                                 (eyedrop-face-at-point))))
+      (unless face (setq face  (read-face-name facemenup-err-mouse)))
+      (add-hook 'palette-exit-hook `(lambda () (set-face-foreground ',face palette-current-color)))
+      (let ((fg  (facemenup-face-fg face)))
+        (setq facemenup-last-face-fg       fg
+              facemenup-last-face-changed  face)
+        (when facemenup-palette-update-while-editing-flag
+          (setq palette-action  `(lambda () (set-face-foreground ',face palette-current-color))))
+        (condition-case nil
+            (palette fg)
+          (quit (set-face-foreground face fg)))))))
 
 (when (fboundp 'palette)
   (defun facemenup-palette-face-bg-at-point ()
     "Use palette to edit background of face at the cursor (point).
-To change this face: edit the color in the palette, then save it
-\(\\<palette-mode-map>`\\[palette-save-new-color]'), and exit the palette using \
-`\\[palette-exit]'.
+To change this face: edit the color in the palette, then exit the
+palette using `\\[palette-exit]'.
 
-To quit the palette without effecting any change on the face, use `\\[palette-quit]'."
+To quit the palette without effecting any change on the face, use `\\[palette-quit]'.
+To restore the face color after you have changed it, use
+`\\[facemenup-face-bg-restore]'.
+
+If option `facemenup-palette-update-while-editing-flag' is non-nil,
+then the face is automatically updated each time you change the
+palette's current color, which is typically when you hit `RET' or
+click `mouse-2'.  In this case, quitting the palette with `\\[palette-quit]' will not
+undo any face changes you made.  Use `\\[facemenup-face-bg-restore]' to restore."
     (interactive)
-    (let ((face (eyedrop-face-at-point)))
+    (let ((face  (eyedrop-face-at-point)))
       (unless face (read-face-name facemenup-err-point))
       (add-hook 'palette-exit-hook
                 `(lambda () (set-face-background ',face palette-current-color)))
-      (let ((bg (face-background face nil 'default)))
-        (setq facemenup-last-face-bg bg facemenup-last-face-changed face)
-        (palette bg)))))
+      (let ((bg  (facemenup-face-bg face)))
+        (setq facemenup-last-face-bg       bg
+              facemenup-last-face-changed  face)
+        (when facemenup-palette-update-while-editing-flag
+          (setq palette-action  `(lambda () (set-face-background ',face palette-current-color))))
+        (condition-case nil
+            (palette bg)
+          (quit (set-face-background face bg)))))))
 
 (when (fboundp 'palette)
   (defun facemenup-palette-face-fg-at-point ()
     "Use palette to edit foreground of face at the cursor (point).
-To change this face: edit the color in the palette, then save it
-\(\\<palette-mode-map>`\\[palette-save-new-color]'), and exit the palette using \
-`\\[palette-exit]'.
+To change this face: edit the color in the palette, then exit the
+palette using `\\[palette-exit]'.
 
-To quit the palette without effecting any change on the face, use `\\[palette-quit]'."
+To quit the palette without effecting any change on the face, use `\\[palette-quit]'.
+To restore the face color after you have changed it, use
+`\\[facemenup-face-fg-restore]'.
+
+If option `facemenup-palette-update-while-editing-flag' is non-nil,
+then the face is automatically updated each time you change the
+palette's current color, which is typically when you hit `RET' or
+click `mouse-2'.  In this case, quitting the palette with `\\[palette-quit]' will not
+undo any face changes you made.  Use `\\[facemenup-face-fg-restore]' to restore."
     (interactive)
-    (let ((face (eyedrop-face-at-point)))
+    (let ((face  (eyedrop-face-at-point)))
       (unless face (read-face-name facemenup-err-point))
       (add-hook 'palette-exit-hook
                 `(lambda () (set-face-foreground ',face palette-current-color)))
-      (let ((fg (face-foreground face nil 'default)))
-        (setq facemenup-last-face-fg fg facemenup-last-face-changed face)
-        (palette fg)))))
+      (let ((fg  (facemenup-face-fg face)))
+        (setq facemenup-last-face-fg       fg
+              facemenup-last-face-changed  face)
+        (when facemenup-palette-update-while-editing-flag
+          (setq palette-action  `(lambda () (set-face-foreground ',face palette-current-color))))
+        (condition-case nil
+            (palette fg)
+          (quit (set-face-foreground face fg)))))))
 
 (when (fboundp 'doremi-face-bg+)
   (defun facemenup-change-bg-of-face-at-mouse+ (event increment)
@@ -614,12 +691,12 @@ Background Color\" (`eyedrop-pick-background-at-mouse'), and then use
 that as the initial value for
 `facemenup-change-bg-of-face-at-mouse+'."
     (interactive "e\np")
-    (let ((echo-keystrokes 0)
-          (face (save-excursion
-                  (set-buffer (window-buffer (posn-window (event-end event))))
-                  (goto-char (posn-point (event-end event)))
-                  (eyedrop-face-at-point))))
-      (unless face (setq face (read-face-name facemenup-err-mouse)))
+    (let ((echo-keystrokes  0)
+          (face             (save-excursion
+                              (set-buffer (window-buffer (posn-window (event-end event))))
+                              (goto-char (posn-point (event-end event)))
+                              (eyedrop-face-at-point))))
+      (unless face (setq face  (read-face-name facemenup-err-mouse)))
       ;; Emacs bug on Windows: Get extra, pending <C-drag-mouse-2> event, so discard it.
       (while (input-pending-p) (discard-input))
       (doremi-face-bg+ face
@@ -642,12 +719,12 @@ using \"Pick Up Foreground Color\"
 \(`eyedrop-pick-foreground-at-mouse'), and then use that as the
 initial value for `facemenup-change-fg-of-face-at-mouse+'."
     (interactive "e\np")
-    (let ((echo-keystrokes 0)
-          (face (save-excursion
-                  (set-buffer (window-buffer (posn-window (event-end event))))
-                  (goto-char (posn-point (event-end event)))
-                  (eyedrop-face-at-point))))
-      (unless face (setq face (read-face-name facemenup-err-mouse)))
+    (let ((echo-keystrokes  0)
+          (face             (save-excursion
+                              (set-buffer (window-buffer (posn-window (event-end event))))
+                              (goto-char (posn-point (event-end event)))
+                              (eyedrop-face-at-point))))
+      (unless face (setq face  (read-face-name facemenup-err-mouse)))
       ;; Emacs bug on Windows: Get extra, pending <C-drag-mouse-2> event, so discard it.
       (while (input-pending-p) (discard-input))
       (doremi-face-fg+ face
@@ -670,8 +747,8 @@ using \"Pick Up Background Color\"
 \(`eyedrop-pick-background-at-point'), and then use that as the
 initial value for `facemenup-change-bg-of-face-at-point+'."
     (interactive "p")
-    (let ((echo-keystrokes 0)
-          (face (eyedrop-face-at-point)))
+    (let ((echo-keystrokes  0)
+          (face             (eyedrop-face-at-point)))
       (unless face (read-face-name facemenup-err-point))
       (doremi-face-bg+ face (read-char-exclusive (format "Change background of `%s'. \
 Adjust red, green, blue, hue, saturation, or value? [rgbhsv]: " face))
@@ -692,8 +769,8 @@ using \"Pick Up Foreground Color\"
 \(`eyedrop-pick-foreground-at-point'), and then use that as the
 initial value for `facemenup-change-fg-of-face-at-point+'."
     (interactive "p")
-    (let ((echo-keystrokes 0)
-          (face (eyedrop-face-at-point)))
+    (let ((echo-keystrokes  0)
+          (face             (eyedrop-face-at-point)))
       (unless face (read-face-name facemenup-err-point))
       (doremi-face-fg+ face (read-char-exclusive (format "Change foreground of `%s'. \
 Adjust red, green, blue, hue, saturation, or value? [rgbhsv]: " face))
@@ -703,232 +780,228 @@ Adjust red, green, blue, hue, saturation, or value? [rgbhsv]: " face))
   "Set RGB of background of face at character under the mouse pointer.
 RGB is specified in decimal."
   (interactive "e")
-  (let ((echo-keystrokes 0)
-        (face (save-excursion
-                (set-buffer (window-buffer (posn-window (event-end event))))
-                (goto-char (posn-point (event-end event)))
-                (eyedrop-face-at-point)))
+  (let ((echo-keystrokes  0)
+        (face             (save-excursion
+                            (set-buffer (window-buffer (posn-window (event-end event))))
+                            (goto-char (posn-point (event-end event)))
+                            (eyedrop-face-at-point)))
         red green blue)
-    (unless face (setq face (read-face-name facemenup-err-mouse)))
+    (unless face (setq face  (read-face-name facemenup-err-mouse)))
     ;; Emacs bug on Windows: Get extra, pending <C-drag-mouse-2> event, so discard it.
     (while (input-pending-p) (discard-input))
     (while (or (not (wholenump red)) (>= red 256))
-      (setq red (read-minibuffer "Red value (decimal): ")))
+      (setq red  (read-minibuffer "Red value (decimal): ")))
     (while (or (not (wholenump green)) (>= green 256))
-      (setq green (read-minibuffer "Green value (decimal): ")))
+      (setq green  (read-minibuffer "Green value (decimal): ")))
     (while (or (not (wholenump blue)) (>= blue 256))
-      (setq blue (read-minibuffer "Blue value (decimal): ")))
-    (setq red   (format "%02x" red))
-    (setq green (format "%02x" green))
-    (setq blue  (format "%02x" blue))
-    (let ((bg (facemenup-face-bg face)))
-      (setq facemenup-last-face-bg bg facemenup-last-face-changed face))
+      (setq blue  (read-minibuffer "Blue value (decimal): ")))
+    (setq red    (format "%02x" red)
+          green  (format "%02x" green)
+          blue   (format "%02x" blue))
+    (let ((bg  (facemenup-face-bg face)))
+      (setq facemenup-last-face-bg       bg
+            facemenup-last-face-changed  face))
     (set-face-background face (format "#%s%s%s" red green blue))))
 
 (defun facemenup-set-face-fg-RGB-at-mouse (event)
   "Set RGB of foreground of face at character under the mouse pointer.
 RGB is specified in decimal."
   (interactive "e")
-  (let ((echo-keystrokes 0)
-        (face (save-excursion
-                (set-buffer (window-buffer (posn-window (event-end event))))
-                (goto-char (posn-point (event-end event)))
-                (eyedrop-face-at-point)))
+  (let ((echo-keystrokes  0)
+        (face             (save-excursion
+                            (set-buffer (window-buffer (posn-window (event-end event))))
+                            (goto-char (posn-point (event-end event)))
+                            (eyedrop-face-at-point)))
         red green blue)
-    (unless face (setq face (read-face-name facemenup-err-mouse)))
+    (unless face (setq face  (read-face-name facemenup-err-mouse)))
     ;; Emacs bug on Windows: Get extra, pending <C-drag-mouse-2> event, so discard it.
     (while (input-pending-p) (discard-input))
     (while (or (not (wholenump red)) (>= red 256))
-      (setq red (read-minibuffer "Red value (decimal): ")))
+      (setq red  (read-minibuffer "Red value (decimal): ")))
     (while (or (not (wholenump green)) (>= green 256))
-      (setq green (read-minibuffer "Green value (decimal): ")))
+      (setq green  (read-minibuffer "Green value (decimal): ")))
     (while (or (not (wholenump blue)) (>= blue 256))
-      (setq blue (read-minibuffer "Blue value (decimal): ")))
-    (setq red   (format "%02x" red))
-    (setq green (format "%02x" green))
-    (setq blue  (format "%02x" blue))
-    (let ((fg (facemenup-face-fg face)))
-      (setq facemenup-last-face-fg fg facemenup-last-face-changed face))
+      (setq blue  (read-minibuffer "Blue value (decimal): ")))
+    (setq red    (format "%02x" red)
+          green  (format "%02x" green)
+          blue   (format "%02x" blue))
+    (let ((fg  (facemenup-face-fg face)))
+      (setq facemenup-last-face-fg       fg
+            facemenup-last-face-changed  face))
     (set-face-foreground face (format "#%s%s%s" red green blue))))
 
 (defun facemenup-set-face-bg-RGB-at-point ()
   "Set RGB of background of face at character following cursor (point).
 RGB is specified in decimal, from 0 to 255."
   (interactive)
-  (let ((face (eyedrop-face-at-point))
+  (let ((face  (eyedrop-face-at-point))
         red green blue)
-    (unless face (setq face (read-face-name facemenup-err-mouse)))
+    (unless face (setq face  (read-face-name facemenup-err-mouse)))
     (while (or (not (wholenump red)) (>= red 256))
-      (setq red (read-minibuffer "Red value (decimal, 0-255): ")))
+      (setq red  (read-minibuffer "Red value (decimal, 0-255): ")))
     (while (or (not (wholenump green)) (>= green 256))
-      (setq green (read-minibuffer "Green value (decimal, 0-255): ")))
+      (setq green  (read-minibuffer "Green value (decimal, 0-255): ")))
     (while (or (not (wholenump blue)) (>= blue 256))
-      (setq blue (read-minibuffer "Blue value (decimal, 0-255): ")))
-    (setq red   (format "%02x" red))
-    (setq green (format "%02x" green))
-    (setq blue  (format "%02x" blue))
-    (let ((bg (facemenup-face-bg face)))
-      (setq facemenup-last-face-bg bg facemenup-last-face-changed face))
+      (setq blue  (read-minibuffer "Blue value (decimal, 0-255): ")))
+    (setq red    (format "%02x" red)
+          green  (format "%02x" green)
+          blue   (format "%02x" blue))
+    (let ((bg  (facemenup-face-bg face)))
+      (setq facemenup-last-face-bg       bg
+            facemenup-last-face-changed  face))
     (set-face-background face (format "#%s%s%s" red green blue))))
 
 (defun facemenup-set-face-fg-RGB-at-point ()
   "Set RGB of foreground of face at character following cursor (point).
 RGB is specified in decimal, from 0 to 255."
   (interactive)
-  (let ((face (eyedrop-face-at-point))
+  (let ((face  (eyedrop-face-at-point))
         red green blue)
-    (unless face (setq face (read-face-name facemenup-err-mouse)))
+    (unless face (setq face  (read-face-name facemenup-err-mouse)))
     (while (or (not (wholenump red)) (>= red 256))
-      (setq red (read-minibuffer "Red value (decimal, 0-255): ")))
+      (setq red  (read-minibuffer "Red value (decimal, 0-255): ")))
     (while (or (not (wholenump green)) (>= green 256))
-      (setq green (read-minibuffer "Green value (decimal, 0-255): ")))
+      (setq green  (read-minibuffer "Green value (decimal, 0-255): ")))
     (while (or (not (wholenump blue)) (>= blue 256))
-      (setq blue (read-minibuffer "Blue value (decimal, 0-255): ")))
-    (setq red   (format "%02x" red))
-    (setq green (format "%02x" green))
-    (setq blue  (format "%02x" blue))
-    (let ((fg (facemenup-face-fg face)))
-      (setq facemenup-last-face-fg fg facemenup-last-face-changed face))
+      (setq blue  (read-minibuffer "Blue value (decimal, 0-255): ")))
+    (setq red    (format "%02x" red)
+          green  (format "%02x" green)
+          blue   (format "%02x" blue))
+    (let ((fg  (facemenup-face-fg face)))
+      (setq facemenup-last-face-fg       fg
+            facemenup-last-face-changed  face))
     (set-face-foreground face (format "#%s%s%s" red green blue))))
 
 (defun facemenup-set-face-bg-RGB-hex-at-mouse (event)
   "Set RGB of background of face at character under the mouse pointer.
 RGB is specified in hexadecimal, from 0 to FFFF."
   (interactive "e")
-  (let ((echo-keystrokes 0)
-        (face (save-excursion
-                (set-buffer (window-buffer (posn-window (event-end event))))
-                (goto-char (posn-point (event-end event)))
-                (eyedrop-face-at-point)))
+  (let ((echo-keystrokes  0)
+        (face             (save-excursion
+                            (set-buffer (window-buffer (posn-window (event-end event))))
+                            (goto-char (posn-point (event-end event)))
+                            (eyedrop-face-at-point)))
         red green blue)
-    (unless face (setq face (read-face-name facemenup-err-mouse)))
+    (unless face (setq face  (read-face-name facemenup-err-mouse)))
     ;; Emacs bug on Windows: Get extra, pending <C-drag-mouse-2> event, so discard it.
     (while (input-pending-p) (discard-input))
     (while (null (condition-case nil
                      (prog1
-                         (setq red
-                               (hexrgb-hex-to-int
-                                (read-from-minibuffer "Red value (hex, 0-FFFF): ")))
+                         (setq red  (hexrgb-hex-to-int
+                                     (read-from-minibuffer "Red value (hex, 0-FFFF): ")))
                        (when (or (< red 0) (> red 65535)) (error)))
                    (error nil))))
     (while (null (condition-case nil
                      (prog1
-                         (setq green
-                               (hexrgb-hex-to-int
-                                (read-from-minibuffer "Green value (hex, 0-FFFF): ")))
+                         (setq green  (hexrgb-hex-to-int
+                                       (read-from-minibuffer "Green value (hex, 0-FFFF): ")))
                        (when (or (< green 0) (> green 65535)) (error)))
                    (error nil))))
     (while (null (condition-case nil
                      (prog1
-                         (setq blue
-                               (hexrgb-hex-to-int
-                                (read-from-minibuffer "Blue value (hex, 0-FFFF): ")))
+                         (setq blue  (hexrgb-hex-to-int
+                                      (read-from-minibuffer "Blue value (hex, 0-FFFF): ")))
                        (when (or (< blue 0) (> blue 65535)) (error)))
                    (error nil))))
-    (let ((bg (facemenup-face-bg face)))
-      (setq facemenup-last-face-bg bg facemenup-last-face-changed face))
+    (let ((bg  (facemenup-face-bg face)))
+      (setq facemenup-last-face-bg       bg
+            facemenup-last-face-changed  face))
     (set-face-background face (format "#%04x%04x%04x" red green blue))))
 
 (defun facemenup-set-face-fg-RGB-hex-at-mouse (event)
   "Set RGB of foreground of face at character under the mouse pointer.
 RGB is specified in hexadecimal, from 0 to FFFF."
   (interactive "e")
-  (let ((echo-keystrokes 0)
-        (face (save-excursion
-                (set-buffer (window-buffer (posn-window (event-end event))))
-                (goto-char (posn-point (event-end event)))
-                (eyedrop-face-at-point)))
+  (let ((echo-keystrokes  0)
+        (face             (save-excursion
+                            (set-buffer (window-buffer (posn-window (event-end event))))
+                            (goto-char (posn-point (event-end event)))
+                            (eyedrop-face-at-point)))
         red green blue)
-    (unless face (setq face (read-face-name facemenup-err-mouse)))
+    (unless face (setq face  (read-face-name facemenup-err-mouse)))
     ;; Emacs bug on Windows: Get extra, pending <C-drag-mouse-2> event, so discard it.
     (while (input-pending-p) (discard-input))
     (while (null (condition-case nil
                      (prog1
-                         (setq red
-                               (hexrgb-hex-to-int
-                                (read-from-minibuffer "Red value (hex, 0-FFFF): ")))
+                         (setq red  (hexrgb-hex-to-int
+                                     (read-from-minibuffer "Red value (hex, 0-FFFF): ")))
                        (when (or (< red 0) (> red 65535)) (error)))
                    (error nil))))
     (while (null (condition-case nil
                      (prog1
-                         (setq green
-                               (hexrgb-hex-to-int
-                                (read-from-minibuffer "Green value (hex, 0-FFFF): ")))
+                         (setq green  (hexrgb-hex-to-int
+                                       (read-from-minibuffer "Green value (hex, 0-FFFF): ")))
                        (when (or (< green 0) (> green 65535)) (error)))
                    (error nil))))
     (while (null (condition-case nil
                      (prog1
-                         (setq blue
-                               (hexrgb-hex-to-int
-                                (read-from-minibuffer "Blue value (hex, 0-FFFF): ")))
+                         (setq blue  (hexrgb-hex-to-int
+                                      (read-from-minibuffer "Blue value (hex, 0-FFFF): ")))
                        (when (or (< blue 0) (> blue 65535)) (error)))
                    (error nil))))
-    (let ((fg (facemenup-face-fg face)))
-      (setq facemenup-last-face-fg fg facemenup-last-face-changed face))
+    (let ((fg  (facemenup-face-fg face)))
+      (setq facemenup-last-face-fg       fg
+            facemenup-last-face-changed  face))
     (set-face-foreground face (format "#%04x%04x%04x" red green blue))))
 
 (defun facemenup-set-face-bg-RGB-hex-at-point ()
   "Set RGB of background of face at character following cursor (point).
 RGB is specified in hexadecimal, from 0 to FFFF."
   (interactive)
-  (let ((face (eyedrop-face-at-point))
+  (let ((face  (eyedrop-face-at-point))
         red green blue)
-    (unless face (setq face (read-face-name facemenup-err-mouse)))
+    (unless face (setq face  (read-face-name facemenup-err-mouse)))
     (while (null (condition-case nil
                      (prog1
-                         (setq red
-                               (hexrgb-hex-to-int
-                                (read-from-minibuffer "Red value (hex, 0-FFFF): ")))
+                         (setq red  (hexrgb-hex-to-int
+                                     (read-from-minibuffer "Red value (hex, 0-FFFF): ")))
                        (when (or (< red 0) (> red 65535)) (error)))
                    (error nil))))
     (while (null (condition-case nil
                      (prog1
-                         (setq green
-                               (hexrgb-hex-to-int
-                                (read-from-minibuffer "Green value (hex, 0-FFFF): ")))
+                         (setq green  (hexrgb-hex-to-int
+                                       (read-from-minibuffer "Green value (hex, 0-FFFF): ")))
                        (when (or (< green 0) (> green 65535)) (error)))
                    (error nil))))
     (while (null (condition-case nil
                      (prog1
-                         (setq blue
-                               (hexrgb-hex-to-int
-                                (read-from-minibuffer "Blue value (hex, 0-FFFF): ")))
+                         (setq blue  (hexrgb-hex-to-int
+                                      (read-from-minibuffer "Blue value (hex, 0-FFFF): ")))
                        (when (or (< blue 0) (> blue 65535)) (error)))
                    (error nil))))
-    (let ((bg (facemenup-face-bg face)))
-      (setq facemenup-last-face-bg bg facemenup-last-face-changed face))
+    (let ((bg  (facemenup-face-bg face)))
+      (setq facemenup-last-face-bg       bg
+            facemenup-last-face-changed  face))
     (set-face-background face (format "#%04x%04x%04x" red green blue))))
 
 (defun facemenup-set-face-fg-RGB-hex-at-point ()
   "Set RGB of foreground of face at character following cursor (point).
 RGB is specified in hexadecimal, from 0 to FFFF."
   (interactive)
-  (let ((face (eyedrop-face-at-point))
+  (let ((face  (eyedrop-face-at-point))
         red green blue)
-    (unless face (setq face (read-face-name facemenup-err-mouse)))
+    (unless face (setq face  (read-face-name facemenup-err-mouse)))
     (while (null (condition-case nil
                      (prog1
-                         (setq red
-                               (hexrgb-hex-to-int
-                                (read-from-minibuffer "Red value (hex, 0-FFFF): ")))
+                         (setq red  (hexrgb-hex-to-int
+                                     (read-from-minibuffer "Red value (hex, 0-FFFF): ")))
                        (when (or (< red 0) (> red 65535)) (error)))
                    (error nil))))
     (while (null (condition-case nil
                      (prog1
-                         (setq green
-                               (hexrgb-hex-to-int
-                                (read-from-minibuffer "Green value (hex, 0-FFFF): ")))
+                         (setq green  (hexrgb-hex-to-int
+                                       (read-from-minibuffer "Green value (hex, 0-FFFF): ")))
                        (when (or (< green 0) (> green 65535)) (error)))
                    (error nil))))
     (while (null (condition-case nil
                      (prog1
-                         (setq blue
-                               (hexrgb-hex-to-int
-                                (read-from-minibuffer "Blue value (hex, 0-FFFF): ")))
+                         (setq blue  (hexrgb-hex-to-int
+                                      (read-from-minibuffer "Blue value (hex, 0-FFFF): ")))
                        (when (or (< blue 0) (> blue 65535)) (error)))
                    (error nil))))
-    (let ((fg (facemenup-face-fg face)))
-      (setq facemenup-last-face-fg fg facemenup-last-face-changed face))
+    (let ((fg  (facemenup-face-fg face)))
+      (setq facemenup-last-face-fg       fg
+            facemenup-last-face-changed  face))
     (set-face-foreground face (format "#%04x%04x%04x" red green blue))))
 
 (defun facemenup-paste-to-face-bg-at-mouse (event)
@@ -936,13 +1009,13 @@ RGB is specified in hexadecimal, from 0 to FFFF."
 The last color copied is in `eyedrop-last-picked-color'."
   (interactive "e")
   (unless eyedrop-last-picked-color (error "Cannot paste. No color copied"))
-  (let ((face (save-excursion
-                (set-buffer (window-buffer (posn-window (event-end event))))
-                (goto-char (posn-point (event-end event)))
-                (eyedrop-face-at-point))))
-    (unless face (setq face (read-face-name facemenup-err-mouse)))
-    (let ((bg (facemenup-face-bg face)))
-      (setq facemenup-last-face-bg bg facemenup-last-face-changed face))
+  (let ((face  (save-excursion (set-buffer (window-buffer (posn-window (event-end event))))
+                               (goto-char (posn-point (event-end event)))
+                               (eyedrop-face-at-point))))
+    (unless face (setq face  (read-face-name facemenup-err-mouse)))
+    (let ((bg  (facemenup-face-bg face)))
+      (setq facemenup-last-face-bg       bg
+            facemenup-last-face-changed  face))
     (set-face-background face eyedrop-last-picked-color)))
 
 (defun facemenup-paste-to-face-fg-at-mouse (event)
@@ -950,13 +1023,13 @@ The last color copied is in `eyedrop-last-picked-color'."
 The last color copied is in `eyedrop-last-picked-color'."
   (interactive "e")
   (unless eyedrop-last-picked-color (error "Cannot paste. No color copied"))
-  (let ((face (save-excursion
-                (set-buffer (window-buffer (posn-window (event-end event))))
-                (goto-char (posn-point (event-end event)))
-                (eyedrop-face-at-point))))
-    (unless face (setq face (read-face-name facemenup-err-mouse)))
-    (let ((fg (facemenup-face-fg face)))
-      (setq facemenup-last-face-fg fg facemenup-last-face-changed face))
+  (let ((face  (save-excursion (set-buffer (window-buffer (posn-window (event-end event))))
+                               (goto-char (posn-point (event-end event)))
+                               (eyedrop-face-at-point))))
+    (unless face (setq face  (read-face-name facemenup-err-mouse)))
+    (let ((fg  (facemenup-face-fg face)))
+      (setq facemenup-last-face-fg       fg
+            facemenup-last-face-changed  face))
     (set-face-foreground face eyedrop-last-picked-color)))
 
 (defun facemenup-paste-to-face-bg-at-point ()
@@ -964,10 +1037,11 @@ The last color copied is in `eyedrop-last-picked-color'."
 The last color copied is in `eyedrop-last-picked-color'."
   (interactive)
   (unless eyedrop-last-picked-color (error "Cannot paste. No color copied"))
-  (let ((face (eyedrop-face-at-point)))
+  (let ((face  (eyedrop-face-at-point)))
     (unless face (read-face-name facemenup-err-point))
-    (let ((bg (facemenup-face-bg face)))
-      (setq facemenup-last-face-bg bg facemenup-last-face-changed face))
+    (let ((bg  (facemenup-face-bg face)))
+      (setq facemenup-last-face-bg       bg
+            facemenup-last-face-changed  face))
     (set-face-background face eyedrop-last-picked-color)))
 
 (defun facemenup-paste-to-face-fg-at-point ()
@@ -975,10 +1049,11 @@ The last color copied is in `eyedrop-last-picked-color'."
 The last color copied is in `eyedrop-last-picked-color'."
   (interactive)
   (unless eyedrop-last-picked-color (error "Cannot paste. No color copied"))
-  (let ((face (eyedrop-face-at-point)))
+  (let ((face  (eyedrop-face-at-point)))
     (unless face (read-face-name facemenup-err-point))
-    (let ((fg (facemenup-face-fg face)))
-      (setq facemenup-last-face-fg fg facemenup-last-face-changed face))
+    (let ((fg  (facemenup-face-fg face)))
+      (setq facemenup-last-face-fg       fg
+            facemenup-last-face-changed  face))
     (set-face-foreground face eyedrop-last-picked-color)))
 
 (when (fboundp 'set-face-attribute)     ; Emacs 22
@@ -986,12 +1061,11 @@ The last color copied is in `eyedrop-last-picked-color'."
     "Set attribute of face used at character under the mouse pointer.
 You are prompted for the face attribute to change and its new value."
     (interactive "e")
-    (let* ((face
-            (save-excursion
-              (set-buffer (window-buffer (posn-window (event-end event))))
-              (goto-char (posn-point (event-end event)))
-              (eyedrop-face-at-point))))
-      (unless face (setq face (read-face-name facemenup-err-mouse)))
+    (let* ((face  (save-excursion
+                    (set-buffer (window-buffer (posn-window (event-end event))))
+                    (goto-char (posn-point (event-end event)))
+                    (eyedrop-face-at-point))))
+      (unless face (setq face  (read-face-name facemenup-err-mouse)))
       ;; Emacs bug on Windows: Get extra, pending <C-drag-mouse-2> event, so discard it.
       (while (input-pending-p) (discard-input))
       (facemenup-set-face-attribute-at--1 face)))
@@ -1000,20 +1074,19 @@ You are prompted for the face attribute to change and its new value."
     "Set attribute of face used at character following cursor (point).
 You are prompted for the face attribute to change and its new value."
     (interactive)
-    (let ((face (eyedrop-face-at-point)))
+    (let ((face  (eyedrop-face-at-point)))
       (unless face (read-face-name facemenup-err-point))
       (facemenup-set-face-attribute-at--1 face)))
 
   ;; Helper function
   (defun facemenup-set-face-attribute-at--1 (face)
-    (let* ((attr (intern (completing-read
-                          "Face attribute to change:"
-                          [:family :width :height :weight :slant :foreground
-                                   :background :inverse-video :stipple :underline
-                                   :overline :strike-through :inherit :box :font
-                                   :bold :italic]
-                          nil t nil nil ":foreground")))
-           (value (read-minibuffer (format "New value for attribute `%s': " attr))))
+    (let* ((attr   (intern (completing-read "Face attribute to change:"
+                                            [:family :width :height :weight :slant :foreground
+                                                     :background :inverse-video :stipple
+                                                     :underline :overline :strike-through
+                                                     :inherit :box :font :bold :italic]
+                                            nil t nil nil ":foreground")))
+           (value  (read-minibuffer (format "New value for attribute `%s': " attr))))
       (set-face-attribute face nil attr value)
       (put face 'customized-face (list (list 't (list attr value))))
       (message (substitute-command-keys
@@ -1023,24 +1096,22 @@ You are prompted for the face attribute to change and its new value."
     "Set attribute of face.
 You are prompted for the face, attribute to change, and its new value."
     (interactive)
-    (let ((face (intern (symbol-name (read-face-name "Modify face: ")))))
+    (let ((face  (intern (symbol-name (read-face-name "Modify face: ")))))
       (facemenup-set-face-attribute-at--1 face))))
 
 (defun facemenup-customize-face-at-mouse (event)
   "Customize the face used at character under the mouse pointer."
   (interactive "e")
-  (let* ((face
-          (save-excursion
-            (set-buffer (window-buffer (posn-window (event-end event))))
-            (goto-char (posn-point (event-end event)))
-            (eyedrop-face-at-point))))
+  (let ((face  (save-excursion (set-buffer (window-buffer (posn-window (event-end event))))
+                               (goto-char (posn-point (event-end event)))
+                               (eyedrop-face-at-point))))
     (unless face (read-face-name facemenup-err-mouse))
     (customize-face face)))
 
 (defun facemenup-customize-face-at-point ()
   "Customize the face used at character following cursor (point)."
     (interactive)
-    (let ((face (eyedrop-face-at-point)))
+    (let ((face  (eyedrop-face-at-point)))
       (unless face (read-face-name facemenup-err-point))
       (customize-face face)))
 
@@ -1055,7 +1126,7 @@ For Emacs 22+, this is `face-background' inheriting from `default'."
   "`face-foreground', but get frame foreground if face has none.
 For Emacs 22+, this is `face-foreground' inheriting from `default'."
   (condition-case nil
-      (face-foreground face nil 'default) ; Emacs 22
+      (face-foreground face nil 'default) ; Emacs 22+.  Raises error for previous versions.
     (error (or (face-foreground face) (cdr (assq 'foreground-color (frame-parameters)))))))
 
 
@@ -1065,18 +1136,20 @@ For Emacs 22+, this is `face-foreground' inheriting from `default'."
 ;;;###autoload
 (defun facemenu-read-color (&optional prompt)
   "Read a color using the minibuffer."
-  (setq prompt (or prompt "Color: "))
+  (setq prompt  (or prompt "Color: "))
   (let* ((completion-ignore-case  t)
-         (col
-          (cond ((and (boundp 'icicle-mode) icicle-mode) (icicle-read-color 0 prompt))
-                ((fboundp 'hexrgb-read-color) (hexrgb-read-color nil t prompt))
-                (t
-                 (completing-read
-                  prompt
-                  (or facemenu-color-alist
-                      (if (fboundp 'defined-colors)
-                          (defined-colors)
-                        (and window-system (mapcar 'list (x-defined-colors)))))))))) ; Emacs < 22
+         (col                     (cond ((and (boundp 'icicle-mode) icicle-mode)
+                                         (icicle-read-color 0 prompt))
+                                        ((fboundp 'hexrgb-read-color)
+                                         (hexrgb-read-color nil t prompt))
+                                        (t
+                                         (completing-read
+                                          prompt
+                                          (or facemenu-color-alist
+                                              (if (fboundp 'defined-colors) ; Emacs 22+
+                                                  (defined-colors)
+                                                (and window-system
+                                                     (mapcar 'list (x-defined-colors))))))))))
     (if (equal "" col) nil col)))
 
 (when (>= emacs-major-version 22)
@@ -1103,7 +1176,7 @@ FACE is determined as follows:
     (interactive
      (list (progn (barf-if-buffer-read-only)
                   (if (and current-prefix-arg (atom current-prefix-arg))
-                      (let ((deactivate-mark nil)) (list-faces-display))
+                      (let ((deactivate-mark  nil)) (list-faces-display))
                     (read-face-name "Use face")))
            (and mark-active (atom current-prefix-arg) (region-beginning))
            (and mark-active (atom current-prefix-arg) (region-end))))
@@ -1138,25 +1211,24 @@ faces with matching names are displayed."
                               (if (fboundp 'read-regexp) ; Emacs 23.
                                   (read-regexp "List faces matching regexp: ")
                                 (read-string "List faces matching regexp: "))))))
-    (let ((all-faces (zerop (length regexp)))
-          (frame (selected-frame))
-          (max-length 0)
-          (deactivate-mark nil)
-          faces line-format
-          disp-frame window face-name)
+    (let ((all-faces        (zerop (length regexp)))
+          (frame            (selected-frame))
+          (max-length       0)
+          (deactivate-mark  nil)
+          faces line-format disp-frame window face-name)
       ;; We filter and take the max length in one pass
-      (setq faces (delq nil (mapcar (lambda (f) (let ((s (symbol-name f)))
-                                                  (when (or all-faces (string-match regexp s))
-                                                    (setq max-length (max (length s) max-length))
-                                                    f)))
-                                    (sort (face-list) #'string-lessp))))
+      (setq faces  (delq nil (mapcar (lambda (f) (let ((s  (symbol-name f)))
+                                              (when (or all-faces (string-match regexp s))
+                                                (setq max-length  (max (length s) max-length))
+                                                f)))
+                                     (sort (face-list) #'string-lessp))))
       (unless faces (error "No faces matching \"%s\"" regexp))
-      (setq max-length (1+ max-length)
-            line-format (format "%%-%ds" max-length))
+      (setq max-length   (1+ max-length)
+            line-format  (format "%%-%ds" max-length))
       (with-output-to-temp-buffer "*Faces*"
         (save-excursion
           (set-buffer standard-output)
-          (setq truncate-lines t)
+          (setq truncate-lines  t)
           (insert (substitute-command-keys
                    (concat "Use "
                            (if (display-mouse-p) "\\[help-follow-mouse] or ")
@@ -1165,18 +1237,18 @@ faces with matching names are displayed."
                            " * on a face name to see a description of the face and possibly"
                            " customize it.\n\n"
                            "Face                                      Sample\n\n")))
-          (setq help-xref-stack nil)
-          (dolist (face faces)
-            (setq face-name (symbol-name face))
+          (setq help-xref-stack  ())
+          (dolist (face  faces)
+            (setq face-name  (symbol-name face))
             (insert (format line-format face-name))
             ;; Hyperlink to a help buffer for the face.
             (save-excursion
               (save-match-data
                 (search-backward face-name)
-                (setq help-xref-stack-item `(list-faces-display ,regexp))
+                (setq help-xref-stack-item  `(list-faces-display ,regexp))
                 (help-xref-button 0 'help-face face)))               
-            (let ((beg (point))
-                  (line-beg (line-beginning-position)))
+            (let ((beg       (point))
+                  (line-beg  (line-beginning-position)))
               (insert list-faces-sample-text)
               ;; Button to apply the face to the active region.
               (save-excursion
@@ -1200,13 +1272,13 @@ faces with matching names are displayed."
       ;; If the *Faces* buffer appears in a different frame,
       ;; copy all the face definitions from FRAME,
       ;; so that the display will reflect the frame that was selected.
-      (setq window (get-buffer-window (get-buffer "*Faces*") t))
-      (setq disp-frame (if window (window-frame window) (car (frame-list))))
+      (setq window      (get-buffer-window (get-buffer "*Faces*") t)
+            disp-frame  (if window (window-frame window) (car (frame-list))))
       (or (eq frame disp-frame)
-          (let ((faces (face-list)))
+          (let ((faces  (face-list)))
             (while faces
               (copy-face (car faces) (car faces) frame disp-frame)
-              (setq faces (cdr faces)))))))
+              (setq faces  (cdr faces)))))))
 
   (define-button-type 'help-facemenu-set-face
       :supertype 'help-xref
@@ -1218,15 +1290,14 @@ faces with matching names are displayed."
 Argument FACE+BUFFER is a list (FACE BUFFER), where FACE is the
 face to apply and BUFFER is the target buffer.
 Also, close the *Faces* display."
-    (let ((face (car face+buffer))
-          (buffer (cadr face+buffer)))
-      (save-excursion
-        (set-buffer buffer)
-        (facemenu-add-new-face face)
-        (facemenu-add-face
-         face (and mark-active (region-beginning)) (and mark-active (region-end)))
-        (setq mark-active nil)))
-    (let ((win (get-buffer-window "*Faces*"))) (when win (delete-window win))))
+    (let ((face    (car face+buffer))
+          (buffer  (cadr face+buffer)))
+      (save-excursion (set-buffer buffer)
+                      (facemenu-add-new-face face)
+                      (facemenu-add-face face (and mark-active (region-beginning))
+                                         (and mark-active (region-end)))
+                      (setq mark-active  nil)))
+    (let ((win  (get-buffer-window "*Faces*"))) (when win (delete-window win))))
   
 
   ;; REPLACES ORIGINAL in `facemenu.el':
@@ -1242,8 +1313,8 @@ Also, close the *Faces* display."
       (dolist (color list)
         (if (consp color)
             (when (cdr color)
-              (setq color (sort color (lambda (a b) (string< (downcase a) (downcase b))))))
-          (setq color (list color)))
+              (setq color  (sort color (lambda (a b) (string< (downcase a) (downcase b))))))
+          (setq color  (list color)))
         (put-text-property (prog1 (point) (insert (car color)) (indent-to 22))
                            (point) 'face (list ':background (car color)))
         (put-text-property (prog1 (point)
@@ -1259,7 +1330,7 @@ Also, close the *Faces* display."
           (save-match-data
             (forward-line 0)
             (re-search-forward ".*")
-            (setq help-xref-stack-item `(list-colors-display ,list))
+            (setq help-xref-stack-item  `(list-colors-display ,list))
             (help-xref-button 0 'help-facemenu-edit-color (if (consp color) (car color) color))))
         (insert "\n")))
     (goto-char (point-min)))
@@ -1301,8 +1372,8 @@ effect.  See `facemenu-remove-face-function'."
             (funcall facemenu-remove-face-function start end)
           (if (and start (< start end))
               (remove-text-properties start end '(face default))
-            (setq self-insert-face 'default
-                  self-insert-face-command this-command)))
+            (setq self-insert-face          'default
+                  self-insert-face-command  this-command)))
       (if facemenu-add-face-function
           (save-excursion
             (if end (goto-char end))
@@ -1315,11 +1386,11 @@ effect.  See `facemenu-remove-face-function'."
                             facemenu-end-add-face
                           (funcall facemenu-end-add-face face)))))
         (if (and start (< start end))
-            (let ((part-start start) part-end)
+            (let ((part-start  start)
+                  part-end)
               (while (not (= part-start end))
-                (setq part-end (next-single-property-change part-start 'face
-                                                            nil end))
-                (let ((prev (get-text-property part-start 'face)))
+                (setq part-end  (next-single-property-change part-start 'face nil end))
+                (let ((prev  (get-text-property part-start 'face)))
                   (put-text-property part-start part-end 'face
                                      (if (null prev)
                                          face
@@ -1328,18 +1399,16 @@ effect.  See `facemenu-remove-face-function'."
                                               (if (listp prev)
                                                   prev
                                                 (list prev)))
-                                        ;; Specify the selected frame
-                                        ;; because nil would mean to use
-                                        ;; the new-frame default settings,
-                                        ;; and those are usually nil.
+                                        ;; Specify selected frame because nil means to use the
+                                        ;; new-frame default settings, and those are usually nil.
                                         (selected-frame))))
                   (put-text-property part-start part-end 'font-lock-ignore t))
-                (setq part-start part-end)))
-          (setq self-insert-face (if (eq last-command self-insert-face-command)
-                                     (cons face (if (listp self-insert-face)
-                                                    self-insert-face
-                                                  (list self-insert-face)))
-                                   face)
+                (setq part-start  part-end)))
+          (setq self-insert-face  (if (eq last-command self-insert-face-command)
+                                      (cons face (if (listp self-insert-face)
+                                                     self-insert-face
+                                                   (list self-insert-face)))
+                                    face)
                 self-insert-face-command this-command))))
     (unless (facemenu-enable-faces-p)
       (message "Font-lock mode will override any faces you set in this buffer"))))

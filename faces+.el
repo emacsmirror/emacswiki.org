@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Fri Jun 28 15:07:06 1996
 ;; Version: 21.0
-;; Last-Updated: Sat Aug  1 15:24:09 2009 (-0700)
+;; Last-Updated: Mon Nov 16 14:44:29 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 268
+;;     Update #: 271
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/faces+.el
 ;; Keywords: faces, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -48,6 +48,8 @@
 ;; 
 ;;; Change log:
 ;;
+;; 2009/11/16 dadams
+;;     face-(foreground|background)-20+: Use condition-case.  Don't test for face-attribute.
 ;; 2006/06/25 dadams
 ;;     Removed set-face-(fore|back)ground-RGB-(hex-)at-* to facemenu+.el.
 ;; 2006/06/24 dadams
@@ -199,16 +201,16 @@ as a face, leave it unmodified.  Value is FACE."
 ;;;###autoload
 (defun face-foreground-20+ (face &optional frame inherit)
   "A version of `face-foreground' that will work with Emacs 20 and later."
-  (if (fboundp 'face-attribute)         ; Emacs 21
-      (face-foreground face frame inherit)
-    (face-foreground face frame)))
+  (condition-case nil
+      (face-foreground face frame inherit) ; Emacs 22+.
+    (error (face-foreground face frame))))
 
 ;;;###autoload
 (defun face-background-20+ (face &optional frame inherit)
   "A version of `face-background' that will work with Emacs 20 and later."
-  (if (fboundp 'face-attribute)         ; Emacs 21
-      (face-background face frame inherit)
-    (face-background face frame)))
+  (condition-case nil
+      (face-background face frame inherit) ; Emacs 22+.
+    (error (face-background face frame))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
