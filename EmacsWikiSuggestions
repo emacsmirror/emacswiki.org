@@ -313,5 +313,9 @@ Also, you might consider not complaining anonymously.
 
 Hi, I created an article about how to install and configure [http://setup.wikia.com/wiki/GNU_Emacs GNU Emacs] at [http://setup.wikia.com/wiki/Set_up_and_get_started_Wiki Set up and get started Wiki]. I've already covered quite much, including variables, the .emacs file and some different commands, but you can gladly add more to the article since it's a wiki. -- Kri
 
+== Change css style of second-level headers to bold ==
+
+In graphical browsers second-level headers currently are the same size as regular text, just italic.  This does not standout at all, making them bold would be much better in my eyes.  For example I just added a page with a long list of code snippets at the end. I reorganized them thematically and then added second-level headers. Boy that was less readable as before! So I had to add the horizontal lines back that I previously removed.  Ps: why do we skip = and use == instead? -- JonasBernoulli
+
 ----
 CategoryEmacsWikiSite

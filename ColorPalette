@@ -291,6 +291,31 @@ If this is not good enough for you, please use an alternative, if you can find o
 2.
 When users choose one satisfying face, they will close palette, I think mostly users will do this, not leave palette opened and continue working i emacs, so palette frame is like modal dialog, and so, I think you can use `q' to cancel the face updated, and `x' to update action users did, how do you think about it? -- [[ahei]]
 
+[new:DrewAdams:2009-11-17 14:59 UTC]
+1. I have no idea. You tell me.
+
+2. No, not the way it is designed and implemented. As I said, calling function `palette' simply displays the palette -- function `palette' returns immediately; nothing waits on it. As far as palette is concerned, you are simply changing colors there. You asked that each color change there also effect a face change. Palette knows nothing about that -- it does not know or care whether a face is involved, what face, etc. All it does is call a function it is passed -- it has no idea what that function is or what it does. The function passed in this case changes the face color.
+
+To recover the original color, before editing, just choose the restore menu item or enter the restore command. If that's too much trouble, then customize the option to ##nil##, and return to the previous behavior before your enhancement request. Then `q' will cancel the color change by preventing it from ever being copied from the palette to the face.
+
+As I said, this is the design. If you want a different design, feel free to create your own. -- DrewAdams
+
+[new]
+My meaning is: Is it also slow like using facemenup-paste-to-face-fg-at-point when you use doremi-bg-color-name+  on your computer?
+-- [[ahei]]
+
+[new:DrewAdams:2009-11-17 16:19 UTC]
+If I have the palette open at the same time, yes; otherwise, no. As I said, Emacs is ''slow when there are lots of faces''. And the palette uses a separate face for each bit of color you see -- about 11500 faces for the hue x saturation palette alone. -- DrewAdams
+
+[new]
+If I used facemenup-palette-face-fg-at-point, then I close palette, and then I use `M-x palette', now, when I type "RET" on palette, it change face which be selected I used facemenup-palette-face-fg-at-point. -- [[ahei]]
+
+[new:DrewAdams:2009-11-17 18:49 UTC]
+Thx. Should be OK now.  -- DrewAdams
+
+[new]
+I disable blink-cursor-mode, but when I execute M-x palette, it enable blink-cursor-mode. -- [[ahei]]
+
 ----
 Lisp:palette.el, Lisp:facemenu+.el
 

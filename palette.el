@@ -7,9 +7,9 @@
 ;; Copyright (C) 2006-2009, Drew Adams, all rights reserved.
 ;; Created: Sat May 20 07:56:06 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Nov 16 15:55:41 2009 (-0800)
+;; Last-Updated: Tue Nov 17 11:30:26 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 407 4
+;;     Update #: 433 4
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/palette.el
 ;; Keywords: color, rgb, hsv, hexadecimal, face, frame
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -329,6 +329,10 @@
 ;;
 ;;; Change log:
 ;;
+;; 2009/11/17 dadams
+;;     palette-quit: Added optional arg.  If nil, reset palette-action, palette-exit-hook.
+;;     palette-exit: Call palette-quit with arg.  Reset palette-action.
+;;     palette: Call palette-quit with arg.
 ;; 2009/11/16 dadams
 ;;     Added: palette-action.
 ;;     palette-pick-background-at-(mouse|point): Call palette-action.  Thx to Ahei.
@@ -1345,27 +1349,35 @@ The saved color is returned."
 
 (defun palette-exit ()                  ; Bound to `x'.
   "Exit the color palette with exit action, if defined.
-Call `palette-quit', then run `palette-exit-hook' and reset it to nil.
+Call `palette-quit', then run `palette-exit-hook', then reset
+`palette-action' and `palette-exit-hook'.
+Return `palette-current-color'."
+  (interactive)
+  (unwind-protect
+       (progn (palette-quit 'dont-reset)
+              (run-hooks 'palette-exit-hook))
+    (setq palette-action     nil        ; Reset.
+          palette-exit-hook  nil)
+    palette-current-color))             ; Return latest value.
+
+(defun palette-quit (&optional dont-reset) ; Bound to `q'.
+  "Quit the color palette without any exit action.
+Unlike palette-exit', this does not run `palette-exit-hook'.
+Unless DONT-RESET is non-nil, reset `palette-action' and
+ `palette-exit-hook'.
 Return `palette-current-color'."
   (interactive)
   (unwind-protect
        (progn
-         (palette-quit)
-         (run-hooks 'palette-exit-hook))
-    (setq palette-exit-hook  nil)           ; Reset it.
-    palette-current-color))                ; Return latest value.
-
-(defun palette-quit ()                  ; Bound to `q'.
-  "Quit the color palette without any exit action.
-Unlike palette-exit', this does not run `palette-exit-hook'.
-Return `palette-current-color'."
-  (interactive)
-  (let ((win  (get-buffer-window "Palette (Hue x Saturation)" 'visible)))
-    (when win (select-window win) (delete-frame)))
-  (when (get-buffer "Palette (Hue x Saturation)") (kill-buffer "Palette (Hue x Saturation)"))
-  (when (get-buffer "Brightness") (kill-buffer "Brightness"))
-  (when (get-buffer "Current/Original") (kill-buffer "Current/Original"))
-  palette-current-color)                ; Return latest value.
+         (let ((win  (get-buffer-window "Palette (Hue x Saturation)" 'visible)))
+           (when win (select-window win) (delete-frame)))
+         (when (get-buffer "Palette (Hue x Saturation)")
+           (kill-buffer "Palette (Hue x Saturation)"))
+         (when (get-buffer "Brightness") (kill-buffer "Brightness"))
+         (when (get-buffer "Current/Original") (kill-buffer "Current/Original")))
+    (unless dont-reset (setq palette-action     nil ; Reset.
+                             palette-exit-hook  nil))
+    palette-current-color))             ; Return latest value.
 
 (defun palette-where-is-color (color &optional cursor-color) ; Bound to `w'.
   "Move to the palette location of COLOR.
@@ -1646,7 +1658,7 @@ See `palette-mode' for more information."
   (palette-set-current-color (hexrgb-color-name-to-hex color))
   (setq palette-old-color  palette-current-color)
   (unless palette-font (error "You must define `palette-font'.  `C-h v' for more information"))
-  (palette-quit)
+  (palette-quit 'dont-reset)
   (let* ((pop-up-frames                   t)
          (window-min-width                5)
          (fit-frame-inhibit-fitting-flag  t) ; Defined in `fit-frame.el'.

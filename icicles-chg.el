@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Nov 14 07:19:01 2009 (-0800)
+;; Last-Updated: Tue Nov 17 15:41:34 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 4571
+;;     Update #: 4572
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2009/11/17 dadams
+;;     icicle-bbdb-complete-name: Bind completion-case-ignore.
 ;; 2009/11/14 dadams
 ;;     icicle-bbdb-complete-name: Replace macro bbdb-hashtable by its expansion.
 ;; 2009/09/21 dadams

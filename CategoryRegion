@@ -32,5 +32,6 @@ Click on the heading above to list '''all''' pages related to ''regions''.
 * EevMode -- `M-x eev' saves region to a temporary script. Later we can execute it.
 * ChangingCursorDynamically -- Make the TextCursor more visible when Emacs is idle (not directly related to the region, but helps you find it)
 * [[Subedit]] -- Edit part of a buffer in a new buffer
+* FastNav -- Provides a command to set mark quickly at the next/previous n'th occurence of a character while the point is kept.
 
 

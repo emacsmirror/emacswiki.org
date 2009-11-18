@@ -62,5 +62,6 @@ This category is about editing, not modes.  See CategoryModes, instead.
 ** BookMarks -- Jump to places you have recorded (persistently or not).
 ** VisibleBookmarks -- VisualStudio-like bookmarks for quick in-buffer navigation
 ** BreadcrumbForEmacs -- Leave breadcrumb bookmarks in the buffers, and jump back to them quickly.
+** FastNav -- Multiple commands to support quick jump to, replace at, kill at, etc. the next/previous occurences of characters.
 
 See also EmacsNiftyTricks.

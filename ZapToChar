@@ -9,5 +9,7 @@ See ZapToCharUsage for a discussion on using ZapToChar.
 
 See ZapUpToChar for an alternative command that doesn't "zap" the char specified.
 
+See FastNav for a collection of commands that jump to, replace at and doest other operations at the next/previous occurence of a character.
+
 ----
 CategoryEditing

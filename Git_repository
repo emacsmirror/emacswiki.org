@@ -1,14 +1,8 @@
-A cron job copies the entire EmacsWiki setup to a machine that [[zeus]] is running,
-producing the [[Rsync repository]]. Another cron job then uses that to check it all
-into a *Git repository* run by JonasBernoulli.
+== Usage ==
 
-To get a *complete* copy simply run:
+To get a *complete* copy of the repository simply run:
 
     git clone git://github.com/tarsius/emacswiki.git
-
-You can also browse the repository at:
-
-* http://github.com/tarsius/emacswiki
 
 Or fetch individual branches only:
 
@@ -18,29 +12,23 @@ Or fetch individual branches only:
     git remote add origin git://github.com/tarsius/emacswiki.git -t <branch> -m <branch>
     git pull origin
 
+The repositories webpage is at:
+
+* http://github.com/tarsius/emacswiki
+
 == Branches ==
 
-The repository contains several branches (with completely separate history):
+The repository contains several branches:
 
-* master -- contains the files used to maintain the repository
-* wiki -- contains the entire Emacswiki setup
-* plain -- contains all pages converted to plain text
-* pages -- contains most webpages converted to plain text (excluding deleted and redirected pages)
-* elisp -- contains all Emacs Lisp files converted to plain text
-
-/wiki/ is like the [[Rsync repository]] (but excludes backup files), /pages/ is like the [[SVN repository]], /elisp/ is like the [[CVS repository]] and /plain/ is like the SVN and CVS repositories combined.
+* about -- contains README.md and the script used to maintain the mirror
+* master -- contains the entire Emacswiki setup
+* TODO pages -- contains most webpages (excluding deleted, redirected, news and home- pages)
+* TODO elisp -- contains all Emacs Lisp files
+* TODO more to come
 
 == Status ==
 
-[new]
-Broken as of 2009-05-28.
-[new]
-Still dead as of 2009-08-14. Can we delete this page? --RyanDavis
-[new]
-Perhaps it was broken because the [[Rsync repository]] was broken.
-I think it should be possible to get it started again. -- AlexSchroeder
-[new]
-I will set this up again one Alex's subversion repository is up. --JonasBernoulli
+The wiki branch is now synchronized regularly.  The missing branches will be created during the next few days. Sorry for the delay --JonasBernoulli
 
 ----
 CategoryEmacsWikiSite, WikiDownload

@@ -2,7 +2,7 @@ This page is about storing the current date and time in a file and keeping it up
 
 Time stamps in Emacs:
 
-* Emacs (version 21 or later) has time-stamp support (See "Time Stamps" in the EmacsManual). 
+* Emacs (version 21 or later) has time-stamp support (See [[Manual:Time Stamps]]). 
 * Library <tt>[[header2.el]]</tt> has code to insert and update a date and time field in a file header. Unlike vanilla Emacs timestamps, such a time stamp need not be within the first eight lines of the file. The default timestamp format used by ##header2.el## looks like this, but you can customize it any way you like (option `header-date-format'):
 
           Sun Dec 04 13:46:31 2005 (Pacific Standard Time)

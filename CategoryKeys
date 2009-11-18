@@ -66,6 +66,7 @@ For information on using the menu for actions instead of keys, see CategoryMenus
 * BackwardDeleteWord -- Binding M-backspace to delete instead of kill.
 * Lisp:singlebind.el -- Bind commands to single characters
 * ErgoMovementMode -- Ergonomic movement commands: M-jikl
+* FastNav -- Multiple commands to support quick jump to, replace at, kill at, etc. the next/previous occurences of characters.
 
 : In GNU Emacs, the ignored part of the filename is visible after typing a slash or tilde, at least until completion is performed with TAB. With the CVS version of GNU Emacs, the behaviour of XEmacs can be approximated by using <code>(file-name-shadow-mode 1)</code> and customizing either <code>file-name-shadow-properties</code> or <code>file-name-shadow-tty-properties</code>. -- MattHodges
 

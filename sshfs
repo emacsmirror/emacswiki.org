@@ -1,0 +1,12 @@
+Using sshfs with Emacs generally works great.
+
+But sometimes emacs can produce 10s timeouts every 20s or so.
+This is due to a bug in emacs, fixed in the repository as of Jan 2009.
+The bug is in lisp/jit-lock.el, so you can patch it easily without recompiling.
+I encountered this in Aquamacs 1.9.
+
+http://www.opensubscriber.com/message/emacs-devel@gnu.org/11471189.html
+
+(This should perhaps be added to a faq - finding the patch above is not easy. 
+Also there are a lot of solutions floating around that suggest writing backup files
+to a local disk, instead of pointing to the above problem)

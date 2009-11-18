@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Nov 14 07:17:03 2009 (-0800)
+;; Last-Updated: Tue Nov 17 15:29:59 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 19898
+;;     Update #: 19903
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1103,7 +1103,8 @@ control completion behaviour using `bbdb-completion-type'."
          (orig                 (buffer-substring beg end))
          (typed                (downcase orig))
          (pattern              (bbdb-string-trim typed))
-         ;; Just replace (bbdb-hashtable) by its expansion (bbdb-with-db-buffer ... bbdb-hashtable),
+         ;; DADAMS -
+         ;; Replaced `(bbdb-hashtable)' by its expansion (bbdb-with-db-buffer ... bbdb-hashtable),
          ;; to avoid the silly macro altogether and simplify user byte-compiling a little.
          (ht                   (bbdb-with-db-buffer (bbdb-records nil t) bbdb-hashtable))
          ;; Make a list of possible completion strings (all-the-completions), and a flag to
@@ -1112,20 +1113,21 @@ control completion behaviour using `bbdb-completion-type'."
          (all-the-completions  ())
          (pred
           #'(lambda (sym)
-              (when (bbdb-completion-predicate sym)
-                (when (and only-one-p all-the-completions
-                           (or
-                            ;; Not sure about this. More than one record attached to the symbol?
-                            ;; Does that happen?
-                            (> (length (symbol-value sym)) 1)
-                            ;; This is the doozy. Multiple syms which all match the same record.
-                            (delete t (mapcar #'(lambda (x)
-                                                  (equal (symbol-value x) (symbol-value sym)))
-                                              all-the-completions))))
-                  (setq only-one-p  nil))
-                (if (memq sym all-the-completions)
-                    nil
-                  (setq all-the-completions  (cons sym all-the-completions))))))
+              (and (bbdb-completion-predicate sym)
+                   (progn
+                     (when (and only-one-p all-the-completions
+                                (or
+                                 ;; Not sure about this. More than one record attached to the symbol?
+                                 ;; Does that happen?
+                                 (> (length (symbol-value sym)) 1)
+                                 ;; This is the doozy. Multiple syms which all match the same record.
+                                 (delete t (mapcar #'(lambda (x)
+                                                       (equal (symbol-value x) (symbol-value sym)))
+                                                   all-the-completions))))
+                       (setq only-one-p  nil))
+                     (if (memq sym all-the-completions)
+                         nil
+                       (setq all-the-completions  (cons sym all-the-completions)))))))
          (completion           (progn (all-completions pattern ht pred)
                                       (try-completion pattern ht)))
          (exact-match          (eq completion t)))
@@ -1312,6 +1314,7 @@ control completion behaviour using `bbdb-completion-type'."
                     (let* ((icicle-show-Completions-initially-flag      t)
                            (icicle-incremental-completion-p             'display)
                            (icicle-top-level-when-sole-completion-flag  t)
+                           (completion-ignore-case                      t)
                            (choice
                             (save-excursion
                               (completing-read "Complete: " (mapcar #'list dwim-completions)

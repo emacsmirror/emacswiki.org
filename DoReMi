@@ -918,6 +918,51 @@ Guide your search for a particular color by using hue, saturation, and value sep
 2. yeah, I also think palette is the best tools to choose color, is intuitive, but M-x palette and M-x facemenup-paste-to-face-fg-at-point is slow, and doremi-face-bg-color-name+ is fast, so I want use doremi to iterate all of colors.
 
 
+[new:DrewAdams:2009-11-17 15:14 UTC]
+
+1. It doesn't matter much what the increment is, and '''Do Re Mi''' lets you boost the increment anyway using `M-'. The point is that it is pretty pointless to traverse the entire set of colors in a single order --- ''any'' single order --- at any speed. The point is to steer toward the color you want, instead of covering the whole field without any aim. Steering wheel = on-the-fly choice of component: ##[rgbhsvRH]##.
+
+Change components at any time (I'm not sure you have understood that part), without exiting the command. Need the color to be a little redder? ##r##: Add some red. Need it to be a little darker? ##v##: Turn down the brightness. Need it to be a little paler? ##s##: Turn down the saturation.
+
+In the old days, we had to adjust the color on TVs occasionally. Do you think we had only one dial, which ran the gamut of all shades and saturations of all color hues? No, we had separate dials for hue, brightness, etc. And with '''Do Re Mi''' you have all of the dials combined in one command -- just hit a different letter when you want to change dials.
+
+2. Use '''Do Re Mi''' to iterate colors intelligently -- ''aim''. You can still iterate through all of the colors, using any of the '''Do Re Mi''' color commands. There is a color that you want somewhere in the middle of a big field. Use the steering wheel to get to it, instead of just mowing down the whole field systematically like a TV raster. -- DrewAdams
+
+[new]
+<pre>
+Change components at any time (I'm not sure you have understood that part) -- DrewAdams
+</pre>
+I do understand it, and I also used it. but if I choose r component with increment 1000, and then I choose v component, then v component's increment is also 1000, but increment 1000 is so large for v component. -- [[ahei]]
+
+
+[new:DrewAdams:2009-11-17 16:32 UTC]
+That's the purpose of [[option]] `doremi-RGB-increment-factor' --- see the doc for it (`C-h v'). I customize it, myself, to 256. The value you use probably will depend on the kind of RGB color representations (how many hex digits per component) you work with. -- DrewAdams
+
+[new]
+can you display current component using when doremi series commands is executing? -- [[ahei]]
+
+[new:DrewAdams:2009-11-17 18:45 UTC]
+What do you mean -- let you know whether you last hit `r' or `h', for instance, in case you forgot? For that, no, but you can just hit `r' again, to be sure you're incrementing red (or whatever). I don't understand the problem. -- DrewAdams
+
+[new]
+May be forget, maybe other, I think you display component users using is good for user, and I think this is easy to do for you.
+
+<pre>
+For that, no, but you can just hit `r' again, to be sure you're incrementing red (or whatever). -- DrewAdams
+</pre>
+yeah, users can do that, but it's so trouble for users. how do you think about it? -- [[ahei]]
+
+[new:DrewAdams:2009-11-18 03:57 UTC]
+No, I don't think it's useful. You won't forget within a few seconds what you just did. And you don't need to remember, in any case: WYSIWYG. You hit a key based on what component you want to increase or decrease -- it doesn't matter which component you incremented in the past. All that counts is what the current color is (look at it) and what color you want (redder, darker, etc.). I see no use for a reminder of what component you were incrementing up till now. -- DrewAdams  
+
+[new]
+<pre>
+can you display current component using when doremi series commands is executing? -- [[ahei]]
+it doesn't matter which component you incremented in the past. All that counts is what the current color is (look at it) 
+and what color you want (redder, darker, etc.).
+</pre>
+I not mean display component users incremented in the past, I mean display component users using. -- [[ahei]]
+
 ----
 [:SeeAlso]
 == See Also ==

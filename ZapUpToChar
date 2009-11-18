@@ -62,13 +62,14 @@ I often want to use zap-to-char to put some text into the kill-ring without kill
 
 The only issue with this is that if you use it in an unmodified buffer, it sets the modified flag. I bind it to M-Z for easy access.
 
+See FastNav for a collection of commands that jump to, replace at and do other operations at the next/previous occurence of a character.
 
 [new]
 XEmacs has zap-to-char and also zap-up-to-char which deletes up to the given character, but not the character, so deleting something like: "^Hello, World" where ^ is [[Point]], you could `M-x zap-up-to-char ,' and your result would be: "^, World" ... Obviously, if you use that *very* handy function, you would want to bind it to something as it is not bound by default. -- JeremyCowgar
 
 ----
 
-See also ViKeys, ZapToCharUsage, ZapToISearch.
+See also ViKeys, ZapToCharUsage, ZapToISearch, FastNav.
 
 ----
 CategoryEditing
