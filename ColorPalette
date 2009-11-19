@@ -314,7 +314,41 @@ If I used facemenup-palette-face-fg-at-point, then I close palette, and then I u
 Thx. Should be OK now.  -- DrewAdams
 
 [new]
-I disable blink-cursor-mode, but when I execute M-x palette, it enable blink-cursor-mode. -- [[ahei]]
+1.
+I disable blink-cursor-mode, but when I execute M-x palette, it enable blink-cursor-mode. 
+
+2. when I M-x describe-function read-face-name, I get message "`read-face-name' is an alias for `old-read-face-name'
+find-function-search-for-symbol: Don't know where `old-read-face-name' is defined", how do I fix this problem?
+
+3. I open palette use M-x palette and then close it with no operation, but It change hl-line-face, my hl-line-face not set foreground color, 
+I see facemenup-palette-face-fg-at-point code, 
+<pre>
+(add-hook 'palette-exit-hook
+                `(lambda () (set-face-foreground ',face palette-current-color)))
+</pre>
+It will execute when I use `x' to exit palette.
+-- [[ahei]]
+
+
+[new:DrewAdams:2009-11-18 19:33 UTC]
+1. Yes, this is a general problem. I've tried to fix it with a workaround; please try the latest. The problem is that the palette needs a blinking cursor, since the cursor is so tiny, but `blink-cursor-mode' is a global (minor) mode.
+
+2. `old-read-face-name' is what `read-face-name' was before '''[[Icicles]]''' was loaded. It is probably the vanilla Emacs definition of `read-face-name', unless you first loaded some library that advises that function. `old-read-face-name' is defined in <tt>[[icicles-fn.el]]</tt>. '''Icicles''' restores that definition when you quit ''Icicle'' mode. (This has nothing to do with <tt>[[palette.el]]</tt>.)
+
+3. No idea what you're saying. Sounds like you might be repeating a previous remark about `hl-line-mode', to which I already responded.
+
+And again, you must always quit the palette using `palette-quit' or `palette-exit'. Especially now that I've added the actions you wanted and an attempt to restore your preferred `blink-cursor-mode' value (off). -- DrewAdams
+
+[new]
+can you add a command which copy current color on palette (palette-current-color), if users select a satisfying color, they may need add it to those dot emacs. -- [[ahei]]
+
+[new:DrewAdams:2009-11-19 08:01 UTC]
+You mention `palette-current-color' yourself. That variable already has the current color as its value -- just use `C-h v' to see it. IOW, the current color has already been copied for you, and is always available as the value of that variable.
+
+Beyond that, copying a color is what `mouse-2', `RET', `##~##', `c', `M-h', `M-r', ##Shift## plus the arrow keys, `r', `g', `b', `h', `s', `v', `R', and `H' all do. Those and other commands copy a color to variables `palette-last-picked-color', `palette-picked-background', `palette-picked-foreground', `palette-last-color', and `palette-current-color'. The latter two variables will pretty much always give you the current color. This is all explained in the <tt>[[palette.el]]</tt> commentary and the doc strings of those commands and variables. You can also check the code for details. -- DrewAdams
+
+[new]
+which variable that same as palette-current-color store current color when I use doremi? -- [[ahei]]
 
 ----
 Lisp:palette.el, Lisp:facemenu+.el

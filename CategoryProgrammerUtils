@@ -62,6 +62,7 @@ Code navigation and hints:
 * IdUtils -- database of code identifiers´
 * XreFactory -- proprietary tool which claims to provide code completion, source browsing and refactoring.
 * SimpleCallTree -- returns a call-tree data structure saying which function calls which function using Emacs's font highlighting of functions
+* IdeBridge -- code completion, refactoring, compilation for C# (only available on win32 now).
 
 File changes:
 

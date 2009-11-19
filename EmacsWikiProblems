@@ -442,6 +442,13 @@ I haven't figured out what the problem is yet, but I added http://www.emacswiki.
 [new]
 When I look at the RSS feed, I get to see the latest revision of the page. I must therefore assume that it's Google Reader's fault. I can imagine two problems: 1. It takes very long for changes to be picked up by Google. That's the explanation I currently favor because I have several of my own wikis in Google Reader and I often have the impression that Google Reader is up to a day late. 2. Google Reader thinks that you're looking at an update to an existing page and will not show it anymore. I remember there was such an option for Blog Lines, but I can't find anything like it for Google Reader. -- AlexSchroeder
 
+== File type "data" ==
+
+file (see man file) returns "Lisp/Scheme program text" for most of the hosted libraries. However for Lisp:cscope.el, Lisp:less.el, Lisp:php-completion.el and Lisp:rcirc.el it returns "data". The files look okay at first glance. Might there be a problem with encoding? What else? Could this possibly be fixed by simply editing and resaving these files? The page BuildingEmacsWithMinGW is also reported as "data". This problem occurs regardless whether I download the file manually or get it using the subversion mirror.  -- JonasBernoulli
+
+== Empty files in subversion mirror ==
+
+The subversion repository contains two empty pages:  DavidSpreen and ScreencastProductions. As you can see they don't exist anymore on the wiki. Alex, please remove these. -- JonasBernoulli
 ----
 CategoryEmacsWikiSite
 

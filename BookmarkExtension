@@ -2,7 +2,9 @@ This page is about [http://mercurial.intuxication.org/hg/emacs-bookmark-extensio
 
 This is a fork of bookmark+.el, but simpler to use (less commands).
 
-Compatibilty: Only emacs23+.
+Compatibility: Only emacs23+.
+
+== Download ==
 
 You can get it here with mercurial: 
 
@@ -20,17 +22,37 @@ hg update -C development
 
 </pre>
 
-At the moment it provide support for bookmarking in W3m, Gnus, Woman, Man, Info with emacs standard bookmarks.
+== Features ==
 
-You can now import your W3m bookmarks in your Emacs bookmarks. (Use M-x bmkext-import-or-sync-w3m-bmks).
+* At the moment it provide support for bookmarking in W3m, Gnus, Woman, Man, Info with emacs standard bookmarks.
 
-The display is colorized to differency caregories of bookmarks.
+* You can now import your W3m bookmarks in your Emacs bookmarks. (Use M-x bmkext-import-or-sync-w3m-bmks).
 
-You will find filters to show only the category of bookmarks you want (e.g Gnus, W3m, etc...)
+* The imported w3m bookmarks will be saved only if `bmkext-always-save-w3m-imported' is non--nil.
 
-You will find the support to use it in [[Anything]] in Lisp:anything-config.el
+* You can import w3m bookmarks temporarily by using the w3m filter (W) in menu list with a prefix arg (C-u).
 
-It provide also an incremental searching of bookmarks ala [[Anything]].(no need to have [[Anything]] installed)
+* The display is colorized to differency caregories of bookmarks.
+
+* You will find filters to show only the category of bookmarks you want (e.g Gnus, W3m, etc...)
+
+* You will find the support to use it in [[Anything]] in Lisp:anything-config.el
+
+* It provide also an incremental searching of bookmarks ala [[Anything]].(no need to have [[Anything]] installed)
+
+* Bookmarking a page from firefox in Emacs bookmarks is possible:
+
+You will find files and instructions in contrib directory.
+
+You will have to add protocol handlers to firefox to make that working:
+
+That is not so easy as it was in firefox version < 3 due to a bug in firefox3+ i think.
+
+I will add infos when i know more about that. See [https://bugzilla.mozilla.org/show_bug.cgi?id=529511 Bug 529511]
+
+For the moment you will have to hack file in firefox: mimeTypes.rdf in addition of the usual user.js.
+
+== Screenshots ==
 
 Here some screenshots:
 
@@ -44,6 +66,7 @@ http://farm4.static.flickr.com/3520/4079996702_810752dbda.jpg
 
 [http://farm4.static.flickr.com/3520/4079996702_65588d83c1_o.png Full screen]
 
+== Discuss ==
 
 [new]
 

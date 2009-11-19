@@ -36,6 +36,9 @@ http://flymake.sourceforge.net/ - check syntax more-or-less continually, and use
 
 vj-complete - C# Code Completion [http://ozymandias.dk/emacs/emacs.html#vj-complete]
 
+ide-bridge - C# Code Completion/refactoring/navigation/compilation [http://code.google.com/p/idebridge/]
+
+
 
 ==Comments/Remarks==
 

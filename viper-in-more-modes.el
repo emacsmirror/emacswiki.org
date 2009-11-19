@@ -5,7 +5,7 @@
 ;; Version: 0.1.2
 ;; Authors: Alessandro Piras <laynor@gmail.com>,
 ;;          Brad Beveridge <brad.beveridge@gmail.com>
-;; Previous maintainer: Jason Spiro <jasonspiro3@gmail.com>
+;; Previous maintainer: Jason Spiro <http://www.jspiro.com>
 ;; Maintainer: No maintainer anymore. Got a patch? See below.
 ;; URL: http://emacswiki.org/elisp/viper-in-more-modes.el
 ;; 

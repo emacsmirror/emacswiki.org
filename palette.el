@@ -7,9 +7,9 @@
 ;; Copyright (C) 2006-2009, Drew Adams, all rights reserved.
 ;; Created: Sat May 20 07:56:06 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Nov 17 11:30:26 2009 (-0800)
+;; Last-Updated: Wed Nov 18 17:01:08 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 433 4
+;;     Update #: 512 4
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/palette.el
 ;; Keywords: color, rgb, hsv, hexadecimal, face, frame
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -282,7 +282,8 @@
 ;;    `eyedrop-color-message', `eyedrop-face-at-point',
 ;;    `palette-barf-if-outside-palette', `palette-color-message',
 ;;    `palette-complement-or-alternative', `palette-face-at-point',
-;;    `palette-pick-by-name-action', `palette-set-current-color'.
+;;    `palette-pick-by-name-action', `palette-set-current-color',
+;;    `palette-update-blink-cursor-mode'.
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -291,7 +292,8 @@
 ;;    `palette-current-color', `palette-last-color',
 ;;    `palette-last-picked-color', `palette-mode-map',
 ;;    `palette-old-color', `palette-picked-background',
-;;    `palette-picked-foreground', `palette-popup-map'.
+;;    `palette-picked-foreground', `palette-popup-map',
+;;    `palette-saved-blink-cursor-mode'.
 ;;
 ;;  Do NOT try to use this library without a window manager.
 ;;  That is, do not try to use this with `emacs -nw'.
@@ -329,6 +331,12 @@
 ;;
 ;;; Change log:
 ;;
+;; 2009/11/18 dadams
+;;     Added: palette-saved-blink-cursor-mode, palette-update-blink-cursor-mode.
+;;     palette-mode: add-hook palette-update-blink-cursor-mode.
+;;     palette: Save blink-cursor-mode to palette-saved-blink-cursor-mode.
+;;     palette-(exit|quit): Turn off blink-cursor-mode per palette-saved-blink-cursor-mode, and
+;;                          remove-hook palette-update-blink-cursor-mode.
 ;; 2009/11/17 dadams
 ;;     palette-quit: Added optional arg.  If nil, reset palette-action, palette-exit-hook.
 ;;     palette-exit: Call palette-quit with arg.  Reset palette-action.
@@ -569,6 +577,13 @@ You can use `palette-pick-foreground-at-point' or
 (defvaralias 'eyedrop-last-picked-color 'palette-last-picked-color)
 (defvar palette-last-picked-color nil
   "Color last picked from a face or frame foreground or background.")
+
+(defvar palette-saved-blink-cursor-mode nil
+  "Value of `blink-cursor-mode' before `palette' is displayed.
+`blink-cursor-mode' is restored (turned on or off) to reflect this
+saved value when you exit or quit the palette.
+The saved value is updated when `palette' is called and whenever the
+user updates `blink-cursor-mode'.")
 
 (defvar palette-popup-map nil "Keymap for `palette-mode' popup menu.")
 (defvar palette-mode-map nil "Keymap for `palette-mode'.")
@@ -835,7 +850,9 @@ Some things to keep in mind when using the Color Palette:
       (set (make-local-variable 'truncate-lines) t)
       (setq show-trailing-whitespace        nil
             cursor-in-non-selected-windows  t)
-      (when (fboundp 'blink-cursor-mode) (blink-cursor-mode 1)))
+      (when (fboundp 'blink-cursor-mode)
+        (add-hook 'blink-cursor-mode-hook 'palette-update-blink-cursor-mode)
+        (blink-cursor-mode 1)))
 
   ;; Emacs 22.
   (define-derived-mode palette-mode nil "Color Palette"
@@ -949,7 +966,15 @@ Some things to keep in mind when using the Color Palette:
     (set (make-local-variable 'truncate-lines) t)
     (setq show-trailing-whitespace        nil
           cursor-in-non-selected-windows  t)
-    (when (fboundp 'blink-cursor-mode) (blink-cursor-mode 1))))
+    (when (fboundp 'blink-cursor-mode)
+      (add-hook 'blink-cursor-mode-hook 'palette-update-blink-cursor-mode)
+      (blink-cursor-mode 1))))
+
+(defun palette-update-blink-cursor-mode ()
+  "Update `palette-saved-blink-cursor-mode' from `blink-cursor-mode'.
+No update is made if we are in the palette."
+  (unless (eq major-mode 'palette-mode)
+    (setq palette-saved-blink-cursor-mode  blink-cursor-mode)))
 
 (defun palette-popup-menu (event)       ; Bound to `mouse-3'.
   "Display a popup menu of palette commands."
@@ -1351,6 +1376,7 @@ The saved color is returned."
   "Exit the color palette with exit action, if defined.
 Call `palette-quit', then run `palette-exit-hook', then reset
 `palette-action' and `palette-exit-hook'.
+Turn off `blink-cursor-mode', if it was off before showing palette.
 Return `palette-current-color'."
   (interactive)
   (unwind-protect
@@ -1358,6 +1384,9 @@ Return `palette-current-color'."
               (run-hooks 'palette-exit-hook))
     (setq palette-action     nil        ; Reset.
           palette-exit-hook  nil)
+    (when (and (fboundp 'blink-cursor-mode) (not palette-saved-blink-cursor-mode))
+      (blink-cursor-mode -1))
+    (remove-hook 'blink-cursor-mode-hook 'palette-update-blink-cursor-mode)
     palette-current-color))             ; Return latest value.
 
 (defun palette-quit (&optional dont-reset) ; Bound to `q'.
@@ -1365,6 +1394,7 @@ Return `palette-current-color'."
 Unlike palette-exit', this does not run `palette-exit-hook'.
 Unless DONT-RESET is non-nil, reset `palette-action' and
  `palette-exit-hook'.
+Turn off `blink-cursor-mode', if it was off before showing palette.
 Return `palette-current-color'."
   (interactive)
   (unwind-protect
@@ -1375,8 +1405,12 @@ Return `palette-current-color'."
            (kill-buffer "Palette (Hue x Saturation)"))
          (when (get-buffer "Brightness") (kill-buffer "Brightness"))
          (when (get-buffer "Current/Original") (kill-buffer "Current/Original")))
-    (unless dont-reset (setq palette-action     nil ; Reset.
-                             palette-exit-hook  nil))
+    (unless dont-reset
+      (setq palette-action     nil      ; Reset.
+            palette-exit-hook  nil))
+    (when (and (fboundp 'blink-cursor-mode) (not palette-saved-blink-cursor-mode))
+      (blink-cursor-mode -1))
+    (remove-hook 'blink-cursor-mode-hook 'palette-update-blink-cursor-mode)
     palette-current-color))             ; Return latest value.
 
 (defun palette-where-is-color (color &optional cursor-color) ; Bound to `w'.
@@ -1657,6 +1691,8 @@ See `palette-mode' for more information."
       (setq color  (elt colors rand))))
   (palette-set-current-color (hexrgb-color-name-to-hex color))
   (setq palette-old-color  palette-current-color)
+  (when (and (boundp 'blink-cursor-mode) (not (eq major-mode 'palette-mode)))
+    (setq palette-saved-blink-cursor-mode  blink-cursor-mode))
   (unless palette-font (error "You must define `palette-font'.  `C-h v' for more information"))
   (palette-quit 'dont-reset)
   (let* ((pop-up-frames                   t)

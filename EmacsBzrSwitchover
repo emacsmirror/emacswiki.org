@@ -6,7 +6,7 @@ GNU Emacs development is switching from CVS to [http://bazaar-vcs.org Bzr].  Thi
 Start browsing here: http://bzr.savannah.gnu.org/lh/emacs/ . To get a local copy of the repository, this is probably fastest:
 
 <pre>
-$ scp -r yourusername@bzr.savannah.gnu.org:/srv/bzr/emacs/emacs emacs-bzr-repository
+$ scp -r yourusername@bzr.savannah.gnu.org:/srv/bzr/emacs emacs-bzr-repository
 </pre>
 
 That gets you the whole repository, but with empty dirs for the working trees.  You can "check out" (i.e., fill in) a working tree like this:

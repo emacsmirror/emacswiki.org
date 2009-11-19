@@ -179,8 +179,9 @@ the mode line, where you can see it all the time, even when scrolling long dirs.
 
 * Use the listings of recent files (C-c C-r) and recent directories (C-c C-d) to
 reuse the paths to already visited  files  and  directories.  Recent  files  are
-managed by recentf and automatically persisted across emacs session. If you want
-the same for recent directories you can use the savehist persistence mechanism:
+managed  by  recentf  and  automatically persisted across emacs sessions. If you
+want the same for recent  directories  you  can  use  the  savehist  persistence
+mechanism:
 
             1. M-x customize-group RET savehist RET
             2. Set savehist-mode to ON
@@ -190,7 +191,7 @@ the same for recent directories you can use the savehist persistence mechanism:
 *  Use Sunrise checkpoints. Checkpoints are kind of bookmarks you can create for
 both panes simultaneously by pressing C-&gt; (or  C-c  >  in  the  console)  and
 giving  a  name  for  the  checkpoint.  To recall it, press C-. (or C-c . in the
-console) Checkpoints can be persisted across emacs session the same way  as  the
+console) Checkpoints can be persisted across emacs sessions the same way as  the
 listing  of  recent  directories  (the additional variable to persist is in this
 case sr-checkpoint-registry). There's currently no  way  to  view  the  list  of
 currently  defined  checkpoints  other  than M-: sr-checkpoint-registry RET, but

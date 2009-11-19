@@ -1,3 +1,9 @@
+== About ==
+
+The [[Git]] repository imports and extends the content of the [[SVN repository]]. Unlike the subversion mirror it not only features a branch containing all files hosted on the Emacswiki but also other branches that only contain reasonable subsets thereof.
+
+The mirror can be found at http://github.com/tarsius/emacswiki.
+
 == Usage ==
 
 To get a *complete* copy of the repository simply run:
@@ -12,23 +18,29 @@ Or fetch individual branches only:
     git remote add origin git://github.com/tarsius/emacswiki.git -t <branch> -m <branch>
     git pull origin
 
-The repositories webpage is at:
-
-* http://github.com/tarsius/emacswiki
-
 == Branches ==
 
-The repository contains several branches:
+The following branches are useful for users:
 
-* about -- contains README.md and the script used to maintain the mirror
-* master -- contains the entire Emacswiki setup
-* TODO pages -- contains most webpages (excluding deleted, redirected, news and home- pages)
-* TODO elisp -- contains all Emacs Lisp files
-* TODO more to come
+* *about* -- contains a readme and metadata
+* *master* -- contains the complete Emacswiki (same as the [[SVN repository]])
+* *pages* -- contains most webpages (excluding homepages, news and obsolete stuff)
+* *homepages* -- contains personal homepages
+* *news* -- contains news
+* *emacslisp* -- contains most Emacs Lisp files
+* *libraries* -- contains actual Emacs Lisp libraries
+* *snippets* -- contains Emacs Lisp files that don't qualify as libraries
+
+*trim-1* and *trim-2* are just intermediate steps and should not be used. 
 
 == Status ==
 
-The wiki branch is now synchronized regularly.  The missing branches will be created during the next few days. Sorry for the delay --JonasBernoulli
+* The above branches have been created and will be synchronized regularly.
+* TODO Create a branch for each library.
+* TODO Each such branch should have it's own repository (on github?).
+* TODO Generate metadata from libraries (like README).
+
+Since the repository is still fresh and might contain some fundamental flaws I can not promise never to rebase. However I do not intend to keep it that way.
 
 ----
 CategoryEmacsWikiSite, WikiDownload

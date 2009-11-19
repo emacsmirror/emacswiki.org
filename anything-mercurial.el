@@ -77,7 +77,7 @@
                               (top
                                (with-temp-buffer
                                  (apply #'call-process "hg" nil t nil
-                                        `("tip" "--template" "#rev#" "-R" ,anything-c-qpatch-directory))
+                                        `("tip" "--template" "{rev}" "-R" ,anything-c-qpatch-directory))
                                  (buffer-string))))
                           (setq top (string-to-int top))
                           (setq applied-patchs (remove "" (split-string applied-patchs "\n")))

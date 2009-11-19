@@ -1,0 +1,11 @@
+!IdeBridge help bringing functionalities from one IDE to another.
+
+Currently it 'bridge' functionalities from SharpDevelop IDE into emacs IDE.
+
+So with !IdeBridge you have the following functionalities in emacs:
+
+* building of .NET solutions.
+* intellisense completion (see [http://code.google.com/p/idebridge/wiki/ScreenShots ScreenShots]) for C# language.
+* go to definition for C# language. 
+
+look here for more details : http://code.google.com/p/idebridge/
