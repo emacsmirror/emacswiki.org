@@ -2080,5 +2080,64 @@ See `icicle-delete-region-from-alist'."
 
 -- ThierryVolpiatto
 
+== Firefox "places" (URLs and their titles) ==
+
+This works a bit like Firefox' "wonderbar" that matches what you type against a URL or the title of a web page. I needed this for my AnythingLauncher hack.
+
+The source requires a copy of your places.sqlite file (found under ~/.mozilla/firefox/YOURPROFILE/) because sqlite does not allow opening it while Firefox is running. I have a scheduled script that makes regular copies of it. 
+
+Here are the sources and helper functions:
+
+<pre>
+
+(defvar firefox-places-file "~/.firefox.places.sqlite.copy")
+
+(defun firefox-places-most-visited ()
+  "Lists all places visited in Firefox more than 10 times."
+  (with-temp-buffer
+     (shell-command (concat "sqlite3" " "
+                            firefox-places-file " "
+                            " \"select title || ' | ' || url from moz_places where visit_count > 10;\"") t)
+    (sort-lines nil (point-min) (point-max))
+    (split-string (buffer-substring-no-properties
+                   (point-min) (point-max)) "\n" t)))
+
+(defun firefox-places-matching (pattern)
+  "List all Firefox places where URl or title matches PATTERN."
+  (with-temp-buffer
+    (shell-command (concat "sqlite3" " " 
+                           firefox-places-file " "
+                           "\"select title || ' | ' || url from moz_places where url like '%" pattern 
+                           "%' or title like '%" pattern "%';\"") t)
+    (sort-lines nil (point-min) (point-max))
+    (split-string (buffer-substring-no-properties
+                     (point-min) (point-max)) "\n" t)))
+
+(defun firefox-places-open-place (place)
+  "Open PLACE."
+  (browse-url
+   (let ((parts (split-string place " | ")))
+     (cadr parts))))
+
+(defvar anything-c-source-firefox-places-often-visited
+ '((name . "Often visited Web Sites")
+   (candidates . firefox-places-most-visited)
+   (action . (("Open often visited URL" . firefox-places-open-place)))
+   (requires-pattern . 2)))
+
+(defvar anything-c-source-firefox-places-all
+ '((name . "All Firefox places")
+   (candidates . (lambda ()
+                   (firefox-places-matching anything-pattern)))
+   (action . (("Open often visited URL" . firefox-places-open-place)))
+   (volatile)
+   (requires-pattern . 3)))
+
+</pre>
+
+Enjoy!
+
+-- MaDa
+
 ----
 [[Anything]]

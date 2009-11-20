@@ -1,4 +1,4 @@
-;;;  sunrise-x-tabs.el --- Tabs for the Sunrise Commander File Manager.
+;;; sunrise-x-tabs.el --- Tabs for the Sunrise Commander File Manager.
 
 ;; Copyright (C) 2009 José Alfredo Romero Latouche (j0s3l0)
 
@@ -38,7 +38,7 @@
 ;; mouse or keyboard:
 
 ;; * Press C-j (or select Sunrise > Tabs > Add Tab in the menu) to create a new
-;; tab.
+;; tab or to rename an already existing tab.
 
 ;; * Press C-k (or right-click the tab) to kill an existing tab.
 
@@ -63,7 +63,7 @@
 ;; Sunrise  panes.  It’s meant to be simple and to work nicely with Sunrise with
 ;; just a few tabs (up to 10‐15 per pane, maybe).
 
-;; This is version $Rev: 221 $ of the Sunrise Commander Tabs Extension.
+;; This is version 1 $Rev: 226 $ of the Sunrise Commander Tabs Extension.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.
@@ -123,11 +123,13 @@
 ;;; Core functions:
 
 (defun sr-tabs-add ()
-  "Assigns the current buffer to exactly one tab in the active pane."
+  "Assigns  the  current  buffer to exactly one tab in the active pane, or calls
+  interactively sr-tabs-rename if a tab already exists for the current  buffer."
   (interactive)
   (let ((tab-name (buffer-name))
         (tab-set (assoc sr-selected-window sr-tabs)))
-      (unless (member tab-name (cdr tab-set))
+      (if (member tab-name (cdr tab-set))
+          (call-interactively 'sr-tabs-rename)
         (setcdr tab-set (cons tab-name (cdr tab-set)))))
   (sr-tabs-refresh))
 
@@ -210,6 +212,13 @@
     (unless (or (null stack) (eq to-kill (current-buffer)))
       (kill-buffer to-kill))))
 
+(defun sr-tabs-rename (&optional new-name)
+  (interactive "sRename current tab to: ")
+  (let* ((key (buffer-name))
+         (label (cdr (assoc key sr-tabs-labels-cache))))
+    (if label
+        (sr-tabs-redefine-label key new-name))))
+
 ;;; ============================================================================
 ;;; Graphical interface:
 
@@ -219,6 +228,13 @@
   `(lambda ()
      (interactive)
      (sr-tabs-focus ,name ',side)))
+
+(defun sr-tabs-rename-cmd (name)
+  "Returns  an  anonymous  function  that can be used to rename the tab with the
+  given name in both panes."
+  `(lambda (&optional new-name)
+     (interactive "sRename tab to: ")
+     (sr-tabs-redefine-label ,name new-name)))
 
 (defun sr-tabs-kill-cmd (name side)
   "Returns  an  anonymous  function  that can be used to delete the tab with the
@@ -235,32 +251,50 @@
   as a tab tag."
   (propertize string
               'face face
-              'help-echo "mouse-1: follow tab\n\mouse-3: kill tab"
+              'help-echo "mouse-1: select tab\n\mouse-2: rename tab\n\mouse-3: kill tab"
               'local-map keymap))                
 
-(defun sr-tabs-make-tag (name as-active)
+(defun sr-tabs-make-tag (name as-active &optional tag)
   "Prepares and returns a propertized string for decorating a tab with the given
-  name in the given state (nil = passive, t = active)."
-  (let ((tag name)
+  name in the given state (nil = passive, t =  active).  The  optional  argument
+  allows to provide a pretty name to label the tag."
+  (let ((tag (or tag name))
         (side sr-selected-window)
         (keymap (make-sparse-keymap)))
     (if (< sr-tabs-max-tabsize (length tag))
         (setq tag (concat (substring tag 0 sr-tabs-max-tabsize) "…")))
     (setq tag (concat sr-tabs-sep tag sr-tabs-sep))
+    (define-key keymap [header-line mouse-1] (sr-tabs-focus-cmd name side))
+    (define-key keymap [header-line mouse-2] (sr-tabs-rename-cmd name))
     (define-key keymap [header-line mouse-3] (sr-tabs-kill-cmd name side))
     (if as-active
         (sr-tabs-propertize-tag tag 'sr-tabs-active-face keymap)
       (sr-tabs-propertize-tag tag 'sr-tabs-inactive-face keymap))))
 
-(defun sr-tabs-make-label (name)
+(defun sr-tabs-make-label (name &optional alias)
   "Prepares  and returns a new label for decorating a tab with the given name. A
   label is a dotted pair of tags, for active and passive state. The new label is
-  put in cache for later reuse."
-  (let* ((label (cons (sr-tabs-make-tag name t)
-                      (sr-tabs-make-tag name nil)))
+  put in cache for later reuse. The optional argument allows to provide a pretty
+  name to label the tab."
+  (let* ((alias (or alias name))
+         (label (cons (sr-tabs-make-tag name t alias)
+                      (sr-tabs-make-tag name nil alias)))
          (entry (list (cons name label))))
     (setq sr-tabs-labels-cache (append sr-tabs-labels-cache entry))
     label))
+
+(defun sr-tabs-redefine-label (name alias)
+  "Allows to modify the pretty name (alias) of the label with the given name."
+  (let* ((alias (or alias ""))
+         (alias (replace-regexp-in-string "^\\s-+\\|\\s-+$" "" alias)))
+    (if (string= "" alias)
+        (error "Cancelled: invalid tab name")
+      (progn
+        (setq sr-tabs-labels-cache
+              (delq nil (mapcar (lambda(x) (and (not (equal (car x) name)) x))
+                                sr-tabs-labels-cache)))
+        (sr-tabs-make-label name alias)
+        (sr-tabs-refresh)))))
 
 (defun sr-tabs-get-tag (name is-active)
   "Retrieves  the  cached tag for the tab with the given name in the given state
@@ -368,7 +402,7 @@
 (defvar sr-tabs-menu
   (easy-menu-create-menu
    "Tabs"
-   '(["Add tab" sr-tabs-add]
+   '(["Add/Rename tab" sr-tabs-add]
      ["Remove tab" sr-tabs-remove]
      ["Go to next tab" sr-tabs-next]
      ["Go to previous tab" sr-tabs-prev]
@@ -398,7 +432,7 @@
   "Tabs support for the Sunrise Commander file manager. This minor mode provides
   the following keybindings:
 
-        C-j ........... Assign the current buffer to a tab in the active pane.
+        C-j ........... Create new tab (or rename existing tab) in active pane.
         C-k ........... Kill the tab of the current buffer in the active pane.
         C-n ........... Move to the next tab in the active pane.
         C-p ........... Move to the previous tab in the active pane.
@@ -441,4 +475,3 @@
 (provide 'sunrise-x-tabs)
 
 ;;; sunrise-x-tabs.el ends here
-

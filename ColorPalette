@@ -350,6 +350,47 @@ Beyond that, copying a color is what `mouse-2', `RET', `##~##', `c', `M-h', `M-r
 [new]
 which variable that same as palette-current-color store current color when I use doremi? -- [[ahei]]
 
+[new:DrewAdams:2009-11-19 15:06 UTC]
+None. '''[[DoReMi|Do Re Mi]]''' is not the same as the palette. However, if you're looking for a variable that stores the ''previous'' color, before the '''Do Re Mi''' changes you make, see `doremi-last-face-value' and `doremi-last-frame-color'.  For a frame background/foreground change, the ''current'' color is available using ''function'' `frame-parameters'. For a face background/foreground change, the current color is available using ''functions'' `face-background' and `face-foreground'. -- DrewAdams
+
+[new]
+About problem of read-face-name, 
+
+1.
+<pre>
+emacs -q
+add path to load path
+(require 'icicles)
+(require 'gud)
+
+C-h f read-face-name:
+read-face-name is an alias for `old-read-face-name' in `icicles-mode.el'.
+</pre>
+
+2.
+<pre>
+emacs -q
+add path to load path
+(require 'icicles)
+echo "(require 'gud)" > a.el
+put a.el to load path
+(load "a")
+
+C-h f read-face-name:
+read-face-name is an alias for `old-read-face-name' in `a.el'.
+</pre>
+but old-read-face-name is not in a.el, so I can not location code of read-face-name. -- [[ahei]]
+
+[new:DrewAdams:2009-11-19 17:37 UTC]
+1. This has nothing to do with ColorPalette.
+
+2. File an Emacs bug, if you like. Your complaint is for `describe-function' -- it is responsible for the incorrect information that the alias is defined in ##a.el##. -- DrewAdams
+
+[new]
+it is responsible for the incorrect information that the alias is defined in ##a.el##.
+
+what do you mean? file a.el only contain one statement: (require 'gud) -- [[ahei]]
+
 ----
 Lisp:palette.el, Lisp:facemenu+.el
 

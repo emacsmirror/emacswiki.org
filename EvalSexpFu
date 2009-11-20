@@ -1,0 +1,30 @@
+This page is about the Lisp:eval-sexp-fu.el
+
+= Introduction =
+
+Tiny functionality enhancements for evaluating sexps.
+
+such that
+
+* Flashing the sexps during the evaluation.
+
+* `eval-last-sexp' variants (inner-list/inner-sexp).
+
+= Demo =
+
+http://cloud.github.com/downloads/hchbaw/eval-sexp-fu.el/evalsexpfu-mini.gif
+
+You can see the Lisp:eval-sexp-fu.el in action.
+
+( [http://wiki.github.com/hchbaw/eval-sexp-fu.el/longversionofthedemo Here] is much longer version of the demo.)
+
+= Special thanks =
+
+* [[HighLight]]
+* [[EvaluatingExpressions]]
+
+Thanks very much for these great resources.
+
+
+----
+CategoryCode

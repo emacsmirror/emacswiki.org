@@ -38,19 +38,34 @@ AnythingLauncher consists of the following pieces:
 
 First, get the three files from the repository (see below).
 
-Next, change paths in the bash script and anything-launcher.el to suit your setup. Some things are quite specific to my needs but it is not hard to understand what it does and how it works. At least the web sites source should work for most people.
+Next, change paths in the bash script and anything-launcher.el to suit
+your setup. Some things are quite specific to my needs but it is not
+hard to understand what it does and how it works. At least the web
+sites source should work for most people.
 
-When you can run the anything-launcher script to get the launcher open, execute something, and hide itself, it's time to pick a key to bind this to. I chose the Windows key plus Q but you can of course any key you like:
+When you can run the anything-launcher script to get the launcher
+open, execute something, and hide itself, it's time to pick a key to
+bind this to. I chose the Windows key plus Q but you can of course any
+key you like:
 
-To map a command to a key, under Gnome, start gconf-edit. Go to /apps/metacity/global_keybindings in the tree. On the right hand side, pick a free run_command-entry and type a key name there. On my machine, Windows + Q is written <Mod4>q. 
+To map a command to a key, under Gnome, start gconf-edit. Go to
+/apps/metacity/global_keybindings in the tree. On the right hand side,
+pick a free run_command-entry and type a key name there. On my
+machine, Windows + Q is written <Mod4>q.
 
-Next, go to /apps/metacity/keybinding_commands and identify the command for the run_command-entry you chose. Add this: /bin/bash -c /home/mathias/bin/anything-launcher. Change the path to suit your setup.
+Next, go to /apps/metacity/keybinding_commands and identify the
+command for the run_command-entry you chose. Add this: /bin/bash -c
+/home/mathias/bin/anything-launcher. Change the path to suit your
+setup.
 
-At the moment you save the value the key binding should be active and you should be able to start the launcher with the chosen key.
+At the moment you save the value the key binding should be active and
+you should be able to start the launcher with the chosen key.
 
 = Does it work? =
 
-Yes, it seems so. The first time I activate AnythingLauncher it takes a few seconds for things to load but consecutive invocations are very quick.
+Yes, it seems so. The first time I activate AnythingLauncher it 
+takes a few seconds for things to load but consecutive invocations 
+are very quick.
 
 = Screenshots =
 
@@ -70,39 +85,68 @@ gives me this:
 
 Although it works quite well, it can be a bit shaky and there are a few loose ends.
 
-Dummy cancel command: if I just do C-q in Anything, it will leave the Emacs window open, so I added a dummy command that does not do anything, just so that emacsclient will end happily.
+Dummy cancel command: if I just do C-q in Anything, it will 
+leave the Emacs window open, so I added a dummy command that 
+does not do anything, just so that emacsclient will end happily.
 
-Not hiding quickly enough: After emacsclient has asked Emacs and Anything to do what it needs to do, the bash script will hide the Emacs window. For some reason this does not happen immediately. Why, I cannot say.
+Not hiding quickly enough: After emacsclient has asked Emacs and
+Anything to do what it needs to do, the bash script will hide 
+the Emacs window. For some reason this does not happen 
+immediately. Why I cannot say.
 
-Ugly startup wait loop: because I do not know when Emacs has loaded the .el file and because I need it to run asynchronously (otherwise the Emacs window cannot be hidden by xdotool afterwards) I need to use an ugly sleep-loop and wait until the .el script creates a certain file on disk.
+Ugly startup wait loop: because I do not know when Emacs has loaded 
+the .el file and because I need it to run asynchronously (otherwise 
+the Emacs window cannot be hidden by xdotool afterwards) I need to 
+use an ugly sleep-loop and wait until the .el script creates a certain 
+file on disk.
 
-xdotool/Metacity troubles: Well, it seems window managers have all sorts of magic to stop me from doing what I want to do. Sometimes when a window is supposed to get focus and be brough to front it sits in the back and the name is flashing in the taskbar applet. The current bash script seems to work all the time though, but I do not trust it one bit...
+xdotool/Metacity troubles: Well, it seems window managers have all 
+sorts of magic to stop me from doing what I want to do. Sometimes 
+when a window is supposed to get focus and be brough to front it 
+sits in the back and the name is flashing in the taskbar applet. 
+The current bash script seems to work all the time though, but I 
+do not trust it one bit...
 
-Any suggestions on how to get this hack feel more stable are welcome. The main requirements are quite few actually: bring Emacs to front, start Anything with a special configuration, and hide Emacs when done. Should be easy eh? Nah...
+Any suggestions on how to get this hack feel more stable are welcome.
+The main requirements are quite few actually: bring Emacs to front, 
+start Anything with a special configuration, and hide Emacs when done. 
+Should be easy eh? Nah...
 
 = Ideas =
 
-It might be possible to have Emacs call xdotool to, for example, handle the situation where the user types C-q at the Anything prompt. As it is now, this makes the Emacs frame stay visible, which is kind of ugly.
+It might be possible to have Emacs call xdotool to, for example, handle 
+the situation where the user types C-q at the Anything prompt. As it is 
+now, this makes the Emacs frame stay visible, which is kind of ugly.
 
 = Todo =
 
-Prefix everything in the code with anything-launcher or similar so not to interfere with other things. Yup, I should have done it properly to begin with but I did not think anyone would be interested :)
+Prefix everything in the code with anything-launcher or similar so not to 
+interfere with other things. Yup, I should have done it properly to begin 
+with but I did not think anyone would be interested :)
 
 = Repository =
 
 I just put up the files here: http://github.com/brakjoller/anything-launcher
 
-Warning! The code is quite okay but there is no special prefix to all defuns, so there might be name clashes with stuff you currently have (although if you run this as I do not many files are being loaded).
+Warning! The code is quite okay but there is no special prefix to all defuns, 
+so there might be name clashes with stuff you currently have (although if 
+you run this as I do not many files are being loaded).
 
 = Discussion =
 
-You should announce it on gnu.emacs.sources too, even if it's not polished, because you can get ideas and contributors from there. Not everyone follows the recent changes of EmacsWiki.
+You should announce it on gnu.emacs.sources too, even if it's not polished, 
+because you can get ideas and contributors from there. Not everyone follows 
+the recent changes of EmacsWiki.
 
 [new]
-Maybe. I have double posted stuff here and over at g.e.s before and there might be some benefit to it. We'll see... -- MaDa
+Maybe. I have double posted stuff here and over at g.e.s before and there 
+might be some benefit to it. We'll see... -- MaDa
 
 [new]
 Interesting! Where is the repository? -- [[rubikitch]]
+
+[new]
+See above. -- MaDa
 
 ----
 [[Anything]]

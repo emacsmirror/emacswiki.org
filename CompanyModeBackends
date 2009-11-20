@@ -4,9 +4,17 @@ http://groups.google.com/group/gnu.emacs.sources/msg/844540d2ec531e0d?
 
 = SlimeMode =
 
+A backend plugging into the slime completion mechanism:
+
+Lisp:slime-company.el
+
+It can display docstrings and display the source of a completion candidate.
+Please note that it needs a Slime not older than 2009-11-07.
+The first version of this file, for use with an older Slime, can be found at:
+
 http://common-lisp.net/pipermail/slime-devel/attachments/20090328/91ce4004/attachment.asc
 
-= SlimeMode, extended to work with Clojure and the Slime-REPL =
+A variant of the older version, extended to work with Clojure and the Slime-REPL is available at:
 
 http://gist.github.com/179847
 

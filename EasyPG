@@ -41,6 +41,8 @@ epa-file will prompt for which key to use for encryption each time you save a .g
  	   (setcdr entry nil))
 }}}
 
+The above patch appears to be included in Emacs 23.
+
 Other people suggested using `epa-file-encrypt-to' instead, but that doesn't get rid of the prompt.
 
 == Comments ==

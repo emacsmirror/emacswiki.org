@@ -8,6 +8,7 @@ I'm Japanese. I use GNU Emacs 23.1.50.1
 * Lisp:anything-c-aspell-interactively.el -- Interactive aspell with [[Anything]] interface.
 * Lisp:el-swank-fuzzy.el -- fuzzy symbol completion.
 * Lisp:anything-el-swank-fuzzy.el -- anything-sources for el-swank-fuzzy.el.
+* Lisp:eval-sexp-fu.el [[EvalSexpFu]] -- tiny functionality enhancements for evaluationg sexps.
 
 = Link =
 
@@ -21,3 +22,7 @@ Welcome to wiki! :) -- AndyStewart
 
 [new:TakeshiBanse:2009-10-13 18:25:02 UTC]
 I'm glad to see you guys here! -- TakeshiBanse
+
+
+----
+CategoryHomepage

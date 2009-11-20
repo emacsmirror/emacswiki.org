@@ -147,5 +147,10 @@ completion-cycle-backwards seems to be broken at version 0.11.6. Should the defi
   (completion-cycle (- (or n 1))))
 </pre>
 
+
+----
+
+You may want to take a look at [http://www.emacswiki.org/emacs/2009-11-18 this completion display]. The approach is unconventional, but CompletionUI could provide something similar as an option.
+
 ----
 CategoryCode | CategoryCompletion
