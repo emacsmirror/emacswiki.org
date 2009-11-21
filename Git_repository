@@ -1,29 +1,4 @@
-== About ==
+The Git repository is run by JonasBernoulli and hosted on Github. It is an import of the [[SVN repository]] and contains the raw text of all wiki pages. A cron job updates the repository every 24h some time after the subversion repository has been updated. Clone it like this:
 
-The [[Git]] repository imports and extends the content of the
-[[SVN repository]]. Unlike the subversion mirror it not only features
-a branch containing all files hosted on the Emacswiki but also other
-branches that only contain reasonable subsets thereof.
+    git remote add origin git://github.com/tarsius/emacswiki.git -t master -m master
 
-The mirror can be found at http://github.com/tarsius/emacswiki.  That
-page also contains some additional usage information as well as a list
-of planned features - so really you should be reading that instead of
-this page.
-
-== Branches ==
-
-The following branches are useful for users:
-
-* *about* -- contains a readme and metadata
-* *master* -- contains the complete Emacswiki
-  (same as the [[SVN repository]])
-* *wikipages* -- contains most webpages
-  (excluding homepages, news and obsolete stuff)
-* *homepages* -- contains personal homepages
-* *wikinews* -- contains news from the wiki
-* *emacslisp* -- contains most Emacs Lisp files
-* *libraries* -- contains actual Emacs Lisp libraries
-* *snippets* -- contains Emacs Lisp files that don't qualify as libraries
-
-----
-CategoryEmacsWikiSite, WikiDownload

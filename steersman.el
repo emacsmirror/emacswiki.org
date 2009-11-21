@@ -141,5 +141,5 @@
       (doctor-doc (doctor-sentence-from-string input))
       (buffer-substring begin-point (- (point-max) 1)))))
 
-(provide 'steerman)
+(provide 'steersman)
 ;;; steersman.el ends here

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2009, Drew Adams, all rights reserved.
 ;; Created: Sun Sep 12 17:13:58 2004
 ;; Version: 21.0
-;; Last-Updated: Sat Nov  7 11:54:42 2009 (-0700)
+;; Last-Updated: Sat Nov 21 00:56:07 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 220
+;;     Update #: 276
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/doremi-cmd.el
 ;; Keywords: keys, cycle, repeat
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -73,11 +73,16 @@
 ;;
 ;;    `doremi-color-themes'.
 ;;
-;;  New commands defined here:
+;;  Commands defined here:
 ;;
 ;;    `doremi-bookmarks+', `doremi-buffers+', `doremi-color-themes+',
 ;;    `doremi-global-marks+', `doremi-marks+',
 ;;    `doremi-window-height+', `doremi-window-width+'.
+;;
+;;  Non-interactive functions defined here:
+;;
+;;    `doremi-buffers-1', `doremi-color-themes-1',
+;;    `doremi-global-marks-1', `doremi-marks-1'.
 ;;
 ;;
 ;;  Add this to your initialization file (~/.emacs or ~/_emacs):
@@ -135,6 +140,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2009/11/21 dadams
+;;     Added: doremi-color-themes-1, doremi-buffers-1, doremi(-global)-marks-1.
+;;     doremi-(color-themes|buffers|(-global)marks)+: Let C-g restore .  Use *-1.
 ;; 2009/11/07 dadams
 ;;     Renamed all Do Re Mi iterative commands by appending +.
 ;; 2009/06/26 dadams
@@ -223,8 +231,41 @@ Don't forget to mention your Emacs and library versions."))
 ;;;###autoload
 (defun doremi-color-themes+ ()
   "Successively cycle among color themes.
-The themes used for cycling are those in option `doremi-color-themes'."
+The themes used for cycling are those in option `doremi-color-themes'.
+
+You can use `C-g' to quit and cancel changes made so far.
+Alternatively, after using `doremi-color-themes+' you can use
+`color-theme-select' and choose pseudo-theme `[Reset]' - that does the
+same thing.  Note that in either case, some things might not be
+restored."
   (interactive)
+  (unless (require 'color-theme nil t) 
+    (error "This command requires library `color-theme.el'"))
+  ;; Create the snapshot, if not available.  Do this so users can undo using
+  ;; pseudo-theme `[Reset]'.  Use `condition-case' here because this can fail in
+  ;; some older versions of `color-theme.el'.
+  (condition-case nil
+      (when (or (not (assq 'color-theme-snapshot color-themes))
+                (not (commandp 'color-theme-snapshot)))
+        (fset 'color-theme-snapshot (color-theme-make-snapshot))
+        (setq color-themes  (delq (assq 'color-theme-snapshot color-themes)
+                                  color-themes)
+              color-themes  (delq (assq 'bury-buffer color-themes) color-themes)
+              color-themes  (append '((color-theme-snapshot
+                                       "[Reset]" "Undo changes, if possible.")
+                                      (bury-buffer "[Quit]" "Bury this buffer."))
+                                    color-themes)))
+    (error nil))
+  (let ((snapshot  (if (or (assq 'color-theme-snapshot color-themes)
+                           (commandp 'color-theme-snapshot))
+                       (symbol-function 'color-theme-snapshot) ; Avoid (lambda ()).
+                     (color-theme-make-snapshot))))
+    (condition-case nil
+        (doremi-color-themes-1)
+      (quit (funcall snapshot)))))
+
+(defun doremi-color-themes-1 ()
+  "Helper function for `doremi-color-themes+'."
   (doremi (lambda (newval) (funcall newval) newval) ; update fn - just call theme
           (car (last doremi-color-themes)) ; start with last theme
           nil                           ; ignored
@@ -246,8 +287,16 @@ The themes used for cycling are those in option `doremi-color-themes'."
 
 ;;;###autoload
 (defun doremi-buffers+ ()
-  "Successively cycle among all existing buffers."
+  "Successively cycle among all existing buffers.
+You can use `C-g' to quit and return to the original buffer."
   (interactive)
+  (let ((curr-buff  (current-buffer)))
+    (condition-case nil
+        (doremi-buffers-1)
+      (quit (switch-to-buffer curr-buff)))))
+
+(defun doremi-buffers-1 ()
+  "Helper-function for `doremi-buffers+'."
   (doremi (lambda (newval) (switch-to-buffer newval 'norecord) newval)
           (current-buffer)
           nil                           ; ignored
@@ -256,8 +305,17 @@ The themes used for cycling are those in option `doremi-color-themes'."
 
 ;;;###autoload
 (defun doremi-marks+ ()
-  "Successively cycle among all marks in the `mark-ring'."
+  "Successively cycle among all marks in the `mark-ring'.
+You can use `C-g' to quit and return to the original position."
   (interactive)
+  (unless mark-ring (error "No marks in this buffer"))
+  (let ((curr-pos  (point-marker)))
+    (condition-case nil
+        (doremi-marks-1)
+      (quit (goto-char curr-pos)))))
+
+(defun doremi-marks-1 ()
+  "Helper function for `doremi-marks+'."
   (doremi (lambda (newval) (set-mark-command t) newval)
           (car mark-ring)
           nil                           ; ignored
@@ -266,8 +324,18 @@ The themes used for cycling are those in option `doremi-color-themes'."
 
 ;;;###autoload
 (defun doremi-global-marks+ ()
-  "Successively cycle among all marks in the `global-mark-ring'."
+  "Successively cycle among all marks in the `global-mark-ring'.
+You can use `C-g' to quit and return to the original position."
   (interactive)
+  (unless global-mark-ring (error "No global marks"))
+  (let ((curr-pos  (point-marker)))
+    (condition-case nil
+        (doremi-global-marks-1)
+      (quit (switch-to-buffer (marker-buffer curr-pos))
+            (goto-char curr-pos)))))
+
+(defun doremi-global-marks-1 ()
+  "Helper function for `doremi-global-marks+'."
   (doremi (lambda (newval) (pop-global-mark) newval)
           (car (last global-mark-ring))
           nil                           ; ignored

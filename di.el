@@ -790,3 +790,5 @@ buffer doesn't exist, forget it."
 		   (setq name (substring name 1))))))))
   name)
 
+(provide 'di)
+;;; di.el ends here

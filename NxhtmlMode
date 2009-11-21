@@ -76,7 +76,7 @@ Note that if you have [[EmacsW32]] then nXhtml is already included, but you have
 I used to have a list here, but I always forget to update that so I have removed it.
 Please download the whole library if you are interested in some special pieces.
 Or, pick them from the 
-[http://bazaar.launchpad.net/~nxhtml/nxhtml/main/files/head%3A/ latest beta version sources on Launchpad].
+[http://bazaar.launchpad.net/~nxhtml/nxhtml/main/files/head%3A/ latest version sources on Launchpad] (this may be a beta version though).
 
 Note: Some of the files used to be here on Emacs Wiki too, but I decided to delete them since the latest version of them are now easily available from there.
 The files I have deleted are 

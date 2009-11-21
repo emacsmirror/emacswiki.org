@@ -1,10 +1,55 @@
 emacswiki dot wjcf at xoxy dot net
 
-[new:DrewAdams:2009-05-12 00:56 UTC]
-Welcome to the wiki. -- DrewAdams
+=Gnus for IMAP Email with Offlineimap and Dovecot=
+
+This is a scratchpad, to which I intend to add information and then perhaps promote it out of my personal page:
+
+I decided to try to use offlineIMAP/Dovecot/Gnus for email.  Gnus is synchronous so it can tie up emacs, so a good solution is to use offlineimap to get the mail, and then use a local IMAP server like Dovecot to access it (gnus has some problems reading the maildir output itself).
+
+It's essential to study the internal manual, particularly the "Mail in a Newsreader" section.
+
+===offlineIMAP===
+Installing offlineIMAP and configuring it is pretty straightforward and well documented.  I'm currently running it in a screen session, though it could just run in emacs.
+
+===dovecot===
+This doesn't even have to run as a server - gnus can run it as a shell command directly.  See config below
+
+===gnus===
+
+After much messing about, I discovered there's a null news select method, so if you /only/ want mail, you can have your ~/.gnus something like:
+
+<pre>
+(setq gnus-select-method
+      '(nnnil "Dummy Null"))
+(setq gnus-secondary-select-methods
+      '((nnimap "Mail"
+                (nnimap-stream shell))))
+(setq imap-shell-program "/usr/sbin/dovecot --exec-mail imap")
+</pre>
 
 
+Working out what to do after M-x gnus is pretty bewildering until you trawl through a /lot/ of doc.  Some of the important keys I found:
 
+In the groups (folders) view:
+
+||L||List all groups, including unread||
+||l||List only groups with unread||
+||g||get new messages - refresh||
+||A A||List all groups||
+||^||go to a server view, then you can select your Mail server and get at the groups another way.  Sometimes this is the only way I can see a new folder.  Still working this out.||
+
+In the group/folder view
+
+||#||mark message.  M-# unmarks, then commands can be done on multiple marked messages||
+||M-u||clear all marks - ticks, read, old etc||
+||M-g||refresh.  With prefix arg., will also show previously read messages||
+||R||Reply||
+||F||Follow-up (reply all)||
+||K H||send HTML message to display in browser||
+||K b||create buttons for all mime parts||
+||C-c C-s||Prefix for sort commands - C-h will show them all||
+
+There's no way around it though, you have to spend an hour or two reading the manual (and then revisiting it...).
 
 
 

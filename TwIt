@@ -306,6 +306,18 @@ Just wrote a quick function to demonstrate what I would like to do with key bind
 
 I just added a function called twit-open-link to twit.el (and bumped the version number to 0.3.6).  The version I put in is different from the above quick & dirty bcui-twit-open-link.  Please let me know if you have any suggestions/questions.  -- BaoqiuCui
 
+[new:PeterJones:2009-11-20 23:00 UTC]
+Can we get this code in a version control system somewhere?  I have a
+few changes to make, which will take a few days.  In the meantime,
+someone might come along and upload a new version and I'd have to
+manually merge changes.  No fun.
+
+I've fixed a small (very small) bug and would like to add two things:
+
+* Resize images to specified size
+* Change twit-request-headers to a defcustom so I can hack it in ~/.emacs
+* Finish the popup status writing buffer.  I hate writing in the minibuffer.
+
 == Archived Discussion ==
 I don't personally do the cell phone thing (it sounds irritating), but anyway, they got slashdotted yesterday.  I had never heard of them.  But it looked cool, so i joined and wrote twit.el.  I think i would like to broaden it--generalize it a bit and let users read friend's posts.  I am working on that....
 

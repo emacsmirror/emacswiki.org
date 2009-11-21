@@ -84,4 +84,5 @@ Should be a positive integer.")
         (scroll-up 1)
       (error (idle-scroll-mode -1)))))
 
+(provide 'idle-scroll)
 ;;; idle-scroll.el ends here

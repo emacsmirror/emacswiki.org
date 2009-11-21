@@ -608,4 +608,5 @@ filter."
   (while (< (point) (point-max))
     (htmlr-step)))
 
+(provide 'htmlr)
 ;;; htmlr.el ends here

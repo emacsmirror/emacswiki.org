@@ -204,4 +204,5 @@ Rearranges MENU-BAR which is a keymap."
            (setq last-command-event (nth 1 prop))
            (call-interactively (nth 2 prop))))))
 
+(provide 'textmenu)
 ;;; textmenu.el ends here

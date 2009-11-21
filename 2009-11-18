@@ -11,3 +11,11 @@ Yes, we can guess ... even if the guess is wrong, perhaps ... ;-)
 
 [new]
 Seems to be a direct challenge to Toby C and his Completion UI stuff... :) -- MaDa
+
+[new]
+I think it is more an alternative that fits into a framework like CompletionUI or CompanyMode.
+
+And of course such an alternative using external programs for popup is not always available.
+Wonder how it synchs with Emacs? What happens if one switches frame?
+
+It would be very easy to built this in Emacs if something like wxWidgets could be integrated on Emacs GUI platforms. But that integration might be very difficult though.

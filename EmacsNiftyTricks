@@ -224,7 +224,7 @@ See also GnusNiftyTricks
 * `M-x flyspell-prog-mode RET' -- `flyspell' for comments and strings.
 * CEldocMode -- on-the-fly function documentation for C programs.
 * Make sure you have a proper psgml and the proper DTD's when writing html. In fact don't write html any more. Write XHTML. Then emacs+psgml+DTD makes you very productive.
-* Learn version control stuff. Write some [http://www.mightystudents.com/catalog/history history essays] for reviewing and recording.
+* Learn version control stuff. 
 * Learn EdiffMode.
 * Learn to use `query-replace-regexp' -- see ReplaceRegexp.
 * Use `##M-|##' to feed bits of text to perl or ruby one-liners or scripts. `##C-u M-|##' to replace the text.
@@ -266,3 +266,4 @@ CategoryDotEmacs
 CategoryDocumentation.
 CategoryEditing
 CategoryHelp
+

@@ -977,13 +977,25 @@ I think my answer was clear. -- DrewAdams
 [new]
 C-g does not affect color-themes+ -- [[ahei]]
 
+[new:DrewAdams:2009-11-20 17:05 UTC]
+No idea what that means. If you want to report a bug, please provide a complete recipe, starting with ##emacs -Q##. -- DrewAdams
+
+[new]
+oh, I make a mistake, C-g does not affect doremi-color-themes+. -- [[ahei]]
+
+
+[new:DrewAdams:2009-11-21 09:00 UTC]
+OK, I understand now. Your latest statements have nothing to do with the preceding discussion. It is far clearer if you just submit a bug report or enhancement request by email. This page has no structure supporting separate dialog threads etc., and it's unlikely that others are very interested in some of the exchanges. 
+
+Anyway, wrt your enhancement request: try the latest. Note that there is no sure-fire way to restore everything after making a color-theme change. `C-g' now does the same thing for `##doremi-color-theme+##' that ColorTheme does when you choose pseudo-theme ##[Reset]##. That "undo" is not always satisfactory, but it can be better than nothing. -- DrewAdams
+
 ----
 [:SeeAlso]
 == See Also ==
 
-The following pages discuss things that are in the spirit of DoReMi, even though they do not necessarily use the generic doremi commands.
+The following pages discuss things that are in the spirit of DoReMi, even though they do not necessarily use the generic doremi commands. -- [[Simon Nuttall]]
 
-* RotateText -- Replace selected text (e.g. a word) by cycling through a series of predefined replacements. -- [[Simon Nuttall]]
+* RotateText -- Replace selected text (e.g. a word) by cycling through a series of predefined replacements.
 
 ----
 Lisp:doremi.el, Lisp:doremi-cmd.el, Lisp:doremi-frm.el, Lisp:doremi-mac.el, Lisp:facemenu+.el, Lisp:frame-cmds.el, Lisp:hexrgb.el, Lisp:menu-bar+.el, Lisp:ring+.el, Lisp:setup-keys.el, Lisp:thumb-frm.el, Lisp:zoom-frm.el

@@ -66,4 +66,5 @@
       (message "not wikified: %s" name)
       name)))
 
+(provide 'wikify-ell)
 ;;; wikify-ell.el ends here

@@ -65,4 +65,5 @@
 			  (point-max)
 			  '(invisible nil)))
 
+(provide 'unparen)
 ;;; unparen.el ends here

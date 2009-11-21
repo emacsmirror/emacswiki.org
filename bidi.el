@@ -1399,4 +1399,5 @@ or a list of symbols."
   (assert (string= (bidi-pretty-print "\"foo")
 		   "  \"   f   o   o")))
 
+(provide 'bidi)
 ;;; bidi.el ends here

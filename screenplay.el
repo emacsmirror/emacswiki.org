@@ -133,4 +133,5 @@ and the end of the line."
 		 (setq c (char-after)))))
       (not found))))
 
+(provide 'screenplay)
 ;;; screenplay.el ends here

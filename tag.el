@@ -182,4 +182,5 @@ Use this defun as a value for `tag-update'."
       (insert "mp3info " (mapconcat 'identity args " ")) (newline)
       (apply 'call-process "mp3info" nil '(nil t) nil args))))
 
+(provide 'tag)
 ;;; tag.el ends here

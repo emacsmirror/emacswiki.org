@@ -102,3 +102,6 @@
 		      (dict ("cow" . "moo") ("spam" . "eggs"))
 		      (dict ("spam" "a" "b")))))
   (assert (string= (bencode obj) str)))
+
+(provide 'bencode)
+;;; bencode.el ends here.

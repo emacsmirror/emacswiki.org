@@ -387,9 +387,12 @@ but old-read-face-name is not in a.el, so I can not location code of read-face-n
 2. File an Emacs bug, if you like. Your complaint is for `describe-function' -- it is responsible for the incorrect information that the alias is defined in ##a.el##. -- DrewAdams
 
 [new]
-it is responsible for the incorrect information that the alias is defined in ##a.el##.
+"it is responsible for the incorrect information that the alias is defined in ##a.el##."
 
 what do you mean? file a.el only contain one statement: (require 'gud) -- [[ahei]]
+
+[new:DrewAdams:2009-11-20 17:04 UTC]
+What do I mean? I mean that it is the output of vanilla Emacs function `describe-function' that you are complaining is incorrect. So file an Emacs bug about that. That has nothing to do with '''Icicles''', and even less than nothing to do with ColorPalette. -- DrewAdams
 
 ----
 Lisp:palette.el, Lisp:facemenu+.el

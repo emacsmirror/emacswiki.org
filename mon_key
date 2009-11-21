@@ -21,6 +21,7 @@
 * Lisp:mon-insertion-utils.el
 * Lisp:mon-boxcutter.el
 * Lisp:mon-color-utils.el
+* Lisp:mon-tramp-utils.el
 * Lisp:naf-mode.el
 * Lisp:naf-mode-faces.el
 * Lisp:naf-mode-insertion-utils.el

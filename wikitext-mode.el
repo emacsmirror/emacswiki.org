@@ -370,4 +370,5 @@ The following commands are also defined:
       (longlines-mode 1)))
 (add-hook 'wikitext-mode-hook 'wikitext-turn-on-longlines)
 
+(provide 'wikitext-mode)
 ;;; wikitext-mode.el ends here.

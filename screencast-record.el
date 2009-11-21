@@ -30,6 +30,8 @@
 ;;; Usage:
 
 ;; Requires wmctrl and recordmydesktop to be installed!
+;; Note: This can only be used on systems supporting them.
+;;       Currently that means GNU/Linux and FreeBSD only.
 
 ;; Install this file to an appropriate directory in your load-path,
 ;; and add these expressions to your ~/.emacs

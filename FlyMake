@@ -60,17 +60,8 @@ FlymakeCSS for Cascading Style Sheets
 
 ----
 
-If you are using the JavaDevelopmentEnvironment, check JdeeFlymake.
+FlymakeJava with Make or JDEE
 
-- NascifAbousalhNeto
-
-(JdeeFlymake and the[http://www.emacswiki.org/cgi-bin/emacs/jde-eclipse-compiler-server.el alternative] did not work for me and after some hacking I came up with a workable situation: FlyMakeJdeeEclipse
-
-- jwickers
-
-I have also posted some instructions on how you can tweak the ECJ options to be a little more useful, and how to integrate this with another checker such as check style: http://jwickers.wordpress.com/2008/10/13/tweaking-flymake-for-java/
-
-If you are not using jdee, but still want to run flymake for java you can try to use [http://www.khelekore.org/~robo/ecj-flymake/|ecj flymake]
 ----
 
 Flymake as shipped doesn't quite work right on Linux yet, but I sent a patch to the author so hopefully soon it'll work fine (it's just a buglet in the relative path handling). It works really well! You need some makefile magic though, this is what I used for the Wine build system:

@@ -18,13 +18,53 @@ I've done a few things with emacs which I'm trying to push into this wiki:
 
 == Things I am interested in doing ==
 
+* getting the smallest most adaptable init file I can
 * getting emacs to talk to dbus for things like IM alerts
 ** I use bitlbee/rcirc for all my im... but it's not good notification wise
 * improving emacs as a mail client
 * xml edting
 * python editing
- 
+
+
+== Emacs in a screen terminal: colors ==
+I do some remote pair programming inside screen. I would like to use emacs. Standard colors are too difficult for me to read (my eyes are going!).
+
+vim has the very nice: 
+
+{{{
+set background=dark
+}}}
+
+which turns up the brightness on dark font faces. According to #emacs we have no equivalent.
+
+So I am writing one. Here's the important bit:
+
+{{{
+(let ((difficult-colors                                                                     
+       '("red" "medium blue")))                                                             
+   (mapc                                                                                    
+    (lambda (face)                                                                          
+      (and (member (face-attribute face :foreground)  difficult-colors)                 
+           (set-face-attribute face nil :weight 'bold)))                                    
+    (face-list)))                                                                           
+}}}  
+
+This makes them all bright. Of course, what we want is a toggle, just like vim. I will make one soon enough.
+
+== Small Init Files ==
+For a long time I've used a complex init file with loads of stuff in it. This is great, it means emacs starts up with all my goodies. But it also means when I go to another emacs I'm lost. It's also non-trivial to move my stuff to another emacs.
+
+I am trying to pair down my emacs use to the standard dist delivered behaviour and then add obvious extras on top. This is a process I started long ago but is still underway.
+
+I am about to get rid of this keybinding from my personal emacs:
+
+{{{
+(global-set-key "\C-xh" 'toggle-truncate-lines)
+}}}
+
+That's been something I've used quite a bit over the years... but it turns out it was just one of those things I adopted because I didn't understand emacs correctly. It should be a customized setting, occasionaly switching it to untruncated by using the toggle.
+
+Once I have a minimally changed emacs I can start looking to distribute extensions in a more sensible manner.
+   
 ----
 CategoryHomepage
-
-

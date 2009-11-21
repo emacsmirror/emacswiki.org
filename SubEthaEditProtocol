@@ -87,9 +87,9 @@ characters.)
 
 == Structure of a Typical Session ==
 
-The following describes the structure of a typical session (with
-encryption disabled). The roles "Initiating" and "Listening" peer
-refer to the network connection. Although the description here
+The following section describes the structure of a typical session
+(with encryption disabled). The roles "Initiating" and "Listening"
+peer refer to the network connection. Although the description here
 distinguishes these roles, the protocol seems to be symmetrical.
 
 # BEEP Protocol Setup Sequence  
@@ -113,8 +113,8 @@ distinguishes these roles, the protocol seems to be symmetrical.
 ** Listening => Initiating
 ### Listening peer requests status channel
     (profile: ##http://www.codingmonkeys.de/BEEP/TCMMMStatus##)
-### Listening peer sends ##TCMMMStatus## ##USRCHG##, ##FCAYESEND##,
-    ##STAVIS##, ##USRRCH##
+### Listening peer sends ##TCMMMStatus## ##USRCHG##, ##FCAYES##,
+    ##STAVIS##, ##USRRCH## messages
 ### Listening peer sends ##DOCANN## messages for its documents
 ### Initiating peer acknowledges all messages with empty replies
 # Session Protocol
@@ -180,19 +180,21 @@ Content-Type: application/beep+xml
   The listening peer answers with a ##GRT## message that is
   identically structured but can have different dictionary values.
   Takes a dictionary with the following values:
-** url => URL of the remote end of the connection -- sometimes has a
-   <nowiki>see://</nowiki> protocol on it, sometimes does not.  Always
-   seems to include the port. Example: ##see://codingmonkeys.de:6942##.
-   In the response from the listening peer, the semantics are reversed: it
-   is the IP-address and port of the initiating peer. Example:
-   ##212.204.60.78:65164##
-** uid => UUID of... something.  Undetermined if this is the client
+** ##url## => String. URL of the remote end of the connection --
+   sometimes has a <nowiki>see://</nowiki> protocol on it, sometimes
+   does not.  Always seems to include the port. Example:
+   ##see://codingmonkeys.de:6942##. In the response from the listening
+   peer, the semantics are reversed: it is the IP-address and port of
+   the initiating peer. Example: ##212.204.60.78:65164##
+** ##uid## => UUID of... something.  Undetermined if this is the client
    install, the user, or what.  Normal hex, dash-separated format,
    without curly braces.  (As specified in RFC 4122)
    Example: ##c26bff50-3f16-b1f6-e60c-8858649bdc56##
-** vers => the version of the protocol in use?  Only known value is '200'.
-** uag => only present in the listening peer's response (?). Seems to
-   describe the software version. Example: ##SubEthaEdit/3.5.1 (3263)##
+** ##vers## => String. The version of the protocol in use?  Only known
+   value is "200". 
+** ##uag## => String. Only present in the listening peer's response
+   (?). Probably "User Agent". Seems to describe the software
+   version. Example: ##SubEthaEdit/3.5.1 (3263)##
 ; ##ACK## Message: Acknowledges a message from the other end of the
   connection.
   Possibly the simplest payload, it takes no extra data of any sort.
@@ -211,94 +213,121 @@ A TCMMMStatus channel is created by both sides of the connection. The
 listening peer requests a TCMMMStatus channel after receiving the
 'ACK' message on the handshake channel.
 
-* USRCHG: User Change (?) - Gives a short description of a user, a dictionary with the following vals:
-** cnt => An integer, presumably some sort of count (of what?)
-** name => A user name.
-** uID => A 16 byte id string unique for the user (presumably).
+; ##STAVIS## Message: Status Visible - Probably changes status of the
+  sending peer to visible
 
-* STAVIS: Status Visible (?) - Not sure of the purpose of this one, no known content.
+; ##STAINV## Message: Status Invisible - Probably changes status of
+  the sending peer to invisible
 
-* USRRCH: User Reachability (?)
-** uid => 36 byte id string; Seems to equal to the id used in the
+; ##FCAYES## Message: FCA (?) Yes - No idea
+
+; ##USRCHG## Message: User Change (?) - Gives a short description of a user, a dictionary with the following entries:
+** ##cnt## => An integer, presumably some sort of count (of what?)
+** ##name## => User name as string
+** ##uID## => A 16 byte id string unique for the user (presumably)
+
+; ##USRRCH## Message: User Reachability - Probably transmitting a
+  SubEthaEdit URL that can be used to reach the sending peer on the
+  Internet.
+** ##uid## => 36 byte id string; Seems to equal to the id used in the
    ##GRT## message of the ##SubEthaEditHandshake## profile.
-** url => URL with ##see://## schema, IP address and port of the
+** ##url## => URL with ##see://## schema, IP address and port of the
    initiating peer.
 
-* USRREQ: User Request (?) - Only see with an empty list as content, so far, maybe its supposed to be a list of users that the peer should send full information for?
+; ##USRREQ## Message: User Request (?) - Probably a list of users that
+  the receiving peer should send full information for. List of
+  dictionaries of the following form
+** ##name## => String
+** ##uID## => 16 byte id of the requested user (?)
+** ##cnt## => Integer
 
-* USRFUL: User Full (?) - A longer user description, including:
-** cnt => An integer, counting something.. ?
-** hue => As an integer, color of something, probably highlight color of this user's text
-** uID => Users unique ID, same as in USRCHG
-** name => Users name, same as in USRCHG
-** mail => Users email address, probably taken from Address Book data
-** PNG => The users icon, as a PNG file (contains the actual picture data as a byte string), probably taken from NetInfo data
-** AIM => Users AIM screenname, probably taken from Address Book data
+; ##USRFUL## Message: User Full (?) - A longer user description, including:
+** ##cnt## => An integer, counting something.. ?
+** ##hue## => As an integer, color of something, probably highlight
+   color of this user's text
+** ##uID## => Users unique ID, same as in USRCHG
+** ##name## => Users name, same as in USRCHG
+** ##mail## => Users email address, probably taken from Address Book
+   data
+** ##PNG## => The users icon, as a PNG file (contains the actual
+   picture data as a byte string), probably taken from NetInfo data
+** ##AIM## => Users AIM screenname, probably taken from Address Book
+   data
 
-* DOCANN: Document Announce (?) - Announces each document that the peer has to offer:
+; ##DOCANN## Message: Document Announce (?) - Announces each document
+  that the peer has to offer. A list of dictionaries of the following
+  form
 ** name => Name of the document
 ** sID => ID of something
-** hID => Yet another ID of something
-** acc => ??
+** hID => 16 byte id. Probably unique id of the user hosting the
+   document (or creator?).
+** acc => No idea
+** sec => Integer. Only known value: 1. Probably some security
+   (encryption?) information.
 
 === The Session Profile (SubEthaEditSession) ====
 
 Started by the client (either side?) to join a particular document.
 
-* JONJON: Join request - sent by the client
-** UserNotification => a dictionary containing:
-*** cnt => An integer, counting ?
-*** name => Users name
-*** uID => Users unique ID
-** SessionID => UUID denoting the session, see GRT
+; ##JONJON## Message: Join request - sent by the client
+** ##UserNotification## => a dictionary containing:
+*** ##cnt## => An integer, counting ?
+*** ##name## => Users name
+*** ##uID## => Users unique ID
+** ##SessionID## => UUID denoting the session, see GRT
 
-* JONACK: Join Acknowledge - Empty acknowledge command
+; ##JONACK## Message: Join Acknowledge - Empty acknowledge command
 
-* SESINF: Session Information - Information about the session, from the document owning peer
-** ContentLength => Integer - doc length?
+; ##SESINF## Message: Session Information - Information about the
+  session, from the document owning peer 
+** ##ContentLength## => Integer - doc length?
 ** Participants => a dictionary containing:
-*** ReadWrite => a list of dictionaries containing:
-**** User => a dictionary containing:
-***** cnt => integer, counter (?)
-***** name => users name
-***** uID => Users unique id
-**** SessionProperties => an empty dictionary ?
-**** User => ..
-** Contributors => a list of dictionaries of:
-*** cnt
-*** name
-*** uID
-** DocumentSessionInformation => a dictionary containing:
-*** UseTabs => Integer (0/1)
-*** DocumentMode => String "SEEMode.Base"
-*** LineEnding => Integer 1
-*** TabWidth => Integer 4
-*** WrapLines => Integer 1
-*** WrapMode => Integer 1
+*** ##ReadWrite## => a list of dictionaries containing:
+**** ##User## => a dictionary containing:
+***** ##cnt## => integer, counter (?)
+***** ##name## => users name
+***** ##uID## => Users unique id
+**** ##SessionProperties## => an empty dictionary ?
+**** ##User## => ..
+** ##Contributors## => a list of dictionaries of:
+*** ##cnt##
+*** ##name##
+*** ##uID##
+** ##DocumentSessionInformation## => a dictionary containing:
+*** ##FileType## => String. Only known value "SEETextType"
+*** ##UseTabs## => Integer (0/1)
+*** ##DocumentMode## => String. Known values: "SEEMode.Base" |
+    "SEEMode.Conference" 
+*** ##LineEnding## => Integer. Known values: 1
+*** ##TabWidth## => Integer 4
+*** ##WrapLines## => Integer. Known values: 1
+*** ##WrapMode## => Integer. Known values: 0 | 1
 
-* USRREQ: User Request - empty list
+; ##USRREQ## Message: //Probably identical to// ##USRREQ## //in
+    TCMMMStatus profile above.//
 
-* SESCON: Session Connection (?) - Original document status ?
-** TextStorage => dictionary containing:
-*** String => String containing document content
-*** Encoding => Integer 30
-** Attributes => dictionary containing:
-*** ChangedByUserID => list of dictionary containing:
-**** val => UUID
-**** loc => Integer 0
-**** len => Integer 1508
-** WrittenByUserID => list of dictionary containing:
-*** val => UUID
-*** loc => Integer
-*** len => Integer
+; ##SESCON## Message: Session Connection (?) - Original document status ?
+** ##TextStorage## => dictionary containing:
+*** ##String## => String containing document content
+*** ##Encoding## => Integer 30
+** ##Attributes## => dictionary containing:
+*** ##ChangedByUserID## => list of dictionary containing:
+**** ##val## => UUID
+**** ##loc## => Integer 0
+**** ##len## => Integer 1508
+** ##WrittenByUserID## => list of dictionary containing:
+*** ##val## => UUID
+*** ##loc## => Integer
+*** ##len## => Integer
 
-* DOCMSG: Document Message -
-** op => dictionary containing:
-*** ot => "sel" | "txt" | "nop"
-*** len => Integer (not present with ot => "nop")
-*** uid => User unique id
-*** loc => Integer (not present with ot => "nop") - cursor location
-*** str => String that was added (only present by ot => "txt")
+; ##DOCMSG## Message: Document Message - Sent when document string or
+  the text range selected by one of the editors changes.
+** ##op## => dictionary containing:
+*** ##ot## => String. Known values: "sel" | "txt" | "nop"
+*** ##len## => Integer (not present with ot => "nop")
+*** ##uid## => 16 byte user unique id
+*** ##loc## => Integer (not present with ot => "nop") - cursor location
+*** ##str## => String that was added (only present when ot => "txt")
 ** #C => Integer
 ** #S => Integer
 

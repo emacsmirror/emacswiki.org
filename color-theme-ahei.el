@@ -40,11 +40,13 @@
 ;;; Code:
 
 (defface ahei-hl-line-face
-  '((t :background "AntiqueWhite4" :underline t :inverse-video nil))
+  '((((type tty)) :underline t)
+    (t :background "AntiqueWhite4" :underline t :inverse-video nil))
   "ahei's `hl-line-face'.")
 
+(setq hl-line-face 'ahei-hl-line-face)
+
 (when window-system
-  (setq hl-line-face 'ahei-hl-line-face)
   (setq hl-line-face-delta #X30FF)
   ;; (setq hl-line-face-delta #X0100)
   
@@ -617,7 +619,8 @@
      (xref-list-symbol-face ((t (:foreground "Sienna"))))
      (yas/field-debug-face ((t (nil))))
      (yas/field-highlight-face ((t (:background "DimGrey"))))))
-  (color-theme-adjust-hl-line-face))
+  (if window-system
+      (color-theme-adjust-hl-line-face)))
 
 (add-to-list 'color-themes '(color-theme-ahei "color-theme-ahei" "ahei"))
 
