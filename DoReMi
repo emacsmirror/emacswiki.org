@@ -576,7 +576,8 @@ Allow doremi-up-key, doremi-down-key, etc, to be lists (sets) of keys, any of wh
 [:PossibleApplications]
 == Possible Applications of Do Re Mi ==
 
-'''''YOUR IDEAS HERE''''' -- this space for rent.
+'''''YOUR IDEAS HERE'''''
+
 
 * What about *direct* buffer-switching (that is, the buffer is switched to directly and not when you have pressed RET) using either the arrow keys or the mouse wheel? Hmm, maybe this already exist on some other page on the wiki... -- MaDa
 
@@ -724,6 +725,7 @@ I think increment all of the R,G,B components (or all of the H, S, V components)
 
 2.
 :  I update those lists of defined things by hand 
+
 First, I surprised when I heard that,:), your package is so many.
 Second, but, I saw "lists of defined" in many packages on emacswiki, they all update it by hand? but those format so similar. -- [[ahei]]
 
@@ -930,7 +932,8 @@ In the old days, we had to adjust the color on TVs occasionally. Do you think we
 
 [new]
 <pre>
-Change components at any time (I'm not sure you have understood that part) -- DrewAdams
+Change components at any time (I'm not sure you have understood
+that part) -- DrewAdams
 </pre>
 I do understand it, and I also used it. but if I choose r component with increment 1000, and then I choose v component, then v component's increment is also 1000, but increment 1000 is so large for v component. -- [[ahei]]
 
@@ -948,7 +951,8 @@ What do you mean -- let you know whether you last hit `r' or `h', for instance, 
 May be forget, maybe other, I think you display component users using is good for user, and I think this is easy to do for you.
 
 <pre>
-For that, no, but you can just hit `r' again, to be sure you're incrementing red (or whatever). -- DrewAdams
+For that, no, but you can just hit `r' again, to be sure you're
+incrementing red (or whatever). -- DrewAdams
 </pre>
 yeah, users can do that, but it's so trouble for users. how do you think about it? -- [[ahei]]
 
@@ -957,9 +961,11 @@ No, I don't think it's useful. You won't forget within a few seconds what you ju
 
 [new]
 <pre>
-can you display current component using when doremi series commands is executing? -- [[ahei]]
+can you display current component using when doremi series
+commands is executing? -- [[ahei]]
 
-it doesn't matter which component you incremented in the past. All that counts is what the current color is (look at it) 
+it doesn't matter which component you incremented in the past.
+All that counts is what the current color is (look at it)
 and what color you want (redder, darker, etc.).
 </pre>
 I not mean display component users incremented in the past, I mean display component users using. -- [[ahei]]
@@ -987,7 +993,60 @@ oh, I make a mistake, C-g does not affect doremi-color-themes+. -- [[ahei]]
 [new:DrewAdams:2009-11-21 09:00 UTC]
 OK, I understand now. Your latest statements have nothing to do with the preceding discussion. It is far clearer if you just submit a bug report or enhancement request by email. This page has no structure supporting separate dialog threads etc., and it's unlikely that others are very interested in some of the exchanges. 
 
-Anyway, wrt your enhancement request: try the latest. Note that there is no sure-fire way to restore everything after making a color-theme change. `C-g' now does the same thing for `##doremi-color-theme+##' that ColorTheme does when you choose pseudo-theme ##[Reset]##. That "undo" is not always satisfactory, but it can be better than nothing. -- DrewAdams
+Anyway, wrt your enhancement request: try the latest. Note that there is no sure-fire way to restore everything after making a color-theme change. `C-g' now does the same thing for `##doremi-color-theme+##' that ColorTheme does when you choose pseudo-theme ##[Reset]##. That "undo" is not always satisfactory, but it can be better than nothing. 
+
+FYI, I made the same `C-g' change for <tt>[[ColorTheme#IciclesColorThemes|`icicle-color-theme']]</tt>. That '''Icicles''' command cycles themes like `##doremi-color-theme+##', but it also lets you (1) use [[completion]] to choose themes; (2) filter the list of themes to pick from ([[regexp]], substring, fuzzy match, etc.); (3) sort the list in various ways; and (4) pick themes in any order. -- DrewAdams
+
+[new]
+I think you can delete our preceding discussion. 
+
+`C-g' work on 'doremi-color-thems+' now. icicle-color-theme do cycles completion, but it does not apply theme change, it only cycles completion, 
+and I use: M-x icicle-color-theme color-theme-billw, it does not change my theme, it only flash and then restore my old theme immediately.
+
+I wrote one article to introduce your icicles, doremi and color palette, :), at http://ahei.yo2.cn/icicles-doremi-palette.htm, :) --- [[ahei]]
+
+
+
+[new:DrewAdams:2009-11-21 20:26 UTC]
+Please pick up the latest '''Icicles''' files and <tt>[[doremi-cmd.el]]</tt>. Should be OK now.
+
+I took a look at the URL you posted (translated thanks to Google, so I didn't understand everything ;-)). Just a minor comment: It is `##menu-bar+##', not `##menu-bar +##' (should be no space). Likewise for `##facemenu+##'. But maybe that is just a problem on the translated page -- it also shows things like `##facemenup -palette--face##', which I assume should be `##facemenup-palette--face##'.
+
+Consider creating an EmacsWiki page (it could be short) that describes some of your config code, or at least points to your blog that shows that. This could be helpful for others. (And you can create an English version using Google translate.) Thx -- DrewAdams
+
+[new]
+1. yeah, that's the google translator's problem.
+
+2.
+I try your latest version of doremi and icicles, 
+<pre>
+emacs -Q
+add all icicles files to load path
+(require 'icicles)
+M-x icy-mode
+M-x icicle- and then type "TAB", I get message "Symbol's value as
+variable is void: icicle-current-TAB-method"
+M-x color-theme-aalto-dark and then type RET, I get message "Symbol's
+value as variable is void: icicle-prefix-completion-is-basic-flag"
+</pre>
+
+3. I'll consider your suggestion.
+
+-- [[ahei]]
+
+
+[new:DrewAdams:2009-11-22 07:47 UTC]
+It's pretty clear to me that you have done something wrong. In particular, you apparently do not have all of the latest '''Icicles''' files. 
+`icicle-current-TAB-method' is defined in file <tt>[[icicles-var.el]]</tt>. And there is no variable `icicle-prefix-completion-is-basic-flag', and no code uses such a variable.
+
+Be sure that you are loading all of the latest '''Icicles''' files. If you then run into a problem, then please file a normal, complete bug report, using `M-x icicle-send-bug-report'. Provide a reproducible, step-by-step recipe, starting with ##emacs -Q##, and provide your platform, Emacs version, and any other relevant info.
+
+And please do not report '''Icicles''', Color Palette, or any other problems that are unrelated to '''Do Re Mi''' on this page. Thx -- DrewAdams
+
+[new]
+oh, sorry, my mistake, but I only have seen you update three files, icicles-opt.el, icicles-cmd.el, icicles-cmd1.el in RecentChanges page, the variable `icicle-prefix-completion-is-basic-flag' is in previous version of icicles-fn.el, I do not know you updated it, and icicle-color-theme is work now after I update file icicles-fn.el. However, I thought when I press TAB after I execute M-x icicle-color-theme, it will apply theme like doremi-color-themes after I seen you said "That '''Icicles''' command cycles themes like `##doremi-color-theme+##'".
+
+-- [[ahei]]
 
 ----
 [:SeeAlso]

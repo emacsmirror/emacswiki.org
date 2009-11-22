@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2009, Drew Adams, all rights reserved.
 ;; Created: Sun Sep 12 17:13:58 2004
 ;; Version: 21.0
-;; Last-Updated: Sat Nov 21 00:56:07 2009 (-0800)
+;; Last-Updated: Sat Nov 21 16:51:42 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 276
+;;     Update #: 312
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/doremi-cmd.el
 ;; Keywords: keys, cycle, repeat
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -17,7 +17,7 @@
 ;; Features that might be required by this library:
 ;;
 ;;   `cl', `color-theme', `cus-face', `doremi', `easymenu', `mwheel',
-;;   `ring', `ring+', `wid-edit', `widget'.
+;;   `reporter', `ring', `ring+', `sendmail', `wid-edit', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -34,6 +34,11 @@
 ;;        `doremi-'.  In order to more easily distinguish commands
 ;;        that iterate in Do Re Mi fashion from other functions in the
 ;;        library, the iterative commands are suffixed with `+'.
+;;
+;;  If you also use library `crosshairs.el' (which requires libraries
+;;  `hl-line.el', `hl-line+.el', `vline.el', and `col-highlight.el'),
+;;  then commands `doremi-marks+' and `doremi-global-marks+' use
+;;  crosshairs to highlight the mark positions when you visit them.
 ;;
 ;;  Note on saving changes made with the commands defined here:
 ;;
@@ -143,6 +148,8 @@
 ;; 2009/11/21 dadams
 ;;     Added: doremi-color-themes-1, doremi-buffers-1, doremi(-global)-marks-1.
 ;;     doremi-(color-themes|buffers|(-global)marks)+: Let C-g restore .  Use *-1.
+;;     doremi-color-themes: Load color-theme-library.el also, for version 6.6.0+.
+;;     doremi(-global)-marks(+|-1): Highlight position with crosshairs if we can.
 ;; 2009/11/07 dadams
 ;;     Renamed all Do Re Mi iterative commands by appending +.
 ;; 2009/06/26 dadams
@@ -221,7 +228,10 @@ Don't forget to mention your Emacs and library versions."))
 ;; By default, this includes all color themes defined globally (`color-themes').
 ;;
 ;;;###autoload
-(defcustom doremi-color-themes (and (require 'color-theme nil t)
+(defcustom doremi-color-themes (and (prog1 (require 'color-theme nil t)
+                                      (condition-case nil
+                                          (load-library "color-theme-library")
+                                        (error nil)))
                                     (delq 'bury-buffer (mapcar 'car color-themes)))
   "*List of color themes to cycle through using `doremi-color-themes+'."
   :type 'hook :group 'doremi-misc-commands)
@@ -239,26 +249,23 @@ Alternatively, after using `doremi-color-themes+' you can use
 same thing.  Note that in either case, some things might not be
 restored."
   (interactive)
-  (unless (require 'color-theme nil t) 
+  (unless (require 'color-theme nil t)
     (error "This command requires library `color-theme.el'"))
   ;; Create the snapshot, if not available.  Do this so users can undo using
-  ;; pseudo-theme `[Reset]'.  Use `condition-case' here because this can fail in
-  ;; some older versions of `color-theme.el'.
-  (condition-case nil
-      (when (or (not (assq 'color-theme-snapshot color-themes))
-                (not (commandp 'color-theme-snapshot)))
-        (fset 'color-theme-snapshot (color-theme-make-snapshot))
-        (setq color-themes  (delq (assq 'color-theme-snapshot color-themes)
-                                  color-themes)
-              color-themes  (delq (assq 'bury-buffer color-themes) color-themes)
-              color-themes  (append '((color-theme-snapshot
-                                       "[Reset]" "Undo changes, if possible.")
-                                      (bury-buffer "[Quit]" "Bury this buffer."))
-                                    color-themes)))
-    (error nil))
+  ;; pseudo-theme `[Reset]'.
+  (when (or (not (assq 'color-theme-snapshot color-themes))
+            (not (commandp 'color-theme-snapshot)))
+    (fset 'color-theme-snapshot (color-theme-make-snapshot))
+    (setq color-themes  (delq (assq 'color-theme-snapshot color-themes)
+                              color-themes)
+          color-themes  (delq (assq 'bury-buffer color-themes) color-themes)
+          color-themes  (append '((color-theme-snapshot
+                                   "[Reset]" "Undo changes, if possible.")
+                                  (bury-buffer "[Quit]" "Bury this buffer."))
+                                color-themes)))
   (let ((snapshot  (if (or (assq 'color-theme-snapshot color-themes)
                            (commandp 'color-theme-snapshot))
-                       (symbol-function 'color-theme-snapshot) ; Avoid (lambda ()).
+                       (symbol-function 'color-theme-snapshot)
                      (color-theme-make-snapshot))))
     (condition-case nil
         (doremi-color-themes-1)
@@ -306,17 +313,26 @@ You can use `C-g' to quit and return to the original buffer."
 ;;;###autoload
 (defun doremi-marks+ ()
   "Successively cycle among all marks in the `mark-ring'.
-You can use `C-g' to quit and return to the original position."
+You can use `C-g' to quit and return to the original position.
+If library `crosshairs.el' is used, highlight each visited mark
+position temporarily."
   (interactive)
   (unless mark-ring (error "No marks in this buffer"))
-  (let ((curr-pos  (point-marker)))
-    (condition-case nil
-        (doremi-marks-1)
-      (quit (goto-char curr-pos)))))
+  (unwind-protect
+       (let ((curr-pos  (point-marker)))
+         (condition-case nil
+             (doremi-marks-1)
+           (quit (goto-char curr-pos))))
+    (when (fboundp 'crosshairs-unhighlight)
+      (crosshairs-unhighlight 'even-if-frame-switch))))
 
 (defun doremi-marks-1 ()
   "Helper function for `doremi-marks+'."
-  (doremi (lambda (newval) (set-mark-command t) newval)
+  (doremi (lambda (newval)
+            (set-mark-command t)
+            (when (fboundp 'crosshairs-unhighlight)
+              (when (fboundp 'crosshairs-highlight) (crosshairs-highlight)))
+            newval)
           (car mark-ring)
           nil                           ; ignored
           nil                           ; ignored
@@ -325,18 +341,27 @@ You can use `C-g' to quit and return to the original position."
 ;;;###autoload
 (defun doremi-global-marks+ ()
   "Successively cycle among all marks in the `global-mark-ring'.
-You can use `C-g' to quit and return to the original position."
+You can use `C-g' to quit and return to the original position.
+If library `crosshairs.el' is used, highlight each visited mark
+position temporarily."
   (interactive)
   (unless global-mark-ring (error "No global marks"))
-  (let ((curr-pos  (point-marker)))
-    (condition-case nil
-        (doremi-global-marks-1)
-      (quit (switch-to-buffer (marker-buffer curr-pos))
-            (goto-char curr-pos)))))
+  (unwind-protect
+       (let ((curr-pos  (point-marker)))
+         (condition-case nil
+             (doremi-global-marks-1)
+           (quit (switch-to-buffer (marker-buffer curr-pos))
+                 (goto-char curr-pos))))
+    (when (fboundp 'crosshairs-unhighlight)
+      (crosshairs-unhighlight 'even-if-frame-switch))))
 
 (defun doremi-global-marks-1 ()
   "Helper function for `doremi-global-marks+'."
-  (doremi (lambda (newval) (pop-global-mark) newval)
+  (doremi (lambda (newval)
+            (pop-global-mark)
+            (when (fboundp 'crosshairs-unhighlight)
+              (when (fboundp 'crosshairs-highlight) (crosshairs-highlight)))
+            newval)
           (car (last global-mark-ring))
           nil                           ; ignored
           nil                           ; ignored

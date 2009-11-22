@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Nov  7 15:04:46 2009 (-0700)
+;; Last-Updated: Sat Nov 21 17:03:12 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 3389
+;;     Update #: 3396
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -18,8 +18,8 @@
 ;; Features that might be required by this library:
 ;;
 ;;   `cl', `color-theme', `cus-face', `easymenu', `ffap', `ffap-',
-;;   `hexrgb', `kmacro', `levenshtein', `thingatpt', `thingatpt+',
-;;   `wid-edit', `widget'.
+;;   `hexrgb', `kmacro', `levenshtein', `reporter', `sendmail',
+;;   `thingatpt', `thingatpt+', `wid-edit', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -756,10 +756,14 @@ inputs.  You can override the behavior by using `C-u' with `\\[icicle-retrieve-p
 ;; By default, this includes all color themes defined globally (variable `color-themes').
 ;;;###autoload
 (defcustom icicle-color-themes
-  (and (require 'color-theme nil t)
+  (and (prog1 (require 'color-theme nil t)
+         (condition-case nil (load-library "color-theme-library") (error nil)))
        (delq 'bury-buffer
              (mapcar (lambda (entry) (list (symbol-name (car entry)))) color-themes)))
-  "*List of color themes to cycle through using `M-x icicle-color-theme'."
+  "*List of color themes to cycle through using `M-x icicle-color-theme'.
+Note: Starting with Color Theme version 6.6.0, you will need to put
+library `color-theme-library.el', as well as library `color-theme.el',
+in your `load-path'."
   :type 'hook :group 'Icicles-Miscellaneous)
 
 ;;;###autoload

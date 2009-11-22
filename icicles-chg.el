@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Nov 17 15:41:34 2009 (-0800)
+;; Last-Updated: Sat Nov 21 16:56:37 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 4572
+;;     Update #: 4577
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2009/11/21 dadams
+;;     icicle-color-theme: Use color-theme-snapshot to let C-g undo changes.
+;;                         Try to load color-theme-library.el (available with version 6.6.0).
 ;; 2009/11/17 dadams
 ;;     icicle-bbdb-complete-name: Bind completion-case-ignore.
 ;; 2009/11/14 dadams
@@ -3424,6 +3427,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2009/11/21 dadams
+;;     icicle-color-themes: (load-library "color-theme-library"), for color theme version 6.6.0.
 ;; 2009/10/25 dadams
 ;;     Added: icicle-TAB-completion-methods.
 ;;     Removed: icicle-fuzzy-completion-flag, icicle-prefix-completion-is-basic-flag.

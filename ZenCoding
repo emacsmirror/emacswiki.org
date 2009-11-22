@@ -29,6 +29,8 @@ Github repo.: http://github.com/chrisdone/zencoding
 
 Please feel free to hack on it and I'll add you as a member of the github project so that you can push to it.
 
+YouTube video here: http://www.youtube.com/watch?v=u2r8JfJJgy8)
+
 === Screenshot ===
 
 [[image:ZenCodingModeScreenshot]]
@@ -224,3 +226,7 @@ How can I produce <source src='video.ogv' type='video/ogg; codecs="theora, vorbi
 [new]
 
 Hey lazni, supporting anything complex like that is not what I intended. I intentionally made it "dumb" to be quick to type out and trivial. If you can come up with a nice way to express that I'd like to see! I have considered a feature like this: you type out 'source src=video.ogv codecs=$1' and then it makes some kind of temporary yasnippet (assuming yasnippet's library lets you do that) which prints <source src="video.ogv" type="video/ogg; codecs=""> with the mark inside the 'codecs' property. So it would be a bit like a keyboard macro, but a snippet macro that you can repeat. What do you think of that? -- ChrisDone
+
+---
+
+Check out this article about an other implementation: http://www.smashingmagazine.com/2009/11/21/zen-coding-a-new-way-to-write-html-code

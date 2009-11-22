@@ -82,3 +82,8 @@ On Debian, perl-modules provides UnicodeData.txt.
 	map))
 
  (require 'unicode-helper)
+
+== Discussion ==
+
+[new]
+Where did the file go? Apparently somebody deleted the source file in 2008. -- AlexSchroeder

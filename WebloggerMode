@@ -41,6 +41,12 @@ There is also another version available at http://jwickers.wordpress.com/2007/09
 Please note that i only test it with the Wordpress used on my blog, but feedback is appreciated. 
 There are also some oddities in regard of whether the post get published or not and sometimes may come back as Draft .. so i will  go on working on it when i have free time. 
 
+[new]
+
+Here's a page which describes how to setup weblogger with Drupal:
+
+http://www.randomsample.de/dru5/node/76
+
 ===Does It Work?===
 
 I spent about 2 hours in frustration trying to get  blogger.el  or weblogger.el to work.

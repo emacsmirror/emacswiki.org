@@ -89,6 +89,8 @@ this option at any time using [[command]]
 `##icicle-toggle-~-for-home-dir##', bound to '''`##M-~##''''.
 
 
+
+
 ----
 [:RegexpMatchingAndGlobbing]
 ==== Regexp Completion and File-Name Globbing ====
@@ -97,6 +99,9 @@ Remember that you can use a ''[[regular expression]]'' (regexp) to [[apropos com
 not confuse its use with the ability to use ''shell wildcards'' (globbing) to
 access multiple files at once.  For example, if you use `##C-x 4 f *.el RET##', then all files with suffix `el' will be opened.
 Regexp matching is used only for apropos (not [[prefix completion|prefix]]) completion and cycling.  See [[Icicles - Special Characters in Input Patterns]].
+
+
+
 
 ----
 [:DollarInEnvVarAndRegexps]
@@ -111,7 +116,8 @@ special character.  For example, you can use a pattern such as
 [:EnvVarCompletion]
 ==== Completion of Environment Variables ====
 
-Starting with Emacs 23, and provided that option '''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-completion-is-basic-flag|icicle-prefix-completion-is-basic-flag]]</tt>'''' is `nil', you can
+Starting with Emacs 23, and and if the current `TAB' completion
+method is `vanilla' (see [[Icicles - Fuzzy Completion]]), you can
 complete environment variables during file-name completion,
 using `TAB'.  So you can, for example, complete `##$HO##' to any of
 the candidates `HOME', `HOMEDRIVE', `HOMEPATH'.  This is in

@@ -1,3 +1,5 @@
+[[image:SunriseCommanderLogoPage|The Sunrise Commander|]]
+
 A few tips for effectively using the
 [http://www.emacswiki.org/emacs/Sunrise_Commander Sunrise Commander] file manager.
 If you can think of any other please share.
@@ -24,10 +26,10 @@ message (just press h while in sunrise mode).
 #  You'll be best set off with Sunrise if you use some kind of Linux or MacOS X.
 On Windows there's unfortunately a heck lot of stuff you have to set up first to
 make all the emacs capabilities integrated in Sunrise work. In particular try to
-have AVFS running in your box -- it will allow to  transparently  navigate  into
-all  kinds  of  archives (zip, rar, jar, even mbox) -- great deal. Unfortunately
-AFAIK there's no AVFS for Windows. BTW Archlinux offers Sunrise  with  AVFS  and
-other goodies conveniently placed in one single package.
+have AVFS running in your box ([[#AvfsSetup]]) -- it will allow to transparently
+navigate  into  all  kinds of archives (zip, rar, jar, even mbox) -- great deal.
+Unfortunately AFAIK there's no AVFS for Windows. BTW  Archlinux  offers  Sunrise
+with AVFS and other goodies conveniently placed in one single package.
 
 # Explore all the configurable settings Sunrise offers by typing:
             //M-x configure-group RET sunrise RET//
@@ -156,6 +158,36 @@ file a snippet like the following:
         (sr-rainbow sr-gorw-face
                     (:background "misty rose")
             "^..\\(-....\\(...\\)?w..*$\\)")
+
+[:AvfsSetup]
+==Setting up transparent navigation in compressed archives==
+
+Sunrise   integrates   with   [http://avf.sourceforge.net/   AVFS]   to  provide
+transparent navigation inside compressed  archives  with  a  minimal  amount  of
+configuration.  How to install AVFS depends on your OS - in linux it's usually a
+trivial operation (hopefully your  distribution  provides  a  package  ready  to
+install). In Debian all you have to do is type (as root):
+
+        apt-get install avfs
+
+in your command line and press Return.
+
+Once  you  have  AVFS installed in your system, you must launch the AVFS daemon,
+indicating a point (directory) where to "mount" your  entire  file  system.  For
+instance, If you use as mount point a directory called .avfs (it's the one I use
+in my home directory), the command to use will look like the following:
+
+       /usr/bin/avfsd -o allow_root -o intr -o sync_read .avfs 
+
+(have  a  look at the AVFS documentation for the meaning of the options). If all
+goes well, you'll be able to see a "mirror copy" of your file system inside  the
+.avfs directory. Now, from the emacs side all you have to do is:
+
+        M-x customize-variable <RET> sr-avfs-root <RET>
+
+provide  the  full path to your AVFS mount point, and press the "Save for future
+sessions" button. That's it -- now try to open some *.zip file  inside  Sunrise,
+you should be able to navigate inside it as if it were a regular directory.
 
 
 [:OpenDirInPassivePane]

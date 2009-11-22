@@ -37,19 +37,24 @@ set background=dark
 
 which turns up the brightness on dark font faces. According to #emacs we have no equivalent.
 
-So I am writing one. Here's the important bit:
+So I wrote one:
 
 {{{
-(let ((difficult-colors                                                                     
-       '("red" "medium blue")))                                                             
-   (mapc                                                                                    
-    (lambda (face)                                                                          
-      (and (member (face-attribute face :foreground)  difficult-colors)                 
-           (set-face-attribute face nil :weight 'bold)))                                    
-    (face-list)))                                                                           
+(defvar dark-background nil)
+
+(defun toggle-dark-background ()
+  (interactive)
+  (let ((difficult-colors
+         '("red" "blue" "medium blue")))
+    (mapc
+     (lambda (face)
+       (and (member (face-attribute face :foreground)  difficult-colors)
+            (set-face-bold-p face (not dark-background))))
+     (face-list)))
+  (setq dark-background (not dark-background)))
 }}}  
 
-This makes them all bright. Of course, what we want is a toggle, just like vim. I will make one soon enough.
+This toggles bold on the dark ones, which I think is all the vim thing is doing.
 
 == Small Init Files ==
 For a long time I've used a complex init file with loads of stuff in it. This is great, it means emacs starts up with all my goodies. But it also means when I go to another emacs I'm lost. It's also non-trivial to move my stuff to another emacs.

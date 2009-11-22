@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Nov 17 15:29:59 2009 (-0800)
+;; Last-Updated: Sat Nov 21 16:54:28 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 19903
+;;     Update #: 19920
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -22,8 +22,8 @@
 ;;   `easymenu', `ffap', `ffap-', `frame-cmds', `frame-fns',
 ;;   `hexrgb', `icicles-fn', `icicles-mcmd', `icicles-opt',
 ;;   `icicles-var', `kmacro', `levenshtein', `misc-fns', `mwheel',
-;;   `pp', `pp+', `ring', `ring+', `strings', `thingatpt',
-;;   `thingatpt+', `wid-edit', `wid-edit+', `widget'.
+;;   `pp', `pp+', `reporter', `ring', `ring+', `sendmail', `strings',
+;;   `thingatpt', `thingatpt+', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -3874,7 +3874,28 @@ available from http://www.emacswiki.org/cgi-bin/wiki.pl?ColorTheme." ; Doc strin
   "Theme: " icicle-color-themes nil t nil ; `completing-read' args
   (if (boundp 'color-theme-history) 'color-theme-history 'icicle-color-theme-history)
   nil nil
-  ((icicle-delete-candidate-object  'icicle-color-themes))) ; Additional bindings
+  ((snapshot                        (if (or (assq 'color-theme-snapshot color-themes) ; Bindings
+                                            (commandp 'color-theme-snapshot))
+                                        (symbol-function 'color-theme-snapshot)
+                                      (color-theme-make-snapshot)))
+   (icicle-delete-candidate-object  'icicle-color-themes))
+  (progn
+    (unless (prog1 (require 'color-theme nil t) ; First code
+              (condition-case nil (load-library "color-theme-library") (error nil)))
+      (error "This command requires library `color-theme.el'"))
+    ;; Create the snapshot, if not available.  Do this so users can also undo using
+    ;; pseudo-theme `[Reset]'.
+    (when (or (not (assq 'color-theme-snapshot color-themes))
+              (not (commandp 'color-theme-snapshot)))
+      (fset 'color-theme-snapshot (color-theme-make-snapshot))
+      (setq color-themes  (delq (assq 'color-theme-snapshot color-themes)
+                                color-themes)
+            color-themes  (delq (assq 'bury-buffer color-themes) color-themes)
+            color-themes  (append '((color-theme-snapshot
+                                     "[Reset]" "Undo changes, if possible.")
+                                    (bury-buffer "[Quit]" "Bury this buffer."))
+                                  color-themes))))
+  (funcall snapshot))                   ; Undo code
 
 ;; Bound to `C-- C-y' via `icicle-yank-maybe-completing'.
 ;;;###autoload

@@ -29,8 +29,14 @@ a download button, because we can copy link url easily, then use other download 
 [new:DrewAdams:2009-11-04 05:10 UTC]
 (Ahei reported this problem on page DoReMi. Dunno why he posted it there, but I moved it here. -- DrewAdams)
 
+[new:DrewAdams:2009-11-21 10:28 UTC]
+I can confirm the problem [[ahei]] reports: the ##Download## link/button does not work for IE (IE 6, in any case). What was the reason we switched from a textual link to the giant button? -- DrewAdams
 
+[new]
+The reason I added it was [http://www.emacswiki.org/emacs/EmacsWikiSuggestions#toc10 a suggestion regarding download links]. The simple links were considered "a little too easy to ignore and accidentally scroll past" -- so I started looking for some HTML markup that wasn't as ugly as the proposed green table. I'll use an ordinary link with some CSS. As soon as you upload a new revision of the elisp file, the button markup should be replaced with what you see [http://www.emacswiki.org/emacs/AlexSchroederErcConfig?cache=0 in this example with cache disabled]. -- AlexSchroeder
 
+[new:DrewAdams:2009-11-22 01:17 UTC]
+Thanks; it works for me. -- DrewAdams
 
 == Cannot Download Previous Versions of a File ==
 

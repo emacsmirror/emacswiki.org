@@ -63,9 +63,9 @@ Now create a generic development branch where you can actually do your work.  It
 
       bzr branch trunk/ dev/
 
-These branches are lightweight --- it doesn't cost much to create them, as they're all sharing storage in the repository.  The one we just created is for quick, one-off work: for example, you spot a typo in the README file and want to fix it.
+These branches are lightweight --- it doesn't cost much to create them, as they're all sharing storage in the repository.  The one we just created is for quick, one-off work: for example, you spot a typo in the README file and want to fix it.  You can just keep reusing this branch for small, self-contained changes.
 
-But for larger tasks, such as a complicated bug fix that might require multiple commits and rounds of feedback, you might want to create a "task branch", to keep its changes separate from other things you might have going on:
+But for larger tasks, such as a complicated bug fix or new feature that might require multiple commits and rounds of feedback, you might want to create a "task branch" dedicated to that fix or feature.  This keeps its changes separate from other things you might have going on.
 
       bzr branch trunk/ SOME-TASKNAME/
 
@@ -111,11 +111,28 @@ The reason you use "##merge##" instead of "##pull##" in the task branch is that 
 
 Once your bugfix is ready, you'll want to send it upstream.
 
-If you're one of the Emacs maintainers, then you can just push it directly to the upstream master:
+If you're one of the Emacs maintainers, then you should merge your changes into your mirror
 
-      bzr push %%bzr+ssh://bzr.savannah.gnu.org/sources/emacs/trunk/%%
+      cd trunk/
+      bzr merge ../SOME-TASKNAME
+
+and then commit
+
+      bzr commit -m "Merge SOME-TASKNAME, which teaches the compiler to make passes at the linker."
+
+which automatically pushes to the upstream master, because the mirror is set up as bound branch.  There is a race condition here, just as in CVS: if your mirror is not up-to-date because another developer has committed since you last updated, your commit will fail.  In this case you should abort the merge
+
+      bzr revert
+
+do another ##bzr pull##, merge again, and commit.
+
+You can also just push it directly to the upstream master:
+
+      bzr push bzr+ssh://bzr.savannah.gnu.org/sources/emacs/trunk/
 
 That pushes all pending changes to the destination branch ("pending" meaning changes the destination branch doesn't already have).  After you do that, you might want to go pull the changes down into your mirror, though if you don't do it now, you'll just get them sometime later.
+
+The two different methods have an important difference.  In the case where you merge to the mirror, then commit there (and automatically push to the master), by default all of your work will appear as a single entry (the merge commit message) in ##bzr log##.  (All of your commit messages are available via ##bzr log -n 0##.)  If you push directly from the ##SOME-TASKNAME## branch, however, your branch will be perceived as the mainline by ##bzr log##, while commits on the mainline (including merges from other developers and their detailed branch histories) will be hidden.  The first method is generally preferred because the log is more readable, but the second method can be used to save time and effort if you only have one commit to push for a single task.  (/I.e./, the "merge to mirror and commit" method is more appropriate to the kind of tasks that have their own "##SOME-TASKNAME##" branch, while "push directly from the branch" is appropriate to the small tasks you do on the ##dev## branch.)
 
 If you don't have push access to the mainline, then create a "bundle", that is, a file containing your change, in a special "merge directive" format that bzr understands but that also contains a human-readable diff:
 
@@ -142,6 +159,8 @@ Lather, rinse, repeat... until the changes are incorporated into the upstream.  
       cd trunk/
       bzr pull
       cd ..
+
+Note that you will still be able to see the entire history of your branch in the trunk, even though you've deleted the local copy.  (Of course, if you had been working on a small task resulting in a single commit on your ##dev## branch, you wouldn't delete it; rather, you'd reuse it for the next small task, after merging from the trunk.)
 
 When you decide to work on the next bugfix, create a new task branch:
 

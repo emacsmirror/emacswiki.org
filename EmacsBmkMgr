@@ -20,6 +20,8 @@ If you have darcs installed, you can get the latest source code from my archive:
     % darcs get http://hacks-galore.org/jao/darcs/bmk
 
 Or get [http://hacks-galore.org/jao/darcs/bmk/bmk.tar.gz this tarball]. The archive is also [http://hacks-galore.org/darcs?r=bmk-mgr;a=summary browsable online].
+[new]
+Both links are down.
 
 === To do ===
 * Destroy bookmarks frame on exit when bmk-use-own-frame is t.

@@ -22,25 +22,45 @@
 * Lisp:mon-boxcutter.el
 * Lisp:mon-color-utils.el
 * Lisp:mon-tramp-utils.el
+* Lisp:ebay-template-mode.el
+* Lisp:ebay-template-tools.el
+* Lisp:perlisisms.el (Perlisisms)
+* Lisp:STING-software-engineering-glossary.el
+
+ Naf-mode
+
 * Lisp:naf-mode.el
 * Lisp:naf-mode-faces.el
 * Lisp:naf-mode-insertion-utils.el
 * Lisp:naf-mode-replacements.el
+* Lisp:naf-name-utils.el
+* Lisp:naf-mode-classes.el
+* Lisp:naf-mode-db-fields.el
+* Lisp:naf-mode-db-flags.el
+* Lisp:naf-mode-dates.el
+* Lisp:naf-mode-french-months.el
 * Lisp:naf-mode-nation-english.el
 * Lisp:naf-mode-nation-french.el
 * Lisp:naf-mode-nationality-english.el
 * Lisp:naf-mode-nationality-french.el
+* Lisp:naf-mode-intnl-city-names.el
+* Lisp:naf-mode-city-names-us.el
+* Lisp:naf-mode-state-names.el
+* Lisp:naf-mode-regions.el
 * Lisp:naf-mode-publications-periodicals-english.el
 * Lisp:naf-mode-publications-periodicals-french.el
 * Lisp:naf-mode-publications-periodicals-intnl.el
 * Lisp:naf-mode-institution.el
 * Lisp:naf-mode-students-of-julian.el
+* Lisp:naf-mode-events.el
+* Lisp:naf-mode-english-roles.el
+* Lisp:naf-mode-french-roles.el
+* Lisp:naf-mode-awards-prizes.el
+* Lisp:naf-mode-group-period-styles.el
+* Lisp:naf-mode-art-keywords.el
+* Lisp:naf-mode-benezit-flags.el
+* Lisp:naf-mode-ulan-utils.el
 * Lisp:naf-mode-xrefs.el
-* Lisp:naf-name-utils.el
-* Lisp:ebay-template-mode.el
-* Lisp:ebay-template-tools.el
-* Lisp:perlisisms.el (Perlisisms)
-* Lisp:STING-software-engineering-glossary.el
 
  =]
 

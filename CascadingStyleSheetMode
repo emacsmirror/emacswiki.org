@@ -8,23 +8,13 @@ There are several other stabs at creating a CSS major mode for Emacs, but I thin
 
 == Comments and Questions ==
 
-=== Annoyances with default css-mode in Emacs 23 ===
+=== There is no completion in css-mode in Emacs 23 ===
 
-* Doesn't work with combined selectors, e.g. with <code>.hello span {}</code> only <code>.hello</code> is colored
-* Doesn't recognize new CSS like <code>opacity</code>, <code>overflow-x</code>
-* Indentation doesn't work with curly start brace at end of selector
-<pre>
-.hello {
-         display: none; /* wrong */
-}
-.hello {
-  display: none; /* have to change it manually into this */
-}
-</pre>
-* Bad handling of end brace, I seem to always have to indent it manually
-* Completion on M-tab which is not very compatible with usual default window manager bindings
+Stefan has prepared for this a bit, writing a function that can download and organize the current syntax.
+However there is currently no parser.
+The CSS syntax is rather complex so a parser should perhaps be built on CEDET (which is now in CVS Emacs).
 
-All in all, I would recommend looking for one of the "old" modes below, e.g. the Mewde one. It would be cool if it could be merged in. Ole
+Note that none of the old mode has context sensitive completion.
 
 
 === Feedback discussion ===

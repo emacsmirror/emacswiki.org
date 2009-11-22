@@ -145,6 +145,8 @@ http://svn.savannah.gnu.org/viewvc/emacswikipages/AlexSchroeder?root=emacswiki -
 
 Please put a link to the chronological listing of libraries on page [http://www.emacswiki.org/elisp/ Alphabetical List], and put a link to the alphabetical listing on page [EmacsWiki:action=rc;match=%5C.%28el%7Ctar%29%28%5C.gz%29%3F%24;from=1117497600;showedit=1 Chronological List] -- preferably near the top of the page. -- DrewAdams
 
+[new]
+These pages are generated automatically by the wiki script; writing code to provide this feature seems excessive. -- AlexSchroeder
 
 == Downloading Elisp Files ==
 
@@ -231,6 +233,9 @@ face="sans-serif">Click to Download</font></a></td></tr></table>
 How about using the button element? I implemented it but haven't flushed the HTML cache of any pages. Follow this link to see the effect:
 http://www.emacswiki.org/emacs/AlexSchroederErcConfig?cache=0 -- it's a bit subtler than what you've posted. Do we need it to be even more obvious? -- AlexSchroeder
 
+[new]
+I changed the button element back to an ordinary link and will use some green background instead. -- AlexSchroeder
+
 == Indexing Schemes ==
 
 [new:DrewAdams:2004-12-24 23:00 UTC]
@@ -296,7 +301,7 @@ Good URLs are critically important, thus the reason InterLinks are very useful o
 Not currently no. If I find more I will report it here. -- Jonas
 
 == Drew Adams' Libraries == 
-Drew I respect your work and all that you've done with Emac and on EmacsWiki. However, PLEASE can a emacswiki pages be required by sanction to be limited to only 1 (One!) reference to instances of Drew's libraries, and then *ONLY* after other relevant examples, code, etc. pertinent to the a pages context. This site is *SERIOUSLY* limited by Drew's spam and suffers because of it to the extent that it is becoming unusable because of the superfluous `Icicles.*' references strewn about.  There is a point at which the entire Emacs community suffers because of Drew's insistence on xrefs to anything remotely related to his libraries.
+Drew I respect your work and all that you've done with Emac and on EmacsWiki. However, PLEASE can a emacswiki pages be required by sanction to be limited to only 1 (One!) reference to instances of Drew's libraries, and then *ONLY* after other relevant examples, code, etc. pertinent to the a pages context. This site is *SERIOUSLY* limited by Drew's spam and suffers because of it to the extent that it is becoming unusable because of the superfluous `Icicles.*' references strewn about.  There is a point at which the entire Emacs community suffers because of Drew's insistence on xrefs to anything remotely related to his libraries. -- mon_key
 
 [new]
 The wiki encourages people to post their own code, and to cross-references pages, and by extension, people will cross reference their own code wherever it seems appropriate. If nobody else is as prolific, then that's hardly Drew's fault. On the contrary, *I wish other people would add more crossreferences.*
@@ -309,13 +314,34 @@ Also, you might consider not complaining anonymously.
 
 -- AlexSchroeder
 
-== Wikia article about setting up Emacs ==
+[new]
+I've added a sig, now its not anonymous. I _hope_ I do my best to try and contribute constructively and to make judicious commenting on libraries and xrefs. That said, I tend to put them in my source which seems like a reasonable way to voice support for particular authors, goals, pkgs etc. You are correct, and I agree, the matter is a bit of a philosophical point. If everyone xrefd with Drew's zeal as a philosophical matter I personally think the site would suffer, obv. YMMV. As I say, I truly do respect what Drew has done w/ Icicles; this doesn't make it OK to splatter it about at the vaguest possible connection. FWIW there is a search bar, it is quite useful and I'm surprised sometimes by how readily it will point _me_ to what _I_ am looking for.  -- mon_key
 
-Hi, I created an article about how to install and configure [http://setup.wikia.com/wiki/GNU_Emacs GNU Emacs] at [http://setup.wikia.com/wiki/Set_up_and_get_started_Wiki Set up and get started Wiki]. I've already covered quite much, including variables, the .emacs file and some different commands, but you can gladly add more to the article since it's a wiki. -- Kri
 
-== Change css style of second-level headers to bold ==
 
+
+== CSS (headers, printing) ==
+
+[new]
+For some ideas on print style sheets, see [http://alistapart.com/articles/goingtoprint/ Eric Meyer's article on A List Apart]. One particularly nice idea shows how to display the URL with hyperlinked text, which would be handy here.
+--AmyYoung
+
+[new]
+What exactly should we do? -- AlexSchroeder
+
+[new]
+Could we go back to the situation where in default CSS the rendering of different headers level differ only in the font size (but do differ) down until last HTML header level? -- JakubNarebski
+
+[new]
+Not unless more people support this since I don't like it. -- AlexSchroeder
+
+[new]
 In graphical browsers second-level headers currently are the same size as regular text, just italic.  This does not standout at all, making them bold would be much better in my eyes.  For example I just added a page with a long list of code snippets at the end. I reorganized them thematically and then added second-level headers. Boy that was less readable as before! So I had to add the horizontal lines back that I previously removed.  Ps: why do we skip = and use == instead? -- JonasBernoulli
+
+[new]
+Take a look at the [[CSS]] page. That will allow you to use your own CSS instead of relying on the default. If you write a CSS file that makes a significant improvement and convince some other long-time users of the site, I'll be happy to use it instead of what we have right now.
+
+As to the /why/ of the current CSS: I'm happy with the look of H2 and H3 headers. I believe HTML pages should have but one H1 element -- the one at the top of the page, and I believe any page on this wiki should be written with just H2 and H3 sections and subsections. I find the need for H4 subsubsections to be a sign that the text ought to be reorganized instead. I also find horizonzal lines unnecessary except when creating the pseudo-footers separating categories and related pages from the rest of the page. It's how I interpret the suggestions given by Robert Bringhurst in his _The Elements of Typographical Style_, p. 61ff. Typographically, poise is mad of white space. Don't permit the titles to oppress the text. Use as many levels of headings as you need: no more and no fewer. There were people who didn't like the amount of whitespace I prefer, which is why I'm using the theme "with more whitespace around headers and small-caps". -- AlexSchroeder
 
 ----
 CategoryEmacsWikiSite

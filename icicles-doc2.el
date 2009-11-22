@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Nov  7 15:02:29 2009 (-0700)
+;; Last-Updated: Sun Nov 22 00:05:31 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 26028
+;;     Update #: 26034
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3335,11 +3335,6 @@
 ;;  file-name completion, to be able to complete directory components,
 ;;  for instance.
 ;;
-;;  Note: The same Emacs mechanism allows for completion of
-;;  environment variables during file-name completion, and this too is
-;;  inhibited if you set `icicle-prefix-completion-is-basic-flag' to
-;;  nil.
-;;
 ;;(@* "Scatter-Match Completion")
 ;;  ** Scatter-Match Completion **
 ;;
@@ -4411,22 +4406,6 @@
 ;;    deletion, replacement).  This option is used only if you have
 ;;    library `levenshtein.el'.  See (@> "Fuzzy Completion").
 ;;
-;;  * A nil value of option `icicle-prefix-completion-is-basic-flag'
-;;    means that Icicles prefix completion respects the standard
-;;    option `completion-styles' (new in Emacs 23), so that `TAB'
-;;    behaves similarly to what it does in vanilla Emacs.  Otherwise
-;;    (value non-nil or with Emacs prior to Emacs 23), `TAB' performs
-;;    only basic prefix completion.
-;;
-;;    A nil value also means that `TAB' completes environment
-;;    variables during file-name completion and in shell commands.  A
-;;    non-nil value inhibits this completion, but it does not inhibit
-;;    the expansion of complete environment variables to their values
-;;    when you hit `S-TAB' or `RET'.
-;;
-;;    In releases prior to Emacs 23, this option has no effect:
-;;    Icicles acts as if the value is nil.
-;;
 ;;  * Top-level command `icicle-search' uses several faces to
 ;;    highlight found text that matches your input.  Faces
 ;;    `icicle-search-main-regexp-current' and
@@ -5110,8 +5089,8 @@
 ;;    whose names end in `t'.  See
 ;;    (@file :file-name "icicles-doc1.el" :to "What About Special-Character Conflicts?").
 ;;
-;;  * Starting with Emacs 23, and provided that option
-;;    `icicle-prefix-completion-is-basic-flag' is nil, you can
+;;  * Starting with Emacs 23, and if the current `TAB' completion
+;;    method is `vanilla' (see (@* "Fuzzy Completion")), you can
 ;;    complete environment variables during file-name completion,
 ;;    using `TAB'.  So you can, for example, complete `$HO' to any of
 ;;    the candidates `HOME', `HOMEDRIVE', `HOMEPATH'.  This is in

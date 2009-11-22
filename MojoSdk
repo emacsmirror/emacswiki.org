@@ -8,3 +8,50 @@ I'm also open to outside ideas and contributions.  If you fix bugs, or add funct
 
 Happy Hacking!
 
+
+----
+
+v 0.9.1 bump, minor changes unless you wanted to specify explicitly whether to target the device or emulator, then it's big news! :p
+
+ ;; v 0.9.1
+ ;;
+ ;;       - Added mojo-package-install-and-launch.
+ ;;
+ ;;       - New variable for specifying whether commands target the
+ ;;         device or emulator, *mojo-target*.  Set it to 'usb' for a
+ ;;         real device and 'tcp' for the emulator.  Defaults to 'tcp'.
+ ;;         To set the default target you can use the convenience
+ ;;         functions mojo-target-device and mojo-target-emulator.
+
+
+
+I've made some significant changes and as such bumped the version to 0.9.  Here's the excerpt from the changelog within mojo.el:
+
+ ;; v 0.9 - Automatically find Mojo project root by searching upwards
+ ;;         for appinfo.json.
+ ;; 
+ ;;       - Added command for generating new scenes,
+ ;;         mojo-generate-scene.
+ ;;
+ ;;       - mojo-package now operates only on the current project.
+ ;;
+ ;;       - Parse appinfo.json to get version, used for installing &
+ ;;         launching with less interaction.
+ ;;
+ ;;       - mojo-install, mojo-launch, mojo-inspect, and mojo-delete
+ ;;         still read in arguments but have the current project/app as
+ ;;         the default values.
+ ;; 
+ ;;       - New convenience method: mojo-package-install-and-inspect
+ ;;         This function only operates on the active app and does not
+ ;;         read in any input.
+ ;;
+ ;;       - Remembered filenames and app ids are cleared when the Mojo
+ ;;         project root changes. (DWIM)
+ ;;
+ ;;       - Parse output of `palm-install --list` for app id
+ ;;         completion.  App id completion was ported from cheat.el.
+
+So lots of fun new stuff!  Now all we have to do is run `mojo-package-install-and-inspect` when the current buffer is somewhere under the project's root and then switch to the emulator window.  There is still a lot of room for improvement, and please test this on Windows and Linux as I'm developing solely on Mac OS X these days.
+
+My latest version will always be up in my [http://github.com/samsonjs/config/blob/master/emacs.d/mojo.el config repo on github].  Don't hesitate to send a pull request or e-mail me.   -- sjs 2009-11-21

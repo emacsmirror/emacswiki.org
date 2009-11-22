@@ -94,10 +94,8 @@ Emacs, and '''Icicles''' supports it.  You might find it useful in
 file-name completion, to be able to complete directory components,
 for instance.
 
-Note: The same Emacs mechanism allows for completion of
-environment variables during file-name completion, and this too is
-inhibited if you set `icicle-prefix-completion-is-basic-flag' to
-`nil'.
+
+
 
 
 

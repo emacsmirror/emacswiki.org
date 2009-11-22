@@ -5,7 +5,7 @@
 ;;; DESCRIPTION:
 ;;; mon-tramp-utils provides cross platform utilities for working with tramp.
 ;;; This package should be compatible with both GNU/LINUX and w32 systems.
-;;; I have no idea if it will work with cygwin.
+;;; I have no idea if it will work with cygwin. 
 ;;;
 ;;; FUNCTIONS:►►►
 ;;; `mon-tramp-plink-example', `mon-tramp-add-default-methods', 
@@ -38,28 +38,54 @@
 ;;; TODO:
 ;;;
 ;;; NOTES:
-;;; ON MON system we set an environmental variable "MON_PTTY" (getenv
-;;; "MON_PTTY").  and make sure that is in our path. Normally, if Putty is
-;;; installed it is in your path already.
+;;; Following table maps three variabls which are defined in this package but
+;;; which source their values from a seperate file:
+;;; ,----
+;;; | `*mon-tramp-putty-private-keys*' -> `mon-pks'
+;;; | `*mon-tramp-paths-alist*'        -> `mon-tramp-alist'
+;;; | `*mon-tramp-default-methods-l*'  -> `mon-p-ssn'
+;;; `----
 ;;;
-;;; :NOTE the argument mon-tramp-alist to var `*mon-tramp-paths-alist*'
-;;; is defined in an external package. 
+;;; If the above symbols `mon-pks', `mon-tramp-alist', and `mon-p-ssn' are not
+;;; present on your system they will be populated with example values and these
+;;; example values will be bound at load time.
+;;;
+;;; In particular, this means that when this package is loaded the tramp
+;;; variable `tramp-default-method-alist' will have contain these examples.
+;;; These example values shouldn't pose an immediate concern as I've pointed
+;;; them to a google IP - if google's ssh ports let you in then they deserve
+;;; what they get :) Regardless, if you intend to use mon-tramp-utils you will
+;;; want to examine the source and docstrings for these three variables and
+;;; replace them with parameters suitable for your system/needs. I've attempted
+;;; to document the required format these variables expect and the source is
+;;; fairly well commented. :SEE below for discussion.
+;;;
+;;; :NOTE the argument `mon-tramp-alist' to variable `*mon-tramp-paths-alist*'
+;;; is a symbol defined in an external package. You need to provide your own
+;;; value for either the variable `*mon-tramp-paths-alist*' or bind it to the
+;;; `mon-tramp-alist' symbol (either locally or in a separate file). In either
+;;; case the provided value should reflect defined in the docstring of
+;;; `*mon-tramp-paths-alist*'.
 ;;;
 ;;; :NOTE on MON systems the variable `*mon-tramp-putty-private-keys*'
-;;; evaluates thes symbold value of `mon-pks' which is defined in an external
-;;; package. You will need to provide your own value for either the variable
-;;; `*mon-tramp-putty-private-keys*' or bind it to the `mon-pks' symbol.
+;;; evaluates the symbol value of `mon-pks' which is defined in an external
+;;; package. The current default value for `mon-pks' is: '(""). If you intend to
+;;; use putty/plink on w32 you will need to provide your own value for either
+;;; the variable `*mon-tramp-putty-private-keys*' or bind it to the `mon-pks'
+;;; symbol (either locally or in a separate file). In either case the provided
+;;; value should reflect the formated defined in the docstring of
+;;; `*mon-tramp-putty-private-keys*'.
 ;;;
-;;; The `mon-tramp-add-default-methods' function calls the variable
-;;; `*mon-tramp-default-methods-l*'. On MON systems this var evaluates the value
-;;; of `mon-p-ssn' symobl which is defined in an external package. The symbol
-;;; holds a list of putty session names formatted for tramp's HOST arg with the
-;;; plinkx method. You will need to provide your own tramp (HOST USER METHOD)
-;;; lists. :SEE docstring of `*mon-tramp-default-methods-l*' and
-;;; `mon-tramp-plink-example' for
-;;; discussion.
+;;; :NOTE The `mon-tramp-add-default-methods' function calls the variable
+;;; `*mon-tramp-default-methods-l*'. On MON systems the variable
+;;; `*mon-tramp-default-methods-l*' takes evaluates the value of the `mon-p-ssn'
+;;; symobl. The `mon-p-ssn' symbol is defined in an external package. You will
+;;; need to provide your own value for either the variable
+;;; `*mon-tramp-default-methods-l*' or bind it to the `mon-p-ssn' symbol (either
+;;; locally or in a separate file). In either case the provided value should
+;;; reflect the format defined docstrings of `*mon-tramp-default-methods-l*'
 ;;;
-;;; FOR w32 this package requires an environment with:
+;;; :NOTE For w32 systems this package requires an environment with:
 ;;; a) Putty, putty-agent, and plink in your path.
 ;;;    You can test by evaluating: (mon-tramp-putty-conf-status)
 ;;;
@@ -68,19 +94,27 @@
 ;;;  ii) With the correct port number when this is _NOT_ `22';
 ;;;
 ;;; c) putty-agent has the key for each given session loaded.
-;;;     A utility function is provided to accomodate this.
+;;;     A utility function is provided to accommodate this.
 ;;;    :SEE `mon-tramp-add-pageant-keys'
 ;;;
-;;; FOR GNU/Linux this package requires an environment a running ssh-agent:
+;;; :NOTE For GNU/Linux this package requires an environment running ssh-agent:
 ;;;  a) MON does this with a script sourced at login.
+;;;
 ;;;  b) The ssh-agent has the keys loaded via:
 ;;;     - SHELL> ssh-add ~/.ssh/<SOME-KEY>
 ;;;     For GNU/Linux systems a utility is provided to test if keys are loaded:
 ;;;     (mon-ssh-add-p) 
 ;;;     Additionally, provided is an untested function which will 
-;;;     load a key via ssh-add see the commneted funcion `mon-ssh-add-pass' 
+;;;     load a key via ssh-add see the commented function `mon-ssh-add-pass' 
 ;;;     at bottom of file:
 ;;;
+;;; :NOTE MON systems set an environmental variable "MON_PTTY":
+;;; e.g.: (getenv "MON_PTTY").
+;;; This is done to make sure that putty.exe et al are in MON paths. Normally,
+;;; this prob. isn't required but MON does things lysdexically :) IOW if Putty
+;;; is installed on your system, then it is in your path already and prob. also
+;;; has its own environmental variable set.
+;;; 
 ;;; SNIPPETS:
 ;;;
 ;;; REQUIRES:
@@ -98,7 +132,7 @@
 ;;; THIRD PARTY CODE:
 ;;; constant `mon-tramp-mode-line-buffer-ident' from tramp manual.
 ;;;
-;;; Thue functions `mon-ssh-add-pass' and `mon-ssh-add-p'
+;;; The functions `mon-ssh-add-pass' and `mon-ssh-add-p'
 ;;; :COURTESY Roland Winkler help.gnu.emacs :DATE 2008-03-30
 ;;; :SUBJECT "tramp and ssh-agent / ssh-add"
 ;;; :CREATED <Timestamp: #{2009-11-19T14:19:24-05:00Z}#{09474} - by MON>
@@ -148,7 +182,7 @@
 ;;
 (unless (featurep 'tramp) (require 'tramp))
 
-;;; :EMACS-WIKI if :FILE mon-default-loads.el isn't in load-path.
+;;; :NOTE :EMACS-WIKI if :FILE mon-default-loads.el isn't in load-path.
 (unless (featurep 'mon-default-loads)
   (cond ((eq system-type 'windows-nt)
          (setq IS-MON-P-W32 t)
@@ -161,23 +195,23 @@
 ;;; :TEST-ME IS-MON-P-GNU
 
 ;;; ==============================
-;; Make sure our initial tramp methods are sane.
+;;; :NOTE Make sure our initial tramp methods are sane.
 (cond (IS-MON-P-W32 (setq tramp-default-method "plinkx")) 
       ;; It isn't clear whether this should be "ssh2".
       (IS-MON-P-GNU (setq tramp-default-method "ssh"))) 
 
 ;;; ==============================
-;;; :NOTE verbatim from:(info "(tramp)Frequently Asked Questions")
+;;; :NOTE Following block :FROM (info "(tramp)Frequently Asked Questions")
 ;;; :CREATED <Timestamp: #{2009-11-18T15:38:32-05:00Z}#{09473} - by MON KEY>
 (defconst mon-tramp-mode-line-buffer-ident
   (list '(:eval (let ((host-name
-                   (or (file-remote-p default-directory 'host)
-                       (system-name))))
-              (if (string-match "^[^0-9][^.]*\\(\\..*\\)" host-name)
-                  (substring host-name 0 (match-beginning 1))
-                  host-name)))
+                       (or (file-remote-p default-directory 'host)
+                           (system-name))))
+                  (if (string-match "^[^0-9][^.]*\\(\\..*\\)" host-name)
+                      (substring host-name 0 (match-beginning 1))
+                      host-name)))
         ": %12b")
-"Show us when we're in a Tramp buffer.
+  "Show when visiting a Tramp buffer.
 :NOTE verbatim from info node `(tramp)Frequently Asked Questions'.\n►►►")
 ;;
 (setq-default mode-line-buffer-identification mon-tramp-mode-line-buffer-ident)
@@ -193,8 +227,11 @@
 ;;; (setq tramp-persistency-file-name "~/tramp-persistency") ;nil)
 
 ;;; ==============================
+;;; :NOTE If the `mon-pks'isn't avaiable default it it to '("").
 ;;; :CREATED <Timestamp: #{2009-11-19T16:26:42-05:00Z}#{09474} - by MON>
-(defvar *mon-tramp-putty-private-keys* mon-pks
+(defvar *mon-tramp-putty-private-keys* (if (bound-and-true-p mon-pks) 
+                                             mon-pks
+                                             (setq mon-pks '("")))
   "*List of keys to add to the putty agent pageant.exe
 :NOTE the symbol `mon-pks' is sourced from an external package.
 You should provide your own list (or symbol) for the value of 
@@ -213,7 +250,14 @@ Path should be escaped for `w32-shell-execute' with `\\\\' not as `/'.\n
 ;;; ==============================
 ;;; :NOTE `mon-tramp-alist' is sourced from an external package. 
 ;;; :CREATED <Timestamp: #{2009-11-19T17:04:40-05:00Z}#{09474} - by MON KEY>
-(defvar *mon-tramp-paths-alist* mon-tramp-alist
+(defvar *mon-tramp-paths-alist* 
+  (if (bound-and-true-p mon-tramp-alist) 
+      mon-tramp-alist
+      (setq mon-tramp-alist 
+            ;;  KEY         ;; GNU/Linux ssh tramp path  ;; W32 plinkx tramp path
+            '((example-key1 "/ssh2:root@74.125.45.100:" "/plinkx:<EXAMPLE-SESSION1>:")
+              (example-key2 "/ssh:gg@74.125.45.100#2200:/home/gg" "/plinkx:<EXAMPLE-SESSION2>:")
+              (example-key3 "/ssh:<USER>@<HOST>:/home/<USER>:" "/plinkx:<EXAMPLE-SESSION3>:"))))
   "*An alist of paths for use with `mon-tramp-connect's completing-read.
 List is formatted to be portable between GNU/Linux <-> W32 systems.
 Elements of alist should be as shown below.\n\n:EXAMPLE\n\(let \(\(mta '\(\(<KEY> 
@@ -234,8 +278,26 @@ Elements of alist should be as shown below.\n\n:EXAMPLE\n\(let \(\(mta '\(\(<KEY
 ;;; (makunbound '*mon-tramp-paths-alist*)
 
 ;;; ==============================
+;;; :NOTE `mon-p-ssn' is sourced from an external package. 
 ;;; :CREATED <Timestamp: #{2009-11-19T19:41:09-05:00Z}#{09475} - by MON KEY>
-(defvar *mon-tramp-default-methods-l* mon-p-ssn
+(defvar *mon-tramp-default-methods-l* 
+  (if (bound-and-true-p mon-p-ssn)
+      mon-p-ssn
+      (setq mon-p-ssn
+            ;; First list for IS-MON-P-W32 - list with 3 strings.
+            `(;; (elt (assoc 'example-key1 *mon-tramp-paths-alist*) 2)
+              ("\\`<EXAMPLE-SESSION1>\\'"  
+               ;; (elt (assoc 'example-key2 *mon-tramp-paths-alist*) 2)
+               "\\`<EXAMPLE-SESSION2>\\'"  
+               ;; (elt (assoc 'example-key3 *mon-tramp-paths-alist*) 2)
+               "\\`<EXAMPLE-SESSION3>\\'") 
+              ;; Second list for IS-MON-P-GNU - list of lists.
+              (;; (elt (assoc 'example-key1 *mon-tramp-paths-alist*) 1)              
+               ("\\`74\\.125\\.45\\.100\\'" "\\`root\\'" "ssh2")
+               ;; (elt (assoc 'example-key2 *mon-tramp-paths-alist*) 1)
+               ("\\`74\\.125\\.45\\.100#2200\\'" "\\`gg\\'" "ssh") ;; Uses port 2200
+               ;; (elt (assoc 'example-key3 *mon-tramp-paths-alist*) 1)
+               ("\\`<SOME.HOST.IP>\\'" "\\`<USER>\\'" "ssh")))))
   "*Two element list containing `tramp-default-methods' according to system type.
 :CALLED-BY `mon-tramp-add-default-methods'.\n
 :NOTE On MON systems this variable evalautes the value of the `mon-p-ssn' symbol.
@@ -282,8 +344,10 @@ car of `*mon-tramp-default-methods-l*'.\n
 (defun mon-tramp-add-default-methods ()
   "Map elts of `*mon-tramp-default-methods-l*' to `tramp-default-method-alist'.
 When `IS-MON-P-W32' add the the 'plinkx' methods.
-When `IS-MON-P-GNU' add the the ssh-agent style methods.\n►►►"
-  ;; :FOR-TESTING  (let ((IS-MON-P-GNU t) (IS-MON-P-W32 nil))
+When `IS-MON-P-GNU' add the the ssh-agent style methods.
+:SEE-ALSO `tramp-default-method-alist', `tramp-default-method'\n►►►"
+  ;; (let ((IS-MON-P-GNU t)   ; :FOR-TESTING cross-platform.
+  ;;      (IS-MON-P-W32 nil)) ; :FOR-TESTING cross-platform.
   (cond (IS-MON-P-W32 
          (mapc (lambda (x) 
                  (pushnew (list x "" "plinkx") tramp-default-method-alist :test 'equal))
@@ -291,7 +355,8 @@ When `IS-MON-P-GNU' add the the ssh-agent style methods.\n►►►"
         (IS-MON-P-GNU 
          (mapc (lambda (x) 
                  (pushnew x tramp-default-method-alist :test 'equal))
-               (car *mon-tramp-default-methods-l*)) t)))
+               (cadr *mon-tramp-default-methods-l*)) t))
+  ) ;; )) ; :CLOSE-TESTING cross-platform.
 ;; Evaluate it now.
 (mon-tramp-add-default-methods)
 
@@ -362,25 +427,24 @@ On W32 message user about putty/pagent/plink.
   "Return a tramp connection for `mon-tramp-connect'.
 Return value is conditional on whether `IS-MON-P-W32' or `IS-MON-P-GNU'.\n
 :EXAMPLE\n(mon-tramp-read-conns)\n
-:SEE-ALSO `*mon-tramp-paths-alist*'n►►►"
-  (let (;; (IS-MON-P-W32 nil) ;cross-platform testing 
-        ;; (IS-MON-P-GNU t)   ;cross-platform testing
+:SEE-ALSO `*mon-tramp-paths-alist*'\n►►►"
+  (let (;; (IS-MON-P-W32 nil) ; :FOR-TESTING cross-platform.
+        ;; (IS-MON-P-GNU t)   ; :FOR-TESTING cross-platform.
         (conn-key (mapcar #'(lambda (x) 
                               (format "%s" (car x))) *mon-tramp-paths-alist*))
-        (read-conn)
-        (cond-conn))
+        (read-conn))
     (setq read-conn (read (completing-read "Choose a connection (tab completes): " conn-key nil t)))
     (setq read-conn (assoc read-conn *mon-tramp-paths-alist*))
 (cond (IS-MON-P-W32
        (let ((tst-can-conn (elt read-conn 2)))
-         (if (and tst-can-conn ; not nil
-                  (not (eq "" tst-can-conn))) ; and has a value
+         (if (and tst-can-conn ; Is not nil.
+                  (not (eq "" tst-can-conn))) ; And has a value.
                   tst-can-conn
                   (error "Can't find a connection for this system"))))
       (IS-MON-P-GNU        
        (let ((tst-can-conn (elt read-conn 1)))
-         (if (and tst-can-conn ; not nil
-                  (not (eq "" tst-can-conn))) ; and has a value
+         (if (and tst-can-conn ; Is not nil.
+                  (not (eq "" tst-can-conn))) ; And has a value.
              tst-can-conn
              (error "Can't find a connection for this system")))))))
 ;;
@@ -404,7 +468,7 @@ When TRAMP-PATH is non-nil attempt to connect to specified host.
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-11-18T15:14:11-05:00Z}#{09473} - by MON KEY>
 (defun mon-tramp-disconnect ()
-"All remote connections are cleaned up.  
+  "All remote connections are cleaned up.  
 All buffers, which are related to a remote connection, are killed.
 Flushes objects for all active remote connections. For more fine grained control
 :SEE `tramp-cleanup-all-connections', `tramp-cleanup-all-buffers'

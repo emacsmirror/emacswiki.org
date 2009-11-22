@@ -960,25 +960,6 @@ library <tt>[[levenshtein.el]]</tt>.  See [[Icicles - Fuzzy Completion#NOffCompl
 
 
 
-----
-[:icicle-prefix-completion-is-basic-flag]
-==== Option icicle-prefix-completion-is-basic-flag ====
-
-A `nil' value of option '''`icicle-prefix-completion-is-basic-flag''''
-means that '''Icicles''' [[prefix completion]] respects the standard
-option `completion-styles' (new in Emacs 23), so that `TAB'
-behaves similarly to what it does in vanilla Emacs.  Otherwise
-(value non-`nil' or with Emacs prior to Emacs 23), `TAB' performs
-only basic prefix completion.
-
-A `nil' value also means that `TAB' completes environment
-variables during file-name completion and in shell commands.  A
-non-`nil' value inhibits this completion, but it does not inhibit
-the expansion of complete environment variables to their values when you hit
-`S-TAB' or `RET'.
-
-In releases prior to Emacs 23, this option has no effect:
-'''Icicles''' acts as if the value is `nil'.
 
 
 ----

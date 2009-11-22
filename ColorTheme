@@ -142,32 +142,15 @@ Here are four alternative ways to cycle among color themes in a list. For illust
 [:DoReMiColorThemes]
 === Do Re Mi: Cycling with Arrow Keys or Mouse Wheel ===
 
-`M-x doremi-color-themes', then use the up and down arrow keys and/or the mouse wheel to cycle among themes. The name of each newly applied theme is displayed in the echo area. By default (without changing variable `doremi-color-themes'), this cycles among ''all'' color themes.
+`##M-x doremi-color-themes+##', then use the up and down arrow keys and/or the mouse wheel to cycle among themes. The name of each newly applied theme is displayed in the echo area. You can customize [[option]] `doremi-color-themes', which is the set of color themes to cycle among. By default, ''all'' color themes are included. You can use `##doremi-color-themes+##' to preview color themes: use `C-g' to cancel changes and return to what you had before. (This is equivalent to picking pseudo-theme ##[Reset]##, which also means that sometimes not everything is restored.) This is part of library <tt>[[doremi-cmd.el]]</tt>.
 
-  (setq doremi-color-themes my-color-themes) ; Otherwise, cycles among _all_ themes.
+Also worth mentioning, if you define your own color theme, are the commands in library <tt>[[doremi-frm.el]]</tt> that let you fine-tune [[frame]] and [[face]] colors incrementally, using the arrow keys or mouse wheel. They give you an easy way to get exactly the color scheme you want before saving it as a color theme. There are also commands to convert and tweak colors (for example, obtain a color that is slightly lighter, redder, etc. than a given color). See '''[[DoReMi|Do Re Mi]]'''.
 
-  (defun doremi-color-themes ()
-    "Successively cycle among color themes."
-    (interactive)
-    (doremi (lambda (newval) (funcall newval) newval) ; update fn - just call theme
-            (car (last doremi-color-themes)) ; start with last theme
-            nil                           ; ignored
-            nil                           ; ignored
-            doremi-color-themes))         ; themes to cycle through
 
-This code is part of library Lisp:doremi-cmd.el.
-
-Also worth mentioning, if you define your own color theme, are the commands in library Lisp:doremi-frm.el that let you fine-tune [[Frame]] and [[Face]] colors incrementally, using the arrow keys or mouse wheel. They give you an easy way to get exactly the color scheme you want before saving it as a color theme. There are also commands to convert and tweak colors (for example, obtain a color that is slightly lighter, redder, etc. than a given color). -- DrewAdams
-
+[:IciclesColorThemes]
 === Icicles: Completion and Cycling of Color Themes ===
 
-You can use '''[[Icicles]]''' command `icicle-color-theme' to cycle among color themes. This functionality is similar to that provided by '''DoReMi''' (see [[#DoReMiColorThemes]], above), but it also lets you ''complete'' the color-theme names. See '''[[Icicles]]'''.
-
-For comparison with the other cycling commands on this page, do this:
-
-  (setq icicle-color-themes my-color-themes) ; Otherwise, cycles among _all_ themes.
-
-''Note:'' If anyone knows a good way to ''undo'' a color-theme change, let me know, so I can modify `icicle-color-theme' to let you use `C-g' to undo changes -- that way, you will be able to use `icicle-color-theme' to cycle among color themes, ''previewing'' them, without necessarily changing the theme. -- DrewAdams
+You can use '''[[Icicles]]''' command `icicle-color-theme' to cycle among color themes. This is similar to that provided by [[#DoReMiColorThemes]] (above), but you can also ''complete'' the color-theme names. Just as for `##doremi-color-themes+##', `C-g' undoes your changes. Option `icicle-color-themes' is similar to option `doremi-color-themes' -- customize it to define the list of themes to choose from (default: all themes). See '''[[Icicles]]'''. 
 
 
 === Cycling by Repeating a Command ===
