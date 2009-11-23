@@ -7,6 +7,25 @@ and offer similar functionality, e.g. execute arbitrary EmacsLisp code from the 
 
 == How to start to use EmacsClient ==
 
+= Starting Server With Emacs 23 : Easy Way =
+RichardRiley : With emacs 23 simply do something like
+
+<pre>
+#!/bin/bash
+export GDK_NATIVE_WINDOWS=1
+exec emacsclient --alternate-editor="" -c "$@"
+</pre>
+
+Then
+
+<pre>
+export EDITOR=~/bin/edit
+</pre>
+
+Where "edit" is the small script above. The key is the "" for alternate-editor. emacsclient starts the server for you if and only if it is not already running.
+
+
+
 #  start emacs with the emacsserver running (this can be done by adding (server-start) to your InitFile, or by typing ##M-x server-start## from within emacs)
 # use emacsclient where you'd normally use emacs (as your editor in pine, as the value of the EDITOR environmental variable, etc).
 

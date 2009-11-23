@@ -78,7 +78,7 @@ I tried to post a message, but I had HTML code in my text, and I received the er
 
 [new]
 
-I'm using version 1.4.3, with Emacs 23.1, Drupal 6.13 and Slackware 13.0. In spite of some odd behavior (e.g., can't get it to handle <title> tags automatically), it's a very useful addition to emacs. I had problems getting it to work initially but solved them by updating xml-rpc.el.
+I'm using version 1.4.3, with Emacs 23.1, Drupal 6.13 and Slackware 13.0. In spite of some odd behavior (e.g., <title> tags end up displayed as part of the post and I have to delete them manually when I revise), it's a very useful addition to emacs. I had problems getting it to work initially but solved them by updating an old copy of xml-rpc.el.
 
 It's worth noting, as a usage quirk, that if you're revising an entry and do C-x C-s ("save") the entry revises, while if you do C-c C-c ("send") it will create a new entry. --JimKalb
 

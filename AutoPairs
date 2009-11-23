@@ -25,11 +25,10 @@ Does it make use of command loop hooks?  Well the answer to the question "how" i
 ##autopair-fallback## takes care of running the original binding. When running the ##post-command-hook## one reads ##autopair-action## and decides what to do.
 -- JoaoTavora
 
-==== Conflicts with paredit-mode ====
+==== Using with paredit-mode ====
 
-Autopair and paredit-mode don't play well together.  If you have set (autopair-global-mode 1), and paredit-mode is turned on, you will get '(()' when you type '('.
-
-Here is a code sample that turns on autopairs for the modes listed in autopair-modes, but disables it when paredit-mode is turned on:
+Autopair doesn't make much sense when paredit-mode is turned on, so it actually defers to paredit-mode when that is installed and enabled. Using ##autopair-global-mode## is thus safe
+but anyway the following code sample turns on autopairs for the modes listed in autopair-modes, but disables it when paredit-mode is turned on:
 
 <pre>
   (require 'autopair)
@@ -51,7 +50,7 @@ Here is a code sample that turns on autopairs for the modes listed in autopair-m
 
 </pre>
 
--- TimCHarper
+-- TimCHarper (tweaked by JoaoTavora)
 
 [new]
 hi, I use your AutoPairs, its a good tool.
@@ -84,7 +83,8 @@ I don't think the wiki is the best place to ask questions.  However, why aren't 
 um, how do I report bug to you? email? I also tried paredit before tried autopairs, but I think autopairs is better than paredit, :), only I think, I think there are more bugs in paredit, so I choose autopairs. That's the bad news for me you'll disable autopairs, :(. -- [[ahei]]
 
 [new]
-hehehe, autopair.el also has bugs believe me... To submit a bug or track autopair.el development go to http://autopair.googlecode.com. Will try to implement your backtick-and-quote custom pairing, and a few other ideas  --JoaoTavora
+There is a new feature that implements your desired backtick-and-quote custom pairing. Anyway to submit a bug or track autopair.el development go to http://autopair.googlecode.com, you can ask questions there and I can follow-up much better on them. For example one of the issues in point 3 you report is a not a bug, autopair can't guess you don't mean to start a string before the ")".--JoaoTavora
+
 
 === SkeletonMode ===
 

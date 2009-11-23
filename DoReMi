@@ -1044,9 +1044,18 @@ Be sure that you are loading all of the latest '''Icicles''' files. If you then 
 And please do not report '''Icicles''', Color Palette, or any other problems that are unrelated to '''Do Re Mi''' on this page. Thx -- DrewAdams
 
 [new]
-oh, sorry, my mistake, but I only have seen you update three files, icicles-opt.el, icicles-cmd.el, icicles-cmd1.el in RecentChanges page, the variable `icicle-prefix-completion-is-basic-flag' is in previous version of icicles-fn.el, I do not know you updated it, and icicle-color-theme is work now after I update file icicles-fn.el. However, I thought when I press TAB after I execute M-x icicle-color-theme, it will apply theme like doremi-color-themes after I seen you said "That '''Icicles''' command cycles themes like `##doremi-color-theme+##'".
+oh, sorry, my mistake, but I only have seen you update three files, icicles-opt.el, icicles-cmd.el, icicles-cmd1.el in RecentChanges page, the variable `icicle-prefix-completion-is-basic-flag' is in previous version of icicles-fn.el, I do not know you updated it, and icicle-color-theme is work now after I update file icicles-fn.el. However, I thought when I press TAB after I execute M-x icicle-color-theme, it will apply theme like doremi-color-themes after I seen you said "That '''Icicles''' command cycles themes like `##doremi-color-theme+##'", and if I use icicle-color-theme change my color theme, and later I use M-x icicle-color-theme, and type some letters, and then press `C-g', icicles will restore my color theme. -- [[ahei]]
 
--- [[ahei]]
+
+
+[new:DrewAdams:2009-11-22 17:17 UTC]
+Always pick up ''all'' of the '''Icicles''' source files. I often update files on an individual basis, but you need them all. If you want to see all changes in RecentChanges, then you need to click the links to show minor edits and rollbacks.
+
+'''Icicles''' cycling is similar to '''Do Re Mi''' cycling, but it is also different. As I said, '''Icicles''' lets you skip candidates when cycling -- you can access any candidates in any order. And it lets you filter the set of candidates to cycle. And sort it. And so on.
+
+For '''Icicles''' cycling that acts on the candidates, use `C-next', `C-down', `C-prior', or `C-up'. Without the `C-' modifier you cycle without action on the candidates cycled. With modifiers `C-M-' you cycle help on individual candidates. This is not particular to color themes -- it is the way '''Icicles''' works in general. So instead of using `up' and `down', as in '''Do Re Mi''', you can use `C-up' and `C-down'. Or `C-prior' and `C-next', if you filter with a substring or [[regexp]]. 
+
+`icicle-color-theme' applies the candidate color theme. If you don't quit with `C-g' (two `C-g's in this case), then the new theme stands. If you use `C-g', then the original colors are restored. The same thing applies to `icicle-frame-bg' and `icicle-frame-fg', which are analogous to `##doremi-bg-color-name+##' and `##doremi-fg-color-name+##'. -- DrewAdams
 
 ----
 [:SeeAlso]

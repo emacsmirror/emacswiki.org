@@ -5,7 +5,7 @@ This is a quick-start guide to using [http://bazaar-vcs.org Bazaar] for Emacs de
 === What Version of Bazaar to Use ===
 
 As Emacs needs some of the improvements provided by 1.17 release, it
-is higly recommended to use GNU Bazaar 1.17 or higher to develop
+is highly recommended to use GNU Bazaar 1.17 or higher to develop
 Emacs.
 
 [:WhereIsEmacs]
@@ -128,11 +128,13 @@ do another ##bzr pull##, merge again, and commit.
 
 You can also just push it directly to the upstream master:
 
+      cd ../SOME-TASKNAME    # (or maybe "cd ../dev")
       bzr push bzr+ssh://bzr.savannah.gnu.org/sources/emacs/trunk/
+      cd ..
 
 That pushes all pending changes to the destination branch ("pending" meaning changes the destination branch doesn't already have).  After you do that, you might want to go pull the changes down into your mirror, though if you don't do it now, you'll just get them sometime later.
 
-The two different methods have an important difference.  In the case where you merge to the mirror, then commit there (and automatically push to the master), by default all of your work will appear as a single entry (the merge commit message) in ##bzr log##.  (All of your commit messages are available via ##bzr log -n 0##.)  If you push directly from the ##SOME-TASKNAME## branch, however, your branch will be perceived as the mainline by ##bzr log##, while commits on the mainline (including merges from other developers and their detailed branch histories) will be hidden.  The first method is generally preferred because the log is more readable, but the second method can be used to save time and effort if you only have one commit to push for a single task.  (/I.e./, the "merge to mirror and commit" method is more appropriate to the kind of tasks that have their own "##SOME-TASKNAME##" branch, while "push directly from the branch" is appropriate to the small tasks you do on the ##dev## branch.)
+These two methods of sending changes upstream differ in how the changes appear to others.  In the case where you merge to the mirror, then commit there (thus automatically pushing to the master), by default all of your work will appear grouped as a single merge in ##bzr log##.  (But anyone can use ##bzr log -n0## to see the sub-commits, or "nested commits", within such a merge.)  On the other hand, if you push directly from the ##SOME-TASKNAME## branch, your branch will be perceived as part of the mainline by ##bzr log##, while commits on the mainline (including merges from other developers and their detailed branch histories) will be hidden.  The first method is generally preferred because the log is more readable, but the second method can be used to save time and effort if you only have one commit to push for a single task.  (/I.e./, the "merge to mirror and commit" method is more appropriate to the kind of tasks that have their own "##SOME-TASKNAME##" branch, while "push directly from the branch where you did the work" is appropriate to the small tasks you do on the ##dev## branch.)
 
 If you don't have push access to the mainline, then create a "bundle", that is, a file containing your change, in a special "merge directive" format that bzr understands but that also contains a human-readable diff:
 

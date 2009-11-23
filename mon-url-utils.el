@@ -28,7 +28,7 @@
 ;;; `mon-wrap-one-url', `mon-wrap-url',`mon-wrap-span', 
 ;;; `mon-make-html-table-string' 
 ;;; `mon-make-html-table',`mon-tld-find-tld', `mon-tld-find-name',
-;;; `mon-tld',
+;;; `mon-tld', `mon-get-w3m-url-at-point-maybe', `mon-get-w3m-url-at-point'
 ;;; FUNCTIONS:◄◄◄
 ;;;
 ;;; RENAMED: 
@@ -36,7 +36,7 @@
 ;;; `hexcolor-add-to-font-lock' -> `hexcolour-add-to-font-lock'
 ;;;
 ;;; RENAMED: Dave Pearson's tld-* 
-;;; (URL `http://www.davep.org/emacs/tld.el')
+;;; :SEE (URL `http://www.davep.org/emacs/tld.el')
 ;;; `tld'           -> `mon-tld'
 ;;; `tld-find-name' -> `mon-tld-find-name'
 ;;;                 -> `mon-tld-find-tld'
@@ -66,6 +66,9 @@
 ;;; AUTHOR: MON KEY
 ;;; MAINTAINER: MON KEY
 ;;;
+;;; PUBLIC-LINK: (URL `http://www.emacswiki.org/emacs/mon-url-utils.el')
+;;; FIRST-PUBLISHED: <Timestamp: #{2009-09-20}#{} - by MON>
+;;; 
 ;;; FILE-CREATED:
 ;;; <Timestamp: Tuesday June 16, 2009 @ 08:39.52 PM - by MON KEY>
 ;;; ================================================================
@@ -86,7 +89,17 @@
 ;;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
 ;;; Floor, Boston, MA 02110-1301, USA.
 ;;; ================================================================
-;;; Copyright (C) 2009 by MON KEY 
+;;; Permission is granted to copy, distribute and/or modify this
+;;; document under the terms of the GNU Free Documentation License,
+;;; Version 1.3 or any later version published by the Free Software
+;;; Foundation; with no Invariant Sections, no Front-Cover Texts,
+;;; and no Back-Cover Texts. A copy of the license is included in
+;;; the section entitled "GNU Free Documentation License".
+;;; A copy of the license is also available from the Free Software
+;;; Foundation Web site at:
+;;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
+;;; ================================================================
+;;; Copyright © 2009 MON KEY 
 ;;; ==============================
 ;;; CODE:
 
@@ -99,12 +112,12 @@
 ;;; ==============================
 
 ;;; ==============================
-;;; CREATED: <Timestamp: Tuesday June 16, 2009 @ 08:28.49 PM - by MON KEY>
-;;; COURTESY: Thierry Volpiatto  HIS: tv-utils.el WAS: `tv-htmlfontify-buffer-to-firefox'
-;;; REQUIRES: `htmlfontify.el'
+;;; :CREATED <Timestamp: Tuesday June 16, 2009 @ 08:28.49 PM - by MON>
+;;; :COURTESY Thierry Volpiatto  :HIS tv-utils.el :WAS `tv-htmlfontify-buffer-to-firefox'
+;;; :REQUIRES `htmlfontify.el'
 (defun mon-htmlfontify-buffer-to-firefox ()
   "Converts fontified buffer to an html file with Firefox.\n
-See also; `mon-htmlfontify-region-to-firefox', `*emacs2html-temp*'."
+:SEE-ALSO `mon-htmlfontify-region-to-firefox', `*emacs2html-temp*'.\n►►►"
   (interactive)
   (let ((fname (concat *emacs2html-temp* "/" (symbol-name (gensym "emacs2firefox")) ".html")))
     (htmlfontify-buffer)
@@ -113,12 +126,12 @@ See also; `mon-htmlfontify-region-to-firefox', `*emacs2html-temp*'."
     (browse-url-firefox (format "file://%s" fname))))
 
 ;;; ==============================
-;;; CREATED: <Timestamp: Tuesday June 16, 2009 @ 08:28.49 PM - by MON KEY>
-;;; COURTESY: Thierry Volpiatto HIS: tv-utils.el WAS: `tv-htmlfontify-region-to-firefox'
-;;; REQUIRES: `htmlfontify.el'
+;;; :CREATED <Timestamp: Tuesday June 16, 2009 @ 08:28.49 PM - by MON>
+;;; :COURTESY Thierry Volpiatto :HIS tv-utils.el :WAS `tv-htmlfontify-region-to-firefox'
+;;; :REQUIRES `htmlfontify.el'
 (defun mon-htmlfontify-region-to-firefox (beg end)
   "Converts fontified region to an html file with Firefox.\n
-See also; `mon-htmlfontify-region-to-firefox', `*emacs2html-temp*'."
+:SEE-ALSO `mon-htmlfontify-region-to-firefox', `*emacs2html-temp*'.\n►►►"
   (interactive "r")
   (let ((fname (concat *emacs2html-temp* "/"(symbol-name (gensym "emacs2firefox")) ".html"))
         (buf (current-buffer)))
@@ -129,11 +142,11 @@ See also; `mon-htmlfontify-region-to-firefox', `*emacs2html-temp*'."
     (browse-url-firefox (format "file://%s" fname))))
 
 ;;; ==============================
-;;; COURTESY: Xah Lee
-;;; (URL `http://xahlee.org/emacs/emacs_html.html')
+;;; :COURTESY Xah Lee
+;;; :SEE (URL `http://xahlee.org/emacs/emacs_html.html')
 (defvar *hexcolor-keywords* 'nil
   "Keywords for fontification of hex code color values \(e.g. CSS\).\n
-See also; `hexcolor-add-to-font-lock'.")
+:SEE-ALSO `hexcolor-add-to-font-lock'.\n►►►")
 ;;
 (when (not (bound-and-true-p *hexcolor-keywords*))
 (setq *hexcolor-keywords*
@@ -147,17 +160,16 @@ See also; `hexcolor-add-to-font-lock'.")
 ;;; ==============================
 (defun hexcolor-add-to-font-lock ()
   "Add font-lock keywords for hex code color values for fontification.\n
-See also; `*hexcolor-keywords*'."
+:SEE-ALSO `*hexcolor-keywords*'.\n►►►"
   (font-lock-add-keywords nil *hexcolor-keywords*))
 ;;
 ;(add-hook 'css-mode-hook 'hexcolour-add-to-font-lock)
 (add-hook 'naf-mode-hook 'hexcolor-add-to-font-lock)
 
 ;;; ==============================
-;;; NOTE:
-;;; Maybe better to use firefox for ULAN - conkeror doesn't scroll well :(
+;;; :NOTE Maybe better to use firefox for ULAN - conkeror doesn't scroll well :(
 ;;; Or, better even, just retrieve url synchronously. 
-;;; CREATED: <Timestamp: Friday February 13, 2009 @ 07:01.59 PM - by MON KEY>
+;;; :CREATED <Timestamp: Friday February 13, 2009 @ 07:01.59 PM - by MON>
 (defun mon-search-ulan (&optional uq)
   "Open the ULAN in a browser. When UQ is non-nil search the ULAN artist name. 
 When the mark is active search ULAN for name in region. Attempts to rotate
@@ -171,7 +183,7 @@ is not active and UQ is nil open a blank ULAN query in browser:\n
 \(URL `http://www.getty.edu/research/conducting_research/vocabularies/ulan/'\)\n
 `mon-search-ulan-for-name' for an interactive version which automatically
 defaults to a prompt for name to search.\n
-See also; `mon-search-wikipedia'\nUsed in `naf-mode'."
+:SEE-ALSO `mon-search-wikipedia'\nUsed in `naf-mode'.\n►►►"
   (interactive "P")
   (let* ((uqp (if (and uq)
 		  t nil))
@@ -202,33 +214,33 @@ See also; `mon-search-wikipedia'\nUsed in `naf-mode'."
 		     prompt-url)
 		    ((and (not build-url) (not uqp))
 		     "http://www.getty.edu/research/conducting_research/vocabularies/ulan/"))))
-    ;;    (browse-url ulan-url)))  ;See NOTE: above.
+    ;;    (browse-url ulan-url)))  ;:SEE :NOTE above.
     (browse-url-firefox ulan-url)))
-
-;;;test-me; Lastname (Firstname)
-;;;test-me; Lastname, Firstname
-;;;test-me; Firstname Lastname
-;;;test-me; Pyle (Howard)
-;;;test-me; Pyle, Howard
-;;;test-me; Howard Pyle
+;;
+;;; :TEST-ME  Lastname (Firstname)
+;;; :TEST-ME  Lastname, Firstname
+;;; :TEST-ME  Firstname Lastname
+;;; :TEST-ME  Pyle (Howard)
+;;; :TEST-ME  Pyle, Howard
+;;; :TEST-ME  Howard Pyle
 
 ;;; ==============================
 (defun mon-search-ulan-for-name ()
   "Interactive version of `mon-search-ulan'.
 Default behavior is to prompt for name to search.\n
-See also; `mon-search-wikipedia'.\nUsed in `naf-mode'."
+:SEE-ALSO `mon-search-wikipedia'.\nUsed in `naf-mode'.\n►►►"
   (interactive)
   (mon-search-ulan t))
 
 ;;; ==============================
-;;; COURTESY: Xah Lee
-;;; (URL `http://xahlee.org/emacs/emacs_lookup_ref.html')
+;;; :COURTESY Xah Lee
+;;; :SEE (URL `http://xahlee.org/emacs/emacs_lookup_ref.html')
 (defun mon-search-wikipedia ()
-  "Look up the words in Wikipedia (URL `http//:www.Wikipedia.com')
+  "Look up the words on Wikipedia.
 Generates a url, with active region (a phrase), lookup that phrase
 and switches to browser.\n\nUsed in `naf-mode'.
-See also; `mon-search-ulan', `mon-search-ulan-for-name',
-`mon-search-loc', `mon-search-bnf'."
+:SEE-ALSO `mon-search-ulan', `mon-search-ulan-for-name',
+`mon-search-loc', `mon-search-bnf'.\n►►►"
  (interactive)
  (let (myword myurl)
    (setq myword
@@ -242,24 +254,23 @@ See also; `mon-search-ulan', `mon-search-ulan-for-name',
 (defalias 'mon-search-wiki 'mon-search-wikipedia)
 
 ;;; ==============================
-;;; `mon-search-loc' needs to take arguments to build the search.
-;;; SEE: (find-file "../naf-mode/a1-working-notes.el")
+;;; :NOTE `mon-search-loc' needs to take arguments to build the search.
 (defun mon-search-loc  ()
   "Open the LOC Authority Headings Search Page in the default browser. 
-\(URL `http://authorities.loc.gov/cgi-bin/Pwebrecon.cgi?DB=local&PAGE=First')
-See also; `mon-search-ulan', `mon-search-ulan-for-name', `mon-search-bnf',
-`mon-search-wikipedia'.\nUsed in `naf-mode'."
+:SEE \(URL `http://authorities.loc.gov/cgi-bin/Pwebrecon.cgi?DB=local&PAGE=First')
+:SEE-ALSO `mon-search-ulan', `mon-search-ulan-for-name', `mon-search-bnf',
+`mon-search-wikipedia'.\nUsed in `naf-mode'.\n►►►"
   (interactive)
   (browse-url "http://authorities.loc.gov/cgi-bin/Pwebrecon.cgi?DB=local&PAGE=First"))
 
 ;;; ==============================
-;;; `mon-search-bnf' needs to take arguments to build the search.
-;;; SEE: (find-file "../naf-mode/a1-working-notes.el")
+;;; :NOTE `mon-search-bnf' needs to take arguments to build the search.
+;;; :SEE :FILE "../naf-mode/a1-working-notes.el"
 (defun mon-search-bnf  ()
   "Open the BNF Authority Headings Search Page in the default browser. 
-\(URL `http://catalogue.bnf.fr/jsp/recherche_autorites_bnf.jsp?host=catalogue')
-See also; `mon-search-ulan', `mon-search-ulan-for-name', `mon-search-loc',
-`mon-search-wikipedia'.\nUsed in `naf-mode'."
+:SEE \(URL `http://catalogue.bnf.fr/jsp/recherche_autorites_bnf.jsp?host=catalogue')
+:SEE-ALSO `mon-search-ulan', `mon-search-ulan-for-name', `mon-search-loc',
+`mon-search-wikipedia'.\nUsed in `naf-mode'.\n►►►"
   (interactive)
   (browse-url "http://catalogue.bnf.fr/jsp/recherche_autorites_bnf.jsp?host=catalogue"))
 
@@ -269,25 +280,31 @@ See also; `mon-search-ulan', `mon-search-ulan-for-name', `mon-search-loc',
 Inserts the following:\n
 <a class=\"link_green_bold\" href=\"../insert-path-here\" \"> insert-link-text </a>\n
 Link will be colored according to to DBC .css for link_gree_bold.\n
-See also; `mon-insert-dbc-doc-link' for a pre-formatted href to doc-detail page.
-Used in `naf-mode'."
+:SEE-ALSO `mon-insert-dbc-doc-link' for a pre-formatted href to doc-detail page.
+Used in `naf-mode'.\n►►►"
   (interactive)
   (insert "<a class=\"link_green_bold\" href=\"../insert-path-here\" \"> insert-link-text </a>"))
 
 ;;; =======================
-;;; Default URL generated for Derby City Prints.
+;;; :NOTE
+;;; ,---- CSS
+;;; | .link_green_bold {
+;;; | 	font-family: Verdana, Arial, Helvetica, sans-serif;
+;;; | 	font-size: 9px;
+;;; | 	color: #5A8F5D;
+;;; | 	font-weight:bold;
+;;; | }
+;;; `----
 (defun mon-insert-dbc-doc-link (&optional doc-num doc-type link-text)
   "Insert a vanilla \(relative path\) href template at point. 
-Default url generated for DBC.
 Called interactively prompts for:
 DOC-NUM (a 3-4 digit number), default is \"####\";
 DOC-TYPE (artist, author, brand, book, people), default is \"naf-type\";
 LINK-TEXT (text with .css class \"link_green_bold\") default is \" insert link text \".
 Inserts:\n
 <a class=\"link_green_bold\" href=\"../doc-details-DOC-NUM-DOC-TYPE.htm\" \">LINK-TEXT</a>\n
-Link will be coded according to to DBC .css for link_gree_bold.\n
-See also; `mon-insert-dbc-link' which inserts a vanilla href link formatted for a
-DBC page URL.\nUsed in `naf-mode'."
+:SEE-ALSO `mon-insert-dbc-link' which inserts a vanilla href link formatted for a
+page URL.\nUsed in `naf-mode'.\n►►►"
 (interactive "n3-4 digit document number:\nsDoc's NAF type:\nsText for link title:")
   (let* ((dn
 	  (if (and doc-num)
@@ -306,15 +323,15 @@ DBC page URL.\nUsed in `naf-mode'."
     (insert  dbc-url)))
 
 ;;; ==============================
-;;; NOTE: not 100% correct yet because doesn't detect pre-existing wrapped urls
+;;; :NOTE not 100% correct yet because doesn't detect pre-existing wrapped urls
 ;;; in _some_ buffer locations.
-;;; CREATED: <Timestamp: Saturday April 18, 2009 @ 06:51.27 PM - by MON KEY>
+;;; :CREATED <Timestamp: Saturday April 18, 2009 @ 06:51.27 PM - by MON>
 (defun mon-wrap-all-urls ()
   "Wraps all URLs in buffer _after point_ with (URL `*').
 Conditional prefix matching regexps in `*mon-wrap-url-schemes*' global.
 Won't replace recursively on pre-existing wrapped URLs.\n
-See also; `thing-at-point-url-at-point', `mon-wrap-url', `mon-wrap-text', 
-`mon-wrap-span', `mon-wrap-selection', `mon-wrap-with'."
+:SEE-ALSO `thing-at-point-url-at-point', `mon-wrap-url', `mon-wrap-text', 
+`mon-wrap-span', `mon-wrap-selection', `mon-wrap-with'.\n►►►"
   (interactive)
   (save-excursion
     ;;(goto-char (point-min)) -not working
@@ -332,22 +349,21 @@ See also; `thing-at-point-url-at-point', `mon-wrap-url', `mon-wrap-text',
 		(skip-syntax-backward "^-")
 		(replace-string url-targ url-rep)
 		(skip-syntax-forward "^w"))))))))
-
-;;;test-me;http://www.somethign.xomthing.com/blotto
-;;;test-me;ftp://some.site.com
-;;;test-me;http://www.somethign.xomthing.com/blamop
-;;;test-me;mailto:stan@derbycityprints.com
+;;
+;;; :TEST-ME http://www.somethign.xomthing.com/blotto
+;;; :TEST-ME ftp://some.site.com
+;;; :TEST-ME http://www.somethign.xomthing.com/blamop
 
 ;;; ==============================
-;;; TODO: Add ability evaluate the region programatically and otherwise.
-;;; MODIFICATIONS: <Timestamp: Monday June 29, 2009 @ 06:22.48 PM - by MON KEY>
+;;; :TODO Add ability evaluate the region programatically and otherwise.
+;;; :MODIFICATIONS <Timestamp: Monday June 29, 2009 @ 06:22.48 PM - by MON>
 (defun mon-wrap-one-url () ;;(&optional start end insertp)
   "Wrap 1\(one\)the URL  _after point_ with (URL `*').
 Conditional prefix matching regexps in `*mon-wrap-url-schemes*' global.
 Won't replace recursively on pre-existing wrapped URLs.\n
-See also; `mon-wrap-all-urls', `thing-at-point-url-at-point',
+:SEE-ALSO `mon-wrap-all-urls', `thing-at-point-url-at-point',
 `mon-wrap-url', `mon-wrap-text', `mon-wrap-span', `mon-wrap-with'
-`mon-wrap-selection'."
+`mon-wrap-selection'.\n►►►"
   (interactive)
   (save-excursion
     (let* ((url-bnds (bounds-of-thing-at-point 'url))
@@ -361,22 +377,21 @@ See also; `mon-wrap-all-urls', `thing-at-point-url-at-point',
       (goto-char bnd-start)
       (delete-region bnd-start bnd-end)
       (insert rep-url))))
-
-;;;test-me;http://www.somethign.xomthing.com/blotto
-;;;test-me;ftp://some.site.com
-;;;test-me;http://www.somethign.xomthing.com/blamop
-;;;test-me;mailto:stan@derbycityprints.com
+;;
+;;; :TEST-ME http://www.somethign.xomthing.com/blotto
+;;; :TEST-ME ftp://some.site.com
+;;; :TEST-ME http://www.somethign.xomthing.com/blamop
 
 ;;; ==============================
-;;; COURTESY: Xah Lee
+;;; :COURTESY Xah Lee
 (defun mon-wrap-url ()
   "Make thing at cursor point into an HTML link.\n
-EXAMPLE:\n http://wikipedia.org\nbecomes:\n
+:EXAMPLE\n http://wikipedia.org\nbecomes:\n
 <a href=\"http://en.wikipedia.org/\">http://wikipedia.org/</a>\n
 Or:\n'test' becomes <a href=\"test\">test</a>\n
-See also; `mon-wrap-all-urls', `mon-wrap-one-url', `*mon-wrap-url-schemes*',
+:SEE-ALSO `mon-wrap-all-urls', `mon-wrap-one-url', `*mon-wrap-url-schemes*',
 `thing-at-point-url-at-point',`mon-wrap-text', `mon-wrap-span',
-`mon-wrap-selection', `mon-wrap-with'."
+`mon-wrap-selection', `mon-wrap-with'.\n►►►"
   (interactive)
   (re-search-backward "[\n\t ()]" nil t)
   (looking-at "[\n\t ()]?\\([^\n\t ()]+\\)")
@@ -388,24 +403,26 @@ See also; `mon-wrap-all-urls', `mon-wrap-one-url', `*mon-wrap-url-schemes*',
     (delete-region p1 p2)
     (goto-char p1)
     (insert "<a href=\"" url "\">" url "</a>" )))
-
+;;
 ;;; http://sosof.org/
 ;;; => <a href="http://sosof.org/">http://sosof.org/</a>
 
 ;;; `mon-wrap-text' is defined in mon-utils.el
 ;;; ==============================
-;;; COURTESY: Xah Lee
+;;; :COURTESY Xah Lee
 (defun mon-wrap-span ()
   "Wrap a HTML <span> tag around current word or region.
-Uses DBC's link_green_bold CSS.\n\nEXAMPLE:
-.link_green_bold {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 9px;
-	color: #5A8F5D;
-	font-weight:bold;
-}\n
-See also; `mon-wrap-selection', `mon-wrap-text', `mon-wrap-with',
-`mon-wrap-url', `mon-wrap-all-urls'."
+Uses MON's link_green_bold CSS.\n\n:EXAMPLE
+,----
+| .link_green_bold {
+| 	font-family: Verdana, Arial, Helvetica, sans-serif;
+| 	font-size: 9px;
+| 	color: #5A8F5D;
+| 	font-weight:bold;
+| }
+`----\n
+:SEE-ALSO `mon-wrap-selection', `mon-wrap-text', `mon-wrap-with',
+`mon-wrap-url', `mon-wrap-all-urls'.\n►►►"
   (interactive)
   (mon-wrap-text "<span class=\"link_green_bold\">" "</span>"))
 
@@ -419,7 +436,7 @@ See also; `mon-wrap-selection', `mon-wrap-text', `mon-wrap-with',
 ;;; ==============================
 (defun mon-make-html-table-string (textblock delim)
   "Turn a text string into an HTML table. 
-Helper function for `mon-make-html-table' which see."
+Helper function for `mon-make-html-table' which see.\n►►►"
   (let ()
     (setq textblock (replace-regexp-in-string delim "</td><td>" textblock))
     (setq textblock (replace-regexp-in-string "\n" "</td></tr>\n<tr><td>" textblock))
@@ -432,7 +449,7 @@ Helper function for `mon-make-html-table' which see."
   "Turn the current paragraph into a HTML table.
 Where \"current paragraph\" has empty lines before and after the block of 
 text after point.\n
-EXAMPLE:
+:EXAMPLE
 With \"-\" as separator transforms this:\n
 a-b-c\n  1-2-3\n  this-and-that\n
 Into the following html table:\n
@@ -440,7 +457,7 @@ Into the following html table:\n
  <tr><td>a</td><td>b</td><td>c</td></tr>
  <tr><td>1</td><td>2</td><td>3</td></tr>
  <tr><td>this</td><td>and</td><td>that</td></tr>\n </table>\n
-See also; `mon-make-html-table-string'."
+:SEE-ALSO `mon-make-html-table-string'.\n►►►"
   (interactive "sEnter string pattern for column separation:")
   (let (bds p1 p2 myStr)
     (setq bds (bounds-of-thing-at-point 'paragraph))
@@ -451,22 +468,62 @@ See also; `mon-make-html-table-string'."
     (insert (mon-make-html-table-string myStr sep) "\n")))
 
 ;;; ==============================
-;;; NOTE: This is buggy on the w32 paths.
-;;; USE: wget.el instead. (locate-library "wget") 
-;;; CREATED: <Timestamp: Tuesday June 30, 2009 @ 02:30.21 PM - by MON KEY>
+;;; :NOTE This is buggy on the w32 paths.
+;;; :USE wget.el instead. (locate-library "wget") 
+;;; :CREATED <Timestamp: Tuesday June 30, 2009 @ 02:30.21 PM - by MON KEY>
 (defun mon-fetch-rfc (rfc-num)
 "Fetches an RFC with RFC-NUM with wget.
-NOTE: This is buggy with w32 paths."
+:NOTE This is buggy with w32 paths.\n►►►"
 (interactive "sRFC number :")
   (let* ((the-rfc rfc-num)
          (fetch-from (format 
                       "http://tools.ietf.org/rfc/rfc%s.txt" the-rfc)))
     (shell-command  (format "wget %s" fetch-from))))
-
-;;;test-me;(mon-fetch-rfc 2616)
+;;
+;;; :TEST-ME (mon-fetch-rfc 2616)
 
 ;;; ==============================
-;;; COURTESY: Stefan Reichoer <stefan@xsteve.at> HIS: .emacs 
+;;; :W3M url grabber
+
+(when (featurep 'w3m)
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-11-22T16:50:15-05:00Z}#{09477} - by MON>
+(defun mon-get-w3m-url-at-point-maybe ()
+  "Return two elt list as \(MEHTOD \"URL\"\) when text-properties at point has
+w3m-href-anchor value and is a 'file 'http 'https.
+:SEE-ALSO `mon-get-w3m-url-at-point'\n►►►"
+  (let* ((is-url (get-text-property (point) 'w3m-href-anchor))
+         (match-with "\\(file\\|http\\|https\\)")
+         (is-match (if (stringp is-url)
+                       (string-match match-with is-url)))
+         (got-match (if (and is-url is-match)
+                        (match-string-no-properties 0 is-url))))
+    (if got-match
+        (cond ((string= got-match "file")  `(file  ,is-url))
+              ((string= got-match "http")  `(http  ,is-url))
+              ((string= got-match "https") `(https ,is-url))
+              (t nil)))))
+;; 
+;;; ============================== 
+;;; :CREATED <Timestamp: #{2009-11-22T16:59:12-05:00Z}#{09477} - by MON>
+(defun mon-get-w3m-url-at-point (&optional insrtp buffer intrp)
+  "Return w3m-href-anchor value and is a 'file 'http 'https.
+When INSRTP in non-nil and BUFFER names an existing buffer insert the w3m URL in
+BUFFER. If BUFFER is nil or does no exist return URL.
+:SEE-ALSO `mon-get-w3m-url-at-point-maybe'\n►►►"
+  (interactive "i\ni\np")
+  (let ((url-maybe (mon-get-w3m-url-at-point-maybe))
+        (do-buff (if buffer (get-buffer buffer))))
+    (when url-maybe
+      (cond (intrp (princ (cadr url-maybe)))
+            ((and insrtp do-buff)
+             (save-excursion                
+               (princ (concat "\n" (cadr url-maybe)) do-buff)))
+            (t url-maybe)))))
+) ; :CLOSE if w3m
+
+;;; ==============================
+;;; :COURTESY Stefan Reichoer <stefan@xsteve.at> :HIS .emacs 
 ;;; ==============================
 ;; ;;; wget
 ;; (add-site-lisp-load-path "wget/")
@@ -489,32 +546,32 @@ NOTE: This is buggy with w32 paths."
 ;;; ==============================
 
 ;;; ==============================
-;;; COURTESY: Dave Pearson <davep@davep.org> HIS: tld.el 
-;;; (URL `http://www.davep.org/emacs/tld.el')
-;;; VERSION: $Revision: 1.5 $ - Copyright 2000-2008 - GPLv2
+;;; :COURTESY Dave Pearson <davep@davep.org> :HIS tld.el 
+;;; :SEE (URL `http://www.davep.org/emacs/tld.el')
+;;; :VERSION $Revision: 1.5 $ - Copyright 2000-2008 - GPLv2
 ;;; TLD -> Top Level Domain names
 ;;; A TLD lookup tool tld.el provides a command for looking up TLDs, either by searching for a
 ;;; specific TLD or by searching country names. One command is provided: `tld'.
 ;;;
-;;; NOTE: that, to some degree, this code duplicates the functionality
+;;; :NOTE that, to some degree, this code duplicates the functionality
 ;;; provided by `what-domain' (a command that is part of emacs). tld.el
 ;;; differs slightly in that it allows for both TLD and country name
 ;;; searches. Also, compared to emacs 20.7, the list of TLDs is more complete
 ;;; (autoload 'tld "tld" "Perform a TLD lookup" t)
 ;;; ==============================
-;;; CREATED: <Timestamp: Tuesday May 19, 2009 @ 12:11.29 PM - by MON KEY>
-;;; MODIFICATIONS: altered the original tld alist keys to reflect the those of
+;;; :CREATED <Timestamp: Tuesday May 19, 2009 @ 12:11.29 PM - by MON>
+;;; :MODIFICATIONS altered the original tld alist keys to reflect the those of
 ;;; mail-extr.el (e.g. notes pertaining to `what-doman')
 ;;; FROM: mail-extr.el
 ;;; Keep in mind that the country abbreviations follow ISO-3166.  There is
 ;;; a U.S. FIPS that specifies a different set of two-letter country
 ;;; abbreviations. Updated by the RIPE Network Coordination Centre.
 ;;; Source: ISO 3166 Maintenance Agency - Latest change: 2007/11/15
-;;; (URL `http://www.iso.org/iso/en/prods-services/iso3166ma/02iso-3166-code-lists/list-en1-semic.txt')
-;;; (URL `http://www.iana.org/domain-names.htm')
-;;; (URL `http://www.iana.org/cctld/cctld-whois.htm')
+;;; :SEE (URL `http://www.iso.org/iso/en/prods-services/iso3166ma/02iso-3166-code-lists/list-en1-semic.txt')
+;;; :SEE (URL `http://www.iana.org/domain-names.htm')
+;;; :SEE (URL `http://www.iana.org/cctld/cctld-whois.htm')
 ;;; ==============================
-;;; WAS: `tld-list' -> `*mon-tld-list*'
+;;; :WAS `tld-list' -> `*mon-tld-list*'
 (defconst *mon-tld-list*
   '(;; ISO 3166 codes:
     ("AC" . "Ascension Island")  
@@ -795,51 +852,51 @@ NOTE: This is buggy with w32 paths."
     ("UUCP" . "Unix to Unix CoPy")
     ("ARPA" . "Advanced Research Projects Agency (U.S. DoD)"))
   "Association list of TLDs per ISO-3166 codes.
-NOTE: Country abbreviations are per ISO 3166 spec. There is an U.S. FIPS that
+:NOTE Country abbreviations are per ISO 3166 spec. There is an U.S. FIPS that
 specifies a different set of two-letter country abbreviations.
 Updated by the RIPE Network Coordination Centre. 
-SOURCE: ISO 3166 Maintenance Agency - LATEST-CHANGE: 2007-11-15.
-\(URL `http://www.iso.org/iso/en/prods-services/iso3166ma/02iso-3166-code-lists/list-en1-semic.txt');
-\(URL `http://www.iana.org/domain-names.htm');
-\(URL `http://www.iana.org/cctld/cctld-whois.htm').\n
-See also; `mon-tld-find-name', `mon-tld-tld', `mon-tld-find-tld', `mon-tld-name', `mon-tld'.")
+:SOURCE ISO 3166 Maintenance Agency - :VERSION 2007-11-15.
+:SEE \(URL `http://www.iso.org/iso/en/prods-services/iso3166ma/02iso-3166-code-lists/list-en1-semic.txt');
+:SEE \(URL `http://www.iana.org/domain-names.htm');
+:SEE \(URL `http://www.iana.org/cctld/cctld-whois.htm').\n
+:SEE-ALSO `mon-tld-find-name', `mon-tld-tld', `mon-tld-find-tld', `mon-tld-name', `mon-tld'.\n►►►")
 ;;
-;;; WAS: `tld-tld' -> `mon-tld-tld'
+;;; :WAS `tld-tld' -> `mon-tld-tld'
 (defsubst mon-tld-tld (tld)
   "Return the TLD portion of a TLD pair.\n
-See also; `mon-tld-find-name',`mon-tld-find-tld', `mon-tld-name',
-`mon-tld',`*mon-tld-list*'."
+:SEE-ALSO `mon-tld-find-name',`mon-tld-find-tld', `mon-tld-name',
+`mon-tld',`*mon-tld-list*'.\n►►►"
   (car tld))
-;;; WAS: `tld-name' -> `mon-tld-name'
+;;; :WAS `tld-name' -> `mon-tld-name'
 (defsubst mon-tld-name (tld)
   "Return the name portion of a TLD pair.\n
-See also; `mon-tld-find-name', `mon-tld-tld', `mon-tld-find-tld',
-`mon-tld',`*mon-tld-list*'."
+:SEE-ALSO `mon-tld-find-name', `mon-tld-tld', `mon-tld-find-tld',
+`mon-tld',`*mon-tld-list*'.\n►►►"
   (cdr tld))
 ;;
-;;; WAS: `mon-tld-find-tld'
+;;; :WAS `mon-tld-find-tld'
 (defun mon-tld-find-tld (tld)
   "Lookup a TLD. If found a (TLD . NAME) pair is returned.\n
-See also; `mon-tld-find-name', `mon-tld-tld',`mon-tld-name', `mon-tld',
-`*mon-tld-list*'.."
+:SEE-ALSO `mon-tld-find-name', `mon-tld-tld',`mon-tld-name', `mon-tld',
+`*mon-tld-list*'\n►►►."
   (assoc (upcase tld) *mon-tld-list*))
 ;;
-;;; WAS: `tld-find-name' -> `mon-tld-find-name'
+;;; :WAS `tld-find-name' -> `mon-tld-find-name'
 (defun mon-tld-find-name (name)
   "Lookup a TLD name. Returns a list of hits.\n
-See also; `mon-tld-tld', `mon-tld-find-tld', `mon-tld-name', `mon-tld', 
-,`*mon-tld-list*'."
+:SEE-ALSO `mon-tld-tld', `mon-tld-find-tld', `mon-tld-name', `mon-tld', 
+`*mon-tld-list*'."
   (let ((case-fold-search t))
     (loop for tld in mon-tld-list
           when (string-match name (mon-tld-name tld))
           collect tld)))
 ;;
-;;; WAS: `tld' -> `mon-tld'
+;;; :WAS `tld' -> `mon-tld'
 ;;;###autoload
 (defun mon-tld (search)
   "Search the TLD list.\n
-See also; `mon-tld-find-name', `mon-tld-tld', `mon-tld-find-tld', `mon-tld-name',
-`*mon-tld-list*'."
+:SEE-ALSO `mon-tld-find-name', `mon-tld-tld', `mon-tld-find-tld', `mon-tld-name',
+`*mon-tld-list*'.\n►►►"
   (interactive "sSearch: ")
   (let* ((tld-lookup (string= (substring search 0 1) "."))
          (result     (if tld-lookup (mon-tld-find-tld (substring search 1)) (mon-tld-find-name search))))

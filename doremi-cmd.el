@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2009, Drew Adams, all rights reserved.
 ;; Created: Sun Sep 12 17:13:58 2004
 ;; Version: 21.0
-;; Last-Updated: Sat Nov 21 16:51:42 2009 (-0800)
+;; Last-Updated: Sun Nov 22 10:34:47 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 312
+;;     Update #: 319
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/doremi-cmd.el
 ;; Keywords: keys, cycle, repeat
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -145,6 +145,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2009/11/22 dadams
+;;     Use color-theme-initialize instead of load-library, to load themes.
 ;; 2009/11/21 dadams
 ;;     Added: doremi-color-themes-1, doremi-buffers-1, doremi(-global)-marks-1.
 ;;     doremi-(color-themes|buffers|(-global)marks)+: Let C-g restore .  Use *-1.
@@ -227,11 +229,22 @@ Don't forget to mention your Emacs and library versions."))
 ;; Replace this by your favorite color themes. Each must be a defined function.
 ;; By default, this includes all color themes defined globally (`color-themes').
 ;;
+;; NOTE: We need the `condition-case' because of a BUG in `directory-files' for
+;; Emacs 20.  Bug reported to `color-theme.el' maintainer 2009-11-22.  The problem
+;; is that the default value of `color-theme-libraries' concats
+;; `file-name-directory', which ends in `/', with `/themes', not with `themes'.
+;; So the result is `...//themes'.  That is tolerated by Emacs 21+
+;; `directory-files', but not for Emacs 20.  Until this `color-theme.el' bug is
+;; fixed, Emacs 20 users will need to manually load `color-theme-libraries.el'.
 ;;;###autoload
 (defcustom doremi-color-themes (and (prog1 (require 'color-theme nil t)
-                                      (condition-case nil
-                                          (load-library "color-theme-library")
-                                        (error nil)))
+                                      (when (and (fboundp 'color-theme-initialize)
+                                                 (not color-theme-initialized))
+                                        (condition-case nil
+                                            (let ((color-theme-load-all-themes  t))
+                                              (color-theme-initialize)
+                                              (setq color-theme-initialized  t))
+                                          (error nil))))
                                     (delq 'bury-buffer (mapcar 'car color-themes)))
   "*List of color themes to cycle through using `doremi-color-themes+'."
   :type 'hook :group 'doremi-misc-commands)

@@ -11,7 +11,7 @@
 ;;; `mon-twin-vertical', `mon-what-face', `mon-toggle-menu-bar',
 ;;; `mon-append-to-register', `mon-append-to-buffer', `mon-region-position',
 ;;; `mon-region-length', `mon-region-unfill', `mon-region-capitalize',
-;;; `mon-region-reverse', `mon-trunc', `mon-inhibit-read-only',
+;;; `mon-region-reverse', `mon-toggle-trunc', `mon-inhibit-read-only',
 ;;; `mon-inhibit-modification-hooks', `mon-inhibit-point-motion-hooks',
 ;;; `mon-toggle-read-only-point-motion', `mon-wrap-selection',
 ;;; `mon-wrap-text', `mon-wrap-with', `mon-choose-from-menu',
@@ -65,6 +65,7 @@
 ;;; `mon-sha1-region', `mon-kill-ring-save-w-props', 
 ;;; `mon-escape-string-for-cmd', `mon-line-strings-qt-region'
 ;;; `mon-buffer-name->kill-ring', `mon-make-a-pp'
+;;; `mon-generate-WPA-key', `mon-string-to-hex-string'
 ;;; FUNCTIONS:◄◄◄
 ;;; FUNCTIONS:###
 ;;; 
@@ -79,6 +80,7 @@
 ;;; VARIABLES:
 ;;;
 ;;; ALIASED:
+;;; `mon-scratch'                  -> `scratch'
 ;;; `mon-string-combine-and-quote' -> `combine-and-quote-strings'
 ;;; `mon-string-split-and-unquote' -> `split-string-and-unquote'
 ;;; `mon-string->symbol'           -> `mon-string-to-symbol'
@@ -90,9 +92,10 @@
 ;;; `mon-foreach', `mon-for', `mon-loop', `mon-moveq'
 ;;;
 ;;; DEPRECATED:
-;;; `mon-string-from-sequence2' ;removed
+;;; `mon-string-from-sequence2' ;; :REMOVED
 ;;;
 ;;; RENAMED:
+;;; `mon-trunc' -> `mon-toggle-truncate-line'
 ;;; `mon-stringify-list' -> `mon-string-ify-list'
 ;;; `mon-split-string-line' -> `mon-string-split-line'
 ;;;
@@ -164,7 +167,7 @@
 ;;; ==============================
 (require 'mon-regexp-symbols)
 (require 'mon-time-utils)
-(require 'naf-mode-replacements) ;;BEFORE mon-dir-utils, BEFORE: naf-mode-insertion-utils
+(require 'naf-mode-replacements) ;; :BEFORE mon-dir-utils :BEFORE naf-mode-insertion-utils
 (require 'mon-dir-locals-alist)
 (require 'mon-dir-utils)
 (require 'mon-insertion-utils)
@@ -173,6 +176,7 @@
 (require 'mon-hash-utils)
 (require 'mon-doc-help-utils)
 (require 'mon-doc-help-CL)
+(require 'mon-tramp-utils)
 (require 'naf-skeletons)
 (require 'naf-mode)
 (require 'ebay-template-mode)
@@ -183,7 +187,7 @@
 ;;; ==============================
 ;;; (require 'mon-regexp-symbols)
 ;;; (require 'mon-time-utils)
-;;; (require 'naf-mode-replacements) ;before dir-utils
+;;; (require 'naf-mode-replacements) ;; :BEFORE dir-utils
 ;;; (require 'mon-dir-locals-alist)
 ;;; (require 'mon-dir-utils)
 ;;; (require 'mon-insertion-utils)
@@ -266,11 +270,12 @@ When insrtp or called-interactively insert returned vars at point.
 ;;; :TEST-ME (prin1 (mon-get-env-variables t) (current-buffer))
 
 ;;; ==============================
+;;; :NOTE (emacs-pid)
 ;;; :CREATED <Timestamp: #{2009-10-16T15:49:07-04:00Z}#{09425} - by MON KEY>
 (defun mon-get-sys-proc-list ()
   "Return a full lisp list of current system-proceses.\n
-:EXAMPLE:\n(mon-get-sys-proc-list)\n
-:SEE-ALSO `mon-insert-sys-proc-list'.\n►►►"
+:EXAMPLE \n(mon-get-sys-proc-list)\n
+:SEE-ALSO `mon-insert-sys-proc-list', `emacs-pid'.\n►►►"
   (mapcar (lambda (x) (process-attributes x))
            (list-system-processes)))
 ;;
@@ -308,7 +313,6 @@ On w32 it is not required give the .exe suffix.
 ;;; :TEST-ME (mon-get-proc-w-name "emacs")
 ;;; :TEST-ME (mon-get-proc-w-name "svchost")
 ;;; :TEST-ME (mon-get-proc-w-name "bubba")
-;;; (emacs-pid) 3064
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-10-06T16:04:09-04:00Z}#{09412} - by MON KEY>
@@ -329,18 +333,19 @@ This function will be :DEPRECATED once EMACS <-> CEDET merge is complete."
 (defun mon-terminal ()
   "When `gnu-linuxp' launch a terminal. 
 When `win32p' launch Cygwin Bash in cmd console.\n
-:SEE-ALSO `mon-cmd' which when win32p returns the NT Command console.\n►►►"
+:SEE-ALSO `mon-cmd' which when win32p returns the NT Command console.
+`w32shell-cmd-here', `w32shell-cmd', `w32shell-explorer'.\n►►►"
   (interactive)
   (cond 
-   (IS-BUG-P (message "you don't have the goods for this"))
-   (IS-MON-P-W32 (w32-shell-execute "open" "C:\\Cygwin.bat"))
+   (IS-BUG-P (message "You don't have the goods for this"))
+   (IS-MON-P-W32 (w32-shell-execute "open" "cmd.exe" "C:\\Cygwin.bat"))
    (IS-MON-P-GNU (shell-command "terminal"))))
 
 ;;; ==============================
 (defun mon-cmd ()
   "When `win32p' launch the NT Command console. 
 When `gnu-linuxp' return a terminal.\n
-:SEE-ALSO `mon-terminal' which when `win32p' gives a cygwin bash shell wrapped
+:SEE-ALSO `mon-terminal' which when `win32p' gives a Cygwin bash shell wrapped
 in a cmd console.\n►►►"
   (interactive)
   (cond (win32p (w32-shell-execute "open" "cmd"))
@@ -379,10 +384,12 @@ put following in conkerorrc file:
 Get \(or create\) a *scratch* buffer now!\n►►►"
   (interactive)
   (switch-to-buffer "*scratch*")
-  ;;(lisp-interaction-mode)
+  ;; (lisp-interaction-mode)
   (if current-prefix-arg
       (delete-region (point-min) (point-max))
     (goto-char (point-max))))
+;;
+(defalias 'mon-scratch 'scratch)
 
 ;;; ==============================
 (defun switch-to-messages ()
@@ -395,7 +402,7 @@ Get \(or create\) a *scratch* buffer now!\n►►►"
   "Scroll with the cursor in place, moving the UP page instead.\n►►►"
   (interactive "p")
   (forward-line (- n))
-  ;;  (previous-line n)
+  ;; (previous-line n)
   (scroll-down n))
 
 ;;; ==============================
@@ -403,7 +410,7 @@ Get \(or create\) a *scratch* buffer now!\n►►►"
   "Scroll with the cursor in place, moving the DOWN page instead.\n►►►"
   (interactive "p")
   (forward-line n)
-  ;(next-line n)
+  ;; (next-line n)
   (scroll-up n))
 
 ;;; ==============================
@@ -529,7 +536,7 @@ Redefines `append-to-buffer' with a \"\n\".
 	(set-buffer append-to)
 	(setq point (point))
 	(barf-if-buffer-read-only)
-	(newline)  ;added newline else identical to append-to-buffer
+	(newline)  ;; :ADDED `newline', else identical to `append-to-buffer'.
 	(insert-buffer-substring oldbuf start end)
 	(dolist (window windows)
 	  (when (= (window-point window) point)
@@ -540,13 +547,15 @@ Redefines `append-to-buffer' with a \"\n\".
   "Return the postion of current region. 
 A stupid and mostly useless function.\n►►►"
   (interactive)
-  (message "current reg-beg is: %s reg-end is: %s" (region-beginning) (region-end)))
+  (message "current reg-beg is: %s reg-end is: %s"
+           (region-beginning) (region-end)))
 
 ;;; ==============================
 (defun mon-region-length ()
   "Return the regions length.\n►►►"
   (interactive)
-  (message "Region length=%s" (- (region-end) (region-beginning))))
+  (message "Region length=%s" 
+           (- (region-end) (region-beginning))))
 
 ;;; ==============================
 (defun mon-region-unfill (start end)
@@ -566,29 +575,33 @@ This function is a 1:1 duplicate of `capitalize-region'.\n►►►"
   (capitalize-region start end))
 
 ;;; ==============================
-(defun mon-region-reverse (beg end)
-  "Reverses the characters in the region. 
+(defun mon-region-reverse (beg end &optional insrtp intrp)
+  "Reverse the characters in the region. 
+When called-interactively insert the reversed as with princ.
+When INSRTP is non-nil insert the reversed as with princ.
+Insertion does not move point. Insertion is whitespace agnostic.
 :SEE-ALSO `mon-word-reverse-region'.\n►►►"
-  (interactive "r")
-  (insert (apply 'concat (reverse (split-string (delete-and-extract-region beg end) "")))))
-
-;;; ==============================
-(defun mon-trunc ()
-  "Toggle the truncate-line variable and redraw the display.\n►►►"
-  (interactive)
-  (toggle-truncate-lines nil)
-  (message
-   (if truncate-lines
-       "truncating lines (... $)"
-     "wrapping lines (...\\)")
-   (redraw-display)))
+  (interactive "r\ni\np")
+  (let ((rr (apply 
+             'concat 
+             (reverse 
+              (split-string (buffer-substring-no-properties beg end) "")))))
+        (cond (intrp
+               (save-excursion 
+                 (delete-region beg end)
+                 (princ rr (current-buffer))))
+              (insrtp 
+               (save-excursion 
+                 (delete-region beg end)
+                 (prin1 rr (current-buffer))))
+              (t rr))))
 
 ;;; ==============================
 ;;; :NOTE consider macrology?
-;;; Working-but _bugity_ :AS-OF
+;;; BUGGY but :WORKING-AS-OF
 ;;; :CREATED <Timestamp: #{2009-09-09T12:29:52-04:00Z}#{09373} - by MON>
 (defun mon-test-keypresses (&optional first second third)
-  "Used to test if additioanl optional Prefix args have been passed to interactive.\n
+  "Use to test if additioanl optional prefix args have been passed to interactive.\n
 :EXAMPLE\nM-34 M-x mon-test-keypresses\n
 => \(\(meta . 51\) \(meta . 52\) \(meta . 120\) mon-test-keypresses\)\n►►►"
   (interactive "P\nP\np")
@@ -703,6 +716,20 @@ the tedium of building the entire scaffolding.
       (insert in-front)
       (save-excursion
         (insert in-rear)))))
+
+;;; ==============================
+;;; :RENAMED `mon-trunc' -> `mon-toggle-truncate-line'
+;;; :MODIFICATIONS <Timestamp: #{2009-10-26T15:45:18-04:00Z}#{09441} - by MON KEY>
+(defun mon-toggle-truncate-line (&optional intrp)
+  "Toggle the truncate-line variable and redraw the display.\n►►►"
+  (interactive "p")
+  (toggle-truncate-lines nil)
+  (if intrp
+      (message
+       (if truncate-lines
+           "truncating lines (... $)"
+           "wrapping lines (...\\)")))
+  (redraw-display))
 
 ;;; ==============================
 ;;; :NOTE to remind us where we're going 
@@ -2411,8 +2438,8 @@ EXAMPLE:\n(mon-generate-prand-id)\n
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-11-06T17:41:33-05:00Z}#{09455} - by MON>
 (defun* mon-string-to-hex-string (&key hxify-str w-dlim prand-hex-len)
-  "Return HXIFY-STR as a string of hex numbers.  When keyword W-DLIM is non-nil
-delimit hex numbers w-dlim.  When keyword PRAND-HEX-LEN (a number >= 80 ) is
+  "Return HXIFY-STR as a string of hex numbers. When keyword W-DLIM is non-nil
+delimit hex numbers w-dlim. When keyword PRAND-HEX-LEN (a number >= 80 ) is
 non-nil, return a pseudo-random string of length N generated with
 `mon-generate-prand-id'. Useful for generating throw-away WPA keys.\n
 :EXAMPLE\n\(mon-string-to-hex-string :hxify-str \"bubba\"\)
@@ -2423,15 +2450,15 @@ non-nil, return a pseudo-random string of length N generated with
 :SEE-ALSO `mon-generate-WPA-key', `mon-generate-prand-seed'.\n►►►"
   (let (xx)
     (unless prand-hex-len
-      (mapc (lambda (x) (setq xx (cons x xx)))  hxify-str)
+      (mapc (lambda (x) (setq xx (cons x xx))) hxify-str)
       (setq xx (reverse xx))
       (setq xx
             (mapconcat (lambda (x) (format "%x" x))
                        xx (if (and w-dlim (stringp w-dlim)) w-dlim ""))))
-    (when prand-hex-len 
+    (when prand-hex-len
       (if (<= prand-hex-len 80)
           (setq xx
-                (substring 
+                (substring
                  (concat (car (mon-generate-prand-id))
                          (car (mon-generate-prand-id))) 0 prand-hex-len))
           (error "%s is too large or not a number" prand-hex-len)))
@@ -2458,6 +2485,7 @@ Does not move point.\n:EXAMPLE\n(mon-generate-WPA-key)\n
 ;;
 ;;; :TEST-ME (mon-generate-WPA-key)
 ;;; :TEST-ME (call-interactively 'mon-generate-WPA-key)
+;;; ==============================
 
 ;;; ==============================
 ;;; CREATED: <Timestamp: #{2009-10-21T14:27:09-04:00Z}#{09433} - by MON KEY>
@@ -3142,13 +3170,16 @@ to atom-func.\n
 (defun mon-escape-string-for-cmd (unescape a-string &rest more-strings)
   "Return A-STRING escaped for passing to the w32 cmd.exe e.g `/' -> `\\\\'.
 When MORE-STRINGS is non-nil escape these also.
-When UNESCAPE is non-nil unescape A-STRING and/or MORE-STRINGS."
+When UNESCAPE is non-nil unescape A-STRING and/or MORE-STRINGS.
+:SEE-ALSO `convert-standard-filename', `w32-shell-dos-semantics'.
+`w32-quote-process-args'
+\n►►►"
   (let ((got-more-p (if more-strings
-                     (cons a-string more-strings)
-                     a-string))
+                        (cons a-string more-strings)
+                        a-string))
         (rgxp-rplc (if unescape
-                     #'(lambda (u)(replace-regexp-in-string  "\\\\" "/" u))
-                     #'(lambda (e)(replace-regexp-in-string "/" "\\\\" e)))))
+                       #'(lambda (u)(replace-regexp-in-string  "\\\\" "/" u))
+                       #'(lambda (e)(replace-regexp-in-string "/" "\\\\" e)))))
     (if (consp got-more-p)
         (mapconcat rgxp-rplc got-more-p " ")
         (funcall rgxp-rplc got-more-p))))
@@ -3162,7 +3193,7 @@ Insert backslashes in front of special characters (namely  `\' backslash,
 requirements.\n\n:NOTE\n Don't run this on docstrings with regexps.\n
 Region should only contain the characters actually comprising the string
 supplied without the surrounding quotes.\n
-:SEE-ALSO`mon-unescape-lisp-string-region', `mon-escape-string-for-cmd'.\n►►►"
+:SEE-ALSO `mon-unescape-lisp-string-region', `mon-escape-string-for-cmd'.\n►►►"
   (interactive "*r")
   (save-excursion
     (save-restriction
@@ -3187,7 +3218,7 @@ supplied without the surrounding quotes.\n
 This amounts to removing preceeding backslashes from characters they escape.\n
 :NOTE region should only contain the characters actually comprising the string
 without the surrounding quotes.
-:SEE-ALSO `mon-escape-lisp-string-region',  `mon-escape-string-for-cmd'.\n►►►"
+:SEE-ALSO `mon-escape-lisp-string-region', `mon-escape-string-for-cmd'.\n►►►"
   (interactive "*r")
   (save-excursion
     (save-restriction
@@ -3288,8 +3319,7 @@ Gets us eval-expression automatically inserted into current-buffer.\n►►►"
 	   (read-from-minibuffer "Eval: "
 				 nil read-expression-map t
 				 'read-expression-history))
-         ;; the only point of this function is to 
-         ;; set current-prefix-arg to default to t
+         ;; Only point of function is to set current-prefix-arg default to t.
          ;; :CHANGED
          ;; current-prefix-arg)) 
 	 t))
@@ -3337,7 +3367,7 @@ Subsequent calls mark higher levels of sexps.\n►►►"
 
 ;;; ==============================
 ;;; :COURTESY Nikolaj Schumacher  :VERSION 2008-10-20
-;;; (URL `http://xahlee.org/emacs/syntax_tree_walk.html')
+;;; :SEE (URL `http://xahlee.org/emacs/syntax_tree_walk.html')
 ;;; :CREATED <Timestamp: Sunday January 18, 2009 - by MON KEY>
 (defun mon-semnav-up (arg)
   (interactive "p")
@@ -3419,7 +3449,7 @@ With ARG, begin column display at current column, not at left margin.\n►►►
     (if (and (beginning-of-defun) (looking-at "(defun"))
         (fmakunbound (cadr (read (current-buffer))))
       (error "No defun found near point"))))
-;;keep-with-above
+;; :KEEP-WITH-ABOVE
 (defun mon-unbind-symbol (symbol)
   "Totally unbind SYMBOL. Includes unbinding function binding, variable binding,
 and property list.\n►►►"
@@ -3427,17 +3457,17 @@ and property list.\n►►►"
   (fmakunbound symbol)
   (makunbound symbol)
   (setf (symbol-plist symbol) nil))
-;; keep-with-above.
+;; :KEEP-WITH-ABOVE
 (defun mon-unbind-function (symbol)
   "Remove the function binding of SYMBOL.\n►►►"
   (interactive "aFunction: ")
   (fmakunbound symbol))
-;; keep-with-above.
+;; :KEEP-WITH-ABOVE
 (defun mon-unbind-command (symbol)
   "Remove the command binding of SYMBOL.\n►►►"
   (interactive "CCommand: ")
   (fmakunbound symbol))
-;; keep-with-above.
+;; :KEEP-WITH-ABOVE
 (defun mon-unbind-variable (symbol)
   "Remove the variable binding of SYMBOL.\n►►►"
   (interactive (list 
@@ -3452,7 +3482,7 @@ and property list.\n►►►"
 
 ;;; ==============================
 ;;; :COURTESY Thierry Volpiatto :WAS `tv-dump-object-to-file'
-;;; (URL `http://lists.gnu.org/archive/html/emacs-devel/2009-09/msg00846.html')
+;;; :SEE (URL `http://lists.gnu.org/archive/html/emacs-devel/2009-09/msg00846.html')
 ;;; :CREATED <Timestamp: #{2009-10-01T12:31:29-04:00Z}#{09404} - by MON>
 (defun mon-dump-object-to-file (obj file)
   "Save symbol object OBJ to the byte compiled version of FILE.
@@ -3485,7 +3515,7 @@ This was only easily accesible from the menu.\n►►►"
 
 ;;; ==============================
 ;;; :COURTESY Francois Fleuret <fleuret@idiap.ch> :HIS fleuret.emacs.el
-;;; (URL `http://www.idiap.ch/~fleuret/files/fleuret.emacs.el')
+;;; :SEE (URL `http://www.idiap.ch/~fleuret/files/fleuret.emacs.el')
 ;;; :WAS `ff/compile-when-needed' -> `mon-compile-when-needed'
 ;;; ==============================
 (defun mon-compile-when-needed (name)

@@ -1,0 +1,82 @@
+This page is for discussing the page CategoryCompletion: its purpose, organization, etc.
+
+
+== 2009-11-22 changes ==
+
+[new]
+Drew reverted my attempts to try to add some context for organizing this page.
+We have had a rather long discussion off line and I think we will disagree for now on this.
+
+However I feel this page is badly organized.
+For example by just looking here you do not get any feeling for the different levels the packages mentioned here work on.
+That makes it in my opinion very hard for new users to understand (and perhaps for many old users too).
+Do someone else object to adding some thoughts about this here and reorganizing things here?
+(It should be short thoughts of course. Longer explanations do not fit here.) -- LennartBorgman
+
+[new:DrewAdams:2009-11-23 00:26 UTC]
+My disagreement is not with helping users get a better feeling for the "different levels" the packages mentioned here work on.
+
+My disagreement is with characterizing this ''category'' as having to do ''only'' with "different levels of completion software", "completion frameworks", "completion models", a conceptual software design model for implementations of completion mechanisms, and the like.
+-- DrewAdams
+
+[new]
+Then you are disagreeing with yourself. I have never said it should be only about different levels.
+<b>I said the page should be organized so that it is more easy to understand.</b>
+
+For example Icicles and RecentFiles shares some concepts, but they are really mostly not on the same level. Neither are TabCompletion and DynamicAbbreviations.
+
+And to do that organisation and make it useful you must shortly present why you do it.
+
+I think this an answer to all you write below.
+(And please notice that the lack of proper organizatio has already led to some discussion of it at the bottom of the page. And you also takes part there.)
+-- LennartBorgman
+
+[new]
+[CONTINUED, before Lennart's post just above]
+
+I have no problem with our adding wiki pages for such topics and their discussion. I simply disagree that '''completion''' is limited to such topics.
+
+CategoryCompletion should encompass any wiki page that relates in any way to Emacs completion. The category page should describe briefly what Emacs completion is (it does that now) -- and that's all.
+
+The category page should not try to shoehorn the category into any particular model regarding completion software, or even into the narrow topic of all such possible models.
+
+What needs to be said about what completion is in Emacs is said in the glossary page: [[completion]]. What we mean by completion is simply this: '''completion of text'''.
+
+Regardless of how that completion is done. Regardless of how the mapping between input text and output (completed) text is defined. Regardless of how that mapping is realized (implemented). Regardless of what UI is used to let users access/see/manipulate the set of matches (completions). Regardless of what UI is used to let users choose a completion.
+
+All of that belongs to CategoryCompletion, but the category is not limited to that. The category can include pages that tell users how to use vanilla Emacs completion, and other pages to help them learn this part of Emacs. The category is not just about a model of completion software.
+
+In Emacs, there is one distinction regarding completion that it is useful to be aware of: ''where the text is completed''. In Emacs, that means either (a) the [[minibuffer]] or (b) another buffer. Why is this distinction important? It is important ''practically'' -- that's what Emacs completion is about. As a user, it's important to realize the distinction, to know when someone means one or the other, etc.
+
+And that distinction is not only, or even primarily, about UI, BTW. How you interact with the minibuffer or with another buffer during completion is a different matter. Sure, the minibuffer has a vanilla, predefined behavior, and most non-minibuffer completion also. But the UI question is separate from where the text is being completed.
+
+I don't insist on distinguising minibuffer from non-minibuffer completion, though I believe it helps users to do so. We could simply list all of the CategoryCompletion links with no special organization, for all I care.
+
+What I do object to is characterizing completion itself, on the category page, using one particular model, or considering that completion wiki pages must be about completion models. The category should not be restricted in any way, beyond what Emacs completion '''''IS''''': text completion.
+
+''Any'' wiki page that is related to text completion is a candidate for category completion, IMO, and it should stay that way. And the text on the category page, besides the links, should say only that. Let's please keep discussion of software models etc. on separate pages, which can be linked to from the category page as appropriate. -- DrewAdams
+
+
+
+
+
+
+== 2006-01, about section `Other Completions' ==
+
+[new:DrewAdams:2006-01-02 20:15 UTC]
+Questions on section "Other Completion":
+* Are these not either input completion or text completion? Maybe some more explanation/description is needed.
+* What does the "command interaction" (in the intro) mean? Emacs commands or something else? If Emacs commands, why wouldn't "input filename completion" belong in section "Minibuffer Input Completion"? Again, maybe some more explanation/description is needed.
+* Is the point in putting SubprocessCompletion here that it can be used for either input completion or text completion? If so, that info is missing. Wouldn't it be clearer, in that case, to just list it in each of those sections?
+
+In sum, can we clear up whether "Other Completion" is needed and, if so, just what it means? Does it really mean "other than input or text completion"? -- DrewAdams
+
+[new]
+I'm trying to find a way to get rid of any past "Completions" buffers that appeared if you clicked on TAB, but you didn't use them. Is there any way to remove them from the buffer list automatically even if you didn't use them? I find that annoying... [[Anonymous]]
+
+
+
+
+
+----
+CategoryCompletion

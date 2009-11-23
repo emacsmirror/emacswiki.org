@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Tue Nov  3 11:54:14 2009 (-0700)
+;; Last-Updated: Sun Nov 22 09:12:33 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 1159
+;;     Update #: 1162
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -22,8 +22,9 @@
 ;;   `easymenu', `ffap', `ffap-', `frame-cmds', `frame-fns',
 ;;   `hexrgb', `icicles-cmd1', `icicles-fn', `icicles-mcmd',
 ;;   `icicles-opt', `icicles-var', `kmacro', `levenshtein',
-;;   `misc-fns', `mwheel', `pp', `pp+', `ring', `ring+', `strings',
-;;   `thingatpt', `thingatpt+', `wid-edit', `wid-edit+', `widget'.
+;;   `misc-fns', `mwheel', `pp', `pp+', `reporter', `ring', `ring+',
+;;   `sendmail', `strings', `thingatpt', `thingatpt+', `wid-edit',
+;;   `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -403,9 +404,8 @@ This command is intended only for use in Icicle mode." ; Doc string
   (lambda (color)                       ; Function to perform the action
     (modify-frame-parameters
      orig-frame (list (cons 'background-color (icicle-transform-multi-completion color)))))
-  prompt                                ; `completing-read' args
-  (mapcar #'icicle-make-color-candidate named-colors)
-  nil t nil (if (boundp 'color-history) 'color-history 'icicle-color-history) nil nil
+  prompt named-colors nil t nil         ; `completing-read' args
+  (if (boundp 'color-history) 'color-history 'icicle-color-history) nil nil
   ((orig-frame                         (selected-frame)) ; Additional bindings
    (orig-bg                            (frame-parameter nil 'background-color))
    (prompt                             "Background color: ")
@@ -431,9 +431,8 @@ See `icicle-frame-bg' - but this is for foreground, not background." ; Doc strin
   (lambda (color)                       ; Function to perform the action
     (modify-frame-parameters
      orig-frame (list (cons 'foreground-color (icicle-transform-multi-completion color)))))
-  prompt                                ; `completing-read' args
-  (mapcar #'icicle-make-color-candidate named-colors)
-  nil t nil (if (boundp 'color-history) 'color-history 'icicle-color-history) nil nil
+  prompt named-colors nil t nil         ; `completing-read' args
+  (if (boundp 'color-history) 'color-history 'icicle-color-history) nil nil
   ((orig-frame                         (selected-frame)) ; Additional bindings
    (orig-bg                            (frame-parameter nil 'foreground-color))
    (prompt                             "Foreground color: ")

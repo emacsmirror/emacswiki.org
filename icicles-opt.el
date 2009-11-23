@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Nov 21 17:03:12 2009 (-0800)
+;; Last-Updated: Sun Nov 22 10:37:12 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 3396
+;;     Update #: 3400
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -754,12 +754,26 @@ inputs.  You can override the behavior by using `C-u' with `\\[icicle-retrieve-p
 
 ;; Replace this list by your favorite color themes. Each must be the name of a defined function.
 ;; By default, this includes all color themes defined globally (variable `color-themes').
+;;
+;; NOTE: We need the `condition-case' because of a BUG in `directory-files' for Emacs 20.
+;; Bug reported to `color-theme.el' maintainer 2009-11-22.  The problem is that the default value
+;; of `color-theme-libraries' concats `file-name-directory', which ends in `/', with `/themes',
+;; not with `themes'.  So the result is `...//themes'.  That is tolerated by Emacs 21+
+;; `directory-files', but not for Emacs 20.  Until this `color-theme.el' bug is fixed, Emacs 20
+;; users will need to manually load `color-theme-libraries.el'.
 ;;;###autoload
-(defcustom icicle-color-themes
-  (and (prog1 (require 'color-theme nil t)
-         (condition-case nil (load-library "color-theme-library") (error nil)))
-       (delq 'bury-buffer
-             (mapcar (lambda (entry) (list (symbol-name (car entry)))) color-themes)))
+(defcustom icicle-color-themes (and (prog1 (require 'color-theme nil t)
+                                      (when (and (fboundp 'color-theme-initialize)
+                                                 (not color-theme-initialized))
+                                        (condition-case nil
+					    (let ((color-theme-load-all-themes  t))
+					      (color-theme-initialize)
+					      (setq color-theme-initialized  t))
+					  (error nil))))
+                                    (delq 'bury-buffer
+                                          (mapcar (lambda (entry)
+                                                    (list (symbol-name (car entry))))
+                                                  color-themes)))
   "*List of color themes to cycle through using `M-x icicle-color-theme'.
 Note: Starting with Color Theme version 6.6.0, you will need to put
 library `color-theme-library.el', as well as library `color-theme.el',

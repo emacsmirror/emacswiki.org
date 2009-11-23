@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Nov 21 16:56:37 2009 (-0800)
+;; Last-Updated: Sun Nov 22 10:02:31 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 4577
+;;     Update #: 4581
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2009/11/22 dadams
+;;     icicle-color-theme: Use color-theme-initialize instead of load-library, to load themes.
 ;; 2009/11/21 dadams
 ;;     icicle-color-theme: Use color-theme-snapshot to let C-g undo changes.
 ;;                         Try to load color-theme-library.el (available with version 6.6.0).
@@ -138,6 +140,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2009/11/22 dadams
+;;     icicle-frame-(bg|fg): Don't apply *-make-color-candidate to named-colors (done already).
 ;; 2009/11/03 dadams
 ;;     icicle-frame-(bg|fg): Use named-colors, not x-defined-colors.
 ;;     icicle-read-color: No need to bind icicle-transform-function, since we use hexrgb.el.
@@ -3427,6 +3431,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2009/11/22 dadams
+;;     icicle-color-themes: Use color-theme-initialize instead of load-library, to load themes.
 ;; 2009/11/21 dadams
 ;;     icicle-color-themes: (load-library "color-theme-library"), for color theme version 6.6.0.
 ;; 2009/10/25 dadams

@@ -1,4 +1,4 @@
-Timestamp: Mon Nov 16 14:20:09 GMT 2009
+Timestamp: Sun Nov 22 09:21:19 GMT 2009
 
 This page is based on the EmacsLispList by StephenEglen and updated automatically.
 
@@ -78,7 +78,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://groups.google.com/groups?selm=i47ln2rvggf.fsf%40atticus.cisco.com apm.el] --- Using APM (Advanced Power Management) From Within (X)Emacs (by Dinesh G Dutt)
 
-[http://www.emacswiki.org/elisp/apropos-plus.el apropos+.el] --- extensions to standard library `apropos.el' (by Drew Adams)
+[http://www.emacswiki.org/elisp/apropos+.el apropos+.el] --- extensions to standard library `apropos.el' (by Drew Adams)
 
 [http://www.gnulinux.org.mx/~drs/emacs/apt-sources.el apt-sources.el] --- Mode for editing apt source.list file (by Dr. Rafael Sepúlveda)
 
@@ -132,7 +132,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://www.emacswiki.org/elisp/autofit-frame.el autofit-frame.el] --- automatically fit each one-window frame to its buffer (by Drew Adams)
 
-[http://www.emacswiki.org/elisp/autoload-plus.el autoload+.el] --- extensions to standard library `autoload.el' (by Drew Adams)
+[http://www.emacswiki.org/elisp/autoload+.el autoload+.el] --- extensions to standard library `autoload.el' (by Drew Adams)
 
 [ftp://ftp.csd.uu.se/pub/users/andersl/emacs/autorevert.el autorevert.el] --- Revert buffers when file on disk change. (by Anders Lindgren)
 
@@ -206,7 +206,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://www.brockman.se/software/bongo/ bongo.el] --- buffer-oriented media player for Emacs (by Daniel Brockman)
 
-[http://www.emacswiki.org/cgi-bin/wiki/bookmark%2b.el bookmark+.el] --- extensions to standard library `bookmark.el' (by Drew Adams)
+[http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el bookmark+.el] --- extensions to standard library `bookmark.el' (by Drew Adams)
 
 [http://bookmall.hypermart.net/cinput/emacs.html boshiamy-cue.el] --- [Help for Boshiamy input method in BIG5 Chinese; Chinese page] (by blacksburg98)
 
@@ -226,7 +226,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://opensource.cis.ohio-state.edu/~hurley/ browse-kill-ring.el] --- interactively insert items from kill-ring (by Nick Hurley)
 
-[http://www.emacswiki.org/elisp/browse-kill-ring-plus.el browse-kill-ring+.el] --- extensions to library `browse-kill-ring.el' (by Drew Adams)
+[http://www.emacswiki.org/elisp/browse-kill-ring+.el browse-kill-ring+.el] --- extensions to library `browse-kill-ring.el' (by Drew Adams)
 
 [http://savannah.gnu.org/cgi-bin/viewcvs/emacs/emacs/lisp/net/browse-url.el browse-url.el] --- Pass a URL to a WWW browser (by Dave Love)
 
@@ -234,7 +234,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://www.gelatinous.com/pld/bubblet.html bubblet.el] --- a bubble-popping game (by Paul Du Bois)
 
-[http://www.emacswiki.org/elisp/buff-menu-plus.el buff-menu+.el] --- extensions to standard library `buff-menu' (by Drew Adams)
+[http://www.emacswiki.org/elisp/buff-menu+.el buff-menu+.el] --- extensions to standard library `buff-menu' (by Drew Adams)
 
 [http://www.sixfingeredman.net/proj/xemacs/buffer-stack.el buffer-stack.el] --- Smart movement through the buffer list. (by Adrian Kubala)
 
@@ -348,9 +348,9 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://user42.tuxfamily.org/compilation-recenter-end/index.html compilation-recenter-end.el] --- recentre the end of compilation output (by Kevin Ryde)
 
-[http://www.emacswiki.org/elisp/compile-plus.el compile+.el] --- extensions to standard library `compile.el' (by Drew Adams)
+[http://www.emacswiki.org/elisp/compile+.el compile+.el] --- extensions to standard library `compile.el' (by Drew Adams)
 
-[http://www.emacswiki.org/elisp/compile-plus-twenty.el compile+20.el] --- extensions to standard library `compile.el' for < Emacs 21 (by Drew Adams)
+[http://www.emacswiki.org/elisp/compile+-twenty.el compile+20.el] --- extensions to standard library `compile.el' for < Emacs 21 (by Drew Adams)
 
 [http://www.emacswiki.org/elisp/compile-.el compile-.el] --- extensions to standard library `compile.el' (by Drew Adams)
 
@@ -412,7 +412,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://www.emacswiki.org/cgi-bin/wiki/download/cursor-chg.el cursor-chg.el] --- automatically change the cursor form, depending on the context (by Drew Adams)
 
-[http://www.emacswiki.org/elisp/cus-edit-plus.el cus-edit+.el] --- extensions to standard library `cus-edit.el' (by Drew Adams)
+[http://www.emacswiki.org/elisp/cus-edit+.el cus-edit+.el] --- extensions to standard library `cus-edit.el' (by Drew Adams)
 
 [http://www.dina.kvl.dk/~abraham/custom/ custom.el] --- Tools for declaring and initializing options. (by Per Abrahamsen)
 
@@ -502,9 +502,9 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://me.in-berlin.de/~myrkr/dictionary/index.html dictionary.el] --- an interface to RFC 2229 dictionary server (by Torsten Hilbrich)
 
-[http://www.emacswiki.org/elisp/diff-plus.el diff+.el] --- extensions to standard library `diff.el' (by Drew Adams)
+[http://www.emacswiki.org/elisp/diff+.el diff+.el] --- extensions to standard library `diff.el' (by Drew Adams)
 
-[http://www.emacswiki.org/elisp/diff-plus-twenty.el diff+20.el] --- extensions to standard library `diff.el' for < Emacs 21 (by Drew Adams)
+[http://www.emacswiki.org/elisp/diff+-twenty.el diff+20.el] --- extensions to standard library `diff.el' for < Emacs 21 (by Drew Adams)
 
 [http://www.emacswiki.org/elisp/diff-mode-.el diff-mode-.el] --- extensions to standard library `diff-mode.el' (by Drew Adams)
 
@@ -516,7 +516,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://www.eskimo.com/~seldon/diminish.el diminish.el] --- Diminished modes are minor modes with no modeline display (by Will Mengarini)
 
-[http://www.emacswiki.org/elisp/dired-plus.el dired+.el] --- extensions to std libraries `dired.el', `dired-aux.el', `dired-x.el' (by Drew Adams)
+[http://www.emacswiki.org/elisp/dired+.el dired+.el] --- extensions to std libraries `dired.el', `dired-aux.el', `dired-x.el' (by Drew Adams)
 
 [http://groups.google.com/groups?selm=yzig226gpoz.fsf%40inge.nada.kth.se dired-a.el] --- Various dired extensions. (by Inge Frick)
 
@@ -552,7 +552,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://gnufans.net/~deego/emacspub/lisp-mine/dope/ dope.el] --- Profile Of Dotemacs .. A per-sexp-evaltime profiler. (by D. Goel)
 
-[http://www.emacswiki.org/elisp/ doremi.el] --- incrementally adjust properties using arrow keys and/or mouse wheel (by Drew Adams)
+[http://www.emacswiki.org/elisp/download/doremi.el doremi.el] --- incrementally adjust properties using arrow keys and/or mouse wheel (by Drew Adams)
 
 [http://www.emacswiki.org/elisp/doremi-cmd.el doremi-cmd.el] --- miscellaneous DoReMi commands (by Drew Adams)
 
@@ -621,8 +621,6 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 [http://spice-mode.4t.com/ eldo-mode.el] --- major mode for Eldo netlist files [analog simulator] (by Emmanuel Rouat and Geert Van der Plas)
 
 [ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/eldoc.el eldoc.el] --- show function arglist or variable docstring in echo area (by Noah Friedman)
-
-[http://www.emacswiki.org/elisp/elect-mbuf.el elect-mbuf.el] --- minibuffer completion and default input cycling (by Drew Adams)
 
 [ftp://ftp.lysator.liu.se/pub/emacs/ elib.el] --- [Emacs lisp library] (by Inge Wallin)
 
@@ -722,7 +720,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://www.emacswiki.org/cgi-bin/wiki/download/facemenu+.el facemenu+.el] --- extensions to standard library facemenu.el (by Drew Adams)
 
-[http://www.emacswiki.org/elisp/faces-plus.el faces+.el] --- extensions to standard library `faces.el' (by Drew Adams)
+[http://www.emacswiki.org/elisp/faces+.el faces+.el] --- extensions to standard library `faces.el' (by Drew Adams)
 
 [http://gnufans.net/~deego/emacspub/lisp-mine/faith/ faith.el] --- [Helps reinforce and spread faith in the ONE TRUE EDITOR] (by Deepak Goel)
 
@@ -752,7 +750,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://www.eskimo.com/~seldon/filemenu.el filemenu.el] --- Mode for buffers that present menus of files to visit (by Will Mengarini)
 
-[http://www.emacswiki.org/elisp/files-plus.el files+.el] --- extensions to standard library `files.el' (by Drew Adams)
+[http://www.emacswiki.org/elisp/files+.el files+.el] --- extensions to standard library `files.el' (by Drew Adams)
 
 [http://members.a1.net/t.link/CompEmacsFilesets.html filesets.el] --- filesets [for] (X)Emacs (by Thomas Link)
 
@@ -766,7 +764,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://savannah.nongnu.org/cgi-bin/viewcvs/*checkout*/emhacks/emhacks/elisp/find-and-play.el?rev=HEAD&content-type=text/plain find-and-play.el] --- Interface to find-and-play. (by Marco Parrone)
 
-[http://www.emacswiki.org/elisp/find-dired-plus.el find-dired+.el] --- extensions to standard library `find-dired.el' (by Drew Adams)
+[http://www.emacswiki.org/elisp/find-dired+.el find-dired+.el] --- extensions to standard library `find-dired.el' (by Drew Adams)
 
 [http://www.emacswiki.org/elisp/find-dired-.el find-dired-.el] --- extensions to standard library `find-dired.el' (by Drew Adams)
 
@@ -830,7 +828,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://pagesperso-systeme.lip6.fr/Christian.Queinnec/WWW/elisp.html fracc.el] --- French accent towards Latin1, TeX, BibTeX, HTML. (by Christian Queinnec)
 
-[http://www.emacswiki.org/elisp/frame-plus.el frame+.el] --- extensions to standard library `frame.el' (by Drew Adams)
+[http://www.emacswiki.org/elisp/frame+.el frame+.el] --- extensions to standard library `frame.el' (by Drew Adams)
 
 [http://www.emacswiki.org/elisp/frame-cmds.el frame-cmds.el] --- frame and window commands (interactive functions) (by Drew Adams)
 
@@ -914,8 +912,6 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://www.emacswiki.org/cgi-bin/wiki/grep%2b.el grep+.el] --- extensions to standard library grep.el (by Drew Adams)
 
-[http://www.emacswiki.org/elisp/grep-.el grep-.el] --- extensions to standard library `grep.el' (by Drew Adams)
-
 [http://people.debian.org/~psg/elisp/gri-mode.el gri-mode.el] --- major mode for Gri files (by Peter S. Galbraith)
 
 [http://www.antisleep.com/elisp/gse-locate.el gse-locate.el] --- [Interface to locate] (by Scott Evans)
@@ -958,15 +954,15 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://www.emacswiki.org/elisp/header.el header2.el] --- support for creation and update of file headers (by Drew Adams)
 
-[http://www.emacswiki.org/elisp/help-plus.el help+.el] --- extensions to standard library `help.el' (by Drew Adams)
+[http://www.emacswiki.org/elisp/help+.el help+.el] --- extensions to standard library `help.el' (by Drew Adams)
 
 [http://www.emacswiki.org/cgi-bin/wiki/download/help+20.el help+20.el] --- extensions to standard library help.el (Emacs 20) (by Drew Adams)
 
 [http://www.emacswiki.org/cgi-bin/wiki/download/help-fns+.el help-fns+.el] --- extensions to standard library help-fns.el (by Drew Adams)
 
-[http://www.emacswiki.org/elisp/help-macro-plus.el help-macro+.el] --- extensions to standard library `help-macro.el' (by Drew Adams)
+[http://www.emacswiki.org/elisp/help-macro+.el help-macro+.el] --- extensions to standard library `help-macro.el' (by Drew Adams)
 
-[http://www.emacswiki.org/elisp/help-mode-plus.el help-mode+.el] --- extensions to standard library `help-mode.el' (by Drew Adams)
+[http://www.emacswiki.org/elisp/help-mode+.el help-mode+.el] --- extensions to standard library `help-mode.el' (by Drew Adams)
 
 [http://groups.google.com/groups?selm=buhb0j%24hu8n8%242%40ID-39741.news.uni-berlin.de&output=gplain helpex.el] --- useful extensions for the C-h prefix (by Michael Schierl)
 
@@ -1058,7 +1054,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://www.emacswiki.org/emacs/Icicles icicles.el] --- [enhances minibuffer completion] (by Drew Adams)
 
-[http://www.emacswiki.org/elisp/icomplete-plus.el icomplete+.el] --- extensions to standard library `icomplete.el' (by Drew Adams)
+[http://www.emacswiki.org/elisp/icomplete+.el icomplete+.el] --- extensions to standard library `icomplete.el' (by Drew Adams)
 
 [http://www.oakden.org/mark/icsel/ ics.el] --- a major mode for communicating with Internet Chess Servers (by Mark Oakden)
 
@@ -1096,7 +1092,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://www.emacswiki.org/elisp/imdbs.el imdbs.el] --- compute movies statistic using your imdb vote history (by Jean-Philippe Theberge)
 
-[http://www.emacswiki.org/elisp/imenu-plus.el imenu+.el] --- extensions to standard library `imenu.el' (by Drew Adams)
+[http://www.emacswiki.org/elisp/imenu+.el imenu+.el] --- extensions to standard library `imenu.el' (by Drew Adams)
 
 [ftp://ftp.math.ohio-state.edu/pub/users/ilya/emacs/imenu-go.el imenu-go.el] --- Go to definition of item using imenu and tags (by Ilya Zakharevich)
 
@@ -1104,7 +1100,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [ftp://dlpx1.dl.ac.uk/fx/emacs/indent-tabs-maybe.el indent-tabs-maybe.el] --- guess whether to use indent-tabs-mode when finding file  (by Dave Love)
 
-[http://www.emacswiki.org/elisp/info-plus.el info+.el] --- extensions to standard library `info.el' - use with `setup-info.el' (by Drew Adams)
+[http://www.emacswiki.org/elisp/info+.el info+.el] --- extensions to standard library `info.el' - use with `setup-info.el' (by Drew Adams)
 
 [http://purl.org/harder/ info-apropos.el] --- Search all Info indices (by Jesper Harder)
 
@@ -1122,7 +1118,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://ipython.scipy.org/dist/ ipython.el] --- Adds support for IPython to python-mode.el (by Alexander Schmolck)
 
-[http://www.emacswiki.org/elisp/isearch-plus.el isearch+.el] --- extensions to standard library `isearch.el' (by Drew Adams)
+[http://www.emacswiki.org/elisp/isearch+.el isearch+.el] --- extensions to standard library `isearch.el' (by Drew Adams)
 
 [http://www.newartisans.com/johnw/Emacs/isearchb.el isearchb.el] --- a marriage between iswitchb and isearch (by John Wiegley)
 
@@ -1328,7 +1324,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://nschum.de/src/emacs/macro-math/ macro-math.el] --- in-buffer mathematical operations (by Nikolaj Schumacher)
 
-[http://www.emacswiki.org/elisp/macros-plus.el macros+.el] --- extensions to standard library `macros.el' (by Drew Adams)
+[http://www.emacswiki.org/elisp/macros+.el macros+.el] --- extensions to standard library `macros.el' (by Drew Adams)
 
 [http://savannah.nongnu.org/cgi-bin/viewcvs/*checkout*/emhacks/emhacks/elisp/mail-centric-reminder.el?rev=HEAD&content-type=text/plain mail-centric-reminder.el] --- Mail-centric reminder. (by Marco Parrone)
 
@@ -1398,7 +1394,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/meditate.el meditate.el] --- talk to ZenMOO and optionally make emacs meditate (by Noah Friedman)
 
-[http://www.emacswiki.org/elisp/menu-bar-plus.el menu-bar+.el] --- extensions to standard library `menu-bar.el' (by Drew Adams)
+[http://www.emacswiki.org/elisp/menu-bar+.el menu-bar+.el] --- extensions to standard library `menu-bar.el' (by Drew Adams)
 
 [http://www.coling.uni-freiburg.de/~schauer/resources/emacs/message-utils.el.gz message-utils.el] --- Utils for message-mode (by Holger Schauer)
 
@@ -1464,7 +1460,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://regexps.srparish.net/www-ancient/monkey.html monkey.el] --- [a nice directory editor for Emacs] (by Tom Lord)
 
-[http://www.emacswiki.org/elisp/mouse-plus.el mouse+.el] --- extensions to standard library `mouse.el' (by Drew Adams)
+[http://www.emacswiki.org/elisp/mouse+.el mouse+.el] --- extensions to standard library `mouse.el' (by Drew Adams)
 
 [http://xsteve.nit.at/prg/emacs/mouse-embrace.el mouse-embrace.el] --- Minor Mode to embrace text with mouse selections (by Stefan Reichör)
 
@@ -1564,7 +1560,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://www.isi.edu/~johnh/SOFTWARE/NOTES_MODE/ notes-mode.el] --- [An indexing system for on-line note-taking] (by John Heidemann)
 
-[http://www.emacswiki.org/elisp/novice-plus.el novice+.el] --- extensions to standard library `novice.el' (by Drew Adams)
+[http://www.emacswiki.org/elisp/novice+.el novice+.el] --- extensions to standard library `novice.el' (by Drew Adams)
 
 [ftp://dlpx1.dl.ac.uk/fx/emacs/noweb.el noweb.el] --- noweb mode for literate programming (by Dave Love)
 
@@ -1606,7 +1602,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://www.cs.utah.edu/~karra/code/OpenGL.el.gz OpenGL.el] --- Minor mode commands for editing OpenGL C/C++ code. (by Sriram Karra)
 
-[http://www.emacswiki.org/elisp/options-plus.el options+.el] --- extensions to standard library `options.el' (by Drew Adams)
+[http://www.emacswiki.org/elisp/options+.el options+.el] --- extensions to standard library `options.el' (by Drew Adams)
 
 [http://pbreton.ne.mediaone.net/emacs/orbix.el orbix.el] --- Emacs Orbix utilities and functions (by Peter Breton)
 
@@ -1628,7 +1624,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://www.python.org/emacs/outdent.el outdent.el] --- Indentation-based outline exposure and maneuvering (by Ken Manheimer)
 
-[http://www.emacswiki.org/elisp/outline-plus.el outline+.el] --- extensions to standard library `outline.el' (by Drew Adams)
+[http://www.emacswiki.org/elisp/outline+.el outline+.el] --- extensions to standard library `outline.el' (by Drew Adams)
 
 [http://www.astro.uva.nl/~dominik/Tools/outline-magic.el outline-magic.el] --- outline mode extensions for Emacs (by Carsten Dominik)
 
@@ -1720,7 +1716,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://www.imada.sdu.dk/~blackie/emacs/power-macros.el power-macros.el] --- [manage a group of keyboard macros with descriptions] (by Jesper K. Pedersen)
 
-[http://www.emacswiki.org/elisp/pp-plus.el pp+.el] --- extensions to standard library `pp.el' (by Drew Adams)
+[http://www.emacswiki.org/elisp/pp+.el pp+.el] --- extensions to standard library `pp.el' (by Drew Adams)
 
 [http://www.emacswiki.org/cgi-bin/wiki/download/pp-c-l.el pp-c-l.el] --- display C-l (page-break; form-feed) characters in a pretty way (by Drew Adams)
 
@@ -1818,8 +1814,6 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://groups.google.com/groups?selm=uog8gtq8y.fsf%40pobox.com read-library.el] --- read library from minibuffer with completion (by Gareth Rees)
 
-[http://www.emacswiki.org/elisp/rebind-mbuf-maps.el rebind-mbuf-maps.el] --- rebind minibuffer completion maps - subset of `elect-mbuf.el' (by Drew Adams)
-
 [http://nschum.de/src/emacs/recent-addresses/ recent-addresses.el] --- store and recall recently used email addresses (by Nikolaj Schumacher)
 
 [http://groups.google.com/groups?selm=pcbtk31c8p.fsf%40aigf.sncf.fr recent-files.el] --- Maintain menu of recently opened files. (by Juergen Nickelsen)
@@ -1844,7 +1838,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://sacha.free.net.ph/notebook/emacs/emacs-wiki/remember.el remember.el] --- a mode for quickly jotting down things to remember (by Sacha Chua)
 
-[http://www.emacswiki.org/elisp/replace-plus.el replace+.el] --- extensions to standard library `replace.el' (by Drew Adams)
+[http://www.emacswiki.org/elisp/replace+.el replace+.el] --- extensions to standard library `replace.el' (by Drew Adams)
 
 [http://www.python.org/emacs/reporter.el reporter.el] --- customizable bug reporting of lisp programs (by Barry A. Warsaw)
 
@@ -1876,7 +1870,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://josefsson.org/aes/ rijndael.el] --- Rijndael (AES) block cipher implementation (by Simon Josefsson)
 
-[http://www.emacswiki.org/elisp/ring-plus.el ring+.el] --- extensions to standard library `ring.el' (by Drew Adams)
+[http://www.emacswiki.org/elisp/ring+.el ring+.el] --- extensions to standard library `ring.el' (by Drew Adams)
 
 [http://ignotus.hixsplit.hu/rk-nym.html (brief tutorial) rk-nym.el] --- nym services support for Mailcrypt and Gnus (by Richard Klinda)
 
@@ -1972,13 +1966,11 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://www.wonderworks.com/download/setnu.el setnu.el] --- vi-style line number mode for Emacs (by Kyle Jones)
 
-[http://www.emacswiki.org/elisp/setnu-plus.el setnu+.el] --- extensions to standard library `setnu.el' (by Drew Adams)
+[http://www.emacswiki.org/elisp/setnu+.el setnu+.el] --- extensions to standard library `setnu.el' (by Drew Adams)
 
 [http://www.emacswiki.org/elisp/setup.el setup.el] --- startup assignments: hooks etc. (by Drew Adams)
 
 [http://www.emacswiki.org/elisp/setup-cygwin.el setup-cygwin.el] --- set up Emacs for using Cygwin (from Markus Hoenika) (by Drew Adams)
-
-[http://www.emacswiki.org/elisp/setup-info.el setup-info.el] --- settings for Info --- to be used with `info+.el' (by Drew Adams)
 
 [http://www.emacswiki.org/elisp/setup-keys.el setup-keys.el] --- some key bindings (by Drew Adams)
 
@@ -2010,7 +2002,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/silly-mail.el silly-mail.el] --- generate bozotic mail headers (by Noah Friedman)
 
-[http://www.emacswiki.org/elisp/simple-plus.el simple+.el] --- extensions to standard library `simple.el' (by Drew Adams)
+[http://www.emacswiki.org/elisp/simple+.el simple+.el] --- extensions to standard library `simple.el' (by Drew Adams)
 
 [http://www.emacswiki.org/cgi-bin/wiki.pl?CallTree simple-call-tree.el] --- analyze source code based on font-lock text-properties (by Alex Schroeder)
 
@@ -2196,7 +2188,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://www.emacswiki.org/cgi-bin/wiki/download/thing-cmds.el thing-cmds.el] --- commands to select things at or near the cursor (by Drew Adams)
 
-[http://www.emacswiki.org/elisp/thingatpt-plus.el thingatpt+.el] --- extensions to standard library `thingatpt.el' (by Drew Adams)
+[http://www.emacswiki.org/elisp/thingatpt+.el thingatpt+.el] --- extensions to standard library `thingatpt.el' (by Drew Adams)
 
 [http://www.davep.org/emacs/thinks.el thinks.el] --- Insert text in a think bubble. (by Dave Pearson)
 
@@ -2212,7 +2204,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://www.emacswiki.org/elisp/timeclock-x.el timeclock-x.el] --- Extra features for John Wiegley's timeclock (by Kahlil (Kal) Hodgson)
 
-[http://www.emacswiki.org/elisp/timer-plus.el timer+.el] --- extensions to standard library `timer.el' (by Drew Adams)
+[http://www.emacswiki.org/elisp/timer+.el timer+.el] --- extensions to standard library `timer.el' (by Drew Adams)
 
 [http://gnufans.net/~deego/emacspub/lisp-mine/timerfunctions timerfunctions.el] --- Enhancements to timer.el. (by Deepack Goel)
 
@@ -2246,7 +2238,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://www.gnusoftware.com/Emacs/Lisp/toggle-source.el toggle-source.el] --- Toggle between source and implementation files. (by Steve Kemp)
 
-[http://www.emacswiki.org/elisp/tool-bar-plus.el tool-bar+.el] --- extensions to standard library `tool-bar.el' (by Drew Adams)
+[http://www.emacswiki.org/elisp/tool-bar+.el tool-bar+.el] --- extensions to standard library `tool-bar.el' (by Drew Adams)
 
 [http://www.emacswiki.org/cgi-bin/emacs?ToolBox toolbox.el] --- create simple menus in buffers (by Alex Schroeder)
 
@@ -2332,13 +2324,13 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 = V =
 
-[http://www.emacswiki.org/elisp/vc-plus.el vc+.el] --- extensions to standard library `vc.el' (by Drew Adams)
+[http://www.emacswiki.org/elisp/vc+.el vc+.el] --- extensions to standard library `vc.el' (by Drew Adams)
 
 [http://www.emacswiki.org/elisp/vc-.el vc-.el] --- extensions to standard library `vc.el' (by Drew Adams)
 
 [http://www.pps.jussieu.fr/~jch/software/repos/vc-darcs/vc-darcs.el vc-darcs.el] --- a VC backend for darcs (by Juliusz Chroboczek)
 
-[http://www.emacswiki.org/elisp/vc-hooks-plus.el vc-hooks+.el] --- extensions to standard library `vc-hooks.el' (by Drew Adams)
+[http://www.emacswiki.org/elisp/vc-hooks+.el vc-hooks+.el] --- extensions to standard library `vc-hooks.el' (by Drew Adams)
 
 [ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/vcard.el vcard.el] --- vcard parsing and display routines (by Noah Friedman)
 
@@ -2397,8 +2389,6 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 [http://groups.google.com/groups?selm=%3Ffnord%3Fulm1kpvqv.fsf!FNORD!%40ID-97657.usr.dfncis.de&output=gplain vvb-mode2.el] --- a minor mode to display a Visible Vertical Bar(s) [works with Emacs] (by Jerry G. Chen)
 
 = W =
-
-[http://www.emacswiki.org/elisp/w-browser.el w-browser.el] --- run Windows application associated with a file (by Drew Adams)
 
 [http://www.gnu.org/software/w3/ w3.el] --- [The fully customizable web browser for Emacs.] (by W3 mailing list)
 
@@ -2468,7 +2458,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://www.stanford.edu/~hovav/elisp/ windmove.el] --- directional window-selection routines (by Hovav Shacham)
 
-[http://www.emacswiki.org/elisp/window-plus.el window+.el] --- extensions to standard library `window.el' (by Drew Adams)
+[http://www.emacswiki.org/elisp/window+.el window+.el] --- extensions to standard library `window.el' (by Drew Adams)
 
 [http://nschum.de/src/emacs/window-numbering-mode/ window-numbering-mode.el] --- Numbered window shortcuts (by Nikolaj Schumacher)
 

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Nov 21 16:54:28 2009 (-0800)
+;; Last-Updated: Sun Nov 22 10:35:46 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 19920
+;;     Update #: 19927
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3881,7 +3881,19 @@ available from http://www.emacswiki.org/cgi-bin/wiki.pl?ColorTheme." ; Doc strin
    (icicle-delete-candidate-object  'icicle-color-themes))
   (progn
     (unless (prog1 (require 'color-theme nil t) ; First code
-              (condition-case nil (load-library "color-theme-library") (error nil)))
+              (when (and (fboundp 'color-theme-initialize) (not color-theme-initialized))
+                ;; NOTE: We need the `condition-case' because of a BUG in `directory-files' for
+                ;; Emacs 20.  Bug reported to `color-theme.el' maintainer 2009-11-22.  The problem
+                ;; is that the default value of `color-theme-libraries' concats
+                ;; `file-name-directory', which ends in `/', with `/themes', not with `themes'.
+                ;; So the result is `...//themes'.  That is tolerated by Emacs 21+ `directory-files',
+                ;; but not for Emacs 20.  Until this `color-theme.el' bug is fixed, Emacs 20 users
+                ;; will need to manually load `color-theme-libraries.el'.
+                (condition-case nil
+		    (let ((color-theme-load-all-themes  t))
+		      (color-theme-initialize)
+		      (setq color-theme-initialized  t))
+		  (error nil))))
       (error "This command requires library `color-theme.el'"))
     ;; Create the snapshot, if not available.  Do this so users can also undo using
     ;; pseudo-theme `[Reset]'.

@@ -34,6 +34,14 @@ For another take on c-eldoc, see this article[http://tenkan.org/~tim/c-function-
 == Comments ==
 I think caching symbol-info into alist or hashtable is better than calculating symbol-info EVERY TIME. It is immutable until the source file and included files are modified. -- [[rubikitch]]
 
+[new]
+if you replace the grep command and the function-name pattern (2 times in the code) like below, you could get complex macros/functions working like printf or others from stdio.h.
+<pre>
+   c-eldoc-grep "'[^a-zA-Z_0-9]"
+   function-name "[\s]*('" )) 
+</pre>
+-- clabom
+
 ----
 CategoryModes
 CategoryProgramming

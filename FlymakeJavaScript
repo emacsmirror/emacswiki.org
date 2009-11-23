@@ -132,6 +132,9 @@ I do not have a Windows box to verify the fix below, but according to some forum
 </pre>
 
 -- Nyuhuhuu
+[new]
+Thanks Nyuhuhuu, that made it work on Windows.
+
 
 [new]
 Before I fixed the issue you speak of, I had to fix an apparent problem with 'compilation-error-regexp-alist-alist' in 'flymake.el'.  For details on that, please see [http://groups.google.com/group/gnu.emacs.help/browse_thread/thread/0cd12cf6b61e7923#d734eb7aedf67971 this post] on gnu.emacs.help.

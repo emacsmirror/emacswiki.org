@@ -1,6 +1,12 @@
 Click the heading to search for pages in this category.
 
-'''[[Completion]]''' can mean different things in Emacs. In particular, it refers to completing input in the MiniBuffer and completing text in a [[Buffer]] other than the minibuffer.   Minibuffer input can be a command that you enter using `M-x' or text that you enter in response to a prompt in the minibuffer. File-name input is an example of the latter.  
+[new]
+See DiscussionCategoryCompletion if you are interested in discussing this page. Please do not discuss it here.
+
+[new]
+'''[[Completion]]''' can mean different things in Emacs. In particular, it refers to completing input in the [[minibuffer]] and completing text in a [[buffer]] other than the minibuffer.   Minibuffer input can be a command that you enter using `M-x' or text that you enter in response to a prompt in the minibuffer. File-name input is an example of the latter.  
+
+Besides the question of ''where'' text is completed (minibuffer or other buffer) is the question of ''how''. Completion can be effected in various ways (e.g. using different kinds of matching, filtering, sorting), and it can be accomplished using various user interfaces (e.g. popup selection list/menu).
 
 
 
@@ -81,19 +87,3 @@ Some completions are available in modes that provide command interaction.
 
 
 
-
-
-
-[:Discussion]
-== Discussion ==
-
-[new:DrewAdams:2006-01-02 20:15 UTC]
-Questions on section "Other Completion":
-* Are these not either input completion or text completion? Maybe some more explanation/description is needed.
-* What does the "command interaction" (in the intro) mean? Emacs commands or something else? If Emacs commands, why wouldn't "input filename completion" belong in section "Minibuffer Input Completion"? Again, maybe some more explanation/description is needed.
-* Is the point in putting SubprocessCompletion here that it can be used for either input completion or text completion? If so, that info is missing. Wouldn't it be clearer, in that case, to just list it in each of those sections?
-
-In sum, can we clear up whether "Other Completion" is needed and, if so, just what it means? Does it really mean "other than input or text completion"? -- DrewAdams
-
-[new]
-I'm trying to find a way to get rid of any past "Completions" buffers that appeared if you clicked on TAB, but you didn't use them. Is there any way to remove them from the buffer list automatically even if you didn't use them? I find that annoying...
