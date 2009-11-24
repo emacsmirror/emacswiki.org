@@ -1,5 +1,7 @@
 == Espresso mode ==
 
+<b>This is now in CVS Emacs under the name js-mode (with an alias javascript-mode).</b>
+
 Espresso-mode is a fork of Karl Landstrom's mode below, but with additional features and robustness improvements. See http://www.nongnu.org/espresso
 
 It includes:

@@ -677,7 +677,6 @@ Icicles really appeals to me because I've never seen a more sophisticated intera
 
 
 
-[:LatestEntry]
 
 <pre>
 
@@ -732,7 +731,59 @@ My suggestion is to try the default behavior a little more. If you still don't l
 '''Icicles''' is mainly for minibuffer completion, not completion of text in buffers. `icicle-lisp-complete-symbol' (`M-TAB') is one of the exceptions. -- DrewAdams
 
 
+
+
+
+
+
+
+
 [:LatestEntry]
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+
+[new]
+1.
+<pre>
+For Icicles cycling that acts on the candidates
+</pre>
+cool! how to change keys which act on candidates, default keys is " ‘C-next’, ‘C-down’, ‘C-prior’, or ‘C-up’." Your Icicles is so strong, I'll take time to learn to use it.
+
+2. 
+<pre>
+M-x icicle-color-theme color-theme-aalto-dark RET, now color theme is color-theme-aalto-dark
+M-x icicle-color-theme TAB C-g, but now  it cancel color-theme-aalto-dark and restore old color theme
+M-x icicle-frame-bg antiquewhite4: #8B8B83837878, now frame background color is antiquewhite4
+M-x icicle-frame-bg TAB C-g, and it does not restore old frame background color. 
+</pre>
+
+3. what's the difference between `icicle-frame-bg' and `set-face-background' when icy-mode is on?
+
+4. Are there any way to use `icicle-color-theme' with cycling and acts on the candidates when icy-mode is off? -- [[ahei]]
+
+
+[new:DrewAdams:2009-11-24 05:07 UTC]
+1. You need to read a little of the '''Icicles''' doc, especially if you want to customize it. See [[Icicles - Customization and General Tips#icicle-apropos-cycle-previous-keys|Icicles Cycling Keys]].
+
+2. Yes. For `icicle-frame-bg', I use the normal behavior: `C-g' cancels the current command (only). It is `icicle-color-theme' that is exceptional in this regard.
+
+It's a choice; I can do it either way, for `icicle-color-theme'. The way I chose is to take a single color-theme snapshot, only the first time you use `icicle-color-theme' (per Emacs session), so that any use of `C-g' thereafter (or any use of `color-theme-snapshot', which is the ##[Reset]## pseudo-theme choice) restores that theme or color situation that was current before you started.
+
+This choice is in keeping with how ColorTheme itself works: it takes the snapshot for ##[Reset]## only once. But I guess it is a bit confusing, being exceptional in this regard (and I failed to document this).
+
+Do you prefer that `icicle-color-theme' take a snapshot each time it is called, so it restores to the state you had when it was called -- IOW, so it acts like `icicle-frame-bg'? I can do that. Or perhaps I should let a prefix arg force a new snapshot, but otherwise take a snapshot only the first time (as now). What do you think?
+
+3. `icicle-frame-bg' and `set-face-background' have nothing in common. The former affects the frame background (which is the background of face `default'); the latter affects the background of a face you choose. In ''Icicle'' mode you can choose the face and the color for it using WYSIWYG candidates, but otherwise there is nothing special about it. `icicle-frame-bg' is an '''Icicles''' [[multi-command]]: you can use `C-next', `C-mouse-2', etc. to act on any number of candidates (colors) in the same command invocation.
+
+4. Not sure what you're asking. It sounds like you're asking whether you can use an '''Icicles''' multi-command as such with ''Icicle'' mode turned off. The answer to that is no. With ''Icicle'' mode turned off, multi-commands act like normal Emacs commands: all you can do is use `RET' to choose one candidate (color theme, in this case). Also, with ''Icicle'' mode turned off, there is no [[Icicles - Cycling Completions|cycling]] of candidates (let alone acting on them), no [[apropos completion]], no [[progressive completion]] -- in short, no '''Icicles''' features. -- DrewAdams
 
 
 

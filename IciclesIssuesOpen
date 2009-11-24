@@ -85,7 +85,7 @@ Better yet, use this to separate threads (puts space before and after the horizo
 </pre>
 ----
 <pre>
-
+i discovered icicles long ago, but didn't opt for it since i really liked ido for handling my buffers and finding files.  i'm running into icicles again and would like to incorporate it into my workflow.  is there a way to disable icicles for buffers and finding files?  i'd like to have ido handle those two tasks.  --vinhdizzo
 </pre>
 
 [new]

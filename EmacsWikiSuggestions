@@ -317,9 +317,6 @@ Also, you might consider not complaining anonymously.
 [new]
 I've added a sig, now its not anonymous. I _hope_ I do my best to try and contribute constructively and to make judicious commenting on libraries and xrefs. That said, I tend to put them in my source which seems like a reasonable way to voice support for particular authors, goals, pkgs etc. You are correct, and I agree, the matter is a bit of a philosophical point. If everyone xrefd with Drew's zeal as a philosophical matter I personally think the site would suffer, obv. YMMV. As I say, I truly do respect what Drew has done w/ Icicles; this doesn't make it OK to splatter it about at the vaguest possible connection. FWIW there is a search bar, it is quite useful and I'm surprised sometimes by how readily it will point _me_ to what _I_ am looking for.  -- mon_key
 
-
-
-
 == CSS (headers, printing) ==
 
 [new]
@@ -342,6 +339,18 @@ In graphical browsers second-level headers currently are the same size as regula
 Take a look at the [[CSS]] page. That will allow you to use your own CSS instead of relying on the default. If you write a CSS file that makes a significant improvement and convince some other long-time users of the site, I'll be happy to use it instead of what we have right now.
 
 As to the /why/ of the current CSS: I'm happy with the look of H2 and H3 headers. I believe HTML pages should have but one H1 element -- the one at the top of the page, and I believe any page on this wiki should be written with just H2 and H3 sections and subsections. I find the need for H4 subsubsections to be a sign that the text ought to be reorganized instead. I also find horizonzal lines unnecessary except when creating the pseudo-footers separating categories and related pages from the rest of the page. It's how I interpret the suggestions given by Robert Bringhurst in his _The Elements of Typographical Style_, p. 61ff. Typographically, poise is mad of white space. Don't permit the titles to oppress the text. Use as many levels of headings as you need: no more and no fewer. There were people who didn't like the amount of whitespace I prefer, which is why I'm using the theme "with more whitespace around headers and small-caps". -- AlexSchroeder
+
+== Use div#main etc ==
+
+Could you please put id on relevant div tags so it is possible to play a bit more with the CSS? (like &lt;div id="main"> )
+
+-- LennartBorgman
+
+[new]
+There is div.content and there is div.wrapper.  I'm not a CSS expert, so I can't tell what it is you're insinuating that makes adding another div necessary for CSS trickery? -- AaronHawley
+
+[new]
+This are CSS classes, not Id:s. Putting id:s on some important div tags makes it easier to under stand IMO. -- LennartBorgman
 
 ----
 CategoryEmacsWikiSite

@@ -15,7 +15,7 @@ Buffer `##*Shell Command Buffer*##' is displayed briefly whenever you run a shel
 
 == TAB Completion for `M-!' and `M-|' ==
 
-Starting with Emacs 23, `TAB' [[completion]] will be available for `##M-|##' and `##M-|##'. These libraries provide such a feature for earlier Emacs versions:
+Starting with Emacs 23, `TAB' [[completion]] will be available for `##M-!##' and `##M-|##'. These libraries provide such a feature for earlier Emacs versions:
 
 *  http://namazu.org/~tsuchiya/elisp/shell-command.el
 *  http://www.emacswiki.org/cgi-bin/wiki/shell-completion.el

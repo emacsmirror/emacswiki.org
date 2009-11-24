@@ -94,7 +94,7 @@ or for a local stylesheet on your filesystem users running a Web server locally 
 
 <code>http://www.emacswiki.org/cgi-bin/wiki?action=browse;id=CSS;css=http://localhost/~username/emacswiki.css</code>
 
-Using the local filesystem doesn't work in [[Mozilla]]:
+Using the local filesystem doesn't work in [[Mozilla]] (works for me with Firefox 3.5.5 on w32):
 
 <code>http://www.emacswiki.org/cgi-bin/wiki?action=browse;id=CSS;css=file:///home/username/.mozilla/emacswiki.css</code>
 

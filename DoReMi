@@ -1057,6 +1057,17 @@ For '''Icicles''' cycling that acts on the candidates, use `C-next', `C-down', `
 
 `icicle-color-theme' applies the candidate color theme. If you don't quit with `C-g' (two `C-g's in this case), then the new theme stands. If you use `C-g', then the original colors are restored. The same thing applies to `icicle-frame-bg' and `icicle-frame-fg', which are analogous to `##doremi-bg-color-name+##' and `##doremi-fg-color-name+##'. -- DrewAdams
 
+[new]
+OK, I see -- [[ahei]]
+
+
+
+
+
+
+
+
+
 ----
 [:SeeAlso]
 == See Also ==

@@ -207,6 +207,11 @@ Note that this does not do the context menus; it sets the icons in Windows Explo
 Hopefully this brings us a step closer.
 --[[thundt]]
 
+[new]
+Had some trouble getting emacsclient to work under Windows 7 with the default settings.  The server file was created in %userprofile%\appdata\roaming\.emacs.d\server\server and emacsclient didn't look there by default.  Quickest solution was to define EMACS_SERVER_FILE environment variable and restart Emacs.
+
+--RobDavenport
+
 
 ==== "Open with Emacs" on Windows with Emacs 22 ====
 

@@ -94,7 +94,7 @@ External Programs and Remote Services:
 * [[CategoryCalendar|Calendar]] -- calendar, diary, task (appointment) reminders
 ** [[CategoryTodo|Todo]] -- maintaining "to-do" lists
 ** [[CategoryTimeTracking|TimeTracking]] -- tracking your time doing things
-* [[CategoryEducation|Education]] -- learn something new, use a dictionary or grade students according to their [[http://www.resumesplanet.com resume writing]].
+* [[CategoryEducation|Education]] -- learn something new, use a dictionary or grade students
 * [[CategoryEmulation|Emulation]] -- emulating environments of other systems and software in Emacs
 * [[CategoryExternalUtilities|ExternalUtilities]] -- using external utilities for other than programming
 ** [[CategoryCryptography|Cryptography]] -- encrypt and decrypt files you edit
@@ -107,7 +107,6 @@ External Programs and Remote Services:
 ** [[CategoryJournaling|Journaling]] -- Emacs interfaces to Web logs (blogs)
 * [[CategoryMail|Mail]] -- reading email in Emacs
 ** [[CategoryGnus|Gnus]] -- an Emacs reader of news and mail
-
 ** [[CategoryMailAddons|MailAddons]] -- mail-handling add-ons (not Gnus-related).
 ** [[CategoryViewMail|VM]] -- View Mail is an alternate package to [[Rmail]]
 * [[CategoryPersonalInformationManager|PersonalInformationManager]] -- PIM functionalities
