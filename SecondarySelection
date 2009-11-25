@@ -24,6 +24,8 @@ You can also use the secondary selection as another way to do what you do with `
 [new]
 the above doesn't works on Linux (Ubuntu) because most meta mouse stuff is intercepted by X (Meta drag moves the window, for example) Is there a way to use secondary selection with Windows key instead of Meta key? -- Anon
 
+  Initiating the mouse action before hitting meta seems to bypass the window manager and get to emacs. --Anon
+
 [new]
 Is the secondary selection in emacs speak the same thing as the secondary selection in X Windows speak? -- Anon
 

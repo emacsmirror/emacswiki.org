@@ -10,6 +10,7 @@ Other implementations still alive:
 * EdWin, based on [[Scheme]].
 * EfunsEditor, based on ObjectiveCaml.
 * [[Mg]], a lightweight public domain Emacs clone
+* [[Ymacs]], an Emacs-like editor for the Web
 
 Other more or less obscure implementations:
 * [[EINE]]

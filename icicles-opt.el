@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Nov 22 10:37:12 2009 (-0800)
+;; Last-Updated: Tue Nov 24 23:27:45 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 3400
+;;     Update #: 3404
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -72,6 +72,7 @@
 ;;    `icicle-completing-read+insert-keys',
 ;;    `icicle-completion-history-max-length',
 ;;    `icicle-Completions-display-min-input-chars',
+;;    `icicle-completions-format',
 ;;    `icicle-Completions-frame-at-right-flag',
 ;;    `icicle-Completions-text-scale-decrease',
 ;;    `icicle-Completions-window-max-height',
@@ -770,10 +771,10 @@ inputs.  You can override the behavior by using `C-u' with `\\[icicle-retrieve-p
 					      (color-theme-initialize)
 					      (setq color-theme-initialized  t))
 					  (error nil))))
-                                    (delq 'bury-buffer
-                                          (mapcar (lambda (entry)
-                                                    (list (symbol-name (car entry))))
-                                                  color-themes)))
+                                    (delete '("bury-buffer")
+                                            (mapcar (lambda (entry)
+                                                      (list (symbol-name (car entry))))
+                                                    color-themes)))
   "*List of color themes to cycle through using `M-x icicle-color-theme'.
 Note: Starting with Color Theme version 6.6.0, you will need to put
 library `color-theme-library.el', as well as library `color-theme.el',
@@ -871,6 +872,17 @@ set of candidates during incremental completion.  The default value of
 0 causes this option to have no effect: *Completions* is never removed
 based only on the number of input characters."
   :type 'integer :group 'Icicles-Completions-Display)
+
+;;;###autoload
+(defcustom icicle-completions-format (and (boundp 'completions-format)
+                                          completions-format) ; Defined in Emacs 23+.
+  "*Layout of completion candidates in buffer *Completions*.
+`vertical' means display down columns first, then to the right.
+`horizontal' or nil means display across rows first, then down."
+  :type '(choice
+          (const :tag "Display vertically"    vertical)
+          (other :tag "Display horizontally"  horizontal))
+  :group 'Icicles-Completions-Display)
 
 ;;;###autoload
 (defcustom icicle-Completions-frame-at-right-flag t

@@ -85,11 +85,109 @@ Better yet, use this to separate threads (puts space before and after the horizo
 </pre>
 ----
 <pre>
-i discovered icicles long ago, but didn't opt for it since i really liked ido for handling my buffers and finding files.  i'm running into icicles again and would like to incorporate it into my workflow.  is there a way to disable icicles for buffers and finding files?  i'd like to have ido handle those two tasks.  --vinhdizzo
+
 </pre>
 
 [new]
+<pre>
+emacs -Q
+(require 'icicles)
+M-x icicle-color-theme color-theme-aalto-dark RET, now color theme is color-theme-aalto-dark
+M-x icicle-color-theme RET, I get error tip: "Symbol's function definition is void: ", and now  it cancel color-theme-aalto-dark 
+and restore old color theme (RET does not exit the minibuffer successful.
+</pre>
 
+-- [[ahei]]
+
+[new:DrewAdams:2009-11-24 18:30 UTC]
+1. I cannot reproduce that. What is the symbol that it complains about? You quoted only part of the error message. Are you sure you have all the latest '''Icicles''' files? What is your Emacs version? What version of ColorTheme are you using? Etc.
+
+2. It is normal that the saved theme was restored when an error is raised. The snapshot was taken only once per Emacs session. That's why the theme that was restored was your initial theme. 
+
+3. In any case, I've just uploaded a new version of <tt>[[icicles-cmd1.el]]</tt> that makes the change I suggested I would make. By default, a snapshot is now taken at the start of each invocation of the command. If you use a prefix arg, then no snapshot is taken (unless none has been taken for the current Emacs session). IOW, a prefix arg gives you pretty much the behavior of the previous version, and no prefix arg means that `C-g' restores the state as it was before the command was invoked. -- DrewAdams
+
+
+[new]
+I use your latest icicles-install, and have use it update latest icicles.
+
+icicle-color-theme docstring said:
+<pre>
+If you use `C-g' during this command, the previous color-theme
+snapshot is used to restore that color theme.
+
+By default, each time you invoke this command, a snapshot is first
+made of the current color theme (or current colors, if no theme is
+used).  Thus, by default, if you use `C-g', the colors restored are
+those used before you changed themes using this command.
+
+However, if you use a prefix arg, then this command takes no new
+snapshot, unless no snapshot has ever been taken during this Emacs
+session.  This can be useful when experimenting, to restore not to the
+state just before this command invocation, but to some previous
+snapshot.
+</pre>
+
+<pre>
+emacs -Q
+(require 'icicles)
+(require 'color-theme)
+M-x icy-mode
+
+1.
+M-x icicle-color-theme RET , I get error tip: "Symbol's function definition is void: ", this is 
+whole message emacs give to me. and now color theme is also color-theme-aalto-dark, this is same 
+as docstring said.
+
+2.
+M-x icicle-color-theme color-theme-aalto-dark RET, now color theme is color-theme-aalto-dark
+
+M-x icicle-color-theme TAB C-up C-up C-up, now color theme is other, C-g C-g, and now color theme 
+restore to color-theme-aalto-dark, this is same as docstring said.
+
+C-u M-x icicle-color-theme TAB C-up C-up C-up, now color theme is other, C-g C-g, and now color theme 
+restore to color-theme-aalto-dark, but this is not same as docstring said.
+
+IOW, M-x icicle-color-theme and C-u M-x icicle-color-theme is same.
+
+my system is ubuntu 8.04, and M-x emacs-version: GNU Emacs 23.1.2 (i686-pc-linux-gnu, GTK+ Version 2.12.9) 
+of 2009-08-21 on ahei-ubuntu
+I use color theme 6.6.0
+</pre>
+
+-- [[ahei]]
+
+[new:DrewAdams:2009-11-25 08:14 UTC]
+Thanks for providing more info.
+
+0. No need to require `##color-theme.el##'. If it is in your `load-path', and the subdirectory `themes' is in your `load-path', then `##color-theme.el##' and `##color-theme-library.el##' will be loaded when you load '''Icicles'''. Check the value of option `icicle-color-themes' after loading '''Icicles''' and before doing anything else. If it is empty, then the color-theme library wasn't loaded at '''Icicles''' load time.
+
+But please download the latest <tt>[[icicles-opt.el]]</tt>. I just fixed a bug in `icicle-color-themes' initialization.
+
+1. I don't understand #1.
+
+1a. You are getting the error after `RET' just to enter the command name, before trying completion, correct? Perhaps the error is related to the bug I just fixed, but I doubt it. Normally, that error message shows the symbol whose function cell it claims is void. I'm surprised that you don't see any symbol name.
+
+1b. You say that after the error was raised the color theme was changed to `color-theme-aalto-dark'. An error causes the theme to be restored to the snapshot. The snapshot is created when the command is invoked. In your case, the command was barely invoked (you got an error before using completion), so it could be that the snapshot was not yet created.
+
+But if the theme changed to `color-theme-aalto-dark' then that must be the value of the snapshot, which means either that this was not the first time you invoked the command (your recipe was not accurate) or that was the theme that you started out with. Some info seems to be missing here.
+
+Anyway, you will need to use the debugger to get some more info about what's happening. After loading the '''Icicles''' source files (not byte-compiled files), do `M-x debug-on-entry icicle-color-theme'. Then do `M-x icicle-color-theme RET' to try to reproduce the problem. Step through the debugger with `d' (you can use `c' for any sexp whose eval you want to skip through quickly). See what happens at the moment the first error is raised. To easily follow the execution, put the source file in another frame so you can see what's happening. Let me know whatever you find out.
+
+It's easier to communicate about this by mail (backtrace contents etc.), BTW. `M-x icicle-send-bug-report'.
+
+2. #2 shows that it works, in spite of the error raised in #1. I still need to understand what happened in #1, however.
+
+You seem surprised by the last part of #2, but that is just what the doc string says. You exited normally the first time, giving you the dark theme. The second invocation created the snapshot to the dark theme (and `C-g' restored it). The third invocation, with `C-u', did not create a new snapshot, and your `C-g' restored to the existing snapshot, which was, again, the dark theme. 
+
+`C-u' prevents taking a new snapshot at the time of command invocation. It leaves the existing snapshot as it was. Its purpose is just that: to not overwrite the snapshot, because you don't want to save the current theme. But in your case, the current theme was the same as the snapshot (dark), so `C-u' made no difference. It simply prevented overwriting the dark snapshot with a new dark snapshot (same thing).
+
+You would have seen the utility of `C-u' if you had not used `C-g' but had exited with, say, a light theme, so the current theme would then have been different from the snapshot you had made earlier. Then, if you invoked the command again with `C-u' and hit `C-g', the dark theme would be restored, not the light theme that was in effect when the command was invoked.
+
+IOW, if you always use `C-u', then you don't take snapshots. If you want to be able to restore to the current state, not to an earlier state, then do not use `C-u'. If you like some state, and you want to experiment with others and then come back to the state you liked, then use `C-u' for all such experimentation -- no new snapshots will be taken, and `C-g' (or choosing pseudo-theme ##[Reset]## using `color-theme-select') will restore the state you liked.
+
+The common case, I expect, is to want to restore things to the way they were when the command was invoked, that is, to cancel the effect of the current command (only). This was the point you raised before, complaining that the (older) behavior was not similar to, say, `icicle-frame-bg'. Now it is similar (if you don't use `C-g').
+
+Please try to debug #1 a little and let me know what you find out. Thx -- DrewAdams
 
 
 

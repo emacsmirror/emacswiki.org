@@ -26,15 +26,26 @@ hg update -C development
 
 * At the moment it provide support for bookmarking in W3m, Gnus, Woman, Man, Info with emacs standard bookmarks.
 
-* You can now import your W3m bookmarks in your Emacs bookmarks. (Use M-x bmkext-import-or-sync-w3m-bmks).
-
-* The imported w3m bookmarks will be saved only if `bmkext-always-save-w3m-imported' is non--nil.
-
 * You can import w3m bookmarks temporarily by using the w3m filter (W) in menu list with a prefix arg (C-u).
 
 * You can import Delicious bookmarks temporarily with (D) a prefix arg will refresh the list from delicious.
-
 NOTE: For this feature you will need Lisp:anything-delicious.el even if you don't use Anything.
+
+* You can import Firefox bookmarks temporarily with (P).
+NOTE: Firefox version>=3 don't use anymore html file to store bookmarks.
+It use instead places.sqlite, an sql database.
+bookmark-extensions.el use the bookmarks.html file to import firefox bookmarks.
+To feed your bookmarks.html automatically, add this line in user.js (in ~/.mozilla/firefox/xxxx.default)
+
+<pre>
+
+user_pref("browser.bookmarks.autoExportHTML", true);
+
+</pre>
+
+Or set it to true with a doubleclick in about:config from firefox.
+
+This will import automatically your firefox bookmarks from places.sqlite to bookmarks.html
 
 * You can jump to your urls with external browser (e.g firefox) if you use a prefix arg (C-u RET). 
 

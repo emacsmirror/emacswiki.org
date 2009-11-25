@@ -46,7 +46,7 @@
 
 ;; Note that this package is pretty harsh to your std shortcuts you
 ;; probably should edit them (or at least see them through this file
-;; to suit your needs. I eg. personally never used backwards searches,
+;; to suit your needs. I e.g. personally never used backwards searches,
 ;; so C-r was doomed in my hands. I use only enter for indented
 ;; linebreaks, so C-j also seemed as a nice candidate for something
 ;; more useful - you might want to bind:

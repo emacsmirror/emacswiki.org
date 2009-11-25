@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Nov 22 10:02:31 2009 (-0800)
+;; Last-Updated: Tue Nov 24 23:36:13 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 4581
+;;     Update #: 4586
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2009/11/24 dadams
+;;     icicle-color-theme: Take a snapshot each time invoked, unless prefix arg.
 ;; 2009/11/22 dadams
 ;;     icicle-color-theme: Use color-theme-initialize instead of load-library, to load themes.
 ;; 2009/11/21 dadams
@@ -140,6 +142,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2009/11/24 dadams
+;;     icicle-read-color: Copy the prompt string, so *-color-completion-setup can put props.
 ;; 2009/11/22 dadams
 ;;     icicle-frame-(bg|fg): Don't apply *-make-color-candidate to named-colors (done already).
 ;; 2009/11/03 dadams
@@ -3431,6 +3435,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2009/11/24 dadams
+;;     Added: icicle-completions-format.
+;;     icicle-color-themes: Fix: delete singleton list with string, not symbol bury-buffer.
 ;; 2009/11/22 dadams
 ;;     icicle-color-themes: Use color-theme-initialize instead of load-library, to load themes.
 ;; 2009/11/21 dadams

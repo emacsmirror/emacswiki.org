@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Nov 22 10:35:46 2009 (-0800)
+;; Last-Updated: Wed Nov 25 00:27:05 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 19927
+;;     Update #: 19940
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3538,7 +3538,7 @@ noninteractively.  Lisp code can bind `current-prefix-arg' to control
 the behavior."                          ; Doc string
   icicle-kill-a-buffer-and-update-completions ; Function to perform the action
   "Kill buffer: "                       ; `completing-read' args
-  (mapcar #'(lambda (buf) (list (buffer-name buf))) bufflist) nil
+  (mapcar #'(lambda (buf) (list (buffer-name buf))) bufflist) nil ; `bufflist' is free here.
   (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ; Emacs23.
   nil 'buffer-name-history (buffer-name (current-buffer)) nil
   (icicle-buffer-bindings))             ; Bindings
@@ -3597,7 +3597,7 @@ noninteractively.  Lisp code can bind `current-prefix-arg' to control
 the behavior."                          ; Doc string
   switch-to-buffer                      ;  Function to perform the action
   "Switch to buffer: "                  ; `completing-read' args
-  (mapcar #'(lambda (buf) (list (buffer-name buf))) bufflist) nil
+  (mapcar #'(lambda (buf) (list (buffer-name buf))) bufflist) nil ; `bufflist' is free here.
   (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ; Emacs23.
   nil 'buffer-name-history (icicle-default-buffer-names) nil
   (icicle-buffer-bindings))              ; Bindings
@@ -3646,7 +3646,7 @@ noninteractively.  Lisp code can bind `current-prefix-arg' to control
 the behavior."                          ; Doc string
   insert-buffer                         ;  Function to perform the action
   "Buffer: "                            ; `completing-read' args
-  (mapcar #'(lambda (buf) (list (buffer-name buf))) bufflist) nil
+  (mapcar #'(lambda (buf) (list (buffer-name buf))) bufflist) nil ; `bufflist' is free here.
   (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ; Emacs23.
   nil 'buffer-name-history (icicle-default-buffer-names) nil
   (icicle-buffer-bindings))             ; Bindings
@@ -3657,7 +3657,7 @@ the behavior."                          ; Doc string
 Same as `icicle-buffer' except it uses a different window." ; Doc string
   switch-to-buffer-other-window         ; Function to perform the action
   "Switch to buffer in other window: "  ; `completing-read' args
-  (mapcar #'(lambda (buf) (list (buffer-name buf))) bufflist) nil
+  (mapcar #'(lambda (buf) (list (buffer-name buf))) bufflist) nil ; `bufflist' is free here.
   (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ; Emacs23.
   nil 'buffer-name-history (icicle-default-buffer-names) nil
   (icicle-buffer-bindings))              ; Bindings
@@ -3681,7 +3681,7 @@ the behavior."                          ; Doc string
     (funcall icicle-customize-save-variable-function 'icicle-buffer-extras icicle-buffer-extras)
     (message "Buffer `%s' added to always-show buffers" buf))
   "Buffer candidate to show always: "   ; `completing-read' args
-  (mapcar #'(lambda (buf) (list (buffer-name buf))) bufflist) nil
+  (mapcar #'(lambda (buf) (list (buffer-name buf))) bufflist) nil ; `bufflist' is free here.
   (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ; Emacs23.
   nil 'buffer-name-history (icicle-default-buffer-names) nil
   (icicle-buffer-bindings ((icicle-use-candidates-only-once-flag  t)))) ; Bindings
@@ -3868,46 +3868,56 @@ Save the updated option."               ; Doc string
 You can use `S-delete' during completion to remove the current
 candidate from the list of color themes.
 
+If you use `C-g' during this command, the previous color-theme
+snapshot is used to restore that color theme.
+
+By default, each time you invoke this command, a snapshot is first
+made of the current color theme (or current colors, if no theme is
+used).  Thus, by default, if you use `C-g', the colors restored are
+those used before you changed themes using this command.
+
+However, if you use a prefix arg, then this command takes no new
+snapshot, unless no snapshot has ever been taken during this Emacs
+session.  This can be useful when experimenting, to restore not to the
+state just before this command invocation, but to some previous
+snapshot.
+
 To use this command, you must have loaded library `color-theme.el',
 available from http://www.emacswiki.org/cgi-bin/wiki.pl?ColorTheme." ; Doc string
   (lambda (theme) (funcall (intern theme))) ; Action - just call the theme.
   "Theme: " icicle-color-themes nil t nil ; `completing-read' args
   (if (boundp 'color-theme-history) 'color-theme-history 'icicle-color-theme-history)
   nil nil
-  ((snapshot                        (if (or (assq 'color-theme-snapshot color-themes) ; Bindings
-                                            (commandp 'color-theme-snapshot))
-                                        (symbol-function 'color-theme-snapshot)
-                                      (color-theme-make-snapshot)))
-   (icicle-delete-candidate-object  'icicle-color-themes))
-  (progn
-    (unless (prog1 (require 'color-theme nil t) ; First code
-              (when (and (fboundp 'color-theme-initialize) (not color-theme-initialized))
-                ;; NOTE: We need the `condition-case' because of a BUG in `directory-files' for
-                ;; Emacs 20.  Bug reported to `color-theme.el' maintainer 2009-11-22.  The problem
-                ;; is that the default value of `color-theme-libraries' concats
-                ;; `file-name-directory', which ends in `/', with `/themes', not with `themes'.
-                ;; So the result is `...//themes'.  That is tolerated by Emacs 21+ `directory-files',
-                ;; but not for Emacs 20.  Until this `color-theme.el' bug is fixed, Emacs 20 users
-                ;; will need to manually load `color-theme-libraries.el'.
-                (condition-case nil
-		    (let ((color-theme-load-all-themes  t))
-		      (color-theme-initialize)
-		      (setq color-theme-initialized  t))
-		  (error nil))))
-      (error "This command requires library `color-theme.el'"))
-    ;; Create the snapshot, if not available.  Do this so users can also undo using
-    ;; pseudo-theme `[Reset]'.
-    (when (or (not (assq 'color-theme-snapshot color-themes))
-              (not (commandp 'color-theme-snapshot)))
-      (fset 'color-theme-snapshot (color-theme-make-snapshot))
-      (setq color-themes  (delq (assq 'color-theme-snapshot color-themes)
-                                color-themes)
-            color-themes  (delq (assq 'bury-buffer color-themes) color-themes)
-            color-themes  (append '((color-theme-snapshot
-                                     "[Reset]" "Undo changes, if possible.")
-                                    (bury-buffer "[Quit]" "Bury this buffer."))
-                                  color-themes))))
-  (funcall snapshot))                   ; Undo code
+  ((icicle-delete-candidate-object  'icicle-color-themes) ; Bindings
+   (prefix-arg                      current-prefix-arg))
+  (progn (unless (prog1 (require 'color-theme nil t) ; First code
+                   (when (and (fboundp 'color-theme-initialize) (not color-theme-initialized))
+                     ;; NOTE: We need the `condition-case' because of a BUG in `directory-files' for
+                     ;; Emacs 20.  Bug reported to `color-theme.el' maintainer 2009-11-22.  The problem
+                     ;; is that the default value of `color-theme-libraries' concats
+                     ;; `file-name-directory', which ends in `/', with `/themes', not with `themes'.
+                     ;; So the result is `...//themes'.  That is tolerated by Emacs 21+
+                     ;; `directory-files', but not for Emacs 20.  Until this `color-theme.el' bug is
+                     ;; fixed, Emacs 20 users will need to manually load `color-theme-libraries.el'.
+                     (condition-case nil
+                         (let ((color-theme-load-all-themes  t))
+                           (color-theme-initialize)
+                           (setq color-theme-initialized  t))
+                       (error nil))))
+           (error "This command requires library `color-theme.el'"))
+         ;; Create the snapshot, if not available.  Do this so users can also undo using
+         ;; pseudo-theme `[Reset]'.
+         (when (or (not prefix-arg)
+                   (not (assq 'color-theme-snapshot color-themes))
+                   (not (commandp 'color-theme-snapshot)))
+           (fset 'color-theme-snapshot (color-theme-make-snapshot))
+           (setq color-themes  (delq (assq 'color-theme-snapshot color-themes) color-themes)
+                 color-themes  (delq (assq 'bury-buffer color-themes) color-themes)
+                 color-themes  (append '((color-theme-snapshot
+                                          "[Reset]" "Undo changes, if possible.")
+                                         (bury-buffer "[Quit]" "Bury this buffer."))
+                                       color-themes))))
+  (color-theme-snapshot))               ; Undo code
 
 ;; Bound to `C-- C-y' via `icicle-yank-maybe-completing'.
 ;;;###autoload

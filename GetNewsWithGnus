@@ -1,12 +1,9 @@
-Set the environment NNTPSERVER to the news server or write your news server name to /etc/nntpserver.
+== Server ==
 
-You can also use Gnus select methods:
+Set the environment *NNTPSERVER* to the news server or write your news server name to **/etc/nntpserver**.
+Or you can also use Gnus select methods:
 
  (setq gnus-select-method '(nntp "my.news.server"))
-
-If you want the use more than one server, place them into the variable <code>gnus-secondary-select-methods</code>.
-
-Hint: If your news server required a username and a password, you should create the ~/.authinfo file. See GnusAuthinfo for more.
 
 You can also use your local spool:
 
@@ -14,21 +11,25 @@ You can also use your local spool:
 
 Note: First configure your <code>nnspool-*</code> variables.
 
+If you want the use *more than one server*, place them into the variable <code>gnus-secondary-select-methods</code>.
+
+If your news server required *username and password*, you should create the ~/.authinfo file. See GnusAuthinfo for more.
+
+== Start Gnus And Subscribe ==
+
 Then type <code>M-x gnus</code> to invoke Gnus, and then type L to list groups.
 
-If you get the message "No news is no news":
+If you get the message *No news is no news*:
 
-Does `A k' show a list of groups?  Hit `u' on the ones you like.
-
-If `A k' doesn't do the trick, try `A z'.  Use `u' as above, but `C-k' on the ones you don't want.
-
-If that still doesn't do it, try `A A'.
+# Does `A k' show a list of groups?  Hit `u' on the ones you like.
+# If `A k' doesn't do the trick, try `A z'.  Use `u' as above, but `C-k' on the ones you don't want.
+# If that still doesn't do it, try `A A'.
 
 Or an alternative using the *Server* buffer:
 
-From the *Group* buffer, type `^'.  Then, you should be in the server buffer.  There, move point to the server name you are trying to read, hit SPC.  Here, you should see a listing of all groups that the server has to offer.  Search for the group you want.  Hit, `u' on it.  Then, hit q q and you should be back at the *Group* buffer.  Point should also be on the selected group.  Now, hit `g' to retrieve news.  Then hit SPC to enter the group and have at it.
+From the *Group* buffer, type `^'.  You are now in the server buffer.  There, move point to the server name you are trying to read, hit SPC.  You should see a listing of all groups that the server has to offer.  Search for the group you want.  Hit, `u' on it.  Then, hit q q and you should be back at the *Group* buffer.  Point should also be on the selected group.  Now, hit `g' to retrieve news.  Then hit SPC to enter the group and have at it.
 
-Contributors: BrianWhite, KaiGrossjohann, GalenBoyer
+== Questions ==
 
 [new]
 Is there any way to make Gnus pass through an HTTP proxy?

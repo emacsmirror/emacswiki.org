@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon Nov  2 10:03:35 2009 (-0700)
+;; Last-Updated: Tue Nov 24 07:53:01 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 24776
+;;     Update #: 24778
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2391,6 +2391,8 @@
 ;;  without confirming, if you wish - see (@> "Multi-Commands").  See
 ;;  also (@> "Exiting the Minibuffer Without Confirmation") for how to
 ;;  obtain the complete-and-exit behavior of library `iswitchb.el'.
+;;  Note that you can use Iswitchb together with Icicles, but Ido is
+;;  incompatible.
 ;;
 ;;  The main reason I prefer Icicles is because of its generality.
 ;;  You use the same input, cycling, and completion method for

@@ -184,6 +184,12 @@ If you're running "emacs -nw" in Terminal.app you can swap the cmd and alt keys;
 http://andrewmcdermott.blogspot.com/2009/11/cmd-key-happy-swap-cmdalt-keys-in.html.
 
 
+CocoaEmacs has a group of customizable options named Ns, for adjustment of GNUstep/Mac OS X specific features. 
+Some variables in this group can be set to either assign behavior to modifier keys, or remove it to make them behave as usual in Mac OS X.
+The variables are named ns-{control,command,altenate,function}-modifier.
+(Each has an alias of the form mac-{control,...}-modifier.)
+To make a Option (Alt) work as described for AquamacsEmacs above,  set ns-alternate-modifier to none (No modifier) in the customize buffer and save the changes.
+
 == Console and Terminal ==
 
 

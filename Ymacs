@@ -1,0 +1,30 @@
+[http://www.ymacs.org/ Ymacs] is an Emacs-like editor for the Web--that is,
+it works in a browser.  Currently it's only tested with Firefox, and it's
+known to have some minor issues on Mac OS X (most key bindings flash the
+Edit or File menus, which seems to be a Macintosh “feature”).
+
+Ymacs started out as an experiment and should still be considered so, but
+it's currently quite functional.  The main goal of the project was to make
+it pleasurable to write source code in the browser; using a <textarea> it's
+far from convenient.
+
+Features:
+
+* many standard editing commands, such as text filling, movement by word, transposition etc.
+* kill ring
+* undo stack
+* prefix keys (but no ESC for Meta yet, ALT should be used)
+* split windows (they are called frames in Ymacs)
+* multiple buffers
+* autocompletion (dabbrev-expand)
+* modeline and minibuffer (though minibuffer is not very functional for now, no M-x)
+* interactive search
+* syntax highlighting
+* overlays, markers, point and mark
+* transient region
+* editing modes
+
+Programming modes are provided for JavaScript, XML and Lisp -- providing
+syntax highlighting and automatic indentation.
+
+Ymacs is distributed under a [http://www.ymacs.org/license.html BSD license].

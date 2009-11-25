@@ -79,6 +79,8 @@ These things can be done after the switchover, we just shouldn't forget them:
 
 * [http://savannah.gnu.org/support/index.php?106612 Savannah ticket #106612] about the Emacs Bzr switchover in general.
 
+* [https://savannah.gnu.org/support/index.php?107143 Savannah ticket #107143] about getting bzr+ssh access to work on savannah.gnu.org.
+
 * [https://savannah.gnu.org/support/index.php?106951 Savannah ticket #106951] about upgrading Bazaar to 1.17 on Savannah.
 
 * [https://savannah.gnu.org/support/index.php?106531 Savannah ticket #106531] about bzr commit emails omitting large diffs.

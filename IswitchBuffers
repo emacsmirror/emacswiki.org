@@ -1,4 +1,4 @@
-This is an alternative to using `C-x b'.  By default, `C-x b' calls `switch-to-buffer'.
+'''[::Iswitchb]''' is an alternative to using `C-x b'.  By default, `C-x b' calls `switch-to-buffer'.
 There, you can enter a buffer name, with completion. Some people prefer
 `iswitchb-buffer' to `switch-to-buffer'.  As you type the buffer name, the list of options is reduced to the buffers matching what you type.  And it is not limited to the beginning of the buffer name, either.  That means you could type "tch" to switch to the "*scratch*" buffer.
 

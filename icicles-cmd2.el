@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sun Nov 22 09:12:33 2009 (-0800)
+;; Last-Updated: Tue Nov 24 07:29:57 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 1162
+;;     Update #: 1166
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5209,8 +5209,8 @@ used with `C-u', with Icicle mode turned off)."
             icicle-list-nth-parts-join-string  icicle-list-join-string
             icicle-list-end-string             icicle-proxy-candidate-regexp
             named-colors                       icicle-proxy-candidates)
-
-        (setq prompt  (or prompt "Color: "))
+        ;; Copy the prompt string because `icicle-color-completion-setup' puts a text prop on it.
+        (setq prompt  (copy-sequence (or prompt "Color: ")))
         (icicle-color-completion-setup)
         (setq icicle-proxy-candidates
               (append icicle-proxy-candidates

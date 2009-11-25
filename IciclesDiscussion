@@ -735,12 +735,6 @@ My suggestion is to try the default behavior a little more. If you still don't l
 
 
 
-
-
-
-[:LatestEntry]
-
-
 <pre>
 
 </pre>
@@ -785,18 +779,62 @@ Do you prefer that `icicle-color-theme' take a snapshot each time it is called, 
 
 4. Not sure what you're asking. It sounds like you're asking whether you can use an '''Icicles''' multi-command as such with ''Icicle'' mode turned off. The answer to that is no. With ''Icicle'' mode turned off, multi-commands act like normal Emacs commands: all you can do is use `RET' to choose one candidate (color theme, in this case). Also, with ''Icicle'' mode turned off, there is no [[Icicles - Cycling Completions|cycling]] of candidates (let alone acting on them), no [[apropos completion]], no [[progressive completion]] -- in short, no '''Icicles''' features. -- DrewAdams
 
+[new]
+1. OK
+
+2. If I press `C-g' when execute icicle-color-theme, icicle restore old color theme, how do I exit command icicle-color-theme but not cancel my new color theme which I change before execute icicle-color-theme?
+
+3. sorry, my mistake.what's the difference between `icicle-frame-bg' and `set-background-color' when icy-mode is on?
+
+4. yeah, I do mean that and I see. -- [[ahei]]
 
 
+[new:DrewAdams:2009-11-24 15:28 UTC]
+2. `RET'. Just exit the minibuffer normally, instead quitting with `C-g'.
+
+BTW, I think what I'll do is, by default, take a snapshot each time, so `C-g' restores the situation before you invoked the command. And then let you override this, preventing a new snapshot being taken, by using a prefix arg. WDYT?
+
+3. Same answer, essentially (did you read it?). In ''Icicle'' mode, `set-background-color' lets you choose the color using WYSIWYG candidates, but otherwise there is nothing special about it; it is an ordinary, vanilla-Emacs command. `icicle-frame-bg' is an '''Icicles''' [[multi-command]]: you can use `C-next', `C-mouse-2', etc. to act on any number of candidates (colors) in the same command invocation. -- DrewAdams
+
+[new]
+2. `RET' does not work. 
+<pre>
+M-x icicle-color-theme color-theme-aalto-dark RET, now color theme is color-theme-aalto-dark
+M-x icicle-color-theme RET, I get error tip: "Symbol's function definition is void: ", and now  it cancel color-theme-aalto-dark 
+and restore old color theme
+</pre>
+and if use "RET", I M-x icicle-color-theme color-theme-, if I want to cancel to execute icicle-color-theme, I first must delete "color-theme-" which I typed.
+I'm not very understand your meaning, but it sounds good, :)
+
+3. Do there have multi-command like icicle-frame-bg to set face background, e.g. icicle-face-bg?
+
+4. I think you may should manage your icicles, doremi, etc. which are all large packages and have many files with some version control tools such as svn, git, etc., then users don't need know which file you updated, they just need use version control tools to update latest version. -- [[ahei]]
+
+[new:DrewAdams:2009-11-24 16:56 UTC]
+2. Report a bug: `M-x icicle-send-bug-report' -- it works for me. Provide a precise recipe etc. Your first line shows that `RET' does work. I don't follow your explanation at all, sorry. Please try to rephrase it. Stick to short sentences or just a recipe of steps. And this page is not the place for reporting bugs.
+
+3. No. You can see this by doing `C-h f icicle S-SPC face'. And no, I won't be creating such a command. You can define such a command if you need it. It's as easy to define an '''Icicles''' multi-command as it is to define an ordinary command -- see [[Icicles - Defining Icicles Commands|Defining Icicles Commands]].
+
+4. Sorry, not interested. Download all of the files each time you want to update '''Icicles'''. All of the download methods described do that -- see[[Icicles - Libraries#BulkIciclesDownload|Downloading Icicles]]. The '''DoReMi''' files are independent: you do not need any of them to use any of the others, except that you need <tt>[[doremi.el]]</tt> for two of the three others. -- DrewAdams
 
 
+[:LatestEntry]
 
 
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
 
 
+[new]
+i discovered icicles long ago, but didn't opt for it since i really liked ido for handling my buffers and finding files.  i'm running into icicles again and would like to incorporate it into my workflow.  is there a way to disable icicles for buffers and finding files?  i'd like to have ido handle those two tasks.  -- [[vinhdizzo]]
 
-
-
-
+[new:DrewAdams:2009-11-24 15:47 UTC]
+No, I'm sorry. [[Ido]] uses the minibuffer in incompatible ways; '''Icicles''' uses it essentially the same way vanilla Emacs does. You can get some of the Ido behavior and still use '''Icicles''', if you want, but you cannot use both Ido and '''Icicles''' at the same time (both modes active). See [[#IdoAndIcicles]], above, for more information. -- DrewAdams
 
 
 

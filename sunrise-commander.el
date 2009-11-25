@@ -1,5 +1,5 @@
-;;; sunrise-commander.el  --- Two-pane file manager for Emacs based on Dired and
-;; inspired by MC.
+;;; sunrise-commander.el  --  Two-pane file manager for Emacs based on Dired and
+;;  inspired by MC.
 
 ;; Copyright (C) 2007 2008 2009 José Alfredo Romero Latouche (j0s3l0)
 
@@ -116,7 +116,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 3 $Rev: 225 $ of the Sunrise Commander.
+;; This is version 3 $Rev: 227 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.  I  have  also  received
@@ -377,6 +377,11 @@
 (defface sr-highlight-path-face
   '((t (:background "yellow" :foreground "#ace6ac" :bold t :height 120)))
   "Face of the directory path on mouse hover"
+  :group 'sunrise)
+
+(defface sr-broken-link-face
+  '((t (:foreground "red" :italic t)))
+  "Face to highlight broken symbolic links"
   :group 'sunrise)
 
 (defface sr-clex-hotchar-face
@@ -956,12 +961,38 @@ automatically:
     (save-excursion
       (goto-char (point-min))
       (sr-hide-avfs-root)
-      (if window-system
-          (progn
-            (sr-graphical-highlight face)
-            (sr-force-passive-highlight)))
+      (sr-highlight-broken-links)
+      (when window-system
+        (sr-graphical-highlight face)
+        (sr-force-passive-highlight))
       (run-hooks 'sr-refresh-hook))
     (hl-line-mode 1)))
+
+(defun sr-hide-avfs-root ()
+  "Hides the AVFS virtual filesystem root (if any) on the path line."
+  (if sr-avfs-root
+      (let ((next (search-forward (concat sr-avfs-root "/") nil t))
+            (len (length sr-avfs-root))
+            (overlay))
+        (while next
+          (progn
+            (setq overlay (make-overlay (- next len) next))
+            (overlay-put overlay 'invisible t)
+            (overlay-put overlay 'intangible t)
+            (setq next (search-forward sr-avfs-root nil t))))
+        (goto-char (point-min)))))
+
+(defun sr-highlight-broken-links ()
+  "Marks broken symlinks with an exclamation mark and a special face."
+  (let ((pos (search-forward-regexp dired-re-sym nil t))
+        (dired-marker-char ?!) bol eol)
+    (while pos
+      (unless (file-exists-p (dired-get-filename))
+        (setq bol (line-beginning-position) eol (line-end-position))
+        (if (eq 32 (char-after bol))
+            (save-excursion (dired-mark 1)))
+        (overlay-put (make-overlay bol eol) 'face 'sr-broken-link-face))
+      (setq pos (search-forward-regexp dired-re-sym nil t)))))
 
 (defun sr-graphical-highlight (&optional face)
   "Sets up the graphical path line in the current buffer (fancy fonts and
@@ -1001,20 +1032,6 @@ automatically:
         (sr-graphical-highlight 'sr-passive-path-face)
         (unless (eq sr-left-buffer sr-right-buffer)
           (hl-line-mode 0)))))
-
-(defun sr-hide-avfs-root ()
-  "Hides the AVFS virtual filesystem root (if any) on the path line."
-  (if sr-avfs-root
-      (let ((next (search-forward (concat sr-avfs-root "/") nil t))
-            (len (length sr-avfs-root))
-            (overlay))
-        (while next
-          (progn
-            (setq overlay (make-overlay (- next len) next))
-            (overlay-put overlay 'invisible t)
-            (overlay-put overlay 'intangible t)
-            (setq next (search-forward sr-avfs-root nil t))))
-        (goto-char (point-min)))))
 
 (defun sr-quit (&optional norestore)
   "Quit Sunrise and restore emacs to previous operation."
@@ -1137,14 +1154,16 @@ automatically:
                   (setq filename (buffer-substring (+ 2 (point-min)) slash))
                 (setq filename default-directory)))
           (setq filename (expand-file-name (dired-get-filename nil t)))))
-    (if filename
-        (if (file-directory-p filename)
-            (progn
-              (setq filename (file-name-as-directory filename))
-              (if (string= filename (expand-file-name "../"))
-                  (sr-dired-prev-subdir)
-                (sr-goto-dir filename)))
-          (sr-find-file filename)))))
+    (when filename
+      (unless (file-exists-p filename)
+        (error "ERROR: Nonexistent target"))
+      (if (file-directory-p filename)
+          (progn
+            (setq filename (file-name-as-directory filename))
+            (if (string= filename (expand-file-name "../"))
+                (sr-dired-prev-subdir)
+              (sr-goto-dir filename)))
+        (sr-find-file filename)))))
 
 (defun sr-find-file (filename &optional wildcards)
   "Determines  the  proper  way  of handling a file. If the file is a compressed
@@ -1239,6 +1258,8 @@ automatically:
     (when (and target-symlink
                (string= target-dir (dired-current-directory))
                (not (eq major-mode 'sr-virtual-mode)))
+      (unless (file-exists-p target-symlink)
+        (error "ERROR: File is a symlink to a nonexistent target"))
       (setq target-path target-symlink)
       (setq target-dir (file-name-directory target-symlink)))
 

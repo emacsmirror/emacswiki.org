@@ -133,7 +133,7 @@ each time they start X.
 
 == Editing ==
 
-=== How can I change the encoding of a text file ? ===
+=== How can I change the encoding of a text file? ===
 								        [16:44]
 Open the file and run the following command:
 								        [16:47]
@@ -216,7 +216,7 @@ wraps at the last word) *unless* you have split the screen.
 Most likely, you are editing a DOS file and the DOS line-endings are being displayed by emacs.  You should
 run the dos2unix command before editing the file, or upgrade to a more recent version of emacs.
 
-=== How do I insert a tab or a newline in a regexp interactively ? ===
+=== How do I insert a tab or a newline in a regexp interactively? ===
 
 You can't use \n or \t when entering a regexp interactively (when
 using C-M% - query-replace-regexp for instance). Simply type <TAB> or

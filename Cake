@@ -1,4 +1,4 @@
-See page in [http://trac.codecheck.in codecheck.in] http://trac.codecheck.in/share/wiki/CakeOnEmacs
+See page in http://wiki.github.com/k1LoW/emacs-cake
 
 This package is minor-mode for editing [http://cakephp.org/ CakePHP] code in Emacs.
 

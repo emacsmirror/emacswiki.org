@@ -30,7 +30,7 @@ Here is a list of tasks and corresponding workflows that will be useful to new u
 # Create a patch bundle for review.
 # Push changes to the upstream master.
 # Using a feature branch for longer-range changes that are expected to require multiple commits or to span multiple updates from the master.
-# Using a checkout to build the latest upstream sources, or to create a patch just once.
+# Using a stacked branch to build the latest upstream sources, or to create a patch just once.
 
 Overview of life with Bazaar:
 
@@ -97,8 +97,8 @@ Since you can't edit files in the /trunk/ branch (they're nonexistent), you must
       cd $DEVHOME/emacs
       bzr branch trunk/ quickfixes/
 
-Compared to CVS, a Bazaar branch is lightweight --- it doesn't cost much to create one, as all branches in the repository are sharing storage, and they can't bother anyone else.  However, there is one "weighty" aspect: the source tree itself, which takes time to check out.  Even more important, /there will be no build products in the tree/.  ##make bootstrap## takes an annoying amount of time.  That's why we recommend that for small changes you use and reuse a branch dedicated to such small changes.  Once you've bootstrapped the build, the update, build, and commit elements of the update-edit-build-test-commit cycle are all very fast, as long as you keep working in that branch.
-
+In a Bazaar shared repository, all the branches share history.  This means less spaced used and less time spent downloading history and file content, making Bazaar branches much more lightweight than CVS branches.   However, it still takes time to check out the source tree for a new branch, and bootstrapping a new tree takes an annoyingly long time.  That is why we recommend that for small changes you keep reusing the same ##quickfixes## branch.  This way, after you have bootstrapped the ##quickfixes## branch once, the subsequent update, build, and commit steps of the update-edit-build-test-commit cycle all are very fast, as long as you continue working in the same branch. 
+ 
 [:QuickFix]
 === Workflow for a One-Off Change ===
 
@@ -286,3 +286,5 @@ which updates your ##my-hacks## branch with changes from upstream, and sets the 
 === Other Resources ===
 
 * [http://doc.bazaar-vcs.org/bzr.dev/en/user-guide/index.html Bzr Users Guide]
+* [http://doc.bazaar-vcs.org/migration/en/survival/bzr-for-git-users.html Bazaar for Git users]  A pretty complete overview of the differences between Git and Bazaar.  Contains a couple of glossaries of VCS terms, which are probably useful to those who don't know git, too.
+* [http://doc.bazaar-vcs.org/migration/en/survival/bzr-for-cvs-users.html Bazaar for CVS users]  A brief stub.
