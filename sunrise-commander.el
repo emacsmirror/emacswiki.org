@@ -116,7 +116,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 3 $Rev: 227 $ of the Sunrise Commander.
+;; This is version 3 $Rev: 228 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.  I  have  also  received
@@ -594,6 +594,18 @@ automatically:
      (when dispose
        (bury-buffer dispose)
        (kill-buffer dispose))))
+
+(defmacro sr-in-other (form)
+  "Executes the given form in the context of the passive pane. Helper macro for
+   passive & synchronized navigation."
+  `(progn
+     (if sr-synchronized ,form)
+     (sr-change-window)
+     (condition-case description
+         ,form
+       (error (message (second description))))
+     (sr-change-window)
+     (sr-highlight)))
 
 (defun sr-dired-mode ()
   "Sets Sunrise mode in every Dired buffer opened in Sunrise (called in hook)."
@@ -1405,13 +1417,17 @@ automatically:
 
 (defun sr-focus-filename (filename)
   "Tries to select the given file name in the current buffer."
-  (when (and dired-omit-mode
-             (string-match (dired-omit-regexp) filename))
-    (sr-omit-mode -1))
+  (if (and dired-omit-mode
+           (string-match (dired-omit-regexp) filename))
+      (sr-omit-mode -1))
   (let ((expr filename))
-    (when (or (file-directory-p filename) (file-symlink-p filename))
-      (setq expr (replace-regexp-in-string "/$" "" expr))
-      (setq expr (concat (regexp-quote expr) "\\(?:/\\| ->\\|$\\)")))
+    (setq expr (replace-regexp-in-string "/$" "" expr))
+    (cond ((file-symlink-p filename)
+           (setq expr (concat (regexp-quote expr) " ->")))
+          ((file-directory-p filename)
+           (setq expr (concat (regexp-quote expr) "\\(?:/\\|$\\)")))
+          ((file-regular-p filename)
+           (setq expr (concat (regexp-quote expr) "$"))))
     (setq expr (concat "[0-9] +" expr))
     (beginning-of-line)
     (if (null (re-search-forward expr nil t))
@@ -1496,28 +1512,50 @@ automatically:
     (sr-highlight)))
 
 (defun sr-quick-view (&optional arg)
-  "Opens  the  selected file on the viewer window without selecting it. Kills
-  any other buffer opened previously the same  way.  With  optional  argument
-  kills the last quick view buffer without opening a new one."
+  "Allows  to quick-view the currently selected item: on regular files, it opens
+  the file in quick-view mode (see  sr-quick-view-file  for  more  details),  on
+  directories,  visits  the  selected  directory  in  the  passive  pane, and on
+  symlinks follows the file the link points to in the passive pane."
   (interactive "P")
   (if arg
-      (sr-kill-quick-view)
-    (let ((split-width-threshold (* 10 (window-width))))
-      (if (buffer-live-p other-window-scroll-buffer)
-          (kill-buffer other-window-scroll-buffer))
-      (save-selected-window
-        (condition-case description
-            (progn
-              (dired-find-file-other-window)
-              (sr-scrollable-viewer (current-buffer)))
-          (error (message "%s" (second description)))))) ))
+      (sr-quick-view-kill)
+    (let ((name (dired-get-filename nil t)))
+      (cond ((file-directory-p name) (sr-quick-view-directory name))
+            ((file-symlink-p name) (sr-quick-view-symlink name))
+            (t (sr-quick-view-file))))))
 
-(defun sr-kill-quick-view ()
+(defun sr-quick-view-kill ()
   "Kills the last buffer opened using quick view (if any)."
   (let ((buf other-window-scroll-buffer))
     (if (and (buffer-live-p buf)
              (y-or-n-p (concat "Kill buffer " (buffer-name buf) " ? ")))
         (kill-buffer buf))))
+
+(defun sr-quick-view-directory (name)
+  "Opens the given directory in the passive pane."
+  (let ((name (expand-file-name name)))
+    (sr-in-other (sr-advertised-find-file name))))
+
+(defun sr-quick-view-symlink (name)
+  "Follows the target of the given symlink in the passive pane."
+  (let ((name (expand-file-name (file-symlink-p name))))
+    (if (file-exists-p name)
+        (sr-in-other (sr-follow-file name))
+      (error "ERROR: File is a symlink to a nonexistent target"))))
+
+(defun sr-quick-view-file ()
+  "Opens  the selected file on the viewer window without selecting it. Kills any
+  other buffer opened previously the same way. With optional argument kills  the
+  last quick view buffer without opening a new one."
+  (let ((split-width-threshold (* 10 (window-width))))
+    (if (buffer-live-p other-window-scroll-buffer)
+        (kill-buffer other-window-scroll-buffer))
+    (save-selected-window
+      (condition-case description
+          (progn
+            (dired-find-file-other-window)
+            (sr-scrollable-viewer (current-buffer)))
+        (error (message "%s" (second description)))))))
 
 ;; These clean up after a quick view:
 (add-hook 'sr-quit-hook (lambda () (setq other-window-scroll-buffer nil)))
@@ -1657,18 +1695,6 @@ automatically:
 
 ;;; ============================================================================
 ;;; Passive & synchronized navigation functions:
-
-(defmacro sr-in-other (form)
-  "Executes the given form in the context of the passive pane. Helper macro for
-   passive & synchronized navigation."
-  `(progn
-     (if sr-synchronized ,form)
-     (sr-change-window)
-     (condition-case description
-         ,form
-       (error (message (second description))))
-     (sr-change-window)
-     (sr-highlight)))
 
 (defun sr-sync ()
   "Toggles the Sunrise synchronized navigation feature."

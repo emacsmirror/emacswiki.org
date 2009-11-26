@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Nov 25 00:27:05 2009 (-0800)
+;; Last-Updated: Wed Nov 25 07:29:19 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 19940
+;;     Update #: 19945
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3884,7 +3884,9 @@ snapshot.
 
 To use this command, you must have loaded library `color-theme.el',
 available from http://www.emacswiki.org/cgi-bin/wiki.pl?ColorTheme." ; Doc string
-  (lambda (theme) (funcall (intern theme))) ; Action - just call the theme.
+  (lambda (theme)
+    (when (string= "" theme) (error "No theme name entered (empty input)"))
+    (funcall  (intern theme))) ; Action - just call the theme.
   "Theme: " icicle-color-themes nil t nil ; `completing-read' args
   (if (boundp 'color-theme-history) 'color-theme-history 'icicle-color-theme-history)
   nil nil

@@ -366,6 +366,47 @@ Otherwise return a translation site name."
           (append (encode-coding-string (or str "") (or coding 'iso-2022-jp))
                   nil))))
 
+;; initialization function
+(defun text-translator-site-data-init ()
+  ;; initialize
+  (setq text-translator-site-data-alist nil)
+  (setq text-translator-site-data-alist
+        text-translator-site-data-minimum-alist)
+  (dolist (site text-translator-site-data-template-alist)
+    (let ((tt-convert-name '(lambda (lang)
+                            (let ((match-lang (assoc lang
+                                                     (nth 7 site))))
+                              (if match-lang
+                                  (cdr match-lang)
+                                lang))))
+        (tt-replace-string '(lambda (pstr olang tlang)
+                              (when olang
+                                (setq pstr
+                                    (replace-regexp-in-string "%o"
+                                                              olang
+                                                              pstr)))
+                              (when tlang
+                                (setq pstr
+                                    (replace-regexp-in-string "%t"
+                                                              tlang
+                                                              pstr))
+                                pstr)))
+        tt-alist)
+    (dolist (i (nth 6 site))
+      (add-to-list 'text-translator-site-data-alist
+                   (list (format "%s"
+                                 (concat (nth 0 site)
+                                         "_"
+                                         (funcall tt-convert-name (car i))
+                                         (funcall tt-convert-name (cdr i))))
+                         (nth 1 site)
+                         (nth 2 site)
+                         (funcall tt-replace-string
+                                  (nth 3 site) (car i) (cdr i))
+                         (nth 4 site)
+                         (nth 5 site)))))))
+(text-translator-site-data-init)        ; init
+
 (provide 'text-translator)
 ;;; text-translator.el ends here
 

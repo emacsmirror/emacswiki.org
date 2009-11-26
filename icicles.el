@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Nov  7 15:02:00 2009 (-0700)
+;; Last-Updated: Wed Nov 25 07:42:14 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 22609
+;;     Update #: 22613
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -27,10 +27,10 @@
 ;;   `icicles-fn', `icicles-mac', `icicles-mcmd', `icicles-mode',
 ;;   `icicles-opt', `icicles-var', `info', `info+', `kmacro',
 ;;   `levenshtein', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
-;;   `mkhtml', `mkhtml-htmlize', `mwheel', `pp', `pp+', `ring',
-;;   `ring+', `second-sel', `strings', `thingatpt', `thingatpt+',
-;;   `unaccent', `w32-browser', `w32browser-dlgopen', `wid-edit',
-;;   `wid-edit+', `widget'.
+;;   `mkhtml', `mkhtml-htmlize', `mwheel', `pp', `pp+', `reporter',
+;;   `ring', `ring+', `second-sel', `sendmail', `strings',
+;;   `thingatpt', `thingatpt+', `unaccent', `w32-browser',
+;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -510,6 +510,7 @@
 ;;    `icicle-completing-read+insert-keys',
 ;;    `icicle-completion-history-max-length',
 ;;    `icicle-Completions-display-min-input-chars',
+;;    `icicle-completions-format',
 ;;    `icicle-Completions-frame-at-right-flag',
 ;;    `icicle-Completions-text-scale-decrease',
 ;;    `icicle-Completions-window-max-height',
@@ -791,6 +792,7 @@
 ;;    `icicle-mode-line-name-less-p', `icicle-most-recent-first-p',
 ;;    `icicle-mouse-candidate-action-1',
 ;;    `icicle-msg-maybe-in-minibuffer', `icicle-ms-windows-NET-USE',
+;;    `icicle-nb-Completions-cols',
 ;;    `icicle-nb-of-candidate-in-Completions',
 ;;    `icicle-next-candidate',
 ;;    `icicle-next-single-char-property-change',
@@ -840,6 +842,7 @@
 ;;    `icicle-restore-standard-options',
 ;;    `icicle-restore-std-completion-fns',
 ;;    `icicle-retrieve-candidates-from-set', `icicle-reversible-sort',
+;;    `icicle-row-wise-cand-nb',
 ;;    `icicle-run-icicle-post-command-hook',
 ;;    `icicle-run-icicle-pre-command-hook', `icicle-saved-fileset-p',
 ;;    `icicle-save-or-restore-input', `icicle-save-raw-input',

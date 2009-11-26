@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Nov  7 15:00:56 2009 (-0700)
+;; Last-Updated: Wed Nov 25 07:50:51 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 15045
+;;     Update #: 15058
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -20,8 +20,8 @@
 ;;   `apropos', `apropos-fn+var', `cl', `color-theme', `cus-face',
 ;;   `doremi', `easymenu', `ffap', `ffap-', `hexrgb', `icicles-fn',
 ;;   `icicles-opt', `icicles-var', `kmacro', `levenshtein', `mwheel',
-;;   `pp', `pp+', `ring', `ring+', `thingatpt', `thingatpt+',
-;;   `wid-edit', `wid-edit+', `widget'.
+;;   `pp', `pp+', `reporter', `ring', `ring+', `sendmail',
+;;   `thingatpt', `thingatpt+', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -115,7 +115,7 @@
 ;;    `icicle-move-to-next-completion',
 ;;    `icicle-move-to-previous-completion',
 ;;    `icicle-narrow-candidates',
-;;    `icicle-narrow-candidates-with-predicate',
+;;    `icicle-narrow-candidates-with-predicate', 
 ;;    `icicle-negative-argument', `icicle-next-apropos-candidate',
 ;;    `icicle-next-apropos-candidate-action',
 ;;    `icicle-next-apropos-candidate-alt-action',
@@ -231,13 +231,14 @@
 ;;    `icicle-looking-back-at-anychar-regexp-p',
 ;;    `icicle-markers-to-readable',
 ;;    `icicle-maybe-multi-completion-completing-p',
-;;    `icicle-mouse-candidate-action-1',
+;;    `icicle-mouse-candidate-action-1', `icicle-nb-Completions-cols',
 ;;    `icicle-nb-of-candidate-in-Completions',
 ;;    `icicle-prefix-complete-1', `icicle-raise-Completions-frame',
 ;;    `icicle-remove-cand-from-lists',
 ;;    `icicle-remove-candidate-display-others',
 ;;    `icicle-replace-input-w-parent-dir',
-;;    `icicle-retrieve-candidates-from-set', `icicle-signum',
+;;    `icicle-retrieve-candidates-from-set',
+;;    `icicle-row-wise-cand-nb', `icicle-signum',
 ;;    `icicle-successive-action', `icicle-transform-sole-candidate',
 ;;    `icicle-transpose-chars-dots', `icicle-upcase-if-ignore-case',
 ;;    `icicle-update-and-next'.
@@ -3404,12 +3405,14 @@ You can use this command only from buffer *Completions* (`\\<completion-list-mod
 
 
 ;; Replaces `next-completion' (defined in `simple.el').
-;; This is the same code, except:
+;; This is similar, except:
 ;; 1. This highlights the current candidate.
 ;; 2. This wraps around from first to last and last to first.
+;; 3. Properly handles completions laid out vertically.
+;;
 ;;;###autoload
-(defun icicle-move-to-next-completion (n &optional no-minibuffer-follow-p) ; Bound to `right', `TAB'
-                                        ;  in *Completions*.
+(defun icicle-move-to-next-completion (n &optional no-minibuffer-follow-p) ; Bound to `right',
+                                        ;  `TAB' in *Completions*.
   "Move to the next item in the completion list.
 With prefix argument N, move N items (negative N means move backward).
 Optional second argument, if non-nil, means do not copy the completion
@@ -3420,36 +3423,71 @@ You can use this command only from buffer *Completions* (`\\<completion-list-mod
   (interactive "p")
   (when (interactive-p) (icicle-barf-if-outside-Completions))
   (setq n  (or n 0))
+  (when (eq icicle-completions-format 'vertical)
+    (let* ((cols      (icicle-nb-Completions-cols))
+           (nb-cands  (length icicle-completion-candidates))
+           (rows      (/ nb-cands cols)))
+      (unless (zerop (% nb-cands cols)) (setq rows  (1+ rows)))
+      (setq n  (icicle-row-wise-cand-nb n nb-cands rows cols))))
   (let ((beg  (icicle-start-of-candidates-in-Completions))
         (end  (point-max)))
+
+    ;; Forward: n > 0.
     (while (and (> n 0) (not (eobp)))
-      ;; If in a completion, move to the end of it.
-      (when (get-text-property (point) 'mouse-face)
+      (when (get-text-property (point) 'mouse-face) ; If in a candidate, move to its end.
         (goto-char (next-single-property-change (point) 'mouse-face nil end)))
-      ;; Move to start of next one.
-      (unless (get-text-property (point) 'mouse-face)
+      (unless (get-text-property (point) 'mouse-face) ; Move to start of next candidate.
         (goto-char (or (next-single-property-change (point) 'mouse-face)
                        beg)))           ; Wrap back to first candidate.
       (setq n  (1- n)))
+
+    ;; Backward: n < 0.
     (while (and (< n 0) (>= (count-lines 1 (point)) (if icicle-show-Completions-help-flag 3 2)))
       (let ((prop  (get-text-property (1- (point)) 'mouse-face)))
-        ;; If in a completion, move to the start of it.
-        (when (and prop (eq prop (get-text-property (point) 'mouse-face)))
+        (when (and prop (eq prop (get-text-property (point) 'mouse-face))) ; If in cand, move to start.
           (goto-char (previous-single-property-change (point) 'mouse-face nil beg))))
-      ;; Move to end of the previous completion.
-      (unless (or (< (count-lines 1 (point)) (if icicle-show-Completions-help-flag 3 2))
+      (unless (or (< (count-lines 1 (point)) ; Move to end of previous candidate.
+                     (if icicle-show-Completions-help-flag 3 2))
                   (get-text-property (1- (point)) 'mouse-face))
         (goto-char (or (previous-single-property-change (point) 'mouse-face)
                        end)))           ; Wrap back to last candidate.
-      ;; Move to the start of that one.
+
+      ;; Move to the start of that candidate.
       (goto-char (previous-single-property-change (point) 'mouse-face nil beg))
       (setq n  (1+ n)))
+
     (icicle-place-overlay
      (point) (next-single-property-change (point) 'mouse-face nil end)
      'icicle-current-completion-candidate-overlay 'icicle-current-candidate-highlight
      100 (current-buffer)))
   (unless no-minibuffer-follow-p
     (save-excursion (save-window-excursion (icicle-insert-completion)))))
+
+(defun icicle-nb-Completions-cols ()
+  "Return the number of candidate columns in *Completions*."
+  (let* ((start       (icicle-start-of-candidates-in-Completions))
+         (eol         (save-excursion (goto-char start) (line-end-position)))
+         (mouse-chgs  0)
+         mousef)
+    (save-excursion
+      (goto-char start)
+      (while (< (point) eol)
+        (setq mousef  (next-single-property-change (point) 'mouse-face nil eol))
+        (when mousef
+          (goto-char mousef)
+          (setq mouse-chgs  (1+ mouse-chgs)))))
+    (/ (1+ mouse-chgs) 2)))             ; Return # of columns.
+
+(defun icicle-row-wise-cand-nb (cand-nb nb-cands rows cols)
+  "Row-wise number of candidate number CAND-NB.
+Used when candidates are laid out vertically, to get the equivalent
+candidate number for a horizontal layout."
+  (let* ((row  (mod cand-nb rows))
+         (col  (/ cand-nb rows))
+         (nb   (+ col (* row cols)))
+         (lim  (- rows (- (* rows cols) nb-cands))))
+    (when (> row lim) (setq nb  (- nb (- row lim))))
+    nb))
 
 ;;;###autoload
 (defun icicle-previous-line ()          ; Bound to `up' *Completions*.

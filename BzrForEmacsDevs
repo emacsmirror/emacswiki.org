@@ -60,7 +60,7 @@ Of course some people like to organize things differently.  However, there are v
 
 This section describes how to set things up if you plan on making repeated contributions to Emacs (whether or not you're one of the Emacs maintainers).  
 
-We'll assume Emacs's public master trunk lives at ##http://bzr.savannah.gnu.org/sources/emacs/trunk##.  (If it ends up somewhere else, please update this doc.  Please check all the URLs in the document!)  If you are a committer, you will want to use a ##bzr+ssh## URL instead: ##bzr+ssh://bzr.savannah.gnu.org/sources/emacs/trunk##.
+We'll assume Emacs's public master trunk lives at ##http://bzr.savannah.gnu.org/r/emacs/trunk##.  If you are a committer, you will want to use a ##sftp## URL instead: ##sftp://<membername>@bzr.savannah.gnu.org/srv/bzr/emacs/trunk##.  (Actually, you /want/ to use a ##bzr+ssh## URL, and /we/ want to run a smart server on Savannah.  But ##savannah-hackers## considers this a security risk that needs to be analyzed carefully.  Please update the URLs if it becomes possible to use ##bzr+ssh##.)
 
 First, initialize a shared repository in which to store all your branches:
 
@@ -72,15 +72,15 @@ First, initialize a shared repository in which to store all your branches:
 Now, create a branch called ##trunk## that will just be a mirror of the mainline.  You'll never do any development in this branch; its job is just to reflect the upstream master:
 
       cd emacs/
-      bzr branch --no-tree http://bzr.savannah.gnu.org/sources/emacs/trunk/ trunk/
+      bzr branch --no-tree http://http://bzr.savannah.gnu.org/r/emacs/trunk/ trunk/
 
 (Or use the ##bzr+ssh## URL if you are a committer.)
 
 The ##--no-tree## option prevents an automatic checkout of the source tree.  This has two functions.  It saves some space.  More important, it reduces the temptation to edit sources in this branch to almost nothing --- so that you don't accidentally commit any local changes on it.  Next, further safeguard that mirror --- this is what makes it a "two-way" mirror as we'll see below.  (All your work will be done in other branches, which we'll create in a moment).  We "bind" the local branch to the upstream master:
 
       cd trunk/
-      echo "public_branch = http://bzr.savannah.gnu.org/sources/emacs/trunk" >> .bzr/branch/config
-      bzr bind http://bzr.savannah.gnu.org/sources/emacs/trunk/
+      echo "public_branch = http://bzr.savannah.gnu.org/r/emacs/trunk" >> .bzr/branch/config
+      bzr bind http://bzr.savannah.gnu.org/r/emacs/trunk/
       cd ..
 
 The first ##bzr branch## operation in a new repository may take many minutes.  An alternative, faster, method based on a tarball containing the whole repository is being set up.  This will be documented here when the details are known.
@@ -168,7 +168,7 @@ do another ##bzr pull##, merge from ##quickfixes## again, and commit.  After you
 It might occur to you to save some effort by just doing ##bzr push## directly to the upstream master from inside the ##quickfixes## branch:
 
       cd $DEVHOME/emacs/quickfixes
-      bzr push bzr+ssh://bzr.savannah.gnu.org/sources/emacs/trunk/
+      bzr push sftp://<membername>@bzr.savannah.gnu.org/srv/bzr/emacs/trunk/
 
 //Do not do this// --- it can cause history to be displayed in a strange way in the upstream master, any mirrors or branches of it, and your own branch later. Search for the word "hidden" in [http://lists.gnu.org/archive/html/emacs-devel/2009-11/msg01021.html this mail] for more details.)
 
@@ -241,7 +241,7 @@ When you decide to work on the next task, create a new task branch:
 If you just want to run bleeding-edge code (perhaps so you can report bugs against the latest development sources), and do not expect to make code changes to Emacs, then you can save a little bit of time and space by using a /stacked branch/.  This workflow is very similar to CVS:
 
       cd /usr/local/src                         # or wherever
-      bzr branch --stacked http://bzr.savannah.gnu.org/sources/emacs/trunk emacs-trunk
+      bzr branch --stacked http://bzr.savannah.gnu.org/r/emacs/trunk emacs-trunk
 
 Now you can build, test, install, and run Emacs in this directory in the usual way.  If you want to update the checkout, you just do
 

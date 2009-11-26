@@ -36,5 +36,8 @@ main([File_Name]) ->
 
 
 [new:Habitue01:] Would it be possible to alter this script to get output from dialyzer as well?
+
+Would it be possible to check also .hrl header files?
+
 ----
 FlyMake

@@ -729,6 +729,18 @@ mouse wheel to increment and decrement the value.  You can at the same time use 
 
 
 ----
+[:icicle-completions-format]
+==== Option icicle-completions-format ====
+
+Option '''`icicle-completions-format'''' controls whether candidates
+displayed in `*Completions*' are laid out horizontally (the
+default) or vertically.  Set the value to `vertical' for the
+latter.  Starting with Emacs 23.2, you can just use the vanilla
+option `completions-format' for this, if you want the same type
+of layout with ''Icicle mode'' turned on or off.
+
+
+----
 [:icicle-historical-candidate]
 [:icicle-highlight-historical-candidates-flag]
 ==== Option icicle-highlight-historical-candidates-flag, Face icicle-historical-candidate ====

@@ -1,24 +1,31 @@
 = CSharpMode (CSharp, C#) =
 
-== Modes available ==
+== The Best and Preferred == 
+
+The latest version I found on the net was 0.7.0 and I uploaded it to Lisp:csharp-mode.el. -- danielpoe
+(Note: This version is also included in [NxhtmlMode nXhtml].)
+
+[new]
+This csharp-mode.el has a lot of compilation warnings. Perhaps they will introduce bugs that are hard to find.
+Anyone interested in fixing this?
+
+[new]
+; http://mfgames.com/csharp-mode/start
+:Work by DylanMoonfire on a derived cc-mode. See these threads on sourceforge [http://sourceforge.net/mailarchive/forum.php?thread_id=6676996&forum_id=6827], [http://sourceforge.net/mailarchive/forum.php?thread_id=6596410&forum_id=6827] for more info. The current version (September 5, 2007) is  0.7.0. [http://cinki.mfgames.com/buglist.cgi?bug_status=__all__&product=csharp-mode Bug Tracking]
+
+
+== Other attempts ==
 
 ; http://www.cybercom.net/~zbrad/DotNet/Emacs/
-:This is the original.  It originally involved changes to a set of elisp files.  Some say it doesn't handle @"\" correctly.
+:This is the original.  It involves changes to a set of standard elisp files.  It apparently doesn't handle @"\" correctly.
   * please send me a more detailed description of the problem reported here? Thanks mailto:zbrad@cybercom.net
 
 ; http://davh.dk/script/
-:Is a mod of the above (doesn't solve the @"\" problem either), collects all the changes into a single file. [http://lists.ximian.com/pipermail/mono-list/2002-May/006182.html]
+:Is a mod of zbrad's original. Collects all the changes into a single file.  It also doesn't solve the @"\" problem.  
+[http://lists.ximian.com/pipermail/mono-list/2002-May/006182.html]
 
 ; http://csde.sourceforge.net/
-:Based on JavaDevelopmentEnvironment.  Appears to be abandonware.
-
-; http://mfgames.com/csharp-mode/start
-:Recent work (Dec 2005) by DylanMoonfire on a derived cc-mode. See these threads on sourceforge [http://sourceforge.net/mailarchive/forum.php?thread_id=6676996&forum_id=6827], [http://sourceforge.net/mailarchive/forum.php?thread_id=6596410&forum_id=6827] for more info. The current version (September 5, 2007) is [http://mfgames.com/linux/csharp-mode 0.7.0]. [http://cinki.mfgames.com/buglist.cgi?bug_status=__all__&product=csharp-mode Bug Tracking]
-
-Site doesn't seem to be available anymore as of today (2009-07-14). The latest version I found on the net was 0.7.0 and I uploaded it to Lisp:csharp-mode.el. -- danielpoe
-(Note: This version is also included in [NxhtmlMode nXhtml].)
-
-The site url has changed (2009-08-06), now updated.
+:Based on JavaDevelopmentEnvironment.  Appears to be abandonware.  Not sure if this has a C# mode or not. 
 
 ; http://www.devhood.com/tools/tool_details.aspx?tool_id=643 :
 

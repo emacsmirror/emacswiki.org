@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Nov 22 00:05:31 2009 (-0800)
+;; Last-Updated: Wed Nov 25 10:12:14 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 26034
+;;     Update #: 26042
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4235,6 +4235,13 @@
 ;;    mouse wheel to increment and decrement the value.  You can at
 ;;    the same time use the `left' and `right' keys to adjust the
 ;;    value of `icicle-candidate-width-factor'.  WYSIWYG.
+;;
+;;  * Option `icicle-completions-format' controls whether candidates
+;;    displayed in `*Completions*' are laid out horizontally (the
+;;    default) or vertically.  Set the value to `vertical' for the
+;;    latter.  Starting with Emacs 23.2, you can just use the vanilla
+;;    option `completions-format' for this, if you want the same type
+;;    of layout with Icicle mode turned on or off.
 ;;
 ;;  * Face `icicle-historical-candidate' is used to highlight
 ;;    completion candidates that you have used (entered with `RET')

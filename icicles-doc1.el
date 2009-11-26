@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Nov 24 07:53:01 2009 (-0800)
+;; Last-Updated: Wed Nov 25 10:23:56 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 24778
+;;     Update #: 24795
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2498,9 +2498,9 @@
 ;;  *Completions* Display
 ;;  ---------------------
 ;;
-;;  Icicles adds a few enhancements to the `*Completions*' display,
-;;  for convenience.  The following apply whenever buffer
-;;  `*Completions*' is displayed.
+;;  Icicles enhances the `*Completions*' display in several ways.  The
+;;  following features are available whenever buffer `*Completions*'
+;;  is displayed.
 ;;
 ;;  * In buffer `*Completions*', you can use the arrow keys (`up',
 ;;    `down', `left', `right') to navigate among the candidate
@@ -2631,6 +2631,22 @@
 ;;    `M-v'.  You can use `C-u' at any time to reverse the scroll
 ;;    directions.  In Emacs 22 or later, you can also use the mouse
 ;;    wheel to scroll `*Completions*'.
+;;
+;;  * You can lay completion candidates out vertically, if you like,
+;;    instead of horizontally (the default).  To do that, customize
+;;    option `icicle-completions-format' to have the value `vertical'.
+;;
+;;    Starting with Emacs 23.2, this is also possible in vanilla
+;;    Emacs, and the vanilla option for this is `completions-format'.
+;;    The default value of `icicle-completions-format' is the value of
+;;    `completions-format', so if you prefer you can simply use the
+;;    vanilla Emacs option.  Vertical layout works in Icicles for all
+;;    Emacs versions, starting with Emacs 20.
+;;
+;;    Unlike the case for vanilla Emacs, in Icicles the arrow keys in
+;;    buffer `*Completions*' correctly reflect the candidate order
+;;    (e.g. as sorted).  This also means that candidate cycling acts
+;;    properly for a vertical layout.
 ;;
 ;;  * In some cases, Icicles adds one or more additional, proxy
 ;;    completion candidates.  These are placeholders for real

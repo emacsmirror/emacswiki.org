@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Nov  3 11:55:14 2009 (-0700)
+;; Last-Updated: Tue Nov 24 17:10:25 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 11388
+;;     Update #: 11389
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -19,8 +19,8 @@
 ;;
 ;;   `apropos', `apropos-fn+var', `cl', `color-theme', `cus-face',
 ;;   `easymenu', `ffap', `ffap-', `hexrgb', `icicles-opt',
-;;   `icicles-var', `kmacro', `levenshtein', `thingatpt',
-;;   `thingatpt+', `wid-edit', `wid-edit+', `widget'.
+;;   `icicles-var', `kmacro', `levenshtein', `reporter', `sendmail',
+;;   `thingatpt', `thingatpt+', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -2709,28 +2709,44 @@ The optional second arg is ignored."
                               (cdr (assq 'width default-frame-alist)))))
                     (comp-win (1- (window-width comp-win))) ; Width picked by `display-buffer'.
                     (t 40))))           ; Failsafe.
+           (nb-cands      (length candidates))
            (columns       (max 1 (min (/ (* 100 wwidth) (* icicle-candidate-width-factor max-cand-len))
-                                      (length candidates))))
+                                      nb-cands)))
            (colwidth      (/ wwidth columns))
            (column-nb     0)
+           (rows          (/ nb-cands columns))
+ 	   (row           0)
            startpos endpos string)
-      (dolist (cand candidates)
+      (unless (zerop (mod nb-cands rows)) (setq rows (1+ rows)))
+      (dolist (cand  candidates)
         (setq endpos  (point))
-        (unless (bolp)
-          (put-text-property (point) (point) 'mouse-face nil) ; Turn off `mouse-face'
-          (indent-to (* (max 1 column-nb) colwidth) icicle-inter-candidates-min-spaces)
-          (when (< wwidth (+ (max colwidth (if (consp cand)
-                                               (+ (length (car cand)) (length (cadr cand)))
-                                             (length cand)))
-                             (current-column)))
-            (save-excursion             ; This is like `fixup-whitespace', but only forward.
-              (delete-region (point) (progn (skip-chars-forward " \t") (point)))
-              (unless (or (looking-at "^\\|\\s)")
-                          (save-excursion (forward-char -1) (looking-at "$\\|\\s(\\|\\s'")))
-                (insert ?\ )))
-            (insert "\n")
-            (setq column-nb  columns)))  ; End of the row. Simulate being in farthest column.
-        (when (< endpos (point)) (set-text-properties endpos (point) nil))
+        (cond
+          ((eq icicle-completions-format 'vertical) ; Vertical layout.
+           (when (>= row rows)
+             (forward-line (- rows))
+             (setq row        0
+                   column-nb  (+ column-nb colwidth)))
+           (when (> column-nb 0)
+             (end-of-line)
+             (let ((cand-end  (point)))
+               (indent-to column-nb icicle-inter-candidates-min-spaces)
+               (put-text-property cand-end (point) 'mouse-face nil)))) ; Turn off `mouse-face'
+          (t                            ; Horizontal layout.
+           (unless (bolp)
+             (put-text-property (point) (point) 'mouse-face nil) ; Turn off `mouse-face'
+             (indent-to (* (max 1 column-nb) colwidth) icicle-inter-candidates-min-spaces)
+             (when (< wwidth (+ (max colwidth (if (consp cand)
+                                                  (+ (length (car cand)) (length (cadr cand)))
+                                                (length cand)))
+                                (current-column)))
+               (save-excursion          ; This is like `fixup-whitespace', but only forward.
+                 (delete-region (point) (progn (skip-chars-forward " \t") (point)))
+                 (unless (or (looking-at "^\\|\\s)")
+                             (save-excursion (forward-char -1) (looking-at "$\\|\\s(\\|\\s'")))
+                   (insert ?\ )))
+               (insert "\n")
+               (setq column-nb  columns))) ; End of the row. Simulate being in farthest column.
+           (when (< endpos (point)) (set-text-properties endpos (point) nil))))
         ;; Convert candidate (but not annotation) to unibyte or to multibyte, if needed.
         (setq string  (if (consp cand) (car cand) cand))
         (cond ((and (null enable-multibyte-characters) (multibyte-string-p string))
@@ -2759,7 +2775,13 @@ The optional second arg is ignored."
                (when (eq ?\n (char-before (point)))
                  (put-text-property (1- (point)) (point) 'icicle-keep-newline t))
                (set-text-properties (point) (progn (insert (cadr cand)) (point)) nil)))
-        (setq column-nb  (mod (1+ column-nb) columns))))))
+        (cond ((eq icicle-completions-format 'vertical)
+               ;; Vertical format
+               (if (> column-nb 0) (forward-line) (insert "\n"))
+               (setq row  (1+ row)))
+              (t
+               ;; Horizontal format
+               (setq column-nb  (mod (1+ column-nb) columns))))))))
 
 (defun icicle-fit-completions-window ()
   "Fit the window showing completions to its contents.

@@ -95,7 +95,7 @@ For <tt>[PythonMode python.el]</tt>, add
                 (setq indent-tabs-mode t)
                 (setq tab-width (default-value 'tab-width))))
 
-Smart tabs are fully Python compliant since the compiler ignores the leading whitespace of continuation lines. However, in accordance with [http://www.python.org/dev/peps/pep-0008/ PEP 8], you should probably use tabs only when maintaining old code.
+Smart tabs are, of course, fully Python compliant, as the compiler ignores the leading whitespace of continuation lines. However, in accordance with [http://www.python.org/dev/peps/pep-0008/ PEP 8], you should probably use tabs only when maintaining old code.
 
 === Ruby ===
 

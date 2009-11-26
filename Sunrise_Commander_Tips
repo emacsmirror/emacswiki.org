@@ -193,8 +193,10 @@ you should be able to navigate inside it as if it were a regular directory.
 [:OpenDirInPassivePane]
 ==How to open the directory under the cursor in the passive pane?==
 
-You need  to combine two commands: M-;  M-Return (follow file in  passive pane +
-visit selected file/directory in passive pane)
+In  versions  3R228  and later that's how the sr-quick-view command ("o" or "v")
+works for directories. In previous versions you need to  combine  two  commands:
+M-;  M-Return  (follow  file  in passive pane + visit selected file/directory in
+passive pane).
 
 
 [:NavigationAndTracking]

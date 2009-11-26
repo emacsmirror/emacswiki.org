@@ -6,26 +6,38 @@
 
 == Display of Buffer *Completions* ==
 
-'''Icicles''' adds a few enhancements to the `*Completions*'
-display, for convenience.  The following apply whenever [[buffer]]
+'''Icicles''' enhances the `*Completions*'
+display in several ways.  The following features are available whenever [[buffer]]
 `*Completions*' is displayed.
 
+
+
+[:CyclingCandidates]
 === Cycling Candidates ===
 
 In buffer `*Completions*', you can use the ''arrow keys'' (`up', `down', `left', `right') to navigate
 among the candidate completions.  The current candidate (under
 the cursor) is highlighted.
 
+
+
+[:CurrentCandidate]
 === Current Candidate ===
 
 When you cycle completion candidates in the [[minibuffer]]:
 * The current candidate is highlighted in `*Completions*'.
 * Help on the current candidate (typically, the first line of a [[doc string]]) is displayed in the [[mode line]], provided [[user option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-help-in-mode-line-flag|icicle-help-in-mode-line-flag]]</tt>'''' is non-`nil'.
 
+
+
+[:NumberOfCandidatesIndicator]
 === Number of Available Candidates ===
 The total number of completion candidates is displayed in the
 [[mode line]] of buffer `*Completions*'.
 
+
+
+[:SwitchingBetweenCompletionsAndMinibuffer]
 === Switch to *Completions* and Back to Minibuffer ===
 
 You can use '''`C-insert'''' to move back and forth between the minibuffer and `*Completions*'.  In each direction, the current
@@ -36,11 +48,15 @@ other direction, if the cursor is on `foobar' in `*Completions*',
 after you hit `C-insert' the current input in the minibuffer is
 `foobar'.
 
-=== *Completions* as Apropos Icompletion ===
+
+
+[:CompletionsDisplayAsAproposIcompletion]
+=== *Completions* Display as Apropos Icompletion ===
 
 `*Completions*' can also serve as apropos icompletion help -- see [[Icicles - Icompletion]].
 
 
+[:ChooseMultipleCandidates]
 === Choose Multiple Candidates ===
 
 You can choose multiple candidates during completion, by
@@ -49,6 +65,7 @@ pressed.  See [[Icicles - Multi-Commands]].  You can choose a set of
 candidates in additional ways, and then act on all of them -- see [[Icicles - Candidate Sets]]).
 
 
+[:AutoResizeOfCompletionsWindow]
 === *Completions* Window Resized to Fit ===
 
 '''Icicles''' dynamically resizes the `*Completions*' [[window]] vertically, to fit
@@ -56,6 +73,7 @@ the current set of completion candidates.  The window is not
 resized, however, if buffer `*Completions*' appears in its own
 [[frame]].  (It is also not resized in Emacs releases prior to 21.)  You can control this automatic resizing generally or on a
 per-[[command]] basis:
+
 
 [:icicle-Completions-window-max-height]
 * User option '''`<tt>[[Icicles - Customization and General Tips#icicle-Completions-window-max-height|icicle-Completions-window-max-height]]</tt>'''' is the
@@ -84,6 +102,8 @@ of the height for command `bar'. If you use such code, evaluate it after you loa
 [:1on1-completions-frame-zoom-font-difference]
 
 
+
+[:TextSizeInCompletions]
 === Smaller Text in *Completions* ===
 Starting with Emacs 23, if you also use '''DoReMi''' library <tt>[[doremi-frm.el]]</tt>, then you can use '''`##C-x -##'''' in the minibuffer to
 zoom the `*Completions*' buffer text, shrinking or enlarging it
@@ -117,6 +137,7 @@ If you use library <tt>[[oneonone.el]]</tt> with a standalone
 
 [:icicle-candidate-width-factor]
 [:icicle-inter-candidates-min-spaces]
+[:ChangeCompletionsSpacingOnTheFly]
 === Change *Completions* Spacing and Columns On the Fly ===
 '''Icicles''' varies the number of columns used to display completion candidates, for a better fit.  You can tweak this with options '''`<tt>[[Icicles - Customization and General Tips#icicle-candidate-width-factor|icicle-candidate-width-factor]]</tt>'''' and '''`<tt>[[Icicles - Customization and General Tips#icicle-inter-candidates-min-spaces|icicle-inter-candidates-min-spaces]]</tt>''''.
 
@@ -132,6 +153,8 @@ Because different sets of candidates have different candidate
 lengths and distributions of those lengths.  Play with it a bit
 and you will see.  One size does ''not'' fit all in an ideal way.
 
+
+[:HideCommonMatchPortion]
 === Hide Common-Match Portion of Candidates ===
 You can use '''`##C-x .##'''' (`icicle-toggle-hiding-common-match') in the
 minibuffer at any time during [[completion]] to toggle hiding of the
@@ -145,11 +168,38 @@ completion candidates are absolute file names that share a
 common directory, it can be convenient to hide the directory
 portion that is common to all candidates.
 
+
+
+[:ScrollCompletions]
 === Scroll *Completions* ===
 You can scroll `*Completions*' down using `C-v', and up using
 `M-v'.  You can use '''`C-u'''' at any time to reverse the scroll
 directions.  In Emacs 22 or later, you can also use the mouse
 wheel to scroll `*Completions*'.
+
+
+
+
+[:VerticalLayout]
+=== Optional Vertical Layout ===
+
+You can lay completion candidates out vertically, if you like,
+instead of horizontally (the default).  To do that, customize
+option '''`<tt>[[Icicles - Customization and General Tips#icicle-completions-format|icicle-completions-format]]</tt>'''' to have the value `vertical'.
+
+Starting with Emacs 23.2, this is also possible in vanilla
+Emacs, and the vanilla option for this is `completions-format'.
+The default value of `icicle-completions-format' is the value of
+`completions-format', so if you prefer you can simply use the
+vanilla Emacs option.  Vertical layout works in '''Icicles''' for all
+Emacs versions, starting with Emacs 20.
+
+Unlike the case for vanilla Emacs, in '''Icicles''' the arrow keys in
+buffer `*Completions*' correctly reflect the candidate order
+(e.g. as sorted).  This also means that candidate cycling acts
+properly for a vertical layout.
+
+
 
 
 [:ProxyCandidates]

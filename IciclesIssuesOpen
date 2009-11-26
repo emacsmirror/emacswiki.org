@@ -189,7 +189,41 @@ The common case, I expect, is to want to restore things to the way they were whe
 
 Please try to debug #1 a little and let me know what you find out. Thx -- DrewAdams
 
+[new]
+1. sorry for my mistake and it taike doubt to you.
+<pre>
+emacs -Q
+(require 'icicles)
+M-x icy-mode
+M-x icicle-color-theme RET RET , I get error tip: "Symbol's function definition is void: ", this is 
+whole message emacs give to me. 
+</pre>
 
+2. I eventually understand your meaning, and it is complex, :)
+
+3. can icicle-download-wizard only download files which updated but not download all files in icicles?
+
+-- [[ahei]]
+
+
+[new:DrewAdams:2009-11-25 15:32 UTC]
+1. Should be fixed now -- raises an error for empty input; thanks. Download <tt>[[icicles-cmd1.el]]</tt>.
+
+3. Not as far as I know. I didn't write and don't maintain the scripts etc. for downloading '''Icicles''' files. Feel free to send a patch to improve it. However, "only download files which updated" means what? Updated since when? Since Ahei's last use of the wizard? ;-) -- DrewAdams
+
+[new]
+1. It work now.
+
+3. Icicles can record a version number, then update tool just detect version number which many windows's softwares do. :) -- [[ahei]]
+
+[new:DrewAdams:2009-11-25 17:45 UTC]
+1. Good to hear.
+
+3. Sorry, not interested. I update individual files as needed. Each file has an individual ##Update ### in the header. I do not want to version '''Icicles''' as a whole. 
+
+I was only half-kidding about "since Ahei's last use of the wizard". It should be possible for the wizard to record the date of the last download and compare that with the dates on the wiki. Just a suggestion. 
+
+But if someone doesn't download '''Icicles''' often, there is no problem in simply downloading all of the files. And if someone does update his copy of '''Icicles''' often, then it's no big deal to compare the file dates and download only the files that are more recent than what s?he has locally. -- DrewAdams
 
 ----
 

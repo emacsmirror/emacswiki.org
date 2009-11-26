@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Nov 24 23:36:13 2009 (-0800)
+;; Last-Updated: Wed Nov 25 07:43:12 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 4586
+;;     Update #: 4594
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2009/11/25 dadams
+;;     icicle-color-theme: Raise error for empty input.  Thx to Ahei.
 ;; 2009/11/24 dadams
 ;;     icicle-color-theme: Take a snapshot each time invoked, unless prefix arg.
 ;; 2009/11/22 dadams
@@ -292,6 +294,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2009/11/25 dadams
+;;     icicle-insert-candidates: Handle vertical layout: icicle-completions-format.
 ;; 2009/11/03 dadams
 ;;     icicle-color-completion-setup: Use hexrgb-defined-colors, not x-defined-colors.
 ;;                                    No icicle-transform-function, since we use hexrgb.el.
@@ -1643,6 +1647,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2009/11/25 dadams
+;;     Added: icicle-completions-format, icicle-row-wise-cand-nb.
+;;     icicle-move-to-next-completion: Handle completions laid out vertically.
 ;; 2009/11/07 dadams
 ;;     Renamed Icicles doremi cmds (added +).  Applied other doremi cmd renamings (added +).
 ;; 2009/10/25 dadams

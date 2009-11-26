@@ -86,8 +86,23 @@ This is what I use to provide channel-specific prompts (like #emacs> in the Emac
          (erc-propertize (concat (erc-default-target) ">") 'read-only t 'rear-nonsticky t 'front-nonsticky t)
        (erc-propertize (concat "ERC>") 'read-only t 'rear-nonsticky t 'front-nonsticky t))))
 
-Bug alert: (erc-default-target) returns nil when the prompt is first displayed. Also, this code is ugly and needs fixing. I'd love to hear about the fix - mail to sacha@free.net.ph
+Bug alert: (erc-default-target) retu(defun jf-erc-format-nick (&optional user channel-data)
+  (format "%s %s" (downcase (format-time-string "%I:%M%p")) (erc-server-user-nickname user)))
+rns nil when the prompt is first displayed. Also, this code is ugly and needs fixing. I'd love to hear about the fix - mail to sacha@free.net.ph
 
+== Customized nickname format ==
+
+You can alter the nick reporting within the "<>" by defining a defun.  E.g. to add the date:
+<pre>
+(defun erc-format-nick-timestamp (&optional user channel-data)
+  (when user 
+    (format "%s %s" 
+            (downcase (format-time-string "%I:%M%p"))
+            (erc-server-user-nickname user))))
+</pre>
+and then customize erc-format-nick-function to be erc-format-nick-timestamp
+
+"<foo> hi" becomes "<01:23pm foo> hi"
 == Viper ==
 
 Viper and ERC don't seem to get along by default. Here's a fix.

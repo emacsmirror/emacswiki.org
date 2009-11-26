@@ -534,6 +534,7 @@ xpdb is a fork of the standard library pdb, available here: https://code.launchp
 * press F1 to check your code with pylint: http://www.logilab.org/projects/pylint
 * Pretty good completion and refactoring support from: http://rope.sourceforge.net/ropemacs.html
 * Debugging within Emacs: PdbNotes
+* Another debugger, which contains Emacs interface: pydb (http://bashdb.sourceforge.net/pydb/). It even has multiple-windows interface :)
 * Python autocompletion using pycomplete: http://groups.google.com/group/comp.lang.python/msg/048168c675ff0c68
 * More on completion: http://www.rwdev.eu/articles/emacspyeng
 * Yasnippet: http://code.google.com/p/yasnippet/ for Python, Django, django-templates snippets

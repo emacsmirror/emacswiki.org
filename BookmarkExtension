@@ -18,7 +18,7 @@ To get the development branch:
 
 <pre>
 
-hg update -C development
+hg update -C Development
 
 </pre>
 
@@ -98,3 +98,6 @@ You should use an image host which allows full size images, so if you click on t
 These screenshots are pretty much useless, because you only see a very vague color outline of things. If a new user comes here they are not very helpful to present what these features actually look like during use.
 
 : Thanks for the links to the full screen pictures. I wish it would be a policy on Emacs Wiki (to provide a link to the original picture), because I've seen ridiculously tiny screenshots on other pages too.
+
+It would be great if you provided more information about the differences between bookmark-extensions vs. Bookmark+.el.
+As of now, it is hard to tell what kind of advantages bookmark-extensions provides over Bookmark+.el.

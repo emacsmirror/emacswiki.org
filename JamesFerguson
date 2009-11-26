@@ -16,17 +16,11 @@ This doesn't even have to run as a server - gnus can run it as a shell command d
 
 ===gnus===
 
-After much messing about, I discovered there's a null news select method, so if you /only/ want mail, you can have your ~/.gnus something like:
-
+~/.gnus:
 <pre>
-(setq gnus-select-method
-      '(nnnil "Dummy Null"))
-(setq gnus-secondary-select-methods
-      '((nnimap "Mail"
-                (nnimap-stream shell))))
+(setq gnus-select-method '(nnimap "Mail" (nnimap-stream shell)))
 (setq imap-shell-program "/usr/sbin/dovecot --exec-mail imap")
 </pre>
-
 
 Working out what to do after M-x gnus is pretty bewildering until you trawl through a /lot/ of doc.  Some of the important keys I found:
 
