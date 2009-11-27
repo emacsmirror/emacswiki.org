@@ -4,9 +4,12 @@ If able, use ScreencastRecord create a video, and upload it to ScreencastRecordi
 
 ||**DESCRIPTION**||**LINK**||
 ||graphviz-dot-mode ||http://www.emacswiki.org/emacs/screencast-graphviz-dot-mode.el||
+||nxml-mode||http://www.emacswiki.org/emacs/screencast-nxml.el||
 ||orgtbl-mode showoff||http://www.emacswiki.org/emacs/screencast-cyedt.el||
 ||outline-mode hiding ||http://www.emacswiki.org/emacs/screencast-outline.el||
 ||outline-mode navigation||http://www.emacswiki.org/emacs/screencast-outline.el||
+||rectangles||http://www.emacswiki.org/emacs/screencast-rectangles.el||
+||registers||http://www.emacswiki.org/emacs/screencast-registers.el||
 ||screencast-mode dev||http://www.emacswiki.org/emacs/screencast.el||
 ||screencast-mode user||http://www.emacswiki.org/emacs/screencast.el||
 (please keep the list sorted alphabetically by mode)

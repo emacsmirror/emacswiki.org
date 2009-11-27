@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Nov 24 23:27:45 2009 (-0800)
+;; Last-Updated: Thu Nov 26 13:31:23 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 3404
+;;     Update #: 3406
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2551,7 +2551,7 @@ See also option `icicle-S-TAB-completion-methods-alist'."
                  (choice
                   (const :tag "Basic" basic)
                   (const :tag "Fuzzy" fuzzy)))))   
-  :group 'Icicles-Completions-Display)
+  :group 'Icicles-Matching)
 
 ;;;###autoload
 (defcustom icicle-TAB-shows-candidates-flag t

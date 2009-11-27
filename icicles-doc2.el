@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Nov 25 10:12:14 2009 (-0800)
+;; Last-Updated: Thu Nov 26 15:30:54 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 26042
+;;     Update #: 26045
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3373,8 +3373,9 @@
 ;;    account.  This means that `M-_' in the minibuffer has no effect
 ;;    on fuzzy completion.
 ;;  * Fuzzy completion candidates are always sorted by decreasing
-;;    match strength.  This means that you cannot use `C-,' in the
-;;    minibuffer to sort candidates differently.
+;;    match strength.  This means that if you use `C-,' in the
+;;    minibuffer to sort candidates differently, it has no effect on
+;;    fuzzy candidates.
 ;;
 ;;  Fuzzy completion is a form of prefix completion in which some
 ;;  input characters might not be present in a matched candidate.

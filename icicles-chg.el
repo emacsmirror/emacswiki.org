@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Nov 25 07:43:12 2009 (-0800)
+;; Last-Updated: Thu Nov 26 15:29:45 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 4594
+;;     Update #: 4596
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1647,6 +1647,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2009/11/26 dadams
+;;     icicle-next-TAB-completion-method: Do not set icicle-inhibit-sort-p to t for fuzzy.
 ;; 2009/11/25 dadams
 ;;     Added: icicle-completions-format, icicle-row-wise-cand-nb.
 ;;     icicle-move-to-next-completion: Handle completions laid out vertically.

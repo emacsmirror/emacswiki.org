@@ -73,7 +73,9 @@ You can also have infos about that on the org mailing list.
 For the moment you will have to hack file in firefox: mimeTypes.rdf in addition of the usual user.js.
 
 You will find some code to setup protocols in Firefox in the contrib directory (firefox-protocol.el), but that is
-experimental (use with care).
+experimental (use with care) though that work fine for me here to setup my protocols.
+
+* Org support: You will also find command `bmkext-firefox2org' to send your firefox bookmarks to an org file.
 
 == Screenshots ==
 

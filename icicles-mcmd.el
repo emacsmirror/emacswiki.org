@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Nov 25 07:50:51 2009 (-0800)
+;; Last-Updated: Thu Nov 26 15:24:49 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 15058
+;;     Update #: 15064
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1251,7 +1251,9 @@ completion methods."
             icicle-current-TAB-method  (if now
                                            (or (cadr now) (car icicle-TAB-completion-methods))
                                          'basic))))
-  (when (eq 'fuzzy icicle-current-TAB-method) (setq icicle-inhibit-sort-p  t))
+  ;; $$$$$$ Inhibiting sorting is not correct for file-name completion, and sorting would not be
+  ;;        restored when change back to non-fuzzy.
+  ;; (when (eq 'fuzzy icicle-current-TAB-method) (setq icicle-inhibit-sort-p  t))
   (icicle-msg-maybe-in-minibuffer "TAB completion is now %s" icicle-current-TAB-method))
 
 ;;;###autoload

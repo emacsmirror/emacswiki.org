@@ -1,8 +1,8 @@
-==Installing Debian and Emacs on G1/G2 phone==
+==Installing Debian/Ubuntu and Emacs on G1/G2 phone==
 
 There is a lot of online information for hacking HTC mobile phones on the [http://www.xda-developers.com/ xda-developers website]. 
 This includes the G1 and G2 google phones.
-One of these hacks is to get a full Debian distribution running, on which you can then install Emacs :)
+One of these hacks is to get a full distribution such as Debian or Ubuntu running, on which you can then install Emacs :)
 
 Check out the [http://wiki.xda-developers.com/index.php?pagename=HTC_Dream wiki] to get an overview of hacking the G1, and how to flash the ROM etc.
 
@@ -16,6 +16,12 @@ Read how to install new images and updates [http://wiki.xda-developers.com/index
 Then have a look at these simple [http://www.androidfanatic.com/cms/community-forums.html?func=view&catid=9&id=2248 instructions] on installing Debian (Note: you may need to alter the installer.sh script as mentioned in post #3566 [http://www.androidfanatic.com/cms/community-forums.html?func=view&amp;catid=9&amp;id=2248&amp;start=60#3566 here]).
 
 Once you have Debian installed you can just "apt-get emacs" to install emacs 22.
+
+To install Ubuntu instead, see [http://xdatap1.wordpress.com/2009/05/03/jaunty-under-android/ here].  He provides downloads for prebuilt Jaunty (9.04) images which makes it very easy to set up.  Again it's a simple matter to install emacs via apt-get.
+
+I strongly recommend using [http://code.google.com/p/connectbot/ ConnectBot] in local mode as the terminal emulator, since it preserves the running terminal session even when you switch away to other apps and back, and also has some extremely convenient keybindings and many other great features -- AdamSpiers
+
+Here are some [http://article.gmane.org/gmane.emacs.orgmode/17033 useful thoughts on reducing emacs' footprint] for low-powered devices.
 
 == Using emacs for making calls and sending texts ==
 

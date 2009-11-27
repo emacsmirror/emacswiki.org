@@ -104,6 +104,7 @@
 ;; 0.9.3: Smarter minibuffer handling by attila.lendvai@gmail.com
 ;; 0.9.4: Better handle symlinks by levente.meszaros@gmail.com
 ;; 0.9.5: Collect resolved files in the result by attila.lendvai@gmail.com
+;; 0.9.6: Use a seen hashtable to deal with circles through symlinks by attila.lendvai@gmail.com
 
 (require 'cl)
 
@@ -207,6 +208,7 @@
 If PROMPT-P is non-nil, or if called interactively, Prompts for visiting
 search result\(s\)."
   (let ((*dirs* (findr-make-queue))
+        (seen-directories (make-hash-table :test 'equal))
         *found-files*)
     (labels ((findr-1 (dir)
                (message "Searching %s ..." dir)
@@ -216,9 +218,13 @@ search result\(s\)."
                      for fname = (file-relative-name file dir)
                      when (and (file-directory-p file)
                                (not (string-match findr-skip-directory-regexp fname))
+                               (not (gethash (file-truename file) seen-directories))
                                (or (not skip-symlinks)
                                    (not (file-symlink-p file))))
-                     do (findr-enqueue file *dirs*)
+                     do (progn
+                          (print file)
+                          (setf (gethash (file-truename file) seen-directories) t)
+                          (findr-enqueue file *dirs*))
                      when (and (string-match name fname)
                                (not (string-match findr-skip-file-regexp fname))
                                (or (not skip-symlinks)

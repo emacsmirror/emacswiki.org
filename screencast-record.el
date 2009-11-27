@@ -30,8 +30,6 @@
 ;;; Usage:
 
 ;; Requires wmctrl and recordmydesktop to be installed!
-;; Note: This can only be used on systems supporting them.
-;;       Currently that means GNU/Linux and FreeBSD only.
 
 ;; Install this file to an appropriate directory in your load-path,
 ;; and add these expressions to your ~/.emacs
@@ -64,7 +62,7 @@
 (require 'screencast)
 (defvar screencast-record-fill-column 60 "The fill column value to be used during a recording session")
 (defvar screencast-record-font
-  "-Adobe-Courier-Medium-R-Normal--14-100-100-100-M-90-ISO8859-1"
+  "-Misc-Fixed-Medium-R-Normal--20-200-75-75-C-100-ISO8859-1"
   "The font to use during a recording session.")
 (defvar screencast-record-dir "~/" "The directory to save recordings to")
 
@@ -88,8 +86,8 @@ The same is true for the end of the screencast."
                              " "
                              "--no-cursor"
                              " "
-                             "--windowid $(wmctrl -l | awk '/"frame-title-format-new"/ {print $1}')"
-                             " "
+                             ;; "--windowid $(wmctrl -l | awk '/"frame-title-format-new"/ {print $1}')"
+                             ;; " "
                              "--no-frame"
                              " "
                              "--overwrite"
@@ -110,7 +108,7 @@ The same is true for the end of the screencast."
          (fill-column-old fill-column)
          (fill-column-new screencast-record-fill-column)
          (fill-column-function 
-          `(progn (setq fill-column ,fill-column-new)))
+          `(progn (setq-default fill-column ,fill-column-new)))
          (list-with-fill-column (append 
                                  (list fill-column-function) list))
          (pauselist '(p p))
@@ -119,11 +117,16 @@ The same is true for the end of the screencast."
          )
     ;; change look
     (setq frame-title-format frame-title-format-new)
-    (sit-for 1) ; needed for the wm to update the frame title
     (set-background-color background-new)
     (set-foreground-color foreground-new)
     (set-frame-font font-new)
-    ;; record
+    (message "Recording in 3 ...")
+    (sit-for 1)
+    (message "Recording in 2 ...")
+    (sit-for 1)
+    (message "Recording in 1 ...")
+    (sit-for 1)
+    (message "And action!")
     (shell-command record-command
                    record-output-buffer)
     (screencast list-with-pauses name version 0 init)

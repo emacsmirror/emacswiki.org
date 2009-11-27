@@ -8,9 +8,9 @@
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Copyright (C) 2009, rubikitch, all rights reserved.
 ;; Created: 2008-12-11 13:56:50
-;; Version: $Revision: 1.18 $
-;; Last-Updated: Fri May 22 13:07:04 2009 (-0700)
-;;           By: dradams
+;; Version: $Revision: 1.20 $
+;; Last-Updated: 2009/11/26 22:41:56 +0900
+;;           By: Tomohiko KOSAKA
 ;; URL: http://www.emacswiki.org/emacs/download/auto-install.el
 ;; Keywords: auto-install
 ;; Compatibility: GNU Emacs 22 ~ 23
@@ -25,7 +25,7 @@
 ;;   `url-util', `url-vars'.
 ;;
 
-(defvar auto-install-version "$Id: auto-install.el,v 1.19 2009/05/22 13:04:56 dadams Exp $")
+(defvar auto-install-version "$Id: auto-install.el,v 1.20 2009/11/26 22:41:56 +0900 Tomohiko KOSAKA Exp $")
 ;;; This file is NOT part of GNU Emacs
 
 ;;; License
@@ -268,6 +268,9 @@
 ;;; Change log:
 ;;
 ;; $Log: auto-install.el,v $
+;; Revision 1.20  2009/11/26 22:41:56  Tomohiko KOSAKA
+;; Fix `auto-install-buffer-save'.
+;;
 ;; Revision 1.19  2009/05/22 13:04:56  dadams
 ;; Split icicles-cmd.el into icicles-cmd[12].el.
 ;;
@@ -1039,7 +1042,7 @@ This command just run when have exist old version."
                ;; Replace file if have exist.
                (auto-install-get-path filename)
                ;; Otherwise, install in directory `auto-install-directory'.
-               (concat auto-install-directory filename)))
+               (concat (file-name-as-directory auto-install-directory) filename)))
         ;; Save file.
         (if (and (file-exists-p file-path)
                  auto-install-replace-confirm

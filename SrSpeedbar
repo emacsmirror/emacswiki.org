@@ -55,5 +55,9 @@ A bug/problem found: speedbar's frame doesn't react on window resize. It may bec
 Re-opening speedbar fixes the problem. Emacs 23.1.
 
 ----
+: ''On GNU Emacs 23.0.60.1 when opening sr-speedbar the 'let: Wrong type argument: stringp, nil' error occurs and the content of sr-speedbar is the same buffer.
+-- Andrea
+
+----
 Setting the width doesn't appear to work (Emacs 23.1, Ubuntu 8.10). 
 

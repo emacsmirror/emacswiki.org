@@ -3,12 +3,9 @@
 Hi all,
 
 I'm an Emacs fan from several years (since 2000) now. I use Emacs 23 on Ubuntu.
-
-I'm a french Ass. professor (sorry for my bad English) working on Software Engineering.
-
+I'm a French Ass. professor (sorry for my bad English) working on Software Engineering.
 Fan of Gnus and org-mode (still trying to master them).
-
-Facing an emacs bankrupcy, I'm currently looking for differents autoloaders and package installer, like :
+Facing an emacs bankruptcy, I'm currently looking for different autoloaders and package installer, like :
 * [[Grail]]
 * [[ELPA]]
 * [[Pases]]
@@ -16,12 +13,21 @@ Facing an emacs bankrupcy, I'm currently looking for differents autoloaders and 
 * AutoInstall
 * ...
 
+After a month of experiments, I switch to [[ELPA]] for the following reasons :
+* Rumors that ELPA will be integrated in the next Emacs version
+* Very simple to configure
+* Some interesting module are already packaged
+* I discover the fabulous [http://github.com/technomancy/emacs-starter-kit/ Emacs starter kit] and its version in org file [http://github.com/eschulte/emacs-starter-kit Starter kit documented in org-mode file], and the starter kit use ELPA...
 
-After some experiments, I will try to send some feedbacks
+Then, now, thanks to [http://orgmode.org/worg/org-contrib/babel/org-babel.php org-babel mode], I could make literacy programming for my configuration file : in one file, I could put my explanations in org-mode format (with cute outline and table facility) and my emacs lisp code. The lisp code is automatically tanggled and the documentation (pdf ou html) could be generated ! It's now much easier to navigate in my different configuration files.
 
+Concerning the package installer, my main preoccupation was to get something which automatize the org-mode installation (org-mode is very active and there are dailies updates), none of the tested installers address this requirement.
+Fortunately, the org-mode community gets [http://orgmode.org/worg/org-contrib/org-track.php org-track], an automatic installer of org-mode...
+Finally, thanks to [http://orgmode.org/worg/org-contrib/babel/org-babel-screen.php Org-babel screen], something similar to [http://angg.twu.net/eev-article.html eev mode] but with org-mode style, from an emacs file, I could also execute shell-script to automatize others packages installations. All my configuration staff are in the same files, it is now easier to manage.
 
-[new:DrewAdams:2009-10-15 15:32 UTC]
-Welcome to the wiki. -- DrewAdams
+My emacs bankruptcy seems to be avoided.
+
+I still face some problems in the use of [http://orgmode.org/worg/org-contrib/babel/org-babel-screen.php Org-babel screen], but this module is very recent and few documented (in November 2009).
 
 ----
 CategoryHomepage

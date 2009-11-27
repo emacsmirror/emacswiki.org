@@ -25,6 +25,7 @@ Why did you change `setq' here to `defvaralias'? Why assume that every time some
 [new]
 Because it helps make the indentation less dependent on the value of `tab-width'. The defaults are [http://lxr.linux.no/linux+v2.6.29/Documentation/CodingStyle#L467 notoriously horrible] -- try opening the code with different settings, and then try to /figure out/ the original settings necessary to make it readable. It's a mess.
 
+[:TabSizeVsOffset]
 It's worse than that, actually. Different values for "tab size" and "indentation" are known to [http://lists.macromates.com/textmate/2007-November/023215.html cause problems for users of the TextMate editor], which treats this as the same number. So the default values of ##2## and ##8## are really a '''hindrance to interoperability'''.
 
 If the indentation offset and tab width are equal when indenting lines, on the other hand, only [[TabsAreEvil#TabsAndAlignment|a few lines]] are garbled with different settings. (Or [SmartTabs none].) `tab-width' and `c-basic-offset' are buffer-local, so changing any of them will only affect the current buffer.

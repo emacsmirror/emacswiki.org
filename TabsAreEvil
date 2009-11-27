@@ -12,7 +12,7 @@ There's a number of way this requirement may come about, and a number of ways to
 [:TabsAndAlignment]
 === Tabs and alignment ===
 
-This is Emacs' default behavior. Well, sort of. By default, ##tab-width## (the number of columns a single tab character occupies) and ##c-basic-offset## (the basic indentation offset in [CcMode CC Mode]) have different values. Nothing good can come of this arrangement. Below, we've set them both to ##4##, so that one tab (‘##--->##’) corresponds to one indentation level:
+This is Emacs' default behavior. Well, sort of. By default, ##tab-width## (the number of columns a single tab character occupies) and ##c-basic-offset## (the basic indentation offset in Emacs' C mode, [CcMode CC Mode]) have different values. [[IndentationBasics#TabSizeVsOffset|Nothing good can come of this arrangement]]. Below, we've set them both to ##4##, so that one tab (‘##--->##’) corresponds to one indentation level:
 
     int foo(char bar[]) {
     --->int i = 0;
@@ -23,7 +23,7 @@ This is Emacs' default behavior. Well, sort of. By default, ##tab-width## (the n
 
 This works fine for the code above: we can change the tab width, and things will still look right.
 
-The problem is ''alignment''. When an expression spans multiple lines, CC Mode cleverly lines it up to make it more readable:
+The problem occurs with ''continuation lines''. When an expression spans multiple lines, CC Mode cleverly lines it up to make it more readable:
 
     int f(int x,
           int y) {
@@ -31,7 +31,7 @@ The problem is ''alignment''. When an expression spans multiple lines, CC Mode c
                  y);
     }
 
-Unfortunately, Emacs uses tab characters for the alignment (adding spaces, '##.##', as necessary). This makes the alignment dependent on the value of ##tab-width##. If we change ##tab-width## to ##2##, the second and fourth lines are garbled, counter to the whole [[#TabsPurpose|purpose]] of using tabs.
+Unfortunately, Emacs uses tab characters for this alignment (adding spaces, '##.##', for when it's not a multiple of the tab width). This makes the second and fourth lines dependent on the value of ##tab-width##, as seen below. If we change ##tab-width## to ##2##, they are misaligned, counter to the [[#TabsPurpose|stated purpose]] of using tabs.
 
     int f(int x,        int f(int x,
     --->..int y) {      ->..int y) {
@@ -44,7 +44,7 @@ However, look closely at the ''third'' line (“##return## ...”), which has no
 [:TabsAndNoAlignment]
 === Tabs and no alignment ===
 
-VisualStudio takes this approach. When an expression spans multiple lines, the remaining lines are given one or two additional "levels" of indentation:
+VisualStudio takes this approach. When an expression spans multiple lines, the continuation lines are simply given one or two additional "levels" of indentation:
 
     int f(int x,
     --->int y) {
@@ -57,7 +57,7 @@ In other words, ''the amount of indentation is always a multiple of the basic in
 [:NoTabsAndNoAlignment]
 === No tabs and no alignment ===
 
-Furthermore, without alignment, we can convert all tabs to spaces (##M-x untabify##) -- and back (##M-x tabify##) -- with no loss of information.
+Furthermore, without alignment, we can straightforwardly convert all tabs to spaces (##M-x untabify##) -- and back (##M-x tabify##) -- with no loss of information.
 
     int f(int x,
     ....int y) {
@@ -67,12 +67,10 @@ Furthermore, without alignment, we can convert all tabs to spaces (##M-x untabif
 
 So it would seem that we have found a non-[[#TabsPurpose|evil]] way to use tabs in source code.
 
-''(Pause)''
-
-But, when all is said and done, non-aligned code just doesn't ''look'' as nice. And so we come full circle, as many a user's motivation to use spaces only is to keep the alignment.
-
 [:NoTabsAndAlignment]
 === No tabs and alignment ===
+
+But someone may opine that non-aligned code doesn't ''look'' as nice. And so we come full circle, as many a user's motivation to use spaces only is to keep the alignment.
 
 In Emacs, we may set ##indent-tabs-mode## to ##nil## and use spaces only:
 
@@ -84,7 +82,7 @@ In Emacs, we may set ##indent-tabs-mode## to ##nil## and use spaces only:
 
 This will, of course, look correct in any editor, spaces being the same everywhere.
 
-One problem remains, however. Spaces ''lock'' the indentation offset -- we have to set up our editor's auto-indentation values to match the file's (see GuessOffset), and if we want a different offset, we have to reformat the whole file. Tabs were [[#TabsPurpose|supposed to]] address this problem, but failed unless we [[#TabsAndNoAlignment|disallowed alignment]]. Is there a better way to employ them?
+One problem remains, however. Spaces ''lock'' the indentation offset, so we have to [IndentationBasics set up our editor’s auto-indentation values] to match the file's (which gets really tedious when working with different projects -- see GuessOffset for automatic approaches). If we wanted a different offset, we would have to reformat the whole file. Tabs were [[#TabsPurpose|supposed to]] address this problem, but failed unless we [[#TabsAndNoAlignment|disallowed alignment]]. Is there a better way to employ them?
 
 [:SmartTabs]
 == ... and how they ought to handle it ==
@@ -107,14 +105,14 @@ Tabs ''only'' broke when we threw alignment into the mix. The solution, then, is
     ->.........y);
     }
 
-and it is not garbled, because the aligned lines are prefixed with the same amount of tab characters.
+and it is not garbled, because the continuation lines are prefixed with the same amount of tab characters. In other words, ''smartly tabbed files do not have an indentation offset!''
 
 To persuade Emacs to insert the right amount of tabs and spaces automatically, see SmartTabs.
 
 [:TabLimitations]
 === Limitations using tabs ===
 
-Of course, any tab scheme means you cannot line up comments across different indentation levels:
+Of course, any tab scheme means you cannot line up comments ''across different indentation levels'' (but this is [[#BadStyle|bad style]] anyway):
 
     int foo(char bar[]) {     // Indent level 0
     --->int i = 0;            // Indent level 1
@@ -148,6 +146,7 @@ We could try to compensate for the difference of indentation level by inserting 
     ------->return i;------->............// Indent level 1 (difference: 1)
     }------->------->....................// Indent level 0 (difference: 2)
 
+[:BadStyle]
 When all is said and done, excessive trailing comments are bad style in any case.[http://www.amazon.com/dp/0132350882/] The following style is much easier to maintain, whether tabs or spaces are used:
 
     // Indent level 0

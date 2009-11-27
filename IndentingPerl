@@ -11,6 +11,8 @@ You can force all attempts to invoke perl-mode to invoke cperl-mode instead via 
 
    (fset 'perl-mode 'cperl-mode)
 
+== Basic indentation ==
+
 Basic indentation can be changed using the variable
 <code>cperl-indent-level</code>:
 
@@ -18,6 +20,8 @@ Basic indentation can be changed using the variable
 
 Note that the variable <code>cperl-indent-alist</code> has a doc string
 that says it is not being used.
+
+== Treating parentheses as blocks ==
 
 Version 5.0 of CPerlMode offers many improvements over older versions.
 For one, parenthetical blocks such as
@@ -85,6 +89,7 @@ which give me:
 
 -- RossLonstein
 
+== Continued indentation ==
 
 How do you solve this indenting problem? Notice the staircasing inside the "if()" after the first "print" and how the join and being outside the curly bracket doesnt have this problem. This occurs with cperl-mode, not perl-mode on every system I have access to.
 
