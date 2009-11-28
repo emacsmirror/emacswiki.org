@@ -18,6 +18,9 @@ matching.
 account for various typing mistakes.  This algorithm is provided
 by library <tt>[[fuzzy-match.el]]</tt>, so I call its use in '''Icicles''' "'''[::fuzzy completion]'''".  You must have library ##fuzzy-match.el## to use this.
 
+* '''Swank''' -- [[symbol|Symbols]] are completed using the algorithm of
+<tt>[[el-swank-fuzzy.el]]</tt> -- see that library for details.
+
 * '''Scatter''' -- This is a simple, poor man's fuzzy matching that I call
 "'''[::scatter matching]'''".  [[Ido]] calls it "flex" matching.  The
 TextMate editor has the same thing for file-name
@@ -27,20 +30,27 @@ matching (only), without naming it.
 at most a given number of character operations, the so-called
 [[LevenshteinDistance|Levenshtein distance]].
 
-You can use fuzzy completion in place of prefix completion (`TAB').
+You can use fuzzy or swank completion in place of prefix completion (`TAB').
 You can use the scatter or Levenshtein completion in place of apropos completion
 (`S-TAB').  You can change completion methods easily at any time,
 by hitting a key in the [[minibuffer]]:
 
 * '''`##C-(##'''' (command `icicle-next-TAB-completion-method') to cycle among `TAB' completion methods: `basic',
-`vanilla', and `fuzzy' (`vanilla' only for Emacs 23 and later;
-`fuzzy' only if you use library <tt>[[fuzzy-match.el]]</tt>).
+`vanilla', `fuzzy', and `swank' (`vanilla' only for Emacs 23 and later;
+`fuzzy' only if you have library <tt>[[fuzzy-match.el]]</tt>; `swank' only if you have library <tt>[[el-swank-fuzzy.el]]</tt>).
 
 * '''`##M-(##'''' (command `icicle-next-S-TAB-completion-method') to cycle `S-TAB' completion methods: `apropos', `scatter',
 `Levenshtein' and `##Levenshtein strict##'.
 
-Of these methods, prefix completion and apropos completion are by
-far the most useful, followed, in order, by scatter, fuzzy, and Levenshtein completion.
+Repeating `##C-(##' and `TAB' or `##M-(##' and `S-TAB' on the fly for the same input
+can be a good way to learn the differences between the various
+completion methods.
+
+''My opinion'' about the relative usefulness of the various methods:
+Basic (prefix) completion and apropos completion are by
+far the most useful.  They are followed, in order of decreasing
+usefulness, by scatter, fuzzy, Levenshtein, vanilla, and swank
+completion. ''YMMV''.
 
 Besides these methods, remember that you can get ordinary
 substring matching with `S-TAB' by using '''`##C-`##'''' to turn off
@@ -50,9 +60,6 @@ characters escaped, `S-TAB' does literal substring completion.
 The type of completion matching that is used when you hit `S-TAB'
 and `TAB' is controlled by [[user option]]s 
 '''`<tt>[[Icicles - Customization and General Tips#icicle-S-TAB-completion-methods-alist|icicle-S-TAB-completion-methods-alist]]</tt>'''' and '''`<tt>[[Icicles - Customization and General Tips#icicle-TAB-completion-methods|icicle-TAB-completion-methods]]</tt>'''', respectively.  By default, the first method in each list is used for matching.
-
-You can use `##M-(##' and `##C-(##' in the minibuffer to cycle among the
-`S-TAB' and `TAB' completion methods, respectively.
 
 
 
@@ -112,8 +119,47 @@ What this really amounts to is matching input `abc' as if it were
 the regexp `##a.*b.*c##'.  That's all.
 
 You can use '''Icicles''' scatter matching at any time in place of
-apropos (regexp) matching.  Unlike the case of fuzzy completion
+apropos (regexp) matching.  Unlike the cases of swank and fuzzy completion
 (see below), you can use it to complete file names also.
+
+
+
+
+
+
+[:SwankCompletion]
+=== Swank (Fuzzy Symbol) Completion ===
+
+If you choose `swank' completion, what you get in '''Icicles''' is fuzzy
+completion (see [[#FuzzyMatchCompletion|next]]), except regarding [[symbol]]s.  That is, swank
+completion per se applies only to symbols.  Symbols are completed
+using the algorithm of <tt>[[el-swank-fuzzy.el]]</tt> -- see that library for
+details.
+
+'''Icicles''' options '''`<tt>[[Icicles - Customization and General Tips#icicle-swank-timeout|icicle-swank-timeout]]</tt>'''' and '''`<tt>[[Icicles - Customization and General Tips#icicle-swank-prefix-length|icicle-swank-prefix-length]]</tt>'''' give you some control over the
+behavior.  When the `TAB' completion method is `swank', you can
+use '''`C-x 1'''' (`icicle-doremi-increment-swank-timeout') and '''`C-x 2''''
+(`icicle-doremi-increment-swank-prefix-length') in the minibuffer
+to increment these options on the fly using the arrow keys `up'
+and `down'.
+
+Swank symbol completion uses heuristics that relate to supposedly
+typical patterns found in symbol names.  It also uses a timeout
+that can limit the number of matches.  It is generally quite a bit
+slower than fuzzy completion, and it sometimes does not provide
+all candidates that you might think should match, even when all of your input is a prefix (or even when it is already complete!).
+
+If swank completion produces no match when you think it should,
+remember that you can use `##C-(##' on the fly to change the
+completion method.
+
+I do not necessarily recommend swank symbol completion, but it is
+available for those who appreciate it.
+
+Like fuzzy completion (see [[#FuzzyMatchCompletion|next]]), swank completion always sorts
+candidate symbols according to its own scoring, putting what it
+thinks are the best matches first.  This means that using `##C-,##' in
+the minibuffer to sort candidates differently has no effect.
 
 
 
@@ -125,25 +171,18 @@ apropos (regexp) matching.  Unlike the case of fuzzy completion
 
 [:icicle-next-TAB-completion-method]
 [:icicle-TAB-completion-methods]
-Fuzzy completion takes more explaining.  If you use library <tt>[[fuzzy-match.el]]</tt>, then you can use fuzzy input
-matching during '''Icicles''' `TAB' completion.
-'''Icicles''' fuzzy completion is controlled by option
-'''`<tt>[[Icicles - Customization and General Tips#icicle-TAB-completion-methods|icicle-TAB-completion-methods]]</tt>'''', which you can cycle at any time
-from the minibuffer using '''`##C-(##'''' (command `icicle-next-TAB-completion-method').  When fuzzy completion is turned on, `TAB' fuzzy-completes your input.
-
-Fuzzy matching is described in detail in the commentary of library
+Fuzzy completion takes more explaining.  It is described in detail in the commentary of library
 <tt>[[fuzzy-match.el]]</tt>; please refer to that documentation.  Here are
 some things to keep in mind when you use '''Icicles''' fuzzy completion:
 
-* File-name completion is never fuzzy.
+* File-name completion is never fuzzy.  Basic prefix completion is used for file names.
 * Fuzzy completion is always case-sensitive.  This means that
   `C-A' in the minibuffer has no effect on fuzzy completion.
 * Fuzzy completion always takes a space prefix in your input into
   account.  This means that `##M-_##' in the minibuffer has no effect on fuzzy completion.
 * Fuzzy completion candidates are always sorted by decreasing
-  match strength.  This means that if you use `##C-,##' in the
-  minibuffer to sort candidates differently, it has no effect on
-  fuzzy candidates.
+  match strength.  This means that using `##C-,##' in the
+  minibuffer to sort candidates differently has no effect.
 
 Fuzzy completion is a form of prefix completion in which some input
 characters might not be present in a matched candidate.  Matching finds the

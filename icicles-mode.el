@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Nov  7 14:58:36 2009 (-0700)
+;; Last-Updated: Fri Nov 27 13:46:13 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 6106
+;;     Update #: 6139
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -21,13 +21,14 @@
 ;;   `color-theme', `cus-edit', `cus-face', `cus-load', `cus-start',
 ;;   `custom', `dired', `dired+', `dired-aux', `dired-x', `doremi',
 ;;   `easymenu', `ediff-diff', `ediff-help', `ediff-init',
-;;   `ediff-merg', `ediff-mult', `ediff-util', `ediff-wind', `ffap',
-;;   `ffap-', `fit-frame', `frame-cmds', `frame-fns', `help+20',
-;;   `hexrgb', `icicles-cmd1', `icicles-cmd2', `icicles-fn',
-;;   `icicles-mcmd', `icicles-opt', `icicles-var', `info', `info+',
-;;   `kmacro', `levenshtein', `menu-bar', `menu-bar+', `misc-cmds',
-;;   `misc-fns', `mkhtml', `mkhtml-htmlize', `mwheel', `pp', `pp+',
-;;   `ring', `ring+', `second-sel', `strings', `thingatpt',
+;;   `ediff-merg', `ediff-mult', `ediff-util', `ediff-wind',
+;;   `el-swank-fuzzy', `ffap', `ffap-', `fit-frame', `frame-cmds',
+;;   `frame-fns', `fuzzy-match', `help+20', `hexrgb', `icicles-cmd1',
+;;   `icicles-cmd2', `icicles-fn', `icicles-mcmd', `icicles-opt',
+;;   `icicles-var', `info', `info+', `kmacro', `levenshtein',
+;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `mkhtml',
+;;   `mkhtml-htmlize', `mwheel', `pp', `pp+', `reporter', `ring',
+;;   `ring+', `second-sel', `sendmail', `strings', `thingatpt',
 ;;   `thingatpt+', `unaccent', `w32-browser', `w32browser-dlgopen',
 ;;   `wid-edit', `wid-edit+', `widget'.
 ;;
@@ -275,6 +276,7 @@ The following top-level commands are also available in Icicle mode:
 `clear-option' (alias)                 - Set binary option(s) to nil
 `icicle-add-buffer-candidate'          - Add always-candidate buffer
 `icicle-add-buffer-config'             - To `icicle-buffer-configs'
+`icicle-add-entry-to-saved-completion-set' - Add completion to a set
 `icicle-add-region'                    - Add to `icicle-region-alist'
 `icicle-add/update-saved-completion-set' - To
                                         `icicle-saved-completion-sets'
@@ -284,6 +286,14 @@ The following top-level commands are also available in Icicle mode:
 `icicle-apropos-variable'              - Enhanced `apropos-variable'
 `icicle-apropos-zippy'                 - Show matching Zippy quotes
 `icicle-bookmark'(`-other-window')'    - Jump to bookmark(s)
+`icicle-bookmark-file-other-window'    - Jump to a file bookmark
+`icicle-bookmark-gnus-other-window'    - Jump to a Gnus bookmark
+`icicle-bookmark-info-other-window'    - Jump to an Info bookmark
+`icicle-bookmark-local-file-other-window'- Jump to local-file bookmark
+`icicle-bookmark-non-file-other-window' - Jump to buffer bookmark
+`icicle-bookmark-region-other-window'  - Jump to a region bookmark
+`icicle-bookmark-remote-file-other-window' - Jump to remote-file
+`icicle-bookmark-w3m-other-window'     - Jump to a W3M bookmark
 `icicle-buffer'(`-other-window')       - Switch to buffer(s)
 `icicle-buffer-config'                 - Pick `icicle-buffer' options
 `icicle-buffer-list'                   - Choose a list of buffer names
@@ -301,13 +311,16 @@ The following top-level commands are also available in Icicle mode:
 `icicle-customize-icicles-group'       - Customize Icicles
 `icicle-delete-file'                   - Delete file(s)/directory(s)
 `icicle-delete-window'                 - Delete window (`C-u': buffer)
-`icicle-delete-windows-on'             - Delete all windows for buffer
+`icicle-delete-windows'                - Delete all windows for buffer
 `icicle-doremi-candidate-width-factor+' - +/- candidate column width
+`icicle-doremi-increment-variable'     - Increment var using Do Re Mi
 `icicle-doremi-inter-candidates-min-spaces+' - +/- candidate spacing
 `icicle-doremi-zoom-Completions+'      - +/- *Completions* text size
 `icicle-doc'                           - Show doc for fn, var, or face
 `icicle-execute-extended-command'      - Multi-command `M-x'
 `icicle-execute-named-keyboard-macro'  - Execute named keyboard macro
+`icicle-face-list'                     - Choose a list of face names
+`icicle-file-list'                     - Choose a list of file names
 `icicle-file'(`-other-window')         - Visit file(s)/directory(s)
 `icicle-find-file'(`-other-window')    -       same: relative only
 `icicle-find-file-absolute'(`-other-window') - same: absolute only
@@ -321,12 +334,15 @@ The following top-level commands are also available in Icicle mode:
 `icicle-goto-global-marker'            - Go to a global marker
 `icicle-goto-marker'                   - Go to a marker in this buffer
 `icicle-imenu'                         - Navigate among Imenu entries
+`icicle-increment-option'              - Increment numeric options
+`icicle-increment-variable'            - Increment numeric variables
 `icicle-Info-goto-node'                - Multi-cmd `Info-goto-node'
 `icicle-Info-index'                    - Multi-command `Info-index'
 `icicle-Info-menu'                     - Multi-command `Info-menu'
 `icicle-Info-virtual-book'             - Book of any nodes you want
-`icicle-insert-buffer'                 - Insert buffer
+`icicle-insert-buffer'                 - Multi-command `insert-buffer'
 `icicle-insert-thesaurus-entry'        - Insert thesaurus entry(s)
+`icicle-keyword-list'                  - Choose a list of keywords
 `icicle-kill-buffer'                   - Kill buffer
 `icicle-kmacro'                        - Execute a keyboard macro
 `icicle-locate-file'(`-other-window')  - Visit file(s) in a directory
@@ -337,12 +353,14 @@ The following top-level commands are also available in Icicle mode:
 `icicle-occur'                         - `occur' + apropos icompletion
 `icicle-other-window-or-frame'         - Other window/frame or select
 `icicle-plist'                         - Show symbols, property lists
+`icicle-purge-bad-file-regions'        - From `icicle-region-alist'
 `icicle-recent-file'(`-other-window')  - Open recently used file(s)
 `icicle-recompute-shell-command-candidates' - Update from search path
 `icicle-remove-buffer-candidate'       - Remove always-candidate buf
 `icicle-remove-buffer-config'          - From `icicle-buffer-configs'
+`icicle-remove-entry-from-saved-completion-set' - From a saved set
 `icicle-remove-file-from-recentf-list' - Remove from recent files list
-`icicle-remove-region'                 - Remove from `icicle-region-alist'
+`icicle-remove-region'                 - From `icicle-region-alist'
 `icicle-remove-saved-completion-set'   - From
                                         `icicle-saved-completion-sets'
 `icicle-reset-option-to-nil'           - Set binary option(s) to nil
@@ -475,6 +493,7 @@ The following top-level commands are also available in Icicle mode:
 `clear-option' (alias)                 - Set binary option(s) to nil
 `icicle-add-buffer-candidate'          - Add always-candidate buffer
 `icicle-add-buffer-config'             - To `icicle-buffer-configs'
+`icicle-add-entry-to-saved-completion-set' - Add completion to a set
 `icicle-add-region'                    - Add to `icicle-region-alist'
 `icicle-add/update-saved-completion-set' - To
                                         `icicle-saved-completion-sets'
@@ -484,6 +503,14 @@ The following top-level commands are also available in Icicle mode:
 `icicle-apropos-variable'              - Enhanced `apropos-variable'
 `icicle-apropos-zippy'                 - Show matching Zippy quotes
 `icicle-bookmark'(`-other-window')'    - Jump to bookmark(s)
+`icicle-bookmark-file-other-window'    - Jump to a file bookmark
+`icicle-bookmark-gnus-other-window'    - Jump to a Gnus bookmark
+`icicle-bookmark-info-other-window'    - Jump to an Info bookmark
+`icicle-bookmark-local-file-other-window'- Jump to local-file bookmark
+`icicle-bookmark-non-file-other-window' - Jump to buffer bookmark
+`icicle-bookmark-region-other-window'  - Jump to a region bookmark
+`icicle-bookmark-remote-file-other-window' - Jump to remote-file
+`icicle-bookmark-w3m-other-window'     - Jump to a W3M bookmark
 `icicle-buffer'(`-other-window')       - Switch to buffer(s)
 `icicle-buffer-config'                 - Pick `icicle-buffer' options
 `icicle-buffer-list'                   - Choose a list of buffer names
@@ -501,13 +528,16 @@ The following top-level commands are also available in Icicle mode:
 `icicle-customize-icicles-group'       - Customize Icicles
 `icicle-delete-file'                   - Delete file(s)/directory(s)
 `icicle-delete-window'                 - Delete window (`C-u': buffer)
-`icicle-delete-windows-on'             - Delete all windows for buffer
+`icicle-delete-windows'                - Delete all windows for buffer
 `icicle-doremi-candidate-width-factor+' - +/- candidate column width
+`icicle-doremi-increment-variable'     - Increment var using Do Re Mi
 `icicle-doremi-inter-candidates-min-spaces+' - +/- candidate spacing
 `icicle-doremi-zoom-Completions+'      - +/- *Completions* text size
 `icicle-doc'                           - Show doc for fn, var, or face
 `icicle-execute-extended-command'      - Multi-command `M-x'
 `icicle-execute-named-keyboard-macro'  - Execute named keyboard macro
+`icicle-face-list'                     - Choose a list of face names
+`icicle-file-list'                     - Choose a list of file names
 `icicle-file'(`-other-window')         - Visit file(s)/directory(s)
 `icicle-find-file'(`-other-window')    -       same: relative only
 `icicle-find-file-absolute'(`-other-window') - same: absolute only
@@ -521,11 +551,15 @@ The following top-level commands are also available in Icicle mode:
 `icicle-goto-global-marker'            - Go to a global marker
 `icicle-goto-marker'                   - Go to a marker in this buffer
 `icicle-imenu'                         - Navigate among Imenu entries
+`icicle-increment-option'              - Increment numeric options
+`icicle-increment-variable'            - Increment numeric variables
 `icicle-Info-goto-node'                - Multi-cmd `Info-goto-node'
 `icicle-Info-index'                    - Multi-command `Info-index'
 `icicle-Info-menu'                     - Multi-command `Info-menu'
+`icicle-Info-virtual-book'             - Book of any nodes you want
 `icicle-insert-buffer'                 - Insert buffer
 `icicle-insert-thesaurus-entry'        - Insert thesaurus entry(s)
+`icicle-keyword-list'                  - Choose a list of keywords
 `icicle-kill-buffer'                   - Kill buffer
 `icicle-kmacro'                        - Execute a keyboard macro
 `icicle-locate-file'(`-other-window')  - Visit file(s) in a directory
@@ -536,10 +570,12 @@ The following top-level commands are also available in Icicle mode:
 `icicle-occur'                         - `occur' + apropos icompletion
 `icicle-other-window-or-frame'         - Other window/frame or select
 `icicle-plist'                         - Show symbols, property lists
+`icicle-purge-bad-file-regions'        - From `icicle-region-alist'
 `icicle-recent-file'(`-other-window')  - Open recently used file(s)
 `icicle-recompute-shell-command-candidates' - Update from search path
 `icicle-remove-buffer-candidate'       - Remove always-candidate buf
 `icicle-remove-buffer-config'          - From `icicle-buffer-configs'
+`icicle-remove-entry-from-saved-completion-set' - From a saved set
 `icicle-remove-file-from-recentf-list' - Remove from recent files list
 `icicle-remove-region'                 - Remove from `icicle-region-alist'
 `icicle-remove-saved-completion-set'   - From
@@ -2460,7 +2496,10 @@ complete)"))
     (define-key map "\C-xw"                  'icicle-doremi-candidate-width-factor+) ; `C-x w'
     (define-key map "\C-x|"                  'icicle-doremi-inter-candidates-min-spaces+) ; `C-x |'
     (when (fboundp 'text-scale-increase) ; Emacs 23+.
-      (define-key map "\C-x-"                'icicle-doremi-zoom-Completions+))) ; `C-x -'
+      (define-key map "\C-x-"                'icicle-doremi-zoom-Completions+)) ; `C-x -'
+    (when (eq icicle-current-TAB-method 'swank)
+      (define-key map "\C-x1"                'icicle-doremi-increment-swank-timeout)
+      (define-key map "\C-x2"                'icicle-doremi-increment-swank-prefix-length)))
   ;; `minibuffer-completion-help' got wiped out by remap for self-insert.
   (define-key map "?"                        'icicle-self-insert) ; `?'
   (define-key map " "                        'icicle-self-insert) ; " "
@@ -2681,7 +2720,9 @@ MAP is `minibuffer-local-completion-map',
     (define-key map "\C-xw"                  nil)
     (define-key map "\C-x|"                  nil)
     (when (fboundp 'text-scale-increase)
-      (define-key map "\C-x-"                nil)))
+      (define-key map "\C-x-"                nil))
+    (define-key map "\C-x1"                  nil)
+    (define-key map "\C-x2"                  nil))
   ;; Do these last. -----------------
   (define-key map [(control ?i)]             'minibuffer-complete)
   (define-key map [tab]                      'minibuffer-complete)

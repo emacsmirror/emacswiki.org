@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Tue Nov 24 07:29:57 2009 (-0800)
+;; Last-Updated: Fri Nov 27 11:50:10 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 1166
+;;     Update #: 1167
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -19,12 +19,12 @@
 ;;
 ;;   `apropos', `apropos-fn+var', `avoid', `cl', `color-theme',
 ;;   `cus-edit', `cus-face', `cus-load', `cus-start', `doremi',
-;;   `easymenu', `ffap', `ffap-', `frame-cmds', `frame-fns',
-;;   `hexrgb', `icicles-cmd1', `icicles-fn', `icicles-mcmd',
-;;   `icicles-opt', `icicles-var', `kmacro', `levenshtein',
-;;   `misc-fns', `mwheel', `pp', `pp+', `reporter', `ring', `ring+',
-;;   `sendmail', `strings', `thingatpt', `thingatpt+', `wid-edit',
-;;   `wid-edit+', `widget'.
+;;   `easymenu', `el-swank-fuzzy', `ffap', `ffap-', `frame-cmds',
+;;   `frame-fns', `fuzzy-match', `hexrgb', `icicles-cmd1',
+;;   `icicles-fn', `icicles-mcmd', `icicles-opt', `icicles-var',
+;;   `kmacro', `levenshtein', `misc-fns', `mwheel', `pp', `pp+',
+;;   `reporter', `ring', `ring+', `sendmail', `strings', `thingatpt',
+;;   `thingatpt+', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -2015,7 +2015,7 @@ To add a region to `icicle-region-alist', do one of the following:
 
 ;;;###autoload
 (defun icicle-purge-bad-file-regions ()
-  "Remove regions whose file does not exist from `icicle-region-alist'.
+  "Remove regions whose files do not exist from `icicle-region-alist'.
 Remove only regions that explicitly reference files.
 Save updated `icicle-region-alist'."
   (interactive)

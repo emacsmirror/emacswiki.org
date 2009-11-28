@@ -133,11 +133,13 @@ It's nice to have the same behavior for the '##'##' key -- inserting "##`##" or 
       (cond
        (mark-active
         (let ((skeleton-end-newline nil))
-          (skeleton-insert `(nil ?` _ ?') -1)))
-       ((looking-back "\\>")
-        (self-insert-command arg))
+          (skeleton-insert
+           `(nil ?` _ ?') -1)))
+       ((or (looking-at "\\<")
+            (looking-back "^\\|\\s-\\|`"))
+        (insert "`"))
        (t
-        (insert "`"))))
+        (self-insert-command arg))))
 
     (add-hook 'LaTeX-mode-hook
               '(lambda ()

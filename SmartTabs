@@ -115,7 +115,7 @@ For VhdlMode, add
 [:Toggling]
 === Toggling ===
 
-Smart tabs are only used when ##indent-tabs-mode## is non-##nil## (default). Type '##C-h v indent-tabs-mode RET##' to see the current value. To change ##indent-tabs-mode## for the current buffer only, type '##M-x set-variable indent-tabs-mode RET##' or customize the [ModeHooks mode hook].
+Smart tabs are only used when ##indent-tabs-mode## is non-##nil## (default). Type '##C-h v indent-tabs-mode RET##' to see the current, buffer-local value. To change ##indent-tabs-mode## for the current buffer only, type '##M-x set-variable indent-tabs-mode RET##' or customize the [ModeHooks mode hook].
 
 ''What you probably want to do:'' Disable tabs globally (spaces only) and reactivate them for modes with smart tabs handling. For CC Mode:
 

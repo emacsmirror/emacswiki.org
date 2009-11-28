@@ -593,15 +593,17 @@ Can I set TrampMode up so that a method like:
 
 would access the same file in the same manner?  I.e., can I set it up to use an abbreviated path?  -- Dirk
 
-[new]
-Multis don't work in the current version.  Use proxies: http://www.gnu.org/software/tramp/#index-multi_002dhop-100
-
 
 ---- 
 '''How do you do a three-step multi?'''  or '''Why doesn't multi work?'''
 
+
+This works in debian lenny (2009), which comes with emacs 22.2 and tramp 2.0.55:
+
    /multi:ssh:me@localhost:ssh:other@localhost:   # gets me to dired on other
    /multi:ssh:me@foo:ssh:me@bar:sudo:me@localhost:  # edits  
+
+It *is* awesome!
 
 Multi-hops seems like an obsolete format.  The current documentation (May 2005) says stuff about proxies.
 

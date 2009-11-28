@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Nov 25 07:42:14 2009 (-0800)
+;; Last-Updated: Fri Nov 27 13:29:12 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 22613
+;;     Update #: 22619
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -21,16 +21,17 @@
 ;;   `color-theme', `cus-edit', `cus-face', `cus-load', `cus-start',
 ;;   `custom', `dired', `dired+', `dired-aux', `dired-x', `doremi',
 ;;   `easymenu', `ediff-diff', `ediff-help', `ediff-init',
-;;   `ediff-merg', `ediff-mult', `ediff-util', `ediff-wind', `ffap',
-;;   `ffap-', `fit-frame', `frame-cmds', `frame-fns', `help+20',
-;;   `hexrgb', `icicles-cmd1', `icicles-cmd2', `icicles-face',
-;;   `icicles-fn', `icicles-mac', `icicles-mcmd', `icicles-mode',
-;;   `icicles-opt', `icicles-var', `info', `info+', `kmacro',
-;;   `levenshtein', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
-;;   `mkhtml', `mkhtml-htmlize', `mwheel', `pp', `pp+', `reporter',
-;;   `ring', `ring+', `second-sel', `sendmail', `strings',
-;;   `thingatpt', `thingatpt+', `unaccent', `w32-browser',
-;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
+;;   `ediff-merg', `ediff-mult', `ediff-util', `ediff-wind',
+;;   `el-swank-fuzzy', `ffap', `ffap-', `fit-frame', `frame-cmds',
+;;   `frame-fns', `fuzzy-match', `help+20', `hexrgb', `icicles-cmd1',
+;;   `icicles-cmd2', `icicles-face', `icicles-fn', `icicles-mac',
+;;   `icicles-mcmd', `icicles-mode', `icicles-opt', `icicles-var',
+;;   `info', `info+', `kmacro', `levenshtein', `menu-bar',
+;;   `menu-bar+', `misc-cmds', `misc-fns', `mkhtml',
+;;   `mkhtml-htmlize', `mwheel', `pp', `pp+', `reporter', `ring',
+;;   `ring+', `second-sel', `sendmail', `strings', `thingatpt',
+;;   `thingatpt+', `unaccent', `w32-browser', `w32browser-dlgopen',
+;;   `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -152,6 +153,7 @@
 ;;    `icicle-dired-save-marked-more',
 ;;    `icicle-dired-save-marked-persistently',
 ;;    `icicle-dired-save-marked-to-variable', `icicle-doc',
+;;    `icicle-doremi-increment-variable',
 ;;    `icicle-ess-complete-filename',
 ;;    `icicle-ess-complete-object-name',
 ;;    `icicle-ess-internal-complete-object-name',
@@ -173,6 +175,7 @@
 ;;    `icicle-gud-gdb-complete-command', `icicle-handle-switch-frame',
 ;;    `icicle-imenu', `icicle-imenu-command',
 ;;    `icicle-imenu-non-interactive-function',
+;;    `icicle-increment-option', `icicle-increment-variable',
 ;;    `icicle-Info-goto-node', `icicle-Info-goto-node-cmd',
 ;;    `icicle-Info-index', `icicle-Info-index-20',
 ;;    `icicle-Info-index-cmd', `icicle-Info-menu',
@@ -326,6 +329,8 @@
 ;;    `icicle-dispatch-C-^', `icicle-dispatch-C-.',
 ;;    `icicle-dispatch-C-comma', `icicle-dispatch-M-comma',
 ;;    `icicle-dispatch-M-q', `icicle-doremi-candidate-width-factor',
+;;    `icicle-doremi-increment-swank-prefix-length',
+;;    `icicle-doremi-increment-swank-timeout',
 ;;    `icicle-doremi-inter-candidates-min-spaces',
 ;;    `icicle-doremi-zoom-Completions+', `icicle-end-of-line+',
 ;;    `icicle-erase-minibuffer',
@@ -596,6 +601,7 @@
 ;;    `icicle-sort-function', `icicle-sort-functions-alist',
 ;;    `icicle-special-candidate-regexp',
 ;;    `icicle-S-TAB-completion-methods-alist',
+;;    `icicle-swank-prefix-length', `icicle-swank-timeout',
 ;;    `icicle-TAB-completion-methods',
 ;;    `icicle-TAB-shows-candidates-flag',
 ;;    `icicle-test-for-remote-files-flag',

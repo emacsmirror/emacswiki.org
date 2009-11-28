@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Nov 26 13:31:23 2009 (-0800)
+;; Last-Updated: Fri Nov 27 13:27:22 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 3406
+;;     Update #: 3421
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -17,9 +17,10 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `cl', `color-theme', `cus-face', `easymenu', `ffap', `ffap-',
-;;   `hexrgb', `kmacro', `levenshtein', `reporter', `sendmail',
-;;   `thingatpt', `thingatpt+', `wid-edit', `widget'.
+;;   `cl', `color-theme', `cus-face', `easymenu', `el-swank-fuzzy',
+;;   `ffap', `ffap-', `fuzzy-match', `hexrgb', `kmacro',
+;;   `levenshtein', `reporter', `sendmail', `thingatpt',
+;;   `thingatpt+', `wid-edit', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -158,6 +159,7 @@
 ;;    `icicle-sort-function', `icicle-sort-functions-alist',
 ;;    `icicle-special-candidate-regexp',
 ;;    `icicle-S-TAB-completion-methods-alist',
+;;    `icicle-swank-prefix-length', `icicle-swank-timeout',
 ;;    `icicle-TAB-completion-methods',
 ;;    `icicle-TAB-shows-candidates-flag',
 ;;    `icicle-test-for-remote-files-flag',
@@ -2486,35 +2488,48 @@ See also option `icicle-TAB-completion-methods'."
   :group 'Icicles-Matching)
 
 ;;;###autoload
+(defcustom icicle-swank-prefix-length 1
+  "*Length (chars) of symbol prefix that much match, for swank completion."
+  :type 'integer :group 'Icicles-Matching)
+
+;;;###autoload
+(defcustom icicle-swank-timeout 3000
+  "*Number of msec before swank (fuzzy symbol) completion gives up."
+  :type 'integer :group 'Icicles-Matching)
+
+;;;###autoload
 (defcustom icicle-TAB-completion-methods ; Cycle with `C-('.
-  (cond ((and (boundp 'completion-styles) (require 'fuzzy-match nil t))
-         '(basic vanilla fuzzy))
-        ((boundp 'completion-styles) '(basic vanilla))
-        ((featurep 'fuzzy-match)     '(basic fuzzy))
-        (t '(basic)))
+  (let ((methods  ()))
+    (when (require 'el-swank-fuzzy nil t) (push 'swank   methods))
+    (when (require 'fuzzy-match nil t)    (push 'fuzzy   methods))
+    (when (boundp 'completion-styles)     (push 'vanilla methods))
+    (push 'basic methods)
+    methods)
   "*List of completion methods to use for \
 `\\<minibuffer-local-completion-map>\\[icicle-prefix-complete]'.
 The first method in the list is the default method.
 
 The available methods can include these:
 
- `basic'
- `vanilla' (provided you have Emacs 23 or later)
- `fuzzy'   (provided you use library `fuzzy-match.el')
+1. `basic'
+2. `vanilla' (provided you have Emacs 23 or later)
+3. `fuzzy'   (provided you have library `fuzzy-match.el')
+4. `swank'   (provided you have library `el-swank-fuzzy.el')
 
-Basic completion is prefix completion. It is the `basic' completion
-style of Emacs 23 or later, and it is essentially the completion style
-prior to Emacs 23 (Emacs 22 completion was slightly different - see
-Emacs 23 option `custom-styles' for more info).
+1. Basic completion means ordinary prefix completion. It is the
+`basic' completion style of Emacs 23 or later, and it is essentially
+the completion style prior to Emacs 23 (Emacs 22 completion was
+slightly different - see Emacs 23 option `custom-styles' for more
+info).
 
-Vanilla completion respects option `completion-styles' (new in Emacs
-23), so that `TAB' behaves similarly in Icicles to what it does in
-vanilla Emacs.  The vanilla method also completes environment
+2. Vanilla completion respects option `completion-styles' (new in
+Emacs 23), so that `TAB' behaves similarly in Icicles to what it does
+in vanilla Emacs.  The vanilla method also completes environment
 variables during file-name completion and in shell commands.  The
 non-vanilla methods do not complete environment variables, but the
 variables are expanded to their values when you hit `RET'.
 
-Fuzzy completion is a form of prefix completion in which matching
+3. Fuzzy completion is a form of prefix completion in which matching
 finds the candidates that have the most characters in common with your
 input, in the same order, and with a minimum of non-matching
 characters.  It can skip over non-matching characters, as long as the
@@ -2527,30 +2542,48 @@ Fuzzy completion is described in detail in the commentary of library
 completion is the same as basic for file names.  Fuzzy completion is
 always case-sensitive.
 
-If you do not customize this option, the default value will reflect
-your Emacs version and whether you have library `fuzzy-match.el'.
+4. Swank completion in Icicles is the same as fuzzy completion, except
+regarding symbols.  That is, swank completion per se applies only to
+symbols.  Symbols are completed using the algorithm of library
+`el-swank-fuzzy.el'.
+
+Icicles options `icicle-swank-timeout' and
+`icicle-swank-prefix-length' give you some control over the behavior.
+When the `TAB' completion method is `swank', you can use `C-x 1'
+\(`icicle-doremi-increment-swank-timeout') and `C-x 2'
+\(`icicle-doremi-increment-swank-prefix-length') in the minibuffer to
+increment these options on the fly using the arrow keys `up' and
+`down'.
+
+Swank symbol completion uses heuristics that relate to supposedly
+typical patterns found in symbol names.  It also uses a timeout that
+can limit the number of matches.  It is generally quite a bit slower
+than fuzzy completion, and it sometimes does not provide all
+candidates that you might think should match, even when all of your
+input is a prefix (or even when it is already complete!).  If swank
+completion produces no match when you think it should, remember that
+you can use `\\[icicle-next-TAB-completion-method]' on the fly to \
+change the completion method.
+
+
+If you do not customize `icicle-TAB-completion-methods', then the
+default value (that is, the available `TAB' completion methods) will
+reflect your current Emacs version and whether you have loaded
+libraries `fuzzy-match.el' and `el-swank-fuzzy.el'.
 
 By default, `TAB' is the key for this completion. The actual keys
 used are the value of option `icicle-prefix-complete-keys'.
 
 See also option `icicle-S-TAB-completion-methods-alist'."
-  :type (cond ((and (boundp 'completion-styles)
-                    (require 'fuzzy-match nil t))
-               '(repeat
-                 (choice
-                  (const :tag "Basic" basic)
-                  (const :tag "Vanilla `completion-styles'" vanilla)
-                  (const :tag "Fuzzy" fuzzy))))
-              ((boundp 'completion-styles)
-               '(repeat
-                 (choice
-                  (const :tag "Basic" basic)
-                  (const :tag "Vanilla `completion-styles'" vanilla))))
-              ((featurep 'fuzzy-match)
-               '(repeat
-                 (choice
-                  (const :tag "Basic" basic)
-                  (const :tag "Fuzzy" fuzzy)))))   
+  :type (let ((methods  ()))
+          (when (require 'el-swank-fuzzy nil t)
+            (push '(const :tag "Swank (Fuzzy Symbol)" swank) methods))
+          (when (require 'fuzzy-match nil t)
+            (push '(const :tag "Fuzzy" fuzzy) methods))
+          (when (boundp 'completion-styles)
+            (push '(const :tag "Vanilla `completion-styles'" vanilla) methods))
+          (push '(const :tag "Basic" basic) methods)
+          `(repeat (choice ,@methods)))
   :group 'Icicles-Matching)
 
 ;;;###autoload

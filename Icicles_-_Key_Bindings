@@ -190,39 +190,63 @@ to keys in ''Icicle'' mode -- they are ''not'' bound by '''Icicles''' (except to
 [:icicle-add-buffer-candidate]
 [:icicle-add-buffer-config]
 [:icicle-add-entry-to-saved-completion-set]
+[:icicle-add-region]
 [:icicle-add-update-saved-completion-set]
 [:icicle-apply]
 [:icicle-apropos]
 [:icicle-apropos-command]
 [:icicle-apropos-variable]
 [:icicle-apropos-zippy]
+[:icicle-bookmark-file-other-window]
+[:icicle-bookmark-gnus-other-window]
+[:icicle-bookmark-info-other-window]
+[:icicle-bookmark-local-file-other-window]
+[:icicle-bookmark-non-file-other-window]
+[:icicle-bookmark-region-other-window]
+[:icicle-bookmark-remote-file-other-window]
+[:icicle-bookmark-w3m-other-window]
 [:icicle-buffer-config]
 [:icicle-buffer-list]
 [:icicle-clear-history]
 [:icicle-color-theme]
+[:icicle-completing-yank]
 [:icicle-customize-icicles-group]
 [:icicle-delete-file]
 [:icicle-delete-windows]
 [:icicle-doc]
+[:icicle-doremi-increment-variable]
 [:icicle-font]
 [:icicle-frame-bg]
 [:icicle-frame-fg]
 [:icicle-fundoc]
 [:icicle-imenu]
-[:icicle-completing-yank]
+[:icicle-increment-option]
+[:icicle-increment-variable]
+[:icicle-Info-virtual-book]
 [:icicle-insert-thesaurus-entry]
 [:icicle-keyword-list]
 [:icicle-locate-file]
 [:icicle-minibuffer-help]
+[:icicle-plist]
+[:icicle-purge-bad-file-regions]
 [:icicle-recent-file]
 [:icicle-recompute-shell-command-candidates]
 [:icicle-remove-buffer-candidate]
 [:icicle-remove-buffer-config]
 [:icicle-remove-entry-from-saved-completion-set]
 [:icicle-remove-file-from-recentf-list]
+[:icicle-remove-region]
 [:icicle-remove-saved-completion-set]
 [:icicle-reset-option-to-nil]
 [:icicle-save-string-to-variable]
+[:icicle-search-file-bookmark]
+[:icicle-search-gnus-bookmark]
+[:icicle-search-info-bookmark]
+[:icicle-search-local-file-bookmark]
+[:icicle-search-non-file-bookmark]
+[:icicle-search-region-bookmark]
+[:icicle-search-remote-file-bookmark]
+[:icicle-search-w3m-bookmark]
 [:icicle-select-window]
 [:icicle-set-option-to-t]
 [:icicle-toggle-option]
@@ -233,39 +257,65 @@ to keys in ''Icicle'' mode -- they are ''not'' bound by '''Icicles''' (except to
 * `icicle-add-buffer-candidate' -- Add buffer to those always shown
 * `icicle-add-buffer-config' -- Add to `icicle-buffer-configs'
 * `icicle-add-entry-to-saved-completion-set' -- Add a completion candidate to a [[Icicles - Candidate Sets|saved set]]
+* `icicle-add-region' -- Add a region to `icicle-region-alist'
 * `icicle-add/update-saved-completion-set' -- Add a set to `icicle-saved-completion-sets'
 * `icicle-apply'        -- Apply function to [[alist]] items
 * `icicle-apropos'     --  Like `apropos', but shows matches
 * `icicle-apropos-command' -- Enhanced `apropos-command'
 * `icicle-apropos-variable' -- Enhanced `apropos-variable'
 * `icicle-apropos-zippy' -- Show matching Zippy quotes
+* `icicle-bookmark-file-other-window' -- Jump to a file bookmark
+* `icicle-bookmark-gnus-other-window' -- Jump to a Gnus bookmark
+* `icicle-bookmark-info-other-window' -- Jump to an [[Info]] bookmark
+* `icicle-bookmark-local-file-other-window' -- Jump to a local-file bookmark
+* `icicle-bookmark-non-file-other-window' -- Jump to a non-file (buffer) bookmark
+* `icicle-bookmark-region-other-window' -- Jump to a [[region]] bookmark
+* `icicle-bookmark-remote-file-other-window' -- Jump to remote-file bookmark
+* `icicle-bookmark-w3m-other-window' -- Jump to a W3M bookmark
 * `icicle-buffer-config' -- Pick options for '''Icicles''' buffer commands
 * `icicle-buffer-list'  -- Choose a [[list]] of buffer names
 * `icicle-clear-history' -- Clear minibuffer histories
 * `icicle-color-theme'  -- Change color theme
+* `icicle-completing-yank' -- Yank text using completion
 * `icicle-customize-icicles-group' -- Customize '''Icicles''' options and [[face]]s
 * `icicle-delete-file'  -- Delete a file or directory
 * `icicle-delete-windows' -- Delete all [[window]]s for a buffer
 * `icicle-doc'          -- Display doc of function, [[variable]], or face
+* `icicle-doremi-increment-variable' -- Increment a variable using '''[[DoReMi|Do Re Mi]]'''
+* `icicle-face-list'    -- Choose a list of [[face]] names
+* `icicle-file-list'    -- Choose a list of file names
 * `icicle-font'         -- Change the [[frame]] font
 * `icicle-frame-bg'     -- Change the frame background color
 * `icicle-frame-fg'     -- Change the frame foreground color
 * `icicle-fundoc'       -- Display the doc of a function
-* `icicle-imenu'        -- Navigate among [[ImenuMode|Imenu]] entries
-* `icicle-completing-yank' -- Yank text using completion
+* `icicle-increment-option' -- Increment numeric [[option]]s using '''[[DoReMi|Do Re Mi]]'''
+* `icicle-increment-variable' -- Increment [[variable]]s using '''[[DoReMi|Do Re Mi]]'''
+* `icicle-Info-virtual-book' -- Open [[Info]] on a virtual book
 * `icicle-insert-thesaurus-entry' -- Insert a thesaurus entry
 * `icicle-keyword-list' -- Choose a list of keywords ([[regexp]]s)
 * `icicle-locate-file'  -- Open a file located anywhere
 * `icicle-minibuffer-help' -- Show '''Icicles''' minibuffer help
+* `icicle-plist' -- Choose symbols with matching property lists
+* `icicle-purge-bad-file-regions' -- Remove regions whose files do not exist from `icicle-region-alist'
 * `icicle-recent-file'  -- Open a recently used file
 * `icicle-recompute-shell-command-candidates' -- Update commands from search path
 * `icicle-remove-buffer-candidate' -- Remove buffer from those always shown
 * `icicle-remove-buffer-config' -- Remove from `icicle-buffer-configs'
 * `icicle-remove-entry-from-saved-completion-set' -- Remove a candidate from a saved set
 * `icicle-remove-file-from-recentf-list' -- Remove files from recent-files list
+* `icicle-remove-region'  -- Remove region from `icicle-region-alist'
 * `icicle-remove-saved-completion-set' -- Remove a set from `icicle-saved-completion-sets'
 * `icicle-reset-option-to-nil' --  Set value of binary option to `nil'
 * `icicle-save-string-to-variable' -- Save text for use with `C-='
+* `icicle-search-file-bookmark' -- Search file bookmarks
+* `icicle-search-gnus-bookmark' -- Search Gnus bookmarks
+* `icicle-search-info-bookmark' -- Search Info bookmarks
+* `icicle-search-local-file-bookmark' -- Search local file bookmarks
+* `icicle-search-non-file-bookmark' -- Search non-file bookmarks
+* `icicle-search-region' -- Search multiple regions
+* `icicle-search-region-bookmark' -- Search region bookmarks
+* `icicle-search-remote-file-bookmark' -- Search remote files
+* `icicle-search-w3m-bookmark' -- Search W3M bookmarks
 * `icicle-select-window' -- Select a window by its buffer name
 * `icicle-set-option-to-t' -- Set value of binary option to `t'
 * `icicle-toggle-option' -- Toggle the value of a binary option

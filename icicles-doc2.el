@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Thu Nov 26 15:30:54 2009 (-0800)
+;; Last-Updated: Fri Nov 27 13:27:16 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 26045
+;;     Update #: 26117
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -242,6 +242,7 @@
 ;;  (@> "Fuzzy Completion")
 ;;    (@> "Partial Completion")
 ;;    (@> "Scatter-Match Completion")
+;;    (@> "Swank (Fuzzy Symbol) Completion")
 ;;    (@> "Fuzzy-Match Completion")
 ;;
 ;;  (@> "Completion in Other Buffers")
@@ -3258,6 +3259,9 @@
 ;;    call its use in Icicles `fuzzy' completion.  You must have
 ;;    library `fuzzy-match.el' to use this.
 ;;
+;;  * Swank - Symbols are completed using the algorithm of
+;;    `el-swank-fuzzy.el' - see that library for details.
+;;
 ;;  * Scatter - This is a simple, poor man's fuzzy matching method
 ;;    that I call `scatter' matching.  Ido calls it `flex' matching.
 ;;    The TextMate editor has the same thing for file-name matching
@@ -3267,23 +3271,31 @@
 ;;    at most a given number of character operations, the so-called
 ;;    "Levenshtein distance".
 ;;
-;;  You can use fuzzy completion in place of prefix completion
-;;  (`TAB').  You can use the scatter or Levenshtein completion in
-;;  place of apropos completion (`S-TAB').  You can change completion
-;;  methods easily at any time, by hitting a key in the minibuffer:
+;;  You can use fuzzy or swank completion in place of prefix
+;;  completion (`TAB').  You can use the scatter or Levenshtein
+;;  completion in place of apropos completion (`S-TAB').  You can
+;;  change completion methods easily at any time, by hitting a key in
+;;  the minibuffer:
 ;;
 ;;  * `C-(' (command `icicle-next-TAB-completion-method') to cycle
-;;    among `TAB' completion methods: `basic', `vanilla', and `fuzzy'
-;;    (`vanilla' only for Emacs 23 and later; `fuzzy' only if you use
-;;    library `fuzzy-match.el').
+;;    among `TAB' completion methods: `basic', `vanilla', `fuzzy', and
+;;    `swank' (`vanilla' only for Emacs 23 and later; `fuzzy' only if
+;;    you have library `fuzzy-match.el'; `swank' only if you have
+;;    library `el-swank-fuzzy.el').
 ;;
 ;;  * `M-(' (command `icicle-next-S-TAB-completion-method') to cycle
 ;;    `S-TAB' completion methods: `apropos', `scatter', `Levenshtein'
 ;;    and `Levenshtein strict'.
 ;;
-;;  Of these methods, basic (prefix) completion and apropos completion
-;;  are by far the most useful, followed, in order, by scatter, fuzzy,
-;;  and Levenshtein completion.
+;;  Repeating `C-(' and `TAB' or `M-(' and `S-TAB' on the fly for the
+;;  same input can be a good way to learn the differences between the
+;;  various completion methods.
+;;
+;;  My opinion about the relative usefulness of the various methods:
+;;  Basic (prefix) completion and apropos completion are by far the
+;;  most useful.  They are followed, in order of decreasing
+;;  usefulness, by scatter, fuzzy, Levenshtein, vanilla, and swank
+;;  completion. YMMV.
 ;;
 ;;  Besides these methods, remember that you can get ordinary
 ;;  substring matching with `S-TAB' by using `C-`' to turn off
@@ -3295,9 +3307,6 @@
 ;;  `icicle-S-TAB-completion-methods-alist' and
 ;;  `icicle-TAB-completion-methods', respectively.  By default, the
 ;;  first method in each list is used for matching.
-;;
-;;  You can use `M-(' and `C-(' in the minibuffer to cycle among the
-;;  `S-TAB' and `TAB' completion methods, respectively.
 ;;
 ;;(@* "Partial Completion")
 ;;  ** Partial Completion **
@@ -3348,34 +3357,64 @@
 ;;  the regexp `a.*b.*c'.  That's all.
 ;;
 ;;  You can use Icicles scatter matching at any time in place of
-;;  apropos (regexp) matching.  Unlike the case of fuzzy completion
-;;  (see below), you can use it to complete file names also.
+;;  apropos (regexp) matching.  Unlike the cases of swank and fuzzy
+;;  completion (see below), you can use it to complete file names
+;;  also.
+;;
+;;(@* "Swank (Fuzzy Symbol) Completion")
+;;  ** Swank (Fuzzy Symbol) Completion **
+;;
+;;  If you choose `swank' completion, what you get in Icicles is fuzzy
+;;  completion (see next), except regarding symbols.  That is, swank
+;;  completion per se applies only to symbols.  Symbols are completed
+;;  using the algorithm of `el-swank-fuzzy.el' - see that library for
+;;  details.
+;;
+;;  Icicles options `icicle-swank-timeout' and
+;;  `icicle-swank-prefix-length' give you some control over the
+;;  behavior.  When the `TAB' completion method is `swank', you can
+;;  use `C-x 1' (`icicle-doremi-increment-swank-timeout') and `C-x 2'
+;;  (`icicle-doremi-increment-swank-prefix-length') in the minibuffer
+;;  to increment these options on the fly using the arrow keys `up'
+;;  and `down'.
+;;
+;;  Swank symbol completion uses heuristics that relate to supposedly
+;;  typical patterns found in symbol names.  It also uses a timeout
+;;  that can limit the number of matches.  It is generally quite a bit
+;;  slower than fuzzy completion, and it sometimes does not provide
+;;  all candidates that you might think should match, even when all of
+;;  your input is a prefix (or even when it is already complete!).
+;;
+;;  If swank completion produces no match when you think it should,
+;;  remember that you can use `C-(' on the fly to change the
+;;  completion method.
+;;
+;;  I do not necessarily recommend swank symbol completion, but it is
+;;  available for those who appreciate it.
+;;
+;;  Like fuzzy completion (see next), swank completion always sorts
+;;  candidate symbols according to its own scoring, putting what it
+;;  thinks are the best matches first.  This means that using `C-,' in
+;;  the minibuffer to sort candidates differently has no effect.
 ;;
 ;;(@* "Fuzzy-Match Completion")
 ;;  ** Fuzzy-Match Completion **
 ;;
-;;  Fuzzy completion takes more explaining.  If you use library
-;;  `fuzzy-match.el', then you can use fuzzy input matching during
-;;  Icicles `TAB' completion.  Icicles fuzzy completion is controlled
-;;  by option `icicle-TAB-completion-methods', which you can cycle at
-;;  any time from the minibuffer using `C-(' (command
-;;  `icicle-next-TAB-completion-method').  When fuzzy completion is
-;;  turned on, `TAB' fuzzy-completes your input.
+;;  Fuzzy completion takes more explaining.  It is described in detail
+;;  in the commentary of library `fuzzy-match.el'; please refer to
+;;  that documentation.  Here are some things to keep in mind when you
+;;  use Icicles fuzzy completion:
 ;;
-;;  Fuzzy matching is described in detail in the commentary of library
-;;  `fuzzy-match.el'; please refer to that documentation.  Here are
-;;  some things to keep in mind when you use Icicles fuzzy completion:
-;;
-;;  * File-name completion is never fuzzy.
+;;  * File-name completion is never fuzzy.  Basic prefix completion is
+;;    used for file names.
 ;;  * Fuzzy completion is always case-sensitive.  This means that
 ;;    `C-A' in the minibuffer has no effect on fuzzy completion.
 ;;  * Fuzzy completion always takes a space prefix in your input into
 ;;    account.  This means that `M-_' in the minibuffer has no effect
 ;;    on fuzzy completion.
 ;;  * Fuzzy completion candidates are always sorted by decreasing
-;;    match strength.  This means that if you use `C-,' in the
-;;    minibuffer to sort candidates differently, it has no effect on
-;;    fuzzy candidates.
+;;    match strength.  This means that using `C-,' in the minibuffer
+;;    to sort candidates differently has no effect.
 ;;
 ;;  Fuzzy completion is a form of prefix completion in which some
 ;;  input characters might not be present in a matched candidate.
@@ -5288,6 +5327,7 @@
 ;;  `icicle-add-buffer-config' - Add to `icicle-buffer-configs'
 ;;  `icicle-add-entry-to-saved-completion-set' -
 ;;                          Add a completion candidate to a saved set
+;;  `icicle-add-region' - Add region to `icicle-region-alist'
 ;;  `icicle-add/update-saved-completion-set' - Add a set to
 ;;                          `icicle-saved-completion-sets'
 ;;  `icicle-apply'        - Selectively apply function to alist items
@@ -5295,6 +5335,14 @@
 ;;  `icicle-apropos-command' - Enhanced `apropos-command'
 ;;  `icicle-apropos-variable' - Enhanced `apropos-variable'
 ;;  `icicle-apropos-zippy' - Show matching Zippy quotes
+;;  `icicle-bookmark-file-other-window' - Jump to a file bookmark
+;;  `icicle-bookmark-gnus-other-window' - Jump to a Gnus bookmark
+;;  `icicle-bookmark-info-other-window' - Jump to an Info bookmark
+;;  `icicle-bookmark-local-file-other-window' - Jump to local file
+;;  `icicle-bookmark-non-file-other-window' - Jump to buffer bookmark
+;;  `icicle-bookmark-region-other-window' - Jump to a region bookmark
+;;  `icicle-bookmark-remote-file-other-window' - Jump to remote file
+;;  `icicle-bookmark-w3m-other-window' - Jump to a W3M bookmark
 ;;  `icicle-buffer-config' - Pick options for Icicles buffer commands
 ;;  `icicle-buffer-list'  - Choose a list of buffer names
 ;;  `icicle-clear-history' - Clear minibuffer histories
@@ -5306,32 +5354,48 @@
 ;;  `icicle-delete-file'  - Delete a file or directory
 ;;  `icicle-delete-windows' - Delete all windows for a buffer
 ;;  `icicle-doc'          - Display doc of function, variable, or face
+;;  `icicle-doremi-increment-variable' -
+;;                          Increment a variable using Do Re Mi
 ;;  `icicle-face-list'    - Choose a list of face names
 ;;  `icicle-file-list'    - Choose a list of file names
 ;;  `icicle-font'         - Change the frame font
 ;;  `icicle-frame-bg'     - Change the frame background color
 ;;  `icicle-frame-fg'     - Change the frame foreground color
 ;;  `icicle-fundoc'       - Display the doc of a function
+;;  `icicle-increment-option' - Increment numeric options (Do Re Mi)
+;;  `icicle-increment-variable' - Increment variables (Do Re Mi)
+;;  `icicle-Info-virtual-book' - Open Info on a virtual book
 ;;  `icicle-insert-thesaurus-entry' -
 ;;                          Insert a thesaurus entry
 ;;  `icicle-keyword-list' - Choose a list of keywords (regexps)
 ;;  `icicle-locate-file'  - Open a file located anywhere
 ;;  `icicle-minibuffer-help' - Show Icicles minibuffer help
+;;  `icicle-plist'        - Show symbols, property lists
+;;  `icicle-purge-bad-file-regions' - Clean up `icicle-region-alist'
 ;;  `icicle-recent-file'  - Open a recently used file
 ;;  `icicle-recompute-shell-command-candidates' - Update from PATH
 ;;  `icicle-remove-buffer-candidate' -
 ;;                          Remove buffer from those always shown
-;;  `icicle-remove-buffer-config' -
-;;                          Remove from `icicle-buffer-configs'
+;;  `icicle-remove-buffer-config'- Remove from `icicle-buffer-configs'
 ;;  `icicle-remove-entry-from-saved-completion-set' -
 ;;                          Remove a candidate from a saved set
 ;;  `icicle-remove-file-from-recentf-list' - Remove from recent files
+;;  `icicle-remove-region'  - Remove region from `icicle-region-alist'
 ;;  `icicle-remove-saved-completion-set' - Remove a set from
 ;;                          `icicle-saved-completion-sets'
 ;;  `icicle-reset-option-to-nil' -
 ;;                          Set value of binary option to nil
 ;;  `icicle-save-string-to-variable' -
 ;;                          Save text for use with `C-='
+;;  `icicle-search-file-bookmark' - Search file bookmarks
+;;  `icicle-search-gnus-bookmark' - Search Gnus bookmarks
+;;  `icicle-search-info-bookmark' - Search Info bookmarks
+;;  `icicle-search-local-file-bookmark' - Search local file bookmarks
+;;  `icicle-search-non-file-bookmark' - Search non-file bookmarks
+;;  `icicle-search-region' - Search multiple regions
+;;  `icicle-search-region-bookmark' - Search region bookmarks
+;;  `icicle-search-remote-file-bookmark' - Search remote files
+;;  `icicle-search-w3m-bookmark' - Search W3M bookmarks
 ;;  `icicle-select-window' - Select a window by its buffer name
 ;;  `icicle-set-option-to-t' - Set value of binary option to t
 ;;  `icicle-toggle-option' - Toggle the value of a binary option

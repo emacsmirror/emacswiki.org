@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Nov 26 15:29:45 2009 (-0800)
+;; Last-Updated: Fri Nov 27 13:47:05 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 4596
+;;     Update #: 4619
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2009/11/27 dadams
+;;     Added: icicle(-doremi)-increment-(variable|option).
 ;; 2009/11/25 dadams
 ;;     icicle-color-theme: Raise error for empty input.  Thx to Ahei.
 ;; 2009/11/24 dadams
@@ -294,6 +296,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2009/11/27 dadams
+;;     *-display-candidates-in-Completions, *-prefix-candidates, *-fuzzy-candidates:
+;;       Handle swank completions too.
 ;; 2009/11/25 dadams
 ;;     icicle-insert-candidates: Handle vertical layout: icicle-completions-format.
 ;; 2009/11/03 dadams
@@ -1647,6 +1652,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2009/11/27 dadams
+;;     Added: icicle-doremi-increment-swank-(prefix-length|timeout).
+;;     *-next-TAB-completion-method, *-prefix-complete-1: Handle swank completions too.
+;;     *-next-TAB-completion-method: Bind icicle-doremi-increment-swank-(prefix-length|timeout).
 ;; 2009/11/26 dadams
 ;;     icicle-next-TAB-completion-method: Do not set icicle-inhibit-sort-p to t for fuzzy.
 ;; 2009/11/25 dadams
@@ -2601,6 +2610,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2009/11/27 dadams
+;;     icicle-(bind|restore)-completion-keys: Bind/restore C-x 1, C-x 2.
 ;; 2009/11/07 dadams
 ;;     Applied doremi cmd renamings (added +).
 ;; 2009/10/25 dadams
@@ -3444,6 +3455,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2009/11/27 dadams
+;;     Added: icicle-swank-prefix-length, icicle-swank-timeout.
+;;     icicle-TAB-completion-methods: Treat swank method also.
 ;; 2009/11/24 dadams
 ;;     Added: icicle-completions-format.
 ;;     icicle-color-themes: Fix: delete singleton list with string, not symbol bury-buffer.

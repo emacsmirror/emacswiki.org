@@ -1,0 +1,154 @@
+== Bazaar quick start guide for Emacs Developers ==
+
+Emacs is going to switch to Bazaar as its Version Control System.
+
+If you are an Emacs contributor without experience on Bazaar in
+particular and Distributed Version Control Systems (dVCS) in general,
+this guide will allow you to 
+
+* Keep contributing to Emacs without having to immerse yourself into
+  the brave new world of dVCS.
+
+* Get conversant with the Bazaar UI.
+
+* Have a starting point for learning the full capabilities of Bazaar.
+
+
+=== Conventions and basic info ===
+
+* Whenever we need to refer to the Emacs /trunk/ branch (aka
+  /mainline/ aka /HEAD/) on the GNU servers, we'll use
+  *URL_TO_UPSTREAM_TRUNK*. At the time of this writing, it is
+  ##sftp://<membername>@bzr.savannah.gnu.org/srv/bzr/emacs/trunk## but
+  it may change at any moment.
+
+* ##bzr help /command/## is an easy way to get documentation about
+    /command/. Use this for learning useful command line options.
+
+* bzr version 1.17 or newer is required. It is highly recommended to
+  use version 2.0 or newer, due to performance improvements.
+
+
+=== Starting ===
+
+We start by telling Bazaar who you are. This is used for recording the
+author of the commits:
+
+##bzr whoami "Joe Hacker <joe.hacker@address.org>"##
+
+Now we create a shared repository. A repository is just a place
+where you can store one or more branches, not necessarily related one
+to each other. It's a performance trick that dramatically improves (in
+terms of required time and storage) certain operations that you may do
+when you expand your Bazaar usage beyond what is explained here. It is
+a good idea, but not strictly required.
+
+##bzr init-repo --2a emacs/##
+
+creates a shared repository in the directory /emacs/. It is an storage
+format specification. --2a is the most efficient and modern format
+supported by Bazaar right now and is the default on Bazaar version
+2.0. This is a slow process. It needs to download about 300 MB of
+data and is both net-bound and CPU-bound, so be patient.
+
+Now we get the source files plus all the history of the branch we work
+on (/trunk/ on this case, which is the CVS mainline);
+
+##cd emacs/##
+
+##bzr checkout URL_TO_UPSTREAM_TRUNK trunk##
+
+On Bazaar parlance this creates a *bound branch*, also known as a
+ *heavyweight checkout*.
+
+Now we have everything we need in the directory /trunk/. If you are
+working inside a shared repository like recommended above do not move
+the /trunk/ directory around nor rename it.
+
+
+=== Daily work ===
+
+It is fairly similar to CVS:
+
+##<edit files>##
+
+##bzr up##
+
+##bzr commit##
+
+If Bazaar complains about conflicts after the update, fix them and use
+
+##bzr resolve <file>##
+
+You can list a series of name files after each command for restricting
+its scope. If omitted, all files are assumed, except in the case of
+##bzr resolve##, which requires the file names or the switch ##--all##
+for marking all conflicts as resolved.
+
+Before committing, not just the files you are committing but _all_
+your local source files must be up to date with upstream. So if
+somebody else commits to upstream between the ##bzr up## and the ##bzr
+commit## commands, you'll need to ##bzr up## again.
+
+
+=== More branches ===
+
+If you work on other branches besides /trunk/, just ##cd## into your
+shared repository and
+
+##bzr checkout URL_TO_UPSTREAM_branch_name your_branch_name##
+
+This is one of the operations where having a shared repository helps:
+Bazaar will download only those revisions which are not on /trunk/, so
+the process will be much faster.
+
+
+=== Other commands ===
+
+Bazaar has ##status##, ##log##, ##annotate##, ##revert##, etc. They do
+what you expect.
+
+
+=== Use VC-Dir ===
+
+VC-Dir works fine with this setup. It doesn't support all features of
+more advanced Bazaar setups, though.
+
+
+=== That's it ===
+
+You know enough to continue your Emacs hacking. Furthermore, you have
+the initial elements for turning your current setup into a more
+advanced setup once you learn enough to do so. You will not need to
+download all the history from upstream again.
+
+
+=== What you have, what you are missing ===
+
+You have in your disk a copy of the VC history of the /trunk/ branch
+since the last ##bzr update##. Hence, Bazaar does not need to contact
+a server upstream for displaying logs, reverting edited files,
+annotating, etc. This is useful for working off-line.
+
+For complete off-line work, Bazaar allows to commit changes locally
+and send them upstream when you have net access. With your current
+setup, you can do this with ##bzr commit --local##. See its
+documentation with ##bzr help commit##. If you commit often when you
+are off-line, there are better methods (not explained here).
+
+Bazaar allows you to work as if you had your own personal CVS branch
+in your machine and communicate changes with other developers, not
+only with upstream. What's considered "upstream" is just an agreement
+among the developers who participate on the same project. That is the
+essence of Distributed Version Control. Your current setup can be
+easily adapted for this, but you need to master the necessary Bazaar
+concepts before embarking on that practices.
+
+Bazaar makes very easy to create as much private branches as you
+wish.
+
+
+=== Further reading ===
+
+BzrForEmacsDevs is the definitive guide for jumping straight into
+Distributed Version Control practices while you hack on Emacs.

@@ -164,6 +164,7 @@ with external program wget"
   (let (anything-delicious-user anything-delicious-password)
     (unless (and anything-delicious-user anything-delicious-password)
       (anything-delicious-authentify))
+    (message "Syncing with Delicious in Progress...")
     (start-process-shell-command "wget-retrieve-delicious" nil "wget"
                                  (format "-q -O %s --user %s --password %s %s"
                                          anything-c-delicious-cache-file
@@ -174,10 +175,9 @@ with external program wget"
                           (if sentinel
                               sentinel
                               #'(lambda (process event)
-                                  (message
-                                   "%s is %s Delicious bookmarks should be up to date!"
-                                   process
-                                   event)
+                                    (if (string= event "finished\n")
+                                        (message "Syncing with Delicious...Done.")
+                                        (message "Failed to synchronize with Delicious."))
                                   (setq anything-c-delicious-cache nil))))))
 
 

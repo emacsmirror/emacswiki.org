@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Nov 25 07:29:19 2009 (-0800)
+;; Last-Updated: Fri Nov 27 10:41:15 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 19945
+;;     Update #: 19949
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -19,11 +19,12 @@
 ;;
 ;;   `apropos', `apropos-fn+var', `avoid', `cl', `color-theme',
 ;;   `cus-edit', `cus-face', `cus-load', `cus-start', `doremi',
-;;   `easymenu', `ffap', `ffap-', `frame-cmds', `frame-fns',
-;;   `hexrgb', `icicles-fn', `icicles-mcmd', `icicles-opt',
-;;   `icicles-var', `kmacro', `levenshtein', `misc-fns', `mwheel',
-;;   `pp', `pp+', `reporter', `ring', `ring+', `sendmail', `strings',
-;;   `thingatpt', `thingatpt+', `wid-edit', `wid-edit+', `widget'.
+;;   `easymenu', `el-swank-fuzzy', `ffap', `ffap-', `frame-cmds',
+;;   `frame-fns', `fuzzy-match', `hexrgb', `icicles-fn',
+;;   `icicles-mcmd', `icicles-opt', `icicles-var', `kmacro',
+;;   `levenshtein', `misc-fns', `mwheel', `pp', `pp+', `reporter',
+;;   `ring', `ring+', `sendmail', `strings', `thingatpt',
+;;   `thingatpt+', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -102,6 +103,7 @@
 ;;    `icicle-dired-save-marked-more',
 ;;    `icicle-dired-save-marked-persistently',
 ;;    `icicle-dired-save-marked-to-variable',
+;;    `icicle-doremi-increment-variable',
 ;;    `icicle-ess-complete-filename',
 ;;    `icicle-ess-complete-object-name',
 ;;    `icicle-ess-internal-complete-object-name',
@@ -117,7 +119,8 @@
 ;;    (+)`icicle-find-file-other-window', (+)`icicle-find-first-tag',
 ;;    (+)`icicle-find-first-tag-other-window', (+)`icicle-find-tag',
 ;;    `icicle-grep-saved-file-candidates',
-;;    `icicle-gud-gdb-complete-command', (+)`icicle-insert-buffer',
+;;    `icicle-gud-gdb-complete-command', (+)`icicle-increment-option',
+;;    (+)`icicle-increment-variable', (+)`icicle-insert-buffer',
 ;;    (+)`icicle-kill-buffer', (+)`icicle-kmacro',
 ;;    `icicle-lisp-complete-symbol', (+)`icicle-locate-file',
 ;;    (+)`icicle-locate-file-other-window',
@@ -2674,6 +2677,79 @@ candidates, as follows:
 (defun icicle-binary-option-p (symbol)
   "Non-nil if SYMBOL is a user option that has custom-type `boolean'."
   (eq (get symbol 'custom-type) 'boolean))
+
+;;;###autoload
+(icicle-define-command icicle-increment-option ; Command name
+  "Increment option's value using the arrow keys (`up', `down').
+Completion candidates are limited to options that have `integer',
+`float', and `number' custom types.
+This command needs library `doremi.el'." ; Doc string
+  (lambda (opt)                         ; Function to perform the action
+    (let ((sym  (intern opt)))
+      (icicle-doremi-increment-variable sym (icicle-read-number "Increment (amount): ") t)
+      (message "`%s' is now %s" opt (eval sym))))
+  "Increment value of option: " obarray ; `completing-read' args
+  (lambda (symbol) (memq (get symbol 'custom-type) '(number integer float)))  
+  'must-confirm nil
+  (if (boundp 'variable-name-history) 'variable-name-history 'icicle-variable-name-history) nil nil
+  ((enable-recursive-minibuffers  t)    ; Bindings
+   (alt-fn                        nil)
+   (icicle-candidate-alt-action-fn
+    (or icicle-candidate-alt-action-fn (setq alt-fn  (icicle-alt-act-fn-for-type "option"))))
+   (icicle-all-candidates-list-alt-action-fn
+    (or icicle-all-candidates-list-alt-action-fn alt-fn (icicle-alt-act-fn-for-type "option"))))
+  (unless (require 'doremi nil t) (error "This command needs library `doremi.el'."))) ; First code
+
+;;;###autoload
+(icicle-define-command icicle-increment-variable ; Command name
+  "Increment variable's value using the arrow keys (`up', `down').
+With a prefix arg, only numeric user options are candidates.
+This command needs library `doremi.el'." ; Doc string
+  (lambda (opt)                         ; Function to perform the action
+    (let ((sym  (intern opt)))
+      (icicle-doremi-increment-variable sym (icicle-read-number "Increment (amount): ") prefix-arg)
+      (message "`%s' is now %s" opt (eval sym))))
+  "Increment value of variable: " obarray ; `completing-read' args
+  (if prefix-arg
+      (lambda (symbol) (memq (get symbol 'custom-type) '(number integer float)))
+    'boundp)
+  'must-confirm nil
+  (if (boundp 'variable-name-history) 'variable-name-history 'icicle-variable-name-history) nil nil
+  ((enable-recursive-minibuffers  t)    ; Bindings
+   (prefix-arg                    current-prefix-arg)
+   (alt-fn                        nil)
+   (icicle-candidate-alt-action-fn
+    (or icicle-candidate-alt-action-fn
+        (setq alt-fn  (icicle-alt-act-fn-for-type (if prefix-arg "option" "variable")))))
+   (icicle-all-candidates-list-alt-action-fn
+    (or icicle-all-candidates-list-alt-action-fn alt-fn
+        (icicle-alt-act-fn-for-type (if prefix-arg "option" "variable")))))
+  (unless (require 'doremi nil t) (error "This command needs library `doremi.el'."))) ; First code
+
+;;;###autoload
+(defun icicle-doremi-increment-variable (variable &optional increment optionp)
+  "Increment VARIABLE by INCREMENT (default 1).
+Interactively, you can choose VARIABLE using completion.
+With a prefix arg, only user options are available to choose from.
+Raises an error if VARIABLE's value is not a number."
+  (interactive
+   (let ((symb (or (and (fboundp 'symbol-nearest-point) (symbol-nearest-point))
+                   (and (symbolp (variable-at-point)) (variable-at-point))))
+         (enable-recursive-minibuffers t))
+     (list (intern (completing-read "Increment variable: " obarray
+                                    (if current-prefix-arg 'user-variable-p 'boundp)
+                                    t nil nil (and symb (symbol-name symb)) t))
+           (icicle-read-number "Increment (amount): ")
+           current-prefix-arg)))
+  (unless (require 'doremi nil t) (error "This command needs library `doremi.el'."))
+  (unless increment (setq increment 1))
+  (unless (numberp (symbol-value variable))
+    (error "Variable's value is not a number: %S" (symbol-value variable)))
+  (doremi (lambda (new-val)
+            (set variable  new-val)
+            new-val)
+          (symbol-value variable)
+          increment))
 
 ;;;###autoload
 (defun icicle-bookmark-cmd (&optional parg) ; Bound to what `bookmark-set' is bound to (`C-x r m').

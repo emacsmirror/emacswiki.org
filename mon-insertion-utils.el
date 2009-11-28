@@ -23,6 +23,7 @@
 ;;; FUNCTIONS:◄◄◄
 ;;;
 ;;; MACROS: 
+;;; `mon-print-in-buffer-if-p'
 ;;;
 ;;; METHODS:
 ;;;
@@ -134,6 +135,27 @@
 (require 'mon-time-utils) 
 
 ;;; ==============================
+;;; :CREATED <Timestamp: #{2009-11-20T19:38:47-05:00Z}#{09476} - by MON KEY>
+(defmacro mon-print-in-buffer-if-p (print-type form)
+  "When buffer is writable print FORM with PRINT-TYPE.
+Otherwise, just return the printed value of form."
+  `(,print-type 
+    ,form
+    ,(if (and (not buffer-read-only)
+              (buffer-file-name)
+              (file-writable-p (buffer-file-name))
+              (file-exists-p (buffer-file-name)))
+         (current-buffer))))
+;;
+;;; :TEST-ME
+;;; (let ((this (get-buffer (current-buffer))))
+;;;   (unwind-protect
+;;;        (progn
+;;;          (set-buffer (get-buffer "*Help*"))
+;;;          (mon-print-in-buffer-if-p princ (buffer-name)))
+;;;     (set-buffer this)))
+
+;;; ==============================
 (defun mon-insert-dirs-in-path (dir-list dir-path)
   "Directory elts held by symbol DIR-LIST (list of strings) are inserted in DIR-PATH.
 Does minimal error checking, shouldn't be trusted for unfamilar pathnames.\n►►►"
@@ -168,20 +190,20 @@ A more general solution is `mon-insert-dirs-in-path'. This function is a
 generic version of `mon-insert-naf-file-in-dirs'. However, this function 
 is _NOT_ appropriate for creation of `naf-mode' specific files.\n
 Directory's name and file's name are taken from elt in MAKE-DIR-LIST. Directory
-is created relative to current buffer's DEFAULT-DIRECTORY. File's contents are
+is created relative to current buffer's `default-directory'. File's contents are
 automatically inserted according to text held in INSERT-TEXT. EXTENSION argument
 provides the file extension for file.\n
 When generating the 'directory-name' and 'file-name' components from the elts
 of MAKE-DIR-LIST tests for the presence of:\n
-   '(', ')', '_', '.', ':', ';', ' '        <--Removed and/or replaced by '-'.\n
+   '(', ')', '_', '.', ':', ';', ' '        <- Removed and/or replaced w/ '-'.\n
 
 Generation of file-name the EXTENSION string tests for the presence of:\n
-   '(', ')', '_', '.', ':', ';', ' '   <--Removed and/or replaced by '-' and ',_'.\n
+   '(', ')', '_', '.', ':', ';', ' '   <- Remove and/or replace w/ '-' and ',_'.\n
 A second pass checks EXTENSION for leading '.' and inserts it when missing.\n
 Format of list for MAKE-DIR-LIST should be as follows:\n
- (setq make-my-dirs 
-   '(\"Name_Part1\" \"Name (Part2)\"
-     \"Name, :Part3\" \"Name Part4;\"))\n\n
+ \(setq make-my-dirs 
+   '(\"Name_Part1\" \"Name \(Part2\)\"
+     \"Name, :Part3\" \"Name Part4;\"\)\)\n\n
 :EXAMPLE\nAssuming buffer's default directory is \"c:/home/my-dirs\"
 Invoking the form with args make-my-dirs my-insert-text \".dbc\":\n
 \(mon-insert-file-in-dirs make-my-dirs my-insert-text \".dbc\")\n
@@ -189,9 +211,9 @@ Or, interactively; M-x mon-insert-naf-file-in-dirs\n
 => minibuffer-prompt: Give Symbol holind dir/file list : make-my-dirs
 => minibuffer-prompt: Give Symbol holing insert-text : my-insert-text
 => minibuffer-prompt: File extenison :dbc \n
-Creates the following directors and files in c:/home/my-dirs :
+Creates the following directorys and files in c:/home/my-dirs :
               .
-              |-- Name-(Part2)
+              |-- Name-\(Part2\)
               |   `-- Name-Part2.dbc
               |-- Name-Part1
               |   `-- Name-Part1.dbc
@@ -288,27 +310,27 @@ whitespace.\n:EXAMPLE
            (put-string  (if call-int-p (read-string "String to put :") string-to-put))
            (delimp (if call-int-p (yes-or-no-p "With delimiter? :") with-delim))
            (nlp (if call-int-p (yes-or-no-p "Insert newlines? :") nlp))
-           (delim-put (let* ((dt (and delimp))     ; t when delim t
-                             (df (and (not delimp))) ; t when delim nil
-                             (nlt (and nlp))         ; t when newlines t
-                             (nlf (and (not nlp))))  ; t when newlines nil
+           (delim-put (let* ((dt (and delimp))       ; t when delim is t.
+                             (df (and (not delimp))) ; t when delim is nil.
+                             (nlt (and nlp))         ; t when newlines is t.
+                             (nlf (and (not nlp))))  ; t when newlines is nil.
                         (cond 
-                         ;; do newline, do delim	                   
+                         ;; Do newline, do delim.
                          ((and nlt dt)	
                           ((lambda () (concat 
                                        (if call-int-p  
                                            (read-string "Delimit range with (add whitespace if needed) :") 
                                          delim)
                                        "\n"))))
-                         ;; do delim, no newline 	 	
+                         ;; Do delim, no newline.	 	
                          ((and dt nlf)		
                           ((lambda () 
                              (if call-int-p 
                                  (read-string "Delimit range with (add whitespace if needed) :") 
                                delim))))
-                         ;; do newline, no delim
+                         ;; Do newline, no delim.
                          ((and nlt df) "\n")	
-                         ;;no delim ; no newline ;whatabout whitespace?
+                         ;; No delim,  no newline. What about whitespace??
                          ((and df nlf)	   
                           (if call-int-p 
                               (if (yes-or-no-p "No Delim, No Newline, Wanna Interleave range with whitespace? :")
@@ -492,16 +514,30 @@ space boundaries.\n\n:EXAMPLE
 ;;; :TEST-ME (mon-insert-string-ify "a b c")
 
 ;;; ==============================
-;;; utf-8-auto-unix, utf-8-emacs-unix, encode-coding-region, describe-coding-system
-;;; ==============================
 ;;; :NOTE Now inlined with the let in `unicode-insert'.
-;;; (setq read-quoted-char-radix 16)
-;;; prompt collection &optional predicate require-match initial-input hist def inherit-input-method)
+;;; :MODIFICATIONS <Timestamp: #{2009-11-27T15:17:34-05:00Z}#{09485} - by MON KEY>
 (defun mon-insert-unicode (char &optional insertp intrp)
-  "Reads a unicode code point for CHAR and insert CHAR at point.\n
+  "Read a Anicode code point for CHAR and insert CHAR at point.\n
+Called interactively prompts 2 options:
+i) Read char in radix 16 as with `read-quoted-char' e.g.:
+   code point: 0x2019 can be passed as 2019
+ii) Read char as with `read-char-by-name'
+    by its Unicode name, octal, hex, or decimal value e.g.
+    Code point can be passed as:
+    HEAVY BLACK HEART <- name 
+    #o21430           <- octal
+    #x2318            <- hex
+    #10r8984          <- decimal
 :EXAMPLE\n(mon-insert-unicode \"25BA\")\n
-Invokes `read-quoted-char-radix' with val set to 16. This allows easy coping of
-values from Unicode charts, :SEE (URL `http://www.decodeunicode.org/u+2019').\n
+\(call-interactively 'mon-insert-unicode\)\n
+option 1 radix 16 w/ arg 2019  => (\"’\" nil t)
+option 2 w/ arg #o20031 => (\"’\" nil t)
+option 2 w/ arg #x2019 => (\"’\" nil t)
+option 2 w/ arg #10r8217 => (\"’\" nil t)
+option 2 w/ arg RIGHT SINGLE QUOTATION MARK => (\"’\" nil t)\n
+:NOTE When called-interactively and option 1 is selected invokes
+`read-quoted-char-radix' bound to 16. This allows easy coping of values
+from Unicode charts :SEE (URL `http://www.decodeunicode.org/u+2019').\n
 For access/alteration to encoding/coding information
 :SEE `encode-coding-region', `describe-coding-system', `unicode-insert'.\n►►►"
   (interactive `(,@(let* ((rd-types (list "1 Unicode char in radix 16 e.g. '25BA'"
@@ -515,12 +551,15 @@ For access/alteration to encoding/coding information
                                             (setq the-char (read-char-by-name "Char (tab completes) :"))
                                             (cond ((not (integerp the-char))
                                                    (error "Not a Unicode character code: %S" the-char))
-                                                  ((or (< arg 0) (> arg #x10FFFF))
+                                                  ((or (< the-char 0) (> the-char #x10FFFF))
                                                    (error "Not a Unicode character code: 0x%X" the-char)))
-                                            (char-to-string the-char)))))) `(,char-rd nil t))) )
+                                            (char-to-string the-char)))
+                                         )))
+                         `(,char-rd nil t))))
   (let (t-char)
     (setq t-char
-          (cond ((integerp char) char)
+          (cond (intrp char)
+                ((integerp char) char)
                 ;;(cdr (assoc-string "BLACK RIGHT-POINTING POINTER" (ucs-names) t))
                 ((cdr (assoc-string char (ucs-names) t)))
                 ((stringp char) 
@@ -534,10 +573,11 @@ For access/alteration to encoding/coding information
                         (error "Not a Unicode character code: 0x%X" char))
                        ;;(t (setq t-char (char-to-string t-char))))
                        ))))
-    (setq t-char (char-to-string t-char))
+    (setq t-char (cond (intrp char)
+                       (t (char-to-string t-char))))
     (if (or insertp intrp)
         (save-excursion (insert-and-inherit t-char))
-      t-char)
+        t-char)
     t-char))
 ;;
 ;;; :TEST-ME (mon-insert-unicode "#o22672" t)►
@@ -546,13 +586,14 @@ For access/alteration to encoding/coding information
 ;;; :TEST-ME (mon-insert-unicode 9658 t)►
 ;;; :TEST-ME (mon-insert-unicode "#x25ba" t)►
 ;;; :TEST-ME (mon-insert-unicode "BLACK RIGHT-POINTING POINTER" t)►►
-;;; :TEST-ME (mon-insert-unicode "bubba" t)
-;;; :TEST-ME (mon-insert-unicode "#o22672")
-;;; :TEST-ME (mon-insert-unicode #o22672)
-;;; :TEST-ME (mon-insert-unicode "#x25ba")
-;;; :TEST-ME (mon-insert-unicode 9658)
-;;; :TEST-ME (mon-insert-unicode #x25ba)
-;;; :TEST-ME (mon-insert-unicode "BLACK RIGHT-POINTING POINTER")
+;;; :TEST-ME (mon-insert-unicode "#o22672" t)►
+;;; :TEST-ME (mon-insert-unicode #o22672 t)►
+;;; :TEST-ME (mon-insert-unicode "#x25ba" t)►
+;;; :TEST-ME (mon-insert-unicode 9658 t)►
+;;; :TEST-ME (mon-insert-unicode #x25ba t)►
+;;; :TEST-ME (mon-insert-unicode "BLACK RIGHT-POINTING POINTER" t)►
+;;; :TEST-ME (mon-insert-unicode "#10r10084" t)❤
+;;; :TEST-ME (call-interactively 'mon-insert-unicode)
 ;;; :TEST-ME (mon-insert-unicode "bubba")
 ;;; :TEST-ME (mon-insert-unicode "bubba" t)
 
@@ -1158,7 +1199,7 @@ Conditional upon `IS-BUG-P' returning t.
 ;;; :CREATED <Timestamp: Thursday April 09, 2009 @ 05:52.10 PM - by MON KEY>
 ;;; :RENAMED `mon-insert-naf-mode-file-template' ->`mon-insert-file-template'
 (defun mon-insert-file-template (&optional with-fname insertp intrp)
-"Insert an elisp file template. 
+  "Insert an elisp file template. 
 Template includes GPLv3+ clause from `*mon-gnu-license-header*'
 GFDLv1.3 clause w/ Copyright <YYYY> <NAME> from: `*mon-gnu-license-header-gfdl*'\n
 :EXAMPLE\n(mon-insert-file-template)\n
@@ -1166,55 +1207,65 @@ GFDLv1.3 clause w/ Copyright <YYYY> <NAME> from: `*mon-gnu-license-header-gfdl*'
 `mon-file-stamp', `mon-build-copyright-string', `mon-insert-copyright', 
 `mon-insert-gnu-licence'.\n►►►"
   (interactive "i\ni\np")  
-    (let* ((cur-nm (buffer-name))
-           (fname (if (and intrp (mon-buffer-written-p))
-                      cur-nm
+  (let* ((cur-nm (buffer-name))
+         (fname (if (and intrp (mon-buffer-written-p))
+                    cur-nm
                     "<PKG-NAME>.el"))
-           (fname-sans 
-            (if (and intrp (mon-buffer-written-p))
-                (file-name-sans-extension cur-nm)
-                cur-nm
+         (fname-sans 
+          (if (and intrp (mon-buffer-written-p))
+              (file-name-sans-extension cur-nm)
+              cur-nm
               "<PKG-NAME>"))
-           (fl-template
-            (concat
-             ";; -*- mode: EMACS-LISP; -*-\n"
-             ";;; this is " fname "\n"
-             (mon-comment-divider-w-len 64)"\n"
-             ";;; DESCRIPTION:\n"
-             ";;; " fname-sans " provides {description here}.\n;;;\n"
-             ";;; FUNCTIONS:►►►\n;;;\n;;; FUNCTIONS:◄◄◄\n;;;\n"
-             ";;; MACROS:\n;;;\n"
-             ";;; METHODS:\n;;;\n"
-             ";;; CLASSES:\n;;;\n"
-             ";;; CONSTANTS:\n;;;\n"
-             ";;; VARIABLES:\n;;;\n"
-             ";;; ALIASED/ADVISED/SUBST'D:\n;;;\n"
-             ";;; DEPRECATED:\n;;;\n"
-             ";;; RENAMED:\n;;;\n"
-             ";;; MOVED:\n;;;\n"
-             ";;; TODO:\n;;;\n"
-             ";;; NOTES:\n;;;\n"
-             ";;; SNIPPETS:\n;;;\n"
-             ";;; REQUIRES:\n;;;\n"
-             ";;; THIRD PARTY CODE:\n;;;\n" 
-             ";;; AUTHOR: MON KEY\n"
-             ";;; MAINTAINER: MON KEY\n;;;\n"
-             ";;; PUBLIC-LINK: (URL `http://www.emacswiki.org/emacs/" fname ")\n"
-             ";;; FIRST-PUBLISHED:\n;;;\n"
-             ";;; FILE-CREATED:\n;;; <Timestamp: " (mon-timestamp :naf t) "\n"
-             (mon-comment-divider-w-len 64) "\n"
-             *mon-gnu-license-header* "\n"
-             (mon-insert-gnu-licence-gfdl t) "\n"
-             ";;; CODE:\n\n"
-             ";   {...\n;   " fname-sans " Contents here\n;   ...}\n\n"
-             *mon-default-comment-divider* "\n" 
-             ";;; (provide '" fname-sans ")\n"
-             *mon-default-comment-divider* "\n\n"
-             (mon-comment-divider-w-len 64) "\n"
-             ";;; " fname " ends here\n;;; EOF")))
-             (if (or insertp intrp)
-                 (insert fl-template)
-                 fl-template)))
+         (fl-template
+          (concat
+           ";; -*- mode: EMACS-LISP; -*-\n"
+           ";;; this is " fname "\n"
+           (mon-comment-divider-w-len 64)"\n"
+           ";;; DESCRIPTION:\n"
+           ";;; " fname-sans " provides {description here}.\n;;;\n"
+           ";;; FUNCTIONS:►►►\n;;;\n;;; FUNCTIONS:◄◄◄\n;;;\n"
+           ";;; MACROS:\n;;;\n"
+           ";;; METHODS:\n;;;\n"
+           ";;; CLASSES:\n;;;\n"
+           ";;; CONSTANTS:\n;;;\n"
+           ";;; VARIABLES:\n;;;\n"
+           ";;; ALIASED/ADVISED/SUBST'D:\n;;;\n"
+           ";;; DEPRECATED:\n;;;\n"
+           ";;; RENAMED:\n;;;\n"
+           ";;; MOVED:\n;;;\n"
+           ";;; TODO:\n;;;\n"
+           ";;; NOTES:\n;;;\n"
+           ";;; SNIPPETS:\n;;;\n"
+           ";;; REQUIRES:\n;;;\n"
+           ";;; THIRD-PARTY-CODE:\n;;;\n" 
+           ";;; Strip or reformat with regexps on these commonly employed \"TAGS\":"
+           "\n;;;\n"
+           ";;; TAGS-APPEARING-IN-COMMENTS:\n"
+           ";;; :CLEANUP :CLOSE :COURTESY :CREATED :DATE :EMACS-WIKI :EVAL-BELOW-TO-TEST\n"
+           ";;; :FIXES :FIXME :HIS :IF-NOT-FEATURE-P :KEYWORD-REGEXPS-IN\n"
+           ";;; :LOAD-SPECIFIC-PROCEDURES :MODIFICATIONS :RENAMED :SEE-BELOW :SUBJECT :TODO\n"
+           ";;; :TEST-ME :UNCOMMENT-BELOW-TO-TEST :VERSION :WAS\n;;;\n"
+           ";;; TAGS-APPEARING-IN-DOCSTRINGS:\n"
+           ";;; :ALIASED-BY :CALLED-BY :EXAMPLE :FACE-DEFINED-IN :FACE-DOCUMENTED-IN\n"
+           ";;; :FILE :IDIOM :KEYWORD-REGEXPS-IN :NOTE :SEE :SEE-ALSO :SOURCE :USED-BY\n;;;\n"
+           ";;; AUTHOR: MON KEY\n"
+           ";;; MAINTAINER: MON KEY\n;;;\n"
+           ";;; PUBLIC-LINK: (URL `http://www.emacswiki.org/emacs/" fname ")\n"
+           ";;; FIRST-PUBLISHED:\n;;;\n"
+           ";;; FILE-CREATED:\n;;; <Timestamp: " (mon-timestamp :naf t) "\n"
+           (mon-comment-divider-w-len 64) "\n"
+           *mon-gnu-license-header* "\n"
+           (mon-insert-gnu-licence-gfdl t) "\n"
+           ";;; CODE:\n\n"
+           ";   {...\n;   " fname-sans " Contents here\n;   ...}\n\n"
+           *mon-default-comment-divider* "\n" 
+           ";;; (provide '" fname-sans ")\n"
+           *mon-default-comment-divider* "\n\n"
+           (mon-comment-divider-w-len 64) "\n"
+           ";;; " fname " ends here\n;;; EOF")))
+    (if (or insertp intrp)
+        (insert fl-template)
+        fl-template)))
 ;;
 (defalias 'mon-insert-naf-mode-file-template 'mon-insert-file-template)
 ;;
@@ -1558,7 +1609,7 @@ buffer to before proceeding with insertion.\n
 ;;;         (unintern '*mon-hgignore-template*))
 
 ;;; ==============================
-;;; CREATED: <Timestamp: #{2009-10-23T16:06:04-04:00Z}#{09435} - by MON KEY>
+;;; :CREATED <Timestamp: #{2009-10-23T16:06:04-04:00Z}#{09435} - by MON KEY>
 (defun mon-insert-hgignore-template (&optional insrtp intrp)
   "Insert MON standard list of patterns for .hgignore files.
 When INSERTP is non-nil or called-interactively insert at point.
@@ -1633,7 +1684,6 @@ Does not move-point.\n
 ;;
 ;;; :TEST-ME (mon-comput-45 600)
 ;;; :TEST-ME (mon-comput-33 600 t)
-;;
 
 ;;; ==============================
 ;;; :NOTE (local-set-key "\C-c3" mon-comput-33)
@@ -1663,54 +1713,6 @@ Does not move-point.\n
 ;;
 ;;; :TEST-ME (mon-comput-33 600)
 ;;; :TEST-ME (mon-comput-33 600 t)
-;;; ==============================
-;;; CREATED: <Timestamp: #{2009-10-22T16:29:10-04:00Z}#{09434} - by MON>
-(defun* mon-ps2ascii (pdf-fname &key out-fname in-buffer)
-  "PDF-FNAME is a pdf filename.
-OUT-FNAME a filename to write the conversion to.
-Keyword IN-BUFFER spits conversion out to current-buffer.
-When OUT-FNAME and IN-BUFFER are nil conversion is output to
-\"*Shell Command Output*\" buffer.\n►►►"
-   (cond (out-fname 
-          (shell-command (concat "ps2ascii " pdf-fname " " out-fname)))
-          (in-buffer
-           (shell-command (concat "ps2ascii " pdf-fname " ") t))
-          (t (shell-command (concat "ps2ascii " pdf-fname " ")))))
-
-
-
-;;; ==============================
-(defun* mon-pdftotext (frm-pdf &key w-layout w-nopgbrk w-htmlmeta to-fname in-buffer)
- (shell-command 
-  (concat "pdftotext "
-          (when w-layout   "-layout ")
-          (when w-nopgbrk  "-nopgbrk ")
-          (when w-htmlmeta "-htmlmeta ")
-          "-eol unix "
-           frm-pdf " "
-           (when to-fname (concat to-fname " ")))
-  in-buffer))
-
-
-;;; ==============================
-;;; CREATED: <Timestamp: #{2009-10-21T15:00:41-04:00Z}#{09433} - by MON>
-(defun* mon-pdfinfo (fname &key w-meta)
-  (princ (format "\n;;; Output of \"pdfinfo%s%s\"\n" 
-                 (if w-meta " -meta " " ")
-                 fname)
-         (current-buffer))
-           (call-process-shell-command 
-            (concat "pdfinfo "
-                    (if w-meta "-meta " "")
-                        fname ) nil t))
-
-;;; ==============================
-;;; CREATED: <Timestamp: #{2009-10-21T15:00:36-04:00Z}#{09433} - by MON>
-  (defun mon-get-ps-pdf ()
-    (prin1 
-     (mapconcat 'identity 
-                (directory-files default-directory t ".*\.ps\\|.*\.pdf") "\n")
-     (current-buffer)))
 
 ;;; ==============================
 ;;; :WORKING-ON-THIS AS-OF: 2009-07-18

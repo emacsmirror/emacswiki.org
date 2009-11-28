@@ -5,7 +5,7 @@ The main point of using tabs for indentation is to ''not lock the indentation of
 
 : '''Tabs are evil whenever they require you to know the tab width in advance.'''
 
-There's a number of way this requirement may come about, and a number of ways to [[#SmartTabs|address it]].
+There's a number of ways this requirement may come about, and a number of ways to address it: [[#NoTabsAndAlignment|no tabs]] (duh), [[#TabsAndNoAlignment|no alignment]] (cruder formatting), and [[#SmartTabs|smart tabs]] (tabs for indentation and spaces for any alignment).
 
 == How editors handle indentation ... ==
 
@@ -21,7 +21,7 @@ This is Emacs' default behavior. Well, sort of. By default, ##tab-width## (the n
     --->return i;
     }
 
-This works fine for the code above: we can change the tab width, and things will still look right.
+This works fine for the code above: we can change the tab width to whatever we want, and things will still look right.
 
 The problem occurs with ''continuation lines''. When an expression spans multiple lines, CC Mode cleverly lines it up to make it more readable:
 
@@ -31,7 +31,7 @@ The problem occurs with ''continuation lines''. When an expression spans multipl
                  y);
     }
 
-Unfortunately, Emacs uses tab characters for this alignment (adding spaces, '##.##', for when it's not a multiple of the tab width). This makes the second and fourth lines dependent on the value of ##tab-width##, as seen below. If we change ##tab-width## to ##2##, they are misaligned, counter to the [[#TabsPurpose|stated purpose]] of using tabs.
+We shall refer to the extra leading whitespace of the second and fourth lines as "alignment". Unfortunately, Emacs uses tab characters for this alignment (adding spaces, '##.##', for when it's not a multiple of the tab width). This makes the second and fourth lines dependent on the value of ##tab-width##, as seen below. If we change ##tab-width## to ##2##, they are misaligned, counter to the [[#TabsPurpose|stated purpose]] of using tabs.
 
     int f(int x,        int f(int x,
     --->..int y) {      ->..int y) {
@@ -52,7 +52,7 @@ VisualStudio takes this approach. When an expression spans multiple lines, the c
     --->--->y);
     }
 
-In other words, ''the amount of indentation is always a multiple of the basic indentation offset''. We can change ##tab-width## (and ##c-basic-offset##) to whatever we like, and the code will still, by definition, be indented correctly.
+In other words, ''the amount of leading whitespace is always a multiple of the basic indentation offset''. We can change ##tab-width## (and ##c-basic-offset##) to whatever we like, and the code will still, by definition, display correctly.
 
 [:NoTabsAndNoAlignment]
 === No tabs and no alignment ===
@@ -70,7 +70,7 @@ So it would seem that we have found a non-[[#TabsPurpose|evil]] way to use tabs 
 [:NoTabsAndAlignment]
 === No tabs and alignment ===
 
-But someone may opine that non-aligned code doesn't ''look'' as nice. And so we come full circle, as many a user's motivation to use spaces only is to keep the alignment.
+But someone may opine that non-aligned code doesn't ''look'' as nice, or even that it's less readable. And so we come full circle, as the main reason tabs are ditched is to ensure that aligned text stays aligned.
 
 In Emacs, we may set ##indent-tabs-mode## to ##nil## and use spaces only:
 
@@ -82,7 +82,7 @@ In Emacs, we may set ##indent-tabs-mode## to ##nil## and use spaces only:
 
 This will, of course, look correct in any editor, spaces being the same everywhere.
 
-One problem remains, however. Spaces ''lock'' the indentation offset, so we have to [IndentationBasics set up our editor’s auto-indentation values] to match the file's (which gets really tedious when working with different projects -- see GuessOffset for automatic approaches). If we wanted a different offset, we would have to reformat the whole file. Tabs were [[#TabsPurpose|supposed to]] address this problem, but failed unless we [[#TabsAndNoAlignment|disallowed alignment]]. Is there a better way to employ them?
+The original problem remains, however. That is, spaces ''lock'' the indentation offset, so we have to [IndentationBasics set up our editor’s auto-indentation values] to match the file's (which gets really tedious when working with different projects -- see GuessOffset for automatic approaches). If we wanted a different offset, we would have to reformat the whole file. Tabs were [[#TabsPurpose|supposed to]] address this, but failed unless we [[#TabsAndNoAlignment|disallowed alignment]]. Is there a better way to employ them?
 
 [:SmartTabs]
 == ... and how they ought to handle it ==
@@ -107,7 +107,7 @@ Tabs ''only'' broke when we threw alignment into the mix. The solution, then, is
 
 and it is not garbled, because the continuation lines are prefixed with the same amount of tab characters. In other words, ''smartly tabbed files do not have an indentation offset!''
 
-To persuade Emacs to insert the right amount of tabs and spaces automatically, see SmartTabs.
+To persuade Emacs to do "tab width-independent" indentation like above, see SmartTabs.
 
 [:TabLimitations]
 === Limitations using tabs ===
@@ -130,7 +130,7 @@ Of course, any tab scheme means you cannot line up comments ''across different i
 
 Only comments of the same indentation level remain aligned when we change ##tab-width## to ##8##.
 
-We could try to compensate for the difference of indentation level by inserting extra tabs before the comments. However, that will only work in editors where the interpretation of a tab is "always expand to ''X'' columns", rather than "expand to the next column which is a multiple of ''X''", i.e., to the next tabstop. Emacs' is the latter.
+We could try to compensate for the difference of indentation level by inserting extra tabs before the comments (##C-q <tab>##). However, that will only work in editors where the interpretation of a tab is "always expand to ''X'' columns", rather than "expand to the next column which is a multiple of ''X''", i.e., to the next tabstop. Emacs' is the latter.
 
     int foo(char bar[]) {--->--->// Indent level 0 (difference: 2)
     --->int i = 0;--->...........// Indent level 1 (difference: 1)

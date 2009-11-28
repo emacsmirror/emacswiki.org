@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Nov 26 15:24:49 2009 (-0800)
+;; Last-Updated: Fri Nov 27 13:45:22 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 15064
+;;     Update #: 15075
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -18,10 +18,11 @@
 ;; Features that might be required by this library:
 ;;
 ;;   `apropos', `apropos-fn+var', `cl', `color-theme', `cus-face',
-;;   `doremi', `easymenu', `ffap', `ffap-', `hexrgb', `icicles-fn',
-;;   `icicles-opt', `icicles-var', `kmacro', `levenshtein', `mwheel',
-;;   `pp', `pp+', `reporter', `ring', `ring+', `sendmail',
-;;   `thingatpt', `thingatpt+', `wid-edit', `wid-edit+', `widget'.
+;;   `doremi', `easymenu', `el-swank-fuzzy', `ffap', `ffap-',
+;;   `fuzzy-match', `hexrgb', `icicles-fn', `icicles-opt',
+;;   `icicles-var', `kmacro', `levenshtein', `mwheel', `pp', `pp+',
+;;   `reporter', `ring', `ring+', `sendmail', `thingatpt',
+;;   `thingatpt+', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -78,6 +79,8 @@
 ;;    `icicle-dispatch-C-^', `icicle-dispatch-C-.',
 ;;    `icicle-dispatch-C-comma', `icicle-dispatch-M-comma',
 ;;    `icicle-dispatch-M-q', `icicle-doremi-candidate-width-factor+',
+;;    `icicle-doremi-increment-swank-prefix-length',
+;;    `icicle-doremi-increment-swank-timeout',
 ;;    `icicle-doremi-inter-candidates-min-spaces+',
 ;;    `icicle-doremi-zoom-Completions+', `icicle-end-of-line+',
 ;;    `icicle-erase-minibuffer',
@@ -115,7 +118,7 @@
 ;;    `icicle-move-to-next-completion',
 ;;    `icicle-move-to-previous-completion',
 ;;    `icicle-narrow-candidates',
-;;    `icicle-narrow-candidates-with-predicate', 
+;;    `icicle-narrow-candidates-with-predicate',
 ;;    `icicle-negative-argument', `icicle-next-apropos-candidate',
 ;;    `icicle-next-apropos-candidate-action',
 ;;    `icicle-next-apropos-candidate-alt-action',
@@ -1234,11 +1237,22 @@ Optional arg PLAINP means convert to plain `.'.
               (replace-match (icicle-anychar-regexp) nil t))))))))
 
 ;;;###autoload
+(defun icicle-doremi-increment-swank-timeout () ; Bound to `C-x 1' in the minibuffer (swank only)
+  (interactive)
+  (icicle-doremi-increment-variable 'icicle-swank-timeout 1000))
+
+;;;###autoload
+(defun icicle-doremi-increment-swank-prefix-length () ; Bound to `C-x 2' in the minibuffer (swank only)
+  (interactive)
+  (icicle-doremi-increment-variable 'icicle-swank-prefix-length 1))
+
+;;;###autoload
 (defun icicle-next-TAB-completion-method () ; Bound to `C-(' in the minibuffer.
   "Cycle to the next `TAB' completion method.
-Bound to `C-(' in the minibuffer.
-Option `icicle-TAB-completion-methods' customizes the available TAB
-completion methods."
+Bound to \\<minibuffer-local-completion-map>`\\[icicle-next-TAB-completion-method]' \
+in the minibuffer.
+Option `icicle-TAB-completion-methods' determines the TAB completion
+methods that are available."
   (interactive)
   (let ((now  (member icicle-current-TAB-method icicle-TAB-completion-methods)))
     (setq icicle-current-TAB-method  (if now
@@ -1246,11 +1260,27 @@ completion methods."
                                        'basic))
     ;; Skip any method that is not currently supported.
     (while (or (and (eq icicle-current-TAB-method 'fuzzy) (not (featurep 'fuzzy-match)))
+               (and (eq icicle-current-TAB-method 'swank) (not (featurep 'el-swank-fuzzy)))
                (and (eq icicle-current-TAB-method 'vanilla) (not (boundp 'completion-styles))))
-      (setq now (member icicle-current-TAB-method icicle-TAB-completion-methods)
+      (setq now                        (member icicle-current-TAB-method
+                                               icicle-TAB-completion-methods)
             icicle-current-TAB-method  (if now
                                            (or (cadr now) (car icicle-TAB-completion-methods))
                                          'basic))))
+  (cond ((and (eq icicle-current-TAB-method 'swank) (fboundp 'doremi))
+         (define-key minibuffer-local-completion-map "\C-x1"
+           'icicle-doremi-increment-swank-timeout)
+         (define-key minibuffer-local-must-match-map "\C-x1"
+           'icicle-doremi-increment-swank-timeout)
+         (define-key minibuffer-local-completion-map "\C-x2"
+           'icicle-doremi-increment-swank-prefix-length)
+         (define-key minibuffer-local-must-match-map "\C-x2"
+           'icicle-doremi-increment-swank-prefix-length))
+        ((fboundp 'doremi)
+         (define-key minibuffer-local-completion-map "\C-x1" nil)
+         (define-key minibuffer-local-must-match-map "\C-x1" nil)
+         (define-key minibuffer-local-completion-map "\C-x2" nil)
+         (define-key minibuffer-local-must-match-map "\C-x2" nil)))
   ;; $$$$$$ Inhibiting sorting is not correct for file-name completion, and sorting would not be
   ;;        restored when change back to non-fuzzy.
   ;; (when (eq 'fuzzy icicle-current-TAB-method) (setq icicle-inhibit-sort-p  t))
@@ -2868,6 +2898,7 @@ Optional argument WORD-P non-nil means complete only a word at a time."
              (unless (eq no-display-p 'no-msg)
                (minibuffer-message (case icicle-current-TAB-method
                                      (fuzzy   "  [No fuzzy completions]")
+                                     (swank   "  [No swank (fuzzy symbol) completions]")
                                      (vanilla "  [No vanilla completions]")
                                      (t       "  [No prefix completions]")))))
             ((null (cdr icicle-completion-candidates)) ; Single candidate.  Update minibuffer.
@@ -2921,6 +2952,7 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                       (minibuffer-message
                        (format (case icicle-current-TAB-method
                                  (fuzzy   "  [One fuzzy completion: %s]")
+                                 (swank   "  [One swank (fuzzy symbol) completion: %s]")
                                  (vanilla "  [One vanilla completion: %s]")
                                  (t       "  [One prefix completion: %s]"))
                                icicle-current-input))
@@ -2928,6 +2960,7 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                      ((not (eq no-display-p 'no-msg))
                       (minibuffer-message (case icicle-current-TAB-method
                                             (fuzzy   "  [Sole fuzzy completion]")
+                                            (swank   "  [Sole swank (fuzzy symbol) completion]")
                                             (vanilla "  [Sole vanilla completion]")
                                             (t       "  [Sole prefix completion]")))
                       (setq mode-line-help  icicle-current-input)))

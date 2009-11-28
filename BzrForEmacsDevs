@@ -286,5 +286,6 @@ which updates your ##my-hacks## branch with changes from upstream, and sets the 
 === Other Resources ===
 
 * [http://doc.bazaar-vcs.org/bzr.dev/en/user-guide/index.html Bzr Users Guide]
+* [http://doc.bazaar-vcs.org/explorer/en/tutorials/open-source-dev-gnome.html Open Source Development Using Bazaar Explorer (GNOME)]  An excellent tutorial on using the Bazaar Explorer GUI.  Warning: the workflow advocated there is both more complex in some ways and slightly different from the one recommended in /Bazaar for Emacs Devs/.
 * [http://doc.bazaar-vcs.org/migration/en/survival/bzr-for-git-users.html Bazaar for Git users]  A pretty complete overview of the differences between Git and Bazaar.  Contains a couple of glossaries of VCS terms, which are probably useful to those who don't know git, too.
 * [http://doc.bazaar-vcs.org/migration/en/survival/bzr-for-cvs-users.html Bazaar for CVS users]  A brief stub.

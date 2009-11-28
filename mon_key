@@ -22,6 +22,8 @@
 * Lisp:mon-boxcutter.el
 * Lisp:mon-color-utils.el
 * Lisp:mon-tramp-utils.el
+* Lisp:mon-iptables-vars.el
+* Lisp:mon-iptables-regexps.el
 * Lisp:ebay-template-mode.el
 * Lisp:ebay-template-tools.el
 * Lisp:perlisisms.el (Perlisisms)

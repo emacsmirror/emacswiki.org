@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Nov 24 17:10:25 2009 (-0800)
+;; Last-Updated: Fri Nov 27 08:02:50 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 11389
+;;     Update #: 11395
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2391,6 +2391,7 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                   (concat "No " typ (and typ " ") "completions"))
               (case icicle-current-TAB-method
                 (fuzzy   "No fuzzy completions")
+                (swank   "No swank (fuzzy symbol) completions")
                 (vanilla "No vanilla completions")
                 (t       "No prefix completions")))))
           (t
@@ -2559,7 +2560,7 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                          (save-restriction
                            (narrow-to-region beg end) ; Restrict to the completion candidate.
                            (let ((fn  (if (and (eq 'prefix icicle-current-completion-mode)
-                                               (not (eq 'fuzzy 'icicle-current-TAB-method)))
+                                               (not (memq icicle-current-TAB-method '(fuzzy swank))))
                                           ;; $$$$$$ What is best for `vanilla' (Emacs 23) completion?
                                           'search-forward
                                         (case icicle-apropos-complete-match-fn
@@ -2845,7 +2846,8 @@ Version of `minibuffer-prompt-end' that works for Emacs 20 and later."
   "List of prefix or fuzzy completions for the current partial INPUT.
 INPUT is a string.  Each candidate is a string."
   (setq icicle-candidate-nb  nil)
-  (if (and (eq 'fuzzy icicle-current-TAB-method) (featurep 'fuzzy-match))
+  (if (or (and (eq 'fuzzy icicle-current-TAB-method) (featurep 'fuzzy-match))
+          (and (eq 'swank icicle-current-TAB-method) (featurep 'el-swank-fuzzy)))
       (condition-case nil
           (icicle-transform-candidates (append icicle-extra-candidates icicle-proxy-candidates
                                                (icicle-fuzzy-candidates input)))
@@ -2856,20 +2858,28 @@ INPUT is a string.  Each candidate is a string."
             (t                           cands)))))
 
 (defun icicle-fuzzy-candidates (input)
-  "Return `FM-all-fuzzy-matches' (fuzzy matches) for INPUT."
+  "Return fuzzy matches for INPUT.  Handles also swank fuzzy symbol match."
   (let ((candidates  ()))
     ;; $$$$ Should treat other `minibuffer-completion-table' types also.
-    (cond ((vectorp minibuffer-completion-table)
+    (cond ((and (vectorp minibuffer-completion-table)
+                (not (eq icicle-current-TAB-method 'swank)))
            (mapatoms (lambda (symb) (when (or (null minibuffer-completion-predicate)
                                               (funcall minibuffer-completion-predicate symb))
                                       (push (symbol-name symb) candidates)))
-                     minibuffer-completion-table))
+                     minibuffer-completion-table)
+           (setq candidates  (FM-all-fuzzy-matches input candidates)))
+          ((vectorp minibuffer-completion-table)
+           (setq candidates  (mapcar #'car
+                                     (car (el-swank-fuzzy-completions
+                                           input icicle-swank-timeout
+                                           (or minibuffer-completion-predicate 'fboundp)
+                                           icicle-swank-prefix-length)))))
           ((and (consp minibuffer-completion-table) (consp (car minibuffer-completion-table)))
            (dolist (cand minibuffer-completion-table)
              (when (or (null minibuffer-completion-predicate)
                        (funcall minibuffer-completion-predicate cand))
-               (push (car cand) candidates)))))
-    (setq candidates  (FM-all-fuzzy-matches input candidates))
+               (push (car cand) candidates)))
+           (setq candidates  (FM-all-fuzzy-matches input candidates))))
     (when (consp candidates)
       (setq icicle-common-match-string  (icicle-expanded-common-match input candidates)))
     candidates))
