@@ -45,14 +45,13 @@ a good idea, but not strictly required.
 
 ##bzr init-repo --2a emacs/##
 
-creates a shared repository in the directory /emacs/. It is an storage
-format specification. --2a is the most efficient and modern format
+creates a shared repository in the directory /emacs/. ##--2a## is an storage
+format specification which is the most efficient and modern format
 supported by Bazaar right now and is the default on Bazaar version
-2.0. This is a slow process. It needs to download about 300 MB of
-data and is both net-bound and CPU-bound, so be patient.
+2.0.
 
 Now we get the source files plus all the history of the branch we work
-on (/trunk/ on this case, which is the CVS mainline);
+on (/trunk/ on this case, which is the CVS mainline):
 
 ##cd emacs/##
 
@@ -60,6 +59,9 @@ on (/trunk/ on this case, which is the CVS mainline);
 
 On Bazaar parlance this creates a *bound branch*, also known as a
  *heavyweight checkout*.
+
+Is a slow process. It needs to download about 300 MB of data and makes
+heavy use of the CPU sometimes, so be patient.
 
 Now we have everything we need in the directory /trunk/. If you are
 working inside a shared repository like recommended above do not move
@@ -89,6 +91,28 @@ Before committing, not just the files you are committing but _all_
 your local source files must be up to date with upstream. So if
 somebody else commits to upstream between the ##bzr up## and the ##bzr
 commit## commands, you'll need to ##bzr up## again.
+
+With Bazaar you shouldn't commit the changed files one at a time if
+they belong to the same logical change. So please don't do:
+
+##bzr commit ChangeLog.txt##
+
+##bzr commit lisp/foo.el##
+
+but instead do
+
+##bzr commit lisp/foo.el ChangeLog.txt##
+
+or just
+
+##bzr commit##
+
+if those are the only changed files. This is very important because
+every commit creates a *changeset*, which is a discrete step on the
+history of the code base. A changeset should correspond to one
+well-defined purpose which is completely achieved with the
+corresponding commit as, for instance, "Fix bug #342" or "Implement
+feature Foo".
 
 
 === More branches ===

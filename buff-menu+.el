@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Sep 11 10:29:56 1995
 ;; Version: 21.0
-;; Last-Updated: Sat Aug  1 15:13:40 2009 (-0700)
+;; Last-Updated: Sat Nov 28 08:57:33 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 2496
+;;     Update #: 2506
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/buff-menu+.el
 ;; Keywords: mouse, local, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -124,12 +124,19 @@
 ;;                            revert-buffer. (Emacs 21 only)
 ;;
 ;;
-;;  This file should be loaded after loading the standard GNU file
-;;  `buff-menu.el'.  So, in your `~/.emacs' file, do this:
-;;  (eval-after-load "buff-menu" '(require 'buff-menu+))
+;;  In your init file (`~/.emacs') file, do this:
 ;;
-;;  Note: This file must be saved with encoding UTF-8 or equivalent,
-;;  because it contains an em-dash character.
+;;    (require 'buff-menu+)
+;;
+;;  NOTE:
+;;
+;;  1. This file must be saved with encoding UTF-8 or equivalent,
+;;     because it contains an em-dash character.
+;;
+;;  2. If you byte-compile this using a version of Emacs prior to 23,
+;;     and you use the byte-compiled file with Emacs 23 or later, then
+;;     some keys, such as `q', will not be defined in the buffer list.
+;;     (So byte-compile it using Emacs 23 or later.)
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

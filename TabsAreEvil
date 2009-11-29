@@ -3,7 +3,7 @@
 [:TabsPurpose]
 The main point of using tabs for indentation is to ''not lock the indentation offset''. Hence,
 
-: '''Tabs are evil whenever they require you to know the tab width in advance.'''
+: '''Tabs are evil whenever they require you to know the tab size in advance.'''
 
 There's a number of ways this requirement may come about, and a number of ways to address it: [[#NoTabsAndAlignment|no tabs]] (duh), [[#TabsAndNoAlignment|no alignment]] (cruder formatting), and [[#SmartTabs|smart tabs]] (tabs for indentation and spaces for any alignment).
 
@@ -12,73 +12,73 @@ There's a number of ways this requirement may come about, and a number of ways t
 [:TabsAndAlignment]
 === Tabs and alignment ===
 
-This is Emacs' default behavior. Well, sort of. By default, ##tab-width## (the number of columns a single tab character occupies) and ##c-basic-offset## (the basic indentation offset in Emacs' C mode, [CcMode CC Mode]) have different values. [[IndentationBasics#TabSizeVsOffset|Nothing good can come of this arrangement]]. Below, we've set them both to ##4##, so that one tab (‘##--->##’) corresponds to one indentation level:
+This is Emacs' default behavior. Well, sort of. By default, the ''tab size'' (the distance between tab stops) and the ''indentation offset'' (the number of columns an indented line is shifted to the right) have different values. [[IndentationBasics#TabSizeVsOffset|Nothing good]] can come of this arrangement. Below, we've set them both to ##4##, so that one tab (‘##--->##’) corresponds to one indentation level:
 
-    int foo(char bar[]) {
-    --->int i = 0;
-    --->while(bar[i] != '\0')
-    --->--->i++;
-    --->return i;
-    }
+    1 int foo(char bar[]) {
+    2 --->int i = 0;
+    3 --->while(bar[i] != '\0')
+    4 --->--->i++;
+    5 --->return i;
+    6 }
 
-This works fine for the code above: we can change the tab width to whatever we want, and things will still look right.
+This works fine for the C code above: we can change the tab size to whatever we want, and things will still look right.
 
-The problem occurs with ''continuation lines''. When an expression spans multiple lines, CC Mode cleverly lines it up to make it more readable:
+The problem occurs with ''continuation lines''. When an expression spans multiple lines, Emacs cleverly lines it up to make it more readable:
 
-    int f(int x,
-          int y) {
-        return g(x,
-                 y);
-    }
+    1 int f(int x,
+    2       int y) {
+    3     return g(x,
+    4              y);
+    5 }
 
-We shall refer to the extra leading whitespace of the second and fourth lines as "alignment". Unfortunately, Emacs uses tab characters for this alignment (adding spaces, '##.##', for when it's not a multiple of the tab width). This makes the second and fourth lines dependent on the value of ##tab-width##, as seen below. If we change ##tab-width## to ##2##, they are misaligned, counter to the [[#TabsPurpose|stated purpose]] of using tabs.
+We shall refer to the extra leading whitespace of the second and fourth lines as "alignment". Unfortunately, Emacs uses tab characters for this alignment (adding spaces, '##.##', for when it's not a multiple of the tab size). This makes the continuation lines dependent on the tab size, as seen below. If we change it from ##4## to ##2##, they are misaligned, counter to the [[#TabsPurpose|stated purpose]] of using tabs.
 
-    int f(int x,        int f(int x,
-    --->..int y) {      ->..int y) {
-    --->return g(x,     ->return g(x,
-    --->--->--->.y);    ->->->.y);
-    }                   }
+    1 int f(int x,        1 int f(int x,
+    2 --->..int y) {      2 ->..int y) {
+    3 --->return g(x,     3 ->return g(x,
+    4 --->--->--->.y);    4 ->->->.y);
+    5 }                   5 }
 
 However, look closely at the ''third'' line (“##return## ...”), which has no alignment, just indentation. It is not garbled. Thus, one way to handle the problem is to ''disallow alignment altogether''.
 
 [:TabsAndNoAlignment]
 === Tabs and no alignment ===
 
-VisualStudio takes this approach. When an expression spans multiple lines, the continuation lines are simply given one or two additional "levels" of indentation:
+[VisualStudio Visual Studio] takes this approach. When an expression spans multiple lines, the continuation lines are simply given one or two additional "levels" of indentation:
 
-    int f(int x,
-    --->int y) {
-    --->return g(x,
-    --->--->y);
-    }
+    1 int f(int x,
+    2 --->int y) {
+    3 --->return g(x,
+    4 --->--->y);
+    5 }
 
-In other words, ''the amount of leading whitespace is always a multiple of the basic indentation offset''. We can change ##tab-width## (and ##c-basic-offset##) to whatever we like, and the code will still, by definition, display correctly.
+In other words, ''the amount of leading whitespace is always a multiple of the indentation offset''. Therefore, as long as the tab size and indentation offset are equal, the code will, regardless of their value, display and save correctly.
 
 [:NoTabsAndNoAlignment]
 === No tabs and no alignment ===
 
-Furthermore, without alignment, we can straightforwardly convert all tabs to spaces (##M-x untabify##) -- and back (##M-x tabify##) -- with no loss of information.
+Furthermore, without alignment, we can straightforwardly convert all tabs to spaces (##M-x untabify##) -- and [[#TabsAndNoAlignment|back]] (##M-x tabify##) -- with no loss of information.
 
-    int f(int x,
-    ....int y) {
-    ....return g(x,
-    ........y);
-    }
+    1 int f(int x,
+    2 ....int y) {
+    3 ....return g(x,
+    4 ........y);
+    5 }
 
 So it would seem that we have found a non-[[#TabsPurpose|evil]] way to use tabs in source code.
 
 [:NoTabsAndAlignment]
 === No tabs and alignment ===
 
-But someone may opine that non-aligned code doesn't ''look'' as nice, or even that it's less readable. And so we come full circle, as the main reason tabs are ditched is to ensure that aligned text stays aligned.
+But someone may opine that non-aligned code doesn't ''look'' as nice, or even that it's less readable. And so we come full circle, as the usual reason tabs are ditched is to ensure that aligned text stays aligned.
 
 In Emacs, we may set ##indent-tabs-mode## to ##nil## and use spaces only:
 
-    int f(int x,
-    ......int y) {
-    ....return g(x,
-    .............y);
-    }
+    1 int f(int x,
+    2 ......int y) {
+    3 ....return g(x,
+    4 .............y);
+    5 }
 
 This will, of course, look correct in any editor, spaces being the same everywhere.
 
@@ -91,73 +91,73 @@ The original problem remains, however. That is, spaces ''lock'' the indentation 
 
 There ''is'' a better way: '''use tabs for expressing the indentation level and spaces for alignment.'''
 
-    int f(int x,
-    ......int y) {
-    --->return g(x,
-    --->.........y);
-    }
+    1 int f(int x,
+    2 ......int y) {
+    3 --->return g(x,
+    4 --->.........y);
+    5 }
 
-Tabs ''only'' broke when we threw alignment into the mix. The solution, then, is to use spaces for lining up characters, and tabs elsewhere. If we change ##tab-width## to ##2##, the code above becomes
+Tabs ''only'' broke when we threw alignment into the mix. The solution, then, is to use spaces for lining up characters, and tabs elsewhere. If we change the tab size to ##2##, the code above becomes
 
-    int f(int x,
-    ......int y) {
-    ->return g(x,
-    ->.........y);
-    }
+    1 int f(int x,
+    2 ......int y) {
+    3 ->return g(x,
+    4 ->.........y);
+    5 }
 
-and it is not garbled, because the continuation lines are prefixed with the same amount of tab characters. In other words, ''smartly tabbed files do not have an indentation offset!''
+and it is not garbled, because the continuation lines are prefixed with the same amount of tab characters. In other words, ''smartly tabbed files do not have an indentation offset''.
 
-To persuade Emacs to do "tab width-independent" indentation like above, see SmartTabs.
+To persuade Emacs to do "tab size-independent" indentation like above, see SmartTabs.
 
 [:TabLimitations]
 === Limitations using tabs ===
 
 Of course, any tab scheme means you cannot line up comments ''across different indentation levels'' (but this is [[#BadStyle|bad style]] anyway):
 
-    int foo(char bar[]) {     // Indent level 0
-    --->int i = 0;            // Indent level 1
-    --->while(bar[i] != '\0') // Indent level 1
-    --->--->i++;              // Indent level 2
-    --->return i;             // Indent level 1
-    }                         // Indent level 0
+    1 int foo(char bar[]) {     // Indent level 0
+    2 --->int i = 0;            // Indent level 1
+    3 --->while(bar[i] != '\0') // Indent level 1
+    4 --->--->i++;              // Indent level 2
+    5 --->return i;             // Indent level 1
+    6 }                         // Indent level 0
 
-    int foo(char bar[]) {     // Indent level 0
-    ------->int i = 0;            // Indent level 1
-    ------->while(bar[i] != '\0') // Indent level 1
-    ------->------->i++;              // Indent level 2
-    ------->return i;             // Indent level 1
-    }                         // Indent level 0
+    1 int foo(char bar[]) {     // Indent level 0
+    2 ------->int i = 0;            // Indent level 1
+    3 ------->while(bar[i] != '\0') // Indent level 1
+    4 ------->------->i++;              // Indent level 2
+    5 ------->return i;             // Indent level 1
+    6 }                         // Indent level 0
 
-Only comments of the same indentation level remain aligned when we change ##tab-width## to ##8##.
+Only comments of the same indentation level remain aligned when we change the tab size to ##8##.
 
 We could try to compensate for the difference of indentation level by inserting extra tabs before the comments (##C-q <tab>##). However, that will only work in editors where the interpretation of a tab is "always expand to ''X'' columns", rather than "expand to the next column which is a multiple of ''X''", i.e., to the next tabstop. Emacs' is the latter.
 
-    int foo(char bar[]) {--->--->// Indent level 0 (difference: 2)
-    --->int i = 0;--->...........// Indent level 1 (difference: 1)
-    --->while(bar[i] != '\0')--->// Indent level 1 (difference: 1)
-    --->--->i++;.................// Indent level 2 (difference: 0)
-    --->return i;--->............// Indent level 1 (difference: 1)
-    }--->--->....................// Indent level 0 (difference: 2)
+    1 int foo(char bar[]) {--->--->// Indent level 0 (difference: 2)
+    2 --->int i = 0;--->...........// Indent level 1 (difference: 1)
+    3 --->while(bar[i] != '\0')--->// Indent level 1 (difference: 1)
+    4 --->--->i++;.................// Indent level 2 (difference: 0)
+    5 --->return i;--->............// Indent level 1 (difference: 1)
+    6 }--->--->....................// Indent level 0 (difference: 2)
 
-    int foo(char bar[]) {------->------->// Indent level 0 (difference: 2)
-    ------->int i = 0;------->...........// Indent level 1 (difference: 1)
-    ------->while(bar[i] != '\0')------->// Indent level 1 (difference: 1)
-    ------->------->i++;.................// Indent level 2 (difference: 0)
-    ------->return i;------->............// Indent level 1 (difference: 1)
-    }------->------->....................// Indent level 0 (difference: 2)
+    1 int foo(char bar[]) {------->------->// Indent level 0 (difference: 2)
+    2 ------->int i = 0;------->...........// Indent level 1 (difference: 1)
+    3 ------->while(bar[i] != '\0')------->// Indent level 1 (difference: 1)
+    4 ------->------->i++;.................// Indent level 2 (difference: 0)
+    5 ------->return i;------->............// Indent level 1 (difference: 1)
+    6 }------->------->....................// Indent level 0 (difference: 2)
 
 [:BadStyle]
 When all is said and done, excessive trailing comments are bad style in any case.[http://www.amazon.com/dp/0132350882/] The following style is much easier to maintain, whether tabs or spaces are used:
 
-    // Indent level 0
-    int foo(char bar[]) {
-        // Indent level 1
-        int i = 0;
-        while(bar[i] != '\0')
-            // Indent level 2
-            i++;
-        return i;
-    }
+    1 // Indent level 0
+    2 int foo(char bar[]) {
+    3     // Indent level 1
+    4     int i = 0;
+    5     while(bar[i] != '\0')
+    6         // Indent level 2
+    7         i++;
+    8     return i;
+    9 }
 
 == Discussion ==
 
@@ -167,118 +167,113 @@ Tabs are assumed to be good. Spaces aren't useful for lining things up, particul
 
 When hacking or reviewing source code, spaces for indentation instead of tabs is more useful when looking through code from different individuals using different editors and indentation styles.
 
-It's not that the indentation looks poor in certain editors, or just when code is used across editors.  It is possible to adjust the tab stops properly in most modern text editors.  However, niether people nor editors can always fully discern what the author intended for indentation. With spaces for indentation, rather than tabs, one can always see what the author intended.  Tabs are ambiguous.
+It's not that the indentation looks poor in certain editors, or just when code is used across editors. It is possible to adjust the tab stops properly in most modern text editors. However, neither people nor editors can always fully discern what the author intended for indentation. With spaces for indentation, rather than tabs, one can always see what the author intended. Tabs are ambiguous.
 
-Even C is not a simply indented language.  For instance, when you indent something like a function parameter list or a conditional.
+Even C is not a simply indented language. For instance, when you indent something like a function parameter list or a conditional.
 
     if (first condition
         second condition)
 
-The second line of the conditional should line up after the open-paren at the beginning of the conditional.  That's not easy to do with only tabs.  Some editors use a hybridized interpretation of both spaces and tabs, in which tabs are always used and spaces are added when the indentation is not a multiple of the tab width.  Any time you start mixing tabs and spaces in this way it's not going to look right when the tab-widths vary later.
+The second line of the conditional should line up after the open-paren at the beginning of the conditional. That's not easy to do with only tabs. Some editors use a hybridized interpretation of both spaces and tabs, in which tabs are always used and spaces are added when the indentation is not a multiple of the tab width. Any time you start mixing tabs and spaces in this way it's not going to look right when the tab-widths vary later.
 
 The following indentation, however, seems to display properly in all editors ('##--->##' = TAB and '##.##' = SPACE):
 
     --->if (first condition
     --->....second condition)
 
-Some hackers see this as the correct way to do it: use tabs for expressing the indentation level and use spaces for alignment. To implement this behavior in Emacs, see SmartTabs.
+Some hackers see this as the correct way to do it: use tabs for expressing the indentation level and use spaces for alignment. <i><b>Edit:</b> To implement this behavior in Emacs, see SmartTabs.</i>
 
 With tabs, it is explicit -- anything on the same tab-stop is supposed to line up. This means you can customize the tab-width and (theoretically) get the same result, but with your preferred amount of indentation. With spaces, you can't do this, because what lines up is dependent on how the editor interprets syntax. Therefore, tabs provide for consistent indentation block-level languages, like C or Python. In languages like [[Lisp]], spaces should be used explicitly to attain subtle formatting and alignment.
 
 Others see using only spaces as the only reliable rule to get clean and reliable indentation, since spaces guarantee code alignment.
 
 [new]
-On the other hand, with tabs you get graceful degradation -- in the above example, it doesn't matter if the two lines don't line up directly. If the editor was smart enough to recognize a tab character as meaning "indent to the next level" and render it correctly as such, that would give the best of both worlds; perfect layout, as intended, in smart editors, and the ability to customize indentation depth even in not-so-smart editors. --AdrianKubala
+On the other hand, with tabs you get graceful degradation -- in the above example, it doesn't matter if the two lines don't line up directly. If the editor was smart enough to recognize a tab character as meaning "indent to the next level" and render it correctly as such, that would give the best of both worlds; perfect layout, as intended, in smart editors, and the ability to customize indentation depth even in not-so-smart editors. -- AdrianKubala
 
 [new]
-:: As of yet, even Emacs isn't smart enough to do that.  The problem is that my example is really a half-level of indentation.
+:: As of yet, even Emacs isn't smart enough to do that. <i><b>Edit:</b> [SmartTabs Yes, it is].</i> The problem is that my example is really a half-level of indentation.
 
 [new]
-I accept that. But.. Dont you think that as a user, you should be in control of how code looks? Particularly, when you have a 800x600 res machine to review some code, if its hard coded with spaces and does not obey the EightyColumnRule , I think it makes sense for me to set the tab offset to say 2, and view it properly.. my 2c --GirishB
+I accept that. But ... don't you think that as a user, you should be in control of how code looks? Particularly, when you have a 800×600 res. machine to review some code, if it's hard-coded with spaces and does not obey the EightyColumnRule, I think it makes sense for me to set the tab offset to, say, 2, and view it properly ... my 2¢ -- GirishB
 
 [new]
-In such a situation I think the problem is the author of the code you're reviewing not using the EightyColumnRule. Moreover, there's a very good chance that setting offset to 2 won't let you view the code properly. I've seen plenty of code which has been a combination of tabs and spaces thru no direct fault of the author. Setting tab width to something other than they intended can result in an awful mess. -- DavePearson
+In such a situation I think the problem is the author of the code you're reviewing not using the EightyColumnRule. Moreover, there's a very good chance that setting offset to 2 won't let you view the code properly. I've seen plenty of code which has been a combination of tabs and spaces through no direct fault of the author. Setting tab width to something other than they intended can result in an awful mess. -- DavePearson
 
 [new]
 JamieZawinski weighs in on tabs versus spaces -- the eternal holy war -- at http://www.jwz.org/doc/tabs-vs-spaces.html with far too much information ''and'' details on how to scrub tabs from any file that passes through Emacs.
 
 [new]
 Boost doesn't do tabs either:
+
 * http://boost.org/more/lib_guide.htm#Tabs
-Summarizing their viewpoint, multi-user projects suffer when displayed other than in a mono-space, tab-free way.  In particular, ASCII art diagrams and
-visual cues you put in the code (I love to tabularize arguments in function definitions) get torn, spindled, and mutilated if there are tabs in use.
-Of the free software programs whose source I've browsed, the majority eschew the tab, PostgreSQL being one that I've seen accepting love potion #9.
+
+Summarizing their viewpoint, multi-user projects suffer when displayed other than in a mono-space, tab-free way. In particular, ASCII art diagrams and visual cues you put in the code (I love to tabularize arguments in function definitions) get torn, spindled, and mutilated if there are tabs in use. Of the free software programs whose source I've browsed, the majority eschew the tab, !PostgreSQL being one that I've seen accepting love potion #9.
 
 [new]
-Slashdot polled on width, but not do-you-be-tabbin-in-yo-code-p:
+Slashdot polled on width, but not ##do-you-be-tabbin-in-yo-code-p##:
+
 * http://slashdot.org/pollBooth.pl?qid=395&aid=-1
+
 but there were no comments with it, for reasons unexplained. -- ChristopherSmith
 
 [new]
 Rule #1, of course, has to be, "When in Rome, do as the Romans do." That is to say, if you're editing a file or joining a project that already has a convention, then adhere to that convention.
 
-Now, for my bit of insight: Indentation can be used for more then one thing. Indentation be used for formatting.  That is, to line up fixed-width characters vertically.  For example, to line up text in a stars-and-bars ASCII art diagram, or to make code visually appealing in some way.  Indentation can also be used to indicate code blocks (semantic indentation).  Using tabs for formatting is, I think, more prone to lossage.  For semantic indentation, if one follows a strict rule of "one tab, one level of indentation", tab lossage is far less of a problem.  -- Ben Scott (dragonhawk at iname dot com).
+Now, for my bit of insight: Indentation can be used for more then one thing. Indentation be used for formatting. That is, to line up fixed-width characters vertically. For example, to line up text in a stars-and-bars ASCII art diagram, or to make code visually appealing in some way. Indentation can also be used to indicate code blocks (semantic indentation). Using tabs for formatting is, I think, more prone to lossage. For semantic indentation, if one follows a strict rule of "one tab, one level of indentation", tab lossage is far less of a problem. -- Ben Scott (dragonhawk at iname dot com).
 
 [new]
-I agree with Luis, so much as to have created my own version of cc-mode to have emacs indent with tabs and spaces in the appropriate places automatically---tabs for indentation, and spacing for alignment. Read more about it here:
-[http://web.archive.org/web/20051124145441/http://my.erinet.com/~tschaef/cc-mode/description.html http://numeromancer.dyndns.org/~timothy/tab-width-independence/description.html]
-   ---Tim S.
+I agree with Luis, so much as to have created my own version of cc-mode to have emacs indent with tabs and spaces in the appropriate places automatically---tabs for indentation, and spacing for alignment. Read more about it here: [http://web.archive.org/web/20051124145441/http://my.erinet.com/~tschaef/cc-mode/description.html http://numeromancer.dyndns.org/~timothy/tab-width-independence/description.html] -- Tim S.
 
 [new]
 Tabs versus Spaces in Source Code
 
 Xah Lee, 2006-05-13
 
-In coding a computer program, there’s often the choices of tabs or spaces for code indentation. There is a large amount of confusion about which is better. It has become what's known as “religious war” — a heated fight over trivia. In this essay, i like to explain what is the situation behind it, and which is proper.
+In coding a computer program, there's often the choices of tabs or spaces for code indentation. There is a large amount of confusion about which is better. It has become what's known as "religious war" -- a heated fight over trivia. In this essay, I like to explain what is the situation behind it, and which is proper.
 
 I have since wrote a 1500-words essay on this issue, please see:
 http://xahlee.org/UnixResource_dir/writ/tabs_vs_spaces.html
 
-— [[Xah Lee]], 2006-05-13
+-- [[Xah Lee]], 2006-05-13
 
 The premise of the value of semantic information in tabs is wrong in by far most programming languages. Tabs encode ''redundant'' (thus at best needless and at worst harmful) semantic information about nesting . White space of all sorts is best treated in these languages as what it is: a convenience for the programmer, to lay out the text in aesthetically pleasing fashion. Spaces are preferable for this, since they communicate the author's layout to readers more reliably. Customizing layout of program text, when desired, should be done by algorithms that examine the program syntax, which is the ultimate authority on the matter of nesting, rather than relying on redundant and frequently incorrect information implicit in tabs. Context matters, of course. This reasoning obviously does not apply to languages such as Python. -- DanMuller, 2006-05-14
 
 === Let's be consistent ===
+
 Tabs are currently the only way that a programmer can indent code in a ''meaningful'' way and still allow other programmers to suit the display to their needs without altering the code. Let me stress I said meaningful, not pleasant: tabs are not good for coding styles that require fancy alignments. So, why use tabs? Because not all editors do syntactic analysis. Many editors auto-indent by simply repeating leading white space from the preceding line. In that context, re-indenting a block means adding or removing ''one'' leading tab from each line.
 
-'''Tabs only make sense if they are used consistenly.''' That means setting ##c-offsets-alist## at multiples of ##tab-width##! Otherwise, there are better compression methods for saving storage room. Of course, changing  the tab width to suit a particular major mode, also implies something like ##(make-variable-buffer-local 'tab-width)## in ##.emacs##
--- AleVesely, 2006-07-06.
+'''Tabs only make sense if they are used consistenly.''' That means setting ##c-offsets-alist## at multiples of ##tab-width##! Otherwise, there are better compression methods for saving storage room. Of course, changing the tab width to suit a particular major mode, also implies something like ##(make-variable-buffer-local 'tab-width)## in ##.emacs## -- AleVesely, 2006-07-06.
 
 [new]
-
 I'm entirely convinced by everything here that tabs are evil. Everyone stop using tabs in source code right now. Go on, I'll wait.
 
 OK, has everyone stopped using tabs? Great. Now forget whatever you used to use them for, set your tab width to 8, and go back to using tabs for the only thing they ever should have been used for in source code, which is replacing a well defined, uniform number of spaces, namely 8 less the number of characters past the previous tab-stop.
 
-Tabs themselves are not evil in source code, only changing the tab <em>size</em> is evil.
---don provan, 2006-07-26
+Tabs themselves are not evil in source code, only changing the tab <em>size</em> is evil. -- don provan, 2006-07-26
 
 [new]
+What is the point of having a special key and a special character that means "8 × another character"? If that's all that tab is, we should remove the key from the keyboard, and remove the character from the ASCII set, because it is worthless.
 
-What is the point of having a special key and a special character that means "8 x another character"?  If that's all that tab is, we should remove the key from the keyboard, and remove the character from the ASCII set, because it is worthless.
-
-No, what it comes down to is that it's useful to have a special key and a special character which represents code indent.  Tab is that key and that character.  If you reduce this concept to just a bunch of spaces, its semantic value is lost.  Modern editors are pretty clever at reconstructing the meaning by guessing at which spaces are code indents and which are not, but why go through these backflips when we have a character design to represent exactly that?  This makes everything simpler, files smaller, and lets individual users make choices about their own visual needs without adversely affecting other users.
+No, what it comes down to is that it's useful to have a special key and a special character which represents code indent. Tab is that key and that character. If you reduce this concept to just a bunch of spaces, its semantic value is lost. Modern editors are pretty clever at reconstructing the meaning by guessing at which spaces are code indents and which are not, but why go through these backflips when we have a character design to represent exactly that? This makes everything simpler, files smaller, and lets individual users make choices about their own visual needs without adversely affecting other users.
 
 [http://web.archive.org/web/20071016164815/http://adam.blogs.bitscribe.net/2006/08/09/tabs-have-all-the-advantages/ http://adam.blogs.bitscribe.net/2006/08/09/tabs-have-all-the-advantages/]
 
 [new]
-
-Hmmm... didn't I say /let's be consistent?/ Anyway, tabs have a semantic meaning: _horizontal alignment._ As everybody knows an /i/ doesn't have the same width as an /M/, does it?
+Hmmm ... didn't I say ''let's be consistent?'' Anyway, tabs have a semantic meaning: _horizontal alignment_. As everybody knows, an ''i'' doesn't have the same width as an ''M'', does it?
 
 '''Variable pitch fonts are evil!'''
 
-That's why noone uses them for programming. In facts, it also wastes lots of CPU to compute paragraphs that use fancy fonts. Let's all stick to ##Courier New!##
+That's why no one uses them for programming. In facts, it also wastes lots of CPU to compute paragraphs that use fancy fonts. Let's all stick to <tt>Courier New</tt>!
 
-'''Better yet, exhume your 80x25 B&W phosphor alphanumeric CRT'''
+'''Better yet, exhume your 80×25 B&W phosphor alphanumeric CRT!'''
 
 Nice one: less flickering, good contrast, hight persistence, no glares.
 
-In addition, since we all know that the page width is 80 we can stop using newlines and just fill the rest of each line with tabs until it wraps. Only the appearance matters and we achieve it sticking to the same hardware. Not to mention the advantages, e.g. we'll have no line endings to convert...
+In addition, since we all know that the page width is 80, we can stop using newlines and just fill the rest of each line with tabs until it wraps. Only the appearance matters, and we achieve it sticking to the same hardware. Not to mention the advantages, e.g., we'll have no line endings to convert ...
 
 '''Newlines are evil!'''
 
-Newlines themselves are not evil in source code, only changing the page <em>width</em> is evil.
-
+Newlines themselves are not evil in source code, only changing the page ''width'' is evil.
 
 [new]
 '''Tabs' history'''

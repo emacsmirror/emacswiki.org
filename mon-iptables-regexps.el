@@ -39,10 +39,10 @@
 ;;; SNIPPETS:
 ;;;
 ;;; REQUIRES:
-;;; `mon-iptables-vars.el'
+;;; `mon-iptables-vars.el' <- `*mon-iptables-alst*'
 ;;;
 ;;; THIRD-PARTY-CODE:
-;;; List `*mon-iptables-alist*' produced from :SOURCE iptables man page.
+;;; List `*mon-iptables-alst*' produced from :SOURCE iptables man page.
 ;;; :COURTESY Herve Eychenne <rv@wallfire.org>
 ;;; :COURTESY Marc Boucher, Martin Josefsson, Yasuyuki Kozakai, Jozsef
 ;;; Kadlecsik, Patrick McHardy, James Morris, Pablo Neira Ayuso, Harald Welte
@@ -100,19 +100,20 @@
 ;;; ==============================
 ;;; CODE:
 
+;;
 (require 'mon-iptables-vars)
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-11-27T16:29:49-05:00Z}#{09485} - by MON KEY>
 (defvar *mon-iptables-alist-as-sym* nil
   "*Lisp alist of symbols, flags, etc. for GNU/Linux `iptables' i.e. `netfilter'.
-List keys associate elements of list which are all symbols.
-List keys include: :IPTABLES-TARGETS\n:IPTABLES-TABLES\n:IPTABLES-COMMANDS
+List keys associate elements of list which are all symbols.\n
+List keys include:\n\n:IPTABLES-TARGETS\n:IPTABLES-TABLES\n:IPTABLES-COMMANDS
 :IPTABLES-PARAMETERS\n:IPTABLES-OPTIONS\n:IPTABLES-MATCH-EXTENSIONS
 :IPTABLES-TARGET-EXTENSIONS\n
 For equivalent list with all sublist elts as strings 
-:SEE `*mon-iptables-alist*'.\n
-List produced from :SOURCE iptables man page.
+:SEE `*mon-iptables-alst*'.\n
+List produced from :SOURCE iptables man page.\n
 :SEE-ALSO `*regexp-clean-iptables*',
 `mon-iptables-pp-key', `mon-iptables-pp-as-sym',
 `mon-iptables-make-regexps', `mon-iptables-make-regexps-long'
@@ -126,12 +127,12 @@ List produced from :SOURCE iptables man page.
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-11-27T12:57:26-05:00Z}#{09485} - by MON KEY>
 (defvar *regexp-clean-iptables* nil
-  "*Regexp alist suitable for converting iptables short flags to 'long-option' flags.
+  "*Regexp alist for converting iptables short flags to 'long-option' flags.\n
 alist key :IPTABLES-REGEXPS-SHORT->LONG  <- `mon-iptables-make-regexps'.
-alist key :IPTABLES-REGEXPS-SHORT->LONG <- `mon-iptables-make-regexps-long'.
-:CALLED-BY `mon-cln-iptables-short-form', `mon-iptables-make-regexps-long'
-:SEE-ALSO `*regexp-clean-iptables*', `*mon-iptables-alist*',
-`*mon-iptables-alist-as-sym*',`mon-iptables-pp-key', `mon-iptables-pp-as-sym'.\n
+alist key :IPTABLES-REGEXPS-LONG->SHORT  <- `mon-iptables-make-regexps-long'.\n
+:CALLED-BY `mon-cln-iptables-short-form', `mon-iptables-make-regexps-long'\n
+:SEE-ALSO `*regexp-clean-iptables*', `*mon-iptables-alst*',
+`*mon-iptables-alist-as-sym*',`mon-iptables-pp-key', `mon-iptables-pp-as-sym'.
 ►►►")
 ;; 
 ;;; :TEST-ME (cdr (assoc :IPTABLES-REGEXPS-SHORT->LONG *regexp-clean-iptables*))
@@ -143,21 +144,21 @@ alist key :IPTABLES-REGEXPS-SHORT->LONG <- `mon-iptables-make-regexps-long'.
 ;;; :CREATED <Timestamp: #{2009-11-25T22:38:13-05:00Z}#{09484} - by MON KEY>
 (defun mon-iptables-make-regexps ()
   "Return regexp list for converting iptables short flags to 'long-option' flags.
-Regexps are returned for `*mon-iptables-alist*' keywords:
+Regexps are returned for `*mon-iptables-alst*' keywords:
 :IPTABLES-COMMANDS e.g. \(assoc :IPTABLES-COMMANDS *regexp-clean-iptables*\)
 :IPTABLES-PARAMETERS e.g. \(assoc :IPTABLES-PARAMETERS *regexp-clean-iptables*\)
-Each return elemented is a list of the form:
- \(\"\\\\\( <-SHRT> \\\\\)\" \" --<LONG> \"\)
+Each return elemented is a list of the form:\n
+ \(\"\\\\\( <-SHRT> \\\\\)\" \" --<LONG> \"\)\n
 Where the car is the short form to match and the cadr is the longform to replace
-the match. 
+the match.\n
 :EXAMPLE\n\(mon-iptables-make-regexps\)\n
 :CALLED-BY `*regexp-clean-iptables*'.\n
 :SEE-ALSO `mon-iptables-make-regexps-long', `mon-cln-iptables-short-form', 
 `mon-cln-iptables-long-form',`*mon-iptables-alist-as-sym*'.\n►►►"
   (let ((mk-shrt-lng
          (append
-          (cdr (assoc :IPTABLES-COMMANDS *mon-iptables-alist*))
-          (cdr (assoc :IPTABLES-PARAMETERS *mon-iptables-alist*))))
+          (cdr (assoc :IPTABLES-COMMANDS *mon-iptables-alst*))
+          (cdr (assoc :IPTABLES-PARAMETERS *mon-iptables-alst*))))
         (mk-shrt-lng-rgxps))
     (mapc (lambda (x)
             (push `(,(concat "\\( " (cdr x) " \\)") ,(concat " " (car x) " ")) mk-shrt-lng-rgxps))
@@ -170,11 +171,11 @@ the match.
 ;;; :CREATED <Timestamp: #{2009-11-27T17:26:56-05:00Z}#{09485} - by MON KEY>
 (defun mon-iptables-make-regexps-long ()
   "Return regexp list for converting iptables short flags to 'long-option' flags.
-Regexps are returned for `*mon-iptables-alist*' keywords:
+Regexps are returned for `*mon-iptables-alst*' keywords:
 :IPTABLES-COMMANDS e.g. \(assoc :IPTABLES-COMMANDS *regexp-clean-iptables*\)
 :IPTABLES-PARAMETERS e.g. \(assoc :IPTABLES-PARAMETERS *regexp-clean-iptables*\)
-Each return elemented is a list of the form:
- \(\"\\\\\( --<LONG> \\\\\)\" \" -<SHORT> \"\)
+Each return elemented is a list of the form:\n
+ \(\"\\\\\( --<LONG> \\\\\)\" \" -<SHORT> \"\)\n
 Where the car is the short form to match and the cadr is the longform to replace
 the match.\n
 :EXAMPLE\n\(mon-iptables-make-regexps\)\n
@@ -182,8 +183,8 @@ the match.\n
 :SEE-ALSO `mon-cln-iptables-short-form', `*mon-iptables-alist-as-sym*'.\n►►►"
   (let ((mk-shrt-lng
          (append
-          (cdr (assoc :IPTABLES-COMMANDS *mon-iptables-alist*))
-          (cdr (assoc :IPTABLES-PARAMETERS *mon-iptables-alist*))))
+          (cdr (assoc :IPTABLES-COMMANDS *mon-iptables-alst*))
+          (cdr (assoc :IPTABLES-PARAMETERS *mon-iptables-alst*))))
         (mk-shrt-lng-rgxps))
     (mapc (lambda (x)
             (push `(,(concat "\\( " (car x) " \\)") ,(concat " " (cdr x) " ")) mk-shrt-lng-rgxps))
@@ -204,15 +205,15 @@ the match.\n
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-11-27T12:57:04-05:00Z}#{09485} - by MON KEY>
 (defun mon-cln-iptables-short-form (&optional start end intrp)
-  "Replace short format iptables argument flags with long format equivalent.
+  "Replace short format iptables argument flags with long format equivalent.\n
 When optional args START END are non-nil replace short with long in region
-otherwise replace all in buffer.
+otherwise replace all in buffer.\n
 When called-interactively, if region is active replace short with long in region
-otherwise replace all in buffer.
+otherwise replace all in buffer.\n
 :SEE-ALSO `mon-cln-iptables-long-form',
 `mon-iptables-make-regexps', `mon-iptables-make-regexps-long'
 `*regexp-clean-iptables*',`*mon-iptables-regexps*', 
-`*mon-iptables-alist-as-sym*',`*mon-iptables-alist*'.\n►►►"
+`*mon-iptables-alist-as-sym*',`*mon-iptables-alst*'.\n►►►"
   (interactive "i\n\i\np")
   (let* ((reg-or-buffer (cond ((and intrp (use-region-p)
                                     `(,(region-beginning) . ,(region-end))))
@@ -235,7 +236,8 @@ otherwise replace all in buffer.
             (goto-char (buffer-end 0))
             (mapc (lambda (x)
                     (let ((mtch (car x))
-                          (repl (cadr x)))
+                          (repl (cadr x))
+                          (case-fold-search nil))
                       (goto-char (buffer-end 0))
                       (while (search-forward-regexp mtch nil t)
                         (replace-match repl))))
@@ -271,12 +273,12 @@ otherwise replace all in buffer.
 (defun mon-cln-iptables-long-form (&optional start end intrp)
   "Replace long format iptables argument flags with short format equivalent.
 When optional args START END are non-nil replace short with long in region
-otherwise replace all in buffer.
+otherwise replace all in buffer.\
 When called-interactively, if region is active replace long with short in region
-otherwise replace all in buffer.
+otherwise replace all in buffer.\n
 :SEE-ALSO `mon-cln-iptables-short-form', `mon-iptables-make-regexps', 
 `*regexp-clean-iptables*', `*mon-iptables-regexps*',
-`*mon-iptables-alist-as-sym*',`*mon-iptables-alist*'.\n►►►"
+`*mon-iptables-alist-as-sym*',`*mon-iptables-alst*'.\n►►►"
   (interactive "i\n\i\np")
   (let* ((reg-or-buffer (cond ((and intrp (use-region-p)
                                     `(,(region-beginning) . ,(region-end))))
@@ -299,7 +301,8 @@ otherwise replace all in buffer.
             (goto-char (buffer-end 0))
             (mapc (lambda (x)
                     (let ((mtch (car x))
-                          (repl (cadr x)))
+                          (repl (cadr x))
+                          (case-fold-search nil))
                       (goto-char (buffer-end 0))
                       (while (search-forward-regexp mtch nil t)
                         (replace-match repl))))
@@ -333,15 +336,16 @@ otherwise replace all in buffer.
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-11-25T22:08:09-05:00Z}#{09483} - by MON>
 (defun mon-iptables-pp-key (iptbl-key &optional insrtp)
-  "Pretty-print the iptable sublist of `*mon-iptables-alist*' with IPTBL-KEY.
-IPTBL-KEY is one of:
+  "Pretty-print the iptable sublist of `*mon-iptables-alst*' with IPTBL-KEY.
+IPTBL-KEY is one of:\n
 :IPTABLES-TARGETS\n:IPTABLES-TABLES\n:IPTABLES-COMMANDS\n:IPTABLES-PARAMETERS
 :IPTABLES-OPTIONS\n:IPTABLES-MATCH-EXTENSIONS\:IPTABLES-TARGET-EXTENSIONS\n
+:EXAMPLE\n(mon-iptables-pp-key :IPTABLES-COMMANDS)\n
 :SEE-ALSO `mon-iptables-pp-as-sym', `mon-iptables-make-regexps',
 `*regexp-clean-iptables*', `*mon-iptables-alist-as-sym*'.\n►►►"
-  (let ((map-ipt-k (car (member iptbl-key (mapcar 'car *mon-iptables-alist*))))
+  (let ((map-ipt-k (car (member iptbl-key (mapcar 'car *mon-iptables-alst*))))
         (ipt-k #'(lambda (x) ;(cdr
-                   (assoc x *mon-iptables-alist*)))
+                   (assoc x *mon-iptables-alst*)))
         (ipt-sub))
     (if map-ipt-k
         (setq ipt-sub (with-temp-buffer
@@ -360,12 +364,12 @@ IPTBL-KEY is one of:
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-11-25T22:14:24-05:00Z}#{09483} - by MON>
 (defun mon-iptables-pp-as-sym (&optional insrtp)
-  "Pretty-print the iptable list `*mon-iptables-alist*' as symbol values.
+  "Pretty-print the iptable list `*mon-iptables-alst*' as symbol values.\n
 :SEE-ALSO `mon-iptables-pp-key', `*mon-iptables-alist-as-sym*'.\n►►►"
   (let (ipt-v)
     (setq ipt-v 
           (with-temp-buffer
-            (princ *mon-iptables-alist* (current-buffer))
+            (princ *mon-iptables-alst* (current-buffer))
             (pp-buffer)
             (buffer-substring-no-properties (buffer-end 0) (buffer-end 1))))
   (if insrtp
@@ -390,3 +394,4 @@ IPTBL-KEY is one of:
 ;;; ================================================================
 ;;; mon-iptables-regexps.el ends here
 ;;; EOF
+

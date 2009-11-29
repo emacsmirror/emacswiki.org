@@ -1,6 +1,7 @@
 What is the purpose of the [::.emacs.d] directory?
 
-The directory ##~/.emacs.d/## is a standard location for your own configuration files, your own developments, or external third-party modes.  It is not shipped by the operating system distributor--e.g. Debian, Suse, etc--which means it will not be overwritten by a re-installation. 
+The directory ##~/.emacs.d/## is a standard location for your own configuration files, your own developments, or external third-party modes.  For example, starting with Emacs 22, if the [[init file]] ##~/.emacs## does not exist, Emacs will try ##~/.emacs.d/init.el## or ##~/.emacs.d/init.elc##.  You can also put the shell init file ##.emacs_SHELL## under ##~/.emacs.d##.
+The directory ##~/.emacs.d/## is not shipped by the operating system distributor--e.g. Debian, Suse, etc--which means it will not be overwritten by a re-installation. 
 
 [new]
 (The above doesn't seem to make sense, grammatically. It's not clear what it's trying to say. For example:
@@ -21,7 +22,7 @@ Thanks in advance for clearing this up. I just want to know what the .emacs.d di
 
 
 
-For Emacs 22: "If the init file ##~/.emacs## does not exist, Emacs will try
+For Emacs 22: "If the [[init file]] ##~/.emacs## does not exist, Emacs will try
 ##~/.emacs.d/init.el## or ##~/.emacs.d/init.elc##.  You can also put the shell
 init file ##.emacs_SHELL## under ##~/.emacs.d##."
 

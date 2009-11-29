@@ -170,14 +170,12 @@ The default clause above (##t##) means '##()##' will only be inserted if the cur
         (self-insert-command (prefix-numeric-value arg))
         (indent-according-to-mode))))
 
-    (defun autopair-backspace (arg)
-      (interactive "p")
-      (if (eq (char-after)
-              (car (last (assq (char-before) skeleton-pair-alist))))
-          (and (char-after) (delete-char 1)))
-      (delete-backward-char arg))
-
-    (global-set-key [backspace] 'autopair-backspace)
+    (defadvice delete-backward-char (before autopair activate)
+      (when (and (char-after)
+                 (eq this-command 'delete-backward-char)
+                 (eq (char-after)
+                     (car (last (assq (char-before) skeleton-pair-alist)))))
+        (delete-char 1)))
 
     (global-set-key "("  'autopair-insert)
     (global-set-key ")"  'autopair-insert)

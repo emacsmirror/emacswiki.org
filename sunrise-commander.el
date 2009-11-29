@@ -116,7 +116,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 3 $Rev: 228 $ of the Sunrise Commander.
+;; This is version 3 $Rev: 230 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.  I  have  also  received
@@ -462,8 +462,8 @@ substitution may be about to happen."
         C-= ........... smart compare files (ediff)
         C-c = ......... smart compare files (console compatible)
         = ............. fast smart compare files (plain diff)
-        C-M-= ......... compare directories
-        C-x = ......... compare directories (console compatible)
+        C-M-= ......... compare panes
+        C-x = ......... compare panes (console compatible)
 
         C-c C-f ....... execute find-dired in Sunrise VIRTUAL mode
         C-c C-n ....... execute find-name-dired in Sunrise VIRTUAL mode
@@ -742,7 +742,7 @@ automatically:
 
 (define-key sr-mode-map "="                   'sr-diff)
 (define-key sr-mode-map "\C-c="               'sr-ediff)
-(define-key sr-mode-map "\C-x="               'sr-compare-dirs)
+(define-key sr-mode-map "\C-x="               'sr-compare-panes)
 
 (define-key sr-mode-map "\C-c\C-f"            'sr-find)
 (define-key sr-mode-map "\C-c\C-n"            'sr-find-name)
@@ -794,7 +794,7 @@ automatically:
       (define-key sr-mode-map [(control tab)]       'sr-select-viewer-window)
       (define-key sr-mode-map [(control backspace)] 'sr-toggle-attributes)
       (define-key sr-mode-map [(control ?\=)]       'sr-ediff)
-      (define-key sr-mode-map [(control meta ?\=)]  'sr-compare-dirs)
+      (define-key sr-mode-map [(control meta ?\=)]  'sr-compare-panes)
       (define-key sr-mode-map [(control })]         'sr-max-lock-panes)
       (define-key sr-mode-map [(control {)]         'sr-min-lock-panes)))
 
@@ -2119,30 +2119,42 @@ the original one."
 ;;; ============================================================================
 ;;; Directory and file comparison functions:
 
-(defun sr-compare-dirs()
-  "Compares paned directories between themselves."
+(defun sr-compare-panes ()
+  "Compares the contents of Sunrise panes."
   (interactive)
-  (dired-compare-directories sr-other-directory (ask-compare-dirs-predicate)))
+  (let* ((predicate (sr-ask-compare-panes-predicate))
+         (file-alist1 (sr-files-attributes))
+         (other (sr-other 'buffer))
+         (file-alist2 (with-current-buffer other (sr-files-attributes)))
+         (file-list1 (mapcar 'cadr (dired-file-set-difference
+                                    file-alist1 file-alist2 predicate)))
+         (file-list2 (mapcar 'cadr (dired-file-set-difference
+                                    file-alist2 file-alist1 predicate))))
+    (dired-mark-if (member (dired-get-filename nil t) file-list1) nil)
+    (with-current-buffer other
+      (dired-mark-if (member (dired-get-filename nil t) file-list2) nil))
+    (message "Marked in pane1: %s files, in pane2: %s files"
+             (length file-list1)
+             (length file-list2))))
 
-(defun ask-compare-dirs-predicate ()
-  "Prompts for the criterion to use for comparing two directories."
-  (let (
-        (resp -1)
-        (prompt "Compare by (d)ate, (s)ize, date_(a)nd_size, (n)ame or (c)ontents? ")
-       )
-    (while (not (memq resp '(?d ?D ?s ?S ?a ?A ?n ?N ?c ?C)))
-      (setq resp (read-event prompt))
-      (setq prompt "Please select: Compare by (d)ate, (s)ize, date_(a)nd_size \
-or (c)ontents? "))
-    (if (>= resp 97)
-        (setq resp (- resp 32)))
-    (cond ((eq resp ?D)
+(defun sr-ask-compare-panes-predicate ()
+  "Prompts for the criterion to use for comparing the contents of the panes."
+  (let ((prompt "Compare by (d)ate, (s)ize, date_(a)nd_size, (n)ame \
+or (c)ontents? ")
+        (response -1))
+    (while (not (memq response '(?d ?D ?s ?S ?a ?A ?n ?N ?c ?C)))
+      (setq response (read-event prompt))
+      (setq prompt "Please select: Compare by (d)ate, (s)ize, date_(a)nd_size,\
+ (n)ame or (c)ontents? "))
+    (if (>= response 97)
+        (setq response (- response 32)))
+    (cond ((eq response ?D)
            (list 'not (list '= 'mtime1 'mtime2)))
-          ((eq resp ?S)
+          ((eq response ?S)
            (list 'not (list '= 'size1 'size2)))
-          ((eq resp ?N)
+          ((eq response ?N)
            nil)
-          ((eq resp ?C)
+          ((eq response ?C)
            (list 'not (list 'string=
                             (list 'sr-md5 'file1)
                             (list 'sr-md5 'file2))))
@@ -2150,6 +2162,28 @@ or (c)ontents? "))
            (list 'or
                  (list 'not (list '= 'mtime1 'mtime2))
                  (list 'not (list '= 'size1 'size2)))))))
+
+(defun sr-files-attributes ()
+  "Returns  a  list of all file names and attributes from the current pane. This
+  list has the same form as the  one  returned  by  dired-files-attributes,  but
+  contains all the files currently displayed in VIRTUAL panes."
+  (delq
+   nil
+   (mapcar
+    (lambda (file-name)
+      (unless (member file-name '("." ".."))
+        (let ((full-file-name (expand-file-name file-name default-directory)))
+          (list file-name full-file-name (file-attributes full-file-name)))))
+    (sr-pane-files))))
+
+(defun sr-pane-files ()
+  "Wrapper  for  the  directory-files function that in VIRTUAL panes returns the
+  list of all files being currently displayed."
+  (delq
+   nil
+   (if (eq major-mode 'sr-virtual-mode)
+       (sr-buffer-files (current-buffer))
+     (directory-files default-directory))))
 
 (defun sr-md5 (file-alist)
   "Builds  and  executes a shell command to calculate the MD5 sum of the file
@@ -2204,19 +2238,15 @@ or (c)ontents? "))
 
 (defun sr-pop-mark ()
   "Pops the first mark in the current dired buffer."
-  (let ((marks (dired-get-marked-files t nil nil t)))
-    (if (< 1 (length marks))
-        (progn
-          (dired-unmark-all-marks)
-          (if (not (equal t (car marks)))
-              (progn
-                (mapc (lambda (x)
-                          (dired-mark-files-regexp
-                           (concat "^" (regexp-quote x) "$")))
-                        (cdr marks))
-                (car marks))
-            (second marks)))
-      nil)))
+  (let ((result nil))
+    (condition-case description
+      (save-excursion
+        (goto-char (point-min))
+        (dired-next-marked-file 1)
+        (setq result (dired-get-filename t t))
+        (dired-unmark 1))
+      (error (message (second description))))
+    result))
 
 ;;; ============================================================================
 ;;; File search functions:
@@ -2248,20 +2278,42 @@ or (c)ontents? "))
   (interactive "sFind files containing pattern: ")
   (sr-find-apply 'find-grep-dired pattern))
 
-(defun sr-locate ()
-  "Runs locate with the necessary options to produce a buffer that can be put in
-   sunrise virtual mode."
-  (interactive)
+;; This renames automatically the *Find* buffer after every find operation:
+(defadvice find-dired-sentinel
+  (after sr-advice-find-dired-sentinel (proc state))
+  (when (eq 'sr-virtual-mode major-mode)
+    (rename-uniquely)
+    (sr-revert-buffer)))
+(ad-activate 'find-dired-sentinel)
+
+(eval-and-compile
+  (unless (featurep 'locate)
+    (defun locate-prompt-for-search-string ()
+      (error "ERROR: Feature locate not available!"))))
+
+(defun sr-locate (search-string &optional filter arg)
+  "Runs locate and displays results in sunrise virtual mode."
+  (interactive (list (locate-prompt-for-search-string) nil current-prefix-arg))
   (sr-save-aspect
-   (switch-to-buffer "*Locate*")
-   (let ((locate-prompt-for-command t)
-         (locate-filename-indentation 2)
-         (locate-make-command-line
-          (lambda (arg)
-            (list "locate" arg "| xargs ls -d" sr-virtual-listing-switches))))
-     (call-interactively 'locate))
+   (locate search-string filter arg)
+   (sr-select-window sr-selected-window)
+   (switch-to-buffer (create-file-buffer "*Sunrise Locate*"))
+   (cd "/")
+   (insert (concat "  " default-directory ":"))(newline)
+   (insert (concat " Results of: locate " search-string))(newline)
+   (mapc (lambda (file)
+           (setq file (concat default-directory
+                              (replace-regexp-in-string "/$" "" file)))
+           (when (file-exists-p file)
+             (insert-char 32 2)
+             (insert-directory file sr-virtual-listing-switches)
+             (sr-end-of-buffer)
+             (dired-next-line 1)))
+         (sr-buffer-files "*Locate*"))
+   (toggle-read-only 1)
    (sr-virtual-mode)
-   (sr-keep-buffer)))
+   (sr-keep-buffer)
+   (kill-buffer "*Locate*")))
 
 (defun sr-recent-files ()
   "Displays the history of recent files maintained by recentf in sunrise virtual
@@ -2594,6 +2646,17 @@ or (c)ontents? "))
 
 ;;; ============================================================================
 ;;; Miscellaneous functions:
+
+(defun sr-buffer-files (buffer-or-name)
+  "Returns the list of all file names currently displayed in the given buffer."
+  (with-current-buffer buffer-or-name
+    (save-excursion
+      (let ((result nil))
+        (sr-beginning-of-buffer)
+        (while (not (eobp))
+          (setq result (cons (dired-get-filename t t) result))
+          (forward-line 1))
+        (reverse result)))))
 
 (defun sr-keep-buffer ()
   "Keeps  the currently selected buffer as one of the panes, even if it does not

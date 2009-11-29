@@ -1,6 +1,6 @@
 == Bazaar for Emacs Developers ==
 
-This is a quick-start guide to using [http://bazaar-vcs.org Bazaar] for Emacs development.  It assumes familiarity with the old CVS ways.
+This is a quick-start guide to using [http://bazaar-vcs.org Bazaar] for Emacs development.  It assumes familiarity with the old CVS ways.  The focus at present is on /easing the transition/ from CVS to Bazaar, /not/ on providing the most powerful or efficient workflows.
 
 === What Version of Bazaar to Use ===
 
@@ -24,6 +24,7 @@ Most of this guide is oriented toward the "regular contributor," whether a "core
 
 Here is a list of tasks and corresponding workflows that will be useful to new users of the public Emacs Bazaar repository.  The mainline branch of this repository will be called the /master branch/, /master/ for short, or /upstream master branch/ for emphasis.  The mainline branch is the one containing the changes targeted for the next public release.
 
+# Configure Bazaar with personal information.
 # Initialize your local repository, including the trunk (mirror of the upstream master).
 # Initialize a working branch.
 # Using a "quickfix" branch for "one-off" changes, such as one-line bugfixes and documentation updates.
@@ -34,6 +35,8 @@ Here is a list of tasks and corresponding workflows that will be useful to new u
 
 Overview of life with Bazaar:
 
+# Tell Bazaar your name and email address; these will be used as defaults to identify your commits.
+# Bazaar doesn't provide extensive Unix-style man pages, or Info.  Instead, use ##bzr help##.
 # Create a bzr repository locally.  It will hold all your branches.
 # Create your first local branch: a mirror of the project trunk.
 # Create a local development branch, based off your local trunk mirror.
@@ -54,6 +57,15 @@ Now let's look at the specific bzr commands.  Throughout the examples, we'll ass
       export DEVHOME=/usr/local/src/bzr-repos       # season to taste
 
 Of course some people like to organize things differently.  However, there are very good reasons to keep all of your Emacs branches in one place when using Bazaar, so we recommend you use this kind of organization until you are familiar with Bazaar.
+
+[:PersonalizingBzr]
+=== Personalizing Bazaar ===
+
+Unlike centralized VCSes where you are identified by an account in the repository, in Bazaar you can create branches in many places, and you may have permission to commit to many branches you don't control access to.  So Bazaar keeps the information used to identify you in the history locally, and includes it in every revision you commit.  This information is your name and email address.  To configure Bazaar to use them,
+
+      bzr whoami 'J. Random Hacker <jrhacker@gnu.org.invalid>'
+
+If you are integrating somebody else's work, you want to be identified as the committer (so you can handle technical issues with the commit), but not as the author.  In that case you can use the ##--author## option to ##bzr commit## to specify the author.
 
 [:InitializingYourBzrRepo]
 === Initializing Your Local Bazaar Repository ===
@@ -125,7 +137,9 @@ Now you start editing.  When you are done:
 
       bzr commit -m "Fix bla bla bla (closes Bug #1)."
 
-Note that bzr assumes you want to commit all changes in your workspace relative to the most recent commit in the branch.  This is almost always what you want after making a "quick fix".  If you have an unusually long commit message, you can use the ##-F## option instead of ##-m## (see [[#FeatureBranch]]).
+Note that ##bzr## assumes you want to commit all changes in your workspace relative to the most recent commit in the branch.  This is almost always what you want after making a "quick fix".  If you have an unusually long commit message, you can use the ##-F## option instead of ##-m## (see [[#FeatureBranch]]).
+
+##bzr## will automatically identify you as the committer and author of these changes (see [[#PersonalizingBzr]]).  If you are integrating another developer's work, you can use ##--author 'J. Random Hacker <jrhacker@gnu.org.invalid>'## to identify JR Hacker as the author of the change.
 
 [:SendABundle]
 === Creating Bundles for Review ===
@@ -286,6 +300,7 @@ which updates your ##my-hacks## branch with changes from upstream, and sets the 
 === Other Resources ===
 
 * [http://doc.bazaar-vcs.org/bzr.dev/en/user-guide/index.html Bzr Users Guide]
+* BzrQuickStartForEmacsDevs provides an alternate, more CVS-like, simpler workflow. 
 * [http://doc.bazaar-vcs.org/explorer/en/tutorials/open-source-dev-gnome.html Open Source Development Using Bazaar Explorer (GNOME)]  An excellent tutorial on using the Bazaar Explorer GUI.  Warning: the workflow advocated there is both more complex in some ways and slightly different from the one recommended in /Bazaar for Emacs Devs/.
 * [http://doc.bazaar-vcs.org/migration/en/survival/bzr-for-git-users.html Bazaar for Git users]  A pretty complete overview of the differences between Git and Bazaar.  Contains a couple of glossaries of VCS terms, which are probably useful to those who don't know git, too.
 * [http://doc.bazaar-vcs.org/migration/en/survival/bzr-for-cvs-users.html Bazaar for CVS users]  A brief stub.

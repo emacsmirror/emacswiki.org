@@ -23,12 +23,10 @@ You /should/ ensure these variables have the same value, e.g.,
 Why did you change `setq' here to `defvaralias'? Why assume that every time someone sets `tab-width' in some buffer (in whatever mode) s?he also wants to set `c-basic-offset' and `cperl-indent-level' to the same value? This seems misguided. Also, the intro line is no longer accurate: you are not simply setting these variables to the same value. -- DrewAdams
 
 [new]
-Because it helps make the indentation less dependent on the value of `tab-width'. The defaults are [http://lxr.linux.no/linux+v2.6.29/Documentation/CodingStyle#L467 notoriously horrible] -- try opening the code with different settings, and then try to /figure out/ the original settings necessary to make it readable. It's a mess.
-
 [:TabSizeVsOffset]
-It's worse than that, actually. Different values for "tab size" and "indentation" are known to [http://lists.macromates.com/textmate/2007-November/023215.html cause problems for users of the TextMate editor], which treats this as the same number. So the default values of ##2## and ##8## are really a '''hindrance to interoperability'''.
+Because different values for "tab size" and "indentation" (like the defaults of ##8## and ##2##) are a '''hindrance to interoperability'''. For instance, they are known to [http://lists.macromates.com/textmate/2007-November/023215.html cause problems for users of the TextMate editor], which treats them as the same number. The way to avoid problems is to make ##c-basic-offset## and ##cperl-indent-level## (and any other indentation variables) an alias of ##tab-width##; they are buffer-local, anyway, so changing any of them will only affect the current buffer.
 
-If the indentation offset and tab width are equal when indenting lines, on the other hand, only [[TabsAreEvil#TabsAndAlignment|a few lines]] are garbled with different settings. (Or [SmartTabs none].) `tab-width' and `c-basic-offset' are buffer-local, so changing any of them will only affect the current buffer.
+With this set-up, all lines but continuation lines become independent of the tab size used by the programmer. To fix continuation lines too, see SmartTabs.
 
 ----
 

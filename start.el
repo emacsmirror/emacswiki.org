@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2009, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 21.1
-;; Last-Updated: Sun Oct 25 09:16:52 2009 (-0700)
+;; Last-Updated: Sat Nov 28 07:48:32 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 2807
+;;     Update #: 2809
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -28,29 +28,30 @@
 ;;   `dired-x', `doremi', `doremi-cmd', `doremi-frm', `easymenu',
 ;;   `ediff', `ediff+', `ediff-diff', `ediff-help', `ediff-init',
 ;;   `ediff-merg', `ediff-mult', `ediff-util', `ediff-wind',
-;;   `em-joc', `emacsbug', `eshell-auto', `eyedropper', `facemenu',
-;;   `facemenu+', `faces', `faces+', `ffap', `ffap-', `files+',
-;;   `find-dired', `find-dired+', `find-dired-', `finder', `finder+',
-;;   `finder-inf', `fit-frame', `font-lock', `font-menus', `frame',
-;;   `frame+', `frame-cmds', `frame-fns', `fuzzy-match', `header2',
-;;   `help+20', `hexrgb', `highlight', `icicles', `icicles-cmd1',
-;;   `icicles-cmd2', `icicles-face', `icicles-fn', `icicles-mac',
-;;   `icicles-mcmd', `icicles-mode', `icicles-opt', `icicles-var',
-;;   `icomplete', `icomplete+', `imenu', `imenu+', `info', `info+',
-;;   `isearch+', `iso-transl', `kmacro', `lacarte', `levenshtein',
+;;   `el-swank-fuzzy', `em-joc', `emacsbug', `eshell-auto',
+;;   `eyedropper', `facemenu', `facemenu+', `faces', `faces+',
+;;   `ffap', `ffap-', `files+', `find-dired', `find-dired+',
+;;   `find-dired-', `finder', `finder+', `finder-inf', `fit-frame',
+;;   `font-lock', `font-menus', `frame', `frame+', `frame-cmds',
+;;   `frame-fns', `fuzzy-match', `header2', `help+20', `hexrgb',
+;;   `highlight', `icicles', `icicles-cmd1', `icicles-cmd2',
+;;   `icicles-face', `icicles-fn', `icicles-mac', `icicles-mcmd',
+;;   `icicles-mode', `icicles-opt', `icicles-var', `icomplete',
+;;   `icomplete+', `imenu', `imenu+', `info', `info+', `isearch+',
+;;   `iso-transl', `kmacro', `lacarte', `levenshtein',
 ;;   `lib-requires', `lisp-float-type', `lisp-mnt', `loadhist',
 ;;   `local-lpr', `local-ps-print', `lpr', `ls-lisp', `ls-lisp+',
 ;;   `ls-lisp-verbosity', `menu-bar', `menu-bar+', `misc-cmds',
 ;;   `misc-fns', `mkhtml', `mkhtml-htmlize', `moccur-edit', `mouse',
 ;;   `mouse+', `mwheel', `occur-schroeder', `oneonone', `paren',
 ;;   `pcmpl-auto', `pp', `pp+', `pp-c-l', `printing', `ps-print',
-;;   `replace+', `ring', `ring+', `savehist-20+', `second-sel',
-;;   `sendmail', `setup', `setup-keys', `simple+', `solar',
-;;   `speedbar', `start', `strings', `swiss-move', `synonyms',
-;;   `thing-cmds', `thingatpt', `thingatpt+', `thumb-frm', `timer',
-;;   `timer+', `unaccent', `vc', `vc+', `vc-', `vc-hooks',
-;;   `vc-hooks+', `w32-browser', `w32browser-dlgopen', `wid-edit',
-;;   `wid-edit+', `widget', `window+', `zoom-frm'.
+;;   `replace+', `reporter', `ring', `ring+', `savehist-20+',
+;;   `second-sel', `sendmail', `setup', `setup-keys', `simple+',
+;;   `solar', `speedbar', `start', `strings', `swiss-move',
+;;   `synonyms', `thing-cmds', `thingatpt', `thingatpt+',
+;;   `thumb-frm', `timer', `timer+', `unaccent', `vc', `vc+', `vc-',
+;;   `vc-hooks', `vc-hooks+', `w32-browser', `w32browser-dlgopen',
+;;   `wid-edit', `wid-edit+', `widget', `window+', `zoom-frm'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -86,6 +87,8 @@
 ;;
 ;; Change log:
 ;;
+;; 2009/11/28 dadams
+;;     Typo: '' -> '.
 ;; 2009/10/25 dadams
 ;;     Renamings from lib-requires.el: libreq-(requires-(tree|list)|insert-lib-requires-as-comment).
 ;; 2009/10/11 dadams
@@ -482,7 +485,7 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
 (setq dmoccur-list '(("dir" default-directory (".*") dir)))
 (require 'color-moccur nil t)
 (when (fboundp 'dired-do-moccur) (define-key dired-mode-map "E" 'dired-do-moccur))
-(when (fboundp 'Buffer-menu-moccur) (define-key Buffer-menu-mode-map "E" ''Buffer-menu-moccur))
+(when (fboundp 'Buffer-menu-moccur) (define-key Buffer-menu-mode-map "E" 'Buffer-menu-moccur))
 (when (fboundp 'occur-by-moccur)
   (global-set-key "\C-x\C-o" 'occur-by-moccur)) ; was `delete-blank-lines'
 (when (fboundp 'moccur) (global-set-key "\C-c\C-x\C-o" 'moccur))
