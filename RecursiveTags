@@ -1,51 +1,25 @@
-The easiest way by far is to use `ctags' for ETAGS generation, as `ctags' has an <code>-R</code> option for recursing into directories. See below.
+= Overview =
 
-== ctags ==
-
- From: those who know me have no need of my name
- Subject: Re: etags help
- Newsgroups: gnu.emacs.help
- Date: 28 Jun 2001 01:13:39 GMT
-
- cd c:\source-root
- ctags [other-flags-if-any] -R *.hpp *.cpp *.h
-
-If you want ETAGS output, remember to add the <code>-e</code> option, i.e.,
-
- ctags -e -R *.hpp *.cpp *.h
+This page contains additional information about generating tags in recursive directories.  See [[BuildTags]] for the basics.
 
 == etags ==
 
-Here's how to create a TagFile for an entire directory tree as posted
-on one of the EmacsNewsgroups:
+=== Windows ===
 
- From: Alexander
- Subject: Re: etags help
- Newsgroups: gnu.emacs.help
- Date: Wed, 27 Jun 2001 17:51:27 GMT
+(From: Alexander)
 
-win:
+Here's how to create a TagFile for an entire directory tree as posted on one of the EmacsNewsgroups:
 
  cd c:\source-root
  dir /b /s *.cpp *.h *.hpp | etags --your_options -
 
-unix
+=== Older versions of etags ===
 
- cd /source-root
- find `pwd` | egrep 'cpp$|h$|hpp$' | xargs etags --your_options -
-
-
-== Recursive etags ==
-Create a [[tags file]] for all ##*.cpp *.h## files in current dir and all subdirectories:
-
- find .   -name "*.cpp" -print   -or   -name "*.h" -print    | etags -
-
-[new]
-Here, the 5.7 version of etags don't have the - option. So I had to do it this way:
+[[BuildTags]] describes how to combine find with etags to generate tags for a tree of files. But the 5.7 version of etags don't have the `-' option. Use xargs instead (but see the caveat about xargs on [[BuildTags]]!
 
  find .   -name "*.cpp" -print   -or   -name "*.h" -print    | xargs etags
 
-== recursive etags: the full blooded version ==
+=== auto-recursive functionality ===
 
 This shell script will plough through a source tree and
 produce a [[tags file]] on standard output with GNU `etags'.
@@ -81,25 +55,6 @@ produce a [[tags file]] on standard output with GNU `etags'.
    esac;
  done;
 
-== Multiple languages in a project ==
-
-If you have several languages such as C++ and python, no problem.  The
-`etags' program will recognize language based on extension.  If you want
-to customize this behaviour to suit your specific project, I recommend
-ExuberantCtags.
-
-== Build tags with traverselisp ==
-
-You can build a [[tags file]] recursively in a directory tree with Lisp:traverselisp.el :
-
-M-x traverse-build-tags-in-project
-
-then you have just to choose the extension of file you want.
-
-Multi extension is allowed, you can add to the prompt more than one ext
-
-separated with space ==> .el .py etc...
-
-
 ----
 CategoryExternalUtilities
+

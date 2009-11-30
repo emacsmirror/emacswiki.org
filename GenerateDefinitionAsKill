@@ -1,0 +1,87 @@
+After a while, I find writing funcion definition header for templated c++ class is no fun. So I write a function to do that for me. 
+
+for example, if you have code in foo.h
+<pre>
+template <typename T, class U>
+class foo: public bar {
+public:
+	foo();
+	foo(int a, int b);
+	virtual ~foo();
+	inline int& bar();
+	const int& bar2() const;
+	bool operator ==(const foo& rhs);
+	bool operator+(const foo& rhs);
+	friend bool operator ==(const int& lhs, const foo& rhs);
+private:
+	int a;
+	static vector< list < int > > b;
+};
+
+#include "foo.cc"
+</pre>
+
+and put point after (or at)  one of the function declarations, then M-x generate-definition-as-kill (I bind it key C-c k f), and switch to foo.cc, do a C-y, you get the corresponding definition header:
+
+<pre>
+template <typename T, class U>
+foo< T, U >::foo(){
+
+}
+
+template <typename T, class U>
+foo< T, U >::foo(int a, int b){
+	
+}
+
+
+template <typename T, class U>
+foo< T, U >::~foo(){
+	
+}
+
+
+template <typename T, class U>
+int& foo< T, U >::bar(){
+	
+}
+
+template <typename T, class U>
+const int& foo< T, U >::bar2() const{
+	
+}
+
+template <typename T, class U>
+bool foo< T, U >::operator ==(const foo& rhs){
+	
+}
+
+template <typename T, class U>
+bool foo< T, U >::operator+(const foo& rhs){
+	
+}
+
+bool operator ==(const int& lhs, const foo& rhs){
+	
+}
+
+</pre>
+
+This function is not mean to generate *all* functions from header file at a time. There are other tools that do this. It only helps when you want to implement a function and don't want to do useless verbose typing.
+
+The code can be found at CppExtensionsSylecn.
+
+I have the following key binding to use them efficiently.
+
+<pre>
+(defun my-c++-mode-hook ()
+  (interactive)
+  (define-key c++-mode-map (kbd "C-c k f")
+    'c++-generate-definition-as-kill)
+  (define-key c++-mode-map (kbd "C-y")
+    'c++-yank)
+  ;; other entries removed.
+  )
+
+(add-hook 'c++-mode-hook 'my-c++-mode-hook)
+</pre>

@@ -8,6 +8,13 @@ To install, put it in your LoadPath and add the following to your InitFile:
 
     (eval-after-load 'rcirc '(require 'rcirc-notify))
 
+This library tries to use the following binaries to send the message:
+
+
+; notify-send: Available in packages libnotify-bin on Ubuntu, for example
+; growlnotify: Newer Mac OSX
+; osascript: Older Mac OSX
+
 == How do I change the message? ==
 
 Redefine `my-rcirc-notify-message`. Use %s for where you want the name of the person calling your name to go.

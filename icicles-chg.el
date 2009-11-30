@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Nov 27 13:47:05 2009 (-0800)
+;; Last-Updated: Sun Nov 29 12:51:54 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 4619
+;;     Update #: 4621
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2610,6 +2610,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2009/11/29 dadams
+;;     Don't reference minibuffer-local-must-match-filename-map unless bound (obsolete in 23.2).
 ;; 2009/11/27 dadams
 ;;     icicle-(bind|restore)-completion-keys: Bind/restore C-x 1, C-x 2.
 ;; 2009/11/07 dadams

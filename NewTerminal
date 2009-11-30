@@ -1,6 +1,8 @@
 Go to [http://kanis.fr/nterm.html nterm] home page.
 
-Nterm is meant to be a full vt100 compatible terminal emulator. It has the following features:
+version 0.2 supports double width and height font.
+
+version 0.1 has the following features:
 
     * G0 G1 switching with shift in and shift out
     * special graphics characters (used for line drawing)
@@ -11,14 +13,3 @@ Nterm is meant to be a full vt100 compatible terminal emulator. It has the follo
     * switch between 80 and 132 columns screen
     * tabulation set and reset
     * all VT100 escape sequences are handled
-
-Things that remains to do:
-
-    * Double width character
-    * Double height character
-    * ANSI color
-    * VT52 compatibility mode
-
-I think nterm is easier to maintain than term. One look at term's term-emulate-terminal function should convince anyone that term cannot be maintained anymore. Compare with nterm equivalent function nterm-emulate it is only 25 lines long.
-
-It has a recording mode (C-c r) so that you can record and replay traces. It has a terminal memory so that area of the terminal can be redrawn for blinking and changing screen background. There is a memory dump mode (C-c m) that allows the programmer to examine the memory.

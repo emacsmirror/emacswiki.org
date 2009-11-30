@@ -3,19 +3,26 @@ I started to use emacs in Feb, 2009. I really love this editor. I'm using the cv
 == Extensions I'm Using ==
 Here is a list of features and libraries I'm currently using:
 
+Builtin
+* VC
+* OrgMode
+* auto-insert
+* whitespace
+* Speedbar file explorer
+* MidnightMode clear up buffers
+* find-file switch between related files
+
 Utils
 * [http://www.splode.com/~friedman/software/emacs-lisp/src/protbuf.el ProtBuf] protect buffer from being killed
-* FixmeMode highlight some keyword like FIXME TODO
+* FixmeMode highlight TODO FIXME
 * HighlightParentheses
-* PrettyControlL Pretty print ^L character
+* PrettyControlL
 * ColorTheme
- 
+* HighlightCurrentLine
+* Yasnippet customizable code complete
+
 Extensions
-* SlimeMode improved lisp mode
-* [[Git]] git and git-blame
-* [[EMMS]]
 * [[emacs-w3m]]
-* PoMode
 * [[rcirc]]
 
 == Very Basic Settings == 
@@ -24,7 +31,7 @@ Below are settings that I think should be helpful to new users which is not defa
 Two very help tip, don't ignore them:
 <pre>
 1. use CapsLock as Ctrl
-   This really helps. In linux, it is very easy. no need to restart or logout.
+   This really helps. In linux, it is very easy. You don't need to restart or logout.
    First copy paste the following code to ~/.xmodmaprc
 
     ! for emacs

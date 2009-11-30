@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Nov 27 08:02:50 2009 (-0800)
+;; Last-Updated: Sun Nov 29 12:45:52 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 11395
+;;     Update #: 11396
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -18,9 +18,10 @@
 ;; Features that might be required by this library:
 ;;
 ;;   `apropos', `apropos-fn+var', `cl', `color-theme', `cus-face',
-;;   `easymenu', `ffap', `ffap-', `hexrgb', `icicles-opt',
-;;   `icicles-var', `kmacro', `levenshtein', `reporter', `sendmail',
-;;   `thingatpt', `thingatpt+', `wid-edit', `wid-edit+', `widget'.
+;;   `easymenu', `el-swank-fuzzy', `ffap', `ffap-', `fuzzy-match',
+;;   `hexrgb', `icicles-opt', `icicles-var', `kmacro', `levenshtein',
+;;   `reporter', `sendmail', `thingatpt', `thingatpt+', `wid-edit',
+;;   `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -338,7 +339,7 @@
 (defvar recentf-menu-filter-commands)
 (defvar recentf-menu-items-for-commands)
 
-;; The name changed during development of Emacs 23.
+;; The name changed during development of Emacs 23.  They aliased it for 23.1, but removed it for 23.2.
 ;; Use the new name and alias the old, but don't declare old obsolete (let Emacs 23 do that.)
 (when (and (boundp 'minibuffer-local-must-match-filename-map) (fboundp 'defvaralias)) ; Emacs 22
   (defvar minibuffer-local-filename-must-match-map minibuffer-local-must-match-filename-map

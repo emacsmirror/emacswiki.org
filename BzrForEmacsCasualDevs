@@ -1,0 +1,57 @@
+== Bazaar Workflows for Casual Developers ==
+
+This document describes some workflows by which a casual contributor can follow Emacs development, without having the full developer setup.
+
+We still recommend that even casual developers eventually migrate to the the regular developer's workflow described at [[BzrForEmacsDevs]].  If you have time to set that up, please do so now instead of reading this page; it offers a superset of what this page describes, and is more standard (therefore better supported).
+
+Nevertheless, if you just need a quick-and-easy way to follow bleeding edge Emacs, or to make a one-time patch contribution, etc, then this page may help.
+
+[:BleedingEdgeBuilds]
+=== How To Follow Bleeding-Edge Emacs ===
+
+If you just want to run bleeding-edge code (perhaps so you can report bugs against the latest development sources), and do not expect to make code changes to Emacs, then you can save a little bit of time and space by using a /stacked branch/.  This workflow is very similar to CVS:
+
+      cd /home/jrandom/projects                    # or wherever
+      bzr branch --stacked http://bzr.savannah.gnu.org/r/emacs/trunk emacs-trunk
+
+(Use ##sftp## instead of ##http## if you have ##sftp## access.)
+
+Now you can build, test, install, and run Emacs in this directory in the usual way.  If you want to update the checkout, you just do
+
+      cd /home/jrandom/projects/emacs-trunk
+      bzr pull
+
+Note that ##bzr pull## /will fail/ if you have made /any/ changes to version-controlled files.
+
+[:PatchContributors]
+=== How One-Time Patch Contributors Should Use Bazaar ===
+
+Oops --- ##bzr pull## failed because you "had an itch", and made some changes in your ##emacs-trunk## stacked branch.  You may as well send your improvement upstream.  
+
+      cd /home/jrandom/projects/emacs-trunk
+
+Write up a ChangeLog entry for your change.  Now
+
+      bzr commit -m "Describe my wonderful patch."
+
+Then follow the instructions for [[BzrForEmacsDevs#SendABundle]] to submit your changes for review.  From now on, until your code is merged, you cannot use ##bzr pull##.  You must merge, instead:
+
+      bzr merge
+      bzr commit -m "Merge from upstream master."
+
+The merge may fail due to a change that conflicts with yours.  You'll need to fix the problem, then
+
+      bzr resolve -m file-you-changed ...          # Mark these conflicts as resolved.
+      bzr commit -m "Merge from upstream master."
+
+You will have to continue merging in this way until you code is merged.
+
+But really, if you find yourself making one code change to Emacs, you'll probably make more, so you should just take the time set to yourself up in the way described for [[BzrForEmacsDevs]].  Then you can follow the workflows described there (/i.e./, create a repository and mirror branch), and do:
+
+      cd /$DEVHOME/emacs
+      bzr branch /home/jrandom/projects/emacs-trunk my-hacks
+      cd my-hacks
+      bzr merge --remember ../trunk
+      rm -rf /home/jrandom/projects/emacs-trunk    # optional
+
+which updates your ##my-hacks## branch with changes from upstream, and sets the parent of the my-hacks branch to your ##trunk## mirror.  After that you can simply follow the workflows recommended above for [[BzrForEmacsDevs]] (including submitting your patch by [[BzrForEmacsDevs#SendABundle]]!)  Happy hacking!

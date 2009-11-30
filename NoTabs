@@ -1,28 +1,22 @@
-If you want to use spaces instead of tabs when indenting, put the following in your ~/.emacs file:
+If you want to use spaces instead of tabs when indenting, put the following in your <tt>[InitFile .emacs]</tt> file:
 
- (setq-default indent-tabs-mode nil)
+    (setq-default indent-tabs-mode nil)
 
-You may also customize the `indent-tabs-mode' variable instead, obviously.
-If you want to remove tabs in an existing file, mark the whole buffer using
-C-x h and use M-x untabify.  (M-x tabify does the opposite...)
+You may also customize the `indent-tabs-mode' variable instead, obviously. If you want to remove tabs in an existing file, mark the whole buffer using ##C-x h## and use ##M-x untabify##. (##M-x tabify## does the opposite ...)
 
-Discussion on why this is or is not a good idea: TabsAreEvil (or not).
+Discussion on whether this is a good idea: TabsAreEvil (or not).
 
-If you wish to change the amount of spaces that the TAB key inserts, check out
-the TabStopList page.  Do not confuse this with <code>tab-width</code>, which
-is only good for displaying existing tabs in files!
+If you wish to change the amount of spaces that the Tab key inserts, check out the TabStopList page. Do not confuse this with ##tab-width##, which is only good for displaying existing tabs in files!
 
-The <code>tab-width</code> variable tells Emacs how long a tab is.
-You might want to set it to something other than 8 before calling M-x untabify.
+The ##tab-width## variable tells Emacs how wide a tab is (more precisely, the distance between tab stops). You might want to set it to something other than ##8## before calling ##M-x untabify##.
 
-= So How Do I Insert a TAB If I Really Have To? =
+== So How Do I Insert a Tab If I Really Have To? ==
 
-Yes, of course you agree that TabsAreEvil. But you just ''have'' to indulge yourself a TAB from time to time - perhaps to create a file in some required format. Whaddya do?
+Yes, of course you agree that TabsAreEvil. But you just ''have'' to indulge yourself a tab from time to time -- perhaps to create a file in some required format. Whaddya do?
 
-`C-q' to the rescue! Don't forget it: `C-q' says "Insert the next character, whatever it is" (command <code>quoted-insert</code>).
+'##C-q##' to the rescue! Don't forget it: '##C-q##' says "insert the next character, whatever it is" (command ##quoted-insert##).
 
-So, `C-q TAB' does the trick.  -- DrewAdams
-
+So, '##C-q <tab>##' does the trick. -- DrewAdams
 
 ----
 CategoryIndentation

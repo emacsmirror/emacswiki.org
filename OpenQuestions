@@ -19,6 +19,13 @@ When I find the file in question, and eval the buffer, I do not get these errors
 Thanks.
 
 [new]
+==Total Newbie Question: Where Do The Aquamacs .el Files Live?==
+
+Hi, I'm just getting started with Aquamacs on OS X 10.6 and I'm not sure where I'm supposed to add customizations.  For example, I'm trying to install a markdown mode (http://jblevins.org/projects/markdown-mode/) but I don't know where to put the actual .el file.  Also, I'm just putting my .emacs files in my home directory.  Is that the best place for it?
+
+Thank you for your help.
+
+[new]
 == Customizing Two-Mode-Mode to ignore delimiter when indenting and/or fontifying ==
 At work we are using our own preprocessor to allow Perl embedded inside Verilog HDL source files.  Each Perl line must be prepended with a '@@' marker.  I have succesfully customized two-mode-mode.el such that is recognizes this start-marker (and end-of-line as the end-marker).  Now a problem comes with indenting.  Outside these lines, while in verilog-mode, the indenter breaks because of the '@@'.  Inside a Perl line, the indenter also breaks because of '@@'.  In other words, neither of the two major modes accept the '@@' as valid syntax, and thus indentation & fontification breaks for both modes.
 

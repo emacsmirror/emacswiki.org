@@ -1,17 +1,62 @@
-The usual way to create a [[tags file]] is to run `etags' from the command
-line. Example:
+= Overview =
 
-    etags *.el
+There are several tools to create a [[tags file]].  Two of the main tools are etags (which comes with emacs), and ExuberantCtags.  Unless if you have a specific reason not to (you can't install it), ExuberantCtags is the best choice as it supports more languages and is more robust.
 
-Or to build a tags file for a source tree (e.g. the linux kernel) you can use something like:
+== Using ExuberantCtags ==
 
-    find . -type f -iname "*.[ch]" | etags -L -
+=== From the command line ===
 
-See also RecursiveTags.
+To use ctags with emacs, you must supply the `-e' parameter to instruct ctags to generate an emacs tag file.
 
-Avoid using `xargs' with `etags' (e.g. ##find . -type f -iname "*.[ch]" | xargs etags##).  For source trees with many files, xargs will execute etags multiple times, overwriting the previous tags file on each execution.
+  cd /path/to/my/project
+  ctags -e myfile.cpp
 
-Or to build the tags file within Emacs, put this in your [[init file]]:
+Ctags also has a recursive option, `-R'.  This is the most common (and simple) usage.  To generate tags for all files that ctags recognizes, simply execute this from the terminal:
+
+  cd /path/to/my/project
+  ctags -e -R .
+
+You can filter it to specific extensions if needed:
+
+  cd /path/to/my/project
+  ctags -e -R *.cpp *.hpp *.h
+
+=== From within Emacs ===
+
+Put this in your [[init file]]:
+
+  (setq path-to-ctags "/opt/local/bin/ctags") ;; <- you're ctags path here
+
+  (defun create-tags (dir-name)
+    "Create tags file."
+    (interactive "DDirectory: ")
+    (shell-command
+     (format "%s -f %s/TAGS -e -R %s" path-to-ctags dir-name dir-name))
+  )
+
+Then, once it has been evaluated, you can invoke it via `m-x create-tags'
+
+== Using etags ==
+
+=== Console ===
+
+First, see a list of languages supported by etags by running `etags --help'.
+
+To generate tags for certain source files (like *.el files), invoke this:
+
+  cd /path/to/my/project
+  etags *.el
+
+To recurse through directories, run something like this:
+
+  cd /path/to/my/project
+  find . -type f -iname "*.[ch]" | etags -L -
+
+FYI: Avoid using `xargs' with `etags' (e.g. ##find . -type f -iname "*.[ch]" | xargs etags##).  For source trees with many files, xargs may execute etags multiple times, overwriting the previous tags file on each execution.
+
+=== From within emacs ===
+
+Put this in your [[init file]]:
 
   (defun create-tags (dir-name)
      "Create tags file."
@@ -19,19 +64,30 @@ Or to build the tags file within Emacs, put this in your [[init file]]:
      (eshell-command 
       (format "find %s -type f -name \"*.[ch]\" | etags -L -" dir-name)))
 
-This package provides a function which rebuilds the tags file being
-used by the current buffer. You can pre-configure the shell command
-based on the tag file being built.
+== Other tips ==
 
-* http://www.sixfingeredman.net/proj/xemacs/build-tags.el
+=== Multiple Languages in a project ===
 
-Also, Lisp:traverselisp.el is able to build tags fast recursively in a directory tree:
+It just works with ExuberantCtags and etags, as both recognize the language based on extension.
+
+If you happen to need to use two separate tags programs (like rtags and ctags) to parse all languages used in a project, just append one to the other.
+
+=== TraverseLisp.el ===
+
+Lisp:traverselisp.el is able to build tags fast recursively in a directory tree:
 
 M-x traverse-build-tags-in-project
 
 then just choose extension from prompt.
 
+=== Updating TAGS on file save ===
+
+[http://github.com/mattkeller/etags-update etags-update.el] is a global minor mode that will update your TAGS when you save a file. It can also offer to add a file to your TAGS if it is not already indexed.
+
+=== See Also ===
+
+* RecursiveTags for more tips on generating tags in recursive directories.
+
 ----
 
 CategoryExternalUtilities
-

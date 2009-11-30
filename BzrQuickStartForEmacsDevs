@@ -1,18 +1,22 @@
 == Bazaar quick start guide for Emacs Developers ==
 
-Emacs is going to switch to Bazaar as its Version Control System.
+Emacs is going to switch to Bazaar as its version control system.
 
 If you are an Emacs contributor without experience on Bazaar in
 particular and Distributed Version Control Systems (dVCS) in general,
-this guide will allow you to 
+the full introduction is at [[BzrForEmacsDevs]] -- that document tells
+you how to jump straight into Distributed Version Control practices as
+an Emacs developer.
 
-* Keep contributing to Emacs without having to immerse yourself into
-  the brave new world of dVCS.
+However, if you don't have time to switch to a dVCS way of working
+right away but still need to contribute a fix to Emacs, you can start
+here instead.  It will allow you to:
 
+* Contribute to Emacs without immersing yourself in the brave new world of dVCS.
 * Get conversant with the Bazaar UI.
-
 * Have a starting point for learning the full capabilities of Bazaar.
 
+We hope you will go back and read [[BzrForEmacsDevs]] when you have a chance.
 
 === Conventions and basic info ===
 
@@ -154,11 +158,11 @@ since the last ##bzr update##. Hence, Bazaar does not need to contact
 a server upstream for displaying logs, reverting edited files,
 annotating, etc. This is useful for working off-line.
 
-For complete off-line work, Bazaar allows to commit changes locally
-and send them upstream when you have net access. With your current
-setup, you can do this with ##bzr commit --local##. See its
-documentation with ##bzr help commit##. If you commit often when you
-are off-line, there are better methods (not explained here).
+Bazaar makes possible to commit changes off-line to your local history
+and send them upstream in one batch. There are several options with
+associated trade-offs for doing this, so read BzrForEmacsDevs or ask
+on the emacs-devel mailing list if you are interested on that
+possibility.
 
 Bazaar allows you to work as if you had your own personal CVS branch
 in your machine and communicate changes with other developers, not
@@ -171,8 +175,6 @@ concepts before embarking on that practices.
 Bazaar makes very easy to create as much private branches as you
 wish.
 
-
 === Further reading ===
 
-BzrForEmacsDevs is the definitive guide for jumping straight into
-Distributed Version Control practices while you hack on Emacs.
+BzrForEmacsDevs

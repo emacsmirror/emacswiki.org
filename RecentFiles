@@ -381,5 +381,40 @@ file to write to."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   (recentf-mode 1))
 </pre>
+
+= Entries for files that were never displayed =
+
+If you, for example, use [[CEDET]], the recentf package may be fairly useless by default.  The problem is that CEDET can scan lots of source files and make files in the process of building a tags database or managing the build system.  The recentf list is then saturated with files you haven't displayed or edited on screen.
+
+[new]
+This is fixed in the CVS version of CEDET.
+
+[new]
+The following is a workaround.
+
+<pre>
+(require 'recentf)
+(recentf-mode 1)
+
+(defsubst file-was-visible-p (file)
+  "Return non-nil if FILE's buffer exists and has been displayed."
+  (let ((buf (find-buffer-visiting file)))
+    (if buf
+      (let ((display-count (buffer-local-value 'buffer-display-count buf)))
+        (if (> display-count 0) display-count nil)))))
+
+(defsubst keep-default-and-visible-recentf-p (file)
+  "Return non-nil if recentf would, by default, keep FILE, and
+FILE has been displayed."
+  (if (recentf-keep-default-predicate file)
+      (file-was-visible-p file)))
+
+;; When a buffer is closed, remove the associated file from the recentf
+;; list if (1) recentf would have, by default, removed the file, or
+;; (2) the buffer was never displayed.  This is useful because, for
+;; example, CEDET opens a lot of files in the background to generate
+;; its tags database, etc.
+(setq recentf-keep '(keep-default-and-visible-recentf-p))
+</pre>
 ----
 CategoryCommands CategoryDotEmacs CategoryPersistence CategoryCompletion

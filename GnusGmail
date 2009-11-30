@@ -31,7 +31,7 @@ Also, if you want to take advantage of using gmail's SMTP server (so gmail keeps
       smtpmail-local-domain "yourcompany.com")
 </pre>
 
-NOTE: You will need starttls, which is used to set up the SSL encrypted connection to the GMail server. This is contained in the "gnutls-bin" package on debian and ubuntu. If you don't have this installed, you'll get a (rather generic) "smtpmail-send-it: Sending failed; SMTP protocol error" error message.
+NOTE: You will need starttls, which is used to set up the SSL encrypted connection to the GMail server. This is contained in the "gnutls-bin" package on earlier versions of debian and ubuntu. With later versions (at least Ubuntu 9.10), starttls is in its own package, and the "gnutls-bin" package is not needed. If you don't have starttls installed, you'll get a (rather generic) "smtpmail-send-it: Sending failed; SMTP protocol error" error message.
 
 NOTE: (Pointed out by ChristofHarper) You can also store your password in the smtpmail-auth-credentials line, but this means that you've got to be more careful when sharing config files with other people.
 

@@ -12,6 +12,149 @@
 ;;ADD-new-content-here
 
 ;;======================================================================
+(defun goto-line-lisp (line)
+  "`goto-line' is not supposed to be used in lisp code. This function is."
+  (interactive)
+  (goto-char (point-min))
+  (forward-line (1- line)))
+
+;;======================================================================
+(defun format-dr-downing-c++-code ()
+  "Dr Downing's code has `}' at the same line of `;', such as `;}}}'.
+This function format it so that `}' will be on a separate line."
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (while (search-forward ";}" nil t)
+      (backward-char 1)
+      (while (looking-at-p "}")
+	(insert ?\n)
+	(funcall indent-line-function)
+	(forward-char 1)))))
+
+;;======================================================================
+;; start a simple new frame, binded to C-x 5 s (simple)
+(defun make-simple-frame ()
+  "make a new frame without modeline, minibuffer. and possible always on top.
+somewhat like the little ediff control window."
+  (interactive)
+  ;; see default-frame-alist doc
+  ;; see ediff
+  ;; TODO how to add/overwrite only given options. keep original properties.
+  (let ((simple-frame-alist
+	  '(;; size
+	    (width . 40)
+	    (height . 10)
+	    ;; (user-size . t)
+	    ;; pos
+	    (top . 0)
+	    (left . 0)
+	    ;; (user-position . t)
+	    ;; layout
+	    ;; (vertical-scroll-bars . nil)
+	    ;; (menu-bar-lines . nil)
+	    ;; (tool-bar-lines . nil)
+	    ;; buffer
+	    (minibuffer . nil)
+	    (unsplittable . t)
+	    )))
+    (make-frame simple-frame-alist)))
+
+;;======================================================================
+;; paste to pastebin.com, binded to f11
+(defvar pastebinit-major-mode-format-alist
+  ;;this is only the init value, customize it in .emacs
+  '((c++-mode . "cpp")
+    (c-mode . "c")
+    (sh-mode . "bash")
+    (html-mode . "html4strict")
+    (java-mode . "java")
+    (php-mode . "php")
+    (python-mode . "python")
+    (scheme-mode . "scheme")
+    (emacs-lisp-mode . "lisp"))
+  "map emacs major mode to pastebin.com syntax format.")
+
+;; now use my simple version: ~/bin/pastebinit-my
+;; the original pastebinit seems not working sometimes
+;; TODO sometimes doesn't post, and return:
+;;      http://sylecn.pastebin.com/pastebin.php
+(defun pastebinit-current-buffer ()
+  "run pastebinit on current buffer, put the resulting url in default kill-ring. in other words, type C-y to paste the link after this command."
+  (interactive)
+  ;; I use a private pastebin address here
+  (let ((textformat (or (cdr (assq major-mode
+				   pastebinit-major-mode-format-alist))
+			"text")))
+    (shell-command-on-region (point-min)
+    			     (point-max)
+			     (concat "pastebinit-my " textformat)))
+  (set-buffer "*Shell Command Output*")
+  (copy-region-as-kill (point-min) (point-max)))
+
+;;======================================================================
+(defun unbalance-two-window ()
+  "when there are two window. make the current one height +10."
+  (interactive)
+  (enlarge-window 10))
+
+;;======================================================================
+(defun cut-for-learnlinux ()
+  "common pattern is `something is a some other thing.' this will remove the \"is\" and add two slashes."
+  (interactive)
+  (move-beginning-of-line nil)
+  (forward-word nil)
+  (kill-word 1)
+  (forward-char nil)
+  (insert " //"))
+
+;;======================================================================
+
+
+;;======================================================================
+;;open manpage in current window
+;;TODO should use man minibuffer input history.
+(defun m (&optional word)
+  "replace default man command. open in one window."
+  (interactive
+   (let ((v (word-at-point))
+	 (enable-recursive-minibuffers t)
+	 (completion-ignore-case t)
+	 val)
+     (setq val
+	   (completing-read
+	    (if (stringp v)
+		(format "man (default %s): " v)
+	      "man: ")
+	    obarray))
+     (list (if (equal val "")
+	       v val))))
+  (man word)
+  (sleep-for 1)
+  (other-window 1)
+  (delete-other-windows))
+
+;;======================================================================
+;;ref: http://www.emacswiki.org/emacs/TrampMode
+;;can be used as a ref on how to implement my "svim" function.
+(defun find-alternate-file-with-sudo ()
+  "open the current file using /sudo::/your-file"
+  (interactive)
+  (when buffer-file-name
+    (find-alternate-file
+     (concat "/sudo:root@localhost:"
+	     buffer-file-name))))
+(defalias 'sudo 'find-alternate-file-with-sudo)
+
+;;======================================================================
+(defun shrink-other-window-if-larger-than-buffer ()
+  "shrink-window-if-larger-than-buffer for other window."
+  (interactive)
+  (other-window 1)
+  (shrink-window-if-larger-than-buffer)
+  (other-window -1))
+
+;;======================================================================
 ;;my customized hippie-expand functions
 
 ;;complete file name
@@ -75,6 +218,51 @@ This function is made to easy set font just by font name. Note that use this fun
   ;;FIXME how to get currently using default font and unicode font?
   (my-set-default-font "Bitstream Vera Sans Mono" size)
   (set-unicode-font "NSimSun" size))
+
+
+;;======================================================================
+;; search word using dict.cn or google
+;;
+;; let default word be the word under/around point
+;;   code borrowed from C-h v
+(defun w3m-dict-cn-search (&optional word)
+  "search word on dict.cn, create w3m buffer if necessary."
+  (interactive
+   (let ((v (word-at-point))
+	 (enable-recursive-minibuffers t)
+	 (completion-ignore-case t)
+	 val)
+     (setq val
+	   (completing-read
+	    (if (stringp v)
+		(format "Search word on dict.cn (default %s): " v)
+	      "Search word on dict.cn: ")
+	    ;;TODO set collection to english words
+	    ;;TODO should allow space in input. for phrases
+	    ;;     space is bind to complete word, you can type C-q SPC to
+	    ;;     input a raw space.
+	    obarray))
+     (list (if (equal val "")
+	       v val))))
+  (w3m-goto-url (concat "http://dict.cn/" word)))
+
+(defun w3m-google-dict-search (&optional word)
+  "search word on google dict cn, create w3m buffer if necessary."
+  (interactive
+   (let ((v (word-at-point))
+	 (enable-recursive-minibuffers t)
+	 (completion-ignore-case t)
+	 val)
+     (setq val
+	   (completing-read
+	    (if (stringp v)
+		(format "Search word on google dict cn (default %s): " v)
+	      "Search word on google dict cn: ")
+	    ;;TODO set collection to english words
+	    obarray))
+     (list (if (equal val "")
+	       v val))))
+  (w3m-goto-url (format "http://www.google.cn/dictionary?langpair=en|zh-CN&q=%s&hl=zh-CN&aq=f" word)))
 
 ;;======================================================================
 ;;google-search using emacs default browser
@@ -141,6 +329,7 @@ With prefix argument, insert date and time."
 (defalias 'now 'insert-datetime)
 
 ;;insert email
+;;  Yuanle Song <sylecn@gmail.com>
 (defun insert-email-formal ()
   "insert email address. If you need anti-spam style, use `insert-email-antispam'."
   (interactive)
@@ -152,7 +341,7 @@ With prefix argument, insert date and time."
   ;;TODO form an antispam address
   ;;replace @ by " AT "
   ;;replace . by " DOT "
-  (insert "your email address will here later..."))
+  (insert "sylecn AT gmail DOT com"))
 
 (defalias 'insert-email 'insert-email-formal)
 
@@ -177,34 +366,48 @@ With prefix argument, insert date and time."
      (region-beginning) (line-end-position))))
 
 ;;======================================================================
-;; comment-line
-;; This may be obsolete now, please use comment-dwim-line.
-(defun comment-line ()
-  "Comment or uncomment current line. If there is highlight region, comment or uncomment that region instead."
+;; my-comment-dwim
+
+(defun comment-line-toggle ()
+  "Comment or uncomment current line."
+  (interactive)
+  (comment-or-uncomment-region
+   (line-beginning-position) (line-end-position)))
+
+(defun my-comment-dwim ()
+  "Comment or uncomment current line. If there is a highlighted region, comment or uncomment that region instead.
+
+When one of the following is true, add new comment (`comment-indent') rather than comment or uncomment current line:
+* at an empty line.
+* point is at end of line, and there is a space before point.
+"
   (interactive)
   (comment-normalize-vars)
   (if (not (region-active-p))
-      (comment-or-uncomment-region
-       (line-beginning-position) (line-end-position))
+      (if (looking-at-p "$")
+	  ;; We are at the end of line. It's probable the user want to
+	  ;; add new comment. Add new comment when:
+	  ;; * at empty line, or
+	  ;; * there is a space before end-of-line
+	  (let ((prev-char (char-before)))
+	    (cond
+	     ((null prev-char)
+	      (insert comment-start))
+	     ((= prev-char ?\s)
+	      (let ((prev-prev-char (char-before (1- (point)))))
+		(if (or (= prev-prev-char ?\s)
+			(= prev-prev-char ?\t)
+			(= prev-prev-char ?\n))
+		    (insert comment-start)
+		  (progn
+		    (backward-delete-char 1)
+		    (comment-indent)))))
+	     ((or (= prev-char ?\n)
+		  (= prev-char ?\t))
+	      (insert comment-start))
+	     (t (comment-line-toggle))))
+	(comment-line-toggle))
     (comment-or-uncomment-region (region-beginning) (region-end))))
-
-;;======================================================================
-;; M-; enhancement
-;; Now it can comment current line when not at end of line.
-;;ref: http://www.emacswiki.org/emacs/CommentingCode
-;;Original idea from
-;;http://www.opensubscriber.com/message/emacs-devel@gnu.org/10971693.html
-
-;; There is still one difference between the orginal and this one.
-;; You can't align the in-line comment at end of code now.
-
-(defun comment-dwim-line (&optional arg)
-  "When no region active and not at end of line, comment current line; else call comment-dwim."
-  (interactive "*P")
-  (comment-normalize-vars)
-  (if (and (not (region-active-p)) (not (looking-at "[ \t]*$")))
-      (comment-or-uncomment-region (line-beginning-position) (line-end-position))
-    (comment-dwim arg)))
 
 ;;======================================================================
 (defun swap-recent-buffer ()
@@ -245,18 +448,22 @@ With prefix argument, insert date and time."
   (shell-command (format "wc %s" (buffer-file-name))))
 
 ;;======================================================================
+;;TODO should show summary of the two byte-recompile-directory, not
+;;     the last one in minibuffer.
 (defun byte-recompile-my-emacs-dir ()
   "handy function for easier update my el files"
   (interactive)
+  (byte-compile-file "~/.emacs-custom.el")
   (byte-recompile-directory "~/.emacs.d/sylecn-scripts/" 0)
-  (byte-recompile-directory "~/.emacs.d/startup-scripts/" 0))
+  (byte-recompile-directory "~/.emacs.d/startup-scripts/" 0)
+  (byte-recompile-directory "~/fromsource/yasnippet/" 0)
+  )
 
 ;;======================================================================
-;; TODO how to do it reliably?
 (defun x-version-running ()
-  "return t if running x version. nil if running terminal version"
+  "return t if current frame is running on a x window. nil if running on terminal."
   (interactive)
-  (>= (display-color-cells) 16777216))
+  window-system)
 
 ;;======================================================================
 (defun exit-emacs-client ()
@@ -313,7 +520,13 @@ occurence of CHAR."
   (setq unread-command-events (list last-input-event)))
 
 ;;======================================================================
+(defun cmd ()
+  "start a shell in buffer \"*cmd*\""
+  (interactive)
+  (shell "*cmd*"))
+
 (defun switch-to-shell-buffer ()
+  "switch to buffer \"*cmd*\""
   (interactive)
   (switch-to-buffer "*cmd*"))
 
@@ -323,13 +536,44 @@ occurence of CHAR."
   (interactive)
   (find-file "~/texts/lwords"))
 
-(fset 'lword-add-word-from-region
-   "\C-[<\C-u10\C-n\C-@\C-s\C-m\谷歌\C-m\C-a\C-[wq\C-[xlword\C-m\C-[>\C-y\C-[gl\C-x\C-s")
+(defun dict-cn-trim-word ()
+  "format/trim pasted dict.cn word"
+  (interactive)
+  (forward-line -1)
+  ;;Note, don't move the newline char at the end. That's part of the search str.
+  (search-backward-regexp "^
+")
+  (set-mark-command nil)
+  (search-forward-regexp "剑\n?桥\n?辞\n?典")
+  (kill-region (region-beginning) (region-end))
+  (kill-line 1)
+  (forward-line -1)
+  (search-forward "[")
+  (backward-char)
+  (just-one-space)
+  (search-forward "]")
+  (kill-line)
+  (goto-char (point-max)))
 
-;; format/trim pasted dict.cn word
-;; TODO should not change my kill ring.
-(fset 'dict-cn-trim-word
-   "\C-r^$\C-r\C-r\C-k\C-p\C-cf[\C-b\C-[ \C-cf]\C-k\C-[>\C-m")
+(defun w3m-dict-cn-add-word-to-lword ()
+  "add current word on dict.cn page to lword file, auto format, save the file."
+  (interactive)
+  (goto-char (point-min))
+  (forward-line (1- 12))
+  (set-mark-command nil)
+  (forward-line 3)
+  (search-forward-regexp "^
+")
+  (copy-region-as-kill (region-beginning) (region-end))
+  ;; hide *w3m* buffer 
+  ;; (w3m-close-window)
+  ;;make it more portable if someday I removed lword from myfiles var.
+  ;;(switch-to-buffer "lwords")
+  (lword)
+  (goto-char (point-max))
+  (yank)
+  (dict-cn-trim-word)
+  (save-buffer))
 
 (defun search-lword ()
   "search word in lword, and jump to it in lword buffer."
