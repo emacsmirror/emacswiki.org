@@ -1,6 +1,8 @@
 This is a list of user-contributed ideas or wishes for AquamacsEmacs. These ideas do not necessarily enjoy wide support in the user base, technically feasible, or are even internally consistent.
 ** In case you find a bug, please file a bug report using the Help / Diagnose and Report Bug menu.  Restart Aquamacs without customizations (per menu), reproduce the bug, then report using the reporting function.
 
+BryanLHarris: I would like better scrolling support for the Magic Mouse, which is currently kind of crazy.  The scrolling is so quick I just end up at either the top or bottom of the file.
+
 [new:Unhammer:2009-08-08 08:59 UTC]
 Now that emacs 23 has this fancy multi-tty stuff, isn't the time ripe to implement the two functions `collaboration-server-start' and `collaboration-server-join' for user-friendly [[CollaborativeEditing]]?
 
@@ -179,6 +181,8 @@ DavidReitter: interesting suggestion. Reasonably easy to implement,  I guess. We
  http://repo.or.cz/w/MacVim.git?a=tree;f=src/MacVim/edit-in-odb has sample code from MacVim. 
  No, I don't speak C either :)
  
+
+ Max: yes, ODB, would be really great!! (Don't know C either, sorry...)
 
 [new]
 Randolf Schultz:

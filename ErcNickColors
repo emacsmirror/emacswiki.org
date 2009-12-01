@@ -1,4 +1,7 @@
-Use this elisp to color IRC nicks according to a list of usable colors.  Note that the colors are determined by the MD5 sum of a nick string, and if the nick-colors-list changes, so will the color indexes.  Enjoy!  Put this in your emacs load path and add <code>(require 'erc-nick-colors)</code> to your <code>.emacs</code>.  If you have any improvements or suggestions, contact me at <code>cygnus at cprogrammer dot org</code>.
+Below is a variety of elisp to color IRC nicks according to a list of usable colors.  
+
+==Option 1==
+The colors are determined by the MD5 sum of a nick string, and if the nick-colors-list changes, so will the color indexes.  Enjoy!  Put this in your emacs load path and add <code>(require 'erc-nick-colors)</code> to your <code>.emacs</code>.  If you have any improvements or suggestions, contact me at <code>cygnus at cprogrammer dot org</code>.
 
 <pre>
 (setq nick-face-list '())
@@ -49,6 +52,7 @@ you'll change the colors used for nicks."
 (provide 'erc-nick-colors)
 </pre>
 
+==Option 2==
 
 Here is a reformulation of the above. It is simpler to hack, and allows you to specify colors for some people (in case you're tired of their usual color, if you want to avoid collision, or whatever). Contact at antoine d0t levitt, at gmail.
 <pre>
@@ -85,6 +89,33 @@ Here is a reformulation of the above. It is simpler to hack, and allows you to s
 (add-hook 'erc-insert-modify-hook 'erc-put-color-on-nick)
 </pre>
 
+==Option 3==
+
+Same as the above, but highlight nicks no matter where they appear, using code copied from erc-button-add-nickname-buttons.  Take Option 2 code but replace erc-put-color-on-nick:
+
+<pre>
+(defun erc-put-color-on-nick ()
+  "Modifies the color of nicks according to erc-get-color-for-nick"
+  (save-excursion
+    (goto-char (point-min))
+    (while (forward-word 1)
+      (setq bounds (bounds-of-thing-at-point 'word))
+      (setq word (buffer-substring-no-properties
+                  (car bounds) (cdr bounds)))
+      (when (or (and (erc-server-buffer-p) (erc-get-server-user word))
+                (and erc-channel-users (erc-get-channel-user word)))
+        (put-text-property (car bounds) (cdr bounds) 
+                           'face (cons 'foreground-color
+                                       (erc-get-color-for-nick word)))))))
+</pre>
+
+Note you may also want to add underscore to the syntax table for words, as they're common in nicks  This will improve the button behavior too:
+
+<pre>
+(add-hook 'erc-mode-hook (lambda () (modify-syntax-entry ?\_ "w" nil)))
+</pre>
+
+==Option 4==
 
 To get a bit more variety:
 <pre>

@@ -17,6 +17,8 @@ here instead.  It will allow you to:
 * Have a starting point for learning the full capabilities of Bazaar.
 
 We hope you will go back and read [[BzrForEmacsDevs]] when you have a chance.
+The workflow described there is a superset of what is described here -- once
+you have read that document, you won't need this one anymore.
 
 === Conventions and basic info ===
 

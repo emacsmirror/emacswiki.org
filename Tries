@@ -7,6 +7,8 @@ Requires the [[Heaps]], TaggedNFA, [[Queues]], and [[AVLtrees]] packages. The la
 * Trie package download: http://www.dr-qubit.org/download.php?file=predictive/trie.el
 * Web-site: http://www.dr-qubit.org/emacs.php#structures
 
+Please send bug reports and suggestions to [mailto:toby-predictive@dr-qubit.org toby-predictive@dr-qubit.org] (you can post them here as well if you like, of course). I don't check this page regularly, so anything not emailed to me is likely to languish here unnoticed for some time.
+
 -- TobyCubitt
 
 ----

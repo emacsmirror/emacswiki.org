@@ -41,6 +41,7 @@
 ;;; `mon-help-window-functions', `mon-help-hg-archive'
 ;;; `mon-help-crontab', `mon-help-unix-commands', `mon-help-permissions'
 ;;; `mon-help-propertize-tags', `mon-help-propertize-tags-TEST'
+;;; `mon-help-du-incantation'
 ;;; FUNCTIONS:◄◄◄
 ;;;
 ;;; MACROS:
@@ -61,6 +62,7 @@
 ;;; `*regexp-mon-doc-help-docstring-tags-TABLES*',
 ;;; `*regexp-mon-doc-help-docstring-tags*',`*regexp-mon-doc-help-comment-tags*'
 ;;; `*regexp-mon-doc-help-pointer-tags*',`*regexp-mon-doc-help-meta-tags*'
+;;; `*regexp-clean-du-flags*'
 ;;; `*reference-sheet-help-A-HAWLEY*', `*w32-env-variables-alist*',
 ;;; `*doc-cookie*', `*regexp-symbol-defs*', `*mon-help-interactive-spec-alist*'
 ;;;
@@ -139,7 +141,7 @@
 ;;; MAINTAINER: MON KEY
 ;;;
 ;;; PUBLIC-LINK: (URL `http://www.emacswiki.org/emacs/mon-doc-help-utils.el')
-;;; FILE-PUBLISHED <Timestamp: #{2009-08-15} - by MON KEY>
+;;; FILE-PUBLISHED: <Timestamp: #{2009-08-15} - by MON KEY>
 ;;;
 ;;; FILE-CREATED:
 ;;; <Timestamp: Wednesday June 17, 2009 @ 11:29.15 AM - by MON KEY>
@@ -224,9 +226,10 @@ docstring should be commented out when inserting into buffer.
       ":SUBJECT" ":TEST-ME" ":TODO" ":TAGS-COMMON" ":UNCOMMENT-BELOW-TO-TEST"
       ":VERSION" ":WAS"))
     (docstr-tags                        ;. 
-     ("►►►" ":ALIASED-BY" ":CALLED-BY" ":EXAMPLE" ":FACE-DEFINED-IN"
-      ":FACE-DOCUMENTED-IN" ":FILE" ":IDIOM" ":KEYWORD-REGEXPS-IN" ":NOTE"
-      ":SEE" ":SEE-ALSO" ":SOURCE" ":USED-BY"))
+     ("►►►" ":ALIASED-BY" ":CALLED-BY" ":CALLED-BY" ":EXAMPLE"
+     ":FACE-DEFINED-IN" ":FACE-DOCUMENTED-IN" ":FACE-DEFINED-IN"":FILE" ":IDIOM"
+     ":KEYWORD-REGEXPS-IN" ":KEYWORD-LISTS-IN" ":NOTE" ":SEE" ":SEE-ALSO"
+     ":SOURCE" ":USED-BY"))
     (meta-tags                          ;.
      ("<BEGINNING>" "<BUFFER>" "<CLASS>" "<COMMAND>" "<CONSTANT>"
       "<DEPRECATED>" "<DIRECTORY>" "<EXPRESSION>" "<FACE>" "<FILE>" "<FILES>"
@@ -331,8 +334,9 @@ For `help-mode' views of MON functions, in particular those from
 (defvar *regexp-mon-doc-help-docstring-tags*
   (regexp-opt
    '(":ALIASED-BY" ":CALLED-BY" ":CALLED-BY" ":EXAMPLE" ":FACE-DEFINED-IN"
-     ":FACE-DOCUMENTED-IN" ":FILE" ":IDIOM" ":KEYWORD-REGEXPS-IN" ":NOTE" ":SEE"
-     ":SEE-ALSO" ":SOURCE" ":USED-BY") t)
+     ":FACE-DOCUMENTED-IN" ":FACE-DEFINED-IN"":FILE" ":IDIOM"
+     ":KEYWORD-REGEXPS-IN" ":KEYWORD-LISTS-IN" ":NOTE" ":SEE" ":SEE-ALSO"
+     ":SOURCE" ":USED-BY") t)
   "*Regexp for locating \"meta-syntactic\" type tags in :FILE `mon-doc-help-utils.el'.
 :SEE-ALSO `*regexp-mon-doc-help-docstring-tags-DYNAMIC*'
 `*regexp-mon-doc-help-docstring-tags-TABLES*',`*regexp-mon-doc-help-comment-tags*'
@@ -466,6 +470,7 @@ For advising `help-mode' of some more things to fontlock.
                  (match-beginning (elt x 1)) (match-end (elt x 1)) 
                  `(face ,(elt x 2))))) 
           help-props)))
+;;
 ;;; :TEST-ME (mon-help-propertize-tags-TEST)
 
 ;;; ==============================
@@ -1466,6 +1471,7 @@ Why not! :)\n►►►
 `mon-help-cntl->hex->ecma-48'\n
 ;; :RECIPES
 `mon-help-crontab'
+`mon-help-du-incantation'
 `mon-help-format-width'
 `mon-help-hg-archive'
 `mon-help-info-incantation'
@@ -2568,7 +2574,7 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:
 `eieio-class-tree'               &optional ROOT-CLAS
 `eieio-class-slot-name-index'    CLASS SLOT
 `eieio-slot-name-index'          CLASS OBJ SLOT
-`eieio-default-superclass'      ;<VARIABLE> ;<-:ALIASED-BY `standard-class'
+`eieio-default-superclass'      ;<VARIABLE> ;<- :ALIASED-BY `standard-class'
 `eieio-describe-class-slots'     CLASS
 `eieio-describe-constructor'     FCN
 `eieio-lambda-arglist'           FUNC
@@ -4304,6 +4310,74 @@ done \n►►►"
 ;;; :TEST-ME (mon-help-rename-incantation)
 ;;; :TEST-ME (call-interactively 'mon-help-rename-incantation)
 ;;; :TEST-ME (describe-function 'mon-help-rename-incantation)
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-11-30T16:39:56-05:00Z}#{09491} - by MON KEY>
+(defvar *regexp-clean-du-flags*
+  '(("-a" . "--all")
+    ("--apparent-size")
+    ("-b" . "--bytes")
+    ("-B" . "--block-size")             ;SIZE & =SIZE")
+    ("-c" . "--total")
+    ("-D" . "--dereference-args")
+    ("--files0-from")                   ;=FILE
+    ("-h" . "--human-readable")
+    ("-H")
+    ("-k")
+    ("-l" . "--count-links")
+    ("-L" . "--dereference")
+    ("-P" . "--no-dereference")
+    ("--max-depth")                     ;=DEPTH
+    ("-0" . "--null")
+    ("--si")
+    ("-s" . "--summarize")
+    ("-S" . "--separate-dirs")
+    ("-x" . "--one-file-system")
+    ("--exclude")                       ;=PATTERN
+    ("-X" . "--exclude-from"))          ;FILE & =FILE
+  "*Alist of short and long flags for the `du' command.
+:SEE-ALSO `mon-help-du-iincantation'\n►►►")
+;;
+;;; :TEST-ME *regexp-clean-du-flags*
+;;
+;;; (progn (makunbound '*regexp-clean-du-flags*)(unintern '*regexp-clean-du-flags*))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-11-30T16:31:20-05:00Z}#{09491} - by MON KEY>
+(defun mon-help-du-incantation (&optional insertp intrp)
+  ""
+(interactive "i\nP")
+  (if (or insertp intrp)
+      (mon-help-function-spit-doc 'mon-help-du-incantation :insertp t)
+    (message "Pass non-nil for optional arg INTRP")))
+;;
+;; Now, tack the var list onto the docstring
+(eval-when-compile
+(let (put-flags)
+  (setq put-flags "")
+  (mapc #'(lambda (x) (setq put-flags 
+                            (concat (format "`%s' %s\n" 
+                                            (car x) 
+                                            (if (cdr x) 
+                                                (concat "`" (cdr x) "'")
+                                                ""))
+                                    put-flags)))
+        (reverse (symbol-value '*regexp-clean-du-flags*)))
+  (mon-help-put-var-doc-val->func 'put-flags  'mon-help-du-incantation
+                                  (concat 
+                                   "Short and long flags to the du command.\n\n"
+                                   ";; :DU-FLAGS\n")
+                                   nil 
+                                   (concat
+                                   "\n:EXAMPLE\n shell> du -s --si <DIR>\n\n"
+                                   ":SEE-ALSO `*regexp-clean-du-flags*'\n►►►"))))
+;;
+;;; :TEST-ME (mon-help-du-incantation )
+;;; :TEST-ME (mon-help-du-incantation t)
+;;; :TEST-ME (call-interactively 'mon-help-du-incantation)
+;;; :TEST-ME (describe-function 'mon-help-du-incantation)
+;;
+;;; (progn (fmakunbound 'mon-help-du-incantation) (unintern 'mon-help-du-incantation))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: Sunday May 31, 2009 @ 04:35.09 PM - by MON KEY>

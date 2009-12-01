@@ -11,6 +11,8 @@ Note that Emacs' regexps are not [http://en.wikipedia.org/wiki/Regular_expressio
 
 This package essentially implements Laurikari's algorithm, as described in his [http://www.iki.fi/vl/regex-submatch.ps.gz master's thesis], but it builds the corresponding tagged [http://en.wikipedia.org/wiki/Deterministic_finite-state_machine deterministic finite state automaton] (DFA) on-the-fly as needed. See also RussCox' [http://swtch.com/~rsc/regexp/regexp1.html online article] for more about NFAs, DFAs, and regular expression matching.
 
+Please send bug reports and suggestions to [mailto:toby-predictive@dr-qubit.org toby-predictive@dr-qubit.org] (you can post them here as well if you like, of course). I don't check this page regularly, so anything not emailed to me is likely to languish here unnoticed for some time.
+
 --TobyCubitt
 
 ----

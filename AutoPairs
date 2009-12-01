@@ -85,6 +85,10 @@ um, how do I report bug to you? email? I also tried paredit before tried autopai
 [new]
 There is a new feature that implements your desired backtick-and-quote custom pairing. Anyway to submit a bug or track autopair.el development go to http://autopair.googlecode.com, you can ask questions there and I can follow-up much better on them. For example one of the issues in point 3 you report is a not a bug, autopair can't guess you don't mean to start a string before the ")".--JoaoTavora
 
+[new]
+About backtick-and-quote, I already used it, it's good. Small suggestion, I think "(setq autopair-extra-pairs `(:everywhere ((?` . ?'))))" is more common for elisp users.
+
+ -- [[ahei]]
 
 === SkeletonMode ===
 

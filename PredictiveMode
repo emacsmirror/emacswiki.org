@@ -14,6 +14,8 @@ The latest version of the Predictive Completion package significantly breaks com
 
 The predictive completion package uses the CompletionUI, AutoOverlays,  DictionaryTrees, [[Tries]], TaggedNFA, [[Heaps]], [[AVLtrees]], and [[Queues]] packages. For convenience, these are included in the download file (linked above).
 
+Please send bug reports and suggestions to [mailto:toby-predictive@dr-qubit.org toby-predictive@dr-qubit.org] (you can post them here as well if you like, of course). I don't check this page regularly, so anything not emailed to me is likely to languish here unnoticed for some time.
+
 -- TobyCubitt
 
 
@@ -152,7 +154,7 @@ There are two aspects to completion: which completions are offered, and how to c
 
 == Discusion ==
 
-(add comments here)
+[add comments here]
 
 ----
 CategoryModes | CategoryCompletion | CategorySpelling

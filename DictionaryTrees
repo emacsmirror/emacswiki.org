@@ -1,6 +1,6 @@
-These dictionary data structures are a hybrid between [[Tries]] and hash tables.
+These dictionary tree data structures are a hybrid between [[Tries]] and hash tables.
 
-The data is stored in a trie, but results of queries that take particularly long to retrieve are cached in hash tables, which are automatically kept synchronised with the tree. The package also provides persistent storage of the data structures in files, and various other convenience features.
+The data is stored in a trie, but results of queries that take particularly long to retrieve are cached in hash tables, which are automatically kept synchronised with the tree. The package also provides persistent storage of the data structures in files, automatic saving, using multiple dictionary trees together as a combined meta-dictionary, and various other convenience features.
 
 Requires the [[Heaps]], [[Tries]], TaggedNFA and [[Queues]] packages. The latest version (0.12.1, released February 2009) can be obtained from:
 
@@ -9,12 +9,14 @@ Requires the [[Heaps]], [[Tries]], TaggedNFA and [[Queues]] packages. The latest
 
 **!!!Warning!!! This version breaks compatibility with dictionaries created using earlier versions.**
 
+Please send bug reports and suggestions to [mailto:toby-predictive@dr-qubit.org toby-predictive@dr-qubit.org] (you can post them here as well if you like, of course). I don't check this page regularly, so anything not emailed to me is likely to languish here unnoticed for some time.
+
 Happy Elisping!
 
 --TobyCubitt
 
 
-= Just for fun...! =
+== Just for fun...! ==
 
 The following command might help when solving crosswords. Note that, for this to work, you'll either need the English dictionary from the PredictiveMode package, or you'll need to create your own dictionary and name it dict-english (or modify the code below to use a different dictionary name):
 

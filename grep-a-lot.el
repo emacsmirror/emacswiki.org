@@ -4,7 +4,7 @@
 
 ;; Author: Avi Rozen <avi.rozen@gmail.com>
 ;; Keywords: tools, convenience, search
-;; Version: %Id: 3%
+;; Version: %Id: 4%
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -110,12 +110,12 @@ With REVERSE non-nil the sort order is reversed."
         (setq all-buffers (cdr all-buffers))))
     ;; sort buffers by name
     (sort buffers (lambda (a b)
-                    (let ((name-a (buffer-name a))
-                          (name-b (buffer-name b)))
+                    (let ((pos-a (grep-a-lot-buffer-position (buffer-name a)))
+                          (pos-b (grep-a-lot-buffer-position (buffer-name b))))
                       (if reverse
-                          ;; assume name-a and name-b are not equal
-                          (string-lessp name-b name-a)
-                        (string-lessp name-a name-b)))))))
+                          ;; assume pos-a and pos-b are not equal
+                          (< pos-b pos-a)
+                        (< pos-a pos-b)))))))
 
 (defun grep-a-lot-last-buffer ()
   "Return last grep-a-lot buffer."

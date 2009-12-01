@@ -2,6 +2,7 @@
 
 == Bugs ==
 
+# vimpulse uses functions from the ##cl## package. It is therefore necessary to ##(require 'cl)## before loading it, but this is not mentioned in the documentation.
 # `cas'/`das' only recognize the dot (##.##) as a sentence terminator.
 # Hitting ##ESC## at beginning of the buffer generates the error message "##and: Wrong type argument: number-or-marker-p, nil##".
 # Visually selected text is not replaced on paste. [''fixed'']

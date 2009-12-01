@@ -2,229 +2,91 @@ This page is about library '''<tt>[[bookmark+.el]]</tt>''', which enhances vanil
 
 The internal bookmark format (data structure) used by '''[::Bookmark+]''' is compatible with that of vanilla GnuEmacs. It extends that structure in new ways, to accommodate new bookmark types.
 
-With '''Bookmark+''' you can use bookmarks that were created with any Emacs version in any other Emacs version. In particular, '''Bookmark+''' lets you use Emacs prior to release 23 with bookmarks created using Emacs 23 (or created using any older version).
+With '''Bookmark+''' you can use bookmarks that were created with any Emacs version in any other Emacs version. In particular, '''Bookmark+''' lets you use Emacs prior to release 23 with bookmarks created using Emacs 23 (or created using any older version). (See also [[#Compatibility]], below.)
 
 
+[:FeatureOverview]
+== Overview of Features ==
 
-[:BookmarkRegion]
-== Bookmark Regions, Not Just Single Positions ==
+Here is an overview of the features that '''Bookmark+''' provides.  Some of
+these are detailed further below.
 
-A vanilla Emacs bookmark records a single position (destination) somewhere. With '''Bookmark+''', you can record a [[region]], that is, two positions (in the same document). If the region is active (and non-empty) when you set a bookmark, then the region information is automatically saved as part of the bookmark.
+=== Richer bookmarks.  They record more.  They are more accurate. ===
 
-When you then jump to a bookmark that records a region, the region is activated automatically, provided [[user option]] '''`bookmark-use-region-flag'''' is non-`nil' (which it is by default). You can also flip the option value temporarily when you visit a bookmark, by using a [[prefix argument]].
+* You can ''tag'' bookmarks, a la [[http://delicious.com|del.icio.us]].
+This is perhaps the
+     most important '''Bookmark+''' feature.  In effect, '''[::bookmark tag]s''' define
+     bookmark ''sets''.  A bookmark can have any number of tags, and
+     multiple bookmarks can have the same tag.  You can mark or
+     show just the bookmarks with a given tag or a set of tags.
 
+* Bookmarks record the ''number of visits'' and the ''time'' of the last
+     visit.  You can sort, show/hide, or mark bookmarks based on
+     this info.
 
-[:BufferBookmarks]
-== Bookmark Any Buffer, Not Just a File ==
+* You can bookmark a ''[[region]]'' of text, not just a position.  When
+     you jump to a bookmark that records a region, the region is
+     activated (see option '''`bookmarkp-use-region-flag'''').  (Region
+     activation is not supported for Gnus bookmarks.)
 
-In vanilla Emacs, you can bookmark a position in any file, including files of special types, such as [[InfoMode|Info]], %%DocView%% (PDF), an image, or a [[Gnus]] article.
+* Bookmarks are relocated better when the contextual text changes.  By default, when you visit a bookmark that requires relocation, the bookmark is then saved with the new, relocated position information. If you want to turn off this automatic saving, then customize user option '''`bookmark-save-new-location-flag'''' to `nil'.
 
-With '''Bookmark+''', you can also bookmark a position (or a region) in ''any'' buffer. When you jump to such a non-file bookmark, an attempt is made to re-create the buffer if it is not already open.
 
 
 
-[:GnusAndW3mBookmarks]
-== Gnus, W3M ==
 
-With '''Bookmark+''' you can use the normal bookmarking commands to bookmark Gnus articles -- no need for special Gnus-specific key bindings. Also, the same bookmark data structure is used to store Gnus bookmarks (in ##.emacs.bmk##). Note: Gnus article bookmarks do not record region information.
+=== Improvements for the bookmark list. ===
 
-You can bookmark URLs when you use [[w3m|W3M]]. By default, a new tab is opened for each such bookmark you visit, but you can alternatively open a separate W3M session for each visited bookmark.
+This is buffer `##*Bookmark List*##', aka the bookmark "menu list", which you display using `C-x r l'.
 
+* The last display state is saved (by default), and is restored
+     the next time you show the list.  (''Tip:'' Use the bookmark list
+     as your '''Home''' page at Emacs startup.)
 
+* ''Marking''/unmarking is enhanced.  It is similar to [[DiredMode|Dired]]'s.
 
-[:BookmarkRelocation]
-== Better Bookmark Relocation, Saving Updated Location ==
+* You can easily mark or show different ''classes'' of bookmarks.
 
-Just as is the case for vanilla Emacs bookmarks, '''Bookmark+''' relocates bookmark positions when you visit them, if they have moved because the surrounding text has changed since they were recorded. This applies also to bookmarks with regions (two positions).
+* You can ''sort'' bookmarks in many ways.  You can easily define
+     your own sort orders, even complex ones.
 
-This relocation is more robust than the relocation for vanilla Emacs bookmarks: the new location is found correctly more often. In the case of a bookmark with a region, the region text, like the surrounding text, can be modified and the bookmark will typically be relocated correctly. 
+* You can regexp-search (`M-a') or query-replace (`M-q') the
+     targets (destination files or buffers) of the marked bookmarks, in the
+     current sort order.  For Emacs 23 and later, you can search
+     incrementally (`M-x a C-s', or `M-x a C-M-s' for [[regexp]]).
 
-By default, when you visit a bookmark that requires relocation, the bookmark is then saved with the new, relocated position information. If you want to turn off this automatic saving, just customize user option '''`bookmark-save-new-location-flag'''' to `nil'.
+* [[Face]]s distinguish bookmarks by type:
 
+** non-file buffers
+** local files with regions
+** local files without regions
+** local directories
+** remote files or directories
+** remote files or directories that must be accessed by `su' or `sudo' (`root')
+** w3m URLs
+** Info nodes
+** Gnus articles
 
+* You can edit a bookmark (its name and file name).
 
 
-[:SaveMenuListState]
-== Menu-List State Is Saved ==
 
-'''Bookmark+''' greatly enhances the so-called "menu list", buffer `##*Bookmark List*##', which is displayed when you use command `bookmark-bmenu-list' (`C-x r l'). These enhancements are described in other sections, below.
+=== Additional types of bookmarks. ===
 
-Many of the enhancements let you display, sort, and mark various subsets of your complete set of bookmarks. A major '''Bookmark+''' feature is that when you quit the menu list (using `q') or you quit Emacs, the current state is saved.
+* You can bookmark a [[DiredMode|Dired]] buffer, recording and restoring its
+     switches and which files are marked.
 
-So if, for example, when you quit the menu list you are showing only bookmarks to Info nodes and UNIX manual pages, sorted a particular way, and with some of them marked for particular processing, then the next time you open the list the same state is restored: the same set of bookmarks is shown, in the same order, with the same markings.
+* You can bookmark a [[buffer]] that is not associated with a file. 
 
-One way to use this is as a way of configuring how you want the menu list to start out in a new Emacs session -- your bookmarks homepage, as it were.
+* You can bookmark a [[Gnus]] article, a URL (if you use [[w3m|W3M]]), a PDF file (%%DocView%%), an image, or a UNIX manual page (from the output of Emacs
+     command `woman' or `man').
 
-You can turn off this automatic state saving, if you want, by customizing option '''`bookmarkp-bmenu-state-file'''' to `nil'. And you can toggle this option at any time, using '''`C-t'''' in the menu list. In particular, if you want your next visit to the menu list to start out with a previously recorded state instead of the current state, just hit `C-t' before quitting the menu list or Emacs.
 
+=== Synergy with Icicles. ===
 
-
-
-
-
-[:BookmarkTypesHighlighted]
-== Bookmark Types Are Highlighted ==
-
-In '''Bookmark+'''', bookmarks are highlighted in the menu list, to indicate their type:
-
-* non-file buffers
-* local files with regions
-* local files without regions
-* local directories
-* remote files or directories
-* remote files or directories that must be accessed by `su' or `sudo' (`root')
-* w3m URLs
-* Info nodes
-* Gnus articles
-
-
-
-
-
-[:MarkingAndUnmarkingBookmarks]
-== Marking and Unmarking Bookmarks ==
-
-'''Bookmark+''' enhances marking and unmarking in several ways.  In
-general, these enhancements are similar to features offered by
-[[DiredMode|Dired]] and [[Dired X]]. You can use:
-
-* '''`##% m##'''' to mark bookmarks whose names match a [[regexp]].
-
-* '''`M-DEL'''' (or '''`U'''') to unmark all bookmarks, or all that
-   are marked `##>##', or all that are flagged `D'.
-
-* '''`t'''' to toggle (swap) marked and unmarked bookmarks:
-   the marked become unmarked, and vice versa.
-
-* '''`##>##'''' to show only the marked bookmarks or '''`##<##'''' to show
-   only the unmarked bookmarks.  Repeat to show all again.
-
-* '''`##F M##'''', '''`##I M##'''' etc. to __m__ark only __f__ile bookmarks, __I__nfo
-bookmarks etc.
-
-
-
-
-
-
-[:HidingAndShowingBookmarks]
-== Filtering: Hiding and Showing Bookmarks ==
-
-You can hide and show different sets of bookmarks in the menu
-list (`C-x r l').  There are commands to show only bookmarks of a particular
-type (e.g. `##I S##' to show only Info bookmarks).  These are, in
-effect, shortcuts for first marking those bookmarks and then
-showing only the marked bookmarks (and then unmarking).  For
-example, `##F S##' is a shortcut for `##F M >##' (and then `##U RET##').
-
-You can also filter to show only the bookmarks that match a
-regexp.  There are two ways to do this:
-
-* Use '''`##P B##'''' (for "__p__attern", "__b__ookmark") and type a regexp.  The
-  bookmarks are filtered incrementally, as you type.  Only the
-  bookmark name is matched.  Hit any non-inserting key, such as
-  `RET', to stop defining the pattern. Similarly, hit '''`##P F##'''' for bookmarks whose __f__ile names match a
-  regexp, and '''`##P T##'''' for bookmarks with one or more __t__ags that match
-  a regexp.  See [[#Bookmark Tags]], below, for information about
-  tags.
-
-* Just as in Dired, use '''`##% m##'''' to mark the bookmarks that match a
-  regexp.  The entire bookmark line in the menu list (bookmark
-  name and perhaps file name) is searched for a match.
-Then use '''`##>##'''' to show only the marked bookmarks.  This method has
-  the advantage that you can show the complement: the bookmarks
-  that do *not* match the regexp, by using '''`##<##'''' instead of `##>##'.  It
-  also has the advantage/disadvantage that matching checks the
-  combination of bookmark name and file name.
-
-Commands that operate on the current bookmark or on the marked or
-the unmarked bookmarks ''act only on bookmarks that are displayed''
-(not hidden).  This includes the commands that mark or unmark
-bookmarks.  This means that you can easily define any given set of
-bookmarks.
-
-For example:
-
-# `##F S##' -- __S__how only bookmarks associated with __f__iles.
-# `##% m##' -- __M__ark those whose names match a particular [[regexp]].
-# `##R S##' -- __S__how only bookmarks that have __r__egions.
-# `m' -- __M__ark some of those region bookmarks individually.
-# `##.##' -- Show all bookmarks.
-# `t' -- __T__oggle the marked and unmarked (so unmarked are now marked)
-# `D' -- __D__elete all of the marked bookmarks (after confirming)
-
-That deletes all file bookmarks that match the regexp and all
-region bookmarks that you selectively marked.
-
-These are the keys for hiding or showing bookmarks:
-
-* '''`##.##'''' -- Show all bookmarks.
-
-* '''`##B S##'''' -- Show only non-file (e.g. __b__uffer) bookmarks.
-
-* '''`##F S##'''' -- Show only __f__ile (including directory) bookmarks. With a [[prefix argument]], hide remote-file bookmarks.
-
-* '''`##G S##'''' -- Show only __G__nus bookmarks.
-
-* '''`##I S##'''' -- Show only __I__nfo bookmarks.
-
-* '''`##R S##'''' -- Show only bookmarks with __r__egion information.
-
-* '''`##W S##'''' -- Show only __W__3M bookmarks.
-
-* '''`##>##'''' -- Toggle showing only marked bookmarks
-
-* '''`##<##'''' -- Toggle showing only unmarked bookmarks
-
-
-
-
-
-[:SortingBookmarks]
-== Sorting Bookmarks ==
-
-Filtering hides certain kinds of bookmarks.  Sometimes, you want
-to see bookmarks of various kinds, but you want them to be grouped
-or sorted in different ways, for easy recognition, comparison, and
-access.
-
-Bookmarks shown in the menu list (`C-x r l') are sorted using the current
-value of option '''`bookmark-sort-function''''.  (If `nil', they are
-unsorted.)
-
-You can use '''`##s s##''''... (repeat hitting the `s' key) to cycle among
-the various sort orders possible.  By default, all available sort
-orders are cycled, but you can shorten the cycling list by
-customizing option '''`bookmarkp-sort-orders-for-cycling-alist''''.
-
-You can also change directly to one of the main sort orders
-(without cycling) using '''`##s n##'''', '''`##s f n##'''', etc.:
-
-* '''`##s >##'''' -- Sort marked before unmarked.
-* '''`##s b##'''' -- Sort by last __b__uffer or file access.
-* '''`##s g##'''' -- Sort by __G__nus thread: group, article, message.
-* '''`##s i##'''' -- Sort by __I__nfo manual, node, position
-* '''`##s k##'''' -- Sort by bookmark type (__k__ind)
-* '''`##s n##'''' -- Sort by bookmark __n__ame
-* '''`##s t##'''' -- Sort by last bookmark access __t__ime
-* '''`##s v##'''' -- Sort by __v__isit frequency
-* '''`##s w##'''' -- Sort by __W__3M URL
-* '''`##s f d##'''' -- Sort by local __f__ile type: file, symlink, __d__ir
-* '''`##s f n##'''' -- Sort by __f__ile __n__ame
-* '''`##s f s##'''' -- Sort by local __f__ile __s__ize
-* '''`##s f t##'''' -- Sort by last local __f__ile access __t__ime
-* '''`##s f u##'''' -- Sort by last local __f__ile __u__pdate (edit)
-
-You can __r__everse the current sort direction (ascending/descending)
-using '''`##s r##''''.
-
-Remember that you can combine sorting with hiding/showing
-different sets of bookmarks -- bookmarks of different kinds
-(e.g. Info) or bookmarks that are marked or unmarked.
-
-Finally, you can easily define your own sorting commands and sort
-orders.  See macro '''`bookmarkp-define-sort-command'''' and the
-documentation for option `bookmarkp-sort-comparer'.
+If you use '''[[Icicles]]''', then you can use `S-delete' during
+     completion for a bookmark name, to delete selected bookmarks on the fly.  You can delete any number of bookmarks this way, during a single invocation of a bookmark command. In addition, '''Icicles''' provides enhanced
+bookmark visiting and definition. See command '''`icicle-bookmark''''.
 
 
 
@@ -253,7 +115,7 @@ use bookmarks to tag files in various ways purely for purposes of
 organizing them (e.g. into projects), whether or not you ever use
 the bookmarks as a way to visit them.
 
-For example, if you also use '''[[Dired+]]''' (library <tt>[[dired+.el]]</tt>), then you can use
+For example, if you use '''[[Dired+]]''' (library <tt>[[dired+.el]]</tt>), then you can use
 '''`M-b'''' (`diredp-do-bookmark') in Dired to create a bookmark for each of the
 marked files in the Dired buffer.  Even if you never use those
 bookmarks for navigating to the files, you can use them with tags
@@ -262,16 +124,49 @@ to organize the files.
 To make tags more useful, '''Bookmark+''' provides lots of commands: for
 adding or removing tags, and for marking or unmarking bookmarks
 that are tagged in various ways.  When combined with other
-Bookmark+ commands (e.g. search, query-replace) that apply to the
-marked bookmarks in the `##*Bookmarks List*##' window, you can really
-do quite a lot using bookmark tags.  Use your imagination!
+'''Bookmark+''' commands (e.g. search, query-replace) that apply to the
+marked bookmarks in the `##*Bookmark List*##' window, you can really
+do quite a lot using bookmark tags.  Use your imagination!  See [[#TagCommandsAndKeys]]), below, for more about this.
 
-There are lots of tags-related bookmark commands, and they are all
-bound to keys in buffer `##*Bookmarks List*##'.  How to keep them
+
+
+
+
+
+[:Bookmark List]
+== Bookmark List (Display) ==
+
+'''Bookmark+''' enhances the bookmark list (aka the bookmark "menu list") that is displayed in buffer `##*Bookmark List*##' when you use `C-x r l' (command `bookmark-bmenu-list'). Bookmarks are highlighted to
+indicate their type. You can mark and unmark bookmarks, show or
+hide bookmarks of particular types, and much more.
+
+If option '''`bookmarkp-bmenu-state-file'''' is non-`nil', then '''Bookmark+'''
+remembers the last state of the bookmark list when you quit it or
+you quit Emacs, and it restores that state when you show the list
+again (which could be in the next Emacs session).  You can toggle
+this option using '''`C-t'''' in the bookmark list.  You can think of
+this feature as your '''Home''' page for bookmarks, giving you a
+stepping stone to the files and directories you use most.
+
+If, for example, when you quit the bookmark list you are showing only bookmarks to [[Info]] nodes and UNIX manual pages, sorted in a particular way, and with some of them marked for particular processing, then the next time you open the list the same state is restored: the same set of bookmarks is shown, in the same order, with the same markings.
+
+You can turn off this automatic state saving, if you want, by customizing option '''`bookmarkp-bmenu-state-file'''' to `nil'. And you can toggle this option at any time, using '''`C-t'''' in the bookmark list. In particular, if you want your next visit to the bookmark list to start out with a previously recorded state instead of the current state, just hit `C-t' before quitting the bookmark list or Emacs.
+
+Use `##?##' or `##C-h m##' in buffer `##*Bookmark List*##' for more
+information about the bookmark list.
+
+
+
+
+[:TagCommandsAndKeys]
+=== Tag Commands and Keys ===
+
+There are lots of tag-related bookmark commands, and they are all
+bound to keys in buffer `##*Bookmark List*##'.  How can you keep them
 straight or remember the keys?  `##C-h m##' is your friend, of course.
-And the tag-related keys are organized as follows:
+Beyond that, the tag-related keys are organized as follows:
 
-They all have the prefix key `T'.
+They all have the prefix key '''`T''''.
 
 * '''`m'''' means __m__ark
 * '''`u'''' means __u__nmark
@@ -280,34 +175,34 @@ They all have the prefix key `T'.
 * '''`##+##'''' means OR  (set union; some/any)
 * '''`##~##'''' means NOT (set complement)
 
-The key `##T m *##', for instance, marks the bookmarks that are tagged
-with ''all'' of a given set of tags.  It prompts you for one or more
+The key `##T m *##', for instance, marks (`m') the bookmarks that are tagged
+with ''all'' (`##*##' = AND) of a given set of tags.  It prompts you for one or more
 tags that the bookmarks must have, and it marks all bookmarks that
 have all of the tags you enter.
 
-The key `##T u ~ +##' unmarks the bookmarks that do ''not'' have ''any'' of
-the tags you specify.  And so on.  Marking and unmarking commands
-compare the tags a bookmark has with tags you enter.  Any
+The key `##T u ~ +##' unmarks (`u') the bookmarks that do ''not'' (`##~##') have ''any'' (`##+##' = OR) of
+the tags you specify.  And so on.  The marking and unmarking commands for tags
+compare the tags a bookmark has with tags that you enter.  Any
 bookmarks that have no tags are ignored -- they are neither marked
 nor unmarked by these commands.
 
 '''`##+##'''' and '''`##-##'''' can also mean ''add'' and ''remove'' tags, respectively, and
-'''`##>##'''' stands for the ''marked'' bookmarks.  So `##T > +##' adds one or more
-tags to all of the marked bookmarks.
+'''`##>##'''' stands for the ''marked'' bookmarks.  So `##T > +##' adds (`##+##') one or more
+tags to each of the marked (`##>##') bookmarks.
 
 In general, the tag-related commands let you enter a ''set'' of tags,
-one at a time.  Thus, instead of having a command to add a single
-tag to the current bookmark, you have a command to add any number
-of tags to it.  To add just a single tag, you hit `RET' twice: once
-to enter the tag, and once again to indicate that it's the last
+one at a time.  Thus, instead of having a command that adds a single
+tag to the current bookmark, you have a command that adds any number
+of tags to it.  To add just a single tag, hit `RET' twice: once
+to enter the tag, and once again to indicate that it is the last (i.e., the only)
 one.
 
-If you just hit `RET' immediately, specifying an empty set of tags,
-then each of the commands does something reasonable.  For `##T m *##',
-for instance, an empty list of tags means to mark the bookmarks
-that have any tags at all.
+If you just hit `RET' immediately, specifying an empty set of tags, 
+then each of the commands does something different, but reasonable.  For `##T m *##',
+for instance, an empty list of tags means to mark (only) the bookmarks
+that have some tags (any at all).
 
-Finally, for the marking/unmarking commands, a [[prefix argument]]
+Finally, for the marking/unmarking tags commands, a [[prefix argument]]
 flips the sense of the command:
 
 * "some" --> "some are not", i.e., "not all are" (and vice versa)
@@ -320,15 +215,15 @@ In other words:
   C-u T m +    =  T m ~ *  (some are not = not all are)
   C-u T m ~ *  =  T m +    (not all are  = some are not)
 
-You'll figure it out.
+You'll figure it out ;-).
 
 
 
 [:BookmarkSets]
-== Sets of Bookmarks ==
+=== Sets of Bookmarks ===
 
 The best way to think about tags is as ''names'' of persistent ''sets''.  All
-bookmarks tagged `blue' constitute the bookmark set named `blue'. The bookmarks visible in the menu list at any time also constitute an unnamed set. Likewise, the marked bookmarks and the unmarked bookmarks are unnamed sets. '''Bookmark+''' is all about helping you act on sets of Emacs objects. Bookmarks are named, persistent pointers to objects such as files and file sets. Bookmark tags are named, persistent sets of bookmarks (and hence of their target objects).
+bookmarks tagged `blue' constitute the bookmark set named `blue'. The bookmarks visible in the bookmark list at any time also constitute an unnamed set. Likewise, the marked bookmarks and the unmarked bookmarks are unnamed sets. '''Bookmark+''' is all about helping you act on sets of Emacs objects. Bookmarks are named, persistent pointers to objects such as files and file sets. Bookmark tags are named, persistent sets of bookmarks (and hence of their target objects).
 
 The marking commands make it easy to combine sets as unions or
 intersections.  And you can give the result a name for quick
@@ -347,15 +242,15 @@ How would you sort your bookmarks, to show all those tagged both `blue' and `moo
 
 # `##T m * blue moon##', to mark them.
 
-# `##s >##' to sort the marked bookmarks first.
+# `##s >##' to sort the marked bookmarks first (see [[#SortingBookmarks]], below).
 
 If you wanted to show only the marked bookmarks, instead of sorting to put them first in the list, you would use `##>##' instead of `##s >##'.
 
 How would you query-replace the set of files that are tagged with
-any of the tags `alpha', `beta', and `gamma', but are not tagged
+''any'' of the tags `alpha', `beta', and `gamma', but are ''not'' tagged
 `blue' or `moon'?
 
-# `##F S##', to show only the file bookmarks.
+# `##F S##', to show only the file bookmarks (see [[#FilteringBookmarks]], below).
 
 # `##T m + alpha RET beta RET gamma RET RET##', to mark the
 bookmarks that have at least one of those tags.
@@ -365,20 +260,221 @@ bookmarks that have at least one of those tags.
 # `M-q' to query-replace the marked files.
 
 
-
-If that were a set of files that you use often, then you would name the set by giving the files a new tag.
+If that were a set of files that you used often, then you would name the set by giving the files a new tag.
 
 The point is that bookmarks, and bookmark tags in particular, let you define and manipulate sets of Emacs objects. It doesn't matter how you define such a set: regexp matching (marking, filtering), by object type, by tag combinations... Sets need not be named to act on them, but you can provide them with persistent names (tags) to save redefining them over and over. Manipulation of bookmarked objects includes visiting, searching, and query-replacing. And you can define your own bookmark types (using bookmark handlers) and associated manipulations.
 
 
 
 
-[:Icicles]
-== Take Advantage of Icicles ==
 
-If you also use '''[[Icicles]]''', then '''Bookmark+''' lets you use `S-delete' during completion to ''delete'' selected bookmarks on the fly.  That is, whenever you are asked for a bookmark name by any bookmark command, you can cycle among the completion candidates and hit `S-delete' to delete the bookmark whose name is the current candidate.  You can delete any number of bookmarks this way, during a single invocation of a bookmark command.
+[:MarkingAndUnmarkingBookmarks]
+=== Marking and Unmarking Bookmarks ===
 
-See also '''Icicles''' command `icicle-bookmark', which lets you navigate among bookmarks.  It too lets you use `S-delete' to delete bookmarks on the fly.
+'''Bookmark+''' enhances marking and unmarking of bookmarks in the bookmark list in several ways.  In
+general, these enhancements are similar to features offered by
+[[DiredMode|Dired]] and [[Dired X]]. You can use:
+
+* '''`##% m##'''' to mark the bookmarks that match a [[regexp]].  The entire
+line in the bookmark list is checked for a match, that
+is, both the bookmark name and the file name, if shown.
+
+* '''`M-DEL'''' (or '''`U'''') to unmark all bookmarks, or all that
+   are marked `##>##', or all that are flagged `D' for deletion.
+
+* '''`t'''' to toggle (swap) marked and unmarked bookmarks:
+   those that are marked become unmarked, and vice versa.
+
+* '''`##>##'''' to show only the marked bookmarks or '''`##<##'''' to show
+   only the unmarked bookmarks.  Repeat to show them all again.
+
+* '''`##F M##'''', '''`##I M##'''' etc. to __m__ark only the __f__ile bookmarks, __I__nfo
+bookmarks etc.  (The first key here is the same as the
+corresponding filter key, e.g. `F' for files -- see [[#FilteringBookmarks]], below.)
+
+
+
+
+[:FilteringBookmarks]
+=== Filtering: Hiding and Showing Bookmarks ===
+
+You can hide and show different sets of bookmarks in the bookmark 
+list.  There are commands to show only the bookmarks of a particular
+type  -- e.g. `##I S##' to show only the Info bookmarks.  These are, in
+effect, shortcuts for first marking those bookmarks and then
+showing only the marked bookmarks (and then unmarking).  For
+example, `##F S##' is a shortcut for `##F M >##' (and then `##U RET##').
+
+You can also filter to show only the bookmarks that match a
+[[regexp]].  There are two ways to do this:
+
+* Use '''`##P B##'''' (for "__p__attern", "__b__ookmark") and type a regexp.  The
+  bookmarks are filtered incrementally, as you type.  Only the
+  bookmark name is matched (not the file name).  Hit any non-inserting key, such as
+  `RET', to finish defining the pattern. Similarly, hit '''`##P F##'''' for bookmarks whose __f__ile names match a
+  regexp, and '''`##P T##'''' for bookmarks with one or more __t__ags that match
+  a regexp.  See [[#BookmarkTags]], above, for information about
+  tags.
+
+* Just as in [[DiredMode|Dired]], use '''`##% m##'''' to mark the bookmarks that match a
+  regexp. Then use '''`##>##'''' to show only the marked bookmarks. See [[#MarkingAndUnmarkingBookmarks]], above.  This method has
+  the advantage that you can show the complement: the bookmarks
+  that do ''not'' match the regexp, by using '''`##<##'''' instead of `##>##'.  It
+  also has the advantage that matching checks the
+  combination of bookmark name and file name (use `M-t' to
+ toggle showing file names).
+
+These are the keys for hiding or showing bookmarks:
+
+* '''`##.##'''' -- Show all bookmarks.
+
+* '''`##B S##'''' -- Show only non-file (e.g. __b__uffer) bookmarks.
+
+* '''`##F S##'''' -- Show only __f__ile (including directory) bookmarks. With a [[prefix argument]], hide remote-file bookmarks.
+
+* '''`##G S##'''' -- Show only __G__nus bookmarks.
+
+* '''`##I S##'''' -- Show only __I__nfo bookmarks.
+
+* '''`##R S##'''' -- Show only bookmarks with __r__egion information.
+
+* '''`##W S##'''' -- Show only __W__3M bookmarks.
+
+* '''`##>##'''' -- Toggle showing only marked bookmarks
+
+* '''`##<##'''' -- Toggle showing only unmarked bookmarks
+
+
+
+
+
+
+=== Only Visible Bookmarks Are Affected ===
+
+Commands that operate on the current bookmark or on the marked or
+the unmarked bookmarks ''act only on bookmarks that are displayed''
+(not hidden).  This includes the commands that mark or unmark
+bookmarks.  This means that you can easily define any given set of
+bookmarks.
+
+For example:
+
+# `##F S##' -- __S__how only bookmarks associated with __f__iles.
+# `##% m##' -- __M__ark those whose names match a particular [[regexp]].
+# `##R S##' -- __S__how only bookmarks that have __r__egions.
+# `m' -- __M__ark some of those region bookmarks individually.
+# `##.##' -- Show all bookmarks.
+# `t' -- __T__oggle the marked and unmarked (so unmarked are now marked)
+# `D' -- __D__elete all of the marked bookmarks (after confirming)
+
+That deletes all file bookmarks that match the regexp and all
+region bookmarks that you selectively marked.
+
+
+
+[:SortingBookmarks]
+=== Sorting Bookmarks ===
+
+Filtering hides certain kinds of bookmarks.  Sometimes, you want
+to see bookmarks of various kinds, but you want them to be grouped
+or sorted in different ways, for easy recognition, comparison, and
+access.
+
+Bookmarks shown in the bookmark list are sorted using the current
+value of option '''`bookmark-sort-function''''.  (If that is `nil', they are
+unsorted, which means they appear in reverse chronological
+order of their creation..)
+
+You can use '''`##s s##''''... (repeat hitting the `s' key) to cycle among
+the various sort orders possible, updating the display
+accordingly.  By default, you cycle among all available sort
+orders, but you can shorten the cycling list by
+customizing option '''`bookmarkp-sort-orders-for-cycling-alist''''.
+
+You can also change directly to one of the main sort orders
+(without cycling) using '''`##s n##'''', '''`##s f n##'''', etc.:
+
+* '''`##s >##'''' -- Sort marked before unmarked.
+* '''`##s b##'''' -- Sort by last __b__uffer or file access.
+* '''`##s g##'''' -- Sort by __G__nus thread: group, article, message.
+* '''`##s i##'''' -- Sort by __I__nfo manual, node, position
+* '''`##s k##'''' -- Sort by bookmark type (__k__ind)
+* '''`##s n##'''' -- Sort by bookmark __n__ame
+* '''`##s t##'''' -- Sort by last bookmark access __t__ime
+* '''`##s v##'''' -- Sort by __v__isit frequency
+* '''`##s w##'''' -- Sort by __W__3M URL
+* '''`##s f d##'''' -- Sort by local __f__ile type: file, symlink, __d__ir
+* '''`##s f n##'''' -- Sort by __f__ile __n__ame
+* '''`##s f s##'''' -- Sort by local __f__ile __s__ize
+* '''`##s f t##'''' -- Sort by last local __f__ile access __t__ime
+* '''`##s f u##'''' -- Sort by last local __f__ile __u__pdate (edit)
+
+You can __r__everse the current sort direction (ascending/descending)
+using '''`##s r##''''.
+
+[For a complex sort, which involves composing several sorting
+conditions, you can also use `##s C-r##' to reverse the order of
+bookmark sorting groups or the order within each group (depending
+on whether `##s r##' is also used).  Be aware that this can be a bit
+unintuitive.  If it does not do what you expect or want, or if it
+confuses you, then don't use it ;-).  (`##s C-r##' has no noticeable
+effect on simple sorting.)]
+
+Remember that you can combine sorting with filtering
+different sets of bookmarks -- bookmarks of different kinds
+(e.g. Info) or bookmarks that are marked or unmarked.
+
+Finally, you can easily define your own sorting commands and sort
+orders.  See macro '''`bookmarkp-define-sort-command'''' and the
+documentation for option `bookmarkp-sort-comparer'.   ('''Bookmark+'''
+uses option '''`bookmarkp-sort-comparer''''; it ''ignores'' vanilla Emacs
+option `bookmark-sort-flag'.)
+
+
+
+
+[:Compatibility]
+== Bookmark Compatibility with Vanilla Emacs ==
+
+Library <tt>[[bookmark+.el]]</tt> is generally compatible with GnuEmacs
+versions 20 through 23.
+
+1. All bookmarks created using any version of vanilla Emacs
+   (library ##bookmark.el##) continue to work with ##bookmark+.el##.
+
+2. All bookmarks created using library ##bookmark+.el## will work
+   with all Emacs versions (20-23), provided you use library
+   ##bookmark+.el## to access them.
+
+3. Most bookmarks created using ##bookmark+.el## will not interfere
+   with the behavior of vanilla Emacs, versions 21-23.  The new
+   bookmark types are simply ignored by vanilla Emacs.  For
+   example:
+
+* A bookmark with a region is treated like a simple position
+     bookmark: the destination is the region start position.
+
+* A Gnus bookmark does not work; it is simply ignored. 
+
+However, there are two cases in which ##bookmark+.el## bookmarks
+   will raise an error in vanilla Emacs:
+
+* You cannot use non-file (e.g. buffer-only) bookmarks with any
+     version of vanilla Emacs.
+
+* You cannot use any bookmarks created using ##bookmark+.el##
+     with vanilla Emacs 20.
+
+The Emacs bookmark data structure has changed from version to
+   version.  Library ##bookmark+.el## always creates bookmarks that
+   have the most recent structure (Emacs 23).  As is the case for
+   any bookmarks that have the Emacs 23 structure, these bookmarks
+   will not work in vanilla Emacs 20 (that is, without
+   ##bookmark+.el##).
+
+Bottom line: Use '''Bookmark+''' to access bookmarks created using
+'''Bookmark+'''.
+
 
 
 ----

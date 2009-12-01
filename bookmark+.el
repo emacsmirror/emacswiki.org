@@ -8,9 +8,9 @@
 ;; Copyright (C) 2000-2009, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Nov  1 17:15:09 2009 (-0700)
+;; Last-Updated: Mon Nov 30 16:08:32 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 7499
+;;     Update #: 7788
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -41,11 +41,15 @@
 ;;
 ;;  (@> "Things Defined Here")
 ;;  (@> "Documentation")
-;;    (@> "Bookmark+ Features")
 ;;    (@> "Installing Bookmark+")
-;;    (@> "Bookmarks Menu List")
+;;    (@> "Bookmark+ Features")
+;;    (@> "Bookmark Tags")
+;;    (@> "Bookmark List (Display)")
+;;      (@> "Tag Commands and Keys")
+;;      (@> "Sets of Bookmarks")
 ;;      (@> "Marking and Unmarking Bookmarks")
-;;      (@> "Filtering: Hiding and Showing Bookmarks")
+;;      (@> "Filtering Bookmarks (Hiding and Showing)")
+;;      (@> "Only Visible Bookmarks Are Affected")
 ;;      (@> "Sorting Bookmarks")
 ;;    (@> "Bookmark Compatibility with Vanilla Emacs (`bookmark.el')")
 ;;    (@> "New Bookmark Structure")
@@ -340,196 +344,87 @@
 ;;  Documentation
 ;;  -------------
 ;;
-;;(@* "Bookmark+ Features")
-;;  ** Bookmark+ Features **
-;;
-;;  * New types of bookmarks, and additional recorded information:
-;;
-;;     - You can bookmark a buffer that is not associated with a file.
-;;
-;;     - You can bookmark a Gnus article.
-;;
-;;     - You can bookmark a Dired buffer, recording and restoring its
-;;       switches and marked files.
-;;
-;;     - You can bookmark a UNIX manual page (from the output of Emacs
-;;       command `woman' or `man').
-;;
-;;     - You can bookmark a region of text, not just a position.
-;;       By default, when you jump to a bookmark that records a
-;;       region, the region is activated.  See option
-;;       `bookmarkp-use-region-flag'.  `C-u' reverses the behavior
-;;       specified by the value of the option.  Region activation is
-;;       not supported for Gnus bookmarks.
-;;
-;;     - Bookmarks record the number of visits and the time of last
-;;       visit.
-;;
-;;     - You can tag bookmarks.  A bookmark can have any number of
-;;       tags, and multiple bookmarks can have the same tag.
-;;
-;;  * Better bookmark relocation when the contextual text changes.
-;;
-;;  * Improvements for the menu list (buffer `*Bookmark List*'):
-;;
-;;     - You can sort bookmarks in various ways.
-;;     - You can search or query-replace the destinations of the
-;;       marked bookmarks (in the current order).  For Emacs 23 and
-;;       later, this includes incremental multi-search.
-;;     - Enhanced marking/unmarking, similar to that in Dired.
-;;     - You can mark or show different classes of bookmarks.
-;;     - The last state of the menu list is (optionally) saved.
-;;     - Faces distinguish bookmarks by type.
-;;     - You can edit a bookmark (its name and file name).
-;;
-;;  If you also use Icicles, you can use `S-delete' during completion
-;;  for a bookmark name, to delete the current bookmark candidate.
-;;  See http://www.emacswiki.org/cgi-bin/wiki/Icicles.  In addition,
-;;  Icicles provides enhanced bookmark visiting and definition.
-;;
 ;;(@* "Installing Bookmark+")
 ;;  ** Installing Bookmark+ **
 ;;
 ;;  Put this library in your `load-path'.
 ;;  Add this to your init file (~/.emacs) : (require 'bookmark+)
 ;;
-;;(@* "Bookmarks Menu List")
-;;  ** Bookmarks Menu List **
 ;;
-;;  Bookmark+ enhances the bookmarks list (the "menu list") that is
-;;  displayed in buffer `*Bookmark List*' when you use `C-x r l'
-;;  (`bookmark-bmenu-list').  Bookmarks are highlighted to indicate
-;;  their type. You can show or hide bookmarks of particular types,
-;;  mark and unmark bookmarks, and much more.
+;;(@* "Bookmark+ Features")
+;;  ** Bookmark+ Features **
 ;;
-;;  If option `bookmarkp-bmenu-state-file' is non-nil, then Bookmark+
-;;  remembers the last state of the menu list when you quit it (or you
-;;  quit Emacs), and it restores it when you show the list again
-;;  (possibly in the next Emacs session).  You can toggle this option
-;;  using `C-t' in the menu list.
+;;  Here is an overview of the features that Bookmark+ provides.  Some
+;;  of these are detailed in other sections, below.
 ;;
-;;  Use `C-h m' in buffer `*Bookmark List*' for more information.
+;;  * Richer bookmarks.  They record more.  They are more accurate.
 ;;
-;;  (Note: Bookmark+ uses option `bookmarkp-sort-comparer'; it ignores
-;;  vanilla Emacs option `bookmark-sort-flag'.)
+;;     - You can tag bookmarks, a la del.icio.us.  This is perhaps the
+;;       most important Bookmark+ feature.  In effect, tags define
+;;       bookmark sets.  A bookmark can have any number of tags, and
+;;       multiple bookmarks can have the same tag.  You can mark or
+;;       show just the bookmarks with a given tag or a set of tags.
 ;;
-;;(@* "Marking and Unmarking Bookmarks")
-;;  *** Marking and Unmarking Bookmarks ***
+;;     - Bookmarks record the number of visits and the time of the
+;;       last visit.  You can sort, show/hide, or mark bookmarks based
+;;       on this info.
 ;;
-;;  Bookmark+ enhances marking and unmarking of bookmarks in several
-;;  ways.  In general, these enhancements are similar to features
-;;  offered by Dired and Dired-X.
+;;     - You can bookmark a region of text, not just a position.  When
+;;       you jump to a bookmark that records a region, the region is
+;;       activated (see option `bookmarkp-use-region-flag').  (Region
+;;       activation is not supported for Gnus bookmarks.)
 ;;
-;;  * You can use `% m' to mark bookmarks that match a regexp.  The
-;;    entire bookmark line in the menu list is checked for a match.
+;;     - Bookmarks are relocated better when the contextual text
+;;       changes.
 ;;
-;;  * You can use `M-DEL' (or `U') to unmark all bookmarks, or all
-;;    that are marked `>', or all that are flagged `D'.
+;;  * Improvements for the bookmark list (buffer `*Bookmark List*',
+;;    aka "menu list") that is displayed using `C-x r l'.
 ;;
-;;  * You can use `t' to toggle (swap) marked and unmarked bookmarks:
-;;    the marked become unmarked, and vice versa.
+;;     - The last display state is saved (by default), and is restored
+;;       the next time you show the list.  (Tip: Use the bookmark list
+;;       as your "Home" page at Emacs startup.)
 ;;
-;;  * You can use `>' to show only the marked bookmarks or `<' to show
-;;    only the unmarked bookmarks.  Repeat to show all again.
+;;     - Marking/unmarking is enhanced.  It is similar to Dired's.
 ;;
-;;  * You can use `F M', `I M' etc. to mark only file bookmarks, Info
-;;    bookmarks etc.
+;;     - You can easily mark or show different classes of bookmarks.
 ;;
-;;(@* "Filtering: Hiding and Showing Bookmarks")
-;;  *** Filtering: Hiding and Showing Bookmarks ***
+;;     - You can sort bookmarks in many ways.  You can easily define
+;;       your own sort orders, even complex ones.
 ;;
-;;  You can hide and show different sets of bookmarks in the menu
-;;  list.  There are commands to show only bookmarks of a particular
-;;  type - e.g. `I S' to show only Info bookmarks.  These are, in
-;;  effect, shortcuts for first marking those bookmarks and then
-;;  showing only the marked bookmarks (and then unmarking).  For
-;;  example, `F S' is a shortcut for `F M >' (and then `U RET').
+;;     - You can regexp-search (`M-a') or query-replace (`M-q') the
+;;       targets (destination file or buffers) of the marked
+;;       bookmarks, in the current sort order.  For Emacs 23 and
+;;       later, you can search incrementally (`M-x a C-s', or `M-x a
+;;       C-M-s' for regexp).
 ;;
-;;  You can also filter to show only the bookmarks that match a
-;;  regexp.  There are two ways to do this:
+;;     - Faces distinguish bookmarks by type.
 ;;
-;;  * Use `P B' (for "pattern", "bookmark") and type a regexp.  The
-;;    bookmarks are filtered incrementally, as you type.  Only the
-;;    bookmark name is matched.  Hit any non-inserting key, such as
-;;    `RET', to stop defining the pattern.
+;;     - You can edit a bookmark (its name and file name).
 ;;
-;;    Similarly, hit `P F' for bookmarks whose file names match a
-;;    regexp, and `P T' for bookmarks with one or more tags that match
-;;    a regexp.  See (@> Bookmark Tags), below, for information about
-;;    tags.
+;;  * Additional types of bookmarks.
 ;;
-;;  * Just as in Dired, use `% m' to mark the bookmarks that match a
-;;    regexp.  The entire bookmark line in the menu list (bookmark
-;;    name and perhaps file name) is searched for a match.
+;;     - You can bookmark a Dired buffer, recording and restoring its
+;;       switches and which files are marked.
 ;;
-;;    Then use `>' to show only the marked bookmarks.  This method has
-;;    the advantage that you can show the complement: the bookmarks
-;;    that do *not* match the regexp, by using `<' instead of `>'.  It
-;;    also has the advantage/disadvantage that matching checks the
-;;    combination of bookmark name and file name.
+;;     - You can bookmark a buffer that is not associated with a file.
 ;;
-;;  Commands that operate on the current bookmark or on the marked or
-;;  the unmarked bookmarks act only on bookmarks that are displayed
-;;  (not hidden).  This includes the commands that mark or unmark
-;;  bookmarks.  This means that you can easily define any given set of
-;;  bookmarks.
+;;     - You can bookmark a Gnus article, a URL (if you use W3M), a
+;;       PDF file (DocView), an image, or a UNIX manual page (from the
+;;       output of Emacs command `woman' or `man').
 ;;
-;;  For example:
+;;  * Synergy with Icicles.
 ;;
-;;    Use `F S' to show only bookmarks associated with files.
-;;    Use `% m' to mark those that match a particular regexp.
-;;    Use `R S' to show only bookmarks that have regions.
-;;    Use `m' to mark some of those region bookmarks individually.
-;;    Use `.' to show all bookmarks.
-;;    Use `t' to swap marked and unmarked (so unmarked are now marked)
-;;    Use `D' to delete all of the marked bookmarks (after confirming)
+;;     - If you use Icicles, then you can use `S-delete' during
+;;       completion for a bookmark name, to delete the current
+;;       bookmark candidate.  You can delete any number of bookmarks
+;;       this way, during a single invocation of a bookmark command.
+;;       In addition, Icicles provides enhanced bookmark visiting and
+;;       definition.  See command `icicle-bookmark' and
+;;       http://www.emacswiki.org/cgi-bin/wiki/Icicles.
 ;;
-;;  That deletes all file bookmarks that match the regexp and all
-;;  region bookmarks that you selectively marked.
 ;;
-;;(@* "Sorting Bookmarks")
-;;  *** Sorting Bookmarks ***
-;;
-;;  Filtering hides certain kinds of bookmarks.  Sometimes, you want
-;;  to see bookmarks of various kinds, but you want them to be grouped
-;;  or sorted in different ways, for easy recognition, comparison, and
-;;  access.
-;;
-;;  Bookmarks shown in the menu list are sorted using the current
-;;  value of option `bookmark-sort-function'.  (If that is nil, they
-;;  are unsorted, which means they appear in reverse chronological
-;;  order of their creation.)
-;;
-;;  You can use `s s'... (repeat hitting the `s' key) to cycle among
-;;  the various sort orders possible.  By default, all available sort
-;;  orders are cycled, but you can shorten the cycling list by
-;;  customizing option `bookmarkp-sort-orders-for-cycling-alist'.
-;;
-;;  You can also change directly to one of the main sort orders
-;;  (without cycling) using `s n', `s f n', etc. - use `C-h m' for
-;;  more info.
-;;
-;;  You can reverse the current sort direction (ascending/descending)
-;;  using `s r'.
-;;
-;;  For a complex sort, which involves composing several sorting
-;;  conditions, you can also use `s C-r' to reverse the order of
-;;  bookmark sorting groups or the order within each group (depending
-;;  on whether `s r' is also used).  Be aware that this can be a bit
-;;  unintuitive.  If it does not do what you expect or want, or if it
-;;  confuses you, then don't use it. ;-) (`s C-r' has no noticeable
-;;  effect on simple sorting.)
-;;
-;;  Remember that you can combine sorting with hiding/showing
-;;  different sets of bookmarks - bookmarks of different kinds
-;;  (e.g. Info) or bookmarks that are marked or unmarked.
-;;
-;;  Finally, you can easily define your own sorting commands and sort
-;;  orders.  See macro `bookmarkp-define-sort-command' and the
-;;  documentation for option `bookmarkp-sort-comparer'.
-;;
-;;(@* Bookmark Tags)
-;; ** Bookmark Tags **
+;;(@* "Bookmark Tags")
+;;  ** Bookmark Tags **
 ;;
 ;;  With Bookmark+ you can bookmark several kinds of Emacs object.
 ;;  Bookmarks record locations - that is their primary purpose.  They
@@ -551,23 +446,67 @@
 ;;  organizing them (e.g. into projects), whether or not you ever use
 ;;  the bookmarks as a way to visit them.
 ;;
-;;  For example, if you also use library `dired+.el', then you can use
+;;  For example, if you use library `dired+.el', then you can use
 ;;  `M-b' (`diredp-do-bookmark') in Dired to create a bookmark for
 ;;  each of the marked files in the Dired buffer.  Even if you never
 ;;  use those bookmarks for navigating to the files, you can use them
 ;;  with tags to organize the files.
 ;;
-;;  To make tags more useful, Bookmark+ provides lots of commands: for
-;;  adding or removing tags, and for marking or unmarking bookmarks
-;;  that are tagged in various ways.  When combined with other
-;;  Bookmark+ commands (e.g. search, query-replace) that apply to the
-;;  marked bookmarks in the `*Bookmarks List*' window, you can really
-;;  do quite a lot using bookmark tags.  Use your imagination!
+;;  To make tags more useful, Bookmark+ provides lots of commands:
+;;  commands for adding or removing tags, and for marking or unmarking
+;;  bookmarks that are tagged in various ways.  When combined with
+;;  other Bookmark+ commands (e.g. search, query-replace) that apply
+;;  to the marked bookmarks in the `*Bookmark List*' window, you can
+;;  really do quite a lot using bookmark tags.  Use your imagination!
+;;  See (@> "Tag Commands and Keys") for more about this.
 ;;
-;;  There are lots of tags-related bookmark commands, and they are all
-;;  bound to keys in buffer `*Bookmarks List*'.  How to keep them
-;;  straight or remember the keys?  `C-h m' is your friend, of course.
-;;  And the tag-related keys are organized as follows:
+;;
+;;(@* "Bookmark List (Display)")
+;;  ** Bookmark List (Display) **
+;;
+;;  Bookmark+ enhances the bookmark list (aka the bookmark "menu
+;;  list") that is displayed in buffer `*Bookmark List*' when you use
+;;  `C-x r l' (command `bookmark-bmenu-list').  Bookmarks are
+;;  highlighted to indicate their type. You can mark and unmark
+;;  bookmarks, show or hide bookmarks of particular types, and much
+;;  more.
+;;
+;;  If option `bookmarkp-bmenu-state-file' is non-nil, then Bookmark+
+;;  remembers the last state of the bookmark list when you quit it or
+;;  you quit Emacs, and it restores that state when you show the list
+;;  again (which could be in the next Emacs session).  You can toggle
+;;  this option using `C-t' in the bookmark list.  You can think of
+;;  this feature as your "Home" page for bookmarks, giving you a
+;;  stepping stone to the files and directories you use most.
+;;
+;;  If, for example, when you quit the bookmark list you are showing
+;;  only bookmarks to Info nodes and UNIX manual pages, sorted in a
+;;  particular way, and with some of them marked for particular
+;;  processing, then the next time you open the list the same state is
+;;  restored: the same set of bookmarks is shown, in the same order,
+;;  with the same markings.
+;;
+;;  You can turn off this automatic state saving, if you want, by
+;;  customizing option `bookmarkp-bmenu-state-file' to nil.  And you
+;;  can toggle this option at any time, using `C-t' in the bookmark
+;;  list.  In particular, if you want your next visit to the bookmark
+;;  list to start out with a previously recorded state instead of the
+;;  current state, just hit `C-t' before quitting the bookmark list or
+;;  Emacs.
+;;
+;;  Use `?' or `C-h m' in buffer `*Bookmark List*' for more
+;;  information about the bookmark list.
+;;
+;;
+;;(@* "Tag Commands and Keys")
+;;  *** Tag Commands and Keys***
+;;
+;;  There are lots of tag-related bookmark commands, and they are all
+;;  bound to keys in buffer `*Bookmark List*'.  How can you keep them
+;;  straight or remember the keys?
+;;
+;;  `C-h m' (or `?') is your friend, of course.  Beyond that, the
+;;  tag-related keys are organized as follows:
 ;;
 ;;    They all have the prefix key `T'.
 ;;
@@ -578,35 +517,37 @@
 ;;    `+' means OR  (set union; some/any)
 ;;    `~' means NOT (set complement)
 ;;
-;;  The key `T m *', for instance, marks the bookmarks that are tagged
-;;  with all of a given set of tags.  It prompts you for one or more
-;;  tags that the bookmarks must have, and it marks all bookmarks that
-;;  have all of the tags you enter.
+;;  The key `T m *', for instance, marks (`m') the bookmarks that are
+;;  tagged with all (`*' = AND) of a given set of tags.  It prompts you
+;;  for one or more tags that the bookmarks must have, and it marks
+;;  all bookmarks that have all of the tags you enter.
 ;;
-;;  The key `T u ~ +' unmarks the bookmarks that do not have any of
-;;  the tags you specify.  And so on.  Marking and unmarking commands
-;;  compare the tags a bookmark has with tags you enter.  Any
-;;  bookmarks that have no tags are ignored - they are neither marked
-;;  nor unmarked by these commands.
+;;  The key `T u ~ +' unmarks (`u') the bookmarks that do not (`~')
+;;  have any (`+' = OR) of the tags you specify.  And so on.
+;;
+;;  The marking and unmarking commands for tags compare the tags a
+;;  bookmark has with tags that you enter.  Any bookmarks that have no
+;;  tags are ignored - they are neither marked nor unmarked by these
+;;  commands.
 ;;
 ;;  `+' and `-' can also mean add and remove tags, respectively, and
-;;  `>' stands for the marked bookmarks.  So `T > +' adds one or more
-;;  tags to all of the marked bookmarks.
+;;  `>' stands for the marked bookmarks.  So `T > +' adds (`+') one or
+;;  more tags to each of the marked (`>') bookmarks.
 ;;
 ;;  In general, the tag-related commands let you enter a set of tags,
-;;  one at a time.  Thus, instead of having a command to add a single
-;;  tag to the current bookmark, you have a command to add any number
-;;  of tags to it.  To add just a single tag, you hit `RET' twice:
-;;  once to enter the tag, and once again to indicate that it's the
-;;  last one.
+;;  one at a time.  Thus, instead of having a command that adds a
+;;  single tag to the current bookmark, you have a command that adds
+;;  any number of tags to it.  To add just a single tag, hit `RET'
+;;  twice: once to enter the tag, and once again to indicate that it
+;;  is the last (i.e., the only) one.
 ;;
 ;;  If you just hit `RET' immediately, specifying an empty set of
-;;  tags, then each of the commands does something reasonable.
-;;  For `T m *', for instance, an empty list of tags means to mark the
-;;  bookmarks that have any tags at all.
+;;  tags, then each of the commands does something different, but
+;;  reasonable.  For `T m *', for instance, an empty list of tags
+;;  means to mark (only) the bookmarks that have any tags at all.
 ;;
-;;  Finally, for the marking/unmarking commands, a prefix argument
-;;  flips the sense of the command:
+;;  Finally, for the marking/unmarking tags commands, a prefix
+;;  argument flips the sense of the command:
 ;;
 ;;    "some" -> "some are not", i.e., "not all are" (and vice versa)
 ;;    "all"  -> "all are not", i.e., "none are" (and vice versa)
@@ -618,20 +559,44 @@
 ;;    C-u T m +    =  T m ~ *  (some are not = not all are)
 ;;    C-u T m ~ *  =  T m +    (not all are  = some are not)
 ;;
-;;  You'll figure it out.
+;;  You'll figure it out ;-).
+;;
+;;
+;;(@* "Sets of Bookmarks")
+;;  *** Sets of Bookmarks ***
 ;;
 ;;  The best way to think about tags is as names of sets.  All
 ;;  bookmarks tagged `blue' constitute the bookmark set named `blue'.
 ;;
+;;  The bookmarks visible in the bookmark list at any time also
+;;  constitute an unnamed set.  Likewise, the marked bookmarks and the
+;;  unmarked bookmarks are unnamed sets.  Bookmark+ is all about
+;;  helping you act on sets of Emacs objects.  Bookmarks are named,
+;;  persistent pointers to objects such as files and file sets.
+;;  Bookmark tags are named, persistent sets of bookmarks (and hence
+;;  of their target objects).
+;;
 ;;  The marking commands make it easy to combine sets as unions or
 ;;  intersections.  And you can give the result a name for quick
 ;;  access later, just by adding a new tag.  in other words, do the
-;;  set-definition work only once, and name the result.  For example,
-;;  to tag as `Java IDE Projects' the bookmarks that are already
-;;  tagged both `Java' and `ide':
+;;  set-definition work only once, and name the result.
 ;;
-;;    1. Mark those bookmarks, using `T m * Java RET ide RET RET'.
-;;    2. Tag them, using `T + Java IDE Projects RET RET.
+;;  How would you tag as `Java IDE Projects' the bookmarks that are
+;;  already tagged both `Java' and `ide'?
+;;
+;;  1. `T m * Java RET ide RET RET', to mark them.
+;;  2. `T + Java IDE Projects RET RET, to tag them.
+;;
+;;  How would you sort your bookmarks, to show all those tagged both
+;;  `blue' and `moon' first?
+;;
+;;  1. `T m * blue moon', to mark them.
+;;  2. `s >' to sort the marked bookmarks first
+;;     (see (@> "Sorting Bookmarks"), below).
+;;
+;;  If you wanted to show only the marked bookmarks, instead of
+;;  sorting to put them first in the list, you would use `>'
+;;  instead of `s >'.
 ;;
 ;;  How would you query-replace the set of files that are tagged with
 ;;  any of the tags `alpha', `beta', and `gamma', but are not tagged
@@ -643,8 +608,147 @@
 ;;    3. `T u + blue RET red', to unmark those that are blue or red.
 ;;    4. `M-q' to query-replace the marked files.
 ;;
-;;  If that's a set of files that you use often, then name the set by
-;;  giving the files a new tag.
+;;  If that were a set of files that you used often, then you would
+;;  name the set by giving the files a new tag.
+;;
+;;  The point is that bookmarks, and bookmark tags in particular, let
+;;  you define and manipulate sets of Emacs objects.  It doesn't
+;;  matter how you define such a set: regexp matching (marking,
+;;  filtering), by object type, by tag combinations...  Sets need not
+;;  be named to act on them, but you can provide them with persistent
+;;  names (tags) to save redefining them over and over.  Manipulation
+;;  of bookmarked objects includes visiting, searching, and
+;;  query-replacing.  And you can define your own bookmark types
+;;  (using bookmark handlers) and associated manipulations.
+;;
+;;
+;;(@* "Marking and Unmarking Bookmarks")
+;;  *** Marking and Unmarking Bookmarks ***
+;;
+;;  Bookmark+ enhances the marking and unmarking of bookmarks in the
+;;  bookmark list in several ways.  These enhancements are similar to
+;;  features offered by Dired and Dired-X.  You can use:
+;;
+;;  * `% m' to mark the bookmarks that match a regexp.  The entire
+;;    line in the bookmark list is checked for a match, that is, both
+;;    the bookmark name and the file name, if shown.
+;;
+;;  * `M-DEL' (or `U') to unmark all bookmarks, or all that are marked
+;;    `>', or all that are flagged `D' for deletion.
+;;
+;;  * `t' to toggle (swap) the marked and unmarked bookmarks: those
+;;    that are marked become unmarked, and vice versa.
+;;
+;;  * `>' to show only the marked bookmarks or `<' to show only the
+;;    unmarked bookmarks.  Repeat to show them all again.
+;;
+;;  * `F M', `I M' etc. to mark only the file bookmarks, Info
+;;    bookmarks etc.  (The first key here is the same as the
+;;    corresponding filter key, e.g. `F' for files - see next topic.)
+;;
+;;
+;;(@* "Filtering Bookmarks (Hiding and Showing)")
+;;  *** Filtering Bookmarks (Hiding and Showing) ***
+;;
+;;  You can hide and show different sets of bookmarks in the bookmark
+;;  list.  There are commands to show only bookmarks of a particular
+;;  type - e.g. `I S' to show only Info bookmarks.  These are, in
+;;  effect, shortcuts for first marking those bookmarks and then
+;;  showing only the marked bookmarks (and then unmarking).  For
+;;  example, `F S' is a shortcut for `F M >' (and then `U RET').
+;;
+;;  You can also filter to show only the bookmarks that match a given
+;;  regexp.  There are two ways to do this:
+;;
+;;  * Use `P B' (for "pattern", "bookmark") and type a regexp.  The
+;;    bookmarks are filtered incrementally, as you type.  Only the
+;;    bookmark name is matched (not the file name).  Hit any
+;;    non-inserting key, such as `RET', to finish defining the
+;;    pattern.
+;;
+;;    Similarly, hit `P F' for bookmarks whose file names match a
+;;    regexp, and `P T' for bookmarks with one or more tags that match
+;;    a regexp.  See (@> Bookmark Tags), above, for information about
+;;    tags.
+;;
+;;  * Just as in Dired, use `% m' to mark the bookmarks that match a
+;;    regexp.  Then use `>' to show only the marked bookmarks.  See
+;;    (@> "Marking and Unmarking Bookmarks"), above.
+;;
+;;    This method has the advantage that you can show the complement,
+;;    the bookmarks that do *not* match the regexp, by using `<'
+;;    instead of `>'.  It also has the advantage that matching checks
+;;    the combination of bookmark name and file name (use `M-t' to
+;;    toggle showing file names).
+;;
+;;
+;;(@* "Only Visible Bookmarks Are Affected")
+;;  *** Only Visible Bookmarks Are Affected ***
+;;
+;;  Commands that operate on the current bookmark or on the marked or
+;;  the unmarked bookmarks act only on bookmarks that are displayed
+;;  (not hidden).  This includes the commands that mark or unmark
+;;  bookmarks.  This means that you can easily define any given set of
+;;  bookmarks.
+;;
+;;  For example:
+;;
+;;    Use `F S' to show only bookmarks associated with files.
+;;    Use `% m' to mark those that match a particular regexp.
+;;    Use `R S' to show only bookmarks that have regions.
+;;    Use `m' to mark some of those region bookmarks individually.
+;;    Use `.' to show all bookmarks.
+;;    Use `t' to swap marked and unmarked (so unmarked are now marked)
+;;    Use `D' to delete all of the marked bookmarks (after confirming)
+;;
+;;  That deletes all file bookmarks that match the regexp and all
+;;  region bookmarks that you selectively marked.
+;;
+;;
+;;(@* "Sorting Bookmarks")
+;;  *** Sorting Bookmarks ***
+;;
+;;  Filtering hides certain kinds of bookmarks.  Sometimes, you want
+;;  to see bookmarks of various kinds, but you want them to be grouped
+;;  or sorted in different ways, for easy recognition, comparison, and
+;;  access.
+;;
+;;  Bookmarks shown in the bookmark list are sorted using the current
+;;  value of option `bookmark-sort-function'.  (If that is nil, they
+;;  are unsorted, which means they appear in reverse chronological
+;;  order of their creation.)
+;;
+;;  You can use `s s'... (repeat hitting the `s' key) to cycle among
+;;  the various sort orders possible, updating the display
+;;  accordingly.  By default, you cycle among all available sort
+;;  orders, but you can shorten the cycling list by customizing option
+;;  `bookmarkp-sort-orders-for-cycling-alist'.
+;;
+;;  You can also change directly to one of the main sort orders
+;;  (without cycling) using `s n', `s f n', etc. - use `C-h m' for
+;;  more info.
+;;
+;;  You can reverse the current sort direction (ascending/descending)
+;;  using `s r'.
+;;
+;;  For a complex sort, which involves composing several sorting
+;;  conditions, you can also use `s C-r' to reverse the order of
+;;  bookmark sorting groups or the order within each group (depending
+;;  on whether `s r' is also used).  Be aware that this can be a bit
+;;  unintuitive.  If it does not do what you expect or want, or if it
+;;  confuses you, then don't use it ;-).  (`s C-r' has no noticeable
+;;  effect on simple sorting.)
+;;
+;;  Remember that you can combine sorting with filtering different
+;;  sets of bookmarks - bookmarks of different kinds (e.g. Info) or
+;;  bookmarks that are marked or unmarked.
+;;
+;;  Finally, you can easily define your own sorting commands and sort
+;;  orders.  See macro `bookmarkp-define-sort-command' and the
+;;  documentation for option `bookmarkp-sort-comparer'.  (Bookmark+
+;;  uses option `bookmarkp-sort-comparer'; it *ignores* vanilla Emacs
+;;  option `bookmark-sort-flag'.)
+
 ;;
 ;;(@* "Bookmark Compatibility with Vanilla Emacs (`bookmark.el')")
 ;;  ** Bookmark Compatibility with Vanilla Emacs (`bookmark.el') **
@@ -687,6 +791,7 @@
 ;;
 ;;  Bottom line: Use `bookmark+.el' to access bookmarks created using
 ;;  `bookmark+.el'.
+;;
 ;;
 ;;(@* "New Bookmark Structure")
 ;;  ** New Bookmark Structure **
@@ -1242,7 +1347,7 @@
 (eval-when-compile (require 'cl)) ;; case, gensym, loop, pushnew
 
 
-(defconst bookmarkp-version-number "2.6.2")
+(defconst bookmarkp-version-number "2.7.1")
 
 (defun bookmarkp-version ()
   "Show version number of library `bookmark+.el'."
@@ -1267,7 +1372,7 @@
 ;;; Macros -----------------------------------------------------------
 
 (defmacro bookmarkp-define-sort-command (sort-order comparer doc-string)
-  "Define a command to sort bookmarks in the menu list by SORT-ORDER.
+  "Define a command to sort bookmarks in the bookmark list by SORT-ORDER.
 SORT-ORDER is a short string or symbol describing the sorting method.
 Examples: \"by last access time\", \"by bookmark name\".
 
@@ -1590,6 +1695,10 @@ then the rest."
 ***************************** Bookmark+ *****************************\
 \\<bookmark-bmenu-mode-map>
 
+The following are in addition to the features of the vanilla bookmark
+list display.
+
+
 Miscellaneous
 -------------
 
@@ -1599,11 +1708,11 @@ Miscellaneous
 \\[bookmarkp-bmenu-edit-bookmark]\t- Edit bookmark name and file name
 \\[bookmarkp-bmenu-quit]\t- Quit (the bookmarks list)
 \\[bookmark-bmenu-save]\t- Save bookmarks (`C-u': prompt for the bookmarks file to use)
-\\[bookmarkp-toggle-saving-menu-list-state]\t- Toggle saving menu-list state
+\\[bookmarkp-toggle-saving-menu-list-state]\t- Toggle saving the bookmark list display state
 
 
-Mark/unmark bookmarks (see also `Tags', below)
-----------------------------------------------
+Mark/unmark bookmarks (see also `Tags', next)
+---------------------------------------------
 
 \\[bookmarkp-bmenu-mark-all]\t- Mark all bookmarks
 \\[bookmarkp-bmenu-regexp-mark]\t- Mark all bookmarks whose names match a regexp
@@ -1617,65 +1726,6 @@ Mark/unmark bookmarks (see also `Tags', below)
 \\[bookmarkp-bmenu-mark-man-bookmarks]\t- Mark `man' page bookmarks (that's `M' twice, not Meta-M)
 \\[bookmarkp-bmenu-mark-region-bookmarks]\t- Mark region bookmarks
 \\[bookmarkp-bmenu-mark-w3m-bookmarks]\t- Mark W3M (URL) bookmarks
-
-
-Hide/show bookmarks
--------------------
-
-\\[bookmarkp-bmenu-show-all]\t- Show all bookmarks
-\\[bookmarkp-bmenu-toggle-show-only-marked]\t- Toggle showing only marked bookmarks
-\\[bookmarkp-bmenu-toggle-show-only-unmarked]\t- Toggle showing only unmarked bookmarks
-\\[bookmarkp-bmenu-show-only-non-files]\t- Show only non-file (i.e. buffer) bookmarks
-\\[bookmarkp-bmenu-show-only-dired]\t- Show only Dired bookmarks
-\\[bookmarkp-bmenu-show-only-files]\t- Show only file & directory bookmarks (`C-u': local only)
-\\[bookmarkp-bmenu-show-only-gnus]\t- Show only Gnus bookmarks
-\\[bookmarkp-bmenu-show-only-info-nodes]\t- Show only Info bookmarks
-\\[bookmarkp-bmenu-show-only-man-pages]\t- Show only `man' page bookmarks
-\\[bookmarkp-bmenu-show-only-regions]\t- Show only region bookmarks
-\\[bookmarkp-bmenu-show-only-w3m-urls]\t- Show only W3M (URL) bookmarks
-\\[bookmarkp-bmenu-filter-bookmark-name-incrementally]\t- Incrementally show only bookmarks \
-whose names match a regexp
-\\[bookmarkp-bmenu-filter-file-name-incrementally]\t- Incrementally show only bookmarks whose \
-files match a regexp
-\\[bookmarkp-bmenu-filter-tags-incrementally]\t- Incrementally show only bookmarks whose tags \
-match a regexp
-
-
-Sort bookmarks (repeat to cycle normal/reversed/off, except as noted)
----------------------------------------------------------------------
-
-\\[bookmarkp-bmenu-sort-marked-before-unmarked]\t- Sort marked bookmarks first
-\\[bookmarkp-bmenu-sort-by-last-buffer-or-file-access]\t- Sort by last buffer or file \
-access
-\\[bookmarkp-bmenu-sort-by-Gnus-thread]\t- Sort by Gnus thread: group, article, message
-\\[bookmarkp-bmenu-sort-by-Info-location]\t- Sort by Info manual, node, position
-\\[bookmarkp-bmenu-sort-by-bookmark-type]\t- Sort by bookmark type
-\\[bookmarkp-bmenu-sort-by-bookmark-name]\t- Sort by bookmark name
-\\[bookmarkp-bmenu-sort-by-last-bookmark-access]\t- Sort by last bookmark access time
-\\[bookmarkp-bmenu-sort-by-bookmark-visit-frequency]\t- Sort by bookmark visit frequency
-\\[bookmarkp-bmenu-sort-by-w3m-url]\t- Sort by W3M URL
-
-\\[bookmarkp-bmenu-sort-by-local-file-type]\t- Sort by local file type: file, symlink, dir
-\\[bookmarkp-bmenu-sort-by-file-name]\t- Sort by file name
-\\[bookmarkp-bmenu-sort-by-local-file-size]\t- Sort by local file size
-\\[bookmarkp-bmenu-sort-by-last-local-file-access]\t- Sort by last local file access
-\\[bookmarkp-bmenu-sort-by-last-local-file-update]\t- Sort by last local file update (edit)
-
-\\[bookmarkp-reverse-sort-order]\t- Reverse current sort direction       (repeat to toggle)
-\\[bookmarkp-reverse-multi-sort-order]\t- Complement sort predicate decisions  (repeat \
-to toggle)
-\\[bookmarkp-bmenu-change-sort-order-repeat]\t- Cycle sort orders                    (repeat \
-to cycle)
-
-
-Search-and-replace bookmark locations (in sort order)
------------------------------------------------------
-
-\\[bookmarkp-bmenu-search-marked-bookmarks-regexp]\t- Regexp-search the marked file bookmarks
-\\[bookmarkp-bmenu-query-replace-marked-bookmarks-regexp]\t- Query-replace the marked file \
-bookmarks
-M-x a C-s\t- Isearch the marked bookmarks (Emacs 23+)
-M-x a C-M-s\t- Regexp Isearch the marked bookmarks (Emacs 23+)
 
 
 Tags
@@ -1712,8 +1762,67 @@ in a set      (NOT OR)
 in a set      (NOT AND)
 
 
-Options affecting *Bookmarks List*
-----------------------------------
+Search-and-replace bookmark locations (in sort order)
+-----------------------------------------------------
+
+\\[bookmarkp-bmenu-search-marked-bookmarks-regexp]\t- Regexp-search the marked file bookmarks
+\\[bookmarkp-bmenu-query-replace-marked-bookmarks-regexp]\t- Query-replace the marked file \
+bookmarks
+M-x a C-s\t- Isearch the marked bookmarks (Emacs 23+)
+M-x a C-M-s\t- Regexp Isearch the marked bookmarks (Emacs 23+)
+
+
+Sort bookmarks (repeat to cycle normal/reversed/off, except as noted)
+---------------------------------------------------------------------
+
+\\[bookmarkp-bmenu-sort-marked-before-unmarked]\t- Sort marked bookmarks first
+\\[bookmarkp-bmenu-sort-by-last-buffer-or-file-access]\t- Sort by last buffer or file \
+access
+\\[bookmarkp-bmenu-sort-by-Gnus-thread]\t- Sort by Gnus thread: group, article, message
+\\[bookmarkp-bmenu-sort-by-Info-location]\t- Sort by Info manual, node, position
+\\[bookmarkp-bmenu-sort-by-bookmark-type]\t- Sort by bookmark type
+\\[bookmarkp-bmenu-sort-by-bookmark-name]\t- Sort by bookmark name
+\\[bookmarkp-bmenu-sort-by-last-bookmark-access]\t- Sort by last bookmark access time
+\\[bookmarkp-bmenu-sort-by-bookmark-visit-frequency]\t- Sort by bookmark visit frequency
+\\[bookmarkp-bmenu-sort-by-w3m-url]\t- Sort by W3M URL
+
+\\[bookmarkp-bmenu-sort-by-local-file-type]\t- Sort by local file type: file, symlink, dir
+\\[bookmarkp-bmenu-sort-by-file-name]\t- Sort by file name
+\\[bookmarkp-bmenu-sort-by-local-file-size]\t- Sort by local file size
+\\[bookmarkp-bmenu-sort-by-last-local-file-access]\t- Sort by last local file access
+\\[bookmarkp-bmenu-sort-by-last-local-file-update]\t- Sort by last local file update (edit)
+
+\\[bookmarkp-reverse-sort-order]\t- Reverse current sort direction       (repeat to toggle)
+\\[bookmarkp-reverse-multi-sort-order]\t- Complement sort predicate decisions  (repeat \
+to toggle)
+\\[bookmarkp-bmenu-change-sort-order-repeat]\t- Cycle sort orders                    (repeat \
+to cycle)
+
+
+Hide/show bookmarks
+-------------------
+
+\\[bookmarkp-bmenu-show-all]\t- Show all bookmarks
+\\[bookmarkp-bmenu-toggle-show-only-marked]\t- Toggle showing only marked bookmarks
+\\[bookmarkp-bmenu-toggle-show-only-unmarked]\t- Toggle showing only unmarked bookmarks
+\\[bookmarkp-bmenu-show-only-non-files]\t- Show only non-file (i.e. buffer) bookmarks
+\\[bookmarkp-bmenu-show-only-dired]\t- Show only Dired bookmarks
+\\[bookmarkp-bmenu-show-only-files]\t- Show only file & directory bookmarks (`C-u': local only)
+\\[bookmarkp-bmenu-show-only-gnus]\t- Show only Gnus bookmarks
+\\[bookmarkp-bmenu-show-only-info-nodes]\t- Show only Info bookmarks
+\\[bookmarkp-bmenu-show-only-man-pages]\t- Show only `man' page bookmarks
+\\[bookmarkp-bmenu-show-only-regions]\t- Show only region bookmarks
+\\[bookmarkp-bmenu-show-only-w3m-urls]\t- Show only W3M (URL) bookmarks
+\\[bookmarkp-bmenu-filter-bookmark-name-incrementally]\t- Incrementally show only bookmarks \
+whose names match a regexp
+\\[bookmarkp-bmenu-filter-file-name-incrementally]\t- Incrementally show only bookmarks whose \
+files match a regexp
+\\[bookmarkp-bmenu-filter-tags-incrementally]\t- Incrementally show only bookmarks whose tags \
+match a regexp
+
+
+Options affecting *Bookmark List* display
+-----------------------------------------
 
 `bookmarkp-sort-comparer'          - Initial sort
 `bookmarkp-sort-orders-for-cycling-alist' -
@@ -1722,7 +1831,7 @@ Options affecting *Bookmarks List*
 `bookmark-bmenu-toggle-filenames'  - Show filenames initially?
 `bookmark-bmenu-file-column'       - Bookmark width if files are shown
 `bookmarkp-bmenu-state-file'       - File to save the menu-list state
-                                     (or nil to not restore state)
+                                     (\"home\") nil: do not save/restore
 
 
 Other bookmark options
@@ -1831,14 +1940,14 @@ Don't forget to mention your Emacs and library versions."))
   :link '(emacs-commentary-link :tag "Commentary" "bookmark+"))
 
 (defcustom bookmarkp-bmenu-state-file (convert-standard-filename "~/.emacs-bmk-bmenu-state.el")
-  "*File to save menu-list (`*Bookmark List*') state when you quit it.
+  "*File to save bookmark-list (`*Bookmark List*') state when you quit it.
 This must be an absolute file name or nil (it is not expanded).
 
 The state is also saved when you quit Emacs, even if you don't quit
-the menu list first (using \\<bookmark-bmenu-mode-map>`\\[bookmarkp-bmenu-quit]').
+the bookmark list first (using \\<bookmark-bmenu-mode-map>`\\[bookmarkp-bmenu-quit]').
 
-Set this to nil if you do not want to restore the menu list as it was
-the last time you used it."
+Set this to nil if you do not want to restore the bookmark list as it
+was the last time you used it."
   :type '(choice
           (const :tag "Do not save and restore menu-list state")
           (file  :tag "File for saving menu-list state"))
@@ -1888,7 +1997,7 @@ If nil show only beginning of region."
                                      bookmarkp-alpha-p) ; This corresponds to `s k'.
   ;; $$$$$$ An alternative default value: `bookmarkp-alpha-p', which corresponds to `s n'.
   "*Predicate or predicates for sorting (comparing) bookmarks.
-This defines the default sort for bookmarks in the menu list.
+This defines the default sort for bookmarks in the bookmark list.
 
 Various sorting commands, such as \\<bookmark-bmenu-mode-map>\
 `\\[bookmarkp-bmenu-sort-by-bookmark-visit-frequency]', change the value of this
@@ -2095,10 +2204,10 @@ general reverse that order.  The order within each group is unchanged
   "Timer used for incremental filtering.")
  
 (defvar bookmarkp-bmenu-first-time-p t
-  "Internal flag that is non-nil the first time the menu list is shown.")
+  "Internal flag: non-nil the first time the bookmark list is shown.")
 
 (defvar bookmarkp-last-bmenu-bookmark nil
-  "The name of the last bookmark current in the menu list.")
+  "The name of the last bookmark current in the bookmark list.")
 
 (defvar bookmarkp-last-bmenu-state-file nil
   "Last value of option `bookmarkp-bmenu-state-file'.")
@@ -2804,7 +2913,7 @@ Interactively:
  If called from the menubar, select OLD from a menu.
 If NEW is nil, then prompt for its string value.
 
-If BATCH is non-nil, then do not rebuild the menu list.
+If BATCH is non-nil, then do not rebuild the bookmark list.
 
 While the user enters the new name, repeated `C-w' inserts consecutive
 words from the buffer into the new bookmark name.
@@ -2956,7 +3065,7 @@ candidate.  In this way, you can delete multiple bookmarks."
 ;; 3. Raise error if not in `*Bookmark List*'.
 ;;
 ;;;###autoload
-(defun bookmark-bmenu-mark ()           ; `m' in menu list
+(defun bookmark-bmenu-mark ()           ; `m' in bookmark list
   "Mark the bookmark on this line, using mark `>'."
   (interactive)
   (bookmarkp-barf-if-not-in-menu-list)
@@ -2974,7 +3083,7 @@ candidate.  In this way, you can delete multiple bookmarks."
 ;; 3. Raise error if not in `*Bookmark List*'.
 ;;
 ;;;###autoload
-(defun bookmark-bmenu-unmark (&optional backup) ; `u' in menu list
+(defun bookmark-bmenu-unmark (&optional backup) ; `u' in bookmark list
   "Unmark the bookmark on this line, then move down to the next.
 Optional BACKUP means move up instead."
   (interactive "P")
@@ -3048,7 +3157,7 @@ Use `customize-face' if you want to change the appearance.
   `bookmarkp-info', `bookmarkp-non-file', `bookmarkp-remote-file',
   `bookmarkp-su-or-sudo', `bookmarkp-w3m'.
 
-Non-nil FILTEREDP means the menu list has been filtered, so:
+Non-nil FILTEREDP means the bookmark list has been filtered, so:
  * Use `bookmarkp-bmenu-title' not the default menu-list title.
  * Do not reset `bookmarkp-latest-bookmark-alist' to `bookmark-alist'."
   (interactive)
@@ -3091,7 +3200,8 @@ Non-nil FILTEREDP means the menu list has been filtered, so:
 See `bookmark-bmenu-list' for the description of FILTEREDP.
 Non-nil RESET-MARKED-P resets `bookmarkp-bmenu-marked-bookmarks'.
 Non-nil INTERACTIVEP means `bookmark-bmenu-list' was called
-interactively, so pop to the menu list and communicate the sort order."
+ interactively, so pop to the bookmark list and communicate the sort
+ order."
   (when reset-marked-p (setq bookmarkp-bmenu-marked-bookmarks  ()))
   (unless filteredp (setq bookmarkp-latest-bookmark-alist  bookmark-alist))
   (if interactivep
@@ -3226,7 +3336,7 @@ non-nil, then do nothing."
 ;; 2. Do not call `bookmark-bmenu-check-position' (done by `bookmark-bmenu-bookmark').
 ;; 3. Raise error if not in buffer `*Bookmark List*'.
 ;;
-(defun bookmark-bmenu-other-window ()   ; `o' in menu list
+(defun bookmark-bmenu-other-window ()   ; `o' in bookmark list
   "Select this line's bookmark in other window, leaving bookmark menu visible."
   (interactive)
   (bookmarkp-barf-if-not-in-menu-list)
@@ -3246,7 +3356,7 @@ non-nil, then do nothing."
 ;; 6. Raise error if not in buffer `*Bookmark List*'.
 ;;
 ;;;###autoload
-(defun bookmark-bmenu-execute-deletions (&optional markedp) ; `x' in menu list
+(defun bookmark-bmenu-execute-deletions (&optional markedp) ; `x' in bookmark list
   "Delete (visible) bookmarks flagged `D'.
 With a prefix argument, delete the bookmarks marked `>' instead, after
 confirmation."
@@ -3284,7 +3394,7 @@ confirmation."
 ;; 3. Raise error if not in buffer `*Bookmark List*'.
 ;;
 ;;;###autoload
-(defun bookmark-bmenu-rename ()         ; `r' in menu list
+(defun bookmark-bmenu-rename ()         ; `r' in bookmark list
   "Rename bookmark on current line.  Prompts for a new name."
   (interactive)
   (bookmarkp-barf-if-not-in-menu-list)
@@ -3352,7 +3462,7 @@ Otherwise, the last-used bookmark in the current buffer."
     bookmark-current-bookmark))
 
 ;;;###autoload
-(defun bookmarkp-toggle-saving-menu-list-state () ; `C-t' in menu list
+(defun bookmarkp-toggle-saving-menu-list-state () ; `C-t' in bookmark list
   "Toggle the value of option `bookmarkp-bmenu-state-file'.
 Tip: You can use this before quitting Emacs, to not save the state."
   (interactive)
@@ -3368,7 +3478,7 @@ Tip: You can use this before quitting Emacs, to not save the state."
 ;;  *** Menu-List (`*-bmenu-*') Filter Commands ***
 
 ;;;###autoload
-(defun bookmarkp-bmenu-show-only-dired () ; `M-d M-s' in menu list
+(defun bookmarkp-bmenu-show-only-dired () ; `M-d M-s' in bookmark list
   "Display (only) the Dired bookmarks."
   (interactive)
   (bookmarkp-barf-if-not-in-menu-list)
@@ -3381,7 +3491,7 @@ Tip: You can use this before quitting Emacs, to not save the state."
                                                         "Only Dired bookmarks are shown")))
 
 ;;;###autoload
-(defun bookmarkp-bmenu-show-only-files (arg) ; `F S' in menu list
+(defun bookmarkp-bmenu-show-only-files (arg) ; `F S' in bookmark list
   "Display a list of file and directory bookmarks (only).
 With a prefix argument, do not include remote files or directories."
   (interactive "P")
@@ -3399,7 +3509,7 @@ With a prefix argument, do not include remote files or directories."
                                                         "Only file bookmarks are shown")))
 
 ;;;###autoload
-(defun bookmarkp-bmenu-show-only-non-files () ; `B S' in menu list
+(defun bookmarkp-bmenu-show-only-non-files () ; `B S' in bookmark list
   "Display (only) the non-file bookmarks."
   (interactive)
   (bookmarkp-barf-if-not-in-menu-list)
@@ -3412,7 +3522,7 @@ With a prefix argument, do not include remote files or directories."
                                                         "Only non-file bookmarks are shown")))
     
 ;;;###autoload
-(defun bookmarkp-bmenu-show-only-gnus () ; `G S' in menu list
+(defun bookmarkp-bmenu-show-only-gnus () ; `G S' in bookmark list
   "Display (only) the Gnus bookmarks."
   (interactive)
   (bookmarkp-barf-if-not-in-menu-list)
@@ -3425,7 +3535,7 @@ With a prefix argument, do not include remote files or directories."
                                                         "Only Gnus bookmarks are shown")))
 
 ;;;###autoload
-(defun bookmarkp-bmenu-show-only-info-nodes () ; `I S' in menu list
+(defun bookmarkp-bmenu-show-only-info-nodes () ; `I S' in bookmark list
   "Display (only) the Info bookmarks."
   (interactive)
   (bookmarkp-barf-if-not-in-menu-list)
@@ -3438,7 +3548,7 @@ With a prefix argument, do not include remote files or directories."
                                                         "Only Info bookmarks are shown")))
 
 ;;;###autoload
-(defun bookmarkp-bmenu-show-only-man-pages () ; `M S' in menu list
+(defun bookmarkp-bmenu-show-only-man-pages () ; `M S' in bookmark list
   "Display (only) the `man' page bookmarks."
   (interactive)
   (bookmarkp-barf-if-not-in-menu-list)
@@ -3451,7 +3561,7 @@ With a prefix argument, do not include remote files or directories."
                                                         "Only `man' page bookmarks are shown")))
 
 ;;;###autoload
-(defun bookmarkp-bmenu-show-only-regions () ; `R S' in menu list
+(defun bookmarkp-bmenu-show-only-regions () ; `R S' in bookmark list
   "Display (only) the bookmarks that record a region."
   (interactive)
   (bookmarkp-barf-if-not-in-menu-list)
@@ -3465,7 +3575,7 @@ With a prefix argument, do not include remote files or directories."
                                     "Only bookmarks with regions are shown")))
 
 ;;;###autoload
-(defun bookmarkp-bmenu-show-only-w3m-urls () ; `W S' in menu list
+(defun bookmarkp-bmenu-show-only-w3m-urls () ; `W S' in bookmark list
   "Display (only) the w3m bookmarks."
   (interactive)
   (bookmarkp-barf-if-not-in-menu-list)
@@ -3478,9 +3588,9 @@ With a prefix argument, do not include remote files or directories."
                                                         "Only W3M bookmarks are shown")))
 
 ;;;###autoload
-(defun bookmarkp-bmenu-show-all ()      ; `.' in menu list
-  "Show all bookmarks already known to the bookmarks menu list.
-This does not revert the menu list, to bring it up to date.
+(defun bookmarkp-bmenu-show-all ()      ; `.' in bookmark list
+  "Show all bookmarks known to the bookmark list (aka \"menu list\").
+This does not revert the bookmark list, to bring it up to date.
 To revert the list, use `\\<bookmark-bmenu-mode-map>\\[bookmarkp-bmenu-refresh-menu-list]'."
   (interactive)
   (bookmarkp-barf-if-not-in-menu-list)
@@ -3492,9 +3602,10 @@ To revert the list, use `\\<bookmark-bmenu-mode-map>\\[bookmarkp-bmenu-refresh-m
     (bookmarkp-msg-about-sort-order (bookmarkp-current-sort-order) "All bookmarks are shown")))
 
 ;;;###autoload
-(defun bookmarkp-bmenu-refresh-menu-list () ; `g' in menu list
-  "Refresh (revert) bookmarks menu list, bringing it up to date.
-This does not change the current filtering or sorting."
+(defun bookmarkp-bmenu-refresh-menu-list () ; `g' in bookmark list
+  "Refresh (revert) the bookmark list (\"menu list\").
+This brings the displayed list up to date.  It does not change the
+current filtering or sorting of the displayed list."
   (interactive)
   (bookmarkp-barf-if-not-in-menu-list)
   (let ((bookmark-alist  (if bookmarkp-bmenu-filter-function
@@ -3503,7 +3614,7 @@ This does not change the current filtering or sorting."
     (bookmark-bmenu-list 'filteredp)))
 
 ;;;###autoload
-(defun bookmarkp-bmenu-filter-bookmark-name-incrementally () ; `P B' in menu list
+(defun bookmarkp-bmenu-filter-bookmark-name-incrementally () ; `P B' in bookmark list
   "Incrementally filter bookmarks by bookmark name using a regexp."
   (interactive)
   (bookmarkp-barf-if-not-in-menu-list)
@@ -3515,7 +3626,7 @@ This does not change the current filtering or sorting."
     (bookmarkp-bmenu-cancel-incremental-filtering)))
 
 (defun bookmarkp-bmenu-filter-alist-by-bookmark-name-regexp ()
-  "Filter bookmarks by bookmark name, then refresh the menu list."
+  "Filter bookmarks by bookmark name, then refresh the bookmark list."
   (setq bookmarkp-bmenu-filter-function  'bookmarkp-regexp-filtered-bookmark-name-alist-only
         bookmarkp-bmenu-title
         (format "%% Bookmarks with Names Matching Regexp `%s'" bookmarkp-bmenu-filter-pattern))
@@ -3524,7 +3635,7 @@ This does not change the current filtering or sorting."
     (bookmark-bmenu-list 'filteredp)))
 
 ;;;###autoload
-(defun bookmarkp-bmenu-filter-file-name-incrementally () ; `P F' in menu list
+(defun bookmarkp-bmenu-filter-file-name-incrementally () ; `P F' in bookmark list
   "Incrementally filter bookmarks by file name using a regexp."
   (interactive)
   (bookmarkp-barf-if-not-in-menu-list)
@@ -3536,7 +3647,7 @@ This does not change the current filtering or sorting."
     (bookmarkp-bmenu-cancel-incremental-filtering)))
 
 (defun bookmarkp-bmenu-filter-alist-by-file-name-regexp ()
-  "Filter bookmarks by file name, then refresh the menu list."
+  "Filter bookmarks by file name, then refresh the bookmark list."
   (setq bookmarkp-bmenu-filter-function  'bookmarkp-regexp-filtered-file-name-alist-only
         bookmarkp-bmenu-title
         (format "%% Bookmarks with File Names Matching Regexp `%s'"
@@ -3546,7 +3657,7 @@ This does not change the current filtering or sorting."
     (bookmark-bmenu-list 'filteredp)))
 
 ;;;###autoload
-(defun bookmarkp-bmenu-filter-tags-incrementally () ; `P T' in menu list
+(defun bookmarkp-bmenu-filter-tags-incrementally () ; `P T' in bookmark list
   "Incrementally filter bookmarks by tags using a regexp."
   (interactive)
   (bookmarkp-barf-if-not-in-menu-list)
@@ -3558,7 +3669,7 @@ This does not change the current filtering or sorting."
     (bookmarkp-bmenu-cancel-incremental-filtering)))
 
 (defun bookmarkp-bmenu-filter-alist-by-tags-regexp ()
-  "Filter bookmarks by tags, then refresh the menu list."
+  "Filter bookmarks by tags, then refresh the bookmark list."
   (setq bookmarkp-bmenu-filter-function  'bookmarkp-regexp-filtered-tags-alist-only
         bookmarkp-bmenu-title
         (format "%% Bookmarks with Tags Matching Regexp `%s'" bookmarkp-bmenu-filter-pattern))
@@ -3595,7 +3706,7 @@ This does not change the current filtering or sorting."
   (setq bookmarkp-bmenu-filter-timer  nil))
 
 ;;;###autoload
-(defun bookmarkp-bmenu-toggle-show-only-unmarked () ; `<' in menu list
+(defun bookmarkp-bmenu-toggle-show-only-unmarked () ; `<' in bookmark list
   "Hide all marked bookmarks.  Repeat to toggle, showing all."
   (interactive)
   (bookmarkp-barf-if-not-in-menu-list)
@@ -3624,7 +3735,7 @@ This does not change the current filtering or sorting."
   (when (fboundp 'fit-frame-if-one-window) (fit-frame-if-one-window)))
 
 ;;;###autoload
-(defun bookmarkp-bmenu-toggle-show-only-marked () ; `>' in menu list
+(defun bookmarkp-bmenu-toggle-show-only-marked () ; `>' in bookmark list
   "Hide all unmarked bookmarks.  Repeat to toggle, showing all."
   (interactive)
   (bookmarkp-barf-if-not-in-menu-list)
@@ -3657,7 +3768,7 @@ This does not change the current filtering or sorting."
 ;;  *** Menu-List (`*-bmenu-*') Commands Involving Marks ***
 
 ;;;###autoload
-(defun bookmarkp-bmenu-mark-all ()      ; `M-m' in menu list
+(defun bookmarkp-bmenu-mark-all ()      ; `M-m' in bookmark list
   "Mark all bookmarks, using mark `>'."
   (interactive)
   (bookmarkp-barf-if-not-in-menu-list)
@@ -3669,7 +3780,7 @@ This does not change the current filtering or sorting."
 
 ;; This is similar to `dired-unmark-all-files'.
 ;;;###autoload
-(defun bookmarkp-bmenu-unmark-all (mark &optional arg) ; `M-DEL', `U' in menu list
+(defun bookmarkp-bmenu-unmark-all (mark &optional arg) ; `M-DEL', `U' in bookmark list
   "Remove a mark from each bookmark.
 Hit the mark character (`>' or `D') to remove those marks,
  or hit `RET' to remove all marks (both `>' and `D').
@@ -3700,7 +3811,7 @@ Use `\\[help-command]' during querying for help."
       (if (= 1 count) (message "1 mark removed") (message "%d marks removed" count)))))
 
 ;;;###autoload
-(defun bookmarkp-bmenu-regexp-mark (regexp) ; `% m' in menu list
+(defun bookmarkp-bmenu-regexp-mark (regexp) ; `% m' in bookmark list
   "Mark bookmarks that match REGEXP.
 The entire bookmark line is tested: bookmark name and possibly file name."
   (interactive "sRegexp: ")
@@ -3714,13 +3825,13 @@ The entire bookmark line is tested: bookmark name and possibly file name."
       (if (= 1 count) (message "1 bookmark matched") (message "%d bookmarks matched" count)))))
 
 ;;;###autoload
-(defun bookmarkp-bmenu-mark-dired-bookmarks () ; `M-d M-m' in menu list
+(defun bookmarkp-bmenu-mark-dired-bookmarks () ; `M-d M-m' in bookmark list
   "Mark Dired bookmarks."
   (interactive)
   (bookmarkp-bmenu-mark-bookmarks-satisfying 'bookmarkp-dired-bookmark-p))
 
 ;;;###autoload
-(defun bookmarkp-bmenu-mark-file-bookmarks (arg) ; `F M' in menu list
+(defun bookmarkp-bmenu-mark-file-bookmarks (arg) ; `F M' in bookmark list
   "Mark file bookmarks.
 With a prefix argument, do not mark remote files or directories."
   (interactive "P")
@@ -3728,37 +3839,37 @@ With a prefix argument, do not mark remote files or directories."
    (if arg 'bookmarkp-local-file-bookmark-p 'bookmarkp-file-bookmark-p)))
 
 ;;;###autoload
-(defun bookmarkp-bmenu-mark-gnus-bookmarks () ; `G M' in menu list
+(defun bookmarkp-bmenu-mark-gnus-bookmarks () ; `G M' in bookmark list
   "Mark Gnus bookmarks."
   (interactive)
   (bookmarkp-bmenu-mark-bookmarks-satisfying 'bookmarkp-gnus-bookmark-p))
 
 ;;;###autoload
-(defun bookmarkp-bmenu-mark-info-bookmarks () ; `I M' in menu list
+(defun bookmarkp-bmenu-mark-info-bookmarks () ; `I M' in bookmark list
   "Mark Info bookmarks."
   (interactive)
   (bookmarkp-bmenu-mark-bookmarks-satisfying 'bookmarkp-info-bookmark-p))
 
 ;;;###autoload
-(defun bookmarkp-bmenu-mark-man-bookmarks () ; `M M' in menu list
+(defun bookmarkp-bmenu-mark-man-bookmarks () ; `M M' in bookmark list
   "Mark `man' page bookmarks."
   (interactive)
   (bookmarkp-bmenu-mark-bookmarks-satisfying 'bookmarkp-man-bookmark-p))
 
 ;;;###autoload
-(defun bookmarkp-bmenu-mark-non-file-bookmarks () ; `B M' in menu list
+(defun bookmarkp-bmenu-mark-non-file-bookmarks () ; `B M' in bookmark list
   "Mark non-file bookmarks."
   (interactive)
   (bookmarkp-bmenu-mark-bookmarks-satisfying 'bookmarkp-non-file-bookmark-p))
 
 ;;;###autoload
-(defun bookmarkp-bmenu-mark-region-bookmarks () ; `R M' in menu list
+(defun bookmarkp-bmenu-mark-region-bookmarks () ; `R M' in bookmark list
   "Mark bookmarks that record a region."
   (interactive)
   (bookmarkp-bmenu-mark-bookmarks-satisfying 'bookmarkp-region-bookmark-p))
 
 ;;;###autoload
-(defun bookmarkp-bmenu-mark-w3m-bookmarks () ; `W M' in menu list
+(defun bookmarkp-bmenu-mark-w3m-bookmarks () ; `W M' in bookmark list
   "Mark W3M (URL) bookmarks."
   (interactive)
   (bookmarkp-bmenu-mark-bookmarks-satisfying 'bookmarkp-region-bookmark-p))
@@ -3779,7 +3890,7 @@ With a prefix argument, do not mark remote files or directories."
       (if (= 1 count) (message "1 bookmark matched") (message "%d bookmarks matched" count)))))
 
 ;;;###autoload
-(defun bookmarkp-bmenu-toggle-marks ()  ; `t' in menu list
+(defun bookmarkp-bmenu-toggle-marks ()  ; `t' in bookmark list
   "Toggle marks: Unmark all marked bookmarks; mark all unmarked bookmarks.
 This affects only the `>' mark, not the `D' flag."
   (interactive)
@@ -3800,7 +3911,7 @@ This affects only the `>' mark, not the `D' flag."
         (message "Marked: %d, unmarked: %d" marked-count unmarked-count)))))
 
 ;;;###autoload
-(defun bookmarkp-bmenu-delete-marked () ; `D' in menu list
+(defun bookmarkp-bmenu-delete-marked () ; `D' in bookmark list
   "Delete all (visible) bookmarks that are marked `>', after confirmation."
   (interactive)
   (bookmarkp-barf-if-not-in-menu-list)
@@ -3856,7 +3967,7 @@ corresponding bookmark buffer is returned."
       (goto-char (if isearch-forward (point-min) (point-max)))
       (isearch-forward-regexp)))
 
-  (defun bookmarkp-bmenu-isearch-marked-bookmarks () ; `M-s a C-s' in menu list
+  (defun bookmarkp-bmenu-isearch-marked-bookmarks () ; `M-s a C-s' in bookmark list
     "Isearch the marked bookmark locations, in their current order."
     (interactive)
     (bookmarkp-barf-if-not-in-menu-list)
@@ -3865,7 +3976,7 @@ corresponding bookmark buffer is returned."
           (bookmarkp-use-region-flag  nil)) ; Suppress region handling.
       (bookmarkp-isearch-bookmarks bookmarks)))
 
-  (defun bookmarkp-bmenu-isearch-marked-bookmarks-regexp () ; `M-s a M-C-s' in menu list
+  (defun bookmarkp-bmenu-isearch-marked-bookmarks-regexp () ; `M-s a M-C-s' in bookmark list
     "Regexp Isearch the marked bookmark locations, in their current order."
     (interactive)
     (bookmarkp-barf-if-not-in-menu-list)
@@ -3874,7 +3985,7 @@ corresponding bookmark buffer is returned."
           (bookmarkp-use-region-flag  nil)) ; Suppress region handling.
       (bookmarkp-isearch-bookmarks-regexp bookmarks))))
 
-(defun bookmarkp-bmenu-search-marked-bookmarks-regexp (regexp) ; `M-a' in menu list
+(defun bookmarkp-bmenu-search-marked-bookmarks-regexp (regexp) ; `M-a' in bookmark list
   "Search the marked file bookmarks, in their current order, for REGEXP.
 Use `\\[tags-loop-continue]' to advance among the search hits.
 Marked directory and non-file bookmarks are ignored."
@@ -3890,7 +4001,7 @@ Marked directory and non-file bookmarks are ignored."
                             (push file files)))
                         (setq files  (nreverse files)))))
 
-(defun bookmarkp-bmenu-query-replace-marked-bookmarks-regexp (from to ; `M-q' in menu list
+(defun bookmarkp-bmenu-query-replace-marked-bookmarks-regexp (from to ; `M-q' in bookmark list
                                                               &optional delimited)
   "`query-replace-regexp' FROM with TO, for all marked file bookmarks.
 DELIMITED (prefix arg) means replace only word-delimited matches.
@@ -3957,7 +4068,7 @@ REQUIRE-MATCH is passed to `completing-read'."
     (nreverse btags)))
 
 ;;;###autoload
-(defun bookmarkp-remove-all-tags (bookmark &optional msgp) ; `T 0' in menu list
+(defun bookmarkp-remove-all-tags (bookmark &optional msgp) ; `T 0' in bookmark list
   "Remove all tags from BOOKMARK.
 Non-nil optional arg MSGP means display a message about the removal."
   (interactive (list (bookmark-completing-read "Bookmark" (bookmarkp-default-bookmark-name))
@@ -3968,7 +4079,7 @@ Non-nil optional arg MSGP means display a message about the removal."
     (when (and msgp nb-removed) (message "%d tags removed" nb-removed))))
 
 ;;;###autoload
-(defun bookmarkp-add-tags (bookmark tags &optional msgp) ; `T +' in menu list
+(defun bookmarkp-add-tags (bookmark tags &optional msgp) ; `T +' in bookmark list
   "Add TAGS to BOOKMARK.
 TAGS is a list of tags (strings) or a single tag.
 Non-nil optional arg MSGP means display a message about the addition.
@@ -3989,7 +4100,7 @@ Return the number of tags added."
       nb-added)))
 
 ;;;###autoload
-(defun bookmarkp-remove-tags (bookmark tags &optional msgp) ; `T -' in menu list
+(defun bookmarkp-remove-tags (bookmark tags &optional msgp) ; `T -' in bookmark list
   "Remove TAGS from BOOKMARK.
 TAGS is a list of tags (strings) or a single tag.
 Non-nil optional arg MSGP means display a message about the removal."
@@ -4049,7 +4160,7 @@ Non-nil optional arg MSGP means display a message about the deletion."
   (when msgp (message "Renamed")))
 
 ;;;###autoload
-(defun bookmarkp-bmenu-add-tags-to-marked (tags &optional msgp) ; `T > +' in menu list
+(defun bookmarkp-bmenu-add-tags-to-marked (tags &optional msgp) ; `T > +' in bookmark list
   "Add TAGS to each of the marked bookmarks."
   (interactive (list (bookmarkp-read-tags-completing) 'msg))
   (bookmarkp-barf-if-not-in-menu-list)
@@ -4058,7 +4169,7 @@ Non-nil optional arg MSGP means display a message about the deletion."
   (when msgp (message "Tags added: %S" tags)))
 
 ;;;###autoload
-(defun bookmarkp-bmenu-remove-tags-from-marked (tags &optional msgp) ; `T > -' in menu list
+(defun bookmarkp-bmenu-remove-tags-from-marked (tags &optional msgp) ; `T > -' in bookmark list
   "Remove TAGS from each of the marked bookmarks."
   (interactive (let ((cand-tags  ()))
                  (dolist (bmk  (bookmarkp-marked-bookmarks-only))
@@ -4089,7 +4200,7 @@ With a prefix arg, mark all that are tagged but with no tags that match."
       (if (= 1 count) (message "1 bookmark matched") (message "%d bookmarks matched" count)))))
 
 ;;;###autoload
-(defun bookmarkp-bmenu-mark-bookmarks-tagged-all (tags ; `T m *' in menu list
+(defun bookmarkp-bmenu-mark-bookmarks-tagged-all (tags ; `T m *' in bookmark list
                                                   &optional nonep msgp)
   "Mark all visible bookmarks that are tagged with *each* tag in TAGS.
 As a special case, if TAGS is empty, then mark the bookmarks that have
@@ -4104,7 +4215,7 @@ With a prefix arg, mark all that are *not* tagged with *any* TAGS."
   (bookmarkp-bmenu-mark/unmark-bookmarks-tagged-all/none tags nonep nil msgp))
 
 ;;;###autoload
-(defun bookmarkp-bmenu-mark-bookmarks-tagged-none (tags ; `T m ~ +' in menu list
+(defun bookmarkp-bmenu-mark-bookmarks-tagged-none (tags ; `T m ~ +' in bookmark list
                                                    &optional allp msgp)
   "Mark all visible bookmarks that are not tagged with *any* tag in TAGS.
 As a special case, if TAGS is empty, then mark the bookmarks that have
@@ -4119,7 +4230,7 @@ With a prefix arg, mark all that are tagged with *each* tag in TAGS."
   (bookmarkp-bmenu-mark/unmark-bookmarks-tagged-all/none tags (not allp) nil msgp))
 
 ;;;###autoload
-(defun bookmarkp-bmenu-mark-bookmarks-tagged-some (tags ; `T m +' in menu list
+(defun bookmarkp-bmenu-mark-bookmarks-tagged-some (tags ; `T m +' in bookmark list
                                                    &optional somenotp msgp)
   "Mark all visible bookmarks that are tagged with *some* tag in TAGS.
 As a special case, if TAGS is empty, then mark the bookmarks that have
@@ -4134,7 +4245,7 @@ With a prefix arg, mark all that are *not* tagged with *all* TAGS."
   (bookmarkp-bmenu-mark/unmark-bookmarks-tagged-some/not-all tags somenotp nil msgp))
 
 ;;;###autoload
-(defun bookmarkp-bmenu-mark-bookmarks-tagged-not-all (tags ; `T m ~ *' in menu list
+(defun bookmarkp-bmenu-mark-bookmarks-tagged-not-all (tags ; `T m ~ *' in bookmark list
                                                       &optional somep msgp)
   "Mark all visible bookmarks that are *not* tagged with *all* TAGS.
 As a special case, if TAGS is empty, then mark the bookmarks that have
@@ -4149,7 +4260,7 @@ With a prefix arg, mark all that are tagged with *some* tag in TAGS."
   (bookmarkp-bmenu-mark/unmark-bookmarks-tagged-some/not-all tags (not somep) nil msgp))
 
 ;;;###autoload
-(defun bookmarkp-bmenu-unmark-bookmarks-tagged-all (tags ; `T u *' in menu list
+(defun bookmarkp-bmenu-unmark-bookmarks-tagged-all (tags ; `T u *' in bookmark list
                                                     &optional nonep msgp)
   "Unmark all visible bookmarks that are tagged with *each* tag in TAGS.
 As a special case, if TAGS is empty, then mark the bookmarks that have
@@ -4164,7 +4275,7 @@ With a prefix arg, unmark all that are *not* tagged with *any* TAGS."
   (bookmarkp-bmenu-mark/unmark-bookmarks-tagged-all/none tags nonep 'unmark msgp))
 
 ;;;###autoload
-(defun bookmarkp-bmenu-unmark-bookmarks-tagged-none (tags ; `T u ~ +' in menu list
+(defun bookmarkp-bmenu-unmark-bookmarks-tagged-none (tags ; `T u ~ +' in bookmark list
                                                      &optional allp msgp)
   "Unmark all visible bookmarks that are *not* tagged with *any* TAGS.
 With a prefix arg, unmark all that are tagged with *each* tag in TAGS.
@@ -4178,7 +4289,7 @@ no tags at all."
   (bookmarkp-bmenu-mark/unmark-bookmarks-tagged-all/none tags (not allp) 'unmark msgp))
 
 ;;;###autoload
-(defun bookmarkp-bmenu-unmark-bookmarks-tagged-some (tags ; `T u +' in menu list
+(defun bookmarkp-bmenu-unmark-bookmarks-tagged-some (tags ; `T u +' in bookmark list
                                                      &optional somenotp msgp)
   "Unmark all visible bookmarks that are tagged with *some* tag in TAGS.
 As a special case, if TAGS is empty, then unmark the bookmarks that have
@@ -4193,7 +4304,7 @@ With a prefix arg, unmark all that are *not* tagged with *all* TAGS."
   (bookmarkp-bmenu-mark/unmark-bookmarks-tagged-some/not-all tags somenotp 'unmark msgp))
 
 ;;;###autoload
-(defun bookmarkp-bmenu-unmark-bookmarks-tagged-not-all (tags ; `T u ~ *' in menu list
+(defun bookmarkp-bmenu-unmark-bookmarks-tagged-not-all (tags ; `T u ~ *' in bookmark list
                                                         &optional somep msgp)
   "Unmark all visible bookmarks that are tagged with *some* tag in TAGS.
 As a special case, if TAGS is empty, then mark the bookmarks that have
@@ -4278,7 +4389,7 @@ unmark those that have no tags at all."
 ;;  *** General Menu-List (`-*bmenu-*') Commands and Functions ***
 
 ;;;###autoload
-(defun bookmarkp-bmenu-edit-bookmark () ; `E' in menu list
+(defun bookmarkp-bmenu-edit-bookmark () ; `E' in bookmark list
   "Edit the bookmark under the cursor: its name and file name."
   (interactive)
   (bookmarkp-barf-if-not-in-menu-list)
@@ -4359,11 +4470,11 @@ unmark those that have no tags at all."
                         help-echo (format "BAD BOOKMARK (maybe): `%s'" ,filep))))))))
 
 ;;;###autoload
-(defun bookmarkp-bmenu-quit ()          ; `q' in menu list
-  "Quit the menu list.
+(defun bookmarkp-bmenu-quit ()          ; `q' in bookmark list
+  "Quit the bookmark list (aka \"menu list\").
 If `bookmarkp-bmenu-state-file' is non-nil, then save the state, to be
-restored the next time the menu list is shown.  Otherwise, reset the
-internal lists that record menu-list markings."
+restored the next time the bookmark list is shown.  Otherwise, reset
+the internal lists that record menu-list markings."
   (interactive)
   (bookmarkp-barf-if-not-in-menu-list)
   (if (not bookmarkp-bmenu-state-file)
@@ -4886,7 +4997,7 @@ terminated with a period."
        (last-repeatable-command           'repeat))
    (repeat nil)))
 
-(defun bookmarkp-bmenu-change-sort-order-repeat (arg) ; `s s'... in menu list
+(defun bookmarkp-bmenu-change-sort-order-repeat (arg) ; `s s'... in bookmark list
   "Cycle to the next sort order.
 With a prefix arg, reverse current sort order.
 This is a repeatable version of `bookmarkp-bmenu-change-sort-order'."
@@ -4917,7 +5028,7 @@ With a prefix arg, reverse the current sort order."
   (or (car (rassoc bookmarkp-sort-comparer bookmarkp-sort-orders-alist))
       (format "%s" bookmarkp-sort-comparer)))
 
-(defun bookmarkp-reverse-sort-order ()  ; `s r' in menu list
+(defun bookmarkp-reverse-sort-order ()  ; `s r' in bookmark list
   "Reverse the current sort order.
 If you combine this with \\<bookmark-bmenu-mode-map>\
 `\\[bookmarkp-reverse-multi-sort-order]', then see the doc for that command."
@@ -4929,7 +5040,7 @@ If you combine this with \\<bookmark-bmenu-mode-map>\
     (bookmarkp-bmenu-goto-bookmark-named current-bmk)) ; Put cursor back on the right line.
   (when (interactive-p) (bookmarkp-msg-about-sort-order (bookmarkp-current-sort-order))))
 
-(defun bookmarkp-reverse-multi-sort-order () ; `s C-r' in menu list
+(defun bookmarkp-reverse-multi-sort-order () ; `s C-r' in bookmark list
   "Reverse the application of multi-sorting predicates.
 These are the PRED predicates described for option
 `bookmark-sort-function'.
@@ -4975,75 +5086,75 @@ use it."
 ;; `bookmarkp-sort-orders-alist'.  The first here is thus also the DEFAULT sort order.
 ;; Entries are traversed by `s s'..., in `bookmarkp-sort-orders-alist' order.
 
-(bookmarkp-define-sort-command          ; `s k' in menu list (`k' for "kind")
+(bookmarkp-define-sort-command          ; `s k' in bookmark list (`k' for "kind")
  "by bookmark type"                     ; `bookmarkp-bmenu-sort-by-bookmark-type'
  ((bookmarkp-info-cp bookmarkp-gnus-cp bookmarkp-w3m-cp bookmarkp-local-file-type-cp)
   bookmarkp-alpha-p)
  "Sort bookmarks by type: Info, Gnus, W3M, files, other.")
 
-(bookmarkp-define-sort-command          ; `s w' in menu list
+(bookmarkp-define-sort-command          ; `s w' in bookmark list
  "by w3m url"                           ; `bookmarkp-bmenu-sort-by-w3m-url'
  ((bookmarkp-w3m-cp) bookmarkp-alpha-p)
  "Sort W3M bookmarks alphabetically by their URL/filename.
 When two bookmarks are not comparable this way, compare them by
 bookmark name.")
 
-(bookmarkp-define-sort-command          ; `s g' in menu list
+(bookmarkp-define-sort-command          ; `s g' in bookmark list
  "by Gnus thread"                       ; `bookmarkp-bmenu-sort-by-Gnus-thread'
  ((bookmarkp-gnus-cp) bookmarkp-alpha-p)
  "Sort Gnus bookmarks by group, then by article, then by message.
 When two bookmarks are not comparable this way, compare them by
 bookmark name.")
 
-(bookmarkp-define-sort-command          ; `s i' in menu list
+(bookmarkp-define-sort-command          ; `s i' in bookmark list
  "by Info location"                     ; `bookmarkp-bmenu-sort-by-Info-location'
  ((bookmarkp-info-cp) bookmarkp-alpha-p)
  "Sort Info bookmarks by file name, then node name, then position.
 When two bookmarks are not comparable this way, compare them by
 bookmark name.")
 
-(bookmarkp-define-sort-command          ; `s f u' in menu list
+(bookmarkp-define-sort-command          ; `s f u' in bookmark list
  "by last local file update"            ; `bookmarkp-bmenu-sort-by-last-local-file-update'
  ((bookmarkp-local-file-updated-more-recently-cp) bookmarkp-alpha-p)
  "Sort bookmarks by last local file update time.
 Sort a local file before a remote file, and a remote file before other
 bookmarks.  Otherwise, sort by bookmark name.")
 
-(bookmarkp-define-sort-command          ; `s f t' in menu list
+(bookmarkp-define-sort-command          ; `s f t' in bookmark list
  "by last local file access"            ; `bookmarkp-bmenu-sort-by-last-local-file-access'
  ((bookmarkp-local-file-accessed-more-recently-cp) bookmarkp-alpha-p)
  "Sort bookmarks by last local file access time.
 A local file sorts before a remote file, which sorts before other
 bookmarks.  Otherwise, sort by bookmark name.")
 
-(bookmarkp-define-sort-command          ; `s f s' in menu list
+(bookmarkp-define-sort-command          ; `s f s' in bookmark list
  "by local file size"                   ; `bookmarkp-bmenu-sort-by-local-file-size'
  ((bookmarkp-local-file-size-cp) bookmarkp-alpha-p)
  "Sort bookmarks by local file size.
 A local file sorts before a remote file, which sorts before other
 bookmarks.  Otherwise, sort by bookmark name.")
 
-(bookmarkp-define-sort-command          ; `s f n' in menu list
+(bookmarkp-define-sort-command          ; `s f n' in bookmark list
  "by file name"                         ; `bookmarkp-bmenu-sort-by-file-name'
  ((bookmarkp-file-alpha-cp) bookmarkp-alpha-p)
  "Sort bookmarks by file name.
 When two bookmarks are not comparable by file name, compare them by
 bookmark name.")
 
-(bookmarkp-define-sort-command          ; `s f d' in menu list (`d' for "directory")
+(bookmarkp-define-sort-command          ; `s f d' in bookmark list (`d' for "directory")
  "by local file type"                   ; `bookmarkp-bmenu-sort-by-local-file-type'
  ((bookmarkp-local-file-type-cp) bookmarkp-alpha-p)
  "Sort bookmarks by local file type: file, symlink, directory.
 A local file sorts before a remote file, which sorts before other
 bookmarks.  Otherwise, sort by bookmark name.")
 
-(bookmarkp-define-sort-command          ; `s >' in menu list
+(bookmarkp-define-sort-command          ; `s >' in bookmark list
  "marked before unmarked"               ; `bookmarkp-bmenu-sort-marked-before-unmarked'
  ((bookmarkp-marked-cp) bookmarkp-alpha-p)
  "Sort bookmarks by putting marked before unmarked.
 Otherwise alphabetize by bookmark name.")
 
-(bookmarkp-define-sort-command          ; `s b' in menu list
+(bookmarkp-define-sort-command          ; `s b' in bookmark list
  "by last buffer or file access"        ; `bookmarkp-bmenu-sort-by-last-buffer-or-file-access'
  ((bookmarkp-buffer-last-access-cp bookmarkp-local-file-accessed-more-recently-cp)
   bookmarkp-alpha-p)
@@ -5054,21 +5165,21 @@ before a local file bookmark.  When two bookmarks are not comparable
 by such critera, sort them by bookmark name.  (In particular, sort
 remote-file bookmarks by bookmark name.")
 
-(bookmarkp-define-sort-command          ; `s v' in menu list
+(bookmarkp-define-sort-command          ; `s v' in bookmark list
  "by bookmark visit frequency"          ; `bookmarkp-bmenu-sort-by-bookmark-visit-frequency'
  ((bookmarkp-visited-more-cp) bookmarkp-alpha-p)
  "Sort bookmarks by the number of times they were visited as bookmarks.
 When two bookmarks are not comparable by visit frequency, compare them
 by bookmark name.")
 
-(bookmarkp-define-sort-command          ; `s t' in menu list
+(bookmarkp-define-sort-command          ; `s t' in bookmark list
  "by last bookmark access"              ; `bookmarkp-bmenu-sort-by-last-bookmark-access'
  ((bookmarkp-bookmark-last-access-cp) bookmarkp-alpha-p)
  "Sort bookmarks by the time of their last visit as bookmarks.
 When two bookmarks are not comparable by visit time, compare them
 by bookmark name.")
 
-(bookmarkp-define-sort-command          ; `s n' in menu list
+(bookmarkp-define-sort-command          ; `s n' in bookmark list
  "by bookmark name"                     ; `bookmarkp-bmenu-sort-by-bookmark-name'
  bookmarkp-alpha-p
  "Sort bookmarks by bookmark name, respecting `case-fold-search'.")

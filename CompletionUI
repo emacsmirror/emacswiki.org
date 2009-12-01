@@ -5,17 +5,26 @@ The latest version of the Completion User Interface (0.11.7, released October 20
 
 This package can take advantage of the AutoOverlays package if it's available, but does not require it.
 
+Please send bug reports and suggestions to [mailto:toby-predictive@dr-qubit.org toby-predictive@dr-qubit.org] (you can post them here as well if you like, of course). I don't check this page regularly, so anything not emailed to me is likely to languish here unnoticed for some time.
+
 --TobyCubitt
 
 
 
-= Overview =
+== Overview ==
 
 The Completion User Interface package implements user-interfaces for in-buffer completion.
 
-Typically, a lot of code in packages providing some kind of text completion deals with the user interface. The goal of CompletionUI is to be the swiss-army knife of in-buffer completion user-interfaces, which any source of completions can plug in to, thus freeing completion package writers to concentrate on the task of finding the completions in the first place. In fact, CompletionUI is even better than a swiss-army knife, because it's also extensible: it's easy to add new user-interfaces, as well as new completion sources. See [[#ExtendingCompletionUI]].
+Typically, a lot of code in packages providing some kind of text completion deals with the user interface. The goal of CompletionUI is to be the swiss-army knife of in-buffer completion user-interfaces, which any source of completions can plug in to, thus freeing completion package writers to concentrate on the task of finding the completions in the first place. In fact, CompletionUI is even better than a swiss-army knife, because it's also extensible: it's easy to add new user-interfaces, and it's easy to add new completion sources. See [[#ExtendingCompletionUI]].
 
-Various completion user-interfaces and commands are provided, which can be separately enabled, disabled and tweaked by the Emacs user via the usual bewildering array of customization variables:
+Although CompletionUI is intended primarily for authors of Emacs completion packages, it does comes with support for the built-in Emacs completion sources, as well as some sources provided by external packages. So CompletionUI may also be of interest for Emacs users, too.
+
+
+=== User Interfaces ===
+
+It's easy to add new user-interfaces to CompletionUI. All it takes is one command: <code>completion-ui-register-interface</code> for user-interfaces. See the Commentary at the top of the <pre>completion-ui.el</pre> file for details.
+
+Various completion user-interfaces and commands are already provided in the CompletionUI package. These can be separately enabled, disabled and tweaked by the Emacs user via the usual bewildering array of customization variables:
 
 * Dynamic completion: provisionally insert the best completion candidate in the buffer as you type.
 
@@ -39,7 +48,13 @@ Various completion user-interfaces and commands are provided, which can be separ
 
 The philosophy of CompletionUI is that customization of the user-interface should be left up to users. They know what they want better than you do! And by providing a universal user-interface that can be used by all completion packages, Completion-UI lets users customize their in-buffer completion user interface once-and-for-all to suit their tastes, rather than having to learn how to customize each new package separately.
 
-CompletionUI comes with built-in support for various source of completions. For each source, it defines an interactive command that complete the word next to the point using that source:
+
+=== Completion Sources ===
+
+It's very easy to add new completion source to CompletionUI: just pass the completion function to <code>completion-ui-register-source</code>. An interactive command will automatically be defined that completes the word next to the point using the new source, and the new source will become available as an option in the relevant customization options.  See the Commentary at the top of the <pre>completion-ui.el</pre> file for details.
+
+
+The CompletionUI package already comes with pre-defined support for various completion sources. The corresponding interactive commands are:
 
 * <code>complete-dabbrev</code>: complete using DynamicAbbreviations
 
@@ -57,21 +72,21 @@ as well as (if the packages are installed):
 
 * <code>complete-predictive</code>: PredictiveMode completion
 
-These commands are not bound to any keys by default. As with any Emacs command, you can run them using "M-x complete-<name>", or bind them to keys, either globally or in minor-mode key maps. See the Commentary at the top of the <pre>completion-ui.el</code> file for more details.
+These commands are not bound to any keys by default. As with any Emacs command, you can run them using "M-x complete-<name>", or bind them to keys, either globally or in minor-mode key maps. Again, see the Commentary at the top of the <pre>completion-ui.el</code> file for more details.
+
 
 
 [:ExtendingCompletionUI]
-= Extending CompletionUI =
+== Extending CompletionUI ==
 
 It is easy to add new sources of completions and even new user-interfaces to CompletionUI. All it takes is one command: <code>completion-ui-register-source</code> for completion sources, <code>completion-ui-register-interface</code> for user-interfaces. See the Commentary at the top of the <pre>completion-ui.el</pre> file for details.
 
 Feel free add examples of or links to new completion sources and new user-interfaces below.
 
 
+=== Examples of Completion Sources ===
 
-= Examples of Completion Sources =
-
-=== Using Dabbrevs With Better Ordering ===
+==== Using Dabbrevs With Better Ordering ====
 
 Using "dabbrev--find-all-expansions" to find candidate expansions does not generally list the most likely candidates first. The following code tries to emulate the same ordering as the dabbrev-expand command to address this. You may consider it a hack since it uses dabbrev variables intended for internal use, but at least it increases the accuracy of the expansion candidates significantly.
 
@@ -122,8 +137,13 @@ Using "dabbrev--find-all-expansions" to find candidate expansions does not gener
 -- StianSelnes (updated by TobyCubitt)
 
 
+==== Examples of Completion User-Interfaces ====
 
-= Discussion =
+[Add examples of new completion interfaces here]
+
+
+
+== Discussion ==
 
 Is it possible to make it work with hippie-expand ? --PierreJeanTurpeau
 
@@ -131,12 +151,19 @@ Is it possible to make it work with hippie-expand ? --PierreJeanTurpeau
 
 I'm not very familiar with hippie-expand, but from what I understand of it, the user-interface part of hippie-expand is a subset of the CompletionUI features, so it's more that CompletionUI replaces (that part of) hippie-expand.
 
-I do realise that hippie-expand also defines methods of gathering completions, as well as a user-interface for displaying and choosing them. CompletionUI now provides support for the main built-in Emacs methods of gathering completions. If hippie-expand defines a function that returns a list of possible completions of a string (ideal case), or of the word next to the point (less ideal but still useable), then it could quite easily be made used by CompletionUI. You'd need to register it using <code>completion-ui-register-source</code>.
+I do realise that hippie-expand also defines methods of gathering completions, as well as a user-interface for displaying and choosing them. CompletionUI comes with the pre-defined sources for the main built-in Emacs methods of gathering completions. If hippie-expand defines a function that returns a list of possible completions of a string (ideal case), or of the word next to the point (less ideal but still useable), then it could quite easily be used by CompletionUI. You'd need to register it using <code>completion-ui-register-source</code>.
 
 -- TobyCubitt
 
+----
+
 [new:rubikitch:2009-04-14 00:54 UTC]
 AutoInstall now supports *Batch install files*, installing packages with multiple lisp files like [[Icicles]] and AutoComplete. If each completion-ui*.el has its own URL, installing process is much simpler. Only executing #M-x auto-install-batch completion-ui#. -- [[rubikitch]]
+
+[new]
+Rather than me splitting the CompletionUI tarball into separate files, it would make much more sense for AutoInstall to support installation from tarballs for packages with multiple lisp files. (It's always irritated me that I have to use a script to download all the necessary [[Icicles]] files, when a simple tarball (or zip archive, I'm not religious about the format) would make life so much easier.) --TobyCubitt
+
+----
 
 completion-cycle-backwards seems to be broken at version 0.11.6. Should the definition be as follows? (n -> (or n 1)) -- leque
 
@@ -147,10 +174,39 @@ completion-cycle-backwards seems to be broken at version 0.11.6. Should the defi
   (completion-cycle (- (or n 1))))
 </pre>
 
+[new]
+The "P" interactive spec should have been "p". This is fixed in version 0.11.7.
+
+It would be helpful if you could report all bugs to the email address listed in the package (and also now at the top of this page). I don't check this page regularly, so bugs reported here are likely to languish here unnoticed for significant lengths of time.
+
+--TobyCubitt
 
 ----
 
 You may want to take a look at [http://www.emacswiki.org/emacs/2009-11-18 this completion display]. The approach is unconventional, but CompletionUI could provide something similar as an option.
 
+[new]
+It's easy to add new user-interfaces to CompletionUI. Once you've got the code that implements the interface, all it needs is a call to <code>completion-ui-register-interface</code>. Care to attempt this for the interface you linked to? --TobyCubitt
+
 ----
+
+I got a Problem on Mac OS X 10.6 with a dual screen setup. The tooltip/overlay is still displayed on my primary display with emacs moved to the secondary. And i have to say i like the apperance of the overlay of company-mode more, because i think its more in line with the overall look of emacs and it nicely aligns with the rest of the text(and it doesnt want to stay on my primary display).
+
+Apart from that i very much like completion-uis auto-completion-mode and the numbering of completion candidates. But i think the numbers in the overlay should be displayed in front of the candidates, like they are positioned in the minibuffer completion preview. That would make looking them up easier, because ones eye dont has to parse the line up to the number imo.
+
+[new]
+Please send bug reports and comments to the email address listed in the package (and also now at the top of this page, too). I don't check this page regularly, so bugs reported here are likely to languish unnoticed for significant lengths of time.
+
+You should raise the tooltip issue with the Emacs devs. CompletionUI uses the standard Emacs tooltip functions, so any problems are very likely to be problems with Emacs' tooltips rather than CompletionUI code per se. Emacs' tooltips are crude and limited in functionality. Whether this is an inherent limitation in X or could be improved is beyond my ken.
+
+The numbering of the completion candidates in the tooltip follows the positioning of key bindings for menu items. But I can see where you're coming from, and I'll consider changing this in the next release. In fact, by writing a custom `completion-tooltip-function' it's already possible to customize this.
+
+I also like the company-mode interface, and I wish someone would offer to port it to CompletionUI! I'm not familiar with the company-mode code base, but assuming it's cleanly implemented then it shouldn't be all that difficult. All it would take is extracting the code that implements the overlay-based tooltip interface into a new <code>completion-ui-overlay-tooltip.el</code> library, identifying which function accepts a list of completions to display in the interface and hooking that into CompletionUI with a call to <code>completion-ui-register-interface</code>.
+
+I'll get around to doing this sooner or later, but if you want it sooner, why not have a go yourself?
+
+--TobyCubitt
+
+----
+
 CategoryCode | CategoryCompletion

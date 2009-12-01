@@ -1,43 +1,18 @@
-== Problem with International Keyboards ==
+== Problem with AltGR on International Keyboards on MS Windows ==
 
-Emacs keys may be "hidden" because *AltGr* + *Control* + *key* is just *AltGr* + *key*
+Emacs keys may seem to be "hidden" (perhaps only) on MS Windows because *AltGr* + *LeftControl* + *key* is just *AltGr* + *key*.
 For example on a Swedish keyboard @ and \ are typed using *AltGr*. 
-This means that all things bound to C-@ anywhere in a keymap (at any depth) is not possible to type. 
-Here are a list of commands that are currently not available to me on my keyboard this way in my current mode:
-(and to Fabian Hombsch on a german keyboard)
-
-* C-M-@ mark-sexp
-* C-@ set-mark-command
-* C-x C-@ pop-global-mark
-* C-x r C-@ point-to-register
-* C-M-\ indent-region
-* C-x RET C-\ set-input-method
-* C-] abort-recursive-edit
-
-== Looking for a common solution ==
-
-Every Emacs user of course solves this problem in their own way. I am looking for a common solution that would make it more easy for new users and more easy if you use Emacs in a new place.
-
-== altgr.el ==
+This means that all things bound to C-@ anywhere in a keymap (at any depth) are at least a bit difficult to type.
 
 [new]
-Because of the excellent explanation below about *AltGr* '''+''' *RCtrl* I have thrown altgr.el in the big wastebasket.
+Note: I think the whole problem only exists under MS Windows because it implements *AltGr* as *Alt* + *Left Control*.  For the X Window System e.g. <code>Mode_switch</code>, which is usually mapped to *AltGr*, is a different modifier, completely unrelated to *Alt* or *Control*.
 
-== Problems ==
 
-I have done this under MS Windows.
-I do not know if this works under other OS:es running on a PC.
-Please tell us!
-Are the code for the keys the same on all PCs?
-Are they the same on other OS:es?
 
-[new]
-I think the whole problem only exists under MS Windows because it implements *AltGr* as *Alt* + *Left Control*.  For the X Window System e.g. <code>Mode_switch</code>, which is usually mapped to *AltGr*, is a different modifier, completely unrelated to *Alt* or *Control*.
+== Solution 1: Using the Right Control ==
 
-== Using the Right Control ==
-
-Are you sure all these combinations are really non-typeable? I use a Spanish keyboard
-with *AltGr* and I can type them all. The trick is that you must type *AltGr* as the first
+But you can type those keys even on MS Windows!
+The trick is that you must type *AltGr* as the first
 key, and *Ctrl* must be the *right* control key, not the left one.
 
 So, on my Spanish keyboard, I can do:
@@ -50,6 +25,58 @@ So, on my Spanish keyboard, I can do:
 
 just fine.
 
+
+== Solution 2: Using Alternate Key Bindings ==
+
+It turns out that instead of C-@ you can always type C-SPACE.
+(Don't ask me why, I have forgotten. Anyone remembers?)
+
+So this makes it a lot easier to type these commands:
+
+   C-M-@        mark-sexp          => C-M-SPACE
+   C-@          set-mark-command   => C-SPACE
+   C-x C-@      pop-global-mark    => C-x C-SPACE
+   C-x r C-@    point-to-register  => C-x r C-SPACE
+
+And indentation is so common so it has a very convenient binding:
+
+   C-M-\        indent-region      => TAB
+
+The keys below are still troublesome. (Maybe there are more?) You need solution 1 here:
+
+* Very troublesome since they may be frequent:
+
+   M-{		backward-paragraph
+   M-}		forward-paragraph
+   M-$		ispell-word
+   M-@		mark-word
+   M-\		delete-horizontal-space
+
+* A bit more for experts:
+
+   M-|		shell-command-on-region
+   C-]          abort-recursive-edit
+   M-~		not-modified
+
+* Maybe not so common:
+
+   C-x RET C-\  set-input-method
+   C-\		toggle-input-method
+   C-h C-\	describe-input-method
+
+
+
+
+== Making it possible to actually type this: Sticky Modifiers ==
+
+If actually type these difficult with /AltGr/ combinations you are either probably a first class guitarist or a normal human using StickyModifiers.
+This is an OS feature. With those on you can type the keys one by one.
+
+=== The order of things ===
+
+Unfortunately using StickyModifiers is not enough.
+In the case with Alt Gr you also have to type the keys in a certain order.
+
 [new]
 Today (2006-12-17) I saw on Emacs developers list that *RCtrl* must be typed before *AltGr*. Seems like something has changed. Anyone else that have seen this?
 
@@ -60,6 +87,16 @@ Yes! It works very nice, thanks for the hint! Still, those shortcuts are real fi
 Today (2007-02-20) I have to type *AltGr* before *RCtrl* again.
 Even if I use an old CVS Emacs from the date above.
 Anyone who understands this?
--- LennartBorgman
+
+
+----
+== Questions and suggestions ==
+
+Esc-Ctrl-@, for example, will work for this on every platform. (Aidan Kehoe, Mon Nov 30 16:20:24 GMT 2009)
+
 [new]
-See also StickyModifiers. This is an OS feature. With those on you can type the keys one by one.
+Unfortunately it will not work at all if you are using Viper.
+And you have the same problem with Alt Gr here.
+
+
+

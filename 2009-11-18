@@ -19,3 +19,6 @@ And of course such an alternative using external programs for popup is not alway
 Wonder how it synchs with Emacs? What happens if one switches frame?
 
 It would be very easy to built this in Emacs if something like wxWidgets could be integrated on Emacs GUI platforms. But that integration might be very difficult though.
+
+[new]
+It’s easy to add new user-interfaces to CompletionUI. Once you’ve got the code that implements the interface, all it needs is a call to <code>completion-ui-register-interface</code>. Care to attempt this? --TobyCubitt

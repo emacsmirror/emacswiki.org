@@ -455,6 +455,8 @@ kernel commandline. ;)
 I'd like to have the diary/calendar display and recognize dates in -true- ISO format, i.e. 2006-03-01, not 2006-3-1. Any ideas on how to accomplish this?
 //Nate, using emacs 21.4
 
+* Emacs 23 appears to do this
+
 
 I want anniversary entries in my diary to be marked in the M-x calendar in the
 same way that normal diary entries can be marked (with some face). Is this possible?
