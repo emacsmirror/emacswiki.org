@@ -65,7 +65,8 @@
 ;;; `mon-sha1-region', `mon-kill-ring-save-w-props', 
 ;;; `mon-escape-string-for-cmd', `mon-line-strings-qt-region'
 ;;; `mon-buffer-name->kill-ring', `mon-make-a-pp'
-;;; `mon-generate-WPA-key', `mon-string-to-hex-string'
+;;; `mon-string-to-hex-string', `mon-generate-WPA-key'
+;;; `mon-async-du-dir', `mon-make-shell-buffer', `mon-shell'
 ;;; FUNCTIONS:◄◄◄
 ;;; FUNCTIONS:###
 ;;; 
@@ -181,6 +182,8 @@
 (require 'naf-mode)
 (require 'ebay-template-mode)
 (require 'mon-empty-registers)
+(require 'mon-iptables-vars)
+(require 'mon-iptables-regexps)
 
 ;;; ==============================
 ;;; :EMACSWIKI Enable 'em if you got 'em.
@@ -274,7 +277,7 @@ When insrtp or called-interactively insert returned vars at point.
 ;;; :CREATED <Timestamp: #{2009-10-16T15:49:07-04:00Z}#{09425} - by MON KEY>
 (defun mon-get-sys-proc-list ()
   "Return a full lisp list of current system-proceses.\n
-:EXAMPLE \n(mon-get-sys-proc-list)\n
+:EXAMPLE:\n(mon-get-sys-proc-list)\n
 :SEE-ALSO `mon-insert-sys-proc-list', `emacs-pid'.\n►►►"
   (mapcar (lambda (x) (process-attributes x))
            (list-system-processes)))
@@ -315,6 +318,81 @@ On w32 it is not required give the .exe suffix.
 ;;; :TEST-ME (mon-get-proc-w-name "bubba")
 
 ;;; ==============================
+;;; :CREATED <Timestamp: #{2009-12-01T13:54:34-05:00Z}#{09492} - by MON KEY>
+(defun mon-make-shell-buffer ()
+  "Return a new *shell* buffer. 
+If *shell* exists increment by 1 and return *shell-N*.\n
+:EXAMPLE\n\(let \(\(kl-bf \(mon-make-shell-buffer\)\)\)
+  \(progn \(momentary-string-display 
+          \(format \" The buffer %s is about to die\" kl-bf\) \(point\)\)
+         \(kill-buffer kl-bf\)\)\)\n
+:NOTE could also be accomplished similarly with:\n
+\(get-buffer-create \(generate-new-buffer-name \"*shell*\"\)\)\n
+But, this way MON has fine-grain control over the assigned name suffix.\n
+:CALLED-BY `mon-shell'\n
+:SEE-ALSO `shell'\n►►►" 
+  (let (buffs buffs-str)
+    (setq buffs (with-temp-buffer
+                  (princ
+                   (buffer-list)
+                   (current-buffer))
+                  (buffer-substring-no-properties
+                   (buffer-end 0)
+                   (buffer-end 1))))
+    (setq buffs (read buffs))
+    (setq buffs (mapcar #'(lambda (x) (format "%s" x)) buffs))
+    (mapc #'(lambda (x)
+              (when (string-match-p "\\*shell" x)
+                (push x buffs-str)))
+          buffs)
+    (setq buffs (car buffs-str))
+    (cond
+      ((null buffs) (get-buffer-create "*shell*"))
+      ((= (length buffs) 7) (get-buffer-create "*shell-1*"))
+      ((> (length buffs) 7) 
+       (get-buffer-create
+        (format "*shell-%d*" (1+ (string-to-int (substring buffs 7 8)))))))))
+;;
+;;; :TEST-ME (mon-make-shell-buffer)
+;;; :TEST-ME (let ((kl-bf (mon-make-shell-buffer)))
+;;;              (prog1 (princ kl-bf) (kill-buffer kl-bf)))
+
+;;; ==============================
+;;; :NOTE I tried to figure out how to do this with `defadvice'... that was bad!
+;;; :CREATED <Timestamp: #{2009-12-01T15:18:38-05:00Z}#{09492} - by MON KEY>
+(defun mon-shell ()
+  "Return *shell* buffer.
+If *shell* exists increment by 1 and return *shell-N*
+:SEE-ALSO `mon-make-shell-buffer', `shell'.\n►►►"
+  (interactive)
+  (shell (mon-make-shell-buffer)))
+;;
+;;; :TEST-ME (progn (mon-shell) (mon-shell))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-12-01T01:12:29-05:00Z}#{09492} - by MON KEY>
+(defun mon-async-du-dir (the-dir)
+  "Return a sorted du \(big->small\)for DIR in buffer `*DU-<DIR>'.
+du run as an asynchronous shell command.\n
+:EXAMPLE \(mon-async-du-dir \"~/GNUstep\")
+:SEE-ALSO `mon-help-du-incantation', `*regexp-clean-du-flags*'\n►►►"
+  (interactive "DDirectory to du :");(read-directory-name "Directory to du :" nil nil t)))
+  (if IS-MON-P-W32
+      (message "The du command is not available on w32")
+      (let ((dir-du
+             (file-name-as-directory
+              (file-truename
+               (if (file-name-absolute-p the-dir)
+                   the-dir
+                   (expand-file-name the-dir))))))
+    (async-shell-command 
+     (format "du %s | sort -nr" dir-du)
+     (get-buffer-create (format "*DU-%s" dir-du))))))
+;;
+;;; :TEST-ME (mon-async-du-dir "~/GNUstep")
+
+
+;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-10-06T16:04:09-04:00Z}#{09412} - by MON KEY>
 (defun mon-load-cedet ()
   "Load CEDET if it isn't already.
@@ -334,7 +412,8 @@ This function will be :DEPRECATED once EMACS <-> CEDET merge is complete."
   "When `gnu-linuxp' launch a terminal. 
 When `win32p' launch Cygwin Bash in cmd console.\n
 :SEE-ALSO `mon-cmd' which when win32p returns the NT Command console.
-`w32shell-cmd-here', `w32shell-cmd', `w32shell-explorer'.\n►►►"
+`w32shell-cmd-here', `w32shell-cmd', `w32shell-explorer'
+\n►►►"
   (interactive)
   (cond 
    (IS-BUG-P (message "You don't have the goods for this"))
@@ -2370,7 +2449,8 @@ This means:\n
  a) the return value of all elts after car are _not_ random at all;\n
  b) where UID assignment occurs in parallel with time-stamping we can infer
     when the UID was generated relative the index of previous/subsequent elts.
-    This is a Featured-Bug®.\n►►►"
+    This is a Featured-Bug®.
+:SEE-ALSO `mon-string-to-hex-string', `mon-generate-WPA-key'.\n►►►"
   (eval-when-compile (require 'sha1))
   (let ((gthr)
         (ccnt (if cnt cnt 1)))
@@ -2394,13 +2474,13 @@ Seed is only pseudo random/unique but it will suffice for our needs.
 Don't call this function in a loop it won't work b/c TIME is slow as hell.
 Instead, use as a seed for `mon-generate-prand-id'.
 On MON system a min. 0.85 seconds is needed between calls to produce unique id's.
-EXAMPLE:\n(mon-generate-prand-id)\n
+:EXAMPLE\n(mon-generate-prand-id)\n
 \(let \(\(i 11\) \(k\)\)
   \(while \(/= i 0\)
     \(sleep-for 0.85\)
     \(setq k \(cons `\(,\(mon-generate-prand-id\)\) k\)\)
     \(setq i \(1- i\)\)\)
-\(prin1 k\)\)\n►►►"
+\(prin1 k\)\)\n:SEE-ALSO `mon-generate-prand-seed'.\n►►►"
   (eval-when-compile (require 'cookie1))
   (let* ((pseudo-r #'(lambda () (mon-string-to-sequence (number-to-string (abs (random t))))))
          (seq->v #'(lambda (x) (apply 'vector x)))
@@ -2438,8 +2518,8 @@ EXAMPLE:\n(mon-generate-prand-id)\n
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-11-06T17:41:33-05:00Z}#{09455} - by MON>
 (defun* mon-string-to-hex-string (&key hxify-str w-dlim prand-hex-len)
-  "Return HXIFY-STR as a string of hex numbers. When keyword W-DLIM is non-nil
-delimit hex numbers w-dlim. When keyword PRAND-HEX-LEN (a number >= 80 ) is
+  "Return HXIFY-STR as a string of hex numbers.  When keyword W-DLIM is non-nil
+delimit hex numbers w-dlim.  When keyword PRAND-HEX-LEN (a number >= 80 ) is
 non-nil, return a pseudo-random string of length N generated with
 `mon-generate-prand-id'. Useful for generating throw-away WPA keys.\n
 :EXAMPLE\n\(mon-string-to-hex-string :hxify-str \"bubba\"\)
@@ -2447,18 +2527,19 @@ non-nil, return a pseudo-random string of length N generated with
 \(mon-string-to-hex-string :hxify-str \"bubba\" :w-dlim \" \"\)
 \(mon-string-to-hex-string :prand-hex-len 64\)
 \(mon-string-to-hex-string :prand-hex-len 81\) ;<-Should Fail.\n
-:SEE-ALSO `mon-generate-WPA-key', `mon-generate-prand-seed'.\n►►►"
+:SEE-ALSO `mon-string-from-hex-list', `mon-generate-WPA-key',
+`mon-generate-prand-seed'.\n►►►"
   (let (xx)
     (unless prand-hex-len
-      (mapc (lambda (x) (setq xx (cons x xx))) hxify-str)
+      (mapc (lambda (x) (setq xx (cons x xx)))  hxify-str)
       (setq xx (reverse xx))
       (setq xx
             (mapconcat (lambda (x) (format "%x" x))
                        xx (if (and w-dlim (stringp w-dlim)) w-dlim ""))))
-    (when prand-hex-len
+    (when prand-hex-len 
       (if (<= prand-hex-len 80)
           (setq xx
-                (substring
+                (substring 
                  (concat (car (mon-generate-prand-id))
                          (car (mon-generate-prand-id))) 0 prand-hex-len))
           (error "%s is too large or not a number" prand-hex-len)))
@@ -2469,6 +2550,35 @@ non-nil, return a pseudo-random string of length N generated with
 ;;; :TEST-ME (mon-string-to-hex-string :hxify-str "bubba" :w-dlim " ")
 ;;; :TEST-ME (mon-string-to-hex-string :prand-hex-len 64)
 ;;; :TEST-ME (mon-string-to-hex-string :prand-hex-len 81) ;Should Fail.
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-11-07T14:50:16-05:00Z}#{09456} - by MON>
+(defun mon-string-from-hex-list (hx-l)
+  "Return HX-l \(a list of hex chars) as a string.\n
+Useful for working with w32 registry keys of type REG_BINARY.
+:EXAMPLE\n\(mon-hex-list-as-string 
+ '(43 00 3a 00 5c 00 50 00 72 00 6f 00 67 00 72 00 61 00 6d 00 20 00 46 00 69 00
+ 6c 00 65 00 73 00 5c 00 74 00 65 00 78 00 6c 00 69 00 76 00 65 00 5c 00 32 00
+ 30 00 30 00 38 00 5c 00 62 00 69 00 6e 00 5c 00 77 00 69 00 6e 00 33 00 32 00
+ 5c 00 70 00 61 00 74 00 67 00 65 00 6e 00 2e 00 65 00 78 00 65 \)\)\n
+\(mon-hex-list-as-string
+ \(split-string \(mon-string-to-hex-string :hxify-str \"bubba\" :w-dlim \":\"\) \":\" t\)\)\n
+:SEE-ALSO `mon-string-to-hex-string', `hexl-hex-string-to-integer'.\n►►►"
+  (let (hex-key-as-strings hex-key-as-int)
+    (mapc (lambda (hk-s) (push (format "%s" hk-s) hex-key-as-strings))
+          hx-l)
+    (eval-when-compile (require 'hexl)) ;; `hexl-hex-string-to-integer'
+    (mapc (lambda (hs-i) (push (hexl-hex-string-to-integer hs-i) hex-key-as-int))
+          hex-key-as-strings)
+    (mon-string-from-sequence hex-key-as-int)))
+;;
+(defalias 'mon-hex-list-as-string 'mon-string-from-hex-list)
+;;
+;;; :TEST-ME 
+;;; (mon-string-from-hex-list
+;;;  (split-string 
+;;;   (mon-string-to-hex-string :hxify-str "bubba" :w-dlim ":")
+;;;   ":" t))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-11-06T17:49:43-05:00Z}#{09455} - by MON KEY>
@@ -2485,7 +2595,6 @@ Does not move point.\n:EXAMPLE\n(mon-generate-WPA-key)\n
 ;;
 ;;; :TEST-ME (mon-generate-WPA-key)
 ;;; :TEST-ME (call-interactively 'mon-generate-WPA-key)
-;;; ==============================
 
 ;;; ==============================
 ;;; CREATED: <Timestamp: #{2009-10-21T14:27:09-04:00Z}#{09433} - by MON KEY>

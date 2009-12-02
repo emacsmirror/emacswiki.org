@@ -19,7 +19,7 @@ Later, when you have a chance, come back here and learn the natively distributed
 
 If you find the terminology in this guide confusing, read [http://bazaar-vcs.org/BzrForCVSUsers Bazaar for CVS Users] and come back.  In particular, keep in mind that the main unit of currency in Bzr is the /branch/, and that /repository/ in Bzr does not mean the same thing as in CVS.  In Bzr, a repository is just a place to store multiple branches efficiently; you're as likely to have a repository locally as remotely.  In Bzr, you push and pull changes to/from an upstream /branch/, and whether that branch is in a repository upstream is irrelevant.  The mainline branch of the public Emacs repository will be called the /master branch/, /master/ for short, or /upstream master branch/ for emphasis.  (The mainline branch is the one containing the changes targeted for future public releases.)
 
-The command examples are given in Unix command-line style.  If you use Windows or some other system, please feel free to add examples appropriate for that system.
+The command examples are generally given in Unix command-line style, although we did try to use forms that would work on MS-Windows as well.  If you use Windows or some other system, please feel free to add examples appropriate for that system.
 
 [:GettingStarted]
 == Getting Started ==
@@ -108,7 +108,7 @@ Next, we'll further safeguard that mirror by making it a "two-way" mirror.  We d
       bzr bind http://bzr.savannah.gnu.org/r/emacs/trunk/
       cd ..
 
-(Again, use ##sftp://<membername>@bzr.savannah.gnu.org/srv/bzr/emacs/trunk## as the URL, in both instances above, if you are a committer.  Also, note that the ##echo## command as given above won't work on Windows.  If you are familiar with Windows, please edit this document to say how to do the same thing on Windows.)
+(Again, use ##sftp://<membername>@bzr.savannah.gnu.org/srv/bzr/emacs/trunk## as the URL, in both instances above, if you are a committer.  Also, note that on MS-Windows you need either to remove the quotes around the arguments to the ##echo## command or use a ported GNU ##echo##.)
 
 If there are other branches you'd like to mirror, you can set them up in the same way.  In your local repository, you can efficiently branch them from the upstream branch, because very little history copying will be needed (as long as they themselves were branched from the upstream master).
 
@@ -148,6 +148,8 @@ The merge may fail due to a change that conflicts with your branch.  You'll need
 Once you have achieved a clean merge, commit it:
 
       bzr commit -m "Merge from mainline."
+
+Note that you will need this ##commit## command even if there no conflicts were detected during the merge.
 
 Now you start editing.  When you are done:
 

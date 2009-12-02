@@ -72,7 +72,7 @@ Here is a reformulation of the above. It is simpler to hack, and allows you to s
   (or (cdr (assoc nick erc-nick-color-alist))
       (nth
        (mod (string-to-number
-	     (substring (md5 nick) 0 6) 16)
+	     (substring (md5 (downcase nick)) 0 6) 16)
 	    (length erc-colors-list))
        erc-colors-list)))
 
@@ -109,10 +109,12 @@ Same as the above, but highlight nicks no matter where they appear, using code c
                                        (erc-get-color-for-nick word)))))))
 </pre>
 
-Note you may also want to add underscore to the syntax table for words, as they're common in nicks  This will improve the button behavior too:
+You may also want to modify the syntax table for characters which are commonly in nicks, e.g.::
 
 <pre>
-(add-hook 'erc-mode-hook (lambda () (modify-syntax-entry ?\_ "w" nil)))
+(add-hook 'erc-mode-hook (lambda () 
+                           (modify-syntax-entry ?\_ "w" nil)
+                           (modify-syntax-entry ?\- "w" nil)))
 </pre>
 
 ==Option 4==

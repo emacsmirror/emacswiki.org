@@ -3,53 +3,54 @@
 Language-specific:
 
 * AssemblyProgramming -- Programming with the assembler.
-* CProgrammingLanguage -- C specific programming.
 * CPlusPlus -- C++ specific programming.
+* CProgrammingLanguage -- C specific programming.
 * DProgrammingLanguage -- D specific programming.
 * EcmaScript -- Programming in Javascript, Jscript, and !ActionScript.
-* JavaDevelopmentEnvironment -- a great set of tools for Java programmers.
 * EmacsEclim -- tight eclipse integration for emacs.
+* JavaDevelopmentEnvironment -- a great set of tools for Java programmers.
 * MozillaDevelopmentEnvironmentforEmacs -- support for Mozilla technologies in Emacs.
 * PerlLanguage -- Perl specific programming.
 * RubyLanguage -- Ruby specific programming.
 
 Coding style:
 
+* AutomaticFileHeaders -- automatic insertion and update of file headers for different types of file (C, shell, EmacsLisp, and so on). 
 * CategoryIndentation
 * CommentingCode
 * DeletingTypedefs -- adapt your coding style and convert typedefs to plain structs
-* AutomaticFileHeaders -- automatic insertion and update of file headers for different types of file (C, shell, EmacsLisp, and so on). 
 
 Code navigation and information:
 
+* [[EAssist]] -- Offers rapid method/function navigation for C++, C, Java, Lisp...
 * ElDoc -- echos the argument list of functions in the echo area
 * [[ESense]] - ESense - Erlang "IntelliSense" for Emacs
-* [[EAssist]] - Offers rapid method/function navigation for C++, C, Java, Lisp...
 * Lisp:tooltip-help.el --- show help as tooltip
 
 Development environments:
 
-* ProjectBufferMode -- generic mode to handle projects
 * CollectionOfEmacsDevelopmentEnvironmentTools -- complete development environment
-* ObjectOrientedBrowser -- supports C++, Java, Python, and a few other languages
 * EmacsBrowse -- simpler than ObjectOrientedBrowser, but comes with Emacs
 * EmacsForDevStudioUsers-- will make your MSVC-using friend envious of your comfortable development environment
+* [[eproject]] - project workspaces for emacs
 * IdeSkel -- simple environment for svn/cvs projects, with embedded "speedbars"
 * MultiTerm -- Use multiple terminals in Emacs, support dedicated window for debug program.
-* [[eproject]] - project workspaces for emacs
+* ObjectOrientedBrowser -- supports C++, Java, Python, and a few other languages
+* ProjectBufferMode -- generic mode to handle projects
 
 File management:
 
+* AutomaticFileHeaders -- automatic insertion and update of file headers for different types of file (C, shell, EmacsLisp, and so on). 
+* BookmarkPlus -- Tag files and code fragments a la [[http://delicious.com|del.icio.us]], to organize into sets and facilitate/control access.
 * ChangeLog -- Log the changes to your source files.
+* EmacsCodeBrowser -- provides views of directories and files that go one step beyond what SpeedBar does
+* [http://www.littleredbat.net/mk/code/mk-project.html mk-project] -- Quickly switch between projects and perform operations on a per-project basis
 * ProjectSettings -- Configuration settings for an entire project (directory).
 * ProjectWizard -- simple, customizable project wizard
-* SimpleProjectManagment -- A simple project managment
 * ProjmanMode -- move between different projects (directories) maintaining options and open buffers for each
-* [http://www.littleredbat.net/mk/code/mk-project.html mk-project] -- Quickly switch between projects and perform operations on a per-project basis
+* SimpleProjectManagment -- A simple project managment
 * SpeedBar -- provides alternate views into individual source files
 * SrSpeedbar -- Display speedbar in same frame, very handy!
-* EmacsCodeBrowser -- provides views of directories and files that go one step beyond what SpeedBar does
-* AutomaticFileHeaders -- automatic insertion and update of file headers for different types of file (C, shell, EmacsLisp, and so on). 
 * VersionControl -- Manage revisions to your source files.
 
 '''See also:'''

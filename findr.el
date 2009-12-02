@@ -105,6 +105,8 @@
 ;; 0.9.4: Better handle symlinks by levente.meszaros@gmail.com
 ;; 0.9.5: Collect resolved files in the result by attila.lendvai@gmail.com
 ;; 0.9.6: Use a seen hashtable to deal with circles through symlinks by attila.lendvai@gmail.com
+;; 0.9.7: Fix wrong calls to message by Michael Heerdegen
+;; 0.9.8: Fix 'symbol-calue' typo in non-exposed code path by Michael Heerdegen
 
 (require 'cl)
 
@@ -168,7 +170,7 @@
 
 (defun* findr-read-from-minibuffer-defaulting (prompt history &key store-empty-answer-in-history)
   (let* ((default (if (consp history)
-                      (elt (symbol-calue (car history)) (cdr history))
+                      (elt (symbol-value (car history)) (cdr history))
                       (first (symbol-value history))))
          (result (findr-read-from-minibuffer
                   (format prompt (or default ""))
@@ -242,7 +244,7 @@ search result\(s\)."
                                  (file-truename file)
                                  file)
                              *found-files*))
-                     (message file)
+                     (message "%s" file)
                      (when (and prompt-p
                                 (y-or-n-p (format "Find file %s? " file)))
                        (find-file file)
@@ -285,7 +287,9 @@ To continue searching for next match, use command \\[tags-loop-continue]."
   (interactive (list (findr-read-file-regexp)
                      (findr-read-starting-directory)))
   ;; TODO: open a scratch buffer or store in the clipboard
-  (mapcar 'message (findr files dir)))
+  (mapcar (lambda (file)
+            (message "%s" file))
+          (findr files dir)))
 
 ;;;; Queues
 

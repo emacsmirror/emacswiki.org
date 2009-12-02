@@ -4,6 +4,8 @@ It's included in Emacs 23 and is also available via ELPA. However, those copies 
 
   svn co http://svn.ruby-lang.org/repos/ruby/trunk/misc ruby-mode
 
+Web frontend to that repository: http://svn.ruby-lang.org/cgi-bin/viewvc.cgi/trunk/misc/ 
+
 See also RubyOnRails.
 
 ----

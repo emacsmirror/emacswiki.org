@@ -10,10 +10,12 @@ This version has support for the new JavaScriptMode mode in CVS Emacs (called js
 
 [new]
 : To download nXhtml go to [http://ourcomments.org/Emacs/nXhtml/doc/nxhtml.html nXhtml homepage]. It is also included in [[EmacsW32]].
+: You can also download nXhtml directly from the repository (without bzr). To do that download the file [http://bazaar.launchpad.net/~nxhtml/nxhtml/main/annotate/head%3A/util/web-vcs.el web-vcs.el], eval it and do <b>M-x nxhtml-download</b>. This can be used both for initial download and updating.
 : To report a bug go to https://bugs.launchpad.net/nxhtml.
 
 [new]
 **Newest features** (see [http://ourcomments.org/Emacs/nXhtml/doc/nxhtml-changes.html#latest changelog]):
+* Web download directly from Emacs (without bzr)
 * Chunks in chunks
 * Inline images for html, org-mode, css-mode etc.
 * Preview as you type in Firefox (but rather slow - additions are welcome), find out where an element is in Firefox
@@ -45,7 +47,8 @@ Some more:
 * Simple file uploading based on a concept of a site. This mean that nXhtml remember where files in a certain directory tree should be uploaded and it can remember the password for you.
 
 [new]
-Some images showing a bit of the functionality (visit the home page if you wonder more):
+[:ScreenShots]
+Some images showing a bit of the nXhtml functionality (visit the home page if you wonder more):
 
 http://ourcomments.org/Emacs/nXhtml/doc/img/php-in-nxhtml-2.png
 http://ourcomments.org/Emacs/nXhtml/doc/img/links-appmenu.png

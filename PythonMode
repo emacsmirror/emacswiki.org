@@ -119,6 +119,13 @@ python-mode.el already has py-help-at-point for this, and python.el's
 python-describe-symbol tries to get doc in the context of what the
 source file imports.
 
+Emacs23 and python-mode.el:
+
+C-c C-f	"sys" -- this works, and describes the "sys" module in a separate Emacs help buffer.
+
+If I define function "zoot", help doesn't on it -- it's only for global things.
+
+
 == Search the python documentation in Emacs ==
 
 Search the python online/offline documentations with convenience in Emacs

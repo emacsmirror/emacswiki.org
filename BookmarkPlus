@@ -372,6 +372,11 @@ region bookmarks that you selectively marked.
 
 
 
+
+
+
+
+
 [:SortingBookmarks]
 === Sorting Bookmarks ===
 
@@ -430,6 +435,11 @@ documentation for option `bookmarkp-sort-comparer'.   ('''Bookmark+'''
 uses option '''`bookmarkp-sort-comparer''''; it ''ignores'' vanilla Emacs
 option `bookmark-sort-flag'.)
 
+See also ApplesAndOranges for more about the sorting used in '''Bookmark+'''.
+
+
+
+
 
 
 
@@ -478,7 +488,7 @@ Bottom line: Use '''Bookmark+''' to access bookmarks created using
 
 
 ----
-CategoryHypermedia CategoryPersistence
+CategoryHypermedia CategoryPersistence CategoryProgramming
 
 
 

@@ -82,14 +82,14 @@ Since filename can work for any part of the path, if you filter on a partial (or
 I'm not familiar with gnus, and have been unsuccessful tracking written docs on filtering -- I extracted the above from a reading of ##ibuf-ext.el## and then onto the contents of ##ibuffer-filtering-alist##. If there is anything out there, somebody please add it in, and edit this note. --OtherMichael
 
 
-== Get rid of title and summary
+== Get rid of title and summary ==
 
 The last two lines of the ibuffer provide some information about each column. 
 These two lines may be hidden by setting the <code>ibuffer-display-summary</code> variable to nil. The first two lines of the ibuffer are headers describing
-the contents of the columns. I don't find these headers so useful, but I didn't
-find a quick way to turn them off. So here is an advice that does the trick.
+the contents of the columns. I don't find these headers so useful and didn't
+find a quick way to turn them off. So here is an advice that does the trick:
 
-  (defadvice ibuffer-update-title-and-summary (after kill-2-lines)
+  (defadvice ibuffer-update-title-and-summary (after remove-column-titles)
    (save-excursion
       (set-buffer "*Ibuffer*")
       (toggle-read-only 0)

@@ -87,5 +87,8 @@ I'm just wondering if I have missed something obvious. The default is to see you
 [new]
 You can use the somewhat non-obvious keybinding of C-c C-s (twittering-update-status-interactive).
 
+[new]
+Icon support does not work in windows.  I have gnu wget installed and in path, and the icons are downloading to twittering-tmp-dir.  However, they do not display in icon mode. --Tim Hoolihan
+
 ----
 See also: [[Twitter]] [[Identica-mode]]

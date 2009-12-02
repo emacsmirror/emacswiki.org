@@ -42,6 +42,9 @@ And indentation is so common so it has a very convenient binding:
 
    C-M-\        indent-region      => TAB
 
+
+=== AltGr key combos without alternatives ===
+
 The keys below are still troublesome. (Maybe there are more?) You need solution 1 here:
 
 * Very troublesome since they may be frequent:

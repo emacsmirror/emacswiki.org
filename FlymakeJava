@@ -1,3 +1,11 @@
+== Adhoc single files ==
+To use flymake with individual Java files use the following init function, along with the stock flymake-simple-cleanup function:
+
+<pre>(defun my-java-flymake-init ()
+  (list "javac" (list (flymake-init-create-temp-buffer-copy
+                       'flymake-create-temp-with-folder-structure))))
+</pre>
+
 == Java syntax checking with Make ==
 
 This is the command that stock flymake.el runs on a Java source file:

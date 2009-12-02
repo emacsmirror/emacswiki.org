@@ -116,7 +116,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 3 $Rev: 230 $ of the Sunrise Commander.
+;; This is version 3 $Rev: 231 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.  I  have  also  received
@@ -1957,19 +1957,12 @@ subdirectories")))
       (if (file-directory-p f)
           (progn
             (setq f (replace-regexp-in-string "/?$" "/" f))
-            (let* (
-                   (name (file-name-nondirectory f))
-                   (target-subdir target-dir)
-                   (initial-path (file-name-directory f))
-                   )
-              (if (string= "" name)
-                  (setq target-subdir
-                        (concat target-dir (sr-directory-name-proper f))))
-              (if (file-exists-p target-subdir)
+            (let* ((target (concat target-dir (sr-directory-name-proper f))))
+              (if (file-exists-p target)
                   (if (or (eq do-overwrite 'ALWAYS)
-                          (setq do-overwrite (ask-overwrite target-subdir)))
-                      (sr-move-directory initial-path name target-dir do-overwrite))
-                (sr-move-directory initial-path name target-dir do-overwrite))))
+                          (setq do-overwrite (ask-overwrite target)))
+                      (dired-rename-file f target do-overwrite))
+                (dired-rename-file f target do-overwrite))))
         (let* (
                (name (file-name-nondirectory f))
                (target-file (concat target-dir name))
@@ -1981,13 +1974,6 @@ subdirectories")))
                   (dired-rename-file f target-file t))
             (dired-rename-file f target-file t))) )))
    file-path-list))
-
-(defun sr-move-directory (in-dir d to-dir do-overwrite)
-  "Copies recursively the given directory d from in-dir to to-dir, then removes
-the original one."
-  (sr-copy-directory in-dir d to-dir do-overwrite)
-  (let ((delete-dir (concat in-dir d)))
-    (dired-delete-file delete-dir 'always)))
 
 (defun sr-link (creator action marker)
   "Helper function for implementing sr-do-symlink and sr-do-relsymlink."
