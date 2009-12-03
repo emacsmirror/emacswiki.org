@@ -51,3 +51,7 @@ kruhft''
 ----
 
 Wow, I've gone from despising working in Windows to LOVING (well... not minding :) ) it in like 5 minutes with this app, AMAZING!
+
+----
+
+Anyone have XKeymacs working on Windows 7 (64-bit)?  It runs, but doesn't seem to function - i.e. C-a in notepad just highlights all, not move to beginning of line.  (I'm using XKeymacs 3.47.)  I'm betting it's the 64-bitness that's causing the trouble, but I'm going to really miss it until it works again. --RobDavenport

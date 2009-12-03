@@ -67,6 +67,7 @@
 ;;; `mon-buffer-name->kill-ring', `mon-make-a-pp'
 ;;; `mon-string-to-hex-string', `mon-generate-WPA-key'
 ;;; `mon-async-du-dir', `mon-make-shell-buffer', `mon-shell'
+;;; `mon-line-strings-pipe-bol', `mon-line-strings-indent-to-col'
 ;;; FUNCTIONS:◄◄◄
 ;;; FUNCTIONS:###
 ;;; 
@@ -351,7 +352,7 @@ But, this way MON has fine-grain control over the assigned name suffix.\n
       ((= (length buffs) 7) (get-buffer-create "*shell-1*"))
       ((> (length buffs) 7) 
        (get-buffer-create
-        (format "*shell-%d*" (1+ (string-to-int (substring buffs 7 8)))))))))
+        (format "*shell-%d*" (1+ (string-to-number (substring buffs 7 8)))))))))
 ;;
 ;;; :TEST-ME (mon-make-shell-buffer)
 ;;; :TEST-ME (let ((kl-bf (mon-make-shell-buffer)))
@@ -377,7 +378,7 @@ du run as an asynchronous shell command.\n
 :EXAMPLE \(mon-async-du-dir \"~/GNUstep\")
 :SEE-ALSO `mon-help-du-incantation', `*regexp-clean-du-flags*'\n►►►"
   (interactive "DDirectory to du :");(read-directory-name "Directory to du :" nil nil t)))
-  (if IS-MON-P-W32
+  (if (fboundp 'async-shell-command)
       (message "The du command is not available on w32")
       (let ((dir-du
              (file-name-as-directory
@@ -385,12 +386,11 @@ du run as an asynchronous shell command.\n
                (if (file-name-absolute-p the-dir)
                    the-dir
                    (expand-file-name the-dir))))))
-    (async-shell-command 
-     (format "du %s | sort -nr" dir-du)
-     (get-buffer-create (format "*DU-%s" dir-du))))))
+        (async-shell-command 
+         (format "du %s | sort -nr" dir-du)
+         (get-buffer-create (format "*DU-%s" dir-du))))))
 ;;
 ;;; :TEST-ME (mon-async-du-dir "~/GNUstep")
-
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-10-06T16:04:09-04:00Z}#{09412} - by MON KEY>
@@ -1842,8 +1842,9 @@ When following characters are at BOL no replacement is peformed on symbol:
  \(1+ \(search-forward-regexp \"►\"\)\) \(- \(search-forward-regexp \"►\"\) 2\)\)\)
 \n►\nI-will-be-a-string\n\"I-am-almost-a-string\nI-am-a-half-string\"\n
 I-am-not-a-string'\n►\n 
-:SEE-ALSO `mon-line-strings-bq-qt-sym-bol', `mon-line-strings-to-list',
-`mon-string-ify-list', `mon-string-ify-current-line',
+:SEE-ALSO `mon-line-strings-bq-qt-sym-bol', `mon-line-strings-pipe-bol'
+`mon-line-strings-indent-to-col', `mon-line-strings-to-list',
+`mon-string-ify-list', `mon-string-ify-current-line'
 `mon-string-split-line', `mon-line-drop-in-words'.\n►►►"
   (interactive "r\ni\np")
   (let (rtn-v)
@@ -1895,8 +1896,9 @@ When following characters are at BOL no replacement is peformed on symbol:
 call-next-method &rest replacement-args
 `call-next-method &rest replacement-args
 call-next-method' &rest replacement-args\n►\n
-:SEE-ALSO `mon-line-strings-qt-region', `mon-line-strings-to-list',
-`mon-string-ify-list', `mon-string-ify-current-line',
+:SEE-ALSO `mon-line-strings-qt-region', `mon-line-strings-pipe-bol',
+`mon-line-strings-indent-to-col', `mon-line-strings-to-list', 
+`mon-string-ify-list', `mon-string-ify-current-line'
 `mon-string-split-line', `mon-line-drop-in-words'.\n►►►"
   (interactive "r\ni\np")
   (let (rtn-v)
@@ -1945,6 +1947,119 @@ call-next-method' &rest replacement-args\n►\n
 ;;| call-next-method
 ;;| call-next-method'
 ;;| call-next-method
+;;|►
+;;`----
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-12-02T11:58:40-05:00Z}#{09493} - by MON>
+(defun mon-line-strings-pipe-bol (start end &optional insertp intrp)
+  "Return BOL in region replaced with `| '.
+When INSERTP is non-nil or called-interactively replace active region and
+move point to region-beginning.\n
+:EXAMPLE\n\(save-excursion\n \(mon-line-strings-pipe-bol
+   \(1+ \(search-forward-regexp \"►\"\)\)
+   \(- \(search-forward-regexp \"►\"\) 2\)\)\)\n
+►\n Craig Balding\n Emmanuel Bouillon\n Bernardo Damele Assumpcao Guimarase
+ Jean-Paul Fizaine\n Rob Havelt\n Chris Wysopal\n►\n 
+:SEE-ALSO `mon-line-strings-qt-region', `mon-line-strings-bq-qt-sym-bol', 
+`mon-line-strings-indent-to-col', `mon-line-strings-to-list'\n►►►"
+  (interactive "r\ni\np")
+  (let ((replc)
+        (r-beg (make-marker))
+        (r-end (make-marker)))
+    (set-marker r-beg start)
+    (set-marker r-end end)
+    (setq replc (buffer-substring-no-properties r-beg r-end))
+    (setq replc
+          (with-temp-buffer 
+            (insert replc)
+            (goto-char (buffer-end 0))
+            (while (search-forward-regexp "^\\(.*\\)$" nil t)
+              (replace-match "| \\1"))
+            (buffer-substring-no-properties (buffer-end 0) (buffer-end 1))))
+      (if (or insertp intrp)
+          (save-excursion
+            (delete-region r-beg r-end)
+            (insert replc))
+          replc)))
+;;
+;;; :TEST-ME (save-excursion (mon-line-strings-pipe-bol
+;;;          (1+ (search-forward-regexp "►")) (- (search-forward-regexp "►") 2)))
+;;
+;;,---- :UNCOMMENT-TO-TEST
+;;|►
+;;| Craig Balding
+;;| Emmanuel Bouillon
+;;| Bernardo Damele Assumpcao Guimarase
+;;| Jean-Paul Fizaine
+;;| Rob Havelt
+;;| Chris Wysopal
+;;|►
+;;`----
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-12-02T11:58:40-05:00Z}#{09493} - by MON>
+(defun mon-line-strings-indent-to-col (start end col &optional insertp intrp)
+  "Return region lines indented to column number COL.\n
+When called-interactively with non-nil prefix arg COL return region indented to
+column number. When prefix arg is nil prompt for COL.\n
+When INSERTP is non-nil or called-interactively replace active region and
+move point to region-beginning.\n
+:NOTE following example used in conjunction with `mon-line-strings-pipe-bol'.\n
+:EXAMPLE\n\(let \(\(rs \(1+ \(search-forward-regexp \"►\"\)\)\)
+      \(re \(- \(search-forward-regexp \"►\"\) 2\)\)\n      \(tmp\)\)
+  \(setq tmp \(buffer-substring-no-properties rs re\)\)
+  \(setq tmp \(with-temp-buffer \n              \(insert tmp\)
+              \(mon-line-strings-pipe-bol \(buffer-end 0\) \(buffer-end 1\) t\)
+              \(mon-line-strings-indent-to-col \(buffer-end 0\) \(buffer-end 1\) 7 t\)
+              \(buffer-substring-no-properties \(buffer-end 0\) \(buffer-end 1\)\)\)\)
+  tmp\)\n\n►\nCraig Balding\nEmmanuel Bouillon\nBernardo Damele Assumpcao Guimarase
+Jean-Paul Fizaine\nRob Havelt\nChris Wysopal\n►\n
+:SEE-ALSO `mon-line-strings-qt-region', `mon-line-strings-bq-qt-sym-bol', 
+`mon-line-strings-to-list'\n►►►"
+  (interactive "r\nP\ni\np")
+  (let ((coln (if (and intrp (not col))
+                  (read-number "Indent to column number: ")
+                  col))
+        (lreplc)
+        (lr-beg (make-marker))
+        (lr-end (make-marker)))
+    (set-marker lr-beg start)
+    (set-marker lr-end end)
+    (setq lreplc (buffer-substring-no-properties lr-beg lr-end))
+    (setq lreplc
+          (with-temp-buffer 
+            (insert lreplc)
+            (goto-char (buffer-end 0))
+            (while (not (mon-line-eol-is-eob))
+              (indent-line-to coln)
+              (line-move 1 t)
+              (when (mon-line-eol-is-eob)
+                (indent-line-to coln)))
+            (buffer-substring-no-properties (buffer-end 0) (buffer-end 1))))
+    (if (or insertp intrp)
+        (save-excursion
+          (delete-region lr-beg lr-end)
+          (insert lreplc))
+        lreplc)))
+;;
+;;; :TEST-ME 
+;;; (save-excursion 
+;;;   (let ((rs (1+ (search-forward-regexp "►")))
+;;;         (re (- (search-forward-regexp "►") 2)))
+;;;     (goto-char rs)
+;;;     (mon-line-strings-pipe-bol rs re t)
+;;;     (goto-char rs)
+;;;     (mon-line-strings-indent-to-col rs re 7 t)))
+;;
+;;,---- :UNCOMMENT-TO-TEST
+;;,►
+;;|Craig Balding
+;;|Emmanuel Bouillon
+;;|Bernardo Damele Assumpcao Guimarase
+;;|Jean-Paul Fizaine
+;;|Rob Havelt
+;;|Chris Wysopal
 ;;|►
 ;;`----
 

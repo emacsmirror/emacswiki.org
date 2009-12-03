@@ -258,6 +258,7 @@ I found a few minor issues with twit-key-list: q is mapped to 'burry-buffer'; r 
 
 [new:Unhammer:2009-08-15 10:57 UTC]
 Does it work with Laconi.ca yet? (eg. http://identi.ca)
+: Well, merely substituting the API references from Twitter with those of Identica, I could use Twit.el for Identica with no issues. Probably means we should think about integrating the Identica feature?
 
 [new]
 Zebra striping should look a LOT better now.  r keybinding is fixed in v3.3.  What is wrong with the q binding?  --JonathanArkell

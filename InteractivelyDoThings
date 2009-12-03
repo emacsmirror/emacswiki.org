@@ -186,6 +186,8 @@ Did you ever want to use [[bookmark]]s from within ido? I just did a little mash
               ido-rotate-temp t)
         (exit-minibuffer)))
 
+If you don't want to set recursive minibuffers globally, you could also activate them locally in the above function using a let declaration.
+
 = Complete find-tag using ido =
 
 Use ido to complete tags:

@@ -11,6 +11,19 @@ Note that this page is not about EmacsWikiMode.
 ----
 
 
+== Elisp Alphabetic Index is in Catalan? ==
+
+I use IE 6, with Google toolbar. When I visit a Web page in some language other than English, a bar pops up with a `Translate' button. That is happening now on the Elisp page with alphabetic sorting [http://www.emacswiki.org/cgi-bin/wiki?action=index;match=%5C.(el%7Ctar)(%5C.gz)%3F%24] -- the bar says that the page is in "Catalan (Spain)". The page appears to be in English, however. Dunno if this is a wiki problem, an IE problem, or a Google toolbar problem, but I thought I'd mention it. This problem just started. -- DrewAdams
+
+[new]
+My guess is all the "el" articles! :)
+
+On a more technical note, it's true that the wiki engine tries to guess the language(s) of the wiki page so that RecentChanges can be filtered, but this meta information is not added to the page HTML itself. Thus whatever you're seeing is not using any broken language guessing of our own. -- AlexSchroeder
+
+
+[new:DrewAdams:2009-12-03 01:39 UTC]
+That's interesting :-). Thanks for taking a look at it. It's odd that it just started, but maybe there is one `el' more than some threshold now, or maybe Google updated the toolbar so that changed things. You can close this "problem", in any case. -- DrewAdams
+
 == (Minor) Problem(?) with user names on RecentChanges ==
 
 Click the link for ##José Alfredo Romero L.## on RecentChanges ---e.g. for 2009-11-11, ##13:37 UTC (new) (history) sunrise-x-tabs.el . . . . José Alfredo Romero L. – Added source for the sunrise-x-tabs extension. [en]##

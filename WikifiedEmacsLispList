@@ -1,4 +1,4 @@
-Timestamp: Sun Nov 22 09:21:19 GMT 2009
+Timestamp: Wed Dec  2 12:16:33 GMT 2009
 
 This page is based on the EmacsLispList by StephenEglen and updated automatically.
 
@@ -350,11 +350,11 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://www.emacswiki.org/elisp/compile+.el compile+.el] --- extensions to standard library `compile.el' (by Drew Adams)
 
-[http://www.emacswiki.org/elisp/compile+-twenty.el compile+20.el] --- extensions to standard library `compile.el' for < Emacs 21 (by Drew Adams)
-
 [http://www.emacswiki.org/elisp/compile-.el compile-.el] --- extensions to standard library `compile.el' (by Drew Adams)
 
-[http://www.emacswiki.org/elisp/compile-twenty.el compile-20.el] --- extensions to standard library `compile.el' for < Emacs 21 (by Drew Adams)
+[http://www.emacswiki.org/elisp/compile+20.el compile+20.el] --- extensions to `compile.el' (by Drew Adams)
+
+[http://www.emacswiki.org/elisp/compile-20.el compile-20.el] --- extensions to `compile.el' (by Drew Adams)
 
 [http://nschum.de/src/emacs/compile-bookmarks/ compile-bookmarks.el] --- bookmarks for compilation commands (by Nikolaj Schumacher)
 
@@ -504,7 +504,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://www.emacswiki.org/elisp/diff+.el diff+.el] --- extensions to standard library `diff.el' (by Drew Adams)
 
-[http://www.emacswiki.org/elisp/diff+-twenty.el diff+20.el] --- extensions to standard library `diff.el' for < Emacs 21 (by Drew Adams)
+[http://www.emacswiki.org/elisp/diff+20.el diff+20.el] --- extensions to `diff.el' for Emacs 20 or older. (by Drew Adams)
 
 [http://www.emacswiki.org/elisp/diff-mode-.el diff-mode-.el] --- extensions to standard library `diff-mode.el' (by Drew Adams)
 
@@ -952,7 +952,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://www.coling.uni-freiburg.de/~schauer/resources/emacs/header-action.el.gz header-action.el] --- Do something before sending mail/news based on some header settings. (by Holger Schauer)
 
-[http://www.emacswiki.org/elisp/header.el header2.el] --- support for creation and update of file headers (by Drew Adams)
+[http://www.emacswiki.org/elisp/header2.el header2.el] --- support for creation and update of file headers (by Drew Adams)
 
 [http://www.emacswiki.org/elisp/help+.el help+.el] --- extensions to standard library `help.el' (by Drew Adams)
 
@@ -1132,7 +1132,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://kdstevens.com/~stevens/ispell-page.html ispell.el] --- Interface to International Ispell Version 3.1 (by Ken Stevens)
 
-[http://xsteve.nit.at/prg/emacs/iss-mode.el iss-mode.el] --- Mode for InnoSetup install scripts (by Stefan Reichoer)
+[http://bazaar.launchpad.net/~nxhtml/nxhtml/main/annotate/head:/related/iss-mode.el iss-mode.el] --- Mode for InnoSetup install scripts (by Stefan Reichoer)
 
 [http://github.com/joodie/iswitch-menu/tree/master iswitch-menu.el] --- Use iswitch to access menus (by Joost Diepenmaat)
 

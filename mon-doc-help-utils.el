@@ -4809,6 +4809,87 @@ whatis\n►►►"
 ;;; :TEST-ME (elisp-index-search "setq")
 
 ;;; ==============================
+;;; :CREATED <Timestamp: #{2009-12-02T20:58:01-05:00Z}#{09493} - by MON>
+(defvar *regexp-clean-pacman-Q*
+  '(("-c" "--changelog" "View the changelog of a package.")
+    ("-g" "--groups" "View all members of a package group.")
+    ("-i" "--info" "View package information \(-ii for backup files\).")
+    ("-k" "--check" "Check that the files owned by the package\(s\) are present.")
+    ("-l" "--list" "List the contents of the queried package.")
+    ("-q" "--quiet" "Show less information for query and search.")
+    ("-v" "--verbose" "Be verbose.")
+    ("--noconfirm" nil "Do not ask for any confirmation.")
+    ("--noprogressbar" nil "Do not show a progress bar when downloading files.")
+    ("--noscriptlet" nil "Do not execute the install scriptlet if one exists.")
+    ("--debug" nil "Display debug messages.")
+    ;; :HAS-FILTER
+    ("-m" "--foreign" "List installed packages not found in sync db\(s\) [filter].")
+    ("-t" "--unrequired" "List packages not required by any package [filter].")
+    ("-u" "--upgrades" "List outdated packages [filter].")
+    ("-d" "--deps" "List packages installed as dependencies [filter].")
+    ("-e" "--explicit" "List packages explicitly installed [filter].")
+    ;; :HAS-ARG
+    ("-o" "--owns" "<FILE> Query the package that owns <file>.")
+    ("-p" "--file" "<PACKAGE> Query a package file instead of the database.")
+    ("-s" "--search" "<REGEX> Search locally-installed packages for matching strings.")
+    ("-r" "--root" "<PATH> Set an alternate installation root.")
+    ("-b" "--dbpath" "<PATH> Set an alternate database location.")
+    ("--config" nil "<PATH> Set an alternate configuration file.")
+    ("--logfile" nil "<PATH> Set an alternate log file.")
+    ("--cachedir" nil "<DIR> set an alternate package cache location."))
+  "*A list of short and long flags Flags Arch's `pacman -Q' command.
+:SEE-ALSO `mon-help-pacman-Q'\n►►►")
+;;
+;;; :TEST-ME *regexp-clean-pacman-Q*
+;;
+;;; (progn (makunbound '*regexp-clean-pacman-Q*)(unintern '*regexp-clean-pacman-Q*))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-12-02T20:55:45-05:00Z}#{09493} - by MON>
+(defun mon-help-pacman-Q (&optional insertp intrp)
+  ""
+  (interactive "i\nP")
+  (if (or insertp intrp)
+      (mon-help-function-spit-doc 'mon-help-pacman-Q :insertp t)
+      (message "Pass non-nil for optional arg INTRP")))
+;;
+;; Now, tack the var list onto the docstring.
+(eval-when-compile
+  (let (put-flags)
+    (setq put-flags "")
+    (mapc #'(lambda (x) 
+              (setq put-flags 
+                    (concat 
+                     (format "`%s' %s%s\n" 
+                             (car x) 
+                             (if (cadr x) (concat "`" (cadr x) "'") "")
+                             (concat " ;" (caddr x)))
+                     put-flags)))
+          (reverse (symbol-value '*regexp-clean-pacman-Q*)))
+    (setq put-flags
+          (with-temp-buffer 
+            (insert put-flags)
+            (while (search-backward-regexp "' +;" nil t)
+              (skip-chars-forward "^;")
+              (indent-to 20))
+            (buffer-substring-no-properties (buffer-end 0) (buffer-end 1))))
+    (mon-help-put-var-doc-val->func 'put-flags  'mon-help-pacman-Q
+                                    (concat 
+                                     "Flags for use with Arch's `pacman -Q'.\n\n"
+                                     ":USAGE  pacman {-Q --query} [options] [package(s)]\n\n"
+                                     ";; :PACMAN-Q-OPTIONS:\n")
+                                    nil 
+                                    "\n:SEE-ALSO `*regexp-clean-pacman-Q*'\n►►►")))
+  
+;;
+;;; :TEST-ME (mon-help-pacman-Q )
+;;; :TEST-ME (mon-help-pacman-Q t)
+;;; :TEST-ME (call-interactively 'mon-help-pacman-Q)
+;;; :TEST-ME (describe-function 'mon-help-pacman-Q)
+;;
+;;; (progn (fmakunbound 'mon-help-pacman-Q) (unintern 'mon-help-pacman-Q))
+
+;;; ==============================
 ;;; :MODIFICATIONS <Timestamp: #{2009-10-01T22:22:37-04:00Z}#{09405} - by MON KEY>
 ;;; :CREATED <Timestamp: Thursday July 02, 2009 @ 11:50.50 AM - by MON KEY>
 (eval-and-compile

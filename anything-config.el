@@ -258,6 +258,8 @@
 ;;    Run `anything-create' from `anything' as a fallback.
 ;;  `anything-create'
 ;;    Do many create actions from STRING.
+;;  `anything-apt'
+;;    The `anything' frontend of APT package manager.
 ;;  `anything-c-set-variable'
 ;;    Set value to VAR interactively.
 ;;  `anything-c-adaptive-save-history'
@@ -278,7 +280,7 @@
 ;;    default = 50
 ;;  `anything-c-google-suggest-url'
 ;;    URL used for looking up suggestions.
-;;    default = "http://www.google.com/complete/search?hl=en&js=true&qu="
+;;    default = "http://google.com/complete/search?output=toolbar&q="
 ;;  `anything-c-google-suggest-search-url'
 ;;    URL used for searching.
 ;;    default = "http://www.google.com/search?ie=utf-8&oe=utf-8&q="
@@ -633,21 +635,22 @@ With two prefix args allow choosing in which symbol to search."
    '((name . "Regexp Builder")
      (action
       ("Kill Regexp as sexp" .
-       (lambda (x) (anything-c-regexp-kill-new (prin1-to-string anything-input))))
+       (lambda (x) (anything-c-regexp-kill-new (prin1-to-string (funcall (anything-attr 'regexp))))))
       ("Query Replace Regexp" .
        (lambda (x) (apply 'query-replace-regexp (anything-c-query-replace-args (point)))))
       ("Kill Regexp" .
-       (lambda (x) (anything-c-regexp-kill-new anything-input)))))))
+       (lambda (x) (anything-c-regexp-kill-new (funcall (anything-attr 'regexp)))))))))
 
 (defun anything-c-query-replace-args (start-point)
   ;; create arguments of `query-replace-regexp'.
-  (let ((region-only (and transient-mark-mode mark-active)))
+  (let ((region-only (and transient-mark-mode mark-active))
+        (regexp (funcall (anything-attr 'regexp))))
     (list
-     anything-input
-     (query-replace-read-to anything-input
+     regexp
+     (query-replace-read-to regexp
                             (format "Query replace regexp %s%s%s with: "
                                     (if region-only "in region " "")
-                                    anything-input
+                                    regexp
                                     (if current-prefix-arg "(word) " ""))
                             t)
      current-prefix-arg)))
@@ -682,20 +685,35 @@ With two prefix args allow choosing in which symbol to search."
     (let ((anything-compile-source-functions
            ;; rule out anything-match-plugin because the input is one regexp.
            (delq 'anything-compile-source--match-plugin
-                 (copy-sequence anything-compile-source-functions))))
+                 (copy-sequence anything-compile-source-functions)))
+          (base-attributes
+           '((init . (lambda () (anything-candidate-buffer anything-current-buffer)))
+             (candidates-in-buffer)
+             (get-line . anything-c-regexp-get-line)
+             (persistent-action . anything-c-regexp-persistent-action)
+             (multiline)
+             (delayed))))
       (if (and transient-mark-mode mark-active)
           (narrow-to-region (region-beginning) (region-end)))
       (anything
        (list
         (append
-         '((init . (lambda () (anything-candidate-buffer anything-current-buffer)))
-           (candidates-in-buffer)
-           (get-line . anything-c-regexp-get-line)
-           (persistent-action . anything-c-regexp-persistent-action)
-           (multiline)
-           (delayed))
-         attributes))
+         attributes
+         '((regexp . (lambda () anything-pattern)))
+         base-attributes)
+        ;; sexp form regexp
+        (append
+         `((name . ,(concat (assoc-default 'name attributes) " (sexp)")))
+         attributes
+         '((candidates-in-buffer
+            . (lambda () (let ((anything-pattern (eval (read anything-pattern))))
+                           (anything-candidates-in-buffer))))
+           (regexp . (lambda () (eval (read anything-pattern)))))
+         base-attributes))
        nil prompt nil nil "*anything regexp*"))))
+
+;; (anything-c-regexp-base "Regexp: " '((name . "test")))
+;; (anything-c-regexp-base "Regexp: " '((name . "test") (candidates-in-buffer . (lambda () (let ((anything-pattern (eval (read anything-pattern)))) (anything-candidates-in-buffer))))))
 
 (defun anything-c-regexp-kill-new (input)
   (kill-new input)
@@ -3240,7 +3258,7 @@ See also `anything-create--actions'."
                   (elscreen-goto (- (aref candidate 1) (aref "0" 0)))))
                ("Kill Screen".
                 (lambda (candidate)
-                  (elscreen-kill (- (aref candidate 1) (aref "0" 0)))))
+                  (elscreen-kill-internal (- (aref candidate 1) (aref "0" 0)))))
                ("Only Screen".
                 (lambda (candidate)
                   (elscreen-goto (- (aref candidate 1) (aref "0" 0)))
@@ -3297,6 +3315,52 @@ See also `anything-create--actions'."
   
 ;; (anything 'anything-c-source-xfonts)
 
+;; Source for Debian/Ubuntu users
+(defvar anything-c-source-apt
+  '((name . "APT")
+    (init . anything-c-apt-init)
+    (candidates-in-buffer)
+    (display-to-real . anything-c-apt-display-to-real)
+    (candidate-number-limit . 9999)
+    (action
+     ("Show package description" . anything-c-apt-cache-show)
+     ("Install package" . anything-c-apt-install))))
+;; (anything 'anything-c-source-apt)
+
+(defvar anything-c-apt-query "emacs")
+(defvar anything-c-apt-search-command "apt-cache search '%s'")
+(defvar anything-c-apt-show-command "apt-cache show '%s'")
+(defvar anything-c-apt-install-command "xterm -e sudo apt-get install '%s' &")
+
+(defun anything-apt (query)
+  "The `anything' frontend of APT package manager."
+  (interactive "sAPT search: ")
+  (let ((anything-c-apt-query query))
+    (anything 'anything-c-source-apt)))
+
+(defun anything-c-apt-init ()
+  (with-current-buffer
+      (anything-candidate-buffer
+       (get-buffer-create (format "*anything-apt:%s*" anything-c-apt-query)))
+    (call-process-shell-command
+     (format anything-c-apt-search-command anything-c-apt-query)
+     nil (current-buffer))))
+(defun anything-c-apt-display-to-real (line)
+  (car (split-string line " - ")))
+
+(defun anything-c-shell-command-if-needed (command)
+  (interactive "sShell command: ")
+  (if (get-buffer command)		; if the buffer already exists
+      (switch-to-buffer command)	; then just switch to it
+    (switch-to-buffer command)		; otherwise create it
+    (insert (shell-command-to-string command))))
+
+(defun anything-c-apt-cache-show (package)
+  (anything-c-shell-command-if-needed (format anything-c-apt-show-command package)))
+(defun anything-c-apt-install (package)
+  (shell-command (format anything-c-apt-install-command package) "*apt install*"))
+
+;; (anything-c-apt-install "jed")
 ;; Sources for gentoo users
 
 (defvar anything-gentoo-prefered-shell 'eshell
@@ -3603,7 +3667,7 @@ directory, open this directory."
     (dired-goto-file file)))
 
 (defun anything-c-display-to-real-line (candidate)
-  (if (string-match "^ *\\([0-9]+\\):\\(.+\\)$" candidate)
+  (if (string-match "^ *\\([0-9]+\\):\\(.*\\)$" candidate)
       (list (string-to-number (match-string 1 candidate)) (match-string 2 candidate))
     (error "Line number not found")))
 
@@ -3622,7 +3686,7 @@ directory, open this directory."
 (defun anything-c-filtered-candidate-transformer-file-line (candidates source)
   (mapcar
    (lambda (candidate)
-     (if (not (string-match "^\\(.+?\\):\\([0-9]+\\):\\(.+\\)$" candidate))
+     (if (not (string-match "^\\(.+?\\):\\([0-9]+\\):\\(.*\\)$" candidate))
          (error "Filename and line number not found")
        (let ((filename (match-string 1 candidate))
              (lineno (match-string 2 candidate))
@@ -4314,8 +4378,44 @@ Return nil if bmk is not a valid bookmark."
 (define-anything-type-attribute 'line
   '((display-to-real . anything-c-display-to-real-line)
     (action ("Go to Line" . anything-c-action-line-goto)))
-  "LINENO:CONTENT string, eg. \"  16:foo\".")
+  "LINENO:CONTENT string, eg. \"  16:foo\".
 
+Optional `target-file' attribute is a name of target file.
+
+Optional `before-jump-hook' attribute is a function with no
+arguments which is called before jumping to position.
+
+Optional `after-jump-hook' attribute is a function with no
+arguments which is called after jumping to position.
+
+If `adjust' attribute is specified, searches the line whose
+content is CONTENT near the LINENO.
+
+If `recenter' attribute is specified, the line is displayed at
+the center of window, otherwise at the top of window.
+")
+
+(define-anything-type-attribute 'file-line
+  `((filtered-candidate-transformer anything-c-filtered-candidate-transformer-file-line)
+    (multiline)
+    (action ("Go to" . anything-c-action-file-line-goto)))
+  "FILENAME:LINENO:CONTENT string, eg. \"~/.emacs:16:;; comment\".
+
+Optional `default-directory' attribute is a default-directory
+FILENAME is interpreted.
+
+Optional `before-jump-hook' attribute is a function with no
+arguments which is called before jumping to position.
+
+Optional `after-jump-hook' attribute is a function with no
+arguments which is called after jumping to position.
+
+If `adjust' attribute is specified, searches the line whose
+content is CONTENT near the LINENO.
+
+If `recenter' attribute is specified, the line is displayed at
+the center of window, otherwise at the top of window.
+")
 ;;;; unit test
 ;; (install-elisp "http://www.emacswiki.org/cgi-bin/wiki/download/el-expectations.el")
 ;; (install-elisp "http://www.emacswiki.org/cgi-bin/wiki/download/el-mock.el")

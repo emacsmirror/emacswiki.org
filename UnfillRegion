@@ -1,0 +1,17 @@
+Unfilling a region joins all the lines in a paragraph into a single line for each paragraphs in that region. It is the contrary of fill-region and the idea is based on UnfillParagraph.
+
+    (defun unfill-region (from to)
+      "Takes a region containing multi-line, hard wrapped, paragraphs and joins each paragraph into a
+      single line of text, for use, e.g. with visual-line-mode." 
+      (interactive (progn
+                     (barf-if-buffer-read-only)
+                     (list (region-beginning) (region-end))))
+      (let ((fill-column (point-max)))
+        (fill-region from to)))
+
+[new]
+For those that needs those functions they are in the file util/ourcomments-util.el in [NxhtmlMode nXhtml]. You can grab that file from the repository if you like.
+(But I think the functions should be in Emacs so we do not have to reinvent them so often as we do now...)
+
+----
+CategoryFilling
