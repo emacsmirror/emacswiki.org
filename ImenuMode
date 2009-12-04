@@ -2,9 +2,11 @@
 
 Imenu (pronounced "eye menu") matches regexp patterns against the text in the current buffer, typically a source-code buffer. The matches are generally definitions (of functions, variables, etc.), but they could in principle match anything. Imenu then lets you jump to the match occurrences in the buffer.
 
-In this, Imenu resembles OccurMode. However, for Imenu, the patterns are predefined for the current buffer mode, whereas, for Occur, you enter a pattern interactively. The other significant difference is that Imenu gives you access to match occurrences via a menu or MiniBuffer [[Completion]].
+In this, Imenu resembles OccurMode. However, for Imenu, the patterns are predefined for the current buffer mode, whereas, for Occur, you enter a pattern interactively. The other significant difference is that Imenu gives you access to match occurrences via a menu or [[minibuffer]] [[completion]].
 
 The Imenu patterns for a given buffer constitute the local value of variable '''`imenu-generic-expression''''. That is, the patterns are defined for a given mode, giving you a mode-specific buffer index for quickly accessing definitions. The value of `imenu-generic-expression' is essentially a list of regexps that match source-code definitions (of functions, variables, etc.).
+
+See the Emacs manual, node '''Imenu''': Manual:Imenu.
 
 
 == Imenu from a Menu ==
@@ -33,7 +35,7 @@ You can bind Imenu to any KeySequence. Here's how to bind it to `S-mouse-3':
      (global-set-key [(shift button3)] 'imenu) ; XEmacs
    (global-set-key [S-mouse-3] 'imenu)) ; GNU Emacs
 
-'''Icicles''' can make this even handier, by letting you complete any part of a defined name (or its definition), not just a prefix -- see [[#ImenuBrowser]], below. Just type enough of a name to identify it uniquely, and voila!
+'''[[Icicles]]''' can make this even handier, by letting you complete any part of a defined name (or its definition), not just a prefix -- see [[#ImenuBrowser]], below. Just type enough of a name to identify it uniquely, and voila!
 
 
 == Grouping and Truncating of Menu Items ==

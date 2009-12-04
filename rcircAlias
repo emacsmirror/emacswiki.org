@@ -1,0 +1,14 @@
+[[rcirc-alias.el]] is an incomplete extension for [[rcirc]]. It allows you to rename nicks and merge them -- treating multiple nicks as a single person.
+
+Currently implemented:
+
+* User-interface using an ##/ALIAS## command.
+* The list of names returned by ##/NAMES## is munged appropriately.
+
+Todo:
+
+* Make sure nicks are only used in a single alias when defining them.
+* Use a defcustom for rcirc-alias.
+* Allow TAB completion for aliases.
+* Transparently translate any aliases used to the appropriate nick based on current server.
+* Provide a command to remove nicks (remove a nick when it is prefixed by a minus).

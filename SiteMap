@@ -108,7 +108,7 @@ External Programs and Remote Services:
 * [[CategoryMail|Mail]] -- reading email in Emacs
 ** [[CategoryGnus|Gnus]] -- an Emacs reader of news and mail
 ** [[CategoryMailAddons|MailAddons]] -- mail-handling add-ons (not Gnus-related).
-** [[CategoryViewMail|VM]] -- View Mail is an alternate package to [http://www.cheappoolproducts.com/ supplies pool]
+** [[CategoryViewMail|VM]] -- View Mail is an alternate package to [[Rmail]]
 * [[CategoryPersonalInformationManager|PersonalInformationManager]] -- PIM functionalities
 ** [[CategoryBbdb|Bbdb]] -- "Big Brother <nowiki>DataBase</nowiki>": maintaining phone numbers, mail addresses
 * [[CategoryProgrammerUtils|ProgrammerUtils]] -- tools for programmers, such as code browsers

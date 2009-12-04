@@ -116,7 +116,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 3 $Rev: 231 $ of the Sunrise Commander.
+;; This is version 3 $Rev: 232 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.  I  have  also  received
@@ -418,15 +418,16 @@ substitution may be about to happen."
         + ............. create new directory
         C ............. copy marked (or current) files and directories
         R ............. rename marked (or current) files and directories
+        D ............. delete marked (or current) files and directories
         S ............. soft-link selected file/directory to passive pane
         Y ............. do relative soft-link of selected file in passive pane
         H ............. hard-link selected file to passive pane
         M-C ........... copy (using traditional dired-do-copy)
         M-R ........... rename (using traditional dired-do-rename)
+        M-D ........... delete (using traditional dired-do-delete)
         M-S............ soft-link (using traditional dired-do-symlink)
         M-Y............ do relative soft-link (with traditional dired-do-relsymlink)
         M-H............ hard-link selected file/directory to passive pane
-        D ............. delete marked (or current) files and directories
         A ............. search marked files for regular expression
         Q ............. perform query-replace-regexp on marked files
 
@@ -729,11 +730,14 @@ automatically:
 
 (define-key sr-mode-map "C"                   'sr-do-copy)
 (define-key sr-mode-map "R"                   'sr-do-rename)
+(define-key sr-mode-map "D"                   'sr-do-delete)
+(define-key sr-mode-map "x"                   'sr-do-flagged-delete)
 (define-key sr-mode-map "S"                   'sr-do-symlink)
 (define-key sr-mode-map "Y"                   'sr-do-relsymlink)
 (define-key sr-mode-map "H"                   'sr-do-hardlink)
 (define-key sr-mode-map "\M-C"                'dired-do-copy)
 (define-key sr-mode-map "\M-R"                'dired-do-rename)
+(define-key sr-mode-map "\M-D"                'dired-do-delete)
 (define-key sr-mode-map "\M-S"                'dired-do-symlink)
 (define-key sr-mode-map "\M-Y"                'dired-do-relsymlink)
 (define-key sr-mode-map "\M-H"                'dired-do-hardlink)
@@ -1872,6 +1876,29 @@ automatically:
             (sr-revert-buffer)))
       (message "Empty selection. Nothing done."))))
 
+(defun sr-do-delete ()
+  "Removes selected files from the file system."
+  (interactive)
+  (let* ((files (dired-get-marked-files))
+         (mode (sr-ask-delete files))
+         (deletion-mode (cond ((eq mode 'ALWAYS) 'always)
+                              (mode 'top)
+                              (t (error "(No deletions performed)")))))
+    (mapc (lambda (x) (dired-delete-file x deletion-mode)) files)
+    (if (eq major-mode 'sr-virtual-mode)
+        (dired-do-kill-lines)
+      (sr-revert-buffer))))
+
+(defun sr-do-flagged-delete ()
+  "Removes flagged files from the file system."
+  (interactive)
+  (let* ((dired-marker-char dired-del-marker)
+         (regexp (dired-marker-regexp)) )
+    (if (save-excursion (goto-char (point-min))
+			(re-search-forward regexp nil t))
+        (sr-do-delete)
+      (message "(No deletions requested)"))))
+
 (defun sr-do-symlink ()
   "Creates  symbolic  links  in  the  passive pane to all the currently selected
   files and directories in the active one."
@@ -1923,7 +1950,7 @@ automatically:
           (message "%s" (concat f " => " target-file))
           (if (file-exists-p target-file)
               (if (or (eq do-overwrite 'ALWAYS)
-                      (setq do-overwrite (ask-overwrite target-file)))
+                      (setq do-overwrite (sr-ask-overwrite target-file)))
                   (dired-copy-file f target-file t))
             (dired-copy-file f target-file t))))))
    file-path-list))
@@ -1959,18 +1986,17 @@ subdirectories")))
             (setq f (replace-regexp-in-string "/?$" "/" f))
             (let* ((target (concat target-dir (sr-directory-name-proper f))))
               (if (file-exists-p target)
-                  (if (or (eq do-overwrite 'ALWAYS)
-                          (setq do-overwrite (ask-overwrite target)))
-                      (dired-rename-file f target do-overwrite))
+                  (when (or (eq do-overwrite 'ALWAYS)
+                            (setq do-overwrite (sr-ask-overwrite target)))
+                    (sr-copy-directory f "" target-dir do-overwrite)
+                    (dired-delete-file f 'always))
                 (dired-rename-file f target do-overwrite))))
-        (let* (
-               (name (file-name-nondirectory f))
-               (target-file (concat target-dir name))
-               )
+        (let* ((name (file-name-nondirectory f))
+               (target-file (concat target-dir name)))
           (message "%s" (concat f " => " target-file))
           (if (file-exists-p target-file)
               (if (or (eq do-overwrite 'ALWAYS)
-                      (setq do-overwrite (ask-overwrite target-file)))
+                      (setq do-overwrite (sr-ask-overwrite target-file)))
                   (dired-rename-file f target-file t))
             (dired-rename-file f target-file t))) )))
    file-path-list))
@@ -2026,9 +2052,18 @@ subdirectories")))
         (sr-change-window)
         (dired-unmark-all-marks)))))
 
-(defun ask-overwrite (file-name)
+(defun sr-ask-overwrite (file-name)
   "Asks whether to overwrite a given file."
   (y-n-or-a-p (concat "File " file-name " exists. OK to overwrite? ")))
+
+(defun sr-ask-delete (files)
+  "Asks whether to delete a given list of files."
+  (when (and files (listp files))
+    (let* ((len (length files))
+           (msg (if (< 1 len)
+                    (concat "* [" (int-to-string len) " files]")
+                  (car files))))
+      (y-n-or-a-p (concat "Delete " msg " ")))))
 
 (defun y-n-or-a-p (prompt)
   "Prompts  for  an answer to an alternative of the type y/n/a (where 'a' stands
@@ -2359,14 +2394,6 @@ or (c)ontents? ")
      (sr-keep-buffer)
      (unless (sr-equal-dirs sr-this-directory sr-other-directory)
        (kill-buffer dispose)))))
-
-;; This cleans up the current pane after deletion from the history of recent
-;; files:
-(defadvice dired-do-flagged-delete
-  (after sr-advice-dired-do-flagged-delete (&optional nomessage))
-  (if (string= (buffer-name) "*Recent Files*")
-      (sr-recent-files)))
-(ad-activate 'dired-do-flagged-delete)
 
 (defun sr-dired-do-apply (dired-fun)
   "Helper function for implementing sr-do-query-replace-regexp and Co."

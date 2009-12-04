@@ -233,6 +233,7 @@ Read the function documentation for ##skeleton-insert## to learn about creating 
 
 Other example uses of Skeleton mode are at these pages.
 
+* AutoPairs
 * BbCode
 * CmodeTemplates
 * HtmlRedirectPage

@@ -33,6 +33,7 @@ Emacs Interfaces to Online Utilities.
 * DeliciousEl -- Interface to ([http://del.icio.us del.icio.us])
 * CorbaImplementation -- CORBA Dynamic Invocation interface using the IIOP protocol.
 * XmlRpc -- call functions on remote systems by sending them some XML
+* SoapClient -- talk to SOAP Web Services
 * saft-to ([http://asf.void.at/emacs/saft-to.el saft-to.el]) -- A simple emacs interface for the Simple Asynchronous File Transfer Protocol.
 * EmacsWeather:
 ** RainOrShine -- slurping it from a web site

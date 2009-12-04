@@ -1,0 +1,8 @@
+This page describes ways to determine the [EmacsSyntaxTable syntax] at the current position in the buffer.
+
+== Investigate the font-lock face ==
+
+One approach, if using [EnablingFontLock Font Lock Mode], is to check the ##face## property at point. For instance, comments can commonly be identified as having the ##font-lock-comment-face##:
+
+    (eq (get-text-property (point) 'face)
+        'font-lock-comment-face)

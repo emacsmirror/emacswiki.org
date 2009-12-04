@@ -118,9 +118,4 @@ WeakishJiang: I have not used ERC. But I found this piece on [[InternetRelayChat
 
 Hope it helps.
 
-
-----
-
-How to know whether someone sent you a private message? [[rcircSound]] only solves the in channel directed messages notification problem. There's also a minor mode to see a visual indicator, but it would be better if an audible signal could also be used (e.g. when you are not using Emacs). If there's no such option then it's hardly practical to use. 
-
 CategoryChatClient

@@ -8,9 +8,9 @@
 ;; Copyright (C) 2000-2009, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Nov 30 16:08:32 2009 (-0800)
+;; Last-Updated: Thu Dec  3 17:35:05 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 7788
+;;     Update #: 7870
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -88,6 +88,7 @@
 ;;    `bookmarkp-add-tags', `bookmarkp-bmenu-add-tags-to-marked',
 ;;    `bookmarkp-bmenu-change-sort-order',
 ;;    `bookmarkp-bmenu-change-sort-order-repeat',
+;;    `bookmarkp-bmenu-define-command',
 ;;    `bookmarkp-bmenu-delete-marked',
 ;;    `bookmarkp-bmenu-describe-this-bookmark',
 ;;    `bookmarkp-bmenu-edit-bookmark',
@@ -154,7 +155,7 @@
 ;;
 ;;  User options defined here:
 ;;
-;;    `bookmarkp-bmenu-state-file',
+;;    `bookmarkp-bmenu-commands-file', `bookmarkp-bmenu-state-file',
 ;;    `bookmarkp-bookmark-name-length-max',
 ;;    `bookmarkp-handle-region-function',
 ;;    `bookmarkp-incremental-filter-delay',
@@ -396,6 +397,15 @@
 ;;       bookmarks, in the current sort order.  For Emacs 23 and
 ;;       later, you can search incrementally (`M-x a C-s', or `M-x a
 ;;       C-M-s' for regexp).
+;;
+;;     - You can use `c' to save the current bookmark-list sort order,
+;;       filtering, and title as a new command, and then use that
+;;       command at any time to restore them (perhaps in another Emacs
+;;       session).  Define any number of such commands for the views
+;;       you use.  The file for saving the definitions is never
+;;       overwritten, so you can also add other code to it manually.
+;;       The file is read the first time the bookmark list is
+;;       displayed in a given Emacs session.
 ;;
 ;;     - Faces distinguish bookmarks by type.
 ;;
@@ -748,7 +758,7 @@
 ;;  documentation for option `bookmarkp-sort-comparer'.  (Bookmark+
 ;;  uses option `bookmarkp-sort-comparer'; it *ignores* vanilla Emacs
 ;;  option `bookmark-sort-flag'.)
-
+;;
 ;;
 ;;(@* "Bookmark Compatibility with Vanilla Emacs (`bookmark.el')")
 ;;  ** Bookmark Compatibility with Vanilla Emacs (`bookmark.el') **
@@ -806,6 +816,10 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2009/12/03 dadams
+;;     Added: bookmarkp-bmenu-define-command (bound to c), bookmarkp-bmenu-commands-file.
+;;     bookmark-bmenu-list: Read bookmarkp-bmenu-commands-file.
+;;     bookmarkp-sort-and-remove-dups: Bug fix - return the list even when null sort function.
 ;; 2009/11/01 dadams
 ;;     Added: *-bmenu-check-position (redefinition), bmkext-jump-* defaliases.
 ;;     *-(w3m|man|gnus)-bookmark-p: Recognize the aliases.
@@ -1492,7 +1506,7 @@ then the rest."
              '(nil))
             (t;; Neither is a file.
              nil)))))
-  
+ 
 ;;(@* "Keymaps")
 ;;; Keymaps ----------------------------------------------------------
 
@@ -1537,6 +1551,8 @@ then the rest."
 (define-key bookmark-bmenu-mode-map "BM" 'bookmarkp-bmenu-mark-non-file-bookmarks)
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "BS" 'bookmarkp-bmenu-show-only-non-files)
+;;;###autoload
+(define-key bookmark-bmenu-mode-map "c" 'bookmarkp-bmenu-define-command)
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "D" 'bookmarkp-bmenu-delete-marked)
 ;;;###autoload
@@ -1705,6 +1721,7 @@ Miscellaneous
 \\[bookmarkp-bmenu-describe-this-bookmark]\t- Show information about this bookmark
 \\[bookmarkp-bmenu-refresh-menu-list]\t- Refresh (revert) to up-to-date bookmarks list
 \\[bookmarkp-bmenu-delete-marked]\t- Delete visible bookmarks marked `>' (not `D')
+\\[bookmarkp-bmenu-define-command]\t- Define a command to restore the current sort order & filter
 \\[bookmarkp-bmenu-edit-bookmark]\t- Edit bookmark name and file name
 \\[bookmarkp-bmenu-quit]\t- Quit (the bookmarks list)
 \\[bookmark-bmenu-save]\t- Save bookmarks (`C-u': prompt for the bookmarks file to use)
@@ -1911,7 +1928,7 @@ Also used for `D' (deletion) flags."
     '((t (:foreground "Red")))
   "*Face used for a bookmarked tramp file (/su: or /sudo:)."
   :group 'bookmarkp)
- 
+
 (defface bookmarkp-w3m
     '((((background dark)) (:foreground "yellow"))
       (t (:foreground "DarkMagenta")))
@@ -1923,7 +1940,7 @@ Also used for `D' (deletion) flags."
       '((t (:foreground "ForestGreen")))
     "Face used to highlight the heading in bookmark menu buffers."
     :group 'bookmarkp :version "22.1"))
-  
+ 
 ;;(@* "User Options (Customizable)")
 ;;; User Options (Customizable) --------------------------------------
 
@@ -1939,8 +1956,19 @@ Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Description" "http://www.emacswiki.org/BookmarkPlus")
   :link '(emacs-commentary-link :tag "Commentary" "bookmark+"))
 
+(defcustom bookmarkp-bmenu-commands-file (convert-standard-filename
+                                          "~/.emacs-bmk-bmenu-commands.el")
+  "*File for saving user-defined bookmark-list commands.
+This must be an absolute file name or nil (it is not expanded).
+
+Each time you define a command using `bookmarkp-bmenu-define-command',
+it is saved in the file.  A new definition of the same command is
+simply appended to the file, so you might want to clean the file up
+occasionally, to remove any old, unused definitions."
+  :type '(file  :tag "File for saving menu-list state") :group 'bookmarkp)
+
 (defcustom bookmarkp-bmenu-state-file (convert-standard-filename "~/.emacs-bmk-bmenu-state.el")
-  "*File to save bookmark-list (`*Bookmark List*') state when you quit it.
+  "*File for saving`*Bookmark List*' state when you quit bookmark list.
 This must be an absolute file name or nil (it is not expanded).
 
 The state is also saved when you quit Emacs, even if you don't quit
@@ -2202,7 +2230,7 @@ general reverse that order.  The order within each group is unchanged
 
 (defvar bookmarkp-bmenu-filter-timer nil
   "Timer used for incremental filtering.")
- 
+
 (defvar bookmarkp-bmenu-first-time-p t
   "Internal flag: non-nil the first time the bookmark list is shown.")
 
@@ -3141,6 +3169,8 @@ Optional arg DONT-TOGGLE-FILENAMES-P is passed to
 ;;    (but keep `one-window-p' if that's the case).
 ;; 4. If option `bookmarkp-bmenu-state-file' is non-nil, then the first time since the last quit
 ;;     (or the last Emacs session) restores the last menu-list state.
+;; 5. If option `bookmarkp-bmenu-commands-file' is non-nil, then read that file, which contains
+;;    user-defined `*Bookmark List*' commands.
 ;;
 ;;;###autoload
 (defun bookmark-bmenu-list (&optional filteredp) ; `C-x r l'
@@ -3162,6 +3192,16 @@ Non-nil FILTEREDP means the bookmark list has been filtered, so:
  * Do not reset `bookmarkp-latest-bookmark-alist' to `bookmark-alist'."
   (interactive)
   (bookmark-maybe-load-default-file)
+  (when (and bookmarkp-bmenu-first-time-p bookmarkp-bmenu-commands-file
+             (file-readable-p bookmarkp-bmenu-commands-file))
+    (with-current-buffer (let ((enable-local-variables  nil))
+                           (find-file-noselect bookmarkp-bmenu-commands-file))
+      (goto-char (point-min))
+      (while (not (eobp))
+        (condition-case nil
+            (eval (read (current-buffer)))
+          (error nil)))
+      (kill-buffer (current-buffer))))
   (cond ((and bookmarkp-bmenu-first-time-p  bookmarkp-bmenu-state-file
               (file-readable-p bookmarkp-bmenu-state-file))
          (let ((state  ()))
@@ -3520,7 +3560,7 @@ With a prefix argument, do not include remote files or directories."
     (bookmark-bmenu-list 'filteredp))
   (when (interactive-p) (bookmarkp-msg-about-sort-order (bookmarkp-current-sort-order)
                                                         "Only non-file bookmarks are shown")))
-    
+
 ;;;###autoload
 (defun bookmarkp-bmenu-show-only-gnus () ; `G S' in bookmark list
   "Display (only) the Gnus bookmarks."
@@ -4389,6 +4429,44 @@ unmark those that have no tags at all."
 ;;  *** General Menu-List (`-*bmenu-*') Commands and Functions ***
 
 ;;;###autoload
+(defun bookmarkp-bmenu-define-command ()
+  "Define a command to use the current sort order, filter, and title.
+Prompt for the command name.  Save the command definition in
+`bookmarkp-bmenu-commands-file'.
+
+The current sort order, filter function, and title for buffer
+`*Bookmark List*' are encapsulated as part of the command.  Use the
+command at any time to restore them."
+  (interactive)
+  (let* ((fn   (intern (read-string "New sort+filter command: " nil 'foo-history)))
+         (def  `(defun ,fn ()
+                 (interactive)
+                 (setq
+                  bookmarkp-sort-comparer          ',bookmarkp-sort-comparer
+                  bookmarkp-reverse-sort-p         ',bookmarkp-reverse-sort-p
+                  bookmarkp-reverse-multi-sort-p   ',bookmarkp-reverse-multi-sort-p
+                  bookmarkp-bmenu-filter-function  ',bookmarkp-bmenu-filter-function
+                  bookmarkp-bmenu-title            ',bookmarkp-bmenu-title
+                  bookmark-bmenu-toggle-filenames  ',bookmark-bmenu-toggle-filenames)
+                 (bookmarkp-bmenu-refresh-menu-list)
+                 (when (interactive-p)
+                   (bookmarkp-msg-about-sort-order
+                    (car (rassoc bookmarkp-sort-comparer bookmarkp-sort-orders-alist)))))))
+    (eval def)
+    (with-current-buffer (get-buffer-create " *User Bookmark List Commands*")
+      (goto-char (point-min))
+      (delete-region (point-min) (point-max))
+      (let ((print-length  nil)
+            (print-level   nil))
+        (pp def (current-buffer))
+        (insert "\n")
+        (condition-case nil
+            (write-region (point-min) (point-max) bookmarkp-bmenu-commands-file 'append)
+          (file-error (error "Cannot write `%s'" bookmarkp-bmenu-commands-file)))
+        (kill-buffer (current-buffer))))
+    (message "Command `%s' defined and saved in file `%s'" fn bookmarkp-bmenu-commands-file)))
+
+;;;###autoload
 (defun bookmarkp-bmenu-edit-bookmark () ; `E' in bookmark list
   "Edit the bookmark under the cursor: its name and file name."
   (interactive)
@@ -4503,8 +4581,7 @@ the internal lists that record menu-list markings."
              (last-bmenu-toggle-filenames           . ,bookmark-bmenu-toggle-filenames)
              (last-bmenu-before-hide-marked-alist   . ,bookmarkp-bmenu-before-hide-marked-alist)
              (last-bmenu-before-hide-unmarked-alist
-              . ,bookmarkp-bmenu-before-hide-unmarked-alist)
-             )))
+              . ,bookmarkp-bmenu-before-hide-unmarked-alist))))
       (with-current-buffer (get-buffer-create " *Menu-List State*")
         (goto-char (point-min))
         (delete-region (point-min) (point-max))
@@ -4913,7 +4990,8 @@ If `bookmarkp-reverse-sort-p' is non-nil, then reverse the sort order."
     (when sort-fn
       (setq newlist  (sort newlist (if bookmarkp-reverse-sort-p
                                        (lambda (a b) (not (funcall sort-fn a b)))
-                                     sort-fn))))))
+                                     sort-fn))))
+    newlist))
 
 ;;; KEEP this simpler version also.  This uses `run-hook-with-args-until-success', but it
 ;;; does not respect `bookmarkp-reverse-multi-sort-p'.
@@ -4985,7 +5063,7 @@ terminated with a period."
                            (t ""))))))))
     (when prefix-msg (setq msg  (concat prefix-msg ".  " msg)))
     (message msg)))
-               
+
 
 ;;(@* "Sorting - Commands")
 ;;  *** Sorting - Commands ***
@@ -5880,7 +5958,7 @@ BOOKMARK is a bookmark name or a bookmark record."
     "Create bookmark record for `man' page bookmark created by `woman'."
     `(,@(bookmark-make-record-default 'point-only)
       (filename . ,woman-last-file-name) (handler . bookmarkp-jump-woman)))
-  
+
   (add-hook 'woman-mode-hook #'(lambda ()
                                  (set (make-local-variable 'bookmark-make-record-function)
                                       'bookmarkp-make-woman-record)))
@@ -5900,7 +5978,7 @@ BOOKMARK is a bookmark name or a bookmark record."
   `(,@(bookmark-make-record-default 'point-only)
     (filename . ,bookmarkp-non-file-filename)
     (man-args . ,Man-arguments) (handler . bookmarkp-jump-man)))
-  
+
 (add-hook 'Man-mode-hook #'(lambda () (set (make-local-variable 'bookmark-make-record-function)
                                            'bookmarkp-make-man-record)))
 
@@ -5927,7 +6005,7 @@ BOOKMARK is a bookmark name or a bookmark record."
       ,@(bookmark-make-record-default 'point-only)
       (filename . ,dir) (dired-marked . ,mfiles) (dired-switches . ,dired-actual-switches)
       (handler . bookmarkp-jump-dired))))
-    
+
 (add-hook 'dired-mode-hook #'(lambda () (set (make-local-variable 'bookmark-make-record-function)
                                              'bookmarkp-make-dired-record)))
 

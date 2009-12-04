@@ -11,188 +11,61 @@ Taken from the home page:
 
 Flymake is implemented as an Emacs minor mode. It runs the syntax check tool in the background, passing it a temporary copy of the current buffer, and parses the output for known error/warning message patterns. Flymake then highlights erroneous lines (that is, lines for which at least one error or warning has been reported), and displays an overall buffer status in the mode line.
 
-Flymake's author is Pavel Kobiakov.
+Flymake's author is Pavel Kobiakov
 
-----
+[new]
+Flymake is part of Emacs 23 and some of the tips below works OTB there.
+
+
+
+== PHP ==
 
 [http://www.blik.it/2007/02/21/syntax-checking-for-php-in-emacs/ PHP syntax checking for Flymake]
 
-----
+== Ruby ==
 
 FlymakeRuby for Ruby
 
 
-----
+== Fortran G95 ==
 
 [[Flymake Fortran G95]]
 
-----
+== JavaScript ==
 
 FlymakeJavaScript for JavaScript
 
-----
+== Actionscript 3 ==
 
 FlymakeActionscriptThree for Actionscript 3, more than just syntax checking; full incremental compilation
 
-----
+== Haskell ==
 
 FlymakeHaskell for Haskell
 
-----
+== Erlang ==
 
 FlymakeErlang for Erlang
 
-----
+== Lua ==
 
 FlymakeLua for Lua
 
-----
+== *nix Shell ==
 
 FlymakeShell for shell programming. Default it uses Bash.
 
-----
+== Elisp ==
 
 FlymakeElisp for EmacsLisp
 
-----
+== CSS ==
 
 FlymakeCSS for Cascading Style Sheets
 
-----
+== Java ==
 
 FlymakeJava with Make or JDEE
-
-----
-
-Flymake as shipped doesn't quite work right on Linux yet, but I sent a patch to the author so hopefully soon it'll work fine (it's just a buglet in the relative path handling). It works really well! You need some makefile magic though, this is what I used for the Wine build system:
-
-<pre>
-check-syntax:
-	$(MAKE) syntax-target SYNTAX="-fsyntax-only"
-
-syntax-target: $(SOURCES:.c=.o)
-</pre>
-
--MikeHearn
-
-----
-
-In my simple project I use the following target in the Makefile:
-
-<pre>
-.PHONY: check-syntax
-check-syntax:
-	$(CXX) -Wall -Wextra -pedantic -fsyntax-only $(CHK_SOURCES)
-</pre>
-
-This works out-of-the-box with GNU Emacs 22.0.90.
-
-----
-
-Does anybody know how to change flymake so that it sticks all of its junk files (*_flymake.*) in /tmp? 
-
-For example, you're editing the source to a folder which you do not have write permissions on. Flymake breaks because it cannot save the _flymake file to the same directory as the source. Plus this leads to ugly _flymake files all over the place if it fails to delete them.
-
-----
-
-What about resource consumption ? Does it eat all the CPU or RAM ?
-How Emacs is running when this is activated ? Except these questions,
-it really seems a killer-app :) -- XavierMaillard
-----
-I've tried it (linux, stock emacs).. GREAT.. but.. I found that the buffer is only updated after I save the buffer, even if flymake is running gcc very often... is it normal?
-
-: No, it is supposed to run automatically -- VagnJohansen
-----
-
-If you have a mode that flymake does not support (and you can't/won't add flymake support for it), then you can use lmcompile.el/linemark.el from the CEDET tools (CollectionOfEmacsDevelopmentEnvironmentTools) to at least get automatic highlighting after compiles.
-
-Assuming that cedet is properly configured you can use
-
-<pre>
-  (require 'lmcompile)
-  (add-hook 'compilation-finish-functions 'vj-compilation-finish-highlight)
-  (defun vj-compilation-finish-highlight (buffer result-str)
-    (interactive)
-    (lmcompile-do-highlight))
-</pre>
-
-
-On my system the lmcompile-do-highligth call changes point to the last highlight entry (bug?). I had to use a delayed call:
-
-<pre>
-(defun vj-compilation-finish-highlight (buffer result-str)
-  (interactive)
-  (run-at-time "1 sec" nil 'lmcompile-do-highlight))
-</pre>
-
-- VagnJohansen
-
-----
-
-If you do not want to use mouse hover to check out the error messages, I've made a small modification that puts them in as overlays
-[http://graphics.tudelft.nl/~jorik/css/flymake.html]. You may need to patch it a bit to get it to run though.
-
-- JorikBlaas
-
-----
-
-Quickly show next err-menu:
-
-  ;; flymake
-  (defun my-flymake-show-next-error()
-    (interactive)
-    (flymake-goto-next-error)
-    (flymake-display-err-menu-for-current-line)
-    )
-
-  (local-set-key "\C-c\C-v" 'my-flymake-show-next-error)
-
-----
-To use in console/tty emacs you could try the following:
-
-    (defun next-flymake-error ()
-      (interactive)
-      (let ((err-buf nil))
-        (condition-case err
-            (setq err-buf (next-error-find-buffer))
-          (error))
-        (if err-buf
-            (next-error)
-            (progn
-              (flymake-goto-next-error)
-              (let ((err (get-char-property (point) 'help-echo)))
-                (when err
-                  (message err)))))))
-
-I bind to C-` (for cperl only at the moment) which suits the way I work. If you don't care about the whole next-error thing then something like:
-
-    (flymake-goto-next-error)
-    (let ((err (get-char-property (point) 'help-echo)))
-      (when err
-        (message err)))
-
-might be all you need. - PhilJackson
-
-Another solution worth mentioning made by Nafai can be found at [http://paste.lisp.org/display/60617].
-From the comment to this code:
-: Additional functionality that makes flymake error messages appear
-: in the minibuffer when point is on a line containing a flymake
-: error. This saves having to mouse over the error, which is a
-: keyboard user's annoyance
-
-RichardRiley: The solution below was from Dave Love on gnu.emacs.help:-
-
-<pre>
-
- (defun my-flymake-show-help ()
-   (when (get-char-property (point) 'flymake-overlay)
-     (let ((help (get-char-property (point) 'help-echo)))
-       (if help (message "%s" help)))))
-
- (add-hook 'post-command-hook 'my-flymake-show-help)
-
-
-</pre>
 
 
 == python-mode ==
@@ -376,6 +249,152 @@ Use Flymake's XML syntax-checking on files with a .xsl extension.
     (push '(".+\\.xsl$" flymake-xml-init) flymake-allowed-file-name-masks)
     (add-hook 'xsl-mode-hook
 	      (lambda () (flymake-mode t)))
+
+----
+
+== More Tips and Questions ==
+
+=== Flymake on GNU/Linux ==
+
+Flymake as shipped doesn't quite work right on Linux yet, but I sent a patch to the author so hopefully soon it'll work fine (it's just a buglet in the relative path handling). It works really well! You need some makefile magic though, this is what I used for the Wine build system:
+
+<pre>
+check-syntax:
+	$(MAKE) syntax-target SYNTAX="-fsyntax-only"
+
+syntax-target: $(SOURCES:.c=.o)
+</pre>
+
+-MikeHearn
+
+----
+
+In my simple project I use the following target in the Makefile:
+
+<pre>
+.PHONY: check-syntax
+check-syntax:
+	$(CXX) -Wall -Wextra -pedantic -fsyntax-only $(CHK_SOURCES)
+</pre>
+
+This works out-of-the-box with GNU Emacs 22.0.90.
+
+----
+=== Using temp dir ===
+Does anybody know how to change flymake so that it sticks all of its junk files (*_flymake.*) in /tmp? 
+
+For example, you're editing the source to a folder which you do not have write permissions on. Flymake breaks because it cannot save the _flymake file to the same directory as the source. Plus this leads to ugly _flymake files all over the place if it fails to delete them.
+
+----
+=== Resource consumption? ===
+What about resource consumption ? Does it eat all the CPU or RAM ?
+How Emacs is running when this is activated ? Except these questions,
+it really seems a killer-app :) -- XavierMaillard
+
+----
+=== When is flymake run? ===
+I've tried it (linux, stock emacs).. GREAT.. but.. I found that the buffer is only updated after I save the buffer, even if flymake is running gcc very often... is it normal?
+
+: No, it is supposed to run automatically -- VagnJohansen
+
+----
+
+=== Using CEDET tools for unsupported modes ===
+If you have a mode that flymake does not support (and you can't/won't add flymake support for it), then you can use lmcompile.el/linemark.el from the CEDET tools (CollectionOfEmacsDevelopmentEnvironmentTools) to at least get automatic highlighting after compiles.
+
+Assuming that cedet is properly configured you can use
+
+<pre>
+  (require 'lmcompile)
+  (add-hook 'compilation-finish-functions 'vj-compilation-finish-highlight)
+  (defun vj-compilation-finish-highlight (buffer result-str)
+    (interactive)
+    (lmcompile-do-highlight))
+</pre>
+
+
+On my system the lmcompile-do-highligth call changes point to the last highlight entry (bug?). I had to use a delayed call:
+
+<pre>
+(defun vj-compilation-finish-highlight (buffer result-str)
+  (interactive)
+  (run-at-time "1 sec" nil 'lmcompile-do-highlight))
+</pre>
+
+- VagnJohansen
+
+----
+
+=== Showing error messages in without a mouse ===
+
+If you do not want to use mouse hover to check out the error messages, I've made a small modification that puts them in as overlays
+[http://graphics.tudelft.nl/~jorik/css/flymake.html]. You may need to patch it a bit to get it to run though.
+
+- JorikBlaas
+
+----
+
+Quickly show next err-menu:
+
+  ;; flymake
+  (defun my-flymake-show-next-error()
+    (interactive)
+    (flymake-goto-next-error)
+    (flymake-display-err-menu-for-current-line)
+    )
+
+  (local-set-key "\C-c\C-v" 'my-flymake-show-next-error)
+
+----
+To use in console/tty emacs you could try the following:
+
+    (defun next-flymake-error ()
+      (interactive)
+      (let ((err-buf nil))
+        (condition-case err
+            (setq err-buf (next-error-find-buffer))
+          (error))
+        (if err-buf
+            (next-error)
+            (progn
+              (flymake-goto-next-error)
+              (let ((err (get-char-property (point) 'help-echo)))
+                (when err
+                  (message err)))))))
+
+I bind to C-` (for cperl only at the moment) which suits the way I work. If you don't care about the whole next-error thing then something like:
+
+    (flymake-goto-next-error)
+    (let ((err (get-char-property (point) 'help-echo)))
+      (when err
+        (message err)))
+
+might be all you need. - PhilJackson
+
+Another solution worth mentioning made by Nafai can be found at [http://paste.lisp.org/display/60617].
+From the comment to this code:
+: Additional functionality that makes flymake error messages appear
+: in the minibuffer when point is on a line containing a flymake
+: error. This saves having to mouse over the error, which is a
+: keyboard user's annoyance
+
+RichardRiley: The solution below was from Dave Love on gnu.emacs.help:-
+
+<pre>
+
+ (defun my-flymake-show-help ()
+   (when (get-char-property (point) 'flymake-overlay)
+     (let ((help (get-char-property (point) 'help-echo)))
+       (if help (message "%s" help)))))
+
+ (add-hook 'post-command-hook 'my-flymake-show-help)
+
+
+</pre>
+
+[new]
+Something rather similar is used in [NxhtmlMode nXhtml] where (colored) flymake errors are shown in the echo area by default when point enters the flymake error marking.
+nXhtml also adds support for some of the above that are not part of Emacs 23 (like CSS, Javascript and an enhanced version for Java).
 
 ----
 CategoryProgrammerUtils CategoryModes

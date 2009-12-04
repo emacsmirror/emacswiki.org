@@ -53,12 +53,12 @@ Overview of the Bazaar work routine:
 # From time to time, pull upstream newness into your mirror branch (this is like <tt>cvs update</tt>), and then merge the newness into your dev/task branches from there (also sort of like <tt>cvs update</tt>).
 # When your local changes are ready, then either
 ## push them up to the master branch (if you're a maintainer and have the necessary access rights --- this is analogous to committing in CVS), /or/
-## package up your changes and submit them as a "bundle" to the project mailing list (analogous to posting a patch).
+## package up your changes and send them as a "bundle" to the project mailing list (analogous to posting a patch).
 # Receive feedback.
 # Maybe make some more commits locally, in response to the feedback
 # Push again (or submit a new bundle).
 # Lather, rinse, repeat until the change is accepted.
-# If you did all this on a local task branch, you can remove it now.  The change history will live upstream.
+# If you did all this on a local feature branch, you can remove it now.  The change history will live upstream.
 
 Now let's look at the specific bzr commands.  Throughout the examples, we'll assume you have some specific directory where you keep your sources.  For concreteness, imagine you have an environment variable:
 
@@ -87,7 +87,7 @@ First, initialize a shared repository in which to store all your branches:
       cd $DEVHOME
       bzr init-repo --2a emacs/
 
-(The ##--2a## is because we need the most modern, technically best format, even though for compatibility reasons Bazaar may not use it as the default yet.)  In Bazaar, a /repository/ contains the history of one or more branches.  It's possible to create a "standalone" branch, which contains its own repository under the ##./.bzr## directory.  But here we are using a /shared repository/, which is very important for performance: because all branches created under ##$DEVHOME/emacs## will share history storage.  Not only does this save a lot of space, but it speeds up branch creation immensely because the history does not need to be copied each time.
+(The ##--2a## option is not required if you are using Bazaar 2.0.0 or later.)  In Bazaar, a /repository/ contains the history of one or more branches.  It's possible to create a "standalone" branch, which contains its own repository under the ##./.bzr## directory.  But here we are using a /shared repository/, which is very important for performance: because all branches created under ##$DEVHOME/emacs## will share history storage.  Not only does this save a lot of space, but it speeds up branch creation immensely because the history does not need to be copied each time.
 
 Now, create a branch called ##trunk## that will just be a mirror of the mainline.  You'll never do any development in this branch; its job is just to reflect the upstream master:
 
@@ -287,4 +287,4 @@ Even if you use one of those simpler setups at first, we still encourage you to 
 * BzrQuickStartForEmacsDevs provides an alternate, more CVS-like, simpler workflow.
 * [http://doc.bazaar-vcs.org/explorer/en/tutorials/open-source-dev-gnome.html Open Source Development Using Bazaar Explorer (GNOME)]  An excellent tutorial on using the Bazaar Explorer GUI.  Warning: the workflow advocated there is both more complex in some ways and slightly different from the one recommended in /Bazaar for Emacs Devs/.
 * [http://doc.bazaar-vcs.org/migration/en/survival/bzr-for-git-users.html Bazaar for Git users]  A pretty complete overview of the differences between Git and Bazaar.  Contains a couple of glossaries of VCS terms, which are probably useful to those who don't know git, too.
-* [http://doc.bazaar-vcs.org/migration/en/survival/bzr-for-cvs-users.html Bazaar for CVS users]  A whirlwind introduction to the features and command-line UI of Bazaar.  The workflow described is very similar to that of BzrQuickStartForEmacsDevs, and the latter document may be easier to understand because it concentrates on introducing the workflow rather than the while field of distributed version control.
+* [http://doc.bazaar-vcs.org/migration/en/survival/bzr-for-cvs-users.html Bazaar for CVS users]  A whirlwind introduction to the features and command-line UI of Bazaar.  The workflow described is very similar to that of BzrQuickStartForEmacsDevs, and the latter document may be easier to understand because it concentrates on introducing the workflow rather than the wider field of distributed version control.

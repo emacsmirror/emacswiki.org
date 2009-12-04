@@ -1,6 +1,8 @@
-Estoy probando la internacionalización (i18n) y localización (l10n) de GNU Emacs para proyectos de extensión dirigidos a usuarios finales.
+Estoy probando la internacionalización (i18n) y localización (l10n) de
+GNU Emacs para proyectos de extensión dirigidos a usuarios finales.
 
-Para ello hace falta que toda la documentación, así como el propio sistema Info, también lo esté.
+Para ello hace falta que toda la documentación, así como el propio
+sistema Info, también lo esté.
 
 He abierto una página en 
 
@@ -8,8 +10,27 @@ He abierto una página en
 
 para esos asuntos.
 
+
+Actualizacion de Dic/09
+Por cierto, ¿cómo se indican las fechas en este sistema?  Leo las
+conversaciones en las páginas y nadie indica la fecha.  Eso me marea.
+
+Decía que en estos momentos ya hay publicados una buena cantidad de
+manuales oficiales de GNU Emacs, su traducción en bruto, pendiente de
+las preceptivas revisiones ulteriores en lo técnico y en lo
+estilístico.  Hay más de 15 manuales traducidos.
+
+También abrí ya la sección de Desarrollo, donde se pueden encontrar
+los ficheros fuente en C del directorio src de Emacs de primer nivel
+que requerían marcado para la i18n, en total 95 ficheros, según el
+modo PO.  Esos ficheros ya están marcados y se pueden bajar de manera
+individual para hacer pruebas de menor trascendencia, o también se
+pueden descargar en un tar.gz que los incluye a todos.
+
+
 [new]
 Welcome to the Wiki! Please feel free to create Spanish pages on this wiki as well. :) -- AlexSchroeder
 
 ----
 CategoryHomepage
+

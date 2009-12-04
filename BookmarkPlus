@@ -55,6 +55,15 @@ This is buffer `##*Bookmark List*##', aka the bookmark "menu list", which you di
      current sort order.  For Emacs 23 and later, you can search
      incrementally (`M-x a C-s', or `M-x a C-M-s' for [[regexp]]).
 
+* You can use '''`c'''' to save the current bookmark-list sort order,
+filtering, and title as a new command, and then use that
+command at any time to restore them (perhaps in another Emacs
+session).  Define any number of such commands for the views
+you use.  The file for saving the definitions is never
+overwritten, so you can also add other code to it manually.
+The file is read the first time the bookmark list is
+displayed in a given Emacs session.
+
 * [[Face]]s distinguish bookmarks by type:
 
 ** non-file buffers

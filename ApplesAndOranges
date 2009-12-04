@@ -28,6 +28,7 @@ attributes the fruits have in common.  We can compare the core sizes
 of two apples or the number of segments of two oranges, but these particular
 attributes must be ignored when comparing an apple and an orange.
 
+[:pred1]
 For sorting, we can define a complex predicate to pass to `sort',
 which, for example, sorts first by size, then by core size
 (if both are apples), then by harvest date:
@@ -72,6 +73,7 @@ In Lisp, we can use, for example, `##(t)##' for true, `##(nil)##' for false, and
 one returns non-`nil', that is, until one can actually decide true or
 false.
 
+[:pred2]
 We can rewrite `pred1' like this, to separate the component predicates
 a bit better:
 
@@ -382,6 +384,22 @@ bookmarkp-sort-comparer belabors what I am pointing out here.
 Hint, the tip of this iceberg began with my consideration of eql vs. equal in
 lieu of a review of bookmarkp-sort-comparer; which by the way occured prior
 to my initial response here. :) --[[mon_key]]
+
+
+[new:DrewAdams:2009-12-03 18:42 UTC]
+I said "I'm not interested in a wide-ranging, abstract discussion in unclear terms". Sorry.
+
+Suffice it to say that I disagree that anything in CL, including `values', `multiple-value-bind', and the higher-order sequence functions, adds anything to the party or changes anything wrt the ideas presented here. 
+
+Whether you use explicit lists or `values' to return multiple values is irrelevant. One way or another, you still have to let the component predicates indicate whether they have decided definitively or not (and binary-valued predicates always decide definitively). In CL, you might choose to use `values' to do that (or you might choose to use a list or a structure or...). In EmacsLisp, `values' is not an option, but that changes nothing essential. If all you are saying is that if one were implementing these ideas in CL then one might choose a different implementation, then sure, that's obvious. 
+
+But show me how you would use existing ''binary''-valued predicates to accomplish this (in CL or any other language). Employ `values', `m-v-b', and anything else you want. Show me how to combine binary-valued predicates `size', `core', and `date' to compare apples and oranges. Show me something that moves beyond `<tt>[[#pred1]]</tt>' and `<tt>[[#pred2]]</tt>' above, so that one can easily change the order of predicate application (hence sorting) etc.
+
+Again, if you want to present specific, alternative code snippets (e.g. CL code) to the code in <tt>[[bookmark+.el]]</tt>, we can discuss that -- in ''specific'' terms. I am not interested in a hand-waving, abstract discussion.
+
+To be clear about CL -- I have nothing against it; quite the contrary. And I prefer it to Emacs Lisp in many ways. I used CL from the moment it existed (the first implementations available in Europe, in the early 80s -- in particular Kyoto CL, even before it was fully baked). I like CL and appreciate many of the features it has that Emacs Lisp lacks.
+
+The macro you refer to wrt sorting is, I assume, `bookmarkp-define-sort-command'. That is irrelevant to this discussion. It simply facilitates interactive choice of sort orders -- it is purely a UI thing, unrelated to how predicates are combined or how sorting works. It takes as input a comparer (list of predicates) and simply makes that particular comparer available interactively in various ways (e.g. cycling). The code for sorting using a comparer is in `bookmarkp-multi-sort' -- it is essentially `run-hook-with-args-until-success'. -- DrewAdams
 
 ----
 CategoryCode

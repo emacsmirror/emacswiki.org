@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Nov 29 12:45:52 2009 (-0800)
+;; Last-Updated: Thu Dec  3 09:43:59 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 11396
+;;     Update #: 11404
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -860,7 +860,7 @@ Completion ignores case when `completion-ignore-case' is non-nil."
     ;; Filter DEF using `icicle-filter-wo-input'.  Done in `read-from-minibuffer' anyway, but we
     ;; must also do it here, to reuse the correct default value for the init value.
     (if (atom def)
-        (setq initial-input  (icicle-filter-wo-input def))
+        (setq initial-input  (or (icicle-filter-wo-input def) "")) ; Ensure that it is non-nil.
       (let ((found  nil)
             (def1   def))
         (while (and (not found) def1)

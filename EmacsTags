@@ -20,7 +20,7 @@ Once you have a [[tags file]], you can follow tags (of functions, variables, mac
 * `tags-apropos’ -- list all tags in a tags file that match a regexp
 * `list-tags' -- list all tags defined in a source file
 
-See the Emacs manual, node '''Tags''' for more information.
+See the Emacs manual, node '''Tags''' for more information: Manual:Tags.
 
 
 

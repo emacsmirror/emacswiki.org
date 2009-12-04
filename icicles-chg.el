@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Nov 29 12:51:54 2009 (-0800)
+;; Last-Updated: Thu Dec  3 09:49:30 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 4621
+;;     Update #: 4625
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -296,6 +296,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2009/12/03 dadams
+;;     icicle-completing-read:
+;;       Make sure we don't use a nil def value for init value.  Thx to Sebastian Luque.
 ;; 2009/11/27 dadams
 ;;     *-display-candidates-in-Completions, *-prefix-candidates, *-fuzzy-candidates:
 ;;       Handle swank completions too.
