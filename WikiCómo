@@ -1,18 +1,28 @@
 [[en:TextFormattingRules]]
-Un wiki es un sitio colaborativo. Cualquier persona puede hacer contribuciones. Cada página tiene un enlace al final que le permite comenzar a hacer ediciones. Un buen lugar para crear su primera página es CategoríaHomepage.
+Un wiki es un sitio colaborativo. Cualquier persona puede hacer
+contribuciones. Cada página tiene un enlace al final que le permite
+comenzar a hacer ediciones. Un buen lugar para crear su primera página
+es CategoríaHomepage.
 
-* NombreDeUsuario tiene más información sobre los nombres de usuario utilizados en este wiki.
+* NombreDeUsuario tiene más información sobre los nombres de usuario
+  utilizados en este wiki.
 
-Aquí hay algunos enlaces (en otros wikis) que incluyen buenas introducciones:
+Aquí hay algunos enlaces (en otros wikis) que incluyen buenas
+introducciones:
 
-* MeatBall:StyleGuide contiene una breve discusión sobre cómo escribir para los curiosos. Siempre y cuando el sentido común prevalezca, no es necesario nada más. Intente evitar las páginas superficiales: No es necesario crear páginas solo para definir términos.
-* MeatBall:WhyWikiWorks explica porqué (con un poco de suerte) los wikis generan contenido interesante y porqué no existe demasiado abuso.
-* Oddmuse:SiteMap es el sitio web principal del motor wiki -- el script CGI (en Perl) que produce las páginas que usted está leyendo.
+* MeatBall:StyleGuide contiene una breve discusión sobre cómo escribir
+  para los curiosos. Siempre y cuando el sentido común prevalezca, no
+  es necesario nada más. Intente evitar las páginas superficiales: No
+  es necesario crear páginas solo para definir términos.
+* MeatBall:WhyWikiWorks explica por qué (con un poco de suerte) los
+  wikis generan contenido interesante y porqué no existe demasiado
+  abuso.
+* Oddmuse:SiteMap es el sitio web principal del motor wiki -- el
+  script CGI (en Perl) que produce las páginas que usted está leyendo.
 
-== Reglas Para el Formato de Texto ==
+== Reglas para el formato de texto ==
 
-¡Utilice la CajaDeArena (en español no se dice "Caja de arena", de
-dice "Banco de Pruebas" -SuSo) para hacer pruebas sobre la edición en un wiki!
+¡Utilice el BancoDePruebas para hacer pruebas sobre la edición en un wiki!
 
 Las reglas más importantes son bastante simples:
 
@@ -22,31 +32,42 @@ Las reglas más importantes son bastante simples:
 
 Enlaces:
 
-* Las palabras en estilo <i>Camel</i> (mezcla de mayúsculas y minúsculas) son transformadas a enlaces locales.
-* Para algunos caracteres no-ASCII, el concepto de "estilo camel" puede que no se aplique. En ese caso use <nowiki>[[corchetes cuadrados dobles]]</nowiki>
-* Las URLs simples se convierten a hipervínculos automáticamente.
-* Las URLs simples que apunten a imágenes se adaptan al contenido de la página.
+* Las palabras en estilo <i>Camello</i> (mezcla de mayúsculas y
+  minúsculas) son transformadas a enlaces locales.
+
+* Para algunos caracteres no-ASCII, el concepto de "estilo camello"
+  puede que no se aplique. En ese caso use <nowiki>[[corchetes
+  dobles]]</nowiki>
+
+* Las URL simples se convierten a hipervínculos automáticamente.
+
+* Las URL simples que apunten a imágenes se adaptan al contenido de la
+  página.
 
 Listas, párrafos con sangría:
 
-* Los elementos de una lista comienzan con un asterisco (`*'). Los elementos se ubican uno por línea.
+* Los elementos de una lista comienzan con un asterisco (`*'). Los
+  elementos se ubican uno por línea.
 * Las líneas con sangría comienzan con uno o más símbolos "dos puntos" (`:').
 
 Código fuente, ejemplos:
 
-* Las líneas que comienzan con espacios son tratadas como código fuente (sugerimos que use cuatro espacios de sangría).
+* Las líneas que comienzan con espacios son tratadas como código
+  fuente (sugerimos que use cuatro espacios de sangría).
 
 Cabeceras:
 
-* Las cabeceras de sección van entre pares de símbolos de igualdad (`== Cabecera ==').
-* Las cabeceras de subsección van entre tríos de símbolos de igualdad (`=== Sub-sección ===').
+* Las cabeceras de sección van entre pares de símbolos de igualdad
+  (`== Cabecera ==').
+* Las cabeceras de subsección van entre tríos de símbolos de igualdad
+  (`=== Sub-sección ===').
 
-Algunas etiquetas HTML son permitidas también:
+También se permiten algunas etiquetas HTML:
 
 ; em: <em>Énfasis</em>
-; i: <i>Itálicas</i>
+; i: <i>Cursiva</i>
 ; strong: <strong>Fuerte</strong>
-; b: <b>Bold</b>
+; b: <b>Negrita</b>
 ; tt: <tt>Teletipo</tt>
 ; code: <code>Código</code> (también evita procesamiento por parte del wiki)
 ; pre: <tt>Preformato</tt> (para párrafos, los espacios se conservan, también evita procesamiento por parte del wiki)
@@ -54,71 +75,130 @@ Algunas etiquetas HTML son permitidas también:
 
 Más reglas: MeatBall:TextFormattingRules.
 
-== Publicando material tomado de Usenet ==
+== Publicación de material tomado de Usenet ==
 
-Si publica artículos tomados de Usenet en este wiki, por favor consulte con el autor original si está dispuesto a colocar su trabajo bajo la Licencia de Documentación Libre GNU (o liberarlo al dominio público.)
+Si se publican artículos tomados de Usenet en este wiki, por favor
+consulte con el autor original si está dispuesto a colocar su trabajo
+bajo la Licencia de Documentación Libre GNU (o liberarlo al dominio
+público.)
 
-=== Retire las Direcciones de Correo ===
+=== Eliminación de las direcciones de correo ===
 
-Por favor elimine todas las direcciones de correo electrónico de cualquier material que publique y convierta el nombre original a un enlace a sus respectivos sitios web en este wiki. Si las personas desean revelar sus direcciones de correo en sus páginas personales, bien. Por ejemplo: Alex Schroeder <alex@some.adress.com> se convierte a AlexSchroeder.
+Por favor elimine todas las direcciones de correo electrónico de
+cualquier material que publique y convierta el nombre original a un
+enlace a sus respectivos sitios web en este wiki. Si las personas
+desean revelar sus direcciones de correo en sus páginas personales,
+bien. Por ejemplo: Alex Schroeder <alex@some.adress.com> se convierte
+a AlexSchroeder.
 
-Retire las direcciones de correo electrónico incluso si está copiendo un artículo interesante de un grupo de noticias. Retírelas incluso de los comentarios de cualquier código fuente. Ofrezca suficientes cabeceras de tal modo que personas interesadas puedan usar motores de búsqueda como http://groups.google.com/ para determinar las direcciones de correo originales de los autores (se sugiere el uso de cabeceras como el nombre del autor, asunto, grupo de noticias y fecha.)
+Retire las direcciones de correo electrónico incluso si está copiendo
+un artículo interesante de un grupo de noticias. Retírelas incluso de
+los comentarios de cualquier código fuente. Ofrezca suficientes
+cabeceras de tal modo que personas interesadas puedan usar motores de
+búsqueda como http://groups.google.com/ para determinar las
+direcciones de correo originales de los autores (se sugiere el uso de
+cabeceras como el nombre del autor, asunto, grupo de noticias y
+fecha.)
 
 No remueva las direcciones de correo electrónico de listas de correo.
 
-== Creación de Nuevas Páginas ==
+== Creación de páginas nuevas ==
 
-* Método 1: Edite una página con la que desee enlazar su nueva página e inserte un término wiki para ese enlace. Cree esta palabra siguiendo los lineamientos dados más adelante bajo <i>Dándole Nombre a las Páginas Nuevas</i>. Básicamente, una palabra formada por una mezcla de mayúsculas y minúsculas será tratada como una palabra wiki. Entonces es momento de guardar la página. El nuevo enlace tendrá un símbolo de interrogación al final, que indicará un hipervínculo. Siga ese enlace y estará editando la nueva página.
+* Método 1: Edite una página con la que desee enlazar su nueva página
+  e inserte un término wiki para ese enlace. Cree esta palabra
+  siguiendo los lineamientos dados más adelante bajo <i>Dándole Nombre
+  a las Páginas Nuevas</i>. Básicamente, una palabra formada por una
+  mezcla de mayúsculas y minúsculas será tratada como una palabra
+  wiki. Entonces es momento de guardar la página. El nuevo enlace
+  tendrá un símbolo de interrogación al final, que indicará un
+  hipervínculo. Siga ese enlace y estará editando la nueva página.
 
-* Método 2: Método conocido como exploración de URLs. Visite http://www.emacswiki.org/cgi-bin/wiki.pl?NuevaPalabraWiki y podrá empezar a editar la nueva página.
+* Método 2: Método conocido como exploración de URLs. Visite
+  http://www.emacswiki.org/cgi-bin/wiki.pl?NuevaPalabraWiki y podrá
+  empezar a editar la nueva página.
 
-== Dándole Nombre a las Páginas Nuevas ==
+== Cómo darle nombre a las páginas nuevas ==
 
-Aquí hay algunas indicaciones para elegir sabiamente los nombres de las nuevas páginas:
+Aquí hay algunas indicaciones para elegir sabiamente los nombres de
+las nuevas páginas:
 
-* Si el nombre es muy corto, como por ejemplo Sql o Tcl, agregue el término "Modo" si está describiendo un modo de Emacs. Por lo tanto se obtiene algo como: <nowiki>ModoSql, ModoTcl</nowiki>.
-* Para algo tan grande como Gnus, se puede esperar que existan varias sub-páginas. Por esta razón cree una nueva categoría: <nowiki>CategoríaGnus</nowiki>.
-* Si algo es una abreviación o acrónimo, simplemente puede deletrearlo: <nowiki>WTresM</nowiki>.
-* Si la página contiene su configuración de un paquete específico, use el sufijo -Configuración, p.ej.: <nowiki>ConfiguraciánBbdb</nowiki>.
-* Si aun no puede encontrar un buen nombre, simplemente agrege "Página". Esto rara vez se ve en otros wikis. Usualmente se usan trucos poco elegantes como <nowiki>HoRrible</nowiki>. Bueno... <nowiki>PáginaTramp</nowiki> es agradable ya que puede ser usado para decir cosas como, "Para más información, consulte la <nowiki>PáginaTramp</nowiki>.
+* Si el nombre es muy corto, como por ejemplo Sql o Tcl, agregue el
+  término "Modo" si está describiendo un modo de Emacs. Por lo tanto
+  se obtiene algo como: <nowiki>ModoSql, ModoTcl</nowiki>.
+* Para algo tan grande como Gnus, se puede esperar que existan varias
+  sub-páginas. Por esta razón cree una nueva categoría:
+  <nowiki>CategoríaGnus</nowiki>.
+* Si algo es una abreviación o acrónimo, simplemente puede
+  deletrearlo: <nowiki>WTresM</nowiki>.
+* Si la página contiene su configuración de un paquete específico, use
+  el sufijo -Configuración, p.ej.: <nowiki>ConfiguraciánBbdb</nowiki>.
+* Si aun no puede encontrar un buen nombre, simplemente agrege
+  "Página". Esto rara vez se ve en otros wikis. Usualmente se usan
+  trucos poco elegantes como <nowiki>HoRrible</nowiki>.
+  Bueno... <nowiki>PáginaTramp</nowiki> es agradable ya que puede
+  utilizarse para decir cosas como: "Para más información, consulte la
+  <nowiki>PáginaTramp</nowiki>.
 
-== Agregue Etiquetas para Indicar que hay Cosas que Necesitan ser Arregladas ==
+== Añadido de etiquetas para indicar que hay cosas que necesitan ser arregladas ==
 
-Si encuentra algo que está incorrecto, incompleto, o simplemente necesita un poco más de trabajo, puede ser buena idea agregarle una etiqueta FI<nowiki>X</nowiki>ME a sus comentarios, de modo que otras personas se den cuenta de que hay algo que necesita ser arreglado. Hay una interfaz de búsqueda en el sitio que puede utilizar para encontrar todas las páginas que contengan este texto.
+Si encuentra algo que está incorrecto, incompleto, o simplemente
+necesita un poco más de trabajo, puede ser buena idea agregarle una
+etiqueta FI<nowiki>X</nowiki>ME a sus comentarios, de modo que otras
+personas se den cuenta de que hay algo que necesita ser arreglado. Hay
+una interfaz de búsqueda en el sitio que puede utilizar para encontrar
+todas las páginas que contengan este texto.
 
-Por favor no remueva los comentarios FI<nowiki>X</nowiki>ME a menos que usted haya solucionado el problema que se describe. Si no se encuentra de acuerdo con un comentario que dice algo incorrecto, quizás deba iniciar una discusión sobre si el material realmente necesita ser arreglado; quizás quiera transladar esa discusión a la página PreguntasAbiertas, o crear una nueva página independiente si la discusión tiene un valor importante.
+Por favor, no remueva los comentarios FI<nowiki>X</nowiki>ME a menos
+que usted haya solucionado el problema que se describe. Si no se
+encuentra de acuerdo con un comentario que dice algo incorrecto,
+quizás deba iniciar una discusión sobre si el material realmente
+necesita ser arreglado; quizás quiera transladar esa discusión a la
+página PreguntasAbiertas, o crear una nueva página independiente si la
+discusión tiene un valor importante.
 
-Si desea incluir la palabra FI<nowiki>X</nowiki>ME en alguna parte en donde no quiere decir realmente "hay que arreglar esto", puede utilizar la etiqueta "nowiki" en medio de la palabra para prevenir que sea incluido entre los resultados de una eventual búsqueda. (Vea el enlace de reglas de formato, o simplemente edite el texto de esta página para ver cómo fue formateado este párrafo).
+Si desea incluir la palabra FI<nowiki>X</nowiki>ME en alguna parte en
+donde no quiere decir realmente "hay que arreglar esto", puede
+utilizar la etiqueta "nowiki" en medio de la palabra para prevenir que
+sea incluido entre los resultados de una eventual búsqueda. (Vea el
+enlace de reglas de formato, o simplemente edite el texto de esta
+página para ver cómo fue formateado este párrafo).
 
-== Eliminando el Spam ==
+== Eliminación del Spam ==
 
 Reemplace páginas de Spam con "PáginaEliminada".
 
-== Abreviaciones de URL ==
+== Abreviaturas de URL ==
 
-Puede encontrar una lista de posibles abreviaciones en la página de InterMap. Allí se listan las abreviaciones de URL soportadas y sus valores de expansión.
+Puede encontrar una lista de posibles abreviaturas en la página de
+InterMap.  Allí se listan las abreviaturas de URL soportadas y sus
+valores de expansión.
 
-Aquí hay algunos de los ejemplos más interesantes:
+Estos son algunos de los ejemplos más interesantes:
 
 * MeatBall:StartingPoints
 * Google:emacswiki
 * Groups:emacswiki
 
-=== Cómo escribir URLs ===
+=== Cómo escribir URL ===
 
-Si está haciendo referencia al sitio web de un paquete, o desea enlazar a los archivos de código fuente, coloque el enlace en una línea propia, precedido de una viñeta:
+Si está haciendo referencia al sitio web de un paquete, o desea
+enlazar a los archivos de código fuente, coloque el enlace en una
+línea propia, precedido de una viñeta:
 
 * http://foo.bar/de.este.modo
 
-Esto crea un enlace que sobresale, y hace que la página tenga un formato apropiado de impresión sin perder información importante.
+Esto crea un enlace que sobresale, y hace que la página tenga un
+formato apropiado de impresión sin perder información importante.
 
 == Fuera de Tema ==
 
 Algunas cosas es mejor discutirlas en alguna otra parte:
 
 * CLiki:Recent%20Changes -- Common Lisp
-* Wiki:RecentChanges -- lenguajes de programación no relacionados con Emacs, técnicas, paradigmas
-* MeatBall:RecentChanges -- comunidades en línea, seguridad, moderaciones, meta discusiones sobre los wikis, terminología wiki
+* Wiki:RecentChanges -- lenguajes de programación no relacionados con
+  Emacs, técnicas, paradigmas
+* MeatBall:RecentChanges -- comunidades en línea, seguridad,
+  moderaciones, meta discusiones sobre los wikis, terminología wiki
 * Why:RecentChanges -- temas religiosos
 * CreationMatters:RecentChanges -- temas sociales
 * AndStuff:RecentChanges -- temas filosóficos
@@ -126,22 +206,48 @@ Algunas cosas es mejor discutirlas en alguna otra parte:
 
 Para más ideas, visite http://www.emacswiki.org/intermap.
 
-=== Cuando Desee Usar otros Medios ===
+=== Cuando desee usar otros medios ===
 
-Vea MeatBall:AppropriateMedia para más información. En lo que concierne a este wiki, lo siguiente es aplicable:
+Vea MeatBall:AppropriateMedia para más información. En lo que
+concierne a este wiki, se aplica lo siguiente:
 
-* La documentación que no es parte de los manuales de Emacs/XEmacs debe ir en el wiki.
-* Los <i>bugs</i> en los manuales de Emacs/XEmacs deben ser reportados con los encargados de estos paquetes.
-* Ejemplos, notas sobre uso, personalizaciones y segmentos de código deben ir en el wiki.
-* Los reportes de fallos de software y parches correctivos deben ser reportados con los encargados apropiados.
-* Las discusiones, preguntas, etc. generalmente deben ir a los GruposDeNoticiasEmacs. Quisiéramos ver más información del tipo cómo-hacer-esto en el wiki, pero por el momento mucho del material de calidad viene de publicaciones de Usenet que son copiadas y resumidas en el wiki.
-* Con frecuencia el contenido nuevo nos motiva a compartir nuestro propio conocimiento, o nos anima a formular preguntas sobre lo que es publicado en el wiki. Todo esto debe mantenerse dentro del wiki.
+* La documentación que no es parte de los manuales de Emacs/XEmacs
+  debe ir en el wiki.
+* Los <i>bugs</i> en los manuales de Emacs/XEmacs deben ser reportados
+  a los encargados de estos paquetes.
+* Ejemplos, notas sobre uso, personalizaciones y segmentos de código
+  deben ir en el wiki.
+* Los reportes de fallos de software y parches correctivos deben ser
+  reportados a los encargados apropiados.
+* Las discusiones, preguntas, etc. generalmente deben ir a los
+  GruposDeNoticiasEmacs. Quisiéramos ver más información del tipo
+  cómo-hacer-esto en el wiki, pero por el momento mucho del material
+  de calidad viene de publicaciones de Usenet que son copiadas y
+  resumidas en el wiki.
+* Con frecuencia el contenido nuevo nos motiva a compartir nuestro
+  propio conocimiento, o nos anima a formular preguntas sobre lo que
+  se publica en el wiki. Todo esto debe mantenerse dentro del wiki.
 
-Quisiéramos que esto no desanime a las personas de agregar nuevas cosas. Esperamos que con esto quede más o menos claro cuál es nuestra posición en la Infraestructura de Información Emacs.
+Quisiéramos que esto no desanime a las personas de agregar nuevas
+cosas. Esperamos que con esto quede más o menos claro cuál es nuestra
+posición en la Infraestructura de Información Emacs.
 
-== Enlaces a Páginas Padres ==
+== Enlaces a páginas madres ==
 
-Algunas páginas tienen "padres" o pertenecen a cierta categoría. Sería bueno ofrecer enlaces explícitos a estas páginas padre o de categorías. Los autores tienen que agregar estos enlaces manualmente, es decir, agregar la etiqueta de padre o categoría apropiada al final de la página. Estos enlaces pueden ser buscados, automáticamente. Simplemente pulse sobre la cabecera para obtener una lista de todas las páginas que tienen enlaces hacia su página actual. Esto funciona mediante un mecanismo simple de búsqueda plana. La razón por la que esto no está automatizado del todo es que a) requeriría del mantenimiento de una base de datos de enlaces aparte, y b) en un modelo de enlazamiento doble hay una gran cantidad de páginas potencialmente irrelevantes que apunten hacia la página actual, así que no siempre querrá listarlas todas. Y por esto la estrategia manual de agregar etiquetas de categorías o páginas padre al final.
+Algunas páginas tienen "madres" o pertenecen a cierta categoría. Sería
+bueno ofrecer enlaces explícitos a estas páginas madre o de
+categorías. Los autores tienen que agregar estos enlaces manualmente,
+es decir agregar la etiqueta de madre o categoría apropiada al final
+de la página. Estos enlaces pueden buscarse automáticamente.
+Simplemente pulse sobre la cabecera para obtener una lista de todas
+las páginas que tienen enlaces hacia su página actual. Esto funciona
+mediante un mecanismo simple de búsqueda plana. La razón por la que
+esto no está automatizado del todo es que a) requeriría del
+mantenimiento de una base de datos de enlaces aparte, y b) en un
+modelo de enlazamiento doble hay una gran cantidad de páginas
+potencialmente irrelevantes que apunten hacia la página actual, así
+que no siempre querrá listarlas todas. Y por esto la estrategia manual
+de agregar etiquetas de categorías o páginas padre al final.
 
 Esto se ve más o menos así al final de una página:
 
@@ -150,25 +256,30 @@ Esto se ve más o menos así al final de una página:
 CategoríaFoo
 </pre>
 
-== Inclusión de Fuentes RSS ==
+== Inclusión de fuentes RSS ==
 
-Puede que desee incluir una fuente RSS en su página personal. Este es un ejemplo del modo de hacerlo:
+Puede que desee incluir una fuente RSS en su página personal. Este es
+un ejemplo del modo de hacerlo:
 
 <pre>
     <rss "http://purl.org/NET/kensanata/home?action=rss">
 </pre>
 
-== Inclusión de Diarios En Línea ==
+== Inclusión de Diarios en línea ==
 
-Si usted mantiene un diario en línea (MeatBall:OnlineDiary) en otro wiki, y ese otro wiki puede entregarle el contenido puro de las páginas, y las reglas de formato de texto son similares a las de este wiki, entonces puede simplemente incluir la página:
+Si usted mantiene un diario en línea (MeatBall:OnlineDiary) en otro
+wiki, y ese otro wiki puede entregarle el contenido puro de las
+páginas, y las reglas de formato de texto son similares a las de este
+wiki, entonces puede simplemente incluir la página:
 
 <pre>
     <include "http://www.usemod.com/cgi-bin/mb.pl?action=browse&id=AlexSchroeder&raw=1">
 </pre>
 
-== Juegos de Caracteres Diferentes a Latin-1 ==
+== Juegos de caracteres diferentes a Latin-1 ==
 
-Cuando necesite escribir texto en una página que ''no'' sea Latin-1, haga lo siguiente:
+Cuando necesite escribir texto en una página que ''no'' sea Latin-1,
+haga lo siguiente:
 
 * Coloque el contenido en un búfer de Emacs
 * Guarde el búfer en UTF-8 o algo parecido (vea CodificaciónUnicode)
@@ -176,6 +287,7 @@ Cuando necesite escribir texto en una página que ''no'' sea Latin-1, haga lo si
 (vea DebianPackage:recode)
 * Pegue el contenido HTML codificado en el archivo
 
-Esto hace que la edición sea mucho más difícil, de modo que no es recomendable. Pero funciona bien en pasajes cortos y anotaciones.
+Esto hace que la edición sea mucho más difícil, de modo que no es
+recomendable. Pero funciona bien en pasajes cortos y anotaciones.
 
 

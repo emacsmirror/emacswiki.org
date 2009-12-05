@@ -1,18 +1,20 @@
 The Git repository is run by JonasBernoulli and hosted on Github. It is an import of the [[SVN repository]] and contains the raw text of all wiki pages. A cron job updates the repository every 24h some time after the subversion repository has been updated. Clone it like this:
 
-    git remote add origin git://github.com/tarsius/emacswiki.git -t master -m master
+    git clone git://github.com/emacsmirror/emacswiki.org.git
 
-== Troubleshooting ==
+== Discussion ==
 
-I got "fatal: Not a git repository (or any of the parent directories): .git".  This seems to work:
+I got "fatal: Not a git repository (or any of the parent directories): .git".
 
-    mkdir emacswiki
-    cd emacswiki
-    git init
-    git remote add origin git://github.com/tarsius/emacswiki.git -t master -m master
-    git pull
+[new]
+Yes, the instructions were incomplete, sorry about that.  Since there currently is only one branch, I changed the instructions to the simple case of cloning the complete repository. I also changed the default location of the repository but the old location will continue to work too. -- JonasBernoulli
+
+----
 
 There's lots of non-ascii pages.  This moves them to another directory:
 
     mkdir OTHER
     mv `ls -1 | awk '$1>"z" {print $1}'` OTHER/
+
+[new]
+Yes I know. Because of that I am working on creating branches for subsets of all files, like e.g. libraries and wikipages. However I do not have the time to complete this at the moment so for now this mirror is pretty boring. (But see the older revisions of this page for an idea what I am working on.) -- JonasBernoulli

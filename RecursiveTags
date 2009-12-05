@@ -1,12 +1,25 @@
-= Overview =
+The easiest way by far to generate a [[tags file]] recursively is with `ctags' with its ##-R## option for recursing into directories. See BuildTags for just basic information.
 
-This page contains additional information about generating tags in recursive directories.  See [[BuildTags]] for the basics.
+== ctags ==
+
+ From: those who know me have no need of my name
+ Subject: Re: etags help
+ Newsgroups: gnu.emacs.help
+ Date: 28 Jun 2001 01:13:39 GMT
+
+ cd c:\source-root
+ ctags [other-flags-if-any] -R *.hpp *.cpp *.h
+
+If you want ETAGS output, remember to add the <code>-e</code> option, i.e.,
+
+ ctags -e -R *.hpp *.cpp *.h
 
 == etags ==
 
-=== Windows ===
-
-(From: Alexander)
+ From: Alexander
+ Subject: Re: etags help
+ Newsgroups: gnu.emacs.help
+ Date: Wed, 27 Jun 2001 17:51:27 GMT
 
 Here's how to create a TagFile for an entire directory tree as posted on one of the EmacsNewsgroups:
 
@@ -15,9 +28,9 @@ Here's how to create a TagFile for an entire directory tree as posted on one of 
 
 === Older versions of etags ===
 
-[[BuildTags]] describes how to combine find with etags to generate tags for a tree of files. But the 5.7 version of etags don't have the `-' option. Use xargs instead (but see the caveat about xargs on [[BuildTags]]!
+BuildTags describes how to combine find with etags to generate tags for a tree of files. But the 5.7 version of etags doesn't have a `-' option for reading on stdin. Use xargs instead (but see the caveat about xargs on BuildTags!
 
- find .   -name "*.cpp" -print   -or   -name "*.h" -print    | xargs etags
+ find . -name "*.cpp" -print -or -name "*.h" -print | xargs etags
 
 === auto-recursive functionality ===
 
@@ -57,4 +70,3 @@ produce a [[tags file]] on standard output with GNU `etags'.
 
 ----
 CategoryExternalUtilities
-

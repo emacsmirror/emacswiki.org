@@ -248,7 +248,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Version:
-(defconst traverse-version "1.1.43")
+(defconst traverse-version "1.1.44")
 
 ;;; Code:
 
@@ -1368,7 +1368,8 @@ for commands provided in the search buffer."
                 (delete-overlay traverse-occur-overlay))
               (delete-other-windows) (goto-char curpos))
             (if traverse-incremental-exit-and-quit-p
-                (traverse-incremental-jump-and-quit)
+                (progn (traverse-incremental-jump-and-quit)
+                       (kill-buffer "*traverse search*"))
                 (traverse-incremental-jump) (other-window 1)))
         (setq traverse-incremental-quit-flag nil)))))
 

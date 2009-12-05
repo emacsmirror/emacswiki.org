@@ -1,6 +1,6 @@
 === Alternatives to Kill & Yank ===
 
-If you don't dig the DefaultKillingAndYanking keybinding with ##C-y##, ##M-y## and so on, then consider these alternatives:
+If you don't care for the DefaultKillingAndYanking [[key binding]]s (##C-w##, ##M-w##, ##C-y##, ##M-y##, and so on), then consider these alternatives:
 
 * PcSelectionMode -- the Windows and Motif flavour with ##C-<ins>##, ##C-<del>##, and ##S-<ins>##.
 * CuaMode -- use ##C-x##, ##C-c## and ##C-v## to copy and paste
@@ -9,6 +9,8 @@ If you don't dig the DefaultKillingAndYanking keybinding with ##C-y##, ##M-y## a
 * SlickCopy -- ##C-w## and ##M-w## act on the current line when TransientMarkMode is not active
 
 === X11 Copy & Paste to/from Emacs: ===
+
+If you are having issues with cutting and pasting between emacs and other applications, it may be an issue with interactions between the UI's clipboard or selection buffer and the emacs.   Windows has a single clipboard buffer. X11 has more then one buffer.  Consider these solutions:
 
 ==== XEmacs: ====
 

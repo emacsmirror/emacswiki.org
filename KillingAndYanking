@@ -1,20 +1,24 @@
-'''_Vocabulary:_''' In Emacs, we call '''killing''' what others call ''cutting'', and '''yanking''' what others call ''pasting''. We call "saving onto the kill-ring" what others call ''copying'' text. The '''kill-ring''' is similar to a ''clipboard'': it is a list of the last 60 killed items, from which items can be yanked.
+'''_Vocabulary:_''' In Emacs, we call '''killing''' what others call ''cutting'', and '''yanking''' what others call ''pasting''. '''killing''' moves text from the document to the top of the kill ring.  We call "saving onto the kill-ring" what others call ''copying'' text. The '''kill-ring''' is similar to a ''clipboard'': it is a list of the last 60 killed items, from which items can be yanked.
 
 The default command for killing the selected region is `kill-region' (`C-w'). The command for saving (copying) text to the `kill-ring' is `kill-ring-save' (`M-w').
 
-Text removed with the `delete-*' commands, such as `delete-backwards-char' (`DEL'), is not saved to the `kill-ring'. 
+The default command for killing the rest of the current line is `kill-line'  (`C-k').  The default command for killing the rest of a sentence is `kill-sentence' (`M-k').  As always, repeated invocations of kill commands prepend the kills, in order, to the `kill-ring'.  
+
+The default command for yanking a copy of the top entry on the kill-ring into the buffer is `yank' (`C-y').
 
 Yanking inserts the last killed item from the head of the list, but you can cycle through the list to instead yank previously killed or copied text using `M-y'.
 
-== Cycling forwards ==
+Text removed with the `delete-*' commands, such as `delete-backwards-char' (`DEL'), is not saved to the `kill-ring'. 
+
+== Cycling through the kill-ring ==
 
 `M-y' (`yank-pop') cycles backwards through the `kill-ring'. Here's a way to cycle in the reverse direction with `M-Y' (Meta-<i>Shift</i>-Y):
 
-    (defun yank-pop-backwards (arg)
+    (defun yank-pop-forwards (arg)
       (interactive "p")
       (yank-pop (- arg)))
 
-    (global-set-key "\M-Y" 'yank-pop-backwards) ; M-Y (Meta-Shift-Y)
+    (global-set-key "\M-Y" 'yank-pop-forwards) ; M-Y (Meta-Shift-Y)
 
 == Deleting word backwards ==
 

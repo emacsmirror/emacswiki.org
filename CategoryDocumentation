@@ -13,6 +13,6 @@ See EmacsNewbieHelpReference for finding help in Emacs.
 
 Emacs comes with ReferenceCards.  Emacs is known as "the SelfDocumenting" editor, though, so while the refcard can be useful, one should learn to rely on InfoMode for most of the more complicated features of this editor.
 
-If you need information on a specific library within Emacs, use FinderCommentary.
+If you need information on a specific library within Emacs, use FinderCommentary.  And FinderMode lists available libraries by keyword categories.
 
 Reading within Emacs documentation that is not about Emacs but about other parts of the system is available with WoMan, ManMode, and InfoMode.

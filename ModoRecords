@@ -1,0 +1,19 @@
+[[es:ModoRecords]]
+El ModoRecords permite mantener un diario, anotaciones al vuelo, tareas por hacer, etc., con capacidad de indexación de las notas.
+
+El paquete se hospeda actualmente en launchpad en
+
+* https://launchpad.net/records
+
+XavierMaillard es el mantenedor actual a partir de la versión 1.5.1 "redux"
+(véase https://launchpad.net/records/1.5/1.5.2)
+
+Esta entrega no añade características nuevas.
+
+La traducción de su manual al español (1.5.0) se encuentra en
+
+* http://gnu.manticore.es/node/174
+
+
+----
+CategoryPersonalInformationManager CategoryTodo CategoryModes

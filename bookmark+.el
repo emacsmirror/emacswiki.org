@@ -8,9 +8,9 @@
 ;; Copyright (C) 2000-2009, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Dec  3 17:35:05 2009 (-0800)
+;; Last-Updated: Fri Dec  4 15:06:03 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 7870
+;;     Update #: 7968
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -89,6 +89,8 @@
 ;;    `bookmarkp-bmenu-change-sort-order',
 ;;    `bookmarkp-bmenu-change-sort-order-repeat',
 ;;    `bookmarkp-bmenu-define-command',
+;;    `bookmarkp-bmenu-define-full-snapshot-command',
+;;    `bookmarkp-define-tags-sort-command',
 ;;    `bookmarkp-bmenu-delete-marked',
 ;;    `bookmarkp-bmenu-describe-this-bookmark',
 ;;    `bookmarkp-bmenu-edit-bookmark',
@@ -389,6 +391,8 @@
 ;;
 ;;     - You can easily mark or show different classes of bookmarks.
 ;;
+;;     - Faces distinguish bookmarks by type.
+;;
 ;;     - You can sort bookmarks in many ways.  You can easily define
 ;;       your own sort orders, even complex ones.
 ;;
@@ -398,16 +402,29 @@
 ;;       later, you can search incrementally (`M-x a C-s', or `M-x a
 ;;       C-M-s' for regexp).
 ;;
-;;     - You can use `c' to save the current bookmark-list sort order,
-;;       filtering, and title as a new command, and then use that
-;;       command at any time to restore them (perhaps in another Emacs
-;;       session).  Define any number of such commands for the views
-;;       you use.  The file for saving the definitions is never
-;;       overwritten, so you can also add other code to it manually.
-;;       The file is read the first time the bookmark list is
-;;       displayed in a given Emacs session.
+;;     - You can use `c' (`bookmarkp-bmenu-define-command') to save
+;;       the current bookmark-list sort order and filtering as a new
+;;       command, and then use that command at any time to restore
+;;       them (perhaps in another Emacs session).  Define any number
+;;       of such commands for the views you use.  The file for saving
+;;       the definitions is never overwritten, so you can also add
+;;       other code to it manually.  The file is read the first time
+;;       the bookmark list is displayed in a given Emacs session.
 ;;
-;;     - Faces distinguish bookmarks by type.
+;;     - Similarly, you can use `C'
+;;       (`bookmarkp-bmenu-define-full-snapshot-command') to save a
+;;       full snapshot of the current bookmark-list state as a new
+;;       command, and then use that command at any time to restore it
+;;       completely.  You can thus record the current state (markings,
+;;       filtering - everything) and then return to it at any time
+;;       later, simply by invoking the command you defined.  This is
+;;       the same thing that happens automatically (by default) when
+;;       you quit the bookmark list (or Emacs), but this lets you have
+;;       multiple such saved states and switch to them at will.
+;;
+;;       HOWEVER, be aware that such command definitions can be quite
+;;       large, since they contain copies of the current bookmark list
+;;       and accessory lists (hidden and marked bookmarks etc.).
 ;;
 ;;     - You can edit a bookmark (its name and file name).
 ;;
@@ -484,9 +501,8 @@
 ;;  If option `bookmarkp-bmenu-state-file' is non-nil, then Bookmark+
 ;;  remembers the last state of the bookmark list when you quit it or
 ;;  you quit Emacs, and it restores that state when you show the list
-;;  again (which could be in the next Emacs session).  You can toggle
-;;  this option using `C-t' in the bookmark list.  You can think of
-;;  this feature as your "Home" page for bookmarks, giving you a
+;;  again (which could be in the next Emacs session).  You can think
+;;  of this feature as your "Home" page for bookmarks, giving you a
 ;;  stepping stone to the files and directories you use most.
 ;;
 ;;  If, for example, when you quit the bookmark list you are showing
@@ -503,6 +519,10 @@
 ;;  list to start out with a previously recorded state instead of the
 ;;  current state, just hit `C-t' before quitting the bookmark list or
 ;;  Emacs.
+;;
+;;  See also `C' (command
+;;  `bookmarkp-bmenu-define-full-snapshot-command'), above, for a way
+;;  to create and restore other bookmark-list snapshots.
 ;;
 ;;  Use `?' or `C-h m' in buffer `*Bookmark List*' for more
 ;;  information about the bookmark list.
@@ -570,6 +590,15 @@
 ;;    C-u T m ~ *  =  T m +    (not all are  = some are not)
 ;;
 ;;  You'll figure it out ;-).
+;;
+;;  Remember that `C-h RET' shows you the tags that belong to the
+;;  current bookmark (under the cursor).  Alternatively, you can use
+;;  `T -' and then `TAB' to see the tags belonging to the bookmark as
+;;  completion candidates.  (If you use Icicles, you can type an input
+;;  pattern to filter the tag completions.)
+;;
+;;  You can also sort bookmarks according to how they are tagged, even
+;;  in complex ways.  See (@> "Sorting Bookmarks").
 ;;
 ;;
 ;;(@* "Sets of Bookmarks")
@@ -759,6 +788,27 @@
 ;;  uses option `bookmarkp-sort-comparer'; it *ignores* vanilla Emacs
 ;;  option `bookmark-sort-flag'.)
 ;;
+;;  Of particular note is that you can interactively define commands
+;;  that sort by a given list of tags - you use keys `T s' (command
+;;  `bookmarkp-define-tags-sort-command') to do that.  You are
+;;  prompted for the tags to sort by.  Bookmarks are sorted first
+;;  according to whether they are tagged with the first tag, then the
+;;  second tag, and so on.  Otherwise, sorting is by bookmark name.
+;;
+;;  The tags you specify are used, in order, in the name of the new
+;;  command.  For example, if you enter tags `alpha', `beta', and
+;;  `gamma', in that order, then the sorting command created is
+;;  `bookmarkp-bmenu-sort-alpha-beta-gamma'.
+;;
+;;  Note that because you can add a new tag to all bookmarks that have
+;;  some given set of tags, you can use that single (new) tag to
+;;  represent the entire tag set.  Sorting by that tag is then the
+;;  same as sorting by the tag set.  You can of course use overlapping
+;;  sets in the composite sort command.  You can, for example, sort
+;;  first according to tag `tag1', which represents the set of tags
+;;  `alpha', `beta', `gamma', `delta', and then sort according to tag
+;;  `tag2', which represents the set of tags `beta', `delta'.
+;;
 ;;
 ;;(@* "Bookmark Compatibility with Vanilla Emacs (`bookmark.el')")
 ;;  ** Bookmark Compatibility with Vanilla Emacs (`bookmark.el') **
@@ -816,6 +866,10 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2009/12/04 dadams
+;;     Added: bookmarkp-bmenu-define-full-snapshot-command (bound to C),
+;;            bookmarkp-define-tags-sort-command.
+;;     bookmarkp-bmenu-mark-bookmarks-tagged-regexp: Removed extra forward-line if we mark line.
 ;; 2009/12/03 dadams
 ;;     Added: bookmarkp-bmenu-define-command (bound to c), bookmarkp-bmenu-commands-file.
 ;;     bookmark-bmenu-list: Read bookmarkp-bmenu-commands-file.
@@ -1527,34 +1581,36 @@ then the rest."
 (when (< emacs-major-version 21)
   (define-key bookmark-bmenu-mode-map (kbd "RET") 'bookmark-bmenu-this-window))
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "." 'bookmarkp-bmenu-show-all)
+(define-key bookmark-bmenu-mode-map "."    'bookmarkp-bmenu-show-all)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map ">" 'bookmarkp-bmenu-toggle-show-only-marked)
+(define-key bookmark-bmenu-mode-map ">"    'bookmarkp-bmenu-toggle-show-only-marked)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "<" 'bookmarkp-bmenu-toggle-show-only-unmarked)
+(define-key bookmark-bmenu-mode-map "<"    'bookmarkp-bmenu-toggle-show-only-unmarked)
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map (kbd "M-<DEL>") 'bookmarkp-bmenu-unmark-all)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "%" nil) ; For Emacs 20
+(define-key bookmark-bmenu-mode-map "%"    nil) ; For Emacs 20
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "%m" 'bookmarkp-bmenu-regexp-mark)
+(define-key bookmark-bmenu-mode-map "%m"   'bookmarkp-bmenu-regexp-mark)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "*" nil) ; For Emacs 20
+(define-key bookmark-bmenu-mode-map "*"    nil) ; For Emacs 20
 ;;;###autoload
 (when (< emacs-major-version 21)
   (define-key bookmark-bmenu-mode-map "*m" 'bookmark-bmenu-mark))
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "\M-a" 'bookmarkp-bmenu-search-marked-bookmarks-regexp)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "B" nil) ; For Emacs 20
+(define-key bookmark-bmenu-mode-map "B"    nil) ; For Emacs 20
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "BM" 'bookmarkp-bmenu-mark-non-file-bookmarks)
+(define-key bookmark-bmenu-mode-map "BM"   'bookmarkp-bmenu-mark-non-file-bookmarks)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "BS" 'bookmarkp-bmenu-show-only-non-files)
+(define-key bookmark-bmenu-mode-map "BS"   'bookmarkp-bmenu-show-only-non-files)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "c" 'bookmarkp-bmenu-define-command)
+(define-key bookmark-bmenu-mode-map "c"    'bookmarkp-bmenu-define-command)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "D" 'bookmarkp-bmenu-delete-marked)
+(define-key bookmark-bmenu-mode-map "C"    'bookmarkp-bmenu-define-full-snapshot-command)
+;;;###autoload
+(define-key bookmark-bmenu-mode-map "D"    'bookmarkp-bmenu-delete-marked)
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "\M-d" nil) ; For Emacs 20
 ;;;###autoload
@@ -1562,130 +1618,132 @@ then the rest."
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "\M-d\M-s" 'bookmarkp-bmenu-show-only-dired)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "E" 'bookmarkp-bmenu-edit-bookmark)
+(define-key bookmark-bmenu-mode-map "E"    'bookmarkp-bmenu-edit-bookmark)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "F" nil) ; For Emacs 20
+(define-key bookmark-bmenu-mode-map "F"    nil) ; For Emacs 20
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "FM" 'bookmarkp-bmenu-mark-file-bookmarks)
+(define-key bookmark-bmenu-mode-map "FM"   'bookmarkp-bmenu-mark-file-bookmarks)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "FS" 'bookmarkp-bmenu-show-only-files)
+(define-key bookmark-bmenu-mode-map "FS"   'bookmarkp-bmenu-show-only-files)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "g" 'bookmarkp-bmenu-refresh-menu-list)
+(define-key bookmark-bmenu-mode-map "g"    'bookmarkp-bmenu-refresh-menu-list)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "G" nil) ; For Emacs 20
+(define-key bookmark-bmenu-mode-map "G"    nil) ; For Emacs 20
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "GM" 'bookmarkp-bmenu-mark-gnus-bookmarks)
+(define-key bookmark-bmenu-mode-map "GM"   'bookmarkp-bmenu-mark-gnus-bookmarks)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "GS" 'bookmarkp-bmenu-show-only-gnus)
+(define-key bookmark-bmenu-mode-map "GS"   'bookmarkp-bmenu-show-only-gnus)
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map (kbd "C-h RET") 'bookmarkp-bmenu-describe-this-bookmark)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "I" nil) ; For Emacs 20
+(define-key bookmark-bmenu-mode-map "I"    nil) ; For Emacs 20
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "IM" 'bookmarkp-bmenu-mark-info-bookmarks)
+(define-key bookmark-bmenu-mode-map "IM"   'bookmarkp-bmenu-mark-info-bookmarks)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "IS" 'bookmarkp-bmenu-show-only-info-nodes)
+(define-key bookmark-bmenu-mode-map "IS"   'bookmarkp-bmenu-show-only-info-nodes)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "M" nil) ; For Emacs 20
+(define-key bookmark-bmenu-mode-map "M"    nil) ; For Emacs 20
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "MM" 'bookmarkp-bmenu-mark-man-bookmarks)
+(define-key bookmark-bmenu-mode-map "MM"   'bookmarkp-bmenu-mark-man-bookmarks)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "MS" 'bookmarkp-bmenu-show-only-man-pages)
+(define-key bookmark-bmenu-mode-map "MS"   'bookmarkp-bmenu-show-only-man-pages)
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "\M-m" 'bookmarkp-bmenu-mark-all)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "P" nil) ; For Emacs 20
+(define-key bookmark-bmenu-mode-map "P"    nil) ; For Emacs 20
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "PB" 'bookmarkp-bmenu-filter-bookmark-name-incrementally)
+(define-key bookmark-bmenu-mode-map "PB"   'bookmarkp-bmenu-filter-bookmark-name-incrementally)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "PF" 'bookmarkp-bmenu-filter-file-name-incrementally)
+(define-key bookmark-bmenu-mode-map "PF"   'bookmarkp-bmenu-filter-file-name-incrementally)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "PT" 'bookmarkp-bmenu-filter-tags-incrementally)
+(define-key bookmark-bmenu-mode-map "PT"   'bookmarkp-bmenu-filter-tags-incrementally)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "q" 'bookmarkp-bmenu-quit)
+(define-key bookmark-bmenu-mode-map "q"    'bookmarkp-bmenu-quit)
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "\M-q" 'bookmarkp-bmenu-query-replace-marked-bookmarks-regexp)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "R" nil) ; For Emacs 20
+(define-key bookmark-bmenu-mode-map "R"    nil) ; For Emacs 20
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "RM" 'bookmarkp-bmenu-mark-region-bookmarks)
+(define-key bookmark-bmenu-mode-map "RM"   'bookmarkp-bmenu-mark-region-bookmarks)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "RS" 'bookmarkp-bmenu-show-only-regions)
+(define-key bookmark-bmenu-mode-map "RS"   'bookmarkp-bmenu-show-only-regions)
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "\M-r" 'bookmark-bmenu-relocate) ; `R' in Emacs
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "S" 'bookmark-bmenu-save) ; `s' in Emacs
+(define-key bookmark-bmenu-mode-map "S"    'bookmark-bmenu-save) ; `s' in Emacs
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "s" nil) ; For Emacs 20
+(define-key bookmark-bmenu-mode-map "s"    nil) ; For Emacs 20
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "s>" 'bookmarkp-bmenu-sort-marked-before-unmarked)
+(define-key bookmark-bmenu-mode-map "s>"   'bookmarkp-bmenu-sort-marked-before-unmarked)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "sb" 'bookmarkp-bmenu-sort-by-last-buffer-or-file-access)
+(define-key bookmark-bmenu-mode-map "sb"   'bookmarkp-bmenu-sort-by-last-buffer-or-file-access)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "sfd" 'bookmarkp-bmenu-sort-by-local-file-type)
+(define-key bookmark-bmenu-mode-map "sfd"  'bookmarkp-bmenu-sort-by-local-file-type)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "sfn" 'bookmarkp-bmenu-sort-by-file-name)
+(define-key bookmark-bmenu-mode-map "sfn"  'bookmarkp-bmenu-sort-by-file-name)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "sfs" 'bookmarkp-bmenu-sort-by-local-file-size)
+(define-key bookmark-bmenu-mode-map "sfs"  'bookmarkp-bmenu-sort-by-local-file-size)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "sft" 'bookmarkp-bmenu-sort-by-last-local-file-access)
+(define-key bookmark-bmenu-mode-map "sft"  'bookmarkp-bmenu-sort-by-last-local-file-access)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "sfu" 'bookmarkp-bmenu-sort-by-last-local-file-update)
+(define-key bookmark-bmenu-mode-map "sfu"  'bookmarkp-bmenu-sort-by-last-local-file-update)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "sg" 'bookmarkp-bmenu-sort-by-Gnus-thread)
+(define-key bookmark-bmenu-mode-map "sg"   'bookmarkp-bmenu-sort-by-Gnus-thread)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "si" 'bookmarkp-bmenu-sort-by-Info-location)
+(define-key bookmark-bmenu-mode-map "si"   'bookmarkp-bmenu-sort-by-Info-location)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "sk" 'bookmarkp-bmenu-sort-by-bookmark-type)
+(define-key bookmark-bmenu-mode-map "sk"   'bookmarkp-bmenu-sort-by-bookmark-type)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "sn" 'bookmarkp-bmenu-sort-by-bookmark-name)
+(define-key bookmark-bmenu-mode-map "sn"   'bookmarkp-bmenu-sort-by-bookmark-name)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "sr" 'bookmarkp-reverse-sort-order)
+(define-key bookmark-bmenu-mode-map "sr"   'bookmarkp-reverse-sort-order)
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "s\C-r" 'bookmarkp-reverse-multi-sort-order)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "ss" 'bookmarkp-bmenu-change-sort-order-repeat)
+(define-key bookmark-bmenu-mode-map "ss"   'bookmarkp-bmenu-change-sort-order-repeat)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "st" 'bookmarkp-bmenu-sort-by-last-bookmark-access)
+(define-key bookmark-bmenu-mode-map "st"   'bookmarkp-bmenu-sort-by-last-bookmark-access)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "sv" 'bookmarkp-bmenu-sort-by-bookmark-visit-frequency)
+(define-key bookmark-bmenu-mode-map "sv"   'bookmarkp-bmenu-sort-by-bookmark-visit-frequency)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "sw" 'bookmarkp-bmenu-sort-by-w3m-url)
+(define-key bookmark-bmenu-mode-map "sw"   'bookmarkp-bmenu-sort-by-w3m-url)
 ;;;###autoload
 (when (> emacs-major-version 22)        ; Emacs 23+
  (define-key bookmark-bmenu-mode-map (kbd "M-s a C-s") 'bookmarkp-bmenu-isearch-marked-bookmarks)
  (define-key bookmark-bmenu-mode-map (kbd "M-s a M-C-s")
    'bookmarkp-bmenu-isearch-marked-bookmarks-regexp))
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "T" nil) ; For Emacs20
+(define-key bookmark-bmenu-mode-map "T"    nil) ; For Emacs20
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "T0" 'bookmarkp-remove-all-tags)
+(define-key bookmark-bmenu-mode-map "T0"   'bookmarkp-remove-all-tags)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "T+" 'bookmarkp-add-tags)
+(define-key bookmark-bmenu-mode-map "T+"   'bookmarkp-add-tags)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "T-" 'bookmarkp-remove-tags)
+(define-key bookmark-bmenu-mode-map "T-"   'bookmarkp-remove-tags)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "T>+" 'bookmarkp-bmenu-add-tags-to-marked)
+(define-key bookmark-bmenu-mode-map "T>+"  'bookmarkp-bmenu-add-tags-to-marked)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "T>-" 'bookmarkp-bmenu-remove-tags-from-marked)
+(define-key bookmark-bmenu-mode-map "T>-"  'bookmarkp-bmenu-remove-tags-from-marked)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "Td" 'bookmarkp-remove-tags-from-all)
+(define-key bookmark-bmenu-mode-map "Td"   'bookmarkp-remove-tags-from-all)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "Tm*" 'bookmarkp-bmenu-mark-bookmarks-tagged-all)
+(define-key bookmark-bmenu-mode-map "Tm*"  'bookmarkp-bmenu-mark-bookmarks-tagged-all)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "Tm%" 'bookmarkp-bmenu-mark-bookmarks-tagged-regexp)
+(define-key bookmark-bmenu-mode-map "Tm%"  'bookmarkp-bmenu-mark-bookmarks-tagged-regexp)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "Tm+" 'bookmarkp-bmenu-mark-bookmarks-tagged-some)
+(define-key bookmark-bmenu-mode-map "Tm+"  'bookmarkp-bmenu-mark-bookmarks-tagged-some)
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "Tm~*" 'bookmarkp-bmenu-mark-bookmarks-tagged-not-all)
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "Tm~+" 'bookmarkp-bmenu-mark-bookmarks-tagged-none)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "Tr" 'bookmarkp-rename-tag)
+(define-key bookmark-bmenu-mode-map "Tr"   'bookmarkp-rename-tag)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "Tu*" 'bookmarkp-bmenu-unmark-bookmarks-tagged-all)
+(define-key bookmark-bmenu-mode-map "Ts"   'bookmarkp-define-tags-sort-command)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "Tu+" 'bookmarkp-bmenu-unmark-bookmarks-tagged-some)
+(define-key bookmark-bmenu-mode-map "Tu*"  'bookmarkp-bmenu-unmark-bookmarks-tagged-all)
+;;;###autoload
+(define-key bookmark-bmenu-mode-map "Tu+"  'bookmarkp-bmenu-unmark-bookmarks-tagged-some)
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "Tu~*" 'bookmarkp-bmenu-unmark-bookmarks-tagged-not-all)
 ;;;###autoload
@@ -1695,15 +1753,15 @@ then the rest."
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "\M-t" 'bookmark-bmenu-toggle-filenames) ; `t' in Emacs
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "t" 'bookmarkp-bmenu-toggle-marks)
+(define-key bookmark-bmenu-mode-map "t"    'bookmarkp-bmenu-toggle-marks)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "U" 'bookmarkp-bmenu-unmark-all)
+(define-key bookmark-bmenu-mode-map "U"    'bookmarkp-bmenu-unmark-all)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "W" nil) ; For Emacs 20
+(define-key bookmark-bmenu-mode-map "W"    nil) ; For Emacs 20
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "WM" 'bookmarkp-bmenu-mark-w3m-bookmarks)
+(define-key bookmark-bmenu-mode-map "WM"   'bookmarkp-bmenu-mark-w3m-bookmarks)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "WS" 'bookmarkp-bmenu-show-only-w3m-urls)
+(define-key bookmark-bmenu-mode-map "WS"   'bookmarkp-bmenu-show-only-w3m-urls)
 
 
 (defadvice bookmark-bmenu-mode (before bookmark+-add-keymap () activate)
@@ -1719,11 +1777,13 @@ Miscellaneous
 -------------
 
 \\[bookmarkp-bmenu-describe-this-bookmark]\t- Show information about this bookmark
-\\[bookmarkp-bmenu-refresh-menu-list]\t- Refresh (revert) to up-to-date bookmarks list
+\\[bookmarkp-bmenu-refresh-menu-list]\t- Refresh (revert) to up-to-date bookmark list
 \\[bookmarkp-bmenu-delete-marked]\t- Delete visible bookmarks marked `>' (not `D')
 \\[bookmarkp-bmenu-define-command]\t- Define a command to restore the current sort order & filter
+\\[bookmarkp-bmenu-define-full-snapshot-command]\t- Define a command to restore the current \
+bookmark-list state
 \\[bookmarkp-bmenu-edit-bookmark]\t- Edit bookmark name and file name
-\\[bookmarkp-bmenu-quit]\t- Quit (the bookmarks list)
+\\[bookmarkp-bmenu-quit]\t- Quit (the bookmark list)
 \\[bookmark-bmenu-save]\t- Save bookmarks (`C-u': prompt for the bookmarks file to use)
 \\[bookmarkp-toggle-saving-menu-list-state]\t- Toggle saving the bookmark list display state
 
@@ -1961,10 +2021,14 @@ Don't forget to mention your Emacs and library versions."))
   "*File for saving user-defined bookmark-list commands.
 This must be an absolute file name or nil (it is not expanded).
 
-Each time you define a command using `bookmarkp-bmenu-define-command',
-it is saved in the file.  A new definition of the same command is
-simply appended to the file, so you might want to clean the file up
-occasionally, to remove any old, unused definitions."
+NOTE: Each time you define a command using \\<bookmark-bmenu-mode-map>\
+`\\[bookmarkp-bmenu-define-command]' or `\\[bookmarkp-bmenu-define-full-snapshot-command]', \
+it is saved in
+the file.  A new definition of the same command is simply appended to
+the file, so you might want to clean the file up occasionally, to
+remove any old, unused definitions.  This is especially advisable if
+you used `\\[bookmarkp-bmenu-define-full-snapshot-command]', because such \
+command definitions can be very large."
   :type '(file  :tag "File for saving menu-list state") :group 'bookmarkp)
 
 (defcustom bookmarkp-bmenu-state-file (convert-standard-filename "~/.emacs-bmk-bmenu-state.el")
@@ -3153,7 +3217,7 @@ the deletions."
 ;; 2. Update the menu-list title.
 ;;
 (defun bookmark-bmenu-surreptitiously-rebuild-list ()
-  "Rebuild the bookmarks list, if it exists.
+  "Rebuild the bookmark list, if it exists.
 Optional arg DONT-TOGGLE-FILENAMES-P is passed to
 `bookmark-bmenu-list'."
   (when (get-buffer "*Bookmark List*")
@@ -4233,10 +4297,10 @@ With a prefix arg, mark all that are tagged but with no tags that match."
       (while (not (eobp))
         (setq tags  (bookmarkp-get-tags (bookmark-bmenu-bookmark))
               anyp  (and tags (bookmarkp-some (lambda (tag) (string-match regexp tag)) tags)))
-        (when (and tags (if notp (not anyp) anyp))
+        (if (not (and tags (if notp (not anyp) anyp)))
+            (forward-line 1)
           (bookmark-bmenu-mark)
-          (setq count  (1+ count)))
-        (forward-line 1))
+          (setq count  (1+ count))))
       (if (= 1 count) (message "1 bookmark matched") (message "%d bookmarks matched" count)))))
 
 ;;;###autoload
@@ -4429,7 +4493,7 @@ unmark those that have no tags at all."
 ;;  *** General Menu-List (`-*bmenu-*') Commands and Functions ***
 
 ;;;###autoload
-(defun bookmarkp-bmenu-define-command ()
+(defun bookmarkp-bmenu-define-command () ; `c' in bookmark list
   "Define a command to use the current sort order, filter, and title.
 Prompt for the command name.  Save the command definition in
 `bookmarkp-bmenu-commands-file'.
@@ -4438,7 +4502,8 @@ The current sort order, filter function, and title for buffer
 `*Bookmark List*' are encapsulated as part of the command.  Use the
 command at any time to restore them."
   (interactive)
-  (let* ((fn   (intern (read-string "New sort+filter command: " nil 'foo-history)))
+  (let* ((fn   (intern (read-string "New sort+filter command: " nil
+                                    'bookmarkp-bmenu-define-command-history)))
          (def  `(defun ,fn ()
                  (interactive)
                  (setq
@@ -4465,6 +4530,96 @@ command at any time to restore them."
           (file-error (error "Cannot write `%s'" bookmarkp-bmenu-commands-file)))
         (kill-buffer (current-buffer))))
     (message "Command `%s' defined and saved in file `%s'" fn bookmarkp-bmenu-commands-file)))
+
+;;;###autoload
+(defun bookmarkp-bmenu-define-full-snapshot-command () ; `C' in bookmark list
+  "Define a command to restore the current bookmark-list state.
+Prompt for the command name.  Save the command definition in
+`bookmarkp-bmenu-commands-file'.
+
+Be aware that the command definition can be quite large, since it
+copies the current bookmark list and accessory lists (hidden
+bookmarks, marked bookmarks, etc.).  For a lighter weight command, use
+`bookmarkp-bmenu-define-full-snapshot-command' instead.  That records
+only the sort and filter information."
+  (interactive)
+  (let* ((fn   (intern (read-string "New restore-snapshot command: " nil
+                                    'bookmarkp-bmenu-define-command-history)))
+         (def  `(defun ,fn ()
+                 (interactive)
+                 (setq
+                  bookmarkp-sort-comparer           ',bookmarkp-sort-comparer
+                  bookmarkp-reverse-sort-p          ',bookmarkp-reverse-sort-p
+                  bookmarkp-reverse-multi-sort-p    ',bookmarkp-reverse-multi-sort-p
+                  bookmarkp-latest-bookmark-alist   ',bookmarkp-latest-bookmark-alist
+                  bookmarkp-bmenu-marked-bookmarks  ',bookmarkp-bmenu-marked-bookmarks
+                  bookmarkp-bmenu-filter-function   ',bookmarkp-bmenu-filter-function
+                  bookmarkp-bmenu-title             ',bookmarkp-bmenu-title
+                  bookmarkp-last-bmenu-bookmark     ',(and (get-buffer "*Bookmark List*")
+                                                           (with-current-buffer
+                                                               (get-buffer "*Bookmark List*")
+                                                             (bookmark-bmenu-bookmark)))
+                  bookmark-bmenu-toggle-filenames   ',bookmark-bmenu-toggle-filenames
+                  bookmarkp-bmenu-before-hide-marked-alist
+                  ',bookmarkp-bmenu-before-hide-marked-alist
+                  bookmarkp-bmenu-before-hide-unmarked-alist
+                  ',bookmarkp-bmenu-before-hide-unmarked-alist)
+                 ;;(bookmarkp-bmenu-refresh-menu-list)
+                 (let ((bookmark-alist  (or bookmarkp-latest-bookmark-alist bookmark-alist)))
+                   (bookmark-bmenu-list-1 'filteredp nil (interactive-p)))
+                 (when bookmarkp-last-bmenu-bookmark
+                   (with-current-buffer (get-buffer "*Bookmark List*")
+                     (bookmarkp-bmenu-goto-bookmark-named bookmarkp-last-bmenu-bookmark)))
+                 (when (interactive-p)
+                   (bookmarkp-msg-about-sort-order
+                    (car (rassoc bookmarkp-sort-comparer bookmarkp-sort-orders-alist)))))))
+    (eval def)
+    (with-current-buffer (get-buffer-create " *User Bookmark List Commands*")
+      (goto-char (point-min))
+      (delete-region (point-min) (point-max))
+      (let ((print-length  nil)
+            (print-level   nil))
+        (pp def (current-buffer))
+        (insert "\n")
+        (condition-case nil
+            (write-region (point-min) (point-max) bookmarkp-bmenu-commands-file 'append)
+          (file-error (error "Cannot write `%s'" bookmarkp-bmenu-commands-file)))
+        (kill-buffer (current-buffer))))
+    (message "Command `%s' defined and saved in file `%s'" fn bookmarkp-bmenu-commands-file)))
+
+;;;###autoload
+(defun bookmarkp-define-tags-sort-command (tags &optional msgp) ; 
+  "Define a command to sort bookmarks in the bookmark list by tags.
+You are prompted for the TAGS to sort by.  The new command sorts first
+by the first tag in TAGS, then by the second, and so on.
+
+Besides sorting for these specific tags, any bookmark that has a tag
+sorts before one that has no tags.  Otherwise, sorting is by bookmark
+name, alphabetically.
+
+The name of the new command is `bookmarkp-bmenu-sort-' followed by the
+specified tags, in order, separated by hyphens (`-').  E.g., for TAGS
+\(\"alpha\" \"beta\"), the name is `bookmarkp-bmenu-sort-alpha-beta'."
+  (interactive (list (bookmarkp-read-tags-completing) 'msg))
+  (let ((sort-order  (concat "tags-" (mapconcat #'identity tags "-")))
+        (doc-string  (read-string "Doc string for command: "))
+        (comparer    ()))
+    (dolist (tag  tags)
+      (push `(lambda (b1 b2)
+              (let ((tags1  (bookmarkp-get-tags b1))
+                    (tags2  (bookmarkp-get-tags b2)))
+                (cond ((and (member ,tag tags1) (member ,tag tags2)) nil)
+                      ((member ,tag tags1) '(t))
+                      ((member ,tag tags2) '(nil))
+                      ((and tags1 tags2) nil)
+                      (tags1 '(t))
+                      (tags2 '(nil))
+                      (t nil))))
+            comparer))
+    (setq comparer  (nreverse comparer)
+          comparer  (list comparer 'bookmarkp-alpha-p))
+    (eval `(bookmarkp-define-sort-command ,sort-order ,comparer ,doc-string))
+    (when msgp (message "Defined command `%s'" (concat "bookmarkp-bmenu-sort-" sort-order)))))
 
 ;;;###autoload
 (defun bookmarkp-bmenu-edit-bookmark () ; `E' in bookmark list

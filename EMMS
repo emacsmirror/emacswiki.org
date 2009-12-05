@@ -131,6 +131,20 @@ Here it is:
           (setq counter (1+ counter)))))))
 </pre>
 
+=== KDE Notifications ===
+
+Use knotify to display the current song. Requires Emacs with dbus:
+
+<pre>
+(defun ts/showsong ()
+  (emms-next-noerror)
+  (set 'notifyid (dbus-call-method :session "org.kde.knotify" "/Notify" "org.kde.KNotify" "event" "emms_song" "emacs" '(:array (:variant nil)) "Currently Playing" (emms-show) '(:array :byte 0 :byte 0 :byte 0 :byte 0) '(:array) :int64 0))
+  (run-at-time "5 sec" nil 'dbus-call-method :session "org.kde.knotify" "/Notify" "org.kde.KNotify" "closeNotification" :int32 notifyid)
+  )
+
+(setq emms-player-next-function 'ts/showsong)
+</pre>
+
 == Screenshots ==
 
 [http://www.gnu.org/software/emms/screenshots.html]

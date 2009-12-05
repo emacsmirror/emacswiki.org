@@ -45,17 +45,8 @@ If you don't wish to store your password there, just omit the "password secret" 
 
 ====Accessing the [Gmail] folders====
 
-To access the folders specified with [Gmail], you'll need to S s from the group buffer.  The specification is something line nnimap+gmail:[Gmail]/Spam.  To get "Sent Mail", you have to do the same thing but type in Sent C-q SPC Mail.  I believe this has to do with gnus-invalid-group-regexp, which contains a space, a slash, and some other things that will prevent the Server browse from seeing it, although I haven't played with it to make sure that's the case.
-
-Try doing this:
-<pre>
-(setq gnus-invalid-group-regexp "[:`'\"]\\|^$")
-</pre>
-
-as one of the first lines in your gnus.el.  After that, S s to the groups as specified above.  Before doing anything else, G c configure each Gmail line, and hit [done].  Gnus will pick up "another" group, this time without the nnimap+gmail designator.  C-k the old group and it works!  (I don't know why; I originally wanted gcc-self "nnimap+gmail:[Gmail]/Sent Mail" on INBOX and this was the easiest way to arrange that.  Magically, it picked up the new INBOX and everything worked, even across sessions.)
-
-[new]
-I investigated this further today, the issue seems to be that gnus-ignored-newsgroups matches those boxes. Currently I set it to "", and now it works. I'll look into this and see if i can change it to something sane. -- TomRauchenwald
+All Gmail system labels have a prefix [Gmail], it matches the default value of gnus-ignored-newsgroups, so
+we could set it to "^to\\.\\|^[0-9.        ]+\\( \\|$\\)\\|^[\"]\"[#'()]" to work around.
 
 ===Accessing Gmail via POP===
 

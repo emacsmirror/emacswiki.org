@@ -7,5 +7,10 @@ The homepage is http://cedet.sourceforge.net/checkdoc.shtml
 http://cedet.sourceforge.net/checkdoc.jpg
 
 checkdoc.el is part of GNU Emacs since version 21. 
+
+Here are some things extending checkdoc,
+
+* [http://user42.tuxfamily.org/checkdoc-keywords/index.html checkdoc-keywords.el] -- at least one "Keyword:" known to FinderMode
+
 ----
 CategoryCode

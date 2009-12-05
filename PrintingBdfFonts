@@ -84,5 +84,23 @@ Then:
 
 Euro sign checked, it works!
 
+
+Nice ! The postscript looks fine on screen, but when I send it to the printer, I get garbage if there are some special Unicode characters in the file, e.g. 03B1 (alpha) 03B2 (beta) etc. The same happens if I convert the postscript to pdf using ps2pdf. 
+
+As a workaround, I filtered the postscript through the ps2ps utility, and it worked. Here is a short snippet that does it automatically.
+
+  (defadvice ps-do-despool (before ps-2-ps activate)
+   "we apply the ps2ps command to the postscript buffer just before printing"
+   (if (or (not (boundp 'ps-spool-buffer))
+           (not (symbol-value 'ps-spool-buffer)))
+       (message "No spooled PostScript to print")
+    (save-excursion
+     (set-buffer ps-spool-buffer)
+     (shell-command-on-region 
+        (point-min) (point-max) "ps2ps - -" nil t "*Message*"))))
+
+The `ps-generate' command can be adviced in the same way if we want
+to convert the content of the *postscript* buffer as soon as it is generated.
+
 ----
 CategoryInternationalization

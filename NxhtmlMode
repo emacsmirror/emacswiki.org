@@ -2,6 +2,10 @@
 http://ourcomments.org/Emacs/nXhtml/doc/img/use-nXhtml-trans2.png
 
 [new]
+*Warning*: Latest CVS Emacs (2009-12-03) breaks indentation for php-mode when used in multi major mode buffers.
+We are working on it, but it may take some time.
+
+[new]
 Released nXhtml version 2.023 (2009-11-24).
 This version has support for the new JavaScriptMode mode in CVS Emacs (called js-mode, formerly known as Espresso mode).
 

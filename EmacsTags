@@ -1,28 +1,20 @@
-== Overview ==
-
 This page is about '''[::tags]''', a facility for recording names and their definitions and later looking up the definitions.
 
-== Building / Updating Tags ==
-
-See [[BuildTags]]
+See BuildTags for how to build or update a [[tags file]] with a command-line program which records where names of different kinds of entities are defined and where they are referenced.  Names that are indexed for quick lookup this way are called '''[[tag]]s'''.
 
 == Navigating using tags ==
-
-== Use `M-.' (`find-tag') To Look Up Definitions ==
 
 Once you have a [[tags file]], you can follow tags (of functions, variables, macros, whatever) to their definitions. These are the basic commands:
 
 * `##M-.##' (`find-tag') -- find a tag, that is, use the Tags file to look up a definition.  If there are multiple tags in the project with the same name, use `##C-u M-.##' to go to the next match.
 * `##M-*##' (`pop-tag-mark') -- jump back
-* `tags-search' -- [[regexp]]-search through the source files indexed by a tags file (a bit like `grep')
-* `tags-query-replace' -- query-replace through the source files indexed by a tags file
+* `M-x tags-search' -- [[regexp]]-search through the source files indexed by a tags file (a bit like `grep')
+* `M-x tags-query-replace' -- query-replace through the source files indexed by a tags file
 * `##M-,##’ (`tags-loop-continue’) -- resume  `tags-search'  or `tags-query-replace' starting at [[point]] in a source file
-* `tags-apropos’ -- list all tags in a tags file that match a regexp
-* `list-tags' -- list all tags defined in a source file
+* `M-x tags-apropos’ -- list all tags in a tags file that match a regexp
+* `M-x list-tags' -- list all tags defined in a source file
 
 See the Emacs manual, node '''Tags''' for more information: Manual:Tags.
-
-
 
 == Choosing Among Multiple Tags for the Same Name ==
 
@@ -36,8 +28,6 @@ It's good to have a way to navigate among different definitions of the same name
 * Lisp:anything-etags.el is [[Anything]] interface to select candidates.
 ** See also AnythingApplications
 
-
-
 == Icicles Helps You Work with Tags ==
 
 You can use use '''[[Icicles]]''' [[Icicles - Multi-Commands|multi-commands]] '''‘icicle-search-tag’''' and '''`icicle-find-tag'''' to do all of what you normally do with a combination of commands `find-tag’, `tags-loop-continue’ (`##M-,##’), `tags-apropos’, `tags-query-replace', `list-tags', and more.  Each of these is a general ''tags browser''.  Being multi-commands, you can visit any number of tags, in any order, in a single command invocation. You see a list of all tags that match your (reexp) input, and those choices are dynamically updated when you change your minibuffer input. See [[Icicles - Tags Enhancements]].
@@ -46,9 +36,6 @@ You can use use '''[[Icicles]]''' [[Icicles - Multi-Commands|multi-commands]] ''
 In addition, you can use '''Icicles''' multi-command `icicle-imenu' as an alternative to using tags.  Like tags, it lets you navigate among definitions in multiple files -- and also multiple saved regions and non-file buffers.  Like ImenuMode, you need not build a tags file.
 
 Since `icicle-imenu' locates definitions using Imenu regexps, you can only navigate among definitions in buffers that you are visiting. This is both an advantage and a disadvantage: you can narrow the search to certain files, but you must know which files to search. And if you want to search all files, then you must open them all (e.g. by matching a project regexp). See [[Icicles - Other Search Commands#IciclesImenu|Icicles Imenu]].
-
-
-
 
 == Finding Tags Files ==
 

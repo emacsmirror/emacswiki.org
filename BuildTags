@@ -1,12 +1,8 @@
-= Overview =
-
-There are several tools to create a [[tags file]].  Two of the main tools are etags (which comes with emacs), and ExuberantCtags.  Unless if you have a specific reason not to (you can't install it), ExuberantCtags is the best choice as it supports more languages and is more robust.
+There are several tools to create a [[tags file]].  The two dominant tools are [[etags]] and ExuberantCtags.  Etags comes with Emacs and ExuberantCtags is separate but available on most systems.  ExuberantCtags is the better choice as it supports more languages and is more robust.
 
 == Using ExuberantCtags ==
 
-=== From the command line ===
-
-To use ctags with emacs, you must supply the `-e' parameter to instruct ctags to generate an emacs tag file.
+To use ctags with emacs, you must supply the `-e' parameter to instruct ctags to generate an emacs tag file.  The commands below are often sourced into a Makefile and then run with a CompileCommand.
 
   cd /path/to/my/project
   ctags -e myfile.cpp
@@ -38,8 +34,6 @@ Then, once it has been evaluated, you can invoke it via `m-x create-tags'
 
 == Using etags ==
 
-=== Console ===
-
 First, see a list of languages supported by etags by running `etags --help'.
 
 To generate tags for certain source files (like *.el files), invoke this:
@@ -66,28 +60,15 @@ Put this in your [[init file]]:
 
 == Other tips ==
 
-=== Multiple Languages in a project ===
-
 It just works with ExuberantCtags and etags, as both recognize the language based on extension.
 
 If you happen to need to use two separate tags programs (like rtags and ctags) to parse all languages used in a project, just append one to the other.
 
-=== TraverseLisp.el ===
+== See also ==
 
-Lisp:traverselisp.el is able to build tags fast recursively in a directory tree:
-
-M-x traverse-build-tags-in-project
-
-then just choose extension from prompt.
-
-=== Updating TAGS on file save ===
-
-[http://github.com/mattkeller/etags-update etags-update.el] is a global minor mode that will update your TAGS when you save a file. It can also offer to add a file to your TAGS if it is not already indexed.
-
-=== See Also ===
-
+* Lisp:traverselisp.el is able to build tags fast recursively in a directory tree with ` M-x traverse-build-tags-in-project' then just choose extension from prompt.
+* [http://github.com/mattkeller/etags-update etags-update.el] is a global minor mode that will update your TAGS when you save a file. It can also offer to add a file to your TAGS if it is not already indexed.
 * RecursiveTags for more tips on generating tags in recursive directories.
 
 ----
-
 CategoryExternalUtilities

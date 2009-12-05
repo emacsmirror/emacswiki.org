@@ -90,5 +90,10 @@ You can use the somewhat non-obvious keybinding of C-c C-s (twittering-update-st
 [new]
 Icon support does not work in windows.  I have gnu wget installed and in path, and the icons are downloading to twittering-tmp-dir.  However, they do not display in icon mode. --Tim Hoolihan
 
+[new]
+Icon Works on Windows needs GNU Win32 image packages (http://gnuwin32.sourceforge.net/packages.html) installed, which includes jpeg, libungif, libpng,  xpm, and zlib, etc. And the packages dir must be set into the %PATH% environment various. 
+
+BTW: I wish this code would support HTTPS and third-party API in the future. It would be very useful. --Moses
+
 ----
 See also: [[Twitter]] [[Identica-mode]]

@@ -17,7 +17,7 @@ Later, when you have a chance, come back here and learn the natively distributed
 [:Terminology]
 === Terminology ===
 
-If you find the terminology in this guide confusing, read [http://bazaar-vcs.org/BzrForCVSUsers Bazaar for CVS Users] and come back.  In particular, keep in mind that the main unit of currency in Bzr is the /branch/, and that /repository/ in Bzr does not mean the same thing as in CVS.  In Bzr, a repository is just a place to store multiple branches efficiently; you're as likely to have a repository locally as remotely.  In Bzr, you push and pull changes to/from an upstream /branch/, and whether that branch is in a repository upstream is irrelevant.  The mainline branch of the public Emacs repository will be called the /master branch/, /master/ for short, or /upstream master branch/ for emphasis.  (The mainline branch is the one containing the changes targeted for future public releases.)
+If you find the terminology in this guide confusing, read [http://bazaar-vcs.org/BzrForCVSUsers Bazaar for CVS Users] and come back.  In particular, keep in mind that the main unit of currency in Bzr is the /branch/, and that /repository/ in Bzr does not mean the same thing as in CVS.  In Bzr, a repository is just a place to store multiple branches efficiently; you're as likely to have a repository locally as remotely.  In Bzr, you send and receive changes to/from an upstream /branch/, and whether that branch is in a repository upstream is irrelevant.  The mainline branch of the public Emacs repository will be called the /master branch/, /master/ for short, or /upstream master branch/ for emphasis.  (The mainline branch is the one containing the changes targeted for future public releases.)
 
 The command examples are generally given in Unix command-line style, although we did try to use forms that would work on MS-Windows as well.  If you use Windows or some other system, please feel free to add examples appropriate for that system.
 
@@ -52,11 +52,11 @@ Overview of the Bazaar work routine:
 # Do your work on one of your non-mirror local branches, committing locally as you go.
 # From time to time, pull upstream newness into your mirror branch (this is like <tt>cvs update</tt>), and then merge the newness into your dev/task branches from there (also sort of like <tt>cvs update</tt>).
 # When your local changes are ready, then either
-## push them up to the master branch (if you're a maintainer and have the necessary access rights --- this is analogous to committing in CVS), /or/
+## merge them into the master branch (if you're a maintainer and have the necessary access rights --- this is analogous to committing in CVS), /or/
 ## package up your changes and send them as a "bundle" to the project mailing list (analogous to posting a patch).
 # Receive feedback.
 # Maybe make some more commits locally, in response to the feedback
-# Push again (or submit a new bundle).
+# Merge to master again (or submit a new bundle).
 # Lather, rinse, repeat until the change is accepted.
 # If you did all this on a local feature branch, you can remove it now.  The change history will live upstream.
 
@@ -69,7 +69,7 @@ Of course some people like to organize things differently.  However, there are v
 [:PersonalizingBzr]
 === Personalizing Bazaar ===
 
-Unlike centralized VCSes where you are identified by an account in the repository, in Bazaar you can create branches in many places, and you may be pushing changes to many places (including, but not limited to, the upstream master branch).  So Bazaar stores your identity locally, and includes it as part of every revision you commit.  This information is your name and email address.  To configure Bazaar to use them, do
+Unlike centralized VCSes where you are identified by an account in the repository, in Bazaar you can create branches in many places, and you may be sending changes to many places (including, but not limited to, the upstream master branch).  So Bazaar stores your identity locally, and includes it as part of every revision you commit.  This information is your name and email address.  To configure Bazaar to use them, do
 
       bzr whoami "J. Random Hacker <jrandom@gnu.org.invalid>"
 
@@ -179,9 +179,10 @@ and send it off.
 When revising your change, even though nobody else knows about your first commit yet, it is simplest to just make more commits.  (It's possible to "uncommit" in Bazaar, but it's not straightforward, and there's no compelling reason to do it if you're just revising a change.)  Although in the ##quickfixes## branch a plain ##bzr log## will show you all your changes, when you do plain ##bzr log## after your changes have been merged in ##trunk##, you will see only a merge commit log, which describes the whole series of commits for this task.  It will typically look something like "Merge: fix bla bla bla (closes Bug #1)."
 
 [:PushToUpstream]
-=== Pushing To the Upstream Master ===
+[:MergeToUpstream]
+=== Merging Into the Upstream Master ===
 
-Alternatively, if you are a committer, you may want to push to the upstream master.
+Alternatively, if you are a committer, you may want to merge to the upstream master.  To do this, first merge to your mirror:
 
       cd $DEVHOME/emacs/trunk/
       bzr pull
@@ -191,7 +192,7 @@ and then commit
 
       bzr commit -m "Merge: fix bla bla bla (closes Bug #1)."
 
-which automatically pushes all your new commits to the upstream master, because the mirror is set up as bound branch.  In this process, updating your ##trunk## with ##bzr pull## is not really optional.  There is a race condition here, just as in CVS: if your mirror is not up-to-date because another developer has committed since you last updated, your commit will fail.  In this case you should abort the merge
+which automatically merges all your new commits to the upstream master, because the mirror is set up as bound branch.  In this process, updating your ##trunk## with ##bzr pull## is not really optional.  There is a race condition here, just as in CVS: if your mirror is not up-to-date because another developer has committed since you last updated, your commit will fail.  In this case you should abort the merge
 
       bzr revert
 
@@ -246,7 +247,7 @@ And after refreshing the mirror, you'll want to get those changes into your task
 
 (As described in [[#QuickFix]], the merge may fail due to conflicts, which you must resolve before you can commit.)
 
-Once you have completed the task, you'll want to send it upstream.  You do this just as you would for a quick fix, either by [[#SendABundle]] or by [[#PushToUpstream]].
+Once you have completed the task, you'll want to send it upstream.  You do this just as you would for a quick fix, either by [[#SendABundle]] or by [[#MergeToUpstream]].
 
 At that point, you can delete your task branch...
 

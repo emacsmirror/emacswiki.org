@@ -1,0 +1,57 @@
+[[zh:沙盒]]
+[[it:Polski]]
+[[se:SandLåda]]
+[[de:SandKasten]]
+[[de:SandKasten]]
+[[es:BancoDePruebas]]
+[[fr:SandBox]]
+[[ru:Песочница]]
+
+'''Por favor, deje todo el texto por encima de la primera línea horizontal intacto''',
+para que sirva como instrucciones para los demás.
+
+Esta página no debe confundirse con //sandbox.el// que se encuentra en
+http://panix.com/~tehom/my-code/, cuyo destino es ayudar a comprobar la
+seguridad de código elisp nuevo.
+
+Esta página es el sitio para '''probar cosas'''.  También se puede usar el
+[http://www.emacswiki.org/cgi-bin/test Test Wiki] para hacer pruebas.
+Si necesita un wiki propio, pruebe con
+[http://communitywiki.org/odd Oddwiki].
+
+'''Por favor, haga que todas las ediciones aquí sean menores:''' marque la
+casilla que hay bajo el campo de edición y que dice "Este cambio es una edición menor."
+
+Vea en WikiCómo unos cuantos consejos de edición.  Pulse en "Editar esta página" que se
+encuentra al final de cada página para examinar su código fuente y ver cómo hacen las
+cosas los demás.  Después regrese aquí para experimentar.  Recuerde que no necesita
+guardar la edición para ver cómo luce; basta con que pulse '''Previsualizar'''.
+
+----
+
+
+
+##<tt>[[test.el]]</tt>## --> <tt>[[test.el]]</tt>
+
+##<tt>''[[test.el]]''</tt>## --> <tt>''[[test.el]]''</tt>
+
+##<tt>"[[test.el]]"</tt>## --> <tt>"[[test.el]]"</tt> -- interesante - mueve las comillas fuera
+
+##<tt>//[[test.el]]//</tt>## --> <tt>//[[test.el]]//</tt> -- se pierde el enlace
+
+##<tt>//''[[test.el]]''//</tt>## --> <tt>//''[[test.el]]''//</tt> -- lo mismo
+
+##<tt>''"[[test.el]]"''</tt>## --> <tt>''"[[test.el]]"''</tt> -- comillas fuera y cursivas
+
+Prueba de yaoddmuse!
+
+Edición menor en estos momentos ^-^ lo siento
+
+aaa
+bbb
+ccc
+dddd
+eee
+ffff
+
+

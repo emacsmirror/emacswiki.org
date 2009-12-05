@@ -170,8 +170,8 @@ virtual environments, but this is largely untested.
 
         #flymake: ("\\(.*\\) at \\([^ \n]+\\) line \\([0-9]+\\)[,.\n]" 2 3 nil 1)
         #or in non-retardate: r'(.*) at ([^ \n]) line ([0-9])[,.\n]'
-        output_format = ("%(level)s %(error_type)s%(error_number)s:"
-                         "%(description)s at %(filename)s line %(line_number)s.")
+        output_format = "%(level)s %(error_type)s%(error_number)s:" \
+                        "%(description)s at %(filename)s line %(line_number)s."
 
         def __init__(self, virtualenv=None, ignore_codes=(),
                      use_sane_defaults=True):
@@ -376,7 +376,7 @@ PATH called 'epylint'.  That script is:
     p = Popen("pylint -f parseable -r n --disable-msg-cat=C,R %s" %
               sys.argv[1], shell = True, stdout = PIPE).stdout
     
-    for line in p.readlines():
+    for line in p:
         match = re.search("\\[([WE])(, (.+?))?\\]", line)
         if match:
             kind = match.group(1)

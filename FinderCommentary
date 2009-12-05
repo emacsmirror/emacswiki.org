@@ -1,7 +1,7 @@
 [[de:pexYeZxd]]
 finder-commentary is a function that displays the commentary section of an Emacs library.  Simply type `M-x finder-commentary RET' and it prompts you for the library name. The name of the library can be both `name' and `name.el'. This prompt uses completing-read, which means that you can press TAB to try for completions.
 
-Press `q' to exit finder-commentary, and `d' to see a list of available topics.
+Press `q' to exit finder-commentary, and `d' to see a list of available topics (in FinderMode).
 
 finder-commentary can be very useful, as you don't need to locate the library to see its documentation, it only needs to be in your load-path (see LoadPath).
 

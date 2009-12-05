@@ -47,23 +47,6 @@ This is buffer `##*Bookmark List*##', aka the bookmark "menu list", which you di
 
 * You can easily mark or show different ''classes'' of bookmarks.
 
-* You can ''sort'' bookmarks in many ways.  You can easily define
-     your own sort orders, even complex ones.
-
-* You can regexp-search (`M-a') or query-replace (`M-q') the
-     targets (destination files or buffers) of the marked bookmarks, in the
-     current sort order.  For Emacs 23 and later, you can search
-     incrementally (`M-x a C-s', or `M-x a C-M-s' for [[regexp]]).
-
-* You can use '''`c'''' to save the current bookmark-list sort order,
-filtering, and title as a new command, and then use that
-command at any time to restore them (perhaps in another Emacs
-session).  Define any number of such commands for the views
-you use.  The file for saving the definitions is never
-overwritten, so you can also add other code to it manually.
-The file is read the first time the bookmark list is
-displayed in a given Emacs session.
-
 * [[Face]]s distinguish bookmarks by type:
 
 ** non-file buffers
@@ -75,6 +58,37 @@ displayed in a given Emacs session.
 ** w3m URLs
 ** Info nodes
 ** Gnus articles
+
+* You can ''sort'' bookmarks in many ways.  You can easily define
+     your own sort orders, even complex ones.
+
+* You can regexp-search (`M-a') or query-replace (`M-q') the
+     targets (destination files or buffers) of the marked bookmarks, in the
+     current sort order.  For Emacs 23 and later, you can search
+     incrementally (`M-x a C-s', or `M-x a C-M-s' for [[regexp]]).
+
+[:bookmarkp-bmenu-define-command]
+* You can use '''`c'''' (`bookmarkp-bmenu-define-command') to save the current bookmark-list sort order and filtering as a new command, and then use that
+command at any time to restore them (perhaps in another Emacs
+session).  Define any number of such commands for the views
+you use.  The file for saving the definitions is never
+overwritten, so you can also add other code to it manually.
+The file is read the first time the bookmark list is
+displayed in a given Emacs session.
+
+[:bookmarkp-bmenu-define-full-snapshot-command]
+* Similarly, you can use '''`C'''' (`bookmarkp-bmenu-define-full-snapshot-command') to save a
+full snapshot of the current bookmark-list state as a new
+command, and then use that command at any time to restore it
+completely.  You can thus record the current state (markings,
+filtering --- everything) and then return to it at any time
+later, simply by invoking the command you defined.  This is
+the same thing that happens automatically (by default) when
+you quit the bookmark list (or Emacs), but this lets you have
+multiple such saved states and switch to them at will.
+''However'', be aware that such command definitions can be quite
+large, since they contain copies of the current bookmark list
+and accessory lists (hidden and marked bookmarks etc.).
 
 * You can edit a bookmark (its name and file name).
 
@@ -152,14 +166,17 @@ hide bookmarks of particular types, and much more.
 If option '''`bookmarkp-bmenu-state-file'''' is non-`nil', then '''Bookmark+'''
 remembers the last state of the bookmark list when you quit it or
 you quit Emacs, and it restores that state when you show the list
-again (which could be in the next Emacs session).  You can toggle
-this option using '''`C-t'''' in the bookmark list.  You can think of
+again (which could be in the next Emacs session).  You can think of
 this feature as your '''Home''' page for bookmarks, giving you a
 stepping stone to the files and directories you use most.
 
 If, for example, when you quit the bookmark list you are showing only bookmarks to [[Info]] nodes and UNIX manual pages, sorted in a particular way, and with some of them marked for particular processing, then the next time you open the list the same state is restored: the same set of bookmarks is shown, in the same order, with the same markings.
 
 You can turn off this automatic state saving, if you want, by customizing option '''`bookmarkp-bmenu-state-file'''' to `nil'. And you can toggle this option at any time, using '''`C-t'''' in the bookmark list. In particular, if you want your next visit to the bookmark list to start out with a previously recorded state instead of the current state, just hit `C-t' before quitting the bookmark list or Emacs.
+
+See also `C' (command
+`bookmarkp-bmenu-define-full-snapshot-command'), [[#bookmarkp-bmenu-define-full-snapshot-command|above]], for a way
+to create and restore other bookmark-list snapshots.
 
 Use `##?##' or `##C-h m##' in buffer `##*Bookmark List*##' for more
 information about the bookmark list.
@@ -225,6 +242,17 @@ In other words:
   C-u T m ~ *  =  T m +    (not all are  = some are not)
 
 You'll figure it out ;-).
+
+Remember that '''`C-h RET'''' shows you the tags that belong to the
+current bookmark (under the [[cursor]]).  Alternatively, you can use
+'''`##T -##'''' and then `TAB' to see the tags belonging to the bookmark as
+[[completion]] candidates.  (If you use '''[[Icicles]]''', you can type an input
+pattern to filter the tag completions.)
+
+You can also sort bookmarks according to how they are tagged, even
+in complex ways.  See [[#SortingBookmarks]].
+
+
 
 
 
@@ -443,6 +471,27 @@ orders.  See macro '''`bookmarkp-define-sort-command'''' and the
 documentation for option `bookmarkp-sort-comparer'.   ('''Bookmark+'''
 uses option '''`bookmarkp-sort-comparer''''; it ''ignores'' vanilla Emacs
 option `bookmark-sort-flag'.)
+
+Of particular note is that you can interactively define commands
+that sort by a given list of tags --- you use keys '''`##T s##'''' (command
+`bookmarkp-define-tags-sort-command') to do that.  You are
+prompted for the tags to sort by.  Bookmarks are sorted first
+according to whether they are tagged with the first tag, then the
+second tag, and so on.  Otherwise, sorting is by bookmark name.
+
+The tags you specify are used, in order, in the name of the new
+command.  For example, if you enter tags `alpha', `beta', and
+`gamma', in that order, then the sorting command created is
+`bookmarkp-bmenu-sort-alpha-beta-gamma'.
+
+Note that because you can add a new tag to all bookmarks that have
+some given set of tags, you can use that single (new) tag to
+represent the entire tag set.  Sorting by that tag is then the
+same as sorting by the tag set.  You can of course use overlapping
+sets in the composite sort command.  You can, for example, sort
+first according to tag `tag1', which represents the set of tags
+`alpha', `beta', `gamma', `delta', and then sort according to tag
+`tag2', which represents the set of tags `beta', `delta'.
 
 See also ApplesAndOranges for more about the sorting used in '''Bookmark+'''.
 

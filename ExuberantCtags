@@ -2,14 +2,12 @@ ExuberantCtags is superior to etags in many ways.  You can find it here:
 
 * http://ctags.sourceforge.net
 
-== How is it better than etags? ==
+How is it better than etags?:
 
-It:
-
-* supports more languages than etags
-* has better rules for matching files to languages
-* has decent handling of preprocessor switches
-* generates tag files compatible with a variety of editors.
+* Supports more languages than etags.
+* Has better rules for matching files to languages.
+* Has decent handling of preprocessor switches.
+* Generates tag files compatible with a variety of editors.
 
 ----
 CategoryExternalUtilities

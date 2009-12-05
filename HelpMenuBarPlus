@@ -64,7 +64,7 @@ The `'''Help'''' menu has been enhanced as follows:
 *** _Manual_ -- Access the EmacsLispReference in InfoMode (`emacs-lisp-info')
 *** _Manual Index..._
 *** _Locate Library..._ (`locate-library')
-*** _Locate Libraries by Keyword_ (`finder-by-keyword')
+*** _Locate Libraries by Keyword_ (`finder-by-keyword') -- see FinderByKeyword
 *** _What's New_ (`view-emacs-lisp-news') -- Emacs 20 only
 
 ::: [[image:drew-emacs-help-learn-lisp]]
