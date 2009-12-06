@@ -51,6 +51,13 @@ Many characters are special when they follow a backslash -- see below.
 Also, ##\W##, ##\B##, and ##\Sc## match any character that does not match 
 ##\w##,  ##\b##, and ##\sc##.
 
+Characters are organized by category. Use ##C-u C-x =## to display the category of the character under the cursor.
+
+  \ca      ascii character
+  \Ca      non-ascii character (newline included)
+  \cl      latin character
+  \cg      greek character
+
 Here are some [[syntax classes]] that can be used between brackets, ##[]##.
 
   [:digit:]  a digit, same as [0-9]
@@ -58,6 +65,7 @@ Here are some [[syntax classes]] that can be used between brackets, ##[]##.
   [:space:]  a whitespace character, as defined by the syntax table
   [:xdigit:] an hexadecimal digit
   [:cntrl:]  a control character
+  [:ascii:]  an ascii character
 
 Syntax classes:
 
@@ -125,7 +133,7 @@ the expression to get it executed).
 
 == Some Regexp Examples ==
 
- [+-[:digit:]]                     digit or + or - sign
+ [-+[:digit:]]                     digit or + or - sign
  \(\+\|-\)?[0-9]+\(\.[0-9]+\)?     decimal number (-2 or 1.5 but not .2 or 1.)
  \(\w+\) +\1\>                     two consecutive, identical words
  \<[[:upper:]]\w*                  word starting with an uppercase letter

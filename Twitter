@@ -46,6 +46,15 @@ I've been using twittering-mode for the last couple of days and it's the most co
 [new]
 µblog.el is under heavy (!) development. Several features are unimplemented and it's riddled with bugs. -- Artagnon
 
+[new]
+why all this twitter client for emacs give me error message:
+<pre>
+Search failed: "
+
+"
+</pre>
+who can help me?
+
 ----
 CategoryJournaling
 

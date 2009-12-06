@@ -1,6 +1,6 @@
 ==Installing Debian/Ubuntu and Emacs on G1/G2 phone==
 
-There is a lot of online information for hacking HTC mobile phones on the [http://www.xda-developers.com/ xda-developers website]. 
+There is a lot of online information for hacking HTC mobile phones on the [http://www.xda-developers.com/ xda-developers website].
 This includes the G1 and G2 google phones.
 One of these hacks is to get a full distribution such as Debian or Ubuntu running, on which you can then install Emacs :)
 
@@ -14,6 +14,8 @@ You will also need to install the latest radio image available [http://www.htc.c
 Read how to install new images and updates [http://wiki.xda-developers.com/index.php?pagename=HTC_Dream_overview_and_useful_information#Updatingx20.thex20.ROM here].
 
 Then have a look at these simple [http://www.androidfanatic.com/cms/community-forums.html?func=view&catid=9&id=2248 instructions] on installing Debian (Note: you may need to alter the installer.sh script as mentioned in post #3566 [http://www.androidfanatic.com/cms/community-forums.html?func=view&amp;catid=9&amp;id=2248&amp;start=60#3566 here]).
+
+If you like it a little less "simple" and more solid, I'd rather recommend Bayle Shank's instructions on installing debian into an ext partition by hand [http://bayleshanks.com/wiki.pl?tips-computer-android-g1 here], as parts of that installer are really bogus. In that case you'll also have to enable compcache by hand, which Bayle Shank's script doesn't do, so you just paste his script into the "custom_shells" section of the user.conf obtained from [http://forum.xda-developers.com/showthread.php?t=542899]. Also you might want to use a non-root user for your emacs work, in that case [http://android-dls.com/wiki/index.php?title=Debian_on_G1#Sockets_for_non-root_users:] will help. -- TauPan
 
 Once you have Debian installed you can just "apt-get emacs" to install emacs 22.
 
@@ -34,7 +36,7 @@ With this recipe you can make phone calls from your [BbdbMode bbdb buffer]:
 # Save the following python code to 'dialnumber.py' and save it to '/root/android/' in your Debian installation (you will need to create this directory):
 
     #!/usr/bin/env python
-    
+
     import android
     import sys
     droid = android.Android()
@@ -48,43 +50,43 @@ With this recipe you can make phone calls from your [BbdbMode bbdb buffer]:
     transformations from bbdb-dial-local-prefix-alist if a prefix arg
     is given."
       (interactive (list (bbdb-current-field)
-    		     current-prefix-arg))
+                 current-prefix-arg))
       (if (eq (car-safe phone) 'name)
           (setq phone (car (bbdb-record-phones (bbdb-current-record)))))
       (if (eq (car-safe phone) 'phone)
           (setq phone (car (cdr phone))))
       (or (vectorp phone) (error "not on a phone field"))
-    
+
       (let* ((number (bbdb-phone-string phone)) shortnumber)
         (when (not force-area-code)
           (let ((alist bbdb-dial-local-prefix-alist))
-    	(while alist
-    	  (if (string-match (concat "^" (eval (caar alist))) number)
-    	      (setq shortnumber (concat (car (cdar alist))
-    					(substring number (match-end 0)))
-    		    alist nil))
-    	  (setq alist (cdr alist)))))
-    
+        (while alist
+          (if (string-match (concat "^" (eval (caar alist))) number)
+              (setq shortnumber (concat (car (cdar alist))
+                        (substring number (match-end 0)))
+                alist nil))
+          (setq alist (cdr alist)))))
+
         ;; cut off the extension
         (if (string-match "x[0-9]+$" number)
-    	(setq number (substring number 0 (match-beginning 0))))
-    
+        (setq number (substring number 0 (match-beginning 0))))
+
         ;; This is terrifically Americanized...
         ;; Leading 0 => local number (?)
         (if (and (not shortnumber) bbdb-dial-local-prefix
-    	     (string-match "^0" number))
-    	(setq number (concat bbdb-dial-local-prefix number)))
-    
+             (string-match "^0" number))
+        (setq number (concat bbdb-dial-local-prefix number)))
+
         ;; Leading + => long distance/international number
         (if (and (not shortnumber) bbdb-dial-long-distance-prefix
-    	     (string-match "^\+" number))
-    	(setq number (concat bbdb-dial-long-distance-prefix " "
-    			     (substring number 1))))
-    
+             (string-match "^\+" number))
+        (setq number (concat bbdb-dial-long-distance-prefix " "
+                     (substring number 1))))
+
         ;; use the short number if it's available
         (setq number (or shortnumber number))
         (if (not bbdb-silent-running)
-    	(message "Dialing %s" number))
+        (message "Dialing %s" number))
         (shell-command (concat "export AP_PORT=$(netstat -napt|sed -n 's/^tcp.*127.0.0.1:\\([0-9]*\\).*LISTEN.*ase$/\\1/gp');/root/android/dialnumber.py " number))))
 
 === Sending SMS text messages ===
@@ -93,7 +95,7 @@ With this recipe you can send text messages from emacs:
 # Save the following python code to 'sendtext.py' and save it to '/root/android/' in your Debian installation:
 
     #!/usr/bin/env python
-    
+
     import android
     import sys
     droid = android.Android()

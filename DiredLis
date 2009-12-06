@@ -12,7 +12,7 @@ always even if you press enter in sub directory until you press C-g or other
 keys to abort isearch.
 </pre>
 
-Download: Lisp:dired-lis.el.
+Download: [http://code.google.com/p/dea/source/browse/trunk/my-lisps/dired-lis.el dired-lis].
 
 
 See also: DiredIsearch, DiredView

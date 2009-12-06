@@ -319,6 +319,14 @@ I've fixed a small (very small) bug and would like to add two things:
 * Change twit-request-headers to a defcustom so I can hack it in ~/.emacs
 * Finish the popup status writing buffer.  I hate writing in the minibuffer.
 
+[new]
+When I call twit-show-recent-tweets, it give me error message:
+<pre>
+Search failed: "
+"
+</pre>
+how to resolve that problem? Thx.  -- [[ahei]]
+
 == Archived Discussion ==
 I don't personally do the cell phone thing (it sounds irritating), but anyway, they got slashdotted yesterday.  I had never heard of them.  But it looked cool, so i joined and wrote twit.el.  I think i would like to broaden it--generalize it a bit and let users read friend's posts.  I am working on that....
 

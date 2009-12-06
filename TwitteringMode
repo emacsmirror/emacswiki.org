@@ -95,5 +95,17 @@ Icon Works on Windows needs GNU Win32 image packages (http://gnuwin32.sourceforg
 
 BTW: I wish this code would support HTTPS and third-party API in the future. It would be very useful. --Moses
 
+[new]
+I wish twittering-mode would support socket proxy. I only use tor to connect twitter. --rix
+
+[new]
+I wrote some patches so that icon-mode works well without external programs, wget and convert.
+You can get it from my repository on github http://github.com/cvmat/twittering-mode/tree/without-external-program . I confirmed it with NTEmacs on Windows XP and Emacs on Debian. -- Tadashi MATSUO
+
+[new]
+Sorry for my rudeness. At last, I found tor+privoxy can make a http proxy. privoxy's default proxy port is 8118. --rix
+
+[new]
+hayamiz has merged my patches into the main repository. The main repository http://github.com/hayamiz/twittering-mode/tree/master now supports icon-mode without external programs. --Tadashi MATSUO
 ----
 See also: [[Twitter]] [[Identica-mode]]

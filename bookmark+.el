@@ -8,9 +8,9 @@
 ;; Copyright (C) 2000-2009, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Dec  4 15:06:03 2009 (-0800)
+;; Last-Updated: Sat Dec  5 22:36:24 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 7968
+;;     Update #: 7976
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -577,17 +577,17 @@
 ;;  means to mark (only) the bookmarks that have any tags at all.
 ;;
 ;;  Finally, for the marking/unmarking tags commands, a prefix
-;;  argument flips the sense of the command:
+;;  argument flips the sense of the command, in this way:
 ;;
-;;    "some" -> "some are not", i.e., "not all are" (and vice versa)
-;;    "all"  -> "all are not", i.e., "none are" (and vice versa)
+;;  "some are" -> "some are NOT", i.e., "not all are" (and vice versa)
+;;  "all are"  -> "all are NOT",  i.e., "none are"    (and vice versa)
 ;;
 ;;  In other words:
 ;;
-;;    C-u T m *    =  T m ~ +  (all are not  = not some are)
-;;    C-u T m ~ +  =  T m *    (not some are = all are not)
-;;    C-u T m +    =  T m ~ *  (some are not = not all are)
-;;    C-u T m ~ *  =  T m +    (not all are  = some are not)
+;;    C-u T m *    =  T m ~ +  (all are NOT      = not some are)
+;;    C-u T m ~ +  =  T m *    (not some are NOT = all are)
+;;    C-u T m +    =  T m ~ *  (some are NOT     = not all are)
+;;    C-u T m ~ *  =  T m +    (not all are NOT  = some are)
 ;;
 ;;  You'll figure it out ;-).
 ;;
@@ -768,7 +768,8 @@
 ;;  more info.
 ;;
 ;;  You can reverse the current sort direction (ascending/descending)
-;;  using `s r'.
+;;  using `s r'.  Also, repeating any of the main sort-order commands
+;;  (e.g. `s n') cycles among that order, the reverse, and unsorted.
 ;;
 ;;  For a complex sort, which involves composing several sorting
 ;;  conditions, you can also use `s C-r' to reverse the order of

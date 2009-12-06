@@ -1,0 +1,24 @@
+Using Emacs since approximately 2006. 
+
+As a Dvorak user, I use ##C-t## instead of ##C-x## and ##M-t## instead of ##M-x##.
+
+    (global-unset-key (kbd "C-t"))
+    (global-set-key (kbd "C-t") (lookup-key global-map (kbd "C-x")))
+    (global-set-key (kbd "C-t C-t") 'exchange-point-and-mark)
+    (global-set-key (kbd "C-t C-m") 'find-file)
+    (global-set-key (kbd "C-t C-n") 'mode-line-other-buffer)
+    (global-set-key (kbd "C-t C-k") 'bury-buffer)
+    (global-set-key (kbd "C-t u") 'switch-to-buffer)
+    
+    (global-set-key (kbd "M-t") 'execute-extended-command)
+    (global-set-key (kbd "C-M-t") 'eval-defun)
+
+
+[new:DrewAdams:2009-12-05 20:35 UTC]
+Welcome to the wiki. -- DrewAdams
+
+
+
+
+----
+CategoryHomepage

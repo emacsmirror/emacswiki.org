@@ -6,7 +6,7 @@ symbol when they expand use ac-source-symbols, because there so many garbage
 in obarray.
 </pre>
 
-Download: Lisp:auto-complete+.el.
+Download: [http://code.google.com/p/dea/source/browse/trunk/my-lisps/auto-complete%2B.el auto-complete-plus].
 
 
 See also: AutoComplete

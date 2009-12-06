@@ -229,17 +229,17 @@ for instance, an empty list of tags means to mark (only) the bookmarks
 that have some tags (any at all).
 
 Finally, for the marking/unmarking tags commands, a [[prefix argument]]
-flips the sense of the command:
+flips the sense of the command, in this way:
 
-* "some" --> "some are not", i.e., "not all are" (and vice versa)
-* "all"  --> "all are not", i.e., "none are" (and vice versa)
+* "some are" --> "some are NOT", i.e., "not all are" (and vice versa)
+* "all are"  --> "all are NOT",  i.e., "none are"    (and vice versa)
 
 In other words:
 
-  C-u T m *    =  T m ~ +  (all are not  = not some are)
-  C-u T m ~ +  =  T m *    (not some are = all are not)
-  C-u T m +    =  T m ~ *  (some are not = not all are)
-  C-u T m ~ *  =  T m +    (not all are  = some are not)
+  C-u T m *    =  T m ~ +  (all are NOT      = not some are)
+  C-u T m ~ +  =  T m *    (not some are NOT = all are)
+  C-u T m +    =  T m ~ *  (some are NOT     = not all are)
+  C-u T m ~ *  =  T m +    (not all are NOT  = some are)
 
 You'll figure it out ;-).
 
@@ -452,7 +452,9 @@ You can also change directly to one of the main sort orders
 * '''`##s f u##'''' -- Sort by last local __f__ile __u__pdate (edit)
 
 You can __r__everse the current sort direction (ascending/descending)
-using '''`##s r##''''.
+using '''`##s r##''''.  Also, repeating any of the main sort-order commands
+(e.g. `##s n##') cycles among that order, the reverse, and
+unsorted.
 
 [For a complex sort, which involves composing several sorting
 conditions, you can also use `##s C-r##' to reverse the order of
