@@ -116,7 +116,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 3 $Rev: 232 $ of the Sunrise Commander.
+;; This is version 3 $Rev: 233 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.  I  have  also  received
@@ -811,7 +811,7 @@ automatically:
   (define-key sr-mode-map [(f5)]            'sr-do-copy)
   (define-key sr-mode-map [(f6)]            'sr-do-rename)
   (define-key sr-mode-map [(f7)]            'dired-create-directory)
-  (define-key sr-mode-map [(f8)]            'dired-do-delete)
+  (define-key sr-mode-map [(f8)]            'sr-do-delete)
   (define-key sr-mode-map [(f10)]           'keyboard-escape-quit)
   (define-key sr-mode-map [(insert)]        'dired-mark)
   (define-key sr-mode-map [(control prior)] 'sr-dired-prev-subdir))

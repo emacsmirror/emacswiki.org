@@ -12,6 +12,9 @@ gtk app that creates a gtk_socket, and prints the window id of that socket.
 When the program runs, emacs can be started with the --parent-id flag with the socket id, and 
 emacs shows up in the demo app. Cool!
 
+[new]
+It would be very cool to embed Emacs into [[http://www.srware.net/en/software_srware_iron.php Iron]] or Firefox so every TEXTAREA would be governed by Emacs. Maybe [[http://people.ksp.sk/~martin/firefox/extensions/EmbeddedEditor/ EmbeddedEditor]] can be updated to do this. I tried it at some point but I could not get it to work properly.
+
 == embedding apps in emacs windows ==
 The xwidget patch enables embedding of gtk widgets inside emacs buffers.
 

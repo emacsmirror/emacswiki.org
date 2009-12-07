@@ -180,49 +180,7 @@ Feel free to improve this function to suit your needs (for example by adding sup
 Would it be possible to make a [SkeletonMode skeleton pair] that would automatically match a '##\(##' with a '##\)##'? The same should be true for '##\[##' and '##\]##'. Thanks!
 
 [new]
-Here's two skeletons made with ##define-skeleton##:
-
-    (define-skeleton quoted-parentheses
-      "Insert \\( ... \\)."
-      nil "\\(" _ "\\)")
-
-    (define-skeleton quoted-brackets
-      "Insert \\[ ... \\]."
-      nil "\\[" _ "\\]")
-
-Then [KeybindingGuide bind] them as you see fit, e.g.,
-
-    (global-set-key "\C-c(" 'quoted-parentheses)
-    (global-set-key "\C-c[" 'quoted-brackets)
-
-Hope this helps!
-
-[new]
-That works great! Thanks. I was wondering if it can be bind to ##\(## without interfering with ##\##. I.e., insert a '##\##' when I type it. If I happen to type a '##(##' afterward, insert a matching '##\)##'. The same for '##\##' and '##[##'.
-
-The way I set it up '##\##' is captured so that it wont insert a plain '##\##'.
-
-Thanks.
-
-[new]
-In that case, you're better off defining the commands with ##defun##.
-
-    (defun quoted-parentheses (arg)
-      (interactive "p")
-      (if (looking-back "\\\\")
-          (skeleton-insert '(nil "(" _ "\\)"))
-        (self-insert-command arg)))
-
-    (defun quoted-brackets (arg)
-      (interactive "p")
-      (if (looking-back "\\\\")
-          (skeleton-insert '(nil "[" _ "\\]"))
-        (self-insert-command arg)))
-
-    (global-set-key "(" 'quoted-parentheses)
-    (global-set-key "[" 'quoted-brackets)
-
-Also, remember that no matter what you do, you can always get the "plain" behavior by pressing '##C-q##' first. E.g., '##C-q \##' will always produce a single backslash.
+Rest of discussion moved to [[AutoPairs#Discussion|AutoPairs]].
 
 ----
 CategoryModes

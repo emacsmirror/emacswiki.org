@@ -254,7 +254,95 @@ The SkeletonMode page explores skeletons more broadly.
 
 [ParEdit ParEdit] is a minor mode for Lisp languages, and provides enhanced [[sexp]] editing, navigating and manipulating. It does all of the above and more (but targets Lisp).
 
+[:Discussion]
+== Discussion ==
 
+Would it be possible to make a [SkeletonMode skeleton pair] that would automatically match a '##\(##' with a '##\)##'? The same should be true for '##\[##' and '##\]##'. Thanks!
+
+[new]
+Here's two skeletons made with ##define-skeleton##:
+
+    (define-skeleton quoted-parentheses
+      "Insert \\( ... \\)."
+      nil "\\(" _ "\\)")
+
+    (define-skeleton quoted-brackets
+      "Insert \\[ ... \\]."
+      nil "\\[" _ "\\]")
+
+Then [KeybindingGuide bind] them as you see fit, e.g.,
+
+    (global-set-key "\C-c(" 'quoted-parentheses)
+    (global-set-key "\C-c[" 'quoted-brackets)
+
+Hope this helps!
+
+[new]
+That works great! Thanks. I was wondering if it can be bind to ##\(## without interfering with ##\##. I.e., insert a '##\##' when I type it. If I happen to type a '##(##' afterward, insert a matching '##\)##'. The same for '##\##' and '##[##'.
+
+The way I set it up '##\##' is captured so that it wont insert a plain '##\##'.
+
+Thanks.
+
+[new]
+In that case, you're better off defining the commands with ##defun##.
+
+    (defun quoted-parentheses (arg)
+      (interactive "P")
+      (if (looking-back "\\\\")
+          (skeleton-insert '(nil "(" _ "\\)"))
+        (self-insert-command arg)))
+
+    (defun quoted-brackets (arg)
+      (interactive "P")
+      (if (looking-back "\\\\")
+          (skeleton-insert '(nil "[" _ "\\]"))
+        (self-insert-command arg)))
+
+    (global-set-key "(" 'quoted-parentheses)
+    (global-set-key "[" 'quoted-brackets)
+
+Also, remember that no matter what you do, you can always get the "plain" behavior by pressing '##C-q##' first. E.g., '##C-q \##' will always produce a single backslash.
+
+[new]
+This works great :) I hardly dare ask, but ... this breaks the lovely [SkeletonMode skeleton]-setup of matching '##(##' and '##)##'. [http://www.emacswiki.org/cgi-bin/wiki/EmacsSpeaksStatistics#toc4] Is it possible to combine these two features? I appreciate this help. I really enjoy working with Emacs, but programming is certainly not my strength. Thanks!
+
+[new]
+Simply replace ##self-insert-command## with ##skeleton-pair-insert-maybe## in the function definitions, like so:
+
+    (setq skeleton-pair t) ; enable pairing
+
+    (defun quoted-parentheses (arg)
+      (interactive "P")
+      (if (looking-back "\\\\")
+          (skeleton-insert '(nil "(" _ "\\)") -1)
+        (skeleton-pair-insert-maybe arg)))
+
+    (defun quoted-brackets (arg)
+      (interactive "P")
+      (if (looking-back "\\\\")
+          (skeleton-insert '(nil "[" _ "\\]") -1)
+        (skeleton-pair-insert-maybe arg)))
+
+    (global-set-key "(" 'quoted-parentheses)
+    (global-set-key "[" 'quoted-brackets)
+
+This will give '##()##' in regular situations and '##\(\)##' when point is preceded by a backslash.
+
+[new]
+''Perfect!'' This should be included in AUCTeX as default! Should we clean up the discussion or just leave it as it is? Thanks again!
+
+[new]
+Since this is more of an !AutoPairs issue than an !AUCTeX issue, I'm moving the discussion here. Do check out the other code on this page. :)
+[new]
+Maybe it is an !AutoPairs issue :) The info is relevant to !OrgMode as well.
+
+It can actually be improved further, but I have no idea how to do it.
+
+First of all it might be nice if one can embrace a region with ##\( .. \)##. With the implementation above it does not seem possible. Maybe one just need to bind the quoted-parentheses/quoted-brackets to some other key?
+
+Second, when deleting it would be nice if pairs were deleted together. I.e. if I delete ##\)## the matching ##\(## should be deleted.
+
+Thanks,
 ----
 CategoryCode CategoryTemplates CategoryParentheses
-

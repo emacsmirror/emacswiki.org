@@ -327,6 +327,9 @@ Search failed: "
 </pre>
 how to resolve that problem? Thx.  -- [[ahei]]
 
+[new]
+I think put user's twitter's password into el is not secure, so can you prompt user to input those password before do any actions on twitter when those twitter's password is not set? what do you think? -- [[ahei]]
+
 == Archived Discussion ==
 I don't personally do the cell phone thing (it sounds irritating), but anyway, they got slashdotted yesterday.  I had never heard of them.  But it looked cool, so i joined and wrote twit.el.  I think i would like to broaden it--generalize it a bit and let users read friend's posts.  I am working on that....
 
