@@ -1,6 +1,6 @@
 ;;; mojo.el --- Interactive functions for webOS development
-;; 2009-12-04 15:44:24
-(defconst mojo-version "0.9.9")
+;; 2009-12-07 14:28:52
+(defconst mojo-version "0.9.10")
 
 (require 'json)
 
@@ -86,6 +86,7 @@ ideas.  Send me a pull request on github if you hack on mojo.el.")
 ;;   * C-c C-c S   -- mojo-switch-to-stylesheet
 ;;   * C-c C-c v   -- mojo-switch-to-view
 ;;   * C-c C-c SPC -- mojo-switch-file-dwim
+;;   * C-c C-c C-d -- mojo-target-device
 ;;   * C-c C-c C-e -- mojo-emulate
 ;;   * C-c C-c C-p -- mojo-package
 ;;   * C-c C-c C-r -- mojo-package-install-and-inspect
@@ -221,6 +222,7 @@ ideas.  Send me a pull request on github if you hack on mojo.el.")
 ;;  mojo-set-escape-html-in-templates
 ;;    Enable or disable escaping of HTML in templates.
 
+
 ;;; Customizable Options:
 ;;
 ;; Below are customizable option list:
@@ -242,6 +244,16 @@ ideas.  Send me a pull request on github if you hack on mojo.el.")
 
 ;; CHANGELOG
 ;; =========
+;; 
+;; sjs 2009-12-07
+;; v 0.9.10 (bug fix)
+;; 
+;;       - All arguments sent through mojo-cmd now quoted before being
+;;         sent to the shell (in case filenames contain spaces).  Values
+;;         are unintelligently wrapped in double quotes, this is *not*
+;;         escaping, just brain-dead quoting.
+;; 
+;;       - New default key binding: C-c C-c C-d runs mojo-target-device
 ;; 
 ;; sjs 2009-12-04
 ;; v 0.9.9 (bug fix)
@@ -364,6 +376,7 @@ ideas.  Send me a pull request on github if you hack on mojo.el.")
       * C-c C-c S     -- \\[mojo-switch-to-stylesheet]
       * C-c C-c v     -- \\[mojo-switch-to-view]
       * C-c C-c SPC   -- \\[mojo-switch-file-dwim]
+      * C-c C-c C-d   -- \\[mojo-target-device]
       * C-c C-c C-e   -- \\[mojo-emulate]
       * C-c C-c C-p   -- \\[mojo-package]
       * C-c C-c C-r   -- \\[mojo-package-install-and-inspect]
@@ -386,6 +399,7 @@ ideas.  Send me a pull request on github if you hack on mojo.el.")
     ("\C-c\C-cS" . mojo-switch-to-stylesheet)
     ("\C-c\C-cv" . mojo-switch-to-view)
     ("\C-c\C-c " . mojo-switch-file-dwim)
+    ("\C-c\C-c\C-d" . mojo-target-device)
     ("\C-c\C-c\C-e" . mojo-emulate)
     ("\C-c\C-c\C-p" . mojo-package)
     ("\C-c\C-c\C-r" . mojo-package-install-and-inspect)
@@ -464,6 +478,7 @@ NAME is the name of the scene."
 (defun mojo-emulate ()
   "Launch the palm emulator."
   (interactive)
+  (mojo-target-emulator) ;; target emulator from now on
   (unless (mojo-emulator-running-p)
     (mojo-cmd "palm-emulator" nil)))
 
@@ -1119,6 +1134,12 @@ This command only works on Unix-like systems."
     ((windows-nt) (concat mojo-sdk-directory "/bin/" cmd ".bat"))
     (t (concat mojo-sdk-directory "/bin/" cmd))))
 
+(defun mojo-quote (string)
+  "Wrap a string in double quotes.
+
+Used to quote filenames sent to shell commands."
+  (concat "\"" string "\""))
+
 ;;* lowlevel cmd
 (defun mojo-cmd (cmd args)
   "General interface for running mojo-sdk commands.
@@ -1128,8 +1149,8 @@ CMD is the name of the command (without path or extension) to execute.
 ARGS is a list of all arguments to the command.
  These arguments are NOT shell quoted."
   (let ((cmd (mojo-path-to-cmd cmd))
-	(args (mojo-string-join " " args)))
-    (if mojo-debug (message "running %s with args %s " cmd args))
+	(args (mojo-string-join " " (mapcar 'mojo-quote args))))
+    (when mojo-debug (message "running %s with args %s " cmd args))
     (shell-command (concat cmd " " args))))
 
 ;;* lowlevel cmd

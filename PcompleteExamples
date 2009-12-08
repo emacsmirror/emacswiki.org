@@ -8,46 +8,35 @@ See also: ProgrammableCompletion.
 The various sections on this page shall contain various examples:
 
 ----
-<b>Question:</b> I want the very basic minimal completion, where I supply a
+**Q:** I want the very basic minimal completion, where I supply a
 list of completions, and pcomplete completes them based on the word at
 point.
 
-<b>Answer:</b>
+**A:**
 
 Let your major mode be called foo-mode.  
 
 Now, advise your users to (add-hook 'foo-mode-hook
 'pcomplete-foo-setup)
 
-
-
- (defvar foo-all-completions <list of completions as strings>)
- (defvar foo-all-completions '("foo" "bar" "baz"))
-
-
-
+    (defvar foo-all-completions <list of completions as strings>)
+    (defvar foo-all-completions '("foo" "bar" "baz"))
 
 In the above example, when your users type fo and press M-x pcomplete
 somewhere, when in foo major mode, you want the pcompletions offered
 to be one of foo, bar and baz.
 
- (defun pcomplete-foo-setup ()
- (interactive)
-  (set (make-local-variable 'pcomplete-parse-arguments-function)
-   'pcomplete-parse-foo-arguments)
-  (set (make-local-variable 'pcomplete-default-completion-function)
-       'pcomplete-foo-default-completion)
-  )
+    (defun pcomplete-foo-setup ()
+      (interactive)
+      (set (make-local-variable 'pcomplete-parse-arguments-function)
+           'pcomplete-parse-foo-arguments)
+      (set (make-local-variable 'pcomplete-default-completion-function)
+           'pcomplete-foo-default-completion))
 
+For example:
 
-
-for example: 
-
-
-
-
- (defun pcomplete-foo-default-completion ()
-   (pcomplete-here foo-all-completions))
+   (defun pcomplete-foo-default-completion ()
+     (pcomplete-here foo-all-completions))
 
 So far, pretty clear, right?  Now the only thing remaining is to
 define the pcomplete-parse-arguments-function.  This function should
@@ -61,17 +50,14 @@ where the points correspond to the args.
 
 So, you can define:
 
-
-
  (defun pcomplete-parse-foo-arguments ()
-  (save-excursion
-    (let* ((thispt (point))
-	   (pt (search-backward-regexp "[ \t\n]" nil t))
-	   (ptt (if pt (+ pt 1) thispt)))
-      
-      (list
-       (list "dummy" (buffer-substring-no-properties ptt thispt))
-       (point-min) ptt))))
+   (save-excursion
+     (let* ((thispt (point))
+            (pt (search-backward-regexp "[ \t\n]" nil t))
+            (ptt (if pt (+ pt 1) thispt)))
+      (list (list "dummy"
+                  (buffer-substring-no-properties ptt thispt))
+            (point-min) ptt))))
 
 As you can see, the first argument is a "dummy"
 
@@ -81,8 +67,9 @@ pcomplete-foo-setup.  From then on M-x pcomplete works as expected.
 
 ----
 
-Is there a package for Emacs to complete an interactive call to load-library() just like XEmacs does?
-: There's a find-lib.el 
+**Q:** Is there a package for Emacs to complete an interactive call to load-library() just like XEmacs does?
+
+**A:** There's a find-lib.el 
 ----
 
 For a very simple example of supporting pcomplete from within [EshellCompletion Eshell], see Lisp:pcmpl-ssh.el (PcompleteSSH)

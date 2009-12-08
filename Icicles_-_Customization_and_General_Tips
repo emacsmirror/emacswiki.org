@@ -1670,7 +1670,8 @@ User options '''`icicle-pp-eval-expression-print-length'''' and
 
 Non-`nil' option '''`icicle-guess-commands-in-path'''' means
 that all executable files (or all files, if option `shell-completion-execonly' is `nil') in your search path are included among the completion candidates whenever a shell command is read.  The particular non-nil value determines when this list of commands is updated from your current search
-path. See [[Icicles - Shell-Command Enhancements#icicle-guess-commands-in-path|Icicles - Shell-Command Enhancements]].
+path. The default value is `nil'.
+See [[Icicles - Shell-Command Enhancements#icicle-guess-commands-in-path|Icicles - Shell-Command Enhancements]].
 
 
 

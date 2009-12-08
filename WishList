@@ -28,6 +28,9 @@ improve command line emacs and replace usage of other languages
 for shell scripting.  I'd prefer elisp with (require 'cl) over scsh.
 * To connect two Emacs Sessions in different machines, i mean: i have a session of emacs (with an elisp package in a freebsd box) and want to work on that but from my Aquamacs Emacs interface in my Mac. As for today i couldn't do this, i think it is quite difficult as i want to transmit images between the two instances.--AlvaroMartinez
 ** On that note, I'd like to see Emacs support the type of [[CollaborativeEditing]] that [http://www.codingmonkeys.de/subethaedit/ SubEthaEdit] has. I know there have been attempts, but they seem to have gone to ground all. [[SummerOfCode]] 2010?
+[new]
+*** This type of collaborative editing is possible in Emacs with [[Rudel]]. Currently the obby protocol (introduced by the [http://gobby.0x539.de/trac/ Gobby] collaborative editor) is supported. Support for the protocol used by [[SubEthaEdit]] is under development.  -- JanMoringen (disclaimer: Rudel author)
+[new]
 
 === Configuration Wishes ===
 
@@ -391,7 +394,12 @@ buffers or windows synchronously?
 ** ... erlang (see [[ErLisp]]) :-)
 ** ...[[CommonLisp]].
 ** ...[[EmacsLisp]] (in other words, make the Lisp engine faster and then replace all the C code with Lisp).
-** ...[[Haskell]].
+** ...[[Haskell]] ([http://www.haskell.org/pipermail/haskell-cafe/2007-June/026994.html]: "the idea of writing an Emacs-like system  in Haskell might be 
+ill-considered but, as you also notice in the rest of your message, that 
+doesn't make it worthless in a long-term perspective"; [http://www.haskell.org/pipermail/haskell-cafe/2007-June/027010.html]: "Having just presented a case for the possible rationality of the irrational 
+decision of creating an Emacs-like IDE in Haskell, I wonder if we should not 
+be even more irrational and contemplate the possibility of using Haskell to 
+create a radically different kind of IDE.").
 * Emacs or Xemacs running on top of portable, standard ANSI Common
   Lisp (with macrology to emulate elisp enough that most packages will
   work).  Then we can choose the back end (clisp, cmucl, sbcl, ...)

@@ -1,0 +1,32 @@
+<bpalmer> which is why all right-thinking individuals
+      reject the heresy of [http://en.wikipedia.org/wiki/Two%27s_complement two’s complement]
+<snogglethorpe> surely right-thinking
+      individuals would prefer _negated_ two's complement...
+<snogglethorpe> well, assuming positive numbers are on
+      the right
+
+Theres are more negative integers than positive ones!
+
+On my system:
+
+    most-positive-fixnum => 268435455
+    (integerp 268435455) => t
+    (integerp 268435456) => nil
+    (integerp -268435456) => t
+
+Interesting effect:
+
+    (< (abs -268435456) 0) => t 
+
+Because:
+
+    (abs -268435455) => 268435455
+    (abs -268435456) => -268435456
+
+An integer overflow error...
+
+A Java puzzler based on the above quirk of IEEE floating point implementations is at http://www.youtube.com/watch?v=wDN_EYUvUq0
+Fast forward to "6. Histogram Mystery".
+
+----
+CategoryHumor

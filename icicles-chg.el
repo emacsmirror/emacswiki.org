@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Dec  3 09:49:30 2009 (-0800)
+;; Last-Updated: Mon Dec  7 16:03:01 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 4625
+;;     Update #: 4637
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -296,6 +296,14 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2009/12/07 dadams
+;;     Added: icicle-minibuffer-default-add-dired-shell-commands.
+;;     icicle-dired-read-shell-command: Instead of using minibuffer-default-add-shell-commands,
+;;       use icicle-minibuffer-default-add-dired-shell-commands.
+;;     icicle-read-shell-command-completing: Bind insert-default-directory to nil.
+;;     icicle-dir-prefix-wo-wildcards: Don't ever return nil - return "" if need be.
+;;     icicle-read-string:
+;;       Handle a consp default-value when user enters "": use the car.  Thx to Sakuma Ryo.
 ;; 2009/12/03 dadams
 ;;     icicle-completing-read:
 ;;       Make sure we don't use a nil def value for init value.  Thx to Sebastian Luque.
@@ -3460,6 +3468,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2009/12/07 dadams
+;;     icicle-guess-commands-in-path: Changed default value to nil.
 ;; 2009/11/27 dadams
 ;;     Added: icicle-swank-prefix-length, icicle-swank-timeout.
 ;;     icicle-TAB-completion-methods: Treat swank method also.

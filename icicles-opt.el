@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Nov 27 13:27:22 2009 (-0800)
+;; Last-Updated: Mon Dec  7 10:40:51 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 3421
+;;     Update #: 3422
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1235,7 +1235,7 @@ The candidates are the executable files in your search path or, if
     completions))
 
 ;;;###autoload
-(defcustom icicle-guess-commands-in-path 'first-use
+(defcustom icicle-guess-commands-in-path nil
   "*Non-nil means all shell commands are available for completion.
 This is used in Icicle mode whenever a shell-command is read.
 

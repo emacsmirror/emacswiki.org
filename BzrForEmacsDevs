@@ -92,12 +92,10 @@ First, initialize a shared repository in which to store all your branches:
 Now, create a branch called ##trunk## that will just be a mirror of the mainline.  You'll never do any development in this branch; its job is just to reflect the upstream master:
 
       cd emacs/
-      bzr branch --no-tree http://bzr.savannah.gnu.org/r/emacs/trunk/ trunk/
+      bzr branch http://bzr.savannah.gnu.org/r/emacs/trunk/ trunk/
 
 (Use ##sftp://<membername>@bzr.savannah.gnu.org/srv/bzr/emacs/trunk##
 instead if you are a committer.)
-
-The ##--no-tree## option prevents an automatic checkout of the source tree (here, "checkout" just means get to working files, files that you could edit with Emacs, commit the changes from, etc).  Preventing the checkout has two functions: it saves some space, and  more importantly, it reduces the temptation to edit sources in this branch --- so that you don't accidentally commit any local changes on it (all your work will be done in other branches, which we'll create in a moment).
 
 This first ##bzr branch## operation in a new repository may take many minutes --- people have reported 20 to 55 minutes.  (An alternative, faster, method based on a tarball containing the whole repository is being set up.  This will be documented here when the details are known.)  At the end of the long wait, the repository will contain the whole history of the trunk, //but no source files.//
 

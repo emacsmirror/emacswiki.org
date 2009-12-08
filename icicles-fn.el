@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Dec  3 09:43:59 2009 (-0800)
+;; Last-Updated: Mon Dec  7 15:58:09 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 11404
+;;     Update #: 11458
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -114,6 +114,7 @@
 ;;    `icicle-mctized-full-candidate',
 ;;    `icicle-minibuffer-default-add-completions',
 ;;    `icicle-minibuf-input', `icicle-minibuf-input-sans-dir',
+;;    `icicle-minibuffer-default-add-dired-shell-commands',
 ;;    `icicle-minibuffer-prompt-end', `icicle-mode-line-name-less-p',
 ;;    `icicle-most-recent-first-p', `icicle-msg-maybe-in-minibuffer',
 ;;    `icicle-ms-windows-NET-USE', `icicle-next-candidate',
@@ -1591,7 +1592,9 @@ Fifth arg INHERIT-INPUT-METHOD, if non-nil, means the minibuffer inherits
  the current input method and the setting of enable-multibyte-characters."
   (let ((value  (read-from-minibuffer prompt initial-input nil nil hist-m@%=!$+&^*z
                                       default-value inherit-input-method)))
-    (if (and default-value (equal value "")) default-value value)))
+    (when (and default-value (equal value ""))
+      (setq value (if (consp default-value) (car default-value) default-value)))
+    value))
 
 
 ;; REPLACE ORIGINAL `read-face-name' in `faces.el',
@@ -2176,6 +2179,8 @@ specifies the value of ERROR-BUFFER."
 ;; REPLACE ORIGINAL `dired-read-shell-command' defined in `dired-aux.el'
 ;; and redefined in `dired-x.el', saving it for restoration when you toggle `icicle-mode'.
 ;; Uses Icicles completion.
+;; Uses `icicle-minibuffer-default-add-dired-shell-commands', not
+;; `minibuffer-default-add-dired-shell-commands'.
 ;;
 (defun icicle-dired-read-shell-command (prompt arg files)
   "Read a shell command for FILES using file-name completion.
@@ -2186,17 +2191,32 @@ FILES are the files for which the shell command should be appropriate."
       (minibuffer-with-setup-hook
        (lambda ()
          (set (make-local-variable 'minibuffer-default-add-function)
-              'minibuffer-default-add-shell-commands))
+              'icicle-minibuffer-default-add-dired-shell-commands))
        (dired-mark-pop-up  nil 'shell files 'icicle-dired-guess-shell-command
                            (format prompt (dired-mark-prompt arg files)) files))
     (dired-mark-pop-up  nil 'shell files 'icicle-dired-guess-shell-command
                         (format prompt (dired-mark-prompt arg files)) files)))
 
-
 (defun icicle-dired-guess-shell-command (prompt files)
   "Read a shell command for FILES using file-name completion.
 Call `icicle-read-shell-command-completing', passing PROMPT and FILES."
   (icicle-read-shell-command-completing prompt nil nil nil nil files))
+
+;; Similar to `minibuffer-default-add-dired-shell-commands', but if Dired-X is available
+;; we include also the commands from `dired-guess-default'.
+(defun icicle-minibuffer-default-add-dired-shell-commands ()
+  "Return a list of all commands associated with current dired files.
+The commands are from `minibuffer-default-add-dired-shell-commands',
+and if `dired-x.el' is used, `dired-guess-default'."
+  (interactive)
+  (let ((dired-guess-cmds  (and (boundp 'files) (fboundp 'dired-guess-default)
+                                (dired-guess-default files)))
+        (mailcap-cmds      (and (boundp 'files) (require 'mailcap nil t)
+                                (mailcap-file-default-commands files))))
+    (when (stringp dired-guess-cmds) (setq dired-guess-cmds  (list dired-guess-cmds)))
+    (if (listp minibuffer-default)
+        (append minibuffer-default dired-guess-cmds mailcap-cmds)
+      (cons minibuffer-default (append dired-guess-cmds mailcap-cmds)))))
 
 (defun icicle-read-shell-command-completing (prompt &optional initial-contents hist default-value
                                              inherit-input-method files)
@@ -2238,6 +2258,7 @@ the file's properties."
                                                            (dired-guess-default files)))
          (icicle-sort-function                        'icicle-extra-candidates-first-p)
          (completion-ignore-case                      (memq system-type '(ms-dos windows-nt cygwin)))
+         (insert-default-directory                    nil)
          (icicle-extra-candidates-dir-insert-p        nil)
          (icicle-point-position-in-candidate          'input-end)
          (icicle-candidate-help-fn                    (lambda (cand)
@@ -3391,7 +3412,7 @@ occurrence of `*'.  Otherwise, this is just `file-name-directory'."
            (member 'partial-completion completion-styles)
            (string-match "/[^/]*\\*" filename))
       (substring filename 0 (1+ (match-beginning 0)))
-    (file-name-directory filename)))
+    (or (file-name-directory filename) ""))) ; Don't return nil, in any case.
       
 
 (defun icicle-show-help-in-mode-line (candidate)

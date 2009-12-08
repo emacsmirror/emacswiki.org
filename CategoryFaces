@@ -9,7 +9,8 @@ Here are some of the pages in CategoryFaces.
 * AnSys -- make Emacs highlight your Ansys-Files
 * BufferBackgroundColor -- a temporary solution for buffer background color
 * ColorPalette -- examine or modify colors in various ways, including by name, RGB, and HSV
-* ColorTheme -- dozens of color themes to choose from
+* ColorTheme -- a package with dozens of color themes to choose from
+* ColorThemeCollection -- a place for new color themes
 ** ColorThemeAhei -- ahei's color theme
 * ColorsAndKde -- sometimes changing the colors within Emacs has no effect if you are using KDE
 * CursorOnLinuxConsole -- how to modifiy the TextCursor on the Linux console

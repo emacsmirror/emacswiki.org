@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Nov 27 13:27:16 2009 (-0800)
+;; Last-Updated: Mon Dec  7 15:00:21 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 26117
+;;     Update #: 26123
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1634,7 +1634,7 @@
 ;;  Though file-name completion is used for reading shell commands,
 ;;  extra, known commands are also made available as completion
 ;;  candidates if option `icicle-guess-commands-in-path' is non-nil
-;;  (which it is by default).  These extra candidates are the names of
+;;  (it is nil by default).  These extra candidates are the names of
 ;;  all executable files (or of all files, if
 ;;  `shell-completion-execonly' is nil) in your search path.
 ;;
@@ -1651,10 +1651,11 @@
 ;;  particular non-nil value of `icicle-guess-commands-in-path'
 ;;  determines when the cache is filled.
 ;;
-;;  By default, the cache is filled the first time you use it, and
-;;  each time you turn on Icicle mode it is updated.  If you set
-;;  `icicle-guess-commands-in-path' to the value `load', then the
-;;  cache is instead filled each time you load Icicles.
+;;  If the value of `icicle-guess-commands-in-path' is `first-use',
+;;  the cache is filled the first time you use it, and each time you
+;;  turn on Icicle mode it is updated.  If the value of
+;;  `icicle-guess-commands-in-path' is `load', then the cache is
+;;  instead filled each time you load Icicles.
 ;;
 ;;  Regardless of the non-nil value of
 ;;  `icicle-guess-commands-in-path', if you save
@@ -4977,7 +4978,8 @@
 ;;    included among the completion candidates whenever a
 ;;    shell command is read.  The particular non-nil value determines
 ;;    when this list of commands is updated from your current search
-;;    path.  See (@> "Icicles Shell-Command Enhancements").
+;;    path.  The default value is nil.
+;;    See (@> "Icicles Shell-Command Enhancements").
 ;;
 ;;  * Non-nil option `icicle-quote-shell-file-name-flag' means that
 ;;    `icicle-read-shell-command-completing' double-quotes the file

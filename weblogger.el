@@ -9,9 +9,12 @@
 ;; Keywords: weblog blogger cms movable type openweblog blog
 ;; URL: http://emacswiki.org/emacs/weblogger.el
 ;; Maintained-at: http://savannah.nongnu.org/bzr/?group=emacsweblogs
-;; Version: 1.4.3
-;; Last Modified: <2009-09-13 02:13:03 mah>
-;; Package-Requires: ((xml-rpc "1.6.5"))
+;; Version: 1.4.4
+;; Last Modified: <2009-12-07 17:21:57 mah>
+;; Package-Requires: ((xml-rpc "1.6.7"))
+
+(defconst weblogger-version "1.4.4"
+  "Current version of weblogger.el")
 
 ;; This file is not yet part of GNU Emacs.
 
@@ -154,6 +157,11 @@
 (require 'xml-rpc)
 (require 'message)
 (require 'ring)
+(eval-when-compile
+  (require 'cl))
+
+(defconst weblogger-maintainer-address "mah@everybody.org"
+  "The address where bug reports should be sent.")
 
 (defgroup weblogger nil
   "Edit Weblogs with Emacs."
@@ -242,6 +250,21 @@ send to the server."
   :group 'weblogger
   :type 'hook)
 
+(defcustom weblogger-edit-mode 'nxml-mode
+  "Major mode to use for editing weblog entries"
+  :group 'weblogger
+  :type 'function)
+
+(defcustom weblogger-edit-mode-toggle-hook nil
+  "Hook to call when switching to edit mode"
+  :group 'weblogger
+  :type 'hook)
+
+(defcustom weblogger-weblogger-mode-toggle-hook nil
+  "Hook to call when switching back to weblogger mode"
+  :group 'weblogger
+  :type 'hook)
+
 (defvar weblogger-entry-list nil
   "List of weblog entries that we know about. Chronological
 order, with newest first.")
@@ -305,13 +328,13 @@ haven't set one.  Set to nil for no category.")
 
 (defvar menu-bar-weblogger-menu nil)
 
+(defvar weblogger-header nil
+  "Holds the weblog header")
+
 (defconst weblogger-blogger-app-key
   "07C72E6970E0FBA5DE21BA9F4800C44534C19870"
   "OBSOLETE. The appkey to send to weblog server.  Generally this
 shouldn't be changed.")
-
-(defconst weblogger-version "1.4.3"
-  "Current version of weblogger.el")
 
 (defconst weblogger-no-capabilities '(("wp.getUsersBlogs" . nil)
                                       ("wp.getPage" . nil)
@@ -400,6 +423,7 @@ shouldn't be changed.")
           (define-key map "\C-c\C-o" 'weblogger-change-server)
           (define-key map "\C-c\C-w" 'weblogger-change-weblog)
           (define-key map "\C-c\C-u" 'weblogger-change-user)
+          (define-key map "\C-c\C-e" 'weblogger-toggle-edit-body)
           map)))
 
 (unless weblogger-template-mode-map
@@ -411,18 +435,62 @@ shouldn't be changed.")
   (easy-menu-define
     menu-bar-weblogger-menu weblogger-entry-mode-map ""
     '("Weblogger"
-      ["Send weblog entry" weblogger-send-entry t]
-      ["Save weblog entry" weblogger-save-entry nil t]
+      ["Start a new Weblog Entry"     weblogger-start-entry t]
+      ["Save weblog entry as draft"   weblogger-save-entry t]
+      ["Publish weblog entry"         weblogger-send-entry t :active (buffer-modified-p)]
       ["--" nil nil]
-      ["Delete entry"      weblogger-delete-entry t]
+      ["Switch to edit mode"          weblogger-toggle-edit-body t]
       ["--" nil nil]
-      ["Previous entry"    weblogger-prev-entry t]
-      ["Next entry"        weblogger-next-entry t]
+      ["Delete entry"                 weblogger-delete-entry t]
       ["--" nil nil]
-      ["Edit Main Template" weblogger-edit-main-template t]
-      ["Edit Archive Template" weblogger-edit-main-template t]
+      ["Previous entry"               weblogger-prev-entry t]
+      ["Next entry"                   weblogger-next-entry t]
       ["--" nil nil]
-      ["Change Weblog"    weblogger-change-weblog t])))
+      ["Edit Main Template"           weblogger-edit-main-template t]
+      ["Edit Archive Template"        weblogger-edit-main-template t]
+      ["--" nil t]
+      ["Set edit mode"                (lambda () (interactive) (customize-variable 'weblogger-edit-mode)) t]
+      ["Change Weblog"                weblogger-change-weblog t]
+      ["Setup Weblog"                 weblogger-setup-weblog t]))
+  (define-key-after menu-bar-tools-menu [separator-weblogger]
+    '("--") 'simple-calculator)
+  (define-key-after menu-bar-tools-menu [start-weblog]
+    '(menu-item "Start a new Weblog Entry" weblogger-start-entry :enable
+      (or weblogger-config-alist weblogger-server-url))
+      'separator-weblogger)
+  (define-key-after menu-bar-tools-menu [setup-weblog]
+    '(menu-item "Setup your Weblog" weblogger-setup-weblog) 'start-weblog))
+
+(defun weblogger-submit-bug-report ()
+ "Submit a bug report on weblogger."
+ (interactive)
+ (require 'reporter)
+ (let ((xml-rpc-tz-pd-defined-in
+        (if (fboundp 'find-lisp-object-file-name)
+            (find-lisp-object-file-name
+             'timezone-parse-date (symbol-function 'timezone-parse-date))
+          (symbol-file 'timezone-parse-date))))
+   (reporter-submit-bug-report
+    weblogger-maintainer-address
+    (concat "weblogger.el " weblogger-version)
+    (list 'xml-rpc-tz-pd-defined-in
+          'xml-rpc-load-hook
+          'xml-rpc-use-coding-system
+          'xml-rpc-allow-unicode-string
+          'xml-rpc-base64-encode-unicode
+          'xml-rpc-base64-decode-unicode
+          'weblogger-config-alist
+          'weblogger-config-name
+          'weblogger-start-edit-entry-hook
+          'weblogger-edit-entry-hook
+          'weblogger-pre-struct-hook
+          'weblogger-edit-mode
+          'weblogger-edit-mode-toggle-hook
+          'weblogger-weblogger-mode-toggle-hook
+          'weblogger-server-url
+          'weblogger-entry-mode-hook
+          'weblogger-new-entry-hook
+          'weblogger-capabilities))))
 
 ;;;###autoload
 (defun weblogger-select-configuration (&optional config)
@@ -514,17 +582,14 @@ the filename in weblogger-config-file."
 				 (weblogger-select-texttype))))
     (goto-char point-save)))
 
-(defun weblogger-entry-mode ()
+(define-derived-mode weblogger-entry-mode message-mode "Weblog"
   "Major mode for editing text for Weblogger.  Based on message-mode."
-  (interactive)
-  (message-mode)
-  (message-disassociate-draft)
-  (use-local-map weblogger-entry-mode-map)
-  (setq mode-name "weblogger-entry")
-  (setq major-mode 'weblogger-entry-mode)
+  ;; (interactive)
+  ;; (message-mode)
+  ;; (message-disassociate-draft)
+  ;; (use-local-map weblogger-entry-mode-map)
   (unless weblogger-entry-ring
-    (setq weblogger-entry-ring (make-ring weblogger-max-entries-in-ring)))
-  (run-hooks 'weblogger-entry-mode-hook))
+    (setq weblogger-entry-ring (make-ring weblogger-max-entries-in-ring))))
 
 (defun weblogger-template-mode ()
   "Major mode for editing templates for Weblogger. Based on text-mode."
@@ -628,9 +693,7 @@ argument, prompts for the weblog to use."
 for the weblog to use."
   (interactive)
   (set-buffer-modified-p t)
-  (weblogger-save-entry t arg)
-  (bury-buffer))
-
+  (weblogger-save-entry t arg))
 
 (defun weblogger-save-entry (&optional publishp arg)
   "Publish the current entry is publishp is set.  With optional
@@ -1293,7 +1356,7 @@ internally).  If BUFFER is not given, use the current buffer."
   (save-excursion
     (run-hooks weblogger-pre-struct-hook)
     (set-buffer buffer)
-    (delq nil 
+    (delq nil
 	  (list
 	   (cons "authorName"   (message-fetch-field "From"))
 	   (cons "dateCreated"
@@ -1328,6 +1391,25 @@ internally).  If BUFFER is not given, use the current buffer."
                          (point) (point-max)))
                      (buffer-substring-no-properties
                       (point) (point-max)))))))))
+
+(defun weblogger-toggle-edit-body ()
+  "Toggle between editing the body and editing the headers"
+  (interactive)
+  (if (string= mode-name "Weblog")
+      (progn
+        (message-goto-body)
+        (setq weblogger-header (buffer-substring (point-min) (point)))
+        (delete-region (point-min) (point))
+        (run-hooks 'weblogger-edit-mode-toggle-hook)
+        (funcall weblogger-edit-mode)
+        (make-local-variable 'weblogger-header))
+    (if (not (assoc 'weblogger-header (buffer-local-variables)))
+        (error "You didn't come here from a weblogger buffer, so we can switch back")
+      (goto-char (point-min))
+      (run-hooks 'weblogger-weblogger-mode-toggle-hook)
+      (goto-char (point-min))
+      (insert weblogger-header)
+      (weblogger-entry-mode))))
 
 ;; TODO -- Support for toolbar
 ;; (eval-when-compile (defvar tool-bar-map))

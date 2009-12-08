@@ -116,7 +116,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 3 $Rev: 233 $ of the Sunrise Commander.
+;; This is version 3 $Rev: 234 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.  I  have  also  received
@@ -1091,8 +1091,9 @@ automatically:
 
 (defun sr-bury-panes ()
   "Sends both pane buffers to the end of the emacs list of buffers."
-  (bury-buffer (buffer-name sr-left-buffer))
-  (bury-buffer (buffer-name sr-right-buffer)))
+  (mapc (lambda (x)
+          (bury-buffer (symbol-value (sr-symbol x 'buffer))))
+        '(left right)))
 
 (defun sr-resize-panes (&optional reverse)
   "Enlarges (or shrinks, if reverse is t) the left pane by 5 columns."
@@ -1884,7 +1885,9 @@ automatically:
          (deletion-mode (cond ((eq mode 'ALWAYS) 'always)
                               (mode 'top)
                               (t (error "(No deletions performed)")))))
-    (mapc (lambda (x) (dired-delete-file x deletion-mode)) files)
+    (mapc (lambda (x)
+            (message (concat "Deleting " x))
+            (dired-delete-file x deletion-mode)) files)
     (if (eq major-mode 'sr-virtual-mode)
         (dired-do-kill-lines)
       (sr-revert-buffer))))
@@ -2280,7 +2283,7 @@ or (c)ontents? ")
            (concat "-exec ls -d " sr-virtual-listing-switches suffix)
            "ls -ld")))
     (sr-save-aspect
-     (apply fun (list default-directory pattern))
+     (sr-alternate-buffer (apply fun (list default-directory pattern)))
      (sr-virtual-mode)
      (sr-keep-buffer))))
 
@@ -2318,7 +2321,8 @@ or (c)ontents? ")
   (sr-save-aspect
    (locate search-string filter arg)
    (sr-select-window sr-selected-window)
-   (switch-to-buffer (create-file-buffer "*Sunrise Locate*"))
+   (sr-alternate-buffer
+    (switch-to-buffer (create-file-buffer "*Sunrise Locate*")))
    (cd "/")
    (insert (concat "  " default-directory ":"))(newline)
    (insert (concat " Results of: locate " search-string))(newline)
@@ -2385,7 +2389,7 @@ or (c)ontents? ")
    (let ((dir (directory-file-name (dired-current-directory)))
          (buff (generate-new-buffer-name (buffer-name (current-buffer))))
          (dispose (current-buffer)))
-     (switch-to-buffer buff)
+     (sr-alternate-buffer (switch-to-buffer buff))
      (goto-char (point-min))
      (insert (concat "  " dir) ":\n")
      (insert " Pure VIRTUAL buffer: \n")

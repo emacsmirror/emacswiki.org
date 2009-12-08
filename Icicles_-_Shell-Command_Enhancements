@@ -45,7 +45,7 @@ want, not just a completion candidate, and you can edit completed
 input, to add switches (options) and arguments.
 
 [:icicle-guess-commands-in-path]
-Though file-name completion is used for reading shell commands, ''extra'', known commands are also made available as completion candidates if option '''`<tt>[[Icicles - Customization and General Tips#icicle-guess-commands-in-path|icicle-guess-commands-in-path]]</tt>'''' is non-`nil' (which it is by default).  These extra candidates are the names of all executable
+Though file-name completion is used for reading shell commands, ''extra'', known commands are also made available as completion candidates if option '''`<tt>[[Icicles - Customization and General Tips#icicle-guess-commands-in-path|icicle-guess-commands-in-path]]</tt>'''' is non-`nil' (it is `nil' by default).  These extra candidates are the names of all executable
 files (or of all files, if `shell-completion-execonly' is `nil') in
 your ''search path''.
 
@@ -62,9 +62,8 @@ search-path candidate commands is computed once and cached as the
 value of option '''`<tt>[[Icicles - Customization and General Tips#icicle-shell-command-candidates-cache|icicle-shell-command-candidates-cache]]</tt>''''.  The
 particular non-`nil' value of `icicle-guess-commands-in-path'
 determines when the cache is filled.
-By default, the cache is filled the first time you use it, and each time you turn on ''Icicle''
-mode it is updated.  If you set `icicle-guess-commands-in-path' to
-the value '''`load'''', then the cache is instead filled each time you
+If the value of `icicle-guess-commands-in-path' is '''`first-use'''', the cache is filled the first time you use it, and each time you turn on ''Icicle''
+mode it is updated.  If the value of `icicle-guess-commands-in-path' to is '''`load'''', then the cache is instead filled each time you
 load '''Icicles'''.
 
 Regardless of the non-`nil' value of

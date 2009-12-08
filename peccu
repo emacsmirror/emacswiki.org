@@ -1,12 +1,17 @@
-I love emacs and Mac.
+I love emacs and Mac.I'm Japanese.
 
 * [http://d.hatena.ne.jp/peccu/ My site]
 
+I applied patch from [http://dme.org/emacs/twit.el.diff patch] to [http://www.emacswiki.org/emacs/TwIt twit.el] and fix small bug about this patch.
 
+And I have a few small script.I will post it soon.
 
+----
 [new:DrewAdams:2009-12-02 15:20 UTC]
 Welcome to the wiki. -- DrewAdams
 
+[new:peccu:]
+Thank you! -- [[peccu]]
 
 
 ----
