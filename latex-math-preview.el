@@ -2,8 +2,8 @@
 
 ;; Author: Takayuki YAMAGUCHI <d@ytak.info>
 ;; Keywords: LaTeX TeX
-;; Version: 0.3.11
-;; Created: Sun Oct 18 16:50:02 2009
+;; Version: 0.4.1
+;; Created: Wed Dec  9 09:36:47 2009
 ;; URL: http://www.emacswiki.org/latex-math-preview.el
 ;; Site: http://www.emacswiki.org/LaTeXMathPreview
 
@@ -227,6 +227,10 @@
 ;;       "cache directory in your system")
 
 ;; ChangeLog:
+;; 2009/12/09 version 0.4.1 yamaguchi
+;;     Add some key binding on latex-math-preview-expression-mode-map.
+;; 2009/12/08 version 0.4.0 yamaguchi
+;;     Use image-mode when previewing mathematical expressions.
 ;; 2009/10/18 version 0.3.11 yamaguchi
 ;;     Change function latex-math-preview-bounds-of-latex-math
 ;;     to distingush '$$ ... $$' from '$ ... $'.
@@ -282,6 +286,7 @@
 ;;; Code:
 
 (require 'cl)
+(require 'image-mode)
 (require 'thingatpt)
 
 ;;;###autoload
@@ -292,7 +297,7 @@
   )
 
 (defvar latex-math-preview-expression-buffer-name
-  "*latex-math-preview*"
+  "*latex-math-preview-expression*"
   "Name of buffer which displays preview image.")
 
 (defvar latex-math-preview-tex-processing-error-buffer-name
@@ -408,9 +413,9 @@
     (0 . "\\\\begin{alignat\\(\\|\\*\\)}\\(\\(.\\|\n\\)*?\\)\\\\end{alignat\\(\\|\\*\\)}")
 
     )
-  "These eqpressions are used for matching to extract tex math expression.
-The elements of this list are list which is \(integer regular-expression\).
-The regular-expression matchs string including LaTeX mathematical expressions.
+  "We use these expressions when extracting a LaTeX mathematical expression.
+The elements of this list is the form which is a list of \(integer regular-expression\).
+The regular-expression matchs a string including LaTeX mathematical expressions.
 The integer is the number to access needed string from regular-expressin.")
 
 (defvar latex-math-preview-list-name-symbol-datasets
@@ -609,7 +614,7 @@ StringA and StringB.")
     ("Typefaces"
      ("typefaces (1)" nil
       (("\\mathrm{" "abcdefghABCDEFGH" "}") ("\\mathbf{" "abcdefghABCDEFGH" "}")
-       ("\\mathit{" "abcdefghABCDEFGH" "}") ("\\mathcal{" "abcdefghABCDEFGHz" "}")
+       ("\\mathit{" "abcdefghABCDEFGH" "}") ("\\mathcal{" "abcdefghABCDEFGH" "}")
        ("\\mathsf{" "abcdefghABCDEFGH" "}") ("\\mathtt{" "abcdefghABCDEFGH" "}")))
      ("typefaces (2)" ("\\usepackage{amssymb}")
       (("\\mathfrak{" "abcdefghABCDEFGH" "}") ("\\mathbb{" "abcdefghABCDEFGH" "}"))))
@@ -663,17 +668,20 @@ For data structure, refer to `latex-math-preview-text-symbol-datasets'")
   "Symbol of function is used for determining whether cursor is in mathematical expression.
 If you use YaTeX mode then the recommended value of this variable is YaTeX-in-math-mode-p.")
 
-(defvar latex-math-preview-expression-map
-  (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "q") 'latex-math-preview-quit-window)
-    (define-key map (kbd "Q") 'latex-math-preview-delete-buffer)
-    (define-key map (kbd "g") 'latex-math-preview-quit-window)
-    (define-key map (kbd "j") 'scroll-up)
-    (define-key map (kbd "k") 'scroll-down)
-    (define-key map (kbd "n") 'scroll-up)
-    (define-key map (kbd "p") 'scroll-down)
-    map)
-  "Keymap for latex-math-preview-expression.")
+(define-derived-mode latex-math-preview-expression-mode image-mode "LaTeXPreview"
+  "Major mode for latex-math-preview-expression. This mode is derived from image-mode."
+  (define-key latex-math-preview-expression-mode-map "n" 'next-line)
+  (define-key latex-math-preview-expression-mode-map "p" 'previous-line)
+  (define-key latex-math-preview-expression-mode-map "f" 'forward-char)
+  (define-key latex-math-preview-expression-mode-map "b" 'backward-char)
+  (define-key latex-math-preview-expression-mode-map "j" 'next-line)
+  (define-key latex-math-preview-expression-mode-map "k" 'previous-line)
+  (define-key latex-math-preview-expression-mode-map "l" 'forward-char)
+  (define-key latex-math-preview-expression-mode-map "h" 'backward-char)
+  (define-key latex-math-preview-expression-mode-map "o" 'delete-other-windows)
+  (define-key latex-math-preview-expression-mode-map "g" 'latex-math-preview-quit-window)
+  (define-key latex-math-preview-expression-mode-map "q" 'latex-math-preview-quit-window)
+  (define-key latex-math-preview-expression-mode-map "Q" 'latex-math-preview-delete-buffer))
 
 (defvar latex-math-preview-insert-symbol-map
   (let ((map (make-sparse-keymap)))
@@ -854,18 +862,13 @@ This can be used in `latex-math-preview-function', but it requires:
 	(progn
 	  (with-current-buffer (get-buffer-create latex-math-preview-expression-buffer-name)
 	    (setq cursor-type nil)
-	    (setq buffer-read-only nil)
-	    (erase-buffer)
-	    (insert " ")
-	    (insert-image-file image)
-	    (end-of-line)
-	    (insert "\n")
-	    (goto-char (point-min))
-	    (buffer-disable-undo)
-	    (setq buffer-read-only t)
-	    (use-local-map latex-math-preview-expression-map)
-	    (setq mode-name "LaTeXPreview")
-	    )
+	    (let ((inhibit-read-only t))
+	      (setq buffer-read-only nil)
+	      (erase-buffer)
+	      (insert-file-contents image)
+	      (goto-char (point-min)))
+	    (latex-math-preview-expression-mode)
+	    (buffer-disable-undo))
 	  (pop-to-buffer latex-math-preview-expression-buffer-name))
       (message "Can not create a png file."))))
 
@@ -928,7 +931,9 @@ buffer is left showing the messages and the return is nil."
 (defun latex-math-preview-cut-mathematical-expression (&optional remove-num-expression)
   (let ((str))
     (if (and transient-mark-mode mark-active)
-	(setq str (buffer-substring (region-beginning) (region-end)))
+	(progn
+	  (setq str (buffer-substring (region-beginning) (region-end)))
+	  (setq mark-active nil))
       ;; If you use (region-active-p), then the program can not work on emacs 22.
       (setq str (thing-at-point 'latex-math)))
     (if (and str remove-num-expression)
@@ -1467,11 +1472,11 @@ Return maximum size of images and maximum length of strings and images"
 
 (defvar latex-math-preview-insert-isearch-map
   (let ((map (copy-keymap isearch-mode-map)))
-    (define-key map (kbd "<return>") 'latex-math-preview-inseart-isearch-exit)
+    (define-key map (kbd "<return>") 'latex-math-preview-insert-isearch-exit)
     map)
   "Keymap for latex-math-preview-insert-isearch.")
 
-(defun latex-math-preview-inseart-isearch-exit ()
+(defun latex-math-preview-insert-isearch-exit ()
   "Search insertion item."
   (interactive)
   (latex-math-preview-set-overlay-for-selected-item)

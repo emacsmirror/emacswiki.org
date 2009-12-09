@@ -8,19 +8,16 @@ But I have coded 6 months in a Smalltalk project and code weekly in ELisp, and I
 
 Depending of my needs, I also write Ruby, Groovy, & Perl scripts, plus a few lines of Scheme, Haskell, x86 assembly & Java bytecode in my spare time, and enjoy it as well.
 
-== .emacs & related ==
+== My Emacs related code at GitHub ==
 
-* SebastienRoccaSerraDotEmacs
-* SebastienRoccaSerraCustom
-* SebastienRoccaSerraKeyBindings
-* SebastienRoccaSerraLocal
+* http://github.com/sroccaserra/emacs
 
 == See Also ==
 
+* TabCompletion -- see Smart Tab, it's minibuffer compliant and indents region if `mark-active'
 * FlymakeLua -- on the fly Lua syntax checker
 * PrintIt -- a Smalltalk-printIt-like function inside Emacs
 * DuplicateStartOfLineOrRegion -- Easily duplicate the beginning of a line or a whole region
-* TabCompletion -- see Smart Tab, it's minibuffer compliant and indents region if `mark-active'
 
 ----
 CategoryHomepage

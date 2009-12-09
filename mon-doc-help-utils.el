@@ -41,7 +41,7 @@
 ;;; `mon-help-window-functions', `mon-help-hg-archive'
 ;;; `mon-help-crontab', `mon-help-unix-commands', `mon-help-permissions'
 ;;; `mon-help-propertize-tags', `mon-help-propertize-tags-TEST'
-;;; `mon-help-du-incantation'
+;;; `mon-help-du-incantation', 
 ;;; FUNCTIONS:◄◄◄
 ;;;
 ;;; MACROS:
@@ -93,6 +93,8 @@
 ;;; `mon-insert-lisp-testme' ;-> mon-insertion-utils.el
 ;;; `*regexp-symbol-defs*' ;-> mon-regexp-symbols.el
 ;;; `mon-test->*regexp-symbol-defs*' ;-> mon-regexp-symbols.el
+;;;
+;;; Loads the :FILE `mon-doc-help-pacman.el' if it exists in load-path.
 ;;;
 ;;; NOTES:
 ;;; I think I remember lifting the `emacs-wiki-escape-lisp-string-region'
@@ -1476,6 +1478,7 @@ Why not! :)\n►►►
 `mon-help-hg-archive'
 `mon-help-info-incantation'
 `mon-help-install-info-incantation'
+`mon-help-pacman-Q'
 `mon-help-permissions'
 `mon-help-rename-incantation'
 `mon-help-tar-incantation'
@@ -1494,10 +1497,20 @@ Why not! :)\n►►►
 `mon-insert-doc-help-cookie'
 `emacs-wiki-escape-lisp-string-region'
 `emacs-wiki-unescape-lisp-string-region'\n
-;; :VARIABLES
-`*reference-sheet-help-A-HAWLEY*'         ;<VARIABLE>
-`*w32-env-variables-alist*'               ;<VARIABLE>
-`*doc-cookie*'                            ;<VARIABLE>"
+;; :MON-DOC-HELP-VARIABLES
+`*doc-cookie*'                                 ;<VARIABLE>
+`*mon-help-interactive-spec-alist*'            ;<VARIABLE>
+`*reference-sheet-help-A-HAWLEY*'              ;<VARIABLE>
+`*regexp-mon-doc-help-docstring-tags-DYNAMIC*' ;<VARIABLE>
+`*regexp-mon-doc-help-docstring-tags-TABLES*'  ;<VARIABLE>
+`*regexp-mon-doc-help-docstring-tags*'         ;<VARIABLE>
+`*regexp-mon-doc-help-comment-tags*'           ;<VARIABLE>
+`*regexp-mon-doc-help-pointer-tags*'           ;<VARIABLE>
+`*regexp-mon-doc-help-meta-tags*'              ;<VARIABLE>
+`*regexp-clean-du-flags*'                      ;<VARIABLE>
+`*regexp-symbol-defs*'                         ;<VARIABLE>
+`*regexp-clean-pacman-Q*'                      ;<VARIABLE>
+`*w32-env-variables-alist*'                    ;<VARIABLE>"
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-reference-sheet :insertp t)
@@ -1505,7 +1518,10 @@ Why not! :)\n►►►
 ;;
 (defalias 'mon-help-mon-help 'mon-help-reference-sheet)
 ;;
+;;; :TEST-ME (mon-help-reference-sheet)
 ;;; :TEST-ME (mon-help-reference-sheet t)
+;;; :TEST-ME (describe-function 'mon-help-reference-sheet)
+;;; :TEST-ME (call-interactively 'mon-help-reference-sheet)
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: Thursday July 02, 2009 @ 02:34.14 PM - by MON KEY>
@@ -4317,7 +4333,7 @@ done \n►►►"
   '(("-a" . "--all")
     ("--apparent-size")
     ("-b" . "--bytes")
-    ("-B" . "--block-size")             ;SIZE & =SIZE")
+    ("-B" . "--block-size")             ;SIZE & =SIZE
     ("-c" . "--total")
     ("-D" . "--dereference-args")
     ("--files0-from")                   ;=FILE
@@ -4336,7 +4352,7 @@ done \n►►►"
     ("--exclude")                       ;=PATTERN
     ("-X" . "--exclude-from"))          ;FILE & =FILE
   "*Alist of short and long flags for the `du' command.
-:SEE-ALSO `mon-help-du-iincantation'\n►►►")
+:SEE-ALSO `mon-help-du-iincantation', `mon-async-du-dir'\n►►►")
 ;;
 ;;; :TEST-ME *regexp-clean-du-flags*
 ;;
@@ -4351,7 +4367,7 @@ done \n►►►"
       (mon-help-function-spit-doc 'mon-help-du-incantation :insertp t)
     (message "Pass non-nil for optional arg INTRP")))
 ;;
-;; Now, tack the var list onto the docstring
+;; Now, tack the var list onto the docstring.
 (eval-when-compile
 (let (put-flags)
   (setq put-flags "")
@@ -4807,87 +4823,6 @@ whatis\n►►►"
     (Info-index topic)))
 ;;
 ;;; :TEST-ME (elisp-index-search "setq")
-
-;;; ==============================
-;;; :CREATED <Timestamp: #{2009-12-02T20:58:01-05:00Z}#{09493} - by MON>
-(defvar *regexp-clean-pacman-Q*
-  '(("-c" "--changelog" "View the changelog of a package.")
-    ("-g" "--groups" "View all members of a package group.")
-    ("-i" "--info" "View package information \(-ii for backup files\).")
-    ("-k" "--check" "Check that the files owned by the package\(s\) are present.")
-    ("-l" "--list" "List the contents of the queried package.")
-    ("-q" "--quiet" "Show less information for query and search.")
-    ("-v" "--verbose" "Be verbose.")
-    ("--noconfirm" nil "Do not ask for any confirmation.")
-    ("--noprogressbar" nil "Do not show a progress bar when downloading files.")
-    ("--noscriptlet" nil "Do not execute the install scriptlet if one exists.")
-    ("--debug" nil "Display debug messages.")
-    ;; :HAS-FILTER
-    ("-m" "--foreign" "List installed packages not found in sync db\(s\) [filter].")
-    ("-t" "--unrequired" "List packages not required by any package [filter].")
-    ("-u" "--upgrades" "List outdated packages [filter].")
-    ("-d" "--deps" "List packages installed as dependencies [filter].")
-    ("-e" "--explicit" "List packages explicitly installed [filter].")
-    ;; :HAS-ARG
-    ("-o" "--owns" "<FILE> Query the package that owns <file>.")
-    ("-p" "--file" "<PACKAGE> Query a package file instead of the database.")
-    ("-s" "--search" "<REGEX> Search locally-installed packages for matching strings.")
-    ("-r" "--root" "<PATH> Set an alternate installation root.")
-    ("-b" "--dbpath" "<PATH> Set an alternate database location.")
-    ("--config" nil "<PATH> Set an alternate configuration file.")
-    ("--logfile" nil "<PATH> Set an alternate log file.")
-    ("--cachedir" nil "<DIR> set an alternate package cache location."))
-  "*A list of short and long flags Flags Arch's `pacman -Q' command.
-:SEE-ALSO `mon-help-pacman-Q'\n►►►")
-;;
-;;; :TEST-ME *regexp-clean-pacman-Q*
-;;
-;;; (progn (makunbound '*regexp-clean-pacman-Q*)(unintern '*regexp-clean-pacman-Q*))
-
-;;; ==============================
-;;; :CREATED <Timestamp: #{2009-12-02T20:55:45-05:00Z}#{09493} - by MON>
-(defun mon-help-pacman-Q (&optional insertp intrp)
-  ""
-  (interactive "i\nP")
-  (if (or insertp intrp)
-      (mon-help-function-spit-doc 'mon-help-pacman-Q :insertp t)
-      (message "Pass non-nil for optional arg INTRP")))
-;;
-;; Now, tack the var list onto the docstring.
-(eval-when-compile
-  (let (put-flags)
-    (setq put-flags "")
-    (mapc #'(lambda (x) 
-              (setq put-flags 
-                    (concat 
-                     (format "`%s' %s%s\n" 
-                             (car x) 
-                             (if (cadr x) (concat "`" (cadr x) "'") "")
-                             (concat " ;" (caddr x)))
-                     put-flags)))
-          (reverse (symbol-value '*regexp-clean-pacman-Q*)))
-    (setq put-flags
-          (with-temp-buffer 
-            (insert put-flags)
-            (while (search-backward-regexp "' +;" nil t)
-              (skip-chars-forward "^;")
-              (indent-to 20))
-            (buffer-substring-no-properties (buffer-end 0) (buffer-end 1))))
-    (mon-help-put-var-doc-val->func 'put-flags  'mon-help-pacman-Q
-                                    (concat 
-                                     "Flags for use with Arch's `pacman -Q'.\n\n"
-                                     ":USAGE  pacman {-Q --query} [options] [package(s)]\n\n"
-                                     ";; :PACMAN-Q-OPTIONS:\n")
-                                    nil 
-                                    "\n:SEE-ALSO `*regexp-clean-pacman-Q*'\n►►►")))
-  
-;;
-;;; :TEST-ME (mon-help-pacman-Q )
-;;; :TEST-ME (mon-help-pacman-Q t)
-;;; :TEST-ME (call-interactively 'mon-help-pacman-Q)
-;;; :TEST-ME (describe-function 'mon-help-pacman-Q)
-;;
-;;; (progn (fmakunbound 'mon-help-pacman-Q) (unintern 'mon-help-pacman-Q))
 
 ;;; ==============================
 ;;; :MODIFICATIONS <Timestamp: #{2009-10-01T22:22:37-04:00Z}#{09405} - by MON KEY>
@@ -6492,6 +6427,12 @@ without the surrounding quotes.\n:SEE-ALSO `emacs-wiki-escape-lisp-string-region
 ;;; (prin1 *reference-sheet-help-A-HAWLEY* (current-buffer))
 ;;; (goto-char this-point)
 ;;; (emacs-wiki-unescape-lisp-string-region nil nil t)))
+
+;;; ==============================
+;;; Load `mon-doc-help-pacman' if it is in load-path.
+(when (file-exists-p "mon-doc-help-pacman.el")
+  (unless (featurep 'mon-doc-help-pacman)
+    (require 'mon-doc-help-pacman)))
 
 ;;; ==============================
 (provide 'mon-doc-help-utils)

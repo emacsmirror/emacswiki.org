@@ -10,7 +10,7 @@ A '''wiki''' is a collaborative web site.  '''''You can contribute'''''. Before 
 * UserName -- How to sign your wiki contributions with your user name.
 * '''TextFormattingRules''' -- How to ''format'' a wiki page, ''create links'', and so on. The Emacs Wiki uses the [http://www.oddmuse.org/ Oddmuse] wiki engine, which defines the formatting rules.
 * CreateNewPages -- How to ''create new wiki pages''. A good way to start your first page is by adding your UserName to CategoryHomepage.
-
+* StyleGuide -- how to write well and help your neighbour
 * ElispArea -- How to ''upload'' an Emacs Lisp file.
 ** Please indicate compatibility of your files by adding appropriate ##Compatibility: GNU Emacs X.X## notes to your files.
 ** If you notice that a particular piece of code does not work on your version of Emacs, please indicate as much on the appropriate wiki page.

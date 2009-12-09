@@ -68,6 +68,7 @@
 ;;; `mon-string-to-hex-string', `mon-generate-WPA-key'
 ;;; `mon-async-du-dir', `mon-make-shell-buffer', `mon-shell'
 ;;; `mon-line-strings-pipe-bol', `mon-line-strings-indent-to-col'
+;;; `mon-line-strings-region'
 ;;; FUNCTIONS:◄◄◄
 ;;; FUNCTIONS:###
 ;;; 
@@ -1828,6 +1829,53 @@ Neither SPLIT-ON nor DELIM have an effect when Invoked interactively.\n:EXAMPLE
 ;;; :TEST-ME (mon-string-ify-current-line nil nil \"|\"\) split me to a list of strings
 
 ;;; ==============================
+;;; :CREATED <Timestamp: #{2009-12-08T12:36:48-05:00Z}#{09502} - by MON>
+(defun mon-line-strings-region (start end &optional insertp intrp)
+  "Return each line of region as a string followed by a `\n'.
+When called-interactively or INSERTP is non-nil insert strings at point.
+Does not move point.\n
+Use with concat for formated indentation in source.\n
+:EXAMPLE\n(save-excursion \n  (mon-line-strings-region
+   \(1+ (search-forward-regexp \"►\"\)\) \(- \(search-forward-regexp \"►\"\) 2\)\)\)\n
+►\nI-will-be-a-string\nI too will be a string.\nMe as well.
+More stringification here\n►\n
+:SEE-ALSO `mon-line-strings-bq-qt-sym-bol', `mon-line-strings-to-list',
+`mon-string-ify-list', `mon-string-ify-current-line',
+`mon-string-split-line', `mon-line-drop-in-words'.\n►►►"
+  (interactive "r\ni\np")
+  (let ((qt-lns)
+        (ln-r-st (make-marker))
+        (ln-r-end (make-marker)))
+    (set-marker ln-r-st start)
+    (set-marker ln-r-end end)
+    (setq qt-lns (buffer-substring-no-properties ln-r-st ln-r-end))
+    (setq qt-lns 
+          (with-temp-buffer 
+            (insert qt-lns)
+            (goto-char (buffer-end 0))
+            (while (search-forward-regexp "^\\(.*\\)$" nil t)
+              (replace-match "\"\\1\\\\n\"" t)) ;Do not alter case.
+            (buffer-substring-no-properties (buffer-end 0) (buffer-end 1))))
+    (if (or insertp intrp)
+        (save-excursion 
+          (delete-region ln-r-st ln-r-end)
+          (goto-char ln-r-st)
+          (insert qt-lns))
+        qt-lns)))
+;;
+;;; :TEST-ME (mon-line-strings-region
+;;;           (1+ (search-forward-regexp "►")) (- (search-forward-regexp "►") 2))
+;;
+;;,---- :UNCOMMENT-BELOW-TO-TEST
+;;|►
+;;|I-will-be-a-string
+;;|I too will be a string.
+;;|Me as well.
+;;|More stringification here
+;;|►
+;;`----
+
+;;; ==============================
 ;;; CREATED: <Timestamp: #{2009-10-23T16:16:47-04:00Z}#{09435} - by MON KEY>
 (defun mon-line-strings-qt-region (start end &optional insertp intrp)
   "Return symbols at each BOL in region wrapped in double-quotes `\"'.
@@ -1844,7 +1892,7 @@ When following characters are at BOL no replacement is peformed on symbol:
 I-am-not-a-string'\n►\n 
 :SEE-ALSO `mon-line-strings-bq-qt-sym-bol', `mon-line-strings-pipe-bol'
 `mon-line-strings-indent-to-col', `mon-line-strings-to-list',
-`mon-string-ify-list', `mon-string-ify-current-line'
+`mon-line-strings-region', `mon-string-ify-list', `mon-string-ify-current-line'
 `mon-string-split-line', `mon-line-drop-in-words'.\n►►►"
   (interactive "r\ni\np")
   (let (rtn-v)
@@ -1898,7 +1946,7 @@ call-next-method &rest replacement-args
 call-next-method' &rest replacement-args\n►\n
 :SEE-ALSO `mon-line-strings-qt-region', `mon-line-strings-pipe-bol',
 `mon-line-strings-indent-to-col', `mon-line-strings-to-list', 
-`mon-string-ify-list', `mon-string-ify-current-line'
+`mon-line-strings-region', `mon-string-ify-list', `mon-string-ify-current-line'
 `mon-string-split-line', `mon-line-drop-in-words'.\n►►►"
   (interactive "r\ni\np")
   (let (rtn-v)
@@ -1962,7 +2010,8 @@ move point to region-beginning.\n
 ►\n Craig Balding\n Emmanuel Bouillon\n Bernardo Damele Assumpcao Guimarase
  Jean-Paul Fizaine\n Rob Havelt\n Chris Wysopal\n►\n 
 :SEE-ALSO `mon-line-strings-qt-region', `mon-line-strings-bq-qt-sym-bol', 
-`mon-line-strings-indent-to-col', `mon-line-strings-to-list'\n►►►"
+`mon-line-strings-region', `mon-line-strings-indent-to-col',
+`mon-line-strings-to-list'\n►►►"
   (interactive "r\ni\np")
   (let ((replc)
         (r-beg (make-marker))
@@ -2013,9 +2062,10 @@ move point to region-beginning.\n
               \(mon-line-strings-pipe-bol \(buffer-end 0\) \(buffer-end 1\) t\)
               \(mon-line-strings-indent-to-col \(buffer-end 0\) \(buffer-end 1\) 7 t\)
               \(buffer-substring-no-properties \(buffer-end 0\) \(buffer-end 1\)\)\)\)
-  tmp\)\n\n►\nCraig Balding\nEmmanuel Bouillon\nBernardo Damele Assumpcao Guimarase
+  tmp\)\n\n►\nCraig Balding\nEmmanuel Bouillon\nBernardo Damele Assumpcao Guimaraes
 Jean-Paul Fizaine\nRob Havelt\nChris Wysopal\n►\n
-:SEE-ALSO `mon-line-strings-qt-region', `mon-line-strings-bq-qt-sym-bol', 
+:SEE-ALSO `mon-comment-divider->col' `mon-line-strings-qt-region',
+`mon-line-strings-region', `mon-line-strings-bq-qt-sym-bol',
 `mon-line-strings-to-list'\n►►►"
   (interactive "r\nP\ni\np")
   (let ((coln (if (and intrp (not col))
@@ -2056,7 +2106,7 @@ Jean-Paul Fizaine\nRob Havelt\nChris Wysopal\n►\n
 ;;,►
 ;;|Craig Balding
 ;;|Emmanuel Bouillon
-;;|Bernardo Damele Assumpcao Guimarase
+;;|Bernardo Damele Assumpcao Guimaraes
 ;;|Jean-Paul Fizaine
 ;;|Rob Havelt
 ;;|Chris Wysopal
@@ -2082,7 +2132,7 @@ Mon Key\nMON\nMon\nMON KEY\n\n;; When W-CDR nil:
 `mon-line-string-rotate-namestrings-combine', `mon-make-lastname-firstname', 
 `naf-make-name-for-lisp', `mon-make-names-list',`mon-string-ify-current-line', 
 `mon-line-strings-qt-region', `mon-string-ify-list', `mon-string-split-line',
-`mon-line-drop-in-words'.\n►►►"
+`mon-line-strings-region', `mon-line-drop-in-words'.\n►►►"
   (interactive "r\ni\nP\ni\np") ;; (interactive "r\nP\ni\ni\np") make w-cdr the pref arg
   (let ((start-reg start)
         (end-reg end)
@@ -2152,7 +2202,8 @@ holding a string containing one nameform.\n
 \(mon-line-string-rotate-name '\(\"Dmitri Pavlovich Romanov\")\)\n
 :SEE-ALSO `mon-line-strings-to-list', `mon-line-string-rotate-namestrings'
 `mon-line-string-unrotate-namestrings', `mon-line-string-rotate-namestrings-combine'
-`mon-make-lastname-firstname', `naf-make-name-for-lisp', `mon-make-names-list'.\n►►►"
+`mon-make-lastname-firstname', `naf-make-name-for-lisp', `mon-make-names-list'.
+`mon-line-strings-region'\n►►►"
   (let* ((nm-or-elt (if (atom name-str-or-elt)
 			name-str-or-elt
 		      (let ((get-head name-str-or-elt))
@@ -2188,7 +2239,8 @@ When INSRTP is non-nil or called-interactively insert rotated names at point.
 Does not move point.\n
 :SEE-ALSO `mon-line-string-unrotate-namestrings', `mon-line-string-rotate-name', 
 `mon-line-string-rotate-namestrings-combine', `mon-line-strings-to-list',
-`mon-make-lastname-firstname', `mon-make-names-list', `naf-make-name-for-lisp'.\n►►►"
+`mon-make-lastname-firstname', `mon-make-names-list', `naf-make-name-for-lisp'.
+`mon-line-strings-region'\n►►►"
   (interactive "r\nP\ni\np")
   (let ((r-nms-strt start)
 	(r-nms-end  end)
@@ -2242,7 +2294,8 @@ Harriman (William Averell)\nMcCloy (John Jay)\nBohlen (Charles Eustis)
 Lovett (Robert Abercrombie)\n►\n
 :SEE-ALSO `mon-line-string-rotate-name', `mon-line-string-rotate-namestrings'
 `mon-line-string-rotate-namestrings-combine' `mon-line-strings-to-list',
-`mon-make-lastname-firstname', `naf-make-name-for-lisp', `mon-make-names-list'.\n►►►"
+`mon-make-lastname-firstname', `naf-make-name-for-lisp', `mon-make-names-list',
+`mon-line-strings-region'\n►►►"
   (interactive "r\nP\ni\np")
   (let ((s-r start)
         (e-r end)

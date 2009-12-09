@@ -2,17 +2,13 @@ This is a place to share your Emacs color themes.
 
 To add your color theme edit this page and add <code>Lisp:color-theme-<name here>.el</code>. Then follow the link, edit the page, and paste the file. When pasting, make sure the first line on the page starts with three semicolons: <code>;;;</code>.
 
-Lisp:color-theme-ahei.el
-
-Lisp:color-theme-domq.el
-
-Lisp:color-theme-inkpot.el
-
-Lisp:color-theme-maker.el
-
-Lisp:color-theme-reg.el
-
-Lisp:color-theme-tango.el -- Color theme based on Tango Palette
+* Lisp:color-theme-ahei.el
+* Lisp:color-theme-domq.el
+* [http://edward.oconnor.cx/elisp/color-theme-hober2.el color-theme-hober2.el]
+* Lisp:color-theme-inkpot.el
+* Lisp:color-theme-maker.el
+* Lisp:color-theme-reg.el
+* Lisp:color-theme-tango.el -- Color theme based on Tango Palette
 
 == Notes ==
 

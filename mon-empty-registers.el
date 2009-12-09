@@ -10,6 +10,7 @@
 ;;; `mon-query-replace-register1<-reg2', `mon-coerce->char'
 ;;; `mon-decode-meta-key-event', `mon-catch-meta-key'
 ;;; `mon-set-register->tags', `mon-make-set-register->tags-docs'
+;;; `mon-set-register->tags-semic', `mon-set-register->tags-sharp'
 ;;; FUNCTIONS:◄◄◄
 ;;;
 ;;; MACROS:
@@ -147,19 +148,9 @@
 ) ;; eval-when
 
 ;;; ==============================
+;;; (string-to-char "C")
 ;;; :CREATED <Timestamp: #{2009-12-03T14:40:12-05:00Z}#{09494} - by MON>
-(defvar *mon-register-config-tags*
-  '((:W-COMMENT-PFX . ((87  . ":WAS")
-                       (70  . ":FROM")
-                       (84  . ":TO")
-                       (83  . ":SEE")
-                       (78  . ":NOTE")
-                       (79  . ":OLD")
-                       (77  . ":MATCH")
-                       (69  . ":EXAMPLE")))
-    (:TIMESTAMPED . ((67 .  ":CHANGED")
-                     (65 . ":ADDED")))
-    (:NO-COMMENT-PFX . ((115 . "shell>"))))
+(defvar *mon-register-config-tags* nil
   "*Alist of char and tag strings for commenting source.
 Keys map as follows: 
 :W-COMMENT-PFX ->  Strings with whitespace wrapping.
@@ -167,6 +158,22 @@ Keys map as follows:
 :NO-COMMENT-PFX -> Strings without whitespace wrapping.\n
 :CALLED-BY `mon-set-register->tags'.
 :SEE-ALSO `mon-make-set-register->tags-docs'\n►►►")
+;;
+(eval-when-compile
+(unless (bound-and-true-p *mon-register-config-tags*)
+  (setq *mon-register-config-tags*
+        '((:W-COMMENT-PFX  . ((87  . ":WAS")
+                              (70  . ":FROM")
+                              (84  . ":TO")
+                              (83  . ":SEE")
+                              (78  . ":NOTE")
+                              (79  . ":OLD")
+                              (77  . ":MATCH")
+                              (67  . ":CONFLICT")
+                              (69  . ":EXAMPLE")))
+          (:TIMESTAMPED    . ((67 .  ":CHANGED")
+                              (65 . ":ADDED")))
+          (:NO-COMMENT-PFX . ((115 . "shell>")))))))
 ;;
 ;;; :TEST-ME (assoc :W-COMMENT-PFX *mon-register-config-tags*) 
 ;;; :TEST-ME (assoc :TIMESTAMPED *mon-register-config-tags*)
@@ -178,7 +185,7 @@ Keys map as follows:
 ;;; :CREATED <Timestamp: #{2009-12-03T17:50:24-05:00Z}#{09494} - by MON KEY>
 (defun* mon-set-register->tags (&key sharp semic)
   ""
-  (interactive)
+  ;;  (interactive)
   (let ((mp-keys *mon-register-config-tags*)
         (setr-wsp #'(lambda (x) 
                       (set-register (car x) 
@@ -208,14 +215,34 @@ Keys map as follows:
 ;;; :TEST-ME (progn (mon-set-register->tags :semic t)(insert-register 77))
 
 ;;; ==============================
+;;; :CREATED <Timestamp: #{2009-12-07T17:29:54-05:00Z}#{09501} - by MON>
+(defun mon-set-register->tags-semic ()
+"Set the prefix comment style of `mon-set-register->tags' to `;; '.
+:SEE-ALSO `mon-set-register->tags-sharp', `*mon-register-config-tags*'.\n►►►"
+  (interactive)
+  (mon-set-register->tags :semic t))
+;;
+;;; :TEST-ME (call-interactively 'mon-set-register->tags-semic)
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-12-07T17:29:52-05:00Z}#{09501} - by MON>
+(defun mon-set-register->tags-sharp ()
+"Set the prefix comment style of `mon-set-register->tags' to `# '.\n
+:SEE-ALSO `mon-set-register->tags-semic', `*mon-register-config-tags*'.\n►►►"
+  (interactive)
+  (mon-set-register->tags :sharp t))
+;;
+;;; :TEST-ME (call-interactively 'mon-set-register->tags-sharp)
+
+;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-12-03T17:32:01-05:00Z}#{09494} - by MON>
 (defun mon-make-set-register->tags-docs ()
-"Helper function puts register contents/keybinding values on 
+  "Helper function puts register contents/keybinding values on 
 docstring of `mon-set-register->tags'.\n
 :SEE-ALSO `*mon-register-config-tags*'.\n►►►"
   (let* ((build-doc)
-        (do-s t)
-        (map-sym #'(lambda (q) 
+         (do-s t)        
+         (map-sym #'(lambda (q) 
                      (mapc #'(lambda (u) (push u build-doc))
                            (mapcar 'car (cdr (assoc q *mon-register-config-tags*))))))
         (map-kys #'(lambda (z)
@@ -229,9 +256,9 @@ docstring of `mon-set-register->tags'.\n
                             (current-buffer))
                            (funcall (key-binding (concat "\C-cri" (char-to-string z))))
                            (newline))))))
-
-    (princ "\n;; :SEMI-C Style\n" (current-buffer))
-    (mon-set-register->tags)
+    (princ "\n;; :SEMI-C-STYLE\n" (current-buffer))
+    ;; :WAS (mon-set-register->tags)
+    (mon-set-register->tags-semic)
     (funcall map-sym :W-COMMENT-PFX)
     (funcall map-sym :NO-COMMENT-PFX)
     (mapc #'(lambda (s) (funcall map-kys s)) build-doc)
@@ -239,8 +266,9 @@ docstring of `mon-set-register->tags'.\n
           build-doc nil)
     (funcall map-sym :TIMESTAMPED)
     (mapc #'(lambda (s) (funcall map-kys s)) build-doc)
-    (princ "\n;; :SHARP Style\n" (current-buffer))
-    (mon-set-register->tags :sharp t)
+    (princ "\n;; :SHARP-STYLE\n" (current-buffer))
+    ;; :WAS (mon-set-register->tags :sharp t)
+    (mon-set-register->tags-sharp)
     (setq do-s t
           build-doc nil)
     (funcall map-sym :W-COMMENT-PFX)
@@ -273,8 +301,10 @@ keybindings: \"\C-cri<CHAR>\" :WARNING! bound as with `global-set-key'.\n
 Elements of `:W-COMMENT-PFX' `:NO-COMMENT-PFX' have standard register
 insertion keybindings: \"\C-xri<CHAR>\"\n\n:EXAMPLE"
 nil
-"\n:SEE-ALSO `mon-make-set-register->tags-docs'\n►►►")))
-
+"\n:SEE-ALSO `mon-set-register->tags-semic', `mon-set-register->tags-sharp'
+`mon-make-set-register->tags-docs'\n►►►")))
+;;
+;;; :TEST-ME (describe-function 'mon-set-register->tags)
 ;;; ==============================
 ;;; :CREATED <Timestamp: 2009-08-05-W32-3T16:12:00-0400Z - by MON KEY>
 (defvar *mon-cntl-char-registers* nil)
@@ -660,7 +690,7 @@ When called interactively or INTRP is non-nil resets all registers.\n
       (make-reg-list)
       (pop-registers))
   (setq pairs (pairlis reg-keys reg-lists))
-  (setq make-list '())
+  (setq make-reg-list '())
 (if (or intrp all)
     ;; (setq make-reg-list(mapcar (lambda (x) (symbol-value (cadr x))) *registr-of-registers*))
     (progn

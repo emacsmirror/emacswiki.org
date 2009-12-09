@@ -1,3 +1,3 @@
 Flymake for Lua, more than heavily inspired by FlymakeRuby:
 
-* [http://bitbucket.org/sroccaserra/emacs/src/tip/flymake-lua.el flymake-lua.el]
+* [http://github.com/sroccaserra/emacs/blob/master/flymake-lua.el flymake-lua.el]

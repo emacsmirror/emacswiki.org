@@ -25,10 +25,6 @@ export EDITOR=~/bin/edit
 Where "edit" is the small script above. The key is the "" for alternate-editor. emacsclient starts the server for you if and only if it is not already running.
 
 
-
-#  start emacs with the emacsserver running (this can be done by adding (server-start) to your InitFile, or by typing ##M-x server-start## from within emacs)
-# use emacsclient where you'd normally use emacs (as your editor in pine, as the value of the EDITOR environmental variable, etc).
-
 = Starting Emacs automatically =
 
 The tips for doing this are platform specific.

@@ -28,7 +28,7 @@ Tabkey2 steals the TAB key and tries to call the function you tell it to call.
 
 Here's what I use every day:
 
-* [http://bitbucket.org/sroccaserra/emacs/src/tip/smart-tab.el smart-tab.el]
+* [http://github.com/sroccaserra/emacs/blob/master/smart-tab.el smart-tab.el]
 
 It feels very natural (to me at least), ##<tab>## always do what I mean.
 
