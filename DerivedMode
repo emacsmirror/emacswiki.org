@@ -57,5 +57,19 @@ Note that there is another ProcmailMode available via tiny tools.
 
 Another example is SimpleWikiMode.
 
+If you are are deriving your new mode from something other than fundamental-mode, you may want to add to that mode's set of existing keywords.
+
+    (defface c3-face-1 
+      '((t (:foreground "#FF0000")))
+      "red")
+
+     ;;; c3-mode 
+    (define-derived-mode c3-mode sgml-mode 
+     "c3-mode" 
+     "A variant of SGML mode. Numbers appear in red."
+
+     (font-lock-add-keywords nil '(("[0-9]" . 'c3-face-1)))
+    )
+
 ----
 CategoryCode

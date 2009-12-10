@@ -116,7 +116,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 3 $Rev: 234 $ of the Sunrise Commander.
+;; This is version 3 $Rev: 235 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.  I  have  also  received
@@ -592,9 +592,11 @@ automatically:
      ,form
      (setq sr-this-directory default-directory)
      (sr-keep-buffer)
-     (when dispose
-       (bury-buffer dispose)
-       (kill-buffer dispose))))
+     (if dispose
+         (with-current-buffer dispose
+           (bury-buffer)
+           (set-buffer-modified-p nil)
+           (kill-buffer dispose)))))
 
 (defmacro sr-in-other (form)
   "Executes the given form in the context of the passive pane. Helper macro for
@@ -1189,14 +1191,14 @@ automatically:
   (interactive (find-file-read-args "Find file: " nil))
   (let ((mode (assoc-default filename auto-mode-alist 'string-match)))
     (when (and sr-avfs-root
-	       (or (eq 'archive-mode mode)
-		   (eq 'tar-mode mode)
-		   (and (listp mode) (eq 'jka-compr (second mode)))
-		   (eq 'avfs-mode mode)))
+               (or (eq 'archive-mode mode)
+                   (eq 'tar-mode mode)
+                   (and (listp mode) (eq 'jka-compr (second mode)))
+                   (eq 'avfs-mode mode)))
       (let ((vfile (sr-avfs-dir filename)))
-	(when vfile
-	  (sr-goto-dir vfile)
-	  (setq filename nil))))
+        (when vfile
+          (sr-goto-dir vfile)
+          (setq filename nil))))
     (when (eq 'sr-virtual-mode mode)
       (sr-save-aspect
        (sr-alternate-buffer (find-file filename)))
@@ -1470,17 +1472,18 @@ automatically:
 
 (defun sr-synchronize-panes (&optional reverse)
   "Changes  the  directory  in the other pane to that in the current one. If the
-  optional parameter reverse is set to t, performs the opposite operation,  i.e.
+  optional parameter reverse is not nil, performs the opposite  operation,  i.e.
   changes the directory in the current pane to that in the other one."
-  (interactive)
+  (interactive "P")
   (let ((target (current-buffer)))
     (sr-change-window)
     (if reverse
         (setq target (current-buffer))
       (sr-alternate-buffer (switch-to-buffer target)))
     (sr-change-window)
-    (if reverse
-        (sr-alternate-buffer (switch-to-buffer target)))))
+    (when reverse
+      (sr-alternate-buffer (switch-to-buffer target))
+      (sr-revert-buffer))))
 
 (defun sr-browse-pane ()
   "Browses the directory in the active pane."
@@ -1783,7 +1786,7 @@ automatically:
   (interactive)
   (sr-highlight 'sr-editing-path-face)
   (let* ((was-virtual (equal major-mode 'sr-virtual-mode))
-	 (major-mode 'dired-mode))
+         (major-mode 'dired-mode))
     (wdired-change-to-wdired-mode)
     (if was-virtual
         (set (make-local-variable 'sr-virtual-buffer) t)))
@@ -1805,14 +1808,14 @@ automatically:
     `(advice
       lambda ()
       (if sr-running
-	  (sr-save-aspect
-	   (let ((was-virtual (local-variable-p 'sr-virtual-buffer))
+          (sr-save-aspect
+           (let ((was-virtual (local-variable-p 'sr-virtual-buffer))
                  (saved-point (point)))
-	     (setq major-mode 'wdired-mode)
-	     ad-do-it
-	     (sr-readonly-pane was-virtual)
+             (setq major-mode 'wdired-mode)
+             ad-do-it
+             (sr-readonly-pane was-virtual)
              (goto-char saved-point)))
-	ad-do-it)))
+        ad-do-it)))
    'around 'last)
   (ad-activate fun nil))
 (sr-terminate-wdired 'wdired-finish-edit)
@@ -1898,7 +1901,7 @@ automatically:
   (let* ((dired-marker-char dired-del-marker)
          (regexp (dired-marker-regexp)) )
     (if (save-excursion (goto-char (point-min))
-			(re-search-forward regexp nil t))
+                        (re-search-forward regexp nil t))
         (sr-do-delete)
       (message "(No deletions requested)"))))
 
@@ -2034,14 +2037,16 @@ subdirectories")))
   (let ((fileset (dired-get-marked-files nil))
         indentation)
     (sr-change-window)
-    (sr-end-of-buffer)
+    (sr-beginning-of-buffer)
     (beginning-of-line)
     (re-search-forward "\\S-" nil t)
     (setq indentation (- (current-column) 1))
+    (sr-end-of-buffer)
     (dired-next-line 1)
     (toggle-read-only -1)
     (mapc (lambda (file)
             (insert-char 32 indentation)
+            (setq file (dired-make-relative file default-directory))
             (setq file (replace-regexp-in-string "/$" "" file))
             (insert-directory file sr-virtual-listing-switches)
             (sr-end-of-buffer)
@@ -2382,22 +2387,25 @@ or (c)ontents? ")
   (sr-alternate-buffer (switch-to-buffer name))
   (kill-region (point-min) (point-max)))
 
-(defun sr-pure-virtual ()
-  "Creates a new empty buffer in Sunrise VIRTUAL mode."
-  (interactive)
-  (sr-save-aspect
-   (let ((dir (directory-file-name (dired-current-directory)))
-         (buff (generate-new-buffer-name (buffer-name (current-buffer))))
-         (dispose (current-buffer)))
-     (sr-alternate-buffer (switch-to-buffer buff))
-     (goto-char (point-min))
-     (insert (concat "  " dir) ":\n")
-     (insert " Pure VIRTUAL buffer: \n")
-     (insert "  drwxrwxrwx 0 ? ? 0000 0000-00-00 00:00 ./\n")
-     (sr-virtual-mode)
-     (sr-keep-buffer)
-     (unless (sr-equal-dirs sr-this-directory sr-other-directory)
-       (kill-buffer dispose)))))
+(defun sr-pure-virtual (&optional arg)
+  "Creates  a new empty buffer in Sunrise VIRTUAL mode. If the optional argument
+  is not nil, creates the virtual buffer in the passive pane."
+  (interactive "P")
+  (if arg
+      (progn
+        (sr-synchronize-panes)
+        (sr-in-other (sr-pure-virtual nil)))
+    (sr-save-aspect
+     (let* ((dir (directory-file-name (dired-current-directory)))
+            (buff (generate-new-buffer-name (buffer-name (current-buffer))))
+            (here (if (string-match dired-omit-files ".") dir ".")))
+       (sr-alternate-buffer (switch-to-buffer buff))
+       (goto-char (point-min))
+       (insert (concat "  " dir) ":\n")
+       (insert " Pure VIRTUAL buffer: \n  ")
+       (insert-directory here sr-virtual-listing-switches)
+       (sr-virtual-mode)
+       (sr-keep-buffer)))))
 
 (defun sr-dired-do-apply (dired-fun)
   "Helper function for implementing sr-do-query-replace-regexp and Co."

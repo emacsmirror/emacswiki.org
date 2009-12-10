@@ -80,7 +80,7 @@ These things can be done after the switchover, we just shouldn't forget them:
 
 * [http://savannah.gnu.org/support/index.php?106612 Savannah ticket #106612] about the Emacs Bzr switchover in general.
 
-* [https://savannah.gnu.org/support/index.php?107143 Savannah ticket #107143] about getting bzr+ssh access to work on savannah.gnu.org.
+* [https://savannah.gnu.org/support/index.php?107143 Savannah ticket #107143] and [https://savannah.gnu.org/support/?107077 #107077] about getting bzr+ssh access to work on savannah.gnu.org.
 
 * [https://savannah.gnu.org/support/index.php?107142 Savannah ticket #107142] Browsing Bazaar repositories doesn't work
 

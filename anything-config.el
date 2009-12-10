@@ -162,12 +162,164 @@
 ;;     `anything-c-source-minibuffer-history' (Minibuffer History)
 ;;     `anything-c-source-elscreen'           (Elscreen)
 ;;  System:
+;;     `anything-c-source-absolute-time-timers'     (Absolute Time Timers)
+;;     `anything-c-source-idle-time-timers'         (Idle Time Timers)
 ;;     `anything-c-source-xrandr-change-resolution' (Change Resolution)
 ;;     `anything-c-source-xfonts'                   (X Fonts)
 ;;     `anything-c-source-apt'                      (APT)
 ;;     `anything-c-source-gentoo'                   (Portage sources)
 ;;     `anything-c-source-use-flags'                (Use Flags)
 ;;     `anything-c-source-emacs-process'            (Emacs Process)
+
+;;; Commands:
+;;
+;; Below are complete command list:
+;;
+;;  `anything-for-files'
+;;    Preconfigured `anything' for opening files.
+;;  `anything-info-at-point'
+;;    Preconfigured `anything' for searching info at point.
+;;  `anything-show-kill-ring'
+;;    Preconfigured `anything' for `kill-ring'. It is drop-in replacement of `yank-pop'.
+;;  `anything-minibuffer-history'
+;;    Preconfigured `anything' for `minibuffer-history'.
+;;  `anything-gentoo'
+;;    Preconfigured `anything' for gentoo linux.
+;;  `anything-surfraw-only'
+;;    Preconfigured `anything' for surfraw.
+;;  `anything-imenu'
+;;    Preconfigured `anything' for `imenu'.
+;;  `anything-google-suggest'
+;;    Preconfigured `anything' for google search with google suggest.
+;;  `anything-for-buffers'
+;;    Preconfigured `anything' for buffer.
+;;  `anything-bbdb'
+;;    Preconfigured `anything' for BBDB.
+;;  `anything-locate'
+;;    Preconfigured `anything' for Locate.
+;;  `anything-w3m-bookmarks'
+;;    Preconfigured `anything' for w3m bookmark.
+;;  `anything-colors'
+;;    Preconfigured `anything' for color.
+;;  `anything-bm-list'
+;;    Preconfigured `anything' for visible bookmarks.
+;;  `anything-timers'
+;;    Preconfigured `anything' for timers.
+;;  `anything-kill-buffers'
+;;    You can continuously kill buffer you selected.
+;;  `anything-query-replace-regexp'
+;;    Drop-in replacement of `query-replace-regexp' with building regexp visually.
+;;  `anything-regexp'
+;;    It is like `re-builder'. It helps buliding regexp and replacement.
+;;  `anything-insert-buffer-name'
+;;    Insert buffer name.
+;;  `anything-insert-symbol'
+;;    Insert current symbol.
+;;  `anything-insert-selection'
+;;    Insert current selection.
+;;  `anything-show-buffer-only'
+;;    [OBSOLETE] Only show sources about buffer.
+;;  `anything-show-bbdb-only'
+;;    [OBSOLETE] Only show sources about BBDB.
+;;  `anything-show-locate-only'
+;;    [OBSOLETE] Only show sources about Locate.
+;;  `anything-show-info-only'
+;;    [OBSOLETE] Only show sources about Info.
+;;  `anything-show-imenu-only'
+;;    [OBSOLETE] Only show sources about Imenu.
+;;  `anything-show-files-only'
+;;    [OBSOLETE] Only show sources about File.
+;;  `anything-show-w3m-bookmarks-only'
+;;    [OBSOLETE] Only show source about w3m bookmark.
+;;  `anything-show-colors-only'
+;;    [OBSOLETE] Only show source about color.
+;;  `anything-show-kill-ring-only'
+;;    [OBSOLETE] Only show source about kill ring.
+;;  `anything-show-this-source-only'
+;;    Only show this source.
+;;  `anything-test-sources'
+;;    List all anything sources for test.
+;;  `anything-select-source'
+;;    Select source.
+;;  `anything-find-files'
+;;    Preconfigured anything for `find-file'.
+;;  `anything-bookmark-ext'
+;;    Preconfigured anything for bookmark-extensions sources.
+;;  `anything-mark-ring'
+;;    Preconfigured `anything' for `anything-c-source-mark-ring'.
+;;  `anything-global-mark-ring'
+;;    Preconfigured `anything' for `anything-c-source-global-mark-ring'.
+;;  `anything-yaoddmuse-cache-pages'
+;;    Fetch the list of files on emacswiki and create cache file.
+;;  `anything-yaoddmuse-emacswiki-edit-or-view'
+;;    Edit or View EmacsWiki page.
+;;  `anything-yaoddmuse-emacswiki-post-library'
+;;    Post library to EmacsWiki.
+;;  `anything-emms-stream-edit-bookmark'
+;;    Change the information of current emms-stream bookmark from anything.
+;;  `anything-emms-stream-delete-bookmark'
+;;    Delete an emms-stream bookmark from anything.
+;;  `anything-call-source'
+;;    Call anything source.
+;;  `anything-call-source-from-anything'
+;;    Call anything source within `anything' session.
+;;  `anything-create-from-anything'
+;;    Run `anything-create' from `anything' as a fallback.
+;;  `anything-create'
+;;    Do many create actions from STRING.
+;;  `anything-apt'
+;;    The `anything' frontend of APT package manager.
+;;  `anything-c-set-variable'
+;;    Set value to VAR interactively.
+;;  `anything-c-adaptive-save-history'
+;;    Save history information to file given by `anything-c-adaptive-history-file'.
+;;
+;;; Customizable Options:
+;;
+;; Below are customizable option list:
+;;
+;;  `anything-c-use-standard-keys'
+;;    Whether use standard keybindings. (no effect)
+;;    default = nil
+;;  `anything-c-adaptive-history-file'
+;;    Path of file where history information is stored.
+;;    default = "~/.emacs.d/anything-c-adaptive-history"
+;;  `anything-c-adaptive-history-length'
+;;    Maximum number of candidates stored for a source.
+;;    default = 50
+;;  `anything-c-google-suggest-url'
+;;    URL used for looking up suggestions.
+;;    default = "http://google.com/complete/search?output=toolbar&q="
+;;  `anything-c-google-suggest-search-url'
+;;    URL used for searching.
+;;    default = "http://www.google.com/search?ie=utf-8&oe=utf-8&q="
+;;  `anything-google-suggest-use-curl-p'
+;;    *When non--nil use CURL to get info from `anything-c-google-suggest-url'.
+;;    default = nil
+;;  `anything-c-boring-buffer-regexp'
+;;    The regexp that match boring buffers.
+;;    default = (rx (or (group bos " ") "*anything" " *Echo Area" " *Minibuf"))
+;;  `anything-c-boring-file-regexp'
+;;    The regexp that match boring files.
+;;    default = (rx (or (and "/" ... ...) (and line-start ".#") (and ... eol)))
+;;  `anything-kill-ring-threshold'
+;;    *Minimum length to be listed by `anything-c-source-kill-ring'.
+;;    default = 10
+;;  `anything-su-or-sudo'
+;;    What command to use for root access.
+;;    default = "su"
+;;  `anything-for-files-prefered-list'
+;;    Your prefered sources to find files.
+;;    default = (quote (anything-c-source-ffap-line anything-c-source-ffap-guesser anything-c-source-buffers+ anything-c-source-recentf anything-c-source-bookmarks ...))
+;;  `anything-create--actions-private'
+;;    User defined actions for `anything-create' / `anything-c-source-create'.
+;;    default = nil
+;;  `anything-allow-skipping-current-buffer'
+;;    Show current buffer or not in anything buffer
+;;    default = t
+;;  `anything-c-enable-eval-defun-hack'
+;;    *If non-nil, execute `anything' using the source at point when C-M-x is pressed.
+;;    default = t
 
 ;;; Change log:
 ;;
@@ -455,6 +607,13 @@ With two prefix args allow choosing in which symbol to search."
   "Preconfigured `anything' for visible bookmarks."
   (interactive)
   (anything-other-buffer 'anything-c-source-bm "*anything bm list*"))
+
+(defun anything-timers ()
+  "Preconfigured `anything' for timers."
+  (interactive)
+  (anything-other-buffer '(anything-c-source-absolute-time-timers
+                           anything-c-source-idle-time-timers)
+                         "*anything timers*"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Anything Applications ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; kill buffers
@@ -1028,6 +1187,7 @@ buffer that is not the current buffer."
     (volatile)
     (action . (("Find File" . find-file-at-point)
                ("Find file other window" . find-file-other-window)
+               ("Find file in Elscreen"  . elscreen-find-file)
                ("Find file as root" . anything-find-file-as-root)))))
 
 ;; (anything 'anything-c-source-find-files)
@@ -1037,15 +1197,15 @@ buffer that is not the current buffer."
 If LEVEL is positive reduce from end else from beginning.
 If UNIX-CLOSE is non--nil close filename with /.
 If EXPAND is non--nil expand-file-name."
-  (let* ((exp-fname (expand-file-name fname))
+  (let* ((exp-fname  (expand-file-name fname))
          (fname-list (split-string (if (or (string= fname "~/") expand)
                                        exp-fname fname) "/" t))
-         (len (length fname-list))
-         (pop-list (if (< level 0)
-                       (subseq fname-list (* level -1))
-                       (subseq fname-list 0 (- len level))))
-         (result (mapconcat #'(lambda (x) x) pop-list "/"))
-         (empty (string= result "")))
+         (len        (length fname-list))
+         (pop-list   (if (< level 0)
+                         (subseq fname-list (* level -1))
+                         (subseq fname-list 0 (- len level))))
+         (result     (mapconcat 'identity pop-list "/"))
+         (empty      (string= result "")))
     (when unix-close (setq result (concat result "/")))
     (if (string-match "^~" result)
         (if (string= result "~/") "~/" result)
@@ -1062,7 +1222,7 @@ If EXPAND is non--nil expand-file-name."
                (string-match "^\\(http\\|https\\|ftp\\)://.*" path))
            (list path))
           ((string= anything-pattern "")
-           (directory-files (getenv "HOME") t))
+           (directory-files "/" t))
           ((and (file-directory-p path)
                 (file-exists-p path))
            (directory-files path t))
@@ -1541,6 +1701,7 @@ Work both with standard Emacs bookmarks and bookmark-extensions.el."
                               (bmkext-man-bookmark-p i))
      for iswoman       = (and (fboundp 'bmkext-woman-bookmark-p) ; Woman
                               (bmkext-woman-bookmark-p i))
+     for handlerp      = (bookmark-get-handler i)
      for isannotation  = (bookmark-get-annotation i)
      ;; Add a * if bookmark have annotation
      if (and isannotation (not (string-equal isannotation "")))
@@ -1568,7 +1729,7 @@ Work both with standard Emacs bookmarks and bookmark-extensions.el."
              (not regp) (not (or iswoman isman)))
      collect (propertize i 'face 'anything-bmkext-file 'help-echo pred)
      ;; buffer non--filename
-     if (and (fboundp 'bmkext-get-buffer-name) bufp (not (bookmark-get-handler i))
+     if (and (fboundp 'bmkext-get-buffer-name) bufp (not handlerp)
              (if pred (not (file-exists-p pred)) (not pred)))
      collect (propertize i 'face 'anything-bmkext-no--file)))
        
@@ -3301,6 +3462,26 @@ See also `anything-create--actions'."
 
 ;;;; <System>
 
+;;; Timers
+(defvar anything-c-source-absolute-time-timers
+  '((name . "Absolute Time Timers")
+    (candidates . timer-list)
+    (type . timer)))
+;; (anything 'anything-c-source-absolute-time-timers)
+
+(defvar anything-c-source-idle-time-timers
+  '((name . "Idle Time Timers")
+    (candidates . timer-idle-list)
+    (type . timer)))
+;; (anything 'anything-c-source-idle-time-timers)
+
+(defun anything-c-timer-real-to-display (timer)
+  (destructuring-bind (_ t1 t2 t3 _ func args &rest rest) (append timer nil)
+    (format "%s %s(%s)"
+            (format-time-string "%m/%d %T" (list t1 t2 t3))
+            func
+            (mapconcat 'prin1-to-string (aref timer 6) " "))))
+
 ;;; X RandR resolution change
 ;;; FIXME I do not care multi-display.
 (defvar anything-c-xrandr-output "VGA")
@@ -4460,6 +4641,12 @@ content is CONTENT near the LINENO.
 If `recenter' attribute is specified, the line is displayed at
 the center of window, otherwise at the top of window.
 ")
+
+(define-anything-type-attribute 'timer
+  '((real-to-display . anything-c-timer-real-to-display)
+    (action ("Cancel Timer" . cancel-timer)))
+  "Timer.")
+
 ;;;; unit test
 ;; (install-elisp "http://www.emacswiki.org/cgi-bin/wiki/download/el-expectations.el")
 ;; (install-elisp "http://www.emacswiki.org/cgi-bin/wiki/download/el-mock.el")
@@ -4536,152 +4723,4 @@ the center of window, otherwise at the top of window.
 ;;; LocalWords:  Vokes rfind berkeley JST ffap lacarte bos
 ;;; LocalWords:  Lacarte Minibuf epp LaCarte bm attrset migemo attr conf mklist
 ;;; LocalWords:  startpos noselect dont desc
-
-;;; Commands:
-;;
-;; Below are complete command list:
-;;
-;;  `anything-for-files'
-;;    Preconfigured `anything' for opening files.
-;;  `anything-info-at-point'
-;;    Preconfigured `anything' for searching info at point.
-;;  `anything-show-kill-ring'
-;;    Preconfigured `anything' for `kill-ring'. It is drop-in replacement of `yank-pop'.
-;;  `anything-minibuffer-history'
-;;    Preconfigured `anything' for `minibuffer-history'.
-;;  `anything-gentoo'
-;;    Preconfigured `anything' for gentoo linux.
-;;  `anything-surfraw-only'
-;;    Preconfigured `anything' for surfraw.
-;;  `anything-imenu'
-;;    Preconfigured `anything' for `imenu'.
-;;  `anything-google-suggest'
-;;    Preconfigured `anything' for google search with google suggest.
-;;  `anything-for-buffers'
-;;    Preconfigured `anything' for buffer.
-;;  `anything-bbdb'
-;;    Preconfigured `anything' for BBDB.
-;;  `anything-locate'
-;;    Preconfigured `anything' for Locate.
-;;  `anything-w3m-bookmarks'
-;;    Preconfigured `anything' for w3m bookmark.
-;;  `anything-colors'
-;;    Preconfigured `anything' for color.
-;;  `anything-bm-list'
-;;    Preconfigured `anything' for visible bookmarks.
-;;  `anything-kill-buffers'
-;;    You can continuously kill buffer you selected.
-;;  `anything-query-replace-regexp'
-;;    Drop-in replacement of `query-replace-regexp' with building regexp visually.
-;;  `anything-regexp'
-;;    It is like `re-builder'. It helps buliding regexp and replacement.
-;;  `anything-insert-buffer-name'
-;;    Insert buffer name.
-;;  `anything-insert-symbol'
-;;    Insert current symbol.
-;;  `anything-insert-selection'
-;;    Insert current selection.
-;;  `anything-show-buffer-only'
-;;    [OBSOLETE] Only show sources about buffer.
-;;  `anything-show-bbdb-only'
-;;    [OBSOLETE] Only show sources about BBDB.
-;;  `anything-show-locate-only'
-;;    [OBSOLETE] Only show sources about Locate.
-;;  `anything-show-info-only'
-;;    [OBSOLETE] Only show sources about Info.
-;;  `anything-show-imenu-only'
-;;    [OBSOLETE] Only show sources about Imenu.
-;;  `anything-show-files-only'
-;;    [OBSOLETE] Only show sources about File.
-;;  `anything-show-w3m-bookmarks-only'
-;;    [OBSOLETE] Only show source about w3m bookmark.
-;;  `anything-show-colors-only'
-;;    [OBSOLETE] Only show source about color.
-;;  `anything-show-kill-ring-only'
-;;    [OBSOLETE] Only show source about kill ring.
-;;  `anything-show-this-source-only'
-;;    Only show this source.
-;;  `anything-test-sources'
-;;    List all anything sources for test.
-;;  `anything-select-source'
-;;    Select source.
-;;  `anything-find-files'
-;;    Preconfigured anything for `find-file'.
-;;  `anything-bookmark-ext'
-;;    Preconfigured anything for bookmark-extensions sources.
-;;  `anything-mark-ring'
-;;    Preconfigured `anything' for `anything-c-source-mark-ring'.
-;;  `anything-global-mark-ring'
-;;    Preconfigured `anything' for `anything-c-source-global-mark-ring'.
-;;  `anything-yaoddmuse-cache-pages'
-;;    Fetch the list of files on emacswiki and create cache file.
-;;  `anything-yaoddmuse-emacswiki-edit-or-view'
-;;    Edit or View EmacsWiki page.
-;;  `anything-yaoddmuse-emacswiki-post-library'
-;;    Post library to EmacsWiki.
-;;  `anything-emms-stream-edit-bookmark'
-;;    Change the information of current emms-stream bookmark from anything.
-;;  `anything-emms-stream-delete-bookmark'
-;;    Delete an emms-stream bookmark from anything.
-;;  `anything-call-source'
-;;    Call anything source.
-;;  `anything-call-source-from-anything'
-;;    Call anything source within `anything' session.
-;;  `anything-create-from-anything'
-;;    Run `anything-create' from `anything' as a fallback.
-;;  `anything-create'
-;;    Do many create actions from STRING.
-;;  `anything-apt'
-;;    The `anything' frontend of APT package manager.
-;;  `anything-c-set-variable'
-;;    Set value to VAR interactively.
-;;  `anything-c-adaptive-save-history'
-;;    Save history information to file given by `anything-c-adaptive-history-file'.
-;;
-;;; Customizable Options:
-;;
-;; Below are customizable option list:
-;;
-;;  `anything-c-use-standard-keys'
-;;    Whether use standard keybindings. (no effect)
-;;    default = nil
-;;  `anything-c-adaptive-history-file'
-;;    Path of file where history information is stored.
-;;    default = "~/.emacs.d/anything-c-adaptive-history"
-;;  `anything-c-adaptive-history-length'
-;;    Maximum number of candidates stored for a source.
-;;    default = 50
-;;  `anything-c-google-suggest-url'
-;;    URL used for looking up suggestions.
-;;    default = "http://google.com/complete/search?output=toolbar&q="
-;;  `anything-c-google-suggest-search-url'
-;;    URL used for searching.
-;;    default = "http://www.google.com/search?ie=utf-8&oe=utf-8&q="
-;;  `anything-google-suggest-use-curl-p'
-;;    *When non--nil use CURL to get info from `anything-c-google-suggest-url'.
-;;    default = nil
-;;  `anything-c-boring-buffer-regexp'
-;;    The regexp that match boring buffers.
-;;    default = (rx (or (group bos " ") "*anything" " *Echo Area" " *Minibuf"))
-;;  `anything-c-boring-file-regexp'
-;;    The regexp that match boring files.
-;;    default = (rx (or (and "/" ... ...) (and line-start ".#") (and ... eol)))
-;;  `anything-kill-ring-threshold'
-;;    *Minimum length to be listed by `anything-c-source-kill-ring'.
-;;    default = 10
-;;  `anything-su-or-sudo'
-;;    What command to use for root access.
-;;    default = "su"
-;;  `anything-for-files-prefered-list'
-;;    Your prefered sources to find files.
-;;    default = (quote (anything-c-source-ffap-line anything-c-source-ffap-guesser anything-c-source-buffers+ anything-c-source-recentf anything-c-source-bookmarks ...))
-;;  `anything-create--actions-private'
-;;    User defined actions for `anything-create' / `anything-c-source-create'.
-;;    default = nil
-;;  `anything-allow-skipping-current-buffer'
-;;    Show current buffer or not in anything buffer
-;;    default = t
-;;  `anything-c-enable-eval-defun-hack'
-;;    *If non-nil, execute `anything' using the source at point when C-M-x is pressed.
-;;    default = t
 

@@ -23,6 +23,10 @@
 ;;   default, need to change to the initial background colour. (17/12/2008)
 ;;
 ;; Please let me know if this is useful to you, or if you have any suggestions!
+;;
+;; CHANGES:
+;; - 2009-12-09 incorporated Tom Breton's suggested change to word-count (see wiki page)
+
 
 (require 'timer)
 
@@ -118,9 +122,24 @@ warning routine or stimulus routine."
   )
 
 (defun word-count nil 
-  "Count words in buffer" 
-  (how-many "\\w+" (point-min) (point-max))
-)
+       "Count words in buffer" 
+       ;;Adapted from replace.el - Tehom
+       (let
+	  ((regexp "\\w+")
+	     (rend (point-max)))
+	  (save-excursion
+	     (goto-char (point-min))
+	     (let ((count 0)
+		     opoint)
+		(while (and 
+			  (< (point) rend)
+			  (progn
+			     (setq opoint (point))
+			     (re-search-forward regexp rend t)))
+		   (if (= opoint (point))
+		      (forward-char 1)
+		      (setq count (1+ count))))
+		count))))
 
 (defun write-or-die-go ()
   "Start incentivised writing!"

@@ -3,10 +3,11 @@ Now you can run vi (or mutt! (see MuttInEmacs) (or Emacs! :))) in an Emacs buffe
 
 Use M-x ansi-term to start it.
 
-Note that M-x ansi-term differs from M-x term: ansi-term will render
-colors, too.
+Note that M-x ansi-term differs from M-x term: ansi-term will render colors, too.
 
 Also note that ansi-term remaps your default C-x key to C-c.
+
+In Emacs 22, try prefixing actions that aren't recognized by their standard key commands with C-x.  For example, M-x becomes C-x M-x.
 ----
 [new:AndyStewart:2009-02-03 00:42 UTC]
 I think MultiTerm is more better. -- AndyStewart
