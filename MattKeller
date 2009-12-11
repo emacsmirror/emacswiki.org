@@ -12,6 +12,21 @@ I've written a library called mk-project.el to manage emacs "projects" (see [[Ca
 
 Details are on the [http://www.littleredbat.net/mk/code/mk-project.html mk-project.el homepage]; see Lisp:mk-project.el for the source. 
 
+[new]
+There is a slight problem with the mk-proj-find-cmd-ignore-args function if ignore-patterns is nil.
+Here is a fix:
+
+ (defun mk-proj-find-cmd-ignore-args (ignore-patterns)
+   "Generate the -not ( -name <pat1> -o -name <pat2> ...) pattern for find cmd"
+   (if ignore-patterns
+       (concat " -not " (mk-proj-find-cmd-src-args ignore-patterns))
+     ""))
+
+[[JoeBloggs]]
+
+Joe - thanks for noticing. However that bug was fixed in version 1.1. Cheers --[[MattKeller]]
+
+
 === etags-update.el ===
 
 A global minor mode that updates your EmacsTags when you save a file. The code is [http://github.com/mattkeller/etags-update available on github].

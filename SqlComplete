@@ -1,8 +1,6 @@
 This package provides a framework for completion of column and table names for SqlMode.
 
-You can get it here:
-
-* Geocities:/kensanata/elisp/sql-complete.el.txt
+* Lisp:sql-complete.el
 
 First, you have to set the data dictionary up.  Call `M-x sql-oracle-data-dictionary'.  This will send a select statement to the host that dumps the data dictionary.  The data dictionary is then read and stored in a lisp variable.  Based on this information, `M-x sql-complete' now completes columns and tables.  Bind `sql-complete' to any key you like in `sql-mode-map' and `sql-interactive-mode-map'.
 

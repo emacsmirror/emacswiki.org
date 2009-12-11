@@ -113,6 +113,10 @@ I'm trying to follow up on this, but it's not obvious. Dunno what [[Rick Bielaws
 The problem appears to be an Emacs bug (see bug #4835, [http://emacsbugs.donarmstrong.com/cgi-bin/bugreport.cgi?bug=4835]). So far I haven't found a solution or a workaround. You are of course welcome to use the original version if it suits your needs. -- DrewAdams
 
 
+[new:DrewAdams:2009-12-10 17:35 UTC]
+Sorry for the delay. This is fixed now. -- DrewAdams
+
+
 
 == Discussion (other than problems) == 
 

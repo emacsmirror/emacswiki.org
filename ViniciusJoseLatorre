@@ -129,7 +129,7 @@ code.
 
 </pre>
 ; ([Self:action=history;id=whitespace.el history])  Download:whitespace.el  (WhiteSpace) : Minor mode to visualize blanks (TAB, (HARD) SPACE and NEWLINE).
-: .:: ''v12.0'' :: ''part of GNU Emacs'' ::.
+: .:: ''v12.1'' :: ''part of GNU Emacs'' ::.
 : It runs on Emacs 23.
 : **Note 1:** //The source here in EmacsWiki was modified to run on Emacs 21, 22 and 23.//
 : **Note 2:** //This package replaces// BlankMode.

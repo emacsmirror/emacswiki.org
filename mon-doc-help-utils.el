@@ -11,7 +11,7 @@
 ;;; SEE: (URL `http://www.emacswiki.org/emacs/Reference_Sheet_by_Aaron_Hawley')
 ;;; (URL `http://www.emacswiki.org/emacs/Reference_Sheet_by_Aaron_Hawley_source')
 ;;;
-;;; :MOTIVATIONS from /etc/TODO:
+;;; :MOTIVATIONS :FROM :FILE /etc/TODO:
 ;;; ,----
 ;;; | ** Have a command suggestion help system that recognizes patterns
 ;;; |    of commands which could be replaced with a simpler common command.
@@ -77,6 +77,9 @@
 ;;; `mon-help-CL-time', `mon-help-CL-loop', `mon-help-slime-keys' -> mon-doc-help-CL.el
 ;;; `mon-index-elisp-symbol' <- mon-utils.el
 ;;;
+;;; `mon-help-pacman-Q', `mon-help-pacman-S' `mon-help-pacman-commands',
+;;; `*regexp-clean-pacman-Q*'`*regexp-clean-pacman-S*' -> mon-doc-help-pacman.el
+;;; 
 ;;; Following moved from `mon-insertion-utils.el' and renamed *insert* -> *help*
 ;;; `mon-insert-file-dir-functions'  -> `mon-help-file-dir-functions'
 ;;; `mon-insert-install-info-incantation' -> `mon-help-install-info-incantation'
@@ -222,16 +225,32 @@ docstring should be commented out when inserting into buffer.
 ;;; :CREATED <Timestamp: #{2009-11-20T17:41:52-05:00Z}#{09475} - by MON>
 (defvar *mon-help-mon-tags-alist*
   '((comment-tags                       ;.
-     (":CLEANUP" ":CLOSE" ":COURTESY" ":CREATED" ":DATE" ":EMACS-WIKI"
-      ":EVAL-BELOW-TO-TEST" ":FIXES" ":FIXME" ":HIS" ":IF-NOT-FEATURE-P"
-      ":LOAD-SPECIFIC-PROCEDURES" ":MODIFICATIONS" ":RENAMED" ":SEE-BELOW"
-      ":SUBJECT" ":TEST-ME" ":TODO" ":TAGS-COMMON" ":UNCOMMENT-BELOW-TO-TEST"
-      ":VERSION" ":WAS"))
+     (":AFTER" ":AS-OF" ":BEFORE" ":ADDED" 
+      ":CHANGED" ":CLEANUP" ":CLOSE" ":COMMENTED" ":COURTESY" ":CREATED"  
+      ":DATE" 
+      ":EMACS-WIKI" ":EVAL-BELOW-TO-TEST" 
+      ":FIXES" ":FIXME" ":FIX-ME" ":FROM"
+      ":HIS" ":IF-NOT-FEATURE-P"
+      ":LOAD-SPECIFIC-PROCEDURES" 
+      ":MODIFICATIONS" 
+      ":RENAMED" 
+      ":SEE-BELOW" ":SUBJECT"
+      ":TAGS-COMMON" ":TEST-ME" ":TESTING" ":TODO"  ":TO"
+      ":UNCOMMENT-BELOW-TO-TEST" ":UNCOMMENT-TO-TEST"
+      ":VERSION" 
+      ":WAS"))
     (docstr-tags                        ;. 
-     ("►►►" ":ALIASED-BY" ":CALLED-BY" ":CALLED-BY" ":EXAMPLE"
-     ":FACE-DEFINED-IN" ":FACE-DOCUMENTED-IN" ":FACE-DEFINED-IN"":FILE" ":IDIOM"
-     ":KEYWORD-REGEXPS-IN" ":KEYWORD-LISTS-IN" ":NOTE" ":SEE" ":SEE-ALSO"
-     ":SOURCE" ":USED-BY"))
+     ("►►►" ":ALIASED-BY" 
+      ":CALLED-BY" 
+      ":EXAMPLE"
+      ":FACE-DEFINED-IN" ":FACE-DOCUMENTED-IN" 
+      ":FILE" 
+      ":IDIOM"
+      ":KEYWORD-REGEXPS-IN" ":KEYWORD-LISTS-IN" 
+      ":NOTE"
+      ":REGEXPS-IN" 
+      ":SEE" ":SEE-ALSO" ":SOURCE" 
+      ":USED-BY" ":USED-IN"))
     (meta-tags                          ;.
      ("<BEGINNING>" "<BUFFER>" "<CLASS>" "<COMMAND>" "<CONSTANT>"
       "<DEPRECATED>" "<DIRECTORY>" "<EXPRESSION>" "<FACE>" "<FILE>" "<FILES>"
@@ -239,7 +258,7 @@ docstring should be commented out when inserting into buffer.
       "<MATCH>" "<METHOD>" "<NAME>" "<NEW>" "<OLD>" "<PATH>" "<PATTERN>"
       "<PRINTER>" "<PROPERTY>" "<REGEXP>" "<STRING>" "<SYMBOL>" "<TERM>"
       "<TERMS>" "<TITLE>" "<VARIABLE>")))
-  "An aList of commonly used MON tags.
+  "*An aList of commonly used MON tags.
 The `comment-tags' key associates tags appearing in source comments.
 The `docstr-tags' key associates tags appearing in docstrings.
 The `meta-tags' key associates tags appearing in both soure comments and 
@@ -276,7 +295,7 @@ docstrings to indicated metasyntactic or idiomatic forms and types.
 ;;; :TEST-ME (progn (search-forward-regexp *regexp-mon-doc-help-pointer-tags*)
 ;;;                 (match-string-no-properties 2))
 ;;;
-;;; ,---- :UNCOMMENT-TO-TEST
+;;; ,---- :UNCOMMENT-BELOW-TO-TEST
 ;;; | ->   ;->  ; ->
 ;;; | =>   ;=>  ; =>    
 ;;; | -->  ;-->  ; --> --->
@@ -335,10 +354,14 @@ For `help-mode' views of MON functions, in particular those from
 ;;; :CREATED <Timestamp: #{2009-11-21T14:19:24-05:00Z}#{09476} - by MON>
 (defvar *regexp-mon-doc-help-docstring-tags*
   (regexp-opt
-   '(":ALIASED-BY" ":CALLED-BY" ":CALLED-BY" ":EXAMPLE" ":FACE-DEFINED-IN"
-     ":FACE-DOCUMENTED-IN" ":FACE-DEFINED-IN"":FILE" ":IDIOM"
-     ":KEYWORD-REGEXPS-IN" ":KEYWORD-LISTS-IN" ":NOTE" ":SEE" ":SEE-ALSO"
-     ":SOURCE" ":USED-BY") t)
+   '(":ALIASED-BY" ":CALLED-BY" ":EXAMPLE"
+     ":FACE-DOCUMENTED-IN" ":FACE-DEFINED-IN"
+     ":FILE" 
+     ":IDIOM"
+     ":KEYWORD-REGEXPS-IN" ":KEYWORD-LISTS-IN" ":NOTE" 
+     ":REGEXPS-IN"     
+     ":SEE" ":SEE-ALSO"
+     ":SOURCE" ":USED-BY" ":USED-IN") t)
   "*Regexp for locating \"meta-syntactic\" type tags in :FILE `mon-doc-help-utils.el'.
 :SEE-ALSO `*regexp-mon-doc-help-docstring-tags-DYNAMIC*'
 `*regexp-mon-doc-help-docstring-tags-TABLES*',`*regexp-mon-doc-help-comment-tags*'
@@ -354,13 +377,22 @@ For `help-mode' views of MON functions, in particular those from
 ;;; :CREATED <Timestamp: #{2009-11-21T13:51:13-05:00Z}#{09476} - by MON>
 (defvar *regexp-mon-doc-help-comment-tags*
   (regexp-opt
-   '(":CLEANUP" ":CLOSE" ":COURTESY" ":CREATED" ":DATE" ":EMACS-WIKI"
-     ":EVAL-BELOW-TO-TEST" ":FIXES" ":FIXME" ":HIS" ":IF-NOT-FEATURE-P"
-     ":LOAD-SPECIFIC-PROCEDURES" ":MODIFICATIONS" ":RENAMED"
-     ":SEE-BELOW" ":SUBJECT" ":TEST-ME" ":TODO" ":TAGS-COMMON"
-     ":UNCOMMENT-BELOW-TO-TEST" ":VERSION" ":WAS") t)
+   '(":AFTER" ":AS-OF" ":BEFORE" ":ADDED" 
+     ":CHANGED" ":CLEANUP" ":CLOSE" ":COMMENTED" ":COURTESY" ":CREATED"  
+     ":DATE" 
+     ":EMACS-WIKI" ":EVAL-BELOW-TO-TEST" 
+     ":FIXES" ":FIXME" ":FIX-ME" ":FROM"
+     ":HIS" ":IF-NOT-FEATURE-P"
+     ":LOAD-SPECIFIC-PROCEDURES" 
+     ":MODIFICATIONS" 
+     ":RENAMED" 
+     ":SEE-BELOW" ":SUBJECT"
+     ":TAGS-COMMON" ":TEST-ME" ":TESTING" ":TODO"  ":TO"
+     ":UNCOMMENT-BELOW-TO-TEST" ":UNCOMMENT-TO-TEST"
+     ":VERSION" 
+     ":WAS") t)
   "*Regexp for locating \"meta-syntactic\" type tags 
-:NOTE These should be fontlocked in `emacs-lisp-mode'.
+:NOTE These should be fontlocked in `emacs-lisp-mode'.\n
 :SEE-ALSO `*regexp-mon-doc-help-docstring-tags-DYNAMIC*'
 `*regexp-mon-doc-help-docstring-tags-TABLES*'
 `*regexp-mon-doc-help-docstring-tags*',`*regexp-mon-doc-help-pointer-tags*',
@@ -382,7 +414,7 @@ For `help-mode' views of MON functions, in particular those from
      "<SYMBOL>" "<VARIABLE>") t)
   "*Regexp for locating \"meta-syntactic\" type tags.
 For `help-mode' views of MON functions, in particular those from
-:FILE `mon-doc-help-utils.el'.
+:FILE `mon-doc-help-utils.el'.\n
 :SEE-ALSO `*regexp-mon-doc-help-docstring-tags-DYNAMIC*'
 `*regexp-mon-doc-help-docstring-tags-TABLES*'
 `*regexp-mon-doc-help-docstring-tags*',`*regexp-mon-doc-help-comment-tags*'
@@ -398,10 +430,10 @@ For `help-mode' views of MON functions, in particular those from
     '(( ((class color) (min-colors 88))
          (:foreground "light steel blue" 
           :weight extrabold)))
-  "*A mon-help-symbol mon-help-symbol KEY face.
-:KEYWORD-REGEXPS-IN `*regexp-mon-doc-help-docstring-tags*'
+  "*A mon-help-symbol mon-help-symbol KEY face.\n
+:KEYWORD-REGEXPS-IN `*regexp-mon-doc-help-docstring-tags*'\n
 :SEE-ALSO `mon-help-META-tag', `mon-help-PNTR-tag', 
-`mon-help-DYNATAB-tag', `mon-help-KEY-tag'.")
+`mon-help-DYNATAB-tag', `mon-help-KEY-tag'.\n►►►")
 ;;
 ;;; :TEST-ME (describe-face 'mon-help-KEY-tag)
 ;;
@@ -411,11 +443,11 @@ For `help-mode' views of MON functions, in particular those from
 ;;; :CREATED <Timestamp: #{2009-11-21T17:03:49-05:00Z}#{09476} - by MON>
 (defface mon-help-DYNATAB-tag
     '((t :inherit mon-help-KEY-tag :foreground "cadet blue"))
-  "*A mon-help-symbol mon-help-symbol DYNAMIC and TABLE tag face.
-:KEYWORD-REGEXPS-IN `*regexp-mon-doc-help-docstring-tags-TABLES*'
-:KEYWORD-REGEXPS-IN `*regexp-mon-doc-help-docstring-tags-DYNAMIC*'
+  "*A mon-help-symbol mon-help-symbol DYNAMIC and TABLE tag face.\n
+:KEYWORD-REGEXPS-IN `*regexp-mon-doc-help-docstring-tags-TABLES*'\n
+:KEYWORD-REGEXPS-IN `*regexp-mon-doc-help-docstring-tags-DYNAMIC*'\n
 :SEE-ALSO `mon-help-META-tag', `mon-help-PNTR-tag', 
-`mon-help-DYNATAB-tag', `mon-help-KEY-tag'.")
+`mon-help-DYNATAB-tag', `mon-help-KEY-tag'.\n►►►")
 ;;
 ;;; :TEST-ME (describe-face 'mon-help-DYNATAB-tag)
 ;;
@@ -425,10 +457,10 @@ For `help-mode' views of MON functions, in particular those from
 ;;; :CREATED <Timestamp: #{2009-11-21T17:03:30-05:00Z}#{09476} - by MON>
 (defface mon-help-META-tag
     '((t :inherit mon-help-KEY-tag :foreground "sky blue"))
-  "*A mon-help-symbol META tag face.
-:KEYWORD-REGEXPS-IN `*regexp-mon-doc-help-meta-tags*'
+  "*A mon-help-symbol META tag face.\n
+:KEYWORD-REGEXPS-IN `*regexp-mon-doc-help-meta-tags*'\n
 :SEE-ALSO `mon-help-META-tag', `mon-help-PNTR-tag', 
-`mon-help-DYNATAB-tag', `mon-help-KEY-tag'.")
+`mon-help-DYNATAB-tag', `mon-help-KEY-tag'.\n►►►")
 ;;
 ;;; :TEST-ME (describe-face 'mon-help-PNTR-tag)
 ;;
@@ -438,10 +470,10 @@ For `help-mode' views of MON functions, in particular those from
 ;;; :CREATED <Timestamp: #{2009-11-21T17:37:44-05:00Z}#{09476} - by MON>
 (defface mon-help-PNTR-tag
     '((t :inherit mon-help-KEY-tag :foreground "powder blue"))
-  "*A mon-help-symbol pointer tag face.
-:KEYWORD-REGEXPS-IN `*regexp-mon-doc-help-pointer-tags*'
+  "*A mon-help-symbol pointer tag face.\n
+:KEYWORD-REGEXPS-IN `*regexp-mon-doc-help-pointer-tags*'\n
 :SEE-ALSO `mon-help-META-tag', `mon-help-PNTR-tag', 
-`mon-help-DYNATAB-tag', `mon-help-KEY-tag'.")
+`mon-help-DYNATAB-tag', `mon-help-KEY-tag'.\n►►►")
 ;;
 ;;; :TEST-ME (describe-face 'mon-help-PNTR-tag)
 ;;
@@ -457,7 +489,7 @@ For `help-mode' views of MON functions, in particular those from
 ;;; :CREATED <Timestamp: #{2009-11-21T18:15:49-05:00Z}#{09476} - by MON>
 (defun mon-help-propertize-tags ()
   "Propertize mon-help-tags with face values.
-For advising `help-mode' of some more things to fontlock.
+For advising `help-mode' of some more things to fontlock.\n
 :SEE-ALSO `mon-help-propertize-tags-TEST'.\n►►►"
   (let ((help-props
          `((,*regexp-mon-doc-help-docstring-tags*         0  mon-help-KEY-tag)     
@@ -522,18 +554,18 @@ propertizing.\n►►►"
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-08-21T19:00:14-04:00Z}#{09345} - by MON KEY>
 (defun mon-tags-naf-apropos ()
-  "Search tags-tables in for occurences of regexp \"*naf-\" with `tags-apropos'.
-:SEE-ALSO `mon-tags-apropos', `*mon-tags-table-list*',
-`mon-update-tags-tables'.►►►"
+  "Search tags-tables in for occurences of regexp \"*naf-\" with `tags-apropos'.\n
+:SEE-ALSO `mon-tags-apropos', `*mon-tags-table-list*', `mon-update-tags-tables'.
+►►►"
   (interactive)
   (tags-apropos "*naf-"))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-08-21T18:57:08-04:00Z}#{09345} - by MON KEY>
 (defun mon-tags-apropos ()
-  "Search tags-tables in for occurences of regexp \"*mon-\" with `tags-apropos'.
-:SEE-ALSO `mon-tags-naf-apropos', `*mon-tags-table-list*',
-`mon-update-tags-tables'. ►►►"
+  "Search tags-tables in for occurences of regexp \"*mon-\" with `tags-apropos'.\n
+:SEE-ALSO `mon-tags-naf-apropos', `*mon-tags-table-list*', 
+`mon-update-tags-tables'.\n►►►"
   (interactive)
   (tags-apropos "*mon-"))
 
@@ -544,7 +576,9 @@ Everything up to `*doc-cookie*' is commented out when inserted into a buffer.
 Default cookie is '►►►' \(ucs-insert \"25BA\"\) ;=> ►
 Set value of *doc-cookie* variable otherwise if this is not acceptable.
 :CALLED-BY `mon-help-function-spit-doc' to find comment-begin of snarfed doc
-strings. ►►►"
+strings.\n
+:SEE-ALSO `mon-insert-ebay-field-trigger-l-and-r',
+`mon-insert-ebay-field-trigger-l' `mon-insert-ebay-field-trigger-r'.\n►►►"
   (interactive)
   (insert "►►►"))
 
@@ -609,7 +643,7 @@ substring occuring after CUT-V-STR. The substring CUT-V-STR is not placed on
 func-name's documentation-property.
 When non-nil PRE-V-STR is a string to insert before value string of var-name.
 When non-nil PST-V-STR is a string to insert after value string of var-name.\n
-:EXAMPLE-INVOCATION
+:EXAMPLE\n
 \(mon-help-put-var-doc-val->func '<VAR-NAME> '<FUNC-NAME>
   \"\\nThis is a PRE-V-STR\\n\"
   \"content of CUT-V-STR removed\"
@@ -618,7 +652,7 @@ When non-nil PST-V-STR is a string to insert after value string of var-name.\n
   nil \"content of CUT-V-STR removed\" nil\)\n\n
 \(mon-help-put-var-doc-val->func '<VAR-NAME> '<FUNC-NAME>
 \"\\nPRE-V-STR\\n\" nil \"PST-V-STR\"\)\n
-:SEE-ALSO `mon-help-swap-var-doc-const-val'\n►►►"
+:SEE-ALSO `mon-help-swap-var-doc-const-val'.\n►►►"
   ;;(declare (indent 2) (debug t))
 (let ((putf-doc (make-symbol "putf-doc"))
       (getv-doc (make-symbol "getv-doc"))
@@ -647,10 +681,12 @@ When non-nil PST-V-STR is a string to insert after value string of var-name.\n
      (put ,func-name 'function-documentation ,putf-doc))))
 
 ;;; ==============================
-;;; :NOTE When compiling, defvar and defconst forms must be made known at compile time.
-;;; Wrap them _and_ the macro call in an `eval-when-compile' and make sure that
-;;; \(eval-when-compile \(require 'cl\)\) is at top of file. Otherwise, all of the
-;;; args docstrings get doubled up at compile time.
+;;; :NOTE When compiling, defvar and defconst forms must be made known at
+;;;       compile time.  Wrap them _and_ the macro call in an
+;;;       `eval-when-compile' and make sure that: 
+;;;       (eval-when-compile (require 'cl)) is at top of file. 
+;;;       Otherwise, all of the args docstrings get doubled up at compile time.
+;;;
 ;;; :MODIFICATIONS <Timestamp: #{2009-10-03T14:31:54-04:00Z}#{09406} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-09-14T14:16:34-04:00Z}#{09381} - by MON KEY>
 (defmacro mon-help-swap-var-doc-const-val (var-name const-name xrefs &optional face-name)
@@ -732,58 +768,56 @@ from lists bound variables.\n
      (plist-put (symbol-plist ',const-name) 'variable-documentation ,c-doc)
      (plist-put (symbol-plist ',var-name) 'variable-documentation ,v-doc))))
 ;;
-;;;(progn (fmakunbound 'mon-help-swap-var-doc-const-val)
-;;;         (unintern 'mon-help-swap-var-doc-const-val) )
-;;;
-;;; :NOTE When compiling defvar and defconst forms mut be made known at compile time.
-;;; Wrap them _and_ the macro call in an `eval-when-compile'.
-;;; When compiling make sure that the following is present at head of files:
-;;; (eval-when-compile (require 'cl)
-;;;
-;;; :UNCOMMENT-BELOW-TO-TEST
-;;; ==============================
-;;; (progn
-;;;   (defface test-swap-var->const-face
-;;;             '((((class color) (background light)) (:foreground "CornflowerBlue"))
-;;;               (((class color) (background dark)) (:foreground "CornflowerBlue"))
-;;;               (t (:bold t :italic t)))
-;;;           "*Face fontlocking of institution name keywords in .naf files.
-;;; Additional documentation in var `test-swap-var->const-fface'")
-;;; (defvar test-swap-var->const-fface 'test-swap-var->const-face
-;;;            "*Face for `naf-mode' font-locking of institution name keywords
-;;; :KEYWORDS-IN the regexp defined in: {:SEE-ALSO list of XREFD var names}.
-;;; Face definition in `test-swap-var->const-face'.")
-;;; (defvar *test-swap-var-xrefs*
-;;;   '(*test-swap-var->const* *test-swap-var->const2* *test-swap-var->const3* *test-swap-var-xrefs*)
-;;;   "List of symbol names of variables which xref each other in `test-swap-var-mode'.
-;;; :SEE :FILE \"./test-swap-var-mode.el\".")
-;;; (defvar *test-swap-var->const* '("list" "of" "keywords" "to" "fontlock")
-;;;           "Did this docstring get swapped to docstring of `test-swap-var->cons'?.
-;;;   Is its value at the top of docstring?")
-;;; (defconst test-swap-var->const (regexp-opt *test-swap-var->const* 'paren)))
-;;; ;; :CLEANUP
-;;; (progn (makunbound '*test-swap-var->const*)  (unintern '*test-swap-var->const*)
-;;;        (makunbound 'test-swap-var->const)  (unintern 'test-swap-var->const)
-;;;        (makunbound '*test-swap-var-xrefs*)  (unintern '*test-swap-var-xrefs*)
-;;;        (makunbound 'test-swap-var->const-face)  (unintern 'test-swap-var->const-face)
-;;;        (makunbound 'test-swap-var->const-fface)  (unintern 'test-swap-var->const-fface)))
+;;; (progn (fmakunbound 'mon-help-swap-var-doc-const-val)
+;;;        (unintern 'mon-help-swap-var-doc-const-val) )
 ;;
-;;; :EVAL-BELOW-TO-TEST
-;;; (mon-help-swap-var-doc-const-val *test-swap-var->const* test-swap-var->const)
-;;; (mon-help-swap-var-doc-const-val
-;;;     *test-swap-var->const* test-swap-var->const
-;;;     *test-swap-var-xrefs*  test-swap-var->const-fface)
+;;,---- :UNCOMMENT-BELOW-TO-TEST
+;;| (progn
+;;|   (defface test-swap-var->const-face
+;;|             '((((class color) (background light)) (:foreground "CornflowerBlue"))
+;;|               (((class color) (background dark)) (:foreground "CornflowerBlue"))
+;;|               (t (:bold t :italic t)))
+;;|           "*Face fontlocking of institution name keywords in .naf files.
+;;| Additional documentation in var `test-swap-var->const-fface'")
+;;| (defvar test-swap-var->const-fface 'test-swap-var->const-face
+;;|            "*Face for `naf-mode' font-locking of institution name keywords
+;;| :KEYWORDS-IN the regexp defined in: {:SEE-ALSO list of XREFD var names}.
+;;| Face definition in `test-swap-var->const-face'.")
+;;| (defvar *test-swap-var-xrefs*
+;;|   '(*test-swap-var->const* *test-swap-var->const2* *test-swap-var->const3* *test-swap-var-xrefs*)
+;;|   "List of symbol names of variables which xref each other in `test-swap-var-mode'.
+;;| :SEE :FILE \"./test-swap-var-mode.el\".")
+;;| (defvar *test-swap-var->const* '("list" "of" "keywords" "to" "fontlock")
+;;|           "Did this docstring get swapped to docstring of `test-swap-var->cons'?.
+;;|   Is its value at the top of docstring?")
+;;| (defconst test-swap-var->const (regexp-opt *test-swap-var->const* 'paren)))
+;;`----
+;;
+;;,---- :CLEANUP
+;;| (progn (makunbound '*test-swap-var->const*)  (unintern '*test-swap-var->const*)
+;;|        (makunbound 'test-swap-var->const)  (unintern 'test-swap-var->const)
+;;|        (makunbound '*test-swap-var-xrefs*)  (unintern '*test-swap-var-xrefs*)
+;;|        (makunbound 'test-swap-var->const-face)  (unintern 'test-swap-var->const-face)
+;;|        (makunbound 'test-swap-var->const-fface)  (unintern 'test-swap-var->const-fface)))
+;;`----
+;;
+;;,---- :EVAL-BELOW-TO-TEST
+;;| (mon-help-swap-var-doc-const-val *test-swap-var->const* test-swap-var->const)
+;;| (mon-help-swap-var-doc-const-val
+;;|     *test-swap-var->const* test-swap-var->const
+;;|     *test-swap-var-xrefs*  test-swap-var->const-fface)
+;;`----
 ;;
 
 ;;; ==============================
 ;;; :NOTE Not entirely correct for funcs where byte symbol is byte compiled
-;;;  compare output of interpreted:
-;;; (mon-help-xref-symbol-value 'mon-help-xref-symbol-value)
-;;; versus byte-compiled:
-;;; (byte-compile 'mon-help-xref-symbol-value)
-;;; (mon-help-xref-symbol-value 'mon-help-xref-symbol-value)
-;;; (symbol-function 'mon-help-xref-symbol-value)
-;;; Need to check if symbol is compiled and then pull apart the vector.
+;;;       compare output of interpreted:
+;;;        (mon-help-xref-symbol-value 'mon-help-xref-symbol-value)
+;;;       versus byte-compiled:
+;;;        (byte-compile 'mon-help-xref-symbol-value)
+;;;        (mon-help-xref-symbol-value 'mon-help-xref-symbol-value)
+;;;        (symbol-function 'mon-help-xref-symbol-value)
+;;; :TODO Need to check if symbol is compiled and then pull apart the vector.
 ;;; :CREATED <Timestamp: #{2009-09-30T16:44:24-04:00Z}#{09403} - by MON KEY>
 (defun mon-help-xref-symbol-value (sym)
   "Return the value of symbol SYM.
@@ -792,7 +826,7 @@ When SYM is a variable return `symbol-value' of symbol.
 value returned is of the form:
 \(\(SYMBOL <FUNCTION>|<VARIABLE>\) \(VALUE-OF-FUNICTION-OR-VARIABLE\)\n
 :EXAMPLE\n(mon-help-xref-symbol-value 'mon-help-xref-symbol-value)\n
-\(mon-help-xref-symbol-value '*w32-env-variables-alist*\)
+\(mon-help-xref-symbol-value '*w32-env-variables-alist*\)\n
 :SEE-ALSO `mon-help-function-spit-doc', `mon-help-function-args',
 `mon-help-swap-var-doc-const-val', `mon-help-parse-interactive-spec'
 ►►►"
@@ -807,22 +841,22 @@ value returned is of the form:
 ;;; :CREATED <Timestamp: Thursday July 02, 2009 @ 05:16.20 PM - by MON KEY>
 (defun* mon-help-function-spit-doc (sym-name &key alt-cookie do-var insertp
                                              do-face do-group do-theme)
-  "Return documentation for function with SYM-NAME.
-When :ALT-COOKIE \(a string\) is non-nil overrides the default comment delimiter
-set in global var `*doc-cookie*' - \"►►►\". If :ALT-COOKIE is not present in
-SYM-NAME's docstring header of docstring is inserted uncommented.
-When :INSERTP is non-nil insert documentation in current buffer.
-When keyword arg :DO-VAR is non-nil get documentation of a variable or constant.
-:DO-VAR should be t when invoked for variable, constant, custom documentation,
-e.g. symbols defined inside a defvar, defconst, or defcustom form.
-When keyword arg :DO-FACE is non-nil get face documentation for sym-name.
-:DO-FACE should be t when invoked for face documentation, e.g. symbols defined
-inside a defface form.
-When keyword arg :DO-GROUP is non-nil get face documentation for sym-name.
-:DO-GROUP should be t when invoked for group documentation, e.g. symbols defined
-inside a defgroup form.
-When keyword arg :DO-THEME is non-nil get face documentation for sym-name.
-:DO-THEME should be t when invoked for group documentation, e.g. symbols defined
+  "Return documentation for function with SYM-NAME.\n
+When `:ALT-COOKIE' \(a string\) is non-nil overrides the default comment delimiter
+set in global var `*doc-cookie*' - \"►►►\". If `:ALT-COOKIE' is not present in
+SYM-NAME's docstring header of docstring is inserted uncommented.\n
+When `:INSERTP' is non-nil insert documentation in current buffer.\n
+When keyword arg `:DO-VAR' is non-nil get documentation of a variable or constant.
+`:DO-VAR' should be t when invoked for variable, constant, custom documentation,
+e.g. symbols defined inside a defvar, defconst, or defcustom form.\n
+When keyword arg `:DO-FACE' is non-nil get face documentation for sym-name.
+`:DO-FACE' should be t when invoked for face documentation, e.g. symbols defined
+inside a defface form.\n
+When keyword arg `:DO-GROUP' is non-nil get face documentation for sym-name.
+`:DO-GROUP' should be t when invoked for group documentation, e.g. symbols defined
+inside a defgroup form.\n
+When keyword arg `:DO-THEME' is non-nil get face documentation for sym-name.
+`:DO-THEME' should be t when invoked for group documentation, e.g. symbols defined
 inside a defgroup form.\n
 :EXAMPLE
 \(mon-help-function-spit-doc 'mon-help-function-spit-doc\) ;defun
@@ -833,7 +867,7 @@ inside a defgroup form.\n
 \(mon-help-function-spit-doc 'apropos :do-group t\) ;defgroup\n
 :SEE-ALSO `mon-insert-doc-help-cookie', `mon-insert-doc-help-tail'
 `mon-help-xref-symbol-value', `mon-help-function-args'
-`mon-help-insert-documentation'. ►►►"
+`mon-help-insert-documentation'.\n►►►"
   (let (mk-docstr)
     (save-excursion
       (setq mk-docstr
@@ -865,12 +899,13 @@ inside a defgroup form.\n
                        (do-group (or (plist-get (symbol-plist sym-name) 'group-documentation)
                                      (documentation-property sym-name 'group-documentation))) ;; groups.
                        (do-theme (or (plist-get (symbol-plist sym-name) 'theme-documentation)
-                                    (documentation-property sym-name 'theme-documentation))) ;; consider `theme-settings'.
+                                     ;; :NOTE consider `theme-settings' here.
+                                    (documentation-property sym-name 'theme-documentation))) 
                        (t (documentation sym-name))))
                 (set-marker st-mrk (point))
                 (setq help-bnds (+ (marker-position st-mrk) (length put-help)))
                 (princ put-help (current-buffer))
-                ;;(prin1 put-help (current-buffer))
+                ;; (prin1 put-help (current-buffer))
                 (goto-char st-mrk)
                 (search-forward-regexp (concat "\\(" dc "\\)") help-bnds t)
                 (set-marker cookie-mrk (point))
@@ -926,7 +961,7 @@ When optional arg not-insert is non-nil return comment divider as string.\n
              (bound-and-true-p *regexp-symbol-defs*))
 ;;; :CREATED <Timestamp: 2009-08-03-W32-1T11:04:11-0400Z - by MON KEY>
 (defvar *regexp-symbol-defs* nil
-  "*Regexp for finding lisp definition forms defun, defmacro, defvar.
+  "*Regexp for finding lisp definition forms defun, defmacro, defvar.\n
 :CALLED-BY `mon-insert-lisp-testme',`mon-insert-doc-help-tail',
 `mon-test->*regexp-symbol-defs*'.\n►►►")
 ;;
@@ -935,36 +970,27 @@ When optional arg not-insert is non-nil return comment divider as string.\n
         (concat
          ;; :FIXME doesn't catch on cases where the lambda list is on the next line.
          ;;...1..
-         "^\\((" ;;opening paren
-         ;;grp 2 -> `defun' `defun*' `defmacro' `defmacro*' `defsubst' `defsubst*'
-         ;;`defvar' `defconst' `defcustom' `deftheme'
+         "^\\((" ;; Opening paren.
+         ;; grp 2 -> `defun' `defun*' `defmacro' `defmacro*' `defsubst' `defsubst*'
+         ;;          `defvar' `defconst' `defcustom' `deftheme'
          ;;..2................................................
          "\\(def\\(?:c\\(?:onst\\|ustom\\)\\|face\\|macro\\*?\\|subst\\*?\\|theme\\|un\\*?\\|var\\)\\)"
          ;;.3....................         ;; :NOTE leading whitepspace.
          " \\([A-Za-z0-9/><:*-]+\\)"      ;; grp 3 -> *some/-symbol:->name<-2*.
          ;;...4........................
-         "\\(\\( (\\)\\|\\( '\\)\\|\\( `\\)\\)\\)" ;;grp 4 -> ` (' or ` ''.
+         "\\(\\( (\\)\\|\\( '\\)\\|\\( `\\)\\)\\)" ;; grp 4 -> ` (' or ` ''.
          )))
 ;;
 ;;; :TEST-ME  *regexp-symbol-defs*
 ;;; :SEE-BELOW for-additional-tests-with `mon-test->*regexp-symbol-defs*'
 ;;
 ;;;(progn (makunbound '*regexp-symbol-defs*) (unintern '*regexp-symbol-defs*))
-;;
-;;;;;;;;;;;; :CURRENT-REGEXP ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  ....1..2.................................................3.......................4........................
-;;;  "\\(def\\(?:c\\(?:onst\\|ustom\\)\\|face\\|macro\\*?\\|subst\\*?\\|theme\\|un\\*?\\|var\\)\\)"
-;;
-;;;(concat "^\\(("
-;;; (regexp-opt '("defun" "defun*" "defmacro" "defmacro*" "defsubst" "defsubst*"
-;;;  "defconst" "defvar"  "defcustom" "defface" "deftheme" ) t)
-;;;(regexp-opt-depth "\\(def\\(?:c\\(?:onst\\|ustom\\)\\|face\\|macro\\*?\\|subst\\*?\\|theme\\|un\\*?\\|var\\)\\)")
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-09-02T16:11:07-04:00Z}#{09363} - by MON KEY>
 (unless (fboundp 'mon-test->*regexp-symbol-defs*)
 (defun mon-test->*regexp-symbol-defs* (&optional insertp intrp)
-  "Test function to ensure that the regexp in var `*regexp-symbol-defs*' works.
+  "Test function to ensure that the regexp in var `*regexp-symbol-defs*' works.\n
 :SEE-ALSO `mon-insert-lisp-testme',`mon-insert-doc-help-tail'. ►►►"
   (interactive "i\np")
   (let ((find-def* *regexp-symbol-defs*)
@@ -986,7 +1012,7 @@ When optional arg not-insert is non-nil return comment divider as string.\n
 ) ;; :CLOSE unless batp.
 
 ;;; :TEST-ME  *regexp-symbol-defs*
-;;;(progn (makunbound '*regexp-symbol-defs*)
+;;; (progn (makunbound '*regexp-symbol-defs*)
 ;;;        (unintern '*regexp-symbol-defs*) )
 ;;
 ;;; ,---- :UNCOMMENT-TO-TEST
@@ -1066,8 +1092,9 @@ Regexp held by global var `*regexp-symbol-defs*'.\n
               (set-marker limit (point)))
           (search-forward-regexp
            (format "%s$" test-me-string) (marker-position limit) t)
-          t) ; t needed here to prevent returning buffer position when called externally?
-        return-tms)))
+          ;; :NOTE Is t needed to prevent return buffer posn when called externally?
+          t) 
+          return-tms)))
  ) ;; :CLOSE unless fboundp.
 ;;
 ;;; ,---- :UNCOMMENT-TO-TEST
@@ -1081,9 +1108,8 @@ Regexp held by global var `*regexp-symbol-defs*'.\n
 ;;; | (defun *some/-symbol:->name<-2* 'somevar
 ;;; `----
 ;;
-;;; :TEST-ME
-;;; (let ((find-def* *regexp-symbol-defs*))
-;;; (search-backward-regexp find-def*))
+;;; :TEST-ME (let ((find-def* *regexp-symbol-defs*)) (search-backward-regexp find-def*))
+;;; 
 ;;
 ;;; :TEST-ME `(,(match-beginning 3) ,(match-end 3))
 ;;; :TEST-ME (match-sring 1) ;grp 1=>"(defun* some-func:name* ("
@@ -1135,14 +1161,14 @@ UPTO-STRING is a simple string. No regexps, chars, numbers, lists, etc.\n
 ) ;; :CLOSE 2nd mon-util's unless.
 (unless (fboundp 'mon-string-after-index)
 ;;; :CREATED <Timestamp: #{2009-10-01T15:16:29-04:00Z}#{09404} - by MON KEY>
-(defun mon-string-after-index (in-string after-string)
-  "Return substring of IN-STRING UPTO-STRING.
-UPTO-STRING is a simple string. No regexps, chars, numbers, lists, etc.\n
+(defun mon-string-after-index (in-str after-str)
+  "Return substring of IN-STR AFTER-STR.
+AFTER-STR is a simple string. No regexps, chars, numbers, lists, etc.\n
 :EXAMPLE\n\(mon-string-after-index \"string before ### string after\" \"###\"\)\n
-:SEE-ALSO `mon-string-index', `mon-string-upto-index',
- `mon-string-position', `mon-string-has-suffix', `mon-string-chop-spaces'.\n►►►"
-(substring in-string
-           (+ (mon-string-index in-string after-string) (length after-string))))
+:SEE-ALSO `mon-string-index', `mon-string-upto-index', `mon-string-position',
+`mon-string-has-suffix', `mon-string-chop-spaces'.\n►►►"
+  (substring in-str
+             (+ (mon-string-index in-str after-str) (length after-str))))
 )) ;; :CLOSE 3rd mon-util's unless and outer unless.
 ;;
 ;;; :TEST-ME (mon-string-upto-index "string before ### string after" "###")
@@ -4329,30 +4355,35 @@ done \n►►►"
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-11-30T16:39:56-05:00Z}#{09491} - by MON KEY>
-(defvar *regexp-clean-du-flags*
-  '(("-a" . "--all")
-    ("--apparent-size")
-    ("-b" . "--bytes")
-    ("-B" . "--block-size")             ;SIZE & =SIZE
-    ("-c" . "--total")
-    ("-D" . "--dereference-args")
-    ("--files0-from")                   ;=FILE
-    ("-h" . "--human-readable")
-    ("-H")
-    ("-k")
-    ("-l" . "--count-links")
-    ("-L" . "--dereference")
-    ("-P" . "--no-dereference")
-    ("--max-depth")                     ;=DEPTH
-    ("-0" . "--null")
-    ("--si")
-    ("-s" . "--summarize")
-    ("-S" . "--separate-dirs")
-    ("-x" . "--one-file-system")
-    ("--exclude")                       ;=PATTERN
-    ("-X" . "--exclude-from"))          ;FILE & =FILE
+(defvar *regexp-clean-du-flags* nil
   "*Alist of short and long flags for the `du' command.
-:SEE-ALSO `mon-help-du-iincantation', `mon-async-du-dir'\n►►►")
+:SEE-ALSO `mon-help-du-incantation', `mon-async-du-dir'\n►►►")
+;;
+(eval-when (compile load)
+  (unless (bound-and-true-p *regexp-clean-du-flags*)
+    (setq *regexp-clean-du-flags*
+          '(("-a" . "--all")
+            ("--apparent-size")
+            ("-b" . "--bytes")
+            ("-B" . "--block-size")     ;SIZE & =SIZE
+            ("-c" . "--total")
+            ("-D" . "--dereference-args")
+            ("--files0-from")           ;=FILE
+            ("-h" . "--human-readable")
+            ("-H")
+            ("-k")
+            ("-l" . "--count-links")
+            ("-L" . "--dereference")
+            ("-P" . "--no-dereference")
+            ("--max-depth")             ;=DEPTH
+            ("-0" . "--null")
+            ("--si")
+            ("-s" . "--summarize")
+            ("-S" . "--separate-dirs")
+            ("-x" . "--one-file-system")
+            ("--exclude")               ;=PATTERN
+            ("-X" . "--exclude-from"))  ;FILE & =FILE)
+          )))
 ;;
 ;;; :TEST-ME *regexp-clean-du-flags*
 ;;

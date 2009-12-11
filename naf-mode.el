@@ -24,7 +24,6 @@
 ;;; `naf-font-lock-keywords', `naf-mode-syntax-table', `naf-mode-map',
 ;;; `naf-mode-hook', `*naf-mode-xref-of-xrefs*'
 ;;;
-;;;
 ;;; ALIASED/ADVISED/SUBST'D:
 ;;;
 ;;; DEPRECATED:
@@ -32,6 +31,7 @@
 ;;; RENAMED:
 ;;;
 ;;; MOVED:
+;;; *naf-mode-xref-of-xrefs* -> naf-mode-xrefs.el
 ;;;
 ;;; REQUIRES:
 ;;; mon-dir-utils
@@ -104,22 +104,31 @@
 ;;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
 ;;; Floor, Boston, MA 02110-1301, USA.
 ;;; ================================================================
+;;; Permission is granted to copy, distribute and/or modify this
+;;; document under the terms of the GNU Free Documentation License,
+;;; Version 1.3 or any later version published by the Free Software
+;;; Foundation; with no Invariant Sections, no Front-Cover Texts,
+;;; and no Back-Cover Texts. A copy of the license is included in
+;;; the section entitled "GNU Free Documentation License".
+;;; ==============================
 ;;; Copyright (C) 2009 MON KEY
-;;; ==========================
+;;; ==============================
 ;;; CODE:
+
+(eval-when-compile (require 'cl))
 
 ;;; ==============================
 (require 'mon-dir-utils)
 (require 'mon-dir-locals-alist)
 (require 'mon-regexp-symbols)
-(require 'naf-mode-replacements) ;; :before insertion-utils
+(require 'naf-mode-replacements) ;; :BEFORE insertion-utils
 (require 'naf-skeletons)
 (require 'naf-mode-insertion-utils)
 (require 'mon-url-utils)
 (require 'naf-name-utils)
-;; trying this: <Timestamp: #{2009-09-17T15:29:44-04:00Z}#{09384} - by MON KEY>
+;; :TESTTING :AS-OF <Timestamp: #{2009-09-17T15:29:44-04:00Z}#{09384} - by MON KEY>
 (require 'naf-mode-faces)
-(require 'naf-mode-institution) ;; :after naf-mode-faces
+(require 'naf-mode-institution) ;; :AFTER naf-mode-faces
 ;;;
 (require 'naf-mode-db-fields)
 (require 'naf-mode-db-flags)
@@ -142,11 +151,12 @@
 (require 'naf-mode-events)
 (require 'naf-mode-group-period-styles)
 (require 'naf-mode-benezit-flags)
-(require 'naf-mode-sql-skeletons)
+;; (require 'naf-mode-sql-skeletons) ;; Load from :FILE mon-utils.el
 (require 'naf-mode-awards-prizes)
 (require 'naf-mode-students-of-julian)
 (require 'easymenu)
-;;; COMMENTED: <Timestamp: #{2009-09-17T15:30:05-04:00Z}#{09384} - by MON KEY>
+
+;;; :COMMENTED <Timestamp: #{2009-09-17T15:30:05-04:00Z}#{09384} - by MON KEY>
 ;; (require 'naf-mode-faces)
 ;; (require 'naf-mode-institution) ;; naf-mode-institution should come _after_ naf-mode-faces
 ;;
@@ -155,12 +165,12 @@
 
 ;;; ==============================
 (defgroup naf-mode 'nil
-  "Customization of `naf-mode'."
+  "Customization of `naf-mode'.\n►►►"
   :link  '(url-link "http://www.emacswiki.org/emacs/naf-mode.el")
   :group 'local)
 
 (defgroup naf-mode-faces 'nil
-  "Customization of `naf-mode' font-locking faces."
+  "Customization of `naf-mode' font-locking faces.\n►►►"
   ;; :link (url-link URL)
   :link '(file-link "./naf-mode-faces.el")
   :group 'faces
@@ -168,37 +178,14 @@
 
 ;;; ==============================
 (defconst naf-mode-version "September 2009"
-  "Return current version of `naf-mode'.")
+  "Return current version of `naf-mode'.\n►►►")
 
 ;;; ==============================
 (defcustom naf-comment-prefix ";;;"
   "*String used by `comment-region' to comment out region in a NAF buffer.
-Used in `naf-mode'."
+:USED-IN `naf-mode'.\n►►►"
   :type 'string
   :group 'naf-mode)
-
-;;; ==============================
-;;; CREATED: <Timestamp: #{2009-09-14T18:45:10-04:00Z}#{09381} - by MON KEY>
-(defvar *naf-mode-xref-of-xrefs*
-  '(*naf-mode-art-keywords-xrefs* 
-    *naf-mode-institution-xrefs*
-    *naf-mode-city-names-us-xrefs*
-    *naf-mode-awards-prizes-xrefs*
-    *naf-mode-benezit-flags-xrefs*
-    *naf-mode-group-period-styles-xrefs*
-    *naf-mode-dates-xrefs*
-    *naf-mode-events-xrefs*
-    *naf-mode-students-of-julian-xrefs*
-    *naf-mode-nation-french-xrefs*
-    *naf-mode-nation-english-xrefs*
-    )
-"*List of symbol names of variables holding package level xrefs lists.")
-
-;;;test-me; *naf-mode-xref-of-xrefs*
-;;;test-me; (member '*naf-mode-events-xrefs* *naf-mode-xref-of-xrefs*)
-;;;test-me; (symbol-value (car (member '*naf-mode-events-xrefs* *naf-mode-xref-of-xrefs*)))
-;;
-;;;(progn (makunbound '*naf-mode-xref-of-xrefs*) (unintern '*naf-mode-xref-of-xrefs*))
 
 ;;; ==============================
 (defvar naf-font-lock-keywords
@@ -206,7 +193,7 @@ Used in `naf-mode'."
     (,naf-mode-comment-delim             0 naf-mode-delim-fface t)
     (,naf-mode-db-entry                  0 naf-mode-db-entry-fface t)
     (,naf-mode-timestamp-flag            0 naf-mode-timestamp-fface t)
-    ;;working??? <Timestamp: Wednesday July 29, 2009 @ 04:35.53 PM - by MON KEY>
+    ;; Working??? <Timestamp: Wednesday July 29, 2009 @ 04:35.53 PM - by MON KEY>
     ;;`(,(concat naf-mode-accessed-by-flag) 0 naf-mode-accessed-by-fface t)
     (,naf-mode-accessed-by-flag          0 naf-mode-accessed-by-fface t)
     (,naf-mode-db-numbers-flag           0 naf-mode-db-field-entry-fface t)
@@ -218,7 +205,7 @@ Used in `naf-mode'."
     (,*naf-mode-x-of-ulan-bol*           0 naf-mode-ulan-ppl-corp-fface t)
     (,naf-mode-field-names-bnf           0 naf-mode-field-bnf-fface t)
     ;;
-    ;; COMMENTED: <Timestamp: #{2009-08-07T15:16:32-04:00Z}#{09325} - by MON KEY>
+    ;; :COMMENTED <Timestamp: #{2009-08-07T15:16:32-04:00Z}#{09325} - by MON KEY>
     ;; The identical version below should work fine... we'll see.
     ;; (,naf-mode-url-flag 0 naf-mode-field-url-flag-fface t)
     ;; (,naf-mode-url-wrapper-flag
@@ -236,7 +223,7 @@ Used in `naf-mode'."
     ;;
     (,naf-mode-english-roles-primary     0 naf-mode-primary-role-fface keep)
     (,naf-mode-french-roles-primary      0 naf-mode-primary-role-fface keep)
-    ;; =====ENTITY NAME RELATED========
+    ;; :NAF-ENTITY-NAME-RELATED
     (,naf-mode-publications-periodicals-english          0 naf-mode-publication-periodical-fface)
     (,naf-mode-publications-periodicals-english-one-word 0 naf-mode-publication-periodical-fface)
     (,naf-mode-publications-periodicals-french           0 naf-mode-publication-periodical-fface)
@@ -253,7 +240,7 @@ Used in `naf-mode'."
     (,naf-mode-art-events-generic-french  0 naf-mode-event-fface) ;; keep?
     (,naf-mode-art-events-french          0 naf-mode-event-fface) ;; keep?
     (,naf-mode-art-events-english         0 naf-mode-event-fface) ;; keep?
-    ;; ======= INSITITUIONS =========
+    ;; :NAF-INSITITUIONS
     (,naf-mode-institution-museum-names   0 naf-mode-institution-fface keep)
     (,naf-mode-academy-names              0 naf-mode-institution-fface keep)
     (,naf-mode-school-names-intnl         0 naf-mode-institution-fface keep)
@@ -262,11 +249,11 @@ Used in `naf-mode'."
     (,naf-mode-benezit-museum-short       0 naf-mode-institution-fface keep)
     (,naf-mode-inst-names-anchored        0 naf-mode-institution-fface keep)
     (,naf-mode-awards-prizes-names        0 naf-mode-awards-prizes-fface)
-    ;; == 2ND ROLE & ART KEYWORD FLAGS|SEPERATE FACE ==
+    ;; :NAF-SCNDRY-ROLE  :NAF-ART-KEYWORD-FLAGS-W-SEP-FACE
     (,naf-mode-english-roles-secondary    0 naf-mode-secondary-role-fface)
     (,naf-mode-french-roles-secondary     0 naf-mode-secondary-role-fface)
     (,naf-mode-art-keywords               0 naf-mode-art-keywords-role-fface)
-    ;; ==== DATE AND TEMPORAL RELATED ====
+    ;; :NAF-DATE-TEMPORAL-RELATED
     (,naf-mode-lifespan                   0 naf-mode-date-fface)
     (,naf-mode-date-string                0 naf-mode-date-fface)
     (,naf-mode-english-dates              0 naf-mode-date-fface)
@@ -278,7 +265,7 @@ Used in `naf-mode'."
     (,naf-mode-french-days                0 naf-mode-date-fface)
     (,naf-mode-simple-date                0 naf-mode-date-fface)
     ;; ==============================
-    ;; ONCE ALL PLISTS AND EXTRA PROPS ARE FINALIZED:
+    ;; :NOTE Once all plists and extra props are finalized:
     ;; ((,@(concat naf-mode-active-date
     ;; 		 naf-mode-active-date-flags-paren
     ;; 		 naf-mode-active-date-flags-solo))
@@ -292,10 +279,10 @@ Used in `naf-mode'."
     (,naf-mode-active-date                0 naf-mode-date-active-fface)
     (,naf-mode-active-date-flags-paren    0 naf-mode-date-active-fface t)
     (,naf-mode-active-date-flags-solo     0 naf-mode-date-active-fface)
-    ;; ========= BENEZIT FLAGS ===========
+    ;; :NAF-BENEZIT-FLAGS
     (,naf-mode-benezit-currency-acronym   0 naf-mode-benezit-fface)
-    (,naf-mode-benezit-section-flag       0  naf-mode-benezit-fface)
-    ;; == LOCATION AND PLACE NAME RELATED ==
+    (,naf-mode-benezit-section-flag       0 naf-mode-benezit-fface)
+    ;; :NAF-LOCATION-PLACE-NAME-RELATED
     (,naf-mode-nation-english             0 naf-mode-place-fface)
     (,naf-mode-nation-french              0 naf-mode-place-fface)
     (,naf-mode-nationality-english        0 naf-mode-nationality-fface)
@@ -306,7 +293,7 @@ Used in `naf-mode'."
     (,naf-mode-region-names-french        0 naf-mode-place-fface)
     (,naf-mode-region-names-other         0 naf-mode-place-fface)
     (,naf-mode-intnl-auction-city-names   0 naf-mode-place-fface)
-    ;; =========STUDENTS of Rodolphe Julian's Académie Julian ===================
+    ;; :NAF-STUDENTS-OF-JULIAN
     (,naf-mode-students-of-julian-french        0 naf-mode-artist-student-of-julian-fface)
     (,naf-mode-students-of-julian-us            0 naf-mode-artist-student-of-julian-fface)
     (,naf-mode-students-of-julian-misc          0 naf-mode-artist-student-of-julian-fface)
@@ -320,9 +307,9 @@ Used in `naf-mode'."
     (,naf-mode-students-of-julian-uk            0 naf-mode-artist-student-of-julian-fface))
   "*Collect `naf-mode-keywords' into a single place.
 Variables and Constants of this list loaded by `naf-mode' require statments.
-They are encapsulated here for easy modification.")
-
-;;;test-me; naf-font-lock-keywords
+These are encapsulated here for easy modification.\n►►►")
+;;
+;;; :TEST-ME naf-font-lock-keywords
 ;;
 ;;;(progn (makunbound 'naf-font-lock-keywords) (unintern 'naf-font-lock-keywords))
 
@@ -336,7 +323,7 @@ They are encapsulated here for easy modification.")
     ;; Add `p' so M-c on `hello' givs to `Hello', not `hello'.
     (modify-syntax-entry ?' "W p" st)
     st)
-  "Syntax table used while in `naf-mode'.")
+  "*Syntax table :USED-IN `naf-mode'.\n►►►")
 
 ;;; ==============================
 ;;; Construct a keymap for `naf-mode'.
@@ -347,13 +334,14 @@ They are encapsulated here for easy modification.")
 ;;; type "C" in a naf-buffer. Reset that with (define-key naf-mode-map "C" nil)
 ;;; To rebind temporarily (define-key naf-mode-map "\C-c\M-" nil)
 ;;;
-;;; Pending assignment:
+;;; :TODO These are pending assignement.
 ;;; (define-key naf-map "\C-c\M-" ')
 ;;; (define-key naf-map "\C-c\M-" 'mon-save-current-directory)
 ;;; ==============================
 (defvar naf-mode-map
   (let ((naf-map (make-sparse-keymap)))
-    ;; M-c Should be Kept available for "cleaning" functions.
+    ;; :NOTE  M-c should be Kept available for "cleaning" functions.
+    ;; :CLEANING-FUNCTIONS           <- M-c
     (define-key naf-map "\C-c\M-ar"     'mon-append-to-register)
     (define-key naf-map "\C-c\M-cbb"    'mon-cln-bib) ;cbb ok?
     (define-key naf-map "\C-c\M-cbl"    'mon-cln-blank-lines)
@@ -374,23 +362,23 @@ They are encapsulated here for easy modification.")
     (define-key naf-map "\C-c\M-cwt"    'mon-cln-trail-whitespace)
     ;; M-dw			        
     (define-key naf-map "\C-c\M-dwt"    'mon-toggle-dired-dwim-target)
-    ;; M-e FOR EXPLORER RELATED FUNCTIONS:
+    ;; :EXPLORER-FUNCTIONS           <- M-e 
     (define-key naf-map "\C-c\M-exh"    'mon-open-explorer)
     (define-key naf-map "\C-c\M-exi"    'mon-open-images-ed-swap)
     (define-key naf-map "\C-c\M-exm"    'mon-open-moz-down)
-    ;; M-f__ FOR WINDOW RELATED FUNCTIONS:
+    ;; :WINDOW-FUNCTIONS             <- M-f__ 
     (define-key naf-map "\C-c\M-flw"    'mon-flip-windows)
     (define-key naf-map "\C-c\M-flv"    'mon-twin-vertical)
     (define-key naf-map "\C-c\M-flh"    'mon-twin-horizontal)
-    ;; M-fm FRAME RELATED:	        
+    ;; :FRAME-FUNCTIONS              <- M-fm 
     (define-key naf-map "\C-c\M-fmx"    'mon-maximize-frame)
     (define-key naf-map "\C-c\M-fmn"    'mon-minimize-frame)
     (define-key naf-map "\C-c\M-fmr"    'mon-restore-frame)
     (define-key naf-map "\C-c\M-fmb"    'mon-menu-bar)
-    ;; M-fw WINDOW HEIGHT/WIDTH:        
+    ;; :WINDOW-HEIGHT-WIDTH-FUNCTIONS <- M-fw 
     (define-key naf-map "\C-c\M-fwh"    'doremi-window-height)
     (define-key naf-map "\C-c\M-fww"    'doremi-window-window-width)
-    ;; M-h__ FOR HELP:		        
+    ;; :HELP-FUNCTIONS               <- M-h__
     (define-key naf-map "\C-c\M-hky"    'mon-help-keys)        
     (define-key naf-map "\C-c\M-hdc"    'mon-help-diacritics)
     (define-key naf-map "\C-c\M-hnf"    'mon-help-naf-mode-faces)
@@ -398,7 +386,7 @@ They are encapsulated here for easy modification.")
     (define-key naf-map "\C-c\M-huf"    'mon-help-naf-mode-ulan-flags)
     (define-key naf-map "\C-c\M-hrs"    'mon-help-reference-sheet)
     (define-key naf-map "\C-c\M-hcl"    'mon-help-color-chart)
-   ;; M-i__ FOR INSERTRION:
+    ;; :INSERTRION-FUNCTIONS          <- M-i__
     (define-key naf-map "\C-c\M-inar"   'artist-naf)
     (define-key naf-map "\C-c\M-inau"   'author-naf)
     (define-key naf-map "\C-c\M-inbo"   'book-naf)
@@ -416,14 +404,14 @@ They are encapsulated here for easy modification.")
     (define-key naf-map "\C-c\M-inc"    'mon-insert-string-incr)        ;!! "\C-c\C-in"
     (define-key naf-map "\C-c\M-in0"    'mon-insert-numbers-padded) ; M-i n zero
     (define-key naf-map "\C-c\M-inl"    'number-lines-region)
-    ;; M-ip_ FOR NON-POSTING-*-SOURCE INSERTION:
+    ;; :NON-POSTING-SOURCE-INSERTION <- M-ip_
     (define-key naf-map "\C-c\M-ipb"    'non-posting-benezit-source)
     (define-key naf-map "\C-c\M-ipe"    'non-posting-ebay-source)
     (define-key naf-map "\C-c\M-ipi"    'non-posting-internet-source)
     (define-key naf-map "\C-c\M-ipp"    'non-posting-philsp-source)
     (define-key naf-map "\C-c\M-ips"    'non-posting-source)
     (define-key naf-map "\C-c\M-ipw"    'non-posting-wiki-source)
-    ;; M-is_ 
+    ;;                               <- M-is_ 
     (define-key naf-map "\C-c\M-isa"    'mon-accessed-stamp)
     (define-key naf-map "\C-c\M-isb"    'mon-insert-subdirs-in-buffer)
     (define-key naf-map "\C-c\M-isc"    'mon-rectangle-sum-column)
@@ -432,7 +420,7 @@ They are encapsulated here for easy modification.")
     (define-key naf-map "\C-c\M-isn"    'mon-insert-string-n-times)
     (define-key naf-map "\C-c\M-ist"    'mon-stamp)
     (define-key naf-map "\C-c\M-isu"    'mon-insert-unicode)
-    ;; M-iw_ WRAPPING THE REGION:
+    ;; :WRAPPING-FUNCTIONS           <- M-iw_ 
     (define-key naf-map "\C-c\M-iwa"    'mon-wrap-all-urls)
     (define-key naf-map "\C-c\M-iw1"    'mon-wrap-one-url)
     (define-key naf-map "\C-c\M-iwc"    'mon-wrap-span)
@@ -440,13 +428,13 @@ They are encapsulated here for easy modification.")
     (define-key naf-map "\C-c\M-iww"    'mon-wrap-with)
     (define-key naf-map "\C-c\M-iwu"    'mon-wrap-url)
     (define-key naf-map "\C-c\M-iyr"    'mon-insert-regexp-template-yyyy)
-    ;; M-l__ DIRED RELATED - LS SWITCHES:
+    ;; :DIRED-LS-SWITCHES:           <- M-l__
     (define-key naf-map "\C-c\M-lsa"    'mon-dired-srt-alph)      ;ls -la
     (define-key naf-map "\C-c\M-lst"    'mon-dired-srt-chrn)      ;ls -lt
     (define-key naf-map "\C-c\M-lsx"    'mon-dired-srt-type)      ;ls -lX
     (define-key naf-map "\C-c\M-lxa"    'mon-dired-srt-type-alph) ;ls -lXa
     (define-key naf-map "\C-c\M-lxt"    'mon-dired-srt-type-chrn) ;ls -lXt
-    ;; M-n__ NAF DIRECTORY RELATED FUNCTIONS:
+    ;; :NAF-DIRECTORY-FUNCTIONS      <- M-n__
     (define-key naf-map "\C-c\M-nxa"    'naf-explorer-artist)
     (define-key naf-map "\C-c\M-nxb"    'naf-explorer-brand)
     (define-key naf-map "\C-c\M-ndf"    'mon-insert-file-in-dirs)
@@ -457,17 +445,17 @@ They are encapsulated here for easy modification.")
                                                                                        ;binding without naf-mode-hook.Don't
                                                                                        ;remove globals frm mon-key-bindings
     (define-key naf-map "\C-c\M-nwn"    'new-naf)
-    ;; M-pr_ FOR LAUNCHING EXTERNAL APPLICATIONS:
+    ;; :LAUNCHING-EXTERNAL-APPS      <- M-pr_
     (define-key naf-map "\C-c\M-pra"    'mon-open-abbyy)
     (define-key naf-map "\C-c\M-prc"    'mon-conkeror)
     (define-key naf-map "\C-c\M-prn"    'mon-open-notepad++)
     (define-key naf-map "\C-c\M-prp"    'mon-open-photoshop)
     (define-key naf-map "\C-c\M-prf"    'mon-firefox)
     (define-key naf-map "\C-c\M-prs"    'mon-open-fastone)
-    ;; M-pt_ FOR PATH RELATED:
+    ;; :PATH-FUNCTIONS               <- M-pt_ 
     (define-key naf-map "\C-c\M-pti"    'mon-insert-path)
     (define-key naf-map "\C-c\M-pth"    'mon-copy-file-path)
-    ;; M-r__ FOR REPLACING FUNCTIONS:
+    ;; :REPLACING-FUNCTIONS          <- M-r__ 
     (define-key naf-map "\C-c\M-rnm"    'mon-num-to-month)
     (define-key naf-map "\C-c\M-rmw"    'mon-num-to-month-whitespace)
     (define-key naf-map "\C-c\M-rmn"    'mon-month-to-num)
@@ -486,19 +474,19 @@ They are encapsulated here for easy modification.")
     (define-key naf-map "\C-c\M-rvw"    'mon-reverse-words)
     (define-key naf-map "\C-c\M-rvr"    'mon-region-reverse)
     (define-key naf-map "\C-c\M-rzr"    'mon-zippify-region)
-    ;; M-s__ FOR SEARCHING RELATED:
+    ;;  :SEARCHING-FUNCTIONS         <- M-s__
     (define-key naf-map "\C-c\M-sbn"    'mon-search-bnf)
     (define-key naf-map "\C-c\M-sgg"    'google-define) ;!! "\C-c\C-gg"
     (define-key naf-map "\C-c\M-slc"    'mon-search-loc)
     (define-key naf-map "\C-c\M-sul"    'mon-search-ulan)
     (define-key naf-map "\C-c\M-sun"    'mon-search-ulan-for-name)
     (define-key naf-map "\C-c\M-swk"    'mon-search-wikipedia)
-    ;; M-t__ FOR CASE RELATED FUNCTONS: 
+    ;; :CASE-FUNCTONS                 <- M-t__ 
     (define-key naf-map "\C-c\M-tcr"    'mon-region-capitalize) ;!! "\C-c\M-r"
     (define-key naf-map "\C-c\M-trc"    'mon-rectangle-capitalize)
     (define-key naf-map "\C-c\M-tdr"    'mon-rectangle-downcase)
     (define-key naf-map "\C-c\M-tur"    'mon-rectangle-upcase)
-    ;;M-W__ FOR WORD/LINE COUNT RELATED:
+    ;; :WORD-LINE-COUNT-FUNCTIONS    <- M-W__ 
     (define-key naf-map "\C-c\M-wca"    'mon-word-count-analysis)
     (define-key naf-map "\C-c\M-wcl"    'mon-line-count-region)
     (define-key naf-map "\C-c\M-wco"    'mon-count-word-occurences)
@@ -507,16 +495,16 @@ They are encapsulated here for easy modification.")
     (define-key naf-map "\C-c\M-wml"    'mon-line-length-max)
     (define-key naf-map [C-S-down-mouse-3]  'naf-mode-menu)
     naf-map)
-  "Keymap for `naf-mode'. Some keys bound also global in `mon-keybindings'.
+  "*Keymap for `naf-mode'. Some keys bound also global in `mon-keybindings'.
 Globals are included here in order that `describe-mode' in `*Help*'
 buffers can show the global-bindings too as they are still used most by naf-mode.
-Typically naf-mode binds \"\C-c\M-##\".")
-
-;;;(unintern 'naf-mode-map)
-;;;(unintern 'naf-mode-prefix)
+Typically naf-mode binds \"\C-c\M-##\".\n►►►")
+;;
+;;; (unintern 'naf-mode-map)
+;;; (unintern 'naf-mode-prefix)
 
 ;;; ==============================
-(easy-menu-define naf-mode-menu naf-mode-map   "Menu for NAF-mode buffers."
+(easy-menu-define naf-mode-menu naf-mode-map   "Menu for NAF-mode buffers.\n►►►"
   ;;(defconst - used in one of the emacs libs..
   '("Naf-mode"
     ["New NAF" new-naf :help "Open a new NAF"]
@@ -700,14 +688,15 @@ Typically naf-mode binds \"\C-c\M-##\".")
 
 ;;; ==============================
 ;;;  TODO: need a hook to (setq sort-fold-case t) when loading a .naf file
-;;;  FROM DOCSTRING: Variable is safe as a **file local** variable if its value
-;;;  satisfies the predicate `booleanp'.
-;;;  Wrapped in unless because this _should_ already be available from "./mon-utils.el"
+;;;  :NOTE From docstring; 
+;;;        Variable is safe as a **file local** variable if its value
+;;;        satisfies the predicate `booleanp'.
+;;;  Wrapped in unless because this _should_ already be available from :FILE ./mon-utils.el
 (unless (fboundp 'new-naf)
 (defun new-naf (&optional rnm inter-p)
   "Make a new naf buffer named new-naf switch to buffer with naf-mode on.
 Optional arg RNM supplies a different name for the new naf buffer.\n
-Used in `naf-mode'."
+:USED-IN `naf-mode'.\n►►►"
   (interactive "p\np")
   (let* ((rnm-bp (cond ((and (eq 1 rnm) (eq 1 inter-p))
                         (if (yes-or-no-p "Set a name for this new buffer (defaults to: new-naf)? :")
@@ -729,19 +718,19 @@ Used in `naf-mode'."
 
 ;;; ==============================
 (defvar naf-mode-hook nil
-  "*Hook called by `naf-mode'.")
+  "*Hook called by `naf-mode'.\n►►►")
 
 ;;; ==============================
 (define-derived-mode naf-mode fundamental-mode "NAF-mode"
   "A major mode for creating NAFS (Name Authority Files).
-\\{naf-mode-map}."
+\\{naf-mode-map}.\n►►►"
   :group 'naf-mode
   ;; :link
   ;; (set (make-local-variable 'imenu-generic-expression)
   ;;      sample-imenu-generic-expression)
   ;;  (make-local-variable '*naf-mode-buffer-local-llm*)
   ;;
-  ;; ==========FONT-LOCKS==========
+  ;; :FONT-LOCKS
   (set (make-local-variable 'font-lock-defaults)
         '(naf-font-lock-keywords))
   (set (make-local-variable 'font-lock-keywords)
@@ -749,40 +738,46 @@ Used in `naf-mode'."
   (message "Loading Naf Mode."))
 
   ;; ==============================
-  ;; NOTE:
+  ;; :NOTE
   ;;(set (make-local-variable 'font-lock-keywords)
   ;;       '(naf-font-lock-keywords))
   ;;
   ;;  (set (make-local-variable 'font-lock-keywords)
   ;;   naf-font-lock-keywords)
   ;;;;;;;;;;;;
-  ;; Testing this: borrowed-from: spartan-wiki.el
+  ;; :COURTESY Rubikich :HIS spartan-wiki.el
+  ;; :TESTING 
   ;; (set (make-local-variable 'font-lock-extra-managed-props)
   ;;      some-property-list)
   ;;
   ;; (setq font-lock-extra-managed-props 'naf-mode-face-props)
   ;; ==============================
-  ;; Is following needed?:
-  ;; (run-hooks 'naf-mode-hook)
-  ;; Docs say `derived-mode' automatically builds a `run-mode-hooks' initiates
-  ;; the mode variables with this ''mode-hook''. But, the hooks docs say don't
-  ;; `run-hooks' on a var set buffer-local for a mode w/ `make-local-variable'.
-  ;; WTF!
+  ;; :NOTE Is following needed?: (run-hooks 'naf-mode-hook) 
+  ;;       Docs say: `derived-mode' automatically builds a `run-mode-hooks'
+  ;;       initiates the mode variables with this ''mode-hook''. But, the hooks
+  ;;       docs say don't `run-hooks' on a var set buffer-local for a mode w/
+  ;;       `make-local-variable'.  WTF!
   ;; ==============================
 
 ;;; ==============================
+;;; :CREATED <Timestamp: #{2009-09-26T19:25:12-04:00Z}#{09396} - by MON KEY>
+(add-hook 'naf-mode-hook 
+          #'(lambda () (unless (not (buffer-local-value 'show-paren-mode (current-buffer)))
+                         (set (make-local-variable  'show-paren-mode) nil))))
+;;
 (add-hook 'naf-mode-hook (function (lambda () (longlines-mode 1))))
 (add-hook 'naf-mode-hook (function (lambda () (setq local-abbrev-table naf-mode-abbrev-table))))
-
-;;(add-hook 'naf-mode-hook (function (lambda () ;))))
-;;;(add-hook hook function &optional append local)
 ;;
-;;;(unintern 'naf-mode-hook)
+;;; (add-hook hook function &optional append local)
+;;; (add-hook 'naf-mode-hook #'(lambda () paren-mode 
+;;; (add-hook 'naf-mode-hook (function (lambda () ;))))
+;;
+;;; (unintern 'naf-mode-hook)
 
 ;;; ==============================
 ;;; Following form may not be needed according to the (set (MLV 'somevar) '(idiom))
 ;;; in the define-derived-mode above.
-;;; COMMENTED-OUT: <Timestamp: #{2009-08-15T20:54:36-04:00Z}#{09337} - by MON KEY>
+;;; :COMMENTED-OUT <Timestamp: #{2009-08-15T20:54:36-04:00Z}#{09337} - by MON KEY>
 ;;; (font-lock-add-keywords 'naf-mode naf-font-lock-keywords)
 
 ;;; ==============================

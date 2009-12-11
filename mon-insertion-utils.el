@@ -37,7 +37,7 @@
 ;;; `*mon-hgignore-template*'
 ;;; 
 ;;; ALIASED/ADIVISED/SUBST'D:
-;;; `mon-comment-divide->col' -> `comment-divider-to-col'
+;;; `mon-comment-divider->col' -> `comment-divider-to-col'
 ;;; `bug-insert-copyright'    -> `mon-insert-copyright'
 ;;;
 ;;; RENAMED-AND-MOVED:
@@ -527,7 +527,7 @@ ii) Read char as with `read-char-by-name'
     HEAVY BLACK HEART <- name 
     #o21430           <- octal
     #x2318            <- hex
-    #10r8984          <- decimal
+    #10r8984          <- decimal\n
 :EXAMPLE\n(mon-insert-unicode \"25BA\")\n
 \(call-interactively 'mon-insert-unicode\)\n
 option 1 radix 16 w/ arg 2019  => (\"’\" nil t)
@@ -560,7 +560,7 @@ For access/alteration to encoding/coding information
     (setq t-char
           (cond (intrp char)
                 ((integerp char) char)
-                ;;(cdr (assoc-string "BLACK RIGHT-POINTING POINTER" (ucs-names) t))
+                ;; (cdr (assoc-string "BLACK RIGHT-POINTING POINTER" (ucs-names) t))
                 ((cdr (assoc-string char (ucs-names) t)))
                 ((stringp char) 
                  (cond ((numberp (mon-string-to-symbol char))
@@ -571,7 +571,7 @@ For access/alteration to encoding/coding information
                         (error "Not a Unicode character code: %d" char))
                        ((or (< char 0) (> char #x10FFFF)) ;;(or (< #x25ba 0) (> #x25ba #x10FFFF))
                         (error "Not a Unicode character code: 0x%X" char))
-                       ;;(t (setq t-char (char-to-string t-char))))
+                       ;; (t (setq t-char (char-to-string t-char))))
                        ))))
     (setq t-char (cond (intrp char)
                        (t (char-to-string t-char))))
@@ -593,6 +593,7 @@ For access/alteration to encoding/coding information
 ;;; :TEST-ME (mon-insert-unicode #x25ba t)►
 ;;; :TEST-ME (mon-insert-unicode "BLACK RIGHT-POINTING POINTER" t)►
 ;;; :TEST-ME (mon-insert-unicode "#10r10084" t)❤
+;;; :TEST-ME (mon-insert-unicode "#x2764" t)❤
 ;;; :TEST-ME (call-interactively 'mon-insert-unicode)
 ;;; :TEST-ME (mon-insert-unicode "bubba")
 ;;; :TEST-ME (mon-insert-unicode "bubba" t)
@@ -605,7 +606,7 @@ When INSERTP is non-nil or called-interactively inserts at point.
 Does not move point.\n\n:EXAMPLE\n\(split-designator\)\n
 :SEE-ALSO `non-posting-source', `non-posting-ebay-source', `naf-comment-prefix'.
 `non-posting-wiki-source', `npps', `benezit-naf-template'.\n
-Used in `naf-mode'.\n►►►"
+:USED-IN `naf-mode'.\n►►►"
   (interactive "i\np")
   (if (or insertp intrp)
       (save-excursion
@@ -659,7 +660,10 @@ Where the OP-PREFIX arg is non-nil for example using `*' comment divider is:\n
 with subesequent line or region commented with `** '. 
 When INSERTP is non-nil insert commented region at point, doesn't move point.\n
 :SEE `mon-lisp-comment-to-col' for a specifically lisp centric interactive
-implementation.\n:SEE-ALSO `*mon-default-comment-divider*'\n►►►"
+implementation.\n
+:SEE-ALSO `*mon-default-comment-divider*', `mon-line-strings-indent-to-col',
+`mon-line-indent-from-to-col', `mon-line-strings-pipe-to-col',
+`mon-string-fill-to-col'.\n►►►"
   (interactive "i\nr\nP\ni\np")
   (let ((strt-frm   (make-marker))
         (s-ident-at (make-marker))
@@ -667,15 +671,15 @@ implementation.\n:SEE-ALSO `*mon-default-comment-divider*'\n►►►"
         (prfx      
          (cond ((and intrp op-prefix)
                 (concat 
-                 (make-string 2 (string-to-char (substring (read-string "use alternative prefix :") 0 1))) 
+                 (make-string 2 (string-to-char (substring (read-string "Use alternative prefix: ") 0 1))) 
                  " "))
                ((and op-prefix (not intrp))
                 (concat (make-string 2 (string-to-char (substring op-prefix 0 1))) " "))
                (t ";; ")))
         (2col (cond ((and intrp (or (not to-col) (not (numberp to-col))))
-                     (read-number "indent to column number :"))
+                     (read-number "Indent to column number: "))
                     ((and (not intrp) (not (numberp to-col)))
-                     (error "to-col must be a number. supplied arg was : %s" to-col))
+                     (error "Arg to-col must be a number, but got: %s" to-col))
                     (t to-col)))
         (cd2cN)
         (w/reg))
@@ -740,21 +744,29 @@ implementation.\n:SEE-ALSO `*mon-default-comment-divider*'\n►►►"
           (insert cd2cN))
       cd2cN)))
 ;;
-(defalias 'mon-comment-divide->col 'comment-divider-to-col)
+(defalias 'mon-comment-divider->col 'comment-divider-to-col)
 ;;
 ;;;(progn (makunbound 'comment-divider-to-col) (unintern 'comment-divider-to-col)
 ;;;       (makunbound 'mon-comment-divide->col) (unintern 'mon-comment-divide->col))
 
+
 ;;; ==============================
+;;; :MODIFICATIONS <Timestamp: #{2009-12-10T14:20:52-05:00Z}#{09504} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-08-25T18:17:18-04:00Z}#{09352} - by MON KEY>
 (defun mon-lisp-comment-to-col (&optional col-n)
   "Insert `comment-divider' at COL-N comment and indent region/next line to col.
 COL-N is a prefix arg. When region is active indent and comment content of region 
 to COL-N else indent and comment next line. Comment prefix is `;; '.
-To provide an alternative comment prefix use `comment-divider-to-col'.
-:SEE-ALSO `comment-divider', `*mon-default-comment-divider*'.\n►►►"
+To provide an alternative comment prefix use `comment-divider-to-col'.\n
+:SEE-ALSO `comment-divider', `*mon-default-comment-divider*'.
+`mon-line-strings-indent-to-col', `mon-line-indent-from-to-col', 
+`mon-line-strings-pipe-to-col', `mon-string-fill-to-col'.\n►►►"
   (interactive "P")
-  (comment-divider-to-col col-n nil nil alt-prefix nil t))
+  (if (not (region-active-p))
+      (progn
+        (line-move -1)
+        (comment-divider-to-col col-n nil nil nil nil t))
+      (comment-divider-to-col col-n nil nil nil nil t)))
 
 ;;; ==============================
 ;;; :MODIFICATIONS <Timestamp: #{2009-08-25T19:17:39-04:00Z}#{09352} - by MON KEY>
@@ -781,9 +793,9 @@ Insert at point:\n
  //***************************//\n
 :SEE-ALSO `comment-divider', `comment-divider-to-col-four'.\n►►►"
   (interactive "i\np")
-  (if (or insrtp intrp))  
-  (insert "//***************************//")
-  "//***************************//")
+  (if (or insrtp intrp)
+      (insert "//***************************//")
+      "//***************************//"))
 ;;
 ;;; :TEST-ME (call-interactively 'mon-insert-php-comment-divider)
 
@@ -1171,7 +1183,7 @@ When MONKEY is non-nil use longform of MONish username.
 Default is abbreviated nameform.
 When W-SHORT-FORM is non-nil insert with 34 char length comment divider.
 Default is to return with 68 char length comment dividers.\n
-:SEE-ALSO `mon-build-copyright-string'.\nUsed in `naf-mode'.\n►►►" 
+:SEE-ALSO `mon-build-copyright-string'.\n:USED-IN `naf-mode'.\n►►►" 
   (interactive "p\nP\ni\np")
 (if (or insertp intrp)
     (save-excursion 
@@ -1238,26 +1250,28 @@ GFDLv1.3 clause w/ Copyright <YYYY> <NAME> from: `*mon-gnu-license-header-gfdl*'
            ";;; SNIPPETS:\n;;;\n"
            ";;; REQUIRES:\n;;;\n"
            ";;; THIRD-PARTY-CODE:\n;;;\n" 
-           ";;; Strip or reformat with regexps on these commonly employed \"TAGS\":"
-           "\n;;;\n"
-           ";;; TAGS-APPEARING-IN-COMMENTS:\n"
-           ";;; :CLEANUP :CLOSE :COURTESY :CREATED :DATE :EMACS-WIKI :EVAL-BELOW-TO-TEST\n"
-           ";;; :FIXES :FIXME :HIS :IF-NOT-FEATURE-P :KEYWORD-REGEXPS-IN\n"
-           ";;; :LOAD-SPECIFIC-PROCEDURES :MODIFICATIONS :RENAMED :SEE-BELOW :SUBJECT :TODO\n"
-           ";;; :TEST-ME :UNCOMMENT-BELOW-TO-TEST :VERSION :WAS\n;;;\n"
-           ";;; TAGS-APPEARING-IN-DOCSTRINGS:\n"
-           ";;; :ALIASED-BY :CALLED-BY :EXAMPLE :FACE-DEFINED-IN :FACE-DOCUMENTED-IN\n"
-           ";;; :FILE :IDIOM :KEYWORD-REGEXPS-IN :NOTE :SEE :SEE-ALSO :SOURCE :USED-BY\n;;;\n"
+           ;;; ";;; Strip or reformat with regexps on these commonly employed \"TAGS\":"
+           ;;; "\n;;;\n"
+           ;;; ";;; TAGS-APPEARING-IN-COMMENTS:\n"
+           ;;; ";;; :CLEANUP :CLOSE :COURTESY :CREATED :DATE :EMACS-WIKI :EVAL-BELOW-TO-TEST\n"
+           ;;; ";;; :FIXES :FIXME :HIS :IF-NOT-FEATURE-P :KEYWORD-REGEXPS-IN\n"
+           ;;; ";;; :LOAD-SPECIFIC-PROCEDURES :MODIFICATIONS :RENAMED :SEE-BELOW :SUBJECT :TODO\n"
+           ;;; ";;; :TEST-ME :UNCOMMENT-BELOW-TO-TEST :VERSION :WAS\n;;;\n"
+           ;;; ";;; TAGS-APPEARING-IN-DOCSTRINGS:\n"
+           ;;; ";;; :ALIASED-BY :CALLED-BY :EXAMPLE :FACE-DEFINED-IN :FACE-DOCUMENTED-IN\n"
+           ;;; ";;; :FILE :IDIOM :KEYWORD-REGEXPS-IN :NOTE :SEE :SEE-ALSO :SOURCE :USED-BY\n;;;\n"
            ";;; AUTHOR: MON KEY\n"
            ";;; MAINTAINER: MON KEY\n;;;\n"
-           ";;; PUBLIC-LINK: (URL `http://www.emacswiki.org/emacs/" fname ")\n"
+           ";;; PUBLIC-LINK: (URL `http://www.emacswiki.org/emacs/" fname "')\n"
            ";;; FIRST-PUBLISHED:\n;;;\n"
            ";;; FILE-CREATED:\n;;; <Timestamp: " (mon-timestamp :naf t) "\n"
            (mon-comment-divider-w-len 64) "\n"
            *mon-gnu-license-header* "\n"
            (mon-insert-gnu-licence-gfdl t) "\n"
            ";;; CODE:\n\n"
-           ";   {...\n;   " fname-sans " Contents here\n;   ...}\n\n"
+           "\(eval-when-compile \(require 'cl\)\)\n\n"
+           *mon-default-comment-divider*
+           "\n;   {...\n;   " fname-sans " Contents here\n;   ...}\n\n"
            *mon-default-comment-divider* "\n" 
            ";;; (provide '" fname-sans ")\n"
            *mon-default-comment-divider* "\n\n"
@@ -1280,7 +1294,7 @@ GFDLv1.3 clause w/ Copyright <YYYY> <NAME> from: `*mon-gnu-license-header-gfdl*'
 Insertion provides GPLv3+ clause.\n
 :EXAMPLE\n*mon-gnu-license-header*\n
 :CALLED-BY `mon-insert-file-template',`mon-insert-gnu-licence'.\n
-:SEE `*mon-gnu-license-header-gfdl*',`mon-insert-gnu-licence-gfdl'.\n►►►")
+:SEE-ALSO `*mon-gnu-license-header-gfdl*',`mon-insert-gnu-licence-gfdl'.\n►►►")
 ;;
 (when (not (bound-and-true-p *mon-gnu-license-header*))
            (setq *mon-gnu-license-header*
@@ -1302,8 +1316,8 @@ Insertion provides GPLv3+ clause.\n
 ;;; Floor, Boston, MA 02110-1301, USA."))
 ;;
 ;;; :TEST-ME *mon-gnu-license-header*
-;;;(progn (makunbound '*mon-gnu-lincense-header*)
-;;;       (unintern '*mon-gnu-license-header*))
+;;; (progn (makunbound '*mon-gnu-lincense-header*)
+;;;        (unintern '*mon-gnu-license-header*))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-10-02T12:01:00-04:00Z}#{09405} - by MON KEY>
@@ -1328,8 +1342,8 @@ Insertion provides GFDL clause.\n
          "\n;;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').")))
 ;;
 ;;; :TEST-ME *mon-gnu-license-header-gfdl*
-;;;(progn (makunbound '*mon-gnu-lincense-header-gfdl*)
-;;;       (unintern '*mon-gnu-license-header-gfdl*))
+;;; (progn (makunbound '*mon-gnu-lincense-header-gfdl*)
+;;;        (unintern '*mon-gnu-license-header-gfdl*))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-08-09T11:26:16-04:00Z}#{09327} - by MON KEY>
@@ -1394,7 +1408,7 @@ Does not move point.\n:EXAMPLE\n(mon-insert-defclass-template nil 2)\n
   (interactive "i\nP\ni\np")
   (let ((c-nm (if class-pfx (format "%s" class-pfx) "<CLASS-NAME>"))
         (s-nm (if class-pfx (concat "<SLOT-"      
-                                    (cond ((<= (length class-pfx) 2) class-sfx)
+                                    (cond ((<= (length class-pfx) 2) class-pfx)
                                           ((> (length class-pfx) 2)
                                            (concat (substring class-pfx 0 1) 
                                                    (format "%d"(- (length class-pfx) 2))
@@ -1843,15 +1857,15 @@ Does not move-point.\n
 ;;; - The test-me subr should insert differently depending on symbol 'type' 
 ;;;   and cnt esp. for use with mon-insert-doc-help tail.
 ;;;   4 'test-me's for functions
-;;;   "test-me;(<FNAME>)"
-;;;   "test-me;(<FNAME> t)"
-;;;   "test-me;(describe-function '<FNAME>)"
-;;;   "test-me;;(call-interactively '<FNAME>)"
+;;;   ":TEST-ME (<FNAME>)"
+;;;   ":TEST-ME (<FNAME> t)"
+;;;   ":TEST-ME (describe-function '<FNAME>)"
+;;;   ":TEST-ME (call-interactively '<FNAME>)"
 ;;;   When a variable is found: should insert:
-;;;   "test-me; <VARNAME>"
-;;;   "test-me;(describe-variable '<VARNAME>)"
+;;;   ":TEST-ME <VARNAME>"
+;;;   ":TEST-ME (describe-variable '<VARNAME>)"
 ;;;   When a face is found: should insert:
-;;;   "test-me;(describe-face '<FACENAME>)"
+;;;   ":TEST-ME (describe-face '<FACENAME>)"
 
 ;;; ==============================
 ;;; :UNFINISHED-AS-OF <Timestamp: #{2009-10-05T16:03:34-04:00Z}#{09411} - by MON KEY>
@@ -1886,7 +1900,7 @@ Regexp held by global var `*regexp-symbol-defs*'.\n
          (sym-typ (match-string-no-properties 2))
          (fun-syms '("defun" "defun*" "defmacro" "defmacro*" "defsubst" "defsubst*"))
          (var-syms '("defvar" "defconst" "defcustom"))
-         ;;(sym-name &key :alt-cookie :do-var :insertp :do-face :do-group :do-theme
+         ;; (sym-name &key :alt-cookie :do-var :insertp :do-face :do-group :do-theme
          (sym-typ-cond (cond ((car (member found fun-syms))
                               (concat 
                                ";;; :TEST-ME (%s)"
@@ -1898,14 +1912,14 @@ Regexp held by global var `*regexp-symbol-defs*'.\n
                                      (intrp-posn (car (intersection 
                                                        '(insertp insert-p insrtp insrt-p 
                                                          :insertp :insert-p :insrtp :insrt-p)
-                                                       tst-intrp)))
+                                                       tst-intrp-l)))
                                      ;; :UNFINISHED-AS-OF 
                                      ;; <Timestamp: #{2009-10-05T16:03:34-04:00Z}#{09411} - by MON KEY>
                                      )
                                      (if intrp-posn
                                      (position inrp-posn (mon-help-function-args sym-nm)))
                                      )
-                               )) ;close first cond
+                               )) ;; :CLOSE first cond.
                              ;;
                              ((car (member found var-syms)) 
                               ";;; :TEST-ME %s")
@@ -1939,9 +1953,8 @@ Regexp held by global var `*regexp-symbol-defs*'.\n
           t) ; t needed here to prevent returning buffer position when called externally?
         return-tms)))
 ;;;
-;;; ==============================
-;;; TEMPLATE FOR GATHERING data re: previous function:
-;;; ==============================
+;; :TEMPLATE-FOR-GATHERING-PREV-FUNCTION-DATA
+;;
 ;; (search-backward-regexp *regexp-symbol-defs*)
 ;; (sym (match-string-no-properties 3)) ;symbol name
 ;; (found (match-string-no-properties 2)) ;symbol type

@@ -25,6 +25,7 @@
 * Lisp:mon-tramp-utils.el
 * Lisp:mon-iptables-vars.el
 * Lisp:mon-iptables-regexps.el
+* Lisp:mon-mysql-utils.el (MySqlHelp)
 * Lisp:ebay-template-mode.el
 * Lisp:ebay-template-tools.el
 * Lisp:perlisisms.el (Perlisisms)

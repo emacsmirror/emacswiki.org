@@ -6,11 +6,11 @@
 ;; Maintainer: Rick Bielawski <rbielaws@i1.net>
 ;; Created: Tue Nov 22 10:26:03 2005
 ;; Version: 
-;; Last-Updated: Mon Jan 21 09:51:45 2008 (Pacific Standard Time)
+;; Last-Updated: Thu Dec 10 09:26:44 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 278
+;;     Update #: 311
 ;; Keywords: tools convenience highlight
-;; Compatibility: GNU Emacs 21, GNU Emacs 22
+;; Compatibility: GNU Emacs 21, GNU Emacs 22, GNU Emacs 23
 ;; 
 ;; Features that might be required by this library:
 ;;
@@ -85,6 +85,10 @@
 ;; 
 ;;; Change log:
 ;;
+;; 2009/12/10 dadams
+;;     column-marker-internal: Quote the face.  Thx to Johan Bockgård.
+;; 2009/12/09 dadams
+;;     column-marker-find: fset a symbol to the function, and return the symbol.
 ;; 2008/01/21 dadams
 ;;     Renamed faces by dropping suffix "-face".
 ;; 2006/08/18 dadams
@@ -94,7 +98,7 @@
 ;;       so it is done in the right buffer, updating column-marker-vars buffer-locally.
 ;;     column-marker-find: Corrected comment.  Changed or to progn for clarity.
 ;; 2005/12/29 dadams
-;;     Updated wrt new version of column-marker.el (mulit-column characters).
+;;     Updated wrt new version of column-marker.el (multi-column characters).
 ;;     Corrected stray occurrences of column-marker-here to column-marker-1.
 ;;     column-marker-vars: Added make-local-variable.
 ;;     column-marker-create: Changed positive to non-negative.
@@ -155,12 +159,12 @@ Changing this directly affects only new markers." )
     "Face used for a column marker.  Usually a background color.
 Changing this directly affects only new markers." )
 
-(defvar column-marker-vars nil
+(defvar column-marker-vars ()
   "List of all internal column-marker variables")
 (make-variable-buffer-local 'column-marker-vars) ; Buffer local in all buffers.
 
 (defmacro column-marker-create (var &optional face)
-  "Define a column marker named %%colmark%%-VAR.
+  "Define a column marker named VAR.
 FACE is the face to use.  If nil, then face `column-marker-1' is used."
   (setq face (or face 'column-marker-1))
   `(progn
@@ -192,28 +196,34 @@ FACE is the face to use.  If nil, then face `column-marker-1' is used."
                 (column-marker-internal var nil)))))))
 
 (defun column-marker-find (col)
-  "Creates a function to locate a character in column COL."
-  `(lambda (end)
-     (let* ((start (point)))
-       (when (> end (point-max)) (setq end (point-max)))
+  "Defines a function to locate a character in column COL.
+Returns the function symbol, named `column-marker-move-to-COL'."
+  (let ((fn-symb  (intern (format "column-marker-move-to-%d" col))))
+    (fset `,fn-symb
+          `(lambda (end)
+             (let ((start (point)))
+               (when (> end (point-max)) (setq end (point-max)))
 
-       ;; Try to keep `move-to-column' from going backward, though it still can.
-       (unless (< (current-column) ,col) (forward-line 1))
+               ;; Try to keep `move-to-column' from going backward, though it still can.
+               (unless (< (current-column) ,col) (forward-line 1))
 
-       ;; Again, don't go backward.  Try to move to correct column.
-       (when (< (current-column) ,col) (move-to-column ,col))
+               ;; Again, don't go backward.  Try to move to correct column.
+               (when (< (current-column) ,col) (move-to-column ,col))
 
-       ;; If not at target column, try to move to it.
-       (while (and (< (current-column) ,col) (< (point) end)
-                   (= 0 (+ (forward-line 1) (current-column)))) ; Should be bol.
-         (move-to-column ,col))
+               ;; If not at target column, try to move to it.
+               (while (and (< (current-column) ,col) (< (point) end)
+                           (= 0 (+ (forward-line 1) (current-column)))) ; Should be bol.
+                 (move-to-column ,col))
 
-       ;; If at target column, not past end, and not prior to start,
-       ;; then set match data and return t.  Otherwise go to start
-       ;; and return nil.
-       (if (and (= ,col (current-column)) (<= (point) end) (> (point) start))
-           (progn (set-match-data (list (1- (point)) (point))) t) ; Return t.
-         (goto-char start) nil))))      ; Return nil.
+               ;; If at target column, not past end, and not prior to start,
+               ;; then set match data and return t.  Otherwise go to start
+               ;; and return nil.
+               (if (and (= ,col (current-column)) (<= (point) end) (> (point) start))
+                   (progn (set-match-data (list (1- (point)) (point)))
+                          t)            ; Return t.
+                 (goto-char start)
+                 nil))))                ; Return nil.
+    fn-symb))
 
 (defun column-marker-internal (sym col &optional face)
   "SYM is the symbol for holding the column marker context.
@@ -226,7 +236,7 @@ FACE is the face to use.  If nil, then face `column-marker-1' is used."
     (set sym nil))
   (when (or (listp col) (< col 0)) (setq col nil)) ; Allow nonsense stuff to turn off the marker
   (when col                             ; Generate a new column marker
-    (set sym `((,(column-marker-find col) (0 ,face prepend t))))
+    (set sym `((,(column-marker-find col) (0 ',face prepend t))))
     (font-lock-add-keywords nil (symbol-value sym) t))
   (font-lock-fontify-buffer))
 

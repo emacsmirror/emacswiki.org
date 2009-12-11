@@ -61,6 +61,13 @@
 
 ;;; History:
 
+;; v0.3.0
+;; Teach transformer to play nicely a bit with `anything-enable-shortcuts'.
+
+;; v0.2.1
+;; Fix "No buffer named *anything complete*" bug.
+;; Thanks deftsp for the report.
+
 ;; v0.2.0
 ;; * Add `anything-el-swank-fuzzy-complete-symbol'.
 ;; * Add `anything-el-swank-fuzzy-indent-and-complete-symbol' respectively.
@@ -73,7 +80,7 @@
 
 (require 'anything)
 (require 'anything-complete)
-(require 'cl)
+(eval-when-compile (require 'cl))
 (require 'el-swank-fuzzy)
 (require 'eldoc)
 
@@ -107,8 +114,7 @@
         (enable-recursive-minibuffers t)
         anything-samewindow)
     (aeswf-anything-noresume sources (if target-default-input-p target nil)
-                             nil nil nil
-                             (get-buffer-create "*anything complete*"))))
+                             nil nil nil "*anything complete*")))
 
 (defun aeswf-put-any-realvalue-property (real)
   (put-text-property (point-at-bol 0) (point-at-eol 0)
@@ -154,75 +160,95 @@ proper text properties."
                                            (funcall put-property (car c)))))))
 
 ;;; anything-show-completion.el extension.
-(defun aeswf-transformer-prepend-spacer0 (prepend candidates source)
-  (mapcar (lambda (cand)
-            (cons (funcall prepend cand)
-                  (or (get-text-property 0 'anything-realvalue cand) cand)))
-          candidates))
+(defvar aeswf-tps-count 0)
+(defun aeswf-transformer-prepend-spacer (prepend candidates _source)
+  (loop for cand in candidates
+        for i from aeswf-tps-count to (+ aeswf-tps-count (length candidates))
+        collect (cons (funcall prepend cand i)
+                      (or (get-text-property 0 'anything-realvalue cand)
+                          cand))
+        finally (setq aeswf-tps-count i)))
 (defun* aeswf-current-column (&optional (target anything-complete-target)
                                         (buffer anything-current-buffer))
   (with-current-buffer buffer
     (save-excursion
       (backward-char (string-width target))
-      (let ((col (alcs-current-physical-column)))
-        (if (< col 0) ;; XXX: WTF? Fall off?
-            (- (point) (save-excursion (vertical-motion -1) (point)))
-          col)))))
+      (alcs-current-physical-column))))
 
 (require 'term) ;; term-window-width
 (defalias 'aeswf-window-width 'term-window-width)
-(defvar aeswf-transformer-prepend-spacer-saved-column nil)
-(defun* aeswf-transformer-prepend-spacer-compute
-    (candidates source &optional (compute (lambda (col sw ww)
-                                            (- col (- (+ col sw) ww)))))
+(defvar aeswf-tps-saved-column nil)
+(defun aeswf-transformer-prepend-spacer-compute (candidates source compute)
   (flet ((save-column-maybe ()
-           (or aeswf-transformer-prepend-spacer-saved-column
-               (setq aeswf-transformer-prepend-spacer-saved-column
-                     (let ((ww (alcs-window-width))
-                           (sw (reduce (lambda (acc x)
-                                         (max acc (string-width x)))
-                                       candidates
-                                       :initial-value 0))
-                           (col (alcs-current-column)))
-                       (if (< (+ col sw) ww)
-                           col
-                         (funcall compute col sw ww)))))))
-    (if candidates
-        (let ((column (save-column-maybe)))
-          (aeswf-transformer-prepend-spacer0 (lambda (cand)
-                                               (concat (make-string column ? )
-                                                       cand))
-                                               candidates
-                                               source))
-      candidates)))
-(defun aeswf-transformer-prepend-spacer-saved-column-clear ()
-  (setq aeswf-transformer-prepend-spacer-saved-column nil))
-(when (and (boundp 'anything-show-completion-activate))
-  (add-hook 'anything-cleanup-hook 'aeswf-transformer-prepend-spacer-saved-column-clear))
+           (or aeswf-tps-saved-column
+               (setq aeswf-tps-saved-column
+                     (aeswf-tps-initialize candidates compute)))))
+    (when candidates
+      (aeswf-tps-compute (save-column-maybe) anything-digit-overlays
+                         candidates source))))
+(defun aeswf-tps-initialize (candidates compute)
+  (let ((ww (aeswf-window-width))
+        (sw (loop for c in candidates maximize (string-width c)))
+        (col (aeswf-current-column)))
+    (if (< (+ col sw) ww)
+        col
+      (funcall compute col sw ww))))
+(defun aeswf-tps-compute (column overlays candidates source)
+  (let ((prepend
+         (lambda (column overlays cand i)
+           (let ((spacers (aeswf-tps-compute-spacer column i overlays)))
+             (concat (make-string spacers ? ) cand)))))
+    (aeswf-transformer-prepend-spacer (apply-partially prepend column overlays)
+                                      candidates source)))
+(defvar aeswf-tps-shortcut-length 4) ;; Taken from the format arg "%s -".
+(defun aeswf-tps-compute-spacer (column i overlays)
+  (or (and anything-enable-digit-shortcuts overlays (nth i overlays)
+           (max 0 (- column aeswf-tps-shortcut-length)))
+      column))
+(defun aeswf-tps-any-cleanup ()
+  (setq aeswf-tps-saved-column nil)
+  (setq aeswf-tps-count 0))
+(defun aeswf-tps-any-update ()
+  (setq aeswf-tps-count 0)
+  (aeswf-tps-any-update-move-overlays-maybe))
+(defun aeswf-tps-any-update-move-overlays-maybe ()
+  (when (and anything-enable-shortcuts anything-digit-overlays
+             aeswf-tps-saved-column)
+    (dolist (ov anything-digit-overlays)
+      (anything-aif (overlay-start ov)
+          (let ((pos (+ it (max 0 (- aeswf-tps-saved-column
+                                     aeswf-tps-shortcut-length)))))
+            (move-overlay ov pos pos (get-buffer anything-buffer)))))))
+
+(eval-when (load eval)
+  (when (and (boundp 'anything-show-completion-activate))
+    (add-hook 'anything-update-hook 'aeswf-tps-any-update)
+    (add-hook 'anything-cleanup-hook 'aeswf-tps-any-cleanup)))
 
 (defun aeswf-transformer-prepend-spacer-maybe (candidates source)
   (if (and (boundp 'anything-show-completion-activate)
            anything-show-completion-activate)
-      (let ((compute (lambda (col sw ww)
-                       (- ww sw))))
+      (let ((compute (lambda (col sw ww) (- ww sw))))
         (aeswf-transformer-prepend-spacer-compute candidates source compute))
     candidates))
 
+(defun aeswf-source-base (ass)
+  (append ass
+          '((candidates-in-buffer)
+            (get-line . buffer-substring)
+            (filtered-candidate-transformer
+             aeswf-transformer-prepend-spacer-maybe))))
 ;;; basic completion.
 (defvar anything-el-swank-fuzzy-complete-functions
-  `((name . "el-swank-fuzzy functions")
-    (init . ,(apply-partially 'aeswf-init-candidates-buffer 'fboundp))
-    (candidates-in-buffer)
-    (get-line . buffer-substring)
-    (type . complete-function)
-    (filtered-candidate-transformer aeswf-transformer-prepend-spacer-maybe)))
+  (aeswf-source-base
+   `((name . "el-swank-fuzzy functions")
+     (init . ,(apply-partially 'aeswf-init-candidates-buffer 'fboundp))
+     (type . complete-function))))
 (defvar anything-el-swank-fuzzy-complete-variables
-  `((name . "el-swank-fuzzy variables")
-    (init . ,(apply-partially 'aeswf-init-candidates-buffer 'boundp))
-    (candidates-in-buffer)
-    (get-line . buffer-substring)
-    (type . complete-variable)
-    (filtered-candidate-transformer aeswf-transformer-prepend-spacer-maybe)))
+  (aeswf-source-base
+   `((name . "el-swank-fuzzy variables")
+     (init . ,(apply-partially 'aeswf-init-candidates-buffer 'boundp))
+     (type . complete-variable))))
 (defun aeswf-complete (sources)
   (flet ((get-input ()
            (let ((b (bounds-of-thing-at-point 'symbol)))
@@ -272,8 +298,6 @@ proper text properties."
          anything-el-swank-fuzzy-completions-prefix-length)
       (loop for c in completions
             for sym = (intern (car c))
-            with fs = nil
-            with bs = nil
             with fbuffer = (init-candidate-buffer "functions")
             with bbuffer = (init-candidate-buffer "variables")
             when (fboundp sym)
@@ -281,16 +305,14 @@ proper text properties."
             when (boundp sym)
             do (insert-candidate bbuffer c)
             finally do
-            (flet ((source (name type completions)
-                     `((name . ,(format "el-swank-fuzzy %s" name))
-                       (candidates-in-buffer)
-                       (get-line . buffer-substring)
-                       (type . ,type)
-                       (filtered-candidate-transformer
-                        aeswf-transformer-prepend-spacer-maybe))))
-              (anything-set-sources
-               (list (source "functions" 'complete-function fs)
-                     (source "variables" 'complete-variable bs))))))))
+            (flet ((source (name type)
+                     (aeswf-source-base
+                      `((name . ,(format "el-swank-fuzzy %s" name))
+                        (type . ,type)))))
+              (anything-set-sources (list
+                                     (source "functions" 'complete-function)
+                                     (source "variables" 'complete-variable))
+                                    nil t))))))
 
 (defcustom anything-el-swank-fuzzy-complete-symbol-classify t
   "*If non-nil, use separate source for the functions/variables in `anything-el-swank-fuzzy-complete-symbol'."
@@ -300,12 +322,11 @@ proper text properties."
   (if classifyp
       '(((name . "el-swank-fuzzy symbol meta source")
          (init . aeswf-complete-symbol-meta-source-init)))
-    `(((name . "el-swank-fuzzy symbol")
-       (init . ,(apply-partially 'aeswf-init-candidates-buffer
-                                 (lambda (s) (or (boundp s) (fboundp s)))))
-       (get-line . buffer-substring)
-       (candidates-in-buffer)
-       (type . complete)))))
+    `(,(aeswf-source-base
+        `((name . "el-swank-fuzzy symbol")
+          (init . ,(apply-partially 'aeswf-init-candidates-buffer
+                                    (lambda (s) (or (boundp s) (fboundp s)))))
+          (type . complete))))))
 (defun anything-el-swank-fuzzy-complete-symbol ()
   "`lisp-complete-symbol' using `anything'."
   (interactive)

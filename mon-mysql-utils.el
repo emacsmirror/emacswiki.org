@@ -1,0 +1,535 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; -*- mode: EMACS-LISP; -*-
+;;; this is mon-mysql-utils.el
+;;; ================================================================
+;;; DESCRIPTION:
+;;; mon-mysql-utils provides an alist and completion function for 
+;;; accessing MySQL's `mysql' client help facility e.g. 
+;;; mysql> help contents
+;;; mysql> help [<CATEGORY>|<TOPIC>]
+;;;
+;;; :SEE-ALSO :FILE naf-mode-sql-skeletons.el
+;;; :SEE-ALSO :FILE ../lisp/progmodes/sql.el
+;;;
+;;; :SEE (URL `http://www.emacswiki.org/cgi-bin/emacs/download/sql-completion.el')
+;;; :SEE (URL `http://www.emacswiki.org/emacs/mysql.el')
+;;; 
+;;;
+;;; FUNCTIONS:►►►
+;;; `mon-help-mysql-complete'
+;;; `mon-csv-string-to-list', `mon-csv-split-string', `mon-mysql-get-field-col'
+;;; FUNCTIONS:◄◄◄
+;;;
+;;; MACROS:
+;;;
+;;; METHODS:
+;;;
+;;; CLASSES:
+;;;
+;;; CONSTANTS:
+;;;
+;;; VARIABLES:
+;;; `*regexp-clean-mysql*'
+;;;
+;;; ALIASED/ADVISED/SUBST'D:
+;;;
+;;; DEPRECATED:
+;;;
+;;; RENAMED:
+;;;
+;;; MOVED:
+;;;
+;;; TODO:
+;;;
+;;; NOTES:
+;;;
+;;; SNIPPETS:
+;;;
+;;; REQUIRES:
+;;;
+;;; THIRD PARTY CODE:
+;;;
+;;; AUTHOR: MON KEY
+;;; MAINTAINER: MON KEY
+;;;
+;;; PUBLIC-LINK: (URL `http://www.emacswiki.org/emacs/mon-mysql-utils.el')
+;;; FIRST-PUBLISHED: <Timestamp: #{2009-12-10T14:59:16-05:00Z}#{09504} - by MON>
+;;;
+;;; FILE-CREATED:
+;;; <Timestamp: #{2009-12-10T11:11:41-05:00Z}#{09504} - by MON>
+;;; ================================================================
+;;; This file is not part of GNU Emacs.
+;;;
+;;; This program is free software; you can redistribute it and/or
+;;; modify it under the terms of the GNU General Public License as
+;;; published by the Free Software Foundation; either version 3, or
+;;; (at your option) any later version.
+;;;
+;;; This program is distributed in the hope that it will be useful,
+;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;;; General Public License for more details.
+;;;
+;;; You should have received a copy of the GNU General Public License
+;;; along with this program; see the file COPYING.  If not, write to
+;;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
+;;; Floor, Boston, MA 02110-1301, USA.
+;;; ================================================================
+;;; Permission is granted to copy, distribute and/or modify this
+;;; document under the terms of the GNU Free Documentation License,
+;;; Version 1.3 or any later version published by the Free Software
+;;; Foundation; with no Invariant Sections, no Front-Cover Texts,
+;;; and no Back-Cover Texts. A copy of the license is included in
+;;; the section entitled "GNU Free Documentation License".
+;;; A copy of the license is also available from the Free Software
+;;; Foundation Web site at:
+;;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
+;;; ================================================================
+;;; Copyright © 2009 MON KEY 
+;;; ==============================
+;;; CODE:
+
+(eval-when-compile (require 'cl))
+
+;;; ==============================
+;;; :NOTE "mysql> help contents"
+;;; :CREATED <Timestamp: #{2009-12-10T10:52:19-05:00Z}#{09504} - by MON>
+(defvar *regexp-clean-mysql* nil
+  "*An alist of association key value pairs for use with `mysql help' command.\n
+:EXAMPLE\n (cdr (assoc :DATA-TYPES *regexp-clean-mysql*))\n
+ \(mapcar 'car *regexp-clean-mysql*\)\n
+Alist keys correpsond to the following `mysql help' categories:\n
+  Account Management - Administration - Compound Statements - Data Definition
+  Data Manipulation - Data Types - Functions - Geographic Features
+  Language Structure - Plugins - Table Maintenance - Transactions
+  User-Defined Functions - Utility
+  Functions and Modifiers for Use with GROUP BY\n
+;; :MYSQL-HELP-KEYS\n
+:ACCOUNT-MANAGEMENT \n:ADMINISTRATION \n:COMPOUND-STATEMENTS
+:DATA-DEFINITION \n:DATA-MANIPULATION \n:DATA-TYPES
+:BIT-FUNCTIONS \n:COMPARISON-OPERATORS \n:CONTROL-FLOW-FUNCTIONS
+:DATE-AND-TIME-FUNCTIONS \n:ENCRYPTION-FUNCTIONS \n:INFORMATION-FUNCTIONS
+:LOGICAL-OPERATORS \n:MISCELLANEOUS-FUNCTIONS \n:NUMERIC-FUNCTIONS
+:STRING-FUNCTIONS \n:GROUP-BY-FUNCTIONS-MODIFIERS \n:GEOGRAPHIC-FEATURES
+:GEOMETRY-CONSTRUCTORS \n:GEOMETRY-PROPERTIES \n:GEOMETRY-RELATIONS
+:LINESTRING-PROPERTIES \n:MBR \n:POINT-PROPERTIES \n:POLYGON-PROPERTIES
+:WKB \n:WKT \n:PLUGINS \n:TABLE-MAINTENANCE \n:TRANSACTIONS
+:USER-DEFINED-FUNCTIONS \n:UTILITY \n
+:SEE-ALSO `mon-help-mysql-complete'.\n►►►.")
+;;
+(eval-when-compile
+(unless  (bound-and-true-p *regexp-clean-mysql* )
+  (setq *regexp-clean-mysql*
+        '((:ACCOUNT-MANAGEMENT . ("create user" "drop user" "grant" 
+                                  "rename user" "revoke" "set password"))
+          (:ADMINISTRATION . ("binlog" "cache index" "change master to"
+                              "deallocate prepare" "execute statement" "flush"
+                              "flush query cache" "help command" "kill" 
+                              "load data from master" "load index" 
+                              "load table from master" "prepare" "purge binary logs"
+                              "reset" "reset master" "reset slave" "set" 
+                              "set global sql_slave_skip_counter" 
+                              "set sql_log_bin" "show"
+                              "show authors" "show binary logs" 
+                              "show binlog events" "show character set" 
+                              "show collation" "show columns" "show contributors"
+                              "show create database" "show create event" 
+                              "show create function" "show create procedure" 
+                              "show create table" "show create trigger" 
+                              "show create view" "show databases" "show engine" 
+                              "show engines" "show errors" "show events" 
+                              "show function code" "show function status" "show grants" 
+                              "show index" "show innodb status" "show master status" 
+                              "show open tables" "show plugins" "show privileges"
+                              "show procedure code" "show procedure status"
+                              "show processlist" "show profile" "show profiles"
+                              "show slave hosts" "show slave status" 
+                              "show status" "show table status" "show tables" 
+                              "show triggers" "show variables" "show warnings" 
+                              "start slave" "stop slave"))
+          (:COMPOUND-STATEMENTS . ("begin end" "case statement" "close" 
+                                   "declare condition" "declare cursor" 
+                                   "declare handler" "declare variable" 
+                                   "fetch" "if statement" "iterate" 
+                                   "leave" "loop" "open" "repeat loop"
+                                   "return" "select into" "set variable" "while"))
+          (:DATA-DEFINITION . ("alter database" "alter event" "alter function"
+                               "alter logfile group" "alter procedure" 
+                               "alter server" "alter table" "alter tablespace" 
+                               "alter view" "constraint" "create database" 
+                               "create event" "create function" "create index" 
+                               "create procedure" "create server" "create table" 
+                               "create tablespace" "create trigger" "create view"
+                               "drop database" "drop event" "drop function" 
+                               "drop index" "drop procedure" "drop server" 
+                               "droptable" "drop tablespace" "drop trigger" 
+                               "drop view" "merge" "rename table"))
+          (:DATA-MANIPULATION . ("call" "delete" "do" "dual" "handler" "insert"
+                                 "insert delayed" "insert select" "join" 
+                                 "load data" "replace" "select" "truncate table"
+                                 "union" "update"))
+          (:DATA-TYPES . ("auto_increment" "bigint" "binary" "bit" "blob" 
+                          "blob data type" "boolean" "char" "char byte" "date"
+                          "datetime" "dec" "decimal" "double" "double precision"
+                          "enum" "float" "int" "integer" "longblob" "longtext"
+                          "mediumblob" "mediumint" "mediumtext" "set data type"
+                          "smallint" "text" "time" "timestamp" "tinyblob"
+                          "tinyint" "tinytext" "varbinary" "varchar" 
+                          "year data type"))
+          (:BIT-FUNCTIONS . ("&" "<<" ">>" "BIT_COUNT" "^" "|" "~"))
+          (:COMPARISON-OPERATORS . ("!=" "<" "<=" "<=>" "=" ">" ">=" 
+                                    "between and" "coalesce" "greatest" "in" 
+                                    "interval" "is" "is not" "is not null" 
+                                    "is null" "isnull" "least" "not between" 
+                                    "not in"))
+          (:CONTROL-FLOW-FUNCTIONS . ("case operator" "if function"
+                                      "ifnull" "nullif"))
+          (:DATE-AND-TIME-FUNCTIONS . ("adddate" "addtime" "convert_tz"
+                                       "curdate" "current_date" "current_time"
+                                       "current_timestamp" "curtime" 
+                                       "date function" "datediff" "date_add"
+                                       "date_format" "date_sub" "day" "dayname"
+                                       "dayofmonth" "dayofweek" "dayofyear"
+                                       "extract" "from_days" "from_unixtime"
+                                       "get_format" "hour" "last_day"
+                                       "localtime" "localtimestamp" "makedate"
+                                       "maketime" "microsecond" "minute" "month"
+                                       "monthname" "now" "period_add"
+                                       "period_diff" "quarter" "second"
+                                       "sec_to_time" "str_to_date" "subdate"
+                                       "subtime" "sysdate" "time function"
+                                       "timediff" "timestamp function"
+                                       "timestampadd" "timestampdiff"
+                                       "time_format" "time_to_sec" "to_days"
+                                       "unix_timestamp" "utc_date" "utc_time"
+                                       "utc_timestamp" "week" "weekday"
+                                       "weekofyear" "year" "yearweek"))
+          (:ENCRYPTION-FUNCTIONS . ("aes_decrypt" "aes_encrypt" "compress"
+                                    "decode" "des_decrypt" "des_encrypt"
+                                    "encode" "encrypt" "md5" "old_password"
+                                    "password" "sha1" "uncompress"
+                                    "uncompressed_length"))
+          (:INFORMATION-FUNCTIONS . ("benchmark" "charset" "coercibility"
+                                     "collation" "connection_id" "current_user"
+                                     "database" "found_rows" "last_insert_id"
+                                     "row_count" "schema" "session_user"
+                                     "system_user" "user" "version"))
+          (:LOGICAL-OPERATORS . ("!" "&&" "xor" "||"))
+          (:MISCELLANEOUS-FUNCTIONS . ("procedure analyse" "default" "get_lock"
+                                       "inet_aton" "inet_ntoa" "is_free_lock"
+                                       "is_used_lock" "master_pos_wait"
+                                       "name_const" "release_lock" "sleep"
+                                       "uuid" "uuid_short" "values"))
+          (:NUMERIC-FUNCTIONS . ("%" "*" "+" "- binary" "- unary" "/" "abs"
+                                 "acos" "asin" "atan" "atan2" "ceil" "ceiling"
+                                 "conv" "cos" "cot" "crc32" "degrees" "div"
+                                 "exp" "floor" "ln" "log" "log10" "log2" "mod"
+                                 "oct" "pi" "pow" "power" "radians" "rand"
+                                 "round" "sign" "sin" "sqrt" "tan" "truncate"))
+          (:STRING-FUNCTIONS . ("ascii" "bin" "binary operator" "bit_length"
+                                "cast" "char function" "character_length"
+                                "char_length" "concat" "concat_ws" "convert"
+                                "elt" "export_set" "extractvalue" "field"
+                                "find_in_set" "format" "hex" "insert function"
+                                "instr" "lcase" "left" "length" "like"
+                                "load_file" "locate" "lower" "lpad" "ltrim"
+                                "make_set" "match against" "mid" "not like" 
+                                "not regexp" "octet_length" "ord" "position" 
+                                "quote" "regexp" "repeat function" 
+                                "replace function" "reverse" "right" "rpad"
+                                "rtrim" "soundex" "sounds like" "space" "strcmp"
+                                "substr" "substring" "substring_index" "trim" 
+                                "ucase" "unhex" "updatexml" "upper"))
+          (:GROUP-BY-FUNCTIONS-MODIFIERS . ("avg" "bit_and" "bit_or" "bit_xor"
+                                            "count" "count distinct"
+                                            "group_concat" "max" "min" "std"
+                                            "stddev" "stddev_pop" "stddev_samp"
+                                            "sum" "variance" "var_pop" "var_samp"))
+          (:GEOGRAPHIC-FEATURES . ("geometry" "geometry hierarchy" "spatial"))
+          (:GEOMETRY-CONSTRUCTORS .  ("geometrycollection" "linestring"
+                                      "multilinestring" "multipoint"
+                                      "multipolygon" "point" "polygon"))
+          (:GEOMETRY-PROPERTIES . ("boundary" "dimension" "envelope"
+                                   "geometrytype" "isempty" "issimple" "srid"))
+          (:GEOMETRY-RELATIONS . ("contains" "crosses" "disjoint" "equals"
+                                  "intersects" "overlaps" "touches" "within"))
+          (:LINESTRING-PROPERTIES . ("endpoint" "glength" "numpoints" "pointn"
+                                     "startpoint"))
+          (:MBR . ("mbr definition" "mbrcontains" "mbrdisjoint" "mbrequal"
+                   "mbrintersects" "mbroverlaps" "mbrtouches" "mbrwithin"))
+          (:POINT-PROPERTIES   . ("x" "y"))
+          (:POLYGON-PROPERTIES . ("area" "exteriorring" "interiorringn"
+                                  "numinteriorrings"))
+          (:WKB . ("asbinary" "geomcollfromwkb" "geomfromwkb" "linefromwkb"
+                   "mlinefromwkb" "mpointfromwkb" "mpolyfromwkb" "pointfromwkb"
+                   "polyfromwkb"))
+          (:WKT . ("astext" "geomcollfromtext" "geomfromtext" "linefromtext"
+                   "mlinefromtext" "mpointfromtext" "mpolyfromtext"
+                   "pointfromtext" "polyfromtext" "wkt definition"))
+          ;; (:LANGUAGE-STRUCTURE . ( ))
+          (:PLUGINS . ("show plugins"))
+          (:TABLE-MAINTENANCE . ("analyze table" "backup table" "check table"
+                                 "checksum table" "optimize table" 
+                                 "repair table" "restore table"))
+          (:TRANSACTIONS . ("isolation" "lock" "savepoint" "start transaction"))
+          (:USER-DEFINED-FUNCTIONS . ("create function udf"
+                                      "drop function udf"))
+          (:UTILITY . ("describe" "explain" "help statement" "use"))))))
+;;
+;;; :TEST-ME (cdr (assoc :STRING-FUNCTIONS *regexp-clean-mysql*))
+;;; :TEST-ME (mapcar 'car *regexp-clean-mysql*)
+;;
+;;; (progn (makunbound '*regexp-clean-mysql*)(unintern '*regexp-clean-mysql*))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-12-09T17:43:40-05:00Z}#{09503} - by MON>
+(defun mon-help-mysql-complete (&optional mysql-key)
+  "Return a symbol for the alist keys of `*regexp-clean-mysql*'.
+When MYSQL-KEY (a string or :symbol) is non-nil try completing it instead.\n
+:EXAMPLE\n\(mon-help-mysql-complete\)
+\(mon-help-mysql-complete :ADMINISTR\)
+\(mon-help-mysql-complete \":ADMINISTR\"\)
+\(cdr \(assoc \(mon-help-mysql-complete\) *regexp-clean-mysql*\)\)\n
+To access/send to a running mysql system (sub)process :SEE `mon-get-process'.
+►►►"
+  (let (a b)
+      (setq a (mapcar 'car *regexp-clean-mysql*))
+      (setq b (mapcar #'(lambda (s) (format "%s" s)) a))
+      (if mysql-key
+          (read (try-completion  (format "%s" mysql-key) b))
+          (read (completing-read "Which key: " b)))))
+;;
+;;; :TEST-ME (mon-help-mysql-complete :ADMINISTR)
+;;; :TEST-ME (mon-help-mysql-complete ":ADMINISTR")
+;;; :TEST-ME (mon-help-mysql-complete :AD)
+;;; :TEST-ME (mon-help-mysql-complete ":AC")
+;;; :TEST-ME (mon-help-mysql-complete)
+
+;;; ==============================
+;;; :NOTE For use to get help for a specific MySQL help topic e.g.
+;;; "mysql> help contents", "mysql> help [<CATEGORY>|<TOPIC>]"
+;;; :TODO needs to test if there is an existing mysql processs running; system|subproccess.
+;;; :SEE `mon-get-process'
+;;; (let ((help-for 
+;;;        (completing-read "Get MySQL help for :"
+;;;                         (cdr (assoc (mon-help-mysql-complete) *regexp-clean-mysql*)))))
+;;;    (if (processp (get-process "shell"))
+;;;        (process-send-string 
+;;;         (get-process "shell")
+;;;         (concat "help " help-for "\n"))))
+
+;;; ==============================
+;;; :NOTE Process related functions. 
+;;; :SEE (describe-function 'mon-help-process-functions)
+
+;;; (process-plist (get-process "shell"))
+;;; (process-status (get-process "shell"))
+;;;  =>run
+;;; (process-type (get-process "shell"))
+;;;  =>real
+;;; (process-send-string process string)
+;;; (list-processes)
+;;; (process-buffer
+;;; (process-id 
+;;; ==============================
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-12-10T16:39:52-05:00Z}#{09504} - by MON>
+(defun mon-mysql-get-field-col (start end)
+  "Extract all MySQL fields in table from START to END.\n
+:SEE-ALSO `mon-csv-split-string', `mon-csv-string-to-list',
+`mon-cln-csv-fields', `mon-string-csv-rotate'.\n►►►"
+  (interactive "r")
+  (let (flds)
+    (setq flds (buffer-substring-no-properties start end))
+    (setq flds
+    (with-temp-buffer
+      (insert flds)        
+      (goto-char (buffer-end 0))
+      (progn
+        ;; Remove table header.
+        (search-forward-regexp   "\\(\| Field .* |\\)" nil t)
+        (replace-match ""))
+      ;; Remove all "+----+----+...." lines.
+      (goto-char (buffer-end 0))
+      (while (search-forward-regexp "^\\([+-]+\\)$" nil t)
+        (replace-match ""))
+      (goto-char (buffer-end 0))
+      (while (search-forward-regexp 
+              ;;..1...2........3....4.........................
+              "^\\(\\(\| \\)\\([A-z0-9_]+\\)\\([\\[:space:]].*\\)\\)$" nil t)
+        (replace-match "\\3"))
+      (whitespace-cleanup)
+      (buffer-substring-no-properties (buffer-end 0)(buffer-end 1))))
+    (setq flds (concat "(" flds ")"))
+    (setq flds (car (read-from-string flds)))
+    flds))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-12-10T19:27:04-05:00Z}#{09505} - by MON>
+(defun mon-csv-string-to-list (csv-str)
+"Return a converted csv string (a paren wrapped list) as a lisp list.
+Assumes the following:
+ o Initial value of is formated as \"\('<INITIAL-VALUE>',
+ o A null values has the format ,''
+ o Numeric values are not quoted: ,0  instead of ,'0'\n
+Primarily useful for tearing down SQL dumps on the way to a pairlis.\n
+:EXAMPLE
+\(mon-csv-string-to-list
+ \"('VALUE','VALUE','VALUE-3','Y','N','T','F','escaped\\\\\\'quote','','',0,1,2\)\"\)\n
+\(pairlis
+ '\(KEY-0 KEY-1 KEY-3 wrkng pretty will-do gv-a-sht PITA has-val nth first second\)
+ \(mon-csv-string-to-list
+  \"('VALUE-0','VALUE-1','VALUE-3','Y','N','T','F','escaped\\\\\\'quote','','',0,1,2\)\")\)\n
+:SEE-ALSO `mon-csv-split-string', `mon-mysql-get-field-col',
+`mon-csv-string-to-list', `mon-cln-csv-fields',
+`mon-string-csv-rotate'.\n►►►"
+(let ((strip-cruft csv-str))
+  (setq strip-cruft (replace-regexp-in-string "('\\|)" "" strip-cruft t))
+  (setq strip-cruft (replace-regexp-in-string "," " " strip-cruft t))
+  (setq strip-cruft (replace-regexp-in-string "''" "nil" strip-cruft t))
+  (setq strip-cruft (replace-regexp-in-string "' '\\|' nil" " " strip-cruft t))
+  (setq strip-cruft (car (read-from-string (concat "(" strip-cruft ")"))))))
+;;
+;;; :TEST-ME 
+;;; (mon-csv-string-to-list
+;;;   "('VALUE','VALUE','VALUE-3','Y','N','T','F','escaped\\'quote','','',0,1,2)")
+
+;;; ==============================
+;;; :COURTESY Francis J. Wright :HIS csv-mode.el :WAS `csv-split-string'
+;;; :CREATED <Timestamp: #{2009-12-10T19:03:25-05:00Z}#{09505} - by MON>
+(defun mon-csv-split-string (string &optional separators subexp allowbeg allowend)
+  "Split STRING into substrings where there are matches for SEPARATORS.
+Return list of substrings between split points.
+When SEPARATORS is nil default is \"[ \\f\\t\\n\\r\\v]+\".
+SUBEXP specifies a subexpression of SEPARATORS as split point; defaults is 0.\n
+If ALLOWBEG is non-nil when there is a match for SEPARATORS at the beginning of
+STRING include a null substring for that.
+If ALLOWEND is non-nil when match is at the end of STRING include a null
+substring for that.\n
+:NOTE Modifies the match data; use `save-match-data' if necessary.\n
+:SEE-ALSO `mon-mysql-get-field-col', `mon-csv-string-to-list', 
+`mon-cln-csv-fields',, `mon-string-csv-rotate'.\n►►►"
+  (or subexp (setq subexp 0))
+  (let ((rexp (or separators "[ \f\t\n\r\v]+"))
+	(start 0)
+	notfirst
+	(list nil))
+    (while (and (string-match rexp string
+			      (if (and notfirst
+				       (= start (match-beginning subexp))
+				       (< start (length string)))
+				  (1+ start) start))
+		(< (match-beginning subexp) (length string)))
+      (setq notfirst t)
+      (or (and (not allowbeg) (eq (match-beginning subexp) 0))
+	  (and (eq (match-beginning subexp) (match-end subexp))
+	       (eq (match-beginning subexp) start))
+	  (push (substring string start (match-beginning subexp)) list))
+      (setq start (match-end subexp)))
+    (or (and (not allowend) (eq start (length string)))
+	(push (substring string start) list))
+    (nreverse list)))
+
+
+;;; ==============================
+(provide 'mon-mysql-utils)
+;;; ==============================
+
+;;; ================================================================
+;;; mon-mysql-utils.el ends here
+;;; EOF
+
+;;; ==============================
+;;; :NOTE following have for the most part been superceded by keys from
+;;; `*regexp-clean-mysql*' alist. However, key|value pairs their may benefit by
+;;; pointing into examples or canned expressions for relevant args.
+;;;
+;;; ,----
+;;; | :TYPES
+;;; | 
+;;; | int
+;;; | smallint
+;;; | 
+;;; | char
+;;; | varchar
+;;; | 
+;;; | time
+;;; | timestamp
+;;; | year
+;;; | 
+;;; | enum
+;;; | longblob
+;;; | longtext
+;;; | mediumblob
+;;; | mediumtext
+;;; `----
+;;; ,----
+;;; | :SHOW
+;;; | show tables;
+;;; | show databeses;
+;;; | show columns from <TABLE>;
+;;; | show create table <TABLE>;
+;;; | show index from
+;;; | 
+;;; | explain select
+;;; `----
+;;; ,----
+;;; | :AGGREGATE-FUNCTIONS
+;;; | avg()
+;;; | max()
+;;; | std()
+;;; | sum()
+;;; | 
+;;; | having
+;;; | using
+;;; | count
+;;; | 
+;;; | inner join
+;;; | group by
+;;; | order by
+;;; | 
+;;; | select 
+;;; | from
+;;; | where
+;;; | like
+;;; | 
+;;; | insert into
+;;; `----
+;;;
+;;; ,----
+;;; | :ALIASING
+;;; | as
+;;; `----
+;;;
+;;; ,----
+;;; | :FUNCTIONS
+;;; | concat
+;;; `----
+;;;
+;;; ,----
+;;; | :MANIPULATE
+;;; | alter table
+;;; | create table
+;;; | truncate table
+;;; | drop table
+;;; | 
+;;; | add primary key
+;;; | drop primary key
+;;; | add index
+;;; | drop index
+;;; | 
+;;; | rename to
+;;; | modify
+;;; | change
+;;; | first
+;;; | after
+;;; | cast
+;;; | 
+;;; | 
+;;; | rename database
+;;; | drop database
+;;; | 
+;;; | if exists
+;;; | show warnings
+;;; `----

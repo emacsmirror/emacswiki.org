@@ -1,0 +1,10 @@
+* Lisp:mon-mysql-utils.el 
+
+Provides an alist and completion function for accessing MySQL's `mysql' client help facility e.g. 
+
+   mysql> help contents
+
+   mysql> help [<CATEGORY>|<TOPIC>]
+
+----
+CategorySql

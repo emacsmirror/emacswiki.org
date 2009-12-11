@@ -189,6 +189,8 @@
 (require 'mon-empty-registers)
 (require 'mon-iptables-vars)
 (require 'mon-iptables-regexps)
+(require 'mon-mysql-utils)
+(require 'naf-mode-sql-skeletons) ;; Load here instead of from :FILE naf-mode.el
 
 ;;; ==============================
 ;;; :EMACSWIKI Enable 'em if you got 'em.
@@ -209,6 +211,7 @@
 ;;; (require 'mon-empty-registers)
 ;;; (require 'mon-iptables-vars)
 ;;; (require 'mon-iptables-regexps)
+;;; (require 'mon-mysql-utils)
 
 ;;; ==============================
 ;;; :COURTESY Raphael Van Dyck :HIS km-frames.el :WAS `with-file-buffer'
@@ -1708,14 +1711,14 @@ UPTO-STRING is a simple string. No regexps, chars, numbers, lists, etc.\n
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-10-01T15:16:29-04:00Z}#{09404} - by MON KEY>
-(defun mon-string-after-index (in-string after-string)
-  "Return substring of IN-STRING UPTO-STRING.
-UPTO-STRING is a simple string. No regexps, chars, numbers, lists, etc.\n
+(defun mon-string-after-index (in-str after-str)
+  "Return substring of IN-STR AFTER-STR.
+AFTER-STR is a simple string. No regexps, chars, numbers, lists, etc.\n
 :EXAMPLE\n\(mon-string-after-index \"string before ### string after\" \"###\"\)\n
 :SEE-ALSO `mon-string-index', `mon-string-upto-index', `mon-string-position',
 `mon-string-has-suffix', `mon-string-chop-spaces'.\n►►►"
-  (substring in-string 
-             (+ (mon-string-index in-string after-string) (length after-string))))
+  (substring in-str
+             (+ (mon-string-index in-str after-str) (length after-str))))
 ;;
 ;;; :TEST-ME (mon-string-after-index "string before ### string after" "###")
 
@@ -1769,7 +1772,7 @@ If the SUBSTR is not found, then return nil.\n
 ;;; :TEST-ME (mon-string-chop-spaces " some string no spaces ")
 
 ;;; ==============================
-;;; RENAMED: `mon-stringify-list' -> `mon-string-ify-list'
+;;; :RENAMED `mon-stringify-list' -> `mon-string-ify-list'
 (defun mon-string-ify-list (string-given)
   "Return a list of strings obtained by breaking the string the user entered at the
 space boundaries.\n\n:EXAMPLE
@@ -2223,7 +2226,8 @@ move point to region-beginning.\n
   tmp\)\n\n►\nCraig Balding\nEmmanuel Bouillon\nBernardo Damele Assumpcao Guimaraes
 Jean-Paul Fizaine\nRob Havelt\nChris Wysopal\n►\n
 :SEE-ALSO `mon-line-indent-from-to-col', `mon-line-strings-pipe-to-col'
-`mon-line-strings', `mon-string-fill-to-col', `mon-comment-divider->col', 
+`mon-comment-divider->col', `mon-lisp-comment-to-col',
+`mon-line-strings', `mon-string-fill-to-col',
 `mon-line-strings-qt-region', `mon-line-strings-region', 
 `mon-line-strings-bq-qt-sym-bol',`mon-line-strings-to-list'\n►►►"
   (interactive "r\nP\ni\np")
@@ -2280,7 +2284,8 @@ Jean-Paul Fizaine\nRob Havelt\nChris Wysopal\n►\n
 When called-interactively prompt for column numer of FROM-COL and TO-COL.
 :NOTE Does not work for one line regions.\n
 :SEE-ALSO `mon-line-strings-indent-to-col', `mon-line-strings-pipe-to-col'
-`mon-string-fill-to-col',`mon-comment-divider->col'.\n►►►"
+`mon-string-fill-to-col',`mon-comment-divider->col',
+`mon-lisp-comment-to-col'.\n►►►"
   (interactive "i\ni\ni\ni\np")
   (let ((frm-c (cond (from-col from-col)
                      ((or intrp t)
@@ -2350,7 +2355,8 @@ When called-interactively or INSRTP is non-nil replace region.
 ►William Gibson\nBruce Sterling\nDan Brown\nNeal Stephenson\nLoyd Blankenship
 Erik Gordon Corley◀\n
 :SEE-ALSO  `mon-line-strings-pipe-bol', `mon-line-strings-indent-to-col',
-`mon-line-strings', `mon-line-indent-from-to-col'.\n►►►"
+`mon-line-strings', `mon-line-indent-from-to-col',
+`mon-comment-divider->col', `mon-lisp-comment-to-col'.\n►►►"
   (interactive "i\n\i\nP\ni\np")
   (let  ((rg-b (make-marker))
          (rg-e (make-marker))

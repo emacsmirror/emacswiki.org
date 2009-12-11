@@ -4,9 +4,7 @@ I often write SQL statements for application dialogs using SqlMode.  Usually, I 
 
 Note that this code still needs improvements; I'm interested in any feedback.  Points that need improvement: handling of missing information, better identification of start and end of SQL statements.
 
-You can get it here:
-
-* http://www.geocities.com/kensanata/elisp/sql-transform.el.txt
+You can get it here: Lisp:sql-transform.el
 
 ----
 CategorySql
