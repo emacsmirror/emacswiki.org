@@ -8,9 +8,9 @@
 ;; Copyright (C) 2000-2009, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Dec  6 16:52:24 2009 (-0800)
+;; Last-Updated: Fri Dec 11 14:49:19 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 8016
+;;     Update #: 8101
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -90,7 +90,6 @@
 ;;    `bookmarkp-bmenu-change-sort-order-repeat',
 ;;    `bookmarkp-bmenu-define-command',
 ;;    `bookmarkp-bmenu-define-full-snapshot-command',
-;;    `bookmarkp-define-tags-sort-command',
 ;;    `bookmarkp-bmenu-delete-marked',
 ;;    `bookmarkp-bmenu-describe-this-bookmark',
 ;;    `bookmarkp-bmenu-edit-bookmark',
@@ -147,7 +146,9 @@
 ;;    `bookmarkp-bmenu-unmark-bookmarks-tagged-none',
 ;;    `bookmarkp-bmenu-unmark-bookmarks-tagged-not-all',
 ;;    `bookmarkp-bmenu-unmark-bookmarks-tagged-some',
+;;    `bookmarkp-define-tags-sort-command',
 ;;    `bookmarkp-describe-bookmark',
+;;    `bookmarkp-list-defuns-in-commands-file',
 ;;    `bookmarkp-menu-jump-other-window' (Emacs 20, 21),
 ;;    `bookmarkp-remove-all-tags', `bookmarkp-remove-tags',
 ;;    `bookmarkp-remove-tags-from-all', `bookmarkp-rename-tag',
@@ -264,8 +265,9 @@
 ;;    `bookmarkp-region-alist-only', `bookmarkp-region-bookmark-p',
 ;;    `bookmarkp-remote-file-alist-only',
 ;;    `bookmarkp-remote-file-bookmark-p',
-;;    `bookmarkp-remove-assoc-dups', `bookmarkp-remove-if',
-;;    `bookmarkp-remove-if-not', `bookmarkp-repeat-command',
+;;    `bookmarkp-remove-assoc-dups', `bookmarkp-remove-dups',
+;;    `bookmarkp-remove-if', `bookmarkp-remove-if-not',
+;;    `bookmarkp-repeat-command',
 ;;    `bookmarkp-replace-regexp-in-string',
 ;;    `bookmarkp-root-or-sudo-logged-p',
 ;;    `bookmarkp-save-menu-list-state',
@@ -880,6 +882,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2009/12/11 dadams
+;;     Added: bookmarkp-list-defuns-in-commands-file, bookmarkp-remove-dups.
 ;; 2009/12/06 dadams
 ;;     Added: bookmarkp-bmenu-mouse-3-menu (bound to mouse-3),
 ;;            bookmarkp-bmenu-(menubar|define-command|sort|show|tags|mark)-menu. 
@@ -1680,6 +1684,9 @@ Don't forget to mention your Emacs and library versions."))
                                           "~/.emacs-bmk-bmenu-commands.el")
   "*File for saving user-defined bookmark-list commands.
 This must be an absolute file name or nil (it is not expanded).
+
+You can use `\\[bookmarkp-list-defuns-in-commands-file]' to list the
+commands defined in the file and how many times each is defined.
 
 NOTE: Each time you define a command using \\<bookmark-bmenu-mode-map>\
 `\\[bookmarkp-bmenu-define-command]' or `\\[bookmarkp-bmenu-define-full-snapshot-command]', \
@@ -4626,6 +4633,15 @@ A new list is returned (no side effects)."
 ;;(@* "General Utility Functions")
 ;;  *** General Utility Functions ***
 
+(defun bookmarkp-remove-dups (list)
+  "Copy of LIST with duplicate elements removed.  Tested with `equal'."
+  (let ((tail  list)
+        new)
+    (while tail
+      (unless (member (car tail) new) (push (car tail) new))
+      (pop tail))
+    (nreverse new)))
+  
 (defun bookmarkp-remove-assoc-dups (alist)
   "Copy of ALIST with elements that have duplicate keys removed.
 Only the first element of those with the same key is kept.
@@ -5521,6 +5537,45 @@ BOOKMARK is a bookmark name or a bookmark record."
       (with-output-to-temp-buffer "*Help*" (princ help-text))
       help-text)))
 
+;;;###autoload
+(defun bookmarkp-list-defuns-in-commands-file ()
+  "List the functions defined in `bookmarkp-bmenu-commands-file'.
+Typically, these are all commands."
+  (interactive)
+  (when (and bookmarkp-bmenu-commands-file (file-readable-p bookmarkp-bmenu-commands-file))
+    (let ((fns  ())
+          (buf  (let ((enable-local-variables  nil))
+                  (find-file-noselect bookmarkp-bmenu-commands-file))))
+      (help-setup-xref (list #'bookmarkp-list-defuns-in-commands-file) (interactive-p))
+      (with-current-buffer buf
+        (goto-char (point-min))
+        (while (not (eobp))
+          (when (re-search-forward "\\s-*(defun \\([^ \t\n(\"]+\\)[ \t\n(]" nil 'move)
+            (push (match-string 1) fns)))
+        (setq fns  (nreverse fns)
+              fns  (sort fns 'string-lessp)))
+      (when (buffer-live-p buf) (kill-buffer buf))
+      (with-output-to-temp-buffer "*Help*"
+        (princ "Bookmark Commands You Defined (in `bookmarkp-bmenu-commands-file')") (terpri)
+        (princ "------------------------------------------------------------------") (terpri)
+        (terpri)
+        (let ((non-dups  (bookmarkp-remove-dups fns)))
+          (dolist (fn  non-dups)
+            (if (and (fboundp (intern fn)) (fboundp 'help-insert-xref-button))
+                (with-current-buffer "*Help*"
+                  (goto-char (point-max))
+                  (help-insert-xref-button fn 'help-function (intern fn) (commandp (intern fn))))
+              (princ fn))
+            (let ((dups   (member fn fns)) ; Sorted, so all dups are together.
+                  (count  0))
+              (while (equal fn (car dups))
+                (setq count  (1+ count)
+                      dups   (cdr dups)))
+              (when (> count 1) (princ (format "  (%d times)" count))))
+            (terpri)))
+        (help-make-xrefs (current-buffer)))
+      fns)))
+
 (defun bookmarkp-root-or-sudo-logged-p ()
   "Return t if the user logged in using Tramp as `root' or `sudo'.
 Otherwise, return nil."
@@ -6076,6 +6131,8 @@ bookmark-list state
 \\[bookmarkp-bmenu-quit]\t- Quit (the bookmark list)
 \\[bookmark-bmenu-save]\t- Save bookmarks (`C-u': prompt for the bookmarks file to use)
 \\[bookmarkp-toggle-saving-menu-list-state]\t- Toggle saving the bookmark list display state
+\\[bookmarkp-list-defuns-in-commands-file]\t- List the commands
+\t  defined in `bookmarkp-bmenu-commands-file'.
 
 
 Mark/unmark bookmarks (see also `Tags', next)
@@ -6229,6 +6286,9 @@ Other bookmark options
 (define-key bookmarkp-bmenu-menubar-menu [bookmark-bmenu-save]
   '(menu-item "Save" bookmark-bmenu-save))
 (define-key bookmarkp-bmenu-menubar-menu [top-sep1] '("--"))
+
+(define-key bookmarkp-bmenu-menubar-menu [bookmarkp-list-defuns-in-commands-file]
+  '(menu-item "List User-Defined Commands" bookmarkp-list-defuns-in-commands-file))
 
 (defvar bookmarkp-bmenu-define-command-menu (make-sparse-keymap "Define Command"))
 (define-key bookmarkp-bmenu-menubar-menu [define-command]

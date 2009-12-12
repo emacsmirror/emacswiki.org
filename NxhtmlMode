@@ -1,15 +1,15 @@
 [new]
+----
+<b><i>
+Warning: CVS Emacs from 2009-12-03 or later breaks indentation for php-mode when used in multi major mode buffers.
+We are working on it, but it may take some time.
+(The latest beta 2.06 of nXhtml works around this, but it can probably break later.)
+</i></b>
+----
+
+[new]
 http://ourcomments.org/Emacs/nXhtml/doc/img/use-nXhtml-trans2.png
 
-[new]
-*Warning*: Latest CVS Emacs (2009-12-03) breaks indentation for php-mode when used in multi major mode buffers.
-We are working on it, but it may take some time.
-
-[new]
-Released nXhtml version 2.023 (2009-11-24).
-This version has support for the new JavaScriptMode mode in CVS Emacs (called js-mode, formerly known as Espresso mode).
-
-[new]
 <b>This page should really be named /nXhtml/ since it is about the whole nXhtml package. nxhtml-mode is just a part of that package.</b>
 
 [new]
@@ -19,13 +19,14 @@ This version has support for the new JavaScriptMode mode in CVS Emacs (called js
 
 [new]
 **Newest features** (see [http://ourcomments.org/Emacs/nXhtml/doc/nxhtml-changes.html#latest changelog]):
-* Web download directly from Emacs (without bzr)
+* Web download directly from Emacs (without bzr, instead using *web-vcs.el*, see above)
+* Support for the new JavaScriptMode mode in CVS Emacs (called js-mode, formerly known as Espresso mode).
 * Chunks in chunks
 * Inline images for html, org-mode, css-mode etc.
 * Preview as you type in Firefox (but rather slow - additions are welcome), find out where an element is in Firefox
 * You can now use hi-lock with Mumamo multi major modes.
 * Mumamo region chunks, which is temporarily chunks you add yourself with any major mode. You just hilight the region and decide what major mode it should have.
-* Fetch and start using the latest development versions of [CollectionOfEmacsDevelopmentEnvironmentTools CEDET] and [EmacsCodeBrowser ECB] right now!
+* Fetch and start using the latest development version of [EmacsCodeBrowser ECB] right now!
 
 
 

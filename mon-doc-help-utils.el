@@ -41,7 +41,7 @@
 ;;; `mon-help-window-functions', `mon-help-hg-archive'
 ;;; `mon-help-crontab', `mon-help-unix-commands', `mon-help-permissions'
 ;;; `mon-help-propertize-tags', `mon-help-propertize-tags-TEST'
-;;; `mon-help-du-incantation', 
+;;; `mon-help-du-incantation', `mon-help-ipv4-header'
 ;;; FUNCTIONS:◄◄◄
 ;;;
 ;;; MACROS:
@@ -1477,10 +1477,11 @@ Why not! :)\n►►►
 `mon-help-CL:LOCAL-TIME'                  ;-> \"mon-doc-help-CL.el\"
 `mon-help-CL:LOOP'                        ;-> \"mon-doc-help-CL.el\"\n
 ;; :ASCII-ART
+`mon-help-color-chart'
 `mon-help-easy-menu'
-`mon-help-widgets'
 `mon-help-font-lock'
-`mon-help-color-chart'\n
+`mon-help-ipv4-header'
+`mon-help-widgets'\n
 ;; :PRESENTATION
 `mon-help-make-faces'
 `mon-help-basic-faces'
@@ -1526,6 +1527,7 @@ Why not! :)\n►►►
 ;; :MON-DOC-HELP-VARIABLES
 `*doc-cookie*'                                 ;<VARIABLE>
 `*mon-help-interactive-spec-alist*'            ;<VARIABLE>
+`*mon-iptables-alst*'                          ;<VARIABLE>
 `*reference-sheet-help-A-HAWLEY*'              ;<VARIABLE>
 `*regexp-mon-doc-help-docstring-tags-DYNAMIC*' ;<VARIABLE>
 `*regexp-mon-doc-help-docstring-tags-TABLES*'  ;<VARIABLE>
@@ -4139,6 +4141,95 @@ as a reference for finding which characters match which codes.\n►►►\n
 ;;; :TEST-ME (describe-function 'mon-help-cntl->hex->ecma-35)
 ;;; :TEST-ME (documentation 'mon-help-cntl->hex->ecma-35)
 ;;; :TEST-ME (describe-function 'mon-help-cntl->hex->ecma-35)
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-12-11T11:44:07-05:00Z}#{09505} - by MON KEY>
+(defun mon-help-ipv4-header (&optional insertp intrp)
+  "The IPv4 header as per RFC-791 \(more or less\).
+:SEE (URL `http://tools.ietf.org/rfc/rfc791.txt')\n
+Bit-offset
+ |    0                   1                   2                   3   
+ `--- 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   / |VERSION|  :IHL |   :TOS        |         :TOTAL-LENGTH         |
+  /  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ |   |          :IDENTIFICATION      |:FLAG|   :FRAGMENT-OFFSET      |
+ |   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ |   | :TIME-TO-LIVE |   :PROTOCOL   |         :HEADER-CHECKSUM      |
+ |   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ |   |                   :SOURCE-ROUTING-LOCATOR                     |
+ |   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ |   |                   :DESTINATION-ROUTING-LOCATOR                |
+  \\  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   \\ |                   :OPTIONS                    |   :PADDING    |
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+                                                                   70^
+
+:VERSION                      -> 4-bit. Version field.\n
+:IHL \(Internet Header Length\) -> 4-bit. Number of 32-bit words in header.\n
+:DS  \(Differentiated Service\) -> :SEE RFC-2474 & RFC-3168\n
+:TOS \(Type of Service\)        -> 8-bit.\n
+           0     1     2     3     4     5     6     7
+        +-----+-----+-----+-----+-----+-----+-----+-----+
+        |                 |     |     |     |     |     |
+        |   :PRECEDENCE   |  D  |  T  |  R  |  0  |  0  |
+        |                 |     |     |     |     |     |
+        +-----+-----+-----+-----+-----+-----+-----+-----+\n
+        o bits_0–2 -> :TOS-PRECEDENCE
+                      111 -> Network Control 
+                      110 -> Internetwork Control
+                      101 -> CRITIC/ECP
+                      100 -> Flash Override
+                      011 -> Flash
+                      010 -> Immediate
+                      001 -> Priority
+                      000 -> Routine\n
+        o bit-3         0 -> Normal Delay
+                        1 -> Low Delay\n
+        o bit-4         0 -> Normal Throughput
+                        1 -> High Throughput\n
+        o bit-5         0 -> Normal Reliability 
+                        1 -> High Reliability\n
+        o bit-6         0 -> Normal Cost 
+                        1 -> Minimize Monetary Cost :SEE RFC-1349\n
+        o bit-7           -> undefined\n
+:TOTAL-LENGTH   -> 16-bit. Define datagram size.\n
+:IDENTIFICATION -> Identify fragments of original IP datagram.\n
+:FLAG           -> 3-bit. Control or identify fragments.\n
+                     0   1   2
+                   +---+---+---+
+                   |   | D | M |
+                   | 0 | F | F |
+                   +---+---+---+\n
+                   :FLAG-ORDER-HIGH->LOW\n
+                   bit-0 -> Reserved, must be zero.\n
+                   bit-1 -> :DF-DO-NOT-FRAGMENT 
+                             0 -> May Fragment
+                             1 -> Don't Fragment\n
+                   bit-2 -> :MF-MORE-FRAGMENTS
+                             0 -> Last Fragment
+                             1 -> More Fragments\n
+:FRAGMENT-OFFSET    -> 13-bit in 8-byte blocks. 
+                       Fragment offset rel. orig. unfragmented IP datagram.\n
+:TTL (Time to Live) -> 8-bit. Limit datagram lifetime.\n
+:PROTOCOL           -> Define protocol of IP datagram's data.\n
+:HEADER-CHECKSUM    -> 16-bit. Checksum.\n
+:SOURCE-ROUTING-LOCATOR -> 32-bit as 4-octet group. IPv4 address packet source.\n
+:DESTINATION-ROUTING-LOCATOR -> As above, IPv4 packet reciever.\n
+:SEE (URL `http://tools.ietf.org/rfc/rfc1349.txt')
+:SEE (URL `http://tools.ietf.org/html/rfc2474.txt')
+:SEE (URL `http://tools.ietf.org/rfc/rfc3168.txt')
+:SEE (URL `http://en.wikipedia.org/wiki/IPv4')\n
+:SEE-ALSO `*mon-iptables-alst*'.\n►►►"
+(interactive "i\nP")
+  (if (or insertp intrp)
+      (mon-help-function-spit-doc 'mon-help-ipv4-header :insertp t)
+    (message "Pass non-nil for optional arg INTRP")))
+;;
+;;; :TEST-ME (mon-help-ipv4-header )
+;;; :TEST-ME (mon-help-ipv4-header t)
+;;; :TEST-ME (describe-function 'mon-help-ipv4-header)
+;;; :TEST-ME (call-interactively 'mon-help-ipv4-header)
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-09-27T06:39:21-04:00Z}#{09397} - by MON>

@@ -251,6 +251,8 @@ In c++-mode, ac-source-filename can not work, because
 and thing-at-point is ahe when point after /home/ahe.
 I think auto-complete should have multiple ac-prefix, and then complete those all. -- [[ahei]]
 
+[new]
+Can anyone explain how the ac-omni-completion-sources replacement works?  I am not understanding how to use this ac-prefix stuff.  I want to start completion on '.' and '->' for C programming, so foo-> would pop up completions for the struct Foo.  This was working in 0.20 and I'm just not seeing how to set this up again. LesHarris
 ----
 CategoryCompletion
 

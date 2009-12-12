@@ -116,7 +116,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 3 $Rev: 235 $ of the Sunrise Commander.
+;; This is version 3 $Rev: 236 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.  I  have  also  received
@@ -2035,27 +2035,18 @@ subdirectories")))
   set  to the right value. See the documentation of function sr-sort-virtual for
   more details."
   (let ((fileset (dired-get-marked-files nil))
-        indentation)
+        (inhibit-read-only t))
     (sr-change-window)
-    (sr-beginning-of-buffer)
-    (beginning-of-line)
-    (re-search-forward "\\S-" nil t)
-    (setq indentation (- (current-column) 1))
-    (sr-end-of-buffer)
-    (dired-next-line 1)
-    (toggle-read-only -1)
+    (goto-char (point-max))
     (mapc (lambda (file)
-            (insert-char 32 indentation)
+            (insert-char 32 2)
             (setq file (dired-make-relative file default-directory))
             (setq file (replace-regexp-in-string "/$" "" file))
-            (insert-directory file sr-virtual-listing-switches)
-            (sr-end-of-buffer)
-            (dired-next-line 1))
+            (insert-directory file sr-virtual-listing-switches))
           fileset)
     (unwind-protect
         (kill-line)
       (progn
-        (toggle-read-only 1)
         (sr-revert-buffer)
         (sr-change-window)
         (dired-unmark-all-marks)))))
@@ -2397,13 +2388,11 @@ or (c)ontents? ")
         (sr-in-other (sr-pure-virtual nil)))
     (sr-save-aspect
      (let* ((dir (directory-file-name (dired-current-directory)))
-            (buff (generate-new-buffer-name (buffer-name (current-buffer))))
-            (here (if (string-match dired-omit-files ".") dir ".")))
+            (buff (generate-new-buffer-name (buffer-name (current-buffer)))))
        (sr-alternate-buffer (switch-to-buffer buff))
        (goto-char (point-min))
        (insert (concat "  " dir) ":\n")
-       (insert " Pure VIRTUAL buffer: \n  ")
-       (insert-directory here sr-virtual-listing-switches)
+       (insert " Pure VIRTUAL buffer: \n")
        (sr-virtual-mode)
        (sr-keep-buffer)))))
 

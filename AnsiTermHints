@@ -38,7 +38,7 @@ ansi-term command doesn't support additional arguments:
     (defun remote-term (new-buffer-name cmd &rest switches)
       (setq term-ansi-buffer-name (concat "*" new-buffer-name "*"))
       (setq term-ansi-buffer-name (generate-new-buffer-name term-ansi-buffer-name))
-      (setq term-ansi-buffer-name (apply 'term-ansi-make-term term-ansi-buffer-name cmd nil switches))
+      (setq term-ansi-buffer-name (apply 'make-term term-ansi-buffer-name cmd nil switches))
       (set-buffer term-ansi-buffer-name)
       (term-mode)
       (term-char-mode)

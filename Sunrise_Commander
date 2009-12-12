@@ -6,10 +6,13 @@
 
 [[image:SunriseCommanderLogoPage|The Sunrise Commander|]]
 
+[:Intro]
+==Rationale and outstanding features==
 Hello, Emacs Community!
 
 I've  been  working  lately  on  a new OFM for GNU Emacs. (For those who may not
-know, OFM stands for "Orthodox File Manager"[http://www.softpanorama.org/OFM/index.shtml] - it's the kind of  interface  made
+know, OFM stands for "Orthodox File Manager"
+[http://www.softpanorama.org/OFM/index.shtml]  - it's the kind of interface made
 popular by the Norton and Midnight Commanders.)
 
 "Another one?" you may say.
@@ -102,7 +105,9 @@ Here's a screenshot:
 
 http://joseito.republika.pl/sunrise.png
 
-[new]
+----
+[:ButtonsExt]
+==The Buttons Extension: making Sunrise a bit more like MC==
 I  have  written  a small extension that may be of help to new users who want to
 get acquainted fast with the  most  frequent  functions  found  in  the  Sunrise
 Commander  and their keybindings. Once installed, it displays a panel with mouse
@@ -129,7 +134,9 @@ instructions) go here:
 
 Enjoy ;-)
 
-[new]
+----
+[:MirrorExt]
+==The Mirror Extension: full read/write access to compressed archives==
 Unfortunately  the  access  to compressed archives offered by AVFS is limited to
 read-only operations, so I have written an extension to  the  Sunrise  Commander
 that  provides  seamless  and effective manipulation of compressed archives in a
@@ -152,7 +159,9 @@ This  means  that most probably this extension will work out-of-the-box on Linux
 was  written  on  GNU  Emacs  23  on Linux and tested on GNU Emacs 22 and 23 for
 Linux.
 
-[new]
+----
+[:LoopExt]
+==The Loop Extension: copying and renaming files in the background==
 Not  long ago I read in some discussion board a quite nice comment regarding the
 Sunrise Commander, something on the lines of "beautiful stuff, but it will never
 be a real file manager as long as emacs remains single-threaded". The answer any
@@ -183,7 +192,8 @@ You can get a copy of the Sunrise Loop extension here:
 * http://joseito.republika.pl/sunrise-x-loop.el.gz
 * Lisp:sunrise-x-loop.el
 
-[new]
+[:PopviewerExt]
+==The PopViewer Extension: making the viewer window float==
 A Sunrise Commander User had the following problem:
 
     I  practically  don't use the "viewer window", instead I
@@ -208,7 +218,9 @@ this. The resulting code is a new extension called "popviewer", now available at
 
 if  you have the same itch, you can scratch it too :)
 
-[new]
+----
+[:ModelineExt]
+==The Mode Line Extension: directory paths always in sight==
 Here is a new usability enhancement I’ve just released for the Sunrise Commander
 window manager: sunrise‐x‐modeline ‐‐ a minor mode that puts the directory  path
 of  each  Sunrise  pane on the mode line of its respective window, so it remains
@@ -221,9 +233,9 @@ usage notes) go to:
 * http://joseito.republika.pl/sunrise-x-modeline.el.gz
 * Lisp:sunrise-x-modeline.el
 
-[new]
-Here is another one: the Tabs extension.
-
+----
+[:TabsExt]
+==The Tabs Extension==
 This  extension brings tab‐based navigation to the Sunrise Commander. It adds to
 the list of optional mechanisms already available in Sunrise for  moving  around
 the   file   system   (like   regular  bookmarks,  checkpoints,  history  rings,
@@ -243,6 +255,9 @@ To get a copy of the Sunrise Tabs extension go to:
 * http://joseito.republika.pl/sunrise-x-tabs.el.gz
 * Lisp:sunrise-x-tabs.el
 
+----
+[:Misc]
+==Comments and Suggestions==
 [new]
 I  have some  problems  with sunrise  commander.   Is there  some mailing  list,
 project page or  other way to report bugs?  It seems  the devadvice usage breaks

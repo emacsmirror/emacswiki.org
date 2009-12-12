@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 21.1
-;; Last-Updated: Mon Aug  3 14:21:59 2009 (-0700)
+;; Last-Updated: Fri Dec 11 09:22:16 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 3832
+;;     Update #: 3841
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/info+.el
 ;; Keywords: help, docs, internal
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -170,6 +170,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2009/12/11 dadams
+;;     info-fontify-(node|quotations|reference-items), Info-merge-subnodes:
+;;       Use font-lock-face property, not face, if > Emacs 21.
 ;; 2009/08/03 dadams
 ;;     Updated for Emacs 23.1 release: Info-find-node-2, Info-fontify-node, Info-search: new version.
 ;; 2009/06/10 dadams
@@ -2090,7 +2093,9 @@ to search again for `%s'.")
         ;; Fontify header line
         (goto-char (point-min))
         (when (and not-fontified-p (looking-at "^File: \\([^,: \t]+\\),?[ \t]+"))
-          (put-text-property (match-beginning 1) (match-end 1) 'face 'info-file))
+          (put-text-property (match-beginning 1) (match-end 1)
+                             (if (> emacs-major-version 21) 'font-lock-face 'face)
+                             'info-file))
         (goto-char (point-min))
         (when (and not-fontified-p (looking-at "^\\(File: [^,: \t]+,?[ \t]+\\)?"))
           (while (looking-at "[ \t]*\\([^:, \t\n]+\\):[ \t]+\\([^:,\t\n]+\\),?")
@@ -2509,7 +2514,7 @@ to search again for `%s'.")
         ;; Fontify header line
         (goto-char (point-min))
         (when (and not-fontified-p (looking-at "^File: \\([^,: \t]+\\),?[ \t]+"))
-          (put-text-property (match-beginning 1) (match-end 1) 'face 'info-file))
+          (put-text-property (match-beginning 1) (match-end 1) 'font-lock-face 'info-file))
         (goto-char (point-min))
         (when (and not-fontified-p (looking-at "^\\(File: [^,: \t]+,?[ \t]+\\)?"))
           (while (looking-at "[ \t]*\\([^:, \t\n]+\\):[ \t]+\\([^:,\t\n]+\\),?")
@@ -2896,7 +2901,7 @@ If ... contains \" or ' then that character must be backslashed.")
  \"...\"\t- use face `info-string'
  '\t- use face `info-single-quote'"
   (let ((regexp    info-quotation-regexp)
-        (property  (if (< emacs-major-version 21) 'face 'font-lock-face)))
+        (property  (if (> emacs-major-version 21) 'font-lock-face 'face)))
     (while (condition-case nil (re-search-forward regexp nil t) (error nil))
       (cond ((and (eq ?` (aref (match-string 0) 0)) ; Single-quoted backslashes: `\', `\\', `\\\', etc.
                   (goto-char (match-beginning 0))
@@ -2933,7 +2938,7 @@ Command:\\|User Option:\\|Macro:\\|Syntax class:\\)\\(.*\\)"
     (let ((symb (intern (match-string 1))))
       (put-text-property (match-beginning 1)
                          (match-end 1)
-                         'face
+                         (if (> emacs-major-version 21) 'font-lock-face 'face)
                          (case symb
                            ('Function:       'info-function-ref-item)
                            ('Variable:       'info-variable-ref-item)
@@ -2942,7 +2947,9 @@ Command:\\|User Option:\\|Macro:\\|Syntax class:\\)\\(.*\\)"
                            ('User\ Option:   'info-user-option-ref-item)
                            ('Macro:          'info-macro-ref-item)
                            ('Syntax\ class:  'info-syntax-class-item)))
-      (put-text-property (match-beginning 2) (match-end 2) 'face 'info-reference-item))))
+      (put-text-property (match-beginning 2) (match-end 2)
+                         (if (> emacs-major-version 21) 'font-lock-face 'face)
+                         'info-reference-item))))
 
 
 
@@ -4290,7 +4297,9 @@ subnodes (outside Info)? ")
               (while (> ind 0) (insert "=") (setq ind (1- ind))) ; Underline menu item.
               (insert "\n")
               (put-text-property (save-excursion (forward-line -2) (point))
-                                 (save-excursion (forward-line 1) (point)) 'face 'info-file)
+                                 (save-excursion (forward-line 1) (point))
+                                 (if (> emacs-major-version 21) 'font-lock-face 'face)
+                                 'info-file)
               (setq oldpt (point))
               (insert strg)             ; Insert subnode contents.
               (indent-rigidly oldpt (point) 2)

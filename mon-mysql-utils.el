@@ -1,5 +1,3 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; -*- mode: EMACS-LISP; -*-
 ;;; this is mon-mysql-utils.el
 ;;; ================================================================
 ;;; DESCRIPTION:
@@ -16,8 +14,8 @@
 ;;; 
 ;;;
 ;;; FUNCTIONS:►►►
-;;; `mon-help-mysql-complete'
-;;; `mon-csv-string-to-list', `mon-csv-split-string', `mon-mysql-get-field-col'
+;;; `mon-help-mysql-complete', `mon-mysql-cln-pipes', `mon-mysql-get-field-col'
+;;; `mon-csv-string-to-list', `mon-csv-split-string', 
 ;;; FUNCTIONS:◄◄◄
 ;;;
 ;;; MACROS:
@@ -115,7 +113,7 @@ Alist keys correpsond to the following `mysql help' categories:\n
 :LINESTRING-PROPERTIES \n:MBR \n:POINT-PROPERTIES \n:POLYGON-PROPERTIES
 :WKB \n:WKT \n:PLUGINS \n:TABLE-MAINTENANCE \n:TRANSACTIONS
 :USER-DEFINED-FUNCTIONS \n:UTILITY \n
-:SEE-ALSO `mon-help-mysql-complete'.\n►►►.")
+:SEE-ALSO `mon-help-mysql-complete', `mon-help-mysql-commands'.\n►►►.")
 ;;
 (eval-when-compile
 (unless  (bound-and-true-p *regexp-clean-mysql* )
@@ -291,13 +289,13 @@ When MYSQL-KEY (a string or :symbol) is non-nil try completing it instead.\n
 \(mon-help-mysql-complete \":ADMINISTR\"\)
 \(cdr \(assoc \(mon-help-mysql-complete\) *regexp-clean-mysql*\)\)\n
 To access/send to a running mysql system (sub)process :SEE `mon-get-process'.
-►►►"
+:SEE-ALSO `mon-help-mysql-commands'.\n►►►"
   (let (a b)
-      (setq a (mapcar 'car *regexp-clean-mysql*))
-      (setq b (mapcar #'(lambda (s) (format "%s" s)) a))
-      (if mysql-key
-          (read (try-completion  (format "%s" mysql-key) b))
-          (read (completing-read "Which key: " b)))))
+    (setq a (mapcar 'car *regexp-clean-mysql*))
+    (setq b (mapcar #'(lambda (s) (format "%s" s)) a))
+    (if mysql-key
+        (read (try-completion  (format "%s" mysql-key) b))
+        (read (completing-read "Which key \(tab completes\): " b nil t ":")))))
 ;;
 ;;; :TEST-ME (mon-help-mysql-complete :ADMINISTR)
 ;;; :TEST-ME (mon-help-mysql-complete ":ADMINISTR")
@@ -305,6 +303,25 @@ To access/send to a running mysql system (sub)process :SEE `mon-get-process'.
 ;;; :TEST-ME (mon-help-mysql-complete ":AC")
 ;;; :TEST-ME (mon-help-mysql-complete)
 
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-12-11T19:22:39-05:00Z}#{09506} - by MON KEY>
+(defun mon-help-mysql-commands (&optional insrtp intrp)
+  "Return a MySQL help 'topic' by with completions by category.
+Useful for passing to CLI e.g. `mysql> help <SOME-TOPIC>'.
+:EXAMPLE (mon-help-mysql-commands)\n
+:SEE-ALSO: `mon-help-mysql-complete',`*regexp-clean-mysql*'.\n►►►"
+  (interactive "i\np")
+  (let ((help-for 
+         (completing-read "MySQL help for \(tab completes\): "
+                        (cdr (assoc (mon-help-mysql-complete) *regexp-clean-mysql*)))))
+    (if (or insrtp intrp)
+        (princ (concat "help " help-for) (current-buffer))
+        help-for)))
+;;
+;;; :TEST-ME (mon-help-mysql-commands)
+;;; :TEST-ME (call-interactively 'mon-help-mysql-commands)
+
+;; :ADDED :FUNCTION `mon-mysql-cln-pipes', `mon-help-mysql-commands' :FIXED `mon-mysql-get-field-col'
 ;;; ==============================
 ;;; :NOTE For use to get help for a specific MySQL help topic e.g.
 ;;; "mysql> help contents", "mysql> help [<CATEGORY>|<TOPIC>]"
@@ -333,37 +350,133 @@ To access/send to a running mysql system (sub)process :SEE `mon-get-process'.
 ;;; (process-id 
 ;;; ==============================
 
+
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-12-10T16:39:52-05:00Z}#{09504} - by MON>
-(defun mon-mysql-get-field-col (start end)
-  "Extract all MySQL fields in table from START to END.\n
-:SEE-ALSO `mon-csv-split-string', `mon-csv-string-to-list',
+(defun mon-mysql-get-field-col (start end &optional field-1 intrp)
+  "Return list of extracted rows in region of MySQL table's with FIELD-1 as key.
+List has the form \(FIELD-1 (ROW1-VAL ROW2-VAL ROW3-VAL\)\)
+When called-interactively or INTRP is non-nil put return value on the kill ring.\n
+When called-interactively with prefix arg or FIELD-1 is non-nil match FIELD1 
+as first field in table header row. Default is \"Field\".\n
+Use to extract fields from mysql command:\nmysql> SHOW COLUMNS FROM THE-DB.TABLE\n
+:EXAMPLE 
+\(let \(\(r-eg `\(,\(1+ \(search-forward-regexp \"^►\" nil t\)\) . 
+                   ,\(- \(search-forward-regexp \"◄$\" nil t\) 3\)\)\)\)
+  \(mon-mysql-get-field-col \(car r-eg\) \(cdr r-eg\) \"Tables_in_mysql\" t\)
+      \(momentary-string-display \(current-kill 0\) \(point\)\)\)
+►
+ +---------------------------+ 
+ | Tables_in_mysql           | 
+ +---------------------------+ 
+ | columns_priv              | 
+ | db                        | 
+ | event                     | 
+ | func                      | 
+ | general_log               | 
+ | help_category             | 
+ | help_keyword              | 
+ | help_relation             | 
+ | help_topic                | 
+ | host                      | 
+ | ndb_binlog_index          | 
+ | plugin                    | 
+ | proc                      | 
+ | procs_priv                | 
+ | servers                   | 
+ | slow_log                  | 
+ | tables_priv               | 
+ | time_zone                 | 
+ | time_zone_leap_second     | 
+ | time_zone_name            | 
+ | time_zone_transition      | 
+ | time_zone_transition_type | 
+ | user                      | 
+ +---------------------------+ 
+◄\n
+:SEE-ALSO `mon-mysql-cln-pipes',`mon-csv-split-string',`mon-csv-string-to-list',
 `mon-cln-csv-fields', `mon-string-csv-rotate'.\n►►►"
-  (interactive "r")
-  (let (flds)
+  (interactive "r\nsFirst field's value: \np")
+  (let (flds
+        (the-field (if (or intrp field-1) field-1 "Field")))
     (setq flds (buffer-substring-no-properties start end))
     (setq flds
-    (with-temp-buffer
-      (insert flds)        
-      (goto-char (buffer-end 0))
-      (progn
-        ;; Remove table header.
-        (search-forward-regexp   "\\(\| Field .* |\\)" nil t)
-        (replace-match ""))
-      ;; Remove all "+----+----+...." lines.
-      (goto-char (buffer-end 0))
-      (while (search-forward-regexp "^\\([+-]+\\)$" nil t)
-        (replace-match ""))
-      (goto-char (buffer-end 0))
-      (while (search-forward-regexp 
-              ;;..1...2........3....4.........................
-              "^\\(\\(\| \\)\\([A-z0-9_]+\\)\\([\\[:space:]].*\\)\\)$" nil t)
-        (replace-match "\\3"))
-      (whitespace-cleanup)
-      (buffer-substring-no-properties (buffer-end 0)(buffer-end 1))))
+          (with-temp-buffer
+            (insert flds)        
+            (goto-char (buffer-end 0))
+            ;; Remove whitespace at BOL & EOL.
+            (whitespace-cleanup)
+            (goto-char (buffer-end 0))
+            (while (search-forward-regexp "^[\\[:blank:]]" nil t )(replace-match ""))            
+            ;; Remove all "+----+----+...." lines.
+            ;; (while (search-forward-regexp 
+            ;;         ;;...1....................2........3.......................
+            ;;         "^\\([\\[:blank:]]?\\)\\([+-]+\\)\\([\\[:blank:]]?\\)" nil t)
+            ;;   (replace-match ""))
+            (goto-char (buffer-end 0))
+            (while (search-forward-regexp "^\\([+-]+\\)$" nil t) (replace-match ""))
+            (goto-char (buffer-end 0))
+            (progn
+              ;; Remove table header.
+              (search-forward-regexp (concat "\\(\| " the-field " .* |\\)") nil t)
+              (replace-match ""))
+            (goto-char (buffer-end 0))
+            (while (search-forward-regexp 
+                    ;;..1...2........3..............4.....................
+                    "^\\(\\(\| \\)\\([A-z0-9_]+\\)\\([\\[:space:]].*\\)\\)$" nil t)
+              (replace-match "\\3"))
+            (whitespace-cleanup)
+            (buffer-substring-no-properties (buffer-end 0)(buffer-end 1))))
     (setq flds (concat "(" flds ")"))
-    (setq flds (car (read-from-string flds)))
-    flds))
+    (setq flds `(,(car (read-from-string field-1)) ,(car (read-from-string flds))))
+    (if intrp
+        (progn
+          (kill-new (format "%S" flds))
+          flds)
+        flds)))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-12-11T17:10:27-05:00Z}#{09505} - by MON>
+(defun mon-mysql-cln-pipes (start end &optional to-kill)
+  "Return MySQL query table rows without the table as a lisp list of strings
+:SEE-ALSO `mon-mysql-get-field-col',`mon-csv-split-string', 
+`mon-csv-string-to-list', `mon-cln-csv-fields', `mon-string-csv-rotate'.\n►►►"
+  (interactive "r\np")
+  (let (tb mtb)
+    (setq tb (buffer-substring-no-properties start end))
+    (setq tb (with-temp-buffer
+               (insert tb)              
+               (goto-char (buffer-end 0))
+               ;; Remove all "+----+----+...." lines.
+               (while (search-forward-regexp "^\\([+-]+\\)$" nil t)
+                 (replace-match ""))
+               (goto-char (buffer-end 0))
+               ;; Remove pipe at BOL.
+               (while (search-forward-regexp "^| " nil t)
+                 (replace-match ""))
+               (goto-char (buffer-end 0))
+               ;; Remove pipe at EOL.
+               (while (search-forward-regexp " |$" nil t)
+                 (replace-match ""))
+               (goto-char (buffer-end 0))
+               ;; Remove remaining inter-field pipes per row.
+               (while (search-forward-regexp "\\(| \\|  + | \\| +| +| \\)" nil t)
+                 (replace-match " "))
+               ;; Try to catch any remaining cruft at EOL.
+               (whitespace-cleanup)
+               (goto-char (buffer-end 0))
+               ;; Did we miss any stragglers at BOL?
+               (while (search-forward-regexp "^ " nil t) 
+                 (replace-match ""))
+               (buffer-substring-no-properties (buffer-end 0) (buffer-end 1))))
+    (setq tb (split-string tb "\n" ))
+    (setq mtb (mapcar #'(lambda (r)  (split-string r nil t)) tb))
+    (setq mtb (remq nil mtb)) ;; Any nil's are from empty lines. Kill them now!
+    (if to-kill
+        (progn
+          (kill-new (format "%S" mtb))
+          mtb)
+        mtb)))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-12-10T19:27:04-05:00Z}#{09505} - by MON>
@@ -533,3 +646,4 @@ substring for that.\n
 ;;; | if exists
 ;;; | show warnings
 ;;; `----
+
