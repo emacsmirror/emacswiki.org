@@ -80,7 +80,7 @@ When you are integrating somebody else's work, you will want to be identified as
 
 This section describes how to set things up if you plan on making repeated contributions to Emacs (whether or not you're one of the Emacs maintainers).  
 
-We'll assume Emacs's public master trunk lives at ##http://bzr.savannah.gnu.org/r/emacs/trunk##.  If you are a committer, you will want to use a ##sftp## URL instead: ##sftp://<membername>@bzr.savannah.gnu.org/srv/bzr/emacs/trunk##.  (Actually, you /want/ to use a ##bzr+ssh## URL, and we /want/ to run a smart server on Savannah to make that possible.  But ##savannah-hackers## considers this a security risk that needs to be analyzed carefully.  Please update this page if it becomes possible to use ##bzr+ssh##.  See [http://savannah.gnu.org/maintenance/Bzr this page] and [https://savannah.gnu.org/support/index.php?107143 sr 107143] for details.)
+We'll assume Emacs's public master trunk lives at ##http://bzr.savannah.gnu.org/r/emacs/trunk##.  If you are a committer, you will want to use a ##sftp## URL instead: ##sftp://<membername>@bzr.savannah.gnu.org/srv/bzr/emacs/trunk##.  (Actually, you /want/ to use a ##bzr+ssh## URL, and we /want/ to run a smart server on Savannah to make that possible.  But ##savannah-hackers## considers this a security risk that needs to be analyzed carefully.  Please update this page if it becomes possible to use ##bzr+ssh##.  See [https://savannah.gnu.org/support/index.php?107143 sr 107143] for details.)
 
 First, initialize a shared repository in which to store all your branches:
 
@@ -94,10 +94,9 @@ Now, create a branch called ##trunk## that will just be a mirror of the mainline
       cd emacs/
       bzr branch http://bzr.savannah.gnu.org/r/emacs/trunk/ trunk/
 
-(Use ##sftp://<membername>@bzr.savannah.gnu.org/srv/bzr/emacs/trunk##
-instead if you are a committer.)
+(Use ##sftp://<membername>@bzr.savannah.gnu.org/srv/bzr/emacs/trunk## instead if you are a committer.)
 
-This first ##bzr branch## operation in a new repository may take many minutes --- people have reported 20 to 55 minutes.  (An alternative, faster, method based on a tarball containing the whole repository is being set up.  This will be documented here when the details are known.)  At the end of the long wait, the repository will contain the whole history of the trunk, //but no source files.//
+This first ##bzr branch## operation in a new repository may take many minutes --- people have reported 20 to 55 minutes.  At the end of the long wait, the repository will contain the whole history of the trunk, and the ##trunk## directory will contain the working files -- that is, an Emacs tree.
 
 Next, we'll further safeguard that mirror by making it a "two-way" mirror.  We do this by "binding" the local trunk to the upstream master:
 

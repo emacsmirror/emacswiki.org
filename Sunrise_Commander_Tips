@@ -57,7 +57,7 @@ use  C-c C-j and C-c C-k to switch between line and character mode. Learn to use
 CLEX tags (%f, %F, %d, %D, %n, %N etc) to write fast your paths and  file  names
 in the CL.
 
-
+----
 [:ExternalApps]
 ==Opening files in external applications.==
 
@@ -106,7 +106,7 @@ distribution soon.
 Once you've  installed OpenWith, customize  the /openwith-associations/ variable
 as needed.
 
-
+----
 [:MouseSupport]
 ==Better mouse support?==
 
@@ -138,7 +138,7 @@ instead  :)  Besides,  Drag-n-drop is available even for vanilla Dired - no need
 for DiredPlus to add it. See the Emacs manual,  node  Drag  and  Drop
 (/Thanks Drew/).
 
-
+----
 [:HighlightingPermissions]
 ==Highlighting files with inappropriate permissions==
 
@@ -159,6 +159,7 @@ file a snippet like the following:
                     (:background "misty rose")
             "^..\\(-....\\(...\\)?w..*$\\)")
 
+----
 [:AvfsSetup]
 ==Setting up transparent navigation in compressed archives==
 
@@ -189,7 +190,7 @@ provide  the  full path to your AVFS mount point, and press the "Save for future
 sessions" button. That's it -- now try to open some *.zip file  inside  Sunrise,
 you should be able to navigate inside it as if it were a regular directory.
 
-
+----
 [:OpenDirInPassivePane]
 ==How to open the directory under the cursor in the passive pane?==
 
@@ -198,7 +199,32 @@ works for directories. In previous versions you need to  combine  two  commands:
 M-;  M-Return  (follow  file  in passive pane + visit selected file/directory in
 passive pane).
 
+----
+[:Cloning]
+==How to copy a directory structure without copying the files?==
 
+//(You  know,  what  "XCOPY /T/E" used to do in good ol' DOS. Sunrise calls this
+"cloning")//
+
+Upgrade  your  copy  of SC to version 3R237 or newer, select the directories you
+want to clone, press K (sr-do-clone) and select "(D)irectories only".
+
+Cloning  was  devised as a more general operation than recurrently copying files
+and directories[1]: all directories are created with the same name and structure
+at the destination, while what happens to the whole rest of the files depends on
+the option you choose:
+
+* "(D)irectories only" - ignores all files, copies only directories,
+* "(C)opies" - performs a traditional copy of all files,
+* "(H)ardlinks" - makes  every  new  file  a  (hard)  link  to  the original one
+(obviously the source and destination directories must be in the same  partition
+for this to work),
+* "(S)ymlinks" - creates absolute symbolic links for all files in the tree,
+* "(R)elative symlinks" - creates relative symbolic links for all files.
+
+[1] actually Copy is now implemented as a cloning operation.
+
+----
 [:NavigationAndTracking]
 ==Advanced navigation and location tracking.==
 

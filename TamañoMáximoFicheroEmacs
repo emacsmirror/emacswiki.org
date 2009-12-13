@@ -1,0 +1,109 @@
+[[en:EmacsFileSizeLimit]]
+Si se compila GNU Emacs en una arquitectura admitida con más de 32
+bits, se puede incrementar el tamaño máximo del búfer.  La razón de
+esto son los llamados "bits para etiquetas", que etiquetan cada
+puntero con el tipo de datos correspondiente.  Esto limita el tamaño
+de los búferes al entero más grande que se pueda representar en Emacs
+Lisp.
+
+Este es un ejemplo de cómo calcular el límite:
+
+    (let ((i 1024))
+      (while (> i 0)
+        (setq i (* i 2)))
+      (1- i))
+    => 268435455
+
+Y además:
+
+    (1+ 268435455)
+    => -268435456
+
+Así, el límite es de 256MB en el sistema donde se ejecutó este código
+particular:
+
+    (/ 268435456.0 1024 1024)
+    => 256.0
+
+¡Véase que hemos empleado aritmética con coma flotante para computar
+el resultado!
+
+De todos modos, lo que sigue es un poco de base técnica, a partir de
+las EmacsFaq y algunos artículos de los grupos de noticias:
+
+== GNU Emacs ==
+
+Las versiones más antiguas (e.d., todo lo anterior a 19.29) de GNU
+Emacs tenían problemas con la edición de ficheros superiores a 8
+megabytes.  A partir de la versión 19.29, el tamaño máximo del búfer
+es al menos 2^27-1, o 134,217,727 bytes.  En sistemas de 64bit, el
+límite se eleva a 2^59-1, que es casi un millón de Terabytes.
+
+David Gillespie explica cómo surge este problema; aunque sus números
+concretos sólo son ciertos en las versiones pre-19.29 de GNU Emacs, la
+teoría sigue siendo la misma en las versiones actuales.
+
+: Emacs está ampliamente escrito en un dialecto de Lisp; Lisp es un
+lenguaje libre de tipos en el sentido en que se puede poner cualquier
+valor de cualquier tipo en cualquier variable, o devolverlo desde una
+función, etc.  Así que cada valor debe portar una "etiqueta" junto con
+él que identifique qué clase de cosa es, v.g., entero, puntero a una
+lista, puntero a un búfer de edición, etc.  Emacs emplea los enteros
+estándares de 32-bit para los objetos de datos, tomando los 8 bits
+superiores para la etiqueta y los 24 bits inferiores para el valor.
+Así que los enteros (y los punteros) están algo restringidos
+comparados con los enteros y punteros reales de C.
+
+Y a continuación más detalles:
+
+ From: EliZaretskii
+ Subject: Re: maximum buffer size
+ Newsgroups: comp.emacs
+ Date: Mon, 21 May 2001 19:32:49 +0300
+
+Emacs necesita registrar las posiciones en cada búfer.  Las variables
+que lo hacen (el punto y sus congéneres) son todas enteros de Lisp,
+que tan sólo tienen 28 bits en las máquinas de 32-bit.  Esta es la
+razón de fondo para el límite de 128MB.
+
+En contraste, la cantidad máxima de memoria virtual disponible para un
+proceso la determina el Sistema Operativo y los límites que éste
+impone a los recursos disponibles para cada proceso.
+
+Las limitaciones en MV son tangenciales a los valores posibles
+representables por un entero de Emacs.  Por ejemplo, si cada búfer es
+menor de 128MB, Emacs debería ser capaz de tener tantos de esos
+búferes como la MV disponible sea capaz de soportar.  Si su sistema
+puede tener más de 1.28GB de MV, Emacs debería estar en condiciones de
+tener 10 o más búferes de 128-MB.
+
+== XEmacs ==
+
+ Subject: Re: large file aware? 
+ From: HrvojeNiksic (edited by AlexSchroeder)
+ Date: 13 Oct 1999 15:57:34 +0200 
+ Newsgroups: comp.emacs.xemacs 
+
+El límite real depende de la versión de XEmacs y tiene que ver con los
+límites de los enteros en Lisp.  Tradicionalmente, el tamaño de búfer
+mayor era de 256M (== 2^28; tres bits de etiquetas, y un bit para el
+signo).  A partir de XEmacs 21, ha sido posible configurar XEmacs
+--with-minimal-tagbits, que emplea trucos perversos para obtener
+enteros de 31-bit con signo en Lisp.  Esto hace que salte el tanaño
+máximo del búfer a 2^30 (aún se necesita un bit para el signo) == 1G.
+
+Si un fichero es mayor de 2G, XEmacs no podrá ubicarlo en la memoria,
+incluso si se dispone de suficiente RAM física.
+
+Si usted realmente realmente quiere intentar la edición de esos
+ficheros desproporcionados en XEmacs, debería obtener la última
+versión y compilarla en un entorno LP64.  De ese modo se obtendrá un
+tamaño máximo de búfer de 2^62 bytes, y soporte para ficheros grandes
+todo de una.
+
+Por cierto, buena suerte al editar esos ficheros.
+
+----
+CategoryBuilding
+
+

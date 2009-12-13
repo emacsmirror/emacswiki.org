@@ -88,13 +88,39 @@ This is what I use to provide channel-specific prompts (like #emacs> in the Emac
 
 Bug alert: (erc-default-target) returns nil when the prompt is first displayed. Also, this code is ugly and needs fixing. I'd love to hear about the fix - mail to sacha@free.net.ph
 
+== Channel-specific flood-unprotection ==
+
+Motivation: by default, ERC automatically splits too long (by the IRC definition) lines, and it also pauses between successive lines if you submit too many. There are some channels (or times) where I don't want that though. (For example, sometimes I join channels specifically to collaborate on a little bit of code with only friends, and it's more convenient to just paste into buffers than to use a paste service.)
+
+So, I've got these two things:
+
+    ;; allow some channels to not auto-delay messages. This can probably
+    ;; get you kicked from some channels, so don't use it.
+    (add-hook 'erc-mode-hook
+              (lambda ()
+                (let ((floodable-buffers
+                       '(;; every channel in this list is floodable:
+                         "#bugfunk"
+                         )))
+                  (when (member (buffer-name) floodable-buffers)
+                    (make-local-variable 'erc-server-flood-penalty)
+                    (setq erc-server-flood-penalty 0)))))
+
+and
+
+    (defun bwm-make-buffer-floodable ()
+      (make-local-variable 'erc-server-flood-penalty)
+      (setq erc-server-flood-penalty 0))
+
+you know, for friends. BrandonWMaister
+
 == Customized nickname format ==
 
 You can alter the nick reporting within the "<>" by defining a defun.  E.g. to add the date:
 <pre>
 (defun erc-format-nick-timestamp (&optional user channel-data)
-  (when user 
-    (format "%s %s" 
+  (when user
+    (format "%s %s"
             (downcase (format-time-string "%I:%M%p"))
             (erc-server-user-nickname user))))
 </pre>

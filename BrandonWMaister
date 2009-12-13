@@ -1,8 +1,10 @@
-I'm a second-semester student of the way computer science, former sysadmin, and I have been using Emacs since day 4. (Pretty literally)
+Compsci student/semi-professional programmer, I've been using emacs for a couple of years now, and every day just keeps getting better.
 
-I worked my way through the emacs-lisp-intro over the summer and am starting to feel like I kind of know my way around. I still definitely don't though, any advice, critiques, tips are most definitely welcome.
+I worked my way through the emacs-lisp-intro over a summer and am starting to feel like I kind of know my way around. I still definitely don't though, any advice, critiques, tips are most definitely welcome
 
 On on the internet I go by [::quodlibetor]: [http://blog.quodlibetor.com my blog] and [http://svn.quodlibetor.com public svn], quodlibetor on aim/yim/msn and @gmail.
+
+Also, I (now) keep my emacs.d in [http://hg.quodlibetor.com a mercurial repo] online. I try to only push when it's reasonably clean, but it is my .emacs, so it goes through pretty heavy churn.
 
 = Contributions =
 

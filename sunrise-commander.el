@@ -116,7 +116,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 3 $Rev: 236 $ of the Sunrise Commander.
+;; This is version 3 $Rev: 237 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.  I  have  also  received
@@ -422,6 +422,7 @@ substitution may be about to happen."
         S ............. soft-link selected file/directory to passive pane
         Y ............. do relative soft-link of selected file in passive pane
         H ............. hard-link selected file to passive pane
+        K ............. clone marked (or current) files and directories
         M-C ........... copy (using traditional dired-do-copy)
         M-R ........... rename (using traditional dired-do-rename)
         M-D ........... delete (using traditional dired-do-delete)
@@ -731,6 +732,7 @@ automatically:
 (define-key sr-mode-map "\C-y"                'sr-scroll-down)
 
 (define-key sr-mode-map "C"                   'sr-do-copy)
+(define-key sr-mode-map "K"                   'sr-do-clone)
 (define-key sr-mode-map "R"                   'sr-do-rename)
 (define-key sr-mode-map "D"                   'sr-do-delete)
 (define-key sr-mode-map "x"                   'sr-do-flagged-delete)
@@ -1822,34 +1824,45 @@ automatically:
 (sr-terminate-wdired 'wdired-abort-changes)
 
 (defun sr-do-copy ()
-  "Copies recursively selected files and directories from one pane to the other."
+  "Copies recursively selected files and directories to the passive pane."
   (interactive)
-  (let* (
-         (selected-files (dired-get-marked-files nil))
-         (files-count (length selected-files))
-         (files-count-str (int-to-string files-count))
+  (let* ((items (dired-get-marked-files nil))
+         (count (int-to-string (length items)))
          (vtarget (sr-virtual-target))
-         (target (or vtarget sr-other-directory))
-         )
-    (if (> files-count 0)
-        (if (and (not vtarget) (sr-equal-dirs default-directory sr-other-directory))
-            (dired-do-copy)
-          (when (y-or-n-p (concat "Copy " files-count-str " files to " target "? "))
-            (if vtarget
-                (sr-copy-virtual)
-              (let ((names (mapcar #'file-name-nondirectory selected-files))
-                    (inhibit-read-only t))
-                (with-current-buffer (sr-other 'buffer)
-                  (sr-copy-files selected-files target)
-                  (sr-force-passive-highlight t)
-                  (dired-mark-remembered
-                   (mapcar (lambda (x) (cons (expand-file-name x) ?C)) names)))
-                (save-selected-window
-                  (select-window (sr-other 'window))
-                  (sr-focus-filename (car names)))))
-            (dired-unmark-all-marks)
-            (message "%s" (concat "Done: " files-count-str " file(s) dispatched"))))
-      (message "Empty selection. Nothing done."))))
+         (target (or vtarget sr-other-directory)))
+    (if (and (not vtarget) (sr-equal-dirs default-directory sr-other-directory))
+        (dired-do-copy)
+      (when (y-or-n-p (concat "Copy " count " items to " target "? "))
+        (if vtarget
+            (sr-copy-virtual)
+          (sr-clone items target #'copy-file ?C))
+        (dired-unmark-all-marks)
+        (message "Done: %s items(s) copied" count)))))
+
+(defun sr-do-symlink ()
+  "Creates  symbolic  links  in  the  passive pane to all the currently selected
+  files and directories in the active one."
+  (interactive)
+  (if (sr-equal-dirs default-directory sr-other-directory)
+      (dired-do-symlink)
+    (sr-link #'make-symbolic-link "Symlink" dired-keep-marker-symlink)))
+
+(defun sr-do-relsymlink ()
+  "Creates  relative  symbolic  links  in  the passive pane to all the currently
+  selected files and directories in the active one."
+  (interactive)
+  (if (sr-equal-dirs default-directory sr-other-directory)
+      (dired-do-relsymlink)
+    (sr-link #'dired-make-relative-symlink
+             "RelSymLink"
+             dired-keep-marker-relsymlink)))
+
+(defun sr-do-hardlink ()
+  "Simply refuses to hardlink files to VIRTUAL buffers."
+  (interactive)
+  (if (sr-virtual-target)
+      (error "Cannot hardlink files to a VIRTUAL buffer, try (C)opying instead.")
+    (dired-do-hardlink)))
 
 (defun sr-do-rename ()
   "Moves recursively selected files and directories from one pane to the other."
@@ -1857,19 +1870,19 @@ automatically:
   (if (sr-virtual-target)
       (error "Cannot move files to a VIRTUAL buffer, try (C)opying instead."))
   (let* (
-         (selected-files (dired-get-marked-files nil))
-         (files-count (length selected-files))
+         (selected-items (dired-get-marked-files nil))
+         (files-count (length selected-items))
          (files-count-str (int-to-string files-count))
          (target sr-other-directory)
-         )
+        )
     (if (> files-count 0)
         (if (sr-equal-dirs default-directory sr-other-directory)
             (dired-do-rename)
           (when (y-or-n-p (concat "Move " files-count-str " files to " target "? "))
-            (let ((names (mapcar #'file-name-nondirectory selected-files))
+            (let ((names (mapcar #'file-name-nondirectory selected-items))
                   (inhibit-read-only t))
               (with-current-buffer (sr-other 'buffer)
-                (sr-move-files selected-files default-directory)
+                (sr-move-files selected-items default-directory)
                 (revert-buffer)
                 (dired-mark-remembered
                  (mapcar (lambda (x) (cons (expand-file-name x) ?R)) names)))
@@ -1905,30 +1918,29 @@ automatically:
         (sr-do-delete)
       (message "(No deletions requested)"))))
 
-(defun sr-do-symlink ()
-  "Creates  symbolic  links  in  the  passive pane to all the currently selected
-  files and directories in the active one."
-  (interactive)
-  (if (sr-equal-dirs default-directory sr-other-directory)
-      (dired-do-symlink)
-    (sr-link #'make-symbolic-link "Symlink" dired-keep-marker-symlink)))
+(defun sr-do-clone (&optional mode)
+  "Clones recursively all selected items into the passive pane."
+  (interactive "cClone selected items as: (D)irectories only, (C)opies,\
+ (H)ardlinks, (S)ymlinks, (R)elative symlinks? ")
 
-(defun sr-do-relsymlink ()
-  "Creates  relative  symbolic  links  in  the passive pane to all the currently
-  selected files and directories in the active one."
-  (interactive)
-  (if (sr-equal-dirs default-directory sr-other-directory)
-      (dired-do-relsymlink)
-    (sr-link #'dired-make-relative-symlink
-             "RelSymLink"
-             dired-keep-marker-relsymlink)))
-
-(defun sr-do-hardlink ()
-  "Simply refuses to hardlink files to VIRTUAL buffers."
-  (interactive)
   (if (sr-virtual-target)
-      (error "Cannot hardlink files to a VIRTUAL buffer, try (C)opying instead.")
-    (dired-do-hardlink)))
+      (error "Cannot clone into a VIRTUAL buffer, try (C)opying instead."))
+  (if (sr-equal-dirs default-directory sr-other-directory)
+      (error "Cannot clone inside one single directory, please select a\
+ different one in the passive pane."))
+
+  (let ((target sr-other-directory) clone-op items)
+    (if (and mode (>= mode 97)) (setq mode (- mode 32)))
+    (cond ((eq ?D mode) (setq clone-op nil))
+          ((eq ?C mode) (setq clone-op #'copy-file))
+          ((eq ?H mode) (setq clone-op #'add-name-to-file))
+          ((eq ?S mode) (setq clone-op #'make-symbolic-link))
+          ((eq ?R mode) (setq clone-op #'dired-make-relative-symlink))
+          (t (error (concat "Invalid cloning mode: " (char-to-string mode)))))
+    (setq items (dired-get-marked-files nil))
+    (sr-clone items target clone-op ?K)
+    (dired-unmark-all-marks)
+    (message "Done: %s items(s) dispatched" (length items))))
 
 (defun sr-fast-backup-files ()
   "Makes  new  copies of all marked files (but not directories!) inside the same
@@ -1937,33 +1949,46 @@ automatically:
   (dired-do-copy-regexp "$" ".bak")
   (sr-revert-buffer))
 
-(defun sr-copy-files (file-path-list target-dir &optional do-overwrite)
-  "Copies all files in file-path-list (list of full paths) to target dir."
+(defun sr-clone (items target clone-op mark-char)
+  "Clones  recursively  all given items (files and directories) into the passive
+  pane."
+  (let ((names (mapcar #'file-name-nondirectory items))
+        (inhibit-read-only t))
+    (with-current-buffer (sr-other 'buffer)
+      (sr-clone-files items target clone-op)
+      (sr-force-passive-highlight t)
+      (dired-mark-remembered
+       (mapcar (lambda (x) (cons (expand-file-name x) mark-char)) names)))
+    (save-selected-window
+      (select-window (sr-other 'window))
+      (sr-focus-filename (car names)))))
+
+(defun sr-clone-files (file-paths target-dir clone-op &optional do-overwrite)
+  "Clones  all  files  in  file-paths  (list  of full paths) to target dir using
+  clone-op to clone all files."
   (setq target-dir (replace-regexp-in-string "/?$" "/" target-dir))
   (mapc
    (function
     (lambda (f)
       (if (file-directory-p f)
-          (let* (
-                 (name (file-name-nondirectory f))
-                 (initial-path (file-name-directory f))
-                 )
-            (sr-copy-directory initial-path name target-dir do-overwrite))
-        (let* (
-               (name (file-name-nondirectory f))
-               (target-file (concat target-dir name))
-               )
-          (message "%s" (concat f " => " target-file))
-          (if (file-exists-p target-file)
-              (if (or (eq do-overwrite 'ALWAYS)
-                      (setq do-overwrite (sr-ask-overwrite target-file)))
-                  (dired-copy-file f target-file t))
-            (dired-copy-file f target-file t))))))
-   file-path-list))
+          (let* ((name (file-name-nondirectory f))
+                 (initial-path (file-name-directory f)))
+            (sr-clone-directory
+             initial-path name target-dir clone-op do-overwrite))
+        (if clone-op
+            (let* ((name (file-name-nondirectory f))
+                   (target-file (concat target-dir name)))
+              (message "%s" (concat f " => " target-file))
+              (if (file-exists-p target-file)
+                  (if (or (eq do-overwrite 'ALWAYS)
+                          (setq do-overwrite (sr-ask-overwrite target-file)))
+                      (apply clone-op (list f target-file t)))
+                (apply clone-op (list f target-file t))))))))
+   file-paths))
 
-(defun sr-copy-directory (in-dir d to-dir do-overwrite)
-  "Copies directory d in in-dir to to-dir, and recursively, all files too.
-indir/d => to-dir/d"
+(defun sr-clone-directory (in-dir d to-dir clone-op do-overwrite)
+  "Clones directory d in in-dir to to-dir, and recursively, all files too.
+indir/d => to-dir/d using clone-op to clone all files."
   (setq d (replace-regexp-in-string "/?$" "/" d))
   (if (not (sr-overlapping-paths-p (concat in-dir d) to-dir))
       (progn
@@ -1978,13 +2003,14 @@ indir/d => to-dir/d"
                (file-paths-in-d
                 (mapcar (lambda (f) (concat in-dir d f)) files-in-d))
                )
-          (sr-copy-files file-paths-in-d (concat to-dir d) do-overwrite)))
-    (error "ERROR: You cannot copy a directory into itself or one of its \
+          (sr-clone-files
+           file-paths-in-d (concat to-dir d) clone-op do-overwrite)))
+    (error "ERROR: You cannot clone a directory into itself or any of its \
 subdirectories")))
 
 (defun sr-move-files (file-path-list target-dir &optional do-overwrite)
   "Moves all files in file-path-list (list of full paths) to target dir."
-  (mapcar
+  (mapc
    (function
     (lambda (f)
       (if (file-directory-p f)
@@ -1994,7 +2020,7 @@ subdirectories")))
               (if (file-exists-p target)
                   (when (or (eq do-overwrite 'ALWAYS)
                             (setq do-overwrite (sr-ask-overwrite target)))
-                    (sr-copy-directory f "" target-dir do-overwrite)
+                    (sr-clone-directory f "" target-dir 'copy-file do-overwrite)
                     (dired-delete-file f 'always))
                 (dired-rename-file f target do-overwrite))))
         (let* ((name (file-name-nondirectory f))
@@ -2081,6 +2107,7 @@ subdirectories")))
 
 (defun sr-overlapping-paths-p (dir1 dir2)
   "Determines whether the directory dir2 is located inside the directory dir1."
+  (setq dir1 (expand-file-name dir1) dir2 (expand-file-name dir2))
   (if (>= (length dir2) (length dir1))
       (equal (substring dir2 0 (length dir1)) dir1)
       nil))

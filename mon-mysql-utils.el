@@ -1,3 +1,5 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; -*- mode: EMACS-LISP; -*-
 ;;; this is mon-mysql-utils.el
 ;;; ================================================================
 ;;; DESCRIPTION:
@@ -30,6 +32,7 @@
 ;;; `*regexp-clean-mysql*'
 ;;;
 ;;; ALIASED/ADVISED/SUBST'D:
+;;; `mon-cln-pipes' -> `mon-mysql-cln-pipes'
 ;;;
 ;;; DEPRECATED:
 ;;;
@@ -44,6 +47,9 @@
 ;;; SNIPPETS:
 ;;;
 ;;; REQUIRES:
+;;; `mon-cln-pipes' <- `mon-string-from-sequence' -> :FILE mon-utils.el
+;;; `mon-cln-pipes' <- `mon-string-to-sequence'   -> :FILE mon-utils.el
+;;; :SEE (URL `http://www.emacswiki.org/emacs/mon-utils.el')
 ;;;
 ;;; THIRD PARTY CODE:
 ;;;
@@ -321,7 +327,6 @@ Useful for passing to CLI e.g. `mysql> help <SOME-TOPIC>'.
 ;;; :TEST-ME (mon-help-mysql-commands)
 ;;; :TEST-ME (call-interactively 'mon-help-mysql-commands)
 
-;; :ADDED :FUNCTION `mon-mysql-cln-pipes', `mon-help-mysql-commands' :FIXED `mon-mysql-get-field-col'
 ;;; ==============================
 ;;; :NOTE For use to get help for a specific MySQL help topic e.g.
 ;;; "mysql> help contents", "mysql> help [<CATEGORY>|<TOPIC>]"
@@ -365,35 +370,20 @@ Use to extract fields from mysql command:\nmysql> SHOW COLUMNS FROM THE-DB.TABLE
                    ,\(- \(search-forward-regexp \"◄$\" nil t\) 3\)\)\)\)
   \(mon-mysql-get-field-col \(car r-eg\) \(cdr r-eg\) \"Tables_in_mysql\" t\)
       \(momentary-string-display \(current-kill 0\) \(point\)\)\)
-►
- +---------------------------+ 
- | Tables_in_mysql           | 
- +---------------------------+ 
- | columns_priv              | 
- | db                        | 
- | event                     | 
- | func                      | 
- | general_log               | 
- | help_category             | 
- | help_keyword              | 
- | help_relation             | 
- | help_topic                | 
- | host                      | 
- | ndb_binlog_index          | 
- | plugin                    | 
- | proc                      | 
- | procs_priv                | 
- | servers                   | 
- | slow_log                  | 
- | tables_priv               | 
- | time_zone                 | 
- | time_zone_leap_second     | 
- | time_zone_name            | 
- | time_zone_transition      | 
- | time_zone_transition_type | 
- | user                      | 
- +---------------------------+ 
-◄\n
+►\n +---------------------------+ 
+ | Tables_in_mysql           | \n +---------------------------+ 
+ | columns_priv              | \n | db                        | 
+ | event                     | \n | func                      | 
+ | general_log               | \n | help_category             | 
+ | help_keyword              | \n | help_relation             | 
+ | help_topic                | \n | host                      | 
+ | ndb_binlog_index          | \n | plugin                    | 
+ | proc                      | \n | procs_priv                | 
+ | servers                   | \n | slow_log                  | 
+ | tables_priv               | \n | time_zone                 | 
+ | time_zone_leap_second     | \n | time_zone_name            | 
+ | time_zone_transition      | \n | time_zone_transition_type | 
+ | user                      | \n +---------------------------+ \n◄\n
 :SEE-ALSO `mon-mysql-cln-pipes',`mon-csv-split-string',`mon-csv-string-to-list',
 `mon-cln-csv-fields', `mon-string-csv-rotate'.\n►►►"
   (interactive "r\nsFirst field's value: \np")
@@ -436,9 +426,35 @@ Use to extract fields from mysql command:\nmysql> SHOW COLUMNS FROM THE-DB.TABLE
         flds)))
 
 ;;; ==============================
+;;; :NOTE character: ␠ (9248, #o22040, #x2420) code point: 0x2420
+;;; (ucs-insert 9248) (princ (char-to-string 9248)(current-buffer))
+;;; :TEST-ME
+;;; (let ((rnd-trip '(83 89 77 66 79 76 32 70 79 82 32 83 80 65 67 69))
+;;;       (catch-trip))
+;;;   (push rnd-trip catch-trip)
+;;;   (setq rnd-trip (subst 9248 32 rnd-trip))
+;;;   (push rnd-trip catch-trip)
+;;;   (setq catch-trip 
+;;;         (mapcar #'(lambda (rnd)
+;;;                     (mon-string-from-sequence rnd))
+;;;                 catch-trip)))
+;;; `mon-string-from-sequence', `mon-string-to-sequence'in :FILE mon-utils.el
 ;;; :CREATED <Timestamp: #{2009-12-11T17:10:27-05:00Z}#{09505} - by MON>
 (defun mon-mysql-cln-pipes (start end &optional to-kill)
-  "Return MySQL query table rows without the table as a lisp list of strings
+  "Return MySQL query table rows in region without the table.
+When called-interactively or TO-KILL is non-nil put retun value on kill-ring.\n
+:NOTE Replaces empty valued cell ` | | ' with `?NULL?'.
+      Converts row values containing whitespace to strings.
+      Attempts handling quoted strings in table rows, but may be unreliable.
+      May return incorrect results for wrapped lines. Use toggle-truncate-lines.\n
+:EXAMPLE\n \(let \(\(r-eg `\(,\(search-forward-regexp \"^►\" nil t\) . 
+                ,\(- \(search-forward-regexp \"◄◄\" nil t\) 2\)\)\)\)
+   \(mon-mysql-cln-pipes \(car r-eg\) \(cdr r-eg\) t\)
+   \(momentary-string-display \(current-kill 0\) \(+ \(point\) 5\)\)\)\n\n
+► | \"12000\" | bubba | 1200 | T | \"bubba\" | | 2008-10-25 16:54:04 | 
+| 2008-10-25 16:54:04 | 1200 | 0 | \"Quoted string \\\"bubba\\\"\" | | 2008-10-25 16:54:04 | 
+| \"2008-05-25 16:54:04\" | 1200 | t | \"bubba\" | | 2008-10-25 16:54:04 |
+| 2008-10-25 16:54:04 | 1200 | F | \"bubba\" | | 2008-10-25 16:54:04 |◄◄           \n
 :SEE-ALSO `mon-mysql-get-field-col',`mon-csv-split-string', 
 `mon-csv-string-to-list', `mon-cln-csv-fields', `mon-string-csv-rotate'.\n►►►"
   (interactive "r\np")
@@ -451,16 +467,60 @@ Use to extract fields from mysql command:\nmysql> SHOW COLUMNS FROM THE-DB.TABLE
                (while (search-forward-regexp "^\\([+-]+\\)$" nil t)
                  (replace-match ""))
                (goto-char (buffer-end 0))
-               ;; Remove pipe at BOL.
-               (while (search-forward-regexp "^| " nil t)
-                 (replace-match ""))
+               ;; pipe at BOL.
+               (while (search-forward-regexp "^|[\\[:blank:]]+" nil t)
+                 ;; :WAS (replace-match " | "))
+                 (replace-match "| "))
                (goto-char (buffer-end 0))
                ;; Remove pipe at EOL.
-               (while (search-forward-regexp " |$" nil t)
-                 (replace-match ""))
+               (while (search-forward-regexp "[\\[:blank:]]+|$" nil t)
+                 ;; :WAS (replace-match " | "))
+                 (replace-match " |"))
+               ;; Attempt to find empty pairs of pipes ` | | '.
+               ;; These may or may not be column vals. replace with ?NULL?
                (goto-char (buffer-end 0))
+               (while (search-forward-regexp 
+                       "\\([\\[:graph:]]?\\)\\([\\[:blank:]]|[\\[:blank:]]+|[\\[:blank:]]\\)" nil t)
+                 (replace-match "\\1 | ?NULL? | "))
+               ;; Replace the field data.
+               (goto-char (buffer-end 0))
+               (while
+                   (search-forward-regexp  
+                    (concat
+                     ;;..1.
+                     "\\("
+                     ;;..2.........................................3....................
+                     "\\([^| \n][\\[:graph:]\\[:blank:]][^|]+\\)\\([\\[:blank:]]|\\)\\)"
+                     ;;.....4....5....................
+                     "\\|\\(| \\([\\[:alpha:]]\\) |\\)") nil t)
+                 (let* ((rep-mtch
+                         (if (match-string-no-properties 2)
+                             (match-string-no-properties 2)
+                             (match-string-no-properties 5)))
+                        (rep-seq (mon-string-to-sequence  ;; in :FILE `mon-utils.el'
+                                   rep-mtch)))
+                   (cond ( ;; First char is `"'. 
+                          (eq (car rep-seq) 34)
+                          ;; Test for whitespace.
+                          (if (member 32 rep-seq)
+                              (setq rep-seq (mon-string-from-sequence ;; in :FILE `mon-utils.el'
+                                             (subst 9248 32 rep-seq)))
+                              ;;(format "%S | " rep-seq)
+                              (replace-match (concat rep-seq " |")  nil t)
+                              (replace-match (concat rep-mtch " |") nil t)))
+                         ( ;; Not string _but_ contains whitespace and should be.
+                          (member 32 rep-seq)                                          
+                          (setq rep-seq (subst 9248 32 rep-seq))
+                          (setq rep-seq (mon-string-from-sequence rep-seq))
+                          (replace-match  (format "%S | " rep-seq) nil t))
+                         ( ;; Got one char - in case we want to change logic.
+                          (eq (length rep-seq) 1)
+                          (replace-match (concat rep-mtch " |")))
+                         ( ;; Symbol without whitespace
+                          t (replace-match (concat rep-mtch " |"))))))
                ;; Remove remaining inter-field pipes per row.
-               (while (search-forward-regexp "\\(| \\|  + | \\| +| +| \\)" nil t)
+               (goto-char (buffer-end 0))
+               (while (search-forward-regexp  "\\(| \\|  + | \\| +| +| \\)" nil t)
                  (replace-match " "))
                ;; Try to catch any remaining cruft at EOL.
                (whitespace-cleanup)
@@ -470,13 +530,45 @@ Use to extract fields from mysql command:\nmysql> SHOW COLUMNS FROM THE-DB.TABLE
                  (replace-match ""))
                (buffer-substring-no-properties (buffer-end 0) (buffer-end 1))))
     (setq tb (split-string tb "\n" ))
-    (setq mtb (mapcar #'(lambda (r)  (split-string r nil t)) tb))
+    (setq mtb (mapcar #'(lambda (r) (split-string r nil t)) tb))
     (setq mtb (remq nil mtb)) ;; Any nil's are from empty lines. Kill them now!
+    (setq tb nil)
+    (let ((map-tb mtb)
+          (tst-tb))
+      (while map-tb
+        (setq tst-tb 
+              (mapcar #'(lambda (rnd)
+                          (let ((tst-rnd rnd))
+                            (if (stringp tst-rnd)
+                                (progn
+                                  (setq tst-rnd (mon-string-to-sequence tst-rnd))
+                                  (if (member 9248 tst-rnd)
+                                      (setq tst-rnd (mon-string-from-sequence (subst 32 9248 tst-rnd)))
+                                      (setq tst-rnd (mon-string-from-sequence tst-rnd))))
+                                tst-rnd)))
+                      (pop map-tb)))
+        (push tst-tb tb)))
+    (setq mtb (format "%s" tb))
     (if to-kill
         (progn
-          (kill-new (format "%S" mtb))
+          (kill-new mtb)
           mtb)
         mtb)))
+;;
+(defalias 'mon-cln-pipes 'mon-mysql-cln-pipes)
+;;
+;;; :TEST-ME:
+;;; (let ((r-eg `(,(search-forward-regexp "^►" nil t) . 
+;;;                 ,(- (search-forward-regexp "◄◄" nil t) 2))))
+;;;    (mon-mysql-cln-pipes (car r-eg) (cdr r-eg) t)
+;;;    (current-kill 0))
+;;
+;;,---- :UNCOMMENT-BELOW-TO-TEST
+;;| ► | "12000" | bubba | 1200 | T | "bubba" | | 2008-10-25 16:54:04 | 
+;;| | 2008-10-25 16:54:04 | 1200 | 0 | "Quoted string \"bubba\"" | | 2008-10-25 16:54:04 | 
+;;| | "2008-05-25 16:54:04" | 1200 | t | "bubba" | | 2008-10-25 16:54:04 |
+;;| | 2008-10-25 16:54:04 | 1200 | F | "bubba" | | 2008-10-25 16:54:04 |◄◄
+;;`----
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-12-10T19:27:04-05:00Z}#{09505} - by MON>
@@ -552,98 +644,3 @@ substring for that.\n
 ;;; ================================================================
 ;;; mon-mysql-utils.el ends here
 ;;; EOF
-
-;;; ==============================
-;;; :NOTE following have for the most part been superceded by keys from
-;;; `*regexp-clean-mysql*' alist. However, key|value pairs their may benefit by
-;;; pointing into examples or canned expressions for relevant args.
-;;;
-;;; ,----
-;;; | :TYPES
-;;; | 
-;;; | int
-;;; | smallint
-;;; | 
-;;; | char
-;;; | varchar
-;;; | 
-;;; | time
-;;; | timestamp
-;;; | year
-;;; | 
-;;; | enum
-;;; | longblob
-;;; | longtext
-;;; | mediumblob
-;;; | mediumtext
-;;; `----
-;;; ,----
-;;; | :SHOW
-;;; | show tables;
-;;; | show databeses;
-;;; | show columns from <TABLE>;
-;;; | show create table <TABLE>;
-;;; | show index from
-;;; | 
-;;; | explain select
-;;; `----
-;;; ,----
-;;; | :AGGREGATE-FUNCTIONS
-;;; | avg()
-;;; | max()
-;;; | std()
-;;; | sum()
-;;; | 
-;;; | having
-;;; | using
-;;; | count
-;;; | 
-;;; | inner join
-;;; | group by
-;;; | order by
-;;; | 
-;;; | select 
-;;; | from
-;;; | where
-;;; | like
-;;; | 
-;;; | insert into
-;;; `----
-;;;
-;;; ,----
-;;; | :ALIASING
-;;; | as
-;;; `----
-;;;
-;;; ,----
-;;; | :FUNCTIONS
-;;; | concat
-;;; `----
-;;;
-;;; ,----
-;;; | :MANIPULATE
-;;; | alter table
-;;; | create table
-;;; | truncate table
-;;; | drop table
-;;; | 
-;;; | add primary key
-;;; | drop primary key
-;;; | add index
-;;; | drop index
-;;; | 
-;;; | rename to
-;;; | modify
-;;; | change
-;;; | first
-;;; | after
-;;; | cast
-;;; | 
-;;; | 
-;;; | rename database
-;;; | drop database
-;;; | 
-;;; | if exists
-;;; | show warnings
-;;; `----
-
