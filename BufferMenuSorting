@@ -10,14 +10,6 @@ What the manual fails to mention is that you can change the sorting with `M-x Bu
 ; `M-5 M-x Buffer-menu-sort': Sort by buffer ''file'' name.
 ; `M-x Buffer-menu-sort': Sort by ''display time'' (default).
 
-
-To permanently customize the default listing order of buffer menu, set `Buffer-menu-sort-column'.  For example, use the following to automatically sort by column Mode.
-
-   (setq Buffer-menu-sort-column 4)
-
-[new]
-You can easily sort on any column, in both directions, if you use BufferMenuPlus. If you instead use the vanilla BufferMenu, you can still sort the list in a couple of ways. -- DrewAdams
-
 === Sort by Buffer Name ===
 
 If your buffer list becomes too disorganized, you can sort it using this function:
@@ -44,6 +36,14 @@ and bind it with
 
 [new]
 An extension like this became obsolete with Emacs 22.
+
+
+To permanently customize the default listing order of buffer menu, set `Buffer-menu-sort-column'.  For example, use the following to automatically sort by column Mode.
+
+   (setq Buffer-menu-sort-column 4)
+
+[new]
+You can easily sort on any column, in both directions, if you use BufferMenuPlus. If you instead use the vanilla BufferMenu, you can still sort the list in a couple of ways. -- DrewAdams
 
 ----
 CategoryBufferSwitching

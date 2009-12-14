@@ -78,6 +78,8 @@ These things can be done after the switchover, we just shouldn't forget them:
 [:References]
 == References ==
 
+* [http://savannah.gnu.org/support/index.php?107170 Savannah ticket #107170] This is the big one: make the CVS repository read-only, so we can do our final conversion and start using Bazaar.
+
 * [http://savannah.gnu.org/support/index.php?106612 Savannah ticket #106612] about the Emacs Bzr switchover in general.
 
 * [https://savannah.gnu.org/support/index.php?107143 Savannah ticket #107143] and [https://savannah.gnu.org/support/?107077 #107077] about getting bzr+ssh access to work on savannah.gnu.org.
@@ -89,7 +91,5 @@ These things can be done after the switchover, we just shouldn't forget them:
 * [https://savannah.gnu.org/support/index.php?106531 Savannah ticket #106531] about bzr commit emails omitting large diffs.
 
 * [https://savannah.gnu.org/support/index.php?107118 Savannah ticket #107118] about fixing the bzr access instructions on Savannah project pages.
-
-* [http://lists.gnu.org/archive/html/emacs-devel/2009-01/msg00575.html Email with high-level plan].
 
 * [https://bugs.edge.launchpad.net/bzr/+bugs?field.searchtext=&orderby=-importance&assignee_option=any&field.assignee=&field.bug_reporter=&field.bug_supervisor=&field.bug_commenter=&field.subscriber=&field.omit_dupes.used=&field.omit_dupes=on&field.has_patch.used=&field.has_cve.used=&field.tag=emacs-adoption&field.tags_combinator=ANY&search=Search List of Bazaar bugs tagged with "emacs-adoption"].

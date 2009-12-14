@@ -20,9 +20,6 @@ This one is useful if you want to lose the *...* special buffers from the list. 
 
 For more about iswitch-buffer, see UseIswitchBuffer.
 
-[new]
-'''See Also: [[Icicles]]''', for similar functionality (command `icicle-buffer'). It offers both immediate buffer switching and switching-upon-confirmation. Like `iswitch-buffer', you can match any part of a buffer name. You can also use a regular expression to match the name.  And '''[[Icicles]]''' provides completion on buffer names.
-
 = Highlighting Buffer List Selection =
 
 iswitchb does wonders when you have a *pretty* good idea of what you're looking for.  But many times, what you think you're getting isn't what you'll really be getting.  The problem arises when the buffer names start to sound/look alike, and you're left wondering what'd happen when you select a particular buffer that *seems* like what you want.
@@ -99,10 +96,14 @@ Additionally one can configure [[uniquify]] to rework the buffer names whenever 
 
 = See Also =
 
-* [[FileNameCache]] : Open cached files as if they are buffers.
-* [[Icicles]] : `icicle-buffer' offers similar functionality.
-* [[IciclesIswitchb]] : Plus icicles' narrowing candidates.
 * [[Anything]] : QuickSilver on Emacs supports iswitchb.
+* [[FileNameCache]] : Open cached files as if they are buffers.
+* [[Icicles]] : `icicle-buffer' offers similar functionality. (command
+  `icicle-buffer'). It offers both immediate buffer switching and
+  switching-upon-confirmation. Like `iswitch-buffer', you can match any part of
+  a buffer name. You can also use a regular expression to match the name.  And
+  '''[[Icicles]]''' provides completion on buffer names.
+* [[IciclesIswitchb]] : Plus icicles' narrowing candidates.
 * [[IswitchMenu]] : use iswitchb to navigate menus.
 
 == Preventing Switching To Another Frame ==

@@ -209,10 +209,10 @@ passive pane).
 Upgrade  your  copy  of SC to version 3R237 or newer, select the directories you
 want to clone, press K (sr-do-clone) and select "(D)irectories only".
 
-Cloning  was  devised as a more general operation than recurrently copying files
+Cloning  was  devised as a more general operation than recursively copying files
 and directories[1]: all directories are created with the same name and structure
-at the destination, while what happens to the whole rest of the files depends on
-the option you choose:
+at the destination, while what happens to the all the other files depends on the
+option you choose:
 
 * "(D)irectories only" - ignores all files, copies only directories,
 * "(C)opies" - performs a traditional copy of all files,

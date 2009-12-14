@@ -126,6 +126,8 @@ by '''Icicles''' commands:
 [:icicle-buffer-other-window]
 [:icicle-dabbrev-completion]
 [:icicle-delete-window]
+[:icicle-dired]
+[:icicle-dired-other-window]
 [:icicle-exchange-point-and-mark]
 [:lacarte-execute-extended-command]
 [:icicle-file]
@@ -155,6 +157,8 @@ by '''Icicles''' commands:
  `bookmark-set'.....................`icicle-bookmark-cmd'
  `dabbrev-completion'...............`icicle-dabbrev-completion'
  `delete-window'....................`icicle-delete-window'
+ `dired'............................`icicle-dired'
+ `dired-other-window'...............`icicle-dired-other-window'
  `eval-expression'..................`icicle-pp-eval-expression'
  `exchange-point-and-mark'..........`icicle-exchange-point-and-mark'
  `execute-extended-command'.........`icicle-execute-extended-command'
@@ -198,6 +202,7 @@ to keys in ''Icicle'' mode -- they are ''not'' bound by '''Icicles''' (except to
 [:icicle-apropos-variable]
 [:icicle-apropos-zippy]
 [:icicle-bookmark-file-other-window]
+[:icicle-bookmark-dired-other-window]
 [:icicle-bookmark-gnus-other-window]
 [:icicle-bookmark-info-other-window]
 [:icicle-bookmark-local-file-other-window]
@@ -264,6 +269,7 @@ to keys in ''Icicle'' mode -- they are ''not'' bound by '''Icicles''' (except to
 * `icicle-apropos-command' -- Enhanced `apropos-command'
 * `icicle-apropos-variable' -- Enhanced `apropos-variable'
 * `icicle-apropos-zippy' -- Show matching Zippy quotes
+* `icicle-bookmark-dired-other-window' -- Jump to a [[Dired]] bookmark
 * `icicle-bookmark-file-other-window' -- Jump to a file bookmark
 * `icicle-bookmark-gnus-other-window' -- Jump to a Gnus bookmark
 * `icicle-bookmark-info-other-window' -- Jump to an [[Info]] bookmark

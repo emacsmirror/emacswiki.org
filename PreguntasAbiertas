@@ -10,6 +10,10 @@ los submenus (añadidos desde EmacsLisp) estarían en inglés)? ¿Y la documenta
 Lo más que podemos hacer es facilitar la vida al usuario traduciendo los manuales de referencia, tutoriales, y ofreciendo ayuda en Internet, un uso
 más avanzado del editor requerirá tener un mínimo manejo del Inglés.
 
+::: 14/12/2009: Sí se podría; sólo es asunto de voluntad, cosa que se ha discutido bastantes veces en las listas de gnu-emacs-help y gnu-emacs-devel.  Aunque lo tienen como una tarea pendiente en su fichero TODO, parece que nadie del equipo más activo de los desarrolladores le quiere meter mano, así que decidí crear una página web exclusivamente dedicada a la internacionalización de Emacs:  -SuSo
+
+* http://gnu.manticore.es
+
 
 ¿Cómo hago para escribir Ñ's y palabras con acentos como "camión, lápiz y café"?
 

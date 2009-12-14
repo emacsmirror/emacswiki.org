@@ -162,6 +162,7 @@
 ;;     `anything-c-source-minibuffer-history' (Minibuffer History)
 ;;     `anything-c-source-elscreen'           (Elscreen)
 ;;  System:
+;;     `anything-c-source-top'                      (Top (Press C-c C-u to refresh))
 ;;     `anything-c-source-absolute-time-timers'     (Absolute Time Timers)
 ;;     `anything-c-source-idle-time-timers'         (Idle Time Timers)
 ;;     `anything-c-source-xrandr-change-resolution' (Change Resolution)
@@ -267,6 +268,8 @@
 ;;    Run `anything-create' from `anything' as a fallback.
 ;;  `anything-create'
 ;;    Do many create actions from STRING.
+;;  `anything-top'
+;;    Preconfigured `anything' for top command.
 ;;  `anything-apt'
 ;;    The `anything' frontend of APT package manager.
 ;;  `anything-c-set-variable'
@@ -1190,6 +1193,7 @@ buffer that is not the current buffer."
     (volatile)
     (action . (("Find File" . find-file-at-point)
                ("Find file other window" . find-file-other-window)
+               ("Find file in Dired" . anything-c-open-dired)
                ("Find file in Elscreen"  . elscreen-find-file)
                ("Find file as root" . anything-find-file-as-root)))))
 
@@ -3466,6 +3470,49 @@ See also `anything-create--actions'."
 ;; (anything 'anything-c-source-elscreen)
 
 ;;;; <System>
+
+;;; Top (process)
+(defvar anything-c-top-command "COLUMNS=%s top -b -n 1"
+  "Top command (batch mode). %s is replaced with `frame-width'.")
+(defvar anything-c-source-top
+  '((name . "Top (Press C-c C-u to refresh)")
+    (init . anything-c-top-init)
+    (candidates-in-buffer)
+    (display-to-real . anything-c-top-display-to-real)
+    (action
+     ("kill (TERM)" . (lambda (pid) (anything-c-top-sh (format "kill -TERM %s" pid))))
+     ("kill (KILL)" . (lambda (pid) (anything-c-top-sh (format "kill -KILL %s" pid)))))))
+;; (anything 'anything-c-source-top)
+
+(defun anything-c-top-sh (cmd)
+  (message "Executed %s\n%s" cmd (shell-command-to-string cmd)))
+
+(defun anything-c-top-init ()
+  (with-current-buffer (anything-candidate-buffer 'global)
+    (call-process-shell-command
+     (format anything-c-top-command (frame-width))
+     nil (current-buffer))))
+
+(defun anything-c-top-display-to-real (line)
+  (car (split-string line)))
+
+(defun anything-c-top-refresh ()
+  (interactive)
+  (let ((anything-source-name (assoc-default 'name anything-c-source-top))) ;UGLY HACK
+    (anything-c-top-init))
+  (anything-update))
+
+(defun anything-top ()
+  "Preconfigured `anything' for top command."
+  (interactive)
+  (let ((anything-samewindow t)
+        (anything-display-function 'anything-default-display-buffer)
+        (anything-map (copy-keymap anything-map))
+        (anything-candidate-number-limit 9999))
+    (define-key anything-map "\C-c\C-u" 'anything-c-top-refresh)
+    (save-window-excursion
+      (delete-other-windows)
+      (anything-other-buffer 'anything-c-source-top "*anything top*"))))
 
 ;;; Timers
 (defvar anything-c-source-absolute-time-timers

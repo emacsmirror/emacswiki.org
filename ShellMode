@@ -2,13 +2,6 @@
 
 Use `M-x shell' to invoke a shell.  The shell is an external program, and shell mode inherits the ability to interact with the program and its basic behaviors from ComintMode.  If you want to use a shell written entirely in elisp use `M-x eshell', see [[Eshell]].
 
-== Icicles Enhancements to Shell Mode ==
-
-You can use [[Icicles]] [[completion]] in Shell mode. Whenever there are multiple completion candidates, Icicles completion is used (if Icicle minor mode is on). This means you can [[Icicles - Cycling Completions|cycle]] to choose a candidate, complete using one or more substrings or [[regexp]]s ([[progressive completion]]), and so on. See [[Icicles - Completion in Other Buffers#ShellCommandCompletion|Icicles - Completion in Comint Modes]]. 
-
-You can also use `##C-`##' to quickly find, reuse, and edit a previous shell input, matching it in several ways. See [[Icicles - Other Search Commands#IciclesShell|Icicles - Reuse Shell Inputs]].
-
-
 ==Removing ^M Characters==
 
 Change the way ComintMode (the basis of ShellMode) treats the input by adding a filter function.  Put this in your ~/.emacs file:
@@ -131,6 +124,12 @@ Here are alternative methods that track the cwd, regardless of what command is b
 == Show the current directory in the mode-line ==
 
 Restore some sanity to your PS1 by putting the full working directory in the mode-line: ModeLineDirtrack
+
+== Icicles Enhancements to Shell Mode ==
+
+You can use [[Icicles]] [[completion]] in Shell mode. Whenever there are multiple completion candidates, Icicles completion is used (if Icicle minor mode is on). This means you can [[Icicles - Cycling Completions|cycle]] to choose a candidate, complete using one or more substrings or [[regexp]]s ([[progressive completion]]), and so on. See [[Icicles - Completion in Other Buffers#ShellCommandCompletion|Icicles - Completion in Comint Modes]]. 
+
+You can also use `##C-`##' to quickly find, reuse, and edit a previous shell input, matching it in several ways. See [[Icicles - Other Search Commands#IciclesShell|Icicles - Reuse Shell Inputs]].
 
 ----
 CategoryExternalUtilities

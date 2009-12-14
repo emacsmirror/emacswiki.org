@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 21.1
-;; Last-Updated: Fri Dec 11 09:22:16 2009 (-0800)
+;; Last-Updated: Sun Dec 13 11:53:47 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 3841
+;;     Update #: 3851
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/info+.el
 ;; Keywords: help, docs, internal
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -170,6 +170,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2009/12/13 dadams
+;;     Typo: Incorrectly used Emacs 22 version for Emacs 21 also.
 ;; 2009/12/11 dadams
 ;;     info-fontify-(node|quotations|reference-items), Info-merge-subnodes:
 ;;       Use font-lock-face property, not face, if > Emacs 21.
@@ -1925,7 +1927,6 @@ COMMAND must be a symbol or string."
            (error "No documentation found for command `%s'" command)))))
 
 
-
 ;; REPLACES ORIGINAL in `info.el':
 ;; If key's command is not found, then `Info-search' for key sequence in text.
 ;; Message for repeating.
@@ -1995,16 +1996,18 @@ to search again for `%s'.")
                       (search-failed (message "No documentation found for key `%s'." pp-key)
                                      nil)))))))))     ; RETURN nil: not found.
 
+
+;; REPLACES ORIGINAL in `info.el':
+;; 1. File name in face `info-file'.
+;; 2. Node names in face `info-node'.
+;; 3. Menu items in face `info-menu'.
+;; 4. Only 5th and 9th menu items have their `*' colored.
+;; 5. Notes in face `info-xref'.
+;; 6. If `Info-fontify-quotations-flag', fontify `...' in face `info-quoted-name',
+;;    "..." in face `info-string', and ' in face `info-single-quote'.
+;;
 ;;;###autoload
 (unless (> emacs-major-version 21)
-  ;; REPLACES ORIGINAL in `info.el':
-  ;; 1. File name in face `info-file'.
-  ;; 2. Node names in face `info-node'.
-  ;; 3. Menu items in face `info-menu'.
-  ;; 4. Only 5th and 9th menu items have their `*' colored.
-  ;; 5. Notes in face `info-xref'.
-  ;; 6. If `Info-fontify-quotations-flag', fontify `...' in face `info-quoted-name',
-  ;;    "..." in face `info-string', and ' in face `info-single-quote'.
   (defun Info-fontify-node ()
     (save-excursion
       (let ((buffer-read-only nil)
@@ -2067,13 +2070,13 @@ to search again for `%s'.")
         (set-buffer-modified-p nil)))))
 
 
-
 ;; REPLACES ORIGINAL in `info.el':
 ;; 1. File name in face `info-file'.
 ;; 2. If `Info-fontify-quotations-flag', fontify `...' in face `info-quoted-name',
 ;;    "..." in face `info-string', and ' in face `info-single-quote'.
+;;
 ;;;###autoload
-(when (member emacs-major-version '(21 22))
+(when (= emacs-major-version 22)
   (defun Info-fontify-node ()
     "Fontify the node."
     (save-excursion
@@ -2093,9 +2096,7 @@ to search again for `%s'.")
         ;; Fontify header line
         (goto-char (point-min))
         (when (and not-fontified-p (looking-at "^File: \\([^,: \t]+\\),?[ \t]+"))
-          (put-text-property (match-beginning 1) (match-end 1)
-                             (if (> emacs-major-version 21) 'font-lock-face 'face)
-                             'info-file))
+          (put-text-property (match-beginning 1) (match-end 1) 'font-lock-face 'info-file))
         (goto-char (point-min))
         (when (and not-fontified-p (looking-at "^\\(File: [^,: \t]+,?[ \t]+\\)?"))
           (while (looking-at "[ \t]*\\([^:, \t\n]+\\):[ \t]+\\([^:,\t\n]+\\),?")
@@ -2487,11 +2488,11 @@ to search again for `%s'.")
         (set-buffer-modified-p nil)))))
 
 
-
 ;; REPLACES ORIGINAL in `info.el':
 ;; 1. File name in face `info-file'.
 ;; 2. If `Info-fontify-quotations-flag', fontify `...' in face `info-quoted-name',
 ;;    "..." in face `info-string', and ' in face `info-single-quote'.
+;;
 ;;;###autoload
 (when (> emacs-major-version 22)
   (defun Info-fontify-node ()
@@ -2952,7 +2953,6 @@ Command:\\|User Option:\\|Macro:\\|Syntax class:\\)\\(.*\\)"
                          'info-reference-item))))
 
 
-
 ;; REPLACES ORIGINAL in `info.el':
 ;; 1. Fits frame if `one-window-p'.
 ;; 2. Highlights the found regexp if `search-highlight'.
@@ -3242,7 +3242,6 @@ To remove the highlighting, just start an incremental search: \
           (message (substitute-command-keys
                     "Use \\<Info-mode-map>`\\[Info-search] RET' to search again for `%s'.")
                    regexp))))))
-
 
 
 ;; REPLACES ORIGINAL in `info.el':
@@ -3577,7 +3576,6 @@ These are all of the current Info Mode bindings:
     (run-hooks 'Info-mode-hook)))
 
 
-
 ;; REPLACES ORIGINAL in `info.el':
 ;; Use `Info-mode-syntax-table' (bug #3312).
 ;; Doc string changed: displays all bindings.
@@ -3713,7 +3711,6 @@ These are all of the current Info Mode bindings:
     (add-hook 'clone-buffer-hook 'Info-clone-buffer-hook nil t)
     (Info-set-mode-line)
     (run-hooks 'Info-mode-hook)))
-
 
 
 ;; REPLACES ORIGINAL in `info.el':
@@ -3870,7 +3867,6 @@ These are all of the current Info Mode bindings:
     (set (make-local-variable 'search-whitespace-regexp) Info-search-whitespace-regexp)
     (Info-set-mode-line)
     (run-mode-hooks 'Info-mode-hook)))
-
 
 
 ;; REPLACES ORIGINAL in `info.el':

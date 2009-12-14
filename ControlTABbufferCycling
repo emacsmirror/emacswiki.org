@@ -73,8 +73,6 @@ I doubt, unfortunately, that ''most'' people use one window per frame.  If you d
 
 See OneOnOneEmacs for enhancements to Emacs that facilitate using it in a one-window-per-frame fashion, including commands to kill buffers and delete associated windows -- [[Delete Frames Easily - But Not Too Easily]].
 
-See also '''[[Icicles]]''' for a good way to cycle buffers: using the arrow keys on buffer names in the minibuffer. And don't forget: completion is always available in the minibuffer, so you are not limited to traversing the whole buffer cycle. -- DrewAdams
-
 [new]
 
 But our GUI's often give us an even faster shortcut, especially when
@@ -258,9 +256,7 @@ I use Linux, and so the Windows key isn't generally used.  I've gone through and
 [:Icicles]
 = Icicles =
 
-Command `icicle-buffer' (which I bind to `C-x b') in '''[[Icicles]]''' lets you use `C-next' and `C-prior' to cycle among your buffers. As the key is pressed, the next buffer appears. By default, the buffers are cycled in alphabetical order. However, if you use `<code>C-,</code>' after hitting `C-x b', then the order is that determined by `other-buffer', which is essentially chronological. You can alternatively impose a chronological order by setting or binding user option `icicle-sort-function' appropriately.
-
-See '''[[Icicles]]''' for more information. -- DrewAdams
+Command `icicle-buffer' (which I bind to `C-x b') in '''[[Icicles]]''' lets you use `C-next' and `C-prior' to cycle among your buffers. As the key is pressed, the next buffer appears. By default, the buffers are cycled in alphabetical order. However, if you use `<code>C-,</code>' after hitting `C-x b', then the order is that determined by `other-buffer', which is essentially chronological. You can alternatively impose a chronological order by setting or binding user option `icicle-sort-function' Also, '''[[Icicles]]''' offers nice ways to cycle buffers: using the arrow keys on buffer names in the minibuffer. And don't forget: completion is always available in the minibuffer, so you are not limited to traversing the whole buffer cycle. See '''[[Icicles]]''' for more information. -- DrewAdams
 
 [:swbuff]
 = SwBuff and SwBuff-x =

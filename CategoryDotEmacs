@@ -1,15 +1,6 @@
 Click the heading to list all pages related to writing your own .emacs file, see InitFile.
 
-Complete packages:
-
-* EmacsMacro -- An InitFile to end all init files.
-* TinyTools -- A collection of add-on utilities.
-* DrewsElispLibraries -- Another extensively customized Emacs. See [[DrewsElispLibraries#HowToUseDrewsLibraries|How to Use Drew's Libraries]] for how to use <tt>[[emacs-init.el]]</tt> and the libraries it loads.
-* [[Grail]] -- Grand unified .emacs loader - robust and flexible load-path hack. 
-* DotEmacsModular -- a simple package for loading everything under <tt>.emacs.d%%/site-start.d/%%</tt>
-* [http://user42.tuxfamily.org/startup-file-name-history/index.html startup-file-name-history.el] -- put command line files into the ##find-file## history
-
-Specific issues:
+Specific Init issues:
 
 * AlarmBell -- if you can not stand the beeping anymore
 * AutoCompileInit -- Automatically compile your InitFile
@@ -25,6 +16,8 @@ Specific issues:
 * ModeHooks -- basics of using mode hooks
 * ProjectSettings -- making customizations local to a project
 * RemoteDotEmacs -- eval the InitFile you have on a web server
+
+Dedicated Init File Pages:
 
 There are also pages dedicated to some simple EmacsLisp / Emacs commands
 which allow you to do astonishing things, without requiring you to load
@@ -62,6 +55,15 @@ There's lots more at:
 
 * http://www.dotemacs.de/
 * http://www.dotfiles.com/ Unfortunately dotfiles has been down for a long time.
+
+Some Complete Init packages:
+
+* EmacsMacro -- An InitFile to end all init files.
+* TinyTools -- A collection of add-on utilities.
+* DrewsElispLibraries -- Another extensively customized Emacs. See [[DrewsElispLibraries#HowToUseDrewsLibraries|How to Use Drew's Libraries]] for how to use <tt>[[emacs-init.el]]</tt> and the libraries it loads.
+* [[Grail]] -- Grand unified .emacs loader - robust and flexible load-path hack. 
+* DotEmacsModular -- a simple package for loading everything under <tt>.emacs.d%%/site-start.d/%%</tt>
+* [http://user42.tuxfamily.org/startup-file-name-history/index.html startup-file-name-history.el] -- put command line files into the ##find-file## history
 
 See also DotEmacsDotD, DumpingEmacs, CategoryPersistence, SessionManagement.
 

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon Dec  7 15:00:21 2009 (-0800)
+;; Last-Updated: Sun Dec 13 16:27:40 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 26123
+;;     Update #: 26131
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -111,6 +111,8 @@
 ;;  (@file :file-name "icicles-doc1.el" :to "More about Multi-Commands")
 ;;    (@file :file-name "icicles-doc1.el" :to "Alternative Actions")
 ;;    (@file :file-name "icicles-doc1.el" :to "Deleting Objects")
+;;    (@file :file-name "icicles-doc1.el" :to "Option `icicle-use-C-for-actions-flag'")
+;;    (@file :file-name "icicles-doc1.el" :to "Accessing Saved Locations (Bookmarks) on the Fly")
 ;;
 ;;  (@file :file-name "icicles-doc1.el" :to "Icicles Tripping")
 ;;    (@file :file-name "icicles-doc1.el" :to "Highlighting the Destination")
@@ -1398,8 +1400,8 @@
 ;;  choose any region in `icicle-region-alist', navigate to it, and
 ;;  activate it.  You can use this as a sort of bookmark mechanism,
 ;;  retrieving saved regions later for operations in different Emacs
-;;  sessions.  Unlike Emacs bookmarks, Icicles regions are not limited
-;;  to being in file buffers - any buffer can be used.
+;;  sessions.  Unlike vanilla Emacs bookmarks, Icicles regions are not
+;;  limited to being in file buffers - any buffer can be used.
 ;;
 ;;  You can also think of Icicles region definition and selection as a
 ;;  kind of tagging mechanism.  You can assign any identifying tag,
@@ -5291,6 +5293,8 @@
 ;;  `bookmark-set'.....................`icicle-bookmark-cmd'
 ;;  `dabbrev-completion'...............`icicle-dabbrev-completion'
 ;;  `delete-window'....................`icicle-delete-window'
+;;  `dired'............................`icicle-dired'
+;;  `dired-other-window'...............`icicle-dired-other-window'
 ;;  `eval-expression'..................`icicle-pp-eval-expression'
 ;;  `exchange-point-and-mark'.........`icicle-exchange-point-and-mark'
 ;;  `execute-extended-command'.......`icicle-execute-extended-command'
@@ -5337,6 +5341,7 @@
 ;;  `icicle-apropos-command' - Enhanced `apropos-command'
 ;;  `icicle-apropos-variable' - Enhanced `apropos-variable'
 ;;  `icicle-apropos-zippy' - Show matching Zippy quotes
+;;  `icicle-bookmark-dired-other-window' - Jump to a Dired bookmark
 ;;  `icicle-bookmark-file-other-window' - Jump to a file bookmark
 ;;  `icicle-bookmark-gnus-other-window' - Jump to a Gnus bookmark
 ;;  `icicle-bookmark-info-other-window' - Jump to an Info bookmark
@@ -6884,6 +6889,7 @@
 ;;  `icicle-delete-windows' - Delete windows showing a buffer anywhere
 ;;  `icicle-describe-option-of-type' - Describe option of a given type
 ;;  `icicle-directory-list' - Choose a list of directory names
+;;  `icicle-dired'        - Visit a directory in Dired mode
 ;;  `icicle-doc'          - Display doc of function, variable, or face
 ;;  `icicle-execute-extended-command' -
 ;;                          A multi-command version of `M-x'

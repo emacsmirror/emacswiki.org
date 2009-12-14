@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Dec  7 16:03:01 2009 (-0800)
+;; Last-Updated: Sun Dec 13 15:48:57 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 4637
+;;     Update #: 4665
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2009/12/13 dadams
+;;     Added: icicle-bookmark-dired-other-window, icicle-dired(-other-window).
+;;     *-buffer*, *-dired-project*, *-find-file(-absolute)*, *-(recent|locate)-file*,
+;;       *-find-file-in-tags-table*:
+;;         Bind C-x m to icicle-bookmark-(non-file|dired|file)-other-window.
 ;; 2009/11/27 dadams
 ;;     Added: icicle(-doremi)-increment-(variable|option).
 ;; 2009/11/25 dadams
@@ -146,6 +151,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2009/12/13 dadams
+;;     icicle-Info-read-node-name: Bind C-x m to icicle-bookmark-info-other-window.
 ;; 2009/11/24 dadams
 ;;     icicle-read-color: Copy the prompt string, so *-color-completion-setup can put props.
 ;; 2009/11/22 dadams
@@ -1585,6 +1592,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mac.el'")
 ;;
+;; 2009/12/13 dadams
+;;     icicle-define-sort-command: Add REVERSED to msg if reversed.
 ;; 2009/10/22 dadams
 ;;     icicle-define-file-command: Use icicle-file-name-directory, not file-name-directory.
 ;; 2009/09/17 dadams
@@ -1663,6 +1672,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2009/12/13 dadams
+;;     icicle-change-sort-order: Add REVERSED to msg when reversed.
 ;; 2009/11/27 dadams
 ;;     Added: icicle-doremi-increment-swank-(prefix-length|timeout).
 ;;     *-next-TAB-completion-method, *-prefix-complete-1: Handle swank completions too.
@@ -2621,6 +2632,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2009/12/13 dadams
+;;     icicle-define-minibuffer-maps:
+;;       Bind C-x m to icicle-bookmark-file-other-window in file-name completion maps.
 ;; 2009/11/29 dadams
 ;;     Don't reference minibuffer-local-must-match-filename-map unless bound (obsolete in 23.2).
 ;; 2009/11/27 dadams
@@ -3468,6 +3482,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2009/12/13 dadams
+;;     icicle-top-level-key-bindings: Map dired(-other-window) to icicle-dired(-other-window).
 ;; 2009/12/07 dadams
 ;;     icicle-guess-commands-in-path: Changed default value to nil.
 ;; 2009/11/27 dadams

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Nov 29 12:43:29 2009 (-0800)
+;; Last-Updated: Sun Dec 13 14:45:46 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 6151
+;;     Update #: 6159
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1954,14 +1954,22 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
      ;; `minibuffer-local-must-match-map', respectively.  For Emacs 23.1,
      ;; `minibuffer-local-must-match-filename-map' is an alias for
      ;; `minibuffer-local-filename-must-match-map'.  But for Emacs 23.2, there is no such alias!
-     ;; The only thing we do here is bind `C-backspace' to `icicle-up-directory' in these maps.
      (when (boundp 'minibuffer-local-filename-completion-map)
+       (when (and (require 'bookmark+ nil t) (fboundp 'icicle-bookmark-file-other-window))
+         (define-key minibuffer-local-filename-completion-map
+             "\C-xm" 'icicle-bookmark-file-other-window))
        (define-key minibuffer-local-filename-completion-map
          [(control backspace)] 'icicle-up-directory))
      (when (boundp 'minibuffer-local-must-match-filename-map)
+       (when (and (require 'bookmark+ nil t) (fboundp 'icicle-bookmark-file-other-window))
+         (define-key minibuffer-local-must-match-filename-map
+             "\C-xm" 'icicle-bookmark-file-other-window))
        (define-key minibuffer-local-must-match-filename-map ; Use the old name, for Emacs 22-23.1.
          [(control backspace)] 'icicle-up-directory))
      (when (boundp 'minibuffer-local-filename-must-match-map)
+       (when (and (require 'bookmark+ nil t) (fboundp 'icicle-bookmark-file-other-window))
+         (define-key minibuffer-local-filename-must-match-map
+             "\C-xm" 'icicle-bookmark-file-other-window))
        (define-key minibuffer-local-filename-must-match-map ; Use the new name, for Emacs 23.2+.
          [(control backspace)] 'icicle-up-directory))
 
@@ -2128,11 +2136,14 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
      ;; `minibuffer-local-must-match-filename-map' is an alias for
      ;; `minibuffer-local-filename-must-match-map'.  But for Emacs 23.2, there is no such alias!
      (when (boundp 'minibuffer-local-filename-completion-map)
+       (define-key minibuffer-local-filename-completion-map "\C-xm" nil)
        (define-key minibuffer-local-filename-completion-map [(control backspace)] nil))
      (when (boundp 'minibuffer-local-must-match-filename-map)
+       (define-key minibuffer-local-must-match-filename-map "\C-xm" nil)
        (define-key minibuffer-local-must-match-filename-map ; Use the old name, for Emacs 22-23.1.
            [(control backspace)] nil))
      (when (boundp 'minibuffer-local-filename-must-match-map)
+       (define-key minibuffer-local-filename-must-match-map "\C-xm" nil)
        (define-key minibuffer-local-filename-must-match-map ; Use the new name, for Emacs 23.2+.
            [(control backspace)] nil))
 

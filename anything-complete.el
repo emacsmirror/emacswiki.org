@@ -1,5 +1,5 @@
 ;;; anything-complete.el --- completion with anything
-;; $Id: anything-complete.el,v 1.68 2009/11/11 19:01:09 rubikitch Exp $
+;; $Id: anything-complete.el,v 1.72 2009/12/14 00:13:28 rubikitch Exp rubikitch $
 
 ;; Copyright (C) 2008  rubikitch
 
@@ -96,6 +96,23 @@
 ;;; History:
 
 ;; $Log: anything-complete.el,v $
+;; Revision 1.72  2009/12/14 00:13:28  rubikitch
+;; New command: `alcs-update-restart'
+;;
+;; Pressing `C-c C-u' in `anything-lisp-complete-symbol' and `anything-lisp-complete-symbol-partial-match' recollects symbols and reexecutes this command.
+;;
+;; Revision 1.71  2009/12/13 23:34:19  rubikitch
+;; Show timestamp of lisp symbols
+;;
+;; Revision 1.70  2009/12/13 23:17:18  rubikitch
+;; Make alcs-make-candidates timer singleton
+;;
+;; Revision 1.69  2009/12/13 23:06:34  rubikitch
+;; New variable `anything-lisp-complete-symbol-add-space-on-startup':
+;;
+;; If non-nil, `anything-lisp-complete-symbol' and `anything-lisp-complete-symbol-partial-match' adds space on startup.
+;; It utilizes anything-match-plugin's feature.
+;;
 ;; Revision 1.68  2009/11/11 19:01:09  rubikitch
 ;; Bug fix when completing at right side
 ;;
@@ -315,7 +332,7 @@
 
 ;;; Code:
 
-(defvar anything-complete-version "$Id: anything-complete.el,v 1.68 2009/11/11 19:01:09 rubikitch Exp $")
+(defvar anything-complete-version "$Id: anything-complete.el,v 1.72 2009/12/14 00:13:28 rubikitch Exp rubikitch $")
 (require 'anything-match-plugin)
 (require 'thingatpt)
 
@@ -360,6 +377,9 @@
 (defvar anything-lisp-complete-symbol-input-idle-delay 0.1
   "`anything-input-idle-delay' for `anything-lisp-complete-symbol',
 `anything-lisp-complete-symbol-partial-match' and `anything-apropos'.")
+(defvar anything-lisp-complete-symbol-add-space-on-startup t
+  "If non-nil, `anything-lisp-complete-symbol' and `anything-lisp-complete-symbol-partial-match' adds space on startup.
+It utilizes anything-match-plugin's feature.")
 
 (defun alcs-create-buffer (name)
   (let ((b (get-buffer-create name)))
@@ -373,10 +393,14 @@
 (defvar alcs-commands-buffer " *command symbols*")
 (defvar alcs-symbol-buffer " *other symbols*")
 
+(defvar alcs-symbols-time nil
+  "Timestamp of collected symbols")
+
 (defun alcs-make-candidates ()
   (message "Collecting symbols...")
   ;; To ignore read-only property.
   (let ((inhibit-read-only t))
+    (setq alcs-symbols-time (current-time))
     (alcs-create-buffer alcs-variables-buffer)
     (alcs-create-buffer alcs-functions-buffer)
     (alcs-create-buffer alcs-commands-buffer)
@@ -391,10 +415,18 @@
                ((not fbp) (set-buffer alcs-symbol-buffer) (insert name "\n")))))))
   (message "Collecting symbols...done"))
 
+(defun alcs-header-name (name)
+  (format "%s at %s (Press `C-c C-u' to update)"
+          name (format-time-string "%H:%M:%S" alcs-symbols-time)))
+
+(defvar alcs-make-candidates-timer nil)
 (defun anything-lisp-complete-symbol-set-timer (update-period)
   "Update Emacs symbols list when Emacs is idle,
 used by `anything-lisp-complete-symbol-set-timer' and `anything-apropos'"
-  (run-with-idle-timer update-period t 'alcs-make-candidates))
+  (when alcs-make-candidates-timer
+    (cancel-timer alcs-make-candidates-timer))
+  (setq alcs-make-candidates-timer
+        (run-with-idle-timer update-period t 'alcs-make-candidates)))
 
 (defvar alcs-physical-column-at-startup nil)
 (defun alcs-init (bufname)
@@ -518,48 +550,65 @@ used by `anything-lisp-complete-symbol-set-timer' and `anything-apropos'"
 
 (define-anything-type-attribute 'apropos-function
   '((filtered-candidate-transformer . alcs-sort-maybe)
+    (header-name . alcs-header-name)
     (persistent-action . alcs-describe-function)
     (action
      ("Describe Function" . alcs-describe-function)
      ("Find Function" . alcs-find-function))))
 (define-anything-type-attribute 'apropos-variable
   '((filtered-candidate-transformer . alcs-sort-maybe)
+    (header-name . alcs-header-name)
     (persistent-action . alcs-describe-variable)
     (action
      ("Describe Variable" . alcs-describe-variable)
      ("Find Variable" . alcs-find-variable))))
 (define-anything-type-attribute 'complete-function
   '((filtered-candidate-transformer alcs-sort-maybe alcs-transformer-prepend-spacer-maybe)
+    (header-name . alcs-header-name)
     (action . ac-insert)
     (persistent-action . alcs-describe-function)))
 (define-anything-type-attribute 'complete-variable
   '((filtered-candidate-transformer alcs-sort-maybe alcs-transformer-prepend-spacer-maybe)
+    (header-name . alcs-header-name)
     (action . ac-insert)
     (persistent-action . alcs-describe-variable)))
 
+(defvar alcs-this-command nil)
 (defun anything-lisp-complete-symbol-1 (update sources input)
+  (setq alcs-this-command this-command)
   (when (or update (null (get-buffer alcs-variables-buffer)))
     (alcs-make-candidates))
   (let (anything-samewindow
         (anything-input-idle-delay
          (or anything-lisp-complete-symbol-input-idle-delay
-             anything-input-idle-delay)))
+             anything-input-idle-delay))
+        (anything-map (copy-keymap anything-map)))
+    (define-key anything-map "\C-c\C-u" 'alcs-update-restart)
     (anything-noresume sources input nil nil nil "*anything complete*")))
+
+(defun alcs-update-restart ()
+  (interactive)
+  (alcs-make-candidates)
+  (anything-run-after-quit 'call-interactively alcs-this-command))
+
+(defun alcs-initial-input (partial-match)
+  (anything-aif (symbol-at-point)
+      (format "%s%s%s"
+              (if partial-match "" "^")
+              it
+              (if anything-lisp-complete-symbol-add-space-on-startup " " ""))
+    ""))
 
 (defun anything-lisp-complete-symbol (update)
   "`lisp-complete-symbol' replacement using `anything'."
   (interactive "P")
   (anything-lisp-complete-symbol-1 update anything-lisp-complete-symbol-sources
-                                   (anything-aif (symbol-at-point)
-                                       (format "^%s" it)
-                                     "")))
+                                   (alcs-initial-input nil)))
 (defun anything-lisp-complete-symbol-partial-match (update)
   "`lisp-complete-symbol' replacement using `anything' (partial match)."
   (interactive "P")
   (anything-lisp-complete-symbol-1 update anything-lisp-complete-symbol-sources
-                                   (anything-aif (symbol-at-point)
-                                       (symbol-name it)
-                                     "")))
+                                   (alcs-initial-input t)))
 (defun anything-apropos (update)
   "`apropos' replacement using `anything'."
   (interactive "P")

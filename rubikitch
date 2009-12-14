@@ -285,5 +285,23 @@ http://orgmode.org/index.html#sec-3.1 ---[[BlueDian]]
 
 ----
 
+[new:IvanKorotkov:2009-12-13 13:15 UTC]
+Seems that ScreenShot does not work properly with Emacs 23 -- last or default scheme is not used
+when asking for scheme name. Emacs 23 requires the following: (2 arguments removed)
+<pre>
+(completing-read "Scheme: " (mapcar 'car screenshot-schemes)
+    nil t (or screenshot-default-scheme
+    screenshot-last-scheme-name))))
+</pre>
+
+Also, it would be nice to message URL to status bar, so that user knows when async process 
+of snapshotting is complete.
+
+[http://tweedle-dee.org/svn/emacs.d/site-lisp/screenshot.el This] version of screenshot.el has both issues fixed, not sure though if it works under 22 properly. --- [[IvanKorotkov]]
+
+-- Applied! thanks -- [[rubikitch]]
+
+----
+
 CategoryHomepage
 

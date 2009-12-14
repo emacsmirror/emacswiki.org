@@ -19,7 +19,7 @@ buffer, using command '''`icicle-remove-all-regions-in-buffer''''.
 
 You can use [[multi-command]] '''`icicle-select-region'''' (`##C-u C-x C-x##) to choose any region in `icicle-region-alist', navigate to it, and activate it.  You can use this as a
 kind of bookmark mechanism, retrieving saved regions later for
-operations in different Emacs sessions.  Unlike Emacs
+operations in different Emacs sessions.  Unlike vanilla Emacs
 [[bookmark]]s, '''Icicles''' regions are not limited
 to being in ''file'' buffers -- any buffer can be used.
 

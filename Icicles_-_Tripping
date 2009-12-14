@@ -45,6 +45,7 @@ Here are some of the '''Icicles''' tripping commands:
 * '''`icicle-bookmark'''' (`C-- C-x r m') -- Trip among [[bookmark]]s.
 * '''`icicle-buffer'''' (`C-x b') -- Trip among [[buffer]]s.
 * '''`icicle-compilation-search'''' (`##C-c `##') -- Trip among `grep' hits.
+* '''`icicle-dired'''' -- Trip among directories in [[Dired]] mode.
 * '''`icicle-find-file'''' (`C-x C-f') -- Trip among files.
 * '''`icicle-find-file-absolute'''' (`C-u C-x C-f') -- Trip among files.
 * '''`icicle-find-file-in-tags-table'''' -- Trip among the files listed in the current [[TagsFile|tags table]] (think "project")
@@ -84,7 +85,7 @@ Here are some of the '''Icicles''' tripping commands:
 [:HighlightingDestination]
 === Highlighting the Destination ===
 
-Starting with Emacs 22, the '''Icicles''' commands that have single
+Starting with Emacs 22, most '''Icicles''' commands that have single
 positions as their trip visits (e.g. `icicle-bookmark',
 `icicle-Info-goto-node', `icicle-goto-marker', `icicle-find-tag')
 highlight those positions temporarily as they are visited.  Except

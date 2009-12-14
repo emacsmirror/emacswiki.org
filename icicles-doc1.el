@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Nov 27 08:35:53 2009 (-0800)
+;; Last-Updated: Sun Dec 13 16:54:27 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 24796
+;;     Update #: 24810
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -197,6 +197,8 @@
 ;;  (@> "More about Multi-Commands")
 ;;    (@> "Alternative Actions")
 ;;    (@> "Deleting Objects")
+;;    (@* "Option `icicle-use-C-for-actions-flag'")
+;;    (@* "Accessing Saved Locations (Bookmarks) on the Fly")
 ;;
 ;;  (@> "Icicles Tripping")
 ;;    (@> "Highlighting the Destination")
@@ -3847,7 +3849,7 @@
 ;;  (`S-delete') and variable `icicle-delete-candidate-object'.
 ;;
 ;;(@* "Option `icicle-use-C-for-actions-flag'")
-;;  ** "Option `icicle-use-C-for-actions-flag' **
+;;  ** Option `icicle-use-C-for-actions-flag' **
 ;;
 ;;  In some contexts, you end up using `C-next' more than `next', and
 ;;  likewise for the other keys that combine candidate action and
@@ -3867,6 +3869,24 @@
 ;;
 ;;  You can toggle `icicle-use-C-for-actions-flag' at any time using
 ;;  `M-g' (`icicle-toggle-C-for-actions') in the minibuffer.
+;;
+;;(@* "Accessing Saved Locations (Bookmarks) on the Fly")
+;;  ** Accessing Saved Locations (Bookmarks) on the Fly **
+;;
+;;  When you complete the names of some kinds of objects, you can use
+;;  `C-x m' to follow bookmarks to objects of that type.  This is
+;;  available only if you use library `bookmark+.el'.
+;;
+;;  For example, when you invoke a command that completes file names,
+;;  you can use `C-x m' to interrupt that operation and complete
+;;  against the names of file bookmarks.  This is a multi-command, so
+;;  you can actually visit any number of file bookmarks.  When
+;;  finished, you can continue with non-bookmark file-name completion.
+;;
+;;  The same thing holds for Info bookmarks when you use
+;;  `icicle-Info-goto-node' (`g' in Info mode); for buffer (non-file)
+;;  bookmarks when you use `icicle-buffer' (`C-x b'); and for Dired
+;;  bookmarks when you use `icicle-dired' (`C-x d').
  
 ;;(@* "Icicles Tripping")
 ;;
@@ -3912,6 +3932,7 @@
 ;;  * `icicle-bookmark' (`C-- C-x r m') - Trip among bookmarks.
 ;;  * `icicle-buffer' (`C-x b') - Trip among buffers.
 ;;  * `icicle-compilation-search' (`C-c `') - Trip among `grep' hits.
+;;  * `icicle-dired' - Trip among directories in Dired mode.
 ;;  * `icicle-find-file' (`C-x C-f') - Trip among files.
 ;;  * `icicle-find-file-absolute' (`C-u C-x C-f') - Trip among files.
 ;;  * `icicle-find-file-in-tags-table' - Trip among the files listed
@@ -3951,7 +3972,7 @@
 ;;(@* "Highlighting the Destination")
 ;;  ** Highlighting the Destination **
 ;;
-;;  Starting with Emacs 22, the Icicles commands that have single
+;;  Starting with Emacs 22, most Icicles commands that have single
 ;;  positions as their trip visits (e.g. `icicle-bookmark',
 ;;  `icicle-Info-goto-node', `icicle-goto-marker', `icicle-find-tag')
 ;;  highlight those positions temporarily as they are visited.  Except
@@ -5217,11 +5238,21 @@
 ;;  used to read file-name input, but they do so in very different
 ;;  ways.
 ;;
-;;  Note: In addition to the usual Icicles key bindings, during
-;;  file-name completion you can use `C-backspace'
-;;  (`icicle-up-directory') to navigate up the directory hierarchy.
-;;  It removes the last directory component (and any partial file
-;;  name) from your minibuffer input.
+;;  In addition to the usual Icicles key bindings, during file-name
+;;  completion you can use the following keys:
+;;
+;;  * `C-backspace' (`icicle-up-directory') to navigate up the
+;;    directory hierarchy.  It removes the last directory component
+;;    (and any partial file name) from your minibuffer input.
+;;
+;;    (For Emacs versions before Emacs 22, this feature is available
+;;    only for completion of absolute file names.)
+;;
+;;  * `C-x b' (`icicle-bookmark-file-other-window') to visit a
+;;    bookmarked file or directory.  This is available only if you use
+;;    library `bookmark+.el'.  It is a multi-command, so you can
+;;    actually visit any number of file bookmarks.  When finished, you
+;;    can continue with non-bookmark file-name completion.
 ;;
 ;;  Note: Whether a command supports file-name globbing wildcards such
 ;;  as `*' is independent of whether it uses `read-file-name' or

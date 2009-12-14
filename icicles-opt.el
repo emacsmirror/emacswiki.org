@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Dec  7 10:40:51 2009 (-0800)
+;; Last-Updated: Sun Dec 13 15:12:32 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 3422
+;;     Update #: 3424
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -551,6 +551,8 @@ whatever OLD is bound to in MAP, or in OLDMAP, if provided."
     (abort-recursive-edit           icicle-abort-recursive-edit     t) ; `C-]'
     (minibuffer-keyboard-quit      icicle-abort-recursive-edit ; `C-g' (minibuffer - `delsel.el')
      (fboundp 'minibuffer-keyboard-quit))
+    (dired                          icicle-dired                    t) ; `C-x d'
+    (dired-other-window             icicle-dired-other-window       t) ; `C-x 4 d'
     (execute-extended-command       icicle-execute-extended-command t) ; `M-x'
     (switch-to-buffer               icicle-buffer                   t) ; `C-x b'
     (switch-to-buffer-other-window  icicle-buffer-other-window      t) ; `C-x 4 b'

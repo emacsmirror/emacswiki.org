@@ -91,6 +91,7 @@ This is a subpage of CategoryModes.  It lists modes for programming languages or
 * TieMode -- Tensilica Instruction Extension (TIE) Language
 * TuaregMode -- ObjectiveCaml
 * TypoScriptMode -- !TypoScript mode for Emacs.
+* TypoThreePhpMode
 * UniBASICMode -- IBM Uni-Verse BASIC Language
 * VisualBasicMode (yes!)
 * XbaseMode

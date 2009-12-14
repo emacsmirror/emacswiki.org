@@ -10,7 +10,6 @@ Bookmarks are just that -- they let you remember locations and return to them la
 Your own personal bookmark file, `~/.emacs.bmk', is maintained
 automatically by Emacs.
 
-
 == Bookmark List ==
 
 The bookmark list is a kind of [[DiredMode|Dired]] or BufferMenu for bookmarks. You access it using `C-x r l'. (Emacs sometimes calls it the "bookmark ''menu'' list".)
@@ -26,33 +25,9 @@ Some keys in the bookmark list (buffer `*Bookmark List*'):
 * `a' -- show annotation for the current bookmark
 * `e' -- edit the annotation for the current bookmark
 
-
-[:BookmarkPlus]
-== Bookmark+ ==
-
-Library <tt>[[bookmark+.el]]</tt> enhances vanilla Emacs bookmarks in several ways. Bookmark positions and regions anywhere. Sort the bookmark list in various ways. Mark and unmark bookmarks as in Dired. More. See BookmarkPlus.
-
-
-
-
-[:CyclingBookmarks]
-== Cycling Among Bookmarks ==
-
-* Command `doremi-bookmarks' lets you cycle among bookmarks by using the up and down arrow keys or a mouse wheel. It is in library <tt>[[doremi-cmd.el]]</tt> -- see '''DoReMi'''.
-
-* Command `icicle-bookmark' similarly lets you [[completion|complete]] or [[Icicles - Cycling Completions|cycle]] bookmarks to navigate among them. [[Icicles - Apropos Completions|Apropos]] ([[regexp]], substring) completion is available. See '''[[Icicles]]'''.
-
-* BookMarkIteratorPackage -- iterate through your bookmarks
-
-
-
-== Info Node Bookmarks ==
+== Info Node Bookmarks - Vanilla ==
 
 You can bookmark [[InfoMode|Info]] nodes also -- just use `C-x r m', as usual. Command `bookmark-bmenu-list', bound to `C-x r l', provides a convenient menu to access bookmarks.
-
-Sometimes it is convenient to see only the Info nodes that are in such a list, which then functions as a kind of virtual Info manual.  You can do that using BookmarkPlus.
-
-Or if you use InfoPlus, then `C-u v' in Info will show you such an Info nodes virtual book. In addition, you can use `##.##' in Info, to add nodes to such a virtual book without also adding them to your bookmark list.  If, in addition, you use [[Icicles]], then you can have any number of ''persistent'' virtual Info books. 
 
 
 == Bookmarks as Abbreviations ==
@@ -152,8 +127,27 @@ Add this to your .emacs:
 
 Bookmarks are saved whenever you exit emacs or call `M-x bookmark-save' manually. -- AnselmHelbig
 
-== See Also ==
+[:BookmarkPlus]
+== Bookmark+ ==
 
+Library <tt>[[bookmark+.el]]</tt> enhances vanilla Emacs bookmarks in several ways. Bookmark positions and regions anywhere. Sort the bookmark list in various ways. Mark and unmark bookmarks as in Dired. More. See BookmarkPlus.
+
+=== Info Node Bookmarks - Extended ===
+
+Sometimes it is convenient to see only the Info nodes that are in such a list, which then functions as a kind of virtual Info manual.  You can do that using BookmarkPlus.
+
+Or if you use InfoPlus, then `C-u v' in Info will show you such an Info nodes virtual book. In addition, you can use `##.##' in Info, to add nodes to such a virtual book without also adding them to your bookmark list.  If, in addition, you use [[Icicles]], then you can have any number of ''persistent'' virtual Info books. 
+
+[:CyclingBookmarks]
+== Cycling Among Bookmarks ==
+
+* Command `doremi-bookmarks' lets you cycle among bookmarks by using the up and down arrow keys or a mouse wheel. It is in library <tt>[[doremi-cmd.el]]</tt> -- see '''DoReMi'''.
+
+* Command `icicle-bookmark' similarly lets you [[completion|complete]] or [[Icicles - Cycling Completions|cycle]] bookmarks to navigate among them. [[Icicles - Apropos Completions|Apropos]] ([[regexp]], substring) completion is available. See '''[[Icicles]]'''.
+
+
+== See Also ==
+* BookMarkIteratorPackage -- iterate through your bookmarks
 * VisibleBookmarks Visible, buffer-local bookmarks (library ##bm.el##)
 * <tt>[[wuxch-bookmark.el]]</tt> -- Extends [[#BookmarkPlus]] and VisibleBookmarks
 * [[BreadcrumbForEmacs]] Breadcrumb for Emacs.  Leaves breadcrumb bookmarks in file buffers.

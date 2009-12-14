@@ -1,15 +1,18 @@
-This is one of the coolest functions in emacs. A dynamic abbreviation (dabbrev) is almost like a normal abbreviation that you define, with the following differences:
+See also: AbbrevMode.
+
+= Dynamic Abbrevs =
+Dynamic Abbreviations are one of the coolest functions in Emacs. 
+
+A dynamic abbreviation (dabbrev) is almost like a normal abbreviation that you define, with the following differences:
 
 # You do not have to define it :)
 # You need to call the dabbrev-expand command explicitly to use it
 
-What it does is to look at the "word" to the left of point and try to expand that word by looking for text in the current buffer, and if not found there, in all open buffers (e.g. /usr/share/dict/words ;-) --Andre).
-
-Did I say that this is extremely cool? :)
-
-See also: AbbrevMode.
+What it does is to look at the "word" to the left of point and try to expand that word by looking for text in the current buffer, and if not found there, in all open buffers (e.g. /usr/share/dict/words) ;-) --Andre
 
 = Examples =
+
+Did I say that this is extremely cool? :)
 
 Let's say you define
 
@@ -32,14 +35,7 @@ This is bound to M-/ by default.  Since that is rather hard to type on some keyb
 
 You need the second statement because in the MiniBuffer, `##C-<tab>##' has a separate binding which overrides the global one.
 
-= Dynamic Abbreviation Enhancements =
-
-* [[Icicles - Completion in Other Buffers]] -- all [[Icicles]] features are available for `dabbrev-completion': apropos (regexp) [[Completion]], cycling of completion candidates...
-* DabbrevExpandMultiple -- show multiple candidates with tooltip
-* Lisp:anything-dabbrev-expand.el -- show multiple candidates with [[Anything]]
-
 = Getting Character Case Right =
-
 
 I've been writing C# code with Emacs and it has a lot of StudlyCaps style variable names. I use <tt>dabbrev-expand</tt> (and sometimes also <tt>hippie-expand</tt>) a lot to 'tab-complete' my words. 
 When given two variable names, '<nowiki>ThisWord</nowiki>' and 'thisWord', 'Th' + <tt>dabbrev-expand</tt> yields correctly '<nowiki>ThisName</nowiki>', but 'th' + <tt>dabbrev-expand</tt> produces 'thisname', instead of 'thisName'. Is there a way to correct this? -- DuncanMak
@@ -60,13 +56,11 @@ and you type "this" then execute <tt>dabbrev-expand</tt>, "this" will be expande
 
 = Continuing Expansion =
 
-
 Once you have successfully used dabbrev-expand to expand a word, hitting <space> then immediately using dabbrev-expand again will continue to expand from the point that the expansion was found.  For example.  If previously in the buffer, you had made the function call:
 
     thisLongVariableName.someFunction(someArgument)
 
 Then at some point later in the buffer you type: "this" then use dabbrev-expand to expand "this" to "thisLongVariableName", if you then type <space> and then use dabbrev-expand again, it will expand "thisLongVariableName" to "thisLongVariableName.someFunction".  Continuing this, if you type <space> again then dabbrev-expand again, it will add "(someArgument" and the following word to the expansion.
-
 
 = Vim Style c file expansion =
 
@@ -112,6 +106,11 @@ In Vim, C-p/C-n expands current words according by parsing #include lines recurs
     (set (make-variable-buffer-local 'dabbrev-select-buffers-function) 'c-dabbrev--select-buffers)))
 }}}
 
+= Packages which extend standard Emacs Dynamic Abbreviation =
+
+* DabbrevExpandMultiple -- show multiple candidates with tooltip
+* [[Icicles - Completion in Other Buffers]] -- all [[Icicles]] features are available for `dabbrev-completion': apropos (regexp) [[Completion]], cycling of completion candidates...
+* Lisp:anything-dabbrev-expand.el -- show multiple candidates with [[Anything]]
 
 ----
 CategoryCompletion

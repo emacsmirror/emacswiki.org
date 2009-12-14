@@ -7,16 +7,6 @@ This way, all these specific packages share a common base functionality,
 and a common set of bindings, which makes them easier to use (and
 saves code, implementation time, etc., etc.).
 
-== Icicles Enhancements to Comint Mode ==
-
-You can use [[Icicles]] [[completion]] in Comint mode. Whenever there are multiple completion candidates, Icicles completion is used (if Icicle minor mode is on). This means you can [[Icicles - Cycling Completions|cycle]] to choose a candidate, complete using one or more substrings or [[regexp]]s ([[progressive completion]]), and so on. See [[Icicles - Completion in Other Buffers#ShellCommandCompletion|Icicles - Completion in Comint Modes]]. 
-
-You can also use `##C-`##' to quickly find, reuse, and edit a previous shell input, matching it in several ways. See [[Icicles - Other Search Commands#IciclesShell|Icicles - Reuse Comint Inputs]].
-
-
-
-
-
 == Leveraging Comint ==
 
 Since SqlMode is based on comint-mode, several aspects of SQLi buffers
@@ -51,4 +41,9 @@ Lots of times, the buffer just grows and grows, especially if you do a lot of co
     (delete-region (point-min) (point-max))
     (comint-send-input))
 
+== Icicles Enhancements to Comint Mode ==
+
+You can use [[Icicles]] [[completion]] in Comint mode. Whenever there are multiple completion candidates, Icicles completion is used (if Icicle minor mode is on). This means you can [[Icicles - Cycling Completions|cycle]] to choose a candidate, complete using one or more substrings or [[regexp]]s ([[progressive completion]]), and so on. See [[Icicles - Completion in Other Buffers#ShellCommandCompletion|Icicles - Completion in Comint Modes]]. 
+
+You can also use `##C-`##' to quickly find, reuse, and edit a previous shell input, matching it in several ways. See [[Icicles - Other Search Commands#IciclesShell|Icicles - Reuse Comint Inputs]].
 

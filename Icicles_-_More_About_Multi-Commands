@@ -263,6 +263,26 @@ The option has no effect on other keys.
 You can toggle `icicle-use-C-for-actions-flag' at any time using
 '''`M-g'''' ('''`icicle-toggle-C-for-actions'''') in the minibuffer.
 
+
+[:AccessingBookmarks]
+=== Accessing Saved Locations (Bookmarks) on the Fly ===
+
+When you complete the names of some kinds of objects, you can use
+'''`C-x m'''' to follow bookmarks to objects of that type.  This is
+available only if you use library '''[[Bookmark+]]''' (<tt>[[bookmark+.el]]</tt>).
+
+For example, when you invoke a command that completes file names, you can
+use `C-x m' to interrupt that operation and complete against the
+names of file bookmarks.  This is a [[multi-command]], so you can
+actually visit any number of file bookmarks.  When finished, you
+can continue with non-bookmark file-name completion.
+
+The same thing holds for [[Info]] bookmarks when you use
+`icicle-Info-goto-node' (`g' in Info mode); for [[buffer]] (non-file)
+bookmarks when you use `icicle-buffer' (`C-x b'); and for [[Dired]]
+bookmarks when you use `icicle-dired' (`C-x d').
+
+
 ----
 
 

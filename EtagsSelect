@@ -4,10 +4,6 @@ It works for EmacsTags in [[Emacs]] and [[XEmacs]].
 
 * Lisp:etags-select.el
 
-[new:DrewAdams:2008-02-18 21:33 UTC]
-'''See Also:''' '''[[Icicles]]''' command `icicle-search-tag'.  You can browse matching tags (including duplicates) in any order, and not necessarily consecutively. Very easy to filter tags to those you want to visit, using regexps; you can filter the source files to search also. Tag completion is also available.
-
-
 == Discussion ==
 
 I have integrated this patch after having used it for a month and it works fine imo. It adds TAB completion just like find-tag has. - MartinNordholts
@@ -72,5 +68,11 @@ otherwise raises an error."
 (add-hook 'emacs-startup-hook 
 	'(lambda () (jds-set-tags-file-path)))
 </pre>
+
+== Related Commands From Other Packages ==
+
+[new:DrewAdams:2008-02-18 21:33 UTC]
+'''See Also:''' '''[[Icicles]]''' command `icicle-search-tag'.  You can browse matching tags (including duplicates) in any order, and not necessarily consecutively. Very easy to filter tags to those you want to visit, using regexps; you can filter the source files to search also. Tag completion is also available.
+
 ----
 CategoryProgrammerUtils

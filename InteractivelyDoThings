@@ -75,10 +75,6 @@ I use ERC, and I wanted to bind something to the equivalent of "C-x b #": that i
 
     (ido-buffer-internal ido-default-buffer-method nil nil nil "#")
 
-= See Also =
-
-* [[Icicles]] -- Similar to ido.el in some ways, but you use the same minibuffer interface for files, buffers, commands -- everything.  Completion and ''cycling'' of completion candidates. Standard ''prefix'' completion and ''apropos'' (regexp) completion. Perform actions on selected (or all) candidates. Manipulate sets of completion candidates. More.
-
 = Wish list =
 
 [new] it would be nice if ido could truename files.  ido blows away the truenaming of files that i had set up with ffap.  It can be very confusing to open a symlink and have the buffer name be the name of the symlink.  I fixed this in ffap with the following code, but I don't know where to fix it in ido since it does not seem to have a finder variable.
@@ -141,18 +137,6 @@ You can also check out [[Smex]]. On top of a M-x Ido interface it features ranki
 
 Minor issue both with this solution and Smex: M-x commands are no longer recorded in the command history (see for yourself via M-x command-history or C-x ESC ESC).  M-p M-n still work in the minibuffer though, so you can access command history that way.
 -- LVA
-
-[new] Can one use IDO to complete symbols in text buffers? Currently whenever you press TAB twice a *completion* buffer pops up. I would like to replace this buffer with IDO in minibuffer, such that after pressing RET the current symbol is replaced with completion candidate. 
-Is it possible?  Thanks for any suggestion. -- RedBlue
-
-[new:DrewAdams:2009-08-31 23:23 UTC]
-: Dunno, for Ido. But if you would like to use [[Icicles]] instead, then `M-TAB' does what you want, in Icicle mode. -- DrewAdams
-[new]
-:: Thanks Drew. It works nicelly indeed, replaces too many thing at once. Can I make only this feature work without activating icy-mode? I need it for ESS; have tried to replace comint-dynamic-simple-complete in original code in ESS but it didn't work out. Thanks. -- RedBlue
-
-[new:DrewAdams:2009-09-02 17:42 UTC]
-::: Nope, sorry. But you can turn off Icicle mode at any time. ;-)  Alternatively, you can borrow and adapt the code for `icicle-lisp-complete-symbol' in file <tt>[[icicles-cmd1.el]]</tt>. Just remove the `let' bindings for the 3 Icicles variables. That will give you most of the functionality, but without Icicles completion features (e.g. different matching, cycling etc.). -- DrewAdams
-
 
 [new]
 Sometimes I think it would be convenient to be able to bury buffer. I can use bury-buffer command,
@@ -230,8 +214,6 @@ If you want to ensure '.' is not buried by this, change the final lambda as foll
 
 [new:DrewAdams:2008-08-17 20:24 UTC]
 Depending on the type of entities (e.g. file names) in the list and your current context, it can often be more convenient to sort alphabetically. It all depends. For files and directories, this is why we have different sort orders in DiredMode (see, e.g., DiredSortMenu). 
-
-[[Icicles]] lets you change the sort order on the fly during completion. There are many predefined sort orders available, and you can easily add your own. Some are general (always available, for all completion types) and some are available only in particular completion contexts. See [[Icicles - Sorting Candidates#DifferentSortForDifferentUses|Icicles Sort Orders]]. -- DrewAdams
 
 = A better (IMHO) ido-edit-input function =
 
@@ -346,6 +328,22 @@ This is a refinement of the above. It adds two features:
 
 [NxhtmlMode nXhtml] tweaks Ido to do ControlTABbufferCycling combined with Ido's normal buffer switching.
 
+= Iclicles Isn't Ido =
+
+* [[Icicles]] -- Similar to ido.el in some ways, but you use the same minibuffer interface for files, buffers, commands -- everything.  Completion and ''cycling'' of completion candidates. Standard ''prefix'' completion and ''apropos'' (regexp) completion. Perform actions on selected (or all) candidates. Manipulate sets of completion candidates. More.
+
+* [[Icicles]] lets you change the sort order on the fly during completion. There are many predefined sort orders available, and you can easily add your own. Some are general (always available, for all completion types) and some are available only in particular completion contexts. See [[Icicles - Sorting Candidates#DifferentSortForDifferentUses|Icicles Sort Orders]]. -- DrewAdams
+
+[new] Can one use IDO to complete symbols in text buffers? Currently whenever you press TAB twice a *completion* buffer pops up. I would like to replace this buffer with IDO in minibuffer, such that after pressing RET the current symbol is replaced with completion candidate. 
+Is it possible?  Thanks for any suggestion. -- RedBlue
+
+[new:DrewAdams:2009-08-31 23:23 UTC]
+: Dunno, for Ido. But if you would like to use [[Icicles]] instead, then `M-TAB' does what you want, in Icicle mode. -- DrewAdams
+[new]
+:: Thanks Drew. It works nicelly indeed, replaces too many thing at once. Can I make only this feature work without activating icy-mode? I need it for ESS; have tried to replace comint-dynamic-simple-complete in original code in ESS but it didn't work out. Thanks. -- RedBlue
+
+[new:DrewAdams:2009-09-02 17:42 UTC]
+::: Nope, sorry. But you can turn off Icicle mode at any time. ;-)  Alternatively, you can borrow and adapt the code for `icicle-lisp-complete-symbol' in file <tt>[[icicles-cmd1.el]]</tt>. Just remove the `let' bindings for the 3 Icicles variables. That will give you most of the functionality, but without Icicles completion features (e.g. different matching, cycling etc.). -- DrewAdams
 
 ----
 CategoryCommands

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Fri Nov 27 11:50:10 2009 (-0800)
+;; Last-Updated: Sun Dec 13 16:33:59 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 1167
+;;     Update #: 1231
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -611,11 +611,18 @@ This is an Icicles command - see command `icicle-mode'."
 
 (defun icicle-Info-read-node-name (prompt &optional include-file-p)
   "Read a node name, prompting with PROMPT.
-Non-nil INCLUDE-FILE-P means include current Info file in the name."
-  (let* ((completion-ignore-case           t)
-         (Info-read-node-completion-table  (icicle-Info-build-node-completions include-file-p))
-         (nodename                         (completing-read prompt 'Info-read-node-name-1 nil nil)))
-    (if (equal nodename "") (icicle-Info-read-node-name prompt) nodename)))
+Non-nil INCLUDE-FILE-P means include current Info file in the name.
+You can use `C-x m' during completion to access Info bookmarks, if you
+ use library `bookmark+.el'."
+  (when (and (require 'bookmark+ nil t) (fboundp 'icicle-bookmark-info-other-window))
+    (define-key minibuffer-local-completion-map "\C-xm" 'icicle-bookmark-info-other-window))
+  (unwind-protect
+       (let* ((completion-ignore-case           t)
+              (Info-read-node-completion-table  (icicle-Info-build-node-completions include-file-p))
+              (nodename                         (completing-read prompt 'Info-read-node-name-1
+                                                                 nil nil)))
+         (if (equal nodename "") (icicle-Info-read-node-name prompt) nodename))
+    (define-key minibuffer-local-completion-map "\C-xm" nil)))
 
 (defun icicle-Info-build-node-completions (&optional include-file-p)
   "Build completions list for Info nodes.

@@ -80,6 +80,11 @@ Better yet, use this to separate threads (puts space before and after the horizo
 
 
 
+
+
+
+
+
 <pre>
 
 </pre>
@@ -88,142 +93,56 @@ Better yet, use this to separate threads (puts space before and after the horizo
 
 </pre>
 
-[new]
 <pre>
-emacs -Q
-(require 'icicles)
-M-x icicle-color-theme color-theme-aalto-dark RET, now color theme is color-theme-aalto-dark
-M-x icicle-color-theme RET, I get error tip: "Symbol's function definition is void: ", and now  it cancel color-theme-aalto-dark 
-and restore old color theme (RET does not exit the minibuffer successful.
+(add-to-list 'load-path "path/to/icicles")
+(load-library "icicles")
+
+Debugger entered--Lisp error: (void-variable icicle-mode-map)
 </pre>
 
--- [[ahei]]
+I get an error when I try to load the icicles library.
 
-[new:DrewAdams:2009-11-24 18:30 UTC]
-1. I cannot reproduce that. What is the symbol that it complains about? You quoted only part of the error message. Are you sure you have all the latest '''Icicles''' files? What is your Emacs version? What version of ColorTheme are you using? Etc.
+1. I am using a recent build of Emacs 23.1.90.1 on Mac OS X 10.5
 
-2. It is normal that the saved theme was restored when an error is raised. The snapshot was taken only once per Emacs session. That's why the theme that was restored was your initial theme. 
+2. The error only happens if I have byte-compiled the icicles code.  If there are nothing but .el files in the directory it is fine.
 
-3. In any case, I've just uploaded a new version of <tt>[[icicles-cmd1.el]]</tt> that makes the change I suggested I would make. By default, a snapshot is now taken at the start of each invocation of the command. If you use a prefix arg, then no snapshot is taken (unless none has been taken for the current Emacs session). IOW, a prefix arg gives you pretty much the behavior of the previous version, and no prefix arg means that `C-g' restores the state as it was before the command was invoked. -- DrewAdams
+3. If I evaluate (load-library "icicles") again it works fine and the package is loaded.
+
+4. (Side note: the discussion on [[IciclesIswitchb]] does not apply to my environment.  The only way I've been able to get iswitchb functionality working is to use all of (iswitchb-mode), (require 'icicles), (iswitchb-default-keybindings), (require 'icicles-iswitchb).)
+
+Perhaps 23.1 isn't supported yet? -- [[rmolinari]]
 
 
-[new]
-I use your latest icicles-install, and have use it update latest icicles.
+[new:DrewAdams:2009-12-14 01:33 UTC]
+Sorry for your trouble. Thanks for your report, but I will need more info.
 
-icicle-color-theme docstring said:
-<pre>
-If you use `C-g' during this command, the previous color-theme
-snapshot is used to restore that color theme.
+1. I do support the release (23.1), but I do not officially support the CVS development code, which is what you are using (23.1.90.1) -- it is too much of a moving target. Nevertheless, I know that there are '''Icicles''' users who do use the latest CVS Emacs with no problem.
 
-By default, each time you invoke this command, a snapshot is first
-made of the current color theme (or current colors, if no theme is
-used).  Thus, by default, if you use `C-g', the colors restored are
-those used before you changed themes using this command.
+2. Make sure that all of the '''Icicles''' files you have are the latest versions. Be sure to start with ##emacs -Q## for a bug recipe.
 
-However, if you use a prefix arg, then this command takes no new
-snapshot, unless no snapshot has ever been taken during this Emacs
-session.  This can be useful when experimenting, to restore not to the
-state just before this command invocation, but to some previous
-snapshot.
-</pre>
+3. With byte-compiled code, make sure that you load the source files before compiling. It is at least important to load <tt>[[icicles-mac.el]]</tt> before byte-compiling the other files, since it contains macros that they use.
 
-<pre>
-emacs -Q
-(require 'icicles)
-(require 'color-theme)
-M-x icy-mode
+4. If you can get hold of an official release (e.g. Emacs 23.1 or 22.3), see if you can reproduce the problem with it. That might save time if you cannot. It's possible that there is a change in the CVS code that affects this. But I doubt it. Usually, problems of this kind come from compiling and loading sequencing.
 
-1.
-M-x icicle-color-theme RET , I get error tip: "Symbol's function definition is void: ", this is 
-whole message emacs give to me. and now color theme is also color-theme-aalto-dark, this is same 
-as docstring said.
+5. I'm afraid you will need to do some debugging to figure out what is happening. The load order in <tt>[[icicles.el]]</tt> should be correct. You can try turning on `debug-on-error'. You can try loading each of the byte-compiled files, in turn (in the order given in <tt>[[icicles.el]]</tt>. You can try loading all of the source files except for a single byte-compiled file, in turn.
 
-2.
-M-x icicle-color-theme color-theme-aalto-dark RET, now color theme is color-theme-aalto-dark
-
-M-x icicle-color-theme TAB C-up C-up C-up, now color theme is other, C-g C-g, and now color theme 
-restore to color-theme-aalto-dark, this is same as docstring said.
-
-C-u M-x icicle-color-theme TAB C-up C-up C-up, now color theme is other, C-g C-g, and now color theme 
-restore to color-theme-aalto-dark, but this is not same as docstring said.
-
-IOW, M-x icicle-color-theme and C-u M-x icicle-color-theme is same.
-
-my system is ubuntu 8.04, and M-x emacs-version: GNU Emacs 23.1.2 (i686-pc-linux-gnu, GTK+ Version 2.12.9) 
-of 2009-08-21 on ahei-ubuntu
-I use color theme 6.6.0
-</pre>
-
--- [[ahei]]
-
-[new:DrewAdams:2009-11-25 08:14 UTC]
-Thanks for providing more info.
-
-0. No need to require `##color-theme.el##'. If it is in your `load-path', and the subdirectory `themes' is in your `load-path', then `##color-theme.el##' and `##color-theme-library.el##' will be loaded when you load '''Icicles'''. Check the value of option `icicle-color-themes' after loading '''Icicles''' and before doing anything else. If it is empty, then the color-theme library wasn't loaded at '''Icicles''' load time.
-
-But please download the latest <tt>[[icicles-opt.el]]</tt>. I just fixed a bug in `icicle-color-themes' initialization.
-
-1. I don't understand #1.
-
-1a. You are getting the error after `RET' just to enter the command name, before trying completion, correct? Perhaps the error is related to the bug I just fixed, but I doubt it. Normally, that error message shows the symbol whose function cell it claims is void. I'm surprised that you don't see any symbol name.
-
-1b. You say that after the error was raised the color theme was changed to `color-theme-aalto-dark'. An error causes the theme to be restored to the snapshot. The snapshot is created when the command is invoked. In your case, the command was barely invoked (you got an error before using completion), so it could be that the snapshot was not yet created.
-
-But if the theme changed to `color-theme-aalto-dark' then that must be the value of the snapshot, which means either that this was not the first time you invoked the command (your recipe was not accurate) or that was the theme that you started out with. Some info seems to be missing here.
-
-Anyway, you will need to use the debugger to get some more info about what's happening. After loading the '''Icicles''' source files (not byte-compiled files), do `M-x debug-on-entry icicle-color-theme'. Then do `M-x icicle-color-theme RET' to try to reproduce the problem. Step through the debugger with `d' (you can use `c' for any sexp whose eval you want to skip through quickly). See what happens at the moment the first error is raised. To easily follow the execution, put the source file in another frame so you can see what's happening. Let me know whatever you find out.
-
-It's easier to communicate about this by mail (backtrace contents etc.), BTW. `M-x icicle-send-bug-report'.
-
-2. #2 shows that it works, in spite of the error raised in #1. I still need to understand what happened in #1, however.
-
-You seem surprised by the last part of #2, but that is just what the doc string says. You exited normally the first time, giving you the dark theme. The second invocation created the snapshot to the dark theme (and `C-g' restored it). The third invocation, with `C-u', did not create a new snapshot, and your `C-g' restored to the existing snapshot, which was, again, the dark theme. 
-
-`C-u' prevents taking a new snapshot at the time of command invocation. It leaves the existing snapshot as it was. Its purpose is just that: to not overwrite the snapshot, because you don't want to save the current theme. But in your case, the current theme was the same as the snapshot (dark), so `C-u' made no difference. It simply prevented overwriting the dark snapshot with a new dark snapshot (same thing).
-
-You would have seen the utility of `C-u' if you had not used `C-g' but had exited with, say, a light theme, so the current theme would then have been different from the snapshot you had made earlier. Then, if you invoked the command again with `C-u' and hit `C-g', the dark theme would be restored, not the light theme that was in effect when the command was invoked.
-
-IOW, if you always use `C-u', then you don't take snapshots. If you want to be able to restore to the current state, not to an earlier state, then do not use `C-u'. If you like some state, and you want to experiment with others and then come back to the state you liked, then use `C-u' for all such experimentation -- no new snapshots will be taken, and `C-g' (or choosing pseudo-theme ##[Reset]## using `color-theme-select') will restore the state you liked.
-
-The common case, I expect, is to want to restore things to the way they were when the command was invoked, that is, to cancel the effect of the current command (only). This was the point you raised before, complaining that the (older) behavior was not similar to, say, `icicle-frame-bg'. Now it is similar (if you don't use `C-g').
-
-Please try to debug #1 a little and let me know what you find out. Thx -- DrewAdams
+6. Wrt [[IswitchBuffers|IswitchB]], I'm afraid I can't help. I don't use it, myself. I sanity-tested it briefly with '''Icicles''' long ago, but I don't retest the combination. All I know is what others have written on page IciclesIswitchb. Feel free to update that page if you have additional info. -- DrewAdams
 
 [new]
-1. sorry for my mistake and it taike doubt to you.
+Hi Drew.  Thanks for the quick reply.  Loading icicles before byte-compiling didn't help so there must be something squirrelly in my setup.  I don't have time to investigate more carefully right now but will try to find time later in the week.  Thanks for a great product!  -- [[rmolinari]]
+
+
+[new:DrewAdams:2009-12-14 04:38 UTC]
+OK, let me know what you find out. Even more details about what you did helps. -- DrewAdams
+
 <pre>
-emacs -Q
-(require 'icicles)
-M-x icy-mode
-M-x icicle-color-theme RET RET , I get error tip: "Symbol's function definition is void: ", this is 
-whole message emacs give to me. 
+
+</pre>
+----
+<pre>
+
 </pre>
 
-2. I eventually understand your meaning, and it is complex, :)
-
-3. can icicle-download-wizard only download files which updated but not download all files in icicles?
-
--- [[ahei]]
-
-
-[new:DrewAdams:2009-11-25 15:32 UTC]
-1. Should be fixed now -- raises an error for empty input; thanks. Download <tt>[[icicles-cmd1.el]]</tt>.
-
-3. Not as far as I know. I didn't write and don't maintain the scripts etc. for downloading '''Icicles''' files. Feel free to send a patch to improve it. However, "only download files which updated" means what? Updated since when? Since Ahei's last use of the wizard? ;-) -- DrewAdams
-
-[new]
-1. It work now.
-
-3. Icicles can record a version number, then update tool just detect version number which many windows's softwares do. :) -- [[ahei]]
-
-[new:DrewAdams:2009-11-25 17:45 UTC]
-1. Good to hear.
-
-3. Sorry, not interested. I update individual files as needed. Each file has an individual ##Update ### in the header. I do not want to version '''Icicles''' as a whole. 
-
-I was only half-kidding about "since Ahei's last use of the wizard". It should be possible for the wizard to record the date of the last download and compare that with the dates on the wiki. Just a suggestion. 
-
-But if someone doesn't download '''Icicles''' often, there is no problem in simply downloading all of the files. And if someone does update his copy of '''Icicles''' often, then it's no big deal to compare the file dates and download only the files that are more recent than what s?he has locally. -- DrewAdams
 
 ----
 

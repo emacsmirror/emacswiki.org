@@ -251,6 +251,7 @@ Several top-level '''Icicles''' commands have been defined using
 * '''`icicle-delete-windows'''' -- Delete [[window]]s showing a buffer anywhere
 * '''`icicle-describe-option-of-type'''' -- Describe [[option]] of a given type
 * '''`icicle-directory-list'''' -- Choose a list of directory names
+* '''`icicle-dired'''' -- Visit a directory in [[Dired]] mode
 * '''`icicle-doc''''         -- Display doc of function, [[variable]], or [[face]]
 * '''`icicle-execute-extended-command'''' -- A multi-command version of `M-x'
 * '''`icicle-execute-named-keyboard-macro'''' -- Execute a named [[keyboard macro]]

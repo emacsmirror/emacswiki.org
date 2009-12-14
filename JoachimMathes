@@ -1,8 +1,9 @@
 Hallo!
 
-I use GNU Emacs a lot and wrote a basic TypoScriptMode for it. It was born from necessity and might be improved from time to time.
+I use GNU Emacs a lot and feel so comfortable with this Editor that I prefer using it for my TYPO3 development instead of switching to one of the so called ''modern'' IDEs. To improve the editing features with respect to TYPO3 I developed a TypoScriptMode and a TypoThreePhpMode. Both of them where born from necessity and might be improved from time to time.
 
-It's great to have such an easy to use platform like this EmacsWiki to publish any information or code concerning Emacs.
+[new]
+Welcome to the wiki – even if the welcome is about five months late! :) -- AlexSchroeder
 
 ----
 CategoryHomepage

@@ -80,7 +80,7 @@ When you are integrating somebody else's work, you will want to be identified as
 
 This section describes how to set things up if you plan on making repeated contributions to Emacs (whether or not you're one of the Emacs maintainers).  
 
-We'll assume Emacs's public master trunk lives at ##http://bzr.savannah.gnu.org/r/emacs/trunk##.  If you are a committer, you will want to use a ##sftp## URL instead: ##sftp://<membername>@bzr.savannah.gnu.org/srv/bzr/emacs/trunk##.  (Actually, you /want/ to use a ##bzr+ssh## URL, and we /want/ to run a smart server on Savannah to make that possible.  But ##savannah-hackers## considers this a security risk that needs to be analyzed carefully.  Please update this page if it becomes possible to use ##bzr+ssh##.  See [https://savannah.gnu.org/support/index.php?107143 sr 107143] for details.)
+For the general public, Emacs's public master trunk lives at ##http://bzr.savannah.gnu.org/r/emacs/trunk##.  But committers should use an ##sftp## URL instead: ##sftp://<membername>@bzr.savannah.gnu.org/srv/bzr/emacs/trunk##.  (Actually, you /want/ to use a ##bzr+ssh## URL, and we /want/ to run a smart server on Savannah to make that possible.  But ##savannah-hackers## considers this a security risk that needs to be analyzed carefully.  Please update this page if it becomes possible to use ##bzr+ssh##.  See [https://savannah.gnu.org/support/index.php?107143 sr 107143] for details.)
 
 First, initialize a shared repository in which to store all your branches:
 
@@ -92,36 +92,36 @@ First, initialize a shared repository in which to store all your branches:
 Now, create a branch called ##trunk## that will just be a mirror of the mainline.  You'll never do any development in this branch; its job is just to reflect the upstream master:
 
       cd emacs/
-      bzr branch http://bzr.savannah.gnu.org/r/emacs/trunk/ trunk/
+      bzr branch sftp://<membername>@bzr.savannah.gnu.org/srv/bzr/emacs/trunk trunk/
 
-(Use ##sftp://<membername>@bzr.savannah.gnu.org/srv/bzr/emacs/trunk## instead if you are a committer.)
+(Use ##http://bzr.savannah.gnu.org/r/emacs/trunk/## instead if you are not a committer and just expect read-only access.)
 
 This first ##bzr branch## operation in a new repository may take many minutes --- people have reported 20 to 55 minutes.  At the end of the long wait, the repository will contain the whole history of the trunk, and the ##trunk## directory will contain the working files -- that is, an Emacs tree.
 
 Next, we'll further safeguard that mirror by making it a "two-way" mirror.  We do this by "binding" the local trunk to the upstream master:
 
       cd trunk/
-      echo "public_branch = http://bzr.savannah.gnu.org/r/emacs/trunk" >> .bzr/branch/branch.conf
-      bzr bind http://bzr.savannah.gnu.org/r/emacs/trunk/
+      echo "public_branch = sftp://<membername>@bzr.savannah.gnu.org/srv/bzr/emacs/trunk" >> .bzr/branch/branch.conf
+      bzr bind sftp://<membername>@bzr.savannah.gnu.org/srv/bzr/emacs/trunk
       cd ..
 
-(Again, use ##sftp://<membername>@bzr.savannah.gnu.org/srv/bzr/emacs/trunk## as the URL, in both instances above, if you are a committer.  Also, note that on MS-Windows you need either to remove the quotes around the arguments to the ##echo## command or use a ported GNU ##echo##.)
+(Again, use ##http://bzr.savannah.gnu.org/r/emacs/trunk## as the URL, in both instances above, if you are not a committer and just expect read-only access.  Also, note that on MS-Windows you need either to remove the quotes around the arguments to the ##echo## command or use a ported GNU ##echo##.)
 
 If there are other branches you'd like to mirror, you can set them up in the same way.  In your local repository, you can efficiently branch them from the upstream branch, because very little history copying will be needed (as long as they themselves were branched from the upstream master).
 
 [:InitializeBranch]
 === Initialize Your quickfixes Branch ===
 
-We recommend you create one branch for quick, one-off work: for example, you spot a typo in the README file and want to fix it.  You can just keep reusing this branch for small, self-contained changes.  (For larger tasks, such as a complicated bug fix or new feature that might require multiple commits and rounds of feedback, we recommend that you create a "task branch" dedicated to that fix or feature, described in [[#FeatureBranch]].)
+You shouldn't do development work in the local ##trunk## mirror, since it is meant to be a pristine mirror of the upstream trunk.  Instead, you should create local development branches, where you will actually do your work.  Each will be based on the local trunk mirror (another way to say it is that the new branch will be "branched from" the mirror).
 
-Since you can't edit files in the /trunk/ branch (they're nonexistent), you must create development branches where you can actually do your work.  Each will be based on the local trunk mirror we just created (another way to say it is that the new branch will be "branched from" the mirror):
+We recommend you create one branch for quick, one-off work: for example, you spot a typo in the README file and want to fix it.  You can just keep reusing this branch for small, self-contained changes.  (For larger tasks, such as a complicated bug fix or new feature that might require multiple commits and rounds of feedback, we recommend that you create a "task branch" dedicated to that fix or feature, described in [[#FeatureBranch]].)
 
       cd $DEVHOME/emacs
       bzr branch trunk/ quickfixes/
 
 This creates a directory ##quickfixes## and populates it with the Emacs source tree.  This operation should be much faster than the first ##bzr branch##.
 
-We have set up a shared repository.  In a Bazaar shared repository, all the branches share history.  This means less spaced used and less time spent downloading history and file content, making Bazaar branches much more lightweight than CVS branches.   However, it still takes time to check out the source tree for a new branch (which we just did), and bootstrapping a new tree takes an annoyingly long time.  That is why we recommend that for small changes you keep reusing the same ##quickfixes## branch.  This way, after you have bootstrapped the ##quickfixes## branch once, the subsequent update, build, and commit steps of the update-edit-build-test-commit cycle all are very fast, as long as you continue working in the same branch. 
+Remember this is all happening inside a shared repository.  In a Bazaar shared repository, all the branches share history, which means less spaced used and less time spent downloading history and file content; this makes Bazaar branches much more lightweight than CVS branches.   However, it still takes time to check out the source tree for a new branch (which we just did), and bootstrapping a new tree takes an annoyingly long time.  That is why we recommend that for small changes you keep reusing the same ##quickfixes## branch.  This way, after you have bootstrapped the ##quickfixes## branch once, the subsequent update, build, and commit steps of the update-edit-build-test-commit cycle all are very fast, as long as you continue working in the same branch. 
  
 [:QuickFix]
 [:OneOffChange]

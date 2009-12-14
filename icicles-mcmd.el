@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Nov 27 13:45:22 2009 (-0800)
+;; Last-Updated: Sun Dec 13 15:28:31 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 15075
+;;     Update #: 15077
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1349,7 +1349,9 @@ order instead, updating `icicle-alternative-sort-function'."
                       (cdr (assoc next-order icicle-sort-functions-alist))))))
         (icicle-complete-again-update)
         (icicle-msg-maybe-in-minibuffer
-         "%sorting is now %s.  Reverse: `C-9 C-,'" (if alternativep "Alternative s" "S") next-order)))))
+         "%sorting is now %s%s.  Reverse: `C-9 C-,'"
+         (if alternativep "Alternative s" "S") next-order
+         (if icicle-reverse-sort-p ", REVERSED" ""))))))
 
 (defun icicle-current-sort-functions ()
   "Subset of `icicle-sort-functions-alist' that is currently appropriate."

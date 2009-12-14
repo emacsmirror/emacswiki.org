@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon Dec  7 14:01:35 2009 (-0800)
+;; Last-Updated: Sun Dec 13 15:08:29 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 22620
+;;     Update #: 22623
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -113,7 +113,8 @@
 ;;    `icicle-apropos-function', `icicle-apropos-option',
 ;;    `icicle-apropos-variable', `icicle-apropos-zippy',
 ;;    `icicle-bbdb-complete-name', `icicle-bookmark',
-;;    `icicle-bookmark-cmd', `icicle-bookmark-file-other-window',
+;;    `icicle-bookmark-cmd', `icicle-bookmark-dired-other-window',
+;;    `icicle-bookmark-file-other-window',
 ;;    `icicle-bookmark-gnus-other-window',
 ;;    `icicle-bookmark-info-other-window', `icicle-bookmark-jump',
 ;;    `icicle-bookmark-jump-other-window',
@@ -143,9 +144,10 @@
 ;;    `icicle-delete-window', `icicle-delete-windows',
 ;;    `icicle-delete-windows-on', `icicle-describe-file',
 ;;    `icicle-describe-option-of-type', `icicle-directory-list',
-;;    `icicle-dired-chosen-files',
+;;    `icicle-dired', `icicle-dired-chosen-files',
 ;;    `icicle-dired-chosen-files-other-window',
-;;    `icicle-dired-project', `icicle-dired-project-other-window',
+;;    `icicle-dired-other-window', `icicle-dired-project',
+;;    `icicle-dired-project-other-window',
 ;;    `icicle-dired-saved-file-candidates',
 ;;    `icicle-dired-saved-file-candidates-other-window',
 ;;    `icicle-dired-save-marked',
