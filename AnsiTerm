@@ -43,4 +43,7 @@ Has anybody succeded to run ansi-term (or term, or terminal-emulator for that ma
 [new]
 Q: Is it possible to change the color palette for LS_COLORS? Inside a Gnome terminal, I like to switch to the "Tango" palette and since I use color-theme-tango it would be nice to have the same colors inside Emacs especially because the standard terminal colors don't go well with Tango's background color.
 ----
+I would also like to know, if there is a possibility that the colors (e.g. of directories) in term or ansi-term could make use of the Tango palette, as directory names are hardly readable.
+---
+
 CategoryExternalUtilities

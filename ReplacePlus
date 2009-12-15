@@ -1,9 +1,9 @@
-This page is about library <tt>[[replace+.el]]</tt>, written by DrewAdams. This extends standard Emacs library ##replace.el##. That standard library contains a lot of different functionalities, including both `occur' and `query-replace'. Library <tt>[[replace+.el]]</tt> makes improvements to several of those functionalities.
+This page is about library <tt>[[replace+.el]]</tt>, written by DrewAdams. It extends functionalities in the standard Emacs library ##replace.el##, including commands `occur' and `query-replace'.
 
-[:QueryReplaceImprovements]
-== Query-Replace Improvements ==
+[:QueryReplaceExtensions]
+== Query-Replace Extensions ==
 
-Library <tt>[[replace+.el]]</tt> provides the following improvements to `query-replace':
+Library <tt>[[replace+.el]]</tt> provides the following extensions to Emacs' standard `query-replace' command:
 
 * Command '''`query-replace-w-options'''' rolls both `query-replace' and `query-replace-regexp' into one command. The prefix arg governs the behavior:
 ** None -- replace ''literal'' string matches
@@ -18,15 +18,15 @@ Library <tt>[[replace+.el]]</tt> provides the following improvements to `query-r
 
 * Command '''`toggle-replace-w-completion'''' toggles option `replace-w-completion-flag'.
 
-* Option '''`search/replace-default-fn'''' (defined in <tt>[[replace+.el]]</tt>) determines the default value for the new (replacement) and old (original) arguments. By default, this option has value `symbol-name-nearest-point', if that function is defined, and `word-at-point', otherwise. This means that the symbol or word at the TextCursor is the default value. (You can of course still use the history lists, and you can still enter nothing, to repeat the previous query-replacement operation.)
+* Option '''`search/replace-default-fn'''' (defined in <tt>[[replace+.el]]</tt>) determines the default value for the new (replacement) and old (original) arguments. By default, this option has value `symbol-name-nearest-point', if that function is defined, and `word-at-point', otherwise. This means that the symbol or word at the [[cursor]] is the default value. (You can of course still use the history lists, and you can still enter nothing, to repeat the previous query-replacement operation.)
 
 '''See Also: IsearchPlus''' for more information on option `isearchp-set-region-flag' and command 
 `set-region-around-search-target'.
 
-[:OccurImprovements]
-== Occur Improvements ==
+[:OccurExtensions]
+== Occur Extensions ==
 
-Library <tt>[[replace+.el]]</tt> provides the following improvements to `occur':
+Library <tt>[[replace+.el]]</tt> provides the following extensions to Emacs' standard `occur' command:
 
 * When you visit an occurrence, the line number is highlighted in buffer `*Occur*', using face `occur-highlight-linenum'.  This is similar to highlighting links that you have already visited in Info or in a Web browser: it lets you know where you've been.
 
@@ -34,20 +34,20 @@ Library <tt>[[replace+.el]]</tt> provides the following improvements to `occur':
 
 * The text matching the search pattern is highlighted in the source buffer also.
 
-* Option '''`search/replace-default-fn'''' determines the default value for the regexp argument. See [[#QueryReplaceImprovements]], above, for more information.
+* Option '''`search/replace-default-fn'''' determines the default value for the regexp argument. See [[#QueryReplaceExtensions]], above, for more information.
 
 * (Emacs 20 only) In buffer <code>*Occur*</code>, you can click anywhere on a found line: the entire line is mouse-face active. 
 
-* (Emacs 20 only) The [[Frame]] of buffer <code>*Occur*</code> is shrink-wrapped to fit the matching lines. 
+* (Emacs 20 only) The [[frame]] of buffer <code>*Occur*</code> is shrink-wrapped to fit the matching lines. 
 
 '''See Also:''' OccurMode, for a screenshot and more information.
 
 
-== Improvements to `flush-lines', `keep-lines', and `how-many' ==
+== Extensions to `flush-lines', `keep-lines', and `how-many' ==
 
-Library <tt>[[replace+.el]]</tt> provides the following improvements to commands `flush-lines', `keep-lines', and `how-many'. These improvements are not needed for Emacs 21 or greater; they are useful for Emacs 20.
+Library <tt>[[replace+.el]]</tt> provides the following extensions to commands `flush-lines', `keep-lines', and `how-many'. They are not needed for users of Emacs 21 or greater.
 
-* Option '''`search/replace-default-fn'''' determines the default value for the regexp argument. See [[#QueryReplaceImprovements]], above, for more information.
+* Option '''`search/replace-default-fn'''' determines the default value for the regexp argument. See [[#QueryReplaceExtensions]], above, for more information.
 
 * The prompt lets you know that only lines after point are affected.
 

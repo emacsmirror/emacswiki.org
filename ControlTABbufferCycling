@@ -61,11 +61,10 @@ screen), we have become used to the idea that we can have multiple
 things taking place at once, but usually only one of them commands our
 attention.
 
-In Emacs, we usually see people with one window in a [[Frame]], and to switch to another buffer, we usually use
+In Emacs, we usually see people with one window in a [[frame]], and to switch to another buffer, we usually use
 something like <code>C-x b</code> and then type in the buffer we want.
 People who want to be more efficient about this use things like
-IswitchBuffers or InteractivelyDoThings to streamline the process and
-move to the buffer they want quickly.
+IswitchBuffers, InteractivelyDoThings, or [[Icicles]] to streamline the process and move to the buffer they want quickly.
 
 [new:DrewAdams:2004-12-24 21:54 UTC]
 
@@ -256,7 +255,9 @@ I use Linux, and so the Windows key isn't generally used.  I've gone through and
 [:Icicles]
 = Icicles =
 
-Command `icicle-buffer' (which I bind to `C-x b') in '''[[Icicles]]''' lets you use `C-next' and `C-prior' to cycle among your buffers. As the key is pressed, the next buffer appears. By default, the buffers are cycled in alphabetical order. However, if you use `<code>C-,</code>' after hitting `C-x b', then the order is that determined by `other-buffer', which is essentially chronological. You can alternatively impose a chronological order by setting or binding user option `icicle-sort-function' Also, '''[[Icicles]]''' offers nice ways to cycle buffers: using the arrow keys on buffer names in the minibuffer. And don't forget: completion is always available in the minibuffer, so you are not limited to traversing the whole buffer cycle. See '''[[Icicles]]''' for more information. -- DrewAdams
+Command `icicle-buffer' (bound by default to `C-x b') in '''[[Icicles]]''' lets you use `C-next' and `C-prior' to cycle among your buffers. As the key is pressed, the next buffer appears. By default, the buffers are cycled in alphabetical order. However, if you use `<code>C-,</code>' after hitting `C-x b', then you cycle to another sort order -- several orders are available. You can alternatively impose a given order by default, by setting or binding user option `icicle-sort-function' appropriately.
+
+
 
 [:swbuff]
 = SwBuff and SwBuff-x =

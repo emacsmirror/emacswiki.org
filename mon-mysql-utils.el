@@ -33,6 +33,8 @@
 ;;;
 ;;; ALIASED/ADVISED/SUBST'D:
 ;;; `mon-cln-pipes' -> `mon-mysql-cln-pipes'
+;;; `mon-mysql-csv-to-list'  -> `mon-csv-string-to-list'
+;;; `mon-mysql-csv-split-string' -> `mon-csv-split-string'
 ;;;
 ;;; DEPRECATED:
 ;;;
@@ -384,7 +386,7 @@ Use to extract fields from mysql command:\nmysql> SHOW COLUMNS FROM THE-DB.TABLE
  | time_zone_leap_second     | \n | time_zone_name            | 
  | time_zone_transition      | \n | time_zone_transition_type | 
  | user                      | \n +---------------------------+ \n◄\n
-:SEE-ALSO `mon-mysql-cln-pipes',`mon-csv-split-string',`mon-csv-string-to-list',
+:SEE-ALSO `mon-mysql-cln-pipes',`mon-mysql-csv-split-string',`mon-mysql-csv-to-list',
 `mon-cln-csv-fields', `mon-string-csv-rotate'.\n►►►"
   (interactive "r\nsFirst field's value: \np")
   (let (flds
@@ -455,8 +457,8 @@ When called-interactively or TO-KILL is non-nil put retun value on kill-ring.\n
 | 2008-10-25 16:54:04 | 1200 | 0 | \"Quoted string \\\"bubba\\\"\" | | 2008-10-25 16:54:04 | 
 | \"2008-05-25 16:54:04\" | 1200 | t | \"bubba\" | | 2008-10-25 16:54:04 |
 | 2008-10-25 16:54:04 | 1200 | F | \"bubba\" | | 2008-10-25 16:54:04 |◄◄           \n
-:SEE-ALSO `mon-mysql-get-field-col',`mon-csv-split-string', 
-`mon-csv-string-to-list', `mon-cln-csv-fields', `mon-string-csv-rotate'.\n►►►"
+:SEE-ALSO `mon-mysql-get-field-col',`mon-mysql-csv-split-string', 
+`mon-mysql-csv-to-list', `mon-cln-csv-fields', `mon-string-csv-rotate'.\n►►►"
   (interactive "r\np")
   (let (tb mtb)
     (setq tb (buffer-substring-no-properties start end))
@@ -498,12 +500,12 @@ When called-interactively or TO-KILL is non-nil put retun value on kill-ring.\n
                              (match-string-no-properties 2)
                              (match-string-no-properties 5)))
                         (rep-seq (mon-string-to-sequence  ;; in :FILE `mon-utils.el'
-                                   rep-mtch)))
+                                  rep-mtch)))
                    (cond ( ;; First char is `"'. 
                           (eq (car rep-seq) 34)
                           ;; Test for whitespace.
                           (if (member 32 rep-seq)
-                              (setq rep-seq (mon-string-from-sequence ;; in :FILE `mon-utils.el'
+                              (setq rep-seq (mon-string-from-sequence  ;; in :FILE `mon-utils.el'
                                              (subst 9248 32 rep-seq)))
                               ;;(format "%S | " rep-seq)
                               (replace-match (concat rep-seq " |")  nil t)
@@ -573,7 +575,7 @@ When called-interactively or TO-KILL is non-nil put retun value on kill-ring.\n
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-12-10T19:27:04-05:00Z}#{09505} - by MON>
 (defun mon-csv-string-to-list (csv-str)
-"Return a converted csv string (a paren wrapped list) as a lisp list.
+  "Return a converted csv string (a paren wrapped list) as a lisp list.
 Assumes the following:
  o Initial value of is formated as \"\('<INITIAL-VALUE>',
  o A null values has the format ,''
@@ -586,15 +588,21 @@ Primarily useful for tearing down SQL dumps on the way to a pairlis.\n
  '\(KEY-0 KEY-1 KEY-3 wrkng pretty will-do gv-a-sht PITA has-val nth first second\)
  \(mon-csv-string-to-list
   \"('VALUE-0','VALUE-1','VALUE-3','Y','N','T','F','escaped\\\\\\'quote','','',0,1,2\)\")\)\n
-:SEE-ALSO `mon-csv-split-string', `mon-mysql-get-field-col',
-`mon-csv-string-to-list', `mon-cln-csv-fields',
+:SEE-ALSO `mon-mysql-csv-split-string', `mon-mysql-get-field-col',
+`mon-mysql-csv-to-list', `mon-cln-csv-fields',
 `mon-string-csv-rotate'.\n►►►"
-(let ((strip-cruft csv-str))
-  (setq strip-cruft (replace-regexp-in-string "('\\|)" "" strip-cruft t))
-  (setq strip-cruft (replace-regexp-in-string "," " " strip-cruft t))
-  (setq strip-cruft (replace-regexp-in-string "''" "nil" strip-cruft t))
-  (setq strip-cruft (replace-regexp-in-string "' '\\|' nil" " " strip-cruft t))
-  (setq strip-cruft (car (read-from-string (concat "(" strip-cruft ")"))))))
+  (let ((normalize csv-str))
+    (setq normalize (replace-regexp-in-string ",\\([0-9]+\\)" ",'\\1'" normalize nil)) ;; ,DIGIT -> ,'DIGIT'
+    (setq normalize (replace-regexp-in-string
+                     ;;.1.......2..................3.....  
+                     "\\((\\)\\([\\[:digit:]]+\\)\\(,\\)" "('\\2'," normalize)) ;; (DIGIT, -> ('DIGIT',
+    (setq normalize (replace-regexp-in-string ",''" ",'nil'" normalize)) ;; Replace empty value with 'nil'
+    (setq normalize (replace-regexp-in-string "('\\|')" "" normalize)) ;; Remove lead/trail parens.
+    (setq normalize (replace-regexp-in-string "','" " " normalize)) ;; Remove the value separators
+    (setq normalize (car (read-from-string (concat "(" normalize ")")))) ;; Turn string into a list we can `read'.
+    ))
+;;
+(defalias 'mon-mysql-csv-to-list 'mon-csv-string-to-list)
 ;;
 ;;; :TEST-ME 
 ;;; (mon-csv-string-to-list
@@ -613,7 +621,7 @@ STRING include a null substring for that.
 If ALLOWEND is non-nil when match is at the end of STRING include a null
 substring for that.\n
 :NOTE Modifies the match data; use `save-match-data' if necessary.\n
-:SEE-ALSO `mon-mysql-get-field-col', `mon-csv-string-to-list', 
+:SEE-ALSO `mon-mysql-get-field-col', `mon-mysql-csv-to-list', 
 `mon-cln-csv-fields',, `mon-string-csv-rotate'.\n►►►"
   (or subexp (setq subexp 0))
   (let ((rexp (or separators "[ \f\t\n\r\v]+"))
@@ -635,6 +643,8 @@ substring for that.\n
     (or (and (not allowend) (eq start (length string)))
 	(push (substring string start) list))
     (nreverse list)))
+;;
+(defalias 'mon-mysql-csv-split-string 'mon-csv-split-string)
 
 
 ;;; ==============================

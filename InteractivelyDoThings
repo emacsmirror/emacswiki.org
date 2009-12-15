@@ -27,6 +27,10 @@ To find a file C-x C-f:
 * do C-x C-d to enter Dired in this directory
 * to create a new file matching the text you entered do C-j (note that this is needed if the text you entered matches an existing file, because simply typing enter would rather open the existing one)
 
+This screencast demos Ido: 
+Screencast: http://www.vimeo.com/1013263
+
+
 [new:eleanor:Sun Oct 26 19:10:09 CET 2008]
 After C-x C-f in ido-mode, M-r doesn't work as expected. With the default find-file, you can regexp search for recently opened files. With ido, the file names do show up in ido-work-file-list but I always get a 'no earlier matching history item' when searching for a history item.
 ----
@@ -172,6 +176,9 @@ Did you ever want to use [[bookmark]]s from within ido? I just did a little mash
 
 If you don't want to set recursive minibuffers globally, you could also activate them locally in the above function using a let declaration.
 
+See also [[#InvokeBookmarks]].
+
+
 = Complete find-tag using ido =
 
 Use ido to complete tags:
@@ -215,6 +222,8 @@ If you want to ensure '.' is not buried by this, change the final lambda as foll
 [new:DrewAdams:2008-08-17 20:24 UTC]
 Depending on the type of entities (e.g. file names) in the list and your current context, it can often be more convenient to sort alphabetically. It all depends. For files and directories, this is why we have different sort orders in DiredMode (see, e.g., DiredSortMenu). 
 
+See also [[#SortOrder]].
+
 = A better (IMHO) ido-edit-input function =
 
 In order to be more consistent with the normal find-file HCI, to which I am really really used (and, by the waym with the way command shells do completion), I changed slighlty the behaviour of the backspace and C-e keys in 'file mode :
@@ -239,11 +248,8 @@ Maybe this is useless with recent versions of emacs/ido, but here I'm forced to 
 
    ;;(process-environment (cons "HOME=/" process-environment)) 
 
-- [[Gyom]]
+-- [[Gyom]]
 
-= What You Can Learn From ido.el =
-
-Screencast: http://www.vimeo.com/1013263
 
 [:TagsFile]
 = Find files in Tags File =
@@ -328,22 +334,18 @@ This is a refinement of the above. It adds two features:
 
 [NxhtmlMode nXhtml] tweaks Ido to do ControlTABbufferCycling combined with Ido's normal buffer switching.
 
-= Iclicles Isn't Ido =
+= Icicles and Ido =
 
-* [[Icicles]] -- Similar to ido.el in some ways, but you use the same minibuffer interface for files, buffers, commands -- everything.  Completion and ''cycling'' of completion candidates. Standard ''prefix'' completion and ''apropos'' (regexp) completion. Perform actions on selected (or all) candidates. Manipulate sets of completion candidates. More.
+[[Icicles]] is similar to Ido in some ways, and the two are sometimes confused. In Icicles, you use the same [[minibuffer]] interface for files, buffers, commands -- everything.  Completion and ''cycling'' of completion candidates. Standard prefix completion and ''apropos'' ([[regexp]]) completion. Perform actions on selected (or all) candidates. Manipulate sets of completion candidates.
 
-* [[Icicles]] lets you change the sort order on the fly during completion. There are many predefined sort orders available, and you can easily add your own. Some are general (always available, for all completion types) and some are available only in particular completion contexts. See [[Icicles - Sorting Candidates#DifferentSortForDifferentUses|Icicles Sort Orders]]. -- DrewAdams
+[:InvokeBookmarks]
+Icicles lets you access [[bookmark]]s in many ways, including according to their type. You can access a file bookmark when you use `C-x C-f', access an [[Info]] bookmark when you use `g' to go to an Info node, etc.
 
-[new] Can one use IDO to complete symbols in text buffers? Currently whenever you press TAB twice a *completion* buffer pops up. I would like to replace this buffer with IDO in minibuffer, such that after pressing RET the current symbol is replaced with completion candidate. 
-Is it possible?  Thanks for any suggestion. -- RedBlue
+[:SortOrder]
+Icicles lets you change the sort order on the fly during completion. There are many predefined sort orders available, and you can easily add your own. Some are general (always available, for all completion types) and some are available only in particular completion contexts. See [[Icicles - Sorting Candidates#DifferentSortForDifferentUses|Icicles Sort Orders]].
 
-[new:DrewAdams:2009-08-31 23:23 UTC]
-: Dunno, for Ido. But if you would like to use [[Icicles]] instead, then `M-TAB' does what you want, in Icicle mode. -- DrewAdams
-[new]
-:: Thanks Drew. It works nicelly indeed, replaces too many thing at once. Can I make only this feature work without activating icy-mode? I need it for ESS; have tried to replace comint-dynamic-simple-complete in original code in ESS but it didn't work out. Thanks. -- RedBlue
+You cannot use Ido and Icicles together (with both turned on) -- they use the minibuffer differently. Icicles uses it pretty much the same as vanilla Emacs, but Ido does not.
 
-[new:DrewAdams:2009-09-02 17:42 UTC]
-::: Nope, sorry. But you can turn off Icicle mode at any time. ;-)  Alternatively, you can borrow and adapt the code for `icicle-lisp-complete-symbol' in file <tt>[[icicles-cmd1.el]]</tt>. Just remove the `let' bindings for the 3 Icicles variables. That will give you most of the functionality, but without Icicles completion features (e.g. different matching, cycling etc.). -- DrewAdams
 
 ----
 CategoryCommands

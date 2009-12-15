@@ -7,17 +7,27 @@ buffer -- the Dired buffer you chose it in is not deleted.
 Some people don't like this behavior, because as you navigate around the
 directory tree you accumulate Dired buffers, one for each directory you visit.
 
-== Reuse Approaches ==
+== Simple Alternatives ==
 
-* In Emacs 22, you can use `a' in a Dired buffer, instead of `e', `f', and `RET'. This method does not affect mouse clicks on directory names, however. 
+* In Emacs 22 and later, you can use `a' in a Dired buffer, instead of `e', `f', and `RET'. This method does not affect mouse clicks on directory names, however. 
  
 * Alternatively you can use this code (mouse clicks is still not affected, but `RET' works):
 
-  (put 'dired-find-alternate-file 'disabled nil)  
+       (put 'dired-find-alternate-file 'disabled nil)  
 
-== Reuse with Advise ==
+== Libraries that Provide for Reuse ==
 
-Here are two ways to advise `dired-find-file', so it reuses a directory buffer:
+* '''Dired+''' -- Library Lisp:dired+.el (see DiredPlus) has command `toggle-dired-find-file-reuse-dir', to let you choose whether or not to reuse Dired buffers.  This changes all key bindings for `dired-find-file' and `diredp-mouse-find-file' to use the same buffer for visited directories. 
+
+: Use `toggle-dired-find-file-reuse-dir' interactively to toggle between the two visit-directory behaviors, or put this in your .emacs to just turn on directory-buffer reuse: ##(toggle-dired-find-file-reuse-dir 1)##.
+
+: Dired+ also provides commands `diredp-find-file-reuse-dir-buffer' and `diredp-mouse-find-file-reuse-dir-buffer' that open a directory in the same buffer -- bind them as you like.
+
+* http://www.northbound-train.com/emacs/dired-single.el
+
+== Advise `dired-find-file' ==
+
+Here are two ways to advise `dired-find-file', so it reuses a directory buffer. (But see AdviceVsHooks.)
 
 * The first
 
@@ -50,8 +60,7 @@ Here are two ways to advise `dired-find-file', so it reuses a directory buffer:
                        (not (eq (current-buffer) orig)))
               (kill-buffer orig))))
 
-== Reuse and ^ ==
-Using the methods above will still create a new buffer if you invoke ^ (dired-up-directory). To prevent this:
+: Using the advising methods above will still create a new buffer if you invoke ^ (dired-up-directory). To prevent this:
 
      (eval-after-load "dired"
        ;; don't remove `other-window', the caller expects it to be there
@@ -70,15 +79,6 @@ Using the methods above will still create a new buffer if you invoke ^ (dired-up
      	     (dired up)
      	     (dired-goto-file dir))))))
 
-== Package Level Approaches ==
-
-* '''Dired+''' -- Library Lisp:dired+.el (see DiredPlus) has command `toggle-dired-find-file-reuse-dir', to give you this functionality.  This changes all key bindings for `dired-find-file' and `diredp-mouse-find-file' to use the same buffer for visited directories. Use `toggle-dired-find-file-reuse-dir' interactively to toggle between the two visit-directory behaviors, or put this in your .emacs to just turn on directory-buffer reuse:
-
-        (toggle-dired-find-file-reuse-dir 1)
-
-:: <tt>[[dired+.el]]</tt> also provides commands `diredp-find-file-reuse-dir-buffer' and `diredp-mouse-find-file-reuse-dir-buffer' that open a directory in the same buffer -- bind them as you like.
-
-* http://www.northbound-train.com/emacs/dired-single.el
 
 ----
 CategoryDirectories

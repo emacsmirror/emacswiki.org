@@ -1,8 +1,6 @@
-This page is about library <tt>[[isearch+.el]]</tt>, written by DrewAdams. This extends standard Emacs library ##isearch.el##, which provides incremental searching.
+This page is about library <tt>[[isearch+.el]]</tt>, written by DrewAdams. This extends standard Emacs library ##isearch.el##, which provides IncrementalSearch.
 
-== Improvements to Incremental Searching (`isearch') ==
-
-Library <tt>[[isearch+.el]]</tt> provides the following improvements to IncrementalSearch (`isearch'):
+Features:
 
 * New option and commands to let you select the last target occurrence (set the [[region]] around it):
 ** Option '''`isearchp-set-region-flag'''' -- Non-`nil' means automatically set the region around the last search target.
@@ -20,15 +18,15 @@ Library <tt>[[isearch+.el]]</tt> provides the following improvements to Incremen
 ** '''`C-SPC'''' lets you toggle setting the region around the last found occurrence.
 ** '''`C-end'''' -- go to the longest line. Repeat to go to the longest line following that one in the buffer. As usual, `C-g' puts you back where you started. This binding is made only if you also use library <tt>[[misc-cmds.el]]</tt>. See [[FindLongLines#goto-longest-line|Find Long Lines]].
 
-* Highlighting of the failed portion of your search string in the MiniBuffer -- that is, the portion that will be removed if you do `C-g'.
+* Highlighting of the failed portion of your search string in the [[minibuffer]]-- that is, the portion that will be removed if you do `C-g'. (I added this feature to vanilla Emacs in release 23.1.)
 
-* `M-e' during Isearch edit (that is, after `M-e' -- so `M-e M-e') moves the cursor between the match success and fail positions of the search string. This lets you quickly change a character or two that you mistyped at that position.
+* `M-e' during Isearch edit (that is, after `M-e' -- so `M-e M-e') moves the [[cursor]] between the match success and fail positions of the search string. This lets you quickly change a character or two that you mistyped at that position.
 
 '''See Also:'''
 
-* '''ReplacePlus''' for related improvements to `query-replace'. In particular, the ability to select (put the region around) the last replacement.
-* '''ThingAtPointCommands''' for commands to extend the region around different things near the TextCursor. You can use it to extend the search-target region.
-* '''[[Icicles - Icompletion#HighlightNonmatch|Icicles Icompletion]]''' for similar highlighting of the non-matching portion of your input during [[Completion]].
+* '''ReplacePlus''' for related extensions to Emacs' standard `query-replace'. In particular, the ability to select (put the [[region]] around) the last replacement.
+* '''ThingAtPointCommands''' for commands to extend the region around different things near [[point]]. You can use it to extend the search-target region.
+* '''[[Icicles - Icompletion#HighlightNonmatch|Icicles Icompletion]]''' for similar highlighting of the non-matching portion of your input during [[completion]].
 
 
 

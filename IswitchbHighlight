@@ -1,0 +1,25 @@
+== Highlighting Buffer List Selection ==
+
+IswitchBuffers does wonders when you have a *pretty* good idea of what you're looking for.  But many times, what you think you're getting isn't what you'll really be getting.  The problem arises when the buffer names start to sound/look alike, and you're left wondering what'd happen when you select a particular buffer that *seems* like what you want.
+
+Not only that, iswitchb buffer choices can be quite dense.  There's no easy way to pick out some *type* of buffer you're looking for from among the list of file names, directory names, etc.
+
+So, here's my attempt at making this a little easier.
+
+Download:iswitchb-highlight.el
+
+The above package fontifies the buffer name in the buffer selection list based on the mode-name of the buffer.
+
+For instance,
+
+    '(("Dired"       . 1)
+      ("Planner"     . 2)
+      ("Fundamental" . 3)
+      ("Completions" . 3))
+
+    
+would fontify the above modes with *predefined* associated font face: iswitchb-highlight-X-face, where X is the number. -- PeterLee
+
+
+----
+CategoryBufferSwitching

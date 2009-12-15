@@ -1,0 +1,145 @@
+This is SuperDuperRedundantPlus+® the package so great you don't even really need it!
+
+Don't get it here Lisp:SuperDuperRedundantPlus+.el
+
+== Things SuperDuperRedundantPlus+® Can Not Do ==
+
+Following subsections outline the benefits of not using
+SuperDuperRedundantPlus+® and enumerate the things it could do if standard
+Emacs didn't provide tools for doing same already.
+
+=== SuperDuperRedundantPlus+® Does Not query-replace Multiple Files ===
+
+Don't use SuperDuperRedundantPlus+® to search files in a dired buffer
+containing regexp in order to query-replace over them.
+
+Instead, just do:
+
+`dired-mark-files-containing-regexp' followed by `dired-do-query-replace-regexp'.
+
+See, you don't need SuperDuperRedundantPlus+®.
+
+== SuperDuperRedundantPlus+® FAQ ==
+
+=== SuperDuperRedundantPlus+® Authors ===
+SuperDuperRedundantPlus+ ® is authored those taking the time to learn
+Emacs and no longer need SuperDuperRedundantPlus+® 
+(Hint, this is probably you!)
+
+=== Does SuperDuperRedundantPlus+® Have a Catchy Motto?===
+
+Yes. We say:
+
+"Why use SuperDuperRedundantPlus+® when you already have Emacs?"
+
+=== Can I Contribute to SuperDuperRedundantPlus+®?===
+
+SuperDuperRedundantPlus+® encourages input from the the EmacsWiki users.
+
+If you are aware of a feature that ought to be provided by
+SuperDuperRedundantPlus+® but isn't because Emacs already does it better
+we encourage you to submit your code snippets here under a dedicated
+section.
+
+=== How Do I Contribute to the SuperDuperRedundantPlus+® Project?===
+
+You can do this by following these steps:
+
+* Come to this Page;
+
+* Make a subsection heading under the Section 
+  "Things SuperDuperRedundantPlus+® Can Not Do";
+
+* Describe what SuperDuperRedundantPlus+® does not do. 
+  Feel free to be unusually verbose where necessary;
+
+* Provide a code snippet for how SuperDuperRedundantPlus+® _would_
+  accomplish a task were it actually needed;
+
+* Remind users that they don't really need SuperDuperRedundantPlus+®;
+
+* Scour the EmacsWiki and locate any and every possible pages where
+  SuperDuperRedundantPlus+® can be xrefd back to this page;
+
+* Having located potential xref target pages on the EmacsWiki execute
+  project SuperDuperRedundantPlus+® by interlinking back to this page,
+  preferably to an anchored location.
+
+ 
+=== Idiomatic SuperDuperRedundantPlus+® Section Format: ===
+
+Here is the standard template for adding your own SuperDuperRedundantPlus+®:
+
+
+<pre>
+  === The SuperDuperRedundantPlus+® Does Not Do XXXX ===
+
+  SuperDuperRedundantPlus+® does not do {Description here}
+
+  Don't use SuperDuperRedundantPlus+® to do `XXXX'
+
+  Instead, just do:
+
+  `code-snippet-here'
+
+  See, you don't need SuperDuperRedundantPlus+®.
+
+</pre>
+
+
+=== Are EmaksWiki Xrefs to SuperDuperRedundantPlus+® Spam? ===
+
+Absolutely Not.
+
+Don't worry if your EmacsWiki SuperDuperRedundantPlus+® xrefs are mostly
+irrelevant, confuse other users of the EmacsWiki or otherwise muddles an
+existing page.
+
+As a SuperDuperRedundantPlus+® developer this should not concern you. 
+
+=== Is SuperDuperRedundantPlus+® Borgish? ===
+
+Yep.
+
+Remember, other users must be made constantly aware of the myriad applications
+of SuperDuperRedundantPlus+®.
+
+Also, remember this, once users learn of SuperDuperRedundantPlus+® they _will_
+be assimilated.
+
+=== Why Is SuperDuperRedundantPlus+® Borgish? ===
+
+Assimilation by SuperDuperRedundantPlus+® is important because without it
+SuperDuperRedundantPlus+® will never become a part of the standard Emacs
+distribution. Don't blame the authors of SuperDuperRedundantPlus+® we
+believe it should be but Stefan Monnier and Chong Yidong don't like
+SuperDuperRedundantPlus+®. Comrades we must force their hands.
+
+=== Can I refer to SuperDuperRedundantPlus+® as SDRP+® ===
+
+Does a bear wear the pope's hat?
+
+=== What license is SuperDuperRedundantPlus+® released under ===
+
+Gnu vacuous v4.3 or any thing prior.
+
+=== If I fork SuperDuperRedundantPlus+® can I use its source in my new package UBERSuperDuperRedundantPlus+® ===
+
+Are you crazy man.. you're joking right??? 
+We will sue you for everything SuperDuperRedundantPlus+® is worth.
+
+=== Are there other packages like SuperDuperRedundantPlus+®? ===
+
+See TheIciclesWampeter
+
+----
+
+CategoryAccessibility
+CategoryBufferSwitching
+CategoryEmacsWikiSite
+CategoryHelp
+CategoryHistory
+CategoryHumor
+CategoryGlossary
+
+

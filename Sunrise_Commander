@@ -192,6 +192,7 @@ You can get a copy of the Sunrise Loop extension here:
 * http://joseito.republika.pl/sunrise-x-loop.el.gz
 * Lisp:sunrise-x-loop.el
 
+----
 [:PopviewerExt]
 ==The PopViewer Extension: making the viewer window float==
 A Sunrise Commander User had the following problem:

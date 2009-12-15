@@ -24,9 +24,11 @@ Things I'd like to try/get working:
 * something to replace Google Reader, perhaps NewsTicker, Gnus?
 
 Things that will make Emacs cooler (if that's possible):
-* [http://www.emacswiki.org/emacs/Google_Wave_for_Emacs Google Wave for Emacs]
+* [[Google Wave for Emacs]]
 * Emacs webkit and/or gecko integration (maybe something like ezbl)
  
+[new]
+Welcome to the wiki! :) As for the webkit stuff, did you take a look at EmacsXembed? -- AlexSchroeder
 
- ----
- CategoryHomepage
+----
+CategoryHomepage

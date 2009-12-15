@@ -68,12 +68,10 @@ above. I'll rip the text straight from the EmacsManual:
      the new names are `foo' and `bar'.
 </pre>
 
-[new:DrewAdams:2004-12-24 22:16 UTC]
-See also '''DiredPlus''', which provides these on menus, as well as commands to ''capitalize'' file and directory names. 
+[new]
+I agree with you that there is lots of stuff in Dired that is is not obvious.  I added commands like these to DiredPlus ''menus'' to help people notice and learn them. 
 
-I agree with you that there is lots of stuff in Dired that is is not obvious.  I added commands like these to Dired ''menus'' to help people notice and learn them. 
-
-Another good example is `<code>*.</code>' (`dired-mark-extension') -- I mentioned that command in response to a question on mailing list <code>help-gnu-emacs@gnu.org</code>, and I got an email back from someone saying that he had used Emacs for decades without being aware of that command. In '''Dired+''' the command is on the '''Mark''' menu, so it's more noticeable. -- DrewAdams
+Another good example is `<code>*.</code>' (`dired-mark-extension') -- I mentioned that command in response to a question on mailing list <code>help-gnu-emacs@gnu.org</code>, and I got an email back from someone saying that he had used Emacs for decades without being aware of that command. In DiredPlus the command is on the '''Mark''' menu, so it's more noticeable. -- DrewAdams
 [new]
 
 <pre>
@@ -187,6 +185,8 @@ A small customization to use your [mouse-2] button (middle button) to "find-alte
 To omit unmarked files, just type tk. This toggles the mark and then kills all the marked lines (which were previously the unmarked lines). Silly, but simple.
 
 = See Also =
+
+* DiredPlus -- Provides menus, highlighting, new commands, and more. 
 
 * [[Icicles]] -- Act on selected (or all) files and subdirectories matching a regexp, without entering Dired. Just `C-x C-f', type a regexp, and use `S-TAB' to see all matching files. You can use <code>[next]</code> and 
 <code>[prior]</code> to cycle among them. When you find one you want to act on, use `C-o' -- or use `<code>C-!</code>' to act on all matching files. The "action" here can be anything you like. See command `icicle-delete-file' for an example: delete one matching file or all of them.

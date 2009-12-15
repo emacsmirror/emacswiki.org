@@ -351,6 +351,14 @@ Please apply the above patch.
 
 Applied -- [[rubikitch]]
 
+[new]
+If there's no visible mark set by `anything-toggle-visible-mark', and press 'M-[' will cause:
+equal: Wrong type argument: overlayp, nil.
+
+[new:rubikitch:2009-12-15 05:32 UTC]
+Fixed! thanks -- [[rubikitch]]
+
+
 ----
 [[Anything]]
 

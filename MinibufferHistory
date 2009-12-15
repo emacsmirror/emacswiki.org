@@ -1,3 +1,6 @@
+This page is about Emacs' Minibuffer History.
+
+=Emacs Minibuffer History=
 Text you enter in the [[minibuffer]] ([[command]]s, input arguments) is typically added to a '''[::minibuffer history]''', also called '''[::input history]'''.
 
 Different contexts use different minibuffer histories. For example, if you input a filename argument to a command such as `find-file', it is added to a history of filename inputs.
@@ -14,17 +17,7 @@ Naturally, these keys work only during minibuffer input.
 `M-p' and `M-n' move one item through a history list each time you use them.
 
 
-== Enhancements to Minibuffer History ==
-
-=== Icicles ===
-
-'''[[Icicles]]''' enhances minibuffer behavior in many ways. In particular, you can match a regexp against items in each of the minibuffer history lists, without having to search the list match by match. See [[Icicles - History Enhancements]]. 
-
-You can also [[Icicles - Cycling Completions|cycle]] through the [[completion]] candidates for minibuffer input (including history items) using the arrow keys, and there is additional support for minibuffer completion. The standard minibuffer-history behavior (`M-n', `M-p') is still available as well.
-
-
-
-=== Rebinding Cycling Keys to History Completing Keys ===
+== Rebinding Cycling Keys to History Completing Keys ==
 
 `M-s' and `M-r' are, by default, bound to `next-complete-history-element' and `previous-complete-history-element', respectively (see above). Alternatively, you might want to rebind `M-p', `M-n', `up' and `down' to the history completion commands:
 
@@ -33,6 +26,9 @@ You can also [[Icicles - Cycling Completions|cycle]] through the [[completion]] 
  (define-key minibuffer-local-map (kbd "<up>") 'previous-complete-history-element)
  (define-key minibuffer-local-map (kbd "<down>") 'next-complete-history-element)
 
+== Packages that Extend Minibuffer History Behavior ==
+
+In [[Icicles]] you can match a [[regexp]] against items in each of the minibuffer history lists, without having to search the list match by match. See [[Icicles - History Enhancements]], and you can [[Icicles - Cycling Completions|cycle]] among [[completion]] candidates for minibuffer input (including history items).
 
 ----
 CategoryCommands

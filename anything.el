@@ -1,5 +1,5 @@
 ;;;; anything.el --- open anything / QuickSilver-like candidate-selection framework
-;; $Id: anything.el,v 1.219 2009/12/14 03:21:11 rubikitch Exp rubikitch $
+;; $Id: anything.el,v 1.222 2009/12/14 20:55:23 rubikitch Exp $
 
 ;; Copyright (C) 2007        Tamas Patrovics
 ;;               2008, 2009  rubikitch <rubikitch@ruby-lang.org>
@@ -325,6 +325,15 @@
 
 ;; (@* "HISTORY")
 ;; $Log: anything.el,v $
+;; Revision 1.222  2009/12/14 20:55:23  rubikitch
+;; Fix display bug: `anything-enable-digit-shortcuts' / multiline
+;;
+;; Revision 1.221  2009/12/14 20:29:49  rubikitch
+;; fix an error when executing `anything-prev-visible-mark' with no visible marks.
+;;
+;; Revision 1.220  2009/12/14 20:19:05  rubikitch
+;; Bugfix about anything-execute-action-at-once-if-one and multiline
+;;
 ;; Revision 1.219  2009/12/14 03:21:11  rubikitch
 ;; Extend alphabet shortcuts to A-Z
 ;;
@@ -1037,7 +1046,7 @@
 ;; New maintainer.
 ;;
 
-(defvar anything-version "$Id: anything.el,v 1.219 2009/12/14 03:21:11 rubikitch Exp rubikitch $")
+(defvar anything-version "$Id: anything.el,v 1.222 2009/12/14 20:55:23 rubikitch Exp $")
 (require 'cl)
 
 ;; (@* "User Configuration")
@@ -2017,9 +2026,17 @@ LONG-DOC is displayed below attribute name and short documentation."
 
 (defun anything-approximate-candidate-number ()
   "Approximate Number of candidates.
-It is used to check if candidate number is 0 or 1."
+It is used to check if candidate number is 0, 1, or 2+."
   (with-current-buffer anything-buffer
-    (1- (line-number-at-pos (1- (point-max))))))
+    (let ((lines (1- (line-number-at-pos (1- (point-max))))))
+      (if (zerop lines)
+          0
+        (save-excursion
+          (goto-char (point-min))
+          (forward-line 1)
+          (if (anything-pos-multiline-p)
+              (if (search-forward anything-candidate-separator nil t) 2 1)
+            lines))))))
 
 (defmacro with-anything-quittable (&rest body)
   `(let (inhibit-quit)
@@ -2458,6 +2475,10 @@ Cache the candidates if there is not yet a cached value."
             separate)
         (anything-insert-header-from-source source)
         (dolist (match matches)
+          (if (and multiline separate)
+              (anything-insert-candidate-separator)
+            (setq separate t))
+
           (when (and anything-enable-digit-shortcuts
                      (not (eq anything-digit-shortcut-count
                               (length anything-digit-overlays))))
@@ -2466,10 +2487,6 @@ Cache the candidates if there is not yet a cached value."
                           (line-beginning-position)
                           (line-beginning-position))
             (incf anything-digit-shortcut-count))
-
-          (if (and multiline separate)
-              (anything-insert-candidate-separator)
-            (setq separate t))
           (anything-insert-match match 'insert))
         
         (if multiline
@@ -3416,18 +3433,20 @@ Otherwise ignores `special-display-buffer-names' and `special-display-regexps'."
 (defun anything-next-visible-mark (&optional prev)
   (interactive)
   (with-anything-window
-    (setq anything-visible-mark-overlays
-          (sort* anything-visible-mark-overlays
-                 '< :key 'overlay-start))
-    (let ((i (position-if (lambda (o) (< (point) (overlay-start o)))
-                          anything-visible-mark-overlays)))
-      (when prev
+    (block 'exit
+      (setq anything-visible-mark-overlays
+            (sort* anything-visible-mark-overlays
+                   '< :key 'overlay-start))
+      (let ((i (position-if (lambda (o) (< (point) (overlay-start o)))
+                            anything-visible-mark-overlays)))
+        (when prev
+          (unless anything-visible-mark-overlays (return-from 'exit nil))
           (if (not i) (setq i (length anything-visible-mark-overlays)))
           (if (equal (point) (overlay-start (nth (1- i) anything-visible-mark-overlays)))
               (setq i (1- i))))
-      (when i
-        (goto-char (overlay-start (nth (if prev (1- i) i) anything-visible-mark-overlays)))
-        (anything-mark-current-line)))))
+        (when i
+          (goto-char (overlay-start (nth (if prev (1- i) i) anything-visible-mark-overlays)))
+          (anything-mark-current-line))))))
 
 (defun anything-prev-visible-mark ()
   (interactive)
@@ -5318,6 +5337,39 @@ Given pseudo `anything-sources' and `anything-pattern', returns list like
           (define-anything-type-attribute 'buffer '((action . switch-to-buffer)))
           (define-anything-type-attribute 'file '((action . find-file)))
           anything-type-attributes))
+      (defun "anything-approximate-candidate-number")
+      (expect 0
+        (with-temp-buffer
+          (let ((anything-buffer (current-buffer)))
+            (anything-approximate-candidate-number))))
+      (expect 1
+        (with-temp-buffer
+          (let ((anything-buffer (current-buffer)))
+            (insert "Title\n"
+                    "candiate1\n")
+            (anything-approximate-candidate-number))))
+      (expect t
+        (with-temp-buffer
+          (let ((anything-buffer (current-buffer)))
+            (insert "Title\n"
+                    "candiate1\n"
+                    "candiate2\n")
+            (<= 2 (anything-approximate-candidate-number)))))
+      (expect 1
+        (with-temp-buffer
+          (let ((anything-buffer (current-buffer)))
+            (insert "Title\n"
+                    (propertize "multi\nline\n" 'anything-multiline t))
+            (anything-approximate-candidate-number))))
+      (expect t
+        (with-temp-buffer
+          (let ((anything-buffer (current-buffer))
+                (anything-candidate-separator "-----"))
+            (insert "Title\n"
+                    (propertize "multi\nline1\n" 'anything-multiline t)
+                    "-----\n"
+                    (propertize "multi\nline2\n" 'anything-multiline t))
+            (<= 2 (anything-approximate-candidate-number)))))
       )))
 
 
