@@ -331,9 +331,13 @@ This will give '##()##' in regular situations and '##\(\)##' when point is prece
 
 [new]
 ''Perfect!'' This should be included in AUCTeX as default! Should we clean up the discussion or just leave it as it is? Thanks again!
-
+[new]
+This does not work on my emacs version.  Even with a .emacs file which contains only the code above, I get the message 
+"Marker does not point anywhere".  I am also a very novice elisp programmer. 
 [new]
 Since this is more of an !AutoPairs issue than an !AUCTeX issue, I'm moving the discussion here. Do check out the other code on this page. :)
+[new]
+Hmm.  The !AUCTeX page points back to the present one. 
 [new]
 Maybe it is an !AutoPairs issue :) The info is relevant to !OrgMode as well.
 

@@ -38,6 +38,7 @@ ephemeral. Learn to use it.
 = Packages Which Extend Emacs' Standard Region Handling =
 
 * AnchoredTranspose -- Transposes a phrase around an anchor phrase. In other words it swaps 2 regions.
+* [[Bookmark+]] -- Name regions and make them persistent. Revisit to activate.
 * ChangingCursorDynamically -- Find the region by making TextCursor more visible when Emacs is idle.
 * CuaMode -- Use key bindings compatible with the Common User Access (CUA) system
 * EevMode -- `M-x eev' saves region to a temporary script. Later we can execute it.

@@ -1,0 +1,23 @@
+I was amazed to find that there's no mode for editing grammar files in BNF format. Here's a small contribution which does some syntax highlighting.
+
+<pre>
+(define-generic-mode 'bnf-mode
+ () ;; comment char: inapplicable because # must be at start of line
+ nil ;; keywords
+ '(
+   ("^#.*" . 'font-lock-comment-face) ;; comments at start of line
+   ("^<[^ \t\n]*?>" . 'font-lock-function-name-face) ;; LHS nonterminals
+   ("<[^ \t\n]*?>" . 'font-lock-builtin-face) ;; other nonterminals
+   ("::=" . 'font-lock-const-face) ;; "goes-to" symbol
+   ("\|" . 'font-lock-warning-face) ;; "OR" symbol
+   )
+ '("\\.bnf\\'") ;; filename suffixes
+ nil ;; extra function hooks
+ "Major mode for BNF highlighting.")
+</pre>
+
+By jmmcd (jamesmichaelmcdermott ATTTT gmail)
+
+
+[new:DrewAdams:2009-12-16 01:22 UTC]
+That sounds like it could be useful when using Vinicius's [[ViniciusJoseLatorre#toc3|EBNF2PS]]. -- DrewAdams

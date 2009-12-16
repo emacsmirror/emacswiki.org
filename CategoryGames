@@ -26,6 +26,7 @@ Add-on games:
 * SokobanMode
 * TypingOfEmacs -- a game for fast typers
 * TypingPractice -- typing practice in the minibuffer.
+* [[Whine]] -- complaint generator
 * MineSweeper -- a game of mine sweeper
 * [http://www.elite-for-emacs.org/elite-for-emacs/index.html Elite for emacs]
 -- An Emacs version of the classic game Elite

@@ -59,5 +59,19 @@ Thanks Tom.
 -- DuncanMortimer
 
 ----
+
+Your count function looks rather complicated, what about:
+{{{
+  (save-excursion
+    (let ((count 0))
+      (goto-char (point-min))
+      (while (< (point) (point-max))
+	(forward-word 1)
+	(setq count (1+ count)))
+}}}
+
+-- Rebecca
+
+----
 CategoryModes
 CategoryWriting

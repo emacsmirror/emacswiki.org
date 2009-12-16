@@ -13,11 +13,11 @@
 ;;;
 ;;; :SEE (URL `http://www.emacswiki.org/cgi-bin/emacs/download/sql-completion.el')
 ;;; :SEE (URL `http://www.emacswiki.org/emacs/mysql.el')
-;;; 
 ;;;
 ;;; FUNCTIONS:►►►
 ;;; `mon-help-mysql-complete', `mon-mysql-cln-pipes', `mon-mysql-get-field-col'
-;;; `mon-csv-string-to-list', `mon-csv-split-string', 
+;;; `mon-csv-string-to-list', `mon-csv-string-map-list', `mon-csv-split-string', 
+;;; `mon-csv-map-col-field-pairs'
 ;;; FUNCTIONS:◄◄◄
 ;;;
 ;;; MACROS:
@@ -32,9 +32,11 @@
 ;;; `*regexp-clean-mysql*'
 ;;;
 ;;; ALIASED/ADVISED/SUBST'D:
-;;; `mon-cln-pipes' -> `mon-mysql-cln-pipes'
-;;; `mon-mysql-csv-to-list'  -> `mon-csv-string-to-list'
-;;; `mon-mysql-csv-split-string' -> `mon-csv-split-string'
+;;; `mon-cln-pipes'                     -> `mon-mysql-cln-pipes'
+;;; `mon-mysql-csv-to-list'             -> `mon-csv-string-to-list'
+;;; `mon-mysql-csv-split-string'        -> `mon-csv-split-string'
+;;; `mon-mysql-csv-map-list'            -> `mon-csv-string-map-list'
+;;; `mon-mysql-csv-map-col-field'       -> `mon-csv-map-col-field-pairs'
 ;;;
 ;;; DEPRECATED:
 ;;;
@@ -386,8 +388,10 @@ Use to extract fields from mysql command:\nmysql> SHOW COLUMNS FROM THE-DB.TABLE
  | time_zone_leap_second     | \n | time_zone_name            | 
  | time_zone_transition      | \n | time_zone_transition_type | 
  | user                      | \n +---------------------------+ \n◄\n
-:SEE-ALSO `mon-mysql-cln-pipes',`mon-mysql-csv-split-string',`mon-mysql-csv-to-list',
-`mon-cln-csv-fields', `mon-string-csv-rotate'.\n►►►"
+:SEE-ALSO `mon-mysql-cln-pipes',`mon-mysql-csv-split-string',
+`mon-mysql-csv-to-list', `mon-cln-csv-fields'
+`mon-mysql-csv-map-list', `mon-mysql-csv-map-col-field',
+`mon-string-csv-rotate'.\n►►►"
   (interactive "r\nsFirst field's value: \np")
   (let (flds
         (the-field (if (or intrp field-1) field-1 "Field")))
@@ -400,13 +404,12 @@ Use to extract fields from mysql command:\nmysql> SHOW COLUMNS FROM THE-DB.TABLE
             (whitespace-cleanup)
             (goto-char (buffer-end 0))
             (while (search-forward-regexp "^[\\[:blank:]]" nil t )(replace-match ""))            
-            ;; Remove all "+----+----+...." lines.
-            ;; (while (search-forward-regexp 
-            ;;         ;;...1....................2........3.......................
-            ;;         "^\\([\\[:blank:]]?\\)\\([+-]+\\)\\([\\[:blank:]]?\\)" nil t)
-            ;;   (replace-match ""))
             (goto-char (buffer-end 0))
-            (while (search-forward-regexp "^\\([+-]+\\)$" nil t) (replace-match ""))
+            ;; Remove all "+----+----+...." lines.
+            (while (search-forward-regexp "^\\([+-]+\\)$" nil t) 
+              ;; :WAS ;;...1....................2........3.......................
+              ;;      "^\\([\\[:blank:]]?\\)\\([+-]+\\)\\([\\[:blank:]]?\\)" nil t)
+              (replace-match ""))
             (goto-char (buffer-end 0))
             (progn
               ;; Remove table header.
@@ -458,11 +461,14 @@ When called-interactively or TO-KILL is non-nil put retun value on kill-ring.\n
 | \"2008-05-25 16:54:04\" | 1200 | t | \"bubba\" | | 2008-10-25 16:54:04 |
 | 2008-10-25 16:54:04 | 1200 | F | \"bubba\" | | 2008-10-25 16:54:04 |◄◄           \n
 :SEE-ALSO `mon-mysql-get-field-col',`mon-mysql-csv-split-string', 
-`mon-mysql-csv-to-list', `mon-cln-csv-fields', `mon-string-csv-rotate'.\n►►►"
+`mon-mysql-csv-to-list', `mon-cln-csv-fields', 
+`mon-mysql-csv-map-list', `mon-mysql-csv-map-col-field',
+`mon-string-csv-rotate'.\n►►►"
   (interactive "r\np")
   (let (tb mtb)
     (setq tb (buffer-substring-no-properties start end))
     (setq tb (with-temp-buffer
+               (toggle-truncate-lines -1) ;; <- Paranoia.
                (insert tb)              
                (goto-char (buffer-end 0))
                ;; Remove all "+----+----+...." lines.
@@ -471,30 +477,65 @@ When called-interactively or TO-KILL is non-nil put retun value on kill-ring.\n
                (goto-char (buffer-end 0))
                ;; pipe at BOL.
                (while (search-forward-regexp "^|[\\[:blank:]]+" nil t)
-                 ;; :WAS (replace-match " | "))
-                 (replace-match "| "))
+                 ;; :WAS (replace-match "| "))
+                 (replace-match " | "))
                (goto-char (buffer-end 0))
                ;; Remove pipe at EOL.
                (while (search-forward-regexp "[\\[:blank:]]+|$" nil t)
-                 ;; :WAS (replace-match " | "))
-                 (replace-match " |"))
+                 ;; :WAS (replace-match " |"))
+                 (replace-match " | "))
                ;; Attempt to find empty pairs of pipes ` | | '.
                ;; These may or may not be column vals. replace with ?NULL?
                (goto-char (buffer-end 0))
                (while (search-forward-regexp 
                        "\\([\\[:graph:]]?\\)\\([\\[:blank:]]|[\\[:blank:]]+|[\\[:blank:]]\\)" nil t)
-                 (replace-match "\\1 | ?NULL? | "))
-               ;; Replace the field data.
+                 (replace-match "\\1 | ?NULL? | ")
+                 (search-backward "?NULL?" nil t))
                (goto-char (buffer-end 0))
-               (while
-                   (search-forward-regexp  
-                    (concat
-                     ;;..1.
-                     "\\("
-                     ;;..2.........................................3....................
-                     "\\([^| \n][\\[:graph:]\\[:blank:]][^|]+\\)\\([\\[:blank:]]|\\)\\)"
-                     ;;.....4....5....................
-                     "\\|\\(| \\([\\[:alpha:]]\\) |\\)") nil t)
+               ;; Replace the single char cell ` | T | '
+               (while (search-forward-regexp 
+                       (concat "\\([\\[:blank:]]|[\\[:blank:]]\\)" ;; <- grp1
+                               "\\([A-Z]\\{1,1\\}\\)"              ;; <- grp2
+                               "\\([\\[:blank:]]+|\\)")            ;; <- grp3 
+                       nil t)
+                 (replace-match " | \\2 |")
+                 (skip-chars-backward " |"))
+               (goto-char (buffer-end 0))
+               ;; Replace leading whitespace - should only happend on digits?
+               (while (search-forward-regexp
+                       (concat
+                        ;;..1..............................
+                        "\\([\\[:blank:]]|[\\[:blank:]]+\\)"
+                        ;;..2..3.................
+                        "\\(\\([\\[:digit:]]+\\)"
+                        ;;..4.............................
+                        "\\([\\[:blank:]]|[\\[:blank:]]\\)  \\)") nil t)
+                 (replace-match " | \\3 |")
+                 (skip-chars-backward " |"))
+               (goto-char (buffer-end 0))
+               ;; Replace remaning trailing whitespace on digits and UPPERS.
+               (while (search-forward-regexp
+                       (concat
+                        "\\(|[\\[:blank:]]" ;; <-grp1 leading piped w/ space.
+                        "\\([A-Z]\\{1,1\\}\\|[0-9]+\\)\\)" ;; <-grp2 A Single UPPER or Digit
+                        "\\([\\[:blank:]]+|\\)" ;;<- grp3 trailing space
+                        ) nil t)
+                 (replace-match "| \\2 |")
+                 (skip-chars-backward " |"))
+               (goto-char (buffer-end 0))
+               ;; remaining _Big_ whitespace is after field data.
+               (while (search-forward-regexp  "\\([\\[:blank:]]+|\\)[\\[:blank:]]" nil t)
+                 (replace-match " | "))
+               (goto-char (buffer-end 0))
+               ;; Replace the field data.
+               (while (search-forward-regexp  
+                       (concat
+                        ;;..1.
+                        "\\("
+                        ;;..2.........................................3....................
+                        "\\([^| \n][\\[:graph:]\\[:blank:]][^|]+\\)\\([\\[:blank:]]|\\)\\)"
+                        ;;.....4....5...............
+                        "\\|\\(| \\([\\[:alpha:]]\\) |\\)") nil t)
                  (let* ((rep-mtch
                          (if (match-string-no-properties 2)
                              (match-string-no-properties 2)
@@ -524,10 +565,13 @@ When called-interactively or TO-KILL is non-nil put retun value on kill-ring.\n
                (goto-char (buffer-end 0))
                (while (search-forward-regexp  "\\(| \\|  + | \\| +| +| \\)" nil t)
                  (replace-match " "))
+               (goto-char (buffer-end 0))
                ;; Try to catch any remaining cruft at EOL.
                (whitespace-cleanup)
                (goto-char (buffer-end 0))
-               ;; Did we miss any stragglers at BOL?
+               (while (search-forward-regexp  "[\\[:blank:]]?|[\\[:blank:]]?$" nil t)
+                 (replace-match ""))
+               ;; Did we miss any straggling whitespace at BOL?
                (while (search-forward-regexp "^ " nil t) 
                  (replace-match ""))
                (buffer-substring-no-properties (buffer-end 0) (buffer-end 1))))
@@ -590,6 +634,7 @@ Primarily useful for tearing down SQL dumps on the way to a pairlis.\n
   \"('VALUE-0','VALUE-1','VALUE-3','Y','N','T','F','escaped\\\\\\'quote','','',0,1,2\)\")\)\n
 :SEE-ALSO `mon-mysql-csv-split-string', `mon-mysql-get-field-col',
 `mon-mysql-csv-to-list', `mon-cln-csv-fields',
+`mon-csv-string-map-list', `mon-mysql-csv-map-col-field',
 `mon-string-csv-rotate'.\n►►►"
   (let ((normalize csv-str))
     (setq normalize (replace-regexp-in-string ",\\([0-9]+\\)" ",'\\1'" normalize nil)) ;; ,DIGIT -> ,'DIGIT'
@@ -609,6 +654,69 @@ Primarily useful for tearing down SQL dumps on the way to a pairlis.\n
 ;;;   "('VALUE','VALUE','VALUE-3','Y','N','T','F','escaped\\'quote','','',0,1,2)")
 
 ;;; ==============================
+;;; :CREATED <Timestamp: #{2009-12-15T16:10:18-05:00Z}#{09512} - by MON KEY>
+(defun mon-csv-string-map-list (csv-list)
+  "Map CSV-LIST a of strings containing csv separated values.
+Return pretty printed list with each string of CSV-LIST in a list.\n
+:EXAMPLE\n\(mon-csv-string-map-list
+  '\(\"\('VALUE-A0','VALUE-A1','VALUE-A2','Y','N','T','F','escaped\\\\\'quote','','',0,1,2\)\"
+    \"\('VALUE-B0','VALUE-B1','VALUE-A2','N','N','T','T','bubba','','',2,1,0\)\"
+    \"\('VALUE-C0','VALUE-C1','VALUE-C2','N','Y','F','T','bubbette','','',1,0,2\)\"\)\)\n
+:SEE-ALSO `mon-mysql-csv-split-string', `mon-mysql-get-field-col',
+`mon-mysql-csv-to-list', `mon-cln-csv-fields',
+`mon-csv-string-map-list', `mon-mysql-csv-map-col-field'
+`mon-string-csv-rotate'.\n►►►"
+(let (ii)
+    (dolist (i csv-list (setq ii (nreverse ii)))
+      (push (mon-csv-string-to-list i) ii))))
+;;
+(defalias 'mon-mysql-csv-map-list 'mon-csv-string-map-list)
+;;
+;;; :TEST-ME 
+;;; (mon-csv-string-map-list
+;;;  '("('VALUE-A0','VALUE-A1','VALUE-A2','Y','N','T','F','escaped\\'quote','','',0,1,2)"
+;;;    "('VALUE-B0','VALUE-B1','VALUE-A2','N','N','T','T','bubba','','',2,1,0)"
+;;;    "('VALUE-C0','VALUE-C1','VALUE-C2','N','Y','F','T','bubbette','','',1,0,2)"))
+
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-12-15T16:54:49-05:00Z}#{09512} - by MON KEY>
+(defun mon-csv-map-col-field-pairs (col-val-list csv-field-vals &optional insrtp)
+  "Map the pair of key values in COL-VAL-LIST with each val in the list of strings 
+CSV-FIELD-VALS. Return a list of lists of of key-val -> field-val for each string.
+:EXAMPLE\n\(mon-csv-map-col-field-pairs\n '\(KEY-0 KEY-1 KEY-2\)
+ '\(\"\(1,'VAL-A1','VAL-A2'\)\" \"\('VAL-B0',1,''\)\" \"\('VAL-C0','VAL-C1',2\)\"\)\)\n
+:SEE-ALSO `mon-mysql-csv-split-string', `mon-mysql-get-field-col',
+`mon-mysql-csv-to-list', `mon-cln-csv-fields',
+`mon-mysql-csv-map-list', `mon-mysql-csv-map-col-field'
+`mon-string-csv-rotate'.\n►►►"
+  (let (kvrt)
+    (dolist (kv (mon-mysql-csv-map-list csv-field-vals) (setq kvrt (nreverse kvrt)))
+      (push (pairlis col-val-list kv) kvrt))
+    (if insrtp
+        (save-excursion 
+          (newline)
+          (princ (pp kvrt) (current-buffer)))
+        kvrt)))
+;;
+(defalias 'mon-mysql-csv-map-col-field 'mon-csv-map-col-field-pairs)
+;; 
+;;; :TEST-ME 
+;;; (mon-csv-map-col-field-pairs 
+;;;  '(KEY-0 KEY-1 KEY-2)
+;;;  '("(1,'VAL-A1','VAL-A2')" "('VAL-B0',1,'')" "('VAL-C0','VAL-C1',2)"))
+
+;;; ==============================
+;;; :TODO Decide how we want to handle blocks of csv lists starting from strings.
+;;; :CREATED <Timestamp: #{2009-12-15T16:31:58-05:00Z}#{09512} - by MON KEY>
+;;; (defun mon- ( &optional insertp intrp) 
+;;; (interactive " \ni\np") 
+;;; (SOME XXX {...}
+;;; (save-excursion 
+;;;   (newline) 
+;;;   (DO XXX (current-buffer))))
+
+;;; ==============================
 ;;; :COURTESY Francis J. Wright :HIS csv-mode.el :WAS `csv-split-string'
 ;;; :CREATED <Timestamp: #{2009-12-10T19:03:25-05:00Z}#{09505} - by MON>
 (defun mon-csv-split-string (string &optional separators subexp allowbeg allowend)
@@ -622,7 +730,8 @@ If ALLOWEND is non-nil when match is at the end of STRING include a null
 substring for that.\n
 :NOTE Modifies the match data; use `save-match-data' if necessary.\n
 :SEE-ALSO `mon-mysql-get-field-col', `mon-mysql-csv-to-list', 
-`mon-cln-csv-fields',, `mon-string-csv-rotate'.\n►►►"
+`mon-csv-string-map-list', `mon-cln-csv-fields', `mon-mysql-csv-map-col-field'
+`mon-string-csv-rotate'.\n►►►"
   (or subexp (setq subexp 0))
   (let ((rexp (or separators "[ \f\t\n\r\v]+"))
 	(start 0)

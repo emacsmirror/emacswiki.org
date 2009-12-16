@@ -63,7 +63,7 @@
 ;; Sunrise  panes.  It’s meant to be simple and to work nicely with Sunrise with
 ;; just a few tabs (up to 10‐15 per pane, maybe).
 
-;; This is version 1 $Rev: 226 $ of the Sunrise Commander Tabs Extension.
+;; This is version 1 $Rev: 239 $ of the Sunrise Commander Tabs Extension.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.
@@ -83,6 +83,11 @@
 
 (require 'sunrise-commander)
 (require 'easymenu)
+
+(defcustom sr-tabs-follow-panes t
+  "Whether tabs should be swapped too when transposing the Sunrise panes."
+  :group 'sunrise
+  :type 'boolean)
 
 (defcustom sr-tabs-max-tabsize 10
   "Maximum length of tabs in the Sunrise Commander FM."
@@ -219,15 +224,34 @@
     (if label
         (sr-tabs-redefine-label key new-name))))
 
+(defun sr-tabs-transpose (&optional interactive)
+  "Swaps the sets of tabs from one pane to the other."
+  (interactive "p")
+  (setq sr-tabs (mapc (lambda (x)
+                        (if (eq 'left (car x))
+                            (setcar x 'right)
+                          (setcar x 'left))) sr-tabs))
+  (when (or interactive
+            (not sr-tabs-follow-panes))
+    (sr-in-other (sr-tabs-refresh))
+    (sr-tabs-refresh)))
+
+;; This synchronizes the tabs with the panes if so required (see variable
+;; sr-tabs-follow-panes). Activated in method sr-tabs-engage.
+(defadvice sr-transpose-panes
+  (before sr-advice-sr-transpose-panes ())
+  (if sr-tabs-follow-panes (sr-tabs-transpose)))
+
 ;;; ============================================================================
 ;;; Graphical interface:
 
 (defun sr-tabs-focus-cmd (name side)
   "Returns  an anonymous function that can be used to give focus to the tab with
   the given name in the given pane."
-  `(lambda ()
-     (interactive)
-     (sr-tabs-focus ,name ',side)))
+  (let ((selector (if (eq side (caar sr-tabs)) #'caar #'caadr)))
+    `(lambda ()
+       (interactive)
+       (sr-tabs-focus ,name (funcall ',selector sr-tabs)))))
 
 (defun sr-tabs-rename-cmd (name)
   "Returns  an  anonymous  function  that can be used to rename the tab with the
@@ -239,12 +263,13 @@
 (defun sr-tabs-kill-cmd (name side)
   "Returns  an  anonymous  function  that can be used to delete the tab with the
   given name in the given pane."
-  `(lambda ()
-     (interactive)
-     (if (eq sr-selected-window ',side)
-         (sr-tabs-kill ,name)
-       (sr-in-other
-        (sr-tabs-kill ,name)))))
+  (let ((selector (if (eq side (caar sr-tabs)) #'caar #'caadr)))
+    `(lambda ()
+       (interactive)
+       (if (eq sr-selected-window (funcall ',selector sr-tabs))
+           (sr-tabs-kill ,name)
+         (sr-in-other
+          (sr-tabs-kill ,name))))))
 
 (defsubst sr-tabs-propertize-tag (string face keymap)
   "Propertizes the given string with the given face and keymap so it can be used
@@ -385,6 +410,7 @@
   (add-hook 'sr-refresh-hook 'sr-tabs-refresh)
   (add-hook 'sr-quit-hook 'sr-tabs-bury-all)
   (add-hook 'kill-buffer-query-functions 'sr-tabs-protect-buffer)
+  (ad-activate 'sr-transpose-panes)
   (sr-tabs-refresh))
 
 (defun sr-tabs-disengage ()
@@ -393,6 +419,7 @@
   (remove-hook 'sr-refresh-hook 'sr-tabs-refresh)
   (remove-hook 'sr-quit-hook 'sr-tabs-bury-all)
   (remove-hook 'kill-buffer-query-functions 'sr-tabs-protect-buffer)
+  (ad-deactivate 'sr-transpose-panes)
   (setq header-line-format (default-value 'header-line-format))
   (sr-in-other (setq header-line-format (default-value 'header-line-format))))
 
@@ -407,6 +434,7 @@
      ["Go to next tab" sr-tabs-next]
      ["Go to previous tab" sr-tabs-prev]
      ["Kill buffer and go to next tab" sr-tabs-kill-and-go]
+     ["Transpose tabs" sr-tabs-transpose]
      ["Tabs mode help" (lambda ()
                          (interactive)
                          (describe-function 'sr-tabs-mode))])))
@@ -427,6 +455,7 @@
   (lambda () (interactive) (sr-in-other (sr-tabs-next))))
 
 (define-key sr-tabs-mode-map "\C-xk" 'sr-tabs-kill-and-go)
+(define-key sr-tabs-mode-map "\M-T"  'sr-tabs-transpose)
 
 (define-minor-mode sr-tabs-mode
   "Tabs support for the Sunrise Commander file manager. This minor mode provides

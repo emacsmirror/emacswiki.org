@@ -84,7 +84,7 @@ It's worth noting, as usage quirks, that if you're revising an entry and do C-x 
 
 [new]
 
-I made a path(http://rix3.8.je/blog/2009/12/16/emacs%e7%9a%84weblogger1-4-4%e7%9a%84wordpress-patch/) about 1.4.4 for wordpress(2.8.6) like Tom Robinson, fixed the Categories bug and date bug(for me). At least, it worked very well for me.
+I made a patch(http://rix3.8.je/blog/2009/12/16/emacs%e7%9a%84weblogger1-4-4%e7%9a%84wordpress-patch/) about 1.4.4 for wordpress(2.8.6) like Tom Robinson, fixed the Categories bug and date bug(for me). At least, it worked very well for me. --rix
 ----
 
 CategoryJournaling

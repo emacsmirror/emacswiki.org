@@ -1,4 +1,4 @@
-Palm has put out a new device called the Palm Pre, running the WebKit OS, and Mojo Framework.  Basically it is a browser-like os on your phone, running HTML 5, CSS 3, and Javascript.  The Mojo SDK has a suite of commandline tools to st up a base application, launchc the emulator, interact with the phone, etc.
+Palm has put out a new device called the Palm Pre, running the Mojo Framework atop webOS.  Basically it is a browser-like os on your phone, running HTML 5, CSS 3, and Javascript.  The Mojo SDK has a suite of commandline tools to st up a base application, launchc the emulator, interact with the phone, etc.
 
 Lisp:mojo.el is a set of interactive functions to help out with the development of a Mojo application.  Right now it is in its early alpha/beta phase, and could use more work.
 

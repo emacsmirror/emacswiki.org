@@ -24,6 +24,11 @@ This is perhaps the
      visit.  You can sort, show/hide, or mark bookmarks based on
      this info.
 
+* You can ''combine bookmarks'', to make composite, or sequence,
+bookmarks.  Invoking a seqence bookmark invokes each of its
+component bookmarks in turn.  A component bookmark can itself
+be a sequence bookmark.
+
 * You can bookmark a ''[[region]]'' of text, not just a position.  When
      you jump to a bookmark that records a region, the region is
      activated (see option '''`bookmarkp-use-region-flag'''').  (Region
@@ -58,6 +63,8 @@ This is buffer `##*Bookmark List*##', aka the bookmark "menu list", which you di
 ** w3m URLs
 ** Info nodes
 ** Gnus articles
+** function bookmarks
+** sequence bookmarks
 
 * You can ''sort'' bookmarks in many ways.  You can easily define
      your own sort orders, even complex ones.
@@ -92,7 +99,7 @@ and accessory lists (hidden and marked bookmarks etc.).
 
 * You can edit a bookmark (its name and file name).
 
-* A complete menu, `Bookmark+' is provided on the [[menu bar]].
+* A complete menu, '''`##Bookmark+##'''', is provided on the [[menu bar]].
 Use it in particular when you don't remember a key binding.
 The same menu is available on `C-mouse-3'.
 
@@ -112,6 +119,12 @@ individual bookmark you point to.
 
 * You can bookmark a [[Gnus]] article, a URL (if you use [[w3m|W3M]]), a PDF file (%%DocView%%), an image, or a UNIX manual page (from the output of Emacs
      command `woman' or `man').
+
+* A bookmark can represent a function, which is invoked when
+you "jump" to the bookmark.
+
+* As mentioned above, a bookmark can represent a sequence of
+other bookmarks.
 
 
 === Synergy with Icicles. ===
@@ -161,6 +174,42 @@ marked bookmarks in the `##*Bookmark List*##' window, you can really
 do quite a lot using bookmark tags.  Use your imagination!  See [[#TagCommandsAndKeys]]), below, for more about this.
 
 
+
+
+[:FunctionAndSequenceBookmarks]
+== Function and Sequence Bookmarks ==
+
+Bookmarks are typically thought of only as recorded locations.
+Invoking a bookmark, called "jumping" to it, traditionally means
+just visiting its location.  '''Bookmark+''' looks at bookmarks in a
+more general way than that.  A bookmark is a shortcut of some
+kind -- nothing more.
+
+A given type of bookmark is defined by its handler function,
+which really could do anything you like.  We've already seen the
+examples of region bookmarks, which restore the active region, and
+Dired bookmarks, which restore a set of Dired markings.
+
+A '''function bookmark''' simply invokes some function -- any function.
+You can, for instance, define a window or frame configuration and
+record that as a bookmark.  Then jump to the bookmark to switch
+contexts.
+
+Function bookmarks might not seem too interesting, since we have
+other ways of invoking functions in Emacs.  But the other features
+of '''Bookmark+''' combine with this feature.  You can, for instance,
+tag such bookmarks.
+
+And you can combine them, invoking the functions sequentially.
+This is just a particular case of using a '''sequence bookmark''',
+which simply records a sequence of bookmarks.  The bookmarks in a
+sequence can be of any kind, including other sequence bookmarks.
+
+Command '''`bookmarkp-make-function-bookmark'''' creates a function
+bookmark -- you give it a function symbol or a lambda expression.
+Command '''`bookmarkp-bmenu-make-sequence-from-marked'''' creates a
+sequence from the marked bookmarks in the bookmark list, in their
+current order.
 
 
 
@@ -558,7 +607,7 @@ Bottom line: Use '''Bookmark+''' to access bookmarks created using
 
 
 ----
-CategoryHypermedia CategoryPersistence CategoryProgramming
+CategoryHypermedia CategoryPersistence CategoryProgramming CategoryRegion
 
 
 

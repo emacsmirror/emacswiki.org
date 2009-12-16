@@ -64,6 +64,13 @@ I use emacs without X, in the terminal exclusively (Ubuntu emacs-nox package). I
 [new]
 Is there any way to sort the *Newsticker Tree* buffer?
 
+: Currently (2009-12-16) there are keys for adding groups (M-a) and for moving feeds to groups (M-m). In order to sort feeds and groups one has to edit  ##~/.emacs.d/newsticker/groups## (##`newsticker-dir'/groups##). UlfJasper
+
+[new]
+Is Newsticker not maintained anymore?
+
+: Newsticker is part of GNU Emacs. UlfJasper
+
 ==Addons==
 
 * NewstickerNotify -- Display news number at mode-line when NewsTicker fetch news.

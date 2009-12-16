@@ -8,9 +8,9 @@
 ;; Copyright (C) 2000-2009, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Dec 11 14:49:19 2009 (-0800)
+;; Last-Updated: Tue Dec 15 22:09:04 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 8101
+;;     Update #: 8285
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -44,6 +44,7 @@
 ;;    (@> "Installing Bookmark+")
 ;;    (@> "Bookmark+ Features")
 ;;    (@> "Bookmark Tags")
+;;    (@> "Function and Sequence Bookmarks")
 ;;    (@> "Bookmark List (Display)")
 ;;      (@> "Tag Commands and Keys")
 ;;      (@> "Sets of Bookmarks")
@@ -98,6 +99,7 @@
 ;;    `bookmarkp-bmenu-filter-tags-incrementally',
 ;;    `bookmarkp-bmenu-isearch-marked-bookmarks' (Emacs 23+),
 ;;    `bookmarkp-bmenu-isearch-marked-bookmarks-regexp' (Emacs 23+),
+;;    `bookmarkp-bmenu-make-sequence-from-marked',
 ;;    `bookmarkp-bmenu-mark-all',
 ;;    `bookmarkp-bmenu-mark-bookmarks-tagged-all',
 ;;    `bookmarkp-bmenu-mark-bookmarks-tagged-none',
@@ -149,6 +151,7 @@
 ;;    `bookmarkp-define-tags-sort-command',
 ;;    `bookmarkp-describe-bookmark',
 ;;    `bookmarkp-list-defuns-in-commands-file',
+;;    `bookmarkp-make-function-bookmark',
 ;;    `bookmarkp-menu-jump-other-window' (Emacs 20, 21),
 ;;    `bookmarkp-remove-all-tags', `bookmarkp-remove-tags',
 ;;    `bookmarkp-remove-tags-from-all', `bookmarkp-rename-tag',
@@ -165,6 +168,7 @@
 ;;    `bookmarkp-incremental-filter-delay',
 ;;    `bookmarkp-region-search-size',
 ;;    `bookmarkp-save-new-location-flag',
+;;    `bookmarkp-sequence-jump-display-function',
 ;;    `bookmarkp-show-end-of-region', `bookmarkp-sort-comparer',
 ;;    `bookmarkp-sort-orders-alist',
 ;;    `bookmarkp-sort-orders-for-cycling-alist',
@@ -173,12 +177,12 @@
 ;;
 ;;  Faces defined here:
 ;;
-;;    `bookmarkp-bad-bookmark', `bookmarkp-buffer', `bookmarkp-gnus',
-;;    `bookmarkp-info', `bookmarkp-local-directory',
-;;    `bookmarkp-local-file-with-region',
+;;    `bookmarkp-bad-bookmark', `bookmarkp-buffer',
+;;    `bookmarkp-function', `bookmarkp-gnus', `bookmarkp-info',
+;;    `bookmarkp-local-directory', `bookmarkp-local-file-with-region',
 ;;    `bookmarkp-local-file-without-region', `bookmarkp-man',
 ;;    `bookmarkp-non-file', `bookmarkp-remote-file',
-;;    `bookmarkp-su-or-sudo', `bookmarkp-w3m'.
+;;    `bookmarkp-sequence', `bookmarkp-su-or-sudo', `bookmarkp-w3m'.
 ;;
 ;;  Macros defined here:
 ;;
@@ -221,18 +225,19 @@
 ;;    `bookmarkp-file-attribute-10-cp',
 ;;    `bookmarkp-file-attribute-11-cp', `bookmarkp-file-bookmark-p',
 ;;    `bookmarkp-file-remote-p', `bookmarkp-float-time',
-;;    `bookmarkp-get-buffer-name', `bookmarkp-get-end-position',
-;;    `bookmarkp-get-tags', `bookmarkp-get-visit-time',
-;;    `bookmarkp-get-visits-count', `bookmarkp-gnus-alist-only',
-;;    `bookmarkp-gnus-bookmark-p', `bookmarkp-gnus-cp',
-;;    `bookmarkp-goto-position', `bookmarkp-handle-region-default',
-;;    `bookmarkp-has-tag-p', `bookmarkp-info-alist-only',
-;;    `bookmarkp-info-bookmark-p', `bookmarkp-info-cp',
-;;    `bookmarkp-isearch-bookmarks' (Emacs 23+),
+;;    `bookmarkp-function-bookmark-p', `bookmarkp-get-buffer-name',
+;;    `bookmarkp-get-end-position', `bookmarkp-get-tags',
+;;    `bookmarkp-get-visit-time', `bookmarkp-get-visits-count',
+;;    `bookmarkp-gnus-alist-only', `bookmarkp-gnus-bookmark-p',
+;;    `bookmarkp-gnus-cp', `bookmarkp-goto-position',
+;;    `bookmarkp-handle-region-default', `bookmarkp-has-tag-p',
+;;    `bookmarkp-info-alist-only', `bookmarkp-info-bookmark-p',
+;;    `bookmarkp-info-cp', `bookmarkp-isearch-bookmarks' (Emacs 23+),
 ;;    `bookmarkp-isearch-bookmarks-regexp' (Emacs 23+),
 ;;    `bookmarkp-isearch-next-bookmark-buffer' (Emacs 23+),
-;;    `bookmarkp-jump-dired', `bookmarkp-jump-gnus',
-;;    `bookmarkp-jump-man', `bookmarkp-jump-w3m',
+;;    `bookmarkp-jump-dired', `bookmarkp-jump-function',
+;;    `bookmarkp-jump-gnus', `bookmarkp-jump-man',
+;;    `bookmarkp-jump-sequence', `bookmarkp-jump-w3m',
 ;;    `bookmarkp-jump-w3m-new-session',
 ;;    `bookmarkp-jump-w3m-only-one-tab', `bookmarkp-jump-woman',
 ;;    `bookmarkp-line-number-at-pos',
@@ -271,7 +276,8 @@
 ;;    `bookmarkp-replace-regexp-in-string',
 ;;    `bookmarkp-root-or-sudo-logged-p',
 ;;    `bookmarkp-save-menu-list-state',
-;;    `bookmarkp-save-new-region-location', `bookmarkp-set-union',
+;;    `bookmarkp-save-new-region-location',
+;;    `bookmarkp-sequence-bookmark-p', `bookmarkp-set-union',
 ;;    `bookmarkp-some', `bookmarkp-some-marked-p',
 ;;    `bookmarkp-some-unmarked-p' `bookmarkp-sort-and-remove-dups',
 ;;    `bookmarkp-unmarked-bookmarks-only', `bookmarkp-upcase',
@@ -378,6 +384,11 @@
 ;;       last visit.  You can sort, show/hide, or mark bookmarks based
 ;;       on this info.
 ;;
+;;     - You can combine bookmarks, to make composite, or sequence,
+;;       bookmarks.  Invoking a seqence bookmark invokes each of its
+;;       component bookmarks in turn.  A component bookmark can itself
+;;       be a sequence bookmark.
+;;
 ;;     - You can bookmark a region of text, not just a position.  When
 ;;       you jump to a bookmark that records a region, the region is
 ;;       activated (see option `bookmarkp-use-region-flag').  (Region
@@ -453,6 +464,12 @@
 ;;       PDF file (DocView), an image, or a UNIX manual page (from the
 ;;       output of Emacs command `woman' or `man').
 ;;
+;;     - A bookmark can represent a function, which is invoked when
+;;       you "jump" to the bookmark.
+;;
+;;     - As mentioned above, a bookmark can represent a sequence of
+;;       other bookmarks.
+;;
 ;;  * Synergy with Icicles.
 ;;
 ;;     - If you use Icicles, then you can use `S-delete' during
@@ -500,6 +517,42 @@
 ;;  to the marked bookmarks in the `*Bookmark List*' window, you can
 ;;  really do quite a lot using bookmark tags.  Use your imagination!
 ;;  See (@> "Tag Commands and Keys") for more about this.
+;;
+;;
+;;(@* "Function and Sequence Bookmarks")
+;;  ** Function and Sequence Bookmarks **
+;;
+;;  Bookmarks are typically thought of only as recorded locations.
+;;  Invoking a bookmark, called "jumping" to it, traditionally means
+;;  just visiting its location.  Bookmark+ looks at bookmarks in a
+;;  more general way than that.  A bookmark is a shortcut of some
+;;  kind - nothing more.
+;;
+;;  A given type of bookmark is defined by its handler function, which
+;;  really could do anything you like.  We've already seen the
+;;  examples of region bookmarks, which restore the active region, and
+;;  Dired bookmarks, which restore a set of Dired markings.
+;;
+;;  A "function bookmark" simply invokes some function - any function.
+;;  You can, for instance, define a window or frame configuration and
+;;  record that as a bookmark.  Then jump to the bookmark to switch
+;;  contexts.
+;;
+;;  Function bookmarks might not seem too interesting, since we have
+;;  other ways of invoking functions in Emacs.  But the other features
+;;  of Bookmark+ combine with this feature.  You can, for instance,
+;;  tag such bookmarks.
+;;
+;;  And you can combine them, invoking the functions sequentially.
+;;  This is just a particular case of using a "sequence bookmark",
+;;  which simply records a sequence of bookmarks.  The bookmarks in a
+;;  sequence can be of any kind, including other sequence bookmarks.
+;;
+;;  Command `bookmarkp-make-function-bookmark' creates a function
+;;  bookmark - you give it a function symbol or a lambda expression.
+;;  Command `bookmarkp-bmenu-make-sequence-from-marked' creates a
+;;  sequence from the marked bookmarks in the bookmark list, in their
+;;  current order.
 ;;
 ;;
 ;;(@* "Bookmark List (Display)")
@@ -882,6 +935,21 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2009/12/15 dadams
+;;     Added: bookmarkp-sequence-jump-display-function, bookmarkp-sequence, bookmarkp-function,
+;;            bookmarkp-bmenu-make-sequence-from-marked, bookmarkp-jump-sequence,
+;;            bookmarkp-sequence-bookmark-p, bookmarkp-make-function-bookmark,
+;;            bookmarkp-jump-function, bookmarkp-function-bookmark-p.
+;;     bookmarkp-describe-bookmark: Update for sequence and function bookmarks.
+;;     bookmark-bmenu-list: Use condition-case when read from bookmarkp-bmenu-state-file.
+;;                          Bind emacs-lisp-mode-hook to nil.
+;;     bookmark-bmenu-surreptitiously-rebuild-list: Use save-current-buffer.
+;;     bookmarkp-bmenu-propertize-item: Add faces to function and sequence bookmarks.
+;;     bookmarkp-bmenu-menubar-menu: Add *-make-sequence-*-from-marked, *-make-function-bookmark.
+;;     bookmark--jump-via: Call *-record-visit with BATCH arg, to preserver point in menu list.
+;;     bookmark-bmenu-list-1: fit-frame only if buffer is *Bookmark List*.
+;; 2009/12/13 dadams
+;;     *-alist-only: Call bookmark-maybe-load-default-file.
 ;; 2009/12/11 dadams
 ;;     Added: bookmarkp-list-defuns-in-commands-file, bookmarkp-remove-dups.
 ;; 2009/12/06 dadams
@@ -1439,7 +1507,7 @@
 (eval-when-compile (require 'cl)) ;; case, gensym, loop, pushnew
 
 
-(defconst bookmarkp-version-number "2.7.1")
+(defconst bookmarkp-version-number "2.7.2")
 
 (defun bookmarkp-version ()
   "Show version number of library `bookmark+.el'."
@@ -1600,6 +1668,12 @@ Also used for `D' (deletion) flags."
   "*Face used for a bookmarked existing buffer not associated with a file."
   :group 'bookmarkp)
 
+(defface bookmarkp-function
+    '((((background dark)) (:foreground "DeepPink1"))
+      (t (:foreground "DeepPink1")))
+  "*Face used for a function bookmark: a bookmark that invokes a function."
+  :group 'bookmarkp)
+
 (defface bookmarkp-gnus
     '((((background dark)) (:foreground "Magenta"))
       (t (:foreground "DarkBlue")))
@@ -1646,6 +1720,12 @@ Also used for `D' (deletion) flags."
     '((((background dark)) (:foreground "pink"))
       (t (:foreground "DarkViolet")))
   "*Face used for a bookmarked tramp remote file (/ssh:)."
+  :group 'bookmarkp)
+
+(defface bookmarkp-sequence
+    '((((background dark)) (:foreground "DarkOrange2"))
+      (t (:foreground "DarkOrange2")))
+  "*Face used for a sequence bookmark: one composed of other bookmarks."
   :group 'bookmarkp)
 
 (defface bookmarkp-su-or-sudo
@@ -1728,6 +1808,10 @@ as part of the bookmark definition."
 
 (defcustom bookmarkp-handle-region-function 'bookmarkp-handle-region-default
   "*Function to handle a bookmarked region."
+  :type 'function :group 'bookmarkp)
+
+(defcustom bookmarkp-sequence-jump-display-function 'pop-to-buffer
+  "Function used to display the bookmarks in a bookmark sequence."
   :type 'function :group 'bookmarkp)
 
 (defcustom bookmarkp-su-or-sudo-regexp "\\(/su:\\|/sudo:\\)"
@@ -2430,7 +2514,7 @@ Newline characters are stripped out."
   "Helper function for `bookmark-jump(-other-window)'.
 BOOKMARK is a bookmark name or a bookmark record.
 DISPLAY-FUNCTION is the function that displays the bookmark."
-  (bookmarkp-record-visit bookmark)
+  (bookmarkp-record-visit bookmark 'batch)
   (setq bookmarkp-jump-display-function  display-function)
   (bookmark-handle-bookmark bookmark)
   (let ((win  (get-buffer-window (current-buffer) 0)))
@@ -2926,21 +3010,20 @@ Non-nil FILTEREDP means the bookmark list has been filtered, so:
   (bookmark-maybe-load-default-file)
   (when (and bookmarkp-bmenu-first-time-p bookmarkp-bmenu-commands-file
              (file-readable-p bookmarkp-bmenu-commands-file))
-    (with-current-buffer (let ((enable-local-variables  nil))
+    (with-current-buffer (let ((enable-local-variables  nil)
+                               (emacs-lisp-mode-hook    nil))
                            (find-file-noselect bookmarkp-bmenu-commands-file))
       (goto-char (point-min))
-      (while (not (eobp))
-        (condition-case nil
-            (eval (read (current-buffer)))
-          (error nil)))
+      (while (not (eobp)) (condition-case nil (eval (read (current-buffer))) (error nil)))
       (kill-buffer (current-buffer))))
   (cond ((and bookmarkp-bmenu-first-time-p  bookmarkp-bmenu-state-file
               (file-readable-p bookmarkp-bmenu-state-file))
          (let ((state  ()))
-           (with-current-buffer (let ((enable-local-variables  nil))
+           (with-current-buffer (let ((enable-local-variables  nil)
+                                      (emacs-lisp-mode-hook    nil))
                                   (find-file-noselect bookmarkp-bmenu-state-file))
              (goto-char (point-min))
-             (setq state  (read (current-buffer)))
+             (setq state  (condition-case nil (read (current-buffer)) (error nil)))
              (kill-buffer (current-buffer)))
            (when (consp state)
              (setq bookmarkp-sort-comparer           (cdr (assq 'last-sort-comparer          state))
@@ -3012,7 +3095,9 @@ Non-nil INTERACTIVEP means `bookmark-bmenu-list' was called
     (goto-char (point-min)) (forward-line 2)
     (bookmark-bmenu-mode)
     (when bookmark-bmenu-toggle-filenames (bookmark-bmenu-toggle-filenames t))
-    (when (fboundp 'fit-frame-if-one-window) (fit-frame-if-one-window)))
+    (when (and (fboundp 'fit-frame-if-one-window)
+               (eq (selected-window) (get-buffer-window (get-buffer-create "*Bookmark List*"))))
+      (fit-frame-if-one-window)))
   (when (and interactivep bookmarkp-sort-comparer)
     (bookmarkp-msg-about-sort-order (bookmarkp-current-sort-order))))
 
@@ -3244,6 +3329,24 @@ Tip: You can use this before quitting Emacs, to not save the state."
   (message (if bookmarkp-bmenu-state-file
                "Saving menu-list state is now ON"
              "Saving menu-list state is now OFF")))
+
+;;;###autoload
+(defun bookmarkp-make-function-bookmark (bookmark-name function)
+  "Create a bookmark that will invoke FUNCTION when \"jumped\" to.
+You are prompted for the bookmark name and the name of the function.
+Returns the new bookmark (internal record)."
+  (interactive (list (read-string "Name: ")
+                     (completing-read "Function: " obarray 'functionp)))
+  (bookmark-store bookmark-name `((filename . ,bookmarkp-non-file-filename)
+                                  (position . 0)
+                                  (function . ,(read function))
+                                  (handler  . bookmarkp-jump-function))
+                  nil)
+  (let ((new  (bookmark-get-bookmark bookmark-name 'noerror)))
+    (unless (memq new bookmarkp-latest-bookmark-alist)
+      (setq bookmarkp-latest-bookmark-alist  (cons new bookmarkp-latest-bookmark-alist)))
+    (bookmark-bmenu-surreptitiously-rebuild-list)
+    new))
 
 
 ;;(@* "Menu-List (`*-bmenu-*') Filter Commands")
@@ -3487,7 +3590,7 @@ current filtering or sorting of the displayed list."
       (let ((bookmark-alist  bookmarkp-latest-bookmark-alist)
             status)
         (if bookmarkp-bmenu-before-hide-marked-alist
-            (setq bookmark-alist  bookmarkp-bmenu-before-hide-marked-alist
+            (setq bookmark-alist                            bookmarkp-bmenu-before-hide-marked-alist
                   bookmarkp-bmenu-before-hide-marked-alist  ()
                   bookmarkp-latest-bookmark-alist           bookmark-alist
                   status                                    'shown)
@@ -3516,7 +3619,9 @@ current filtering or sorting of the displayed list."
       (let ((bookmark-alist  bookmarkp-latest-bookmark-alist)
             status)
         (if bookmarkp-bmenu-before-hide-unmarked-alist
-            (setq bookmark-alist  bookmarkp-bmenu-before-hide-unmarked-alist
+            (setq bookmark-alist
+                  bookmarkp-bmenu-before-hide-unmarked-alist
+
                   bookmarkp-bmenu-before-hide-unmarked-alist  ()
                   bookmarkp-latest-bookmark-alist             bookmark-alist
                   status                                      'shown)
@@ -3688,6 +3793,42 @@ This affects only the `>' mark, not the `D' flag."
   (interactive)
   (bookmarkp-barf-if-not-in-menu-list)
   (bookmark-bmenu-execute-deletions 'marked))
+
+;;;###autoload
+(defun bookmarkp-bmenu-make-sequence-from-marked (bookmark-name)
+  "Create a sequence bookmark from the marked bookmarks.
+The bookmarks that are currently marked are recorded as a sequence, in
+their current order in buffer `*Bookmark List*'.
+When you \"jump\" to the sequence bookmark, the bookmarks in the
+sequence are processed in order.
+
+Note that an existing sequence bookmark can be marked, and thus
+included in the new sequence bookmark created.  That is, you can
+include other sequences within a sequence bookmark.
+
+Returns the new bookmark (internal record)."
+  (interactive
+   (progn (unless bookmarkp-bmenu-marked-bookmarks (error "No marked bookmarks"))
+          (list (read-string "Name: "))))
+  (unless bookmarkp-bmenu-marked-bookmarks (error "No marked bookmarks"))
+  (unless (get-buffer "*Bookmark List*") (bookmark-bmenu-list))
+  (let ((marked-bmks  ()))
+    (save-excursion
+      (with-current-buffer "*Bookmark List*"
+        (goto-char (point-min)) (forward-line 2)
+        (while (re-search-forward "^>" (point-max) t)
+          (push (bookmark-bmenu-bookmark) marked-bmks))))
+    (bookmark-store bookmark-name
+                    `((filename . ,bookmarkp-non-file-filename)
+                      (position . 0)
+                      (sequence ,@(nreverse marked-bmks))
+                      (handler . bookmarkp-jump-sequence))
+                    nil))
+  (let ((new  (bookmark-get-bookmark bookmark-name 'noerror)))
+    (unless (memq new bookmarkp-latest-bookmark-alist)
+      (setq bookmarkp-latest-bookmark-alist  (cons new bookmarkp-latest-bookmark-alist)))
+    (bookmark-bmenu-surreptitiously-rebuild-list)
+    new))
 
 
 ;;(@* "Search-and-Replace Locations of Marked Bookmarks")
@@ -4320,13 +4461,15 @@ specified tags, in order, separated by hyphens (`-').  E.g., for TAGS
 
 (defun bookmarkp-bmenu-propertize-item (bookmark-name start end)
   "Add text properties to BOOKMARK-NAME, from START to END."
-  (let* ((buffp     (bookmarkp-get-buffer-name bookmark-name))
-         (w3m-p     (bookmarkp-w3m-bookmark-p bookmark-name))
-         (gnus-p    (bookmarkp-gnus-bookmark-p bookmark-name))
-         (handlerp  (bookmark-get-handler bookmark-name))
-         (info-p    (bookmarkp-info-bookmark-p bookmark-name))
-         (man-p     (bookmarkp-man-bookmark-p bookmark-name))
-         (regionp   (bookmarkp-region-bookmark-p bookmark-name))
+  (let* ((buffp      (bookmarkp-get-buffer-name bookmark-name))
+         (sequencep  (bookmarkp-sequence-bookmark-p bookmark-name))
+         (functionp  (bookmarkp-function-bookmark-p bookmark-name))
+         (w3m-p      (bookmarkp-w3m-bookmark-p bookmark-name))
+         (gnus-p     (bookmarkp-gnus-bookmark-p bookmark-name))
+         (handlerp   (bookmark-get-handler bookmark-name))
+         (info-p     (bookmarkp-info-bookmark-p bookmark-name))
+         (man-p      (bookmarkp-man-bookmark-p bookmark-name))
+         (regionp    (bookmarkp-region-bookmark-p bookmark-name))
 
          ;; Begin `let*' dependencies.
          (filep     (bookmark-get-filename bookmark-name))
@@ -4337,18 +4480,24 @@ specified tags, in order, separated by hyphens (`-').  E.g., for TAGS
     (put-text-property start end 'bookmarkp-bookmark-name bookmark-name)
     (add-text-properties
      start  end
-     (cond (info-p  (append (bookmarkp-face-prop 'bookmarkp-info)
-                            '(mouse-face highlight follow-link t
-                              help-echo "mouse-2: Visit this Info bookmark")))
-           (man-p   (append (bookmarkp-face-prop 'bookmarkp-man)
-                            '(mouse-face highlight follow-link t
-                              help-echo (format "mouse-2 Goto `man' page"))))
-           (gnus-p  (append (bookmarkp-face-prop 'bookmarkp-gnus)
-                            '(mouse-face highlight follow-link t
-                              help-echo "mouse-2: Visit this Gnus bookmark")))
-           (w3m-p   (append (bookmarkp-face-prop 'bookmarkp-w3m)
-                            `(mouse-face highlight follow-link t
-                              help-echo (format "mouse-2: Visit URL `%s'" ,filep))))
+     (cond (sequencep  (append (bookmarkp-face-prop 'bookmarkp-sequence)
+                               '(mouse-face highlight follow-link t
+                                 help-echo "mouse-2: Invoke the bookmarks in this sequence")))
+           (functionp  (append (bookmarkp-face-prop 'bookmarkp-function)
+                               '(mouse-face highlight follow-link t
+                                 help-echo "mouse-2: Invoke this function bookmark")))
+           (info-p     (append (bookmarkp-face-prop 'bookmarkp-info)
+                               '(mouse-face highlight follow-link t
+                                 help-echo "mouse-2: Visit this Info bookmark")))
+           (man-p      (append (bookmarkp-face-prop 'bookmarkp-man)
+                               '(mouse-face highlight follow-link t
+                                 help-echo (format "mouse-2 Goto `man' page"))))
+           (gnus-p     (append (bookmarkp-face-prop 'bookmarkp-gnus)
+                               '(mouse-face highlight follow-link t
+                                 help-echo "mouse-2: Visit this Gnus bookmark")))
+           (w3m-p      (append (bookmarkp-face-prop 'bookmarkp-w3m)
+                               `(mouse-face highlight follow-link t
+                                 help-echo (format "mouse-2: Visit URL `%s'" ,filep))))
            ((and su-p (not (bookmarkp-root-or-sudo-logged-p))) ; Root/sudo not logged
             (append (bookmarkp-face-prop 'bookmarkp-su-or-sudo)
                     `(mouse-face highlight follow-link t
@@ -4444,6 +4593,16 @@ the internal lists that record menu-list markings."
 ;;(@* "Bookmark Predicates")
 ;;  *** Bookmark Predicates ***
 
+(defun bookmarkp-sequence-bookmark-p (bookmark)
+  "Return non-nil if BOOKMARK is a sequence bookmark.
+BOOKMARK is a bookmark name or a bookmark record."
+  (eq (bookmark-get-handler bookmark) 'bookmarkp-jump-sequence))
+
+(defun bookmarkp-function-bookmark-p (bookmark)
+  "Return non-nil if BOOKMARK is a function bookmark.
+BOOKMARK is a bookmark name or a bookmark record."
+  (eq (bookmark-get-handler bookmark) 'bookmarkp-jump-function))
+
 ;; Note: To avoid remote access, if bookmark does not have the Dired handler, then we insist
 ;; that it be for a local directory.  IOW, we do not include remote directories that were not
 ;; bookmarked by Bookmark+ (and so do not have the Dired handler).
@@ -4536,6 +4695,7 @@ BOOKMARK is a bookmark name or a bookmark record."
 (defun bookmarkp-dired-alist-only ()
   "`bookmark-alist', filtered to retain only Dired bookmarks.
 A new list is returned (no side effects)."
+  (bookmark-maybe-load-default-file)
   (bookmarkp-remove-if-not #'bookmarkp-dired-bookmark-p bookmark-alist))
 
 (defun bookmarkp-file-alist-only ()
@@ -4543,40 +4703,48 @@ A new list is returned (no side effects)."
 This excludes bookmarks that might contain file information but are
 particular in some way - for example, Info bookmarks or Gnus bookmarks.
 A new list is returned (no side effects)."
+  (bookmark-maybe-load-default-file)
   (bookmarkp-remove-if-not #'bookmarkp-file-bookmark-p bookmark-alist))
 
 (defun bookmarkp-gnus-alist-only ()
   "`bookmark-alist', filtered to retain only Gnus bookmarks.
 A new list is returned (no side effects)."
+  (bookmark-maybe-load-default-file)
   (bookmarkp-remove-if-not #'bookmarkp-gnus-bookmark-p bookmark-alist))
 
 (defun bookmarkp-info-alist-only ()
   "`bookmark-alist', filtered to retain only Info bookmarks.
 A new list is returned (no side effects)."
+  (bookmark-maybe-load-default-file)
   (bookmarkp-remove-if-not #'bookmarkp-info-bookmark-p bookmark-alist))
 
 (defun bookmarkp-man-alist-only ()
   "`bookmark-alist', filtered to retain only `man' page bookmarks.
 A new list is returned (no side effects)."
+  (bookmark-maybe-load-default-file)
   (bookmarkp-remove-if-not #'bookmarkp-man-bookmark-p bookmark-alist))
 
 (defun bookmarkp-local-file-alist-only ()
   "`bookmark-alist', filtered to retain only local-file bookmarks.
 A new list is returned (no side effects)."
+  (bookmark-maybe-load-default-file)
   (bookmarkp-remove-if-not #'bookmarkp-local-file-bookmark-p bookmark-alist))
 
 (defun bookmarkp-non-file-alist-only ()
   "`bookmark-alist', filtered to retain only non-file bookmarks.
 A new list is returned (no side effects)."
+  (bookmark-maybe-load-default-file)
   (bookmarkp-remove-if-not #'bookmarkp-non-file-bookmark-p bookmark-alist))
 
 (defun bookmarkp-regexp-filtered-bookmark-name-alist-only ()
   "`bookmark-alist', filtered for bookmark-name matches."
+  (bookmark-maybe-load-default-file)
   (bookmarkp-remove-if-not
    #'(lambda (bmk) (string-match bookmarkp-bmenu-filter-pattern (car bmk))) bookmark-alist))
 
 (defun bookmarkp-regexp-filtered-file-name-alist-only ()
   "`bookmark-alist', filtered for file-name matches."
+  (bookmark-maybe-load-default-file)
   (let (fname)
     (bookmarkp-remove-if-not #'(lambda (bmk)
                                  (and (setq fname  (bookmark-get-filename bmk))
@@ -4585,6 +4753,7 @@ A new list is returned (no side effects)."
 
 (defun bookmarkp-regexp-filtered-tags-alist-only ()
   "`bookmark-alist', filtered for tag matches."
+  (bookmark-maybe-load-default-file)
   (let (tags)
     (bookmarkp-remove-if-not
      #'(lambda (bmk) (and (setq tags  (bookmarkp-get-tags bmk))
@@ -4596,16 +4765,19 @@ A new list is returned (no side effects)."
 (defun bookmarkp-region-alist-only ()
   "`bookmark-alist', filtered to retain only bookmarks that have regions.
 A new list is returned (no side effects)."
+  (bookmark-maybe-load-default-file)
   (bookmarkp-remove-if-not #'bookmarkp-region-bookmark-p bookmark-alist))
 
 (defun bookmarkp-remote-file-alist-only ()
   "`bookmark-alist', filtered to retain only remote-file bookmarks.
 A new list is returned (no side effects)."
+  (bookmark-maybe-load-default-file)
   (bookmarkp-remove-if-not #'bookmarkp-remote-file-bookmark-p bookmark-alist))
 
 (defun bookmarkp-w3m-alist-only ()
   "`bookmark-alist', filtered to retain only W3M bookmarks.
 A new list is returned (no side effects)."
+  (bookmark-maybe-load-default-file)
   (bookmarkp-remove-if-not #'bookmarkp-w3m-bookmark-p bookmark-alist))
 
 
@@ -5490,26 +5662,39 @@ If TRUTH is nil, return nil."
 BOOKMARK is a bookmark name or a bookmark record."
   (interactive
    (list (bookmark-completing-read "Describe bookmark" (bookmarkp-default-bookmark-name))))
-  (setq bookmark  (bookmark-get-bookmark bookmark))
-  (let ((bname    (bookmark-name-from-full-record bookmark))
-        (buf      (bookmarkp-get-buffer-name bookmark))
-        (file     (bookmark-get-filename bookmark))
-        (start    (bookmark-get-position bookmark))
-        (end      (bookmarkp-get-end-position bookmark))
-        (time     (bookmarkp-get-visit-time bookmark))
-        (visits   (bookmarkp-get-visits-count bookmark))
-        (tags     (bookmarkp-get-tags bookmark))
-        (dired-p  (bookmarkp-dired-bookmark-p bookmark))
-        (gnus-p   (bookmarkp-gnus-bookmark-p bookmark))
-        (info-p   (bookmarkp-info-bookmark-p bookmark))
-        (man-p    (bookmarkp-man-bookmark-p bookmark))
-        (w3m-p    (bookmarkp-w3m-bookmark-p bookmark))
-        (tags     (bookmarkp-get-tags bookmark))
-        (annot    (bookmark-get-annotation bookmark)))
+  (setq bookmark     (bookmark-get-bookmark bookmark))
+  (let ((bname       (bookmark-name-from-full-record bookmark))
+        (buf         (bookmarkp-get-buffer-name bookmark))
+        (file        (bookmark-get-filename bookmark))
+        (start       (bookmark-get-position bookmark))
+        (end         (bookmarkp-get-end-position bookmark))
+        (time        (bookmarkp-get-visit-time bookmark))
+        (visits      (bookmarkp-get-visits-count bookmark))
+        (tags        (bookmarkp-get-tags bookmark))
+        (sequence-p  (bookmarkp-sequence-bookmark-p bookmark))
+        (function-p  (bookmarkp-function-bookmark-p bookmark))
+        (dired-p     (bookmarkp-dired-bookmark-p bookmark))
+        (gnus-p      (bookmarkp-gnus-bookmark-p bookmark))
+        (info-p      (bookmarkp-info-bookmark-p bookmark))
+        (man-p       (bookmarkp-man-bookmark-p bookmark))
+        (w3m-p       (bookmarkp-w3m-bookmark-p bookmark))
+        (tags        (bookmarkp-get-tags bookmark))
+        (annot       (bookmark-get-annotation bookmark))
+        no-position-p)
+    (when (or sequence-p function-p) (setq no-position-p  t))
     (help-setup-xref (list #'bookmarkp-describe-bookmark bookmark) (interactive-p))
     (let* ((help-text  (concat
                         (format "%s\n%s\n\n" bname (make-string (length bname) ?-))
-                        (cond (gnus-p  (format "Gnus, group:\t%s, article: %s, message-id: %s\n"
+                        (cond (sequence-p  (format "Sequence:\n%s\n"
+                                                   (pp-to-string
+                                                    (bookmark-prop-get bookmark 'sequence))))
+                              (function-p  (let ((fn  (bookmark-prop-get bookmark 'function)))
+                                             (if (symbolp fn)
+                                                 (format "Function:\t%s\n" fn)
+                                               (format "Function:\n%s\n"
+                                                       (pp-to-string
+                                                        (bookmark-prop-get bookmark 'function))))))
+                              (gnus-p  (format "Gnus, group:\t%s, article: %s, message-id: %s\n"
                                                (bookmark-prop-get bookmark 'group)
                                                (bookmark-prop-get bookmark 'article)
                                                (bookmark-prop-get bookmark 'message-id)))
@@ -5527,9 +5712,10 @@ BOOKMARK is a bookmark name or a bookmark record."
                                (format "Buffer:\t\t%s\n" (bookmarkp-get-buffer-name bookmark)))
                               (file    (format "File:\t\t%s\n" (expand-file-name file)))
                               (t       "Unknown\n"))
-                        (if (bookmarkp-region-bookmark-p bookmark)
-                            (format "Region:\t\t%d to %d (%d chars)\n" start end (- end start))
-                          (format "Position:\t%d\n" start))
+                        (unless no-position-p
+                          (if (bookmarkp-region-bookmark-p bookmark)
+                              (format "Region:\t\t%d to %d (%d chars)\n" start end (- end start))
+                            (format "Position:\t%d\n" start)))
                         (if visits (format "Visits:\t\t%d\n" visits) "")
                         (if time   (format "Last visit:\t%s\n" (format-time-string "%c" time)) "")
                         (if tags   (format "Tags:\t\t%S\n" tags) "")
@@ -5756,6 +5942,21 @@ position, and the context strings for the position."
     (goto-char (match-beginning 0)))
   (when (and behind-str (search-backward behind-str (point-min) t)) (goto-char (match-end 0)))
   nil)                                  ; $$$$$ Why return nil?
+
+(defun bookmarkp-jump-sequence (bookmark)
+  "Handle a sequence bookmark BOOKMARK.
+BOOKMARK is a bookmark name or a bookmark record.
+Handler function for sequence bookmarks."
+  (dolist (bmk  (bookmark-prop-get bookmark 'sequence))
+    (bookmark--jump-via bmk bookmarkp-sequence-jump-display-function))
+  (message "Done invoking bookmarks in sequence `%s'"
+           (if (stringp bookmark) bookmark (bookmark-name-from-full-record bookmark))))
+
+(defun bookmarkp-jump-function (bookmark)
+  "Handle a function bookmark BOOKMARK.
+BOOKMARK is a bookmark name or a bookmark record.
+Handler function for function bookmarks."
+  (funcall (bookmark-prop-get bookmark 'function)))
 
 ;; W3M support
 (defun bookmarkp-make-w3m-record ()
@@ -6131,8 +6332,13 @@ bookmark-list state
 \\[bookmarkp-bmenu-quit]\t- Quit (the bookmark list)
 \\[bookmark-bmenu-save]\t- Save bookmarks (`C-u': prompt for the bookmarks file to use)
 \\[bookmarkp-toggle-saving-menu-list-state]\t- Toggle saving the bookmark list display state
-\\[bookmarkp-list-defuns-in-commands-file]\t- List the commands
-\t  defined in `bookmarkp-bmenu-commands-file'.
+
+\\[bookmarkp-make-function-bookmark]
+\t- Create a function bookmark
+\\[bookmarkp-bmenu-make-sequence-from-marked]
+\t- Create a sequence bookmark from the marked bookmarks
+\\[bookmarkp-list-defuns-in-commands-file]
+\t- List the commands defined in `bookmarkp-bmenu-commands-file'
 
 
 Mark/unmark bookmarks (see also `Tags', next)
@@ -6189,8 +6395,8 @@ in a set      (NOT AND)
 Search-and-replace bookmark locations (in sort order)
 -----------------------------------------------------
 
-\\[bookmarkp-bmenu-search-marked-bookmarks-regexp]\t- Regexp-search the marked file bookmarks
-\\[bookmarkp-bmenu-query-replace-marked-bookmarks-regexp]\t- Query-replace the marked file \
+\\[bookmarkp-bmenu-search-marked-bookmarks-regexp]\t\t- Regexp-search the marked file bookmarks
+\\[bookmarkp-bmenu-query-replace-marked-bookmarks-regexp]\t\t- Query-replace the marked file \
 bookmarks
 M-x a C-s\t- Isearch the marked bookmarks (Emacs 23+)
 M-x a C-M-s\t- Regexp Isearch the marked bookmarks (Emacs 23+)
@@ -6248,25 +6454,26 @@ match a regexp
 Options affecting *Bookmark List* display
 -----------------------------------------
 
-`bookmarkp-sort-comparer'          - Initial sort
-`bookmarkp-sort-orders-for-cycling-alist' -
-                                   - Sort orders that \
+bookmarkp-sort-comparer          - Initial sort
+bookmarkp-sort-orders-for-cycling-alist
+                                 - Sort orders that \
 `\\[bookmarkp-bmenu-change-sort-order-repeat]'... cycles
-`bookmark-bmenu-toggle-filenames'  - Show filenames initially?
-`bookmark-bmenu-file-column'       - Bookmark width if files are shown
-`bookmarkp-bmenu-state-file'       - File to save the menu-list state
-                                     (\"home\") nil: do not save/restore
+bookmark-bmenu-toggle-filenames  - Show filenames initially?
+bookmark-bmenu-file-column       - Bookmark width if files are shown
+bookmarkp-bmenu-state-file       - File to save the menu-list state
+                                   (\"home\") nil: do not save/restore
 
 
 Other bookmark options
 ----------------------
 
-`bookmark-default-file'            - File to save bookmarks in
-`bookmarkp-save-new-location-flag' - Save if bookmark relocated?
-`bookmark-save-flag'               - Whether and when to save
-`bookmark-use-annotations'         - Saving queries for an annotation?
-`bookmarkp-use-region-flag'        - Activate saved region when visit?
-`bookmarkp-su-or-sudo-regexp'      - Bounce-show each end of region?")
+bookmark-default-file            - File to save bookmarks in
+bookmarkp-save-new-location-flag - Save if bookmark relocated?
+bookmark-save-flag               - Whether and when to save
+bookmark-use-annotations         - Saving queries for an annotation?
+bookmarkp-use-region-flag        - Activate saved region when visit?
+bookmarkp-su-or-sudo-regexp      - Bounce-show each end of region?
+bookmarkp-sequence-jump-display-function - How to display components")
 
 (defvar bookmarkp-bmenu-menubar-menu (make-sparse-keymap "Bookmark+"))
 (define-key bookmark-bmenu-mode-map [menu-bar bookmarkp]
@@ -6433,6 +6640,10 @@ Other bookmark options
   '(menu-item "Delete Flagged (D)" bookmark-bmenu-execute-deletions))
 (define-key bookmarkp-bmenu-menubar-menu [bookmarkp-bmenu-delete-marked]
   '(menu-item "Delete Marked (>)" bookmarkp-bmenu-delete-marked))
+(define-key bookmarkp-bmenu-menubar-menu [bookmarkp-make-function-bookmark]
+  '(menu-item "New Function Bookmark" bookmarkp-make-function-bookmark))
+(define-key bookmarkp-bmenu-menubar-menu [bookmarkp-bmenu-make-sequence-from-marked]
+  '(menu-item "New Sequence Bookmark from Marked" bookmarkp-bmenu-make-sequence-from-marked))
 (define-key bookmarkp-bmenu-menubar-menu [bookmarkp-bmenu-query-replace-marked-bookmarks-regexp]
   '(menu-item "Query-Replace Marked" bookmarkp-bmenu-query-replace-marked-bookmarks-regexp))
 (when (fboundp 'bookmarkp-bmenu-isearch-marked-bookmarks)

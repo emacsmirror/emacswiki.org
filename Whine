@@ -1,0 +1,21 @@
+whine.el --- complaint generator for GNU Emacs
+
+You can get the source code here:
+
+* Lisp:whine.el
+
+This was posted to [[comp.emacs]] by Bard Bloom in 1988. Here is his original announcement:
+: In a fit of silliness, I wrote the following code.  It rebinds a lot of the main emacs keys, like space and c-f and return and c-x c-s.  They still do the same things they did before, but they whine about it, printing messages which do not in general have anything to do with reality.  The main lossage is c-l, which refreshes the screen and then whines about it so that you can't get a clear message line.
+:: m-x whinify turns it on
+:: m-x unwhinify turns it off
+: It only does things to global key bindings.  Local bindings would have been a serious problem, and I wasn't in a serious mood.
+: -- Bard the gnumacs gargoyle
+: http://groups.google.com/group/comp.emacs/msg/00352d73fff71dca
+
+The LCD datafile had listed it under the name [::whinify].
+
+I've made some modifications so that it runs with recent Emacs versions. The main change is that it now uses post-command-hook instead of rebinding keys.
+
+[new:ulm:2009-12-15 15:00 UTC]
+----
+CategoryGames
