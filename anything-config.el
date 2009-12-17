@@ -1253,9 +1253,10 @@ If CANDIDATE is not a directory open this file."
   (if (file-directory-p candidate)
       (with-selected-window (minibuffer-window)
         (delete-minibuffer-contents)
-        (let* ((len          (length candidate))
-               (cand-no-prop candidate))
-          (set-text-properties 0 len nil cand-no-prop) 
+        (let* ((cand-no-prop (file-name-as-directory
+                              (expand-file-name candidate)))
+               (len          (length cand-no-prop)))
+          (set-text-properties 0 len nil cand-no-prop)
           (insert cand-no-prop)))
       (find-file candidate)))
 
@@ -3490,7 +3491,8 @@ See also `anything-create--actions'."
 (defun anything-c-top-init ()
   (with-current-buffer (anything-candidate-buffer 'global)
     (call-process-shell-command
-     (format anything-c-top-command (frame-width))
+     (format anything-c-top-command
+             (- (frame-width) (if anything-enable-digit-shortcuts 4 0)))
      nil (current-buffer))))
 
 (defun anything-c-top-display-to-real (line)

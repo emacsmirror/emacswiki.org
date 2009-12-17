@@ -94,6 +94,10 @@ and the following snippet for your <code>.emacs</code>:
 
 Then modify the frame/icon frame title variables as you would in a window system.
 
+== Notes ==
+
+By [[avar]]:
+
 My Emacs insists that I have a "dumb" terminal. Even under xterm. This works for me:
 
   (when (and
@@ -103,6 +107,12 @@ My Emacs insists that I have a "dumb" terminal. Even under xterm. This works for
           (string-match "^xterm" (getenv "TERM"))))
     (require 'xterm-title)
     (xterm-title-mode 1))
+
+By PaulGoins:
+
+My Emacs (emacs-snapshot on Ubuntu, version 1:20090730-1~intrepid1) says TERM is "dumb" after fully loading, but while loading .emacs it does show the right thing (rxvt-unicode, in my case).  "Your mileage may vary", I suppose.
+
+(Note: xterm-title-mode does not seem to work with urxvt.  It does work fine with other xterm-compatibles like gnome-terminal.)
 
 ----
 CategoryFrames CategoryDisplay FrameModes

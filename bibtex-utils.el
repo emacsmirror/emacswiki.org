@@ -72,13 +72,15 @@ Maybe restrict the values to those matching REGEXP."
 	  (when (and key-field (string-match regexp key-field))
 	    (add-to-list 'output (buffer-substring
 				  (bibtex-beginning-of-entry)
-				  (bibtex-end-of-entry)) t))))
+				  (bibtex-end-of-entry)) t)))
+        (beginning-of-line 2))
       (switch-to-buffer-other-window
        (get-buffer-create "*BibTeX selected entries*"))
       (if (null output)
 	  (error "No BibTeX entry which \"%s\" key matches \"%s\""
 		 key regexp)
 	(prog1 (message "Returned %d entries" (length output))
+	  (bibtex-mode)
 	  (while (setq item (pop output))
 	    (insert item "\n\n")))))))
 

@@ -116,7 +116,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 3 $Rev: 237 $ of the Sunrise Commander.
+;; This is version 3 $Rev: 240 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.  I  have  also  received
@@ -1449,6 +1449,8 @@ automatically:
 (defun sr-split-toggle()
   "Changes sunrise windows layout from horizontal to vertical to top and so on."
   (interactive)
+  (if (<= sr-panes-height (* 4 window-min-height))
+      (setq sr-panes-height nil))
   (cond
    ((equal sr-window-split-style 'horizontal) (sr-split-setup 'vertical))
    ((equal sr-window-split-style 'vertical)   (sr-split-setup 'top))
@@ -1886,9 +1888,8 @@ automatically:
                 (revert-buffer)
                 (dired-mark-remembered
                  (mapcar (lambda (x) (cons (expand-file-name x) ?R)) names)))
-              (save-selected-window
-                (select-window (sr-other 'window))
-                (sr-focus-filename (car names))))
+              (if (window-live-p (sr-other 'window))
+                  (sr-in-other (sr-focus-filename (car names)))))
             (message "%s" (concat "Done: " files-count-str " file(s) dispatched"))
             (sr-revert-buffer)))
       (message "Empty selection. Nothing done."))))
@@ -1955,13 +1956,14 @@ automatically:
   (let ((names (mapcar #'file-name-nondirectory items))
         (inhibit-read-only t))
     (with-current-buffer (sr-other 'buffer)
-      (sr-clone-files items target clone-op)
-      (sr-force-passive-highlight t)
-      (dired-mark-remembered
-       (mapcar (lambda (x) (cons (expand-file-name x) mark-char)) names)))
-    (save-selected-window
-      (select-window (sr-other 'window))
-      (sr-focus-filename (car names)))))
+      (sr-clone-files items target clone-op))
+    (if (window-live-p (sr-other 'window))
+        (sr-in-other
+         (progn
+           (sr-revert-buffer)
+           (dired-mark-remembered
+            (mapcar (lambda (x) (cons (expand-file-name x) mark-char)) names))
+           (sr-focus-filename (car names)))))))
 
 (defun sr-clone-files (file-paths target-dir clone-op &optional do-overwrite)
   "Clones  all  files  in  file-paths  (list  of full paths) to target dir using

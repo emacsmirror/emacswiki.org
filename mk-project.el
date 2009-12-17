@@ -49,7 +49,7 @@
 ;;
 ;; (require 'mk-project)
 ;;
-;; (project-def "my-java-project"
+;; (project-def "my-java-project"g
 ;;       '((basedir          "/home/me/my-java-project/")
 ;;         (src-patterns     ("*.java" "*.jsp"))
 ;;         (ignore-patterns  ("*.class" "*.wsdl"))
@@ -89,7 +89,7 @@
 (require 'thingatpt)
 (require 'cl)
 
-(defvar mk-proj-version "1.2"
+(defvar mk-proj-version "1.2.1"
   "As tagged at http://github.com/mattkeller/mk-project/tree/master")
 
 ;; ---------------------------------------------------------------------
@@ -335,9 +335,17 @@ paths when greping or indexing the project.")
     (message "Closed %d buffers, %d modified buffers where left open"
              (length closed) (length dirty))))
 
+(defun mk-proj-buffer-name (buf)
+  "Return buffer's name based on filename or dired's location"
+  (let ((file-name (or (buffer-file-name buf)
+                       (with-current-buffer buf list-buffers-directory))))
+    (if file-name
+        (expand-file-name file-name)
+      nil)))
+
 (defun mk-proj-buffer-p (buf)
   "Is the given buffer in our project based on filename? Also detects dired buffers open to basedir/*"
-  (let ((file-name (buffer-file-name buf)))
+  (let ((file-name (mk-proj-buffer-name buf)))
     (if (and file-name
              (string-match (concat "^" (regexp-quote mk-proj-basedir)) file-name))
         t
@@ -367,9 +375,10 @@ paths when greping or indexing the project.")
   "Write the list of `files' to a file"
   (when mk-proj-open-files-cache
     (with-temp-buffer
-      (dolist (f (mapcar (lambda (b) (buffer-file-name b)) (mk-proj-buffers)))
-        (unless (string-equal mk-proj-tags-file f)
-          (insert f "\n")))
+      (dolist (f (mapcar (lambda (b) (mk-proj-buffer-name b)) (mk-proj-buffers)))
+        (when f
+          (unless (string-equal mk-proj-tags-file f)
+            (insert f "\n"))))
       (if (file-writable-p mk-proj-open-files-cache)
           (progn
             (write-region (point-min)

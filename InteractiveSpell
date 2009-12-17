@@ -170,11 +170,11 @@ In windows I use the following. Make sure that hunspell is in the path.
 (require 'rw-language-and-country-codes)
 (require 'rw-ispell)
 (require 'rw-hunspell)
-(setq ispell-dictionary "da_DK_hunspell")
+(setq ispell-dictionary "da_DK_hunspell") ;the _suffix is the same as the name of the final dicpath directory
 
 ;; The following is set via custom
 (custom-set-variables
- '(rw-hunspell-dicpath-list ("C:/Program Files/hunspell/")
+ '(rw-hunspell-dicpath-list '("C:/Program Files/hunspell/")) ;spaces or special characters may be problematic
  '(rw-hunspell-make-dictionary-menu t)
  '(rw-hunspell-use-rw-ispell t)
 )

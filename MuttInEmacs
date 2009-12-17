@@ -60,6 +60,22 @@ Here's another way which binds C-c C-c and doesn't prompt whether you want to sa
          (save-buffer)
          (server-edit)))))
 
+
+== Using Message mode for Mutt == 
+
+Following snippet opens any file having name "mutt" in it in message mode, sets mail-header-separator to "" for M-q and auto-fill to work correctly, sets auto-fill-mode default for message-mode and assigns C-c C-c in message mode to close the server buffer and exit quickly. 
+
+  (add-to-list 'auto-mode-alist '(".*mutt.*" . message-mode))                                                                   
+  (setq mail-header-separator "")                                                                                               
+  (add-hook 'message-mode-hook 'auto-fill-mode)                                                                                 
+  (define-key message-mode-map (kbd "C-c C-c")  '(lambda ()                                                                     
+                                                 "save and exit quickly"                                                      
+                                                 (interactive)                                                                
+                                                 (save-buffer)                                                                
+                                                 (server-edit)))                                                              
+                                                                                  
+
+
 == Switching window focus between mutt and emacs when using emacsclient ==
 
 See the [[EmacsClient#WMFocus|"Automatically managing window manager focus" section]] of

@@ -1,4 +1,6 @@
-Below is a variety of elisp to color IRC nicks according to a list of usable colors.  
+The easiest (and highly satisfactory) option is to use [[ErcHighlightNicknames]].
+
+But if you must, below is a variety of elisp to color IRC nicks according to a list of usable colors:
 
 ==Option 1==
 The colors are determined by the MD5 sum of a nick string, and if the nick-colors-list changes, so will the color indexes.  Enjoy!  Put this in your emacs load path and add <code>(require 'erc-nick-colors)</code> to your <code>.emacs</code>.  If you have any improvements or suggestions, contact me at <code>cygnus at cprogrammer dot org</code>.

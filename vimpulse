@@ -19,7 +19,7 @@ The function ##vimpulse-get-bounds-with-whitespace## has an optional parameter, 
 
 '''Restore visual selection:''' `gv' restores the last visual selection, much like ##C-x C-x## in Emacs.
 
-----
+=== Text objects ===
 
 From ViperMode:
 
@@ -201,11 +201,16 @@ I've done a messy hack to get basic `dib' functionality (that is, "delete inner 
       (call-interactively 'viper-insert))
 
 Place the above in your ##.emacs##, ##.viper##, ##vimpulse.el## or where you see fit.
+
 [new]
 Thanks for the idea, now vimpulse has pretty good text object support :)
 Alessandro
 
-http://lists.ourproject.org/cgi-bin/mailman/listinfo/implementations-list
+== External links ==
+
+* Mailing list: http://lists.ourproject.org/cgi-bin/mailman/listinfo/implementations-list
+* Assembla repository: http://www.assembla.com/spaces/vimpulse/trac_subversion_tool
+* Assembla tickets: http://my-trac.assembla.com/vimpulse/report/
 
 ----
 CategoryKeys CategoryEmulation
