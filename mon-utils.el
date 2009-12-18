@@ -71,7 +71,7 @@
 ;;; `mon-line-strings-region', `mon-line-indent-from-to-col', 
 ;;; `mon-get-system-specs', `mon-string-fill-to-col'
 ;;; `mon-line-strings-pipe-to-col', `mon-line-strings'
-;;; `mon-get-process'
+;;; `mon-get-process', `mon-toggle-eval-length'
 ;;; FUNCTIONS:◄◄◄
 ;;; FUNCTIONS:###
 ;;; 
@@ -885,7 +885,8 @@ the tedium of building the entire scaffolding.\n
 ;;; :MODIFICATIONS <Timestamp: #{2009-10-26T15:45:18-04:00Z}#{09441} - by MON KEY>
 (defun mon-toggle-truncate-line (&optional intrp)
   "Toggle the truncate-line variable and redraw the display.\n
-:SEE-ALSO `mon-toggle-dired-dwim-target', `mon-toggle-menu-bar'
+:SEE-ALSO `mon-toggle-eval-length', `print-length',
+`mon-toggle-dired-dwim-target', `mon-toggle-menu-bar'
 `mon-toggle-read-only-point-motion', `mon-inhibit-modification-hooks',
 `mon-inhibit-point-motion-hooks', `mon-inhibit-read-only'.\n►►►"
   (interactive "p")
@@ -898,12 +899,48 @@ the tedium of building the entire scaffolding.\n
   (redraw-display))
 
 ;;; ==============================
-;;; :NOTE to remind us where we're going 
-;;; (defun mon-wrap-artist-name ()
-;;; (interactive)
-;;; (mon-wrap-text "\\@:artist[" "]"))
-(defun mon-wrap-text (aa bb)
-  "Wrap string args AA and BB around current word or region.\n
+;;; :CREATED <Timestamp: #{2009-12-17T20:25:27-05:00Z}#{09515} - by MON KEY>
+(defun mon-toggle-eval-length (&optional new-depth intrp)
+  "Toggle or set a new value for `eval-expression-print-length' variable.
+Return value of `eval-expression-print-length'.\n
+When `eval-expression-print-length' is nil and NEW-DEPTH is non-nil or
+called-interactively with prefix arg use length, else set length to 12 - the
+default.\n
+When `eval-expression-print-length' is non-nil set length to nil.
+When `eval-expression-print-length' and NEW-DEPTH are non-nil set length.\n
+:EXAMPLE\n\n\(mon-toggle-eval-length\)\n\n\(mon-toggle-eval-length 16\)\n
+\(mon-toggle-eval-length nil t\)\n\n\(mon-toggle-eval-length 1 t\)\n
+\(mon-toggle-eval-length\)\n
+:SEE-ALSO `mon-toggle-truncate-line', `print-length'.\n►►►"  
+  (interactive "P\np")
+  (let (nd)
+    (if (and new-depth intrp)
+        (setq nd (read-number "New length for eval-expression-print-length: "))
+        (setq nd new-depth))
+    (cond ((not eval-expression-print-length)
+           (if nd 
+               (setq eval-expression-print-length nd)
+               (setq eval-expression-print-length 12)))
+          (eval-expression-print-length 
+           (if nd 
+               (setq eval-expression-print-length nd)
+               (setq eval-expression-print-length nil))))
+  eval-expression-print-length))
+;;
+;;; :TEST-ME (mon-toggle-eval-length)
+;;; :TEST-ME (mon-toggle-eval-length 16)
+;;; :TEST-ME (mon-toggle-eval-length nil t)
+;;; :TEST-ME (mon-toggle-eval-length 1 t)
+;;; :TEST-ME (mon-toggle-eval-length)
+;;
+;;; eval-expression-print-length
+
+;;; ==============================
+;;; :NOTE To remind us where we're going:
+;;; (defun mon-wrap-artist-name () "" (interactive)
+;;;   (mon-wrap-text "\\@:artist[" "]"))
+(defun mon-wrap-text (arap brap)
+  "Wrap current word or region with the string args ARAP and BRAP.\n
 :SEE-ALSO `mon-wrap-selection', `mon-wrap-url', `mon-wrap-span' 
 `mon-wrap-with'.\n►►►"
   (save-excursion
@@ -916,12 +953,12 @@ the tedium of building the entire scaffolding.\n
           (skip-chars-forward "-A-Za-z")
           (setq p2 (point))))
       (setq word-to-wrap (buffer-substring-no-properties p1 p2))
-      (goto-char p2) (insert bb)
-      (goto-char p1) (insert aa))))
+      (goto-char p2) (insert brap)
+      (goto-char p1) (insert arap))))
 
 ;;; ==============================
 (defun mon-wrap-with (front-wrap back-wrap)
-  "Wrap the current word or region with supplied args FRONT-WRAP and BACK-WRAP.\n
+  "Wrap the current word or region with FRONT-WRAP and BACK-WRAP.\n
 :SEE-ALSO `mon-wrap-selection', `mon-wrap-url', `mon-wrap-span',
 `mon-wrap-text', `mon-wrap-with'.\n►►►"
   (interactive "sEnter String for front-wrap:\nsEnter String for back-wrap:")
@@ -1007,7 +1044,7 @@ If AFTER is non-nil return t when char after point is a 'space'.\n
 ;;; ==============================
 ;;; :CREATED <Timestamp: Thursday May 07, 2009 @ 03:11.19 PM - by MON KEY>
 (defun mon-spacep-not-bol (&optional intrp)
-  "t if character after point at BOL is not a space.\n
+  "Return t if character after point at BOL is not a space.\n
 :SEE-ALSO `mon-spacep-is-bol', `mon-spacep', `mon-line-bol-is-eol',
 `mon-spacep-is-after-eol', `mon-spacep-is-after-eol-then-graphic',
 `mon-spacep-at-eol', `mon-cln-spc-tab-eol'.\n►►►"
@@ -1026,7 +1063,7 @@ If AFTER is non-nil return t when char after point is a 'space'.\n
 ;;; ==============================
 ;;; :CREATED <Timestamp: Thursday May 07, 2009 @ 03:11.19 PM - by MON KEY>
 (defun mon-spacep-is-bol (&optional intrp)
-  "t if character after point at BOL _is_ a space.\n
+  "Return t if character after point at BOL _is_ a space.\n
 :SEE-ALSO `mon-spacep-not-bol', `mon-spacep', `mon-line-bol-is-eol', 
 `mon-line-next-bol-is-eol', `mon-line-previous-bol-is-eol',
 `mon-spacep-is-after-eol', `mon-spacep-is-after-eol-then-graphic',
@@ -1046,7 +1083,7 @@ If AFTER is non-nil return t when char after point is a 'space'.\n
 ;;; ==============================
 ;;; :CREATED <Timestamp: Thursday May 07, 2009 @ 05:39.17 PM - by MON KEY>
 (defun mon-spacep-is-after-eol (&optional intrp)
-  "t if character after eol _is_ a space.\n
+  "Return t if character after eol _is_ a space.\n
 :SEE-ALSO `mon-spacep-is-bol', `mon-spacep-not-bol',
 `mon-spacep', `mon-line-bol-is-eol', `mon-line-next-bol-is-eol',
 `mon-line-previous-bol-is-eol', `mon-spacep-is-after-eol-then-graphic',
@@ -1242,7 +1279,7 @@ Instances of such chars are be skipped.\n►►►"
 ;;; :WAS `get-next-line' -> `mon-line-get-next'
 (defun mon-line-get-next ()
   "Return the next line in the buffer, leaving point following it.
-Nil is returned at `end-of-buffer'.\n
+Return nil at `end-of-buffer'.\n
 :SEE-ALSO `mon-string-ify-current-line'.\n►►►"
   (let (start)
     (beginning-of-line)
@@ -1257,10 +1294,10 @@ Nil is returned at `end-of-buffer'.\n
 (defun mon-line-find-duplicates (&optional insertp interp)
   "Locate adjacent duplicate lines in buffer.
 Functions which find duplicate lines don't always sort lines.
-Where  lines of a file are presorted, use to locate duplicates before removing.
-i.e. situations of type: `uniquify-maybe'. Extend `find-duplicate-lines' by
-comparing its result list with one or more of the list comparison procedures
-`set-difference', `union', `intersection', etc.\n
+Where lines of a file are presorted can be use to locate duplicates before
+removing, i.e. situations of type: `uniquify-maybe'.  Can extend
+`find-duplicate-lines' by comparing its result list with one or more of the list
+comparison procedures `set-difference', `union', `intersection', etc.\n
 :SEE-ALSO `mon-line-get-next', `mon-cln-blank-lines', `mon-cln-uniq-lines',
 `uniq', `uniq-region'.\n►►►"
   (let ((max-pon (line-number-at-pos (point-max)))
@@ -1271,7 +1308,7 @@ comparing its result list with one or more of the list comparison procedures
 	     (when  (equal this-line next-line)  (setq gather-dups (cons this-line gather-dups)))))
     (if (or insertp interp)
 	(save-excursion (newline) (princ gather-dups (current-buffer)))
-      gather-dups)))
+        gather-dups)))
 
 ;;; ==============================
 (defun mon-line-count-region (start end)
@@ -2329,32 +2366,37 @@ When called-interactively prompt for column numer of FROM-COL and TO-COL.
 ;;                 (nd-pnt (make-marker))
 ;;                 (fndr  #'(lambda (y) (search-forward-regexp y nil t))))
 ;;             (set-marker st-pnt (funcall fndr "^►")) ;st-pnt)
-;;             (set-marker nd-pnt (funcall fndr "◀$")) ; nd-pnt)
+;;             (set-marker nd-pnt (funcall fndr "◄$")) ; nd-pnt)
 ;;             (goto-char st-pnt)
 ;;             (mon-line-indent-from-to-col 24 32 st-pnt nd-pnt)
 ;;             (goto-char st-pnt)
 ;;             (mon-line-indent-from-to-col 46 58 st-pnt nd-pnt))
 ;;
-;;,---- :UNCOMMENT-BELOW-TO-TEST
-;;|►emacsen.auto_apart     001           001
-;;|emacsen.rug_compat_42   00            00
-;;|emacsen.rug_compt_adorn 00            00       
-;;|emacsen.cache_empire    080           080      
-;;|emacsen.hashdelimiter   no-hash       no-hash
-;;|emacsen.rookie_romain   no value      no value◀
-;;`----
+;; ,---- :UNCOMMENT-BELOW-TO-TEST
+;; |►emacsen.auto_apart     001           001
+;; |emacsen.rug_compat_42   00            00
+;; |emacsen.rug_compt_adorn 00            00       
+;; |emacsen.cache_empire    080           080      
+;; |emacsen.hashdelimiter   no-hash       no-hash
+;; |emacsen.rookie_romain   no value      no value◄
+;; `----
 
 ;;; ==============================
+;;; :NOTE (length "=> TO-COLM-NUM-19-!")
 ;;; :CREATED <Timestamp: #{2009-12-09T15:07:13-05:00Z}#{09503} - by MON>
 (defun mon-line-strings-pipe-to-col (start end &optional to-col insrtp intrp)
-  "Return region's BOL piped and indented to column number TO-COL.
-When called-interactively or INSRTP is non-nil replace region.
-:EXAMPLE\n\(let \(\(reb  \(search-forward-regexp \"►\"\)\)
-  \(ree (1- \(search-forward-regexp \"◀\"\)\)\)\)
-      \(mon-line-strings-pipe-to-col reb ree 12\)\)\n
-►William Gibson\nBruce Sterling\nDan Brown\nNeal Stephenson\nLoyd Blankenship
-Erik Gordon Corley◀\n
-:SEE-ALSO  `mon-line-strings-pipe-bol', `mon-line-strings-indent-to-col',
+  "Return region's BOL piped and indented to column number.
+When TO-COL is non-nil return region indented TO-COL, default column number 7.
+When called-interactively or INSRTP is non-nil replace region.\n
+:EXAMPLE\n\n\(let \(\(reb \(1+ \(search-forward-regexp \"►\"\)\)\)
+      \(ree \(- \(search-forward-regexp \"◄\"\) 2\)\)\)
+  \(momentary-string-display
+   \(concat \"\\n\\n=> TO-THE-19th-COL-!\\n\\n\"
+           \(mon-line-strings-pipe-to-col reb ree 19\)
+           \"\\n\\n... and beyond ... :\)\\n\"\) \(point\)\)\)\n
+►\nWilliam Gibson\nBruce Sterling\nDan Brown\nNeal Stephenson\nLoyd Blankenship
+Erik Gordon Corley\n◄\n
+:SEE-ALSO `mon-line-strings-pipe-bol', `mon-line-strings-indent-to-col',
 `mon-line-strings', `mon-line-indent-from-to-col',
 `mon-comment-divider->col', `mon-lisp-comment-to-col'.\n►►►"
   (interactive "i\n\i\nP\ni\np")
@@ -2381,18 +2423,20 @@ Erik Gordon Corley◀\n
         tmp-pipe)))
 ;;
 ;;; :TEST-ME 
-;;; (let ((reb  (search-forward-regexp "►"))
-;;;       (ree (1- (search-forward-regexp "◀"))))
+;;; (let ((reb (1+ (search-forward-regexp "►")))
+;;;       (ree (- (search-forward-regexp "◄") 2)))
 ;;;   (mon-line-strings-pipe-to-col reb ree 12))
 ;;
-;;,---- :UNCOMMENT-BELOW-TO-TEST
-;;|►William Gibson
-;;|Bruce Sterling
-;;|Dan Brown
-;;|Neal Stephenson
-;;|Loyd Blankenship
-;;|Erik Gordon Corley◀
-;;`----
+;; ,---- :UNCOMMENT-BELOW-TO-TEST
+;; | ►
+;; | William Gibson
+;; | Bruce Sterling
+;; | Dan Brown
+;; | Neal Stephenson
+;; | Loyd Blankenship
+;; | Erik Gordon Corley
+;; | ◄
+;; `----
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-09-13T09:30:42-04:00Z}#{09377} - by MON>
@@ -2547,18 +2591,18 @@ Does not move point.\n
 ;;;    (1+ (search-forward-regexp "►")) (- (search-forward-regexp "►") 2))
 ;;; (mon-line-string-rotate-namestrings 
 ;;;    (1+ (search-forward-regexp "►")) (- (search-forward-regexp "►") 2) t)
-;;,---- :UNCOMMENT-TO-TEST
-;;|►
-;;|George Charles Aid
-;;|Thomas Pollock Anshutz
-;;|Cecilia Beaux
-;;|Frank Weston Benson
-;;|Thomas Hart Benton
-;;|Saul Bernstein
-;;|George Biddle
-;;|Gutzon Borglum
-;;|►
-;;`----
+;; ,---- :UNCOMMENT-TO-TEST
+;; |►
+;; |George Charles Aid
+;; |Thomas Pollock Anshutz
+;; |Cecilia Beaux
+;; |Frank Weston Benson
+;; |Thomas Hart Benton
+;; |Saul Bernstein
+;; |George Biddle
+;; |Gutzon Borglum
+;; |►
+;; `----
 
 ;; ==============================
 ;;; :CREATED <Timestamp: #{2009-09-23T20:12:26-04:00Z}#{09394} - by MON KEY>
@@ -2615,17 +2659,17 @@ Lovett (Robert Abercrombie)\n►\n
 ;;; :TEST-ME 
 ;;; (mon-line-string-unrotate-namestrings 
 ;;;    (1+ (search-forward-regexp "►")) (- (search-forward-regexp "►") 2))
-;;,---- :UNCOMMENT-TO-TEST:
-;;|►
-;;|George Frost Kennan
-;;|Dean Gooderham Acheson
-;;|William Averell Harriman
-;;|Lukács János Albert 
-;;|John Jay McCloy
-;;|Charles Eustis Bohlen 
-;;|Robert Abercrombie Lovett
-;;|►
-;;`----
+;; ,---- :UNCOMMENT-TO-TEST:
+;; |►
+;; |George Frost Kennan
+;; |Dean Gooderham Acheson
+;; |William Averell Harriman
+;; |Lukács János Albert 
+;; |John Jay McCloy
+;; |Charles Eustis Bohlen 
+;; |Robert Abercrombie Lovett
+;; |►
+;; `----
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-09-24T14:18:44-04:00Z}#{09394} - by MON>
@@ -2664,18 +2708,18 @@ Charles Julius Guiteau\n►\n\n:SEE-ALSO
 ;;; (mon-line-string-rotate-namestrings-combine
 ;;;    (1+ (search-forward-regexp "►")) (- (search-forward-regexp "►") 2))
 ;;
-;;,---- :UNCOMMENT-TO-TEST:
-;;|►
-;;|Emil Max Hödel
-;;|John Wilkes Booth
-;;|Leon Frank Czolgosz
-;;|Lee Harvey Oswald
-;;|Dmitry Grigoriyevich Bogrov
-;;|Paul Gorguloff
-;;|John Bellingham
-;;|Charles Julius Guiteau
-;;|►
-;;`----
+;; ,---- :UNCOMMENT-TO-TEST:
+;; |►
+;; |Emil Max Hödel
+;; |John Wilkes Booth
+;; |Leon Frank Czolgosz
+;; |Lee Harvey Oswald
+;; |Dmitry Grigoriyevich Bogrov
+;; |Paul Gorguloff
+;; |John Bellingham
+;; |Charles Julius Guiteau
+;; |►
+;; `----
 
 ;;; ==============================
 ;;; :COURTESY Nelson H. F. Beebe :HIS clsc.el :VERSION 1.53 of 2001-05-27
@@ -3676,7 +3720,7 @@ in ARGS.\n:EXAMPLE\n\(mon-combine '\(www ftp\) '\(exa\) '\(com org\)\)\)\n
         (t nil)))
 ;;
 ;;; :TEST-ME (mon-maptree #'(lambda (x) (when (stringp x) (prin1 x)))  '(a ("b" b cc) dd))
-;;;=> "b" (nil ("b" nil nil) nil)
+;;; => "b" (nil ("b" nil nil) nil)
 
 ;;; ==============================
 ;;; :COURTESY Pascal J. Bourguignon :HIS pjb-utilities.el :WAS recursive-apply?

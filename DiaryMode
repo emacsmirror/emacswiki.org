@@ -177,16 +177,15 @@ The code for Spanish didn't worked for me, this is the code which worked:
 === Italiano ===
 This code works for me
 
-(setq european-calendar-style 't)
-(setq calendar-week-start-day 1
-      calendar-day-name-array
-      ["Domenica" "Luned** "Marted** "Mercoled**
-         "Gioved** "Venerd** "Sabato"]
+  (setq european-calendar-style 't)
+  (setq calendar-week-start-day 1
+        calendar-day-name-array
+        ["Domenica" "Luned" "Marted" "Mercoled"
+         "Gioved" "Venerd" "Sabato"]
         calendar-month-name-array
         ["Gennaio" "Febbraio" "Marzo" "Aprile" "Maggio"
          "Giugno" "Luglio" "Agosto" "Settembre"
-         "Ottobre" "Novembre" "Dicembre"]
-        )
+         "Ottobre" "Novembre" "Dicembre"])
 
 == Diary Entries ==
 

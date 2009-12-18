@@ -2,7 +2,7 @@
 ;;; ================================================================
 ;;; DESCRIPTION: 
 ;;; MON utilities for working with time. 
-;;; Routines for converting from 'eBay official time' to 'YOUR Official Time ®'
+;;; Routines for converting from 'eBay official time' to 'YOUR Official Time®'
 ;;;
 ;;; FUNCTIONS:►►►
 ;;; `mon-get-current-year' `mon-format-iso-8601-time'
@@ -56,9 +56,9 @@
 ;;; `mon-today' mon-utils.el 
 ;;;             |-> `mon-string-to-symbol'
 ;;; 
-;;; `mon-timestamp'-> mon-dir-utils.el
-;;;                   |-> `mon-get-buffers-parent-dir'
-;;;                   |-> `mon-buffer-written-p'
+;;; `mon-timestamp' -> mon-dir-utils.el
+;;;                    |-> `mon-get-buffers-parent-dir'
+;;;                    |-> `mon-buffer-written-p'
 ;;;                                     
 ;;; The variables and constants:
 ;;; `IS-MON-P', `IS-MON-P-W32', `IS-MON-P-GNU' 
@@ -124,7 +124,7 @@
 ;;; swap PDT <-> PST
 ;;;
 ;;; ==============================
-;;; The timestamps generate by functions herein are of the form:
+;;; The time-stamps generated w/ functions herein have the form:
 ;;;
 ;;; <Timestamp: #{YYYY-MM-DDTHH:MM:SS+/-HH:MMZ}#{yyWwD} - by NAME>
 ;;; <Timestamp: #{2009-08-06T21:17:10-04:00Z}#{09325} - by Ebay>
@@ -219,7 +219,6 @@
 (eval-when (compile load eval) 
   (require 'cl))
 
-;;; ==============================
 (require 'mon-regexp-symbols)
 ;;
 (eval-when 
@@ -228,7 +227,7 @@
       (message (concat 
                 "This :PACKAGE `mon-time-uitls' wants the :FUNCTION \n"
                 "`mon-string-to-symbol' from :PACKAGE `mon-utils' \n"
-                "Had that that package been loaded already, the :FUNCTIONS \n"
+                "Had that that package been loaded already, the :FUNCTION \n"
                 "`mon-get-buffers-parent-dir', `mon-buffer-written-p' \n"
                 "from :PACKAGE `mon-dir-utils' would have been loaded already \n" 
                 "In any event this :PACKAGE `mon-time-uitls' " 
@@ -239,13 +238,13 @@
 ;;; :CREATED <Timestamp: #{2009-10-24T14:12:12-04:00Z}#{09436} - by MON KEY>
 (defvar *mon-default-comment-start* ";;; "
  "*Comment prefix for `mon-comment-divider-w-len'.
- This is a cheap around so we don't have to deal with `comment-start' with 
+ This is a cheap work around so we don't have to deal with `comment-start' with
 mon-comment-* functions which might rely on or calculate a string/substring
 inidex per the value of this var.
 :EXAMPLE\n*mon-default-comment-start*\n
 \(let \(\(*mon-default-comment-start* \"%% \"\)\)
   *mon-default-comment-start*\)\n
-:CALLED-BY `mon-comment-divider-w-len', `comment-divider-to-col'
+:CALLED-BY `mon-comment-divider-w-len', `comment-divider-to-col'\n
 :SEE-ALSO `*mon-default-comment-divider*'.\n►►►")
 ;;
 ;;; :TEST-ME *mon-default-comment-start*
@@ -275,7 +274,7 @@ value of `*mon-default-comment-start*'.\n
 ;;
 ;;; :TEST-ME *mon-default-comment-divider*
 ;;;(progn (makunbound '*mon-default-comment-divider*)
-;;;       (unintern '*mon-default-comment-divider*))
+;;;       (unintern '*mon-default-comment-divider*) )
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: Saturday July 18, 2009 @ 11:59.08 AM - by MON KEY>
@@ -308,7 +307,7 @@ to Internet.
 ;;; :CREATED <Timestamp: #{2009-10-23T20:57:47-04:00Z}#{09436} - by MON KEY>
 (defun* mon-today (&key as-string as-symbol as-list-str 
                         as-list-num as-vec-str as-vec-num)
-  "Return today's date as YYYY-MM-DD
+  "Return today's date as YYYY-MM-DD.\n
 When keyword AS-STRING is non-nil return date as a string.
 When keyword AS-SYMBOL is non-nil return date as a symbol.
 When keyword AS-LIST-STR is non-nil return date as a list of three strings.
@@ -358,11 +357,11 @@ When keyword AS-VEC-NUM is non-nil return date as a vector of three numbers.
 ;;; :TEST-ME (call-interactively 'mon-get-current-year)
 
 ;;; ==============================
-;;; :CREATED <Timestamp: 2009-08-06-W32-4T14:55:01-0400Z - by MON KEY>
 ;;; :COURTESY Edward O'Connor <hober0@gmail.com> 
-;;; SUBJECT: Re: Can `format-time-string' produce full/extended ISO 8601 times?
-;;; LIST: emacs-devel@gnu.org
-;;; DATE: 2009-08-06-W32-4T14:51:02-0400Z
+;;; :SUBJECT Re: Can `format-time-string' produce full/extended ISO 8601 times?
+;;; :MAIL-LIST emacs-devel@gnu.org
+;;; :DATE 2009-08-06-W32-4T14:51:02-0400Z
+;;; :CREATED <Timestamp: 2009-08-06-W32-4T14:55:01-0400Z - by MON KEY>
 (defun mon-format-iso-8601-time (&optional time insertp intrp)
   "Returns ISO-8601 compliant timestring in 'Extended' format.
 :EXAMPLE\n\(mon-format-iso-8601-time\)
@@ -382,17 +381,16 @@ The current function extends Emacs' interpretation by colon delimiting the
 time-numoffset:
  +/-time-hour:time-minute ->  +/-hh:mm  -> \"-05:00\"\n
 Additionally, the \"Zulu\" or trailing Z of ISO-8601/rfc3339 appended to the UTC.\n
-:SEE
-\(URL `http://isotc.iso.org/livelink/livelink/4021199/ISO_8601_2004_E.zip?func=doc.Fetch&nodeid=4021199')
-\(URL `http://www.ietf.org/rfc/rfc3339.txt') ;Date and Time on the Internet.
-\(URL `http://www.w3.org/TR/NOTE-datetime') ;W3C Specification about UTC Date and Time.
-\(URL `http://en.wikipedia.org/wiki/ISO-8601').
-\(URL `http://en.wikipedia.org/wiki/ISO_8601_usage').\n►►►"
+:SEE \(URL `http://isotc.iso.org/livelink/livelink/4021199/ISO_8601_2004_E.zip?func=doc.Fetch&nodeid=4021199')
+:SEE \(URL `http://www.ietf.org/rfc/rfc3339.txt') <- Date and Time on the Internet.
+:SEE \(URL `http://www.w3.org/TR/NOTE-datetime')  <- W3C Specification about UTC Date and Time.
+:SEE \(URL `http://en.wikipedia.org/wiki/ISO-8601').
+:SEE \(URL `http://en.wikipedia.org/wiki/ISO_8601_usage').\n►►►"
   (interactive "i\ni\np")
   (let* ((colon-z-stamp 
           ;;(format-time-string "%Y-%m-%d-W%V-%uT%T%zZ" time))
           ;;(format-time-string "%Y-%m-%d-W%V-%uT%T%zZ" time))
-          ;; NOTE: `#{' is a reserved user dispatching macro char in CL
+          ;; :NOTE `#{' is a reserved user dispatching macro char in CL
            (format-time-string"#{%Y-%m-%dT%T%zZ}#{%y%V%u}" time)) 
          (iso-8601-colon-stamp  
           (format "%s:%s%s"  ;"%s:%s" 
@@ -409,16 +407,17 @@ Additionally, the \"Zulu\" or trailing Z of ISO-8601/rfc3339 appended to the UTC
 ;;; :TEST-ME (call-interactively 'mon-format-iso-8601-time)
 
 ;;; ==============================
-;;; Why this isn't already a default function I'll never know...
+;;; :NOTE Why this isn't already a default function I'll never know...
 ;;; :CREATED <Timestamp: Wednesday June 03, 2009 @ 08:07.05 PM - by MON KEY>
 (defun mon-file-older-than-file-p (file1 file2)
   "t when FILE1 is older than FILE2.\n
-:SEE-ALSO `file-newer-than-file-p'.\n►►►"
+:SEE-ALSO `file-newer-than-file-p', `mon-conv-time-flt-pnt'.\n►►►"
   (let ((fepf1 (if (file-exists-p file1) t (error (format "file does not exist: %s" file1))))
 	(fepf2 (if (file-exists-p file1) t (error (format "file does not exist: %s" file1)))))
     (not (file-newer-than-file-p file2 file2))))
 
 ;;; ==============================
+;;; :NOTE file-newer-than-file-p filename1 filename2
 ;;; :CREATED <Timestamp: Friday May 15, 2009 @ 01:16.43 PM - by MON KEY>
 (defun mon-get-file-mod-times (file-or-dir)
   "Return formatted string for file FILE-OR-DIR's modification and accessed time.
@@ -440,19 +439,20 @@ Formatted string also informs if FILE-OR-DIR is a dir.\n
     (format "file %s: last-modified: %s last-accessed: %s" f-type last-modified last-accessed)))
 ;;
 ;;; :TEST-ME (mon-get-file-mod-times mon-user-emacsd)
-;;; :TEST-ME (mon-get-file-mod-times "u:/NEFS_PHOTOS/Nef_Drive2/EBAY/BMP-Scans/e1038/")
-;;; :TEST-ME (mon-get-file-mod-times "u:/NEFS_PHOTOS/Nef_Drive2/EBAY/BMP-Scans/e1038/e1038-0.bmp")
-;;; file-newer-than-file-p filename1 filename2
+;;; :TEST-ME (mon-get-file-mod-times (concat *ebay-images-bmp-path* "/e1038/"))
+;;; :TEST-ME (mon-get-file-mod-times (concat *ebay-images-bmp-path* "/e1038/e1038-0.bmp"))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: Wednesday May 20, 2009 @ 04:54.25 PM - by MON KEY>
 (defun mon-conv-time-flt-pnt (&optional time)
   "Time is a floating point number (fractions of 1 hour).
 e.g. \(/ (+ (* HIGH-bit  65536.0) LOW-bit) 3600.0)\n
-NOTE: Not acccurate to microsecond. Take care comparing object timestamps.
+:NOTE Not acccurate to microsecond. Take care comparing object timestamps.
 Function lifted from `ido.el's `ido-time-stamp'.\n
 :EXAMPLE\n\(mon-conv-time-flt-pnt (nth 4 (file-attributes \"~/.emacs\")))
-  ;=>345113.5183333333\n►►►"
+  ;=>345113.5183333333\n
+:SEE-ALSO `mon-comp-times-flt-pnt', `mon-get-file-mod-times', 
+`mon-file-older-than-file-p', `file-newer-than-file-p'.\n►►►"
   (let (op-time)
     (setq op-time (or time (current-time)))
     (/ (+ (* (car op-time) 65536.0)  (cadr op-time)) 3600.0)))
@@ -470,14 +470,15 @@ When T1 or T2 is nil value defaults to `current-time'.\n
 T1 and T2 are the first _two_ integers of time-value list
 per three integer list returned from current-time e.g.\(18963 22549 531000).
 Where it is supplied the third integer  microsecond count (cddr) is dropped.\n
-:EXAMPLE
-\(mon-comp-times-flt-pnt 
+:EXAMPLE\n\(mon-comp-times-flt-pnt 
   (current-time) ;<--T1 is now!
   '(18963 22549 531000)) ;<--T2 is in the past.\n; => t
 \(mon-comp-times-flt-pnt '(18963 22549 531000) (current-time)) ;=> nil 
 \(mon-comp-times-flt-pnt '(18963 22549 531000))
 \(current-time-string '(18963 22549 531000))
- ;=>\"Tue May 19 21:08:37\" <--T2's value converted to human speak.\n►►►"
+ ;=>\"Tue May 19 21:08:37\" <--T2's value converted to human speak.\n
+:SEE-ALSO `mon-conv-time-flt-pnt', `mon-get-file-mod-times', 
+`mon-file-older-than-file-p', `file-newer-than-file-p'.\n►►►"
 (let ((got-t1 (if t1 t1	nil))
       (got-t2 (if t2 t2	nil)))
   (> (mon-conv-time-flt-pnt got-t1) (mon-conv-time-flt-pnt got-t2))))
@@ -487,7 +488,7 @@ Where it is supplied the third integer  microsecond count (cddr) is dropped.\n
 (defun mon-accessed-time-stamp ()
   ":DEPRECATED Build the function for inserting shortform time-stamps.\n
 :SEE-ALSO `mon-accessed-stamp', `mon-timestamp', `mon-stamp'.\n
-Used in `naf-mode'.\n►►►"
+:USED-IN `naf-mode'.\n►►►"
   (insert (format-time-string "%A %B %d, %Y")))
 ;;
 ;;; :TEST-ME (mon-accessed-time-stamp)
@@ -530,8 +531,8 @@ are still in effect but use the NAME value associated with buffer-filename.\n
                       (naf (concat " - by " cond-name ">"))
                       (t (concat " - by " cond-name ">"))))
                 ((or IS-MON-P-W32 (equal user-real-login-name  (cadr (assoc 5 *MON-NAME*))))
-                 (cond (accessed " - MON") ;!dont replace me
-                       (naf " - by MON>") ;!dont replace me
+                 (cond (accessed " - MON") ;; :NOTE Do not replace me!
+                       (naf " - by MON>")  ;; :NOTE Do not replace me!
                        (t "")))
                 ((or IS-MON-P-GNU 
                      (and (equal system-type 'gnu/linux)
@@ -554,11 +555,14 @@ are still in effect but use the NAME value associated with buffer-filename.\n
       put-stamp)))
 ;;
 ;;; :TEST-ME (mon-timestamp)
-;;; :TEST-ME (mon-timestamp :insertp t)#{2009-08-24T15:43:45-04:00Z}#{09351} - by MON KEY>
+;;; :TEST-ME (mon-timestamp :insertp t)
+;;;          ;=> #{2009-08-24T15:43:45-04:00Z}#{09351} - by MON KEY>
 ;;; :TEST-ME (mon-timestamp :accessed t)
-;;; :TEST-ME (mon-timestamp :accessed t :insertp t)#{2009-08-24T15:43:36-04:00Z}#{09351} - MON KEY
+;;; :TEST-ME (mon-timestamp :accessed t :insertp t)
+;;;          ;=> #{2009-08-24T15:43:36-04:00Z}#{09351} - MON KEY
 ;;; :TEST-ME (mon-timestamp :naf t)
-;;; :TEST-ME (mon-timestamp :naf t :insertp t) ;-> #{2009-08-24T15:43:21-04:00Z}#{09351} - by MON KEY>
+;;; :TEST-ME (mon-timestamp :naf t :insertp t) 
+;;;          ;=> #{2009-08-24T15:43:21-04:00Z}#{09351} - by MON KEY>
 ;;; :TEST-ME (mon-timestamp)
 ;;; :TEST-ME (call-interactively 'mon-timestamp)
 ;;; :TEST-ME (cadr (assoc "reference-sheet-help-utils.el" *mon-timestamp-cond-alist*))
@@ -590,7 +594,7 @@ Stamp is fontlocked when invoked from a `naf-mode' buffer.\n
   "Return an 'accessed date' timestamp string.
 When INSERTP or called interactively insert at accessed stamp at point.
 If COMMENTED is non-nil or called interactively with prefix arg returns with a 
-';;; ACCESSED: ' Prefix - default is 'accessed: '.
+';;; :ACCESSED ' Prefix - default is 'accessed: '.
 Invoked from a `naf-mode' buffer acessed-stamp fontlocked by
 `naf-mode-accessed-by-flag'.\n
 :EXAMPLE\n\(mon-accessed-stamp\)\n\(mon-accessed-stamp nil t\)\n
@@ -598,7 +602,7 @@ Invoked from a `naf-mode' buffer acessed-stamp fontlocked by
 `mon-lisp-stamp', `mon-file-stamp'.\n►►►"
   (interactive "i\nP\np")
   (let ((tstmp (if commented
-                   (concat ";;; ACCESSED: " (mon-timestamp :accessed t))
+                   (concat ";;; :ACCESSED " (mon-timestamp :accessed t))
                  (concat "accessed: " (mon-timestamp :accessed t)))))
     (if (or insertp intrp)
         (insert tstmp)
@@ -617,7 +621,7 @@ Invoked from a `naf-mode' buffer acessed-stamp fontlocked by
   "Return or insert at point a `comment-divider' newline and `mon-stamp'.
 When INSERTP is non-nil or called interactively timestap insert at point.
 When MODIFICATIONS is non-nil or called interactively with Prefix Arg.
-Returns with a ';;; MODIFICATIONS: ' prefix -default is ';;; CREATED: '
+Returns with a ';;; MODIFICATIONS: ' prefix - default is ';;; CREATED: '
 Use after creating new elisp functions to delimit and date them.\n
 :EXAMPLE\n\(mon-insert-lisp-stamp\)\n\(mon-insert-lisp-stamp nil nil t\)\n
 :SEE-ALSO `mon-insert-lisp-stamp', `mon-file-stamp', `mon-insert-copyright',
@@ -642,77 +646,189 @@ Use after creating new elisp functions to delimit and date them.\n
 ;;; :TEST-ME (call-interactively 'mon-lisp-stamp)
 
 ;;; ==============================
+;;; :MODIFICATIONS <Timestamp: #{2009-12-17T17:35:35-05:00Z}#{09514} - by MON>
 ;;; :CREATED <Timestamp: #{2009-10-24T11:52:41-04:00Z}#{09436} - by MON>
-(defun mon-file-stamp-vrfy-put-eof (insertp)
-  "Return the preferred EOF delimiter if not present in current-buffer
-When INSERTP is non-nil and the delimiter wasn't found insert it.
+(defun mon-file-stamp-vrfy-put-eof (&optional insrtp)
+  "Return the preferred EOF delimiter if not present in current-buffer.
+When INSRTP is non-nil and the delimiter wasn't found insert it.
 Does not move point.\n
 :EXAMPLE\n\(mon-file-stamp-vrfy-put-eof nil\)\n
 :SEE-ALSO `mon-file-stamp', `*mon-default-comment-divider*'.\n►►►"
-  (let  ((end-of-dlm *mon-default-comment-divider*)
+  (interactive "p")
+  (let  (;; :NOTE Using *mon-default-comment-divider* gives granularity, but may
+         ;;       cause failure where pre-existing footers are a diff. length.
+         (end-of-dlm *mon-default-comment-divider*) 
          (end-of ";;; EOF")
-         (eof-dlm-mk (make-marker))
-         (eof-mk (make-marker)))
+         (do-EOF t))
     (save-excursion
       (goto-char (buffer-end 1))
-      (set-marker eof-mk (point))
-      (set-marker eof-dlm-mk (point))
-      ;; We do these checks b/c there may newlines etc. after the EOF.
-      (search-backward-regexp (concat "^" end-of "$") nil t)
-      (unless
-          (when (looking-at-p (concat "^" end-of "$"))
-            ;; Make a bounds for next so we don't over-search.
-            (set-marker eof-mk (point)) 
-            (set-marker eof-dlm-mk (- eof-mk (1+ (length end-of-dlm))))
-            (search-backward-regexp (concat "^" end-of-dlm "$") eof-dlm-mk t)
-            (and (= eof-dlm-mk (point)) (not (= eof-mk eof-dlm-mk))))
-        (if insertp 
-            (princ (concat "\n" end-of-dlm "\n" end-of) (current-buffer))
-            (concat "\n" end-of-dlm "\n" end-of))))))
+      (when (search-backward-regexp (concat "^" end-of-dlm "\n" end-of "$") (line-end-position -5) t)
+        (setq do-EOF nil))
+      (when do-EOF
+        (when (search-backward-regexp (concat "^" end-of-dlm "\n" end-of "$") nil t)
+          (setq do-EOF nil))
+        (cond ((and insrtp do-EOF)
+               (goto-char (buffer-end 1))
+               (princ (concat "\n" end-of-dlm "\n" end-of) (current-buffer)))
+              (do-EOF (concat "\n" end-of-dlm "\n" end-of)))))))
 ;;
 ;;; :TEST-ME (with-temp-buffer (mon-file-stamp-vrfy-put-eof nil))
 
 ;;; ==============================
+;;; :NOTE comment-delimiter in docstring is 1- its real value to aid examples.
+;;; :MODIFICATIONS <Timestamp: #{2009-12-17T19:56:13-05:00Z}#{09515} - by MON KEY>
 ;;; :MODIFICATIONS <Timestamp: #{2009-10-24T12:20:13-04:00Z}#{09436} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-08-24T15:46:26-04:00Z}#{09351} - by MON KEY>
-(defun mon-file-stamp (&optional insertp intrp w/url)
-  "Return timestamped file header and EOF footer.
-Retrun value of header's timestamp prepended with \";;; FILE-CREATED:\".
-If a file footer is not present it is concatted to header as:\n
- \";;; ==============================\n  ;;; EOF\"\n
-When optional arg W/URL is non-nil wrap the URL with \(URL `'\) and include it 
-on a second line as: \";;; \(URL `http://some-url.com'\)\". When insertp is 
-non-nil or called interactively insert string(s) in buffer, don't move point.
-When inserting if point is not equal point-min prepends a newline prior to 
-inserting.\n
-:EXAMPLE
-\(mon-file-stamp nil nil\)\n\(mon-file-stamp nil nil \"http://emacswiki.com\")\n
+(defun mon-file-stamp (&optional insrtp intrp w/url at-point)
+  "Return MON's default `time-stamp'd file header with EOF footer.\n
+Find first line matching the file created time-stamp prefixed with:\n
+;;; :FILE-CREATED\n
+When present do not alter existing stamp, else return a time-stamp as:\n
+;;; :FILE-CREATED <Timestamp: #{2009-12-17T18:49:01-05:00Z}#{09514} - by MON>\n
+Locate first line beginning matching either of the formats:\n
+;;; :FILE\n;;; :FILE :DIRECTORY\n
+When either is present do not alter the existing file or directory name.
+If neither is present, and buffer-filename is t return value of filename as:\n
+:FILE /some/path/to/file\n
+When buffer-file-name is nil, return expanded value of default-directory as:\n
+:FILE :DIRECTORY /some/path/to/buffers/dir/\n
+When optional arg W/URL is non-nil, find first line matching an external
+reference with one of the three formats:\n
+;;; :SOURCE\n;;; :SEE\n;;; \(URL\n
+When present do not alter. Else, return the wrapped URL of arg to W/URL as:\n
+;;; :SOURCE \(URL `http://some-url.com'\)\n
+Find the \"EOF\" string and commented delimiter around last 4 lines of buffer.
+When present do nothing. When an EOF file footer is not present return one as:\n
+;;; =============================\n;;; EOF\n
+When INSRTP or INTRP is non-nil defualt behaviour is to insert return value in
+buffer at BOF and EOF. Does not move point.\n
+When INSRTP or INTRP is non-nil, and AT-POINT is non-nil insert return prepended
+with a newline and insert at point. Does not move point.
+When AT-POINT is non-nil insert return value at point. Does not move point.
+:NOTE The AT-POINT arg overrides a nil arg of either INSRTP or INTRP.\n
+:EXAMPLE\n
+\(mon-file-stamp nil nil\)\n
+\(mon-file-stamp nil nil \"http://www.emacswiki.org\")\n
+:NOTE Following illustrates adding a URL :SOURCE line to an existing file stamp.
+      Watch the URL added at line 3 while other existing lines remain unchanged.\n
+:EXAMPLE\n\n\(save-excursion
+  \(with-output-to-temp-buffer \"*MON-TEST-MFS*\"
+    \(set-buffer \"*MON-TEST-MFS*\"\)
+    \(display-buffer \"*MON-TEST-MFS*\" t\)
+    \(mon-file-stamp t\)
+    \(sit-for 3\)
+    \(mon-file-stamp t nil \"http://wikipedia.com\"\)\)
+  \(sit-for 3\)
+  \(kill-buffer  \"*MON-TEST-MFS*\"\)\)\n
 :SEE-ALSO `mon-file-stamp-vrfy-put-eof' `*mon-default-comment-divider*'
 `mon-lisp-stamp', `mon-timestamp', `mon-stamp', `mon-accessed-stamp'.\n►►►"
   (interactive "i\np\nP")
   (let* ((the-url (cond ((and intrp w/url)
-                         (concat "\n;;; SOURCE: (URL `" (read-string "URL to wrap :") "')"))
-                        ((and (not intrp) w/url) 
-                         (concat "\n;;; SOURCE: (URL `"  w/url "')"))
+                         (concat ";;; :SOURCE (URL `" (read-string "URL to wrap :") "')"))
+                        ((and (not intrp) w/url)
+                         (concat ";;; :SOURCE (URL `"  w/url "')"))
                         (t "")))
-         (f-tstmp (concat ";;; FILE-CREATED: <Timestamp: "(mon-timestamp :naf t )
-                          the-url "\n" *mon-default-comment-divider* "\n")))
-    (if (or intrp insertp) 
-        (save-excursion 
-          (if (= (point) (point-min))
-              (insert f-tstmp)
-            (progn (newline) (insert f-tstmp)))
-          (mon-file-stamp-vrfy-put-eof t))
-        (concat f-tstmp (mon-file-stamp-vrfy-put-eof nil)))))
+         (the-file-or-dir
+          (if (buffer-file-name)
+              (concat ";;; :FILE " (buffer-file-name))
+              (concat ";;; :FILE :DIRECTORY " (expand-file-name default-directory))))
+         (f-tstmp (concat 
+                   ";;; :FILE-CREATED <Timestamp: " (mon-timestamp :naf t )
+                   "\n" the-file-or-dir
+                   (if w/url
+                       (concat "\n" the-url "\n" )
+                       "\n")
+                   *mon-default-comment-divider* "\n")))
+    (save-excursion    
+      (cond ( ;; Return the standard `f-tstmp' w/ footer
+             (and (not intrp) (not insrtp))
+             (format "%s\n%s" f-tstmp (mon-file-stamp-vrfy-put-eof)))
+            ((or intrp insrtp t)
+             (if at-point 
+                 (if (= (point) (point-min)) 
+                     (if (looking-at "\\(;;; :FILE-CREATED\\|;;; FILE-CREATED:\\)")
+                         (progn
+                           (end-of-line) 
+                           (if (= (point) (buffer-end 1))
+                               (progn 
+                                 (open-line 1) 
+                                 (forward-char 1))
+                               (forward-char 1))
+                           (princ (format "%s%s%s" 
+                                          the-file-or-dir 
+                                          (if the-url (concat "\n" the-url)"\n")
+                                          (mon-file-stamp-vrfy-put-eof))
+                                  (current-buffer)))
+                         (mon-file-stamp-vrfy-put-eof t))
+                     (princ (format "%s\n%s" f-tstmp (mon-file-stamp-vrfy-put-eof)) (current-buffer)))
+                 nil)
+             (unless (= (point) (buffer-end 0)) (goto-char (buffer-end 0)))
+             (cond ((= (buffer-end 0) (line-end-position))
+                    (princ (format "%s" f-tstmp)(current-buffer))
+                    (mon-file-stamp-vrfy-put-eof t))
+                   ((<= (line-end-position)  (buffer-end 1))
+                    (let ((started-from (make-marker)))
+                      (set-marker started-from (point))
+                      (search-forward-regexp 
+                       "\\(;;; :FILE-CREATED\\|;;; FILE-CREATED:\\)" 
+                       (line-end-position) t)
+                      (when (> (point) started-from)
+                        (goto-char started-from) 
+                        (end-of-line) (forward-char 1)
+                        (set-marker started-from (point)))
+                      (search-forward-regexp 
+                       ";;; :FILE \\(:DIRECTORY\\)?" 
+                       (line-end-position) t)
+                      (when (> (point) started-from)
+                        (goto-char started-from) 
+                        (end-of-line) (forward-char 1)
+                        (set-marker started-from (point)))
+                      (search-forward-regexp 
+                       ";;; \\(:SOURCE \\((URL\\)?\\|:SEE \\((URL\\)?\\|\\((URL\\)\\)" 
+                       (line-end-position) t)
+                      (cond ;; `f-tstmp', `the-file-or-dir', and `the-url' are here. Jump to EOF.
+                        ((> (point) started-from)
+                         (mon-file-stamp-vrfy-put-eof t))
+                        ;; `f-tstmp' and `the-file-or-dir' here. Insert `the-url' and jump to EOF.
+                        ((search-backward-regexp "^;;; :FILE \\(:DIRECTORY\\)?" nil t)
+                         (end-of-line) (forward-char 1)
+                         (princ 
+                          (format "%s" (if the-url (concat the-url "\n")"\n"))
+                          (current-buffer))
+                         (mon-file-stamp-vrfy-put-eof t))
+                        ;; `f-tstmp' is here. Insert `the-file-or-dir' and `the-url', then jump to EOF.
+                        ((search-backward-regexp "^\\(;;; :FILE-CREATED\\|;;; FILE-CREATED:\\)" nil t)
+                         (end-of-line) (forward-char 1)
+                         (princ (format "%s%s" the-file-or-dir (if the-url (concat "\n" the-url "\n")"\n"))
+                                (current-buffer))
+                         (mon-file-stamp-vrfy-put-eof t))
+                        ;; Nothing found. We shouldn't be here. Logic is screwy. :(
+                        ;; Put everything now; `f-tstmp', `the-file-or-dir', `the-url'. Jump to EOF.
+                        ((or (= started-from (buffer-end 0)) t)
+                         (princ (format "%s" f-tstmp)(current-buffer))
+                         (mon-file-stamp-vrfy-put-eof t)))))))))))
 ;;
-;;; :TEST-ME (mon-file-stamp)
-;;; :TEST-ME (mon-file-stamp nil nil "http://wikipedia.com")
-;;; :TEST-ME (mon-file-stamp t)
+;;; :NOTE Following 4(four) tests need to be performed in a separate buffer.
+;;; :TEST-ME (mon-file-stamp) 
+;;; :TEST-ME (mon-file-stamp nil nil "http://wikipedia.com") 
+;;; :TEST-ME (mon-file-stamp t) 
 ;;; :TEST-ME (mon-file-stamp nil t "http://wikipedia.com")
-;;; :TEST-ME (call-interactively 'mon-file-stamp)
+;;
+;;; :TEST-ME (mon-file-stamp t nil "http://wikipedia.com" t)
+;;
+;;; :TEST-ME 
+;;; (save-excursion
+;;;   (with-output-to-temp-buffer "*MON-TEST-MFS*"
+;;;     (set-buffer "*MON-TEST-MFS*")
+;;;     (display-buffer "*MON-TEST-MFS*" t)
+;;;     (mon-file-stamp t)
+;;;     (sit-for 3)
+;;;     (mon-file-stamp t nil "http://wikipedia.com"))
+;;;   (sit-for 3)
+;;;   (kill-buffer  "*MON-TEST-MFS*"))
 
 ;;; ==============================
-;;; <Timestamp: 2009-07-30-W31-4T20:03:12-0400Z - by MON KEY>
+;;; :CREATED <Timestamp: 2009-07-30-W31-4T20:03:12-0400Z - by MON KEY>
 (defun mon-convert-ebay-time (time-string)
   "Parse an ebay-time-string encode -> decode it.
 Used as a helper funcition with `mon-cln-ebay-time-string'
@@ -759,8 +875,8 @@ but, `decode-time' and `parse-time-string' both return:
 ;;; :TEST-ME (mon-convert-ebay-time-mvb "29 Jul 2009 Tuesday 11:05:27 PDT")
 
 ;;; ==============================
-;;; <Timestamp: Wednesday July 29, 2009 @ 06:36.54 PM - by MON KEY>
-;;; TODO: consider providing an optional arg to return the stamp without the call to
+;;; <Timestamp: Wednesday July 29, 2009 @ 06:36.54 PM - by MON>
+;;; :TODO consider providing an optional arg to return the stamp without the call to
 ;;; `mon-convert-ebay-time'???
 (defun mon-cln-ebay-time-string (&optional time-string start end insertp intrp)
   "Clean an ebay timestring and process with `mon-convert-ebay-time'.
@@ -770,21 +886,21 @@ Jul-29 11:05                 <-style2, from eBay listing manager
 Aug-10-09 09:16:14 PDT       <-style3, from eBay post listing email confirm
 replacing string with a canonically formatted timestamp.
 When TIME-STRING has form of style1 following occur:
- * '(Mmm' -> Month
- * parens are removed from head and tail of string;
- * Comma after DD is removed; 
- * Whitespace is inserted after YYYY.\n
+ o '(Mmm' -> Month
+ o parens are removed from head and tail of string;
+ o Comma after DD is removed; 
+ o Whitespace is inserted after YYYY.\n
 When TIME-STRING has form of style2 following occur:
- *  'Mmm-' -> Month  
- *  Current year is concatenated to string;
- *  An eBay time-zone is inserted, either PDT or PST
+ o  'Mmm-' -> Month  
+ o  Current year is concatenated to string;
+ o  An eBay time-zone is inserted, either PDT or PST
     This is calculated against `current-time-zone' and may return
     incorrect results if your environment's timezone doesn't track 
     daylight-savings-time in a similiar manner as the U.S. (most should).\n
 When TIME-STRING has form of style3 following occur:
- * 'Mmm-' -> Month  
- * Hyphenation removed from 'Mmm-DD-YY'
- * Current year is converted from YY -> YYYY\n
+ o 'Mmm-' -> Month  
+ o Hyphenation removed from 'Mmm-DD-YY'
+ o Current year is converted from YY -> YYYY\n
 For all 3\(three\) styles returns an extended timestamp formatted to allow
 further processing according to ISO 8601 spec. The timestamp provides conversion of
 eBay PDT or PST timezone to local time \(not everyone lives on West Coast of 
@@ -909,10 +1025,9 @@ Replaces existing time-string in region with converted form.\n
 ;;; :TEST-ME (mon-cln-ebay-time-string "Jul-29 11:05" nil nil t)
 ;;; :TEST-ME (mon-cln-ebay-time-string "Jul-29-09 11:05:14 PDT")
 ;;; :TEST-ME (mon-cln-ebay-time-string "Jul-29-09 11:05:14 PDT" nil nil t)
-;;;
 
 ;;; ==============================
-;;; <Timestamp: Tuesday July 28, 2009 @ 08:28.46 PM - by MON KEY>
+;;; :MODIFICATIONS <Timestamp: Tuesday July 28, 2009 @ 08:28.46 PM - by MON KEY>
 (defun mon-calculate-ebay-timezone-diff (ebay-time-string)
   "Return time difference in hours between ebay-time (PDT or PST)
 and `current-time-zone'.
@@ -937,18 +1052,19 @@ year. The 2007 U.S. change was part of the Energy Policy Act of 2005;
 previously, from 1987 through 2006, the start and end dates were the first
 Sunday in April and the last Sunday in October, and Congress retains the right
 to go back to the previous dates now that an energy-consumption study has been
-done. :SEE\n\(URL `http://en.wikipedia.org/wiki/Daylight_saving_time').
-\(URL `http://isotc.iso.org/livelink/livelink/4021199/ISO_8601_2004_E.zip?func=doc.Fetch&nodeid=4021199').
+done.\n
+:SEE \(URL `http://en.wikipedia.org/wiki/Daylight_saving_time')
+:SEE \(URL `http://isotc.iso.org/livelink/livelink/4021199/ISO_8601_2004_E.zip?func=doc.Fetch&nodeid=4021199')
 ►►►"
   (let ((ets ebay-time-string))
     (/ (- (abs (car (last (parse-time-string ets))))
           (abs (car (current-time-zone))))
        3600)))
 ;;
-;;; :TEST-ME (mon-calculate-ebay-timezone-diff "28 July 2009 17:08:26 PST") ;-> 4
-;;; :TEST-ME (mon-calculate-ebay-timezone-diff "28 July 2009 17:08:26 PDT") ;-> 3
-;;; :TEST-ME (mon-calculate-ebay-timezone-diff "28 July 2009 17:08:26 EST") ;-> 1
-;;; :TEST-ME (mon-calculate-ebay-timezone-diff "28 July 2009 17:08:26 EDT") ;-> 0
+;;; :TEST-ME (mon-calculate-ebay-timezone-diff "28 July 2009 17:08:26 PST") ;=> 4
+;;; :TEST-ME (mon-calculate-ebay-timezone-diff "28 July 2009 17:08:26 PDT") ;=> 3
+;;; :TEST-ME (mon-calculate-ebay-timezone-diff "28 July 2009 17:08:26 EST") ;=> 1
+;;; :TEST-ME (mon-calculate-ebay-timezone-diff "28 July 2009 17:08:26 EDT") ;=> 0
 
 ;;; ==============================
 (provide 'mon-time-utils)

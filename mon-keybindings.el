@@ -1,5 +1,5 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; -*- mode: EMACS-LISP; -*-
+;; -*- mode: EMACS-LISP; no-byte-compile: t; -*-
 ;;; This is mon-keybindings.el 
 ;;; ================================================================
 ;;; DESCRIPTION:
@@ -52,7 +52,7 @@
 ;;; `global-set-key', `global-unset-key'
 ;;; `function-key-map' (var) 
 ;;;
-;;; --- KEYBINDING HOOK IDIOM:
+;;; :KEYBINDING-HOOK-IDIOM
 ;;; (add-hook 'some-hook-to-add|(remove-hook 'some-hook-to-remove
 ;;;              ;(function  ;note using function/#'here makes it possible to remove the
 ;;;                          ;lambda (annonymous) function.
@@ -87,27 +87,37 @@
 ;;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
 ;;; Floor, Boston, MA 02110-1301, USA.
 ;;; ================================================================
-;;; Copyright (C) 2009 MON KEY 
-;;; ==========================
-
+;;; Permission is granted to copy, distribute and/or modify this
+;;; document under the terms of the GNU Free Documentation License,
+;;; Version 1.3 or any later version published by the Free Software
+;;; Foundation; with no Invariant Sections, no Front-Cover Texts,
+;;; and no Back-Cover Texts. A copy of the license is included in
+;;; the section entitled "GNU Free Documentation License".
+;;; A copy of the license is also available from the Free Software
+;;; Foundation Web site at:
+;;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
+;;; ================================================================
+;;; Copyright © 2009 MON KEY 
 ;;; ==============================
-;;; !NOT C-c bound
+;;; CODE:
+
+
+;; :NOT-BOUND-W-C-c
 (global-set-key "\M-n" 'scroll-up-in-place)
 (global-set-key "\M-p" 'scroll-down-in-place)
 (global-set-key (kbd "<C-backspace>") 'backward-kill-word)
 (global-set-key (kbd "<S-backspace>") (kbd "DEL"))
 
 ;;; ==============================
-;;; Removed this binding to accomodate `dired-efap'.
-;;; MODIFICATIONS: <Timestamp: #{2009-09-07T14:45:06-04:00Z}#{09371} - by MON KEY>
-;;;(global-set-key [(f2)] 'doremi-window-width)
+;;; :NOTE Removed this binding to accomodate `dired-efap'.
+;;; :MODIFICATIONS <Timestamp: #{2009-09-07T14:45:06-04:00Z}#{09371} - by MON>
+;;; (global-set-key [(f2)] 'doremi-window-width)
 
 (when win32p (global-set-key [(f3)] 'w32-maximize-frame))
 
-;;; ==============================
-;;; NOTE: Keyindings marked ;!! are bound in naf-mode.el but use a different global-key.
-;;; C-c BOUND KEYS:
-;;; ==============================
+;; :BOUND-W-C-c
+;;; :NOTE Keyindings marked ;!! are bound in naf-mode.el but use a different global-key.
+
 (global-set-key "\C-c!"       'shell-command)  ; "M-!" doesn't like windows :(
 ;; (global-set-key "\C-cc"     'comment-region) moving this into emacs-lisp binding only
 (global-set-key "\C-cwou"     'mon-wrap-one-url)
@@ -115,16 +125,16 @@
 (global-set-key "\C-cvm"      'view-mode)                        
 ;;
 ;; C-c C-*
-(global-set-key "\C-c\C-cp"   'mon-put-copyright)               ;!! "\C-c\M-pc" 
+(global-set-key "\C-c\C-cp"   'mon-put-copyright)                ;!! "\C-c\M-pc" 
 (global-set-key "\C-c\C-di"   'comment-divider)                  ;!! "\C-c\M-di"
 (global-set-key "\C-c\C-dn"   'comment-divider-to-col-four)      ;!! "\C-c\M-dn" 
-;; (global-set-key "\C-c\C-in" 'mon-incr)                       ;!! "\C-c\M-in" 
+;; (global-set-key "\C-c\C-in" 'mon-incr)                        ;!! "\C-c\M-in" 
 (global-set-key "\C-x\C-k1"   'split-designator)                 ;!! "\C-C\M-k1"
 (global-set-key "\C-c\C-kc"   'mon-kill-completions)
 (global-set-key "\C-c\C-gg"   'google-define)                    ;!! "\C-c\M-gg" 
 (global-set-key "\C-c\C-na"   'naf-drive-dired-artist-letter)    ;!! "\C-c\M-na" - w32 only. path is MON local. 
 (global-set-key "\C-c\C-nb"   'naf-drive-dired-brand-letter)     ;!! "\C-c\M-na" - w32 only. path is MON local
-;; (global-set-key "\C-x\C-u" 'describe-char) ; when it gets rebound
+;; (global-set-key "\C-x\C-u" 'describe-char) ;; When it gets rebound.
 ;;
 ;; C-c M-*
 (global-set-key "\C-c\M-/"    'hippie-expand)
@@ -136,20 +146,24 @@
 (global-set-key "\C-c\M-php"  'mon-insert-php-comment-divider)
 (global-set-key "\C-c\M-wd"   'wdired-change-to-wdired-mode)
 
-;; CREATED: <Timestamp: #{2009-08-24T16:33:22-04:00Z}#{09351} - by MON KEY>
+;; :CREATED <Timestamp: #{2009-08-24T16:33:22-04:00Z}#{09351} - by MON>
 (global-set-key "\C-cfst" 'mon-file-stamp) 
 
 ;;; ==============================
 
 ;;; ==============================
-;;; ADDED: `dired-efap' keybinding.
-;;; MODIFICATIONS: <Timestamp: #{2009-09-07T14:48:26-04:00Z}#{09371} - by MON KEY>
+;;; :ADDED `dired-efap' keybinding.
+;;; :MODIFICATIONS <Timestamp: #{2009-09-07T14:48:26-04:00Z}#{09371} - by MON>
+;;; :ADDED `mon-w3m-dired-file' <Timestamp: #{2009-12-17T13:21:29-05:00Z}#{09514} - by MON>
 (add-hook 'dired-mode-hook 
-          (function 
-           (lambda () 
-             (define-key dired-mode-map "\C-c\M-dwt" 'mon-toggle-dired-dwim-target)
-             (define-key dired-mode-map "\M-^" 'dired-up-directory-this-buffer)
-	     (define-key dired-mode-map [M-f2] 'dired-efap))))
+         (function 
+          (lambda () 
+              (define-key dired-mode-map "\C-c\M-dwt" 'mon-toggle-dired-dwim-target)
+              (define-key dired-mode-map "\M-^"       'dired-up-directory-this-buffer)
+              (define-key dired-mode-map [M-f2]       'dired-efap)
+              (define-key dired-mode-map "\C-c\M-wl"  'mon-copy-file-dired-as-list)   ;; as-list full-path
+              (define-key dired-mode-map "\C-c\M-ws"  'mon-copy-file-dired-as-string) ;; unqouted full-path
+              (define-key dired-mode-map "\C-cw3"     'mon-w3m-dired-file))))
 
 (add-hook 'Info-mode-hook  
 	  (function 
@@ -166,17 +180,17 @@
          (define-key TeX-mode-map (kbd "<S-iso-lefttab>")  
            'TeX-complete-symbol))))
 
-;;; ==============================
-;;; emacs-lisp-mode-map 
-;;; (global-set-key "\C-c\M-;"   'mon-user-evald)
-;;; ==============================
 
-;;; ==============================
+;; :EMACS-LISP-MODE-KEYMAP
+;;; (symbol-value 'emacs-lisp-mode-map)
+;;; (global-set-key "\C-c\M-;"   'mon-user-evald)
+
 (when IS-MON-P 
   (add-hook 'emacs-lisp-mode-hook  
             (function 
              (lambda () 
                (progn
+                 (define-key emacs-lisp-mode-map "\M-i"        'indent-according-to-mode)
                  (define-key emacs-lisp-mode-map "\C-c\M-:"    'mon-eval-expression)
                  (define-key emacs-lisp-mode-map "\C-cc"       'comment-region)
                  (define-key emacs-lisp-mode-map "\C-c\C-uc"   'uncomment-region)
@@ -184,32 +198,33 @@
                  (define-key emacs-lisp-mode-map "\C-c\C-dn"   'comment-divider-to-col-four)
                  (define-key emacs-lisp-mode-map "\C-cst"      'mon-insert-lisp-stamp)
                  (define-key emacs-lisp-mode-map "\C-ctm"      'mon-insert-lisp-testme)
-                 ;;!NOTE: C-c C-b bound to slime-interupt in Slime-mode
+                 ;; :NOTE  C-c C-b bound to slime-interupt in Slime-mode!!
                  (define-key emacs-lisp-mode-map "\C-c\C-b"    'mon-eval-sexp-at-point)
                  (define-key emacs-lisp-mode-map "\C-c\C-j"    'mon-eval-print-last-sexp)
                  (define-key emacs-lisp-mode-map "\C-c\C-cb"   'mon-princ-cb)
+                 (define-key emacs-lisp-mode-map "\C-cal"      'align-let) ;; :WAS [?\C-c ?\C-a] in align-let.el
                  (define-key emacs-lisp-mode-map "\C-cel"      'mon-escape-lisp-string-region)
+                 (define-key emacs-lisp-mode-map "\C-cexs"     'mon-insert-lisp-doc-eg-xref)
                  (define-key emacs-lisp-mode-map "\C-cul"      'mon-unescape-lisp-string-region)
 		 (define-key emacs-lisp-mode-map "\C-clsl"     'mon-line-strings-to-list)
                  (define-key emacs-lisp-mode-map "\C-c\t"      'lisp-complete-symbol)
                  (cond (IS-MON-P-GNU  (define-key emacs-lisp-mode-map (kbd "<S-iso-lefttab>")  'lisp-complete-symbol))
                        (IS-MON-P-W32 (define-key emacs-lisp-mode-map (kbd "<backtab>")  'lisp-complete-symbol))))))))
 
-;;; ==============================
-;;; lisp-interaction-mode-map:
-;;; ==============================
+;; :LISP-INTERACTION-MODE-KEYMAP
+;;; (symbol-value 'lisp-interaction-mode-map
 (when IS-MON-P
   (add-hook 'lisp-interaction-mode-hook 
             (function	
              (lambda () 
-               (progn
-                 (local-unset-key "\C-j")
-                 (define-key lisp-interaction-mode-map "\C-j" 'newline-and-indent)
-                 (define-key lisp-interaction-mode-map "\C-c\C-j" 'mon-eval-print-last-sexp)
-                 (cond (IS-MON-P-GNU
-                        (define-key lisp-interaction-mode-map (kbd "<S-iso-lefttab>")  'lisp-complete-symbol))
-                       (IS-MON-P-W32
-                        (define-key lisp-interaction-mode-map  (kbd "<backtab>") 'lisp-complete-symbol))))))))
+              (progn
+                (local-unset-key "\C-j")
+                (define-key lisp-interaction-mode-map "\C-j" 'newline-and-indent)
+                (define-key lisp-interaction-mode-map "\C-c\C-j" 'mon-eval-print-last-sexp)
+                (cond (IS-MON-P-GNU
+                       (define-key lisp-interaction-mode-map (kbd "<S-iso-lefttab>")  'lisp-complete-symbol))
+                      (IS-MON-P-W32
+                       (define-key lisp-interaction-mode-map  (kbd "<backtab>") 'lisp-complete-symbol))))))))
 
 ;;; ==============================
 (add-hook 'message-mode-hook
@@ -220,13 +235,13 @@
 	       (define-key message-mode-map "\C-c\C-dd" 'message-dont-send)))))
 
 ;;; ==============================
-;;; hg's revert isn't usually what is wanted and ?U is to close to ?u which
-;;; normally unmarks in dired... This is/was a HORRIBLE design decision in DVC.
-;;; Lets fix it.  
+;;; :NOTE hg's revert isn't usually what is wanted and ?U is to close to ?u
+;;;       which normally unmarks in dired... This is/was a HORRIBLE design
+;;;       decision in DVC.  Lets fix it.
 ;;
-;;; (add-hook 'dvc-diff-mode-hook #'(lambda () (local-unset-key [?U]))) ;; WAS: dvc-revert-files
+;;; (add-hook 'dvc-diff-mode-hook #'(lambda () (local-unset-key [?U]))) ;; :WAS dvc-revert-files
 ;;
-;;; (add-hook 'xhg-log-mode-hook  #'(lambda () (local-unset-key [?R]))) ;; WAS: xhg-rollback
+;;; (add-hook 'xhg-log-mode-hook  #'(lambda () (local-unset-key [?R]))) ;; :WAS xhg-rollback
 
 ;;; ==============================
 (provide 'mon-keybindings)

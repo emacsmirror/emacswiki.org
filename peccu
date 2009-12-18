@@ -1,8 +1,11 @@
 I love emacs and Mac.I'm Japanese.
 
-* [http://d.hatena.ne.jp/peccu/ My site]
+* [http://d.hatena.ne.jp/peccu/ My site(Japanese)]
+* [http://peccu.posterous.com/ My site(English)]
 
 I applied patch from [http://dme.org/emacs/twit.el.diff patch] to [http://www.emacswiki.org/emacs/TwIt twit.el] and fix small bug about this patch.
+
+I add function *twit-show-favorites-tweets* to [http://www.emacswiki.org/emacs/TwIt twit.el]
 
 And I have a few small script.I will post it soon.
 

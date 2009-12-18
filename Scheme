@@ -39,6 +39,8 @@ SchemeComplete provides R5Rs and some SRFI symbols completion and ElDoc support.
 
 For running R6RS scripts with [[Ikarus]] and jumping to source locations displayed as part of a error message from Ikarus, there is [http://github.com/rotty/dotfiles/tree/master/.emacs.d/lisp/ikarus-script.el|ikarus-script.el].
 
+A new Emacs mode is available: [http://programming-musings.org/2009/05/14/geiser/|Geiser] (currently supports Guile and PLT Scheme).
+
 [:SICP]
 == SICP ==
 

@@ -6,20 +6,6 @@
 ;;; Provides utilities to call urls for data lookup and modify web/internet 
 ;;; related contents of buffer.
 ;;;
-;;; CONSTANTS:
-;;; `*mon-tld-list*'
-;;;
-;;; VARIABLES:
-;;; `*hexcolor-keywords*'
-;;; 
-;;; ALIASES:
-;;; `mon-search-wiki' ->  `mon-search-wikipedia'
-;;;
-;;; SUBST:
-;;; `mon-tld-tld', `mon-tld-name' 
-;;;
-;;; MACROS:
-;;;
 ;;; FUNCTIONS:►►►
 ;;; `mon-htmlfontify-buffer-to-firefox',`mon-htmlfontify-region-to-firefox'
 ;;; `hexcolour-add-to-font-lock', `mon-search-ulan', `mon-search-ulan-for-name',
@@ -29,7 +15,30 @@
 ;;; `mon-make-html-table-string' 
 ;;; `mon-make-html-table',`mon-tld-find-tld', `mon-tld-find-name',
 ;;; `mon-tld', `mon-get-w3m-url-at-point-maybe', `mon-get-w3m-url-at-point'
+;;; `mon-w3m-read-gnu-lists-nxt-prv', `mon-url-encode', `mon-url-decode'
 ;;; FUNCTIONS:◄◄◄
+;;;
+;;; MACROS:
+;;;
+;;; METHODS:
+;;;
+;;; CLASSES:
+;;;
+;;; CONSTANTS:
+;;; `*mon-tld-list*'
+;;;
+;;; VARIABLES:
+;;; `*hexcolor-keywords*'
+;;; 
+;;; ALIASES:
+;;; `mon-search-wiki'                    ->  `mon-search-wikipedia'
+;;; `mon-url-escape'                     -> `mon-url-encode'
+;;; `mon-w3m-get-url-at-point-maybe'     -> `mon-get-w3m-url-at-point-maybe'
+;;; `mon-w3m-get-url-at-point'           -> `mon-get-w3m-url-at-point'
+;;; `mon-get-w3m-read-gnu-lists-nxt-prv' ->  `mon-w3m-read-gnu-lists-nxt-prv'
+;;;
+;;; SUBST:
+;;; `mon-tld-tld', `mon-tld-name' 
 ;;;
 ;;; RENAMED: 
 ;;; `hexcolour-keywords' -> `*hexcolor-keywords*'
@@ -56,7 +65,10 @@
 ;;; `mon-htmlfontify-buffer-to-firefox'  -> html-fontify.el
 ;;; `mon-htmlfontify-region-to-firefox'  -> html-fontify.el
 ;;; `hexcolor-add-to-font-lock'          -> `css-mode-hook' ;when active
-;;;  mon-tld-xxx functions               -> cl
+;;; `mon-get-w3m-url-at-point-maybe'     -> w3m
+;;; `mon-get-w3m-url-at-point'           -> w3m
+;;; `mon-w3m-read-gnu-lists-nxt-prv'     -> w3m
+;;; `mon-tld-*-'                         -> cl
 ;;;
 ;;; TODO:
 ;;; Adjust `mon-search-ulan', `mon-search-ulan-for-name' to retrieve url (a)synchronously. 
@@ -104,17 +116,22 @@
 ;;; CODE:
 
 ;;; ==============================
-;;; Needed in mon-tld-xxx functions.
+;; :REQUIRED-BY `mon-htmlfontify-buffer-to-firefox'
+;; :REQUIRED-BY `mon-htmlfontify-region-to-firefox'
+(eval-when-compile (when (locate-library "htmlfontify") (require 'htmlfontify)))  
+;; :REQUIRED-BY `mon-get-w3m-url-at-point-maybe'
+;; :REQUIRED-BY `mon-w3m-read-gnu-lists-nxt-prv'
+;; :REQUIRED-BY `mon-get-w3m-url-at-point'
+(eval-when-compile  (when (locate-library "w3m")(require 'w3m)))
+;; :REQUIRED-BY in `mon-tld-xxx' functions.
 (eval-when-compile (require 'cl))
-
-;;; ==============================
-(require 'htmlfontify)
 ;;; ==============================
 
+(when (featurep 'htmlfontfiy)
 ;;; ==============================
-;;; :CREATED <Timestamp: Tuesday June 16, 2009 @ 08:28.49 PM - by MON>
 ;;; :COURTESY Thierry Volpiatto  :HIS tv-utils.el :WAS `tv-htmlfontify-buffer-to-firefox'
-;;; :REQUIRES `htmlfontify.el'
+;;; :NOTE :REQUIRES :FILE `htmlfontify.el'
+;;; :CREATED <Timestamp: Tuesday June 16, 2009 @ 08:28.49 PM - by MON>
 (defun mon-htmlfontify-buffer-to-firefox ()
   "Converts fontified buffer to an html file with Firefox.\n
 :SEE-ALSO `mon-htmlfontify-region-to-firefox', `*emacs2html-temp*'.\n►►►"
@@ -124,11 +141,14 @@
     (with-current-buffer (current-buffer)
       (write-file fname))
     (browse-url-firefox (format "file://%s" fname))))
+);; :CLOSE E-W-C
 
+(when (featurep 'htmlfontfiy)
 ;;; ==============================
-;;; :CREATED <Timestamp: Tuesday June 16, 2009 @ 08:28.49 PM - by MON>
 ;;; :COURTESY Thierry Volpiatto :HIS tv-utils.el :WAS `tv-htmlfontify-region-to-firefox'
-;;; :REQUIRES `htmlfontify.el'
+;;; :NOTE :REQUIRES :FILE `htmlfontify.el'
+;;; :CREATED <Timestamp: Tuesday June 16, 2009 @ 08:28.49 PM - by MON>
+
 (defun mon-htmlfontify-region-to-firefox (beg end)
   "Converts fontified region to an html file with Firefox.\n
 :SEE-ALSO `mon-htmlfontify-region-to-firefox', `*emacs2html-temp*'.\n►►►"
@@ -140,6 +160,7 @@
       (htmlfontify-buffer)
       (write-file fname))
     (browse-url-firefox (format "file://%s" fname))))
+);; :CLOSE E-W-C
 
 ;;; ==============================
 ;;; :COURTESY Xah Lee
@@ -166,9 +187,34 @@
 ;(add-hook 'css-mode-hook 'hexcolour-add-to-font-lock)
 (add-hook 'naf-mode-hook 'hexcolor-add-to-font-lock)
 
+
+;;; ==============================
+;;; :COURTESY Alex Schroeder :HIS ConfigConfusibombus :WAS `url-decode'
+;;; :SEE (URL `http://www.emacswiki.org/emacs-en/AlexSchroederConfigConfusibombus')
+;;; :CREATED <Timestamp: #{2009-11-27T17:08:03-05:00Z}#{09485} - by MON KEY>
+(defun mon-url-encode (str)
+  "URL-encode STR.\n
+:SEE-ALSO `mon-url-decode'.\n►►►"
+  (interactive "sURL-encode: ")
+  (message "%s" (url-hexify-string str)))
+;;
+(defalias 'mon-url-escape 'mon-url-encode)
+
+;;; ==============================
+;;; :COURTESY Alex Schroeder :HIS ConfigConfusibombus :WAS `url-decode'
+;;; :SEE (URL `http://www.emacswiki.org/emacs-en/AlexSchroederConfigConfusibombus')
+;;; :CREATED <Timestamp: #{2009-11-27T17:08:21-05:00Z}#{09485} - by MON KEY>
+(defun mon-url-decode (str)
+  "URL-decode STR.\n
+:SEE-ALSO `mon-url-encode'.\n►►►"
+  (interactive "sURL-decode: ")
+  (message "%s" (decode-coding-string
+		 (url-unhex-string str)
+		 'utf-8)))
+
 ;;; ==============================
 ;;; :NOTE Maybe better to use firefox for ULAN - conkeror doesn't scroll well :(
-;;; Or, better even, just retrieve url synchronously. 
+;;;       Or, better even, just retrieve url synchronously. 
 ;;; :CREATED <Timestamp: Friday February 13, 2009 @ 07:01.59 PM - by MON>
 (defun mon-search-ulan (&optional uq)
   "Open the ULAN in a browser. When UQ is non-nil search the ULAN artist name. 
@@ -468,11 +514,11 @@ Into the following html table:\n
     (insert (mon-make-html-table-string myStr sep) "\n")))
 
 ;;; ==============================
-;;; :NOTE This is buggy on the w32 paths.
+;;; :NOTE This is buggy on w32 paths.
 ;;; :USE wget.el instead. (locate-library "wget") 
 ;;; :CREATED <Timestamp: Tuesday June 30, 2009 @ 02:30.21 PM - by MON KEY>
 (defun mon-fetch-rfc (rfc-num)
-"Fetches an RFC with RFC-NUM with wget.
+"Fetches an RFC with RFC-NUM with wget.\n
 :NOTE This is buggy with w32 paths.\n►►►"
 (interactive "sRFC number :")
   (let* ((the-rfc rfc-num)
@@ -483,15 +529,16 @@ Into the following html table:\n
 ;;; :TEST-ME (mon-fetch-rfc 2616)
 
 ;;; ==============================
-;;; :W3M url grabber
+;; :W3M-URL-GRABBER  
 
 (when (featurep 'w3m)
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-11-22T16:50:15-05:00Z}#{09477} - by MON>
 (defun mon-get-w3m-url-at-point-maybe ()
   "Return two elt list as \(MEHTOD \"URL\"\) when text-properties at point has
-w3m-href-anchor value and is a 'file 'http 'https.
-:SEE-ALSO `mon-get-w3m-url-at-point'\n►►►"
+w3m-href-anchor value and is a 'file 'http 'https.\n
+:SEE-ALSO `mon-get-w3m-url-at-point', `mon-w3m-read-gnu-lists-nxt-prv'
+`mon-w3m-dired-file'.\n►►►"
   (let* ((is-url (get-text-property (point) 'w3m-href-anchor))
          (match-with "\\(file\\|http\\|https\\)")
          (is-match (if (stringp is-url)
@@ -503,14 +550,19 @@ w3m-href-anchor value and is a 'file 'http 'https.
               ((string= got-match "http")  `(http  ,is-url))
               ((string= got-match "https") `(https ,is-url))
               (t nil)))))
-;; 
+;;
+(defalias 'mon-w3m-get-url-at-point-maybe 'mon-get-w3m-url-at-point-maybe)
+) ;; :CLOSE E-W-C
+
+(when (featurep 'w3m)
 ;;; ============================== 
 ;;; :CREATED <Timestamp: #{2009-11-22T16:59:12-05:00Z}#{09477} - by MON>
 (defun mon-get-w3m-url-at-point (&optional insrtp buffer intrp)
   "Return w3m-href-anchor value and is a 'file 'http 'https.
 When INSRTP in non-nil and BUFFER names an existing buffer insert the w3m URL in
-BUFFER. If BUFFER is nil or does no exist return URL.
-:SEE-ALSO `mon-get-w3m-url-at-point-maybe'\n►►►"
+BUFFER. If BUFFER is nil or does no exist return URL.\n
+:SEE-ALSO `mon-get-w3m-url-at-point-maybe',`mon-w3m-read-gnu-lists-nxt-prv',
+`mon-w3m-dired-file'.\n►►►"
   (interactive "i\ni\np")
   (let ((url-maybe (mon-get-w3m-url-at-point-maybe))
         (do-buff (if buffer (get-buffer buffer))))
@@ -520,7 +572,89 @@ BUFFER. If BUFFER is nil or does no exist return URL.
              (save-excursion                
                (princ (concat "\n" (cadr url-maybe)) do-buff)))
             (t url-maybe)))))
-) ; :CLOSE if w3m
+;;
+(defalias 'mon-w3m-get-url-at-point 'mon-get-w3m-url-at-point)
+) ;; :CLOSE E-W-C
+
+(when (featurep 'w3m)
+;;; ==============================
+;;; ;WORKING-BUT-BUGGY-AS-OF
+;;; :CREATED <Timestamp: #{2009-11-22T19:00:33-05:00Z}#{09477} - by MON>
+(defun mon-w3m-read-gnu-lists-nxt-prv (prev next)
+  "Browse GNU mailing lists with w3m selecting next in thread prev in thread.
+:SEE \(URL `http://lists.gnu.org/archive/html/emacs-devel/'\)
+:SEE \(URL `http://lists.gnu.org'\)
+:SEE-ALSO `mon-get-w3m-url-at-point', `mon-get-w3m-url-at-point-maybe',
+`mon-w3m-dired-file'.\n►►►"
+  (let ((nxt-prev-p
+         (if (save-excursion
+               (goto-char (buffer-end 0))
+               (search-forward-regexp
+                (cond (prev "Prev in Thread")
+                      (next "Next in Thread"))
+                nil t))
+             (match-end 0))))
+    (if nxt-prev-p
+        (progn 
+          (goto-char (1- nxt-prev-p))
+          (let ((is-http (mon-get-w3m-url-at-point-maybe)))
+            (if (string= (cadr is-http) w3m-current-url)
+                ;; We found 
+                (cond (prev (message "No previous in thread"))
+                      (next (message "No next in thread" )))
+                (if (eq (car is-http) 'http)
+                    (prog1
+                        (message (cadr is-http))
+                      (w3m-view-this-url))
+                    (message 
+                     (cond (prev (message "Can't locate previous in thread"))
+                           (next (message "Can't locate next in thread")))))))))))
+;;;
+(defalias 'mon-get-w3m-read-gnu-lists-nxt-prv 'mon-w3m-read-gnu-lists-nxt-prv)
+) ;; :CLOSE E-W-C
+
+;;
+;; (mon-w3m-read-gnu-lists-nxt-prv nil t)
+;;
+;; ,---- :UNCOMMENT-TO-TEST
+;; | (dolist (i '(("1" "2007-06/msg00634.html") ("2" "2007-06/msg00725.html")))
+;; |   (search-forward-regexp (concat  (car i) "\\[\\(.* in Thread\\)]") nil t)
+;; |   (put-text-property  
+;; |    (match-beginning 1) (match-end 1)
+;; |    'w3m-href-anchor (concat "http://lists.gnu.org/archive/html/emacs-devel/" (cadr i))))
+;; | 
+;; | 1[Prev in Thread] ;with-tp
+;; | 2[Next in Thread] ;with-tp
+;; |  [Prev in Thread] ;without-tp
+;; |  [Next in Thread] ;without-tp
+;; `----
+;;; ==============================
+;;; :NOTE Alternate approach to `mon-w3m-read-gnu-lists-nxt-prv'
+;;; :NOT-WOKRING-AS-OF
+;;; :CREATED <Timestamp: #{2009-11-23T12:28:11-05:00Z}#{09481} - by MON>
+;;; ,----
+;;; | (defun mon-w3m-read-gnu-lists-nxt-prv (prev next)
+;;; |   (let* ( (match-on (cond (prev "Prev in Thread")
+;;; |                           (next "Next in Thread")))
+;;; |          (got-one
+;;; |           (save-excursion
+;;; |             (goto-char (buffer-end 1))
+;;; |             (let ((is-wha (previous-single-property-change (point) 'w3m-href-anchor)))
+;;; |               (while is-wha
+;;; |                 (if (looking-back match-on) 
+;;; |                     ;;    :FIXME
+;;; |                     ;;    {....}
+;;; |                     ))))))
+;;; |     (if got-one 
+;;; |         (save-excursion
+;;; |           (goto-char (1- got-one))
+;;; |           (setq got-one (mon-get-w3m-url-at-point-maybe))
+;;; |         (if (string=   (cadr got-one) w3m-current-url)
+;;; |             (message (format "%s is current URL." match-on))
+;;; |               (w3m-view-this-url)))) ))
+;;; `----
+;;;
+
 
 ;;; ==============================
 ;;; :COURTESY Stefan Reichoer <stefan@xsteve.at> :HIS .emacs 
@@ -553,20 +687,19 @@ BUFFER. If BUFFER is nil or does no exist return URL.
 ;;; A TLD lookup tool tld.el provides a command for looking up TLDs, either by searching for a
 ;;; specific TLD or by searching country names. One command is provided: `tld'.
 ;;;
-;;; :NOTE that, to some degree, this code duplicates the functionality
-;;; provided by `what-domain' (a command that is part of emacs). tld.el
-;;; differs slightly in that it allows for both TLD and country name
-;;; searches. Also, compared to emacs 20.7, the list of TLDs is more complete
+;;; :NOTE To some degree, this code duplicates the functionality
+;;;       provided by `what-domain' (a command that is part of emacs). tld.el
+;;;       differs slightly in that it allows for both TLD and country name
+;;;       searches. Also, compared to emacs 20.7, the list of TLDs is more complete.
 ;;; (autoload 'tld "tld" "Perform a TLD lookup" t)
 ;;; ==============================
 ;;; :CREATED <Timestamp: Tuesday May 19, 2009 @ 12:11.29 PM - by MON>
-;;; :MODIFICATIONS altered the original tld alist keys to reflect the those of
-;;; mail-extr.el (e.g. notes pertaining to `what-doman')
-;;; FROM: mail-extr.el
+;;; :MODIFICATIONS Altered the original tld alist keys to reflect the those of
+;;; mail-extr.el (e.g. notes pertaining to `what-doman') :SEE :FILE mail-extr.el
 ;;; Keep in mind that the country abbreviations follow ISO-3166.  There is
 ;;; a U.S. FIPS that specifies a different set of two-letter country
 ;;; abbreviations. Updated by the RIPE Network Coordination Centre.
-;;; Source: ISO 3166 Maintenance Agency - Latest change: 2007/11/15
+;;; :SOURCE ISO 3166 Maintenance Agency - Latest change: 2007/11/15
 ;;; :SEE (URL `http://www.iso.org/iso/en/prods-services/iso3166ma/02iso-3166-code-lists/list-en1-semic.txt')
 ;;; :SEE (URL `http://www.iana.org/domain-names.htm')
 ;;; :SEE (URL `http://www.iana.org/cctld/cctld-whois.htm')
@@ -887,7 +1020,7 @@ Updated by the RIPE Network Coordination Centre.
 :SEE-ALSO `mon-tld-tld', `mon-tld-find-tld', `mon-tld-name', `mon-tld', 
 `*mon-tld-list*'."
   (let ((case-fold-search t))
-    (loop for tld in mon-tld-list
+    (loop for tld in *mon-tld-list*
           when (string-match name (mon-tld-name tld))
           collect tld)))
 ;;

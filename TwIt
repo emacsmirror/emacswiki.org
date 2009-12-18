@@ -115,7 +115,7 @@ Any time tweets are shown in a buffer, whether they are direct, @tweets, or part
 * k - twit-remove-friend - uses the current tweet under point, or if the point is in a @username, that username.
 
 * S - twit-search
-* v - twit-visit-link - visit current url
+* v - twit-visit-link - visit current url, status(on timestamp), in reply to(on "in reprly to user"), twitter client(on source)
 * A - twit-analyse-user - visit twanalysis page of the selected user.  Press A on the titlebar for yoru twanalysis.
 * G - twit-analyse-graph-user - visit twanalysis graph page of current user.  Press G on the titlebar for your graph.
 
@@ -144,6 +144,8 @@ With the twit-new-tweet-hook, you can call a function when there is a new unseen
 M-x *twit-show-direct-tweets* RET Shows you the most recent direct tweets that came your way.
 
 M-x *twit-show-at-tweets* RET shows you all the tweets directed to you.
+
+M-x *twit-show-favorites-tweets* RET will create a new buffer and show your favorite tweets in it.
 
 M-x *twit-add-favorite* RET add a particular tweet to your favorites.  You are prompted for the ID of the tweet, and if you are currently on a tweet, it will fill that in as a default.
 
