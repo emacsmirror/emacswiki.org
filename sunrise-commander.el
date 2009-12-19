@@ -127,7 +127,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 3 $Rev: 242 $ of the Sunrise Commander.
+;; This is version 3 $Rev: 243 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.  I  have  also  received
@@ -486,6 +486,7 @@ substitution may be about to happen."
         C-c C-c ....... [after find, locate or recent] dismiss virtual buffer
         ; ............. follow file (go to same directory as selected file)
         M-; ........... follow file in passive pane
+        C-M-o ......... follow a projection of current directory in passive pane
 
         C-> ........... save named checkpoint (a.k.a. \"bookmark panes\")
         C-c > ......... save named checkpoint (console compatible)
@@ -713,16 +714,21 @@ automatically:
 (define-key sr-mode-map "j"                   'sr-goto-dir)
 (define-key sr-mode-map "^"                   'sr-dired-prev-subdir)
 (define-key sr-mode-map "J"                   'sr-dired-prev-subdir)
+(define-key sr-mode-map ";"                   'sr-follow-file)
+(define-key sr-mode-map "\M-t"                'sr-transpose-panes)
+(define-key sr-mode-map "\M-o"                'sr-synchronize-panes)
+(define-key sr-mode-map "\C-\M-o"             'sr-project-path)
 (define-key sr-mode-map "\M-y"                'sr-history-prev)
 (define-key sr-mode-map "\M-u"                'sr-history-next)
 (define-key sr-mode-map "\C-c>"               'sr-checkpoint-save)
 (define-key sr-mode-map "\C-c."               'sr-checkpoint-restore)
+(define-key sr-mode-map "\C-c\C-z"            'sr-sync)
+
 (define-key sr-mode-map "\t"                  'sr-change-window)
 (define-key sr-mode-map "\C-c\t"              'sr-select-viewer-window)
 (define-key sr-mode-map "\M-a"                'sr-beginning-of-buffer)
 (define-key sr-mode-map "\M-e"                'sr-end-of-buffer)
 (define-key sr-mode-map "\C-c\C-s"            'sr-split-toggle)
-(define-key sr-mode-map "\M-t"                'sr-transpose-panes)
 (define-key sr-mode-map "]"                   'sr-enlarge-left-pane)
 (define-key sr-mode-map "["                   'sr-enlarge-right-pane)
 (define-key sr-mode-map "}"                   'sr-enlarge-panes)
@@ -730,7 +736,6 @@ automatically:
 (define-key sr-mode-map "\\"                  'sr-lock-panes)
 (define-key sr-mode-map "\C-c}"               'sr-max-lock-panes)
 (define-key sr-mode-map "\C-c{"               'sr-min-lock-panes)
-(define-key sr-mode-map "\M-o"                'sr-synchronize-panes)
 (define-key sr-mode-map "\C-o"                'sr-omit-mode)
 (define-key sr-mode-map "b"                   'sr-browse-file)
 (define-key sr-mode-map "\C-c\C-w"            'sr-browse-pane)
@@ -738,7 +743,6 @@ automatically:
 (define-key sr-mode-map "\C-c\d"              'sr-toggle-attributes)
 (define-key sr-mode-map "\M-l"                'sr-toggle-truncate-lines)
 (define-key sr-mode-map "s"                   'sr-interactive-sort)
-(define-key sr-mode-map "\C-c\C-z"            'sr-sync)
 (define-key sr-mode-map "\C-e"                'sr-scroll-up)
 (define-key sr-mode-map "\C-y"                'sr-scroll-down)
 
@@ -770,7 +774,6 @@ automatically:
 (define-key sr-mode-map "\C-c\C-r"            'sr-recent-files)
 (define-key sr-mode-map "\C-c\C-d"            'sr-recent-directories)
 (define-key sr-mode-map "\C-c\C-v"            'sr-pure-virtual)
-(define-key sr-mode-map ";"                   'sr-follow-file)
 (define-key sr-mode-map "Q"                   'sr-do-query-replace-regexp)
 (define-key sr-mode-map "F"                   'sr-do-find-marked-files)
 (define-key sr-mode-map "A"                   'sr-do-search)
@@ -1319,6 +1322,25 @@ automatically:
     (if target-dir ;; <-- nil in symlinks to other files in same directory:
         (sr-goto-dir target-dir))
     (sr-focus-filename target-file)))
+
+(defun sr-project-path (&optional order)
+  "Tries  to find a directory with a path similar to the one in the active pane,
+  but under the directory currently displayed in the passive  pane.  On  success
+  displays the contents of that directory in the passive pane."
+  (interactive "p")
+  (let ((order (or order 0))
+        (path (expand-file-name (dired-default-directory)))
+        (pos 0) (projections (list)) candidate)
+    (setq path (replace-regexp-in-string "^/\\|/$" "" path))
+    (if (< 0 (length path))
+        (while (and pos (< (length projections) order))
+          (setq candidate (concat sr-other-directory (substring path (1+ pos))))
+          (if (file-directory-p candidate)
+              (setq projections (cons candidate projections)))
+          (setq pos (string-match "/" path (1+ pos)))))
+    (if projections
+        (sr-in-other (sr-goto-dir (car projections)))
+      (message "Sunrise: sorry, no suitable projection found."))))
 
 (defun sr-history-push (element)
   "Pushes a new path into the history ring of the current pane."

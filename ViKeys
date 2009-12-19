@@ -66,6 +66,8 @@ That is all and with this you have the full power of Viper.
 
 '''modal-mode'''[http://jjfoerch.com/git/modal-mode/] is an effort to provide modal editing to Emacs, but remain light, and not step too far into the territory of vi emulation. Its default bindings are based on vi, but its design accommodates the creation of other modality styles. It has explicit support for vi-like text-objects through transient modes that turn movement keys into selection keys, in order to provide compound commands like those of vi's ##d##, ##y## and ##c## keys.
 
+'''vim-mode'''[http://www.tu-chemnitz.de/~fifr/repos/vim-mode] is an early implementation of new Vim-like mode.
+
 There is also the [PoorMansViMode poor man’s vi mode]. :)
 
 ----

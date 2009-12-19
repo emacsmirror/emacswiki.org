@@ -11,7 +11,7 @@ we are trying to unify the Emacsverse. -- [[dto]]
 [new]
 * Forks already exist. If they are disasters, that's up to you. But the numbers of users speak otherwise.
 * Your sentence (disaster, "because we are trying to unify the Emacsverse") doesn't make sense. You (and even others) trying to unify the "Emacsverse" does not turn other people's forks into disasters.
-* Forks happen because people have ideas that they aren't able to implement and push in the mainstream Emacs, and because users see a need for those features and make a fork successful.  
+* Forks happen because people have ideas that they aren't able to implement and push in the mainstream Emacs, and because users see a need for those features and make a fork successful.
 
 -- DR
 
@@ -20,7 +20,7 @@ Those are some good points. I'll have to modify my comments on forks in order to
 
 Yes, forks of Emacs exist. But if you care about the integrity and cohesion of Emacs as a software development platform, then they ARE disasters---because each of them is ALSO a fork of the Emacs Lisp language definition. (Imagine if each fork of the Linux kernel were to significantly modify the C language or the UNIX library system call interface.)
 
-The forks' definitions of Emacs Lisp have diverged significantly from one another, requiring ugly "#ifdef"-ish code, and that will only solve the smaller problems (such as `propertize' not being defined in XEmacs, or `define-error' not being defined in GNU Emacs) for which you can define a compatibility function of a few lines. 
+The forks' definitions of Emacs Lisp have diverged significantly from one another, requiring ugly "#ifdef"-ish code, and that will only solve the smaller problems (such as `propertize' not being defined in XEmacs, or `define-error' not being defined in GNU Emacs) for which you can define a compatibility function of a few lines.
 
 The larger differences just fragment/java-ify the elisp space (XWEM, XLIB, and other stuff that for some reason only works on XEmacs---or conversely, anything that takes advantage of the newer GNU-only features of GNU Emacs.) As these variants' featuresets grow this will become even more of a problem.
 
@@ -34,7 +34,7 @@ Just look at http://www.sxemacs.org/ and its list of what's cool about SXEmacs. 
 
 
 * Enhanced Numerics. We sorely need this too.
-* Apparently much better multimedia support (Of particular interest to me.) 
+* Apparently much better multimedia support (Of particular interest to me.)
 * Doubly-linked lists, skip lists, and some other possibly interesting data structures.
 
 So my question is: are ALL these much-needed improvements exclusive to SXEmacs just because they were rejected from the mainstream GNU Emacs? Or are they just here because the SXEmacs maintainers decided to throw every feature they want into the fork (instead of at least trying to contribute some of it to the platform as a whole?)
@@ -46,7 +46,7 @@ Speaking of forks, some of their bullet points are not so pleasing:
 
 * Now SXEmacs as a (presumably incompatible) network server library. I didn't look into it deeply but it will need at least some compatibility code to handle transparently.
 * They are promising multithreadedness at some point in the future. If it means changes to Emacs Lisp, well, not everyone thinks this is desirable, practical, or possible. It would certainly fragment the platform in that case.
-* "SXEmacs does not support the Win32 platform and it never will. Yes, we consider this a feature." 
+* "SXEmacs does not support the Win32 platform and it never will. Yes, we consider this a feature."
 
 This last one is just stupid.
 
@@ -93,7 +93,20 @@ its windows.
 -- [[dto]]
 
 [new]
-Embedding X windows would be quite nice.  With this you could set up a fun web development environment by embedding a browser under Emacs control.  Maybe Emacs could have better graphics support too.  Or, perhaps Emacs could get the display features it needs to be able to wysiwyg-edit ODF.  -- TomTromey
+Embedding X windows would be quite nice.  With this you could set up a
+fun web development environment by embedding a browser under Emacs
+control.  Maybe Emacs could have better graphics support too.  Or,
+perhaps Emacs could get the display features it needs to be able to
+wysiwyg-edit ODF.  -- TomTromey
+
+[new]
+To the two points above: DanielHackney has created an XEmbed patch and
+a project called [http://github.com/dhax/ezbl ezbl] which takes advantage of said patch to embed
+uzbl (a highly configurable Webkit based browser) in Emacs. He's been
+announcing progress on http://www.haxney.org/.  -- JosephGay
+
+[new]
+It was actually JoakimVerona who wrote the XEmbed patch, I'm not nearly smart enough to do that :).  And Ezbl does exactly what TomTromey suggests: embeds an X window in a buffer and then communicates with it. It's still very early (and needs a patch to Emacs), but is coming along.-- DanielHackney
 
 [new]
 The XEmacs approach to characters is better. In GNU Emacs characters are just integers, while in XEmacs they are a separate data type. It would be a nice new feature for GNU Emacs. -- PeterBarabas

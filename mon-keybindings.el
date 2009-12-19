@@ -165,6 +165,18 @@
               (define-key dired-mode-map "\C-c\M-ws"  'mon-copy-file-dired-as-string) ;; unqouted full-path
               (define-key dired-mode-map "\C-cw3"     'mon-w3m-dired-file))))
 
+;; :COMPLETION
+;;; :NOTE Make `n' and `p' move up and down in *Completions* buffer.
+;;;       Make SPC scroll the page.
+;;; :CREATED <Timestamp: #{2009-12-18T21:48:03-05:00Z}#{09515} - by MON KEY>
+(add-hook
+  'completion-list-mode-hook
+          (function 
+           (lambda ()
+            (define-key completion-list-mode-map "n" #'(lambda () (interactive) (line-move 1 t)))
+            (define-key completion-list-mode-map "p"  #'(lambda () (interactive) (line-move -1 t)))
+            (define-key completion-list-mode-map (kbd "SPC")  'scroll-up)))))))
+
 (add-hook 'Info-mode-hook  
 	  (function 
            (lambda () 

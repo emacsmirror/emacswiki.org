@@ -4,18 +4,8 @@ See also CLiki:SLIME and its project page at http://common-lisp.net/project/slim
 
 It is based on EmacsLisp magic by EricMarsden (who called it SLIM) to highlight CLiki:CMUCL error/warning/compiler note output directly in the Lisp editing buffer. LukeGorrie and HelmutEller added control of the Lisp process similar to that found in Distel, CLiki:CMUCL XREF support, good debugger interaction, and many other Lisp interaction enhancements. Most people consider it superior to ILispMode. It has been ported to CLiki:OpenMCL, CLiki:SBCL, CLiki:ACL, CLiki:LispWorks, though support varies a bit between implementations (with CLiki:CMUCL and CLiki:SBCL being the best).
 
-Here is a new link for the Marco Baringer video instead of the three dead ones below: http://www.guba.com/watch/3000054867
-Peter Christensen wrote an annotated reference guide for the tutorial video http://www.pchristensen.com/blog/articles/reference-for-the-slimelispemacs-screencast/
-
-(( A few good (but old) screenshots of SlimeMode in action can be found on LukeGorrie's site: http://fresh.homeunix.net/~luke/misc/lisp/ (the slime*.png files). MarcoBaringer made a tutorial video http://common-lisp.net/movies/slime.torrent (http://common-lisp.net/movies/slime.mov) [156 MillionBytes!]  ))
-
-
-[new] All Slime users should watch this video. It is AWESOME, really ! 
--- XavierMaillard 
-[new]
-
-All *Emacs* users should see this video and make sure more modes like SLIME are developed!
-
+Marco Baringer made [http://www.guba.com/watch/3000054867 a video] for this mode; 
+Peter Christensen wrote [http://www.pchristensen.com/blog/articles/reference-for-the-slimelispemacs-screencast/ an annotated reference guide] for the tutorial video.
 
 == Fontify *SLIME Description* buffer for SBCL ==
 

@@ -113,7 +113,7 @@ Not sure I followed all of that. Perhaps someone else can help more. My impressi
 [new]
 As usual, I seem to have a weird problem that no one else has. I'll try to make it clear in the bug report. -- ditch.
 
-[new]
+[new:sylecn:2009-12-18 18:53 UTC]
 '''Question:'''. I'm using (toggle-hl-line-when-idle 1) in my ~/.emacs. and I don't want to highlight line when I'm in Info mode or Help mode etc.
 I try to use
     (add-hook 'Info-mode-hook
@@ -128,9 +128,34 @@ You might try to change the definition of `hl-line-idle-timer' to run not `hl-li
 
 If you do that and like what you end up with, I could add it to the library, if you like. -- DrewAdams
 
+[new:sylecn:2009-12-18]
+Hi Drew, I have a simple patch that allow user to define modes that should not be highlighted by hl-line+. It's based on a older version, but you get the idea.
+<pre>
++(defcustom hl-line-disable-for-modes '(Info-mode help-mode view-mode Man-mode)
++  "hl-line+ will not hl anything on these modes."
++  :type 'list
++  :group 'hl-line)
++
+... 
+ (defun hl-line-highlight-now ()
+   "Turn on `global-hl-line-mode' and highlight current line now."
+-  (unless global-hl-line-mode
+-    (global-hl-line-mode 1)
+-    (global-hl-line-highlight)
+-    (add-hook 'pre-command-hook 'hl-line-unhighlight-now)))
++  (if (not (member major-mode hl-line-disable-for-modes))
++      (unless global-hl-line-mode
++	(global-hl-line-mode 1)
++	(global-hl-line-highlight)
++	(add-hook 'pre-command-hook 'hl-line-unhighlight-now))))
+</pre>
+-- [[sylecn]]
 
+[new:DrewAdams:2009-12-18 21:25 UTC]
+OK, I've added that (assuming you agree). I set the default value to `nil', however. It's not clear to me that any given nonempty list of modes would be good by default, especially since `hl-line-highlight-now' can be called from other code. Thx -- DrewAdams
 
-
+[new:sylecn:]
+of course I agree:) Thanks Drew. --[[sylecn]]
 
 == Library `highlight-current-line.el' ==
 

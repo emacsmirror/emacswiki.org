@@ -7,9 +7,9 @@
 ;; Copyright (C) 2006-2009, Drew Adams, all rights reserved.
 ;; Created: Sat Aug 26 18:17:18 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Aug  1 15:31:12 2009 (-0700)
+;; Last-Updated: Fri Dec 18 13:28:42 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 404
+;;     Update #: 420
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/hl-line+.el
 ;; Keywords: highlight, cursor, accessibility
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -78,7 +78,8 @@
 ;;
 ;;  User options defined here:
 ;;
-;;    `hl-line-flash-show-period'.
+;;    `hl-line-flash-show-period',
+;;    `hl-line-inhibit-highlighting-for-modes'.
 ;;
 ;;  Commands defined here:
 ;;
@@ -99,6 +100,9 @@
 ;; 
 ;;; Change log:
 ;;
+;; 2009/12/18 dadams
+;;     Added: hl-line-inhibit-highlighting-for-modes.
+;;     hl-line-highlight-now: Respect hl-line-inhibit-for-modes.  Thx to Sylecn.
 ;; 2009/02/16 dadams
 ;;     Removed spotlight stuff - moved to new library hl-spotlight.el.
 ;; 2009/02/15 dadams
@@ -159,6 +163,12 @@
   "Number of seconds for `hl-line-flash' to highlight the line."
   :type 'integer :group 'cursor :group 'hl-line)
 
+;; Possible value: `(Info-mode help-mode view-mode Man-mode)'
+(defcustom hl-line-inhibit-highlighting-for-modes ()
+  "Modes where highlighting is inhibited for `hl-line-highlight-now'.
+A list of `major-mode' values (symbols)."
+  :type 'list :group 'hl-line)
+
 (defvar hl-line-idle-interval 5
   "Number of seconds to wait before turning on `global-hl-line-mode'.
 Do NOT change this yourself to change the wait period; instead, use
@@ -204,7 +214,8 @@ use `\\[toggle-hl-line-when-idle]."
 
 (defun hl-line-highlight-now ()
   "Turn on `global-hl-line-mode' and highlight current line now."
-  (unless global-hl-line-mode
+  (unless (or global-hl-line-mode
+              (member major-mode hl-line-inhibit-highlighting-for-modes))
     (global-hl-line-mode 1)
     (global-hl-line-highlight)
     (add-hook 'pre-command-hook 'hl-line-unhighlight-now)))

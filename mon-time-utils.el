@@ -646,6 +646,13 @@ Use after creating new elisp functions to delimit and date them.\n
 ;;; :TEST-ME (call-interactively 'mon-lisp-stamp)
 
 ;;; ==============================
+;;; :NOTE This is not correct for EOF MON's existing elisp footers with format:
+;;;           ;;; ============================
+;;;           ;;; <PACKAGE>.el ends here
+;;;           EOF
+;;;     Also, the EOF comment divider string may not always have length 32.
+;;;     e.g. (length *mon-default-comment-divider*)
+;;;     :SEE `mon-comment-divider-w-len' for possible workarounds.
 ;;; :MODIFICATIONS <Timestamp: #{2009-12-17T17:35:35-05:00Z}#{09514} - by MON>
 ;;; :CREATED <Timestamp: #{2009-10-24T11:52:41-04:00Z}#{09436} - by MON>
 (defun mon-file-stamp-vrfy-put-eof (&optional insrtp)
@@ -653,19 +660,33 @@ Use after creating new elisp functions to delimit and date them.\n
 When INSRTP is non-nil and the delimiter wasn't found insert it.
 Does not move point.\n
 :EXAMPLE\n\(mon-file-stamp-vrfy-put-eof nil\)\n
-:SEE-ALSO `mon-file-stamp', `*mon-default-comment-divider*'.\n►►►"
+:SEE-ALSO `mon-file-stamp', `mon-insert-file-template', 
+`mon-insert-lisp-CL-file-template' `*mon-default-comment-divider*'
+`mon-comment-divider-w-len'.\n►►►"
   (interactive "p")
-  (let  (;; :NOTE Using *mon-default-comment-divider* gives granularity, but may
-         ;;       cause failure where pre-existing footers are a diff. length.
+  (let  (;; :NOTE Use of *mon-default-comment-divider* gives granularity/portablility.
          (end-of-dlm *mon-default-comment-divider*) 
          (end-of ";;; EOF")
          (do-EOF t))
     (save-excursion
       (goto-char (buffer-end 1))
-      (when (search-backward-regexp (concat "^" end-of-dlm "\n" end-of "$") (line-end-position -5) t)
+      ;; :WAS (when (search-backward-regexp 
+      ;;        (concat "^" end-of-dlm "\n" end-of "$") (line-end-position -5) t)
+      ;;      (setq do-EOF nil))
+      (when (search-backward-regexp 
+             (concat 
+              "^\\(" (substring end-of-dlm 0 4) "=\\{26,68\\}\\)\n"
+              "\\(;;; .* ends here\n\\)?"
+               ";;; EOF") (line-end-position -5) t)
         (setq do-EOF nil))
       (when do-EOF
-        (when (search-backward-regexp (concat "^" end-of-dlm "\n" end-of "$") nil t)
+        ;; :WAS (when (search-backward-regexp (concat "^" end-of-dlm "\n" end-of "$") nil t)
+        ;;      (setq do-EOF nil))
+        ;;; There isn't a footer in the last 5 lines what about further up?
+        (when (search-backward-regexp 
+               (concat 
+                "^\\(" (substring end-of-dlm 0 4) "=\\{26,36\\}\\)\n"
+                ";;; EOF") nil t)
           (setq do-EOF nil))
         (cond ((and insrtp do-EOF)
                (goto-char (buffer-end 1))
@@ -675,31 +696,32 @@ Does not move point.\n
 ;;; :TEST-ME (with-temp-buffer (mon-file-stamp-vrfy-put-eof nil))
 
 ;;; ==============================
-;;; :NOTE comment-delimiter in docstring is 1- its real value to aid examples.
+;;; :NOTE The comment prefix `;;;' uses \x3b to prevent false positives with
+;;;       other source processing regexps from aid examples.
 ;;; :MODIFICATIONS <Timestamp: #{2009-12-17T19:56:13-05:00Z}#{09515} - by MON KEY>
 ;;; :MODIFICATIONS <Timestamp: #{2009-10-24T12:20:13-04:00Z}#{09436} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-08-24T15:46:26-04:00Z}#{09351} - by MON KEY>
 (defun mon-file-stamp (&optional insrtp intrp w/url at-point)
   "Return MON's default `time-stamp'd file header with EOF footer.\n
 Find first line matching the file created time-stamp prefixed with:\n
-;;; :FILE-CREATED\n
+\x3b;; :FILE-CREATED\n
 When present do not alter existing stamp, else return a time-stamp as:\n
-;;; :FILE-CREATED <Timestamp: #{2009-12-17T18:49:01-05:00Z}#{09514} - by MON>\n
+\x3b;; :FILE-CREATED <Timestamp: #{2009-12-17T18:49:01-05:00Z}#{09514} - by MON>\n
 Locate first line beginning matching either of the formats:\n
-;;; :FILE\n;;; :FILE :DIRECTORY\n
+\x3b;; :FILE\n\x3b;; :FILE :DIRECTORY\n
 When either is present do not alter the existing file or directory name.
 If neither is present, and buffer-filename is t return value of filename as:\n
-:FILE /some/path/to/file\n
+\x3b;; :FILE /some/path/to/file\n
 When buffer-file-name is nil, return expanded value of default-directory as:\n
-:FILE :DIRECTORY /some/path/to/buffers/dir/\n
+\x3b;; :FILE :DIRECTORY /some/path/to/buffers/dir/\n
 When optional arg W/URL is non-nil, find first line matching an external
 reference with one of the three formats:\n
-;;; :SOURCE\n;;; :SEE\n;;; \(URL\n
+\x3b;; :SOURCE\n;;; :SEE\n;;; \(URL\n
 When present do not alter. Else, return the wrapped URL of arg to W/URL as:\n
-;;; :SOURCE \(URL `http://some-url.com'\)\n
+\x3b;; :SOURCE \(URL `http://some-url.com'\)\n
 Find the \"EOF\" string and commented delimiter around last 4 lines of buffer.
 When present do nothing. When an EOF file footer is not present return one as:\n
-;;; =============================\n;;; EOF\n
+\x3b;; ==============================\n;;; EOF\n
 When INSRTP or INTRP is non-nil defualt behaviour is to insert return value in
 buffer at BOF and EOF. Does not move point.\n
 When INSRTP or INTRP is non-nil, and AT-POINT is non-nil insert return prepended
@@ -726,81 +748,152 @@ When AT-POINT is non-nil insert return value at point. Does not move point.
   (let* ((the-url (cond ((and intrp w/url)
                          (concat ";;; :SOURCE (URL `" (read-string "URL to wrap :") "')"))
                         ((and (not intrp) w/url)
-                         (concat ";;; :SOURCE (URL `"  w/url "')"))
-                        (t "")))
+                         (concat ";;; :SOURCE (URL `"  w/url "')"))))
          (the-file-or-dir
           (if (buffer-file-name)
               (concat ";;; :FILE " (buffer-file-name))
               (concat ";;; :FILE :DIRECTORY " (expand-file-name default-directory))))
-         (f-tstmp (concat 
-                   ";;; :FILE-CREATED <Timestamp: " (mon-timestamp :naf t )
-                   "\n" the-file-or-dir
-                   (if w/url
-                       (concat "\n" the-url "\n" )
-                       "\n")
-                   *mon-default-comment-divider* "\n")))
+         (fc-stmp (concat ";;; :FILE-CREATED <Timestamp: " (mon-timestamp :naf t )))
+         (f-tstmp (concat fc-stmp "\n" 
+                          the-file-or-dir 
+                          (if w/url 
+                              (concat "\n" the-url "\n") 
+                              "\n")
+                          *mon-default-comment-divider* "\n")))
     (save-excursion    
       (cond ( ;; Return the standard `f-tstmp' w/ footer
              (and (not intrp) (not insrtp))
-             (format "%s\n%s" f-tstmp (mon-file-stamp-vrfy-put-eof)))
+             (format "%s%s" 
+                     f-tstmp 
+                     (concat "\n" *mon-default-comment-divider* "\n;;; EOF\n")))
+            (at-point
+             (if (= (point) (point-min))
+                 ;; If if there is an existing Created don't overwrite at point.
+                 (if (looking-at "\\(;;; :FILE-CREATED\\|;;; FILE-CREATED:\\)")
+                     (progn
+                       (end-of-line) 
+                       (if (= (point) (buffer-end 1))
+                           (progn 
+                             (open-line 1) 
+                             (forward-char 1))
+                           (forward-char 1))
+                       (princ 
+                        (format "%s%s%s"
+                                the-file-or-dir 
+                                (if the-url 
+                                    (concat "\n" the-url) 
+                                    "")
+                                ;; We want to insert the EOF template but check anyways.
+                                (if (not (mon-file-stamp-vrfy-put-eof))
+                                    (concat "\n"  
+                                            *mon-default-comment-divider* 
+                                            "\n;;; EOF\n")
+                                    (prog1 
+                                        "" 
+                                      (mon-file-stamp-vrfy-put-eof t)))
+                                (current-buffer))))
+                     (princ (format "%s%s" 
+                                    f-tstmp 
+                                    (concat "\n" 
+                                            *mon-default-comment-divider* 
+                                            "\n;;; EOF\n"))
+                            (current-buffer)))
+                 (princ (format "\n%s%s" 
+                                f-tstmp 
+                                (concat "\n" 
+                                        *mon-default-comment-divider* 
+                                        "\n;;; EOF\n"))
+                        (current-buffer))))
             ((or intrp insrtp t)
-             (if at-point 
-                 (if (= (point) (point-min)) 
-                     (if (looking-at "\\(;;; :FILE-CREATED\\|;;; FILE-CREATED:\\)")
-                         (progn
-                           (end-of-line) 
-                           (if (= (point) (buffer-end 1))
-                               (progn 
-                                 (open-line 1) 
-                                 (forward-char 1))
-                               (forward-char 1))
-                           (princ (format "%s%s%s" 
-                                          the-file-or-dir 
-                                          (if the-url (concat "\n" the-url)"\n")
-                                          (mon-file-stamp-vrfy-put-eof))
-                                  (current-buffer)))
-                         (mon-file-stamp-vrfy-put-eof t))
-                     (princ (format "%s\n%s" f-tstmp (mon-file-stamp-vrfy-put-eof)) (current-buffer)))
-                 nil)
-             (unless (= (point) (buffer-end 0)) (goto-char (buffer-end 0)))
-             (cond ((= (buffer-end 0) (line-end-position))
+             (unless (= (point) (buffer-end 0)) 
+               (goto-char (buffer-end 0)))
+             (cond (;; We're finished. Insert the full template and go.
+                    (= (buffer-end 0) (line-end-position))
                     (princ (format "%s" f-tstmp)(current-buffer))
                     (mon-file-stamp-vrfy-put-eof t))
-                   ((<= (line-end-position)  (buffer-end 1))
-                    (let ((started-from (make-marker)))
+                   (;; One or more existing `;;; ' are present. Begin checking for each.
+                    (<= (line-end-position)  (buffer-end 1))
+                    (let ((started-from (make-marker))
+                          (cmt-delim ;;=> "^\\(;;; =\\{26,68\\}\\)"
+                           (concat "\\(" 
+                                   (substring *mon-default-comment-divider* 0 4)
+                                   "=\\{26,68\\}\\)")))
                       (set-marker started-from (point))
-                      (search-forward-regexp 
-                       "\\(;;; :FILE-CREATED\\|;;; FILE-CREATED:\\)" 
-                       (line-end-position) t)
-                      (when (> (point) started-from)
-                        (goto-char started-from) 
-                        (end-of-line) (forward-char 1)
-                        (set-marker started-from (point)))
-                      (search-forward-regexp 
-                       ";;; :FILE \\(:DIRECTORY\\)?" 
-                       (line-end-position) t)
-                      (when (> (point) started-from)
-                        (goto-char started-from) 
-                        (end-of-line) (forward-char 1)
-                        (set-marker started-from (point)))
+                      (search-forward-regexp "\\(;;; :FILE-CREATED\\|;;; FILE-CREATED:\\)" 
+                                             (line-end-position) t)
+                      (cond ((> (point) started-from)
+                             (progn
+                               (goto-char started-from) 
+                               (end-of-line) (forward-char 1)
+                               (set-marker started-from (point))))
+                            ((= (point) started-from)
+                             (cond ((looking-at "^$")
+                                    (princ fc-stmp (current-buffer))
+                                    (forward-char 1)
+                                    (set-marker started-from (point)))
+                                   ((looking-at "^;;; [^=].*$")
+                                    (open-line 1)
+                                    (princ fc-stmp (current-buffer))
+                                    (forward-char 1)
+                                    (set-marker started-from (point)))
+                                   (;; This is a screwy buffer, insert the template now.
+                                    (looking-at (concat "^" cmt-delim "\n"))
+                                    (princ f-tstmp (current-buffer))
+                                    (mon-file-stamp-vrfy-put-eof t)
+                                    (goto-char started-from) 
+                                    (end-of-line)(forward-char 1)
+                                    (set-marker started-from (point))))))
+                      (search-forward-regexp ";;; :FILE \\(:DIRECTORY\\)?" (line-end-position) t)
+                      ;; :WAS
+                      ;; (when (> (point) started-from)
+                      ;;   (goto-char started-from) 
+                      ;;   (end-of-line) (forward-char 1)
+                      ;;   (set-marker started-from (point)))
+                      (if (> (point) started-from)
+                          (progn
+                            (goto-char started-from) 
+                            (end-of-line) (forward-char 1)
+                            (set-marker started-from (point)))
+                          (progn 
+                            (princ the-file-or-dir (current-buffer))
+                            (cond ((looking-at ";;; \\(:SOURCE \\((URL\\)?\\|:SEE \\((URL\\)?\\|\\((URL\\)\\)" )
+                                   (open-line 1)
+                                   (forward-char 1)
+                                   (set-marker started-from (point)))
+                                  ((looking-at (concat cmt-delim "\n"))
+                                   (open-line 1)
+                                   (forward-char 1)
+                                   (set-marker started-from (point)))
+                                  ((= (point) (line-end-position))
+                                   (forward-char 1)
+                                   (set-marker started-from (point))))))
                       (search-forward-regexp 
                        ";;; \\(:SOURCE \\((URL\\)?\\|:SEE \\((URL\\)?\\|\\((URL\\)\\)" 
                        (line-end-position) t)
                       (cond ;; `f-tstmp', `the-file-or-dir', and `the-url' are here. Jump to EOF.
                         ((> (point) started-from)
-                         (mon-file-stamp-vrfy-put-eof t))
+                         (end-of-line) (forward-char)
+                         ;; Make sure we have an divider block.
+                         (unless (looking-at (concat "^" cmt-delim))
+                           (open-line 1) 
+                           (princ *mon-default-comment-divider* (current-buffer)))
+                           (mon-file-stamp-vrfy-put-eof t))
                         ;; `f-tstmp' and `the-file-or-dir' here. Insert `the-url' and jump to EOF.
                         ((search-backward-regexp "^;;; :FILE \\(:DIRECTORY\\)?" nil t)
                          (end-of-line) (forward-char 1)
-                         (princ 
-                          (format "%s" (if the-url (concat the-url "\n")"\n"))
-                          (current-buffer))
+                         (princ (format "%s" (if the-url (concat the-url "\n") "")) (current-buffer))
+                         (unless (looking-at (concat "^" cmt-delim))
+                           (open-line 1) 
+                           (princ *mon-default-comment-divider* (current-buffer)))
                          (mon-file-stamp-vrfy-put-eof t))
                         ;; `f-tstmp' is here. Insert `the-file-or-dir' and `the-url', then jump to EOF.
                         ((search-backward-regexp "^\\(;;; :FILE-CREATED\\|;;; FILE-CREATED:\\)" nil t)
                          (end-of-line) (forward-char 1)
-                         (princ (format "%s%s" the-file-or-dir (if the-url (concat "\n" the-url "\n")"\n"))
+                         (princ (format "%s%s" the-file-or-dir (if the-url (concat the-url "\n") ""))
                                 (current-buffer))
+                         (unless (looking-at (concat "^" cmt-delim))
+                           (open-line 1) 
+                           (princ *mon-default-comment-divider* (current-buffer)))
                          (mon-file-stamp-vrfy-put-eof t))
                         ;; Nothing found. We shouldn't be here. Logic is screwy. :(
                         ;; Put everything now; `f-tstmp', `the-file-or-dir', `the-url'. Jump to EOF.
@@ -1070,6 +1163,6 @@ done.\n
 (provide 'mon-time-utils)
 ;;; ==============================
 
-;;; ============================
+;;; ==============================
 ;;; mon-time-utils.el ends here
 ;;; EOF

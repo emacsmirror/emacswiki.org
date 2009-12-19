@@ -49,27 +49,32 @@ He is also the author of a "Multi-Byte Survival Kit" for Emacs 20, which removed
 
 His [http://groups.google.com/group/comp.lang.lisp/msg/f499cca6b478260f radical customizations] of a standard keyboard:
 
-  I have a "standard" PC keyboard (except with tons of function keys) and
-  have moved the digits off the normal keypad and onto the numeric keypad
-  and moved all the shifted symbols down to unshifted, and then physically
-  moved the column that used to read 6YHN and all columns right of it one
-  column right.  The vacated holes in they keyboard are filled with whatever
-  left-over keys you have, and then you tell your keyboard driver og X or
-  whatever that you have placed the parens {} [] () and <> (unshifted and
-  shifted) in what used to be the 6YHN colum.  This move some incredibly
-  frequently used keys to between your index fingers instead of terrorizing
-  your right little finger.  Also, return and backspace are now one column
-  closer and also strain the little finger much less.  You also get a little
-  more space between your hands, which some of those ergonomic stunts seem
-  to argue is a good thing.  Also, with Unicode, typing becomes much more
-  fun than remembering those TeX monstrosities, but the downside is that you
-  need a lot more keys.  So AltGr is also one column closer to your right
-  thumb and painless to use even with other keys on the right hand.  Then
-  the left thumb can be used for space, too, or the Alt key that you can use
-  to teach Emacs to use much shorter commands.  Also, remap the useless CAPS
-  key to something useful, like window manager shortcuts.  The really good
-  thing about this keyboard layout is that your computer is /secure/ even if
-  someone should break in and get console access.
+ From: Erik Naggum
+ Newsgroups: comp.lang.lisp
+ Subject: Re: Lisp options on Mac OS X
+ Date: 26 Oct 2002 14:59:25 +0000
+
+ I have a "standard" PC keyboard (except with tons of function keys) and
+ have moved the digits off the normal keypad and onto the numeric keypad
+ and moved all the shifted symbols down to unshifted, and then physically
+ moved the column that used to read 6YHN and all columns right of it one
+ column right.  The vacated holes in they keyboard are filled with whatever
+ left-over keys you have, and then you tell your keyboard driver og X or
+ whatever that you have placed the parens {} [] () and <> (unshifted and
+ shifted) in what used to be the 6YHN colum.  This move some incredibly
+ frequently used keys to between your index fingers instead of terrorizing
+ your right little finger.  Also, return and backspace are now one column
+ closer and also strain the little finger much less.  You also get a little
+ more space between your hands, which some of those ergonomic stunts seem
+ to argue is a good thing.  Also, with Unicode, typing becomes much more
+ fun than remembering those TeX monstrosities, but the downside is that you
+ need a lot more keys.  So AltGr is also one column closer to your right
+ thumb and painless to use even with other keys on the right hand.  Then
+ the left thumb can be used for space, too, or the Alt key that you can use
+ to teach Emacs to use much shorter commands.  Also, remap the useless CAPS
+ key to something useful, like window manager shortcuts.  The really good
+ thing about this keyboard layout is that your computer is /secure/ even if
+ someone should break in and get console access.
 
 == Common Lisp and Emacs ==
 

@@ -42,6 +42,14 @@ Use <tt>[http://furius.ca/pubcode/pub/conf/common/elisp/blais/qtdoc.el qtdoc.el]
 
 CCLookup (Searching cppreference): http://taesoo.org/Opensource/CClookup
 
+== GTK++ ==
+
+GTKLookup (using anything)
+
+Web: http://taesoo.org/Opensource/Gtklookup
+
+Git: http://github.com/tsgates/gtklookup
+
 == HTML 4.01/CSS 2.1 ==
 
 See [NxhtmlMode nXhtml].

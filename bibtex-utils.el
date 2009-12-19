@@ -82,7 +82,8 @@ Maybe restrict the values to those matching REGEXP."
 	(prog1 (message "Returned %d entries" (length output))
 	  (bibtex-mode)
 	  (while (setq item (pop output))
-	    (insert item "\n\n")))))))
+	    (insert item "\n\n"))
+	  (goto-char (point-min)))))))
 
 (defun bibtex-make-field-keywords (&optional arg)
   "Make a keywords field.

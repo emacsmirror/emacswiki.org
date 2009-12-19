@@ -1,6 +1,5 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; -*- mode: EMACS-LISP; -*_
-;; -*- mode: EMACS-LISP; -*_
+;; -*- mode: EMACS-LISP; -*-
 ;;; This is mon-dir-utils.el
 ;;; ================================================================
 ;;; DESCRIPTION:
@@ -29,7 +28,7 @@
 ;;; `mon-toggle-dired-dwim-target',
 ;;; `mon-copy-file-dired-as-list', `mon-copy-file-dired-as-string'
 ;;; `mon-get-ps2ascii', `mon-get-pdftotext', `mon-get-pdfinfo'
-;;; `mon-w3m-dired-file'
+;;; `mon-w3m-dired-file', `mon-new-buffer-w-stamp'
 ;;; FUNCTIONS:◄◄◄
 ;;;
 ;;; MACROS:
@@ -433,7 +432,49 @@ machine and the BUG'd system.\n
    (list (dired-get-filename)))
   (dired-maybe-insert-subdir dirname "-laR"))
 
- ;;; ==============================
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-12-18T21:51:32-05:00Z}#{09515} - by MON>
+(defun mon-new-buffer-w-stamp (new-buffer-w-name &optional auto-save intrp)
+  "Create and display NEW-BUFFER-W-NAME pre-populated with `mon-file-stamp'.
+The pre-filled line `:FILE' line is formatted as:\n
+\x3B;; :FILE default-directory/NEW-BUFFER-W-NAME\n
+:NOTE The file is not written yet. Save it yourself if that is what you want.
+When called-interactively prompts for NEW-BUFFER-W-NAME.
+When AUTO-SAVE is non-nil or called-interactively with prefix-arg 
+do not prompt before saving NEW-BUFFER-W-NAME.
+If NEW-BUFFER-W-NAME is an existing file in default-directory signal an error.
+:EXAMPLE\n(call-interactively 'mon-new-buffer-w-stamp)\n
+:SEE-ALSO .\n►►►"
+  (interactive "i\nP\np")
+  (let ((nbwn (make-symbol "--nbwn--"))
+        (nb-name))
+    (setq nb-name (if intrp 
+                      (read-string "New buffer-file-name: ")
+                      new-buffer-w-name))
+    (if (file-exists-p (concat default-directory nb-name))
+        (error "Pre-existing file %s in %s" nb-name (pwd))
+        (setq nb-name (concat 
+                       (expand-file-name 
+                        (directory-file-name 
+                         (file-name-directory default-directory)))
+                       "/" nb-name)))
+      (with-current-buffer (get-buffer-create (format "%s" nbwn))
+        (set-visited-file-name nb-name)
+        (mon-file-stamp t))
+    (switch-to-buffer (get-buffer (file-name-nondirectory nb-name)))
+    (if auto-save
+        (progn (write-file (buffer-file-name) t)
+               (buffer-file-name))
+        (when (yes-or-no-p 
+               (format "Buffer visiting the unwritten file `%s'. Save now (Y) or proceed without saving (N)? " 
+                       (file-relative-name (buffer-file-name) "../")))
+          (write-file (buffer-file-name) t)
+          (buffer-file-name)))))
+;;
+;;; :TEST-ME (mon-new-buffer-w-stamp "testing")
+;;; :TEST-ME (call-interactively 'mon-new-buffer-w-stamp)
+
+;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-10-27T15:50:08-04:00Z}#{09442} - by MON>
 (defun mon-get-dir-name-absolute (dir-name)
   "Return absolute directory file-name of DIR-NAME.\n

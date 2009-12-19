@@ -14,8 +14,9 @@ I work primarily in Ruby, Java, PHP, JavaScript, and Bash, plus a little bit of 
 
 = See also =
 
-* TabCompletion - I recently created a [http://github.com/chrono325/smart-tab/tree/master repository] for Smart Tab.
+* TabCompletion - I recently created a [http://github.com/cdhax/smart-tab/tree/master repository] for Smart Tab.
 * [[anything-eproject.el]]
+* [http://github.com/dhax/ezbl Ezbl], a wrapper for the WebKit-based [http://www.uzbl.org Uzbl] web browser.
 
 [new:DrewAdams:2009-05-25 08:45 UTC]
 Welcome to the wiki. -- DrewAdams
