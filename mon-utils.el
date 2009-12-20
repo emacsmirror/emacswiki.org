@@ -173,7 +173,7 @@
 ;;; ==============================
 (require 'mon-regexp-symbols)
 (require 'mon-time-utils)
-(require 'naf-mode-replacements) ;; :BEFORE mon-dir-utils :BEFORE naf-mode-insertion-utils
+(require 'mon-replacement-utils) ;; :BEFORE :FILE mon-dir-utils.el naf-mode-insertion-utils.el
 (require 'mon-dir-locals-alist)
 (require 'mon-dir-utils)
 (require 'mon-insertion-utils)
@@ -197,7 +197,7 @@
 ;;; ==============================
 ;;; (require 'mon-regexp-symbols)
 ;;; (require 'mon-time-utils)
-;;; (require 'naf-mode-replacements) ;; :BEFORE dir-utils
+;;; (require 'mon-replacement-utils) ;; :BEFORE :FILE mon-dir-utils.el
 ;;; (require 'mon-dir-locals-alist)
 ;;; (require 'mon-dir-utils)
 ;;; (require 'mon-insertion-utils)
@@ -271,7 +271,7 @@ Does not move point.\n
 ;;; :TEST-ME (mon-get-system-specs t)
 
 ;;; ==============================
-;;; :COURTESY `read-envvar-name' :FILE emacs/lisp/env.el
+;;; :COURTESY :FILE emacs/lisp/env.el :WAS `read-envvar-name' 
 ;;; :CREATED <Timestamp: #{2009-10-16T15:29:37-04:00Z}#{09425} - by MON KEY>
 (defun mon-get-env-variables (&optional as-strings insrtp intrp)
   "Return a list of the current enviromental variables.
@@ -309,7 +309,8 @@ When insrtp or called-interactively insert returned vars at point.\n
 ;;; :TEST-ME (prin1 (mon-get-env-variables t) (current-buffer))
 
 ;;; ==============================
-;;; :NOTE (emacs-pid)
+;;; :NOTE MON recently found the :FILE proced.el 
+;;;       Some of this might be accomplished with that excellent package.
 ;;; :CREATED <Timestamp: #{2009-10-16T15:49:07-04:00Z}#{09425} - by MON KEY>
 (defun mon-get-sys-proc-list ()
   "Return a full lisp list of current system-proceses.\n
@@ -323,6 +324,8 @@ When insrtp or called-interactively insert returned vars at point.\n
 ;;; :TEST-ME (mon-get-sys-proc-list)
 
 ;;; ==============================
+;;; :NOTE MON recently found the :FILE proced.el 
+;;;       Some of this might be accomplished with that excellent package.
 ;;; CREATED: <Timestamp: #{2009-10-16T15:54:29-04:00Z}#{09425} - by MON KEY>
 (defun mon-insert-sys-proc-list ()
   "Insert a full lisp list of current system-proceses at point.
@@ -339,6 +342,8 @@ Does not move point.\n
           (mon-get-sys-proc-list))))
 
 ;;; ==============================
+;;; :NOTE MON recently found the :FILE proced.el 
+;;;       Some of this might be accomplished with that excellent package.
 ;;; :CREATED <Timestamp: #{2009-10-16T16:34:48-04:00Z}#{09425} - by MON KEY>
 (defun mon-get-proc-w-name (comm)
   "Return list of `process-attributes' lists for Command name COMM.
@@ -361,7 +366,9 @@ On w32 it is not required give the .exe suffix.\n
 ;;; :TEST-ME (mon-get-proc-w-name (invocation-name))
 
 ;;; ==============================
-;;; :NOTE built to test for "mysql" command.
+;;; :NOTE Built to test for "mysql" command before looking for a comint.
+;;;       MON recently found the :FILE proced.el 
+;;;       Some of this might be accomplished with that excellent package.
 ;;; :CREATED <Timestamp: #{2009-12-09T20:02:30-05:00Z}#{09503} - by MON>
 (defun mon-get-process (&optional proc-comm)
   "Find the process-id for process invoked with command.
@@ -633,7 +640,7 @@ Like `append-next-kill' but skips the C M-w M-w finger-chord hoop jump.\n►►�
   (balance-windows))
 
 ;;; ==============================
-;;; :COURTESY Miles Bader <miles@lsi.nec.co.jp>, (gnus.emacs.help)
+;;; :COURTESY Miles Bader :SOURCE (gnus.emacs.help)
 (defun mon-what-face (pos)
   "Return the font-lock face information at the current point.\n►►►"
   (interactive "d")
@@ -645,7 +652,9 @@ Like `append-next-kill' but skips the C M-w M-w finger-chord hoop jump.\n►►�
 
 ;;; ==============================
 (defun mon-toggle-menu-bar ()
-  "Toggle the top menu bar.\nGets the max editor screen for your money!\n►►►"
+  "Toggle the top menu bar.\nGets the max editor screen for your money!\n
+:SEE-ALSO `mon-toggle-dired-dwim-target', `mon-toggle-truncate-line'
+`mon-toggle-eval-length', `mon-naf-mode-toggle-restore-llm'.\n►►►"
   (interactive)
   (let ((height (frame-height)))
     (menu-bar-mode nil)
@@ -683,7 +692,7 @@ It is inserted into that buffer before its point.\n
 When calling from a program, give three arguments:
 BUFFER (or buffer name), START and END.
 START and END specify the portion of the current buffer to be copied.
-Redefines `append-to-buffer' with a \"\n\".\n
+An alternative definition of `append-to-buffer' with a \"\n\".\n
 :SEE-ALSO `mon-append-to-register', `mon-kill-appending'.\n►►►"
   (interactive
    (list (read-buffer "Append to buffer: " (other-buffer (current-buffer) t))
@@ -720,9 +729,8 @@ A stupid and mostly useless function.\n►►►"
 ;;; ==============================
 (defun mon-region-unfill (start end)
   "Do the opposite of fill-region.
-Stuff all paragraphs paragraphs in the current region into long lines.
-:SEE-ALSO 
-`mon-line-strings-indent-to-col', `mon-line-indent-from-to-col', 
+Stuff all paragraphs paragraphs in the current region into long lines.\n
+:SEE-ALSO `mon-line-strings-indent-to-col', `mon-line-indent-from-to-col',
 `mon-string-fill-to-col', `mon-comment-divide->col'.\n►►►"
   (interactive "r")
   (let ((fill-column 9000))
@@ -731,7 +739,7 @@ Stuff all paragraphs paragraphs in the current region into long lines.
 ;;; ==============================
 (defun mon-region-capitalize (start end)
   "Capitalize the region. 
-\"mon-\" funcution name wrapper for consistency, and to aid completion
+\"mon-\" function name wrapper for consistency, and to aid completion
 because we also have `mon-rectangle-capitalize'.
 This function is a 1:1 duplicate of `capitalize-region'.\n►►►"
   (interactive "r")
@@ -760,8 +768,7 @@ Insertion does not move point. Insertion is whitespace agnostic.\n
               (t rr))))
 
 ;;; ==============================
-;;; :NOTE consider macrology?
-;;; BUGGY but :WORKING-AS-OF
+;;; :NOTE consider macrology? BUGGY but :WORKING-AS-OF
 ;;; :CREATED <Timestamp: #{2009-09-09T12:29:52-04:00Z}#{09373} - by MON>
 (defun mon-test-keypresses (&optional first second third)
   "Use to test if additioanl optional prefix args have been passed to interactive.\n
@@ -840,7 +847,7 @@ the tedium of building the entire scaffolding.\n
 (defun mon-toggle-read-only-point-motion ()
 "Toggle `inhibit-read-only' and `inhibit-point-motion-hooks'.\n
 :SEE-ALSO `mon-inhibit-read-only', `mon-inhibit-point-motion-hooks',
-`mon-inhibit-modification-hooks'.\n►►►"
+`mon-inhibit-modification-hooks', `mon-naf-mode-toggle-restore-llm'.\n►►►"
   (interactive)
   (if (or
        (bound-and-true-p inhibit-read-only)
@@ -857,8 +864,8 @@ the tedium of building the entire scaffolding.\n
 (defun mon-wrap-selection (&optional front-arg rear-arg)
   "Wraps contents region with a front and rear delimeter.\n\n
 :PROMPT-FOR 
-            Front Delimiter:  <--- Delmiter for beginning of region
-            Rear Delimiter:   <--- Delmiter for end of region\n\n
+            Front Delimiter:  <- Delmiter for beginning of region
+            Rear Delimiter:   <- Delmiter for end of region\n\n
 :EXAMPLE
           Point/Mark of region contain: My cats breath smells like cat food
           Front's prompt is provided: |[
@@ -887,8 +894,9 @@ the tedium of building the entire scaffolding.\n
   "Toggle the truncate-line variable and redraw the display.\n
 :SEE-ALSO `mon-toggle-eval-length', `print-length',
 `mon-toggle-dired-dwim-target', `mon-toggle-menu-bar'
-`mon-toggle-read-only-point-motion', `mon-inhibit-modification-hooks',
-`mon-inhibit-point-motion-hooks', `mon-inhibit-read-only'.\n►►►"
+`mon-naf-mode-toggle-restore-llm', `mon-toggle-read-only-point-motion',
+`mon-inhibit-modification-hooks', `mon-inhibit-point-motion-hooks',
+`mon-inhibit-read-only'.\n►►►"
   (interactive "p")
   (toggle-truncate-lines nil)
   (if intrp
@@ -911,7 +919,8 @@ When `eval-expression-print-length' and NEW-DEPTH are non-nil set length.\n
 :EXAMPLE\n\n\(mon-toggle-eval-length\)\n\n\(mon-toggle-eval-length 16\)\n
 \(mon-toggle-eval-length nil t\)\n\n\(mon-toggle-eval-length 1 t\)\n
 \(mon-toggle-eval-length\)\n
-:SEE-ALSO `mon-toggle-truncate-line', `print-length'.\n►►►"  
+:SEE-ALSO `mon-toggle-truncate-line', `mon-naf-mode-toggle-restore-llm',
+`print-length'.\n►►►"  
   (interactive "P\np")
   (let (nd)
     (if (and new-depth intrp)
@@ -1012,8 +1021,8 @@ point, or nil if there is no match in the buffer.\n►►►"
          (buffer-substring start end))))
 
 ;;; ===================================
-;;; :WHITESPACE 
-;;;  EOL, BOL, EOB, BOB, LEP, LBP, etc.
+;; :WHITESPACE 
+;;; EOL, BOL, EOB, BOB, LEP, LBP, etc.
 ;;; ===================================
 
 ;;; ==============================
@@ -1141,7 +1150,7 @@ If AFTER is non-nil return t when char after point is a 'space'.\n
 
 ;;; ==============================
 ;;; :COURTESY Andy Stewart <lazycat.manatee@gmail.com> :WAS `colp'
-;;; (URL `http://www.emacswiki.org/emacs/lazycat-toolkit.el')
+;;; :SEE (URL `http://www.emacswiki.org/emacs/lazycat-toolkit.el')
 (defun mon-spacep-first ()
   "Return t if point is first non-whitespace character of line.\n►►►"
   (let (current-point)
@@ -1196,7 +1205,7 @@ called non-interactively MOVE-TIMES arg examines Nth previos line.\n
 ;;; :TEST-ME  (mon-line-previous-bol-is-eol 4)
 
 ;;; ==============================
-;;; MODIFICATIONS: <Timestamp: #{2009-10-15T18:17:13-04:00Z}#{09424} - by MON KEY>
+;;; :MODIFICATIONS <Timestamp: #{2009-10-15T18:17:13-04:00Z}#{09424} - by MON KEY>
 ;;; Tired of compiler warnings for `next-line' changed to (forward-line n)
 ;;; :CREATED <Timestamp: Thursday May 07, 2009 @ 03:38.46 PM - by MON KEY>
 (defun mon-line-next-bol-is-eol (&optional intrp move-times)
@@ -1269,8 +1278,8 @@ Instances of such chars are be skipped.\n►►►"
           (skip-chars-backward " \t"))))))
 
 ;;; ==============================
+;;; :COURTESY :FILE thing-at-point.el
 ;;; :TODO Wrap in a function and install under bol/eol funcs in mon-utils.el
-;;; :COURTESY thing-at-point.el
 ;;; :CREATED <Timestamp: #{2009-09-14T15:15:57-04:00Z}#{09381} - by MON KEY>
 ;;; (funcall (lambda () (if (bolp) (forward-line -1) (beginning-of-line))))
 
@@ -1346,7 +1355,7 @@ Arg TEST-FROM is a buffer pos to start counting from.\n
 ;;; ==============================
 (defun mon-line-length-max (&optional intrp)
   "Return the maximum line length of the current buffer.
-Called interactively returns a message in mini-buffer:
+When called-interactively return message in mini-buffer:
 \"The longest line in buffer `mon-utils.el' ends at column 115.\"\n►►►"
 (interactive "p")
   (let ((max-len 0))
@@ -1479,10 +1488,11 @@ Wants char literals.\n
 ;;; :COURTESY Pascal Bourguignon :HIS pjb-strings.el :WAS `string-justify-left'
 (defun mon-string-justify-left (string &optional width left-margin)
   "Return a left-justified string built from string.\n
-:NOTE   The default width is 72 characters, the default left-margin is 0.  
-        The width is counted from column 0.
-        The word separators are those of split-string: [ \\f\\t\\n\\r\\v]+, which
-        means that the string is justified as one paragraph.\n
+:NOTE The default width is 72 characters, the default left-margin is 0.  
+      The width is counted from column 0.
+      The word separators are those of split-string:
+      [ \\f\\t\\n\\r\\v]+
+      Which means that the string is justified as one paragraph.\n
 :SEE-ALSO `mon-string-fill-to-col'.\n►►►"
   (if (null width) (setq width 72))
   (if (null left-margin) (setq left-margin 0))
@@ -1575,8 +1585,8 @@ unreadable object with the '#' prefix so we strip it.\n
 ;;; :TEST-ME (mon-string-read-match-string 4)
 
 ;;; ==============================
-;;; I hope this isn't reinventing the wheel here... 
-;;; If not, WTF? why isn't this in Emacs already?
+;;; :NOTE I hope this isn't reinventing the wheel here... 
+;;;       If not, WTF? why isn't this in Emacs already?
 ;;; :MODIFICATIONS <Timestamp: #{2009-10-14T11:06:04-04:00Z}#{09423} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-08-26T17:08:02-04:00Z}#{09353} - by MON KEY>
 (defun mon-string-to-symbol (str &optional start end)
@@ -1600,8 +1610,8 @@ substring of str they default to 0 and (length string) respectively.
 ;;; :TEST-ME (mon-string-to-symbol (mon-symbol->string 'bubba))
 
 ;;; ==============================
-;;; Periodically MON is completely at a loss for how to accomplish this.
-;;; Lets make _damn_ sure it never happens again!!
+;;; :NOTE Periodically MON is completely at a loss for how to accomplish this.
+;;;       Lets make _damn_ sure it never happens again!!
 ;;; :CREATED <Timestamp: #{2009-09-29T21:00:43-04:00Z}#{09403} - by MON KEY>
 (defun mon-symbol-to-string (symbol) 
   "Return SYMBOL as a string.\n
@@ -1762,7 +1772,7 @@ AFTER-STR is a simple string. No regexps, chars, numbers, lists, etc.\n
 ;;; ==============================
 ;;; :COURTESY Pascal J. Bourguignon :HIS pjb-strings.el :WAS `string-position'
 (defun mon-string-position (string substr &optional frompos)
-  "Return the position in STRING of the first occurence of the SUBSTR
+  "Return the position in STRING of the first occurence of SUBSTR
 searching FROMPOS, or from the start if FROMPOS is absent or nil. 
 If the SUBSTR is not found, then return nil.\n
 :EXAMPLE\n\(mon-string-position \"dogmeat\" \"meat\"\)\n
@@ -1775,8 +1785,8 @@ If the SUBSTR is not found, then return nil.\n
 ;;; ==============================
 ;;; :COURTESY Pascal J. Bourguignon :HIS pjb-strings.el :WAS `string-has-suffix'
 (defun mon-string-has-suffix (string suffix)
-"Return t when STRING has SUFFIX as a component.\n\n:EXAMPLE\n
-\(mon-string-has-suffix \"dogmeat\" \"meat\"\).\n
+"Return t when STRING has SUFFIX as a component.\n
+:EXAMPLE\n\(mon-string-has-suffix \"dogmeat\" \"meat\"\).\n
 :SEE-ALSO `mon-string-position', `mon-string-index'
 `mon-string-upto-index', `mon-string-after-index'.\n►►►"
   (cond ((or
@@ -1868,7 +1878,7 @@ string STR and return it.\n
 
 ;;; ==============================
 ;;; :COURTESY Jared D. :WAS `string-repeat'
-;;; (URL `http://curiousprogrammer.wordpress.com/2009/07/26/emacs-utility-functions/')
+;;; :SEE (URL `http://curiousprogrammer.wordpress.com/2009/07/26/emacs-utility-functions/')
 ;;; :MODIFICATIONS <Timestamp: #{2009-08-19T20:13:32-04:00Z}#{09344} - by MON KEY>
 (defun mon-string-repeat (str n &optional insertp w/spc intrp)
   "Return the string STR N times.
@@ -1918,8 +1928,9 @@ Does not move-point.\n
   (save-excursion
     (set-buffer buffer)
     (setq splt-str
-          (buffer-substring-no-properties (progn (end-of-line 1) (setq splt-str-e (point)))
-                                          (progn (beginning-of-line 1) (setq splt-str-s (point))))))
+          (buffer-substring-no-properties 
+           (progn (end-of-line 1) (setq splt-str-e (point)))
+           (progn (beginning-of-line 1) (setq splt-str-s (point))))))
   (if (or insrtp intrp)
       (save-excursion (prin1 splt-str (current-buffer)))
     splt-str)))
@@ -2014,15 +2025,15 @@ Pier Gerlofs Donia\nBöŏvarr Bjarki\n◀\n
 ;;;       (lege (- (search-forward-regexp "◀") 2)))
 ;;;   (setq legs (mon-line-strings legb lege)))
 ;;
-;;,---- :UNCOMMENT-BELOW-TO-TEST
-;;|►
-;;|Hassan-i Sabbah
-;;|Tristan and Iseult
-;;|Broder Rusche
-;;|Pier Gerlofs Donia
-;;|Böŏvarr Bjarki
-;;|◀
-;;`----
+;; ,---- :UNCOMMENT-BELOW-TO-TEST
+;; |►
+;; |Hassan-i Sabbah
+;; |Tristan and Iseult
+;; |Broder Rusche
+;; |Pier Gerlofs Donia
+;; |Böŏvarr Bjarki
+;; |◀
+;; `----
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-12-08T12:36:48-05:00Z}#{09502} - by MON>
@@ -2036,9 +2047,9 @@ Use with concat for formated indentation in source.\n
 ►\nI-will-be-a-string\nI too will be a string.\nMe as well.
 More stringification here\n►\n
 :SEE-ALSO `mon-line-strings', `mon-line-strings-to-list',
- `mon-line-strings-bq-qt-sym-bol', `mon-string-ify-list', 
+`mon-line-strings-bq-qt-sym-bol', `mon-string-ify-list', 
 `mon-string-ify-current-line', `mon-string-split-line', 
-`mon-line-drop-in-words'.\n►►►"
+`mon-line-drop-in-words', `mon-cln-up-colon'.\n►►►"
   (interactive "r\ni\np")
   (let ((qt-lns)
         (ln-r-st (make-marker))
@@ -2063,17 +2074,17 @@ More stringification here\n►\n
 ;;; :TEST-ME (mon-line-strings-region
 ;;;           (1+ (search-forward-regexp "►")) (- (search-forward-regexp "►") 2))
 ;;
-;;,---- :UNCOMMENT-BELOW-TO-TEST
-;;|►
-;;|I-will-be-a-string
-;;|I too will be a string.
-;;|Me as well.
-;;|More stringification here
-;;|►
-;;`----
+;; ,---- :UNCOMMENT-BELOW-TO-TEST
+;; |►
+;; |I-will-be-a-string
+;; |I too will be a string.
+;; |Me as well.
+;; |More stringification here
+;; |►
+;; `----
 
 ;;; ==============================
-;;; CREATED: <Timestamp: #{2009-10-23T16:16:47-04:00Z}#{09435} - by MON KEY>
+;;; :CREATED <Timestamp: #{2009-10-23T16:16:47-04:00Z}#{09435} - by MON KEY>
 (defun mon-line-strings-qt-region (start end &optional insertp intrp)
   "Return symbols at each BOL in region wrapped in double-quotes `\"'.
 When INSERTP is non-nil or called-interactively replace active region and
@@ -2088,9 +2099,10 @@ When following characters are at BOL no replacement is peformed on symbol:
 \n►\nI-will-be-a-string\n\"I-am-almost-a-string\nI-am-a-half-string\"\n
 I-am-not-a-string'\n►\n 
 :SEE-ALSO `mon-line-strings-bq-qt-sym-bol', `mon-line-strings-pipe-bol'
-`mon-line-strings',`mon-line-strings-indent-to-col', `mon-line-strings-to-list',
-`mon-line-strings-region', `mon-string-ify-list', `mon-string-ify-current-line'
-`mon-string-split-line', `mon-line-drop-in-words'.\n►►►"
+`mon-cln-up-colon', `mon-line-strings',`mon-line-strings-indent-to-col',
+`mon-line-strings-to-list', `mon-line-strings-region', `mon-string-ify-list',
+`mon-string-ify-current-line' `mon-string-split-line',
+`mon-line-drop-in-words'.\n►►►"
   (interactive "r\ni\np")
   (let (rtn-v)
     (setq rtn-v (buffer-substring-no-properties start end))
@@ -2115,14 +2127,14 @@ I-am-not-a-string'\n►\n
 ;;; :TEST-ME
 ;;; (princ (mon-line-strings-qt-region
 ;;;  (1+ (search-forward-regexp "►")) (- (search-forward-regexp "►") 2)))
-;;,---- :UNCOMMENT-TO-TEST first case should pass, the rest fail
-;;|►
-;;|I-will-be-a-string
-;;|"I-am-almost-a-string
-;;|I-am-a-half-string"
-;;|I-am-not-a-string'
-;;|►
-;;`----
+;; ,---- :UNCOMMENT-TO-TEST first case should pass, the rest fail
+;; |►
+;; |I-will-be-a-string
+;; |"I-am-almost-a-string
+;; |I-am-a-half-string"
+;; |I-am-not-a-string'
+;; |►
+;; `----
 
 ;;; ==============================
 ;;; :MODIFICATIONS <Timestamp: #{2009-10-23T18:04:19-04:00Z}#{09435} - by MON KEY>
@@ -2141,7 +2153,7 @@ When following characters are at BOL no replacement is peformed on symbol:
 call-next-method &rest replacement-args
 `call-next-method &rest replacement-args
 call-next-method' &rest replacement-args\n►\n
-:SEE-ALSO `mon-line-strings', `mon-line-strings-qt-region',
+:SEE-ALSO `mon-line-strings', `mon-line-strings-qt-region', `mon-cln-up-colon',
 `mon-line-strings-pipe-bol',`mon-line-strings-indent-to-col', 
 `mon-line-strings-to-list', `mon-line-strings-region',
 `mon-string-ify-list', `mon-string-ify-current-line'
@@ -2180,21 +2192,21 @@ call-next-method' &rest replacement-args\n►\n
 ;;; :TEST-ME
 ;;; (mon-line-strings-bq-qt-sym-bol 
 ;;;   (1+ (search-forward-regexp "►")) (- (search-forward-regexp "►") 2))
-;;,---- :UNCOMMENT-TO-TEST (only the first 3 should succeed)
-;;|►
-;;|call-next-method
-;;|call-next-method &rest replacement-args
-;;|call-next-method  &rest replacement-args
-;;|`call-next-method  &rest replacement-args
-;;|call-next-method' &rest replacement-args
-;;| call-next-method'  &rest replacement-args
-;;|`call-next-method
-;;|call-next-method'
-;;| call-next-method
-;;| call-next-method'
-;;| call-next-method
-;;|►
-;;`----
+;; ,---- :UNCOMMENT-TO-TEST (only the first 3 should succeed)
+;; |►
+;; |call-next-method
+;; |call-next-method &rest replacement-args
+;; |call-next-method  &rest replacement-args
+;; |`call-next-method  &rest replacement-args
+;; |call-next-method' &rest replacement-args
+;; | call-next-method'  &rest replacement-args
+;; |`call-next-method
+;; |call-next-method'
+;; | call-next-method
+;; | call-next-method'
+;; | call-next-method
+;; |►
+;; `----
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-12-02T11:58:40-05:00Z}#{09493} - by MON>
@@ -2233,16 +2245,16 @@ move point to region-beginning.\n
 ;;; :TEST-ME (save-excursion (mon-line-strings-pipe-bol
 ;;;          (1+ (search-forward-regexp "►")) (- (search-forward-regexp "►") 2)))
 ;;
-;;,---- :UNCOMMENT-TO-TEST
-;;|►
-;;| Craig Balding
-;;| Emmanuel Bouillon
-;;| Bernardo Damele Assumpcao Guimarase
-;;| Jean-Paul Fizaine
-;;| Rob Havelt
-;;| Chris Wysopal
-;;|►
-;;`----
+;; ,---- :UNCOMMENT-TO-TEST
+;; |►
+;; | Craig Balding
+;; | Emmanuel Bouillon
+;; | Bernardo Damele Assumpcao Guimarase
+;; | Jean-Paul Fizaine
+;; | Rob Havelt
+;; | Chris Wysopal
+;; |►
+;; `----
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-12-02T11:58:40-05:00Z}#{09493} - by MON>
@@ -2302,16 +2314,16 @@ Jean-Paul Fizaine\nRob Havelt\nChris Wysopal\n►\n
 ;;;     (goto-char rs)
 ;;;     (mon-line-strings-indent-to-col rs re 7 t)))
 ;;
-;;,---- :UNCOMMENT-TO-TEST
-;;,►
-;;|Craig Balding
-;;|Emmanuel Bouillon
-;;|Bernardo Damele Assumpcao Guimaraes
-;;|Jean-Paul Fizaine
-;;|Rob Havelt
-;;|Chris Wysopal
-;;|►
-;;`----
+;; ,---- :UNCOMMENT-TO-TEST
+;; ,►
+;; |Craig Balding
+;; |Emmanuel Bouillon
+;; |Bernardo Damele Assumpcao Guimaraes
+;; |Jean-Paul Fizaine
+;; |Rob Havelt
+;; |Chris Wysopal
+;; |►
+;; `----
 
 ;;; ==============================
 ;;; :NOTE Does not work for one line regions.
@@ -2591,6 +2603,7 @@ Does not move point.\n
 ;;;    (1+ (search-forward-regexp "►")) (- (search-forward-regexp "►") 2))
 ;;; (mon-line-string-rotate-namestrings 
 ;;;    (1+ (search-forward-regexp "►")) (- (search-forward-regexp "►") 2) t)
+;;;
 ;; ,---- :UNCOMMENT-TO-TEST
 ;; |►
 ;; |George Charles Aid

@@ -16,7 +16,7 @@
 (windmove-default-keybindings)
 (column-number-mode 1)
 (blink-cursor-mode -1)
-(set-face-attribute 'default nil :height 100)
+(set-face-attribute 'default nil :height 105)
 
 (setq x-select-enable-clipboard t); Ubuntu
 
@@ -411,9 +411,8 @@ From a program takes two point or marker arguments, BEG and END."
       rcirc-server-alist
       '(("irc.freenode.net" :channels
 	 ("#emacs" "#rcirc" "#wiki" "#oddmuse" "#epfarms"
-	  "#hcoop" "#ubuntu"))
-	("irc.datacomm.ch" :channels ("#drsrm"))
-	("irc.chaostreff.ch" :channels ("#hackerfunk"))
+	  "#hcoop" "#ubuntu" "#perl6"))
+	("ircnet.eversible.com" :channels ("#drsrm"))
 	("irc.perl.org" :channels ("#perlde"))
 	("localhost" :channels ("&bitlbee")))
       rcirc-decode-coding-system 'undecided
@@ -424,8 +423,10 @@ From a program takes two point or marker arguments, BEG and END."
 		       (insert-file-contents-literally "~/.rcirc-authinfo")
 		       (read (current-buffer))))
 
-(eval-after-load 'rcirc '(require 'rcirc-pounce))
-(eval-after-load 'rcirc '(require 'rcirc-color))
+(eval-after-load 'rcirc '(require 'rcirc-pounce nil t))
+(eval-after-load 'rcirc '(require 'rcirc-color nil t))
+(eval-after-load 'rcirc '(require 'rcirc-controls nil t))
+(eval-after-load 'rcirc '(require 'rcirc-notify nil t))
 
 (setq rcirc-colors
       (let (candidates)
@@ -642,10 +643,10 @@ cells by columns first."
     ("\\[\\[.*?\\]\\]" . 'link)
     ("\\[.*\\]" . 'link)
     (,goto-address-url-regexp . 'link)
-    ("\\*\\*.*?\\*\\*" . 'bold)
+    ("\\*\\*\\(.*?\n\\)*?.*?\\*\\*" . 'bold)
     ("\\*.*?\\*" . 'bold)
-    ("//.*?//" . 'italic)
-    ("/.*?/" . 'italic)
+    ("//\\(.*?\n\\)*?.*?//" . 'italic)
+    ("/..*?/" . 'italic)
     ("__.*?__" . 'italic)
     ("_.*?_" . 'underline)); font-lock list
   '(".oddmuse\\'"); auto-mode-alist

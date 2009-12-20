@@ -1253,6 +1253,51 @@ Regexp held by global var `*regexp-symbol-defs*'.\n
 ;;;(mon-insert-lisp-testme nil 3 nil)
 
 ;;; ==============================
+;;; :COURTESY Dave Love <fx@gnu.org> :HIS fx-misc.el :WAS `function-arity'
+;;; :CREATED <Timestamp: #{2009-12-19T01:06:00-05:00Z}#{09516} - by MON>
+(defun mon-help-function-arity (function)
+  "Return information on the arity (argument numbers) of FUNCTION.
+The result is of the form returned by `subr-arity' or the symbol
+`unknown' for an autoloaded function (whose arity is unknown).\n
+FUNCTION must be a function (or special form) according to
+`functionp', or else a macro.\n►►►"
+  (setq function (indirect-function function))
+  (cond ((eq 'autoload (car-safe function))
+	 'unknown)
+	((subrp function)
+	 (subr-arity function))
+	(t				; macro, lambda or byte code
+	 (let ((min-args 0)
+	       lambda-list max-args &optional)
+	   (if (eq 'macro (car-safe function))
+	       (pop function)		; now byte code or lambda
+	     (unless (functionp function)
+	       (signal 'invalid-function (list function))))
+	   (if (eq 'lambda (car-safe function))
+	       (setq lambda-list (cadr function))
+	     (if (not (byte-code-function-p function))
+		 'unknown		; shouldn't happen
+	       (setq lambda-list (aref function 0))))
+	   ;; We've got a lambda list.
+	   (while (and lambda-list (not (eq 'many max-args)))
+	     (cond ((eq (car lambda-list) '&optional)
+		    (setq &optional 0))
+		   ((eq (car lambda-list) '&rest)
+  		    (setq max-args 'many))
+		   (t
+		    (if &optional
+			(setq &optional (1+ &optional))
+		      (setq min-args (1+ min-args)))))
+	     (pop lambda-list))
+	   (unless max-args (setq max-args (+ min-args (or &optional 0))))
+	   (cons min-args max-args)))))
+;;
+;;; :TEST-ME (mon-help-function-arity 'mon-file-stamp)
+
+;;; ==============================
+;;; :NOTE Following function fails on byte-compiled code w/ emacs from CVS
+;;; :AS-OF <Timestamp: #{2009-12-19T16:22:26-05:00Z}#{09516} - by MON KEY>
+;;;
 ;;; :MODIFICATIONS <Timestamp: #{2009-09-07T19:54:58-04:00Z}#{09371} - by MON KEY>
 ;;; :FIXES CL &key &aux args in the tail of Elisp &rest e.g.
 ;;;        this-> ``&rest --cl-rest--''
@@ -4143,28 +4188,29 @@ as a reference for finding which characters match which codes.\n►►►\n
 ;;; :TEST-ME (describe-function 'mon-help-cntl->hex->ecma-35)
 
 ;;; ==============================
+;;; :NOTE `¦' -> BROKEN BAR (ucs-insert #xa6)
 ;;; :CREATED <Timestamp: #{2009-12-11T11:44:07-05:00Z}#{09505} - by MON KEY>
 (defun mon-help-ipv4-header (&optional insertp intrp)
   "The IPv4 header as per RFC-791 \(more or less\).
 :SEE (URL `http://tools.ietf.org/rfc/rfc791.txt')\n
-Bit-offset
- |    0                   1                   2                   3   
- `--- 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 
-     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   / |VERSION|  :IHL |   :TOS        |         :TOTAL-LENGTH         |
-  /  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- |   |          :IDENTIFICATION      |:FLAG|   :FRAGMENT-OFFSET      |
- |   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- |   | :TIME-TO-LIVE |   :PROTOCOL   |         :HEADER-CHECKSUM      |
- |   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- |   |                   :SOURCE-ROUTING-LOCATOR                     |
- |   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- |   |                   :DESTINATION-ROUTING-LOCATOR                |
-  \\  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   \\ |                   :OPTIONS                    |   :PADDING    |
-     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-                                                                   70^
-
+:BYTE-OFFSET                                                                 80.
+`--> |0      ¦       ¦    1          ¦        2      ¦            3  |          
+     |-------¦-------¦---------------¦---------------¦---------------|========  
+  00 |VERSION|  :IHL |  :TOS         |         :TOTAL-LENGTH         |  ¦    ¦  
+     |-------¦---------------------------------------¦---------------|  20   ¦    
+  04 |       |  :IDENTIFICATION      |:FLAG|   :FRAGMENT-OFFSET      | Bytes ¦  
+     |-------¦-------¦---------------¦---------------¦---------------|  ¦    ¦  
+  08 | :TIME-TO-LIVE |  :PROTOCOL    |         :HEADR-CHECKSUM       |  ¦ IHL¦  
+     |-------¦-------¦---------------¦---------------¦---------------|  ¦ Intrnt
+  12 |       ¦       |  :SOURCE-ROUTE-LOCATOR        |               |  ¦ Header
+     |-------¦-------¦---------------¦---------------¦---------------|  ¦ Length
+  16 |       ¦       |  :DESTINATION-ROUTING-LOCATOR |               |  ¦    ¦  
+     |-------¦-------¦---------------¦---------------¦---------------|====   ¦  
+  20 |       ¦       |  :OPTIONS     |               |   :PADDING    |       ¦  
+     |-------¦-------¦---------------¦---------------¦---------------|========  
+:BIT |0 1 2 3¦4 5 6 7¦8 9 0 1 2 3 4 5¦6 7 8 9 0 1 2 3¦4 5 6 7 8 9 0 1|          
+     |  Nib  ¦ Byte  ¦                     Word                      |          
+                                                                             80^
 :VERSION                      -> 4-bit. Version field.\n
 :IHL \(Internet Header Length\) -> 4-bit. Number of 32-bit words in header.\n
 :DS  \(Differentiated Service\) -> :SEE RFC-2474 & RFC-3168\n

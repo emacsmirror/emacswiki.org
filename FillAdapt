@@ -18,7 +18,8 @@ Here are some things adding to filladapt (in addition to the sections below),
 
 * HaskellMode -- recognising haskell style comments
 * HtmlMode -- <nowiki><li></nowiki> and <nowiki><p></nowiki> bullet points
-* [Geocities:user42_kevin/nroff-filladapt nroff-filladapt] – setup nroff comment prefixes for [[NroffMode]]
+* [http://user42.tuxfamily.org/filladapt-pat/index.html filladapt-pat.el] -- add or remove some patterns
+* [http://user42.tuxfamily.org/nroff-filladapt/index.html nroff-filladapt.el] -- setup nroff comment prefixes for [[NroffMode]]
 
 
 == C/C++/Java and javadoc/doxygen comments ==

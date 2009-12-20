@@ -1,4 +1,4 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; -*- mode: EMACS-LISP; -*-
 ;;; this is mon-url-utils.el
 ;;; ================================================================
@@ -16,6 +16,7 @@
 ;;; `mon-make-html-table',`mon-tld-find-tld', `mon-tld-find-name',
 ;;; `mon-tld', `mon-get-w3m-url-at-point-maybe', `mon-get-w3m-url-at-point'
 ;;; `mon-w3m-read-gnu-lists-nxt-prv', `mon-url-encode', `mon-url-decode'
+;;; `mon-get-host-address'
 ;;; FUNCTIONS:◄◄◄
 ;;;
 ;;; MACROS:
@@ -512,6 +513,25 @@ Into the following html table:\n
     (setq myStr (buffer-substring-no-properties p1 p2))
     (delete-region p1 p2)
     (insert (mon-make-html-table-string myStr sep) "\n")))
+
+;;; ==============================
+;;; :COURTESY Dave Love <fx@gnu.org> :HIS fx-misc.el :WAS `gethostaddr'
+;;; :CREATED <Timestamp: #{2009-12-19T00:53:06-05:00Z}#{09516} - by MON KEY>
+(defun mon-get-host-address (name-or-number)
+  "Return IP host name or address corresponding to NAME-OR-NUMBER using host(1).
+If the arg is an IP number, return the host name, else return the address
+corresponding to the host name arg.\n
+:EXAMPLE\n\(mon-get-host-address \"google.com\"\)
+\n►►►"
+  (if (string-match "^[[:digit:]]+\\(\\.[[:digit:]]+\\)\\{3\\}$"
+		    name-or-number)
+      name-or-number
+    (let ((str (shell-command-to-string
+		(concat "host " (shell-quote-argument name-or-number)))))
+      (string-match "\\s-+\\([[:digit:]]+\\(\\.[[:digit:]]+\\)\\{3\\}\\)$" str)
+      (match-string 1 str))))
+;;
+;;; :TEST-ME (mon-get-host-address "google.com")
 
 ;;; ==============================
 ;;; :NOTE This is buggy on w32 paths.
@@ -1057,3 +1077,4 @@ Updated by the RIPE Network Coordination Centre.
 ;;; ==============================
 ;;; mon-url-utils.el ends here
 ;;; EOF
+

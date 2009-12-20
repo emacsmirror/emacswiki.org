@@ -1,5 +1,5 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; -*- mode: EMACS-LISP; -*-
+;; -*- mode: EMACS-LISP; -*_
 ;;; This is mon-dir-utils.el
 ;;; ================================================================
 ;;; DESCRIPTION:
@@ -69,25 +69,30 @@
 ;;;
 ;;; REQUIRES:
 ;;; 
-;;; `mon-multi-read-name' `mon-reduce-file-name' `naf-dired-image-dir' ->`cl.el'
+;;; :FILE cl.el
+;;; `mon-multi-read-name' `mon-reduce-file-name' `naf-dired-image-dir' ->
 ;;; 
-;;; :FILE `mon-dir-locals-alist.el'
+;;; :FILE mon-dir-locals-alist.el
 ;;; :LINK (URL `http://www.emacswiki.org/emacs/mon-dir-locals-alist.el')
 ;;;  |-> `*nefs_photos_nefs-alist*'`*nef-scan-nefs-path*'`*ebay-images-bmp-path*'
 ;;;
-;;; :FILE `mon-hash-utils.el'
+;;; :FILE mon-hash-utils.el
 ;;; :LINK (URL `http://www.emacswiki.org/emacs/mon-hash-utils.el')
-;;; `mon-hash-img-dir', `mon-complete-hashed-dir' -> `mon-hash-all-keys'
+;;; |-> `mon-hash-img-dir', `mon-complete-hashed-dir' -> `mon-hash-all-keys'
 ;;;                                                   
-;;; :FILE `naf-mode-replacements.el'
-;;; :LINK (URL `http://www.emacswiki.org/emacs/naf-mode-replacements.el')
+;;; :FILE mon-replacement-utils.el
+;;; :LINK (URL `http://www.emacswiki.org/emacs/mon-replacement-utils.el')
 ;;;
-;;; :FILE `mon-css-color.el' 
+;;; :FILE mon-css-color.el 
 ;;; :LINK (URL `http://www.emacswiki.org/emacs/mon-css-color.el')
 ;;; :NOTE _before_ mon-rename-image-utils
 ;;;
-;;; :FILE `mon-rename-image-utils.el'
+;;; :FILE mon-rename-image-utils.el
 ;;; :LINK (URL `http://www.emacswiki.org/emacs/mon-css-color.el')
+;;;
+;;; :FILE mon-time-utils.el
+;;; :LINK (URL `http://www.emacswiki.org/emacs/mon-time-utils.el')
+;;; `mon-new-buffer-w-stamp' -> `mon-file-stamp-vrfy-put-eof', `mon-file-stamp'
 ;;;
 ;;; TODO:
 ;;;
@@ -145,7 +150,7 @@
 (load "mon-dir-locals-alist")
 ;;; (require 'mon-dir-locals-alist)
 (require 'mon-hash-utils)
-(require 'naf-mode-replacements)
+(require 'mon-replacement-utils)
 (require 'mon-css-color) ;; :NOTE _before_ mon-rename-image-utils
 (require 'mon-rename-image-utils)
 ;;; ==============================
@@ -410,7 +415,7 @@ machine and the BUG'd system.\n
   (dired-sort-other "-lXt"))
 
 ;;; ==============================
-;;; :COURTESY Stefan Reichor, <stefan@xsteve.at> :HIS xsteve-functions.el
+;;; :COURTESY Stefan Reichor :HIS xsteve-functions.el
 ;;; :NOTE (define-key dired-mode-map "\177" 'dired-up-directory-this-buffer)
 (defun dired-up-directory-this-buffer ()
   "Move up directory tree i.e. `../' to a new dired buffer killing current one.
@@ -425,7 +430,7 @@ machine and the BUG'd system.\n
 
 ;;; ==============================
 ;;; :NOTE (define-key dired-mode-map [(meta i)] 'dired-insert-dirs-recursive)
-;;; :COURTESY Stefan Reichor, stefan@xsteve.at :HIS xsteve-functions.el :VERSION 2001-03-28
+;;; :COURTESY Stefan Reichor, :HIS xsteve-functions.el :VERSION 2001-03-28
 (defun dired-insert-dirs-recursive (dirname)
   "In dired recursively inserts the subdirs of dir at point.\n►►►"
   (interactive
@@ -433,6 +438,9 @@ machine and the BUG'd system.\n
   (dired-maybe-insert-subdir dirname "-laR"))
 
 ;;; ==============================
+;;; :REQUIRES `mon-file-stamp-vrfy-put-eof' -> :FILE mon-time-utils.el
+;;; :REQUIRES `mon-file-stamp'              -> :FILE mon-time-utils.el
+;;; :LINK (URL `http://www.emacswiki.org/emacs/mon-time-utils.el')
 ;;; :CREATED <Timestamp: #{2009-12-18T21:51:32-05:00Z}#{09515} - by MON>
 (defun mon-new-buffer-w-stamp (new-buffer-w-name &optional auto-save intrp)
   "Create and display NEW-BUFFER-W-NAME pre-populated with `mon-file-stamp'.
@@ -444,7 +452,8 @@ When AUTO-SAVE is non-nil or called-interactively with prefix-arg
 do not prompt before saving NEW-BUFFER-W-NAME.
 If NEW-BUFFER-W-NAME is an existing file in default-directory signal an error.
 :EXAMPLE\n(call-interactively 'mon-new-buffer-w-stamp)\n
-:SEE-ALSO .\n►►►"
+:SEE-ALSO `mon-file-stamp', `mon-insert-file-template',`mon-lisp-stamp',
+`mon-timestamp', `mon-stamp', `mon-accessed-stamp'.\n►►►"
   (interactive "i\nP\np")
   (let ((nbwn (make-symbol "--nbwn--"))
         (nb-name))
@@ -474,7 +483,7 @@ If NEW-BUFFER-W-NAME is an existing file in default-directory signal an error.
 ;;; :TEST-ME (mon-new-buffer-w-stamp "testing")
 ;;; :TEST-ME (call-interactively 'mon-new-buffer-w-stamp)
 
-;;; ==============================
+ ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-10-27T15:50:08-04:00Z}#{09442} - by MON>
 (defun mon-get-dir-name-absolute (dir-name)
   "Return absolute directory file-name of DIR-NAME.\n

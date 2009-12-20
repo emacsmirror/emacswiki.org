@@ -2,5 +2,9 @@ This package comes with Emacs.
 
 M-x copyright inserts a copyright statement, M-x copyright-update updates it by appending the current year to the list of years.
 
+Here are some related things,
+
+* [http://user42.tuxfamily.org/copyright-both-ends/index.html copyright-both-ends.el] -- update notices at both start and end of file
+
 ----
 CategoryTemplates

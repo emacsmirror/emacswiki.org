@@ -61,10 +61,13 @@ Note that currently the wave client-server protocol is *not documented*.  At the
 Loosely related info: there is already an existing system similar to Wave and it has an emacs lisp client: [http://www.lysator.liu.se/lyskom/index-en.html LysKOM]
 
 [new]
-Does %%LysKOM%% work in CVS Emacs 23?
+> Does %%LysKOM%% work in CVS Emacs 23?
+Yes, it does, but I'd suggest using the CVS lyskom client then.
 
 [new]
 Wave might be even more awesome than LysKOM. As far as I've always understood it (I might be wrong about this), LysKOM's discussions are chained to a particular server, much like phpBB works. Another thing I'm not sure about wrt LysKOM is whether or not you can edit stuff. What I like about Wave is it's wiki-like properties. I hate trawling through overly redundant BB-based threads looking for information. A wiki page has the interesting information early. Don't get me wrong, I've long admired LysKOM but I've never been a member of Lysator.
+
+-- Each LysKOM server stands alone, yes, And no, LysKOM does not support edits. There is however support for adding footnotes and remarks to posts made. I personally think that wave has a lot of potential, but at the same time KOM has a 20 year head start. :)
 
 If the real thing lives up to what the demo video promises, and if I can find a client and a server, Wave might replace most of my other forms of communication.
 

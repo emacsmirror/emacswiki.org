@@ -1,37 +1,60 @@
-==Mon Packages==
+= :MON-PACKAGES =
 
-* Lisp:monDOTemacs.el
-* Lisp:mon-site-local-defaults.el
-* Lisp:mon-default-loads.el
-* Lisp:mon-default-start-loads.el
-* Lisp:mon-w32-load.el
-* Lisp:mon-keybindings.el
+Following is organized roughly according to the load order whilst trying to convey how MON contextualizes packages. For a more detailed outline w/re load order :SEE [[#MonLoadOrder]] below.
+
+== :MON-STARTUP-FILES ==
+
+* Lisp:monDOTemacs.el -- Points to a local directory and load mon-site-local-defaults.
+* Lisp:mon-site-local-defaults.el -- An example configuration of MON's `site-local-private.el' which acts as a bootstrap for mon-default-loads and helps to obfuscate information which needn't be revealed other packages.
+* Lisp:mon-default-loads.el -- Setup the globals and base system portability.
+* Lisp:mon-default-start-loads.el -- Setup any Emacs and Third party packages required.
+* Lisp:mon-w32-load.el -- w32 specific features which must be present or are better left segregated.
+* Lisp mon-GNU-load.el -- GNU/Linux specific features. Mostly for quick reconfiguration of Slime related stuff prior to slime-loads.el
+* Lisp slime-loads.el -- Slime is a moving target with multiple backends for multiple languages. This is for sanity.
+* Lisp:mon-keybindings.el -- Set global keybindings and mode specific stuff.
+
+== :MON-UTILS ==
+The package mon-utils is the entry point which loads the rest of the system and specifically any mon-*.el and naf-mode-*.el packages.
+
+* Lisp:mon-utils.el -- This package is the entry point that loads everything else below.
+* Lisp:mon-dir-locals-alist.el --
+* Lisp:mon-dir-utils.el --
+* Lisp:mon-insertion-utils.el --
+* Lisp:mon-replacement-utils.el
+* Lisp:mon-regexp-symbols.el
+* Lisp:mon-time-utils.el (EbayTime)
+
+=== :MON-STANDARDS ===
+
 * Lisp:mon-empty-registers.el (EmptyRegisters);
+* Lisp:mon-hash-utils.el
+* Lisp:mon-rename-image-utils.el (RenameImageUtils);
+* Lisp:mon-tramp-utils.el
+
+=== :MON-EXTRAS ===
+
+* Lisp:mon-boxcutter.el
+* Lisp:mon-color-utils.el
+* Lisp:mon-mysql-utils.el (MySqlHelp)
+* Lisp:mon-rename-image-utils-supplemental.el
+* Lisp:mon-url-utils.el 
+
+=== :MON-DOC-UTILS ===
+
 * Lisp:mon-doc-help-utils.el (ReferenceSheetHelpUtils);
 * Lisp:mon-doc-help-pacman.el;
 * Lisp:mon-doc-help-CL.el
-* Lisp:mon-utils.el
-* Lisp:mon-dir-locals-alist.el
-* Lisp:mon-dir-utils.el
-* Lisp:mon-hash-utils.el
-* Lisp:mon-rename-image-utils.el (RenameImageUtils);
-* Lisp:mon-rename-image-utils-supplemental.el
-* Lisp:mon-regexp-symbols.el
-* Lisp:mon-time-utils.el (EbayTime)
-* Lisp:mon-url-utils.el 
-* Lisp:mon-insertion-utils.el
-* Lisp:mon-boxcutter.el
-* Lisp:mon-color-utils.el
-* Lisp:mon-tramp-utils.el
 * Lisp:mon-iptables-vars.el
 * Lisp:mon-iptables-regexps.el
-* Lisp:mon-mysql-utils.el (MySqlHelp)
-* Lisp:ebay-template-mode.el
-* Lisp:ebay-template-tools.el
 * Lisp:perlisisms.el (Perlisisms)
 * Lisp:STING-software-engineering-glossary.el
 
- Naf-mode
+=== :EBAY-TOOLS ===
+
+* Lisp:ebay-template-mode.el
+* Lisp:ebay-template-tools.el
+
+=== :NAF-MODE ====
 
 * Lisp:naf-mode.el
 * Lisp:naf-mode-faces.el
@@ -65,6 +88,79 @@
 * Lisp:naf-mode-benezit-flags.el
 * Lisp:naf-mode-ulan-utils.el
 * Lisp:naf-mode-xrefs.el
+
+[:MonLoadOrder]
+== :MON-LOAD-ORDER ==
+
+Roughly the sequence with which MON brings his Emacs' systems up.
+
+<pre>
+
+¦monDOTemacs.el
+¦► mon-site-local-defaults.el
+¦►► mon-default-loads.el
+¦►►► mon-default-start-loads.el
+¦►►►► mon-w32-load.el
+¦     mon-GNU-load.el
+¦►►►►► slime-loads.el
+¦►►►►► mon-keybindings.el
+¦►►► mon-utils.el
+¦►►►► mon-regexp-symbols.el
+¦►►►► mon-time-utils.el
+¦►►►► mon-replacement-utils ;; :BEFORE mon-dir-utils.el naf-mode-insertion-utils.el
+¦►►►► mon-dir-locals-alist.el
+¦►►►► mon-dir-utils.el
+¦►►►► mon-insertion-utils.el
+¦►►►► naf-mode-insertion-utils.el
+¦►►►► mon-url-utils.el
+¦►►►► mon-hash-utils.el
+¦►►►► mon-doc-help-utils.el
+¦►►►► mon-doc-help-CL.el
+¦►►►► mon-tramp-utils.el
+¦►►►► naf-skeletons.el
+¦►►►► naf-mode.el
+¦►►►►► naf-name-utils.el
+¦►►►►► naf-mode-faces.el
+¦►►►►► naf-mode-institution ;; :AFTER naf-mode-faces.el
+¦►►►►► naf-mode-db-fds.el
+¦►►►►► naf-mode-db-flags.el
+¦►►►►► naf-mode-ulan-utils.el
+¦►►►►► naf-mode-publications-periodicals-french.el
+¦►►►►► naf-mode-publications-periodicals-english.el
+¦►►►►► naf-mode-publications-periodicals-intnl.el
+¦►►►►► naf-mode-dates.el
+¦►►►►► naf-mode-english-roles.el
+¦►►►►► naf-mode-french-roles.el
+¦►►►►► naf-mode-nation-english.el
+¦►►►►► naf-mode-nation-french.el
+¦►►►►► naf-mode-nationality-french.el
+¦►►►►► naf-mode-nationality-english.el
+¦►►►►► naf-mode-state-names.el
+¦►►►►► naf-mode-city-names-us.el
+¦►►►►► naf-mode-intnl-city-names.el
+¦►►►►► naf-mode-regions.el
+¦►►►►► naf-mode-art-keywords.el
+¦►►►►► naf-mode-events.el
+¦►►►►► naf-mode-group-period-styles.el
+¦►►►►► naf-mode-benezit-flags.el
+¦►►►►► naf-mode-awards-prizes.el
+¦►►►►► naf-mode-students-of-julian.el
+	Following naf-mode files are still in development/transition but also loaded from naf-mode.el
+¦¦►►►►► naf-mode-abbrevs.el
+¦¦►►►►► naf-mode-awards-prizes.el
+¦¦►►►►► naf-mode-bibliograpbhic-entry.el
+¦¦►►►►► naf-mode-classes.el
+¦¦►►►►► naf-mode-ulan-help-docs.el
+¦¦►►►►► naf-mode-xrefs.el
+¦►►►► ebay-template-mode.el
+¦►►►► mon-empty-registers.el
+¦►►►► mon-iptables-vars.el
+¦►►►► mon-iptables-regexps.el
+¦►►►► mon-mysql-utils.el
+¦¦►►►► naf-mode-sql-skeletons.el -- This package isn't provide here. It is mostly a collection of SQL statement.
+¦¦►►►► smith-poster-utils.el --  This package isn't provide here.
+
+</pre>
 
  =]
 

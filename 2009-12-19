@@ -1,0 +1,36 @@
+Remember the old Emacs Wiki licensing discussion?
+I proposed a *license change* in [[2003-11-16]] in order to accommodate XEmacs developers and in order to make it easier to extract text from the wiki and incorporate it into other free documents. The current license took effect nearly six years ago:
+
+: This work is licensed to you under version 2 of the GNU General Public License. Alternatively, you may choose to receive this work under any other license that grants the right to use, copy, modify, and/or distribute the work, as long as that license imposes the restriction that derivative works have to grant the same rights and impose the same restriction. For example, you may choose to receive this work under the GNU Free Documentation License, the !CreativeCommons !ShareAlike License, the XEmacs manual license, or similar licenses.
+
+Recently people started to work on pages such as EmacsBzrSwitchover, BzrForEmacsDevs, BzrForEmacsCasualDevs, and BzrQuickStartForEmacsDevs, and [[RMS]] noticed *a potential license problem*:
+
+: This has a problem: it includes GPLv2 but not GPLv3.  GPLv3 allows
+certain variation in the terms, so it does not qualify. How can we fix this? -- RMS
+
+I didn't understand the problem until he metioned *section 7*:
+
+: GPLv3 section 7 explains how exceptions can be added or removed, and
+what they mean.  When you add code for which you hold the copyright,
+you can add it with an exception.  If the exception adds a
+requirement, it must be in a list of specific kinds of allowed
+harmless requirements.  (The list is in section 7.)
+
+: If the exception grants added permission, it can say whatever you
+like.  It could, for instance, be the X11 license.  This happens when
+you merge some X11-licensed code into a GPLv3-covered program.
+
+: Perhaps it is an issue of the precise meaning of the words used in the
+Emacswiki license, whether GPLv3 fits them or not. -- RMS
+
+I wrote back that I saw three options for going forward:
+
+# Writing text for Emacs moves off site because the license is considered incompatible; that would be unfortunate.
+
+# We agree that the GPL v3 falls under the broad clause "any other license that grants the right to use, copy, modify, and/or distribute the work, as long as that license imposes the restriction that derivative works have to grant the same rights and impose the same restriction." That was certainly my intent when I draftet this text. The GPL v3 discussions and prelude give the impression that the GPL v3 was also intended to be a copyleft license. This is my preferred solution.
+
+# Somebody organizes a license change for the Emacs Wiki. As there have been many anonymous contributions, we will never get the kind of legal security that we would get if we followed the GNU procedures of assigning copyrights and all that. Since I don't want to go there, and since I don't see a need to go there, somebody else would have to organize this. I'd be happy to put up notes on the site and help other people with technical issues, but I don't have the energy and the patience for this.
+
+RMS said he hoped we could conclude that the Emacs Wiki license included the GPL v3 and that he was going to discuss it with the [http://www.softwarefreedom.org/ Software Freedom Law Center] in a few weeks.
+
+Anyway, just to keep you guys in the loop. ;) -- AlexSchroeder
