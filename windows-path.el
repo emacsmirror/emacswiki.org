@@ -41,7 +41,7 @@
 
 
 ;; How it works:
-;; basically push some functions onto file-name-handler-alist.
+;; Basically push some functions onto file-name-handler-alist.
 ;; They detect filenames expressed in Windows style, and translate
 ;; those names into cygwin style.
 

@@ -80,5 +80,9 @@ Here are two ways to advise `dired-find-file', so it reuses a directory buffer. 
      	     (dired-goto-file dir))))))
 
 
+== Experiences ==
+
+I used to hate those Dired buffers cluttering up my Emacs so I had one of these hacks enabled for years. However, for some years now I have gone back to the default behaviour which has (at least) one advantage that is worth more to me than to have less buffers: performance when opening Dired buffers for directories on slow servers. I open a lot of directories on shares at different servers at work, many in remote locations. As with many Emacs concepts I have now got used to it and suspect that there was actually some thought behind this from the beginning even if it seems strange at first. Also, since I have F5 bound to a helper command to kill buffers, it is really easy to get rid of the dired buffers when I want to. And, sometimes when I drill down from one directory to a sub directory I discovver that I wanted to go to the parent. Then for me I can just kill the current one (F5) or switch to the previous one (bound to F1 in my setup). So, that's my experience and I just thought I should share it :) -- MaDa
+
 ----
 CategoryDirectories

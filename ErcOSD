@@ -1,0 +1,52 @@
+Richard Riley : rileyrgdev AT gmail DOT com
+
+Requires the gnome-osd package to be installed. 
+
+<pre>
+
+(defun rgr/xml-escape (s)
+  (setq s (replace-regexp-in-string "'" "&apos;" 
+  (replace-regexp-in-string "\"" "&quot;"
+  (replace-regexp-in-string "&" "&amp;" 
+  (replace-regexp-in-string "<" "&lt;"
+  (replace-regexp-in-string ">" "&gt;" s)))))))
+
+  (defun rgr/osd-display (id msg &optional delay vattrib hattrib font) 
+    "Display a message msg using OSD. Currently requires gnome-osd-client"
+    (unless vattrib (setq vattrib "top"))
+    (unless hattrib (setq hattrib "right"))
+    (unless delay (setq delay 5000))
+    (unless font (setq font "Arial 12"))
+    (save-window-excursion
+      (shell-command
+       (format
+	"gnome-osd-client -f \"<message id='%s' osd_fake_translucent_bg='off' osd_font='%s' animations='on' hide_timeout='%d' osd_vposition='%s' osd_halignment='%s'>%s</message>\""    
+	id
+	font
+	delay
+	vattrib
+	hattrib
+	(rgr/xml-escape msg)
+	))))
+
+(defun rgr/erc-notify-osd (matched-type nick msg)
+  (interactive)
+  "Hook to add into erc-text-matched-hook in order to remind the user that a message from erc has come their way."
+  (when (and (string= matched-type "current-nick") (string-match "\\([^:]*\\).*:\\(.*\\)" msg))
+    (let(
+	 (text (match-string 2 msg))
+	 (from (erc-extract-nick nick)))
+      
+      (when text
+	
+	(let ((maxlength 128))
+	  (if ( > (length msg) maxlength )
+	      (setq msg (concat (substring msg 0 20) ".. *snip* .. " (substring msg (- 30)) "."))))
+	
+	(setq msg (concat from " : " msg))
+	(rgr/osd-display (format "%s:%d" from (% (nth 1 (current-time)) 3)) msg 6000 "top" "center" "Verdana 23"))
+      )))
+
+(add-hook 'erc-text-matched-hook 'rgr/erc-notify-osd)
+
+</pre>
