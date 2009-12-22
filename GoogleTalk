@@ -41,3 +41,14 @@ most of us mortals will need a setup like the following:
 
 And make sure that you have either gnutls-cli or openssl installed
 and in your path.  Then C-x C-j C-c should Just Work™.
+
+== groupchat ==
+
+Here is a function to create use google groupchat:
+
+  (defun egh:jabber-google-groupchat-create ()
+      (interactive)
+      (let ((group (apply 'format "private-chat-%x%x%x%x%x%x%x%x-%x%x%x%x-%x%x%x%x-%x%x%x%x-%x%x%x%x%x%x%x%x%x%x%x%x@groupchat.google.com"
+                          (mapcar (lambda (x) (random x)) (make-list 32 15))))
+            (account (jabber-read-account)))
+        (jabber-groupchat-join account group (jabber-muc-read-my-nickname account group) t)))

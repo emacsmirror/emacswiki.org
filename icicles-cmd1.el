@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Dec 13 16:33:25 2009 (-0800)
+;; Last-Updated: Mon Dec 21 08:50:23 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 20033
+;;     Update #: 20034
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -952,7 +952,7 @@ Perform completion on the GDB command preceding point."
 ;; Uses Icicles completion when there are multiple candidates.
 ;;
 (when (and (fboundp 'dabbrev-completion) (not (fboundp 'old-dabbrev-completion)))
-(fset 'old-dabbrev-completion (symbol-function 'dabbrev-completion)))
+(defalias 'old-dabbrev-completion (symbol-function 'dabbrev-completion)))
 
 ;;;###autoload
 (defun icicle-dabbrev-completion (&optional arg) ; Bound to `C-M-/' globally.
@@ -1338,7 +1338,7 @@ control completion behaviour using `bbdb-completion-type'."
 ;; Selects *Completions* window even if on another frame.
 ;;
 (unless (fboundp 'old-lisp-complete-symbol)
-(fset 'old-lisp-complete-symbol (symbol-function 'lisp-complete-symbol)))
+(defalias 'old-lisp-complete-symbol (symbol-function 'lisp-complete-symbol)))
 
 ;;;###autoload
 (defun icicle-lisp-complete-symbol (&optional predicate) ; `M-TAB' (`C-M-i', `ESC-TAB'), globally.
@@ -1426,7 +1426,7 @@ Each Icicles file has a header `Update #' that you can use to identify it.  %s."
 ;; Multi-command version.
 ;;
 (unless (fboundp 'old-customize-face)
-(fset 'old-customize-face (symbol-function 'customize-face)))
+(defalias 'old-customize-face (symbol-function 'customize-face)))
 
 ;;;###autoload
 (defun icicle-customize-face (face)
@@ -1489,7 +1489,7 @@ This is an Icicles command - see command `icicle-mode'."
 ;; Multi-command version.
 ;;
 (unless (fboundp 'old-customize-face-other-window)
-(fset 'old-customize-face-other-window (symbol-function 'customize-face-other-window)))
+(defalias 'old-customize-face-other-window (symbol-function 'customize-face-other-window)))
 
 ;;;###autoload
 (defun icicle-customize-face-other-window (face)
@@ -1536,7 +1536,7 @@ Same as `icicle-customize-face' except it uses a different window."
 ;; Uses `completing-read' to read the regexp.
 ;;
 (unless (fboundp 'old-customize-apropos)
-(fset 'old-customize-apropos (symbol-function 'customize-apropos)))
+(defalias 'old-customize-apropos (symbol-function 'customize-apropos)))
 
 ;;;###autoload
 (defun icicle-customize-apropos (regexp &optional all)
@@ -1598,7 +1598,7 @@ you see what items will be available in the customize buffer."
 ;; Uses `completing-read' to read the regexp.
 ;;
 (unless (fboundp 'old-customize-apropos-faces)
-(fset 'old-customize-apropos-faces (symbol-function 'customize-apropos-faces)))
+(defalias 'old-customize-apropos-faces (symbol-function 'customize-apropos-faces)))
 
 ;;;###autoload
 (defun icicle-customize-apropos-faces (regexp)
@@ -1617,7 +1617,7 @@ you see what items will be available in the customize buffer."
 ;; Uses `completing-read' to read the regexp.
 ;;
 (unless (fboundp 'old-customize-apropos-groups)
-(fset 'old-customize-apropos-groups (symbol-function 'customize-apropos-groups)))
+(defalias 'old-customize-apropos-groups (symbol-function 'customize-apropos-groups)))
 
 ;;;###autoload
 (defun icicle-customize-apropos-groups (regexp)
@@ -1636,7 +1636,7 @@ you see what items will be available in the customize buffer."
 ;; Uses `completing-read' to read the regexp.
 ;;
 (unless (fboundp 'old-customize-apropos-options)
-(fset 'old-customize-apropos-options (symbol-function 'customize-apropos-options)))
+(defalias 'old-customize-apropos-options (symbol-function 'customize-apropos-options)))
 
 ;;;###autoload
 (defun icicle-customize-apropos-options (regexp &optional arg)
@@ -1667,7 +1667,7 @@ you see what items will be available in the customize buffer."
 ;;
 (when (and (fboundp 'customize-apropos-options-of-type)
            (not (fboundp 'old-customize-apropos-options-of-type)))
-(fset 'old-customize-apropos-options-of-type (symbol-function 'customize-apropos-options-of-type)))
+(defalias 'old-customize-apropos-options-of-type (symbol-function 'customize-apropos-options-of-type)))
 
 ;;;###autoload
 (defun icicle-customize-apropos-options-of-type (type regexp)
@@ -1721,7 +1721,7 @@ you see which options will be available in the customize buffer."
 ;; `TAB' to see the history list and `C-,' to toggle sorting that display.
 ;;
 (unless (fboundp 'old-repeat-complex-command)
-(fset 'old-repeat-complex-command (symbol-function 'repeat-complex-command)))
+(defalias 'old-repeat-complex-command (symbol-function 'repeat-complex-command)))
 
 ;;;###autoload
 (defun icicle-repeat-complex-command (arg) ; Bound to `C-x ESC ESC', `C-x M-:' in Icicle mode.

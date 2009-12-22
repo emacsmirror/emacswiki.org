@@ -273,6 +273,18 @@ hobbies and whatnot and keep them at hand in you home directory.
 tabs and to keep them around with all their  marks  and  state  untouched  (tabs
 cannot be made persistent across sessions, though).
 
+* Use //path projection// to quickly navigate within similar directory trees. If
+you have, say, the trunk version of a project from SVN in directory  trunk/  and
+your  latest and greatest branch in directory branch/, whenever your active pane
+is displaying branch/some/deeply/nested/dir and your passive pane is  at  trunk/
+(or  trunk/some,  or  trunk/some/deeply)  you  can  jump  directly  to directory
+trunk/some/deeply/nested/dir in the passive pane by simply pressing **C‐M‐o** in
+the  active  one.  It’s  a  bit  similar  to  synchronizing the panes (M‐o), but
+constrained to the directory being currently displayed in the passive  pane.  If
+there  is more than one possible target you can prefix the command with a number
+(e.g. **2 C‐M‐o**) to specify which one of them to use. By default  the  longest
+path found is used.
+
 ----
 CategoryDirectories
 CategoryEmulation

@@ -45,5 +45,36 @@ Just create a new face when occur new nick, if find a old nick, get face from `e
 
 And i have upload a new version, enjoy!                 -- AndyStewart
 
+== Modification to avoid highlighting notices (and breaking erc-track) ==
+
+You may wish to keep notices in a very low-contrast face to allow the actual messages to stand out.  This advice will:  1. Mark notices as such with a text property, and then 2.  Prevent nickname highlighting of so-marked notices.
+
+Also, this code avoids nick-highlighting of (erc-current-nick), because that breaks erc-track highlighting.
+
+Please feel free to edit this to make it more elegant and robust.
+
+<pre>
+;; modify nickname highlighting
+(defvar is-notice-property) ;; just a symbol for use as text prop name
+(defadvice erc-highlight-notice (after note-notice-on-highlight activate)
+  "Annotate notices with is-notice-property"
+  (put-text-property 0 (length s) 'is-notice-property 't s))
+
+;; unactivated modification to erc-get-server-user to reject self.
+(defadvice erc-get-server-user (around erc-get-server-user-notself)
+  (if (not (string-equal nick (erc-current-nick)))
+    ad-do-it))
+  
+(defadvice erc-highlight-nicknames (around disable-nick-highlight-for-notice activate)
+  "only allow nick highlighting when not a notice, and disable
+   highlighting of own nick"
+  (re-search-forward "\\w+" nil t 2) ;; make sure we skip leading timestamp
+  (unless (get-text-property (point) 'is-notice-property)
+    ;; don't re-highlight self, as it does nothing but break erc-track
+    (ad-activate-regexp "erc-get-server-user-notself")
+    ad-do-it
+    (ad-deactivate-regexp "erc-get-server-user-notself")))
+</pre>
+
 ----
 [[ERC]], [[ErcExtraModules]]

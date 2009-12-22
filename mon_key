@@ -16,78 +16,80 @@ Following is organized roughly according to the load order whilst trying to conv
 == :MON-UTILS ==
 The package mon-utils is the entry point which loads the rest of the system and specifically any mon-*.el and naf-mode-*.el packages.
 
-* Lisp:mon-utils.el -- This package is the entry point that loads everything else below.
+* Lisp:mon-utils.el -- (MonUtils) This package is the entry point that loads everything else below.
 * Lisp:mon-dir-locals-alist.el --
-* Lisp:mon-dir-utils.el --
-* Lisp:mon-insertion-utils.el --
-* Lisp:mon-replacement-utils.el
-* Lisp:mon-regexp-symbols.el
-* Lisp:mon-time-utils.el (EbayTime)
+* Lisp:mon-dir-utils.el -- Provides a collection of handy functions and interactive commands for working with directories and files.
+* Lisp:mon-insertion-utils.el -- Provides insertion related utilities, templates and string building/manipulation procedures that ease routine chores and interactive command invocation.
+* Lisp:mon-replacement-utils.el -- Provides a collection of routines and commands and abstracts some commonly encountered procedures for processing regexps with their replacements.
+* Lisp:mon-regexp-symbols.el -- Provides a collection of Symbols bound to lisp lists of regexp/replacement pairs. Allows simple easy interactive command invocation using symbols as arguments to containing lists of regexps.
+* Lisp:mon-time-utils.el (EbayTime) --
 
 === :MON-STANDARDS ===
 
-* Lisp:mon-empty-registers.el (EmptyRegisters);
-* Lisp:mon-hash-utils.el
-* Lisp:mon-rename-image-utils.el (RenameImageUtils);
-* Lisp:mon-tramp-utils.el
+* Lisp:mon-empty-registers.el (EmptyRegisters) -- Provides utilities for filling/emptying register locations en masse. Also provides interactive tools for register centric coercion, manipulation, roundtripping of chars, strings, etc.
+* Lisp:mon-hash-utils.el -- Provides a collection of procedures to extend Emacs lisp hash table functionality.
+* Lisp:mon-rename-image-utils.el (RenameImageUtils) -- Provides utility functions for working with images and EmacsImageManipulation.
+* Lisp:mon-tramp-utils.el -- Provides cross platform utilities for working with tramp. This package should be compatible with both GNU/LINUX and w32 systems and helps MON with Emacs portability across envirionments.
 
 === :MON-EXTRAS ===
 
-* Lisp:mon-boxcutter.el
-* Lisp:mon-color-utils.el
-* Lisp:mon-mysql-utils.el (MySqlHelp)
-* Lisp:mon-rename-image-utils-supplemental.el
-* Lisp:mon-url-utils.el 
+* Lisp:mon-boxcutter.el -- For initializing w32 screencaptures from Emacs using Matthew D. Rasmussen's Boxcutter screen-capture executables: boxcutter-fs.exe and boxcutter.exe
+* Lisp:mon-color-utils.el -- Provides an assembled set of routines for manipulations/examinations of 'color'.
+* Lisp:mon-mysql-utils.el (MySqlHelp) -- Provides interactive procedures for stripping content from MySQL query result tables.  Also, provides an alist of MySQL help categorys and topics and a rudimentary completion functionality for accessing MySQL's `mysql' client help facility.
+* Lisp:mon-rename-image-utils-supplemental.el --
+* Lisp:mon-url-utils.el -- Provides utilities for interactively calling URL data lookups and for in
+;;; buffer modification of web/internet scrapes.
 
 === :MON-DOC-UTILS ===
 
-* Lisp:mon-doc-help-utils.el (ReferenceSheetHelpUtils);
-* Lisp:mon-doc-help-pacman.el;
-* Lisp:mon-doc-help-CL.el
-* Lisp:mon-iptables-vars.el
-* Lisp:mon-iptables-regexps.el
-* Lisp:perlisisms.el (Perlisisms)
-* Lisp:STING-software-engineering-glossary.el
+* Lisp:mon-doc-help-utils.el (ReferenceSheetHelpUtils) --
+* Lisp:mon-doc-help-utils-supplemental.el -- Provides functions and vars for use with mon-doc-help-utils should you choose to not load the full packages it requires.
+* Lisp:mon-doc-help-pacman.el -- Some help functions for using the package manager with the GNU/Linux Arch distribution.
+* Lisp:mon-doc-help-CL.el -- Some Emacs Lisp help functions for using Common-Lisp functions (loop, do, etc.)
+* Lisp:mon-iptables-regexps.el -- Provides interactive utilities for converting iptables short flags to long flags.  Also provides procedures for using Emacs help-mode to documentat the order of position for the symbols, flags, etc. used with `iptables' AKA `netfilter'.
+* Lisp:mon-iptables-vars.el -- Provides gigantic alist `*mon-iptables-alst*' needed for use with mon-iptables-regexps
+* Lisp:perlisisms.el (Perlisisms) -- 
+* Lisp:STING-software-engineering-glossary.el --
 
 === :EBAY-TOOLS ===
 
-* Lisp:ebay-template-mode.el
-* Lisp:ebay-template-tools.el
+* Lisp:ebay-template-mode.el -- 
+* Lisp:ebay-template-tools.el -- 
 
 === :NAF-MODE ====
 
-* Lisp:naf-mode.el
-* Lisp:naf-mode-faces.el
-* Lisp:naf-mode-insertion-utils.el
-* Lisp:naf-mode-replacements.el
-* Lisp:naf-name-utils.el
-* Lisp:naf-mode-classes.el
-* Lisp:naf-mode-db-fields.el
-* Lisp:naf-mode-db-flags.el
-* Lisp:naf-mode-dates.el
-* Lisp:naf-mode-french-months.el
-* Lisp:naf-mode-nation-english.el
-* Lisp:naf-mode-nation-french.el
-* Lisp:naf-mode-nationality-english.el
-* Lisp:naf-mode-nationality-french.el
-* Lisp:naf-mode-intnl-city-names.el
-* Lisp:naf-mode-city-names-us.el
-* Lisp:naf-mode-state-names.el
-* Lisp:naf-mode-regions.el
-* Lisp:naf-mode-publications-periodicals-english.el
-* Lisp:naf-mode-publications-periodicals-french.el
-* Lisp:naf-mode-publications-periodicals-intnl.el
-* Lisp:naf-mode-institution.el
-* Lisp:naf-mode-students-of-julian.el
-* Lisp:naf-mode-events.el
-* Lisp:naf-mode-english-roles.el
-* Lisp:naf-mode-french-roles.el
-* Lisp:naf-mode-awards-prizes.el
-* Lisp:naf-mode-group-period-styles.el
-* Lisp:naf-mode-art-keywords.el
-* Lisp:naf-mode-benezit-flags.el
-* Lisp:naf-mode-ulan-utils.el
-* Lisp:naf-mode-xrefs.el
+* Lisp:naf-mode.el -- 
+* Lisp:naf-mode-faces.el -- 
+* Lisp:naf-mode-insertion-utils.el -- 
+* Lisp:naf-mode-replacements.el -- 
+* Lisp:naf-name-utils.el -- 
+* Lisp:naf-mode-classes.el -- 
+* Lisp:naf-mode-db-f.el -- ds.el -- 
+* Lisp:naf-mode-db-flags.el -- 
+* Lisp:naf-mode-dates.el -- 
+* Lisp:naf-mode-french-months.el -- 
+* Lisp:naf-mode-nation-english.el -- 
+* Lisp:naf-mode-nation-french.el -- 
+* Lisp:naf-mode-nationality-english.el -- 
+* Lisp:naf-mode-nationality-french.el -- 
+* Lisp:naf-mode-intnl-city-names.el -- 
+* Lisp:naf-mode-city-names-us.el -- 
+* Lisp:naf-mode-state-names.el -- 
+* Lisp:naf-mode-regions.el -- 
+* Lisp:naf-mode-publications-periodicals-english.el -- 
+* Lisp:naf-mode-publications-periodicals-french.el -- 
+* Lisp:naf-mode-publications-periodicals-intnl.el -- 
+* Lisp:naf-mode-institution.el -- 
+* Lisp:naf-mode-students-of-julian.el -- 
+* Lisp:naf-mode-events.el -- 
+* Lisp:naf-mode-english-roles.el -- 
+* Lisp:naf-mode-french-roles.el -- 
+* Lisp:naf-mode-awards-prizes.el -- 
+* Lisp:naf-mode-group-period-styles.el -- 
+* Lisp:naf-mode-art-keywords.el -- 
+* Lisp:naf-mode-benezit-flags.el -- 
+* Lisp:naf-mode-ulan-utils.el -- 
+* Lisp:naf-mode-xrefs.el -- 
 
 [:MonLoadOrder]
 == :MON-LOAD-ORDER ==

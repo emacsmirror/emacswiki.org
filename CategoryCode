@@ -155,6 +155,7 @@ Writing code that works on different versions of Emacs and XEmacs is Comparative
 
 * FakeClosures -- How to fake a closure in Emacs Lisp.
 * DefiningErrors -- How to easily define errors types.
+* [http://user42.tuxfamily.org/bytecomp-simplify/index.html bytecomp-simplify.el] -- warnings for possible code simplifications
 
 == Discussion About Emacs Lisp ==
 

@@ -1,0 +1,2809 @@
+Lisp:mon-utils.el provides the following functions and macros documented below:
+<pre>
+ ============================================================
+ `scratch' <FUNCTION>
+ ============================================================
+
+ <INTERACTIVE-SPEC-IS-LIST>
+ ==============================
+Switch to *scratch* buffer.
+Get (or create) a *scratch* buffer now!
+
+:SEE-ALSO `mon-switch-to-mesages', `mon-kill-completions'.
+
+
+ ============================================================
+ `switch-to-messages' <FUNCTION>
+ ============================================================
+
+ <INTERACTIVE-SPEC-IS-LIST>
+ ==============================
+Select buffer *message* in the current window.
+:SEE-ALSO `mon-scratch', `mon-kill-completions'
+
+
+ ============================================================
+ `scroll-down-in-place' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (n)
+ <INTERACITVE-SPEC>
+ <PREFIX-ARG->NUMBER> 
+ ==============================
+Scroll with the cursor in place, moving the UP page instead.
+
+
+ ============================================================
+ `scroll-up-in-place' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (n)
+ <INTERACITVE-SPEC>
+ <PREFIX-ARG->NUMBER> 
+ ==============================
+Scroll with the cursor in place, moving the DOWN page instead.
+
+
+ ============================================================
+ `mon-kill-appending' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (beg end)
+ <INTERACITVE-SPEC>
+ <REGION> 
+ ==============================
+Append the region current to the kill ring without killing it. 
+Like `append-next-kill' but skips the C M-w M-w finger-chord hoop jump.
+
+
+ ============================================================
+ `mon-kill-completions' <FUNCTION>
+ ============================================================
+
+ <INTERACTIVE-SPEC-IS-LIST>
+ ==============================
+Kill *Completions* buffer without leaving point.
+
+:SEE-ALSO `mon-scratch', `mon-switch-to-messages'.
+
+
+ ============================================================
+ `mon-flip-windows' <FUNCTION>
+ ============================================================
+
+ <INTERACTIVE-SPEC-IS-LIST>
+ ==============================
+Swap current buffer display with buffer in other window.
+
+:SEE-ALSO `mon-twin-vertical', `mon-twin-horizontal'.
+
+
+ ============================================================
+ `mon-twin-horizontal' <FUNCTION>
+ ============================================================
+
+ <INTERACTIVE-SPEC-IS-LIST>
+ ==============================
+Split current-buffer horizontally.
+:SEE-ALSO `mon-twin-vertical', `mon-flip-windows'.
+
+
+ ============================================================
+ `mon-twin-vertical' <FUNCTION>
+ ============================================================
+
+ <INTERACTIVE-SPEC-IS-LIST>
+ ==============================
+Split current-buffer vertically.
+:SEE-ALSO `mon-twin-horizontal', `mon-flip-windows'.
+
+
+ ============================================================
+ `mon-what-face' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (pos)
+ <INTERACITVE-SPEC>
+ <VALUE-POINT-AS-NUMBER-NO-I/O> 
+ ==============================
+Return the font-lock face information at the current point.
+
+
+ ============================================================
+ `mon-toggle-menu-bar' <FUNCTION>
+ ============================================================
+
+ <INTERACTIVE-SPEC-IS-LIST>
+ ==============================
+Toggle the top menu bar.
+Gets the max editor screen for your money!
+
+:SEE-ALSO `mon-toggle-dired-dwim-target', `mon-toggle-truncate-line'
+`mon-toggle-eval-length', `mon-naf-mode-toggle-restore-llm'.
+
+
+ ============================================================
+ `mon-append-to-register' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (register start end &optional delete-region-p)
+ <INTERACITVE-SPEC>
+ <CHARACTER-NO-INPUT-METHOD> Append to register: 
+ <REGION> 
+ <PREFIX-ARG-RAW> 
+ ==============================
+Append region to text in register REGISTER.
+When non-nil prefix arg DELETE-REGION-P will delete region as well.
+Called programaticaly, takes four args: REGISTER, START, END and DELETE-REGION-P.
+START and END are buffer positions indicating what to append.
+Redefines `append-to-register' with a "
+".
+
+:SEE-ALSO `mon-append-to-buffer', `mon-kill-appending'.
+
+
+ ============================================================
+ `mon-append-to-buffer' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (buffer start end)
+ <INTERACTIVE-SPEC-IS-LIST>
+ ==============================
+Append to specified buffer the text of the region.
+It is inserted into that buffer before its point.
+
+When calling from a program, give three arguments:
+BUFFER (or buffer name), START and END.
+START and END specify the portion of the current buffer to be copied.
+An alternative definition of `append-to-buffer' with a "
+".
+
+:SEE-ALSO `mon-append-to-register', `mon-kill-appending'.
+
+
+ ============================================================
+ `mon-region-position' <FUNCTION>
+ ============================================================
+
+ <INTERACTIVE-SPEC-IS-LIST>
+ ==============================
+Return the postion of current region. 
+A stupid and mostly useless function.
+
+
+ ============================================================
+ `mon-region-length' <FUNCTION>
+ ============================================================
+
+ <INTERACTIVE-SPEC-IS-LIST>
+ ==============================
+Return the regions length.
+
+
+ ============================================================
+ `mon-region-unfill' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (start end)
+ <INTERACITVE-SPEC>
+ <REGION> 
+ ==============================
+Do the opposite of fill-region.
+Stuff all paragraphs paragraphs in the current region into long lines.
+
+:SEE-ALSO `mon-line-strings-indent-to-col', `mon-line-indent-from-to-col',
+`mon-string-fill-to-col', `mon-comment-divide->col'.
+
+
+ ============================================================
+ `mon-region-capitalize' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (start end)
+ <INTERACITVE-SPEC>
+ <REGION> 
+ ==============================
+Capitalize the region. 
+"mon-" function name wrapper for consistency, and to aid completion
+because we also have `mon-rectangle-capitalize'.
+This function is a 1:1 duplicate of `capitalize-region'.
+
+
+ ============================================================
+ `mon-region-reverse' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (beg end &optional insrtp intrp)
+ <INTERACITVE-SPEC>
+ <REGION> 
+ <IGNORED-NOOP> 
+ <PREFIX-ARG->NUMBER> 
+ ==============================
+Reverse the characters in the region. 
+When called-interactively insert the reversed as with princ.
+When INSRTP is non-nil insert the reversed as with princ.
+Insertion does not move point. Insertion is whitespace agnostic.
+
+:SEE-ALSO `mon-word-reverse-region'.
+
+
+ ============================================================
+ `mon-inhibit-read-only' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (func-arg)
+ ==============================
+Evaluate FUNC-ARG at point with `inhibit-read-only' t.
+Evaluation occurs inside an unwind protect so 'safe-enough' 
+for invoking 'one off functions' such-as `kill-line' without
+the tedium of building the entire scaffolding.
+
+:SEE-ALSO `mon-inhibit-modification-hooks', `mon-inhibit-point-motion-hooks',
+`mon-toggle-read-only-point-motion'.
+
+
+ ============================================================
+ `mon-inhibit-modification-hooks' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (func-arg)
+ ==============================
+Evaluate FUNC-ARG at point with `inhibit-modification-hooks' t.
+Evaluation occurs inside an unwind protect so 'safe-enough' 
+for invoking 'one off functions' such-as `kill-line' without
+the tedium of building the entire scaffolding.
+
+:SEE-ALSO `mon-inhibit-read-only', `mon-inhibit-point-motion-hooks',
+`mon-toggle-read-only-point-motion'.
+
+
+ ============================================================
+ `mon-inhibit-point-motion-hooks' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (func-arg)
+ ==============================
+Evaluate FUNC-ARG at point with `inhibit-point-motion-hooks' t.
+Evaluation occurs inside an unwind protect so 'safe-enough' 
+for invoking 'one off functions' such-as `kill-line' without
+the tedium of building the entire scaffolding.
+
+:SEE-ALSO `mon-inhibit-read-only', `mon-inhibit-modification-hooks',
+`mon-toggle-read-only-point-motion'.
+
+
+ ============================================================
+ `mon-toggle-read-only-point-motion' <FUNCTION>
+ ============================================================
+
+ <INTERACTIVE-SPEC-IS-LIST>
+ ==============================
+Toggle `inhibit-read-only' and `inhibit-point-motion-hooks'.
+
+:SEE-ALSO `mon-inhibit-read-only', `mon-inhibit-point-motion-hooks',
+`mon-inhibit-modification-hooks', `mon-naf-mode-toggle-restore-llm'.
+
+
+ ============================================================
+ `mon-wrap-selection' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (&optional front-arg rear-arg)
+ <INTERACTIVE-SPEC-IS-LIST>
+ ==============================
+Wraps contents region with a front and rear delimeter.
+
+
+:PROMPT-FOR 
+            Front Delimiter:  <- Delmiter for beginning of region
+            Rear Delimiter:   <- Delmiter for end of region
+
+
+:EXAMPLE
+          Point/Mark of region contain: My cats breath smells like cat food
+          Front's prompt is provided: |[
+          Rear's prompt is provided:  ]|
+          Return: |[My cats breath smells like catfood]|
+
+:SEE-ALSO `mon-wrap-url', `mon-wrap-span', `mon-wrap-text', `mon-wrap-with'.
+
+
+ ============================================================
+ `mon-wrap-text' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (arap brap)
+ ==============================
+Wrap current word or region with the string args ARAP and BRAP.
+
+:SEE-ALSO `mon-wrap-selection', `mon-wrap-url', `mon-wrap-span' 
+`mon-wrap-with'.
+
+
+ ============================================================
+ `mon-wrap-with' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (front-wrap back-wrap)
+ <INTERACITVE-SPEC>
+ <ANY-STRING> Enter String for front-wrap:
+ <ANY-STRING> Enter String for back-wrap:
+ ==============================
+Wrap the current word or region with FRONT-WRAP and BACK-WRAP.
+
+:SEE-ALSO `mon-wrap-selection', `mon-wrap-url', `mon-wrap-span',
+`mon-wrap-text', `mon-wrap-with'.
+
+
+ ============================================================
+ `mon-choose-from-menu' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (menu-title menu-items)
+ ==============================
+Choose from a list of choices from a popup menu.
+
+
+ ============================================================
+ `mon-match-at-point' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (regexp)
+ ==============================
+Return the buffer substring around point matching REGEXP.
+Look for a match starting at or before point.  Move back a character
+at a time while still looking at a match ending at the same point.  If
+no match is found at or before point, return the first match after
+point, or nil if there is no match in the buffer.
+
+
+ ============================================================
+ `mon-spacep' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (&optional pt after)
+ ==============================
+Return t when char before point is a 'space' character.
+If non-nil, PT (a char position) returns t for a'space' before/after PT.
+If AFTER is non-nil return t when char after point is a 'space'.
+
+:SEE-ALSO `mon-spacep-is-bol', `mon-spacep-not-bol',
+`mon-spacep', `mon-line-bol-is-eol', `mon-line-next-bol-is-eol',
+`mon-line-previous-bol-is-eol', `mon-spacep-is-after-eol',
+`mon-cln-spc-tab-eol'.
+
+
+ ============================================================
+ `mon-spacep-not-bol' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (&optional intrp)
+ <INTERACITVE-SPEC>
+ <PREFIX-ARG->NUMBER> 
+ ==============================
+Return t if character after point at BOL is not a space.
+
+:SEE-ALSO `mon-spacep-is-bol', `mon-spacep', `mon-line-bol-is-eol',
+`mon-spacep-is-after-eol', `mon-spacep-is-after-eol-then-graphic',
+`mon-spacep-at-eol', `mon-cln-spc-tab-eol'.
+
+
+ ============================================================
+ `mon-spacep-is-bol' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (&optional intrp)
+ <INTERACITVE-SPEC>
+ <PREFIX-ARG->NUMBER> 
+ ==============================
+Return t if character after point at BOL _is_ a space.
+
+:SEE-ALSO `mon-spacep-not-bol', `mon-spacep', `mon-line-bol-is-eol', 
+`mon-line-next-bol-is-eol', `mon-line-previous-bol-is-eol',
+`mon-spacep-is-after-eol', `mon-spacep-is-after-eol-then-graphic',
+`mon-spacep-at-eol', `mon-cln-spc-tab-eol'.
+
+
+ ============================================================
+ `mon-spacep-is-after-eol' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (&optional intrp)
+ <INTERACITVE-SPEC>
+ <PREFIX-ARG->NUMBER> 
+ ==============================
+Return t if character after eol _is_ a space.
+
+:SEE-ALSO `mon-spacep-is-bol', `mon-spacep-not-bol',
+`mon-spacep', `mon-line-bol-is-eol', `mon-line-next-bol-is-eol',
+`mon-line-previous-bol-is-eol', `mon-spacep-is-after-eol-then-graphic',
+`mon-spacep-at-eol', `mon-cln-spc-tab-eol'.
+
+
+ ============================================================
+ `mon-spacep-is-after-eol-then-graphic' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (&optional intrp)
+ <INTERACITVE-SPEC>
+ <PREFIX-ARG->NUMBER> 
+ ==============================
+Return t if character after eol _is_ a space and next char is not.
+
+:SEE-ALSO `mon-spacep-is-bol', `mon-spacep-not-bol',
+`mon-spacep', `mon-line-bol-is-eol', `mon-line-next-bol-is-eol',
+`mon-line-previous-bol-is-eol', `mon-line-previous-bol-is-eol'
+`mon-spacep-is-after-eol-then-graphic', `mon-spacep-at-eol',
+`mon-cln-spc-tab-eol'.
+
+
+ ============================================================
+ `mon-spacep-at-eol' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (&optional intrp)
+ <INTERACITVE-SPEC>
+ <PREFIX-ARG->NUMBER> 
+ ==============================
+Return t if character at eol is either TAB (char 9) or SPC (char 32).
+
+:SEE-ALSO `mon-spacep-is-bol', `mon-spacep-not-bol',
+`mon-spacep', `mon-line-bol-is-eol', `mon-line-next-bol-is-eol',
+`mon-line-previous-bol-is-eol', `mon-line-previous-bol-is-eol'
+`mon-spacep-at-eol', `mon-spacep-is-after-eol',
+`mon-spacep-is-after-eol-then-graphic'.
+
+
+ ============================================================
+ `mon-spacep-first' <FUNCTION>
+ ============================================================
+
+ ==============================
+Return t if point is first non-whitespace character of line.
+
+
+ ============================================================
+ `mon-line-bol-is-eol' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (&optional intrp)
+ <INTERACITVE-SPEC>
+ <PREFIX-ARG->NUMBER> 
+ ==============================
+Return t if postion at beginning of line is eq end of line.
+
+:SEE-ALSO `mon-spacep-is-bol', `mon-spacep-not-bol',
+`mon-spacep', `mon-line-bol-is-eol', `mon-line-next-bol-is-eol',
+`mon-line-previous-bol-is-eol', `mon-spacep-is-after-eol',
+`mon-spacep-is-after-eol-then-graphic', `mon-spacep-at-eol',
+`mon-cln-spc-tab-eol'.
+
+
+ ============================================================
+ `mon-line-previous-bol-is-eol' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (&optional intrp move-times)
+ <INTERACITVE-SPEC>
+ <PREFIX-ARG->NUMBER> 
+ ==============================
+Return t if position at beginning of previous line is eq end of line.
+called non-interactively MOVE-TIMES arg examines Nth previos line.
+
+:SEE-ALSO `mon-spacep-is-bol', `mon-spacep-not-bol',
+`mon-spacep', `mon-line-bol-is-eol', `mon-line-next-bol-is-eol',
+`mon-spacep-is-after-eol', `mon-spacep-is-after-eol-then-graphic',
+`mon-spacep-at-eol',`mon-cln-spc-tab-eol'.
+
+
+ ============================================================
+ `mon-line-next-bol-is-eol' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (&optional intrp move-times)
+ <INTERACITVE-SPEC>
+ <PREFIX-ARG->NUMBER> 
+ ==============================
+Return t if position at beginning of previous line is eq end of line.
+Called non-interactively MOVE-TIMES arg examines Nth previos line.
+
+:SEE-ALSO `mon-spacep-is-bol', `mon-spacep-not-bol',
+`mon-spacep', `mon-line-bol-is-eol', `mon-line-previous-bol-is-eol',
+`mon-spacep-is-after-eol', `mon-spacep-is-after-eol-then-graphic',
+`mon-spacep-at-eol',`mon-cln-spc-tab-eol'.
+
+
+ ============================================================
+ `mon-line-eol-is-eob' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (&optional intrp)
+ <INTERACITVE-SPEC>
+ <PREFIX-ARG->NUMBER> 
+ ==============================
+Return t if point EOL is also EOB (point-max).
+:NOTE Does not test for narrowing!
+
+:SEE-ALSO `mon-spacep-is-bol', `mon-spacep-not-bol',
+`mon-spacep', `mon-line-bol-is-eol', `mon-line-next-bol-is-eol',
+`mon-line-previous-bol-is-eol', `mon-line-eol-is-eob'
+`mon-spacep-at-eol', `mon-spacep-is-after-eol',
+`mon-spacep-is-after-eol-then-graphic'.
+
+
+ ============================================================
+ `mon-line-end-or-code-end' <FUNCTION>
+ ============================================================
+
+ <INTERACTIVE-SPEC-IS-LIST>
+ ==============================
+Move point to EOL. If point is already there, to EOL sans comments.
+That is, the end of the code, ignoring any trailing comment
+or whitespace.  
+:NOTE this does not handle 2 character  comment starters like // or /*.
+Instances of such chars are be skipped.
+
+
+ ============================================================
+ `mon-line-get-next' <FUNCTION>
+ ============================================================
+
+ ==============================
+Return the next line in the buffer, leaving point following it.
+Return nil at `end-of-buffer'.
+
+:SEE-ALSO `mon-string-ify-current-line'.
+
+
+ ============================================================
+ `mon-line-count-region' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (start end)
+ <INTERACITVE-SPEC>
+ <REGION> 
+ ==============================
+Return a mini-buffer message with regions' number of lines and characters.
+
+:SEE-ALSO `mon-word-count-chars-region', `mon-word-count-region',
+`mon-word-count-analysis', `mon-word-count-occurrences'.
+
+
+ ============================================================
+ `mon-line-count-matchp' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (test-from line-count &optional bol-char-test)
+ ==============================
+Return t when number of lines in region is eq LINE-COUNT.
+Arg TEST-FROM is a buffer pos to start counting from.
+
+:SEE-ALSO `mon-word-count-chars-region', `mon-word-count-region',
+`mon-word-count-analysis', `mon-word-count-occurrences'.
+
+
+ ============================================================
+ `mon-line-length-max' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (&optional intrp)
+ <INTERACITVE-SPEC>
+ <PREFIX-ARG->NUMBER> 
+ ==============================
+Return the maximum line length of the current buffer.
+When called-interactively return message in mini-buffer:
+"The longest line in buffer `mon-utils.el' ends at column 115."
+
+
+ ============================================================
+ `mon-is-digit' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (x)
+ ==============================
+Reutrn t when X is a digit character.
+
+:SEE-ALSO `mon-is-letter', `mon-is-alphanum' `mon-string-index',
+`mon-string-position'.
+
+
+ ============================================================
+ `mon-is-letter' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (x)
+ ==============================
+Return t when X is an alpha character.
+
+:EXAMPLE
+(mon-is-alphanum (char-after (point)))\?56
+(mon-is-alphanum (char-after (point)))8
+
+:SEE-ALSO `mon-is-digit', `mon-is-alphanum', `mon-string-index',
+`mon-string-position'.
+
+
+ ============================================================
+ `mon-is-alphanum' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (x)
+ ==============================
+Return t when X is either an alpha character or integer.
+
+:EXAMPLE
+(mon-is-alphanum (char-after (point)))  
+(mon-is-alphanum (char-after (point)))8
+
+:SEE-ALSO `mon-is-digit', `mon-is-digit-2', `mon-string-index', 
+`mon-string-position'.
+
+
+ ============================================================
+ `mon-is-digit-simp' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (c)
+ ==============================
+Return t if C is a digit character, and otherwise, nil.
+
+Unlike `mon-is-digit' fails when other than \? prefixed digit.
+Wants char literals.
+:EXAMPLE
+(mon-is-digit-simp ?0)
+(mon-is-digit-simp "0")
+(mon-is-digit "0")
+
+:SEE-ALSO `mon-is-letter-simp', `mon-is-alphanum-simp',
+`mon-string-index', `mon-string-position'.
+
+
+ ============================================================
+ `mon-is-letter-simp' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (c)
+ ==============================
+Return t if C is an alphabetic character, and otherwise, nil.
+Unlike `mon-is-letter' fails when other than \? prefixed chars.
+Wants char literals.
+
+:EXAMPLE
+(mon-is-letter-simp ?x)
+
+(mon-is-letter-simp "x")
+(mon-is-letter "x")
+
+:SEE-ALSO `mon-is-digit-simp',`mon-is-alphanum-simp'.
+`mon-string-index', `mon-string-position'.
+
+
+ ============================================================
+ `mon-is-alphanum-simp' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (x)
+ ==============================
+Return t when X is either an alpha character or integer.
+
+Unlike `mon-is-alphanum' fails when other than \? prefixed chars or digits.
+Wants char literals.
+
+(mon-is-alphanum-simp ?8)             
+(mon-is-alphanum-simp ?A)             
+(mon-is-alphanum-simp "8")            
+(mon-is-alphanum-simp "A")            
+(mon-is-alphanum-simp (prin1-char 88))
+(mon-is-alphanum (char-to-string 88))
+
+:SEE-ALSO `mon-is-digit-simp' `mon-is-letter-simp',
+`mon-string-index', `mon-string-position'.
+
+
+ ============================================================
+ `mon-string-justify-left' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (string &optional width left-margin)
+ ==============================
+Return a left-justified string built from string.
+
+:NOTE The default width is 72 characters, the default left-margin is 0.  
+      The width is counted from column 0.
+      The word separators are those of split-string:
+      [ \f\t\n\r\v]+
+      Which means that the string is justified as one paragraph.
+
+:SEE-ALSO `mon-string-fill-to-col'.
+
+
+ ============================================================
+ `mon-string-to-sequence' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (str)
+ ==============================
+Return string STR as a list of chars.
+
+:EXAMPLE
+(mon-string-to-sequence "? string")
+
+:SEE-ALSO `mon-string-from-sequence', `mon-string-index',
+`mon-string-position', `mon-string-alpha-list',
+`mon-is-alphanum', `mon-is-digit', `mon-is-letter'.
+
+
+ ============================================================
+ `mon-string-from-sequence' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (seq &rest seqs)
+ ==============================
+Return SEQ - a sequence of character integers - as a string.
+WHEN SEQS is non-nil these can be lists (quoted), vectors, or strings in any
+combination concatenate these also.
+
+:EXAMPLE(S)
+(mon-string-from-sequence '(115 116 114 105 110 103))
+
+(mon-string-from-sequence
+ '(115 116 114 105 110 103 48)
+ '(115 116 114 105 110 103 115 49)
+ '(115 116 114 50))
+
+(mon-string-from-sequence (number-sequence 0 127))
+
+(mon-string-from-sequence
+ '(98 117 98 98 97)
+ "string0"
+ [98 117 98 98 97 115 97]
+ '(115 116 114 105 110 103)
+ [98 117 98 98 97 115 97])
+
+:SEE-ALSO `mon-string-index',`mon-string-position', `mon-string-alpha-list',
+`mon-is-alphanum',`mon-is-digit',`mon-is-letter'.
+
+
+ ============================================================
+ `mon-string-alpha-list' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (from-letter to-letter &optional as-symb)
+ ==============================
+Return alphabetized list of ASCII character strings FROM-LETTER TO-LETTER.
+If either FROM-LETTER or TO-LETTER is upper-cased list returned 
+will be in upper cased. When TO-LETTER comes before FROM-LETTER in a 
+lexicographic sort the two args are swapped; this check is exclusive of case
+check.
+
+:EXAMPLE
+
+(mon-string-alpha-list "a" "f")
+(mon-string-alpha-list "A" "F")
+(mon-string-alpha-list "l" "G")
+(mon-string-alpha-list "g" "l")
+Use this to get a list of symbols instead:
+
+(princ (mon-string-alpha-list "m" "r") (current-buffer));=>(m n o p q r)
+
+:SEE-ALSO `mon-string-to-sequence', `mon-string-to-sequence',
+`number-sequence', `mon-is-alphanum', `mon-is-digit', `mon-is-letter'.
+
+
+ ============================================================
+ `mon-string-index' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (string-to-idx needle &optional frompos)
+ ==============================
+Return the position in STRING of the beginning of first occurence of NEEDLE.
+Return nil if needle is not found. NEEDLE is a char, number, or string.
+When FROMPOS is non-nil begin search for needle from position. 
+Default is to search from start of string.
+
+:EXAMPLE
+(mon-string-index "string before ### string after" "###")
+:SEE-ALSO `mon-string-upto-index', `mon-string-after-index',
+`mon-string-position', `mon-string-has-suffix', `mon-string-chop-spaces'.
+
+
+ ============================================================
+ `mon-string-position' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (string substr &optional frompos)
+ ==============================
+Return the position in STRING of the first occurence of SUBSTR
+searching FROMPOS, or from the start if FROMPOS is absent or nil. 
+If the SUBSTR is not found, then return nil.
+
+:EXAMPLE
+(mon-string-position "dogmeat" "meat")
+
+:SEE-ALSO `mon-string-index', `mon-string-upto-index', `mon-string-after-index'
+`mon-string-to-sequence', `mon-string-from-sequence'.
+
+
+ ============================================================
+ `mon-string-has-suffix' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (string suffix)
+ ==============================
+Return t when STRING has SUFFIX as a component.
+
+:EXAMPLE
+(mon-string-has-suffix "dogmeat" "meat").
+
+:SEE-ALSO `mon-string-position', `mon-string-index'
+`mon-string-upto-index', `mon-string-after-index'.
+
+
+ ============================================================
+ `mon-string-ify-list' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (string-given)
+ ==============================
+Return a list of strings obtained by breaking the string the user entered at the
+space boundaries.
+
+:EXAMPLE
+(mon-string-ify-list "Make this sentence a list of strings").
+
+:SEE-ALSO `mon-stringify-list' ,`mon-insert-string-ify', 
+`mon-string-ify-current-line', `mon-line-get-next', 
+`mon-get-word-list-buffer'.
+
+
+ ============================================================
+ `mon-string-split-on-regexp' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (str regexp)
+ ==============================
+Return a list of strings from splitting STR at the regular expression
+REGEXP. This function is patterned after the awk split() function.
+
+:SEE-ALSO `mon-string-chop-spaces', `mon-string-sub-old->new',
+`mon-string-position', `mon-string-index'.
+
+
+ ============================================================
+ `mon-string-sub-old->new' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (old new str)
+ ==============================
+Substitute the first occurrence of OLD by NEW in a copy of the
+string STR and return it.
+
+:SEE-ALSO `mon-string-split-on-regexp', `mon-string-chop-spaces',
+`mon-string-position', `mon-string-index'.
+
+
+ ============================================================
+ `mon-string-split-line' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (&optional buffer insrtp intrp)
+ <INTERACITVE-SPEC>
+ <IGNORED-NOOP> 
+ <IGNORED-NOOP> 
+ <PREFIX-ARG->NUMBER> 
+ ==============================
+Return current line of text in BUFFER as a string.
+When INSRTP is non-nil or called interactively insert return string at point. 
+Does not move-point.
+
+:SEE-ALSO `mon-line-strings-qt-region', `mon-line-strings-to-list',
+`mon-stringify-list', `mon-insert-string-ify', `mon-line-drop-in-words',
+`mon-string-ify-current-line',`mon-get-word-list-buffer'.
+
+
+ ============================================================
+ `mon-string-ify-current-line' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (&optional intrp split-on delim)
+ <INTERACITVE-SPEC>
+ <PREFIX-ARG->NUMBER> 
+ ==============================
+Return line at point as a list of strings.
+When non-nil split-on is a string which should be split on.
+When non-nil delim is a delimter to be concatenated to _front_ of each string. 
+Called interacively kills current line replacing with string per-word
+unless in an unreadable buffer where just retruns.
+Neither SPLIT-ON nor DELIM have an effect when Invoked interactively.
+
+:EXAMPLE
+(mon-string-ify-current-line) split me to a list of strings
+(mon-string-ify-current-line nil "s" "S") split me to a list of strings
+(mon-string-ify-current-line nil nil "|") split me to a list of strings
+
+
+:SEE-ALSO `mon-line-strings-qt-region', `mon-line-strings-to-list',
+`mon-string-ify-list', `mon-insert-string-ify', `mon-string-split-line',
+`mon-line-drop-in-words', `mon-get-word-list-buffer'.
+
+
+ ============================================================
+ `mon-get-word-list-buffer' <FUNCTION>
+ ============================================================
+
+ <INTERACTIVE-SPEC-IS-LIST>
+ ==============================
+Convert the entire buffer to a list of `newline' separated ``words''
+in a new buffer *Word List*, where a word is defined by `forward-word'
+according to the syntax-table settings.  You can apply `sort-lines' and
+unique-lines to this to obtain a list of all the unique words in a
+document.
+
+:SEE-ALSO `mon-line-strings-to-list', `mon-string-ify-current-line',
+`mon-stringify-list', `mon-dropin-line-word', `mon-insert-string-ify',
+`mon-word-count-analysis' `mon-word-count-occurrences', 
+`mon-word-count-region', `mon-word-count-chars-region'.
+
+
+ ============================================================
+ `mon-word-get-next' <FUNCTION>
+ ============================================================
+
+ ==============================
+Return the next 'word' in the buffer, where a word is defined by
+`forward-word' according to the syntax-table settings.  Point is left
+following the word.  At `end-of-buffer', nil is returned and point is
+unchanged.
+
+:SEE-ALSO `mon-line-get-next', `mon-get-word-list-buffer'.
+
+
+ ============================================================
+ `mon-word-reverse-region' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (beg end)
+ <INTERACITVE-SPEC>
+ <REGION> 
+ ==============================
+Reverse the order of words in region.
+:SEE-ALSO `mon-region-reverse'.
+
+
+ ============================================================
+ `mon-word-iterate-over' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (buffer)
+ ==============================
+Return an iterator that gets the next word in buffer.
+Uses lexical-let for a lambda closure over buf and pos.
+Extract one word at a time by calling (funcall next-word).
+
+:EXAMPLE For BUFFER test-buffer containing "This is text."
+(setq next-word (mon-word-iterate-over-in (get-buffer "test buffer")))
+The first time next-word is called, return "This".
+The next time, retrun " is". Then, " text.". 
+Finally, return nil forever.
+
+
+ ============================================================
+ `mon-word-count-analysis' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (start end)
+ <INTERACITVE-SPEC>
+ <REGION> 
+ ==============================
+Count number of times each word is used in the region. Ignores punctuation.
+
+:SEE-ALSO `mon-line-count-region', `mon-word-count-chars-region',
+`mon-word-count-occurrences', `mon-word-count-region', 
+`mon-get-word-list-buffer'.
+
+
+ ============================================================
+ `mon-word-count-occurrences' <FUNCTION>
+ ============================================================
+
+ <INTERACTIVE-SPEC-IS-LIST>
+ ==============================
+Display in a new buffer the list of words sorted by number of occurrences.
+
+:SEE-ALSO `mon-line-count-region', `mon-word-count-region',`mon-word-count-analysis',
+`mon-word-count-chars-region', `mon-get-word-list-buffer'.
+
+
+ ============================================================
+ `mon-word-count-region' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (start end)
+ <INTERACITVE-SPEC>
+ <REGION> 
+ ==============================
+Return the number of words in the region.
+
+:SEE-ALSO `mon-line-count-region', `mon-word-count-chars-region',
+`mon-word-count-analysis', `mon-word-count-occurrences',
+`mon-get-word-list-buffer'.
+
+
+ ============================================================
+ `mon-word-count-chars-region' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (beginning end)
+ <INTERACITVE-SPEC>
+ <REGION> 
+ ==============================
+Return message indicating the number of words and chars that are in a region.
+
+:SEE-ALSO `mon-line-count-region', `mon-word-count-region',
+`mon-word-count-analysis', `mon-word-count-occurrences', 
+`mon-get-word-list-buffer', `mon-string-from-sequence'.
+
+
+ ============================================================
+ `mon-rectangle-columns' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (start end)
+ <INTERACITVE-SPEC>
+ <REGION> 
+ ==============================
+Return column positions at START and END.
+Mostly useful as a code template for rectangle related functions.
+
+:SEE-ALSO `mon-rectangle-sum-column'.
+
+
+ ============================================================
+ `mon-rectangle-sum-column' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (start end)
+ <INTERACITVE-SPEC>
+ <REGION> 
+ ==============================
+Add all integer, decimal, and floating-point numbers in selected rectangle.
+
+Numbers which can be read include (nonexhaustive):
+2 +2 -2 2. +2. -2. 2.0 +2.0 -2.0 2e0 +2e0 -2e0 2E0 2e+0 2e-0, 2.e0, 2.0e0, etc.
+
+:SEE-ALSO `mon-rectangle-columns',
+`mon-insert-numbers-padded', `mon-number-lines-region',
+`mon-insert-string-incr', `mon-re-number-region'.
+
+
+ ============================================================
+ `mon-rectangle-operate-on' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (function start end &rest args)
+ ==============================
+Call FUNCTION for each line of rectangle with corners at START, END.
+FUNCTION is called with two arguments: the start and end columns of the
+rectangle, plus ARGS extra arguments.  Point is at the beginning of line when
+the function is called.
+
+:SEE-ALSO `mon-rectangle-operate-on', `mon-rectangle-apply-on-region-points',
+`mon-rectangle-downcase', `mon-rectangle-upcase', `mon-rectangle-capitalize',
+and `apply-on-rectangle' in `rect.el'.
+
+
+ ============================================================
+ `mon-rectangle-apply-on-region-points' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (fun start end &rest args)
+ ==============================
+Like `apply-on-rectangle', but pass points in the buffer instead of columns.
+
+:SEE-ALSO`mon-rectangle-operate-on', `mon-rectangle-apply-on-region-points',
+`mon-rectangle-downcase' `mon-rectangle-upcase' `mon-rectangle-capitalize'.
+
+
+ ============================================================
+ `mon-rectangle-downcase' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (beg end)
+ <INTERACITVE-SPEC>
+ <REGION> 
+ ==============================
+Convert the marked rectangle to lower case.
+
+:SEE-ALSO `mon-rectangle-upcase', `mon-rectangle-capitalize',
+`mon-rectangle-operate-on', `mon-rectangle-apply-on-region-points'.
+
+
+ ============================================================
+ `mon-rectangle-upcase' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (beg end)
+ <INTERACITVE-SPEC>
+ <REGION> 
+ ==============================
+Convert the marked rectangle to upper case.
+:SEE-ALSO `mon-rectangle-downcase' ,`mon-rectangle-operate-on',
+`mon-rectangle-apply-on-region-points', `rect.el'.
+
+ ============================================================
+ `mon-rectangle-capitalize' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (beg end)
+ <INTERACITVE-SPEC>
+ <REGION> 
+ ==============================
+Convert the marked rectangle to Title case.
+
+:SEE-ALSO `mon-rectangle-downcase', `mon-rectangle-upcase', `mon-rectangle-capitalize'
+`mon-rectangle-operate-on', `mon-rectangle-apply-on-region-points'.
+
+
+ ============================================================
+ `mon-line-test-content' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (syn-sym &optional rtrn-as-list)
+ ==============================
+Examine Syntax Location of SYN-SYM from point.
+When syntax SYN-SYM is t advances point to end of syntax.
+Return a formatted string describing syntax locations.
+SYN-SYM arg is a symbol of type: 'word 'whitespace or 'punctuation.
+When RTRN-AS-LIST is non-nil returns as list.
+
+:EXAMPLE
+(mon-line-test-content 'word)word =>
+"[line:413 word:word word-start:20267 word-end:20271]"
+
+(mon-line-test-content 'word t)word => 
+(413 word "word" 20269 20273)
+(car cadr caddr cadddr cddddr)
+ line type found satart end
+
+(if (> (skip-syntax-forward "^-") 0)
+     (mon-line-test-content 'whitespace t))word more-word
+
+:NOTE Function relies on current buffers local syntax table.
+
+:SEE-ALSO `mon-test-props', `mon-view-help-source'.
+
+
+ ============================================================
+ `mon-test-props' <FUNCTION>
+ ============================================================
+
+ ==============================
+Test for a category text-property. 
+Helper function for `mon-view-help-source'
+
+:SEE-ALSO `mon-test-props', `mon-view-help-source',`mon-line-test-content'.
+
+
+ ============================================================
+ `mon-view-help-source' <FUNCTION>
+ ============================================================
+
+ <INTERACTIVE-SPEC-IS-LIST>
+ ==============================
+:SEE-ALSO `mon-test-props', `mon-line-test-content'.
+
+ ============================================================
+ `mon-index-elisp-symbol' <FUNCTION>
+ ============================================================
+
+ <INTERACTIVE-SPEC-IS-LIST>
+ ==============================
+Find TOPIC in the indices of the Emacs Lisp Reference Manual.
+
+:EXAMPLE
+(elisp-index-search "setq")
+
+
+ ============================================================
+ `mon-plist-keys' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (plist)
+ ==============================
+Cons up a plist of keys with PLIST.
+
+:SEE-ALSO mon-plist-remove'.
+
+
+ ============================================================
+ `mon-list-all-properties-in-buffer' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (buffer)
+ ==============================
+List text-properties in BUFFER.
+
+:SEE-ALSO `mon-nuke-text-properties-buffer'.
+
+
+ ============================================================
+ `mon-nuke-text-properties-buffer' <FUNCTION>
+ ============================================================
+
+ <INTERACTIVE-SPEC-IS-LIST>
+ ==============================
+Remove text-properites in buffer.
+
+:SEE-ALSO `mon-list-all-properties-in-buffer'.
+
+
+ ============================================================
+ `mon-remove-text-property' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (start end property &optional object)
+ ==============================
+Remove a property from text from START to END.
+Argument PROPERTY is the property to remove.
+Optional argument OBJECT is the string or buffer containing the text.
+Return t if the property was actually removed, nil otherwise.
+
+:SEE-ALSO `mon-remove-single-text-property', `remove-text-property',
+`mon-nuke-text-properties-region', `next-single-property-change',
+`add-text-properties', `put-text-property'.
+
+
+ ============================================================
+ `mon-remove-single-text-property' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (start end prop value &optional object)
+ ==============================
+Remove a specific property value from text from START to END.
+Arguments PROP and VALUE specify the property and value to remove.  The
+resulting property values are not equal to VALUE nor lists containing VALUE.
+Optional argument OBJECT is the string or buffer containing the text.
+:SEE-ALSO `mon-remove-text-property', , `remove-text-property',
+`mon-nuke-text-properties-region', `next-single-property-change',
+`add-text-properties', `put-text-property'.
+
+
+ ============================================================
+ `mon-nuke-text-properties-region' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (beg end)
+ <INTERACITVE-SPEC>
+ <REGION> 
+ ==============================
+Eliminate all text properties in marked region of current buffer.
+This only removes text properties, not overlays.
+
+:SEE-ALSO `mon-remove-single-text-property', `mon-remove-text-property'
+`mon-nuke-text-properties-region', `remove-text-property',
+`next-single-property-change', `add-text-properties', `put-text-property'.
+
+
+ ============================================================
+ `mon-elt->' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (list aft-el el)
+ ==============================
+Insert EL after AFT-EL in LIST.
+
+:SEE-ALSO `mon-elt->', `mon-elt->elt', `mon-elt-<', `mon-elt-<elt'.
+
+
+ ============================================================
+ `mon-elt-<' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (list bef-el el)
+ ==============================
+Insert EL before BEF-EL in LIST.
+
+:SEE-ALSO `mon-elt->', `mon-elt->elt', `mon-elt-<', `mon-elt-<elt'.
+
+
+ ============================================================
+ `mon-elt->elt' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (list old-el new-el)
+ ==============================
+Set OLD-EL to NEW-EL in LIST.
+
+:SEE-ALSO `mon-elt->', `mon-elt->elt', `mon-elt-<', `mon-elt-<elt'.
+
+
+ ============================================================
+ `mon-elt-<elt' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (list el1 el2)
+ ==============================
+Exchange places of EL1 and EL2 in LIST.
+
+:SEE-ALSO `mon-elt->', `mon-elt->elt', `mon-elt-<', `mon-elt-<elt'.
+
+
+ ============================================================
+ `mon-flatten' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (tree)
+ ==============================
+Return a tree containing all the elements of the `tree'.
+
+:SEE-ALSO `mon-maptree', `mon-recursive-apply' `mon-map-append', `mon-combine',
+`mon-transpose', `mon-sublist', `mon-sublist-gutted', `mon-remove-dups',
+`mon-assoc-replace', `mon-moveq'.
+
+
+ ============================================================
+ `mon-combine' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (&rest args)
+ ==============================
+Return the set of tuples built taking one item in order from each list
+in ARGS.
+:EXAMPLE
+(mon-combine '(www ftp) '(exa) '(com org)))
+
+;=> ((www exa com) (www exa org) (ftp exa com) (ftp exa org))
+
+:SEE-ALSO `mon-maptree', `mon-recursive-apply' `mon-map-append',
+`mon-flatten', `mon-transpose', `mon-sublist', `mon-sublist-gutted', 
+`mon-remove-dups', `mon-assoc-replace', `mon-moveq'.
+
+
+ ============================================================
+ `mon-recursive-apply' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (atom-func list-a list-b)
+ ==============================
+Apply recursively the function atom-func on each and every pairs
+that can be found recursively in the two parallel structures a-list
+and b-list. Only the elements from a-list must be an atom to be passed
+to atom-func.
+
+:EXAMPLE(1)
+
+(mon-recursive-apply '+ '((1 2) (3 4)) '((1 0) (0 1)))
+
+:EXAMPLE(2)
+
+(mon-recursive-apply
+ #'(lambda (atom other) (cons atom other))
+   '(apple orange peach) '((red yellow green) (orange) (yellow white)))
+
+:SEE-ALSO `mon-maptree', `mon-map-append', `mon-combine', `mon-flatten',
+`mon-transpose', `mon-sublist', `mon-sublist-gutted', `mon-remove-dups',
+`mon-assoc-replace', `mon-moveq'.
+
+
+ ============================================================
+ `mon-escape-lisp-string-region' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (start end)
+ <INTERACITVE-SPEC>
+  r
+ ==============================
+Escape special characters in the region as if a lisp string.
+Insert backslashes in front of special characters (namely  `' backslash,
+`"' double quote, `(' `)' parens in the region, according to the docstring escape 
+requirements.
+
+:NOTE
+ Don't run this on docstrings with regexps.
+
+Region should only contain the characters actually comprising the string
+supplied without the surrounding quotes.
+
+:SEE-ALSO `mon-unescape-lisp-string-region', `mon-escape-string-for-cmd'.
+
+
+ ============================================================
+ `mon-unescape-lisp-string-region' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (start end)
+ <INTERACITVE-SPEC>
+  r
+ ==============================
+Unescape special characters from the CL string specified by the region.
+This amounts to removing preceeding backslashes from characters they escape.
+
+:NOTE region should only contain the characters actually comprising the string
+without the surrounding quotes.
+:SEE-ALSO `mon-escape-lisp-string-region', `mon-escape-string-for-cmd'.
+
+
+ ============================================================
+ `mon-princ-cb' <FUNCTION>
+ ============================================================
+
+ <INTERACTIVE-SPEC-IS-LIST>
+ ==============================
+Wrap region in a princ->current-buffer to eval and print newline\result after point.
+:SEE-ALSO `mon-eval-sexp-at-point'
+
+
+ ============================================================
+ `mon-eval-sexp-at-point' <FUNCTION>
+ ============================================================
+
+ <INTERACTIVE-SPEC-IS-LIST>
+ ==============================
+Evaluate S-expression at point print commented result on nl.
+Return point after commented result. Best on trivial expressions.
+
+:EXAMPLE
+(+ 1 3)
+;;;=>4
+^point^
+
+:SEE-ALSO `mon-princ-cb'
+
+
+ ============================================================
+ `mon-eval-print-last-sexp' <FUNCTION>
+ ============================================================
+
+ <INTERACTIVE-SPEC-IS-LIST>
+ ==============================
+Like `eval-print-last-sexp' but does not move point.
+
+
+ ============================================================
+ `mon-extend-selection' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (arg &optional incremental)
+ <INTERACTIVE-SPEC-IS-LIST>
+ ==============================
+Mark symbol surrounding point.
+Subsequent calls mark higher levels of sexps.
+
+
+ ============================================================
+ `mon-semnav-up' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (arg)
+ <INTERACITVE-SPEC>
+ <PREFIX-ARG->NUMBER> 
+ ==============================
+
+
+ ============================================================
+ `mon-semnav-up' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (arg)
+ <INTERACITVE-SPEC>
+ <PREFIX-ARG->NUMBER> 
+ ==============================
+
+
+ ============================================================
+ `mon-eval-expression' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (eval-expression-arg &optional eval-expression-insert-value)
+ <INTERACTIVE-SPEC-IS-LIST>
+ ==============================
+This is `eval-expression' with the EVAL-EXPRESSION-INSERT-VALUE defaulted to t.
+Gets us eval-expression automatically inserted into current-buffer.
+
+
+ ============================================================
+ `mon-nuke-and-eval' <FUNCTION>
+ ============================================================
+
+ <INTERACTIVE-SPEC-IS-LIST>
+ ==============================
+Attempt to cleanly re-evaluate a buffer of elisp code.
+
+
+ ============================================================
+ `mon-unbind-defun' <FUNCTION>
+ ============================================================
+
+ <INTERACTIVE-SPEC-IS-LIST>
+ ==============================
+Unbind the `defun' near `point' in `current-buffer'.
+
+
+ ============================================================
+ `mon-unbind-symbol' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (symbol)
+ <INTERACITVE-SPEC>
+ <ANY-SYMBOL> Symbol: 
+ ==============================
+Totally unbind SYMBOL. Includes unbinding function binding, variable binding,
+and property list.
+
+
+ ============================================================
+ `mon-unbind-function' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (symbol)
+ <INTERACITVE-SPEC>
+ <FUNCTION-NAME> Function: 
+ ==============================
+Remove the function binding of SYMBOL.
+
+
+ ============================================================
+ `mon-unbind-command' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (symbol)
+ <INTERACITVE-SPEC>
+ <COMMAND-NAME> Command: 
+ ==============================
+Remove the command binding of SYMBOL.
+
+
+ ============================================================
+ `mon-unbind-variable' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (symbol)
+ <INTERACTIVE-SPEC-IS-LIST>
+ ==============================
+Remove the variable binding of SYMBOL.
+
+
+ ============================================================
+ `mon-byte-compile-and-load' <FUNCTION>
+ ============================================================
+
+ <INTERACTIVE-SPEC-IS-LIST>
+ ==============================
+Byte compile and load the current .el file.
+This was only easily accesible from the menu.
+
+
+ ============================================================
+ `mon-compile-when-needed' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (name)
+ ==============================
+Compile the given file only if needed. 
+Add .el if required, and use `load-path' to find it.
+
+
+ ============================================================
+ `mon-load-or-alert' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (name &optional compile-when-needed)
+ ==============================
+Try to load the specified file and insert a warning message in a
+load-warning buffer in case of failure.
+
+
+ ============================================================
+ `mon-cmd' <FUNCTION>
+ ============================================================
+
+ <INTERACTIVE-SPEC-IS-LIST>
+ ==============================
+When `win32p' launch the NT Command console. 
+When `gnu-linuxp' return a terminal.
+
+:SEE-ALSO `mon-terminal' which when `win32p' gives a Cygwin bash shell wrapped
+in a cmd console.
+
+
+ ============================================================
+ `mon-terminal' <FUNCTION>
+ ============================================================
+
+ <INTERACTIVE-SPEC-IS-LIST>
+ ==============================
+When `gnu-linuxp' launch a terminal. 
+When `win32p' launch Cygwin Bash in cmd console.
+
+:SEE-ALSO `mon-cmd' which when win32p returns the NT Command console.
+`w32shell-cmd-here', `w32shell-cmd', `w32shell-explorer'
+
+
+ ============================================================
+ `mon-string-to-symbol' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (str &optional start end)
+ ==============================
+Return string STR as a symbol.
+
+When optional args START and END are non-nil delimit the 
+substring of str they default to 0 and (length string) respectively.
+:EXAMPLE
+(mon-string-to-symbol "Bubba")
+
+(mon-string-to-symbol (mon-symbol->string 'bubba))
+
+(mon-string-to-symbol "mon-string-to-symbol" 4 10)
+
+(mon-string-to-symbol "mon-string-to-symbol" 4)
+
+:SEE-ALSO `mon-symbol-to-string', `mon-string-to-sequence',
+`mon-string-from-sequence', `mon-string-alpha-list',
+`mon-string-index', `mon-string-has-suffix'.
+
+
+ ============================================================
+ `mon-line-find-duplicates' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (&optional insertp interp)
+ ==============================
+Locate adjacent duplicate lines in buffer.
+Functions which find duplicate lines don't always sort lines.
+Where lines of a file are presorted can be use to locate duplicates before
+removing, i.e. situations of type: `uniquify-maybe'.  Can extend
+`find-duplicate-lines' by comparing its result list with one or more of the list
+comparison procedures `set-difference', `union', `intersection', etc.
+
+:SEE-ALSO `mon-line-get-next', `mon-cln-blank-lines', `mon-cln-uniq-lines',
+`uniq', `uniq-region'.
+
+
+ ============================================================
+ `mon-test-keypresses' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (&optional first second third)
+ <INTERACITVE-SPEC>
+ <PREFIX-ARG-RAW> 
+ <PREFIX-ARG-RAW> 
+ <PREFIX-ARG->NUMBER> 
+ ==============================
+Use to test if additioanl optional prefix args have been passed to interactive.
+
+:EXAMPLE
+M-34 M-x mon-test-keypresses
+
+=> ((meta . 51) (meta . 52) (meta . 120) mon-test-keypresses)
+
+
+ ============================================================
+ `mon-line-strings-to-list' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (start end &optional w-cdr w-wrap insertp intrp)
+ <INTERACITVE-SPEC>
+ <REGION> 
+ <IGNORED-NOOP> 
+ <PREFIX-ARG-RAW> 
+ <IGNORED-NOOP> 
+ <PREFIX-ARG->NUMBER> 
+ ==============================
+Return region's lines as list, each list elt contains string content of line.
+Region between START END should be passed as a line per string/symbol.
+Strips trailing whitespace. Does not preseve tabs converts them to spaces.
+When W-CDR is non-nil or called-interactively with prefix-arg return each
+element of list with an empty string as cdr.
+
+:EXAMPLE
+
+Mon Key
+MON
+Mon
+MON KEY
+
+;; When W-CDR nil:
+=>(("Mon Key")
+   ("MON")
+   ("Mon")
+   ("MON KEY"))
+
+;; When W-CDR non-nil:
+=>(("Mon Key" "")
+   ("MON" "")
+   ("Mon" "")
+   ("MON KEY" ""))
+
+(mon-line-strings-to-list-*test* t nil)
+
+(mon-line-strings-to-list-*test*)
+
+:SEE-ALSO `mon-line-string-rotate-name', `mon-line-strings-to-list-*test*',
+`mon-line-string-rotate-namestrings', `mon-line-string-unrotate-namestrings'
+`mon-line-string-rotate-namestrings-combine', `mon-make-lastname-firstname', 
+`naf-make-name-for-lisp', `mon-make-names-list',`mon-string-ify-current-line', 
+`mon-line-strings-qt-region', `mon-string-ify-list', `mon-string-split-line',
+`mon-line-strings', `mon-line-strings-region', `mon-line-drop-in-words'.
+
+
+ ============================================================
+ `mon-line-strings-to-list-*test*' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (&optional with-cdr with-wrap insertp)
+ ==============================
+Test function for `mon-line-strings-to-list'.
+
+
+ ============================================================
+ `mon-line-string-rotate-name' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (name-str-or-elt &optional as-list)
+ ==============================
+Rotate the namestring NAME-STR-OR-ELT. 
+Return the last whitespace delimited name in string at head top of string.
+Remaining names in string returned inside a parenthetical group.
+NAME-STR-OR-ELT is a string containing one nameform or one elt listsame 
+holding a string containing one nameform.
+
+:EXAMPLE
+(mon-line-string-rotate-name "István Tisza")
+(mon-line-string-rotate-name '("Stanisław Marcin Ulam"))
+(mon-line-string-rotate-name '("Dmitri Pavlovich Romanov"))
+
+:SEE-ALSO `mon-line-strings', `mon-line-strings-to-list',
+`mon-line-string-rotate-namestrings', `mon-line-string-unrotate-namestrings',
+`mon-line-string-rotate-namestrings-combine', `mon-make-lastname-firstname',
+`naf-make-name-for-lisp', `mon-make-names-list', `mon-line-strings-region'.
+
+
+ ============================================================
+ `mon-line-string-rotate-namestrings' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (start end &optional as-strings insrtp intrp)
+ <INTERACITVE-SPEC>
+ <REGION> 
+ <PREFIX-ARG-RAW> 
+ <IGNORED-NOOP> 
+ <PREFIX-ARG->NUMBER> 
+ ==============================
+Rotate namestrings in region. Namestring are formatted one name per line
+Firstname Middlenames Lastname. Return Lastname (Firstname Middlename).
+When AS-STRINGS is non-nil retrun namestrings as strings as with prin1.
+When INSRTP is non-nil or called-interactively insert rotated names at point.
+Does not move point.
+
+:SEE-ALSO `mon-line-string-unrotate-namestrings', `mon-line-string-rotate-name', 
+`mon-line-string-rotate-namestrings-combine', `mon-line-strings-to-list',
+`mon-make-lastname-firstname', `mon-make-names-list', `naf-make-name-for-lisp',
+`mon-line-strings-region'.
+
+
+ ============================================================
+ `mon-line-string-unrotate-namestrings' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (start end &optional as-strings insrtp intrp)
+ <INTERACITVE-SPEC>
+ <REGION> 
+ <PREFIX-ARG-RAW> 
+ <IGNORED-NOOP> 
+ <PREFIX-ARG->NUMBER> 
+ ==============================
+Unrotate namestrings in region. 
+Namestrings are formatted name per line e.g. `Lastname (Firstname Middlenames)'
+Return `Firstname Middlename Lastname'
+When INSRTP is non-nil or Called-interactively insert rotated names at point.
+Does not move point. When AS-STRINGS is non-nil return rotated names as strings.
+
+:EXAMPLE
+(mon-line-string-unrotate-namestrings 
+   (1+ (search-forward-regexp "►")) (- (search-forward-regexp "►") 2))
+
+►
+Kennan (George Frost)
+Albert (Lukács János)
+Achesonn (Dean Gooderham)
+Harriman (William Averell)
+McCloy (John Jay)
+Bohlen (Charles Eustis)
+Lovett (Robert Abercrombie)
+►
+
+:SEE-ALSO `mon-line-string-rotate-name', `mon-line-string-rotate-namestrings'
+`mon-line-string-rotate-namestrings-combine' `mon-line-strings-to-list',
+`mon-make-lastname-firstname', `naf-make-name-for-lisp', `mon-make-names-list',
+`mon-line-strings-region'.
+
+
+ ============================================================
+ `mon-symbol-to-string' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (symbol)
+ ==============================
+Return SYMBOL as a string.
+
+:EXAMPLE
+(mon-symbol-to-string 'bubba)
+
+(mon-symbol-to-string (mon-string-to-symbol "bubba"))
+
+:SEE-ALSO `mon-string-to-symbol', `mon-string-to-sequence',
+`mon-string-from-sequence'.
+
+
+ ============================================================
+ `mon-line-string-rotate-namestrings-combine' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (start end &optional insertp intrp)
+ <INTERACITVE-SPEC>
+ <REGION> 
+ <IGNORED-NOOP> 
+ <PREFIX-ARG->NUMBER> 
+ ==============================
+Return lists of namestrings from START to END both rotated and normalalized.
+Elements of list returned have the form:
+("Fname Lname" "Lname (Fname)")
+
+:EXAMPLE
+(mon-line-string-rotate-namestrings-combine
+   (1+ (search-forward-regexp "►")) (- (search-forward-regexp "►") 2))
+
+►
+Emil Max Hödel
+John Wilkes Booth
+Leon Frank Czolgosz
+Lee Harvey Oswald
+Dmitry Grigoriyevich Bogrov
+Paul Gorguloff
+John Bellingham
+Charles Julius Guiteau
+►
+
+:SEE-ALSO
+`mon-line-string-rotate-namestrings' `mon-line-string-unrotate-namestrings',
+`mon-line-string-rotate-name', `mon-line-strings-to-list'
+`mon-make-lastname-firstname' `naf-make-name-for-lisp' `mon-make-names-list'.
+
+
+ ============================================================
+ `mon-sublist' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (skip-n return-n in-list)
+ ==============================
+RETURN-N elements IN-LIST skipping the first SKIP-N.
+
+:EXAMPLE
+(let ((piece-work
+       '(A B (C D) E (F G) (Q (H I)) K)))
+        ;0 1   2   3  4     5        6
+  (mon-sublist 4 2 piece-work))
+;=> ((F G) (Q (H I)))
+     ;4     5
+
+:SEE-ALSO `mon-sublist-gutted' `mon-remove-dups', `mon-assoc-replace',
+`mon-moveq', `mon-flatten', `mon-transpose', `mon-maptree', 
+`mon-recursive-apply' `mon-map-append', `mon-combine'
+
+
+ ============================================================
+ `mon-sublist-gutted' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (gut-from-n to-n-ards gut-list)
+ ==============================
+Return GUT-LIST with GUTS-FROM-N TO-N-ARDS extracted.
+
+:EXAMPLE
+(let ((eviscerate-me 
+       '(A B (C D) E (F G) (Q (H I)) K)))
+        ;0 1   2   3  4     5        6
+  (mon-sublist-gutted 4 2 eviscerate-me))
+;=> (A B (C D) E K)
+
+     ;0 1   2   3 6
+
+:SEE-ALSO `mon-sublist'. `mon-flatten', `mon-transpose', `mon-remove-dups',
+`mon-assoc-replace', `mon-moveq' `mon-maptree', `mon-recursive-apply',
+`mon-map-append', `mon-combine'.
+
+
+ ============================================================
+ `mon-map-append' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (mapping-l)
+ ==============================
+Append all sublists in list.
+
+:SEE-ALSO `mon-maptree', `mon-recursive-apply', `mon-combine',
+`mon-flatten', `mon-transpose', `mon-sublist', `mon-sublist-gutted', 
+`mon-remove-dups', `mon-assoc-replace', `mon-moveq'.
+
+
+ ============================================================
+ `mon-string-chop-spaces' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (string)
+ ==============================
+Return a substring of `string' with spaces removed left and right.
+
+:SEE-ALSO `mon-string-split-on-regexp', `mon-string-sub-old->new', 
+`mon-string-chop-spaces', `mon-string-position', `mon-string-index',
+`mon-string-upto-index', `mon-string-after-index'
+
+
+ ============================================================
+ `mon-maptree' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (fun &rest trees)
+ ==============================
+Map function FUN over trees or TREES.
+
+:EXAMPLE
+(mon-maptree
+ #'(lambda (x) (when (stringp x) (prin1 x))) '(a ("b" b cc) dd))
+
+:SEE-ALSO `mon-recursive-apply' `mon-map-append', `mon-combine',
+`mon-flatten', `mon-transpose', `mon-sublist', `mon-sublist-gutted', 
+`mon-remove-dups', `mon-assoc-replace', `mon-moveq'.
+
+
+ ============================================================
+ `mon-transpose' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (tree)
+ ==============================
+Return a tree where all the CAR and CDR are exchanged.
+
+:SEE-ALSO `mon-maptree', `mon-recursive-apply' `mon-map-append', `mon-combine',
+`mon-flatten',`mon-sublist', `mon-sublist-gutted',  `mon-remove-dups',
+`mon-assoc-replace', `mon-moveq'.
+
+
+ ============================================================
+ `plist-remove' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (plist prop)
+ ==============================
+:DO      (remf plist prop)
+:RETURN  The modified PLIST.
+
+:SEE-ALSO `mon-plist-keys'.
+
+
+ ============================================================
+ `mon-dump-object-to-file' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (obj file)
+ ==============================
+Save symbol object OBJ to the byte compiled version of FILE.
+OBJ can be any lisp object, list, hash-table, etc.
+FILE is an elisp file with ext *.el.
+Loading the *.elc file will re-institute object.
+
+:NOTE This function utilizes an documented feature of `eval-when-compile'. It
+can be interesting way to save a persistent elisp object. Using `setf' combined
+with `eval-when-compile' is a convenient way to save lisp objects like
+hash-table.
+
+ ============================================================
+ `mon-string-upto-index' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (in-string upto-string)
+ ==============================
+Return substring of IN-STRING UPTO-STRING.
+UPTO-STRING is a simple string. No regexps, chars, numbers, lists, etc.
+
+:EXAMPLE
+(mon-string-upto-index "string before ### string after" "###")
+
+:SEE-ALSO `mon-string-index', `mon-string-after-index'
+`mon-string-position', `mon-string-has-suffix', `mon-string-chop-spaces'.
+
+
+ ============================================================
+ `mon-string-after-index' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (in-str after-str)
+ ==============================
+Return substring of IN-STR AFTER-STR.
+AFTER-STR is a simple string. No regexps, chars, numbers, lists, etc.
+
+:EXAMPLE
+(mon-string-after-index "string before ### string after" "###")
+
+:SEE-ALSO `mon-string-index', `mon-string-upto-index', `mon-string-position',
+`mon-string-has-suffix', `mon-string-chop-spaces'.
+
+
+ ============================================================
+ `mon-line-strings-bq-qt-sym-bol' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (start end &optional insertp intrp)
+ <INTERACITVE-SPEC>
+ <REGION> 
+ <IGNORED-NOOP> 
+ <PREFIX-ARG->NUMBER> 
+ ==============================
+Return symbols at BOL in region wrapped in backquote and quote.
+When INSERTP is non-nil or called-interactively replace active region and
+move point to region-beginning.
+When following characters are at BOL no replacement is peformed on symbol:
+^ ; , . ( ) < > ` ' # ► | Likewise, do not replace if ' follows symbol.
+
+:EXAMPLE
+(mon-line-strings-bq-qt-sym-bol
+ (1+ (search-forward-regexp "►")) (- (search-forward-regexp "►") 2))
+►
+call-next-method &rest replacement-args
+call-next-method &rest replacement-args
+`call-next-method &rest replacement-args
+call-next-method' &rest replacement-args
+►
+
+:SEE-ALSO `mon-line-strings', `mon-line-strings-qt-region', `mon-cln-up-colon',
+`mon-line-strings-pipe-bol',`mon-line-strings-indent-to-col', 
+`mon-line-strings-to-list', `mon-line-strings-region',
+`mon-string-ify-list', `mon-string-ify-current-line'
+`mon-string-split-line', `mon-line-drop-in-words'.
+
+
+ ============================================================
+ `mon-get-env-variables' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (&optional as-strings insrtp intrp)
+ <INTERACITVE-SPEC>
+ <PREFIX-ARG-RAW> 
+ <IGNORED-NOOP> 
+ <PREFIX-ARG->NUMBER> 
+ ==============================
+Return a list of the current enviromental variables.
+When AS-STRINGS is non-nil or called with a prefix-arg return as strings.
+When insrtp or called-interactively insert returned vars at point.
+
+:SEE-ALSO `mon-get-system-specs', `mon-help-emacs-introspect'
+`getenv', `process-environment', `initial-environment'.
+
+
+ ============================================================
+ `mon-get-proc-w-name' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (comm)
+ ==============================
+Return list of `process-attributes' lists for Command name COMM.
+COMM (a string) is an executable name. 
+On w32 it is not required give the .exe suffix.
+
+:EXAMPLE
+(mon-get-proc-w-name "emacs")
+
+:SEE-ALSO `mon-get-process', `mon-get-sys-proc-list',`mon-get-sys-proc-list'.
+
+
+ ============================================================
+ `mon-get-sys-proc-list' <FUNCTION>
+ ============================================================
+
+ ==============================
+Return a full lisp list of current system-proceses.
+
+:EXAMPLE:
+(mon-get-sys-proc-list)
+
+:SEE-ALSO `mon-get-process',`mon-insert-sys-proc-list', 
+`mon-get-env-variables',`mon-get-system-specs',
+`mon-help-emacs-introspect', `emacs-pid'.
+
+
+ ============================================================
+ `mon-insert-sys-proc-list' <FUNCTION>
+ ============================================================
+
+ <INTERACTIVE-SPEC-IS-LIST>
+ ==============================
+Insert a full lisp list of current system-proceses at point.
+Does not move point.
+
+:SEE-ALSO `mon-get-process', `mon-get-sys-proc-list', 
+`mon-insert-sys-proc-list', `emacs-pid',
+`mon-get-env-variables' `mon-get-system-specs'
+ `mon-help-emacs-introspect'.
+
+
+ ============================================================
+ `mon-generate-prand-id' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (&optional cnt)
+ ==============================
+Return a pseudo-rand UID.
+Return value is a 40 char hex string generated as sha1 sum from seed
+`mon-generate-prand-seed'. When > CNT 1 return N UID's.
+
+:EXAMPLE
+(mon-generate-prand-id 6)
+
+:NOTE Only the first sum has random qualities.
+      Subsequent sha1 sums are taken from sum calculated in previous iteration.
+      Thus, if CNT is 4 then the sha1 of sum1 -> sum2 -> sum3 -> sum4.
+
+This means:
+
+ a) the return value of all elts after car are _not_ random at all;
+
+ b) where UID assignment occurs in parallel with time-stamping we can infer
+    when the UID was generated relative the index of previous/subsequent elts.
+    This is a Featured-Bug®.
+
+:SEE-ALSO `mon-string-to-hex-string', `mon-generate-WPA-key'.
+
+
+ ============================================================
+ `mon-generate-prand-seed' <FUNCTION>
+ ============================================================
+
+ ==============================
+Generate a seed for 'unique random identifier' a 32 character hex string.
+Seed is only pseudo random/unique but it will suffice for our needs.
+Don't call this function in a loop it won't work b/c TIME is slow as hell.
+Instead, use as a seed for `mon-generate-prand-id'.
+On MON system a min. 0.85 seconds is needed between calls to produce unique id's.
+:EXAMPLE
+(mon-generate-prand-id)
+
+(let ((i 11) (k))
+  (while (/= i 0)
+    (sleep-for 0.85)
+    (setq k (cons `(,(mon-generate-prand-id)) k))
+    (setq i (1- i)))
+(prin1 k))
+:SEE-ALSO `mon-generate-prand-seed'.
+
+
+ ============================================================
+ `mon-sha1-region' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (start end &optional insrtp intrp)
+ <INTERACITVE-SPEC>
+ <REGION> 
+ <IGNORED-NOOP> 
+ <PREFIX-ARG->NUMBER> 
+ ==============================
+Return the sha1sum for contents of region.
+When INSRTP is non-nil or called-interactively insert sha1 on newline.
+Does not move point.
+:SEE-ALSO `sha1-region', `sha1-string'.
+
+
+
+ ============================================================
+ `mon-kill-ring-save-w-props' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (start end &optional no-strip)
+ <INTERACITVE-SPEC>
+ <REGION> 
+ <PREFIX-ARG-RAW> 
+ ==============================
+Copy region _with_ text-properties to kill-ring.
+If a leading `#' is present in string strip it.
+When NO-STRIP in non-nil or called-interactively with prefix arg do not strip
+leading `#'.
+
+:NOTE Function is yank-handler agnostic w/re to 2nd optional arg of `kill-new'.
+
+:SEE-ALSO `mon-line-test-content', `mon-list-all-properties-in-buffer'
+`mon-nuke-text-properties-buffer',`mon-nuke-text-properties-region'
+`mon-remove-text-property'`mon-remove-single-text-property'.
+
+
+ ============================================================
+ `mon-escape-string-for-cmd' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (unescape a-string &rest more-strings)
+ ==============================
+Return A-STRING escaped for passing to the w32 cmd.exe e.g `/' -> `\\'.
+When MORE-STRINGS is non-nil escape these also.
+When UNESCAPE is non-nil unescape A-STRING and/or MORE-STRINGS.
+:SEE-ALSO `convert-standard-filename', `w32-shell-dos-semantics'.
+`w32-quote-process-args'
+
+
+
+ ============================================================
+ `mon-line-strings-qt-region' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (start end &optional insertp intrp)
+ <INTERACITVE-SPEC>
+ <REGION> 
+ <IGNORED-NOOP> 
+ <PREFIX-ARG->NUMBER> 
+ ==============================
+Return symbols at each BOL in region wrapped in double-quotes `"'.
+When INSERTP is non-nil or called-interactively replace active region and
+move point to region-beginning.
+Line's symbol should be without trailing whitespace.
+If whitespace is present at EOL it is destructively removed.
+When following characters are at BOL no replacement is peformed on symbol:
+  ;( ) ` ' " Likewise, do not replace if " or ' follows symbol.
+
+:NOTE will not quote symbols containing whitespace.
+:EXAMPLE
+(princ (mon-line-strings-qt-region
+ (1+ (search-forward-regexp "►")) (- (search-forward-regexp "►") 2)))
+
+►
+I-will-be-a-string
+"I-am-almost-a-string
+I-am-a-half-string"
+
+I-am-not-a-string'
+►
+
+:SEE-ALSO `mon-line-strings-bq-qt-sym-bol', `mon-line-strings-pipe-bol'
+`mon-cln-up-colon', `mon-line-strings',`mon-line-strings-indent-to-col',
+`mon-line-strings-to-list', `mon-line-strings-region', `mon-string-ify-list',
+`mon-string-ify-current-line' `mon-string-split-line',
+`mon-line-drop-in-words'.
+
+
+ ============================================================
+ `mon-buffer-name->kill-ring' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (&optional or-buffer insrtp)
+ <INTERACITVE-SPEC>
+ <IGNORED-NOOP> 
+ <PREFIX-ARG-RAW> 
+ ==============================
+Put buffer-name of current-buffer on kill-ring.
+When OR-BUFFER is non-nil put that buffer's name on kill ring instead.
+When INSRTP is non-nil or called-interactively with prefix arg insert 
+buffer-name at point. Does not move point.
+
+:EXAMPLE
+(mon-buffer-name->kill-ring)
+(call-interactively 'mon-buffer-name->kill-ring)
+
+
+ ============================================================
+ `mon-make-a-pp' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (start end &optional CL->downcase)
+ <INTERACITVE-SPEC>
+ <REGION> 
+ <PREFIX-ARG-RAW> 
+ ==============================
+Pretty print the region in buffer. Do not move point.
+ When CL->DOWNCASE is non-nil it is used clean CL that is in ALL CAPS.
+:SEE-ALSO `mon-princ-cb', `mon-eval-sexp-at-point'
+
+
+ ============================================================
+ `mon-string-to-hex-string' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (&key hxify-str w-dlim prand-hex-len)
+ ==============================
+Return HXIFY-STR as a string of hex numbers.  When keyword W-DLIM is non-nil
+delimit hex numbers w-dlim.  When keyword PRAND-HEX-LEN (a number >= 80 ) is
+non-nil, return a pseudo-random string of length N generated with
+`mon-generate-prand-id'. Useful for generating throw-away WPA keys.
+
+:EXAMPLE
+(mon-string-to-hex-string :hxify-str "bubba")
+(mon-string-to-hex-string :hxify-str "bubba" :w-dlim ":")
+(mon-string-to-hex-string :hxify-str "bubba" :w-dlim " ")
+(mon-string-to-hex-string :prand-hex-len 64)
+(mon-string-to-hex-string :prand-hex-len 81) ;<-Should Fail.
+
+:SEE-ALSO `mon-string-from-hex-list', `mon-generate-WPA-key',
+`mon-generate-prand-seed'.
+
+
+ ============================================================
+ `mon-generate-WPA-key' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (&optional insrtp intrp)
+ <INTERACITVE-SPEC>
+ <IGNORED-NOOP> 
+ <PREFIX-ARG->NUMBER> 
+ ==============================
+Return a 64 char pseudo-random hex-string.
+When INSRTP is non-nil or called-interactively insert string at point.
+Does not move point.
+:EXAMPLE
+(mon-generate-WPA-key)
+
+:SEE-ALSO `mon-string-to-hex-string', `mon-generate-prand-id'.
+
+
+ ============================================================
+ `mon-async-du-dir' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (the-dir)
+ <INTERACITVE-SPEC>
+ <DIRECTORY-NAME> Directory to du :
+ ==============================
+Return a sorted du (big->small)for DIR in buffer `*DU-<DIR>'.
+du run as an asynchronous shell command.
+
+:EXAMPLE (mon-async-du-dir "~/GNUstep")
+:SEE-ALSO `mon-help-du-incantation', `*regexp-clean-du-flags*'
+
+
+ ============================================================
+ `mon-make-shell-buffer' <FUNCTION>
+ ============================================================
+
+ ==============================
+Return a new *shell* buffer. 
+If *shell* exists increment by 1 and return *shell-N*.
+
+:EXAMPLE
+(let ((kl-bf (mon-make-shell-buffer)))
+  (progn (momentary-string-display 
+          (format " The buffer %s is about to die" kl-bf) (point))
+         (kill-buffer kl-bf)))
+
+:NOTE could also be accomplished similarly with:
+
+(get-buffer-create (generate-new-buffer-name "*shell*"))
+
+But, this way MON has fine-grain control over the assigned name suffix.
+
+:CALLED-BY `mon-shell'
+
+:SEE-ALSO `shell'
+
+
+ ============================================================
+ `mon-shell' <FUNCTION>
+ ============================================================
+
+ <INTERACTIVE-SPEC-IS-LIST>
+ ==============================
+Return *shell* buffer.
+If *shell* exists increment by 1 and return *shell-N*.
+
+:SEE-ALSO `mon-make-shell-buffer', `shell'.
+
+
+ ============================================================
+ `mon-line-strings-pipe-bol' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (start end &optional insertp intrp)
+ <INTERACITVE-SPEC>
+ <REGION> 
+ <IGNORED-NOOP> 
+ <PREFIX-ARG->NUMBER> 
+ ==============================
+Return BOL in region replaced with `| '.
+When INSERTP is non-nil or called-interactively replace active region and
+move point to region-beginning.
+
+:EXAMPLE
+(save-excursion
+ (mon-line-strings-pipe-bol
+   (1+ (search-forward-regexp "►"))
+   (- (search-forward-regexp "►") 2)))
+
+►
+ Craig Balding
+ Emmanuel Bouillon
+ Bernardo Damele Assumpcao Guimarase
+ Jean-Paul Fizaine
+ Rob Havelt
+ Chris Wysopal
+►
+
+:SEE-ALSO `mon-line-strings-pipe-to-col', `mon-line-strings-bq-qt-sym-bol', 
+`mon-line-strings', `mon-line-strings-qt-region',  `mon-line-strings-region', 
+`mon-line-strings-indent-to-col', `mon-line-strings-to-list'.
+
+
+ ============================================================
+ `mon-line-strings-indent-to-col' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (start end col &optional insertp intrp)
+ <INTERACITVE-SPEC>
+ <REGION> 
+ <PREFIX-ARG-RAW> 
+ <IGNORED-NOOP> 
+ <PREFIX-ARG->NUMBER> 
+ ==============================
+Return region lines indented to column number COL.
+
+When called-interactively with non-nil prefix arg COL return region indented to
+column number. When prefix arg is nil prompt for COL.
+
+When INSERTP is non-nil or called-interactively replace active region and
+move point to region-beginning.
+
+:NOTE following example used in conjunction with `mon-line-strings-pipe-bol'.
+
+:EXAMPLE
+(let ((rs (1+ (search-forward-regexp "►")))
+      (re (- (search-forward-regexp "►") 2))
+      (tmp))
+  (setq tmp (buffer-substring-no-properties rs re))
+  (setq tmp (with-temp-buffer 
+              (insert tmp)
+              (mon-line-strings-pipe-bol (buffer-end 0) (buffer-end 1) t)
+              (mon-line-strings-indent-to-col (buffer-end 0) (buffer-end 1) 7 t)
+              (buffer-substring-no-properties (buffer-end 0) (buffer-end 1))))
+  tmp)
+
+►
+Craig Balding
+Emmanuel Bouillon
+Bernardo Damele Assumpcao Guimaraes
+Jean-Paul Fizaine
+Rob Havelt
+Chris Wysopal
+►
+
+:SEE-ALSO `mon-line-indent-from-to-col', `mon-line-strings-pipe-to-col'
+`mon-comment-divider->col', `mon-lisp-comment-to-col',
+`mon-line-strings', `mon-string-fill-to-col',
+`mon-line-strings-qt-region', `mon-line-strings-region', 
+`mon-line-strings-bq-qt-sym-bol',`mon-line-strings-to-list'
+
+
+ ============================================================
+ `mon-line-strings-region' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (start end &optional insertp intrp)
+ <INTERACITVE-SPEC>
+ <REGION> 
+ <IGNORED-NOOP> 
+ <PREFIX-ARG->NUMBER> 
+ ==============================
+Return each line of region as a string followed by a `
+'.
+When called-interactively or INSERTP is non-nil insert strings at point.
+Does not move point.
+
+Use with concat for formated indentation in source.
+
+:EXAMPLE
+(save-excursion 
+  (mon-line-strings-region
+   (1+ (search-forward-regexp "►")) (- (search-forward-regexp "►") 2)))
+
+►
+I-will-be-a-string
+I too will be a string.
+Me as well.
+More stringification here
+►
+
+:SEE-ALSO `mon-line-strings', `mon-line-strings-to-list',
+`mon-line-strings-bq-qt-sym-bol', `mon-string-ify-list', 
+`mon-string-ify-current-line', `mon-string-split-line', 
+`mon-line-drop-in-words', `mon-cln-up-colon'.
+
+
+ ============================================================
+ `mon-line-indent-from-to-col' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (from-col to-col start end &optional intrp)
+ <INTERACITVE-SPEC>
+ <IGNORED-NOOP> 
+ <IGNORED-NOOP> 
+ <IGNORED-NOOP> 
+ <IGNORED-NOOP> 
+ <PREFIX-ARG->NUMBER> 
+ ==============================
+Indent to column starting FROM-COL identing TO-COL in region START to END.
+When called-interactively prompt for column numer of FROM-COL and TO-COL.
+:NOTE Does not work for one line regions.
+
+:SEE-ALSO `mon-line-strings-indent-to-col', `mon-line-strings-pipe-to-col'
+`mon-string-fill-to-col',`mon-comment-divider->col',
+`mon-lisp-comment-to-col'.
+
+
+ ============================================================
+ `mon-get-system-specs' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (&optional insertp intrp)
+ <INTERACITVE-SPEC>
+ <IGNORED-NOOP> 
+ <PREFIX-ARG->NUMBER> 
+ ==============================
+Return the output of shell-command 'uname -a'.
+When called-interactively or INSERTP is non-nil insert at point.
+Does not move point.
+
+:EXAMPLE
+(mon-get-system-specs)
+
+:SEE-ALSO `mon-get-env-variables', `mon-get-proc-w-name', 
+`mon-get-sys-proc-list', `mon-insert-sys-proc-list'.
+
+
+ ============================================================
+ `mon-string-fill-to-col' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (str to-col)
+ ==============================
+Return a string STR filled to column number TO-COL.
+
+:EXAMPLE
+(mon-string-fill-to-col (mon-get-system-specs) 72)
+
+:SEE-ALSO `mon-line-strings-indent-to-col', `mon-line-indent-from-to-col'.
+`mon-string-justify-left'.
+
+
+ ============================================================
+ `mon-line-strings-pipe-to-col' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (start end &optional to-col insrtp intrp)
+ <INTERACITVE-SPEC>
+ <IGNORED-NOOP> 
+ <IGNORED-NOOP> 
+ <PREFIX-ARG-RAW> 
+ <IGNORED-NOOP> 
+ <PREFIX-ARG->NUMBER> 
+ ==============================
+Return region's BOL piped and indented to column number.
+When TO-COL is non-nil return region indented TO-COL, default column number 7.
+When called-interactively or INSRTP is non-nil replace region.
+
+:EXAMPLE
+
+(let ((reb (1+ (search-forward-regexp "►")))
+      (ree (- (search-forward-regexp "◄") 2)))
+  (momentary-string-display
+   (concat "\n\n=> TO-THE-19th-COL-!\n\n"
+           (mon-line-strings-pipe-to-col reb ree 19)
+           "\n\n... and beyond ... :)\n") (point)))
+
+►
+William Gibson
+Bruce Sterling
+Dan Brown
+Neal Stephenson
+Loyd Blankenship
+Erik Gordon Corley
+◄
+
+:SEE-ALSO `mon-line-strings-pipe-bol', `mon-line-strings-indent-to-col',
+`mon-line-strings', `mon-line-indent-from-to-col',
+`mon-comment-divider->col', `mon-lisp-comment-to-col'.
+
+
+ ============================================================
+ `mon-line-strings' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (start end &optional insrtp intrp)
+ <INTERACITVE-SPEC>
+ <REGION> 
+ <IGNORED-NOOP> 
+ <PREFIX-ARG->NUMBER> 
+ ==============================
+Return lines of region from START to END as strings.
+Each line is replaced with a quoted string.
+When called-interactively or INSRTP is non-nil replace region with strings and 
+move point to START.
+
+:EXAMPLE
+(let ((legs)
+      (legb (1+ (search-forward-regexp "►")))
+      (lege (- (search-forward-regexp "◀") 2)))
+  (setq legs (mon-line-strings legb lege)))
+
+►
+Hassan-i Sabbah
+Tristan and Iseult
+Broder Rusche
+Pier Gerlofs Donia
+Böŏvarr Bjarki
+◀
+
+:SEE-ALSO `mon-line-strings-to-list', `mon-line-strings-region'
+`mon-line-strings-qt-region',`mon-line-drop-in-words'
+`mon-string-ify-list',`mon-string-ify-current-line'.
+
+
+ ============================================================
+ `mon-get-process' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (&optional proc-comm)
+ <INTERACTIVE-SPEC-IS-LIST>
+ ==============================
+Find the process-id for process invoked with command.
+When PROC-COMM is non-nil it is a command name to find.
+Default is value of (invocation-name).
+
+:NOTE This function is GNU/Linux centric! However, unlike `mon-get-proc-w-name'
+this function can match multiple processes with identical invocation commands.
+
+:EXAMPLE
+(mon-get-process (invocation-name))
+
+:SEE-ALSO `mon-insert-sys-proc-list', `mon-get-sys-proc-list',
+`mon-help-process-functions'.
+
+
+ ============================================================
+ `mon-toggle-eval-length' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (&optional new-depth intrp)
+ <INTERACITVE-SPEC>
+ <PREFIX-ARG-RAW> 
+ <PREFIX-ARG->NUMBER> 
+ ==============================
+Toggle or set a new value for `eval-expression-print-length' variable.
+Return value of `eval-expression-print-length'.
+
+When `eval-expression-print-length' is nil and NEW-DEPTH is non-nil or
+called-interactively with prefix arg use length, else set length to 12 - the
+default.
+
+When `eval-expression-print-length' is non-nil set length to nil.
+When `eval-expression-print-length' and NEW-DEPTH are non-nil set length.
+
+:EXAMPLE
+
+(mon-toggle-eval-length)
+
+(mon-toggle-eval-length 16)
+
+(mon-toggle-eval-length nil t)
+
+(mon-toggle-eval-length 1 t)
+
+(mon-toggle-eval-length)
+
+:SEE-ALSO `mon-toggle-truncate-line', `mon-naf-mode-toggle-restore-llm',
+`print-length'.
+
+ ============================================================
+ `mon-foreach' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (var list &rest body)
+ ==============================
+A foreach style macro idiom for looping over vars in a list with body.
+
+  (foreach i           ; <-var			
+	   '(1 2 3 4)  ; <-list		
+	   (+ i i))    ; <-body		
+  (foreach i '(1 2 3 4) (+ i i)) 
+  => (2 4 6 8)
+
+  :SEE-ALSO `mon-for', `mon-loop'.
+
+
+ ============================================================
+ `mon-for' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (var init final &rest body)
+ ==============================
+Execute a simple for loop.
+
+:EXAMPLE
+(for i  1  10  (print i))
+
+:SEE-ALSO `mon-foreach', `mon-loop'.
+
+
+ ============================================================
+ `mon-loop' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (clauses &rest body)
+ ==============================
+Macro to execute a loop over clauses.
+:SEE-ALSO `mon-foreach', `mon-for'.
+
+
+ ============================================================
+ `mon-moveq' <FUNCTION>
+ ============================================================
+ <ARG-LIST>
+ (new old)
+ ==============================
+Set NEW to OLD and set OLD to nil.
+
+:SEE-ALSO `mon-maptree', `mon-recursive-apply' `mon-map-append', `mon-combine',
+`mon-flatten', `mon-transpose', `mon-sublist', `mon-sublist-gutted', 
+`mon-remove-dups', `mon-assoc-replace'.
+
+;;;  <Timestamp: #{2009-12-22T03:43:27-05:00Z}#{09522} - by MON KEY>
+;;; :NOTE Documentation for mon-utils.el produced with:
+(mon-help-insert-documentation
+ '(scratch switch-to-messages scroll-down-in-place scroll-up-in-place
+   mon-kill-appending mon-kill-completions mon-flip-windows mon-twin-horizontal
+   mon-twin-vertical mon-what-face mon-toggle-menu-bar mon-append-to-register
+   mon-append-to-buffer mon-region-position mon-region-length mon-region-unfill
+   mon-region-capitalize mon-region-reverse ;; mon-toggle-trunc
+   mon-inhibit-read-only mon-inhibit-modification-hooks
+   mon-inhibit-point-motion-hooks mon-toggle-read-only-point-motion
+   mon-wrap-selection mon-wrap-text mon-wrap-with mon-choose-from-menu
+   mon-match-at-point mon-spacep mon-spacep-not-bol mon-spacep-is-bol
+   mon-spacep-is-after-eol mon-spacep-is-after-eol-then-graphic
+   mon-spacep-at-eol mon-spacep-first mon-line-bol-is-eol
+   mon-line-previous-bol-is-eol mon-line-next-bol-is-eol mon-line-eol-is-eob
+   mon-line-end-or-code-end mon-line-get-next mon-line-count-region
+   mon-line-count-matchp mon-line-length-max mon-is-digit mon-is-letter
+   mon-is-alphanum mon-is-digit-simp mon-is-letter-simp mon-is-alphanum-simp
+   mon-string-justify-left mon-string-to-sequence mon-string-from-sequence
+   mon-string-alpha-list mon-string-index mon-string-position
+   mon-string-has-suffix mon-string-ify-list mon-string-split-on-regexp
+   mon-string-sub-old->new mon-string-split-line mon-string-ify-current-line
+   mon-get-word-list-buffer mon-word-get-next mon-word-reverse-region
+   mon-word-iterate-over mon-word-count-analysis mon-word-count-occurrences
+   mon-word-count-region mon-word-count-chars-region mon-rectangle-columns
+   mon-rectangle-sum-column mon-rectangle-operate-on
+   mon-rectangle-apply-on-region-points mon-rectangle-downcase
+   mon-rectangle-upcase mon-rectangle-capitalize mon-line-test-content
+   mon-test-props mon-view-help-source mon-index-elisp-symbol mon-plist-keys
+   mon-list-all-properties-in-buffer mon-nuke-text-properties-buffer
+   mon-remove-text-property mon-remove-single-text-property
+   mon-nuke-text-properties-region mon-elt-> mon-elt-< mon-elt->elt mon-elt-<elt
+   mon-flatten mon-combine mon-recursive-apply mon-escape-lisp-string-region
+   mon-unescape-lisp-string-region mon-princ-cb mon-eval-sexp-at-point
+   mon-eval-print-last-sexp mon-extend-selection mon-semnav-up mon-semnav-up
+   ;problematic mon-eval-expression mon-nuke-and-eval mon-unbind-defun
+   mon-unbind-symbol mon-unbind-function mon-unbind-command mon-unbind-variable
+   mon-byte-compile-and-load mon-compile-when-needed mon-load-or-alert mon-cmd
+   mon-terminal mon-string-to-symbol mon-line-find-duplicates
+   mon-test-keypresses mon-line-strings-to-list mon-line-strings-to-list-*test*
+   mon-line-string-rotate-name mon-line-string-rotate-namestrings
+   mon-line-string-unrotate-namestrings mon-symbol-to-string
+   mon-line-string-rotate-namestrings-combine mon-sublist mon-sublist-gutted
+   mon-map-append mon-string-chop-spaces mon-maptree mon-transpose plist-remove
+   mon-dump-object-to-file mon-string-upto-index mon-string-after-index
+   mon-line-strings-bq-qt-sym-bol mon-get-env-variables mon-get-proc-w-name
+   mon-get-sys-proc-list mon-insert-sys-proc-list mon-generate-prand-id
+   mon-generate-prand-seed mon-sha1-region mon-kill-ring-save-w-props
+   mon-escape-string-for-cmd mon-line-strings-qt-region
+   mon-buffer-name->kill-ring mon-make-a-pp mon-string-to-hex-string
+   mon-generate-WPA-key mon-async-du-dir mon-make-shell-buffer mon-shell
+   mon-line-strings-pipe-bol mon-line-strings-indent-to-col
+   mon-line-strings-region mon-line-indent-from-to-col mon-get-system-specs
+   mon-string-fill-to-col mon-line-strings-pipe-to-col mon-line-strings
+   mon-get-process mon-toggle-eval-length))
+
+(mon-help-insert-documentation
+ '(mon-foreach mon-for mon-loop mon-moveq))
+
+</pre>

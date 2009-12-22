@@ -500,19 +500,20 @@ be just a subtle coloured underline.
 Found a desciption on how to use this pair at http://www.plope.com/Members/chrism/flymake-mode
 I did a copy 'n paste for simplicity.
 
-  (when (load "flymake" t) 
-         (defun flymake-pyflakes-init () 
-           (let* ((temp-file (flymake-init-create-temp-buffer-copy 
-                              'flymake-create-temp-inplace)) 
-              (local-file (file-relative-name 
-                           temp-file 
-                           (file-name-directory buffer-file-name)))) 
-             (list "pyflakes" (list local-file)))) 
-
-         (add-to-list 'flymake-allowed-file-name-masks 
-                  '("\\.py\\'" flymake-pyflakes-init))) 
-
-   (add-hook 'find-file-hook 'flymake-find-file-hook)
+{{{
+(when (load "flymake" t) 
+  (defun flymake-pyflakes-init () 
+     ; Make sure it's not a remote buffer or flymake would not work
+     (when (not (subsetp (list (current-buffer)) (tramp-list-remote-buffers)))
+      (let* ((temp-file (flymake-init-create-temp-buffer-copy 
+                         'flymake-create-temp-inplace)) 
+             (local-file (file-relative-name 
+                          temp-file 
+                          (file-name-directory buffer-file-name)))) 
+        (list "pyflakes" (list local-file)))))
+  (add-to-list 'flymake-allowed-file-name-masks 
+               '("\\.py\\'" flymake-pyflakes-init))) 
+}}}
 
 There are some comments regarding using flymake-cursor to show the error in minibuffer [http://paste.lisp.org/display/60617,1/raw flymake-cursor.el] (the same idea is now available in [NxhtmlMode nXhtml] in the file <b>util/flymakemsg.el</b>).
 

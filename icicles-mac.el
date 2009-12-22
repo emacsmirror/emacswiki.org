@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Dec 13 15:27:41 2009 (-0800)
+;; Last-Updated: Mon Dec 21 08:53:01 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 521
+;;     Update #: 522
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -114,7 +114,7 @@
 ;;; Macros -----------------------------------------------------------
 
 (if (fboundp 'with-selected-window)     ; Emacs 22+
-    (fset 'icicle-with-selected-window (symbol-function 'with-selected-window))
+    (defalias 'icicle-with-selected-window (symbol-function 'with-selected-window))
   (defmacro icicle-with-selected-window (window &rest body)
     "Execute the forms in BODY with WINDOW as the selected window.
 The value returned is the value of the last form in BODY.

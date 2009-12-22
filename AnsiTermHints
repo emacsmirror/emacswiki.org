@@ -59,16 +59,24 @@ frequently visit with it's own buffer name and connection parameters:
 One of the best features of AnsiTerm mode is its remote directory tracking. Whatever remote directory your terminal is in, that will be the default directory that tramp uses if you choose to edit a file with C-x C-f. But you have to set up the following in your ##.bash_profile## on each remote host first:
 
     function set-eterm-dir {
-        echo -e "\033AnSiTu" $(whoami)
-        echo -e "\033AnSiTc" $(pwd)
-        echo -e "\033AnSiTh" $(hostname -f)
-        history -a                  # write history to disk
+        echo -e "\033AnSiTu" "$LOGNAME" # $LOGNAME is more portable than using pwd.
+        echo -e "\033AnSiTc" "$(pwd)"
+        if [ $(uname) = "SunOS" ]; then
+	    # The -f option does something else on SunOS and is not needed anyway.
+       	    hostname_options="";
+        else
+            hostname_options="-f";
+        fi
+        echo -e "\033AnSiTh" "$(hostname $hostname_options)" # Using the -f option can cause problems on some OSes.
+        history -a # Write history to disk.
     }
 
-    # track directory, username, and cwd for remote logons
-    if [ $TERM = eterm-color ]; then
+    # Track directory, username, and cwd for remote logons.
+    if [ "$TERM" = "eterm-color" ]; then
         PROMPT_COMMAND=set-eterm-dir
     fi
+
+Note that the above code may not work if /etc/hosts does not contain the fully qualified domain name (eg. it contains example instead of www.example.com).  This is the case by default on Ubuntu when it is installed using the live CD and can be fixed by editing /etc/hosts.  Tested on FreeBSD, Ubuntu and SunOS.
 
 == Remote Term Type ==
 

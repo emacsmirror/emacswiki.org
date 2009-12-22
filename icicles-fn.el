@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Dec  7 15:58:09 2009 (-0800)
+;; Last-Updated: Mon Dec 21 08:52:22 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 11458
+;;     Update #: 11460
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -363,7 +363,7 @@
 ;; Free variable `completion-reference-buffer' is defined in `simple.el'.
 ;;
 (unless (fboundp 'old-choose-completion-string)
-(fset 'old-choose-completion-string (symbol-function 'choose-completion-string)))
+(defalias 'old-choose-completion-string (symbol-function 'choose-completion-string)))
 
 ;;;###autoload
 (cond ((> emacs-major-version 21)       ; Emacs 22
@@ -514,7 +514,7 @@ the following is true:
 ;; That's so we can fit the *Completions* window to the buffer, including the help lines.
 ;;
 (unless (fboundp 'old-completion-setup-function)
-(fset 'old-completion-setup-function (symbol-function 'completion-setup-function)))
+(defalias 'old-completion-setup-function (symbol-function 'completion-setup-function)))
 
 ;;;###autoload
 (when (< emacs-major-version 22)
@@ -730,7 +730,7 @@ lax: a match is not required."
 ;; `#1=#:hist'...`#1#'...`#1' read syntax to use an uninterned symbol.
 ;;
 (unless (fboundp 'old-completing-read)
-(fset 'old-completing-read (symbol-function 'completing-read)))
+(defalias 'old-completing-read (symbol-function 'completing-read)))
 
 ;;;###autoload
 (defun icicle-completing-read (prompt collection &optional predicate require-match
@@ -1204,7 +1204,7 @@ Returns the modified copy of PLIST."
 ;; `#1=#:hist'...`#1#'...`#1' read syntax to use an uninterned symbol.
 ;;
 (unless (fboundp 'old-read-from-minibuffer)
-(fset 'old-read-from-minibuffer (symbol-function 'read-from-minibuffer)))
+(defalias 'old-read-from-minibuffer (symbol-function 'read-from-minibuffer)))
 
 ;;;###autoload
 (defun icicle-read-from-minibuffer (prompt &optional initial-contents keymap read
@@ -1287,7 +1287,8 @@ functions, which use zero-indexing for POSITION."
 ;;
 (when (fboundp 'minibuffer-default-add-completions) ; Emacs 23+.
   (unless (fboundp 'old-minibuffer-default-add-completions)
-(fset 'old-minibuffer-default-add-completions (symbol-function 'minibuffer-default-add-completions)))
+(defalias 'old-minibuffer-default-add-completions
+    (symbol-function 'minibuffer-default-add-completions)))
 
   ;; Use this as `minibuffer-default-add-function'.
   (defun icicle-minibuffer-default-add-completions ()
@@ -1311,7 +1312,7 @@ functions, which use zero-indexing for POSITION."
 ;;
 (when (fboundp 'read-number)            ; Emacs 22+
   (unless (fboundp 'old-read-number)
-(fset 'old-read-number (symbol-function 'read-number)))
+(defalias 'old-read-number (symbol-function 'read-number)))
 
   (defun icicle-read-number (prompt &optional default)
     "Read a number in the minibuffer, prompting with PROMPT (a string).
@@ -1572,7 +1573,7 @@ before you call this function."
 ;; `#1=#:hist'...`#1#'...`#1' read syntax to use an uninterned symbol.
 ;;
 (unless (fboundp 'old-read-string)
-(fset 'old-read-string (symbol-function 'read-string)))
+(defalias 'old-read-string (symbol-function 'read-string)))
 
 ;;;###autoload
 (defun icicle-read-string (prompt &optional initial-input hist-m@%=!$+&^*z
@@ -1603,7 +1604,7 @@ Fifth arg INHERIT-INPUT-METHOD, if non-nil, means the minibuffer inherits
 ;; Show face names in *Completions* with the faces they name.
 ;;
 (unless (fboundp 'old-read-face-name)
-(fset 'old-read-face-name (symbol-function 'read-face-name)))
+(defalias 'old-read-face-name (symbol-function 'read-face-name)))
 
 ;;;###autoload
 (cond ((< emacs-major-version 21)
@@ -1838,7 +1839,7 @@ FACE."
 ;;
 (when (fboundp 'face-valid-attribute-values) ; Emacs 21+.
   (unless (fboundp 'old-face-valid-attribute-values)
-(fset 'old-face-valid-attribute-values (symbol-function 'face-valid-attribute-values)))
+(defalias 'old-face-valid-attribute-values (symbol-function 'face-valid-attribute-values)))
 
 ;;;###autoload
   (defun icicle-face-valid-attribute-values (attribute &optional frame)
@@ -1908,7 +1909,7 @@ If `hexrgb.el' is not loaded, then just return COLOR-NAME."
     (when (fboundp 'crm-init-keymaps) (crm-init-keymaps)) ; Emacs 22, but not 23.
     ;; Save vanilla CRM stuff as `old-' stuff.
     (unless (fboundp 'old-completing-read-multiple)
-(fset 'old-completing-read-multiple (symbol-function 'completing-read-multiple)))
+(defalias 'old-completing-read-multiple (symbol-function 'completing-read-multiple)))
     (defvar old-crm-local-completion-map crm-local-completion-map "Original CRM completion map.")
     (defvar old-crm-local-must-match-map crm-local-must-match-map "Original CRM must-match map.")
 
@@ -2037,7 +2038,7 @@ Uses Icicles completion - see `icicle-read-shell-command-completing'."
 ;;
 (unless (fboundp 'read-shell-command)   ; Emacs 23.
   (unless (fboundp 'old-shell-command)
-(fset 'old-shell-command (symbol-function 'shell-command)))
+(defalias 'old-shell-command (symbol-function 'shell-command)))
 
   (defun icicle-shell-command (command &optional output-buffer error-buffer)
     "Execute string COMMAND in inferior shell; display output, if any.
@@ -2105,7 +2106,7 @@ specifies the value of ERROR-BUFFER."
 ;;
 (unless (fboundp 'read-shell-command)   ; Emacs 23.
   (unless (fboundp 'old-shell-command-on-region)
-(fset 'old-shell-command-on-region (symbol-function 'shell-command-on-region)))
+(defalias 'old-shell-command-on-region (symbol-function 'shell-command-on-region)))
 
   (defun icicle-shell-command-on-region (start end command &optional output-buffer replace
                                          error-buffer display-error-buffer)
@@ -2673,7 +2674,7 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
 ;;    `completions-common-part' are used on candidates.
 ;;
 (unless (fboundp 'old-display-completion-list)
-(fset 'old-display-completion-list (symbol-function 'display-completion-list)))
+(defalias 'old-display-completion-list (symbol-function 'display-completion-list)))
 
 ;;;###autoload
 (defun icicle-display-completion-list (completions &optional ignored)

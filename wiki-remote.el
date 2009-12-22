@@ -1,4 +1,3 @@
-[[de:fhyYKjDkA]]
 ;;; wiki-remote.el --- edit pages on a remote wiki
 
 ;; Copyright (C) 2001, 2002, 2003  Alex Schroeder <alex@gnu.org>

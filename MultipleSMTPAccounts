@@ -8,9 +8,11 @@ Unfortunately, there doesn't exist a built-in feature set to decide which SMTP s
 
  ;; Available SMTP accounts.
  (defvar smtp-accounts
-   '((plain "me@foo.com" "smtp.foo.com" 25  "user-foo" "pass-foo")
-     (ssl   "me@bar.com" "smtp.bar.com" 587 "user-bar" "pass-bar" "key" "cert")
-     (ssl   "me@baz.com" "smtp.baz.com" 587 "user-baz" "pass-baz" "key" "cert")))
+   '((plain    "me@foo.com" "smtp.foo.com" 25  "user-foo" "pass-foo")
+     (login    "me@foo.com" "smtp.moo.com" 25  "user-moo" nil)
+     (cram-md5 "me@foo.com" "smtp.hoo.com" 25  "user-hoo" nil)
+     (ssl      "me@bar.com" "smtp.bar.com" 587 "user-bar" "pass-bar" "key" "cert")
+     (ssl      "me@baz.com" "smtp.baz.com" 587 "user-baz" "pass-baz" "key" "cert")))
 
  ;; Default smtpmail.el configurations.
  (require 'smtpmail)
@@ -21,11 +23,12 @@ Unfortunately, there doesn't exist a built-in feature set to decide which SMTP s
        smtpmail-debug-info t
        smtpmail-debug-verb t)
 
- (defun set-smtp-plain (server port user password)
+ (defun set-smtp (mech server port user password)
    "Set related SMTP variables for supplied parameters."
    (setq smtpmail-smtp-server server
          smtpmail-smtp-service port
          smtpmail-auth-credentials (list (list server port user password))
+         smtpmail-auth-supported (list mech)
          smtpmail-starttls-credentials nil)
    (message "Setting SMTP server to `%s:%s' for user `%s'."
             server port user))
@@ -49,14 +52,14 @@ Unfortunately, there doesn't exist a built-in feature set to decide which SMTP s
      (loop with from = (save-restriction
                          (message-narrow-to-headers)
                          (message-fetch-field "from"))
-           for (acc-type address . auth-spec) in smtp-accounts
+           for (auth-mech address . auth-spec) in smtp-accounts
            when (string-match address from)
            do (cond
-               ((eql acc-type 'plain)
-                (return (apply 'set-smtp-plain auth-spec)))
-               ((eql acc-type 'ssl)
+               ((memq auth-mech '(cram-md5 plain login))
+                (return (apply 'set-smtp (cons auth-mech auth-spec))))
+               ((eql auth-mech 'ssl)
                 (return (apply 'set-smtp-ssl auth-spec)))
-               (t (error "Unrecognized SMTP account type: `%s'." acc-type)))
+               (t (error "Unrecognized SMTP auth. mechanism: `%s'." auth-mech)))
            finally (error "Cannot infer SMTP information."))))
 
  (add-hook 'message-send-hook 'change-smtp)

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Dec 13 15:48:57 2009 (-0800)
+;; Last-Updated: Mon Dec 21 20:36:17 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 4665
+;;     Update #: 4684
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2009/12/21 dadams
+;;     fset -> defalias.
 ;; 2009/12/13 dadams
 ;;     Added: icicle-bookmark-dired-other-window, icicle-dired(-other-window).
 ;;     *-buffer*, *-dired-project*, *-find-file(-absolute)*, *-(recent|locate)-file*,
@@ -303,6 +305,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2009/12/21 dadams
+;;     fset -> defalias.
 ;; 2009/12/07 dadams
 ;;     Added: icicle-minibuffer-default-add-dired-shell-commands.
 ;;     icicle-dired-read-shell-command: Instead of using minibuffer-default-add-shell-commands,
@@ -1592,6 +1596,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mac.el'")
 ;;
+;; 2009/12/21 dadams
+;;     fset -> defalias.
 ;; 2009/12/13 dadams
 ;;     icicle-define-sort-command: Add REVERSED to msg if reversed.
 ;; 2009/10/22 dadams
@@ -1672,6 +1678,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2009/12/21 dadams
+;;     icicle-narrow-candidates:
+;;       Add fn to minibuffer-setup-hook to make the reference buffer be the new minibuffer.
+;;     fset -> defalias.
 ;; 2009/12/13 dadams
 ;;     icicle-change-sort-order: Add REVERSED to msg when reversed.
 ;; 2009/11/27 dadams
@@ -2632,6 +2642,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2009/12/21 dadams
+;;     Final dolist: Move loaded-library test outside of eval-after-load.
+;;                   Update the test for Emacs 22+ (not just assoc).  Thx to Kevin Ryde.
+;;     Combine eval-after-load's for dired-x.  Remove eval-after-load for simple.el (preloaded).
+;;     fset -> defalias.
 ;; 2009/12/13 dadams
 ;;     icicle-define-minibuffer-maps:
 ;;       Bind C-x m to icicle-bookmark-file-other-window in file-name completion maps.

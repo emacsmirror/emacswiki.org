@@ -1,5 +1,7 @@
 Install this to get notified everytime your name is mentioned (except for when your name is mentioned as part of a room listing of who's in the room)
 
+ToDoChiKu is another alternative, that works with Growl, Snarl or libnotify.
+
 <pre>
 (defvar growlnotify-command (executable-find "growlnotify") "The path to growlnotify")
 

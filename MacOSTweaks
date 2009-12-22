@@ -137,6 +137,9 @@ Emacs lisp support for Mac OS X plist files (including the environment plist fil
 
 Changing the Finder's environment variables doesn't take effect until you log out entirely and back in, though.  Whether this is a problem depends on whether you're in the habit of rebooting (ever), or not.
 
+A final alternative: if you spend most of your time in Terminal.app and would like emacs to inherit your shell's environment, 
+<code>open /Applications/Emacs.app</code> will accomplish this.
+
 === open-network-stream gives the error "No address associated with nodename" ===
 
 Open-network-stream is called to create a socket connection to a remote host; it's given a string in the form <nowiki>"host:port"</nowiki>, where

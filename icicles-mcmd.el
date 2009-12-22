@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Dec 13 15:28:31 2009 (-0800)
+;; Last-Updated: Mon Dec 21 12:18:07 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 15077
+;;     Update #: 15084
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -387,7 +387,7 @@
 ;; Selects minibuffer contents and leaves point at its beginning.
 ;;
 (unless (fboundp 'old-next-history-element)
-(fset 'old-next-history-element (symbol-function 'next-history-element)))
+(defalias 'old-next-history-element (symbol-function 'next-history-element)))
 
 ;;;###autoload
 (defun icicle-next-history-element (arg) ; Bound to `M-n' in the minibuffer.
@@ -407,7 +407,7 @@ With argument N, it uses the Nth following element."
 ;; Remove *Completion* window.
 ;;
 (unless (fboundp 'old-exit-minibuffer)
-(fset 'old-exit-minibuffer (symbol-function 'exit-minibuffer)))
+(defalias 'old-exit-minibuffer (symbol-function 'exit-minibuffer)))
 
 ;;;###autoload
 (defun icicle-exit-minibuffer ()        ; Bound to `C-m' (`RET') in the minibuffer.
@@ -447,7 +447,7 @@ Remove `*Completions*' window.  Remove Icicles minibuffer faces."
 ;; Use Icicles completion.
 ;;
 (unless (fboundp 'old-minibuffer-complete-and-exit)
-(fset 'old-minibuffer-complete-and-exit (symbol-function 'minibuffer-complete-and-exit)))
+(defalias 'old-minibuffer-complete-and-exit (symbol-function 'minibuffer-complete-and-exit)))
 
 ;; Bound to `C-m' (`RET') in `minibuffer-local-must-match-map'.
 ;;;###autoload
@@ -530,7 +530,7 @@ is to `minibuffer-complete'.  That is, it is the regexp-match version."
 ;; Don't strip text properties.
 ;;
 (unless (fboundp 'old-choose-completion)
-(fset 'old-choose-completion (symbol-function 'choose-completion)))
+(defalias 'old-choose-completion (symbol-function 'choose-completion)))
 
 ;;;###autoload
 (defun icicle-choose-completion ()
@@ -569,7 +569,7 @@ is to `minibuffer-complete'.  That is, it is the regexp-match version."
 ;; Don't strip text properties.
 ;;
 (when (and (fboundp 'mouse-choose-completion) (not (fboundp 'old-mouse-choose-completion)))
-(fset 'old-mouse-choose-completion (symbol-function 'mouse-choose-completion)))
+(defalias 'old-mouse-choose-completion (symbol-function 'mouse-choose-completion)))
 
 ;;;###autoload
 (defun icicle-mouse-choose-completion (event) ; Bound to `mouse-2' in *Completions*.
@@ -659,7 +659,7 @@ POSITION is a buffer position."
 ;; Selects *Completions* window even if on another frame.
 ;;
 (unless (fboundp 'old-switch-to-completions)
-(fset 'old-switch-to-completions (symbol-function 'switch-to-completions)))
+(defalias 'old-switch-to-completions (symbol-function 'switch-to-completions)))
 
 ;;;###autoload
 (defun icicle-switch-to-completions ()
@@ -4345,7 +4345,7 @@ You can use this command only from the minibuffer or *Completions*
 ;; This is a top-level command, but we put it here to avoid library require cycles.
 ;;;###autoload
 (if (and (not (fboundp 'icicle-describe-file)) (fboundp 'describe-file))
-    (fset 'icicle-describe-file (symbol-function 'describe-file))
+    (defalias 'icicle-describe-file (symbol-function 'describe-file))
   (defun icicle-describe-file (filename) ; Suggestion: bind to `C-h M-f'.
     "Describe the file named FILENAME.
 If FILENAME is nil, describe the current directory."
@@ -4691,6 +4691,13 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
                (error (message (error-message-string i-narrow-candidates))))))
           (t
            (let* (;; $$$$$$$$$$$$$ (icicle-whole-candidate-as-text-prop-p  nil)
+                  (minibuffer-setup-hook ; Make sure the new minibuffer is the reference buffer.
+                   (cons
+                    (lambda ()
+                      (with-current-buffer (get-buffer-create "*Completions*")
+                        (set (make-local-variable 'completion-reference-buffer)
+                             (window-buffer (active-minibuffer-window)))))
+                    minibuffer-setup-hook))
                   (current-candidates  icicle-completion-candidates)
                   (result
                    (if (and (> emacs-major-version 21) (icicle-file-name-input-p))

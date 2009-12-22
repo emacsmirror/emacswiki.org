@@ -8,9 +8,9 @@
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Copyright (C) 2009, rubikitch, all rights reserved.
 ;; Created: 2008-12-11 13:56:50
-;; Version: $Revision: 1.20 $
-;; Last-Updated: 2009/11/26 22:41:56 +0900
-;;           By: Tomohiko KOSAKA
+;; Version: $Revision: 1.22 $
+;; Last-Updated: Fri May 22 13:07:04 2009 (-0700)
+;;           By: dradams
 ;; URL: http://www.emacswiki.org/emacs/download/auto-install.el
 ;; Keywords: auto-install
 ;; Compatibility: GNU Emacs 22 ~ 23
@@ -25,7 +25,7 @@
 ;;   `url-util', `url-vars'.
 ;;
 
-(defvar auto-install-version "$Id: auto-install.el,v 1.20 2009/11/26 22:41:56 +0900 Tomohiko KOSAKA Exp $")
+(defvar auto-install-version "$Id: auto-install.el,v 1.22 2009/12/21 12:51:56 rubikitch Exp $")
 ;;; This file is NOT part of GNU Emacs
 
 ;;; License
@@ -268,8 +268,14 @@
 ;;; Change log:
 ;;
 ;; $Log: auto-install.el,v $
-;; Revision 1.20  2009/11/26 22:41:56  Tomohiko KOSAKA
-;; Fix `auto-install-buffer-save'.
+;; Revision 1.22  2009/12/21 12:51:56  rubikitch
+;; Update auto-install-batch anything
+;;
+;; Revision 1.21  2009/12/21 12:26:54  rubikitch
+;; New URL for auto-complete development version
+;;
+;; Revision 1.20  2009/05/22 20:17:24  rubikitch
+;; Merged from dradams' change
 ;;
 ;; Revision 1.19  2009/05/22 13:04:56  dadams
 ;; Split icicles-cmd.el into icicles-cmd[12].el.
@@ -580,15 +586,9 @@ Nil means no confirmation is needed."
     ;; AutoComplete development version.
     ("auto-complete development version" nil nil
      (
-      "http://www.cx4a.org/pub/auto-complete.el"            ; Main library
-      "http://www.cx4a.org/pub/auto-complete-cpp.el"        ; Completion for C++
-      "http://www.cx4a.org/pub/auto-complete-css.el"        ; Completion for CSS
-      "http://www.cx4a.org/pub/auto-complete-emacs-lisp.el" ; Completion for elisp
-      "http://www.cx4a.org/pub/auto-complete-gtags.el"      ; Completion for gtags
-      "http://www.cx4a.org/pub/auto-complete-python.el"     ; Completion for python
-      "http://www.cx4a.org/pub/auto-complete-ruby.el"       ; Completion for ruby
-      "http://www.cx4a.org/pub/auto-complete-semantic.el"   ; Completion for semantic
-      "http://www.cx4a.org/pub/auto-complete-yasnippet.el"  ; Completion for yasnippet
+      "http://github.com/m2ym/auto-complete/raw/master/auto-complete.el"
+      "http://github.com/m2ym/auto-complete/raw/master/auto-complete-config.el"
+      "http://github.com/m2ym/auto-complete/raw/master/popup.el"
       ))
     ;; Anything
     ("anything" nil nil
@@ -596,6 +596,13 @@ Nil means no confirmation is needed."
       "http://www.emacswiki.org/emacs/download/anything.el"        ; Main library
       "http://www.emacswiki.org/emacs/download/anything-config.el" ; Configuration for anything.el
       "http://www.emacswiki.org/emacs/download/anything-match-plugin.el" ; Matching algorithm humanely
+      "http://www.emacswiki.org/emacs/download/anything-migemo.el" ; Migemo extension for Japanese
+      "http://www.emacswiki.org/emacs/download/anything-complete.el" ; Completion
+      "http://www.emacswiki.org/emacs/download/anything-show-completion.el" ; Show completion prettily
+      "http://www.emacswiki.org/emacs/download/anything-auto-install.el" ; auto-install extension
+      "http://www.emacswiki.org/emacs/download/descbinds-anything.el" ; describe-key replacement
+      "http://www.emacswiki.org/emacs/download/anything-grep.el" ; Grep with anything
+      "http://www.emacswiki.org/emacs/download/anything-startup.el" ; Startup file
       ))
     ;; SDCV (Interface for StartDict console version)
     ("sdcv" nil nil
@@ -1042,7 +1049,7 @@ This command just run when have exist old version."
                ;; Replace file if have exist.
                (auto-install-get-path filename)
                ;; Otherwise, install in directory `auto-install-directory'.
-               (concat (file-name-as-directory auto-install-directory) filename)))
+               (concat auto-install-directory filename)))
         ;; Save file.
         (if (and (file-exists-p file-path)
                  auto-install-replace-confirm
