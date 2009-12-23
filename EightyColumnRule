@@ -24,7 +24,7 @@ And lines longer than 80 are *really really* annoying.
 Keeping lines short is important.
 
 ----
-Using ColumnMarker is one way to keep track of column 80 overflow. See also FindLongLines.
+Using ColumnMarker is one way to keep track of column 80 overflow. See also ModeLinePosition and FindLongLines.
 
 ----
 I've started working in a company with lots of legacy C code, and it has made me work to the 80 rule, and of course TabsAreEvil. 

@@ -59,7 +59,7 @@ frequently visit with it's own buffer name and connection parameters:
 One of the best features of AnsiTerm mode is its remote directory tracking. Whatever remote directory your terminal is in, that will be the default directory that tramp uses if you choose to edit a file with C-x C-f. But you have to set up the following in your ##.bash_profile## on each remote host first:
 
     function set-eterm-dir {
-        echo -e "\033AnSiTu" "$LOGNAME" # $LOGNAME is more portable than using pwd.
+        echo -e "\033AnSiTu" "$LOGNAME" # $LOGNAME is more portable than using whoami.
         echo -e "\033AnSiTc" "$(pwd)"
         if [ $(uname) = "SunOS" ]; then
 	    # The -f option does something else on SunOS and is not needed anyway.

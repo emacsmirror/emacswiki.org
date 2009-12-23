@@ -1,6 +1,10 @@
-You can use this snippet to create YARD comments in Ruby buffers and highlight them to the extent the YARD tags match with the Doxygen ones. Any files opened in this buffer after a ruby file was loaded will retain the settings, but this is still the least intrusive method I could find. Another solution would be extending doxymacs itself with another style.
+;;;
+;; You can use this snippet to create YARD comments in Ruby buffers and
+;; highlight them to the extent the YARD tags match with the Doxygen ones.
+;; Any files opened in this buffer after a ruby file was loaded will retain
+;; the settings, but this is still the least intrusive method I could find.
+;; Another solution would be extending doxymacs itself with another style.
 
-{{{
 (add-hook 'ruby-mode-hook 'doxymacs-yard)
 
 (defun doxymacs-yard ()
@@ -71,4 +75,3 @@ You can use this snippet to create YARD comments in Ruby buffers and highlight t
   (setq doxymacs-group-comment-start '("# @{"))
   (setq doxymacs-group-comment-end '("# @}"))
   )
-}}}

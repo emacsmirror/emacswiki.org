@@ -1,0 +1,33 @@
+Currently desktop-recover.el is hosted at github.  It's available
+here: [http://github.com/doomvox/desktop-recover/blob/master/desktop-recover.el desktop-recover.el]
+
+The desktop-recover project uses the standard "desktop.el"
+package for session management including crash recovery.
+
+Using this system, when you re-start your emacs you're presented
+with a buffer showing a list of of what you had open before,
+treating it as a list of candidates of things you may want to
+open again.  You can just hit return to accept the defaults, or
+you can go through the list, marking or un-marking which ones you
+want (using the keystrokes <TT>*</TT> or <TT>u</TT>).
+
+http://obsidianrook.com/data/desktop-recover-demo-q.png
+
+Once you hit return, the state of your desktop will be saved
+automatically during idle moments as you continue working.
+If you choose not to hit return, the automatic desktop save
+system will be left off for the session.
+
+Installation instructions are in the comments at the top of
+the desktop-recover.el.
+
+The desktop-recover-setup.el file shows a usage example,
+(this file is not a necessary component of the system).
+
+Further documentation is included as the help strings for dummy
+variables which all begin with the prefix:
+<TT>desktop-recover-doc-</TT>.  See desktop-recover-doc-toc for a
+listing of them.
+
+This code was developed with GNU emacs 23 in mind.  It has not been 
+tested with other flavors.

@@ -325,18 +325,12 @@ I've fixed a small (very small) bug and would like to add two things:
 * Finish the popup status writing buffer.  I hate writing in the minibuffer.
 
 [new]
-When I call twit-show-recent-tweets, it give me error message:
-<pre>
-Search failed: "
-"
-</pre>
-how to resolve that problem? Thx.  -- [[ahei]]
+1. I found a bug in version of ";; Time-stamp: <2007-03-19 18:33:17 thorne>", line 1674,"(cancel-timer 'twit-timer)" should be "(cancel-timer twit-timer)".
 
-[new]
-I think put user's twitter's password into el is not secure, so can you prompt user to input those password before do any actions on twitter when those twitter's password is not set? what do you think? -- [[ahei]]
+2. can you add a function which can set api host, because people in some country can not access twitter.com.
 
-[new]
-I think you should encrypt twit-pass. :) -- [[ahei]]
+3x.
+-- [[ahei]]
 
 == Archived Discussion ==
 I don't personally do the cell phone thing (it sounds irritating), but anyway, they got slashdotted yesterday.  I had never heard of them.  But it looked cool, so i joined and wrote twit.el.  I think i would like to broaden it--generalize it a bit and let users read friend's posts.  I am working on that....

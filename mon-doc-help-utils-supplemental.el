@@ -1,22 +1,13 @@
 ;;; this is mon-doc-help-utils-supplemental.el
 ;;; ================================================================
 ;;; DESCRIPTION:
-;;; mon-doc-help-utils-supplemental provides feautres required for use with
-;;; the package mon-doc-help-utils which requires the following packages:
-;;;
-;;; mon-insertion-utils.el  mon-regexp-symbols.el  mon-utils.el
-;;;
-;;; While each of these packages provides is useful and provides nice facilities
-;;; which extend the standard Emacs distribution you may not wish to load all of
-;;; them into your Emacs esp. as MON does not generally use autoload cookies.
-;;;
-;;; If you do not wish to load all of the feautres from the required packages:
-;;; this package mon-doc-help-utils-supplemental.el provides them herein as a
-;;; single a consolidated bundle using conditional feature tests for those
-;;; specific functions variables needed for use with mon-doc-help-utils. When a
-;;; features in not present load them.
-;;;
-;;; This packages provides these functions and variables from these packages:
+;;; mon-doc-help-utils-supplemental is required and should be present in Emacs
+;;; load-path when using mon-doc-help-utils. It provides the specific
+;;; subfeatures required to bootstrap mon-doc-help-utils.  In order to load and
+;;; byte-compile mon-doc-help-utils a few subfeatures need to be present. If you
+;;; do not wish to load the full feauture set of the following packages
+;;; mon-doc-help-utils-supplemental.el is careful to load only the neccesary
+;;; functions and variables listed below:
 ;;;
 ;;; :FILE mon-insertion-utils.el 
 ;;;       | -> `mon-insert-lisp-testme'
@@ -34,22 +25,30 @@
 ;;;       | -> `mon-string-after-index'
 ;;; :SEE (URL `http://www.emacswiki.org/emacs/mon-utils.el')
 ;;;
-;;; MOVED:
+;;; :NOTE While mon-doc-help-utils-supplemental.el will provide the necessary
+;;; features in order to get mon-doc-help-utils bootstrapped wherever possible
+;;; MON encourages you to also use the above required packages in addition to the
+;;; supplemental. As such, where those packages are present, the supplemental
+;;; will not shadow any additional functionality extensions which they provide.
 ;;;
-;;; :NOTE While mon-doc-help-utils-supplemental.el _should_ provide the necessary
-;;; features whereever possible MON encourages you to use the required packages
-;;; instead of supplemental. It is sometimes difficult to keep what
-;;; amounts essentially duplicate current. If for some reason you are unable to
-;;; use mon-doc-help-utils or you are getting errors signalled with only the
-;;; supplemental please try downloading the required packages and adding them to
-;;; your loadpath. 
+;;; That said, while each of the above packages provides useful and nice
+;;; facilities which extend the standard Emacs distribution you may not wish to
+;;; load all of them into your Emacs esp. as MON does not generally use autoload
+;;; cookies. MON routinely runs the entire suite of mon-*.el and naf-mode-*.el
+;;; packages as interpreted code with little performance impact and generally
+;;; unless your embedding Emacs loading lots of third party packages rarely
+;;; poses much concern on modern systems IOW use the following with impunity:
+;;; (require 'mon-superbig-package) 
 ;;; 
 ;;; TODO:
-;;; Hopefully sometime in the next year MON will make the switch to using bzr
-;;; and Launchpad for distributed version control and this type of stuff won't
-;;; be quite as big a problem. In the interim MON is using mercurial. Contact
-;;; MON for access to a stripped hg archive of all MON's current elisp source.
-;;;
+;;; Hopefully sometime in the near future the Emacs-devels will begin using the
+;;; bzr and Launchpad features of distributed version control to build a better
+;;; Emacs Lisp 'packaging' tool that can aid in some of this minor dependency
+;;; issues and this type of stuff won't be quite as big a problem (and instead
+;;; we'll all move to grokking DAGs with recursive dependency cycles). In the
+;;; interim MON is still using Mercurial. Contact MON for access to a stripped
+;;; hg archive of all MON's current Elisp source.
+;;
 ;;; NOTES: 
 ;;; The contents of this file used to be inlined within mon-doc-help-utils.el
 ;;; However, as this mon-doc-help-utils has grown conisderably in size and
@@ -300,8 +299,8 @@ Regexp held by global var `*regexp-symbol-defs*'.\n
 ;;; ==============================
 ;;; :LOAD-SPECIFIC-PROCEDURES :IF-NOT-FEATURE-P `mon-utils.el'
 ;;; `mon-string-index', `mon-string-upto-index', `mon-string-after-index'
-(unless (featurep 'mon-utils)
-  (unless (fboundp 'mon-string-index)
+(unless (and (featurep 'mon-utils)
+             (fboundp 'mon-string-index))
 ;;; :COURTESY Pascal J. Bourguignon :HIS pjb-strings.el :WAS `string-index'
 (defun mon-string-index (string-to-idx needle &optional frompos)
   "Return the position in STRING of the beginning of first occurence of NEEDLE.
@@ -319,7 +318,8 @@ Default is to search from start of string.\n
    string-to-idx frompos))
 ) ;; :CLOSE 1st foundp  mon-string-index
 ;;
-(unless (fboundp 'mon-string-upto-index)
+(unless (and (featurep 'mon-utils)
+             (fboundp 'mon-string-upto-index))
 ;;; :CREATED <Timestamp: #{2009-10-01T15:16:26-04:00Z}#{09404} - by MON KEY>
 (defun mon-string-upto-index (in-string upto-string)
   "Return substring of IN-STRING UPTO-STRING.
@@ -331,7 +331,8 @@ UPTO-STRING is a simple string. No regexps, chars, numbers, lists, etc.\n
              (mon-string-index in-string upto-string)))
 ) ;; :CLOSE 2nd fboundp mon-string-upto-index
 ;;
-(unless (fboundp 'mon-string-after-index)
+(unless (and (featurep 'mon-utils)
+             (fboundp 'mon-string-after-index))
 ;;; :CREATED <Timestamp: #{2009-10-01T15:16:29-04:00Z}#{09404} - by MON KEY>
 (defun mon-string-after-index (in-str after-str)
   "Return substring of IN-STR AFTER-STR.
@@ -342,12 +343,10 @@ AFTER-STR is a simple string. No regexps, chars, numbers, lists, etc.\n
   (substring in-str
              (+ (mon-string-index in-str after-str) (length after-str))))
 ) ;; :CLOSE 3rd foundp mon-string-after-index
-) ;; :CLOSE featurep mon-utils
 ;;
 ;;; :TEST-ME (mon-string-upto-index "string before ### string after" "###")
 ;;; :TEST-ME (mon-string-index "string before ### string after" "###")
 ;;; :TEST-ME (mon-string-after-index "string before ### string after" "###")
-
 
 ;;; ==============================
 (provide 'mon-doc-help-utils-supplemental)

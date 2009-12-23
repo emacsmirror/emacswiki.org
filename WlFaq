@@ -1,6 +1,4 @@
-== Frequently Asked Questions about Wanderlust ==
-
-=== How can I prevent WL from splitting large attachments into many messages? ===
+== How can I prevent WL from splitting large attachments into many messages? ==
 
 Add the following to your ##.wl## file:
 
@@ -8,9 +6,13 @@ Add the following to your ##.wl## file:
 (setq mime-edit-split-message nil)
 }}}
 
-=== Speed ===
+== If I add folders to an access group outside of Wanderlust, how do I make Wanderlust pick up those changes? ==
 
-==== When I update, Wanderlust is slow and spends a long time with the message "Updating marks..." ====
+In the folder manager, close the access group, then use ##C-u <ENTER>## to open it again. Wanderlust will scan the access group for new folders.
+
+== Speed ==
+
+=== When I update, Wanderlust is slow and spends a long time with the message "Updating marks..." ===
 
 If you only use Wanderlust to access a mailbox, you can set
 ##wl-summary-auto-sync-marks## to ##nil## in your ##.wl## file.

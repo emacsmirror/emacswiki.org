@@ -2,7 +2,7 @@
 
 ;; Author: Bard Bloom <bard@theory.lcs.mit.edu>
 ;; Maintainer: Ulrich Mueller <ulm@gentoo.org>
-;; Version: 20091120
+;; Version: 20091222
 ;; Keywords: games
 
 ;; This file isn't part of much of anything.
@@ -197,7 +197,7 @@ function --> funcalls it without arguments and whines the result."
 			     "Buffer is read-only")))
     (whine "\C-_"  '("Oh, no!  I've forgotten what I did!"))
     (whine "\C-xu" '("Oh, no!  I've forgotten what I did!"))
-    (whine "\C-k"  '("Please don't make me KILL again!"))
+    (whine "\C-w"  '("Please don't make me KILL again!"))
     (whine "\C-f"  (append whine-pain '("Forward ho!" "Oh, no!")))
     (whine "\C-b"  (append
 		    whine-pain
@@ -206,7 +206,7 @@ function --> funcalls it without arguments and whines the result."
 		      "Backwards ha!"
 		      "Catastrophic error -- world aborted."
 		      "Career aborted -- unable to restart.")))
-    (whine "\C-w"  (append whine-pain '("kill! Kill! KILL!")))
+    (whine "\C-?"  (append whine-pain '("kill! Kill! KILL!")))
     (whine "\C-xb" (append whine-pain
 			   '("This buffer is horrible!"
 			     "I don't want to be here!")))

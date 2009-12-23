@@ -1,25 +1,36 @@
-[[Gnus]] can connect to the gmail server in two ways: by POP3, or by IMAP. Each protocol behaves in a different way, so you can select the one which better suits your needs. Furthermore, as a third solution you can download your mail with an external program like fetchmail and let Gnus handle it locally.
+[[Gnus]] puede conectar con el servidor de Gmail por dos vías:
+mediante POP3 o por IMAP.  Cada protocolo se comporta de manera
+distinta, así que el usuario puede seleccionar aquella que mejor se
+ajuste a sus necesidades.  Una tercera solución es descargar el correo
+a través de un programa externo como `fetchmail' y dejar que Gnus lo
+maneje localmente.
 
-This page describes how to configure Gnus to read and send mails from your gmail account, and should also explain how to do in Gnus what you're able to do through the web interface.
+Esta página describe cómo configurar Gnus para que lea y envíe correos
+desde una cuenta de Gmail, y también debería explicar cómo hacer en
+Gnus lo que se puede hacer a través de la interfaz web.
 
 ----
 
-==Configuration==
-===Accessing Gmail via Imap===
+==Configuración==
+===Acceso a Gmail mediante Imap===
 
-Firstly, don't forget to enable IMAP in your Gmail account (settings->forwarding POP/IMAP). Settings to tell gnus to use Gmail's IMAP as a (secondary) select method are as follows:
+Primero hay que activar IMAP en la cuenta de Gmail
+(Configuración->Reenvío y correo POP/IMAP).  También hay que decirle a
+Gnus que use el IMAP de Gmail como método de selección (secundario):
 <pre>
 (add-to-list 'gnus-secondary-select-methods '(nnimap "gmail"
                                   (nnimap-address "imap.gmail.com")
                                   (nnimap-server-port 993)
                                   (nnimap-stream ssl)))
 </pre>
-with a line like the following one in your ~/.authinfo
+con una línea como la siguiente en el fichero ~/.authinfo
 <pre>
 machine imap.gmail.com login username@gmail.com password secret port 993
 </pre>
 
-Also, if you want to take advantage of using gmail's SMTP server (so gmail keeps track of your sent mail), you can use the following settings:
+Si además se quiere aprovechar el servidor SMTP de Gmail (tal que
+tenga un registro del correo que envía el usuario), se puede usar los
+ajustes siguientes:
 
 <pre>
 (setq message-send-mail-function 'smtpmail-send-it
@@ -31,28 +42,49 @@ Also, if you want to take advantage of using gmail's SMTP server (so gmail keeps
       smtpmail-local-domain "yourcompany.com")
 </pre>
 
-NOTE: You will need starttls, which is used to set up the SSL encrypted connection to the GMail server. This is contained in the "gnutls-bin" package on earlier versions of debian and ubuntu. With later versions (at least Ubuntu 9.10), starttls is in its own package, and the "gnutls-bin" package is not needed. If you don't have starttls installed, you'll get a (rather generic) "smtpmail-send-it: Sending failed; SMTP protocol error" error message.
+NOTA: El usuario necesitará starttls, que se emplea para configurar la
+conexión cifrada SSL al servidor de GMail.  Va incluido en el paquete
+"gnutls-bin" en versiones anteriores de Debian y Ubuntu.  En versiones
+más recientes (al menos Ubuntu 9.10), starttls va en su propio
+paquete.  Si el usuario no tiene starttls instalado, se obtendrá un
+(bastante genérico) mensaje de error "smtpmail-send-it: Sending
+failed; SMTP protocol error".
 
-NOTE: (Pointed out by ChristofHarper) You can also store your password in the smtpmail-auth-credentials line, but this means that you've got to be more careful when sharing config files with other people.
+NOTA: (Señalada por ChristofHarper) También se puede almacenar la
+contraseña en la línea smtpmail-auth-credentials, pero esto significa
+que el usuario habrá de ser especialmente cuidadoso cuando comparta
+ficheros de configuración con otras personas.
 
-NOTE: It seems that the above settings (which are what Google recommends) don't work for some people. Another possibility is to use port 25, and then use ~/.authinfo to convert it back to 587, thus circumventing some code which was getting confused about SMTP through a non-25 port. To do this, replace all occurrences of 587 with 25 in the above snippet, and add the following line to your ~/.authinfo (see [[GnusAuthinfo]] and [[GnusEncryptedAuthInfo]]):
+NOTA: Parece que los ajustes de arriba (que son los recomendados por
+Google) no funcionan a todos.  Otra posibilidad es usar el puerto 25,
+y después emplear ~/.authinfo para convertirlo de nuevo en el 587,
+dándole un rodeo así a algún código que queda confundido cuando se
+habla de SMTP a través de puertos no-25.  Para hacerlo, se reemplazan
+los 587 con 25 en el fragmente de arriba y se añade lo siguiente en el
+fichero ~/.authinfo (véase [[GnusAuthinfo]] y [[GnusEncryptedAuthInfo]]):
 
 <pre>
 machine smtp.gmail.com login username@gmail.com password secret port 587
 </pre>
 
-If you don't wish to store your password there, just omit the "password secret" altogether and you'll be prompted when you send an email.
+Si no se desea almacenar la contraseña, basta con omitir las palabras
+"password secret" y el usuario tendrá que introducirla cada vez que
+envíe correo.
 
-====Accessing the [Gmail] folders====
+====Acceso a las carpetas de [Gmail]====
 
-All Gmail system labels have a prefix [Gmail], it matches the default value of gnus-ignored-newsgroups, so
-we could set it to "^to\\.\\|^[0-9.        ]+\\( \\|$\\)\\|^[\"]\"[#'()]" to work around.
+Todas las etiquetas del sistema Gmail tienen un prefijo [Gmail], que
+coincide con el valor predeterminado de gnus-ignored-newsgroups, así
+que podríamos establecerlo en "^to\\.\\|^[0-9.  ]+\\(
+\\|$\\)\\|^[\"]\"[#'()]" para evitar que Gnus oculte los grupos de
+Gmail.
 
-===Accessing Gmail via POP===
+===Acceso a Gmail mediante POP===
 
-"Retrieving mail with POP3 is supported over SSL/TLS and with <nowiki>StartTLS</nowiki>." (from GNUS-NEWS)
+"La obtención de correo con POP3 se admite a través de SSL/TLS y con
+<nowiki>StartTLS</nowiki>." (tomado de GNUS-NEWS)
 
-Put the following in your /gnus-init-file/ is sufficient.
+Es suficiente con poner lo siguiente en el /gnus-init-file/ .
 <pre>
 (setq mail-sources
       '((pop :server "pop.gmail.com"
@@ -62,57 +94,62 @@ Put the following in your /gnus-init-file/ is sufficient.
              :stream ssl)))
 </pre>
 
-I have tested this with No Gnus 0.6 (2006-10-19) and XftGnuEmacs (2006-10-04).
+Lo he comprobado con No Gnus 0.6 (2006-10-19) y XftGnuEmacs (2006-10-04).
 
 [new]
-According to
+De acuerdo con
 http://mail.google.com/support/bin/answer.py?answer=13287
-the user name must include @gmail.com  -- AdrianAichner
+el nombre de usuario ha de contener @gmail.com  -- AdrianAichner
 
 ----
 
-There is bleeding edge support for sending/getting email through Gmail using only Gnus (and not the webmail interface.) I've verified that this works (rather well in fact.)
+Gnus proporciona un magnífico soporte para el envío/obtención de
+correo a través de Gmail (sin emplear la interfaz webmail.)  He
+verificado que esto funciona (bastante bien de hecho.)
 
-# Configure your Gmail account for POP support. This is under Settings in the gmail web interface.
+# Véanse las instrucciones en esta página: http://www.pvv.ntnu.no/~terjeros/wiki/GnusGmail
 
-# Use CVS Emacs and CVS Gnus. It won't work any other way. 
+-- NOTA: también se necesitará ssl.el, que no parece venir en GNU CVS.
+   Lo encontré con una rápida búsqueda en Google.
 
-# Replace your installation's "pop3.el" and "pop3.elc" with those linked to from this page: http://www.pvv.ntnu.no/~terjeros/wiki/GnusGmail
 
-# Configure as on the linked page. 
+===Acceso a Gmail por medio de un recogedor externo de correo===
 
--- NOTE: you also need ssl.el, which doesn't seem to come with the current GNU CVS. I found it with a quick google search.
-
--- I still can seem to get any messages from the server.  I've solved the problems with connection and missing load files, but now it will connect and not report any of the messages.  Any hints?
-
-===Accessing Gmail via an external mail retriever===
-
-Note that you can also get your mail from Gmail using fetchmail if that's installed on your home system. The following .fetchmailrc works for me:
+Hay que recordar que también se puede obtener el correo de Gmail
+empleando `fetchmail' si se tiene instalado.  El siguiente
+.fetchmailrc funciona para mí:
 
  poll pop.gmail.com with proto POP3 and options no dns
  user 'USERNAME@gmail.com' there with password 'PASSWORD' is 'LOCALUSERNAME' here options ssl
 
-You can then set up a cron job to run fetchmail every few minutes:
+Se puede configurar un trabajo cron para ejecutar fetchmail cada
+varios minutos:
 
  */3 * * * * fetchmail -s >/dev/null 2>&1
 
--- ALTERNATE: Instead of using cron, you could always add "set daemon 300" (without the quotes) to your .fetchmailrc to use its built-in daemonic capabilities. The "300" tells it to run every 300 seconds (five minutes). Change this number to suit your tastes.
+-- ALTERNATIVA: En vez de usar cron, se podría añadir "set daemon 300"
+   (sin las comillas) en el fichero .fetchmailrc para aprovechar sus
+   capacidades demoníacas predefinidas.  El "300" dice que se ejecute
+   cada 300 segundos (cinco minutos).  Cambiese este número al gusto.
 
-and let gnus read your mail from wherever the usual location is on your system.
+y se hace que Gnus lea el correo desde la ubicación habitual que se
+tenga en el sistema.
 
-Another possibility: if you set up a Gmail filter by entering "in:inbox" in the "Has the words" field (you will get an error message but ignore it) you can have Gmail forward all your mail from your inbox (leaving spam behind) to some location where you can access it without changing your emacs or gnus installation.
 
-Not even the above is necessary (as of 2006-12-02), gmail has now an option for forwarding the whole inbox to another address. [[dida]]
+===Envío de correo a través del servidor SMTP de Gmail===
+Véase la sección de configuración de IMAP.
 
-===Sending mail through Gmail's SMTP server===
-See the section with the IMAP configuration for the required settings to configure SMTP.
+====Almacenamiento en el servidor del correo enviado====
+Lo predeterminado es que el correo que se envíe desde Gnus no se copie
+en el servidor de Gmail, tal que si se abre la carpeta de "Enviados",
+no se verá.  Sólo se verá el correo enviado desde la interfaz web.
 
-====Storing sent mail in the server====
-By default, the mail you send from Gnus is not copied to the Gmail server, so if you open the folder "Sent mail", you won't see it. You will only see mail sent from the web interface.
-
-TODO: how to store sent mail in the server?  (See below.)
-
-A workaround can be CCing yourself whenever you send a mail. With this approach you'll get a copy which is reflected on the server as well. Moreover, you'll be the sender of these copies which makes it easy to define a view including only these messages. To use this solution, write this into your .gnus.el file:
+Un rodeo podría ser enviarse una copia de carbón a sí mismo cuando se
+envíe correo.  Con esta aproximación se obtendrá una copia que quedará
+asimismo reflejada en el servidor.  Más aún, como uno mismo será el
+remitente de esas copias, eso facilitará la definición de una vista
+que incluya sólo esos mensajes.  Para emplear esta solución se escribe
+en el fichero .gnus.el:
 <pre>
 (setq gnus-posting-styles
       '((".*"
@@ -120,95 +157,144 @@ A workaround can be CCing yourself whenever you send a mail. With this approach 
          (address "username@gmail.com"))))
 </pre>
 
-Actually, the problem seems to be solved *if* you send mail via gmail's smtp server - at their "Recommended IMAP client settings" they say:
+De hecho, el problema parece estar resuelto *si* se envía correo por
+medio del servidor SMTP de Gmail.  En sus "Recommended IMAP client
+settings" dicen:
 
-"Do NOT save sent messages on the server. If your client is sending mail through Gmail's SMTP server, your sent messages will be automatically copied to the [Gmail]/Sent Mail folder."
+"Do NOT save sent messages on the server. If your client is sending
+mail through Gmail's SMTP server, your sent messages will be
+automatically copied to the [Gmail]/Sent Mail folder."
 
 
 
 
-==Usage==
-===Archiving mails===
-What is the equivalent Gnus command to the „Archive“ button? (Remove from „Inbox“ and stay in „All mail“)
+==Uso==
+===Archivado del correo===
+¿Cual es el comando equivalente en Gnus para el botón „Archivar“?
+(Sacar el correo de „Recibidos“ y dejarlo en „Todos“)
 
 [new:IainDalton:2008-09-07 04:28 UTC]
-Remove the "Inbox" tag by deleting from the "INBOX" folder with ##B DEL##.
+Se elimina la etiqueta "Recibidos" desde la carpeta homónima con ##B DEL##.
 
-===Deleting mails===
-How can you delete a mail in Gnus so that it disappears from your Inbox in gmail and goes to Trash?
+===Eliminación de correos===
+¿Cómo se puede eliminar un mensaje de correo en Gnus tal que
+desaparezca de la bandeja de entrada en Gmail y vaya a la Papelera?
 
 [new]
-##B m## does ##gnus-summary-move-article##.  Invoke it, then type "[Gmail]/Trash".  In Gmail terms, this will remove the "Inbox" label and apply the "Trash" label.  Messages in the trash don't show up in other folders, even though they may have other labels.
+##B m## hace ##gnus-summary-move-article##.  Se invoca y después se
+  escribe "[Gmail]/Papelera".  En términos de Gmail, esto removerá la
+  etiqueta "Recibidos" y le aplicará la etiqueta "Papelera".  Los
+  mensajes de la papelera no se muestran en otras carpetas, incluso si
+  tuvieran puestas otras etiquetas.
 
-To really delete, type ##B DEL## (##gnus-summary-delete-article##), but beware: you'll have to delete it from the Trash or Spam folder for it to really delete it.  Otherwise, it will only remove the label from the message.  I suggest writing a script (probably relying on Message-ID) to find the same message in the trash and delete /that/ copy.
+Para eliminarlo realmente se escribe ##B DEL##
+(##gnus-summary-delete-article##), pero atención: habrá que borrarlo
+desde la carpeta Papelera o Spam para que se elimine realmente.  De lo
+contrario, sólo removerá la etiqueta.  Sugiero escribir un script
+(probablemente basado en Message-ID) para encontrar ese mismo mensaje
+en la papelera y eliminar /esa/ copia.
 
 [new:IainDalton:2008-09-21 21:10 UTC]
-Moving an email to the trash will fail to remove the Inbox label[http://groups.google.com/group/Gmail-Help-POP-and-IMAP-en/browse_thread/thread/bdb862726b66d492/5e4711a3dde1aead#msg_97d44d726079359c].  The solution is to make Gnus locate the message in [Gmail]/All Mail with the same Message-ID as the one in INBOX.  Delete the one in the Inbox and move the one in All Mail to the trash.  Crocky, but the only solution unless Gmail fixes this on their end.  Anyone who has the skill to write this script is welcome to do it.
+Mover un correo a la papelera fallará en la remoción de la etiqueta
+Recibidos
+[http://groups.google.com/group/Gmail-Help-POP-and-IMAP-en/browse_thread/thread/bdb862726b66d492/5e4711a3dde1aead#msg_97d44d726079359c].
+La solución es hacer que Gnus localice el mensaje en [Gmail]/Todos con
+el mismo Message-ID que tiene en Recibidos.  Eliminar el de Recibidos
+y mover el que hay en Todos a la Papelera.  Chocante, pero es la única
+solución a menos que Gmail lo corrija por su parte.  Cualquiera que
+tenga el nivel para escribir este script es muy bien recibido.
 
 ===Catching up===
-If you are seeing some mails in Gnus, and then you delete them in Gmail's web interface, how can make them also disappear from the Gnus view?
+Si se ven algunos mensajes en Gnus y después se eliminan en la
+interfaz web de Gmail, ¿cómo se puede hacer para que también
+desaparezcan de la vista de Gnus?
 
 [new:IainDalton:2008-09-07 05:28 UTC]
-##g## does ##gnus-group-get-new-news## in group mode.  This doesn't seem to work completely correctly: it may report incorrect numbers of unread messages in each group after an update.
+##g## hace ##gnus-group-get-new-news## en modo grupos.  Esto no parece
+funcionar completamente: puede reportar un número incorrecto de
+mensajes sin leer en cada grupo después de una actualización.
 [new:DanielClemente:dom sep  7 16:52:11 CEST 2008]
-Only ##g## (or ##M-g##) didn't work with the normal configuration. I have seen that Gmail starts working perfectly in Gnus after you disable Gnus Agent, with (setq gnus-agent nil). It seems that gnus-agent and nnimap don't play well together.
+Sólo ##g## (o ##M-g##) no funcionará con la configuración normal.  He
+comprobado que Gmail empieza a funcionar perfectamente en Gnus después
+de desactivar Gnus Agent, con (setq gnus-agent nil).  Parece ser que
+gnus-agent y nnimap no se entienden bien.
 
 [new:IainDalton:2008-09-08 03:42 UTC]
-A less drastic solution is to only disable gnus-agent for Gmail.  Go to the server buffer with ##^## and disable the agent for Gmail with ##J r##.
+Una solución menos drástica es desactivar gnus-agent sólo para Gmail.
+Se va al búfer del servidor con ##^## y se desactiva el agente para
+Gmail con ##J r##.
 
-===Conversations view===
-How can you see in a single thread both the received message and the sent messages to a person? (As in Gmail's web interface).
+===Vista de las conversaciones===
+¿Cómo se puede ver en un solo hilo tanto el mensaje recibido como el
+enviado? (Como en la interfaz web de Gmail).
 
 [new]
-Create a nnvirtual group that contains both "nnimap+imap.gmail.com:INBOX" and "nnimap+imap.gmail.com:[Gmail]/Sent Mail", and you can have conversational view in that group.
+Se crea un grupo nnvirtual que contenga tanto
+"nnimap+imap.gmail.com:INBOX" como "nnimap+imap.gmail.com:[Gmail]/Sent
+Mail" y se podrá tener la vista de las conversaciones en ese grupo.
 
-===Tags===
-How can you assign and remove tags from messages?
+===Etiquetas===
+¿Cómo se pueden asignar y remover etiquetas de los mensajes?
 
 [new:IainDalton:2008-09-07 05:28 UTC]
-##B c## and ##B DEL##, respectively.
+##B c## y ##B DEL##, respectivamente.
 
-===Empty spam folder===
-How can you access your spam folder and review and really delete all messages? (Not move them to Trash!)
+===Vaciado de la carpeta de Spam===
+¿Cómo se puede acceder a la carpetad de Spam y revisarla y eliminar
+realmente todos sus mensajes? (¡No moverlos a la Papelera!)
 
 [new:IainDalton:2008-09-07 05:28 UTC]
 ##B DEL##
 
 [new:DanielClemente:dom sep  7 17:16:30 CEST 2008]
-How can you *see* the spam folder in the first place? Since I don't see it in the „Gnus browse server“ buffer (accesible from key ^). It's the only folder missing.
+¿Cómo se puede *ver* la carpeta de Spam desde el principio?  Ya que no
+se puede ver en el búfer „Gnus browse server“ (accesible con la tecla
+^).  Es la única carpeta que no aparece.
 
 [new:IainDalton:2008-09-08 03:16 UTC]
-See the configuration section.
+Véase la sección de configuración.
 
-===Drafts===
-How can you stop composition of an e-mail and store it in Gmail's draft folder? How can you recover it again? 
+===Borradores===
+¿Cómo se puede detener la composición de un correo electrónico y
+almacenarlo en la carpeta de borradores de Gmail?  ¿Cómo se puede
+recuperar más tarde? 
 
 [new]
-In the same way as you can for any other gnus backend (composition is separate from the sending method, mostly): save the mail via C-x C-s and then exit it with C-c C-k. When you look in your nndraft:drafts folder, you'll see it there. To edit, hit e on the mail.
+De la misma manera en que se puede hacer con otros sistemas base para
+Gnus (la composición está separada de los métodos de envío, casi
+siempre): se guarda el mensaje por medio de C-x C-s y después se
+finaliza con C-c C-k.  Cuando se mire en la carpeta nndraft:drafts,
+allí estará.  Para edirarlo, se presiona e sobre el mensaje.
 
 [new:DanielClemente:dom sep  7 17:16:30 CEST 2008]
-nndraft is fast, but sometimes it may be convenient to store the draft in the remote folder (for mobility between computers). Any simple solution for that?
+nndraft es rápido, pero en ocasiones puede ser conveniente almacenar
+el borrador en la carpeta remota (debido a la movilidad entre
+computadoras).  ¿Alguna solución simple para eso?
 
 [new:IainDalton:2008-09-08 03:16 UTC]
-Not as of [http://www.mail-archive.com/info-gnus-english@gnu.org/msg01888.html two years ago, according to Lars], or [http://www.mail-archive.com/info-gnus-english@gnu.org/msg05486.html a few months ago either].
 
-===E-mail search===
-How can you search a text string through all your e-mails?
+Parece que no.  Véanse
+http://www.mail-archive.com/info-gnus-english@gnu.org/msg01888.html o
+http://www.mail-archive.com/info-gnus-english@gnu.org/msg05486.html.
 
-This works only for IMAP. 
+===Búsqueda en los mensajes===
+¿Cómo se puede buscar una cadena de texto en todos los mensajes?
 
-From [http://www.lshift.net/blog/2005/07/21/searching-imap-in-gnus Searching IMAP in Gnus].
-Add the following line to your .emacs:
+Esto sólo funciona para IMAP. 
+
+Véase [http://www.lshift.net/blog/2005/07/21/searching-imap-in-gnus Searching IMAP in Gnus].
+Se añade la línea siguiente en el fichero .emacs:
 <pre>
 require 'nnir
 </pre>
 
-Then add the following line to the secondary-method in .gnus.el 
+Después se añade la línea siguiente en el método secundario en el
+fichero .gnus.el 
 <pre>
 (nnir-search-engine imap)
 </pre>
 
-It should look like this:
+Se mostraría más o menos así:
 <pre>
 (add-to-list 'gnus-secondary-select-methods '(nnimap "gmail"
 				 (nnimap-stream ssl)
@@ -217,34 +303,49 @@ It should look like this:
  				 (nnir-search-engine imap)))
 </pre>
 
-Restart Gnus. With ##G G## in the *Groups* buffer, you search for mails in the current group. Note that this not work in virtual groups. If you want to search on all your mails, you should add the folder 'All Mail'.
+Se reinicia Gnus.  Con ##G G## en el búfer *Groups* se buscará en los
+mensajes del grupo en curso.  Hay que tener presente que esto no
+funcionará en los grupos virtuales.  Si se quiere buscar en todos los
+correos, habrá que añadir la carpeta 'Todos'.
 
-===Contact autocompletion===
-When you compose a message in Gmail, you type the first letters, and a list open ups with the contacts whose name matches what you wrote. How can you manage your contacts and do autocompletion in Gnus?
+===Auto-completado de los contactos===
+Cuando se compone un mensaje en Gmail, se escriben las primeras letras
+y se abre una lista con los contactos cuyos nombres coincidan con lo
+escrito.  ¿Cómo se pueden manejar los contactos y hacer
+auto-completado en Gnus?
 
 [new]
-Using BBDB (see [[CategoryBbdb]]) you can manage your contacts, and have their names autocompleted when composing new messages.
+Con BBDB (véase [[CategoryBbdb]]) se pueden manejar los contactos y
+hacer que sus nombres se auto-completen cuando se redactan mensajes
+nuevos.
 
 [new]
-But Gmail tracks information automatically about all e-mails ever seen, whereas in BBDB you must add each manually. Which [[BbdbConfiguration]] must be applied to act more Big-Brother-alike, like Gmail?
+Pero Gmail registra la información automáticamente de todos los
+correos vistos, mientras que en BBDB se debe añadir cada uno
+manualmente.  ¿Qué [[BbdbConfiguration]] debería aplicarse para actuar
+más a la Big-Brother, como Gmail?
 
 ===Chat===
-Gmail provides a chat interface which uses the XMPP (Jabber) protocol; therefore you can use Emacs Jabber (see [[JabberEl]] or [[BitlBee]]) to chat with your contacts and with anyone who has a Jabber account.
+Gmail proporciona una interfaz de chat que emplea el protocolo XMPP
+(Jabber); por tanto el usuario podrá emplear Emacs Jabber (véase
+[[JabberEl]] o [[BitlBee]]) para chatear con sus contactos y con
+cualquiera que tenga una cuenta Jabber.
 
-===How do actions sync in IMAP?===
-From [http://mail.google.com/support/bin/answer.py?answer=77657 Gmail Help]
-|| *Action on client* || *Result in Gmail on the web* || *Command in Gnus* ||
-||Open a message ||Mark a message as read ||##RET## ||
-||Flag a message ||Apply a star to the message ||##!## ||
-||Unflag a message ||Remove the star from the message ||##M-u## ||
-||Move a message to a folder ||Apply a label to the message ||##B m## ||
-||Move a message to a folder within a folder ||Apply a label showing folder hierarchy ('!MainFolder/!SubFolder') ||##B m## ||
-||Create a folder ||Create a label ||##B m## to nonexistent folder will create it.||
-||Move a message to [Gmail]/Spam ||Report a message as spam ||##B m [Gmail]Spam RET## ||
-||Move a message to [Gmail]/Trash ||Move a message to Trash ||##B m [Gmail]Trash RET## ||
-||Send a message ||Store message in Sent Mail ||##m##  ||
-||Delete a message in inbox ||Remove the message from inbox ||##B DEL## ||
-||Delete a message from a folder ||Remove that label from the message ||##B DEL## ||
-||Delete a message from [Gmail]/Spam or [Gmail]/Trash ||Delete the message permanently ||##B DEL## ||
+===¿Cómo hacer las acciones de sincronización en IMAP?===
+De [http://mail.google.com/support/bin/answer.py?answer=77657 Gmail Help]
+|| *Acción en el cliente* || *Resultado en Gmail web* || *Comando en Gnus* ||
+||Abrir un mensaje ||Marca el mensaje como leído ||##RET## ||
+||Destacar un mensaje ||Aplica una estrella al mensaje ||##!## ||
+||No destacar un mensaje ||Remueve la estrella del mensaje ||##M-u## ||
+||Mover un mensaje a una carpeta ||Aplica una etiqueta al mensaje ||##B m## ||
+||Mover un mensaje a una carpeta dentro de otra ||Aplica una etiqueta que muestra la jerarquía de carpetas ('!MainFolder/!SubFolder') ||##B m## ||
+||Crear una carpeta ||Crea una etiqueta ||##B m## en una carpeta no existente la creará||
+||Mover un mensaje a [Gmail]/Spam ||Reportar mensaje como spam ||##B m [Gmail]Spam RET## ||
+||Mover un mensaje a [Gmail]/Trash ||Mueve el mensaje a la Papelera ||##B m [Gmail]Trash RET## ||
+||Enviar un mensaje ||Almacena el mensaje en Enviados ||##m##  ||
+||Eliminar un mensaje de Recibidos ||Remueve el mensaje de Recibidos ||##B DEL## ||
+||Eliminar un mensaje de una carpeta ||Remueve esa etiqueta del mensaje ||##B DEL## ||
+||Eliminar un mensaje de [Gmail]/Spam o [Gmail]/Trash ||Elimina el mensaje permanentemente ||##B DEL## ||
 ----
 CategoryGnus
+

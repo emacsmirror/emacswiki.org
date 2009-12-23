@@ -11,6 +11,10 @@ The latest version (version 0.1.4, released December 2009) can be obtained from:
 * Undo-tree package download: http://www.dr-qubit.org/download.php?file=undo-tree/undo-tree.el
 * Web-site: http://www.dr-qubit.org/emacs.php#undo-tree
 
+Note that <code>undo-tree-mode</code> does not yet support undo-in-region, nor (for low-level reasons) does it restore marker adjustments. I plan to support both of these in a future version.
+
+For more information, see the Commentary at the top of the <code>undo-tree.el</code> file.
+
 Please send bug reports and suggestions to [mailto:toby-undo-tree@dr-qubit.org toby-undo-tree@dr-qubit.org] (you can post them here as well if you like, of course). I don't check this page regularly, so anything not emailed to me is likely to languish here unnoticed for some time.
 
 -- TobyCubitt

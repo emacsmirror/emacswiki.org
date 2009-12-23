@@ -31,7 +31,7 @@ You can specify buffers which should not be saved, by name or by mode, e.g.:
 
    (setq desktop-buffers-not-to-save
         (concat "\\(" "^nn\\.a[0-9]+\\|\\.log\\|(ftp)\\|^tags\\|^TAGS"
-	        "\\|\\.emacs.*\\|\\.diary\\|\\.newsrc-dribble\\|\\.bbdb" 
+"\\|\\.emacs.*\\|\\.diary\\|\\.newsrc-dribble\\|\\.bbdb"
 	        "\\)$"))
    (add-to-list 'desktop-modes-not-to-save 'dired-mode)
    (add-to-list 'desktop-modes-not-to-save 'Info-mode)
@@ -56,11 +56,11 @@ I (PaulTipper) got hacked off with having Xorg lock up on me during an Emacs ses
   (desktop-save-mode 1) ;; Switch on desktop.el
 
   (setq *foo-desktop-file* (concatenate 'string desktop-dir
-                                        "/" 
+                                        "/"
                                         desktop-base-file-name))
 
   (setq *foo-desktop-lock* (concatenate 'string desktop-dir
-                                        "/" 
+                                        "/"
                                         desktop-base-lock-name))
 
   (defun desktop-in-use-p ()
@@ -74,28 +74,20 @@ I (PaulTipper) got hacked off with having Xorg lock up on me during an Emacs ses
   ;; Can be switched off with (cancel-timer *foo-desktop-saver-timer*)
   (add-hook 'after-init-hook
              (lambda ()
-                     (setq *foo-desktop-saver-timer* 
+                     (setq *foo-desktop-saver-timer*
                            (run-with-timer 5 300 'autosave-desktop))))
 
+== saving desktop with auto-save ==
 
-There are some good hints there, but I prefer having the desktop save happen whenever idle, and tying it to the auto-save-hook works pretty well for that.  I'm starting to work on a new package called "desktop-autosave.el" with some improvements like this: in it's simplest form it just looks like this:
-
-   ;;; desktop-autosave.el begins here
-  (provide 'desktop-autosave)
-  (eval-when-compile
-    (require 'cl))
+I prefer having the desktop save happen whenever idle, and tying it to the auto-save-hook works pretty well for that.  I'm starting to work on a new package called [[DesktopRecover|desktop-recover.el]] with some improvements like this. Alternately, you can just add something like this to your .emacs:
 
   (require 'desktop)
+  (desktop-save-mode 1)
+  (add-hook 'auto-save-hook
+             (lambda ()
+              (desktop-save-in-desktop-dir)))
 
-  (desktop-save-mode 1) ;; Switch on desktop.el
-
-  (defun desktop-autosave-save ()
-    (desktop-save-in-desktop-dir))
-
-    (add-hook 'auto-save-hook
-              (lambda ()
-              (desktop-autosave-save)))
-  ;;; desktop-autosave.el ends here
+ -- [[Doom]]
 
 == Automatically Overriding Stale Locks ==
 
@@ -138,7 +130,7 @@ intended.
 It works for me with one desktop, with more than one may need some tweaking.
 
 {{{
-;; use only one desktop 
+;; use only one desktop
 (setq desktop-path '("~/.emacs.d/"))
 (setq desktop-dirname "~/.emacs.d/")
 (setq desktop-base-file-name "emacs-desktop")
@@ -196,7 +188,7 @@ I'm having trouble with desktop loading lazy loading, as my final line in .emacs
 
    (plan)
 
-So it loads planner, but then the planner buffer gets lost when desktop starts restoring the other buffers. 
+So it loads planner, but then the planner buffer gets lost when desktop starts restoring the other buffers.
 I tried to set desktop-restore-eager to 't, without any success. Any idea?
 
 [new]
@@ -212,7 +204,7 @@ When I try to add an array of strings to desktop-globals-to-save it saves it wit
 I could set up desktop-files-not-to-save var for any buffer opening remote file not to be saved into .emacs.desktop file while invoking (desktop-save)
 with its default value %%("^/[^/:]*:")%%.
 
-In the same time, I also want save dired-mode buffers except buffers that show remote directories. 
+In the same time, I also want save dired-mode buffers except buffers that show remote directories.
 I found that desktop package only check its (buffer-file-name) and (buffer-name) whether he save a ceratain buffer or not, and unfortunately (buffer-file-name) has no meaning in dired-mode buffer(it just returns nil) so finally... dired-mode buffer displaying remote directory is saved in .emacs.desktop file.
 How can I exclude those kind of dired-mode buffers?
 --JoonhwanLee
@@ -224,7 +216,7 @@ Great entry! Thanks. I had been using recentf, but desktop is more up my alley -
 
 On Emacs 21.4 (from Debian Etch) the desktop does not work as expected. The only way I could make it work
 was with
-  
+
   (load-library "/usr/share/emacs/21.4/lisp/desktop.elc")
   (setq desktop-enable t)
 

@@ -94,25 +94,25 @@
 ;;; cl.el `intersection' in `mon-help-function-spit-doc'
 ;;;
 ;;; regexpl.el 
-;;; :LINK (URL `http://www.emacswiki.org/emacs/regexpl.el')
+;;; :SEE (URL `http://www.emacswiki.org/emacs/regexpl.el')
 ;;;
 ;;; mon-doc-help-pacman.el (Loaded only if it exists in load-path)
 ;;; :SEE (URL `http://www.emacswiki.org/emacs/mon-doc-help-pacman.el')
-;;
+;;;
 ;;; mon-doc-help-proprietary.el (Loaded only if it exists in load-path)
 ;;; :NOTE This packages provides documentation functions which can't possibly be
 ;;; GPL/GFDL e.g MS-C0RP API etc. Contact MON if you wish to have this package
 ;;; made avaiable to you.
 ;;;
-;;; Some features are also required from the following packages:
-;;;
-;;; mon-insertion-utils.el  mon-regexp-symbols.el  mon-utils.el
-;;;
-;;; If you do not wish to load all of the feautres from these packages MON
-;;; provides a supplemental package mon-doc-help-utils-supplemental.el
+;;; mon-doc-help-utils-supplemental.el
 ;;; :SEE (URL `http://www.emacswiki.org/emacs/mon-doc-help-utils-supplemental.el')
-;;; which provides them in a single consolidated place and includes only the
-;;; neccesary functions and variables from these packages:
+;;; This package is required and should be present in Emacs load-path when using
+;;; mon-doc-help-utils. It provides the specific subfeatures required to
+;;; bootstrap mon-doc-help-utils.  In order to load and byte-compile
+;;; mon-doc-help-utils a few subfeatures need to be present. If you do not wish
+;;; to load the full feauture set of the following packages
+;;; mon-doc-help-utils-supplemental.el is careful to load only the neccesary
+;;; functions and variables listed below:
 ;;;
 ;;; :FILE mon-insertion-utils.el 
 ;;;       | -> `mon-insert-lisp-testme'
@@ -130,18 +130,20 @@
 ;;;       | -> `mon-string-after-index'
 ;;; :SEE (URL `http://www.emacswiki.org/emacs/mon-utils.el')
 ;;;
-;;; :NOTE While mon-doc-help-utils-supplemental.el _should_ provide the necessary
-;;; features whereever possible MON encourages you to use the required packages
-;;; instead of supplemental. It is sometimes difficult to keep what
-;;; amounts essentially duplicate current. If for some reason you are unable to
-;;; use mon-doc-help-utils or you are getting errors signalled with only the
-;;; supplemental please try downloading the required packages and adding them to
-;;; your loadpath. 
+;;; :NOTE While mon-doc-help-utils-supplemental.el will provide the necessary
+;;; features in order to get mon-doc-help-utils bootstrapped wherever possible
+;;; MON encourages you to also use the above required packages in addition to the
+;;; supplemental. As such, where those packages are present the supplemental
+;;; will not shadow any additional functionality extensions which they provide.
 ;;; 
-;;; Hopefully sometime in the next year MON will make the switch to using bzr
-;;; and Launchpad for distributed version control and this type of stuff won't
-;;; be quite as big a problem. In the interim MON is using mercurial. Contact
-;;; MON for access to a stripped hg archive of all MON's current elisp source.
+;;; TODO:
+;;; Hopefully sometime in the near future the Emacs-devels will begin using the
+;;; bzr and Launchpad features of distributed version control to build a better
+;;; Emacs Lisp 'packaging' tool that can aid in some of this minor dependency
+;;; issues and this type of stuff won't be quite as big a problem (and instead
+;;; we'll all move to grokking DAGs with recursive dependency cycles). In the
+;;; interim MON is still using Mercurial. Contact MON for access to a stripped
+;;; hg archive of all MON's current Elisp source.
 ;;;
 ;;; NOTES:
 ;;;
@@ -149,7 +151,6 @@
 ;;; and  from Pascal Bourguignon but I can no longer find the reference
 ;;; to the source... I have it elsewhere as `escape-lisp-string-region'.
 ;;;
-;;; TODO:
 ;;;
 ;;; KEYBINDINGS:
 ;;; Assigning a keybinding for `mod-doc-help-insert-cookie'
@@ -226,21 +227,22 @@
 ;;; ==============================
 ;; :EMACS-WIKI - so we don't require more than you want/need.
 ;;
-(if (locate-library "mon-regexp-symbols")
-    (require 'mon-regexp-symbols))
+(unless (featurep 'mon-regexp-symbols)
+  (if (locate-library "mon-regexp-symbols")
+      (require 'mon-regexp-symbols)))
 ;;
-(if (locate-library "mon-insertion-utils")
-    (require 'mon-insertion-utils))
+(unless (featurep 'mon-regexp-symbols)
+  (if (locate-library "mon-insertion-utils")
+      (require 'mon-insertion-utils)))
 ;;
 ;; When not load the full packages above load mon-doc-help-utils-supplemental
-(unless (and 
-         (featurep 'mon-insertion-utils)
-         (featurep 'mon-regexp-symbols)
-         ;; :NOTE Following from mon-utils. Can't do a featurep/require test on
-         ;; it though because that requires this and fails with recursive load.
-         (and (fboundp 'mon-string-index) 
-              (fboundp 'mon-string-upto-index)
-              (fboundp 'mon-string-after-index)))
+(unless (and (featurep 'mon-insertion-utils)
+             (featurep 'mon-regexp-symbols)
+             ;; :NOTE Following from mon-utils. Can't do a featurep/require test on
+             ;; it though because that requires this and fails with recursive load.
+             (and (fboundp 'mon-string-index) 
+                  (fboundp 'mon-string-upto-index)
+                  (fboundp 'mon-string-after-index)))
   (require 'mon-doc-help-utils-supplemental))
 ;;
 ;; Load doc functions which can't possibly be GPL/GFDL e.g MS-C0RP API etc.
@@ -987,8 +989,9 @@ inside a defgroup form.\n
                 (setq put-help
                       (cond ((functionp sym-name)
                              (or (documentation sym-name)
-                                 (when (stringp (caddr (symbol-function 'mon-help-function-spit-doc)))
-                                   (stringp (caddr (symbol-function 'mon-help-function-spit-doc)))))) ;; funcs, macros.
+                                 (unless (byte-code-function-p sym-name)
+                                   (when (stringp (caddr (symbol-function sym-name)))
+                                     (stringp (caddr (symbol-function sym-name))))))) ;; funcs, macros.
                        (do-var (or (plist-get (symbol-plist sym-name) 'variable-documentation)
                                    (documentation-property sym-name 'variable-documentation))) ;; var, const, customs.
                        (do-face (or (face-documentation sym-name)
@@ -1338,9 +1341,9 @@ Default is `*doc-cookie*'.
                 (dolist (j vl)
                   (let ((v-dlim (format (cadr dlims) j)))
                     (princ
-                      (concat v-dlim 
-                       ;; :WAS (get j 'variable-documentation)  "\n")
-                       (documentation-property j 'variable-documentation) "\n")
+                     (concat v-dlim 
+                             ;; :WAS (get j 'variable-documentation)  "\n")
+                             (documentation-property j 'variable-documentation) "\n")
                      (current-buffer)))))
               (when fc-l
                 (dolist (k fc-l)
