@@ -10,9 +10,9 @@ A page break can also be used for a logical separation of source-code sections. 
 
 You can show page breaks other than as the text ##^L##. 
 
-=== PrettyControlL ===
-
-You can use PrettyControlL to display a page break pretty much any way you want. PrettyControlL also provides a little more information about ##^L## and standard GnuEmacs options that affect it.
+* PrettyControlL -- minor mode configurable to almost anything you want
+* OverlayControlL -- with an overlay and font-lock
+* [http://user42.tuxfamily.org/formfeed-hline/index.html formfeed-hline.el] -- minor mode for a line <code>^L------</code>
 
 === Display as a horizontal line, using a display table ===
 

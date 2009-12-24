@@ -2,7 +2,7 @@ This page describes package Lisp:ps-print-23.tar.gz, by ViniciusJoseLatorre.
 
 ''See ##README## file for installation instructions.''
 
-: .:: ''v7.3.4'' :: ''part of GNU Emacs 23'' ::.
+: .:: ''v7.3.5'' :: ''part of GNU Emacs 23'' ::.
 : .:: ''depends on ##lpr.el##'' :: ''mule'' ::.
 
 

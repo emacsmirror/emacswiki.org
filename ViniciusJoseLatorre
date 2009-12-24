@@ -94,7 +94,7 @@ code.
 : .:: ''part of GNU Emacs'' ::.
 : .:: ''depends on ##lpr.el##'' :: ''mule'' ::.
 : Please, check the Emacs version:
-:: ([Self:action=history;id=ps-print-23.tar.gz history])  ''[[PsPrintPackage-23|Emacs 23]]'' :: ''v7.3.4'' :: Download:ps-print-23.tar.gz  ([[PsPrintPackage-23]])
+:: ([Self:action=history;id=ps-print-23.tar.gz history])  ''[[PsPrintPackage-23|Emacs 23]]'' :: ''v7.3.5'' :: Download:ps-print-23.tar.gz  ([[PsPrintPackage-23]])
 :: ([Self:action=history;id=ps-print-22.tar.gz history])  ''[[PsPrintPackage-22|Emacs 22]]'' :: ''v6.8.2'' :: Download:ps-print-22.tar.gz  ([[PsPrintPackage-22]])
 :: ([Self:action=history;id=ps-print-20-21.tar.gz history])  ''[[PsPrintPackage-20|Emacs 21]]'' :: ''v6.6.10'' :: Download:ps-print-20-21.tar.gz  ([[PsPrintPackage-20]])
 :: ([Self:action=history;id=ps-print-20-21.tar.gz history])  ''[[PsPrintPackage-20|Emacs 20]]'' :: ''v6.6.10'' :: Download:ps-print-20-21.tar.gz  ([[PsPrintPackage-20]])

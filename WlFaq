@@ -8,7 +8,18 @@ Add the following to your ##.wl## file:
 
 == If I add folders to an access group outside of Wanderlust, how do I make Wanderlust pick up those changes? ==
 
-In the folder manager, close the access group, then use ##C-u <ENTER>## to open it again. Wanderlust will scan the access group for new folders.
+In the folder manager, close the access group, then use ##C-u <RET>## to open it again. Wanderlust will scan the access group for new folders.
+
+== Offline ==
+
+=== How do I force Wanderlust to pre-fetch all messages in a folder for offline access? ==
+
+First:
+{{{
+(setq wl-summary-incorporate-marks '("N" "U" "!" "A" "F" "$"))
+}}}
+
+Now, from the ##Folder## buffer, use the command ##wl-folder-prefetch-current-entity## (bound to ##I##) on any entity that you wish to prefetch all messages of.
 
 == Speed ==
 
@@ -16,3 +27,4 @@ In the folder manager, close the access group, then use ##C-u <ENTER>## to open 
 
 If you only use Wanderlust to access a mailbox, you can set
 ##wl-summary-auto-sync-marks## to ##nil## in your ##.wl## file.
+

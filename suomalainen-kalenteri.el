@@ -1,5 +1,5 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; suomalainen-kalenteri.el (2009-07-10)
+;; suomalainen-kalenteri.el (2009-12-23)
 ;;
 ;; Suomalaiset merkkipäivät Emacsin         Finnish holidays for Emacs calendar.
 ;; kalenteriin.
@@ -80,14 +80,16 @@ format.")
    (holiday-fixed 7 6 "Eino Leinon päivä, runon ja suven päivä (liputus)")
    (holiday-fixed 7 27 "Unikeonpäivä")
    (holiday-float 9 0 1 "Mikkelinpäivä" 29)
-   (holiday-fixed 10 10 (concat "Aleksis Kiven päivä, suomalaisen "
-                                "kirjallisuuden päivä (liputus)"))
+   (holiday-fixed 10 10 ,(concat "Aleksis Kiven päivä, suomalaisen "
+                                 "kirjallisuuden päivä (liputus)"))
    (holiday-fixed 10 24 "YK:n päivä (liputus)")
    (holiday-float 10 6 1 "Pyhäinpäivä" 31)
    (holiday-fixed 11 6 "Ruotsalaisuuden päivä, svenska dagen (liputus)")
    (holiday-float 11 0 2 "Isänpäivä (liputus)")
    (holiday-fixed 11 20 "Lapsen oikeuksien päivä")
    (holiday-fixed 12 6 "Itsenäisyyspäivä (liputus)")
+   (holiday-sexp '(if (>= year 2011) (list 12 8 year))
+                 "Jean Sibeliuksen päivä (liputus)")
    (holiday-float 11 0 1 "1. adventtisunnuntai" 27)
    (holiday-float 12 0 1 "2. adventtisunnuntai" 4)
    (holiday-float 12 0 1 "3. adventtisunnuntai" 11)
@@ -103,8 +105,8 @@ format.")
 ;; Muita merkkipäiviä
 (setq holiday-finnish-holidays
       (append holiday-finnish-holidays
-              '((holiday-fixed 3 30 (concat "Ahvenanmaan demilitarisoinnin "
-                                            "ja neutralisoinnin juhlapäivä"))
+              `((holiday-fixed 3 30 ,(concat "Ahvenanmaan demilitarisoinnin "
+                                             "ja neutralisoinnin juhlapäivä"))
                 (holiday-fixed 4 1 "Aprillipäivä")
                 (holiday-fixed 4 7 "Maailman terveyspäivä")
                 (holiday-float 4 0 -1 "Ahvenanmaan lipun päivä")
