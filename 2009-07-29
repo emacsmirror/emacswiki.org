@@ -6,3 +6,15 @@ vandalising the wiki.
 You might consider watching [Self:action=rc;showedit=1;rollback=1 RecentChanges including minor edits and rollbacks] if you want to help
 revert this vandalism. The edits I've looked at today all seemed to come from the IP number 119.111.124.194.
 -- AlexSchroeder
+
+[new]
+We've reached the end of 2009 and the stupid essay spam is still as strong as ever. Any ideas on how to handle it without inconveniencing regular users? -- Alex
+
+[new:DrewAdams:2009-12-24 23:28 UTC]
+Sorry, no idea. It sure is a PITA, though. -- DrewAdams
+
+[new]
+
+Why not add a custom regex edit rule for this? Most of the domains contain the word "papers", because it's a SEO keyword for them. This world (and other words like "essay") could be banned from URLs, so if a new edit contains an URL and it contains the word "papers" then it is not allowed to proceed.
+
+The word papers is not too frequent in legitmate URLs, so this ban could be employed for a trial period without bothering legitimate users to see its effectiveness. 

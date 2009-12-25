@@ -416,5 +416,13 @@ FILE has been displayed."
 ;; its tags database, etc.
 (setq recentf-keep '(keep-default-and-visible-recentf-p))
 </pre>
+
+= Extension package =
+
+Lisp:recentf-ext.el extends recentf package.
+* `dired' buffers can be handled.
+* Switching to file buffer considers it as most recent file.
+
+-- [[rubikitch]]
 ----
 CategoryCommands CategoryDotEmacs CategoryPersistence CategoryCompletion

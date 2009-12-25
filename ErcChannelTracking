@@ -54,7 +54,9 @@ This is useful if, for instance, ChanServ restarts:
 
 == Promoting QUERY buffer tracking ==
 
-A quick hack so that query buffers are tracked as if everything contains your current nick, otherwise they just appear with the default face:
+A quick hack so that query buffers are tracked as if everything contains your current nick, better reflecting the urgency of a private message.  Otherwise they just appear in the modeline with the default face and it can be easy to miss them.
+
+This works well with erc-auto-query set to bury.  It wont directly interrupt you, but will give you a clear modeline notification.  C-c C-space will then take you to your private message.
 
 <pre>
 (defadvice erc-track-find-face (around erc-track-find-face-promote-query activate)

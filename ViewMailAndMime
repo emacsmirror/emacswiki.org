@@ -1,1 +1,6 @@
-Does anyone know if it is possible to get ViewMail to allow you to choose which subpart of a multipart mime message it will display?  It seems that some mailers will embed attachments in the html part of a multipart message, and since my VM is set to prefer to display text/plain I don't get to see the attachments.
+**Q:** Does anyone know if it is possible to get ViewMail to allow you to choose which subpart of a multipart mime message it will display?  It seems that some mailers will embed attachments in the html part of a multipart message, and since my VM is set to prefer to display text/plain I don't get to see the attachments.
+
+**A:** The customization variable `vm-mime-alternative-select-method' can be used specify the choice.  A value of 'best will allow the best alternative to be displayed, typically html.  For this to work, however, you should have configured your Emacs to display html, using packages such as w3 or w3m.  The default value is 'best-internal, which means choose the best alternative that can be displayed internally in Emacs.  Again, if you have configured your Emacs to display html, it will be chosen.  Otherwise, text/plain alternative will be displayed.
+
+The variable `vm-mime-show-alternatives' can be used to show '''all''' the alternatives, either in full form or as buttons.
+

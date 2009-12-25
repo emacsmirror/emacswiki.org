@@ -18,7 +18,7 @@ putting the following in the InitFile
 
 The basic settings are specified as in mail mode
 
-  (setq user-mail-adress "my-mail-adress@somewhere.edu"
+  (setq user-mail-address "my-mail-adress@somewhere.edu"
         user-full-name "me myself and I")
 
 The standard method on the system is used by default for sending mail.

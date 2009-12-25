@@ -56,6 +56,7 @@ EevMode is my partner for years.
 * LispXmp -- Automagic lisp value annotation like Ruby's xmpfilter
 * Lisp:sticky.el -- Sticky Shift
 * Lisp:display-buffer-for-wide-screen.el -- Set `display-buffer-function' for wide-screen display
+* Lisp:recentf-ext.el -- Extension of RecentFiles package.
 * I maintained
 ** OddmuseMode -- Edit oddmuse wikis (including EmacsWiki) in Emacs
 
