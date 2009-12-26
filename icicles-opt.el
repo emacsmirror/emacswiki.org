@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Dec 13 15:12:32 2009 (-0800)
+;; Last-Updated: Fri Dec 25 12:01:05 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 3424
+;;     Update #: 3426
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -585,12 +585,12 @@ whatever OLD is bound to in MAP, or in OLDMAP, if provided."
     (pop-global-mark
      icicle-goto-global-marker-or-pop-global-mark                    t) ; `C-x C-@', `C-x C-SPC'
     ;; For La Carte (`lacarte.el'), not Icicles, but it's convenient to do this here.
-    (,(kbd "ESC M-x")      lacarte-execute-menu-command
-     (fboundp 'lacarte-execute-menu-command)) ; `ESC M-x'
-    (,(kbd "M-`")          lacarte-execute-menu-command
-     (fboundp 'lacarte-execute-menu-command)) ; `M-`' - replaces `tmm-menubar'.
-    (,(kbd "<f10>")        lacarte-execute-menu-command
-     (fboundp 'lacarte-execute-menu-command))) ; `f10' - replaces `menu-bar-open'.
+    (,(kbd "ESC M-x")      lacarte-execute-command ; `ESC M-x'
+     (fboundp 'lacarte-execute-command))
+    (,(kbd "M-`")          lacarte-execute-menu-command ; `M-`' - replaces `tmm-menubar'.
+     (fboundp 'lacarte-execute-menu-command))
+    (,(kbd "<f10>")        lacarte-execute-menu-command ; `f10' - replaces `menu-bar-open'.
+     (fboundp 'lacarte-execute-menu-command)))
   "*List of top-level commands to bind in Icicle mode.
 Each list element is of custom type `icicle-key-definition' and has
 the form (KEY COMMAND CONDITION).

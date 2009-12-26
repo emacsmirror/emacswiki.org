@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Dec 21 12:18:07 2009 (-0800)
+;; Last-Updated: Fri Dec 25 12:02:55 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 15084
+;;     Update #: 15096
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4281,7 +4281,7 @@ You can use this command only from the minibuffer or *Completions*
            icicle-candidate-help-fn
            (funcall icicle-candidate-help-fn icicle-last-completion-candidate))
 
-          (;; Call to `lacarte-execute-menu-command' (defined in `lacarte.el').
+          (;; Call to `lacarte-execute(-menu)-command' (defined in `lacarte.el').
            ;; Use command associated with menu item.
            (consp lacarte-menu-items-alist) ; `lacarte-menu-items-alist' is in `lacarte.el'.
            (setq cand-symb  (cdr (assoc icicle-last-completion-candidate lacarte-menu-items-alist)))

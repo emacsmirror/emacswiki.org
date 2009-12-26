@@ -6,13 +6,13 @@ This page describes library '''<tt>[[lacarte.el]]</tt>''', which lets you execut
 : '''<code>ESC M-x</code>'''
 
 : <code>Menu command:</code>
-: <code>Menu command:</code> '''<code>T [TAB]</code>'''
+: <code>Menu command:</code> '''<code>t [TAB]</code>'''
 : <code>Menu command: Tools > </code>
 : <code>Menu command: Tools > </code>'''<code>Compa [TAB]</code>'''
 : <code>Menu command: Tools > Compare (Ediff) > </code>'''<code>Two F [TAB]</code>'''
 : <code>Menu command: Tools > Compare (Ediff) > Two Files... </code>'''<code>[RET]</code>'''
 
-(Note: ##lacarte.el## replaces [[icicles-menu.el]].)
+(Note: ##lacarte.el## replaces the deprecated library [[icicles-menu.el]].)
 
 
 
@@ -22,13 +22,13 @@ All you need to do is put this in your [[init file]] (##~/.emacs##):
 
   (require 'lacarte)
 
-For convenience, bind a [[key sequence]] to `lacarte-execute-menu-command':
+For convenience, bind a [[key sequence]] to `lacarte-execute-command':
 
-  (global-set-key [?\e ?\M-x] 'lacarte-execute-menu-command)
+  (global-set-key [?\e ?\M-x] 'lacarte-execute-command)
 
 Consider also replacing the standard binding of `tmm-menu':
 
-  (global-set-key [?\M-`] 'lacarte-execute-menu-command)
+  (global-set-key [?\M-`] 'lacarte-execute-command)
 
 And you're good to go.  Type `<code><ESC> M-x</code>'. You are prompted for a menu command to execute.  Just start typing its name. Each menu item's full name, for completion, has its parent menu names as prefixes, as shown in the example above: 
 
@@ -39,26 +39,58 @@ And you're good to go.  Type `<code><ESC> M-x</code>'. You are prompted for a me
 
 == Not Just for Wimps and Noobs Anymore ==
 
-''You'' don't use menus. They're too slow. Only newbies and wimps use menus. '''''Not any more!''''' Use the keyboard to access any menu item, without knowing where it is or what its full name is. Type just part of its name -- ''any'' part -- and use completion to get the rest: the complete path and item name.
+''You'' don't use menus. Nah, they're too slow! Only newbies and wimps use menus. '''''Well, not any more.''''' Use the keyboard to access any menu item, without knowing where it is or what its full name is. Type just part of its name and use completion to get the rest: the complete path and item name.
 
 
 
 
 
+== Commands and Menu Commands ==
+
+You can bind either '''`lacarte-execute-menu-command'''' or
+'''`lacarte-execute-command'''' to a key such as `##ESC M-x##'.
+`lacarte-execute-menu-command' uses only menu commands.
+`lacarte-execute-command' lets you choose among ordinary Emacs
+[[command]]s, in addition to menu commands.  You can use a [[prefix argument]]
+with `lacarte-execute-command' to get the same effect as
+`lacarte-execute-menu-command'.
+
+Use `lacarte-execute-command' if you don't care whether a command
+is on a menu.  Then, if you want a command that affects a [[buffer]],
+just type `buf'.  This is especially useful if you use '''Icicles''' -- see [[#IciclesEnhancesDining|below]]. By default, in ''Icicle'' mode, `##ESC M-x##' is bound to `lacarte-execute-command', and `##M-`##' is bound to `lacarte-execute-menu-command'.
+
+
+
+
+
+[:IciclesEnhancesDining]
 == Icicles Enhances Dining A La Carte ==
 
-Use '''[[Icicles]]''' with '''La Carte''' to get more power and convenience.
+Use '''[[Icicles]]'''  with '''La Carte''' to get more power and convenience.
+It is '''Icicles''' that lets you choose menu items a la carte, in fact.
+That is, you can access them directly, wherever they might be in
+the menu hierachy.  Without '''Icicles''', you are limited to choosing
+items by their menu-hierarchy prefixes, and you must complete the
+entire menu prefix to the item, from the top of the menu on down.
+With '''Icicles''', you can directly match any parts of a menu item and
+its hierarchy path.
+
 Type any part of a menu-item, then use the '''Page Up''' and '''Page Down'''
-keys (`prior' and `next') to [[Icicles - Cycling Completions|cycle through all menu commands]] that
+keys (`prior' and `next') to [[Icicles - Cycling Completions|cycle]] through all menu commands that
 contain the text you typed somewhere in their name.  You can match within
 any menu or within all menus; that is, you can match any part(s) of the
 menu-hierachy prefix.
 
 You can use `S-TAB' to show and choose from all such [[Icicles - Apropos Completions|apropos
 completions]], just as you normally use `TAB' to show all prefix
-completions (that is, ordinary completions).  Vanilla prefix
+completions (that is, ordinary completions).  Vanilla, prefix
 completion is still available using `TAB', and you can cycle
 through the prefix completions using the arrow keys.
+
+You can use '''Icicles''' [[progressive completion]] to match multiple
+parts of a menu item separately, in any order.  For example, if
+you want a menu command that has to do with buffers and
+highlighting, type `##buf M-SPC hig S-TAB##'.
 
 '''Icicles''' apropos completion also lets you type a [[regular expression]]
 (regexp) -- it is matched against all of the possible menu items.
@@ -69,7 +101,7 @@ commands that match `print' followed somewhere by `buf'.
 
 : [[image:lacarte-w-icicles]]
 
-If you know how to use regexps, you can easily and quickly get to the menu command you want, or at least narrow the list of candidates for completion and cycling.
+If you know how to use regexps, you can easily and quickly get to a menu command you want, or at least narrow the list of candidates for completion and cycling.
 
 In addition, when you cycle to a candidate or complete to one (entirely), you can see help for that candidate in the [[mode line]]. In the screenshot above, for example, the current candidate is menu item '''File > Print > Printify Buffer''', and this menu item is described in the mode-line as follows:
 {{{
@@ -81,9 +113,9 @@ In addition, when you cycle to a candidate or complete to one (entirely), you ca
 
 === Menu Organization Helps You Find a Command ===
 
-Unlike commands listed in a flat `*Apropos*' page, menu items are organized, grouped logically by common area of application (`File', `Edit',...).  This grouping is also available when cycling completion candidates, and you can take advantage of it to hasten your search for the right command.
+Unlike commands listed in a flat `*Apropos*' page, menu items are organized, grouped logically by common area of application (`File', `Edit',...).  This grouping is also available when cycling completion candidates using '''Icicles''', and you can take advantage of it to hasten your search for the right command.
 
-You want to execute a command that puts the [[cursor]] at the end of a buffer, but you don't remember its name, what menu it might be a part of, or where it might appear in that (possibly complex) menu. You type `<code>ESC M-x</code>' and type `buffer' at the prompt. You use the '''Page Up''' and '''Page Down''' keys to cycle through all menu items that contain the word `buffer'. 
+You want to execute a command that puts the [[cursor]] at the end of a buffer, but you don't remember its name, what menu it might be a part of, or where it might appear in that (possibly complex) menu. With '''Icicles''' and '''La Carte''', you type `<code>ESC M-x</code>' and then type `buffer' at the prompt. You use the '''Page Up''' and '''Page Down''' keys (called `prior' and `next' in Emacs) to cycle through all menu items that contain the word `buffer'. 
 
 There are ''lots'' of such menu items. But, all items from the same menu (e.g. `File') are grouped together. You cycle quickly (not reading) to the `Edit' menu, because you guess that moving the cursor has more to do with editing than with file operations, tool use, buffer choice, help, etc. Then you cycle more slowly among the `buffer' menu items in the `Edit' menu. You quickly find `<code>Edit > Go To > Goto End of Buffer</code>'.  QED.
 

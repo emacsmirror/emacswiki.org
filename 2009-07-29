@@ -18,3 +18,23 @@ Sorry, no idea. It sure is a PITA, though. -- DrewAdams
 Why not add a custom regex edit rule for this? Most of the domains contain the word "papers", because it's a SEO keyword for them. This world (and other words like "essay") could be banned from URLs, so if a new edit contains an URL and it contains the word "papers" then it is not allowed to proceed.
 
 The word papers is not too frequent in legitmate URLs, so this ban could be employed for a trial period without bothering legitimate users to see its effectiveness. 
+
+
+[new:DrewAdams:2009-12-25 19:43 UTC]
+They're really stepping up the spam attacks -- I suppose for the holidays. The latest flurry, from the "eluneart" URL, seems to be from a bot: the edit times are close together. -- DrewAdams
+
+[new]
+
+What's with the CAPTCHA barrier? Have they broken reCaptcha?
+
+[new]
+Captchas are known to be broken at least on blogs.
+
+I use wp-hashcash for my blog (which I do not have time to use now...).
+It seems to work well.
+
+    http://en.wikipedia.org/wiki/Hashcash
+
+The strategy in hashcash is to let the client with javascript compute something that takes time (and then of course include the result in what is sent back and check that it is correct).
+That works well since spammers do not have the time to wait.
+Do you think this can be used here too?

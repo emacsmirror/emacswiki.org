@@ -313,6 +313,14 @@ XEmacs by default uses a different configuration file
 provided for compatibility.  You can follow the instructions above
 with the changed file names; e.g., C-x C-f ~/.xemacs/init.el RET
 
+== Misc ==
+
+=== How do I check if the current frame is displayed in a terminal or X? ===
+
+The variable <code>window-system</code> stores the name of the windowing system being used to display the current frame.
+
+Its value is, for instance, <code>x</code> for X11, or <code>nil</code> for a text-only terminal.
+
 == ELisp ==
 
 === What is ELisp? ===

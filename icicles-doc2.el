@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Dec 13 16:27:40 2009 (-0800)
+;; Last-Updated: Fri Dec 25 12:00:42 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 26131
+;;     Update #: 26132
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5260,7 +5260,8 @@
 ;;  * `C-c TAB'        - `icicle-comint-command' (in *shell* etc.)
 ;;  * `C-c /'          - `icicle-complete-thesaurus-entry'
 ;;  * `C-h C-o'        - `icicle-describe-option-of-type'
-;;  * `ESC M-x', `M-`' - `lacarte-execute-menu-command'
+;;  * `ESC M-x'        - `lacarte-execute-command'
+;;  * `M-`', `f10'     - `lacarte-execute-menu-command'
 ;;  * `M-x'            - `icicle-execute-extended-command'
 ;;  * `C-x SPC'        - `icicle-command-abbrev'
 ;;  * `C-x M-e'        - `icicle-execute-named-keyboard-macro'

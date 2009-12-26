@@ -13,9 +13,25 @@ As a Dvorak user, I use ##C-t## instead of ##C-x## and ##M-t## instead of ##M-x#
     (global-set-key (kbd "M-t") 'execute-extended-command)
     (global-set-key (kbd "C-M-t") 'eval-defun)
 
+    ;; useful functions
+    (defun insert-key-sequence ()
+      "Reads a sequence of keys until C-g is hit, and inserts the
+    prettified key sequence with C-g excluded."
+      (interactive "*")
+      (let ((result "")
+            key)
+        (while (progn
+                 (setq key (read-key "Enter the key sequence: "))
+                 (unless (eq 7 key)
+                   (setq result (concat result (key-description (list key)) " ")))
+                 (not (eq 7 key))))
+        (when (not (string= result ""))
+          (insert result)
+          (backward-delete-char 1))))
 
 [new:DrewAdams:2009-12-05 20:35 UTC]
 Welcome to the wiki. -- DrewAdams
+[new:DenizDogan:2009-12-25 13:37 UTC]Thank you. -- DenizDogan
 
 
 

@@ -7,7 +7,7 @@ Around 1994, [http://www.sun.com/ Sun Microsystems] and [http://www.dreamsongs.c
 
 Lucid's Emacs had forked quite publicly from the FreeSoftwareFoundation's Emacs a year before this. This fork has persisted as the EmacsSchism. 
 
-The '''X''' in '''XEmacs''' occasionally confuses people. It doesn't mean that the program can't be run in a terminal, nor that GnuEmacs can't take advantage of [http://www.x.org/ X11].  '''XEmacs''' can be used in TTYs and under X11---occasionally at the same time, using GnuClient---without problems. GnuEmacs can be run under X11 and under TTYs, though not at the same time (but see MultiTTYSupport). 
+The '''X''' in '''XEmacs''' occasionally confuses people. It doesn't mean that the program can't be run in a terminal, nor that GnuEmacs can't take advantage of [http://www.x.org/ X11].  '''XEmacs''' can be used in TTYs and under X11---occasionally at the same time, using GnuClient---without problems.
 
 See also: BuildingXEmacs XEmacsBugs EmacsSchism  
 
