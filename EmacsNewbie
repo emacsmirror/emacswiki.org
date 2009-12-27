@@ -5,26 +5,30 @@ Français:NouvelUtilisateurEmacs
 このページは日本語があります：
 日本語:Emacsビギナー
 
-* [http://www.gnu.org/software/emacs/tour/ Guided tour] -- Official Web version for GnuEmacs.
-* WikiPedia:Emacs -- An overview.
-* EmacsTutorial -- Learn basic familiarity using the built-in tutorial.
-* LearningEmacs -- Different strategies for learning.
-* EmacsKeyNotation -- Standard notation for Emacs keys.
-* CategoryGlossary -- Emacs terminology.
-* WhyUseEmacs -- Overview of Emacs features.
-* EmacsNewbieKeyReference -- Commonly used commands.
-* EmacsNewbieHelpReference -- Commonly used keys.
-* EmacsNewbieMouseReference -- How the Emacs mouse works.
-* EmacsNewbieWithIcicles -- Use [[Icicles]] to learn Emacs -- lower the learning curve, learn more, learn better.
-* EmacsCrashCourse -- One recipe for learning.
-* KeyboardMacros -- Capture what you do and then play it back again, multiple times. Almost everything you do (mouse, menus, keyboard keys) can be recorded and replayed.
-* LearnEmacsLisp -- Learning EmacsLisp is part of learning Emacs -- yes, even for newbies.
-* EmacsScreencasts -- Screen casts where you can learn how others use Emacs.
+* An Emacs [http://www.gnu.org/software/emacs/tour/ Guided tour] -- Official Web version for GnuEmacs.
 * BooksAboutEmacs -- Books in print and on line.
+* CategoryGlossary -- Emacs terminology.
+* CategoryHistory -- Emacs History.
+* CategoryReferenceSheet -- Emacs key reference sheet examples.
+* [http://www.rgrjr.com/emacs/emacs_cheat.html Cheat] Sheet -- Emacs Cheat Sheet courtesy Bob Rogers and David Cohen.
 * CommonProblems -- Common sources of confusion.
+* EmacsCrashCourse -- One recipe for learning.
+* EmacsKeyNotation -- Standard notation for Emacs keys.
+* EmacsNewbieHelpReference -- Commonly used keys.
+* EmacsNewbieKeyReference -- Commonly used commands. 
+* EmacsNewbieMouseReference -- How the Emacs mouse works.
+* EmacsNewbieWithIcicles -- Use [[Icicles]] to learn Emacs.
+* EmacsScreencasts -- Screen casts where you can learn how others use Emacs.
+* EmacsTutorial -- Learn basic familiarity using the built-in tutorial.
 * EnjoyWrestlingWithEmacs -- What you're in for!
+* KeyboardMacros -- Capture what you do and then play it back again, multiple times. Almost everything you do (mouse, menus, keyboard keys) can be recorded and replayed.
+* LearningEmacs -- Different strategies for learning.
+* LearnEmacsLisp -- Learning EmacsLisp is part of LearningEmacs -- yes, even for newbies.
+* ReferenceCards -- Emacs is distributed with printable reference cards.
+* [[Reference_Sheet_by_Aaron_Hawley_source]] -- Cheat Sheet for doing everything in Emacs.
+* WhyUseEmacs -- Overview of Emacs features.
+* WikiPedia:Emacs -- An overview.
 
-See also CategoryHistory 
 
 ----
-CategoryHelp
+CategoryHelp CategoryDocumentation

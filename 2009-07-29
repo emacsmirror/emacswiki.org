@@ -38,3 +38,23 @@ It seems to work well.
 The strategy in hashcash is to let the client with javascript compute something that takes time (and then of course include the result in what is sent back and check that it is correct).
 That works well since spammers do not have the time to wait.
 Do you think this can be used here too?
+
+[new]
+I think the essay and paper spam is written by actual people. It doesn't just add spam to a page – they're actively trying to hide it by producing semi-legible text. As for the gulidova.client.kv.chereda.net spam – I looked at AlexSchroederConfigPyrobombus and noticed that they spammed the page, and then reverted their own spam, probably because it wasn't being linked? They didn't revert their own spam on EmacsNiftyTricks, for example.
+
+If you look at the list of _all_ changes (not just the latest one for each page), you'll see that gulidova.client.kv.chereda.net spammed the site on 2009-12-25 from 17:37 to 17:55 with about an edit per minute. They had lots of time. -- Alex
+
+[new:DrewAdams:2009-12-26 19:26 UTC]
+Guess you're right. But then "they had lots of time" in both senses -- time to kill, apparently. Spending 20 minutes doing that by hand, at a page per minute -- they gotta ''love'' it! -- Drew
+
+[new]
+But then I suppose some intervention on the human level is necessary.
+Registration of users?
+Email confirmation of edits? -- LennartBorgman
+
+[new]
+Alex, one of the things we did on another (now defunct) wiki was to set up the robots.txt to tell google to exclude history pages. That and nofollow to the history pages. It will make the linkspam worthless, which won't necessarily reduce the dumber spammers, but it will at least render them impotent. That and 2 weeks expiry seems excessive. -- RyanDavis
+
+[new]
+
+For dumber spammers there could be an explicit warning on the edit page that their spam is not indexed on the history pages.

@@ -66,6 +66,14 @@ Hopefully this is fixed, now. -- Alex
 [new:DrewAdams:2009-10-16 14:53 UTC]
 Thanks. Almost fixed. The file name that shows up in the `##File name:##' field of the `##Save As##' dialog box is this, however: `##emacs.el;raw=1;revision=71##', instead of the name of the file, ##bookmark+.el##. But at least I can modify that text by hand to give it the right name -- and downloading then works. -- DrewAdams
 
+[new]
+Downloading of elisp files seems to be impossible now.
+I tried at http://www.emacswiki.org/emacs/doremi.el.
+The download link is behind a html button.
+Alex, did you accidently restore some old version of the wiki software? -- LennartBorgman
+
+[new:DrewAdams:2009-12-27 00:28 UTC]
+It seems that page still has the old (less new) Download button. Alex, can you run some script to update all of the Elisp pages so they use your new pseudo-button? If not, what do we need to do? Do we need to edit each library with a fictitious change and then save? That will take quite a while. Thx -- DrewAdams
 
 
 [:StalePagesServed]

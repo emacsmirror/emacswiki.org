@@ -472,6 +472,49 @@ region bookmarks that you selectively marked.
 
 
 
+
+[:OmittingBookmarks]
+=== Omitting Bookmarks from Display ===
+
+In sections [[#MarkingAndUnmarkingBookmarks]] and
+[[#FilteringBookmarks]] you learned how
+to hide and show bookmarks in the bookmark list.  This section is
+about a different kind of hiding, called '''omitting'''.
+
+Omitted bookmarks are not shown in the bookmark list, no matter
+what filtering is used.  The only way to show omitted bookmarks is
+to show all of them and only them, using '''`##O S##'''', which is bound to
+command '''`bookmarkp-bmenu-show-only-omitted''''.
+
+Omitted bookmarks are still available even if they are not shown, and you can still jump to
+them (e.g. using `C-x r b').  You just don't see them in the
+bookmark list.  And that's the reason for this feature: to hide
+those bookmarks that you don't care to see.
+
+The most common use for this feature is to hide the component
+bookmarks that make up a sequence bookmark (see [[#FunctionAndSequenceBookmarks]]). The default behavior when
+you create a sequence bookmark is in fact to omit its component
+bookmarks from the displayed list.
+
+You can omit any bookmarks by marking them and then using '''`##O >##''''
+('''`bookmarkp-bmenu-omit/unomit-marked'''').  If you are looking at the
+omitted bookmarks (after using `##O S##'), then `##O >##' '''''un'''''-omits the
+bookmarks marked there.  Think of two complementary spaces: the
+normal bookmark list and the omitted bookmark list.  When you use
+`##O >##', the marked bookmarks that are currently shown are moved to
+the opposite space.
+
+You can un-omit ''all'' of the omitted bookmarks at once, using '''`##O U##''''
+('''`bookmarkp-unomit-all'''').  You can also call this command from
+outside the bookmark-list display.
+
+
+
+
+
+
+
+
 [:SortingBookmarks]
 === Sorting Bookmarks ===
 

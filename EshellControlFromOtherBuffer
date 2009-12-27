@@ -28,7 +28,7 @@ Inspired by `eev', I made this. The command below makes it possible to send comm
 
 </pre>
 
-And yes, I know about the history in eshell. But that's my problem; I always end up losing by eshell history and bash history files and when I need that cool command I used a year ago I can never find it. Hence this hack which allows me to keep all my eshell commands in a simple text file that I keep a controlled backup of.
+And yes, I know about the history in eshell. But that's my problem; I always end up losing my eshell history and bash history files and when I need that cool command I used a year ago I can never find it. Hence this hack which allows me to keep all my eshell commands in a simple text file that I keep a controlled backup of.
 
 -- MaDa
 ----

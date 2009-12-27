@@ -43,6 +43,8 @@ Bind `l' to `help-go-back' in `help-mode', to make it behave a tiny bit more lik
     (lambda () (define-key help-mode-map "l" 'help-go-back)))
 
 ----
+EmacsNewbie
 CategoryHelp
-CategoryReferenceSheet
 CategoryKeys
+CategoryReferenceSheet
+

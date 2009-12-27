@@ -8,9 +8,9 @@
 ;; Copyright (C) 2000-2009, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Dec 15 22:09:04 2009 (-0800)
+;; Last-Updated: Sun Dec 27 00:08:30 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 8285
+;;     Update #: 8433
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -51,6 +51,7 @@
 ;;      (@> "Marking and Unmarking Bookmarks")
 ;;      (@> "Filtering Bookmarks (Hiding and Showing)")
 ;;      (@> "Only Visible Bookmarks Are Affected")
+;;      (@> "Omitting Bookmarks from Display")
 ;;      (@> "Sorting Bookmarks")
 ;;    (@> "Bookmark Compatibility with Vanilla Emacs (`bookmark.el')")
 ;;    (@> "New Bookmark Structure")
@@ -66,6 +67,7 @@
 ;;    (@> "Menu-List (`*-bmenu-*') Filter Commands")
 ;;    (@> "Menu-List (`*-bmenu-*') Commands Involving Marks")
 ;;    (@> "Search-and-Replace Locations of Marked Bookmarks")
+;;    (@> "Omitted Bookmarks")
 ;;    (@> "Tags")
 ;;    (@> "General Menu-List (`-*bmenu-*') Commands and Functions")
 ;;    (@> "Bookmark Predicates")
@@ -114,7 +116,8 @@
 ;;    `bookmarkp-bmenu-mark-non-file-bookmarks',
 ;;    `bookmarkp-bmenu-mark-region-bookmarks',
 ;;    `bookmarkp-bmenu-mark-w3m-bookmarks',
-;;    `bookmarkp-bmenu-mouse-3-menu',
+;;    `bookmarkp-bmenu-mouse-3-menu', `bookmarkp-bmenu-omit-marked',
+;;    `bookmarkp-bmenu-omit/unomit-marked',
 ;;    `bookmarkp-bmenu-query-replace-marked-bookmarks-regexp',
 ;;    `bookmarkp-bmenu-quit', `bookmarkp-bmenu-refresh-menu-list',
 ;;    `bookmarkp-bmenu-regexp-mark',
@@ -125,6 +128,7 @@
 ;;    `bookmarkp-bmenu-show-only-info-nodes',
 ;;    `bookmarkp-bmenu-show-only-man-pages',
 ;;    `bookmarkp-bmenu-show-only-non-files',
+;;    `bookmarkp-bmenu-show-only-omitted',
 ;;    `bookmarkp-bmenu-show-only-regions',
 ;;    `bookmarkp-bmenu-show-only-w3m-urls',
 ;;    `bookmarkp-bmenu-sort-by-bookmark-name',
@@ -148,6 +152,7 @@
 ;;    `bookmarkp-bmenu-unmark-bookmarks-tagged-none',
 ;;    `bookmarkp-bmenu-unmark-bookmarks-tagged-not-all',
 ;;    `bookmarkp-bmenu-unmark-bookmarks-tagged-some',
+;;    `bookmarkp-bmenu-unomit-marked',
 ;;    `bookmarkp-define-tags-sort-command',
 ;;    `bookmarkp-describe-bookmark',
 ;;    `bookmarkp-list-defuns-in-commands-file',
@@ -157,12 +162,14 @@
 ;;    `bookmarkp-remove-tags-from-all', `bookmarkp-rename-tag',
 ;;    `bookmarkp-reverse-multi-sort-order',
 ;;    `bookmarkp-reverse-sort-order',
-;;    `bookmarkp-toggle-saving-menu-list-state', `bookmarkp-version',
+;;    `bookmarkp-toggle-saving-menu-list-state',
+;;    `bookmarkp-unomit-all', `bookmarkp-version',
 ;;    `old-bookmark-insert', `old-bookmark-relocate'.
 ;;
 ;;  User options defined here:
 ;;
-;;    `bookmarkp-bmenu-commands-file', `bookmarkp-bmenu-state-file',
+;;    `bookmarkp-bmenu-commands-file', `bookmarkp-bmenu-omitted-list',
+;;    `bookmarkp-bmenu-state-file',
 ;;    `bookmarkp-bookmark-name-length-max',
 ;;    `bookmarkp-handle-region-function',
 ;;    `bookmarkp-incremental-filter-delay',
@@ -256,7 +263,7 @@
 ;;    `bookmarkp-maybe-save-bookmarks',
 ;;    `bookmarkp-msg-about-sort-order', `bookmarkp-multi-sort',
 ;;    `bookmarkp-non-file-alist-only',
-;;    `bookmarkp-non-file-bookmark-p',
+;;    `bookmarkp-non-file-bookmark-p', `bookmarkp-omitted-alist-only',
 ;;    `bookmarkp-position-after-whitespace',
 ;;    `bookmarkp-position-before-whitespace',
 ;;    `bookmarkp-position-post-context',
@@ -446,12 +453,12 @@
 ;;
 ;;     - You can edit a bookmark (its name and file name).
 ;;
-;;     - A complete menu, `Bookmark+' is provided on the menu-bar.
+;;     - A complete menu, `Bookmark+', is provided on the menu-bar.
 ;;       Use it in particular when you don't remember a key binding.
 ;;       The same menu is available on `C-mouse-3'.
 ;;
 ;;     - A popup menu is available on `mouse-3', with actions for the
-;;       individual bookmark you point to.
+;;       individual bookmark you point to when you click the mouse.
 ;;
 ;;  * Additional types of bookmarks.
 ;;
@@ -811,6 +818,43 @@
 ;;  region bookmarks that you selectively marked.
 ;;
 ;;
+;;(@* "Omitting Bookmarks from Display")
+;;  *** Omitting Bookmarks from Display ***
+;;
+;;  In sections (@> "Marking and Unmarking Bookmarks") and
+;;  (@> "Filtering Bookmarks (Hiding and Showing)") you learned how
+;;  to hide and show bookmarks in the bookmark list.  This section is
+;;  about a different kind of hiding, called "omitting".
+;;
+;;  Omitted bookmarks are not shown in the bookmark list, no matter
+;;  what filtering is used.  The only way to show omitted bookmarks is
+;;  to show all of them and only them, using `O S', which is bound to
+;;  command `bookmarkp-bmenu-show-only-omitted'.
+;;
+;;  Omitted bookmarks are still available even if they are not shown,
+;;  and you can still jump to them (e.g. using `C-x r b').  You just
+;;  don't see them in the bookmark list.  And that's the reason for
+;;  this feature: to hide those bookmarks that you don't care to see.
+;;
+;;  The most common use for this feature is to hide the component
+;;  bookmarks that make up a sequence bookmark (see
+;;  (> "Function and Sequence Bookmarks")).  The default behavior when
+;;  you create a sequence bookmark is in fact to omit its component
+;;  bookmarks from the displayed list.
+;;
+;;  You can omit any bookmarks by marking them and then using `O >'
+;;  (`bookmarkp-bmenu-omit/unomit-marked').  If you are looking at the
+;;  omitted bookmarks (after using `O S'), then `O >' un-omits the
+;;  bookmarks marked there.  Think of two complementary spaces: the
+;;  normal bookmark list and the omitted bookmark list.  When you use
+;;  `O >', the marked bookmarks that are currently shown are moved to
+;;  the opposite space.
+;;
+;;  You can un-omit all of the omitted bookmarks at once, using `O U'
+;;  (`bookmarkp-unomit-all').  You can also call this command from
+;;  outside the bookmark-list display.
+;;
+;;
 ;;(@* "Sorting Bookmarks")
 ;;  *** Sorting Bookmarks ***
 ;;
@@ -935,6 +979,23 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2009/12/26 dadams
+;;     Added: bookmarkp-bmenu-omitted-list, bookmarkp-bmenu-show-only-omitted, bookmarkp-unomit-all,
+;;            bookmarkp-bmenu-omit/unomit-marked, bookmarkp-bmenu-(un-)omit-marked,
+;;            bookmarkp-omitted-alist-only.
+;;            Bind *-bmenu-omit/unomit-marked, *-bmenu-show-only-omitted, *-unomit-all to O>,OS,OU.
+;;     Added omit/un-omit stuff to Bookmark+ menu.
+;;     bookmarkp-remove-assoc-dups, bookmarkp-sort-and-remove-dups: Added optional arg OMIT.
+;;     bookmark-delete: Update bookmarkp-bmenu-omitted-list.
+;;     bookmarkp-save-menu-list-state, bookmark-bmenu-list:
+;;       Save/restore bookmarkp-bmenu-omitted-list as part of state.
+;;     bookmark-bmenu-list-1: Treat omitted list when bookmarkp-omitted-alist-only.
+;;     bookmarkp-marked-bookmark-p: Arg can now be a bookmark (or a bookmark name).
+;;     bookmarkp-bmenu-unmark-all: Start by going forward 2 lines, not 1, if user hit RET.
+;;     bookmarkp-bmenu-make-sequence-from-marked:
+;;       Added optional arg DONT-OMIT-P.  If nil, omit marked bookmarks.
+;;       If the seq bookmark already exists, prompt to add to it or replace it.
+;;       Go to the new bookmark in the menu list.
 ;; 2009/12/15 dadams
 ;;     Added: bookmarkp-sequence-jump-display-function, bookmarkp-sequence, bookmarkp-function,
 ;;            bookmarkp-bmenu-make-sequence-from-marked, bookmarkp-jump-sequence,
@@ -1760,6 +1821,15 @@ Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Description" "http://www.emacswiki.org/BookmarkPlus")
   :link '(emacs-commentary-link :tag "Commentary" "bookmark+"))
 
+(defcustom bookmarkp-bmenu-omitted-list ()
+  "List of names of omitted bookmarks.
+They are generally not available for display in the bookmark list.
+You can, however, use \\<bookmark-bmenu-mode-map>\
+`\\[bookmarkp-bmenu-show-only-omitted]' to see them.
+You can then mark some of them and use `\\[bookmarkp-bmenu-omit/unomit-marked]'
+ to make those that are marked available again for the bookmark list."
+  :type '(repeat (string :tag "Bookmark name")) :group 'bookmarkp)
+
 (defcustom bookmarkp-bmenu-commands-file (convert-standard-filename
                                           "~/.emacs-bmk-bmenu-commands.el")
   "*File for saving user-defined bookmark-list commands.
@@ -2023,7 +2093,9 @@ general reverse that order.  The order within each group is unchanged
   "Copy of `bookmark-alist' as last filtered.")
 
 (defvar bookmarkp-bmenu-marked-bookmarks ()
-  "Names of the marked bookmarks.")
+  "Names of the marked bookmarks.
+This includes possibly omitted bookmarks, that is, bookmarks listed in
+`bookmarkp-bmenu-omitted-list'.")
 
 (defvar bookmarkp-bmenu-before-hide-unmarked-alist ()
   "Copy of `bookmark-alist' made before hiding unmarked bookmarks.")
@@ -2160,7 +2232,18 @@ When a region is bookmarked, POS represents the region start position.
  GNUS-ARTICLE-NUMBER is the number of a Gnus article.
  GNUS-MESSAGE-ID is the identifier of a Gnus message.
 
-7. For a W3M bookmark, FILENAME is a W3M URL.")
+7. For a W3M bookmark, FILENAME is a W3M URL.
+
+8. A sequence bookmark has this additional entry:
+
+ (sequence . COMPONENT-BOOKMARKS)
+
+ COMPONENT-BOOKMARKS is the list of component bookmark names.
+
+9. A function bookmark has this additional entry, which records the
+FUNCTION:
+
+ (function . FUNCTION)")
  
 ;;(@* "Compatibility Code for Older Emacs Versions")
 ;;; Compatibility Code for Older Emacs Versions ----------------------
@@ -2172,7 +2255,7 @@ When a region is bookmarked, POS represents the region start position.
   ;; They are the same as the vanilla Emacs 23+ definitions, except as noted.
   ;; They let older versions of Emacs handle bookmarks created with Emacs 23.
 
-  ;; 1. Handle shouldn't-happen case of non-string, non-cons.
+  ;; 1. Handle the shouldn't-happen case of non-string, non-cons.
   ;; 2. Document NOERROR in doc string.
   (defun bookmark-get-bookmark (bookmark &optional noerror)
     "Return the bookmark record corresponding to BOOKMARK.
@@ -2180,8 +2263,8 @@ BOOKMARK is a bookmark name or a bookmark record.
 If BOOKMARK is already a bookmark record, just return it.
 Otherwise look for the corresponding bookmark in `bookmark-alist'.
 
-Non-nil optional arg NOERROR means do not raise an error if BOOKMARK
-is not a valid bookmark."
+Non-nil optional arg NOERROR means return nil if BOOKMARK
+is not a valid bookmark - do not raise an error."
     (cond ((consp bookmark) bookmark)
           ((stringp bookmark)
            (or (if (fboundp 'assoc-string) ; Emacs 22+.
@@ -2263,10 +2346,7 @@ discard the old one."
     (let ((stripped-name  (copy-sequence bookmark-name)))
       (unless (featurep 'xemacs)
         (set-text-properties 0 (length stripped-name) () stripped-name))
-      (if (and (not no-overwrite)
-               (condition-case nil
-                   (bookmark-get-bookmark stripped-name)
-                 (error nil)))
+      (if (and (not no-overwrite) (bookmark-get-bookmark stripped-name 'noerror))
           ;; Existing bookmark under that name and no prefix arg means just overwrite old.
           ;; Use the new (NAME . ALIST) format.
           (setcdr (bookmark-get-bookmark stripped-name) alist)
@@ -2811,7 +2891,7 @@ candidate."
 ;; 1. Added note about `S-delete' to doc string.
 ;; 2. Changed arg name: BOOKMARK -> BOOKMARK-NAME.
 ;; 3. Use `bookmarkp-default-bookmark-name' as default when interactive.
-;; 4. Update `bookmarkp-latest-bookmark-alist'.
+;; 4. Update `bookmarkp-latest-bookmark-alist' and `bookmarkp-bmenu-omitted-list'.
 ;; 5. Increment `bookmark-alist-modification-count' even when using `batch' arg.
 ;;
 ;;;###autoload
@@ -2831,12 +2911,13 @@ candidate.  In this way, you can delete multiple bookmarks."
    (list (bookmark-completing-read "Delete bookmark" (bookmarkp-default-bookmark-name))))
   (bookmark-maybe-historicize-string bookmark-name)
   (bookmark-maybe-load-default-file)
-  (let ((will-go  (bookmark-get-bookmark bookmark-name 'noerror)))
-    (setq bookmark-alist                   (delq will-go bookmark-alist)
-          bookmarkp-latest-bookmark-alist  (delq will-go bookmarkp-latest-bookmark-alist))
-    ;; Added by DB.  `bookmark-current-bookmark' is nil if last occurrence was deleted.
-    (unless (bookmark-get-bookmark bookmark-current-bookmark 'noerror)
-      (setq bookmark-current-bookmark  nil)))
+  (let ((bmk  (bookmark-get-bookmark bookmark-name 'noerror)))
+    (setq bookmark-alist                   (delq bmk bookmark-alist)
+          bookmarkp-latest-bookmark-alist  (delq bmk bookmarkp-latest-bookmark-alist)
+          bookmarkp-bmenu-omitted-list     (delete bookmark-name bookmarkp-bmenu-omitted-list)))
+  ;; Added by DB.  `bookmark-current-bookmark' should be nil if last occurrence was deleted.
+  (unless (bookmark-get-bookmark bookmark-current-bookmark 'noerror)
+    (setq bookmark-current-bookmark  nil))
   ;; Don't rebuild the list when using `batch' arg
   (unless batch (bookmark-bmenu-surreptitiously-rebuild-list))
   (bookmarkp-maybe-save-bookmarks))
@@ -2965,7 +3046,7 @@ the deletions."
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; 1. Rebuild `bookmark-alist' using the last filtered alist in use.
+;; 1. Rebuild the menu list using the last filtered alist in use, `bookmarkp-latest-bookmark-alist'.
 ;; 2. Update the menu-list title.
 ;;
 (defun bookmark-bmenu-surreptitiously-rebuild-list ()
@@ -3016,7 +3097,7 @@ Non-nil FILTEREDP means the bookmark list has been filtered, so:
       (goto-char (point-min))
       (while (not (eobp)) (condition-case nil (eval (read (current-buffer))) (error nil)))
       (kill-buffer (current-buffer))))
-  (cond ((and bookmarkp-bmenu-first-time-p  bookmarkp-bmenu-state-file
+  (cond ((and bookmarkp-bmenu-first-time-p  bookmarkp-bmenu-state-file ; Restore from state file.
               (file-readable-p bookmarkp-bmenu-state-file))
          (let ((state  ()))
            (with-current-buffer (let ((enable-local-variables  nil)
@@ -3030,6 +3111,7 @@ Non-nil FILTEREDP means the bookmark list has been filtered, so:
                    bookmarkp-reverse-sort-p          (cdr (assq 'last-reverse-sort-p         state))
                    bookmarkp-reverse-multi-sort-p    (cdr (assq 'last-reverse-multi-sort-p   state))
                    bookmarkp-latest-bookmark-alist   (cdr (assq 'last-latest-bookmark-alist  state))
+                   bookmarkp-bmenu-omitted-list      (cdr (assq 'last-omitted-list           state))
                    bookmarkp-bmenu-marked-bookmarks  (cdr (assq 'last-bmenu-marked-bookmarks state))
                    bookmarkp-bmenu-filter-function   (cdr (assq 'last-bmenu-filter-function  state))
                    bookmarkp-bmenu-title             (cdr (assq 'last-bmenu-title            state))
@@ -3074,7 +3156,11 @@ Non-nil INTERACTIVEP means `bookmark-bmenu-list' was called
     (insert (format "%s\n- %s\n" real-title (make-string len-title ?-)))
     (add-text-properties (point-min) (point) (bookmarkp-face-prop 'bookmark-menu-heading))
     (let ((max-width     0)
-          (sorted-alist  (bookmarkp-sort-and-remove-dups bookmark-alist))
+          (sorted-alist  (bookmarkp-sort-and-remove-dups
+                          bookmark-alist
+                          (and (not (equal bookmarkp-bmenu-filter-function
+                                           'bookmarkp-omitted-alist-only))
+                               bookmarkp-bmenu-omitted-list)))
           name annotation markedp start)
       (dolist (bmk  sorted-alist)
         (setq max-width  (max max-width (length (bookmark-name-from-full-record bmk)))))
@@ -3110,9 +3196,8 @@ Non-nil INTERACTIVEP means `bookmark-bmenu-list' was called
 (defun bookmark-bmenu-bookmark ()
   "Return the name of the bookmark on this line."
   (condition-case nil
-      (save-excursion
-        (forward-line 0) (forward-char 3)
-        (get-text-property (point) 'bookmarkp-bookmark-name))
+      (save-excursion (forward-line 0) (forward-char 3)
+                      (get-text-property (point) 'bookmarkp-bookmark-name))
     (error nil)))
 
 
@@ -3465,7 +3550,8 @@ With a prefix argument, do not include remote files or directories."
 ;;;###autoload
 (defun bookmarkp-bmenu-show-all ()      ; `.' in bookmark list
   "Show all bookmarks known to the bookmark list (aka \"menu list\").
-This does not revert the bookmark list, to bring it up to date.
+Omitted bookmarks are not shown, however.
+Also, this does not revert the bookmark list, to bring it up to date.
 To revert the list, use `\\<bookmark-bmenu-mode-map>\\[bookmarkp-bmenu-refresh-menu-list]'."
   (interactive)
   (bookmarkp-barf-if-not-in-menu-list)
@@ -3675,7 +3761,7 @@ Use `\\[help-command]' during querying for help."
            (help-form          "Type SPC or `y' to unmark one bookmark, DEL or `n' to skip to next,
 `!' to unmark all remaining bookmarks with no more questions."))
       (goto-char (point-min))
-      (forward-line 1)                  ; Only one, because STRING starts with a newline.
+      (forward-line (if (eq mark ?\r) 2 1)) ; One because STRING starts with a newline.
       (while (and (not (eobp))
                   (if (eq mark ?\r)
                       (re-search-forward dired-re-mark nil t)
@@ -3795,40 +3881,182 @@ This affects only the `>' mark, not the `D' flag."
   (bookmark-bmenu-execute-deletions 'marked))
 
 ;;;###autoload
-(defun bookmarkp-bmenu-make-sequence-from-marked (bookmark-name)
-  "Create a sequence bookmark from the marked bookmarks.
+(defun bookmarkp-bmenu-make-sequence-from-marked (bookmark-name &optional dont-omit-p)
+  "Create or update a sequence bookmark from the visible marked bookmarks.
 The bookmarks that are currently marked are recorded as a sequence, in
 their current order in buffer `*Bookmark List*'.
 When you \"jump\" to the sequence bookmark, the bookmarks in the
 sequence are processed in order.
 
-Note that an existing sequence bookmark can be marked, and thus
-included in the new sequence bookmark created.  That is, you can
-include other sequences within a sequence bookmark.
+By default, omit the marked bookmarks, after creating the sequence.
+With a prefix arg, do not omit them.
 
-Returns the new bookmark (internal record)."
-  (interactive
-   (progn (unless bookmarkp-bmenu-marked-bookmarks (error "No marked bookmarks"))
-          (list (read-string "Name: "))))
-  (unless bookmarkp-bmenu-marked-bookmarks (error "No marked bookmarks"))
+If a bookmark with the specified name already exists, it is
+overwritten.  If a sequence bookmark with the name already exists,
+then you are prompted whether to add the marked bookmarks to the
+beginning of the existing sequence (or simply replace it).
+
+Note that another existing sequence bookmark can be marked, and thus
+included in the sequence bookmark created or updated.  That is, you
+can include other sequences within a sequence bookmark.
+
+Returns the bookmark (internal record) created or updated."
+  (interactive "sName of sequence bookmark: \nP")
+  (bookmarkp-barf-if-not-in-menu-list)
   (unless (get-buffer "*Bookmark List*") (bookmark-bmenu-list))
-  (let ((marked-bmks  ()))
+  (let ((marked-bmks  ())
+        (count        0))
+    (message "Making sequence from marked bookmarks...")
     (save-excursion
       (with-current-buffer "*Bookmark List*"
         (goto-char (point-min)) (forward-line 2)
         (while (re-search-forward "^>" (point-max) t)
-          (push (bookmark-bmenu-bookmark) marked-bmks))))
-    (bookmark-store bookmark-name
-                    `((filename . ,bookmarkp-non-file-filename)
-                      (position . 0)
-                      (sequence ,@(nreverse marked-bmks))
-                      (handler . bookmarkp-jump-sequence))
-                    nil))
+          (push (bookmark-bmenu-bookmark) marked-bmks)
+          (setq count  (1+ count)))))
+    (when (zerop count) (error "No marked bookmarks"))
+    (let ((new-seq  (nreverse marked-bmks))
+          (bmk      (bookmark-get-bookmark bookmark-name 'noerror)))
+      (when (and bmk (bookmarkp-sequence-bookmark-p bmk))
+        (if (y-or-n-p (format "Add marked to existing sequence `%s'? " bookmark-name))
+            (setq new-seq  (nconc new-seq (bookmark-prop-get bmk 'sequence)))
+          "OK, existing sequence will be replaced"))
+      (bookmark-store bookmark-name
+                      `((filename . ,bookmarkp-non-file-filename)
+                        (position . 0)
+                        (sequence ,@new-seq)
+                        (handler . bookmarkp-jump-sequence))
+                      nil)))
   (let ((new  (bookmark-get-bookmark bookmark-name 'noerror)))
     (unless (memq new bookmarkp-latest-bookmark-alist)
       (setq bookmarkp-latest-bookmark-alist  (cons new bookmarkp-latest-bookmark-alist)))
+    (unless dont-omit-p
+      (bookmarkp-bmenu-omit-marked)
+      (message "Marked bookmarks now OMITTED - use `bookmarkp-bmenu-show-only-omitted' to show"))
     (bookmark-bmenu-surreptitiously-rebuild-list)
+    (bookmarkp-bmenu-goto-bookmark-named bookmark-name)
     new))
+
+
+;;(@* "Omitted Bookmarks")
+;;  *** Omitted Bookmarks ***
+
+;;;###autoload
+(defun bookmarkp-bmenu-omit/unomit-marked () ; `O >' in bookmark list
+  "Omit all marked bookmarks or, if showing only omitted ones, unomit."
+  (interactive)
+  (bookmarkp-barf-if-not-in-menu-list)
+  (if (eq bookmarkp-bmenu-filter-function  'bookmarkp-omitted-alist-only)
+      (bookmarkp-bmenu-unomit-marked)
+    (bookmarkp-bmenu-omit-marked)))
+
+;;;###autoload
+(defun bookmarkp-bmenu-omit-marked () ; `O >' in bookmark list
+  "Omit all marked bookmarks.
+They will henceforth be invisible to the bookmark list.
+You can, however, use `bookmarkp-bmenu-show-only-omitted' to see them.
+You can then mark some of them and use `bookmarkp-bmenu-unomit-marked'
+ to make those marked available again for the bookmark list."
+  (interactive)
+  (bookmarkp-barf-if-not-in-menu-list)
+  (let ((o-str    (and (not (looking-at "^>")) (bookmark-bmenu-bookmark)))
+        (o-point  (point))
+        (count    0))
+    (message "Omitting marked bookmarks...")
+    (goto-char (point-min)) (forward-line 2)
+    (while (re-search-forward "^>" (point-max) t)
+      (setq bookmarkp-bmenu-omitted-list  (cons (bookmark-bmenu-bookmark)
+                                                bookmarkp-bmenu-omitted-list)
+            count                         (1+ count)))
+    (if (<= count 0)
+        (message "No marked bookmarks")
+      (bookmark-bmenu-surreptitiously-rebuild-list)
+      (message "Omitted %d bookmarks" count))
+    (if o-str
+        (bookmarkp-bmenu-goto-bookmark-named o-str)
+      (goto-char o-point)
+      (beginning-of-line)))
+  (when (fboundp 'fit-frame-if-one-window) (fit-frame-if-one-window)))
+
+;;;###autoload
+(defun bookmarkp-bmenu-unomit-marked () ; `O >' in bookmark list when showing omitted bookmarks
+  "Remove all marked bookmarks from the list of omitted bookmarks.
+They will henceforth be available for display in the bookmark list.
+\(In order to see and then mark omitted bookmarks you must use command
+`bookmarkp-bmenu-show-only-omitted'.)"
+  (interactive)
+  (bookmarkp-barf-if-not-in-menu-list)
+  (unless bookmarkp-bmenu-omitted-list (error "No omitted bookmarks to UN-omit"))
+  (unless (eq bookmarkp-bmenu-filter-function  'bookmarkp-omitted-alist-only)
+    (error "You must use command `bookmarkp-bmenu-show-only-omitted' first"))
+  (let ((o-str    (and (not (looking-at "^>")) (bookmark-bmenu-bookmark)))
+        (o-point  (point))
+        (count    0))
+    (message "UN-omitting marked bookmarks...")
+    (goto-char (point-min)) (forward-line 2)
+    (while (re-search-forward "^>" (point-max) t)
+      (let ((bmk-name  (bookmark-bmenu-bookmark)))
+        (when (member bmk-name bookmarkp-bmenu-omitted-list)
+          (setq bookmarkp-bmenu-omitted-list  (delete bmk-name bookmarkp-bmenu-omitted-list)
+                count                         (1+ count)))))
+    (if (<= count 0)
+        (message "No marked bookmarks")
+      (setq bookmarkp-bmenu-filter-function  nil
+            bookmarkp-bmenu-title            "% All Bookmarks"
+            bookmarkp-latest-bookmark-alist  bookmark-alist)
+      (bookmark-bmenu-surreptitiously-rebuild-list)
+      (message "UN-omitted %d bookmarks" count))
+    (if o-str
+        (bookmarkp-bmenu-goto-bookmark-named o-str)
+      (goto-char o-point)
+      (beginning-of-line)))
+  (when (fboundp 'fit-frame-if-one-window) (fit-frame-if-one-window)))
+
+;;;###autoload
+(defun bookmarkp-unomit-all ()          ; `O U' in bookmark list
+  "Remove all bookmarks from the list of omitted bookmarks.
+All bookmarks will henceforth be available for display."
+  (interactive)
+  (unless bookmarkp-bmenu-omitted-list (error "No omitted bookmarks to UN-omit"))
+  (message "UN-omitting ALL omitted bookmarks...")
+  (let ((count  0))
+    (dolist (bmk-name  bookmarkp-bmenu-omitted-list)
+      (setq bookmarkp-bmenu-omitted-list  (delete bmk-name bookmarkp-bmenu-omitted-list)
+            count                         (1+ count)))
+    (bookmark-bmenu-surreptitiously-rebuild-list)
+    (message "UN-omitted %d bookmarks" count))
+  (when (equal (buffer-name (current-buffer)) "*Bookmark List*") (bookmarkp-bmenu-show-all))
+  (when (and (fboundp 'fit-frame-if-one-window)
+             (equal (buffer-name (current-buffer)) "*Bookmark List*"))
+    (fit-frame-if-one-window)))
+
+;;;###autoload
+(defun bookmarkp-bmenu-show-only-omitted () ; `O S' in bookmark list to show only omitted
+  "Show only the omitted bookmarks.
+You can then mark some of them and use `bookmarkp-bmenu-unomit-marked'
+ to make those that are marked available again for the bookmark list."
+  (interactive)
+  (bookmarkp-barf-if-not-in-menu-list)
+  (unless bookmarkp-bmenu-omitted-list (error "No omitted bookmarks"))
+  (setq bookmarkp-bmenu-filter-function  'bookmarkp-omitted-alist-only
+        bookmarkp-bmenu-title            "% Omitted Bookmarks")
+  (let ((bookmark-alist  (funcall bookmarkp-bmenu-filter-function)))
+    (setq bookmarkp-latest-bookmark-alist  bookmark-alist)
+    (bookmark-bmenu-list 'filteredp))
+  (when (interactive-p)
+    (bookmarkp-msg-about-sort-order (bookmarkp-current-sort-order)
+                                    "Only omitted bookmarks are shown now")))
+
+(defun bookmarkp-omitted-alist-only ()
+  "`bookmark-alist', filtered to retain only the omitted bookmarks.
+A new list is returned (no side effects)."
+  (bookmark-maybe-load-default-file)
+  (bookmarkp-remove-if-not #'bookmarkp-omitted-bookmark-p bookmark-alist))
+
+(defun bookmarkp-omitted-bookmark-p (bookmark)
+  "Return non-nil if BOOKMARK is an omitted bookmark.
+BOOKMARK is a bookmark name or a bookmark record."
+  (unless (stringp bookmark) (setq bookmark  (car bookmark)))
+  (member bookmark bookmarkp-bmenu-omitted-list))
 
 
 ;;(@* "Search-and-Replace Locations of Marked Bookmarks")
@@ -3986,7 +4214,7 @@ REQUIRE-MATCH is passed to `completing-read'."
 Non-nil optional arg MSGP means display a message about the removal."
   (interactive (list (bookmark-completing-read "Bookmark" (bookmarkp-default-bookmark-name))
                      'msg))
-  (let ((nb-removed  (and (interactive-p) (length (bookmark-prop-get bookmark 'tags)))))
+  (let ((nb-removed  (and (interactive-p) (length (bookmarkp-get-tags bookmark)))))
     (bookmark-prop-set bookmark 'tags ())
     (bookmarkp-maybe-save-bookmarks)
     (when (and msgp nb-removed) (message "%d tags removed" nb-removed))))
@@ -4557,6 +4785,7 @@ the internal lists that record menu-list markings."
              (last-reverse-sort-p                   . ,bookmarkp-reverse-sort-p)
              (last-reverse-multi-sort-p             . ,bookmarkp-reverse-multi-sort-p)
              (last-latest-bookmark-alist            . ,bookmarkp-latest-bookmark-alist)
+             (last-omitted-list                     . ,bookmarkp-bmenu-omitted-list)
              (last-bmenu-marked-bookmarks           . ,bookmarkp-bmenu-marked-bookmarks)
              (last-bmenu-filter-function            . ,bookmarkp-bmenu-filter-function)
              (last-bmenu-title                      . ,bookmarkp-bmenu-title)
@@ -4654,8 +4883,10 @@ BOOKMARK is a bookmark name or a bookmark record."
                                           bmkext-jump-man bmkext-jump-woman)))
 
 (defun bookmarkp-marked-bookmark-p (bookmark)
-  "Return non-nil if BOOKMARK is a marked bookmark."
-  (member (car bookmark) bookmarkp-bmenu-marked-bookmarks))
+  "Return non-nil if BOOKMARK is a marked bookmark.
+BOOKMARK is a bookmark name or a bookmark record."
+  (unless (stringp bookmark) (setq bookmark  (car bookmark)))
+  (member bookmark bookmarkp-bmenu-marked-bookmarks))
 
 (defun bookmarkp-non-file-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK is a non-file bookmark (e.g *scratch*).
@@ -4814,12 +5045,15 @@ A new list is returned (no side effects)."
       (pop tail))
     (nreverse new)))
   
-(defun bookmarkp-remove-assoc-dups (alist)
-  "Copy of ALIST with elements that have duplicate keys removed.
+(defun bookmarkp-remove-assoc-dups (alist &optional omit)
+  "Copy of ALIST without elements that have duplicate keys.
 Only the first element of those with the same key is kept.
-Keys are compared using `equal'."
+Keys are compared using `equal'.
+If optional arg OMIT is non-nil, then omit from the return value any
+elements with keys in list OMIT."
   (let ((new   ()))
-    (dolist (ii alist) (unless (assoc (car ii) new) (push ii new)))
+    (dolist (ii  alist)
+      (unless (or (assoc (car ii) new) (member (car ii) omit))  (push ii new)))
     (nreverse new)))
 
 (defun bookmarkp-remove-if (pred xs)
@@ -4992,14 +5226,16 @@ BOOKMARK is a bookmark name or a bookmark record."
 ;;(@* "Sorting - General Functions")
 ;;  *** Sorting - General Functions ***
 
-(defun bookmarkp-sort-and-remove-dups (list)
-  "Return a copy of LIST, sorted and with no duplicate keys.
+(defun bookmarkp-sort-and-remove-dups (alist &optional omit)
+  "Return a sorted copy of ALIST, with no duplicates.
 Only the first element with a given key is kept.
 Keys are compared using `equal'.
+If optional arg OMIT is non-nil, then omit from the return value any
+elements with keys in list OMIT.
 Sorting is done using using `bookmarkp-sort-comparer'.
-Do nothing if `bookmarkp-sort-comparer' is nil.
+Do not sort if `bookmarkp-sort-comparer' is nil.
 If `bookmarkp-reverse-sort-p' is non-nil, then reverse the sort order."
-  (let ((newlist  (bookmarkp-remove-assoc-dups list))
+  (let ((newlist  (bookmarkp-remove-assoc-dups alist omit))
         (sort-fn  (and bookmarkp-sort-comparer
                        (if (and (not (functionp bookmarkp-sort-comparer))
                                 (consp bookmarkp-sort-comparer))
@@ -6055,7 +6291,7 @@ BOOKMARK is a bookmark name or a bookmark record."
     (unless (> emacs-major-version 20)
       (error "`woman' bookmarks not supported in Emacs prior to Emacs 21"))
     (bookmark-default-handler
-     `("" (buffer . ,(save-window-excursion (woman-find-file (bookmark-prop-get bookmark 'filename))
+     `("" (buffer . ,(save-window-excursion (woman-find-file (bookmark-get-filename bookmark))
                                             (current-buffer)))
        . ,(bookmark-get-bookmark-record bookmark)))))
 
@@ -6099,7 +6335,7 @@ BOOKMARK is a bookmark name or a bookmark record."
   "Jump to Dired bookmark BOOKMARK.
 BOOKMARK is a bookmark name or a bookmark record.
 Handler function for record returned by `bookmarkp-make-dired-record'."
-  (let ((dir       (bookmark-prop-get bookmark 'filename))
+  (let ((dir       (bookmark-get-filename bookmark))
         (mfiles    (bookmark-prop-get bookmark 'dired-marked))
         (switches  (bookmark-prop-get bookmark 'dired-switches)))
     (dired dir switches)
@@ -6195,6 +6431,14 @@ Handler function for record returned by `bookmarkp-make-dired-record'."
 (define-key bookmark-bmenu-mode-map "MS"   'bookmarkp-bmenu-show-only-man-pages)
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "\M-m" 'bookmarkp-bmenu-mark-all)
+;;;###autoload
+(define-key bookmark-bmenu-mode-map "O"    nil) ; For Emacs 20
+;;;###autoload
+(define-key bookmark-bmenu-mode-map "O>"   'bookmarkp-bmenu-omit/unomit-marked)
+;;;###autoload
+(define-key bookmark-bmenu-mode-map "OS"   'bookmarkp-bmenu-show-only-omitted)
+;;;###autoload
+(define-key bookmark-bmenu-mode-map "OU"   'bookmarkp-unomit-all)
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "P"    nil) ; For Emacs 20
 ;;;###autoload
@@ -6451,6 +6695,16 @@ files match a regexp
 match a regexp
 
 
+Omitting/un-omitting bookmarks
+------------------------------
+
+\\[bookmarkp-bmenu-show-only-omitted]\t- Show (only) the omitted bookmarks
+\\[bookmarkp-bmenu-show-all]\t- Show the un-omitted bookmarks (all)
+\\[bookmarkp-bmenu-omit/unomit-marked]\t- Omit the marked bookmarks; un-omit them if after \
+`\\[bookmarkp-bmenu-show-only-omitted]'
+\\[bookmarkp-unomit-all]\t- Un-omit all omitted bookmarks
+
+
 Options affecting *Bookmark List* display
 -----------------------------------------
 
@@ -6462,6 +6716,7 @@ bookmark-bmenu-toggle-filenames  - Show filenames initially?
 bookmark-bmenu-file-column       - Bookmark width if files are shown
 bookmarkp-bmenu-state-file       - File to save the menu-list state
                                    (\"home\") nil: do not save/restore
+bookmarkp-bmenu-omitted-list     - List of omitted bookmarks
 
 
 Other bookmark options
@@ -6588,6 +6843,37 @@ bookmarkp-sequence-jump-display-function - How to display components")
   '(menu-item "Remove Some Tags from Marked" bookmarkp-bmenu-remove-tags-from-marked))
 (define-key bookmarkp-bmenu-tags-menu [bookmarkp-bmenu-add-tags-to-marked]
   '(menu-item "Add Some Tags to Marked" bookmarkp-bmenu-add-tags-to-marked))
+
+(defvar bookmarkp-bmenu-omit-menu (make-sparse-keymap "Omit"))
+(define-key bookmarkp-bmenu-menubar-menu [omitting] (cons "Omit" bookmarkp-bmenu-omit-menu))
+
+(define-key bookmarkp-bmenu-omit-menu [bookmarkp-bmenu-show-all]
+  '(menu-item "Show All" bookmarkp-bmenu-show-all
+    :visible (eq bookmarkp-bmenu-filter-function 'bookmarkp-omitted-alist-only)
+    :help "Show all bookmarks (except omitted)"))
+(define-key bookmarkp-bmenu-omit-menu [bookmarkp-bmenu-show-only-omitted]
+  '(menu-item "Show Only Omitted" bookmarkp-bmenu-show-only-omitted
+    :visible (not (eq bookmarkp-bmenu-filter-function 'bookmarkp-omitted-alist-only))
+    :enable bookmarkp-bmenu-omitted-list
+    :help "Show only the omitted bookmarks"))
+(define-key bookmarkp-bmenu-omit-menu [bookmarkp-unomit-all]
+  '(menu-item "Un-Omit All" bookmarkp-unomit-all
+    :visible bookmarkp-bmenu-omitted-list :help "Un-omit all omitted bookmarks"))
+(define-key bookmarkp-bmenu-omit-menu [bookmarkp-bmenu-unomit-marked]
+  '(menu-item "Un-Omit Marked" bookmarkp-bmenu-unomit-marked
+    :visible (eq bookmarkp-bmenu-filter-function 'bookmarkp-omitted-alist-only)
+    :enable (and bookmarkp-bmenu-omitted-list
+             (save-excursion (goto-char (point-min)) (forward-line 2)
+                             (re-search-forward "^>" (point-max) t)))
+    :help "Un-omit the marked bookmarks"
+    :keys "\\[bookmarkp-bmenu-omit/unomit-marked]"))
+(define-key bookmarkp-bmenu-omit-menu [bookmarkp-bmenu-omit-marked]
+  '(menu-item "Omit Marked" bookmarkp-bmenu-omit-marked
+    :visible (not (eq bookmarkp-bmenu-filter-function 'bookmarkp-omitted-alist-only))
+    :enable (and (save-excursion (goto-char (point-min)) (forward-line 2)
+                                 (re-search-forward "^>" (point-max) t)))
+    :help "Omit the marked bookmarks"
+    :keys "\\[bookmarkp-bmenu-omit/unomit-marked]"))
 
 (defvar bookmarkp-bmenu-mark-menu (make-sparse-keymap "Mark"))
 (define-key bookmarkp-bmenu-menubar-menu [marking] (cons "Mark" bookmarkp-bmenu-mark-menu))
