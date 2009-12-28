@@ -32,7 +32,9 @@ As Emacs needs some of the improvements provided by 1.17 release, this quick-sta
 [:WhereIsEmacs]
 === Where is Emacs? ===
 
-See [[EmacsBzrSwitchover#Where]].
+You can browse Emacs in loggerhead (the Bazaar web front-end) here: http://bzr.savannah.gnu.org/lh/emacs/ .  (Note that loggerhead is broken sometimes; this is [[https://savannah.gnu.org/support/index.php?107142 sr #107142]].)
+
+To make a local branch or branches based on upstream Emacs, start at [[#InitializingYourBzrRepo]] and follow instructions from there.  (This is the Bazaar equivalent of `cvs checkout`.)
 
 [:Help]
 === Getting help on Bazaar ===
@@ -78,7 +80,7 @@ When you are integrating somebody else's work, you will want to be identified as
 [:InitializingYourBzrRepo]
 === Initializing Your Local Bazaar Repository ===
 
-This section describes how to set things up if you plan on making repeated contributions to Emacs (whether or not you're one of the Emacs maintainers).  
+This section describes how to set things up if you plan on making contributions to Emacs (whether or not you're one of the Emacs maintainers).  You can also use this way just to track the Emacs sources, even if you never contribute changes.
 
 For the general public, Emacs's public master trunk lives at ##http://bzr.savannah.gnu.org/r/emacs/trunk##.  But committers should use an ##sftp## URL instead: ##sftp://<membername>@bzr.savannah.gnu.org/srv/bzr/emacs/trunk##.  (Actually, you /want/ to use a ##bzr+ssh## URL, and we /want/ to run a smart server on Savannah to make that possible.  But ##savannah-hackers## considers this a security risk that needs to be analyzed carefully.  Please update this page if it becomes possible to use ##bzr+ssh##.  See [https://savannah.gnu.org/support/index.php?107143 sr 107143] for details.)
 
@@ -92,7 +94,7 @@ First, initialize a shared repository in which to store all your branches:
 Now, create a branch called ##trunk## that will just be a mirror of the mainline.  You'll never do any development in this branch; its job is just to reflect the upstream master:
 
       cd emacs/
-      bzr branch sftp://<membername>@bzr.savannah.gnu.org/srv/bzr/emacs/trunk trunk/
+      bzr branch sftp://<membername>@bzr.savannah.gnu.org/srv/bzr/emacs/trunk trunk
 
 (Use ##http://bzr.savannah.gnu.org/r/emacs/trunk/## instead if you are not a committer and just expect read-only access.)
 
@@ -281,6 +283,7 @@ Even if you use one of those simpler setups at first, we still encourage you to 
 [:OtherResources]
 === Other Resources ===
 
+* [http://bazaar.canonical.com/ Bazaar home site]
 * [http://doc.bazaar-vcs.org/bzr.dev/en/user-guide/index.html Bzr Users Guide]
 * BzrQuickStartForEmacsDevs provides an alternate, more CVS-like, simpler workflow.
 * [http://doc.bazaar-vcs.org/explorer/en/tutorials/foss-contribute.html Contributing to Free Software Projects Made Easy]  An excellent tutorial on using the Bazaar Explorer GUI.  Warning: the workflow advocated there is both more complex in some ways and slightly different from the one recommended in /Bazaar for Emacs Devs/.

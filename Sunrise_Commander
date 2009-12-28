@@ -257,6 +257,21 @@ To get a copy of the Sunrise Tabs extension go to:
 * Lisp:sunrise-x-tabs.el
 
 ----
+[:OldCheckpoints]
+==The Old Checkpoints Extension: checkpoints for Emacs 22==
+Beginning with version 4 of the Sunrise Commander, checkpoints were redefined to
+be a special form of bookmarks. Unfortunately, creating  bookmarks  with  custom
+handlers  isn't  supported in the version of bookmarks.el distributed with emacs
+22, so if you use  Sunrise  checkpoints  and  you  don't  want  to  update  your
+bookmarks.el, just add this extension to your .emacs.el to get back the original
+functionality.
+
+To get a copy of this extension go to:
+
+* http://joseito.republika.pl/sunrise-x-old-checkpoints.el.gz
+* Lisp:sunrise-x-old-checkpoints.el
+
+----
 [:Misc]
 ==Comments and Suggestions==
 [new]

@@ -21,7 +21,13 @@ The most elegant solution is to [AdvisingFunctions advice] ##kill-ring-save## an
          (list (line-beginning-position)
                (line-beginning-position 2)))))
 
-Thus, `M-w' with no selection copies the current line, `C-w' kills it entirely, and `C-a M-w C-y' duplicates it (compare with `dd' and `yyp' in [ViKeys vi]). Below is a comparison of default behavior for deleting lines among editors.
+    (defadvice yank (before slick-copy activate)
+      "Position point when yanking lines."
+      (let ((kill (current-kill 0 t)))
+        (when (eq ?\n (elt kill (1- (length kill))))
+          (beginning-of-line))))
+
+The advice of ##yank## positions point correctly when pasting lines. Thus, `M-w' with no selection copies the current line, `C-w' kills it entirely, and `M-w C-y' duplicates it (compare with `dd' and `yyp' in [ViKeys vi]). Below is a comparison of default behavior for deleting lines among editors.
 
 * Emacs: `C-S-backspace' (or `C-a C-k C-k')
 * Vim: `dd'
@@ -29,7 +35,12 @@ Thus, `M-w' with no selection copies the current line, `C-w' kills it entirely, 
 * !UltraEdit: `C-e'
 * nano (or proprietary Pico): `C-k'
 
+[new]
 Someone asked: "Doing this as advice (as opposed to a new function bound to `C-w') seems like a bad idea -- what happens if some other elisp function calls ##kill-region##?" This shouldn't be a problem, however, since the advice only takes effect when the functions are called [InteractiveFunction interactively].
+
+[new]
+
+If you use PcSelectionMode you have to advise `copy-region-as-kill-nomark' instead of `kill-ring-save'.
 
 == Functions ==
 
@@ -79,7 +90,7 @@ An alternative to ##defadvice## is to define custom copy and cut commands.
 
 == Discussion ==
 
-I like the defadvice, very nice solution.  I changed the ##line-beginning-position 2## to be ##line-end-position## so that I don't get an extra new line when I paste. -- Dmb
+I like the defadvice, very nice solution. I changed the ##line-beginning-position 2## to be ##line-end-position## so that I don't get an extra new line when I paste. -- Dmb
 
 [new]
 For killing the current line, there's the ##kill-whole-line## function, usually bound to 'C-S-backspace'. That's a bit easier than the 'C-a C-k C-k' suggested above. -- sockmonk

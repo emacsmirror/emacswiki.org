@@ -1,5 +1,5 @@
 ;;; anything-gtags.el --- GNU GLOBAL anything.el interface
-;; $Id: anything-gtags.el,v 1.23 2009/12/21 10:41:21 rubikitch Exp rubikitch $
+;; $Id: anything-gtags.el,v 1.26 2009/12/28 04:07:00 rubikitch Exp $
 
 ;; Copyright (C) 2008  rubikitch
 
@@ -34,6 +34,8 @@
 ;;
 ;;  `anything-gtags-select'
 ;;    Tag jump using gtags and `anything'.
+;;  `anything-gtags-resume'
+;;    Select previously selected anything gtags buffer.
 ;;
 ;;; Customizable Options:
 ;;
@@ -49,6 +51,15 @@
 ;;; History:
 
 ;; $Log: anything-gtags.el,v $
+;; Revision 1.26  2009/12/28 04:07:00  rubikitch
+;; remove warnings
+;;
+;; Revision 1.25  2009/12/28 03:59:17  rubikitch
+;; New command `anything-gtags-resume'
+;;
+;; Revision 1.24  2009/12/28 01:39:51  rubikitch
+;; Support multiple anything gtags buffer (resume)
+;;
 ;; Revision 1.23  2009/12/21 10:41:21  rubikitch
 ;; Use `anything-persistent-highlight-point' if available.
 ;;
@@ -180,6 +191,7 @@ If it is other symbol, display file name in candidates even if classification is
   ;; 16 = length of symbol
   (buffer-substring-no-properties (+ s 16) e))
 (defun aggs-set-anything-current-position ()
+  (declare (special c-source-file))
   ;; It's needed because `anything' saves
   ;; *GTAGS SELECT* buffer's position,
   (save-window-excursion
@@ -208,7 +220,9 @@ If it is other symbol, display file name in candidates even if classification is
                         . (lambda ()
                             (aggs-set-anything-current-position)
                             (anything-candidate-buffer gtags-select-buffer)))
-                       ,@aggs-base-source)))))
+                       ,@aggs-base-source))))
+         (aggs-buffer (concat "*anything gtags*"
+                              (substring (buffer-name gtags-select-buffer) 15))))
     (with-current-buffer (get-buffer-create aggs-buffer)
       (set (make-local-variable 'gtags-select-buffer) gtags-select-buffer)
       (set (make-local-variable 'pwd) pwd))
@@ -220,6 +234,7 @@ If it is other symbol, display file name in candidates even if classification is
 (defun aggs-candidate-buffer-by-filename (filename)
   (get-buffer-create (concat "*anything gtags*" filename)))
 (defun aggs-meta-source-init ()
+  (declare (special gtags-select-buffer))
   (aggs-set-anything-current-position)
   (with-current-buffer gtags-select-buffer
     (goto-char (point-min))
@@ -250,7 +265,7 @@ If it is other symbol, display file name in candidates even if classification is
 (defun aggs-select-it (candidate)
   (with-temp-buffer
     ;; `pwd' is defined at `ag-hijack-gtags-select-mode'.
-    (setq default-directory (buffer-local-value 'pwd (get-buffer aggs-buffer)))
+    (setq default-directory (buffer-local-value 'pwd (get-buffer anything-buffer)))
     (insert candidate "\n")
     (forward-line -1)
     (gtags-select-it nil)
@@ -258,6 +273,11 @@ If it is other symbol, display file name in candidates even if classification is
      (when (and anything-in-persistent-action
                (fboundp 'anything-persistent-highlight-point))
       (anything-persistent-highlight-point (point-at-bol) (point-at-eol)))))
+
+(defun anything-gtags-resume ()
+  "Select previously selected anything gtags buffer."
+  (interactive)
+  (anything-resume nil "*anything  gtags* "))
 
 (defadvice switch-to-buffer (around anything-gtags activate)
   "Use `anything' instead of `gtags-select-mode' when `anything-gtags-hijack-gtags-select-mode' is non-nil."

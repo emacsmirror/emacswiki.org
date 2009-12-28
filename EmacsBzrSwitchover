@@ -1,76 +1,27 @@
-GNU Emacs development is switching from CVS to [http://bazaar-vcs.org Bzr].  This page is about making that switchover go smoothly.
+= GNU Emacs Is Now In Bazaar =
+
+**2009-12-27:** GNU Emacs has now switched from CVS to [http://bazaar.canonical.com Bazaar].  Please see [[BzrForEmacsDevs]] for more.
 
 [:Where]
-== Latest Test Repository (2009-11-12) ==
+== Where Are the Emacs Sources Now? ==
 
-Start browsing here: http://bzr.savannah.gnu.org/lh/emacs/ . To get a local copy of the repository, this is probably fastest:
+See [[BzrForEmacsDevs#WhereIsEmacs]]
 
-<pre>
-$ scp -r yourusername@bzr.savannah.gnu.org:/srv/bzr/emacs emacs-bzr-repository
-</pre>
+== Post-Switchover Checklist ==
 
-That gets you the whole repository, but with empty dirs for the working trees.  You can "check out" (i.e., fill in) a working tree like this:
-
-<pre>
-$ cd emacs-bzr-repository
-$ ls
-Boehm-GC/	 emacs-unicode-2/   ILYA/		    ttn-vms-21-2-stash/
-Boehm-versions/  FLYSPELL/	    lexbind/		    ttn-vms-21-3-stash/
-branch-5_8/	 font-backend/	    master-UNNAMED-BRANCH/  unicode-xft/
-custom_themes/	 fx-branch/	    multi-tty/		    URL/
-DAVELOVE/	 gerd_big/	    NewVC-fileset/	    VENDOR/
-EMACS_21_1_RC/	 gerd_dbe/	    patches_21_0/	    XFT_JHD_BRANCH/
-EMACS_22_BASE/	 gerd_defvaralias/  rmail-mbox-branch/
-EMACS_23_1_RC/	 glibc-2_0_x/	    test2/
-emacs-bidi/	 gnus-5_10-branch/  trunk/
-$ cd trunk
-$ ls
-$ ls -Ca
-./  ../  .bzr/
-$ bzr checkout
-$ ls -Ca
-.		 config.guess	 .gitignore	 lwlib		 oldXMenu
-..		 config.sub	 info		 m4		 README
-admin		 configure	 INSTALL	 make-dist	 src
-.arch-inventory  configure.in	 INSTALL.CVS	 Makefile.in	 test
-autogen.sh	 COPYING	 install-sh	 mkinstalldirs	 update-subdirs
-BUGS		 .cvsignore	 kff-log-n0.out  move-if-change  vpath.sed
-.bzr		 .dir-locals.el  leim		 msdos
-ChangeLog	 doc		 lib-src	 nextstep
-config.bat	 etc		 lisp		 nt
-$ bzr log -n0
-  # See a bunch of changes fly by... hopefully some of them look familiar!
-$ 
-</pre>
-
-== Switchover Checklist ==
-
-* Test the conversion.
-
-* Rename and rewrite INSTALL.CVS.  (Just rename to "INSTALL.DEV", so it's not VC-specific anymore?)
-
-* Make sure Loggerhead or some other repository web browsing software is installed on Savannah.  (Seems to be [http://savannah.gnu.org/support/index.php?106612#comment16 done] now, but may still need some [https://savannah.gnu.org/support/index.php?106612#comment17 debugging].
-
-* Test that anon access works.
-
-* Test that SSH dev access works.
+* Get bzr+ssh access working, so we don't have to use sftp.  See [[https://savannah.gnu.org/support/?107077 sr #107077]].
 
 * Make sure commit emails work.
-** Fix the email diff generator, if necessary; see https://savannah.gnu.org/support/?106531
+
+** Fix the email diff generator, if necessary.  See [[https://savannah.gnu.org/support/?106531 sr #106531]].
 
 * Update http://www.gnu.org/software/emacs/.
 
-* Update http://savannah.gnu.org/projects/emacs.
+* Update http://savannah.gnu.org/projects/emacs. (There are four different VCS repositories including the bzr one.  This page should state clearly that Bazaar is the master.)
 
-=== Nice-to-Haves ===
+* Update http://www.gnu.org/software/emacs/#Obtaining //("The GNU Emacs development sources are available via a CVS repository hosted on savannah.gnu.org. For details, see the Emacs project page.")//
 
-These things can be done after the switchover, we just shouldn't forget them:
-
-* Prepare a switchover document for regular Emacs developers (base it on [http://bazaar-vcs.org/Scenarios/RepeatedContributions this scenario]), so they don't all have to read the entire [http://doc.bazaar-vcs.org/bzr.dev/en/user-guide/index.html Bzr Users Guide] to continue working on Emacs.
-** See [[BzrForEmacsDevs#RegularContributors]]
-
-* Prepare one-off contribution document (base it on [http://bazaar-vcs.org/Scenarios/OneOffContribution this scenario])
-** See [[BzrForEmacsDevs#PatchContributors]]
+* Update [[CategoryBuilding]] (that page and a lot of pages linked from there instruct that latest Emacs should be fetched from CVS).
 
 * Document how to do a release from bzr (or adjust our existing release procedure documentation... where is it, anyway?) Possibly ...emacs/admin/FOR-RELEASE
 ** See [[BzrForEmacsDevs#Releases]]

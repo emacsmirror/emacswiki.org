@@ -56,6 +56,9 @@
 
 ;; * Press C-M-= for directory comparison (by date / size / contents of files).
 
+;; * Press y to recursively calculate the total size (in bytes) of all files and
+;;   directories currently selected/marked in the active pane.
+
 ;; * Press C-c t to open a terminal into the current pane's directory.
 
 ;; * Press M-t to swap (transpose) the panes.
@@ -127,7 +130,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 3 $Rev: 243 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 244 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.  I  have  also  received
@@ -137,6 +140,9 @@
 ;; 21, but unfortunately I do not have the time to port them back. I don't  know
 ;; either  if  it will work at all on XEmacs (uses overlays), so try at your own
 ;; risk. All contributions and/or bug reports will be very welcome.
+
+;; For more details on the file manager, extensions and cool tips & tricks visit
+;; http://www.emacswiki.org/emacs/Sunrise_Commander
 
 ;;; Installation and Usage:
 
@@ -341,10 +347,6 @@
   (acons 'left nil (acons 'right nil nil))
   "Registry of visited directories for both panes")
 
-(defvar sr-checkpoint-registry
-  (acons "~" (list sr-left-directory sr-right-directory) nil)
-  "Registry of currently defined checkpoints")
-
 (defvar sr-ti-openterms nil
   "Stack of currently open terminal buffers")
 
@@ -455,6 +457,7 @@ substitution may be about to happen."
         C-o ........... show/hide hidden files (requires dired-omit-mode)
         C-Backspace ... hide/show file attributes in pane
         C-c Backspace . hide/show file attributes in pane (console compatible)
+        y ............. show file type / size of selected files and directories.
         M-l ........... truncate/continue long lines in pane
         C-c C-w ....... browse directory tree using w3m
 
@@ -623,6 +626,11 @@ automatically:
      (sr-change-window)
      (sr-highlight)))
 
+(eval-and-compile
+  (defun sr-symbol (side context)
+    "Synthesizes Sunrise symbols (sr-left-buffer, sr-right-window, etc.)"
+    (intern (concat "sr-" (symbol-name side) "-" (symbol-name context)))))
+
 (defun sr-dired-mode ()
   "Sets Sunrise mode in every Dired buffer opened in Sunrise (called in hook)."
   (if (and sr-running
@@ -634,6 +642,21 @@ automatically:
         (sr-mode)
         (dired-unadvertise dired-directory))))
 (add-hook 'dired-before-readin-hook 'sr-dired-mode)
+
+(defun sr-bookmark-jump ()
+  "Handles panes opened from bookmarks in Sunrise."
+  (when (and sr-running
+             (memq (selected-window) (list sr-left-window sr-right-window)))
+    (let ((last-buf (symbol-value (sr-symbol sr-selected-window 'buffer))))
+      (setq dired-omit-mode (with-current-buffer last-buf dired-omit-mode))
+      (setq sr-this-directory default-directory)
+      (if (sr-equal-dirs sr-this-directory sr-other-directory)
+          (sr-synchronize-panes t)
+        (sr-revert-buffer))
+      (sr-keep-buffer)
+      (unless (memq last-buf (list (current-buffer) (sr-other 'buffer)))
+        (kill-buffer last-buf)))))
+(add-hook 'bookmark-after-jump-hook 'sr-bookmark-jump)
 
 (defun sr-virtual-dismiss ()
   "Restores normal view of pane in Sunrise VIRTUAL mode."
@@ -648,24 +671,6 @@ automatically:
   (before sr-advice-findbuffer (dirname &optional mode))
   (if (sr-equal-dirs sr-dired-directory dirname)
       (setq mode 'sr-mode)))
-
-;; Handles panes opened from bookmarks in Sunrise:
-(defadvice bookmark-jump
-  (around sr-advice-bookmark-jump (str))
-  (if (memq major-mode '(sr-mode sr-virtual-mode))
-      (let ((target (bookmark-get-filename str))
-            (dispose nil))
-        (if (not (eq sr-left-buffer sr-right-buffer))
-            (setq dispose (current-buffer)))
-        (if (sr-equal-dirs target sr-other-directory)
-            (sr-synchronize-panes t)
-          (let ((sr-dired-directory target))
-            (sr-save-aspect ad-do-it)))
-        (if dispose (kill-buffer dispose))
-        (sr-keep-buffer))
-    ad-do-it)
-  (setq sr-this-directory default-directory))
-(ad-activate 'bookmark-jump)
 
 ;; Tweaks the target directory guessing mechanism:
 (defadvice dired-dwim-target-directory
@@ -720,8 +725,8 @@ automatically:
 (define-key sr-mode-map "\C-\M-o"             'sr-project-path)
 (define-key sr-mode-map "\M-y"                'sr-history-prev)
 (define-key sr-mode-map "\M-u"                'sr-history-next)
-(define-key sr-mode-map "\C-c>"               'sr-checkpoint-save)
-(define-key sr-mode-map "\C-c."               'sr-checkpoint-restore)
+(define-key sr-mode-map "\C-c>"               'sr-checkpoint-bookmark)
+(define-key sr-mode-map "\C-c."               'bookmark-jump)
 (define-key sr-mode-map "\C-c\C-z"            'sr-sync)
 
 (define-key sr-mode-map "\t"                  'sr-change-window)
@@ -778,6 +783,7 @@ automatically:
 (define-key sr-mode-map "F"                   'sr-do-find-marked-files)
 (define-key sr-mode-map "A"                   'sr-do-search)
 (define-key sr-mode-map "\C-x\C-f"            'sr-find-file)
+(define-key sr-mode-map "y"                   'sr-show-files-info)
 
 (define-key sr-mode-map "\M-n"                'sr-next-line-other)
 (define-key sr-mode-map [M-down]              'sr-next-line-other)
@@ -811,8 +817,8 @@ automatically:
 
 (if window-system
     (progn
-      (define-key sr-mode-map [(control >)]         'sr-checkpoint-save)
-      (define-key sr-mode-map [(control .)]         'sr-checkpoint-restore)
+      (define-key sr-mode-map [(control >)]         'sr-checkpoint-bookmark)
+      (define-key sr-mode-map [(control .)]         'bookmark-jump)
       (define-key sr-mode-map [(control tab)]       'sr-select-viewer-window)
       (define-key sr-mode-map [(control backspace)] 'sr-toggle-attributes)
       (define-key sr-mode-map [(control ?\=)]       'sr-ediff)
@@ -869,11 +875,6 @@ automatically:
       (unless (eq my-frame (window-frame (selected-window)))
         (select-frame my-frame)
         (sunrise left-directory right-directory filename)))))
-
-(eval-and-compile
-  (defun sr-symbol (side context)
-    "Synthesizes Sunrise symbols (sr-left-buffer, sr-right-window, etc.)"
-    (intern (concat "sr-" (symbol-name side) "-" (symbol-name context)))))
 
 (defun sr-other (&optional context)
   "Without  any  arguments  returns  the  symbol that corresponds to the current
@@ -972,7 +973,11 @@ automatically:
           (let* ((my-style-factor
                   (if (equal sr-window-split-style 'horizontal) 2 1))
                  (my-delta (- sr-panes-height (window-height))))
-            (enlarge-window my-delta))))))
+            (enlarge-window my-delta))
+          (scroll-right)
+          (when (window-live-p sr-right-window)
+            (select-window sr-right-window)
+            (scroll-right))))))
 
 ;; This keeps the size of the Sunrise panes constant:
 (add-hook 'window-size-change-functions 'sr-lock-window)
@@ -981,6 +986,7 @@ automatically:
   "Select/highlight the given sr window (right or left)."
   (select-window (symbol-value (sr-symbol side 'window)))
   (setq sr-selected-window side)
+  (setq sr-this-directory default-directory)
   (sr-highlight))
 
 (defun sr-select-viewer-window ()
@@ -1415,30 +1421,29 @@ automatically:
         (cons item hist)
       hist)))
 
-(defun sr-checkpoint-save (name)
-  "Allows to give a name to the current directories in the Sunrise panes, so
-  they can be restored later."
-  (interactive "sCheckpoint name to save? ")
-  (let ((my-cell (assoc-string name sr-checkpoint-registry)))
+(defun sr-checkpoint-bookmark ()
+  "Creates a new checkpoint bookmark to save the location of both panes."
+  (interactive)
+  (unless (fboundp 'bookmark-make-record)
+    (error "Sunrise: your bookmarks.el don't support checkpoints.\
+ Try upgrading to a newer version or use extension sunrise-x-old-checkpoints."))
+  (let ((bookmark-make-record-function 'sr-make-checkpoint-record))
     (sr-save-directories)
-    (if (null my-cell)
-        (setq sr-checkpoint-registry
-              (acons name
-                     (list sr-left-directory sr-right-directory)
-                     sr-checkpoint-registry))
-      (setcdr my-cell (list sr-left-directory sr-right-directory)))
-  (message "%s" (concat "Checkpoint \"" name "\" saved"))))
+    (call-interactively 'bookmark-set)))
 
-(defun sr-checkpoint-restore (name)
-  "Allows to restore a previously saved checkpoint."
-  (interactive "sCheckpoint name to restore? " )
-  (let* ((cp-list (assoc-string name sr-checkpoint-registry))
-         (dirs-list (cdr cp-list)))
-    (unless cp-list
-      (error (concat "No such checkpoint: " name)))
-    (if (equal sr-selected-window 'right)
-        (setq dirs-list (reverse dirs-list)))
-    (mapc '(lambda (x) (sr-goto-dir x) (sr-change-window)) dirs-list)))
+(defun sr-make-checkpoint-record ()
+  "Generates a the bookmark record for a new checkpoint."
+  `((filename . ,(format "Sunrise Checkpoint: %s | %s"
+                         sr-left-directory sr-right-directory))
+    (sr-directories . (,sr-left-directory ,sr-right-directory))
+    (handler . sr-checkpoint-handler)))
+
+(defun sr-checkpoint-handler (bookmark)
+  "Handler for checkpoint bookmarks."
+  (or sr-running (sunrise))
+  (sr-select-window 'left)
+  (let ((dirs (cdr (assq 'sr-directories (cdr bookmark)))))
+    (mapc (lambda (x) (dired x) (sr-bookmark-jump) (sr-change-window)) dirs)))
 
 (defun sr-do-find-marked-files (&optional noselect)
   "Sunrise replacement for dired-do-marked-files."
@@ -1493,8 +1498,8 @@ automatically:
     (beginning-of-line)
     (if (null (re-search-forward expr nil t))
         (if (null (re-search-backward expr nil t))
-            (error (concat "ERROR: unable to find " filename
-                           " in current directory")))))
+            (error (format "ERROR: unable to find %s in %s"
+                           filename default-directory)))))
   (beginning-of-line)
   (re-search-forward directory-listing-before-filename-regexp nil t))
 
@@ -1523,8 +1528,16 @@ automatically:
   "Changes the order of the panes."
   (interactive)
   (unless (sr-equal-dirs sr-this-directory sr-other-directory)
-    (let ((dirs (list sr-other-directory sr-this-directory)))
-      (mapc '(lambda (x) (sr-dired x) (sr-change-window)) dirs))))
+    (mapc (lambda (x)
+            (let ((left (sr-symbol 'left x)) (right (sr-symbol 'right x)) (tmp))
+              (setq tmp (symbol-value left))
+              (set left (symbol-value right))
+              (set right tmp)))
+          '(directory buffer window))
+    (let ((tmp sr-this-directory))
+      (setq sr-this-directory sr-other-directory
+            sr-other-directory tmp))
+    (sr-setup-windows)))
 
 (defun sr-synchronize-panes (&optional reverse)
   "Changes  the  directory  in the other pane to that in the current one. If the
@@ -1592,7 +1605,7 @@ automatically:
   "Kills the last buffer opened using quick view (if any)."
   (let ((buf other-window-scroll-buffer))
     (if (and (buffer-live-p buf)
-             (y-or-n-p (concat "Kill buffer " (buffer-name buf) " ? ")))
+             (y-or-n-p (format "Kill buffer %s? " (buffer-name buf))))
         (kill-buffer buf))))
 
 (defun sr-quick-view-directory (name)
@@ -1661,10 +1674,10 @@ automatically:
   (if (null (get sr-selected-window 'hidden-attrs))
       (progn
         (sr-hide-attributes)
-        (message (concat "Sunrise: hiding attributes in " (symbol-name sr-selected-window) " pane")))
+        (message "Sunrise: hiding attributes in %s pane" (symbol-name sr-selected-window)))
     (progn
       (sr-unhide-attributes)
-      (message (concat "Sunrise: displaying attributes in " (symbol-name sr-selected-window) " pane")))))
+      (message "Sunrise: displaying attributes in %s pane" (symbol-name sr-selected-window)))))
 
 (defun sr-toggle-truncate-lines ()
   "Enables/Disables truncation of long lines in the active pane."
@@ -1713,7 +1726,7 @@ automatically:
           (setq dired-listing-switches sr-listing-switches))
         (dired-sort-other (concat dired-listing-switches option) t))
       (sr-revert-buffer)))
-  (message "%s" (concat "Sunrise: sorting entries by " label)))
+  (message "Sunrise: sorting entries by %s" label))
 
 (defun sr-sort-virtual (option)
   "Manages  sorting of buffers in Sunrise VIRTUAL mode. Since we cannot rely any
@@ -1765,8 +1778,7 @@ automatically:
   (interactive)
   (setq sr-synchronized (not sr-synchronized))
   (mapc 'sr-mark-sync (list sr-left-buffer sr-right-buffer))
-  (message (concat "Sync navigation is now "
-                   (if sr-synchronized "ON" "OFF")))
+  (message "Sunrise: Sync navigation is now %s" (if sr-synchronized "ON" "OFF"))
   (run-hooks 'sr-refresh-hook)
   (sr-in-other (run-hooks 'sr-refresh-hook)))
 
@@ -1881,17 +1893,16 @@ automatically:
   "Copies recursively selected files and directories to the passive pane."
   (interactive)
   (let* ((items (dired-get-marked-files nil))
-         (count (int-to-string (length items)))
          (vtarget (sr-virtual-target))
          (target (or vtarget sr-other-directory)))
     (if (and (not vtarget) (sr-equal-dirs default-directory sr-other-directory))
         (dired-do-copy)
-      (when (y-or-n-p (concat "Copy " count " items to " target "? "))
+      (when (sr-ask "Copy" target items #'y-or-n-p)
         (if vtarget
             (sr-copy-virtual)
           (sr-clone items target #'copy-file ?C))
         (dired-unmark-all-marks)
-        (message "Done: %s items(s) copied" count)))))
+        (message "Done: %d items(s) copied" (length items))))))
 
 (defun sr-do-symlink ()
   "Creates  symbolic  links  in  the  passive pane to all the currently selected
@@ -1923,16 +1934,13 @@ automatically:
   (interactive)
   (if (sr-virtual-target)
       (error "Cannot move files to a VIRTUAL buffer, try (C)opying instead."))
-  (let* (
-         (selected-items (dired-get-marked-files nil))
+  (let* ((selected-items (dired-get-marked-files nil))
          (files-count (length selected-items))
-         (files-count-str (int-to-string files-count))
-         (target sr-other-directory)
-        )
+         (target sr-other-directory))
     (if (> files-count 0)
         (if (sr-equal-dirs default-directory sr-other-directory)
             (dired-do-rename)
-          (when (y-or-n-p (concat "Move " files-count-str " files to " target "? "))
+          (when (sr-ask "Move" target selected-items #'y-or-n-p)
             (let ((names (mapcar #'file-name-nondirectory selected-items))
                   (inhibit-read-only t))
               (with-current-buffer (sr-other 'buffer)
@@ -1942,20 +1950,20 @@ automatically:
                  (mapcar (lambda (x) (cons (expand-file-name x) ?R)) names)))
               (if (window-live-p (sr-other 'window))
                   (sr-in-other (sr-focus-filename (car names)))))
-            (message "%s" (concat "Done: " files-count-str " file(s) dispatched"))
+            (message "Done: %d file(s) dispatched" files-count)
             (sr-revert-buffer)))
-      (message "Empty selection. Nothing done."))))
+      (message "Sunrise: Empty selection. Nothing done."))))
 
 (defun sr-do-delete ()
   "Removes selected files from the file system."
   (interactive)
   (let* ((files (dired-get-marked-files))
-         (mode (sr-ask-delete files))
+         (mode (sr-ask "Delete" nil files #'y-n-or-a-p))
          (deletion-mode (cond ((eq mode 'ALWAYS) 'always)
                               (mode 'top)
                               (t (error "(No deletions performed)")))))
     (mapc (lambda (x)
-            (message (concat "Deleting " x))
+            (message "Deleting %s" x)
             (dired-delete-file x deletion-mode)) files)
     (if (eq major-mode 'sr-virtual-mode)
         (dired-do-kill-lines)
@@ -1973,8 +1981,8 @@ automatically:
 
 (defun sr-do-clone (&optional mode)
   "Clones recursively all selected items into the passive pane."
-  (interactive "cClone selected items as: (D)irectories only, (C)opies,\
- (H)ardlinks, (S)ymlinks, (R)elative symlinks? ")
+  (interactive "cClone as: (D)irectories only, (C)opies, (H)ardlinks,\
+ (S)ymlinks or (R)elative symlinks? ")
 
   (if (sr-virtual-target)
       (error "Cannot clone into a VIRTUAL buffer, try (C)opying instead."))
@@ -1989,11 +1997,11 @@ automatically:
           ((eq ?H mode) (setq clone-op #'add-name-to-file))
           ((eq ?S mode) (setq clone-op #'make-symbolic-link))
           ((eq ?R mode) (setq clone-op #'dired-make-relative-symlink))
-          (t (error (concat "Invalid cloning mode: " (char-to-string mode)))))
+          (t (error (format "Invalid cloning mode: %c" mode))))
     (setq items (dired-get-marked-files nil))
     (sr-clone items target clone-op ?K)
     (dired-unmark-all-marks)
-    (message "Done: %s items(s) dispatched" (length items))))
+    (message "Done: %d items(s) dispatched" (length items))))
 
 (defun sr-fast-backup-files ()
   "Makes  new  copies of all marked files (but not directories!) inside the same
@@ -2032,7 +2040,7 @@ automatically:
         (if clone-op
             (let* ((name (file-name-nondirectory f))
                    (target-file (concat target-dir name)))
-              (message "%s" (concat f " => " target-file))
+              (message "Cloning: %s => %s" f target-file)
               (if (file-exists-p target-file)
                   (if (or (eq do-overwrite 'ALWAYS)
                           (setq do-overwrite (sr-ask-overwrite target-file)))
@@ -2079,7 +2087,7 @@ subdirectories")))
                 (dired-rename-file f target do-overwrite))))
         (let* ((name (file-name-nondirectory f))
                (target-file (concat target-dir name)))
-          (message "%s" (concat f " => " target-file))
+          (message "Renaming: %s => %s" f target-file)
           (if (file-exists-p target-file)
               (if (or (eq do-overwrite 'ALWAYS)
                       (setq do-overwrite (sr-ask-overwrite target-file)))
@@ -2131,18 +2139,21 @@ subdirectories")))
         (sr-change-window)
         (dired-unmark-all-marks)))))
 
+(defun sr-ask (prompt target files function)
+  "Uses  FUNCTION  to  ask whether to perform PROMPT on FILES with TARGET as the
+  directory of destination for the operation."
+  (if (and files (listp files))
+      (let* ((len (length files))
+             (msg (if (< 1 len)
+                      (format "* [%d items]" len)
+                    (file-name-nondirectory (car files)))))
+        (if target
+            (setq msg (format "%s to %s" msg target)))
+        (funcall function (format "%s %s? " prompt msg)))))
+
 (defun sr-ask-overwrite (file-name)
   "Asks whether to overwrite a given file."
-  (y-n-or-a-p (concat "File " file-name " exists. OK to overwrite? ")))
-
-(defun sr-ask-delete (files)
-  "Asks whether to delete a given list of files."
-  (when (and files (listp files))
-    (let* ((len (length files))
-           (msg (if (< 1 len)
-                    (concat "* [" (int-to-string len) " files]")
-                  (car files))))
-      (y-n-or-a-p (concat "Delete " msg " ")))))
+  (y-n-or-a-p (format "File %s exists. OK to overwrite? " file-name)))
 
 (defun y-n-or-a-p (prompt)
   "Prompts  for  an answer to an alternative of the type y/n/a (where 'a' stands
@@ -2350,7 +2361,7 @@ or (c)ontents? ")
     result))
 
 ;;; ============================================================================
-;;; File search functions:
+;;; File search & analysis functions:
 
 (defun sr-find-apply (fun pattern)
   "Helper function for functions sr-find, sr-find-name and sr-find-grep."
@@ -2401,8 +2412,8 @@ or (c)ontents? ")
    (sr-alternate-buffer
     (switch-to-buffer (create-file-buffer "*Sunrise Locate*")))
    (cd "/")
-   (insert (concat "  " default-directory ":"))(newline)
-   (insert (concat " Results of: locate " search-string))(newline)
+   (insert "  " default-directory ":")(newline)
+   (insert " Results of: locate " search-string)(newline)
    (mapc (lambda (file)
            (setq file (concat default-directory
                               (replace-regexp-in-string "/$" "" file)))
@@ -2443,7 +2454,7 @@ or (c)ontents? ")
          (dired-actual-switches dired-listing-switches)
          (pane-name (capitalize (symbol-name sr-selected-window)))
          (beg))
-     (sr-switch-to-clean-buffer (concat "*" pane-name " Pane History*"))
+     (sr-switch-to-clean-buffer (format "*%s Pane History*" pane-name))
      (insert (concat "Recent Directories in " pane-name " Pane: \n"))
      (dolist (dir hist)
        (condition-case nil
@@ -2472,8 +2483,8 @@ or (c)ontents? ")
             (buff (generate-new-buffer-name (buffer-name (current-buffer)))))
        (sr-alternate-buffer (switch-to-buffer buff))
        (goto-char (point-min))
-       (insert (concat "  " dir) ":\n")
-       (insert " Pure VIRTUAL buffer: \n")
+       (insert "  " dir ":")(newline)
+       (insert " Pure VIRTUAL buffer: ")(newline)
        (sr-virtual-mode)
        (sr-keep-buffer)))))
 
@@ -2493,6 +2504,54 @@ or (c)ontents? ")
   "Forces Sunrise to quit before executing dired-do-search."
   (interactive)
   (sr-dired-do-apply 'dired-do-search))
+
+(defun sr-show-files-info (&optional deref-symlinks)
+  "Enhanced version of dired‐show‐file‐type from dired‐aux.  If at most one item
+  is marked, then print the filetype of the current item according to the `file'
+  command, including its size in bytes.  If  more  than one item is marked, then
+  print the total size in bytes (calculated recursively) of all marked items."
+  (interactive "P")
+  (message "Calculating total size of selection... (C-g to abort)")
+  (let* ((selection (dired-get-marked-files))
+         (size (sr-size-format (sr-files-size selection)))
+         (items (length selection)))
+    (if (>= 1 items)
+        (progn
+          (setq selection (file-name-nondirectory (car selection)))
+          (dired-show-file-type selection deref-symlinks)
+          (message "%s (%s bytes)" (current-message) size))
+      (message "%s bytes in %d selected items" size items))))
+
+(defun sr-files-size (files)
+  "Recursively calculates the total size  of all files and directories listed in
+  the given list of FILES."
+  (eval-when-compile
+    (defsubst size-attr (file) (float (nth 7 (file-attributes file)))))
+  (let ((result 0))
+    (mapc
+     (lambda (x) (setq result (+ x result)))
+     (mapcar (lambda (f) (cond ((string-match "\\.\\./?$" f) 0)
+                               ((string-match "\\./?$" f) (size-attr f))
+                               ((file-symlink-p f) (size-attr f))
+                               ((file-directory-p f) (sr-directory-size f))
+                               (t (float (size-attr f)))))
+             files))
+    result))
+
+(defun sr-directory-size (directory)
+  "Recursively calculates the total size of the given DIRECTORY."
+  (sr-files-size (directory-files directory t nil t)))
+
+(defun sr-size-format (size)
+  "Formats the given (floating) number as a string representation of an integer
+  with separating commas for thousands, millions, etc."
+  (let* ((num (replace-regexp-in-string "\\..*$" "" (number-to-string size)))
+         (digits (reverse (split-string num "" t)))
+         result)
+    (dotimes (n (length digits) result)
+      (if (and (< 0 n) (zerop (% n 3)))
+          (setq result (concat "," result)))
+      (setq result (concat (pop digits) result)))))
 
 ;;; ============================================================================
 ;;; TI (Terminal Integration) and CLEX (Command Line EXpansion) functions:
@@ -2619,7 +2678,7 @@ or (c)ontents? ")
     (rename-uniquely)
     (setq new-name (buffer-name))
     (sr-term)
-    (message "%s" (concat "Previous terminal renamed to " new-name))))
+    (message "Sunrise: previous terminal renamed to %s" new-name)))
 
 (defun sr-ti-restore-previous-term ()
   "Renames back the last open terminal (if any) to the default terminal buffer
@@ -2781,7 +2840,7 @@ or (c)ontents? ")
   "Summarize basic Sunrise commands and show recent dired errors."
   (interactive)
   (dired-why)
-  (message "C-opy, R-ename, D-elete, v-iew, q-uit, U-p, m-ark, u-nmark, h-elp"))
+  (message "C-opy, R-ename, K-lone, D-elete, v-iew, q-uit, U-p, m-ark, u-nmark, h-elp"))
 
 (defun sr-restore-point-if-same-buffer ()
   "Puts  the point in the same place of the same buffer, if it's being displayed

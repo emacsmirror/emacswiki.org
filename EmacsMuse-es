@@ -1,0 +1,167 @@
+== Sumario rápido ==
+
+Esto es una traducción-extracto del artículo original en inglés.  -SuSo
+
+Emacs Muse es un entorno de autor y publicación para Emacs.
+Simplifica el proceso de escritura de los documentos y de su
+publicación en varios formatos de salida (Texinfo, HTML, PDF, DocBook,
+LaTeX y más).
+
+Emacs Muse es similar a EmacsWikiMode, especialmente en su marcado.
+En esta misma página hay una comparación.  De hecho, Muse se deriva de
+Wiki.
+
+== ¿Qué es? ==
+
+Emacs Muse es un entorno de autor y publicación para Emacs.
+Simplifica el proceso de escribir documentos y publicarlos en varios
+formatos de salida.
+
+Muse consiste en dos partes principales: un modo texto mejorado para
+la autoría de documentos con navegación dentro de los proyectos Muse y
+un conjunto de estilos de publicación para la generación de distintos
+tipos de salida.
+
+Lo que distingue a Muse de otros sistemas de publicación de texto es
+su entorno modular, con un núcleo bastante simple, en donde los
+"estilos" se derivan unos de otros, con la posibilidad de crear
+nuevos.  Buena parte de la funcionalidad general de Muse es optativa.
+Por ejemplo, se puede usar el publicador sin el modo mayor o el modo
+mayor sin el publicador; si no se carga el módulo LaTeX, pues no
+estará disponible.
+
+El código base de Muse fue una bifurcación a partir de emacs-wiki.el
+versión 2.44.  Ha sufrido reestructuración y reescritura,
+especialmente en las funciones de publicación.  Se centra en los
+aspectos de autoría y publicación, y la "wikinería" ha sido suprimida
+del comportamiento predeterminado (pero sigue disponible en el módulo
+optativo muse-wiki).  Las palabras con LetraCamello ya no tienen
+significado especial de antemano.
+
+Una de las metas principales en el desarrollo de Muse es facilitar la
+producción de documentos con buen aspecto y conformes a los
+estándares.
+
+== Documentación ==
+
+El manual en español de Emacs Muse está disponible en línea en:
+
+* HTML : http://gnu.manticore.es/node/492
+
+También existe una guía de inicio rápido disponible en español en
+
+* http://exal.0x2.org/Muse/QuickStart.es.html
+
+== Obtención de Muse ==
+
+* http://mwolson.org/projects/EmacsMuse.html -- Página del mantendor actual.
+
+* http://mwolson.org/static/dist/muse-latest.tar.gz -- Último paquete
+  de desarrollo.
+
+* Las entregas publicadas se pueden descargar de http://download.gna.org/muse-el/.
+
+El actual sistema de control de revisiones es git.
+
+== Proyectos basados en Muse ==
+
+# PlannerMode
+# MuseContacts
+# EmacsAtomApi
+# ToMuse
+# EpmMode
+
+== Contribuidores ==
+
+* http://johnwiegley.com/emacs.html -- Sitio web del autor original.
+
+Véase el fichero <code>AUTHORS</code> incluido en Muse.  Allá se
+encuentra la lista completa de los que han contribuido a Muse.
+
+== Obtención de ayuda ==
+
+Para reportar un fallo o sugerir cambios, 
+[http://gna.org/projects/muse-el Interfaz de registro de fallos de Muse].
+Todos los fallos enviados ahí también aparecerán en nuestra lista de correo.
+
+Existen varias listas de correo para Muse.
+
+; muse-el-announce@gna.org: Lista de tráfico bajo para los anuncios de Muse.
+
+: '''URL:''' http://mail.gna.org/listinfo/muse-el-announce/
+
+: '''Gmane:''' <code>gmane.emacs.muse.announce</code>
+
+; muse-el-discuss@gna.org: Discusiones, corrección de fallos,
+  sugerencias, consejos, etc.  También incluye el contenido de la
+  lista de anuncios.
+
+: '''URL:''' http://mail.gna.org/listinfo/muse-el-discuss/
+
+: '''Gmane:''' <code>gmane.emacs.muse.general</code>
+
+; muse-el-logs@gna.org: Mensajes de registro de los cambios compulsados en Muse.
+
+: '''URL:''' http://mail.gna.org/listinfo/muse-el-logs/
+
+: '''Gmane:''' <code>gmane.emacs.muse.scm</code>
+
+; muse-el-internationalization@gna.org: Temas sobre la traducción del
+  sitio web de Muse y su documentación en muchos idiomas.
+
+: '''URL:''' http://mail.gna.org/listinfo/muse-el-internationalization/
+
+: '''Gmane:''' <code>gmane.emacs.muse.internationalization</code>
+
+; muse-el-commits@gna.org: Informes de fallos generados para Emacs
+  Muse.  Si se emplea el registrador de fallos de
+  https://gna.org/bugs/?group=muse-el, los informes se enviarán a esta
+  lista automáticamente.
+
+: '''URL:''' http://mail.gna.org/listinfo/muse-el-commits/
+
+: '''Gmane:''' <code>gmane.emacs.muse.cvs</code>
+
+Existe también un canal IRC dedicado a Muse (así como a EmacsWikiMode
+y quizás PlannerMode) en <code>#muse</code> en
+<code>irc.freenode.net</code>.  El mantenedor actual (MichaelOlson)
+se descuelga ocasionalmente por él.
+
+== Estado ==
+
+La actual versión estable de Muse es la 3.12.
+
+PlannerMode ha sido portado a Muse.  Véase la historia en PlannerMusePort.
+
+
+== Miscelánea ==
+
+=== ¿Qué hay en emacs-wiki que esté ausente en Muse? ===
+
+* emacs-wiki-menu.el, and emacs-wiki-macros.el
+
+=== Personalización de la salida en LaTeX ===
+
+Jim Ottaway ha escrito un estilo latex que permite especificar
+opciones latex empleando directivas muse.  Con él se pueden hacer
+cosas como 
+
+ #latex-class-option +draft
+
+ Location: http://www.users.zetnet.co.uk/jeho/archives/2005
+ Archive name: jeho@jeho.org--2005
+ Branch: muse-stuff--jeho--1.0
+
+
+
+== Preguntas y respuestas ==
+
+'''P:''' ¿Cómo se puede hacer que Muse procese fórmulas matemáticas?
+
+'''R:''' Muse viene ahora con muse-latex2png.el.  Allí mismo hay indicaciones.
+
+----
+MarkupModes
+
+Keywords: muse.el
+

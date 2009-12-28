@@ -56,5 +56,20 @@ Email confirmation of edits? -- LennartBorgman
 Alex, one of the things we did on another (now defunct) wiki was to set up the robots.txt to tell google to exclude history pages. That and nofollow to the history pages. It will make the linkspam worthless, which won't necessarily reduce the dumber spammers, but it will at least render them impotent. That and 2 weeks expiry seems excessive. -- RyanDavis
 
 [new]
-
 For dumber spammers there could be an explicit warning on the edit page that their spam is not indexed on the history pages.
+
+[new]
+Drew, the thing I fear more than spam for money is spam for fun! :D
+
+Lennart, I guess something like that would work – but would you have liked it? I fear that new users will prefer not to edit the wiki. Such measures are my last defense.
+
+Ryan, currently history pages have the ##<meta name="robots" content="NOINDEX,FOLLOW" />## tag, and the link to history pages have the nofollow attribute set: ##<a class="history" rel="nofollow" href="http://www.emacswiki.org/emacs?action=history;id=2009-07-29">View other revisions</a>##. As far as I can tell, the link spam is already rendered impotent by our quick reactions. As soon as they disappear into the history pages, their edits are worth nil.
+
+I'm trying to imagine an economic incentive that keeps their broken behaviour going. I'm thinking that poor paid-by-the-hour or paid-by-the-number-of-pages spam workers spread the spam. As far as they are concerned, their work is done as soon as their supervisor has seen it. Nobody except the spam _client_ cares whether the spam link remain active or not.
+
+As a general rule, I also suspect that most of these edits from the point of view of a spam worker target abandoned wikis. Occasionally a wiki like ours fights back, but why should they care?
+
+To disrupt the economics, we would need something like the following:
+when there are ten edits by a particular username in fifteen minutes, adding the same link, to all of these pages, all ten edits are reverted and the domain (!) is banned. How many false positives would this generate?
+
+-- AlexSchroeder

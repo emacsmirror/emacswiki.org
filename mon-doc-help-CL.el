@@ -8,6 +8,11 @@
 ;;; `mon-help-slime-keys', `mon-help-swank-functions'
 ;;; `mon-help-wget-cl-pkgs', `mon--test--help-wget-cl-pkgs',
 ;;; `mon-help-wget-cl-pkgs-for-shell-command'
+;;; `mon-hspec-plain-p', `mon-hspec-bld-p'
+;;; `mon-hspec-it-p', `mon-hspec-header-line-p'
+;;; `mon-hspec-href-p', `mon-w3m-spec-p'
+;;; `mon-hspec-prop-type', `mon-hspec-stk-n-mv'
+;;; `mon-hspec-parse-w3m',`mon-hspec-out'
 ;;; FUNCTIONS:◄◄◄
 ;;;
 ;;; MACROS:
@@ -16,6 +21,7 @@
 ;;;
 ;;; VARIABLES:
 ;;; `*cl-cmu-ai-repo*',`*cl-ext-pkg-map*'
+;;; `*mon-hs-temp-buffer*', `*mon-hs-root-dir*'
 ;;; 
 ;;; ALIASED/ADVISED/SUBST'D:
 ;;; 
@@ -104,6 +110,14 @@
     (cltl2-src 
      "Guy Steele's Common Lisp the Language Second Edition in HTML."
      "doc/cltl/cltl_src.tgz")
+    (X3J13-archive
+     "Working files for the X3J13 ANSI Common Lisp committee - cannonical archive."
+     ;; ftp://ftp.parc.xerox.com/pub/cl/cleanup/issue-status
+     "ftp://ftp.parc.xerox.com/pub/cl/")
+    (cl-ansi-naggum
+     "ANSI X3.226-1994 final draft PostScript conversion landscape orientation 2up.\n:COURTESY Erik Naggum"
+     ;; http://naggum.no/ANSI-CL/
+     "http://naggum.no/ANSI-CL.tar.gz")
     (dpans3 
      "Common Lisp ANSI Standard X3J13 committe TeX sources Draft 3." 
      "doc/standard/ansi/dpans/dpans3.tgz")
@@ -149,7 +163,7 @@
      "Emacs lisp library from GNU Clisp for Hyperlink Specification access."
      "http://clisp.cvs.sourceforge.net/*checkout*/clisp/clisp/emacs/clhs.el")
     (cl-hyperspec-v3
-     "Common Lisp Hyperspec v3 the variable length version of 2005-April-12."
+     "Common Lisp Hyperspec v3 the variable length version circa 1996."
      ;; http://www.cs.cmu.edu/Groups/AI/html/hyperspec/clspec.html
      "http://www.cs.cmu.edu/Groups/AI/html/hyperspec/clspec30.tgz")
     (cl-hyperspec-v7
@@ -398,6 +412,1138 @@ o Kills temp-buffer and file on exit\n
 ;;; (let ((system-type 'gnu/linux)) 
 ;;;    ;;((system-type 'windows-nt))
 ;;;  (mon-help-wget-cl-pkgs-for-shell-command "wget-script-2009-12-24"))
+;;; ==============================
+
+;;; ============================================================
+;;; I wasn't even a teenager when development of ANSI-CL began over 23 yrs ago.
+;;; I was entering college when the standard was formalized circa 1994 over 15
+;;; years ago. As lispers go I'd bet I'm on the young end of the spectrum...
+;;; Growing/Cultivating Lisp requires cultivation of Lisp documentation.
+;;;
+;;; Emacs Lisp is super at documentation. Common Lisp not so.
+;;; Emacs thrives in large part because it is accessible and open.
+;;; Common Lisp not so much so.
+;;;
+;;; The two documents which best document the standard are locked up in an
+;;; antiquated copyright doubtless few CL originators would endorse today.
+;;; As such while other more contemporary programmin languages and associated
+;;; technical documents allow re-purposing the _format_ of their respective
+;;; contents the ANSI-CL is hog-tied to circa 1990 intellecutal property paradigms
+;;;
+;;; According to copyright disclaimers on the various CL Hyperspecs versions (v3,
+;;; v6, v7) while large portions of the Hyperspec (as originally sanctioned by XJ313
+;;; at Harlequin's request) do copy in a nearly verbatim manner from the ANSI spec
+;;; (itself derived of CLTL[1&2]. This inclusion was originally allowed with the
+;;; permission of X3 and produced under the auspices of the XJ313 Cleanup
+;;; subcommittee. No public digital record of such a formal approval remains
+;;; separate from the rihgts claim distributed with the HyperSpec itself and it is
+;;; unclear from what little remains of the XJ313 Charter (it's organization was a
+;;; hasty/controversial affair) whether such extenion of copyright was even
+;;; permissible within the scope of the charter. Claims to copyright on Govt. funded
+;;; projects strike us as odd given that CLTL, X3J13, and ANSI-CL would not have
+;;; been produced without sufficient and prolonged funding from DARPA, ARPA,
+;;; Etc. IOW, some degree of the ANSI-CL 'product' is a public deliverable funded by
+;;; U.S. Taxpayers. It is doubtful that such material would meet a rigourous
+;;; copywrite challenge... Regardless, since 2005 when Lispworks Limited a UK based
+;;; company acquired the rights to Harlequin's claim on the HyperSpec they have
+;;; maintained a slippery and somewhat dubious claim of ownership w/re the
+;;; HyperSpec. As such, while it is not generally believed permissible to distribute
+;;; the the HyperSpec in an derivative format there seems little to prevent one from
+;;; reversing the Hyperspec's HTML to a privately accessible format.  Following is
+;;; an attempt at using w3m and Emacs' w3m extension package to do so...
+;;;
+;;; The end goal is to use produce code capable of stripping the hyperspec and
+;;; repurposing it for suitable presentation in a dedicated Emacs *Help* buffer for
+;;; _personal_ presentation of the Hyperspec on my machine for my needs.
+;;; IOW _not_ using TeXinfo and not using a web-browser to access a fully
+;;; hyperlinked and xref'd documentation of the standard. If I'm able to succeed
+;;; others could probably use similar such code to similar ends :)
+;;; 
+;;; ============================================================
+;;; :USEFUL-LINKS-REFERENCES-SOURCES-QUOTES
+;;;
+;;; HyperSpec-v3 (The variable length version circa 1996)
+;;; :SEE (URL `http://www.cs.cmu.edu/Groups/AI/html/hyperspec/clspec.html')
+;;; :SEE (URL `http://www.cs.cmu.edu/Groups/AI/html/hyperspec/clspec30.tgz')
+;;;
+;;;
+;; :CL-ANSI-SPEC-COPYRIGHT-P
+;;; According to prevailing wisdom:
+;;; :SEE (URL 
+;;; (concat "http://groups.google.com/group/comp.lang.lisp/browse_frm/thread/"
+;;; "48865a78e6dfabc0/b5d0b025348d5b63?lnk=gst&q=Hyperspec+copyright#b5d0b025348d5b63")
+;;;
+;;; And,
+;;; :SEE (URL `http://lists.nongnu.org/archive/html/axiom-developer/2007-06/msg00456.html')
+;;;
+;;; :X3J13-ARCHIVES
+;;; :SEE (URL `ftp://ftp.parc.xerox.com/pub/cl/')
+;;;
+;;; :HSPEC-RESTRICTED-RIGHTS-LEGEND
+;;;
+;;; The Common Lisp HyperSpec is subject to the following Restricted Rights Legend:
+;;;
+;;;     ``Use, duplication, or disclosure by the United States Government is
+;;;     subject to the restrictions set forth in (i) FAR 52.227-14 Alt III, (ii) 
+;;;     FAR 52.227-19, (iii) DFARS 252.7013(c)(1)(ii), or (iv) the accompanying
+;;;     license Agreement, as applicable. For purposes of the FAR, the Software
+;;;     shall be deemed to be ``unpublished'' and licensed with disclosure
+;;;     prohibitions, rights reserved under the copyright laws of the United
+;;;     States. Harlequin Incorporated, One Cambridge Center, Cambridge,
+;;;     Massachusetts 02142.''
+;;;
+;;; :SOURCE From the Hspec v3 @ MIT
+;;;
+;;;
+;; :CL-SPEC-FROM-ANSI-THEY-ARE-LOST!
+;;; (concat "http://groups.google.com/group/comp.lang.lisp/browse_frm/thread/"
+;;;  "48865a78e6dfabc0/b5d0b025348d5b63?lnk=gst&q=Hyperspec+copyright#b5d0b025348d5b63")
+;;;
+;;;
+;; :X3J13-CHARTER
+;;; Kent Pitman, Sunday, April 18, 1999 notes on the X3J13 Charter
+;;; :SEE (URL `http://www.nhplace.com/kent/CL/x3j13-sd-05.html')
+;;;
+;;;
+;; :GFDL-ANSI-CL
+;;;
+;;; ----Original Message-----
+;;;    From: Joe Corneli [mailto:address@hidden 
+;;;    Sent: Thursday, June 16, 2005 4:40 PM
+;;;    To: Garner, Jennifer
+;;;    Subject: ansi common lisp standard?
+;;;
+;;;
+;;;    Hi Jennifer,
+;;;
+;;;    in October or November of last year, we sent the appended request,
+;;;    concerning the ANSI common lisp standard, to you, in hopes that you
+;;;    could communicate the request to the ANSI J13 management committee.
+;;;    Our aim was to obtain a copy of the Common Lisp standard with
+;;;    permissions that would enable us to use it as the basis of new Lisp
+;;;    documentation.  Can you tell me what the status of this request is
+;;;    currently?
+;;;
+;;;    Thank you,
+;;;
+;;;    Joe Corneli
+;;;
+;;;
+;;;      To the members of the ANSI J13 management committee:
+;;;
+;;;      We wish to file a request on the behalf of Lisp users world wide
+;;;      that ANSI release the text of the Common Lisp standard in a way
+;;;      that would make it legal to use the standard as the foundation
+;;;      for a system of documentation which adequately describes Common
+;;;      Lisp as a living language.
+;;;
+;;;      We recommend the use of the GNU Free Documentation License, which
+;;;      was specifically designed to apply to documentation and standards
+;;;      documents.  Using the GFDL, the copyright holder grants anyone
+;;;      permission to publish both changed and unchanged versions of the
+;;;      document, but requires that they all be distributed under the
+;;;      same license.
+;;;
+;;;      The GFDL has a special feature intended for standards documents.
+;;;      The document can have an Endorsements section which must be
+;;;      removed from any modified version; ANSI's endorsement could say
+;;;      that the document contains the official definition of ANSI Common
+;;;      Lisp.  Other provisions of the license require giving credit to
+;;;      the authors of earlier versions.  Thus, modified versions would
+;;;      give credit to ANSI but could not claim to be the standard.
+;;;
+;;;      We would be glad to explore ways to resolve any issues or
+;;;      uncertainties that may arise as you consider this request.
+;;;
+;;;       Joseph Corneli
+;;;       Richard Stallman
+;;;       Camm McGuire
+;;;       Richard Gabriel
+;;;       Bruno Haible
+;;;       Sam Steingold
+;;;
+;;; :SOURCE (URL `http://lists.nongnu.org/archive/html/axiom-developer/2007-06/msg00456.html')
+;;; ==============================
+
+;;; ============================================================
+;;; Following procedures tested with:
+;;; (emacs-version)
+;;; => "GNU Emacs 23.1.90.1 
+;;;  | (i486-slackware-linux-gnu, GTK+ Version 2.14.7)  of 2009-12-20"
+;;;
+;;; w3m-version
+;;; => "w3m/0.5.2"
+;;;
+;;; w3m-fill-column
+;;; => 80
+;;; ============================================================
+
+(require 'hyperspec)
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-12-27T22:14:27-05:00Z}#{09527} - by MON>
+(defvar *mon-hs-root-dir* common-lisp-hyperspec-root
+  "*The base directory path that the local Hyper Linked Common Lisp specification
+resides under.
+:NOTE I use the path set with the variable defined in the `hyperspec' file
+provided with Slime.\n
+:SEE-ALSO `*mon-hs-temp-buffer*', `mon-hspec-plain-p', `mon-hspec-bld-p',
+`mon-hspec-it-p', `mon-hspec-header-line-p', `mon-hspec-href-p',
+`mon-w3m-spec-p', `mon-hspec-prop-type', `mon-hspec-stk-n-mv',
+`mon-hspec-parse-w3m',`mon-hspec-out'.\n►►►")
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-12-27T22:14:29-05:00Z}#{09527} - by MON>
+(defvar *mon-hs-temp-buffer* "*CL-HSPEC-CONV*"
+  "*The temporary buffer holding the parsed text properties of the current w3m
+  text under examination.\n
+:SEE-ALSO `*mon-hs-root-dir*',`mon-hspec-plain-p', `mon-hspec-bld-p',
+`mon-hspec-it-p', `mon-hspec-header-line-p',`mon-hspec-href-p',
+`mon-w3m-spec-p',`mon-hspec-prop-type', `mon-hspec-stk-n-mv',
+`mon-hspec-parse-w3m',`mon-hspec-out'.\n►►►")
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-12-27T22:14:32-05:00Z}#{09527} - by MON>
+(defun mon-hspec-href-p ()
+  "Are we looking at an w3m-href-anchor text property (with/without bold/italic).
+:SEE-ALSO `mon-hspec-plain-p', `mon-hspec-bld-p',`mon-hspec-it-p',
+`mon-hspec-header-line-p', `mon-w3m-spec-p', `mon-hspec-prop-type',
+`mon-hspec-stk-n-mv', `mon-hspec-parse-w3m',`mon-hspec-out' ,
+`*mon-hs-temp-buffer*',`*mon-hs-root-dir*'.\n►►►"
+  (let (this-xref-prop)
+    (when (get-text-property (point) 'w3m-href-anchor)
+      (let* ((tp-xrf-frm  (point))
+             (tp-xrf-to   (next-single-property-change tp-xrf-frm 'w3m-href-anchor))
+             (tp-xrf-str  (buffer-substring-no-properties tp-xrf-frm tp-xrf-to))
+             (tp-xrf-prop (get-text-property tp-xrf-frm 'w3m-href-anchor)))
+        (setq this-xref-prop
+              `(:xref-on ,tp-xrf-str 
+                         :xref-to ,(replace-regexp-in-string 
+                                    (concat "file://" *mon-hs-root-dir*) "" tp-xrf-prop)
+                         :xref-range (,tp-xrf-frm . ,tp-xrf-to)))))))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-12-27T22:14:37-05:00Z}#{09527} - by MON>
+(defun mon-hspec-header-line-p ()
+  "Are we looking at a w3m header line.\n
+Check if `w3m-header-line-location-content' face and 
+`w3m-header-line-location-title' face properties are present.\n
+When t return a two element list of the form:\n
+\(\(:location     \"Location: \"  :location-range     \(<START> . <END>\)\)
+ \(:location-url \"<URL>\"       :location-url-range \(<END> . <END>\)\)\)\n
+:SEE-ALSO `mon-hspec-plain-p', `mon-hspec-bld-p',`mon-hspec-it-p',
+`mon-hspec-href-p', `mon-w3m-spec-p',`mon-hspec-prop-type',`mon-hspec-stk-n-mv',
+`mon-hspec-parse-w3m',`mon-hspec-out', `*mon-hs-temp-buffer*',
+`*mon-hs-root-dir*'.\n►►►"
+  (when (eq (car (get-text-property (point) 'face)) 'w3m-header-line-location-title)
+    (let ((loc-info `(:location (,(point) . ,(next-single-property-change (point) 'face)))))
+      (setq loc-info `(,(car loc-info) 
+                        ,(buffer-substring-no-properties (caadr loc-info) (cdadr loc-info))
+                        :location-range ,@(cdr loc-info)))
+      (when (eq (car (get-text-property (cdr (plist-get loc-info :location-range)) 'face))
+                'w3m-header-line-location-content)
+        (let ((loc-path `(:location-url
+                          (,(cdr (plist-get loc-info :location-range))
+                            . ,(next-single-property-change (cdr (plist-get loc-info :location-range)) 'face)))))
+          (setq loc-path `(,(car loc-path)
+                            ;; ,(replace-regexp-in-string (concat "file://" *mon-hs-root-dir*) "" {...}
+                            ,(buffer-substring-no-properties (caadr loc-path) (cdadr loc-path))
+                            :location-url-range ,@(cdr loc-path)))
+          (setq loc-info `(,loc-info ,loc-path)))))))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-12-27T22:14:40-05:00Z}#{09527} - by MON>
+(defun mon-hspec-it-p ()
+  "Are we looking at only a w3m-italic face text-property.\n
+:SEE-ALSO `w3m-fontify-italic',`mon-hspec-plain-p', `mon-hspec-bld-p',
+`mon-hspec-header-line-p',`mon-hspec-href-p', `mon-w3m-spec-p',
+`mon-hspec-prop-type', `mon-hspec-stk-n-mv',`mon-hspec-parse-w3m',
+`mon-hspec-out',`*mon-hs-temp-buffer*',`*mon-hs-root-dir*'.\n►►►"
+  (let ((face-it-p (get-text-property (point) 'face)))
+    (when (and (member 'w3m-italic face-it-p)
+               (and (not (member 'w3m-bold face-it-p))
+                    (not (member 'w3m-anchor face-it-p))
+                    (not (null face-it-p))))
+      (let* ((tp-it-frm (point))
+             (tp-it-to  (next-single-property-change tp-it-frm 'face))
+             (tp-it-str (buffer-substring-no-properties tp-it-frm tp-it-to))
+             (this-it-prop))
+        (setq this-it-prop
+              `(:it-on ,tp-it-str :it-range (,tp-it-frm . ,tp-it-to)))))))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-12-27T22:14:43-05:00Z}#{09527} - by MON>
+(defun mon-hspec-bld-p ()
+  "Are we looking at only a w3m-bold face text-property.\n
+:SEE-ALSO `w3m-fontify-bold', `mon-hspec-plain-p',`mon-hspec-it-p',
+`mon-hspec-header-line-p',`mon-hspec-href-p', `mon-w3m-spec-p'
+`mon-hspec-prop-type', `mon-hspec-stk-n-mv',`mon-hspec-parse-w3m',
+`mon-hspec-out',`*mon-hs-temp-buffer*',`*mon-hs-root-dir*'.\n►►►"
+   (let ((face-bold-p (get-text-property (point) 'face)))
+     (when (and (member 'w3m-bold face-bold-p)
+                (and (not (member 'w3m-italic face-bold-p))
+                     (not (member 'w3m-anchor face-bold-p))
+                     (not (null face-bold-p))))
+       (let* ((tp-bld-frm (point))
+              (tp-bld-to (next-single-property-change tp-bld-frm 'face))
+              (tp-bld-str (buffer-substring-no-properties tp-bld-frm tp-bld-to))
+              (this-bld-prop))
+         (setq this-bld-prop
+               `(:bld-on ,tp-bld-str :bld-range (,tp-bld-frm . ,tp-bld-to)))))))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-12-27T22:14:47-05:00Z}#{09527} - by MON>
+(defun mon-hspec-plain-p ()
+  "Are we looking at plain-text sans w3m text-property.
+:SEE-ALSO `mon-hspec-plain-p', `mon-hspec-bld-p',`mon-hspec-it-p',
+`mon-hspec-header-line-p',`mon-hspec-href-p', `mon-w3m-spec-p'
+`mon-hspec-prop-type', `mon-hspec-stk-n-mv',`mon-hspec-parse-w3m',
+`mon-hspec-out', `*mon-hs-temp-buffer*', `*mon-hs-root-dir*'.\n►►►"
+  (when (and (not (get-text-property (point) 'face))
+             (not (get-text-property (point) 'w3m-href-anchor))
+             (next-property-change (point))
+             (not (= (point) (buffer-end 1)))
+             (not (= (next-property-change (point)) (buffer-end 1))))
+    (let* ((tp-pln-frm (point))
+           (tp-pln-to  (next-property-change tp-pln-frm))
+           (tp-pln-str (buffer-substring-no-properties tp-pln-frm tp-pln-to)))
+      (setq this-pln-prop
+            `(:pln-on ,tp-pln-str :pln-range (,tp-pln-frm . ,tp-pln-to))))))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-12-27T22:14:52-05:00Z}#{09527} - by MON>
+(defun mon-w3m-spec-p (spec spec-list)
+  "Helper function for `mon-hspec-prop-type'.
+:SEE-ALSO `mon-hspec-plain-p', `mon-hspec-bld-p',`mon-hspec-it-p', 
+`mon-hspec-header-line-p', `mon-hspec-href-p',, `mon-hspec-prop-type',
+`mon-hspec-stk-n-mv', `mon-hspec-parse-w3m', `mon-hspec-out',
+`*mon-hs-temp-buffer*', `*mon-hs-root-dir*'.\n►►►"
+  (memq spec spec-list))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-12-27T22:14:56-05:00Z}#{09527} - by MON>
+(defun mon-hspec-prop-type ()
+  "Are we looking at a w3m bold, italic, plain, or href text-property.\n
+:SEE-ALSO `mon-hspec-plain-p', `mon-hspec-bld-p', `mon-hspec-it-p',
+`mon-hspec-header-line-p', `mon-hspec-href-p', `mon-w3m-spec-p'
+`mon-hspec-stk-n-mv',`mon-hspec-parse-w3m',`mon-hspec-out',
+`*mon-hs-temp-buffer*', `*mon-hs-root-dir*'.\n►►►"
+  (let ((the-spec (text-properties-at (point)))
+        (w3m-face-spec))
+    (setq w3m-face-spec
+          `(,(car (mon-w3m-spec-p 'w3m-href-anchor the-spec))
+             ,@(cadr (mon-w3m-spec-p 'face the-spec))))
+    (cond ((car w3m-face-spec) (car w3m-face-spec))
+          ((cdr w3m-face-spec)
+           (let ((mp-fc (cdr w3m-face-spec)))
+             (car (or (mon-w3m-spec-p 'w3m-italic mp-fc)
+                      (mon-w3m-spec-p 'w3m-bold   mp-fc)           
+                      (mon-w3m-spec-p 'w3m-anchor mp-fc)))))
+          ((not (cdr w3m-face-spec))  'plain-text))))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-12-27T22:14:59-05:00Z}#{09527} - by MON>
+(defun mon-hspec-out (prop)
+  "Helper function for `mon-hspec-stk-n-mv' to direct parses to temp buffer.
+Temporary buffer is specified in:\n:VARIABLE `*mon-hs-temp-buffer*'\n
+:SEE-ALSO `mon-hspec-plain-p', `mon-hspec-bld-p', `mon-hspec-it-p',
+`mon-hspec-header-line-p', `mon-hspec-href-p', `mon-w3m-spec-p'
+`mon-hspec-prop-type', `mon-hspec-stk-n-mv', `mon-hspec-parse-w3m',
+`*mon-hs-root-dir*'.\n►►►"
+  (get-buffer-create *mon-hs-temp-buffer*)
+  (terpri (get-buffer *mon-hs-temp-buffer*))
+  (prin1 prop (get-buffer *mon-hs-temp-buffer*)))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-12-27T22:15:02-05:00Z}#{09527} - by MON>
+(defun mon-hspec-stk-n-mv ()
+  "Test Hyperlink Specification properties with mon-hspec-* predicates.
+This function is the point mover and conditionally marshalls related functions.\n
+:SEE-ALSO `mon-hspec-plain-p', `mon-hspec-bld-p', `mon-hspec-it-p',
+`mon-hspec-header-line-p',`mon-hspec-href-p', `mon-w3m-spec-p',
+`mon-hspec-prop-type', `mon-hspec-parse-w3m',`mon-hspec-out',
+`*mon-hs-root-dir*', `*mon-hs-temp-buffer*'.\n►►►"
+  (let ((keep-looking t)
+        (curr-prop)) 
+    (cond ((eq (point) (buffer-end 1))
+           (setq keep-looking nil))
+          ((not (next-property-change (point)))
+           (goto-char (buffer-end 1))
+           (setq keep-looking nil))
+          (t (goto-char (next-property-change (point)))))
+    (setq curr-prop (mon-hspec-prop-type))
+    (if keep-looking
+        (cond ((eq curr-prop 'plain-text)      (mon-hspec-out (mon-hspec-plain-p)))
+              ((eq curr-prop 'w3m-href-anchor) (mon-hspec-out (mon-hspec-href-p)))
+              ((eq curr-prop 'w3m-italic)      (mon-hspec-out (mon-hspec-it-p)))
+              ((eq curr-prop 'w3m-bold)        (mon-hspec-out (mon-hspec-bld-p)))
+              ((eq curr-prop 'w3m-anchor)      (mon-hspec-out (mon-hspec-href-p)))
+              (t (if (or (not (next-property-change (point)))
+                         (eq (point) (buffer-end 1)))
+                      (goto-char (buffer-end 1))
+                      (goto-char (next-property-change (point)))))))))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-12-27T22:15:07-05:00Z}#{09527} - by MON>
+(defun mon-hspec-parse-w3m ()
+  "Parse the Hyperlink Specification in current w3m buffer.
+Contents returned in buffer specified by `*mon-hs-temp-buffer*'.\n
+:SEE-ALSO `mon-hspec-plain-p', `mon-hspec-bld-p' `mon-hspec-it-p',
+`mon-hspec-header-line-p' `mon-hspec-href-p', `mon-w3m-spec-p'
+`mon-hspec-prop-type', `mon-hspec-stk-n-mv' `mon-hspec-out',
+`*mon-hs-root-dir*'.\n►►►"
+  (progn
+    (goto-char (buffer-end 0))
+    (let ((hdr (mon-hspec-header-line-p)))
+      (when hdr 
+        (mon-hspec-out (car hdr))
+        (mon-hspec-out  (cadr hdr)))
+      (goto-char (cdr (plist-get (cadr hdr) :location-url-range))))
+    (while (not (eobp)) (mon-hspec-stk-n-mv))))
+
+;;; ============================================================
+;;; :NOTE Following is an example parse from the w3m HTML of HyperSpec v3:
+;;; :FILE ../Body/fun_get-properties.html
+;;;
+;;; (:location "Location: " :location-range
+;;; (1 . 11))
+;;; (:location-url "/HyperSpec-v3/Body/acc_bitcm_sbit.html" 
+;;;  :location-url-range (11 . 144))
+;;; (:xref-on "[HARLEQU" :xref-to "http://www.harlequin.com/" :xref-range
+;;; (145 . 153))
+;;; (:xref-on "[Common " :xref-to "/FrontMatter/index.html" :xref-range
+;;; (153 . 161))
+;;; (:bld-on " " :bld-range
+;;; (161 . 162))
+;;; (:xref-on "[Previou" :xref-to "/Body/fun_vectorp.html" :xref-range
+;;; (162 . 170))
+;;; (:xref-on "[Up]    " :xref-to "/Body/sec_the_arrays_dictionary.html" :xref-range
+;;; (170 . 178))
+;;; (:xref-on "[Next]  " :xref-to "/Body/fun_bit-andcm_c2cm_bit-xor.html" :xref-range
+;;; (178 . 186))
+;;; (:pln-on "
+;;;
+;;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;;; " :pln-range
+;;; (186 . 268))
+;;; (:it-on "Accessor" :it-range
+;;; (268 . 276))
+;;; (:location "Location: " :location-range
+;;; (1 . 11))
+;;; (:location-url "/HyperSpec-v3/Body/fun_get-properties.html" 
+;;;  :location-url-range (11 . 148))
+;;; (:xref-on "[HARLEQU" :xref-to "http://www.harlequin.com/" :xref-range
+;;; (149 . 157))
+;;; (:xref-on "[Common " :xref-to "/FrontMatter/index.html" :xref-range
+;;; (157 . 165))
+;;; (:bld-on " " :bld-range
+;;; (165 . 166))
+;;; (:xref-on "[Previou" :xref-to "/Body/fun_rassoccm__assoc-if-not.html" :xref-range
+;;; (166 . 174))
+;;; (:xref-on "[Up]    " :xref-to "/Body/sec_the_conses_dictionary.html" :xref-range
+;;; (174 . 182))
+;;; (:xref-on "[Next]  " :xref-to "/Body/acc_getf.html" :xref-range
+;;; (182 . 190))
+;;; (:pln-on "
+;;;
+;;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;;; " :pln-range
+;;; (190 . 272))
+;;; (:it-on "Function" :it-range
+;;; (272 . 280))
+;;; (:pln-on " " :pln-range
+;;; (280 . 281))
+;;; (:bld-on "GET-PROPERTIES" :bld-range
+;;; (281 . 295))
+;;; (:pln-on "
+;;;
+;;; " :pln-range
+;;; (295 . 297))
+;;; (:bld-on "Syntax:" :bld-range
+;;; (297 . 304))
+;;; (:pln-on "
+;;;
+;;; " :pln-range
+;;; (304 . 306))
+;;; (:bld-on "get-properties" :bld-range
+;;; (306 . 320))
+;;; (:pln-on " " :pln-range
+;;; (320 . 321))
+;;; (:it-on "plist indicator-list" :it-range
+;;; (321 . 341))
+;;; (:pln-on " => " :pln-range
+;;; (341 . 345))
+;;; (:it-on "indicator, value, tail" :it-range
+;;; (345 . 367))
+;;; (:pln-on "
+;;;
+;;; " :pln-range
+;;; (367 . 369))
+;;; (:bld-on "Arguments and Values:" :bld-range
+;;; (369 . 390))
+;;; (:pln-on "
+;;;
+;;; " :pln-range
+;;; (390 . 392))
+;;; (:it-on "plist" :it-range
+;;; (392 . 397))
+;;; (:pln-on "---a " :pln-range
+;;; (397 . 402))
+;;; (:xref-on "property list" :xref-to "/Body/glo_p.html#property_list" :xref-range
+;;; (402 . 415))
+;;; (:pln-on ".
+;;;
+;;; " :pln-range
+;;; (415 . 418))
+;;; (:it-on "indicator-list" :it-range
+;;; (418 . 432))
+;;; (:pln-on "---a " :pln-range
+;;; (432 . 437))
+;;; (:xref-on "proper list" :xref-to "/Body/glo_p.html#proper_list" :xref-range
+;;; (437 . 448))
+;;; (:pln-on " (of " :pln-range
+;;; (448 . 453))
+;;; (:xref-on "indicators" :xref-to "/Body/glo_i.html#indicator" :xref-range
+;;; (453 . 463))
+;;; (:pln-on ").
+;;;
+;;; " :pln-range
+;;; (463 . 467))
+;;; (:it-on "indicator" :it-range
+;;; (467 . 476))
+;;; (:pln-on "---an " :pln-range
+;;; (476 . 482))
+;;; (:xref-on "object" :xref-to "/Body/glo_o.html#object" :xref-range
+;;; (482 . 488))
+;;; (:pln-on " that is an " :pln-range
+;;; (488 . 500))
+;;; (:xref-on "element" :xref-to "/Body/glo_e.html#element" :xref-range
+;;; (500 . 507))
+;;; (:pln-on " of " :pln-range
+;;; (507 . 511))
+;;; (:it-on "indicator-list" :it-range
+;;; (511 . 525))
+;;; (:pln-on ".
+;;;
+;;; " :pln-range
+;;; (525 . 528))
+;;; (:it-on "value" :it-range
+;;; (528 . 533))
+;;; (:pln-on "---an " :pln-range
+;;; (533 . 539))
+;;; (:xref-on "object" :xref-to "/Body/glo_o.html#object" :xref-range
+;;; (539 . 545))
+;;; (:pln-on ".
+;;;
+;;; " :pln-range
+;;; (545 . 548))
+;;; (:it-on "tail" :it-range
+;;; (548 . 552))
+;;; (:pln-on "---a " :pln-range
+;;; (552 . 557))
+;;; (:xref-on "list" :xref-to "/Body/glo_l.html#list" :xref-range
+;;; (557 . 561))
+;;; (:pln-on ".
+;;;
+;;; " :pln-range
+;;; (561 . 564))
+;;; (:bld-on "Description:" :bld-range
+;;; (564 . 576))
+;;; (:pln-on "
+;;;
+;;; " :pln-range
+;;; (576 . 578))
+;;; (:xref-on "get-properties" :xref-to "/Body/fun_get-properties.html#get-properties" :xref-range
+;;; (578 . 592))
+;;; (:pln-on " is used to look up any of several " :pln-range
+;;; (592 . 627))
+;;; (:xref-on "property list" :xref-to "/Body/glo_p.html#property_list" :xref-range
+;;; (627 . 640))
+;;; (:pln-on " entries all at
+;;; once.
+;;;
+;;; It searches the " :pln-range
+;;; (640 . 679))
+;;; (:it-on "plist" :it-range
+;;; (679 . 684))
+;;; (:pln-on " for the first entry whose " :pln-range
+;;; (684 . 711))
+;;; (:xref-on "indicator" :xref-to "/Body/glo_i.html#indicator" :xref-range
+;;; (711 . 720))
+;;; (:pln-on " is " :pln-range
+;;; (720 . 724))
+;;; (:xref-on "identical" :xref-to "/Body/glo_i.html#identical" :xref-range
+;;; (724 . 733))
+;;; (:pln-on " to one
+;;; of the " :pln-range
+;;; (733 . 748))
+;;; (:xref-on "objects" :xref-to "/Body/glo_o.html#object" :xref-range
+;;; (748 . 755))
+;;; (:pln-on " in " :pln-range
+;;; (755 . 759))
+;;; (:it-on "indicator-list" :it-range
+;;; (759 . 773))
+;;; (:pln-on ". If such an entry is found, the " :pln-range
+;;; (773 . 806))
+;;; (:it-on "indicator" :it-range
+;;; (806 . 815))
+;;; (:pln-on " and 
+;;; " :pln-range
+;;; (815 . 821))
+;;; (:it-on "value" :it-range
+;;; (821 . 826))
+;;; (:pln-on " returned are the " :pln-range
+;;; (826 . 844))
+;;; (:xref-on "property indicator" :xref-to "/Body/glo_p.html#property_indicator" :xref-range
+;;; (844 . 862))
+;;; (:pln-on " and its associated " :pln-range
+;;; (862 . 882))
+;;; (:xref-on "property value" :xref-to "/Body/glo_p.html#property_value" :xref-range
+;;; (882 . 896))
+;;; (:pln-on ",
+;;; and the " :pln-range
+;;; (896 . 906))
+;;; (:it-on "tail" :it-range
+;;; (906 . 910))
+;;; (:pln-on " returned is the " :pln-range
+;;; (910 . 927))
+;;; (:xref-on "tail" :xref-to "/Body/glo_t.html#tail" :xref-range
+;;; (927 . 931))
+;;; (:pln-on " of the " :pln-range
+;;; (931 . 939))
+;;; (:it-on "plist" :it-range
+;;; (939 . 944))
+;;; (:pln-on " that begins with the found entry
+;;; (i.e., whose " :pln-range
+;;; (944 . 991))
+;;; (:xref-on "car" :xref-to "/Body/glo_c.html#car" :xref-range
+;;; (991 . 994))
+;;; (:pln-on " is the " :pln-range
+;;; (994 . 1002))
+;;; (:it-on "indicator" :it-range
+;;; (1002 . 1011))
+;;; (:pln-on "). If no such entry is found, the " :pln-range
+;;; (1011 . 1045))
+;;; (:it-on "indicator" :it-range
+;;; (1045 . 1054))
+;;; (:pln-on ", 
+;;; " :pln-range
+;;; (1054 . 1057))
+;;; (:it-on "value" :it-range
+;;; (1057 . 1062))
+;;; (:pln-on ", and " :pln-range
+;;; (1062 . 1068))
+;;; (:it-on "tail" :it-range
+;;; (1068 . 1072))
+;;; (:pln-on " are all " :pln-range
+;;; (1072 . 1081))
+;;; (:xref-on "nil" :xref-to "/Body/any_nil.html#nil" :xref-range
+;;; (1081 . 1084))
+;;; (:pln-on ".
+;;;
+;;; " :pln-range
+;;; (1084 . 1087))
+;;; (:bld-on "Examples:" :bld-range
+;;; (1087 . 1096))
+;;; (:pln-on "
+;;;
+;;;  (setq x '()) =>  NIL
+;;;  (setq *indicator-list* '(prop1 prop2)) =>  (PROP1 PROP2)
+;;;  (getf x 'prop1) =>  NIL
+;;;  (setf (getf x 'prop1) 'val1) =>  VAL1
+;;;  (eq (getf x 'prop1) 'val1) =>  " :pln-range
+;;; (1096 . 1274))
+;;; (:xref-on "true" :xref-to "/Body/glo_t.html#true" :xref-range
+;;; (1274 . 1278))
+;;; (:pln-on "
+;;;  (get-properties x *indicator-list*) =>  PROP1, VAL1, (PROP1 VAL1)
+;;;  x =>  (PROP1 VAL1)
+;;;
+;;; " :pln-range
+;;; (1278 . 1367))
+;;; (:bld-on "Side Effects:" :bld-range
+;;; (1367 . 1380))
+;;; (:pln-on " None.
+;;;
+;;; " :pln-range
+;;; (1380 . 1388))
+;;; (:bld-on "Affected By:" :bld-range
+;;; (1388 . 1400))
+;;; (:pln-on " None.
+;;;
+;;; " :pln-range
+;;; (1400 . 1408))
+;;; (:bld-on "Exceptional Situations:" :bld-range
+;;; (1408 . 1431))
+;;; (:pln-on " None.
+;;;
+;;; " :pln-range
+;;; (1431 . 1439))
+;;; (:bld-on "See Also:" :bld-range
+;;; (1439 . 1448))
+;;; (:pln-on "
+;;;
+;;; " :pln-range
+;;; (1448 . 1450))
+;;; (:xref-on "get" :xref-to "/Body/acc_get.html#get" :xref-range
+;;; (1450 . 1453))
+;;; (:pln-on ", " :pln-range
+;;; (1453 . 1455))
+;;; (:xref-on "getf" :xref-to "/Body/acc_getf.html#getf" :xref-range
+;;; (1455 . 1459))
+;;; (:pln-on "
+;;;
+;;; " :pln-range
+;;; (1459 . 1461))
+;;; (:bld-on "Notes:" :bld-range
+;;; (1461 . 1467))
+;;; (:pln-on " None.
+;;;
+;;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;;; The following " :pln-range
+;;; (1467 . 1569))
+;;; (:xref-on "X3J13 cleanup issue" :xref-to "/FrontMatter/X3J13-Issues.html" :xref-range
+;;; (1569 . 1588))
+;;; (:pln-on ", " :pln-range
+;;; (1588 . 1590))
+;;; (:it-on "not part of the specification" :it-range
+;;; (1590 . 1619))
+;;; (:pln-on ", applies to
+;;; this section:
+;;;
+;;;   • " :pln-range
+;;; (1619 . 1651))
+;;; (:xref-on "PLIST-DUPLICATES:ALLOW" :xref-to "/Issues/iss269.html" :xref-range
+;;; (1651 . 1673))
+;;; (:pln-on "
+;;;   
+;;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;;; " :pln-range
+;;; (1673 . 1758))
+;;; (:xref-on "[Startin" :xref-to "/FrontMatter/Starting-Points.html" :xref-range
+;;; (1758 . 1766))
+;;; (:xref-on "[Content" :xref-to "/FrontMatter/Chapter-Index.html" :xref-range
+;;; (1766 . 1774))
+;;; (:xref-on "[Index] " :xref-to "/FrontMatter/Master-Index.html" :xref-range
+;;; (1774 . 1782))
+;;; (:xref-on "[Symbols" :xref-to "/FrontMatter/Symbol-Index.html" :xref-range
+;;; (1782 . 1790))
+;;; (:xref-on "[Glossar" :xref-to "/Body/sec_26-1.html" :xref-range
+;;; (1790 . 1798))
+;;; (:xref-on "[Issues]" :xref-to "/Issues/Issues-Categorized.html" :xref-range
+;;; (1798 . 1806))
+;;; (:pln-on "
+;;; " :pln-range
+;;; (1806 . 1807))
+;;; (:xref-on "Copyright 1996, The Harlequin Group Limited. All Rights Reserved." 
+;;;  :xref-to "/FrontMatter/About-HyperSpec.html#Legal" :xref-range (1807 . 1872))
+;;; (:pln-on " " :pln-range
+;;; (276 . 277))
+;;; (:bld-on "BIT, SBIT" :bld-range
+;;; (277 . 286))
+;;; (:pln-on "
+;;;
+;;; " :pln-range
+;;; (286 . 288))
+;;; (:bld-on "Syntax:" :bld-range
+;;; (288 . 295))
+;;; (:pln-on "
+;;;
+;;; " :pln-range
+;;; (295 . 297))
+;;; (:bld-on "bit" :bld-range
+;;; (297 . 300))
+;;; (:pln-on " " :pln-range
+;;; (300 . 301))
+;;; (:it-on "bit-array " :it-range
+;;; (301 . 311))
+;;; (:pln-on "&rest" :pln-range
+;;; (311 . 316))
+;;; (:it-on " subscripts" :it-range
+;;; (316 . 327))
+;;; (:pln-on " => " :pln-range
+;;; (327 . 331))
+;;; (:it-on "bit" :it-range
+;;; (331 . 334))
+;;; (:pln-on "
+;;;
+;;; " :pln-range
+;;; (334 . 336))
+;;; (:bld-on "sbit" :bld-range
+;;; (336 . 340))
+;;; (:pln-on " " :pln-range
+;;; (340 . 341))
+;;; (:it-on "bit-array " :it-range
+;;; (341 . 351))
+;;; (:pln-on "&rest" :pln-range
+;;; (351 . 356))
+;;; (:it-on " subscripts" :it-range
+;;; (356 . 367))
+;;; (:pln-on " => " :pln-range
+;;; (367 . 371))
+;;; (:it-on "bit" :it-range
+;;; (371 . 374))
+;;; (:pln-on "
+;;;
+;;; (setf (" :pln-range
+;;; (374 . 383))
+;;; (:bld-on "bit" :bld-range
+;;; (383 . 386))
+;;; (:pln-on " " :pln-range
+;;; (386 . 387))
+;;; (:it-on "bit-array " :it-range
+;;; (387 . 397))
+;;; (:pln-on "&rest" :pln-range
+;;; (397 . 402))
+;;; (:it-on " subscripts" :it-range
+;;; (402 . 413))
+;;; (:pln-on ") " :pln-range
+;;; (413 . 415))
+;;; (:it-on "new-bit" :it-range
+;;; (415 . 422))
+;;; (:pln-on ")
+;;;
+;;; (setf (" :pln-range
+;;; (422 . 432))
+;;; (:bld-on "sbit" :bld-range
+;;; (432 . 436))
+;;; (:pln-on " " :pln-range
+;;; (436 . 437))
+;;; (:it-on "bit-array " :it-range
+;;; (437 . 447))
+;;; (:pln-on "&rest" :pln-range
+;;; (447 . 452))
+;;; (:it-on " subscripts" :it-range
+;;; (452 . 463))
+;;; (:pln-on ") " :pln-range
+;;; (463 . 465))
+;;; (:it-on "new-bit" :it-range
+;;; (465 . 472))
+;;; (:pln-on ")
+;;;
+;;; " :pln-range
+;;; (472 . 475))
+;;; (:bld-on "Arguments and Values:" :bld-range
+;;; (475 . 496))
+;;; (:pln-on "
+;;;
+;;; " :pln-range
+;;; (496 . 498))
+;;; (:it-on "bit-array" :it-range
+;;; (498 . 507))
+;;; (:pln-on "---for " :pln-range
+;;; (507 . 514))
+;;; (:xref-on "bit" :xref-to "/Body/acc_bitcm_sbit.html#bit" :xref-range
+;;; (514 . 517))
+;;; (:pln-on ", a " :pln-range
+;;; (517 . 521))
+;;; (:xref-on "bit array" :xref-to "/Body/glo_b.html#bit_array" :xref-range
+;;; (521 . 530))
+;;; (:pln-on "; for " :pln-range
+;;; (530 . 536))
+;;; (:xref-on "sbit" :xref-to "/Body/acc_bitcm_sbit.html#sbit" :xref-range
+;;; (536 . 540))
+;;; (:pln-on ", a " :pln-range
+;;; (540 . 544))
+;;; (:xref-on "simple bit array" :xref-to "/Body/glo_s.html#simple_bit_array" :xref-range
+;;; (544 . 560))
+;;; (:pln-on ".
+;;;
+;;; " :pln-range
+;;; (560 . 563))
+;;; (:it-on "subscripts" :it-range
+;;; (563 . 573))
+;;; (:pln-on "---a " :pln-range
+;;; (573 . 578))
+;;; (:xref-on "list" :xref-to "/Body/glo_l.html#list" :xref-range
+;;; (578 . 582))
+;;; (:pln-on " of " :pln-range
+;;; (582 . 586))
+;;; (:it-on "valid array indices" :it-range
+;;; (586 . 605))
+;;; (:pln-on " for the " :pln-range
+;;; (605 . 614))
+;;; (:it-on "bit-array" :it-range
+;;; (614 . 623))
+;;; (:pln-on ".
+;;;
+;;; " :pln-range
+;;; (623 . 626))
+;;; (:it-on "bit" :it-range
+;;; (626 . 629))
+;;; (:pln-on "---a " :pln-range
+;;; (629 . 634))
+;;; (:xref-on "bit" :xref-to "/Body/glo_b.html#bit" :xref-range
+;;; (634 . 637))
+;;; (:pln-on ".
+;;;
+;;; " :pln-range
+;;; (637 . 640))
+;;; (:bld-on "Description:" :bld-range
+;;; (640 . 652))
+;;; (:pln-on "
+;;;
+;;; " :pln-range
+;;; (652 . 654))
+;;; (:xref-on "bit" :xref-to "/Body/acc_bitcm_sbit.html#bit" :xref-range
+;;; (654 . 657))
+;;; (:pln-on " and " :pln-range
+;;; (657 . 662))
+;;; (:xref-on "sbit" :xref-to "/Body/acc_bitcm_sbit.html#sbit" :xref-range
+;;; (662 . 666))
+;;; (:pln-on " " :pln-range
+;;; (666 . 667))
+;;; (:xref-on "access" :xref-to "/Body/glo_a.html#access" :xref-range
+;;; (667 . 673))
+;;; (:pln-on " the " :pln-range
+;;; (673 . 678))
+;;; (:it-on "bit-array" :it-range
+;;; (678 . 687))
+;;; (:pln-on " " :pln-range
+;;; (687 . 688))
+;;; (:xref-on "element" :xref-to "/Body/glo_e.html#element" :xref-range
+;;; (688 . 695))
+;;; (:pln-on " specified by " :pln-range
+;;; (695 . 709))
+;;; (:it-on "subscripts" :it-range
+;;; (709 . 719))
+;;; (:pln-on ".
+;;;
+;;; These " :pln-range
+;;; (719 . 728))
+;;; (:xref-on "functions" :xref-to "/Body/glo_f.html#function" :xref-range
+;;; (728 . 737))
+;;; (:pln-on " ignore the " :pln-range
+;;; (737 . 749))
+;;; (:xref-on "fill pointer" :xref-to "/Body/glo_f.html#fill_pointer" :xref-range
+;;; (749 . 761))
+;;; (:pln-on " when " :pln-range
+;;; (761 . 767))
+;;; (:it-on "accessing" :it-range
+;;; (767 . 776))
+;;; (:pln-on " " :pln-range
+;;; (776 . 777))
+;;; (:xref-on "elements" :xref-to "/Body/glo_e.html#element" :xref-range
+;;; (777 . 785))
+;;; (:pln-on ".
+;;;
+;;; " :pln-range
+;;; (785 . 788))
+;;; (:bld-on "Examples:" :bld-range
+;;; (788 . 797))
+;;; (:pln-on "
+;;;
+;;;  (bit (setq ba (make-array 8 
+;;;                             :element-type 'bit 
+;;;                             :initial-element 1))
+;;;        3) =>  1
+;;;  (setf (bit ba 3) 0) =>  0
+;;;  (bit ba 3) =>  0
+;;;  (sbit ba 5) =>  1
+;;;  (setf (sbit ba 5) 1) =>  1
+;;;  (sbit ba 5) =>  1
+;;;
+;;; " :pln-range
+;;; (797 . 1054))
+;;; (:bld-on "Affected By:" :bld-range
+;;; (1054 . 1066))
+;;; (:pln-on " None.
+;;;
+;;; " :pln-range
+;;; (1066 . 1074))
+;;; (:bld-on "Exceptional Situations:" :bld-range
+;;; (1074 . 1097))
+;;; (:pln-on " None.
+;;;
+;;; " :pln-range
+;;; (1097 . 1105))
+;;; (:bld-on "See Also:" :bld-range
+;;; (1105 . 1114))
+;;; (:pln-on "
+;;;
+;;; " :pln-range
+;;; (1114 . 1116))
+;;; (:xref-on "aref" :xref-to "/Body/acc_aref.html#aref" :xref-range
+;;; (1116 . 1120))
+;;; (:pln-on ", " :pln-range
+;;; (1120 . 1122))
+;;; (:xref-on "Section 3.2.1 (Compiler Terminology)" :xref-to "/Body/sec_3-2-1.html" :xref-range
+;;; (1122 . 1158))
+;;; (:pln-on "
+;;;
+;;; " :pln-range
+;;; (1158 . 1160))
+;;; (:bld-on "Notes:" :bld-range
+;;; (1160 . 1166))
+;;; (:pln-on "
+;;;
+;;; " :pln-range
+;;; (1166 . 1168))
+;;; (:xref-on "bit" :xref-to "/Body/acc_bitcm_sbit.html#bit" :xref-range
+;;; (1168 . 1171))
+;;; (:pln-on " and " :pln-range
+;;; (1171 . 1176))
+;;; (:xref-on "sbit" :xref-to "/Body/acc_bitcm_sbit.html#sbit" :xref-range
+;;; (1176 . 1180))
+;;; (:pln-on " are like " :pln-range
+;;; (1180 . 1190))
+;;; (:xref-on "aref" :xref-to "/Body/acc_aref.html#aref" :xref-range
+;;; (1190 . 1194))
+;;; (:pln-on " except that they require " :pln-range
+;;; (1194 . 1220))
+;;; (:it-on "arrays" :it-range
+;;; (1220 . 1226))
+;;; (:pln-on " to be a " :pln-range
+;;; (1226 . 1235))
+;;; (:xref-on "bit array" :xref-to "/Body/glo_b.html#bit_array" :xref-range
+;;; (1235 . 1244))
+;;; (:pln-on "
+;;; and a " :pln-range
+;;; (1244 . 1251))
+;;; (:xref-on "simple bit array" :xref-to "/Body/glo_s.html#simple_bit_array" :xref-range
+;;; (1251 . 1267))
+;;; (:pln-on ", respectively.
+;;;
+;;; " :pln-range
+;;; (1267 . 1284))
+;;; (:xref-on "bit" :xref-to "/Body/acc_bitcm_sbit.html#bit" :xref-range
+;;; (1284 . 1287))
+;;; (:pln-on " and " :pln-range
+;;; (1287 . 1292))
+;;; (:xref-on "sbit" :xref-to "/Body/acc_bitcm_sbit.html#sbit" :xref-range
+;;; (1292 . 1296))
+;;; (:pln-on ", unlike " :pln-range
+;;; (1296 . 1305))
+;;; (:xref-on "char" :xref-to "/Body/acc_charcm_schar.html#char" :xref-range
+;;; (1305 . 1309))
+;;; (:pln-on " and " :pln-range
+;;; (1309 . 1314))
+;;; (:xref-on "schar" :xref-to "/Body/acc_charcm_schar.html#schar" :xref-range
+;;; (1314 . 1319))
+;;; (:pln-on ", allow the first argument to be an " :pln-range
+;;; (1319 . 1355))
+;;; (:xref-on "array" :xref-to "/Body/glo_a.html#array" :xref-range
+;;; (1355 . 1360))
+;;; (:pln-on " of
+;;; any " :pln-range
+;;; (1360 . 1368))
+;;; (:xref-on "rank" :xref-to "/Body/glo_r.html#rank" :xref-range
+;;; (1368 . 1372))
+;;; (:pln-on ".
+;;;
+;;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;;; The following " :pln-range
+;;; (1372 . 1469))
+;;; (:xref-on "X3J13 cleanup issue" :xref-to "/FrontMatter/X3J13-Issues.html" :xref-range
+;;; (1469 . 1488))
+;;; (:pln-on ", " :pln-range
+;;; (1488 . 1490))
+;;; (:it-on "not part of the specification" :it-range
+;;; (1490 . 1519))
+;;; (:pln-on ", applies to
+;;; this section:
+;;;
+;;;   • " :pln-range
+;;; (1519 . 1551))
+;;; (:xref-on "CONSTANT-MODIFICATION:DISALLOW" :xref-to "/Issues/iss083.html" :xref-range
+;;; (1551 . 1581))
+;;; (:pln-on "
+;;;   
+;;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;;; " :pln-range
+;;; (1581 . 1666))
+;;; (:xref-on "[Startin" :xref-to "/FrontMatter/Starting-Points.html" :xref-range
+;;; (1666 . 1674))
+;;; (:xref-on "[Content" :xref-to "/FrontMatter/Chapter-Index.html" :xref-range
+;;; (1674 . 1682))
+;;; (:xref-on "[Index] " :xref-to "/FrontMatter/Master-Index.html" :xref-range
+;;; (1682 . 1690))
+;;; (:xref-on "[Symbols" :xref-to "/FrontMatter/Symbol-Index.html" :xref-range
+;;; (1690 . 1698))
+;;; (:xref-on "[Glossar" :xref-to "/Body/sec_26-1.html" :xref-range
+;;; (1698 . 1706))
+;;; (:xref-on "[Issues]" :xref-to "/Issues/Issues-Categorized.html" :xref-range
+;;; (1706 . 1714))
+;;; (:pln-on "
+;;; " :pln-range
+;;; (1714 . 1715))
+;;; (:xref-on "Copyright 1996, The Harlequin Group Limited. All Rights Reserved." 
+;;;  :xref-to "/FrontMatter/About-HyperSpec.html#Legal" :xref-range
+;;; (1715 . 1780))
+;;; ============================================================
+
+
+
+;;; ============================================================
+;; :TODO Following will need to be refontified post parse:
+;;; :SEE-ALSO `common-lisp-hyperspec-symbol-table' in :FILE hyperspec.el
+;;;
+;;; :MATCH-THESE
+;;;
+;; "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+;;; :NOTE Following clarified in :SEE (info "(ansicl)Interpreting Dictionary Entries")
+;;; :AT-BOL 
+;;;^Affected By: 
+;;;^Arguments and Values:   ;1.4.4.3
+;;;^Class Precedence List:
+;;;^Compound Type Specifier Arguments:
+;;;^Compound Type Specifier Kind:
+;;;^Compound Type Specifier Description:
+;;;^ Compound Type Specifier Syntax:
+;;;^Description:            ;1.4.4.8
+;;;^Examples:               ;1.4.4.9
+;;;^Exceptional Situations: ;1.4.4.10
+;;;^Method Signatures:      ;1.4.4.13
+;;;^Notes:                  ;1.4.4.15
+;;;^See Also:               ;1.4.4.17
+;;;^Side Effects:           ;1.4.4.18
+;;;^Supertypes:
+;;;^Syntax:                 ;1.4.4.20
+;;
+;;; :X3J13-CLEANUP-ISSUE occur in :FILE /Issues/*
+;; 
+;;;^Issue <SOME-ISSUE-WITH-PROPS> Summary
+;;;^Issue <SOME-ISSUE> Writeup
+;;;^Proposal (<SOME-ISSUE>):
+;;;^Issue:
+;;;^Reference:
+;;;^Category:
+;;;^Edit History:
+;;;^Status:
+;;;^Problem Description:
+;;;^Note:
+;;;^Editorial Impact:
+;;;^Rationale:
+;;;^Current Practice:
+;;;^Cost to Implementors:
+;;;^Cost to Users:
+;;;^Performance Impact:
+;;;^Aesthetics:
+;;;^Discussion:
+;;
+;;; (p.n-NN)|(p.7-9)|(p.7.2)
+;;; AMOP (p.33, p.310)
+;;; Section N.N.N.*
+;;; Version N, M/DD/YY,
+;;; Proposal <SOME-ISSUE> passed N-N, MONTH YEAR
+;;;  X3J13 cleanup issue 
+;;
+;; :DIR-HIEARCHY 
+;;; /Body
+;;; /glo_[a-z].html#<glos-xref>
+;;;
+;;;
+;; :REPLACE
+;;; "[Startin[Content[Index] [Symbols[Glossar[Issues]
+;;; Copyright 1996, The Harlequin Group Limited. All Rights Reserved."
+;;;"[HARLEQU[Common  [Previou[Up]    [Next]  "
+;;;"[HARLEQU[Common  [No Prev[Up]    [No Next"
+;;; ==============================
+;; :DPAN2TEXI-OUTPOUT
+;; ^Pronunciation: (appears in dpans2texi output) ;1.4.4.16
+;; ^or→ 
+;; ^See <some-xref>
+;; , see <some-xref>
+;;; ============================================================
 
 ;;; ==============================
 ;;; COURTESY: Pascal Bourguignon HIS: `pjb-cl.el' WAS: `loop-doc'
