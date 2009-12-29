@@ -28,34 +28,27 @@
 ;; your  bookmarks.el, just add this extension to your .emacs.el to get back the
 ;; original functionality.
 
-;; This is version 1 $Rev: 244 $ of the Sunrise Commander Tabs Extension.
+;; This is version 1 $Rev: 246 $ of the Old Checkpoints Extension.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.
 
 ;;; Installation and Usage:
 
-;; 1) Put this file somewhere in your Emacs load-path.
+;; 1) Put this file somewhere in your Emacs load-path. (Optionally) compile it.
 
-;; 2) Add a (require 'sunrise‐x‐old-checkpoints) expression to your  .emacs file
-;; somewhere after the (require 'sunrise‐commander) one.
-
-;; 3) Evaluate the new expression, or reload your .emacs file, or restart emacs.
-
-;; 4) Enjoy ;-)
+;; 2)  Enjoy  ;-) -- Sunrise should pick the correct extension automatically. On
+;; Emacs 23 it will look for sunrise-x-checkpoints, while on Emacs 22 it'll  try
+;; to  load  sunrise-x-old-checkpoints. Only if you *really* want to use the old
+;; extensions with a more recent version of bookmarks.el than  the  one  bundled
+;; with  Emacs 22 you may add a new (require 'sunrise-x-old-checkpoints) to your
+;; .emacs file somewhere after (require 'sunrise-commander).
 
 ;;; Code:
 
 (defvar sr-checkpoint-registry
   (acons "~" (list sr-left-directory sr-right-directory) nil)
   "Registry of currently defined checkpoints")
-
-(define-key sr-mode-map "\C-c>" 'sr-checkpoint-save)
-(define-key sr-mode-map "\C-c." 'sr-checkpoint-restore)
-
-(when window-system
-  (define-key sr-mode-map [(control >)] 'sr-checkpoint-save)
-  (define-key sr-mode-map [(control .)] 'sr-checkpoint-restore))
 
 (defun sr-checkpoint-save (name)
   "Allows to give a name to the current directories in the Sunrise panes, so
@@ -81,5 +74,9 @@
     (if (equal sr-selected-window 'right)
         (setq dirs-list (reverse dirs-list)))
     (mapc '(lambda (x) (sr-goto-dir x) (sr-change-window)) dirs-list)))
+
+(defun sr-checkpoint-handler (arg)
+  "Empty method to keep compatilibity with new checkpoints interface."
+  (ignore))
 
 (provide 'sunrise-x-old-checkpoints)

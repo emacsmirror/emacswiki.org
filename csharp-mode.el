@@ -1,10 +1,10 @@
 ;;; csharp-mode.el --- C# mode derived mode
 
-;; Author:     2005Dylan R. E. Moonfire
+;; Author:     Dylan R. E. Moonfire
 ;; Maintainer: Dylan R. E. Moonfire <contact@mfgames.com>
 ;; Created:    Feburary 2005
-;; Modified:   September 2007
-;; Version:    0.7.0
+;; Modified:   December 2009
+;; Version:    0.7.1  - Dino Chiesa
 ;; Keywords:   c# languages oop
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -76,6 +76,19 @@
 ;;            (Thank you, Nikolaj Schumacher)
 ;;          - Fontified the entire #region and #endregion lines.
 ;;          - Initial work to get get, set, add, remove font-locked.
+;;    0.7.1 - Added option to indent #if/endif with code
+;;          - Fixed c-opt-cpp-prefix defn (it must not include the BOL
+;;            char (^).
+;;          - proper fontification and indent of classes that inherit
+;;            (previously the colon was confusing the parser)
+;;          - reclassified namespace as a block beginner
+;;          - removed $ as a legal symbol char - not legal in C#.
+;;          - added struct to c-class-decl-kwds so indent is correct
+;;            within a struct.
+
+
+(message  (concat "Loading " load-file-name))
+
 
 ;; This is a copy of the function in cc-mode which is used to handle
 ;; the eval-when-compile which is needed during other times.
@@ -151,6 +164,28 @@ processing blocks."
     (back-to-indentation)
     (if (re-search-forward "#\\(end\\)?region" (c-point 'eol) [0]) 0  [0])))
 
+
+;; Another option: indent both the if/endif and region/endregion
+;; to lineup with whatever the current syntax state is.
+;;
+;; To use this indenting just put the following in your emacs file:
+;;   (c-set-offset 'cpp-macro 'csharp-lineup-if-and-region)
+(defun csharp-lineup-if-and-region (langelem)
+  "Indent all #region/endregion blocks and #if/endif blocks inline with code while
+retaining normal column-zero indention for any other
+processing blocks."
+  (save-excursion
+    (back-to-indentation)
+    (if (re-search-forward "#\\(end\\)?\\(if\\|region\\)" (c-point 'eol) [0]) 0  [0])))
+
+
+
+(c-lang-defconst c-before-font-lock-function
+  csharp nil)
+
+
+
+
 ;; TODO
 ;; Defines our constant for finding attributes.
 ;;(defconst csharp-attribute-regex "\\[\\([XmlType]+\\)(")
@@ -167,9 +202,9 @@ processing blocks."
 ;; references. The problem comes in because Java uses Pascal (leading
 ;; space in names, SomeClass) for class and package names, but
 ;; Camel-casing (initial lowercase, upper case in words,
-;; i.e. someVariable) for variables. The notation suggested by EMCA is
-;; to use Pasacal notation for everything, except inner variables. So,
-;; the regex and formatting actually produces very wrong results.
+;; i.e. someVariable) for variables. The notation suggested by EMCA for C# is
+;; to use Pascal notation for everything, except inner variables. So,
+;; the Java regex and formatting produces very wrong results in C#.
 ;;(error (byte-compile-dest-file))
 ;;(error (c-get-current-file))
 (c-lang-defconst c-opt-after-id-concat-key
@@ -255,11 +290,50 @@ processing blocks."
 (c-lang-defconst c-operators
   csharp `((prefix "base")))
 
-;; C#, unlike Java, does use CPP prefixes for the regions and other
-;; directives. This matches everything to the end of the line (Closes
-;; #76).
+
+;; =======================================================
+;; setting values of constants defined in cc-langs.el
+
+;; C# uses CPP-like prefixes to mark #define, #region/endregion,
+;; #if/else/endif, and #pragma.  This regexp matches the prefix,
+;; not including the beginning-of-line (BOL), and not including
+;; the term after the prefix (define, pragma, etc).  This regexp says
+;; whitespace, followed by the prefix, followed by maybe more whitespace.
+;; I think.
+
 (c-lang-defconst c-opt-cpp-prefix
-  csharp "^\\s *#.*")
+  csharp "\\s *#\\s *")
+
+
+;; there are no message directives in C#
+(c-lang-defconst c-cpp-message-directives
+  csharp nil)
+
+(c-lang-defconst c-cpp-expr-directives
+  csharp '("if"))
+
+(c-lang-defconst c-opt-cpp-macro-define
+  csharp "define")
+
+;; $ is not a legal char in an identifier in C#.  So we need to
+;; create a csharp-specific definition of this constant.
+(c-lang-defconst c-symbol-chars
+  csharp (concat c-alnum "_"))
+
+
+(c-lang-defconst c-colon-type-list-kwds
+  csharp '("class"))
+
+(c-lang-defconst c-block-prefix-disallowed-chars
+
+  ;; Allow ':' for inherit list starters.
+  csharp (set-difference (c-lang-const c-block-prefix-disallowed-chars)
+                         '(?:)))
+
+
+;; =======================================================
+
+
 
 ;; C# uses the following assignment operators
 (c-lang-defconst c-assignment-operators
@@ -278,7 +352,7 @@ processing blocks."
   ;; ECMA-344, S?
   csharp '("class" "interface" "enum" "struct"))
 
-;; Type modifier keywords. They appear anywhere in types, but modifiy
+;; Type modifier keywords. They appear anywhere in types, but modify
 ;; instead create one.
 (c-lang-defconst c-type-modifier-kwds
   ;; EMCA-344, S?
@@ -287,7 +361,7 @@ processing blocks."
 ;; Structures that are similiar to classes.
 (c-lang-defconst c-class-decl-kwds
   ;; EMCA-344, S?
-  csharp '("class" "interface"))
+  csharp '("class" "interface" "struct"))
 
 ;; The various modifiers used for class and method descriptions.
 (c-lang-defconst c-modifier-kwds
@@ -314,18 +388,28 @@ processing blocks."
 (c-lang-defconst c-brace-list-decl-kwds
   csharp '("enum"))
 
-;; We need to remove Java's package keyword
-(c-lang-defconst c-ref-list-kwds
+
+;; (c-lang-defconst c-ref-list-kwds
+;;   csharp '("using" "namespace"))
+
+
+(c-lang-defconst c-other-block-decl-kwds
   csharp '("using" "namespace"))
 
-;; Follow-on blocks that don't require a brace
+;; Statement keywords followed directly by a substatement
+(c-lang-defconst c-block-stmt-1-kwds
+  csharp '("do" "try" "finally"))
+
+
+;; Statement keywords followed by a paren sexp and then by a substatement.
 (c-lang-defconst c-block-stmt-2-kwds
   csharp '("for" "if" "switch" "while" "catch" "foreach"
            "checked" "unchecked" "lock"))
 
+
 ;; Statements that break out of braces
 (c-lang-defconst c-simple-stmt-kwds
-  csharp '("return" "continue" "break" "throw" "goto"))
+  csharp '("return" "continue" "break" "throw" "goto" ))
 
 ;; Statements that allow a label
 ;; TODO?
@@ -340,30 +424,37 @@ processing blocks."
 (c-lang-defconst c-primary-expr-kwds
   csharp '("this" "base"))
 
-;; We need to treat namespace as an outer block to class indenting
+;; We need to treat namespace as an outer block so class indenting
 ;; works properly.
 (c-lang-defconst c-other-block-decl-kwds
   csharp '("namespace"))
 
 ;; We need to include the "as" for the foreach
 (c-lang-defconst c-other-kwds
-  csharp '("in" "sizeof" "typeof"))
+  csharp '("in" "sizeof" "typeof" "is" "as"))
 
 (c-lang-defconst c-overloadable-operators
   ;; EMCA-344, S14.2.1
   csharp '("+" "-" "*" "/" "%" "&" "|" "^"
            "<<" ">>" "==" "!=" ">" "<" ">=" "<="))
 
-;; No cpp in this language, but there's still a "sharppragma" directive to
-;; fontify.  (The definitions for the extra keywords above are enough
-;; to incorporate them into the fontification regexps for types and
-;; keywords, so no additional font-lock patterns are required.)
+
+;; This c-cpp-matchers stuff is used for fontification.
+;; see cc-font.el
+;;
+
+;; No cpp in this language, but there are still directives to fontify:
+;; "#pragma", #region/endregion, #if/else/endif.  (The definitions for
+;; the extra keywords above are enough to incorporate them into the
+;; fontification regexps for types and keywords, so no additional
+;; font-lock patterns are required for keywords.)
+
 (c-lang-defconst c-cpp-matchers
   csharp (cons
       ;; Use the eval form for `font-lock-keywords' to be able to use
       ;; the `c-preprocessor-face-name' variable that maps to a
       ;; suitable face depending on the (X)Emacs version.
-      '(eval . (list "^\\s *\\(sharppragma\\)\\>\\(.*\\)"
+      '(eval . (list "^\\s *\\(#pragma\\)\\>\\(.*\\)"
                      (list 1 c-preprocessor-face-name)
                      '(2 font-lock-string-face)))
       ;; There are some other things in `c-cpp-matchers' besides the
@@ -417,9 +508,11 @@ Each list item should be a regexp matching a single identifier.")
 ;;                (cons "C#" (c-lang-const c-mode-menu csharp)))
 
 ;;; Autoload mode trigger
-(add-to-list 'auto-mode-alist '("\\.cs" . csharp-mode))
+;;;###autoload
+(add-to-list 'auto-mode-alist '("\\.cs$" . csharp-mode))
 
 ;; Custom variables
+;;;###autoload
 (defcustom csharp-mode-hook nil
   "*Hook called by `csharp-mode'."
   :type 'hook
@@ -428,9 +521,8 @@ Each list item should be a regexp matching a single identifier.")
 ;;; The entry point into the mode
 ;;;###autoload
 (defun csharp-mode ()
-  "Major mode for editing C# (pronounced \"see sharp\") code.
-This is a simple example of a separate mode derived from CC Mode to
-support a language with syntax similar to C/C++/ObjC/Java/IDL/Pike.
+  "Major mode for editing C# code. This mode is derived from CC Mode to
+support C#.
 
 The hook `c-mode-common-hook' is run with no args at mode
 initialization, then `csharp-mode-hook'.
@@ -439,6 +531,8 @@ Key bindings:
 \\{csharp-mode-map}"
   (interactive)
   (kill-all-local-variables)
+  (make-local-variable 'beginning-of-defun-function)
+  (make-local-variable 'end-of-defun-function)
   (c-initialize-cc-mode t)
   (set-syntax-table csharp-mode-syntax-table)
   (setq major-mode 'csharp-mode
@@ -455,11 +549,23 @@ Key bindings:
   ;; There's also a lower level routine `c-basic-common-init' that
   ;; only makes the necessary initialization to get the syntactic
   ;; analysis and similar things working.
+
   (c-common-init 'csharp-mode)
   ;;(easy-menu-add csharp-menu)
   (run-hooks 'c-mode-common-hook)
   (run-hooks 'csharp-mode-hook)
-  (c-update-modeline))
+  (c-update-modeline)
+
+  ;; allow fill-paragraph to work on xml code doc
+  (make-local-variable 'paragraph-separate)
+  (setq paragraph-separate "[ \t]*\\(//+\\|\\**\\)\\([ \t]+\\|[ \t]+<.+?>\\)$\\|^\f")
+
+  )
+
+
+(message  (concat "Done loading " load-file-name))
+
+
 
  
 (provide 'csharp-mode)

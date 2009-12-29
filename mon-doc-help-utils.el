@@ -43,6 +43,7 @@
 ;;; `mon-help-propertize-tags', `mon-help-propertize-tags-TEST'
 ;;; `mon-help-du-incantation', `mon-help-ipv4-header'
 ;;; `mon-help-view-file', `mon-help-temp-docstring-display'
+;;; `mon-help-char-representation'
 ;;; FUNCTIONS:◄◄◄
 ;;;
 ;;; MACROS:
@@ -335,7 +336,7 @@ docstrings to indicated metasyntactic or idiomatic forms and types.
   "\\([;\\[:space:]]?\\)\\(\\(<-\\{1,2\\}\\)\\|\\(-\\{1,2\\}>\\)\\|\\(=\\{1,2\\}>\\)\\)"
 ":EXAMPLE\n \(progn 
    \(search-forward-regexp *regexp-mon-doc-help-pointer-tags*\)
-   \(match-string-no-properties 2\)\)
+   \(match-string-no-properties 2\)\)\n
 :SEE-ALSO `*regexp-mon-doc-help-docstring-tags-DYNAMIC*',
 `*regexp-mon-doc-help-docstring-tags-TABLES*',
 `*regexp-mon-doc-help-docstring-tags*',`*regexp-mon-doc-help-comment-tags*'
@@ -610,7 +611,7 @@ propertizing.\n►►►"
 \(mon-help-mon-tags :comment t\)
 \(mon-help-mon-tags :meta t\)
 \(mon-help-mon-tags\)\n
-:SEE-ALSO `*mon-help-mon-tags-alist*'\n►►►"  
+:SEE-ALSO `*mon-help-mon-tags-alist*'.\n►►►"  
   (let ((tag-type
          (cond (comment (assoc 'comment-tags *mon-help-mon-tags-alist*))
                (docs (assoc 'docstr-tags *mon-help-mon-tags-alist*))
@@ -639,7 +640,7 @@ Prompt twice:\n
 Use to keep scope of MON-TAG's as a loosely \"controlled-vocabulary\".
 Choice of tag type completed with `mon-help-mon-tags'.\n
 :EXAMPLE\n(mon-help-insert-tags)\n
-:SEE-ALSO `*mon-help-mon-tags-alist*'\n►►►"
+:SEE-ALSO `*mon-help-mon-tags-alist*'.\n►►►"
   (interactive)
   (save-excursion
     (princ   
@@ -806,7 +807,7 @@ accessible as a variable in *Help* buffers i.e. using \[`describe-variable'].\n
     *naf-school-names-english* naf-mode-school-names-english
     ;;^ VAR-NAME ^             ^ CONST-NAME ^
     *naf-mode-institution-xrefs* naf-mode-institution-fface)
-    ;;^ XREV ^                   ^ FACE-NAME ^\n
+    ;;^ XREF ^                   ^ FACE-NAME ^\n
 :NOTE When compiling defvar and defconst forms mut be made known at compile time.
 Wrap them _and_ the macro call in an `eval-when-compile' and make sure that
 \(eval-when-compile \(require 'cl\)\) is at top of file. Otherwise, all of the
@@ -1166,6 +1167,14 @@ functions defined with the CL packages `defun*' macro.
 ;;;
 ;;;       With regards docstring snarfing following shows the commponents of a
 ;;;       byte-compiled-function:
+;;;       `byte-compile-output-docform'  (preface name info form specindex quoted)
+;;;        INFO is a list of three elements (PREFIX DOC-INDEX POSTFIX)
+;;;        e.g. bind the free-variable OUTBUFFER to some dest and:
+;;;        (let ((outbuffer (current-buffer)))
+;;;              (byte-compile-output-docform nil nil '("@►►►" 0 "@◄◄◄")
+;;;                                '( <SOME-LISP-FORM-HERE> )
+;;;                                t t))
+;;;       Further along that output gets translated to:
 ;;;       #@144 ;; chars left until we hit the `^_' eg char 31 ?\x1F
 ;;;       `^_' ;<- docstring terminator followed by newline
 ;;;       (defalias 'FUNCNAME #[(arg1 arg2 &rest cl-keys) #@710 
@@ -1180,7 +1189,7 @@ functions defined with the CL packages `defun*' macro.
 :CALLED-BY `mon-help-insert-documentation'.\n
 :SEE-ALSO `mon-help-function-arity', `subr-arity', `help-function-arglist',
 `mon-help-xref-symbol-value', `mon-help-parse-interactive-spec',
-`mon-help-function-spit-doc'.\n►►►"
+`mon-help-function-spit-doc', `byte-compile-output-docform'.\n►►►"
   (let ((def (help-function-arglist func))
         (test-def))
     (when (and def (member '&rest def))
@@ -1256,7 +1265,7 @@ spec-type is a string delimited by `<' and `>'.
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-09-07T20:04:57-04:00Z}#{09372} - by MON KEY>
 ;;; :MODIFICATIONS <Timestamp: #{2009-09-30T17:29:53-04:00Z}#{09403} - by MON KEY>
-(eval-and-compile
+;;(eval-and-compile
 (defun mon-help-parse-interactive-spec (fname)
   (let* ((int-spec *mon-help-interactive-spec-alist*)
          (int-t (interactive-form fname))
@@ -1271,7 +1280,8 @@ spec-type is a string delimited by `<' and `>'.
                      (split-string (cadr int-t) "\n") "\n;;; ")))
                   ;; :NOTE Leave the trailing line for `mon-insert-dcoumentation'.
                   ((listp (cadr int-t)) "<INTERACTIVE-SPEC-IS-LIST>")))))
-    int-has-spec)))
+    int-has-spec))
+;)
 ;;
 ;; Now put a doc-string on `mon-help-parse-interactive-spec'
 ;; using value & docstring of var `*mon-help-parse-interactive-spec-alist*'.
@@ -1286,11 +1296,11 @@ Spec of fname is return from a value in var `*mon-help-interactive-spec-alist*':
 ;;
 ;;; :TEST-ME (describe-function 'mon-help-parse-interactive-spec)
 ;;; :TEST-ME (mon-help-parse-interactive-spec  'mon-insert-file-in-dirs)
-;;; :TEST-ME (mon-help-parse-interactive-spec 'mon-help-reference-sheet)
-;;; :TEST-ME (mon-help-parse-interactive-spec 'mon-insert-string-n-times)
-;;; :TEST-ME (mon-help-parse-interactive-spec 'mon-insert-string-n-fancy-times)
-;;; :TEST-ME (listp (cadr (interactive-form  'mon-insert-file-in-dirs)))
-;;; :TEST-ME (listp (cadr (interactive-form 'mon-insert-string-n-times)))
+;;; :TEST-ME (mon-help-parse-interactive-spec  'mon-help-reference-sheet)
+;;; :TEST-ME (mon-help-parse-interactive-spec  'mon-insert-string-n-times)
+;;; :TEST-ME (mon-help-parse-interactive-spec  'mon-insert-string-n-fancy-times)
+;;; :TEST-ME (listp (cadr (interactive-form    'mon-insert-file-in-dirs)))
+;;; :TEST-ME (listp (cadr (interactive-form    'mon-insert-string-n-times)))
 ;;
 ;;;(progn (fmakunbound 'mon-help-parse-interactive-spec)
 ;;;       (unintern 'mon-help-parse-interactive-spec) )
@@ -1304,7 +1314,7 @@ Spec of fname is return from a value in var `*mon-help-interactive-spec-alist*':
 (defun mon-help-insert-documentation (&optional func-list var-list face-list alt-cookie)
   "Return documentation of symbols held by lists FUNC-LIST VAR-LIST FACE-LIST.
 When non-nil ALT-COOKIE is a doc-cookie per `mon-help-function-spit-doc' spec.
-Default is `*doc-cookie*'.
+Default is `*doc-cookie*'.\n
 :SEE-ALSO `mon-help-function-args', `mon-help-xref-symbol-value'.\n►►►"
   (let ((fl func-list)
         (vl var-list)
@@ -1316,7 +1326,7 @@ Default is `*doc-cookie*'.
           (mapcar '(lambda (x)
                      (concat
                       "\n;;; ============================================================\n"
-                      ";;; `%s' " x"\n"
+                      ";;; `%s' " x "\n"
                       ";;; ============================================================\n"))
                   '("<FUNCTION>" "<VARIABLE>" "<FACE>")))
     (save-excursion
@@ -1416,6 +1426,7 @@ Why not! :)\n►►►
 `mon-help-keys'
 `mon-help-slime-keys'\n
 ;; :CHAR-TABLES
+`mon-help-char-representation'
 `mon-help-diacritics'
 `mon-help-ASCII-chars'
 `mon-help-ISO-8859-1-chars'
@@ -1480,14 +1491,16 @@ Why not! :)\n►►►
   "Variables and functions related to what this Emacs knows about this Emacs.
 Unless indicated as a '<FUNCTION>' items listed are '<VARIABLE>'.\n►►►\n
 ;; :EMACS-ENVIRONMENT
-`system-shell'
 `emacs-uptime'           ;<FUNCTION>
 `emacs-priority'
 `initial-environment'
 `emacs-init-time'
+`features'
 `init-file-had-error'
 `init-file-user'
-`features'\n
+`getenv'
+`system-shell'
+`system-type'\n
 ;; :EMACS-ENVIRONMENT-PATHS-FILES
 `load-path'
 `load-history'
@@ -1558,7 +1571,7 @@ Unless indicated as a '<FUNCTION>' items listed are '<VARIABLE>'.\n►►►\n
   "Find packages matching a given keyword using `finder-by-keyword'
 Keyword Search for Lisp Libraries with \\[finder-by-keyword] command
 search the standard Emacs Lisp libraries by topic keywords.
-See info node `\(emacs\)Library Keywords\'\.\n
+:SEE info node `\(emacs\)Library Keywords\'\.\n
 :EXAMPLE\n\(finder-by-keyword\)\n
 Here is a partial list of keywords for use with finder-by-keyword:\n
 abbrev        Abbreviation handling, typing shortcuts, macros.
@@ -1632,8 +1645,7 @@ x 	      The X Window system.\n►►►"
 (defun mon-help-regexp-syntax (&optional insertp intrp)
   "Regexp Syntax overview - simplified!
 :SEE info node `(elisp)Syntax of Regexps' for discussion.
-:SEE info node `(elisp)Syntax of Regexps'
-:SEE-ALSO `mon-help-search-functions'.\n►►►\n
+:SEE info node `(elisp)Syntax of Regexps'\n
 ;; :REGEXP-SPECIAL-CHARS
 \.          -> match ANY
 \*          -> match Preceeding - ALL
@@ -1673,7 +1685,8 @@ $          -> match EOL
 \\=[:alpha:] [:lower:] [:upper:]
 \\=[:blank:] [:cntrl:] [:graph:]
 \\=[:print:] [:punct:] [:space:] [:word:]
-\\=[:multibyte:] [:unibyte:]"
+\\=[:multibyte:] [:unibyte:]\n
+:SEE-ALSO `mon-help-search-functions'.\n►►►"
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-regexp-syntax :insertp t)
@@ -1689,7 +1702,8 @@ $          -> match EOL
 (defun mon-help-syntax-class (&optional insertp intrp)
   "Syntax Class mappings.
 :SEE info node `(elisp)Syntax Table Internals'
-:FILE `syntax_spec_code', `syntax_code_spec' in syntax.c
+:SEE `syntax_spec_code', `syntax_code_spec' in:
+:FILE syntax.c\n
 List one maps from Int->Class->Code-Char.
 List two maps Syntax class code character arguments to SYNTAX.\n
 :INT    :CLASS              :CODE-CHAR
@@ -1709,7 +1723,7 @@ List two maps Syntax class code character arguments to SYNTAX.\n
 13      inherit            \(designated by `@'\)
 14      generic comment    \(designated by `!'\)
 15      generic string     \(designated by `|'\)\n
-SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:
+SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 :SYNTAX-CLASS whitespace character; \(designated by ` ' or `-'\)
 :SYNTAX-CLASS word constituent; \(designated by `w'\)
 :SYNTAX-CLASS symbol constituent; \(designated by `_'\)
@@ -1725,7 +1739,7 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:
 :SYNTAX-CLASS comment ender; \(designated by `>'\)
 :SYNTAX-CLASS inherit standard syntax; \(designated by `@'\)
 :SYNTAX-CLASS generic comment delimiter; \(designated by `!'\)
-:SYNTAX-CLASS generic string delimiter; \(designated by `|'\)\n ►►►"
+:SYNTAX-CLASS generic string delimiter; \(designated by `|'\)\n►►►"
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-syntax-class :insertp t)
@@ -1753,7 +1767,7 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:
 ;; :SEARCH
 `serach-forward'
 `search-backward'
-`search-forward-regexp'  ;-> `re-search-forward' :SEE-ALSO `posix-search-forward'
+`search-forward-regexp'  ;-> `re-search-forward'  :SEE-ALSO `posix-search-forward'
 `search-backward-regexp' ;-> `re-search-backward' :SEE-ALSO `posix-search-backward'
 `word-search-forward'
 `word-search-backward'\n
@@ -1941,7 +1955,8 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:
 `mon-insert-file-in-dirs'        ;<MAKE-DIR-LIST INSERT-TEXT EXTENSION>
  \(mon-insert-file-in-dirs \(make-dir-list insert-text extension\)\)\n
 `mon-insert-naf-file-in-dirs'    ;<MAKE-DIR-LIST>
- \(mon-insert-naf-file-in-dirs \(make-dir-list\)\)\n"
+ \(mon-insert-naf-file-in-dirs \(make-dir-list\)\)
+`unhandled-file-name-directory'\n"
 (interactive "i\nP")
 (if (or insertp intrp)
     (mon-help-function-spit-doc 'mon-help-file-dir-functions :insertp t)
@@ -2720,7 +2735,7 @@ A generic form can be interrogated with `eieio-generic-form':\n
 `eieiomt-optimizing-obarray'          ;<VARIABLE>\n
  EXAMINING-METHODS-AND-GENERICS
  ==============================\n
-:EXAMPLE(S)\n
+:EXAMPLE\n
 \(eieio-describe-constructor 'tt--367\) ; A `constructor' is a 'static' method.\n
 \(describe-variable 'test-tt--367\)\n
 \(describe-function 'acc-s367\)\n
@@ -2743,7 +2758,7 @@ A generic form can be interrogated with `eieio-generic-form':\n
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-10-10T21:36:01-04:00Z}#{09417} - by MON>
 (defun mon-help-type-predicates (&optional insertp intrp)
-  "List of predicat functions for interrogating elisp types.\n
+  "List of predicate functions for interrogating elisp types.\n
 :SEE info node `(elisp)Type Predicates' :SEE info node `(CL)Type Predicates'
 :SEE-ALSO `typep' `deftype' `typecase' `check-type'\n
      `functionp' `keywordp' `commandp'                              70.\n
@@ -2904,6 +2919,7 @@ Unless indicated all items in list are functions.
 (defun mon-help-plist-functions (&optional insertp intrp)
   "Help for plist and property list related functions.
 :SEE info node `(elisp)Documentation Tips'.\n►►►
+:SEE-ALSO `mon-help-text-property-functions'.
 ;; :PLIST-FUNCTIONS
 `get'
 `plist-get'
@@ -2914,10 +2930,23 @@ Unless indicated all items in list are functions.
 `setplist'
 `plist-member'
 `symbol-plist'
-`charset-plist'
 `process-plist'
-`documentation-property'
-`buffer-access-fontified-property'
+`process-put'
+`process-get'
+`charset-plist'
+`char-code-property-description'
+`put-char-code-property'
+`get-char-code-property'    :SEE `mon-help-char-representation'
+`documentation-property'\n
+;; :MON-PLIST-FUNCTIONS
+`mon-plist-keys'
+`mon-plist-remove'\n
+;; :COMMON-PROPERTIES
+`buffer-access-fontified-property'  ;<PROPERTY>
+`char-code-property-documentation'  ;<PROPERTY>
+`face-documentation'                ;<PROPERTY> 
+`function-documentation'            ;<PROPERTY>
+`theme-documentation'               ;<PROPERTY>
 `variable-documentation'            ;<PROPERTY>\n
 ;; :PLIST-ERROR-PROPERTIES
 `error' ;; <PLIST> (symbol-plist 'error)
@@ -2926,7 +2955,7 @@ Unless indicated all items in list are functions.
  |
  |----+ `error-message'             ;<PROPERTY>
  |
- |----+ `byte-compile-format-like'  ;<PROPERTY>"
+ |----+ `byte-compile-format-like'  ;<PROPERTY>\n"
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-plist-functions :insertp t)
@@ -2946,16 +2975,18 @@ Unless indicated all items in list are functions.
 ;;; :CREATED <Timestamp: #{2009-08-24T18:30:56-04:00Z}#{09351} - by MON KEY>
 (defun mon-help-faces-themes (&optional insertp intrp)
   "Functions for handling themes and their faces.\n►►►\n
-`custom-set-faces'
-`custom-reset-faces'
-`custom-declare-face'
-`custom-face-attributes-get'
-`custom-face-attributes'      ;<CONSTANT>
+;; :THEME
 `deftheme'                    ;<MACRO>
 `load-theme'
 `provide-theme'
 `enable-theme'
 `disable-theme'
+;; :FACES-CUSTOM
+`custom-set-faces'
+`custom-reset-faces'
+`custom-declare-face'
+`custom-face-attributes-get'
+`custom-face-attributes'      ;<CONSTANT>
 `custom-enabled-themes'       ;<VARIABLE>
 `custom-enabling-themes'      ;<VARIABLE>
 `custom-declare-theme'
@@ -3055,11 +3086,11 @@ It has the following format:\n
 (defun mon-help-make-faces (&optional insertp intrp)
 "Functions, Variables, Properties, etc. for defining faces.
 :SEE info node `(elisp)Defining Faces'.\n:SEE info node `(elisp)Face Attributes'.
-:SEE-ALSO `mon-help-basic-faces', `mon-help-font-lock', `mon-help-color-chart'.
-►►►                    _________________
-		      |                 |
-		      | :DEFINING-FACES |
- _____________________|_________________|______________________________73.
+:SEE-ALSO `mon-help-basic-faces', `mon-help-font-lock', `mon-help-color-chart'.\n\n
+                         _________________                                 
+                        |                 |                                
+                        | :DEFINING-FACES |                              
+ _______________________|_________________|____________________________73.
 |                                         |                              |
 | `defface' <MACRO>                       |   :FACE-DEFINING-FUNCTIONS   |
 |  :SPEC                                  |______________________________|
@@ -3156,7 +3187,8 @@ It has the following format:\n
                                 |                                        |
                                 | :inherit - (string or list)            |
                                 | {face name, or list of face names}     |
-                                |______________________________________73."
+                                |______________________________________73.
+►►►"
 (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-make-faces :insertp t)
@@ -3221,7 +3253,7 @@ from one of the basic-faces this practice is encouraged. For example,
 ;;; :CREATED <Timestamp: Wednesday June 17, 2009 @ 05:37.52 PM - by MON KEY>
 (defun mon-help-font-lock (&optional insertp intrp)
   "Each element of `font-lock-keywords' specifies how to find certain
-cases of text, and how to highlight those cases:\n►►►
+cases of text, and how to highlight those cases:\n
  ___________________________________________________________________________79.
 |                                                                             |
 |REGEXP                                                                       |
@@ -3265,7 +3297,8 @@ cases of text, and how to highlight those cases:\n►►►
 |                                                                             |
 |[eval . FORM]                                                                |
 |_____________________________________________________________________________|
-                                                                            79^"
+                                                                            79.
+►►►"
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-font-lock :insertp t)
@@ -3280,7 +3313,7 @@ cases of text, and how to highlight those cases:\n►►►
 ;;; :CREATED <Timestamp: #{2009-09-20T13:46:12-04:00Z}#{09387} - by MON>
 (defun mon-help-text-property-functions (&optional insrtp intrp)
   "List of text-property related functions.
-:SEE info node `(elisp)Text Properties'\n:SEE :FILE textprop.c\n►►►
+:SEE info node `(elisp)Text Properties'\n:SEE :FILE textprop.c\n
     ________________________              __________________________
    |                        |            |                          |
    | :TEXT-PROPERTY-GETTERS |            | :TEXT-PROPERTY-SEARCHING |
@@ -3318,7 +3351,8 @@ cases of text, and how to highlight those cases:\n►►►
 |_____________________________________|  | insert-in-front-hooks           |
                                          | insert-behind-hooks             |
                                          | point-entered point-left        |
-                                         |_________________________________| 80^"
+                                         |_________________________________| 80.
+\n:SEE-ALSO `mon-help-plist-functions'.\n►►►"
   (interactive "i\nP")
   (if (or insrtp intrp)
       (mon-help-function-spit-doc 'mon-help-text-property-functions :insertp t)
@@ -3416,7 +3450,7 @@ The optimizable special cases are:
 ;;; ==============================
 ;;; :CREATED <Timestamp: Tuesday June 02, 2009 @ 12:09.40 PM - by MON KEY>
 (defun mon-help-color-chart (&optional insertp intrp)
-  "Chart of Netscape Color Names with their Color Values.\n►►►
+  "Chart of Netscape Color Names with their Color Values.\n
  ____________________________________________________________________________80.
 |                                                                              |
 | ,-+ :NETSCAPE-NAME                                                           |
@@ -3558,8 +3592,9 @@ The optimizable special cases are:
 | yellow              FFFF00  255,255,0    005  004  006  FFFF00  255,255,0    |
 | yellowgreen         9ACD32  154,205,50   082  082  083  99CC33  153,204,51   |
 |____________________________________________________________________________80^
-\n;;; Chart prepared by Tay Vaughan, July, 1996. Timestream, Inc.
-;;; :SEE \(URL `http://www.timestream.com/mmedia/graphics/colors/ns3names.txt'\)."
+\n:COURTESY Tay Vaughan, July, 1996. Timestream, Inc.
+:SEE \(URL `http://www.timestream.com/mmedia/graphics/colors/ns3names.txt'\).
+►►►"
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-color-chart :insertp t)
@@ -3573,8 +3608,8 @@ The optimizable special cases are:
 ;;; ==============================
 ;;; :CREATED <Timestamp: Wednesday June 17, 2009 @ 05:36.08 PM - by MON KEY>
 (defun mon-help-easy-menu (&optional insertp intrp)
-"Following is the mapping for building menus with easy-menu `easy-menu-define'.
-►►►
+"Following is a mapping for building a menu with easy-menu's `easy-menu-define'.
+\n
  ____________________________________________________________________________79.
 |                      ,-+ :MENU-ROOT                                          |
 | [SYMBOL MAPS DOC MENU                                                        |
@@ -3602,8 +3637,8 @@ The optimizable special cases are:
 .                             :   :            |... toggle: radio: button:     |
 .                             | ]                                              |
 | ]                                                                            |
-|______________________________________________________________________________|
-                                                                             79^"
+|____________________________________________________________________________79.
+►►►"
 (interactive "i\nP")
 (if (or insertp intrp)
     (mon-help-function-spit-doc 'mon-help-easy-menu :insertp t)
@@ -3617,10 +3652,10 @@ The optimizable special cases are:
 ;;; ==============================
 ;;; :CREATED <Timestamp: Friday June 19, 2009 @ 02:20.35 PM - by MON KEY>
 (defun mon-help-widgets (&optional insertp intrp)
-"Help table for the widget interface.\n►►►\n
- __________________________
-|                          | :SEE info node `(elisp)Documentation Tips'.
-| :WIDGET-TYPE-SYNTAX-OF   |
+"Help table for the widget interface.\n
+ __________________________                                                  
+|                          | :SEE info node `(elisp)Documentation Tips'.     
+| :WIDGET-TYPE-SYNTAX-OF   |                                                 
 |__________________________|______________________________________________77.
 |                                                                           |
 | NAME ::= (NAME [KEYWORD ARGUMENT]... ARGS)                                |
@@ -3708,8 +3743,8 @@ The optimizable special cases are:
 | |  `widget-button-prefix'    ;<STRING>     |                              |
 | |  `widget-button-suffix'    ;<STRING>     |                              |
 | |__________________________________________|                              |
-|___________________________________________________________________________|
-                                                                          77^"
+|_________________________________________________________________________77.
+►►►"
 (interactive "i\nP")
 (if (or insertp intrp)
     (mon-help-function-spit-doc 'mon-help-widgets :insertp t)
@@ -3854,11 +3889,119 @@ The optimizable special cases are:
 ;;; :TEST-ME (describe-function 'mon-help-diacritics)
 
 ;;; ==============================
+;;; :CREATED <Timestamp: #{2009-12-28T16:25:12-05:00Z}#{09531} - by MON KEY>
+(defun mon-help-char-representation (&optional insertp intrp)
+  "Help for working with Emacs character representations.\n
+:SEE info node `(elisp)Basic Char Syntax'\n
+;; :DECIMAL-CHAR-REPRESNTATION
+225
+?\\á
+\"\\341\"
+\(identity ?\\\á\)        ;=> 225
+\(identity \"\\341\")     ;=> \"á\"
+\(char-to-string ?\\á)  ;=> \"á\"
+\(char-to-string 225)  ;=> \"á\"\n
+;; :OCTAL-REPRESENTATION
+#o341 
+?\\341
+\(identity #o341\)       ;=> 225
+\(identity ?\\341\)       ;=> 225
+\(char-to-string ?\\341\) ;=> á\n 
+;; :HEX-REPRESENTATION
+#xe1 
+\"\\xe1\" 
+?\\xe1
+\(identity \"\\xe1\"\)      ;=> \"á\"
+\(identity #xe1\)        ;=> 225
+\(identity ?\\xe1\)       ;=> 225
+\(char-to-string ?\\xe1\) ;=> \"á\"\n
+;; :UNICODE-REPESENTATION
+\"\\u25BA\"
+?\\u25BA
+\(identity ?\\u25BA\)       ;=> 9658
+\(identity \"\\u25BA\"\)      ;=> \"►\"
+\(char-to-string ?\\u25BA) ;=> \"►\"\n
+;; :CHARACTER-CONVERSION-IDIOMS
+`format'
+\(format \(concat \"\\x09 <- HERE BE A `%s'\\n\"
+                  \"And which be control char: `%s'\\n\"
+                  \"And which be decimal char: `%s'\\n\"
+                  \"And which be octal char: `#o%o'\\nWhich is also being hex char: `#x%x'\"\)
+        \(single-key-description ?\\x09\)
+        \(text-char-description ?\\x09\)
+        \(string-to-char \(format \"%s\" \"\\x09\"\)\) ?\\x9 ?\\11\)\n
+`string'
+\(apply 'string `(?/ ?a ?b ?c ?d ?e ?f ?g ?h ?i ?j ?k ?l ?m ?n ?o ?p ?q ?r ?s ?t
+                 ?u ?v ?w ?x ?y ?z ?A ?B ?C ?D ?E ?F ?G ?H ?I ?J ?K ?L ?M ?N ?O
+                 ?P ?Q ?R ?S ?T ?U ?V ?W ?X ?Y ?Z ?0 ?1 ?2 ?3 ?4 ?5 ?6 ?7 ?8 ?9
+                 ?- ?_ ?. ?! ?~ ?* ?' ?\( ?\)))
+ ;=> \"/abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.!~*'()\"\n
+;; :CHARACTER-CONVERSION
+`char-to-string'
+`get-byte'
+`multibyte-char-to-unibyte'
+`unibyte-char-to-multibyte'
+`string-to-char'
+`string-to-multibyte'
+;; :CHARACTER-READERS
+`read-char'
+`read-char-exclusive'
+`read-char-by-name'
+`read-quoted-char'
+`read-quoted-char-radix' ;<VARIABLE>
+`quoted-insert'
+`ucs-insert'\n
+;; :CHARACTER-DESCRIPTORS
+`characterp' 
+`max-char'
+`text-char-description'
+`single-key-description'\n
+`printable-chars' \(aref printable-chars ?\\x09)\n\(aref printable-chars ?\\x62\)\n
+;; :CHARACTER-PROPERTIES
+`charset-plist'
+`char-code-property-description'
+`get-char-code-property'
+`put-char-code-property'  :SEE info node `(elisp)Character Properties'\n
+    ______________________      
+   |                      |     
+   | :PROPERTIES-OF-CHARS |    
+ __|______________________|____
+|                              |
+| `bidi-class'                 |
+| `canonical-combining-class'  |
+| `decimal-digit-value'        |
+| `decomposition'              |
+| `digit'                      |
+| `general-category'           |
+| `iso-10646-comment'          |   
+| `lowercase'                  |
+| `mirrored'                   |
+| `name'                       |
+| `numeric-value'              |
+| `old-name'                   |
+| `titlecase'                  |
+| `uppercase'                  |
+|______________________________|\n
+:SEE-ALSO `mon-help-diacritics', `mon-help-ASCII-chars',
+`mon-help-ISO-8859-1-chars', `mon-help-cntl->hex->ecma-35',
+`mon-help-cntl->hex->ecma-48'.\n►►►"
+(interactive "i\nP")
+  (if (or insertp intrp)
+      (mon-help-function-spit-doc 'mon-help-char-representation :insertp t)
+    (message "Pass non-nil for optional arg INTRP")))
+;;
+;;; :TEST-ME (mon-help-char-representation)
+;;; :TEST-ME (mon-help-char-representation t)
+;;; :TEST-ME (describe-function 'mon-help-char-representation)
+
+;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-09-01T17:34:29-04:00Z}#{09362} - by MON KEY>
 (defun mon-help-ASCII-chars (&optional insertp intrp)
-  "ASCII Character Tables.\n►►►\n
-;; :ASCII
- _______________________________________________________________67.
+  "ASCII Character Tables.\n
+    ________
+   |        |                                                      
+   | :ASCII |                                                      
+ __|________|___________________________________________________67.
 |                                                                 |
 | 000 NUL|001 SOH|002 STX|003 ETX|004 EOT|005 ENQ|006 ACK|007 BEL |
 | 010 BS |011 HT |012 NL |013 VT |014 NP |015 CR |016 SO |017 SI  |
@@ -3912,7 +4055,10 @@ The optimizable special cases are:
 |104  h |105  i |106  j |107  k |108  l |109  m |110  n |111  o   |
 |112  p |113  q |114  r |115  s |116  t |117  u |118  v |119  w   |
 |120  x |121  y |122  z |123  { |124  | |125  } |126  ~ |127 DEL  |
-|_______________________________________________________________67."
+|_______________________________________________________________67.\n
+:SEE-ALSO `mon-help-char-representation', `mon-help-diacritics',
+`mon-help-ISO-8859-1-chars', `mon-help-cntl->hex->ecma-35',
+`mon-help-cntl->hex->ecma-48'.\n►►►"
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-ASCII-chars  :insertp t)
@@ -3927,9 +4073,11 @@ The optimizable special cases are:
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-09-01T17:34:24-04:00Z}#{09362} - by MON KEY>
 (defun mon-help-ISO-8859-1-chars (&optional insertp intrp)
-"ISO-8859-1 Character Table ►►►\n
-;; :ISO-8859-1
- ______________________________________________________________________73.
+"ISO-8859-1 Character Table\n
+                      _____________                                       
+                     |             |                                      
+                     | :ISO-8859-1 |                                      
+ ____________________|_____________|___________________________________73.
 |                                                                        |
 |   0 NU    16 DL     32 SP    48 0     64 At   80 P      96 '!   112 p  |
 |   1 SH    17 D1     33 !     49 1     65 A    81 Q      97 a    113 q  |
@@ -3965,7 +4113,10 @@ The optimizable special cases are:
 | 141 RI   157 OC   173 --   189 12   205 I'   221 Y'   237 i'   253 y'  |
 | 142 S2   158 PM   174 Rg   190 34   206 I>   222 TH   238 i>   254 th  |
 | 143 S3   159 AC   175 'm   191 ?I   207 I:   223 ss   239 i:   255 y:  |
-|______________________________________________________________________73."
+|______________________________________________________________________73.\n
+:SEE-ALSO `mon-help-char-representation', `mon-help-diacritics',
+`mon-help-ASCII-chars', `mon-help-cntl->hex->ecma-35',
+`mon-help-cntl->hex->ecma-48'.\n►►►"
   (interactive "i\nP")
   (if (or insertp intrp)
         (mon-help-function-spit-doc 'mon-help-ISO-8859-1-chars :insertp t)
@@ -3979,14 +4130,16 @@ The optimizable special cases are:
 ;;; :TEST-ME (describe-function 'mon-help-ISO-8859-1-chars)
 
 ;;; ==============================
-;;; :CREATED <Timestamp: 2009-08-13-W33-4T16:30:22-0400Z - by MON KEY>
 ;;; :COURTESY Micah Cowan  :HIS teseq.info of GNU Teseq VERSION: 1.0.0
+;;; :CREATED <Timestamp: 2009-08-13-W33-4T16:30:22-0400Z - by MON KEY>
 (defun mon-help-cntl->hex->ecma-48 (&optional insertp intrp)
   "For reference, here's a table of the control characters (plus DEL). It
-is based on the information from Table 1 of Ecma-48 / ISO/IEC 6429 (the
-control-key representation has been added).\n►►►\n
-;; :ECMA-48
- __________________________________________________53.
+is based on the information from Table 1 of ECMA-48 /ISO/IEC 6429 
+\(the control-key representation has been added\).
+                       __________                     
+                      |          |                    
+                      | :ECMA-48 |                    
+ _____________________|__________|_________________53.
 |                                                    |
 | :HEX   :KEY    :NAME          :HEX    :KEY   :NAME |
 |____________________________________________________|
@@ -4003,12 +4156,15 @@ control-key representation has been added).\n►►►\n
 | x09     ^I      TAB            x19     ^Y      EM  |
 | x0A     ^J      LF             x1A     ^Z      SUB |
 | x0B     ^K      VT             x1B     ^[      ESC |
-| x0C     ^L      FF             x1C     ^\\      IS4|
+| x0C     ^L      FF             x1C     ^\\      IS4 |
 | x0D     ^M      CR             x1D     ^]      IS3 |
 | x0E     ^N      SO             x1E     ^^      IS2 |
 | x0F     ^O      SI             x1F     ^_      IS1 |
 | x7F     ^?      DEL                                |
-|__________________________________________________53."
+|__________________________________________________53.\n
+:SEE-ALSO `mon-help-char-representation', `mon-help-diacritics',
+`mon-help-ASCII-chars', `mon-help-ISO-8859-1-chars',
+`mon-help-cntl->hex->ecma-35'.\n►►►"
   (interactive "i\nP")
   (if (or insertp intrp)
         (mon-help-function-spit-doc 'mon-help-cntl->hex->ecma-48 :insertp t)
@@ -4027,11 +4183,13 @@ control-key representation has been added).\n►►►\n
 (defun mon-help-cntl->hex->ecma-35 (&optional insertp intrp)
   "The ECMA-35/ISO/IEC 2200 standard defines an escape sequence to be a
 sequence of characters beginning with ESC, with a final byte in the
-range 'x30'-'x7E', and any number (including zero) of intermediate
+range 'x30'-'x7E', and any number \(including zero\) of intermediate
 bytes in the range 'x20'-'x2F'.  The following table has been provided
-as a reference for finding which characters match which codes.\n►►►\n
-;; :ECMA-35
- __________________________________________45.
+as a reference for finding which characters match which codes.
+               __________                     
+              |          |                    
+              | :ECMA-35 |                    
+ _____________|__________|_________________45.
 |      |                                     |
 |      |  x2X   x3X   x4X   x5X   x6X   x7X  |
 |______|_____________________________________|
@@ -4052,7 +4210,10 @@ as a reference for finding which characters match which codes.\n►►►\n
 | xXD  |   -     =     M     ]     m     }   |
 | xXE  |   .     >     N     ^     n     ~   |
 | xXF  |   /     ?     O     _     o    DEL  |
-|__________________________________________45."
+|__________________________________________45.\n
+:SEE-ALSO `mon-help-char-representation', `mon-help-diacritics',
+`mon-help-ASCII-chars', `mon-help-ISO-8859-1-chars',
+`mon-help-cntl->hex->ecma-48'.\n►►►"
   (interactive "i\nP")
   (if (or insertp intrp)
     	(mon-help-function-spit-doc 'stan-help-cntl->hex->ecma-35 :insertp t)
@@ -4391,7 +4552,7 @@ done \n►►►"
             ("-L" . "--dereference")
             ("-P" . "--no-dereference")
             ("--max-depth")             ;=DEPTH
-            ("-0" . "--null")
+            ;; ("-0" . "--null")
             ("--si")
             ("-s" . "--summarize")
             ("-S" . "--separate-dirs")
@@ -4507,7 +4668,6 @@ The default is the basename of the archive, with suffixes removed.\n
 ;;; :TEST-ME (describe-function 'mon-help-hg-archive)
 ;;; :TEST-ME (call-interactively 'mon-help-hg-archive)
 
-
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-11-07T19:33:41-05:00Z}#{09457} - by MON KEY>
 (defun mon-help-crontab (&optional insertp intrp)
@@ -4577,10 +4737,24 @@ user-error, and may even make your CPU to stop working! (Hint just use `:q')\n�
 ;;; :TEST-ME (describe-function 'mon-help-crontab)
 ;;; :TEST-ME (call-interactively 'mon-help-crontab)
 
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-12-28T16:21:30-05:00Z}#{09531} - by MON KEY>
+
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-11-16T14:03:44-05:00Z}#{09471} - by MON KEY>
 (defun mon-help-permissions (&optional insertp intrp)
-  "Tables for working with chown, chmod, chattr, umask, etc.\n
+  "Emacs permission functions and tables for chown, chmod, chattr, umask, etc.\n
+;; :EMACS-PERMISSIONS-FUNCTIONS
+`file-attributes'
+`file-modes-symbolic-to-number'
+`file-modes-char-to-who'
+`file-modes-char-to-right'
+`file-modes-rights-to-number'
+`mon-help-unix-commands'
+`read-file-modes'
+`set-file-modes'
+`set-default-file-modes'\n
  _____________________  __________________________________________________77.
 |                     ||                                                    | 
 |     :UGOA           ||              :TRIPLET                              |
@@ -4861,7 +5035,8 @@ whatis\n►►►"
 ;;; :MODIFICATIONS <Timestamp: #{2009-08-26T17:36:47-04:00Z}#{09353} - by MON KEY>
 (defun mon-index-elisp-symbol ()
   "Find TOPIC in the indices of the Emacs Lisp Reference Manual.\n
-:EXAMPLE\n\(elisp-index-search \"setq\")\n►►►"
+:EXAMPLE\n\(elisp-index-search \"setq\")\n
+:SEE-ALSO `finder-by-keyword',`mon-help-unix-commands'.\n►►►"
   (interactive)
   (let ((topic (symbol-name (symbol-at-point))))
     (setq topic (read-string (format "Subject to look up <%s>: " topic) nil nil topic))
@@ -6392,7 +6567,7 @@ When optional arg INSERTP is non-nil insert wikified reference sheet at point.\n
 ;;; :TEST-ME (emacs-wiki-fy-reference-sheet t t)
 
 ;;; ==============================
-;;; I think I remember stealing this from Pascal Bourguignon?
+;;; :NOTE Maybe MON remembers stealing this from Pascal Bourguignon?
 ;;; :MODIFICATIONS <Timestamp: Saturday May 30, 2009 @ 06:26.12 PM - by MON KEY>
 (defun emacs-wiki-escape-lisp-string-region (&optional start end ref-sheet)
   "Escape special characters in the region as if a Lisp string.
@@ -6438,7 +6613,7 @@ supplied without the surrounding quotes.\n
 ;;; (goto-char this-point)(emacs-wiki-escape-lisp-string-region nil nil t)))
 
 ;;; ==============================
-;;; I think i remember stealing this from Pascal Bourguignon?
+;;; :NOTE Maybe MON remember stealing this from Pascal Bourguignon?
 ;;; :MODIFICATIONS <Timestamp: Saturday May 30, 2009 @ 06:26.12 PM - by MON KEY>
 (defun emacs-wiki-unescape-lisp-string-region (&optional start end ref-sheet)
   "Unescape special characters from the CL string specified by the region.

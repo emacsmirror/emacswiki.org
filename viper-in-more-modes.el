@@ -33,6 +33,35 @@
 ;; This is alpha-quality code.  If it works for you, we would
 ;; appreciate it if you let us know.
 
+;;; TODO:
+;;
+;; * We shouldn't use the "vimper" function-name prefix anywhere in
+;; this file.  The word "vimper" is a leftover from back when
+;; viper-in-more-modes was part of Vimpulse, and Vimpulse was
+;; unreleased and didn't have a good name yet.  But
+;; viper-in-more-modes is no longer part of Vimpulse.  It doesn't
+;; require Vimpulse to load.  It does provide access to some Vimpulse
+;; features like visual mode, but viper-in-more-modes does something
+;; different than Vimpulse and so isn't shipped with Vimpulse.  So we
+;; should pick a new prefix.
+;; 
+;; * Rename viper-in-more-modes to something much shorter.  This will
+;; not only give viper-in-more-modes a shorter name, but will also
+;; instantly provide us with a better prefix.
+;; 
+;; * Clean up the code in general: for example, the error messages
+;; shouldn't include exclamation marks.  And the grammar and
+;; capitalization in the comments should be improved.  Also, the boxed
+;; comments probably don't have to be in boxes.
+;; 
+;; * Submit it to M-x report-emacs-bug and ask them to please include
+;; viper-in-more-modes as part of Viper.  If we can't reach some
+;; contributors for copyright assignment, we'll probably have to
+;; discard their contributions at this time, so we should probably
+;; try to get all contributors' mailing addresses and phone numbers
+;; as soon as they've contributed fifteen lines or more, in case
+;; they later disappear.
+
 ;;; Change Log:
 ;; 
 ;; Version 0.1.2:  Removed some duplicate keybinding code.  Also, 
@@ -56,10 +85,6 @@
 ;; You should have received a copy of the GNU General Public License along with
 ;; this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 ;; Place - Suite 330, Boston, MA 02111-1307, USA.
-
-
-
- 
 
 
 
@@ -105,26 +130,24 @@ work on closed parens like one can expect in vi."
 
 
 
- 
-
-
-
 ;; Begin major mode keybinding code {{{
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; Major mode keybindings and functions used by vimper  ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defvar viper-leader-char " ")
 (defmacro vimper-defkey-l (map key func)
   `(define-key ,map (concat viper-leader-char ,key) ,func))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;     Emacs Lisp Mode - Viper Mappings       ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Commands definitions (Almost all are work-arounds due to the fact that
 ;;; 	    Emacs wants the cursor to be _after_ the ")" to execute functions
-;;;	    on sexps. We use the `do-one-char-forward' utility macro here,
-;;;	    look at vimper/utilities.el for details on that macro).
+;;;	    on sexps. We use the `do-one-char-forward' utility macro here;
+;;;	    the macro is defined above.
 (defun vimper-eval-last-sexp (&optional eval-last-sexp-arg-internal)
   (interactive)
   (do-one-char-forward (eval-last-sexp eval-last-sexp-arg-internal)))
@@ -167,6 +190,7 @@ work on closed parens like one can expect in vi."
 	map))
 (viper-modify-major-mode 'emacs-lisp-mode 'vi-state my-elisp-modified-vi-map)
 (viper-modify-major-mode 'lisp-interaction-mode 'vi-state my-elisp-modified-vi-map)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;     Common Lisp Mode - Viper Mappings      ;;;
 ;;;                    Slime                   ;;;
@@ -307,5 +331,7 @@ work on closed parens like one can expect in vi."
 			 my-repl-modified-insert-map)
 
 ;; }}} End major mode keybinding code
+
+
 
 (provide 'viper-in-more-modes)

@@ -12,6 +12,8 @@ One way to load this, add to ~/.emacs (or see LoadPath):
     (require 'cg-mode)
 
 By default it is used for files with the .cg extension.
+----
+CG might also mean [http://beta.visl.sdu.dk/constraint_grammar.html Constraint Grammar], there is also a [http://www.student.uib.no/~kun041/doc/cg.el Constraint Grammar cg-mode].
 
 ----
 CategoryModes

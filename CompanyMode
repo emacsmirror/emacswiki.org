@@ -81,6 +81,10 @@ Yes, set company-begin-commands
 
 -- [[nschum]]
 
+==== Yasnippet integration ====
+Company does interfere with Yasnippet's native behaviour.
+Here's a quick fix: http://gist.github.com/265010
+
 == Discussion ==
 
 How does this compare to CompletionUI and AutoComplete? -- TobyCubitt

@@ -451,6 +451,24 @@ on line 1636 results in a void-function error. Thanks! MattLundin
 
 : Yep, yaoddmuse.el need thingatpt.el for get word around current point. -- AndyStewart
 
+[new]
+I am having problems trying to access a private wiki (as explained [http://www.oddmuse.org/cgi-bin/oddmuse/Private_Wiki here]). I get garbage for my list of possible page name completions:
+
+Possible completions are:
+"-//W3C//DTD
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+/><link 	/><meta
+1.0 	<!DOCTYPE
+<html 	PUBLIC
+Required</h1><p><a 	Strict//EN"
+XHTML 	charset=UTF-8"/></head><body
+class="error"><h1>Password
+
+and even if I give it a valid page name I get this error: "Get page 'HomePage' form 'MyWiki' failed."
+If I make the wiki public there are no problems, and if I make it private again in the same emacs session (after accessing it as a public wiki) I can still access it as normal. 
+
+[new]
+
 ----
 CategoryHypermedia
 

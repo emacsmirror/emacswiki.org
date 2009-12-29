@@ -46,7 +46,7 @@ Bazaar doesn't provide extensive Unix-style man pages, or Info.  Instead, use ##
 
 Overview of the Bazaar work routine:
 
-# Tell Bazaar your name and email address; these will be used as defaults to identify your commits.
+# Tell Bazaar your name and email address; these will be used as defaults to identify your commits. (Usage: bzr whoami "Frank Chu <fchu@example.com>")
 # Create a bzr shared repository locally, to hold all your branches.
 # Create your first local branch: a mirror of the project trunk.
 # Create a local development branch, based off your local trunk mirror.

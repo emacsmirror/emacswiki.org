@@ -248,6 +248,44 @@ I’ve been hacking on twit.el a bit lately, and I’ve set up a [http://github.
 [new:McC:2009-06-26]
 I'm using Aquamacs 1.7.  I've had to customize the colors and remove various :box's and :underline's to get the display to look good on my dark background setup with images. But the big issue is that #hashtags and @usernames aren't clickable URLs.  However if I click on a message in the empty area to the right of the message text for some users, the user page magically opens in the browser.  But other users it never does.  - McC [http://twitter.com/geek @geek]
 
+[new:Borkdude:2009-12-28]
+Here's a proposal for a function to get *all* the followers, not just the maximum 100 that are requested now by twit-show-followers. If someone wants to integrate it into the existing code, you're welcome to do it. Kind regards, [http://twitter.com/Borkdude @Borkdude] 
+
+{{{
+(defconst twit-all-followers-list-url
+  (concat twit-base-url "/statuses/followers.xml?cursor=%s"))
+
+(defun get-all-followers (cursor acc)
+  (let* ((userinfo (cadr (twit-parse-xml (format twit-all-followers-list-url cursor) "GET")))
+		 (users (xml-get-children (car (xml-get-children userinfo 'users))
+								  'user))
+		 (next-cursor (third (car (xml-get-children userinfo 'next_cursor)))))
+    (if (not (> (string-to-number (or next-cursor "0")) 0)) (concatenate 'list acc users)
+      (get-all-followers next-cursor (concatenate 'list acc users)))))
+
+(defun twit-show-all-followers ()
+  "Display a list of all your twitter.com followers' names."
+  (interactive)
+  (pop-to-buffer
+   (with-twit-buffer 
+	"*Twit-followers*"
+	(twit-write-title "Followers\n")
+	(loop for name in
+		  (loop for name in
+				(loop for user in
+					  (get-all-followers "-1" nil)
+					  collect (eighth user))
+				collect (third name))
+		  for i upfrom 1
+		  do (insert (propertize (format "%s\n" name)
+								 'face
+								 (if (= 0 (% i 2))
+									 "twit-zebra-1-face"
+								   "twit-zebra-2-face")
+								 'twit-user name))))))
+
+
+}}}
 ----
 [new]
 FEATURE REQUESTS:

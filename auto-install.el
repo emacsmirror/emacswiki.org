@@ -8,7 +8,7 @@
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Copyright (C) 2009, rubikitch, all rights reserved.
 ;; Created: 2008-12-11 13:56:50
-;; Version: $Revision: 1.22 $
+;; Version: $Revision: 1.23 $
 ;; Last-Updated: Fri May 22 13:07:04 2009 (-0700)
 ;;           By: dradams
 ;; URL: http://www.emacswiki.org/emacs/download/auto-install.el
@@ -25,7 +25,7 @@
 ;;   `url-util', `url-vars'.
 ;;
 
-(defvar auto-install-version "$Id: auto-install.el,v 1.22 2009/12/21 12:51:56 rubikitch Exp $")
+(defvar auto-install-version "$Id: auto-install.el,v 1.23 2009/12/29 09:31:23 rubikitch Exp rubikitch $")
 ;;; This file is NOT part of GNU Emacs
 
 ;;; License
@@ -268,6 +268,9 @@
 ;;; Change log:
 ;;
 ;; $Log: auto-install.el,v $
+;; Revision 1.23  2009/12/29 09:31:23  rubikitch
+;; add Text Translator to auto-install-batch-list
+;;
 ;; Revision 1.22  2009/12/21 12:51:56  rubikitch
 ;; Update auto-install-batch anything
 ;;
@@ -631,6 +634,13 @@ Nil means no confirmation is needed."
       "http://www.emacswiki.org/emacs/download/anything-match-plugin.el"
       "http://www.emacswiki.org/emacs/download/anything-show-completion.el"
       "http://www.emacswiki.org/emacs/download/perl-completion.el"
+      ))
+    ;; Text Translator
+    ("text translator" nil nil
+     (
+      "http://www.emacswiki.org/emacs/download/text-translator.el"
+      "http://www.emacswiki.org/emacs/download/text-translator-vars.el"
+      "http://www.emacswiki.org/emacs/download/text-translator-load.el"
       ))
     )
   "This list contain packages information for batch install.

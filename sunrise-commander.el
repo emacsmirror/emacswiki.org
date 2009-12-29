@@ -130,7 +130,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 244 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 246 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.  I  have  also  received
@@ -725,8 +725,8 @@ automatically:
 (define-key sr-mode-map "\C-\M-o"             'sr-project-path)
 (define-key sr-mode-map "\M-y"                'sr-history-prev)
 (define-key sr-mode-map "\M-u"                'sr-history-next)
-(define-key sr-mode-map "\C-c>"               'sr-checkpoint-bookmark)
-(define-key sr-mode-map "\C-c."               'bookmark-jump)
+(define-key sr-mode-map "\C-c>"               'sr-checkpoint-save)
+(define-key sr-mode-map "\C-c."               'sr-checkpoint-restore)
 (define-key sr-mode-map "\C-c\C-z"            'sr-sync)
 
 (define-key sr-mode-map "\t"                  'sr-change-window)
@@ -817,8 +817,8 @@ automatically:
 
 (if window-system
     (progn
-      (define-key sr-mode-map [(control >)]         'sr-checkpoint-bookmark)
-      (define-key sr-mode-map [(control .)]         'bookmark-jump)
+      (define-key sr-mode-map [(control >)]         'sr-checkpoint-save)
+      (define-key sr-mode-map [(control .)]         'sr-checkpoint-restore)
       (define-key sr-mode-map [(control tab)]       'sr-select-viewer-window)
       (define-key sr-mode-map [(control backspace)] 'sr-toggle-attributes)
       (define-key sr-mode-map [(control ?\=)]       'sr-ediff)
@@ -1421,29 +1421,31 @@ automatically:
         (cons item hist)
       hist)))
 
-(defun sr-checkpoint-bookmark ()
-  "Creates a new checkpoint bookmark to save the location of both panes."
-  (interactive)
-  (unless (fboundp 'bookmark-make-record)
-    (error "Sunrise: your bookmarks.el don't support checkpoints.\
- Try upgrading to a newer version or use extension sunrise-x-old-checkpoints."))
-  (let ((bookmark-make-record-function 'sr-make-checkpoint-record))
-    (sr-save-directories)
-    (call-interactively 'bookmark-set)))
+(defun sr-require-checkpoints-extension (&optional noerror)
+  "Bootstrap  code for checkpoint support. Just tries to require the appropriate
+  checkpoints extension depending on the version of bookmarks.el being used."
+  (require 'bookmark nil t)
+  (let* ((feature
+          (cond ((fboundp 'bookmark-make-record) 'sunrise-x-checkpoints)
+                (t 'sunrise-x-old-checkpoints)))
+         (name (symbol-name feature)))
+    (or
+     (require feature nil t)
+     noerror
+     (error (format "Feature %s not found!\
+ For checkpoints to work download http://joseito.republika.pl/%s.el.gz\
+ and add it to your load-path" name name)))))
 
-(defun sr-make-checkpoint-record ()
-  "Generates a the bookmark record for a new checkpoint."
-  `((filename . ,(format "Sunrise Checkpoint: %s | %s"
-                         sr-left-directory sr-right-directory))
-    (sr-directories . (,sr-left-directory ,sr-right-directory))
-    (handler . sr-checkpoint-handler)))
+(defmacro sr-checkpoint-command (function-name &optional function-args)
+  `(defun ,function-name ,function-args
+     (interactive)
+     (sr-require-checkpoints-extension)
+     (call-interactively ',function-name)))
 
-(defun sr-checkpoint-handler (bookmark)
-  "Handler for checkpoint bookmarks."
-  (or sr-running (sunrise))
-  (sr-select-window 'left)
-  (let ((dirs (cdr (assq 'sr-directories (cdr bookmark)))))
-    (mapc (lambda (x) (dired x) (sr-bookmark-jump) (sr-change-window)) dirs)))
+(sr-checkpoint-command sr-checkpoint-save    (arg))
+(sr-checkpoint-command sr-checkpoint-restore (arg))
+(sr-checkpoint-command sr-checkpoint-handler (arg))
+(sr-require-checkpoints-extension t)
 
 (defun sr-do-find-marked-files (&optional noselect)
   "Sunrise replacement for dired-do-marked-files."

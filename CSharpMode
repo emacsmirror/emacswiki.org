@@ -1,20 +1,17 @@
 = CSharpMode (CSharp, C#) =
 
-== The Best and Preferred == 
-
-The latest version I found on the net was 0.7.0 and I uploaded it to Lisp:csharp-mode.el. -- danielpoe
-(Note: This version is also included in [NxhtmlMode nXhtml].)
-
 [new]
-This csharp-mode.el has a lot of compilation warnings. Perhaps they will introduce bugs that are hard to find.
-Anyone interested in fixing this?
+The latest version is available at Lisp:csharp-mode.el. -- danielpoe
 
-[new]
+----
+
 ; http://mfgames.com/csharp-mode/start
-:Work by DylanMoonfire on a derived cc-mode. See these threads on sourceforge [http://sourceforge.net/mailarchive/forum.php?thread_id=6676996&forum_id=6827], [http://sourceforge.net/mailarchive/forum.php?thread_id=6596410&forum_id=6827] for more info. The current version (September 5, 2007) is  0.7.0. [http://cinki.mfgames.com/buglist.cgi?bug_status=__all__&product=csharp-mode Bug Tracking]
+:Work by DylanMoonfire on a derived cc-mode. See these threads on sourceforge [http://sourceforge.net/mailarchive/forum.php?thread_id=6676996&forum_id=6827], [http://sourceforge.net/mailarchive/forum.php?thread_id=6596410&forum_id=6827] for more info. The current version (December 2009) is  0.7.1. [http://cinki.mfgames.com/buglist.cgi?bug_status=__all__&product=csharp-mode Bug Tracking] (Broken link as of December 2009)
 
+[NxhtmlMode nXhtml] includes csharp-mode.el v0.7.0. 
+If you grab the latest here, you will want to replace the older 0.7.0 csharp-mode.el that is included in [nXhtmlMode nXhtml]
 
-== Other attempts ==
+== Other, previous attempts at C# mode ==
 
 ; http://www.cybercom.net/~zbrad/DotNet/Emacs/
 :This is the original.  It involves changes to a set of standard elisp files.  It apparently doesn't handle @"\" correctly.
@@ -39,7 +36,7 @@ yasnippet.el - dynamically expand snippets, like dabbrev on steroids. See this w
 hideshow.el - hide and show regions of code.  How to use with C# [http://blogs.msdn.com/dotnetinterop/archive/2008/04/14/making-hideshow-el-work-with-csharp-mode-el-and-region-endregion.aspx]
 
 http://flymake.sourceforge.net/ - check syntax more-or-less continually, and use overlays to highlight syntax problems in the code. How to use with C#:
-[http://blogs.msdn.com/dotnetinterop/archive/2008/04/14/getting-flymake-el-to-work-with-c-modules.aspx]
+[http://blogs.msdn.com/dotnetinterop/archive/2008/04/14/getting-flymake-el-to-work-with-c-modules.aspx] Or see Lisp:flymake-for-csharp.el
 
 vj-complete - C# Code Completion [http://ozymandias.dk/emacs/emacs.html#vj-complete]
 
@@ -47,23 +44,17 @@ ide-bridge - C# Code Completion/refactoring/navigation/compilation [http://code.
 
 
 
-==Comments/Remarks==
+== Comments/Remarks ==
 
-=== http://davh.dk/script/ ===
+=== Works Well ===
 
-==== Easy to install, works fine on Windows ====
-
-I have used the one-file csharpmode from davh.dk, and it worked pretty darn well for me with C# 2.0 and GNU emacs 21.3, running on Windows XP and on Windows Vista.  Installation was a breeze - just copy one elisp file. Everything seems to work pretty nicely: indenting, highlighting, etc.  I used it every day.
-
-I currently use Dylan Moonfire's version, on GNU emacs 22.2.  Again, on Windows (Vista). Every day.  It also works very well.
+I currently use csharp-mode 0.7.1, on GNU emacs 22.2, on Windows (Vista). Every day.  It works very well.
 
 --DinoChiesa
 
-=== http://mfgames.com/linux/csharp-mode, DylanMoonfire ===
+=== Trouble on Xemacs ===
 
-==== Trouble on Xemacs ====
-
-Ihad quite a bit of trouble getting Dylan Moonfire's C# mode to work under Xemacs. The following lines helped, especially with the file available from http://davh.dk/script/
+I had quite a bit of trouble getting csharp-mode to work under Xemacs. The following lines helped, especially with the file available from http://davh.dk/script/
 
     ;;; Helpers for building regexps.
     (defmacro c-paren-re (re)
@@ -74,13 +65,8 @@ Ihad quite a bit of trouble getting Dylan Moonfire's C# mode to work under Xemac
 --JoeHealy
 
 ----
-==== Only one working on Emacs 22? ====
-
-Only Dylan Moonfire's mode seems to work with emacs CVS.
-
-----
-==== Working with Emacs 21.3.1 but small problem ====
-I've got Dylan Moonfire's C# mode working with Emacs 21.3.1 using cc-mode 5.30.9.
+=== Working with Emacs 21.3.1 but small problem ===
+I've got csharp-mode working with Emacs 21.3.1 using cc-mode 5.30.9.
 However there was a slight problem. In my .emacs file, I had to have the line:
 <pre>
 (require 'cc-mode)
@@ -100,9 +86,9 @@ error: "`c-lang-defconst' must be used in a file"
 --DarrenSmith
 
 ----
-==== Does not work with Emacs 22.0.50.1? ====
+=== Does not work with Emacs 22.0.50.1? ===
 
-I'm not able to use Dylan Moonfire's C# mode working with Emacs 22.0.50.1 and cc-mode 5.31
+I'm not able to use csharp-mode working with Emacs 22.0.50.1 and cc-mode 5.31
 
 I get
 
@@ -126,9 +112,9 @@ Grab cc-mode from cvs. They have this issues fixed for cvs emacs.
 --AZ
 
 ----
-==== Working with EmacsW32, Emacs 22.0.50.1 but small problems ====
+=== Working with EmacsW32, Emacs 22.0.50.1 but small problems ===
 
-I just started using Moonfire's mode with [[EmacsW32]], Emacs version 22.0.50.1. So far so good, with a few minor glitches. Here's the code I use to set it up in my init:
+I just started using csharp-mode with [[EmacsW32]], Emacs version 22.0.50.1. So far so good, with a few minor glitches. Here's the code I use to set it up in my init:
 
 <pre>
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -163,12 +149,12 @@ Thanks for all the helpful comments on this page and elsewhere!
 -- DanMuller
 
 [new]
-If you tell me the minor gliches, I'll put them in my bug-tracking for csharp-mode ([http://cinki.mfgames.com/]) and see about get them fixed as soon as possible. Thanks for pointing out how to do the Hide/Show stuff, I haven't figured it quite out, but I'll see if I can add most of that automatically into the mode. Or at least as much as possible.
+If you tell me the minor gliches, I'll put them in my bug-tracking for csharp-mode ([http://cinki.mfgames.com/] (broken link as of December 2009)) and see about get them fixed as soon as possible. Thanks for pointing out how to do the Hide/Show stuff, I haven't figured it quite out, but I'll see if I can add most of that automatically into the mode. Or at least as much as possible.
 
 -- DylanMoonfire
 
 ----
-==== Working with NTEmacs 21.3 + folding tip ====
+=== Working with NTEmacs 21.3 + folding tip ===
 
 I'm using Moonfire's mode with NTEmacs version 21.3 and things are working well.
 I use the following hide-show setup for folding brace-blocks (just like c/c++ mode)
@@ -220,9 +206,9 @@ Use for the statement-cont option in c-offsets-alist.  I use it like so:
 -- DaveS
 
 ----
-==== Problem with TAB ====
+=== Problem with TAB ===
 
-I'm using Dylan's csharp-mode. It works well, but after it gets loaded (by visiting a
+csharp-mode works well, but after it gets loaded (by visiting a
 csharp file) and switching back to an elisp file (like my config file) I get an error
 when indenting a line in the elisp file using TAB and it doesn't indent:
 
@@ -236,46 +222,16 @@ Anyway to fix this?
 
 [new]
 
-I use this patch with csharp-mode:
-
-<pre>
-Index: site-lisp/csharp-mode.el
-===================================================================
---- site-lisp.orig/csharp-mode.el
-+++ site-lisp/csharp-mode.el
-@@ -417,9 +417,11 @@ Each list item should be a regexp matchi
- ;;		  (cons "C#" (c-lang-const c-mode-menu csharp)))
-
- ;;; Autoload mode trigger
-+;;;###autoload
- (add-to-list 'auto-mode-alist '("\\.cs" . csharp-mode))
-
- ;; Custom variables
-+;;;###autoload
- (defcustom csharp-mode-hook nil
-   "*Hook called by `csharp-mode'."
-   :type 'hook
-@@ -439,6 +441,8 @@ Key bindings:
- \\{csharp-mode-map}"
-   (interactive)
-   (kill-all-local-variables)
-+  (make-local-variable 'beginning-of-defun-function)
-+  (make-local-variable 'end-of-defun-function)
-   (c-initialize-cc-mode t)
-   (set-syntax-table csharp-mode-syntax-table)
-   (setq major-mode 'csharp-mode
-</pre>
-
-AlexHarsanyi
+v0.7.1 fixes this. 
 
 [new]
 Awesome, that fixed it. Thanks Alex.
 
 -- Mark A. Nicolosi
 
-==== Documentation comment help ====
+=== Documentation comment help ===
 
-The fill-paragraph in Moonfire's csharp-mode messes up documentation comment tags. I modified the paragraph-separate regexp to interpret comment lines that contain only an XML tag as paragraph sepatators. This allows fill-paragraph to be used on text between two doc comment tags so that the tag lines don't get pulled into the formatting.
+In csharp-mode, fill-paragraph does not properly handle documentation comment tags. I modified the paragraph-separate regexp to interpret comment lines that contain only an XML tag as paragraph sepatators. This allows fill-paragraph to be used on text between two doc comment tags so that the tag lines don't get pulled into the formatting.
 
 I also made a helper function that inserts doc comment skeletons quickly. I've bound it (arbitrarily) to C-c C-z.
 

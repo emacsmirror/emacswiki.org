@@ -59,7 +59,11 @@ Poking around, I found Cygwin's gunzip.exe is 19 bytes long.  The contents are: 
 
 to fix this, either copy gzip.exe to gunzip.exe, or use "bash" as your `shell-file-name'
 
+----
+"Assumes that <code>C:\cygwin\bin</code> is not already in your Windows Path (it generally should not be)."
 
+Why not?
 
+The cygwin documentation itself seems to disagree: http://cygwin.com/cygwin-ug-net/setup-env.html
 ----
 CygWin
