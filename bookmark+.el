@@ -8,9 +8,9 @@
 ;; Copyright (C) 2000-2009, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Dec 27 00:08:30 2009 (-0800)
+;; Last-Updated: Tue Dec 29 15:32:59 2009 (-0800)
 ;;           By: dradams
-;;     Update #: 8433
+;;     Update #: 8468
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -979,6 +979,11 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2009/12/29 dadams
+;;     *-bmenu-refresh-menu-list: Set bookmarkp-latest-bookmark-alist to refreshed list.
+;;     Face *-local-directory: Made dark background version the inverse of light.
+;;     *-bmenu-list-1: Use eq, not equal, test for bookmarkp-omitted-alist-only as filter fn.
+;;     *-bmenu-define(-full-snapshot)-command: Include bookmarkp-bmenu-omitted-list in saved state.
 ;; 2009/12/26 dadams
 ;;     Added: bookmarkp-bmenu-omitted-list, bookmarkp-bmenu-show-only-omitted, bookmarkp-unomit-all,
 ;;            bookmarkp-bmenu-omit/unomit-marked, bookmarkp-bmenu-(un-)omit-marked,
@@ -1748,7 +1753,7 @@ Also used for `D' (deletion) flags."
   :group 'bookmarkp)
 
 (defface bookmarkp-local-directory
-    '((((background dark)) (:foreground "LightGray" :background "DarkRed"))
+    '((((background dark)) (:foreground "HoneyDew2" :background "DarkBlue"))
       (t (:foreground "DarkBlue" :background "HoneyDew2")))
   "*Face used for a bookmarked local directory."
   :group 'bookmarkp)
@@ -2539,8 +2544,7 @@ bookmarks.)"
                            (substring regname 0 (min bookmarkp-bookmark-name-length-max
                                                      (length regname))))
                           ((eq major-mode 'w3m-mode) w3m-current-title)
-                          ((eq major-mode 'gnus-summary-mode)
-                           (elt (gnus-summary-article-header) 1))
+                          ((eq major-mode 'gnus-summary-mode) (elt (gnus-summary-article-header) 1))
                           ((memq major-mode '(Man-mode woman-mode))
                            (buffer-substring (point-min) (save-excursion
                                                            (goto-char (point-min))
@@ -3158,8 +3162,8 @@ Non-nil INTERACTIVEP means `bookmark-bmenu-list' was called
     (let ((max-width     0)
           (sorted-alist  (bookmarkp-sort-and-remove-dups
                           bookmark-alist
-                          (and (not (equal bookmarkp-bmenu-filter-function
-                                           'bookmarkp-omitted-alist-only))
+                          (and (not (eq bookmarkp-bmenu-filter-function
+                                        'bookmarkp-omitted-alist-only))
                                bookmarkp-bmenu-omitted-list)))
           name annotation markedp start)
       (dolist (bmk  sorted-alist)
@@ -3420,8 +3424,7 @@ Tip: You can use this before quitting Emacs, to not save the state."
   "Create a bookmark that will invoke FUNCTION when \"jumped\" to.
 You are prompted for the bookmark name and the name of the function.
 Returns the new bookmark (internal record)."
-  (interactive (list (read-string "Name: ")
-                     (completing-read "Function: " obarray 'functionp)))
+  (interactive (list (read-string "Name: ") (completing-read "Function: " obarray 'functionp)))
   (bookmark-store bookmark-name `((filename . ,bookmarkp-non-file-filename)
                                   (position . 0)
                                   (function . ,(read function))
@@ -3572,6 +3575,7 @@ current filtering or sorting of the displayed list."
   (let ((bookmark-alist  (if bookmarkp-bmenu-filter-function
                              (funcall bookmarkp-bmenu-filter-function)
                            bookmark-alist)))
+    (setq bookmarkp-latest-bookmark-alist  bookmark-alist)
     (bookmark-bmenu-list 'filteredp)))
 
 ;;;###autoload
@@ -4531,13 +4535,13 @@ unmark those that have no tags at all."
 
 ;;;###autoload
 (defun bookmarkp-bmenu-define-command () ; `c' in bookmark list
-  "Define a command to use the current sort order, filter, and title.
+  "Define a command to use the current sort order, filter, and omit list.
 Prompt for the command name.  Save the command definition in
 `bookmarkp-bmenu-commands-file'.
 
-The current sort order, filter function, and title for buffer
-`*Bookmark List*' are encapsulated as part of the command.  Use the
-command at any time to restore them."
+The current sort order, filter function, omit list, and title for
+buffer `*Bookmark List*' are encapsulated as part of the command.
+Use the command at any time to restore them."
   (interactive)
   (let* ((fn   (intern (read-string "New sort+filter command: " nil
                                     'bookmarkp-bmenu-define-command-history)))
@@ -4548,6 +4552,7 @@ command at any time to restore them."
                   bookmarkp-reverse-sort-p         ',bookmarkp-reverse-sort-p
                   bookmarkp-reverse-multi-sort-p   ',bookmarkp-reverse-multi-sort-p
                   bookmarkp-bmenu-filter-function  ',bookmarkp-bmenu-filter-function
+                  bookmarkp-bmenu-omitted-list     ',bookmarkp-bmenu-omitted-list
                   bookmarkp-bmenu-title            ',bookmarkp-bmenu-title
                   bookmark-bmenu-toggle-filenames  ',bookmark-bmenu-toggle-filenames)
                  (bookmarkp-bmenu-refresh-menu-list)
@@ -4578,7 +4583,7 @@ Be aware that the command definition can be quite large, since it
 copies the current bookmark list and accessory lists (hidden
 bookmarks, marked bookmarks, etc.).  For a lighter weight command, use
 `bookmarkp-bmenu-define-full-snapshot-command' instead.  That records
-only the sort and filter information."
+only the omit list and the sort & filter information."
   (interactive)
   (let* ((fn   (intern (read-string "New restore-snapshot command: " nil
                                     'bookmarkp-bmenu-define-command-history)))
@@ -4589,6 +4594,7 @@ only the sort and filter information."
                   bookmarkp-reverse-sort-p          ',bookmarkp-reverse-sort-p
                   bookmarkp-reverse-multi-sort-p    ',bookmarkp-reverse-multi-sort-p
                   bookmarkp-latest-bookmark-alist   ',bookmarkp-latest-bookmark-alist
+                  bookmarkp-bmenu-omitted-list      ',bookmarkp-bmenu-omitted-list
                   bookmarkp-bmenu-marked-bookmarks  ',bookmarkp-bmenu-marked-bookmarks
                   bookmarkp-bmenu-filter-function   ',bookmarkp-bmenu-filter-function
                   bookmarkp-bmenu-title             ',bookmarkp-bmenu-title

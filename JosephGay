@@ -30,5 +30,8 @@ Things that will make Emacs cooler (if that's possible):
 [new]
 Welcome to the wiki! :) As for the webkit stuff, did you take a look at EmacsXembed? -- AlexSchroeder
 
+[new]
+Alex, Thanks for the welcome :) I've been looking at ezbl, which uses
+EmacsXembed to embed uzbl. -- JosephGay
 ----
 CategoryHomepage

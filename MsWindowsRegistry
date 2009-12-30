@@ -22,6 +22,10 @@ customize Emacs. It is set up as a FAQ. You may want to jump straight to an [[#e
 * <tt>HKEY_CURRENT_USER\SOFTWARE\GNU\Emacs</tt>
 * <tt>HKEY_LOCAL_MACHINE\SOFTWARE\GNU\Emacs</tt>
 
+: In Windows 7 64-bit use:
+* <tt> HKEY_CURRENT_USER\SOFTWARE\Wow6432Node\GNU\Emacs</tt>
+* <tt>HKEY_LOCAL_MACHIN\SOFTWARE\Wow6432Node\GNU\Emacs</tt>
+
 : (Usually in disucssions, HKEY_CURRENT_USER is abbreviated as HKCU,
   and HKEY_LOCAL_MACHINE is similarly HKLM.)
 

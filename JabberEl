@@ -228,6 +228,35 @@ Some ideas for improvement:
    1 Improve performance.
    1 Add searching capabilities (e.g., keyword).
 
+== Connecting to Google talk ==
+
+After a bit of googling, I got jabber.el to work with my Google Talk account. I'll save others some googling:
+
+<pre>
+(setq jabber-username "my-username" ;; notice: leave off the @gmail.com
+      jabber-server "gmail.com"     ;; this is a part of your user ID, not a part of the server you will connect to.
+      jabber-network-server "talk.google.com"  ;; this is the actual server to connect to
+      jabber-port 5223
+      jabber-connection-type 'ssl)
+</pre>
+
+(thanks Hamsterboy, [[timcharper]])
+
+[new]
+
+I can verify that the above worked (on MacOS X). However, I had some difficulties at first. The version of gnutls installed by Mac ports would always throw an error when I tried to connect: (I could see this by switching to the buffer *-jabber-process-*)
+
+<pre>
+*** Fatal error: A TLS packet with unexpected length was received.
+*** Server has terminated the connection abnormally.
+</pre>
+
+I installed a more recent version of gnutls (2.8.3), and modified both my PATH environment variable and my exec-path setting via Emacs-customize in order to ensure that that most recent version of gnutls was used, and not the version installed by Mac ports.
+
+Once I did that, jabber connected to Google talk swimmingly.
+
+-- [[timcharper]]
+
 == Success-stories :) ==
 
 I'm using this as my primary jabber client now and have no need for the extra jabber client (I primarily used JAJC on Windows and GAIM on Linux before) and it works really good. The nice thing is of course that you can hack it, customize key bindings etc, something that is much harder to do in most other clients. Among other things I use it as a &quot;agent&quot; to do stuff remotely. Read more about this in the forum on the SourceForge page. -- MathiasDahl
@@ -244,15 +273,6 @@ A note on the above - dbus support is in GNU Emacs in CVS now --GeoffTeale
 [new]
 Jabber.el is my XMPP client for last year. Before I used gaim, tkabber, but I not found happiness in it. Jabber.el makes me happy... -- Zert
 
-[new]
-After a bit of googling, I got jabber.el to work with my Google Talk account. I'll save others some googling:
-
-* jabber-connection-type: ssl
-* jabber-server: "gmail.com"
-* jabber-network-server: "talk.google.com"
-* jabber-port: 5223
-
--- Hamsterboy
 
 [new]
 With emacs-jabber-0.7.92 put
@@ -284,24 +304,19 @@ Function x-urgency-hint allows you to enable or disable urgency hint for the fra
 You may, for example, enable urgency hint when the activity list is updated and disable it when the list becomes empty. In this case your WM will start blinking by taskbar button or by window's header or perform other actions to attract the user's attention (the appearance depends on WM). Tested with emacs-jabber v0.7.91 and IceWM 1.2.35.
 
 <pre>
-(defun x-wm-hints (frame &optional source)
-  (mapcar '(lambda (field) 
-	     (if (consp field)
-		 (+ (lsh (car field) 16) (cdr field))
-	       field))
-	  (x-window-property 
-	   "WM_HINTS" frame "WM_HINTS" 
-	   (if source
-	       source
-	     (string-to-number (frame-parameter frame 'outer-window-id)))
-	   nil t)))
-
-(defun x-urgency-hint (frame arg)
-  (let* ((wm-hints (x-wm-hints frame))
+(defun x-urgency-hint (frame arg &optional source)
+  (let* ((wm-hints (append (x-window-property 
+			    "WM_HINTS" frame "WM_HINTS" 
+			    (if source
+				source
+			      (string-to-number 
+			       (frame-parameter frame 'outer-window-id)))
+			    nil t) nil))
 	 (flags (car wm-hints)))
-    (setcar wm-hints (if arg
-			 (logior flags #x00000100)
-		       (logand flags #xFFFFFEFF)))
+    (setcar wm-hints
+	    (if arg
+		(logior flags #x00000100)
+	      (logand flags #xFFFFFEFF)))
     (x-change-window-property "WM_HINTS" wm-hints frame "WM_HINTS" 32 t)))
 
 ;; usage example
@@ -327,7 +342,20 @@ You may, for example, enable urgency hint when the activity list is updated and 
 Are there any catches in using JabberEl to connect to two different jabber services at the same time? (i.e. google talk and an ordinary jabber...) How does one go about that? --MartinJ
 
 [new]
-This is currently only possible in the CVS version.  You can set up all your accounts in jabber-account-list (e.g. by using Customize), or just connect them manually with M-x jabber-connect-one.  (C-x C-j C-c will connect to all accounts in jabber-account-list, or if that is empty, ask you for an account to connect to) --MagnusHenoch
+This is currently only possible in the CVS version.  You can set up
+all your accounts in jabber-account-list (e.g. by using Customize), or
+just connect them manually with M-x jabber-connect-one.  (C-x C-j C-c
+will connect to all accounts in jabber-account-list, or if that is
+empty, ask you for an account to connect to) --MagnusHenoch
+
+[new]
+I had a problem recently with the 0.8.0 version. The file
+jabber-muc-nick-completion.el defines a function modify-alist, which,
+according to grep, is used only in that file. However, I had loaded
+apel, which also defines modify-alist, and not in a compatible
+way. Therefore, I simply changed the name of jabber's version to
+jabber-modify-alist. Maybe this is already done in CVS, but I thought
+I'd mention it in case it's not. --JosephGay
 
 ----
 CategoryChatClient

@@ -116,7 +116,7 @@ If there are other branches you'd like to mirror, you can set them up in the sam
 
 You shouldn't do development work in the local ##trunk## mirror, since it is meant to be a pristine mirror of the upstream trunk.  Instead, you should create local development branches, where you will actually do your work.  Each will be based on the local trunk mirror (another way to say it is that the new branch will be "branched from" the mirror).
 
-We recommend you create one branch for quick, one-off work: for example, you spot a typo in the README file and want to fix it.  You can just keep reusing this branch for small, self-contained changes.  (For larger tasks, such as a complicated bug fix or new feature that might require multiple commits and rounds of feedback, we recommend that you create a "task branch" dedicated to that fix or feature, described in [[#FeatureBranch]].)
+We recommend you create one branch for quick, easy changes, such as one-line patches.  You can just keep reusing this branch for small, self-contained changes.  (For larger tasks, such as a complicated bug fix or new feature that might require multiple commits and rounds of feedback, we recommend that you create a "task branch" dedicated to that fix or feature, described in [[#FeatureBranch]].)
 
       cd $DEVHOME/emacs
       bzr branch trunk/ quickfixes/
@@ -126,8 +126,7 @@ This creates a directory ##quickfixes## and populates it with the Emacs source t
 Remember this is all happening inside a shared repository.  In a Bazaar shared repository, all the branches share history, which means less spaced used and less time spent downloading history and file content; this makes Bazaar branches much more lightweight than CVS branches.   However, it still takes time to check out the source tree for a new branch (which we just did), and bootstrapping a new tree takes an annoyingly long time.  That is why we recommend that for small changes you keep reusing the same ##quickfixes## branch.  This way, after you have bootstrapped the ##quickfixes## branch once, the subsequent update, build, and commit steps of the update-edit-build-test-commit cycle all are very fast, as long as you continue working in the same branch. 
  
 [:QuickFix]
-[:OneOffChange]
-== Workflow for a One-Off Change ==
+== Workflow for a Quick Change ==
 
 First, refresh your mirror and then the working branch:
 

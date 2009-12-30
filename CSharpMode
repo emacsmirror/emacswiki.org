@@ -15,7 +15,8 @@ If you grab the latest here, you will want to replace the older 0.7.0 csharp-mod
 
 ; http://www.cybercom.net/~zbrad/DotNet/Emacs/
 :This is the original.  It involves changes to a set of standard elisp files.  It apparently doesn't handle @"\" correctly.
-  * please send me a more detailed description of the problem reported here? Thanks mailto:zbrad@cybercom.net
+
+* please send me a more detailed description of the problem reported here? Thanks mailto:zbrad@cybercom.net
 
 ; http://davh.dk/script/
 :Is a mod of zbrad's original. Collects all the changes into a single file.  It also doesn't solve the @"\" problem.  
@@ -24,7 +25,7 @@ If you grab the latest here, you will want to replace the older 0.7.0 csharp-mod
 ; http://csde.sourceforge.net/
 :Based on JavaDevelopmentEnvironment.  Appears to be abandonware.  Not sure if this has a C# mode or not. 
 
-; http://www.devhood.com/tools/tool_details.aspx?tool_id=643 :
+; http://www.devhood.com/tools/tool_details.aspx?tool_id=643 : hthis is just a link to zbrad's code. 
 
 ; http://www.loveshack.ukfsn.org/emacs/index.html#cc-php-js
 :A modified CC mode from Emacs 22, with .elcs for Emacs 21.  Done by someone who doesn't use C#, but reported deficiencies will probably get fixed.
