@@ -1,38 +1,44 @@
-Time-stamp: "2009-12-25 18:52:48 dieter"
+This is the Ansys mode documentation
+
+Time-stamp: "2009-12-30 13:26:46 dieter"
 Copyright (C) 2006 - 2010  H. Dieter Wilhelm GPL V3
 
-= Ansys mode documentation =
+== Introduction ==
 
-Ansys mode provides support for the FEA (Finite Element Analysis)
-program Ansys (http://www.ansys.com) under Computer systems where
-Ansys and Gnu Emacs is running.  It defines 'Ansys mode', a major mode
-for viewing, writing and navigating in APDL (Ansys Parametric Design
-Language) files and provides managing and communication capabilities
-for various Ansys solver processes as well.
+This project provides Gnu Emacs editor support for working with the
+FEA (Finite Element Analysis) program Ansys (http://www.ansys.com)
+under any operating system where Ansys is running.  It defines 'Ansys
+mode', an Emacs major mode for viewing, writing and navigating in APDL
+(Ansys Parametric Design Language) files and offers managing and
+communication capabilities for Ansys solver processes as well.
 
-The mode's capabilities are rather sophisticated but the documentation
-is still targeted for Ansys users with little Emacs experience.  Any
-suggestions for improvements are very welcome.  The latest development
-version is available at http://code.google.com/p/ansys-mode/.
+The mode's capabilities are sophisticated but the comprehensive
+documentation is targeted for Ansys users with little Emacs
+experience.  Any suggestions for improvements are very welcome.  The
+current stable version (ansys-mode-12.0.1) and development versions
+are available at http://code.google.com/p/ansys-mode/.  For
+installing, further instructions and issues please have a look the
+Ansys mode Wiki at http://www.emacswiki.org/cgi-bin/wiki/AnsysMode.
 
 == Requirements ==
 
 The code is based on Ansys version 12.0 and is written for the editor
 GNU Emacs (not consciously targeted for XEmacs).  It is tested with
-Emacs 23.1 under XP and GNU/Linux.  The code won't run without some
-minor adaptions with Emacs 21.4.  Please visit
+Emacs 23.1 under XP and GNU/Linux.  The code won't run without minor
+adaptions with Emacs 21.4.  Please visit
 ftp://ftp.gnu.org/pub/gnu/emacs/windows/ for an official, precompiled
 Windows versions of GNU Emacs.  You might unpack Emacs in any
 directory.  Optionally you can run the program addpm.exe (located in
 the bin directory) to add an Emacs entry to the Windows Start menu
 (please refer to the README.W32 file).
 
-The Ansys solver control and communication capabilities are mainly
-restricted to UNIX systems.
+The Ansys solver control and communication capabilities are somewhat
+restricted on non-UNIX systems.
 
 == Features ==
 
-* Ansys process management (viewing error files, license status, etc.)
+* Ansys process management (viewing error files, license status,
+  starting the Ansys help browser, etc.)
 
 * Solver comunication facilities, i. e. sending code fragments from
   the macro file or commands interactively to an Ansys solver instance
@@ -48,9 +54,9 @@ restricted to UNIX systems.
   comments, navigating number blocks, searching *DO-, *IF-, *DOWHILE-,
   *CREATE-blocks, etc.
 
-* Sophisticated highlighting in various decoration levels (complete
-  Ansys keywords, undocumented commands, deprecated elements, ...)
-  and optionally also user defined variables (experimental)
+* Syntax highlighting in various decoration levels (complete Ansys
+  keywords, undocumented commands, deprecated elements, ...)  and
+  optionally also user defined variables (experimental)
 
 * Overview in a different window of all definitions (*GET, *DIM, *SET,
   =, *DO, ...) of APDL variables in the current file
@@ -73,6 +79,16 @@ restricted to UNIX systems.
 * Use of the Emacs abbreviation facility for block templates
   i. e. with writting a "nickname" Emacs exchanges the characters with
   a whole code template
+
+As a visual example, a screen-shot on Emacs Wiki and Google code show
+an Emacs frame with a ripped off Ansys menu field.  The APDL file is
+in the right window with the (experimental) user variable highlighting
+switched on and a help overlay (in yellow background) activated. The
+smaller windows on the left hand side are showing the "Variable
+definitions buffer" of the same file and a preview buffer of a certain
+code template, respectively.
+
+http://www.duenenhof-wilhelm.de/dieter/ansys-mode.jpg
 
 == Installation ==
 
@@ -130,7 +146,7 @@ automatically applied for all files with suffixes ".mac" and ".inp".
   file '.emacs' of GNU Emacs in your home directory '~\').
 
      (add-to-list 'load-path
-                  "C:\\YOUR\\DIRECTORY\\WHERE\\MODE\\FILES\\RECIDE")
+		  "C:\\YOUR\\DIRECTORY\\WHERE\\MODE\\FILES\\RECIDE")
      (autoload 'ansys-mode "ansys-mode" "Activate Ansys mode." 'interactive)
 
   From here you are able to type "M-x ansys-mode RET" to activate the
@@ -151,12 +167,6 @@ automatically applied for all files with suffixes ".mac" and ".inp".
 
      (add-to-list 'auto-mode-alist '("\\.anf$" . ansys-mode))
 
-* An important customisation option is `ansys-highlighting-level'
-  "fontification.mac" example TODO:
-
-* Templates, code snippets, skeletons can extended "ansys-template.el"
-  and be used similar to a macro library.
-
 * autoinsertion of code
 
   In case you also want to enjoy the auto insertion feature, which
@@ -173,45 +183,35 @@ automatically applied for all files with suffixes ".mac" and ".inp".
   commands in a new Emacs session without the need of previously
   having explicitely called ansys-mode.
 
-     (autoload 'ansys-customise-ansys "ansys-mode" "Activate the Ansys customisation buffer." 'interactive)
-     (autoload 'ansys-abort-file "ansys-mode" "Activate Ansys abort file function." 'interactive)
-     (autoload 'ansys-display-error-file "ansys-mode" "Activate Ansys display error file function." 'interactive)
-     (autoload 'ansys-start-ansys-help "ansys-mode" "Activate Ansys start help function." 'interactive)
+     (autoload 'ansys-customise-ansys "ansys-mode" "Activate the function for calling a special Ansys customisation buffer." 'interactive)
+     (autoload 'ansys-abort-file "ansys-mode" "Activate the function for  aborting Ansys runs." 'interactive)
+     (autoload 'ansys-display-error-file "ansys-mode" "Activate the function for inspecting the Ansys error file." 'interactive)
+     (autoload 'ansys-start-ansys-help "ansys-mode" "Activate the function for starting the Ansys help browser." 'interactive)
  TODO: -license-file, -license-program variables
-     (autoload 'ansys-license-status "ansys-mode" "Activate Ansys license status function." 'interactive)
+     (autoload 'ansys-license-status "ansys-mode" "Activate the function for displaying Ansys license status or starting a license utility." 'interactive)
 
+* further configuration method
 
-* further configuration methods
-
-  As a summary and example to further customisation options please have
-  a look at the accompanying "default.el" example, this applies
-  specifically for the mode's solver communication capabilities.  The
-  file could be used as as system wide startup file in the
-  "EMACS_INSTALLDIR/site-lisp" directory and is therfore an
-  alternative way to customisations in "~/.emacs", your personal
+  As a summary and example to these and further customisation options
+  please have a look at the accompanying "default_.el" example. This
+  is helpful especially if you intend to use the mode's solver
+  communication capabilities.  This file can be used, after renaming
+  it to "default.el" and adjusting as as system wide startup file for
+  Emacs in the "EMACS_INSTALLDIR/site-lisp" directory and is therefore
+  an alternative to customisations in ".emacs", your personal
   configuration file.
 
-== Usage ==
+== Usage and customisation ==
 
 When you have a file under `ansys-mode' check out the menu bar's
 "Ansys" entry for its possibilities and select the entry "Describe
 Ansys Mode" or type "C-h m" (i. e. the CTRL key together with the "h"
 key and subsequently the "m" key), which will display the Ansys mode
-help which is the "online" guide for its usage 8-).
+help which is your "online" guide for its usage and customisation 8-).
 
-== Ansys mode customisation ==
 
-For a summary and documentation of available Ansys mode customisations
-it is best to open the mode customisation buffer either with the
-command M-x `ansys-customise-ansys' or from the menu bar -> 'Ansys' ->
-'Customise Ansys Mode'
-
-When you are changing code in the mode (.el) files itself it is
-sometimes necessary to unload and restart Ansys mode.  Instead of
-restarting Emacs you can do this with the interactive command M-x
-`ansys-restart-ansys-mode' or with the respective, toplevel Ansys menu
-entry.
-
+* Templates i. e. code snippets or skeletons can be extended in "ansys-template.el"
+  and can be used similar to an Ansys macro library.
 
 == Acknowledgements ==
 
@@ -246,6 +246,9 @@ some code is based and the version of the Ansys mode (1) itself.
 
 * Added tooltips to all Ansys menu entries.
 
+* The variable summary is now sorted according to their occurance and
+  not any longer in variable "definition types"
+
 * Added menu entry for reloading Ansys Mode for the case when certain
   customisation options in the code files itself are changed and
   require a code reloading to take effect.
@@ -264,7 +267,7 @@ some code is based and the version of the Ansys mode (1) itself.
   only written in a macro file) to the solver process,
   ansys-query-ansys-command (C-c C-q).
 
-=== ansys-mode.el version 11.0.1 in comparison to its predecessor ansys-mod.el: ===
+=== ansys-mode.el version 11.0.1 in comparison to ansys-mod.el: ===
 
 * New: Provides Ansys command parameter- and syntax help.
 
@@ -294,7 +297,7 @@ some code is based and the version of the Ansys mode (1) itself.
   taken into account in the highlighting.
 
 * The apostrophe "'" is now assigned as the Ansys string and the
-  value of character parameters delimiter and not wrongly "''";
+  value of character parameters delimiter and not wrongly """;
   the strings are fontified accordingly.
 
 * The dollar sign "$" is now emphasised as the Ansys condensed
@@ -319,8 +322,11 @@ some code is based and the version of the Ansys mode (1) itself.
   subsequent format strings of the command are fontified.
 
 * New: " *" (SPC before *) is indicated as an (Ansys deprecated)
-  comment sign e. g.: "a = 3 **4" results in "a" setting to 3,
-  whereas "a = 3**4" sets "a" to 81!
+  comment sign e. g.: 
+    %% a = 3 **4 %%
+  results in "a" having the value 3, whereas 
+    %% a = 3**4 %%
+  sets "a" to 81!
 
 * New: A line beginning with a comma is indented to the lenght of
   the last non slash or asterisk command as a reminder that the
@@ -339,23 +345,19 @@ http://www.ansys.com
 http://www.ansyssolutions.com -- The Ansys solutions magazine
 http://www.xansys.org -- ansys online community
 
-== Minor Bugs and Problems ==
+== Bugs and Problems ==
 
-C*** does no parameter substitution, neither the /SYS command; this is
-wrongly suggested in the variable highlighting of Ansys mode.
+For an overview of the outstanding issues please have a look in the
+TODO file.
 
-Comments behind the C*** are not possible and wrongly highlighted
+The "user variable" highlighting is still experimental, new variable
+definitions are taken into account only when the variable
+ansys-dynamic-highlighting-flag is set or any times when you activate
+the variable display (with C-c C-v in the maximum highlighting level).
 
-A resetting of variables (VAR= ) is not taken into account
-
-Ansys format line (multi-line) highlighting is somewhat brittle,
-please use M-o M-o to update the fontification in case the format line
-is not correctly highlighted.
-
-The *END command is special: It needs 8 characters in all (+ 4
-whitespaces to differentiate it from *ENDIF) before a comment
-character behind it is accepted from the solver (please see the Ansys
-12.0 manual), this is not yet indicated in ansys-mode.
+Ansys "format line" (multi-line) and "user variable" highlighting is
+somewhat brittle, please use M-o M-o to update the fontification in
+case the format line and all variables are not highlighted correctly.
 
 === Getting help ===
 

@@ -75,7 +75,7 @@ I guess we should use Emacs Lisp.  The EmacsManual doesn't use elisp, either, ex
  abandoned at the end of 2000.  There is no current record of an
  "Elisp" mark related to any version of Emacs.
 
-Elisp seems fine.  You aren't trying to sell a product and, as mentioned above by Zeth and Eben's post, there is no trademark registered in the USA for elisp. Even if there were, I highly doubt that informal conversation and notes on a web site (this one) would be enough to be considered infringing use. Then again, [http://ursine.ca/IANAL IANAL] but Eben is. -- MattPerry
+Elisp seems fine.  You aren't trying to sell a product and, as mentioned above by Zeth and Eben's post, there is no trademark registered in the USA for elisp. Even if there were, I highly doubt that informal conversation and notes on a web site (this one) would be enough to be considered infringing use. Then again, [WikiPedia:IANAL IANAL] but Eben is. -- MattPerry
 
 == Lisp vs. Pascal ==
 

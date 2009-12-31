@@ -58,6 +58,13 @@ multi-term.el provides the following interactive functions:
 ==Tips==
 
 * You can type "C-u" before the commands `multi-term' or `multi-term-dedicated-open'.  You will then be prompted for the shell command to use for the your new terminal buffer. 
+** If you want to define a function that starts a new multi-term buffer with a non-default shell, without being prompted, you can do this:
+{{{
+                (defun multi-term-foo ()
+                  "Make a multi-term buffer running foo."
+                  (let ((multi-term-program "/bin/foo"))
+                    (multi-term)))
+}}}
 
 ==Customize==
 All options below can be customized by: M-x RET customize-group RET multi-term RET .

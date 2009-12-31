@@ -89,6 +89,13 @@ Trim whitespace from a string with a perl-like chomp function:
             (setq s (replace-match "" t nil s))))
         s))
 
+A more concise version:
+
+    (defun chomp (str)
+      "Chomp leading and tailing whitespace from STR."
+      (let ((s (if (symbolp str) (symbol-name str) str)))
+        (replace-regexp-in-string "\\(^[[:space:]\\n]*\\|[[:space:]\\n]*$\\)" "" s)))
+
 === Splitting strings ===
 
 See SplitString.
@@ -108,7 +115,7 @@ The basic idea is to convert forms to strings with `prin1-to-string' and convert
 
   (length (read (prin1-to-string (make-list 1000000 '(x)))))
     ==> 1000000
-  
+
   (read (prin1-to-string "Hello World!"))
     ==> "Hello World!"
 
@@ -116,7 +123,7 @@ This only works in the simplest cases.  Unfortunately, this doesn't work for all
 
   (read (prin1-to-string (make-hash-table)))
     ==> Lisp error: (invalid-read-syntax "#")
-  
+
   (read (prin1-to-string (current-buffer)))
     ==> Lisp error: (invalid-read-syntax "#")
 
@@ -462,14 +469,14 @@ Actually the package cl-seq contains the functions <i>remove-if</i> and <i>remov
 
 As an example here is the quick sort algorithm:
 
-  (defun quicksort (lst) 
+  (defun quicksort (lst)
     "Implement the quicksort algorithm."
     (if (null lst) nil
-      (let* ((spl (car lst)) 
-             (rst (cdr lst)) 
-             (smalp (lambda (x) 
+      (let* ((spl (car lst))
+             (rst (cdr lst))
+             (smalp (lambda (x)
                    (< x spl))))
-        (append (quicksort (remove-if-not smalp rst)) 
+        (append (quicksort (remove-if-not smalp rst))
                 (list spl)
                 (quicksort (remove-if smalp rst))))))
 
@@ -614,7 +621,7 @@ An interface to the kernel's stat(2) is provided by the function file-attributes
 
 === Path splitting ===
 
-Splitting the path can be done with `split-string' and with the slash.  Previously, Emacs would determine the character separating directory names with `directory-sep-char'.  However, the variable is obselete with Emacs 21.1.
+Splitting the path can be done with `split-string' and with the slash. Previously, Emacs would determine the character separating directory names with `directory-sep-char'.  However, the variable is obselete with Emacs 21.1.
 
   (split-string default-directory "/")
   ==> ("" "usr" "share" "emacs" "22.2" "lisp" "")
@@ -630,7 +637,7 @@ For splitting a path variable, Emacs already has the `parse-colon-path' function
 
 === Collecting output from a running program ===
 
-Again you have to make a difference between capturing the output in a string variable or in a buffer.  
+Again you have to make a difference between capturing the output in a string variable or in a buffer.
 
 * shell-command-to-string:
 
@@ -650,7 +657,7 @@ Again you have to make a difference between capturing the output in a string var
 * XEmacs also comes with exec-to-string:
 
   (defun test-insert-exec-text (command)
-    "Insert the output of an executable program at the 
+    "Insert the output of an executable program at the
   current cursor postion."
     (interactive "sEnter command-string: ")
     (insert (exec-to-string command)))
@@ -668,7 +675,7 @@ Perhaps EmacsEchoServer and EmacsDaytimeServer can be useful here.
 == Keyboard events ==
 
 * Call function bound to key
-  
+
   (funcall (key-binding (kbd "M-TAB")))
 
   or

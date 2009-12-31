@@ -1,14 +1,33 @@
-;;;
-;; pastie.el -- Emacs integration for pastie.org.
-;;
+;;; pastie.el --- Emacs integration for pastie.org
+
 ;; Copyright (C) 2006  Christian Neukirchen <purl.org/net/chneukirchen>
+;; Authors: Christian Neukirchen
+;; URL: http://www.emacswiki.org/emacs/pastie.el
+;; Created: 2007
+;; Version: 20091230
+;; Keywords: pastie webservices
+;;
+
+;;; Commentary:
+;;
+;; This file is NOT part of GNU Emacs.
 ;; Licensed under the GPL.
+
+;;; Documentation:
+;;
+;; M-x pastie-buffer - Paste the entire buffer to pastie.org. Pastie.el will
+;;                     attempt to autodetect the language by the current
+;;                     active major-mode. Place the URL on the kill ring.
+;; M-x pastie-region - Same as above but paste the current selected region only.
+;; M-x pastie-browse - Open the last pastie in a browser using (browse-url)
+
+;;; Change Log:
 ;;
 ;; 2007-12-27 Updated to work with more recent changes to the pastie API. 
 ;;            (Rob Christie)
 ;; 2007-12-30 Added more major mode sniffs (Ryan McGeary)
 ;; 2007-12-31 Added some minor mode sniffs that are Rails specific. 
-;             (Rob Christie)
+;;            (Rob Christie)
 ;; 2008-01-07 Added pastie-browse (Dan McKinley)
 ;; 2008-06-01 Added support for private pastes, js2-mode, and a timeout. 
 ;;            (Dan McKinley)
@@ -16,7 +35,9 @@
 ;;            Updated for the new pastie.org domain. (Dan McKinley)
 ;; 2008-12-09 Allow pastie.el to compile without warnings and add
 ;;            prefix argument toggling of restricted posting. (Peter Jones)
-;;
+;; 2009-12-30 packaged up for elpa, documentation (Tim Harper)
+
+;;; Code:
 (eval-when-compile
   (require 'cl))
 
@@ -64,6 +85,7 @@
   (if *pastie-restricted* "http://pastie.org/private/%s"
     "http://pastie.org/paste/%s"))
 
+;;;###autoload
 (defun pastie-region (begin end &optional toggle-restricted)
   "Post the current region as a new paste at pastie.org.
 Copies the URL into the kill ring.
@@ -76,9 +98,9 @@ With a prefix argument, toggle the current value of
                 "[<>&]"
                 (lambda (match)
                   (case (string-to-char match)
-                    (?< "&lt;")
-                    (?> "&gt;")
-                    (?& "&amp;")))
+                    (?< "<")
+                    (?> ">")
+                    (?& "&")))
                 body-raw))
          (mode (pastie-language))
          (url-request-method "POST")
@@ -116,6 +138,8 @@ With a prefix argument, toggle the current value of
 	  (message "Error occured: %s" status))))
     (kill-buffer *pastie-buffer*)))
 
+
+;;;###autoload
 (defun pastie-buffer (&optional toggle-restricted)
   "Post the current buffer as a new paste at pastie.org.
 Copies the URL into the kill ring.
@@ -125,6 +149,7 @@ With a prefix argument, toggle the current value of
   (interactive "P")
   (pastie-region (point-min) (point-max) toggle-restricted))
 
+;;;###autoload
 (defun pastie-get (id)
   "Fetch the contents of the paste from pastie.org into a new buffer."
   (interactive "nPastie #: ")
@@ -153,8 +178,11 @@ With a prefix argument, toggle the current value of
           (message "Error occured: %s" status)
           (kill-buffer *pastie-buffer*))))))
 
+;;;###autoload
 (defun pastie-browse ()
   (interactive)
   (browse-url *pastie-last-url*))
 
 (provide 'pastie)
+
+;;; pastie.el ends here

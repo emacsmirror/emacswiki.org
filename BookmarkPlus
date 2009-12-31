@@ -25,9 +25,9 @@ This is perhaps the
      this info.
 
 * You can ''combine bookmarks'', to make composite, or sequence,
-bookmarks.  Invoking a seqence bookmark invokes each of its
-component bookmarks in turn.  A component bookmark can itself
-be a sequence bookmark.
+  bookmarks.  Invoking a seqence bookmark invokes each of its
+  component bookmarks in turn.  A component bookmark can itself
+  be a sequence bookmark.
 
 * You can bookmark a ''[[region]]'' of text, not just a position.  When
      you jump to a bookmark that records a region, the region is
@@ -65,6 +65,7 @@ This is buffer `##*Bookmark List*##', aka the bookmark "menu list", which you di
 ** Gnus articles
 ** function bookmarks
 ** sequence bookmarks
+** bookmark-list bookmarks
 
 * You can ''sort'' bookmarks in many ways.  You can easily define
      your own sort orders, even complex ones.
@@ -74,28 +75,9 @@ This is buffer `##*Bookmark List*##', aka the bookmark "menu list", which you di
      current sort order.  For Emacs 23 and later, you can search
      incrementally (`M-x a C-s', or `M-x a C-M-s' for [[regexp]]).
 
-[:bookmarkp-bmenu-define-command]
-* You can use '''`c'''' (`bookmarkp-bmenu-define-command') to save the current bookmark-list sort order and filtering as a new command, and then use that
-command at any time to restore them (perhaps in another Emacs
-session).  Define any number of such commands for the views
-you use.  The file for saving the definitions  (see option `bookmarkp-bmenu-commands-file') is never
-overwritten, so you can also add other code to it manually.
-The file is read the first time the bookmark list is
-displayed in a given Emacs session.
-
-[:bookmarkp-bmenu-define-full-snapshot-command]
-* Similarly, you can use '''`C'''' (`bookmarkp-bmenu-define-full-snapshot-command') to save a
-full snapshot of the current bookmark-list state as a new
-command, and then use that command at any time to restore it
-completely.  You can thus record the current state (markings,
-filtering --- everything) and then return to it at any time
-later, simply by invoking the command you defined.  This is
-the same thing that happens automatically (by default) when
-you quit the bookmark list (or Emacs), but this lets you have
-multiple such saved states and switch to them at will.
-''However'', be aware that such command definitions can be quite
-large, since they contain copies of the current bookmark list
-and accessory lists (hidden and marked bookmarks etc.).
+* You can save the current bookmark-list state and return to it
+  later.  There are a few ways to do this, including
+  bookmarking the list itself. See [[#BookmarkListViews]].
 
 * You can edit a bookmark (its name and file name).
 
@@ -126,7 +108,13 @@ you "jump" to the bookmark.
 * As mentioned above, a bookmark can represent a sequence of
 other bookmarks.
 
+* You can bookmark buffer `##*Bookmark List*##' itself.  Jumping to such a
+  bookmark restores the sort order, filter, title, and omit
+  list (see [[#OmittingBookmarks]]).
 
+
+
+[:Icicles]
 === Synergy with Icicles. ===
 
 If you use '''[[Icicles]]''', then you can use `S-delete' during
@@ -176,6 +164,9 @@ do quite a lot using bookmark tags.  Use your imagination!  See [[#TagCommandsAn
 
 
 
+
+
+
 [:FunctionAndSequenceBookmarks]
 == Function and Sequence Bookmarks ==
 
@@ -214,14 +205,28 @@ current order.
 
 
 
-[:Bookmark List]
-== Bookmark List (Display) ==
 
-'''Bookmark+''' enhances the bookmark list (aka the bookmark "menu list") that is displayed in buffer `##*Bookmark List*##' when you use `C-x r l' (command `bookmark-bmenu-list'). Bookmarks are highlighted to
-indicate their type. You can mark and unmark bookmarks, show or
-hide bookmarks of particular types, and much more.
 
-If option '''`bookmarkp-bmenu-state-file'''' is non-`nil', then '''Bookmark+'''
+[:BookmarkListViews]
+== Bookmark-List Views - Saving and Restoring State ==
+
+The bookmark list (buffer `##*Bookmark List*##') provides a view into
+the set of bookmarks.  You can mark, sort, and hide (filter, omit)
+bookmarks --- see [[#BookmarkListDisplay]].  The state of the
+displayed bookmark list can thus change.
+
+At different times, and in different contexts, different views can
+be useful.  '''Bookmark+''' lets you save the current state of
+the displayed list and later restore it.  There are a few
+different ways to do this.
+
+
+
+[:QuittingSaves]
+=== Quitting Saves the Bookmark-List State ===
+
+If option '''`bookmarkp-bmenu-state-file'''' is non-`nil', which it is by
+default, then '''Bookmark+'''
 remembers the last state of the bookmark list when you quit it or
 you quit Emacs, and it restores that state when you show the list
 again (which could be in the next Emacs session).  You can think of
@@ -230,15 +235,86 @@ stepping stone to the files and directories you use most.
 
 If, for example, when you quit the bookmark list you are showing only bookmarks to [[Info]] nodes and UNIX manual pages, sorted in a particular way, and with some of them marked for particular processing, then the next time you open the list the same state is restored: the same set of bookmarks is shown, in the same order, with the same markings.
 
-You can turn off this automatic state saving, if you want, by customizing option '''`bookmarkp-bmenu-state-file'''' to `nil'. And you can toggle this option at any time, using '''`C-t'''' in the bookmark list. In particular, if you want your next visit to the bookmark list to start out with a previously recorded state instead of the current state, just hit `C-t' before quitting the bookmark list or Emacs.
+You can turn off this automatic state saving, if you want, by customizing option '''`bookmarkp-bmenu-state-file'''' to `nil'. And you can toggle this option at any time, using '''`C-t'''' in the bookmark list. In particular, if you want your next visit to the bookmark list to start out with a ''previously'' recorded state instead of the current state, just hit `C-t' before quitting the bookmark list or Emacs.
 
-See also `C' (command
-`bookmarkp-bmenu-define-full-snapshot-command'), [[#bookmarkp-bmenu-define-full-snapshot-command|above]], for a way
-to create and restore other bookmark-list snapshots.
+
+
+[:StateRestoration]
+=== State-Restoring Commands and Bookmarks ===
+
+In addition to automatically saving/restoring the final
+bookmark-list state, you can save the state at any time, any
+number of times, for later restoration.  This gives you the
+ability to create multiple persistent views of your bookmarks.
+
+There are two ways to do this:
+
+* Create a bookmark for the `##*Bookmark List*##' buffer itself.
+* Define a command that restores the bookmark-list state.
+
+When you use `C-x r m' (`bookmark-set') in buffer `##*Bookmark List*##' to
+create a bookmark, the current sort order, filter, title, and omit
+list are saved as part of the bookmark.  (These concepts are
+described below --- see [[#BookmarkListDisplay]].)  Jumping to
+such a bookmark restores all of these.
+
+[:bookmarkp-bmenu-define-command]
+Alternatively, you can define a command that does the same thing,
+but without creating another bookmark -- use '''`c'''' (`bookmarkp-bmenu-define-command') in the bookmark
+list to do this.  You are
+prompted for the name of the new command.  Use the command anytime
+(including in another Emacs session) to restore the bookmark list.
+
+Define any number of such commands for the views you use.  The
+file for saving the definitions (see option
+'''`bookmarkp-bmenu-commands-file'''') is never overwritten, so you can
+also add other code to it manually, if you want.  The file is read
+the first time the bookmark list is displayed in a given Emacs
+session.
+
+The state that is saved and restored using a bookmark-list bookmark or a
+command defined using `c' is only a partial state.  The current
+set of markings and some other information is not saved, in order
+to save disk space and save/restore time.
+
+[:bookmarkp-bmenu-define-full-snapshot-command]
+Sometimes, however, you really want to save the entire
+bookmark-list state, creating a full snapshot.  You can use '''`C''''
+(`bookmarkp-bmenu-define-full-snapshot-command') to do that.  This
+defines a command that restores the bookmark list completely.
+That is the same thing that happens automatically (by default)
+whenever you quit the bookmark list (or Emacs), but defining
+snapshot commands lets you have multiple saved states and switch
+to them at will.
+
+''Be aware, however'', that full-snapshot command definitions can be
+quite large, since they each contain a copy of the current
+bookmark list and any accessory lists (hidden and marked bookmarks
+etc.).
+
+Whether you use `c' or `C' to define a state-restoring command or
+you create a bookmark-list bookmark, you can create a ''sequence
+bookmark'' that combines such bookmark-list restoration with
+activation of other bookmarks.  (To include a state-restoring
+command in a sequence, you need to first create a function
+bookmark that uses the command, and then include that bookmark in
+the sequence.)
+
+
+
+
+
+
+
+[:BookmarkListDisplay]
+== Bookmark List (Display) ==
+
+'''Bookmark+''' enhances the bookmark list (aka the bookmark "menu list", a misnomer) that is displayed in buffer `##*Bookmark List*##' when you use `C-x r l' (command `bookmark-bmenu-list'). Bookmarks are highlighted to
+indicate their type. You can mark and unmark bookmarks, show or
+hide bookmarks of particular types, and more.
 
 Use `##?##' or `##C-h m##' in buffer `##*Bookmark List*##' for more
 information about the bookmark list.
-
 
 
 

@@ -12,4 +12,11 @@ or for those behind a proxy:
 
 Beware that this (by design) includes the entire history and therefore weighs about 300MB.
 
+= On the move =
+
+Now that Emacs development has moved to [[Bazaar]] it seems like their is no canonical git mirror yet
+(see http://thread.gmane.org/gmane.emacs.devel/118918).  Once more information is available I will
+update this page (but feel free to do it yourself).
+
+
 See also [[WikiPedia:Git (software)]].

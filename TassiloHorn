@@ -1,24 +1,27 @@
 Hi all,
 
-I use Emacs for all major editing tasks and Gnus for usenet. My configs and some applications I wrote, for example the !RDictCc app with its emacs integration, can be found on my [http://www.tsdh.de homepage].
+I use Emacs for all major editing tasks and Gnus for usenet.  Have a look at my
+[http://www.tsdh.de homepage].
 
 I work on the following emacs projects:
 
 * [[Emacs]] itself
 * [[Gnus]]
+* [[OrgMode]]
 * [[EMMS]]
 * [[Circe]]
 
 My own extensions are:
 
-* DocViewMode -- View PDF, PS and DVI files inside Emacs
+* DocViewMode -- View PDF, PS and DVI files inside Emacs (included in GNU Emacs 23)
 * ExecAbbrevCmd -- Execute emacs commands by giving an abbreviation
 
 Have fun,
 Tassilo, aka [::tsdh]@IRC
 
 [new]
-Welcome to the wiki! It seems that you never got welcomed to the site. Asche auf mein Haupt! Das sei hiermit nachgeholt. ;) -- AlexSchroeder
+Welcome to the wiki! It seems that you never got welcomed to the site. Asche
+auf mein Haupt! Das sei hiermit nachgeholt. ;) -- AlexSchroeder
 
 [new]
 Thanks, Alex!

@@ -21,7 +21,17 @@ truly fun software package I've ever used.
 
 Things I'd like to try/get working:
 * Gnus---is it worth all the effort?
+
+** I started with gnus (I learned emacs only because of Gnus), and I really
+   like it, especially with a local IMAP server (Dovecot) to speed things up,
+   and notmuch for fast email searches.  I have nearly 100.000 mails, and
+   Gnus/notmuch make it managable. -- TassiloHorn
+
 * something to replace Google Reader, perhaps NewsTicker, Gnus?
+
+** I use newsticker, but with the plain interface, not the fancy tree view. For
+   me, it does all I need, and it does work with any format.  The last time I
+   tried gnus for that, it had some troubles with some feeds. -- TassiloHorn
 
 Things that will make Emacs cooler (if that's possible):
 * [[Google Wave for Emacs]]

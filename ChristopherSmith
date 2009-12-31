@@ -1,6 +1,6 @@
 nick on #emacs = smitty1e
 
-real email     = smittyUNDERSCOREoneUNDERSCOREeachAThomtailDOTcom
+real email     = smitty1eATgmailDOTcom
 
 fsf  member    #2221
 
@@ -86,5 +86,130 @@ It is called Mac OS 10, after Mac OS 9, with 10 written as Roman Numeral X, mean
 And Mac stands for? Macintosh which is? A piece of hardware. Thus Mac OS X is named for its hardware.
 [new]
 While filter spam is an obvious requirement, I'm unsure Xah falls in that category, so I'd prefer not to censor his ideas, at least on my personal page.  Thanks, C.
+
+----
+=== .emacs ===
+
+(setq visible-bell 1)
+
+(fset 'yes-or-no-p 'y-or-n-p) 
+
+(setq load-path (cons "C:/Program Files/emacs/lisp/progmodes" load-path))
+
+(require 'bbdb)
+
+(bbdb-initialize)
+
+(require 'php-mode)
+
+(add-hook 'kill-emacs-query-functions
+
+  (lambda () (yes-or-no-p "Really kill Emacs? ")))
+
+(add-hook 'haskell-mode-hook
+
+           #'(lambda ()
+
+               (setq comment-padding " ")
+
+               (setq comment-start "--")))
+
+(setq auto-mode-alist
+
+      (append auto-mode-alist
+
+              '(("\\.[hg]s$"  . haskell-mode)
+
+                ("\\.hs$"     . haskell-mode)
+
+                ("\\.l[hg]s$" . literate-haskell-mode))))
+
+
+
+(autoload 'haskell-mode          "haskell-mode"   "Major mode for editing Haskell scripts." t)
+
+(autoload 'literate-haskell-mode "haskell-mode"   "Major mode for editing literate Haskell scripts." t)
+
+(add-hook 'haskell-mode-hook 	 'turn-on-haskell-doc-mode)
+
+(add-hook 'haskell-mode-hook 	 'turn-on-haskell-indent)
+
+(add-hook 'haskell-mode-hook 	 'font-lock-mode)
+
+(add-hook 'haskell-mode-hook 	 'imenu-add-menubar-index)
+
+(add-hook 'dired-load-hook
+
+          (lambda ()
+
+            (load "dired-x")
+
+            ;; Set dired-x global variables here.  For example:
+
+            ;; (setq dired-guess-shell-gnutar "gtar")
+
+            ;; (setq dired-x-hands-off-my-keys nil)
+
+            ))
+
+(add-hook 'dired-mode-hook
+
+          (lambda ()
+
+            ;; Set dired-x buffer-local variables here.  For example:
+
+             (dired-omit-mode 1)
+
+            ))
+
+
+
+
+
+(custom-set-variables
+
+  ;; custom-set-variables was added by Custom.
+
+  ;; If you edit it by hand, you could mess it up, so be careful.
+
+  ;; Your init file should contain only one such instance.
+
+  ;; If there is more than one, they won't work right.
+
+ '(dired-omit-files "^\\.?#\\|^\\.$\\|^\\.\\.$|\\.elc$|\\.pyc$")
+
+ '(show-paren-mode t)
+
+ '(text-mode-hook (quote (turn-on-auto-fill text-mode-hook-identify)))
+
+ '(transient-mark-mode t))
+
+(custom-set-faces
+
+  ;; custom-set-faces was added by Custom.
+
+  ;; If you edit it by hand, you could mess it up, so be careful.
+
+  ;; Your init file should contain only one such instance.
+
+  ;; If there is more than one, they won't work right.
+
+ )
+
+(fset 'fmjra-suffix
+
+   [?\C-  left left left left left left left left left left left left ?\M-w down end ?\C-y end ])
+
+(fset 'fmjra-linkify
+
+   [home ?< ?l ?i ?> ?< ?a ?  ?h ?r ?e ?f ?= ?\" end ?\" ?> ?< ?/ ?a ?> ?< ?/ ?l ?i ?> ])
+
+(global-set-key (kbd "<f5>") 'fmjra-linkify)
+
+(fset 'fmjra-node
+
+   [?< ?b ?> ?< ?/ ?b ?> return ?< ?u ?l ?> return ?< ?/ ?u ?l ?> ])
+
+(put 'downcase-region 'disabled nil)
 ----
 CategoryHomepage
