@@ -47,6 +47,7 @@ Key features of ElScreen are:
 
 Following emacs variants are confirmed to run ElScreen:
 
+ - GNU Emacs 23.0.92
  - GNU Emacs 22.0.50 (including Meadow 3.00-dev)
  - GNU Emacs 21.4
  - GNU Emacs 21.3

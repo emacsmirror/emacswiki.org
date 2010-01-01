@@ -130,7 +130,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 247 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 248 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.  I  have  also  received
@@ -343,8 +343,7 @@
 (defvar sr-selected-window 'left
   "The window to select when sr starts up.")
 
-(defvar sr-history-registry
-  (acons 'left nil (acons 'right nil nil))
+(defvar sr-history-registry '((left)(right)) 
   "Registry of visited directories for both panes")
 
 (defvar sr-ti-openterms nil
@@ -707,6 +706,14 @@ automatically:
       (if (member (selected-window) (list sr-left-window sr-right-window))
           (sr-select-window sr-selected-window)))))
 (ad-activate 'other-window)
+
+;; for some strange reason delete-directory does not follow symlinks:
+(defadvice delete-directory
+  (around sr-advice-delete-directory (directory &optional recursive))
+  (if (file-symlink-p directory)
+      (delete-file directory)
+    ad-do-it))
+(ad-activate 'delete-directory)
 
 ;;; ============================================================================
 ;;; Sunrise Commander keybindings:
@@ -1430,6 +1437,7 @@ automatically:
                 (t 'sunrise-x-old-checkpoints)))
          (name (symbol-name feature)))
     (or
+     (not (featurep 'sunrise-commander))
      (require feature nil t)
      noerror
      (error (format "Feature %s not found!\
@@ -1442,10 +1450,11 @@ automatically:
      (sr-require-checkpoints-extension)
      (call-interactively ',function-name)))
 
-(sr-checkpoint-command sr-checkpoint-save    (arg))
-(sr-checkpoint-command sr-checkpoint-restore (arg))
-(sr-checkpoint-command sr-checkpoint-handler (arg))
-(sr-require-checkpoints-extension t)
+(sr-checkpoint-command sr-checkpoint-save    (&optional arg))
+(sr-checkpoint-command sr-checkpoint-restore (&optional arg))
+(sr-checkpoint-command sr-checkpoint-handler (&optional arg))
+(eval-after-load 'sunrise-commander
+  (sr-require-checkpoints-extension t))
 
 (defun sr-do-find-marked-files (&optional noselect)
   "Sunrise replacement for dired-do-marked-files."
@@ -2034,20 +2043,29 @@ automatically:
   (mapc
    (function
     (lambda (f)
-      (if (file-directory-p f)
-          (let* ((name (file-name-nondirectory f))
-                 (initial-path (file-name-directory f)))
-            (sr-clone-directory
-             initial-path name target-dir clone-op do-overwrite))
-        (if clone-op
-            (let* ((name (file-name-nondirectory f))
-                   (target-file (concat target-dir name)))
-              (message "Cloning: %s => %s" f target-file)
-              (if (file-exists-p target-file)
-                  (if (or (eq do-overwrite 'ALWAYS)
-                          (setq do-overwrite (sr-ask-overwrite target-file)))
-                      (apply clone-op (list f target-file t)))
-                (apply clone-op (list f target-file t))))))))
+      (let* ((name (file-name-nondirectory f))
+             (target-file (concat target-dir name))
+             (symlink-to (file-symlink-p (replace-regexp-in-string "/*$" "" f))))
+        (cond
+         (symlink-to
+          (progn
+            (if (file-exists-p symlink-to)
+                (setq symlink-to (expand-file-name symlink-to)))
+            (make-symbolic-link symlink-to target-file do-overwrite)))
+
+         ((file-directory-p f)
+          (let ((initial-path (file-name-directory f)))
+            (unless (file-symlink-p initial-path)
+              (sr-clone-directory
+               initial-path name target-dir clone-op do-overwrite))))
+
+         (clone-op
+          (message "Cloning: %s => %s" f target-file)
+          (if (file-exists-p target-file)
+              (if (or (eq do-overwrite 'ALWAYS)
+                      (setq do-overwrite (sr-ask-overwrite target-file)))
+                  (apply clone-op (list f target-file t)))
+            (apply clone-op (list f target-file t))))))))
    file-paths))
 
 (defun sr-clone-directory (in-dir d to-dir clone-op do-overwrite)
@@ -2056,8 +2074,7 @@ indir/d => to-dir/d using clone-op to clone all files."
   (setq d (replace-regexp-in-string "/?$" "/" d))
   (if (string= "" d)
       (setq to-dir (concat to-dir (sr-directory-name-proper in-dir))))
-  (let* ((files-in-d (append (sr-list-of-files (concat in-dir d))
-                             (sr-list-of-directories (concat in-dir d))))
+  (let* ((files-in-d (sr-list-of-contents (concat in-dir d)))
          (file-paths-in-d
           (mapcar (lambda (f) (concat in-dir d f)) files-in-d)))
     (unless (file-exists-p (concat to-dir d))
@@ -2171,24 +2188,25 @@ indir/d => to-dir/d using clone-op to clone all files."
       (equal (substring dir2 0 (length dir1)) dir1)
       nil))
 
+(defun sr-list-of-contents (dir)
+  "Return the whole list of contents in DIR as a list of strings."
+  (sr-filter (function (lambda (x) (not (string-match "\\.\\.?/?$" x))))
+             (directory-files dir)))
+
 (defun sr-list-of-directories (dir)
  "Return  a  list of directories in DIR. Each entry in the list is a string. The
  list does not include the current directory and the parent directory."
- (let (result)
-   (setq result
-         (sr-filter (function (lambda (x) (not (or (equal x ".") (equal x "..")))))
-                    (sr-filter
-                     (function (lambda (x)
-                                 (file-directory-p (concat dir "/" x))))
-                     (directory-files dir))))
+ (let ((result (sr-filter (function (lambda (x)
+                                      (file-directory-p (concat dir "/" x))))
+                          (sr-list-of-contents dir))))
    (mapcar (lambda (x) (concat x "/")) result)))
 
 (defun sr-list-of-files (dir)
-  "Return a list of regular files in DIR. Each entry in the list is a string."
+  "Return a list of regular files in  DIR as a list of strings. Broken links are
+  *not* considered regular files."
   (sr-filter
-   (function (lambda (x)
-               (file-regular-p (concat dir "/" x))))
-   (directory-files dir)))
+   (function (lambda (x) (file-regular-p (concat dir "/" x))))
+   (sr-list-of-contents dir)))
 
 (defun sr-filter (p x)
   "Filter  takes two arguments: a predicate P and a list X.  Return the elements

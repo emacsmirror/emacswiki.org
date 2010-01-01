@@ -28,7 +28,7 @@
 ;; your  bookmarks.el, just add this extension to your .emacs.el to get back the
 ;; original functionality.
 
-;; This is version 1 $Rev: 246 $ of the Old Checkpoints Extension.
+;; This is version 1 $Rev: 248 $ of the Old Checkpoints Extension.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.
@@ -46,8 +46,9 @@
 
 ;;; Code:
 
-(defvar sr-checkpoint-registry
-  (acons "~" (list sr-left-directory sr-right-directory) nil)
+(eval-when-compile (require 'sunrise-commander))
+
+(defvar sr-checkpoint-registry '(("~" "~/" "~/"))
   "Registry of currently defined checkpoints")
 
 (defun sr-checkpoint-save (name)

@@ -65,7 +65,7 @@ statements for loading the other naf-mode-* packages below.
 * Lisp:naf-mode-replacements.el -- 
 * Lisp:naf-name-utils.el -- 
 * Lisp:naf-mode-classes.el -- 
-* Lisp:naf-mode-db-f.el -- 
+* Lisp:naf-mode-db-fields.el -- 
 * Lisp:naf-mode-db-flags.el -- 
 * Lisp:naf-mode-dates.el -- 
 * Lisp:naf-mode-french-months.el -- 

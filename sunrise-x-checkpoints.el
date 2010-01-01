@@ -32,7 +32,7 @@
 ;; other  one is deprecated and will eventually disappear once Emacs 23+ becomes
 ;; the "stable" release.
 
-;; This is version 1 $Rev: 246 $ of the Sunrise Commander Checkpoints Extension.
+;; This is version 1 $Rev: 248 $ of the Sunrise Commander Checkpoints Extension.
 
 ;; It  was  written and tested on GNU Emacs 23 on Linux.
 
@@ -47,6 +47,8 @@
 ;; expression to your .emacs file somewhere after (require 'sunrise-commander).
 
 ;;; Code:
+
+(eval-when-compile (require 'sunrise-commander))
 
 (defalias 'sr-checkpoint-save    'sr-checkpoint-bookmark)
 

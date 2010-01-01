@@ -90,6 +90,8 @@ While filter spam is an obvious requirement, I'm unsure Xah falls in that catego
 ----
 === .emacs ===
 
+
+<pre>
 (setq visible-bell 1)
 
 (fset 'yes-or-no-p 'y-or-n-p) 
@@ -211,5 +213,8 @@ While filter spam is an obvious requirement, I'm unsure Xah falls in that catego
    [?< ?b ?> ?< ?/ ?b ?> return ?< ?u ?l ?> return ?< ?/ ?u ?l ?> ])
 
 (put 'downcase-region 'disabled nil)
+
+</pre>
+
 ----
-CategoryHomepage
+CategoryHomepage CategoryDotEmacs

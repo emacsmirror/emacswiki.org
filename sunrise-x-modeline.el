@@ -1,5 +1,5 @@
 ;;; sunrise-x-modeline.el --- Navigable mode line for the Sunrise Commander File
-;;; Manager.
+;;  Manager.
 
 ;; Copyright (C) 2009 José Alfredo Romero Latouche (j0s3l0)
 
@@ -33,7 +33,7 @@
 ;; The  extension  is  provided  as a minor mode, so you can enable / disable it
 ;; totally by issuing the command (M-x) sr-modeline.
 
-;; This is version 2 $Rev: 220 $ of the Sunrise Commander Modeline Extension.
+;; This is version 2 $Rev: 248 $ of the Sunrise Commander Modeline Extension.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.
@@ -53,11 +53,12 @@
 
 (require 'sunrise-commander)
 (require 'easymenu)
+(eval-when-compile (require 'cl))
 
-(defconst sr-modeline-norm-mark " * ") ;; ☼
-(defconst sr-modeline-sync-mark " & ") ;; ⚓
-(defconst sr-modeline-edit-mark " ! ") ;; ⚡
-(defconst sr-modeline-virt-mark " @ ") ;; ☯
+(defconst sr-modeline-norm-mark " ☼ ") ;; * 
+(defconst sr-modeline-sync-mark " ⚓ ") ;; &
+(defconst sr-modeline-edit-mark " ⚡ ") ;; !
+(defconst sr-modeline-virt-mark " ☯ ") ;; @
 
 ;;; ============================================================================
 ;;; Core functions:
@@ -139,6 +140,8 @@
 
 ;;; ============================================================================
 ;;; Private interface:
+
+(defvar sr-modeline)
 
 (defun sr-modeline-refresh ()
   (setq sr-modeline t)

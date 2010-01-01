@@ -1,5 +1,5 @@
 ;;;  sunrise-x-loop.el  ---  Asynchronous execution of filesystem operations for
-;;;  the Sunrise Commander File Manager.
+;;  the Sunrise Commander File Manager.
 
 ;; Copyright (C) 2008 José Alfredo Romero L.
 
@@ -53,7 +53,7 @@
 ;; since in these cases the execution of file transfers in the background should
 ;; be managed directly by the FTP client.
 
-;; This is version 2 $Rev: 174 $ of the Sunrise Commander Loop Extension.
+;; This is version 3 $Rev: 248 $ of the Sunrise Commander Loop Extension.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.
@@ -105,6 +105,7 @@
 (if (boundp 'sr-mode-map)
     (progn
       (define-key sr-mode-map "C" 'sr-loop-do-copy)
+      (define-key sr-mode-map "K" 'sr-loop-do-clone)
       (define-key sr-mode-map "R" 'sr-loop-do-rename)))
 
 (defun sr-loop-start ()
@@ -205,7 +206,7 @@
                 (message "%s" (concat "[[Executing in background: "
                                       (prin1-to-string command) "]]")))
             (eval command)
-            (message "[[Command successfully executed in background]]"))
+            (message "[[Command successfully invoked in background]]"))
         (error (message "%s" (concat "[[*ERROR IN BACKGROUND JOB: "
                                      (prin1-to-string description) "*]]"))))
         (message "^%s" (prin1-to-string command)))))
@@ -225,6 +226,16 @@
       (let ((sr-loop-scope t))
         (sr-do-copy))
     (sr-do-copy)))
+
+(defun sr-loop-do-clone (&optional arg)
+  "Drop-in prefixable replacement for the sr-do-clone command. When invoked with
+  any prefix,  sets a flag  that is  used later by  advice to decide  whether to
+  delegate further copy operations to the background interpreter."
+  (interactive "P")
+  (if (and arg (sr-loop-applicable-p))
+      (let ((sr-loop-scope t))
+        (call-interactively 'sr-do-clone))
+    (call-interactively 'sr-do-clone)))
 
 (defun sr-loop-do-rename (&optional arg)
   "Drop-in  prefixable  replacement  for  the sr-do-rename command. When invoked
@@ -270,12 +281,13 @@
 
 ;; This delegates to the background interpreter all copy operations triggered by
 ;; sr-do-copy inside a loop scope:
-(defadvice sr-copy-files
-  (around sr-loop-advice-sr-copy-files
-          (file-path-list target-dir &optional do-overwrite))
+(defadvice sr-clone-files
+  (around sr-loop-advice-sr-clone-files
+          (file-path-list target-dir clone-op &optional do-overwrite))
   (if sr-loop-scope
       (sr-loop-enqueue
-       `(sr-copy-files (quote ,file-path-list) ,target-dir 'ALWAYS))
+       `(sr-clone-files
+         (quote ,file-path-list) ,target-dir #',clone-op 'ALWAYS))
     ad-do-it))
 
 ;; This  delegates to the background interpreter all rename operations triggered
@@ -293,7 +305,7 @@
   (mapc 'ad-activate '(y-or-n-p
                        dired-mark-read-file-name
                        dired-create-files
-                       sr-copy-files
+                       sr-clone-files
                        sr-move-files)))
 
 (defun sr-loop-disengage ()
@@ -301,7 +313,7 @@
   (mapc 'ad-deactivate '(y-or-n-p
                          dired-mark-read-file-name
                          dired-create-files
-                         sr-copy-files
+                         sr-clone-files
                          sr-move-files)))
 
 (sr-loop-engage)

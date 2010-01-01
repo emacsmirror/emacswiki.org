@@ -52,7 +52,7 @@ Overview of the Bazaar work routine:
 # Create a local development branch, based off your local trunk mirror.
 # (Maybe create a feature branch for some specific task.)
 # Do your work on one of your non-mirror local branches, committing locally as you go.
-# From time to time, pull upstream newness into your mirror branch (this is like <tt>cvs update</tt>), and then merge the newness into your dev/task branches from there (also sort of like <tt>cvs update</tt>).
+# From time to time, update to get upstream newness into your mirror branch (this is like <tt>cvs update</tt>), and then merge the newness into your dev/task branches from there (also sort of like <tt>cvs update</tt>).
 # When your local changes are ready, then either
 ## merge them into the master branch (if you're a maintainer and have the necessary access rights --- this is analogous to committing in CVS), /or/
 ## package up your changes and send them as a "bundle" to the project mailing list (analogous to posting a patch).
@@ -131,11 +131,11 @@ Remember this is all happening inside a shared repository.  In a Bazaar shared r
 First, refresh your mirror and then the working branch:
 
       cd $DEVHOME/emacs/trunk
-      bzr pull                       # update from the upstream master (optional)
+      bzr update                     # update from the upstream master (optional)
       cd ../quickfixes
       bzr merge                      # update from /trunk/ (optional)
 
-The reason you use "##merge##" instead of "##pull##" in the task branch is that your task branch has local changes -- it has diverged (a bit) from the upstream master, and so any changes from upstream have to be merged with your changes.  A "pull", on the other hand, assumes that the destination is pristine, that is, that there are no local changes, and will error if it finds any.
+The reason you use "##merge##" instead of "##update##" in the task branch is that your task branch has local changes -- it has diverged (a bit) from the upstream master, and so any changes from upstream have to be merged with your changes.
 
 The merge may fail due to a change that conflicts with your branch.  You'll need to fix the problem (looking for conflict markers and editing, just as in CVS), then
 
@@ -180,21 +180,21 @@ When revising your change, even though nobody else knows about your first commit
 [:MergeToUpstream]
 === Merging Into the Upstream Master ===
 
-Alternatively, if you are a committer, you may want to merge to the upstream master.  To do this, first merge to your mirror:
+Alternatively, if you are a committer, you may want to merge to the upstream master.  To do this, first update your mirror:
 
       cd $DEVHOME/emacs/trunk/
-      bzr pull
+      bzr update
       bzr merge ../quickfixes
 
 and then commit
 
       bzr commit -m "Merge: fix bla bla bla (closes Bug #1)."
 
-which automatically merges all your new commits to the upstream master, because the mirror is set up as bound branch.  In this process, updating your ##trunk## with ##bzr pull## is not really optional.  There is a race condition here, just as in CVS: if your mirror is not up-to-date because another developer has committed since you last updated, your commit will fail.  In this case you should abort the merge
+which automatically merges all your new commits to the upstream master, because the mirror is set up as bound branch.  In this process, updating your ##trunk## with ##bzr update## is not really optional.  There is a race condition here, just as in CVS: if your mirror is not up-to-date because another developer has committed since you last updated, your commit will fail.  In this case you should abort the merge
 
       bzr revert
 
-do another ##bzr pull##, merge from ##quickfixes## again, and commit.  After you successfully commit, the changes will appear grouped as a single merge in ##bzr log## on the mainline, but anyone can use ##bzr log -n0## to see the sub-commits (or "nested commits") within that merge.
+do another ##bzr update##, merge from ##quickfixes## again, and commit.  After you successfully commit, the changes will appear grouped as a single merge in ##bzr log## on the mainline, but anyone can use ##bzr log -n0## to see the sub-commits (or "nested commits") within that merge.
 
 It might occur to you to save some effort by just doing ##bzr push## directly to the upstream master from inside the ##quickfixes## branch:
 
@@ -228,14 +228,11 @@ If the task isn't done yet, keep working.  Edit yet more source files, until you
 
 etc.  You can commit any time you reach a good checkpoint.  We recommend committing much more frequently than you might with CVS or Subversion.
 
-From time to time you may wish to refresh the local trunk mirror, by
-pulling in changes from upstream:
+From time to time you may wish to refresh the local trunk mirror, by updating to get changes from upstream:
 
       pushd $DEVHOME/trunk/
-      bzr pull
+      bzr update
       popd
-
-Because the trunk mirror is bound to upstream, and never has any local changes, you don't have to then commit what you just pulled --- all that upstream newness is now fully incorporated into your mirror.
 
 And after refreshing the mirror, you'll want to get those changes into your task branch, by merging them:
 
@@ -255,7 +252,7 @@ At that point, you can delete your task branch...
 ...and update your mirror to receive your own changes:
 
       cd trunk/
-      bzr pull
+      bzr update
       cd ..
 
 Note that you will still be able to see the entire history of your branch in the trunk by using ##bzr log -n0##, even though you've deleted the local copy.

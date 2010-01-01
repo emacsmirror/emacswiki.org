@@ -154,3 +154,17 @@ Here's a function based on hippie expand dabbrev expansion which performs substr
     result))
 
 </pre>
+
+
+
+[new]
+I find a bug in try-expand-dabbrev-visible. When there is no further expansions, the cursor moves, which is very annoying. My simple fix:
+<pre>
+(defun try-zwz-expand-dabbrev-visible (old)
+  (save-excursion (try-expand-dabbrev-visible old)))
+</pre>
+-- [[zwz]]
+
+[new:DrewAdams:2009-12-31 16:08 UTC]
+Report Emacs bugs using `M-x report-emacs-bug'. -- DrewAdams
+

@@ -32,9 +32,9 @@ directory.  Optionally you can run the program addpm.exe (located in
 the bin directory) to add an Emacs entry to the Windows Start menu
 (please refer to the README.W32 file).
 
-The Ansys solver control and communication capabilities are somewhat
-restricted on non-UNIX systems.
+The Ansys solver control and communication capabilities are somewhat restricted on non-UNIX systems.
 
+Ansys Mode needs now more than one lisp file, be sure you have all the necessary files in place, please see the Installation section for a list of them.
 == Features ==
 
 * Ansys process management (viewing error files, license status,
@@ -91,7 +91,19 @@ code template, respectively.
 http://www.duenenhof-wilhelm.de/dieter/ansys-mode.jpg
 
 == Installation ==
+=== Files ===
+Code:
+* ansys-mode.el
+* ansys-keyword.el
+* ansys-template.el
+* ansys-process.el
 
+Auxiliaries:
+* README -- this file
+* TODO -- todos and deficiencies
+* LICENSE -- GPL V3
+* default_.el -- configuration example of an Emacs default.el
+* fontification.mac -- highlighting APDL example
 === Short instructions ===
 
 ==== Direct way; no file configuration necessary ====

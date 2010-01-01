@@ -5,11 +5,6 @@ Kleines How-To, um Highlighting für ANSYS-Dateien zu nutzen.
 
 ; Emacs 21 & 22: http://www.mecheng.adelaide.edu.au/~will/ansys/ansys-mod.el
 
-----
-[new]
-Ich habe einen weiteren Ansys Modus (nur) für GNU Emacs 22 geschrieben, er basiert auf einer aktuellen Ansys Version (11.0) und bietet mehr Möglichkeiten (Siehe AnsysMode). -- [[dida]]
-----
-
 Installation:
 
 * Datei ansys-mod.el in lokales Verzeichnis mit elisp-Dateien herunterladen
@@ -19,6 +14,8 @@ Installation:
 **    (cons '("\\.m$" . ansys-mode) auto-mode-alist)) .m$ in .ans$ aendern
 
 Das war's. Wichtig ist zu beachten, daß die entsprechenden Ansys-Dateien mit .ans enden
-
+----
+[new]
+Ich habe einen erweiterten Ansys Modus für GNU Emacs 23 geschrieben, er basiert auf einer aktuelleren Ansys Version (12.0) und bietet weitaus mehr Möglichkeiten.  Allerdings ist die Dokumentation nur auf Englisch, siehe AnsysMode. -- [[dida]]
 ----
 CategoryModes
