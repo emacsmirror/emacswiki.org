@@ -12,4 +12,4 @@ Get it at http://www.mecheng.adelaide.edu.au/~will/ansys/ansys-mod.el
 
 
 [new]
- For a more powerful and up to date Ansys mode--but which runs only with Emacs 22--please have a look at AnsysMode -- [[dida]]
+ For a more powerful and up to date Ansys mode, based on Ansys 12.0 and written for Emacs 23, please have a look at AnsysMode -- [[dida]]

@@ -1,4 +1,14 @@
-If you want to highlight long lines, use code such as the following:
+If you want to highlight long lines you can use whitespace-mode:
+
+    (setq whitespace-style '(lines))
+    (setq whitespace-line-column 78)
+    (global-whitespace-mode 1)
+
+whitespace-mode can also highlight other nasty things:
+
+    (setq whitespace-style '(tabs trailing lines tab-mark))
+
+Or you can write some elisp code:
 
     (font-lock-add-keywords 
      'emacs-lisp-mode

@@ -32,7 +32,7 @@ As Emacs needs some of the improvements provided by 1.17 release, this quick-sta
 [:WhereIsEmacs]
 === Where is Emacs? ===
 
-You can browse Emacs in loggerhead (the Bazaar web front-end) here: http://bzr.savannah.gnu.org/lh/emacs/ .  (Note that loggerhead is broken sometimes; this is [[https://savannah.gnu.org/support/index.php?107142 sr #107142]].)
+You can browse Emacs in loggerhead (the Bazaar web front-end) here: http://bzr.savannah.gnu.org/lh/emacs/ .  Unfortunately, the Savannah installation of loggerhead is broken sometimes; see [[https://savannah.gnu.org/support/index.php?107142 sr #107142]].  Fortunately, you can [http://bazaar.launchpad.net/~vcs-imports/emacs/trunk/files browse the Emacs sources at Launchpad] too; the Launchpad copy is kept up-to-date by automated means.
 
 To make a local branch or branches based on upstream Emacs, start at [[#InitializingYourBzrRepo]] and follow instructions from there.  (This is the Bazaar equivalent of `cvs checkout`.)
 
@@ -283,5 +283,6 @@ Even if you use one of those simpler setups at first, we still encourage you to 
 * [http://doc.bazaar-vcs.org/bzr.dev/en/user-guide/index.html Bzr Users Guide]
 * BzrQuickStartForEmacsDevs provides an alternate, more CVS-like, simpler workflow.
 * [http://doc.bazaar-vcs.org/explorer/en/tutorials/foss-contribute.html Contributing to Free Software Projects Made Easy]  An excellent tutorial on using the Bazaar Explorer GUI.  Warning: the workflow advocated there is both more complex in some ways and slightly different from the one recommended in /Bazaar for Emacs Devs/.
+* [http://wiki.bazaar.canonical.com/EmacsTips Emacs as commit message editor]  Tips for setting up Emacs as Bazaar commit editor.
 * [http://doc.bazaar-vcs.org/migration/en/survival/bzr-for-git-users.html Bazaar for Git users]  A pretty complete overview of the differences between Git and Bazaar.  Contains a couple of glossaries of VCS terms, which are probably useful to those who don't know git, too.
 * [http://doc.bazaar-vcs.org/migration/en/survival/bzr-for-cvs-users.html Bazaar for CVS users]  A whirlwind introduction to the features and command-line UI of Bazaar.  The workflow described is very similar to that of BzrQuickStartForEmacsDevs, and the latter document may be easier to understand because it concentrates on introducing the workflow rather than the wider field of distributed version control.

@@ -357,5 +357,8 @@ way. Therefore, I simply changed the name of jabber's version to
 jabber-modify-alist. Maybe this is already done in CVS, but I thought
 I'd mention it in case it's not. --JosephGay
 
+[new]
+I had to use @googlemail.com rather than @gmail.com to get gtalk to work.
+
 ----
 CategoryChatClient

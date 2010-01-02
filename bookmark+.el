@@ -5,12 +5,12 @@
 ;; Author: Drew Adams
 ;;         Thierry Volpiatto
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Dec 30 13:09:44 2009 (-0800)
+;; Last-Updated: Fri Jan  1 23:40:09 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 8602
+;;     Update #: 8622
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1044,6 +1044,10 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2010/01/01 dadams
+;;     *-bmenu-(un)mark, *-bmenu-other-window, *-bmenu-rename: Call bookmark-bmenu-check-position.
+;;     *-bmenu-delete: Don't call bookmark-bmenu-check-position again at end.
+;;     *-bmenu-edit-bookmark: Call bookmark-bmenu-check-position at beginning, not end.
 ;; 2009/12/30 dadams
 ;;     Added: bookmarkp-bmenu-header-lines, bookmarkp-bmenu-marks-width.  Use everywhere.
 ;; 2009/12/29 dadams
@@ -3076,8 +3080,8 @@ candidate.  In this way, you can delete multiple bookmarks."
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; 1. Add bookmark to `bookmarkp-bmenu-marked-bookmarks',
-;; 2. Do not call `bookmark-bmenu-check-position'.
+;; 1. Add bookmark to `bookmarkp-bmenu-marked-bookmarks'.
+;; 2. Don't call `bookmark-bmenu-check-position' again at end.
 ;; 3. Raise error if not in `*Bookmark List*'.
 ;;
 ;;;###autoload
@@ -3085,6 +3089,7 @@ candidate.  In this way, you can delete multiple bookmarks."
   "Mark the bookmark on this line, using mark `>'."
   (interactive)
   (bookmarkp-barf-if-not-in-menu-list)
+  (bookmark-bmenu-check-position)
   (beginning-of-line)
   (let ((inhibit-read-only  t))
     (push (bookmark-bmenu-bookmark) bookmarkp-bmenu-marked-bookmarks)
@@ -3095,7 +3100,7 @@ candidate.  In this way, you can delete multiple bookmarks."
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
 ;; 1. Remove bookmark from `bookmarkp-bmenu-marked-bookmarks'.
-;; 2. Do not call `bookmark-bmenu-check-position'.
+;; 2. Don't call `bookmark-bmenu-check-position' again at end.
 ;; 3. Raise error if not in `*Bookmark List*'.
 ;;
 ;;;###autoload
@@ -3104,6 +3109,7 @@ candidate.  In this way, you can delete multiple bookmarks."
 Optional BACKUP means move up instead."
   (interactive "P")
   (bookmarkp-barf-if-not-in-menu-list)
+  (bookmark-bmenu-check-position)
   (beginning-of-line)
   (let ((inhibit-read-only  t))
     (delete-char 1) (insert " ")
@@ -3115,6 +3121,7 @@ Optional BACKUP means move up instead."
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
 ;; 1. Do not use `bookmark-bmenu-check-position' as a test - it always returns non-nil anyway.
+;;    And don't call it at again the end.
 ;; 2. Use face `bookmarkp-bad-bookmark' on the `D' flag.
 ;; 3. Raise error if not in buffer `*Bookmark List*'.
 ;;
@@ -3132,8 +3139,7 @@ the deletions."
     (put-text-property (1- (point)) (point) 'face 'bookmarkp-bad-bookmark)
     (setq bookmarkp-bmenu-marked-bookmarks  (delete (bookmark-bmenu-bookmark)
                                                     bookmarkp-bmenu-marked-bookmarks))
-    (forward-line 1)
-    (bookmark-bmenu-check-position)))
+    (forward-line 1)))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -3371,13 +3377,13 @@ non-nil, then do nothing."
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
 ;; 1. Use `pop-to-buffer', not `switch-to-buffer-other-window'.
-;; 2. Do not call `bookmark-bmenu-check-position' (done by `bookmark-bmenu-bookmark').
-;; 3. Raise error if not in buffer `*Bookmark List*'.
+;; 2. Raise error if not in buffer `*Bookmark List*'.
 ;;
 (defun bookmark-bmenu-other-window ()   ; `o' in bookmark list
   "Select this line's bookmark in other window, leaving bookmark menu visible."
   (interactive)
   (bookmarkp-barf-if-not-in-menu-list)
+  (bookmark-bmenu-check-position)
   (let ((bookmark  (bookmark-bmenu-bookmark))
         (bookmark-automatically-show-annotations  t)) ; FIXME: needed?
     (bookmark--jump-via bookmark 'pop-to-buffer)))
@@ -3428,14 +3434,14 @@ confirmation."
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
 ;; 1. Do not call `bookmark-bmenu-list' (it was already called).
-;; 2. Do not call `bookmark-bmenu-check-position' (done by `bookmark-bmenu-bookmark').
-;; 3. Raise error if not in buffer `*Bookmark List*'.
+;; 2. Raise error if not in buffer `*Bookmark List*'.
 ;;
 ;;;###autoload
 (defun bookmark-bmenu-rename ()         ; `r' in bookmark list
   "Rename bookmark on current line.  Prompts for a new name."
   (interactive)
   (bookmarkp-barf-if-not-in-menu-list)
+  (bookmark-bmenu-check-position)
   (let ((new-name  (bookmark-rename (bookmark-bmenu-bookmark))))
     (when (or (search-forward new-name (point-max) t) (search-backward new-name (point-min) t))
       (beginning-of-line))))
@@ -4778,6 +4784,7 @@ specified tags, in order, separated by hyphens (`-').  E.g., for TAGS
   "Edit the bookmark under the cursor: its name and file name."
   (interactive)
   (bookmarkp-barf-if-not-in-menu-list)
+  (bookmark-bmenu-check-position)
   (let* ((new-data  (bookmarkp-edit-bookmark (bookmark-bmenu-bookmark)))
          (new-name  (car new-data)))
     (if (not new-data)
@@ -4785,8 +4792,7 @@ specified tags, in order, separated by hyphens (`-').  E.g., for TAGS
       (bookmark-bmenu-surreptitiously-rebuild-list)
       (goto-char (point-min))
       (while (not (equal new-name (bookmark-bmenu-bookmark))) (forward-line 1))
-      (forward-line 0)
-      (bookmark-bmenu-check-position))))
+      (forward-line 0))))
 
 (defun bookmarkp-bmenu-propertize-item (bookmark-name start end)
   "Add text properties to BOOKMARK-NAME, from START to END."

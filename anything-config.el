@@ -1218,7 +1218,13 @@ If EXPAND is non--nil expand-file-name."
         (if (string= result "~/") "~/" result)
         (if (< level 0)
             (if empty "../" (concat "../" result))
-            (if empty "/" (concat "/" result))))))
+            (cond ((and (eq system-type 'windows-nt) empty)
+                   "c:/")
+                  ((and (not empty) (eq system-type 'windows-nt))
+                   result)
+                  (empty "/")
+                  (t
+                   (concat "/" result)))))))
 
 (defun anything-find-files-down-one-level (arg)
   "Go down one level like unix command `cd ..'.
