@@ -147,6 +147,27 @@ You can use it reasonably well from Emacs:
 Any suggestions/helpful ideas please feel free.
 
 [new]
+Hi. I'm using zencoding-mode in emacs 22.2.1, on ubuntu karmic with gnome. 
+Ctrl-Return doesn't seem to do the expansion. I just get a return. 
+The expansion works fine if I do 'M-x zencoding-expand-line' though.
+
+
+I looked for info on editing keybindings, and found this page:
+http://xahlee.org/emacs/keyboard_shortcuts.html
+I noted that it lists 'Return' under "Keys to avoid".
+
+
+I have tried to edit the keybinding by changing a line in zencoding-mode.el to:
+(define-key zencoding-mode-keymap (kbd "<C-M-q>") 'zencoding-expand-line)))
+
+However, when I hit that sequence, the minibuffer proffers:
+"C-M-q is undefined"
+
+Did anyone else have a problem with this ?
+How can I fix this ?
+
+
+[new]
 Yes, please rewrite it in elisp ... ;-)
 
 Would that be hard for some reason?

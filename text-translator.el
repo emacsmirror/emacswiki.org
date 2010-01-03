@@ -1,6 +1,6 @@
 ;;; text-translator.el --- Text Translator
 
-;; Copyright (C) 2007-2009  khiker
+;; Copyright (C) 2007-2010  khiker
 
 ;; Author: khiker <khiker.mail+elisp@gmail.com>
 ;;         plus   <MLB33828@nifty.com>
@@ -104,11 +104,50 @@ I choose with the character string that I translated in the last time."
   (interactive)
   (text-translator nil t))
 
-(defun text-translator-client (engine str)
+(defun text-translator-all (arg)
+  "The function to translate in all of translate sites that matches
+the selected type."
+  (interactive "P")
+  (let ((hash text-translator-sitedata-hash)
+        (str (cond
+              (mark-active
+               (buffer-substring-no-properties (region-beginning) (region-end)))
+              (t
+               (read-string "Enter string: "))))
+        keys key)
+    (when (or (null hash)
+              arg)
+      (setq text-translator-sitedata-hash
+            (text-translator-update-hashtable))
+      (setq hash text-translator-sitedata-hash))
+    (maphash '(lambda (x y)
+                (setq keys (cons x keys)))
+             hash)
+    (setq key (completing-read "Select type: " keys nil t))
+    (when key
+      (save-selected-window
+        (pop-to-buffer text-translator-buffer)
+        (setq buffer-read-only nil)
+        (erase-buffer)
+        (text-translator-mode))
+      (let ((sites (gethash key hash)))
+        (setq text-translator-last-string str)
+        (setq text-translator-search-regexp-or-func
+              (concat "_" key))
+        (dolist  (i sites)
+          (text-translator-client i str t))))))
+
+(defun text-translator-client (engine str &optional all)
   "Function that throws out words and phrases that want to translate into
 specified site, and receives translation result."
   (let* ((history-delete-duplicates t)
-         (buf text-translator-work-buffer)
+         (buf (cond (all
+                     (concat text-translator-work-buffer
+                             (replace-regexp-in-string "_.*"
+                                                       ""
+                                                       engine)))
+                    (t
+                     text-translator-work-buffer)))
          (alist
           (cond
            ((not text-translator-do-fill-region)
@@ -137,9 +176,10 @@ specified site, and receives translation result."
          (enc-str (text-translator-url-encode-string str (nth 4 type)))
          (post-str (format (nth 3 type) enc-str))
          (truncate-partial-width-windows nil))
-    (add-to-history 'text-translator-engine-history engine)
-    (setq text-translator-search-regexp-or-func (nth 5 type))
-    (setq text-translator-last-string str)
+    (unless all
+      (add-to-history 'text-translator-engine-history engine)
+      (setq text-translator-search-regexp-or-func (nth 5 type))
+      (setq text-translator-last-string str))
     (with-current-buffer (get-buffer-create buf)
       (erase-buffer)
       (set-process-coding-system proc (nth 4 type) 'binary)
@@ -170,38 +210,75 @@ specified site, and receives translation result."
         post-str "\r\n"
         "\r\n"))
       (message "Translating...")
-      (save-selected-window
-        (pop-to-buffer text-translator-buffer)
-        (setq buffer-read-only nil)
-        (erase-buffer)
-        (text-translator-mode)
-        (setq mode-line-buffer-identification
-              `("%b [" ,(car text-translator-engine-history) "]"))))))
+      (unless (or all
+                  text-translator-display-popup)
+        (save-selected-window
+          (pop-to-buffer text-translator-buffer)
+          (setq buffer-read-only nil)
+          (erase-buffer)
+          (text-translator-mode)
+          (setq mode-line-buffer-identification
+                `("%b [" ,(car text-translator-engine-history) "]")))))))
 
 (defun text-translator-client-filter (proc str)
-  (with-current-buffer (process-buffer proc)
-    (goto-char (process-mark proc))
-    (insert (format "%s" str))
-    (set-marker (process-mark proc) (point))
-    (setq str (text-translator-replace-string
-               (or (cond
-                    ((functionp text-translator-search-regexp-or-func)
-                     (funcall text-translator-search-regexp-or-func))
-                    ((re-search-backward
-                      text-translator-search-regexp-or-func nil t)
-                     (match-string 1)))
-                   "")
-               text-translator-post-string-replace-alist))
-    (unless (string= "" str)
-      (delete-process proc)
-      (let ((window (get-buffer-window text-translator-buffer))
-            (window-min-height
-             (if (> text-translator-window-min-height (/ (frame-height) 2))
-                 (/ (frame-height) 2)
-               (1+ text-translator-window-min-height))))
-        (set-buffer text-translator-buffer)
-        (setq buffer-read-only nil)
-        (when text-translator-leave-string
+  (let ((regex-or-func text-translator-search-regexp-or-func)
+        bname all-flag)
+    (with-current-buffer (process-buffer proc)
+      (goto-char (process-mark proc))
+      (insert (format "%s" str))
+      (set-marker (process-mark proc) (point))
+      (setq bname (buffer-name))
+      (setq all-flag (not (string= bname text-translator-work-buffer)))
+      (when all-flag
+        (setq regex-or-func
+              (nth 5
+                   (assoc (concat
+                           (substring bname
+                                      (length text-translator-work-buffer)
+                                      (length bname))
+                           regex-or-func)
+                          text-translator-site-data-alist))))
+      (setq str (text-translator-replace-string
+                 (or (cond
+                      ((functionp regex-or-func)
+                       (funcall regex-or-func))
+                      ((re-search-backward regex-or-func nil t)
+                       (match-string 1)))
+                     "")
+                 text-translator-post-string-replace-alist))
+      (unless (string= "" str)
+        (delete-process proc)
+        (setq bname (buffer-name))
+        (setq all-flag (not (string= bname text-translator-work-buffer)))
+        (when (or all-flag
+                  (not text-translator-display-popup))
+          (text-translator-display-window str bname all-flag))))
+    ;; To display in popup-tip, buffer is out of with-current-buffer.
+    (when (and (not (string= "" str))
+               (not all-flag)
+               (fboundp 'popup-tip)
+               (eq text-translator-display-popup t))
+      (text-translator-display-popup str))))
+
+(defun text-translator-display-window (str buf all-flag)
+  (let ((window (get-buffer-window text-translator-buffer))
+        (window-min-height
+         (if (> text-translator-window-min-height (/ (frame-height) 2))
+             (/ (frame-height) 2)
+           (1+ text-translator-window-min-height))))
+    (set-buffer text-translator-buffer)
+    (setq buffer-read-only nil)
+    (cond
+     (all-flag
+      (insert (concat
+               (propertize
+                (format "-----  %s  -----\n"
+                        (substring buf
+                                   (length text-translator-work-buffer)
+                                   (length buf)))
+                'face font-lock-keyword-face)
+               str "\n\n")))
+     (t (when text-translator-leave-string
           (insert
            (concat
             (propertize "-----   Original  -----\n"
@@ -224,6 +301,42 @@ specified site, and receives translation result."
         (ding)
         (message "Translating...done")))))
 
+(defun text-translator-display-popup (str)
+  (let ((read-only-p buffer-read-only))
+    (setq str (with-temp-buffer
+                (insert str)
+                (when text-translator-do-fill-region
+                  (goto-char (- (point) (/ (length str) 2)))
+                  (call-interactively 'fill-paragraph))
+                (buffer-string)))
+    (ding)
+    (message "Translating...done")
+    (if read-only-p
+        ;; temporay cancel buffer-read-only
+        (unwind-protect (progn
+                          (setq buffer-read-only nil)
+                          (popup-tip str :margin t))
+          (setq buffer-read-only t))
+      (popup-tip str :margin t))))
+
+(defun text-translator-update-hashtable ()
+  (let ((hash (make-hash-table :test 'equal)))
+    (mapc '(lambda (x)
+             (let ((matched (replace-regexp-in-string "\\([^_]*\\)_"
+                                                      ""
+                                                      (car x))))
+               (unless (or (string= (car x) matched)
+                           (eq ?* (aref matched 0)))
+                 (cond
+                  ((gethash matched hash)
+                   (puthash matched
+                            (cons (car x) (gethash matched hash))
+                            hash))
+                  (t
+                   (puthash matched (list (car x)) hash))))))
+          text-translator-site-data-alist)
+    hash))
+
 (defun text-translator-replace-string (str replace)
   "Function that converts character string specified for argument STR
 according to rule REPLACE."
@@ -234,14 +347,20 @@ according to rule REPLACE."
     (buffer-string)))
 
 (defun text-translator-extract-tag-exclusion-string (regex &optional dont-convert-br)
+;;  (when (re-search-backward regex nil t)
   (when (re-search-backward regex nil t)
     ;; first: convert <br> tag to '\n' (when variable dont-convert-br is nil)
     ;; second: convert any another tags to empty string.
-    (replace-regexp-in-string
-     "<.*?>" "" (if dont-convert-br
-                    (match-string 1)
-                  (replace-regexp-in-string
-                   "<[bB][rR]\\( /\\)?>" "\n" (match-string 1))))))
+    (let ((matchstr (match-string 1)))
+      (setq matchstr
+            (text-translator-replace-string
+             matchstr
+             text-translator-post-string-replace-alist))
+      (replace-regexp-in-string
+       "<.*?>" "" (if dont-convert-br
+                      matchstr
+                    (replace-regexp-in-string
+                     "<[bB][rR]\\( /\\)?>" "\n" matchstr))))))
 
 ;;;; major-mode text-translator-mode
 
@@ -296,7 +415,7 @@ Toggle to display a translation result buffer of character
 string that used last time."
   (interactive)
   (setq text-translator-leave-string (not text-translator-leave-string))
-  (message "Pretranslational string switched%s to leave."
+  (message "Pretranslational string switched %s to leave."
            (if text-translator-leave-string "" " not")))
 
 (defun text-translator-display-last-string (arg)

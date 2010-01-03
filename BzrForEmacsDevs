@@ -96,7 +96,7 @@ Now, create a branch called ##trunk## that will just be a mirror of the mainline
       cd emacs/
       bzr branch sftp://<membername>@bzr.savannah.gnu.org/srv/bzr/emacs/trunk trunk
 
-(Use ##http://bzr.savannah.gnu.org/r/emacs/trunk/## instead if you are not a committer and just expect read-only access.)
+(Here <membername> stands for your Savannah user name.  Use ##http://bzr.savannah.gnu.org/r/emacs/trunk/## instead if you are not a committer and just expect read-only access.)
 
 This first ##bzr branch## operation in a new repository may take many minutes --- people have reported 20 to 55 minutes.  At the end of the long wait, the repository will contain the whole history of the trunk, and the ##trunk## directory will contain the working files -- that is, an Emacs tree.
 

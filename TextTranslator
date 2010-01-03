@@ -51,6 +51,9 @@ put text-translator.el, text-translator-load.el and text-translator-vars.el to l
 <pre>
 (global-set-key "\C-x\M-t" 'text-translator)
 (global-set-key "\C-x\M-T" 'text-translator-translate-last-string)
+;; translate all sites.
+;; for example, if you specify "enja", text-translator use google.com_enja, yahoo.com_enja, ... .
+(global-set-key "\C-x\M-a" 'text-translator-all)
 </pre>
 
 === add keys to major-mode ===
@@ -70,6 +73,15 @@ put text-translator.el, text-translator-load.el and text-translator-vars.el to l
 ;; ;; you have not to set this.
 ;; (setq text-translator-proxy-server "proxy.hogehoge.com")
 ;; (setq text-translator-proxy-port   8080)
+</pre>
+
+=== use popup-tip funcition ===
+
+<pre>
+;; The trasnlation results show the popup (text overlay).
+;; You have to require the popup.el. (http://github.com/m2ym/auto-complete)
+(require 'popup)
+(setq text-translator-display-popup t)
 </pre>
 
 === use translation type auto selection (english/japanese only) ===

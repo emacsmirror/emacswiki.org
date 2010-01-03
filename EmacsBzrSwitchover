@@ -29,17 +29,13 @@ See [[BzrForEmacsDevs#WhereIsEmacs]]
 [:References]
 == References ==
 
-* [http://savannah.gnu.org/support/index.php?107170 Savannah ticket #107170] This is the big one: make the CVS repository read-only, so we can do our final conversion and start using Bazaar.
+* [https://savannah.gnu.org/support/index.php?107190 Savannah ticket #107190] about turning on commit emails.
 
-* [http://savannah.gnu.org/support/index.php?106612 Savannah ticket #106612] about the Emacs Bzr switchover in general.
+* [https://savannah.gnu.org/support/index.php?106531 Savannah ticket #106531] about bzr commit emails omitting large diffs.
 
 * [https://savannah.gnu.org/support/index.php?107143 Savannah ticket #107143] and [https://savannah.gnu.org/support/?107077 #107077] about getting bzr+ssh access to work on savannah.gnu.org.
 
 * [https://savannah.gnu.org/support/index.php?107142 Savannah ticket #107142] Browsing Bazaar repositories doesn't work
-
-* [https://savannah.gnu.org/support/index.php?106951 Savannah ticket #106951] about upgrading Bazaar to 1.17 on Savannah.
-
-* [https://savannah.gnu.org/support/index.php?106531 Savannah ticket #106531] about bzr commit emails omitting large diffs.
 
 * [https://savannah.gnu.org/support/index.php?107118 Savannah ticket #107118] about fixing the bzr access instructions on Savannah project pages.
 

@@ -1,6 +1,6 @@
 ;;; text-translator-vars.el --- Text Translator
 
-;; Copyright (C) 2007-2009  khiker
+;; Copyright (C) 2007-2010  khiker
 
 ;; Author: khiker <khiker.mail+elisp@gmail.com>
 ;;         plus   <MLB33828@nifty.com>
@@ -26,7 +26,7 @@
 
 ;;; Code:
 
-(defconst text-translator-version "0.7.0alpha"
+(defconst text-translator-version "0.7.0"
   "version numbers of this version of text-translator")
 
 (defconst text-translator-buffer "*translated*"
@@ -116,14 +116,16 @@
                   (const :tag "Not use Basic proxy authorization" nil))
   :group 'text-translator)
 
-(defvar text-translator-site-data-template-alist
+(defcustom text-translator-site-data-template-alist
   '(;; Google.com
     ("google.com"
      "translate.google.com"
      "/ HTTP/1.1"
      "js=n&prev=_t&hl=ja&ie=UTF-8&text=%s&file=&sl=%o&tl=%t"
      utf-8-dos
-     "<textarea name=utrans wrap=SOFT dir=\"ltr\" id=suggestion style=\"[^\"]*\">\\(.*\\)</textarea>"
+     (lambda ()
+       (text-translator-extract-tag-exclusion-string
+        "<textarea name=utrans wrap=SOFT dir=\"[lr]t[lr]\" id=suggestion style=\"[^\"]*\">\\(.*\\)</textarea"))
      (("en" . "ja") ("ja" . "en")
       ("en" . "es") ("es" . "en")
       ("en" . "fr") ("fr" . "en")
@@ -193,7 +195,7 @@
      (("English" . "Russian") ("Russian" . "English")
       ("English" . "SimplifiedChinese")
       ("English" . "TraditionalChinese"))
-     (("English" . "en") ("English" . "Russian")
+     (("English" . "en") ("Russian" . "ru")
       ("SimplifiedChinese" . "ch") ("TraditionalChinese" . "tw")))
     ("freetranslation.com"
      "tets9.freetranslation.com"
@@ -303,8 +305,21 @@
       ("ja" . "zh") ("zh" . "ja"))
      (("zh" . "ch"))))
   "The alist where setting of the site which is used for text translation is
-described.")
-
+described. To update site-data, evalute `text-translator-site-data-init`."
+  :type '(repeat
+          (list :tag "Web Site"
+                (string :tag "Web site name and translation type")
+                (string :tag "Host name")
+                (string :tag "POST path and HTTP version")
+                (string :tag "POST contents")
+                (symbol :tag "Character code")
+                (choice (string :tag "regexp") (symbol :tag "function"))
+                (list :tag (concat "The correspondence of translation-able "
+                                   "name (used by translation sites)"))
+                (list :tag (concat "The correspondence of name that used by "
+                                   "text-translator and name that used by "
+                                   "translation sites"))))
+  :group 'text-translator)
 
 (defcustom text-translator-site-data-minimum-alist
   '(;; lou5.jp (Japanese, Lou)
@@ -340,7 +355,7 @@ described.")
      "<div id=\"rezulto\">\\(\\(.\\|\n\\)*?\\)</div>"))
 
   "*The alist where setting of the site which is used for text translation is
-described."
+described. To update site-data, evalute `text-translator-site-data-init`."
   :type  '(repeat
            (list :tag "Web Site"
                  (string :tag "Web site name and translation type")
@@ -368,7 +383,8 @@ described.")
   :group 'text-translator)
 
 (defcustom text-translator-user-agent
-  "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.4) Gecko/20070515 Firefox/2.0.0.4"
+;;  "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.4) Gecko/20070515 Firefox/2.0.0.4"
+  "Mozilla/5.0 (Windows; U; Windows NT 5.0; ja; rv:1.9) Gecko/2008052906 Firefox/3.0"
   "*text-translator's User Agent. Default is Firefox."
   :type  'string
   :group 'text-translator)
@@ -381,6 +397,13 @@ described.")
 (defcustom text-translator-auto-selection-func nil
   "*Value is function that select translation engine automatic.
 this value is function for `text-translator-translate-by-auto-selection'."
+  :type 'symbol
+  :group 'text-translator)
+
+(defcustom text-translator-display-popup nil
+  "*Non-nil means translated message is displayed by using popup-tip.
+To use this option, you have to require popup.el.
+popup.el URL: http://github.com/m2ym/auto-complete"
   :type 'symbol
   :group 'text-translator)
 
@@ -406,6 +429,8 @@ against the translation engines that processes per line."
   "The history of translation engine which you used.")
 
 (defvar text-translator-search-regexp-or-func nil)
+
+(defvar text-translator-sitedata-hash nil)
 
 (provide 'text-translator-vars)
 ;;; text-translator-vars.el ends here

@@ -25,7 +25,7 @@ you have read that document, you won't need this one anymore.
 * Whenever we need to refer to the Emacs /trunk/ branch (aka
   /mainline/ aka /HEAD/) on the GNU servers, we'll use
   *URL_TO_UPSTREAM_TRUNK*. At the time of this writing, it is
-  ##sftp://<membername>@bzr.savannah.gnu.org/srv/bzr/emacs/trunk## but
+  ##sftp://<username>@bzr.savannah.gnu.org/srv/bzr/emacs/trunk## but
   it may change at any moment.
 
 * ##bzr help /command/## is an easy way to get documentation about

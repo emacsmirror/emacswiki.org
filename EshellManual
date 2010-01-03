@@ -16,6 +16,10 @@ To read a Japanese translation:
 
 * http://www.gci-net.com/~johnw/eshell_ja.html
 
+To read a Spanish translation:
+
+* http://gnu.manticore.es/manual-eshell
+
 ----
 The real problem with keeping the source for those files on the Emacs
 Wiki server is that I can't work on them when I'm remote with my

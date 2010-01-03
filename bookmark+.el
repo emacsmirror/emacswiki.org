@@ -8,9 +8,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Jan  1 23:40:09 2010 (-0800)
+;; Last-Updated: Sat Jan  2 09:05:06 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 8622
+;;     Update #: 8628
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -337,6 +337,7 @@
 ;;
 ;;    `bookmark--jump-via', `bookmark-bmenu-bookmark',
 ;;    `bookmark-bmenu-check-position', `bookmark-bmenu-delete',
+;;    `bookmark-bmenu-ensure-position' (Emacs 23.2+),
 ;;    `bookmark-bmenu-hide-filenames', `bookmark-bmenu-mode' (advised,
 ;;    for doc string), `bookmark-bmenu-show-filenames',
 ;;    `bookmark-bmenu-surreptitiously-rebuild-list',
@@ -1044,6 +1045,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2010/01/02 dadams
+;;     Renamed *-bmenu-check-position to *-bmenu-ensure-position, per Emacs 23.2.  Added defalias.
 ;; 2010/01/01 dadams
 ;;     *-bmenu-(un)mark, *-bmenu-other-window, *-bmenu-rename: Call bookmark-bmenu-check-position.
 ;;     *-bmenu-delete: Don't call bookmark-bmenu-check-position again at end.
@@ -1711,7 +1714,7 @@ sort, and unsorted.")
               (t;; This sort order - reverse it.
                (setq bookmarkp-reverse-sort-p  t)))
         (message "Sorting...")
-        (bookmark-bmenu-check-position)
+        (bookmark-bmenu-ensure-position)
         (let ((current-bmk  (bookmark-bmenu-bookmark)))
           (bookmark-bmenu-surreptitiously-rebuild-list)
           (bookmarkp-bmenu-goto-bookmark-named current-bmk)) ; Put cursor back on right line.
@@ -3067,7 +3070,8 @@ candidate.  In this way, you can delete multiple bookmarks."
 ;; 1. Return t.  Value doesn't mean anything (didn't anyway), but must be non-nil for vanilla Emacs.
 ;; 2. Don't count lines.  Just make sure we're on a bookmark line.
 ;;
-(defun bookmark-bmenu-check-position ()
+(defalias 'bookmark-bmenu-check-position 'bookmark-bmenu-ensure-position)
+(defun bookmark-bmenu-ensure-position ()
   "Move to the beginning of the nearest bookmark line."
   (beginning-of-line)
   (unless (bookmark-bmenu-bookmark)
@@ -3075,13 +3079,13 @@ candidate.  In this way, you can delete multiple bookmarks."
         (beginning-of-line 0)
       (goto-char (point-min))
       (forward-line bookmarkp-bmenu-header-lines)))
-  t)                                    ; Vanilla bookmark code depends on non-nil value.
+  t)                                    ; Older vanilla bookmark code depends on non-nil value.
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
 ;; 1. Add bookmark to `bookmarkp-bmenu-marked-bookmarks'.
-;; 2. Don't call `bookmark-bmenu-check-position' again at end.
+;; 2. Don't call `bookmark-bmenu-ensure-position' again at end.
 ;; 3. Raise error if not in `*Bookmark List*'.
 ;;
 ;;;###autoload
@@ -3089,7 +3093,7 @@ candidate.  In this way, you can delete multiple bookmarks."
   "Mark the bookmark on this line, using mark `>'."
   (interactive)
   (bookmarkp-barf-if-not-in-menu-list)
-  (bookmark-bmenu-check-position)
+  (bookmark-bmenu-ensure-position)
   (beginning-of-line)
   (let ((inhibit-read-only  t))
     (push (bookmark-bmenu-bookmark) bookmarkp-bmenu-marked-bookmarks)
@@ -3100,7 +3104,7 @@ candidate.  In this way, you can delete multiple bookmarks."
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
 ;; 1. Remove bookmark from `bookmarkp-bmenu-marked-bookmarks'.
-;; 2. Don't call `bookmark-bmenu-check-position' again at end.
+;; 2. Don't call `bookmark-bmenu-ensure-position' again at end.
 ;; 3. Raise error if not in `*Bookmark List*'.
 ;;
 ;;;###autoload
@@ -3109,7 +3113,7 @@ candidate.  In this way, you can delete multiple bookmarks."
 Optional BACKUP means move up instead."
   (interactive "P")
   (bookmarkp-barf-if-not-in-menu-list)
-  (bookmark-bmenu-check-position)
+  (bookmark-bmenu-ensure-position)
   (beginning-of-line)
   (let ((inhibit-read-only  t))
     (delete-char 1) (insert " ")
@@ -3120,7 +3124,7 @@ Optional BACKUP means move up instead."
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; 1. Do not use `bookmark-bmenu-check-position' as a test - it always returns non-nil anyway.
+;; 1. Do not use `bookmark-bmenu-ensure-position' as a test - it always returns non-nil anyway.
 ;;    And don't call it at again the end.
 ;; 2. Use face `bookmarkp-bad-bookmark' on the `D' flag.
 ;; 3. Raise error if not in buffer `*Bookmark List*'.
@@ -3133,7 +3137,7 @@ the deletions."
   (interactive)
   (bookmarkp-barf-if-not-in-menu-list)
   (beginning-of-line)
-  (bookmark-bmenu-check-position)
+  (bookmark-bmenu-ensure-position)
   (let ((inhibit-read-only  t))
     (delete-char 1) (insert ?D)
     (put-text-property (1- (point)) (point) 'face 'bookmarkp-bad-bookmark)
@@ -3383,8 +3387,8 @@ non-nil, then do nothing."
   "Select this line's bookmark in other window, leaving bookmark menu visible."
   (interactive)
   (bookmarkp-barf-if-not-in-menu-list)
-  (bookmark-bmenu-check-position)
-  (let ((bookmark  (bookmark-bmenu-bookmark))
+  (bookmark-bmenu-ensure-position)
+  (let ((bookmark                                 (bookmark-bmenu-bookmark))
         (bookmark-automatically-show-annotations  t)) ; FIXME: needed?
     (bookmark--jump-via bookmark 'pop-to-buffer)))
 
@@ -3441,7 +3445,7 @@ confirmation."
   "Rename bookmark on current line.  Prompts for a new name."
   (interactive)
   (bookmarkp-barf-if-not-in-menu-list)
-  (bookmark-bmenu-check-position)
+  (bookmark-bmenu-ensure-position)
   (let ((new-name  (bookmark-rename (bookmark-bmenu-bookmark))))
     (when (or (search-forward new-name (point-max) t) (search-backward new-name (point-min) t))
       (beginning-of-line))))
@@ -3788,7 +3792,7 @@ current filtering or sorting of the displayed list."
                 status                                    'hidden))
         (bookmark-bmenu-surreptitiously-rebuild-list)
         (cond ((eq status 'hidden)
-               (bookmark-bmenu-check-position)
+               (bookmark-bmenu-ensure-position)
                (message "Marked bookmarks are now hidden"))
               (t
                (goto-char (point-min))
@@ -3819,7 +3823,7 @@ current filtering or sorting of the displayed list."
                 status                                      'hidden))
         (bookmark-bmenu-surreptitiously-rebuild-list)
         (cond ((eq status 'hidden)
-               (bookmark-bmenu-check-position)
+               (bookmark-bmenu-ensure-position)
                (message "Unmarked bookmarks are now hidden"))
               (t
                (goto-char (point-min))
@@ -4784,7 +4788,7 @@ specified tags, in order, separated by hyphens (`-').  E.g., for TAGS
   "Edit the bookmark under the cursor: its name and file name."
   (interactive)
   (bookmarkp-barf-if-not-in-menu-list)
-  (bookmark-bmenu-check-position)
+  (bookmark-bmenu-ensure-position)
   (let* ((new-data  (bookmarkp-edit-bookmark (bookmark-bmenu-bookmark)))
          (new-name  (car new-data)))
     (if (not new-data)
