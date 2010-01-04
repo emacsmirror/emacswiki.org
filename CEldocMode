@@ -6,7 +6,7 @@ c-eldoc mode displays the arguments of C functions while one is programming.
 This version takes the function declarations from preprocessor output, thus allowing one to use it with system-dependent functions from any library.  This was developed as a response to [[CEDET]], which I was unable to use.  If you know how to make this feature work in [[CEDET]] (I believe it is called `summary-mode'), please post the method here.  This approach is somewhat simpler than that of [[CEDET]].
 
 === Disadvantages ===
-It currently only works with the C language.  I hope to add some C++ features one day.
+It currently only works with the C language.  *I am no longer maintaining this project* :(
 
 == Requirements ==
 This file requires the new eldoc functions available in Emacs 22.
@@ -29,10 +29,16 @@ Replaced English with installation code. You should not force users to translate
 == History ==
 The code here makes a few changes to Paul Pogonyshev's c-eldoc mode, originally posted on emacs-devel [http://lists.gnu.org/archive/html/emacs-devel/2004-06/msg00196.html].  Paul's version worked using TAGS, but this version has eliminated this restriction, allowing one to use it with any function that is <code>#included</code> at the top of the C file.  It is essentially the same speed, but one no longer needs to make a large <code>TAGS</code> file for <code>/usr/include</code>.  When Paul first posted, there was some talk of putting it in a future release of GNU Emacs, but I have yet to see this actually happen.
 
-For another take on c-eldoc, see this article[http://tenkan.org/~tim/c-function-signature.html].
+In 2010, Nathaniel Flath added caching to this file to make it usable on large projects, "like the emacs codebase".
 
-== Comments ==
+*Please mail me if you're interested in maintaining this project, as it seems to still be popular with emacs C hackers.*  I wrote this file in high school and have since graduated moved on to professional work in other languages, so I cannot maintain it further. 
+
+== Bugs ==
+[new]
 I think caching symbol-info into alist or hashtable is better than calculating symbol-info EVERY TIME. It is immutable until the source file and included files are modified. -- [[rubikitch]]
+
+[new]
+Nathaniel's patch has resolved this issue. :) -- MattStrange
 
 [new]
 if you replace the grep command and the function-name pattern (2 times in the code) like below, you could get complex macros/functions working like printf or others from stdio.h.
@@ -41,6 +47,13 @@ if you replace the grep command and the function-name pattern (2 times in the co
    function-name "[\s]*('" )) 
 </pre>
 -- clabom
+
+[new]
+Not maintaining this anymore, so feel free to submit your improvements to the file directly, or better yet, take over the project! -- MattStrange
+
+
+== Alternatives ==
+For another take on c-eldoc, see this article[http://tenkan.org/~tim/c-function-signature.html].
 
 ----
 CategoryModes

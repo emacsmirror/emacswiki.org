@@ -343,7 +343,7 @@ a copy.  Then change the entry below to:
 ** [http://www.chungkuo.org/elisp/speedread.el speedread]
 ** [http://www.dwwc.com/sql-mode/ sql-mode]
 ** [http://www.sics.se/~lofgren/emacs/sr-mode.el sr-mode]
-** [http://www.newartisans.com/johnw/Emacs/obsolete stock-quote]
+** stock-quote http://web.archive.org/web/20060210095105/www.newartisans.com/johnw/Emacs/obsolete/stock-quote.el
 ** [http://np-salesman.net/programs/software/super-fold.el super-fold]
 ** [http://www.glug.org/people/ttn/software/ttn-pers-elisp survey]
 

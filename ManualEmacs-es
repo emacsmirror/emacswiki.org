@@ -1,0 +1,20 @@
+Emacs viene con un detallado manual; se accede a la información completa de Info tecleando <tt>C-h i</tt>.
+Se puede acceder al manual de Emacs directamente con <tt>C-h r</tt>.
+
+El manual en español también está disponible en línea:
+
+* http://gnu.manticore.es/manual-emacs-213
+
+La actualización a la versión más reciente está en progreso en
+
+* http://gnu.manticore.es/manual-emacs-231
+
+Se pueden adquirir ejemplares de la versión impresa en inglés en:
+
+* http://www.gnupress.org/emacs15.html
+
+
+El lenguaje de extensión EmacsLisp está documentado en EmacsLispReferencia.
+
+----
+CategoriaDocumentación

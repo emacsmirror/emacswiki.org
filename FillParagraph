@@ -13,7 +13,9 @@ Emacs displays a "\" character at the end of the line and your typing continues 
 
 Instead of hitting RET when your typing approaches the right margin, you can type <code>M-q</code> or <code>M-x fill-paragraph</code> to fill the current paragraph.  This will take the paragraph and fill all the words such that line breaks are removed from short lines and new line breaks are inserted before words that cross the right margin.
 
-The right margin is determined by the variable <code>fill-column</code>.  You can set it using <code>C-x f</code> or <code>M-x set-fill-column</code> using an explicit argument.  Use C-u followed by a number to specify a column.  Just C-u as argument means to use the current column.
+The right margin is determined by the variable <code>fill-column</code>.  You can set it using <code>C-x f</code> or <code>M-x set-fill-column</code> using an explicit argument.  Use C-u followed by a number to specify a column.  Just C-u as argument means to use the current column. The default value for fill-column is 70. This can be set to 80 in the InitFile with the command
+
+  (setq-default fill-column 80)
 
 In the following example, I have set the fill-column to 35 by typing <code>C-u 35 C-x f</code> and then I used <code>M-q</code> to refill the paragraph.   (See AutoFillMode if you want to reduce your <code>M-q</code> typing.)
 

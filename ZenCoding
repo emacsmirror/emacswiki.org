@@ -147,6 +147,18 @@ You can use it reasonably well from Emacs:
 Any suggestions/helpful ideas please feel free.
 
 [new]
+Hi Chris. Would you be able create a list of which features are implented and which ones aren't? That would make it a little easier to figure out if the syntax I want to use is supposed to be supported or not.
+
+I'm trying to use aliases with a colon, and they are not working. (ie,  script:src). I can't tell if this is syntax is supposed to be supported or not.
+
+Also, I'm wondering if you (or anyone) has plans to implement support for expansion of doctype declarations. (ie, html:4s). That would be rocking.
+
+Do you intend to implement support for zen-coding's css properties? 
+
+Thank you.
+
+
+[new]
 Hi. I'm using zencoding-mode in emacs 22.2.1, on ubuntu karmic with gnome. 
 Ctrl-Return doesn't seem to do the expansion. I just get a return. 
 The expansion works fine if I do 'M-x zencoding-expand-line' though.
@@ -165,6 +177,9 @@ However, when I hit that sequence, the minibuffer proffers:
 
 Did anyone else have a problem with this ?
 How can I fix this ?
+
+CORRECTION: Ctrl-Return does actually work normally. It only fails to work when I use emacs in a terminal emulator. 
+However, this is usually how I use emacs. Is there a way to get this keybinding to work when using emacs in a term window?
 
 
 [new]

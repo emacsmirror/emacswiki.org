@@ -93,7 +93,7 @@ Additional options can be set there: offsets, zoom ratio, geometry etc.
 In recent versions of auctex ( >= 10.85 ), Inverse search can be enabled
 just by putting the following in the InitFile
 
-   (TeX-source-specials-mode 1)
+   (setq TeX-source-specials-mode 1)
 
 Auctex then asks whether to start a server if necessary. You may add the 
 following in your InitFile if you want the server to be started without 

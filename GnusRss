@@ -95,6 +95,13 @@ For some RSS feeds I get "link" where there should be a link -- is this a utf-8 
 --JoelAdamson
 ----
 
+I'm using a snippet from Gnus' manual to extract the RSS URL from within the nnrss summary buffer (http://www.gnu.org/software/emacs/manual/html_node/gnus/RSS.html). This requires the nnrss-url-field/"X-Gnus-Url" header being set.
+
+However, it seems that articles being cached by the gnus agent do not contain the header (removing them from cache results  headers being restored again) -- is there any way to tell gnus to cache the nnrss-url-field, too?
+
+--SandroGiessl
+----
+
 == See Also ==
 
 rss2email, a different way of reading RSS feeds: [http://rss2email.infogami.com/]

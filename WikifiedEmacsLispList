@@ -1,4 +1,4 @@
-Timestamp: Wed Dec  2 12:16:33 GMT 2009
+Timestamp: Sun Jan  3 20:10:14 GMT 2010
 
 This page is based on the EmacsLispList by StephenEglen and updated automatically.
 
@@ -208,7 +208,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el bookmark+.el] --- extensions to standard library `bookmark.el' (by Drew Adams)
 
-[http://bookmall.hypermart.net/cinput/emacs.html boshiamy-cue.el] --- [Help for Boshiamy input method in BIG5 Chinese; Chinese page] (by blacksburg98)
+[http://sourceforge.net/projects/boshiamy-cue/ boshiamy-cue.el] --- [Help for Boshiamy input method in BIG5 Chinese; Chinese page] (by blacksburg98)
 
 [http://www.davep.org/emacs/boxquote.el boxquote.el] --- Quote text with a semi-box. (by Dave Pearson)
 
@@ -704,7 +704,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/eval-expr.el eval-expr.el] --- enhanced eval-expression command (by Noah Friedman)
 
-[http://www.geocities.com/TimesSquare/6120/elisp/eval-sexp-in-comments.el.txt eval-sexp-in-comments.el] --- evaluate sexps in comments (by Alex Schroeder)
+[http://www.gnufans.net/~deego/emacspub/site-lisp-not/eval-sexp-in-comments.el eval-sexp-in-comments.el] --- evaluate sexps in comments (by Alex Schroeder)
 
 [http://members.a1.net/t.link/CompEmacsExcerpt.html excerpt.el] --- extraxt text & report to main file (by Thomas Link)
 
@@ -855,6 +855,8 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 = G =
 
 [http://www.davep.org/emacs/garble.el garble.el] --- emacs interface to garble. (by Dave Pearson)
+
+[http://emacspeak.googlecode.com/svn/trunk/lisp/g-client/gdocs.el g-docs.el] --- Docs Google Client (by T. V. Raman)
 
 [http://www.rempe-online.de/genealogie/lines/ gedcom.el] --- Aid in editing lifelines GEDCOM records (by Matthias Rempe)
 

@@ -35,6 +35,12 @@ If you want to bind F11 to toggle full-screen, here is what you need:
 That does the trick, 
 and now you are GNOME HIG compliant :)
 
+* Alternate definition, which mimics the 'maximize' button:
+
+    (defun switch-full-screen ()
+      (interactive)
+      (shell-command "wmctrl -r :ACTIVE: -btoggle,maximize_vert,maximize_horz"))
+
 == External program: devilspie ===
 
 http://patrick.wagstrom.net/weblog/linux/full-screen-emacs.xml
