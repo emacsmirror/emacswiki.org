@@ -82,7 +82,7 @@ When you are integrating somebody else's work, you will want to be identified as
 
 This section describes how to set things up if you plan on making contributions to Emacs (whether or not you're one of the Emacs maintainers).  You can also use this way just to track the Emacs sources, even if you never contribute changes.
 
-For the general public, Emacs's public master trunk lives at ##http://bzr.savannah.gnu.org/r/emacs/trunk##.  But committers should use an ##sftp## URL instead: ##sftp://<membername>@bzr.savannah.gnu.org/srv/bzr/emacs/trunk##.  (Actually, you /want/ to use a ##bzr+ssh## URL, and we /want/ to run a smart server on Savannah to make that possible.  But ##savannah-hackers## considers this a security risk that needs to be analyzed carefully.  Please update this page if it becomes possible to use ##bzr+ssh##.  See [https://savannah.gnu.org/support/index.php?107143 sr 107143] for details.)
+For the general public, Emacs's public master trunk lives at ##http://bzr.savannah.gnu.org/r/emacs/trunk##.  But committers should use an ##sftp## URL instead: ##sftp://USERNAME@bzr.savannah.gnu.org/srv/bzr/emacs/trunk##.  (Actually, you /want/ to use a ##bzr+ssh## URL, and we /want/ to run a smart server on Savannah to make that possible.  But ##savannah-hackers## considers this a security risk that needs to be analyzed carefully.  Please update this page if it becomes possible to use ##bzr+ssh##.  See [https://savannah.gnu.org/support/index.php?107143 sr 107143] for details.)
 
 First, initialize a shared repository in which to store all your branches:
 
@@ -94,17 +94,17 @@ First, initialize a shared repository in which to store all your branches:
 Now, create a branch called ##trunk## that will just be a mirror of the mainline.  You'll never do any development in this branch; its job is just to reflect the upstream master:
 
       cd emacs/
-      bzr branch sftp://<membername>@bzr.savannah.gnu.org/srv/bzr/emacs/trunk trunk
+      bzr branch sftp://USERNAME@bzr.savannah.gnu.org/srv/bzr/emacs/trunk trunk
 
-(Here <membername> stands for your Savannah user name.  Use ##http://bzr.savannah.gnu.org/r/emacs/trunk/## instead if you are not a committer and just expect read-only access.)
+(Here USERNAME stands for your Savannah user name.  Use ##http://bzr.savannah.gnu.org/r/emacs/trunk/## instead if you are not a committer and just expect read-only access.)
 
 This first ##bzr branch## operation in a new repository may take many minutes --- people have reported 20 to 55 minutes.  At the end of the long wait, the repository will contain the whole history of the trunk, and the ##trunk## directory will contain the working files -- that is, an Emacs tree.
 
 Next, we'll further safeguard that mirror by making it a "two-way" mirror.  We do this by "binding" the local trunk to the upstream master:
 
       cd trunk/
-      echo "public_branch = sftp://<membername>@bzr.savannah.gnu.org/srv/bzr/emacs/trunk" >> .bzr/branch/branch.conf
-      bzr bind sftp://<membername>@bzr.savannah.gnu.org/srv/bzr/emacs/trunk
+      echo "public_branch = sftp://USERNAME@bzr.savannah.gnu.org/srv/bzr/emacs/trunk" >> .bzr/branch/branch.conf
+      bzr bind sftp://USERNAME@bzr.savannah.gnu.org/srv/bzr/emacs/trunk
       cd ..
 
 (Again, use ##http://bzr.savannah.gnu.org/r/emacs/trunk## as the URL, in both instances above, if you are not a committer and just expect read-only access.  Also, note that on MS-Windows you need either to remove the quotes around the arguments to the ##echo## command or use a ported GNU ##echo##.)
@@ -201,7 +201,7 @@ do another ##bzr update##, merge from ##quickfixes## again, and commit.  After y
 It might occur to you to save some effort by just doing ##bzr push## directly to the upstream master from inside the ##quickfixes## branch:
 
       cd $DEVHOME/emacs/quickfixes
-      bzr push sftp://<membername>@bzr.savannah.gnu.org/srv/bzr/emacs/trunk/
+      bzr push sftp://USERNAME@bzr.savannah.gnu.org/srv/bzr/emacs/trunk/
 
 //Do not do this// --- it can cause history to be displayed in a strange way in the upstream master, any mirrors or branches of it, and your own branch later. Search for the word "hidden" in [http://lists.gnu.org/archive/html/emacs-devel/2009-11/msg01021.html this mail] for more details.
 

@@ -158,6 +158,16 @@ Not terribly difficult but it took me a bit to puzzle out what needed to be done
 [http://madscientist.jp/~ikegami/diary/20090215.html#p01 Integrating for Haskell (experimentally, for the Haskell compiler GHC 6.10.1)]
 
 == Questions and Feedback ==
+
+
+[new]
+Non lisp-hacker here. 
+How can I add my own completions, and make auto-complete-mode start automatically for any opened file?
+Thanks.
+
+
+
+
 [new:PhilJackson:2009-01-22 12:26 UTC] Should I expect this to work in a TTY emacsen?
 
 [new] How does this compare with CompletionUI and CompanyMode? --TobyCubitt

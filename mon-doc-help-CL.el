@@ -119,117 +119,200 @@
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-12-23T20:36:35-05:00Z}#{09524} - by MON KEY>
-(eval-and-compile
+;;(eval-and-compile
 (defvar *cl-ext-pkg-map*
-  '((cltl2-html 
-     "Guy Steele's Common Lisp the Language Second Edition in HTML." 
+  `((cltl2-html 
+     "Guy Steele's Common Lisp the Language Second Edition in HTML.\n" 
      "doc/cltl/cltl_ht.tgz")
     (cltl2tex 
-     "CLTL2 TeX macros. Contains Perl script lisp2tex and the example contrl.tex" 
+     "CLTL2 TeX macros. Contains Perl script lisp2tex and the example contrl.tex\n" 
      "util/tex/cltl2tex.tgz")
     (cltl2-src 
-     "Guy Steele's Common Lisp the Language Second Edition in HTML."
+     "Guy Steele's Common Lisp the Language Second Edition in HTML.\n"
      "doc/cltl/cltl_src.tgz")
     (X3J13-archive
-     "Working files for the X3J13 ANSI Common Lisp committee - cannonical archive."
-     ;; ftp://ftp.parc.xerox.com/pub/cl/cleanup/issue-status
+     ,(concat
+       "Working files for the X3J13 ANSI Common Lisp committee - cannonical archive.\n"
+       "   :SEE-ALSO (URL `ftp://ftp.parc.xerox.com/pub/cl/cleanup/issue-status')\n")
      "ftp://ftp.parc.xerox.com/pub/cl/")
     (cl-ansi-naggum
-     "ANSI X3.226-1994 final draft PostScript conversion landscape orientation 2up.\n:COURTESY Erik Naggum"
+     ,(concat 
+      "ANSI X3.226-1994 final draft PostScript conversion landscape orientation 2up.\n"
+      "   :COURTESY Erik Naggum\n")
      ;; http://naggum.no/ANSI-CL/
      "http://naggum.no/ANSI-CL.tar.gz")
     (dpans3 
-     "Common Lisp ANSI Standard X3J13 committe TeX sources Draft 3." 
+     "Common Lisp ANSI Standard X3J13 committe TeX sources Draft 3.\n" 
      "doc/standard/ansi/dpans/dpans3.tgz")
     (dpans3r 
-     "Common Lisp X3J13 Draft rev3 changes from :VERSION 15.17 and 15.17R."
+     "Common Lisp X3J13 Draft rev3 changes from :VERSION 15.17 and 15.17R.\n"
      "doc/standard/ansi/dpans/dpans3r.tgz")
     (dpans-clos 
-     "CLOS SPEC: Common Lisp Object System Specification TeX sources."
+     "CLOS SPEC: Common Lisp Object System Specification TeX sources.\n"
      "doc/standard/ansi/clos/clos.tgz")
     (dpans-amop 
-     "CLOS Metaobject Protocol - Common Lisp 'Specification'."
+     "CLOS Metaobject Protocol - Common Lisp 'Specification'.\n"
      "doc/standard/ansi/mop/mop_spec.tgz")
     (islisp 
-     "ISO: Committee Draft Standard for ISO Lisp :VERSION 11.4 of 1994-08-15."
-     "doc/standard/iso/islsp114.pgz") ;; :NOTE weird format but can be extracted.
+     ,(concat
+       "ISO Committee Draft Standard for ISO Lisp :VERSION 11.4 of 1994-08-15.\n"
+       "   :NOTE if the .pgz format but can't be extracted rename to .gz and try again.\n")
+     "doc/standard/iso/islsp114.pgz") 
     (vgrind 
-     "vgrind/tgrind entries for Common Lisp - Like vgrind -lisp :)"
+     "vgrind/tgrind entries for Common Lisp - Like vgrind -lisp :)\n"
      "util/vgrind/vgrind.txt")
     (refcard 
-     "TeX source of Franz's Emacs reference card for Allegro :VERSION 4.x"
+     "TeX source of Franz's Emacs reference card for Allegro :VERSION 4.x\n"
      "util/emacs/refcard/refcard.tgz")
     (cl-shell 
-     "Emacs major mode for running Common Lisp as an Emacs subprocess."
+     "Emacs major mode for running Common Lisp as an Emacs subprocess.\n"
      "util/emacs/cl_shell/cl_shell.tgz")
     (eli 
-     "Franz Inc's GNU Emacs Allegro Common Lisp interface :VERSION 2.0.16." 
+     "Franz Inc's GNU Emacs Allegro Common Lisp interface :VERSION 2.0.16.\n"
      "/util/emacs/franz/v2016/eli_2016.tgz")
     (cldoc 
-     "An `eldoc' utility for Common Lisp."
-     ;; Yuji `bmonkey' Minejima's <ggb01164@nifty.ne.jp>    
+     ,(concat
+       "An `eldoc' utility for Common Lisp.\n"
+       "   :COURTESY Yuji `bmonkey' Minejima's <ggb01164@nifty.ne.jp>\n")
      "http://homepage1.nifty.com/bmonkey/emacs/elisp/cldoc.el")
     (cl-lookup 
-     ;; http://www.phys.au.dk/~harder/dpans.html    
-     "Common Lisp Hyperlink Specification document lookup utility"
+     "Common Lisp Hyperlink Specification document lookup utility.\n"
      "http://homepage1.nifty.com/bmonkey/emacs/elisp/cl-lookup.tar.gz")
     (dpans2texi 
-     "Common Lisp dpANS TeX -> .texi converter using elisp :COURTESY Jesper Harder."
+     ,(concat
+      "Common Lisp dpANS TeX -> .texi converter using elisp.\n"
+      "   :COURTESY Jesper Harder.\n"
+      "   :SEE-ALSO (URL `http://www.phys.au.dk/~harder/dpans.html')\n")
      "http://www.phys.au.dk/~harder/dpans2texi-1.05.tar.gz")
     (cl-gcl-info 
-     "Common Lisp ANSI standard in .texi and .info format GNU Common Lisp.\n:COURTESY William F. Schelter 1994."
+     ,(concat "Common Lisp ANSI standard in .texi and .info format GNU Common Lisp.\n"
+              "   :COURTESY William F. Schelter 1994.\n")
      "ftp://ftp.ma.utexas.edu/pub/gcl/gcl-info+texi.tgz")
+    (cltl1-history
+     ,(concat 
+       "Traces early CLTL1 history/development from circa 1981-03-12.\n"
+       "   Early emails from \(among others\): Weinreb, Steele, Fahlman, Gabriel, Hedrick,\n"
+       "   JonL White, Feigenbaum, Masinter, Moon, Cannon, etc. Includes reference to\n" 
+       "   Engelmore invitation for ARPA member attendance at March 1981 SRI conference.\n"
+       "   :SEE-ALSO comp.lang.lisp :DATE 1994-10-20T16:53:41-05:00Z\n"
+       "             :SUBJECT CL History (was Re: Why do people like C?)\n")
+     "http://www.cs.cmu.edu/Groups/AI/lang/lisp/doc/history/cl.txt")
     (cl-hs 
-     "Emacs lisp library from GNU Clisp for Hyperlink Specification access."
+     "Emacs lisp library from GNU Clisp for Hyperlink Specification access.\n"
      "http://clisp.cvs.sourceforge.net/*checkout*/clisp/clisp/emacs/clhs.el")
     (cl-hyperspec-v3
-     "Common Lisp Hyperspec v3 the variable length version circa 1996."
-     ;; http://www.cs.cmu.edu/Groups/AI/html/hyperspec/clspec.html
+     ,(concat     
+      "Common Lisp Hyperspec v3 the variable length version circa 1996.\n"
+      "   :SEE-ALSO (URL `http://www.cs.cmu.edu/Groups/AI/html/hyperspec/clspec.html')\n")
      "http://www.cs.cmu.edu/Groups/AI/html/hyperspec/clspec30.tgz")
     (cl-hyperspec-v7
-     "Common Lisp Hyperspec v7 the 8.3 version of 2005-April-12."
+     "Common Lisp Hyperspec v7 the 8.3 version of 2005-April-12.\n"
      "ftp://ftp.lispworks.com/pub/software_tools/reference/HyperSpec-7-0.tar.gz")
     ;;; (cl-hyperspec-v6
     ;;;  "Common Lisp Hyperspec v6 of 2004-August-15."
     ;;;  "ftp://ftp.lispworks.com/pub/software_tools/reference/HyperSpec-6-0.tar.gz")
     (cl-hyperspec-lookup 
-     "Common Lisp interface mapping symbols to URLs of Hspec and CLOS MOP."
-     ;; :COURTESY Erik Enge, David Lichteblau, Nikodemus Siivola
-     ;; (URL `http://common-lisp.net/project/hyperspec-lookup/')
+     ,(concat
+       "Common Lisp interface mapping symbols to URLs of Hspec and CLOS MOP.\n"
+       "   :COURTESY Erik Enge, David Lichteblau, Nikodemus Siivola\n"
+       "   :SEE-ALSO (URL `http://common-lisp.net/project/hyperspec-lookup/')\n")
      "http://common-lisp.net/cgi-bin/viewcvs.cgi/root.tar.gz")
     (cl-slime 
-     "Current distribution of Slime from CVS."
-     ;; :SEE (URL `http://www.cliki.net/SLIME')
+     ,(concat 
+       "Current distribution of Slime from CVS.\n"
+       "   :SEE-ALSO (URL `http://www.cliki.net/SLIME')\n")
      "http://common-lisp.net/project/slime/snapshots/slime-current.tgz")
     (cl-cookbook
-     "VIEW CVS of the cl-cookbook at sourceforge."
-     ;; http://cl-cookbook.sourceforge.net/
+     ,(concat
+       "VIEW CVS of the cl-cookbook at sourceforge.\n"
+       "   :SEE-ALSO (URL `http://cl-cookbook.sourceforge.net/')\n")
      "http://cl-cookbook.cvs.sourceforge.net/viewvc/cl-cookbook/cl-cookbook/")
+    (cl-onlisp
+     ,(concat     
+       "Paul Graham's On Lisp re-purposed as HTML.\n"
+       "   :SEE-ALSO (URL `http://www.bookshelf.jp/texi/onlisp/onlisp.html')\n"
+       "   :NOTE If unable to extract file rename it to onlisp.tar and retry.\n")
+     "http://www.bookshelf.jp/texi/onlisp/onlisp.tar.gz")
+    (cl-gentle
+     ,(concat
+       "Common Lisp - Gentle Intro to Symbolic Computation.\n"
+       "   :COURTESY David Touretzky.\n"
+       "   :SEE-ALSO (URL `http://www-2.cs.cmu.edu/~dst/LispBook/')\n"
+       "   :SEE-ALSO (URL `http://www.cs.cmu.edu/~dst/Lisp/code/')\n"
+       "   :SEE-ALSO (URL `http://www.cs.cmu.edu/~dst')\n")
+     "http://www-2.cs.cmu.edu/~dst/LispBook/book.ps")
+    (lispdoc
+     ,(concat
+       "Search engine for documentation of assored Common Lisp related material.\n"
+       "   Includes xrefs across the following media, books, packages, libraries etc.:\n"
+       "   Common Lisp HyperSpec\n"
+       "   Common Lisp the Language - Second Edition \(CLTL2\) <- Guy Steele.\n"
+       "   On Lisp <- Paul Graham\n"
+       "   Paradigms of Artificial Intelligence Programming (\PAIP\) <- Peter Norvig.\n"
+       "   Succesful Lisp <- David Lamkins\n"
+       "   Practical Common Lisp \(PCL\) <- Peter Seibel.\n\n"
+       "   The follwoing Common Lisp extesion packages:\n"
+       "   ASDF, CFFI, CFFI-FEATURES, CFFI-SYS, CFFI-UTILS, CHUNGA, CL+SSL, CL+SSL-SYSTEM,\n"
+       "   CL-BASE64, CL-PPCRE, CL-PPCRE-TEST, CL-WHO, COMMON-LISP, COMMON-LISP-CONTROLLER,\n"
+       "   FLEXI-STREAMS, HUNCHENTOOT, HUNCHENTOOT-ASD, MD5, RFC2388, S-XML,\n"
+       "   TRIVIAL-GRAY-STREAMS, URL-REWRITE\n\n"
+       "   Steel Bank Common Lisp \(SBCL\) <- The Venerable\n"
+       "   :COURTESY Bill Moorier\n")
+     "http://lispdoc.com/")
+    (lispy
+     ,(concat
+       "Lispy is a library manager for Common Lisp, written in Common Lisp.\n"
+       "   :COURTESY Matthew Kennedy\n"
+       "   :SEE-ALSO (URL `http://common-lisp.net/project/lispy/')\n")
+     "http://common-lisp.net/project/lispy/repository/map.lisp-expr")
     (ilisp
-     "Ilisp source from git with updates for current Emacsen.\nRepo maintainance :COURTESY Barak A. Pearlmutter <barak@cs.nuim.ie>."
-    ;; "http://sourceforge.net/projects/ilisp/files/ilisp/ilisp-snapshot/ilisp-20021222.tar.gz"
-    ;; "http://sourceforge.net/projects/ilisp/files/ilisp/ilisp-snapshot/ilisp-doc-20021222.tar.gz"
-    ;; git://git.debian.org/collab-maint/ilisp.git
+     ,(concat
+       "Ilisp source from git with updates for current Emacsen.\n"
+       "   :COURTESY Barak A. Pearlmutter's <barak@cs.nuim.ie> repo maintainance.\n")
+     ;; "http://sourceforge.net/projects/ilisp/files/ilisp/ilisp-snapshot/ilisp-20021222.tar.gz"
+     ;; "http://sourceforge.net/projects/ilisp/files/ilisp/ilisp-snapshot/ilisp-doc-20021222.tar.gz"
+     ;; git://git.debian.org/collab-maint/ilisp.git
      "http://git.debian.org/?p=collab-maint/ilisp.git;a=summary")
     (oaklisp 
-     "Oaklisp is an OOP Scheme dialect with lexical scoping and first-class classes."
+     "Oaklisp is an OOP Scheme dialect with lexical scoping and first-class classes.\n"
      ;; "http://www.bcl.hamilton.ie/~barak/oaklisp/"
      ;; "http://www.bcl.hamilton.ie/~barak/oaklisp/binaries/dpkg/sources/oaklisp_1.3.1.tar.gz"
      ;; "https://alioth.debian.org/projects/oaklisp/"     
      ;; "https://alioth.debian.org/snapshots.php?group_id=100056"
-     "http://www.bcl.hamilton.ie/~barak/oaklisp/release/oaklisp-07-Jan-2000.tar.gz"))
+     "http://www.bcl.hamilton.ie/~barak/oaklisp/release/oaklisp-07-Jan-2000.tar.gz")
+    (cl-kyoto
+     ,(concat     
+       "Kyoto Common Lisp circa 1987/09.\n"
+       "   :COURTESY Taiichi Yuasa and Masami Hagiya\n"
+       "   :SEE-ALSO (URL `ftp://ftp.sra.co.jp/pub/lang/lisp/kcl/Sep-87/')\n")
+     "ftp://ftp.sra.co.jp/pub/lang/lisp/kcl/Sep-87/compressed_portkit.gz")
+    (cl-wcl
+     ,(concat     
+       "WCL Common Lisp circa 1992-10.\n"
+       "   :COURTESY Wade L. Hennessey\n"
+       "   :SEE-ALSO (URL `ftp://ftp.sra.co.jp/pub/lang/lisp/wcl/lfp-paper.ps')\n")
+     "ftp://ftp.sra.co.jp/pub/lang/lisp/wcl/wcl-2.14.tar.gz")
+    (cl-akcl
+     ,(concat
+       "Austin Kyoto Common Lisp circc 1992-06-19.\n"
+       "   :COURTESY William Schelter's KCL additions.\n"
+       "   :NOTE The interesting files `find-doc.el', `DOC-keys.el', `doc-com.el',\n"
+       "   `dbl.el', `docstrings', `edoc' `DOC' in archive's `./doc' directory.\n")
+     "ftp://ftp.sra.co.jp/pub/lang/lisp/akcl/akcl-1-615.tar.gz"))
   "*List of Common Lisp documentation packages and legacy/historic packages of
 use with Emacs.  Each sublist element of has the format:\n
 \(SYMBOL DESCRIPTION URL\)\n
+:NOTE The following keys point to webpages or dvc archives:\n
+ ilisp cl-cookbook oaklisp lispdoc lispy\n
 :SEE-ALSO `*cl-cmu-ai-repo*', `mon-help-cl-pkgs', `mon-help-wget-cl-pkgs'.\n►►►")
-)
+;;)
 ;;
 ;;; :TEST-ME *cl-ext-pkg-map*
 ;;;(progn (makunbound '*cl-ext-pkg-map*) (unintern '*cl-ext-pkg-map*) )
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-12-23T20:41:48-05:00Z}#{09524} - by MON KEY>
-(eval-when (compile eval)
+;;(eval-when (compile eval)
 (defun mon-help-cl-pkgs (&optional insrtp intrp)
   (interactive "i\np")
   (let (prtty)
@@ -249,18 +332,19 @@ use with Emacs.  Each sublist element of has the format:\n
           (newline)          
           (princ prtty (current-buffer)))
         (prin1 prtty))))
-) ;; :CLOSE eval-when
+;;) ;; :CLOSE eval-when
 ;;
 ;;; :TEST-ME (mon-help-cl-pkgs t)
 ;;
-;;(eval-when-compile
+
+(eval-when (load)
 (put 'mon-help-cl-pkgs 'function-documentation 
        (concat     
         "Return a pretty printed list of historic and Common Lisp packages and Specs."
         "\nIncludes dpANSI Spec, ISO Spec, CLTL2, Ilisp, CL-cookbook, eli, cl-shell etc.\n\n"
         (mon-help-cl-pkgs)
         "\n:SEE-ALSO `*cl-cmu-ai-repo*',`*cl-ext-pkg-map*', `mon-help-wget-cl-pkgs'.\n►►►"))
-;;)
+)
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-12-24T01:10:48-05:00Z}#{09524} - by MON>
@@ -289,11 +373,11 @@ Contents of file are formatted as follows:\n
   - Do not alter permissions of CL-WGET-FNAME\n
 :EXAMPLE\n\(mon--test--help-wget-cl-pkgs\) ;<- helper test function.\n
 :NOTE This function does not write the URLs for *cl-ext-pkg-map* keys
-cl-cookbook, oaklisp, and ilisp as these point to web pages and are not files.
-Download or add these manually if that is what you want. The following loop
-returns the absent URL's:\n
+cl-cookbook, oaklisp, ilisp, lisp, lispdoc. These point to web pages and are not
+files.  Download or add these manually if that is what you want. The following
+loop returns the absent URL's:\n
 \(let \(manual-dl\)
-  \(dolist \(cl-wpgs '\(ilisp cl-cookbook oaklisp\) manual-dl\)
+  \(dolist \(cl-wpgs '\(ilisp cl-cookbook oaklisp lispdoc lispy\) manual-dl\)
     \(setq manual-dl
           \(concat \(caddr \(assoc cl-wpgs *cl-ext-pkg-map*\)\) \"\\n\" manual-dl\)\)\)\)\n
 :SEE-ALSO `mon--test--help-wget-cl-pkgs', `mon-help-cl-pkgs', 
@@ -309,7 +393,7 @@ returns the absent URL's:\n
                         (eq system-type 'linux)) 'gnu))))
     (mapc #'(lambda (wb)
               (setq rmv-wb-pgs (delq wb rmv-wb-pgs)))
-          '(ilisp cl-cookbook oaklisp))
+          '(cl-cookbook ilisp lispy lispdoc oaklisp))
     (setq rmv-wb-pgs
           (mapconcat #'(lambda (clurl)
                          (let* ((this-cl (assoc clurl *cl-ext-pkg-map*))
@@ -635,7 +719,15 @@ o Kills temp-buffer and file on exit\n
 ;;;
 ;;; ============================================================
 
-(eval-when-compile (require 'hyperspec))
+(eval-when-compile
+  (when (locate-library "hyperspec.el") ;<- `*mon-hs-root-dir*'
+    (require 'hyperspec)))
+
+;;; :NOTE The symbol `common-lisp-hyperspec-root' needs to be present.
+;;; We shouldn't bind it if user hasn't loaded slime/hyperspec but _will_ later.
+(unless (or (bound-and-true-p common-lisp-hyperspec-root)
+            (featurep 'hyperspec))
+  (setq common-lisp-hyperspec-root nil))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-12-27T22:14:27-05:00Z}#{09527} - by MON>
@@ -1453,18 +1545,19 @@ insertion.
 ;; :TODO Following will need to be refontified post parse:
 ;;; :SEE-ALSO `common-lisp-hyperspec-symbol-table' in :FILE hyperspec.el
 ;;;
-;;; :MATCH-THESE
+;; :MATCH-THESE
 ;;;
 ;; "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-;;; :NOTE Following clarified in :SEE (info "(ansicl)Interpreting Dictionary Entries")
-;;; :AT-BOL 
+;;; :NOTE Following :AT-BOL's clarified in:
+;;; :SEE (info "(ansicl)Interpreting Dictionary Entries")
+;; :AT-BOL 
 ;;;^Affected By: 
 ;;;^Arguments and Values:   ;1.4.4.3
 ;;;^Class Precedence List:
 ;;;^Compound Type Specifier Arguments:
 ;;;^Compound Type Specifier Kind:
 ;;;^Compound Type Specifier Description:
-;;;^ Compound Type Specifier Syntax:
+;;;^Compound Type Specifier Syntax:
 ;;;^Description:            ;1.4.4.8
 ;;;^Examples:               ;1.4.4.9
 ;;;^Exceptional Situations: ;1.4.4.10
@@ -1513,21 +1606,21 @@ insertion.
 ;;; Copyright 1996, The Harlequin Group Limited. All Rights Reserved."
 ;;;"[HARLEQU[Common  [Previou[Up]    [Next]  "
 ;;;"[HARLEQU[Common  [No Prev[Up]    [No Next"
+;;;
 ;;; ==============================
 ;; :DPAN2TEXI-OUTPOUT
-;; ^Pronunciation: (appears in dpans2texi output) ;1.4.4.16
-;; ^or→ 
-;; ^See <some-xref>
-;; , see <some-xref>
+;;; ^Pronunciation: (appears in dpans2texi output) ;1.4.4.16
+;;; ^or→ 
+;;; ^See <some-xref>
+;;; , see <some-xref>
 ;;; ============================================================
 
 ;;; ==============================
 ;;; :COURTESY Pascal Bourguignon HIS: `pjb-cl.el' WAS: `loop-doc'
-;;; :ADDED <Timestamp: Tuesday June 23, 2009 @ 03:22.54 PM - by MON KEY>
 ;;; :MODIFICATIONS REPLACED: empty lines with '\n' escaped lisp forms in docstring
+;;; :ADDED <Timestamp: Tuesday June 23, 2009 @ 03:22.54 PM - by MON KEY>
 (defun mon-help-CL:LOOP (&optional insertp intrp)
   "The Common Lisp `loop' macro.
-:SEE info node `(cl)Loop Facility'\n
 A CL loop has the form:\n \(loop CLAUSE...)\n
 ;; :VALID-CLAUSES\n
     for VAR from/upfrom/downfrom NUM to/upto/downto/above/below NUM by NUM
@@ -1562,23 +1655,30 @@ A CL loop has the form:\n \(loop CLAUSE...)\n
 ;; :MISCELLANEOUS-CLAUSES\n
     finally EXPRS...
     return EXPR
-    finally return EXPR ►►►\n
-;;; \(loop for i in '\(1 2 3 4\)
-;;;       collect  i into col
-;;;       append   i into app
-;;;       nconc    i into nco
-;;;       sum      i into sum
-;;;       count    i into cnt
-;;;       maximize i into max
-;;;       minimize i into min
-;;;       do \(printf \\\"%d \\\" i\)
-;;;       return \(progn \(printf \\\"\\n\\\" i\)
-;;;                     \(values col app nco sum cnt max min\)\)\)"
+    finally return EXPR\n
+; \(loop for i in '\(1 2 3 4\)
+;       collect  i into col
+;       append   i into app
+;       nconc    i into nco
+;       sum      i into sum
+;       count    i into cnt
+;       maximize i into max
+;       minimize i into min
+;       do \(printf \\\"%d \\\" i\)
+;       return \(progn \(printf \\\"\\n\\\" i\)
+;                     \(values col app nco sum cnt max min\)\)\)\n
+:SEE info node `(cl)Loop Facility'\n
+Peter D. Karp's CL Loop Tutorial at:
+:SEE (URL `http://www.ai.sri.com/~pkarp/loop.html')\n
+Yusuke Shinyama's CL Loop examples:
+:SEE (URL `http://www.unixuser.org/~euske/doc/cl/loop.html')\n
+Cl-Cookbook review of loop at:
+:SEE (URL `http://cl-cookbook.sourceforge.net/loop.html')\n►►►"
 (interactive "i\nP")
 (if (or insertp intrp)
     (mon-help-function-spit-doc 'mon-help-CL:LOOP :insertp t)
   (message "pass non-nil for optional arg INTRP")))
-
+;;
 ;;; :TEST-ME (describe-function 'mon-help-CL:LOOP)
 
 ;;; ==============================

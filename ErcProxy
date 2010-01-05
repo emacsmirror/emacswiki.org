@@ -42,7 +42,7 @@ Set the server to "localhost" if you are running Tor/Privoxy on the localhost, o
 
 [[offby1]] just discovered that ##torify emacs##, followed by ##M-x erc-select##, works fine.
 
-Does this solutions [http://wiki.noreply.org/noreply/TheOnionRouter/TorFAQ#SOCKSAndDNS leak dns?]
+Does this solutions [http://wiki.torproject.org/noreply/TheOnionRouter/TorFAQ#SOCKSAndDNS leak dns?]
 
 
 -----

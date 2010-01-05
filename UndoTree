@@ -6,7 +6,7 @@ It gets better. You don't have to imagine the undo tree, because <code>undo-tree
 
 The only downside to this more advanced yet simpler undo system is that it was inspired by Vim. But, after all, most successful religions steal the best ideas from their competitors!
 
-The latest version (version 0.1.4, released December 2009) can be obtained from:
+The latest version (version 0.1.5, released January 2010) can be obtained from:
 
 * Undo-tree package download: http://www.dr-qubit.org/download.php?file=undo-tree/undo-tree.el
 * Web-site: http://www.dr-qubit.org/emacs.php#undo-tree

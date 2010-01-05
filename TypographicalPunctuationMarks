@@ -1,8 +1,14 @@
 : "Think man! Think of all those quotation marks!"[http://www.csd.uwo.ca/staff/magi/personal/humour/Computer_Audience/Douglas%20Adams%27%20Guide%20to%20the%20Macintosh.html]
 
+----
+
+For a simple solution to insert single or double "curly quotes" or "smart quotes" in a context-sensitive manner, [http://gareth-rees.livejournal.com/9306.html smart-quotes.el] may provide a workable solution. Tested on Emacs ver 22 and 23. The remainder of this page deals with the <tt>typopunct.el</tt> package.
+
+----
+
 The package <tt>[[typopunct.el]]</tt> provides a minor mode to enter typographical punctuation marks in a DWIM (DoWhatIMean) manner.
 
-When ##typopunct-mode## is on, pressing '##-##' two times will insert an en-dash (&ndash;); pressing '##-##' once more will change that to an em-dash (&mdash;). Also, pressing '##"##' and '##'##' will insert typographical quotation marks (AKA "smart quotes") depending on context and various national typographical conventions. By default, the following quotation styles are supported ([[#OtherStyles|other styles]] below):
+When ##typopunct-mode## is on, pressing '##-##' two times will insert an en-dash (&ndash;); pressing '##-##' once more will change that to an em-dash (&mdash;). Also, pressing '##"##' and '##'##' will insert typographical quotation marks (AKA "smart quotes" or "curly quotes") depending on context and various national typographical conventions. By default, the following quotation styles are supported ([[#OtherStyles|other styles]] below):
 
 * ##deutsch## -- for German „quotation marks“ and ‚single quotation marks‘ (default)
 * ##francais## -- for French «double quotation marks» and ‹single quotation marks›
