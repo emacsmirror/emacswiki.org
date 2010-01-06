@@ -2,16 +2,11 @@ This page is about the Emacs `grep' command. '''See Also:''' OccurMode
 
 == lgrep and rgrep ==
 
-With Emacs 22 and later comes the very easy to use yet powerful commands lgrep and rgrep.
-They both prompt the user for what to search for in a convenient manner.
-You do not have to know the unix grep command (but if you know it you can use that knowledge too).
-*lgrep* searches in the current directory and *rgrep* searches the current directory tree.
-rgrep knows about version control systems so it can avoid searching its control directories.
+With Emacs 22 and later comes the very easy to use yet powerful commands lgrep and rgrep. They both prompt the user for what to search for in a convenient manner. You do not have to know the unix grep command (but if you know it you can use that knowledge too). *lgrep* searches in the current directory and *rgrep* searches the current directory tree. rgrep knows about version control systems so it can avoid searching its control directories.
 
-One very conventient thing is that lgrep and rgrep shares command argument history with grep.
-This mean that you after using them can use the grep command to for example filter the output results, perhaps like this:
+One very conventient thing is that lgrep and rgrep shares command argument history with grep. This mean that you after using them can use the grep command to for example filter the output results, perhaps like this:
 
-  grep -i -nH -e "eshell/" *.el | grep -v defun
+    grep -i -nH -e "eshell/" *.el | grep -v defun
 
 
 == Emacs Grep ==
@@ -22,13 +17,34 @@ For example, use `M-x grep' with the following input -- in this case, the regexp
 
   M-x grep -n -e setq ~/.emacs
 
-This lists all lines matching `setq' in your Emacs InitFile, ##~/.emacs##, showing the filename and the line numbers. When you hit `RET' or click `mouse-2' on one of the
-lines, the file is opened at the matching
-line.
+This lists all lines matching `setq' in your Emacs InitFile, ##~/.emacs##, showing the filename and the line numbers. When you hit `RET' or click `mouse-2' on one of the lines, the file is opened at the matching line.
 
 The ##-n##, which makes `grep' add line numbers to the output, is necessary to make the search results active, so that you can navigate to them in the ways mentioned above. Since it's necessary, Emacs automatically includes ##-n## -- you need not type it.
 
-Hits from `##M-x grep##' can be iterated through using `##C-x `##'.  This runs Emacs command `next-error'.
+Hits from `##M-x grep##' can be iterated through using `##C-x `##'. This runs Emacs command `next-error'.
+
+
+== Using grep and find on Windows ==
+
+The [[EmacsW32]] distribution comes with ##grep## and ##find## included.
+
+Alternatively, if you are using the standard Emacs distribution, you can obtain them from the [http://gnuwin32.sourceforge.net/ GnuWin32] project:
+
+* [http://gnuwin32.sourceforge.net/packages/grep.htm Grep for Windows]
+* [http://gnuwin32.sourceforge.net/packages/findutils.htm FindUtils for Windows]
+
+They are installed in ##C:\Program Files\GnuWin32\bin## by default. Copy ##grep.exe## and ##find.exe## to Emacs' own ##bin## directory. Emacs will then use these files over any other executables with the same name, including Windows' own ##find## utility.
+
+For some additional tweaking, do
+
+    (eval-after-load 'grep
+      '(progn
+         (grep-apply-setting
+          'grep-template
+          "grep <C> -d skip -nH -e <R> <F>")
+         (add-to-list 'grep-files-history "*")))
+
+This makes `M-x lgrep' skip directories without warnings. Also, the default is to search ''all'' files, that is, "##*##".
 
 
 == Grep+: Enhancements to Emacs grep ==
@@ -46,28 +62,21 @@ You can also use `M-g' to `grep' marked files in a Dired buffer that has an expl
 
 == Grep All Files in a File Set ==
 
-With [[Icicles]], you can save sets of file-name completion candidates, either persistently as a project or ephemerally as a variable value. You can then `grep' all of the file in such a saved set using command
-`icicle-grep-saved-file-candidates'. See [[Icicles - Support for Projects#icicle-grep-saved-file-candidates|icicle-grep-saved-file-candidates]].
+With [[Icicles]], you can save sets of file-name completion candidates, either persistently as a project or ephemerally as a variable value. You can then `grep' all of the file in such a saved set using command `icicle-grep-saved-file-candidates'. See [[Icicles - Support for Projects#icicle-grep-saved-file-candidates|icicle-grep-saved-file-candidates]].
 
 
 == Icicles Search for `grep' or `compile' Results ==
 
-With [[Icicles]], in a compilation-results buffer such as `*Compilation*' or
-`*grep*', you can use command `icicle-compilation-search' (`##C-`##')
-to search among the result set (search hits).  This is similar to
-`icicle-search', but when you use `C-RET', `C-mouse-2', `C-prior',
-`C-next', `C-up', or `C-down', it visits the source code that
-corresponds to the current line in the compilation buffer.
+With [[Icicles]], in a compilation-results buffer such as `*Compilation*' or `*grep*', you can use command `icicle-compilation-search' (`##C-`##') to search among the result set (search hits). This is similar to `icicle-search', but when you use `C-RET', `C-mouse-2', `C-prior', `C-next', `C-up', or `C-down', it visits the source code that corresponds to the current line in the compilation buffer.
 
-Using `icicle-compilation-search' with `grep' output gives you multiple levels
-of regexp searching. In Emacs 22 and later, you can also replace `grep' search-hit text.
+Using `icicle-compilation-search' with `grep' output gives you multiple levels of regexp searching. In Emacs 22 and later, you can also replace `grep' search-hit text.
 
 
 == igrep for recursive grepping ==
 
 You might prefer ##igrep.el##, by Kevin Rogers, to standard Emacs `grep', because of its transparent interface. It uses the Unix or GNU/Linux command `##find |xargs grep##', and puts the results, including the matched lines, in buffer ##igrep##. The keys bound to `next-error' and `prev-error' work on that buffer and open the corresponding files. No replace capability, though.
 
-Here is the igrep page on the wiki
+Here is the igrep page on the wiki:
 
 * Lisp:igrep.el
 
@@ -111,14 +120,11 @@ I prefer relative path to full path. -- [[rubikitch]]
 
 Lisp:traverselisp.el
 
-Do basically the same than rgrep but don't use external programs, only lisp.
-Traverselisp have also replacing capabilitys:
-When the regexp is found in all the files of all subdirectory's, you can replace this regexp interactively or not, skip a line, or stop.
-Traverselisp can be launched from dired directly.
+Do basically the same as `rgrep', but don't use external programs, only Lisp. Traverselisp have also replacing capabilities: when the regexp is found in all the files of all subdirectories, you can replace this regexp interactively or not, skip a line, or stop. Traverselisp can be launched from dired directly.
 
-You can also get it here with mercurial:
+You can also get it here with Mercurial:
 
- hg clone http://freehg.org/u/thiedlecques/traverselisp/
+    hg clone http://freehg.org/u/thiedlecques/traverselisp/
 
 == Grep with [[Anything]] interface ==
 
@@ -131,17 +137,16 @@ Anything can narrow candidates. Let's utilize Anything to narrow grep result.
 
 Lisp:grep-a-lot.el
 
-Manage multiple grep results buffers: search results go into a newly created buffer instead of clobbering the contents of the last search results buffer. 
+Manage multiple grep results buffers: search results go into a newly created buffer instead of clobbering the contents of the last search results buffer.
 
 Buffers are assigned successive id numbers: ##*grep*<N>##, and you can switch between the buffers either as a ring (next/previous buffer) or as a stack (thus providing a recursive search facility, similar to recursive tags navigation).
 
 You can also get Grep-A-Lot with git:
 
-  git clone git://github.com/ZungBang/emacs-grep-a-lot.git
+    git clone git://github.com/ZungBang/emacs-grep-a-lot.git
 
 [new]
-Hi, I do not think defining global keymap on the top level of elisp is good idea.
-You should define a function to define keymap like `find-function-setup-keys'. -- [[rubikitch]]
+Hi, I do not think defining global keymap on the top level of elisp is good idea. You should define a function to define keymap like `find-function-setup-keys'. -- [[rubikitch]]
 
 [new:AviRozen:2008-12-29 21:08 UTC]
 Fixed. Thanks for the tip. -- AviRozen
@@ -150,14 +155,11 @@ Fixed. Thanks for the tip. -- AviRozen
 
 Lisp:grep-o-matic.el
 
-An extension that automates searching for the word at point in the current repository (requires Lisp:repository-root.el), current directory or the set of currently open files. 
+An extension that automates searching for the word at point in the current repository (requires Lisp:repository-root.el), current directory or the set of currently open files.
 
 You can also get Grep-O-Matic with git:
 
-  git clone git://github.com/ZungBang/emacs-grep-o-matic.git
+    git clone git://github.com/ZungBang/emacs-grep-o-matic.git
 
 ----
 CategoryRegexp CategoryExternalUtilities CategorySearchAndReplace CategoryProgrammerUtils
-
-
-

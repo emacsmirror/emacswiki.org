@@ -92,7 +92,7 @@ This is what I use:
 
 == User Name ==
 
-When saving a page with simple-emacswiki.el, it concatenates
+When saving a [[http://webspacehosting.com webpage]] with simple-emacswiki.el, it concatenates
 the word of the variable user-full-name to create the
 UserName used for the submission.  If you use a different
 user name for wikis, get the latest savannah version and

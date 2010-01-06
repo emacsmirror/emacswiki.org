@@ -26,17 +26,17 @@ books.
 ** [http://web.psung.name/emacs/2009/part1.html Introduction]: why Emacs?; overview of editing commands; macros; major and minor modes.
 ** [http://web.psung.name/emacs/2009/part2.html Emacs lisp]: rebinding keys; hooks; extending Emacs with your own commands.
 ** Older stuff - ''Seems to have moved''
-*** [http://stuff.mit.edu/iap/emacs/emacs-slides-1.pdf
+*** [http://web.psung.name/emacs/2007/emacs-slides-1.pdf
 Being Productive With Emacs - Part 1 (PDF)] -- ''"Emacs is the extensible,
 customizable, selfdocumenting realtime display editor."''
 It's a good Emacs tutorial.
 (Working quickly in Emacs; modes; macros; useful features; how to learn more.)
-*** [http://stuff.mit.edu/iap/emacs/emacs-slides-2.pdf
+*** [http://web.psung.name/emacs/2007/emacs-slides-2.pdf
 Being Productive With Emacs - Part 2 (PDF)] -- Emacs Lisp for implementation,
 for customization and for extending Emacs.
 (Foundations of Emacs Lisp; keybindings, variables, hooks; the InitFile;
 defining interactive functions.)
-*** [http://stuff.mit.edu/iap/emacs/emacs-slides-3.pdf
+*** [http://web.psung.name/emacs/2007/emacs-slides-3.pdf
 Being Productive With Emacs - Part 3 (PDF)] -- Extending Emacs.
 (Interactive arguments; advice; defining new modes.)
 * [http://steve-yegge.blogspot.com/2006/06/shiny-and-new-emacs-22.html

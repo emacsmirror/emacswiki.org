@@ -86,7 +86,7 @@ Windows users check ChangeFontsPermanentlyOnWindows.
 
 By default, Emacs uses a font called “default”.  This *should* be a
 system-wide alias for some sensible default font.  Ubuntu,
-particularly, has no such alias.  Consequently, Emacs displays a boxes
+particularly, has no such alias.  Consequently, Emacs displays boxes
 instead of characters.
 
 You can fix this by changing the font Emacs uses (see previous

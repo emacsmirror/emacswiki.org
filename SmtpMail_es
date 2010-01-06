@@ -1,0 +1,6 @@
+Smtpmail es una biblioteca oficial de la distribución de GNU Emacs que permite la configuración del envío de correo a través de SMTP.
+
+Posee un manual adjunto, cuya traducción al español está publicada en
+
+* http://gnu.manticore.es/manual-smtpmail-emacs
+

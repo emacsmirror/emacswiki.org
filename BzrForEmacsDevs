@@ -141,7 +141,7 @@ The reason you use "##merge##" instead of "##update##" in the task branch is tha
 
 The merge may fail due to a change that conflicts with your branch.  You'll need to fix the problem (looking for conflict markers and editing, just as in CVS), then
 
-      bzr resolve -m file-you-changed ...      # Mark these conflicts as resolved.
+      bzr resolve file-you-changed ...      # Mark these conflicts as resolved.
                                                # Bazaar keeps track of unresolved conflicts,
                                                # and won't let you commit until all are resolved.
 

@@ -8,7 +8,7 @@
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Copyright (C) 2009, rubikitch, all rights reserved.
 ;; Created: 2008-12-11 13:56:50
-;; Version: $Revision: 1.23 $
+;; Version: $Revision: 1.24 $
 ;; Last-Updated: Fri May 22 13:07:04 2009 (-0700)
 ;;           By: dradams
 ;; URL: http://www.emacswiki.org/emacs/download/auto-install.el
@@ -25,7 +25,7 @@
 ;;   `url-util', `url-vars'.
 ;;
 
-(defvar auto-install-version "$Id: auto-install.el,v 1.23 2009/12/29 09:31:23 rubikitch Exp rubikitch $")
+(defvar auto-install-version "$Id: auto-install.el,v 1.24 2010/01/05 09:40:04 rubikitch Exp $")
 ;;; This file is NOT part of GNU Emacs
 
 ;;; License
@@ -268,6 +268,9 @@
 ;;; Change log:
 ;;
 ;; $Log: auto-install.el,v $
+;; Revision 1.24  2010/01/05 09:40:04  rubikitch
+;; fixed error of auto-complete development version in `auto-install-batch-list'
+;;
 ;; Revision 1.23  2009/12/29 09:31:23  rubikitch
 ;; add Text Translator to auto-install-batch-list
 ;;
@@ -589,9 +592,9 @@ Nil means no confirmation is needed."
     ;; AutoComplete development version.
     ("auto-complete development version" nil nil
      (
+      "http://github.com/m2ym/auto-complete/raw/master/popup.el"
       "http://github.com/m2ym/auto-complete/raw/master/auto-complete.el"
       "http://github.com/m2ym/auto-complete/raw/master/auto-complete-config.el"
-      "http://github.com/m2ym/auto-complete/raw/master/popup.el"
       ))
     ;; Anything
     ("anything" nil nil

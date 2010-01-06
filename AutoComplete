@@ -160,13 +160,22 @@ Not terribly difficult but it took me a bit to puzzle out what needed to be done
 == Questions and Feedback ==
 
 
+----
 [new]
 Non lisp-hacker here. 
 How can I add my own completions, and make auto-complete-mode start automatically for any opened file?
 Thanks.
 
-
-
+For the second part of the question here is what i currently use to bypass ac-modes list:
+<pre>
+;; dirty fix for having AC everywhere
+(define-globalized-minor-mode real-global-auto-complete-mode
+  auto-complete-mode (lambda ()
+                       (if (not (minibufferp (current-buffer)))
+                         (auto-complete-mode 1))
+                       ))
+(real-global-auto-complete-mode t)
+</pre>
 
 [new:PhilJackson:2009-01-22 12:26 UTC] Should I expect this to work in a TTY emacsen?
 

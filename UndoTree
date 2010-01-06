@@ -1,3 +1,5 @@
+== About ==
+
 Emacs has a powerful undo system. Unlike the standard undo/redo system in most software, it allows you to recover <em>any</em> past state of a buffer (whereas the standard undo/redo system can lose past states as soon as you redo). However, this power comes at a price: many people find Emacs' undo system confusing and difficult to use, spawning a number of packages that replace it with the less powerful but more intuitive undo/redo system (see CategoryUndo).
 
 Both the loss of data with standard undo/redo, and the confusion of Emacs' undo, stem from trying to treat undo history as a linear sequence of changes. It's not. The <code>undo-tree-mode</code> provided by this package replaces Emacs' undo system with a system that treats undo history as what it is: a branching tree of changes. This simple idea allows the more intuitive behaviour of the standard undo/redo system to be combined with the power of never losing any history. An added side bonus is that undo history can in some cases be stored more efficiently, allowing more changes to accumulate before Emacs starts discarding history.
@@ -6,16 +8,31 @@ It gets better. You don't have to imagine the undo tree, because <code>undo-tree
 
 The only downside to this more advanced yet simpler undo system is that it was inspired by Vim. But, after all, most successful religions steal the best ideas from their competitors!
 
-The latest version (version 0.1.5, released January 2010) can be obtained from:
+For more information, see the Commentary at the top of the <code>undo-tree.el</code> file. (Note that <code>undo-tree-mode</code> does not yet support undo-in-region, nor, for low-level reasons, does it restore marker adjustments. I plan to support both of these in a future version.)
+
+
+== Downloading ==
+
+The latest "stable" version (version 0.1.5, released January 2010) can be obtained from:
 
 * Undo-tree package download: http://www.dr-qubit.org/download.php?file=undo-tree/undo-tree.el
 * Web-site: http://www.dr-qubit.org/emacs.php#undo-tree
 
-Note that <code>undo-tree-mode</code> does not yet support undo-in-region, nor (for low-level reasons) does it restore marker adjustments. I plan to support both of these in a future version.
+If you want to live on the bleeding edge, the latest "development" version can be found in a git repository located at:
 
-For more information, see the Commentary at the top of the <code>undo-tree.el</code> file.
+* Undo-tree git repository: http://www.dr-qubit.org/git/undo-tree.git
+
+This is a git repository, <em>not</em> a web page. To grab the latest development version, clone the repository using something like:
+<pre>
+git clone http://www.dr-qubit.org/git/undo-tree.git undo-tree
+</pre>
+
+
+== Contributing ==
 
 Please send bug reports and suggestions to [mailto:toby-undo-tree@dr-qubit.org toby-undo-tree@dr-qubit.org] (you can post them here as well if you like, of course). I don't check this page regularly, so anything not emailed to me is likely to languish here unnoticed for some time.
+
+If you want to contribute code, either send a patch against the latest development version to [mailto:toby-undo-tree@dr-qubit.org toby-undo-tree@dr-qubit.org], or, better still use git, rebase your work against the latest git HEAD, and let me know where to find your clone of the undo-tree repository so that I can pull your changes.
 
 -- TobyCubitt
 

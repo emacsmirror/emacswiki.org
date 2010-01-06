@@ -39,6 +39,7 @@ The package mon-utils is the entry point which loads the rest of the system and 
 * Lisp:mon-rename-image-utils-supplemental.el --
 * Lisp:mon-url-utils.el -- Provides utilities for interactively calling URL data lookups and for in
 ;;; buffer modification of web/internet scrapes.
+* Lisp:mon-cifs-utils.el -- Provides utilities for and mapping and mounting a CIFS domain with auth-source.
 
 === :MON-DOC-UTILS ===
 

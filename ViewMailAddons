@@ -12,6 +12,7 @@ For the time being, the variable `vm-enable-addons' controls which features of r
 
 This addon inserts a gap when you type in a quoted message.
 
+**Note** (Jan 2010): Robert Fenk has been unavailable since the beginning of 2009, and vm-rfaddons are not being maintained.  Efforts are being made to integrate some of its critical components into VM core, but others are likely to be dysfunctional.  Use caution in using these addons.
 ----
 
 = Appearance =
