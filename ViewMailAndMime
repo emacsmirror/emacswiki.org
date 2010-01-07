@@ -6,7 +6,7 @@ The variable `vm-mime-show-alternatives' can be used to show '''all''' the alter
 
 **Q:** Can one use lynx to convert html to plain text and display it in VM?
 
-**A:** Yes.  You should first ensure that text/html is not declared as an extenal content-type in vm-mime-external-content-types or vm-mime-external-content-type-exceptions.  Include the following lines in your .vm file to convert html to plain text.
+**A:** Yes.  You should first ensure that text/html is not declared as an extenal content-type, by setting `vm-mime-external-content-types' and/or `vm-mime-external-content-type-exceptions' appropriately.  Include the following lines in your .vm file to convert html to plain text.
 
   (add-to-list 'vm-mime-type-converter-alist
       '("text/html" "text/plain"

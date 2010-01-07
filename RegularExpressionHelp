@@ -1,8 +1,10 @@
-== Emacs Regular Expressions Are Not Perl Regular Expressions ==
+[[es:RegularExpressionHelp]]
+== Las expresiones regulares de Emacs no son expresiones regulares de Perl ==
 
-: Just a simple regexp question: why does not a regexp like <code>(?:aaa|bbb)</code> work in `M-x search-forward-regexp'??
+: Una simple pregunta de regexp: 
+¿porqué una expresión regular como <code>(?:aaa|bbb)</code> no trabaja en `M-x search-forward-regexp'?
 
-The answer is simple: There are two "styles" of regular expressions.  One of them made popular by old Unix tools like sed and grep, and another made popular by Perl.  In Perl, the characters <code>( | )</code> have their special meaning -- grouping and alternative.  In the grep, the characters <code>( | )</code> have their ordinary meaning -- they match themselves.  In either case, escaping them using a backslash will change the meaning of the character.
+La respuesta es simple: Hay dos "estilos" de expresiones regulares.  Uno de ellos lo hicieron popular las viejas herramientas de Unix como sed y grep, y el otro lo hizo popular Perl.  En Perl, los caracteres <code>( | )</code> tienen un significado especial -- agrupar y alternativa.  En grep, los caracteres <code>( | )</code> tienen su significado ordinario -- they match themselves.  In either case, escaping them using a backslash will change the meaning of the character.
 
 The above example in Emacs would read <code>\(?:aaa\|bbb\)</code>.
 
@@ -37,4 +39,3 @@ on -- [[Icicles - Search Commands, Overview]]. The search hits are highlighted s
 
 ----
 CategoryRegexp
-

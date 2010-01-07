@@ -19,7 +19,7 @@ add the path (not the full name of the binary - just its directory!) to the list
 
 
 
-== Problems installing Aspell Sepllchecking==
+== Problems installing Aspell Spellchecking==
 
 Firstly you can install Cocoaspell, or the "base package aspell". see: http://aquamacs.org/spelling.shtml 
 
@@ -329,4 +329,3 @@ The two variables interact in a way that may be confusing.  For example, you can
 ||''##visible-bell##''||##nil##||##nil##||##t##||##t##||
 ||||||||||||
 ||*resulting effect*||no sound, no flash||sound, no flash||no sound, no flash||no sound, flash||
-

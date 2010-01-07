@@ -1,9 +1,9 @@
 ;;; sunrise-commander.el  --  Two-pane file manager for Emacs based on Dired and
 ;;  inspired by MC.
 
-;; Copyright (C) 2007 2008 2009 José Alfredo Romero Latouche (j0s3l0)
+;; Copyright (C) 2007-2010 José Alfredo Romero Latouche.
 
-;; Author: José Alfredo Romero L. <joseito@poczta.onet.pl>
+;; Author: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Keywords: Sunrise Commander Emacs File Manager Midnight Norton Orthodox
 
 ;; This program is free software: you can redistribute it and/or modify it under
@@ -130,7 +130,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 248 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 251 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.  I  have  also  received
@@ -939,7 +939,11 @@ automatically:
   (sr-select-viewer-window)
   (delete-other-windows)
   (if (buffer-live-p other-window-scroll-buffer)
-      (switch-to-buffer other-window-scroll-buffer))
+      (switch-to-buffer other-window-scroll-buffer)
+    (let ((start (current-buffer)))
+      (while (and start (memq major-mode '(sr-mode sr-virtual-mode)))
+        (bury-buffer)
+        (if (eq start (current-buffer)) (setq start nil)))))
 
   ;;now create the viewer window
   (unless sr-panes-height
@@ -1019,16 +1023,16 @@ automatically:
 (defun sr-hide-avfs-root ()
   "Hides the AVFS virtual filesystem root (if any) on the path line."
   (if sr-avfs-root
-      (let ((next (search-forward (concat sr-avfs-root "/") nil t))
-            (len (length sr-avfs-root))
-            (overlay))
+      (let ((start nil) (end nil) (overlay nil)
+            (next (search-forward sr-avfs-root nil t)))
+        (if next (setq start (- next (length sr-avfs-root))))
         (while next
-          (progn
-            (setq overlay (make-overlay (- next len) next))
-            (overlay-put overlay 'invisible t)
-            (overlay-put overlay 'intangible t)
-            (setq next (search-forward sr-avfs-root nil t))))
-        (goto-char (point-min)))))
+          (setq end (point)
+                next (search-forward sr-avfs-root nil t)))
+        (when end
+          (setq overlay (make-overlay start end))
+          (overlay-put overlay 'invisible t)
+          (overlay-put overlay 'intangible t)))))
 
 (defun sr-highlight-broken-links ()
   "Marks broken symlinks with an exclamation mark and a special face."

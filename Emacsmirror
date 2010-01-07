@@ -45,12 +45,19 @@ If you know where a package can be found you should change it to:
 ** package-name http://working.download.url http://homepage.url
 </code>
 
-If you are absolutely sure that a file is not distributed anymore but you do
-have a copy of it available you can also send [mailto:jonas@emacsmirror.org me]
+If did try but failed to find some package but do have a copy of
+t available you can also send [mailto:jonas@emacsmirror.org me]
 a copy.  Then change the entry below to:
 
 <code>
 ** package-name (mailed to mirror maintainer)
+</code>
+
+If you try but fail to find some package please note that below also.  So other
+people don't waste their time trying to find the same package.
+
+<code>
+** package-name (I couldn't find it eigher)
 </code>
 
 * A
@@ -267,7 +274,7 @@ a copy.  Then change the entry below to:
 ** [http://www.jeanbaptiste-bourgoin.com/ mpcel]
 ** [http://www.mts.jhu.edu/~kapur/emacs/msn.el msn]
 ** [http://mathias.dahl.net/pgm/emacs/elisp/mss.el mss]
-** [http://np-salesman.net/programs/{software/multi-mode-mode.el} multi-mode-mode]
+** [http://np-salesman.net/programs/software/multi-mode-mode.el]
 ** [http://homepages.cs.ncl.ac.uk/phillip.lord/download/emacs/muse-definitions.el muse-definitions]
 ** [http://www.ma.utexas.edu/~jcorneli/a/elisp/musical-letters.el musical-letters]
 
@@ -294,7 +301,7 @@ a copy.  Then change the entry below to:
 ** [http://www.csis.ul.ie/staff/JohnSturdy/research-elisp/papers.el papers]
 ** [http://www.bluetail.com/~luke/misc/emacs/pbook.el pbook]
 ** [http://www.gnusoftware.com/Emacs/Lisp/perldoc.el perldoc]
-** [http://ee.usyd.edu.au/~thlai/emacs/{pifont.el.gz} pifont]
+** [http://ee.usyd.edu.au/~thlai/emacs/pifont.el.gz]
 ** [http://www.cb1.com/~john/computing/emacs/lisp/natural-language/pinyin-conversions.el pinyin-conversions]
 ** [http://www.pmichaud.com/wiki/Cookbook/Pmwiki-mode pmwiki]
 ** [http://astro.utoronto.ca/~reid/mutt/ post]

@@ -1,7 +1,7 @@
 ;;; sunrise-x-checkpoints.el ---  Checkpoint bookmarks for the Sunrise Commander
 ;;; File Manager
 
-;; Copyright (C) 2009 José Alfredo Romero Latouche (j0s3l0)
+;; Copyright (C) 2009-2010 José Alfredo Romero Latouche.
 
 ;; Author: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Keywords: Sunrise Commander Emacs File Manager Checkpoints Bookmarks
@@ -32,7 +32,7 @@
 ;; other  one is deprecated and will eventually disappear once Emacs 23+ becomes
 ;; the "stable" release.
 
-;; This is version 1 $Rev: 248 $ of the Sunrise Commander Checkpoints Extension.
+;; This is version 1 $Rev: 250 $ of the Sunrise Commander Checkpoints Extension.
 
 ;; It  was  written and tested on GNU Emacs 23 on Linux.
 

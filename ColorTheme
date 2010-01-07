@@ -454,13 +454,7 @@ Put this in your ~/.emacs:
 
 Given the name of a color theme, write out the .Xresources equivalent of the theme.  You would want to do this if you want to make Emacs start much faster than loading the theme from Lisp.
 
-* http://web.archive.org/web/20061018071033/http://dev.gentoo.org/~mkennedy/archive/projects/color-theme-x/color-theme-x.el
-
-: ''NOTE:'' This link is the internet archive mirror of an old link -- [http://wahjava.wordpress.com/ abbe]
-: ''NOTE:'' Then where is the non old link?
-
-* http://www.emacswiki.org/cgi-bin/wiki/color-theme-reg.el
-: "NOTE:" Added a file based on color-theme-x, it can convert color-theme to win32 reg. -- [Kyle M. Lee]
+* Lisp:color-theme-x.el
 
 Example usage:
 
@@ -468,6 +462,10 @@ Example usage:
     C-u M-x color-theme-x RET classic RET ~/elisp/color-theme.el RET
 
 After the generated X resource settings have been written out to your .Xresources file, you'll need run either xrdb -merge .Xresources or xrdb -load .Xresources (depending on the desired effect). You will have to restart your Emacs to have the new X resources take effect. 
+
+== Saving a Color Theme in the Windows Registry ==
+
+Lisp:color-theme-reg.el -- convert color-theme to win32 reg. by Kyle M. Lee, based on color-theme-x.
 
 == Issues ==
 

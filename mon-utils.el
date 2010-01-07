@@ -71,12 +71,13 @@
 ;;; `mon-line-strings-region', `mon-line-indent-from-to-col', 
 ;;; `mon-get-system-specs', `mon-string-fill-to-col'
 ;;; `mon-line-strings-pipe-to-col', `mon-line-strings'
-;;; `mon-get-process', `mon-toggle-eval-length'
+;;; `mon-get-process', `mon-toggle-eval-length',
+;;; `mon-line-string-insert-chars-under'
 ;;; FUNCTIONS:◄◄◄
 ;;; FUNCTIONS:###
 ;;; 
 ;;; MACROS:
-;;; `mon-foreach', `mon-for', `mon-loop', `mon-moveq'
+;;; `mon-foreach', `mon-for', `mon-loop', `mon-moveq', `mon-line-dolines'
 ;;;
 ;;; METHODS:
 ;;;
@@ -132,6 +133,9 @@
 ;;; PUBLIC-LINK: (URL `http://www.emacswiki.org/emacs/mon-utils.el')
 ;;; FIRST-PUBLISHED: AUGUST 2009
 ;;;
+;;; :PUBLIC-LINK (URL `http://www.emacswiki.org/emacs/MonUtils')
+;;; :FIRST-PUBLISHED <Timestamp: #{2009-12-22T03:43:27-05:00Z}#{09522} - by MON>
+;;;
 ;;; FILE-CREATED:
 ;;; <Timestamp: Autumn 2008 - by MON KEY>
 ;;; ================================================================
@@ -173,9 +177,10 @@
 ;;; ==============================
 (require 'mon-regexp-symbols)
 (require 'mon-time-utils)
-(require 'mon-replacement-utils) ;; :BEFORE :FILE mon-dir-utils.el naf-mode-insertion-utils.el
+(require 'mon-replacement-utils) ;; :BEFORE :FILE mon-dir-utils.el mon-insertion-utils.el
 (require 'mon-dir-locals-alist)
 (require 'mon-dir-utils)
+(require 'mon-cifs-utils)
 (require 'mon-insertion-utils)
 (require 'naf-mode-insertion-utils)
 (require 'mon-url-utils)
@@ -2394,6 +2399,47 @@ When called-interactively prompt for column numer of FROM-COL and TO-COL.
 ;; `----
 
 ;;; ==============================
+;;; :COURTESY Pascal .J Bourguignon :WAS `dolines'
+;;; :SEE (URL `http://lists.gnu.org/archive/html/help-gnu-emacs/2009-12/msg00614.html')
+;;; :CREATED <Timestamp: #{2009-12-28T15:57:08-05:00Z}#{09531} - by MON KEY>
+(defmacro* mon-line-dolines (start-end &body body)
+  "Executes the body with start-var and end-var bound to the start and the end 
+of each line of the current-buffer in turn.\n
+:EXAMPLE\(dolines \(start end\)
+  \(goto-char start\)
+  \(when \(re-search-forward 
+           \"^\\\\\( *?[0-9]*\\\\\)\\\\\( *?[0-9]*\\\\\)\\\\\( *[0-9]*\\\\\)$\" end  t\)
+     \(let \(\(day   \(match-string 1\)\)
+           \(month \(match-string 2\)\)
+           \(year  \(match-string 3\)\)\)
+        \(with-current-buffer \(get-buffer-create \"day.txt\"\)
+           \(insert day \"\\n\"\)\)
+        \(with-current-buffer \(get-buffer-create \"month.txt\"\)
+           \(insert month \"\\n\"\)\)       
+        \(with-current-buffer \(get-buffer-create \"year.txt\"\)
+           \(insert year \"\\n\"\)\)\)\)\)\n
+:SEE-ALSO `'.►►►"
+  (let ((vline (gensym)))
+    (destructuring-bind (start-var end-var) start-end
+      `(let ((sm (make-marker))
+             (em (make-marker)))
+         (unwind-protect
+              (progn
+                (goto-char (point-min))
+                (while (< (point) (point-max))
+                  (let ((,vline (point)))
+                    (set-marker sm (point))
+                    (set-marker em (progn (end-of-line) (point)))
+                    (let ((,start-var  (marker-position sm))
+                          (,end-var    (marker-position em)))
+                      ,@body)
+                    (goto-char ,vline)
+                    (forward-line 1))))
+           (set-marker sm nil)
+           (set-marker em nil))
+         nil))))
+
+;;; ==============================
 ;;; :NOTE (length "=> TO-COLM-NUM-19-!")
 ;;; :CREATED <Timestamp: #{2009-12-09T15:07:13-05:00Z}#{09503} - by MON>
 (defun mon-line-strings-pipe-to-col (start end &optional to-col insrtp intrp)
@@ -2696,8 +2742,9 @@ Elements of list returned have the form:
 Dmitry Grigoriyevich Bogrov\nPaul Gorguloff\nJohn Bellingham
 Charles Julius Guiteau\n►\n\n:SEE-ALSO
 `mon-line-string-rotate-namestrings' `mon-line-string-unrotate-namestrings',
-`mon-line-string-rotate-name', `mon-line-strings-to-list'
-`mon-make-lastname-firstname' `naf-make-name-for-lisp' `mon-make-names-list'.\n►►►"
+`mon-make-lastname-firstname', `naf-make-name-for-lisp' `mon-make-names-list',
+`mon-line-string-rotate-name', `mon-line-strings-to-list',
+`mon-line-string-insert-chars-under'.\n►►►"
   (interactive "r\ni\np")
   (let ((rotd-nms (mon-line-string-rotate-namestrings start end t))
         (unrotd-nms)
@@ -2733,6 +2780,41 @@ Charles Julius Guiteau\n►\n\n:SEE-ALSO
 ;; |Charles Julius Guiteau
 ;; |►
 ;; `----
+
+;;; ==============================
+;;; CREATED: <Timestamp: #{2009-10-20T16:16:44-04:00Z}#{09432} - by MON>
+(defun mon-line-string-insert-chars-under (&optional with-char intrp)
+  "Insert a string of `='s (char 61) beneath the current line. 
+Inserted string has the length of current line. Does not move point.
+When WITH-CHAR (char or string) is non-nil insert that char instead.
+When called-interactively with prefix-arg prompt for a char to use.\n
+:SEE-ALSO `mon-line-strings-to-list',.\n►►►"
+  (interactive "P\np")
+  (let ((ln-spec
+         (if (looking-at "^$")
+             (error "No line at point: %d." (point))
+             (bounds-of-thing-at-point 'line)))
+        (with-char (if (and with-char intrp)
+                       (read-char "char to use: ")
+                    with-char)))
+    (save-excursion
+      (end-of-line)
+      (when (= (buffer-end 1)(cdr ln-spec))
+        (setcdr ln-spec (1+ (cdr ln-spec))))
+      (open-line 1)
+      (forward-char 1)
+      (insert (make-string ;;(- (1- (cdr ln-spec)) (car ln-spec)) 
+               (- (1- (cdr ln-spec)) (car ln-spec))
+                           (if with-char                              
+                               (if (stringp with-char)
+                                   (string-to-char with-char)
+                                   with-char)
+                               61))))))
+;;
+;;; :TEST-ME (mon-line-string-insert-chars-under)
+;;; :TEST-ME (mon-line-string-insert-chars-under 9658)
+;;; :TEST-ME (mon-line-string-insert-chars-under "►")
+;;; :TEST-ME (mon-line-string-insert-chars-under t t)
 
 ;;; ==============================
 ;;; :COURTESY Nelson H. F. Beebe :HIS clsc.el :VERSION 1.53 of 2001-05-27
@@ -3414,14 +3496,14 @@ Helper function for `mon-view-help-source'\n
 ;;; ==============================
 ;;; :COURTESY Pascal J. Bourguignon :HIS list.lisp :WAS PLIST-REMOVE
 ;;; :CREATED <Timestamp: #{2009-09-28T17:32:55-04:00Z}#{09401} - by MON>
-(defun plist-remove (plist prop)
+(defun mon-plist-remove (plist prop)
   ":DO      \(remf plist prop\)
 :RETURN  The modified PLIST.\n
 :SEE-ALSO `mon-plist-keys'.\n►►►"
   (remf plist prop)
   plist)
 ;;
-(defalias 'mon-plist-remove 'plist-remove)
+;; (defalias 'mon-plist-remove 'plist-remove)
 
 ;;; ==============================
 ;;; :NOTE Keep with `mon-list-all-properties-in-buffer'.
@@ -3433,7 +3515,7 @@ Helper function for `mon-view-help-source'\n
   (if (null plist)
       plist
       (cons (car plist) (mon-plist-keys (cddr plist)))))
-;;
+;; 
 ;;; ==============================
 ;;; :COURTESY Pascal J. Bourguignon :HIS pjb-emacs.el
 ;;; :NOTE Keep with `mon-nuke-text-properties-buffer', `mon-plist-keys'
@@ -3855,12 +3937,16 @@ without the surrounding quotes.
 	(replace-match "" nil t)
 	(forward-char)))))
 
+;;; 
+
 ;;; ==============================
+;;; :TODO This is a bad name, fix it.
 ;;; :CREATED: <Timestamp: #{2009-10-20T15:56:02-04:00Z}#{09432} - by MON>
-  (defun mon-make-a-pp (start end &optional CL->downcase)
+(defun mon-make-a-pp (start end &optional CL->downcase)
     "Pretty print the region in buffer. Do not move point.
- When CL->DOWNCASE is non-nil it is used clean CL that is in ALL CAPS.
-:SEE-ALSO `mon-princ-cb', `mon-eval-sexp-at-point'\n►►►"
+ When CL->DOWNCASE is non-nil it is used to clean CL that is `UPCASE'd.\n
+:SEE-ALSO `mon-princ-cb', `mon-eval-sexp-at-point', `mon-eval-expression',
+`mon-eval-print-last-sexp', `mon-toggle-eval-length'.\n►►►"
     (interactive "r\nP")
     (let ((fw  (if CL->downcase
                    "(save-excursion (newline) (princ (downcase (pp '("
@@ -3898,23 +3984,30 @@ without the surrounding quotes.
 ;;; ==============================
 ;;; :CREATED <Timestamp: Wednesday May 20, 2009 @ 02:13.22 PM - by MON KEY>
 (defun mon-princ-cb ()
-  "Wrap region in a princ->current-buffer to eval and print newline\\result after point.
-:SEE-ALSO `mon-eval-sexp-at-point'\n►►►"
+  "Wrap region in a princ->current-buffer to eval and print newline\\result
+  after point.\n
+:SEE-ALSO `mon-eval-sexp-at-point', `mon-make-a-pp', `mon-eval-expression',
+`mon-eval-print-last-sexp'.\n►►►"
   (interactive)
   (save-excursion
     ;; (let (sexp-pnt
   (mon-wrap-text "(progn(newline)(princ\n" "\n(current-buffer)))")))
 
 ;;; ==============================
+;;; :NOTE Consider using: (pp-eval-last-sexp t)
 ;;; :CREATED <Timestamp: Wednesday May 20, 2009 @ 03:14.44 PM - by MON KEY>
 (defun mon-eval-sexp-at-point ()
-  "Evaluate S-expression at point print commented result on nl.
+  "Evaluate S-expression at point print commented result on newline.\n
 Return point after commented result. Best on trivial expressions.\n
-:EXAMPLE\n\(+ 1 3)\n;;;=>4\n^point^\n\n:SEE-ALSO `mon-princ-cb'\n►►►"
+:EXAMPLE\n\(+ 1 3)\n;;;=> 4\n^point^\n
+:SEE-ALSO `mon-princ-cb', `mon-make-a-pp', `mon-eval-expression',
+`mon-eval-print-last-sexp', `mon-eval-sexp-at-point', `mon-toggle-eval-length'.
+►►►"
   (interactive)
   (let* ((wrap (sexp-at-point))
 	 (val (eval wrap))      
-	 (comnt "\n;;;=>")
+	 ;; :WAS (comnt "\n;;;=>")
+         (comnt "\n;;;=> ")
 	 (comn-sexp (format "%S%s%S"  wrap comnt val))
 	 (bnds))
     (save-excursion
@@ -3923,30 +4016,40 @@ Return point after commented result. Best on trivial expressions.\n
 	(newline))
       (insert comn-sexp))
     (setq bnds (bounds-of-thing-at-point 'sexp))
-    (delete-region (car bnds) (cdr bnds))
+    ;; :WAS (delete-region (car bnds) (cdr bnds))
+    (setq wrap (delete-and-extract-region (car bnds) (cdr bnds)))
     (when (mon-line-bol-is-eol)
       (delete-char 1))
-    (search-forward-regexp "^;;;=>.*$" nil t)))
+    ;; :WAS (search-forward-regexp "^;;;=> .*$" nil t)
+    (search-forward-regexp (format "^;;;=> %S" val) nil t)
+    val
+    ))
 ;;
 (defun mon-eval-print-last-sexp ()
-  "Like `eval-print-last-sexp' but does not move point.\n►►►"
+  "Like `eval-print-last-sexp' but does not move point.\n
+:SEE-ALSO `mon-eval-expression', `mon-eval-sexp-at-point',
+`mon-make-a-pp', `mon-princ-cb', `mon-toggle-eval-length'.
+`pp-eval-last-sexp'.\n►►►"
   (interactive)
   (save-excursion
     (eval-print-last-sexp)))
 ;;
 ;;; :TEST-ME (+ 1 3) (mon-eval-print-last-sexp)
 
+
 ;;; ==============================
 ;;; :CREATED <Timestamp: Thursday June 25, 2009 @ 12:59.22 PM - by MON KEY>
 (defun mon-eval-expression (eval-expression-arg &optional eval-expression-insert-value)
   "This is `eval-expression' with the EVAL-EXPRESSION-INSERT-VALUE defaulted to t.
-Gets us eval-expression automatically inserted into current-buffer.\n►►►"
+Gets us eval-expression automatically inserted into current-buffer.\n
+:SEE-ALSO `mon-eval-print-last-sexp', `mon-eval-sexp-at-point',
+`mon-make-a-pp', `mon-princ-cb', `mon-toggle-eval-length'.\n►►►"
   (interactive
    (list (let ((minibuffer-completing-symbol t))
 	   (read-from-minibuffer "Eval: "
 				 nil read-expression-map t
 				 'read-expression-history))
-         ;; Only point of function is to set current-prefix-arg default to t.
+         ;; :NOTE Only point of this is to set current-prefix-arg default to t.
          ;; :CHANGED
          ;; current-prefix-arg)) 
 	 t))

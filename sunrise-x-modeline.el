@@ -1,7 +1,7 @@
 ;;; sunrise-x-modeline.el --- Navigable mode line for the Sunrise Commander File
 ;;  Manager.
 
-;; Copyright (C) 2009 José Alfredo Romero Latouche (j0s3l0)
+;; Copyright (C) 2009-2010 José Alfredo Romero Latouche.
 
 ;; Author: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Keywords: Sunrise Commander Emacs File Manager Path Mode Line
@@ -33,7 +33,7 @@
 ;; The  extension  is  provided  as a minor mode, so you can enable / disable it
 ;; totally by issuing the command (M-x) sr-modeline.
 
-;; This is version 2 $Rev: 248 $ of the Sunrise Commander Modeline Extension.
+;; This is version 2 $Rev: 250 $ of the Sunrise Commander Modeline Extension.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.

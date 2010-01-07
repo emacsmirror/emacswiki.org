@@ -1,0 +1,297 @@
+Lisp:mon-cifs-utils.el provides the following variables and functions documented below:
+
+<pre>
+;;; ============================================================
+;;; `*mon-CIFS-mount-points*' <VARIABLE>
+;;; ============================================================
+*An alist mapping local mount points to networked shares.
+Alist entries have one of the following the forms:
+
+ (symbol "//<CIFS-DOMAIN-IP>/<SOME-CIFS-SHARE>" "/LOCAL/MOUNT/<MNT-POINT>")
+
+ (symbol "//<CIFS-DOMAIN-NAME>/<SOME-CIFS-SHARE>" "/LOCAL/MOUNT/<MNT-POINT>")
+
+Where //<CIFS-DOMAIN-NAME> is the domain or workgroup and <SOME-CIFS-SHARE> is
+one of its shares and where /LOCAL/MOUNT/ is the local systems common mount
+directory e.g. /mnt, /media, etc. and <MNT-POINT> is a directory beneath.  
+:NOTE The first two forms above are not needed, and indeed should not be used,
+where each of your shares are located beneath `*mon-CIFS-domain*' and where each
+of your local mount points are beneath `*mon-CIFS-mount-root*' as, by default,
+these are programmatically updated with `mon-map-cifs-domain->local-mount'.
+Instead, you should provide alist entries with the `//CIFS-DOMAIN-*' and root
+`/LOCAL/MOUNT/' portions omitted by using the form:
+
+ (symbol "<SOME-CIFS-SHARE>" "MNT-POINT")
+
+A more detailed example of the preferred format can be seen evaluating and
+examining the output of the the example code provided after the `:EXAMPLE'
+section of that function's docstring.
+
+:NOTE To find CIFS shares and/or test access to a domain do as follows:
+
+ shell> smbclient -L <DOMAIN> -W windom -U <USERNAME>
+        [Provide password when prompted]
+
+:SEE (man "samba")
+:SEE (man "fstab")
+:SEE (man "getmntent")
+
+:SEE-ALSO `mon-get-cifs-credentials', `mon-build-cifs-credentials', 
+`mon-get-cifs-mount-points', `mon-mount-cifs', `*mon-CIFS-mount-points*', 
+`*mon-CIFS-auth-protocol*',`*mon-CIFS-domain*', `*mon-CIFS-pass*', 
+`*mon-CIFS-user*', `*mon-CIFS-mount-root*'.
+
+;;; ============================================================
+;;; `*mon-CIFS-auth-protocol*' <VARIABLE>
+;;; ============================================================
+*A protocol list of CIFS elements for `auth-source-protocols'.
+
+List has the form '(key str-val str-num ... ) where key is the symbol `cifs'
+and value is a string nameing a protocol or port number apropos your site local
+CIFS configuration.
+
+:SEE-ALSO  `mon-get-cifs-credentials', `*mon-CIFS-domain*',
+`*mon-CIFS-user*', `*mon-CIFS-pass*'.
+
+;;; ============================================================
+;;; `*mon-CIFS-domain*' <VARIABLE>
+;;; ============================================================
+*CIFS domain to mount with `*mon-CIFS-user*' using `*mon-CIFS-pass*'.
+This is the the CIFS `workgroup' or `domain' you wish to connect with.
+:SEE (man "mount.cifs")
+:SEE (man "samba")
+:SEE `*mon-CIFS-mount-points*' for additional discussion.
+:SEE-ALSO `mon-get-cifs-credentials',`*mon-CIFS-auth-protocol*'.
+
+;;; ============================================================
+;;; `*mon-CIFS-pass*' <VARIABLE>
+;;; ============================================================
+*CIFS password of `*mon-CIFS-user*' for accessing `*mon-CIFS-domain*'.
+
+:SEE-ALSO `mon-get-cifs-credentials',`*mon-CIFS-auth-protocol*'.
+
+;;; ============================================================
+;;; `*mon-CIFS-user*' <VARIABLE>
+;;; ============================================================
+*CIFS username to access `*mon-CIFS-domain*' using `*mon-CIFS-pass*'.
+
+:SEE-ALSO `*mon-CIFS-pass*', `mon-get-cifs-credentials',
+`*mon-CIFS-auth-protocol*'.
+
+;;; ============================================================
+;;; `*mon-CIFS-mount-root*' <VARIABLE>
+;;; ============================================================
+*Local mount point for networked SMBFS/CIFS shares.
+
+:SEE-ALSO `*mon-CIFS-domain*',`*mon-CIFS-user*',`*mon-CIFS-pass*'.
+
+;;; ============================================================
+;;; `mon-map-cifs-domain->local-mount' <FUNCTION>
+;;; ============================================================
+ <ARG-LIST>
+ (&optional mount-point-list local-mount-point cifs-domain)
+ ==============================
+Map common domain and mount points across the path values in cdr's of
+`*mon-CIFS-mount-points*'. Assumes that the domain and base-mount point are
+consistent across all the elements of `*mon-CIFS-mount-points*' and tack on
+the path prefixes here.
+
+Optional args MOUNT-POINT-LIST, LOCAL-MOUNT-POINT, and CIFS-DOMAIN should have
+similar values as those of their respective defaults values in:
+
+`*mon-CIFS-mount-points*', `*mon-CIFS-mount-root*', and `*mon-CIFS-domain*'.
+
+:NOTE In the default configuration this function assumes that all of your local
+mount points reside under (for example):
+
+ /mnt/some-base/path
+
+And that all of your CIFS shares reside under a common domain (for example):
+
+ //CIFS-DOMAIN-NAME
+
+This approach provides a degree of portability, allows reasonable inter-system
+mirroring of file trees, and aids in keeping path variables,symlinks, alias,
+etc. to a minimum.
+
+:EXAMPLE
+
+(mon-map-cifs-domain->local-mount
+ '((PLN-BUBBA "REMOTE-pln-bubba" "LOCAL-pln-bubba")
+   (LIL-BUBBA "REMOTE-lil-bubba" "LOCAL-lil-bubba")
+   (BIG-BUBBA "REMOTE-big-bubba" "LOCAL-big-bubba")) ;<- MOUNT-POINT-LIST
+ "/mnt/local-bubba"                                  ;<- LOCAL-MOUNT-POINT
+ "BUBBAS-CIFS")                                      ;<- CIFS-DOMAIN
+
+If this above format does not reflect your current configuration, one could
+repeatedly evaluate this loop substituting the optional args where needed and
+`add-to-list'ing the return values to `*mon-CIFS-mount-points*' variable.
+
+:SEE (man "mount.cifs")
+:SEE (man "getmntent")
+:SEE (man "fstab")
+
+:SEE-ALSO `mon-get-cifs-credentials' `mon-build-cifs-credentials',
+`mon-get-cifs-mount-points', `mon-mount-cifs' `*mon-CIFS-auth-protocol*',
+`*mon-CIFS-pass*', `*mon-CIFS-user*'.
+
+
+;;; ============================================================
+;;; `mon-get-cifs-credentials' <FUNCTION>
+;;; ============================================================
+ <INTERACTIVE-SPEC-IS-LIST>
+;;; ==============================
+Return and set CIFS user and password values.
+For use as authentication values when accessing/mounting `*mon-CIFS-domain*'
+using the local ~/.authinfo.gpg file instead of a dedicated credentials file.
+Sets the value of variables `*mon-CIFS-user*' and  `*mon-CIFS-pass*'.
+
+:NOTE Requires `auth-sources' and a properly configured .authinfo that 
+contains pre-existing CIFS authentication entry formatted in netrc format as per
+`auth-source's requirments. CIFS values in .authinfo files should be as below:
+
+ machine protocol login password ;<- netrc style
+ domain username password        ;<- _NOT_ CIFS style
+
+So, if you normally use /etc/fstab or mount with the option:
+
+  crenditals=<SOME-FILE>
+
+where <SOME-FILE> contains the key/value pairs:
+
+ domain=<SOME-DOMAIN> username=<SOME-USER> password=<SOME-PASS>
+
+your ~/.authinfo.gpg file should contain a line with these pairs:
+
+ machine <SOME-MACHINE> port cifs login <SOME-LOGIN> password <SOME-PASS>
+IOW, to make a CIFS credentials format congruent with  ~/.authinfo.gpg you would:
+ o Add a protocol entry using `port cifs';
+ o Substitute `domain' with `machine';
+ o Substitute `username' with `login';
+
+:NOTE Depending on the current netbios config `domain' is prob. the `workgroup'.
+:SEE (man "mount.cifs") for additional details
+
+:SEE-ALSO `auth-source-user-or-password',`mon-map-cifs-domain->local-mount',
+`mon-build-cifs-credentials', `mon-get-cifs-mount-points', `mon-mount-cifs'
+`*mon-CIFS-mount-points*', `*mon-CIFS-auth-protocol*',`*mon-CIFS-mount-root*'.
+
+
+;;; ============================================================
+;;; `mon-build-cifs-credentials' <FUNCTION>
+;;; ============================================================
+ <ARG-LIST>
+ (&optional credentials-file)
+ ==============================
+Return a credentials string for mounting CIFS.
+By default concatenates the credentials values as per CIFS specs.
+:VARIABLES `*mon-CIFS-user*', `*mon-CIFS-domain*', `*mon-CIFS-pass*' 
+return value has the form:
+
+domain=<DOMAIN>,username=<USERNAME>,password=<PASSWORD>
+
+When optional arg CREDENTIALS-FILE is non-nil returns:
+
+ credentials=CREDENTIALS-FILE
+
+:SEE (man "mount.cifs") for additional specifications.
+
+:SEE-ALSO `mon-map-cifs-domain->local-mount', `mon-build-cifs-credentials',
+`mon-get-cifs-mount-points', `mon-mount-cifs',`*mon-CIFS-mount-points*',
+`*mon-CIFS-auth-protocol*', `*mon-CIFS-mount-root*'
+
+
+;;; ============================================================
+;;; `mon-get-cifs-mount-points' <FUNCTION>
+;;; ============================================================
+ <ARG-LIST>
+ (&optional mount-point intrp)
+ <INTERACITVE-SPEC>
+ <PREFIX-ARG->NUMBER> 
+ ==============================
+Return alist element of key MOUNT-POINT in `*mon-CIFS-mount-points*'.
+
+When MOUNT-POINT is nil or called-interactively prompt for MOUNT-POINT key.
+
+:CALLED-BY `mon-mount-cifs'
+
+:SEE-ALSO `mon-map-cifs-domain->local-mount', `mon-get-cifs-credentials', 
+`mon-build-cifs-credentials',`*mon-CIFS-mount-points*',`*mon-CIFS-auth-protocol*',
+`*mon-CIFS-domain*',`*mon-CIFS-pass*',`*mon-CIFS-user*', `*mon-CIFS-mount-root*'.
+
+
+;;; ============================================================
+;;; `mon-mount-cifs' <FUNCTION>
+;;; ============================================================
+ <ARG-LIST>
+ (the-mount &optional unmount credential-file as-string-no-shell)
+ <INTERACITVE-SPEC>
+ <IGNORED-NOOP> 
+ <PREFIX-ARG-RAW> 
+ ==============================
+Mount a remote CIFS designated by alist key THE-MOUNT.
+Elements of THE-MOUNT are mapped to local mount points in fstab and retrieved
+with `mon-get-cifs-mount-points' from alist in `*mon-CIFS-mount-points*'.
+
+When THE-MOUNT is nil or called-interactively prompt for THE-MOUNT.
+
+When optional arg UNMOUNT is non-nil or called-interactively with prefix arg
+unmont THE-MOUNT.
+
+When CREDENTIAL-FILE is non-nil and mounting read credentials from file.
+
+:NOTE CREDENTIAL-FILE must be readable by current user as `mount' is invoked
+with sudo.
+
+When optional AS-STRING-NO-SHELL is non-nil return shell-command as string and
+do not execute.
+
+:EXAMPLE
+(let* ((*mon-CIFS-user* "BUBBA")
+       (*mon-CIFS-pass* "BUBBAS-PASS")
+       (*mon-CIFS-mount-root* "/mnt/local-bubba" )
+       (*mon-CIFS-domain* "BUBBAS-CIFS")
+       (*mon-CIFS-mount-points*
+        (mon-map-cifs-domain->local-mount
+         '((LIL-BUBBA "REMOTE-lil-bubba" "LOCAL-lil-bubba")
+           (BIG-BUBBA "REMOTE-big-bubba" "LOCAL-big-bubba"))
+         "/mnt/local-bubba" "BUBBAS-CIFS"))
+       (mn-str (mon-mount-cifs 'LIL-BUBBA nil nil t))
+       (um-str (mon-mount-cifs 'BIG-BUBBA t nil t))
+       (mn-str-creds 
+        (mon-mount-cifs 'BIG-BUBBA nil 
+                        (directory-file-name default-directory) t)))
+  (setq mn-str 
+        (format 
+         (concat 
+          "\nSample MOUNT for shell-command:\n\n shell> %s\n\n"
+          "Sample UMOUNT string for shell-command:\n\n  shell> %s\n\n"
+          "Sample MOUNT string using credntials file:\n\n  shell> %s\n\n")
+         mn-str um-str mn-str-creds))
+  (momentary-string-display mn-str (line-beginning-position 2)))
+
+:SEE (man "mount.cifs")
+:SEE (man "mount")
+:SEE (man "umount.cifs")
+:SEE (man "samba")
+:SEE (man "sudo")
+
+:SEE-ALSO `mon-map-cifs-domain->local-mount', `mon-get-cifs-credentials'
+`mon-build-cifs-credentials', `mon-get-cifs-mount-points', `mon-mount-cifs'
+`*mon-CIFS-mount-points*', `*mon-CIFS-auth-protocol*',`*mon-CIFS-domain*',
+`*mon-CIFS-pass*',`*mon-CIFS-user*',`*mon-CIFS-mount-root*',
+`*mon-CIFS-mount-root*'.
+
+;;; ==============================
+;;; <Timestamp: #{2010-01-06T15:35:12-05:00Z}#{10013} - by MON>
+;;; :NOTE Documentation for mon-utils.el produced with:
+(progn
+  (mon-help-insert-documentation
+   '(mon-map-cifs-domain->local-mount mon-get-cifs-credentials
+     mon-build-cifs-credentials mon-get-cifs-mount-points mon-mount-cifs))
+  (mon-help-insert-documentation 
+   nil
+   '(*mon-CIFS-mount-points* *mon-CIFS-auth-protocol* *mon-CIFS-domain*
+     *mon-CIFS-pass* *mon-CIFS-user* *mon-CIFS-mount-root*)))
+
+</pre>

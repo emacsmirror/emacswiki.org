@@ -19,9 +19,10 @@ This table does not cover basic commands like character motion
 ||matching ##({[##   ||##%## ||`C-M-f/b' ||
 ||filename on bottom line ||##%##   ||see code below ||
 ||sort lines ||'''''n'''''##!!sort## ||`M-x sort-lines' ||
-||2-way pipe ||'''''n'''''##!!## /cmd/ || `C-u M-| cmd', see also [[ExecuteExternalCommand]] ||
+||2-way pipe ||'''''n'''''##!!## /cmd/ ||`C-u M-| cmd', see also [[ExecuteExternalCommand]] ||
 ||search word/identifier under cursor ||##*## ||`C-s C-w', then `C-s' ||
 ||repeat last command  ||##.##   ||see [[RepeatingCommandsLikeVi]]||
+||set file-local variables ||:h modeline ||see FileLocalVariables, LocalVariables ||
 
 In vi, % in the ':' line gets substituted by the file name.
 This code does the same. It gets invoked by M-x M-! M-: and maybe others

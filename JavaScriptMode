@@ -176,6 +176,7 @@ This integration supports prorotoype.js class representation and original class 
 
 * MozRepl -- connect to Mozilla and Firefox apps and modify/extend them interactively with Javascript from Emacs
 * JavascriptShellServer
+* [http://flusspferd.org Flusspferd] provides a [http://github.com/ruediger/flusspferd/blob/master/misc/emacs/flusspferd.el mode for Emacs] to use the Javascript REPL.
 
 [:Discussion]
 == Discussion ==

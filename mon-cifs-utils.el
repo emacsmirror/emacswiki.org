@@ -10,7 +10,6 @@
 ;;; `mon-map-cifs-domain->local-mount', `mon-get-cifs-credentials'
 ;;; `mon-build-cifs-credentials', `mon-get-cifs-mount-points'
 ;;; `mon-mount-cifs'
-;;;
 ;;; FUNCTIONS:◄◄◄
 ;;;
 ;;; MACROS:
@@ -45,14 +44,14 @@
 ;;; :SEE (man "fstab")
 ;;; :SEE (man "getmntent")
 ;;;
-;;; Below MON uses the `IS-MON-P-GNU' conditional from:
+;;; Below MON uses the `IS-MON-P' conditional from:
 ;;; :FILE mon-default-loads.el to test the current system type.
 ;;; FTMP, IS-MON-P-GNU =: (eq system-type 'gnu/linux) 
 ;;; However, MON has various association keys ferreted away in the
 ;;; :VARIABLE `*mon-misc-path-alist*' these are only evaluated per the above
 ;;; conditional. IOW, _you_ should provide or bind values for the following
 ;;; `*mon-CIFS-domain*', `*mon-CIFS-mount-root*', `*mon-CIFS-mount-points*'
-;;; as defined herein and disregard all the eval-when IS-MON-P-GNU rigmarole.
+;;; as defined herein and disregard all the eval-when IS-MON-P rigmarole.
 ;;; And no, MON won't be putting those local variable in a defcustom
 ;;; form... code relying on the auth-source facility has no business
 ;;; _whatsoever_ interacting with defcustom's dark voodo.
@@ -108,8 +107,8 @@
 
 ;; :NOTE See header.
 (eval-when-compile
-  (unless (bound-and-true-p IS-MON-P-GNU)
-    (setq IS-MON-P-GNU nil)))
+  (unless (bound-and-true-p IS-MON-P)
+    (setq IS-MON-P nil)))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-01-05T16:26:10-05:00Z}#{10012} - by MON>
@@ -139,7 +138,7 @@ This is the the CIFS `workgroup' or `domain' you wish to connect with.
 :SEE-ALSO `mon-get-cifs-credentials',`*mon-CIFS-auth-protocol*'.\n►►►")
 ;;
 (eval-when-compile
-  (if IS-MON-P-GNU
+  (if IS-MON-P
       (unless (bound-and-true-p *mon-CIFS-domain*)
         (setq *mon-CIFS-domain*
               (upcase (substring 
@@ -159,10 +158,9 @@ This is the the CIFS `workgroup' or `domain' you wish to connect with.
 ;;; :CREATED <Timestamp: #{2010-01-05T12:52:36-05:00Z}#{10012} - by MON KEY>
 (defvar *mon-CIFS-mount-root* nil
 "*Local mount point for networked SMBFS/CIFS shares.\n
-:SEE-ALSO `*mon-CIFS-domain*',`*mon-CIFS-user*',`*mon-CIFS-pass*',
-\n►►►")
+:SEE-ALSO `*mon-CIFS-domain*',`*mon-CIFS-user*',`*mon-CIFS-pass*'.\n►►►")
 (eval-when-compile
-  (if IS-MON-P-GNU
+  (if IS-MON-P
       (unless (bound-and-true-p *mon-CIFS-mount-root*)
         (setq *mon-CIFS-mount-root*
               (cadr (assoc 'the-mnt-prfx *mon-misc-path-alist*))))))
@@ -176,20 +174,33 @@ This is the the CIFS `workgroup' or `domain' you wish to connect with.
 ;;; :CREATED <Timestamp: #{2010-01-05T12:54:30-05:00Z}#{10012} - by MON KEY>
 (eval-when-compile
 (defvar *mon-CIFS-mount-points* nil
-  "*An alist mapping local GNU mount points to networked Samba shares.
+  "*An alist mapping local mount points to networked shares.
 Alist entries have one of the following the forms:\n
- \(symbol \"//CIFS_IP/SOME-SHARE\" \"local-mount-point\"\)\n
- \(symbol //CIFS_DOMAIN-NAME/SOME-SHARE\n
-:NOTE you can find CIFS shares and/or test access to a domain as follows:\n
+ \(symbol \"//<CIFS-DOMAIN-IP>/<SOME-CIFS-SHARE>\" \"/LOCAL/MOUNT/<MNT-POINT>\"\)\n
+ \(symbol \"//<CIFS-DOMAIN-NAME>/<SOME-CIFS-SHARE>\" \"/LOCAL/MOUNT/<MNT-POINT>\"\)\n
+Where //<CIFS-DOMAIN-NAME> is the domain or workgroup and <SOME-CIFS-SHARE> is
+one of its shares and where /LOCAL/MOUNT/ is the local systems common mount
+directory e.g. /mnt, /media, etc. and <MNT-POINT> is a directory beneath.  :NOTE
+The first two forms above are not needed, and indeed should not be used, where
+each of your shares are located beneath `*mon-CIFS-domain*' and where each of
+your local mount points are beneath `*mon-CIFS-mount-root*' as, by default,
+these are programmatically updated with `mon-map-cifs-domain->local-mount'.
+Instead, you should provide alist entries with the `//CIFS-DOMAIN-*' and root
+`/LOCAL/MOUNT/' portions omitted by using the form:\n
+ \(symbol \"<SOME-CIFS-SHARE>\" \"MNT-POINT\"\)\n
+A more detailed example of the preferred format can be seen evaluating and
+examining the output of the the example code provided after the `:EXAMPLE'
+section of that function's docstring.\n
+:NOTE To find CIFS shares and/or test access to a domain do as follows:\n
  shell> smbclient -L <DOMAIN> -W windom -U <USERNAME>
         [Provide password when prompted]\n
 :SEE \(man \"samba\"\)\n:SEE \(man \"fstab\"\)\n:SEE \(man \"getmntent\"\)\n
-:SEE-ALSO `mon-map-cifs-domain->local-mount', `mon-get-cifs-credentials'
-`mon-build-cifs-credentials', `mon-get-cifs-mount-points', `mon-mount-cifs'
-`*mon-CIFS-mount-points*', `*mon-CIFS-auth-protocol*',`*mon-CIFS-domain*',
-`*mon-CIFS-pass*', `*mon-CIFS-user*', `*mon-CIFS-mount-root*'.\n►►►")
+:SEE-ALSO `mon-get-cifs-credentials', `mon-build-cifs-credentials', 
+`mon-get-cifs-mount-points', `mon-mount-cifs', `*mon-CIFS-mount-points*', 
+`*mon-CIFS-auth-protocol*',`*mon-CIFS-domain*', `*mon-CIFS-pass*', 
+`*mon-CIFS-user*', `*mon-CIFS-mount-root*'.\n►►►")
 ;;
-(if IS-MON-P-GNU
+(if IS-MON-P
     (unless (bound-and-true-p *mon-CIFS-mount-points*)
       (setq *mon-CIFS-mount-points*
             (cadr (assoc 'the-mnt-maps *mon-misc-path-alist*))))))
@@ -204,23 +215,30 @@ Alist entries have one of the following the forms:\n
 (eval-when-compile
 (defun mon-map-cifs-domain->local-mount (&optional mount-point-list 
                                          local-mount-point cifs-domain)
-  "Map common domain and mout points across the path values in cdr's of
-  `*mon-CIFS-mount-points*'. Assumes that the domain and base-mount point are
-  consistent across all the elements of `*mon-CIFS-mount-points*' and tack on
-  the path prefixes here. Optional args MOUNT-POINT-LIST, LOCAL-MOUNT-POINT, and
-  CIFS-DOMAIN should have similiar values as those of their respective defaults
-  `*mon-CIFS-mount-points*', `*mon-CIFS-mount-root*' and `*mon-CIFS-domain*'.
-:NOTE In the default configuration this functions assumes that all of your local
+  "Map common domain and mount points across the path values in cdr's of
+`*mon-CIFS-mount-points*'. Assumes that the domain and base-mount point are
+consistent across all the elements of `*mon-CIFS-mount-points*' and tack on
+the path prefixes here.\n
+Optional args MOUNT-POINT-LIST, LOCAL-MOUNT-POINT, and CIFS-DOMAIN should have
+similar values as those of their respective defaults values in:\n
+`*mon-CIFS-mount-points*', `*mon-CIFS-mount-root*', and `*mon-CIFS-domain*'.\n
+:NOTE In the default configuration this function assumes that all of your local
 mount points reside under (for example):\n
  /mnt/some-base/path\n
 And that all of your CIFS shares reside under a common domain (for example):\n
- //CIFS-DOMANIN-NAME\n
-This approach provides us a degree of portability, allowing reasonable
-mirrorirng of file trees across systems while also keeping path variables,
-symlinks, alias, etc. to a minimum.\n
-If this does not reflect your current configuration one could repeatedly
-evaluate this loop substituting the optional args where needed and
-`add-to-list'ing to the value of `*mon-CIFS-mount-points*' variable.\n
+ //CIFS-DOMAIN-NAME\n
+This approach provides a degree of portability, allows reasonable inter-system
+mirroring of file trees, and aids in keeping path variables,symlinks, alias,
+etc. to a minimum.\n
+:EXAMPLE\n\n\(mon-map-cifs-domain->local-mount
+ '\(\(PLN-BUBBA \"REMOTE-pln-bubba\" \"LOCAL-pln-bubba\"\)
+   \(LIL-BUBBA \"REMOTE-lil-bubba\" \"LOCAL-lil-bubba\"\)
+   \(BIG-BUBBA \"REMOTE-big-bubba\" \"LOCAL-big-bubba\"\)\) ;<- MOUNT-POINT-LIST
+ \"/mnt/local-bubba\"                                  ;<- LOCAL-MOUNT-POINT
+ \"BUBBAS-CIFS\"\)                                      ;<- CIFS-DOMAIN\n
+If this above format does not reflect your current configuration, one could
+repeatedly evaluate this loop substituting the optional args where needed and
+`add-to-list'ing the return values to `*mon-CIFS-mount-points*' variable.\n
 :SEE \(man \"mount.cifs\"\)\n:SEE \(man \"getmntent\")\n:SEE \(man \"fstab\")\n
 :SEE-ALSO `mon-get-cifs-credentials' `mon-build-cifs-credentials',
 `mon-get-cifs-mount-points', `mon-mount-cifs' `*mon-CIFS-auth-protocol*',
@@ -228,18 +246,22 @@ evaluate this loop substituting the optional args where needed and
   (let (map-mnt )
     (dolist (i (or mount-point-list *mon-CIFS-mount-points*) (nreverse map-mnt))
       (push `(,(car i) 
-               ,(concat (or local-mount-point  *mon-CIFS-mount-root*) "/"(cadr i))
-               ,(concat "//" (or cifs-domain *mon-CIFS-domain*) "/" (caddr i)))
+               ,(concat "//" (or cifs-domain *mon-CIFS-domain*) "/" (cadr i)) ;;(caddr i)))
+               ,(concat (or local-mount-point  *mon-CIFS-mount-root*) "/" (caddr i))) ;;(cadr i))
             map-mnt))))
 ) ;; :CLOSE  eval-when
 ;;
 ;;; :TEST-ME (mon-map-cifs-domain->local-mount)
 
 ;;; ==============================
-;;; :NOTE See docstring of `mon-map-cifs-domain->local-mount'.  If this
+;;; :NOTE See docstring of `mon-map-cifs-domain->local-mount'.  If standard 
 ;;;       arrangmenet is is not what you want or doesn't reflect your needs then
-;;;       hand code _ALL_ of the paths in the variable above and comment out
-;;;       following:
+;;;       hand code a list for _ALL_ of the paths bound by the variable
+;;;       `*mon-CIFS-mount-points*' and comment out the binding below.
+;;;       If you do this, be sure to include the "//CIFS-DOMAIN/" and
+;;;       "/LOCAL/MOUNT/POINT" for each element in the `*mon-CIFS-mount-points*'
+;;;       list.
+;;(eval-when (load)
 (eval-when-compile
   (setq *mon-CIFS-mount-points* (mon-map-cifs-domain->local-mount)))
 
@@ -293,14 +315,16 @@ IOW, to make a CIFS credentials format congruent with  ~/.authinfo.gpg you would
 ;;; :CREATED <Timestamp: #{2010-01-05T13:55:59-05:00Z}#{10012} - by MON KEY>
 (defun mon-build-cifs-credentials (&optional credentials-file)
   "Return a credentials string for mounting CIFS.
-concatenates the values of
-When optional arg CREDENTIALS-FILE is non-nil retruns:\n
+By default concatenates the credentials values as per CIFS specs.
+:VARIABLES `*mon-CIFS-user*', `*mon-CIFS-domain*', `*mon-CIFS-pass*' 
+return value has the form:\n
+domain=<DOMAIN>,username=<USERNAME>,password=<PASSWORD>\n
+When optional arg CREDENTIALS-FILE is non-nil returns:\n
  credentials=CREDENTIALS-FILE\n
-:SEE \(man \"umount.cifs\"\) for additional specifications.\n
+:SEE \(man \"mount.cifs\"\) for additional specifications.\n
 :SEE-ALSO `mon-map-cifs-domain->local-mount', `mon-build-cifs-credentials',
 `mon-get-cifs-mount-points', `mon-mount-cifs',`*mon-CIFS-mount-points*',
-`*mon-CIFS-auth-protocol*', `*mon-CIFS-domain*', `*mon-CIFS-pass*',
-`*mon-CIFS-user*', `*mon-CIFS-mount-root*'\n►►►"
+`*mon-CIFS-auth-protocol*', `*mon-CIFS-mount-root*'\n►►►"
   (let (creds)
     (if (and (not (null credentials-file))
              (file-exists-p credentials-file))
@@ -332,45 +356,71 @@ When MOUNT-POINT is nil or called-interactively prompt for MOUNT-POINT key.\n
           (assoc 
            (if (or intrp (null mount-point))
                (car (read-from-string 
-                     (completing-read "Which mount point :"
+                     (completing-read "Which mount point (TAB completes) :"
                                       mnt-pnts
                                       nil t)))
                mount-point)
            mnt-pnts))))
 ;;
+;;; :NOTE Tests assume req'd vars are bound already.
 ;;: :TEST-ME (mon-get-cifs-mount-points (car (nth 1 *mon-CIFS-mount-points*)))
+;;: :TEST-ME (mon-get-cifs-mount-points) 
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-01-05T13:14:17-05:00Z}#{10012} - by MON KEY>
-(defun mon-mount-cifs (the-mount &optional unmount credential-file)
+(defun mon-mount-cifs (the-mount &optional unmount credential-file as-string-no-shell)
   "Mount a remote CIFS designated by alist key THE-MOUNT.
 Elements of THE-MOUNT are mapped to local mount points in fstab and retrieved
-with `mon-get-cifs-mount-points' from alist in: 
-:VARIABLE `*mon-CIFS-mount-points*'.\n
+with `mon-get-cifs-mount-points' from alist in `*mon-CIFS-mount-points*'.\n
 When THE-MOUNT is nil or called-interactively prompt for THE-MOUNT.\n
 When optional arg UNMOUNT is non-nil or called-interactively with prefix arg
 unmont THE-MOUNT.\n
 When CREDENTIAL-FILE is non-nil and mounting read credentials from file.\n
 :NOTE CREDENTIAL-FILE must be readable by current user as `mount' is invoked
 with sudo.\n
+When optional AS-STRING-NO-SHELL is non-nil return shell-command as string and
+do not execute.\n
+:EXAMPLE\n\(let* \(\(*mon-CIFS-user* \"BUBBA\"\)
+       \(*mon-CIFS-pass* \"BUBBAS-PASS\"\)
+       \(*mon-CIFS-mount-root* \"/mnt/local-bubba\" \)
+       \(*mon-CIFS-domain* \"BUBBAS-CIFS\"\)
+       \(*mon-CIFS-mount-points*
+        \(mon-map-cifs-domain->local-mount
+         '\(\(LIL-BUBBA \"REMOTE-lil-bubba\" \"LOCAL-lil-bubba\"\)
+           \(BIG-BUBBA \"REMOTE-big-bubba\" \"LOCAL-big-bubba\"\)\)
+         \"/mnt/local-bubba\" \"BUBBAS-CIFS\"\)\)
+       \(mn-str \(mon-mount-cifs 'LIL-BUBBA nil nil t\)\)
+       \(um-str \(mon-mount-cifs 'BIG-BUBBA t nil t\)\)
+       \(mn-str-creds 
+        \(mon-mount-cifs 'BIG-BUBBA nil 
+                        \(directory-file-name default-directory\) t\)\)\)
+  \(setq mn-str 
+        \(format 
+         \(concat 
+          \"\\nSample MOUNT for shell-command:\\n\\n shell> %s\\n\\n\"
+          \"Sample UMOUNT string for shell-command:\\n\\n  shell> %s\\n\\n\"
+          \"Sample MOUNT string using credntials file:\\n\\n  shell> %s\\n\\n\"\)
+         mn-str um-str mn-str-creds\)\)
+  \(momentary-string-display mn-str \(line-beginning-position 2\)\)\)\n
 :SEE \(man \"mount.cifs\"\)\n:SEE \(man \"mount\")
-:SEE \(man \"umount.cifs\"\)\n:SEE \(man \"samba\"\):SEE \(man \"sudo\"\)\n
+:SEE \(man \"umount.cifs\"\)\n:SEE \(man \"samba\"\)\n:SEE \(man \"sudo\"\)\n
 :SEE-ALSO `mon-map-cifs-domain->local-mount', `mon-get-cifs-credentials'
 `mon-build-cifs-credentials', `mon-get-cifs-mount-points', `mon-mount-cifs'
-`*mon-CIFS-mount-points*', `*mon-CIFS-auth-protocol*',
-`*mon-CIFS-domain*', `*mon-CIFS-pass*',
-`*mon-CIFS-user*', `*mon-CIFS-mount-root*'
+`*mon-CIFS-mount-points*', `*mon-CIFS-auth-protocol*',`*mon-CIFS-domain*',
+`*mon-CIFS-pass*',`*mon-CIFS-user*',`*mon-CIFS-mount-root*',
 `*mon-CIFS-mount-root*'.\n►►►"
   (interactive "i\nP") 
   (let ((mp (mon-get-cifs-mount-points the-mount)))
     (setq mp (if unmount
                  (concat "sudo /sbin/umount -t cifs " (nth 1 mp))
                  (concat "sudo /sbin/mount -t cifs " (nth 1 mp) 
-                         " " *mon-CIFS-mount-root* "/" (nth 2 mp) 
+                         ;;" " *mon-CIFS-mount-root* "/" (nth 2 mp) 
+                         " " (nth 2 mp) 
                          " -o " (mon-build-cifs-credentials credential-file)
                          ",iocharset=utf8,owner,user,uid="
                          (number-to-string (user-uid)))))
-    (shell-command mp)))
+    (if as-string-no-shell mp
+        (shell-command mp))))
 ;;
 ;;; :TEST-ME (mon-mount-cifs (car (nth 1 *mon-CIFS-mount-points*)))
 ;;; :TEST-ME (mon-mount-cifs (car (nth 1 *mon-CIFS-mount-points*)) t)
