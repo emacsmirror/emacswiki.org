@@ -209,9 +209,9 @@ passive pane).
 Upgrade  your  copy  of SC to version 3R237 or newer, select the directories you
 want to clone, press K (sr-do-clone) and select "(D)irectories only".
 
-Cloning  was  devised as a more general operation than recursively copying files
+Cloning  was devised as a more general operation than recursive copying of files
 and directories[1]: all directories are created with the same name and structure
-at the destination, while what happens to the all the other files depends on the
+at  the  destination,  while  what happens to all the other files depends on the
 option you choose:
 
 * "(D)irectories only" - ignores all files, copies only directories,
@@ -234,8 +234,9 @@ locations besides the traditional point-and-click. You can:
 *  Press  Return (or click) on any point of the directory path at the top of any
 of the panes to jump directly to that location in the file system.
 
-*  Install  the Lisp:sunrise-x-modeline.el extension to obtain a similar path on
-the mode line, where you can see it all the time, even when scrolling long dirs.
+* Install the [Lisp:sunrise-x-modeline.el sunrise-x-modeline] extension to get a
+similar path in the mode line, where you can see it  all  the  time,  even  when
+scrolling long dirs.
 
 * Use the listings of recent files (C-c C-r) and recent directories (C-c C-d) to
 reuse the paths to already visited  files  and  directories.  Recent  files  are
@@ -248,15 +249,19 @@ mechanism:
             3. Add sr-history-registry to ``Savehist Additional Variables''
             4. Click on ``Save for future sessions''
 
-*  Use Sunrise checkpoints. Checkpoints are kind of bookmarks you can create for
+*  Use Sunrise checkpoints. Checkpoints are special bookmarks you can create for
 both panes simultaneously by pressing C-&gt; (or  C-c  >  in  the  console)  and
 giving  a  name  for  the  checkpoint.  To recall it, press C-. (or C-c . in the
-console) Checkpoints can be persisted across emacs sessions the same way as  the
-listing  of  recent  directories  (the additional variable to persist is in this
-case sr-checkpoint-registry). There's currently no  way  to  view  the  list  of
-currently  defined  checkpoints  other  than M-: sr-checkpoint-registry RET, but
-that'll probably change in the near future, since already  a  Sunrise  user  has
-told me he's working on a new extension for doing exactly that.
+console). On Emacs 23 checkpoints can  be  listed  along  with  all  your  other
+bookmarks  using the bookmark-bmenu-list command (C-x r l). On Emacs 22 there is
+no other way to list the currently defined checkpoints than
+//M-: sr-checkpoint-registry RET//,
+but  they  may  be saved across Emacs session too with savehist (the variable to
+persist is sr-checkpoint-registry).
+Since version 4 of the Sunrise Commander, checkpoints are provided as a separate
+extension: [Lisp:sunrise-x-checkpoints.el sunrise-x-checkpoints] for Emacs 23 or
+upgraded versions of the bookmarks.el library, and
+[Lisp:sunrise-x-old-checkpoints.el sunrise-x-old-checkpoints] for Emacs 22.
 
 *  Make  you own "favorites" virtual directories. Assign an extension to sunrise
 virtual buffers (there's an explanation of how to do it in the comments  to  the
@@ -269,9 +274,9 @@ file system too! to remove a line only from your virtual dir just mark  it  (m),
 kill  it (k) and save the file. You can create as many files like this for work,
 hobbies and whatnot and keep them at hand in you home directory.
 
-* Install the Lisp:sunrise-x-tabs.el extension to be able to put pane buffers in
-tabs and to keep them around with all their  marks  and  state  untouched  (tabs
-cannot be made persistent across sessions, though).
+*  Install  the  [Lisp:sunrise-x-tabs.el sunrise-x-tabs] extension to be able to
+put pane buffers in tabs and to keep them around with all their marks and  state
+untouched (tabs cannot be made persistent across sessions, though).
 
 * Use //path projection// to quickly navigate within similar directory trees. If
 you have, say, the trunk version of a project from SVN in directory  trunk/  and

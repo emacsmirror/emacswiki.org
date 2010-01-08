@@ -130,7 +130,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 251 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 252 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.  I  have  also  received
@@ -180,10 +180,10 @@
 (require 'dired)
 (require 'dired-x)
 (require 'font-lock)
-(eval-when-compile (require 'cl))
-(eval-when-compile (require 'esh-mode))
-(eval-when-compile (require 'recentf))
-(eval-when-compile (require 'term))
+(eval-when-compile (require 'cl)
+                   (require 'esh-mode)
+                   (require 'recentf)
+                   (require 'term))
 
 (defgroup sunrise nil
   "The Sunrise Commander File Manager."
@@ -665,6 +665,20 @@ automatically:
        (sr-alternate-buffer (sr-goto-dir sr-this-directory))
        (sr-revert-buffer))))
 
+(defun sr-select-window (side)
+  "Select/highlight the given sr window (right or left)."
+  (select-window (symbol-value (sr-symbol side 'window)))
+  (setq sr-selected-window side)
+  (setq sr-this-directory default-directory)
+  (sr-highlight))
+
+(defun sr-select-viewer-window ()
+  "Tries to select a window that is not a sr pane."
+  (interactive)
+  (dotimes (times 2)
+    (if (memq (selected-window) (list sr-left-window sr-right-window))
+        (other-window 1))))
+
 ;; This is a hack to avoid some dired mode quirks:
 (defadvice dired-find-buffer-nocreate
   (before sr-advice-findbuffer (dirname &optional mode))
@@ -993,20 +1007,6 @@ automatically:
 ;; This keeps the size of the Sunrise panes constant:
 (add-hook 'window-size-change-functions 'sr-lock-window)
 
-(defun sr-select-window (side)
-  "Select/highlight the given sr window (right or left)."
-  (select-window (symbol-value (sr-symbol side 'window)))
-  (setq sr-selected-window side)
-  (setq sr-this-directory default-directory)
-  (sr-highlight))
-
-(defun sr-select-viewer-window ()
-  "Tries to select a window that is not a sr pane."
-  (interactive)
-  (dotimes (times 2)
-    (if (memq (selected-window) (list sr-left-window sr-right-window))
-        (other-window 1))))
-
 (defun sr-highlight(&optional face)
   "Sets up the path line in the current buffer."
   (when (memq major-mode '(sr-mode sr-virtual-mode))
@@ -1024,11 +1024,11 @@ automatically:
   "Hides the AVFS virtual filesystem root (if any) on the path line."
   (if sr-avfs-root
       (let ((start nil) (end nil) (overlay nil)
-            (next (search-forward sr-avfs-root nil t)))
+            (next (search-forward sr-avfs-root (point-at-eol) t)))
         (if next (setq start (- next (length sr-avfs-root))))
         (while next
           (setq end (point)
-                next (search-forward sr-avfs-root nil t)))
+                next (search-forward sr-avfs-root (point-at-eol) t)))
         (when end
           (setq overlay (make-overlay start end))
           (overlay-put overlay 'invisible t)
@@ -1453,12 +1453,9 @@ automatically:
      (interactive)
      (sr-require-checkpoints-extension)
      (call-interactively ',function-name)))
-
 (sr-checkpoint-command sr-checkpoint-save    (&optional arg))
 (sr-checkpoint-command sr-checkpoint-restore (&optional arg))
 (sr-checkpoint-command sr-checkpoint-handler (&optional arg))
-(eval-after-load 'sunrise-commander
-  (sr-require-checkpoints-extension t))
 
 (defun sr-do-find-marked-files (&optional noselect)
   "Sunrise replacement for dired-do-marked-files."
@@ -2456,9 +2453,10 @@ or (c)ontents? ")
      (sr-switch-to-clean-buffer "*Recent Files*")
      (insert "Recently Visited Files: \n")
      (dolist (file recentf-list)
-       (condition-case nil
-           (insert-directory file sr-virtual-listing-switches nil nil)
-         (error (ignore))))
+       (if (file-exists-p file)
+           (condition-case nil
+               (insert-directory file sr-virtual-listing-switches nil nil)
+             (error (ignore)))))
      (sr-virtual-mode)
      (sr-keep-buffer))))
 

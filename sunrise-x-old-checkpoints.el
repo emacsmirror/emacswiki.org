@@ -28,7 +28,7 @@
 ;; your  bookmarks.el, just add this extension to your .emacs.el to get back the
 ;; original functionality.
 
-;; This is version 1 $Rev: 250 $ of the Old Checkpoints Extension.
+;; This is version 1 $Rev: 252 $ of the Old Checkpoints Extension.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.
@@ -51,7 +51,7 @@
 (defvar sr-checkpoint-registry '(("~" "~/" "~/"))
   "Registry of currently defined checkpoints")
 
-(defun sr-checkpoint-save (name)
+(defun sr-checkpoint-save (&optional name)
   "Allows to give a name to the current directories in the Sunrise panes, so
   they can be restored later."
   (interactive "sCheckpoint name to save? ")
@@ -65,7 +65,7 @@
       (setcdr my-cell (list sr-left-directory sr-right-directory)))
   (message "%s" (concat "Checkpoint \"" name "\" saved"))))
 
-(defun sr-checkpoint-restore (name)
+(defun sr-checkpoint-restore (&optional name)
   "Allows to restore a previously saved checkpoint."
   (interactive "sCheckpoint name to restore? " )
   (let* ((cp-list (assoc-string name sr-checkpoint-registry))
@@ -76,7 +76,7 @@
         (setq dirs-list (reverse dirs-list)))
     (mapc '(lambda (x) (sr-goto-dir x) (sr-change-window)) dirs-list)))
 
-(defun sr-checkpoint-handler (arg)
+(defun sr-checkpoint-handler (&optional arg)
   "Empty method to keep compatilibity with new checkpoints interface."
   (ignore))
 

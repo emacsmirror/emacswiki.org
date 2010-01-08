@@ -158,6 +158,17 @@ en el fichero .gnus.el:
          (address "username@gmail.com"))))
 </pre>
 
+Una solución óptima es configurar la variable gnus-message-archive-group,
+aquí el ejemplo general para una cuenta IMAP:
+<pre>
+(setq gnus-message-archive-group "Sent Mail")
+(setq gnus-message-archive-method
+      '(nnimap "gmail"))
+</pre>
+
+Es posible cambiar nnimap por cualquier método de correo como puede ser
+nnml, nnfolder, etc. Además funciona con otros servidores de correo como GMX.
+
 De hecho, el problema parece estar resuelto *si* se envía correo por
 medio del servidor SMTP de Gmail.  En sus "Recommended IMAP client
 settings" dicen:

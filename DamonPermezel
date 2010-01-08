@@ -1,6 +1,3 @@
-Been using emacs for ever.  Even wrote a lisp-based extension language for an early emacs-like editor that lacked one (CCA emacs) until CCA wanted to acquire the rights to the code I was writing.  Fortunately, about that time, gosmacs became available, and soon after that, GNU emacs.
-
-I wrote the original M-x hanoi for GNU emacs.  Unfortunately, my elisp programming sort of stopped there.  Time to rectify that!
 
 ----
 CategoryHomepage

@@ -16,5 +16,10 @@ Had to change magit-escape-for-shell to:
 
 To make it work on windows. -- RodrigoWanderley
 
+[new]
+mo-git-blame is a great addition as a frontend for git blame (which magit currently does not provide)
+
+http://www.bunkus.org/blog/2009/10/an-interactive-iterative-git-blame-mode-for-emacs/
+
 ----
 CategoryVersionControl

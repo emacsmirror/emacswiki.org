@@ -1,5 +1,5 @@
 ;;;; minor-mode-hack.el --- Hack of minor-modes
-;; $Id: minor-mode-hack.el,v 1.1 2010/01/07 06:24:28 rubikitch Exp $
+;; $Id: minor-mode-hack.el,v 1.2 2010/01/07 22:25:49 rubikitch Exp $
 
 ;; Copyright (C) 2010  rubikitch
 
@@ -32,6 +32,8 @@
 ;;
 ;; Below are complete command list:
 ;;
+;;  `show-minor-mode-map-priority'
+;;    Show priority of `minor-mode-map-alist'.
 ;;
 ;;; Customizable Options:
 ;;
@@ -62,13 +64,16 @@
 ;;; History:
 
 ;; $Log: minor-mode-hack.el,v $
+;; Revision 1.2  2010/01/07 22:25:49  rubikitch
+;; New command: `show-minor-mode-map-priority'
+;;
 ;; Revision 1.1  2010/01/07 06:24:28  rubikitch
 ;; Initial revision
 ;;
 
 ;;; Code:
 
-(defvar minor-mode-hack-version "$Id: minor-mode-hack.el,v 1.1 2010/01/07 06:24:28 rubikitch Exp $")
+(defvar minor-mode-hack-version "$Id: minor-mode-hack.el,v 1.2 2010/01/07 22:25:49 rubikitch Exp $")
 
 (defgroup minor-mode-hack nil
   "minor-mode-hack"
@@ -83,6 +88,11 @@
   "Lower `minor-mode-map-alist' priority of MODE-SYMBOL."
   (let ((rel (assq mode-symbol minor-mode-map-alist)))
     (setq minor-mode-map-alist (append (delete rel minor-mode-map-alist) (list rel)))))
+
+(defun show-minor-mode-map-priority ()
+  "Show priority of `minor-mode-map-alist'."
+  (interactive)
+  (message "%S" (mapcar 'car minor-mode-map-alist)))
 
 (provide 'minor-mode-hack)
 

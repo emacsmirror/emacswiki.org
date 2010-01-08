@@ -71,7 +71,10 @@ Your count function looks rather complicated, what about:
 }}}
 
 -- Rebecca
+----
+Yes, that's simpler.  I just adapted replace.el code and stopped when it worked.
 
+-- TomBreton
 ----
 CategoryModes
 CategoryWriting
