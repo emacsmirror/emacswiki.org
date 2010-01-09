@@ -23,6 +23,7 @@
 ;;;       | -> `mon-string-index'      
 ;;;       | -> `mon-string-upto-index' 
 ;;;       | -> `mon-string-after-index'
+;;;       | -> `mon-string-justify-left'
 ;;; :SEE (URL `http://www.emacswiki.org/emacs/mon-utils.el')
 ;;;
 ;;; :NOTE While mon-doc-help-utils-supplemental.el will provide the necessary
@@ -344,9 +345,58 @@ AFTER-STR is a simple string. No regexps, chars, numbers, lists, etc.\n
              (+ (mon-string-index in-str after-str) (length after-str))))
 ) ;; :CLOSE 3rd foundp mon-string-after-index
 ;;
+(unless (and (featurep 'mon-utils)
+             (fboundp 'mon-string-justify-left))
+;;; ==============================
+;;; :COURTESY Pascal Bourguignon :HIS pjb-strings.el :WAS `string-justify-left'
+(defun mon-string-justify-left (string &optional width left-margin)
+  "Return a left-justified string built from string.\n
+:NOTE The default width is 72 characters, the default left-margin is 0.  
+      The width is counted from column 0.
+      The word separators are those of split-string:
+      [ \\f\\t\\n\\r\\v]+
+      Which means that the string is justified as one paragraph.\n
+:SEE-ALSO `mon-string-fill-to-col'.\n►►►"
+  (if (null width) (setq width 72))
+  (if (null left-margin) (setq left-margin 0))
+  (if (not (stringp string)) 
+      (error "string-justify-left: The first argument must be a string."))
+  (if (not (and (integerp width) (integerp left-margin)))
+      (error "string-justify-left: The optional arguments must be integers."))
+  (let* ((margin (make-string left-margin 32))
+         (splited (split-string string))
+         (col left-margin)
+         (justified (substring margin 0 col))
+         (word)
+         (word-length 0)
+         (separator ""))
+    (while splited
+      (setq word (car splited))
+      (setq splited (cdr splited))
+      (setq word-length (length word))
+      (if (> word-length 0)
+          (if (>= (+ col (length word)) width)
+              (progn
+                (setq justified (concat justified "\n" margin word))
+                (setq col (+ left-margin word-length)))
+            (progn
+              (setq justified (concat justified separator word))
+              (setq col (+ col 1 word-length)))))
+      (setq separator " "))
+    (if (< col width)
+        (setq justified (concat justified (make-string (- width col) 32))))
+    justified))
+) ;; :CLOSE 4th foundp `mon-string-justify-left'
+;;
 ;;; :TEST-ME (mon-string-upto-index "string before ### string after" "###")
 ;;; :TEST-ME (mon-string-index "string before ### string after" "###")
 ;;; :TEST-ME (mon-string-after-index "string before ### string after" "###")
+;;; :TEST-ME 
+;;; (mon-string-justify-left 
+;;;  (let (jnk)
+;;;    (dotimes (i 8 jnk) 
+;;;      (dolist (i '(64 94))
+;;;        (setq jnk (concat " " (make-string (elt (shuffle-vector [7 5 3 9]) 3) i) jnk))))) 68)
 
 ;;; ==============================
 (provide 'mon-doc-help-utils-supplemental)

@@ -684,6 +684,17 @@ This is similar to the C-x k binding above, but uses C-c C-c -- which makes it s
 						   (gnuserv-edit)))))
 
 
+== Functionality similar to kill-emacs-query-functions for clients ==
+
+`kill-emacs-query-functions' allows one to call functions that query the user about killing emacs, with the potential for aborting the quit.  i have a simple check in my .emacs that works fine for a standalone emacs process but doesn't get called when exiting an emacs client.
+
+ (setq kill-emacs-query-functions
+      (cons (lambda () (yes-or-no-p "Really kill Emacs? "))
+            kill-emacs-query-functions))
+
+is there some way of achieving similar when killing a client?
+
+
 == Emacs client return values ==
 
 I wanted to use emacsclient as my editor to svn in Windows, but when I used emacsclientw.exe or emacsclient.exe, the return value when I was done editing was always 1, which made svn to reject my edit. How it is with emacsclient and return values? Is my copy just broken?

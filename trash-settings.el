@@ -72,9 +72,9 @@ This guarantees that any deletable file will either be trashed or deleted.
 If the file is excluded from the trash, it is simply deleted."
   (unless (file-excluded-from-system-trash-p filename)
     (ignore-errors
-      (call-process-discard-output "gvfs-trash" (shell-quote-argument filename))))
+      (call-process-discard-output "gvfs-trash" filename)))
   (when (file-exists-p filename)
-    (call-process-discard-output "rm" "-rf" (shell-quote-argument filename))))
+    (call-process-discard-output "rm" "-rf" filename)))
 
 (defalias 'system-move-file-to-trash 'trash-or-rm)
 
@@ -90,3 +90,4 @@ There's also no need to ask, because it's undoable."
   (if delete-by-moving-to-trash
       (move-file-to-trash file)
     ad-do-it)
+ 

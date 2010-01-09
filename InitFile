@@ -2,6 +2,7 @@ Your '''[::init file]''' contains personal EmacsLisp code that you want to execu
 
 * For GnuEmacs, it is ##~/.emacs## or ##_emacs## or ##~/.emacs.d/init.el##.
 * For [[XEmacs]], it is ##~/.xemacs## or ##~/.xemacs/init.el##.
+* For AquamacsEmacs, it is ##~/.emacs## or ##~/Library/Preferences/Aquamacs Emacs/Preferences.el##
 
 In [[Emacs]], if you do not know where your InitFile is located or you do not have one and want to create it, then
 just open it for editing in Emacs:

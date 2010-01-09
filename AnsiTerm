@@ -44,6 +44,16 @@ Has anybody succeded to run ansi-term (or term, or terminal-emulator for that ma
 Q: Is it possible to change the color palette for LS_COLORS? Inside a Gnome terminal, I like to switch to the "Tango" palette and since I use color-theme-tango it would be nice to have the same colors inside Emacs especially because the standard terminal colors don't go well with Tango's background color.
 ----
 I would also like to know, if there is a possibility that the colors (e.g. of directories) in term or ansi-term could make use of the Tango palette, as directory names are hardly readable.
----
+----
+[new]
+The command "dircolors" can help you to change "LS_COLORS". For example, you can copy "/etc/DIR_COLORS" to "~/.eterm_dircolors" as a template, and invoke "eval `dircolors ~/.eterm_dircolors`". Note: the TERM variable is set to "eterm-color" by default.
 
+For the unreadable blue directory color on tango theme, I changed the "*ansi-term-color-vector*" (FIXME), e.g.
+
+(setq ansi-term-color-vector
+  [unspecified "black" "red3" "lime green" "yellow3" "DeepSkyBlue3"
+   "magenta3" "cyan3" "white"])
+
+--- sssslang
+----
 CategoryExternalUtilities

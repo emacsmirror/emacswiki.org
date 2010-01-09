@@ -1,7 +1,7 @@
 This README is the Ansys mode documentation (The text formatting is
 targeted for the Emacs Wiki)
 
-Time-stamp: "2010-01-01 16:14:16 dieter"
+Time-stamp: "2010-01-08 21:10:05 uidg1626"
 Copyright (C) 2006 - 2010  H. Dieter Wilhelm GPL V3
 
 == Introduction ==
@@ -12,7 +12,7 @@ FEA (Finite Element Analysis) program Ansys (http://www.ansys.com).
 Gnu Emacs (http://www.gnu.org/software/emacs/) is an up-to-date,
 powerful, yet free editor which is available for any operating system
 where Ansys is running.  The software defines 'Ansys mode', a mode for
-viewing, writing and navigating in APDL (Ansys Parametric Design
+inspecting, writing and navigating in APDL (Ansys Parametric Design
 Language) files and offers managing and communication capabilities for
 Ansys solver processes as well.
 
@@ -30,7 +30,8 @@ the Ansys mode Wiki (http://www.emacswiki.org/cgi-bin/wiki/AnsysMode).
 = Features
 = Installation
 = Usage and customisation
-= History
+= Experienced Emacs users
+= History and News
 = Resources
 = Bugs and Problems
 
@@ -39,12 +40,13 @@ the Ansys mode Wiki (http://www.emacswiki.org/cgi-bin/wiki/AnsysMode).
 The code is based on Ansys version 12.0 and is written for the editor
 GNU Emacs (not consciously targeted for XEmacs).  It is tested with
 Emacs 23.1 under XP and GNU/Linux.  The code won't run without minor
-adaptions with Emacs 21.4.  Please visit
-ftp://ftp.gnu.org/pub/gnu/emacs/windows/ for an official, precompiled
-Windows versions of GNU Emacs.  You might unpack Emacs in any
-directory.  Optionally you can run the program addpm.exe (located in
-the bin directory) to add an Emacs entry to the Windows Start menu
-(please refer to the README.W32 file).
+adaptions with Emacs 21.4.
+
+If possible grab the Win32 package with a preconfigured Ansys mode
+together with a precompiled Emacs at above Googel Code site and unpack
+the archive in any directory on your system.  Or visit
+http://ftp.gnu.org/pub/gnu/emacs/ for an original versions of GNU
+Emacs.
 
 The Ansys solver control and communication capabilities are somewhat
 restricted on non-UNIX systems.
@@ -77,7 +79,9 @@ of them.
   optionally also user defined variables (experimental)
 
 * Overview of *every* variable definition (*GET, *DIM, *SET, =, *DO,
-  CM, *vget, ...) in the current file, shown in another window
+  CM, *VGET, ...) as well as component names in the current file,
+  shown in another window.  In the highest decoration level these
+  objects are highlighted as well.
 
 * Preview and insertion (optionally auto-insertion) of header and
   Ansys code templates for APDL files.  Respective snippets represent
@@ -97,6 +101,9 @@ of them.
 * Use of the Emacs abbreviation facility for block templates
   i. e. with writting a "nickname" Emacs exchanges the characters with
   a whole code template
+
+* Ansys mode changes some Emacs defaults to smooth the transition from
+  other editors
 
 As a visual example, a screen-shot on EmacsWiki and Google code show
 an Emacs frame with a ripped off Ansys menu field.  The APDL file is
@@ -127,6 +134,14 @@ Auxiliaries:
 
 === Short instructions ===
 
+For Windows system please use the Emacs archive with a preconfigured
+Ansys mode.  Unpack it anywhere on the system, you might run the
+program addpm.exe (located in the bin directory) to add an Emacs entry
+to the Windows Start menu (please refer to the README.W32 file).  Run
+the Emacs executable and get used to this great Editor.  Ansys mode is
+immediately availabel, please open or create an APDL file with a .mac
+suffix.
+
 ==== Direct way; no file configuration necessary ====
 
 Important prerequisite: Emacs must know where all the code (.el) files
@@ -150,12 +165,14 @@ RET' for every new or existing APDL file.
 Extract the files somewhere on disc and put the following paragraph
 into your ".emacs" configuration file (in your home directory), adjust
 the stuff in capital letters, restart Emacs and ansys-mode will be
-automatically applied for all files with suffixes ".mac" and ".inp".
+automatically applied for all files with suffixes ".mac", ".dat" and
+".inp".
 
     (add-to-list 'load-path "C:\\DIRECTORY-PATH\\WHERE\\THE\\ANSYS-MODE\\FILES\\RESIDE")
       ;assuming you extracted the files on drive "c:"
       ;for example: "c:\\emacs\\emacs-23.1"
     (add-to-list 'auto-mode-alist '("\\.mac\\'" . ansys-mode))
+    (add-to-list 'auto-mode-alist '("\\.dat\\'" . ansys-mode))
     (add-to-list 'auto-mode-alist '("\\.inp\\'" . ansys-mode))
     (autoload 'ansys-mode "ansys-mode" nil t)
 
@@ -187,13 +204,16 @@ mode for every interesting file.
 
 * automatic mode assignment
 
-When you intend to apply the mode automatically, e. g. for all files
-you are opening with the extensions '.mac' and '.inp' ( .inp is the
-WorkBench default solver input file suffix), add the following to your
-'.emacs' file:
+When you intend to apply the mode automatically, for all files with
+the extensions ".mac", ".dat", ".inp" and ".anf" ( .dat and .inp are
+WorkBench's solver input file suffixes) you are opening, add the
+following to your '.emacs' file:
 
      (add-to-list 'auto-mode-alist '("\\.mac$" . ansys-mode))
+     (add-to-list 'auto-mode-alist '("\\.dat$" . ansys-mode))
      (add-to-list 'auto-mode-alist '("\\.inp$" . ansys-mode))
+     ;; this is the suffix for "Ansys Neutral Files" which include some APDL.
+     (add-to-list 'auto-mode-alist '("\\.anf$" . ansys-mode))
 
 The suffix below belongs to the "anys neutral file" export format
 which contains also an APDL header and footer.
@@ -247,16 +267,26 @@ Templates, i.e. code snippets or skeletons might be extended in
 "ansys-template.el" and can be used similar or complementary to a
 classical Ansys macro library.
 
+== Experienced Emacs users ==
+
+Ansys mode changes the default behaviour of Emacs
+
+globally: (delete-selection-mode t)
+
+locally: (setq scroll-preserve-screen-position t)
+locally: M-h (mark-paragraph) has improved, in my opinion
+
 == Acknowledgements ==
 
-(In no particular order):
+In no particular order:
+
 Holger Sparr,
 Eli Zaretzki,
 Markus Triska,
 Mathias Dahl,
 rms
 
-== History: ==
+== History and News ==
 
 The version scheme is a mixture of the Ansys version (12.0) on which
 some code is based and the version of the Ansys mode (1) itself.
@@ -274,7 +304,7 @@ some code is based and the version of the Ansys mode (1) itself.
 * Reworked and hopefully improved the mode's help and README
 
 * The output from the LMUtil license status tool (C-c C-l) is now
-  filtered.
+  filtered to be better readable and concise.
 
 * The `ansys-send-to-ansys' (C-c C-c) and the ansys-copy-or-send-above
   (C-c C-u) commands are now generalised so that they are also doing
@@ -286,10 +316,11 @@ some code is based and the version of the Ansys mode (1) itself.
 
 * Ansys mode tries to gather information from the OS environment when
   the variable `ansys-license-file' is not set by the user and uses
-  Ansys standard names as default values for others.
+  now Ansys standard names as default values for some more variables.
 
-* The variable summary is now sorted according to their occurance and
-  not any longer in variable "definition types"
+* The variables in the variable summary are now sorted according to
+  their first occurance and not any longer in "definition types".  Now
+  component names are included with the variable highlighting.
 
 * Added menu entry for reloading Ansys Mode for the case when certain
   customisation options in the code files itself are changed and
@@ -303,13 +334,11 @@ some code is based and the version of the Ansys mode (1) itself.
 * Removed "buffer has no process" bug when killing an ansys-mode
   buffer.
 
-=== Version 11.0.1 ===
-
 * Submitting interactively Ansys commands (via minibuffer query not
   only written in a macro file) to the solver process,
   ansys-query-ansys-command (C-c C-q).
 
-=== ansys-mode.el version 11.0.1 in comparison to ansys-mod.el: ===
+=== ansys-mode.el 11.0.1 in comparison to ansys-mod.el: ===
 
 * New: Provides Ansys command parameter- and syntax help.
 
@@ -389,14 +418,17 @@ http://www.xansys.org -- ansys online community
 For an overview of the outstanding issues please have a look in the
 TODO file.
 
-The "user variable" highlighting is still experimental, new variable
-definitions are taken into account only when the variable
-ansys-dynamic-highlighting-flag is set or any times when you activate
-the variable display (with C-c C-v in the maximum highlighting level).
+The "user variable" highlighting is still experimental, newly edited
+variable definitions are taken into account only when the variable
+ansys-dynamic-highlighting-flag is set (for very large files this
+slows Emacs and this flag is only implemented for ".mac" files) or any
+times when you activate the variable display (with C-c C-v) and the
+maximum highlighting level.
 
-Ansys "format line" (multi-line) and "user variable" highlighting is
-somewhat brittle, please use M-o M-o to update the fontification in
-case the format line and all variables are not highlighted correctly.
+Ansys "format line" (multi-line highlighting) and "user variable"
+highlighting (when the mentioned flag above ist not set) are somewhat
+brittle, please use M-o M-o to update the fontification in case the
+format line and all variables are not highlighted correctly.
 
 === Getting help ===
 
@@ -423,6 +455,3 @@ show-trailing-whitespace: t
 time-stamp-active: t
 indicate-empty-lines: t
 End:
-
-----
-CategoryModes | ProgrammingModes

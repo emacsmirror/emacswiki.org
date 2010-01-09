@@ -19,31 +19,41 @@
 ;;; `----
 ;;;
 ;;; FUNCTIONS:►►►
-;;; `mon-help-reference-sheet', `mon-help-regexp-syntax',
-;;; `mon-help-search-functions', `mon-help-info-incantation',
-;;; `mon-help-tar-incantation', `mon-help-rename-incantation',
-;;; `mon-help-install-info-incantation', `mon-help-format-width',
-;;; `mon-help-file-dir-functions', `mon-help-process-functions',
-;;; `mon-help-w32-env', `mon-help-insert-documentation', `mon-help-function-args',
-;;; `mon-insert-doc-help-tail', `mon-insert-doc-help-cookie',
-;;; `mon-help-function-spit-doc', `mon-tags-apropos', `mon-tags-naf-apropos'
-;;; `mon-index-elisp-symbol', `mon-help-buffer-functions'
-;;; `mon-help-basic-faces', `mon-help-color-functions',
-;;; `mon-help-package-keywords', `mon-help-faces-themes'
-;;; `mon-help-ISO-8859-1-chars', `mon-help-ASCII-chars',
-;;; `mon-help-cntl->hex->ecma-35', `mon-help-cntl->hex->ecma-48',
-;;; `mon-help-text-property-stickyness', `mon-help-xml-functions'
-;;; `mon-help-plist-functions', `mon-help-text-property-functions'
-;;; `mon-help-emacs-introspect', `mon-help-make-faces'
-;;; `mon-help-xref-symbol-value', `mon-help-eieio-defclass'
-;;; `mon-help-eieio-functions', `mon-help-eieio-methods'
-;;; `mon-help-type-predicates', `mon-help-frame-functions'
-;;; `mon-help-window-functions', `mon-help-hg-archive'
-;;; `mon-help-crontab', `mon-help-unix-commands', `mon-help-permissions'
-;;; `mon-help-propertize-tags', `mon-help-propertize-tags-TEST'
-;;; `mon-help-du-incantation', `mon-help-ipv4-header'
-;;; `mon-help-view-file', `mon-help-temp-docstring-display'
-;;; `mon-help-char-representation'
+;;; `mon-help-insert-documentation' `mon-insert-doc-help-tail'
+;;; `mon-insert-doc-help-cookie' `mon-help-function-spit-doc'
+;;; `mon-help-function-args' `mon-help-xref-symbol-value'
+;;; `mon-help-function-arity' `mon-help-parse-interactive-spec'
+;;; `mon-help-view-file' `mon-help-temp-docstring-display'
+;;; `mon-help-get-mon-help-buffer'`mon-help-overlay-result',
+;;; `mon-help-find-result-for-overlay'
+;;; `mon-help-propertize-tags' `mon-help-propertize-tags-TEST'
+;;; `mon-help-mon-tags' `mon-help-insert-tags'
+;;; `mon-tags-apropos' `mon-tags-naf-apropos'
+;;; `mon-help-regexp-syntax' `mon-help-syntax-class' `mon-help-search-functions'
+;;; `mon-help-type-predicates', `mon-help-plist-functions'
+;;; `mon-help-text-property-functions', `mon-help-text-property-stickyness'
+;;; `mon-help-buffer-functions' `mon-help-frame-functions' 
+;;; `mon-help-window-functions'
+;;; `mon-help-make-faces' `mon-help-basic-faces' `mon-help-faces-themes'
+;;; `mon-help-font-lock' `mon-help-easy-menu' `mon-help-widgets'
+;;; `mon-help-file-dir-functions',`mon-help-read-functions', 
+;;; `mon-help-process-functions', `mon-help-xml-functions', 
+;;; `mon-help-color-functions', `mon-help-color-chart'
+;;; `mon-help-char-representation', `mon-help-ISO-8859-1-chars', 
+;;; `mon-help-ASCII-chars', `mon-help-cntl->hex->ecma-35',
+;;; `mon-help-cntl->hex->ecma-48', `mon-help-format-width'
+;;; `mon-help-package-keywords', `mon-index-elisp-symbol'
+;;; `mon-help-mon-help', `mon-help-emacs-introspect'
+;;; `mon-help-crontab', `mon-help-permissions', `mon-help-ipv4-header'
+;;; `mon-help-unix-commands', `mon-help-w32-env'
+;;; `mon-help-eieio-defclass',`mon-help-eieio-functions',`mon-help-eieio-methods'
+;;; `mon-help-nclose-functions', `mon-help-iso-8601'
+;;; `mon-help-info-incantation', `mon-help-install-info-incantation'
+;;; `mon-help-tar-incantation', `mon-help-rename-incantation'
+;;; `mon-help-du-incantation' ,`mon-help-hg-archive'
+;;; `mon-help-diacritics', `mon-emacs-wiki-fy-reference-keys'
+;;; `mon-emacs-wiki-escape-lisp-string-region'
+;;; `mon-emacs-wiki-unescape-lisp-string-region'
 ;;; FUNCTIONS:◄◄◄
 ;;;
 ;;; MACROS:
@@ -60,21 +70,25 @@
 ;;; CONSTANTS:
 ;;;
 ;;; VARIABLES:
-;;; `*regexp-mon-doc-help-docstring-tags-DYNAMIC*',
+;;; `*mon-help-mon-tags-alist*',
+;;; `*regexp-mon-doc-help-docstring-tags-DYNAMIC*', 
 ;;; `*regexp-mon-doc-help-docstring-tags-TABLES*',
-;;; `*regexp-mon-doc-help-docstring-tags*',`*regexp-mon-doc-help-comment-tags*'
-;;; `*regexp-mon-doc-help-pointer-tags*',`*regexp-mon-doc-help-meta-tags*'
-;;; `*regexp-clean-du-flags*'
-;;; `*reference-sheet-help-A-HAWLEY*', `*w32-env-variables-alist*',
-;;; `*doc-cookie*', `*regexp-symbol-defs*', `*mon-help-interactive-spec-alist*'
-;;; `*mon-help-docstring-help-bffr*'
+;;; `*regexp-mon-doc-help-docstring-tags*', `*regexp-mon-doc-help-meta-tags*',
+;;; `*regexp-mon-doc-help-comment-tags*', `*regexp-mon-doc-help-pointer-tags*',
+;;; `*regexp-symbol-defs*' `*mon-help-interactive-spec-alist*'
+;;; `*doc-cookie*' `*mon-help-docstring-help-bffr*'
+;;; `*regexp-clean-du-flags*' `*mon-help-reference-keys*' `*w32-env-variables-alist'
 ;;;
 ;;; ALIASED/ADVISED/SUBST'D:
-;;; `mon-insert-documentation' -> `mon-help-insert-documentation'
-;;; `mon-help-mon-help' -> `mon-help-reference-sheet'
+;;; `mon-insert-documentation'  -> `mon-help-insert-documentation'
+;;; `mon-help-reference-sheet'  -> `mon-help-mon-help'
+;;; `*mon-help-keys-reference*' -> `*mon-help-reference-keys*'
 ;;;
 ;;; RENAMED:
-;;; `*emacs-reference-sheet-A-HAWLEY*' -> `*reference-sheet-help-A-HAWLEY*'
+;;; `*emacs-reference-sheet-A-HAWLEY*'       -> `*mon-help-reference-keys*'
+;;; `emacs-wiki-fy-reference-sheet'          -> `mon-emacs-wiki-fy-reference-keys'
+;;; `emacs-wiki-escape-lisp-string-region'   -> `mon-emacs-wiki-escape-lisp-string-region'
+;;; `emacs-wiki-unescape-lisp-string-region' -> `mon-emacs-wiki-unescape-lisp-string-region'
 ;;;
 ;;; MOVED:
 ;;; `mon-help-CL-time', `mon-help-CL-loop', `mon-help-slime-keys' -> mon-doc-help-CL.el
@@ -129,6 +143,7 @@
 ;;;       | -> `mon-string-index'      
 ;;;       | -> `mon-string-upto-index' 
 ;;;       | -> `mon-string-after-index'
+;;;       | -> `mon-string-justify-left'
 ;;; :SEE (URL `http://www.emacswiki.org/emacs/mon-utils.el')
 ;;;
 ;;; :NOTE While mon-doc-help-utils-supplemental.el will provide the necessary
@@ -148,7 +163,7 @@
 ;;;
 ;;; NOTES:
 ;;;
-;;; I think I remember lifting the `emacs-wiki-escape-lisp-string-region'
+;;; I think I remember lifting the `mon-emacs-wiki-escape-lisp-string-region'
 ;;; and  from Pascal Bourguignon but I can no longer find the reference
 ;;; to the source... I have it elsewhere as `escape-lisp-string-region'.
 ;;;
@@ -168,6 +183,26 @@
 ;;; by helping in generation of introspecting function bodies which utilize the
 ;;; tools included herein.
 ;;;
+;;; :COURTESY Pascal Bourguignon :WAS `space-doc'
+;;; :SUBJECT Re: How to see that a variable holds t :DATE 2010-01-04
+;;; :SEE (URL `http://lists.gnu.org/archive/html/help-gnu-emacs/2010-01/msg00060.html')
+;;; "You could even bind space to automatically find the doc for you:
+;;;      (global-set-key (kbd "SPC") 'space-doc)
+;;;  Or, use local-set-key in mode hooks where you write emacs lisp code
+;;;  such as emacs-lisp-mode-hook."
+;;; (defun mon-space-doc ()
+;;;   (interactive)
+;;;   (save-excursion
+;;;     (backward-sexp) (backward-char)
+;;;     (when (looking-at "(")
+;;;       (forward-char)
+;;;       (when (thing-at-point 'symbol)
+;;;         (let* ((start (point))
+;;;                (end (progn (forward-sexp) (point)))
+;;;                (symname (buffer-substring start end)))
+;;;           (ignore-errors (describe-function (intern symname)))))))
+;;;   (insert " "))
+;;;
 ;;; SNIPPETS:
 ;;; (while (search-forward-regexp "\\(mon-help-function-spit-doc '\\(.*\\) nil nil t\\)")
 ;;;   (replace-match "mon-help-function-spit-doc '\\2 :insertp t"))
@@ -181,6 +216,9 @@
 ;;;
 ;;; PUBLIC-LINK: (URL `http://www.emacswiki.org/emacs/mon-doc-help-utils.el')
 ;;; FILE-PUBLISHED: <Timestamp: #{2009-08-15} - by MON KEY>
+;;;
+;;; :PUBLIC-LINK (URL `http://www.emacswiki.org/emacs/MonDocHelpUtilsDictionaryPretty')
+;;; :FIRST-PUBLISHED <Timestamp: #{2010-01-09T01:03:52-05:00Z}#{10016} - by MON>
 ;;;
 ;;; FILE-CREATED:
 ;;; <Timestamp: Wednesday June 17, 2009 @ 11:29.15 AM - by MON KEY>
@@ -222,7 +260,7 @@
 ;;
 (require 'cl)
 
-;; :USED-BY `emacs-wiki-fy-reference-sheet'
+;; :USED-BY `mon-emacs-wiki-fy-reference-keys'
 (require 'regexpl)
 
 ;;; ==============================
@@ -243,7 +281,8 @@
              ;; it though because that requires this and fails with recursive load.
              (and (fboundp 'mon-string-index) 
                   (fboundp 'mon-string-upto-index)
-                  (fboundp 'mon-string-after-index)))
+                  (fboundp 'mon-string-after-index)
+                  (fboundp 'mon-string-justify-left)))
   (require 'mon-doc-help-utils-supplemental))
 ;;
 ;; Load doc functions which can't possibly be GPL/GFDL e.g MS-C0RP API etc.
@@ -254,9 +293,15 @@
 ;;; :CREATED <Timestamp: Friday July 03, 2009 @ 01:11.47 PM - by MON KEY>
 (defvar *doc-cookie* nil
   "*Default 'documentation cookie' \"►►►\".
-Cookie is used with `mon-help-function-spit-doc'. to delimit which portion of
-docstring should be commented out when inserting into buffer.
-\(ucs-insert \"25BA\"\) ;=> ►\n
+A Documentation cookie delimter for use with `mon-help-function-spit-doc'.\n
+Used to delimit which portion of docstring should be commented out when
+inserting into buffer. Default is \"\u25BA\u25BA\u25BA\"\n
+EXAMPLE:\n
+\(momentary-string-display 
+ \(let \(cooky\)
+   \(dotimes \(i 3 (concat \" The `*doc-cookie*' -> \" cooky \)\)
+     \(setq cooky \(concat \(char-to-string ?\\u25BA\) cooky\)\)\)\)
+ \(point\)\)\n
 :SEE-ALSO `mon-insert-doc-help-cookie'.\n►►►")
 ;;
 (when (not (bound-and-true-p *doc-cookie*))
@@ -314,10 +359,10 @@ Default is *MON-HELP*\n
 The `comment-tags' key associates tags appearing in source comments.
 The `docstr-tags' key associates tags appearing in docstrings.
 The `meta-tags' key associates tags appearing in both soure comments and 
-docstrings to indicated metasyntactic or idiomatic forms and types.
+docstrings to indicated metasyntactic or idiomatic forms and types.\n
 :EXAMPLE\n\(assoc 'comment-tags *mon-help-mon-tags-alist*\)
 \(assoc 'docstr-tags *mon-help-mon-tags-alist*\)
-\(assoc 'meta-tags *mon-help-mon-tags-alist*\)
+\(assoc 'meta-tags *mon-help-mon-tags-alist*\)\n
 :SEE-ALSO `*regexp-mon-doc-help-docstring-tags-DYNAMIC*',
 `*regexp-mon-doc-help-docstring-tags-TABLES*',
 `*regexp-mon-doc-help-docstring-tags*',`*regexp-mon-doc-help-comment-tags*'
@@ -334,7 +379,16 @@ docstrings to indicated metasyntactic or idiomatic forms and types.
 ;;; :CREATED <Timestamp: #{2009-11-21T15:07:32-05:00Z}#{09476} - by MON>
 (defvar *regexp-mon-doc-help-pointer-tags*
   "\\([;\\[:space:]]?\\)\\(\\(<-\\{1,2\\}\\)\\|\\(-\\{1,2\\}>\\)\\|\\(=\\{1,2\\}>\\)\\)"
-":EXAMPLE\n \(progn 
+"Regexp for fontlocking 'pointers' in docstrings and comments.\n
+For `help-mode' views of MON functions, in particular those from 
+:FILE `mon-doc-help-utils.el'.\n
+:EXAMPLE\n\(save-excursion
+  \(dotimes \(i 22\)
+    \(mon-help-find-result-for-overlay *regexp-mon-doc-help-pointer-tags* 0 0 78\)\)\)\n
+Matches the following:
+ ->   ;->  ; -> \n =>   ;=>  ; => \n -->  ;-->  ; --> --->
+ <--  <--  ; <--  <---\n <--  ;<-- ; <--  <--- \n ==>  ;==> ; ==>  ===>\n
+:EXAMPLE\n \(progn 
    \(search-forward-regexp *regexp-mon-doc-help-pointer-tags*\)
    \(match-string-no-properties 2\)\)\n
 :SEE-ALSO `*regexp-mon-doc-help-docstring-tags-DYNAMIC*',
@@ -540,7 +594,7 @@ For `help-mode' views of MON functions, in particular those from
 ;;; (*regexp-mon-doc-help-docstring-tags-DYNAMIC* 0  mon-help-DYNATAB-tag) ;"cadet blue"         
 ;;; :CREATED <Timestamp: #{2009-11-21T18:15:49-05:00Z}#{09476} - by MON>
 (defun mon-help-propertize-tags ()
-  "Propertize mon-help-tags with face values.
+  "Propertize mon-help-tags with face values.\n
 For advising `help-mode' of some more things to fontlock.\n
 :SEE-ALSO `mon-help-propertize-tags-TEST'.\n►►►"
   (let ((help-props
@@ -606,10 +660,10 @@ propertizing.\n►►►"
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-11-20T17:55:35-05:00Z}#{09475} - by MON>
 (defun* mon-help-mon-tags (&key comment docs meta)
-  "Alist of MON's commonly used tags.
-:EXAMPLE\n\(mon-help-mon-tags :docs t\)
-\(mon-help-mon-tags :comment t\)
-\(mon-help-mon-tags :meta t\)
+  "Alist of MON's commonly used tags.\n
+:EXAMPLE\n\(mon-help-mon-tags :docs t\)\n
+\(mon-help-mon-tags :comment t\)\n
+\(mon-help-mon-tags :meta t\)\n
 \(mon-help-mon-tags\)\n
 :SEE-ALSO `*mon-help-mon-tags-alist*'.\n►►►"  
   (let ((tag-type
@@ -654,6 +708,68 @@ Choice of tag type completed with `mon-help-mon-tags'.\n
 ;;; :TEST-ME (call-interactively 'mon-help-insert-tags)
 
 ;;; ==============================
+;;; :CREATED <Timestamp: #{2010-01-08T23:28:40-05:00Z}#{10015} - by MON>
+(defun mon-help-overlay-result (show-string show-here to-here exit-c) ;for-secs 
+  "
+:SEE-ALSO `mon-help-find-result-for-overlay', `momentary-string-display'.\n►►►"
+  (let* ((showit (copy-sequence show-string))
+         (showlay (make-overlay show-here to-here)))
+    (unwind-protect
+         (save-excursion 
+           (overlay-put showlay 'face 
+                        '(:foreground "lime green"
+                          :background "black" :weight ultra-bold 
+                          :box (:line-width 3 :color "yellow1" :style released-button)))
+           (let (got-N)
+             (while (not got-N)
+               (when (eq (read-event 
+                          (format "Type `%c' to continue ..." exit-c))
+                         exit-char)
+                 (setq got-N t)))))
+      (delete-overlay showlay))))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-01-09T00:07:02-05:00Z}#{10016} - by MON>
+(defun mon-help-find-result-for-overlay (search-it match-b match-e exit-char)
+  "Find regexp SEARCH-IT placing overlay on the match from MATCH-B to MATCH-E.\n
+SEARCH-IT is a regexp string to search.\n
+MATCH-B is the group for `match-beginning'\n
+MATCH-E is the group for `match-end'\n
+EXIT-CHAR is a character to exit from the overlay display.\n
+:EXAMPLE\n\(save-excursion
+  \(dotimes \(i 22\)
+    \(mon-help-find-result-for-overlay 
+     *regexp-mon-doc-help-pointer-tags* 0 0 78\)\)\)\n
+Matches the following:
+ ->   ;->  ; -> 
+ =>   ;=>  ; => 
+ -->  ;-->  ; --> --->
+ <--  <--  ; <--  <---
+ <--  ;<-- ; <--  <--- 
+ ==>  ;==> ; ==>  ===>\n
+:SEE-ALSO `mon-help-overlay-result', `momentary-string-display'.\n►►►"
+  (progn
+    (search-forward-regexp search-it nil t)
+    (let* ((mb (match-beginning (or match-b 0)))
+           (me  (match-end (or match-e 0)))
+           (ms (buffer-substring-no-properties mb me)))
+      (mon-help-overlay-result ms mb me exit-char))))
+;;
+;;; :TEST-ME 
+;;; (save-excursion
+;;;   (dotimes (i 22)
+;;;     (mon-help-find-result-for-overlay *regexp-mon-doc-help-pointer-tags* 0 0 78)))
+;; ,----
+;; | Matches the following:
+;; |  ->   ;->  ; -> 
+;; |  =>   ;=>  ; => 
+;; |  -->  ;-->  ; --> --->
+;; |  <--  <--  ; <--  <---
+;; |  <--  ;<-- ; <--  <--- 
+;; |  ==>  ;==> ; ==>  ===>
+;; `----
+
+;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-12-20T17:50:49-05:00Z}#{09517} - by MON>
 (defun mon-help-temp-docstring-display (the-help-doc)
   "Display THE-HELP-DOC string formatted as per help-mode.
@@ -674,12 +790,31 @@ Useful when temporarily editing docstrings.\n
 ;;;           (documentation 'mon-help-temp-docstring-display))
 
 ;;; ==============================
+;;; :NOTE this is here mostly so I don't forget it.
+;;; :COURTESY Thinkig Machines Corp. :HIS help-hacks.el :WAS `help-tmc-hacks'
+;;; :SEE (URL `ftp://ftp.sra.co.jp/pub/lang/lisp/misc/gmacs/gmacs/')
+;;; :CREATED <Timestamp: #{2009-12-31T13:12:41-05:00Z}#{09534} - by MON KEY>
+(defun mon-help-get-mon-help-buffer (d-string) ;; :WAS ()
+"Display D-STRING in view-mode with buffer named by:
+:VARIABLE `*mon-help-docstring-help-bffr*'\n
+:SEE-ALSO `mon-help-temp-docstring-display', `mon-help-view-file'.\n►►►"
+  (interactive)
+  (let ((current-buffer (current-buffer)))
+    (switch-to-buffer 
+     (get-buffer-create *mon-help-docstring-help-bffr*)) ;; :WAS "*Help TMC Hacks*"))
+    (delete-region (point-min) (point-max))
+    (insert d-string) ;; :WAS (insert *hacks-help-string*)
+    (goto-char (point-min))
+    (view-mode current-buffer)))
+;;
+;;; :TEST-ME (mon-help-get-mon-help-buffer "Some Test String")
+;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-12-20T20:34:49-05:00Z}#{09517} - by MON>
 (defun mon-help-view-file (file &optional dir)
-  "View the FILE as like `view-help-file'.
+  "View the FILE as like `view-help-file'.\n
 When DIR is non-nil it is a directory name in which to look for file.
 Unlike `view-help-file' DIR's default is default-dirctory not `data-directory'.
-Signal an error if file does not exist or is unreadable.
+Signal an error if file does not exist or is unreadable.\n
 :SEE-ALSO `mon-help-temp-docstring-display',`*mon-help-docstring-help-bffr*',
 `goto-address-mode'.\n►►►"
   (interactive "fWhich file: ")
@@ -721,12 +856,18 @@ Signal an error if file does not exist or is unreadable.
 (defun mon-insert-doc-help-cookie ()
   "Insert default 'documentation cookie' at point.
 Everything up to `*doc-cookie*' is commented out when inserted into a buffer.
-Default cookie is '►►►' \(ucs-insert \"25BA\"\) ;=> ►
-Set value of *doc-cookie* variable otherwise if this is not acceptable.
-:CALLED-BY `mon-help-function-spit-doc' to find comment-begin of snarfed doc
-strings.\n
+Default value for cookie is: \"\u25BA\u25BA\u25BA\".\n
+:EXAMPLE\n\n\(momentary-string-display 
+ \(concat \" Default doc-cookie to insert -> \"
+         \(do* \(\(i ?\\u25BA\)
+       \(j 0 \(1+ j\)\)
+       \(ck \"\" \(concat \(char-to-string i\) ck\)\)\)
+     \(\(= j 3\) ck\)\)\) \(point\)\)\n
+:NOTE If default value is not acceptable set value of `*doc-cookie*' variable
+otherwise.\n
+:CALLED-BY `mon-help-function-spit-doc'\n
 :SEE-ALSO `mon-insert-ebay-field-trigger-l-and-r',
-`mon-insert-ebay-field-trigger-l' `mon-insert-ebay-field-trigger-r'.\n►►►"
+`mon-insert-ebay-field-trigger-l', `mon-insert-ebay-field-trigger-r'.\n►►►"
   (interactive)
   (insert "►►►"))
 ;;
@@ -734,6 +875,14 @@ strings.\n
 ;;; :TEST-ME (call-interactively 'mon-insert-doc-help-cookie)
 
 ;;; ==============================
+;;; :TODO Consider where `documentation-property' can be used instead of `plist-get'.
+;;; :NOTE
+;;; :NOTE This idiom works for byte compiling in docstrings.
+;;; (eval-and-compile
+;;;  (<THE-DEFVAR>))
+;;
+;;; (eval-when (compile eval)
+;;;  (mon-help-put-var-doc-val->func <THE-DEFVAR> <THE-FUNC>))
 ;;; :CREATED <Timestamp: #{2009-10-01T18:57:13-04:00Z}#{09404} - by MON KEY>
 (defmacro mon-help-put-var-doc-val->func (var-name func-name &optional pre-v-str cut-v-str pst-v-str)
   "VAR-NAME is a variable whose value and docstring will be put on FUNC-NAME.
@@ -741,8 +890,8 @@ CUT-V-STR is a string on which to split the variable documentation of VAR-NAME.
 When non-nil cut-v-str is removed from variables documentation with substring up
 to CUT-V-STR at head of docstring, var-name's value is inserted, followed by the
 substring occuring after CUT-V-STR. The substring CUT-V-STR is not placed on
-func-name's documentation-property.
-When non-nil PRE-V-STR is a string to insert before value string of var-name.
+func-name's documentation-property.\n
+When non-nil PRE-V-STR is a string to insert before value string of var-name.\n
 When non-nil PST-V-STR is a string to insert after value string of var-name.\n
 :EXAMPLE\n
 \(mon-help-put-var-doc-val->func '<VAR-NAME> '<FUNC-NAME>
@@ -792,9 +941,9 @@ When non-nil PST-V-STR is a string to insert after value string of var-name.\n
 ;;; :CREATED <Timestamp: #{2009-09-14T14:16:34-04:00Z}#{09381} - by MON KEY>
 (defmacro mon-help-swap-var-doc-const-val (var-name const-name xrefs &optional face-name)
   "Swap the value of VAR-NAME's variable-documentation property onto
-CONST-NAME's variable-documentation property.
-Put the symbol value of CONST-NAME on VAR-NAME's variable-documentation property.
-Put the symbol value of VAR-NAME on CONST-NAME's variable-documentation property.
+  CONST-NAME's variable-documentation property.\n
+Put the symbol value of CONST-NAME on VAR-NAME's variable-documentation property.\n
+Put the symbol value of VAR-NAME on CONST-NAME's variable-documentation property.\n
 Put XREFS of packages related variables on VAR-NAME and CONST-NAME's
 variable-documentation property. XREF's is  a symbol holding a list of related
 symbol names which should have cross-reference to one another in documentation.
@@ -944,8 +1093,9 @@ value returned is of the form:
                                              do-face do-group do-theme)
   "Return documentation for function with SYM-NAME.\n
 When `:ALT-COOKIE' \(a string\) is non-nil overrides the default comment delimiter
-set in global var `*doc-cookie*' - \"►►►\". If `:ALT-COOKIE' is not present in
-SYM-NAME's docstring header of docstring is inserted uncommented.\n
+set in global var `*doc-cookie*' - \"\u25BA\u25BA\u25BA\".\n
+If `:ALT-COOKIE' is not present in SYM-NAME's docstring header of docstring is
+inserted uncommented.\n
 When `:INSERTP' is non-nil insert documentation in current buffer.\n
 When keyword arg `:DO-VAR' is non-nil get documentation of a variable or constant.
 `:DO-VAR' should be t when invoked for variable, constant, custom documentation,
@@ -959,8 +1109,7 @@ inside a defgroup form.\n
 When keyword arg `:DO-THEME' is non-nil get face documentation for sym-name.
 `:DO-THEME' should be t when invoked for group documentation, e.g. symbols defined
 inside a defgroup form.\n
-:EXAMPLE
-\(mon-help-function-spit-doc 'mon-help-function-spit-doc\) ;defun
+:EXAMPLE\n\(mon-help-function-spit-doc 'mon-help-function-spit-doc\) ;defun
 \(mon-help-function-spit-doc '*doc-cookie* :do-var t\) ;defvar
 \(mon-help-function-spit-doc 'eldoc-message-commands :do-var t\) ;defconst
 \(mon-help-function-spit-doc 'completions-merging-modes :do-var t\) ;defcustom
@@ -1278,7 +1427,7 @@ spec-type is a string delimited by `<' and `>'.
                      (lambda (x)
                        (concat (cadr (assoc-string (subseq x 0 1) int-spec))" " (subseq x 1)))
                      (split-string (cadr int-t) "\n") "\n;;; ")))
-                  ;; :NOTE Leave the trailing line for `mon-insert-dcoumentation'.
+                  ;; :NOTE Leave the trailing line for `mon-insert-documentation'.
                   ((listp (cadr int-t)) "<INTERACTIVE-SPEC-IS-LIST>")))))
     int-has-spec))
 ;)
@@ -1296,7 +1445,7 @@ Spec of fname is return from a value in var `*mon-help-interactive-spec-alist*':
 ;;
 ;;; :TEST-ME (describe-function 'mon-help-parse-interactive-spec)
 ;;; :TEST-ME (mon-help-parse-interactive-spec  'mon-insert-file-in-dirs)
-;;; :TEST-ME (mon-help-parse-interactive-spec  'mon-help-reference-sheet)
+;;; :TEST-ME (mon-help-parse-interactive-spec  'mon-help-mon-help)
 ;;; :TEST-ME (mon-help-parse-interactive-spec  'mon-insert-string-n-times)
 ;;; :TEST-ME (mon-help-parse-interactive-spec  'mon-insert-string-n-fancy-times)
 ;;; :TEST-ME (listp (cadr (interactive-form    'mon-insert-file-in-dirs)))
@@ -1306,10 +1455,6 @@ Spec of fname is return from a value in var `*mon-help-interactive-spec-alist*':
 ;;;       (unintern 'mon-help-parse-interactive-spec) )
 
 ;;; ==============================
-;;; :TODO
-;;; Include in the document snarfing routine of :FILE `mon-help-doc-utils.el'
-;;; (interactive-form 'mon-insert-file-in-dirs)
-;;; (interactive-form 'mon-insert-file-in-dirs)
 ;;; :CREATED <Timestamp: #{2009-08-20T21:30:15-04:00Z}#{09345} - by MON>
 (defun mon-help-insert-documentation (&optional func-list var-list face-list alt-cookie)
   "Return documentation of symbols held by lists FUNC-LIST VAR-LIST FACE-LIST.
@@ -1353,7 +1498,9 @@ Default is `*doc-cookie*'.\n
                     (princ
                      (concat v-dlim 
                              ;; :WAS (get j 'variable-documentation)  "\n")
-                             (documentation-property j 'variable-documentation) "\n")
+                             (replace-regexp-in-string (concat "^" (if alt-c alt-c *doc-cookie*)) ""
+                              (replace-regexp-in-string (concat (if alt-c alt-c *doc-cookie*) "$") ""
+                                                        (documentation-property j 'variable-documentation) "\n")))
                      (current-buffer)))))
               (when fc-l
                 (dolist (k fc-l)
@@ -1367,7 +1514,7 @@ Default is `*doc-cookie*'.\n
 (defalias 'mon-insert-documentation 'mon-help-insert-documentation)
 ;;
 ;;; :TEST-ME
-;; (setq mon-tmp-func-l (list 'mon-insert-string-n-times 'mon-help-reference-sheet
+;; (setq mon-tmp-func-l (list 'mon-insert-string-n-times 'mon-help-mon-help
 ;;                           'mon-insert-file-in-dirs 'mon-help-insert-documentation
 ;;                           'mon-insert-string-n-times))
 ;;
@@ -1377,10 +1524,10 @@ Default is `*doc-cookie*'.\n
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: Friday July 03, 2009 @ 04:53.29 PM - by MON KEY>
-(defun mon-help-reference-sheet (&optional insertp intrp)
+(defun mon-help-mon-help (&optional insertp intrp)
   "Help refrence-sheet to help you find help references.
 Why not! :)\n►►►
-;; :FUNCTION-LISTS
+;; :MON-DOC-FUNCTION-LISTS
 `mon-help-buffer-functions'
 `mon-help-emacs-introspect'
 `mon-help-file-dir-functions'
@@ -1391,48 +1538,48 @@ Why not! :)\n►►►
 `mon-help-read-functions'
 `mon-help-window-functions'
 `mon-help-xml-functions'\n
-;; :SEARCHING
+;; :MON-DOC-SEARCHING
 `mon-help-search-functions'
 `mon-help-regexp-syntax'
 `mon-help-syntax-class'\n
-;; :HELP
+;; :MON-DOC-HELP
 `mon-tags-apropos'
 `mon-tags-naf-apropos'
 `mon-help-package-keywords'
-;; :TIME
+;; :MON-DOC-TIME
 `mon-help-iso-8601'\n
-;; :EIEIO
+;; :MON-DOC-EIEIO
 `mon-help-eieio-defclass'
 `mon-help-eieio-functions'
-`mon-help-eieio-methods'
-;; :CL
+`mon-help-eieio-methods'\n
+;; :MON-DOC-CL
 `mon-help-CL:TIME'                        ; :SEE :FILE mon-doc-help-CL.el
 `mon-help-CL:LOCAL-TIME'                  ; :SEE :FILE mon-doc-help-CL.el
-`mon-help-CL:LOOP'                        ; :SEE :FILE mon-doc-help-CL.el
-;; :ASCII-ART
+`mon-help-CL:LOOP'                        ; :SEE :FILE mon-doc-help-CL.el\n
+;; :MON-DOC-ASCII-ART
 `mon-help-color-chart'
 `mon-help-easy-menu'
 `mon-help-font-lock'
 `mon-help-ipv4-header'
 `mon-help-widgets'\n
-;; :PRESENTATION
+;; :MON-DOC-PRESENTATION
 `mon-help-make-faces'
 `mon-help-basic-faces'
 `mon-help-faces-themes'
 `mon-help-text-property-functions'
 `mon-help-text-property-stickyness'
 `mon-help-color-functions'\n
-;; :KEYS
+;; :MON-DOC-KEYS
 `mon-help-keys'
 `mon-help-slime-keys'\n
-;; :CHAR-TABLES
+;; :MON-DOC-CHAR-TABLES
 `mon-help-char-representation'
 `mon-help-diacritics'
 `mon-help-ASCII-chars'
 `mon-help-ISO-8859-1-chars'
 `mon-help-cntl->hex->ecma-35'
 `mon-help-cntl->hex->ecma-48'\n
-;; :RECIPES
+;; :MON-DOC-RECIPES
 `mon-help-crontab'
 `mon-help-du-incantation'
 `mon-help-format-width'
@@ -1444,7 +1591,7 @@ Why not! :)\n►►►
 `mon-help-rename-incantation'
 `mon-help-tar-incantation'
 `mon-help-unix-commands'\n
-;; :INTROSPECTION-AND-UTILITY
+;; :MON-DOC-INTROSPECTION-AND-UTILITY
 `mon-help-w32-env'
 `mon-index-elisp-symbol'
 `references-sheet-help-emacs-introspect'
@@ -1456,13 +1603,13 @@ Why not! :)\n►►►
 `mon-help-insert-documentation'
 `mon-insert-doc-help-tail'
 `mon-insert-doc-help-cookie'
-`emacs-wiki-escape-lisp-string-region'
-`emacs-wiki-unescape-lisp-string-region'\n
-;; :MON-DOC-HELP-VARIABLES
+`mon-emacs-wiki-escape-lisp-string-region'
+`mon-emacs-wiki-unescape-lisp-string-region'\n
+;; :MON-DOC-VARIABLES
 `*doc-cookie*'                                 ;<VARIABLE>
 `*mon-help-interactive-spec-alist*'            ;<VARIABLE>
 `*mon-iptables-alst*'                          ;<VARIABLE>
-`*reference-sheet-help-A-HAWLEY*'              ;<VARIABLE>
+`*mon-help-reference-keys*'                    ;<VARIABLE>
 `*regexp-mon-doc-help-docstring-tags-DYNAMIC*' ;<VARIABLE>
 `*regexp-mon-doc-help-docstring-tags-TABLES*'  ;<VARIABLE>
 `*regexp-mon-doc-help-docstring-tags*'         ;<VARIABLE>
@@ -1475,15 +1622,15 @@ Why not! :)\n►►►
 `*w32-env-variables-alist*'                    ;<VARIABLE>"
   (interactive "i\nP")
   (if (or insertp intrp)
-      (mon-help-function-spit-doc 'mon-help-reference-sheet :insertp t)
+      (mon-help-function-spit-doc 'mon-help-mon-help :insertp t)
     (message "Pass non-nil for optional arg INTRP")))
 ;;
-(defalias 'mon-help-mon-help 'mon-help-reference-sheet)
+(defalias 'mon-help-reference-sheet 'mon-help-mon-help)
 ;;
-;;; :TEST-ME (mon-help-reference-sheet)
-;;; :TEST-ME (mon-help-reference-sheet t)
-;;; :TEST-ME (describe-function 'mon-help-reference-sheet)
-;;; :TEST-ME (call-interactively 'mon-help-reference-sheet)
+;;; :TEST-ME (mon-help-mon-help)
+;;; :TEST-ME (mon-help-mon-help t)
+;;; :TEST-ME (describe-function 'mon-help-mon-help)
+;;; :TEST-ME (call-interactively 'mon-help-mon-help)
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: Thursday July 02, 2009 @ 02:34.14 PM - by MON KEY>
@@ -1568,7 +1715,7 @@ Unless indicated as a '<FUNCTION>' items listed are '<VARIABLE>'.\n►►►\n
 ;;;          (current-buffer)))
 ;;; :CREATED <Timestamp: #{2009-09-03T19:27:41-04:00Z}#{09364} - by MON KEY>
 (defun mon-help-package-keywords (&optional insertp intrp)
-  "Find packages matching a given keyword using `finder-by-keyword'
+  "Find packages matching a given keyword using `finder-by-keyword'.\n
 Keyword Search for Lisp Libraries with \\[finder-by-keyword] command
 search the standard Emacs Lisp libraries by topic keywords.
 :SEE info node `\(emacs\)Library Keywords\'\.\n
@@ -1643,9 +1790,8 @@ x 	      The X Window system.\n►►►"
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-08-08T13:00:11-04:00Z}#{09326} - by MON KEY>
 (defun mon-help-regexp-syntax (&optional insertp intrp)
-  "Regexp Syntax overview - simplified!
-:SEE info node `(elisp)Syntax of Regexps' for discussion.
-:SEE info node `(elisp)Syntax of Regexps'\n
+  "Regexp Syntax overview - simplified!\n
+:SEE info node `(elisp)Syntax of Regexps' for discussion.\n
 ;; :REGEXP-SPECIAL-CHARS
 \.          -> match ANY
 \*          -> match Preceeding - ALL
@@ -1659,10 +1805,10 @@ $          -> match EOL
 \\          -> backslash QUOTE special chars\n
 ;; :REGEXP-BACKSLASH-CONSTRUCTS
 \\|         -> ALTERNATIVE
-\\={m\\}       -> REPEAT match exactly N times
-\\={m,n\\}     -> REPEAT match n-N times
-\\(...\\)    -> GROUPING Construct
-\\(\\? ... \) -> SHY Grouping Construct
+\\\\={m\\}      -> REPEAT match exactly N times
+\\\\={m,n\\}    -> REPEAT match n-N times
+\\( ... \\)  -> GROUPING Construct
+\\(\? ... \\\) -> SHY Grouping Construct
 \\digit     -> match DIGITH occurence
 \\w         -> match any WORD CONSTITUENT char
 \\W         -> match any char NOT a Word Constituent
@@ -1700,7 +1846,7 @@ $          -> match EOL
 ;;; ==============================
 ;;; :CREATED <Timestamp: Wednesday June 17, 2009 @ 04:58.00 PM - by MON KEY>
 (defun mon-help-syntax-class (&optional insertp intrp)
-  "Syntax Class mappings.
+  "Syntax class mappings.\n
 :SEE info node `(elisp)Syntax Table Internals'
 :SEE `syntax_spec_code', `syntax_code_spec' in:
 :FILE syntax.c\n
@@ -1723,6 +1869,7 @@ List two maps Syntax class code character arguments to SYNTAX.\n
 13      inherit            \(designated by `@'\)
 14      generic comment    \(designated by `!'\)
 15      generic string     \(designated by `|'\)\n
+;; :SYNTAX-CLASS-TABLE
 SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 :SYNTAX-CLASS whitespace character; \(designated by ` ' or `-'\)
 :SYNTAX-CLASS word constituent; \(designated by `w'\)
@@ -1753,17 +1900,8 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-08-07T18:16:16-04:00Z}#{09325} - by MON KEY>
 (defun mon-help-search-functions (&optional insertp intrp)
-  "Common functions, vars, commands for searching, replacing, substituting.
+  "Common functions, vars, commands for searching, replacing, substituting.\n
 :SEE-ALSO `mon-help-regexp-syntax'.\n►►►\n
-;; :SEARCH-MON-LOCAL
-`replace-in-string-mon'
-`replace-char-in-string-mon'
-`mon-string-split-on-regexp'
-`mon-string-csv-regexp'
-`mon-string-rotate-to-regexp'
-`mon-string-sub-old->new'
-`replace-string-pairs-region-no-props'
-`replace-string-pairs-region3'\n
 ;; :SEARCH
 `serach-forward'
 `search-backward'
@@ -1810,10 +1948,23 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 `subst-char-in-string'
 `translate-region'\n
 ;; :SEARCH-DIRED
-`tags-search'
-`tags-query-replace'
+`dired-do-copy-regexp'
+`dired-do-create-files'
+`dired-do-create-files-regexp'
+`dired-do-isearch'
+`dired-do-isearch-regexp'
+`dired-do-query-replace-regexp'
+`dired-do-rename-regexp'
 `dired-do-search'
-`dired-do-query-replace-regexp'\n
+`dired-flag-files-regexp'
+`dired-glob-regexp'
+`dired-mark-files-containing-regexp'
+`dired-mark-files-regexp'
+`dired-isearch-filenames'
+`dired-isearch-filenames-regexp'\n
+;; :SEARCH-TAGS
+`tags-search'
+`tags-query-replace'\n
 ;; :SEARCH-VARIABLES
 `search-spaces-regexp'
 `case-replace'
@@ -1826,7 +1977,16 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 `sentence-end-base'
 `sentence-end-double-space'
 `sentence-end-without-space'
-`sentence-end-without-period'"
+`sentence-end-without-period'\n
+;; :SEARCH-MON-LOCAL-FUNCTIONS
+`replace-in-string-mon'
+`replace-char-in-string-mon'
+`mon-string-split-on-regexp'
+`mon-string-csv-regexp'
+`mon-string-rotate-to-regexp'
+`mon-string-sub-old->new'
+`replace-string-pairs-region-no-props'
+`replace-string-pairs-region3'"
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-search-functions :insertp t)
@@ -1847,7 +2007,7 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 `find-buffer-visiting'           ;<FILENAME &optional PREDICATE>
  \(find-buffer-visiting \(filename\)\n
 `set-visited-file-name'          ;<FILENAME &optional NO-QUERY ALONG-WITH-FILE>\n
-;; FILE-DIR-ACTIONS
+;; :FILE-DIR-ACTIONS
 `find-file'                      ;<FILENAME &optional WILDCARDS>
  \(find-file \(buffer-file-name\)\)\n
 `make-directory'                 ;<DIR &optional PARENTS>\n
@@ -1878,7 +2038,7 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
  \(file-regular-p doc-directory\)\n \(file-regular-p \"~/.emacs\"\)\n
 `file-writable-p'                ;<FILENAME>
  \(file-writable-p default-directory\)\n
-;; FILE-DIR-PATH-INSPECTION
+;; :FILE-DIR-PATH-INSPECTION
 `expand-file-name'               ;<NAME &optional DEFAULT-DIRECTORY>
  \(expand-file-name \"../\"\)
  \(expand-file-name \"../../\"\)
@@ -1928,7 +2088,7 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 `file-name-handler-alist'        ;<VARIABLE>\n
 `inhibit-file-name-handlers'     ;<VARIABLE>\n
 `inhibit-file-name-operation'    ;<VARIABLE>\n
-;; :W32-FILE-DIR
+;; :FILE-DIR-W32
 `convert-standard-filename'      ;<FILENAME>
  \(convert-standard-filename \(file-truename \(getenv \"PROGRAMFILES\"\)\)\n
 `w32-get-true-file-attributes'   ;<VARIABLE>\n
@@ -1936,7 +2096,7 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
  \(w32-long-file-name \(getenv \"HOME\"\)\)\n
 `w32-short-file-name'            ;<FILENAME>
  \(w32-short-file-name \(getenv \"PROGRAMFILES\"\)\)\n
-;; FILE-DIR-OFTEN-USED
+;; :FILE-DIR-OFT-USED-RELATED
 `split-string'                   ;<STRING &optional SEPARATORS OMIT-NULLS>
  \(split-string \(directory-file-name default-directory\) \"/\"\)
 `thing-at-point'                 ;<THING>
@@ -1944,8 +2104,8 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 `bounds-of-thing-at-point'       ;<THING>
  \(bounds-of-thing-at-point 'filename\)
 `ffap'                           ;<&optional FILENAME>\n
- \(ffap\)~/.emacs
-;; :MON-KEY-DIR-FILE-FUNCTIONS
+ \(ffap\)~/.emacs\n
+;; :FILE-DIR-MON-LOCAL
 `mon-toggle-dired-dwim-target'
  \(mon-toggle-dired-dwim-target\)\n
 `mon-get-file-mod-times'         ;<FILE-OR-DIR>
@@ -2040,8 +2200,8 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-09-02T10:22:56-04:00Z}#{09363} - by MON KEY>
 (defun mon-help-buffer-functions (&optional insertp intrp)
-  "Buffer related functions.
-:SEE info node `(elisp)Windows'.
+  "Buffer related functions.\n
+:SEE info node `(elisp)Buffers and Windows'.
 :SEE-ALSO `mon-help-window-functions',`mon-help-frame-functions'.\n►►►
 ;; :BUFFFER-POSITIONS
 `mark-whole-buffer'
@@ -2103,14 +2263,14 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 `eval-current-buffer'
 `lock-buffer'
 `unlock-buffer'\n
-;; :BUFFERS-ACTIONS-ON-MULITPLE
+;; :BUFFER-ACTIONS-ON-MULITPLE
 `grep-buffers'
 `buffer-list'
 `list-buffers'
 `buffer-menu'
 `buffer-menu-other-window'
 `save-some-buffers'\n
-;; :BUFFERS-KILLING
+;; :BUFFER-KILLING
 `kill-buffer'
 `kill-buffer-and-window'
 `kill-matching-buffers'
@@ -2158,7 +2318,7 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-10-16T15:07:43-04:00Z}#{09425} - by MON>
 (defun mon-help-frame-functions (&optional insertp intrp)
-  "Functions for working with frames.
+  "Functions for working with frames.\n
 :SEE info node `(elisp)Frames'
 :SEE-ALSO `mon-help-window-functions', `mon-help-buffer-functions'.\n►►►\n
 ;; :FRAME-PARAMS
@@ -2376,7 +2536,7 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 ;;; :TEST-ME (call-interactively 'mon-help-window-functions)
 
 ;;; ==============================
-;;; :TODO add other xml related material from xml-rpc, and ./lisp/nxml
+;;; :TODO add other XML related material from xml-rpc, and ./lisp/nxml
 ;;; :CREATED <Timestamp: #{2009-09-17T12:06:53-04:00Z}#{09384} - by MON KEY>
 (defun mon-help-xml-functions (&optional insertp intrp)
   "XML related functions.\n►►►
@@ -2395,14 +2555,14 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 `xml-escape-string'\n
 ;; :XML-FILE.nxml.xsd-regexp
 `xsdre-translate'
-`xsdre-parse-regexp'
+`xsdre-parse-regexp'\n
 ;; :XML-FILE.nxml.xmltok
 `xmltok-unicode-to-char'
 `xmltok-forward'
 `xmltok-forward-prolog'
-`xmltok-forward-special'
+`xmltok-forward-special'\n
 ;; :XML-FILE.nxml.nxml-parse
-`nxml-parse-file'
+`nxml-parse-file'\n
 ;; :XML-FILE.eieio-xml
 `eieio-xml-override-prin1'
 `eieio-xml-list-prin1'
@@ -2733,7 +2893,7 @@ A generic form can be interrogated with `eieio-generic-form':\n
 `eieiomt-sym-optimize'                 S
 `eieio-unbind-method-implementations'  METHOD
 `eieiomt-optimizing-obarray'          ;<VARIABLE>\n
- EXAMINING-METHODS-AND-GENERICS
+ :METHODS-AND-GENERICS-EXAMINING
  ==============================\n
 :EXAMPLE\n
 \(eieio-describe-constructor 'tt--367\) ; A `constructor' is a 'static' method.\n
@@ -2759,25 +2919,28 @@ A generic form can be interrogated with `eieio-generic-form':\n
 ;;; :CREATED <Timestamp: #{2009-10-10T21:36:01-04:00Z}#{09417} - by MON>
 (defun mon-help-type-predicates (&optional insertp intrp)
   "List of predicate functions for interrogating elisp types.\n
-:SEE info node `(elisp)Type Predicates' :SEE info node `(CL)Type Predicates'
+:SEE info node `(elisp)Type Predicates'\n:SEE info node `(CL)Type Predicates'
 :SEE-ALSO `typep' `deftype' `typecase' `check-type'\n
      `functionp' `keywordp' `commandp'                              70.\n
- _________________________________________
-|                               --------  |
-| `sequencep'                  |`listp' |-|--|`consp'
-|              __________      |`nlistp'| |  .-+`atom'
-|             |          |      --------  |
-|  ___________| `arrayp' |______________  |
-| |   _________           _________     | |
-| |  |         |         |         |    | |
-| |  |`vectorp'|         |`stringp'|----|-|--|`string-or-null-p'
-| |  |_________|         |_________|    | |  .`char-or-string-p'
-| |  ______________    _______________  | |
-| | |              |  |               | | |
-| | |`char-table-p'|  |`bool-vector-p'| | |
-| | |_|____________|  |_______________| | |  ___________________
-| |___|_________________________________| | |                   |
-|_____|___________________________________| | :NUMERICAL-SHOWER |
+      _______________________                                         
+     |                       |                                        
+     | :TYPE-PREDICATES-SEQS |                                        
+ ____|_______________________|____________                            
+|                               --------  |                           
+| `sequencep'                  |`listp' |-|--|`consp'                 
+|              __________      |`nlistp'| |  .-+`atom'                
+|             |          |      --------  |                           
+|  ___________| `arrayp' |______________  |                           
+| |   _________           _________     | |                           
+| |  |         |         |         |    | |                           
+| |  |`vectorp'|         |`stringp'|----|-|--|`string-or-null-p'      
+| |  |_________|         |_________|    | |  .`char-or-string-p'      
+| |  ______________    _______________  | |                           
+| | |              |  |               | | |                           
+| | |`char-table-p'|  |`bool-vector-p'| | |                           
+| | |_|____________|  |_______________| | |  ___________________      
+| |___|_________________________________| | |                   |     
+|_____|___________________________________| | :NUMERICAL-SHOWER |     
       |                                  ___|___________________|_____
       |-+`keymapp'                      |                             |
       .--+`case-table-p'                |       `zerop'               |
@@ -2793,28 +2956,28 @@ A generic form can be interrogated with `eieio-generic-form':\n
   | char-table   <- `char-table-p'  |   |          |                | |
   | cons         <- `consp'         |   |  `plusp'-+-`minusp'       | |
   | float        <- `floatp'        |   |___________________________|_|
-  | font-entity  <- `fontp'         |                               |
-  | font-object  <- `fontp'         |         `number-or-marker-p'+-|
-  | font-spec    <- `fontp'         |        `integer-or-marker-p'+-.
-  | frame        <- `framep'        |
-  | hash-table   <- `hash-table-p'  |
-  | integer      <- `integerp',     |
-  | marker       <- `markerp'       |
-  | overlay      <- `overlayp'      |
-  | process      <- `processp'      |
-  | string       <- `stringp'       |
-  | subr         <- `subrp'         |
-  | symbol       <- `symbolp'       |
-  | vector       <- `vectorp'       |
-  | window       <- `windowp'       |
-  |                                 |
-  |   :COMPILED-FUNCTION            |        `window-live-p'
-  |  `byte-code-function-p'         |       `user-variable-p'
-  |                                 |     `frame-configuration-p'
-  |   :WINDOW-CONFIGURATION         |        `frame-live-p'
-  | `window-configuration-p'        |
+  | font-entity  <- `fontp'         |                               | 
+  | font-object  <- `fontp'         |         `number-or-marker-p'+-| 
+  | font-spec    <- `fontp'         |        `integer-or-marker-p'+-. 
+  | frame        <- `framep'        |                                 
+  | hash-table   <- `hash-table-p'  |                                 
+  | integer      <- `integerp',     |                                 
+  | marker       <- `markerp'       |                                 
+  | overlay      <- `overlayp'      |                                 
+  | process      <- `processp'      |                                 
+  | string       <- `stringp'       |                                 
+  | subr         <- `subrp'         |                                 
+  | symbol       <- `symbolp'       |                                 
+  | vector       <- `vectorp'       |                                 
+  | window       <- `windowp'       |                                 
+  |                                 |                                 
+  |   :COMPILED-FUNCTION            |        `window-live-p'          
+  |  `byte-code-function-p'         |       `user-variable-p'         
+  |                                 |     `frame-configuration-p'     
+  |   :WINDOW-CONFIGURATION         |        `frame-live-p'           
+  | `window-configuration-p'        |                                 
   |_________________________________|                               70.
-\n►►►"
+►►►"
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-type-predicates :insertp t)
@@ -2828,8 +2991,8 @@ A generic form can be interrogated with `eieio-generic-form':\n
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-09-20T13:26:27-04:00Z}#{09387} - by MON>
 (defun mon-help-read-functions (&optional insrtp intrp)
-  "List of functions for reading.
-Unless indicated all items in list are functions.
+  "List of functions for reading.\n
+Unless indicated all items in list are functions.\n
 :SEE :FILE `lread.c'
 :SEE info node `(elisp)Read and Print'.\n►►►\n
       _______                       ____________________    62.
@@ -2882,7 +3045,7 @@ Unless indicated all items in list are functions.
   |___________________________|  |__________________________|
     _______________                            ________
    |               |                          |        |
-   | :KEYS-EVENTS  |                          | :FACES |
+   | :KEY-EVENTS   |                          | :FACES |
  __|_______________|_________   ______________|________|____
 |                            | |                            |
 | `read-event'               | | `read-face-font'           |
@@ -2917,9 +3080,9 @@ Unless indicated all items in list are functions.
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-09-19T17:02:02-04:00Z}#{09386} - by MON KEY>
 (defun mon-help-plist-functions (&optional insertp intrp)
-  "Help for plist and property list related functions.
-:SEE info node `(elisp)Documentation Tips'.\n►►►
-:SEE-ALSO `mon-help-text-property-functions'.
+  "Help for plist and property list related functions.\n
+:SEE info node `(elisp)Documentation Tips'.
+:SEE-ALSO `mon-help-text-property-functions'.\n►►►\n
 ;; :PLIST-FUNCTIONS
 `get'
 `plist-get'
@@ -2938,10 +3101,10 @@ Unless indicated all items in list are functions.
 `put-char-code-property'
 `get-char-code-property'    :SEE `mon-help-char-representation'
 `documentation-property'\n
-;; :MON-PLIST-FUNCTIONS
+;; :PLIST-FUNCTIONS-MON-LOCAL
 `mon-plist-keys'
 `mon-plist-remove'\n
-;; :COMMON-PROPERTIES
+;; :PLIST-PROPERTIES-COMMON
 `buffer-access-fontified-property'  ;<PROPERTY>
 `char-code-property-documentation'  ;<PROPERTY>
 `face-documentation'                ;<PROPERTY> 
@@ -2967,21 +3130,21 @@ Unless indicated all items in list are functions.
 ;;; :TEST-ME (describe-function 'mon-help-plist-functions)
 
 ;;; ==============================
-;;; DOCSTRING sourced from commented sections of `cus-face.el', and `custom.el'
+;;; :SOURCE from commented sections of :FILE `cus-face.el' and :FILE `custom.el'
 ;;; The Example theme, forest-theme.el
 ;;; :COURTESY Chong Yidong :SOURCE emacs-devel :SUBJECT Re: Color themes
 ;;; :DATE Sun, 09 Aug 2009 12:18:01 -0400
 ;;; :SEE (URL `http://lists.gnu.org/archive/html/emacs-devel/2009-08/msg00356.html')
 ;;; :CREATED <Timestamp: #{2009-08-24T18:30:56-04:00Z}#{09351} - by MON KEY>
 (defun mon-help-faces-themes (&optional insertp intrp)
-  "Functions for handling themes and their faces.\n►►►\n
-;; :THEME
+  "Functions for handling themes and their faces.\n
+;; :THEME-FUNCTIONS
 `deftheme'                    ;<MACRO>
 `load-theme'
 `provide-theme'
 `enable-theme'
 `disable-theme'
-;; :FACES-CUSTOM
+;; :FACE-CUSTOM
 `custom-set-faces'
 `custom-reset-faces'
 `custom-declare-face'
@@ -3004,7 +3167,7 @@ Unless indicated all items in list are functions.
 `custom-theme-recalc-face'
 `custom-theme-set-variables'\n
 :SEE :FILES `cus-face.el', `custom.el', `cus-edit.el'.\n
-;; :CUSTOM-THEMES\n
+;; :THEME-CUSTOM
 Custom themes are collections of settings that can be enabled or
 disabled as a unit.\n
 Each Custom theme is defined by a symbol, called the theme name.
@@ -3037,7 +3200,7 @@ properties for the affected symbols are set.  When a theme is
 disabled, its settings are removed from the `theme-value' and
 `theme-face' properties, but the theme's own `theme-settings'
 property remains unchanged.\n
-;; :DEFINING-THEMES\n
+;; :THEME-DEFINING
 A theme file should be named `THEME-theme.el' (where THEME is the theme
 name), and found in either `custom-theme-directory' or the load path.
 It has the following format:\n
@@ -3045,8 +3208,7 @@ It has the following format:\n
 \(custom-theme-set-variables 'THEME  [THEME-VARIABLES]\)
 \(custom-theme-set-faces 'THEME [THEME-FACES]\)
 \(provide-theme 'THEME\)\n
-;; :EXAMPLE-THEME\n
-;;;; :FILE forest-theme.el\n
+;; :THEME-EXAMPLE :SEE :FILE forest-theme.el\n
 \(deftheme forest \"Created 2009-08-09.\"\)\n
 \(custom-theme-set-faces 'forest\n
  '\(default \(\(t \(:foreground \"wheat\" :background \"black\"\)\)\)\)\n
@@ -3073,7 +3235,7 @@ It has the following format:\n
  '\(highlight \(\(\(\(class color\) \(min-colors 88\)\)
                \(:foreground \"white\" :background \"dark green\"\)\)\)\)\)\n
 \(provide-theme 'forest\)\n
-;;;; end forest-theme.el \n ►►►"
+;;;; end forest-theme.el\n►►►"
   (interactive "i\np")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-faces :insertp t)
@@ -3084,12 +3246,12 @@ It has the following format:\n
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-09-26T13:23:36-04:00Z}#{09396} - by MON KEY>
 (defun mon-help-make-faces (&optional insertp intrp)
-"Functions, Variables, Properties, etc. for defining faces.
+"Functions, Variables, Properties, etc. for defining faces.\n
 :SEE info node `(elisp)Defining Faces'.\n:SEE info node `(elisp)Face Attributes'.
-:SEE-ALSO `mon-help-basic-faces', `mon-help-font-lock', `mon-help-color-chart'.\n\n
+:SEE-ALSO `mon-help-basic-faces', `mon-help-font-lock', `mon-help-color-chart'.\n
                          _________________                                 
-                        |                 |                                
-                        | :DEFINING-FACES |                              
+                        |                 |                              
+                        | :FACE-DEFINING  |                              
  _______________________|_________________|____________________________73.
 |                                         |                              |
 | `defface' <MACRO>                       |   :FACE-DEFINING-FUNCTIONS   |
@@ -3159,7 +3321,7 @@ It has the following format:\n
 |                             | | {t - using face's color                |
 |_____________________________| |  string - using specified color        |
 |                             | |  nil - do not apply effect}            |
-|    :PROPERTY-ATTRIBUTES     | |________________________________________|
+|  :FACE-PROPERTY-ATTRIBUTES  | |________________________________________|
 | (on face's symbol property) | |                                        |
 |                             | | :box - (a boolean, string, list)       |
 |-----------------------------| | {nil - no box                          |
@@ -3202,13 +3364,12 @@ It has the following format:\n
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-09-04T17:34:43-04:00Z}#{09365} - by MON KEY>
 (defun mon-help-basic-faces (&optional insertp intrp)
-  "basic-faces is a custom-group inheriting faces.
-These standard Emacs faces are defined in faces.el
-As of 23.1 there is no _formal_ indication that newly defined faces must inherit
-from one of the basic-faces this practice is encouraged. For example,
-:SEE \(URL `http://lists.gnu.org/archive/html/emacs-devel/2009-08/msg00525.html')
-►►►\n
-;; :BASIC-FACES
+  "The custom-group `basic-faces' is utilized for inheriting faces.\n
+These are the standard Emacs faces are defined in :FILE faces.el\n
+:NOTE As of 23.1 there is no _formal_ indication that newly defined faces must
+inherit from one of the basic-faces this practice is encouraged.
+:SEE \(URL `http://lists.gnu.org/archive/html/emacs-devel/2009-08/msg00525.html').\n►►►
+;; :FACE-BASIC
 \(describe-face 'default\)
 \(describe-face 'bold\)
 \(describe-face 'italic\)
@@ -3256,10 +3417,10 @@ from one of the basic-faces this practice is encouraged. For example,
 cases of text, and how to highlight those cases:\n
  ___________________________________________________________________________79.
 |                                                                             |
-|REGEXP                                                                       |
+| REGEXP                                                                      |
 |_____________________________________________________________________________|
 |                                                                             |
-|FUNCTION                                                                     |
+| FUNCTION                                                                    |
 |_____________________________________________________________________________|
 |                                                                             |
 |[MATCHER . SUBEXP]                                                           |
@@ -3268,12 +3429,12 @@ cases of text, and how to highlight those cases:\n
 |                                        +specify a proplist here**           |
 |                                        |                                    |
 |[MATCHER . FACESPEC]                    v                                    |
-|	   	 |-> (FACESPEC (face FACE PROP1 VAL1 PROP2 VAL2...))          |
+|                |-> (FACESPEC (face FACE PROP1 VAL1 PROP2 VAL2...))          |
 |                |                                                            |
-|	   	 |-> (font-lock-extra-managed-props PROP1 VAL1 PROP2 VAL2)    |
+|                |-> (font-lock-extra-managed-props PROP1 VAL1 PROP2 VAL2)    |
 |                         |                           |-> field VAL           |
-|			  |       		         help-echo VAL        |
-| **and/or specify it here^	 	                 category VAL         |
+|                         |                              help-echo VAL        |
+| **and/or specify it here^                              category VAL         |
 |_____________________________________________________________________________|
 |                                                                             |
 | [MATCHER] . [SUBEXP-HIGHLIGHTER]                                            |
@@ -3286,18 +3447,17 @@ cases of text, and how to highlight those cases:\n
 |                                                   nil-> subexp missing ERROR|
 |_____________________________________________________________________________|
 |                                                                             |
-|[MATCHER . ANCHORED-HIGHLIGHTER]                                             |
-|         |-> [ANCHORED-MATCHER PRE-FORM POST-FORM                            |
-|                                SUBEXP-HIGHLIGHTERS...]                      |
+| [MATCHER . ANCHORED-HIGHLIGHTER]                                            |
+|          |-> [ANCHORED-MATCHER PRE-FORM POST-FORM                           |
+|                                 SUBEXP-HIGHLIGHTERS...]                     |
 |_____________________________________________________________________________|
 |                                                                             |
-|[MATCHER . HIGHLIGHTERS...]                                                  |
-|         |-> [SUBEXP-HIGHLIGHTER[ANCHORED-HIGHLIGHTER]]                      |
+| [MATCHER . HIGHLIGHTERS...]                                                 |
+|          |-> [SUBEXP-HIGHLIGHTER[ANCHORED-HIGHLIGHTER]]                     |
 |_____________________________________________________________________________|
 |                                                                             |
-|[eval . FORM]                                                                |
-|_____________________________________________________________________________|
-                                                                            79.
+| [eval . FORM]                                                               |
+|___________________________________________________________________________79.
 ►►►"
   (interactive "i\nP")
   (if (or insertp intrp)
@@ -3312,7 +3472,7 @@ cases of text, and how to highlight those cases:\n
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-09-20T13:46:12-04:00Z}#{09387} - by MON>
 (defun mon-help-text-property-functions (&optional insrtp intrp)
-  "List of text-property related functions.
+  "List of text-property related functions.\n
 :SEE info node `(elisp)Text Properties'\n:SEE :FILE textprop.c\n
     ________________________              __________________________
    |                        |            |                          |
@@ -3332,26 +3492,26 @@ cases of text, and how to highlight those cases:\n
  |________________________|___        | `text-property-not-all'                |
 |                             |       | `describe-text-properties'             |
 | `propertize'                |       |________________________________________|
-| `add-text-properties'       |
-| `put-text-property'         |             __________________________
-| `set-text-properties'       |            |                          |
-| `with-silent-modifications' |            | :SPECIAL-TEXT-PROPERTIES |
-|_____________________________|           _|__________________________|____
-    ___________________________          |                                 |
-   |                           |         | category      fontified         |
-   | :TEXT-PROPERTY-VARIABLES  |         | display       help-echo         |
- __|___________________________|______   | syntax-table  composition       |
-|                                     |  | keymap        local-map         |
-|  `buffer-access-fontified-property' |  | face font-lock-face mouse-face  |
-|  `buffer-access-fontify-functions'  |  | read-only invisible intangible  |
-|  `default-text-properties'          |  | field     cursor    pointer     |
-|  `char-property-alias-alist'        |  | line-spacing        line-height |
-|  `minibuffer-allow-text-properties' |  | wrap-prefix         line-prefix |
-|  `text-property-default-nonsticky'  |  | modification-hooks              |
-|_____________________________________|  | insert-in-front-hooks           |
-                                         | insert-behind-hooks             |
-                                         | point-entered point-left        |
-                                         |_________________________________| 80.
+| `add-text-properties'       |                                                 
+| `put-text-property'         |             _________________________          
+| `set-text-properties'       |            |                         |         
+| `with-silent-modifications' |            | :TEXT-PROPERTY-SPECIAL  |         
+|_____________________________|           _|_________________________|_____    
+    ___________________________          |                                 |    
+   |                           |         | category      fontified         |    
+   | :TEXT-PROPERTY-VARIABLES  |         | display       help-echo         |    
+ __|___________________________|______   | syntax-table  composition       |    
+|                                     |  | keymap        local-map         |    
+|  `buffer-access-fontified-property' |  | face font-lock-face mouse-face  |    
+|  `buffer-access-fontify-functions'  |  | read-only invisible intangible  |    
+|  `default-text-properties'          |  | field     cursor    pointer     |    
+|  `char-property-alias-alist'        |  | line-spacing        line-height |    
+|  `minibuffer-allow-text-properties' |  | wrap-prefix         line-prefix |    
+|  `text-property-default-nonsticky'  |  | modification-hooks              |    
+|_____________________________________|  | insert-in-front-hooks           |    
+                                         | insert-behind-hooks             |    
+                                         | point-entered point-left        |    
+                                         |_________________________________|  80.
 \n:SEE-ALSO `mon-help-plist-functions'.\n►►►"
   (interactive "i\nP")
   (if (or insrtp intrp)
@@ -3370,18 +3530,19 @@ cases of text, and how to highlight those cases:\n
   "Any property might be front-sticky on the left, rear-sticky on the left,
 front-sticky on the right, or rear-sticky on the right; the 16 combinations
 can be arranged in a matrix with rows denoting the left conditions and
-columns denoting the right conditions:\n\n:TEXT-PROPERTY-STICKYNESS\n
+columns denoting the right conditions:\n
+;; :TEXT-PROPERTY-STICKYNESS\n
       _  __  _
 _     FR FR FR FR
 FR__   0  1  2  3
  _FR   4  5  6  7
 FR     8  9  A  B
   FR   C  D  E  F\n
-left-props  = '\(front-sticky \(p8 p9 pa pb pc pd pe pf\)
+:LEFT-PROPS  = '\(front-sticky \(p8 p9 pa pb pc pd pe pf\)
                 rear-nonsticky \(p4 p5 p6 p7 p8 p9 pa pb\)
                 p0 L p1 L p2 L p3 L p4 L p5 L p6 L p7 L
                 p8 L p9 L pa L pb L pc L pd L pe L pf L\)\n
-right-props = '\(front-sticky \(p2 p3 p6 p7 pa pb pe pf\)
+:RIGHT-PROPS = '\(front-sticky \(p2 p3 p6 p7 pa pb pe pf\)
                 rear-nonsticky \(p1 p2 p5 p6 p9 pa pd pe\)
                 p0 R p1 R p2 R p3 R p4 R p5 R p6 R p7 R
                 p8 R p9 R pa R pb R pc R pd R pe R pf R\)\n
@@ -3391,7 +3552,7 @@ non-nil value for the current property.  If both sides do, then we take
 from the left.\n
 When we inherit a property, we get its stickiness as well as its value.
 So, when we merge the above two lists, we expect to get this:\n
-result      = '\(front-sticky \(p6 p7 pa pb pc pd pe pf\)
+:RESULT      = '\(front-sticky \(p6 p7 pa pb pc pd pe pf\)
      	        rear-nonsticky \(p6 pa\)
                 p0 L p1 L p2 L p3 L p6 R p7 R
                 pa R pb R pc L pd L pe L pf L\)\n
@@ -3421,21 +3582,21 @@ The optimizable special cases are:
 `ansi-color-apply'
 `ansi-color-make-color-map'
 `background-color-at-point'
-`foreground-color-at-point'
+`foreground-color-at-point'\n
 ;; :COLOR-SETTERS
 `set-cursor-color'
 `set-border-color'
 `set-background-color'
 `set-foreground-color'
-`set-mouse-color'
-;; COLOR-LIST
+`set-mouse-color'\n
+;; :COLOR-LIST
 `defined-colors'
 `list-colors-display'
 `list-colors-duplicates'
 `list-colors-print'
 `x-colors'                ;<VARIABLE>
 `color-name-rgb-alist'    ;<VARIABLE>
-`ansi-color-map'          ;<VARIABLE>
+`ansi-color-map'          ;<VARIABLE>\n
 ;; :COLOR-PREDICATES
 `display-color-p'
 `color-defined-p'"
@@ -3451,7 +3612,10 @@ The optimizable special cases are:
 ;;; :CREATED <Timestamp: Tuesday June 02, 2009 @ 12:09.40 PM - by MON KEY>
 (defun mon-help-color-chart (&optional insertp intrp)
   "Chart of Netscape Color Names with their Color Values.\n
- ____________________________________________________________________________80.
+       ______________
+      |              |                                                          
+      | :COLOR-CHART |                                                          
+ _____|______________|_______________________________________________________80.
 |                                                                              |
 | ,-+ :NETSCAPE-NAME                                                           |
 | |                   ,-+ :HEX-TRIPLET                                         |
@@ -3609,8 +3773,12 @@ The optimizable special cases are:
 ;;; :CREATED <Timestamp: Wednesday June 17, 2009 @ 05:36.08 PM - by MON KEY>
 (defun mon-help-easy-menu (&optional insertp intrp)
 "Following is a mapping for building a menu with easy-menu's `easy-menu-define'.
-\n
- ____________________________________________________________________________79.
+:SEE info node `(elisp)Defining Menus'\n
+    ____________
+   |            |                                                              
+   | :EASY-MENU |                                                              
+ __|____________|____________________________________________________________79.
+|                                                                              |
 |                      ,-+ :MENU-ROOT                                          |
 | [SYMBOL MAPS DOC MENU                                                        |
 .                  |                      ,-+ :MENU-CHILD                      |
@@ -3723,10 +3891,10 @@ The optimizable special cases are:
 | |                  | | `widget-insert'   | |     `widget-backward'      | |
 | |     [ ]|[X]      | | `widget-setup'    | |    -------------------     | |
 | |                  | | `widget-get'      | |____________________________| |
-| |    Embedded      | | `widget-put'      |         _________________      |
-| |                  | |___________________|        |                 |     |
-| |     ( )|(*)      |     _______________          | :BUTTON-ACTIONS |     |
-| |                  |    |               |      ___|_________________|___  |
+| |    Embedded      | | `widget-put'      |        ____________________    |
+| |                  | |___________________|       |                    |   |
+| |     ( )|(*)      |     _______________         | :WIDGET-BUTTON-ACT |   |
+| |                  |    |               |      __|____________________|_  |
 | |  [Apply Form]    |    | :WIDGET-FACES |     |                         | |
 | |                  |   _|_______________|__   |     <RET> | Mouse-2     | |
 | |  [Reset Form]    |  |                    |  |  ---------------------  | |
@@ -3848,7 +4016,7 @@ The optimizable special cases are:
 ´ - C-x 8 ' '
 ¨ - C-x 8 \" \"
 ¸ - C-x 8 , ,
-  - C-x 8 * SPC
+  - C-x 8 * SPC
 ► - (ucs-insert \"25BA\")\n\n;;; ==============================\n
 ;;; The Unicode latin scripts are found in several Unicode-Blocks, namely:
 ;;; U+0000 - U+007F -> Controls and Basic Latin;
@@ -3893,7 +4061,7 @@ The optimizable special cases are:
 (defun mon-help-char-representation (&optional insertp intrp)
   "Help for working with Emacs character representations.\n
 :SEE info node `(elisp)Basic Char Syntax'\n
-;; :DECIMAL-CHAR-REPRESNTATION
+;; :CHAR-REPRESNTATION-DECIMAL
 225
 ?\\á
 \"\\341\"
@@ -3901,13 +4069,13 @@ The optimizable special cases are:
 \(identity \"\\341\")     ;=> \"á\"
 \(char-to-string ?\\á)  ;=> \"á\"
 \(char-to-string 225)  ;=> \"á\"\n
-;; :OCTAL-REPRESENTATION
+;; :CHAR-REPRESENTATION-OCTAL
 #o341 
 ?\\341
 \(identity #o341\)       ;=> 225
 \(identity ?\\341\)       ;=> 225
 \(char-to-string ?\\341\) ;=> á\n 
-;; :HEX-REPRESENTATION
+;; :CHAR-REPRESENTATION-HEX
 #xe1 
 \"\\xe1\" 
 ?\\xe1
@@ -3915,13 +4083,13 @@ The optimizable special cases are:
 \(identity #xe1\)        ;=> 225
 \(identity ?\\xe1\)       ;=> 225
 \(char-to-string ?\\xe1\) ;=> \"á\"\n
-;; :UNICODE-REPESENTATION
+;; :CHAR-REPESENTATION-UNICODE
 \"\\u25BA\"
 ?\\u25BA
 \(identity ?\\u25BA\)       ;=> 9658
 \(identity \"\\u25BA\"\)      ;=> \"►\"
 \(char-to-string ?\\u25BA) ;=> \"►\"\n
-;; :CHARACTER-CONVERSION-IDIOMS
+;; :CHAR-CONVERSION-IDIOMS
 `format'
 \(format \(concat \"\\x09 <- HERE BE A `%s'\\n\"
                   \"And which be control char: `%s'\\n\"
@@ -3936,14 +4104,14 @@ The optimizable special cases are:
                  ?P ?Q ?R ?S ?T ?U ?V ?W ?X ?Y ?Z ?0 ?1 ?2 ?3 ?4 ?5 ?6 ?7 ?8 ?9
                  ?- ?_ ?. ?! ?~ ?* ?' ?\( ?\)))
  ;=> \"/abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.!~*'()\"\n
-;; :CHARACTER-CONVERSION
+;; :CHAR-CONVERSION
 `char-to-string'
 `get-byte'
 `multibyte-char-to-unibyte'
 `unibyte-char-to-multibyte'
 `string-to-char'
-`string-to-multibyte'
-;; :CHARACTER-READERS
+`string-to-multibyte'\n
+;; :CHAR-READERS
 `read-char'
 `read-char-exclusive'
 `read-char-by-name'
@@ -3951,20 +4119,21 @@ The optimizable special cases are:
 `read-quoted-char-radix' ;<VARIABLE>
 `quoted-insert'
 `ucs-insert'\n
-;; :CHARACTER-DESCRIPTORS
+;; :CHAR-DESCRIPTORS
 `characterp' 
 `max-char'
 `text-char-description'
 `single-key-description'\n
-`printable-chars' \(aref printable-chars ?\\x09)\n\(aref printable-chars ?\\x62\)\n
-;; :CHARACTER-PROPERTIES
+`printable-chars' \(aref printable-chars ?\\x09)
+                  \(aref printable-chars ?\\x62\)\n
+;; :CHAR-PROPERTIES
 `charset-plist'
 `char-code-property-description'
 `get-char-code-property'
 `put-char-code-property'  :SEE info node `(elisp)Character Properties'\n
     ______________________      
    |                      |     
-   | :PROPERTIES-OF-CHARS |    
+   | :CHAR-PROPERTIES-OF  |    
  __|______________________|____
 |                              |
 | `bidi-class'                 |
@@ -3998,10 +4167,10 @@ The optimizable special cases are:
 ;;; :CREATED <Timestamp: #{2009-09-01T17:34:29-04:00Z}#{09362} - by MON KEY>
 (defun mon-help-ASCII-chars (&optional insertp intrp)
   "ASCII Character Tables.\n
-    ________
-   |        |                                                      
-   | :ASCII |                                                      
- __|________|___________________________________________________67.
+    _____________
+   |             |                                                      
+   | :CHAR-ASCII |                                                      
+ __|_____________|______________________________________________67.
 |                                                                 |
 | 000 NUL|001 SOH|002 STX|003 ETX|004 EOT|005 ENQ|006 ACK|007 BEL |
 | 010 BS |011 HT |012 NL |013 VT |014 NP |015 CR |016 SO |017 SI  |
@@ -4073,11 +4242,11 @@ The optimizable special cases are:
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-09-01T17:34:24-04:00Z}#{09362} - by MON KEY>
 (defun mon-help-ISO-8859-1-chars (&optional insertp intrp)
-"ISO-8859-1 Character Table\n
-                      _____________                                       
-                     |             |                                      
-                     | :ISO-8859-1 |                                      
- ____________________|_____________|___________________________________73.
+"ISO-8859-1 Character Table.\n
+                      __________________                                  
+                     |                  |                                 
+                     | :CHAR-ISO-8859-1 |                                 
+ ____________________|__________________|______________________________73.
 |                                                                        |
 |   0 NU    16 DL     32 SP    48 0     64 At   80 P      96 '!   112 p  |
 |   1 SH    17 D1     33 !     49 1     65 A    81 Q      97 a    113 q  |
@@ -4136,10 +4305,10 @@ The optimizable special cases are:
   "For reference, here's a table of the control characters (plus DEL). It
 is based on the information from Table 1 of ECMA-48 /ISO/IEC 6429 
 \(the control-key representation has been added\).
-                       __________                     
-                      |          |                    
-                      | :ECMA-48 |                    
- _____________________|__________|_________________53.
+                       _______________                
+                      |               |               
+                      | :CHAR-ECMA-48 |               
+ _____________________|_______________|____________53.
 |                                                    |
 | :HEX   :KEY    :NAME          :HEX    :KEY   :NAME |
 |____________________________________________________|
@@ -4186,10 +4355,10 @@ sequence of characters beginning with ESC, with a final byte in the
 range 'x30'-'x7E', and any number \(including zero\) of intermediate
 bytes in the range 'x20'-'x2F'.  The following table has been provided
 as a reference for finding which characters match which codes.
-               __________                     
-              |          |                    
-              | :ECMA-35 |                    
- _____________|__________|_________________45.
+               _______________                
+              |               |               
+              | :CHAR-ECMA-35 |               
+ _____________|_______________|____________45.
 |      |                                     |
 |      |  x2X   x3X   x4X   x5X   x6X   x7X  |
 |______|_____________________________________|
@@ -4376,7 +4545,7 @@ as a reference for finding which characters match which codes.
 (defun mon-help-iso-8601 (&optional insertp intrp)
   "The full, extended format of ISO 8601 is as follows:\n
     1999-10-11T11:10:30,5-07:00\n
-;; :ISO-ELEMENTS\n
+;; :ISO-8601-ELEMENTS\n
    1. the year with four digits
    2. a hyphen \(omitted in the basic format\)
    3. the month with two digits
@@ -4404,7 +4573,7 @@ as a reference for finding which characters match which codes.
    |    |  |  |  |  | |  |  |
    1    3  5  7  9 1113  15 17
 ------------------------------\n
-;; :RULES-FOR-OMISSION
+;; :ISO-8601-OMISSION-RULES
 The rules for omission of elements are quite simple. Elements from the time of
 day may be omitted from the right and take their immediately preceding delimiter
 with them. Elements from the date may be omitted from the left, but leave the
@@ -4423,7 +4592,7 @@ want to express them using this standard.\n
 A duration of time has a separate notation entirely, as follows:\n
     P1Y2M3DT4H5M6S>
     P7W\n
-;; :DURATION-ELEMENTS\n
+;; :ISO-8601-DURATION-ELEMENTS\n
    1. the letter P to indicate a duration
    2. the number of years
    3. the letter Y to indicate years
@@ -4493,7 +4662,7 @@ To jump to an info node with an elisp expression:
 Because I never can remember tar's flags.
 :NOTE\nOn w32 with gnuwin32 to unzip use `gzip.exe -d'
 On w32 with gnuwin32 to pipe a tar to gz on w32 use `bsdtar.exe xvzf'.\n
-:INCANTATION
+:TAR-INCANTATION
 tar -czvf dir-name.tar.gz dir-name \n►►►"
 (interactive "i\nP")
 (if (or insertp intrp)
@@ -4508,7 +4677,7 @@ tar -czvf dir-name.tar.gz dir-name \n►►►"
 ;;; ==============================
 (defun mon-help-rename-incantation (&optional insertp intrp)
   "Insert the rename idiom for BASH renaming.
-# :IDIOM
+# :RENAME-IDIOM
 # for f in *FILENAME; do
 #  base=`basename $f *FILENAME` #<-- note backtick!
 # mv $f $base.NEWNAME
@@ -4651,13 +4820,16 @@ string; :SEE 'hg help export' for details.\n
 Each member added to an archive file has a directory prefix prepended.
 Use -p/--prefix to specify a format string for the prefix.
 The default is the basename of the archive, with suffixes removed.\n
-;; :OPTIONS
+;; :HG-ARCHIVE-OPTIONS
 --no-decode 	do not pass files through decoders
 -p, --prefix 	directory prefix for files in archive
 -r, --rev 	revision to distribute
 -t, --type 	type of distribution to create
 -I, --include 	include names matching the given patterns
--X, --exclude 	exclude names matching the given patterns\n►►►"
+-X, --exclude 	exclude names matching the given patterns\n
+:SEE (URL `http://mercurial.selenic.com/quickstart/')
+:SEE (URL `http://mercurial.selenic.com/guide/')
+:SEE (URL `http://hgbook.red-bean.com/read/')\n►►►"
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-hg-archive :insertp t)
@@ -4831,8 +5003,8 @@ user-error, and may even make your CPU to stop working! (Hint just use `:q')\n�
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-11-16T12:36:57-05:00Z}#{09471} - by MON KEY>
 (defun mon-help-unix-commands (&optional insertp intrp)
-  "Unix command line programs and builtins.
-;; :FILE-SYSTEM
+  "Unix command line programs and builtins.\n
+;; :FILE-SYSTEM-INFO-MAN-NODES
 cd        ; :SEE info node `(coreutils)cp invocation'
 chattr    ;
 cksum     ; :SEE info node `(coreutils)cksum invocation'
@@ -4874,7 +5046,7 @@ unlink    ; :SEE info node `(coreutils)unlink invocation'
 umask     ; :SEE info node `(coreutils)'
 updatedb  ; :SEE info node `(find)Invoking updatedb'
 vdir      ; :SEE info node `(coreutils)vdir invocation'\n
-;; :PROCESSES
+;; :PROCESSES-INFO-MAN-NODES
 at        ; (woman \"at\")
 chroot    ; :SEE info node `(coreutils)chroot invocation'
 cron      ; :SEE (woman \"crontab\") :SEE-ALSO `mon-help-crontab'
@@ -4891,7 +5063,7 @@ tee       ; :SEE info node `(coreutils)tee invocation'
 time      ; :SEE info node `(coreutils)'
 top       ; :SEE (woman \"top\")
 wait\n
-;; :USER-ENVIRONMENT
+;; :USER-ENVIRONMENT-INFO-MAN-NODES
 chmod     ; :SEE info node `(coreutils)chmod invocation' :SEE-ALSO `mon-help-permissions'
 chown     ; :SEE info node `(coreutils)chown invocation'
 chgrp     ; :SEE info node `(coreutils)chgrp invocation'
@@ -4914,7 +5086,7 @@ groups    ; :SEE info node `(coreutils)groups invocation'
 users     ; :SEE info node `(coreutils)users invocation'
 who       ; :SEE info node `(coreutils)who invocation'
 whoami    ; :SEE info node `(coreutils)whoami invocation'\n
-;; :TEXT-PROCESSING
+;; :TEXT-PROCESSING-INFO-MAN-NODES
 awk      ; :SEE info node `(gawk)Invoking Gawk'
 cmp      ; :SEE info node `(diff)Invoking cmp'
 comm     ; :SEE info node `(coreutils)comm invocation'
@@ -4950,7 +5122,7 @@ tr       ; :SEE info node `(coreutils)tr invocation'
 unexpand ; :SEE info node `(coreutils)unexpand'
 uniq     ; :SEE info node `(coreutils)uniq invocation'
 wc       ; :SEE info node `(coreutils)wc invocation'\n
-;; :SHELL-PROGRAMMING
+;; :SHELL-PROGRAMMING-INFO-MAN-NODES
 alias
 bash      ; :SEE info node `(bash)'
 basename  ; :SEE info node `(coreutils)basename invocation'
@@ -4965,19 +5137,19 @@ false     ; :SEE info node `(coreutils)false invocation'
 test      ; :SEE info node `(coreutils)test invocation'
 true      ; :SEE info node `(coreutils)true invocation'
 xargs     ; :SEE info node `(find)Multiple Files'\n
-;; :NETWORKING
+;; :NETWORKING-INFO-MAN-NODES
 host
 netstat
 ping      ; :SEE (woman \"ping\")
 netcat    ; :SEE (woman \"netcat\")
 traceroute ; :SEE (woman \"traceroute\")
-;; :SEARCHING
+;; :SEARCHING-INFO-MAN-NODES
 find      ; :SEE info node `(find)Invoking find'
 grep      ; :SEE info node `(grep)'
 locate    ; :SEE info node `(find)Invoking locate'
 whereis   ; :SEE (woman \"whereis\")
 which     ; :SEE (woman \"which\")\n
-;; :MISCELLANEOUS
+;; :MISCELLANEOUS-INFO-MAN-NODES
 apropos   ; :SEE (woman \"apropos\")
 banner    ; :SEE (woman \"\")
 bc
@@ -5126,10 +5298,11 @@ whatis\n►►►"
 ;;; :TEST-ME (assoc "Program Files" *w32-env-variables-alist*)
 ;;; :TEST-ME (mapcar (lambda (x) (car x))*w32-env-variables-alist*)
 ;;
-;;;(progn (makunbound '*w32-env-variables-alist*)
-;;;       (unintern '*w32-env-variables-alist*))
+;;;(progn (makunbound '*w32-env-variables-alist*) (unintern '*w32-env-variables-alist*) )
 
 ;;; ==============================
+;;; :REQUIRES `mon-string-justify-left'
+;;; :MODIFICATIONS <Timestamp: #{2010-01-08T18:51:29-05:00Z}#{10015} - by MON KEY>
 ;;; :MODIFICATIONS <Timestamp: #{2009-10-01T22:22:37-04:00Z}#{09405} - by MON KEY>
 ;;; :CREATED <Timestamp: Thursday July 02, 2009 @ 11:50.50 AM - by MON KEY>
 (eval-and-compile
@@ -5139,90 +5312,90 @@ whatis\n►►►"
       (mon-help-function-spit-doc 'mon-help-w32-env :insertp t)
     (message "Pass non-nil for optional arg INTRP"))))
 ;; Now we tack on a docstring using.
-(eval-when (compile eval)
-(mon-help-put-var-doc-val->func
-   '*w32-env-variables-alist*
-    'mon-help-w32-env
-  ;; PRE-V-STR
-"Environment variables available in w32.
-Called interactively with Prefix arg non-nil prints to current-buffer.\n\n---
-alist of W32 Environmental variables in var `*w32-env-variables-alist*':\n\n"
-;; CUT-V-STR
-"\*List of environment variables available in w32.
-:CALLED-BY `mon-help-w32-env'."
-;; PST-V-STR
-"\n\n:EXAMPLE\n(assoc 'WINDIR *w32-env-variables-alist*)\n
-:EXAMPLE
-Open a cmd prompt and type echo %appdata% which should return
-the full path to your profile's Application Data directory.
-If calling from a batch file remember to quote the thusly %variable%
-or: set VARIABLE=value.\n
-:SOURCE\n:SEE \(URL `http://windowsitpro.com/article/articleid/23873/')
-:SEE \(URL `http://technet.microsoft.com/en-us/library/bb490954.aspx'\)\n►►►"))
+(eval-when-compile
+  (let ((tt-doc *w32-env-variables-alist*))
+    (put 'tt-doc 'variable-documentation
+         (concat 
+          "Environment variables available in w32.\n"
+          "Called interactively with Prefix arg non-nil prints to current-buffer.\n\n---\n"
+          "Alist of W32 Environmental variables in var `*w32-env-variables-alist*':\n\n"
+          (mapconcat #'(lambda (x)
+                         (let* ((k (car x))
+                                (v (cdr (assoc k tt-doc)))
+                                (v-var (car v))
+                                (v-doc (mon-string-justify-left (cadr v) 68 3)))
+                           (format "-\n%s %s \n%s" k v-var v-doc)))
+                     tt-doc "\n")
+          "\n\n:EXAMPLE\n\n(assoc 'WINDIR *w32-env-variables-alist*)\n\n"
+          ":EXAMPLE\n\n"
+          "Open a cmd prompt and type echo %appdata% which should return\n"
+          "the full path to your profile's Application Data directory.\n"
+          "If calling from a batch file remember to quote the thusly %variable%\n"
+          "or: set VARIABLE=value.\n\n"
+          ":SOURCE\n:SEE \(URL `http://windowsitpro.com/article/articleid/23873/')\n"
+          ":SEE \(URL `http://technet.microsoft.com/en-us/library/bb490954.aspx'\)\n►►►\n"))
+    (put 'mon-help-w32-env 'function-documentation
+         (documentation-property 'tt-doc 'variable-documentation)))
+);; :CLOSE eval-when
+
+;;; :WAS
+;;; (eval-when (compile eval)
+;;; (mon-help-put-var-doc-val->func
+;;;    '*w32-env-variables-alist*
+;;;    'mon-help-w32-env
+;;;   ;; PRE-V-STR
+;;; "Environment variables available in w32.
+;;; Called interactively with Prefix arg non-nil prints to current-buffer.\n\n---
+;;; alist of W32 Environmental variables in var `*w32-env-variables-alist*':\n\n"
+;;; ;; CUT-V-STR
+;;; "\*List of environment variables available in w32.
+;;; :CALLED-BY `mon-help-w32-env'."
+;;; ;; PST-V-STR
+;;; "\n\n:EXAMPLE\n(assoc 'WINDIR *w32-env-variables-alist*)\n
+;;; :EXAMPLE
+;;; Open a cmd prompt and type echo %appdata% which should return
+;;; the full path to your profile's Application Data directory.
+;;; If calling from a batch file remember to quote the thusly %variable%
+;;; or: set VARIABLE=value.\n
+;;; :SOURCE\n:SEE \(URL `http://windowsitpro.com/article/articleid/23873/')
+;;; :SEE \(URL `http://technet.microsoft.com/en-us/library/bb490954.aspx'\)\n►►►"))
 ;;
 ;;; :TEST-ME (mon-help-w32-env t)
 ;;
-;;;(progn (fmakunbound 'mon-help-w32-env)(unintern 'mon-help-w32-env))
-;;;
+;;;(progn (fmakunbound 'mon-help-w32-env)(unintern 'mon-help-w32-env) )
 
-;;; ==============================
-;;; :WAS
-;;; (let ((print-var-list
-;;;        (mapconcat
-;;;         (lambda (x)
-;;;           (let* ((k (car x))
-;;;                  (v (cdr (assoc k *w32-env-variables-alist*)))
-;;;                  (v-var (car v))
-;;;                  (v-doc (cadr v)))
-;;;             (format "-\n%s %s \n%s" k v-var v-doc)))
-;;;         *w32-env-variables-alist* "\n")))
-;;;   (plist-put
-;;;    (symbol-plist 'mon-help-w32-env)
-;;;    'function-documentation
-;;;    (concat
-;;;     "Environment variables available in w32.
-;;; Environmental variables accessible as alist in var `*w32-env-variables-alist*'.
-;;; Called interactively with Prefix arg non-nil prints to current-buffer.
-;;; List of the environment variables callable in w32.\n
-;;; Sourced from: \(URL `http://windowsitpro.com/article/articleid/23873/')\n
-;;; and \(URL `http://technet.microsoft.com/en-us/library/bb490954.aspx'\)\n
-;;; :EXAMPLE Open a cmd prompt and type echo %appdata% which should return
-;;; the full path to your profile's Application Data directory.
-;;; If calling from a batch file remember to quote the thusly %variable%
-;;; or set VARIABLE=value.\n►►►\n\n"
-;;;     print-var-list)))
 
 ;;; ==============================
 ;;; :COURTESY Aaaron Hawley :HIS
 ;;; :SEE (URL `http://www.emacswiki.org/emacs/Reference_Sheet_by_Aaron_Hawley_source')
 ;;; :MODIFICATIONS <Timestamp: #{2009-11-20T16:48:11-05:00Z}#{09475} - by MON KEY>
 ;;; :MODIFICATIONS <Timestamp: Wednesday June 17, 2009 @ 11:31.47 AM - by MON KEY>
-(defvar *reference-sheet-help-A-HAWLEY* nil)
+(defvar *mon-help-reference-keys* nil)
 ;;
-(when (not (bound-and-true-p *reference-sheet-help-A-HAWLEY*))
-  (setq *reference-sheet-help-A-HAWLEY*
+(when (not (bound-and-true-p *mon-help-reference-keys*))
+  (setq *mon-help-reference-keys*
 "#:START:REFERENCE-SHEET#
 
-;; :OPEN
+;; :OPEN-KEY-BINDINGS
 emacs& RET -- or click a graphical icon
 emacs -nw RET -- open in terminal, not in a window
 q -- clear splash screen
 
-;; :EXIT
+;; :EXIT-KEY-BINDINGS
 C-x C-c -- save buffers and quit
 C-] -- recursive edit
 
-;; :CANCEL
+;; :CANCEL-KEY-BINDINGS
 C-g -- a command
 C-M-c -- recursive edit
 M-x top-level -- all recursive edits
 
-;; :RECURSIVE-EDIT
+;; :RECURSIVE-EDIT-KEY-BINDINGS
 C-] -- exit recursive edit
 C-M-c -- cancel recursive edit
 M-x top-level -- cancel all recursive edits
 
-;; :CUSTOMIZE
+;; :CUSTOMIZE-KEY-BINDINGS
 C-x C-f ~/.emacs RET -- Emacs initialization file
 M-x customize -- main menu
 M-x customize-variable -- variable
@@ -5243,13 +5416,13 @@ M-x scroll-bar-mode -- toggle scroll bar
 M-x toggle-scroll-bar -- toggle scroll bar in current frame
 M-x blink-cursor-mode -- toggle blinking of cursor
 
-;; :MENU
+;; :MENU-KEY-BINDINGS
 M-` -- text interaction with drop-down menu
 F10 -- same as previous
 M-x menu-bar-mode -- toggle existence of drop-down menu
 M-x tool-bar-mode -- toggle existence of clickable tool bar
 
-;; HELP
+;; :HELP-KEY-BINDINGS
 C-h ? -- menu
 C-h C-h -- menu
 SPC -- scroll down menu
@@ -5274,7 +5447,7 @@ C-c C-c -- follow cross-reference
 C-c C-b -- go back
 q -- quit
 
-;; :INFO-HELP
+;; :INFO-HELP-KEY-BINDINGS
 C-h i -- open directory of manuals
 C-h r -- open Emacs manual
 q -- close
@@ -5302,7 +5475,7 @@ C-s <SEARCH> -- forward to SEARCH \(:SEE \"search\" below\)
 C-r <SEARCH> -- reverse to SEARCH
 M-n -- make a duplicate buffer in other window \(:SEE \"window\" below\)
 
-;; :MINIBUFFER
+;; :MINIBUFFER-KEY-BINDINGS
 M-p -- previous input
 M-n -- recent input
 TAB -- complete name of buffer, file, symbol \(:SEE \"completion\" below\)
@@ -5312,7 +5485,7 @@ M-s -- search for previous input
 C-h e -- show recently echoed messages
 C-g -- exit
 
-;; :COMPLETION
+;; :COMPLETION-KEY-BINDINGS
 TAB -- complete name of buffer, file, function, variable, ...
 SPC -- completion, unless a file
 ? -- list completions
@@ -5322,14 +5495,14 @@ M-v -- go to \"completions\" buffer
 RET -- select completion
 ESC ESC ESC -- exit back to minibuffer
 
-;; :MODE
+;; :MODE-KEY-BINDINGS
 C-h m -- help with current \(:SEE \"help\" above\)
 M-x text-mode -- for writing
 M-x fundamental-mode -- a simple default
 M-x normal-mode -- change back to what Emacs thought it was
 M-x customize-mode -- customize current \(:SEE \"customize\" above\)
 
-;; :FILE
+;; :FILE-KEY-BINDINGS
 C-x C-f -- open
 C-x C-f -- new
 M-x make-directory RET RET -- including parent directories
@@ -5346,7 +5519,7 @@ C-x C-f file.zip RET -- list contents of zip file
 M-x rename-file -- rename current
 M-x view-file -- \(:SEE \"read only\" below\)
 <insert> -- change whether to use overwrite or switch back to insert mode
-M-x overwrite-mode -- same as previous
+M-x `overwrite-mode' -- same as previous
 M-x binary-overwrite-mode -- edit file as literal bytes
 C-x d M-p RET R -- rename previously saved or opened
 C-x i -- insert other file into current buffer
@@ -5355,15 +5528,15 @@ C-x h M-x write-region -- save buffer once to alternate
 M-x find-file-at-point -- open file name at point
 M-x revert-buffer -- restore buffer with file on disk
 M-x recover-file -- recover auto-save data after a crash
-M-x recover-session -- recover all files with auto-save data
+M-x `recover-session' -- recover all files with auto-save data
 M-x size-indication-mode -- show size in mode line
 M-x auto-revert-mode -- update file if changes on disk
 M-x global-auto-revert-mode -- update any buffer's file
 M-x auto-revert-tail-mode -- update end of file with changes on disk
 
-;; :BUFFER
-M-< -- beginning of buffer
-M-> -- end of buffer
+;; :BUFFER-KEY-BINDINGS
+M-< -- `beginning-of-buffer'
+M-> -- end-of-buffer
 C-x h -- mark
 C-x k <BUFFER> RET -- kill BUFFER
 C-x k RET -- kill current
@@ -5376,41 +5549,41 @@ M-x bury-buffer -- avoid switching to current buffer
 C-x b M-p -- switch to previously switched buffer
 C-x C-s -- save current contents to file on disk
 C-x s -- save modified files
-M-x rename-buffer RET <NAME> -- rename current to NAME
-M-x rename-uniquely -- remove \"<X>\" suffix from buffer name if possible
-M-x revert-buffer -- restore contents with file on disk \(:SEE \"undo\" below\)
-M-x erase-buffer -- delete everything \(:SEE \"delete\" below\)
-M-x clone-indirect-buffer -- open an indirect buffer based on current
+M-x `rename-buffer' RET <NAME> -- rename current to NAME
+M-x `rename-uniquely' -- remove \"<X>\" suffix from buffer name if possible
+M-x `revert-buffer' -- restore contents with file on disk \(:SEE \"undo\" below\)
+M-x `erase-buffer' -- delete everything \(:SEE \"delete\" below\)
+M-x `clone-indirect-buffer' -- open an indirect buffer based on current
 C-x 4 c -- open an indirect buffer but in another window
 C-h f car RET C-x o M-x clone-buffer RET C-h f cdr RET -- compare two functions
 
-;; :READ-ONLY
+;; :READ-ONLY-KEY-BINDINGS
 C-x C-r <FILE> RET -- open FILE as read only
 C-x C-q -- toggle write status
-M-x view-mode -- view mode for current buffer
-M-x view-file <FILE> RET -- open FILE in view mode
-M-x view-buffer -- view mode for other buffer
-SPC -- scroll down
-DEL -- scroll up
+M-x `view-mode' -- view mode for current buffer
+M-x `view-file' <FILE> RET -- open FILE in view mode
+M-x `view-buffer' -- view mode for other buffer
+SPC -- `scroll-down'
+DEL -- `scroll-up'
 h -- view mode help
 q -- turn off view mode
-M-x normal-mode -- turn off view mode
+M-x normal-mode -- turn off view-mode
 
-;; :WINDOW
+;; :WINDOW-KEY-BINDINGS
 C-v -- scroll down
 M-v -- scroll up
 C-M-v -- scroll other window down
-M-< -- beginning of buffer
-M-> -- end of buffer
-M-x beginning-of-buffer-other-window -- beginning of other buffer
-M-x end-of-buffer-other-window -- end of other buffer
+M-< -- `beginning-of-buffer'
+M-> -- `end-of-buffer'
+M-x `beginning-of-buffer-other-window' -- beginning of other buffer
+M-x `end-of-buffer-other-window' -- end of other buffer
 M-r -- move to first column of center line in display
 C-0 M-r -- move to first column of first displayed line
 M-- M-r -- move to first column of last displayed line
 C-4 M-r -- move to first column of fourth displayed line
 C-u - 3 M-r -- move to first column of third to last displayed line
-C-x 2 -- split vertically in two
-C-x o -- switch between windows
+C-x 2 -- `split-window-vertically' in two
+C-x o -- `switch between-windows'
 C-x 4 b -- switch to a buffer in other window
 C-x 4 C-o -- show a buffer in other window
 C-x 0 -- close current
@@ -5427,7 +5600,7 @@ C-x < -- scroll horizontally right
 C-x > -- scroll horizontally left
 M-x toggle-truncate-lines -- change if long lines fold or are truncated
 
-;; :BUFFER-MENU
+;; :BUFFER-MENU-KEY-BINDINGS
 C-x C-b -- list
 C-u C-x C-b -- list only buffers associated with files
 SPC -- move down
@@ -5455,7 +5628,7 @@ C-k -- mark to delete current and move down
 x -- execute marks
 q -- quit
 
-;; :REDISPLAY
+;; :REDISPLAY-KEY-BINDINGS
 C-l -- with line at center of window
 C-0 C-l -- with current line at top of window
 M-- C-l -- with current line at bottom of window
@@ -5463,7 +5636,7 @@ C-u -1 C-l -- same as previous
 C-M-l -- try to make the top of the current function visible in the window
 C-M-l C-M-l -- with current line at top of window
 
-;; :COMMAND
+;; :COMMAND-KEY-BINDINGS
 C-h l -- show recently typed keys
 C-h e -- show recently echoed messages
 C-x z -- repeat last command
@@ -5472,7 +5645,7 @@ C-x M-: -- same as previous
 M-x command-history -- show recently run commands
 x -- run command at line in history
 
-;; :ITERATIVE-COMMAND
+;; :ITERATIVE-COMMAND-KEY-BINDINGS
 C-u -- repeat next command 4 times
 M-- -- next command once in opposite direction
 C-u 8 -- repeat next command 8 times
@@ -5486,11 +5659,11 @@ C-u C-u -- repeat next command 16 times
 C-u C-u C-u -- repeat next command 64 times
 C-u 369 C-u 0 -- insert 369 zeros
 
-;; :NON-ITERATIVE-COMMAND
+;; :NON-ITERATIVE-COMMAND-KEY-BINDINGS
 C-u -- toggle behavior of next command
 M-- -- toggle behavior of next command with negative value
 
-;; :MACRO
+;; :MACRO-KEY-BINDINGS
 C-x \( -- start recording macro
 F3  -- same as previous
 C-x \) -- finish recording macro
@@ -5506,7 +5679,7 @@ C-x C-k e M-x <MACRO> -- edit named MACRO
 C-x C-k e C-h l -- edit and make recently typed keys
 C-x C-f ~/.emacs RET M-x insert-kbd-macro -- save macro
 
-;; :KEY
+;; :KEYS-KEY-BINDINGS
 C-h l -- show recently typed keys
 M-x global-set-key -- set for all buffers
 M-x local-set-key -- set for current buffer
@@ -5522,7 +5695,7 @@ C-x @ h -- modify next key with Hyper
 C-x @ s -- modify next key with Super
 C-x @ a -- modify next key with Alt
 
-;; :UNDO
+;; :UNDO-KEY-BINDINGS
 C-x u -- undo, repeat to further undo
 C-_ -- undo, repeat to further undo
 C-/ -- undo, repeat to further undo
@@ -5532,7 +5705,7 @@ M-x revert-buffer -- restore buffer with file on disk
 M-x buffer-disable-undo -- turn off for current buffer
 M-x buffer-enable-undo -- turn on for current buffer
 
-;; :SEARCH
+;; :SEARCH-KEY-BINDINGS
 C-s <MATCH> -- forward to end of MATCH
 C-r <MATCH> -- reverse to front of MATCH
 C-r C-s <MATCH> -- forward to end of MATCH
@@ -5574,13 +5747,13 @@ C-s <SEARCH> M-% <REPLACE> -- interactive query SEARCH and REPLACE
 M-x isearch-toggle-case-fold -- change case-sensitivity of all searches
 C-h f isearch-forward RET -- help
 
-;; :NON-INTERACTIVE SEARCH
+;; :NON-INTERACTIVE-SEARCH-KEY-BINDINGS
 C-s RET -- forward case-sensitive
 C-r RET -- backward case-sensitive
 C-s RET C-w -- forward word-based ignoring punctuation and whitespace
 C-r RET C-w -- backward word-based ignoring punctuation and whitespace
 
-;; :REGULAR-EXPRESSION
+;; :REGULAR-EXPRESSION-KEY-BINDINGS
 C-M-s -- search forward
 C-M-r -- search reverse
 M-r -- toggle off regexp
@@ -5595,7 +5768,7 @@ M-x count-matches -- count matches
 M-x flush-lines -- delete matching lines
 M-x keep-lines -- keep matching lines delete the rest
 
-;; :REPLACE
+;; :REPLACE-KEY-BINDINGS
 M-% -- search, query, and replace
 C-M-% -- search regular expression, query, and replace
 M-% RET -- resume last
@@ -5616,7 +5789,7 @@ RET -- stop
 q -- stop
 C-x d *.c RET Q int RET long -- replace \"long\" for \"int\" in .c files
 
-;; :DELETE
+;; :DELETE-KEY-BINDINGS
 C-d -- current character
 C-u C-d -- next 4 characters
 C-u 8 C-d -- next 8 characters
@@ -5628,7 +5801,7 @@ C-u 5 DEL -- previous 5 characters
 M-x delete-region -- region
 M-x erase-buffer -- entire buffer
 
-;; :KILL-CUT
+;; :KILL-CUT-KEY-BINDINGS
 C-SPC C-f C-w -- character
 M-d -- word
 C-k -- to end of line
@@ -5659,11 +5832,11 @@ M-- M-z -- delete everything to a character backwards
 C-u -1 M-z -- same as previous
 C-u 3 M-z -- delete everything to 3rd occurrence of a character
 
-;; :YANK-PASTE
+;; :YANK-PASTE-KEY-BINDINGS
 C-y -- the last kill sequence
 M-y -- the 2nd to last kill sequence
 
-;; :MARK
+;; :MARK-KEY-BINDINGS
 C-SPC -- set at current point
 C-@ -- set at current point
 C-x C-x -- toggle between current point and mark
@@ -5679,7 +5852,7 @@ C-M-SPC -- sexp
 C-SPC C-SPC -- temporarily turn on transient mark mode
 M-x transient-mark-mode -- turn on transient mark mode
 
-;; :REGION
+;; :REGION-KEY-BINDINGS
 C-SPC -- set end-point of region
 C-@ -- set end-point of region
 C-w -- kill
@@ -5688,7 +5861,7 @@ M-= -- count lines and characters
 C-x n n -- narrow
 C-x n w -- widen
 
-;; :WHITESPACE
+;; :WHITESPACE-KEY-BINDINGS
 SPC -- insert space
 TAB -- indent or insert tab \(:SEE \"indent\" below\)
 C-q TAB -- insert literal tab character
@@ -5699,7 +5872,7 @@ M-x delete-trailing-whitespace -- remove at end of all lines in buffer
 C-a M-x delete-whitespace-rectangle -- remove at beginning of all lines in region
 C-x h M-x delete-whitespace-rectangle -- remove at beginning of all lines
 
-;; :INDENT
+;; :INDENT-KEY-BINDINGS
 TAB -- line with mode-specific rules
 C-i -- line with mode-specific rules
 M-m -- go to indentation at beginning of line
@@ -5715,7 +5888,7 @@ C-u 5 C-x TAB -- region by 5 columns
 C-u - 2 C-x TAB -- region by 2 columns less
 M-x tabify -- convert spaces to tabs
 
-;; :NEWLINE
+;; :NEWLINE-KEY-BINDINGS
 RET -- one
 C-m -- one
 C-j -- one and indent
@@ -5727,7 +5900,7 @@ C-u 3 C-j -- three and indent
 C-u 3 C-o -- three below current and indent
 C-u 3 C-M-o -- move text following point at same column three lines down
 
-;; :LINE
+;; :LINE-KEY-BINDINGS
 C-n -- next
 C-p -- previous
 C-a -- beginning
@@ -5760,7 +5933,7 @@ C-x RET f dos RET -- change file to Mac
 M-x line-number-mode -- show line number in mode line
 M-x toggle-truncate-lines -- change if long lines fold or are truncated
 
-;; :CHARACTER
+;; :CHAR-KEY-BINDINGS
 C-f -- forward
 C-b -- backward
 C-d -- delete
@@ -5774,7 +5947,7 @@ M-x set-variable RET read-quoted-char-radix 10 -- use decimal for C-q
 C-q 32 RET -- insert space using decimal value 32
 C-u 8 C-q 0 RET -- insert 8 null characters
 
-;; :WORD
+;; :WORD-KEY-BINDINGS
 M-f -- forward
 M-b -- backward
 M-d -- kill forward
@@ -5785,7 +5958,7 @@ M-@ -- mark
 C-u 100 M-@ -- mark next 100
 M-- 3 M-@ -- mark previous 3
 
-;; :CAPITALIZATION
+;; :CAPITALIZATION-KEY-BINDINGS
 M-l -- lowercase next word
 M-- M-l -- lowercase previous word
 C-u M-l -- lowercase next 4 words
@@ -5799,12 +5972,12 @@ C-x C-l -- lowercase region
 C-x C-u -- uppercase region
 M-x capitalize-region -- capitalize region
 
-;; :SENTENCE
+;; :SENTENCE-KEY-BINDINGS
 M-a -- beginning
 M-e -- end
 M-k -- kill
 
-;; :PARAGRAPH
+;; :PARAGRAPH-KEY-BINDINGS
 M-} -- forward
 M-{ -- backward
 M-h -- mark
@@ -5822,7 +5995,7 @@ M-x paragraph-indent-text-mode -- expect leading space rather than empty lines
 M-x auto-refill-mode -- automatically fill at the end of the line
 M-x refill-mode -- automatically fill entire paragraph after each edit
 
-;; :PAGE
+;; :PAGE-KEY-BINDINGS
 C-q C-l -- insert separator
 C-x ] -- forward page
 C-x l -- count lines
@@ -5831,7 +6004,7 @@ C-x n w -- widen
 M-x sort-pages -- alphabetically
 M-x what-page -- display number
 
-;; :SEXP-AND-PARENTHETICAL-EXPRESSIONS
+;; :SEXP-AND-PARENTHETICAL-EXPRESSION-KEY-BINDINGS
 M-\( -- insert opening and closing parentheses
 C-M-f -- move to the next
 C-M-b -- move backward
@@ -5843,7 +6016,7 @@ C-M-@ -- mark
 C-M-t -- transpose
 M-x check-parens -- match all open and closed parentheses in buffer
 
-;; :COMMENT
+;; :COMMENT-KEY-BINDINGS
 C-u M-; -- kill
 C-SPC -- set end point of region
 M-x comment-region
@@ -5853,12 +6026,12 @@ C-x ; -- set comments to start at point
 M-- C-x ; -- kill comment on this line
 C-u C-x ; -- insert and align or just align to column of previous comment
 
-;; :OCCUR
+;; :OCCUR-KEY-BINDINGS
 M-x occur -- show regexp match in buffer
 C-u 3 M-x occur -- show matches with 3 lines of context
 C-u - 3 M-x occur -- show matches with 3 lines before match
 
-;; :SPELL-CHECK
+;; :SPELL-CHECK-KEY-BINDINGS
 M-$ -- word
 M-x ispell-buffer -- buffer
 M-x ispell-region -- region
@@ -5878,7 +6051,7 @@ R -- replace every occurrence of word with typed version
 X -- suspend
 M-x ispell-change-dictionary -- change default dictionary
 
-;; :TRANSPOSE
+;; :TRANSPOSE-KEY-BINDINGS
 C-t -- characters \(:SEE \"character\" above\)
 M-- C-t -- previous with its previous
 C-u 3 C-t -- forward 3 characters
@@ -5890,7 +6063,7 @@ C-x C-t -- lines \(:SEE \"line\" above\)
 M-x transpose-paragraphs -- paragraphs \(:SEE \"paragraph\" above\)
 C-M-t -- parenthetical expressions
 
-;; :COMPOSITION
+;; :COMPOSITION-KEY-BINDINGS
 C-\\ france-postfix RET -- set to French characters
 C-\\ -- disable input method, subsequent re-enables
 C-h C-\\ RET -- help with current input method
@@ -5925,29 +6098,29 @@ u e e -- insert the letters U and E, no umlaut
 s z -- insert the ligature eszett
 s z z -- insert the letters S and Z
 
-;; :TEXT-REGISTER
+;; :TEXT-REGISTER-KEY-BINDINGS
 C-x r s a -- store region as \"a\"
 C-x r i a -- insert region stored in \"a\"
 C-x r r a -- store rectangle as \"a\"
 
-;; :POINT-REGISTER
+;; :POINT-REGISTER-KEY-BINDINGS
 C-x r SPC a -- store current as \"a\"
 C-x r j a -- move to point in \"a\"
 
-;; :WINDOW-REGISTER
+;; :WINDOW-REGISTER-KEY-BINDINGS
 C-x r w a -- store configuration of windows in frame
 C-x r j a -- restore window configurations
 
-;; :FRAME-REGISTER
+;; :FRAME-REGISTER-KEY-BINDINGS
 C-x r f a -- store window configuration for all frames
 C-x r j a -- restore all window configurations
 
-;; :NUMBER-REGISTER
+;; :NUMBER-REGISTER-KEY-BINDINGS
 C-u 1 C-x r n a -- store 1 in \"a\"
 C-u 1 C-x r + a -- add 1 to number in \"a\"
 C-x r i a -- insert number in \"a\"
 
-;; :POSITION-REGISTER
+;; :POSITION-REGISTER-KEY-BINDINGS
 C-x r m RET -- save default
 C-x r m <NAME> RET -- save as NAME
 C-x r b RET -- move to default
@@ -5955,13 +6128,13 @@ C-x r b <NAME> RET -- move to NAME
 C-x r l -- list
 M-x bookmark-save -- save positions to file
 
-;; :COLUMN
+;; :COLUMN-KEY-BINDINGS
 M-x column-number-mode -- show column number in mode line
 C-u C-x C-n -- set column for line motion commands
 C-x C-n -- unset goal column for line motion commands
 M-x ruler-mode -- add a ruler to the current buffer's window
 
-;; :RECTANGLE
+;; :RECTANGLE-KEY-BINDINGS
 C-x r d -- delete, no kill
 C-x r k -- kill
 C-x r y -- yank
@@ -5971,20 +6144,20 @@ M-x string-insert-rectangle -- insert STRING at each line
 M-x delete-whitespace-rectangle -- remove leading whitespace
 C-x r r a -- store to register \"a\"
 
-;; :TABLE
+;; :TABLE-KEY-BINDINGS
 M-x table-recognize-table -- activate table at point
 C-u M-x table-recognize-table -- inactivate table at point
 C-u 3 table-insert-column -- insert 3 columns
 C-u 3 table-delete-column -- delete 3 columns
 
-;; :DELIMITED-TEXT
+;; :DELIMITED-TEXT-KEY-BINDINGS
 M-x delimit-columns-customize -- change settings
 M-x delimit-columns-rectangle -- format rectangle
 M-x delimit-columns-region -- format region
 
-;; :ALIGN
+;; :ALIGN-KEY-BINDINGS
 
-;; :DIRECTORY-FOLDER
+;; :DIRECTORY-FOLDER-KEY-BINDINGS
 M-x cd -- change working
 M-x make-directory RET <PATH> RET -- make PATH including any missing parents
 C-x d RET -- list current
@@ -6029,7 +6202,7 @@ R -- move marked files to another directory
 M-x wdired-change-to-wdired-mode -- manually edit listing with WDired
 C-c C-c -- Exit WDired and commit the edits made to the listing
 
-;; :TRAMP
+;; :TRAMP-KEY-BINDINGS
 C-x C-f /HOST:DIR/FILE -- open FILE in DIR on remote HOST
 C-x C-f /scp:HOST:DIR/FILE -- same but use secure copy \(SCP\)
 C-x C-f /ssh:HOST:DIR/FILE -- same but demand the use of SSH
@@ -6037,7 +6210,7 @@ C-x C-f /ssh1:HOST:DIR/FILE -- same but demand version 1 of SSH
 C-x C-f /HOST:DIR -- list contents of DIR on remote HOST
 C-x d /HOST:DIR -- same as previous
 
-;; :SHELL
+;; :SHELL-KEY-BINDINGS
 M-x shell -- new window
 C-u M-x shell -- prompt for buffer name of new window
 M-! -- run command
@@ -6047,7 +6220,7 @@ M-| -- send region to command
 C-u -- replace region with output of command
 C-x C-w <FILE> RET -- save session transcript to FILE
 
-;; :SHELL-SCRIPT
+;; :SHELL-SCRIPT-KEY-BINDINGS
 C-x C-f file.sh RET -- start a script named file.sh
 M-x shell-script-mode -- use shell script mode for current buffer
 M-x sh-mode -- same as previous
@@ -6070,7 +6243,7 @@ C-c C-c -- insert case statement
 C-c C-t -- insert syntax for temporary file
 C-c \( -- insert syntax for function
 
-;; :COMPILE
+;; :COMPILE-KEY-BINDINGS
 M-x compile -- execute a compilation command
 M-x recompile -- execute last compilation command
 C-c C-k -- kill
@@ -6082,7 +6255,7 @@ M-} -- errors for next file
 M-{ -- errors for previous file
 C-x ` -- go to source code for next error
 
-;; :LISP
+;; :LISP-KEY-BINDINGS
 C-M-a -- beginning of defun
 C-M-e -- end of defun
 C-M-n -- forward sexp
@@ -6098,7 +6271,7 @@ C-M-x -- eval expression at point
 M-; -- insert new comment
 C-u M-; -- kill current comment
 
-;; :EMACS-LISP
+;; :EMACS-LISP-KEY-BINDINGS
 C-x C-e -- evaluate expression before point
 C-u C-x C-e -- evaluate expression and insert result at point
 C-M-x -- evaluate current defun
@@ -6128,12 +6301,12 @@ M-x set-variable RET debug-on-quit RET t RET -- enable debugger on quit
 M-x set-variable RET debug-on-error RET nil RET -- disable debugger on error
 M-x set-variable RET debug-on-quit RET nil RET -- enable debugger on quit
 
-;; :ELISP-INTERACTION
+;; :ELISP-INTERACTION-KEY-BINDINGS
 M-x lisp-interaction-mode -- evaluate expressions interactively
 C-j -- evaluate sexp before point and insert results on next line
 C-M-x -- evaluate current defun \(:SEE \"emacs lisp\" above\)
 
-;; :ELISP-DEBUG
+;; :ELISP-DEBUG-KEY-BINDINGS
 M-x toggle-debug-on-error -- change whether to start session on error
 M-x toggle-debug-on-quit -- change whether C-g starts session
 M-x debug-on-entry RET <FUNCTION> RET -- debug FUNCTION
@@ -6160,7 +6333,7 @@ l -- list functions debugged on entry
 M-x cancel-debug-on-entry <FUNCTION> RET -- don't debug FUNCTION
 M-x cancel-debug-on-entry RET RET -- don't debug for any function
 
-;; :SOURCE-LEVEL-DEBUGGER
+;; :SOURCE-LEVEL-DEBUGGER-KEY-BINDINGS
 M-x edebug-defun -- turn on instrumentation for current function definition
 C-u C-M-x -- same as previous
 C-M-x -- turn off instrumentation for current function definition
@@ -6200,7 +6373,7 @@ C-] -- abort
 q -- quit
 Q -- quit
 
-;; :FINDER
+;; :FINDER-KEY-BINDINGS
 C-h P -- list keywords
 M-x finder-commentary RET <LIBRARY> RET -- Describe LIBRARY
 ? -- help
@@ -6213,9 +6386,9 @@ SPC -- same as previous
 d -- back to beginning of package directory
 q -- quit
 
-;; :C
+;; :C-KEY-BINDINGS
 
-;; :ETAGS
+;; :ETAGS-KEY-BINDINGS
 M-! etags *.[ch] -- index .c and .h files in current directory
 C-u M-x visit-tags-table -- set index file for current buffer
 M-x visit-tags-table -- globally set index file
@@ -6230,9 +6403,9 @@ M-x tags-query-replace -- search and replace for regular expression
 M-TAB -- complete tag at point
 C-u M-TAB -- complete language symbol, avoid tags, at point
 
-;; :GDB
+;; :GDB-KEY-BINDINGS
 
-;; :DIFF
+;; :DIFF-KEY-BINDINGS
 M-x diff RET <OLD> RET <NEW> RET -- compare OLD file with NEW file
 C-u M-x diff -- compare files but prompt for Diff switches
 M-x diff-buffer-with-file -- compare buffer with file on disk
@@ -6264,7 +6437,7 @@ C-u C-c C-u -- convert the entire buffer from context to unified format
 C-c C-u -- convert the entire buffer
 C-c C-e -- start ediff session
 
-;; :VC-VERSION-CONTROL
+;; :VC-VERSION-CONTROL-KEY-BINDINGS
 C-x v i -- register file
 C-x v v -- check in or out, depending on the current state
 C-c C-c -- finish editing log for check in
@@ -6285,7 +6458,7 @@ C-x v m -- merge two revisions
 C-x v h -- insert revision header keyword
 M-x vc-resolve-conflicts -- start ediff-merge session on a file with conflict markers
 
-;; :CHANGELOG
+;; :CHANGELOG-KEY-BINDINGS
 C-x 4 a -- start new entry using context of current file
 C-x 4 a -- start new entry in current log file
 C-c C-p -- insert previous log from version control
@@ -6293,7 +6466,7 @@ M-q -- fill paragraph following syntax rules
 M-x change-log-merge RET <FILE> RET -- merge current with log FILE
 C-x v a -- generate entries from version control
 
-;; :MERGE-CONFLICT
+;; :MERGE-CONFLICT-KEY-BINDINGS
 M-x smerge-mode -- start Smerge Mode if not started
 C-c ^ n -- move to next
 C-c ^ p -- move to previous
@@ -6306,7 +6479,7 @@ C-c ^ c -- combine current with next
 C-c ^ r -- auto resolve
 M-x smerge-resolve-all -- auto resolve entire buffer
 
-;; :GREP
+;; :GREP-KEY-BINDINGS
 M-x grep RET <REGEXP> SPC <FILES> RET -- show matches in FILES for REGEXP
 M-x lgrep RET <REGEXP> RET <FILES> RET -- show matches in FILES for REGEXP
 M-x lgrep RET <REGEXP> RET RET -- show matches in all C files
@@ -6324,7 +6497,7 @@ M-x rgrep RET <REGEXP> RET *.html RET RET -- same, but HTML files
 M-x rgrep RET <REGEXP> RET RET RET -- same, but C files
 M-x rgrep RET <REGEXP> RET el RET RET -- same, but Emacs Lisp files
 
-;; :LOCATE
+;; :LOCATE-KEY-BINDINGS
 M-x locate RET <PATTERN> RET -- show files matching PATTERN
 M-x locate-with-filter RET <PATTERN> RET <REGEXP> -- same, but also match REGEXP
 M-x locate-with-filter -- show
@@ -6334,29 +6507,29 @@ RET -- visit current file at
 C-o -- open file in other window
 V -- open current file in dired \(:SEE \"directory\" above\)
 
-;; :CALENDAR
+;; :CALENDAR-KEY-BINDINGS
 
-;; :DIARY
+;; :DIARY-KEY-BINDINGS
 
-;; :ABBREV
+;; :ABBREV-KEY-BINDINGS
 
-;; :DABBREV
+;; :DABBREV-KEY-BINDINGS
 
-;; :AUTOINSERT
+;; :AUTOINSERT-KEY-BINDINGS
 
-;; :EDIFF
+;; :EDIFF-KEY-BINDINGS
 
-;; :EMERGE
+;; :EMERGE-KEY-BINDINGS
 
-;; :SORT
+;; :SORT-KEY-BINDINGS
 
-;; :BROWSE-URL
+;; :BROWSE-URL-KEY-BINDINGS
 
-;; :EMAIL
+;; :EMAIL-KEY-BINDINGS
 
-;; :W3
+;; :W3-KEY-BINDINGS
 
-;; :HTML
+;; :HTML-KEY-BINDINGS
 C-h m -- help
 C-c C-v -- view current file in Web browser
 C-c C-s -- toggle to view in Web browser on each save
@@ -6416,13 +6589,13 @@ C-u M-; -- kill comment
 M-x sgml-show-context -- display hierarchy of tags for point
 M-x sgml-validate -- check markup with external tool
 
-;; :OUTLINE
+;; :OUTLINE-KEY-BINDINGS
 
-;; :SQL
+;; :SQL-KEY-BINDINGS
 
-;; :CALC
+;; :CALC-KEY-BINDINGS
 
-;; :TIMECLOCK
+;; :TIMECLOCK-KEY-BINDINGS
 M-x timeclock-in -- start a project
 M-x timeclock-out -- stop working on the current project
 M-x timeclock-when-to-leave-string -- report time to leave
@@ -6431,7 +6604,7 @@ M-x timeclock-reread-log -- reread timelog file after crash
 M-x timeclock-reread-log -- reread timelog file after edited
 M-x timeclock-reread-log -- reread timelog file after restarting emacs
 
-;; :GAMES
+;; :GAMES-KEY-BINDINGS
 M-x 5x5 -- fill a 5-by-5 grid
 M-x blackbox -- find balls in a box
 M-x doctor -- psychoanalysis
@@ -6443,7 +6616,7 @@ M-x snake -- eat dots but not yourself or the walls
 M-x tetris -- stack blocks
 M-x type-break-mode -- be told when to take breaks
 
-;; :ANIMATION
+;; :ANIMATION-KEY-BINDINGS
 M-x animate-birthday-present RET <NAME> RET -- Birthday wishes to NAME
 M-x butterfly-mode -- strike the drive platter and flip the desired bit
 M-x dissociated-press -- scramble current text in another buffer
@@ -6453,18 +6626,23 @@ M-x studlify-buffer -- give text in buffer strange capitalization
 M-x studlify-region -- give text in region strange capitalization
 M-x zone -- display text tricks
 
-;; :TAGS-HERE
+;; :TAGS-MON-LOCAL-FOR-KEY-BINDINGS
 <BEGINNING> <BUFFER> <CLASS> <COMMAND> <CONSTANT> <DEPRECATED> <DIRECTORY>
 <EXPRESSION> <FACE> <FILE> <FILES> <FUNCTION> <KEY> <LIBRARY> <MACRO> <MATCH>
 <METHOD> <NAME> <NEW> <OLD> <PATH> <PATTERN> <PRINTER> <PROPERTY> <REGEXP>
 <STRING> <TERM> <TERMS> <TITLE> <VARIABLE>
 
 #:END:REFERENCE-SHEET#")) ;setq
-
-;;; :TEST-ME (symbol-value '*reference-sheet-help-A-HAWLEY*)
-
+;;
+;;; :TEST-ME (symbol-value '*mon-help-reference-keys*)
+;;
+(defvaralias '*reference-sheet-help-A-HAWLEY* '*mon-help-reference-keys*)
+;;
+;;;(progn (makunbound '*mon-help-reference-keys*) (unintern '*mon-help-reference-keys*)
+;;; (makunbound '*reference-sheet-help-A-HAWLEY*) (unintern '*reference-sheet-help-A-HAWLEY*) )
+       
 ;;; ==============================
-;;; Make variable `*reference-sheet-help-A-HAWLEY*' self documenting.
+;;; Make variable `*mon-help-reference-keys*' self documenting.
 ;;; Concat the 'documentation header' onto 'doc string' snarfed from itself.
 ;;; Put that value as the variable-documentation property value.
 ;;; "I'm hungry. Maybe I'll vomit into my own mouth and eat that..."
@@ -6473,29 +6651,29 @@ M-x zone -- display text tricks
 (let (self-puke)
     (setq self-puke
           (concat
-           "Emacs reference card unlike others doesn't fit on a conveniently sized card.
-Instead it tries to tell you everything about doing things in Emacs.
-Use with `emacs-wiki-fy-reference-sheet' for rapid EmacsWikification.
-This list can be kept properly escaped \(more-or-less\) by evaluating
-`emacs-wiki-escape-lisp-string-region' and `emacs-wiki-unescape-lisp-string-region'
-respectively.\n
-:SEE \(URL `http://www.emacswiki.org/emacs/Reference_Sheet_by_Aaron_Hawley')\n
-:SEE \(URL `http://www.emacswiki.org/emacs/Reference_Sheet_by_Aaron_Hawley_source'\).
-►►►\n"
-           (symbol-value '*reference-sheet-help-A-HAWLEY*)))
+           "Emacs reference reference sheet unlike others doesn't fit on a conveniently sized card.\n"
+           "Instead it tries to tell you everything about doing things in Emacs.\n"
+           "Use with `mon-emacs-wiki-fy-reference-keys' for rapid EmacsWikification.\n"
+           "This list can be kept properly escaped \(more-or-less\) by evaluating\n"
+           "`mon-emacs-wiki-escape-lisp-string-region' and `mon-emacs-wiki-unescape-lisp-string-region'\n"
+           "respectively.\n\n"
+           ":SEE \(URL `http://www.emacswiki.org/emacs/Reference_Sheet_by_Aaron_Hawley')\n"
+           ":SEE \(URL `http://www.emacswiki.org/emacs/Reference_Sheet_by_Aaron_Hawley_source'\)."
+           "►►►\n"
+           (symbol-value '*mon-help-reference-keys*)))
     (put
-     '*reference-sheet-help-A-HAWLEY*
+     '*mon-help-reference-keys*
      'variable-documentation
      self-puke))
 ;;
-;;; :TEST-ME (symbol-value '*reference-sheet-help-A-HAWLEY*)
+;;; :TEST-ME (symbol-value '*mon-help-reference-keys*)
 ;;
-;;;(progn (makunbound '*reference-sheet-help-A-HAWLEY*)
-;;;       (unintern '*reference-sheet-help-A-HAWLEY*))
+;;;(progn (makunbound '*mon-help-reference-keys*)
+;;;       (unintern '*mon-help-reference-keys*) )
 
 ;;; ==============================
 ;;; Function documents itself by snarfing from the variable-documentation
-;;; property value of `*reference-sheet-help-A-HAWLEY*' and putting that
+;;; property value of `*mon-help-reference-keys*' and putting that
 ;;; as the value for its own function-documentation prop.
 ;;; :CREATED <Timestamp: Thursday July 02, 2009 @ 05:59.17 PM - by MON KEY>
 (defun mon-help-keys (&optional insertp intrp)
@@ -6508,7 +6686,7 @@ respectively.\n
    'function-documentation
    (concat ""
            (plist-get
-            (symbol-plist '*reference-sheet-help-A-HAWLEY*)
+            (symbol-plist '*mon-help-reference-keys*)
             'variable-documentation)))
 ;;
 ;;; :TEST-ME (mon-help-keys t)
@@ -6519,13 +6697,13 @@ respectively.\n
 ;;; :COURTESY Aaaron Hawley :HIS
 ;;; :SEE (URL `http://www.emacswiki.org/emacs/Reference_Sheet_by_Aaron_Hawley_source')
 ;;; :MODIFICATIONS <Timestamp: Wednesday June 17, 2009 @ 11:31.47 AM - by MON KEY>
-(defun emacs-wiki-fy-reference-sheet (&optional use-var insertp)
+(defun mon-emacs-wiki-fy-reference-keys (&optional use-var insertp)
   "When reference sheet is delimited at top and bottom with
 '#:START:REFERENCE-SHEET#' and '#:END:REFERENCE-SHEET#'
 Return contents between delimiters as wikified for insertion/update to
 EmacsWiki at (URL `http://www.emacswiki.org/emacs/Reference_Sheet_by_Aaron_Hawley_source').
 When optional arg USE-VAR is non-nil wikifiy contents of the global
-`*reference-sheet-help-A-HAWLEY*' instead of contents of buffer from point.
+`*mon-help-reference-keys*' instead of contents of buffer from point.
 When optional arg INSERTP is non-nil insert wikified reference sheet at point.\n
 :EXAMPLE\n
 #:START:REFERENCE-SHEET#\n
@@ -6543,7 +6721,7 @@ When optional arg INSERTP is non-nil insert wikified reference sheet at point.\n
 	(setq in-bfr (with-temp-buffer
 		       (if use-var
                            (mon-help-keys 1)
-                         ;; (insert *reference-sheet-help-A-HAWLEY*)
+                         ;; (insert *mon-help-reference-keys*)
 			 (insert wikify-this))
 		       (goto-char (point-min))
 		       (let ((regexp-replace-list
@@ -6562,14 +6740,14 @@ When optional arg INSERTP is non-nil insert wikified reference sheet at point.\n
 	  (newline))
       in-bfr)))
 ;;
-;;; :TEST-ME (progn(mon-help-keys t)(emacs-wiki-fy-reference-sheet))
-;;; :TEST-ME (progn(mon-help-keys t)(emacs-wiki-fy-reference-sheet nil t))
-;;; :TEST-ME (emacs-wiki-fy-reference-sheet t t)
+;;; :TEST-ME (progn(mon-help-keys t)(mon-emacs-wiki-fy-reference-keys))
+;;; :TEST-ME (progn(mon-help-keys t)(mon-emacs-wiki-fy-reference-keys nil t))
+;;; :TEST-ME (mon-emacs-wiki-fy-reference-keys t t)
 
 ;;; ==============================
 ;;; :NOTE Maybe MON remembers stealing this from Pascal Bourguignon?
 ;;; :MODIFICATIONS <Timestamp: Saturday May 30, 2009 @ 06:26.12 PM - by MON KEY>
-(defun emacs-wiki-escape-lisp-string-region (&optional start end ref-sheet)
+(defun mon-emacs-wiki-escape-lisp-string-region (&optional start end ref-sheet)
   "Escape special characters in the region as if a Lisp string.
 Inserts backslashes in front of special characters (namely  `\' backslash,
 `\"' double quote, `(' `)' parens in the region, according to the docstring escape
@@ -6577,8 +6755,8 @@ requirements.\n
 Don't expect good results evaluation this form on strings with regexps.
 :NOTE region should only contain the characters actually comprising the string
 supplied without the surrounding quotes.\n
-:SEE-ALSO `emacs-wiki-unescape-lisp-string-region', `emacs-wiki-fy-reference-sheet'
-`*reference-sheet-help-A-HAWLEY*'. ►►►"
+:SEE-ALSO `mon-emacs-wiki-unescape-lisp-string-region', `mon-emacs-wiki-fy-reference-keys'
+`*mon-help-reference-keys*'. ►►►"
   (interactive "*r")
   (save-excursion
     (save-restriction
@@ -6609,19 +6787,20 @@ supplied without the surrounding quotes.\n
 ;;
 ;;; :TEST-ME
 ;;; (save-excursion (let ((this-point (point)))
-;;; (newline)(princ *reference-sheet-help-A-HAWLEY* (current-buffer))
-;;; (goto-char this-point)(emacs-wiki-escape-lisp-string-region nil nil t)))
+;;; (newline)(princ *mon-help-reference-keys* (current-buffer))
+;;; (goto-char this-point)(mon-emacs-wiki-escape-lisp-string-region nil nil t)))
 
 ;;; ==============================
 ;;; :NOTE Maybe MON remember stealing this from Pascal Bourguignon?
 ;;; :MODIFICATIONS <Timestamp: Saturday May 30, 2009 @ 06:26.12 PM - by MON KEY>
-(defun emacs-wiki-unescape-lisp-string-region (&optional start end ref-sheet)
+(defun mon-emacs-wiki-unescape-lisp-string-region (&optional start end ref-sheet)
   "Unescape special characters from the CL string specified by the region.
 This amounts to removing preceeding backslashes from characters they escape.\n
 Don't expect good results evaluation this form on strings with regexps.
 :NOTE Region should only contain the characters actually comprising the string
-without the surrounding quotes.\n:SEE-ALSO `emacs-wiki-escape-lisp-string-region',
-`*reference-sheet-help-A-HAWLEY*', `emacs-wiki-fy-reference-sheet'. ►►►"
+without the surrounding quotes.\n
+:SEE-ALSO `mon-emacs-wiki-escape-lisp-string-region',
+`mon-emacs-wiki-fy-reference-keys',  `*mon-help-reference-keys*'.\n►►►"
   (interactive "*r")
   (save-excursion
     (save-restriction
@@ -6645,9 +6824,9 @@ without the surrounding quotes.\n:SEE-ALSO `emacs-wiki-escape-lisp-string-region
 ;;; (save-excursion
 ;;; (let ((this-point (point)))
 ;;; (newline)
-;;; (prin1 *reference-sheet-help-A-HAWLEY* (current-buffer))
+;;; (prin1 *mon-help-reference-keys* (current-buffer))
 ;;; (goto-char this-point)
-;;; (emacs-wiki-unescape-lisp-string-region nil nil t)))
+;;; (mon-emacs-wiki-unescape-lisp-string-region nil nil t)))
 
 ;;; ==============================
 ;;; Load `mon-doc-help-pacman' if it is in load-path.

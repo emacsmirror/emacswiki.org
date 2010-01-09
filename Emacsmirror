@@ -67,7 +67,7 @@ people don't waste their time trying to find the same package.
 ** [http://turingmachine.org/elisp/anaya.el anaya]
 ** [http://pbreton.ne.client2.attbi.com/emacs/ ant]
 ** [http://www.keelhaul.me.uk/linux/apache-mode.el apache-mode]
-** [http://www.gnulinux.org.mx/~drs/emacs/apt-sources.el apt-sources]
+** apt-sources no-direct-download http://packages.debian.org/unstable/debian-el
 ** [http://ignotus.hixsplit.hu/AptUpgrade.html apt-upgrade]
 ** [http://web.verbum.org/~walters/ ascii-display]
 ** [http://www.ugcs.caltech.edu/~shulman/pub/Main/Software/auto-define.el auto-define]
@@ -158,11 +158,11 @@ people don't waste their time trying to find the same package.
 
 ** [http://liyu2000.nease.net/code/faq-mode.el faq-mode]
 ** [http://people.debian.org/~psg/elisp/ff-paths.el ff-paths]
-** [http://www.geocities.com/user42_kevin/ffap/ffap-gcc-path.el.txt ffap-gcc-path]
-** [http://www.geocities.com/user42_kevin/ffap/ffap-include-start.el.txt ffap-include-start]
-** [http://www.geocities.com/user42_kevin/ffap/ffap-mml.el.txt ffap-mml]
-** [http://www.geocities.com/user42_kevin/ffap/ffap-rfc-directories.el.txt ffap-rfc-directories]
-** [http://www.geocities.com/user42_kevin/ffap/ffap-rfc-space.el.txt ffap-rfc-space]
+** ffap-gcc-path ftp://download.tuxfamily.org/user42/ffap-gcc-path.el http://user42.tuxfamily.org/ffap-gcc-path/index.html
+** ffap-include-start ftp://download.tuxfamily.org/user42/ffap-include-start.el http://user42.tuxfamily.org/ffap-include-start/index.html
+** ffap-mml ftp://download.tuxfamily.org/user42/ffap-mml.el http://user42.tuxfamily.org/ffap-mml/index.html
+** ffap-rfc-directories ftp://download.tuxfamily.org/user42/ffap-rfc-directories.el http://user42.tuxfamily.org/ffap-rfc-directories/index.html
+** ffap-rfc-space ftp://download.tuxfamily.org/user42/ffap-rfc-space.el http://user42.tuxfamily.org/ffap-rfc-space/index.html
 ** [http://www.teaser.fr/~flepied/file-log.el.gz file-log]
 ** [http://relativity.yi.org/el/fileutils.el fileutils]
 ** [http://www-sor.inria.fr/~giraud/emacs/fip.el fip]
