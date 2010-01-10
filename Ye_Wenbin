@@ -12,6 +12,7 @@ A list of my elisp:
 * Lisp:perltidy.el --- use perltidy to tidy perl code
 * Lisp:perlcritic.el --- Call perlcritic
 * Lisp:perldb-ui.el -- User Interface for perl debugger
+* Lisp:dirtree.el --- Directory tree view
 * Lisp:template-simple.el -- Expand text template
 * Lisp:windata.el -- Persist window configuration
 * Lisp:compile-dwim.el -- Guess compile command 

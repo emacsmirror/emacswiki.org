@@ -169,6 +169,8 @@ You will have errors if you use another icons set than the xml-weather one.")
 (defvar xml-weather-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map [?q] 'xml-weather-quit)
+    (define-key map (kbd "<tab>") 'xml-weather-next-day)
+    (define-key map (kbd "C-<tab>")   'xml-weather-precedent-day)
     (define-key map (kbd "S-<down>") 'xml-weather-next-day)
     (define-key map (kbd "S-<up>")   'xml-weather-precedent-day)
     (define-key map (kbd "<down>")   'xml-weather-next-button)

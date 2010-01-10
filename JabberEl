@@ -360,5 +360,13 @@ I'd mention it in case it's not. --JosephGay
 [new]
 I had to use @googlemail.com rather than @gmail.com to get gtalk to work.
 
+[new]
+I finally got emacs-jabber up and running on my Debian Lenny
+machine.  It refused to work for a really long time, it always
+stopped with a ssl error, saying that the server name does not
+match the certificate.  Installation of the starttls package,
+which was not installed before, fixed the problem for me.  I hope that
+this hint can save someone else from some headache. 
+
 ----
 CategoryChatClient

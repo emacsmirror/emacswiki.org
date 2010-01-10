@@ -19,40 +19,40 @@
 ;;; `----
 ;;;
 ;;; FUNCTIONS:►►►
-;;; `mon-help-insert-documentation' `mon-insert-doc-help-tail'
-;;; `mon-insert-doc-help-cookie' `mon-help-function-spit-doc'
-;;; `mon-help-function-args' `mon-help-xref-symbol-value'
-;;; `mon-help-function-arity' `mon-help-parse-interactive-spec'
-;;; `mon-help-view-file' `mon-help-temp-docstring-display'
-;;; `mon-help-get-mon-help-buffer'`mon-help-overlay-result',
-;;; `mon-help-find-result-for-overlay'
-;;; `mon-help-propertize-tags' `mon-help-propertize-tags-TEST'
-;;; `mon-help-mon-tags' `mon-help-insert-tags'
-;;; `mon-tags-apropos' `mon-tags-naf-apropos'
-;;; `mon-help-regexp-syntax' `mon-help-syntax-class' `mon-help-search-functions'
-;;; `mon-help-type-predicates', `mon-help-plist-functions'
-;;; `mon-help-text-property-functions', `mon-help-text-property-stickyness'
-;;; `mon-help-buffer-functions' `mon-help-frame-functions' 
-;;; `mon-help-window-functions'
-;;; `mon-help-make-faces' `mon-help-basic-faces' `mon-help-faces-themes'
-;;; `mon-help-font-lock' `mon-help-easy-menu' `mon-help-widgets'
-;;; `mon-help-file-dir-functions',`mon-help-read-functions', 
+;;; `mon-help-insert-documentation', `mon-insert-doc-help-tail',
+;;; `mon-insert-doc-help-cookie', `mon-help-function-spit-doc',
+;;; `mon-help-function-args', `mon-help-xref-symbol-value',
+;;; `mon-help-function-arity', `mon-help-parse-interactive-spec',
+;;; `mon-help-view-file', `mon-help-temp-docstring-display',
+;;; `mon-help-get-mon-help-buffer', `mon-help-overlay-result',
+;;; `mon-help-find-result-for-overlay',
+;;; `mon-help-propertize-tags', `mon-help-propertize-tags-TEST',
+;;; `mon-help-mon-tags', `mon-help-insert-tags',
+;;; `mon-tags-apropos', `mon-tags-naf-apropos',
+;;; `mon-help-regexp-syntax', `mon-help-syntax-class', `mon-help-search-functions',
+;;; `mon-help-type-predicates', `mon-help-plist-functions',
+;;; `mon-help-text-property-functions', `mon-help-text-property-stickyness',
+;;; `mon-help-buffer-functions', `mon-help-frame-functions' ,
+;;; `mon-help-window-functions',
+;;; `mon-help-make-faces', `mon-help-basic-faces', `mon-help-faces-themes',
+;;; `mon-help-font-lock', `mon-help-easy-menu', `mon-help-widgets',
+;;; `mon-help-file-dir-functions', `mon-help-read-functions', 
 ;;; `mon-help-process-functions', `mon-help-xml-functions', 
 ;;; `mon-help-color-functions', `mon-help-color-chart'
 ;;; `mon-help-char-representation', `mon-help-ISO-8859-1-chars', 
 ;;; `mon-help-ASCII-chars', `mon-help-cntl->hex->ecma-35',
 ;;; `mon-help-cntl->hex->ecma-48', `mon-help-format-width'
-;;; `mon-help-package-keywords', `mon-index-elisp-symbol'
-;;; `mon-help-mon-help', `mon-help-emacs-introspect'
-;;; `mon-help-crontab', `mon-help-permissions', `mon-help-ipv4-header'
-;;; `mon-help-unix-commands', `mon-help-w32-env'
-;;; `mon-help-eieio-defclass',`mon-help-eieio-functions',`mon-help-eieio-methods'
-;;; `mon-help-nclose-functions', `mon-help-iso-8601'
-;;; `mon-help-info-incantation', `mon-help-install-info-incantation'
-;;; `mon-help-tar-incantation', `mon-help-rename-incantation'
-;;; `mon-help-du-incantation' ,`mon-help-hg-archive'
-;;; `mon-help-diacritics', `mon-emacs-wiki-fy-reference-keys'
-;;; `mon-emacs-wiki-escape-lisp-string-region'
+;;; `mon-help-package-keywords', `mon-index-elisp-symbol',
+;;; `mon-help-mon-help', `mon-help-emacs-introspect',
+;;; `mon-help-crontab', `mon-help-permissions', `mon-help-ipv4-header',
+;;; `mon-help-unix-commands', `mon-help-w32-env',
+;;; `mon-help-eieio-defclass', `mon-help-eieio-functions', `mon-help-eieio-methods'
+;;; `mon-help-nclose-functions', `mon-help-iso-8601',
+;;; `mon-help-info-incantation', `mon-help-install-info-incantation',
+;;; `mon-help-tar-incantation', `mon-help-rename-incantation',
+;;; `mon-help-du-incantation' ,`mon-help-hg-archive',
+;;; `mon-help-diacritics', `mon-emacs-wiki-fy-reference-keys',
+;;; `mon-emacs-wiki-escape-lisp-string-region',
 ;;; `mon-emacs-wiki-unescape-lisp-string-region'
 ;;; FUNCTIONS:◄◄◄
 ;;;
@@ -217,8 +217,12 @@
 ;;; PUBLIC-LINK: (URL `http://www.emacswiki.org/emacs/mon-doc-help-utils.el')
 ;;; FILE-PUBLISHED: <Timestamp: #{2009-08-15} - by MON KEY>
 ;;;
-;;; :PUBLIC-LINK (URL `http://www.emacswiki.org/emacs/MonDocHelpUtilsDictionaryPretty')
-;;; :FIRST-PUBLISHED <Timestamp: #{2010-01-09T01:03:52-05:00Z}#{10016} - by MON>
+;;; PUBLIC-LINK (URL `http://www.emacswiki.org/emacs/MonDocHelpUtilsDictionary')
+;;; FIRST-PUBLISHED <Timestamp: #{2010-01-09T01:03:52-05:00Z}#{10016} - by MON>
+;;;
+;;; PUBLIC-LINK: 
+;;; (URL `http://www.emacswiki.org/emacs/mon-doc-help-utils-supplemental.el')
+;;; FIRST-PUBLISHED: <Timestamp: #{2009-12-21T21:20:06-05:00Z}#{09522} - by MON>
 ;;;
 ;;; FILE-CREATED:
 ;;; <Timestamp: Wednesday June 17, 2009 @ 11:29.15 AM - by MON KEY>
@@ -709,24 +713,54 @@ Choice of tag type completed with `mon-help-mon-tags'.\n
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-01-08T23:28:40-05:00Z}#{10015} - by MON>
-(defun mon-help-overlay-result (show-string show-here to-here exit-c) ;for-secs 
-  "
-:SEE-ALSO `mon-help-find-result-for-overlay', `momentary-string-display'.\n►►►"
-  (let* ((showit (copy-sequence show-string))
-         (showlay (make-overlay show-here to-here)))
+(defun mon-help-overlay-result (show-here to-here exit-c) ;for-secs 
+  "Return overlay from SHOW-HERE TO-HERE and remove it with exit char EXIT-C.\n
+SHOW-HERE is the starting point in buffer to place overlay.\n
+TO-HERE is the starting point in buffer to place overlay.\n
+EXIT-C is the character corresponding the the keyboard key user must type
+to exit from the overlay display. When function is invoked place the overlay and
+message user to:\n
+ \"Type `<EXIT-CHAR>' to continue ...\"\n
+:EXAMPLE\n\(save-excursion \(forward-sexp 2\)
+  \(let \(\(botp #'\(lambda \(\) `\(,\(line-beginning-position\) . ,\(line-end-position\)\)\)\)
+        \(mhor #'\(lambda \(bd\) \(mon-help-overlay-result \(car bd\) \(cdr bd\) 78\)\)\)\)
+    \(dotimes \(i 2\)
+      \(funcall mhor \(funcall botp\)\)\(line-move-1 -1\)\)\)\)\n
+\( ... LOTSA-JUNK-FOR-AN-OVERLAY... \)\n\( .... MORE-JUNK-FOR-AN-OVERLAY... \)\n
+:NOTE This functionality is modeled after `momentary-string-display' but with less
+bounds error checking and restricts exiting from the loop until user provides
+EXIT-CHAR or enters \7.\n
+:CALLED-BY `mon-help-find-result-for-overlay'.\n►►►"
+  (let ((showlay (make-overlay show-here to-here nil t t)))
     (unwind-protect
          (save-excursion 
-           (overlay-put showlay 'face 
-                        '(:foreground "lime green"
-                          :background "black" :weight ultra-bold 
-                          :box (:line-width 3 :color "yellow1" :style released-button)))
+           (overlay-put showlay 'face '(:foreground "lime green"
+                                        :background "black" 
+                                        :weight ultra-bold 
+                                        :box (:line-width 3 
+                                              :color "yellow1" 
+                                              :style released-button)))
+           (goto-char show-here)
+           (setq show-here (point))
+           (overlay-recenter show-here)
            (let (got-N)
              (while (not got-N)
                (when (eq (read-event 
                           (format "Type `%c' to continue ..." exit-c))
-                         exit-char)
+                         exit-c)
                  (setq got-N t)))))
       (delete-overlay showlay))))
+;;
+;;; :TEST-ME
+;;; (let ((botp #'(lambda () `(,(line-beginning-position) . ,(line-end-position))))
+;;;       (mhor #'(lambda (bd) (mon-help-overlay-result (car bd) (cdr bd) 78))))
+;;;   (save-excursion (forward-sexp 2)
+;;;                   (dotimes (i 2) (funcall mhor (funcall botp))(line-move-1 -1))))
+;;
+;; ,---- :UNCOMMENT-BELOW-TO-TEST
+;; | ( ... LOTSA-JUNK-FOR-AN-OVERLAY... )
+;; | ( .... MORE-JUNK-FOR-AN-OVERLAY... )
+;; `----
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-01-09T00:07:02-05:00Z}#{10016} - by MON>
@@ -735,25 +769,26 @@ Choice of tag type completed with `mon-help-mon-tags'.\n
 SEARCH-IT is a regexp string to search.\n
 MATCH-B is the group for `match-beginning'\n
 MATCH-E is the group for `match-end'\n
-EXIT-CHAR is a character to exit from the overlay display.\n
+EXIT-CHAR is the character corresponding the the keyboard key user must type to
+exit from the overlay display.\n
+:NOTE Looping procedures which invoke this function won't advance until kbd
+input matching EXIT-CHAR is recieved or user enters \7 -- this is a feature!.\n
+Useful for examining the result of a procedure inside a *HELP* buffer,
+particulary anything that changes or alters text in a buffer i.e. regexp
+oriented utilities.\n
 :EXAMPLE\n\(save-excursion
   \(dotimes \(i 22\)
     \(mon-help-find-result-for-overlay 
      *regexp-mon-doc-help-pointer-tags* 0 0 78\)\)\)\n
 Matches the following:
- ->   ;->  ; -> 
- =>   ;=>  ; => 
- -->  ;-->  ; --> --->
- <--  <--  ; <--  <---
- <--  ;<-- ; <--  <--- 
- ==>  ;==> ; ==>  ===>\n
+ ->   ;->  ; -> \n =>   ;=>  ; => \n -->  ;-->  ; --> --->\n <--  <--  ; <--  <---
+ <--  ;<-- ; <--  <--- \n ==>  ;==> ; ==>  ===>\n
 :SEE-ALSO `mon-help-overlay-result', `momentary-string-display'.\n►►►"
   (progn
     (search-forward-regexp search-it nil t)
-    (let* ((mb (match-beginning (or match-b 0)))
-           (me  (match-end (or match-e 0)))
-           (ms (buffer-substring-no-properties mb me)))
-      (mon-help-overlay-result ms mb me exit-char))))
+    (let ((mb (match-beginning (or match-b 0)))
+           (me  (match-end (or match-e 0))))
+      (mon-help-overlay-result mb me exit-char))))
 ;;
 ;;; :TEST-ME 
 ;;; (save-excursion
@@ -4016,7 +4051,7 @@ The optimizable special cases are:
 ´ - C-x 8 ' '
 ¨ - C-x 8 \" \"
 ¸ - C-x 8 , ,
-  - C-x 8 * SPC
+  - C-x 8 * SPC
 ► - (ucs-insert \"25BA\")\n\n;;; ==============================\n
 ;;; The Unicode latin scripts are found in several Unicode-Blocks, namely:
 ;;; U+0000 - U+007F -> Controls and Basic Latin;

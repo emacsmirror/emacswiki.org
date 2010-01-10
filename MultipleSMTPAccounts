@@ -88,5 +88,8 @@ This version is a bit simpler than the above because it only has two SMTP accoun
 [new:DanielClemente:dt set  9 21:25:37 CEST 2008]
 Are there plans to integrate this (the first solution) in the official distribution?
 
+[new::MemnonAnon]
+This setup works fine if you send your mail at once. There is one *limitation* however: If you queue mails, and mails for the different accounts are to be send together via smtpmail-send-queued-mail, the hook message-send-hook is not run, consequently change-smtp is not run, and the settings are not changed on a per mail basis. 
+
 ----
 CategoryGnus
