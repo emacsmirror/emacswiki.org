@@ -62,7 +62,20 @@ Unfortunately, there doesn't exist a built-in feature set to decide which SMTP s
                (t (error "Unrecognized SMTP auth. mechanism: `%s'." auth-mech)))
            finally (error "Cannot infer SMTP information."))))
 
- (add-hook 'message-send-hook 'change-smtp)
+ (add-hook 'message-send-hook 'change-smtp) ; OBSOLETE! (See below!)
+
+Also keep in mind that, supplying NIL instead of a password in SMTP-ACCOUNTS, will make SMTPMAIL-SEND-IT function to ask for password before sending every message. (More secure, more bugging.)
+
+Unfortunately, above CHANGE-SMTP (hooked into MESSAGE-SEND-HOOK) gets called only by SEND-MESSAGE, which means while sending multiple messages (consider SMTPMAIL-SEND-QUEUED-MAIL) CHANGE-SMTP won't get triggered. (Thanks Memnon for the bug report!) To tackle this problem, instead of hooking CHANGE-SMTP into MESSAGE-SEND-HOOK, wrap SMTPMAIL-VIA-SMTP totally:
+
+  (defvar %smtpmail-via-smtp (symbol-function 'smtpmail-via-smtp))
+
+  (defun smtpmail-via-smtp (recipient smtpmail-text-buffer)
+    (with-current-buffer smtpmail-text-buffer
+      (change-smtp))
+    (funcall (symbol-value '%smtpmail-via-smtp) recipient smtpmail-text-buffer))
+
+This will make CHANGE-SMTP to get triggered just before every SMTPMAIL-VIA-SMTP call.
 
 --- Volkan YAZICI
 
@@ -87,9 +100,6 @@ This version is a bit simpler than the above because it only has two SMTP accoun
 
 [new:DanielClemente:dt set  9 21:25:37 CEST 2008]
 Are there plans to integrate this (the first solution) in the official distribution?
-
-[new::MemnonAnon]
-This setup works fine if you send your mail at once. There is one *limitation* however: If you queue mails, and mails for the different accounts are to be send together via smtpmail-send-queued-mail, the hook message-send-hook is not run, consequently change-smtp is not run, and the settings are not changed on a per mail basis. 
 
 ----
 CategoryGnus

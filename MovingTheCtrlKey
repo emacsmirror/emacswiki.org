@@ -81,7 +81,7 @@ A virtual terminal is NOT an <code>[agkux]term</code> inside of X.  It is the wh
 
 === Generic GNU/Linux Virtual Terminal (any distribution) ===
 
-''Note: while these instructions should work under any distribution of GNU/Linux, you may wish to use a distribution-specific method which may be simplier.''
+''Note: while these instructions should work under any distribution of GNU/Linux, you may wish to use a distribution-specific method which may be simpler.''
 
 Press Ctrl-Alt-F1 to enter the first virtual terminal.
 
@@ -284,7 +284,7 @@ There are also these drivers: [http://www.sysinternals.com/ntw2k/source/ctrl2cap
 
 http://www.gnu.org/software/emacs/windows/faq3.html#capscontrol has more info about this.
 
-Microsoft also provides an utility [http://www.microsoft.com/technet/sysinternals/Miscellaneous/Ctrl2Cap.mspx Ctrl2Cap] to replace (note that you will loose the caps lock) the caps lock with the ctrl key.
+Microsoft also provides an utility [http://www.microsoft.com/technet/sysinternals/Miscellaneous/Ctrl2Cap.mspx Ctrl2Cap] to replace the caps lock with the ctrl key.  (Note that you will lose the caps lock.)
 It allows you to reverse it as well.
 
 If you use the AutoHotKey (www.autohotkey.com) Win32 macro program, the following line in autohotkey.ini will effectively remap Caps to Ctrl:

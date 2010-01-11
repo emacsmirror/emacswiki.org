@@ -1,6 +1,7 @@
 ;;; external-abook.el --- Enable the use of external address books from within Emacs
 ;;
 ;; Copyright (C) 2008 pmade inc. (Peter Jones pjones@pmade.com)
+;; Copyright (C) 2009 Dominique Devriese (dominique.devriese@gmail.com) 
 ;;
 ;; Permission is hereby granted, free of charge, to any person obtaining
 ;; a copy of this software and associated documentation files (the
@@ -30,7 +31,7 @@
 ;; Usage:
 ;;
 ;; (require 'external-abook)
-;; (setq external-abook-command "my-query-script '%s'")
+;; (custom-set-variables '(external-abook-command \"mutt_ldap_query.pl '%s'\"))
 ;;
 ;; Bind `external-abook-try-expand' to a key binding of your choice.
 ;; It will expand the text before point into an email address from
@@ -40,19 +41,30 @@
 ;;
 ;; git clone git://pmade.com/elisp
 
-(defvar external-abook-command nil
+(defgroup external-abook nil "external-abook: access an external address book application" :group 'External)
+(defcustom external-abook-command nil
   "The command line tool to use for searching the external address book.
 
 Specify a command to run, with its options.  For example:
 
-  (setq external-abook-command \"mutt_ldap_query.pl '%s'\")
+  (custom-set-variables '(external-abook-command \"mutt_ldap_query.pl '%s'\"))
+or (for use with the goobook app at http://code.google.com/p/goobook/)
+  (custom-set-variables '(external-abook-command \"goobook.py query '%s'\"))
 
-See http://www.mutt.org/doc/manual/manual-4.html#query for more information.")
+See http://www.mutt.org/doc/manual/manual-4.html#query for more information."
+  :group 'external-abook)
+
+(defcustom external-abook-completing-read-function 
+  (if (fboundp 'ido-completing-read) 'ido-completing-read 'completing-read)
+  "The function to use for choosing an address from the ones proposed by the external address book application."
+  :group 'external-abook
+  :type 'function
+  )
 
 (defun external-abook-search (query)
   "Search the address book using the given query."
   (let ((results (shell-command-to-string (format external-abook-command query))))
-    (external-abook-parse (cdr (split-string results "\n" t)))))
+    (external-abook-parse (split-string results "\n" t))))
 
 (defun external-abook-parse (strings)
   "Parse the search results found in the given list of strings."
@@ -69,22 +81,23 @@ See http://www.mutt.org/doc/manual/manual-4.html#query for more information.")
     (apply 'format "%s <%s>" address)))
 
 (defun external-abook-completing-read (&rest args)
-  "Call ido-completing-read if available."
-  (if (fboundp 'ido-completing-read) (apply 'ido-completing-read args)
-    (apply 'completing-read args)))
+  "Call the completing-read function defined through the variable external-abook-completing-read-functiond" 
+  (apply external-abook-completing-read-function args))
 
 (defun external-abook-single-result (results)
   "Narrow the results down to a result formatted with external-abook-make-string."
   (cond
    ((null results) nil)
    ((= 1 (length results)) (external-abook-make-string (car results)))
-   (t (external-abook-make-string (assoc (external-abook-completing-read "Select Name: " results) results)))))
+   (t (let* ((completions (mapcar 'external-abook-make-string results)))
+	 (external-abook-completing-read "Select Name: " completions)))))
 
 (defun external-abook-bounds ()
   "Find text before point that should be used to search with."
   (let* ((end (point))
          (bol (save-excursion (beginning-of-line) (point)))
-         (start (save-excursion (search-backward-regexp "[ :,]" bol t))))
+         (start(save-excursion (search-backward-regexp "[;:,]" bol t) (search-forward-regexp "[^[:space:]]" end t)))
+	 )
     (if start (cons (1+ start) end) (cons bol end))))
 
 (defun external-abook-try-expand ()

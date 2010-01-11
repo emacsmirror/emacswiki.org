@@ -3205,6 +3205,60 @@ Does not move point.
 ;;; ==============================
 
 ;;; ==============================
+;;; :BUG #1184 of Thu, 16 Oct 2008 19:45:02 UTC
+;;; "document how to deal with beer belly rectangles"
+;;; :SEE (URL `http://emacsbugs.donarmstrong.com/cgi-bin/bugreport.cgi?bug=1184')
+;;; :CREATED <Timestamp: #{2010-01-10T21:26:28-05:00Z}#{10017} - by MON>
+(defun mon-kill-rectangle-w-beer-belly (belly-start belly-end)
+  "Like kill-rectangle but adds trailing whitespace when column at mark is less
+than the longest line in rectangle.\n
+The
+following
+is a rectangle-w-beer-belly.
+The paragraph you are reading is a
+potential rectangle. It is a PITA for the 
+`kill-rectangle' command because it is hard to
+put point and mark around being in that it is fat
+in the middle. Thus, while it is easy to mark
+its left side, how are you going to mark its
+right upper or lower corner without
+altering the buffer to add spaces
+in order to get the cursor there?\n
+:SEE-ALSO `mon-rectangle-apply-on-region-points', `mon-rectangle-capitalize',
+`mon-rectangle-columns', `mon-rectangle-downcase', `mon-rectangle-operate-on',
+`mon-rectangle-sum-column', `mon-rectangle-upcase', `mon-line-length-max'.\n►►►"
+  (interactive "r\n")
+  (let ((max-len 0)
+        (fat-belly))
+    (unwind-protect
+         (narrow-to-region belly-start belly-end)
+      (goto-char (point-min))
+      (while (eq (forward-line) 0)
+        (end-of-line)
+        (when (> (current-column) max-len)
+          (setq max-len (current-column))))
+      (when (= (current-column) max-len)
+        (setq fat-belly t)
+        (kill-rectangle belly-start belly-end))
+      (unless fat-belly
+        (setq fat-belly 
+              (buffer-substring-no-properties belly-start belly-end))
+        (goto-char belly-start)
+        (kill-line)
+        (while (eq (forward-line) 0) (kill-line))
+        (when (stringp fat-belly)
+          (with-temp-buffer 
+            (insert fat-belly)
+            (goto-char (point-min))
+            (while (eq (forward-line) 0)
+              (let ((lebp `(,(line-beginning-position) . ,(line-end-position))))
+                (unless (= (- (car lebp) (cdr lebp)) max-len)
+                  (end-of-line) 
+                  (insert (make-string (- max-len (- (cdr lebp) (car lebp))) 32)))))
+            (kill-rectangle (buffer-end 0) (buffer-end 1)))))
+      (widen))))
+
+;;; ==============================
 ;;; :CREATED <Timestamp: Friday June 05, 2009 @ 07:03.00 PM - by MON KEY>
 (defun mon-rectangle-columns (start end)
   "Return column positions at START and END.

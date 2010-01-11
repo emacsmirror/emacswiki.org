@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Tue Jan  5 14:14:53 2010 (-0800)
+;; Last-Updated: Sun Jan 10 21:23:12 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 2295
+;;     Update #: 2307
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -21,7 +21,7 @@
 ;;   `ediff-merg', `ediff-mult', `ediff-util', `ediff-wind',
 ;;   `fit-frame', `info', `info+', `misc-fns', `mkhtml',
 ;;   `mkhtml-htmlize', `strings', `thingatpt', `thingatpt+',
-;;   `w32-browser', `widget'.
+;;   `w32-browser'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -72,9 +72,10 @@
 ;;    `diredp-exec-priv', `diredp-executable-tag', `diredp-file-name',
 ;;    `diredp-file-suffix', `diredp-flag-mark',
 ;;    `diredp-flag-mark-line', `diredp-get-file-or-dir-name',
-;;    `diredp-ignored-file-name', `diredp-link-priv',
-;;    `diredp-no-priv', `diredp-other-priv', `diredp-rare-priv',
-;;    `diredp-read-priv', `diredp-symlink', `diredp-write-priv'.
+;;    `diredp-ignored-file-name', `diredp-inode+size',
+;;    `diredp-link-priv', `diredp-no-priv', `diredp-other-priv',
+;;    `diredp-rare-priv', `diredp-read-priv', `diredp-symlink',
+;;    `diredp-write-priv'.
 ;;
 ;;  Commands defined here:
 ;;
@@ -177,6 +178,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/01/10 dadams
+;;     Added: face diredp-inode+size.  Use in diredp-font-lock-keywords-1.
+;;     diredp-font-lock-keywords-1: Allow decimal point in file size.  Thx to Regis.
 ;; 2010/01/05 dadams
 ;;     dired-insert-set-properties:
 ;;       Add text property dired-filename to the file name (for Emacs 23).
@@ -1274,6 +1278,12 @@ Don't forget to mention your Emacs and library versions."))
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-file-suffix 'diredp-file-suffix)
 
+(defface diredp-inode+size
+  '((t (:foreground "DarkBlue")))
+  "*Face used for file inode number and file size in dired buffers."
+  :group 'Dired-Plus :group 'font-lock-highlighting-faces)
+(defvar diredp-inode+size 'diredp-inode+size)
+
 (defface diredp-symlink
   '((t (:foreground "DarkOrange")))
   "*Face used for symbolic links in dired buffers."
@@ -1384,7 +1394,7 @@ Don't forget to mention your Emacs and library versions."))
          1 diredp-ignored-file-name t)
    '("[^ .]\\.\\([bg]?[zZ]2?\\)[*]?$" 1 diredp-compressed-file-suffix t) ; Compressed (*.z)
    '("\\([*]\\)$" 1 diredp-executable-tag t) ; Executable (*)
-   '(" \\([0-9]+[kKMGTPEZY]?\\)" 1 diredp-file-suffix) ; File size and inode number
+   '(" \\([0-9]+\\(\\.[0-9]+\\)?[kKMGTPEZY]?\\)" 1 diredp-inode+size) ; File inode number & size
    ;; Directory names
    (list "^..\\([0-9]* \\)*d"
          (list dired-move-to-filename-regexp nil nil)

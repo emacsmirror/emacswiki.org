@@ -214,6 +214,8 @@ For emacs 23.1 I have to changed above codes to get list all buffers as one grou
 
 - dixiecko
 
+The function expects one argument; a buffer.
+- Grant Rettke
 ----
 CategoryModes
 
