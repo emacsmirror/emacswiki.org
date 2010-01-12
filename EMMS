@@ -418,6 +418,10 @@ used that). What might be causing this abnormal behavior?
 [new]The playlist uses a different size image by default. Have a
 look at the variable `emms-browser-covers'
 
+=== EMMS and WMA ===
+For one reason or another I have a bunch of WMA files. However, EMMS does not read the tags.
+Instead WMA tracks are just mixed together under Misc. EMMS will play back the tracks, however.
+Does somebody know how to make EMMS handle WMA tags? 
 
 == DVD's and CD's Using MPlayer Player? ==
 

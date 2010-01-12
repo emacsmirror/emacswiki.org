@@ -17,5 +17,10 @@ See also: http://emacs-session.sourceforge.net/related.html
 
 A special program keeps track of [[WThreeMSession]]s.
 
+== Recommendations ==
+
+[new]
+I use EmacsSession, because it doesn't reload all the files and doesn't require a lot of customization like DeskTop does. -- AlexSchroeder
+
 ----
 CategoryPersistence

@@ -79,10 +79,10 @@ With prefix arg don't preserve the aspect ratio."
   (lexical-let ((cur-fname-to-resize
                  (buffer-file-name (current-buffer)))
                 (noverbose quiet))
-    (let* ((edges (window-inside-pixel-edges))
-           (width (- (nth 2 edges) (nth 0 edges)))
+    (let* ((edges  (window-inside-pixel-edges))
+           (width  (- (nth 2 edges) (nth 0 edges)))
            (height (- (nth 3 edges) (nth 1 edges)))
-           (asr (when current-prefix-arg t)))
+           (asr    (when current-prefix-arg t)))
       (apply #'start-process "resize-image" nil "mogrify"
              (list "-resize"
                    (concat (format "%dx%d" width height)
@@ -121,7 +121,7 @@ With prefix arg don't preserve the aspect ratio."
   (lexical-let ((cur-fname-to-resize
                  (buffer-file-name (current-buffer)))
                 (noverbose quiet))
-    (let* ((amount 130)
+    (let* ((amount   130)
            (com-args (if (< n 0)
                          (format "%d%%^" (* 100 (/ 100.0 amount)))
                          (format "%d%%^" amount))))
@@ -146,11 +146,11 @@ With prefix arg don't preserve the aspect ratio."
 (defun eiv-tag-image (text &optional quiet)
   (interactive "sText: ")
   (lexical-let* ((cur-fname-to-tag (concat (symbol-name (gensym "img")) ".jpg"))
-                 (img (buffer-file-name (current-buffer)))
-                 (def-dir (file-name-directory img))
-                 (noverbose quiet))
+                 (img              (buffer-file-name (current-buffer)))
+                 (def-dir          (file-name-directory img))
+                 (noverbose        quiet))
     (let* ((width-buf (eshell-command-result (concat "identify -format %w " img)))
-           (size-buf (concat width-buf "x" "24")))
+           (size-buf  (concat width-buf "x" "24")))
       (apply #'start-process "tag-image" nil "convert"
              (list "-background"
                    "#0008"
@@ -198,16 +198,16 @@ create `iterator' with `tve-list-iterator'."
 
 (defmacro sub-iter-next (seq elm)
   "Create iterator from position of `elm' to end of `seq'."
-  `(lexical-let* ((pos (position ,elm ,seq))
-                  (sub (subseq ,seq (1+ pos)))
+  `(lexical-let* ((pos      (position ,elm ,seq))
+                  (sub      (subseq ,seq (1+ pos)))
                   (iterator (iter-list sub)))
      (lambda ()
        (iter-next iterator))))
 
 (defmacro sub-iter-prec (seq elm)
   "Create iterator from position of `elm' to beginning of `seq'."
-  `(lexical-let* ((pos (position ,elm ,seq))
-                  (sub (reverse (subseq ,seq 0 pos)))
+  `(lexical-let* ((pos      (position ,elm ,seq))
+                  (sub      (reverse (subseq ,seq 0 pos)))
                   (iterator (iter-list sub)))
      (lambda ()
        (iter-next iterator))))
@@ -215,41 +215,18 @@ create `iterator' with `tve-list-iterator'."
 ;;; Image navigation
 
 ;;;###autoload
-(defun* eiv-diaporama (tree &optional (delay eiv-default-diaporama-delay) (ext ".jpg"))
-  "Start a diaporama on tree.
-C-u ==> prompt for delay.
-C-u C-u ==> prompt for ext.
-C-u C-u C-u ==> prompt for both."
-  (interactive "DTree: ")
-  (unwind-protect
-       (progn
-         (cond ((equal current-prefix-arg '(4))
-                (setq delay (read-number "Delay: ")))
-               ((equal current-prefix-arg '(16))
-                (setq ext (read-string "Ext: ")))
-               ((equal current-prefix-arg '(64))
-                (setq delay (read-number "Delay: "))
-                (setq ext (read-string "Ext: "))))
-         (traverse-apply-func-on-files
-          tree
-          #'(lambda (x)
-              (view-file x)
-              (sit-for delay)
-              (quit-window t))
-          ext))
-    (clear-image-cache t)))
-
-
-;;;###autoload
 (defun eiv-viewer (tree &optional only)
   "Allow to navigate in a Tree of dir and subdir of pictures.
-If prefix arg prompt for file ext to use.
-By default use all files.
+If prefix arg prompt for only file extensions to use.
+An interactive diaporama is also available.
+
 On each image, simple manipulations are possible:
 - rotate left and right.
 - resize image to window size.
 - decrease image size
 - increase image size
+- tag image
+- scroll image
 
 NOTE: these manipulations are destructives on file
 so when resizing you will be prompt to save image, if you DON'T save
@@ -257,15 +234,14 @@ your initial image will be LOST."
   (interactive (list (read-directory-name "DTree: ")
                      (when current-prefix-arg
                        (read-string "OnlyExt: "))))
-  (let* ((save-dir (concat eiv-default-save-dir-name "/"))
-         (ignore-dirs (cons eiv-default-save-dir-name traverse-ignore-dirs))
-         (flist (traverse-list-files-in-tree tree nil ignore-dirs only))
+  (let* ((save-dir       (concat eiv-default-save-dir-name "/"))
+         (ignore-dirs    (cons eiv-default-save-dir-name traverse-ignore-dirs))
+         (flist          (traverse-list-files-in-tree tree nil ignore-dirs
+                                                      (when only (list only))))
          (flist-iterator (iter-list flist))
-         (action)
-         (diapo-run nil)
-         (diapo-speed eiv-default-diaporama-delay)
-         (cur-elm)
-         (flag-move))
+         (diapo-run      nil)
+         (diapo-speed    eiv-default-diaporama-delay)
+         action cur-elm flag-move fnext-elm bnext-elm)
     (flet ((eiv-viewer-goto-next-file ()
              (clear-image-cache t)
              (if (eq major-mode 'image-mode)
@@ -301,13 +277,10 @@ your initial image will be LOST."
            (eiv-save-file (fn)
              (unless diapo-run
                (if (y-or-n-p "Save image?")
-                   (let* ((fname (buffer-file-name
-                                  (current-buffer)))
-                          (tmp-fname (concat
-                                      (symbol-name (gensym "img"))
-                                      (file-name-extension fname t)))
-                          (tmp-dname (concat default-directory
-                                             save-dir)))
+                   (let* ((fname     (buffer-file-name (current-buffer)))
+                          (tmp-fname (concat (symbol-name (gensym "img"))
+                                             (file-name-extension fname t)))
+                          (tmp-dname (concat default-directory save-dir)))
                      (if (not (file-exists-p tmp-dname))
                          (make-directory tmp-dname)) 
                      (copy-file fname

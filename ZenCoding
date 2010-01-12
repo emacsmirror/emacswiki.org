@@ -181,6 +181,17 @@ How can I fix this ?
 CORRECTION: Ctrl-Return does actually work normally. It only fails to work when I use emacs in a terminal emulator. 
 However, this is usually how I use emacs. Is there a way to get this keybinding to work when using emacs in a term window?
 
+UPDATE:
+Hi Chris. On another computer, I am now using the latest version of zencoding-mode.el
+( Last-Updated: 2009-11-20 Fri. The previous version, which I am also using, has not date)
+It seems that this latest version has even more issues when used in emacs within a term window.
+As before, C-Ret doesn't do anything.
+Also, the preview mode doesn't respond as expected. If I do p*5, then M-x zen-expand-line, I get the preview. But a return will just add a line break, while the preview remains open.
+
+I really appreciate that you are providing this awesome mode. But I'd really like it if you could add support for emacs in a terminal window.
+
+Is there any chance that you might hammer out these bugs?
+
 
 [new]
 Yes, please rewrite it in elisp ... ;-)

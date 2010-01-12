@@ -3,16 +3,17 @@
 
 This is a quick-start guide to using [http://bazaar-vcs.org Bazaar] for Emacs development.  It assumes familiarity with the old CVS ways.  The focus at present is on /easing the transition/ from CVS to Bazaar, /not/ on teaching you how to be a power Bazaar user.  However, once you have read this, you will have a basic understanding of distributed version control and Bazaar.
 
-This guide mainly presents a Bazaar workflow recommended for use by Emacs developers.  It is oriented toward the "regular contributor," whether a "core" committer, a maintainer of a well-defined package (/e.g./, a major mode), or simply someone who enjoys occasionally hacking on Emacs and then contributing those improvements to the community.  The emphasis is on /necessary/ and /simple/, not on "general" nor on maximal efficiency.  Emacs developers will surely need various other workflows at times, and there are in most cases more highly performant ways of accomplishing most tasks.  However, the ways presented here are intended to be straightforward, effective, reasonably efficient, and relatively simple.
+This guide presents a simple Bazaar workflow oriented toward the "regular contributor," whether a "core" committer, a maintainer of a well-defined package (/e.g./, a major mode), or simply someone who enjoys occasionally hacking on Emacs and then contributing those improvements to the community.  The emphasis is on /necessary/ and /simple/, not on "general" nor on maximal efficiency.  Emacs developers will surely need various other workflows at times, and there are in most cases more highly performant ways of accomplishing most tasks.  However, the ways presented here are intended to be straightforward, effective, reasonably efficient, and relatively simple.
 
 [:StopGap]
-=== A Stopgap Measure for the Impatient ===
 
-While we recommend the workflow documented on this page, it's possible that you just need to contribute a change to Emacs as quickly as you can, and don't have time to dive fully into the distributed way of working right now.
+=== CVS-like workflow ===
 
-If that's the case, then see [[BzrQuickStartForEmacsDevs]], which provides an alternate, more CVS-like workflow that will feel simpler if you are coming from CVS, but will still allow you to contribute changes to Emacs.  (You may find the links in [[#OtherResources]] useful as well.)
+The workflow documented on this page takes advantage of the fact that Bzr is a decentralized version control system.  It is especially useful when you are working on large changes to Emacs.
 
-Later, when you have a chance, come back here and learn the natively distributed workflow.  It is a superset of what is described at [[BzrQuickStartForEmacsDevs]], and hews more closely to what experienced Bazaar users are accustomed to, which will make it easier for you to get support online.
+If you just need a quick and simple workflow, see [[BzrQuickStartForEmacsDevs]].  That page describes a simple CVS-like workflow, which allows you to contribute changes to Emacs as quickly as you can, with a minimum amount of extra effort.  One advantage of that workflow is that you can use VC-dir without complications.
+
+Later, when you have a chance, come back here and learn the workflow described on this page.  This workflow hews more closely to what experienced Bazaar users are accustomed to, which will make it easier for you to get support online.  One disadvantage of this workflow is that VC-dir support is still somewhat lacking.
 
 [:Terminology]
 === Terminology ===
@@ -125,7 +126,7 @@ We recommend you create one branch for quick, easy changes, such as one-line pat
 
 This creates a directory ##quickfixes## and populates it with the Emacs source tree.  This operation should be much faster than the first ##bzr branch##.  (Note: ##quickfixes## should be a sibling directory of ##trunk##, to share history data with it.)
 
-Remember this is all happening inside a shared repository.  In a Bazaar shared repository, all the branches share history, which means less spaced used and less time spent downloading history and file content; this makes Bazaar branches much more lightweight than CVS branches.   However, it still takes time to check out the source tree for a new branch (which we just did), and bootstrapping a new tree takes an annoyingly long time.  That is why we recommend that for small changes you keep reusing the same ##quickfixes## branch.  This way, after you have bootstrapped the ##quickfixes## branch once, the subsequent update, build, and commit steps of the update-edit-build-test-commit cycle all are very fast, as long as you continue working in the same branch. 
+Remember this is all happening inside a shared repository.  In a Bazaar shared repository, all the branches share history, which means less spaced used and less time spent downloading history and file content; this makes Bazaar branches much more lightweight than CVS branches.   However, it still takes time to check out the source tree for a new branch (which we just did), and bootstrapping a new tree takes an annoyingly long time.  That is why we recommend that for small changes you keep reusing the same ##quickfixes## branch.  This way, after you have bootstrapped the ##quickfixes## branch once, the subsequent update, build, and commit steps of the update-edit-build-test-commit cycle are each very fast, as long as you continue working in the same branch. 
  
 [:QuickFix]
 == Workflow for a Quick Change ==
@@ -149,7 +150,7 @@ Once you have achieved a clean merge, commit it:
 
       bzr commit -m "Merge from mainline."
 
-Note that you will need this ##commit## command even if there no conflicts were detected during the merge.
+Note that you will need this ##commit## command even if there were no conflicts detected during the merge.
 
 Now you start editing.  When you are done:
 

@@ -1918,6 +1918,7 @@ When W/SPC is non-nil return string with whitespace interspersed.\n
 ;;; :COURTESY Drew Adams :HIS strings.el
 ;;; :RENAMED `mon-split-string-line' -> `mon-string-split-line'
 ;;; :MODIFICATIONS <Timestamp: #{2009-09-23T18:49:22-04:00Z}#{09393} - by MON KEY>
+;;; :MODIFICATIONS <Timestamp: #{2010-01-11T23:34:36-05:00Z}#{10021} - by MON KEY>
 (defun mon-string-split-line (&optional buffer insrtp intrp)
   "Return current line of text in BUFFER as a string.
 When INSRTP is non-nil or called interactively insert return string at point. 
@@ -1929,15 +1930,18 @@ Does not move-point.\n
 (let ((splt-str-s)
       (splt-str-e)
       (splt-str))  
-  (setq buffer (or buffer (current-buffer)))
-  (save-excursion
-    (set-buffer buffer)
-    (setq splt-str
-          (buffer-substring-no-properties 
-           (progn (end-of-line 1) (setq splt-str-e (point)))
-           (progn (beginning-of-line 1) (setq splt-str-s (point))))))
+  ;; :WAS (setq buffer (or buffer (current-buffer)))
+  ;;       (save-excursion (set-buffer buffer)
+  (save-excursion    
+    (with-current-buffer (if buffer (get-buffer buffer) (current-buffer))
+      (setq splt-str
+            (buffer-substring-no-properties 
+             (progn (end-of-line 1) (setq splt-str-e (point)))
+             (progn (beginning-of-line 1) (setq splt-str-s (point)))))))
   (if (or insrtp intrp)
-      (save-excursion (prin1 splt-str (current-buffer)))
+      (if (not buffer-read-only)      
+          (save-excursion (prin1 splt-str (current-buffer)))
+          (prin1 splt-str))
     splt-str)))
 
 ;;; ==============================
@@ -3573,15 +3577,19 @@ Helper function for `mon-view-help-source'\n
 ;;; ==============================
 ;;; :COURTESY Pascal J. Bourguignon :HIS pjb-emacs.el
 ;;; :NOTE Keep with `mon-nuke-text-properties-buffer', `mon-plist-keys'
-(defun mon-list-all-properties-in-buffer (buffer)
-"List text-properties in BUFFER.\n
+;;; :MODIFICATIONS <Timestamp: #{2010-01-11T23:39:18-05:00Z}#{10021} - by MON KEY>
+(defun mon-list-all-properties-in-buffer (&optional buffer) ;; :WAS (buffer)
+"List text-properties in current-buffer.\n
+When BUFFER is non-nil list its text-properties instead.\n
 :SEE-ALSO `mon-nuke-text-properties-buffer'.\n►►►"
-  (save-excursion
-    (set-buffer buffer)
+(save-excursion
+  ;; :WAS (set-buffer buffer)
+  (with-current-buffer 
+      (if buffer (get-buffer buffer) (current-buffer))
     (delete-duplicates
      (loop
         for i from (point-min) to (point-max)
-        nconc  (delete-duplicates (mon-plist-keys (text-properties-at i nil)))))))
+        nconc  (delete-duplicates (mon-plist-keys (text-properties-at i nil))))))))
 ;;
 ;;; ==============================
 ;;; :COURTESY Pascal J. Bourguignon :HIS pjb-emacs.el
