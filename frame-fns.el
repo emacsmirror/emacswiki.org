@@ -4,12 +4,12 @@
 ;; Description: Non-interactive frame and window functions.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 16:15:50 1996
 ;; Version: 21.1
-;; Last-Updated: Sat Aug  1 15:27:30 2009 (-0700)
+;; Last-Updated: Tue Jan 12 17:16:29 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 185
+;;     Update #: 194
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/frame-fns.el
 ;; Keywords: internal, extensions, local, frames
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -36,6 +36,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/01/12 dadams
+;;     1-window-frames-on, multi-window-frames-on:
+;;       save-excursion + set-buffer -> with-current-buffer.
 ;; 2008/04/05 dadams
 ;;     get-a-frame: Define without using member-if.
 ;; 2005/10/31 dadams
@@ -277,30 +280,30 @@ The optional FRAME argument is as for function `get-buffer-window'."
 ;;;###autoload
 (defun 1-window-frames-on (buffer)
   "List of all visible 1-window frames showing BUFFER."
-  (setq buffer (get-buffer buffer))
-  (let ((frs nil))
-    (save-excursion
-      (set-buffer buffer)
-      (when (buffer-live-p buffer)      ; Do nothing if dead buffer.
-        (dolist (fr (frames-on buffer)) ; Is it better to search through
-          (save-window-excursion        ; frames-on or windows-on?
-            (select-frame fr)
-            (when (one-window-p t fr) (push fr frs))))))
-    frs))
+  (setq buffer  (get-buffer buffer))
+  (when buffer                          ; Do nothing if BUFFER is not a buffer.
+    (let ((frs nil))
+      (with-current-buffer buffer
+        (when (buffer-live-p buffer)    ; Do nothing if dead buffer.
+          (dolist (fr (frames-on buffer)) ; Is it better to search through
+            (save-window-excursion      ; frames-on or windows-on?
+              (select-frame fr)
+              (when (one-window-p t fr) (push fr frs))))))
+      frs)))
 
 ;;;###autoload
 (defun multi-window-frames-on (buffer)
   "List of all visible multi-window frames showing BUFFER."
-  (setq buffer (get-buffer buffer))
-  (let ((frs nil))
-    (save-excursion
-      (set-buffer buffer)
-      (when (buffer-live-p buffer)      ; Do nothing if dead buffer.
-        (dolist (fr (frames-on buffer)) ; Is it better to search through
-          (save-window-excursion        ; frames-on or windows-on?
-            (select-frame fr)
-            (when (not (one-window-p t fr)) (push fr frs))))))
-    frs))
+  (setq buffer  (get-buffer buffer))
+  (when buffer                          ; Do nothing if BUFFER is not a buffer.
+    (let ((frs nil))
+      (with-current-buffer buffer
+        (when (buffer-live-p buffer)    ; Do nothing if dead buffer.
+          (dolist (fr (frames-on buffer)) ; Is it better to search through
+            (save-window-excursion      ; frames-on or windows-on?
+              (select-frame fr)
+              (when (not (one-window-p t fr)) (push fr frs))))))
+      frs)))
 
 ;;;###autoload
 (defun flash-ding (&optional do-not-terminate frame)

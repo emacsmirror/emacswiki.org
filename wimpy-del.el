@@ -4,13 +4,13 @@
 ;; Description: Require confirmation for large region deletion.
 ;; Author: Bard Bloom, bard@theory.lcs.mit.edu, Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) Bard Bloom, June 1989
 ;; Created: Wed Nov 22 14:57:17 1995
 ;; Version: 21.0
-;; Last-Updated: Sat Aug  1 15:46:03 2009 (-0700)
+;; Last-Updated: Tue Jan 12 17:19:12 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 161
+;;     Update #: 167
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/wimpy-del.el
 ;; Keywords: region, cut, kill, copy
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -84,8 +84,6 @@
 ;;
 ;;; Code:
 
-(and (< emacs-major-version 20) (eval-when-compile (require 'cl))) ;; when
-
 (require 'frame-fns nil t) ;; (no error if not found): flash-ding
 (require 'strings nil t) ;; (no error if not found): region-description
 
@@ -117,14 +115,13 @@ Else, if the region is > `wimpy-delete-size', you must confirm the kill."
   (interactive
    (if (and (eq last-command 'complete) ; See `completion.el'.
             (boundp 'cmpl-last-insert-location))
-       (let ((mark-even-if-inactive t))
-         (list (region-beginning) (region-end)))
+       (let ((mark-even-if-inactive  t)) (list (region-beginning) (region-end)))
      (list (region-beginning) (region-end))))
   (cond (;; Remove the most recent completion----See `completion.el'.
          (and (eq last-command 'complete) (boundp 'cmpl-last-insert-location))
          (delete-region (point) cmpl-last-insert-location)
          (insert cmpl-original-string)  ; Defined in `completion.el'.
-         (setq completion-to-accept nil)) ; Defined in `completion.el'.
+         (setq completion-to-accept  nil)) ; Defined in `completion.el'.
         ;; Only kill large region if user confirms.
         ((and wimpy-delete-size
               (> (- end beg) wimpy-delete-size)
@@ -152,7 +149,7 @@ If the previous command was a completion, just remove the completion.
 
 Else, if the region is > `wimpy-delete-size', you must confirm the kill."
   (interactive "r")
-  (let ((x-select-enable-clipboard t))
+  (let ((x-select-enable-clipboard  t))
     (kill-region-wimpy beg end)))
 
 ;;; For use in menu-bar.

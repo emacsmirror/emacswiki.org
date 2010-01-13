@@ -4,12 +4,12 @@
 ;; Description: Miscellaneous non-interactive functions.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 17:21:28 1996
 ;; Version: 21.0
-;; Last-Updated: Sat Aug  1 15:37:19 2009 (-0700)
+;; Last-Updated: Tue Jan 12 15:51:46 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 467
+;;     Update #: 470
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/misc-fns.el
 ;; Keywords: internal, unix, lisp, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -57,6 +57,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/10/12 dadams
+;;     fontify-buffer: save-excursion + set-buffer -> with-current-buffer.
 ;; 2007/09/25 dadams
 ;;     buffer-modifying-cmds: Respect kill-read-only-ok.
 ;; 2007/09/22 dadams
@@ -236,7 +238,7 @@ BUFFER may be either a buffer or its name (a string)."
   "Fontify buffer BUFFER.
 Usable as a candidate for `compilation-finish-functions'.
 Any arguments besides BUFFER (IGNORE list) are ignored."
-  (save-excursion (set-buffer buffer) (font-lock-fontify-buffer)))
+  (with-current-buffer buffer (font-lock-fontify-buffer)))
 
 
 

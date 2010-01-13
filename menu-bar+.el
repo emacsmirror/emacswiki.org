@@ -4,12 +4,12 @@
 ;; Description: Extensions to `menu-bar.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 17 10:05:46 1995
 ;; Version: 21.1
-;; Last-Updated: Sat Nov  7 16:24:08 2009 (-0700)
+;; Last-Updated: Tue Jan 12 15:41:31 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 3305
+;;     Update #: 3308
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/menu-bar+.el
 ;; Keywords: internal, local, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -85,6 +85,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/01/12 dadams
+;;     describe-menubar: save-excursion + set-buffer -> with-current-buffer.
 ;; 2009/11/07 dadams
 ;;     Applied doremi cmd renamings (added +).
 ;;     Added to Do Re Mi menu: *-all-frames-fg+, *(-face)-(bg|fg)-color-name+, *-all-faces-bg+.
@@ -380,8 +382,7 @@ The \"Help\" menu extends the \"Help\" menu described in the Emacs manual (`\\[i
 For information on a menu item, use the \"This\" item in the \"Describe\"
 submenu of the \"Help\" menu."))
     (print-help-return-message)
-    (save-excursion
-      (set-buffer standard-output)
+    (with-current-buffer standard-output
       (help-mode)
       (buffer-string))))                ; Return the text we displayed.
 

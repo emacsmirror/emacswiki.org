@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Thu Jul 11 17:10:39 1996
 ;; Version: 21.0
-;; Last-Updated: Sat Aug  1 15:38:10 2009 (-0700)
+;; Last-Updated: Tue Jan 12 15:55:45 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 125
+;;     Update #: 133
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/novice+.el
 ;; Keywords: internal, help
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -20,14 +20,15 @@
 ;;   `color-theme', `cus-edit', `cus-face', `cus-load', `cus-start',
 ;;   `custom', `dired', `dired+', `dired-aux', `dired-x', `doremi',
 ;;   `easymenu', `ediff-diff', `ediff-help', `ediff-init',
-;;   `ediff-merg', `ediff-mult', `ediff-util', `ediff-wind', `ffap',
-;;   `ffap-', `fit-frame', `frame-cmds', `frame-fns', `help+20',
-;;   `hexrgb', `icicles', `icicles-cmd1', `icicles-cmd2',
-;;   `icicles-face', `icicles-fn', `icicles-mac', `icicles-mcmd',
-;;   `icicles-mode', `icicles-opt', `icicles-var', `info', `info+',
-;;   `kmacro', `levenshtein', `menu-bar', `menu-bar+', `misc-cmds',
-;;   `misc-fns', `mkhtml', `mkhtml-htmlize', `mwheel', `novice',
-;;   `novice+', `pp', `pp+', `ring', `ring+', `second-sel',
+;;   `ediff-merg', `ediff-mult', `ediff-util', `ediff-wind',
+;;   `el-swank-fuzzy', `ffap', `ffap-', `fit-frame', `frame-cmds',
+;;   `frame-fns', `fuzzy-match', `help+20', `hexrgb', `icicles',
+;;   `icicles-cmd1', `icicles-cmd2', `icicles-face', `icicles-fn',
+;;   `icicles-mac', `icicles-mcmd', `icicles-mode', `icicles-opt',
+;;   `icicles-var', `info', `info+', `kmacro', `levenshtein',
+;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `mkhtml',
+;;   `mkhtml-htmlize', `mwheel', `novice', `novice+', `pp', `pp+',
+;;   `reporter', `ring', `ring+', `second-sel', `sendmail',
 ;;   `strings', `thingatpt', `thingatpt+', `unaccent', `w32-browser',
 ;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
 ;;
@@ -55,6 +56,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/01/12 dadams
+;;     (enable|disable)-command: save-excursion + set-buffer -> with-current-buffer.
 ;; 2005/10/31 dadams
 ;;     Use nil as init-value arg in calls to completing-read, everywhere.
 ;; 2004/09/21 dadams
@@ -118,8 +121,7 @@ sessions.  See command `\\[disable-command]'."
          (list (intern (completing-read "Enable command: " obarray 'commandp nil
                                         nil nil (symbol-name symb) t)))))
       (put command 'disabled nil)
-      (save-excursion
-        (set-buffer (find-file-noselect (substitute-in-file-name user-init-file)))
+      (with-current-buffer (find-file-noselect (substitute-in-file-name user-init-file))
         (goto-char (point-min))
         (when (search-forward (concat "(put '" (symbol-name command) " ") nil t)
           (delete-region (progn (beginning-of-line) (point))
@@ -143,7 +145,7 @@ to future sessions."
     (put command 'disabled nil)
     (let ((init-file user-init-file)
           (default-init-file
-            (if (eq system-type 'ms-dos) "~/_emacs" "~/.emacs")))
+              (if (eq system-type 'ms-dos) "~/_emacs" "~/.emacs")))
       (when (null init-file)
         (if (or (file-exists-p default-init-file)
                 (and (eq system-type 'windows-nt)
@@ -157,9 +159,7 @@ to future sessions."
                  (eq system-type 'windows-nt)
                  (file-exists-p "~/_emacs"))
             (setq init-file "~/_emacs")))
-      (save-excursion
-        (set-buffer (find-file-noselect
-                     (substitute-in-file-name init-file)))
+      (with-current-buffer (find-file-noselect (substitute-in-file-name init-file))
         (goto-char (point-min))
         (if (search-forward (concat "(put '" (symbol-name command) " ") nil t)
             (delete-region
@@ -191,8 +191,7 @@ sessions.  See command `\\[enable-command]'."
                                         nil nil (symbol-name symb) t)))))
       (unless (commandp command) (error "Invalid command name `%s'" command))
       (put command 'disabled t)
-      (save-excursion
-        (set-buffer (find-file-noselect (substitute-in-file-name user-init-file)))
+      (with-current-buffer (find-file-noselect (substitute-in-file-name user-init-file))
         (goto-char (point-min))
         (if (search-forward (concat "(put '" (symbol-name command) " ") nil t)
             (delete-region (progn (beginning-of-line) (point))
@@ -216,7 +215,7 @@ to future sessions."
     (put command 'disabled t)
     (let ((init-file user-init-file)
           (default-init-file
-            (if (eq system-type 'ms-dos) "~/_emacs" "~/.emacs")))
+              (if (eq system-type 'ms-dos) "~/_emacs" "~/.emacs")))
       (when (null init-file)
         (if (or (file-exists-p default-init-file)
                 (and (eq system-type 'windows-nt)
@@ -230,9 +229,7 @@ to future sessions."
                  (eq system-type 'windows-nt)
                  (file-exists-p "~/_emacs"))
             (setq init-file "~/_emacs")))
-      (save-excursion
-        (set-buffer (find-file-noselect
-                     (substitute-in-file-name init-file)))
+      (with-current-buffer (find-file-noselect (substitute-in-file-name init-file))
         (goto-char (point-min))
         (if (search-forward (concat "(put '" (symbol-name command) " ") nil t)
             (delete-region

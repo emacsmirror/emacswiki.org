@@ -4,12 +4,12 @@
 ;; Description: Run Windows application associated with a file.
 ;; Author: Emacs Wiki, Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2004-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2010, Drew Adams, all rights reserved.
 ;; Created: Thu Mar 11 13:40:52 2004
 ;; Version: 21.0
-;; Last-Updated: Sat Aug  1 15:45:40 2009 (-0700)
+;; Last-Updated: Tue Jan 12 16:56:23 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 194
+;;     Update #: 199
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/w32-browser.el
 ;; Keywords: mouse, dired, w32, explorer
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -36,6 +36,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/01/12 dadams
+;;     dired-mouse-w32-browser, dired-mouse-w32explore:
+;;       save-excursion + set-buffer -> with-current-buffer.
 ;; 2008/09/22 dadams
 ;;     dired(-mouse)-w32(-browser|explore): Use t as 2nd arg for dired-get-filename.
 ;; 2008/07/18 dadams
@@ -109,8 +112,7 @@ If file is a directory or no application is associated with file, then
 `find-file' instead."
     (interactive "e")
     (let (file)
-      (save-excursion
-        (set-buffer (window-buffer (posn-window (event-end event))))
+      (with-current-buffer (window-buffer (posn-window (event-end event)))
         (save-excursion
           (goto-char (posn-point (event-end event)))
           (setq file (dired-get-filename nil t))))
@@ -145,8 +147,7 @@ If file is a directory or no application is associated with file, then
     "Open Windows Explorer to file or folder under mouse."
     (interactive "e")
     (let (file)
-      (save-excursion
-        (set-buffer (window-buffer (posn-window (event-end event))))
+      (with-current-buffer (window-buffer (posn-window (event-end event)))
         (save-excursion
           (goto-char (posn-point (event-end event)))
           (setq file (dired-get-filename nil t))))

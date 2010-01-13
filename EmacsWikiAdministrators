@@ -4,7 +4,7 @@ We fight WikiSpam day and night!  :)
 
 You're welcome to come help us out -- just ask
 one of the existing administrators for an admin password.
-The only real job we have is maintaining BannedHosts.
+The only real job we have is maintaining BannedContent and BannedHosts.
 
 Current administrators:
 
@@ -38,13 +38,7 @@ The powers of an administrator:
 
 Old InterMap discussion is at InterMapDiscussion.
 
-[new:]
-Why do all the local InterMap prefixes go through "<code>/cgi-bin/emacs*?</code>"? Wouldn't "<code>/emacs*/</code>" be more consistent?
-
-[new]
-Yes it would. -- Alex
-
-----
+== Banning Ranges ==
 
 Whois can tell you whether you should bother banning just one IP, or an entire range.  I use http://network-tools.com/ when working on a system that does not provide whois.
 

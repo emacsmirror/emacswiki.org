@@ -4,12 +4,12 @@
 ;; Description: Main Emacs startup file: require/autoload other files.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1995-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 1995-2010, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 21.1
-;; Last-Updated: Sat Nov 28 07:48:32 2009 (-0800)
+;; Last-Updated: Tue Jan 12 12:37:13 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 2809
+;;     Update #: 2829
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -87,6 +87,8 @@
 ;;
 ;; Change log:
 ;;
+;; 2010/01/12 dadams
+;;     Commented out *scratch* buffer text hack.
 ;; 2009/11/28 dadams
 ;;     Typo: '' -> '.
 ;; 2009/10/25 dadams
@@ -337,14 +339,14 @@
 ;;;;;;;;;;;;;;;;;;;;;;
 
 
-;;; Hack needed if you load `start-opt.el', because it does this:
-;;;    (add-hook 'lisp-mode-hook             'auto-make-header)
-;;; Without this hack, you get a lisp header from header2.el
-;;; in the *scratch* buffer!
-(when (>= emacs-major-version 21)
-  (save-excursion
-    (set-buffer (get-buffer-create "*scratch*"))
-    (insert "Evaluate Emacs Lisp expressions here. `C-h m' for details\n\n\n\n\n")))
+;; ;;; Hack needed if you load `start-opt.el', because it does this:
+;; ;;;    (add-hook 'lisp-mode-hook             'auto-make-header)
+;; ;;; Without this hack, you get a lisp header from header2.el
+;; ;;; in the *scratch* buffer!
+;; (when (>= emacs-major-version 21)
+;;   (save-excursion
+;;     (set-buffer (get-buffer-create "*scratch*"))
+;;     (insert "Evaluate Emacs Lisp expressions here. `C-h m' for details\n\n\n\n\n")))
 
 (when (> emacs-major-version 21) (require 'bindings+ nil t)) ; Minor-mode menus in mode line.
 (require 'misc-fns nil t)               ; Miscellaneous non-interactive functions

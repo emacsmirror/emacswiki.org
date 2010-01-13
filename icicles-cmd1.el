@@ -4,12 +4,12 @@
 ;; Description: Top-level commands for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Dec 21 08:50:23 2009 (-0800)
+;; Last-Updated: Tue Jan 12 13:48:00 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 20034
+;;     Update #: 20051
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -173,6 +173,7 @@
 ;;    `icicle-kmacro-action', `icicle-make-file+date-candidate',
 ;;    `icicle-make-frame-alist', `icicle-make-window-alist',
 ;;    `icicle-bookmark-propertize-candidate',
+;;    `icicle-pp-display-expression',
 ;;    `icicle-remove-buffer-candidate-action',
 ;;    `icicle-remove-buffer-config-action',
 ;;    `icicle-remove-from-recentf-candidate-action',
@@ -372,29 +373,26 @@
 ;;
 ;; This is essentially the same as `pp-eval-expression' defined in `pp+.el'.
 ;;
-;; 1. Use no `emacs-lisp-mode-hook'.
-;; 2. Read with completion, using `icicle-read-expression-map'.
-;; 3. Call font-lock-fontify-buffer.
-;; 4. Progress message added.
-;; 5. Added optional arg and insertion behavior.
-;; 6. Respect `icicle-pp-eval-expression-print-length', `icicle-pp-eval-expression-print-level',
+;; 1. Read with completion, using `icicle-read-expression-map'.
+;; 2. Progress message added.
+;; 3. Added optional arg and insertion behavior.
+;; 4. Respect `icicle-pp-eval-expression-print-length', `icicle-pp-eval-expression-print-level',
 ;;    and `eval-expression-debug-on-error'.
-;; 7. Adjusted to work in different Emacs releases.
+;; 5. Adjusted to work in different Emacs releases.
 ;;
 ;;;###autoload
 (defun icicle-pp-eval-expression (expression ; Bound to `M-:' in Icicle mode.
                                   &optional insert-value)
-  "Evaluate Emacs-Lisp sexp EXPRESSION and pretty-print its value.
+  "Evaluate Emacs-Lisp sexp EXPRESSION, and pretty-print its value.
 Add the value to the front of the variable `values'.
 With a prefix arg, insert the value into the current buffer at point.
+ With a negative prefix arg, if the value is a string, then insert it
+ into the buffer without double-quotes (`\"').
 With no prefix arg:
  If the value fits on one line (frame width) show it in the echo area.
- Otherwise, show the value in buffer *Pp Eval Output*.
+ Otherwise, show the value in buffer `*Pp Eval Output*'.
 
-With a negative prefix arg, if the value is a string, then insert it
-into the buffer without double-quotes (`\"').
-
-This command respects options
+This command respects user options
 `icicle-pp-eval-expression-print-length',
 `icicle-pp-eval-expression-print-level', and
 `eval-expression-debug-on-error'.
@@ -431,40 +429,49 @@ customize option `icicle-top-level-key-bindings'."
            (if (or (not (stringp (car values))) (wholenump insert-value))
                (pp (car values) (current-buffer))
              (princ (car values) (current-buffer))))
-          (t
-           (let* ((old-show-function  temp-buffer-show-function)
-                  ;; Use this function to display the buffer.
-                  ;; This function either decides not to display it at all
-                  ;; or displays it in the usual way.
-                  (temp-buffer-show-function
-                   #'(lambda (buf)
-                       (save-excursion
-                         (set-buffer buf)
-                         (goto-char (point-min))
-                         (end-of-line 1)
-                         (if (or (< (1+ (point)) (point-max))
-                                 (>= (- (point) (point-min)) (frame-width)))
-                             (let ((temp-buffer-show-function  old-show-function)
-                                   (old-selected               (selected-window))
-                                   (window                     (display-buffer buf)))
-                               (goto-char (point-min)) ; expected by some hooks ...
-                               (make-frame-visible (window-frame window))
-                               (unwind-protect
-                                    (progn
-                                      (select-window window)
-                                      (run-hooks 'temp-buffer-show-hook))
-                                 (select-window old-selected)
-                                 (message "Evaluating...done.  See buffer *Pp Eval Output*.")))
-                           (message "%s" (buffer-substring (point-min) (point))))))))
-             (with-output-to-temp-buffer "*Pp Eval Output*"
-               (pp (car values))
-               (with-current-buffer standard-output
-                 (setq buffer-read-only  nil)
-                 (let ((emacs-lisp-mode-hook    nil)
-                       (change-major-mode-hook  nil))
-                   (emacs-lisp-mode))
-                 (set (make-local-variable 'font-lock-verbose) nil)
-                 (font-lock-fontify-buffer))))))))
+          (t (icicle-pp-display-expression (car values) "*Pp Eval Output*")))))
+
+
+;; REPLACE ORIGINAL in `pp.el':
+;; 1. Use no `emacs-lisp-mode-hook' or `change-major-mode-hook'.
+;; 2. Call `font-lock-fontify-buffer'.
+;;
+(defun icicle-pp-display-expression (expression out-buffer-name)
+  "Prettify and show EXPRESSION in a way appropriate to its length.
+If a temporary buffer is needed for representation, it is named
+OUT-BUFFER-NAME."
+  (let* ((old-show-function  temp-buffer-show-function)
+         ;; Use this function to display the buffer.
+         ;; This function either decides not to display it at all
+         ;; or displays it in the usual way.
+         (temp-buffer-show-function
+          #'(lambda (buf)
+              (with-current-buffer buf
+                (goto-char (point-min))
+                (end-of-line 1)
+                (if (or (< (1+ (point)) (point-max))
+                        (>= (- (point) (point-min)) (frame-width)))
+                    (let ((temp-buffer-show-function  old-show-function)
+                          (old-selected               (selected-window))
+                          (window                     (display-buffer buf)))
+                      (goto-char (point-min)) ; expected by some hooks ...
+                      (make-frame-visible (window-frame window))
+                      (unwind-protect
+                           (progn (select-window window)
+                                  (run-hooks 'temp-buffer-show-hook))
+                        (select-window old-selected)
+                        (message "Evaluating...done. See buffer `%s'."
+                                 out-buffer-name)))
+                  (message "%s" (buffer-substring (point-min) (point))))))))
+    (with-output-to-temp-buffer out-buffer-name
+      (pp expression)
+      (with-current-buffer standard-output
+        (setq buffer-read-only  nil)
+        (let ((emacs-lisp-mode-hook    nil)
+              (change-major-mode-hook  nil))
+          (emacs-lisp-mode))
+        (set (make-local-variable 'font-lock-verbose) nil)
+        (font-lock-fontify-buffer)))))
 
 ;;;###autoload
 (defun icicle-shell-command-on-file (file)
@@ -1160,9 +1167,9 @@ control completion behaviour using `bbdb-completion-type'."
                        ;; Use completion buffer
                        (let ((standard-output  (get-buffer-create "*Completions*")))
                          ;; A previously existing buffer has to be cleaned first
-                         (save-excursion (set-buffer standard-output)
-                                         (setq buffer-read-only  nil)
-                                         (erase-buffer))
+                         (with-current-buffer standard-output
+                           (setq buffer-read-only  nil)
+                           (erase-buffer))
                          (display-completion-list
                           (mapcar #'(lambda (n) (bbdb-dwim-net-address rec n))
                                   (bbdb-record-net rec)))

@@ -1,4 +1,4 @@
-This projects aims at creating an emacs frontend to Eclim, see http://eclim.sourceforge.net. With the help of ecilm we can provide emacs-users with a tight eclipse integration. The ultimate goal of the project is to simplify java development with emacs and bring the best features from eclipse to emacs.
+This projects aims at creating an emacs frontend to Eclim, see http://eclim.sourceforge.net. With the help of eclim we can provide emacs-users with a tight eclipse integration. The ultimate goal of the project is to simplify java development with emacs and bring the best features from eclipse to emacs.
 
 == Features ==
 === Projects ===
@@ -8,5 +8,9 @@ This projects aims at creating an emacs frontend to Eclim, see http://eclim.sour
 === Ant ===
 --comming soon--
 == Issues & Questions ==
+[new] It seems like there are a lot of chefs in that kitchen... 
+How does this help/promote use of `The One True Editor'?
+Why not just use Vim or Eclipse instead? After all the project itself states:
+ " .. Eclim is less of an application and more of an integration of two great projects. The first, Vim, is arguably one of the best text editors in existence. The second, Eclipse, ... " I don't see any mention of Emacs in there. Will this require Emacs users to grok these other lesser editors? --[[mon_key]]
 == Contribute ==
 The project is living on github at http://github.com/senny/emacs-eclim. Since the active development has just started lately we are glad for every contribution. Feel free to fork the project and send me a pull-request when you got some new features implemented or some bugs fixed.

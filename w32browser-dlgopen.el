@@ -4,12 +4,12 @@
 ;; Description:  Use w32browser with standard Windows Open File box.
 ;; Author: Binu Jose Philip, Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2000-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Thu Dec  7 09:32:12 2000
 ;; Version: 21.0
-;; Last-Updated: Sat Aug  1 15:45:55 2009 (-0700)
+;; Last-Updated: Tue Jan 12 16:59:29 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 171
+;;     Update #: 176
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/w32browser-dlgopen.el
 ;; Keywords: files, extensions, convenience, dialog
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -47,6 +47,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/01/12 dadams
+;;     dlgopen-open-files: set-buffer -> with-current-buffer.
 ;; 2009/04/26 dadams
 ;;     get-current-line: Bind inhibit-field-text-motion to t.
 ;; 2000/06/12 dadams
@@ -124,29 +126,29 @@ Optional prefix arg FLIP non-nil reverses the effect of variable
                      dlgopen-other-window)))
     (setq buffer (generate-new-buffer "files-to-open"))
     (when (call-process dlgopen-executable-path nil buffer)
-      (save-excursion
-        (set-buffer buffer)
-        (goto-line 1)
-        (setq dir-path (get-current-line))
-        ;; If buffer empty, then user has cancelled or the open failed.
-        ;; If only one line in buffer, then only one file selected, so select it.
-        (when (> (buffer-size) 0)
-          (if (= 1 (setq lines-in-page (count-lines 1 (buffer-size))))
-              (if (fboundp 'w32-browser)
-                  (w32-browser dir-path)
-                (if other-win
-                    (find-file-other-window dir-path)
-                  (find-file dir-path)))
-            (while (> lines-in-page 1)
-              (decf lines-in-page)
-              (forward-line)
-              (setq file-fqn (concat dir-path "/" (get-current-line)))
-              (save-excursion
+      (with-current-buffer buffer
+        (save-excursion
+          (goto-line 1)
+          (setq dir-path (get-current-line))
+          ;; If buffer empty, then user has cancelled or the open failed.
+          ;; If only one line in buffer, then only one file selected, so use it.
+          (when (> (buffer-size) 0)
+            (if (= 1 (setq lines-in-page (count-lines 1 (buffer-size))))
                 (if (fboundp 'w32-browser)
-                  (w32-browser file-fqn)
+                    (w32-browser dir-path)
                   (if other-win
-                      (find-file-other-window file-fqn)
-                    (find-file-noselect file-fqn))))))))) ; no display
+                      (find-file-other-window dir-path)
+                    (find-file dir-path)))
+              (while (> lines-in-page 1)
+                (decf lines-in-page)
+                (forward-line)
+                (setq file-fqn (concat dir-path "/" (get-current-line)))
+                (save-excursion
+                  (if (fboundp 'w32-browser)
+                      (w32-browser file-fqn)
+                    (if other-win
+                        (find-file-other-window file-fqn)
+                      (find-file-noselect file-fqn)))))))))) ; no display
     (kill-buffer buffer)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

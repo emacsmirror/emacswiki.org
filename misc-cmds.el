@@ -4,12 +4,12 @@
 ;; Description: Miscellaneous commands (interactive functions).
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 21.1
-;; Last-Updated: Thu Sep 24 10:11:46 2009 (-0700)
+;; Last-Updated: Tue Jan 12 15:48:26 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 2887
+;;     Update #: 2891
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -63,6 +63,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/01/12 dadams
+;;     region-to-buffer: save-excursion + set-buffer -> with-current-buffer.
 ;; 2009/09/24 dadams
 ;;     Removed no-op - use predefined function ignore instead.
 ;; 2009/06/02 dadams
@@ -824,10 +826,10 @@ With no prefix ARG (nil): `copy-to-buffer'.
   (when (eq buffer (current-buffer))
     (error "Cannot copy region to its own buffer"))
   (cond ((natnump arg)
-         (save-excursion (set-buffer buffer) (goto-char (point-max)))
+         (with-current-buffer buffer (goto-char (point-max)))
          (append-to-buffer buffer start end))
         (arg
-         (save-excursion (set-buffer buffer) (goto-char (point-min)))
+         (with-current-buffer buffer (goto-char (point-min)))
          (prepend-to-buffer buffer start end))
         (t (copy-to-buffer buffer start end))))
 

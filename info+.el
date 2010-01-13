@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 21.1
-;; Last-Updated: Sun Jan 10 15:57:09 2010 (-0800)
+;; Last-Updated: Tue Jan 12 15:39:29 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 4246
+;;     Update #: 4268
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/info+.el
 ;; Keywords: help, docs, internal
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -170,6 +170,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/01/12 dadams
+;;     Info-find-node for Emacs 20, Info-find-node-2 for Emacs 21, 22, Info-search:
+;;       save-excursion + set-buffer -> with-current-buffer.
 ;; 2010/01/10 dadams
 ;;     Info-find-node-2 for Emacs 23+: Updated for Emacs 23.2 (pretest) - virtual function stuff.
 ;; 2009/12/13 dadams
@@ -961,8 +964,7 @@ For example, type `^Q^L^Q^J* ' to set this to \"\\f\\n* \"."
                                  (tagbuf  (or Info-tag-table-buffer
                                               (generate-new-buffer " *info tag table*"))))
                              (setq Info-tag-table-buffer  tagbuf)
-                             (save-excursion
-                               (set-buffer tagbuf)
+                             (with-current-buffer tagbuf
                                (buffer-disable-undo (current-buffer))
                                (setq case-fold-search  t)
                                (erase-buffer)
@@ -997,23 +999,20 @@ For example, type `^Q^L^Q^J* ' to set this to \"\\f\\n* \"."
                    (let ((found-in-tag-table  t)
                          found-anchor found-mode
                          (m                   Info-tag-table-marker))
-                     (save-excursion
-                       (set-buffer (marker-buffer m))
-                       (goto-char m)
-                       (beginning-of-line) ; so re-search will work.
-
-                       ;; Search tag table
-                       (catch 'foo
-                         (while (re-search-forward regexp nil t)
-                           (setq found-anchor  (string-equal "Ref:" (match-string 1)))
-                           (or nodepos (setq nodepos (point))
-                               (and (string-equal (match-string 2) nodename) (throw 'foo t))))
-                         (if nodepos
-                             (goto-char nodepos)
-                           (setq found-in-tag-table  nil)))
-                       (if found-in-tag-table
-                           (setq guesspos  (1+ (read (current-buffer)))))
-                       (setq found-mode  major-mode))
+                     (with-current-buffer (marker-buffer m)
+                       (save-excursion
+                         (goto-char m)
+                         (beginning-of-line) ; so re-search will work.
+                         
+                         ;; Search tag table
+                         (catch 'foo
+                           (while (re-search-forward regexp nil t)
+                             (setq found-anchor  (string-equal "Ref:" (match-string 1)))
+                             (or nodepos (setq nodepos (point))
+                                 (and (string-equal (match-string 2) nodename) (throw 'foo t))))
+                           (if nodepos (goto-char nodepos) (setq found-in-tag-table  nil)))
+                         (when found-in-tag-table (setq guesspos  (1+ (read (current-buffer)))))
+                         (setq found-mode  major-mode)))
 
                      ;; Indirect file among split files
                      (if found-in-tag-table
@@ -1137,8 +1136,7 @@ or file: `%s'"
                                  (tagbuf  (or Info-tag-table-buffer
                                               (generate-new-buffer " *info tag table*"))))
                              (setq Info-tag-table-buffer  tagbuf)
-                             (save-excursion
-                               (set-buffer tagbuf)
+                             (with-current-buffer tagbuf
                                (buffer-disable-undo (current-buffer))
                                (setq case-fold-search  t)
                                (erase-buffer)
@@ -1279,8 +1277,7 @@ or file: `%s'"
                                  (tagbuf  (or Info-tag-table-buffer
                                               (generate-new-buffer " *info tag table*"))))
                              (setq Info-tag-table-buffer  tagbuf)
-                             (save-excursion
-                               (set-buffer tagbuf)
+                             (with-current-buffer tagbuf
                                (buffer-disable-undo (current-buffer))
                                (setq case-fold-search  t)
                                (erase-buffer)
@@ -2162,8 +2159,7 @@ to search again for `%s'.")
                                            ((memq (char-before) '(nil ?\. ?! ??))
                                             "See ")
                                            ((save-match-data
-                                              (save-excursion
-                                                (search-forward "\n\n" start t)))
+                                              (save-excursion (search-forward "\n\n" start t)))
                                             "See ")
                                            (t "see "))))
                   (goto-char next)
@@ -2251,10 +2247,8 @@ to search again for `%s'.")
                     (let ((beg3  (match-beginning 3))
                           (end3  (match-end 3)))
                       (if (and (string-match "\n[ \t]*" (match-string 3))
-                               (not (save-match-data
-                                      (save-excursion
-                                        (goto-char (1+ end3))
-                                        (looking-at "[.)]*$")))))
+                               (not (save-match-data (save-excursion (goto-char (1+ end3))
+                                                                     (looking-at "[.)]*$")))))
                           (remove-text-properties
                            (+ beg3 (match-beginning 0))
                            (+ beg3 (match-end 0))
@@ -2545,8 +2539,7 @@ to search again for `%s'.")
                                            ((memq (char-before) '(nil ?\. ?! ??))
                                             "See ")
                                            ((save-match-data
-                                              (save-excursion
-                                                (search-forward "\n\n" start t)))
+                                              (save-excursion (search-forward "\n\n" start t)))
                                             "See ")
                                            (t "see "))))
                   (goto-char next)
@@ -2613,8 +2606,7 @@ to search again for `%s'.")
                   (goto-char rbeg)
                   (save-match-data
                     (while (re-search-forward "\\s-*\n\\s-*" rend t nil)
-                      (remove-text-properties (match-beginning 0)
-                                              (match-end 0)
+                      (remove-text-properties (match-beginning 0) (match-end 0)
                                               '(font-lock-face t))))))
               (when not-fontified-p
                 (when (memq Info-hide-note-references '(t hide))
@@ -2881,8 +2873,7 @@ To remove the highlighting, just start an incremental search: \
             (unless found
               (unwind-protect
                    (let ((list  ()))
-                     (save-excursion
-                       (set-buffer (marker-buffer Info-tag-table-marker))
+                     (with-current-buffer (marker-buffer Info-tag-table-marker)
                        (goto-char (point-min))
                        (search-forward "\n\^_\nIndirect:")
                        (save-restriction
@@ -3025,8 +3016,7 @@ To remove the highlighting, just start an incremental search: \
               (unwind-protect
                    ;; Try other subfiles.
                    (let ((list  ()))
-                     (save-excursion
-                       (set-buffer (marker-buffer Info-tag-table-marker))
+                     (with-current-buffer (marker-buffer Info-tag-table-marker)
                        (goto-char (point-min))
                        (search-forward "\n\^_\nIndirect:")
                        (save-restriction
@@ -4113,8 +4103,8 @@ subnodes (outside Info)? ")
             ;; Info buffer: Get menu item token.
             (set-buffer buf)
             (end-of-line)
-            (setq oldpt  (point))
-            (setq more (search-forward "\n* " nil t)) ; Possible next menu item.
+            (setq oldpt  (point)
+                  more   (search-forward "\n* " nil t)) ; Possible next menu item.
             (unless more (goto-char (point-max)))
             (while (and (not (eobp))    ; Search for a real menu item.
                         (not (setq token  (Info-get-token ; File menu item.

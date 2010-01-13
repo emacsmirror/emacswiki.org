@@ -4,12 +4,12 @@
 ;; Description: Extensions to `pp.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1999-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep  3 13:45:40 1999
 ;; Version: 21.0
-;; Last-Updated: Sat Aug  1 15:39:13 2009 (-0700)
+;; Last-Updated: Tue Jan 12 13:39:39 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 152
+;;     Update #: 194
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/pp+.el
 ;; Keywords: lisp
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -33,10 +33,11 @@
 ;;
 ;;    `pp-read-expression-map'.
 ;;
-;;  ***** NOTE: The following function defined in `pp.el' has
+;;
+;;  ***** NOTE: The following functions defined in `pp.el' have
 ;;              been REDEFINED HERE:
 ;;
-;;    `pp-eval-expression'.
+;;    `pp-display-expression', `pp-eval-expression'.
 ;;
 ;;
 ;;  Suggested binding:
@@ -47,6 +48,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/01/12 dadams
+;;     Added: pp-display-expression (redefinition).
+;;     pp-eval-expression: Use pp-display-expression.
 ;; 2008/04/14 dadams
 ;;     pp-eval-expression: Treat negative prefix arg.
 ;; 2008/04/13 dadams
@@ -97,7 +101,7 @@
 (defvar pp-read-expression-map nil
   "`read-expression-map' with some Emacs-Lisp key bindings.")
 (unless pp-read-expression-map
-  (let ((map (make-sparse-keymap)))
+  (let ((map  (make-sparse-keymap)))
     (define-key map "\M-\t" 'lisp-complete-symbol)
     (define-key map "\t" 'lisp-indent-line)
     (define-key map "\e\C-q" 'indent-sexp)
@@ -106,7 +110,7 @@
     (define-key map "\e\C-q" 'indent-pp-sexp)
     ;;(define-key map "\177" 'backward-delete-char-untabify)
     (set-keymap-parent map minibuffer-local-map)
-    (setq pp-read-expression-map map)))
+    (setq pp-read-expression-map  map)))
 
 (defcustom pp-eval-expression-print-length nil
   "Value for `print-length' while printing value in `pp-eval-expression'.
@@ -120,28 +124,25 @@ A value of nil means no limit."
 
 
 ;; REPLACES ORIGINAL in `pp.el':
-;; 1. Use no `emacs-lisp-mode-hook'.
-;; 2. Read with completion, using `pp-read-expression-map'.
-;; 3. Call font-lock-fontify-buffer.
-;; 4. Progress message added.
-;; 5. Added optional arg and insertion behavior.
-;; 6. Respect `pp-eval-expression-print-length', `pp-eval-expression-print-level',
+;; 1. Read with completion, using `pp-read-expression-map'.
+;; 2. Progress message added.
+;; 3. Added optional arg and insertion behavior.
+;; 4. Respect `pp-eval-expression-print-length', `pp-eval-expression-print-level',
 ;;    and `eval-expression-debug-on-error'.
-;; 7. Adjusted to work in different Emacs releases.
+;; 5. Adjusted to work in different Emacs releases.
 ;;
 ;;;###autoload
 (defun pp-eval-expression (expression &optional insert-value)
-  "Evaluate an Emacs-Lisp expression and pretty-print its value.
+  "Evaluate Emacs-Lisp sexp EXPRESSION, and pretty-print its value.
 Add the value to the front of the variable `values'.
 With a prefix arg, insert the value into the current buffer at point.
+ With a negative prefix arg, if the value is a string, then insert it
+ into the buffer without double-quotes (`\"').
 With no prefix arg:
  If the value fits on one line (frame width) show it in the echo area.
- Otherwise, show the value in buffer *Pp Eval Output*.
+ Otherwise, show the value in buffer `*Pp Eval Output*'.
 
-With a negative prefix arg, if the value is a string, then insert it
-into the buffer without double-quotes (`\"').
-
-This command respects options `pp-eval-expression-print-length',
+This command respects options user `pp-eval-expression-print-length',
 `pp-eval-expression-print-level', and
 `eval-expression-debug-on-error'.
 
@@ -153,61 +154,69 @@ Emacs-Lisp mode completion and indentation bindings are in effect."
   (message "Evaluating...")
   (if (or (not (boundp 'eval-expression-debug-on-error))
           (null eval-expression-debug-on-error))
-      (setq values (cons (eval expression) values))
-    (let ((old-value (make-symbol "t")) new-value)
+      (setq values  (cons (eval expression) values))
+    (let ((old-value  (make-symbol "t"))
+          new-value)
       ;; Bind debug-on-error to something unique so that we can
       ;; detect when evaled code changes it.
-      (let ((debug-on-error old-value))
-	(setq values (cons (eval expression) values))
-	(setq new-value debug-on-error))
+      (let ((debug-on-error  old-value))
+	(setq values     (cons (eval expression) values)
+              new-value  debug-on-error))
       ;; If evaled code has changed the value of debug-on-error,
       ;; propagate that change to the global binding.
       (unless (eq old-value new-value)
-	(setq debug-on-error new-value))))
-  (let ((print-length pp-eval-expression-print-length)
-	(print-level pp-eval-expression-print-level))
+	(setq debug-on-error  new-value))))
+  (let ((print-length  pp-eval-expression-print-length)
+	(print-level   pp-eval-expression-print-level))
     (cond (insert-value
            (message "Evaluating...done. Value inserted.")
-           (setq insert-value (prefix-numeric-value insert-value))
+           (setq insert-value  (prefix-numeric-value insert-value))
            (if (or (not (stringp (car values))) (wholenump insert-value))
                (pp (car values) (current-buffer))
              (princ (car values) (current-buffer))))
-          (t
-           (let* ((old-show-function temp-buffer-show-function)
-                  ;; Use this function to display the buffer.
-                  ;; This function either decides not to display it at all
-                  ;; or displays it in the usual way.
-                  (temp-buffer-show-function
-                   (function
-                    (lambda (buf)
-                     (save-excursion
-                       (set-buffer buf)
-                       (goto-char (point-min))
-                       (end-of-line 1)
-                       (if (or (< (1+ (point)) (point-max))
-                               (>= (- (point) (point-min)) (frame-width)))
-                           (let ((temp-buffer-show-function old-show-function)
-                                 (old-selected (selected-window))
-                                 (window (display-buffer buf)))
-                             (goto-char (point-min)) ; expected by some hooks ...
-                             (make-frame-visible (window-frame window))
-                             (unwind-protect
-                                  (progn
-                                    (select-window window)
-                                    (run-hooks 'temp-buffer-show-hook))
-                               (select-window old-selected)
-                               (message "Evaluating...done.  \
-See buffer *Pp Eval Output*.")))
-                         (message "%s" (buffer-substring (point-min) (point)))))))))
-             (with-output-to-temp-buffer "*Pp Eval Output*"
-               (pp (car values))
-               (with-current-buffer standard-output
-                 (setq buffer-read-only nil)
-                 (let ((emacs-lisp-mode-hook nil)
-                       (change-major-mode-hook nil))
-                   (emacs-lisp-mode))
-                 (set (make-local-variable 'font-lock-verbose) nil)
-                 (font-lock-fontify-buffer))))))))
+          (t (pp-display-expression (car values) "*Pp Eval Output*")))))
+
+
+;; REPLACES ORIGINAL in `pp.el':
+;; 1. Use no `emacs-lisp-mode-hook' or `change-major-mode-hook'.
+;; 2. Call `font-lock-fontify-buffer'.
+;;
+(defun pp-display-expression (expression out-buffer-name)
+  "Prettify and show EXPRESSION in a way appropriate to its length.
+If a temporary buffer is needed for representation, it is named
+OUT-BUFFER-NAME."
+  (let* ((old-show-function  temp-buffer-show-function)
+         ;; Use this function to display the buffer.
+         ;; This function either decides not to display it at all
+         ;; or displays it in the usual way.
+         (temp-buffer-show-function
+          #'(lambda (buf)
+              (with-current-buffer buf
+                (goto-char (point-min))
+                (end-of-line 1)
+                (if (or (< (1+ (point)) (point-max))
+                        (>= (- (point) (point-min)) (frame-width)))
+                    (let ((temp-buffer-show-function  old-show-function)
+                          (old-selected               (selected-window))
+                          (window                     (display-buffer buf)))
+                      (goto-char (point-min)) ; expected by some hooks ...
+                      (make-frame-visible (window-frame window))
+                      (unwind-protect
+                           (progn (select-window window)
+                                  (run-hooks 'temp-buffer-show-hook))
+                        (select-window old-selected)
+                        (message "Evaluating...done. See buffer `%s'."
+                                 out-buffer-name)))
+                  (message "%s" (buffer-substring (point-min) (point))))))))
+    (with-output-to-temp-buffer out-buffer-name
+      (pp expression)
+      (with-current-buffer standard-output
+        (setq buffer-read-only  nil)
+        (let ((emacs-lisp-mode-hook    nil)
+              (change-major-mode-hook  nil))
+          (emacs-lisp-mode))
+        (set (make-local-variable 'font-lock-verbose) nil)
+        (font-lock-fontify-buffer)))))
 
 ;;;;;;;;;;;;;;;;;;
 

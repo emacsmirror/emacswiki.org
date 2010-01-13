@@ -4,12 +4,12 @@
 ;; Description: Some key bindings.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1999-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Sat Nov  7 16:16:16 2009 (-0700)
+;; Last-Updated: Tue Jan 12 17:26:32 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 969
+;;     Update #: 983
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -21,10 +21,10 @@
 ;;   `faces', `faces+', `fit-frame', `frame-cmds', `frame-fns',
 ;;   `help+20', `hexrgb', `highlight', `info', `info+', `isearch+',
 ;;   `iso-transl', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
-;;   `mouse', `mouse+', `mwheel', `pp', `pp+', `replace+', `ring',
-;;   `ring+', `second-sel', `simple+', `strings', `thingatpt',
-;;   `thingatpt+', `unaccent', `w32browser-dlgopen', `wid-edit',
-;;   `wid-edit+', `widget'.
+;;   `mouse', `mouse+', `mwheel', `pp', `pp+', `replace+',
+;;   `reporter', `ring', `ring+', `second-sel', `sendmail',
+;;   `simple+', `strings', `thingatpt', `thingatpt+', `unaccent',
+;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -273,7 +273,6 @@
 ;;
 ;;; Code:
 
-(and (< emacs-major-version 20) (eval-when-compile (require 'cl))) ;; when, unless
 (require 'frame-cmds nil t) ;; (no error if not found): delete-other-frames,
                             ;; delete-windows-for, enlarge-frame*,
                             ;; iconify-everything, iconify/map-frame, move-frame-*,

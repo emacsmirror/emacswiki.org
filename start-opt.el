@@ -4,12 +4,12 @@
 ;; Description: Customizations to be done at the end of startup.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1995-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 1995-2010, Drew Adams, all rights reserved.
 ;; Created: Thu Dec 28 09:15:00 1995
 ;; Version: 21.0
-;; Last-Updated: Sat Aug  1 15:42:24 2009 (-0700)
+;; Last-Updated: Tue Jan 12 17:51:43 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 1750
+;;     Update #: 1765
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/start-opt.el
 ;; Keywords: local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -23,10 +23,10 @@
 ;;   `hexrgb', `highlight', `info', `info+', `isearch+',
 ;;   `iso-transl', `lib-requires', `loadhist', `menu-bar',
 ;;   `menu-bar+', `misc-cmds', `misc-fns', `mouse', `mouse+',
-;;   `mwheel', `pp', `pp+', `replace+', `ring', `ring+',
-;;   `second-sel', `setup-keys', `simple+', `strings', `thingatpt',
-;;   `thingatpt+', `unaccent', `w32browser-dlgopen', `wid-edit',
-;;   `wid-edit+', `widget', `wimpy-del'.
+;;   `mwheel', `pp', `pp+', `replace+', `reporter', `ring', `ring+',
+;;   `second-sel', `sendmail', `setup-keys', `simple+', `strings',
+;;   `thingatpt', `thingatpt+', `unaccent', `w32browser-dlgopen',
+;;   `wid-edit', `wid-edit+', `widget', `wimpy-del'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

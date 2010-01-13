@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sun Dec 13 16:33:59 2009 (-0800)
+;; Last-Updated: Tue Jan 12 14:15:27 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 1231
+;;     Update #: 1253
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -787,7 +787,7 @@ ORIG-BUFF."
   (goto-char icicle-track-pt)
   (insert string " ")
   (setq icicle-track-pt  (point))
-  (save-excursion (set-buffer (window-buffer (minibuffer-window))) (icicle-clear-minibuffer))
+  (with-current-buffer (window-buffer (minibuffer-window)) (icicle-clear-minibuffer))
   (save-selected-window (icicle-remove-Completions-window)))
 
 ;;;###autoload
@@ -1784,24 +1784,24 @@ If the marker is on an empty line, then text \"<EMPTY LINE>\" is used.
 If both optional argument GLOBALP and option
 `icicle-add-buffer-name-flag' are non-nil, then the text is prefixed
 by MARKER's buffer name."
-  (save-excursion
-    (set-buffer (marker-buffer marker))
-    (goto-char marker)
-    (let ((line  (let ((inhibit-field-text-motion  t))  ; Just to be sure, for `end-of-line'.
-                   (buffer-substring-no-properties (save-excursion (beginning-of-line) (point))
-                                                   (save-excursion (end-of-line) (point)))))
-          (buff  (and globalp icicle-add-buffer-name-flag (buffer-name)))
-          (help  (and (or icicle-help-in-mode-line-flag ; Get it only if user will see it.
-                          (and (boundp 'tooltip-mode) tooltip-mode))
-                      (format "Line: %d, Char: %d" (line-number-at-pos) (point)))))
-      (when (string= "" line) (setq line  "<EMPTY LINE>"))
-      (when help
-        (icicle-candidate-short-help help line)
-        (when (and globalp icicle-add-buffer-name-flag)
-          (icicle-candidate-short-help help buff)))
-      (if (and globalp icicle-add-buffer-name-flag)
-          (cons (list buff line) marker)
-        (cons line marker)))))
+  (with-current-buffer (marker-buffer marker)
+    (save-excursion
+      (goto-char marker)
+      (let ((line  (let ((inhibit-field-text-motion  t)) ; Just to be sure, for `end-of-line'.
+                     (buffer-substring-no-properties (save-excursion (beginning-of-line) (point))
+                                                     (save-excursion (end-of-line) (point)))))
+            (buff  (and globalp icicle-add-buffer-name-flag (buffer-name)))
+            (help  (and (or icicle-help-in-mode-line-flag ; Get it only if user will see it.
+                            (and (boundp 'tooltip-mode) tooltip-mode))
+                        (format "Line: %d, Char: %d" (line-number-at-pos) (point)))))
+        (when (string= "" line) (setq line  "<EMPTY LINE>"))
+        (when help
+          (icicle-candidate-short-help help line)
+          (when (and globalp icicle-add-buffer-name-flag)
+            (icicle-candidate-short-help help buff)))
+        (if (and globalp icicle-add-buffer-name-flag)
+            (cons (list buff line) marker)
+          (cons line marker))))))
 
 (defun icicle-markers (ring)
   "Marks in mark RING that are in live buffers other than a minibuffer."
@@ -2615,60 +2615,61 @@ Highlight the matches in face `icicle-search-main-regexp-others'."
         (temp-list      ())
         (last-beg       nil))
     (unless buffer (setq buffer  (current-buffer)))
-    (when (bufferp buffer)
-      (set-buffer buffer)
-      (unless (and beg end)
-        (setq beg  (point-min)
-              end  (point-max)))
-      (condition-case icicle-search-regexp-scan
-          (save-excursion
-            (goto-char (setq last-beg  beg))
-            (while (and beg (< beg end) (not (eobp)))
-              (while (and (setq beg  (re-search-forward regexp end t))
-                          (eq last-beg beg)
-                          (not (eobp)))
-                (forward-char) (setq beg  (1+ beg))) ; Matched again, same place.  Advance 1 char.
-              (when beg
-                (unless (match-beginning icicle-search-context-level)
-                  (error "Search context has no subgroup of level %d - try a lower number"
-                         icicle-search-context-level))
-                (let* ((hit-string  (buffer-substring-no-properties
-                                     (match-beginning icicle-search-context-level)
-                                     (match-end icicle-search-context-level)))
-                       (end-marker  (copy-marker (match-end icicle-search-context-level))))
-                  (when (and (not (string= "" hit-string))
-                             (or (not predicate)
-                                 (save-match-data (funcall predicate hit-string end-marker))))
-                    (icicle-candidate-short-help
-                     (concat (and add-bufname-p
-                                  (format "Buffer: `%s', " (buffer-name (marker-buffer end-marker))))
-                             (format "Position: %d, Length: %d"
-                                     (marker-position end-marker) (length hit-string)))
-                     hit-string)
-                    ;; Add whole candidate to `temp-list'.  Whole candidate is
-                    ;; (`hit-string' . `end-marker') or ((`hit-string' BUFNAME) . `end-marker').
-                    (push (cons (if add-bufname-p
-                                    (list hit-string
-                                          (let ((string  (copy-sequence (buffer-name))))
-                                            (put-text-property 0 (length string) 'face
-                                                               'icicle-candidate-part string)
-                                            string))
-                                  hit-string)
-                                end-marker)
-                          temp-list)
-                    ;; Highlight search context in buffer.
-                    (when (<= (+ (length temp-list) (length icicle-candidates-alist))
-                              icicle-search-highlight-threshold)
-                      (let ((ov  (make-overlay (match-beginning icicle-search-context-level)
-                                               (match-end icicle-search-context-level))))
-                        (push ov icicle-search-overlays)
-                        (overlay-put ov 'priority 200) ; > ediff's 100+, < isearch-overlay's 1001.
-                        (overlay-put ov 'face 'icicle-search-main-regexp-others))))))
-              (setq last-beg  beg))
-            (setq icicle-candidates-alist  (append icicle-candidates-alist (nreverse temp-list))))
-        (quit (when icicle-search-cleanup-flag (icicle-search-highlight-cleanup)))
-        (error (when icicle-search-cleanup-flag (icicle-search-highlight-cleanup))
-               (error (error-message-string icicle-search-regexp-scan)))))))
+    (when (bufferp buffer)              ; Do nothing if BUFFER is not a buffer.
+      (with-current-buffer buffer
+        (unless (and beg end)
+          (setq beg  (point-min)
+                end  (point-max)))
+        (condition-case icicle-search-regexp-scan
+            (save-excursion
+              (goto-char (setq last-beg  beg))
+              (while (and beg (< beg end) (not (eobp)))
+                (while (and (setq beg  (re-search-forward regexp end t))
+                            (eq last-beg beg)
+                            (not (eobp)))
+                  (forward-char) (setq beg  (1+ beg))) ; Matched again, same place.  Advance 1 char.
+                (when beg
+                  (unless (match-beginning icicle-search-context-level)
+                    (error "Search context has no subgroup of level %d - try a lower number"
+                           icicle-search-context-level))
+                  (let* ((hit-string  (buffer-substring-no-properties
+                                       (match-beginning icicle-search-context-level)
+                                       (match-end icicle-search-context-level)))
+                         (end-marker  (copy-marker (match-end icicle-search-context-level))))
+                    (when (and (not (string= "" hit-string))
+                               (or (not predicate)
+                                   (save-match-data (funcall predicate hit-string end-marker))))
+                      (icicle-candidate-short-help
+                       (concat (and add-bufname-p
+                                    (format "Buffer: `%s', "
+                                            (buffer-name (marker-buffer end-marker))))
+                               (format "Position: %d, Length: %d"
+                                       (marker-position end-marker) (length hit-string)))
+                       hit-string)
+                      ;; Add whole candidate to `temp-list'.  Whole candidate is
+                      ;; (`hit-string' . `end-marker') or ((`hit-string' BUFNAME) . `end-marker').
+                      (push (cons (if add-bufname-p
+                                      (list hit-string
+                                            (let ((string  (copy-sequence (buffer-name))))
+                                              (put-text-property 0 (length string) 'face
+                                                                 'icicle-candidate-part string)
+                                              string))
+                                    hit-string)
+                                  end-marker)
+                            temp-list)
+                      ;; Highlight search context in buffer.
+                      (when (<= (+ (length temp-list) (length icicle-candidates-alist))
+                                icicle-search-highlight-threshold)
+                        (let ((ov  (make-overlay (match-beginning icicle-search-context-level)
+                                                 (match-end icicle-search-context-level))))
+                          (push ov icicle-search-overlays)
+                          (overlay-put ov 'priority 200) ; > ediff's 100+, < isearch-overlay's 1001.
+                          (overlay-put ov 'face 'icicle-search-main-regexp-others))))))
+                (setq last-beg  beg))
+              (setq icicle-candidates-alist  (append icicle-candidates-alist (nreverse temp-list))))
+          (quit (when icicle-search-cleanup-flag (icicle-search-highlight-cleanup)))
+          (error (when icicle-search-cleanup-flag (icicle-search-highlight-cleanup))
+                 (error (error-message-string icicle-search-regexp-scan))))))))
 
 ;; Free var here: `icicle-search-ecm' is bound in `icicle-search'.
 (defun icicle-search-highlight-all-input-matches (&optional input)
@@ -2680,7 +2681,7 @@ Highlight the matches in face `icicle-search-main-regexp-others'."
     ;; Otherwise, it's nil or a list of overlays.
     (when (overlayp icicle-search-refined-overlays)
       (delete-overlay icicle-search-refined-overlays)
-      (setq icicle-search-refined-overlays  nil))
+      (setq icicle-search-refined-overlays  ()))
     (while icicle-search-refined-overlays
       (delete-overlay (car icicle-search-refined-overlays))
       (setq icicle-search-refined-overlays  (cdr icicle-search-refined-overlays))))
@@ -3166,7 +3167,7 @@ region, then search only the text in that region.
          (or (and (featurep 'bookmark+) (bookmarkp-get-end-position bookmark-name)) (point-max))))
     (when (= beg end) (setq beg  (point-min)    end  (point-max)))
     (icicle-search beg end regexp t))
-  (save-excursion (set-buffer (window-buffer (minibuffer-window))) (icicle-erase-minibuffer)))
+  (with-current-buffer (window-buffer (minibuffer-window)) (icicle-erase-minibuffer)))
 
 
 ;; A little macro just to save some source code.
@@ -3284,7 +3285,7 @@ are treated as bookmarks in every respect." ; Doc string
           (icicle-candidates-alist                 icicle-candidates-alist)
           (enable-recursive-minibuffers            t))
       (icicle-search (cadr (cddr reg)) (car (cddr (cddr reg))) regexp t))
-    (save-excursion (set-buffer (window-buffer (minibuffer-window))) (icicle-erase-minibuffer))))
+    (with-current-buffer (window-buffer (minibuffer-window)) (icicle-erase-minibuffer))))
 
 ;;;###autoload
 (defun icicle-search-char-property (beg end require-match
@@ -3376,28 +3377,28 @@ text properties, or both, respectively."
 Only the character properties are included, not their values.
 TYPE can be `overlay', `text', or nil, meaning overlay properties,
 text properties, or both, respectively."
+  (unless buffer (setq buffer  (current-buffer)))
   (let ((props  ())
         ovrlays curr-props)
-    (save-excursion
-      (unless buffer (setq buffer  (current-buffer)))
-      (set-buffer buffer)
-      (unless (and beg end)
-        (setq beg  (point-min)
-              end  (point-max)))
-      (when (or (not type) (eq type 'overlay)) ; Get overlay properties.
-        (setq ovrlays  (overlays-in beg end))
-        (dolist (ovrly  ovrlays)
-          (setq curr-props  (overlay-properties ovrly))
-          (while curr-props
-            (unless (memq (car curr-props) props) (push (car curr-props) props))
-            (setq curr-props  (cddr curr-props)))))
-      (when (or (not type) (eq type 'text)) ; Get text properties.
-        (while (< beg end)
-          (setq beg         (or (next-property-change beg nil end) end)
-                curr-props  (text-properties-at beg))
-          (while curr-props
-            (unless (memq (car curr-props) props) (push (car curr-props) props))
-            (setq curr-props  (cddr curr-props))))))
+    (when (bufferp buffer)              ; Do nothing if BUFFER is not a buffer.
+      (with-current-buffer buffer
+        (unless (and beg end)
+          (setq beg  (point-min)
+                end  (point-max)))
+        (when (or (not type) (eq type 'overlay)) ; Get overlay properties.
+          (setq ovrlays  (overlays-in beg end))
+          (dolist (ovrly  ovrlays)
+            (setq curr-props  (overlay-properties ovrly))
+            (while curr-props
+              (unless (memq (car curr-props) props) (push (car curr-props) props))
+              (setq curr-props  (cddr curr-props)))))
+        (when (or (not type) (eq type 'text)) ; Get text properties.
+          (while (< beg end)
+            (setq beg         (or (next-property-change beg nil end) end)
+                  curr-props  (text-properties-at beg))
+            (while curr-props
+              (unless (memq (car curr-props) props) (push (car curr-props) props))
+              (setq curr-props  (cddr curr-props)))))))
     props))
 
 (defun icicle-search-char-property-scan (buffer beg end prop values type predicate)
@@ -3423,60 +3424,61 @@ PREDICATE is nil or a Boolean function that takes these arguments:
         (temp-list      ())
         (zone-end       nil))
     (unless buffer (setq buffer  (current-buffer)))
-    (set-buffer buffer)
-    (unless (and beg end)
-      (setq beg  (point-min)
-            end  (point-max)))
-    (condition-case icicle-search-char-property-scan
-        (save-excursion
-          (while (and (< beg end)
-                      (let* ((charval  (and (or (not type) (eq type 'overlay))
-                                            (get-char-property beg prop)))
-                             (textval  (and (or (not type) (eq type 'text))
-                                            (get-text-property beg prop)))
-                             (currval  (icicle-flat-list charval textval)))
-                        (not (icicle-set-intersection values currval))))
-            (setq beg  (icicle-next-single-char-property-change beg prop nil end)))
-          (while (and beg (< beg end))
-            (setq zone-end  (or (icicle-next-single-char-property-change beg prop nil end) end))
-            (let* ((hit-string  (buffer-substring-no-properties beg zone-end))
-                   (end-marker  (copy-marker zone-end)))
-              (when (or (not predicate) (save-match-data (funcall predicate hit-string end-marker)))
-                (icicle-candidate-short-help
+    (when (bufferp buffer)              ; Do nothing if BUFFER is not a buffer.
+      (with-current-buffer buffer
+        (unless (and beg end)
+          (setq beg  (point-min)
+                end  (point-max)))
+        (condition-case icicle-search-char-property-scan
+            (save-excursion
+              (while (and (< beg end)
+                          (let* ((charval  (and (or (not type) (eq type 'overlay))
+                                                (get-char-property beg prop)))
+                                 (textval  (and (or (not type) (eq type 'text))
+                                                (get-text-property beg prop)))
+                                 (currval  (icicle-flat-list charval textval)))
+                            (not (icicle-set-intersection values currval))))
+                (setq beg  (icicle-next-single-char-property-change beg prop nil end)))
+              (while (and beg (< beg end))
+                (setq zone-end  (or (icicle-next-single-char-property-change beg prop nil end) end))
+                (let* ((hit-string  (buffer-substring-no-properties beg zone-end))
+                       (end-marker  (copy-marker zone-end)))
+                  (when (or (not predicate) (save-match-data (funcall predicate hit-string end-marker)))
+                    (icicle-candidate-short-help
                      (concat (and add-bufname-p
                                   (format "Buffer: `%s', " (buffer-name (marker-buffer end-marker))))
                              (format "Position: %d, Length: %d"
                                      (marker-position end-marker) (length hit-string)))
                      hit-string)
-                (push (cons (if add-bufname-p
-                                (list hit-string
-                                      (let ((string  (copy-sequence (buffer-name))))
-                                        (put-text-property 0 (length string)
-                                                           'face 'icicle-candidate-part string)
-                                        string))
-                              hit-string)
-                            end-marker)
-                      temp-list)
-                ;; Highlight search context in buffer.
-                (when (<= (+ (length temp-list) (length icicle-candidates-alist))
-                          icicle-search-highlight-threshold)
-                  (let ((ov  (make-overlay beg zone-end)))
-                    (push ov icicle-search-overlays)
-                    (overlay-put ov 'priority 200) ; > ediff's 100+, but < isearch overlays
-                    (overlay-put ov 'face 'icicle-search-main-regexp-others)))))
-            (setq beg  zone-end)
-            (while (and (< beg end)
-                        (let* ((charval  (and (or (not type) (eq type 'overlay))
-                                              (get-char-property beg prop)))
-                               (textval  (and (or (not type) (eq type 'text))
-                                              (get-text-property beg prop)))
-                               (currval  (icicle-flat-list charval textval)))
-                          (not (icicle-set-intersection values currval))))
-              (setq beg  (icicle-next-single-char-property-change beg prop nil end))))
-          (setq icicle-candidates-alist  (append icicle-candidates-alist (nreverse temp-list))))
-      (quit (when icicle-search-cleanup-flag (icicle-search-highlight-cleanup)))
-      (error (when icicle-search-cleanup-flag (icicle-search-highlight-cleanup))
-             (error (error-message-string icicle-search-char-property-scan))))))
+                    (push (cons (if add-bufname-p
+                                    (list hit-string
+                                          (let ((string  (copy-sequence (buffer-name))))
+                                            (put-text-property 0 (length string)
+                                                               'face 'icicle-candidate-part string)
+                                            string))
+                                  hit-string)
+                                end-marker)
+                          temp-list)
+                    ;; Highlight search context in buffer.
+                    (when (<= (+ (length temp-list) (length icicle-candidates-alist))
+                              icicle-search-highlight-threshold)
+                      (let ((ov  (make-overlay beg zone-end)))
+                        (push ov icicle-search-overlays)
+                        (overlay-put ov 'priority 200) ; > ediff's 100+, but < isearch overlays
+                        (overlay-put ov 'face 'icicle-search-main-regexp-others)))))
+                (setq beg  zone-end)
+                (while (and (< beg end)
+                            (let* ((charval  (and (or (not type) (eq type 'overlay))
+                                                  (get-char-property beg prop)))
+                                   (textval  (and (or (not type) (eq type 'text))
+                                                  (get-text-property beg prop)))
+                                   (currval  (icicle-flat-list charval textval)))
+                              (not (icicle-set-intersection values currval))))
+                  (setq beg  (icicle-next-single-char-property-change beg prop nil end))))
+              (setq icicle-candidates-alist  (append icicle-candidates-alist (nreverse temp-list))))
+          (quit (when icicle-search-cleanup-flag (icicle-search-highlight-cleanup)))
+          (error (when icicle-search-cleanup-flag (icicle-search-highlight-cleanup))
+                 (error (error-message-string icicle-search-char-property-scan))))))))
 
 (defun icicle-flat-list (val1 val2)
   "Return a flat list with all values in VAL1 and VAL2."

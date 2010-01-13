@@ -21,7 +21,7 @@ You can filter it to specific extensions if needed:
 
 Put this in your [[init file]]:
 
-  (setq path-to-ctags "/opt/local/bin/ctags") ;; <- you're ctags path here
+  (setq path-to-ctags "/opt/local/bin/ctags") ;; <- your ctags path here
 
   (defun create-tags (dir-name)
     "Create tags file."

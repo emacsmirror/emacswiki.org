@@ -32,7 +32,7 @@ See CategoryVersionControl for other interfaces to other version control systems
 
     M-x vc-resolve-conflicts -- pop up an ediff-merge session on a file with conflict markers
 
-The info pages have more about it: ''Emacs -> Files -> Version Control''.
+The info pages have more about it: ''Emacs -> Maintaining -> Version Control''.
 
 [new]
 Also, don't forget the powerful ediff--revision command which is part of the ediff package and uses the vc interface.  See EdiffMode.

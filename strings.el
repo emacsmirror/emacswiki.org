@@ -4,12 +4,12 @@
 ;; Description: Miscellaneous string functions.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 17:09:08 1996
 ;; Version: 21.0
-;; Last-Updated: Wed Sep  9 13:02:44 2009 (-0700)
+;; Last-Updated: Tue Jan 12 16:49:13 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 481
+;;     Update #: 490
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/strings.el
 ;; Keywords: internal, strings, text
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -64,6 +64,10 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/01/12 dadams
+;;     current-line-string, minibuffer-empty-p, erase-inactive-minibuffer:
+;;       save-excursion + set-buffer -> with-current-buffer.
+;;     insert-in-minibuffer: set-buffer -> with-current-buffer.
 ;; 2009/09/09 dadams
 ;;     (non-)empty-name-p: Got rid of old-style backquote syntax.
 ;; 2008/05/12 dadams
@@ -235,8 +239,7 @@ Optional args BEGIN and END delimit the region to use."
 (defun current-line-string (&optional buffer)
   "Return current line of text in BUFFER as a string."
   (setq buffer (or buffer (current-buffer)))
-  (save-excursion
-    (set-buffer buffer)
+  (with-current-buffer buffer
     (buffer-substring (progn (end-of-line 1) (point))
                       (progn (beginning-of-line 1) (point)))))
 
@@ -345,9 +348,8 @@ but only the memorized state.  Use the function of the same name to be sure.")
 (defun minibuffer-empty-p ()
   "Return non-nil iff minibuffer is empty.
 Sets variable `minibuffer-empty-p' to returned value."
-  (save-excursion
-    (save-window-excursion
-      (set-buffer (window-buffer (minibuffer-window)))
+  (save-window-excursion
+    (with-current-buffer (window-buffer (minibuffer-window))
       (set-minibuffer-empty-p (= 0 (buffer-size))))))
 
 ;;;###autoload
@@ -372,9 +374,8 @@ alternative, see `erase-nonempty-inactive-minibuffer'."
   (let ((win (minibuffer-window)))
     (unless (minibuffer-window-active-p win)
       (message nil)                     ; Clear any messages to show minibuf.
-      (save-excursion
-        (save-window-excursion
-          (set-buffer (window-buffer win))
+      (save-window-excursion
+        (with-current-buffer (window-buffer win)
           (erase-buffer)
           (set-minibuffer-empty-p t)))
       (message nil))))                  ; Clear any messages to show minibuf.
@@ -452,9 +453,9 @@ NOTE: For versions of Emacs that do not have faces, a list of
   (message nil)                         ; Clear any messages to show minibuf.
   (save-excursion
     (save-window-excursion
-      (set-buffer (window-buffer (minibuffer-window)))
-      (goto-char (point-max))
-      (insert-string (apply 'concat-w-faces arguments))))
+      (with-current-buffer (window-buffer (minibuffer-window))
+        (goto-char (point-max))
+        (insert-string (apply 'concat-w-faces arguments)))))
   (when arguments (set-minibuffer-empty-p nil))
   (message nil) (sit-for 0))            ; Clear any messages & show minibuf.
 

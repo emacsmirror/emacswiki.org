@@ -4,12 +4,12 @@
 ;; Description: Look up synonyms for a word or phrase in a thesaurus.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2005-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 2005-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Dec 20 14:39:26 2005
 ;; Version: 1.0
-;; Last-Updated: Sat Aug  1 15:43:56 2009 (-0700)
+;; Last-Updated: Tue Jan 12 16:51:51 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 2375
+;;     Update #: 2380
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/synonyms.el
 ;; Keywords: text, dictionary, thesaurus, spelling, apropos, help
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -20,14 +20,15 @@
 ;;   `color-theme', `cus-edit', `cus-face', `cus-load', `cus-start',
 ;;   `custom', `dired', `dired+', `dired-aux', `dired-x', `doremi',
 ;;   `easymenu', `ediff-diff', `ediff-help', `ediff-init',
-;;   `ediff-merg', `ediff-mult', `ediff-util', `ediff-wind', `ffap',
-;;   `ffap-', `fit-frame', `frame-cmds', `frame-fns', `help+20',
-;;   `hexrgb', `icicles', `icicles-cmd1', `icicles-cmd2',
-;;   `icicles-face', `icicles-fn', `icicles-mac', `icicles-mcmd',
-;;   `icicles-mode', `icicles-opt', `icicles-var', `info', `info+',
-;;   `kmacro', `levenshtein', `menu-bar', `menu-bar+', `misc-cmds',
-;;   `misc-fns', `mkhtml', `mkhtml-htmlize', `mwheel', `pp', `pp+',
-;;   `ring', `ring+', `second-sel', `strings', `thingatpt',
+;;   `ediff-merg', `ediff-mult', `ediff-util', `ediff-wind',
+;;   `el-swank-fuzzy', `ffap', `ffap-', `fit-frame', `frame-cmds',
+;;   `frame-fns', `fuzzy-match', `help+20', `hexrgb', `icicles',
+;;   `icicles-cmd1', `icicles-cmd2', `icicles-face', `icicles-fn',
+;;   `icicles-mac', `icicles-mcmd', `icicles-mode', `icicles-opt',
+;;   `icicles-var', `info', `info+', `kmacro', `levenshtein',
+;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `mkhtml',
+;;   `mkhtml-htmlize', `mwheel', `pp', `pp+', `reporter', `ring',
+;;   `ring+', `second-sel', `sendmail', `strings', `thingatpt',
 ;;   `thingatpt+', `unaccent', `w32-browser', `w32browser-dlgopen',
 ;;   `wid-edit', `wid-edit+', `widget'.
 ;;
@@ -485,6 +486,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/01/12 dadams
+;;     synonyms-history-(backward|forward): save-excursion + set-buffer -> with-current-buffer.
 ;; 2007/12/05 dadams
 ;;     synonyms-obarray: Removed * doc-string prefix.
 ;; 2007/02/10 dadams
@@ -1339,7 +1342,7 @@ A prefix argument has the same meaning as for command `synonyms'."
     ;; Visit last.  If *Synonyms* has appended search results, go to the previous one, from (point).
     (if (not (get-buffer "*Synonyms*"))
         (synonyms-action (car synonyms-history))
-      (let ((divider (save-excursion (set-buffer "*Synonyms*") (re-search-backward "^___" nil t))))
+      (let ((divider  (with-current-buffer "*Synonyms*" (re-search-backward "^___" nil t))))
         (if (not divider)
             (synonyms-action (car synonyms-history))
           (set-buffer "*Synonyms*")
@@ -1363,7 +1366,7 @@ A prefix argument has the same meaning as for command `synonyms'."
     ;; Visit current.  If *Synonyms* has appended search results, go to the next one, from (point).
     (if (not (get-buffer "*Synonyms*"))
         (synonyms-action (car synonyms-history))
-      (let ((divider (save-excursion (set-buffer "*Synonyms*") (re-search-forward "^___" nil t))))
+      (let ((divider  (with-current-buffer "*Synonyms*" (re-search-forward "^___" nil t))))
         (if (not divider)
             (synonyms-action (car synonyms-history))
           (set-buffer "*Synonyms*")

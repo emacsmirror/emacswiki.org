@@ -71,3 +71,16 @@ For a quick overview, you can also access the current nnmairix docs at
 http://randomsample.de/nnmairix-doc/nnmairix.html
 
 Please note that this is only the nnmairix node and not the complete Gnus documentation, so references to other nodes don't work.
+
+== Warnings ==
+
+mairix can cause problems with gnus and IMAP (e.g. if you have a local Dovecot server). If an email in your search results is subsequently moved from it's original group to another group the filename will be changed. This means gnus wont be able to find it when you restart (it will still be listed under the original filename in the search group), and so gnus wont start (you will get an error message about not being able to find file).
+To fix this you will need to do the following things
+# delete the mairix search dir (zz_search... or something like that) and database (mairix_database) 
+# run mairix again from the command line to recreate the database
+# delete the mairix search group from your .newsrc /.newsrc.eld : search for "mairix" in the gnus-newsrc-alist definition and delete the corresponding group definition (i.e. the enclosing list).
+# restart gnus
+# recreate server and default group (press: G b c then choose nnmaildir for backend server)
+
+
+

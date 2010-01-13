@@ -59,6 +59,9 @@ For even more advanced setups, see SplitMailUsingBbdb.
 If you maintain a blacklist of spammers and want to generate a fancy split rule from it
 see BlacklistSpammers.
 
+== Warning ==
+
+Don't split to INBOX (even as your default split). You will get emails being moved around from INBOX to INBOX causing all sorts of confusion.
 ----
 CategoryGnus
 

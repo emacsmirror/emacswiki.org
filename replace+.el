@@ -4,12 +4,12 @@
 ;; Description: Extensions to `replace.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 21.0
-;; Last-Updated: Sat Aug  1 15:40:32 2009 (-0700)
+;; Last-Updated: Tue Jan 12 17:49:36 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 979
+;;     Update #: 1051
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/replace+.el
 ;; Keywords: matching, help, internal, tools, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -107,6 +107,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/01/12 dadams
+;;     occur, occur-mode-mouse-goto: save-excursion + set-buffer -> with-current-buffer.
 ;; 2009/04/26 dadams
 ;;     occur-mode-mouse-goto, occur-mode-goto-occurrence(-other-window), occur-mode-display-occurrence:
 ;;       Bind inhibit-field-text-motion to t, for end-of-line.
@@ -263,9 +265,9 @@ This toggles the value of option `replace-w-completion-flag'."
   (interactive "P")
   (if force-p                           ; Force.
       (if (natnump (prefix-numeric-value force-p))
-          (setq replace-w-completion-flag t)
-        (setq replace-w-completion-flag nil))
-    (setq replace-w-completion-flag (not replace-w-completion-flag)))) ; Toggle.
+          (setq replace-w-completion-flag  t)
+        (setq replace-w-completion-flag  nil))
+    (setq replace-w-completion-flag  (not replace-w-completion-flag)))) ; Toggle.
 
 (defvar search/replace-default-fn
   (if (fboundp 'symbol-name-nearest-point)
@@ -298,16 +300,16 @@ wants to replace FROM with TO.
 Non-nil `replace-w-completion-flag' means you can use completion."
     (if query-replace-interactive
         (car (if regexp-flag regexp-search-ring search-ring))
-      (let* ((default (if (fboundp search/replace-default-fn)
-                          (funcall search/replace-default-fn)
-                        (car (symbol-value query-replace-from-history-variable))))
-             (lastto (car (symbol-value query-replace-to-history-variable)))
-             (lastfrom (car (symbol-value query-replace-from-history-variable)))
+      (let* ((default   (if (fboundp search/replace-default-fn)
+                            (funcall search/replace-default-fn)
+                          (car (symbol-value query-replace-from-history-variable))))
+             (lastto    (car (symbol-value query-replace-to-history-variable)))
+             (lastfrom  (car (symbol-value query-replace-from-history-variable)))
              (from-prompt
               (progn
                 ;; Use second, not first, if the two history items are the same (e.g. shared lists).
                 (when (equal lastfrom lastto)
-                  (setq lastfrom (cadr (symbol-value query-replace-from-history-variable))))
+                  (setq lastfrom  (cadr (symbol-value query-replace-from-history-variable))))
                 (if (and lastto lastfrom)
                     (format "%s.  OLD (empty means %s -> %s): " string (query-replace-descr lastfrom)
                             (query-replace-descr lastto))
@@ -315,20 +317,20 @@ Non-nil `replace-w-completion-flag' means you can use completion."
              ;; The save-excursion here is in case the user marks and copies
              ;; a region in order to specify the minibuffer input.
              ;; That should not clobber the region for the query-replace itself.
-             (from (save-excursion
-                     (if replace-w-completion-flag
-                         (completing-read from-prompt obarray nil nil nil
-                                          query-replace-from-history-variable default t)
-                       (if query-replace-interactive
-                           (car (if regexp-flag regexp-search-ring search-ring))
-                         (read-from-minibuffer from-prompt nil nil nil
-                                               query-replace-from-history-variable default t))))))
+             (from      (save-excursion
+                          (if replace-w-completion-flag
+                              (completing-read from-prompt obarray nil nil nil
+                                               query-replace-from-history-variable default t)
+                            (if query-replace-interactive
+                                (car (if regexp-flag regexp-search-ring search-ring))
+                              (read-from-minibuffer from-prompt nil nil nil
+                                                    query-replace-from-history-variable default t))))))
         (if (and (zerop (length from)) lastto lastfrom)
             (cons lastfrom lastto)
           ;; Warn if user types \n or \t, but don't reject the input.
           (and regexp-flag
                (string-match "\\(\\`\\|[^\\]\\)\\(\\\\\\\\\\)*\\(\\\\[nt]\\)" from)
-               (let ((match (match-string 3 from)))
+               (let ((match  (match-string 3 from)))
                  (cond
                   ((string= match "\\n")
                    (message "Note: `\\n' here doesn't match a newline; to do that, type C-q C-j instead"))
@@ -353,47 +355,44 @@ Non-nil `replace-w-completion-flag' means you can use completion."
 (when (> emacs-major-version 21)
   (defun query-replace-read-to (from string regexp-flag)
     "Query and return the `to' argument of a query-replace operation."
-    (let* ((default (if (fboundp search/replace-default-fn)
-                        (funcall search/replace-default-fn)
-                      (car (symbol-value query-replace-to-history-variable))))
-           (to-prompt (format "%s.  NEW (replacing %s): " string (query-replace-descr from)))
+    (let* ((default    (if (fboundp search/replace-default-fn)
+                           (funcall search/replace-default-fn)
+                         (car (symbol-value query-replace-to-history-variable))))
+           (to-prompt  (format "%s.  NEW (replacing %s): " string (query-replace-descr from)))
            ;; The save-excursion here is in case the user marks and copies
            ;; a region in order to specify the minibuffer input.
            ;; That should not clobber the region for the query-replace itself.
-           (to (save-excursion
-                 (if replace-w-completion-flag
-                     (completing-read to-prompt obarray nil nil nil
-                                      query-replace-to-history-variable default t)
-                   (read-from-minibuffer to-prompt nil nil nil
-                                         query-replace-to-history-variable default t)))))
+           (to         (save-excursion
+                         (if replace-w-completion-flag
+                             (completing-read to-prompt obarray nil nil nil
+                                              query-replace-to-history-variable default t)
+                           (read-from-minibuffer to-prompt nil nil nil
+                                                 query-replace-to-history-variable default t)))))
       (when (and regexp-flag (string-match "\\(\\`\\|[^\\]\\)\\(\\\\\\\\\\)*\\\\[,#]" to))
         (let (pos list char)
-          (while (progn (setq pos (match-end 0))
+          (while (progn (setq pos  (match-end 0))
                         (push (substring to 0 (- pos 2)) list)
-                        (setq char (aref to (1- pos))
-                              to (substring to pos))
+                        (setq char  (aref to (1- pos))
+                              to    (substring to pos))
                         (cond ((eq char ?\#) (push '(number-to-string replace-count) list))
                               ((eq char ?\,)
-                               (setq pos (read-from-string to))
+                               (setq pos  (read-from-string to))
                                (push `(replace-quote ,(car pos)) list)
                                ;; Swallow a space after a symbol if there is a space.
-                               (let ((end (if (and (or (symbolp (car pos))
-                                                       ;; Swallow a space after 'foo
-                                                       ;; but not after (quote foo).
-                                                       (and (eq (car-safe (car pos)) 'quote)
-                                                            (not (= ?\( (aref to 0)))))
-                                                   (eq (string-match " " to (cdr pos))
-                                                       (cdr pos)))
-                                              (1+ (cdr pos))
-                                            (cdr pos))))
-                                 (setq to (substring to end)))))
+                               (let ((end  (if (and (or (symbolp (car pos))
+                                                        ;; Swallow a space after 'foo
+                                                        ;; but not after (quote foo).
+                                                        (and (eq (car-safe (car pos)) 'quote)
+                                                             (not (= ?\( (aref to 0)))))
+                                                    (eq (string-match " " to (cdr pos))
+                                                        (cdr pos)))
+                                               (1+ (cdr pos))
+                                             (cdr pos))))
+                                 (setq to  (substring to end)))))
                         (string-match "\\(\\`\\|[^\\]\\)\\(\\\\\\\\\\)*\\\\[,#]" to)))
-          (setq to (nreverse (delete "" (cons to list)))))
+          (setq to  (nreverse (delete "" (cons to list)))))
         (replace-match-string-symbols to)
-        (setq to (cons 'replace-eval-replacement
-                       (if (> (length to) 1)
-                           (cons 'concat to)
-                         (car to)))))
+        (setq to  (cons 'replace-eval-replacement (if (> (length to) 1) (cons 'concat to) (car to)))))
       to)))
 
 (when (boundp 'menu-bar-search-replace-menu) ; In `menu-bar+.el'.
@@ -454,19 +453,19 @@ insert a SPC or TAB character, you will need to preceed it by \
 If option `isearchp-set-region-flag' is non-nil, then select the last
 replacement."
   (interactive
-   (let* ((kind (cond ((and current-prefix-arg (natnump (prefix-numeric-value current-prefix-arg)))
-                       " WORD")
-                      (current-prefix-arg " REGEXP")
-                      (t " STRING")))
-          (common (query-replace-read-args (concat "Query replace" kind) (string= " REGEXP " kind))))
+   (let* ((kind    (cond ((and current-prefix-arg (natnump (prefix-numeric-value current-prefix-arg)))
+                          " WORD")
+                         (current-prefix-arg " REGEXP")
+                         (t " STRING")))
+          (common  (query-replace-read-args (concat "Query replace" kind) (string= " REGEXP " kind))))
      (list (nth 0 common) (nth 1 common) (nth 2 common)
            ;; These are done separately here, so that command-history will record these expressions
            ;; rather than the values they had this time.
            (and transient-mark-mode mark-active (region-beginning))
            (and transient-mark-mode mark-active (region-end)))))
-  (let ((kind (cond ((and prefix (natnump (prefix-numeric-value prefix))) 'WORD)
-                    (prefix 'REGEXP)
-                    (t 'STRING))))
+  (let ((kind  (cond ((and prefix (natnump (prefix-numeric-value prefix))) 'WORD)
+                     (prefix 'REGEXP)
+                     (t 'STRING))))
     (case kind
       (WORD
        (if (< emacs-major-version 21) (query-replace old new t) (query-replace old new t start end)))
@@ -494,23 +493,23 @@ minibuffer completion while you type the arguments.  In that case, to
 insert a `SPC' or `TAB' character, you will need to preceed it by \
 `\\[quoted-insert]'."
     (unless noerror (barf-if-buffer-read-only))
-    (let* ((default (if (fboundp search/replace-default-fn)
-                        (funcall search/replace-default-fn)
-                      (car regexp-history)))
-           (old-prompt (concat string ".  OLD (to be replaced): "))
-           (oldx (if replace-w-completion-flag
-                     (completing-read old-prompt obarray nil nil nil
-                                      query-replace-from-history-variable default t)
-                   (if query-replace-interactive
-                       (car (if regexp-flag regexp-search-ring search-ring))
-                     (read-from-minibuffer old-prompt nil nil nil
-                                           query-replace-from-history-variable default t))))
-           (new-prompt (format "NEW (replacing %s): " oldx))
-           (newx (if replace-w-completion-flag
-                     (completing-read new-prompt obarray nil nil nil
-                                      query-replace-to-history-variable default t)
-                   (read-from-minibuffer new-prompt nil nil nil
-                                         query-replace-to-history-variable default t))))
+    (let* ((default     (if (fboundp search/replace-default-fn)
+                            (funcall search/replace-default-fn)
+                          (car regexp-history)))
+           (old-prompt  (concat string ".  OLD (to be replaced): "))
+           (oldx        (if replace-w-completion-flag
+                            (completing-read old-prompt obarray nil nil nil
+                                             query-replace-from-history-variable default t)
+                          (if query-replace-interactive
+                              (car (if regexp-flag regexp-search-ring search-ring))
+                            (read-from-minibuffer old-prompt nil nil nil
+                                                  query-replace-from-history-variable default t))))
+           (new-prompt  (format "NEW (replacing %s): " oldx))
+           (newx        (if replace-w-completion-flag
+                            (completing-read new-prompt obarray nil nil nil
+                                             query-replace-to-history-variable default t)
+                          (read-from-minibuffer new-prompt nil nil nil
+                                                query-replace-to-history-variable default t))))
       (list oldx newx current-prefix-arg))))
 
 
@@ -539,18 +538,16 @@ the matching is case-sensitive."
     (when (interactive-p) (message "Deleting non-matching lines..."))
     (save-excursion
       (unless (bolp) (forward-line 1))
-      (let ((start (point))
-            (case-fold-search  (and case-fold-search
-                                    (isearch-no-upper-case-p regexp t))))
+      (let ((start             (point))
+            (case-fold-search  (and case-fold-search (isearch-no-upper-case-p regexp t))))
         (while (not (eobp))
           ;; Start is first char not preserved by previous match.
           (if (not (re-search-forward regexp nil 'move))
               (delete-region start (point-max))
-            (let ((end (save-excursion (goto-char (match-beginning 0))
-                                       (beginning-of-line) (point))))
+            (let ((end  (save-excursion (goto-char (match-beginning 0)) (beginning-of-line) (point))))
               ;; Now end is first char preserved by the new match.
               (when (< start end) (delete-region start end))))
-          (setq start (save-excursion (forward-line 1) (point)))
+          (setq start  (save-excursion (forward-line 1) (point)))
           ;; If the match was empty, avoid matching again at same place.
           (and (not (eobp)) (= (match-beginning 0) (match-end 0))
                (forward-char 1)))))
@@ -579,12 +576,10 @@ the matching is case-sensitive."
               (car regexp-history))
             nil nil 'regexp-history nil t)))
     (when (interactive-p) (message "Deleting matching lines..."))
-    (let ((case-fold-search (and case-fold-search
-                                 (isearch-no-upper-case-p regexp t))))
+    (let ((case-fold-search  (and case-fold-search (isearch-no-upper-case-p regexp t))))
       (save-excursion
         (while (and (not (eobp)) (re-search-forward regexp nil t))
-          (delete-region (save-excursion (goto-char (match-beginning 0))
-                                         (beginning-of-line) (point))
+          (delete-region (save-excursion (goto-char (match-beginning 0)) (beginning-of-line) (point))
                          (progn (forward-line 1) (point))))))
     (when (interactive-p) (message "Deleting matching lines...done"))))
 
@@ -607,17 +602,16 @@ the matching is case-sensitive."
                             (funcall search/replace-default-fn)
                           (car regexp-history)) nil nil 'regexp-history nil t)))
     (when (interactive-p) (message "Counting matches after point..."))
-    (let ((count 0)
-          (case-fold-search  (and case-fold-search
-                                  (isearch-no-upper-case-p regexp t)))
+    (let ((count             0)
+          (case-fold-search  (and case-fold-search (isearch-no-upper-case-p regexp t)))
           opoint)
       (save-excursion
         (while (and (not (eobp))
-                    (progn (setq opoint (point))
+                    (progn (setq opoint  (point))
                            (re-search-forward regexp nil t)))
           (if (= opoint (point))
               (forward-char 1)
-            (setq count (1+ count))))
+            (setq count  (1+ count))))
         (message "%d matches after point." count)))))
 
 
@@ -649,35 +643,31 @@ menu to find any of the occurrences in the current buffer.
 If REGEXP contains upper case characters (excluding those preceded by `\\'),
 the matching is case-sensitive."
     (interactive
-     (list (let ((default (if (fboundp search/replace-default-fn)
-                              (funcall search/replace-default-fn)
-                            (car regexp-history))))
-             (read-from-minibuffer "List lines matching regexp: "
-                                   nil nil nil 'regexp-history default t))
+     (list (let ((default  (if (fboundp search/replace-default-fn)
+                               (funcall search/replace-default-fn)
+                             (car regexp-history))))
+             (read-from-minibuffer "List lines matching regexp: "  nil nil nil 'regexp-history default t))
            current-prefix-arg))
-    (setq occur-regexp regexp)          ; Save for highlighting.
-    (let ((nlines (if nlines
-                      (prefix-numeric-value nlines)
-                    list-matching-lines-default-context-lines))
-          (first t)
+    (setq occur-regexp  regexp)         ; Save for highlighting.
+    (let ((nlines             (if nlines
+                                  (prefix-numeric-value nlines)
+                                list-matching-lines-default-context-lines))
+          (first              t)
           ;;flag to prevent printing separator for first match
-          (occur-num-matches 0)
-          (buffer (current-buffer))
-          (dir default-directory)
-          (linenum 1)
-          (prevpos
-           ;;position of most recent match
-           (point-min))
-          (case-fold-search  (and case-fold-search
-                                  (isearch-no-upper-case-p regexp t)))
+          (occur-num-matches  0)
+          (buffer             (current-buffer))
+          (dir                default-directory)
+          (linenum            1)
+          (prevpos            (point-min)) ; position of most recent match
+          (case-fold-search   (and case-fold-search (isearch-no-upper-case-p regexp t)))
           (final-context-start
            ;; Marker to the start of context immediately following
            ;; the matched text in *Occur*.
            (make-marker)))
 ;;;     (save-excursion
 ;;;       (beginning-of-line)
-;;;       (setq linenum (1+ (count-lines (point-min) (point))))
-;;;       (setq prevpos (point)))
+;;;       (setq linenum  (1+ (count-lines (point-min) (point))))
+;;;       (setq prevpos  (point)))
       (save-excursion
         (goto-char (point-min))
         ;; Check first whether there are any matches at all.
@@ -686,18 +676,17 @@ the matching is case-sensitive."
           ;; Back up, so the search loop below will find the first match.
           (goto-char (match-beginning 0))
           (with-output-to-temp-buffer "*Occur*"
-            (save-excursion
-              (set-buffer standard-output)
-              (setq default-directory dir)
-              ;; We will insert the number of lines, and "lines", later.
-              (insert " matching ")
-              (let ((print-escape-newlines t)) (prin1 regexp))
-              (insert " in buffer `" (buffer-name buffer) "'." ?\n)
-              (occur-mode)
-              (setq occur-buffer buffer)
-              (setq occur-nlines nlines)
-              (setq occur-command-arguments
-                    (list regexp nlines)))
+            (with-current-buffer standard-output
+              (save-excursion
+                (setq default-directory  dir)
+                ;; We will insert the number of lines, and "lines", later.
+                (insert " matching ")
+                (let ((print-escape-newlines  t)) (prin1 regexp))
+                (insert " in buffer `" (buffer-name buffer) "'." ?\n)
+                (occur-mode)
+                (setq occur-buffer             buffer
+                      occur-nlines             nlines
+                      occur-command-arguments  (list regexp nlines))))
             (when (eq buffer standard-output) (goto-char (point-max)))
             (save-excursion
               ;; Find next match, but give up if prev match was at end of buffer.
@@ -705,34 +694,29 @@ the matching is case-sensitive."
                           (re-search-forward regexp nil t))
                 (goto-char (match-beginning 0))
                 (beginning-of-line)
-                (save-match-data
-                  (setq linenum (+ linenum (count-lines prevpos (point)))))
-                (setq prevpos (point))
+                (save-match-data (setq linenum  (+ linenum (count-lines prevpos (point)))))
+                (setq prevpos  (point))
                 (goto-char (match-end 0))
                 (let* ((start
-                        ;;start point of text in source buffer to be put
-                        ;;into *Occur*
-                        (save-excursion
-                          (goto-char (match-beginning 0))
-                          (forward-line (if (< nlines 0) nlines (- nlines)))
-                          (point)))
+                        ;; start point of text in source buffer to be put into *Occur*
+                        (save-excursion (goto-char (match-beginning 0))
+                                        (forward-line (if (< nlines 0) nlines (- nlines)))
+                                        (point)))
                        (end
-                        ;; end point of text in source buffer to be put
-                        ;; into *Occur*
-                        (save-excursion
-                          (goto-char (match-end 0))
-                          (if (> nlines 0)
-                              (forward-line (1+ nlines))
-                            (forward-line 1))
-                          (point)))
+                        ;; end point of text in source buffer to be put into *Occur*
+                        (save-excursion (goto-char (match-end 0))
+                                        (if (> nlines 0)
+                                            (forward-line (1+ nlines))
+                                          (forward-line 1))
+                                        (point)))
                        (match-beg
                         ;; Amount of context before matching text
                         (- (match-beginning 0) start))
                        (match-len
                         ;; Length of matching text
                         (- (match-end 0) (match-beginning 0)))
-                       (tag (format "%5d" linenum))
-                       (empty (make-string (length tag) ?\ ))
+                       (tag    (format "%5d" linenum))
+                       (empty  (make-string (length tag) ?\ ))
                        tem
                        insertion-start
                        ;; Number of lines of context to show for current match.
@@ -745,35 +729,30 @@ the matching is case-sensitive."
                        (text-end
                         ;; Marker pointing to end of text for one match
                         ;; in *Occur*.
-                        (make-marker))
-                       )
+                        (make-marker)))
                   (save-excursion
-                    (setq occur-marker (make-marker))
+                    (setq occur-marker  (make-marker))
                     (set-marker occur-marker (point))
                     (set-buffer standard-output)
-                    (setq occur-num-matches (1+ occur-num-matches))
-                    (or first (zerop nlines)
-                        (insert "--------\n"))
-                    (setq first nil)
+                    (setq occur-num-matches  (1+ occur-num-matches))
+                    (or first (zerop nlines) (insert "--------\n"))
+                    (setq first  nil)
 
                     ;; Insert matching text including context lines from
                     ;; source buffer into *Occur*
                     (set-marker text-beg (point))
-                    (setq insertion-start (point))
+                    (setq insertion-start  (point))
                     (insert-buffer-substring buffer start end)
                     (or (and (/= (+ start match-beg) end)
-                             (with-current-buffer buffer
-                               (eq (char-before end) ?\n)))
+                             (with-current-buffer buffer (eq (char-before end) ?\n)))
                         (insert "\n"))
-                    (set-marker final-context-start
-                                (+ (- (point) (- end (match-end 0)))
-                                   (if (save-excursion
-                                         (set-buffer buffer)
-                                         (save-excursion
-                                           (goto-char (match-end 0))
-                                           (end-of-line)
-                                           (bolp)))
-                                       1 0)))
+                    (set-marker final-context-start (+ (- (point) (- end (match-end 0)))
+                                                       (if (with-current-buffer buffer
+                                                             (save-excursion
+                                                               (goto-char (match-end 0))
+                                                               (end-of-line)
+                                                               (bolp)))
+                                                           1 0)))
                     (set-marker text-end (point))
 
                     ;; Highlight text that was matched.
@@ -794,20 +773,18 @@ the matching is case-sensitive."
                     ;; adding the space and colon to the start of each line.
                     (goto-char insertion-start)
                     ;; Insert space and colon for lines of context before match.
-                    (setq tem (if (< linenum nlines)
-                                  (- nlines linenum)
-                                nlines))
+                    (setq tem  (if (< linenum nlines) (- nlines linenum) nlines))
                     (while (> tem 0)
                       (insert empty ?:)
                       (forward-line 1)
-                      (setq tem (1- tem)))
+                      (setq tem  (1- tem)))
 
                     ;; Insert line number and colon for the lines of
                     ;; matching text.
-                    (let ((this-linenum linenum))
+                    (let ((this-linenum  linenum))
                       (while (< (point) final-context-start)
                         (when (null tag)
-                          (setq tag (format "%5d" this-linenum)))
+                          (setq tag  (format "%5d" this-linenum)))
                         (insert tag ?:)
 ;;;                    ;; DDA: Add mouse-face to line
 ;;;                    (put-text-property (save-excursion
@@ -821,18 +798,18 @@ the matching is case-sensitive."
 ;;;                       (save-excursion (end-of-line) (point))
 ;;;                       occur-regexp list-matching-lines-face))
                         (forward-line 1)
-                        (setq tag nil)
+                        (setq tag  nil)
                         (incf this-linenum))
                       (while (and (not (eobp)) (<= (point) final-context-start))
                         (insert empty ?:)
                         (forward-line 1)
-                        (setq this-linenum (1+ this-linenum))))
+                        (setq this-linenum  (1+ this-linenum))))
 
                     ;; Insert space and colon for lines of context after match.
                     (while (and (< (point) (point-max)) (< tem nlines))
                       (insert empty ?:)
                       (forward-line 1)
-                      (setq tem (1+ tem)))
+                      (setq tem  (1+ tem)))
 
                     ;; Add text properties.  The `occur' prop is used to
                     ;; store the marker of the matching text in the
@@ -849,18 +826,17 @@ the matching is case-sensitive."
               ;; Go back to top of *Occur* and finish off by printing the
               ;; number of matching lines.
               (goto-char (point-min))
-              (let ((message-string
-                     (if (= occur-num-matches 1)
-                         "1 line"
-                       (format "%d lines" occur-num-matches))))
+              (let ((message-string  (if (= occur-num-matches 1)
+                                         "1 line"
+                                       (format "%d lines" occur-num-matches))))
                 (insert message-string)
                 (when (interactive-p)
                   (message "%s matched" message-string)))
-              (setq buffer-read-only t)))
+              (setq buffer-read-only  t)))
           (when (fboundp 'show-a-frame-on) ; Defined in `frame-cmds.el'.
             (show-a-frame-on "*Occur*"))
-          (let ((fr (and (fboundp 'get-a-frame) ; Defined in `frame-fns.el'.
-                         (get-a-frame "*Occur*"))))
+          (let ((fr  (and (fboundp 'get-a-frame) ; Defined in `frame-fns.el'.
+                          (get-a-frame "*Occur*"))))
             (when (and fr (fboundp 'fit-frame)) ; Defined in `fit-frame.el'.
               (fit-frame fr))))))))
 
@@ -871,7 +847,7 @@ the matching is case-sensitive."
 ;;;###autoload
 (when (>= emacs-major-version 21)
   (defadvice occur (before occur-save-regexp activate compile)
-    (setq occur-regexp regexp)))        ; Save for highlighting.
+    (setq occur-regexp  regexp)))        ; Save for highlighting.
 
 
 
@@ -880,19 +856,17 @@ the matching is case-sensitive."
 ;;;###autoload
 (when (>= emacs-major-version 21)
   (defun occur-read-primary-args ()
-    (list (let* ((default (if (fboundp search/replace-default-fn)
-                              (funcall search/replace-default-fn)
-                            (car regexp-history)))
-                 (input
-                  (read-from-minibuffer
-                   (if default
-                       (format "List lines matching regexp (default `%s'): "
-                               (query-replace-descr default))
-                     "List lines matching regexp: ")
-                   nil nil nil 'regexp-history default)))
+    (list (let* ((default  (if (fboundp search/replace-default-fn)
+                               (funcall search/replace-default-fn)
+                             (car regexp-history)))
+                 (input    (read-from-minibuffer
+                            (if default
+                                (format "List lines matching regexp (default `%s'): "
+                                        (query-replace-descr default))
+                              "List lines matching regexp: ")
+                            nil nil nil 'regexp-history default)))
             (if (equal input "") default input))
-          (and current-prefix-arg
-               (prefix-numeric-value current-prefix-arg)))))
+          (and current-prefix-arg (prefix-numeric-value current-prefix-arg)))))
 
 
 
@@ -903,16 +877,16 @@ the matching is case-sensitive."
 (defadvice occur-mode-mouse-goto (around occur-mode-mouse-goto-highlight activate compile)
   "Highlight visited line number in occur buffer.
 Alo highlight occur regexp in source buffer."
-  (save-excursion
-    (set-buffer (window-buffer (posn-window (event-end event))))
-    (goto-char (posn-point (event-end event)))
-    (when (fboundp 'hlt-highlight-regexp-region) ; Highlight goto lineno.
-      (let ((bol (save-excursion (beginning-of-line) (point))))
-        (hlt-highlight-regexp-region bol
-                                     (save-excursion
-                                       (beginning-of-line) (search-forward ":" (+ bol 20) t) (point))
-                                     "[0-9]+:"
-                                     'occur-highlight-linenum))))
+  (with-current-buffer (window-buffer (posn-window (event-end event)))
+    (save-excursion
+      (goto-char (posn-point (event-end event)))
+      (when (fboundp 'hlt-highlight-regexp-region) ; Highlight goto lineno.
+        (let ((bol  (save-excursion (beginning-of-line) (point))))
+          (hlt-highlight-regexp-region bol
+                                       (save-excursion
+                                         (beginning-of-line) (search-forward ":" (+ bol 20) t) (point))
+                                       "[0-9]+:"
+                                       'occur-highlight-linenum)))))
   ad-do-it
   (when (fboundp 'hlt-highlight-regexp-region)
     (let ((inhibit-field-text-motion  t)) ; Just to be sure, for end-of-line.
@@ -930,7 +904,7 @@ Alo highlight occur regexp in source buffer."
   "Highlight visited line number in occur buffer.
 Also highlight occur regexp in source buffer."
   (when (fboundp 'hlt-highlight-regexp-region) ; Highlight goto lineno.
-    (let ((bol (save-excursion (beginning-of-line) (point))))
+    (let ((bol  (save-excursion (beginning-of-line) (point))))
       (hlt-highlight-regexp-region bol
                                    (save-excursion
                                      (beginning-of-line) (search-forward ":" (+ bol 20) t) (point))
@@ -957,13 +931,13 @@ Also highlight occur regexp in source buffer."
   "Go to the occurrence the current line describes, in another window."
   (interactive)
   (when (fboundp 'hlt-highlight-regexp-region) ; Highlight goto lineno.
-    (let ((bol (save-excursion (beginning-of-line) (point))))
+    (let ((bol  (save-excursion (beginning-of-line) (point))))
       (hlt-highlight-regexp-region bol
                                    (save-excursion
                                      (beginning-of-line) (search-forward ":" (+ bol 20) t) (point))
                                    "[0-9]+:"
                                    'occur-highlight-linenum)))
-  (let ((pos (occur-mode-find-occurrence)))
+  (let ((pos  (occur-mode-find-occurrence)))
     (switch-to-buffer-other-window (marker-buffer pos))
     (goto-char pos)
     (when (fboundp 'hlt-highlight-regexp-region)
@@ -981,18 +955,18 @@ Also highlight occur regexp in source buffer."
   "Display in another window the occurrence the current line describes."
   (interactive)
   (when (fboundp 'hlt-highlight-regexp-region) ; Highlight goto lineno.
-    (let ((bol (save-excursion (beginning-of-line) (point))))
+    (let ((bol  (save-excursion (beginning-of-line) (point))))
       (hlt-highlight-regexp-region bol
                                    (save-excursion
                                      (beginning-of-line) (search-forward ":" (+ bol 20) t) (point))
                                    "[0-9]+:"
                                    'occur-highlight-linenum)))
-  (let ((pos (occur-mode-find-occurrence))
+  (let ((pos  (occur-mode-find-occurrence))
         window
         ;; Bind these to ensure `display-buffer' puts it in another window.
         same-window-buffer-names
         same-window-regexps)
-    (setq window (display-buffer (marker-buffer pos)))
+    (setq window  (display-buffer (marker-buffer pos)))
     ;; This is the way to set point in the proper window.
     (save-selected-window
       (select-window window)

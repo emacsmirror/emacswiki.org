@@ -10,16 +10,10 @@ In Emacs 22 and later, `C-SPC C-SPC' activates Transient Mark mode only ''tempor
 
 '''See also:'''
 
-* [[Manual:Transient Mark]] -- Ask the EmacsManual.
-
+* [[Manual:transient-mark-mode]] -- Ask the EmacsManual.
 * DeleteSelectionMode. Delete Selection mode uses Transient Mark mode. It lets you delete or replace the region just by typing (as in many other editors).
-
 * PcSelectionMode also uses Transient Mark mode.
-
 * ZmacsRegions is the equivalent, in [[XEmacs]], of Transient Mark mode in GnuEmacs.
-
-
-
 
 == Activating Transient Mark Mode Temporarily Prior to Emacs 22 ==
 This code snippet is from Emacs CVS.

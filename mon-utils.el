@@ -72,7 +72,7 @@
 ;;; `mon-get-system-specs', `mon-string-fill-to-col'
 ;;; `mon-line-strings-pipe-to-col', `mon-line-strings'
 ;;; `mon-get-process', `mon-toggle-eval-length',
-;;; `mon-line-string-insert-chars-under'
+;;; `mon-line-string-insert-chars-under', `mon-alphabet-as-type'
 ;;; FUNCTIONS:◄◄◄
 ;;; FUNCTIONS:###
 ;;; 
@@ -628,7 +628,7 @@ Like `append-next-kill' but skips the C M-w M-w finger-chord hoop jump.\n►►�
 ;;; :SEE (URL `http://www.idiap.ch/~fleuret/files/fleuret.emacs.el')
 ;;; :WAS `ff/twin-horizontal-current-buffer' -> `mon-twin-horizontal'
 (defun mon-twin-horizontal () 
-  "Split current-buffer horizontally.
+  "Split current-buffer horizontally.\n
 :SEE-ALSO `mon-twin-vertical', `mon-flip-windows'.\n►►►"
   (interactive)
   (delete-other-windows)
@@ -637,7 +637,7 @@ Like `append-next-kill' but skips the C M-w M-w finger-chord hoop jump.\n►►�
 ;;
 ;;; :WAS `ff/twin-vertical-current-buffer' -> `mon-twin-vertical'
 (defun mon-twin-vertical () 
-  "Split current-buffer vertically.
+  "Split current-buffer vertically.\n
 :SEE-ALSO `mon-twin-horizontal', `mon-flip-windows'.\n►►►"
   (interactive)
   (delete-other-windows)
@@ -647,7 +647,9 @@ Like `append-next-kill' but skips the C M-w M-w finger-chord hoop jump.\n►►�
 ;;; ==============================
 ;;; :COURTESY Miles Bader :SOURCE (gnus.emacs.help)
 (defun mon-what-face (pos)
-  "Return the font-lock face information at the current point.\n►►►"
+  "Return the font-lock face information at the current point.\n
+:SEE-ALSO `mon-help-basic-faces', `mon-help-faces-themes',
+`mon-help-make-faces'.\n►►►"
   (interactive "d")
   (let ((face (or (get-char-property (point) 'read-face-name)
 		  (get-char-property (point) 'face))))
@@ -726,14 +728,15 @@ A stupid and mostly useless function.\n►►►"
 
 ;;; ==============================
 (defun mon-region-length ()
-  "Return the regions length.\n►►►"
+  "Return the regions length.\n
+:SEE-ALSO `mon-region-unfill',`mon-region-capitalize',`mon-region-reverse'.\n►►►"
   (interactive)
   (message "Region length=%s" 
            (- (region-end) (region-beginning))))
 
 ;;; ==============================
 (defun mon-region-unfill (start end)
-  "Do the opposite of fill-region.
+  "Do the opposite of `fill-region'.\n
 Stuff all paragraphs paragraphs in the current region into long lines.\n
 :SEE-ALSO `mon-line-strings-indent-to-col', `mon-line-indent-from-to-col',
 `mon-string-fill-to-col', `mon-comment-divide->col'.\n►►►"
@@ -743,10 +746,11 @@ Stuff all paragraphs paragraphs in the current region into long lines.\n
 
 ;;; ==============================
 (defun mon-region-capitalize (start end)
-  "Capitalize the region. 
+  "Capitalize the region.\n
 \"mon-\" function name wrapper for consistency, and to aid completion
 because we also have `mon-rectangle-capitalize'.
-This function is a 1:1 duplicate of `capitalize-region'.\n►►►"
+This function is a 1:1 duplicate of `capitalize-region'.
+:SEE-ALSO `mon-region-unfill',`mon-region-length',`mon-region-reverse'.\n►►►"
   (interactive "r")
   (capitalize-region start end))
 
@@ -756,21 +760,21 @@ This function is a 1:1 duplicate of `capitalize-region'.\n►►►"
 When called-interactively insert the reversed as with princ.
 When INSRTP is non-nil insert the reversed as with princ.
 Insertion does not move point. Insertion is whitespace agnostic.\n
-:SEE-ALSO `mon-word-reverse-region'.\n►►►"
+:SEE-ALSO `mon-word-reverse-region', `mon-region-unfill',`mon-region-capitalize'.\n►►►"
   (interactive "r\ni\np")
   (let ((rr (apply 
              'concat 
              (reverse 
               (split-string (buffer-substring-no-properties beg end) "")))))
-        (cond (intrp
-               (save-excursion 
-                 (delete-region beg end)
-                 (princ rr (current-buffer))))
-              (insrtp 
-               (save-excursion 
-                 (delete-region beg end)
-                 (prin1 rr (current-buffer))))
-              (t rr))))
+    (cond (intrp
+           (save-excursion 
+             (delete-region beg end)
+             (princ rr (current-buffer))))
+          (insrtp 
+           (save-excursion 
+             (delete-region beg end)
+             (prin1 rr (current-buffer))))
+          (t rr))))
 
 ;;; ==============================
 ;;; :NOTE consider macrology? BUGGY but :WORKING-AS-OF
@@ -981,7 +985,8 @@ When `eval-expression-print-length' and NEW-DEPTH are non-nil set length.\n
 ;;; ==============================
 ;;; :COURTESY Sandip Chitale <sandipchitale@attbi.com>
 (defun mon-choose-from-menu (menu-title menu-items)
-  "Choose from a list of choices from a popup menu.\n►►►"
+  "Choose from a list of choices from a popup menu.\n
+:SEE-ALSO `choose-completion'.\n►►►"
   (let ((item)
         (item-list))
     (while menu-items
@@ -1119,9 +1124,7 @@ If AFTER is non-nil return t when char after point is a 'space'.\n
   "Return t if character after eol _is_ a space and next char is not.\n
 :SEE-ALSO `mon-spacep-is-bol', `mon-spacep-not-bol',
 `mon-spacep', `mon-line-bol-is-eol', `mon-line-next-bol-is-eol',
-`mon-line-previous-bol-is-eol', `mon-line-previous-bol-is-eol'
-`mon-spacep-is-after-eol-then-graphic', `mon-spacep-at-eol',
-`mon-cln-spc-tab-eol'.\n►►►"
+`mon-line-previous-bol-is-eol', `mon-spacep-at-eol',`mon-cln-spc-tab-eol'.\n►►►"
 (interactive "p")
   (let* ((after-eol (char-after (1+ (line-end-position))))
 	 (after-eol-then (char-after (+ (line-end-position) 2)))	 
@@ -1141,8 +1144,7 @@ If AFTER is non-nil return t when char after point is a 'space'.\n
   "Return t if character at eol is either TAB (char 9) or SPC (char 32).\n
 :SEE-ALSO `mon-spacep-is-bol', `mon-spacep-not-bol',
 `mon-spacep', `mon-line-bol-is-eol', `mon-line-next-bol-is-eol',
-`mon-line-previous-bol-is-eol', `mon-line-previous-bol-is-eol'
-`mon-spacep-at-eol', `mon-spacep-is-after-eol',
+`mon-line-previous-bol-is-eol',`mon-spacep-at-eol', `mon-spacep-is-after-eol',
 `mon-spacep-is-after-eol-then-graphic'.\n►►►"
   (interactive "p")
   (let ((rtrn 
@@ -1157,7 +1159,12 @@ If AFTER is non-nil return t when char after point is a 'space'.\n
 ;;; :COURTESY Andy Stewart <lazycat.manatee@gmail.com> :WAS `colp'
 ;;; :SEE (URL `http://www.emacswiki.org/emacs/lazycat-toolkit.el')
 (defun mon-spacep-first ()
-  "Return t if point is first non-whitespace character of line.\n►►►"
+  "Return t if point is first non-whitespace character of line.\n
+:SEE-ALSO `mon-spacep-is-bol', `mon-spacep-not-bol',
+`mon-spacep', `mon-line-bol-is-eol', `mon-line-next-bol-is-eol',
+`mon-line-previous-bol-is-eol', `mon-spacep-is-after-eol',
+`mon-spacep-is-after-eol-then-graphic', `mon-spacep-at-eol',
+`mon-cln-spc-tab-eol'.\n►►►"
   (let (current-point)
     (setq current-point (point))
     (save-excursion
@@ -1189,7 +1196,7 @@ If AFTER is non-nil return t when char after point is a 'space'.\n
 ;;; :CREATED <Timestamp: Thursday May 07, 2009 @ 03:38.46 PM - by MON KEY>
 (defun mon-line-previous-bol-is-eol (&optional intrp move-times)
   "Return t if position at beginning of previous line is eq end of line.
-called non-interactively MOVE-TIMES arg examines Nth previos line.\n
+When not called-interactively MOVE-TIMES arg examines Nth previous line.\n
 :SEE-ALSO `mon-spacep-is-bol', `mon-spacep-not-bol',
 `mon-spacep', `mon-line-bol-is-eol', `mon-line-next-bol-is-eol',
 `mon-spacep-is-after-eol', `mon-spacep-is-after-eol-then-graphic',
@@ -1215,7 +1222,7 @@ called non-interactively MOVE-TIMES arg examines Nth previos line.\n
 ;;; :CREATED <Timestamp: Thursday May 07, 2009 @ 03:38.46 PM - by MON KEY>
 (defun mon-line-next-bol-is-eol (&optional intrp move-times)
   "Return t if position at beginning of previous line is eq end of line.
-Called non-interactively MOVE-TIMES arg examines Nth previos line.\n
+When not called-interactively MOVE-TIMES arg examines Nth previos line.\n
 :SEE-ALSO `mon-spacep-is-bol', `mon-spacep-not-bol',
 `mon-spacep', `mon-line-bol-is-eol', `mon-line-previous-bol-is-eol',
 `mon-spacep-is-after-eol', `mon-spacep-is-after-eol-then-graphic',
@@ -1237,7 +1244,7 @@ Called non-interactively MOVE-TIMES arg examines Nth previos line.\n
 ;;; ==============================
 ;;; :CREATED <Timestamp: Friday May 08, 2009 @ 05:58.27 PM - by MON KEY>
 (defun mon-line-eol-is-eob (&optional intrp)
-  "Return t if point EOL is also EOB \(point-max\).
+  "Return t if point EOL is also EOB \(point-max\).\n
 :NOTE Does not test for narrowing!\n
 :SEE-ALSO `mon-spacep-is-bol', `mon-spacep-not-bol',
 `mon-spacep', `mon-line-bol-is-eol', `mon-line-next-bol-is-eol',
@@ -1253,11 +1260,11 @@ Called non-interactively MOVE-TIMES arg examines Nth previos line.\n
        rtrn))
 
 ;;; ==============================
-;;; :SOURCE (URL `http://www.emacswiki.org/emacs/BackToIndentationOrBeginning')
 ;;; "To get the same same type of functionality at the end of the line, try this
 ;;; function. I bind it to my <end> key just like the <home> key above. It jumps
 ;;; between the actual end-of-line and the end of the code line which is different
 ;;; if the line has comments on the end."
+;;; :SEE (URL `http://www.emacswiki.org/emacs/BackToIndentationOrBeginning')
 ;;; :CREATED <Timestamp: Tuesday June 02, 2009 @ 05:36.44 PM - by MON KEY>
 ;;; ==============================
 (defun mon-line-end-or-code-end () 
@@ -1265,11 +1272,13 @@ Called non-interactively MOVE-TIMES arg examines Nth previos line.\n
 That is, the end of the code, ignoring any trailing comment
 or whitespace.  
 :NOTE this does not handle 2 character  comment starters like // or /*.
-Instances of such chars are be skipped.\n►►►"
-  (interactive)
-  (if (not (eolp))
-      (end-of-line)
-    (skip-chars-backward " \t")
+Instances of such chars are be skipped.\n
+:SEE-ALSO `mon-spacep-is-bol', `mon-spacep-not-bol',
+`mon-spacep', `mon-line-bol-is-eol', `mon-line-next-bol-is-eol',
+`mon-line-previous-bol-is-eol', `mon-spacep-is-after-eol',
+`mon-spacep-is-after-eol-then-graphic', `mon-spacep-at-eol',
+`mon-cln-spc-tab-eol'.\n►►►"
+  (skip-chars-backward " \t")
     (let ((pt (point))
 	  (lbp (line-beginning-position))
 	  (lim))
@@ -1361,7 +1370,8 @@ Arg TEST-FROM is a buffer pos to start counting from.\n
 (defun mon-line-length-max (&optional intrp)
   "Return the maximum line length of the current buffer.
 When called-interactively return message in mini-buffer:
-\"The longest line in buffer `mon-utils.el' ends at column 115.\"\n►►►"
+\"The longest line in buffer `mon-utils.el' ends at column 115.\"
+:SEE-ALSO `mon-region-length'.\n►►►"
 (interactive "p")
   (let ((max-len 0))
     (save-excursion
@@ -1380,6 +1390,134 @@ When called-interactively return message in mini-buffer:
 ;;; ==============================
 ;;; Word, Line, String Related utils
 ;;; ==============================
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-01-12T17:06:34-05:00Z}#{10022} - by MON>
+(defun mon-alphabet-as-type (type); up down)
+"Reutrn an alpabetized sequence of TYPE.\n
+Possible args for TYPE are:\n
+ :UPCASE-VERSION       :DOWNCASE-VERSION
+ `cons-keyU->num'      `cons-keyD->num'
+ `cons-keyU->stringU'  `cons-keyD->stringD'
+ `plistU->stringU'     `plistD->stringD'
+ `plistU->num'         `plistD->num'
+ `list-stringU'        `list-stringD'
+ `list-symbolU'        `list-symbolD'
+ `stringU-w-spc'       `stringD-w-spc'
+ `stringU-w-nl'        `stringD-w-nl'\n
+:EXAMPLE\n
+\(mon-alphabet-as-type 'cons-keyU->num\)\n\(mon-alphabet-as-type 'cons-keyD->num\)
+\(mon-alphabet-as-type 'cons-keyU->stringU\)\n\(mon-alphabet-as-type 'cons-keyD->stringD\)
+\(mon-alphabet-as-type 'plistU->stringU\)\n\(mon-alphabet-as-type 'plistD->stringD\)
+\(mon-alphabet-as-type 'plistU->num\)\n\(mon-alphabet-as-type 'plistD->num\)
+\(mon-alphabet-as-type 'list-stringU\)\n\(mon-alphabet-as-type 'list-stringD\)
+\(mon-alphabet-as-type 'list-symbolU\)\n\(mon-alphabet-as-type 'list-symbolD\)
+\(mon-alphabet-as-type 'stringU-w-nl\)\n\(mon-alphabet-as-type 'stringD-w-nl\)
+\(mon-alphabet-as-type 'stringU-w-spc\)\n\(mon-alphabet-as-type 'stringD-w-spc\)\n
+:NOTE This procedured isn't necessarily efficient but it does have the benefit
+of being entirely self contained, and therefor does not rely on external calls.\n
+:SEE-ALSO `mon-string-to-symbol',`mon-symbol-to-string', `mon-string-alpha-list'
+`mon-is-alphanum', `mon-is-letter', `mon-is-digit',
+`mon-is-alphanum-simp', `mon-is-letter-simp', `mon-is-digit-simp'
+`mon-string-ify-list', `mon-string-chop-spaces', 
+`mon-string-from-sequence', `mon-string-to-sequence'.\n►►►"
+(let ((alph '(?A ?B ?C ?D ?E ?F ?G ?H ?I ?J ?K ?L 
+              ?M ?N ?O ?P ?Q ?R ?S ?T ?U ?V ?W ?X ?Y ?Z))
+      (abet))
+  (case type 
+    (plistU->stringU ;; (mon-alphabet-as-type 'plistU->stringU))))
+     (while alph (funcall #'(lambda (p)
+                              (let ((s (funcall 'string p)))
+                                (push (read (upcase (concat ":" s))) abet)
+                                (push (upcase s) abet)))
+                          (pop alph)))
+     (setq abet  (nreverse abet)))
+    (plistD->stringD ;; (mon-alphabet-as-type 'plistD->stringD)
+     (let ((psd (mapcar #'(lambda (sm) (+ sm 32)) alph)))
+       (while psd 
+         (funcall #'(lambda (smD)                                    
+                      (let ((smd (funcall 'string smD)))
+                        (push (read (concat ":" smd)) abet)
+                        (push smd abet)))
+                  (pop psd)))
+       (setq abet (nreverse abet))))
+    (plistU->num ;; (mon-alphabet-as-type 'plistU->num)
+     (let ((pln (mon-alphabet-as-type 'plistU->stringU)))
+       (dotimes (pp (length pln) (setq abet pln))
+         (when (evenp pp)
+           (plist-put pln (elt pln pp) 
+                      (if (> pp 0) (1+ (/ pp 2)) (1+ pp)))))))
+    (plistD->num    ;; (mon-alphabet-as-type 'plistD->num)
+     (let ((plnD (mon-alphabet-as-type 'plistD->stringD)))
+       (dotimes (ppD (length plnD) (setq abet plnD))
+         (when (evenp ppD)
+           (plist-put plnD (elt plnD ppD)
+                      (if (> ppD 0) (1+ (/ ppD 2)) (1+ ppD)))))))
+    (cons-keyU->stringU ;; (mon-alphabet-as-type 'cons-keyU->stringU)
+     (let ((plc (mon-alphabet-as-type 'plistU->stringU)))
+       (while plc
+         (funcall #'(lambda (c)
+                      (push `(,c . ,(pop plc)) abet)) (pop plc))))
+     (setq abet (nreverse abet)))
+    (cons-keyD->stringD ;; (mon-alphabet-as-type 'cons-keyD->stringD)
+     (let ((kdsd (mon-alphabet-as-type 'cons-keyU->stringU)))
+       (mapc #'(lambda (D)
+                 (let ((mk-sml (char-to-string (+ (string-to-char (cdr D)) 32))))
+                   (setcar D (read (concat ":" mk-sml)))
+                   (setcdr D mk-sml)))
+             kdsd)
+       (setq abet kdsd)))
+    (cons-keyU->num ;; (mon-alphabet-as-type 'cons-keyU->num)
+     (let ((plc (mon-alphabet-as-type 'plistU->num)))
+       (while plc
+         (funcall #'(lambda (c)
+                      (push `(,c . ,(pop plc)) abet)) (pop plc))))
+     (setq abet (nreverse abet)))
+    (cons-keyD->num ;; (mon-alphabet-as-type 'cons-keyD->num)
+     (let ((plcD (mon-alphabet-as-type 'plistD->num)))
+       (while plcD
+         (funcall #'(lambda (cD)
+                      (push `(,cD . ,(pop plcD)) abet)) (pop plcD))))
+     (setq abet (nreverse abet)))
+    (list-stringD ;; (mon-alphabet-as-type 'list-stringD)
+     (setq abet (mapcar 'cdr (mon-alphabet-as-type 'cons-keyD->stringD))))
+    (list-stringU ;; (mon-alphabet-as-type 'list-stringU)
+     (setq abet (mapcar 'cdr (mon-alphabet-as-type 'cons-keyU->stringU))))
+    (list-symbolU ;; (mon-alphabet-as-type 'list-symbolU)
+     (let ((tmp-obu (make-vector 26 nil))
+           (poplsu (mon-alphabet-as-type 'list-stringU)))
+       (while poplsu (push (intern (pop poplsu) tmp-obu) abet))
+       (setq abet (nreverse abet))))
+    (list-symbolD ;; (mon-alphabet-as-type 'list-symbolD)
+     (let ((tmp-obd (make-vector 26 nil))
+           (poplsd (mon-alphabet-as-type 'list-stringD)))
+       (while poplsd (push (intern (pop poplsd) tmp-obd) abet))
+       (setq abet (nreverse abet))))
+    (stringU-w-spc ;; (mon-alphabet-as-type 'stringU-w-spc)
+     (mapconcat 'identity (mon-alphabet-as-type 'list-stringU) " "))
+    (stringU-w-nl ;; (mon-alphabet-as-type 'stringU-w-nl)
+     (mapconcat 'identity (mon-alphabet-as-type 'list-stringU) "\n"))
+    (stringD-w-spc ;; (mon-alphabet-as-type 'stringD-w-spc)
+     (mapconcat 'identity (mon-alphabet-as-type 'list-stringD) " "))
+    (stringD-w-nl ;; (mon-alphabet-as-type 'stringD-w-nl)
+     (mapconcat 'identity (mon-alphabet-as-type 'list-stringD) "\n")))))
+;;
+;;; :TEST-ME (mon-alphabet-as-type 'cons-keyU->num)
+;;; :TEST-ME (mon-alphabet-as-type 'cons-keyD->num)
+;;; :TEST-ME (mon-alphabet-as-type 'cons-keyU->stringU)
+;;; :TEST-ME (mon-alphabet-as-type 'cons-keyD->stringD)
+;;; :TEST-ME (mon-alphabet-as-type 'plistU->stringU)
+;;; :TEST-ME (mon-alphabet-as-type 'plistD->stringD)
+;;; :TEST-ME (mon-alphabet-as-type 'plistU->num)
+;;; :TEST-ME (mon-alphabet-as-type 'plistD->num)
+;;; :TEST-ME (mon-alphabet-as-type 'list-stringU)
+;;; :TEST-ME (mon-alphabet-as-type 'list-stringD)
+;;; :TEST-ME (mon-alphabet-as-type 'list-symbolU)
+;;; :TEST-ME (mon-alphabet-as-type 'list-symbolD)
+;;; :TEST-ME (mon-alphabet-as-type 'stringU-w-nl)
+;;; :TEST-ME (mon-alphabet-as-type 'stringD-w-nl)
+;;; :TEST-ME (mon-alphabet-as-type 'stringU-w-spc)
+;;; :TEST-ME (mon-alphabet-as-type 'stringD-w-spc)
 
 ;;; ==============================
 ;;; :COURTESY Pascal J. Bourguignon :HIS pjb-strings.el :WAS `is-digit'
@@ -1401,7 +1539,7 @@ When called-interactively return message in mini-buffer:
 :EXAMPLE\n\(mon-is-alphanum \(char-after \(point\)\)\)\\?56
 \(mon-is-alphanum \(char-after \(point\)\)\)8\n
 :SEE-ALSO `mon-is-digit', `mon-is-alphanum', `mon-string-index',
-`mon-string-position'.\n►►►"
+`mon-string-position', `mon-alphabet-as-type'.\n►►►"
   (cond ((stringp x) (mon-is-letter (string-to-char x)))
         ((integerp x) (not (equal (downcase x) (upcase x))))
         (t nil)))
@@ -1416,7 +1554,7 @@ When called-interactively return message in mini-buffer:
 :EXAMPLE\n\(mon-is-alphanum \(char-after \(point\)\)\)\C-h 
 \(mon-is-alphanum \(char-after \(point\)\)\)8\n
 :SEE-ALSO `mon-is-digit', `mon-is-digit-2', `mon-string-index', 
-`mon-string-position'.\n►►►"
+`mon-string-position', `mon-alphabet-as-type'.\n►►►"
   (or (mon-is-letter x)
       (mon-is-digit x)))
 ;;
@@ -1444,7 +1582,7 @@ Unlike `mon-is-digit' fails when other than \\? prefixed digit.
 Wants char literals.\n:EXAMPLE\n\(mon-is-digit-simp ?0\)
 \(mon-is-digit-simp \"0\"\)\n\(mon-is-digit \"0\"\)\n
 :SEE-ALSO `mon-is-letter-simp', `mon-is-alphanum-simp',
-`mon-string-index', `mon-string-position'.\n►►►"
+`mon-string-index', `mon-string-position', `mon-alphabet-as-type'.\n►►►"
  (and (>= c ?0) (<= c ?9)))
 ;;
 ;;; :TEST-ME (mon-is-digit-simp ?0)
@@ -1460,7 +1598,7 @@ Wants char literals.\n
 \(mon-is-letter-simp \"x\"\)
 \(mon-is-letter \"x\"\)\n
 :SEE-ALSO `mon-is-digit-simp',`mon-is-alphanum-simp'.
-`mon-string-index', `mon-string-position'.\n►►►"
+`mon-string-index', `mon-string-position', `mon-alphabet-as-type'.\n►►►"
  (or  (and (>= c ?a) (<= c ?z))
       (and (>= c ?A) (<= c ?Z))))
 ;;
@@ -1479,7 +1617,7 @@ Wants char literals.\n
 \(mon-is-alphanum-simp \(prin1-char 88\)\)
 \(mon-is-alphanum \(char-to-string 88\)\)\n
 :SEE-ALSO `mon-is-digit-simp' `mon-is-letter-simp',
-`mon-string-index', `mon-string-position'.\n►►►"
+`mon-string-index', `mon-string-position', `mon-alphabet-as-type'.\n►►►"
 (or (mon-is-letter-simp x)
     (mon-is-digit-simp x)))
 ;;
@@ -1498,6 +1636,14 @@ Wants char literals.\n
       The word separators are those of split-string:
       [ \\f\\t\\n\\r\\v]+
       Which means that the string is justified as one paragraph.\n
+:EXAMPLE\n\(mon-string-justify-left 
+ \(let \(jnk\)
+   \(dotimes \(i 8 jnk\) 
+     \(dolist \(i '\(64 94\)\)
+       \(setq jnk 
+             \(concat 
+              \" \" 
+              \(make-string \(elt \(shuffle-vector [7 5 3 9]\) 3\) i\) jnk\)\)\)\)\) 68 4\)\n
 :SEE-ALSO `mon-string-fill-to-col'.\n►►►"
   (if (null width) (setq width 72))
   (if (null left-margin) (setq left-margin 0))
@@ -1528,6 +1674,13 @@ Wants char literals.\n
     (if (< col width)
         (setq justified (concat justified (make-string (- width col) 32))))
     justified))
+;;
+;;; :TEST-ME 
+;;; (mon-string-justify-left 
+;;;  (let (jnk)
+;;;    (dotimes (i 8 jnk) 
+;;;      (dolist (i '(64 94))
+;;;        (setq jnk (concat " " (make-string (elt (shuffle-vector [7 5 3 9]) 3) i) jnk))))) 68)
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-12-09T12:02:47-05:00Z}#{09503} - by MON>
@@ -1604,7 +1757,7 @@ substring of str they default to 0 and (length string) respectively.
 \(mon-string-to-symbol \"mon-string-to-symbol\" 4)\n
 :SEE-ALSO `mon-symbol-to-string', `mon-string-to-sequence',
 `mon-string-from-sequence', `mon-string-alpha-list',
-`mon-string-index', `mon-string-has-suffix'.\n►►►"
+`mon-string-index', `mon-string-has-suffix', `mon-alphabet-as-type'.\n►►►"
   (car (read-from-string str start end)))
 ;;
 (defalias 'mon-string->symbol 'mon-string-to-symbol)
@@ -1623,7 +1776,7 @@ substring of str they default to 0 and (length string) respectively.
 :EXAMPLE\n(mon-symbol-to-string 'bubba)\n
 \(mon-symbol-to-string \(mon-string-to-symbol \"bubba\"\)\)\n
 :SEE-ALSO `mon-string-to-symbol', `mon-string-to-sequence',
-`mon-string-from-sequence'.\n►►►"
+`mon-string-from-sequence', `mon-alphabet-as-type'.\n►►►"
   ;;Which is more correct? (format "%s" symbol)) ; OR:
   (format "%S" symbol)) 
 ;;
@@ -1641,10 +1794,10 @@ substring of str they default to 0 and (length string) respectively.
 :EXAMPLE\n(mon-string-to-sequence \"?\C-lstring\"\)\n
 :SEE-ALSO `mon-string-from-sequence', `mon-string-index',
 `mon-string-position', `mon-string-alpha-list',
-`mon-is-alphanum', `mon-is-digit', `mon-is-letter'.\n►►►"
+`mon-is-alphanum', `mon-is-digit', `mon-is-letter', `mon-alphabet-as-type'.\n►►►"
   ;; :WAS (mapcar (lambda (l) l) str))
   (let (to-seq)
-    (mapc (lambda (l) (push l to-seq)) str)
+    (mapc #'(lambda (l) (push l to-seq)) str)
     (nreverse to-seq)))
 ;;
 ;;; :TEST-ME (mon-string-to-sequence "?\C-lstring")
@@ -1665,7 +1818,7 @@ combination concatenate these also.\n
  [98 117 98 98 97 115 97]\n \'(115 116 114 105 110 103\)
  [98 117 98 98 97 115 97]\)\n
 :SEE-ALSO `mon-string-index',`mon-string-position', `mon-string-alpha-list',
-`mon-is-alphanum',`mon-is-digit',`mon-is-letter'.\n►►►"
+`mon-is-alphanum',`mon-is-digit',`mon-is-letter', `mon-alphabet-as-type'.\n►►►"
   (let ((g-str (lambda (x) (apply 'string x)))
         (chk-seqs (when (and seqs (sequencep seqs))
                     (mapcar #'(lambda (x) (cond ((vectorp x) (append x nil))
@@ -1702,8 +1855,9 @@ check.\n\n:EXAMPLE\n
 \(mon-string-alpha-list \"l\" \"G\"\)\n\(mon-string-alpha-list \"g\" \"l\"\)
 Use this to get a list of symbols instead:\n
 \(princ \(mon-string-alpha-list \"m\" \"r\"\) \(current-buffer\)\);=>\(m n o p q r\)\n
-:SEE-ALSO `mon-string-to-sequence', `mon-string-to-sequence',
-`number-sequence', `mon-is-alphanum', `mon-is-digit', `mon-is-letter'.\n►►►"
+:SEE-ALSO `mon-alphabet-as-type', `number-sequence', `mon-string-to-sequence', 
+`mon-string-from-sequence',  `mon-is-alphanum', `mon-is-digit',
+`mon-is-letter'.\n►►►"
   (let ((frm (string-to-char from-letter))
         (to (string-to-char to-letter))
         (swap)
@@ -1738,7 +1892,8 @@ When FROMPOS is non-nil begin search for needle from position.
 Default is to search from start of string.\n
 :EXAMPLE\n\(mon-string-index \"string before ### string after\" \"###\"\)
 :SEE-ALSO `mon-string-upto-index', `mon-string-after-index',
-`mon-string-position', `mon-string-has-suffix', `mon-string-chop-spaces'.\n►►►"
+`mon-alphabet-as-type', `mon-string-position', `mon-string-has-suffix',
+`mon-string-chop-spaces'.\n►►►"
   (string-match 
    (regexp-quote 
     (cond ((or (characterp needle) (numberp needle)) (format "%c" needle))
@@ -1810,7 +1965,7 @@ If the SUBSTR is not found, then return nil.\n
   "Return a substring of `string' with spaces removed left and right.\n
 :SEE-ALSO `mon-string-split-on-regexp', `mon-string-sub-old->new', 
 `mon-string-chop-spaces', `mon-string-position', `mon-string-index',
-`mon-string-upto-index', `mon-string-after-index'\n►►►"
+`mon-string-upto-index', `mon-string-after-index', `mon-alphabet-as-type'\n►►►"
   (let ((i 0)
         (l (1- (length string)))
         (space 32))
@@ -1831,7 +1986,7 @@ space boundaries.\n\n:EXAMPLE
 \(mon-string-ify-list \"Make this sentence a list of strings\").\n
 :SEE-ALSO `mon-stringify-list' ,`mon-insert-string-ify', 
 `mon-string-ify-current-line', `mon-line-get-next', 
-`mon-get-word-list-buffer'.\n►►►"
+`mon-get-word-list-buffer', `mon-alphabet-as-type'.\n►►►"
   (let ((string string-given) list)
     (store-match-data nil)
     (while (string-match " *\\([^ ]+\\) *" string (match-end 0))
@@ -1917,8 +2072,8 @@ When W/SPC is non-nil return string with whitespace interspersed.\n
 ;;; ==============================
 ;;; :COURTESY Drew Adams :HIS strings.el
 ;;; :RENAMED `mon-split-string-line' -> `mon-string-split-line'
-;;; :MODIFICATIONS <Timestamp: #{2009-09-23T18:49:22-04:00Z}#{09393} - by MON KEY>
-;;; :MODIFICATIONS <Timestamp: #{2010-01-11T23:34:36-05:00Z}#{10021} - by MON KEY>
+;;; :MODIFICATIONS <Timestamp: #{2009-09-23T18:49:22-04:00Z}#{09393} - by MON>
+;;; :MODIFICATIONS <Timestamp: #{2010-01-11T23:34:36-05:00Z}#{10021} - by MON>
 (defun mon-string-split-line (&optional buffer insrtp intrp)
   "Return current line of text in BUFFER as a string.
 When INSRTP is non-nil or called interactively insert return string at point. 
@@ -3230,7 +3385,8 @@ altering the buffer to add spaces
 in order to get the cursor there?\n
 :SEE-ALSO `mon-rectangle-apply-on-region-points', `mon-rectangle-capitalize',
 `mon-rectangle-columns', `mon-rectangle-downcase', `mon-rectangle-operate-on',
-`mon-rectangle-sum-column', `mon-rectangle-upcase', `mon-line-length-max'.\n►►►"
+`mon-rectangle-sum-column', `mon-rectangle-upcase', `mon-line-length-max'
+`mon-line-indent-from-to-col', `mon-line-strings-indent-to-col'.\n►►►"
   (interactive "r\n")
   (let ((max-len 0)
         (fat-belly))
@@ -3286,11 +3442,10 @@ Mostly useful as a code template for rectangle related functions.\n
 ;;; :MODIFICATIONS Charlie Hethcoat <- Improved number regex.
 (defun mon-rectangle-sum-column (start end)
   "Add all integer, decimal, and floating-point numbers in selected rectangle.\n
-Numbers which can be read include (nonexhaustive):
-2 +2 -2 2. +2. -2. 2.0 +2.0 -2.0 2e0 +2e0 -2e0 2E0 2e+0 2e-0, 2.e0, 2.0e0, etc.\n
-:SEE-ALSO `mon-rectangle-columns',
-`mon-insert-numbers-padded', `mon-number-lines-region',
-`mon-insert-string-incr', `mon-re-number-region'.\n►►►"
+Numbers which can be read include (nonexhaustive):\n
+ 2 +2 -2 2. +2. -2. 2.0 +2.0 -2.0 2e0 +2e0 -2e0 2E0 2e+0 2e-0, 2.e0, 2.0e0, etc.\n
+:SEE-ALSO `mon-rectangle-columns', `mon-insert-numbers-padded',
+`mon-number-lines-region',`mon-insert-string-incr',`mon-re-number-region'.\n►►►"
   (interactive "r")
   (save-excursion
     (kill-rectangle start end)
