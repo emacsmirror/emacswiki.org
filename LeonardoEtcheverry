@@ -5,21 +5,18 @@ I use it to write C, Objective-C, java, elisp and ocasionally some vhdl.
 
 In case you're wondering, these are some things I can't live without
 
+* iswitchb and its virtual buffers
 * dabbrev-expand and its more promiscuous cousin hippie-expand
 * EmacsTags for source code navigation
-* tramp's multihop feature for remote file editing
-* dired and all the dired-do-rename-regexp goodness
+* ff-find-other-file
+* dired and wdired
 * re-builder for testing your regexes interactively
-* [[uniquify]] with reverse style and pipe separator (yeah, yeah... I know)
-
+* [[uniquify]] with reverse style and pipe separator
+* savehist-mode
 ----
 
-Other useful and not so well known features:
-* file-name-shadow-mode
-* savehist-mode
-
 [new]
-It's been nearly a month since I added the following lines to my .emacs:
+Long ago I added the following lines to my .emacs:
 
    (global-unset-key [right])
    (global-unset-key [left])

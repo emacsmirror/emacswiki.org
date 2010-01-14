@@ -19,7 +19,7 @@ See CategoryVersionControl for other interfaces to other version control systems
     C-x v c     vc-cancel-version -- delete the latest revision (often it makes more sense to look at an old revision and check that in again!)
 
     C-x v d     vc-directory -- show all files which are not up to date
-    C-x v g     vc-annotate -- show when each line in a cvs file was added and by whom
+    C-x v g     vc-annotate -- show when each line in a tracked file was added and by whom
 
     C-x v s     vc-create-snapshot -- tag all the files with a symbolic name
     C-x v r     vc-retrieve-snapshot -- undo checkouts and return to a snapshot with a symbolic name

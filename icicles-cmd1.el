@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Jan 12 13:48:00 2010 (-0800)
+;; Last-Updated: Wed Jan 13 17:02:42 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 20051
+;;     Update #: 20053
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4552,6 +4552,7 @@ option `icicle-require-match-flag'."    ; Doc string
                                                    (unless (consp recentf-list)
                                                      (error "No recently accessed files"))
                                                    recentf-list))
+    (icicle-candidate-alt-action-fn         'icicle-remove-from-recentf-candidate-action)
     (icicle-use-candidates-only-once-alt-p  t)
     (icicle-candidate-properties-alist      (and current-prefix-arg
                                                  '((1 (face icicle-candidate-part)))))
@@ -4592,6 +4593,7 @@ Same as `icicle-recent-file' except it uses a different window." ; Doc string
                                                    (unless (consp recentf-list)
                                                      (error "No recently accessed files"))
                                                    recentf-list))
+    (icicle-candidate-alt-action-fn         'icicle-remove-from-recentf-candidate-action)
     (icicle-use-candidates-only-once-alt-p  t)
     (icicle-candidate-properties-alist      (and current-prefix-arg
                                                  '((1 (face icicle-candidate-part)))))

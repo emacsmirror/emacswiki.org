@@ -23,6 +23,10 @@
 
 ;;; Commentary:
 
+;; To enable: put the following in your .emacs file:
+;; 
+;; (add-hook 'c-mode-hook 'c-turn-on-eldoc-mode)
+
 ;; Nathaniel has submitted a caching patch to make this workable on large projects "like the emacs
 ;; codebase"
 ;; v0.5 01/02/2010
@@ -32,7 +36,8 @@
 ;; v0.4 01/16/2005
 
 ;; Your improvements are appreciated: I am no longer maintaining this code
-;; m_strange at mail dot utexas dot edu
+;; m_strange at mail dot utexas dot edu.  Instead, direct all requests to
+;; flat0103@gmail.com
 
 ;;; Code:
 
@@ -42,14 +47,19 @@
 (require 'cc-defs)
 (require 'cl)
 
-(defun* cache-make-cache (init-fun test-fun cleanup-fun
-                                  &optional &key
-                                  (test #'eql)
-                                  (size 65)
-                                  (rehash-size 1.5)
-                                  (rehash-threshold 0.8)
-                                  (weakness nil))
-  "Creates a cached hash table.  This is a hash table where
+;; make sure that the opening parenthesis in C will work
+(eldoc-add-command 'c-electric-paren)
+
+;;if cache.el isn't loaded, define the cache functions
+(unless (fboundp 'cache-make-cache)
+  (defun* cache-make-cache (init-fun test-fun cleanup-fun
+                                     &optional &key
+                                     (test #'eql)
+                                     (size 65)
+                                     (rehash-size 1.5)
+                                     (rehash-threshold 0.8)
+                                     (weakness nil))
+    "Creates a cached hash table.  This is a hash table where
 elements expire at some condition, as specified by init-fun and
 test-fun.  The three arguments do as follows:
 
@@ -80,56 +90,45 @@ to the created hash table."
                          :rehash-threshold rehash-threshold
                          :weakness weakness) init-fun test-fun cleanup-fun))
 
-(defun cache-gethash (key cache)
-  "Retrieve the value corresponding to key from cache."
-  (let ((keyval (gethash key (car cache) )))
-    (if keyval
-        (let ((val (car keyval))
-              (info (cdr keyval)))
-          (if (funcall (caddr cache) info)
-              (progn
-                (remhash key (car cache))
-                (funcall (cadddr cache) val)
-                nil)
-            val)))))
-
-(defun cache-puthash (key val cache)
-  "Puts the key-val pair into cache."
-  (puthash key
-           (cons val (funcall (cadr cache)))
-           (car cache)))
-
-
-
-;; make sure that the opening parenthesis in C will work
-(eldoc-add-command 'c-electric-paren)
-
-;; NOTE: most people with normal GNU systems won't need to mess with
-;; these options.
-
-;; if you aren't using /lib/cpp as your preprocessor, set the
-;; replacement here
-(defvar c-eldoc-cpp-command "/lib/cpp")
+  (defun cache-gethash (key cache)
+    "Retrieve the value corresponding to key from cache."
+    (let ((keyval (gethash key (car cache) )))
+      (if keyval
+          (let ((val (car keyval))
+                (info (cdr keyval)))
+            (if (funcall (caddr cache) info)
+                (progn
+                  (remhash key (car cache))
+                  (funcall (cadddr cache) val)
+                  nil)
+              val)))))
+   
+  (defun cache-puthash (key val cache)
+    "Puts the key-val pair into cache."
+    (puthash key
+             (cons val (funcall (cadr cache)))
+             (car cache))))
+         
 
 ;; if you've got a non-GNU preprocessor with funny options, set these
 ;; variables to fix it
 (defvar c-eldoc-cpp-macro-arguments "-dD -w -P")
 (defvar c-eldoc-cpp-normal-arguments "-w -P")
-
+(defvar c-eldoc-cpp-command "/lib/cpp ")
 (defvar c-eldoc-includes
+  "`pkg-config gtk+-2.0 --cflags` -I./ -I../ "
   "List of commonly used packages/include directories - For
   example, SDL or OpenGL.  This shouldn't slow down cpp, even if
-  you've got a lot of them."
-  "`pkg-config gtk+-2.0 --cflags` -I./ -I../ ")
+  you've got a lot of them.")
 
 (defvar c-eldoc-reserved-words
-  "List of commands that eldoc will not check."
-  (list "if" "else" "switch" "while" "for" "sizeof"))
+  (list "if" "else" "switch" "while" "for" "sizeof")
+  "List of commands that eldoc will not check.")
 
 
 (defvar c-eldoc-buffer-regenerate-time
-  "Time to keep a preprocessed buffer around."
-  120)
+  120
+  "Time to keep a preprocessed buffer around.")
 
 (defun c-eldoc-time-diff (t1 t2)
   "Return the difference between the two times, in seconds.
@@ -138,34 +137,30 @@ T1 and T2 are time values (as returned by `current-time' for example)."
   (time-to-seconds (subtract-time t1 t2)))
 
 (defun c-eldoc-time-difference (old-time)
-  "Returns whether or not old-time is less than c-eldoc-buffer-regenerate-time seconds ago."
-  (> (c-eldoc-time-diff (current-time) old-time) c-eldoc-buffer-regenerate-time))
+  (> (c-eldoc-time-diff (current-time) old-time) c-eldoc-buffer-regenerate-time)
+  "Returns whether or not old-time is less than c-eldoc-buffer-regenerate-time seconds ago.")
 
 (defun c-eldoc-cleanup (preprocessed-buffer)
   (kill-buffer preprocessed-buffer))
 
 (defvar c-eldoc-buffers
-  "Cache of buffer->preprocessed file used to speed up finding arguments"
-  (cache-make-cache #'current-time #'c-eldoc-time-difference #'c-eldoc-cleanup))
+  (cache-make-cache #'current-time #'c-eldoc-time-difference #'c-eldoc-cleanup)
+  "Cache of buffer->preprocessed file used to speed up finding arguments")
 
-;; run this to begin
 (defun c-turn-on-eldoc-mode ()
+  "Enable c-eldoc-mode"
   (interactive)
   (set (make-local-variable 'eldoc-documentation-function)
        'c-eldoc-print-current-symbol-info)
   (turn-on-eldoc-mode))
 
 ;; call the preprocessor on the current file
-;; only left interactive for debugging purposes
 ;;
 ;; run cpp the first time to get macro declarations, the second time
 ;; to get normal function declarations
-
-;; TODO: macro's aren't quite working properly(NILP)
 (defun c-eldoc-get-buffer (function-name)
-  (interactive)
   "Call the preprocessor on the current file"
-  ;; run the first time for macros
+;; run the first time for macros
   (let ((output-buffer (cache-gethash (current-buffer) c-eldoc-buffers)))
     (if output-buffer output-buffer
       (let* ((this-name (concat "*" buffer-file-name "-preprocessed*"))
@@ -185,8 +180,8 @@ T1 and T2 are time values (as returned by `current-time' for example)."
         (cache-puthash cur-buffer output-buffer c-eldoc-buffers)
         output-buffer))))
 
-;; finds the current function and position in argument list
 (defun c-eldoc-function-and-argument (&optional limit)
+  "Finds the current function and position in argument list."
   (let* ((literal-limits (c-literal-limits))
          (literal-type (c-literal-type literal-limits)))
     (save-excursion
@@ -212,8 +207,8 @@ T1 and T2 are time values (as returned by `current-time' for example)."
                      (match-beginning 0) (match-end 0))
                     argument-index))))))))
 
-;; make this extended parameter set into a single line
 (defun c-eldoc-format-arguments-string (arguments index)
+  "Formats the argument list of a function."
   (let ((paren-pos (string-match "(" arguments))
         (pos 0))
     (when paren-pos
@@ -239,8 +234,8 @@ T1 and T2 are time values (as returned by `current-time' for example)."
                              '(face bold) arguments))
       arguments)))
 
-;; master printing function
 (defun c-eldoc-print-current-symbol-info ()
+  "Returns documentation string for the current symbol." 
   (let* ((current-function-cons (c-eldoc-function-and-argument (- (point) 1000)))
          (current-function (car current-function-cons))
          (current-function-regexp (concat "[ \t\n]+[*]*" current-function "[ \t\n]*("))

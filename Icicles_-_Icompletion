@@ -188,6 +188,7 @@ performance than a value of `explicit'.  The greatest performance
 hit comes from file-name matching, in particular if remote files
 are involved.
 
+[:icicle-test-for-remote-files-flag]
 If you know that you will not be using remote file names for a
 while, you can let '''Icicles''' and [[Tramp]] know this by using the toggle '''`##C-^##'''' in
 the minibuffer to turn off option

@@ -2,7 +2,9 @@
 ;;; this is mon-empty-registers.el
 ;;; ================================================================
 ;;; DESCRIPTION:
-;;; Some handy register locations with unfilled contents.
+;;; mon-empty-registers Provides utilities for filling/emptying register locations en masse.
+;;; Also provides interactive tools for register centric coercion, manipulation,
+;;; roundtripping of chars, strings, etc.
 ;;; Idea :COURTESY Nelson H. F. Beebe <beebe@math.utah.edu> :HIS bibtex-regs.el
 ;;; 
 ;;; FUNCTIONS:►►►
@@ -11,6 +13,7 @@
 ;;; `mon-decode-meta-key-event', `mon-catch-meta-key'
 ;;; `mon-set-register->tags', `mon-make-set-register->tags-docs'
 ;;; `mon-set-register->tags-semic', `mon-set-register->tags-sharp'
+;;; `mon-set-register-tags-loadtime'
 ;;; FUNCTIONS:◄◄◄
 ;;;
 ;;; MACROS:
@@ -36,10 +39,10 @@
 ;;; RENAMED:
 ;;;
 ;;; MOVED:
-;;; `mon-query-replace-register1<-reg2' <- ./naf-mode-replacements.el
-;;; `mon-coerce->char'                  <- ./mon-utils.el
-;;; `mon-decode-meta-key-event'         <- ./mon-utils.el
-;;; `mon-catch-meta-key'                <- ./mon-utils.el
+;;; `mon-query-replace-register1<-reg2' <- mon-replacement-utils.el
+;;; `mon-coerce->char'                  <- mon-utils.el
+;;; `mon-decode-meta-key-event'         <- mon-utils.el
+;;; `mon-catch-meta-key'                <- mon-utils.el
 ;;;
 ;;; REQUIRES:
 ;;; 'cl -> `mon-reset-registers' uses `defun*', `pairlis', etc.
@@ -148,32 +151,43 @@
 ) ;; eval-when
 
 ;;; ==============================
-;;; (string-to-char "C")
+;;; :SNIPPET (string-to-char "d")
 ;;; :CREATED <Timestamp: #{2009-12-03T14:40:12-05:00Z}#{09494} - by MON>
 (defvar *mon-register-config-tags* nil
   "*Alist of char and tag strings for commenting source.
-Keys map as follows: 
+Keys map as follows:
 :W-COMMENT-PFX ->  Strings with whitespace wrapping.
 :TIMESTAMPED -> Strings with a timestamp appended per `mon-stamp'.
 :NO-COMMENT-PFX -> Strings without whitespace wrapping.\n
-:CALLED-BY `mon-set-register->tags'.
-:SEE-ALSO `mon-make-set-register->tags-docs'\n►►►")
+:CALLED-BY `mon-set-register->tags'.\n
+:NOTE Bound with `eval-after-load' call to `mon-set-register-tags-loadtime'.\n
+:SEE-ALSO `mon-make-set-register->tags-docs'.\n►►►")
 ;;
-(eval-when-compile
-(unless (bound-and-true-p *mon-register-config-tags*)
-  (setq *mon-register-config-tags*
-        '((:W-COMMENT-PFX  . ((87  . ":WAS")
-                              (70  . ":FROM")
-                              (84  . ":TO")
-                              (83  . ":SEE")
-                              (78  . ":NOTE")
-                              (79  . ":OLD")
-                              (77  . ":MATCH")
-                              (67  . ":CONFLICT")
-                              (69  . ":EXAMPLE")))
-          (:TIMESTAMPED    . ((67 .  ":CHANGED")
-                              (65 . ":ADDED")))
-          (:NO-COMMENT-PFX . ((115 . "shell>")))))))
+;;; (eval-when (compile load)
+;;; (unless (bound-and-true-p *mon-register-config-tags*)
+;;;   (setq *mon-register-config-tags*
+;;;         '((:W-COMMENT-PFX  . ((87  . ":WAS")           ;; W
+;;;                               (70  . ":FROM")          ;; F
+;;;                               (84  . ":TO")            ;; T
+;;;                               (83  . ":SEE")           ;; S
+;;;                               (78  . ":NOTE")          ;; N
+;;;                               (79  . ":OLD")           ;; O
+;;;                               (77  . ":MATCH")         ;; M
+;;;                               (67  . ":CONFLICT")      ;; C
+;;;                               (69  . ":EXAMPLE")       ;; E
+;;;                               (85  . ":SOURCE")        ;; U
+;;;                               (100 . ":DEFAULT")       ;; d
+;;;                               (109 . ":MODIFICATIONS") ;; m
+;;;                               (102 . ":FILE")          ;; f
+;;;                               (104 . ":CHANGESET")     ;; h
+;;;                               (116 . ":TEST-ME")       ;; 6
+;;;                               (118 . ":VARIABLE")))    ;; v
+;;;            (:TIMESTAMPED    . ((99 .  ":CHANGED")      ;; c 
+;;;                                (97 .  ":ADDED")))      ;; a
+;;;            (:NO-COMMENT-PFX . ((115 . "shell> "))))))  ;; s
+;;; )
+;; :CLOSE eval-when
+;;
 ;;
 ;;; :TEST-ME (assoc :W-COMMENT-PFX *mon-register-config-tags*) 
 ;;; :TEST-ME (assoc :TIMESTAMPED *mon-register-config-tags*)
@@ -183,9 +197,9 @@ Keys map as follows:
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-12-03T17:50:24-05:00Z}#{09494} - by MON KEY>
+;; (eval-and-compile
 (defun* mon-set-register->tags (&key sharp semic)
   ""
-  ;;  (interactive)
   (let ((mp-keys *mon-register-config-tags*)
         (setr-wsp #'(lambda (x) 
                       (set-register (car x) 
@@ -204,12 +218,13 @@ Keys map as follows:
                                         ,(cond (sharp (concat  "# " (cdr x) " "))
                                                (semic (concat  ";; " (cdr x) " "))
                                                (t (concat  ";; " (cdr x) " " )))
-                                        (mon-stamp))))) ;backquote template
-                         )                              ;;outer lambda
+                                        (mon-stamp))))) ;; Backquote template
+                         )                              ;; Outer lambda
           ))
     (mapc #'(lambda (x) (funcall setr-wsp x)) (cdr (assoc :W-COMMENT-PFX mp-keys)))
     (mapc #'(lambda (x) (funcall setr-no-wsp x)) (cdr (assoc :NO-COMMENT-PFX mp-keys)))
     (mapc #'(lambda (x) (eval (funcall setr-tstamp x))) (cdr (assoc :TIMESTAMPED mp-keys)))))
+;; )
 ;;  
 ;;; :TEST-ME (progn (mon-set-register->tags :sharp t) (insert-register 77))
 ;;; :TEST-ME (progn (mon-set-register->tags :semic t)(insert-register 77))
@@ -239,6 +254,8 @@ Keys map as follows:
 (defun mon-make-set-register->tags-docs ()
   "Helper function puts register contents/keybinding values on 
 docstring of `mon-set-register->tags'.\n
+:NOTE Docstring is added at loadtime with `eval-after-load's call to
+`mon-set-register-tags-loadtime'.\n
 :SEE-ALSO `*mon-register-config-tags*'.\n►►►"
   (let* ((build-doc)
          (do-s t)        
@@ -279,9 +296,39 @@ docstring of `mon-set-register->tags'.\n
     (funcall map-sym :TIMESTAMPED)
     (mapc #'(lambda (s) (funcall map-kys s)) build-doc)))
 
-;; Now, tack on the docstring for `mon-set-register->tags'
-(eval-when-compile
-  (let (put-reg) 
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-01-13T11:42:27-05:00Z}#{10023} - by MON KEY>
+(defun mon-set-register-tags-loadtime ()
+  "Loadtime procedure to bootstrap `mon-set-register-*' functions and variables.
+:CALLED-BY `eval-after-load', peforms the following tasks:\n
+o Bind the alist keys value pars for `*mon-register-config-tags*'.
+o Add `mon-set-register->tags' docstring using `*mon-register-config-tags*' vals.
+:SEE-ALSO `mon-set-register->tags-semic', `mon-set-register->tags-sharp',
+`mon-make-set-register->tags-docs'.\n►►►"
+ (unless (bound-and-true-p *mon-register-config-tags*)
+   (setq *mon-register-config-tags*
+         '((:W-COMMENT-PFX  . ((87  .  ":WAS")            ;; W
+                               (70  .  ":FROM")           ;; F
+                               (84  .  ":TO")             ;; T
+                               (83  .  ":SEE")            ;; S
+                               (78  .  ":NOTE")           ;; N
+                               (79  .  ":OLD")            ;; O
+                               (77  .  ":MATCH")          ;; M
+                               (67  .  ":CONFLICT")       ;; C
+                               (69  .  ":EXAMPLE")        ;; E
+                               (85  .  ":SOURCE")         ;; U
+                               (100 .  ":DEFAULT")        ;; d
+                               (109 .  ":MODIFICATIONS")  ;; m
+                               (102 .  ":FILE")           ;; f
+                               (104 .  ":CHANGESET")      ;; h
+                               (116 .  ":TEST-ME")        ;; 6
+                               (118 .  ":VARIABLE")))     ;; v
+           (:TIMESTAMPED    . ((99 .  ":CHANGED")         ;; c 
+                               (97 .  ":ADDED")))         ;; a
+           (:NO-COMMENT-PFX . ((115 . "shell> "))))))     ;; s
+ ;;
+ ;; Now, tack on the docstring for `mon-set-register->tags'
+ (let (put-reg) 
   (setq put-reg
         (with-temp-buffer
           (mon-make-set-register->tags-docs)
@@ -301,10 +348,13 @@ keybindings: \"\C-cri<CHAR>\" :WARNING! bound as with `global-set-key'.\n
 Elements of `:W-COMMENT-PFX' `:NO-COMMENT-PFX' have standard register
 insertion keybindings: \"\C-xri<CHAR>\"\n\n:EXAMPLE"
 nil
-"\n:SEE-ALSO `mon-set-register->tags-semic', `mon-set-register->tags-sharp'
+"\n:NOTE Bound with `eval-after-load' call to `mon-set-register-tags-loadtime'.\n
+:SEE-ALSO `mon-set-register->tags-semic', `mon-set-register->tags-sharp'
 `mon-make-set-register->tags-docs'\n►►►")))
 ;;
+;;; :TEST-ME *mon-register-config-tags*
 ;;; :TEST-ME (describe-function 'mon-set-register->tags)
+
 ;;; ==============================
 ;;; :CREATED <Timestamp: 2009-08-05-W32-3T16:12:00-0400Z - by MON KEY>
 (defvar *mon-cntl-char-registers* nil)
@@ -872,6 +922,10 @@ all registers to 'something' in order to test they are _NOT_ empty.
 ;;; ==============================
 (provide 'mon-empty-registers)
 ;;; ==============================
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-01-13T11:42:27-05:00Z}#{10023} - by MON KEY>
+(eval-after-load 'mon-empty-registers '(mon-set-register-tags-loadtime))
 
 ;;; ==============================
 ;;; mon-empty-registers.el ends here

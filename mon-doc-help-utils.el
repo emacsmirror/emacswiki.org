@@ -36,7 +36,7 @@
 ;;; `mon-help-window-functions',
 ;;; `mon-help-make-faces', `mon-help-basic-faces', `mon-help-faces-themes',
 ;;; `mon-help-font-lock', `mon-help-easy-menu', `mon-help-widgets',
-;;; `mon-help-file-dir-functions', `mon-help-read-functions', 
+;;; `mon-help-file-dir-functions', `mon-help-read-functions', `mon-help-print'
 ;;; `mon-help-process-functions', `mon-help-xml-functions', 
 ;;; `mon-help-color-functions', `mon-help-color-chart'
 ;;; `mon-help-char-representation', `mon-help-ISO-8859-1-chars', 
@@ -712,8 +712,6 @@ Choice of tag type completed with `mon-help-mon-tags'.\n
 ;;; :TEST-ME (call-interactively 'mon-help-insert-tags)
 
 ;;; ==============================
-;;; :CREATED <Timestamp: #{2010-01-08T23:28:40-05:00Z}#{10015} - by MON>
-;;; ==============================
 ;;; :MODIFICATIONS <Timestamp: #{2010-01-12T12:36:15-05:00Z}#{10022} - by MON>
 ;;; :CREATED <Timestamp: #{2010-01-08T23:28:40-05:00Z}#{10015} - by MON>
 (defun mon-help-overlay-result (show-here to-here exit-c &optional show-str) ;for-secs 
@@ -721,11 +719,11 @@ Choice of tag type completed with `mon-help-mon-tags'.\n
 SHOW-HERE is the starting point in buffer to place overlay.\n
 TO-HERE is the starting point in buffer to place overlay.\n
 EXIT-C is the character corresponding the the keyboard key user must type
-to exit from the overlay display.\n
-When optional arg SHOW-STR \(a string) is non-nil display string but use a less
-'fruit-salady' overlay.\n
+to exit from the overlay display.
+When optional arg SHOW-STR \(a string) is non-nil display it but with a with
+less vibrant overlay.\n
 When function is invoked place the overlay and message user to:\n
- \"Type `<EXIT-CHAR>' to continue ...\"\n
+ \"Type `<EXIT-CHAR>' to continue ... or C-g to exit\"\n
 :EXAMPLE\n\(save-excursion \(forward-sexp 2\)
   \(let \(\(botp #'\(lambda \(\) `\(,\(line-beginning-position\) . ,\(line-end-position\)\)\)\)
         \(mhor #'\(lambda \(bd\) \(mon-help-overlay-result \(car bd\) \(cdr bd\) 78\)\)\)\)
@@ -737,7 +735,6 @@ bounds error checking and restricts exiting from the loop until user provides
 EXIT-CHAR or enters \7.\n
 :CALLED-BY `mon-help-find-result-for-overlay'.\n►►►"
   (let ((showlay (make-overlay show-here to-here nil t t))
-        ;; (recenter-redisplay t)
         (max-mini-window-height 1))
     (unwind-protect
          (save-excursion 
@@ -1585,6 +1582,7 @@ Why not! :)\n►►►
 `mon-help-file-dir-functions'
 `mon-help-frame-functions'
 `mon-help-plist-functions'
+`mon-help-print'
 `mon-help-process-functions'
 `mon-help-type-predicates'
 `mon-help-read-functions'
@@ -2302,7 +2300,7 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 `replace-buffer-in-windows'
 `switch-to-buffer'
 `switch-to-buffer-other-frame'
-switch-to-buffer-other-window'
+`switch-to-buffer-other-window'
 `view-buffer-other-frame'
 `view-buffer-other-window'\n
 ;; :BUFFER-ACTIONS-ON
@@ -3044,8 +3042,6 @@ A generic form can be interrogated with `eieio-generic-form':\n
 (defun mon-help-read-functions (&optional insrtp intrp)
   "List of functions for reading.\n
 Unless indicated all items in list are functions.\n
-:SEE :FILE `lread.c'
-:SEE info node `(elisp)Read and Print'.\n►►►\n
       _______                       ____________________    62.
      |       |                     |                    |
      | :READ |                     | :STANDARD-READERS  |
@@ -3117,7 +3113,10 @@ Unless indicated all items in list are functions.\n
                      | `read-language-name'         |
                      | `read-envvar-name'           |
                      |______________________________|
-                                                            62^\n"
+                                                            62^\n
+:SEE :FILE `lread.c'
+:SEE info node `(elisp)Read and Print'.
+:SEE-ALSO `mon-help-print'.\n►►►"
   (interactive "i\nP")
   (if (or insrtp intrp)
       (mon-help-function-spit-doc 'mon-help-read-functions :insertp t)
@@ -3129,10 +3128,10 @@ Unless indicated all items in list are functions.\n
 ;;; :TEST-ME (call-interactively 'mon-help-read-functions)
 
 ;;; ==============================
-;;; :CREATED <Timestamp: #{2010-01-13T01:05:48-05:00Z}#{10023} - by MON>
+;;; :CREATED <Timestamp: #{2010-01-13T12:21:21-05:00Z}#{10023} - by MON KEY>
 (defun mon-help-print (&optional insertp intrp)
   "Print related functions and Variables which affect their output.\n
-;; :PRINT-FUNCTIONS      :SEE info node `(elisp)Output Functions'\n
+;; :PRINT-FUNCTIONS      :SEE info node `(elisp)Output Functions'
 `eval-print-last-sexp'
 `format'
 `message'
@@ -3144,6 +3143,11 @@ Unless indicated all items in list are functions.\n
 `print'
 `print-buffer'
 `print-region'
+`pp-to-string'
+`terpri'
+`with-output-to-string'
+`write-char'\n
+;; :PRINT-PRETTY-FUNCTIONS    :SEE :FILE pp.el
 `pp'
 `pp-buffer'
 `pp-display-expression'
@@ -3151,12 +3155,11 @@ Unless indicated all items in list are functions.\n
 `pp-eval-last-sexp'
 `pp-last-sexp'
 `pp-macroexpand-expression'
-`pp-macroexpand-last-sexp'
-`pp-to-string'
-`terpri'
-`with-output-to-string'
-`write-char'\n
-;; :PRINT-VARIABLES           :SEE info node `(elisp)Output Variables'\n
+`pp-macroexpand-last-sexp'\n
+;; :PRINT-STREAMS             :SEE info node `(elisp)Streams Intro'
+`standard-output'
+`standard-input'\n
+;; :PRINT-VARIABLES           :SEE info node `(elisp)Output Variables'
 `eval-expression-print-length'
 `eval-expression-print-level'
 `float-output-format'
@@ -3172,13 +3175,12 @@ Unless indicated all items in list are functions.\n
 `print-number-table'
 `print-quoted'
 `print-gensym'
-`standard-output'\n
  \(let \(\(print-gensym t\)
        \(my-bubba \(make-symbol \"bubba\"\)\)\)
    \(princ my-bubba \(current-buffer\)\)\)\n ;=> #:bubba\n
-:SEE info node `(elisp)Read and Print'\n
+:SEE info node `(elisp)Read and Print'
 :SEE info node `(elisp)Printed Representation'\n
-:SEE-ALSO `mon-help-read-functions',`gnus-bind-print-variables'.\n►►►"
+:SEE-ALSO `mon-help-read-functions', `gnus-bind-print-variables'.\n►►►"
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-print :insertp t)
@@ -3193,8 +3195,8 @@ Unless indicated all items in list are functions.\n
 ;;; :CREATED <Timestamp: #{2009-09-19T17:02:02-04:00Z}#{09386} - by MON KEY>
 (defun mon-help-plist-functions (&optional insertp intrp)
   "Help for plist and property list related functions.\n
-:SEE info node `(elisp)Property Lists'.
-:SEE-ALSO `mon-help-text-property-functions'.\n►►►
+:SEE info node `(elisp)Documentation Tips'.
+:SEE-ALSO `mon-help-text-property-functions'.\n►►►\n
 ;; :PLIST-FUNCTIONS
 `get'
 `plist-get'
@@ -3278,7 +3280,7 @@ Unless indicated all items in list are functions.\n
 `custom-theme-reset-faces'
 `custom-theme-recalc-face'
 `custom-theme-set-variables'\n
-:SEE :FILE `cus-face.el', `custom.el', `cus-edit.el'.\n
+:SEE :FILES `cus-face.el', `custom.el', `cus-edit.el'.\n
 ;; :THEME-CUSTOM
 Custom themes are collections of settings that can be enabled or
 disabled as a unit.\n
@@ -3347,12 +3349,10 @@ It has the following format:\n
  '\(highlight \(\(\(\(class color\) \(min-colors 88\)\)
                \(:foreground \"white\" :background \"dark green\"\)\)\)\)\)\n
 \(provide-theme 'forest\)\n
-;;;; end forest-theme.el\n
-:SEE-ALSO `mon-help-make-faces', `mon-help-text-property-functions',
-`mon-help-font-lock'.\n►►►"
+;;;; end forest-theme.el\n►►►"
   (interactive "i\np")
   (if (or insertp intrp)
-      (mon-help-function-spit-doc 'mon-help-faces-themes :insertp t)
+      (mon-help-function-spit-doc 'mon-help-faces :insertp t)
     (message "Pass non-nil for optional arg INTRP")))
 ;;
 ;;; :TEST-ME (mon-help-faces-themes t)
@@ -3361,7 +3361,8 @@ It has the following format:\n
 ;;; :CREATED <Timestamp: #{2009-09-26T13:23:36-04:00Z}#{09396} - by MON KEY>
 (defun mon-help-make-faces (&optional insertp intrp)
 "Functions, Variables, Properties, etc. for defining faces.\n
-:SEE info node `(elisp)Defining Faces'.\n:SEE info node `(elisp)Face Attributes'.\n
+:SEE info node `(elisp)Defining Faces'.\n:SEE info node `(elisp)Face Attributes'.
+:SEE-ALSO `mon-help-basic-faces', `mon-help-font-lock', `mon-help-color-chart'.\n
                          _________________                                 
                         |                 |                              
                         | :FACE-DEFINING  |                              
@@ -3462,10 +3463,8 @@ It has the following format:\n
                                 |                                        |
                                 | :inherit - (string or list)            |
                                 | {face name, or list of face names}     |
-                                |______________________________________73.\n\n
-:SEE-ALSO `mon-help-basic-faces', `mon-help-text-property-functions',
-`mon-help-font-lock', `mon-help-faces-themes', `mon-help-widgets',
-`mon-help-easy-menu'.\n►►►"
+                                |______________________________________73.
+►►►"
 (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-make-faces :insertp t)
@@ -3483,7 +3482,7 @@ It has the following format:\n
 These are the standard Emacs faces are defined in :FILE faces.el\n
 :NOTE As of 23.1 there is no _formal_ indication that newly defined faces must
 inherit from one of the basic-faces this practice is encouraged.
-:SEE \(URL `http://lists.gnu.org/archive/html/emacs-devel/2009-08/msg00525.html').\n
+:SEE \(URL `http://lists.gnu.org/archive/html/emacs-devel/2009-08/msg00525.html').\n►►►
 ;; :FACE-BASIC
 \(describe-face 'default\)
 \(describe-face 'bold\)
@@ -3516,10 +3515,7 @@ inherit from one of the basic-faces this practice is encouraged.
 \(describe-face 'cursor\)
 \(describe-face 'mouse\)
 \(describe-face 'tool-bar\)
-\(describe-face 'menu\)\n\n
-:SEE-ALSO `mon-help-make-faces', `mon-help-faces-themes',
-`mon-help-text-property-functions', `mon-help-font-lock',
-`mon-help-widgets', `mon-help-easy-menu'.\n►►►"
+\(describe-face 'menu\)"
   (interactive "i\np")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-basic-faces :insertp t)
@@ -3531,8 +3527,7 @@ inherit from one of the basic-faces this practice is encouraged.
 ;;; ==============================
 ;;; :CREATED <Timestamp: Wednesday June 17, 2009 @ 05:37.52 PM - by MON KEY>
 (defun mon-help-font-lock (&optional insertp intrp)
-  "Pseduo grammar for font-lock.\n
-Each element of `font-lock-keywords' specifies how to find certain
+  "Each element of `font-lock-keywords' specifies how to find certain
 cases of text, and how to highlight those cases:\n
  ___________________________________________________________________________79.
 |                                                                             |
@@ -3542,12 +3537,12 @@ cases of text, and how to highlight those cases:\n
 | FUNCTION                                                                    |
 |_____________________________________________________________________________|
 |                                                                             |
-| [MATCHER . SUBEXP]                                                          |
-|          |->{REGEXP|FUNCTION}                                               |
+|[MATCHER . SUBEXP]                                                           |
+|         |->{REGEXP|FUNCTION}                                                |
 |_____________________________________________________________________________|
-|                                         +specify a proplist here**          |
-|                                         |                                   |
-| [MATCHER . FACESPEC]                    v                                   |
+|                                        +specify a proplist here**           |
+|                                        |                                    |
+|[MATCHER . FACESPEC]                    v                                    |
 |                |-> (FACESPEC (face FACE PROP1 VAL1 PROP2 VAL2...))          |
 |                |                                                            |
 |                |-> (font-lock-extra-managed-props PROP1 VAL1 PROP2 VAL2)    |
@@ -3576,11 +3571,8 @@ cases of text, and how to highlight those cases:\n
 |_____________________________________________________________________________|
 |                                                                             |
 | [eval . FORM]                                                               |
-|___________________________________________________________________________79.\n\n
-:SEE info node `(elisp)Font Lock Mode'.\n
-:SEE-ALSO `mon-help-make-faces', `mon-help-basic-faces', `mon-help-faces-themes'
- `mon-help-text-property-functions', `mon-help-font-lock',
-`mon-help-widgets', `mon-help-easy-menu'.\n►►►"
+|___________________________________________________________________________79.
+►►►"
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-font-lock :insertp t)
@@ -3633,10 +3625,8 @@ cases of text, and how to highlight those cases:\n
 |_____________________________________|  | insert-in-front-hooks           |    
                                          | insert-behind-hooks             |    
                                          | point-entered point-left        |    
-                                         |_________________________________|  80.\n\n
-:SEE-ALSO `mon-help-text-property-stickyness', `mon-help-make-faces',
-`mon-help-basic-faces', `mon-help-faces-themes', `mon-help-font-lock',
-`mon-help-widgets', `mon-help-easy-menu'.\n►►►"
+                                         |_________________________________|  80.
+\n:SEE-ALSO `mon-help-plist-functions'.\n►►►"
   (interactive "i\nP")
   (if (or insrtp intrp)
       (mon-help-function-spit-doc 'mon-help-text-property-functions :insertp t)
@@ -3683,11 +3673,7 @@ So, when we merge the above two lists, we expect to get this:\n
 The optimizable special cases are:
     left rear-nonsticky = nil, right front-sticky = nil \(inherit left\)
     left rear-nonsticky = t,   right front-sticky = t   \(inherit right\)
-    left rear-nonsticky = t,   right front-sticky = nil \(inherit none\)\n\n
-:SEE :FILE src/intervals.c\n
-:SEE-ALSO `mon-help-text-property-functions', `mon-help-plist-functions',
-`mon-help-make-faces', `mon-help-basic-faces', `mon-help-faces-themes',
-`mon-help-font-lock', `mon-help-widgets', `mon-help-easy-menu'.\n►►►"
+    left rear-nonsticky = t,   right front-sticky = nil \(inherit none\)\n►►►"
   (interactive "i\nP")
   (if (or insertp intrp)
       (save-excursion
@@ -3702,7 +3688,7 @@ The optimizable special cases are:
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-09-04T17:54:39-04:00Z}#{09365} - by MON KEY>
 (defun mon-help-color-functions (&optional insertp intrp)
-"Color related functions.\n
+"Color related functions.\n►►►\n
 ;; :COLOR-FUNCTIONS
 `read-color'
 `color-distance'
@@ -3727,8 +3713,7 @@ The optimizable special cases are:
 `ansi-color-map'          ;<VARIABLE>\n
 ;; :COLOR-PREDICATES
 `display-color-p'
-`color-defined-p'\n
-:SEE-ALSO `mon-help-color-chart'.\n►►►"
+`color-defined-p'"
   (interactive "i\np")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-color-functions :insertp t)
@@ -3887,7 +3872,7 @@ The optimizable special cases are:
 |____________________________________________________________________________80^
 \n:COURTESY Tay Vaughan, July, 1996. Timestream, Inc.
 :SEE \(URL `http://www.timestream.com/mmedia/graphics/colors/ns3names.txt'\).
-:SEE-ALSO `mon-help-color-functions'.\n►►►"
+►►►"
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-color-chart :insertp t)
@@ -3934,10 +3919,8 @@ The optimizable special cases are:
 .                             :   :            |... toggle: radio: button:     |
 .                             | ]                                              |
 | ]                                                                            |
-|____________________________________________________________________________79.\n\n
-:SEE-ALSO `mon-help-widgets', `mon-help-text-property-functions', 
-`mon-help-font-lock',  `mon-help-make-faces', `mon-help-basic-faces',
-`mon-help-faces-themes'.\n►►►"
+|____________________________________________________________________________79.
+►►►"
 (interactive "i\nP")
 (if (or insertp intrp)
     (mon-help-function-spit-doc 'mon-help-easy-menu :insertp t)
@@ -4042,10 +4025,8 @@ The optimizable special cases are:
 | |  `widget-button-prefix'    ;<STRING>     |                              |
 | |  `widget-button-suffix'    ;<STRING>     |                              |
 | |__________________________________________|                              |
-|_________________________________________________________________________77.\n\n
-:SEE-ALSO `mon-help-easy-menu', `mon-help-make-faces',
-`mon-help-basic-faces', `mon-help-faces-themes',
-`mon-help-text-property-functions', `mon-help-font-lock'.\n►►►"
+|_________________________________________________________________________77.
+►►►"
 (interactive "i\nP")
 (if (or insertp intrp)
     (mon-help-function-spit-doc 'mon-help-widgets :insertp t)

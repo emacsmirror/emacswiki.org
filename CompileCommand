@@ -91,6 +91,66 @@ and set the focus back to Emacs frame"
 It is very useful for me, since I alway browse the webs while compiling ;-)
 -- Xu Yuan
 
+[new]
+
+Hack to have the background color change depending on the outcome of the compile command, so long as the compilation window has its own frame. Stick '*compilation*' in special-display-buffer-nams.
+
+The snippet below also makes '<' and '>' into paren characters for easier C++ template debugging.
+
+<pre>
+(require 'cl)
+
+(pushnew '("*compilation*"
+           (minibuffer . nil)
+           (unsplittable . t)
+           (menu-bar-lines . 0))
+         special-display-buffer-names)
+
+(defun find-dedicated-frames (buf)
+  (let (result)
+    (dolist (window (get-buffer-window-list buf t) result)
+      (let ((frame (window-frame window)))
+        (when (frame-parameter frame 'unsplittable)
+          (push frame result))))))
+
+(defun qtmstr-setup-compile-mode ()
+  ;; Support C++ better
+  (modify-syntax-entry ?< "(")
+  (modify-syntax-entry ?> ")")
+
+  (dolist (frame (find-dedicated-frames (current-buffer)))
+    (let ((orig (frame-parameter frame 'orig-background)))
+      (when orig
+        (modify-frame-parameters
+         frame (list (cons 'background-color orig)))))))
+
+(add-hook 'compilation-mode-hook #'qtmstr-setup-compile-mode)
+
+(defun* qtmstr-compile-finish (buf status)
+  (with-current-buffer buf
+    (let* ((color (if (string-match "^finished\\b" status)
+                      "#dfd"
+                    "#fdd"))
+           found)
+
+      (dolist (frame (find-dedicated-frames buf))
+        (setq found t)
+        (modify-frame-parameters
+         frame
+         (list (cons 'background-color color)
+               (cons 'orig-background
+                     (frame-parameter frame 'background-color)))))
+
+      (unless found
+        (let ((overlay)
+              (overlay (make-overlay (point-min) (point-max))))
+          (overlay-put overlay 'face (list :background color))
+          (overlay-put overlay 'evaporate t))))))
+
+(add-hook 'compilation-finish-functions #'qtmstr-compile-finish)
+
+</pre>
+
 == No prompt for command ==
 
 If you get tired of having to hit enter after "make -k" (or whatever your compile-command is) set compilation-read-command to nil.  If you do that M-x compile will only prompt for a compile-command if you give it a prefix argument.

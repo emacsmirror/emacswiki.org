@@ -47,6 +47,12 @@ Here's a page which describes how to setup weblogger with Drupal:
 
 http://www.randomsample.de/dru5/node/76
 
+[new]
+
+I found that the easiest way to set it up was to say:
+
+ M-x customize-apropos weblogger
+
 ===Does It Work?===
 
 I spent about 2 hours in frustration trying to get  blogger.el  or weblogger.el to work.
@@ -85,6 +91,11 @@ It's worth noting, as usage quirks, that if you're revising an entry and do C-x 
 [new]
 
 I made a patch(http://rix3.8.je/blog/2009/12/16/emacs%e7%9a%84weblogger1-4-4%e7%9a%84wordpress-patch/) about 1.4.4 for wordpress(2.8.6) like Tom Robinson, fixed the Categories bug and date bug(for me). At least, it worked very well for me. --rix
+
+[new]
+
+I found the opposite of what Xah found.  weblogger (1.4.3) worked easily while e-blog never quite worked.  Maybe different versions are involved.
+
 ----
 
 CategoryJournaling

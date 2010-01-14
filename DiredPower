@@ -39,10 +39,8 @@ Text ripped from the EmacsManual:
 
 </pre>
 
-You can read more about this in section Dired Marks vs. Flags in the
-EmacsManual:
+You can read more about this at [[Manual:Marks vs Flags]]
 
-http://www.gnu.org/software/emacs/manual/html_node/emacs/Marks-vs-Flags.html
 
 = Renaming Files and Directories =
 
@@ -95,9 +93,7 @@ There is also this one, along the same lines:
 [new]
 
 I'll leave it up to you to read the rest. The section about renaming
-is called "Transforming File Names in Dired":
-
-http://www.gnu.org/software/emacs/manual/html_node/Transforming-File-Names.html#Transforming%20File%20Names
+is [[Manual:Transforming File Names]].
 
 The EmacsManual is really a gold mine and I plan to buy a printed version
 so that I can read a page each night when I go to bed. :)

@@ -79,7 +79,7 @@ press and hold '''Control''' while clicking each chosen candidate with
 `mouse-2'.
 
 Similarly, you can use `<code>C-next</code>', `<code>C-prior</code>', `<code>C-down</code>', and
-`<code>C-up</code>' to act on successive candidates, forward or backward
+`<code>C-up</code>' to act on successive candidates, forward or backward.
 You can thus just hold down the '''Control''' key while cycling, to act
 on each candidate in turn, if you want.
 
