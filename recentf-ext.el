@@ -1,5 +1,5 @@
 ;;;; recentf-ext.el --- Recentf extensions
-;; $Id: recentf-ext.el,v 1.1 2009/12/24 11:53:03 rubikitch Exp $
+;; $Id: recentf-ext.el,v 1.2 2010/01/14 21:52:16 rubikitch Exp rubikitch $
 
 ;; Copyright (C) 2009  rubikitch
 
@@ -63,17 +63,21 @@
 ;;; History:
 
 ;; $Log: recentf-ext.el,v $
+;; Revision 1.2  2010/01/14 21:52:16  rubikitch
+;; `recentf-add-dired-directory': Fix an error when `dired-directory' is not a directory name.
+;;
 ;; Revision 1.1  2009/12/24 11:53:03  rubikitch
 ;; Initial revision
 ;;
 
 ;;; Code:
 
-(defvar recentf-ext-version "$Id: recentf-ext.el,v 1.1 2009/12/24 11:53:03 rubikitch Exp $")
+(defvar recentf-ext-version "$Id: recentf-ext.el,v 1.2 2010/01/14 21:52:16 rubikitch Exp rubikitch $")
 (eval-when-compile (require 'cl))
 (defgroup recentf-ext nil
   "recentf-ext"
   :group 'emacs)
+(require 'recentf)
 
 (recentf-mode 1)
 
@@ -87,7 +91,9 @@
 
 ;;; [2009/12/24] (@* "`recentf' directory")
 (defun recentf-add-dired-directory ()
-  (recentf-add-file dired-directory))
+  (when (and (stringp dired-directory)
+             (equal "" (file-name-nondirectory dired-directory)))
+    (recentf-add-file dired-directory)))
 (add-hook 'dired-mode-hook 'recentf-add-dired-directory)
 
 (provide 'recentf-ext)

@@ -11,6 +11,7 @@
 ;;; `mon-build-cifs-credentials', `mon-get-cifs-mount-points',
 ;;; `mon-mount-cifs', `mon-bind-cifs-vars-at-loadtime',
 ;;; `mon-inform-cifs-credentials-unbound', `mon-verify-CIFS-credentials'
+;;; `mon-spit-auth-source-debug->var'
 ;;; FUNCTIONS:◄◄◄
 ;;;
 ;;; MACROS:
@@ -26,6 +27,8 @@
 ;;; `*mon-CIFS-domain*', `*mon-CIFS-pass*',
 ;;; `*mon-CIFS-user*', `*mon-CIFS-mount-root*',
 ;;; `*mon-CIFS-vars-unbound*',
+;;; `*mon-auth-source-debug-var*'
+;;; `*mon-auth-source-cache-debug-var*'
 ;;; `*mon-misc-path-alist*' <- (CONDITIONAL)
 ;;; ALIASED/ADVISED/SUBST'D:
 ;;;
@@ -372,15 +375,15 @@ IOW, to make a CIFS credentials format congruent with  ~/.authinfo.gpg you would
 ;;; :CREATED <Timestamp: #{2010-01-05T13:55:59-05:00Z}#{10012} - by MON KEY>
 (defun mon-build-cifs-credentials (&optional credentials-file)
   "Return a credentials string for mounting CIFS.
-By default concatenates the credentials values as per CIFS specs.
-:VARIABLES `*mon-CIFS-user*', `*mon-CIFS-domain*', `*mon-CIFS-pass*' 
-return value has the form:\n
+Default is to concatenate the credentials values of
+`*mon-CIFS-user*', `*mon-CIFS-domain*', `*mon-CIFS-pass*' 
+As per CIFS specs return value has the form:\n
 domain=<DOMAIN>,username=<USERNAME>,password=<PASSWORD>\n
 When optional arg CREDENTIALS-FILE is non-nil returns:\n
  credentials=CREDENTIALS-FILE\n
 :SEE \(man \"mount.cifs\"\) for additional specifications.\n
 :SEE-ALSO `mon-map-cifs-domain->local-mount', `mon-build-cifs-credentials',
-`mon-verify-cifs-credentials', `mon-get-cifs-mount-points', `mon-mount-cifs',
+`mon-verify-cifs-credentialss', `mon-get-cifs-mount-points', `mon-mount-cifs',
 `mon-bind-cifs-vars-at-loadtime' `*mon-CIFS-misc-path-alist*',
 `*mon-CIFS-mount-points*', `*mon-CIFS-auth-protocol*',
 `*mon-CIFS-mount-root*'.\n►►►"
@@ -430,17 +433,17 @@ When MOUNT-POINT is nil or called-interactively prompt for MOUNT-POINT key.\n
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-01-05T13:14:17-05:00Z}#{10012} - by MON KEY>
 (defun mon-mount-cifs (the-mount &optional unmount credential-file as-string-no-shell)
-  "Mount a remote CIFS designated by alist key THE-MOUNT.
+  "Mount a remote CIFS designated by alist key THE-MOUNT.\n
 Elements of THE-MOUNT are mapped to local mount points in fstab and retrieved
 with `mon-get-cifs-mount-points' from alist in `*mon-CIFS-mount-points*'.\n
-When THE-MOUNT is nil or called-interactively prompt for THE-MOUNT.\n
-When optional arg UNMOUNT is non-nil or called-interactively with prefix arg
-unmont THE-MOUNT.\n
-When CREDENTIAL-FILE is non-nil and mounting read credentials from file.\n
-:NOTE CREDENTIAL-FILE must be readable by current user as `mount' is invoked
-with sudo.\n
-When optional AS-STRING-NO-SHELL is non-nil return shell-command as string and
-do not execute.\n
+o When THE-MOUNT is nil or called-interactively prompt for THE-MOUNT.\n
+o When optional arg UNMOUNT is non-nil or called-interactively with prefix arg
+  unmont THE-MOUNT.\n
+o When CREDENTIAL-FILE is non-nil and mounting read credentials from file.\n
+  :NOTE CREDENTIAL-FILE must be readable by current user as `mount' is invoked
+        with sudo.\n
+o When optional AS-STRING-NO-SHELL is non-nil return shell-command as string but
+  do not execute the mount.\n
 :EXAMPLE\n\(let* \(\(*mon-CIFS-user* \"BUBBA\"\)
        \(*mon-CIFS-pass* \"BUBBAS-PASS\"\)
        \(*mon-CIFS-mount-root* \"/mnt/local-bubba\" \)
@@ -454,7 +457,8 @@ do not execute.\n
        \(um-str \(mon-mount-cifs 'BIG-BUBBA t nil t\)\)
        \(mn-str-creds 
         \(mon-mount-cifs 'BIG-BUBBA nil 
-                        \(directory-file-name default-directory\) t\)\)\)
+                        \(directory-file-name default-directory\) t\)\)
+       \(lbep \(line-beginning-position 2\)\)\)
   \(setq mn-str 
         \(format 
          \(concat 
@@ -462,7 +466,7 @@ do not execute.\n
           \"Sample UMOUNT string for shell-command:\\n\\n  shell> %s\\n\\n\"
           \"Sample MOUNT string using credntials file:\\n\\n  shell> %s\\n\\n\"\)
          mn-str um-str mn-str-creds\)\)
-  \(momentary-string-display mn-str \(line-beginning-position 2\)\)\)\n
+  \(mon-help-overlay-result lbep \(+ \(length mn-str\) lbep\) 81 mn-str\)\)\n
 :SEE \(man \"mount.cifs\"\)\n:SEE \(man \"mount\")
 :SEE \(man \"umount.cifs\"\)\n:SEE \(man \"samba\"\)\n:SEE \(man \"sudo\"\)\n
 :SEE-ALSO `mon-map-cifs-domain->local-mount', `mon-get-cifs-credentials',
@@ -490,6 +494,7 @@ do not execute.\n
 ;;; :TEST-ME (mon-mount-cifs (car (nth 1 *mon-CIFS-mount-points*)) nil (buffer-file-name))
 ;;; :TEST-ME (mon-mount-cifs (car (nth 1 *mon-CIFS-mount-points*)) t)
 
+
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-01-11T15:26:59-05:00Z}#{10021} - by MON KEY>
 (defun mon-verify-cifs-credentials ()
@@ -516,7 +521,7 @@ after evaluating `mon-verify-cifs-credentials'.\n
             "`mon-verify-cifs-credentials' when you are ready to use `mon-mount-cifs'.")))))
 ;;    
 ;; :TEST-ME (progn (setq *mon-CIFS-user* nil *mon-CIFS-pass* nil)
-;;                 (mon-verify-CIFS-credentials))
+;;                 (mon-verify-cifs-credentials))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-01-11T15:59:58-05:00Z}#{10021} - by MON KEY>
@@ -528,9 +533,10 @@ buffer specifed by the variable `*mon-CIFS-vars-unbound*' each time Emacs is
 loaded. This behavior is useful when one wishes to be reminded to load in the
 CIFS user and password values. By default these values are accessed and bound
 with `mon-get-cifs-credentials' which evaluates `auth-source-user-or-password'.\n 
-In order to preserve a degree of security, whenever one is using ~/authinfo.gpg
-\(or equivalent\) as the value for `auth-sources' the auth-source interface
-requires provision of a gpg password before it will parse the auth-sources file.
+Whenever one is using ~/authinfo.gpg \(or equivalent\) as the value for
+`auth-sources', the auth-source interface will (in an attempt to preserve a
+degree of security) require that users first provide a gpg password before it
+will parse the auth-sources file.\n
 At present MON is not able to find any reasonable way to prompt the user for
 this information at load-time, moreover it isn't entirely clear whether we
 should do this.\n
@@ -547,7 +553,7 @@ in which case we simply signal the following message at load time:\n
 :SEE-ALSO `mon-map-cifs-domain->local-mount', `mon-get-cifs-credentials',
 `mon-build-cifs-credentials', `mon-get-cifs-mount-points', `mon-mount-cifs',
 `mon-bind-cifs-vars-at-loadtime', `mon-inform-cifs-credentials-unbound',
-`mon-verify-CIFS-credentials', `*mon-CIFS-mount-points*',
+`mon-verify-cifs-credentials', `*mon-CIFS-mount-points*',
 `*mon-CIFS-auth-protocol*', `*mon-CIFS-domain*', `*mon-CIFS-mount-root*',
 `*mon-CIFS-vars-unbound*', `*mon-misc-path-alist*'.\n►►►"
   (let ((mcvu *mon-CIFS-vars-unbound*)
@@ -581,34 +587,35 @@ in which case we simply signal the following message at load time:\n
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-01-11T12:32:09-05:00Z}#{10021} - by MON KEY>
 (defun mon-bind-cifs-vars-at-loadtime (&optional no-misc-path no-map-mount-points)
-  "Loadtime function \(re\)bind the variable values of mon-cifs-utils features.\n
-Require the `auth-source.el' if it isn not already present.\n
-Add the value of `*mon-CIFS-auth-protocol*' to `auth-source-protocols'.\n
-Evaluate `mon-get-cifs-credentials' which binds the values of: 
- `*mon-CIFS-user*' and  `*mon-CIFS-pass*'\n
-Bind or rebind the following variables:\n
-`*mon-CIFS-domain*', `*mon-CIFS-mount-root*', `*mon-CIFS-mount-points*',\n
-When the variable `*mon-CIFS-misc-path-alist*' is not present bind it to a
-symbol holding an alist of safe dummy values which present examples for the
-alist keys 'the-shr-prfix', 'the-mnt-prfx', and 'the-mnt-maps' which are
-evaluated elsewhere in with this procedure.
-When optional arg NO-MISC-PATH is non-nil do not map the domain and mount points.
-specified by the alist key values 'the-mnt-prfx' and 'the-mnt-maps'
-of `*mon-CIFS-misc-path-alist*' instead use the user symbol-values of 
-`*mon-CIFS-domain*'  and `*mon-CIFS-mount-root*'.
-The `*mon-CIFS-misc-path-alist*' keys map to values for following variables:\n
- 'the-shr-prfix' <- `*mon-CIFS-domain*'
- 'the-mnt-prfx'  <- `*mon-CIFS-mount-root*'
- 'the-mnt-maps'  <- `*mon-CIFS-mount-points*'\n
-Evaluate `mon-map-cifs-domain->local-mount' which maps the values of
-`*mon-CIFS-domain*' and `*mon-CIFS-mount-root*' by prepending these onto the
-cadr and caddr of each element of `*mon-CIFS-mount-points*'.\n
-When optional arg NO-MAP-MOUNT-POINTS is non-nil do not evaluate
-`mon-map-cifs-domain->local-mount' at loadtime. This prevents mapping domains
-and mount points when either of the values for `*mon-CIFS-domain*'
-`*mon-CIFS-mount-root*' are not the same for each list element of
-`*mon-CIFS-mount-points*' for additional details regarding this mapping heuristic:
-:SEE `mon-map-cifs-domain->local-mount'\n
+  "Called at load time to \(re\)bind the variables for mon-cifs-utils.\n
+Performs the following tasks:\n
+o Require the `auth-source.el' if it isn not already present.\n
+o Add the value of `*mon-CIFS-auth-protocol*' to `auth-source-protocols'.\n
+o Evaluate `mon-get-cifs-credentials' which binds the values of: 
+  `*mon-CIFS-user*' and  `*mon-CIFS-pass*'\n
+o Bind or rebind the following variables:\n
+  `*mon-CIFS-domain*', `*mon-CIFS-mount-root*', `*mon-CIFS-mount-points*',\n
+o When the variable `*mon-CIFS-misc-path-alist*' is not present bind it to a
+  symbol holding an alist of safe dummy values which present examples for the
+  alist keys 'the-shr-prfix', 'the-mnt-prfx', and 'the-mnt-maps' which are
+  evaluated elsewhere in with this procedure.\n
+ The `*mon-CIFS-misc-path-alist*' keys map to variables:\n
+  'the-shr-prfix' <- `*mon-CIFS-domain*'
+  'the-mnt-prfx'  <- `*mon-CIFS-mount-root*'
+  'the-mnt-maps'  <- `*mon-CIFS-mount-points*'\n
+o When optional arg NO-MISC-PATH is non-nil does not map the domain and mount
+  points specified by the alist key values 'the-mnt-prfx' and 'the-mnt-maps' in
+  `*mon-CIFS-misc-path-alist*'; instead uses the user symbol-values of
+  `*mon-CIFS-domain*' and `*mon-CIFS-mount-root*'.\n
+o Evaluate `mon-map-cifs-domain->local-mount' which maps the values of
+  `*mon-CIFS-domain*' and `*mon-CIFS-mount-root*' by prepending these onto the
+  cadr and caddr of each element of `*mon-CIFS-mount-points*'.\n
+o When optional arg NO-MAP-MOUNT-POINTS is non-nil do not evaluate
+  `mon-map-cifs-domain->local-mount' at loadtime. This prevents mapping domains
+  and mount points when either of the values for `*mon-CIFS-domain*'
+  `*mon-CIFS-mount-root*' are not the same for each list element of
+  `*mon-CIFS-mount-points*'. :SEE `mon-map-cifs-domain->local-mount' for
+  additional details regarding this mapping heuristic:\n
 :SEE-ALSO `mon-mount-cifs', `mon-get-cifs-mount-points',
 `mon-build-cifs-credentials', `mon-get-cifs-credentials',
 `mon-verify-cifs-credentials', `mon-inform-cifs-credentials-unbound',
@@ -657,6 +664,142 @@ and mount points when either of the values for `*mon-CIFS-domain*'
               (cadr (assoc 'the-mnt-maps *mon-CIFS-misc-path-alist*)))))
   (unless no-map-mount-points
     (setq *mon-CIFS-mount-points* (mon-map-cifs-domain->local-mount))))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-01-14T19:21:38-05:00Z}#{10025} - by MON>
+(defvar *mon-auth-source-debug-var* nil
+  "*Symbol to store debug messages when `auth-source-debug' is t and bound to
+the function `mon-spit-auth-source-debug->var'.\n
+Also, does double duty as the name of the buffer name that debug logs are
+displayed in.\n
+:WARNING Authentication passwords and login information will persist for this
+Emacs session depending on the value of `*mon-auth-source-cache-debug-var*'.\n
+:SEE-ALSO `auth-source-do-debug', `auth-source-hide-passwords'.\n►►►")
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-01-14T22:53:44-05:00Z}#{10024} - by MON>
+(defvar *mon-auth-source-cache-debug-var*  nil
+"*When non-nil maintain a persistent log of auth-source authentications.
+When nil clear `*mon-auth-source-debug-var*' after each invocation of 
+`mon-spit-auth-source-debug->var', this is the default value.\n
+:SEE-ALSO `auth-source-do-debug',`auth-source-hide-passwords'.\n►►►")
+
+;;; ==============================
+;;; :NOTE The local variables `tail-msg' and `fmt-msg' are conditional on the
+;;; value of the arg `DEBUG-MSG'. 
+;;; The cdr of `DEBUG-MSG' has one three forms:
+;;;
+;;; (("login" "password") HOST PROTOCOL)    
+;;; (("login" "password") "SECRET" HOST PROTOCOL))
+;;; (("login" "password") ("LOGIN" "PASSWORD") HOST PROTOCOL)))
+;;;
+;;; These correpsond to the format string and args for the variable `fmt-msg':
+;;;
+;;; "auth-source-user-or-password: get %s for %s (%s)" mode host protocol)
+;;; auth-source-user-or-password: get (login password) for <HOST> (PROTOCOL)
+;;;
+;;; "auth-source-user-or-password: cached %s=%s for %s (%s)" mode (list|SECRET) host protocol
+;;; auth-source-user-or-password: cached (login password)=(LOGIN PASS) for <HOST> (PROTOCOL) ;(mode)=(clear)
+;;; auth-source-user-or-password: cached (login password)=SECRET for <HOST> (PROTOCOL) ;(mode)=SECRET
+;;;
+;;; "auth-source-user-or-password: found %s=%s for %s (%s)" mode (list|SECRET) host protocol
+;;; auth-source-user-or-password: found (login password)=(LOG PASS) for <HOST> (PROTOCOL) ;(mode)=(clear)
+;;; auth-source-user-or-password: found (login password)=SECRET for <HOST> (PROTOCOL) ;(mode)=SECRET
+;;;
+;;; :CREATED <Timestamp: #{2010-01-12T19:37:03-05:00Z}#{10023} - by MON>
+(defun mon-spit-auth-source-debug->var (&rest debug-msg)
+  "Concat DEBUG-MSG of `auth-source-do-debug' onto `*mon-auth-source-debug-var*'.
+Return the buffer named *MON-AUTH-SOURCE-DEBUG-VAR* with details of recent
+values returned by `auth-source-user-or-password'.\n
+When arg DEBUG-MSG is bogus, signal an error.\n
+:WARNING Authentication passwords and login information may persist in variable
+`*mon-auth-source-debug-var*' depending on value of `*mon-auth-source-cache-debug-var*'.\n
+Also, the return buffer may contain authentication information in the clear when
+`auth-source-hide-passwords' is non-nil.\n
+When you are finished debugging, make sure to kill the buffer named
+*MON-AUTH-SOURCE-DEBUG-VAR* and set *mon-auth-source-debug-var* to nil.\n
+:EXAMPLE\n\n\(dotimes \(i 3 \(progn \(setq *mon-auth-source-debug-var*\)
+                     \(kill-buffer \"*MON-AUTH-SOURCE-DEBUG-VAR*\"\)\)\)
+  \(let \(\(auth-source-debug  'mon-spit-auth-source-debug->var\)
+        \(*mon-auth-source-cache-debug-var* t\)\)
+    \(mon-spit-auth-source-debug->var
+     \"auth-source-user-or-password: found %s=%s for %s \(%s\)\" 
+     '\(\"login\" \"password\"\) '\(\"MY-LOGIN\" \"MY-PASSWORD\"\) 'MY-HOST 'HER-PROTOCOL\)
+    \(sit-for 1.5\)\)\)\n
+:SEE-ALSO `netrc-machine-user-or-password'.\n►►►"
+  (unwind-protect
+       (if auth-source-debug
+           (let ((dbg-buf (get-buffer-create 
+                           (upcase (symbol-name '*mon-auth-source-debug-var*))))
+                 (sprtr (make-string 30 45))
+                 (fmt-msg (car debug-msg))
+                 (tail-msg (cdr debug-msg)))
+             (setq *mon-auth-source-debug-var*
+                   (concat *mon-auth-source-debug-var*
+                           (cond (;; case1 mode not cached
+                                  ;; (("login" "password") HOST PROTOCOL)
+                                  (and (= (length tail-msg) 3) (listp (car tail-msg)))
+                                  (apply 'format                
+                                         (concat
+                                          "GET MODE = %s\n"   ;;GET MODE  = (login password)
+                                          "    HOST = %s\n"   ;;    HOST  = <DOMAIN>
+                                          "PROTOCOL = %s\n")  ;; PROTOCOL = <PROTOCOL/PORT>
+                                         (car    tail-msg) ;; -> (login password)
+                                         (cadr  tail-msg)  ;; -> HOST
+                                         (cddr tail-msg))) ;; -> PROTOCOL
+                                 (;; Don't check `auth-source-hide-passwords's value.
+                                  ;; (("login" "password") "SECRET" HOST PROTOCOL)))
+                                  (and (= (length tail-msg) 4) (stringp (cadr tail-msg)))
+                                  (apply 'format                
+                                         (concat
+                                          "    MODE = %s\n" ;;    MODE  = (login password)
+                                          "   CLEAR = %s\n" ;;   CLEAR  = SECRET
+                                          "    HOST = %s\n" ;;    HOST  = <DOMAIN>
+                                          "PROTOCOL = %s\n") ;; PROTOCOL = <PROTOCOL/PORT>
+                                         (car tail-msg) ;; ("login" "password")
+                                         (cadr tail-msg) ;; -> SECRET
+                                         (caddr tail-msg) ;; -> HOST       
+                                         (cdddr tail-msg))) ;; -> PROTOCOL
+                                 (;; Fall through, groking the mode pair in the clear.
+                                  ;; (("login" "password") ("LOGIN" "PASSWORD") HOST PROTOCOL)
+                                  (= (length tail-msg) 4)
+                                  (apply 'format                
+                                         (concat
+                                          "    MODE = %s\n" ;;    MODE = (login password)
+                                          "   MODEL = %s\n" ;;    MODEL = LOGIN
+                                          "   MODEP = %s\n" ;;    MODEP = PASSWORD
+                                          "  CACHED = %s\n" ;;  CACHED = yes|no
+                                          "    HOST = %s\n" ;;     HOST = <DOMAIN>
+                                          "PROTOCOL = %s\n") ;; PROTOCOL = <PROTOCOL/PORT>
+                                         (car tail-msg) ;; -> ("login" "password")
+                                         (caadr tail-msg)  ;; -> "LOGIN"
+                                         (cadadr tail-msg) ;; -> "PASSWORD"
+                                         (if (string= (substring fmt-msg 30 36) "cached")
+                                             "YES" "NO")
+                                         (caddr tail-msg)  ;; -> HOST
+                                         (cdddr tail-msg))) ;; -> PROTOCOL
+                                 (t (error "Something amiss, check format string of `auth-source-user-or-password'")))
+                           sprtr "\n\n"))
+             (with-current-buffer (buffer-name (get-buffer dbg-buf))
+               (erase-buffer)
+               (insert *mon-auth-source-debug-var*))
+             (display-buffer dbg-buf t))
+           (error "auth-source-debug is nil bind it to t first"))
+    (unless *mon-auth-source-cache-debug-var*
+      (setq *mon-auth-source-debug-var* nil))))
+
+;; ,---- :UNCOMMENT-BELOW-TO-TEST
+;; | (progn
+;; |   (auth-source-forget-all-cached)
+;; |   (let (;; (auth-source-debug t)
+;; |         (auth-source-debug  'mon-spit-auth-source-debug->var)
+;; |         ;; (auth-source-hide-passwords t)
+;; |         (auth-source-hide-passwords nil)
+;; |         ;; (*mon-auth-source-cache-debug-var* t))
+;; |         (*mon-auth-source-cache-debug-var* nil))
+;; |     (auth-source-user-or-password  '("login" "password")
+;; |                                    "<SOME-HOST>"<SOME-PROTOCOL>)))
+;; `----
 
 ;;; ==============================
 (provide 'mon-cifs-utils)

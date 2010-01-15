@@ -72,6 +72,11 @@ Here's one I'm trying these days:
 [new:DrewAdams:2007-10-06 22:40 UTC]
 What's wrong with bookmarks? Lisp:anything-config.el defines a `Bookmarks' source (see above). Your `my-dired-places' seems to be just another set of bookmarks that can only be directories. Or am I missing something? -- DrewAdams
 
+[new:SunilPatel:2010-01-15]
+I think I know what he's getting at. Usually I work with files from several directories, so I open up a dired for each of them. I'd like to have an anything source be a list of files gleaned from every dired buffer. -Sunil Patel
+
+[new:rubikitch:2010-01-15 06:57 UTC]
+Implemented in anything-config.el! Use `anything-c-source-files-in-all-dired'. -- [[rubikitch]]
 
 == Implemented Proposals for anything-config.el ==
 

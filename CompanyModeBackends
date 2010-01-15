@@ -10,13 +10,13 @@ Lisp:slime-company.el
 
 It can display docstrings and display the source of a completion candidate.
 Please note that it needs a Slime not older than 2009-11-07.
-The first version of this file, for use with an older Slime, can be found at:
 
+A variant that works with the current Slime ELPA package (20091016) is available at:
+http://gist.github.com/179847
+
+The first version of this file, for use with an older Slime, can be found at:
 http://common-lisp.net/pipermail/slime-devel/attachments/20090328/91ce4004/attachment.asc
 
-A variant of the older version, extended to work with Clojure and the Slime-REPL is available at:
-
-http://gist.github.com/179847
 
 = EmacsLispMode =
 

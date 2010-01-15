@@ -130,7 +130,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 253 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 254 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.  I  have  also  received
@@ -1242,16 +1242,18 @@ automatically:
   archive and AVFS has been activated, first tries to display it as a  directory
   in the VFS, otherwise just visits the file."
   (interactive (find-file-read-args "Find file: " nil))
-  (let ((mode (assoc-default filename auto-mode-alist 'string-match)))
+  (let ((mode (assoc-default filename auto-mode-alist 'string-match)) vfile)
     (when (and sr-avfs-root
                (or (eq 'archive-mode mode)
                    (eq 'tar-mode mode)
                    (and (listp mode) (eq 'jka-compr (second mode)))
-                   (eq 'avfs-mode mode)))
-      (let ((vfile (sr-avfs-dir filename)))
-        (when vfile
-          (sr-goto-dir vfile)
-          (setq filename nil))))
+                   (not (equal "." (sr-assoc-key filename
+                                                 sr-avfs-handlers-alist
+                                                 'string-match)))))
+      (setq vfile (sr-avfs-dir filename))
+      (when vfile
+        (sr-goto-dir vfile)
+        (setq filename nil)))
     (when (eq 'sr-virtual-mode mode)
       (sr-save-aspect
        (sr-alternate-buffer (find-file filename)))
@@ -1276,11 +1278,12 @@ automatically:
   (let* ((handler (assoc-default filename sr-avfs-handlers-alist 'string-match))
          (vdir (concat sr-avfs-root filename handler))
          (is-mounted (file-directory-p vdir)))
-    (unless (or is-mounted (equal "#/" handler))
-      (condition-case nil
+    (unless is-mounted
+      (condition-case discard
           (with-temp-buffer (cd vdir)) ;; forces AVFS to create vdir.
-        (error (sit-for 1))))
-    (if (file-directory-p vdir) vdir nil)))
+        (error (sit-for 1)))
+      (setq is-mounted (file-directory-p vdir)))
+    (if is-mounted vdir nil)))
 
 (defun sr-goto-dir (dir)
   "Changes the current directory in the active pane to the given one."
@@ -2873,6 +2876,15 @@ or (c)ontents? ")
       (select-window other-win)
       (goto-char point)
       (select-window this-win))))
+
+(defun sr-assoc-key (name alist test)
+  "Returns the key in ALIST matched by NAME according to TEST."
+  (let (head (tail sr-avfs-handlers-alist) found)
+    (while (and tail (not found))
+      (setq head (caar tail)
+            found (and (apply test (list head name)) head)
+            tail (cdr tail)))
+    found))
 
 ;;; ============================================================================
 ;;; Font-Lock colors & styles:

@@ -22,8 +22,8 @@ characterization of this is that of the previous paragraph,
 however: ''names that match the given string''.
 
 Just as with prefix [[completion]], '''Icicles''' lets you cycle among the
-apropos candidates.  To do this, you use keys `next' and `prior'. The root that was completed is ''underlined''
-in the minibuffer completion candidate.
+apropos candidates.  To do this, you use keys `next' and `prior' (labeled ##PageDown## and ##PageUp## on many keyboards). The root that was completed is
+''underlined'' in the minibuffer completion candidate.
 
 For example, suppose you use `M-x' to enter a [[command]].  You don't
 remember the exact command name, but it has something to do with
