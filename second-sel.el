@@ -4,12 +4,12 @@
 ;; Description: Secondary selection commands
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2008-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 2008-2010, Drew Adams, all rights reserved.
 ;; Created: Fri May 23 09:58:41 2008 ()
 ;; Version: 22.0
-;; Last-Updated: Sat Aug  1 15:41:04 2009 (-0700)
+;; Last-Updated: Fri Jan 15 13:41:12 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 242
+;;     Update #: 243
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/second-sel.el
 ;; Keywords: region, selection, yank, paste, edit
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x

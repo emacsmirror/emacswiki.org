@@ -4,12 +4,12 @@
 ;; Description: Extensions to standard library tool-bar.el
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2004-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Oct 05 17:02:16 2004
 ;; Version: 21.0
-;; Last-Updated: Sat Aug  1 15:45:10 2009 (-0700)
+;; Last-Updated: Fri Jan 15 13:50:09 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 208
+;;     Update #: 209
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/tool-bar+.el
 ;; Keywords: tool-bar, convenience, mouse, button, frame
 ;; Compatibility: GNU Emacs: 21.x, 22.x, 23.x

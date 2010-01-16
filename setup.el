@@ -4,12 +4,12 @@
 ;; Description: Startup assignments: hooks etc.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Thu Dec 28 09:15:00 1995
 ;; Version: 21.0
-;; Last-Updated: Sat Aug  1 15:42:11 2009 (-0700)
+;; Last-Updated: Fri Jan 15 13:43:26 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 724
+;;     Update #: 725
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/setup.el
 ;; Keywords: internal, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x

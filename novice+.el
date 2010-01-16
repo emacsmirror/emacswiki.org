@@ -4,12 +4,12 @@
 ;; Description: Extensions to `novice.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Thu Jul 11 17:10:39 1996
 ;; Version: 21.0
-;; Last-Updated: Tue Jan 12 15:55:45 2010 (-0800)
+;; Last-Updated: Fri Jan 15 13:31:13 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 133
+;;     Update #: 134
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/novice+.el
 ;; Keywords: internal, help
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x

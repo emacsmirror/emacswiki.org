@@ -16,6 +16,7 @@ Lots of big changes have been happening recently, including:  direct tweets (vie
 
 * Current: Lisp:twit.el
 * clone (0.1.1; old?): http://github.com/ieure/twit-el
+* Another clone: http://github.com/docgnome/twit.el
 
 Save the file to a directory (suggestion: <code>~/.emacs.d/twit/</code>). Add the following autoload commands to your ~/.emacs
 InitFile:
@@ -286,6 +287,8 @@ Here's a proposal for a function to get *all* the followers, not just the maximu
 
 
 }}}
+[new:DaveKerschner:2010-01-16 04:43 UTC]
+I just added support for new style retweets. I also made a git repo (link above). I'd strongly suggest we start using git instead of manual version tracking on the wiki. Manual version control is just painful.
 ----
 [new]
 FEATURE REQUESTS:

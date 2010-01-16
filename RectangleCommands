@@ -12,7 +12,7 @@ If you were to move down 4 lines but stay in the same column of 3, you would be 
 
 A good way to approach rectangles is to consider them a text-version of the "crop selection" tool one encounters in a graphics program or drawing tool.  Use of rectangles is somewhat akin to operating on a narrowed portion of the buffer where the ''narrowing'' is from column number ''A'' -> ''B'' instead of between point and mark.
 
-Rectangle commands were originally part of Emacs's PictureMode and therefor were intended as handlers on ''visual rectangles of data''.  Rectangles are useful in situations where editing is otherwise unnecessarily difficult, frustrating, or region-oriented Emacs commands are lacking.
+Rectangle commands were originally part of Emacs's PictureMode and therefore were intended as handlers on ''visual rectangles of data''.  Rectangles are useful in situations where editing is otherwise unnecessarily difficult, frustrating, or region-oriented Emacs commands are lacking.
 
 One typically utilizes rectangles in a manner similar to that of the region.  Rectangles can be killed or copied onto the kill ring which is convenient for yanking rectangles into ordinary buffers.  As buffer objects, rectangles are fundamentally different from the region and aren't afforded the same status.  Moreover, this difference is orthogonal to most of the Emacs commands that operate on the region and rectangles can not be relied upon to always "Do the right thing".  This is in contrast to insertion of region registers which honor buffer markers and don't clobber buffer text unless it was intended.  See [[#Registers]] below.
 

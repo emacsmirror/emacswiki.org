@@ -4,13 +4,13 @@
 ;; Description: Display line numbers in left-margin of buffer.
 ;; Author: (Darryl Okahata) darrylo@hpsrdmo, Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1999-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 1989, Hewlett-Packard, all rights reserved.
 ;; Created: Wed Mar 31 16:18:24 1999
 ;; Version: 21.0
-;; Last-Updated: Sat Aug  1 15:35:28 2009 (-0700)
+;; Last-Updated: Fri Jan 15 13:25:23 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 207
+;;     Update #: 208
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/line-num.el
 ;; Keywords: local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x

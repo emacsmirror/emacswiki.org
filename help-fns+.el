@@ -4,12 +4,12 @@
 ;; Description: Extensions to `help-fns.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 2007-2010, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 22.1
-;; Last-Updated: Sun Aug 30 09:06:27 2009 (-0700)
+;; Last-Updated: Fri Jan 15 13:16:03 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 404
+;;     Update #: 405
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help-fns+.el
 ;; Keywords: help, faces
 ;; Compatibility: GNU Emacs: 22.x, 23.x

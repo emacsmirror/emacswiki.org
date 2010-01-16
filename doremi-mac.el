@@ -4,12 +4,12 @@
 ;; Description: A macro for defining Do Re Mi commands.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2004-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 14 16:45:30 2004
 ;; Version: 21.0
-;; Last-Updated: Sat Nov  7 11:57:46 2009 (-0700)
+;; Last-Updated: Fri Jan 15 12:55:51 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 204
+;;     Update #: 205
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/doremi-mac.el
 ;; Keywords: extensions, convenience, keys, repeat, cycle
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x

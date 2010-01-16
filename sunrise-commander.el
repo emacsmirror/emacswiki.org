@@ -130,16 +130,16 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 254 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 255 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.  I  have  also  received
 ;; feedback  from a user reporting it works OK on the Mac (GNU Emacs 22.2 on Mac
 ;; OS X Leopard). I *am* aware that  there  are  several  functions  (including,
 ;; alas,  file  and directory comparison) that simply will not work on GNU Emacs
-;; 21, but unfortunately I do not have the time to port them back. I don't  know
-;; either  if  it will work at all on XEmacs (uses overlays), so try at your own
-;; risk. All contributions and/or bug reports will be very welcome.
+;; 21, but unfortunately I do not have the time to port them  back.  It  doesn't
+;; work  either  on  XEmacs  --  please drop me a line if you would like to help
+;; porting it. All contributions and/or bug reports will be very welcome.
 
 ;; For more details on the file manager, extensions and cool tips & tricks visit
 ;; http://www.emacswiki.org/emacs/Sunrise_Commander
@@ -1276,8 +1276,10 @@ automatically:
   "Returns the virtual path for accessing the given file through AVFS, or nil if
    AVFS cannot manage this kind of file."
   (let* ((handler (assoc-default filename sr-avfs-handlers-alist 'string-match))
-         (vdir (concat sr-avfs-root filename handler))
+         (vdir (concat filename handler))
          (is-mounted (file-directory-p vdir)))
+    (unless (sr-overlapping-paths-p sr-avfs-root vdir)
+      (setq vdir (concat sr-avfs-root vdir)))
     (unless is-mounted
       (condition-case discard
           (with-temp-buffer (cd vdir)) ;; forces AVFS to create vdir.

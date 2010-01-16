@@ -4,12 +4,12 @@
 ;; Description: Extensions to `faces.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Jun 28 15:07:06 1996
 ;; Version: 21.0
-;; Last-Updated: Mon Nov 16 14:44:29 2009 (-0800)
+;; Last-Updated: Fri Jan 15 13:01:15 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 271
+;;     Update #: 272
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/faces+.el
 ;; Keywords: faces, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x

@@ -4,12 +4,12 @@
 ;; Description: Extensions to `frame.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Apr 12 16:42:12 1996
 ;; Version: 21.0
-;; Last-Updated: Sat Aug  1 15:26:58 2009 (-0700)
+;; Last-Updated: Fri Jan 15 13:09:58 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 174
+;;     Update #: 176
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/frame+.el
 ;; Keywords: frames
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x

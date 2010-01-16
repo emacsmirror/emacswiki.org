@@ -4,12 +4,12 @@
 ;; Description: Frame configuration that uses one frame per window.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1999-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Sat Aug  1 15:38:25 2009 (-0700)
+;; Last-Updated: Fri Jan 15 13:31:59 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 2508
+;;     Update #: 2509
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/oneonone.el
 ;; Keywords: local, frames
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x

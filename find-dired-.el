@@ -4,12 +4,12 @@
 ;; Description: Extensions to `find-dired.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2000-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Sep 18 10:17:13 2000
 ;; Version: 20.0
-;; Last-Updated: Sat Dec 27 10:09:31 2008 (-0800)
+;; Last-Updated: Fri Jan 15 13:05:04 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 29
+;;     Update #: 30
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/find-dired-.el
 ;; Keywords: internal, unix, tools, matching, local
 ;; Compatibility: GNU Emacs 20.x

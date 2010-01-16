@@ -4,12 +4,12 @@
 ;; Description: Extensions to library `ffap.el'
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2005-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 2005-2010, Drew Adams, all rights reserved.
 ;; Created: Wed Feb 08 10:47:56 2006
 ;; Version: 20
-;; Last-Updated: Sat Aug  1 15:24:30 2009 (-0700)
+;; Last-Updated: Fri Jan 15 13:01:48 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 99
+;;     Update #: 100
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/ffap-.el
 ;; Keywords: files, hypermedia, matching, mouse, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x

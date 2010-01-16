@@ -4,12 +4,12 @@
 ;; Description: Emacs init file for use with libraries from Drew Adams
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1995-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 1995-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 15:54:33 1995
 ;; Version: 20.0
-;; Last-Updated: Sat Aug  1 15:22:27 2009 (-0700)
+;; Last-Updated: Fri Jan 15 12:57:51 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 2142
+;;     Update #: 2143
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/emacs-init.el
 ;; Keywords: init, .emacs, _emacs, dotemacs
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -29,25 +29,26 @@
 ;;   `dired-x', `doremi', `doremi-cmd', `doremi-frm', `easymenu',
 ;;   `ediff', `ediff+', `ediff-diff', `ediff-help', `ediff-init',
 ;;   `ediff-merg', `ediff-mult', `ediff-util', `ediff-wind',
-;;   `em-joc', `emacsbug', `eshell-auto', `eyedropper', `facemenu',
-;;   `facemenu+', `faces', `faces+', `ffap', `ffap-', `files+',
-;;   `find-dired', `find-dired+', `find-dired-', `finder', `finder+',
-;;   `finder-inf', `fit-frame', `font-lock', `font-menus', `frame',
-;;   `frame+', `frame-cmds', `frame-fns', `fuzzy-match', `header2',
-;;   `help+20', `hexrgb', `highlight', `icicles', `icicles-cmd1',
-;;   `icicles-cmd2', `icicles-face', `icicles-fn', `icicles-mac',
-;;   `icicles-mcmd', `icicles-mode', `icicles-opt', `icicles-var',
-;;   `icomplete', `icomplete+', `imenu', `imenu+', `info', `info+',
-;;   `isearch+', `iso-transl', `kmacro', `lacarte', `levenshtein',
+;;   `el-swank-fuzzy', `em-joc', `emacsbug', `eshell-auto',
+;;   `eyedropper', `facemenu', `facemenu+', `faces', `faces+',
+;;   `ffap', `ffap-', `files+', `find-dired', `find-dired+',
+;;   `find-dired-', `finder', `finder+', `finder-inf', `fit-frame',
+;;   `font-lock', `font-menus', `frame', `frame+', `frame-cmds',
+;;   `frame-fns', `fuzzy-match', `header2', `help+20', `hexrgb',
+;;   `highlight', `icicles', `icicles-cmd1', `icicles-cmd2',
+;;   `icicles-face', `icicles-fn', `icicles-mac', `icicles-mcmd',
+;;   `icicles-mode', `icicles-opt', `icicles-var', `icomplete',
+;;   `icomplete+', `imenu', `imenu+', `info', `info+', `isearch+',
+;;   `iso-transl', `kmacro', `lacarte', `levenshtein',
 ;;   `lib-requires', `lisp-float-type', `lisp-mnt', `loadhist',
 ;;   `local-lpr', `local-ps-print', `lpr', `ls-lisp', `ls-lisp+',
 ;;   `ls-lisp-verbosity', `menu-bar', `menu-bar+', `misc-cmds',
 ;;   `misc-fns', `mkhtml', `mkhtml-htmlize', `moccur-edit', `mouse',
 ;;   `mouse+', `mwheel', `occur-schroeder', `oneonone', `paren',
 ;;   `pcmpl-auto', `pp', `pp+', `pp-c-l', `printing', `ps-print',
-;;   `replace+', `ring', `ring+', `savehist-20+', `second-sel',
-;;   `sendmail', `setup', `setup-cygwin', `setup-keys', `simple+',
-;;   `solar', `speedbar', `start', `start-opt', `strings',
+;;   `replace+', `reporter', `ring', `ring+', `savehist-20+',
+;;   `second-sel', `sendmail', `setup', `setup-cygwin', `setup-keys',
+;;   `simple+', `solar', `speedbar', `start', `start-opt', `strings',
 ;;   `swiss-move', `synonyms', `thing-cmds', `thingatpt',
 ;;   `thingatpt+', `thumb-frm', `timer', `timer+', `unaccent', `vc',
 ;;   `vc+', `vc-', `vc-hooks', `vc-hooks+', `w32-browser',

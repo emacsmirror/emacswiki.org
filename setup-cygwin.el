@@ -4,12 +4,12 @@
 ;; Description:
 ;; Author: Markus Hoenika
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2004-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2010, Drew Adams, all rights reserved.
 ;; Created: Thu Jan 15 11:13:38 2004
 ;; Version: 21.0
-;; Last-Updated: Thu Oct 15 13:39:31 2009 (-0700)
+;; Last-Updated: Fri Jan 15 13:42:29 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 94
+;;     Update #: 95
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/setup-cygwin.el
 ;; Keywords: os, unix, cygwin
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x

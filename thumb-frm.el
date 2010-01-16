@@ -4,12 +4,12 @@
 ;; Description: Commands for thumbnail frames.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2004-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 10 16:44:55 2004
 ;; Version: 21.0
-;; Last-Updated: Sat Nov  7 14:02:08 2009 (-0700)
+;; Last-Updated: Fri Jan 15 13:48:46 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 1359
+;;     Update #: 1360
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thumb-frm.el
 ;; Keywords: frame, icon
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x

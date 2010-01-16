@@ -4,12 +4,12 @@
 ;; Description: Highlight the current line and column.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2006-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 2006-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 08 13:09:19 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Aug  1 15:17:53 2009 (-0700)
+;; Last-Updated: Fri Jan 15 12:43:08 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 373
+;;     Update #: 374
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/crosshairs.el
 ;; Keywords: faces, frames, emulation, highlight, cursor, accessibility
 ;; Compatibility: GNU Emacs: 22.x, 23.x

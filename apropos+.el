@@ -4,12 +4,12 @@
 ;; Description: Extensions to `apropos.el'
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Thu Jun 22 15:07:30 2000
 ;; Version: 21.0
-;; Last-Updated: Sat Aug  1 13:29:13 2009 (-0700)
+;; Last-Updated: Fri Jan 15 10:07:44 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 44
+;;     Update #: 45
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/apropos+.el
 ;; Keywords: help
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x

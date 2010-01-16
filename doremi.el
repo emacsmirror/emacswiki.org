@@ -4,12 +4,12 @@
 ;; Description: Incremental change using arrow keys or mouse wheel.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2004-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2010, Drew Adams, all rights reserved.
 ;; Created: Thu Sep 02 08:21:37 2004
 ;; Version: 21.1
-;; Last-Updated: Sat Nov 14 15:43:28 2009 (-0800)
+;; Last-Updated: Fri Jan 15 12:56:24 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 1559
+;;     Update #: 1560
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/doremi.el
 ;; Keywords: keys, cycle, repeat, higher-order
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x

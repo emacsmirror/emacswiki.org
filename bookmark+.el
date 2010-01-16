@@ -8,9 +8,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Jan  2 09:05:06 2010 (-0800)
+;; Last-Updated: Fri Jan 15 08:24:28 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 8628
+;;     Update #: 8631
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1045,6 +1045,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2010/01/14 dadams
+;;     bookmark-bmenu-surreptitiously-rebuild-list: Put back save-excursion & save-window-excursion.
 ;; 2010/01/02 dadams
 ;;     Renamed *-bmenu-check-position to *-bmenu-ensure-position, per Emacs 23.2.  Added defalias.
 ;; 2010/01/01 dadams
@@ -3156,8 +3158,10 @@ the deletions."
 Optional arg DONT-TOGGLE-FILENAMES-P is passed to
 `bookmark-bmenu-list'."
   (when (get-buffer "*Bookmark List*")
-    (let ((bookmark-alist  bookmarkp-latest-bookmark-alist))
-      (bookmark-bmenu-list 'filteredp))))
+    (save-excursion
+      (save-window-excursion
+        (let ((bookmark-alist  bookmarkp-latest-bookmark-alist))
+          (bookmark-bmenu-list 'filteredp))))))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.

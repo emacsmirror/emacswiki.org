@@ -6,12 +6,12 @@
 ;;         See http://www.emacswiki.org/emacs/PrettyLambda for the original
 ;;         code snippet and its history.
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2009, Drew Adams, all rights reserved.
+;; Copyright (C) 2009-2010, Drew Adams, all rights reserved.
 ;; Created: Sun Jun 14 11:07:04 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sat Aug  1 15:40:19 2009 (-0700)
+;; Last-Updated: Fri Jan 15 13:35:51 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 135
+;;     Update #: 137
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/pretty-lambdada.el
 ;; Keywords: convenience display
 ;; Compatibility: GNU Emacs: 22.x, 23.x

@@ -9,7 +9,32 @@ Note that this page is not about EmacsWikiMode.
 '''Add your problem descriptions below this line'''
 
 ----
+== Internal Server Errors When Try to Save a Page ==
 
+I'm getting errors like this:
+
+  Server error!
+  The server encountered an internal error and was unable to complete your request. 
+
+  Error message: 
+  Premature end of script headers: emacs 
+
+  If you think this is a server error, please contact the webmaster. 
+
+  Error 500
+  www.emacswiki.org
+  Fri Jan 15 21:45:27 2010
+  Apache/2.2.9 (Debian) DAV/2 SVN/1.5.1 mod_jk/1.2.26 mod_ssl/2.2.9 OpenSSL/0.9.8g mod_wsgi/2.5 Python/2.5.2 
+
+I'm not getting the errors at each save attempt -- just occasionally. Started today AFAIK. -- DrewAdams
+
+[new]
+Could it be the rapid fire uploads this afternoon :)
+Maybe Alex has a throttle per the spammers?
+It looks like you identified a problem at 20:48 UTC.
+Are the changes from 21:40 UTC -> 21:55 UTC your attempts to reproduce the problems?
+If not then the 20+ uploads between then 20:48 and 21:16 UTC may be more than this little wiki can handle.
+Weird internal server errors can also indicate a looming hard-disk failure...  --[[mon_key]]
 
 == Elisp Alphabetic Index is in Catalan? ==
 

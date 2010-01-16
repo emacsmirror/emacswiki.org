@@ -4,12 +4,12 @@
 ;; Description: Highlight whitespace of various kinds.
 ;; Author: Peter Steiner <unistein@isbe.ch>, Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2000-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 21 08:54:53 2000
 ;; Version: 21.0
-;; Last-Updated: Sat Aug  1 15:42:17 2009 (-0700)
+;; Last-Updated: Fri Jan 15 13:44:05 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 282
+;;     Update #: 283
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/show-wspace.el
 ;; Keywords: highlight, whitespace
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x

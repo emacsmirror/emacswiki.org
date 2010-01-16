@@ -1,9 +1,9 @@
 ;;; savehist-20+.el --- Save minibuffer history.
-
-;; Copyright (C) 1997, 2005, 2006, 2007  Free Software Foundation, Inc.
-
 ;; Author: Hrvoje Niksic <hniksic@xemacs.org>
 ;; Maintainer: Drew Adams
+;; Copyright (C) 2007-2010, Drew Adams
+;; Copyright (C) 1997, 2005, 2006, 2007  Free Software Foundation, Inc.
+
 ;; Keywords: minibuffer history
 ;; Version: 24
 

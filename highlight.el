@@ -4,12 +4,12 @@
 ;; Description: Highlighting commands.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1995-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 1995-2010, Drew Adams, all rights reserved.
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 21.0
-;; Last-Updated: Thu Sep 24 10:06:51 2009 (-0700)
+;; Last-Updated: Fri Jan 15 13:18:50 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 2539
+;;     Update #: 2540
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/highlight.el
 ;; Keywords: faces, help, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x

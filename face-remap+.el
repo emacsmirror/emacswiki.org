@@ -4,12 +4,12 @@
 ;; Description: Extensions to standard library `face-remap.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2009, Drew Adams, all rights reserved.
+;; Copyright (C) 2009-2010, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 17 14:26:21 2009 (-0700)
 ;; Version: 23.1
-;; Last-Updated: Sat Nov  7 14:44:15 2009 (-0800)
+;; Last-Updated: Fri Jan 15 12:59:57 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 154
+;;     Update #: 155
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/face-remap+.el
 ;; Keywords: window frame face font
 ;; Compatibility: GNU Emacs 23.x

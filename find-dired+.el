@@ -6,13 +6,12 @@
 ;;      Sebastian Kremer <sk@thp.uni-koeln.de>,
 ;;      Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
-;; Copyright (C) 1992, 1994 Free Software Foundation, Inc.
+;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Wed Jan 10 14:31:50 1996
 ;; Version: 20.0
-;; Last-Updated: Sat Dec 27 10:09:31 2008 (-0800)
+;; Last-Updated: Fri Jan 15 13:04:31 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 555
+;;     Update #: 557
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/find-dired+.el
 ;; Keywords: internal, unix, tools, matching, local
 ;; Compatibility: GNU Emacs 20.x

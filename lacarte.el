@@ -4,12 +4,12 @@
 ;; Description: Execute menu items as commands, with completion.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2005-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 2005-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Aug 12 17:18:02 2005
 ;; Version: 22.0
-;; Last-Updated: Fri Dec 25 12:56:41 2009 (-0800)
+;; Last-Updated: Fri Jan 15 13:24:08 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 601
+;;     Update #: 602
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/lacarte.el
 ;; Keywords: menu-bar, menu, command, help, abbrev, minibuffer, keys,
 ;;           completion, matching, local, internal, extensions,

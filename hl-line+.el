@@ -4,12 +4,12 @@
 ;; Description: Extensions to hl-line.el.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2006-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 2006-2010, Drew Adams, all rights reserved.
 ;; Created: Sat Aug 26 18:17:18 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Dec 18 13:28:42 2009 (-0800)
+;; Last-Updated: Fri Jan 15 13:19:27 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 420
+;;     Update #: 421
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/hl-line+.el
 ;; Keywords: highlight, cursor, accessibility
 ;; Compatibility: GNU Emacs: 22.x, 23.x

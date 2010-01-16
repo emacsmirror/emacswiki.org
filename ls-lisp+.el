@@ -4,12 +4,12 @@
 ;; Description: Enhancements of standard library `ls-lisp.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2008-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 2008-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Feb 29 10:54:37 2008 (Pacific Standard Time)
 ;; Version: 20.0
-;; Last-Updated: Fri Oct 23 10:18:55 2009 (-0700)
+;; Last-Updated: Fri Jan 15 13:26:07 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 132
+;;     Update #: 133
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/ls-lisp+.el
 ;; Keywords: internal, extensions, local, files, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x

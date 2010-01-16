@@ -171,3 +171,37 @@ Because VM is not able to encode messages with characters from mixed charsets pr
  			vm-mime-mule-charset-to-coding-alist)))))
 
 Another way to solve this problem is to install Widhopf-Frenk's version of VM which is available at: http://www.robf.de/Hacking/elisp. This works also on XEmacs.
+
+[new]
+Here is another charset workaround.
+Do you ever find annoying 3 digit code characters like \222 \223 \224 etc. while reading your emails?
+Often that is due to a common bug in Microsoft email clients that set the MIME charset to IS0-8859-1 when Microsoft is really using a Microsoft-invented ISO-8859-1 "superset" called Windows-1252. Windows-1252 differs from ISO-8859-1 in that it encodes various additional punctuation marks and accent characters in the non-displayable range 128-159 (octal 200-237; hex 80-9F) of the ISO-8859-1 base charset.
+
+A way to get around this unfortunate but common problem is to tell vm to substitute Windows-1252 any time it sees charset=ISO-8859-1. Note this should not have any ill effect on true ISO-8859-1 messages since any valid such message won't have characters in that range anyway. Indeed, per Wikipedia, the latest HTML5 draft spec takes the same approach and actually requires that all ISO-8859-1 labeled documents be parsed as Windows-1252.
+
+Enough for explanations - the actually code required to fix this is much simpler. Just add the following to your .vm startup file:
+
+    ; First, don't display iso-8859-1 as-is in default face
+    (delete "iso-8859-1" vm-mime-default-face-charsets)
+    ; Then substitute windows-1252 for iso-8859-1
+    (add-to-list 'vm-mime-mule-charset-to-coding-alist
+          '("iso-8859-1" windows-1252))
+
+NOTE: the above approach can be extended if you find similar issues with other region Windows-125x charsets being noted as ISO-8859-y.
+NOTE: in particular the HTML5 spec, requires the following transformations:
+
+    EUC-KR         windows-949
+    GB2312         GBK 	
+    GB_2312-80     GBK
+    ISO-8859-1     windows-1252
+    ISO-8859-9     windows-1254
+    ISO-8859-11    windows-874
+    KS_C_5601-1987 windows-949
+    Shift_JIS      windows-31J
+    TIS-620        windows-874
+    US-ASCII       windows-1252
+
+I would suggest you add them individually as needed (note though that if you are using the default value of vm-mime-default-face-charsets, you only need to do the first "(delete ...)" command for "iso-8859-1" as above and for "us-ascii" if you think you need to replace that charset too)
+
+
+

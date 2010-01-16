@@ -4,12 +4,12 @@
 ;; Description: Extensions to standard library `wid-edit.el'.
 ;; Author: Drew Adams, Lennart Borgman
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 2007-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 21 10:25:32 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Aug  1 15:46:00 2009 (-0700)
+;; Last-Updated: Fri Jan 15 13:53:59 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 248
+;;     Update #: 249
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/wid-edit+.el
 ;; Keywords: widget, color
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x

@@ -4,12 +4,12 @@
 ;; Description: Extensions to `help-macro.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1999-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug 24 15:36:18 1999
 ;; Version: 20.0
-;; Last-Updated: Sat Dec 27 10:09:31 2008 (-0800)
+;; Last-Updated: Fri Jan 15 13:16:45 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 106
+;;     Update #: 107
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help-macro+.el
 ;; Keywords: help
 ;; Compatibility: GNU Emacs 20.x

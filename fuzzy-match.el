@@ -4,13 +4,13 @@
 ;; Description: fuzzy matching
 ;; Author: Simon Marshall <s i m o n  AT  g n u . o r g>
 ;; Maintainer: Drew Adams <d r e w . a d a m s  AT  o r a c l e . c o m>
+;; Copyright (C) 2007-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 1993, 1994 Simon Marshall, all rights reserved.
-;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: 1993, by Simon Marshall
 ;; Version: 1.04
-;; Last-Updated: Sat Aug  1 15:27:56 2009 (-0700)
+;; Last-Updated: Fri Jan 15 13:11:58 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 168
+;;     Update #: 170
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/fuzzy-match.el
 ;; Keywords: matching completion string
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x

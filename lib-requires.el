@@ -4,12 +4,12 @@
 ;; Description: Commands to list Emacs Lisp library dependencies.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2004-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2010, Drew Adams, all rights reserved.
 ;; Created: Thu Dec 30 12:29:29 2004
 ;; Version: 21.0
-;; Last-Updated: Sun Oct 25 09:21:03 2009 (-0700)
+;; Last-Updated: Fri Jan 15 13:24:48 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 731
+;;     Update #: 732
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/lib-requires.el
 ;; Keywords: libraries, files
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x

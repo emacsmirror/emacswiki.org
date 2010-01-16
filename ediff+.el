@@ -4,12 +4,12 @@
 ;; Description: Enhancements to Ediff
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2005-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 2005-2010, Drew Adams, all rights reserved.
 ;; Created: Thu Jan 26 11:14:34 2006
 ;; Version: 20
-;; Last-Updated: Sat Aug  1 15:22:10 2009 (-0700)
+;; Last-Updated: Fri Jan 15 12:57:06 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 92
+;;     Update #: 93
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/ediff+.el
 ;; Keywords: comparing, merging, patching, version control
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x

@@ -4,12 +4,12 @@
 ;; Description: Extensions to standard library `grep.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2005-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 2005-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 16 13:36:47 2005
 ;; Version: 22.0
-;; Last-Updated: Sat Aug  1 15:28:23 2009 (-0700)
+;; Last-Updated: Fri Jan 15 13:12:51 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 421
+;;     Update #: 422
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/grep+.el
 ;; Keywords: tools, processes, compile
 ;; Compatibility: GNU Emacs: 22.x, 23.x

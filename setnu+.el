@@ -4,12 +4,12 @@
 ;; Description: Extensions to `setnu.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2000-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Thu Nov 30 08:51:07 2000
 ;; Version: 21.0
-;; Last-Updated: Sat Aug  1 15:41:20 2009 (-0700)
+;; Last-Updated: Fri Jan 15 13:41:58 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 157
+;;     Update #: 158
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/setnu+.el
 ;; Keywords: lines
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x

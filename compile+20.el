@@ -4,12 +4,12 @@
 ;; Description: Extensions to `compile.el'.
 ;; Author: Drew ADAMS
 ;; Maintainer: Drew ADAMS
-;; Copyright (C) 1999-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 16:55:16 1999
 ;; Version: 20.0
-;; Last-Updated: Sat Dec 27 10:09:33 2008 (-0800)
+;; Last-Updated: Fri Jan 15 12:40:56 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 832
+;;     Update #: 833
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/compile+20.el
 ;; Keywords: tools, processes
 ;; Compatibility: GNU Emacs 20.x, GNU Emacs 21.x

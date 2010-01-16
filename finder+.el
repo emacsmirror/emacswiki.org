@@ -4,12 +4,12 @@
 ;; Description: Extensions to standard library finder.el
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2008-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 2008-2010, Drew Adams, all rights reserved.
 ;; Created: Wed Mar 12 10:00:16 2008 (Pacific Standard Time)
 ;; Version: 21.0
-;; Last-Updated: Sat Aug  1 15:26:00 2009 (-0700)
+;; Last-Updated: Fri Jan 15 13:06:44 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 92
+;;     Update #: 93
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/finder+.el
 ;; Keywords: help
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x

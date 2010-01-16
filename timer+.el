@@ -4,12 +4,12 @@
 ;; Description: Extensions to `timer.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Jul 15 08:45:19 1996
 ;; Version: 20.0
-;; Last-Updated: Fri May 22 07:18:24 2009 (-0700)
+;; Last-Updated: Fri Jan 15 13:49:21 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 77
+;;     Update #: 78
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/timer+.el
 ;; Keywords: processes, calendar
 ;; Compatibility: GNU Emacs 20.x
@@ -20,14 +20,15 @@
 ;;   `color-theme', `cus-edit', `cus-face', `cus-load', `cus-start',
 ;;   `custom', `dired', `dired+', `dired-aux', `dired-x', `doremi',
 ;;   `easymenu', `ediff-diff', `ediff-help', `ediff-init',
-;;   `ediff-merg', `ediff-mult', `ediff-util', `ediff-wind', `ffap',
-;;   `ffap-', `fit-frame', `frame-cmds', `frame-fns', `help+20',
-;;   `hexrgb', `icicles', `icicles-cmd1', `icicles-cmd2',
-;;   `icicles-face', `icicles-fn', `icicles-mac', `icicles-mcmd',
-;;   `icicles-mode', `icicles-opt', `icicles-var', `info', `info+',
-;;   `kmacro', `levenshtein', `menu-bar', `menu-bar+', `misc-cmds',
-;;   `misc-fns', `mkhtml', `mkhtml-htmlize', `mwheel', `pp', `pp+',
-;;   `ring', `ring+', `second-sel', `strings', `thingatpt',
+;;   `ediff-merg', `ediff-mult', `ediff-util', `ediff-wind',
+;;   `el-swank-fuzzy', `ffap', `ffap-', `fit-frame', `frame-cmds',
+;;   `frame-fns', `fuzzy-match', `help+20', `hexrgb', `icicles',
+;;   `icicles-cmd1', `icicles-cmd2', `icicles-face', `icicles-fn',
+;;   `icicles-mac', `icicles-mcmd', `icicles-mode', `icicles-opt',
+;;   `icicles-var', `info', `info+', `kmacro', `levenshtein',
+;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `mkhtml',
+;;   `mkhtml-htmlize', `mwheel', `pp', `pp+', `reporter', `ring',
+;;   `ring+', `second-sel', `sendmail', `strings', `thingatpt',
 ;;   `thingatpt+', `timer', `unaccent', `w32-browser',
 ;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
 ;;

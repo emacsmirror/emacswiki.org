@@ -4,12 +4,12 @@
 ;; Description: Extensions to `help-mode.el'
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2004-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2010, Drew Adams, all rights reserved.
 ;; Created: Sat Nov 06 15:14:12 2004
 ;; Version: 21.0
-;; Last-Updated: Sat Aug  1 15:30:16 2009 (-0700)
+;; Last-Updated: Fri Jan 15 13:17:22 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 97
+;;     Update #: 98
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help-mode+.el
 ;; Keywords: help
 ;; Compatibility: GNU Emacs: 21.x, 22.x, 23.x

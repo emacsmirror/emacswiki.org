@@ -4,12 +4,12 @@
 ;; Description: Automatically resize one-window frames to fit.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2000-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Thu Dec  7 10:06:18 2000
 ;; Version: 21.0
-;; Last-Updated: Sat Aug  1 13:32:33 2009 (-0700)
+;; Last-Updated: Fri Jan 15 10:10:16 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 589
+;;     Update #: 590
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/autofit-frame.el
 ;; Keywords: internal, extensions, convenience, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x

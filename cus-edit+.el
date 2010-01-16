@@ -4,12 +4,12 @@
 ;; Description: Enhancements to cus-edit.el.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2000-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Thu Jun 29 13:19:36 2000
 ;; Version: 21.1
-;; Last-Updated: Sat Aug  1 15:14:53 2009 (-0700)
+;; Last-Updated: Fri Jan 15 12:45:20 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 1241
+;;     Update #: 1242
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/cus-edit+.el
 ;; Keywords: help, customize, help, faces
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x

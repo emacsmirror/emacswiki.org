@@ -4,12 +4,12 @@
 ;; Description: Display Control-l characters in a buffer in a pretty way
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 2007-2010, Drew Adams, all rights reserved.
 ;; Created: Thu Feb 08 20:28:09 2007
 ;; Version: 1.0
-;; Last-Updated: Sat Aug  1 15:39:48 2009 (-0700)
+;; Last-Updated: Fri Jan 15 13:34:55 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 178
+;;     Update #: 179
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/pp-c-l.el
 ;; Keywords: display, convenience, faces
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x

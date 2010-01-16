@@ -4,12 +4,12 @@
 ;; Description: Color palette useful with RGB, HSV, and color names
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2006-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 2006-2010, Drew Adams, all rights reserved.
 ;; Created: Sat May 20 07:56:06 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Nov 18 17:01:08 2009 (-0800)
+;; Last-Updated: Fri Jan 15 13:33:50 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 512 4
+;;     Update #: 514 4
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/palette.el
 ;; Keywords: color, rgb, hsv, hexadecimal, face, frame
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -1271,7 +1271,7 @@ The new current color is returned."     ; Doc string
     ((completion-ignore-case t))))
 
 (defun palette-pick-by-name-action (color)
-  "Helper function for `palette-pick-color-by-name'.
+  "Helper function for `palette-pick-color-by-name-multi'.
 This is the action function, when `palette.el' is used with Icicles."
   (if (string= "" color)
       (let* ((colors  (hexrgb-defined-colors))

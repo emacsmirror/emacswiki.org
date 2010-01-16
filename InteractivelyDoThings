@@ -14,7 +14,7 @@ To activate, place this in your .emacs:
 
 == Using IDO ==
 
-A screencast demonstrating it's features can be found here: http://www.vimeo.com/1013263
+A screencast demonstrating its features can be found here: http://www.vimeo.com/1013263
 
 To switch between buffers, press "C-x b", then:
 

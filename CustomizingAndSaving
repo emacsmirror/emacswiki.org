@@ -72,7 +72,7 @@ See, for instance, `custom-ignore-unsaved-preference' in <tt>[[cus-edit+.el]]</t
 That is useful. Thanks. Why Customize doesn't ship with ready-made functions for these things is beyond me. I may put the phrase "secrets discovered from untold diggings among the ruins of Customize code" in a code comment. :) -- VegardOye
 
 [new]
-'''Update:''' After some more excavation, I discovered that Customize stores ''saved'' values (for future sessions) in the propery ##saved-value##. The line above checks if Customize has changed the value during the current session, while the function below also returns non-##nil## when the variable is Customize'd in ##.emacs##. -- VegardOye
+'''Update:''' After some more excavation, I discovered that Customize stores ''saved'' values (for future sessions) in the property ##saved-value##. The line above checks if Customize has changed the value during the current session, while the function below also returns non-##nil## when the variable is Customize'd in ##.emacs##. -- VegardOye
 
     (defun custom-value-p (symbol)
       "Non-nil if SYMBOL has a customized value."

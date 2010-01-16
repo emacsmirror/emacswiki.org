@@ -4,12 +4,12 @@
 ;; Description: Extensions to `help.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1999-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Mar 16 14:18:11 1999
 ;; Version: 20.0
-;; Last-Updated: Sat Aug  1 15:29:11 2009 (-0700)
+;; Last-Updated: Fri Jan 15 13:14:17 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 2071
+;;     Update #: 2072
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help+.el
 ;; Keywords: help
 ;; Compatibility: GNU Emacs: 22.x, 23.x
