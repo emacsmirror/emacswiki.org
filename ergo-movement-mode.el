@@ -1,7 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ergo-movement-mode.el
+;; ergo-movement-mode.el (2010-01-16)
 ;;
-;; Copyright (C) 2009 Teemu Likonen <tlikonen@iki.fi>
+;; Copyright (C) 2009-2010 Teemu Likonen <tlikonen@iki.fi>
 
 ;; DESCRIPTION
 ;;
@@ -44,11 +44,10 @@
 
 (defvar ergo-movement-mode-map
   (let ((map (make-sparse-keymap))
-        key
         ;; "keydefs" is an alist of (KEY . ACTION) elements. KEY is a
-        ;; keybinding string. ACTION can be a keybinding string or an
-        ;; interactive function. Keybinding use the format known by
-        ;; "kbd" macro.
+        ;; keybinding string. ACTION can be a keybinding string or a
+        ;; symbol referring to a command. Keybinding strings use the
+        ;; format known by the "kbd" macro.
         (keydefs '(
                    ;; indent-new-comment-line -> backward-char
                    ("M-j" . "C-b")
@@ -67,20 +66,23 @@
                    ;; reposition-window -> forward-word
                    ("C-M-l" . "M-f")
                    ("C-M-S-l" . reposition-window)
-                   )))
+                   ))
+        key def)
 
    (dolist (keydef keydefs)
-     (setq key (eval `(kbd ,(car keydef))))
-     (cond ((commandp (cdr keydef) t)
-            (define-key map key (cdr keydef)))
-           ((stringp (cdr keydef))
+     (setq key (eval `(kbd ,(car keydef)))
+           def (cdr keydef))
+     (cond ((commandp def t)
+            (define-key map key def))
+           ((stringp def)
             (define-key map key
               `(lambda () (interactive)
                  (call-interactively
-                  (key-binding ,(eval `(kbd ,(cdr keydef))))))))))
+                  (key-binding ,(read-kbd-macro def))))))))
    map))
 
 
+;;;###autoload
 (define-minor-mode ergo-movement-mode
   "Ergonomic keybindings for cursor movement
 

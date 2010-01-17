@@ -248,7 +248,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Version:
-(defconst traverse-version "1.1.44")
+(defconst traverse-version "1.1.46")
 
 ;;; Code:
 
@@ -500,6 +500,7 @@ Each element of LIS is compared with the filename STR."
 
 (defun* traverse-file-process-ext (regex fname &key (lline traverse-length-line))
   "Function to process files in external program like anything."
+  (setq traverse-count-occurences 0)
   (let ((matched-lines (traverse-find-readlines fname regex :insert-fn 'file)))
     (when matched-lines
       (dolist (i matched-lines) ;; each element is of the form '(key value)
@@ -507,6 +508,7 @@ Each element of LIS is compared with the filename STR."
                (replace-reg   (if (string-match "^\t" ltp) "\\(^\t*\\)" "\\(^ *\\)"))
                (new-ltp       (replace-regexp-in-string replace-reg "" ltp))
                (line-to-print (if traverse-keep-indent ltp new-ltp)))
+          (incf traverse-count-occurences)
           (insert (concat (propertize (file-name-nondirectory fname)
                                       'face 'traverse-path-face
                                       'help-echo line-to-print)
@@ -521,6 +523,7 @@ Each element of LIS is compared with the filename STR."
 
 (defun* traverse-buffer-process-ext (regex buffer &key (lline traverse-length-line))
   "Function to process buffer in external program like anything."
+  (setq traverse-count-occurences 0)
   (let ((matched-lines (traverse-find-readlines buffer regex :insert-fn 'buffer)))
     (when matched-lines 
       (dolist (i matched-lines) ;; each element is of the form '(key value)
@@ -528,6 +531,7 @@ Each element of LIS is compared with the filename STR."
                (replace-reg   (if (string-match "^\t" ltp) "\\(^\t*\\)" "\\(^ *\\)"))
                (new-ltp       (replace-regexp-in-string replace-reg "" ltp)) 
                (line-to-print (if traverse-keep-indent ltp new-ltp)))
+          (incf traverse-count-occurences)
           (insert (concat " " (propertize (int-to-string (+ (first i) 1))
                                           'face 'traverse-match-face
                                           'help-echo line-to-print)
@@ -1305,12 +1309,17 @@ Special commands:
 
 (defun traverse-incremental-filter-alist-by-regexp (regexp buffer-name)
   "Print all lines matching REGEXP in current buffer to buffer BUFFER-NAME."
-  (let ((title (propertize "Traverse Incremental occur" 'face '((:background "Dodgerblue4")))))
+  (let ((title (propertize "Traverse Incremental occur" 'face 'traverse-incremental-title-face)))
     (if (string= regexp "")
         (progn (erase-buffer) (insert (concat title "\n\n")))
-        (erase-buffer) (insert (concat title "\n\n"))
+        (erase-buffer)
         (traverse-buffer-process-ext regexp buffer-name :lline traverse-incremental-length-line)
-        (goto-char (point-min)) (forward-line 2)
+        (goto-char (point-min))
+        (insert (concat title "\n\n"
+                 (propertize (format "Found %s occurences of " traverse-count-occurences)
+                             'face 'underline)
+                 (propertize regexp 'face 'traverse-incremental-regexp-face)
+                 (propertize (format " in %s" buffer-name) 'face 'underline) "\n\n"))
         (traverse-incremental-occur-color-current-line))))
         
 
@@ -1346,7 +1355,7 @@ for commands provided in the search buffer."
     (jit-lock-fontify-now))
   (let* ((init-str (if initial-input (thing-at-point 'symbol) ""))
          (len      (length init-str))
-         (curpos      (point))
+         (curpos   (point))
          str-no-prop)
     (set-text-properties 0 len nil init-str)
     (setq str-no-prop init-str)
@@ -1383,9 +1392,16 @@ for commands provided in the search buffer."
   "Face for highlight line in matched buffer."
   :group 'traverse-faces)
 
+(defface traverse-incremental-title-face '((t (:background "Dodgerblue4")))
+  "Face for highlight incremental buffer title."
+  :group 'traverse-faces)
+
+(defface traverse-incremental-regexp-face '((t (:background "DeepSkyBlue" :underline t)))
+  "Face for highlight found regexp in incremental buffer."
+  :group 'traverse-faces)
+
 (defvar traverse-incremental-face 'traverse-incremental-overlay-face)
 
-;; TODO Make one generic overlay function for all traverse.
 (defun traverse-incremental-occur-color-current-line ()
   "Highlight and underline current position."
   (if (not traverse-incremental-occur-overlay)

@@ -200,7 +200,7 @@ And after refreshing the mirror, you'll want to get those changes into your task
 
 The reason you use "##merge##" instead of "##update##" in the task branch is that your task branch is an independent branch (not bound to anything else) and has its own local commits.  In other words, it has diverged (a bit) from the upstream master, and so any changes from upstream have to be merged with your local changes.
 
-The merge may fail due to an upstream change that conflicts with your branch.  You'll need to fix the problem (looking for conflict markers and editing, just as in CVS), then
+The merge may fail due to an upstream change that conflicts with your branch.  You'll need to fix the problem (looking for conflict markers and editing, just as in CVS).  When you save the files which had conflict markers, Emacs will automatically invoke "bzr resolve" for you, to tell Bazaar that conflicts were resolved.  If for some reason you don't use Emacs  to fix the conflicts (what? how? can't be!), you will need to do it manually:
 
       bzr resolve file-you-changed ...      # Mark these conflicts as resolved.
                                                # Bazaar keeps track of unresolved conflicts,

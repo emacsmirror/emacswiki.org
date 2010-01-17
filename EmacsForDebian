@@ -143,7 +143,13 @@ If a specific package installs itself site wide, and you later decide that this 
 
 There are multiple maintainers involved in supporting the many emacs related packages in Debian. If there is a problem with dealing with specific bugs, please list the bug reports below.
 
+[new:Memnon Anon:2010-01-16 18:06 UTC]
+== Discussion ==
+* Seems to me most of the information on this page is related to woody, which was released 2002-07 and no more supported since 2006-08. I use the debian packages and never experienced any of the problems above, so I think this page really gives a hell of a first impression. How am I to proceed now? I only have a testing available, but I think to remove an item as obsolete, it should be checked against all supported versions, i.e. etch and lenny. I could add a '/bold/Obsolete in squeeze [Date]/bold/', though. Any advice? 
+* And btw.: Why is gentoo policy info on this page?
 
+[new]
+I think such information should either be deleted, or moved to a new page called %%EmacsForWoody%%. Marking information as obsolete on this page will just increase the clutter. Similarly, information for Gentoo should be moved to %%EmacsForGentoo%% or a similar page. -- AlexSchroeder
 
 ----
 See also: EmacsCvsAndDebian
