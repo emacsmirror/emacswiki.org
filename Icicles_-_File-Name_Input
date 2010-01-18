@@ -19,7 +19,7 @@ they do so in very different ways.
 
 * '''`C-backspace'''' (`icicle-up-directory') to navigate up the directory hierarchy.  It removes the last directory component (and any partial file name) from your minibuffer input.  (For Emacs versions before Emacs 22, this feature is available only for completion of absolute file names.)
 
-* '''`C-x b'''' (`icicle-bookmark-file-other-window') to visit a
+* '''`C-x m'''' (`icicle-bookmark-file-other-window') to visit a
 bookmarked file or directory.  This is available only if you use
 library '''[[Bookmark+]]''' (<tt>[[bookmark+.el]]</tt>).  It is a [[multi-command]], so you can
 actually visit any number of file bookmarks.  When finished, you

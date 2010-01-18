@@ -424,5 +424,28 @@ Lisp:recentf-ext.el extends recentf package.
 * Switching to file buffer considers it as most recent file.
 
 -- [[rubikitch]]
+
+= Undo kill buffer =
+The Opera web browser has a surprisingly useful feature called the "trash can".  After you close a tab you can "undo" the close with C-z.  As it turns out when I want a tab reopened it's usually one of the last few I closed, so I almost never end up looking in the history.  I missed this feature in Emacs, so I implemented it on top of recentf.
+
+<pre>
+(defun undo-kill-buffer (arg)
+  "Re-open the last buffer killed.  With ARG, re-open the nth buffer."
+  (interactive "p")
+  (let ((recently-killed-list (copy-sequence recentf-list))
+	 (buffer-files-list
+	  (delq nil (mapcar (lambda (buf)
+			      (when (buffer-file-name buf)
+				(expand-file-name (buffer-file-name buf)))) (buffer-list)))))
+    (mapc
+     (lambda (buf-file)
+       (setq recently-killed-list
+	     (delq buf-file recently-killed-list)))
+     buffer-files-list)
+    (find-file
+     (if arg (nth arg recently-killed-list)
+       (car recently-killed-list)))))
+</pre>
+
 ----
 CategoryCommands CategoryDotEmacs CategoryPersistence CategoryCompletion

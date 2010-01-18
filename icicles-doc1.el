@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Dec 13 16:54:27 2009 (-0800)
+;; Last-Updated: Sun Jan 17 18:24:32 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 24810
+;;     Update #: 24828
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3930,6 +3930,17 @@
 ;;  Here are some of the Icicles tripping commands:
 ;;
 ;;  * `icicle-bookmark' (`C-- C-x r m') - Trip among bookmarks.
+;;  * Type-specific bookmark trips (requires library `bookmark+.el'):
+;;    `icicle-bookmark-non-file-other-window'    (`C-x 4 j b')
+;;    `icicle-bookmark-dired-other-window'       (`C-x 4 j d')
+;;    `icicle-bookmark-file-other-window'        (`C-x 4 j f')
+;;    `icicle-bookmark-gnus-other-window'        (`C-x 4 j g')
+;;    `icicle-bookmark-info-other-window'        (`C-x 4 j i')
+;;    `icicle-bookmark-local-file-other-window'  (`C-x 4 j l')
+;;    `icicle-bookmark-man-other-window'         (`C-x 4 j m')
+;;    `icicle-bookmark-region-other-window'      (`C-x 4 j r')
+;;    `icicle-bookmark-remote-file-other-window' (`C-x 4 j t')
+;;    `icicle-bookmark-w3m-other-window'         (`C-x 4 j w')
 ;;  * `icicle-buffer' (`C-x b') - Trip among buffers.
 ;;  * `icicle-compilation-search' (`C-c `') - Trip among `grep' hits.
 ;;  * `icicle-dired' - Trip among directories in Dired mode.
@@ -5248,7 +5259,7 @@
 ;;    (For Emacs versions before Emacs 22, this feature is available
 ;;    only for completion of absolute file names.)
 ;;
-;;  * `C-x b' (`icicle-bookmark-file-other-window') to visit a
+;;  * `C-x m' (`icicle-bookmark-file-other-window') to visit a
 ;;    bookmarked file or directory.  This is available only if you use
 ;;    library `bookmark+.el'.  It is a multi-command, so you can
 ;;    actually visit any number of file bookmarks.  When finished, you

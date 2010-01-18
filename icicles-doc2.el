@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Dec 25 12:00:42 2009 (-0800)
+;; Last-Updated: Sun Jan 17 18:36:58 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 26132
+;;     Update #: 26137
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5323,6 +5323,13 @@
 ;;  Actually, by default, Icicles binds `icicle-yank-maybe-completing'
 ;;  to whatever the value of option `icicle-yank-function' is.  By
 ;;  default, this value is `yank'.
+;;
+;;  Option `icicle-top-level-key-bindings' remaps not only these
+;;  standard Emacs commands but also some commands provided by other
+;;  libraries.  For example, if you use library `bookmark+.el', then
+;;  type-specific bookmark jump commands such as
+;;  `bookmarkp-dired-jump-other-window' are remapped to Icicles
+;;  multi-command versions.
 ;;
 ;;  Here are some other Icicles commands that you might want to bind
 ;;  to keys in Icicle mode - they are not bound by Icicles (except to

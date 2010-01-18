@@ -25,7 +25,8 @@ The package mon-utils is the entry point which loads the rest of the system and 
 * Lisp:mon-time-utils.el (EbayTime) --
 
 === :MON-STANDARDS ===
-
+* Lisp:mon-cl-compat.el -- This is intendeed to be used as a drop-in replacement for the cl-seq.el When compiling your packages: (eval-when-compile (require 'mon-cl-compat))
+* Lisp:mon-cl-compat-regexps.el -- Provides regular expressions for replacing the symbol-names from the cl-seq.el package with a `cl::' prefix
 * Lisp:mon-empty-registers.el (EmptyRegisters) -- Provides utilities for filling/emptying register locations en masse. Also provides interactive tools for register centric coercion, manipulation, roundtripping of chars, strings, etc.
 * Lisp:mon-hash-utils.el -- Provides a collection of procedures to extend Emacs lisp hash table functionality.
 * Lisp:mon-rename-image-utils.el (RenameImageUtils) -- Provides utility functions for working with images and EmacsImageManipulation.

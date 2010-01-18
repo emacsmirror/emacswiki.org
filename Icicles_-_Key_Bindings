@@ -125,6 +125,16 @@ by '''Icicles''' commands:
 [:icicle-bookmark]
 [:icicle-bookmark-cmd]
 [:icicle-bookmark-other-window]
+[:icicle-bookmark-dired-other-window]
+[:icicle-bookmark-file-other-window]
+[:icicle-bookmark-gnus-other-window]
+[:icicle-bookmark-info-other-window]
+[:icicle-bookmark-local-file-other-window]
+[:icicle-bookmark-man-other-window]
+[:icicle-bookmark-non-file-other-window]
+[:icicle-bookmark-region-other-window]
+[:icicle-bookmark-remote-file-other-window]
+[:icicle-bookmark-w3m-other-window]
 [:icicle-buffer]
 [:icicle-buffer-other-window]
 [:icicle-dabbrev-completion]
@@ -189,6 +199,12 @@ by '''Icicles''' commands:
 Actually, by default, '''Icicles''' binds `icicle-yank-maybe-completing'
 to whatever the value of option '''`<tt>[[Icicles - Customization and General Tips#icicle-yank-function|icicle-yank-function]]</tt>'''' is.  By
 default, this value is `yank'.
+
+Option `icicle-top-level-key-bindings' remaps not only these standard
+Emacs commands but also some commands provided by other libraries.
+For example, if you use library <tt>[[bookmark+.el]]</tt>, then type-specific
+bookmark jump commands such as `bookmarkp-dired-jump-other-window'
+are remapped to '''Icicles''' multi-command versions.
 
 Here are some other '''Icicles''' commands that you might want to bind
 to keys in ''Icicle'' mode -- they are ''not'' bound by '''Icicles''' (except to menu items):

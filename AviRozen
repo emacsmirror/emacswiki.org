@@ -24,5 +24,11 @@ Welcome to the wiki! -- DrewAdams
 
 [new:rubikitch:2010-01-17 10:48 UTC]
 Does grep-a-lot handle igrep.el? -- [[rubikitch]]
+
+[new:AviRozen:2010-01-17 12:47 UTC]
+Fixed (please add <tt>(grep-a-lot-advise igrep)</tt> and verify) -- AviRozen
+
+[new:rubikitch:2010-01-18 12:43 UTC]
+Works fine!! Thanks -- [[rubikitch]]
 ----
 CategoryHomepage

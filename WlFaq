@@ -10,6 +10,19 @@ Add the following to your ##.wl## file:
 
 In the folder manager, close the access group, then use ##C-u <RET>## to open it again. Wanderlust will scan the access group for new folders.
 
+== How can I get WL's mail composition mode to do completion from aliases in my ~/.mailrc file? ==
+
+In your .wl:
+
+{{{
+;; Use ~/.mailrc
+(setq wl-address-init-function 'my-wl-address-init)
+(defun my-wl-address-init ()
+  (wl-local-address-init)
+  (setq wl-address-completion-list
+        (append wl-address-completion-list (build-mail-aliases))))
+}}}
+
 == Offline ==
 
 === How do I force Wanderlust to pre-fetch all messages in a folder for offline access? ==

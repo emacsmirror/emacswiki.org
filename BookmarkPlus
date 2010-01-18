@@ -114,13 +114,74 @@ other bookmarks.
 
 
 
+
+=== Type-Specific Jump Commands ===
+
+* When you want to jump to a bookmark of a specific type (e.g. Dired), you can use a command that offers only such bookmarks as candidates.
+
+
+
+
+
 [:Icicles]
 === Synergy with Icicles. ===
 
 If you use '''[[Icicles]]''', then you can use `S-delete' during
-     completion for a bookmark name, to delete selected bookmarks on the fly.  You can delete any number of bookmarks this way, during a single invocation of a bookmark command. In addition, '''Icicles''' provides enhanced
-bookmark visiting and definition. See command '''`icicle-bookmark''''.
+     [[completion]] for a bookmark name, to delete selected bookmarks on the fly.  You can delete any number of bookmarks this way, during a single invocation of a bookmark command.
 
+In addition, '''Icicles''' provides enhanced
+bookmark visiting and setting.  In ''Icicle'' mode, several of the '''Bookmark+''' keys are remapped to corresponding '''Icicles''' [[multi-command]]s.
+
+
+
+
+
+
+[:TypeSpecificJumpCommands]
+== Different Types of Jump Commands ==
+
+When you jump to a bookmark, you can use completion to specify the
+bookmark name.  With '''Bookmark+''' you can easily have a large number
+of bookmarks.  If you want to jump to a bookmark of a specific
+type, such as Info, you can use a '''Bookmark+''' command that is
+specific to bookmarks of that type: only those bookmarks are
+completion candidates.
+
+Commands '''`bookmarkp-jump-to-type'''' and
+'''`bookmarkp-jump-to-type-other-window'''' prompt you first for the
+type of bookmark you want to jump to, then for a bookmark of that
+type (only).
+
+In addition to these general commands, there are type-specific
+commands: `##bookmarkp-##<tt>__dired__</tt>##-jump##', `##bookmarkp-##<tt>__info__</tt>##-jump##', and so
+on.  Such commands are bound to keys that have the prefix '''`C-x j''''.
+`bookmarkp-dired-jump' is bound to `##C-x j## <tt>__d__</tt>',
+`bookmarkp-info-jump' to `##C-x j## <tt>__i__</tt>', and so on.
+
+There is an other-window version of each such command, and it is
+bound to the same key, except the prefix is '''`C-x 4 j'''', not `C-x j'.  for instance, `bookmarkp-dired-jump-other-window' is bound to
+`C-x 4 j d'.
+
+These bindings round out the jump-command prefix keys:
+
+  C-x j j    - bookmark-jump
+  C-x j :    - bookmarkp-jump-to-type
+
+  C-x 4 j j  - bookmark-jump-other-window
+  C-x 4 j :  - bookmarkp-jump-to-type-other-window
+
+The `C-x j' and `C-x 4 j' bindings are global.  In addition, in some modes '''`j'''' is
+bound to the corresponding type-specific jump command.  For
+example, in Info mode, `j' is bound to `bookmarkp-info-jump'.
+(Dired is an exception here: '''`J'''' is used instead of `j', since `j'
+is already taken for `dired-goto-file'.)  These commands are also
+added to the mode's menu-bar menu.
+
+In Dired mode, '''`C-j'''' is bound to a special Dired-specific jump
+command, `bookmarkp-dired-jump-current', whose destinations all
+use the current Dired directory.  The aim of `C-j' is not to
+change directories but to change to a different set of markings or
+switches for the same directory.
 
 
 

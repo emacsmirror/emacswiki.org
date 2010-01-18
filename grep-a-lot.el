@@ -1,10 +1,10 @@
 ;;; grep-a-lot.el --- manages multiple search results buffers for grep.el
 
-;; Copyright (C) 2008 Avi Rozen
+;; Copyright (C) 2008, 2009 Avi Rozen
 
 ;; Author: Avi Rozen <avi.rozen@gmail.com>
 ;; Keywords: tools, convenience, search
-;; Version: %Id: 4%
+;; Version: %Id: 5%
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -41,6 +41,8 @@
 ;; 2. Add the following to your ~/.emacs:
 ;;    (require 'grep-a-lot)
 ;;    (grep-a-lot-setup-keys)
+;; 3. If you're using igrep.el you may want to add:
+;;    (grep-a-lot-advise igrep)
 ;;
 ;; Currently, there are no customization options.
 ;;    
@@ -108,7 +110,7 @@ With REVERSE non-nil the sort order is reversed."
         (if (grep-a-lot-buffer-p buffer)
             (setq buffers (append buffers (list buffer))))
         (setq all-buffers (cdr all-buffers))))
-    ;; sort buffers by name
+    ;; sort buffers
     (sort buffers (lambda (a b)
                     (let ((pos-a (grep-a-lot-buffer-position (buffer-name a)))
                           (pos-b (grep-a-lot-buffer-position (buffer-name b))))
@@ -182,7 +184,7 @@ Return -1 if NAME is does not match `grep-a-lot-buffer-name-regexp'."
 
 (defun grep-a-lot-buffer-name-function (name)
   "Set current grep search results buffer name."
-  (when (string-equal name "grep")
+  (when (string-match "^i?grep$" name)
     (grep-a-lot-buffer-name (1+ (grep-a-lot-buffer-position (buffer-name (grep-a-lot-last-buffer)))))))
 
 (defun grep-a-lot-kill-buffer-hook ()

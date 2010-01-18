@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Dec 25 12:01:05 2009 (-0800)
+;; Last-Updated: Sun Jan 17 17:47:20 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 3426
+;;     Update #: 3442
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -561,6 +561,19 @@ whatever OLD is bound to in MAP, or in OLDMAP, if provided."
     (insert-buffer                  icicle-insert-buffer            t)
     (find-file                      icicle-file                     t) ; `C-x C-f'
     (find-file-other-window         icicle-file-other-window        t) ; `C-x 4 f'
+    (bookmarkp-dired-jump-other-window  icicle-bookmark-dired-other-window  t) ; `C-x 4 j d'
+    (bookmarkp-file-jump-other-window   icicle-bookmark-file-other-window  t) ; `C-x 4 j f'
+    (bookmarkp-gnus-jump-other-window   icicle-bookmark-gnus-other-window  t) ; `C-x 4 j g'
+    (bookmarkp-info-jump-other-window   icicle-bookmark-info-other-window  t) ; `C-x 4 j i'
+    (bookmarkp-man-jump-other-window    icicle-bookmark-man-other-window  t) ; `C-x 4 j m'
+    (bookmarkp-region-jump-other-window icicle-bookmark-region-other-window  t) ; `C-x 4 j r'
+    (bookmarkp-w3m-jump-other-window    icicle-bookmark-w3m-other-window  t) ; `C-x 4 j w'
+    (bookmarkp-non-file-jump-other-window
+     icicle-bookmark-non-file-other-window  t) ; `C-x 4 j b'
+    (bookmarkp-local-file-jump-other-window
+     icicle-bookmark-local-file-other-window  t) ; `C-x 4 j l'
+    (bookmarkp-remote-file-jump-other-window
+     icicle-bookmark-remote-file-other-window  t) ; `C-x 4 j t'
     (bookmark-set                   icicle-bookmark-cmd             t) ; `C-x r m'
     (bookmark-jump                  icicle-bookmark                 t) ; `C-x r b'
     (bookmark-jump-other-window     icicle-bookmark-other-window    t)

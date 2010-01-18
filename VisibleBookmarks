@@ -27,6 +27,8 @@ Yes, very nice. I use it differently from ##bookmark.el##, not more or less. In 
 [new]
 I have written an extension for this that adds a listing of all bookmarks in all buffers. See here: [[bm-ext.el]]  -- [[DanMcKinley]
 
+ATM, bm.el contains `bm-show-all' and claims to since version 1.34 -- there is even acknowledgement of DanMcKinley's work from [[bm-ext.el]].  AFAICT, [[bm-ext.el]] is no longer necessary from a functional perspective. -- Anonymous
+
 [new:TomFeist:2009-10-20 20:19 UTC]
 If you want to be able to toggle bookmarks by clicking in the fringe, this works for me:
 <pre>
