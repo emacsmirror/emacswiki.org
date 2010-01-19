@@ -1,17 +1,17 @@
 Cette page est aussi disponible en français: Français:CatégorieOutilsDuProgrammeur
 
-Click the heading title to list all pages with information
+This page collects tools that help programmers be more
+productive with programs written in languages such as C,
+C++, and Java. Click the page heading to list all pages with information
 related to utilities for programming.  
 
-This is an attempt to collect tools that help programmers be more
-productive in dealing with programs written in languages such as C,
-C++, or Java.  
+
 
 '''For EmacsLisp coding support, see 
 CategoryCode.'''  More general Emacs programming
 information is at CategoryProgramming. Debugging tools are listed in CategoryDebug.
 
-If you are looking for an interface to some external utility not
+If you are looking for an interface to an external utility not
 directly related to programming, see CategoryExternalUtilities
 instead.
 
@@ -19,79 +19,81 @@ See also CategoryVersionControl.
 
 Compiling:
 
-* AntCall -- run ant from a buffer
+* AntCall -- Run `ant' from a buffer.
 * CompilationMode
-* CompileCommand -- cutomizations to the `compile-command' variable
+* CompileCommand -- `compile-command' customizations.
 ** UsingMakefileFromParentDirectory
-* CompileInsideScratchbox run emacs outside, but compile inside scratchbox
-** CreatingYourOwnCompileErrorRegexp
-** Lisp:compile-.el and Lisp:compile+.el -- enhancements to <code>compile.el</code>.
-* FlyMake -- runs make on the fly, highlights errors/warnings in source buffer
-* ModeCompile -- another better `compile'
-* SmartCompile -- a better `compile'
+* <tt>[[compile-.el]]</tt>, <tt>[[compile+.el]]</tt> -- Enhancements to standard library ##compile.el##.
+* `compile' command enhancements
+** ModeCompile
+** SmartCompile
+* CompileInsideScratchbox - Run Emacs outside scratchbox, but compile inside scratchbox.
+* CreatingYourOwnCompileErrorRegexp
+* FlyMake -- Run `make' on the fly, highlighting errors/warnings in source buffer.
 
 Interpreted files:
 * MakingScriptsExecutableOnSave
 
 Documenting code:
 
-* ArScanner -- help free software developers to manage author rights and licenses
-* DoxyMacs -- a documentation system for C and C++
-* JavadocHelp -- Search a Java class through multiple online and local javadocs
-* JdeDocIndex -- Native Javadoc integration for the Emacs JDE
-* SemanticRecoder -- Includes a smart comment writer, and texinfo code generation.
-* TexiDoclet -- generate Java documentation in Info format
+* ArScanner -- Help free-software developers manage author rights and licenses.
+* DoxyMacs -- Documentation system for C and C++.
+* JavadocHelp -- Search a Java class through multiple online and local javadocs.
+* JdeDocIndex -- Native Javadoc integration for the Emacs JDE.
+* SemanticRecoder -- Smart comment writer and texinfo code generator.
+* TexiDoclet -- Generate Java documentation in [[Info]] format.
 
 Code navigation and hints:
 
-* CScopeAndEmacs -- quickly look up where a symbol is defined, where it is called, and so on
-* EevMode -- EmacsLisp hyperlinks helps us navigate source codes.
-* Emacs tags -- record and locate identifier definitions in source files based on a [[tags file]]
-** overview: EmacsTags (etags)
-** building tags files
-*** BuildTags -- more information on how to create these files
-*** ExuberantCtags (ctags) -- supports more languages and editors than etags
-** navigating to tags (definitions)
-*** [[Icicles - Tags Enhancements]] -- find or browse tags from all tags files (including multiple matches for a tag)
-*** EtagsSelect -- select from multiple matches to a tag
-*** EctagsSelect -- an etags replacement that uses ExuberantCtags and eldoc to good effect
-*** EtagsStack -- Navigate the tags stack
-*** EtagsTable -- Set the tags-table-list based on the current file
-* GnuGlobal -- database of code identifiers and tags
-* GonzuiForEmacs -- emacs interface of gonzui, a source code search engine.
-* IdeBridge -- code completion, refactoring, compilation for C# (only available on win32 now).
-* IdUtils -- database of code identifiers
-* ImenuMode -- move quickly among definitions of functions, macros, classes, types, whatever
-** [[Icicles - Other Search Commands#IciclesImenu|Icicles Imenu]] -- Imenu with regexp [[Completion]], and, like EmacsTags, works across multiple buffers, files, and saved regions
-* SimpleCallTree -- returns a call-tree data structure saying which function calls which function using Emacs's font highlighting of functions
-* XreFactory -- proprietary tool which claims to provide code completion, source browsing and refactoring.
+* CScopeAndEmacs -- Look up where a symbol is defined, called, and so on.
+* EevMode -- EmacsLisp hyperlinks that help navigate source code.
+* Emacs tags -- Record and locate identifier definitions in source files based on a [[tags file]].
+** Overview: EmacsTags (etags)
+** Building tags files
+*** BuildTags -- How to create them.
+*** ExuberantCtags (ctags) -- Support for more languages and editors than etags.
+** Navigating to tags (definitions)
+*** [[Icicles - Tags Enhancements]] -- Find or browse tags from all tags files (including multiple matches for a tag).
+*** EtagsSelect -- Select from multiple matches to a tag.
+*** EctagsSelect -- Etags replacement that uses ExuberantCtags and eldoc.
+*** EtagsStack -- Navigate the tags stack.
+*** EtagsTable -- Set the tags-table-list based on the current file.
+* GnuGlobal -- Database of code identifiers and tags.
+* GonzuiForEmacs -- Emacs interface of `gonzui', a source code search engine.
+* IdeBridge -- Code completion, refactoring, and compilation for C# (only available on win32 now).
+* IdUtils -- Database of code identifiers.
+* ImenuMode -- Move quickly among definitions of functions, macros, classes, types, whatever.
+** [[Icicles - Other Search Commands#IciclesImenu|Icicles Imenu]] -- Imenu with [[regexp]] [[completion]]. Like EmacsTags, works across multiple buffers, files, and saved regions.
+* SimpleCallTree -- A call-tree data structure that says which function calls which function. Highlights functions.
+* XreFactory -- Code completion, source browsing, and code refactoring.
 
 File changes:
 
-* DiffMode -- inspect, edit and apply diffs
-* EdiffMode -- interactively diffs, merges and patches.
-* EdiffTrees -- recursively uses EdiffMode for two variants of a directory tree
-* EdiffUrl -- comparing buffer to a web url.
-* EmergeDiff -- graphical interface to "diff"
+* DiffMode -- Inspect, edit and apply diffs.
+* EdiffMode -- Interactively diff, merge, and patch.
+* EdiffTrees -- Recursively use EdiffMode for two variants of a directory tree.
+* EdiffUrl -- Compare buffer to a web URL.
+* EmergeDiff -- Graphical interface to `diff'.
 
 [:ProjectSupport]
-Projects (code) -- creating and managing:
+Projects (code) -- Creating and managing:
 
+* BookmarkPlus -- Tag project files a la [[http://delicious.com|del.icio.us]]; save/restore Dired states (markings, expanded subdirs).
 * CollectionOfEmacsDevelopmentEnvironmentTools (CEDET)
-* DiredMode -- operate on project files
+* DiredMode -- Operate on project files.
 ** [[GrepMode#GrepOnlyMarkedFiles|grep only marked files in Dired]] -- search project files
 * [[ELPA]]
 * EmacsCodeBrowser (ECB)
-* [[eproject]] - project workspaces for emacs
+* [[eproject]] - Project workspaces for Emacs.
 * EtaskMode
 * FindFileInProject
 * [[Icicles - Support for Projects]]
 * IdeSkel
 * JavaDevelopmentEnvironment
-* [http://www.littleredbat.net/mk/code/mk-project.html mk-project] --  Quickly switch between projects and perform operations on a per-project basis
+* [http://www.littleredbat.net/mk/code/mk-project.html mk-project] --  Quickly switch between projects and perform operations on a per-project basis.
 * MultiTerm
-* [[Profiles]] - Non-invasive user settings common to multiple projects
-* ProjectBufferMode -- generic mode to handle projects
+* [[Profiles]] - Non-invasive user settings common to multiple projects.
+* ProjectBufferMode -- Generic mode to handle projects.
 * ProjectLocalVariables
 * [http://www.shellarchive.co.uk/content/lisp/project-root.el project-root.el]
 * ProjectSettings
@@ -99,24 +101,23 @@ Projects (code) -- creating and managing:
 * ProjmanMode
 * SimpleProjectManagment
 * SrSpeedbar
-* [http://www.ozymandias.dk/emacs/emacs.html#vps vps] Projects as directory sets (by VagnJohansen)
+* [http://www.ozymandias.dk/emacs/emacs.html#vps vps] Projects as directory sets (by VagnJohansen).
 
 Package management and installers:
 
-* PortageMode -- Search and install Gentoo packages -- Also see EmacsForGentoo
+* PortageMode -- Search and install Gentoo packages -- see also EmacsForGentoo.
 * RpmSpecMode -- Edit SPEC files for building RPMs.
-* WajigMode -- An interface for wajig
+* WajigMode -- An interface for wajig.
 
 Related tools and information:
 
-* AsciiMode -- displays ASCII code
+* AsciiMode -- Display ASCII code.
 * AsciiTable and EbcdicTable -- Display charts of characters and their codes for reference purposes.
-* CodeBeautifying -- reindents code and rewraps comments.
-* ConnectedGraphEditor (COGRE) -- a base library for editing and manipulating connected graphs
-* EmacsPmd - Java source code analyzer
-* GprofMode - Add hyperlinks to output files of the GNU profiler
+* CodeBeautifying -- Reindent code and rewrap comments.
+* ConnectedGraphEditor (COGRE) -- Edit and manipulate connected graphs.
+* EmacsPmd - Analyze Java source code.
+* GprofMode - Add hyperlinks to output files of the GNU profiler.
 * PopupRuler -- Measure strings report layouts etc. in source files.
-* PrettyLambda -- a way to use a lambda character in scheme-mode
-* RemoteProgramDevelopment -- editing and running code on a remote host
-* Lisp:vhdl-goto-def.el and Lisp:vhdl-process-wave.el -- some stuff for vhdl coders.
+* RemoteProgramDevelopment -- Edit and run code on a remote host.
+* <tt>[[vhdl-goto-def.el]]</tt>, <tt>[[vhdl-process-wave.el]]</tt> -- For VHDL coders.
 

@@ -95,7 +95,7 @@ individual bookmark you point to.
 === Additional types of bookmarks. ===
 
 * You can bookmark a [[DiredMode|Dired]] buffer, recording and restoring its
-     switches and which files are marked.
+     switches, which files are marked, which subdirectories are inserted, and which (sub)directories are hidden.
 
 * You can bookmark a [[buffer]] that is not associated with a file. 
 
@@ -180,8 +180,8 @@ added to the mode's menu-bar menu.
 In Dired mode, '''`C-j'''' is bound to a special Dired-specific jump
 command, `bookmarkp-dired-jump-current', whose destinations all
 use the current Dired directory.  The aim of `C-j' is not to
-change directories but to change to a different set of markings or
-switches for the same directory.
+change directories but to change to a different set of markings,
+switches, inserted subdirectories, or hidden subdirectories for the same Dired directory.
 
 
 
@@ -240,7 +240,8 @@ kind -- nothing more.
 A given type of bookmark is defined by its handler function,
 which really could do anything you like.  We've already seen the
 examples of region bookmarks, which restore the active region, and
-Dired bookmarks, which restore a set of Dired markings.
+Dired bookmarks, which restore a set of Dired markings, switches,
+inserted subdirectories, and hidden (sub)directories.
 
 A '''function bookmark''' simply invokes some function -- any function.
 You can, for instance, define a window or frame configuration and
@@ -787,7 +788,9 @@ Bottom line: Use '''Bookmark+''' to access bookmarks created using
 
 
 ----
-CategoryHypermedia CategoryPersistence CategoryProgramming CategoryRegion
+CategoryHypermedia CategoryPersistence 
+CategoryProgramming CategoryRegion
+CategoryProgrammerUtils
 
 
 

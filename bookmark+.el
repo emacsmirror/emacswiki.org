@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Jan 17 18:21:15 2010 (-0800)
+;; Last-Updated: Mon Jan 18 17:28:00 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 8737
+;;     Update #: 8839
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -236,7 +236,8 @@
 ;;    `bookmarkp-bookmark-last-access-cp',
 ;;    `bookmarkp-buffer-last-access-cp', `bookmarkp-cp-not',
 ;;    `bookmarkp-current-sort-order', `bookmarkp-dired-alist-only',
-;;    `bookmarkp-dired-bookmark-p', `bookmarkp-edit-bookmark',
+;;    `bookmarkp-dired-bookmark-p', `bookmarkp-dired-subdirs',
+;;    `bookmarkp-edit-bookmark',
 ;;    `bookmarkp-end-position-post-context',
 ;;    `bookmarkp-end-position-pre-context', `bookmarkp-face-prop',
 ;;    `bookmarkp-file-alist-only', `bookmarkp-file-alpha-cp',
@@ -469,7 +470,8 @@
 ;;  * Additional types of bookmarks.
 ;;
 ;;     - You can bookmark a Dired buffer, recording and restoring its
-;;       switches and which files are marked.
+;;       switches, which files are marked, which subdirectories
+;;       are inserted, and which (sub)directories are hidden.
 ;;
 ;;     - You can bookmark a buffer that is not associated with a file.
 ;;
@@ -550,8 +552,9 @@
 ;;  In Dired mode, `C-j' is bound to a special Dired-specific jump
 ;;  command, `bookmarkp-dired-jump-current', whose destinations all
 ;;  use the current Dired directory.  The aim of `C-j' is not to
-;;  change directories but to change to a different set of markings or
-;;  switches for the same directory.
+;;  change directories but to change to a different set of markings,
+;;  switches, inserted subdirectories, or hidden subdirectories for
+;;  the same Dired directory.
 ;;
 ;;
 ;;(@* "Bookmark Tags")
@@ -604,7 +607,8 @@
 ;;  A given type of bookmark is defined by its handler function, which
 ;;  really could do anything you like.  We've already seen the
 ;;  examples of region bookmarks, which restore the active region, and
-;;  Dired bookmarks, which restore a set of Dired markings.
+;;  Dired bookmarks, which restore a set of Dired markings, switches,
+;;  inserted subdirectories, and hidden (sub)directories.
 ;;
 ;;  A "function bookmark" simply invokes some function - any function.
 ;;  You can, for instance, define a window or frame configuration and
@@ -1120,6 +1124,10 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2010/01/18 dadams
+;;     Added: bookmarkp-dired-subdirs.
+;;     bookmarkp-make-dired-record, bookmarkp-jump-dired: Handle inserted and hidden dirs.
+;;     bookmarkp-jump-dired: Use expand-file-name, not concat.
 ;; 2010/01/17 dadams
 ;;     Added:
 ;;       bookmarkp-jump(-other-window)-map, bookmarkp-jump-1, bookmark-all-names (redefined),
@@ -2869,7 +2877,7 @@ candidate."
 ;;;###autoload
 (defun bookmark-jump-other-window (bookmark-name &optional use-region-p) ; `C-x p o'
   "Jump to the bookmark named BOOKMARK-NAME, in another window.
-See `bookmark-jump'."
+See `bookmark-jump', in particular for info about using a prefix arg."
   (interactive (list (bookmark-completing-read "Jump to bookmark (in another window)"
                                                (bookmarkp-default-bookmark-name))
                      current-prefix-arg))
@@ -6591,15 +6599,34 @@ BOOKMARK is a bookmark name or a bookmark record."
 
 (defun bookmarkp-make-dired-record ()
   "Create and return a Dired bookmark record."
-  (let ((dir     (expand-file-name (if (consp dired-directory)
-                                       (car dired-directory)
-                                     dired-directory)))
-        (mfiles  (dired-get-marked-files 'relative nil nil 'distinguish-one-marked)))
-    (when (null (cadr mfiles))  (setq mfiles nil)) ; Don't count unmarked current file.
-    `(,dir
-      ,@(bookmark-make-record-default 'point-only)
-      (filename . ,dir) (dired-marked . ,mfiles) (dired-switches . ,dired-actual-switches)
-      (handler . bookmarkp-jump-dired))))
+  (let ((hidden-dirs  (save-excursion (dired-remember-hidden))))
+    (unwind-protect
+         (let ((dir      (expand-file-name (if (consp dired-directory)
+                                               (file-name-directory (car dired-directory))
+                                             dired-directory)))
+               (subdirs  (bookmarkp-dired-subdirs))
+               (mfiles   (mapcar #'(lambda (mm) (car mm))
+                                 (dired-remember-marks (point-min) (point-max)))))
+           `(,dir
+             ,@(bookmark-make-record-default 'point-only)
+             (filename . ,dir) (dired-directory . ,dired-directory)
+             (dired-marked . ,mfiles) (dired-switches . ,dired-actual-switches)
+             (dired-subdirs . ,subdirs) (dired-hidden-dirs . ,hidden-dirs)
+             (handler . bookmarkp-jump-dired)))
+      (save-excursion			; Hide subdirs that were hidden.
+        (mapcar #'(lambda (dir) (when (dired-goto-subdir dir) (dired-hide-subdir 1)))
+                hidden-dirs)))))
+
+(defun bookmarkp-dired-subdirs ()
+  "Alist of inserted subdirectories, without their positions (markers).
+This is like `dired-subdir-alist' but without the top-level dir and
+without subdir positions (markers)."
+  (interactive)
+  (let ((subdir-alist      (cdr (reverse dired-subdir-alist))) ; Remove top.
+        (subdirs-wo-posns  ()))
+    (dolist (sub  subdir-alist)
+      (push (list (car sub)) subdirs-wo-posns))
+    subdirs-wo-posns))
 
 (add-hook 'dired-mode-hook #'(lambda () (set (make-local-variable 'bookmark-make-record-function)
                                              'bookmarkp-make-dired-record)))
@@ -6608,12 +6635,18 @@ BOOKMARK is a bookmark name or a bookmark record."
   "Jump to Dired bookmark BOOKMARK.
 BOOKMARK is a bookmark name or a bookmark record.
 Handler function for record returned by `bookmarkp-make-dired-record'."
-  (let ((dir       (bookmark-get-filename bookmark))
-        (mfiles    (bookmark-prop-get bookmark 'dired-marked))
-        (switches  (bookmark-prop-get bookmark 'dired-switches)))
+  (let ((dir          (bookmark-prop-get bookmark 'dired-directory))
+        (mfiles       (bookmark-prop-get bookmark 'dired-marked))
+        (switches     (bookmark-prop-get bookmark 'dired-switches))
+        (subdirs      (bookmark-prop-get bookmark 'dired-subdirs))
+        (hidden-dirs  (bookmark-prop-get bookmark 'dired-hidden-dirs)))
     (dired dir switches)
     (let ((inhibit-read-only  t))
-      (dired-mark-remembered (mapcar #'(lambda (mf) (cons (concat dir mf) 42)) mfiles)))
+      (dired-insert-old-subdirs subdirs)
+      (dired-mark-remembered (mapcar #'(lambda (mf) (cons (expand-file-name mf dir) 42)) mfiles))
+      (save-excursion (mapcar #'(lambda (dir)
+                                  (when (dired-goto-subdir dir) (dired-hide-subdir 1)))
+                              hidden-dirs)))
     (goto-char (bookmark-get-position bookmark))))
 
 (defun bookmarkp-read-bookmark-for-type (type alist &optional other-win pred)
@@ -6630,7 +6663,8 @@ PRED is a predicate used for completion."
 ;;;###autoload
 (defun bookmarkp-jump-to-type (bookmark-name &optional use-region-p)
   "Jump to a bookmark of a given type.  You are prompted for the type.
-Otherwise, this is the same as `bookmark-jump'."
+Otherwise, this is the same as `bookmark-jump' - see that, in
+particular, for info about using a prefix argument."
   (interactive
    (let* ((completion-ignore-case  t)
           (type                    (completing-read
@@ -6646,7 +6680,7 @@ Otherwise, this is the same as `bookmark-jump'."
 ;;;###autoload
 (defun bookmarkp-jump-to-type-other-window (bookmark-name &optional use-region-p)
   "Jump to a bookmark of a given type.  You are prompted for the type.
-Otherwise, this is the same as `bookmark-jump-other-window'."
+See `bookmarkp-jump-to-type'."
   (interactive
    (let* ((completion-ignore-case  t)
           (type                    (completing-read
@@ -6661,21 +6695,26 @@ Otherwise, this is the same as `bookmark-jump-other-window'."
 
 ;;;###autoload
 (defun bookmarkp-dired-jump (bookmark-name &optional use-region-p)
-  "Jump to a Dired bookmark."
+  "Jump to a Dired bookmark.
+This is a specialization of `bookmark-jump' - see that, in particular
+for info about using a prefix argument."
   (interactive (let ((alist  (bookmarkp-dired-alist-only)))
                  (list (bookmarkp-read-bookmark-for-type "Dired " alist) current-prefix-arg)))
   (bookmarkp-jump-1 bookmark-name 'switch-to-buffer use-region-p))
 
 ;;;###autoload
 (defun bookmarkp-dired-jump-other-window (bookmark-name &optional use-region-p)
-  "Jump to a Dired bookmark in another window."
+  "Jump to a Dired bookmark in another window.
+See `bookmarkp-dired-jump'."
   (interactive (let ((alist  (bookmarkp-dired-alist-only)))
                  (list (bookmarkp-read-bookmark-for-type "Dired " alist t) current-prefix-arg)))
   (bookmarkp-jump-1 bookmark-name 'switch-to-buffer-other-window use-region-p))
 
 ;;;###autoload
 (defun bookmarkp-dired-jump-current (bookmark-name &optional use-region-p)
-  "Jump to a Dired bookmark for the current directory."
+  "Jump to a Dired bookmark for the current directory.
+This is a specialization of `bookmark-jump' - see that, in particular
+for info about using a prefix argument."
   (interactive (let ((alist  (bookmarkp-dired-alist-only)))
                  (list (bookmarkp-read-bookmark-for-type
                         "Dired " alist nil
@@ -6687,7 +6726,8 @@ Otherwise, this is the same as `bookmark-jump-other-window'."
 
 ;;;###autoload
 (defun bookmarkp-dired-jump-current-other-window (bookmark-name &optional use-region-p)
-  "Jump to a Dired bookmark for the current directory in another window."
+  "Jump to a Dired bookmark for the current directory in another window.
+See `bookmarkp-dired-jump-current'."
   (interactive (let ((alist  (bookmarkp-dired-alist-only)))
                  (list (bookmarkp-read-bookmark-for-type
                         "Dired " alist t
@@ -6699,56 +6739,68 @@ Otherwise, this is the same as `bookmark-jump-other-window'."
 
 ;;;###autoload
 (defun bookmarkp-file-jump (bookmark-name &optional use-region-p)
-  "Jump to a file or directory bookmark."
+  "Jump to a file or directory bookmark.
+This is a specialization of `bookmark-jump' - see that, in particular
+for info about using a prefix argument."
   (interactive (let ((alist  (bookmarkp-file-alist-only)))
                  (list (bookmarkp-read-bookmark-for-type "file " alist) current-prefix-arg)))
   (bookmarkp-jump-1 bookmark-name 'switch-to-buffer use-region-p))
 
 ;;;###autoload
 (defun bookmarkp-file-jump-other-window (bookmark-name &optional use-region-p)
-  "Jump to a file or directory bookmark in another window."
+  "Jump to a file or directory bookmark in another window.
+See `bookmarkp-file-jump'."
   (interactive (let ((alist  (bookmarkp-file-alist-only)))
                  (list (bookmarkp-read-bookmark-for-type "file " alist t) current-prefix-arg)))
   (bookmarkp-jump-1 bookmark-name 'switch-to-buffer-other-window use-region-p))
 
 ;;;###autoload
 (defun bookmarkp-gnus-jump (bookmark-name &optional use-region-p)
-  "Jump to a Gnus bookmark."
+  "Jump to a Gnus bookmark.
+This is a specialization of `bookmark-jump' - see that, in particular
+for info about using a prefix argument."
   (interactive (let ((alist  (bookmarkp-gnus-alist-only)))
                  (list (bookmarkp-read-bookmark-for-type "Gnus " alist) current-prefix-arg)))
   (bookmarkp-jump-1 bookmark-name 'switch-to-buffer use-region-p))
 
 ;;;###autoload
 (defun bookmarkp-gnus-jump-other-window (bookmark-name &optional use-region-p)
-  "Jump to a Gnus bookmark in another window."
+  "Jump to a Gnus bookmark in another window.
+See `bookmarkp-gnus-jump'."
   (interactive (let ((alist  (bookmarkp-gnus-alist-only)))
                  (list (bookmarkp-read-bookmark-for-type "Gnus " alist t) current-prefix-arg)))
   (bookmarkp-jump-1 bookmark-name 'switch-to-buffer-other-window use-region-p))
 
 ;;;###autoload
 (defun bookmarkp-info-jump (bookmark-name &optional use-region-p)
-  "Jump to an Info bookmark."
+  "Jump to an Info bookmark.
+This is a specialization of `bookmark-jump' - see that, in particular
+for info about using a prefix argument."
   (interactive (let ((alist  (bookmarkp-info-alist-only)))
                  (list (bookmarkp-read-bookmark-for-type "Info " alist) current-prefix-arg)))
   (bookmarkp-jump-1 bookmark-name 'switch-to-buffer use-region-p))
 
 ;;;###autoload
 (defun bookmarkp-info-jump-other-window (bookmark-name &optional use-region-p)
-  "Jump to an Info bookmark in another window."
+  "Jump to an Info bookmark in another window.
+See `bookmarkp-info-jump'."
   (interactive (let ((alist  (bookmarkp-info-alist-only)))
                  (list (bookmarkp-read-bookmark-for-type "Info " alist t) current-prefix-arg)))
   (bookmarkp-jump-1 bookmark-name 'switch-to-buffer-other-window use-region-p))
 
 ;;;###autoload
 (defun bookmarkp-local-file-jump (bookmark-name &optional use-region-p)
-  "Jump to a local file or directory bookmark."
+  "Jump to a local file or directory bookmark.
+This is a specialization of `bookmark-jump' - see that, in particular
+for info about using a prefix argument."
   (interactive (let ((alist  (bookmarkp-local-file-alist-only)))
                  (list (bookmarkp-read-bookmark-for-type "local file " alist) current-prefix-arg)))
   (bookmarkp-jump-1 bookmark-name 'switch-to-buffer use-region-p))
 
 ;;;###autoload
 (defun bookmarkp-local-file-jump-other-window (bookmark-name &optional use-region-p)
-  "Jump to a local file or directory bookmark in another window."
+  "Jump to a local file or directory bookmark in another window.
+See `bookmarkp-local-file-jump'."
   (interactive (let ((alist  (bookmarkp-local-file-alist-only)))
                  (list (bookmarkp-read-bookmark-for-type "local file " alist t)
                        current-prefix-arg)))
@@ -6756,21 +6808,26 @@ Otherwise, this is the same as `bookmark-jump-other-window'."
 
 ;;;###autoload
 (defun bookmarkp-man-jump (bookmark-name &optional use-region-p)
-  "Jump to a `man'-page bookmark."
+  "Jump to a `man'-page bookmark.
+This is a specialization of `bookmark-jump' - see that, in particular
+for info about using a prefix argument."
   (interactive (let ((alist  (bookmarkp-man-alist-only)))
                  (list (bookmarkp-read-bookmark-for-type "`man' " alist) current-prefix-arg)))
   (bookmarkp-jump-1 bookmark-name 'switch-to-buffer use-region-p))
 
 ;;;###autoload
 (defun bookmarkp-man-jump-other-window (bookmark-name &optional use-region-p)
-  "Jump to a `man'-page bookmark in another window."
+  "Jump to a `man'-page bookmark in another window.
+See `bookmarkp-man-jump'."
   (interactive (let ((alist  (bookmarkp-man-alist-only)))
                  (list (bookmarkp-read-bookmark-for-type "`man' " alist t) current-prefix-arg)))
   (bookmarkp-jump-1 bookmark-name 'switch-to-buffer-other-window use-region-p))
 
 ;;;###autoload
 (defun bookmarkp-non-file-jump (bookmark-name &optional use-region-p)
-  "Jump to a non-file (buffer) bookmark."
+  "Jump to a non-file (buffer) bookmark.
+This is a specialization of `bookmark-jump' - see that, in particular
+for info about using a prefix argument."
   (interactive (let ((alist  (bookmarkp-non-file-alist-only)))
                  (list (bookmarkp-read-bookmark-for-type "non-file (buffer) " alist)
                        current-prefix-arg)))
@@ -6778,7 +6835,8 @@ Otherwise, this is the same as `bookmark-jump-other-window'."
 
 ;;;###autoload
 (defun bookmarkp-non-file-jump-other-window (bookmark-name &optional use-region-p)
-  "Jump to a non-file (buffer) bookmark in another window."
+  "Jump to a non-file (buffer) bookmark in another window.
+See `bookmarkp-non-file-jump'."
   (interactive (let ((alist  (bookmarkp-non-file-alist-only)))
                  (list (bookmarkp-read-bookmark-for-type "non-file (buffer) " alist t)
                        current-prefix-arg)))
@@ -6786,26 +6844,31 @@ Otherwise, this is the same as `bookmark-jump-other-window'."
 
 ;;;###autoload
 (defun bookmarkp-region-jump (bookmark-name)
-  "Jump to a region bookmark."
+  "Jump to a region bookmark.
+This is a specialization of `bookmark-jump', but without a prefix arg."
   (interactive (list (bookmarkp-read-bookmark-for-type "region " (bookmarkp-region-alist-only))))
   (bookmarkp-jump-1 bookmark-name 'switch-to-buffer t))
 
 ;;;###autoload
 (defun bookmarkp-region-jump-other-window (bookmark-name)
-  "Jump to a region bookmark in another window."
+  "Jump to a region bookmark in another window.
+See `bookmarkp-region-jump'."
   (interactive (list (bookmarkp-read-bookmark-for-type "region " (bookmarkp-region-alist-only))))
   (bookmarkp-jump-1 bookmark-name 'switch-to-buffer-other-window t))
 
 ;;;###autoload
 (defun bookmarkp-remote-file-jump (bookmark-name &optional use-region-p)
-  "Jump to a remote file or directory bookmark."
+  "Jump to a remote file or directory bookmark.
+This is a specialization of `bookmark-jump' - see that, in particular
+for info about using a prefix argument."
   (interactive (let ((alist  (bookmarkp-remote-file-alist-only)))
                  (list (bookmarkp-read-bookmark-for-type "remote file " alist) current-prefix-arg)))
   (bookmarkp-jump-1 bookmark-name 'switch-to-buffer use-region-p))
 
 ;;;###autoload
 (defun bookmarkp-remote-file-jump-other-window (bookmark-name &optional use-region-p)
-  "Jump to a remote file or directory bookmark in another window."
+  "Jump to a remote file or directory bookmark in another window.
+See `bookmarkp-remote-file-jump'."
   (interactive (let ((alist  (bookmarkp-remote-file-alist-only)))
                  (list (bookmarkp-read-bookmark-for-type "remote file " alist t)
                        current-prefix-arg)))
@@ -6813,14 +6876,17 @@ Otherwise, this is the same as `bookmark-jump-other-window'."
 
 ;;;###autoload
 (defun bookmarkp-w3m-jump (bookmark-name &optional use-region-p)
-  "Jump to a W3M bookmark."
+  "Jump to a W3M bookmark.
+This is a specialization of `bookmark-jump' - see that, in particular
+for info about using a prefix argument."
   (interactive (let ((alist  (bookmarkp-w3m-alist-only)))
                  (list (bookmarkp-read-bookmark-for-type "W3M " alist) current-prefix-arg)))
   (bookmarkp-jump-1 bookmark-name 'switch-to-buffer use-region-p))
 
 ;;;###autoload
 (defun bookmarkp-w3m-jump-other-window (bookmark-name &optional use-region-p)
-  "Jump to an W3M bookmark in another window."
+  "Jump to an W3M bookmark in another window.
+See `bookmarkp-w3m-jump'."
   (interactive (let ((alist  (bookmarkp-w3m-alist-only)))
                  (list (bookmarkp-read-bookmark-for-type "W3M " alist t) current-prefix-arg)))
   (bookmarkp-jump-1 bookmark-name 'switch-to-buffer-other-window use-region-p))

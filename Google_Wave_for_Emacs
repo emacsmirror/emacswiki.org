@@ -2,7 +2,9 @@
 
 === Project Information ===
 
-This project was created by several Google engineers working on this in their 20% time as an open-source project.  Please see the [http://code.google.com/p/wave-client-for-emacs/ wave-client-for-emacs] project page for the official location.
+This open-source project was created by AndrewHyatt, a Google engineer working part-time on it.  Please see the [http://code.google.com/p/wave-client-for-emacs/ wave-client-for-emacs] project page for the official location.
+
+Right now the project is pre-alpha, and has the basic ability to read Waves.
 
 === Pre-project discussion ===
 

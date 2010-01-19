@@ -91,6 +91,10 @@ whatever window configuration you had before compile:
 
 --Lars
 
+--SVarrette
+
+The winner-mode version  is excellent but does not work when ECB is activated. Any hint? 
+
 == LaTeX support for mode-compile ==
 To compile LaTeX with mode-compile does not work out-of-the-box as
 AUCTeX makes the variable compile-command (see CompileCommand) buffer-local and thus

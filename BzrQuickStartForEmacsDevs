@@ -37,7 +37,7 @@ useful if you are making substantial changes to Emacs.
 We start by telling Bazaar who you are. This is used for recording the
 author of the commits:
 
-##bzr whoami "Joe Hacker <joe.hacker@address.org>"##
+: ##bzr whoami "Joe Hacker <joe.hacker@address.org>"##
 
 Now we create a shared repository. A repository is just a place
 where you can store one or more branches, not necessarily related one
@@ -46,7 +46,7 @@ terms of required time and storage) certain operations that you may do
 when you expand your Bazaar usage beyond what is explained here. It is
 a good idea, but not strictly required.
 
-##bzr init-repo --2a emacs/##
+: ##bzr init-repo --2a emacs/##
 
 creates a shared repository in the directory /emacs/. ##--2a## is an storage
 format specification which is the most efficient and modern format
@@ -56,9 +56,8 @@ supported by Bazaar right now and is the default on Bazaar version
 Now we get the source files plus all the history of the branch we work
 on (/trunk/ on this case, which is the CVS mainline):
 
-##cd emacs/##
-
-##bzr checkout URL_TO_UPSTREAM_TRUNK trunk##
+* ##cd emacs/##
+* ##bzr checkout URL_TO_UPSTREAM_TRUNK trunk##
 
 On Bazaar parlance this creates a *bound branch*, also known as a
  *heavyweight checkout*.
@@ -73,42 +72,42 @@ the /trunk/ directory around nor rename it.
 
 === Daily work ===
 
-It is fairly similar to CVS:
+It is fairly similar to CVS.  If you're using the command-line:
 
-##<edit files>##
+* Edit files
+* ##bzr up##
+* ##bzr commit##
 
-##bzr up##
+You can also commit using VC-dir:
 
-##bzr commit##
+* ##M-x vc-dir RET##
+* ##m## (Mark files to commit)
+* ##v##
+* Type log (##C-c C-a## to pull in ChangeLog(s))
+* ##C-c C-c##
 
 If Bazaar complains about conflicts after the update, fix them and use
 
-##bzr resolve <file>##
+: ##bzr resolve <file>##
 
 You can list a series of name files after each command for restricting
 its scope. If omitted, all files are assumed, except in the case of
 ##bzr resolve##, which requires the file names or the switch ##--all##
 for marking all conflicts as resolved.
 
-Before committing, not just the files you are committing but _all_
-your local source files must be up to date with upstream. So if
-somebody else commits to upstream between the ##bzr up## and the ##bzr
-commit## commands, you'll need to ##bzr up## again.
-
 With Bazaar you shouldn't commit the changed files one at a time if
 they belong to the same logical change. So please don't do:
 
-##bzr commit ChangeLog.txt##
-
-##bzr commit lisp/foo.el##
+* ##bzr commit ChangeLog.txt##
+* ##bzr commit lisp/foo.el##
 
 but instead do
 
-##bzr commit lisp/foo.el ChangeLog.txt##
+* ##bzr commit lisp/foo.el ChangeLog.txt##
 
 or just
 
-##bzr commit##
+* ##bzr commit##
 
 if those are the only changed files. This is very important because
 every commit creates a *changeset*, which is a discrete step on the
@@ -117,13 +116,19 @@ well-defined purpose which is completely achieved with the
 corresponding commit as, for instance, "Fix bug #342" or "Implement
 feature Foo".
 
+Before committing, not just the files you are committing but _all_
+your local source files must be up to date with upstream. So if
+somebody else commits to upstream between the ##bzr up## and the ##bzr
+commit## commands, you'll need to ##bzr up## again.
+
+
 
 === More branches ===
 
 If you work on other branches besides /trunk/, just ##cd## into your
 shared repository and
 
-##bzr checkout URL_TO_UPSTREAM_branch_name your_branch_name##
+: ##bzr checkout URL_TO_UPSTREAM_branch_name your_branch_name##
 
 This is one of the operations where having a shared repository helps:
 Bazaar will download only those revisions which are not on /trunk/, so
@@ -140,7 +145,6 @@ what you expect.
 
 VC-Dir works fine with this setup. It doesn't support all features of
 more advanced Bazaar setups, though.
-
 
 === That's it ===
 

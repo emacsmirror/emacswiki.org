@@ -1,8 +1,12 @@
 I use Emacs.. alot.
 
-Here is an elisp major-mode I wrote for composing and sending text messages: Lisp:sms.el
+Here are some libraries I wrote:
 
-and here is a library containing functions for using [CategoryBbdb BBDB] with [[sms.el]]: Lisp:bbdb-sms.el
+==My elisp libraries==
+
+* '''Lisp:sms.el''' -- compose text (SMS) messages 
+* '''Lisp:bbdb-sms.el''' -- integration of [[BBDB]] with [[sms.el]]
+* '''Lisp:erc-babel.el''' -- automatic translation of IRC messages between different (spoken) languages
 
 
 [new:DrewAdams:2009-10-06 06:45 UTC]

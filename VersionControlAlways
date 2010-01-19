@@ -104,7 +104,7 @@ Avoiding complications with an existing VC mode session, is a known flaw with th
 
 [new]
 
-Seems stuiped, but this works for me:
+Seems stupid, but this works for me:
 
     #!/bin/sh
     git-init-db
@@ -142,6 +142,22 @@ I create a git repo in my homedir and put all saved changes into it since I lost
 }}}
 (provide 'my-save)
 
+[new]
+Using WIP branches to save every edit
+
+    ;;save changes into wip shadow branch
+    ;; see http://www.jukie.net/~bart/blog/save-everything-with-git-wip
+    ;; and http://github.com/bartman/git-wip
+    (defun git-wip-wrapper () 
+      (interactive)
+      (shell-command (concat "git-wip save \"WIP from emacs\" --editor -- " (buffer-file-name))))
+    (add-hook 'after-save-hook  'git-wip-wrapper)
+
+Enter git-wip. WIP stands for Work In Progress, and is a term that is 
+commonly used to describe work that is not ready to be shared and is 
+still in progress. This git wip tool manages hidden side branches that 
+live along side every other branch you work on. Any time it's invoked 
+it will commit the state of the working tree to this branch.
 
 ----
 CategoryVersionControl

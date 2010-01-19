@@ -146,6 +146,30 @@ linkd-edit-link-at-point seems not worked. I think follwings is worked. -- [[Sug
 </pre>
 
 ----
+[new:eeeickythump:2010-01-19 19:27 UTC]
+
+A bug in the function 'linkd-match' causes the error "wrong argument symbolp, (some list in your code)" when using lazy-lock font-lock mode.
+Replacing linkd-match with the version below fixes the error:
+
+<pre>
+(defun linkd-match (limit)
+  "Try to read link sexp between point and LIMIT.
+Return non-nil if a link is found.  Set match-data appropriately."
+  (let ((sexp nil))
+    (when (search-forward (concat "(" "@") limit t) (backward-char 2))
+    (let ((begin-point (point)))
+      (condition-case nil (setq sexp (read (current-buffer))) ((error nil)))
+      (when (and (symbolp (car-safe sexp))  ; <-- clause added to prevent feeding non-symbol to 'symbol-name'
+                 (string-match "@.*" (symbol-name (car-safe sexp))))
+        (let ((begin-marker (make-marker))
+              (end-marker (make-marker)))
+          (set-marker begin-marker begin-point)
+          (set-marker end-marker (point))
+          (set-match-data (list begin-marker end-marker)))
+        t))))
+</pre>
+
+----
 
 CategoryHypermedia CategoryModes 
 

@@ -6,7 +6,7 @@ Twit.el is a wrapper library for twitter.com, and a reasonably functional client
 
 Twit.el has a novel updating mechanism that works with AutoInstall:  every time twit.el is updated, I post a message with the twit_el account saying as much.  You can move your point to the text "twit.el" and hit "i", which should start the installation process.
 
-It was originally authored by TheronTlax. H Durer, and JonathanArkell have also made contributions.  Currently Jonathan Arkell is working with it.  The most recent version is posted to the wiki.  When Jonathan updates twit.el (or any other elisp library), he usually tweets about it, so feel free to follow him (http://www.twitter.com/jonnay).  You can also follow http://www.twitter.com/twit_el for a low-traffic announce only, when new verions are up.
+It was originally authored by TheronTlax. H Durer, DaveKerschner, and JonathanArkell have also made contributions.  Currently Jonathan Arkell is working with it.  The most recent version is posted to the wiki.  When Jonathan updates twit.el (or any other elisp library), he usually tweets about it, so feel free to follow him (http://www.twitter.com/jonnay).  You can also follow http://www.twitter.com/twit_el for a low-traffic announce only, when new verions are up.
 
 Additionally if you see something you want to add, or fix, feel free to change it and upload it to the wiki.  Just make sure to increment the version number, and mention in the changelog what you did.
 
@@ -288,7 +288,7 @@ Here's a proposal for a function to get *all* the followers, not just the maximu
 
 }}}
 [new:DaveKerschner:2010-01-16 04:43 UTC]
-I just added support for new style retweets. I also made a git repo (link above). I'd strongly suggest we start using git instead of manual version tracking on the wiki. Manual version control is just painful.
+I just added support for new style retweets. I also made a git repo (link above). I'd strongly suggest we start using git instead of manual version tracking on the wiki. Manual version control is just painful. -- DaveKerschner
 ----
 [new]
 FEATURE REQUESTS:

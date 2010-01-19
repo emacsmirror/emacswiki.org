@@ -17,6 +17,7 @@ vim-mode currently supports the following aspects:
 * character-wise, line-wise and block visual-mode
 * changable key-bindings
 * framework for easy definition of new commands and motions
+* basic ex-mode (only latest revision)
 
 == TODO ==
 
@@ -24,8 +25,8 @@ The following aspects are currently not implemented, but should be in future:
 
 * marks
 * registers
-* ex-mode
 * most of the text-object motions
+* some ex-mode stuff (search/substitude)
 * ...
 
 == Downloads ==
@@ -37,191 +38,6 @@ vim-mode is available from the bitbucket repository.
 Archives can be downloaded from
 
 [http://bitbucket.org/lyro/vim-mode/downloads http://bitbucket.org/lyro/vim-mode/downloads]
-
-----
-
-[new]
-Does this build on ViperMode, the current vi emulator in Emacs?
-
-[new]
-No, this is a new implementation from scratch. 
-
--- Frank
-
-[new]
-What is the reason for that? What did you miss?
-
-Enhancing the already very good ViperMode might save people a lot of work. Introducing another vi-emulator is in it self a possible burden. Just think of the work needed to merge what you already have done with the existing vi-emulators in Emacs.
-
-[new]
-I missed visual mode, repeating didn't work as I expected, no text objects and some other things. I looked at ViperMode's code to find out how I could add those features, but I failed. I looked at Vimpulse, but it seems to me extending ViperMode is not that easy. Propably I'm just too stupid to understand the code, so for me it was easier to start from scratch. And I do it just for fun, so it's no burden to me. I don't know how to merge ViperMode and VimMode, and, in fact, I don't care. If someone likes ViperMode or ViperMode + Vimpulse -- very good. Both are great, so just use them. I prefer VimMode, that's all. 
-
--- Frank
-
-[new]
-Yes, you can of course not do anything you do not think is fun. I am however trying to understand what you are missing and if it is easy to add:
-
-* Visual mode: You can of course just mark the visible region and use "dr" to cut it. I guess that is why no one has taken the trouble to implement vim's visual mode. (Doing that looks rather simple however.)
-
-* Repeating: Please explain more.
-
-* Text objects: Emacs seems to have what you want, but I guess you want some other way to access text objects. How?
-
-* Other things: I am curious.
-
--- LennartBorgman
-
-[new]
-It took me some time to understand your first sentence (and I'm still not sure). I won't answer ;)
-
-* Visual mode: The region in Emacs is not the same as in vim. In Emacs, the character at (point) is excluded while in vim it's included. This leads to problems when you want to select the last character in a line, since vim (and viper) does not allow to move the cursor behind the last character. Furthermore there are line-wise and block visual mode. They have the same problems and commands need to distinguish between them. And I missed the nice feature of inserting/appending in block visual mode.
-
-* Repeating: Repeating (especially of insertion) seems to work by measurement of the difference between the start point of the insertion and the end point. This leads to problems with packages that automatically insert some characters behind the end point (e.g. electric braces in c-mode ...).
-
-* Text objects: I want vim-like text-objects to work in visual mode and to be combined with all other vim-commands as it works in vim.
-
-* Other things: I don't remember anymore, just some minor things that happened from time to time. It's a long time since I used viper the last time.
-
-The main feature was extensibility. I want be able to write new commands, motions and text-objects and they should be combinable out of the box with each other and with visual mode. It seemed to me that if I try to modify viper in a way that I get this infrastructure I want, I would rewrite large parts of viper. Probably I'm wrong, but I'm no professional programmer and I have to do things in a way my skills allow. Changing existing code is quite hard for me, so I decided to start from scratch.
-
-But the main reason is: I started with vim-mode because I wanted to do it, to see if it's possible to get my ideas work.
-
--- Frank
-
-[new]
-If you do not think it is fun then you will not learn. And you will have a bad time. That is how our brains work. ;-)
-
-* Visual mode: I never thought of the problem that the last character is not included in the region. Hm, good catch. Wonder how to tackle that in viper. But what are inserting/appending in block visual mode?
-
-* Text objects: Maybe the most important thing is to get text-objects to work with vi commands (like in vim)? What are the key combinations?
-
-Can you describe the extensibility you want a bit more?
-
--- LennartBorgman
-
-[new]
-Because it's fun to code vim-mode, I do it. And I've already learned much about both, vim and emacs, from that.
-
-* Visual mode: Just open vim, go to block-visual mode (C-v) select some block and type shift-i. You go to insert-mode, type some text, and when you leave insert mode, the inserted text will be copied to each line of the selection. Same for append and change.
-
-* Text objects: Text objects are quite easy. Usual motions define one new position -- the position where they would move to cursor. The beginning of the region normal commands work is (point). Text objects just define two positions -- the beginning and the end of the region the command should work on. Obviously, text-objects make sense only in operator-pending mode and visual-mode, but not in normal-mode. The only text-object currently implemented in vim-mode is inner-word bound to "iw", which selects the word where the cursor is.
-
-* Extensibility: Also very easy: I want to define new motions and new commands as easy as usual Emacs commands. This is not completely trivial since they have to interact. Each motion should not only change the (point) but can also be used as operator for a command. And there are inclusive, exclusive and linewise motions which may even differ in different situations. Similar commands not only take a count but also a motion, a register or an argument. vim-mode has two macros for them: vim:defcmd and vim:defmotion which can be bound to a key like any other emacs command (although they work correctly in vim-mode only at the moment).
-
-I don't say that this is difficult. In fact, both macros are quite simple, but they need some infrastructure to be usable.
-
-Btw: I know there are many emacs-vim quirks which have good workarounds in viper. I would be happy to reuse them in vim-mode. But I've been using vim-mode for several months now, and I didn't run in something strange.
-
--- Frank
-
-[new]
-* Visual mode: Block-visual mode seems a bit useful (especially for those who have used Vim before) even in Emacs (where you can do similar things and more complicated variants with keyboard macros).
-
-* Text objects: You can use most Emacs key bindings in normal/insert mode to move by text objects etc. But I do not understand "iw", does not that enter insert mode and insert a "w"?
-
-* Extensibility: Defining macros seems to be a good way.
-
-Thanks for you good clarifications. I do not want to go into more technical details here, that is for someone who want to actually implement this in viper or vim-mode. My opinion is that the additions would perhaps fit best within ViperMode, but I can see it is fun writing a new emulator too.
-
--- LennartBorgman
-
-[new]
-* Text objects: No, since those key-bindings are only active in operator-pending-mode and visual-mode. And in operator-pending-mode "i" is unbound in vi. And text-objects are usually not used for motion but for selection or range definition for commands. "iw" selects the word the cursor is currently on. Similar "ip" selects the current paragraph, and so on.
-
-
--- Frank
-
-[new]
-* Text objects: Ah, I never noticed that "i" could be used there. Interesting. I guess you are using thing-at-point etc for this in Emacs?
-
--- LennartBorgman
-
-[new]
-* Text objects: Yes, I think so. I never used thing-at-point but perhaps it may be used to implement text-objects for vim-mode. I'm not sure since some text-objects are slightly different in vim and emacs.
-
-But the implementation of a concrete text-object in vim-mode is not very difficult, thanks to vim:defmotion ;)
-
-[new]
-* Text objects: I was a bit curious and found this descriptions: http://vimdoc.sourceforge.net/htmldoc/motion.html#text-objects
-
-[new]
-With regard to text objects, the author of the Visual Studio extension [http://www.viemu.com/ ViEmu] made an interesting [http://lists.ourproject.org/pipermail/implementations-list/2009-June/000071.html post on the vimpulse mailing list] explaining his implementation. It's very elegant.
-
-[new]
-Yes, I think the keyboard handling in Viper should be rewritten to something like that.
-A simple state machine (or whatever it is called).
-The current code in Viper for this is not very easy to understand.
-
-Frank, how are you handling the keyboard parsing?
-
--- LennartBorgman
-
-[new]
-In the newest version, vim-mode is only a very flat layer above emacs. vim-modes are emacs minor-modes, vim-keymaps are emacs keymaps which are arranged in some hierarchical order (via usual "parent" keymaps). The current minor-mode determines the current active "root" keymap. The only part of some magic is in the definition of commands and motions. Each command is a usual emacs function but if called interactively the call goes through a special layer (the body of the command is passed as lambda). This layer is a command-handler specific for each mode. The command-handler is responsible for the execution of commands and motions as well as the combination of both. The key-parsing stuff is really easy, because emacs provides everything you need out of the box. And since the key-handling is done in such a way, it does not infer with usual emacs key-handling, and even C-h b and the like work well.
-
-So in some sense, it's a state machine. Some states are Emacs prefix-keys, some states are modes (e.g. operator-pending-mode), and some states are internal variables (digit-argument, register, ...).
-
--- Frank
-
-[new]
-So all keyboard readings is done through keymaps in minor-modes?
-
-What makes ViperMode difficult to understand is perhaps that it does not do it this way.
-It also makes it difficult in my opinion to add new key bindings.
-Of course adding key bindings the normal way in Emacs is not what you want.
-I think a special function that takes the state and the key sequence is needed.
-What do you think?
-
-Could this part of the code easily be broken out and used by Viper?
-
-Note: In an emulator like vim-mode or viper *emulation-mode-map-alist* should be used.
-This overrides all normal minor mode maps and that is what you want.
-I believe that Viper current keyboard handling was written before that and that this is the reason that it is not written in the more simple way with a state machine.
-(This is just my guess, but it looks so to me.)
-
--- LennartBorgman
-
-[new]
-Yes, exactly one minor-mode per vim-mode (normal-mode, operator-pending-mode, insert-mode, visual-mode) with an appropriate keymap. And the nice thing is that adding new key bindings in vim-mode is exactly adding emacs key bindings bound to a vim-command or vim-motion. There are some convenience functions similar to vim: vim:nmap, vim:omap, vim:imap and vim:vmap, but the map directly to define-key.
-
-Perhaps this part could be broken out - but together with the required infrastructure to combine motions and commands, this is almost all of the core of vim-mode. The rest is just definition of commands and motions. That's the reason why I said rewriting from scratch may be easier than changing viper.
-
-*emulation-mode-map-alist* - I didn't know this, maybe I use it in future. Thanks for pointing out.
-
--- Frank
-
-[new]
-But is not the rest of Viper doing a lot of things?
-(Among other things taking care of corner cases of different kinds, I guess.)
-
-I believe I would really want to see this keyboard handling integrated with Viper.
-Or of course all that Viper does integrated with your code, but that seems to be a longer road to me.
-And backward compatibility troubles + more of taking care of in Emacs core code.
-
-You have to use *emulation-mode-map-alist* to get it working correctly.
-Otherwise there will be a lot of small and hard to handle errors for some users.
-
--- LennartBorgman
-
-[new]
-Certainly viper is doing a lot of things. But I don't know which things and why. So they are hard to integrate - no matter in which way. Changing the key-binding stuff and anything related and hoping the rest of viper still works may be a little too optimistic.
-
--- Frank
-
-[new]
-I mailed Michael Kifer and asked him. I think he agree with your view of this.
-So please go ahead, it sounds useful.
-
-So I just started testing vim-mode a bit.
-And reported some issues on bit-bucket.
-I guess that is the way to report bugs?
-
--- LennartBorgman
-
-[new]
-Yes, bug-reports and anything related should go through bitbucket.
-
--- Frank
 
 ----
 CategoryEmulation CategoryKeys ViperMode

@@ -1,0 +1,41 @@
+This page is about using library '''[[BookmarkPlus|Bookmark+]]''' to save and restore [[DiredMode|Dired]] states persistently. IOW, it is about bookmarking Dired buffers.
+
+== Dired Bookmarks ==
+
+You know that you can ''mark'' a set of files in Dired, you can ''insert subdirectory'' listings (using `i'), and you can ''hide (sub)directory'' listings (using '''`##$##''''). And you can control the listing format by using a [[prefix argument]] to specify different `ls' switches.
+
+These Dired features let you use Dired to represent and access a ''project'' or a given project state.
+
+For example, if you display (that is, insert/expand) all of the subdirs that belong to a project in the same Dired buffer, and you mark the source files (e.g. ##*.el## for EmacsLisp files), then you can use `B' to byte-compile them all. Dired provides lots of other commands that act on the marked files (compress, search-and-replace, delete, load, etc.).
+
+But different operations are appropriate for different kinds of files (source, object, config, image, etc.). And you sometimes want to operate on files that are only in particular project subdirectories. To work with your project in Dired, you therefore need to mark and unmark different sets of files, and hide and show different sets of subdirectories, at different times.
+
+The set of markings and display states (inserted subdirs, hidden dirs) that you use for a given project is more or less static: you return to the same Dired states over and over. But you must recreate a given state each time you need it: show the right set of subdirs, mark the right set of files, etc.
+
+You can use [[regexp]]s to mark files, but even so, recreating a given project state takes effort. More importantly, it is error-prone. It would be good if you could do that carefully, once and for all.
+
+What's missing in vanilla Dired is a way to define such a set of Dired states (markings etc.) persistently, so you can return to any given state instantly and with reassurance that you have exactly the right settings. In short, be able to ''bookmark'' a Dired state and revisit it at any time.
+
+Library '''[[BookmarkPlus|Bookmark+]]''' lets you do this. Whenever you create a bookmark in a Dired buffer (e.g. `C-x r m'), the current state is saved as part of the bookmark: [[point]], the current `ls' listing switches, the set of inserted subdirectories, the set of hidden directories, and the set of marked files. Whenever you jump to a Dired bookmark (e.g. `C-x r b'), all of these are restored.
+
+And because you might have many, many bookmarks, '''Bookmark+''' has jump commands that are specialized for Dired bookmarks:
+
+* '''`bookmarkp-dired-jump'''' ('''`J'''' in Dired)
+* '''`bookmarkp-dired-jump-current'''' ('''`C-j'''' in Dired)
+
+The former presents all Dired bookmarks (and only Dired bookmarks) as completion candidates. The latter presents only Dired bookmarks for the ''current'' directory (`default-directory'). 
+
+`C-j' is particularly useful to switch among various "views" of the same project. The directory doesn't change; only its state changes: markings, switches, which subdirs are expanded, and which are hidden.
+
+You can use these commands from any buffer, not just Dired. `bookmarkp-dired-jump' is in fact bound globally to '''`C-x j d'''', and an other-window version of it is bound globally to '''`C-x 4 j d''''.
+
+'''See Also:'''
+
+* [[BookmarkPlus#TypeSpecificJumpCommands|Type-Specific Jump Commands]] for more information about `bookmarkp-dired-jump' and `bookmarkp-dired-jump-current'.
+
+* [[BookmarkPlus#BookmarkTags|Tagging]] for information about organizing your code projects by tagging files in different ways, [[http://delicious.com|del.icio.us]]-style.
+
+
+----
+CategoryDirectories
+CategoryProgrammerUtils

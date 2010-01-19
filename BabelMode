@@ -21,4 +21,7 @@ Babel mode to emacswik. --- JoakimVerona
 Lisp:babel.el
 
 ----
+You can use babel to translate IRC conversations in [[ERC]] with [[erc-babel.el]].
+----
+
 CategoryModes

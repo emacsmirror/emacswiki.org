@@ -1,32 +1,33 @@
-DiredMode is the mode of a '''[::Dired]''' buffer. It shows a directory (folder) listing that you can use to perform various operations on files and subdirectories in the directory and its subdirectories.  The operations you can perform are numerous, from creating subdirectories to byte-compiling files, searching files, and, of course, visiting (editing) files.
+DiredMode is the mode of a '''[::Dired]''' buffer. It shows a directory (folder) listing that you can use to perform various operations on files and subdirectories in the directory.  The operations you can perform are numerous, from creating subdirectories to byte-compiling files, searching files, and of course visiting (editing) files.
 
-The closest thing to Dired in MS Windows is Windows Explorer.  In Emacs, we often speak of "editing" a directory, not "exploring" it, but the behavior is similar.
+The closest thing to Dired in MS Windows is Windows Explorer.  In Emacs, we sometimes speak of "editing" a directory, not "exploring" it, but the behavior is similar.
 
-To edit a directory, use `C-x d' (`<tt>[::dired]</tt>') or `C-x 4 d' (`dired-other-window'). The best way to learn about Dired is to try it out: type `C-x d' and enter a directory name. Then, try various Dired commands. The most important are available on the MenuBar menus '''Operate''', '''Mark''', '''Regexp''', '''Immediate''', and '''Subdir'''. Use the menu to discover some of what is available; the menu also indicates the key sequences you can use as an alternative.
+The best way to learn about Dired is to try it out: type `C-x d' or `C-x 4 d' and enter a directory name. Then, try various Dired commands. The most important are available on the [[menu bar]] menus '''Operate''', '''Mark''', '''Regexp''', '''Immediate''', and '''Subdir'''. Use the menu to discover some of what is available; the menu also indicates the key sequences you can use as an alternative.
 
-You can read more about Dired mode by using `C-h m' in a Dired buffer. The mode is described, and available commands and key bindings are explained. Even more information about Dired mode is available in the EmacsManual: `C-h i', choose Emacs, then choose Dired under Advanced Features.
+You can read more about Dired mode by reading the help displayed using `C-h m' in a Dired buffer. Even more information is available in the EmacsManual: `C-h i', choose Emacs, then choose Dired under Advanced Features.
 
-Here are pages about vanilla Dired, included with GnuEmacs:
+These pages are about vanilla Dired, included with a GnuEmacs distribution:
 
-* [[Dired X]] -- Built-in library ##dired-x.el## provides extra functionality for Dired
-* DiredModeScreenshots
-* DiredOmitMode
-* DiredPower -- Various packages and tips to improve Dired.
-* DiredSearchAndReplace -- Use Dired to search multiple files.
-* DiredTweaks -- Small tweaks for this and that
-* [[Tumme]] -- navigate through image files, in dired, with thumbnail previews and more
-* [[WDired]] -- Lets you rename files by editing the dired buffer.
+* [[Dired X]] -- Many extra features (library ##dired-x.el##).
+* DiredOmitMode -- Selectively remove files and subdirectories from the display, to reduce clutter.
+* DiredSearchAndReplace -- Search multiple files.
+* [[WDired]] -- Rename files by editing names directly in the Dired buffer.
+
+Here are some screenshots of Dired buffers, vanilla and otherwise: DiredModeScreenshots
 
 [:DiredEnhancements]
-These pages describe enhancements to Dired:
+These pages describe Dired tips and additional features:
 
-* [[Dired+]] -- Extends functionalities offered by standard Emacs libraries ##dired.el##, ##dired-aux.el##, and ##dired-x.el##.
+* [[Dired+]] -- Extends standard Emacs libraries ##dired.el##, ##dired-aux.el##, and ##dired-x.el## -- many additional features.
+* DiredBookmarks -- Save/restore Dired state persistently, including switches, marked files, inserted subdirectories, and hidden (sub)directories.
 * DiredDetails -- Lets you hide or show the file and directory details in a Dired listing, to save space and clutter. When details are hidden, all you see (and all IncrementalSearch sees) are the file names.
 * DiredDragAndDrop -- Lets you drag-and-drop files.
-* DiredEfap -- rename the file under `point'
-* DiredReuseDirectoryBuffer – Make Dired reuse the Dired buffer when you visit a directory
-* DiredSortMenu -- Lets you sort Dired listings in various ways. Provides a MenuBar menu and a popup menu for this.
-* DiredView -- Browse and select files using the first character of their names
+* DiredEfap -- Rename the file a [[point]] in Dired.
+* DiredPower -- Various Dired tips and features.
+* DiredReuseDirectoryBuffer – Make Dired reuse an existing Dired buffer
+* DiredSortMenu -- Lets you sort Dired listings in various ways. Provides a [[menu bar]] menu and a popup menu for this.
+* DiredTweaks -- Small Dired tweaks.
+* DiredView -- Browse and select files using the first character of their names.
 * [[Files+]] -- 
 ** Integrates `find-file' (`C-x C-f') and related commands with Dired
 ** Together with <tt>[[ls-lisp+.el]]</tt>, modifies `insert-directory' so that Dired's second header line lists the number of files:
@@ -41,12 +42,13 @@ These pages describe enhancements to Dired:
 * OperatingOnFilesInDired – Opening files in associated applications.
 ** MsShellExecute -- Open any file from dired on W32 systems
 * ThumbsMode -- Modify dired for automatic image previewing.
-* Lisp:trashcan.el -- Contains a recoverable file deletion system
-that behaves like the trash can or recycle bin that many operating
-systems, present and past, show on their screens.
-This system changes the behaviour of the <code>"x"</code> key in DiredMode from
-permanently deleting files to a two stage system.
-* WThirtyTwoFindDired -- Light, w32-version of `find-dired'
+* <tt>[[trashcan.el]]</tt> -- A recoverable file-deletion system
+that behaves like the trash can or recycle bin of many operating
+systems.
+* [[Tumme]] -- Lets you navigate among image files in Dired, with thumbnail previews and more.
+* WThirtyTwoFindDired -- Light, w32-specific version of `find-dired'.
+
+
 
 See CategoryDirectories for some other listing formats, besides what you get in Dired.
 
