@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Jan 18 17:28:00 2010 (-0800)
+;; Last-Updated: Tue Jan 19 17:08:14 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 8839
+;;     Update #: 8912
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -98,6 +98,8 @@
 ;;    `bookmarkp-bmenu-define-full-snapshot-command',
 ;;    `bookmarkp-bmenu-delete-marked',
 ;;    `bookmarkp-bmenu-describe-this-bookmark',
+;;    `bookmarkp-bmenu-describe-this+move-down',
+;;    `bookmarkp-bmenu-describe-this+move-up',
 ;;    `bookmarkp-bmenu-edit-bookmark',
 ;;    `bookmarkp-bmenu-filter-bookmark-name-incrementally',
 ;;    `bookmarkp-bmenu-filter-file-name-incrementally',
@@ -157,7 +159,8 @@
 ;;    `bookmarkp-bmenu-unmark-bookmarks-tagged-some',
 ;;    `bookmarkp-bmenu-unomit-marked',
 ;;    `bookmarkp-define-tags-sort-command',
-;;    `bookmarkp-describe-bookmark', `bookmarkp-dired-jump',
+;;    `bookmarkp-describe-bookmark',
+;;    `bookmarkp-describe-bookmark-internals', `bookmarkp-dired-jump',
 ;;    `bookmarkp-dired-jump-current',
 ;;    `bookmarkp-dired-jump-current-other-window',
 ;;    `bookmarkp-dired-jump-other-window', `bookmarkp-file-jump',
@@ -1124,6 +1127,13 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2010/01/19 dadams
+;;     bookmarkp-remote-file-bookmark-p: Include remote Dired bookmarks.  Thx to Simon Harrison.
+;;     Added: bookmarkp-describe-bookmark-internals, bookmarkp-bmenu-describe-this+move-(down|up),
+;;            defalias for list-bookmarks.
+;;     bookmarkp-describe-bookmark: Reformatted help output.  Added more info about Dired bookmarks.
+;;     bookmarkp-bmenu-describe-this-bookmark:
+;;       C-u calls bookmarkp-describe-bookmark-internals.  Bound also to C-h C-RET.
 ;; 2010/01/18 dadams
 ;;     Added: bookmarkp-dired-subdirs.
 ;;     bookmarkp-make-dired-record, bookmarkp-jump-dired: Handle inserted and hidden dirs.
@@ -1594,8 +1604,7 @@
 ;;                  Renamed fns and faces.
 ;;       2009-08-25 Fit frame after display menu list.
 ;;                  Refresh list when toggle filename visibility.
-;;       2009-08-24 Fix: *-bmenu-list for remote files, bookmark-set,
-;;                       *-remote-file-bookmark-p.
+;;       2009-08-24 Fix: *-bmenu-list for remote files, bookmark-set, *-remote-file-bookmark-p.
 ;;                  Ensure arg to file-remote-p is not nil.
 ;;                  Recenter region only if it is visible.
 ;;       2009-08-23 Remove old *-location.  *-bmenu-list: Add isw3m.
@@ -1758,6 +1767,7 @@
 (defvar Info-current-node)              ; Defined in `info.el'.
 (defvar Info-current-file)              ; Defined in `info.el'.
 (defvar Man-arguments)                  ; Defined in `man.el'.
+(defvar Man-mode-map)                   ; Defined in `man.el'.
 (defvar woman-last-file-name)           ; Defined in `woman.el'.
 (defvar woman-menu)                     ; Defined in `woman.el'.
 (defvar woman-mode-map)                 ; Defined in `woman.el'.
@@ -3280,6 +3290,7 @@ Optional arg DONT-TOGGLE-FILENAMES-P is passed to
 ;; 5. If option `bookmarkp-bmenu-commands-file' is non-nil, then read that file, which contains
 ;;    user-defined `*Bookmark List*' commands.
 ;;
+(defalias 'list-bookmarks 'bookmark-bmenu-list)
 ;;;###autoload
 (defun bookmark-bmenu-list (&optional filteredp) ; `C-x r l'
   "Display a list of existing bookmarks, in buffer `*Bookmark List*'.
@@ -5147,10 +5158,13 @@ BOOKMARK is a bookmark name or a bookmark record."
 
 (defun bookmarkp-remote-file-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK bookmarks a remote file or directory.
-BOOKMARK is a bookmark name or a bookmark record."
-  (let* ((file      (bookmark-get-filename bookmark))
+BOOKMARK is a bookmark name or a bookmark record.
+This includes remote Dired bookmarks, but otherwise excludes bookmarks
+with handlers (Info, Gnus, and W3M)."
+  (let* ((handler   (bookmark-get-handler bookmark))
+         (file      (bookmark-get-filename bookmark))
          (rem-file  (and file  (bookmarkp-file-remote-p file))))
-    (and rem-file  (not (bookmark-get-handler bookmark)))))
+    (and rem-file  (or (not handler) (eq handler 'bookmarkp-jump-dired)))))
 
 (defun bookmarkp-sequence-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK is a sequence bookmark.
@@ -6129,11 +6143,28 @@ If TRUTH is nil, return nil."
 ;;  *** Other Bookmark+ Functions (`bookmarkp-*') ***
 
 ;;;###autoload
-(defun bookmarkp-bmenu-describe-this-bookmark () ; `C-h RET' in bookmark list
-  "Describe bookmark of current line."
-  (interactive)
+(defun bookmarkp-bmenu-describe-this+move-down (&optional defn) ; `C-down' in bookmark list
+  "Describe bookmark of current line, then move down to the next bookmark.
+With a prefix argument, show the internal definition of the bookmark."
+  (interactive "P")
+  (bookmarkp-bmenu-describe-this-bookmark) (forward-line 1))
+
+;;;###autoload
+(defun bookmarkp-bmenu-describe-this+move-up (&optional defn) ; `C-up' in bookmark list
+  "Describe bookmark of current line, then move down to the next bookmark.
+With a prefix argument, show the internal definition of the bookmark."
+  (interactive "P")
+  (bookmarkp-bmenu-describe-this-bookmark) (forward-line -1))
+
+;;;###autoload
+(defun bookmarkp-bmenu-describe-this-bookmark (&optional defn) ; `C-h RET' in bookmark list
+  "Describe bookmark of current line.
+With a prefix argument, show the internal definition of the bookmark."
+  (interactive "P")
   (bookmarkp-barf-if-not-in-menu-list)
-  (bookmarkp-describe-bookmark (bookmark-bmenu-bookmark)))
+  (if defn
+      (bookmarkp-describe-bookmark-internals (bookmark-bmenu-bookmark))
+    (bookmarkp-describe-bookmark (bookmark-bmenu-bookmark))))
 
 ;;;###autoload
 (defun bookmarkp-describe-bookmark (bookmark)
@@ -6169,39 +6200,64 @@ BOOKMARK is a bookmark name or a bookmark record."
                                                     (bookmark-prop-get bookmark 'sequence))))
                               (function-p  (let ((fn  (bookmark-prop-get bookmark 'function)))
                                              (if (symbolp fn)
-                                                 (format "Function:\t%s\n" fn)
+                                                 (format "Function:\t\t%s\n" fn)
                                                (format "Function:\n%s\n"
                                                        (pp-to-string
                                                         (bookmark-prop-get bookmark 'function))))))
-                              (gnus-p      (format "Gnus, group:\t%s, article: %s, message-id: %s\n"
+                              (gnus-p      (format "Gnus, group:\t\t%s, article: %s, message-id: %s\n"
                                                    (bookmark-prop-get bookmark 'group)
                                                    (bookmark-prop-get bookmark 'article)
                                                    (bookmark-prop-get bookmark 'message-id)))
-                              (man-p       (format "UNIX `man' page for command:\t%s\n"
-                                                   (bookmark-prop-get bookmark 'man-args)))
-                              (info-p      (format "Info node:\t(%s) %s\n"
+                              (man-p       (format "UNIX `man' page for:\t`%s'\n"
+                                                   (or (bookmark-prop-get bookmark 'man-args)
+                                                       ;; WoMan has no variable for the cmd name.
+                                                       (bookmark-prop-get bookmark 'buffer-name))))
+                              (info-p      (format "Info node:\t\t(%s) %s\n"
                                                    (file-name-nondirectory file)
                                                    (bookmark-prop-get bookmark 'info-node)))
-                              (w3m-p       (format "W3M URL:\t%s\n" file))
+                              (w3m-p       (format "W3M URL:\t\t%s\n" file))
                               (dired-p 
-                               (let ((switches  (bookmark-prop-get bookmark 'dired-switches)))
-                                 (format "Dired%s:\t\t%s\n"
+                               (let ((switches  (bookmark-prop-get bookmark 'dired-switches))
+                                     (marked    (length (bookmark-prop-get bookmark
+                                                                           'dired-marked)))
+                                     (inserted  (length (bookmark-prop-get bookmark
+                                                                           'dired-subdirs)))
+                                     (hidden    (length (bookmark-prop-get bookmark
+                                                                           'dired-hidden-dirs))))
+                                 (format "Dired%s:%s\t\t%s\nMarked:\t\t\t%s\n\
+Inserted subdirs:\t%s\nHidden subdirs:\t\t%s\n"
                                          (if switches (format " `%s'" switches) "")
-                                         (expand-file-name file))))
+                                         (if switches "" (format "\t"))
+                                         (expand-file-name file)
+                                         marked inserted hidden)))
                               ((equal file bookmarkp-non-file-filename)
-                               (format "Buffer:\t\t%s\n" (bookmarkp-get-buffer-name bookmark)))
-                              (file    (format "File:\t\t%s\n" (expand-file-name file)))
+                               (format "Buffer:\t\t\t%s\n" (bookmarkp-get-buffer-name bookmark)))
+                              (file    (format "File:\t\t\t%s\n" (expand-file-name file)))
                               (t       "Unknown\n"))
                         (unless no-position-p
                           (if (bookmarkp-region-bookmark-p bookmark)
-                              (format "Region:\t\t%d to %d (%d chars)\n" start end (- end start))
-                            (format "Position:\t%d\n" start)))
-                        (if visits (format "Visits:\t\t%d\n" visits) "")
-                        (if time   (format "Last visit:\t%s\n" (format-time-string "%c" time)) "")
-                        (if tags   (format "Tags:\t\t%S\n" tags) "")
+                              (format "Region:\t\t\t%d to %d (%d chars)\n" start end (- end start))
+                            (format "Position:\t\t%d\n" start)))
+                        (if visits (format "Visits:\t\t\t%d\n" visits) "")
+                        (if time   (format "Last visit:\t\t%s\n" (format-time-string "%c" time)) "")
+                        (if tags   (format "Tags:\t\t\t%S\n" tags) "")
                         (if annot  (format "\nAnnotation:\n%s" annot)))))
       (with-output-to-temp-buffer "*Help*" (princ help-text))
       help-text)))
+
+;;;###autoload
+(defun bookmarkp-describe-bookmark-internals (bookmark)
+  "Show the internal definition of the bookmark BOOKMARK.
+BOOKMARK is a bookmark name or a bookmark record."
+  (interactive
+   (list (bookmark-completing-read "Describe bookmark" (bookmarkp-default-bookmark-name))))
+  (setq bookmark  (bookmark-get-bookmark bookmark))
+  (help-setup-xref (list #'bookmarkp-describe-bookmark-internals bookmark) (interactive-p))
+  (let* ((bname      (bookmark-name-from-full-record bookmark))
+         (help-text  (format "%s\n%s\n\n%s"
+                             bname (make-string (length bname) ?-) (pp-to-string bookmark))))
+    (with-output-to-temp-buffer "*Help*" (princ help-text))
+    help-text))
 
 ;;;###autoload
 (defun bookmarkp-list-defuns-in-commands-file ()
@@ -6964,7 +7020,13 @@ See `bookmarkp-w3m-jump'."
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "GS"   'bookmarkp-bmenu-show-only-gnus)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map (kbd "C-h RET") 'bookmarkp-bmenu-describe-this-bookmark)
+(define-key bookmark-bmenu-mode-map (kbd "C-h RET")        'bookmarkp-bmenu-describe-this-bookmark)
+;;;###autoload
+(define-key bookmark-bmenu-mode-map (kbd "C-h C-<return>") 'bookmarkp-bmenu-describe-this-bookmark)
+;;;###autoload
+(define-key bookmark-bmenu-mode-map (kbd "C-<down>")       'bookmarkp-bmenu-describe-this+move-down)
+;;;###autoload
+(define-key bookmark-bmenu-mode-map (kbd "C-<up>")         'bookmarkp-bmenu-describe-this+move-up)
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "I"    nil) ; For Emacs 20
 ;;;###autoload
@@ -7242,7 +7304,10 @@ list display.
 Miscellaneous
 -------------
 
-\\[bookmarkp-bmenu-describe-this-bookmark]\t- Show information about this bookmark
+\\[bookmarkp-bmenu-describe-this-bookmark]\t- Show information about this bookmark (C-u for \
+internal form)
+\\[bookmarkp-bmenu-describe-this+move-down]\t- Show the info, then move to next bookmark
+\\[bookmarkp-bmenu-describe-this+move-up]\t- Show the info, then move to previous bookmark
 \\[bookmarkp-bmenu-refresh-menu-list]\t- Refresh (revert) to up-to-date bookmark list
 \\[bookmarkp-bmenu-delete-marked]\t- Delete visible bookmarks marked `>' (not `D')
 \\[bookmarkp-bmenu-define-command]\t- Define a command to restore the current sort order & filter

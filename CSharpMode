@@ -276,4 +276,33 @@ I don't know why (define-key csharp-mode-map ...) doesn't work but c-mode-map do
 -- Risto Saarelma
 
 ----
+=== Load-time error under Emacs 23 ===
+
+<pre>
+Debugger entered--Lisp error: (error "`c-lang-defconst' must be used in a file")
+  signal(error ("`c-lang-defconst' must be used in a file"))
+  error("`c-lang-defconst' must be used in a file")
+  c-define-lang-constant(c-mode-menu ((t cons ["Comment Out Region" comment-region ...] (cons ["Uncomment Region" ... ...] ...))))
+  load("cc-langs" nil t)
+  (let ((load-path ...)) (load "cc-mode" nil t) (load "cc-fonts" nil t) (load "cc-langs" nil t))
+  (progn (let (...) (load "cc-mode" nil t) (load "cc-fonts" nil t) (load "cc-langs" nil t)))
+  (eval-when-compile (let (...) (load "cc-mode" nil t) (load "cc-fonts" nil t) (load "cc-langs" nil t)))
+  eval-buffer(#<buffer  *load*<2>> nil "/home/rjk/work/random/emacs/csharp-mode.el" nil t)  ; Reading at buffer position 5242
+  load-with-code-conversion("/home/rjk/work/random/emacs/csharp-mode.el" "/home/rjk/work/random/emacs/csharp-mode.el" nil t)
+  require(csharp-mode)
+  eval-buffer(#<buffer  *load*> nil "/home/rjk/.emacs" nil t)  ; Reading at buffer position 174
+  load-with-code-conversion("/home/rjk/.emacs" "/home/rjk/.emacs" t t)
+  load("~/.emacs" t t)
+  #[nil "<binary gunk>" [init-file-user system-type user-init-file-1 user-init-file otherfile source ms-dos "~" "/_emacs" windows-nt directory-files nil "^\\.emacs\\(\\.elc?\\)?$" "~/.emacs" "^_emacs\\(\\.elc?\\)?$" "~/_emacs" "/.emacs" t load expand-file-name "init" file-name-as-directory "/.emacs.d" file-name-extension "elc" file-name-sans-extension ".el" file-exists-p file-newer-than-file-p message "Warning: %s is newer than %s" sit-for 1 "default" alt inhibit-default-init inhibit-startup-screen] 7]()
+  command-line()
+  normal-top-level()
+</pre>
+
+Emacs version is:
+
+GNU Emacs 23.1.1 (x86_64-pc-linux-gnu, GTK+ Version 2.12.12) of 2009-10-19 on debian-build.int-office-er.priv, modified by Debian
+
+-- Richard Kettlewell.
+
+----
 CategoryModes ProgrammingModes

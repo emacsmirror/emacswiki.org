@@ -65,6 +65,10 @@ twittering-mode also provides hooks that are run when new tweets arrive. This ex
                             n (if (> n 1) "s" ""))))))
 
 == Discussion ==
+[new:halloleo:2010-01-20 01:00 UTC]
+
+[[halloleo]]: i'm trying this mode and it works pretty good, but i'm not sure how to completely /finish/ using twitter. does 'q' (`twittering-suspend') do this? i don't think so: it only switches to another buffer, therefore the twitter timer still retrieves tweets...
+
 [new]
 RichardRiley : What packages are needed for icon support? Also, wouldnt
 
