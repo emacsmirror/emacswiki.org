@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Jan 19 17:08:14 2010 (-0800)
+;; Last-Updated: Wed Jan 20 17:01:45 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 8912
+;;     Update #: 8937
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -149,6 +149,7 @@
 ;;    `bookmarkp-bmenu-sort-by-local-file-type',
 ;;    `bookmarkp-bmenu-sort-by-w3m-url',
 ;;    `bookmarkp-bmenu-sort-marked-before-unmarked',
+;;    `bookmarkp-bmenu-mode-status-help',
 ;;    `bookmarkp-bmenu-toggle-marks',
 ;;    `bookmarkp-bmenu-toggle-show-only-marked',
 ;;    `bookmarkp-bmenu-toggle-show-only-unmarked',
@@ -747,7 +748,8 @@
 ;;  bookmarks, show or hide bookmarks of particular types, and more.
 ;;
 ;;  Use `?' or `C-h m' in buffer `*Bookmark List*' for more
-;;  information about the bookmark list.
+;;  information about the bookmark list, including the current status
+;;  of sorting, filtering, and marking.
 ;;
 ;;
 ;;(@* "Tag Commands and Keys")
@@ -1127,6 +1129,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2010/01/20 dadams
+;;     Added: bookmarkp-bmenu-mode-status-help.  Bound to C-h m, ?.
 ;; 2010/01/19 dadams
 ;;     bookmarkp-remote-file-bookmark-p: Include remote Dired bookmarks.  Thx to Simon Harrison.
 ;;     Added: bookmarkp-describe-bookmark-internals, bookmarkp-bmenu-describe-this+move-(down|up),
@@ -4773,6 +4777,61 @@ unmark those that have no tags at all."
 ;;  *** General Menu-List (`-*bmenu-*') Commands and Functions ***
 
 ;;;###autoload
+(defun bookmarkp-bmenu-mode-status-help () ; `C-h m' and `?' in bookmark list
+  "`describe-mode' plus current status of `*Bookmark List*'."
+  (interactive)
+  (bookmarkp-barf-if-not-in-menu-list)
+  (describe-mode)
+  (with-current-buffer "*Help*"
+    (let ((buffer-read-only  nil))
+      (save-excursion
+        (goto-char (point-min))
+        (search-forward "***************************** Bookmark+ " nil t)
+        (forward-line 2)
+        (insert
+         (format "\nCurrent Status of Bookmark List\n-------------------------------\n
+Sorted:\t\t%s\nFiltering:\t%s\nMarked:\t\t%d\nOmitted:\t%d\n\n\n"
+                 (if (not bookmarkp-sort-comparer)
+                     "no"
+                   (format
+                    "%s%s" (bookmarkp-current-sort-order)
+                    ;; Code essentially the same as found in `bookmarkp-msg-about-sort-order'.
+                    (if (not (and (consp bookmarkp-sort-comparer) ; Ordinary single predicate
+                                  (consp (car bookmarkp-sort-comparer))))
+                        (if bookmarkp-reverse-sort-p "; reversed" "")
+                      (if (not (cadr (car bookmarkp-sort-comparer)))
+                          ;; Single PRED.
+                          (if (or (and bookmarkp-reverse-sort-p (not bookmarkp-reverse-multi-sort-p))
+                                  (and bookmarkp-reverse-multi-sort-p (not bookmarkp-reverse-sort-p)))
+                              "; reversed"
+                            "")
+                        ;; In case we want to distinguish:
+                        ;; (if (and bookmarkp-reverse-sort-p
+                        ;;          (not bookmarkp-reverse-multi-sort-p))
+                        ;;     "; reversed"
+                        ;;   (if (and bookmarkp-reverse-multi-sort-p
+                        ;;            (not bookmarkp-reverse-sort-p))
+                        ;;       "; reversed +"
+                        ;;     ""))
+
+                        ;; At least two PREDs.
+                        (cond ((and bookmarkp-reverse-sort-p
+                                    (not bookmarkp-reverse-multi-sort-p))
+                               "; reversed")
+                              ((and bookmarkp-reverse-multi-sort-p
+                                    (not bookmarkp-reverse-sort-p))
+                               "; each predicate group reversed")
+                              ((and bookmarkp-reverse-multi-sort-p
+                                    bookmarkp-reverse-sort-p)
+                               "; order of predicate groups reversed")
+                              (t ""))))))
+                 (or (and bookmarkp-bmenu-filter-function
+                          (downcase (substring bookmarkp-bmenu-title 2)))
+                     "None")
+                 (length bookmarkp-bmenu-marked-bookmarks)
+                 (length bookmarkp-bmenu-omitted-list)))))))
+
+;;;###autoload
 (defun bookmarkp-bmenu-define-command () ; `c' in bookmark list
   "Define a command to use the current sort order, filter, and omit list.
 Prompt for the command name.  Save the command definition in
@@ -7020,6 +7079,13 @@ See `bookmarkp-w3m-jump'."
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "GS"   'bookmarkp-bmenu-show-only-gnus)
 ;;;###autoload
+(if (fboundp 'command-remapping)
+    (define-key bookmark-bmenu-mode-map [remap describe-mode] 'bookmarkp-bmenu-mode-status-help)
+  ;; In Emacs < 22, the `substitute-...' affects only `?', not `C-h m', so we add it separately.
+  (substitute-key-definition 'describe-mode 'bookmarkp-bmenu-mode-status-help
+                             bookmark-bmenu-mode-map)
+  (define-key bookmark-bmenu-mode-map "\C-hm" 'bookmarkp-bmenu-mode-status-help))
+;;;###autoload
 (define-key bookmark-bmenu-mode-map (kbd "C-h RET")        'bookmarkp-bmenu-describe-this-bookmark)
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map (kbd "C-h C-<return>") 'bookmarkp-bmenu-describe-this-bookmark)
@@ -7292,13 +7358,14 @@ See `bookmarkp-w3m-jump'."
 
 
 
-(defadvice bookmark-bmenu-mode (before bookmark+-add-keymap () activate)
+(defadvice bookmark-bmenu-mode (before bookmark+-doc () activate)
   "
+
 ***************************** Bookmark+ *****************************\
 \\<bookmark-bmenu-mode-map>
 
-The following are in addition to the features of the vanilla bookmark
-list display.
+The following features are in addition to those provided by the
+vanilla bookmark list display.
 
 
 Miscellaneous
@@ -7478,8 +7545,8 @@ bookmarkp-sequence-jump-display-function - How to display components")
 ;; Top level
 (define-key bookmarkp-bmenu-menubar-menu [bookmarkp-bmenu-quit]
   '(menu-item "Quit" bookmarkp-bmenu-quit))
-(define-key bookmarkp-bmenu-menubar-menu [describe-mode]
-  '(menu-item "Help on Mode" describe-mode))
+(define-key bookmarkp-bmenu-menubar-menu [bookmarkp-bmenu-mode-status-help]
+  '(menu-item "Help on Mode" bookmarkp-bmenu-mode-status-help))
 (define-key bookmarkp-bmenu-menubar-menu [bookmarkp-toggle-saving-menu-list-state]
   '(menu-item "Toggle Saving State on Quit" bookmarkp-toggle-saving-menu-list-state))
 (define-key bookmarkp-bmenu-menubar-menu [bookmark-bmenu-load]

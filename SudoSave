@@ -1,6 +1,6 @@
 == Overview ==
 
-sudo-save.el is a quick package to save files as root on the local box.  If you have 'sudo' installed and you have permission to edit files (and can cache passwords) then Emacs will run chmod on the file before and after you save it.  This comes in handy for a local laptop when tramp and hobo are overkill.  On my machine at least these have characteristics that are undesirable (including IO block).
+sudo-save.el is a quick package to save files as root on the local box.  If you have 'sudo' installed and you have permission to edit files (and can cache passwords) then Emacs will run chmod on the file before and after you save it.  This comes in handy for a local laptop when TrampMode and HoboMode are overkill.  On my machine at least these have characteristics that are undesirable (including IO block).
 
 Lisp:sudo-save.el
 

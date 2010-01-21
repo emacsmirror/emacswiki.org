@@ -61,6 +61,7 @@ On the following platforms,
 
 * Emacs 23
 ** X Window System and a compositing window manager (e.g. Compiz, Beryl and Compiz Fusion)
+** Mac OS X; MacPorts.
 * Emacs 22 with transparency patch
 ** X Window System and a compositing window manager (e.g. Compiz, Beryl and Compiz Fusion)
 ** Mac OS X; AquamacsEmacs, CarbonEmacsPackage and Fink's emacs

@@ -150,5 +150,13 @@ with the shortcut <code>C-c C-v</code>.
 * xdvi(k), http://xdvi.sourceforge.net/
 * Yap (from !MikTeX)
 
+== Notes on the dvi-previewers ==
+=== Problem: Black pages with xdvik under cygwin ===
+Under cygwin it may be that xdvik only shows black pages when it is started with the option -sourceposition from within emacs. In this case it may help to set
+
+xdvi*fork: false
+
+in the ~/.Xdefaults file. See the manual page of xdvi for details.
+
 ----
 CategoryTex

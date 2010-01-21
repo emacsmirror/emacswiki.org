@@ -32,7 +32,9 @@
 ;;; `cl::subst-if-not', `cl::subst-if', `cl::cl-nsublis-rec', `cl::nsublis',
 ;;; `cl::cl-sublis-rec', `cl::sublis', `cl::cl-tree-equal-rec',
 ;;; `cl::tree-equal', `cl::subseq', `cl::ldiff', `cl::coerce', `cl::typep',
-;;; `cl::cl-make-type-test'
+;;; `cl::cl-make-type-test', `cl::floatp-safe', `cl::plusp', `cl::minusp',
+;;; `cl::oddp', `cl::evenp'
+;;;
 ;;; FUNCTIONS:◄◄◄
 ;;;
 ;;; MACROS:
@@ -57,6 +59,7 @@
 ;;; MOVED:
 ;;;
 ;;; TODO:
+;;; c[ad]r+s
 ;;;
 ;;; NOTES:
 ;;;
@@ -64,7 +67,7 @@
 ;;;
 ;;; REQUIRES:
 ;;; `mon-cl-compat-regexps.el' (only if present in load-path)
-;;;
+;;; `mon-CL-namespace-colonic', `mon-CL-cln-colon-swap'
 ;;; THIRD-PARTY-CODE:
 ;;; This file is a duplicate of cl-seq.el with symbols renamed with suffix
 ;;; `cl::' Additional `cl*.el' symbols `ldiff', `coerce', `typep',
@@ -78,7 +81,7 @@
 ;;; MAINTAINER: MON KEY
 ;;;
 ;;; PUBLIC-LINK: (URL `http://www.emacswiki.org/emacs/mon-cl-compat.el')
-;;; FIRST-PUBLISHED:
+;;; FIRST-PUBLISHED: <Timestamp: #{2010-01-17T23:06:12-05:00Z}#{10027} - by MON>
 ;;;
 ;;; FILE-CREATED:
 ;;; <Timestamp: #{2010-01-17T02:30:54-05:00Z}#{10027} - by MON KEY>
@@ -978,7 +981,7 @@ I.e., if every element of LIST1 also appears in LIST2.
 Return a copy of TREE with all matching elements replaced by NEW.
 \nKeywords supported:  :key
 \n(fn NEW PREDICATE TREE [KEYWORD VALUE]...)"
-  (apply 'sublis (list (cons nil cl-new)) cl-tree :if cl-pred cl-keys))
+  (apply 'cl::sublis (list (cons nil cl-new)) cl-tree :if cl-pred cl-keys))
 
 ;;;###autoload
 (defun cl::subst-if-not (cl-new cl-pred cl-tree &rest cl-keys)
@@ -986,7 +989,7 @@ Return a copy of TREE with all matching elements replaced by NEW.
 Return a copy of TREE with all non-matching elements replaced by NEW.
 \nKeywords supported:  :key
 \n(fn NEW PREDICATE TREE [KEYWORD VALUE]...)"
-  (apply 'sublis (list (cons nil cl-new)) cl-tree :if-not cl-pred cl-keys))
+  (apply 'cl::sublis (list (cons nil cl-new)) cl-tree :if-not cl-pred cl-keys))
 
 ;;;###autoload
 (defun cl::nsubst (cl-new cl-old cl-tree &rest cl-keys)
@@ -1159,7 +1162,7 @@ TYPE is a Common Lisp type specifier.
 			   (if (consp (cadr type)) (list '> val (caadr type))
 			     (list '>= val (cadr type))))
 			 (if (memq (caddr type) '(* nil)) t
-			   (if (consp (caddr type)) (list '< val (caaddr type))
+			   (if (consp (caddr type)) (list '< val (caaddr type)) ;<-`caaddr' cl.el
 			     (list '<= val (caddr type)))))))
 	  ((memq (car type) '(and or not))
 	   (cons (car type)
@@ -1169,6 +1172,38 @@ TYPE is a Common Lisp type specifier.
 	   (list 'and (list 'member* val (list 'quote (cdr type))) t))
 	  ((eq (car type) 'satisfies) (list (cadr type) val))
 	  (t (error "Bad type spec: %s" type)))))
+ 
+;;; ==============================
+;;; `floatp-safe' -> :FILE cl.el
+(defun cl::floatp-safe (object)
+  "Return t if OBJECT is a floating point number.
+On Emacs versions that lack floating-point support, this function
+always returns nil."
+  (and (numberp object) (not (integerp object))))
+
+;;; ==============================
+;;; `plusp' -> :FILE cl.el
+(defun cl::plusp (number)
+  "Return t if NUMBER is positive."
+  (> number 0))
+
+;;; ==============================
+;;; `minusp' -> :FILE cl.el
+(defun cl::minusp (number)
+  "Return t if NUMBER is negative."
+  (< number 0))
+
+;;; ==============================
+;;; `oddp' -> :FILE cl.el
+(defun cl::oddp (integer)
+  "Return t if INTEGER is odd."
+  (eq (logand integer 1) 1))
+
+;;; ==============================
+;;; `evenp' -> :FILE cl.el
+(defun cl::evenp (integer)
+  "Return t if INTEGER is even."
+  (eq (logand integer 1) 0))
 
 ;;; ==============================
 ;;; `typep' -> :FILE cl-macs.el
@@ -1178,6 +1213,81 @@ TYPE is a Common Lisp type specifier.
 TYPE is a Common Lisp-style type specifier."
   (eval (cl::cl-make-type-test 'object type)))
 
+;;; ==============================
+;; `acons' -> :FILE cl.el 
+(defun cl::acons (key value alist)
+  "Add KEY and VALUE to ALIST.
+Return a new list with (cons KEY VALUE) as car and ALIST as cdr."
+  (cons (cons key value) alist))
+
+;;; ==============================
+;;; (declare-function cl-mapcar-many "cl-extra" (cl-func cl-seqs))
+
+;; `cl-mapcar-many' -> :FILE cl-extra.el
+;;;###autoload
+(defun cl::cl-mapcar-many (cl-func cl-seqs)
+  (if (cdr (cdr cl-seqs))
+      (let* ((cl-res nil)
+	     (cl-n (apply 'min (mapcar 'length cl-seqs)))
+	     (cl-i 0)
+	     (cl-args (copy-sequence cl-seqs))
+	     cl-p1 cl-p2)
+	(setq cl-seqs (copy-sequence cl-seqs))
+	(while (< cl-i cl-n)
+	  (setq cl-p1 cl-seqs cl-p2 cl-args)
+	  (while cl-p1
+	    (setcar cl-p2
+		    (if (consp (car cl-p1))
+			(prog1 (car (car cl-p1))
+			  (setcar cl-p1 (cdr (car cl-p1))))
+		      (aref (car cl-p1) cl-i)))
+	    (setq cl-p1 (cdr cl-p1) cl-p2 (cdr cl-p2)))
+	  (push (apply cl-func cl-args) cl-res)
+	  (setq cl-i (1+ cl-i)))
+	(nreverse cl-res))
+    (let ((cl-res nil)
+	  (cl-x (car cl-seqs))
+	  (cl-y (nth 1 cl-seqs)))
+      (let ((cl-n (min (length cl-x) (length cl-y)))
+	    (cl-i -1))
+	(while (< (setq cl-i (1+ cl-i)) cl-n)
+	  (push (funcall cl-func
+			    (if (consp cl-x) (pop cl-x) (aref cl-x cl-i))
+			    (if (consp cl-y) (pop cl-y) (aref cl-y cl-i)))
+		   cl-res)))
+      (nreverse cl-res))))
+
+;;; ==============================
+;; `mapcar*' -> :FILE cl.el 
+(defun cl::mapcar* (cl-func cl-x &rest cl-rest)
+  "Apply FUNCTION to each element of SEQ, and make a list of the results.
+If there are several SEQs, FUNCTION is called with that many arguments,
+and mapping stops as soon as the shortest list runs out.  With just one
+SEQ, this is like `mapcar'.  With several, it is like the Common Lisp
+`mapcar' function extended to arbitrary sequence types.
+\n(fn FUNCTION SEQ...)"
+  (if cl-rest
+      (if (or (cdr cl-rest) (nlistp cl-x) (nlistp (car cl-rest)))
+	  (cl::cl-mapcar-many cl-func (cons cl-x cl-rest))
+	(let ((cl-res nil) (cl-y (car cl-rest)))
+	  (while (and cl-x cl-y)
+	    (push (funcall cl-func (pop cl-x) (pop cl-y)) cl-res))
+	  (nreverse cl-res)))
+    (mapcar cl-func cl-x)))
+
+;;; ==============================
+;; `pairlis' -> :FILE cl.el
+(defun cl::pairlis (keys values &optional alist)
+  "Make an alist from KEYS and VALUES.
+Return a new alist composed by associating KEYS to corresponding VALUES;
+the process stops as soon as KEYS or VALUES run out.
+If ALIST is non-nil, the new pairs are prepended to it."
+  (nconc (cl::mapcar* 'cons keys values) alist))
+
+;;; ==============================
+
+;;; :NOTE Not sure whether to evaluate this or not. 
+;;;       Yes, I should be more sure... less cavalier :[
 ;;;(run-hooks 'cl-seq-load-hook)
 
 ;;; ==============================

@@ -1,10 +1,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; wcheck-mode.el (2009-08-23)
+;; wcheck-mode.el (2010-01-21)
 ;;
 ;; Interface for external spell-checkers and text-filtering programs.
 
 
-;; Copyright (C) 2009 Teemu Likonen <tlikonen@iki.fi>
+;; Copyright (C) 2009-2010 Teemu Likonen <tlikonen@iki.fi>
 ;;
 ;; LICENSE
 ;;
@@ -274,7 +274,10 @@ buffer-local but if GLOBAL is non-nil (prefix argument if called
 interactively) then change the global default language."
   (interactive
    (let* ((comp (mapcar #'car wcheck-language-data))
-          (default (cond ((member wcheck-language comp)
+          (default (cond ((and current-prefix-arg
+                               (member (default-value 'wcheck-language) comp))
+                          (default-value 'wcheck-language))
+                         ((member wcheck-language comp)
                           wcheck-language)
                          ((car comp))
                          (t ""))))
@@ -290,27 +293,29 @@ interactively) then change the global default language."
   ;; database, if needed.
   (when (stringp language)
     (if global
+        ;; Just change the global value and leave.
         (setq-default wcheck-language language)
-      (setq wcheck-language language))
 
-    ;; If the mode is currently turned on we check if language's program
-    ;; is executable and if all is OK request update for the buffer.
-    ;; Otherwise turn off the mode.
-    (when wcheck-mode
-      (let ((program (wcheck-query-language-data language 'program)))
-        (if (wcheck-program-executable-p program)
-            ;; It's executable; update the buffer.
-            (progn
-              (wcheck-update-buffer-data (current-buffer) language)
-              (wcheck-timer-add-read-request (current-buffer))
-              (wcheck-remove-overlays))
+      ;; Change the buffer-local value.
+      (setq wcheck-language language)
+      ;; If the mode is currently turned on check if language's program
+      ;; is executable and if all is OK request update for the buffer.
+      (when wcheck-mode
+        (let ((program (wcheck-query-language-data wcheck-language 'program)))
+          (if (wcheck-program-executable-p program)
+              ;; It's executable; update the buffer.
+              (progn
+                (wcheck-update-buffer-data (current-buffer) wcheck-language)
+                (wcheck-timer-add-read-request (current-buffer))
+                (wcheck-remove-overlays))
 
           ;; It's not executable; turn off.
           (wcheck-mode -1)
           (when (interactive-p)
-            (wcheck-error-program-not-executable language program)))))
+            (wcheck-error-program-not-executable wcheck-language program))))))
 
-    (wcheck-get-data :buffer (current-buffer) :language)))
+    ;; Return the language.
+    language))
 
 
 ;;;###autoload
@@ -372,6 +377,9 @@ information on how to configure Wcheck mode. Interactive command
 
        (t
         ;; We are ready to really turn on the mode.
+
+        ;; Make language buffer-local
+        (make-local-variable 'wcheck-language)
 
         ;; Add hooks.
         (wcheck-add-local-hooks (current-buffer))

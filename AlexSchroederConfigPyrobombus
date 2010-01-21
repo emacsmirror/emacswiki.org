@@ -47,7 +47,7 @@
       ispell-silently-savep t)
 
 (global-set-key (kbd "C-c i") 'indent-region)
-(global-set-key (kbd "C-c c") 'comment-region)
+(global-set-key (kbd "C-c c") 'comment-dwim)
 (global-set-key (kbd "C-c s") 'ispell-word)
 (global-set-key (kbd "C-c n") (lambda () (interactive) (find-file "~/NOTES")))
 (global-set-key (kbd "C-h a") 'apropos)
@@ -123,7 +123,7 @@
   '("name")
   '(("\\[\\(.*\\)\\]" 1 font-lock-type-face)
     ("=\\(.*\\)" 1 font-lock-function-name-face))
-  nil
+  '("\\.venus\\'")
   nil
   "Mode for the ini file to determine the feeds")  
 
@@ -143,17 +143,44 @@ Note that comments between URL and name will stay where they are."
 					 (upcase (car b))))))
       (insert (cdr item) "\n"))))
 
+(defun opml-find-name (opml name)
+  "Find outline node with title attribute NAME
+in parsed XML OPML."
+  (catch 'name
+    (dolist (outline (xml-get-children (first (xml-get-children (first opml)
+								'body))
+				       'outline))
+      (when (string= (xml-get-attribute outline 'title) name)
+	(throw 'name outline)))))
+
+(defun venus-import-opml-folder (file name)
+  "Import an OPML file."
+  (interactive "fOPML file: \nsFolder Name: ")
+  (let ((opml (xml-parse-file file))
+	result)
+    (dolist (outline (xml-get-children (opml-find-name opml name)
+				       'outline))
+      (let ((feed (xml-get-attribute-or-nil outline 'xmlUrl))
+	    (name (xml-get-attribute-or-nil outline 'text)))
+	(when (and feed name)
+	  (setq result (cons (cons name feed) result)))))
+    (dolist (item (nreverse result))
+      (insert "[" (cdr item) "]\n"
+	      "name = " (car item) "\n"))))
 
 (define-generic-mode 'htaccess-mode
   '(?#)
   '( ;; core
-    "AcceptPathInfo" "AccessFileName" "AddDefaultCharset" "AddOutputFilterByType"
+    "AcceptPathInfo" "AccessFileName" "AddDefaultCharset"
+    "AddOutputFilterByType"
     "AllowEncodedSlashes" "AllowOverride" "AuthName" "AuthType"
-    "CGIMapExtension" "ContentDigest" "DefaultType" "DocumentRoot"
+    "CGIMapExtension" "ContentDigest" "DefaultType" "DirectoryIndex"
+    "DocumentRoot"
     "EnableMMAP" "EnableSendfile" "ErrorDocument" "ErrorLog"
     "FileETag" "ForceType" "HostnameLookups" "IdentityCheck"
     "Include" "KeepAlive" "KeepAliveTimeout" "LimitInternalRecursion"
-    "LimitRequestBody" "LimitRequestFields" "LimitRequestFieldSize" "LimitRequestLine"
+    "LimitRequestBody" "LimitRequestFields" "LimitRequestFieldSize"
+    "LimitRequestLine"
     "LimitXMLRequestBody" "LogLevel" "MaxKeepAliveRequests" "NameVirtualHost"
     "Options" "Require" "RLimitCPU" "RLimitMEM"
     "RLimitNPROC" "Satisfy" "ScriptInterpreterSource" "ServerAdmin"
@@ -360,7 +387,8 @@ Note that comments between URL and name will stay where they are."
 	 ("#emacs" "#rcirc" "#wiki" "#oddmuse" "#epfarms"
 	  "#hcoop" "#clojure" "#biology"
 	  "#eclipse" "#eclipse-de" "#osgi"
-	  "#googlewavebots" "#googlewave"))
+	  "#googlewavebots" "#googlewave"
+	  "#ubuntu"))
 	("localhost" :channels ("&bitlbee"))
 	("ircnet.eversible.com" :channels ("#drsrm"))
 	;; ("irc.lugs.ch"   :channels ("#hackerfunk"))
@@ -402,6 +430,15 @@ Note that comments between URL and name will stay where they are."
 		      (symbol-name rcirc-encode-coding-system))
        (set (make-local-variable 'rcirc-encode-coding-system)
 	    (intern-soft arg)))))
+
+(eval-after-load 'rcirc
+  '(defun-rcirc-command sv (arg)
+     "Tell everybody about `emacs-version'."
+     (interactive)
+     (rcirc-send-message process target
+			 (replace-regexp-in-string
+			  "\n *" " "
+			  (concat "I use " (emacs-version))))))
 
 (defun rcirc-unfill ()
   (interactive)

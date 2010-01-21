@@ -2,8 +2,8 @@
 
 ;; Author: Takayuki YAMAGUCHI <d@ytak.info>
 ;; Keywords: LaTeX TeX
-;; Version: 0.4.1
-;; Created: Wed Dec  9 09:36:47 2009
+;; Version: 0.4.2
+;; Created: Wed Jan 20 22:17:54 2010
 ;; URL: http://www.emacswiki.org/latex-math-preview.el
 ;; Site: http://www.emacswiki.org/LaTeXMathPreview
 
@@ -17,7 +17,7 @@
 ;; for details of tex-math-preview.el.
 
 ;; Copyright 2006, 2007, 2008, 2009 Kevin Ryde
-;; Copyright 2009 Takayuki YAMAGUCHI
+;; Copyright 2009, 2010 Takayuki YAMAGUCHI
 ;;
 ;; This program is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free Software
@@ -50,8 +50,15 @@
 ;; M-x `latex-math-preview-save-image-file' make an image for the same object
 ;; as `latex-math-preview-expression' and save it as a file which is png or eps.
 ;; When making an image, this command may remove number of mathematical formulas.
+;; 
+;; Buffer local variable `latex-math-preview-usepackage-cache' has
+;; the values of \usepackage for previewing.
+;; If you want to reload this variable, you use
+;; M-x `latex-math-preview-reload-usepackage'.
 
 ;; Requirements;
+;; You need to install the following softwares.
+;; 
 ;;  - Emacs (version 22 or 23) on Linux or Meadow3 on Windows.
 ;;  - dvipng
 ;;  - dvips
@@ -227,6 +234,9 @@
 ;;       "cache directory in your system")
 
 ;; ChangeLog:
+;; 2010/01/20 version 0.4.2 yamaguchi
+;;     Add buffer local variable `latex-math-preview-usepackage-cache'
+;;     for splitted tex files.
 ;; 2009/12/09 version 0.4.1 yamaguchi
 ;;     Add some key binding on latex-math-preview-expression-mode-map.
 ;; 2009/12/08 version 0.4.0 yamaguchi
@@ -730,22 +740,56 @@ If you use YaTeX mode then the recommended value of this variable is YaTeX-in-ma
 
 ;;-----------------------------------------------------------------------------
 
+(defvar latex-math-preview-usepackage-cache nil)
+(make-variable-buffer-local 'latex-math-preview-usepackage-cache)
+
 (defun latex-math-preview-search-header-usepackage ()
   "Return list of \\usepackage which is used in current buffer."
   (save-excursion
-    (let ((cmds) (beg-doc) (tmp-str))
+    (let (cmds beg-doc tmp-str)
       (goto-char (point-min))
       (if (search-forward "\\begin{document}" nil t)
 	  (setq beg-doc (point)) (setq beg-doc (point-max)))
       (goto-char (point-min))
       (while (re-search-forward "\\\\usepackage[^}]*}" beg-doc t)
-	(setq tmp-str (match-string 0))
-	;; (add-to-list 'cmds tmp-str)
+	(setq tmp-str (match-string-no-properties 0))
 	(save-excursion 
 	  (if (not (re-search-backward "\\(^\\|[^\\\\]\\)%" (line-beginning-position) t))
-	      (add-to-list 'cmds tmp-str)))
-	)
+	      (add-to-list 'cmds tmp-str))))
       (nreverse cmds))))
+
+(defun latex-math-preview-search-header-usepackage-other-file (filename)
+  "Return list of \\usepackage in other file."
+  (if (and (file-exists-p filename) (not (file-directory-p filename)))
+      (with-temp-buffer
+	(insert-file-contents filename)
+	(goto-char (point-min))
+	(latex-math-preview-search-header-usepackage))
+    nil))
+
+(defun latex-math-preview-get-header-usepackage ()
+  "Return cache of usepackage and create cache data if needed"
+  (if (not latex-math-preview-usepackage-cache)
+      (let (cache)
+	(setq cache (latex-math-preview-search-header-usepackage))
+	(if (and (not cache)
+		 (let ((filename (buffer-file-name (current-buffer))))
+		   (and filename (string-match "\\.tex" (buffer-file-name (current-buffer))))))
+	    (setq cache (latex-math-preview-search-header-usepackage-other-file
+			 (read-file-name "Main TeX file: " nil default-directory))))
+	(setq latex-math-preview-usepackage-cache (or cache t))))
+  (if (listp latex-math-preview-usepackage-cache)
+      latex-math-preview-usepackage-cache nil))
+
+(defun latex-math-preview-reload-usepackage (&optional other-file)
+  "Reload usepackage cache from current buffer. If you want to get the cache
+from other file, you use C-u M-x `latex-math-preview-reload-usepackage'."
+  (interactive "P")
+  (setq latex-math-preview-usepackage-cache
+	(if other-file
+	    (or (latex-math-preview-search-header-usepackage-other-file
+		 (read-file-name "Main TeX file: " nil default-directory)) t)
+	  (latex-math-preview-get-header-usepackage))))
 
 (defun latex-math-preview-bounds-of-latex-math ()
   "A `bounds-of-thing-at-point' function for a LaTeX mathematical expression.
@@ -801,7 +845,7 @@ If you use YaTeX, then you should use YaTeX-in-math-mode-p alternatively."
   "Make temporary tex file including MATH-EXP in TMPDIR and compile it."
   (let* ((dot-tex (concat latex-math-dir "/" latex-math-preview-temporary-file-prefix ".tex"))
 	 (dot-dvi (concat latex-math-dir "/" latex-math-preview-temporary-file-prefix ".dvi"))
-	 (usepck (or usepackages (latex-math-preview-search-header-usepackage)
+	 (usepck (or usepackages (latex-math-preview-get-header-usepackage)
 		     latex-math-preview-latex-usepackage-for-not-tex-file))
 	 (tempfile-str (concat template-header
 			       (if usepck (mapconcat 'identity usepck "\n") "")
