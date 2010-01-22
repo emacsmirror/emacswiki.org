@@ -258,6 +258,12 @@ I used your github mail address, is that working?
 -- LennartBorgman
 
 [new]
+Hi Lennart. Your preview addition makes zencoding-mode unusable for emacs -nw.
+The preview is shown, but it cannot be selected.
+Can you please either fix this, or maybe disable this behaviour as a default?
+Thanks.
+
+[new]
 I received them but didn't check my mail last night! Thanks for the changes but I'm afraid I've already added zencoding- prefixes to all symbols on an updated version. I'll create a github project and add you as a project owner and then we can share push rights! It will appear under http://github.com/chrisdone/zencoding once I've set it up. -- [[ChrisDone]]
 
 [new]

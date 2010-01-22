@@ -1,0 +1,40 @@
+== Focus and the Minibuffer ==
+
+Sometimes, I click in another [[window]] while the [[minibuffer]] is active, removing focus from the minibuffer window.  Because the minibuffer window is so narrow, it's difficult to click inside it with the mouse. And most of the time I'd like to cancel the minibuffer action rather than continue it.  This page defines [[command]]s you can bind to [[key]]s to return the focus to the minibuffer. -- [[jpkotta]]
+
+
+=== Refocus to Quit Minibuffer ===
+
+This command quits the minibuffer no matter where the current focus is.
+
+<pre>
+(defun minibuffer-quit ()
+  "Quit the minibuffer command, even when the minibuffer loses focus."
+  (interactive)
+  (when (active-minibuffer-window)
+    (save-window-excursion
+      (select-window (minibuffer-window))
+      (keyboard-escape-quit))))
+(global-set-key (kbd "C-M-g") 'minibuffer-quit)
+</pre>
+
+
+=== Refocus Minibuffer ===
+
+This command returns the focus to the minibuffer, no matter which window is currently selected.
+
+<pre>
+(defun minibuffer-refocus ()
+  "Refocus the minibuffer if it is waiting for input."
+  (interactive)
+  (when (active-minibuffer-window)
+    (message "") ;; clear the echo area, in case it overwrote the minibuffer
+    (select-window (minibuffer-window))))
+(global-set-key (kbd "C-M-g") 'minibuffer-refocus)
+</pre>
+
+
+
+
+----
+CategoryWindows

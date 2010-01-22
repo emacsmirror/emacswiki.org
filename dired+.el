@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Sun Jan 10 21:23:12 2010 (-0800)
+;; Last-Updated: Thu Jan 21 10:38:32 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 2307
+;;     Update #: 2365
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -21,7 +21,7 @@
 ;;   `ediff-merg', `ediff-mult', `ediff-util', `ediff-wind',
 ;;   `fit-frame', `info', `info+', `misc-fns', `mkhtml',
 ;;   `mkhtml-htmlize', `strings', `thingatpt', `thingatpt+',
-;;   `w32-browser'.
+;;   `w32-browser', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -121,8 +121,9 @@
 ;;
 ;;    `diredp-all-files', `diredp-do-grep-1',
 ;;    `diredp-fewer-than-2-files-p', `diredp-find-a-file-read-args',
-;;    `diredp-subst-find-alternate-for-find',
-;;    `diredp-subst-find-for-find-alternate', `diredp-this-subdir'.
+;;    `diredp-make-find-file-keys-reuse-dirs',
+;;    `diredp-make-find-file-keys-not-reuse-dirs',
+;;    `diredp-this-subdir'.
 ;;
 ;;  Variables defined here:
 ;;
@@ -178,6 +179,11 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/01/21 dadams
+;;     Renamed:
+;;       diredp-subst-find-alternate-for-find to diredp-make-find-file-keys-reuse-dirs
+;;       diredp-subst-find-for-find-alternate to diredp-make-find-file-keys-not-reuse-dirs.
+;;     diredp-make-find-file-keys(-not)-reuse-dirs: Handle also dired(-mouse)-w32-browser.
 ;; 2010/01/10 dadams
 ;;     Added: face diredp-inode+size.  Use in diredp-font-lock-keywords-1.
 ;;     diredp-font-lock-keywords-1: Allow decimal point in file size.  Thx to Regis.
@@ -1434,7 +1440,6 @@ Don't forget to mention your Emacs and library versions."))
  
 ;;; Function Definitions
 
-
 (defun diredp-fileset (flset-name)
   "Open Dired on the files in fileset FLSET-NAME."
   (interactive
@@ -1653,25 +1658,27 @@ As a side effect, killed dired buffers for DIR are removed from
     (set-buffer-modified-p nil)
     (find-alternate-file (dired-get-file-for-visit))))
 
+;;;###autoload
 (defun diredp-find-file-reuse-dir-buffer ()
-  "Like `dired-find-file', but reuse buffer if target is a directory."
+  "Like `dired-find-file', but reuse Dired buffers.
+Unlike `dired-find-alternate-file' this does not use
+`find-alternate-file' if the target is not a directory."
   (interactive)
   (set-buffer-modified-p nil)
   (let ((file  (dired-get-file-for-visit)))
-    (if (file-directory-p file)
-        (find-alternate-file file)
-      (find-file file))))
+    (if (file-directory-p file) (find-alternate-file file) (find-file file))))
 
 ;;;###autoload
 (defun diredp-mouse-find-file-reuse-dir-buffer (event)
-  "Like `diredp-mouse-find-file', but reuse buffer for a directory."
+  "Like `diredp-mouse-find-file', but reuse Dired buffers.
+Unlike `dired-find-alternate-file' this does not use
+`find-alternate-file' if the target is not a directory."
   (interactive "e")
   (let (file)
     (save-excursion
       (set-buffer (window-buffer (posn-window (event-end event))))
-      (save-excursion
-        (goto-char (posn-point (event-end event)))
-        (setq file (dired-get-file-for-visit))))
+      (save-excursion (goto-char (posn-point (event-end event)))
+                      (setq file (dired-get-file-for-visit))))
     (select-window (posn-window (event-end event)))
     (if (file-directory-p file)
         (find-alternate-file (file-name-sans-versions file t))
@@ -1679,34 +1686,49 @@ As a side effect, killed dired buffers for DIR are removed from
 
 ;;;###autoload
 (defun toggle-dired-find-file-reuse-dir (force-p)
-  "Toggle whether Dired `find-file' commands use alternate file.
-Non-nil prefix arg FORCE-P => Use alternate file iff FORCE-P >= 0."
+  "Toggle whether Dired `find-file' commands reuse directories.
+A prefix arg specifies directly whether or not to reuse.
+ If its numeric value is non-negative then reuse; else do not reuse.
+
+To set the behavior as a preference (default behavior), put this in
+your ~/.emacs, where VALUE is 1 to reuse or -1 to not reuse:
+
+ (toggle-dired-find-file-reuse-dir VALUE)"
   (interactive "P")
   (if force-p                           ; Force.
       (if (natnump (prefix-numeric-value force-p))
-          (diredp-subst-find-alternate-for-find)
-        (diredp-subst-find-for-find-alternate))
+          (diredp-make-find-file-keys-reuse-dirs)
+        (diredp-make-find-file-keys-not-reuse-dirs))
     (if (where-is-internal 'dired-find-file dired-mode-map 'ascii)
-        (diredp-subst-find-alternate-for-find)
-      (diredp-subst-find-for-find-alternate))))
+        (diredp-make-find-file-keys-reuse-dirs)
+      (diredp-make-find-file-keys-not-reuse-dirs))))
 
 ;;;###autoload
 (defalias 'diredp-toggle-find-file-reuse-dir 'toggle-dired-find-file-reuse-dir)
 
-(defun diredp-subst-find-alternate-for-find ()
-  "Use find-alternate-file commands in place of find-file commands."
+(defun diredp-make-find-file-keys-reuse-dirs ()
+  "Make find-file keys reuse Dired buffers."
   (substitute-key-definition 'dired-find-file 'diredp-find-file-reuse-dir-buffer dired-mode-map)
-  (substitute-key-definition 'diredp-mouse-find-file 'diredp-mouse-find-file-reuse-dir-buffer
-                             dired-mode-map)
-  (message "Accessing directories in Dired will REUSE the buffer"))
+  (substitute-key-definition 'diredp-mouse-find-file
+                             'diredp-mouse-find-file-reuse-dir-buffer dired-mode-map)
+  ;; These commands are defined in `w32-browser.el' (for use with MS Windows).
+  (substitute-key-definition 'dired-w32-browser
+                             'dired-w32-browser-reuse-dir-buffer dired-mode-map)
+  (substitute-key-definition 'dired-mouse-w32-browser
+                             'dired-mouse-w32-browser-reuse-dir-buffer dired-mode-map)
+  (message "Reusing Dired buffers is now ON"))
 
-(defun diredp-subst-find-for-find-alternate ()
-  "Don't use find-alternate-file commands in place of find-file commands."
+(defun diredp-make-find-file-keys-not-reuse-dirs ()
+  "Make find-file keys not reuse Dired buffers (i.e. act normally)."
   (substitute-key-definition 'diredp-find-file-reuse-dir-buffer 'dired-find-file dired-mode-map)
-  (substitute-key-definition 'diredp-mouse-find-file-reuse-dir-buffer 'diredp-mouse-find-file
-                             dired-mode-map)
-  (message "Accessing directories in Dired will NOT reuse the buffer"))
-
+  (substitute-key-definition 'diredp-mouse-find-file-reuse-dir-buffer
+                             'diredp-mouse-find-file dired-mode-map)
+  ;; These commands are defined in `w32-browser.el' (for use with MS Windows).
+  (substitute-key-definition 'dired-w32-browser-reuse-dir-buffer
+                             'dired-w32-browser dired-mode-map)
+  (substitute-key-definition 'dired-mouse-w32-browser-reuse-dir-buffer
+                             'dired-mouse-w32-browser dired-mode-map)
+  (message "Reusing Dired buffers is now OFF"))
 
 ;;;###autoload
 (defun diredp-omit-marked ()

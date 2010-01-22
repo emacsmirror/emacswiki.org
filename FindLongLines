@@ -1,5 +1,7 @@
 This page is about moving the cursor to long lines and visualizing long lines.
 
+
+[:GoToLinesLongerThanN]
 == Go To Lines Longer than Some Limit ==
 
 There are various ways to go to lines that are longer than some limit. Some of them just count characters to determine line length; others take character width into account as well, so they are useful even with characters of variable width.
@@ -42,6 +44,12 @@ The following technique takes character width into account.
         (goto-char opoint)
         (message "Long line not found"))))
 
+
+
+
+
+
+[:GoToLongestLines]
 == Go To the Longest Line(s) ==
 
 [:goto-longest-line]
@@ -61,6 +69,11 @@ Example messages:
 If you repeat `goto-longest-line', it goes to the longest line following the current line. This destination is not necessarily the longest line, besides the current line, in the region or buffer; it is the longest line that occurs after the current line.
 
 I bind `goto-longest-line' to `C-x L'.  If you use IsearchPlus (library <tt>[[isearch+.el]]</tt>, then `goto-longest-line' is also bound to `C-end' during Isearch (`C-s C-end'). This has the added advantage that `C-g' puts you back where you started. -- DrewAdams
+
+
+
+
+
 
 [:ShowLongLines]
 == Visualizing Long Lines ==

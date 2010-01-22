@@ -242,6 +242,20 @@ su -c "$EMACSCLIENT --eval \"$EVALEXIT\"" $USERNAME
 The problem was that root didn't have an emacs server running.  It worked fine when running
 <code>/etc/init.d/emacs stop</code> as <code>$USERNAME</code>, but it would have failed during shutdown. --JasonBlevins
 
+Several more *bugs*
+
+* I needed to alter all uses of "~" in my .emacs (and related) files to the absolute path to my home directory.
+* <code>(user-login-name)</code> returns "root". I have a working hack, but it's probably not very advisable: I've changed the <code>DAEMON</code> and <code>DAEMON_ARGS</code> variables to run <code>emacs</code> using <code>su</code> allowing me to specify the <code>-l</code> switch to <code>su</code>:
+
+<pre>
+DAEMON=/bin/su
+DAEMON_ARGS="${USERNAME} -l -c emacs -- -daemon -u ${USERNAME}"
+</pre>
+
+And <code>start-stop-deamon</code> should be executed *without* the <code>-c $USERNAME</code> switch.
+
+--RichardLewis
+
 == Gentoo ==
 
 Gentoo includes support for running Emacs as a daemon in the

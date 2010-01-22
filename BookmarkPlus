@@ -25,7 +25,7 @@ This is perhaps the
      this info.
 
 * You can ''combine bookmarks'', to make composite, or sequence,
-  bookmarks.  Invoking a seqence bookmark invokes each of its
+  bookmarks.  Invoking a sequence bookmark invokes each of its
   component bookmarks in turn.  A component bookmark can itself
   be a sequence bookmark.
 
@@ -34,7 +34,7 @@ This is perhaps the
      activated (see option '''`bookmarkp-use-region-flag'''').  (Region
      activation is not supported for Gnus bookmarks.)
 
-* Bookmarks are relocated better when the contextual text changes.  By default, when you visit a bookmark that requires relocation, the bookmark is then saved with the new, relocated position information. If you want to turn off this automatic saving, then customize user option '''`bookmark-save-new-location-flag'''' to `nil'.
+* Bookmarks are relocated better than for vanilla Emacs when the contextual text changes.  By default, when you visit a bookmark that requires relocation, the bookmark is then saved with the new, relocated position information. If you want to turn off this automatic saving, then customize user option '''`bookmark-save-new-location-flag'''' to `nil'.
 
 
 
@@ -72,7 +72,7 @@ This is buffer `##*Bookmark List*##', aka the bookmark "menu list", which you di
 
 * You can regexp-search (`M-a') or query-replace (`M-q') the
      targets (destination files or buffers) of the marked bookmarks, in the
-     current sort order.  For Emacs 23 and later, you can search
+     current bookmark-list sort order.  For Emacs 23 and later, you can even search
      incrementally (`M-x a C-s', or `M-x a C-M-s' for [[regexp]]).
 
 * You can save the current bookmark-list state and return to it
@@ -82,7 +82,7 @@ This is buffer `##*Bookmark List*##', aka the bookmark "menu list", which you di
 * You can edit a bookmark (its name and file name).
 
 * A complete menu, '''`##Bookmark+##'''', is provided on the [[menu bar]].
-Use it in particular when you don't remember a key binding.
+Use it, in particular, when you don't remember a key binding.
 The same menu is available on `C-mouse-3'.
 
 * A popup menu is available on `mouse-3', with actions for the
@@ -95,12 +95,12 @@ individual bookmark you point to.
 === Additional types of bookmarks. ===
 
 * You can bookmark a [[DiredMode|Dired]] buffer, recording and restoring its
-     switches, which files are marked, which subdirectories are inserted, and which (sub)directories are hidden.
+     `ls' switches, which files are marked, which subdirectories are inserted, and which (sub)directories are hidden.
 
 * You can bookmark a [[buffer]] that is not associated with a file. 
 
 * You can bookmark a [[Gnus]] article, a URL (if you use [[w3m|W3M]]), a PDF file (%%DocView%%), an image, or a UNIX manual page (from the output of Emacs
-     command `woman' or `man').
+     command `man' or `woman').
 
 * A bookmark can represent a function, which is invoked when
 you "jump" to the bookmark.
@@ -109,7 +109,7 @@ you "jump" to the bookmark.
 other bookmarks.
 
 * You can bookmark buffer `##*Bookmark List*##' itself.  Jumping to such a
-  bookmark restores the sort order, filter, title, and omit
+  bookmark restores the recorded sort order, filter, title, and omit
   list (see [[#OmittingBookmarks]]).
 
 
@@ -117,7 +117,7 @@ other bookmarks.
 
 === Type-Specific Jump Commands ===
 
-* When you want to jump to a bookmark of a specific type (e.g. Dired), you can use a command that offers only such bookmarks as candidates.
+* When you want to jump to a bookmark of a specific type (e.g. Dired), you can use a command that offers only such bookmarks as [[completion]] candidates.
 
 
 
@@ -127,7 +127,7 @@ other bookmarks.
 === Synergy with Icicles. ===
 
 If you use '''[[Icicles]]''', then you can use `S-delete' during
-     [[completion]] for a bookmark name, to delete selected bookmarks on the fly.  You can delete any number of bookmarks this way, during a single invocation of a bookmark command.
+     completion for a bookmark name, to delete selected bookmarks on the fly.  You can delete any number of bookmarks this way, during a single invocation of a bookmark command.
 
 In addition, '''Icicles''' provides enhanced
 bookmark visiting and setting.  In ''Icicle'' mode, several of the '''Bookmark+''' keys are remapped to corresponding '''Icicles''' [[multi-command]]s.
@@ -297,7 +297,7 @@ stepping stone to the files and directories you use most.
 
 If, for example, when you quit the bookmark list you are showing only bookmarks to [[Info]] nodes and UNIX manual pages, sorted in a particular way, and with some of them marked for particular processing, then the next time you open the list the same state is restored: the same set of bookmarks is shown, in the same order, with the same markings.
 
-You can turn off this automatic state saving, if you want, by customizing option '''`bookmarkp-bmenu-state-file'''' to `nil'. And you can toggle this option at any time, using '''`C-t'''' in the bookmark list. In particular, if you want your next visit to the bookmark list to start out with a ''previously'' recorded state instead of the current state, just hit `C-t' before quitting the bookmark list or Emacs.
+You can turn off this automatic state saving, if you want, by customizing option '''`bookmarkp-bmenu-state-file'''' to `nil'. And you can toggle this option at any time, using '''`C-t'''' in the bookmark list. In particular, if you want your next visit to the bookmark list to start out with a ''previously'' recorded state instead of the current state, just hit `C-t' before quitting the bookmark list.
 
 
 
@@ -474,7 +474,7 @@ tagged both `Java' and `ide'?
 
 How would you sort your bookmarks, to show all those tagged both `blue' and `moon' first?
 
-# `##T m * blue moon##', to mark them.
+# `##T m * blue RET moon RET RET##', to mark them.
 
 # `##s >##' to sort the marked bookmarks first (see [[#SortingBookmarks]], below).
 
@@ -489,14 +489,14 @@ How would you query-replace the set of files that are tagged with
 # `##T m + alpha RET beta RET gamma RET RET##', to mark the
 bookmarks that have at least one of those tags.
 
-# `##T u + blue RET red##', to unmark those that are blue or red.
+# `##T u + blue RET moon RET RET##', to unmark those that are tagged `blue' or `moon'.
 
 # `M-q' to query-replace the marked files.
 
 
 If that were a set of files that you used often, then you would name the set by giving the files a new tag.
 
-The point is that bookmarks, and bookmark tags in particular, let you define and manipulate sets of Emacs objects. It doesn't matter how you define such a set: regexp matching (marking, filtering), by object type, by tag combinations... Sets need not be named to act on them, but you can provide them with persistent names (tags) to save redefining them over and over. Manipulation of bookmarked objects includes visiting, searching, and query-replacing. And you can define your own bookmark types (using bookmark handlers) and associated manipulations.
+The point is that bookmarks, and bookmark tags in particular, let you define and manipulate sets of Emacs objects. It doesn't matter how you define such a set: regexp matching (marking, filtering), by object type, by tag combinations... Sets need not be named to act on them, but you can provide them with persistent names (tags) to avoid redefining them over and over. Manipulation of bookmarked objects includes visiting, searching, and query-replacing. And you can define your own bookmark types (using bookmark handlers) and associated manipulations.
 
 
 
@@ -601,7 +601,7 @@ For example:
 # `t' -- __T__oggle the marked and unmarked (so unmarked are now marked)
 # `D' -- __D__elete all of the marked bookmarks (after confirming)
 
-That deletes all file bookmarks that match the regexp and all
+Together, steps 1-7 delete all file bookmarks that match the regexp and all
 region bookmarks that you selectively marked.
 
 
@@ -665,7 +665,7 @@ access.
 Bookmarks shown in the bookmark list are sorted using the current
 value of option '''`bookmark-sort-function''''.  (If that is `nil', they are
 unsorted, which means they appear in reverse chronological
-order of their creation..)
+order of their creation.)
 
 You can use '''`##s s##''''... (repeat hitting the `s' key) to cycle among
 the various sort orders possible, updating the display

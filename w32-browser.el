@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2010, Drew Adams, all rights reserved.
 ;; Created: Thu Mar 11 13:40:52 2004
 ;; Version: 21.0
-;; Last-Updated: Tue Jan 12 16:56:23 2010 (-0800)
+;; Last-Updated: Thu Jan 21 10:40:40 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 199
+;;     Update #: 209
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/w32-browser.el
 ;; Keywords: mouse, dired, w32, explorer
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -36,6 +36,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/01/21 dadams
+;;     Added: dired(-mouse)-w32-browser-reuse-dir-buffer.
 ;; 2010/01/12 dadams
 ;;     dired-mouse-w32-browser, dired-mouse-w32explore:
 ;;       save-excursion + set-buffer -> with-current-buffer.
@@ -101,7 +103,7 @@ If no associated application, then `find-file' FILE."
 If file is a directory, then `dired-find-file' instead.
 If no application is associated with file, then `find-file'."
     (interactive)
-    (let ((file (dired-get-filename nil t)))
+    (let ((file  (dired-get-filename nil t)))
       (if (file-directory-p file)
           (dired-find-file)
         (w32-browser (dired-replace-in-string "/" "\\" file)))))
@@ -119,6 +121,27 @@ If file is a directory or no application is associated with file, then
       (select-window (posn-window (event-end event)))
       (if (file-directory-p file)
           (find-file (file-name-sans-versions file t))
+        (w32-browser (file-name-sans-versions file t)))))
+
+  (defun dired-w32-browser-reuse-dir-buffer ()
+    "Like `dired-w32-browser', but reuse Dired buffers."
+    (interactive)
+    (let ((file  (dired-get-filename nil t)))
+      (if (file-directory-p file)
+          (find-alternate-file file)
+        (w32-browser (dired-replace-in-string "/" "\\" file)))))
+
+  (defun dired-mouse-w32-browser-reuse-dir-buffer (event)
+    "Like `dired-mouse-w32-browser', but reuse Dired buffers."
+    (interactive "e")
+    (let (file)
+      (with-current-buffer (window-buffer (posn-window (event-end event)))
+        (save-excursion
+          (goto-char (posn-point (event-end event)))
+          (setq file (dired-get-filename nil t))))
+      (select-window (posn-window (event-end event)))
+      (if (file-directory-p file)
+          (find-alternate-file (file-name-sans-versions file t))
         (w32-browser (file-name-sans-versions file t)))))
 
   (defun dired-multiple-w32-browser ()
@@ -191,7 +214,7 @@ If file is a directory or no application is associated with file, then
 ;;;         (define-key dired-mode-map [menu-bar immediate dired-w32-browser]
 ;;;           '("Open Associated Applications" . dired-multiple-w32-browser)))))
 
-)
+  )
 
 ;;;;;;;;
 

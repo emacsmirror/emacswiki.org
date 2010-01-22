@@ -97,7 +97,7 @@ You could also ##(setq tramp-chunksize 500)## to see if that helps.
 If you use zsh and Tramp hangs every time you try to connect, try placing this in your .zshrc:
 
 {{{
-[ $TERM = "dumb" ] && unsetopt zle && PS1='$ '
+[[ $TERM == "dumb" ]] && unsetopt zle && PS1='$ '
 }}}
 
 Alternatively, I had success using the following in my .zshrc:
@@ -110,7 +110,7 @@ I've noticed that preexec and precmd call also be noxious if they do fancy stuff
 I've ended up with:
 
 {{{
-if [ "$TERM" = "dumb" ]
+if [[ "$TERM" == "dumb" ]]
 then
   unsetopt zle
   unsetopt prompt_cr

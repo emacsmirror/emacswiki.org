@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Jan 20 17:01:45 2010 (-0800)
+;; Last-Updated: Thu Jan 21 17:39:54 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 8937
+;;     Update #: 8954
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -423,7 +423,7 @@
 ;;       on this info.
 ;;
 ;;     - You can combine bookmarks, to make composite, or sequence,
-;;       bookmarks.  Invoking a seqence bookmark invokes each of its
+;;       bookmarks.  Invoking a sequence bookmark invokes each of its
 ;;       component bookmarks in turn.  A component bookmark can itself
 ;;       be a sequence bookmark.
 ;;
@@ -432,8 +432,8 @@
 ;;       activated (see option `bookmarkp-use-region-flag').  (Region
 ;;       activation is not supported for Gnus bookmarks.)
 ;;
-;;     - Bookmarks are relocated better when the contextual text
-;;       changes.
+;;     - Bookmarks are relocated better than for vanilla Emacs when
+;;       the contextual text changes.
 ;;
 ;;  * Improvements for the bookmark list (buffer `*Bookmark List*',
 ;;    aka "menu list") that is displayed using `C-x r l'.
@@ -453,9 +453,9 @@
 ;;
 ;;     - You can regexp-search (`M-a') or query-replace (`M-q') the
 ;;       targets (destination file or buffers) of the marked
-;;       bookmarks, in the current sort order.  For Emacs 23 and
-;;       later, you can search incrementally (`M-x a C-s', or `M-x a
-;;       C-M-s' for regexp).
+;;       bookmarks, in the current bookmark-list sort order.  For
+;;       Emacs 23 and later, you can even search incrementally (`M-x a
+;;       C-s', or `M-x a C-M-s' for regexp).
 ;;
 ;;     - You can save the current bookmark-list state and return to it
 ;;       later.  There are a few ways to do this, including
@@ -465,7 +465,7 @@
 ;;     - You can edit a bookmark (its name and file name).
 ;;
 ;;     - A complete menu, `Bookmark+', is provided on the menu-bar.
-;;       Use it in particular when you don't remember a key binding.
+;;       Use it, in particular, when you don't remember a key binding.
 ;;       The same menu is available on `C-mouse-3'.
 ;;
 ;;     - A popup menu is available on `mouse-3', with actions for the
@@ -474,14 +474,14 @@
 ;;  * Additional types of bookmarks.
 ;;
 ;;     - You can bookmark a Dired buffer, recording and restoring its
-;;       switches, which files are marked, which subdirectories
+;;       `ls' switches, which files are marked, which subdirectories
 ;;       are inserted, and which (sub)directories are hidden.
 ;;
 ;;     - You can bookmark a buffer that is not associated with a file.
 ;;
 ;;     - You can bookmark a Gnus article, a URL (if you use W3M), a
 ;;       PDF file (DocView), an image, or a UNIX manual page (from the
-;;       output of Emacs command `woman' or `man').
+;;       output of Emacs command `man' or `woman').
 ;;
 ;;     - A bookmark can represent a function, which is invoked when
 ;;       you "jump" to the bookmark.
@@ -490,14 +490,15 @@
 ;;       other bookmarks.
 ;;
 ;;     - You can bookmark buffer *Bookmark List* itself.  Jumping to
-;;       such a bookmark restores the sort order, filter, title, and
-;;       omit list (see (@> "Omitting Bookmarks from Display")).
+;;       such a bookmark restores the recorded sort order, filter,
+;;       title, and omit list (see (@> "Omitting Bookmarks from
+;;       Display")).
 ;;
 ;;  * Type-specific jump commands.
 ;;
 ;;     - When you want to jump to a bookmark of a specific type
 ;;       (e.g. Dired), you can use a command that offers only such
-;;       bookmarks as candidates.
+;;       bookmarks as completion candidates.
 ;;
 ;;  * Synergy with Icicles.
 ;;
@@ -673,8 +674,7 @@
 ;;  can toggle this option at any time, using `C-t' in the bookmark
 ;;  list.  In particular, if you want your next visit to the bookmark
 ;;  list to start out with a previously recorded state instead of the
-;;  current state, just hit `C-t' before quitting the bookmark list or
-;;  Emacs.
+;;  current state, just hit `C-t' before quitting the bookmark list.
 ;;
 ;;
 ;;(@* "State-Restoring Commands and Bookmarks")
@@ -853,7 +853,7 @@
 ;;  How would you sort your bookmarks, to show all those tagged both
 ;;  `blue' and `moon' first?
 ;;
-;;  1. `T m * blue moon', to mark them.
+;;  1. `T m * blue RET moon RET RET', to mark them.
 ;;  2. `s >' to sort the marked bookmarks first
 ;;     (see (@> "Sorting Bookmarks"), below).
 ;;
@@ -868,7 +868,8 @@
 ;;    1. `F S', to show only the file bookmarks.
 ;;    2. `T m + alpha RET beta RET gamma RET RET', to mark the
 ;;       bookmarks that have at least one of those tags.
-;;    3. `T u + blue RET red', to unmark those that are blue or red.
+;;    3. `T u + blue RET moon RET RET', to unmark those that are
+;;       tagged `blue' or `moon'.
 ;;    4. `M-q' to query-replace the marked files.
 ;;
 ;;  If that were a set of files that you used often, then you would
@@ -879,7 +880,7 @@
 ;;  matter how you define such a set: regexp matching (marking,
 ;;  filtering), by object type, by tag combinations...  Sets need not
 ;;  be named to act on them, but you can provide them with persistent
-;;  names (tags) to save redefining them over and over.  Manipulation
+;;  names (tags) to avoid redefining them over and over.  Manipulation
 ;;  of bookmarked objects includes visiting, searching, and
 ;;  query-replacing.  And you can define your own bookmark types
 ;;  (using bookmark handlers) and associated manipulations.
@@ -964,8 +965,8 @@
 ;;    Use `t' to swap marked and unmarked (so unmarked are now marked)
 ;;    Use `D' to delete all of the marked bookmarks (after confirming)
 ;;
-;;  That deletes all file bookmarks that match the regexp and all
-;;  region bookmarks that you selectively marked.
+;;  Together, steps 1-7 delete all file bookmarks that match the
+;;  regexp and all region bookmarks that you selectively marked.
 ;;
 ;;
 ;;(@* "Omitting Bookmarks from Display")

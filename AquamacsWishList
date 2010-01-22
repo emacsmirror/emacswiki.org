@@ -304,3 +304,12 @@ EricBrown: I love the LaTeX environment, but I would like to have a keyboard sho
 
 [new]
 pogopop77: I've always wondered why Emacs never implemented automatic highlighting of C/C++ code within a #if 0 ... #endif construct as a comment.  Vim does it.  It shouldn't be terribly difficult.  I can't think of an argument against it.  And no, hiding the block of code is not the same thing!  Aquamacs has addressed so many other gripes I've had with Emacs, I guess I'm just surprised it's not already in there (is it?)
+
+[new]
+BradAnderson: Where would one change Aquamacs around to successfully interact with Applescript requests?  I'm trying:
+<pre>
+tell application "Aquamacs"
+	get bounds of front window
+end tell
+</pre>
+and I receive:  "Aquamacs got an error: Can’t get bounds of window 1."  Eventually, I want to set bounds as well.  I just built from source and it's still an issue.
