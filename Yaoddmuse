@@ -467,8 +467,14 @@ class="error"><h1>Password
 and even if I give it a valid page name I get this error: "Get page 'HomePage' form 'MyWiki' failed."
 If I make the wiki public there are no problems, and if I make it private again in the same emacs session (after accessing it as a public wiki) I can still access it as normal. 
 
-[new]
-
+[new:Memnon Anon:2010-01-22 12:48 UTC]
+Hi, I just started using yaoddmuse (again), so sorry if this is a stupid question.
+I just delete my old Homepage with yaoddmuse-delete. I kind of expected a way to 
+enter a comment (like it is [[http://www.emacswiki.org/emacs/MinorEdit suggested]]), but
+there was no prompt. Probably, I had used yaoddmuse-toogle-minor previously. Is there
+any way to have yaoddmuse-delete //always// prompt me for a comment, regardless of the 
+minor state? If there is one, is there a reason this is not default? I think no matter which
+wiki you edit, deleting a page demands for an explanation, no?
 ----
 CategoryHypermedia
 

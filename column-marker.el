@@ -6,9 +6,9 @@
 ;; Maintainer: Rick Bielawski <rbielaws@i1.net>
 ;; Created: Tue Nov 22 10:26:03 2005
 ;; Version: 
-;; Last-Updated: Thu Dec 10 09:26:44 2009 (-0800)
+;; Last-Updated: Fri Jan 22 11:28:48 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 311
+;;     Update #: 312
 ;; Keywords: tools convenience highlight
 ;; Compatibility: GNU Emacs 21, GNU Emacs 22, GNU Emacs 23
 ;; 
@@ -73,7 +73,7 @@
 ;; Other init file suggestions (examples):
 ;;
 ;; ;; Highlight column 80 in foo mode.
-;; (add-hook foo-mode-hook (lambda () (interactive) (column-marker-1 80)))
+;; (add-hook 'foo-mode-hook (lambda () (interactive) (column-marker-1 80)))
 ;;
 ;; ;; Use `C-c m' interactively to highlight with face `column-marker-1'.
 ;; (global-set-key [?\C-c ?m] 'column-marker-1)

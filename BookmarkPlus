@@ -81,12 +81,21 @@ This is buffer `##*Bookmark List*##', aka the bookmark "menu list", which you di
 
 * You can edit a bookmark (its name and file name).
 
+* A popup menu is available on '''`mouse-3'''', with actions for the
+individual bookmark you point to.
+
+:: [[image:BookmarkPlusThisBookmarkMenu]]
+
 * A complete menu, '''`##Bookmark+##'''', is provided on the [[menu bar]].
 Use it, in particular, when you don't remember a key binding.
-The same menu is available on `C-mouse-3'.
+The same menu is available on '''`C-mouse-3''''.
 
-* A popup menu is available on `mouse-3', with actions for the
-individual bookmark you point to.
+:: [[image:BookmarkPlusMenuBarMenu]]
+
+:: Submenus '''Mark''', '''Omit''', '''Tags''', '''Show''', '''Sort''', '''Define Command''':
+:: [[image:BookmarkPlusMenuBarMenuMark]] [[image:BookmarkPlusMenuBarMenuOmit]] [[image:BookmarkPlusMenuBarMenuTags]]
+:: [[image:BookmarkPlusMenuBarMenuShow]] [[image:BookmarkPlusMenuBarMenuSort]] [[image:BookmarkPlusMenuBarMenuDefineCommand]]
+
 
 
 

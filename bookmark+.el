@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Jan 21 17:39:54 2010 (-0800)
+;; Last-Updated: Fri Jan 22 11:19:46 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 8954
+;;     Update #: 8958
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -464,12 +464,12 @@
 ;;
 ;;     - You can edit a bookmark (its name and file name).
 ;;
+;;     - A popup menu is available on `mouse-3', with actions for the
+;;       individual bookmark you point to when you click the mouse.
+;;
 ;;     - A complete menu, `Bookmark+', is provided on the menu-bar.
 ;;       Use it, in particular, when you don't remember a key binding.
 ;;       The same menu is available on `C-mouse-3'.
-;;
-;;     - A popup menu is available on `mouse-3', with actions for the
-;;       individual bookmark you point to when you click the mouse.
 ;;
 ;;  * Additional types of bookmarks.
 ;;
@@ -7547,7 +7547,7 @@ bookmarkp-sequence-jump-display-function - How to display components")
 (define-key bookmarkp-bmenu-menubar-menu [bookmarkp-bmenu-quit]
   '(menu-item "Quit" bookmarkp-bmenu-quit))
 (define-key bookmarkp-bmenu-menubar-menu [bookmarkp-bmenu-mode-status-help]
-  '(menu-item "Help on Mode" bookmarkp-bmenu-mode-status-help))
+  '(menu-item "Current Status, Mode Help" bookmarkp-bmenu-mode-status-help))
 (define-key bookmarkp-bmenu-menubar-menu [bookmarkp-toggle-saving-menu-list-state]
   '(menu-item "Toggle Saving State on Quit" bookmarkp-toggle-saving-menu-list-state))
 (define-key bookmarkp-bmenu-menubar-menu [bookmark-bmenu-load]
@@ -7804,12 +7804,13 @@ bookmarkp-sequence-jump-display-function - How to display components")
                        '("Remove Some Tags" . bookmarkp-remove-tags)
                        '("Remove All Tags" . bookmarkp-remove-all-tags)
                        '("--")          ; ----------------------------------------
-                       '("Describe" . bookmarkp-bmenu-describe-this-bookmark)
                        '("Show Annotation" . bookmark-bmenu-show-annotation)
                        '("Edit Annotation" . bookmark-bmenu-edit-annotation)
                        '("Edit Name, File Name" . bookmarkp-bmenu-edit-bookmark)
                        '("Rename" . bookmark-bmenu-rename)
                        '("Relocate" . bookmark-bmenu-relocate)
+                       '("--")          ; ----------------------------------------
+                       '("Describe" . bookmarkp-bmenu-describe-this-bookmark)
                        )
                '("" ("")))))))          ; No menu: not on a bookmark line.
       (when bookmarkp-bmenu-line-overlay (delete-overlay bookmarkp-bmenu-line-overlay))

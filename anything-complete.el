@@ -1,5 +1,5 @@
 ;;; anything-complete.el --- completion with anything
-;; $Id: anything-complete.el,v 1.72 2009/12/14 00:13:28 rubikitch Exp rubikitch $
+;; $Id: anything-complete.el,v 1.74 2010/01/23 04:18:18 rubikitch Exp rubikitch $
 
 ;; Copyright (C) 2008  rubikitch
 
@@ -96,6 +96,12 @@
 ;;; History:
 
 ;; $Log: anything-complete.el,v $
+;; Revision 1.74  2010/01/23 04:18:18  rubikitch
+;; `ac-new-input-source': temporarily disable shortcuts
+;;
+;; Revision 1.73  2009/12/25 01:35:59  rubikitch
+;; Adjust `anything-noresume' to latest version of `anything'
+;;
 ;; Revision 1.72  2009/12/14 00:13:28  rubikitch
 ;; New command: `alcs-update-restart'
 ;;
@@ -332,7 +338,7 @@
 
 ;;; Code:
 
-(defvar anything-complete-version "$Id: anything-complete.el,v 1.72 2009/12/14 00:13:28 rubikitch Exp rubikitch $")
+(defvar anything-complete-version "$Id: anything-complete.el,v 1.74 2010/01/23 04:18:18 rubikitch Exp rubikitch $")
 (require 'anything-match-plugin)
 (require 'thingatpt)
 
@@ -360,7 +366,7 @@
 ;; Warning: I'll change this function's interface. DON'T USE IN YOUR PROGRAM!
 (defun anything-noresume (&optional any-sources any-input any-prompt any-resume any-preselect any-buffer)
   (let (anything-last-sources anything-compiled-sources anything-last-buffer)
-    (anything any-sources any-input any-prompt any-resume any-preselect any-buffer)))
+    (anything any-sources any-input any-prompt 'noresume any-preselect any-buffer)))
 
 (defun anything-complete (sources target &optional limit idle-delay input-idle-delay)
   "Basic completion interface using `anything'."
@@ -628,7 +634,12 @@ used by `anything-lisp-complete-symbol-set-timer' and `anything-apropos'"
 
 (defun ac-new-input-source (prompt require-match &optional additional-attrs)
   (unless require-match
-    `((name . ,prompt) (dummy) ,@additional-attrs)))
+    `((name . ,prompt)
+      (init . (lambda () (setq anything-orig-enable-shortcuts anything-enable-shortcuts
+                               anything-enable-shortcuts nil)))
+      (cleanup . (lambda () (setq anything-enable-shortcuts anything-orig-enable-shortcuts)))
+      (dummy)
+      ,@additional-attrs)))
 (defun* ac-default-source (default &optional accept-empty (additional-attrs '((action . identity))))
   `((name . "Default")
     (default-value . ,(or default (and accept-empty "")))

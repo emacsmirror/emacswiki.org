@@ -13,6 +13,7 @@ This category is about editing, not modes.  See CategoryModes, instead.
 ** ZapToChar -- Delete the characters from [[point]] to a character you specify.
 ** KillOrCopyToIsearch -- [[kill|Kill]] or copy from [[point]] up to where you are Isearching 
 ** Motion/kill do-what-I-mean -- [[cursor]] movement and [[kill|killing]] [[DWIM]] functions.  Lisp:motion-and-kill-dwim.el
+** duplicate-previous/next-line lets you replace current line with a neighboring one by cycling through them like you can with history in Bash. I bind them to M-n and M-p.  Lisp:duplicate-line.el
 * [[register|Registers]]:
 ** RegAdhoc -- automatically add [[register]]s and show their destinations
 ** BetterRegisters -- [[register]] enhancements, [[keyboard macro]]s
