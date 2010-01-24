@@ -46,4 +46,6 @@ Sometimes, I use OrgMode. But org-mark-ring is a circular object. Use the follow
 -- AlexSchroeder
 
 ----
+
+CategoryPersistence
 SessionManagement

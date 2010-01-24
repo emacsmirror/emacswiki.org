@@ -1,6 +1,6 @@
 Saving session information in Emacs is made possible with CVS:desktop.el. More information is available from [[Manual:Saving Emacs Sessions]].
 
-== Loading files from a previous session at startup ==
+== Loading a Desktop Saved from a Previous Session at Startup ==
 
 Desktop will load, at startup, the buffers you were editing when you last quit Emacs.
 
@@ -8,13 +8,12 @@ In Emacs 22+, add the following to your .emacs file:
 
     (desktop-save-mode 1)
 
-    ;; Customization follows below
+You can add any extra variables you want saved across sessions to the list `desktop-globals-to-save'. For example:
+
     (setq history-length 250)
     (add-to-list 'desktop-globals-to-save 'file-name-history)
 
-In particular, you can add any extra variables you want saved across sessions to the list desktop-globals-to-save.
-
-In Emacs 21, you will need to use code like the following:
+In Emacs 20 and 21, use code like the following, instead:
 
     (desktop-load-default)
 
@@ -25,13 +24,16 @@ In Emacs 21, you will need to use code like the following:
     (desktop-read)
     (setq desktop-enable t)
 
-=== Specifying files not to be opened ===
+
+
+=== Specifying Files Not to be Opened ===
 
 You can specify buffers which should not be saved, by name or by mode, e.g.:
 
    (setq desktop-buffers-not-to-save
-        (concat "\\(" "^nn\\.a[0-9]+\\|\\.log\\|(ftp)\\|^tags\\|^TAGS"
-"\\|\\.emacs.*\\|\\.diary\\|\\.newsrc-dribble\\|\\.bbdb"
+        (concat "\\("
+                "^nn\\.a[0-9]+\\|\\.log\\|(ftp)\\|^tags\\|^TAGS"
+                "\\|\\.emacs.*\\|\\.diary\\|\\.newsrc-dribble\\|\\.bbdb"
 	        "\\)$"))
    (add-to-list 'desktop-modes-not-to-save 'dired-mode)
    (add-to-list 'desktop-modes-not-to-save 'Info-mode)
@@ -40,54 +42,46 @@ You can specify buffers which should not be saved, by name or by mode, e.g.:
 
 Since all lists will be truncated when saved, it is important to have
 a high default history length, for example.  If that is not enough,
-follow the suggestions in the doc-string of desktop-globals-to-save:
+follow the suggestions in the doc-string of `desktop-globals-to-save':
 
 : An element may be variable name (a symbol) or a cons cell of the form (VAR . MAX-SIZE), which means to truncate VAR's value to at most MAX-SIZE elements (if the value is a list) before saving the value.
 
-== Automatically saving the desktop periodically ==
 
-I (PaulTipper) got hacked off with having Xorg lock up on me during an Emacs session, thus losing all the changes to my desktop, so I knocked up the following config (neatened a bit from my messy .emacs, hopefully without breaking it).  This gives you a persistent single desktop, as opposed to multiple ones, and saves it every 5 minutes, which hopefully means you don't loose too much when something less reliable flakes out further up the chain.
+
+== Automatically Saving the Desktop Periodically ==
+
+I (PaulTipper) got hacked off with having Xorg lock up on me during an Emacs session, thus losing all the changes to my desktop, so I knocked up the following config (neatened a bit from my messy .emacs, hopefully without breaking it).  This gives you a persistent single desktop, as opposed to multiple ones, and saves it every 5 minutes, which hopefully means you don't lose too much when something less reliable flakes out further up the chain.
 
   (setq *foo-desktop-dir* (expand-file-name "~/.emacs.d/desktop"))
-
   (setq desktop-dir *foo-desktop-dir*)
   (setq desktop-path (list *foo-desktop-dir*))
-
   (desktop-save-mode 1) ;; Switch on desktop.el
-
   (setq *foo-desktop-file* (concatenate 'string desktop-dir
-                                        "/"
-                                        desktop-base-file-name))
-
+                                        "/" desktop-base-file-name))
   (setq *foo-desktop-lock* (concatenate 'string desktop-dir
-                                        "/"
-                                        desktop-base-lock-name))
-
+                                        "/" desktop-base-lock-name))
   (defun desktop-in-use-p ()
-    (and (file-exists-p *foo-desktop-file*)
-         (file-exists-p *foo-desktop-lock*)))
-
+    (and (file-exists-p *foo-desktop-file*) (file-exists-p *foo-desktop-lock*)))
   (defun autosave-desktop ()
-    (if (desktop-in-use-p)
-        (desktop-save-in-desktop-dir)))
-
+    (if (desktop-in-use-p) (desktop-save-in-desktop-dir)))
   ;; Can be switched off with (cancel-timer *foo-desktop-saver-timer*)
   (add-hook 'after-init-hook
              (lambda ()
                      (setq *foo-desktop-saver-timer*
                            (run-with-timer 5 300 'autosave-desktop))))
 
-== saving desktop with auto-save ==
 
-I prefer having the desktop save happen whenever idle, and tying it to the auto-save-hook works pretty well for that.  I'm starting to work on a new package called [[DesktopRecover|desktop-recover.el]] with some improvements like this. Alternately, you can just add something like this to your .emacs:
+
+== Auto-Saving the Desktop ==
+
+I prefer autosaving the desktop whenever Emacs is idle. Tying it to `auto-save-hook' works pretty well for that.  I'm starting to work on a new package called [[DesktopRecover|desktop-recover.el]] with some improvements like this. Alternatively, you can just add something like this to your [[init file]]:  -- [[Doom]]
 
   (require 'desktop)
   (desktop-save-mode 1)
-  (add-hook 'auto-save-hook
-             (lambda ()
-              (desktop-save-in-desktop-dir)))
+  (add-hook 'auto-save-hook (lambda () (desktop-save-in-desktop-dir)))
 
- -- [[Doom]]
+
+
 
 == Automatically Overriding Stale Locks ==
 
@@ -141,12 +135,10 @@ It works for me with one desktop, with more than one may need some tweaking.
 	     ;; desktop-remove clears desktop-dirname
 	     (setq desktop-dirname-tmp desktop-dirname)
 	     (desktop-remove)
-	     (setq desktop-dirname desktop-dirname-tmp)
-	     ))
+	     (setq desktop-dirname desktop-dirname-tmp)))
 
 (defun saved-session ()
-  (file-exists-p
-   (concat desktop-dirname "/" desktop-base-file-name)))
+  (file-exists-p (concat desktop-dirname "/" desktop-base-file-name)))
 
 ;; use session-restore to restore the desktop manually
 (defun session-restore ()
@@ -154,8 +146,7 @@ It works for me with one desktop, with more than one may need some tweaking.
   (interactive)
   (if (saved-session)
       (desktop-read)
-    (message "No desktop found."))
-  )
+    (message "No desktop found.")))
 
 ;; use session-save to save the desktop manually
 (defun session-save ()
@@ -165,23 +156,35 @@ It works for me with one desktop, with more than one may need some tweaking.
       (if (y-or-n-p "Overwrite existing desktop? ")
 	  (desktop-save-in-desktop-dir)
 	(message "Session not saved."))
-  (desktop-save-in-desktop-dir))
-  )
+  (desktop-save-in-desktop-dir)))
 
 ;; ask user whether to restore desktop at start-up
 (add-hook 'after-init-hook
 	  '(lambda ()
 	     (if (saved-session)
 		 (if (y-or-n-p "Restore desktop? ")
-		     (session-restore)))
-	     ))
+		     (session-restore)))))
 }}}
 
-Then type M-x session-save, or M-x session-restore whenever you want to
+Then type `M-x session-save', or `M-x session-restore' whenever you want to
 save or restore a desktop. Restored desktops are deleted from disk.
 
 
-== Open Questions ==
+
+
+== Desktops as Bookmarks ==
+
+The usual way to use a desktop is to (1) define (i.e., save) it as your final Emacs state, when you exit, and (2) restore it at the beginning of a new Emacs session. Library ##desktop.el ## provides for the possibility of having multiple saved desktops, but only one per directory. It searches your `desktop-path' to find a desktop file to load.
+
+If you use '''[[BookmarkPlus|Bookmark+]]''', then you can have any number of desktops and use them as bookmarks, jumping from one to another at any time. You create a desktop bookmark using '''`C-x r K'''' (command '''`bookmarkp-set-desktop-bookmark'''').
+
+Ordinary desktop files are used to record the information.
+The bookmark itself records only the location of the desktop file. Bookmarked desktops are intended to be used only as bookmarks, not in the ordinary way (e.g. at Emacs startup), so the locations of the desktop files used are unimportant. In particular, you can have any number of (bookmark) desktop files per directory.
+
+
+
+
+== Open Desktop Questions ==
 
 [new]
 I'm having trouble with desktop loading lazy loading, as my final line in .emacs is

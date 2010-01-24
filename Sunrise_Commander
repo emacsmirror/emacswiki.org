@@ -146,18 +146,20 @@ copy of it here:
 * http://joseito.republika.pl/sunrise-x-mirror.el.gz
 * Lisp:sunrise-x-mirror.el
 
-Be warned though, that for this extension to work you ABSOLUTELY must have:
+For this extension to work you must have:
 
-# fuse + AVFS support working with your Sunrise Commander installment.
-# fuse + funionfs installed and working in your OS.
-# Programs required for compressing: at least zip, jar and tar.
-# Your  AVFS  filesystem root must be mounted inside a directory where you
-  have writing access.
+# FUSE + AVFS support in your Sunrise Commander. If you can navigate (read-only)
+  inside compressed archives you already have this.
+# One  of funionfs or unionfs-fuse. Debian lenny (stable distribution)  provides
+  packages for both.
+# Programs required for compressing -- at least zip and tar.
+# Your  AVFS  mount point (and the value of variable sr-avfs-root)  must be in a
+  directory where you have writing access.
 
-This  means  that most probably this extension will work out-of-the-box on Linux
-(or other unices), but you'll have a hard time to make it work  on  Windows.  It
-was  written  on  GNU  Emacs  23  on Linux and tested on GNU Emacs 22 and 23 for
-Linux.
+All  this means is that most probably this extension will work out-of-the-box on
+Linux (or MacOS, or other unices), but you'll have a hard time to make  it  work
+on  Windows.  It was written on GNU Emacs 23 on Linux and tested on GNU Emacs 22
+and 23 for Linux.
 
 ----
 [:LoopExt]

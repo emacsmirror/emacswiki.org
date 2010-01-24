@@ -17,7 +17,7 @@ vim-mode currently supports the following aspects:
 * character-wise, line-wise and block visual-mode
 * changable key-bindings
 * framework for easy definition of new commands and motions
-* basic ex-mode (only latest revision)
+* ex-mode (only latest revision)
 
 == TODO ==
 
@@ -26,7 +26,10 @@ The following aspects are currently not implemented, but should be in future:
 * marks
 * registers
 * most of the text-object motions
-* some ex-mode stuff (search/substitude)
+* some ex-mode stuff (interactive substitude)
+* XEmacs compatibility
+* How about invisible text? That is currently a problem in Viper.
+** //Can you give examples of how viper behaves on invisible text and what you would expect?//
 * ...
 
 == Downloads ==

@@ -6,7 +6,7 @@ Memories:
 
 * Wiki:ErikNaggum
 * [http://open.salon.com/blog/kent_pitman/2009/06/24/erik_naggum_rip Erik Naggum, R.I.P. by Kent Pitman]
-* [http://rondam.blogspot.com/2009/06/my-dinner-with-erik.html My Dinner with Erik by Ron Garret] 
+* [http://rondam.blogspot.com/2009/06/my-dinner-with-erik.html My Dinner with Erik by Ron Garret]
 * [http://www.elfworld.org/vis_dag.php?id=643 Erik Naggum by Hogne Bø Pettersen]
 * [http://www.tbray.org/ongoing/When/200x/2009/06/20/Erik-Naggum Erik Naggum, R.I.P. by Tim Bray]
 * [http://www.open-voip.com/blogs/blog1/2009/06/20/erik-naggum-1965-2009-rip Erik Naggum, 1965-2009 RIP by Ruben Olson]
@@ -96,13 +96,26 @@ I believe he used Emacs, but preferred Common Lisp. Naggum is the author of <tt>
  Common Lisp environment that can compile their files and such things,
  not just an application that is fairly closed.
 
+[new]
+
+ From: Erik Naggum
+ Newsgroups: comp.lang.lisp
+ Subject: Re: Difference between LISP and C++
+ Date: 24 Oct 2002 03:46:40 +0000
+
+ Common Lisp code is very easy to write correctly when you figure out the
+ indentation that the editor does for you.  Do not fight the indentation,
+ no matter what you think about it.  If you think you know better, forget
+ it, you do not.
+
+
 == On elegance ==
 
  From: Erik Naggum
  Subject: read the fine manual, please
  Date: 1997/11/14
  Newsgroups: comp.emacs
- 
+
  the clumsiness of people who have to engage their brain at every step is
  unbearably painful to watch, at least to me, and that's what the
  novice-friendly software makes people do, because there's no elegance in

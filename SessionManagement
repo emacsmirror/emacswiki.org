@@ -1,23 +1,23 @@
-"Session Management" is the act of saving what you are doing when you quit
-Emacs (and end your session) and restoring as much as possible and useful
-next time you start Emacs (and want to resume your previous session).
+"Session Management" is the act of saving some of what you are doing  and restoring it later. Often your current state is saved when you quit
+Emacs and restored when you start a new session.
 
-* DeskTop -- saves and restores all open buffers
-* WcyDesktop -- similar to DeskTop, but faster by defering loading file.
-* DesktopMenu -- an extension of DeskTop that enables managing multiple desktops (possibly in a single directory)
-* Desktopaid -- saves and restores frames (http://desktopaid.sourceforge.net/)
-* WindowsMode -- comes with revive.el, which can save and restore window configurations
-* PolicySwitch -- Arranges window configurations in lists called policies.  Can save/restore the configurations.
-* FrameRestorePackage -- save and restore [[Frame]] configurations
-* EmacsSession -- ##session.el## saves global variables, registers, and buffer positions, but doesn't reload visited files like DeskTop does
-* SavePlace -- point goes to the last place where it was when you previously visited the same file
-* SaveHist -- simpler than most of the above: By default, it just saves your MiniBuffer histories.
 
-See also: http://emacs-session.sourceforge.net/related.html
+* [[BookmarkPlus|Bookmark+]] -- [[DeskTop]]s as bookmarks: just hit a key to create them or jump among them.
+* DeskTop -- Save and restore open [[buffer]]s, [[point]], [[mark]], histories, other [[variable]]s.
+* [[http://desktopaid.sourceforge.net/ DesktopAid]] -- Save and restore [[frame]]s.
+* DesktopMenu -- DeskTop extension that lets you manage multiple desktops, possibly in a single directory.
+* EmacsSession, ##session.el## -- Save global variables, [[register]]s, and buffer positions; does not reload visited files like DeskTop does.
+* FrameRestorePackage -- Save and restore frame configurations.
+* PolicySwitch -- Save and restore window configurations using policies.
+* SaveHist -- Save [[minibuffer]] histories and optionally other variables.
+* SavePlace -- Restore [[point]].
+* [[WThreeMSession]] -- Manage W3M sessions.
+* WcyDesktop -- Like DeskTop, but faster loading.
+* WindowsMode, ##revive.el## -- Save and restore [[window]] configurations.
 
-A special program keeps track of [[WThreeMSession]]s.
+See also: http://emacs-session.sourceforge.net/related.html.
 
-== Recommendations ==
+=== Recommendations ===
 
 [new]
 I use EmacsSession, because it doesn't reload all the files and doesn't require a lot of customization like DeskTop does. -- AlexSchroeder

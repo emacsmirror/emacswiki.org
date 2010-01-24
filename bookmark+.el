@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Jan 22 11:19:46 2010 (-0800)
+;; Last-Updated: Sat Jan 23 15:06:54 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 8958
+;;     Update #: 9067
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -113,6 +113,7 @@
 ;;    `bookmarkp-bmenu-mark-bookmarks-tagged-not-all',
 ;;    `bookmarkp-bmenu-mark-bookmarks-tagged-regexp',
 ;;    `bookmarkp-bmenu-mark-bookmarks-tagged-some',
+;;    `bookmarkp-bmenu-mark-desktop-bookmarks',
 ;;    `bookmarkp-bmenu-mark-dired-bookmarks',
 ;;    `bookmarkp-bmenu-mark-file-bookmarks',
 ;;    `bookmarkp-bmenu-mark-gnus-bookmarks',
@@ -127,7 +128,9 @@
 ;;    `bookmarkp-bmenu-quit', `bookmarkp-bmenu-refresh-menu-list',
 ;;    `bookmarkp-bmenu-regexp-mark',
 ;;    `bookmarkp-bmenu-remove-tags-from-marked',
-;;    `bookmarkp-bmenu-show-all', `bookmarkp-bmenu-show-only-dired',
+;;    `bookmarkp-bmenu-show-all',
+;;    `bookmarkp-bmenu-show-only-desktops',
+;;    `bookmarkp-bmenu-show-only-dired',
 ;;    `bookmarkp-bmenu-show-only-files',
 ;;    `bookmarkp-bmenu-show-only-gnus',
 ;;    `bookmarkp-bmenu-show-only-info-nodes',
@@ -161,7 +164,8 @@
 ;;    `bookmarkp-bmenu-unomit-marked',
 ;;    `bookmarkp-define-tags-sort-command',
 ;;    `bookmarkp-describe-bookmark',
-;;    `bookmarkp-describe-bookmark-internals', `bookmarkp-dired-jump',
+;;    `bookmarkp-describe-bookmark-internals',
+;;    `bookmarkp-desktop-read', `bookmarkp-dired-jump',
 ;;    `bookmarkp-dired-jump-current',
 ;;    `bookmarkp-dired-jump-current-other-window',
 ;;    `bookmarkp-dired-jump-other-window', `bookmarkp-file-jump',
@@ -185,6 +189,7 @@
 ;;    `bookmarkp-remove-tags-from-all', `bookmarkp-rename-tag',
 ;;    `bookmarkp-reverse-multi-sort-order',
 ;;    `bookmarkp-reverse-sort-order',
+;;    `bookmarkp-set-desktop-bookmark',
 ;;    `bookmarkp-toggle-saving-menu-list-state',
 ;;    `bookmarkp-unomit-all', `bookmarkp-version',
 ;;    `bookmarkp-w3m-jump', `bookmarkp-w3m-jump-other-window',
@@ -195,6 +200,7 @@
 ;;    `bookmarkp-bmenu-commands-file', `bookmarkp-bmenu-omitted-list',
 ;;    `bookmarkp-bmenu-state-file',
 ;;    `bookmarkp-bookmark-name-length-max',
+;;    `bookmarkp-desktop-no-save-vars',
 ;;    `bookmarkp-handle-region-function',
 ;;    `bookmarkp-incremental-filter-delay',
 ;;    `bookmarkp-region-search-size',
@@ -209,10 +215,10 @@
 ;;  Faces defined here:
 ;;
 ;;    `bookmarkp-bad-bookmark', `bookmarkp-bookmark-list',
-;;    `bookmarkp-buffer', `bookmarkp-function', `bookmarkp-gnus',
-;;    `bookmarkp-info', `bookmarkp-local-directory',
-;;    `bookmarkp-local-file-with-region',
-;;    `bookmarkp-local-file-without-region', `bookmarkp-man',
+;;    `bookmarkp-buffer', `bookmarkp-desktop', `bookmarkp-function',
+;;    `bookmarkp-gnus', `bookmarkp-info', `bookmarkp-local-directory',
+;;    `bookmarkp-local-file-without-region',
+;;    `bookmarkp-local-file-with-region', `bookmarkp-man',
 ;;    `bookmarkp-non-file', `bookmarkp-remote-file',
 ;;    `bookmarkp-sequence', `bookmarkp-su-or-sudo', `bookmarkp-w3m'.
 ;;
@@ -239,7 +245,8 @@
 ;;    `bookmarkp-bmenu-read-filter-input',
 ;;    `bookmarkp-bookmark-last-access-cp',
 ;;    `bookmarkp-buffer-last-access-cp', `bookmarkp-cp-not',
-;;    `bookmarkp-current-sort-order', `bookmarkp-dired-alist-only',
+;;    `bookmarkp-current-sort-order', `bookmarkp-desktop-alist-only',
+;;    `bookmarkp-desktop-bookmark-p', `bookmarkp-dired-alist-only',
 ;;    `bookmarkp-dired-bookmark-p', `bookmarkp-dired-subdirs',
 ;;    `bookmarkp-edit-bookmark',
 ;;    `bookmarkp-end-position-post-context',
@@ -263,16 +270,17 @@
 ;;    `bookmarkp-get-visit-time', `bookmarkp-get-visits-count',
 ;;    `bookmarkp-gnus-alist-only', `bookmarkp-gnus-bookmark-p',
 ;;    `bookmarkp-gnus-cp', `bookmarkp-goto-position',
-;;    `bookmarkp-handle-region-default', `bookmarkp-has-tag-p',
-;;    `bookmarkp-info-alist-only', `bookmarkp-info-bookmark-p',
-;;    `bookmarkp-info-cp', `bookmarkp-isearch-bookmarks' (Emacs 23+),
+;;    `bookmarkp-handler-cp', `bookmarkp-handle-region-default',
+;;    `bookmarkp-has-tag-p', `bookmarkp-info-alist-only',
+;;    `bookmarkp-info-bookmark-p', `bookmarkp-info-cp',
+;;    `bookmarkp-isearch-bookmarks' (Emacs 23+),
 ;;    `bookmarkp-isearch-bookmarks-regexp' (Emacs 23+),
 ;;    `bookmarkp-isearch-next-bookmark-buffer' (Emacs 23+),
 ;;    `bookmarkp-jump-1', `bookmarkp-jump-bookmark-list',
-;;    `bookmarkp-jump-dired', `bookmarkp-jump-function',
-;;    `bookmarkp-jump-gnus', `bookmarkp-jump-man',
-;;    `bookmarkp-jump-sequence', `bookmarkp-jump-w3m',
-;;    `bookmarkp-jump-w3m-new-session',
+;;    `bookmarkp-jump-desktop', `bookmarkp-jump-dired',
+;;    `bookmarkp-jump-function', `bookmarkp-jump-gnus',
+;;    `bookmarkp-jump-man', `bookmarkp-jump-sequence',
+;;    `bookmarkp-jump-w3m', `bookmarkp-jump-w3m-new-session',
 ;;    `bookmarkp-jump-w3m-only-one-tab', `bookmarkp-jump-woman',
 ;;    `bookmarkp-line-number-at-pos',
 ;;    `bookmarkp-local-directory-bookmark-p',
@@ -282,11 +290,12 @@
 ;;    `bookmarkp-local-file-size-cp', `bookmarkp-local-file-type-cp',
 ;;    `bookmarkp-local-file-updated-more-recently-cp',
 ;;    `bookmarkp-make-bookmark-list-record',
-;;    `bookmarkp-make-dired-record', `bookmarkp-make-gnus-record',
-;;    `bookmarkp-make-man-record', `bookmarkp-make-plain-predicate',
-;;    `bookmarkp-make-w3m-record', `bookmarkp-make-woman-record'
-;;    (Emacs 21+), `bookmarkp-man-alist-only',
-;;    `bookmarkp-man-bookmark-p', `bookmarkp-marked-bookmark-p',
+;;    `bookmarkp-make-desktop-record', `bookmarkp-make-dired-record',
+;;    `bookmarkp-make-gnus-record', `bookmarkp-make-man-record',
+;;    `bookmarkp-make-plain-predicate', `bookmarkp-make-w3m-record',
+;;    `bookmarkp-make-woman-record' (Emacs 21+),
+;;    `bookmarkp-man-alist-only', `bookmarkp-man-bookmark-p',
+;;    `bookmarkp-marked-bookmark-p',
 ;;    `bookmarkp-marked-bookmarks-only', `bookmarkp-marked-cp',
 ;;    `bookmarkp-maybe-save-bookmarks',
 ;;    `bookmarkp-msg-about-sort-order', `bookmarkp-multi-sort',
@@ -479,6 +488,16 @@
 ;;
 ;;     - You can bookmark a buffer that is not associated with a file.
 ;;
+;;     - You can bookmark the current desktop, as defined by library
+;;       `desktop.el' - use command `bookmarkp-set-desktop-bookmark'
+;;       (`C-x p K').  You can "jump" to (that is, restore) any number
+;;       of saved desktops.  A desktop includes:
+;;
+;;         - Some global variables.  To exclude variables normally
+;;           saved, see option `bookmarkp-desktop-no-save-vars'.
+;; 	   - The current set of buffers and their associated files.
+;;           For each: its mode, point, mark, & some local variables.
+;;
 ;;     - You can bookmark a Gnus article, a URL (if you use W3M), a
 ;;       PDF file (DocView), an image, or a UNIX manual page (from the
 ;;       output of Emacs command `man' or `woman').
@@ -618,7 +637,7 @@
 ;;  A "function bookmark" simply invokes some function - any function.
 ;;  You can, for instance, define a window or frame configuration and
 ;;  record that as a bookmark.  Then jump to the bookmark to switch
-;;  contexts.
+;;  contexts.  (You can also bookmark a desktop and jump to that.)
 ;;
 ;;  Function bookmarks might not seem too interesting, since we have
 ;;  other ways of invoking functions in Emacs.  But the other features
@@ -1130,6 +1149,19 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2010/01/23 dadams
+;;     Added: bookmarkp-handler-cp, bookmarkp-desktop-no-save-vars, bookmarkp-set-desktop-bookmark,
+;;            bookmarkp-make-desktop-record, bookmarkp-jump-desktop, bookmarkp-desktop-read,
+;;            bookmarkp-desktop-alist-only, bookmarkp-desktop-bookmark-p,
+;;            bookmarkp-bmenu-mark-desktop-bookmarks, bookmarkp-bmenu-show-only-desktops,
+;;            face bookmarkp-desktop.
+;;     bookmarkp-bmenu-sort-by-bookmark-type: Add bookmarkp-handler-cp to the list (last).
+;;     bookmarkp-bmenu-propertize-item: Add face bookmarkp-desktop for desktop bookmarks.
+;;     Bound: bookmarkp-set-desktop-bookmark to C-x p K, C-x r K,
+;;            bookmarkp-bmenu-mark-desktop-bookmarks to K M (and Mark menu),
+;;            bookmarkp-bmenu-show-only-desktops to K S (and Show menu).
+;;     bookmark-bmenu-mode doc string: Updated for new commands.
+;;     Added autoload cookies for all defcustoms.
 ;; 2010/01/20 dadams
 ;;     Added: bookmarkp-bmenu-mode-status-help.  Bound to C-h m, ?.
 ;; 2010/01/19 dadams
@@ -1768,6 +1800,10 @@
 
 ;; Quiet the byte-compiler
 (defvar bookmark-make-record-function)  ; Defined in `bookmark.el'.
+(defvar desktop-buffer-args-list)       ; Defined in `desktop.el'.
+(defvar desktop-delay-hook)             ; Defined in `desktop.el'.
+(defvar desktop-dirname)                ; Defined in `desktop.el'.
+(defvar desktop-file-modtime)           ; Defined in `desktop.el'.
 (defvar gnus-article-current)           ; Defined in `gnus-sum.el'.
 (defvar Info-current-node)              ; Defined in `info.el'.
 (defvar Info-current-file)              ; Defined in `info.el'.
@@ -1930,6 +1966,12 @@ Also used for `D' (deletion) flags."
   "*Face used for a bookmarked existing buffer not associated with a file."
   :group 'bookmarkp)
 
+(defface bookmarkp-desktop
+    '((((background dark)) (:foreground "PaleGoldenrod" :background "DarkBlue"))
+      (t (:foreground "DarkBlue" :background "PaleGoldenrod")))
+  "*Face used for a bookmarked desktop."
+  :group 'bookmarkp)
+
 (defface bookmarkp-function
     '((((background dark)) (:foreground "DeepPink1"))
       (t (:foreground "DeepPink1")))
@@ -1954,16 +1996,16 @@ Also used for `D' (deletion) flags."
   "*Face used for a bookmarked local directory."
   :group 'bookmarkp)
 
-(defface bookmarkp-local-file-with-region
-    '((((background dark)) (:foreground "Indianred2"))
-      (t (:foreground "Blue")))
-  "*Face used for a region bookmark in a local file."
-  :group 'bookmarkp)
-
 (defface bookmarkp-local-file-without-region
     '((((background dark)) (:foreground "Blue"))
       (t (:foreground "Black")))
   "*Face used for a bookmarked local file (without a region)."
+  :group 'bookmarkp)
+
+(defface bookmarkp-local-file-with-region
+    '((((background dark)) (:foreground "Indianred2"))
+      (t (:foreground "Blue")))
+  "*Face used for a region bookmark in a local file."
   :group 'bookmarkp)
 
 (defface bookmarkp-man
@@ -2022,6 +2064,7 @@ Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Description" "http://www.emacswiki.org/BookmarkPlus")
   :link '(emacs-commentary-link :tag "Commentary" "bookmark+"))
 
+;;;###autoload
 (defcustom bookmarkp-bmenu-omitted-list ()
   "List of names of omitted bookmarks.
 They are generally not available for display in the bookmark list.
@@ -2031,6 +2074,7 @@ You can then mark some of them and use `\\[bookmarkp-bmenu-omit/unomit-marked]'
  to make those that are marked available again for the bookmark list."
   :type '(repeat (string :tag "Bookmark name")) :group 'bookmarkp)
 
+;;;###autoload
 (defcustom bookmarkp-bmenu-commands-file (convert-standard-filename
                                           "~/.emacs-bmk-bmenu-commands.el")
   "*File for saving user-defined bookmark-list commands.
@@ -2049,6 +2093,7 @@ you used `\\[bookmarkp-bmenu-define-full-snapshot-command]', because such \
 command definitions can be very large."
   :type '(file  :tag "File for saving menu-list state") :group 'bookmarkp)
 
+;;;###autoload
 (defcustom bookmarkp-bmenu-state-file (convert-standard-filename "~/.emacs-bmk-bmenu-state.el")
   "*File for saving`*Bookmark List*' state when you quit bookmark list.
 This must be an absolute file name or nil (it is not expanded).
@@ -2063,49 +2108,67 @@ was the last time you used it."
           (file  :tag "File for saving menu-list state"))
   :group 'bookmarkp)
 
+;;;###autoload
+(defcustom bookmarkp-desktop-no-save-vars '(search-ring regexp-search-ring kill-ring)
+  "List of variables not to save when creating a desktop bookmark.
+They are removed from `desktop-globals-to-save' for the duration of
+the save (only)."
+  :type '(repeat (variable :tag "Variable")) :group 'bookmarkp)
+
+;;;###autoload
 (defcustom bookmarkp-use-region-flag t
   "*Non-nil means visiting a bookmark activates its recorded region."
   :type 'boolean :group 'bookmarkp)
 
+;;;###autoload
 (defcustom bookmarkp-region-search-size 40
   "*Same as `bookmark-search-size', but specialized for bookmark regions."
   :type 'integer :group 'bookmarkp)
 
+;;;###autoload
 (defcustom bookmarkp-save-new-location-flag t
   "*Non-nil means save relocated bookmarks.
 If nil, then the new bookmark location is visited, but it is not saved
 as part of the bookmark definition."
   :type 'boolean :group 'bookmarkp)
 
+;;;###autoload
 (defcustom bookmarkp-handle-region-function 'bookmarkp-handle-region-default
   "*Function to handle a bookmarked region."
   :type 'function :group 'bookmarkp)
 
+;;;###autoload
 (defcustom bookmarkp-sequence-jump-display-function 'pop-to-buffer
   "Function used to display the bookmarks in a bookmark sequence."
   :type 'function :group 'bookmarkp)
 
+;;;###autoload
 (defcustom bookmarkp-su-or-sudo-regexp "\\(/su:\\|/sudo:\\)"
   "*Regexp to recognize `su' or `sudo' Tramp bookmarks."
   :type 'regexp :group 'bookmarkp)
 
+;;;###autoload
 (defcustom bookmarkp-w3m-allow-multi-tabs t
   "*Non-nil means jump to W3M bookmarks in a new session."
   :type 'boolean :group 'bookmarkp)
 
+;;;###autoload
 (defcustom bookmarkp-show-end-of-region t
   "*Show end of region with `exchange-point-and-mark' when activating a region.
 If nil show only beginning of region."
   :type 'boolean :group 'bookmarkp)
 
+;;;###autoload
 (defcustom bookmarkp-bookmark-name-length-max 70
   "*Max number of chars for default name for a bookmark with a region."
   :type 'integer :group 'bookmarkp)
 
+;;;###autoload
 (defcustom bookmarkp-incremental-filter-delay 0.6
   "*Seconds to wait before updating display when filtering bookmarks."
   :type 'integer :group 'bookmarkp)
 
+;;;###autoload
 (defcustom bookmarkp-sort-comparer '((bookmarkp-info-cp bookmarkp-gnus-cp
                                       bookmarkp-w3m-cp bookmarkp-local-file-type-cp)
                                      bookmarkp-alpha-p) ; This corresponds to `s k'.
@@ -2205,6 +2268,7 @@ is tried and
             (function :tag "Final Predicate"))))
   :group 'bookmarkp)
 
+;;;###autoload
 (when (> emacs-major-version 20)
   (defcustom bookmarkp-sort-orders-alist ()
     "*Alist of all available sort functions.
@@ -2238,6 +2302,7 @@ Each alist element has the form (SORT-ORDER . COMPARER):
                            (function :tag "Final Predicate")))))
     :group 'bookmarkp))
 
+;;;###autoload
 (unless (> emacs-major-version 20)      ; Emacs 20: custom type `alist' doesn't exist.
   (defcustom bookmarkp-sort-orders-alist ()
     "*Alist of all available sort functions.
@@ -3306,10 +3371,13 @@ The second column shows `*' if the bookmark has an annotation.
 The following faces are used for the list entries.
 Use `customize-face' if you want to change the appearance.
 
-  `bookmarkp-local-directory', `bookmarkp-local-file-without-region',
-  `bookmarkp-local-file-with-region', `bookmarkp-gnus',
-  `bookmarkp-info', `bookmarkp-non-file', `bookmarkp-remote-file',
-  `bookmarkp-su-or-sudo', `bookmarkp-w3m'.
+ `bookmarkp-bad-bookmark', `bookmarkp-bookmark-list',
+ `bookmarkp-buffer', `bookmarkp-desktop', `bookmarkp-function',
+ `bookmarkp-gnus', `bookmarkp-info', `bookmarkp-local-directory',
+ `bookmarkp-local-file-without-region',
+ `bookmarkp-local-file-with-region', `bookmarkp-man',
+ `bookmarkp-non-file', `bookmarkp-remote-file', `bookmarkp-sequence',
+ `bookmarkp-su-or-sudo', `bookmarkp-w3m'.
 
 Non-nil FILTEREDP means the bookmark list has been filtered, so:
  * Use `bookmarkp-bmenu-title' not the default menu-list title.
@@ -3682,6 +3750,19 @@ Returns the new bookmark (internal record)."
 ;;  *** Menu-List (`*-bmenu-*') Filter Commands ***
 
 ;;;###autoload
+(defun bookmarkp-bmenu-show-only-desktops () ; `K S' in bookmark list
+  "Display (only) the desktop bookmarks."
+  (interactive)
+  (bookmarkp-barf-if-not-in-menu-list)
+  (setq bookmarkp-bmenu-filter-function  'bookmarkp-desktop-alist-only
+        bookmarkp-bmenu-title            "% Desktop Bookmarks")
+  (let ((bookmark-alist  (funcall bookmarkp-bmenu-filter-function)))
+    (setq bookmarkp-latest-bookmark-alist  bookmark-alist)
+    (bookmark-bmenu-list 'filteredp))
+  (when (interactive-p) (bookmarkp-msg-about-sort-order (bookmarkp-current-sort-order)
+                                                        "Only desktop bookmarks are shown")))
+
+;;;###autoload
 (defun bookmarkp-bmenu-show-only-dired () ; `M-d M-s' in bookmark list
   "Display (only) the Dired bookmarks."
   (interactive)
@@ -4033,6 +4114,12 @@ The entire bookmark line is tested: bookmark name and possibly file name."
         (bookmark-bmenu-mark)
         (setq count  (1+ count)))
       (if (= 1 count) (message "1 bookmark matched") (message "%d bookmarks matched" count)))))
+
+;;;###autoload
+(defun bookmarkp-bmenu-mark-desktop-bookmarks () ; `K M' in bookmark list
+  "Mark desktop bookmarks."
+  (interactive)
+  (bookmarkp-bmenu-mark-bookmarks-satisfying 'bookmarkp-desktop-bookmark-p))
 
 ;;;###autoload
 (defun bookmarkp-bmenu-mark-dired-bookmarks () ; `M-d M-m' in bookmark list
@@ -4397,8 +4484,7 @@ DELIMITED (prefix arg) means replace only word-delimited matches.
 If you exit (`\\[keyboard-quit]', `RET' or `q'), you can use \
 `\\[tags-loop-continue]' to resume where
 you left off."
-  (interactive (let ((common  (query-replace-read-args
-                               "Query replace regexp in marked files" t t)))
+  (interactive (let ((common  (query-replace-read-args "Query replace regexp in marked files" t t)))
                  (list (nth 0 common) (nth 1 common) (nth 2 common))))
   (bookmarkp-barf-if-not-in-menu-list)
   (tags-query-replace from to delimited
@@ -4999,6 +5085,7 @@ specified tags, in order, separated by hyphens (`-').  E.g., for TAGS
          (functionp  (bookmarkp-function-bookmark-p bookmark-name))
          (w3m-p      (bookmarkp-w3m-bookmark-p bookmark-name))
          (gnus-p     (bookmarkp-gnus-bookmark-p bookmark-name))
+         (desktop-p  (bookmarkp-desktop-bookmark-p bookmark-name))
          (handlerp   (bookmark-get-handler bookmark-name))
          (info-p     (bookmarkp-info-bookmark-p bookmark-name))
          (man-p      (bookmarkp-man-bookmark-p bookmark-name))
@@ -5023,6 +5110,9 @@ specified tags, in order, separated by hyphens (`-').  E.g., for TAGS
            (blist-p    (append (bookmarkp-face-prop 'bookmarkp-bookmark-list)
                                '(mouse-face highlight follow-link t
                                  help-echo "mouse-2: Invoke this bookmark-list bookmark")))
+           (desktop-p  (append (bookmarkp-face-prop 'bookmarkp-desktop)
+                               '(mouse-face highlight follow-link t
+                                 help-echo "mouse-2: Visit this desktop bookmark")))
            (info-p     (append (bookmarkp-face-prop 'bookmarkp-info)
                                '(mouse-face highlight follow-link t
                                  help-echo "mouse-2: Visit this Info bookmark")))
@@ -5136,6 +5226,11 @@ the internal lists that record menu-list markings."
 BOOKMARK is a bookmark name or a bookmark record."
   (eq (bookmark-get-handler bookmark) 'bookmarkp-jump-bookmark-list))
 
+(defun bookmarkp-desktop-bookmark-p (bookmark)
+  "Return non-nil if BOOKMARK is a desktop bookmark.
+BOOKMARK is a bookmark name or a bookmark record."
+  (eq (bookmark-get-handler bookmark) 'bookmarkp-jump-desktop))
+
 ;; Note: To avoid remote access, if bookmark does not have the Dired handler, then we insist
 ;; that it be for a local directory.  IOW, we do not include remote directories that were not
 ;; bookmarked by Bookmark+ (and so do not have the Dired handler).
@@ -5239,6 +5334,12 @@ BOOKMARK is a bookmark name or a bookmark record."
 
 ;;(@* "Filter Functions")
 ;;  *** Filter Functions ***
+
+(defun bookmarkp-desktop-alist-only ()
+  "`bookmark-alist', filtered to retain only desktop bookmarks.
+A new list is returned (no side effects)."
+  (bookmark-maybe-load-default-file)
+  (bookmarkp-remove-if-not #'bookmarkp-desktop-bookmark-p bookmark-alist))
 
 (defun bookmarkp-dired-alist-only ()
   "`bookmark-alist', filtered to retain only Dired bookmarks.
@@ -5737,7 +5838,8 @@ use it."
 
 (bookmarkp-define-sort-command          ; `s k' in bookmark list (`k' for "kind")
  "by bookmark type"                     ; `bookmarkp-bmenu-sort-by-bookmark-type'
- ((bookmarkp-info-cp bookmarkp-gnus-cp bookmarkp-w3m-cp bookmarkp-local-file-type-cp)
+ ((bookmarkp-info-cp bookmarkp-gnus-cp bookmarkp-w3m-cp bookmarkp-local-file-type-cp
+                     bookmarkp-handler-cp)
   bookmarkp-alpha-p)
  "Sort bookmarks by type: Info, Gnus, W3M, files, other.")
 
@@ -5836,6 +5938,7 @@ by bookmark name.")
 
 ;; These definitions MUST COME AFTER the calls to macro `bookmarkp-define-sort-command'.
 ;; Otherwise, they won't pick up a populated `bookmarkp-sort-orders-alist'.
+;;;###autoload
 (when (> emacs-major-version 20)
   (defcustom bookmarkp-sort-orders-for-cycling-alist (copy-sequence
                                                       bookmarkp-sort-orders-alist)
@@ -5858,6 +5961,7 @@ this value."
                            (function :tag "Final Predicate")))))
     :group 'bookmarkp))
 
+;;;###autoload
 (unless (> emacs-major-version 20)      ; Emacs 20: custom type `alist' doesn't exist.
   (defcustom bookmarkp-sort-orders-for-cycling-alist (copy-sequence
                                                       bookmarkp-sort-orders-alist)
@@ -5962,6 +6066,29 @@ Return nil if incomparable as described."
           (buf2 '(nil))                 ; Only buf2 exists.
           (t nil))))                    ; Neither buffer exists
 
+(defun bookmarkp-handler-cp (b1 b2)
+  "True if bookmark B1's handler name sorts alphabetically before B2's.
+Two bookmarks with handlers are compared alphabetically, by their
+handler-function names, respecting `case-fold-search'.
+True also if B1 has a handler but B2 has not.
+Reverse the roles of B1 and B2 for a false value.
+A true value is returned as `(t)', a false value as `(nil)'.
+Return nil if neither sorts before the other."
+  (let ((h1  (bookmark-get-handler b1))
+        (h2  (bookmark-get-handler b2)))
+    (cond ((and h1 h2 (symbolp h1) (symbolp h2))
+           ;; Pretend woman bookmarks are man bookmarks, to keep them together.
+           (when (eq h1 'bookmarkp-jump-woman) (setq h1  'bookmarkp-jump-man))
+           (when (eq h2 'bookmarkp-jump-woman) (setq h2  'bookmarkp-jump-man))
+           (setq h1  (symbol-name h1)
+                 h2  (symbol-name h2))
+           (cond ((string-lessp h1 h2) '(t))
+                 ((string-lessp h2 h1) '(nil))
+                 (t nil)))
+          (h1 '(t))
+          (h2 '(nil))
+          (t nil))))
+
 (defun bookmarkp-info-cp (b1 b2)
   "True if bookmark B1 sorts as an Info bookmark before B2.
 Two Info bookmarks are compared first by file name (corresponding to
@@ -6028,7 +6155,7 @@ Return nil if neither sorts before the other."
 (defun bookmarkp-w3m-cp (b1 b2)
   "True if bookmark B1 sorts as a W3M URL bookmark before B2.
 Two W3M URL bookmarks are compared alphabetically, by their URLs.
-True also if B1 is a Gnus bookmark but B2 is not.
+True also if B1 is a W3M bookmark but B2 is not.
 Reverse the roles of B1 and B2 for a false value.
 A true value is returned as `(t)', a false value as `(nil)'.
 Return nil if neither sorts before the other."
@@ -6591,6 +6718,83 @@ Handler function for record returned by `bookmarkp-make-bookmark-list-record'."
                            bookmark-alist)))
     (bookmark-bmenu-list 'filteredp)))
 
+;; Desktop bookmarks
+;;;###autoload
+(defun bookmarkp-set-desktop-bookmark (desktop-file) ; Bound globally to `C-x p K', `C-x r K'
+  "Save the desktop as a bookmark.
+You are prompted for the location for saving the desktop file."
+  (interactive (list (read-file-name "Save desktop in file: ")))
+  (set-text-properties 0 (length desktop-file) nil desktop-file)
+  (unless (file-name-absolute-p desktop-file) (setq desktop-file  (expand-file-name desktop-file)))
+  (unless (require 'desktop nil t) (error "You must have library `desktop.el' to use this command"))
+  (let ((desktop-basefilename     (file-name-nondirectory desktop-file)) ; Emacs < 22
+        (desktop-base-file-name   (file-name-nondirectory desktop-file)) ; Emacs 23+
+        (desktop-dir              (file-name-directory desktop-file))
+        (desktop-restore-eager    t)    ; Don't bother with lazy restore.
+        (desktop-globals-to-save  (bookmarkp-remove-if
+                                   #'(lambda (elt) (memq elt bookmarkp-desktop-no-save-vars))
+                                   desktop-globals-to-save)))
+    (if (< emacs-major-version 22)
+        (desktop-save desktop-dir)      ; Emacs < 22 has no locking.
+      (desktop-save desktop-dir 'RELEASE))
+    (message "Desktop saved in `%s'" desktop-file)
+    (let ((bookmark-make-record-function  #'(lambda () (bookmarkp-make-desktop-record desktop-file))))
+      (call-interactively #'bookmark-set))))
+
+(defun bookmarkp-make-desktop-record (desktop-file)
+  "Create and return a desktop bookmark record.
+DESKTOP-FILE is the absolute file name of the desktop file to use."
+  `(,@(bookmark-make-record-default 'point-only)
+      (filename     . ,bookmarkp-non-file-filename)
+      (desktop-file . ,desktop-file)
+      (handler      . bookmarkp-jump-desktop)))
+
+(defun bookmarkp-jump-desktop (bookmark)
+  "Jump to desktop bookmark BOOKMARK.
+BOOKMARK is a bookmark name or a bookmark record.
+Handler function for record returned by `bookmarkp-make-desktop-record'."
+  (let ((desktop-file  (bookmark-prop-get bookmark 'desktop-file)))
+    (unless (require 'desktop nil t) (error "You must have library `desktop.el' to use this command"))
+    (unless (bookmarkp-desktop-read desktop-file) (error "Could not load desktop file"))))
+
+;; Derived from code in `desktop-read'.
+;;;###autoload
+(defun bookmarkp-desktop-read (file)
+  "Load desktop-file FILE, then run `desktop-after-read-hook'.
+Return t if FILE was loaded, nil otherwise."
+  (interactive)
+  (unless (file-name-absolute-p file) (setq file  (expand-file-name file))) ; Shouldn't happen.
+  (setq desktop-dirname  (file-name-directory file))
+  (if (not (file-readable-p file))
+      nil                               ; Return nil, meaning not loaded.
+    (let ((desktop-restore-eager      t) ; Don't bother with lazy restore.
+          (desktop-first-buffer       nil)
+          (desktop-buffer-ok-count    0)
+          (desktop-buffer-fail-count  0)
+          (desktop-save               nil)) ; Prevent desktop saving during eval of desktop buffer.
+      (when (fboundp 'desktop-lazy-abort) (desktop-lazy-abort)) ; Emacs 22+.
+      (load file t t t)
+      (when (boundp 'desktop-file-modtime) ; Emacs 22+
+        (setq desktop-file-modtime  (nth 5 (file-attributes file))))
+      ;; `desktop-create-buffer' puts buffers at end of the buffer list.
+      ;; We want buffers existing prior to evaluating the desktop (and not reused) to be placed
+      ;; at the end of the buffer list, so we move them here.
+      (mapc 'bury-buffer (nreverse (cdr (memq desktop-first-buffer (nreverse (buffer-list))))))
+      (switch-to-buffer (car (buffer-list)))
+      (run-hooks 'desktop-delay-hook)
+      (setq desktop-delay-hook  ())
+      (run-hooks 'desktop-after-read-hook)
+      (when (boundp 'desktop-buffer-ok-count) ; Emacs 22+
+        (message "Desktop: %d buffer%s restored%s%s." desktop-buffer-ok-count
+                 (if (= 1 desktop-buffer-ok-count) "" "s")
+                 (if (< 0 desktop-buffer-fail-count)
+                     (format ", %d failed to restore" desktop-buffer-fail-count)
+                   "")
+                 (if desktop-buffer-args-list
+                     (format ", %d to be restored lazily" (length desktop-buffer-args-list))
+                   "")))
+      t)))                              ; Return t, meaning successfully loaded.
+
 ;; W3M support
 (defun bookmarkp-make-w3m-record ()
   "Make a special entry for w3m buffers."
@@ -7017,6 +7221,10 @@ See `bookmarkp-w3m-jump'."
 ;;;###autoload
 (define-key ctl-x-map "pj" 'bookmark-jump-other-window)
 ;;;###autoload
+(define-key ctl-x-map "rK" 'bookmarkp-set-desktop-bookmark)
+;;;###autoload
+(define-key bookmark-map "K" 'bookmarkp-set-desktop-bookmark)
+;;;###autoload
 (define-key bookmark-map "o" 'bookmark-jump-other-window)
 ;;;###autoload
 (define-key bookmark-map "q" 'bookmark-jump-other-window)
@@ -7100,6 +7308,12 @@ See `bookmarkp-w3m-jump'."
 (define-key bookmark-bmenu-mode-map "IM"   'bookmarkp-bmenu-mark-info-bookmarks)
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "IS"   'bookmarkp-bmenu-show-only-info-nodes)
+;;;###autoload
+(define-key bookmark-bmenu-mode-map "K"    nil) ; For Emacs 20
+;;;###autoload
+(define-key bookmark-bmenu-mode-map "KM"   'bookmarkp-bmenu-mark-desktop-bookmarks)
+;;;###autoload
+(define-key bookmark-bmenu-mode-map "KS"   'bookmarkp-bmenu-show-only-desktops)
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "M"    nil) ; For Emacs 20
 ;;;###autoload
@@ -7406,6 +7620,7 @@ Mark/unmark bookmarks (see also `Tags', next)
 \\[bookmarkp-bmenu-mark-file-bookmarks]\t- Mark file & directory bookmarks (`C-u': local only)
 \\[bookmarkp-bmenu-mark-gnus-bookmarks]\t- Mark Gnus bookmarks
 \\[bookmarkp-bmenu-mark-info-bookmarks]\t- Mark Info bookmarks
+\\[bookmarkp-bmenu-mark-desktop-bookmarks]\t- Mark desktop bookmarks
 \\[bookmarkp-bmenu-mark-man-bookmarks]\t- Mark `man' page bookmarks (that's `M' twice, not Meta-M)
 \\[bookmarkp-bmenu-mark-region-bookmarks]\t- Mark region bookmarks
 \\[bookmarkp-bmenu-mark-w3m-bookmarks]\t- Mark W3M (URL) bookmarks
@@ -7493,6 +7708,7 @@ Hide/show bookmarks
 \\[bookmarkp-bmenu-show-only-files]\t- Show only file & directory bookmarks (`C-u': local only)
 \\[bookmarkp-bmenu-show-only-gnus]\t- Show only Gnus bookmarks
 \\[bookmarkp-bmenu-show-only-info-nodes]\t- Show only Info bookmarks
+\\[bookmarkp-bmenu-show-only-desktops]\t- Show only desktop bookmarks
 \\[bookmarkp-bmenu-show-only-man-pages]\t- Show only `man' page bookmarks
 \\[bookmarkp-bmenu-show-only-regions]\t- Show only region bookmarks
 \\[bookmarkp-bmenu-show-only-w3m-urls]\t- Show only W3M (URL) bookmarks
@@ -7630,6 +7846,8 @@ bookmarkp-sequence-jump-display-function - How to display components")
   '(menu-item "Show Only Info Nodes" bookmarkp-bmenu-show-only-info-nodes))
 (define-key bookmarkp-bmenu-show-menu [bookmarkp-bmenu-show-only-dired]
   '(menu-item "Show Only Dired Buffers" bookmarkp-bmenu-show-only-dired))
+(define-key bookmarkp-bmenu-show-menu [bookmarkp-bmenu-show-only-desktops]
+  '(menu-item "Show Only Desktops" bookmarkp-bmenu-show-only-desktops))
 (define-key bookmarkp-bmenu-show-menu [bookmarkp-bmenu-show-only-regions]
   '(menu-item "Show Only Regions" bookmarkp-bmenu-show-only-regions))
 (define-key bookmarkp-bmenu-show-menu [bookmarkp-bmenu-show-only-non-files]
@@ -7716,6 +7934,8 @@ bookmarkp-sequence-jump-display-function - How to display components")
   '(menu-item "Mark Info Nodes" bookmarkp-bmenu-mark-info-bookmarks))
 (define-key bookmarkp-bmenu-mark-menu [bookmarkp-bmenu-mark-dired-bookmarks]
   '(menu-item "Mark Dired Buffers" bookmarkp-bmenu-mark-dired-bookmarks))
+(define-key bookmarkp-bmenu-mark-menu [bookmarkp-bmenu-mark-desktop-bookmarks]
+  '(menu-item "Mark Desktop Buffers" bookmarkp-bmenu-mark-desktop-bookmarks))
 (define-key bookmarkp-bmenu-mark-menu [bookmarkp-bmenu-mark-region-bookmarks]
   '(menu-item "Mark Regions" bookmarkp-bmenu-mark-region-bookmarks))
 (define-key bookmarkp-bmenu-mark-menu [bookmarkp-bmenu-mark-non-file-bookmarks]

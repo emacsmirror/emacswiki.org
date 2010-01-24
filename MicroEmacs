@@ -1,7 +1,7 @@
 There are actually several ErsatzEmacs editors known under a common name MicroEmacs, or uemacs (for the similarity of u and the greek &#x3bc;). They originated all from a common ancestor, written somewhen around 1985 by Dave Conroy, Steve Wilhite and George Jones, and later greatly modified and introduced to the "masses" by Daniel Lawrence.
 (See EditorsUsedByOthers and EmacsImplementations.)
 
-It came to a certain fame after Linus Torvalds is, or better, was known to use a particular version of it around the time it was the only editor he had on Linux. 
+It came to a certain fame after Linus Torvalds was known to use a particular version of it around the time it was the only editor he had on Linux.
 
 Daniel Lawrence's original Microemacs is available as source code and binaries for various systems:
 Google:uemacs.
@@ -10,7 +10,6 @@ Its available in versions 3.12 and 4.0. I personally never got any of these to w
 
 Although the source is available, Lawrence's Microemacs is not free software, because its license prohibits commercial use. He is known to be an radical [[GPL]] hater, and refused to make his uemacs free software on several occasions, when he was asked.
 
-[new]
 FreeBSD users have Microemacs available in ports.  /usr/ports/editors/uemacs/ contains Microemacs 4.00, which works just fine. Some standard Emacs keybindings, like `C-x C-f', are present, but many others are not. `M-x describe-key' works, for instance, except you don't press RET before the key you want described. The help file seems to be missing.
 [new]
 
@@ -18,7 +17,7 @@ At the time of writing this, the undoubtely most popular Microemacs distribution
 
 * http://www.jasspa.com/
 
-Here's the feature list as seen on the web site autumn 2001:
+Here's the feature list as seen on the Web site in 2001.
 
 * Window manager support for X-Windows, Microsoft Windows. 
 * Integrated spell checker 
@@ -36,11 +35,17 @@ Here's the feature list as seen on the web site autumn 2001:
 * Binary file editing support 
 * Integral file browser with FTP support 
 * Session history. 
-* Extensible, menu and dialogue features. 
+* Extensible, menu and dialogue features.
 
-The version Linus Torvalds was said to use is possible to be uemacs/PK, 4.0.15, by Petri H. Kutvonen, a version based on Lawrences Mircoemacs version 3.9e from late 1987. This one is not free software either, but very nice, and available on kernel.org amongst linux kernel trees and on virtually every kernel mirror. The development of this one stopped in 1996.
+The more recently added features are listed at http://www.jasspa.com/whatsnew.html
+
+The version Linus Torvalds was said to use is possible to be uemacs/PK, 4.0.15, by Petri H. Kutvonen, a version based on Lawrences Mircoemacs version 3.9e from late 1987. This one is not free software either, but very nice, and available on kernel.org amongst linux kernel trees and on virtually every kernel mirror.
 
 * ftp://ftp.kernel.org/pub/software/editors/uemacs/
+
+The development of this one stopped in 1996, but Linus publishes his maintenance fixes in the kernel Git repository.
+
+* http://git.kernel.org/?p=editors/uemacs/uemacs.git;a=tree
 
 Another cute version is "ersatz emacs" by Chris Baird. Originally this was MicroEmacs 3.6 as released to mod.sources and the Public Domain by Daniel Lawrence in 1986. It is, unlike later MicroEmacs versions, not under a proprietary licence (what later on changed), but released way back then to the public domain. It lacks an extension language completely, and is in fact only a "ersatz emacs", as the name says. It misses a file read completion feature, a nice one like for example uemacs/PK has, which does make it unusable for anything other than quick one file editing.
 

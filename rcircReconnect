@@ -27,7 +27,7 @@ The code also attempts to connect to the same channels you were connected to bef
        (delete-process process)
        (rcirc-connect server port nick
 		      rcirc-default-user-name
-		      rcirc-default-user-full-name
+		      rcirc-default-full-name
 		      channels))))
 </pre>
 

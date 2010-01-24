@@ -106,7 +106,16 @@ The same menu is available on '''`C-mouse-3''''.
 * You can bookmark a [[DiredMode|Dired]] buffer, recording and restoring its
      `ls' switches, which files are marked, which subdirectories are inserted, and which (sub)directories are hidden.
 
-* You can bookmark a [[buffer]] that is not associated with a file. 
+* You can bookmark a [[buffer]] that is not associated with a file.
+
+* You can bookmark the current desktop, as defined by library
+##desktop.el## -- use command '''`bookmarkp-set-desktop-bookmark''''
+('''`C-x p K'''').  You can "jump" to (that is, restore) any number
+of saved desktops.  A desktop includes:
+
+** Some global [[variable]]s.  To exclude variables normally saved, see option '''`bookmarkp-desktop-no-save-vars''''.
+
+** The current set of buffers and their associated files. ''For each:'' its mode, [[point]], [[mark]], and some local variables.
 
 * You can bookmark a [[Gnus]] article, a URL (if you use [[w3m|W3M]]), a PDF file (%%DocView%%), an image, or a UNIX manual page (from the output of Emacs
      command `man' or `woman').
@@ -255,7 +264,7 @@ inserted subdirectories, and hidden (sub)directories.
 A '''function bookmark''' simply invokes some function -- any function.
 You can, for instance, define a window or frame configuration and
 record that as a bookmark.  Then jump to the bookmark to switch
-contexts.
+contexts.  (You can also bookmark a desktop and jump to that.)
 
 Function bookmarks might not seem too interesting, since we have
 other ways of invoking functions in Emacs.  But the other features
@@ -800,7 +809,7 @@ Bottom line: Use '''Bookmark+''' to access bookmarks created using
 ----
 CategoryHypermedia CategoryPersistence 
 CategoryProgramming CategoryRegion
-CategoryProgrammerUtils
+CategoryProgrammerUtils SessionManagement
 
 
 
