@@ -32,7 +32,7 @@ To find a file, press "C-x C-f".
 * [backspace] - go up to the parent directory.
 * // - go to the root directory.
 * C-f - to go back temporarly to the normal find-file.
-* C-x C-d - enter Dired for this directory
+* C-d - enter Dired for this directory (used to be C-x C-d in older versions)
 * C-j - create a new file named with the text you entered (note: this is needed if the text you entered matches an existing file, because RET would open the existing one)
 
 To restrict the list after a first filtering:
@@ -46,7 +46,7 @@ Recently visited directories:
 * M-k to remove the current directory from the history 
 * directories are added to the history by navigating inside them via RET 
 
-The documentation for this keys is available via
+The documentation for these keys is available via
 * M-x describe-function RET ido-find-file RET 
 * C-h f ido-find-file RET
 

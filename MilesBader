@@ -3,10 +3,9 @@ He uses Emacs. He's also known as [::snogglethorpe].
 <tt>miles</tt> /at/ <tt>gnu.org</tt>
 
 
-[:twisted-mode]
-[:caps-lock-mode]
-[:literal-tab-mode]
 == Some fun little minor modes ==
+
+[:twisted-mode]
 
    ;;; ----------------------------------------------------------------
    ;;; twisted-mode, Miles Bader <miles /at/ gnu.org>
@@ -53,6 +52,8 @@ He uses Emacs. He's also known as [::snogglethorpe].
      (backward-char arg))
 
 
+[:caps-lock-mode]
+
    ;;; ----------------------------------------------------------------
    ;;; caps-lock-mode, Miles Bader <miles /at/ gnu.org>
 
@@ -70,6 +71,8 @@ He uses Emacs. He's also known as [::snogglethorpe].
      (setq last-command-char (upcase last-command-char))
      (self-insert-command arg))
 
+
+[:literal-tab-mode]
 
    ;;; ----------------------------------------------------------------
    ;;; literal-tab-mode, Miles Bader <miles /at/ gnu.org>

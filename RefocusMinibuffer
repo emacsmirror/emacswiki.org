@@ -2,6 +2,7 @@
 
 Sometimes, I click in another [[window]] while the [[minibuffer]] is active, removing focus from the minibuffer window.  Because the minibuffer window is so narrow, it's difficult to click inside it with the mouse. And most of the time I'd like to cancel the minibuffer action rather than continue it.  This page defines [[command]]s you can bind to [[key]]s to return the focus to the minibuffer. -- [[jpkotta]]
 
+If all you want to do is cancel the minibuffer action, you can also use the command `abort-recursive-edit' which by default is bound to `##C-]##'.
 
 === Refocus to Quit Minibuffer ===
 

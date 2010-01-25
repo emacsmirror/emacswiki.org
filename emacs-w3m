@@ -460,25 +460,36 @@ Enjoy! :)                                        -- AndyStewart
 
 This code use curl to update delicious.
 
-The login and password are set to anything-delicious-... variables of
+You have to set login and password in your authinfo file.
 
-* Lisp:AnythingConfigThierryVolpiatto.el
+See auth-source to configure that correctly.
 
-So if you do not use this code change the variables.
+This code is part of:
+
+* Lisp:anything-delicious.el
+
 
 <pre>
 (defun w3m-add-delicious-bookmark (description tag)
-  (interactive "sDescription: \nsTag: ")
+  "Add a bookmark to delicious from w3m"
+  (interactive (list (read-from-minibuffer "Description: "
+                                           nil nil nil nil
+                                           w3m-current-title)
+                     (completing-read "Tag: "
+                                      (anything-delicious-get-all-tags-from-cache))))
   (setq description
         (replace-regexp-in-string " " "+" description))
-  (let* ((url w3m-current-url)
-         (auth (concat anything-delicious-user
-                       ":"
-                       anything-delicious-password))
-         (url-api (format "https://api.del.icio.us/v1/posts/add?&url=%s&description=%s&tags=%s"
+  (let* ((url     w3m-current-url)
+         (url-api (format anything-c-delicious-api-url-add
                           url
                           description
-                          tag)))
+                          tag))
+         anything-delicious-user
+         anything-delicious-password
+         auth)
+    (unless (and anything-delicious-user anything-delicious-password)
+      (anything-delicious-authentify))
+    (setq auth (concat anything-delicious-user ":" anything-delicious-password))
     (with-temp-buffer
       (apply #'call-process "curl" nil t nil
              `("-u"
@@ -487,14 +498,40 @@ So if you do not use this code change the variables.
       (buffer-string)
       (goto-char (point-min))
       (if (re-search-forward "<result code=\"done\" />" nil t)
-          (message "%s added to delicious" description)
-          (message "Fail to add bookmark to delicious")))))
+          (unwind-protect
+               (progn
+                 (message "%s added to delicious" description)
+                 (when current-prefix-arg
+                   (w3m-bookmark-write-file url
+                                            (replace-regexp-in-string "\+"
+                                                                      " "
+                                                                      description)
+                                            tag)
+                   (message "%s added to delicious and to w3m-bookmarks" description)))
+            (anything-wget-retrieve-delicious))
+          (message "Fail to add bookmark to delicious")
+          (when current-prefix-arg
+            (if (y-or-n-p "Add anyway to w3m-bookmarks?")
+                (progn
+                  (w3m-bookmark-write-file url
+                                           (replace-regexp-in-string "\+" " "
+                                                                     description)
+                                           tag)
+                  (message "%s added to w3m-bookmarks" description))))))))
 
 (define-key w3m-mode-map "\C-x\C-a" 'w3m-add-delicious-bookmark)
 </pre>
 
 -- ThierryVolpiatto
 
+: Not as simple now that OAuth is used; compare  http://delicious.com/help/api and http://delicious.com/help/oauthapi  --[[jcorneli]]
+
+[new]
+Don't know what is OAuth, i will have a look. However the actual above code of Lisp:anything-delicious.el work fine.
+I have updated it.
+
+-- ThierryVolpiatto
+ 
 = w3m in Emacs 23 (on Debian and Ubuntu 9.10) =
 
 The `w3m-el' package is not fully compatible with Emacs 23. Installing `w3m-el-snapshot' instead worked for me. No additional setup like ##(require 'w3m-load)## was necessary.

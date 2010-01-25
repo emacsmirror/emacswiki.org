@@ -7,11 +7,11 @@ The following are Emacs interfaces to computer algebra systems.  Some of these a
 * [http://www-gap.dcs.st-and.ac.uk/~gap/ GAP] -- a link for the Emacs interface is at   ~/Info4/deposit.html
 * [http://library.wolfram.com/infocenter/MathSource/4567 math.el] -- for running (non-free) Mathematica under Emacs.
 
-See also JayBelanger.
-
-== Question ==
-
-Why not mentioning here Emacs' own CAS system: [AdvancedDeskCalculator calc] and also [http://sage.math.washington.edu/sage/ sage]! --[[dida]]
+And, of course, there's Emacs's built-in computer algebra system,
+[AdvancedDeskCalculator Calc].  However it should be said that Calc is
+not very graphical, and therefore ill-suited to situations in which
+visualisations are necessary (such as work closely related to computer
+graphics).
 
 ------------
 CategoryCalculators

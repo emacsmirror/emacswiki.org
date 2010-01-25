@@ -49,12 +49,16 @@ fractions, and floats are various ways of describing real numbers.
 HMS forms also for many purposes act as real numbers.  These types can
 be combined to form complex numbers, modulo forms, error forms, or
 interval forms.  Finally, all these types of numbers may be combined
-into vectors, matrices, or algebraic formulas.
+into vectors, matrices, or algebraic formulas (hit the apostrophe key
+to enter algebraic expressions).
 
 Calc even allows you to simplify formulas, perform symbolic
 differentiation and integration, numerical integration, and to compute
 taylor series.  It helps you solve equations symbolically, helps you
 find solutions numerically, and it helps you fit curves.
+
+In short, Calc is a powerful, although mostly non-graphical, computer
+algebra system (disguised as a whimpy little RPN calculator).
 
 == Emacs 21 ==
 

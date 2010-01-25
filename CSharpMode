@@ -304,5 +304,14 @@ GNU Emacs 23.1.1 (x86_64-pc-linux-gnu, GTK+ Version 2.12.12) of 2009-10-19 on de
 
 -- Richard Kettlewell.
 
+=== VJ Complete and XEmacs===
+
+vj-complete does not seem to work with XEmacs.
+
+ide-complete do work under windows only (funny to read that it has to be "ported" to Linux, whereas it's written in C#!)
+
+--GM/LIAR
+
+
 ----
 CategoryModes ProgrammingModes

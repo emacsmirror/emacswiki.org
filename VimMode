@@ -26,10 +26,17 @@ The following aspects are currently not implemented, but should be in future:
 * marks
 * registers
 * most of the text-object motions
-* some ex-mode stuff (interactive substitude)
+* some ex-mode stuff (interactive substitute)
 * XEmacs compatibility
+* mouse-handling in visual-mode
+* better interaction of pure Emacs commands with vim-mode (region, ...)
 * How about invisible text? That is currently a problem in Viper.
 ** //Can you give examples of how viper behaves on invisible text and what you would expect?//
+*** If you for example in org-mode are in on a header line with an invisible body and press "o" then the invisible text should be made visible. That does not happen in Viper yet. Searching should open invisible parts just as isearch does.
+** //Searching should be no problem since it uses isearch. Substitute may be a problem, since it does not use isearch in all cases (if there's no 'g' option). This should not be a big problem since I plan to use isearch for substitute, too. Pressing "o" does not open the invisible part for one simple reason: Emacs does not open an invisible part on editing. A simple solution could be the following: when insert-mode (or replace-mode) is started, one could check if there's an overlay with the invisible property at (point). If this is the case, this property is changed to nil. This can be easily done and makes "o" (and also "a" and others) work as you expect. What do you think of this solution?//
+*** Changing the overlay invisible property to nil sounds ok to me, but I wonder if Emacs should not do that by default in the command loop. I will file a bug report.
+**** Eh, forgot that there is global-reveal-mode to take care of this. Wonder why it is not default?
+** //Ah, very good, then this should not be a problem anymore.//
 * ...
 
 == Downloads ==

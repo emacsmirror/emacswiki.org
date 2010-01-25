@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Jan 17 17:47:20 2010 (-0800)
+;; Last-Updated: Sun Jan 24 08:08:57 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 3442
+;;     Update #: 3447
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2648,14 +2648,14 @@ during Icicles search)."
 (defcustom icicle-thing-at-point-functions
   (progn (or (require 'ffap- nil t) (require 'ffap nil t)) ; Try `ffap-.el' first.
          (cons
-          ;; 1) Ffap, 2) Lisp symbol or file name, 3) word, 4) url.
-          `(,@(and (fboundp 'ffap-guesser) '(ffap-guesser))
-            ,(if (fboundp 'symbol-name-nearest-point)
+          ;; 1) Lisp symbol or file name, 2) region-or-word, 3) Ffap, 4)url.
+          `(,(if (fboundp 'symbol-name-nearest-point)
                  'symbol-name-nearest-point
                  (lambda () (symbol-name (symbol-at-point))))
-            ,(if (fboundp 'word-nearest-point)
-                 'word-nearest-point
+            ,(if (fboundp 'region-or-word-nearest-point)
+                 'region-or-word-nearest-point
                  (lambda () (thing-at-point 'word)))
+            ,@(and (fboundp 'ffap-guesser) '(ffap-guesser))
             thing-at-point-url-at-point)
           'forward-word))
   "*Functions that return a string at or near the cursor when you use `M-.'.

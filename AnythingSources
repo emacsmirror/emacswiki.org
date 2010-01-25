@@ -1962,6 +1962,43 @@ For use with [[eproject]].
 
 [[anything-eproject.el]]
 
+==eproject'==
+
+This is for the other eproject that can be found here:
+[http://wiki.github.com/jrockway/eproject/]
+
+<pre>
+(require 'cl)
+(defun anything-eproject-get-files ()
+  (let ((matcher (format "\\(?:%s\\)"
+                         (reduce (lambda (a b) (concat a "\\|" b))
+                                 (mapcar (lambda (f) (format "\\(?:%s\\)" f))
+                                         (eproject-get-project-metadatum
+                                          (eproject-type) :relevant-files))))))
+    (eproject--search-directory-tree (eproject-root) matcher)))
+
+(defvar anything-eproject-source
+  '((name . "eproject")
+    (init . (lambda ()
+              (setq anything-eproject-last-buffer (current-buffer))))
+    (type . file)
+    (candidates . (lambda ()
+                    (with-current-buffer anything-eproject-last-buffer (anything-eproject-get-files))))))
+
+(defun any-eproject ()
+  "helps anything to use eproject to find a file"
+  (interactive)
+  (let ((anything-sources '(anything-eproject-source)) anything-samewindow)
+    (anything nil nil nil nil nil "eproject")))
+
+</pre>
+--greboide
+
+Configuration by Users
+
+RubikitchAnythingConfiguration is my anything configuration. – rubikitch
+</pre>
+
 -- DanielHackney
 
 ==Make calculation result only show actual calculation results==

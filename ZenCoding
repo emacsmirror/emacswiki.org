@@ -147,53 +147,6 @@ You can use it reasonably well from Emacs:
 Any suggestions/helpful ideas please feel free.
 
 [new]
-Hi Chris. Would you be able create a list of which features are implented and which ones aren't? That would make it a little easier to figure out if the syntax I want to use is supposed to be supported or not.
-
-I'm trying to use aliases with a colon, and they are not working. (ie,  script:src). I can't tell if this is syntax is supposed to be supported or not.
-
-Also, I'm wondering if you (or anyone) has plans to implement support for expansion of doctype declarations. (ie, html:4s). That would be rocking.
-
-Do you intend to implement support for zen-coding's css properties? 
-
-Thank you.
-
-
-[new]
-Hi. I'm using zencoding-mode in emacs 22.2.1, on ubuntu karmic with gnome. 
-Ctrl-Return doesn't seem to do the expansion. I just get a return. 
-The expansion works fine if I do 'M-x zencoding-expand-line' though.
-
-
-I looked for info on editing keybindings, and found this page:
-http://xahlee.org/emacs/keyboard_shortcuts.html
-I noted that it lists 'Return' under "Keys to avoid".
-
-
-I have tried to edit the keybinding by changing a line in zencoding-mode.el to:
-(define-key zencoding-mode-keymap (kbd "<C-M-q>") 'zencoding-expand-line)))
-
-However, when I hit that sequence, the minibuffer proffers:
-"C-M-q is undefined"
-
-Did anyone else have a problem with this ?
-How can I fix this ?
-
-CORRECTION: Ctrl-Return does actually work normally. It only fails to work when I use emacs in a terminal emulator. 
-However, this is usually how I use emacs. Is there a way to get this keybinding to work when using emacs in a term window?
-
-UPDATE:
-Hi Chris. On another computer, I am now using the latest version of zencoding-mode.el
-( Last-Updated: 2009-11-20 Fri. The previous version, which I am also using, has not date)
-It seems that this latest version has even more issues when used in emacs within a term window.
-As before, C-Ret doesn't do anything.
-Also, the preview mode doesn't respond as expected. If I do p*5, then M-x zen-expand-line, I get the preview. But a return will just add a line break, while the preview remains open.
-
-I really appreciate that you are providing this awesome mode. But I'd really like it if you could add support for emacs in a terminal window.
-
-Is there any chance that you might hammer out these bugs?
-
-
-[new]
 Yes, please rewrite it in elisp ... ;-)
 
 Would that be hard for some reason?
@@ -287,3 +240,57 @@ Hey lazni, supporting anything complex like that is not what I intended. I inten
 ---
 
 Check out this article about an other implementation: http://www.smashingmagazine.com/2009/11/21/zen-coding-a-new-way-to-write-html-code
+
+[new]
+Hi Chris. Would you be able create a list of which features are implented and which ones aren't? That would make it a little easier to figure out if the syntax I want to use is supposed to be supported or not.
+
+I'm trying to use aliases with a colon, and they are not working. (ie,  script:src). I can't tell if this is syntax is supposed to be supported or not.
+
+Also, I'm wondering if you (or anyone) has plans to implement support for expansion of doctype declarations. (ie, html:4s). That would be rocking.
+
+Do you intend to implement support for zen-coding's css properties? 
+
+Thank you.
+
+
+[new]
+Hi. I'm using zencoding-mode in emacs 22.2.1, on ubuntu karmic with gnome. 
+Ctrl-Return doesn't seem to do the expansion. I just get a return. 
+The expansion works fine if I do 'M-x zencoding-expand-line' though.
+
+
+I looked for info on editing keybindings, and found this page:
+http://xahlee.org/emacs/keyboard_shortcuts.html
+I noted that it lists 'Return' under "Keys to avoid".
+
+
+I have tried to edit the keybinding by changing a line in zencoding-mode.el to:
+(define-key zencoding-mode-keymap (kbd "<C-M-q>") 'zencoding-expand-line)))
+
+However, when I hit that sequence, the minibuffer proffers:
+"C-M-q is undefined"
+
+Did anyone else have a problem with this ?
+How can I fix this ?
+
+CORRECTION: Ctrl-Return does actually work normally. It only fails to work when I use emacs in a terminal emulator. 
+However, this is usually how I use emacs. Is there a way to get this keybinding to work when using emacs in a term window?
+
+UPDATE:
+Hi Chris. On another computer, I am now using the latest version of zencoding-mode.el
+( Last-Updated: 2009-11-20 Fri. The previous version, which I am also using, has not date)
+It seems that this latest version has even more issues when used in emacs within a term window.
+As before, C-Ret doesn't do anything.
+Also, the preview mode doesn't respond as expected. If I do p*5, then M-x zen-expand-line, I get the preview. But a return will just add a line break, while the preview remains open.
+
+I really appreciate that you are providing this awesome mode. But I'd really like it if you could add support for emacs in a terminal window.
+
+Is there any chance that you might hammer out these bugs?
+
+[new]
+
+Sorry guys, as you can tell by the lateness of my response, I really don't have any personal time to work on personal projects. But there are three other project collaborators on the zencoding project, so maybe you can add these issues as Issues on github? Then it keeps them in a central location and means someone other than me might have the time and go and fix them: http://github.com/chrisdone/zencoding/issues If you want to contribute some patches please fork the project and I'll pull from it and add you as a collab.
+
+To the person above the previous, this zencoding-mode only supports what is documented above. Does support CSS classes/ids, but not aliases.
+
+-- [[ChrisDone]]

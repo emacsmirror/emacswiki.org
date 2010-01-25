@@ -10,25 +10,26 @@ If you can think of any other please share.
 # Find two  good key  shortcuts and  assign them to  the sunrise  and sunrise-cd
 functions (e.g. mine are C-c x and C-c X).
 
-# To get acquainted  with the specific capabilities offered  by Sunrise, I think
-the   best  first   step  is   to  get   and  install   the   Buttons  extension
-(Lisp:sunrise-x-buttons.el), it'll  provide you with  a nice third pane  (at the
-bottom) with buttons  you can click to perform many  basic operations. The trick
-with those buttons  is that they're labeled with  their equivalent shortcuts, so
-in no time  you memorize them and  can use them directly from  the keyboard.  In
-general  the highest  productivity can  be achieved  when using  exclusively the
-keyboard -- use the mouse rather as  kind of side-wheels to learn the basics (or
-to work while eating a sandwich), then just drop it.
+#  To  get acquainted with the specific capabilities offered by Sunrise, I think
+the best first step is to get and install the [Lisp:sunrise-x-buttons.el Buttons
+Extension]  ,  it'll  provide  you  with  a nice third pane (at the bottom) with
+buttons you can click to perform many basic operations.  The  trick  with  those
+buttons  is  that they're labeled with their equivalent shortcuts, so in no time
+you memorize them and can use them directly from the keyboard.  In  general  the
+highest  productivity can be achieved when using exclusively the keyboard -- use
+the mouse rather as kind of side-wheels to learn the basics (or  to  work  while
+eating a sandwich), then just drop it.
 
 # Once you know the buttons, go for the listing of bindings in the describe-mode
 message (just press h while in sunrise mode).
 
 #  You'll be best set off with Sunrise if you use some kind of Linux or MacOS X.
 On Windows there's unfortunately a heck lot of stuff you have to set up first to
-make all the emacs capabilities integrated in Sunrise work. In particular try to
-have AVFS running in your box ([[#AvfsSetup]]) -- it will allow to transparently
-navigate  into  all  kinds of archives (zip, rar, jar, even mbox) -- great deal.
-Unfortunately AFAIK there's no AVFS for Windows. BTW  Archlinux  offers  Sunrise
+make  all  the  emacs capabilities integrated in Sunrise work. In particular try
+[http://www.emacswiki.org/emacs/Sunrise_Commander_Tips#AvfsSetup  to  have  AVFS
+running  in  your  box]  -- it will allow you to transparently navigate into all
+kinds of archives (zip, rar, jar, iso, even  mbox  and  patch)  --  great  deal.
+Unfortunately  AFAIK  there's  no AVFS for Windows. BTW Archlinux offers Sunrise
 with AVFS and other goodies conveniently placed in one single package.
 
 # Explore all the configurable settings Sunrise offers by typing:
@@ -46,6 +47,12 @@ manipulate the  names of  your files and  directories -- query  replace, regular
 expressions, serial  numbering... your imagination  is the only limit.  Just one
 warning: be careful  and play a LOT with  it before using it for  real, so there
 are no surprises later and you don't shoot yourself in the foot.
+
+# Learn how to define and execute [KeyboardMacros Keyboard Macros]. Whenever you
+notice you're pressing the same keys you did a while ago, and you suspect you'll
+have  to repeat the same actions over and over again, at least a few more times,
+do yourself a favor, stop for a while, and think how to make Emacs do the monkey
+work for you.
 
 #  Don't  forget  a  OFM is just a semi-graphical extension of the command line.
 Learn when it's preferable to use the command line (CL) instead of the FM. Learn

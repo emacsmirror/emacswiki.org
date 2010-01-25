@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 21.0
-;; Last-Updated: Fri Jan 15 13:48:04 2010 (-0800)
+;; Last-Updated: Sun Jan 24 08:04:29 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 828
+;;     Update #: 831
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thingatpt+.el
 ;; Keywords: extensions, matching, mouse
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -42,10 +42,10 @@
 ;;    `non-nil-symbol-name-at-point',
 ;;    `non-nil-symbol-name-nearest-point',
 ;;    `non-nil-symbol-nearest-point', `number-nearest-point',
-;;    `region-or-word-at-point', `sentence-nearest-point',
-;;    `sexp-nearest-point', `symbol-at-point-with-bounds',
-;;    `symbol-name-nearest-point', `symbol-nearest-point',
-;;    `symbol-nearest-point-with-bounds',
+;;    `region-or-word-at-point', `region-or-word-nearest-point',
+;;    `sentence-nearest-point', `sexp-nearest-point',
+;;    `symbol-at-point-with-bounds', `symbol-name-nearest-point',
+;;    `symbol-nearest-point', `symbol-nearest-point-with-bounds',
 ;;    `thing-at-point-with-bounds',
 ;;    `thing/form-nearest-point-with-bounds', `thing-nearest-point',
 ;;    `thing-nearest-point-with-bounds', `word-nearest-point'.
@@ -81,6 +81,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/01/24 dadams
+;;     Added: region-or-word-nearest-point.
 ;; 2008/10/22 dadams
 ;;     Added: region-or-word-at-point.  Thx to Richard Riley.
 ;; 2007/07/15 dadams
@@ -545,6 +547,14 @@ Returns the name of the nearest symbol other than `nil'.
 \"Nearest\" to point is determined as for `thing-nearest-point'.
 SYNTAX-TABLE is a syntax table to use."
   (thing-nearest-point 'word syntax-table))
+
+;;;###autoload
+(defun region-or-word-nearest-point (&optional syntax-table)
+  "Return the active region or the word nearest point if region inactive.
+See `word-nearest-point'."
+  (if mark-active
+      (buffer-substring-no-properties (region-beginning) (region-end))
+    (word-nearest-point syntax-table)))
 
 ;;;###autoload
 (defun region-or-word-at-point ()
