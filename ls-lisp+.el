@@ -7,9 +7,9 @@
 ;; Copyright (C) 2008-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Feb 29 10:54:37 2008 (Pacific Standard Time)
 ;; Version: 20.0
-;; Last-Updated: Fri Jan 15 13:26:07 2010 (-0800)
+;; Last-Updated: Mon Jan 25 20:37:27 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 133
+;;     Update #: 139
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/ls-lisp+.el
 ;; Keywords: internal, extensions, local, files, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -26,15 +26,14 @@
 ;;    Enhancements of standard library `ls-lisp.el'.
 ;;
 ;;  If you use MS Windows, MS-DOS, or MacOS, then you will likely want
-;;  to use library `ls-lisp.el' and this library, to use an Emacs Lisp
-;;  only definition of `insert-directory'.
+;;  to use library `ls-lisp.el' plus this library, to use an Emacs
+;;  Lisp only definition of `insert-directory'.
 ;;
-;;  Do not load this library directly.  Instead, load library
-;;  `files+.el', which will load this.  Both of these libraries
-;;  redefine `insert-directory' so that the second header line
-;;  includes the number of files and directories in the directory.
-;;  Files `.' and `..' are excluded from the count, but all other
-;;  directories listed are included.
+;;  `ls-lisp+.el' loads libraries `ls-lisp.el' and `files+.el'.  Both
+;;  `files+.el' and `ls-lisp+.el' redefine `insert-directory' so that
+;;  the second header line includes the number of files and
+;;  directories in the directory.  Files `.' and `..' are excluded
+;;  from the count, but all other directories listed are included.
 ;;
 ;;  The second header line thus becomes this, in Emacs 22:
 ;;
@@ -117,7 +116,7 @@ is non-nil; otherwise, it interprets wildcards as regular expressions
 to match file names.  It does not support all `ls' switches -- those
 that work are: A a c i r S s t u U X g G B C R n and F partly."
   (if ls-lisp-use-insert-directory-program
-      (funcall original-insert-directory
+      (funcall original-insert-directory ; Free here.  Defined in `ls-lisp.el'.
 	       file switches wildcard full-directory-p)
     ;; We need the directory in order to find the right handler.
     (let ((handler (find-file-name-handler (expand-file-name file)

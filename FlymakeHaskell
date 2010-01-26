@@ -6,9 +6,11 @@
 
 2008-08-24 fixed to support spaces in source and base_dir paths : Chry Cheng
 
-2009-01-27 pure elisp implementation using the builtin AOP to tweak flymake : RohanHart
+2009-01-27 pure elisp implementation using the builtin AOP to tweak flymake : Rohan Hart
 
 2009-03-16 nothing worked for me, so I tried a simpler solution : John Wiegley
+
+2010-01-26 reworked the elisp version as haskell-mode now provides some flymake integration (which I disable): Rohan Hart
 
 I've tested the following procedure on both GNU Emacs 21.2.1 and 22.1.50.1.
 I'm afraid that it may not work on another version. 
@@ -244,7 +246,13 @@ at the version 0.3 when I write this sentence at 2007-11-11.
 
 == Alternative version using pure elisp AOP ==
 
-This works for flymake 0.3.  One limitation compared to using Perl is that if the split string parameter to flymake-split-string should change position in some future version then the advice will need to be changed accordingly.  Another is that, since flymake uses a process filter, this relies on ghc outputting entire errors and the text not being chunked by the emacs runtime in same way - I've only tested this using ghc 6.10.1 on Windows.
+This works for flymake 0.3.  One limitation compared to using Perl is that if the split string parameter to flymake-split-string should change position in some future version then the advice will need to be changed accordingly.  Another is that, since flymake uses a process filter, this relies on ghc outputting entire errors and the text not being chunked by the emacs runtime in same way - I've only tested this using ghc 6.10.1 on Windows and ghc 6.10.4 on Linux.
+
+Comment out these lines in haskell-mode.el
+
+    (eval-after-load "flymake"
+      '(add-to-list 'flymake-allowed-file-name-masks
+    		'("\\.l?hs\\'" haskell-flymake-init)))
 
 Add the following to your .emacs
 
@@ -276,15 +284,18 @@ Add the following to your .emacs
       (when flymake-split-output-multiline
         (ad-set-arg 1 "^\\s *$")))
     
+    ;; Why did nobody tell me about eval-after-load - very useful
+    (eval-after-load "flymake"
+      '(progn
+         (add-to-list 'flymake-allowed-file-name-masks
+    		  '("\\.l?hs$" flymake-Haskell-init flymake-simple-java-cleanup))
+         (add-to-list 'flymake-err-line-patterns
+    		  '("^\\(.+\\.l?hs\\):\\([0-9]+\\):\\([0-9]+\\):\\(\\(?:.\\|\\W\\)+\\)"
+    		    1 2 3 4))))
+    
     (add-hook
      'haskell-mode-hook
      '(lambda ()
-     	;;; use add-to-list rather than push to avoid growing the list for every Haskell file loaded
-        (add-to-list 'flymake-allowed-file-name-masks
-    		 '("\\.l?hs$" flymake-Haskell-init flymake-simple-java-cleanup))
-        (add-to-list 'flymake-err-line-patterns
-    		 '("^\\(.+\\.l?hs\\):\\([0-9]+\\):\\([0-9]+\\):\\(\\(?:.\\|\\W\\)+\\)"
-    		   1 2 3 4))
         (set (make-local-variable 'multiline-flymake-mode) t)))
 
 == Acknowledgments ==

@@ -107,9 +107,8 @@ None of the above seems to do much for jumpy mouse scrolling. I wrote a snippet 
 [new:DrewAdams:2009-02-16 01:34 UTC]
 I added local and global highlighting modes that can help focus attention on a "window" of the several lines that surround the cursor -- see [[HighlightCurrentLine#HlSpotlight|HL Spotlight]] and library <tt>[[hl-spotlight.el]]</tt>. By default, these modes also turn on local or global cursor-centering modes, as defined in <tt>[[centered-cursor-mode.el]]</tt>. -- DrewAdams
 
-
-
-
+[new:jpkotta:2010-01-26 02:08 UTC]
+I used the <code>(setq scroll-conservatively 10000)</code> solution, and it works well enough for me.  However, moving the point down (and thus scrolling 1 line at a time) still looked very poor - it was jerky and inconsistent.  Every 3rd press would not move the point, but scroll the window a couple of pixels (this is in X, BTW).  This happened whether I was just holding the down arrow or pressing it repeatedly.  I accidentally stumbled upon the <code>auto-window-vscroll</code> variable, I set it to <code>nil</code> and scrolling down looks much better.
 
 ----
 CategoryDisplay

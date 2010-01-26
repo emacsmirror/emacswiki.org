@@ -63,4 +63,10 @@ I assumed that the change was more significant, that's kind of pleasant -- presu
 You can use this package to render code snippets with syntax highlighting when exporting Org-mode files to HTML.
 http://orgmode.org/, see manual "Literal Examples", 6.26 d, Chapter 12, p. 102, footnote1.    -- StefanVollmar
 ----
+
+
+The 1.37 version of this extension worked for me without patching (as far as I could tell).  I did not receive any errors and the HTML output looked like my agenda did in Emacs.  I'm using Emacs 23.1 on Windows. --KevinIngolfsland
+[new]
+----
+
 CategoryFaces CategoryHypermedia

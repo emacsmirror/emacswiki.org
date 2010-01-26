@@ -6,7 +6,7 @@ levels of emulation to help Vi addicts kick the habit.
 * See the section "Emulation" in the EmacsManual.
 * http://www.cs.sunysb.edu/~kifer/emacs.html
 
-See also ViKeys and, in particular, [[vimpulse.el]].
+See also ViKeys and, in particular, [[vimpulse.el]] and [[VimMode]].
 
 [new]
 Is there a way to deactivate Viper for a single buffer in a function? That is, why doesn't the following work?
@@ -271,6 +271,10 @@ You can fix it modifying viper-prefix-arg-com:
 		  (viper-exec-form-in-vi
 		   `(key-binding (char-to-string ,char)))))
 }}}
+
+=== How can you remap prefix keys like 'c' and 'd'? ===
+
+Define-key just maps them to "'viper-command-argument", and the actual meaning is derived by some deeper magic.
 
 ----
 CategoryEmulation

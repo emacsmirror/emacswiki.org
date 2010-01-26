@@ -1,6 +1,6 @@
 ;;; traverselisp.el --- walk through directories and perform actions on files.
 
-;; Copyright (C) 2008, 2009 Thierry Volpiatto
+;; Copyright (C) 2008, 2009, 2010 Thierry Volpiatto, all rights reserved.
 ;; Author:     Thierry Volpiatto 
 ;; Maintainer: Thierry Volpiatto
 ;; Keywords:   data, regexp
@@ -248,7 +248,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Version:
-(defconst traverse-version "1.1.46")
+(defconst traverse-version "1.1.50")
 
 ;;; Code:
 
@@ -1252,59 +1252,51 @@ Special commands:
   "Read each keyboard input and add it to `traverse-incremental-search-pattern'."
   (let* ((prompt       (propertize traverse-incremental-search-prompt 'face '((:foreground "cyan"))))
          (doc          "     [RET:exit, C-g:quit, C-z:Jump, C-j:Jump&quit, C-n/p:next/prec-line]")
-         (inhibit-quit t)
-         (tmp-list     ())
-         char)
+         (inhibit-quit (unless (eq traverse-incremental-read-fn 'read-key) t))
+         (tmp-list     ()))
     (unless (string= initial-input "")
-      (loop for char across initial-input
-         do (push (text-char-description char) tmp-list)))
+      (loop for char across initial-input do (push char tmp-list)))
     (setq traverse-incremental-search-pattern initial-input)
-    (catch 'break
-      (while 1
-        (catch 'continue
-          (setq char (funcall traverse-incremental-read-fn
-                      (concat prompt traverse-incremental-search-pattern doc)))
-          (case char
-            ((or down ?\C-n) ; Next line
-             (when traverse-incremental-search-timer
-               (traverse-incremental-cancel-search))
-             (traverse-incremental-next-line)
-             (traverse-incremental-occur-color-current-line)
-             (throw 'continue nil)) ; Fix me: Is it needed?
-            ((or up ?\C-p) ; precedent line
-             (when traverse-incremental-search-timer
-               (traverse-incremental-cancel-search))
-             (traverse-incremental-precedent-line)
-             (traverse-incremental-occur-color-current-line)
-             (throw 'continue nil)) ; Fix me: Is it needed?
-            ((or ?\e ?\r) ; RET or ESC break and exit code.
-             (throw 'break (message "Incremental Search completed")))    
-            (?\d ; Delete last char of `traverse-incremental-search-pattern' with DEL.
-             (unless traverse-incremental-search-timer
-               (traverse-incremental-start-timer))
-             (pop tmp-list)         
-             (setq traverse-incremental-search-pattern (mapconcat 'identity (reverse tmp-list) ""))
-             (throw 'continue nil))
-            (?\C-g ; Quit and restore buffers.
-             (setq traverse-incremental-quit-flag t) (throw 'break (message "Quit")))
-            ((or right ?\C-z) ; persistent action
-             (traverse-incremental-jump) (other-window 1))
-            ((or left ?\C-j)
-             (setq traverse-incremental-exit-and-quit-p t)
-             (throw 'break (message "Incremental Search completed")))
-            (?\C-v ; Scroll down
-             (scroll-other-window 1))
-            (?\M-v ; Scroll up
-             (scroll-other-window -1))
-            (t
-             (unless traverse-incremental-search-timer
-               (traverse-incremental-start-timer))
-             (condition-case nil ; If keyboard input is an event not listed above we exit.
-                 (progn
-                   (push (text-char-description char) tmp-list)
-                   (setq traverse-incremental-search-pattern (mapconcat 'identity (reverse tmp-list) ""))
-                   (throw 'continue nil))
-               (error (throw 'break nil))))))))))
+    (while (let ((char (funcall traverse-incremental-read-fn
+                                (concat prompt traverse-incremental-search-pattern doc))))
+             (case char
+               ((down ?\C-n) ; Next line
+                (when traverse-incremental-search-timer
+                  (traverse-incremental-cancel-search))
+                (traverse-incremental-next-line)
+                (traverse-incremental-occur-color-current-line) t)
+               ((up ?\C-p) ; precedent line
+                (when traverse-incremental-search-timer
+                  (traverse-incremental-cancel-search))
+                (traverse-incremental-precedent-line)
+                (traverse-incremental-occur-color-current-line) t)
+               ((?\e ?\r) (message nil) nil) ; RET or ESC break and exit code.
+               (?\d ; Delete last char of `traverse-incremental-search-pattern' with DEL.
+                (unless traverse-incremental-search-timer
+                  (traverse-incremental-start-timer))
+                (pop tmp-list))         
+               (?\C-g ; Quit and restore buffers.
+                (setq traverse-incremental-quit-flag t) nil)
+               ((or right ?\C-z) ; persistent action
+                (traverse-incremental-jump) (other-window 1) t)
+               ((left ?\C-j)
+                (setq traverse-incremental-exit-and-quit-p t) nil)
+               (?\C-v ; Scroll down
+                (scroll-other-window 1) t)
+               (?\M-v ; Scroll up
+                (scroll-other-window -1) t)
+               (t ; Store character
+                (unless traverse-incremental-search-timer
+                  (traverse-incremental-start-timer))
+                (if (characterp char)
+                    (push char tmp-list)
+                    ;; Else, a non--character event is entered, not listed above.
+                    ;; add it to `unread-command-events' and exit (nil) .
+                    (setq unread-command-events
+                          (nconc (mapcar 'identity (this-single-command-raw-keys))
+                                 unread-command-events))
+                    nil))))
+      (setq traverse-incremental-search-pattern (apply 'string (reverse tmp-list))))))
 
 
 (defun traverse-incremental-filter-alist-by-regexp (regexp buffer-name)
@@ -1375,10 +1367,10 @@ for commands provided in the search buffer."
               (switch-to-buffer traverse-incremental-current-buffer)
               (when traverse-occur-overlay
                 (delete-overlay traverse-occur-overlay))
-              (delete-other-windows) (goto-char curpos))
+              (delete-other-windows) (goto-char curpos) (message nil))
             (if traverse-incremental-exit-and-quit-p
                 (progn (traverse-incremental-jump-and-quit)
-                       (kill-buffer "*traverse search*"))
+                       (kill-buffer "*traverse search*") (message nil))
                 (traverse-incremental-jump) (other-window 1)))
         (setq traverse-incremental-quit-flag nil)))))
 

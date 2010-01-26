@@ -104,6 +104,31 @@ Turns out it was a keybinding in my .inputrc that caused the problem.
 [new]
 I have a large emacs window and I can't find the GDB marker, =>.  How can I make it blink or appear in red?
 
+[new]
+I use a snippet from [http://kousik.blogspot.com/2005/10/highlight-current-line-in-gdbemacs.html|here] to highlight the marker line. I've made a trivial modification to make it higlight the entire line, as opposed to the original which only highlights it up to the newline character of the current line. The original code is commented out below, and the entire thing is tested and working in GNU Emacs 23. -- StefanKangas
+
+  (defvar gud-overlay
+    (let* ((ov (make-overlay (point-min) (point-min))))
+      (overlay-put ov 'face 'secondary-selection)
+      ov)
+    "Overlay variable for GUD highlighting.")
+   
+  (defadvice gud-display-line (after my-gud-highlight act)
+    "Highlight current line."
+    (let* ((ov gud-overlay)
+           (bf (gud-find-file true-file)))
+      (save-excursion
+        (set-buffer bf)
+        (move-overlay ov (line-beginning-position) (line-beginning-position 2)
+      ;;(move-overlay ov (line-beginning-position) (line-end-position)
+                      (current-buffer)))))
+   
+  (defun gud-kill-buffer ()
+    (if (eq major-mode 'gud-mode)
+        (delete-overlay gud-overlay)))
+   
+  (add-hook 'kill-buffer-hook 'gud-kill-buffer)
+
 ----
 CategoryDebug
 CategoryProgrammerUtils

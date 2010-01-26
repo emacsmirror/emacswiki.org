@@ -1141,6 +1141,8 @@ Can you please test that version?
 [new]
 I downloaded and did some quick tests this morning; will do more tonite. Installing with Admin privs and letting the installer start EmacsClient still gets the ##server-ensure-safe-dir## error message.  Exiting Emacs and then starting it again works properly EmacsClient; only the initial start from the Installer hits the error message.
 
+[new]
+2010-01-25: I just installed EmacsW32 on a new Win7 system and ran into this problem. I ran the installer as Admin and took all default settings. (The option to create additional file associations fails on Win7 in any case.) Thanks to this discussion thread, I was able to fix the problem by fixing the ownership of /Users/xxxxx/AppData and its contents. -- [[DanMuller]]
 
 === Windows 7 Taskbar ===
 
