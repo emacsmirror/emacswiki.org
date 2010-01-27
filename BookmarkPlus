@@ -79,6 +79,9 @@ This is buffer `##*Bookmark List*##', aka the bookmark "menu list", which you di
   later.  There are a few ways to do this, including
   bookmarking the list itself. See [[#BookmarkListViews]].
 
+* You can use `##M-d >##' to open [[Dired]] for just the local file and
+directory bookmarks that are marked (`##>##').
+
 * You can edit a bookmark (its name and file name).
 
 * A popup menu is available on '''`mouse-3'''', with actions for the
@@ -515,6 +518,54 @@ bookmarks that have at least one of those tags.
 If that were a set of files that you used often, then you would name the set by giving the files a new tag.
 
 The point is that bookmarks, and bookmark tags in particular, let you define and manipulate sets of Emacs objects. It doesn't matter how you define such a set: regexp matching (marking, filtering), by object type, by tag combinations... Sets need not be named to act on them, but you can provide them with persistent names (tags) to avoid redefining them over and over. Manipulation of bookmarked objects includes visiting, searching, and query-replacing. And you can define your own bookmark types (using bookmark handlers) and associated manipulations.
+
+
+
+
+
+
+[:OpenDiredForMarkedFiles]
+=== Open Dired for the Marked Files ===
+
+You've seen that the bookmark list has many features that are
+similar to [[Dired]] features.  But Dired is specialized for files and
+directories, and it has many more features for manipulating them.
+The bookmark list is not intended to replace Dired.
+
+You can, however, use the bookmark list to take advantage of
+arbitrary Dired features for file and directory bookmarks.
+Command `bookmarkp-bmenu-dired-marked-local' ('''`##M-d >##'''') weds
+'''Bookmark+''''s set-defining and set-manipulating features (tagging,
+marking, filtering etc.) to Dired's file-manipulating features.
+
+`##M-d >##' opens a Dired buffer that is specialized for just the
+local files and directories whose bookmarks are marked in the
+bookmark list.  (Other marked bookmarks are ignored by the
+command.)  The files and directories can be located anywhere
+locally; they need not be in the same directory.  They are listed
+in Dired using absolute file names.
+(Remote files and directories could be handled also, once Emacs
+bug #5478 is fixed.)
+
+This '''Bookmark+''' feature makes sets of files and directories
+immediately amenable to all of the operations provided by Dired.
+
+It is particularly useful in conjunction with tags.  Use bookmark
+tags and marks to define a possibly complex set of file and
+directory bookmarks.  Then hit `##M-d >##' to list them in a Dired
+buffer.  Then use any Dired commands you want to act on any of
+them.
+
+For example, to compress bookmarked files that are tagged with
+both `blue' and `moon':
+
+# Mark them using `##T m * blue RET moon RET RET##'.
+# Open Dired for them using `##M-d >##'.
+# Mark them in Dired, then compress them using `Z'.
+
+Since tags are persistent, '''Bookmark+''' gives you a good way to
+define an arbitrary set of files as a project and then open them
+in Dired at any time to operate on them.
 
 
 

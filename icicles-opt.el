@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Jan 24 08:08:57 2010 (-0800)
+;; Last-Updated: Tue Jan 26 14:47:36 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 3447
+;;     Update #: 3448
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1432,7 +1432,7 @@ Zero means there is no wait."
 (defcustom icicle-highlight-input-completion-failure-threshold 1000
   "*More candidates means do not highlight non-completing part of input.
 See also `icicle-highlight-input-completion-failure'."
-  :type 'integer :group 'Icicles-Completions-Display)
+  :type 'integer :group 'Icicles-Minibuffer-Display)
 
 ;;;###autoload
 (defcustom icicle-highlight-input-initial-whitespace-flag t

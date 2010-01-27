@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Jan 23 15:06:54 2010 (-0800)
+;; Last-Updated: Tue Jan 26 22:58:22 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 9067
+;;     Update #: 9140
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -51,6 +51,7 @@
 ;;    (@> "Bookmark List (Display)")
 ;;      (@> "Tag Commands and Keys")
 ;;      (@> "Sets of Bookmarks")
+;;      (@> "Open Dired for the Marked Files")
 ;;      (@> "Marking and Unmarking Bookmarks")
 ;;      (@> "Filtering Bookmarks (Hiding and Showing)")
 ;;      (@> "Only Visible Bookmarks Are Affected")
@@ -100,6 +101,7 @@
 ;;    `bookmarkp-bmenu-describe-this-bookmark',
 ;;    `bookmarkp-bmenu-describe-this+move-down',
 ;;    `bookmarkp-bmenu-describe-this+move-up',
+;;    `bookmarkp-bmenu-dired-marked-local',
 ;;    `bookmarkp-bmenu-edit-bookmark',
 ;;    `bookmarkp-bmenu-filter-bookmark-name-incrementally',
 ;;    `bookmarkp-bmenu-filter-file-name-incrementally',
@@ -470,6 +472,9 @@
 ;;       later.  There are a few ways to do this, including
 ;;       bookmarking the list itself.
 ;;       See (@> "Bookmark-List Views - Saving and Restoring State").
+;;
+;;     - You can use `M-d >' to open Dired for just the local file and
+;;       directory bookmarks that are marked (`>').
 ;;
 ;;     - You can edit a bookmark (its name and file name).
 ;;
@@ -905,6 +910,51 @@
 ;;  (using bookmark handlers) and associated manipulations.
 ;;
 ;;
+;;(@* "Open Dired for the Marked Files")
+;;  *** Open Dired for the Marked Files ***
+;;
+;;  You've seen that the bookmark list has many features that are
+;;  similar to Dired features.  But Dired is specialized for files and
+;;  directories, and it has many more features for manipulating them.
+;;  The bookmark list is not intended to replace Dired.
+;;
+;;  You can, however, use the bookmark list to take advantage of
+;;  arbitrary Dired features for file and directory bookmarks.
+;;  Command `bookmarkp-bmenu-dired-marked-local' (`M-d >') weds
+;;  Bookmark+'s set-defining and set-manipulating features (tagging,
+;;  marking, filtering etc.) to Dired's file-manipulating features.
+;;
+;;  `M-d >' opens a Dired buffer that is specialized for just the
+;;  local files and directories whose bookmarks are marked in the
+;;  bookmark list.  (Other marked bookmarks are ignored by the
+;;  command.)  The files and directories can be located anywhere
+;;  locally; they need not be in the same directory.  They are listed
+;;  in Dired using absolute file names.
+;;
+;;  (Remote files and directories could be handled also, once Emacs
+;;  bug #5478 is fixed.)
+;;
+;;  This Bookmark+ feature makes sets of files and directories
+;;  immediately amenable to all of the operations provided by Dired.
+;;
+;;  It is particularly useful in conjunction with tags.  Use bookmark
+;;  tags and marks to define a possibly complex set of file and
+;;  directory bookmarks.  Then hit `M-d >' to list them in a Dired
+;;  buffer.  Then use any Dired commands you want to act on any of
+;;  them.
+;;
+;;  For example, to compress bookmarked files that are tagged with
+;;  both `blue' and `moon':
+;;
+;;  1. Mark them using `T m * blue RET moon RET RET'.
+;;  2. Open Dired for them using `M-d >'.
+;;  3. Mark them in Dired, then compress them using `Z'.
+;;
+;;  Since tags are persistent, Bookmark+ gives you a good way to
+;;  define an arbitrary set of files as a project and then open them
+;;  in Dired at any time to operate on them.
+;;
+;;
 ;;(@* "Marking and Unmarking Bookmarks")
 ;;  *** Marking and Unmarking Bookmarks ***
 ;;
@@ -1149,6 +1199,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2010/01/26 dadams
+;;     Added: bookmarkp-bmenu-dired-marked-local.  Bound to M-d >.
 ;; 2010/01/23 dadams
 ;;     Added: bookmarkp-handler-cp, bookmarkp-desktop-no-save-vars, bookmarkp-set-desktop-bookmark,
 ;;            bookmarkp-make-desktop-record, bookmarkp-jump-desktop, bookmarkp-desktop-read,
@@ -1804,6 +1856,7 @@
 (defvar desktop-delay-hook)             ; Defined in `desktop.el'.
 (defvar desktop-dirname)                ; Defined in `desktop.el'.
 (defvar desktop-file-modtime)           ; Defined in `desktop.el'.
+(defvar desktop-globals-to-save)        ; Defined in `desktop.el'.
 (defvar gnus-article-current)           ; Defined in `gnus-sum.el'.
 (defvar Info-current-node)              ; Defined in `info.el'.
 (defvar Info-current-file)              ; Defined in `info.el'.
@@ -4206,6 +4259,27 @@ This affects only the `>' mark, not the `D' flag."
                  (bookmark-bmenu-mark)
                  (setq marked-count  (1+ marked-count)))))
         (message "Marked: %d, unmarked: %d" marked-count unmarked-count)))))
+
+;;;###autoload
+(defun bookmarkp-bmenu-dired-marked-local (dirbufname)
+  "Dired in another window for the marked local files and directories.
+Absolute file names are used for the entries in the Dired buffer.
+The only entries are for the marked files and directories.  These can
+be located anywhere (locally).  (Remote files and directories are
+excluded because of Emacs bug #5478.)
+
+You are prompted for the Dired buffer name.  The `default-directory'
+of the buffer is the same as that of buffer `*Bookmark List*'."
+  (interactive (list (read-string "Dired buffer name: ")))
+  (bookmarkp-barf-if-not-in-menu-list)
+  (let ((files  ())
+        file)
+    (dolist (bmk  (bookmarkp-sort-and-remove-dups (bookmarkp-marked-bookmarks-only)))
+      (when (bookmarkp-local-file-bookmark-p bmk)
+        (setq file  (bookmark-get-filename bmk))
+        (unless (file-name-absolute-p file) (setq file (expand-file-name file))) ; Should not happen.
+        (push file files)))
+    (dired-other-window (cons dirbufname files))))
 
 ;;;###autoload
 (defun bookmarkp-bmenu-delete-marked () ; `D' in bookmark list
@@ -7268,6 +7342,8 @@ See `bookmarkp-w3m-jump'."
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "\M-d" nil) ; For Emacs 20
 ;;;###autoload
+(define-key bookmark-bmenu-mode-map "\M-d>"    'bookmarkp-bmenu-dired-marked-local)
+;;;###autoload
 (define-key bookmark-bmenu-mode-map "\M-d\M-m" 'bookmarkp-bmenu-mark-dired-bookmarks)
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "\M-d\M-s" 'bookmarkp-bmenu-show-only-dired)
@@ -7590,15 +7666,16 @@ Miscellaneous
 internal form)
 \\[bookmarkp-bmenu-describe-this+move-down]\t- Show the info, then move to next bookmark
 \\[bookmarkp-bmenu-describe-this+move-up]\t- Show the info, then move to previous bookmark
-\\[bookmarkp-bmenu-refresh-menu-list]\t- Refresh (revert) to up-to-date bookmark list
+\\[bookmarkp-bmenu-dired-marked-local]\t- Open Dired for the marked local files and directories
 \\[bookmarkp-bmenu-delete-marked]\t- Delete visible bookmarks marked `>' (not `D')
 \\[bookmarkp-bmenu-define-command]\t- Define a command to restore the current sort order & filter
 \\[bookmarkp-bmenu-define-full-snapshot-command]\t- Define a command to restore the current \
 bookmark-list state
-\\[bookmarkp-bmenu-edit-bookmark]\t- Edit bookmark name and file name
-\\[bookmarkp-bmenu-quit]\t- Quit (the bookmark list)
+\\[bookmarkp-bmenu-edit-bookmark]\t- Edit the current bookmark name and file name
 \\[bookmark-bmenu-save]\t- Save bookmarks (`C-u': prompt for the bookmarks file to use)
 \\[bookmarkp-toggle-saving-menu-list-state]\t- Toggle saving the bookmark list display state
+\\[bookmarkp-bmenu-refresh-menu-list]\t- Refresh (revert) to up-to-date bookmark list
+\\[bookmarkp-bmenu-quit]\t- Quit (the bookmark list)
 
 \\[bookmarkp-make-function-bookmark]
 \t- Create a function bookmark

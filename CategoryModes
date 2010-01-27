@@ -114,6 +114,7 @@ Other pages (could this please be split in major and minor modes?):
 * TableMode -- edit tables in plain text files
 * TempbufMode -- automatically delete unused buffers
 * TemporalLogicOfActionsMode
+* TestCaseMode -- a minor mode for running unit tests
 * TexinfoMode
 * TjicShell -- enhancement of shell.el, supports multiple shells inside emacs
 * TooltipMode -- Display tooltips in Emacs.

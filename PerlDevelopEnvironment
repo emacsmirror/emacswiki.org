@@ -4,18 +4,18 @@ Emacs::PDE is a collection of Emacs Lisp extensions to facilitate Perl programmi
 
 =Download=
 
-Emacs::PDE is available from [http://search.cpan.org/search?query=Emacs-PDE&mode=all CPAN]. You can install it using the CPAN shell (untested) or download the compress file to a local directory and install as described in the following section.
+Emacs::PDE is available from [http://search.cpan.org/search?query=Emacs-PDE&mode=all CPAN]. You can install it using the CPAN shell (untested) or download the compressed file to a local directory and install as described in the following section.
 
 =Installation=
 
-Installing Emacs::PDE is quit easy. When you download the archive of the Emacs::PDE distribution, uncompress the archive to a folder, for example, ~/elisp/pde, then put this into your ~/.emacs:
+Installing Emacs::PDE is quite easy. When you download the archive of the Emacs::PDE distribution, uncompress the archive to a folder, for example, ~/elisp/pde, then put this into your ~/.emacs:
 
 <pre>
      (add-to-list 'load-path "~/elisp/pde/lisp")
      (load "pde-load")
 </pre>
 
-That is all what you need to do for a typical installation.
+That is all you need to do for a typical installation.
 
 You can also use a Perl style installation:
 
@@ -26,49 +26,47 @@ You can also use a Perl style installation:
      ./Build install
 </pre>
 
-Note that test before build, so perl can test whether you have Emacs in your PATH. The default place to install lisp files is "$ENV{HOME}/.emacs.d/pde". You can use option --elispdir to tell Perl where to put the lisp files. Note that if you use this install option, you should add ##~/elisp/pde## to `load-path'. Use the following in your .emacs:
+Note: test before building, so perl can test whether you have Emacs in your PATH. The default place to install lisp files is "$ENV{HOME}/.emacs.d/pde". You can use option <code>--elispdir</code> to tell Perl where to put the lisp files. Note that if you use this install option, you should add ##~/elisp/pde## to `load-path'. Use the following in your .emacs:
 
 <pre>
      (add-to-list 'load-path "~/elisp/pde")
      (load "pde-load")
 </pre>
 
-----
-[new]
-Should this not be ~/.emacs.d/pde? -- AlexSchroeder
-[new]
-Because I see many libraries wrote this path in their installation instruction, I thought it is a convention. In fact, I also prefer put all things related to emacs to ~/.emacs.d. The default place to install PDE is ~/.emacs.d/pde when install by cpan.
+---- [new] Should this not be ~/.emacs.d/pde? -- AlexSchroeder 
+
+---- [new] Because I see many libraries wrote this path in their installation instruction, I thought it is a convention. In fact, I also prefer to put all things related to emacs to ~/.emacs.d. The default place to install PDE is ~/.emacs.d/pde when installing by cpan.
 
 =Features=
-The minimal enable features after load `pde-load' are:
-* make perl script associate with cperl-mode not perl-mode
-* setup new indent style "PDE"
+The minimal enabled features after load `pde-load' are:
+* make perl scripts associate with cperl-mode not perl-mode
+* setup a new indent style "PDE"
 * turn on abbrev mode
-* search document with M-x `perldoc' or using M-x `perldoc-tree'
+* search documents with M-x `perldoc' or M-x `perldoc-tree'
 * show imenu with M-x `imenu-tree'
-* auto chmod when saving perl script
-* create new file with template
+* auto chmod when saving perl scripts
+* create new files with a template
 * call perltidy when editing
 * start interactive perl shell using M-x `inf-perl'
 * improved perldb using M-x `perldb-ui'
 * smart compile and run command using M-x `compile-dwim-compile' and `compile-dwim-run'.
-* find perl module in cperl-mode using M-x `ffap'
-* enable show brief info of buildin function under point in minibuffer
+* find a perl module in cperl-mode using M-x `ffap'
+* enable minibuffer display summarizing built-in function under point
 
-The extra features toggle by pde-extra-setting including:
-* turn on ido-mode and using ido completion read imenu tag
-* automatic update imenu-tree and make tree always visible
-* complete read ingore case
-* turn on partial-completion-mode, and you can find perl module using M-x `find-file' by add prefix char '<'.
+The extra features toggled by pde-extra-setting include:
+* turn on ido-mode and use ido completion read imenu tag
+* automatically update imenu-tree and make it always visible
+* complete read ignore case
+* turn on partial-completion-mode and you can find any perl module using M-x `find-file' by prefix-ing find-file with '<'.
 * multiple compilation buffers
 * useful global key bindings
 * show perldoc-tree and imenu-tree with tabbar
 * set tags-table-list, hippie-expand-try-functions-list, comint-completion-addsuffix to make the command handy
 * some fixup to cperl-mode
-* Debug regexp using interface of re-builder.
+* Debug regexps using the re-builder interface.
 
 =Document=
-The manual of Emacs::PDE is in lisp/doc/pde.info. There is a tutorial for novice: <nowiki>lisp/doc/QuickStart.html</nowiki> in chinese and <nowiki>lisp/doc/QuickStartEn.html</nowiki> in english.
+The manual of Emacs::PDE is in lisp/doc/pde.info. For novices, there is a tutorial in <nowiki>lisp/doc/QuickStart.html</nowiki> in Chinese and <nowiki>lisp/doc/QuickStartEn.html</nowiki> in English.
 
 =Bugs=
-If you found some bugs, or you got some problems or ideas, please do let me known. 
+If you find some bugs, or you have problems or ideas, please let me know.

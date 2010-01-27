@@ -1,6 +1,6 @@
 The library [[uniquify]] overrides Emacs' default mechanism for making buffer names unique (using suffixes like ##<2>##, ##<3>## etc.) with a more sensible behaviour which use parts of the file names to make the buffer names distinguishable.
 
-For instance, buffers visiting "/u/mernst/tmp/Makefile" and "/usr/projects/zaphod/Makefile" would be named "Makefile|tmp" and "Makefile|zaphod", respectively (instead of "Makefile" and "Makefile<2>"). Other buffer name styles are also available.  To enable this, ##(require 'uniquify)## then customize <tt>uniquify-buffer-name-style</tt>.
+For instance, buffers visiting "/u/mernst/tmp/Makefile" and "/usr/projects/zaphod/Makefile" would be named "Makefile|tmp" and "Makefile|zaphod", respectively (instead of "Makefile" and "Makefile<2>"). Other buffer name styles are also available.  To enable this, ##(require 'uniquify)## then customize <tt>uniquify-buffer-name-style</tt>. (Run M-x customize-option)
 
 [[uniquify]] is distributed with GnuEmacs.
 
