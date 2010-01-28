@@ -3,12 +3,27 @@ If you have an Emacs-related question, whether newbie or seasoned hacker, this i
 '''Note:''' You can also post your question to '''help-gnu-emacs@gnu.org''' after reading the EmacsFaq. In some ways, that is a better forum for questions.  
 
 == New Questions ==
-
 Use "<code>[new]</code>" to introduce your question or answer. Indent answers to questions with "<code>:</code>" -- see TextFormattingRules.  A new entry shows up in the table of contents here
 only once you actually Save.
 
 When a question is answered--and sometimes before it is answered, it is moved to a more appropriate page on ThisWiki (See OpenQuestionsDiscussion).
 The [EmacsWiki:action=rc;rcidonly=OpenQuestions;from=1;showedit=1 change log] should usually say where a question was moved to.
+
+
+
+
+== PcSelectionMode in a tty console ==
+<code>[new]</code> My PcSelectionMode is working for emacs-22 in an XWindow console but it's not working for emacs-22 in a tty console (Ctrl Alt F2 or F3...). In a tty console, it does copy but it does not delete and does not reverse the video. I tried the both hacks below:
+
+ (if (fboundp 'pc-selection-mode)                                              
+      (pc-selection-mode)                                                   
+      (require 'pc-select))   
+
+ (custom-set-variables
+  '(pc-selection-mode t nil (pc-select))
+
+
+
 [new]
 == Errors while loading elisp files ==
 After installing new 23.1 installation on an XP machine, I came across a very annoying issue. When I load some el files, I get errors such as 

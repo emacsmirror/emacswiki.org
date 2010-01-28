@@ -281,6 +281,9 @@ I know this is fairly simple to do for emacs only, but I've never looked into ho
 :: I am able to get the xorg under Cygwin on windows to switch the keys via a command line argument to xwin.  Surely then it should be possible to patch emacs to do this at least at the source level.  Anyone?  
 :: Also, what do you mean by "last method?" I don't see a method on here that doesn't require Administrator access.  I'd love to know one.
 
+::: I think that when you run emacs through cygwin, it uses its own x server. When you give a command lin e switch to remap keys, you are effectively doing it across all of your X server. It just happens that your X server is only running emacs.
+::: As far as I know, X does not allow per-application custom keybindings.
+
 === Drivers ===
 There are also these drivers: [http://www.sysinternals.com/ntw2k/source/ctrl2cap.shtml ctrl2cap.sys] or [http://www.sysinternals.com/win9x/utilities/ctrl2cap95.shtml ctrl2cap.vxd].
 

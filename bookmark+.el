@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Jan 26 22:58:22 2010 (-0800)
+;; Last-Updated: Wed Jan 27 14:13:49 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 9140
+;;     Update #: 9224
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -93,6 +93,10 @@
 ;;  Commands defined here:
 ;;
 ;;    `bookmarkp-add-tags', `bookmarkp-bmenu-add-tags-to-marked',
+;;    `bookmarkp-all-tags-jump',
+;;    `bookmarkp-all-tags-jump-other-window',
+;;    `bookmarkp-all-tags-regexp-jump',
+;;    `bookmarkp-all-tags-regexp-jump-other-window',
 ;;    `bookmarkp-bmenu-change-sort-order',
 ;;    `bookmarkp-bmenu-change-sort-order-repeat',
 ;;    `bookmarkp-bmenu-define-command',
@@ -191,7 +195,10 @@
 ;;    `bookmarkp-remove-tags-from-all', `bookmarkp-rename-tag',
 ;;    `bookmarkp-reverse-multi-sort-order',
 ;;    `bookmarkp-reverse-sort-order',
-;;    `bookmarkp-set-desktop-bookmark',
+;;    `bookmarkp-set-desktop-bookmark', `bookmarkp-some-tags-jump',
+;;    `bookmarkp-some-tags-jump-other-window',
+;;    `bookmarkp-some-tags-regexp-jump',
+;;    `bookmarkp-some-tags-regexp-jump-other-window',
 ;;    `bookmarkp-toggle-saving-menu-list-state',
 ;;    `bookmarkp-unomit-all', `bookmarkp-version',
 ;;    `bookmarkp-w3m-jump', `bookmarkp-w3m-jump-other-window',
@@ -252,9 +259,9 @@
 ;;    `bookmarkp-dired-bookmark-p', `bookmarkp-dired-subdirs',
 ;;    `bookmarkp-edit-bookmark',
 ;;    `bookmarkp-end-position-post-context',
-;;    `bookmarkp-end-position-pre-context', `bookmarkp-face-prop',
-;;    `bookmarkp-file-alist-only', `bookmarkp-file-alpha-cp',
-;;    `bookmarkp-file-attribute-0-cp',
+;;    `bookmarkp-end-position-pre-context', `bookmarkp-every',
+;;    `bookmarkp-face-prop', `bookmarkp-file-alist-only',
+;;    `bookmarkp-file-alpha-cp', `bookmarkp-file-attribute-0-cp',
 ;;    `bookmarkp-file-attribute-1-cp',
 ;;    `bookmarkp-file-attribute-2-cp',
 ;;    `bookmarkp-file-attribute-3-cp',
@@ -558,10 +565,19 @@
 ;;  `bookmarkp-dired-jump' is bound to `C-x j d',
 ;;  `bookmarkp-info-jump' to `C-x j i', and so on.
 ;;
-;;  There is an other-window version of each such command, and it is
-;;  bound to the same key, except the prefix is `C-x 4 j', not `C-x
-;;  j'.  for instance, `bookmarkp-dired-jump-other-window' is bound to
-;;  `C-x 4 j d'.
+;;  There are several commands for jumping to a bookmark with tags.
+;;  The completion candidates can be those bookmarks that have all
+;;  tags in a given set, some tags in a given set, all tags matching a
+;;  regexp, or some tags matching a regexp.  You are prompted for the
+;;  set of tags or the regexp to match.  These commands all have the
+;;  prefix key `C-x j t', with the regexp-matching ones having the
+;;  prefix key `C-x j t %'.  The key suffix is `*' for "all" and `+'
+;;  for "some".
+;;
+;;  There is an other-window version of each jump command, and it is
+;;  bound to the same key as the same-window command, except the
+;;  prefix is `C-x 4 j', not `C-x j'.  For instance,
+;;  `bookmarkp-dired-jump-other-window' is bound to `C-x 4 j d'.
 ;;
 ;;  These bindings round out the jump-command prefix keys:
 ;;
@@ -1199,6 +1215,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2010/01/27 dadams
+;;     Added: bookmarkp-every, bookmarkp-(all|some)-tags(-regexp)-jump(-other-window).
 ;; 2010/01/26 dadams
 ;;     Added: bookmarkp-bmenu-dired-marked-local.  Bound to M-d >.
 ;; 2010/01/23 dadams
@@ -2978,7 +2996,7 @@ DISPLAY-FUNCTION is the function that displays the bookmark."
 ;; 4. Added note about Icicles `S-delete' to doc string.
 ;;
 ;;;###autoload
-(defun bookmark-jump (bookmark-name &optional use-region-p) ; `C-x r b', `C-x p g'
+(defun bookmark-jump (bookmark-name &optional use-region-p) ; `C-x j j', `C-x r b', `C-x p g'
   "Jump to the bookmark named BOOKMARK-NAME.
 You may have a problem using this function if the value of variable
 `bookmark-alist' is nil.  If that happens, you need to load in some
@@ -3008,7 +3026,7 @@ candidate."
 ;; 3. Use `bookmarkp-jump-1'.
 ;;
 ;;;###autoload
-(defun bookmark-jump-other-window (bookmark-name &optional use-region-p) ; `C-x p o'
+(defun bookmark-jump-other-window (bookmark-name &optional use-region-p) ; `C-x 4 j j', `C-x p o'
   "Jump to the bookmark named BOOKMARK-NAME, in another window.
 See `bookmark-jump', in particular for info about using a prefix arg."
   (interactive (list (bookmark-completing-read "Jump to bookmark (in another window)"
@@ -4584,6 +4602,7 @@ you left off."
 BOOKMARK is a bookmark name or a bookmark record."
   (bookmark-prop-get bookmark 'tags))
 
+;; Not used currently.
 (defun bookmarkp-has-tag-p (bookmark tag &optional msgp)
   "Return non-nil if BOOKMARK is tagged with TAG.
 BOOKMARK is a bookmark name or a bookmark record."
@@ -5460,13 +5479,13 @@ A new list is returned (no side effects)."
   (bookmarkp-remove-if-not #'bookmarkp-non-file-bookmark-p bookmark-alist))
 
 (defun bookmarkp-regexp-filtered-bookmark-name-alist-only ()
-  "`bookmark-alist', filtered for bookmark-name matches."
+  "`bookmark-alist' for bookmarks matching `bookmarkp-bmenu-filter-pattern'."
   (bookmark-maybe-load-default-file)
   (bookmarkp-remove-if-not
    #'(lambda (bmk) (string-match bookmarkp-bmenu-filter-pattern (car bmk))) bookmark-alist))
 
 (defun bookmarkp-regexp-filtered-file-name-alist-only ()
-  "`bookmark-alist', filtered for file-name matches."
+  "`bookmark-alist' for files matching `bookmarkp-bmenu-filter-pattern'."
   (bookmark-maybe-load-default-file)
   (let (fname)
     (bookmarkp-remove-if-not #'(lambda (bmk)
@@ -5475,7 +5494,7 @@ A new list is returned (no side effects)."
                              bookmark-alist)))
 
 (defun bookmarkp-regexp-filtered-tags-alist-only ()
-  "`bookmark-alist', filtered for tag matches."
+  "`bookmark-alist' for tags matching `bookmarkp-bmenu-filter-pattern'."
   (bookmark-maybe-load-default-file)
   (let (tags)
     (bookmarkp-remove-if-not
@@ -5573,10 +5592,17 @@ Elements of ALIST that are not conses are ignored."
         (setq tail  tail-cdr))))
   alist)
 
-;; Similar to `some' in `cl-seq.el', without non-list sequences and multiple sequences.
+;; Similar to `every' in `cl-extra.el', without non-list sequences and multiple sequences.
+(defun bookmarkp-every (predicate list)
+  "Return t if PREDICATE is true for all elements of LIST; else nil."
+  (let ((res  nil))
+    (while (and list (funcall predicate (car list))) (setq list  (cdr list)))
+    (null list)))
+
+;; Similar to `some' in `cl-extra.el', without non-list sequences and multiple sequences.
 (defun bookmarkp-some (predicate list)
-  "Return non-nil if PREDICATE is true for any element of LIST.
-Returns the first non-nil value returned by PREDICATE."
+  "Return non-nil if PREDICATE is true for some element of LIST; else nil.
+Return the first non-nil value returned by PREDICATE."
   (let ((res  nil))
     (while (and list (not (setq res  (funcall predicate (pop list))))))
     res))
@@ -7049,13 +7075,12 @@ ALIST is the alist used for completion - nil means `bookmark-alist'.
 OTHER-WIN means append \" in another window\" to the prompt.
 PRED is a predicate used for completion."
   (unless alist (error "No bookmarks of type %s" type))
-  (bookmark-completing-read (concat "Jump to " type "bookmark"
-                                    (and other-win " in another window"))
+  (bookmark-completing-read (concat "Jump to " type "bookmark" (and other-win " in another window"))
                             (bookmarkp-default-bookmark-name alist)
                             alist pred))
 
 ;;;###autoload
-(defun bookmarkp-jump-to-type (bookmark-name &optional use-region-p)
+(defun bookmarkp-jump-to-type (bookmark-name &optional use-region-p) ; `C-x j :'
   "Jump to a bookmark of a given type.  You are prompted for the type.
 Otherwise, this is the same as `bookmark-jump' - see that, in
 particular, for info about using a prefix argument."
@@ -7072,7 +7097,7 @@ particular, for info about using a prefix argument."
   (bookmarkp-jump-1 bookmark-name 'switch-to-buffer use-region-p))
 
 ;;;###autoload
-(defun bookmarkp-jump-to-type-other-window (bookmark-name &optional use-region-p)
+(defun bookmarkp-jump-to-type-other-window (bookmark-name &optional use-region-p) ; `C-x 4 j :'
   "Jump to a bookmark of a given type.  You are prompted for the type.
 See `bookmarkp-jump-to-type'."
   (interactive
@@ -7088,7 +7113,7 @@ See `bookmarkp-jump-to-type'."
   (bookmarkp-jump-1 bookmark-name 'switch-to-buffer-other-window use-region-p))
 
 ;;;###autoload
-(defun bookmarkp-dired-jump (bookmark-name &optional use-region-p)
+(defun bookmarkp-dired-jump (bookmark-name &optional use-region-p) ; `C-x j d'
   "Jump to a Dired bookmark.
 This is a specialization of `bookmark-jump' - see that, in particular
 for info about using a prefix argument."
@@ -7097,7 +7122,7 @@ for info about using a prefix argument."
   (bookmarkp-jump-1 bookmark-name 'switch-to-buffer use-region-p))
 
 ;;;###autoload
-(defun bookmarkp-dired-jump-other-window (bookmark-name &optional use-region-p)
+(defun bookmarkp-dired-jump-other-window (bookmark-name &optional use-region-p) ; `C-x 4 j d'
   "Jump to a Dired bookmark in another window.
 See `bookmarkp-dired-jump'."
   (interactive (let ((alist  (bookmarkp-dired-alist-only)))
@@ -7132,7 +7157,7 @@ See `bookmarkp-dired-jump-current'."
   (bookmarkp-jump-1 bookmark-name 'switch-to-buffer-other-window use-region-p))
 
 ;;;###autoload
-(defun bookmarkp-file-jump (bookmark-name &optional use-region-p)
+(defun bookmarkp-file-jump (bookmark-name &optional use-region-p) ; `C-x j f'
   "Jump to a file or directory bookmark.
 This is a specialization of `bookmark-jump' - see that, in particular
 for info about using a prefix argument."
@@ -7141,7 +7166,7 @@ for info about using a prefix argument."
   (bookmarkp-jump-1 bookmark-name 'switch-to-buffer use-region-p))
 
 ;;;###autoload
-(defun bookmarkp-file-jump-other-window (bookmark-name &optional use-region-p)
+(defun bookmarkp-file-jump-other-window (bookmark-name &optional use-region-p) ; `C-x 4 j f'
   "Jump to a file or directory bookmark in another window.
 See `bookmarkp-file-jump'."
   (interactive (let ((alist  (bookmarkp-file-alist-only)))
@@ -7149,7 +7174,7 @@ See `bookmarkp-file-jump'."
   (bookmarkp-jump-1 bookmark-name 'switch-to-buffer-other-window use-region-p))
 
 ;;;###autoload
-(defun bookmarkp-gnus-jump (bookmark-name &optional use-region-p)
+(defun bookmarkp-gnus-jump (bookmark-name &optional use-region-p) ; `C-x j g'
   "Jump to a Gnus bookmark.
 This is a specialization of `bookmark-jump' - see that, in particular
 for info about using a prefix argument."
@@ -7158,7 +7183,7 @@ for info about using a prefix argument."
   (bookmarkp-jump-1 bookmark-name 'switch-to-buffer use-region-p))
 
 ;;;###autoload
-(defun bookmarkp-gnus-jump-other-window (bookmark-name &optional use-region-p)
+(defun bookmarkp-gnus-jump-other-window (bookmark-name &optional use-region-p) ; `C-x 4 j g'
   "Jump to a Gnus bookmark in another window.
 See `bookmarkp-gnus-jump'."
   (interactive (let ((alist  (bookmarkp-gnus-alist-only)))
@@ -7166,7 +7191,7 @@ See `bookmarkp-gnus-jump'."
   (bookmarkp-jump-1 bookmark-name 'switch-to-buffer-other-window use-region-p))
 
 ;;;###autoload
-(defun bookmarkp-info-jump (bookmark-name &optional use-region-p)
+(defun bookmarkp-info-jump (bookmark-name &optional use-region-p) ; `C-x j i'
   "Jump to an Info bookmark.
 This is a specialization of `bookmark-jump' - see that, in particular
 for info about using a prefix argument."
@@ -7175,7 +7200,7 @@ for info about using a prefix argument."
   (bookmarkp-jump-1 bookmark-name 'switch-to-buffer use-region-p))
 
 ;;;###autoload
-(defun bookmarkp-info-jump-other-window (bookmark-name &optional use-region-p)
+(defun bookmarkp-info-jump-other-window (bookmark-name &optional use-region-p) ; `C-x 4 j i'
   "Jump to an Info bookmark in another window.
 See `bookmarkp-info-jump'."
   (interactive (let ((alist  (bookmarkp-info-alist-only)))
@@ -7183,7 +7208,7 @@ See `bookmarkp-info-jump'."
   (bookmarkp-jump-1 bookmark-name 'switch-to-buffer-other-window use-region-p))
 
 ;;;###autoload
-(defun bookmarkp-local-file-jump (bookmark-name &optional use-region-p)
+(defun bookmarkp-local-file-jump (bookmark-name &optional use-region-p) ; `C-x j l'
   "Jump to a local file or directory bookmark.
 This is a specialization of `bookmark-jump' - see that, in particular
 for info about using a prefix argument."
@@ -7192,7 +7217,7 @@ for info about using a prefix argument."
   (bookmarkp-jump-1 bookmark-name 'switch-to-buffer use-region-p))
 
 ;;;###autoload
-(defun bookmarkp-local-file-jump-other-window (bookmark-name &optional use-region-p)
+(defun bookmarkp-local-file-jump-other-window (bookmark-name &optional use-region-p) ; `C-x 4 j l'
   "Jump to a local file or directory bookmark in another window.
 See `bookmarkp-local-file-jump'."
   (interactive (let ((alist  (bookmarkp-local-file-alist-only)))
@@ -7201,7 +7226,7 @@ See `bookmarkp-local-file-jump'."
   (bookmarkp-jump-1 bookmark-name 'switch-to-buffer-other-window use-region-p))
 
 ;;;###autoload
-(defun bookmarkp-man-jump (bookmark-name &optional use-region-p)
+(defun bookmarkp-man-jump (bookmark-name &optional use-region-p) ; `C-x j m'
   "Jump to a `man'-page bookmark.
 This is a specialization of `bookmark-jump' - see that, in particular
 for info about using a prefix argument."
@@ -7210,7 +7235,7 @@ for info about using a prefix argument."
   (bookmarkp-jump-1 bookmark-name 'switch-to-buffer use-region-p))
 
 ;;;###autoload
-(defun bookmarkp-man-jump-other-window (bookmark-name &optional use-region-p)
+(defun bookmarkp-man-jump-other-window (bookmark-name &optional use-region-p) ; `C-x 4 j m'
   "Jump to a `man'-page bookmark in another window.
 See `bookmarkp-man-jump'."
   (interactive (let ((alist  (bookmarkp-man-alist-only)))
@@ -7218,7 +7243,7 @@ See `bookmarkp-man-jump'."
   (bookmarkp-jump-1 bookmark-name 'switch-to-buffer-other-window use-region-p))
 
 ;;;###autoload
-(defun bookmarkp-non-file-jump (bookmark-name &optional use-region-p)
+(defun bookmarkp-non-file-jump (bookmark-name &optional use-region-p) ; `C-x j b'
   "Jump to a non-file (buffer) bookmark.
 This is a specialization of `bookmark-jump' - see that, in particular
 for info about using a prefix argument."
@@ -7228,7 +7253,7 @@ for info about using a prefix argument."
   (bookmarkp-jump-1 bookmark-name 'switch-to-buffer use-region-p))
 
 ;;;###autoload
-(defun bookmarkp-non-file-jump-other-window (bookmark-name &optional use-region-p)
+(defun bookmarkp-non-file-jump-other-window (bookmark-name &optional use-region-p) ; `C-x 4 j b'
   "Jump to a non-file (buffer) bookmark in another window.
 See `bookmarkp-non-file-jump'."
   (interactive (let ((alist  (bookmarkp-non-file-alist-only)))
@@ -7237,21 +7262,21 @@ See `bookmarkp-non-file-jump'."
   (bookmarkp-jump-1 bookmark-name 'switch-to-buffer-other-window use-region-p))
 
 ;;;###autoload
-(defun bookmarkp-region-jump (bookmark-name)
+(defun bookmarkp-region-jump (bookmark-name) ; `C-x j r'
   "Jump to a region bookmark.
 This is a specialization of `bookmark-jump', but without a prefix arg."
   (interactive (list (bookmarkp-read-bookmark-for-type "region " (bookmarkp-region-alist-only))))
   (bookmarkp-jump-1 bookmark-name 'switch-to-buffer t))
 
 ;;;###autoload
-(defun bookmarkp-region-jump-other-window (bookmark-name)
+(defun bookmarkp-region-jump-other-window (bookmark-name) ; `C-x 4 j r'
   "Jump to a region bookmark in another window.
 See `bookmarkp-region-jump'."
   (interactive (list (bookmarkp-read-bookmark-for-type "region " (bookmarkp-region-alist-only))))
   (bookmarkp-jump-1 bookmark-name 'switch-to-buffer-other-window t))
 
 ;;;###autoload
-(defun bookmarkp-remote-file-jump (bookmark-name &optional use-region-p)
+(defun bookmarkp-remote-file-jump (bookmark-name &optional use-region-p) ; `C-x j n'
   "Jump to a remote file or directory bookmark.
 This is a specialization of `bookmark-jump' - see that, in particular
 for info about using a prefix argument."
@@ -7260,7 +7285,7 @@ for info about using a prefix argument."
   (bookmarkp-jump-1 bookmark-name 'switch-to-buffer use-region-p))
 
 ;;;###autoload
-(defun bookmarkp-remote-file-jump-other-window (bookmark-name &optional use-region-p)
+(defun bookmarkp-remote-file-jump-other-window (bookmark-name &optional use-region-p) ; `C-x 4 j n'
   "Jump to a remote file or directory bookmark in another window.
 See `bookmarkp-remote-file-jump'."
   (interactive (let ((alist  (bookmarkp-remote-file-alist-only)))
@@ -7269,7 +7294,7 @@ See `bookmarkp-remote-file-jump'."
   (bookmarkp-jump-1 bookmark-name 'switch-to-buffer-other-window use-region-p))
 
 ;;;###autoload
-(defun bookmarkp-w3m-jump (bookmark-name &optional use-region-p)
+(defun bookmarkp-w3m-jump (bookmark-name &optional use-region-p) ; `C-x j n'
   "Jump to a W3M bookmark.
 This is a specialization of `bookmark-jump' - see that, in particular
 for info about using a prefix argument."
@@ -7278,12 +7303,138 @@ for info about using a prefix argument."
   (bookmarkp-jump-1 bookmark-name 'switch-to-buffer use-region-p))
 
 ;;;###autoload
-(defun bookmarkp-w3m-jump-other-window (bookmark-name &optional use-region-p)
+(defun bookmarkp-w3m-jump-other-window (bookmark-name &optional use-region-p) ; `C-x 4 j w'
   "Jump to an W3M bookmark in another window.
 See `bookmarkp-w3m-jump'."
   (interactive (let ((alist  (bookmarkp-w3m-alist-only)))
                  (list (bookmarkp-read-bookmark-for-type "W3M " alist t) current-prefix-arg)))
   (bookmarkp-jump-1 bookmark-name 'switch-to-buffer-other-window use-region-p))
+
+;;;###autoload
+(defun bookmarkp-all-tags-regexp-jump (regexp bookmark) ; `C-x j t % *'
+  "Jump to a BOOKMARK that has each tag matching REGEXP.
+You are prompted for the REGEXP.
+Then you are prompted for the BOOKMARK (with completion)."
+  (interactive
+   (let* ((regexp  (read-string "Regexp for tags: "))
+          (alist   (bookmarkp-remove-if-not
+                    #'(lambda (bmk)
+                        (bookmarkp-every #'(lambda (tag) (string-match regexp tag))
+                                         (bookmarkp-get-tags bmk)))
+                    bookmark-alist)))
+     (list regexp (bookmark-completing-read
+                   "Bookmark" (bookmarkp-default-bookmark-name alist) alist))))
+  (bookmark-jump bookmark))
+
+;;;###autoload
+(defun bookmarkp-all-tags-regexp-jump-other-window (regexp bookmark) ; `C-x 4 j t % *'
+  "Jump to a BOOKMARK that has each tag matching REGEXP, in another window.
+You are prompted for the REGEXP.
+Then you are prompted for the BOOKMARK (with completion)."
+  (interactive
+   (let* ((regexp  (read-string "Regexp for tags: "))
+          (alist   (bookmarkp-remove-if-not
+                    #'(lambda (bmk)
+                        (let ((bmk-tags  (bookmarkp-get-tags bmk)))
+                          (and bmk-tags
+                               (bookmarkp-every #'(lambda (tag) (string-match regexp tag))
+                                                bmk-tags))))
+                    bookmark-alist)))
+     (list regexp (bookmark-completing-read
+                   "Bookmark" (bookmarkp-default-bookmark-name alist) alist))))
+  (bookmark-jump-other-window bookmark))
+
+;;;###autoload
+(defun bookmarkp-some-tags-regexp-jump (regexp bookmark) ; `C-x j t % +'
+  "Jump to a BOOKMARK that has a tag matching REGEXP.
+You are prompted for the REGEXP.
+Then you are prompted for the BOOKMARK (with completion)."
+  (interactive
+   (let* ((regexp  (read-string "Regexp for tags: "))
+          (alist   (bookmarkp-remove-if-not
+                    #'(lambda (bmk)
+                        (bookmarkp-some #'(lambda (tag) (string-match regexp tag))
+                                        (bookmarkp-get-tags bmk)))
+                    bookmark-alist)))
+     (list regexp (bookmark-completing-read
+                   "Bookmark" (bookmarkp-default-bookmark-name alist) alist))))
+  (bookmark-jump bookmark))
+
+;;;###autoload
+(defun bookmarkp-some-tags-regexp-jump-other-window (regexp bookmark) ; `C-x 4 j t % +'
+  "Jump to a BOOKMARK that has a tag matching REGEXP, in another window.
+You are prompted for the REGEXP.
+Then you are prompted for the BOOKMARK (with completion)."
+  (interactive
+   (let* ((regexp  (read-string "Regexp for tags: "))
+          (alist   (bookmarkp-remove-if-not
+                    #'(lambda (bmk)
+                        (bookmarkp-some #'(lambda (tag) (string-match regexp tag))
+                                        (bookmarkp-get-tags bmk)))
+                    bookmark-alist)))
+     (list regexp (bookmark-completing-read
+                   "Bookmark" (bookmarkp-default-bookmark-name alist) alist))))
+  (bookmark-jump-other-window bookmark))
+
+;;;###autoload
+(defun bookmarkp-some-tags-jump (tags bookmark) ; `C-x j t +'
+  "Jump to a BOOKMARK that has at least one of the TAGS.
+You are prompted for the TAGS and (with completion) the BOOKMARK.
+Hit `RET' after each tag you enter, then `RET' again to end entry."
+  (interactive
+   (let* ((tags   (bookmarkp-read-tags-completing))
+          (alist  (bookmarkp-remove-if-not
+                   #'(lambda (bmk)
+                       (bookmarkp-some #'(lambda (tag) (member tag (bookmarkp-get-tags bmk))) tags))
+                   bookmark-alist)))
+     (list tags (bookmark-completing-read
+                 "Bookmark" (bookmarkp-default-bookmark-name alist) alist))))
+  (bookmark-jump bookmark))
+
+;;;###autoload
+(defun bookmarkp-some-tags-jump-other-window (tags bookmark) ; `C-x 4 j t +'
+  "Jump to a BOOKMARK that has at least one of the TAGS, in another window.
+You are prompted for the TAGS and (with completion) the BOOKMARK.
+Hit `RET' after each tag you enter, then `RET' again to end entry."
+  (interactive
+   (let* ((tags   (bookmarkp-read-tags-completing))
+          (alist  (bookmarkp-remove-if-not
+                   #'(lambda (bmk)
+                       (bookmarkp-some #'(lambda (tag) (member tag (bookmarkp-get-tags bmk))) tags))
+                   bookmark-alist)))
+     (list tags (bookmark-completing-read
+                 "Bookmark" (bookmarkp-default-bookmark-name alist) alist))))
+  (bookmark-jump-other-window bookmark))
+
+;;;###autoload
+(defun bookmarkp-all-tags-jump (tags bookmark) ; `C-x j t *'
+  "Jump to a BOOKMARK that has all of the TAGS.
+You are prompted for the TAGS and (with completion) the BOOKMARK.
+Hit `RET' after each tag you enter, then `RET' again to end entry."
+  (interactive
+   (let* ((tags   (bookmarkp-read-tags-completing))
+          (alist  (bookmarkp-remove-if-not
+                   #'(lambda (bmk)
+                       (bookmarkp-every #'(lambda (tag) (member tag (bookmarkp-get-tags bmk))) tags))
+                   bookmark-alist)))
+     (list tags (bookmark-completing-read
+                 "Bookmark" (bookmarkp-default-bookmark-name alist) alist))))
+  (bookmark-jump bookmark))
+
+;;;###autoload
+(defun bookmarkp-all-tags-jump-other-window (tags bookmark) ; `C-x 4 j t +'
+  "Jump to a BOOKMARK that has all of the TAGS, in another window.
+You are prompted for the TAGS and (with completion) the BOOKMARK.
+Hit `RET' after each tag you enter, then `RET' again to end entry."
+  (interactive
+   (let* ((tags   (bookmarkp-read-tags-completing))
+          (alist  (bookmarkp-remove-if-not
+                   #'(lambda (bmk)
+                       (bookmarkp-every #'(lambda (tag) (member tag (bookmarkp-get-tags bmk))) tags))
+                   bookmark-alist)))
+     (list tags (bookmark-completing-read
+                 "Bookmark" (bookmarkp-default-bookmark-name alist) alist))))
+  (bookmark-jump-other-window bookmark))
  
 ;;(@* "Keymaps")
 ;;; Keymaps ----------------------------------------------------------
@@ -7567,6 +7718,10 @@ See `bookmarkp-w3m-jump'."
 ;;;###autoload
 (define-key bookmarkp-jump-other-window-map "m"    'bookmarkp-man-jump-other-window)
 ;;;###autoload
+(define-key bookmarkp-jump-map              "n"    'bookmarkp-remote-file-jump) ; "_n_etwork"
+;;;###autoload
+(define-key bookmarkp-jump-other-window-map "n"    'bookmarkp-remote-file-jump-other-window)
+;;;###autoload
 (define-key bookmarkp-jump-map              "b"    'bookmarkp-non-file-jump)
 ;;;###autoload
 (define-key bookmarkp-jump-other-window-map "b"    'bookmarkp-non-file-jump-other-window)
@@ -7575,9 +7730,29 @@ See `bookmarkp-w3m-jump'."
 ;;;###autoload
 (define-key bookmarkp-jump-other-window-map "r"    'bookmarkp-region-jump-other-window)
 ;;;###autoload
-(define-key bookmarkp-jump-map              "t"    'bookmarkp-remote-file-jump)
+(define-key bookmarkp-jump-map              "t"    nil) ; For Emacs 20
 ;;;###autoload
-(define-key bookmarkp-jump-other-window-map "t"    'bookmarkp-remote-file-jump-other-window)
+(define-key bookmarkp-jump-other-window-map "t"    nil) ; For Emacs 20
+;;;###autoload
+(define-key bookmarkp-jump-map              "t*"   'bookmarkp-all-tags-jump)
+;;;###autoload
+(define-key bookmarkp-jump-other-window-map "t*"   'bookmarkp-all-tags-jump-other-window)
+;;;###autoload
+(define-key bookmarkp-jump-map              "t+"   'bookmarkp-some-tags-jump)
+;;;###autoload
+(define-key bookmarkp-jump-other-window-map "t+"   'bookmarkp-some-tags-jump-other-window)
+;;;###autoload
+(define-key bookmarkp-jump-map              "t%"   nil) ; For Emacs 20
+;;;###autoload
+(define-key bookmarkp-jump-other-window-map "t%"   nil) ; For Emacs 20
+;;;###autoload
+(define-key bookmarkp-jump-map              "t%*"  'bookmarkp-all-tags-regexp-jump)
+;;;###autoload
+(define-key bookmarkp-jump-other-window-map "t%*"  'bookmarkp-all-tags-regexp-jump-other-window)
+;;;###autoload
+(define-key bookmarkp-jump-map              "t%+"  'bookmarkp-some-tags-regexp-jump)
+;;;###autoload
+(define-key bookmarkp-jump-other-window-map "t%+"  'bookmarkp-some-tags-regexp-jump-other-window)
 ;;;###autoload
 (define-key bookmarkp-jump-map              "w"    'bookmarkp-w3m-jump)
 ;;;###autoload
