@@ -224,6 +224,33 @@ The only inconvenience is resizing the buffer back to normal hight. -- RedBlue
 What's not clear to me is what is different here from when you do not use '''Icicles'''. I would expect the completions shown in the buffer to be displayed a bit differently (e.g. spacing), and perhaps the window height to be a bit different (see the options mentioned above), but what differences do you see that bother you? I believe that in both cases the `*Completions*' window is not removed (but with '''Icicles''' you can remove it by doing `##C-]##'). -- DrewAdams
 
 
+[new:RedBlue:2010-01-28 12:28 UTC]
+
+Without icicles the window is not resized. With icicle instead the new window size is much smaller and I need to resize it to normal height (which i don't know how to do except by using the mouse; very inconvenient).  With `##C-]##' it removes the buffer but did not restore the window height. -- RedBlue
+
+
+[new:DrewAdams:2010-01-28 15:38 UTC]
+OK, I understand. FYI:
+
+* `##C-x ^##' enlarges or shrinks the window, `##C-x +##' makes the window heights the same. See [[Manual:Change Window]].
+
+* Command `icicle-remove-Completions-window' removes the `*Completions*' window. You can bind this to a key globally, if you want. It is already bound in the minibuffer to `C-x 0', so, for example, `##M-x C-x 0##' removes it. 
+
+* In an active minibuffer, `##C-]##' (`icicle-abort-recursive-edit') removes the `*Completions*' window. So `##M-x C-]##' removes it (the `M-x' just makes the minibuffer active).
+
+
+There is no good way to return the window to its size before completion in all cases, since there is no way, especially in the case you describe, to know that completion is finished (i.e. know that the user is finished with the buffer/window).
+
+I could think about providing some way to deal with this, but remember that you will normally want the `*Completions*' window to take up less space when there are few completions. FYI, the relevant code is `icicle-fit-completions-window'. This is not my first priority, however, and it's not sure that a reasonable trade-off is possible. Possibly, I could add an option that prevents resizing or specifies a minimum height (analogous to `icicle-Completions-window-max-height') or something similar. -- DrewAdams
+
+
+
+
+
+
+
+
+
 
 
 <pre>

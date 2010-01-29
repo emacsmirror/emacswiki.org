@@ -274,7 +274,7 @@ You can fix it modifying viper-prefix-arg-com:
 
 === How can you remap prefix keys like 'c' and 'd'? ===
 
-Define-key just maps them to "'viper-command-argument", and the actual meaning is derived by some deeper magic.
+This doesn't seem to be possible with simple configuration, as the prefix keys have been hardcoded into Viper source (http://stackoverflow.com/questions/2145562/how-can-i-remap-the-prefix-keys-c-d-etc-in-emacs-viper-mode)
 
 ----
 CategoryEmulation

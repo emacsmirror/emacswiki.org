@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Jan 27 14:13:49 2010 (-0800)
+;; Last-Updated: Thu Jan 28 15:14:40 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 9224
+;;     Update #: 9304
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -347,12 +347,12 @@
 ;;    `bookmarkp-bmenu-filter-pattern',
 ;;    `bookmarkp-bmenu-filter-prompt', `bookmarkp-bmenu-filter-timer',
 ;;    `bookmarkp-bmenu-first-time-p', `bookmarkp-bmenu-header-lines',
-;;    `bookmarkp-bmenu-marked-bookmarks', `bookmarkp-bmenu-mark-menu',
-;;    `bookmarkp-bmenu-marks-width', `bookmarkp-bmenu-menubar-menu',
-;;    `bookmarkp-bmenu-show-menu', `bookmarkp-bmenu-sort-menu',
-;;    `bookmarkp-bmenu-tags-menu', `bookmarkp-bmenu-title',
-;;    `bookmarkp-isearch-bookmarks' (Emacs 23+),
-;;    `bookmarkp-jump-display-function', `bookmarkp-jump-map',
+;;    `bookmarkp-bmenu-jump-menu', `bookmarkp-bmenu-marked-bookmarks',
+;;    `bookmarkp-bmenu-mark-menu', `bookmarkp-bmenu-marks-width',
+;;    `bookmarkp-bmenu-menubar-menu', `bookmarkp-bmenu-show-menu',
+;;    `bookmarkp-bmenu-sort-menu', `bookmarkp-bmenu-tags-menu',
+;;    `bookmarkp-bmenu-title', `bookmarkp-isearch-bookmarks' (Emacs
+;;    23+), `bookmarkp-jump-display-function', `bookmarkp-jump-map',
 ;;    `bookmarkp-jump-other-window-map',
 ;;    `bookmarkp-last-bmenu-bookmark',
 ;;    `bookmarkp-last-bmenu-state-file',
@@ -1215,6 +1215,12 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2010/01/28 dadams
+;;     bookmarkp-(all|some)-tags(-regexp)-jump(-other-window): Error if no bookmarks with the tags.
+;;     bookmarkp-(all|some)-tags-jump(-other-window): Handle case where user enters no tags.
+;;     Use :advertised-binding property for bookmark-jump(-other-window).
+;;     Added: bookmarkp-bmenu-jump-menu.
+;;     Added bookmarkp-bmenu-jump-menu to menu-bar-bookmark-map and bookmarkp-bmenu-menubar-menu.
 ;; 2010/01/27 dadams
 ;;     Added: bookmarkp-every, bookmarkp-(all|some)-tags(-regexp)-jump(-other-window).
 ;; 2010/01/26 dadams
@@ -7322,6 +7328,7 @@ Then you are prompted for the BOOKMARK (with completion)."
                         (bookmarkp-every #'(lambda (tag) (string-match regexp tag))
                                          (bookmarkp-get-tags bmk)))
                     bookmark-alist)))
+     (unless alist (error "No bookmarks have tags that match `%s'" regexp))
      (list regexp (bookmark-completing-read
                    "Bookmark" (bookmarkp-default-bookmark-name alist) alist))))
   (bookmark-jump bookmark))
@@ -7340,6 +7347,7 @@ Then you are prompted for the BOOKMARK (with completion)."
                                (bookmarkp-every #'(lambda (tag) (string-match regexp tag))
                                                 bmk-tags))))
                     bookmark-alist)))
+     (unless alist (error "No bookmarks have tags that match `%s'" regexp))
      (list regexp (bookmark-completing-read
                    "Bookmark" (bookmarkp-default-bookmark-name alist) alist))))
   (bookmark-jump-other-window bookmark))
@@ -7356,6 +7364,7 @@ Then you are prompted for the BOOKMARK (with completion)."
                         (bookmarkp-some #'(lambda (tag) (string-match regexp tag))
                                         (bookmarkp-get-tags bmk)))
                     bookmark-alist)))
+     (unless alist (error "No bookmarks have tags that match `%s'" regexp))
      (list regexp (bookmark-completing-read
                    "Bookmark" (bookmarkp-default-bookmark-name alist) alist))))
   (bookmark-jump bookmark))
@@ -7372,6 +7381,7 @@ Then you are prompted for the BOOKMARK (with completion)."
                         (bookmarkp-some #'(lambda (tag) (string-match regexp tag))
                                         (bookmarkp-get-tags bmk)))
                     bookmark-alist)))
+     (unless alist (error "No bookmarks have tags that match `%s'" regexp))
      (list regexp (bookmark-completing-read
                    "Bookmark" (bookmarkp-default-bookmark-name alist) alist))))
   (bookmark-jump-other-window bookmark))
@@ -7387,6 +7397,8 @@ Hit `RET' after each tag you enter, then `RET' again to end entry."
                    #'(lambda (bmk)
                        (bookmarkp-some #'(lambda (tag) (member tag (bookmarkp-get-tags bmk))) tags))
                    bookmark-alist)))
+     (unless tags (error "You did not specify any tags"))
+     (unless alist (error "No bookmarks have any of the specified tags" regexp))
      (list tags (bookmark-completing-read
                  "Bookmark" (bookmarkp-default-bookmark-name alist) alist))))
   (bookmark-jump bookmark))
@@ -7402,6 +7414,8 @@ Hit `RET' after each tag you enter, then `RET' again to end entry."
                    #'(lambda (bmk)
                        (bookmarkp-some #'(lambda (tag) (member tag (bookmarkp-get-tags bmk))) tags))
                    bookmark-alist)))
+     (unless tags (error "You did not specify any tags"))
+     (unless alist (error "No bookmarks have any of the specified tags" regexp))
      (list tags (bookmark-completing-read
                  "Bookmark" (bookmarkp-default-bookmark-name alist) alist))))
   (bookmark-jump-other-window bookmark))
@@ -7410,13 +7424,20 @@ Hit `RET' after each tag you enter, then `RET' again to end entry."
 (defun bookmarkp-all-tags-jump (tags bookmark) ; `C-x j t *'
   "Jump to a BOOKMARK that has all of the TAGS.
 You are prompted for the TAGS and (with completion) the BOOKMARK.
-Hit `RET' after each tag you enter, then `RET' again to end entry."
+Hit `RET' after each tag you enter, then `RET' again to end entry.
+If you specify no tags, then every bookmark that has some tags is a
+candidate."
   (interactive
    (let* ((tags   (bookmarkp-read-tags-completing))
           (alist  (bookmarkp-remove-if-not
                    #'(lambda (bmk)
-                       (bookmarkp-every #'(lambda (tag) (member tag (bookmarkp-get-tags bmk))) tags))
+                       (let ((bmk-tags  (bookmarkp-get-tags bmk)))
+                         (and bmk-tags
+                              (bookmarkp-every
+                               #'(lambda (tag) (member tag (bookmarkp-get-tags bmk)))
+                               tags))))
                    bookmark-alist)))
+     (unless alist (error "No bookmarks have all of the specified tags" regexp))
      (list tags (bookmark-completing-read
                  "Bookmark" (bookmarkp-default-bookmark-name alist) alist))))
   (bookmark-jump bookmark))
@@ -7425,13 +7446,20 @@ Hit `RET' after each tag you enter, then `RET' again to end entry."
 (defun bookmarkp-all-tags-jump-other-window (tags bookmark) ; `C-x 4 j t +'
   "Jump to a BOOKMARK that has all of the TAGS, in another window.
 You are prompted for the TAGS and (with completion) the BOOKMARK.
-Hit `RET' after each tag you enter, then `RET' again to end entry."
+Hit `RET' after each tag you enter, then `RET' again to end entry.
+If you specify no tags, then every bookmark that has some tags is a
+candidate."
   (interactive
    (let* ((tags   (bookmarkp-read-tags-completing))
           (alist  (bookmarkp-remove-if-not
                    #'(lambda (bmk)
-                       (bookmarkp-every #'(lambda (tag) (member tag (bookmarkp-get-tags bmk))) tags))
+                       (let ((bmk-tags  (bookmarkp-get-tags bmk)))
+                         (and bmk-tags
+                              (bookmarkp-every
+                               #'(lambda (tag) (member tag (bookmarkp-get-tags bmk)))
+                               tags))))
                    bookmark-alist)))
+     (unless alist (error "No bookmarks have all of the specified tags" regexp))
      (list tags (bookmark-completing-read
                  "Bookmark" (bookmarkp-default-bookmark-name alist) alist))))
   (bookmark-jump-other-window bookmark))
@@ -7707,8 +7735,11 @@ Hit `RET' after each tag you enter, then `RET' again to end entry."
 (define-key bookmarkp-jump-other-window-map "i"    'bookmarkp-info-jump-other-window)
 ;;;###autoload
 (define-key bookmarkp-jump-map              "j"    'bookmark-jump)
+(put 'bookmark-jump :advertised-binding "\C-xjj")
 ;;;###autoload
 (define-key bookmarkp-jump-other-window-map "j"    'bookmark-jump-other-window)
+(put 'bookmark-jump-other-window :advertised-binding "\C-x4jj")
+(put 'jump-other :advertised-binding "\C-x4jj")
 ;;;###autoload
 (define-key bookmarkp-jump-map              "l"    'bookmarkp-local-file-jump)
 ;;;###autoload
@@ -8015,7 +8046,7 @@ bookmarkp-sequence-jump-display-function - How to display components")
 (define-key bookmarkp-bmenu-menubar-menu [bookmarkp-bmenu-quit]
   '(menu-item "Quit" bookmarkp-bmenu-quit))
 (define-key bookmarkp-bmenu-menubar-menu [bookmarkp-bmenu-mode-status-help]
-  '(menu-item "Current Status, Mode Help" bookmarkp-bmenu-mode-status-help))
+  '(menu-item "Current Status, Mode Help" bookmarkp-bmenu-mode-status-help :keys "?"))
 (define-key bookmarkp-bmenu-menubar-menu [bookmarkp-toggle-saving-menu-list-state]
   '(menu-item "Toggle Saving State on Quit" bookmarkp-toggle-saving-menu-list-state))
 (define-key bookmarkp-bmenu-menubar-menu [bookmark-bmenu-load]
@@ -8026,6 +8057,10 @@ bookmarkp-sequence-jump-display-function - How to display components")
   '(menu-item "Save" bookmark-bmenu-save))
 (define-key bookmarkp-bmenu-menubar-menu [top-sep1] '("--"))
 
+(define-key bookmarkp-bmenu-menubar-menu [bookmarkp-make-function-bookmark]
+  '(menu-item "New Function Bookmark" bookmarkp-make-function-bookmark))
+(define-key bookmarkp-bmenu-menubar-menu [bookmarkp-bmenu-make-sequence-from-marked]
+  '(menu-item "New Sequence Bookmark from Marked" bookmarkp-bmenu-make-sequence-from-marked))
 (define-key bookmarkp-bmenu-menubar-menu [bookmarkp-list-defuns-in-commands-file]
   '(menu-item "List User-Defined Commands" bookmarkp-list-defuns-in-commands-file))
 
@@ -8039,6 +8074,48 @@ bookmarkp-sequence-jump-display-function - How to display components")
   '(menu-item "To Restore Sort, Filter" bookmarkp-bmenu-define-command))
 (define-key bookmarkp-bmenu-define-command-menu [bookmarkp-define-tags-sort-command]
   '(menu-item "To Sort by Specific Tags" bookmarkp-define-tags-sort-command))
+
+(defvar bookmarkp-bmenu-jump-menu (make-sparse-keymap "Jump To"))
+(define-key bookmarkp-bmenu-menubar-menu [jump] (cons "Jump To" bookmarkp-bmenu-jump-menu))
+;; Add `Jump' menu also to the vanilla `Bookmarks' menu, and remove the two jump commands there.
+(define-key menu-bar-bookmark-map [jump] (cons "Jump To Bookmark" bookmarkp-bmenu-jump-menu))
+(define-key menu-bar-bookmark-map [jump-other] nil)
+
+(define-key bookmarkp-bmenu-jump-menu [bookmarkp-all-tags-regexp-jump-other-window]
+  '(menu-item "All Tags Matching Regexp..." bookmarkp-all-tags-regexp-jump-other-window))
+(define-key bookmarkp-bmenu-jump-menu [bookmarkp-some-tags-regexp-jump-other-window]
+  '(menu-item "Any Tag Matching Regexp..." bookmarkp-some-tags-regexp-jump-other-window))
+(define-key bookmarkp-bmenu-jump-menu [bookmarkp-all-tags-jump-other-window]
+  '(menu-item "All Tags in Set..." bookmarkp-all-tags-jump-other-window))
+(define-key bookmarkp-bmenu-jump-menu [bookmarkp-some-tags-jump-other-window]
+  '(menu-item "Any Tag in Set..." bookmarkp-some-tags-jump-other-window))
+(define-key bookmarkp-bmenu-jump-menu [jump-sep1] '("--"))
+(define-key bookmarkp-bmenu-jump-menu [bookmarkp-w3m-jump-other-window]
+  '(menu-item "URL (W3M)" bookmarkp-w3m-jump-other-window))
+(define-key bookmarkp-bmenu-jump-menu [bookmarkp-gnus-jump-other-window]
+  '(menu-item "Gnus" bookmarkp-gnus-jump-other-window))
+(define-key bookmarkp-bmenu-jump-menu [bookmarkp-man-jump-other-window]
+  '(menu-item "Man Page" bookmarkp-man-jump-other-window))
+(define-key bookmarkp-bmenu-jump-menu [bookmarkp-info-jump-other-window]
+  '(menu-item "Info Node" bookmarkp-info-jump-other-window))
+(define-key bookmarkp-bmenu-jump-menu [bookmarkp-non-file-jump-other-window]
+  '(menu-item "Buffer (Non-File)" bookmarkp-non-file-jump-other-window))
+(define-key bookmarkp-bmenu-jump-menu [bookmarkp-region-jump-other-window]
+  '(menu-item "Region" bookmarkp-region-jump-other-window))
+(define-key bookmarkp-bmenu-jump-menu [bookmarkp-remote-file-jump-other-window]
+  '(menu-item "Remote File" bookmarkp-remote-file-jump-other-window))
+(define-key bookmarkp-bmenu-jump-menu [bookmarkp-local-file-jump-other-window]
+  '(menu-item "Local File" bookmarkp-local-file-jump-other-window))
+(define-key bookmarkp-bmenu-jump-menu [bookmarkp-file-jump-other-window]
+  '(menu-item "File" bookmarkp-file-jump-other-window))
+(define-key bookmarkp-bmenu-jump-menu [bookmarkp-dired-jump-other-window]
+  '(menu-item "Dired" bookmarkp-dired-jump-other-window))
+(define-key bookmarkp-bmenu-jump-menu [bookmarkp-jump-to-type-other-window]
+  '(menu-item "Of Type..." bookmarkp-jump-to-type-other-window))
+(define-key bookmarkp-bmenu-jump-menu [bookmark-jump-other-window]
+  '(menu-item "Any in Other Window" bookmark-jump-other-window))
+(define-key bookmarkp-bmenu-jump-menu [bookmark-jump]
+  '(menu-item "Any" bookmark-jump))
 
 (defvar bookmarkp-bmenu-sort-menu (make-sparse-keymap "Sort"))
 (define-key bookmarkp-bmenu-menubar-menu [sort] (cons "Sort" bookmarkp-bmenu-sort-menu))
@@ -8207,10 +8284,6 @@ bookmarkp-sequence-jump-display-function - How to display components")
   '(menu-item "Delete Flagged (D)" bookmark-bmenu-execute-deletions))
 (define-key bookmarkp-bmenu-menubar-menu [bookmarkp-bmenu-delete-marked]
   '(menu-item "Delete Marked (>)" bookmarkp-bmenu-delete-marked))
-(define-key bookmarkp-bmenu-menubar-menu [bookmarkp-make-function-bookmark]
-  '(menu-item "New Function Bookmark" bookmarkp-make-function-bookmark))
-(define-key bookmarkp-bmenu-menubar-menu [bookmarkp-bmenu-make-sequence-from-marked]
-  '(menu-item "New Sequence Bookmark from Marked" bookmarkp-bmenu-make-sequence-from-marked))
 (define-key bookmarkp-bmenu-menubar-menu [bookmarkp-bmenu-query-replace-marked-bookmarks-regexp]
   '(menu-item "Query-Replace Marked" bookmarkp-bmenu-query-replace-marked-bookmarks-regexp))
 (when (fboundp 'bookmarkp-bmenu-isearch-marked-bookmarks)

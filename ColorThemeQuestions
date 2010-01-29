@@ -123,6 +123,8 @@ Well, you could put something in your .emacs like:
 </pre>
 You could also make it an 'if' and use an alternative color scheme on console; some work pretty wel.
 
+[new:PauloMatos:2010-01-28]
+It would be nice to have a list of color-themes that work well on a terminal.
 
 ----
 CategoryFaces

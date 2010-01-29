@@ -48,7 +48,9 @@ You can control options of JSLint by using special comments in your source code 
 /*global MochiKit */
 </pre>
 
+== With JSLint server on node.js (lintnode) ==
 
+If you run the above in a persistent server on v8 instead of invoking rhino every time, it goes about twice as fast.  Server code with instructions is available at http://github.com/keturn/lintnode
 
 == With SpiderMonkey ==
 

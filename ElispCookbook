@@ -301,6 +301,20 @@ Using the Common Lisp package:
         (apply 'concat chunks)))
     (commafy (random)))
 
+Here is another way, treating the input as a string from the start (taken from
+the [Lisp:sunrise-commander.el Sunrise Commander]):
+
+  (defun sr-size-format (size)
+    "Formats the given (floating) number as a string representation of an integer
+    with separating commas for thousands, millions, etc."
+    (let* ((num (replace-regexp-in-string "\\..*$" "" (number-to-string size)))
+           (digits (reverse (split-string num "" t)))
+           result)
+      (dotimes (n (length digits) result)
+        (if (and (< 0 n) (zerop (% n 3)))
+            (setq result (concat "," result)))
+        (setq result (concat (pop digits) result)))))
+
 === Incrementing numbers ===
 
 See IncrementNumber.

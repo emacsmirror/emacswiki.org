@@ -12,19 +12,6 @@ to build pipeline from emacs.
 Maybe integrate it with [[EMMS]].
 
 ----
-
-A bit of cool stuff ...
-<code>
-(defcustom minimal-height-for-window 4 "...")
-(defun minimize-window ()
-       (enlarge-window (- minimal-height-for-window (window-height))))
-(defun other-window-minimizing ()
-       (interactive) (minimize-window)(other-window 1))
-(global-set-key [?\C->] 'other-window)
-(global-set-key [?\C-<] 'other-window-minimizing)
-<code>
-
-----
 I wish a wisent parser for Objective-C, we can write it.
 The great tools CollectionOfEmacsDevelopmentEnvironmentTools
 

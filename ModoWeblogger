@@ -1,0 +1,42 @@
+[[en:WebloggerMode]]
+El ModoWeblogger (<i>weblogger.el</i>) es un paquete para Emacs que
+permite publicar en uno de los siguientes sitios de blogs desde Emacs:
+
+* Blogger
+* Drupal
+* LiveJournal
+* MetaWeblog
+* Moveable Type
+* WordPress
+
+Este paquete lo escribió principalmente MarkHershberger.  Se
+desarrolló a partir de BloggerMode (blogger.el).
+
+=Requisitos=
+
+WebloggerMode requiere Lisp:xml-rpc.el .
+
+=Sitios para su descarga=
+
+La versión actual (1.43, cuya última modificación fue el 9/13/09) está
+disponible en Lisp:weblogger.el.
+
+La zona de descargas de
+http://savannah.nongnu.org/projects/emacsweblogs está vacía.
+
+=Configuración=
+
+(esta sección hay que mejorarla)
+
+Después de obtener el ModoWeblogger, el usuario debe o bien ejecutar
+
+    M-x weblogger-setup-weblog RET
+
+o definir `weblogger-config-alist' manualmente para declarar los blog
+en los que desee publicar.
+
+
+Aquí hay una página que describe los pasos para usar weblogger con Drupal:
+
+http://gnu.manticore.es/node/202
+

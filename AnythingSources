@@ -2238,5 +2238,21 @@ This source lists all the relevant files in a standard Grails project tree, to s
 
 -- [[WolfmanJM]]
 
+== Search Files in Current GIT Project ==
+I found it is useful to search files for current git project. I don't need any other "project" packages because a git repository just defines which files contained in the project. You need [[Magit]] for this to work.
+{{{
+(defvar anything-c-source-git-project-files
+      '((name . "Files from Current GIT Project")
+	(init . (lambda () (setq anything-git-top-dir (magit-get-top-dir (if (buffer-file-name)
+									     (file-name-directory (buffer-file-name))
+									   default-directory)))))
+        (candidates . (lambda ()
+			(if anything-git-top-dir
+			    (let ((default-directory anything-git-top-dir))
+			      (mapcar (lambda (file) (concat default-directory file)) (magit-shell-lines (magit-format-git-command "ls-files" nil)))))))
+        (type . file)))
+}}}
+-- Ken Wu
+
 ----
 [[Anything]]

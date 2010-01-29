@@ -1142,7 +1142,14 @@ Can you please test that version?
 I downloaded and did some quick tests this morning; will do more tonite. Installing with Admin privs and letting the installer start EmacsClient still gets the ##server-ensure-safe-dir## error message.  Exiting Emacs and then starting it again works properly EmacsClient; only the initial start from the Installer hits the error message.
 
 [new]
-2010-01-25: I just installed EmacsW32 on a new Win7 system and ran into this problem. I ran the installer as Admin and took all default settings. (The option to create additional file associations fails on Win7 in any case.) Thanks to this discussion thread, I was able to fix the problem by fixing the ownership of /Users/xxxxx/AppData and its contents. -- [[DanMuller]]
+2010-01-25: I just installed %%EmacsW32%% on a new Win7 system and ran into this problem. I ran the installer as Admin and took all default settings. (The option to create additional file associations fails on Win7 in any case.) Thanks to this discussion thread, I was able to fix the problem by fixing the ownership of %%/Users/xxxxx/AppData%% and its contents. -- [[DanMuller]]
+
+[new]
+Thanks, I had nearly forgotten about this. I do not use Win7 myself.
+I do not know how to solve the problem with the privileges.
+The only solution I currently can see is to disable starting Emacs from the installer.
+Can anyone else see a better solution?
+
 
 === Windows 7 Taskbar ===
 
@@ -1198,10 +1205,10 @@ The bug should be fixed in the unpatched version.
 Can someone more familiar with the release procedure confirm whether this is in 23.1 or not?  A comment above seems to indicate it isn't and I can't make 23.1 stack icons, but I'd be surprised if something this important didn't make it.  Also, since emacsclientw gives me an error if I don't have a file for it to edit, I can't really pin it on the taskbar can I?  Shouldn't we also have the same fix in runemacs.exe?
 
 [new]
-I am not quite sure but I believe that it is not in the released 23.1.
+It is not in the released 23.1.
 It will be in the next release.
-(Maybe the last comments in the bug report has some information I do not understand.)
 
+----
 I think there are several important things that just do not make it into the w32 version.
 There are just too few hands there I think.
 Contributors are welcome!
