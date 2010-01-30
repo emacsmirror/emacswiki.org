@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Jan 28 15:14:40 2010 (-0800)
+;; Last-Updated: Fri Jan 29 23:16:06 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 9304
+;;     Update #: 9335
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -212,6 +212,7 @@
 ;;    `bookmarkp-desktop-no-save-vars',
 ;;    `bookmarkp-handle-region-function',
 ;;    `bookmarkp-incremental-filter-delay',
+;;    `bookmarkp-menu-popup-max-length',
 ;;    `bookmarkp-region-search-size',
 ;;    `bookmarkp-save-new-location-flag',
 ;;    `bookmarkp-sequence-jump-display-function',
@@ -1215,6 +1216,12 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2010/01/29 dadams
+;;     bookmarkp-describe-bookmark: Handle desktop bookmarks specifically.
+;;     Added: bookmarkp-menu-popup-max-length.
+;;     bookmark-completing-read: Use bookmarkp-menu-popup-max-length.
+;;     bookmarkp-bmenu-state-file: Added missing default value for const.
+;;     Don't add jump-other entry to menu-bar-bookmark-map (just use Jump To submenu).
 ;; 2010/01/28 dadams
 ;;     bookmarkp-(all|some)-tags(-regexp)-jump(-other-window): Error if no bookmarks with the tags.
 ;;     bookmarkp-(all|some)-tags-jump(-other-window): Handle case where user enters no tags.
@@ -2181,7 +2188,7 @@ the bookmark list first (using \\<bookmark-bmenu-mode-map>`\\[bookmarkp-bmenu-qu
 Set this to nil if you do not want to restore the bookmark list as it
 was the last time you used it."
   :type '(choice
-          (const :tag "Do not save and restore menu-list state")
+          (const :tag "Do not save and restore menu-list state" nil)
           (file  :tag "File for saving menu-list state"))
   :group 'bookmarkp)
 
@@ -2244,6 +2251,22 @@ If nil show only beginning of region."
 (defcustom bookmarkp-incremental-filter-delay 0.6
   "*Seconds to wait before updating display when filtering bookmarks."
   :type 'integer :group 'bookmarkp)
+
+;;;###autoload
+(defcustom bookmarkp-menu-popup-max-length 20
+  "*Max number bookmarks for `bookmark-completing-read' to use a menu.
+When choosing a bookmark from a list of bookmarks using
+`bookmark-completing-read', this controls whether to use a menu or
+minibuffer input with completion.
+If t, then always use a menu.
+If nil, then never use a menu.
+If an integer, then use a menu only if there are fewer bookmark
+ choices than the value."
+  :type '(choice
+          (integer :tag "Use a menu if there are fewer bookmark choices than this" 20)
+          (const   :tag "Always use a menu to choose a bookmark" t)
+          (const   :tag "Never use a menu to choose a bookmark" nil))
+  :group 'bookmarkp)
 
 ;;;###autoload
 (defcustom bookmarkp-sort-comparer '((bookmarkp-info-cp bookmarkp-gnus-cp
@@ -2768,20 +2791,29 @@ The names are those of the bookmarks in ALIST or, if nil,
 ;; 2. Bind `icicle-delete-candidate-object' to `bookmark-delete'.
 ;;
 (defun bookmark-completing-read (prompt &optional default alist pred)
-  "Read a bookmark name, with completion, prompting with PROMPT.
+  "Read a bookmark name, prompting with PROMPT.
 PROMPT is automatically suffixed with \": \", so do not include that.
 
 Optional arg DEFAULT is a string to return if the user enters the
-empty string.
+ empty string.
 The alist argument used for completion is ALIST or, if nil,
-`bookmark-alist'.
+ `bookmark-alist'.
 Optional arg PRED is a predicate used for completion.
+
+If you access this function from a menu, then, depending on the value
+of option `bookmarkp-menu-popup-max-length' and the number of
+bookmarks in ALIST, you choose the bookmark using a menu or using
+completion.
 
 If you use Icicles, then you can use `S-delete' during completion of a
 bookmark name to delete the bookmark named by the current completion
 candidate."
   (bookmark-maybe-load-default-file)
-  (if (listp last-nonmenu-event)
+  (setq alist  (or alist bookmark-alist))
+  (if (and (listp last-nonmenu-event)
+           (or (eq t bookmarkp-menu-popup-max-length)
+               (and (integerp bookmarkp-menu-popup-max-length)
+                    (< (length alist) bookmarkp-menu-popup-max-length))))
       (bookmark-menu-popup-paned-menu
        t prompt
        (if bookmarkp-sort-comparer      ; Test whether to sort, but always use `string-lessp'.
@@ -2793,16 +2825,9 @@ candidate."
            (prompt                          (if default
                                                 (concat prompt (format " (%s): " default))
                                               (concat prompt ": ")))
-           (str                             (completing-read prompt (or alist bookmark-alist)
-                                                             pred 0 nil 'bookmark-history)))
+           (str                             (completing-read prompt alist pred 0 nil
+                                                             'bookmark-history)))
       (if (string-equal "" str) default str))))
-
-;;;###autoload
-(if (> emacs-major-version 21)
-    (define-key-after menu-bar-bookmark-map [jump-other]
-      '("Jump to Bookmark (Other Window)" . bookmark-jump-other-window) 'jump)
-  (define-key-after menu-bar-bookmark-map [jump-other]
-    '("Jump to Bookmark (Other Window)" . bookmarkp-menu-jump-other-window) 'jump))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -6476,6 +6501,7 @@ BOOKMARK is a bookmark name or a bookmark record."
         (tags        (bookmarkp-get-tags bookmark))
         (sequence-p  (bookmarkp-sequence-bookmark-p bookmark))
         (function-p  (bookmarkp-function-bookmark-p bookmark))
+        (desktop-p   (bookmarkp-desktop-bookmark-p bookmark))
         (dired-p     (bookmarkp-dired-bookmark-p bookmark))
         (gnus-p      (bookmarkp-gnus-bookmark-p bookmark))
         (info-p      (bookmarkp-info-bookmark-p bookmark))
@@ -6509,6 +6535,8 @@ BOOKMARK is a bookmark name or a bookmark record."
                                                    (file-name-nondirectory file)
                                                    (bookmark-prop-get bookmark 'info-node)))
                               (w3m-p       (format "W3M URL:\t\t%s\n" file))
+                              (desktop-p   (format "Desktop, file:\t\t%s\n"
+                                                   (bookmark-prop-get bookmark 'desktop-file)))
                               (dired-p 
                                (let ((switches  (bookmark-prop-get bookmark 'dired-switches))
                                      (marked    (length (bookmark-prop-get bookmark
@@ -8036,6 +8064,7 @@ bookmark-save-flag               - Whether and when to save
 bookmark-use-annotations         - Saving queries for an annotation?
 bookmarkp-use-region-flag        - Activate saved region when visit?
 bookmarkp-su-or-sudo-regexp      - Bounce-show each end of region?
+bookmarkp-menu-popup-max-length  - Use menus to choose bookmarks?
 bookmarkp-sequence-jump-display-function - How to display components")
 
 (defvar bookmarkp-bmenu-menubar-menu (make-sparse-keymap "Bookmark+"))

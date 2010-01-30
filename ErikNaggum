@@ -108,6 +108,16 @@ I believe he used Emacs, but preferred Common Lisp. Naggum is the author of <tt>
  no matter what you think about it.  If you think you know better, forget
  it, you do not.
 
+[new]
+
+ From: Erik Naggum
+ Subject: Re: RFC: Lisp/Scheme with less parentheses through Python-like significant indentation?
+ Date: 2000/08/11
+ Newsgroups: comp.lang.lisp
+
+ I once said: "Those who do not know Lisp are doomed to reinvent it"
+ in an Emacs setting.  This is a Lisp setting, so maybe I should say:
+ "Those who do not know Emacs are doomed to reinvent it".
 
 == On elegance ==
 

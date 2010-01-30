@@ -52,5 +52,7 @@ An extension built upon hexl to provide a convenient way to view binary data:
 
 - litchie
 
+[new:]
+HexviewMode
 ----
 CategoryModes

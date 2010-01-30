@@ -225,5 +225,24 @@ Fullscreen mode doesn't work in Vanilla Emacs 23.1.  This at least maximizes you
 
 -- [[timcharper]]
 
+=== True fullscreen for the Cocoa build in Emacs 23 ===
+
+This fork has patches for true fullscreen and it works wonderfully.
+
+<pre>
+$ git clone git://github.com/typester/emacs.git
+$ cd emacs
+$ ./configure --with-ns
+$ make bootstrap
+$ make install
+$ mv nextstep/Emacs.app /Applications
+</pre>
+
+<pre>
+(global-set-key (kbd "M-RET") 'ns-toggle-fullscreen)
+</pre>
+
+Source: http://www.stratospark.com/blog/2010/fullscreen_emacs_on_osx.html
+
 ------
 CategoryPorts CategoryBuilding

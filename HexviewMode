@@ -1,0 +1,21 @@
+Info from the source code:
+
+This package provides a user-interface for hex viewing large file!!
+Hexview mode can open a 5GB file within a second. If you often need
+view large file for data debugging of probing, Hexview is for you!!
+For viewing binary content, Hexview mode is much better than the
+offical hexl-mode(using hexl program piping result in a lot memory
+waste). The core part  of Hexview mode is just a simple builtin
+function: `insert-file-contents-literally'. So Hexview doesn't need
+large memory to view large file. Due to the limitation of emacs's
+Integer representation , on 32-bit version, you can only view file
+content up to index `268435455', but in 64-bit version `emacs' the
+valid range of Integer is much larger. Practically, Hexview mode is
+enough for 80% of you dailly usage. So enjoy.
+
+
+
+Lisp:hexview-mode.el
+
+----
+CategoryModes

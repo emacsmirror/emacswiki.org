@@ -23,6 +23,7 @@ Getting started:
 * WritingChinese -- details for Chinese readers and writers
 ** [[ScimBridge Chinese]] use SCIM in Emacs.
 ** WritingChineseWithWuBi
+** EimForChinese
 * WritingGothic --  Details for Gothic users
 * WritingHebrew -- see also: HebEng
 * WritingIsoLatinOne -- Writing with the `C-x 8' prefix.

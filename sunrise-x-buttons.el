@@ -1,4 +1,4 @@
-;;; sunrise-x-buttons.el  ---  Mouse clickable  shortcut buttons for the Sunrise
+;;; sunrise-x-buttons.el  ---  Mouse  clickable shortcut buttons for the Sunrise
 ;; Commander File Manager.
 
 ;; Copyright (C) 2008-2010 José Alfredo Romero Latouche.
@@ -34,7 +34,7 @@
 ;; of interaction with the program you can add your own commands to the list and
 ;; let this extension manage the creation and layout of the buttons for you.
 
-;; This is version 1 $Rev: 250 $ of the Sunrise Commander Buttons Extension.
+;; This is version 1 $Rev: 263 $ of the Sunrise Commander Buttons Extension.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.
@@ -162,7 +162,7 @@
   "Displays the buttons buffer in the viewer window. If no buttons buffer exists
   yet, then creates one."
   (apply 'require '(cus-edit))
-  (sr-select-viewer-window)
+  (sr-select-viewer-window t)
   (switch-to-buffer sr-buttons-buffer-name)
   (setq truncate-lines t)
   (setq line-spacing 5)

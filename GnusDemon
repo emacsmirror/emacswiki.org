@@ -21,4 +21,18 @@ I'm thinking of adding something like:
 Or could it be harmful?
 
 ----
+
+On my laptop if I forgot to unplug Gnus before I went offline the demon would crash Emacs.  This solves the problem.
+
+<pre>
+(defadvice gnus-demon-scan-news (around gnus-demon-timeout activate)
+  "Timeout for Gnus."
+  (with-timeout
+      (120 (message "Gnus timed out."))
+    ad-do-it))
+</pre>
+
+Of course the length of the timeout should be set generously.
+
+----
 CategoryGnus

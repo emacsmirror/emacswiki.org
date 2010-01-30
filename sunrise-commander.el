@@ -130,7 +130,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 259 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 261 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.  I  have  also  received
@@ -681,12 +681,28 @@ automatically:
   (setq sr-this-directory default-directory)
   (sr-highlight))
 
-(defun sr-select-viewer-window ()
-  "Tries to select a window that is not a sr pane."
-  (interactive)
-  (dotimes (times 2)
-    (if (memq (selected-window) (list sr-left-window sr-right-window))
-        (other-window 1))))
+(defun sr-viewer-window ()
+  "Return an active window that can be used as the viewer."
+  (if (memq major-mode '(sr-mode sr-virtual-mode))
+      (let ((current-window (selected-window)) (target-window))
+        (dotimes (times 2)
+          (setq current-window (next-window current-window))
+          (unless (memq current-window (list sr-left-window sr-right-window))
+            (setq target-window current-window)))
+        target-window)
+    (selected-window)))
+
+(defun sr-select-viewer-window (&optional force-setup)
+  "Select  a  window  that is not a sr pane. If no suitable active window can be
+  found and FORCE-SETUP is set, then calls function sr-setup-windows  and  tries
+  once again."
+  (interactive "p")
+  (let ((viewer (sr-viewer-window)))
+    (if viewer
+        (select-window viewer)
+      (when force-setup
+        (sr-setup-windows)
+        (select-window (sr-viewer-window))))))
 
 ;; This is a hack to avoid some dired mode quirks:
 (defadvice dired-find-buffer-nocreate
@@ -2625,7 +2641,7 @@ or (c)ontents? ")
   "Helper  macro.  Takes  care  of  the  common mechanics of launching a new (or
   switching to an existing) terminal from Sunrise."
   `(let ((buffer))
-     (sr-select-viewer-window)
+     (sr-select-viewer-window t)
      ,form
      (setq buffer (current-buffer))
      (setq cd (or cd (null sr-ti-openterms)))
