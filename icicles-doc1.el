@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Jan 17 18:24:32 2010 (-0800)
+;; Last-Updated: Sat Jan 30 12:49:27 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 24828
+;;     Update #: 24834
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5264,6 +5264,15 @@
 ;;    library `bookmark+.el'.  It is a multi-command, so you can
 ;;    actually visit any number of file bookmarks.  When finished, you
 ;;    can continue with non-bookmark file-name completion.
+;;
+;;  * `S-delete' to delete the file named by the current completion
+;;    candidate.
+;;
+;;  * `M-|' (`icicle-all-candidates-list-alt-action') to open Dired on
+;;    the currently matching file names.  That is, it opens a special
+;;    Dired buffer that contains only the matching files.  You are
+;;    prompted for the Dired buffer name.  See (@> "Alternative
+;;    Actions").
 ;;
 ;;  Note: Whether a command supports file-name globbing wildcards such
 ;;  as `*' is independent of whether it uses `read-file-name' or

@@ -10,6 +10,9 @@ See the instructions at http://emacs.orebokech.com/.
 
 Only i386 and amd64 packages are provided, see instructions below to build packages from source on unsupported architectures.
 
+See also the instructions at http://www.backports.org/
+(http://packages.debian.org/lenny-backports/emacs23)
+
 === Ubuntu hardy, intrepid ===
 
 Official Ubuntu packages can be obtained from the [https://launchpad.net/~ubuntu-elisp/+archive ubuntu-elisp PPA].

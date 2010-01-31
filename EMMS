@@ -481,6 +481,30 @@ This code sets up the arrow keys to control the player:
     (global-set-key (kbd "C-c e <left>") 'emms-previous)
     (global-set-key (kbd "C-c e <right>") 'emms-next)
 
+This is a function to toggle play/pause:
+
+    (defun my-emms-play-pause ()
+      "Play/pause toggle for emms."
+      (interactive)
+      (if emms-player-playing-p
+          (emms-pause)
+        (emms-start)))
+
+If you have "multimedia keys" on your keyboard, you might want to do the following:
+
+    (global-set-key (kbd "<XF86AudioPlay>") 'my-emms-play-pause) ; requires my-emms-play-pause defined above
+    (global-set-key (kbd "<XF86AudioStop>") 'emms-stop)
+    (global-set-key (kbd "<XF86AudioPrev>") 'emms-previous)
+    (global-set-key (kbd "<XF86AudioNext>") 'emms-next)
+
+Or... Are you running Emms inside your emacs daemon? Have you ever wanted to set it as your
+default, primary audio player? Have you ever wanted to switch to the next track (this 
+one suc*s!) but you where in Firefox/OpenOffice/whatever ?
+
+Well, then give a look to [[EmmsRemote]], in order to bind your Window-Manager keychain
+to Emacs/Emms ;-)
+
+
 == Calculating Total time of all tracks in emms playlist, below the point==
 I just started out with lisp and there can be any better thing to hack on but emms!
 

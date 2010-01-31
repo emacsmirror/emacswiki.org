@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Jan 29 23:16:06 2010 (-0800)
+;; Last-Updated: Sat Jan 30 13:06:49 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 9335
+;;     Update #: 9338
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -970,6 +970,13 @@
 ;;  Since tags are persistent, Bookmark+ gives you a good way to
 ;;  define an arbitrary set of files as a project and then open them
 ;;  in Dired at any time to operate on them.
+;;
+;;  Note: If you also use Icicles, then whenever you use a command
+;;  that reads a file (or directory) name, you can use `M-|' during
+;;  file-name completion to open Dired on the currently matching set
+;;  of file names.  That is, this is the same kind of special Dired
+;;  buffer that is provided for file and directory bookmarks by `M-d
+;;  >' in the bookmark list.
 ;;
 ;;
 ;;(@* "Marking and Unmarking Bookmarks")
@@ -6535,7 +6542,7 @@ BOOKMARK is a bookmark name or a bookmark record."
                                                    (file-name-nondirectory file)
                                                    (bookmark-prop-get bookmark 'info-node)))
                               (w3m-p       (format "W3M URL:\t\t%s\n" file))
-                              (desktop-p   (format "Desktop, file:\t\t%s\n"
+                              (desktop-p   (format "Desktop file:\t\t%s\n"
                                                    (bookmark-prop-get bookmark 'desktop-file)))
                               (dired-p 
                                (let ((switches  (bookmark-prop-get bookmark 'dired-switches))

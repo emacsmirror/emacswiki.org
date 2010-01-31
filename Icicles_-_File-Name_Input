@@ -25,6 +25,14 @@ library '''[[Bookmark+]]''' (<tt>[[bookmark+.el]]</tt>).  It is a [[multi-comman
 actually visit any number of file bookmarks.  When finished, you
 can continue with non-bookmark file-name completion.
 
+* '''`S-delete'''' to delete the file named by the current completion candidate.
+
+* '''`##M-|##'''' (`icicle-all-candidates-list-alt-action') to open [[Dired]] on
+the currently matching file names.  That is, it opens a special
+Dired buffer that contains ''only'' the matching files.  You are
+prompted for the Dired buffer name.  See [[Icicles - More About Multi-Commands#AlternativeActions|Alternative Actions]].
+
+
 '''Note:''' Whether a command supports file-name ''globbing wildcards''
 such as `##*##' is independent of whether it uses `read-file-name' or
 `completing-read'.  It is the command itself that offers such

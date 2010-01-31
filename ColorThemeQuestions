@@ -24,6 +24,24 @@ Now, when Emacs loads, it displays the gnome2 theme properly. Then, when I chang
 == How To Undo? ==
 
 After applying a color theme, is there a way to undo that change -- to get back all of the [[Frame]], [[Face]], etc. settings that were in effect before the change? I'm looking for a function that will do this (not "restart Emacs"). -- DrewAdams
+[new]
+<pre>
+(require 'color-theme)
+
+(defun color-theme-undo ()
+  (interactive)
+  (color-theme-reset-faces)
+  (color-theme-snapshot))
+
+;; backup current color theme
+(fset 'color-theme-snapshot (color-theme-make-snapshot))
+
+
+;;change color theme
+
+
+;;M-x color-theme-undo
+</pre>
 
 == How To Find Out a Theme's Name? ==
 

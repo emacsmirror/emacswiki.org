@@ -2,9 +2,14 @@
 
 As of version 21.5b24 [[XEmacs]] has support for Xft fonts right out of the box. The release notes at http://xemacs.org/Releases/21.5.24.html have all the details. [http://blog.clemens.endorphin.org/2006/02/beautiful-xemacs.html Additional configuration suggestions] available from CFruhwirth's Weblog.
 
-= GnuEmacs =
+= GNU Emacs =
+Support for this is in GNU Emacs version 23.1. Quouting `NEWS.23.1':
 
+   *** Added support for the Xft library for antialiasing.
 
+A full list of changes can be found [http://www.gnu.org/software/emacs/NEWS.23.1 here].
+
+[new]
 Emacs on GNUstep (aka EmacsOnAqua; http://emacs-on-aqua.sf.net) renders antialiased fonts on Linux/X11 via Xft.  However, this requires installing GNUstep (http://gnustep.org) and living with the older emacs-20 for now.
 
 [new]

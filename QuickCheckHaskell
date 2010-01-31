@@ -1,0 +1,11 @@
+QuickCheck is a property checking library for Haskell.
+
+I've whipped up a few simple Emacs functions for making testing properties easier by finding the property for the function at the point and displaying the test result in the mini-buffer: http://gist.github.com/290636 Feel free to patch that gist/add more cool stuff to it. Please edit this wiki page if you do to let us know.
+
+Gonna add more to it i.e. to auto-start a Haskell process if one isn't there, make sure QuickCheck is loaded in GHCi, etc. maybe some interaction with one of the Hackage libraries to test all properties in a given file, interaction with C-c C-l, etc.
+
+Maybe merge this with FlyMake somehow, that would be cool. But I don't know FlyMake right now.
+
+Example:
+
+[[image:QuickCheckPreliminaryExample]]

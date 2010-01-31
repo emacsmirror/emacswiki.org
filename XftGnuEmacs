@@ -22,6 +22,9 @@ Xft support is included and enabled by default since emacs 23.1.
 
 An emacs-snapshot package by Romain Francoise is available at http://emacs.orebokech.com
 
+also available at http://www.backports.org/
+(http://packages.debian.org/lenny-backports/emacs23)
+
 See also EmacsCvsAndDebian
 
 == Ubuntu Packages ==

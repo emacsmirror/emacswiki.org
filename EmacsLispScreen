@@ -2,9 +2,6 @@
 is a GNU Emacs window session manager modeled after
 [http://www.gnu.org/software/screen/ GNU screen] by NaotoMorishima.
 
-(This is more or less a copy and paste of what we can read on the
-ElScreen project page)
-
 WorkInProgressPage XavierMaillard
 
 == Introduction ==

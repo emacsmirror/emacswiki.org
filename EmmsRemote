@@ -1,0 +1,65 @@
+= Emms-Remote =
+
+Ever wanted to use emms also when not inside emacs?
+Say, emms is your favourite browser but you **have** to use firefox 
+or OpenOffice?
+
+Emms comes in your rescue. It's a simple shell script, you only have to
+mark it executable, put it somewhere in a directory which is in your $PATH 
+variable, and bind some keyboard shortcuts to it.
+
+Code is simple, home page is at 
+[[http://wiki.santoro.tk/index.cgi/EmmsRemote|http://wiki.santoro.tk/index.cgi/EmmsRemote]].
+
+**Note**: Although I'll try to keep this page updated, you should know
+that its home page is on my wiki ([[http://wiki.santoro.tk/index.cgi/EmmsRemote|http://wiki.santoro.tk/index.cgi/EmmsRemote]]),
+so, when in doubt, check it out.
+
+Code is at [[http://git.santoro.tk/?p=emms-remote.git;a=summary|http://git.santoro.tk/?p=emms-remote.git;a=summary]].
+
+= Dependancies =
+
+Since emms-remote controls emms, and since emms runs in emacs, emms has to 
+connect to emacs someway. The best way is, imho, emacsclient.
+
+So, you need at least emacs22 (better if emacs23, is use version 23 in 
+debian squeeze) and a server running.
+
+= Installing =
+
+{{{
+manu@joker: ~ $ git clone git@git.santoro.tk:emms-remote.git
+manu@joker: ~ $ cd emms-remote
+manu@joker: ~ $ chmod +x emms-remote ;
+manu@joker: ~ $ sudo cp emms-remote /usr/bin/
+}}}
+
+Last step is not mandatory, as you may want to install the script locally.
+
+If you have a directory in your ~ containing all your executables, put 
+`emms-remote` there.
+
+
+= Binding your DE/WM to emms-remote =
+
+This part varies depending on what window manager or desktop environment
+you run. In this period, i'm using Fluxbox intensively (and it's behaving 
+quite well, i have to say), so i'll post configuration for Fluxbox.
+
+**EDIT**: I've solved cofiguration problems. They were related to PATH vars 
+and executability of the emms-remote file, as i put it in my ~/.bin dir, 
+which is in my $PATH now.
+
+BTW, fluxbox conf should be something like this:
+
+<pre>
+### ~/.Bin/Emms-Remote invocation
+# file: ~/.fluxbox/keys
+Mod4 space :ExecCommand ~/.bin/emms-remote --toggle-pause
+Mod4 Down :ExecCommand ~/.bin/emms-remote --stop
+Mod4 Up :ExecCommand ~/.bin/emms-remote --start
+Mod4 Right :ExecCommand ~/.bin/emms-remote --next
+Mod4 Left :ExecCommand ~/.bin/emms-remote --prev
+</pre>
+
+It now fully works. And it's **wounderful**.

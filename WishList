@@ -160,8 +160,10 @@ These are wishes related to interacting with Emacs or with the graphical user in
 
 * More support for One-[[Frame]]-Per-[[Buffer]] use -- that is, non-`nil' `pop-up-frames'. Currently, the `nil' case is pretty much all that's thought about during UI design and testing, IMO. Emacs is hard-code biased toward using Emacs windows instead of frames. OneOnOneEmacs is my attempt to work around some of the problems. -- DrewAdams
 
-* AntiAliasedFaces. [Already the case for Mac and Windows, and in the works for Xft]
+* AntiAliasedFaces.
+** This is supported out of the box in GNU Emacs 23.1.
 
+[new]
 * I'd like the 'suggested fix' feature thats in IDEA, or something like it. IDEA parses the buffer continually when idle, lightbulb appears when the TextCursor is over some parts of the buffer where an autocorrection is possible (typically warnings, errors), pressing Alt-Enter presents a menu of tasks, typically fixes but sometimes other things (eg 'Implement this interface'). Its spelling correction on steroids. A minor mode perhaps? Example uses: in an html editing mode suggested fixes may optionally include fixing tag spelling, closing tags, fixing text spelling, fixing text grammar, adding required attributes ... emacs has all this kind of thing, but all done as separately like ispell, rather than all cooperating on a common 'blackboard' of tasks/fixes.
 
 * I would like to see (as an option) the ability to close a frame and have 

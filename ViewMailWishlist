@@ -2,6 +2,7 @@ Discuss ideas for new features for VM, their feasibility, and code to make them 
 
 == W3M support for inline HTML ==
 
+''These instructions are meant for VM 8.0.X versions.  The 8.1.X versions have built-in support for W3M.  Do not use these instructions with 8.1.x versions. -- Uday Reddy, 2010-01-30''
 :: Here is what I came up with for inline HTML support via W3M.  This code still supports w3, and should be expandable to support other renderers.  It overrides the function, vm-mime-display-internal-text/html, and deprecates the variable vm-mime-use-w3-for-text/html.  With this code in place, you can add "text/html" to your vm-auto-displayed-mime-content-types list to make html messages have their content auto-inlined.
 
   ;;;
@@ -23,7 +24,8 @@ Discuss ideas for new features for VM, their feasibility, and code to make them 
         (goto-char (point-max))
         (delete-char -1))
   
-      (when (and (boundp 'w3m-minor-mode-map) w3m-minor-mode-map)
+      (when (and (boundp 'w3m-minor-mode-map) w3m-minor-mode-map
+                 (equal major-mode 'vm-presentation-mode))
       (add-text-properties (point-min) (point-max)
                            (list 'keymap w3m-minor-mode-map)))))
   

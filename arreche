@@ -1,0 +1,382 @@
+== Comentarios ==
+
+¿Estas perdido? Te dire que “Emacs is the extensible, customizable, self-documenting real-time display editor!”. Si, para que voy a traducir si esta es la mejor y mas breve manera de definirlo.
+
+Lo que me movio a usar emacs fue la necesidad y el desconcierto de tener que aprender a usar un nuevo editor con cada lenguage de programacion.
+
+Bajo mi punto de vista Emacs, ademas de sus excelentes capacidades de edicion, ofrece mediante Elisp, una interfaz totalmente customizable de los sistemas operativos basados en UNIX.
+
+
+Puntos clave para la edicion efectiva:
+ 
+ - Movimiento (keystrokes, marcas, enlaces)
+ - Busqueda de datos y documentacion (resaltado de busqueda, ctext, cscope, grep)
+ - Autocompletado y correccion
+ - Vision estructurada (resaltado de sintaxis, folding)
+
+== Modos que uso ==
+
+erc -- mensajeria instantanea(irc, messenger, gtalk...)
+
+c-mode -- programar en c y c++
+
+gud -- Depuracion
+
+eshell -- Consola
+
+tramp -- Edicion y compilacion remota
+
+emms -- Reproduccion de audio y video
+
+w3m: -- Navegar
+
+calc -- calculadora algebraico-cientifica
+
+
+== Capturas ==
+
+[[image:arrecheScreenshot]]
+
+== Mis configuraciones ==
+
+Emacs en MacOSX consola
+<pre>
+;;-------------------------------------------------------------------------------
+;; Archivo .emacs Gnu Emacs 21.1.1 en terminal MacosX 10.4.6
+;; Configurar Terminal->Window Settings...->keyboard->use option key as meta key
+;; Sugerencias y correciones arreche at gmail dot com
+;;-------------------------------------------------------------------------------
+
+;;-------------------------------------------------------------------------------
+;;; Opciones de inicio
+;;-------------------------------------------------------------------------------
+(setq debug-on-error t)
+(setq inhibit-default-init t)
+(setq inhibit-startup-message t)
+
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(prefer-coding-system 'utf-8)
+(set-language-environment "Spanish")
+
+(tool-bar-mode -1)
+(menu-bar-mode -1)
+
+(set-background-color "black")
+(set-foreground-color "gray")
+(set-cursor-color "yellow")
+
+(transient-mark-mode t)
+(setq visible-bell t)
+(global-font-lock-mode t)
+(setq column-number-mode t)
+(show-paren-mode t)
+(display-time-mode t)
+(setq line-number-mode t)
+
+(mwheel-install)
+(setq auto-save-timeout 1800)
+(setq require-final-newline t)
+(defalias 'yes-or-no-p 'y-or-n-p)
+
+(add-to-list 'exec-path "/sw/bin" "/sw/sbin")
+(setenv "PATH" "/sw/bin:/sw/sbin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/X11R6/bin:/usr/local/bin")
+
+;;-------------------------------------------------------------------------------
+;;; Configuracion de modos
+;;-------------------------------------------------------------------------------
+(add-to-list 'load-path "~/site-lisp/tramp/lisp")
+(require 'tramp)
+(setq tramp-default-method "ssh")
+(custom-set-variables '(tramp-remote-path (quote ("/bin" "/sbin" "/usr/bin" "/usr/sbin" "/local/bin"))))
+(setenv "alias" "/ssh:username@host.domain:")
+
+(add-to-list 'load-path "~/site-lisp/emacs-w3m")
+(setq w3m-use-cookies t)
+(require 'w3m-load)
+
+;;-------------------------------------------------------------------------------
+;; Funciones
+;;-------------------------------------------------------------------------------
+(defun sincronizar()
+  (interactive)
+  (shell-command "rsync -u username@host.domain:~diary ~/diary")
+  (shell-command "rsync -u ~/diary username@host.domain:~/diary"))
+
+(defun chatear()
+  (interactive)
+  (add-to-list 'load-path "~/site-lisp/erc")
+  (require 'erc)
+  (setq erc-autojoin-channels-alist '(("freenode.net" "#emacs-es")))
+  (erc-select :server "irc.freenode.net" :port 6667 :nick "u4a")
+  (erc-select :server "im.bitlbee.org" :port 6667 :nick "arreche")
+  (setq erc-track-exclude-types '("JOIN" "PART" "QUIT" "NICK" "MODE" "Leaving")))
+
+(defvar bitlbee-password "YOURPASSWORD")
+
+(defun bitlbee-identify ()
+  (when (string= "&bitlbee" (buffer-name))
+    (erc-message "PRIVMSG" (format "%s identify %s" (erc-default-target) bitlbee-password))))
+
+(add-hook 'erc-join-hook 'bitlbee-identify)
+
+(defun aviso (proc parsed)
+    (when (search (erc-current-nick) (erc-response.unparsed parsed))  
+      (shell-command (concat "growlnotify -m"  (erc-response.unparsed parsed)))))
+
+(add-hook 'erc-server-PRIVMSG-functions 'aviso t)
+</pre>
+
+Emacs en MacOSX grafico
+<pre>
+;;-------------------------------------------------------------------------------
+;; Archivo .emacs para Carbon Emacs 22.0.5.1 en MacosX 10.4.6
+;; ln -s /Applications/Emacs.app/Contents/Resources/share/emacs/22.0.50/site-lisp ~/site-lisp
+;; Sugerencias y correciones arreche at gmail dot com
+;;-------------------------------------------------------------------------------
+
+;;-------------------------------------------------------------------------------
+;;; Opciones de inicio
+
+;; Información detallada de fallos elisp
+(setq debug-on-error t)
+
+;; No cargar "default.el"
+(setq inhibit-default-init t)
+
+;; Directorio de elisp
+(setq load-path (cons "~/site-lisp" load-path))
+
+;;-------------------------------------------------------------------------------
+;;; Opciones visuales
+
+;; No mensaje de bienvenida
+(setq inhibit-startup-message t)
+
+;; No barra de menu y herramientas ni scroll
+(tool-bar-mode nil)
+(menu-bar-mode nil)
+(scroll-bar-mode nil)
+
+;; Lenguage
+(set-language-environment "Spanish")
+
+;; Esquema de colores
+(set-background-color "black")
+(set-foreground-color "wite")
+(set-cursor-color "yellow")
+
+;; Hora y bateria
+(display-time-mode t)
+(display-battery-mode t)
+
+;; Número de linea, columna y tamaño
+(setq line-number-mode t)
+(setq column-number-mode t)
+(size-indication-mode t)
+
+;; Resaltado de sintáxis
+(global-font-lock-mode t)
+
+;; Resalta Seleccion
+(transient-mark-mode t)
+
+;; Scrool en modo grafico
+(mwheel-install)
+
+;; Beep visual
+(setq visible-bell t)
+
+;; Autoguardado
+(setq auto-save-timeout 1800)
+
+;; Añade ueva linea al final de los archivos automaticamente
+(setq require-final-newline t)
+
+;; Responder y o n en vez de yes or no cuando la minibarra lo requiera
+(defalias 'yes-or-no-p 'y-or-n-p)
+
+;; Codificaciónn de caracteres
+(prefer-coding-system 'utf-8)
+
+;; Corrector ortográfico
+(flyspell-mode)
+
+;;-------------------------------------------------------------------------------
+;;; Personalizaciones varias
+
+;; Keystroke para seleccion rápida de bufferes PENDIENTE
+;(global-set-key "\C-x up" 'electric-buffer-list)
+
+; Tecla meta como C-x C-m. Util para sesiones remotas
+(global-set-key "\C-x\C-m" 'execute-extended-command)
+
+;; Ruta de ejecutables 
+(custom-set-variables
+ '(exec-path (quote ("/sw/bin" "/sw/sbin" "/usr/bin" "/bin" "/usr/sbin" "/sbin" "/Applications/Emacs.app/Contents/MacOS/libexec" "/Applications/Emacs.app/Contents/MacOS/bin" "/usr/X11R6/bin"))))
+
+;; Variable PATH para eshell
+(setenv "PATH" "/sw/bin:/sw/sbin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/X11R6/bin")
+
+;; Alias de sessiones remotas
+(setenv "alias" "/ssh:username@host.domain:")
+
+; Auto autenticcion PENDIENTE es mejor ssh-agent
+;(add-hook 'find-file-hook 'tramp-identify)
+;(defun tramp-identify()
+
+;;-------------------------------------------------------------------------------
+;;; Nuevos modos
+
+;; Emms
+(add-to-list 'load-path "~/site-lisp/emms")
+(require 'emms-default)
+(emms-setup 'tiny "~/Music")
+(setq emms-player-list '(emms-player-mpg123))
+
+(require 'w3m-load)
+;;-------------------------------------------------------------------------------
+;;; Mis funciones
+
+(defun chateador()
+  (interactive)
+;;; erc
+  (setq erc-autojoin-channels-alist '(("freenode.net" "#emacs-es")))
+  (erc-select :server "irc.freenode.net" :port 6667 :nick "u4a")
+  (erc-select :server "im.bitlbee.org" :port 6667 :nick "arreche")
+  (setq erc-track-exclude-types '("JOIN" "PART" "QUIT" "NICK" "MODE")))
+
+(defvar bitlbee-password "TUCONTRASEÑA")
+ 
+(add-hook 'erc-join-hook 'bitlbee-identify)
+(defun bitlbee-identify ()
+  "If we're on the bitlbee server, send the identify command to the 
+ &bitlbee channel."
+  (when ;(and (string= "localhost" erc-session-server)
+      (string= "&bitlbee" (buffer-name));)
+    (erc-message "PRIVMSG" (format "%s identify %s" (erc-default-target) bitlbee-password))))
+
+(defun programador()
+  (interactive)
+  ;; teclas desarrollo
+  (global-set-key [f7] 'recompile)
+  (global-set-key [f8] 'next-error)
+  ;; Abbrev
+  (add-to-list 'load-path "~/site-lisp/msf-abbrev.el")
+  ;; ensure abbrev mode is always on
+  (setq-default abbrev-mode t)
+  ;; do not bug me about saving my abbreviations
+  (setq save-abbrevs nil)
+  ;; load up modes I use
+  (require 'cc-mode)
+  ;; load up abbrevs for these modes
+  (require 'msf-abbrev)
+  (setq msf-abbrev-verbose t) ;; optional
+  (setq msf-abbrev-root "~/site-lisp/mode-abbrevs")
+  (global-set-key (kbd "C-c l") 'msf-abbrev-goto-root)
+  (global-set-key (kbd "C-c a") 'msf-abbrev-define-new-abbrev-this-mode)
+  (msf-abbrev-load))
+
+;; no estaría mal hacer una interfaz para el motor de applescritp
+;  osascript -e "tell app \"iTunes\" to next track"
+</pre>
+
+== Mis proyectos ==
+
+=== Bot simple para msn usando bitlbee ===
+
+<pre>
+(defun respuesta-rexp(base ristra)                                                                                           
+  ;; Busca exp regulares de la base de conocimiento en la ristra                                                             
+  (cond                                                                                                                      
+   ((eq base nil) nil)                                                                                                       
+   ((string-match (car(car base)) ristra) (cdr(car base)))                                                                   
+   ((respuesta-rexp (cdr base) ristra))))                                                                                    
+                                                                                                                             
+(defun bot (proc parsed)                                                                                                     
+  ;; Activar el bot y cargar la base del conocimiento                                                                        
+  (interactive)                                                                                                              
+  (save-excursion                                                                                                            
+    (switch-to-buffer "#emacs-es")                                                                                           
+    (goto-char (point-max))                                                                                                  
+    (setq nick (replace-regexp-in-string "!.*" ": " (erc-response.sender parsed)))                                           
+    (cond                                                                                                                    
+     ( (not (search "chisme" (erc-response.contents parsed))) nil)                                                           
+     ( (search "ayuda" (erc-response.contents parsed))                                                                       
+       (erc-cmd-SAY (concat nick "Comandos disponibles: date tiempo guagua memoriza")) )                                     
+     ( (search "fecha" (erc-response.contents parsed)) (erc-cmd-SAY (concat nick (eshell-command-result "date"))) )          
+     ( (search "tiempo" (erc-response.contents parsed)) (erc-cmd-SAY (concat nick (tiempo "gran+canaria"))) )                
+     ( (search "guagua" (erc-response.contents parsed)) (erc-cmd-SAY (concat nick (guagua "48"))) )                          
+     ( (search "memoriza" (erc-response.contents parsed)) (memo(erc-response.contents parsed)) (erc-cmd-SAY (concat nick (ca\
+r conocimiento))) )                                                                                                          
+     ( t  (erc-cmd-SAY (concat nick (car(respuesta-rexp conocimiento (erc-response.contents parsed))))) ) )))                
+                                                                                                                             
+(add-hook 'erc-server-PRIVMSG-functions 'bot t)                                                                              
+                                                                                                                             
+(load-file "~/elisp/chismebd.el")
+</pre>
+
+==== Funcionalidades ====
+
+<pre>
+(defun memo(cosa)                                                                                                            
+  (push cosa conocimiento))                                                                                                  
+                                                                                                                             
+(defun geturl(url)                                                                                                           
+  (call-process "curl" nil "temp" nil url))                                                                                  
+                                                                                                                             
+(defun tiempo(lugar)                                                                                                         
+  (geturl (concat "http://www.wunderground.com/cgi-bin/findweather/getForecast?query=" lugar))                               
+  (switch-to-buffer "temp")                                                                                                  
+  (goto-char(point-min))                                                                                                     
+  (search-forward "tempf")                                                                                                   
+  (search-forward "value=")                                                                                                  
+  (copy-region-as-kill (+ (point) 1) (+ (point) 3))                                                                          
+                                        ;(kill-buffer "temp")                                                                
+  (concat (car kill-ring) "F"))                                                                                              
+                                                                                                                             
+(defun guagua(linea)                                                                                                         
+  (geturl (concat "www.guaguas.com/lineas/linea" linea ".htm"))                                                              
+  (switch-to-buffer "temp")                                                                                                  
+  (goto-char(point-min))                                                                                                     
+  (search-forward "celdaminutos\">")                                                                                         
+                                        ;(search-forward "value=")                                                           
+  (copy-region-as-kill (+ (point) 1) (+ (point) 3))                                                                          
+  (kill-buffer "temp")                                                                                                       
+  (concat "Sale " (car kill-ring) " Vuelve " (car kill-ring)))                                                               
+                                                                                                                             
+(defun html2text()                                                                                                           
+  (interactive)                                                                                                              
+  (while (/= (point) (point-max))                                                                                            
+    (kill-region (- (search-forward "<") 1) (search-forward ">"))))
+</pre>
+
+==== Base de conocimiento ====
+
+<pre>
+;chismebd.el
+;---
+
+(setq conocimiento '(                                                                                                        
+                     ("saluda" "hola a todos")                                                                               
+                     ("h?o+la\\|buenas\\|nas" "Hola, sabias que soy un bot?")                                                
+                     ("adios\\|chao\\|nos vemos\\|hasta luego" "Venga")                                                      
+                     ("put[ao]\\|cabrona?\\|perr[ao]\\|mamona?" "Tu o tu madre?")                                            
+                     ("mierda\\|coÃ±o\\|teta\\|culo\\|polla\\|cojones" "Comportese")                                         
+                     ("j[aeiou]+" "Que risa")                                                                                
+                     ("\!" "Que bien")                                                                                       
+                     ("Que\\|Como\\|Cuando\\|Donde\\|Por que\\|Para que" "Ni idea")                                          
+                     (".*" "Soy un bot")))
+</pre>
+
+== Enlaces externos ==
+
+ <include "http://del.icio.us/rss/arreche/emacs">
+
+== Diverso ==
+
+[new]
+Welcome to the wiki! :) Nice to see some more Spanish pages on the wiki. I thought it was interesting to see how you changed the purpose of [[ÁreaElisp]]. In English, the ElispArea explains how to upload and download elisp files. I guess it is no longer needed. We have the elisp code stuff in CategoryCode. I don't think you have to do anything – I think the language groups should be able to use their pages as they wish. -- AlexSchroeder
+
+----
+CategoryHomepage
