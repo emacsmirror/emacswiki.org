@@ -5,6 +5,10 @@ The internal bookmark format (data structure) used by '''[::Bookmark+]''' is com
 With '''Bookmark+''' you can use bookmarks that were created with any Emacs version in any other Emacs version. In particular, '''Bookmark+''' lets you use Emacs prior to release 23 with bookmarks created using Emacs 23 (or created using any older version). (See also [[#Compatibility]], below.)
 
 
+
+
+
+
 [:FeatureOverview]
 == Overview of Features ==
 
@@ -35,6 +39,8 @@ This is perhaps the
      activation is not supported for Gnus bookmarks.)
 
 * Bookmarks are relocated better than for vanilla Emacs when the contextual text changes.  By default, when you visit a bookmark that requires relocation, the bookmark is then saved with the new, relocated position information. If you want to turn off this automatic saving, then customize user option '''`bookmark-save-new-location-flag'''' to `nil'.
+
+
 
 
 
@@ -82,6 +88,10 @@ This is buffer `##*Bookmark List*##', aka the bookmark "menu list", which you di
 * You can use `##M-d >##' to open [[Dired]] for just the local file and
 directory bookmarks that are marked (`##>##').
 
+* If you use Emacs on Microsoft Windows, you can open bookmarks
+according to Windows file associations.  (You will also need
+library <tt>[[w32-browser.el]]</tt>.)
+
 * You can edit a bookmark (its name and file name).
 
 * A popup menu is available on '''`mouse-3'''', with actions for the
@@ -107,6 +117,10 @@ The same menu is available on '''`C-mouse-3''''.
 ;;; '''Define Command''': [[image:BookmarkPlusMenuBarMenuDefineCommand]]
 
 * The '''Jump To''' menu is also added to the vanilla '''Bookmarks''' menu, which is typically a submenu of the '''Edit''' menu-bar menu. (It is called '''Jump To Bookmark''' there.)
+
+
+
+
 
 
 
@@ -143,9 +157,12 @@ other bookmarks.
 
 
 
+
+
 === Type-Specific Jump Commands ===
 
 * When you want to jump to a bookmark of a specific type (e.g. Dired), you can use a command that offers only such bookmarks as [[completion]] candidates.
+
 
 
 
@@ -159,6 +176,8 @@ If you use '''[[Icicles]]''', then you can use `S-delete' during
 
 In addition, '''Icicles''' provides enhanced
 bookmark visiting and setting.  In ''Icicle'' mode, several of the '''Bookmark+''' keys are remapped to corresponding '''Icicles''' [[multi-command]]s.
+
+
 
 
 
@@ -224,6 +243,10 @@ switches, inserted subdirectories, or hidden subdirectories for the same Dired d
 
 
 
+
+
+
+
 [:BookmarkTags]
 == Bookmark Tags ==
 
@@ -251,7 +274,7 @@ For example, if you use '''[[Dired+]]''' (library <tt>[[dired+.el]]</tt>), then 
 '''`M-b'''' (`diredp-do-bookmark') in Dired to create a bookmark for each of the
 marked files in the Dired buffer.  Even if you never use those
 bookmarks for navigating to the files, you can use them with tags
-to organize the files.
+to organize the files.  See also [[#WindowsFileAssociations|Open Bookmarks Using Windows File Associations]], below.
 
 To make tags more useful, '''Bookmark+''' provides lots of commands: for
 adding or removing tags, and for marking or unmarking bookmarks
@@ -835,6 +858,39 @@ See also ApplesAndOranges for more about the sorting used in '''Bookmark+'''.
 
 
 
+[:WindowsFileAssociations]
+=== Open Bookmarks Using Windows File Associations ===
+
+If you use Emacs on Microsoft Windows, then you can take advantage
+of Windows file associations to open bookmarks.  To do this, you
+will also need library <tt>[[w32-browser.el]]</tt>.
+
+In the bookmark list, the following keys are bound to commands
+that open bookmarks using the associated Windows `Open'
+applications:
+
+  `M-RET'     - `bookmarkp-bmenu-w32-open'
+  `M-mouse-2' - `bookmarkp-bmenu-w32-open-with-mouse'
+  `V'         - `bookmarkp-bmenu-w32-open-select' (like `v')
+
+If you also use '''[[DiredPlus|Dired+]]''' (library <tt>[[dired+.el]]</tt>), then you can use '''`M-b'''' to
+bookmark all of the marked files in a [[Dired]] buffer, even if you
+normally do not or cannot visit those files in Emacs.  For
+instance, you can bookmark music files or image files, without
+ever opening them as files in Emacs.
+
+Together with the use of bookmark tags, this gives you a handy way
+to organize and access objects of any kind whose files are
+recognized by Windows as being associated with a given
+application.  See [[#BookmarkTags|Bookmark Tags]].
+
+
+
+
+
+
+
+
 [:Compatibility]
 == Bookmark Compatibility with Vanilla Emacs ==
 
@@ -881,7 +937,7 @@ Bottom line: Use '''Bookmark+''' to access bookmarks created using
 
 ----
 CategoryHypermedia CategoryPersistence 
-CategoryProgramming CategoryRegion
+CategoryProgramming CategoryRegion CategoryWThirtyTwo
 CategoryProgrammerUtils SessionManagement
 
 

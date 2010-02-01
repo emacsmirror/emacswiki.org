@@ -481,18 +481,9 @@ This code sets up the arrow keys to control the player:
     (global-set-key (kbd "C-c e <left>") 'emms-previous)
     (global-set-key (kbd "C-c e <right>") 'emms-next)
 
-This is a function to toggle play/pause:
-
-    (defun my-emms-play-pause ()
-      "Play/pause toggle for emms."
-      (interactive)
-      (if emms-player-playing-p
-          (emms-pause)
-        (emms-start)))
-
 If you have "multimedia keys" on your keyboard, you might want to do the following:
 
-    (global-set-key (kbd "<XF86AudioPlay>") 'my-emms-play-pause) ; requires my-emms-play-pause defined above
+    (global-set-key (kbd "<XF86AudioPlay>") 'emms-pause)
     (global-set-key (kbd "<XF86AudioStop>") 'emms-stop)
     (global-set-key (kbd "<XF86AudioPrev>") 'emms-previous)
     (global-set-key (kbd "<XF86AudioNext>") 'emms-next)

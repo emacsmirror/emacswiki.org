@@ -10,6 +10,17 @@ When a question is answered--and sometimes before it is answered, it is moved to
 The [EmacsWiki:action=rc;rcidonly=OpenQuestions;from=1;showedit=1 change log] should usually say where a question was moved to.
 
 
+==Newly Created Files are Invisible on Vista (64)==
+
+[new]
+I have installed emacs 23.1 on a Vista (64) machine. Quite strangely, the files I create with emacs are not visile by the standard Windows programs (cmd, explorer, notepad), though I can access them with emacs and other program (I found out when creating an Xmingrc file in \Program Files (X86)\Xming. Xming reads Xmingrc, while Windows Explorer, dir and notepad do not. However, notepad anot save a file named Xmingrc in the same position. Also I have "show hidden and system files" in my explorer prefs, so that should not be the problem. the nly difference I see between "visible" files and "ghosts":in dired, ghosts are listed as belonging to me; regular files belong to "Administrators". Any idea?
+
+[new:DrewAdams:2010-01-31 20:36 UTC]
+File an Emacs bug: `M-x report-emacs-bug'. Give a clear step-by-step recipe, starting with `##emacs -Q##'. The Emacs developers will determine whether it is an Emacs problem, and if so fix it (hopefully). -- DrewAdams
+
+[new]
+I will do so. Since my post I found that I can "Run as Administrator" as a workaround. It appears that the ACL of newly created files is too strict for most tasks (at least that's my take: if I log in as a different user, I cannot access the files created by emacs as my principal login with *anything*). Now what's weird is that most other programs started as that very same user cannot access the file - so, it is impossible to icacls it. Looks as much a Vista bug as an Emacs bug...
+
 
 
 == PcSelectionMode in a tty console ==

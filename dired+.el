@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Thu Jan 21 10:38:32 2010 (-0800)
+;; Last-Updated: Sun Jan 31 14:06:37 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 2365
+;;     Update #: 2371
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -179,6 +179,10 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/01/31 dadams
+;;     diredp-bookmark:
+;;       Don't use bookmark-set or find-file-noselect - inline the needed bookmark-store code.
+;;       Call bookmark-maybe-load-default-file.  Use rudimentary bookmark-make-record-function.
 ;; 2010/01/21 dadams
 ;;     Renamed:
 ;;       diredp-subst-find-alternate-for-find to diredp-make-find-file-keys-reuse-dirs
@@ -1538,7 +1542,7 @@ Non-nil prefix argument UNMARK-P means unmark instead of mark."
    (and current-prefix-arg ?\040)))
 
 (defun diredp-do-bookmark (prefix &optional arg)
-  "Bookmark marked (or next prefix ARG) files.
+  "Bookmark the marked (or the next prefix ARG) files.
 Each bookmark name is PREFIX followed by the relative file name.
 Interactively, you are prompted for the PREFIX.
 The bookmarked position is the beginning of the file."
@@ -1553,19 +1557,26 @@ The bookmarked position is the beginning of the file."
   (dired-map-over-marks-check #'(lambda () (diredp-bookmark prefix)) arg 'bookmark
                               (diredp-fewer-than-2-files-p arg)))
 
-(defun diredp-bookmark (prefix)
-  "Bookmark the current file.
-Each bookmark name is PREFIX followed by the relative file name.
+(defun diredp-bookmark (prefix)         ; Bound to `M-b'
+  "Bookmark the file or directory named on the current line.
+The bookmark name is PREFIX followed by the relative file name.
 Return nil for success, file name of unsuccessful operation otherwise."
+  (bookmark-maybe-load-default-file)
   (let ((file  (dired-get-file-for-visit))
         failure)
     (condition-case err
-        (with-current-buffer (find-file-noselect file) (bookmark-set (concat prefix file)))
+        (let ((bookmark-make-record-function
+               (lambda ()
+                 `((filename . ,file)
+                   (position . 0)
+                   (front-context-string)
+                   (rear-context-string)))))                   
+          (bookmark-store (concat prefix file) (cdr (bookmark-make-record)) nil))
       (error (setq failure  err)))
     (if (not failure)
-	nil
-      (dired-log "Failed to create bookmark for %s:\n%s\n" file failure)
-      (dired-make-relative file))))
+	nil                             ; Return nil for success.
+      (dired-log "Failed to create bookmark for `%s':\n%s\n" file failure)
+      (dired-make-relative file))))     ; Return file name for failure.
 
 
 ;;; REPLACE ORIGINAL in `dired.el'.

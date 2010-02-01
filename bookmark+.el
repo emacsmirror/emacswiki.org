@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Jan 30 13:06:49 2010 (-0800)
+;; Last-Updated: Sun Jan 31 16:29:33 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 9338
+;;     Update #: 9545
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -57,6 +57,7 @@
 ;;      (@> "Only Visible Bookmarks Are Affected")
 ;;      (@> "Omitting Bookmarks from Display")
 ;;      (@> "Sorting Bookmarks")
+;;      (@> "Open Bookmarks Using Windows File Associations")
 ;;    (@> "Bookmark Compatibility with Vanilla Emacs (`bookmark.el')")
 ;;    (@> "New Bookmark Structure")
 ;;  (@> "Change log")
@@ -167,7 +168,9 @@
 ;;    `bookmarkp-bmenu-unmark-bookmarks-tagged-none',
 ;;    `bookmarkp-bmenu-unmark-bookmarks-tagged-not-all',
 ;;    `bookmarkp-bmenu-unmark-bookmarks-tagged-some',
-;;    `bookmarkp-bmenu-unomit-marked',
+;;    `bookmarkp-bmenu-unomit-marked', `bookmarkp-bmenu-w32-open',
+;;    `bookmarkp-bmenu-w32-open-select',
+;;    `bookmarkp-bmenu-w32-open-with-mouse',
 ;;    `bookmarkp-define-tags-sort-command',
 ;;    `bookmarkp-describe-bookmark',
 ;;    `bookmarkp-describe-bookmark-internals',
@@ -317,6 +320,7 @@
 ;;    `bookmarkp-position-post-context-region',
 ;;    `bookmarkp-position-pre-context',
 ;;    `bookmarkp-position-pre-context-region', `bookmarkp-read-tags',
+;;    `bookmarkp-read-tag-completing',
 ;;    `bookmarkp-read-tags-completing', `bookmarkp-record-visit',
 ;;    `bookmarkp-regexp-filtered-bookmark-name-alist-only',
 ;;    `bookmarkp-regexp-filtered-file-name-alist-only',
@@ -360,6 +364,7 @@
 ;;    `bookmarkp-latest-bookmark-alist',
 ;;    `bookmarkp-non-file-filename', `bookmarkp-reverse-multi-sort-p',
 ;;    `bookmarkp-reverse-sort-p', `bookmarkp-tag-history',
+;;    `bookmarkp-tags-list', `bookmarkp-use-w32-browser-p',
 ;;    `bookmarkp-version-number'.
 ;;
 ;;
@@ -483,6 +488,10 @@
 ;;
 ;;     - You can use `M-d >' to open Dired for just the local file and
 ;;       directory bookmarks that are marked (`>').
+;;
+;;     - If you use Emacs on Microsoft Windows, you can open bookmarks
+;;       according to Windows file associations.  (You will also need
+;;       library `w32-browser.el'.)
 ;;
 ;;     - You can edit a bookmark (its name and file name).
 ;;
@@ -630,7 +639,8 @@
 ;;  `M-b' (`diredp-do-bookmark') in Dired to create a bookmark for
 ;;  each of the marked files in the Dired buffer.  Even if you never
 ;;  use those bookmarks for navigating to the files, you can use them
-;;  with tags to organize the files.
+;;  with tags to organize the files.  See also
+;;  (@> "Open Bookmarks Using Windows File Associations").
 ;;
 ;;  To make tags more useful, Bookmark+ provides lots of commands:
 ;;  commands for adding or removing tags, and for marking or unmarking
@@ -1167,6 +1177,33 @@
 ;;  `tag2', which represents the set of tags `beta', `delta'.
 ;;
 ;;
+;;(@* "Open Bookmarks Using Windows File Associations")
+;;  *** Open Bookmarks Using Windows File Associations ***
+;;
+;;  If you use Emacs on Microsoft Windows, then you can take advantage
+;;  of Windows file associations to open bookmarks.  To do this, you
+;;  will also need library `w32-browser.el'.
+;;
+;;  In the bookmark list, the following keys are bound to commands
+;;  that open bookmarks using the associated Windows `Open'
+;;  applications:
+;;
+;;    `M-RET'     - `bookmarkp-bmenu-w32-open'
+;;    `M-mouse-2' - `bookmarkp-bmenu-w32-open-with-mouse'
+;;    `V'         - `bookmarkp-bmenu-w32-open-select' (like `v')
+;;
+;;  If you also use library `dired+.el', then you can use `M-b' to
+;;  bookmark all of the marked files in a Dired buffer, even if you
+;;  normally do not or cannot visit those files in Emacs.  For
+;;  instance, you can bookmark music files or image files, without
+;;  ever opening them as files in Emacs.
+;;
+;;  Together with the use of bookmark tags, this gives you a handy way
+;;  to organize and access objects of any kind whose files are
+;;  recognized by Windows as being associated with a given
+;;  application.  See (@> "Bookmark Tags").
+;;
+;;
 ;;(@* "Bookmark Compatibility with Vanilla Emacs (`bookmark.el')")
 ;;  ** Bookmark Compatibility with Vanilla Emacs (`bookmark.el') **
 ;;
@@ -1223,6 +1260,20 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2010/01/31 dadams
+;;     Added: bookmarkp-tags-list, bookmarkp-read-tag-completing, bookmarkp-use-w32-browser-p,
+;;            bookmarkp-bmenu-w32-open(-select|-with-mouse).  Bind *-w32* to M-RET, V, M-mouse-2.
+;;     *-default-handler: Call w32-browser if bookmarkp-use-w32-browser-p.
+;;     *-bmenu-unomit-marked: Don't try to return to original position (duh).
+;;     *-bmenu-goto-bookmark-named: Use eobp as loop condition.  Call bookmark-bmenu-ensure-position.
+;;     *-read-tags-completing:
+;;       Added arg UPDATE-TAGS-LIST-P.  Call bookmark-maybe-load-default-file.
+;;       Use bookmarkp-tags-list if CANDIDATE-TAGS is nil.  Update that var if UPDATE-TAGS-LIST-P.
+;;     *-(add|remove)-tags: Added arg NO-CACHE-UPDATE-P.  If nil, call bookmarkp-tags-list.
+;;     *-remove-tags-from-all, *-rename-tag, *-bmenu-(add|remove)-tags-(to|from)-marked:
+;;       Call bookmarkp-tags-list.
+;;     *-remove-tags-from-all: Pass nil as tags arg to bookmarkp-read-tags-completing.
+;;     *-rename-tag: Use bookmarkp-read-tag-completing, not read-string.
 ;; 2010/01/29 dadams
 ;;     bookmarkp-describe-bookmark: Handle desktop bookmarks specifically.
 ;;     Added: bookmarkp-menu-popup-max-length.
@@ -2468,6 +2519,11 @@ This changes the order of the sorting groups, but it does not in
 general reverse that order.  The order within each group is unchanged
 \(not reversed).")
 
+(defvar bookmarkp-use-w32-browser-p nil
+  "Non-nil means use `w32-browser' in the default bookmark handler.
+That is, use the default Windows application for the bookmarked file.
+This has no effect if `w32-browser' is not defined.")
+
 (defvar bookmarkp-latest-bookmark-alist ()
   "Copy of `bookmark-alist' as last filtered.")
 
@@ -2508,6 +2564,11 @@ This includes possibly omitted bookmarks, that is, bookmarks listed in
 
 (defvar bookmarkp-tag-history ()
   "History of tags read from the user.")
+
+(defvar bookmarkp-tags-list ()         
+  "List of all tags, from all bookmarks.
+This is set by function `bookmarkp-tags-list'.
+Use that function to update the value.")
 
 
 ;; REPLACES ORIGINAL DOC STRING in `bookmark.el'.
@@ -3117,13 +3178,19 @@ BOOKMARK can be a bookmark record used internally by some Emacs-Lisp
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; Support regions and buffer names.
+;; 1. Support regions and buffer names.
+;; 2. Handles w32 `Open' command if `bookmarkp-use-w32-browser-p' and if `w32-browser' is defined.
 ;;
 (defun bookmark-default-handler (bookmark)
   "Default handler to jump to the location of BOOKMARK.
 BOOKMARK is a bookmark name or a bookmark record.
 If BOOKMARK records a nonempty region, and `bookmarkp-use-region-flag'
  is non-nil, then activate the region.
+
+Non-nil `bookmarkp-use-w32-browser-p' means just call `w32-browser'
+ (if defined).  That is, use the default MS Windows application for
+ the bookmarked file.
+
 Return nil or signal `file-error'."
   (let* ((bmk            (bookmark-get-bookmark bookmark))
          (file           (bookmark-get-filename bmk))
@@ -3133,28 +3200,30 @@ Return nil or signal `file-error'."
          (end-pos        (bookmarkp-get-end-position bmk))
          (old-info-node  (and (not (bookmark-get-handler bookmark))
                               (bookmark-prop-get bmk 'info-node))))
-    (if old-info-node                   ; Emacs 20-21 Info bookmarks - no handler entry.
-        (progn (require 'info) (Info-find-node file old-info-node) (goto-char pos))
-      (if (not (and bookmarkp-use-region-flag end-pos (/= pos end-pos)))
-          ;; Single-position bookmark (no region).  Go to it.
-          (bookmarkp-goto-position file buf bufname pos
-                                   (bookmark-get-front-context-string bmk)
-                                   (bookmark-get-rear-context-string bmk))
-        ;; Bookmark with a region.  Go to it and activate the region.
-        (if (and file (file-readable-p file) (not (buffer-live-p buf)))
-            (with-current-buffer (find-file-noselect file) (setq buf  (buffer-name)))
-          ;; No file found.  If no buffer either, then signal that file doesn't exist.
-          (unless (or (and buf (get-buffer buf))
-                      (and bufname (get-buffer bufname) (not (string= buf bufname))))
-            (signal 'file-error `("Jumping to bookmark" "No such file or directory"
-                                  (bookmark-get-filename bmk)))))
-        (set-buffer (or buf bufname))
-        (save-current-buffer (funcall bookmarkp-jump-display-function (current-buffer)))
-        (raise-frame)
-        (goto-char (min pos (point-max)))
-        (when (> pos (point-max)) (error "Bookmark position is beyond buffer end"))
-        ;; Activate region.  Relocate it if it moved.  Save relocated bookmark if confirm.
-        (funcall bookmarkp-handle-region-function bmk)))))
+    (if (and bookmarkp-use-w32-browser-p (fboundp 'w32-browser) file)
+        (w32-browser file)
+      (if old-info-node                 ; Emacs 20-21 Info bookmarks - no handler entry.
+          (progn (require 'info) (Info-find-node file old-info-node) (goto-char pos))
+        (if (not (and bookmarkp-use-region-flag end-pos (/= pos end-pos)))
+            ;; Single-position bookmark (no region).  Go to it.
+            (bookmarkp-goto-position file buf bufname pos
+                                     (bookmark-get-front-context-string bmk)
+                                     (bookmark-get-rear-context-string bmk))
+          ;; Bookmark with a region.  Go to it and activate the region.
+          (if (and file (file-readable-p file) (not (buffer-live-p buf)))
+              (with-current-buffer (find-file-noselect file) (setq buf  (buffer-name)))
+            ;; No file found.  If no buffer either, then signal that file doesn't exist.
+            (unless (or (and buf (get-buffer buf))
+                        (and bufname (get-buffer bufname) (not (string= buf bufname))))
+              (signal 'file-error `("Jumping to bookmark" "No such file or directory"
+                                    (bookmark-get-filename bmk)))))
+          (set-buffer (or buf bufname))
+          (save-current-buffer (funcall bookmarkp-jump-display-function (current-buffer)))
+          (raise-frame)
+          (goto-char (min pos (point-max)))
+          (when (> pos (point-max)) (error "Bookmark position is beyond buffer end"))
+          ;; Activate region.  Relocate it if it moved.  Save relocated bookmark if confirm.
+          (funcall bookmarkp-handle-region-function bmk))))))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -3842,7 +3911,7 @@ Tip: You can use this before quitting Emacs, to not save the state."
   "Create a bookmark that will invoke FUNCTION when \"jumped\" to.
 You are prompted for the bookmark name and the name of the function.
 Returns the new bookmark (internal record)."
-  (interactive (list (read-string "Name: ") (completing-read "Function: " obarray 'functionp)))
+  (interactive (list (read-string "Bookmark: ") (completing-read "Function: " obarray 'functionp)))
   (bookmark-store bookmark-name `((filename . ,bookmarkp-non-file-filename)
                                   (position . 0)
                                   (function . ,(read function))
@@ -4317,7 +4386,7 @@ This affects only the `>' mark, not the `D' flag."
         (message "Marked: %d, unmarked: %d" marked-count unmarked-count)))))
 
 ;;;###autoload
-(defun bookmarkp-bmenu-dired-marked-local (dirbufname)
+(defun bookmarkp-bmenu-dired-marked-local (dirbufname) ; `M-d >' in bookmark list
   "Dired in another window for the marked local files and directories.
 Absolute file names are used for the entries in the Dired buffer.
 The only entries are for the marked files and directories.  These can
@@ -4418,9 +4487,9 @@ Returns the bookmark (internal record) created or updated."
 (defun bookmarkp-bmenu-omit-marked () ; `O >' in bookmark list
   "Omit all marked bookmarks.
 They will henceforth be invisible to the bookmark list.
-You can, however, use `bookmarkp-bmenu-show-only-omitted' to see them.
-You can then mark some of them and use `bookmarkp-bmenu-unomit-marked'
- to make those marked available again for the bookmark list."
+You can, however, use \\<bookmark-bmenu-mode-map>`\\[bookmarkp-bmenu-show-only-omitted]' to see them.
+You can then mark some of them and use `\\[bookmarkp-bmenu-omit/unomit-marked]' to make those marked
+ available again for the bookmark list."
   (interactive)
   (bookmarkp-barf-if-not-in-menu-list)
   (let ((o-str    (and (not (looking-at "^>")) (bookmark-bmenu-bookmark)))
@@ -4446,16 +4515,14 @@ You can then mark some of them and use `bookmarkp-bmenu-unomit-marked'
 (defun bookmarkp-bmenu-unomit-marked () ; `O >' in bookmark list when showing omitted bookmarks
   "Remove all marked bookmarks from the list of omitted bookmarks.
 They will henceforth be available for display in the bookmark list.
-\(In order to see and then mark omitted bookmarks you must use command
-`bookmarkp-bmenu-show-only-omitted'.)"
+\(In order to see and then mark omitted bookmarks you must use \\<bookmark-bmenu-mode-map>\
+`\\[bookmarkp-bmenu-show-only-omitted]'.)"
   (interactive)
   (bookmarkp-barf-if-not-in-menu-list)
   (unless bookmarkp-bmenu-omitted-list (error "No omitted bookmarks to UN-omit"))
   (unless (eq bookmarkp-bmenu-filter-function  'bookmarkp-omitted-alist-only)
     (error "You must use command `bookmarkp-bmenu-show-only-omitted' first"))
-  (let ((o-str    (and (not (looking-at "^>")) (bookmark-bmenu-bookmark)))
-        (o-point  (point))
-        (count    0))
+  (let ((count    0))
     (message "UN-omitting marked bookmarks...")
     (goto-char (point-min)) (forward-line bookmarkp-bmenu-header-lines)
     (while (re-search-forward "^>" (point-max) t)
@@ -4469,11 +4536,7 @@ They will henceforth be available for display in the bookmark list.
             bookmarkp-bmenu-title            "% All Bookmarks"
             bookmarkp-latest-bookmark-alist  bookmark-alist)
       (bookmark-bmenu-surreptitiously-rebuild-list)
-      (message "UN-omitted %d bookmarks" count))
-    (if o-str
-        (bookmarkp-bmenu-goto-bookmark-named o-str)
-      (goto-char o-point)
-      (beginning-of-line)))
+      (message "UN-omitted %d bookmarks" count)))
   (when (fboundp 'fit-frame-if-one-window) (fit-frame-if-one-window)))
 
 ;;;###autoload
@@ -4646,7 +4709,7 @@ BOOKMARK is a bookmark name or a bookmark record."
 BOOKMARK is a bookmark name or a bookmark record."
   (member tag (bookmarkp-get-tags bookmark)))
 
-;; Not used currently - we use `bookmarkp-read-tags-completing' instead.
+;; NOT USED currently - we use `bookmarkp-read-tags-completing' instead.
 (defun bookmarkp-read-tags ()
   "Read tags one by one, and return them as a list."
   (let ((tag    (read-string "Tag (RET for each, empty input to finish): "))
@@ -4656,11 +4719,35 @@ BOOKMARK is a bookmark name or a bookmark record."
       (setq tag  (read-string "Tag: ")))
     btags))
 
-(defun bookmarkp-read-tags-completing (&optional candidate-tags require-match)
+(defun bookmarkp-read-tag-completing (&optional prompt candidate-tags require-match
+                                      update-tags-list-p)
+  "Read a tag with completion, and return it.
+PROMPT is the prompt string.  If nil, then use \"Tag: \".
+CANDIDATE-TAGS is a list of tags (strings) used for completion.
+ If nil, then all tags from all bookmarks are used for completion.
+ The set of all tags is taken from variable `bookmarkp-tags-list'.
+REQUIRE-MATCH is passed to `completing-read'.
+Non-nil UPDATE-TAGS-LIST-P means update var `bookmarkp-tags-list'."
+  (bookmark-maybe-load-default-file)
+  (let ((cand-tags  (copy-sequence
+                     (or candidate-tags
+                         (or (and (not update-tags-list-p) bookmarkp-tags-list) ; Use cached list.
+                             (bookmarkp-tags-list)))))) ; Update the cache.
+    (completing-read (or prompt "Tag: ") (mapcar #'list cand-tags) nil require-match nil
+                     'bookmarkp-tag-history)))
+
+(defun bookmarkp-read-tags-completing (&optional candidate-tags require-match update-tags-list-p)
   "Read tags one by one with completion, and return them as a list.
-CANDIDATE-TAGS is a list of strings, possible completions.
-REQUIRE-MATCH is passed to `completing-read'."
-  (let* ((cand-tags  (copy-sequence candidate-tags))
+CANDIDATE-TAGS is a list of tags (strings) used for completion.
+ If nil, then all tags from all bookmarks are used for completion.
+ The set of all tags is taken from variable `bookmarkp-tags-list'.
+REQUIRE-MATCH is passed to `completing-read'.
+Non-nil UPDATE-TAGS-LIST-P means update var `bookmarkp-tags-list'."
+  (bookmark-maybe-load-default-file)
+  (let* ((cand-tags  (copy-sequence
+                      (or candidate-tags
+                          (or (and (not update-tags-list-p) bookmarkp-tags-list) ; Use cached list.
+                              (bookmarkp-tags-list))))) ; Update the cache.
          (tag        (completing-read "Tag (RET for each, empty input to finish): "
                                       (mapcar #'list cand-tags) nil require-match nil
                                       'bookmarkp-tag-history))
@@ -4672,6 +4759,17 @@ REQUIRE-MATCH is passed to `completing-read'."
                                         require-match nil 'bookmarkp-tag-history)
             cand-tags  (delete tag cand-tags)))
     (nreverse btags)))
+
+(defun bookmarkp-tags-list ()
+  "Current list of all tags, from all bookmarks.
+Sets variable `bookmarkp-tags-list', as a cache."
+  (bookmark-maybe-load-default-file)
+  (let ((tags  ())
+        bmk-tags)
+    (dolist (bmk  bookmark-alist)
+      (setq bmk-tags  (bookmarkp-get-tags bmk))
+      (dolist (tag  bmk-tags) (add-to-list 'tags tag)))
+    (setq bookmarkp-tags-list  tags)))
 
 ;;;###autoload
 (defun bookmarkp-remove-all-tags (bookmark &optional msgp) ; `T 0' in bookmark list
@@ -4685,10 +4783,16 @@ Non-nil optional arg MSGP means display a message about the removal."
     (when (and msgp nb-removed) (message "%d tags removed" nb-removed))))
 
 ;;;###autoload
-(defun bookmarkp-add-tags (bookmark tags &optional msgp) ; `T +' in bookmark list
+(defun bookmarkp-add-tags (bookmark tags &optional msgp no-cache-update-p) ; `T +' in bookmark list
   "Add TAGS to BOOKMARK.
+Hit `RET' to enter each tag, then hit `RET' again after the last tag.
+You can use completion to enter the bookmark name and each tag.
+Completion for the bookmark name is strict.
+Completion for tags is lax: you are not limited to existing tags.
+
 TAGS is a list of tags (strings) or a single tag.
-Non-nil optional arg MSGP means display a message about the addition.
+Non-nil MSGP means display a message about the addition.
+Non-nil NO-CACHE-UPDATE-P means do not update `bookmarkp-tags-list'.
 Return the number of tags added."
   (interactive (list (bookmark-completing-read "Bookmark" (bookmarkp-default-bookmark-name))
                      (bookmarkp-read-tags-completing)
@@ -4698,21 +4802,25 @@ Return the number of tags added."
          (olen     (length newtags)))
     (dolist (tag  tags) (pushnew tag newtags :test #'equal))
     (bookmark-prop-set bookmark 'tags newtags)
+    (unless no-cache-update-p (bookmarkp-tags-list)) ; Update the tags cache.
     (bookmarkp-maybe-save-bookmarks)
     (let ((nb-added  (- (length newtags) olen)))
-      (when msgp
-        (message "%d tags added. Now: %S" nb-added
-                 (let ((tt  (copy-sequence newtags))) (setq tt (sort tt #'string<)))))
+      (when msgp (message "%d tags added. Now: %S" nb-added (let ((tt  (copy-sequence newtags)))
+                                                              (setq tt (sort tt #'string<)))))
       nb-added)))
 
 ;;;###autoload
-(defun bookmarkp-remove-tags (bookmark tags &optional msgp) ; `T -' in bookmark list
+(defun bookmarkp-remove-tags (bookmark tags &optional msgp no-cache-update-p) ; `T -' in bookmark list
   "Remove TAGS from BOOKMARK.
+Hit `RET' to enter each tag, then hit `RET' again after the last tag.
+You can use completion to enter the bookmark name and each tag.
+
 TAGS is a list of tags (strings) or a single tag.
-Non-nil optional arg MSGP means display a message about the removal."
+Non-nil MSGP means display a message about the removal.
+Non-nil NO-CACHE-UPDATE-P means do not update `bookmarkp-tags-list'."
   (interactive
    (let ((bmk  (bookmark-completing-read "Bookmark" (bookmarkp-default-bookmark-name))))
-     (list bmk (bookmarkp-read-tags-completing (bookmarkp-get-tags bmk) t) 'msg)))
+     (list bmk  (bookmarkp-read-tags-completing (bookmarkp-get-tags bmk) t)  'msg)))
   (when (and tags (atom tags)) (setq tags  (list tags)))
   (let* ((newtags  (bookmarkp-get-tags bookmark))
          (olen     (length newtags)))
@@ -4721,29 +4829,29 @@ Non-nil optional arg MSGP means display a message about the removal."
       (setq newtags  (bookmarkp-remove-if #'(lambda (tt) (member tt tags))
                                           (bookmarkp-get-tags bookmark)))
       (bookmark-prop-set bookmark 'tags newtags)
+      (unless no-cache-update-p (bookmarkp-tags-list)) ; Update the tags cache.
       (bookmarkp-maybe-save-bookmarks)
       (let ((nb-removed  (- olen (length newtags))))
-        (when msgp
-          (message "%d tags removed. Now: %S" nb-removed
-                   (let ((tt  (copy-sequence newtags))) (setq tt (sort tt #'string<)))))
+        (when msgp (message "%d tags removed. Now: %S" nb-removed
+                            (let ((tt  (copy-sequence newtags))) (setq tt (sort tt #'string<)))))
         nb-removed))))
 
 ;;;###autoload
 (defun bookmarkp-remove-tags-from-all (tags &optional msgp) ; `T d'
-  "Remove TAGS from all bookmarks, even those not showing in `*Bookmark List*'.
-This in effect deletes the tags entirely.
+  "Remove TAGS from all bookmarks.
+Hit `RET' to enter each tag, then hit `RET' again after the last tag.
+You can use completion to enter each tag.
+This affects all bookmarks, even those not showing in bookmark list.
+
 TAGS is a list of tags (strings) or a single tag.
 Non-nil optional arg MSGP means display a message about the deletion."
   (interactive
    (if (not (y-or-n-p
              "Delete the tags you specify from ALL bookmarks, even those not shown? "))
        (error "Deletion cancelled")
-     (let ((cand-tags  ()))
-       (dolist (bmk  bookmark-alist)
-         (setq cand-tags  (bookmarkp-set-union cand-tags (bookmarkp-get-tags bmk))))
-       (list (bookmarkp-read-tags-completing cand-tags t) 'msg))))
-  (dolist (bmk  (mapcar #'car bookmark-alist))
-    (bookmarkp-remove-tags bmk tags))
+     (list (bookmarkp-read-tags-completing nil t)  'MSG)))
+  (dolist (bmk  (mapcar #'car bookmark-alist))  (bookmarkp-remove-tags bmk tags nil 'NO-CACHE-UPDATE))
+  (bookmarkp-tags-list)                 ; Update the tags cache (only once, at end).
   (when msgp (message "Tags removed from all bookmarks: %S" tags)))
 
 ;;;###autoload
@@ -4751,7 +4859,9 @@ Non-nil optional arg MSGP means display a message about the deletion."
   "Rename TAG to NEWNAME in all bookmarks, even those not showing.
 Non-nil optional arg MSGP means display a message about the deletion."
   (interactive
-   (list (read-string "Tag (old name): ") (read-string "New name: ") 'msg))
+   (list (bookmarkp-read-tag-completing "Tag (old name): ")
+         (bookmarkp-read-tag-completing "New name: ")
+         'MSG))
   (dolist (bmk  (mapcar #'car bookmark-alist))
     (let* ((bmktags  (copy-sequence (bookmarkp-get-tags bmk)))
            (newtags  bmktags))
@@ -4763,27 +4873,37 @@ Non-nil optional arg MSGP means display a message about the deletion."
               (throw 'bookmarkp-rename-tag nil)) ; Assume only one tag with the same name.
             (setq bmktags  (cdr bmktags))))
         (bookmark-prop-set bmk 'tags newtags))))
+  (bookmarkp-tags-list)                 ; Update the tags cache.
   (when msgp (message "Renamed")))
 
 ;;;###autoload
 (defun bookmarkp-bmenu-add-tags-to-marked (tags &optional msgp) ; `T > +' in bookmark list
-  "Add TAGS to each of the marked bookmarks."
+  "Add TAGS to each of the marked bookmarks.
+Hit `RET' to enter each tag, then hit `RET' again after the last tag.
+You can use completion to enter each tag, but you are not limited to
+choosing existing tags."
   (interactive (list (bookmarkp-read-tags-completing) 'msg))
   (bookmarkp-barf-if-not-in-menu-list)
   (when msgp (message "Adding tags..."))
-  (dolist (bmk  (mapcar #'car (bookmarkp-marked-bookmarks-only))) (bookmarkp-add-tags bmk tags))
+  (dolist (bmk  (mapcar #'car (bookmarkp-marked-bookmarks-only)))
+    (bookmarkp-add-tags bmk tags nil 'NO-CACHE-UPDATE))
+  (bookmarkp-tags-list)                 ; Update the tags cache (only once, at end).
   (when msgp (message "Tags added: %S" tags)))
 
 ;;;###autoload
 (defun bookmarkp-bmenu-remove-tags-from-marked (tags &optional msgp) ; `T > -' in bookmark list
-  "Remove TAGS from each of the marked bookmarks."
+  "Remove TAGS from each of the marked bookmarks.
+Hit `RET' to enter each tag, then hit `RET' again after the last tag.
+You can use completion to enter each tag."
   (interactive (let ((cand-tags  ()))
                  (dolist (bmk  (bookmarkp-marked-bookmarks-only))
                    (setq cand-tags  (bookmarkp-set-union cand-tags (bookmarkp-get-tags bmk))))
                  (list (bookmarkp-read-tags-completing cand-tags t) 'msg)))
   (bookmarkp-barf-if-not-in-menu-list)
   (when msgp (message "Removing tags..."))
-  (dolist (bmk  (mapcar #'car (bookmarkp-marked-bookmarks-only))) (bookmarkp-remove-tags bmk tags))
+  (dolist (bmk  (mapcar #'car (bookmarkp-marked-bookmarks-only)))
+    (bookmarkp-remove-tags bmk tags nil 'NO-CACHE-UPDATE))
+  (bookmarkp-tags-list)                 ; Update the tags cache (only once, at end).
   (when msgp (message "Tags removed: %S" tags)))
 
 ;;;###autoload
@@ -4810,13 +4930,13 @@ With a prefix arg, mark all that are tagged but with no tags that match."
                                                   &optional nonep msgp)
   "Mark all visible bookmarks that are tagged with *each* tag in TAGS.
 As a special case, if TAGS is empty, then mark the bookmarks that have
-any tags at all.
+any tags at all (i.e., at least one tag).
 
 With a prefix arg, mark all that are *not* tagged with *any* TAGS."
   (interactive (let ((cand-tags  ()))
                  (dolist (bmk  bookmark-alist)
                    (setq cand-tags  (bookmarkp-set-union cand-tags (bookmarkp-get-tags bmk))))
-                 (list (bookmarkp-read-tags-completing cand-tags) current-prefix-arg 'msg)))
+                 (list (bookmarkp-read-tags-completing cand-tags)  current-prefix-arg 'msg)))
   (bookmarkp-barf-if-not-in-menu-list)
   (bookmarkp-bmenu-mark/unmark-bookmarks-tagged-all/none tags nonep nil msgp))
 
@@ -4842,7 +4962,10 @@ With a prefix arg, mark all that are tagged with *each* tag in TAGS."
 As a special case, if TAGS is empty, then mark the bookmarks that have
 any tags at all.
 
-With a prefix arg, mark all that are *not* tagged with *all* TAGS."
+With a prefix arg, mark all that are *not* tagged with *all* TAGS.
+
+Hit `RET' to enter each tag, then hit `RET' again after the last tag.
+You can use completion to enter each tag."
   (interactive (let ((cand-tags  ()))
                  (dolist (bmk  bookmark-alist)
                    (setq cand-tags  (bookmarkp-set-union cand-tags (bookmarkp-get-tags bmk))))
@@ -4951,10 +5074,9 @@ those that have no tags at all."
               (forward-line 1)
             (if unmarkp (bookmark-bmenu-unmark) (bookmark-bmenu-mark))
             (setq count  (1+ count))))
-        (when msgp
-          (if (= 1 count)
-              (message "1 bookmark matched")
-            (message "%d bookmarks matched" count)))))))
+        (when msgp (if (= 1 count)
+                       (message "1 bookmark matched")
+                     (message "%d bookmarks matched" count)))))))
 
 (defun bookmarkp-bmenu-mark/unmark-bookmarks-tagged-some/not-all (tags &optional notallp
                                                                   unmarkp msgp)
@@ -4985,14 +5107,38 @@ unmark those that have no tags at all."
               (forward-line 1)
             (if unmarkp (bookmark-bmenu-unmark) (bookmark-bmenu-mark))
             (setq count  (1+ count))))
-        (when msgp
-          (if (= 1 count)
-              (message "1 bookmark matched")
-            (message "%d bookmarks matched" count)))))))
+        (when msgp (if (= 1 count)
+                       (message "1 bookmark matched")
+                     (message "%d bookmarks matched" count)))))))
 
 
 ;;(@* "General Menu-List (`-*bmenu-*') Commands and Functions")
 ;;  *** General Menu-List (`-*bmenu-*') Commands and Functions ***
+
+;;;###autoload
+(defun bookmarkp-bmenu-w32-open ()      ; `M-RET' in bookmark list.
+  "Use `w32-browser' to open this bookmark."
+  (interactive)
+  (let ((bookmarkp-use-w32-browser-p  t))
+    (bookmark-bmenu-this-window)))
+
+;;;###autoload
+(defun bookmarkp-bmenu-w32-open-with-mouse (event) ; `M-mouse-2' in bookmark list.
+  "Use `w32-browser' to open the bookmark clicked."
+  (interactive "e")
+  (save-excursion
+    (set-buffer (window-buffer (posn-window (event-end event))))
+    (save-excursion
+      (goto-char (posn-point (event-end event)))
+      (let ((bookmarkp-use-w32-browser-p  t))
+        (bookmark-bmenu-other-window)))))
+
+;;;###autoload
+(defun bookmarkp-bmenu-w32-open-select () ; `V' in bookmark-list.
+  "Use `w32-browser' to open this bookmark and all marked bookmarks."
+  (interactive)
+  (let ((bookmarkp-use-w32-browser-p  t))
+    (bookmark-bmenu-select)))
 
 ;;;###autoload
 (defun bookmarkp-bmenu-mode-status-help () ; `C-h m' and `?' in bookmark list
@@ -5149,8 +5295,10 @@ only the omit list and the sort & filter information."
 ;;;###autoload
 (defun bookmarkp-define-tags-sort-command (tags &optional msgp) ; 
   "Define a command to sort bookmarks in the bookmark list by tags.
-You are prompted for the TAGS to sort by.  The new command sorts first
-by the first tag in TAGS, then by the second, and so on.
+Hit `RET' to enter each tag, then hit `RET' again after the last tag.
+
+The new command sorts first by the first tag in TAGS, then by the
+second, and so on.
 
 Besides sorting for these specific tags, any bookmark that has a tag
 sorts before one that has no tags.  Otherwise, sorting is by bookmark
@@ -5341,7 +5489,8 @@ the internal lists that record menu-list markings."
 (defun bookmarkp-bmenu-goto-bookmark-named (name)
   "Go to the first bookmark whose name matches NAME."
   (goto-char (point-min)) (forward-line bookmarkp-bmenu-header-lines)
-  (while (not (equal name (bookmark-bmenu-bookmark)))  (forward-line 1)))
+  (while (and (not (eobp)) (not (equal name (bookmark-bmenu-bookmark))))  (forward-line 1))
+  (bookmark-bmenu-ensure-position))     ; Just in case we fall off the end.
 
 (defun bookmarkp-barf-if-not-in-menu-list ()
   "Raise an error if current buffer is not `*Bookmark List*'."
@@ -7424,8 +7573,8 @@ Then you are prompted for the BOOKMARK (with completion)."
 ;;;###autoload
 (defun bookmarkp-some-tags-jump (tags bookmark) ; `C-x j t +'
   "Jump to a BOOKMARK that has at least one of the TAGS.
-You are prompted for the TAGS and (with completion) the BOOKMARK.
-Hit `RET' after each tag you enter, then `RET' again to end entry."
+Hit `RET' to enter each tag, then hit `RET' again after the last tag.
+You can use completion to enter the bookmark name and each tag."
   (interactive
    (let* ((tags   (bookmarkp-read-tags-completing))
           (alist  (bookmarkp-remove-if-not
@@ -7441,8 +7590,8 @@ Hit `RET' after each tag you enter, then `RET' again to end entry."
 ;;;###autoload
 (defun bookmarkp-some-tags-jump-other-window (tags bookmark) ; `C-x 4 j t +'
   "Jump to a BOOKMARK that has at least one of the TAGS, in another window.
-You are prompted for the TAGS and (with completion) the BOOKMARK.
-Hit `RET' after each tag you enter, then `RET' again to end entry."
+Hit `RET' to enter each tag, then hit `RET' again after the last tag.
+You can use completion to enter the bookmark name and each tag."
   (interactive
    (let* ((tags   (bookmarkp-read-tags-completing))
           (alist  (bookmarkp-remove-if-not
@@ -7458,8 +7607,8 @@ Hit `RET' after each tag you enter, then `RET' again to end entry."
 ;;;###autoload
 (defun bookmarkp-all-tags-jump (tags bookmark) ; `C-x j t *'
   "Jump to a BOOKMARK that has all of the TAGS.
-You are prompted for the TAGS and (with completion) the BOOKMARK.
-Hit `RET' after each tag you enter, then `RET' again to end entry.
+Hit `RET' to enter each tag, then hit `RET' again after the last tag.
+You can use completion to enter the bookmark name and each tag.
 If you specify no tags, then every bookmark that has some tags is a
 candidate."
   (interactive
@@ -7480,8 +7629,8 @@ candidate."
 ;;;###autoload
 (defun bookmarkp-all-tags-jump-other-window (tags bookmark) ; `C-x 4 j t +'
   "Jump to a BOOKMARK that has all of the TAGS, in another window.
-You are prompted for the TAGS and (with completion) the BOOKMARK.
-Hit `RET' after each tag you enter, then `RET' again to end entry.
+Hit `RET' to enter each tag, then hit `RET' again after the last tag.
+You can use completion to enter the bookmark name and each tag.
 If you specify no tags, then every bookmark that has some tags is a
 candidate."
   (interactive
@@ -7592,6 +7741,10 @@ candidate."
 (define-key bookmark-bmenu-mode-map (kbd "C-<down>")       'bookmarkp-bmenu-describe-this+move-down)
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map (kbd "C-<up>")         'bookmarkp-bmenu-describe-this+move-up)
+;;;###autoload
+(define-key bookmark-bmenu-mode-map (kbd "M-<return>")     'bookmarkp-bmenu-w32-open)
+;;;###autoload
+(define-key bookmark-bmenu-mode-map [M-mouse-2]            'bookmarkp-bmenu-w32-open-with-mouse)
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "I"    nil) ; For Emacs 20
 ;;;###autoload
@@ -7727,6 +7880,8 @@ candidate."
 (define-key bookmark-bmenu-mode-map "t"    'bookmarkp-bmenu-toggle-marks)
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "U"    'bookmarkp-bmenu-unmark-all)
+;;;###autoload
+(define-key bookmark-bmenu-mode-map "V"    'bookmarkp-bmenu-w32-open-select)
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "W"    nil) ; For Emacs 20
 ;;;###autoload

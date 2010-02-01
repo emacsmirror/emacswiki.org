@@ -68,7 +68,7 @@ There are two difficulties here: case and accented letters.
 First ensure that the case is taken into account. For this,
 just type:
  
-   M-: RET (setq case-fold-search nil) RET
+   M-: (setq case-fold-search nil) RET
 
 Then, select the region and use the align-regexp command:
 
@@ -110,7 +110,7 @@ These are activated by giving a prefix to the command: <code>C-u M-x align-regex
 * Finally, answer <code>n/y</code>, depending whether the alignment must be done once or repeated. 
 
 
-So, to be short, lining up numbers as given above amounts to type:
+So, in short, lining up numbers as given above amounts to typing:
 
    C-u M-x align-regexp RET SPC RET RET RET y 
 
@@ -119,11 +119,11 @@ Don't forget to mark the region first.
 
 === Repeating align-regexp ===
 
-Arguably, for daily use, it's better to redefine some adhoc align command, e.g.
+Arguably, for daily use, it's better to define some adhoc align command, e.g.
 
   (defun align-repeat (start end regexp)
-    "repeat alignment with respect to 
-     the given regular expression"
+    "Repeat alignment with respect to 
+     the given regular expression."
     (interactive "r\nsAlign regexp: ")
     (align-regexp start end 
         (concat "\\(\\s-*\\)" regexp) 1 1 t))

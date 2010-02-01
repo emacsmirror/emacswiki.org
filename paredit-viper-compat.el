@@ -14,7 +14,7 @@
 ;; (eval-after-load 'paredit
 ;;   '(progn
 ;;      (require 'paredit-viper-compat)
-;;      (paredit-viper-compat))
+;;      (paredit-viper-compat)))
 ;;
 ;; This will apply the paredit-viper-compat fixes only when paredit
 ;; is active.

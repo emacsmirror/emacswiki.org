@@ -63,3 +63,22 @@ Mod4 Left :ExecCommand ~/.bin/emms-remote --prev
 </pre>
 
 It now fully works. And it's **wounderful**.
+
+= Embedding into other =
+As i use conky on my desktop, i also like to know what song is currently 
+emms playing. So i've added a --query option.
+
+The --query switch works well with this line in your .emacs:
+
+<pre>
+(setq emms-show-format "NP: %s")
+</pre>
+
+In my .conkyrc, theese lines solve the problem, invoking emms-remote with
+the --query switch:
+
+<pre>
+$color$stippled_hr${if_running emacs}
+${color}EMMS is playing:
+${color}${alignc}${execi 10 ~/.bin/emms-remote --query }$endif
+</pre>

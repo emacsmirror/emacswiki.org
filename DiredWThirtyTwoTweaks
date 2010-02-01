@@ -1,8 +1,8 @@
-DiredMode enhancements for EmacsForWindows.
+[[Dired]] enhancements for EmacsForWindows.
 
 * Set `shell-file-name' to ##bash.exe## or ##sh.exe##, not ##cmd.exe##. Otherwise, `find' gets confused. -- AadityaSood
 
-* In Dired, be able to use Windows file associations or open Windows Explorer on a file or folder: <tt>[[w32-browser.el]]</tt> plus DiredPlus.
+* In Dired, use Windows file associations or open Windows Explorer on a file or folder: <tt>[[w32-browser.el]]</tt> plus [[DiredPlus|Dired+]]. You can also bookmark the marked files, then (if you use [[BookmarkPlus|Bookmark+]]) open their bookmarks using Windows file associations 
 
 See also
 MsShellExecute,

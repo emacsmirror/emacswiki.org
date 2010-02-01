@@ -50,9 +50,12 @@ Customization:
 
 MS Tips and Tricks:
 
+* [[BookmarkPlus|Bookmark+]] -- open bookmarked files using their Windows file associations
+* [[DiredPlus|Dired+]] -- open files from Dired using their Windows file associations
 * DiredHtmlMoveLikeWThirtyTwo -- a way to make dired behave like Windows Explorer with regard to moving HTML files (while moving or deleting foo.htm MS-Windows also includes the directory foo_files which contains associated images, css etc.)
-* MsShellExecute -- w32-browser and its variants: execute MS-Windows applications associated with file types
+* MsShellExecute -- `w32-browser' and its variants: execute MS-Windows applications associated with file types
 * MsWindowsDiredContextMenu -- display Explorer's context menu
+* VisEmacs - Use emacs as the text editor for VisualStudio
 * WThirtyTwoNetSend -- send messages using the NT command net send
 * WThirtyTwoSwitchToWindows -- switch to a window by its name
 * MsdnHelp -- Get MSDN help right from Emacs.
@@ -63,14 +66,13 @@ MS Tips and Tricks:
 * WThirtyTwoFindDired -- simple w32-version of find-dired
 * WThirtyTwoFindDiredWithUnixUtils -- find-dired on win32 using "real" unix find
 * WThirtyTwoSymlinks -- parse .lnk files
-* VisEmacs - Use emacs as the text editor for VisualStudio
-* CatagoryIntellimouse -- Information about using an !IntelliMouse with emacs
 * IEViewSource -- Use emacs as the Internet Explorer "View Source" application
 * WThirtyTwoMailtoRegistry -- Registry keys to open mailto: links in an Emacs Buffer
 * WThirtyTwoSendMAPI -- Use MAPI to send mail from emacs <nowiki>*mail*</nowiki> buffers
 * WThirtyTwoTelnetPlink -- Use Plink (the command-line interface to PuTTY) as an emacs telnet client.
 * WThirtyTwoSendSysCommand -- list of commands to use with `w32-send-sys-command'
 * w32-toggle-lock-key function (included in Emacs) -- toggle 'Caps Lock', 'Scroll Lock' and 'Num Lock' keys from within elisp
+* CatagoryIntellimouse -- Information about using an !IntelliMouse with emacs
 
 MS applications:
 

@@ -13,7 +13,7 @@ Library <tt>[[dired+.el]]</tt> ('''[::Dired+]''') extends functionalities provid
 * Adds a context-sensitive popup menu on `mouse-3'. The menu differs, depending on whether or not a region is active in Dired.
 * Provides ''fancy'' highlighting (customizable through user variables).
 ** You can see immediately if a file has the wrong permissions (e.g. writable or executable when it shouldn't be).
-** Less important files (defined by variable <code>dired-omit-extensions</code> or <code>completion-ignored-extensions</code>) are in a subdued [[Face]]; other files stand out more. To hide less important files altogether, use `M-o' (it's a toggle) -- see DiredOmitMode.
+** Less important files (defined by variable <code>dired-omit-extensions</code> or <code>completion-ignored-extensions</code>) are in a subdued [[face]]; other files stand out more. To hide less important files altogether, use `M-o' (it's a toggle) -- see DiredOmitMode.
 
 Here is a screenshot of '''Dired+''', showing highlighting and the `mouse-3' menu when a region is active.
 
@@ -61,6 +61,8 @@ And here is a screenshot showing the `mouse-3' popup menu available when no regi
 
 * (`M-RET') You can open '''Windows Explorer''' on a file or folder. If a file, its containing folder is opened and the file is selected (in Windows Explorer).
 
+* (`M-b') You can bookmark all of the marked files and directories, without first visiting. And with '''[[BookmarkPlus|Bookmark+]]''', you can open bookmarks using their Windows file associations.
+
 In addition to being bound to keys `C-RET' and `M-RET', these operations are added to the '''Dired+''' menus, including the `mouse-3' context menu.
 
 ----
@@ -84,6 +86,7 @@ In addition to being bound to keys `C-RET' and `M-RET', these operations are add
 ----
 CategoryDirectories
 CategoryFiles
+CategoryWThirtyTwo
 CategoryMouse
 CategoryMenus
 

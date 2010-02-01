@@ -97,7 +97,7 @@ The biggest difference between auto-install.el and other Elisp installers is tha
 
 * "auto-install-from-library" will install an elisp file taken from a library.
 
-* "auto-install-form-directory" updates elisp files in specified directory from EmacsWiki.
+* "auto-install-from-directory" updates elisp files in specified directory from EmacsWiki.
 
 * "auto-install-from-dired" can install all files marked in dired in parallel.  By default, download these files from EmacsWiki.
 

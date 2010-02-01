@@ -1,16 +1,18 @@
 This page is about Emacs functions that execute Microsoft Windows shell commands.
 
 [:w32-browser]
-== w32-browser, w32browser-dlgopen.el  ==
+== w32-browser, w32browser-dlgopen.el, dired+.el, bookmark+.el  ==
 
 On Microsoft Windows, files are typically associated with applications according to their file extension.  Library <tt>[[w32-browser.el]]</tt> defines command `w32-browser', which calls a Windows application, passing it a string argument such as a file name.  This lets you open ##*.doc##
 files in Word, open URLs in a Web browser, and so on.
 
 ##w32-browser.el## also defines command `w32explore', which opens Windows Explorer to a file or folder; it selects the file in Explorer.
 
-Library '''[[DiredPlus | Dired+]]''' uses ##w32-browser.el## and defines similar commands that are bound to keys and menu items in DiredMode. They act on either the current file or folder or the one under the mouse. See [[DiredPlus#w32-browser]].
-
 Library <tt>[[w32browser-dlgopen.el]]</tt> combines ##w32-browser.el## with ##dlgopen.el##, a library by BinuJosePhilip. It opens the Windows *Open Files* dialog box, then applies `w32-browser' to the files you select. 
+
+Library '''[[DiredPlus|Dired+]]''' uses ##w32-browser.el## and defines similar commands that are bound to keys and menu items in [[Dired]]. They act on either the current file or folder or the one under the mouse. See [[DiredPlus#w32-browser|Dired+: w32-browser]].
+
+Library '''[[BookmarkPlus|Bookmark+]]''' lets you open bookmarks using their Windows file associations. It does this by calling `w32-browser'. And library '''Dired+''' lets you create bookmarks for each of the marked files in a Dired buffer, without your needing to visit them in Emacs. Combined with the ability to tag bookmarks a la [[http://delicious.com|del.icio.us]], these features let you easily organize and open non-text files such as music and images.
 
 
 

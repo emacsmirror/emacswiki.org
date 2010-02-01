@@ -111,6 +111,7 @@ Note that unlike the transparency hacks for Linux, it's not merely showing your 
 For me setting the background-colors alpha value just works with Emacs 23.1 on Mac OS X
 
   (set-background-color "ARGBBB000000")
+: I can't get that to work on the latest Emacs from bzr... It seems that alpha is always 1.0 and that color doesn't parse...
 
 
 ----

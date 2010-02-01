@@ -18,14 +18,15 @@ Using Emacs clients as external editors in other applications:
 The reverse, use external applications from within Emacs. Note that only OrgMode currently tries to handle this in the best possible way for each platform. Most of the others simply uses start-process. If you do that on w32 you will have to enter the application path yourself. This is an unnecessary trouble.
 (I guess there are similar capabilities of other OS:es but I do not know for sure.)
 
-* MsShellExecute -- take advantage of MS Windows file associations
-* TrivialMode -- register applications to open files for you
 * ExtView -- open files with external viewer (orphaned)
+* MsShellExecute -- take advantage of MS Windows file associations
 * OrgMode which is part of Emacs also has this functionality implemented in a cross-platform manner. I would suggest that functionality of this kind use that implementation (and maybe extend it). Then the user would just need to customize it in one place.
+* TrivialMode -- register applications to open files for you
 * These work everywhere (find-file, DiredMode, etc):
+** [[BookmarkPlus|Bookmark+]] + <tt>[[w32-browser.el]]</tt> -- open bookmarked files (e.g. music, images) using Windows file associations
+** [[DiredPlus|Dired+]] + <tt>[[w32-browser.el]]</tt> -- use Windows file associations in [[Dired]]
 ** OpenWith -- open files with external applications.
 ** SexMode -- It is now using the platorm independent functionality offered by OrgMode for starting external applications. (Note that there are some differences, see the beginning of sex-mode.el.)
-** [[DiredPlus|Dired+]] + <tt>[[w32-browser.el]]</tt> -- use MS Windows file associations in DiredMode
 
 Sound and Music:
 
