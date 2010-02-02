@@ -39,9 +39,8 @@
 
 ;; The package is only tested with Cygwin Emacs 23.1.
 
-
 ;; How it works:
-;; Basically push some functions onto file-name-handler-alist.
+;; basically push some functions onto file-name-handler-alist.
 ;; They detect filenames expressed in Windows style, and translate
 ;; those names into cygwin style.
 
@@ -65,7 +64,6 @@ cygdrive-prefix is \"/\" instead of \"/cygdrive\". This prefix must end
 with a '/'!  Do not set this variable because the value of this variable is
 determined at activation-time of windows-path \(see
 `windows-path-activate')")
-
 
 (defun windows-path-run-real-handler (operation args)
   "Run OPERATION with ARGS."
@@ -152,7 +150,6 @@ NOTE: \"/cygdrive/\" is only an example for the cygdrive-prefix \(see
                          'windows-path-map-drive-hook-function))
       (setq windows-path-activated t))))
 
-;; Added by Klaus
 (defun windows-path-deactivate ()
   "Deactivate windows-style-path handling."
   (interactive)
@@ -174,4 +171,3 @@ NOTE: \"/cygdrive/\" is only an example for the cygdrive-prefix \(see
 (provide 'windows-path)
 
 ;;; windows-path.el ends here
-

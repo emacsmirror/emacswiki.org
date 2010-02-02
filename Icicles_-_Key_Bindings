@@ -379,8 +379,8 @@ information on using the minibuffer in ''Icicle'' mode.  During completion, this
 
 [:icicle-previous-prefix-candidate]
 [:icicle-next-prefix-candidate]
-* '''`down'''', '''`up'''' -- `icicle-next-apropos-candidate', `icicle-next-candidate-per-mode' (modal),
-`icicle-previous-apropos-candidate', `icicle-previous-candidate-per-mode' (modal), which [[Icicles - Cycling Completions|cycle]] candidate [[prefix completion]]s.
+* '''`down'''', '''`up'''' -- `icicle-next-prefix-candidate', `icicle-next-candidate-per-mode' (modal),
+`icicle-previous-prefix-candidate', `icicle-previous-candidate-per-mode' (modal), which [[Icicles - Cycling Completions|cycle]] candidate [[prefix completion]]s.
 
 [:icicle-next-apropos-candidate]
 [:icicle-previous-apropos-candidate]
@@ -826,7 +826,7 @@ The following minibuffer bindings let you ''toggle'' '''Icicles''' options or cy
 * '''`##C-.##'''' -- `icicle-toggle-ignored-extensions' (file-name completion)
 * '''`##C-.##'''' -- `icicle-toggle-search-cleanup' (search)
 * '''`##C-M-.##'''' -- `icicle-toggle-dot'
-* '''`##C-x .##'''' -- `icicle-toggle-hiding-common-match
+* '''`##C-x .##'''' -- `icicle-toggle-hiding-common-match'
 * '''`##C-;##'''' -- `icicle-toggle-expand-to-common-match'
 * '''`##C-,##'''' -- `icicle-change-sort-order'
 * '''`##C-,##'''' -- `icicle-toggle-search-replace-whole' (search)

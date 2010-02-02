@@ -263,7 +263,7 @@ as well.
 
 
 
-[:MultiCompletionsVsCRM]]
+[:MultiCompletionsVsCRM]
 == Multi-Completions vs completing-read-multiple ==
 
 Note that there is (only) a superficial similarity between '''Icicles'''

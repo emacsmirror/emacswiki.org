@@ -1,0 +1,5 @@
+To compose mail from outside of Emacs, you should use ##emacsclient## to run the `gnus-msg-mail' function in your running instance of Emacs (or start EmacsAsDaemon on demand with ##-a ""##). You can optionally provide the ##-c## option to show the message buffer in a frame of its own so your window manager will automatically put the focus on the right window. Thus, with all these options included, you get something like:
+
+<code>
+emacsclient -c -a "" -e '(gnus-msg-mail (replace-regexp-in-string "^mailto:" "" "'"$1"'") "'"$2"'")'
+</code>

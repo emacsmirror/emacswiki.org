@@ -4,7 +4,7 @@
 ;; Copyright (C) 2010 Joyer Huang
 
 ;; Author: Joyer Huang <collger@eyou.com>
-;; Version: 0.0.3
+;; Version: 0.0.4
 ;; Keywords: hex, view, fast, user interface
 ;; URL: http://slimeweb.com
 
@@ -51,6 +51,11 @@
 
 ;;; Change Log:
 ;;
+;; Version 0.0.4
+;; * add easy menu
+;; * add region style
+;; * hexview-mode invocation will do `hexview-find-file' the current file
+;;
 ;; Version 0.0.3
 ;; * fix for emacs version lower than 23
 ;; 
@@ -74,7 +79,7 @@
 (load-library "files")
 
 
-(defconst hexview-mode-version "0.0.3")
+(defconst hexview-mode-version "0.0.4")
 (defconst hexview-bug-e-mail "collger@eyou.com")
 (defconst hexview-web-url "http://slimeweb.com/")
 
@@ -90,6 +95,31 @@
 (defvar hexview-mode-map
   (let ((map (make-keymap)))
     map))
+(defvar hexview-view-file nil
+  "Current filename being hexviewing.")
+(defvar hexview-start-index nil
+  "Current file start index being hexviewing.")
+(defvar hexview-cursor-index nil
+  "Current cursor index being hexviewing.")
+
+(defface hexview-address-region
+  '((t (:inherit header-line)))
+  "Face used in address area of hexl-mode buffer."
+  :group 'hexview)
+
+(defface hexview-ascii-region
+  '((t (:inherit header-line)))
+  "Face used in ascii area of hexl-mode buffer."
+  :group 'hexview)
+
+(defvar hexview-font-lock-keywords
+  '(("^\\([0-9A-F]+:\\).\\{48\\} \\(.+\\)"
+     ;; "^\\([0-9a-f]+:\\).+  \\(.+$\\)"
+     (1 'hexview-address-region t t)
+     (2 'hexview-ascii-region t t)))
+  "Font lock keywords used in `hexview-mode'.")
+
+
 (defun hexview:filelen (f)
   (elt (file-attributes f) 7))
 (defun hexview:textp (c)
@@ -137,14 +167,14 @@
   "Prompt for a hexadecimal index of the Hexviewing file, and jump to it."
   (interactive)
   (let ((target (read-string "GoTo Hex:")))
-    (setq hexview-start-index (string-to-int target 16)))
+    (setq hexview-start-index (string-to-number target 16)))
   (hexview:clamp-index)
   (hexview:update))
 (defun hexview:goto-index-dec ()
   "Prompt for a decimal index of the Hexviewing file, and jump to it."
   (interactive)
   (let ((target (read-string "GoTo Dec:")))
-    (setq hexview-start-index (string-to-int target 10)))
+    (setq hexview-start-index (string-to-number target 10)))
   (hexview:clamp-index)
   (hexview:update))
 ;;large-file-warning-threshold
@@ -197,10 +227,10 @@
              (line-chars (hexview:read-file-part hexview-view-file line-index hexview-line-width))
              (line-len (length line-chars)))
       (insert (format "%08X: " line-index))
-      (mapcar #'(lambda (x) (insert (format "%02X " x))) line-chars)
+      (mapc #'(lambda (x) (insert (format "%02X " x))) line-chars)
       (dotimes (v (max (- hexview-line-width line-len) 0))
         (insert "   "))
-      (mapcar #'(lambda (x) (insert (if (hexview:textp x) x "."))) line-chars)
+      (mapc #'(lambda (x) (insert (if (hexview:textp x) x "."))) line-chars)
       (insert "\n")))
     (hexview:usage-info)
     (goto-char 0)))
@@ -219,21 +249,25 @@ use (Meta J) to jump with Dec Index
 When started, run `hexview-mode-hook'.
 \\{hexview-mode-map}"
   (interactive)
-  ;; set up local variables
-  (kill-all-local-variables)
-  (make-local-variable 'hexview-start-index)
-  (make-local-variable 'hexview-cursor-index)
-  (make-local-variable 'hexview-view-file)
-  ;;
-  (setq major-mode                    'hexview-mode
-	mode-name                     "Hexview"
-    hexview-start-index            0
-    hexview-cursor-index           0
-	)
-  (toggle-read-only 1)
-  (use-local-map hexview-mode-map)
-  (if hexview-mode-hook
-      (run-hooks 'hexview-mode-hook)))
+  (if (buffer-file-name)
+      (hexview-find-file (buffer-file-name))
+    (progn 
+     ;; set up local variables
+     (kill-all-local-variables)
+     (make-local-variable 'hexview-start-index)
+     (make-local-variable 'hexview-cursor-index)
+     (make-local-variable 'hexview-view-file)
+     ;;
+     (setq major-mode                    'hexview-mode
+           mode-name                     "Hexview"
+           hexview-start-index            0
+           hexview-cursor-index           0
+           )
+     (toggle-read-only 1)
+     (use-local-map hexview-mode-map)
+     (setq font-lock-defaults '(hexview-font-lock-keywords t))
+     (if hexview-mode-hook
+         (run-hooks 'hexview-mode-hook)))))
 
 (defun hexview-find-file (f)
   "Find a file with `hexview-mode'"
@@ -244,6 +278,28 @@ When started, run `hexview-mode-hook'.
     (hexview-mode)
     (hexview:set-file f)
     (hexview:update)))
+
+(easy-menu-define hexview-menu hexview-mode-map "Hexview Mode menu"
+  `("Hexview"
+    :help "Hexview-specific Features"
+
+    ["Next page" hexview:next-page
+     :help "Move to next page"]
+    ["Previous page" hexview:prev-page
+     :help "Move to previous page"]
+    ["Next line" hexview:next-line
+     :help "Move to next line"]
+    ["Previous line" hexview:prev-line
+     :help "Move to previous line"]
+    ["Goto hex index" hexview:goto-index-hex
+     :help "Goto hex index"]
+    ["Goto dec index" hexview:goto-index-dec
+     :help "Goto dec index"]
+    "-"
+    ["Kill buffer" kill-buffer
+     :help "Kill the buffer"]
+))
+
 ;(add-hook 'find-file-hook 'hexview:large-file-hook)
 (defadvice find-file-noselect (around find-file-noselect-with-hexview last (filename &optional nowarn rawfile wildcards) activate)
   "Use hexview-find-file if the file is too large.(by asking users)"
@@ -252,3 +308,4 @@ When started, run `hexview-mode-hook'.
          (t (if (yes-or-no-p "Try open file with Hexview mode?")
                 (hexview-find-file filename)
               ad-do-it))))
+

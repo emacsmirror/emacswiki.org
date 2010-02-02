@@ -18,6 +18,18 @@ or in GNU Emacs 22 or newer, `C-h S'.
 
 See also InfoMode, GtkLook.
 
+== Comments ==
+In gnuplot info files menu items do not match the regular expression:
+{{{
+"\n\\* \\(.*\\): " 
+}}}
+as it is used in "info-look.el.gz". To make info work with gnuplot-mode I've changed this regexp within the definition of "info-lookup-make-completions" to:
+{{{
+"\n\\* \\(.*\\):[ :]"
+}}}
+
+
+
 ----
 CategoryHelp
 CategoryModes

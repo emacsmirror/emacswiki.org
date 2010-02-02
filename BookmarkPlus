@@ -437,8 +437,10 @@ indicate their type. You can mark and unmark bookmarks, show or
 hide bookmarks of particular types, and more.
 
 Use `##?##' or `##C-h m##' in buffer `##*Bookmark List*##' for more
-information about the bookmark list, including the current status
-of sorting, filtering, and marking.
+information about the bookmark list, including:
+
+* The current status of sorting, filtering, and marking.
+* A legend for the faces used for different bookmark types.
 
 
 

@@ -28,7 +28,7 @@ debian squeeze) and a server running.
 = Installing =
 
 {{{
-manu@joker: ~ $ git clone git@git.santoro.tk:emms-remote.git
+manu@joker: ~ $ git clone http://santoro.tk/~manu/emms-remote.git
 manu@joker: ~ $ cd emms-remote
 manu@joker: ~ $ chmod +x emms-remote ;
 manu@joker: ~ $ sudo cp emms-remote /usr/bin/

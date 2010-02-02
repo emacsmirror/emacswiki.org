@@ -119,6 +119,7 @@
 ;; `traverse-window-split-h-or-t'
 ;; `traverse-list-directories-in-tree'
 ;; `traverse-list-files-in-tree'
+;; `traverse-auto-document-default-prefix'
 ;; `traverse-goto-line'
 ;; `traverse-incremental-forward-line'
 ;; `traverse-incremental-jump'
@@ -138,7 +139,7 @@
 
 ;;  * Internal variables defined here:
 ;; [EVAL] (traverse-auto-document-lisp-buffer :type 'internal-variable :prefix "traverse")
-;; `traversedir-mode-map'
+;; `traverse-mode-map'
 ;; `traverse-match-overlay-face'
 ;; `traverse-show-regexp-delay'
 ;; `traverse-keep-indent'
@@ -153,6 +154,7 @@
 ;; `traverse-incremental-current-buffer'
 ;; `traverse-incremental-occur-overlay'
 ;; `traverse-incremental-read-fn'
+;; `traverse-incremental-exit-and-quit-p'
 ;; `traverse-incremental-face'
 
 ;;  * Faces defined here:
@@ -162,6 +164,8 @@
 ;; `traverse-path-face'
 ;; `traverse-overlay-face'
 ;; `traverse-incremental-overlay-face'
+;; `traverse-incremental-title-face'
+;; `traverse-incremental-regexp-face'
 
 ;;  * User variables defined here:
 ;; [EVAL] (traverse-auto-document-lisp-buffer :type 'user-variable :prefix "^traverse")
@@ -177,7 +181,6 @@
 
 ;;  *** END auto-documentation
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;; Usage:
 ;; =====
 ;;
@@ -248,7 +251,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Version:
-(defconst traverse-version "1.1.50")
+(defconst traverse-version "1.1.54")
 
 ;;; Code:
 
@@ -256,7 +259,7 @@
 (eval-when-compile (require 'cl))
 
 
-(defvar traversedir-mode-map
+(defvar traverse-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map [?q] 'traverse-quit)
     (define-key map [?N] 'traverse-go-forward)
@@ -265,17 +268,17 @@
     (define-key map [(shift up)] 'traverse-scroll-up-other-window)
     (define-key map [?|] 'traverse-toggle-split-window-h-v)
     map)
-  "Keymap used for traversedir commands.")
+  "Keymap used for traverse commands.")
 
-(define-derived-mode traversedir-mode text-mode "traversedir"
+(define-derived-mode traverse-mode text-mode "traverse"
                      "Major mode to recurse in a tree and perform diverses actions on files.
 
 Special commands:
-\\{traversedir-mode-map}")
+\\{traverse-mode-map}")
 
-(defgroup traversedir nil
+(defgroup traverse nil
   "Mode that allow walking through directories and perform diverses actions on files."
-  :prefix "traversedir-"
+  :prefix "traverse-"
   :group 'text)
 
 (defcustom traverse-ignore-files
@@ -299,7 +302,7 @@ Are allowed:(examples)
 - extensions file ==> .ext
 - Plain name ==> TAGS ; note regexps take precedence on plain names.
 - Regexp ==> \".*\\(.py\\)$\""
-  :group 'traversedir
+  :group 'traverse
   :type '(repeat string))
 
 (defcustom traverse-ignore-dirs
@@ -309,46 +312,46 @@ Are allowed:(examples)
     ".arch-ids" "CVS"
     "{arch}" "knits")
   "Directories we don't want to search in."
-  :group 'traversedir
+  :group 'traverse
   :type '(repeat string))
 
 (defcustom traverse-length-line
   45
   "Length of the line displayed in traverse buffers."
-  :group 'traversedir
+  :group 'traverse
   :type 'integer)
 
 (defcustom traverse-file-function
   'traverse-file-process
   "Default function to use to process files."
-  :group 'traversedir
+  :group 'traverse
   :type 'symbol)
 
 (defcustom traverse-use-avfs
   nil
   "Enable support for avfs."
-  :group 'traversedir
+  :group 'traverse
   :type 'boolean)
 
 (defcustom traverse-avfs-default-directory
   "~/.avfs"
   "Default directory for avfs."
-  :group 'traversedir
+  :group 'traverse
   :type 'string)
 
 ;;; Faces for traverse
 (defgroup traverse-faces nil
-  "Faces for TRAVERSEDIR."
-  :group 'traversedir)
+  "Faces for TRAVERSE."
+  :group 'traverse)
 
 (defface traverse-match-face '((t (:foreground "red")))
-  "TRAVERSEDIR face."
+  "TRAVERSE face."
   :group 'traverse-faces)
 (defface traverse-regex-face '((t (:foreground "yellow")))
-  "TRAVERSEDIR face."
+  "TRAVERSE face."
   :group 'traverse-faces)
 (defface traverse-path-face '((t (:foreground "green")))
-  "TRAVERSEDIR face."
+  "TRAVERSE face."
   :group 'traverse-faces)
 (defface traverse-overlay-face '((t (:background "Indianred4" :underline t)))
   "Face for highlight line in matched buffer."
@@ -589,6 +592,7 @@ Each element of LIS is compared with the filename STR."
          (fname     (button-label (button-at (point)))))
     (save-excursion
       (goto-char (point-min))
+      ;; TODO ==>BAD use a variable instead
       (when (re-search-forward "for ")
         (setq regex
               (buffer-substring (point) (- (line-end-position) 1)))))
@@ -599,11 +603,7 @@ Each element of LIS is compared with the filename STR."
           (switch-to-buffer-other-window (get-buffer fname))
           (find-file-other-window fname))
       (traverse-goto-line (string-to-number nline))
-      (setq case-fold-search t)
-      (beginning-of-line)
-      (when (re-search-forward regex nil nil)
-        (goto-char (- (point) (length regex)))
-        (traverse-occur-color-current-line)))))
+      (beginning-of-line) (traverse-occur-color-current-line))))
 
 
 (defun traverse-prepare-buffer ()
@@ -612,7 +612,7 @@ Each element of LIS is compared with the filename STR."
   (erase-buffer)
   (hi-lock-mode 1)
   (goto-char (point-min))
-  (traversedir-mode)
+  (traverse-mode)
   (insert " *Traverse-lisp-output*\n\n\n")
   (highlight-regexp " \\*Traverse-lisp-output\\*$" "hi-pink")
   (display-buffer "*traverse-lisp*")
@@ -1035,6 +1035,8 @@ PRED is a function that take one arg."
       :file-fn #'(lambda (x) (unless (funcall ,pred x) (push x flist))))
      flist))
 
+;;; Traverselisp auto documentation
+
 (defmacro* traverse-auto-document-lisp-buffer (&key type prefix)
   "Auto document tool for lisp code.
 TYPE can be one of:
@@ -1112,14 +1114,22 @@ See headers of traverselisp.el for example."
 
 ;;;###autoload
 (defun traverse-auto-update-documentation ()
+  "Eval all traverse auto document headers found."
   (interactive)
   (goto-char (point-min))
   (while (re-search-forward "^;; +\\[EVAL\\]" nil t)
     (end-of-line) (eval-last-sexp t)
     (while (not (bolp)) (delete-char -1))))
 
+
+(defun traverse-auto-document-default-prefix ()
+  "Return file name without extension as default prefix"
+  (file-name-sans-extension (buffer-name (current-buffer))))
+
 ;;;###autoload
 (defun traverse-auto-documentation-insert-header (title &optional nstar)
+  "Insert an auto documentation line of commented code to eval.
+See headers of `traverselisp.el' for example."
   (interactive "sTitle: \np")
   (let ((ttype (completing-read "Type: " '("command " "nested-command "
                                            "function " "nested-function "
@@ -1127,7 +1137,11 @@ See headers of traverselisp.el for example."
                                            "nested-variable " "faces "
                                            "anything-source ") nil t)))
     (insert (concat ";;  " (make-string nstar ?*) " " title "\n"
-                    ";; [EVAL] (traverse-auto-document-lisp-buffer :type \'" ttype ":prefix \"\")"))))
+                    ";; [EVAL] (traverse-auto-document-lisp-buffer :type \'"
+                    ttype
+                    ":prefix " "\"" (traverse-auto-document-default-prefix) "\")")
+            (if (save-excursion (re-search-forward "^;; +\\*+ .*" nil t))
+                "" "\n\n\n;;  *** END auto-documentation"))))
 
 
 ;;; Incremental occur
@@ -1143,7 +1157,7 @@ See headers of traverselisp.el for example."
     (define-key map (kbd "C-n") 'traverse-incremental-next-line)
     (define-key map (kbd "C-p") 'traverse-incremental-precedent-line)
     map)
-  "Keymap used for traversedir commands.")
+  "Keymap used for traverse commands.")
 
 (define-derived-mode traverse-incremental-mode text-mode "traverse-incremental"
                      "Major mode to search occurences of regexp in current buffer.
@@ -1154,17 +1168,17 @@ Special commands:
 
 (defcustom traverse-incremental-search-delay 0.2
   "*During incremental searching display is updated all `traverse-incremental-search-delay' seconds."
-  :group 'traversedir
+  :group 'traverse
   :type  'integer)
 
 (defcustom traverse-incremental-search-prompt "Pattern: "
   "*Prompt used for `traverse-incremental-occur'."
-  :group 'traversedir
+  :group 'traverse
   :type  'string)
 
 (defcustom traverse-incremental-length-line 80
   "*Length of the line dispalyed in traverse incremental buffer."
-  :group 'traversedir
+  :group 'traverse
   :type 'integer)
 
 ;;; Internal variables
@@ -1251,7 +1265,7 @@ Special commands:
 (defun traverse-incremental-read-search-input (initial-input)
   "Read each keyboard input and add it to `traverse-incremental-search-pattern'."
   (let* ((prompt       (propertize traverse-incremental-search-prompt 'face '((:foreground "cyan"))))
-         (doc          "     [RET:exit, C-g:quit, C-z:Jump, C-j:Jump&quit, C-n/p:next/prec-line]")
+         (doc          "     [RET:exit, C-g:quit, C-k:kill, C-z:Jump, C-j:Jump&quit, C-n/p:next/prec-line]")
          (inhibit-quit (unless (eq traverse-incremental-read-fn 'read-key) t))
          (tmp-list     ()))
     (unless (string= initial-input "")
@@ -1279,10 +1293,13 @@ Special commands:
                 (setq traverse-incremental-quit-flag t) nil)
                ((or right ?\C-z) ; persistent action
                 (traverse-incremental-jump) (other-window 1) t)
-               ((left ?\C-j)
+               ((left ?\C-j) ; Jump to candidate and kill search buffer.
                 (setq traverse-incremental-exit-and-quit-p t) nil)
                (?\C-v ; Scroll down
                 (scroll-other-window 1) t)
+               (?\C-k ; Kill input
+                (kill-new traverse-incremental-search-pattern) 
+                (setq tmp-list ()) t)
                (?\M-v ; Scroll up
                 (scroll-other-window -1) t)
                (t ; Store character

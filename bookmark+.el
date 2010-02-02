@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Jan 31 16:29:33 2010 (-0800)
+;; Last-Updated: Mon Feb  1 10:10:56 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 9545
+;;     Update #: 9554
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -799,8 +799,11 @@
 ;;  bookmarks, show or hide bookmarks of particular types, and more.
 ;;
 ;;  Use `?' or `C-h m' in buffer `*Bookmark List*' for more
-;;  information about the bookmark list, including the current status
-;;  of sorting, filtering, and marking.
+;;  information about the bookmark list, including:
+;;
+;;  * The current status of sorting, filtering, and marking.
+;;
+;;  * A legend for the faces used for different bookmark types.
 ;;
 ;;
 ;;(@* "Tag Commands and Keys")
@@ -1260,6 +1263,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2010/02/01 dadams
+;;     bookmarkp-bmenu-mode-status-help: Added face legend.
 ;; 2010/01/31 dadams
 ;;     Added: bookmarkp-tags-list, bookmarkp-read-tag-completing, bookmarkp-use-w32-browser-p,
 ;;            bookmarkp-bmenu-w32-open(-select|-with-mouse).  Bind *-w32* to M-RET, V, M-mouse-2.
@@ -5142,7 +5147,7 @@ unmark those that have no tags at all."
 
 ;;;###autoload
 (defun bookmarkp-bmenu-mode-status-help () ; `C-h m' and `?' in bookmark list
-  "`describe-mode' plus current status of `*Bookmark List*'."
+  "`describe-mode', current status of `*Bookmark List*', and face legend."
   (interactive)
   (bookmarkp-barf-if-not-in-menu-list)
   (describe-mode)
@@ -5193,7 +5198,48 @@ Sorted:\t\t%s\nFiltering:\t%s\nMarked:\t\t%d\nOmitted:\t%d\n\n\n"
                           (downcase (substring bookmarkp-bmenu-title 2)))
                      "None")
                  (length bookmarkp-bmenu-marked-bookmarks)
-                 (length bookmarkp-bmenu-omitted-list)))))))
+                 (length bookmarkp-bmenu-omitted-list)))
+        (let ((info             "Info node\n")
+              (gnus             "Gnus\n")
+              (w3m              "W3M (URL)\n")
+              (local-no-region  "Local file with no region\n")
+              (local-w-region   "Local file with a region\n")
+              (no-buf           "No current buffer\n")
+              (bad              "Possibly invalid bookmark\n")
+              (remote           "Remote file or directory\n")
+              (sudo             "Remote accessed by `su' or `sudo'\n")
+              (local-dir        "Local directory\n")
+              (bookmark-list    "*Bookmark List*\n")
+              (desktop          "Desktop\n")
+              (function         "Function\n")
+              (man              "Man page\n")
+              (sequence         "Sequence\n")
+              (buffer           "Buffer\n"))
+          (put-text-property 0 (1- (length info))     'face 'bookmarkp-info           info)
+          (put-text-property 0 (1- (length gnus))     'face 'bookmarkp-gnus           gnus)
+          (put-text-property 0 (1- (length w3m))      'face 'bookmarkp-w3m            w3m)
+          (put-text-property 0 (1- (length local-no-region))
+                             'face 'bookmarkp-local-file-without-region               local-no-region)
+          (put-text-property 0 (1- (length local-w-region))
+                             'face 'bookmarkp-local-file-with-region                  local-w-region)
+          (put-text-property 0 (1- (length no-buf))   'face 'bookmarkp-non-file       no-buf)
+          (put-text-property 0 (1- (length bad))      'face 'bookmarkp-bad-bookmark   bad)
+          (put-text-property 0 (1- (length remote))   'face 'bookmarkp-remote-file    remote)
+          (put-text-property 0 (1- (length sudo))     'face 'bookmarkp-su-or-sudo     sudo)
+          (put-text-property 0 (1- (length local-dir))
+                             'face 'bookmarkp-local-directory                         local-dir)
+          (put-text-property 0 (1- (length bookmark-list))
+                             'face 'bookmarkp-bookmark-list                           bookmark-list)
+          (put-text-property 0 (1- (length desktop))  'face 'bookmarkp-desktop        desktop)
+          (put-text-property 0 (1- (length function)) 'face 'bookmarkp-function       function)
+          (put-text-property 0 (1- (length man))      'face 'bookmarkp-man            man)
+          (put-text-property 0 (1- (length sequence)) 'face 'bookmarkp-sequence       sequence)
+          (put-text-property 0 (1- (length buffer))   'face 'bookmarkp-buffer         buffer)
+          (insert "Legend for Bookmark Types\n-------------------------\n\n") (insert info)
+          (insert gnus) (insert w3m) (insert local-no-region) (insert local-w-region) (insert no-buf)
+          (insert bad) (insert remote) (insert sudo) (insert local-dir) (insert bookmark-list)
+          (insert desktop) (insert function) (insert man) (insert sequence) (insert buffer)
+          (insert "\n\n\n"))))))
 
 ;;;###autoload
 (defun bookmarkp-bmenu-define-command () ; `c' in bookmark list
@@ -8051,8 +8097,7 @@ candidate."
 ***************************** Bookmark+ *****************************\
 \\<bookmark-bmenu-mode-map>
 
-The following features are in addition to those provided by the
-vanilla bookmark list display.
+** Bookmark+ bookmark-list features (in addition to vanilla) **
 
 
 Miscellaneous
