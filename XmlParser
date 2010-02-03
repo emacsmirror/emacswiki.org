@@ -26,6 +26,10 @@ symbols.  On the other hand, it contains additional code to
 pretty-print the xml data structures such that it can be used as an
 XML indentation fix.
 
+You can get the source from here:
+
+* Lisp:xml-parse.el
+
 == dom.el ==
 
 The XML parsers will create a lisp data structure for you and they

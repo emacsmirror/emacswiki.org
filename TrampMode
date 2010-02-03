@@ -739,6 +739,9 @@ try here: http://www.gnu.org/software/tramp/#Auto_002dsave-and-Backup --EmorySmi
 
 -- CarsonReynolds (adopted from PhilSuh)
 
+[new]
+See also `How to Customize Traces' in the TRAMP info manual (`C-h i'). The tramp-debug-buffer variable seems to be missing and, I guess, deprecated in GNU Emacs 23.
+
 ----
 
 '''Connecting to a different port:'''

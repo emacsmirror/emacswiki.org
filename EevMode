@@ -65,7 +65,7 @@ you can set M-e globally, like that you can use eev links even when `eev-mode' i
 
 </pre>
 
-<u>Note</u>: `eev-comment-prefix' is the comment string you use for this file (elisp ==> ;)
+<u>Note</u>: `eev-comment-prefix' is the comment string you use for this file (elisp ==> %%;)%%
 
 To make the little green glyph, turn on `eev-mode', then hit M-,
 

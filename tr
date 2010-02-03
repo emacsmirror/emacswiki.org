@@ -1,0 +1,21 @@
+Wasting valuable time online, I wrote this:
+
+
+{{{
+(defun tr (str from to)
+  "Replace all characters in STR listed in FROM
+with characters listed in TO. If FROM is longer
+than TO, then the excess characters are deleted.
+
+\(tr \"abcdefg\" \"abcd\" \"ABC\"\) => \"ABCefg\""
+  (dotimes (i (length str))
+    (let* ((c1 (aref str i))
+	   (pos (progn
+		  (string-match (char-to-string c1) from)
+		  (match-beginning 0)))
+	   (c2 (ignore-errors
+		 (aref to pos))))
+      (when pos
+	(aset str pos (or c2 0)))))
+  (replace-regexp-in-string "\000" "" str))
+}}}

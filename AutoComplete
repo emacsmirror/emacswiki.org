@@ -157,6 +157,8 @@ Not terribly difficult but it took me a bit to puzzle out what needed to be done
 
 [http://madscientist.jp/~ikegami/diary/20090215.html#p01 Integrating for Haskell (experimentally, for the Haskell compiler GHC 6.10.1)]
 
+[http://github.com/buzztaiki/auto-complete/raw/master/ac-company.el Use company backend for Auto-Complete]
+
 == Questions and Feedback ==
 
 

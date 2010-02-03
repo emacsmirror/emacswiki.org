@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Jan 30 12:45:53 2010 (-0800)
+;; Last-Updated: Tue Feb  2 14:49:22 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 20097
+;;     Update #: 20101
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2978,9 +2978,9 @@ You probably don't want to use this.  Use
   (unless (and (boundp 'bookmarkp-use-region-flag) bookmarkp-use-region-flag
                (fboundp 'bookmarkp-get-end-position) (bookmarkp-get-end-position bookmark)
                (/= (bookmark-get-position bookmark) (bookmarkp-get-end-position bookmark)))
-    (when (fboundp 'crosshairs-highlight) (crosshairs-highlight)))
-  (select-window (minibuffer-window))
-  (select-frame-set-input-focus (selected-frame)))
+    (when (fboundp 'crosshairs-highlight) (crosshairs-highlight))))
+;; $$$$$$   (select-window (minibuffer-window))
+;; $$$$$$   (select-frame-set-input-focus (selected-frame)))
 
 (defun icicle-bookmark-help-string (bookmark-name)
   "Return a help string for BOOKMARK-NAME."
@@ -3186,7 +3186,6 @@ Same as `icicle-find-first-tag' except it uses a different window." ; Doc string
   (find-tag-other-window cand)
   (when (fboundp 'crosshairs-highlight) (crosshairs-highlight)))
 
-;; Free vars here: `orig-pt-explore' is bound in `icicle-explore'.
 ;;;###autoload
 (defun icicle-find-tag (regexp &optional arg)
   "Navigate among all tags that match REGEXP.
