@@ -46,9 +46,55 @@ This is perhaps the
 
 
 
+
+=== Additional types of bookmarks. ===
+
+* You can bookmark a [[DiredMode|Dired]] buffer, recording and restoring its
+     `ls' switches, which files are marked, which subdirectories are inserted, and which (sub)directories are hidden.
+
+* You can bookmark a [[buffer]] that is not associated with a file.
+
+* You can bookmark the current [[DeskTop|desktop]], as defined by library
+##desktop.el## -- use command '''`bookmarkp-set-desktop-bookmark''''
+('''`C-x p K'''').  You can "jump" to (that is, restore) any number
+of saved desktops.  A desktop includes:
+
+** Some global [[variable]]s.  To exclude variables normally saved, see option '''`bookmarkp-desktop-no-save-vars''''.
+
+** The current set of buffers and their associated files. ''For each:'' its mode, [[point]], [[mark]], and some local variables.
+
+* You can bookmark a [[Gnus]] article, a URL (if you use [[w3m|W3M]]), a PDF file (%%DocView%%), an image, or a UNIX manual page (from the output of Emacs
+     command `[[ManMode|man]]' or `[[WoMan|woman]]').
+
+* A bookmark can represent a function, which is invoked when
+you "jump" to the bookmark.
+
+* As mentioned above, a bookmark can represent a sequence of
+other bookmarks.
+
+* You can bookmark buffer `##*Bookmark List*##' itself.  Jumping to such a
+  bookmark restores the recorded sort order, filter, title, and omit
+  list (see [[#OmittingBookmarks]]).
+
+
+
+
+
+=== Type-specific jump commands. ===
+
+* When you want to jump to a bookmark of a specific type (e.g. Dired), you can use a command that offers only such bookmarks as [[completion]] candidates.
+
+
+
+
+
+
+
+
+
 === Improvements for the bookmark list. ===
 
-This is buffer `##*Bookmark List*##', aka the bookmark "menu list", which you display using `C-x r l'.
+This is buffer `##*Bookmark List*##', aka the bookmark "menu list" (a misnomer), which you display using `C-x r l'.
 
 * The last display state is saved (by default), and is restored
      the next time you show the list.  (''Tip:'' Use the bookmark list
@@ -60,18 +106,22 @@ This is buffer `##*Bookmark List*##', aka the bookmark "menu list", which you di
 
 * [[Face]]s distinguish bookmarks by type:
 
-** non-file buffers
-** local files with regions
+** [[Info]] nodes
+** [[Gnus]] articles
+** [[w3m|W3M]] URLs
+** Man pages (from `[[ManMode|man]]' or `[[WoMan|woman]]')
+** local files with [[region]]s
 ** local files without regions
 ** local directories
 ** remote files or directories
 ** remote files or directories that must be accessed by `su' or `sudo' (`root')
-** w3m URLs
-** Info nodes
-** Gnus articles
+** bookmark-list bookmarks
+** [[DeskTop|desktop]] bookmarks
 ** function bookmarks
 ** sequence bookmarks
-** bookmark-list bookmarks
+** non-file buffers
+** buffers that don't currently exist
+** possibly invalid bookmarks
 
 * You can ''sort'' bookmarks in many ways.  You can easily define
      your own sort orders, even complex ones.
@@ -124,44 +174,14 @@ The same menu is available on '''`C-mouse-3''''.
 
 
 
+=== Multiple bookmark files. ===
 
-=== Additional types of bookmarks. ===
+Although vanilla Emacs lets you load different bookmark
+files, this feature is not well supported, if not
+contradictory.  With '''Bookmark+''' you can easily switch among
+alternative bookmark files or load multiple files into the
+same session, accumulating their bookmark definitions.
 
-* You can bookmark a [[DiredMode|Dired]] buffer, recording and restoring its
-     `ls' switches, which files are marked, which subdirectories are inserted, and which (sub)directories are hidden.
-
-* You can bookmark a [[buffer]] that is not associated with a file.
-
-* You can bookmark the current desktop, as defined by library
-##desktop.el## -- use command '''`bookmarkp-set-desktop-bookmark''''
-('''`C-x p K'''').  You can "jump" to (that is, restore) any number
-of saved desktops.  A desktop includes:
-
-** Some global [[variable]]s.  To exclude variables normally saved, see option '''`bookmarkp-desktop-no-save-vars''''.
-
-** The current set of buffers and their associated files. ''For each:'' its mode, [[point]], [[mark]], and some local variables.
-
-* You can bookmark a [[Gnus]] article, a URL (if you use [[w3m|W3M]]), a PDF file (%%DocView%%), an image, or a UNIX manual page (from the output of Emacs
-     command `man' or `woman').
-
-* A bookmark can represent a function, which is invoked when
-you "jump" to the bookmark.
-
-* As mentioned above, a bookmark can represent a sequence of
-other bookmarks.
-
-* You can bookmark buffer `##*Bookmark List*##' itself.  Jumping to such a
-  bookmark restores the recorded sort order, filter, title, and omit
-  list (see [[#OmittingBookmarks]]).
-
-
-
-
-
-
-=== Type-Specific Jump Commands ===
-
-* When you want to jump to a bookmark of a specific type (e.g. Dired), you can use a command that offers only such bookmarks as [[completion]] candidates.
 
 
 
@@ -307,7 +327,7 @@ inserted subdirectories, and hidden (sub)directories.
 A '''function bookmark''' simply invokes some function -- any function.
 You can, for instance, define a window or frame configuration and
 record that as a bookmark.  Then jump to the bookmark to switch
-contexts.  (You can also bookmark a desktop and jump to that.)
+contexts.  (You can also bookmark a [[DeskTop|desktop]] and jump to that.)
 
 Function bookmarks might not seem too interesting, since we have
 other ways of invoking functions in Emacs.  But the other features
@@ -340,7 +360,7 @@ displayed bookmark list can thus change.
 
 At different times, and in different contexts, different views can
 be useful.  '''Bookmark+''' lets you save the current state of
-the displayed list and later restore it.  There are a few
+the displayed list and later restore it.  There are a couple of 
 different ways to do this.
 
 
@@ -358,7 +378,7 @@ stepping stone to the files and directories you use most.
 
 If, for example, when you quit the bookmark list you are showing only bookmarks to [[Info]] nodes and UNIX manual pages, sorted in a particular way, and with some of them marked for particular processing, then the next time you open the list the same state is restored: the same set of bookmarks is shown, in the same order, with the same markings.
 
-You can turn off this automatic state saving, if you want, by customizing option '''`bookmarkp-bmenu-state-file'''' to `nil'. And you can toggle this option at any time, using '''`C-t'''' in the bookmark list. In particular, if you want your next visit to the bookmark list to start out with a ''previously'' recorded state instead of the current state, just hit `C-t' before quitting the bookmark list.
+You can turn off this automatic bookmark-list display state saving, if you want, by customizing option '''`bookmarkp-bmenu-state-file'''' to `nil'. And you can toggle this option at any time, using '''`M-l'''' in the bookmark list (command '''`bookmarkp-toggle-saving-menu-list-state''''). In particular, if you want your next visit to the bookmark list to start out with a ''previously'' recorded state instead of the current state, just hit `M-l' before quitting the bookmark list.
 
 
 
@@ -366,7 +386,7 @@ You can turn off this automatic state saving, if you want, by customizing option
 === State-Restoring Commands and Bookmarks ===
 
 In addition to automatically saving/restoring the final
-bookmark-list state, you can save the state at any time, any
+bookmark-list display state, you can save this state at any time, any
 number of times, for later restoration.  This gives you the
 ability to create multiple persistent views of your bookmarks.
 
@@ -422,6 +442,70 @@ activation of other bookmarks.  (To include a state-restoring
 command in a sequence, you need to first create a function
 bookmark that uses the command, and then include that bookmark in
 the sequence.)
+
+
+
+
+
+
+
+
+
+[:UsingMultipleBookmarkFiles]
+== Using Multiple Bookmark Files ==
+
+Bookmark-list views (see [[#BookmarkListViews|Bookmark-List Views]]
+provide
+one way to switch among various sets of bookmarks that you use.
+But that feature affects only the bookmarks that you see displayed
+in buffer `##*Bookmark List*##', not the actual set of available
+bookmarks.
+
+The bookmarks available to you are defined in a ''bookmark file''.  By
+default, they are stored in the file named by option
+'''`bookmark-default-file'''' (`##~/.emacs.bmk##', by default).  You do not
+need to load or save this file manually; Emacs does that for you
+automatically.
+
+But you can also have extra, alternative bookmark files if you
+want, and at any time you can change the bookmark file that is
+current.  To do that, use '''`C-x p L'''' (uppercase `L'), which is
+bound to command '''`bookmarkp-switch-bookmark-file''''.  You can see
+which file is current by using `##?##' or `C-h m' in the buffer
+`##*Bookmark List*##' (or anywhere else using `##M-x bookmarkp-bmenu-mode-status-help##').
+
+Having multiple bookmark files gives you an added degree of
+flexibility, but you must keep track of these extra bookmark files
+yourself -- they are not managed for you automatically.
+
+When bookmarks are saved automatically, or when you save them
+using `bookmark-save' (`S' in the bookmark list or `C-x p s'
+globally) and you don't use a [[prefix argument]], they are saved in
+the current bookmark file.
+
+You can use `bookmark-save' with a prefix argument, or use
+`bookmark-write' (bound to `C-x p w'), to save the currently
+defined bookmarks to a different file.  That is the only
+recommended way to ''create'' a new bookmark file.  Remember that you
+can delete bookmarks from the current set using command
+`bookmark-delete' (`C-x p d') or, in the bookmark list, using `d'
+plus `x' or marking then `D'.
+
+
+You can turn off the automatic saving of the current bookmark
+file, by customizing option '''`bookmark-save-flag'''' to `nil'.  And you
+can toggle this option at any time, using '''`M-s'''' in the bookmark
+list (command '''`bookmarkp-toggle-saving-bookmark-file'''').
+
+Finally, besides using multiple bookmark files as alternatives,
+you can combine them, using them as component bookmark subsets.
+To do that, use command '''`C-x p l'''' (lowercase `l'), which is bound
+to '''`bookmark-load'''', and do not use a prefix argument.  (Using a
+prefix argument with `C-x p l' is the same as using `C-x p L': it
+''switches'' bookmark files.)
+
+
+
 
 
 

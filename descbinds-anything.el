@@ -1,12 +1,13 @@
 ;;; descbinds-anything.el --- Yet Another `describe-bindings' with `anything'.
 
-;; Copyright (C) 2008,2009  Taiki SUGAWARA <buzz.taiki@gmail.com>
+;; Copyright (C) 2008, 2009, 2010  Taiki SUGAWARA <buzz.taiki@gmail.com>
 
 ;; Author: Taiki SUGAWARA <buzz.taiki@gmail.com>
 ;; Keywords: anything, help
-;; Version: 1.03
-;; Time-stamp: <2009-03-29 17:57:12 UTC taiki>
+;; Version: 1.04
+;; Time-stamp: <2010-02-02 20:17:39 UTC taiki>
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/descbinds-anything.el
+;; URL: http://bitbucket.org/buzztaiki/elisp/src/tip/descbinds-anything.el
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -32,27 +33,38 @@
 ;;   (require 'descbinds-anything)
 ;;   (descbinds-anything-install)
 ;;
-;; Now, `describe-bindings' is replaced to `descbinds-anything'. Type `C-h b',
-;; `C-x C-h' these run `descbinds-anything'.
+;; Now, `describe-bindings' is replaced to `descbinds-anything'. Type
+;; `C-h b', `C-x C-h' these run `descbinds-anything'.
 ;;
 ;; In the Anything buffer, you can select key-binds with anything interface.
-;; When type RET, selected candidate command is executed.
-;; When type ESC, You can "Execute", "Describe Function" or "Find Function" by
-;; the menu.
+;;
+;;  - When type RET, selected candidate command is executed.
+;;
+;;  - When type ESC, You can "Execute", "Describe Function" or "Find
+;;    Function" by the menu.
+;;
+;;  - When type C-z, selected command is described without quiting.
 
 ;;; History:
+;; 2010-02-02 UTC  Taiki SUGAWARA  <buzz.taiki@gmail.com>
+;; 
+;;   * descbinds-anything.el: Version 1.04
+;;   add sorting feature.
+;;   separete sorce creation function.
+;;   add persistent action.
+;; 
 ;; 2009-03-29 UTC  Taiki SUGAWARA  <buzz.taiki@gmail.com>
-;;
+;; 
 ;;   * descbinds-anything.el: Version 1.03
 ;;   fix typo.
-;;
+;; 
 ;; 2008-11-16 UTC  Taiki SUGAWARA  <buzz.taiki@gmail.com>
-;;
+;; 
 ;;   * descbinds-anything.el: Version 1.02
 ;;   bound `indent-tabs-mode` to t for nil environment.
-;;
+;; 
 ;; 2008-11-16 UTC  Taiki SUGAWARA  <buzz.taiki@gmail.com>
-;;
+;; 
 ;;   * descbinds-anything.el: fix infinitive-loop when binding-line
 ;;   has not tab.
 
@@ -62,6 +74,7 @@
 
 (defgroup descbinds-anything nil
   "Yet Another `describe-bindings' with `anything'."
+  :prefix "descbinds-anything-"
   :group 'anything)
 
 (defcustom descbinds-anything-actions
@@ -70,25 +83,44 @@
     ("Find Function" . descbinds-anything-action:find-func))
   "Actions of selected candidate."
   :type '(repeat
-	  :tag "Actions"
 	  (cons
 	   :tag "Action"
 	   (string :tag "Name")
-	   (function :tag "Function"))))
+	   (function :tag "Function")))
+  :group 'descbinds-anything)
 
 (defcustom descbinds-anything-candidate-formatter
   'descbinds-anything-default-candidate-formatter
   "Candidate formatter function.
 This function called two argument KEY and BINDING."
-  :type '(function :tag "Formatter"))
+  :type 'function
+  :group 'descbinds-anything)
+
 
 (defcustom descbinds-anything-window-style 'one-window
   "Window splitting style."
   :type '(choice
-	  :tag "Styles"
 	  (const :tag "One Window" one-window)
 	  (const :tag "Same Window" same-window)
-	  (const :tag "Split Window" split-window)))
+	  (const :tag "Split Window" split-window))
+  :group 'descbinds-anything)
+
+
+(defcustom descbinds-anything-section-order
+  '("Major Mode Bindings" "Minor Mode Bindings" "Global Bindings")
+  "A list of section order by name regexp."
+  :type '(repeat (regexp :tag "Regexp"))
+  :group 'descbinds-anything)
+
+(defcustom descbinds-anything-source-template
+  '((candidate-transformer . descbinds-anything-transform-candidates)
+    (persistent-action . descbinds-anything-action:describe)
+    (action . descbinds-anything-actions)
+    (action-transformer . descbinds-anything-transform-actions))
+  "A template of `descbinds-anything' source."
+  :type 'sexp
+  :group 'descbinds-anything)
+
 
 (defun descbinds-anything-all-sections (buffer &optional prefix menus)
   (with-temp-buffer
@@ -100,7 +132,9 @@ This function called two argument KEY and BINDING."
       (while (not (eobp))
 	(cond
 	 (header-p
-	  (setq header (buffer-substring-no-properties (point) (line-end-position)))
+	  (setq header (buffer-substring-no-properties
+			(point)
+			(line-end-position)))
 	  (setq header-p nil)
 	  (forward-line 3))
 	 ((= (char-after) ?\f)
@@ -120,7 +154,9 @@ This function called two argument KEY and BINDING."
 		    key (replace-regexp-in-string"^[ \t\n]+" "" key)
 		    key (replace-regexp-in-string"[ \t\n]+$" "" key))
 	      (goto-char binding-start)
-	      (setq binding (buffer-substring-no-properties binding-start (line-end-position)))
+	      (setq binding (buffer-substring-no-properties
+			     binding-start
+			     (line-end-position)))
 	      (unless (member binding '("self-insert-command"))
 		(push (cons key binding) section))))))
 	(forward-line))
@@ -143,27 +179,37 @@ This function called two argument KEY and BINDING."
   "Default candidate formatter."
   (format "%-10s\t%s" key binding))
 
+(defun descbinds-anything-sort-sections (sections)
+  (flet ((order (x)
+		(loop for n = 0 then (1+ n)
+		      for regexp in descbinds-anything-section-order
+		      if (and (car x) (string-match regexp (car x))) return n
+		      finally return n)))
+    (sort sections (lambda (a b)
+		     (< (order a) (order b))))))
+
+(defun descbinds-anything-transform-candidates (candidates)
+  (mapcar
+   (lambda (pair)
+     (cons (funcall descbinds-anything-candidate-formatter
+		    (car pair) (cdr pair))
+	   (cons (car pair) (intern-soft (cdr pair)))))
+   candidates))
+
+(defun descbinds-anything-transform-actions (actions candidate)
+  (and (commandp (cdr candidate)) actions))
+
 (defun descbinds-anything-sources (buffer &optional prefix menus)
   (mapcar
    (lambda (section)
-     (list
-      (cons 'name (car section))
-      (cons 'candidates (cdr section))
-      (cons 'candidate-transformer
-	    (lambda (candidates)
-	      (mapcar
-	       (lambda (pair)
-		 (cons (funcall descbinds-anything-candidate-formatter
-				(car pair) (cdr pair))
-		       (cons (car pair)
-			     (intern-soft (cdr pair)))))
-	       candidates)))
-      (cons 'action descbinds-anything-actions)
-      (cons 'action-transformer
-	    (lambda (actions candidate)
-	      (and (commandp (cdr candidate))
-		   actions)))))
-   (descbinds-anything-all-sections buffer prefix menus)))
+     (descbinds-anything-source (car section) (cdr section)))
+   (descbinds-anything-sort-sections
+    (descbinds-anything-all-sections buffer prefix menus))))
+
+(defun descbinds-anything-source (name candidates)
+  `((name . ,name)
+    (candidates . ,candidates)
+    ,@descbinds-anything-source-template))
 
 (defun descbinds-anything (&optional prefix buffer)
   "Yet Another `describe-bindings' with `anything'."
@@ -195,4 +241,8 @@ This function called two argument KEY and BINDING."
   (fset 'describe-bindings descbinds-anything-Orig-describe-bindings))
 
 (provide 'descbinds-anything)
+
+;; How to save (DO NOT REMOVE!!)
+;; (emacswiki-post "descbinds-anything.el")
+
 ;;; descbinds-anything.el ends here

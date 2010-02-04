@@ -53,7 +53,7 @@ Reversing a string:
     (apply 'string (reverse (string-to-list "foo")))
     ==> "oof"
 
-See CharacterProcessing and StringModification.
+See CharacterProcessing and StringModification. See [[tr]] for an example of you sometimes need to mix strings and characters.
 
 Looking at characters in buffers:
 

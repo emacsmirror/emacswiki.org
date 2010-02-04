@@ -1,6 +1,6 @@
 These are version control systems that interact with Emacs in a generic way.
 
-* VersionControl, or VC, is the a generic version control interface that comes with Emacs. It provides a consistent interface to interact with many different version control systems, including CVS, Subversion, Git, Mercurial, Bazaar, SCCS, CSSC and RCS.  This is a good choice if you use more than one system for revision control because of the *consistency* of its user interface.
+* VersionControl, or VC, is the generic version control interface that comes with Emacs. It provides a consistent interface to interact with many different version control systems, including CVS, Subversion, Git, Mercurial, Bazaar, SCCS, CSSC and RCS.  This is a good choice if you use more than one system for revision control because of the *consistency* of its user interface.
 ** VcIcon displays an icon indicating the vc status of a file (up-to-date or modified with respect to the repository).
 ** VersionControlAlways
 * DistributedVersionControl is an interface to various *distributed* version control systems.  It doesn't come with Emacs.  Currently DVC supports Git, Mercurial, Bazaar and GNU Arch. Monotone is only partially supported and Darcs support is not usable yet.

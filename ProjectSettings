@@ -203,6 +203,19 @@ the project's source code), you can switch between desktops ("workspaces" or "pr
 IDEs' terminology). DeskTop will remember paths of open files and values of variables (you can
 customize which variables you want).
 
+== projany ==
+
+The purpose of projany is to provide a unified interface to the half a
+dozen emacs project manager libraries out there.  It is intended to
+give libraries a way of knowing about projects without committing to
+any particular project manager.
+
+This is alpha software.  Right now all it provides is
+`projany-pick', which picks a file of some given type from a
+project.
+
+* http://panix.com/~tehom/my-code/projany.el
+
 ----
 CategoryDotEmacs
 CategoryProgrammerUtils

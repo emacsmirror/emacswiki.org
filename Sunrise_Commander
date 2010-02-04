@@ -148,8 +148,9 @@ copy of it here:
 
 For this extension to work you must have:
 
-# FUSE + AVFS support in your Sunrise Commander. If you can navigate (read-only)
-  inside compressed archives you already have this.
+# FUSE   +   AVFS   support   in   your   Sunrise   Commander.     If   you  can
+  [http://www.emacswiki.org/emacs/Sunrise_Commander_Tips#AvfsSetup      navigate
+  (read-only) inside compressed archives] you already have this.
 # One  of funionfs or unionfs-fuse. Debian lenny (stable distribution)  provides
   packages for both.
 # Programs required for compressing -- at least zip and tar.

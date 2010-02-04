@@ -19,3 +19,6 @@ than TO, then the excess characters are deleted.
 	(aset str pos (or c2 0)))))
   (replace-regexp-in-string "\000" "" str))
 }}}
+
+----
+ElispCookbook

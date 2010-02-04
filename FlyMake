@@ -210,6 +210,12 @@ This is the case if you put VariantDir(obj,src) in your SConstruct.
 
 ----
 
+== CMake ==
+
+Using flymake for CMake is not difficult, the trick is to generate Makefiles using information provided by cmake. This [http://www.opencog.org/wiki/Flymake_help|page] contains explanation and scripts to do that. It is possible the provided scripts would work immediately for your CMake project,  if not you will surely get the idea.
+
+-- Nil Geisweiller
+
 == Mozart/Oz ==
 
 Here are instructions how to make flymake work with Mozart/Oz: 

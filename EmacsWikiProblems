@@ -121,6 +121,13 @@ Thanks for looking into this. -- DrewAdams
 This is still happening, but I still cannot give a recipe for why or when it happens -- it happens sometimes. It just happened now. In the same browser session, I updated page DoReMi and saved. Then opened that page again from the link at RecentChanges, using browser's Open Link in New Window. Then clicked Edit the page and got the old page source, before my edit and save. HTH -- DrewAdams
 
 
+[new:DrewAdams:2010-02-04 01:35 UTC]
+Some more info on this, in case it helps. I was just bitten by this again -- I had to redo a bunch of edits as a result. 
+
+If you look at the revisions of BookmarkPlus between Revision 53 and Revision 58, you'll see that Revision 54 was a major edit, then 55 was a minor edit. Well, 55 did not use 54 as its starting point -- it used 53 instead. So I ended up doing 55, 56, 57, and 58, before I realized that the major edit for 54 had been undone (i.e. lost).
+
+I used to think this problem had something to do with the browser cache, but now I'm thinking it has something to do with major and minor edits. HTH. -- DrewAdams
+
 
 
 == Cannot save pages ==

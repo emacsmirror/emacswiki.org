@@ -196,7 +196,7 @@ If you use [[EmacsW32]] which comes with emacsclient instead of gnuserv you can 
 
         DTE.StatusBar.Text = "Opening " + filename + ":" + linenumber.ToString + " in Emacs"
 
-        DTE.ToolWindows.CommandWindow.SendInput("Tools.Shell ""emacsclientw.exe"" -n +" + linenumber.ToString + " " + filename, True)
+        Shell("emacsclientw.exe" + " -n +" + linenumber.ToString + " " + filename)
     End Sub
 
 Simply bind it to a key or menu command and it will open the current file in Emacs at the current line.

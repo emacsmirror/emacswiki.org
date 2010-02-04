@@ -368,5 +368,8 @@ match the certificate.  Installation of the starttls package,
 which was not installed before, fixed the problem for me.  I hope that
 this hint can save someone else from some headache. Update: It refuses to work again, no apparent reason.
 
+[new]
+I seem to have problems if I, by reflex, close the *-jabber-* buffer.  That seems to just totally hose me.  Even if I do a jabber-disconnect, jabber-connect, although the buffer comes back and says I'm online, I can't see anyone and can't even do a version query on myself.  --PaulGoins
+
 ----
 CategoryChatClient

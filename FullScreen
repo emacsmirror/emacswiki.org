@@ -10,15 +10,25 @@
 
     (add-hook 'after-make-frame-functions 'fullscreen)
 
-
-== Send X Messages to the Window Manager ==
+== X Windows ==
+=== Send X Messages to the Window Manager ===
 
      (defun fullscreen ()
        (interactive)
        (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
 	    		 '(2 "_NET_WM_STATE_FULLSCREEN" 0)))
 
-== External program: wmctrl == 
+Or to only maximize window:
+
+     (defun fullscreen (&optional f)
+       (interactive)
+       (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
+	    		 '(2 "_NET_WM_STATE_MAXIMIZED_VERT" 0))
+       (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
+	    		 '(2 "_NET_WM_STATE_MAXIMIZED_HORZ" 0)))
+
+
+=== External program: wmctrl ===
 
 If you want to bind F11 to toggle full-screen, here is what you need:
 
@@ -41,7 +51,7 @@ and now you are GNOME HIG compliant :)
       (interactive)
       (shell-command "wmctrl -r :ACTIVE: -btoggle,maximize_vert,maximize_horz"))
 
-== External program: devilspie ===
+=== External program: devilspie ===
 
 http://patrick.wagstrom.net/weblog/linux/full-screen-emacs.xml
 
@@ -51,7 +61,7 @@ http://patrick.wagstrom.net/weblog/linux/full-screen-emacs.xml
     (if (or (contains (window_class) "emacs") (contains (window_class) "Emacs"))
         (undecorate fullscreen))
 
-== Gnome Keyboard Shortcuts==
+=== Gnome Keyboard Shortcuts===
 
 If you use GNOME you can assign a Keyboard Shortcut to toggle Full Screen or not. Just go to 
 

@@ -7,10 +7,10 @@ My [[http://faculty.valpo.edu/mlundin/|home page]] --- created with OrgMode.
 Some of the other emacs modes to which I am fiercely devoted:
 
 * [[OrgMode]]
-** At the very top of the list!
 * [[EMMS]]
 * [[InteractivelyDoThings]] 
 * [[Gnus]]
+* [[rcirc]]
 * [[AUCTeX]]
 * [[RefTeX]]
 * [[BibTeX]]
