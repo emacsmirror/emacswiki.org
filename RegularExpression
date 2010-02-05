@@ -13,6 +13,8 @@ Regexps are important to Emacs users in many ways, including these:
 * We search with them interactively.  Try `C-M-s' (command <code>isearch-forward-regexp</code>).
 * Emacs code uses them to parse text.  We use regexps all the time, without knowing it, when we use Emacs.
 
+
+[:RegexpSyntax]
 == Regular Expression Syntax ==
 
 Here is the syntax used by Emacs for regular expressions.
@@ -86,6 +88,8 @@ $, %, currency units, accented letters, kanjis. See EmacsSyntaxTable
 for details.
 
 
+
+[:RegexpsInEmacs]
 == Idiosyncrasies of Emacs Regular Expressions ==
 
 * In a interactive search involving a regexp, a space character stands for
@@ -131,6 +135,9 @@ the expression to get it executed).
           (while (re-search-forward "\\([0-9]+\\)\\." nil t)
                         (replace-match "\\1,"))
 
+
+
+[:EmacsRegexpExamples]
 == Some Regexp Examples ==
 
  [-+[:digit:]]                     digit or + or - sign
@@ -146,6 +153,8 @@ the expression to get it executed).
  <tag[^> C-q C-j ]*>\(.*?\)</tag>  html tag
 
 
+
+[:RegexpCommands]
 == Some Emacs Commands that Use Regular Expressions ==
 
  C-M-s                   incremental forward search matching regexp
@@ -185,6 +194,25 @@ IncrementalSearch, ReplaceRegexp, AlignCommands,
 OccurBuffer, DiredPower
 
 
+
+[:ToolsForConstructingRegexps]
+== Tools for Constructing Regexps ==
+
+* Command `re-builder' constructs a
+regular expression. You enter the regexp in a 
+small window at the bottom of the frame. The first 200 matches in the [[buffer]] are highlighted, so you can see if the regexp does what you want. Use Lisp syntax, which means doubling backslashes and using ##\\\\## to match a literal backslash.
+
+* Macro `rx' provides user-friendly syntax for 
+regular expressions. For example, ##(rx (one-or-more blank) line-end)##
+returns the regexp string ##"\\(?:[[:blank:]]+$\\)"##. See [[rx]].
+
+* SymbolicRegexp is similar in aim to `rx'.
+
+
+
+
+
+[:LearningRegexps]
 == Study and Practice ==
 
 * Read about regexps in the Elisp manual (see also RegexpReferences), and study EmacsLisp code that uses regexps.
@@ -225,25 +253,12 @@ OccurBuffer, DiredPower
 ** List lines with more than 80 characters: ##M-x occur RET ^.\{81,\} RET##
 
 
-== Tools for Constructing Regexps ==
-
-* Command `re-builder' constructs a
-regular expression. You enter the regexp in a 
-small window at the bottom of the frame. The first 200 matches in the [[buffer]] are highlighted, so you can see if the regexp does what you want. Use Lisp syntax, which means doubling backslashes and using ##\\\\## to match a literal backslash.
-
-* Macro `rx' provides user-friendly syntax for 
-regular expressions. For example, ##(rx (one-or-more blank) line-end)##
-returns the regexp string ##"\\(?:[[:blank:]]+$\\)"##. See [[rx]].
-
-* SymbolicRegexp is similar in aim to `rx'.
-
-
 [:RegexpsInIcicles]
-== Use Icicles to Learn about Regexps ==
+=== Use Icicles to Learn about Regexps ===
 
 [[Icicles]] provides these interactive ways to learn about regexps: 
 
-* '''`##C-`##'''' (`icicle-search') shows you regexp matches, as does `C-M-s', but it can also show you (that is, highlight) regexp ''subgroup'' matches.  Showing matched subgroups is very helpful for learning, and [[Icicles]] is unique in this.  There are two ways that you can use this feature:
+* '''`##C-`##'''' (`icicle-search') shows you regexp matches, as does `C-M-s', but it can also show you (that is, highlight) regexp ''subgroup'' matches.  Showing matched subgroups is very helpful for learning, and Icicles is unique in this.  There are two ways that you can use this feature:
 
 ** You can seach for a regexp, but limit the search context, used for further searching, to a particular subgroup match. For example, you can search for and highlight Lisp argument lists, by using a regexp subgroup that matches lists, placing that subgroup after `defun':  '''##(defun [^(]*\(([^(]*)\)##''', that is, ##defun##, followed by non-`##(##' character(s), followed by '''`##(##'''', possibly followed by non-`##)##' character(s), followed by '''`##)##''''.
 
@@ -254,6 +269,8 @@ returns the regexp string ##"\\(?:[[:blank:]]+$\\)"##. See [[rx]].
 * `##C-`##' also helps you learn by letting you use two simple regexps (search within a search) as an alternative to coming up with a single, complex regexp to do the same job.  And, as with incremental search, you can change the second regexp on the fly to see immediately what difference the change makes. See [[Icicles - Search Commands, Overview]]
 
 * `S-TAB' during [[minibuffer]] input shows you all matches for your input string, which can be a regexp. So, just type a regexp whenever the minibuffer is active for [[completion]] and hit `S-TAB' to see what the regexp matches. Try this with [[command]] input (`M-x'), [[buffer]] switching (`C-x b'), file visiting (`C-x f'), help (`C-h f', `C-h v'), and so on. Almost any time you type input in the minibuffer, you can type a regexp and use `S-TAB' to see what it matches (and then choose one of the matching candidates to input, if you want).
+
+
 
 ----
 CategoryRegexp

@@ -216,6 +216,10 @@ project.
 
 * http://panix.com/~tehom/my-code/projany.el
 
+Some slight support for EDE with projany is at:
+
+* http://panix.com/~tehom/my-code/projany/ede.el
+
 ----
 CategoryDotEmacs
 CategoryProgrammerUtils

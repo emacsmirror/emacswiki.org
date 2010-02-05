@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Feb  3 17:09:16 2010 (-0800)
+;; Last-Updated: Thu Feb  4 23:55:02 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 10028
+;;     Update #: 10063
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -130,7 +130,7 @@
 ;;    `bookmarkp-bmenu-mark-region-bookmarks',
 ;;    `bookmarkp-bmenu-mark-w3m-bookmarks',
 ;;    `bookmarkp-bmenu-mouse-3-menu', `bookmarkp-bmenu-omit-marked',
-;;    `bookmarkp-bmenu-omit/unomit-marked',
+;;    `bookmarkp-bmenu-omit', `bookmarkp-bmenu-omit/unomit-marked',
 ;;    `bookmarkp-bmenu-query-replace-marked-bookmarks-regexp',
 ;;    `bookmarkp-bmenu-quit', `bookmarkp-bmenu-refresh-menu-list',
 ;;    `bookmarkp-bmenu-regexp-mark',
@@ -182,6 +182,7 @@
 ;;    `bookmarkp-gnus-jump-other-window', `bookmarkp-info-jump',
 ;;    `bookmarkp-info-jump-other-window', `bookmarkp-jump-to-type',
 ;;    `bookmarkp-jump-to-type-other-window',
+;;    `bookmarkp-list-all-tags',
 ;;    `bookmarkp-list-defuns-in-commands-file',
 ;;    `bookmarkp-local-file-jump',
 ;;    `bookmarkp-local-file-jump-other-window',
@@ -545,6 +546,11 @@
 ;;     - A complete menu, `Bookmark+', is provided on the menu-bar.
 ;;       Use it, in particular, when you don't remember a key binding.
 ;;       The same menu is available on `C-mouse-3'.
+;;
+;;     - The vanilla `Bookmarks' menu, which is typically a submenu of
+;;       the `Edit' menu-bar menu, is modified by adding a few items
+;;       from the `Bookmark+' menu, including the `Jump To' submenu
+;;       (called `Jump To Bookmark' there).
 ;;
 ;;  * Multiple bookmark files.
 ;;
@@ -1332,6 +1338,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2010/02/04 dadams
+;;     Added: bookmarkp-bmenu-omit, bookmarkp-list-all-tags.  Added to mouse-3 menu, Tags menus.
 ;; 2010/02/01 dadams
 ;;     Added: bookmarkp-current-bookmark-file, bookmarkp-switch-bookmark-file,
 ;;            (redefinition of) bookmark-load, (redefinition of) bookmark-save,
@@ -4723,6 +4731,16 @@ Returns the bookmark (internal record) created or updated."
 ;;  *** Omitted Bookmarks ***
 
 ;;;###autoload
+(defun bookmarkp-bmenu-omit ()
+  "Omit this bookmark."
+  (interactive)
+  (bookmarkp-barf-if-not-in-menu-list)
+  (bookmark-bmenu-ensure-position)
+  (setq bookmarkp-bmenu-omitted-list  (cons (bookmark-bmenu-bookmark) bookmarkp-bmenu-omitted-list))
+  (bookmark-bmenu-surreptitiously-rebuild-list)
+  (message "Omitted 1 bookmark"))
+
+;;;###autoload
 (defun bookmarkp-bmenu-omit/unomit-marked () ; `O >' in bookmark list
   "Omit all marked bookmarks or, if showing only omitted ones, unomit."
   (interactive)
@@ -5008,6 +5026,13 @@ Non-nil UPDATE-TAGS-LIST-P means update var `bookmarkp-tags-list'."
             cand-tags  (delete tag cand-tags)))
     (nreverse btags)))
 
+;;;###autoload
+(defun bookmarkp-list-all-tags ()       ; `T l' in bookmark list
+  "List all tags used for any bookmarks."
+  (interactive)
+  (require 'pp)
+  (pp-display-expression (bookmarkp-tags-list) "*All Tags"))
+  
 (defun bookmarkp-tags-list ()
   "Current list of all tags, from all bookmarks.
 Sets variable `bookmarkp-tags-list', as a cache."
@@ -5682,29 +5707,29 @@ specified tags, in order, separated by hyphens (`-').  E.g., for TAGS
                                  help-echo "mouse-2: Invoke this bookmark-list bookmark")))
            (desktop-p  (append (bookmarkp-face-prop 'bookmarkp-desktop)
                                '(mouse-face highlight follow-link t
-                                 help-echo "mouse-2: Visit this desktop bookmark")))
+                                 help-echo "mouse-2: Jump to this desktop bookmark")))
            (info-p     (append (bookmarkp-face-prop 'bookmarkp-info)
                                '(mouse-face highlight follow-link t
-                                 help-echo "mouse-2: Visit this Info bookmark")))
+                                 help-echo "mouse-2: Jump to this Info bookmark")))
            (man-p      (append (bookmarkp-face-prop 'bookmarkp-man)
                                '(mouse-face highlight follow-link t
                                  help-echo (format "mouse-2 Goto `man' page"))))
            (gnus-p     (append (bookmarkp-face-prop 'bookmarkp-gnus)
                                '(mouse-face highlight follow-link t
-                                 help-echo "mouse-2: Visit this Gnus bookmark")))
+                                 help-echo "mouse-2: Jump to this Gnus bookmark")))
            (w3m-p      (append (bookmarkp-face-prop 'bookmarkp-w3m)
                                `(mouse-face highlight follow-link t
-                                 help-echo (format "mouse-2: Visit URL `%s'" ,filep))))
+                                 help-echo (format "mouse-2: Jump to URL `%s'" ,filep))))
            ((and su-p (not (bookmarkp-root-or-sudo-logged-p))) ; Root/sudo not logged
             (append (bookmarkp-face-prop 'bookmarkp-su-or-sudo)
                     `(mouse-face highlight follow-link t
-                      help-echo (format "mouse-2: Visit file `%s'" ,filep))))
+                      help-echo (format "mouse-2: Jump to (visit) file `%s'" ,filep))))
            ;; Make sure we test for remoteness before any other tests of the file itself
            ;; (e.g. `file-exists-p'). We don't want to prompt for a password etc.
            ((and remotep (not su-p))    ; Remote file (ssh, ftp)
             (append (bookmarkp-face-prop 'bookmarkp-remote-file)
                     `(mouse-face highlight follow-link t
-                      help-echo (format "mouse-2: Visit remote file `%s'" ,filep))))
+                      help-echo (format "mouse-2: Jump to (visit) remote file `%s'" ,filep))))
            ((and filep (file-directory-p filep)) ; Local directory
             (append (bookmarkp-face-prop 'bookmarkp-local-directory)
                     `(mouse-face highlight follow-link t
@@ -5716,16 +5741,16 @@ specified tags, in order, separated by hyphens (`-').  E.g., for TAGS
            ((and filep (file-exists-p filep)) ; Local file without region
             (append (bookmarkp-face-prop 'bookmarkp-local-file-without-region)
                     `(mouse-face highlight follow-link t
-                      help-echo (format "mouse-2: Visit file `%s'" ,filep))))
+                      help-echo (format "mouse-2: Jump to (visit) file `%s'" ,filep))))
            ((and buffp (get-buffer buffp) (equal filep bookmarkp-non-file-filename)) ; Buffer
             (append (bookmarkp-face-prop 'bookmarkp-buffer)
                     `(mouse-face highlight follow-link t
-                      help-echo (format "mouse-2: Visit buffer `%s'" ,buffp))))
+                      help-echo (format "mouse-2: Jump to buffer `%s'" ,buffp))))
            ((and buffp  (or (not filep) (equal filep bookmarkp-non-file-filename)
                             (not (file-exists-p filep)))) ; Buffer bookmark, but no buffer.
             (append (bookmarkp-face-prop 'bookmarkp-non-file)
                     `(mouse-face highlight follow-link t
-                      help-echo (format "mouse-2: Visit buffer `%s'" ,buffp))))
+                      help-echo (format "mouse-2: Jump to buffer `%s'" ,buffp))))
            (t (append (bookmarkp-face-prop 'bookmarkp-bad-bookmark)
                       `(mouse-face highlight follow-link t
                         help-echo (format "BAD BOOKMARK (maybe): `%s'" ,filep))))))))
@@ -8148,6 +8173,8 @@ candidate."
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "Td"   'bookmarkp-remove-tags-from-all)
 ;;;###autoload
+(define-key bookmark-bmenu-mode-map "Tl"   'bookmarkp-list-all-tags)
+;;;###autoload
 (define-key bookmark-bmenu-mode-map "Tm*"  'bookmarkp-bmenu-mark-bookmarks-tagged-all)
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "Tm%"  'bookmarkp-bmenu-mark-bookmarks-tagged-regexp)
@@ -8407,6 +8434,7 @@ Tags
 \\[bookmarkp-remove-all-tags]\t- Remove all tags from a bookmark
 \\[bookmarkp-remove-tags-from-all]\t- Remove some tags from all bookmarks
 \\[bookmarkp-rename-tag]\t- Rename a tag in all bookmarks
+\\[bookmarkp-list-all-tags]\t- List all tags used in any bookmarks
 
 \\[bookmarkp-bmenu-add-tags-to-marked]\t- Add some tags to the marked bookmarks
 \\[bookmarkp-bmenu-remove-tags-from-marked]\t- Remove some tags from the marked bookmarks
@@ -8757,6 +8785,9 @@ bookmarkp-sequence-jump-display-function - How to display components")
 (defvar bookmarkp-bmenu-tags-menu (make-sparse-keymap "Tags"))
 (define-key bookmarkp-bmenu-menubar-menu [tags] (cons "Tags" bookmarkp-bmenu-tags-menu))
 
+(define-key bookmarkp-bmenu-tags-menu [bookmarkp-list-all-tags]
+  '(menu-item "List All Tags" bookmarkp-list-all-tags
+    :help "List all tags used for any bookmarks"))
 (define-key bookmarkp-bmenu-tags-menu [bookmarkp-rename-tag]
   '(menu-item "Rename Tag" bookmarkp-rename-tag
     :help "Rename a tag in all bookmarks, even those not showing"))
@@ -8887,8 +8918,8 @@ bookmarkp-sequence-jump-display-function - How to display components")
   '(menu-item "Search Marked" bookmarkp-bmenu-search-marked-bookmarks-regexp
     :help "Regexp-search the files whose bookmarks are marked, in their current order"))
 (define-key bookmarkp-bmenu-menubar-menu [bookmark-bmenu-select]
-  '(menu-item "Visit Marked" bookmark-bmenu-select
-    :help "Visit this line's bookmark.  Also visit each bookmark marked with `>'"))
+  '(menu-item "Jump to Marked" bookmark-bmenu-select
+    :help "Jump to this line's bookmark.  Also visit each bookmark marked with `>'"))
 
 
 ;;; Mouse-3 menu binding.
@@ -8935,9 +8966,10 @@ bookmarkp-sequence-jump-display-function - How to display components")
                          (if (looking-at "^D")
                              '("Unmark" . bookmark-bmenu-unmark)
                            '("Flag for Deletion" . bookmark-bmenu-delete)))
+                       '("Omit" . bookmarkp-bmenu-omit)
                        '("--")          ; ----------------------------------------
-                       '("Visit" . bookmark-bmenu-this-window)
-                       '("Visit in Other Window" . bookmark-bmenu-other-window)
+                       '("Jump To" . bookmark-bmenu-this-window)
+                       '("Jump To in Other Window" . bookmark-bmenu-other-window)
                        '("--")          ; ----------------------------------------
                        '("Add Some Tags" . bookmarkp-add-tags)
                        '("Remove Some Tags" . bookmarkp-remove-tags)
@@ -8957,7 +8989,6 @@ bookmarkp-sequence-jump-display-function - How to display components")
            (save-excursion
              (goto-char (posn-point mouse-pos))
              (call-interactively menu-choice))))))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 

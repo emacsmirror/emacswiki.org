@@ -24,3 +24,5 @@ example, in lisp modes, if the point is at -!- in:
 then ``Esc 2 ('' will result in
 
       (if (null? x) (-!-(printf 3) hi))
+
+There's a version that allows the insertion of unbalanced parentheses at http://gist.github.com/294898 .

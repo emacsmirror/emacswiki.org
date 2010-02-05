@@ -149,7 +149,7 @@ individual bookmark you point to.
 
 :: [[image:BookmarkPlusThisBookmarkMenu]]
 
-* A complete menu, '''`##Bookmark+##'''', is provided on the [[menu bar]].
+* A complete menu, '''`Bookmark+'''', is provided on the [[menu bar]].
 Use it, in particular, when you don't remember a key binding.
 The same menu is available on '''`C-mouse-3''''.
 
@@ -166,7 +166,7 @@ The same menu is available on '''`C-mouse-3''''.
 ;;; '''Jump''': [[image:BookmarkPlusMenuBarMenuJump]]
 ;;; '''Define Command''': [[image:BookmarkPlusMenuBarMenuDefineCommand]]
 
-* The '''Jump To''' menu is also added to the vanilla '''Bookmarks''' menu, which is typically a submenu of the '''Edit''' menu-bar menu. (It is called '''Jump To Bookmark''' there.)
+* The vanilla '''Bookmarks''' menu, which is typically a submenu of the '''Edit''' menu-bar menu, is modified by adding a few items from the '''`Bookmark+'''' menu, including the '''Jump To''' submenu (called '''Jump To Bookmark''' there).
 
 
 

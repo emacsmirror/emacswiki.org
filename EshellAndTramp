@@ -9,3 +9,20 @@ http://lists.gnu.org/archive/html/tramp-devel/2002-09/msg00121.html
 I was wondering if there is a simple way [ie a simple change or setting in either eshell or tramp] which inserts the output a remote command into the current eshell buffer...
 
 
+---
+
+I have it working successfully with TRAMP on a Win32 machine, via PuTTY. Nothing special about my setup, here's the TRAMPy part:
+
+    (require 'tramp)
+    (setq tramp-debug-buffer t)
+    (setq tramp-default-method "plink")
+    (setq tramp-auto-save-directory (concat "d:\\tmp\\" user-login-name) ; (Windows)
+
+tramp-default-method seems to be the important thing, to save it guessing how to connect. I can then cd like so:
+
+    cd /USER@PUTTYCONFIG:/some/path
+
+So long as the hostname ("PUTTYCONFIG") has been saved by Putty, it's fine.
+
+I have not tried with other TRAMP methods like ssh (we're using Windows to reach into Unix hosts here, I know crazy...) but if the default is set to something that works, I think eshell should be fine.
+

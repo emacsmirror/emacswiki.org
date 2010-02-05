@@ -343,14 +343,15 @@ directory's paths as the directory doesnt' change that much.\n
 
 ;;; ==============================
 ;;; :TODO This needs to be a hash-table.
+;;; :NOTE Var loaded from `mon-dir-utils.el' at loadtime.
 ;;; :MODIFICATIONS <Timestamp: Thursday May 28, 2009 @ 04:43.15 PM - by MON KEY>
 (defvar *nefs_photos_nefs-alist* nil
   "*Directory contents as an alist for path `*nef-scan-nefs-path*'.
 Alist generated with `mon-update-nef-photos-alist' at startup.
 :NOTE using the ugly underscores to help distinguish in completion lists.\n
-:EXAMPLE\n(symbol-velue '*nefs_photos_nefs-alist*)\n►►►")
-;;
-;;; Var loaded from `mon-dir-utils.el'.
+:EXAMPLE\n(symbol-velue '*nefs_photos_nefs-alist*)\n
+:NOTE Bound loadtime with `mon-bind-nefs-photos-at-loadtime'.
+:SEE-ALSO.\n►►►")
 
 ;;; ==============================
 (defvar *nef-scan-nef2-path* nil

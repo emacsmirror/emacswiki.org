@@ -41,6 +41,7 @@ The package mon-utils is the entry point which loads the rest of the system and 
 * Lisp:mon-url-utils.el -- Provides utilities for interactively calling URL data lookups and for in
 ;;; buffer modification of web/internet scrapes.
 * Lisp:mon-cifs-utils.el -- (MonCifsUtils) Provides utilities for mapping and mounting a CIFS domain using auth-source. Common Internet File System protocol, e.g. successor to the SMB (Server Message Block) protocol with the Samba Server.
+* Lisp:google-define-redux.el -- Provides extensions for *Lisp:google-define.el
 
 === :MON-DOC-UTILS ===
 
@@ -170,6 +171,10 @@ Roughly the sequence with which MON brings his Emacs' systems up.
  =]
 
 /s_P\
+
+[new:stepnem:2010-02-05 08:09 UTC]
+I wonder why your packages don't adhere to Elisp library header conventions.
+Also, some of the `Lisp' links above don't work (missing the colon).
 
 ----
 CategoryHomepage

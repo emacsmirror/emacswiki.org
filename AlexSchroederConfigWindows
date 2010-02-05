@@ -6,15 +6,15 @@
 
 (add-to-list 'load-path (expand-file-name "elisp" (getenv "HOME")))
 ;; (add-to-list 'exec-path "c:/Program Files/GnuWin32/bin")
-(add-to-list 'exec-path "c:/cygwin/bin")
+(add-to-list 'exec-path "c:/Programme/GnuWin32/bin")
 (add-to-list 'exec-path "C:/oracle/product/10.2.0/db_1/bin")
 (server-start)
 
-(unless (string-match "cygwin" (getenv "PATH"))
-  (setenv "PATH" (concat "C:\\cygwin\\bin\\;" (getenv "PATH"))))
-(unless (string-match "oracle" (getenv "PATH"))
-  (setenv "PATH" (concat "C:\\oracle\\product\\10.2.0\\db_1\\bin;"
-			 (getenv "PATH"))))
+(dolist (path '("C:\\Programme\\GnuWin32\\bin"
+		"C:\\cygwin\\bin"))
+  (when (and (file-exists-p path)
+	     (not (string-match (regexp-quote path) (getenv "PATH"))))
+    (setenv "PATH" (concat path ";" (getenv "PATH")))))
 
 (prefer-coding-system 'utf-8)
 (setq default-file-name-coding-system 'cp1252)
@@ -29,7 +29,6 @@
 ; (pink-bliss)
 
 ;; minor modes
-(global-font-lock-mode 1)
 (show-paren-mode 1)
 (tool-bar-mode -1)
 (menu-bar-mode -1)
@@ -243,13 +242,9 @@ Indent by DEPTH, if required"
 
 (global-set-key (kbd "C-c q") 'sql-oracle)
 
-;; (setq sql-user "minicrm"
-;;       sql-password "minicrm"
-;;       sql-database "minicrm")
-
-(setq sql-user "ors"
+(setq sql-user "DEV"
       sql-password ""
-      sql-database "tamedia")
+      sql-database "BSICRM")
 
 (setq sql-input-ring-file-name "~/.sql_history"
       sql-product 'oracle
@@ -316,6 +311,50 @@ using `sql-replacments'."
     (setq key (car (car sql-replacements))))
   (setq sql-replacements (delete (assoc key sql-replacements)
 				 sql-replacements)))
+
+(defun sql-generate-uc (id type num &rest data)
+  "Generate INSERT statements for ORS_UC and ORS_UCL."
+  (interactive "nFirst Id: \nnType: \nnHow many: ")
+  (dotimes (i num)
+    (insert "INSERT INTO ORS_UC (UC_UID, PARTITION_UID, CODE_TYPE, ACTIVE, PROTECTED, PARENT_UID)\n"
+	    "VALUES (" (number-to-string (+ id i)) ", 0, " (number-to-string type) ", 1, 0, 0);\n"
+	    "\n"
+	    "INSERT INTO ORS_UCL (UC_UID, LANGUAGE_ID, CODE_NAME)\n"
+	    "VALUES (" (number-to-string (+ id i)) ", 1303, '" (or (car data) "") "');\n"
+	    "\n")
+    (setq data (cdr data))))
+
+;; (sql-generate-uc 999701 999700 3 "Test" "Foo")
+
+(defun sql-generate-uc-region (id type start end)
+  "Generate INSERT statements for ORS_UC and ORS_UCL.
+Use the region as input, one line per UC."
+  (interactive "nFirst Id: \nnType: \nr")
+  (let ((data (split-string (buffer-substring start end) "\n" t)))
+    (delete-region start end)
+    (apply 'sql-generate-uc id type (length data) data)))
+
+(defun sql-generate-person-region (id company nr start end)
+  "Generate INSERT statements for the persons in the region.
+Each line consists of a lastname, a tab, and a firstname."
+  (interactive "nFirst Id: \nsCompany Name: \nsCompany Nr: \nr")
+  (let ((data (buffer-substring start end)))
+    (delete-region start end)
+    (dolist (person (split-string data "\n" t))
+      (destructuring-bind (lastname firstname) (split-string person "\t")
+	(insert "-- " firstname " " lastname "\n"
+		"\n"
+		"INSERT INTO ORS_PERSON(PERSON_NR, FUNCTION_TYPE_UID, PERSON_TYPE, INTERN, DISPLAY_NAME, COMPANY_NR,\n"
+		" FIRST_NAME, LAST_NAME, ACTIVE, LANGUAGE_UID, NO_MAILING, SALUTATION_UID, CIVIL_STATUS_UID, NATIONALITY_UID)\n"
+		"VALUES(" (number-to-string id) ", 0, 1, 0, '" lastname ", " firstname " (" company ")', " nr ",\n"
+		" '" firstname "', '" lastname "', 1, 1303, 0, 0, 0, 0);\n"
+		"\n"
+		"INSERT INTO ORS_PERSON_ADDRESS(PERSON_NR, TYPE_UID, ADDRESS_NR, COMP_TYPE_UID)\n"
+		"VALUES(" (number-to-string id) ", 2469, 999500, 2315);\n"
+		"\n")
+	(incf id)))))
+
+;; (let ((start (point))) (insert "foo\nbar\n") (sql-generate-uc-region 999601 999600 start (point)))
 
 (defun my-highest-key ()
   "Find highest PK in buffer"
@@ -478,15 +517,17 @@ using `sql-replacments'."
       rcirc-fill-column 65; side-by-side on my laptop
       rcirc-default-nick "kensanata"
       rcirc-log-flag t
-      rcirc-log-directory "~/Eigene Dateien/IRC Logs"
+      rcirc-log-directory "~/IRC Logs"
       rcirc-keywords '("ken" "kens" "kensa")
       rcirc-server-alist
       '(("irc.freenode.net" :channels ("#rcirc" "#wiki" "#oddmuse" "#epfarms"
-	 "#emacs" "#sql" "#hcoop" "#scrum" "#eclipse" "#eclipse-de" "#osgi"))
-	("irc.perl.org" :channels ("#perlde"))
-	("ircnet.eversible.com" :channels ("#drsrm")))
+	 "#emacs" "#sql"))
+	("irc.perl.org" :channels ("#perlde" "#perl6"))
+	("ircnet.eversible.com" :channels ("#drsrm"))
+	("irc.sorcery.net" :channels ("#rpmn")))
       ;; "#scheme" "#nethack" "#atom" "#microformats" "#barcamp"
       ;; "#emacs-fu" "#haskell" "#openfire" "##jabber" "#tentacle"
+      ;; "#openbsd" "#hcoop" "#scrum" "#eclipse" "#eclipse-de" "#osgi"
       rcirc-decode-coding-system 'undecided
       rcirc-ignore-list '()
       rcirc-authinfo (let ((file "~/.rcirc-authinfo"))
