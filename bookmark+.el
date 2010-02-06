@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Feb  4 23:55:02 2010 (-0800)
+;; Last-Updated: Fri Feb  5 16:48:49 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 10063
+;;     Update #: 10105
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -335,7 +335,7 @@
 ;;    `bookmarkp-remove-if', `bookmarkp-remove-if-not',
 ;;    `bookmarkp-repeat-command',
 ;;    `bookmarkp-replace-regexp-in-string',
-;;    `bookmarkp-root-or-sudo-logged-p',
+;;    `bookmarkp-root-or-sudo-logged-p', `bookmarkp-same-file-p',
 ;;    `bookmarkp-save-menu-list-state',
 ;;    `bookmarkp-save-new-region-location',
 ;;    `bookmarkp-sequence-bookmark-p', `bookmarkp-set-union',
@@ -843,25 +843,34 @@
 ;;  globally) and you don't use a prefix argument, they are saved in
 ;;  the current bookmark file.
 ;;
-;;  You can use `bookmark-save' with a prefix argument, or use
-;;  `bookmark-write' (bound to `C-x p w'), to save the currently
-;;  defined bookmarks to a different file.  That is the only
-;;  recommended way to create a new bookmark file.  Remember that you
-;;  can delete bookmarks from the current set using command
-;;  `bookmark-delete' (`C-x p d') or, in the bookmark list, using `d'
-;;  plus `x' or marking then `D'.
-;;
 ;;  You can turn off the automatic saving of the current bookmark
 ;;  file, by customizing option `bookmark-save-flag' to nil.  And you
 ;;  can toggle this option at any time, using `M-s' in the bookmark
 ;;  list (command `bookmarkp-toggle-saving-bookmark-file').
 ;;
-;;  Finally, besides using multiple bookmark files as alternatives,
-;;  you can combine them, using them as component bookmark subsets.
-;;  To do that, use command `C-x p l' (lowercase `l'), which is bound
-;;  to `bookmark-load', and do not use a prefix argument.  (Using a
-;;  prefix argument with `C-x p l' is the same as using `C-x p L': it
-;;  switches bookmark files.)
+;;  Besides using multiple bookmark files as alternatives, you can
+;;  combine them, using them as component bookmark subsets (like
+;;  modules).  To do that, use command `C-x p l' (lowercase `l'),
+;;  which is bound to `bookmark-load', and do not use a prefix
+;;  argument.  (Using a prefix argument with `C-x p l' is the same as
+;;  using `C-x p L': it switches bookmark files.)
+;;
+;;  To create additional bookmark files, to use as either alternatives
+;;  or component files, you can either copy an existing bookmark file
+;;  or use `bookmarkp-empty-file' (`C-x p 0') to create a new, empty
+;;  bookmark file.  If you use `C-x p 0' with an existing bookmark
+;;  file, then its bookmarks are all deleted - it is emptied.
+;;
+;;  Instead of simply copying a bookmark file, you can use
+;;  `bookmark-save' with a prefix argument, or use `bookmark-write'
+;;  (bound to `C-x p w'), to save the currently defined bookmarks to a
+;;  different bookmark file.
+;;
+;;  However a bookmark file was created, you can switch to it and then
+;;  add or delete bookmarks selectively, to change its content.
+;;  Remember that you can delete bookmarks from the current set using
+;;  command `bookmark-delete' (`C-x p d') or, in the bookmark list,
+;;  using `d' plus `x' or marking then `D'.
 ;;
 ;;
 ;;(@* "Bookmark List (Display)")
@@ -1338,6 +1347,11 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2010/02/05 dadams
+;;     Added: bookmarkp-same-file-p, bookmarkp-empty-file.
+;;     Bound bookmarkp-empty-file to C-x p 0, and added it to menus.
+;;     *-bmenu-list, *-switch-bookmark-file: Use bookmarkp-same-file-p.
+;;     bookmark-write-file: Added optional ALT-MSG arg.
 ;; 2010/02/04 dadams
 ;;     Added: bookmarkp-bmenu-omit, bookmarkp-list-all-tags.  Added to mouse-3 menu, Tags menus.
 ;; 2010/02/01 dadams
@@ -2311,8 +2325,7 @@ You can then mark some of them and use `\\[bookmarkp-bmenu-omit/unomit-marked]'
   :type '(repeat (string :tag "Bookmark name")) :group 'bookmarkp)
 
 ;;;###autoload
-(defcustom bookmarkp-bmenu-commands-file (convert-standard-filename
-                                          "~/.emacs-bmk-bmenu-commands.el")
+(defcustom bookmarkp-bmenu-commands-file (convert-standard-filename "~/.emacs-bmk-bmenu-commands.el")
   "*File for saving user-defined bookmark-list commands.
 This must be an absolute file name or nil (it is not expanded).
 
@@ -3530,41 +3543,46 @@ If called from Lisp:
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; 1. Insert code piecewise, to improve performance when saving `bookmark-alist'.
+;; 1. Added optional arg ALT-MSG.
+;; 2. Insert code piecewise, to improve performance when saving `bookmark-alist'.
 ;;    (Do not let `pp' parse all of `bookmark-alist' at once.)
-;; 2. Remove any text properties from bookmark title and file name.
-;; 3. Use `case', not `cond'.
+;; 3. Remove any text properties from bookmark title and file name.
+;; 4. Use `case', not `cond'.
 ;;
-(defun bookmark-write-file (file)
-  "Write `bookmark-alist' to FILE."
-  (bookmark-maybe-message "Saving bookmarks to file `%s'..." file)
-  (with-current-buffer (get-buffer-create " *Bookmarks*")
-    (goto-char (point-min))
-    (delete-region (point-min) (point-max))
-    (let ((print-length  nil)
-          (print-level   nil)
-          bname fname last-fname)
-      (bookmark-insert-file-format-version-stamp)
-      (insert "(")
-      (dolist (bmk  bookmark-alist)
-        (setq bname  (car bmk)
-              fname  (bookmark-get-filename bmk))
-        (set-text-properties 0 (length bname) () bname)
-        (when fname (set-text-properties 0 (length fname) () fname))
-        (setcar bmk bname)
-        (when (setq last-fname  (assq 'filename bmk)) (setcdr last-fname fname))
-        (pp bmk (current-buffer)))
-      (insert ")")
-      (let ((version-control  (case bookmark-version-control
-                                ((nil)      nil)
-                                (never      'never)
-                                (nospecial  version-control)
-                                (t          t))))
-        (condition-case nil
-            (write-region (point-min) (point-max) file)
-          (file-error (message "Cannot write file `%s'" file)))
-        (kill-buffer (current-buffer))
-        (bookmark-maybe-message "Saving bookmarks to file `%s'...done" file)))))
+(defun bookmark-write-file (file &optional alt-msg)
+  "Write `bookmark-alist' to FILE.
+Non-nil ALT-MSG is a message string to use in place of the progress
+message \"Saving bookmarks to file `FILE'...\".  It is shown at the
+end with \"done\" appended."
+  (let ((msg  (or alt-msg "Saving bookmarks to file `%s'..." file)))
+    (bookmark-maybe-message (or alt-msg "Saving bookmarks to file `%s'..." file))
+    (with-current-buffer (get-buffer-create " *Bookmarks*")
+      (goto-char (point-min))
+      (delete-region (point-min) (point-max))
+      (let ((print-length  nil)
+            (print-level   nil)
+            bname fname last-fname)
+        (bookmark-insert-file-format-version-stamp)
+        (insert "(")
+        (dolist (bmk  bookmark-alist)
+          (setq bname  (car bmk)
+                fname  (bookmark-get-filename bmk))
+          (set-text-properties 0 (length bname) () bname)
+          (when fname (set-text-properties 0 (length fname) () fname))
+          (setcar bmk bname)
+          (when (setq last-fname  (assq 'filename bmk)) (setcdr last-fname fname))
+          (pp bmk (current-buffer)))
+        (insert ")")
+        (let ((version-control  (case bookmark-version-control
+                                  ((nil)      nil)
+                                  (never      'never)
+                                  (nospecial  version-control)
+                                  (t          t))))
+          (condition-case nil
+              (write-region (point-min) (point-max) file)
+            (file-error (message "Cannot write file `%s'" file)))
+          (kill-buffer (current-buffer))
+          (bookmark-maybe-message (concat msg "done")))))))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -3610,8 +3628,9 @@ proper bookmark alist, then when bookmarks are saved the current
 bookmark file will likely become corrupted.  You should load only
 bookmark files that were created using the bookmark functions."
   (interactive
-   (list (read-file-name (if current-prefix-arg "Switch to bookmark file: " "Add bookmarks from file: ")
-                         "~/" bookmark-default-file 'confirm)))
+   (list (read-file-name
+          (if current-prefix-arg "Switch to bookmark file: " "Add bookmarks from file: ")
+          "~/" bookmark-default-file 'confirm)))
   (setq file  (expand-file-name file))
   (unless (file-readable-p file) (error "Cannot read bookmark file `%s'" file))
   (unless no-msg (bookmark-maybe-message "Loading bookmarks from `%s'..." file))
@@ -3646,9 +3665,8 @@ still use `bookmark-default-file' for the initial set of bookmarks."
   (interactive
    (list (read-file-name
           "Switch to bookmark file: " "~/"
-          (and (not (string=            ; Default file as default choice, unless it's already current.
-                     (convert-standard-filename (expand-file-name bookmark-default-file))
-                     (convert-standard-filename (expand-file-name bookmarkp-current-bookmark-file))))
+          ;; Default file as default choice, unless it's already current.
+          (and (not (bookmarkp-same-file-p bookmark-default-file bookmarkp-current-bookmark-file))
                bookmark-default-file)
           'confirm)))
   (bookmark-load file t no-msg))
@@ -3822,8 +3840,7 @@ Non-nil FILTEREDP means the bookmark list has been filtered, so:
                    bookmarkp-bmenu-before-hide-unmarked-alist
                    (cdr (assq 'last-bmenu-before-hide-unmarked-alist state)))
              (let ((last-bookmark-file  (cdr (assq 'last-bookmark-file state))))
-               (unless (string= last-bookmark-file (convert-standard-filename
-                                                    (expand-file-name bookmarkp-current-bookmark-file)))
+               (unless (bookmarkp-same-file-p last-bookmark-file bookmarkp-current-bookmark-file)
                  (if (y-or-n-p
                       (format "Saved bookmark-list state does not match the current bookmark \
 file.  Switch to the last file used, `%s'? " last-bookmark-file))
@@ -5389,6 +5406,27 @@ unmark those that have no tags at all."
 ;;  *** General Menu-List (`-*bmenu-*') Commands and Functions ***
 
 ;;;###autoload
+(defun bookmarkp-empty-file (file)
+  "Empty the bookmark file FILE, or create FILE (empty) if it does not exist.
+In either case, FILE will become an empty bookmark file.
+
+NOTE: If FILE already exists and you confirm emptying it, no check is
+      made that it is in fact a bookmark file before emptying it.
+      It is simply replaced by an empty bookmark file and saved.
+
+This does NOT also make FILE the current bookmark file.  To do that,
+use `\\[bookmarkp-switch-bookmark-file]' (`bookmarkp-switch-bookmark-file')."
+  (interactive (list (read-file-name "Create empty bookmark file: " "~/")))
+  (bookmark-maybe-load-default-file)
+  (when (and (file-exists-p file)
+             (not (y-or-n-p (format "CONFIRM: Empty the existing file `%s'? " file))))
+    (error "OK, cancelled"))
+  (let ((bookmark-alist  ()))
+    (bookmark-write-file file (if (file-exists-p file)
+                                  (format "Emptying bookmark file `%s'..." file)
+                                (format "Creating new, empty bookmark file `%s'..." file)))))
+
+;;;###autoload
 (defun bookmarkp-bmenu-w32-open ()      ; `M-RET' in bookmark list.
   "Use `w32-browser' to open this bookmark."
   (interactive)
@@ -6135,6 +6173,12 @@ necessary."
 This works around an Emacs 20 problem that occurs if STRING contains
 binary data (weird chars)."
   (condition-case nil (upcase string) (error string)))
+
+(defun bookmarkp-same-file-p (file1 file2)
+  "Return non-nil if FILE1 and FILE2 name the same file.
+If either name is not absolute, then it is considered relative to
+`default-directory'."
+  (string= (file-truename (expand-file-name file1)) (file-truename (expand-file-name file2))))
 
 (defun bookmarkp-file-remote-p (file-name)
   "Returns non-nil if string FILE-NAME is likely to name a remote file."
@@ -7978,6 +8022,8 @@ candidate."
 ;;;###autoload
 (define-key ctl-x-map "rK" 'bookmarkp-set-desktop-bookmark)
 ;;;###autoload
+(define-key bookmark-map "0" 'bookmarkp-empty-file)
+;;;###autoload
 (define-key bookmark-map "K" 'bookmarkp-set-desktop-bookmark)
 ;;;###autoload
 (define-key bookmark-map "L" 'bookmarkp-switch-bookmark-file)
@@ -8559,6 +8605,10 @@ bookmarkp-sequence-jump-display-function - How to display components")
 
 
 ;; Vanilla `Bookmarks' menu (see also [jump], below).
+(define-key-after menu-bar-bookmark-map [bookmarkp-empty-file]
+  '(menu-item "New (Empty) Bookmark File" bookmarkp-empty-file
+    :help "Create a new, empty bookmark file, or empty an existing bookmark file")
+  'write)
 (define-key menu-bar-bookmark-map [load] ; Just to modify text slightly.
   '(menu-item "Add Bookmarks from File..." bookmark-load
     :help "Load additional bookmarks from a bookmark file"))
@@ -8591,15 +8641,18 @@ bookmarkp-sequence-jump-display-function - How to display components")
 (define-key bookmarkp-bmenu-menubar-menu [bookmark-bmenu-load]
   '(menu-item "Add Bookmarks from File..." bookmark-bmenu-load
     :help "Load additional bookmarks from a bookmark file"))
-(define-key bookmarkp-bmenu-menubar-menu [bookmarkp-bmenu-refresh-menu-list]
-  '(menu-item "Refresh (Revert)" bookmarkp-bmenu-refresh-menu-list
-    :help "Update the displayed bookmark list to reflect the currently defined bookmarks"))
+(define-key bookmarkp-bmenu-menubar-menu [bookmarkp-empty-file]
+  '(menu-item "New (Empty) Bookmark File" bookmarkp-empty-file
+    :help "Create a new, empty bookmark file, or empty an existing bookmark file"))
 (define-key bookmarkp-bmenu-menubar-menu [bookmark-write]
   '(menu-item "Save As..." bookmark-write
     :help "Write the current set of bookmarks to a file whose name you enter"))
 (define-key bookmarkp-bmenu-menubar-menu [bookmark-bmenu-save]
   '(menu-item "Save" bookmark-bmenu-save
     :help "Save the current set of bookmarks to the current bookmark file"))
+(define-key bookmarkp-bmenu-menubar-menu [bookmarkp-bmenu-refresh-menu-list]
+  '(menu-item "Refresh (Revert)" bookmarkp-bmenu-refresh-menu-list
+    :help "Update the displayed bookmark list to reflect the currently defined bookmarks"))
 (define-key bookmarkp-bmenu-menubar-menu [top-sep1] '("--"))
 
 (define-key bookmarkp-bmenu-menubar-menu [bookmarkp-make-function-bookmark]

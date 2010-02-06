@@ -1,0 +1,56 @@
+[[ja:Webgenモード]]
+download: Lisp:webgen-mode.el
+
+Webgen minor mode.
+This mode makes it easy to edit your website using webgen.
+Webgen is a static website generator written in Ruby.
+You can get webgen fron the URL below:
+
+http://webgen.rubyforge.org/
+
+
+==How to use==
+
+You can toggle webgen mode interactively by the command below:
+
+<code>M-x webgen-mode</code>
+
+Input 'C-c C-b' or call funciton 'webgen-build' to run webgen.
+Input 'C-c C-v' or call function 'webgen-browse-html' to browse the generated HTML file.
+
+
+==Configuration==
+
+Add the code below to your '.emacs' or 'init.el'.
+NOTE: If you haven't installed markdown-mode.el, change 'markdown-mode' to whatever mode you like such as 'text-mode'.
+
+<code>(require 'webgen-mode nil t)</code>
+
+<code>(add-to-list 'auto-mode-alist '(\"\\\\.page\\\\'\" . (lambda () (markdown-mode) (webgen-mode))))</code>
+
+<code>(add-to-list 'auto-mode-alist '(\"\\\\.template\\\\'\" . (lambda () (html-mode) (webgen-mode))))</code>
+
+<code>(add-to-list 'auto-mode-alist '(\"[Mm]etainfo\\\\'\" . (lambda () (text-mode) (webgen-mode))))</code>
+
+
+==Functions and variables==
+
+Webgen mode provides the functions below:
+
+* webgen-build
+* webgen-browse-html
+
+Use 'describe-function' to know more about these functions.
+
+
+Webgen mode provides the variables below:
+
+* webgen-program
+* webgen-source-directory
+* webgen-output-directory
+* webgen-output-page-ext
+
+Use 'describe-variable' to know more about these variables.
+
+----
+CategoryModes

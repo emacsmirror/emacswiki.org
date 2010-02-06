@@ -28,8 +28,12 @@ Below is an screenshot showing how the first occurences of each character are hi
 
 Nice. Is it possible to add memory to this thing? Like, '##M-s RET##' jumps forward to the character previously entered.
 
+I don't see the point. Why cannot you just hit '##M-s x##' if x is the character previously entered?
+
 [new]
 I love it! But it fails for me on "org-mode" buffers. It doesn't do anything when I enter the char (it aborts). I don't see any error on *Messages*. Any ideas? -- ferd
+
+Fixed. Sorry for the confusion. -- Zsolt
 
 ----
 CategoryKeys, CategoryEditing

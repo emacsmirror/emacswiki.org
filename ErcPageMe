@@ -102,6 +102,19 @@ matches a regexp in `erc-keywords'."
 (add-hook 'erc-server-PRIVMSG-functions 'my-erc-page-me-PRIVMSG)
 </pre>
 
+== The Above can be used with growlnotify ==
+
+<pre>
+(defun my-erc-page-popup-notification (nick msg)
+  (when window-system
+    ;; must set default directory, otherwise start-process is unhappy
+    ;; when this is something remote or nonexistent
+    (let ((default-directory "~/"))
+	  (start-process "erc-page" nil "growlnotify" "-a" "Emacs ERC" "-t" (format my-erc-page-message nick) "-m" msg))))
+</pre>
+
+Just be sure to replace the two occurrences of <code>my-erc-page-popup-notification (nick)</code> with <code>my-erc-page-popup-notification (nick msg)</code> and <code>my-erc-page-popup-notification (nick msg)</code>
+
 == Alternative version (much simpler) ==
 
 This version lacks the features mentioned above.

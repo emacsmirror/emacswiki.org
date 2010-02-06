@@ -4,8 +4,8 @@
 
 ;; Author: Taiki SUGAWARA <buzz.taiki@gmail.com>
 ;; Keywords: anything, help
-;; Version: 1.04
-;; Time-stamp: <2010-02-02 20:17:39 UTC taiki>
+;; Version: 1.05
+;; Time-stamp: <2010-02-05 15:00:10  taiki>
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/descbinds-anything.el
 ;; URL: http://bitbucket.org/buzztaiki/elisp/src/tip/descbinds-anything.el
 
@@ -46,6 +46,11 @@
 ;;  - When type C-z, selected command is described without quiting.
 
 ;;; History:
+;; 2010-02-05   Taiki SUGAWARA  <sugawara_t@ariel-networks.com>
+;; 
+;;   * descbinds-anything.el: Version 1.05
+;;   bug fix.
+;; 
 ;; 2010-02-02 UTC  Taiki SUGAWARA  <buzz.taiki@gmail.com>
 ;; 
 ;;   * descbinds-anything.el: Version 1.04
@@ -115,7 +120,6 @@ This function called two argument KEY and BINDING."
 (defcustom descbinds-anything-source-template
   '((candidate-transformer . descbinds-anything-transform-candidates)
     (persistent-action . descbinds-anything-action:describe)
-    (action . descbinds-anything-actions)
     (action-transformer . descbinds-anything-transform-actions))
   "A template of `descbinds-anything' source."
   :type 'sexp
@@ -197,7 +201,7 @@ This function called two argument KEY and BINDING."
    candidates))
 
 (defun descbinds-anything-transform-actions (actions candidate)
-  (and (commandp (cdr candidate)) actions))
+  (and (commandp (cdr candidate)) (or actions descbinds-anything-actions)))
 
 (defun descbinds-anything-sources (buffer &optional prefix menus)
   (mapcar

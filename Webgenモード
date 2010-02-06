@@ -1,0 +1,56 @@
+[[en:WebgenMode]]
+download: Lisp:webgen-mode.el
+
+webgen用マイナーモードです。
+このモードにより、webgenを使ってウェブサイトを編集するのが楽になります。
+webgenとはRubyで書かれた静的ウェブサイト生成ツールです。
+webgenは下記のURLから入手することができます。
+
+http://webgen.rubyforge.org/
+
+
+==使い方==
+
+下記のコマンドによって対話的にwebgenモードを切り替えることができます。
+
+<code>M-x webgen-mode</code>
+
+'C-c C-b'と入力するか関数webgen-buildを呼び出すことで、webgenを実行します。
+'C-c C-v'と入力するか関数webgen-browse-htmlを呼び出すことで、生成されたHTMLファイルを閲覧することができます。
+
+
+==設定==
+
+.emacsまたはinit.elに以下のコードを追記してください。
+注意: markdown-mode.elをインストールしていない場合はmarkdown-modeをtext-modeなどの好きなモードに置き換えてください。
+
+<code>(require 'webgen-mode nil t)</code>
+
+<code>(add-to-list 'auto-mode-alist '(\"\\\\.page\\\\'\" . (lambda () (markdown-mode) (webgen-mode))))</code>
+
+<code>(add-to-list 'auto-mode-alist '(\"\\\\.template\\\\'\" . (lambda () (html-mode) (webgen-mode))))</code>
+
+<code>(add-to-list 'auto-mode-alist '(\"[Mm]etainfo\\\\'\" . (lambda () (text-mode) (webgen-mode))))</code>
+
+
+==関数・変数==
+
+webgenモードには以下の関数があります。
+
+* webgen-build
+* webgen-browse-html
+
+関数の詳細についてはdescribe-functionを使ってください。
+
+
+webgenモードには以下の変数があります。
+
+* webgen-program
+* webgen-source-directory
+* webgen-output-directory
+* webgen-output-page-ext
+
+変数の詳細についてはdescribe-variableを使ってください。
+
+----
+CategoryModes

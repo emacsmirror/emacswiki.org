@@ -1,6 +1,8 @@
-;;; fastnav.el -- Fast navigation and editing routines.
+;; fastnav.el -- Fast navigation and editing routines.
 ;;
-;; Copyright (C) 2008, 2009  Zsolt Terek <zsolt@google.com>
+;; Version 1.02
+;;
+;; Copyright (C) 2008, 2009, 2010  Zsolt Terek <zsolt@google.com>
 ;;
 ;; Compatibility: GNU Emacs 22, 23.
 ;;
@@ -32,6 +34,10 @@
 ;; (global-set-key "\M-K" 'delete-char-backward)
 ;; (global-set-key "\M-m" 'mark-to-char-forward)
 ;; (global-set-key "\M-M" 'mark-to-char-backward)
+;;
+;; Changes:
+;;   2010-02-05: Fix for org mode, all commands were broken.
+;;               Fix for electric characters in certain modes.
 ;;
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License
@@ -121,9 +127,14 @@ search of occurences."
 		 (char (event-basic-type event))
 		 (delta 0)
 		 (command (key-binding (vector event))))
-	    (if (member command
-			;; which commands have a keystroke that is valid for search
-			'(self-insert-command newline newline-and-indent))
+	    (if (or
+		 (and (numberp char) (< char 256) (>= char 32))
+		 (member command
+			 ;; which commands have a keystroke
+			 ;; that is valid for search
+			 '(self-insert-command
+			   org-self-insert-command
+			   newline newline-and-indent)))
 		(setq result (list arg event))
 	      (progn
 		(if (member command forwarders)
@@ -140,7 +151,9 @@ search of occurences."
 	result)
     (remove-overlays)))
 
+;; For debugging.
 ;;(key-binding (vector (read-event)))
+;;(event-basic-type (read-event))
 
 (defun highlight-read-char-backward (text arg forwarder backwarder)
   "Highlights the backward ARG'th occurences of each character

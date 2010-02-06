@@ -6,11 +6,18 @@ function calls which function.
 Use `M-x simple-call-tree-analyze' to run it on a buffer.  This uses
 `font-lock-function-name' to identify function names.  Therefore, you
 might have to wait for a bit until the stealth font lock has actually
-fontified all of the buffer, not only the visible part.
+fontified all of the buffer, not only the visible part. Alternatively
+you might want to call `jit-lock-fontify-now' explicitly (e.g. by inserting
+`(when jit-lock-mode (jit-lock-fontify-now))' right after `(interactive)'
+in `simple-call-tree-alist' below), especially if you use jit-lock-mode and your
+Jit Lock Stealth Time is "never" (what is the default, I think).
 
 For CPerl, some keywords like -f are also hilighted using
 font-lock-function-name.  In order to exclude these, use
 `M-x simple-call-tree-analyze-perl'.
+
+For any kind of literate programs consider calling `simple-call-tree-analyze'
+on the [http://en.wikipedia.org/wiki/Literate_programming "tangled" code].
 
 The output in ielm (see InferiorEmacsLispMode):
 
@@ -43,11 +50,23 @@ To see which functions are not called:
 
 Hm, could be that the last function is not analyzed correctly... -- AlexSchroeder
 
+[new]
+
 Somebody make it write out dotty files please! :-) (see http://www.research.att.com/sw/tools/graphviz/)
+
+[new]
+
+For a simple graphviz solution (with dot), see my suggestion below in the Visualization part -- PeterTury
+
+[new]
 
 I can't get this to work properly for me. It will only recognize functions if they have already been displayed in a window.
 I suppose that emacs only updates the text-properties when it needs to (i.e. when the text is displayed in a window). 
 Is there any way to force emacs to evaluate the text properties of a buffer? -- Aleblanc
+
+[new]
+
+Aleblanc, please check my suggestion with `jit-lock-fontify-now' above -- PeterTury
 
 [new]
 
@@ -90,6 +109,52 @@ Alternatively, if you wanted to list which callers and the functions they call, 
                         functions)
                     ".\n")))))
 </pre>
+
+== Visualization ==
+
+A simple (and rather manual) way (using http://www.graphviz.org/) can be:
+
+# make sure you have graphviz installed (use e.g. Synaptic in Ubuntu...)
+# "tangle" your source file (in case of literal programs)
+# fontify your whole buffer (maybe explicitly with `jit-lock-fontify-now')
+# call `simple-call-tree-analyze'
+# create `sct-dot' (see below)
+# switch to an empty buffer
+# evaluate this in the minibuffer (`M-:'): `(insert (sct-dot))'
+# save the buffer as (e.g.) 'my-file.dot'
+# run graphviz's dot program. E.g. from command line: `dot -Tjpg /path/to/my-file.dot -o result.jpg'
+# enjoy! ;)
+
+Evaluate this expression (C-M-x) to create function `sct-dot':
+<pre>
+(defun sct-dot ()
+  "Generate dot file for graphviz from `simple-call-tree-alist'.
+
+After calling `simple-call-tree-analyze', use `sct-dot' in an
+empty buffer via `(insert (sct-dot))'.
+
+Then save the file as \"my-file.dot\" and run
+\"dot -Tjpg /path/to/my-file.dot -o result.jpg\" from command line."
+  (concat "digraph G {\n" ;; default beginning of a dot file
+          (mapconcat 'identity ;; end each line with a ";"
+                     (mapcar
+                      (lambda (defun-list)
+                        "Called for each elemet (list) of `simple-call-tree-alist',
+                         create all the 'caller -> callee;' strings."
+                        (let ((caller (car defun-list))
+                              (callees (cdr defun-list)))
+                          (if (null callees)
+                              (concat "\"" caller "\"")
+                            (mapconcat (lambda (callee)
+                                         "Called with each callee, create 'caller -> callee' pairs."
+                                         (concat "\"" caller "\"" " -> " "\"" callee "\""))
+                                       callees
+                                       ";\n"))))
+                      simple-call-tree-alist)
+                     ";\n")
+          ";\n}"))
+</pre>
+
 
 ----
 CategoryCode CategoryProgrammerUtils

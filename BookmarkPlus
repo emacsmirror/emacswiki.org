@@ -483,27 +483,34 @@ using `bookmark-save' (`S' in the bookmark list or `C-x p s'
 globally) and you don't use a [[prefix argument]], they are saved in
 the current bookmark file.
 
-You can use `bookmark-save' with a prefix argument, or use
-`bookmark-write' (bound to `C-x p w'), to save the currently
-defined bookmarks to a different file.  That is the only
-recommended way to ''create'' a new bookmark file.  Remember that you
-can delete bookmarks from the current set using command
-`bookmark-delete' (`C-x p d') or, in the bookmark list, using `d'
-plus `x' or marking then `D'.
-
-
 You can turn off the automatic saving of the current bookmark
 file, by customizing option '''`bookmark-save-flag'''' to `nil'.  And you
 can toggle this option at any time, using '''`M-s'''' in the bookmark
 list (command '''`bookmarkp-toggle-saving-bookmark-file'''').
 
-Finally, besides using multiple bookmark files as alternatives,
-you can combine them, using them as component bookmark subsets.
+Besides using multiple bookmark files as alternatives,
+you can combine them, using them as component bookmark subsets (like modules).
 To do that, use command '''`C-x p l'''' (lowercase `l'), which is bound
 to '''`bookmark-load'''', and do not use a prefix argument.  (Using a
 prefix argument with `C-x p l' is the same as using `C-x p L': it
 ''switches'' bookmark files.)
 
+To ''create additional bookmark files'', to use as either alternatives
+or component files, you can either copy an existing bookmark file
+or use '''`bookmarkp-empty-file'''' ('''`C-x p 0'''') to create a new, empty
+bookmark file.  If you use `C-x p 0' with an existing bookmark
+file, then its bookmarks are all deleted -- it is emptied.
+
+Instead of simply copying a bookmark file, you can use
+`bookmark-save' with a prefix argument, or use `bookmark-write'
+(bound to `C-x p w'), to save the currently defined bookmarks to a
+different bookmark file.
+
+However a bookmark file was created, you can switch to it and then
+add or delete bookmarks selectively, to change its content.
+Remember that you can delete bookmarks from the current set using
+command `bookmark-delete' (`C-x p d') or, in the bookmark list,
+using `d' plus `x' or marking then `D'.
 
 
 

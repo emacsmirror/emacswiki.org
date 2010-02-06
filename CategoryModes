@@ -124,6 +124,7 @@ Other pages (could this please be split in major and minor modes?):
 * UnicodeEncoding -- describes oc-unicode
 * VersionControl -- and various similar implementations
 * WajigMode -- An interface for wajig
+* WebgenMode -- minor mode for [http://webgen.rubyforge.org/ webgen]
 * WhiteSpace -- minor mode to visualize (HARD) SPACE, TAB and NEWLINE
 * WikiMode
 * WikipediaMode
