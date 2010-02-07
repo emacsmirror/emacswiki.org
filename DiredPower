@@ -182,7 +182,9 @@ To omit unmarked files, just type tk. This toggles the mark and then kills all t
 
 = See Also =
 
-* DiredPlus -- Provides menus, highlighting, new commands, and more. 
+
+* [[Bookmark+]] -- Bookmark Dired buffers (their markings, insertions, etc.). Open a set of file bookmarks in Dired. Bookmark each of the marked files in Dired.
+* [[Dired+]] -- Provides menus, highlighting, new commands, and more. 
 
 * [[Icicles]] -- Act on selected (or all) files and subdirectories matching a regexp, without entering Dired. Just `C-x C-f', type a regexp, and use `S-TAB' to see all matching files. You can use <code>[next]</code> and 
 <code>[prior]</code> to cycle among them. When you find one you want to act on, use `C-o' -- or use `<code>C-!</code>' to act on all matching files. The "action" here can be anything you like. See command `icicle-delete-file' for an example: delete one matching file or all of them.

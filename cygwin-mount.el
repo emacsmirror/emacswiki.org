@@ -253,7 +253,7 @@ The result is either \"/\" or \"/<string>/\"."
   ;; can't use non-greedy regular expressions because versions of
   ;; Emacs older than 21.1 lack them.
   (if (or (string-match "\\(.*\\) on \\(/.*\\) type .* (.*)" line)
-          (string-match "\\(.*\\)\\s-+\\(/.*\\)\\s-+\\(user\\|system\\)\\s-+\\(textmode\\|binmode\\)" line))
+          (string-match "\\(.*\\)\\s-+\\(/.*\\)\\s-+\\(user\\|system\\|vfat\\)\\s-+\\(textmode\\|binmode\\)" line))
 
       (let ((win (match-string 1 line))
             (cyg (match-string 2 line)))

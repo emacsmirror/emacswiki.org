@@ -78,7 +78,7 @@ File changes:
 [:ProjectSupport]
 Projects (code) -- Creating and managing:
 
-* BookmarkPlus -- Tag project files a la [[http://delicious.com|del.icio.us]]; save/restore Dired states (markings, expanded subdirs).
+* [[Bookmark+]] -- Tag files in different projects a la [[http://delicious.com|del.icio.us]]. Bookmark a set of files in arbitrary locations and jump to it in [[Dired]]. Save/restore Dired states (markings, expanded subdirs).
 * CollectionOfEmacsDevelopmentEnvironmentTools (CEDET)
 * DiredMode -- Operate on project files.
 ** [[GrepMode#GrepOnlyMarkedFiles|grep only marked files in Dired]] -- search project files

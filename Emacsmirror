@@ -103,6 +103,9 @@ people don't waste their time trying to find the same package.
 ** [http://www.csis.ul.ie/staff/JohnSturdy/research-elisp/citation.el citation]
 ** [http://relativity.yi.org/el/clipper.el clipper]
 ** [http://www.bright.net/~jonadab/emacs/ color-theme]
+[new:DrewAdams:2010-02-06 23:15 UTC]
+::: What about ColorTheme? -- DrewAdams
+[new]
 ** [http://panix.com/~tehom/my-code/comient-redirect.el comient-redirect]
 ** [http://pbreton.ne.mediaone.net/emacs/comint-redirect.el comint-redirect]
 ** [http://www.csis.ul.ie/staff/JohnSturdy/research-elisp/command-log.el command-log]
@@ -183,6 +186,7 @@ people don't waste their time trying to find the same package.
 ** [http://www.comsecmilnavpac.net/elisp/ gnus-pers]
 ** [ftp://vh213601.truman.edu/pub/Grade/grade.el grade]
 ** [http://people.debian.org/~psg/elisp/gri-mode.el gri-mode]
+** graphviz-dot-mode http://users.skynet.be/ppareit/projects/graphviz-dot-mode/graphviz-dot-mode.el http://users.skynet.be/ppareit/projects/graphviz-dot-mode/graphviz-dot-mode.html
 ** [http://www.antisleep.com/elisp/gse-create-date-file.el gse-create-date-file]
 ** [http://www.djcbsoftware.nl/projecten/emacs/ gwizard]
 
@@ -277,6 +281,7 @@ people don't waste their time trying to find the same package.
 ** [http://np-salesman.net/programs/software/multi-mode-mode.el]
 ** [http://homepages.cs.ncl.ac.uk/phillip.lord/download/emacs/muse-definitions.el muse-definitions]
 ** [http://www.ma.utexas.edu/~jcorneli/a/elisp/musical-letters.el musical-letters]
+** mysql http://www.emacswiki.org/emacs/download/mysql.el http://www.emacswiki.org/emacs/mysql
 
 * N
 
@@ -285,6 +290,7 @@ people don't waste their time trying to find the same package.
 ** [http://www.ma.utexas.edu/~jcorneli/a/elisp/nero.el nero]
 ** [http://www.phys.ntnu.no/~hove/lisp/ newmail-modeline]
 ** [http://www.mts.jhu.edu/~kapur/emacs/nnir-grepmail.el nnir-grepmail]
+** notify http://www.emacswiki.org/emacs/download/notify.el http://www.emacswiki.org/emacs/notify.el
 ** [http://v2.noniq.at/tech/emacs/lisp/ nqmbm]
 ** [http://homepages.inf.ed.ac.uk/sterratt/progs/neuron nrnhoc]
 ** [http://hjem.get2net.dk/storm/emacs/nt-url.el nt-url]
@@ -378,6 +384,7 @@ people don't waste their time trying to find the same package.
 ** [http://www.cs.uu.nl/~otfried/Mule/ unicode]
 ** [http://www.csis.ul.ie/staff/JohnSturdy/research-elisp/unplugged/unplugged-transfers.el unplugged-transfer]
 ** [http://www.zanshin.com/~bobg/unscroll.html unscroll]
+** unbound http://www.emacswiki.org/cgi-bin/wiki/download/unbound.el http://www.emacswiki.org/emacs/unbound.el
 
 * V
 
@@ -398,7 +405,7 @@ people don't waste their time trying to find the same package.
 ** [http://www.gnusoftware.com/Emacs/Lisp/w32-faq.el w32-faq]
 ** [http://mathias.dahl.net/pgm/emacs/elisp/w32-net-send.el w32-net-send]
 ** [http://www.zanshin.com/~bobg/wcount.html wcount]
-** [http://elisp.info/package/weblogger/weblogger.el weblogger]
+** weblogger http://bzr.savannah.nongnu.org/r/emacsweblogs http://www.emacswiki.org/emacs/WebloggerMode
 ** [http://relativity.yi.org/el/wget.el wget]
 ** [http://www.gnusoftware.com/Emacs/Lisp/which.el which]
 ** [http://www.teaser.fr/~flepied/which-function.el.gz which-function]
@@ -413,7 +420,7 @@ people don't waste their time trying to find the same package.
 ** [http://xae.sunsite.dk/ xae]
 ** [http://home.tiscali.de/mgidde/source/xgtags.el xgtags]
 ** [http://www.newartisans.com/johnw/Emacs/xml-parse.el xml-parse]
-** [http://elisp.info/package/xml-rpc/xml-rpc.el xml-rpc]
+** xml-rpc http://bzr.savannah.nongnu.org/r/emacsweblogs/ http://www.emacswiki.org/emacs/xml-rpc.el
 ** [http://www.pwstephenson.fsnet.co.uk/computing/ xref]
 ** [http://www.menteith.com/xslide/ xslide]
 

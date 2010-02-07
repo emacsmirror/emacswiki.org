@@ -41,7 +41,7 @@ The package mon-utils is the entry point which loads the rest of the system and 
 * Lisp:mon-url-utils.el -- Provides utilities for interactively calling URL data lookups and for in
 ;;; buffer modification of web/internet scrapes.
 * Lisp:mon-cifs-utils.el -- (MonCifsUtils) Provides utilities for mapping and mounting a CIFS domain using auth-source. Common Internet File System protocol, e.g. successor to the SMB (Server Message Block) protocol with the Samba Server.
-* Lisp:google-define-redux.el -- Provides extensions for *Lisp:google-define.el
+* Lisp:google-define-redux.el -- Provides extensions for Lisp:google-define.el
 
 === :MON-DOC-UTILS ===
 
@@ -175,6 +175,203 @@ Roughly the sequence with which MON brings his Emacs' systems up.
 [new:stepnem:2010-02-05 08:09 UTC]
 I wonder why your packages don't adhere to Elisp library header conventions.
 Also, some of the `Lisp' links above don't work (missing the colon).
+
+[new:mon_key:2010-02-06]
+<pre>
+Yes, mon-GNU-load.el and slime-loads.el are not provided here. These are however
+referenced in the comments of some of my other files so I display them. I don't
+believe there is anything in these files which should be of any interest to
+others. Have you found a requirement for them that is causing you problems?
+
+Regarding my headers. 
+
+I use a template to generate them 
+</pre>
+:SEE :FUNCTION `mon-insert-file-template' in :FILE Lisp:mon-insertion-utils.el 
+
+<pre>
+For the most part I agree, my packages _should_ adhere to the header conventions.
+
+When I first wrote the template I wasn't aware of the rationale behind using a
+canonical header. I glanced at the docs and what I saw felt ugly so I rolled my
+own.
+
+Since then, the need for adhering to this convention has become more clear to me.  
+Unfortunately it will be a bit tedious adjusting my existing headers to
+conformity and I simply haven't made the switch yet... I would prefer to make
+this change all at once in one unified commit so I don't instantiate unnecessary
+diff/merge conflicts. Note, when this occurs you can expect a Bazaar or HG repo
+to be made available. I'm still working out some kinks :)
+
+This said, there are some conventions of the ``standard'' header that I dislike. 
+
+FWIW they are as follows:
+
+The two semi-colon convention used in some locations is not in keeping with
+other Lisp's commenting conventions and does not necessarily reflect the
+context of the thing being commented...
+
+Likewise, the convention isn't even internally consistent. In some places one
+is recommended to use two colons and in others to use three. The distinction
+made by the parser is reliant on whitespace at BOL. To the extent that the
+header conventions are _actually_ canonical this reliance on whitespace has
+remained workable. In practice adherence to this convention places unwarranted
+power into the hands of the emacs-devels/maintainers allowing them to enforce
+an unspecified specification. I.e. MON, your headers aren't compliant :) 
+
+When one considers adopting an alternative form of field delimiter for package
+headers it is clear that reliance on semi-colon padding and whitespace
+placement alone is a stupid and error prone way to facilitate header parsing.
+It would be _much_ more reasonable to use a dedicated token(s) or cookie(s)
+i.e. my use of `►►►' `◄◄◄' to flag the functions in my packages. Moreover, it
+would be even better to provide package authors to declare _their_ preferred
+delimiting tokens in the file header. These might be placed in the mode `-*-'
+or `file-local-variables-alist' and might be useful for directing
+`hack-local-variables' to identify the users preferred delimiter tags.
+
+It is worth considering, that my consistent use of only the three colon BOL is
+easily remedied with a quick rectangle crop. The same can not be said of the
+combined use of two and three colon BOL's.
+
+The `-*-' convention, that the cookie should appear after the description is
+not in keeping with vast amounts of legacy Lisp code which has it at line 1.
+This is a convention instantiated by a dated political beef, it has little to
+do with shell scripting as purported in the docs.
+
+The `Copyright' line placement is for the benefit of parsers not humans.
+It can be placed in any conspicuous location and _ought_ to come after
+any relevant discussion of the thing being protected. Why should users be
+required to scan through a bunch of boiler plate legalese in order to get an
+understanding of the features a package provides?
+
+The `Licencse' line should be tightly coupled with the copyright line but isn't.
+
+The current Copyright and License lines placement conventions do not
+accommodate incorporation of GFDL well. This is an oversight that should not
+continue.
+
+The `Version' line usage is compromised in lieu of contemporary distributed
+VCS'.
+	
+The `History' line line usage is compromised in lieu of contemporary
+distributed VCS'.
+
+The `Created' line should use a more robust time stamp and should be mandatory
+with _strong_ emphasis encouraging on ISO-8601 conformity. 
+
+Likewise, this line should not be considered "of historic interest" only.
+It is exceedingly useful for user packages distributed separate from Emacs.
+Moreover, in lieu of contemporary distributed VCS the created line conveys
+more data than either the `Version' line or `History' lines. 
+
+The `Author' line convention is spammer fodder.
+
+There are any number of better ways to implement a central registry of package
+authors that might allow users to contact a packages author and that would
+protect both the authors privacy and the users.
+
+I also have a firm belief that when AI occurs it will wish to introspect.
+I've no reason to suspect that such a thing will necessarily be well
+intentioned.  This may seem nuts to many but I don't wish to be participant to
+such introspection without good cause. There is simply no reason to attach a
+unique identifier like ones' common "True name" for untold AI to investigate
+arbitrarily.  In so much as "I am that I am human" others of my type can reach
+me easily enough if need be.
+
+The `Keywords' line is useful only to the extent that `finder-by-keyword' works.
+That function is compromised by the lack of any sort of canonical data
+dictionary, thesaurus, etc. The literature re these mechanism and their
+correct implementation is vast and well explored. The conventional idioms
+explored in the literature are robust and reliable.
+
+Emacs is _embarrassingly_ capable of integrating these idioms, yet it doesn't
+because doing so would increase the memory footprint by a MB or two. This is
+so unbelievably unfortunate that I find it difficult to play along. This
+particular emperor is not only naked he's the lead in a porn flick that co
+stars a goat and a donkey!
+
+The `Commentary' line is only loosely coupled with the Keywords line. The two
+should form a close pair. Also, it is like the `Keywords' field `Emacs Distribution'
+eccentric, that is, externally distributed packages don't (by default) benefit from the
+finder facilities.  This is classism plain and simple. Whats good for one pig
+should be good for them all.
+
+An equitable solution to finder/keywords/commentary concerns is easily had:
+</pre>
+
+:SEE http://www.gnu.org/software/idutils/  
+
+<pre>
+Emacs devels could formally integrate the Idutils tool suite and provide a
+lisp interface to the primitives instead of secreting away the bespoke gutted
+version they currently distribute to facilitate the doc snarfing
+primitives. This would allow users far more control of what gets indexed and
+when and because the index into the Idutils database is stored in binary form,
+it is _FAST_ and it isn't required that everything be indexed _only_ at build
+time. Eli Z is listed as a contributor to this package and IIRC he and Juri
+L. have had public discussions on the topic so one assumes that what is being
+proposed is possible.
+
+The Documentation line is described as ``deprecated'' yet it is a more apt
+descriptor of the the enclosed content than ``Commentary''.
+
+The `Change Log' line should be contain a dash e.g. Change-Log. It really is
+rather ugly to comply with that white space. You don't see Emacs' own ChangeLog
+using it either. Moreover, that Emacs packages don't use this field and store
+their changes in ChangeLog is a good indicator of its utility for externally
+distributed packages. This field is, like its `History' and `Version'
+counterparts, compromised in lieu of contemporary distributed VCS'.
+
+The `FILENAME ends here' convention should mandate an EOF string.
+EOF's are a _CONVENTION_ of great utility and using unencumbered by whitespace
+issues makes good sense. There is no reason to expect that Emacs is or will be
+the only program processing/parsing a package. Obv. inserting a literal Control-D
+(e.g. ASCII 4, \x04) can be problematic when one is moving code around outside
+Emacs but by substituting the literal with a simple text token like EOF one can
+convey the same information and remain unencumbered by whitespace issues.
+
+You'll note, I also don't use defcustom forms. I'm not sure that I can ever
+fully transition to using that facility as currently provided.
+
+I find the current interface confusing, somewhat kludgey, and often abuses my
+expectations. I loathe those situations where custom arbitrarily binds globals
+behind my back. Not only is it difficult to detect this, but it is also
+difficult to locate the change once detected. So, I prefer to set my variables
+by hand. Obv. this may be a big detractor for some users wishing to incorporate
+mon-*.el packages. Given my distaste for custom I'm not sure how best to
+approach increased integration with Emacs' custom interface other than to expect
+that users will take a glance at the source.
+
+Likewise, I'm not convinced that integration of the current custom interface is
+a good use anyone's time. My intuition is that with the new Eieio/EDE
+integration and the prospect of integration of a package facility coupled with
+the _inevitability_ that Emacs will soon provide Bazaar support out of the box
+(i.e. a built-in distributed version control system) will soon render some
+aspects of the current defcustrom/defgroup specification moot. Integration of
+any of these facilities: EIEIO, EDE, Bazaar, Package support, is of itself a
+game changer for Emacs - collectively they will radically alter the scope of how
+Emacs extensions are delivered. I simply can not believe that the current
+defcustom facility will be capable of supporting this change.
+
+So, to come full circle, Emacs' existing header conventions are a complicated
+issue for me and I'm not convinced that the header conventions aren't due for a
+correction first. Obv. this would be *a lot* of work. So the cruft persists. It
+may be worth asking why it is that you feel compelled to have your header files
+conform to Emacs conventions? What are the benefits?
+
+The only rationale that I can find is to consistently comport with third party
+packaging tools.  To the extent that none of these are yet blessed why should
+they adhere to the existing conventions either? AFAIK they don't now and have
+parsing routines for extracting wayward headers already. IMHO This is one of
+these areas where Emacs is broken not the inverse...
+
+Of course, as soon as I'm asked to contribute a package to Emacs proper I'll
+gladly get right and my `issues' with the current header conventions will most
+likely disappear. ;)
+
+</pre>
+
+--[mon_key]
 
 ----
 CategoryHomepage

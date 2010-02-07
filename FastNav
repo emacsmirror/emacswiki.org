@@ -35,5 +35,11 @@ I love it! But it fails for me on "org-mode" buffers. It doesn't do anything whe
 
 Fixed. Sorry for the confusion. -- Zsolt
 
+[new]
+
+I like the idea. You should prefix your functions with fastnav- to avoid polluting the global namespace.
+
+Amúgy szép munka. ;)
+
 ----
 CategoryKeys, CategoryEditing

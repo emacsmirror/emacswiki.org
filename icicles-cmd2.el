@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Tue Jan 12 14:15:27 2010 (-0800)
+;; Last-Updated: Sat Feb  6 13:25:38 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 1253
+;;     Update #: 1256
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -839,10 +839,14 @@ remapping, then customize option `icicle-top-level-key-bindings'." ; Doc string
   t
   ((pref-arg  current-prefix-arg)       ; Additional bindings
    (icicle-candidate-help-fn
-    #'(lambda (c) (let* ((keys   (where-is-internal (intern-soft c) overriding-local-map))
-                         (keys1  (mapconcat 'key-description keys ", ")))
-                    (message (format "`%s' is on `%s'" c keys1))
-                    (sit-for 3))))
+    #'(lambda (c)
+        (with-current-buffer orig-buff
+          (let* ((keys   (where-is-internal (intern-soft c) overriding-local-map))
+                 (keys1  (mapconcat 'key-description keys ", ")))
+            (message (if (string= "" keys1)
+                         (format "`%s' is not on any key" c)
+                       (format "`%s' is on `%s'" c keys1)))
+            (sit-for 3)))))
    (icicle-candidate-alt-action-fn
     (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "command")))
    (icicle-all-candidates-list-alt-action-fn

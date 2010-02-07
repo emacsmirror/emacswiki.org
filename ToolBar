@@ -1,5 +1,7 @@
 GnuEmacs and [[XEmacs]] each have a [::ToolBarMode] that provides buttons -- like most other '''[::tool bar]s'''. You can display or hide it using command `tool-bar-mode'.
 
+== Disable the Toolbar ==
+
 To disable the toolbar completely, turn off `tool-bar-mode'. Add the following to your InitFile, for GnuEmacs:
 
     (tool-bar-mode -1)
@@ -20,6 +22,15 @@ Alternatively, you can add the following line to your ~/.Xresources or
 X resources take effect before the first Emacs [[Frame]] is created, therefore
 you won't see the strange "resizing while loading" effect when using X resources.
 Using EmacsLisp, on the other hand, is portable.
+
+== Example Configuration ==
+
+Here's an example from PinkBliss:
+
+  (when (find-image '((:type xpm :file "pink-gnu.xpm")))
+    (unless tool-bar-mode (tool-bar-mode 1))
+    (setq tool-bar-map (make-sparse-keymap))
+    (tool-bar-add-item "pink-gnu" 'pink-bliss-save-or-open 'pink-defun))
 
 [:Tool-Bar Plus]
 == Pop-Up Tool Bar: tool-bar+.el ==

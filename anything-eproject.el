@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2009 Daniel Hackney
 
-;; Author: Daniel Hackney <chrono325@gmail.com>
+;; Author: Daniel Hackney <dan@haxney.org>
 ;; Keywords: convenience project
 
 ;; This file is free software; you can redistribute it and/or modify it under

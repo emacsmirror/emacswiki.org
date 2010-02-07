@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Feb  5 16:48:49 2010 (-0800)
+;; Last-Updated: Sat Feb  6 13:43:14 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 10105
+;;     Update #: 10124
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -654,8 +654,8 @@
 ;;  organizing them (e.g. into projects), whether or not you ever use
 ;;  the bookmarks as a way to visit them.
 ;;
-;;  For example, if you use library `dired+.el', then you can use
-;;  `M-b' (`diredp-do-bookmark') in Dired to create a bookmark for
+;;  For example, if you use Dired+ (library `dired+.el'), then you can
+;;  use `M-b' (`diredp-do-bookmark') in Dired to create a bookmark for
 ;;  each of the marked files in the Dired buffer.  Even if you never
 ;;  use those bookmarks for navigating to the files, you can use them
 ;;  with tags to organize the files.  See also
@@ -1068,12 +1068,18 @@
 ;;  define an arbitrary set of files as a project and then open them
 ;;  in Dired at any time to operate on them.
 ;;
-;;  Note: If you also use Icicles, then whenever you use a command
-;;  that reads a file (or directory) name, you can use `M-|' during
-;;  file-name completion to open Dired on the currently matching set
-;;  of file names.  That is, this is the same kind of special Dired
-;;  buffer that is provided for file and directory bookmarks by `M-d
-;;  >' in the bookmark list.
+;;  If you use Dired+ (library `dired+.el'), then a similar feature is
+;;  available for the marked files and directories: You can use
+;;  `C-M-*' in Dired to open a separate Dired buffer for only them
+;;  only.  You can of course then bookmark that resulting Dired
+;;  buffer, if you like.
+;;
+;;  If you use Icicles, then whenever you use a command that reads a
+;;  file (or directory) name, you can use `M-|' during file-name
+;;  completion to open Dired on the currently matching set of file
+;;  names.  That is, this is the same kind of special Dired buffer
+;;  that is provided for file and directory bookmarks by `M-d >' in
+;;  the bookmark list.
 ;;
 ;;
 ;;(@* "Marking and Unmarking Bookmarks")
@@ -1279,7 +1285,7 @@
 ;;    `M-mouse-2' - `bookmarkp-bmenu-w32-open-with-mouse'
 ;;    `V'         - `bookmarkp-bmenu-w32-open-select' (like `v')
 ;;
-;;  If you also use library `dired+.el', then you can use `M-b' to
+;;  If you use Dired+ (library `dired+.el'), then you can use `M-b' to
 ;;  bookmark all of the marked files in a Dired buffer, even if you
 ;;  normally do not or cannot visit those files in Emacs.  For
 ;;  instance, you can bookmark music files or image files, without
@@ -1347,6 +1353,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2010/02/06 dadams
+;;     bookmark-write-file, bookmarkp-empty-file: Corrected handling of ALT-MSG.
 ;; 2010/02/05 dadams
 ;;     Added: bookmarkp-same-file-p, bookmarkp-empty-file.
 ;;     Bound bookmarkp-empty-file to C-x p 0, and added it to menus.
@@ -3551,11 +3559,12 @@ If called from Lisp:
 ;;
 (defun bookmark-write-file (file &optional alt-msg)
   "Write `bookmark-alist' to FILE.
-Non-nil ALT-MSG is a message string to use in place of the progress
-message \"Saving bookmarks to file `FILE'...\".  It is shown at the
-end with \"done\" appended."
+Non-nil ALT-MSG is a message format string to use in place of the
+default, \"Saving bookmarks to file `%s'...\".  The string must
+contain a `%s' construct, so that it can be passed along with FILE to
+`format'.  At the end, \"done\" is appended to the message."
   (let ((msg  (or alt-msg "Saving bookmarks to file `%s'..." file)))
-    (bookmark-maybe-message (or alt-msg "Saving bookmarks to file `%s'..." file))
+    (bookmark-maybe-message (or alt-msg "Saving bookmarks to file `%s'...") file)
     (with-current-buffer (get-buffer-create " *Bookmarks*")
       (goto-char (point-min))
       (delete-region (point-min) (point-max))
@@ -5423,8 +5432,8 @@ use `\\[bookmarkp-switch-bookmark-file]' (`bookmarkp-switch-bookmark-file')."
     (error "OK, cancelled"))
   (let ((bookmark-alist  ()))
     (bookmark-write-file file (if (file-exists-p file)
-                                  (format "Emptying bookmark file `%s'..." file)
-                                (format "Creating new, empty bookmark file `%s'..." file)))))
+                                  "Emptying bookmark file `%s'..."
+                                "Creating new, empty bookmark file `%s'..."))))
 
 ;;;###autoload
 (defun bookmarkp-bmenu-w32-open ()      ; `M-RET' in bookmark list.

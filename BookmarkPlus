@@ -365,6 +365,10 @@ different ways to do this.
 
 
 
+
+
+
+
 [:QuittingSaves]
 === Quitting Saves the Bookmark-List State ===
 
@@ -379,6 +383,11 @@ stepping stone to the files and directories you use most.
 If, for example, when you quit the bookmark list you are showing only bookmarks to [[Info]] nodes and UNIX manual pages, sorted in a particular way, and with some of them marked for particular processing, then the next time you open the list the same state is restored: the same set of bookmarks is shown, in the same order, with the same markings.
 
 You can turn off this automatic bookmark-list display state saving, if you want, by customizing option '''`bookmarkp-bmenu-state-file'''' to `nil'. And you can toggle this option at any time, using '''`M-l'''' in the bookmark list (command '''`bookmarkp-toggle-saving-menu-list-state''''). In particular, if you want your next visit to the bookmark list to start out with a ''previously'' recorded state instead of the current state, just hit `M-l' before quitting the bookmark list.
+
+
+
+
+
 
 
 
@@ -535,6 +544,11 @@ information about the bookmark list, including:
 
 
 
+
+
+
+
+
 [:TagCommandsAndKeys]
 === Tag Commands and Keys ===
 
@@ -607,6 +621,10 @@ in complex ways.  See [[#SortingBookmarks]].
 
 
 
+
+
+
+
 [:BookmarkSets]
 === Sets of Bookmarks ===
 
@@ -657,6 +675,8 @@ The point is that bookmarks, and bookmark tags in particular, let you define and
 
 
 
+
+
 [:OpenDiredForMarkedFiles]
 === Open Dired for the Marked Files ===
 
@@ -700,12 +720,24 @@ Since tags are persistent, '''Bookmark+''' gives you a good way to
 define an arbitrary set of files as a project and then open them
 in Dired at any time to operate on them.
 
-'''Note:''' If you also use '''[[Icicles]]''', then whenever you use a command
+If you use '''[[Dired+]]''' (library <tt>[[dired+.el]]</tt>), then a similar feature is
+available for the marked files and directories: You can use
+'''`##C-M-*##'''' in Dired to open a separate Dired buffer for only them
+only.  You can of course then bookmark that resulting Dired
+buffer, if you like.
+
+If you use '''[[Icicles]]''', then whenever you use a command
 that reads a file (or directory) name, you can use '''`##M-|##'''' during
 file-name [[completion]] to open Dired on the currently matching set of file
 names.  That is, this is the same kind of special Dired buffer
 that is provided for file and directory bookmarks by `##M-d >##' in
 the bookmark list.
+
+
+
+
+
+
 
 
 
@@ -732,6 +764,11 @@ is, both the bookmark name and the file name, if shown.
 * '''`##F M##'''', '''`##I M##'''' etc. to __m__ark only the __f__ile bookmarks, __I__nfo
 bookmarks etc.  (The first key here is the same as the
 corresponding filter key, e.g. `F' for files -- see [[#FilteringBookmarks]], below.)
+
+
+
+
+
 
 
 
@@ -966,7 +1003,7 @@ applications:
   `M-mouse-2' - `bookmarkp-bmenu-w32-open-with-mouse'
   `V'         - `bookmarkp-bmenu-w32-open-select' (like `v')
 
-If you also use '''[[DiredPlus|Dired+]]''' (library <tt>[[dired+.el]]</tt>), then you can use '''`M-b'''' to
+If you use '''[[Dired+]]''' (library <tt>[[dired+.el]]</tt>), then you can use '''`M-b'''' to
 bookmark all of the marked files in a [[Dired]] buffer, even if you
 normally do not or cannot visit those files in Emacs.  For
 instance, you can bookmark music files or image files, without
@@ -1031,7 +1068,7 @@ Bottom line: Use '''Bookmark+''' to access bookmarks created using
 ----
 CategoryHypermedia CategoryPersistence 
 CategoryProgramming CategoryRegion CategoryWThirtyTwo
-CategoryProgrammerUtils SessionManagement
+CategoryProgrammerUtils SessionManagement CategoryDirectories
 
 
 

@@ -42,6 +42,20 @@ After applying a color theme, is there a way to undo that change -- to get back 
 
 ;;M-x color-theme-undo
 </pre>
+[new]
+maybe you need to modify faces.el file
+[new]
+<pre>
+738c738
+<       (when (stringp family)
+---
+>       (when (or (stringp family)(eq family 'unspecified))
+741c741
+<       (when (stringp foundry)
+---
+>       (when (or (stringp foundry)(eq foundry 'unspecified))
+</pre>
+
 
 == How To Find Out a Theme's Name? ==
 

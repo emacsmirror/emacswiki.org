@@ -325,6 +325,15 @@ Quote from the history section of ido.el:
 [new:eleanor:Sun Oct 26 19:10:09 CET 2008]
 After C-x C-f in ido-mode, M-r doesn't work as expected. With the default find-file, you can regexp search for recently opened files. With ido, the file names do show up in ido-work-file-list but I always get a 'no earlier matching history item' when searching for a history item.
 
+== A Hint About "Too Big" ==
+
+Once upon a time, I created a lot of files in a given directory.  When I later tried to open a file in that directory with C-x C-f (ido-find-file), not surprisingly, it displayed [Too Big], rather than showing me a list of files in that directory.
+
+But after I deleted all those files, it _still_ said [Too Big].  Even after rebooting Emacs!
+
+I eventually realized that the directory _itself_ was Too Big -- Unix directories get bigger as you add files, but, oddly, don't get smaller when you delete those files -- and so I needed to ensmallen it.  I did that by creating a new directory "frotz", and in the old, too-big directory, doing something like ##find . -mindepth 1 -maxdepth 1 -exec mv {} frotz ';'##.  That moved everything from the old directory to the new.  Then I deleted the old directory, and renamed the new one to the old one's name.  Voila.
+
+You could call this "garbage-collecting" a directory.
 
 == Wish list ==
 
