@@ -13,7 +13,14 @@ with the startup fontset.
 
 * ChangeFontsPermanentlyOnWindows
 
+[:GloballyChangingFont]
+=== Globally Change the Default Font ===
+A simple way to change the default font is to put this in your [[init file]]:
 
+  (set-face-attribute 'default nil :font FONT)
+
+where ##FONT## is a string naming the font you want, for example, ##"Droid Sans Mono-10"##.
+This should work on all platforms.  As of Emacs 23, all of your system fonts including %%TrueType%% are available to Emacs.
 
 
 [:ChangingFontSize]
@@ -112,6 +119,7 @@ For TTF support, see XftGnuEmacs --TimotheeBesset
 
 [new:DrewAdams:2007-04-25 21:28 UTC]
 : I use <nowiki>TrueType</nowiki> fonts with Emacs on MS Windows with no problem. In fact, you even get anti-aliasing. However, I think there appears to be a problem with Emacs 21 -- they work fine in Emacs 20 and 22, at least. -- DrewAdams
+
 
 == CarbonEmacs ==
 

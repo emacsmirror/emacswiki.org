@@ -10,21 +10,17 @@ Normally you should not need to do anything to setup PGG. It should work out of 
 
 You only need to insert this in your ~/.gnus :
 
-<pre>
     (require 'pgg)
-</pre>
 
 Or if you prefer using autoload Emacs feature, you can use this :
 
-<pre>
-    (autoload 'pgg-encrypt-region "pgg" "Encrypt the current region." t)
-    (autoload 'pgg-decrypt-region "pgg" "Decrypt the current region." t)
-    (autoload 'pgg-sign-region "pgg" "Sign the current region." t)
-    (autoload 'pgg-verify-region "pgg" "Verify the current region." t)
-    (autoload 'pgg-insert-key "pgg" "Insert the ASCII armored public key." t)
-    (autoload 'pgg-snarf-keys-region "pgg" "Import public keys in the
-      current region." t)
-</pre>
+     (autoload 'pgg-encrypt-region "pgg" "Encrypt the current region." t)
+     (autoload 'pgg-encrypt-symmetric-region "pgg" "Encrypt the current region with symmetric algorithm." t)
+     (autoload 'pgg-decrypt-region "pgg" "Decrypt the current region." t)
+     (autoload 'pgg-sign-region "pgg" "Sign the current region." t)
+     (autoload 'pgg-verify-region "pgg" "Verify the current region." t)
+     (autoload 'pgg-insert-key "pgg" "Insert the ASCII armored public key." t)
+     (autoload 'pgg-snarf-keys-region "pgg" "Import public keys in the current region." t)
 
 == Basic customisations ==
 

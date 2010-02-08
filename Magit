@@ -21,5 +21,24 @@ mo-git-blame is a great addition as a frontend for git blame (which magit curren
 
 http://www.bunkus.org/blog/2009/10/an-interactive-iterative-git-blame-mode-for-emacs/
 
+
+[new:MarcoCraveiro:dt Feb  08 10:26:37 GMT 2010]
+Don't really like the highlights on diff mode... Made it optional using:
+
+(defcustom magit-use-highlights nil
+     "Use highlights in diff buffer."
+     :group 'magit
+     :type 'boolean)
+
+
+And then changed magit-highlight-section as follows:
+
+ (defun magit-highlight-section ()
+    (let ((section (magit-current-section)))
+      -    (when (not (eq section magit-highlighted-section))
+             +    (when (and (not (eq section magit-highlighted-section))
+                             +                    magit-use-highlights)
+
+ -- MarcoCraveiro
 ----
 CategoryVersionControl

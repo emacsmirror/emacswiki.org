@@ -49,11 +49,11 @@
 (defvar batch-font-lock-keywords
   (eval-when-compile
     (list
-     ; since we can't specify bacth comments through the syntax table,
-     ; we have to specify it here, and override whatever is hilihgted
+     ; since we can't specify batch comments through the syntax table,
+     ; we have to specify it here, and override whatever is highlighted
      '( "^[ \t]*rem\\>.*" (0 font-lock-comment-face t))
 
-     ; sice the argument to the echo command is a string, we format it
+     ; since the argument to the echo command is a string, we format it
      ; as a string
      '( "\\<echo\\>[ \t]*\\(.*\\)" (1 font-lock-string-face t))
 
