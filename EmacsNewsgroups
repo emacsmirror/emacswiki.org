@@ -36,7 +36,7 @@ posting to the newsgroup.
 
 One bidirectional gateway is [http://gmane.org Gmane].  Emacs has it's
 own hierarchy there called <code>gmane.emacs</code>, most of which the
-Emacs-related lists populate.  It's directory is at
+Emacs-related lists populate.  Its directory is at
 http://dir.gmane.org/index.php?prefix=gmane.emacs.  Some lists have
 been categorized differently though, for instance the [[MH-E]] groups
 are under the <code>gmane.mail</code> hierarchy.  Use the

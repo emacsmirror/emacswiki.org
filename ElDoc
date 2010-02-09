@@ -226,7 +226,7 @@ minibuffer is not as wide as mine this may not work very well.
             (sym doc face)
             (let* ((function-name (propertize (symbol-name sym)
                                               'face face))
-                   (spec (format "%s (%s)" function-name doc))
+                   (spec (format "%s %s" function-name doc))
                    (docstring (or (eldoc-docstring-first-line
                                    (documentation sym t))
                                   "Undocumented."))
@@ -277,7 +277,7 @@ binding to suit...
 
 <pre>
 
-(defun rgr/toggle-context-help()
+(defun rgr/toggle-context-help ()
   "Turn on or off the context help.
 Note that if ON and you hide the help buffer then you need to
 manually reshow it. A double toggle will make it reappear"
@@ -285,19 +285,18 @@ manually reshow it. A double toggle will make it reappear"
   (with-current-buffer (help-buffer)
     (unless (local-variable-p 'context-help)
       (set (make-local-variable 'context-help) t))
-      (if (setq context-help (not context-help))
-	  (progn
-	    (if (not (get-buffer-window (help-buffer)))
-	        (display-buffer (help-buffer)))))
+    (if (setq context-help (not context-help))
+	(progn
+	   (if (not (get-buffer-window (help-buffer)))
+	       (display-buffer (help-buffer)))))
     (message "Context help %s" (if context-help "ON" "OFF"))))
 
-(defun rgr/context-help()
+(defun rgr/context-help ()
   "Display function or variable at point in *Help* buffer if visible.
 Default behaviour can be turned off by setting the buffer local
 context-help to false"
   (interactive)
-  
-  (let(( rgr-symbol (symbol-at-point))) ; symbol-at-point http://www.emacswiki.org/cgi-bin/wiki/thingatpt%2B.el
+  (let ((rgr-symbol (symbol-at-point))) ; symbol-at-point http://www.emacswiki.org/cgi-bin/wiki/thingatpt%2B.el
     (with-current-buffer (help-buffer)
      (unless (local-variable-p 'context-help)
        (set (make-local-variable 'context-help) t))
@@ -310,9 +309,9 @@ context-help to false"
 (defadvice eldoc-print-current-symbol-info
   (around eldoc-show-c-tag activate)
   (cond 
-	((eq major-mode 'emacs-lisp-mode)(rgr/context-help) ad-do-it)
-	((eq major-mode 'lisp-interaction-mode)(rgr/context-help) ad-do-it)
-	((eq major-mode 'apropos-mode)(rgr/context-help) ad-do-it)
+	((eq major-mode 'emacs-lisp-mode) (rgr/context-help) ad-do-it)
+	((eq major-mode 'lisp-interaction-mode) (rgr/context-help) ad-do-it)
+	((eq major-mode 'apropos-mode) (rgr/context-help) ad-do-it)
 	(t ad-do-it)))
 
 (global-set-key (kbd "C-c h") 'rgr/toggle-context-help)

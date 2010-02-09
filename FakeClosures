@@ -106,8 +106,26 @@ Exercise: write a loop construct that takes a list with several names and create
 
 --[[DanielClemente]]    
 
+It is worth noting in the last example what happens when a ``dynamic-let'' is used instead:
+
+   (mapc #'(lambda (buttontext)
+             (let ((textsymbol buttontext))
+               (insert-text-button (concat "Button " buttontext)
+                                   'action #'(lambda (arg) 
+                                               (interactive)
+                                               (message "I am button %s" textsymbol)))
+               (insert ", ")))
+         '("one" "two" "three"))
+
+   ;=> Button one, Button two, Button three, 
 
 
+With dynamic let we still get our buttons _but_ selecting them signals an error:
+ 
+  Symbol's value as variable is void: textsymbol
+
+Unlike the `lexical-let' version above here the second lambda form never gets to
+see the binding for textsymbol. --[[mon_key]]
 
 
 ----

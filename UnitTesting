@@ -77,13 +77,13 @@ the code is in EmacsLisp. In other words, you can treat the EmacsLisp code as a 
 
 A "test-infected" MarkTriggs has created a EmacsLisp library that will report the pass/fail status of your unit tests (in any language) called Lisp:unit-test.el. You need to define a function that runs your unit tests and returns non-nil if they pass. Depending on the output, it will display green or red "light" graphic icon (xpm) on the Emacs window mode line.
 
+= Discussion =
+
 [new]
 That there is so much interest in this looks great, but could please someone start making a comparision of the different approaches? What does they support? How easy are they to use? Could more simple packages be built upon more general packages? Etc.
 
 One question: do any of these packages support TAP (the [http://testanything.org/wiki/index.php/Main_Page Test Anything Protocol])? 
 I don't see a single reference to it. 
-
-= Mock / Stub Frameworks =
 
 [new]
 Does anybody know any mock or stub frameworks in Emacs Lisp?

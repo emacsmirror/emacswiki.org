@@ -24,6 +24,10 @@ This is perhaps the
      multiple bookmarks can have the same tag.  You can mark or
      show just the bookmarks with a given tag or a set of tags.
 
+* Bookmark tags can in fact be more than just names.  They can
+be full-fledged user-defined ''attributes'', with EmacsLisp
+objects as their values.
+
 * Bookmarks record the ''number of visits'' and the ''time'' of the last
      visit.  You can sort, show/hide, or mark bookmarks based on
      this info.
@@ -302,6 +306,46 @@ that are tagged in various ways.  When combined with other
 '''Bookmark+''' commands (e.g. search, query-replace) that apply to the
 marked bookmarks in the `##*Bookmark List*##' window, you can really
 do quite a lot using bookmark tags.  Use your imagination!  See [[#TagCommandsAndKeys]]), below, for more about this.
+
+
+
+
+
+
+
+[:TagsAsAttributes]
+== Bookmark Tags Can Have Values ==
+
+Bookmark tags are simply names (strings) when you create them.  Nearly all
+of the predefined operations that use tags use these names:
+sorting, marking, and so on.  But you can in fact add associated
+values to tags.  This means that a tag can act just like an object
+''attribute'': a name/value pair.
+
+To add a value to a tag, or to change the current value, you use
+command '''`bookmarkp-set-tag-value'''', bound to '''`##T v##'''' in the bookmark
+list.  You are prompted for the bookmark, the tag, and the new
+value.
+
+A tag value can be a number, symbol, string, list, vector, and so
+on.  It can be any EmacsLisp object that has read syntax, that is, that
+is readable by the Lisp reader.  (Everything that is saved as part
+of a bookmark must be readable; otherwise, your bookmark file
+could not be read (loaded).)
+
+Because tag values can be pretty much anything, you are pretty
+much on your own when it comes to making use of them.  '''Bookmark+'''
+does not provide any predefined functions for this.  In general,
+tag values are something you will use with home-grown Lisp code
+for your own purposes.
+
+However, you can easily make some interactive use of tag values
+with little effort.  You can, for example, define a predicate that
+tests whether a bookmark has a tag value that satisfies some
+property (e.g. is a number > 3.14159265358979), and then you can
+use command '''`bookmarkp-bmenu-mark-bookmarks-satisfying'''' to mark
+those bookmarks.
+
 
 
 
@@ -677,6 +721,7 @@ The point is that bookmarks, and bookmark tags in particular, let you define and
 
 
 
+[:bookmarkp-bmenu-dired-marked]
 [:OpenDiredForMarkedFiles]
 === Open Dired for the Marked Files ===
 
@@ -687,18 +732,20 @@ The bookmark list is not intended to replace Dired.
 
 You can, however, use the bookmark list to take advantage of
 arbitrary Dired features for file and directory bookmarks.
-Command `bookmarkp-bmenu-dired-marked-local' ('''`##M-d >##'''') weds
+Command `bookmarkp-bmenu-dired-marked' ('''`##M-d >##'''') weds
 '''Bookmark+''''s set-defining and set-manipulating features (tagging,
 marking, filtering etc.) to Dired's file-manipulating features.
 
 `##M-d >##' opens a Dired buffer that is specialized for just the
-local files and directories whose bookmarks are marked in the
+files and directories whose bookmarks are marked in the
 bookmark list.  (Other marked bookmarks are ignored by the
-command.)  The files and directories can be located anywhere
-locally; they need not be in the same directory.  They are listed
+command.)  The files and directories can be located anywhere; they need not be in the same directory.  They are listed
 in Dired using absolute file names.
-(Remote files and directories could be handled also, once Emacs
-bug #5478 is fixed.)
+
+(In Emacs versions prior to release 23.2, only local files and
+directories can be handled, due to Emacs bug #5478.  In such
+versions, remote-file bookmarks are ignored by `##M-d >##'.)
+
 
 This '''Bookmark+''' feature makes sets of files and directories
 immediately amenable to all of the operations provided by Dired.

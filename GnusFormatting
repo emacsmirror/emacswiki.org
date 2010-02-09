@@ -8,7 +8,7 @@ lots of percentages everywhere."
 
 == Summary Buffer Formatting ==
 
-=== Threading, version 1 ===
+=== Version 1 ===
 
 It is possible to show threads with line drawing characters <b>in a terminal</b>.
 
@@ -47,6 +47,7 @@ Now we can finally get the nice looking thread by using <code>%u&thread;</code> 
 
 ----
 
+=== Version 2 ===
 
 The above example may not work in GNU Emacs in all cases. It can generate alternative glyphs that do not produce the drawing line characters shown in the
 image above. Here is an approach that may allow users of gnus to tailor the glyphs to fit with their specific setup.
@@ -88,18 +89,23 @@ Here is an example, tailored to an alternative setup, that reproduces the drawin
 
 ----
 
-=== Threading, version 2 ===
+=== Version 3 (Unicode) ===
 
-Here's a simpler example of threaded summary view:
+Here's a simpler example of threaded summary view using Unicode characters:
 
-    (setq gnus-summary-line-format "%U%R%z %(%&user-date;  %-15,15f %* %B%s%)\n"
-          gnus-user-date-format-alist '((t . "%d.%m.%Y %H:%M"))
-          gnus-sum-thread-tree-false-root ""
-          gnus-sum-thread-tree-indent " "
-          gnus-sum-thread-tree-root ""
-          gnus-sum-thread-tree-leaf-with-other "├► "
-          gnus-sum-thread-tree-single-leaf "╰► "
-          gnus-sum-thread-tree-vertical "│")
+
+    (setq-default
+     gnus-summary-line-format "%U%R%z %(%&user-date;  %-15,15f %* %B%s%)\n"
+     gnus-user-date-format-alist '((t . "%d.%m.%Y %H:%M"))
+     gnus-summary-thread-gathering-function 'gnus-gather-threads-by-references
+     gnus-thread-sort-functions '(gnus-thread-sort-by-date)
+     gnus-sum-thread-tree-false-root ""
+     gnus-sum-thread-tree-indent " "
+     gnus-sum-thread-tree-leaf-with-other "├► "
+     gnus-sum-thread-tree-root ""
+     gnus-sum-thread-tree-single-leaf "╰► "
+     gnus-sum-thread-tree-vertical "│"
+    )
 
 The summary buffer looks like this:
 

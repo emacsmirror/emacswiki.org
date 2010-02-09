@@ -1,0 +1,21 @@
+GnuEmacs user (aka [::rph]).  I use Emacs for:
+* mail (CategoryGnus)
+* irc ([[ERC]])
+* personal information management (OrgMode and DiaryMode)
+* latex (AUCTeX).
+* coding python, bash, and elisp
+* interfacing with [[Git]] ([[Magit]])
+
+= Elisp =
+; Lisp:remind-to-diary.el:  A very modest library that converts remind's simple calendar output into diary entries.  My first!  Comments welcome.
+
+= Talk =
+[new:DrewAdams:2010-02-08 22:56 UTC]
+Welcome to the wiki. -- DrewAdams
+
+[new:RobertHamrick:2010-02-09 00:58 UTC]
+Thanks!  I've been browsing for a few years now.
+
+
+----
+CategoryHomepage

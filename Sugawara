@@ -1,22 +1,11 @@
 I use emacs(meadow).
 
-* Lisp:highlight-cl.el
-
-:: Highlighting `cl' functions.
-
-* Lisp:anything-yaetags.el
-
-:: Yet another etags interface with anything.
-
-* Lisp:descbinds-anything.el
-
-:: replacement of `describe-bindings' with anything.
-
-* Lisp:paint.el
-
-:: Make a emacs to the paint tool.
-
-* VlineMode
+* Lisp:lcomp.el -- list completion hacks!
+* Lisp:highlight-cl.el -- Highlighting `cl' functions.
+* Lisp:anything-yaetags.el -- Yet another etags interface with anything.
+* Lisp:descbinds-anything.el -- replacement of `describe-bindings' with anything.
+* Lisp:paint.el -- Make a emacs to the paint tool.
+* VlineMode -- show vertical line (column highlighting) mode.
 
 [new:DrewAdams:2008-01-21 07:13 UTC]
 :: Very nice! Please consider adding a face variable (`defvar') for face `vline', and use that in your code. That way, other code can make the `vline' code use a particular face in some context, without affecting the user's choice for face `vline'. For example, other code could then do this:
@@ -53,5 +42,4 @@ Welcome ! -- [[Matsuyama]]
 -----
 
 CategoryHomepage
-
 
