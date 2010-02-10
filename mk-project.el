@@ -95,7 +95,7 @@
 (require 'thingatpt)
 (require 'cl)
 
-(defvar mk-proj-version "1.3"
+(defvar mk-proj-version "1.3.1"
   "As tagged at http://github.com/mattkeller/mk-project/tree/master")
 
 ;; ---------------------------------------------------------------------
@@ -185,7 +185,7 @@ returns a string. The argument to the function will be the symbol
 Examples:
 
   ;; A simple string with a custom find command. However, if your
-  ;; command is this simple, you don't need src-find-cmd -- just 
+  ;; command is this simple, you don't need src-find-cmd -- just
   ;; use src-patterns
   (src-find-cmd \"find /home/me/my-java-project/ -type f -name '*.java'\")
 
@@ -344,7 +344,7 @@ value is not used if a custom find command is set in
               ((functionp cmd) (funcall cmd context))
               (t (error "find-cmd is neither a string or a function")))
       nil)))
-    
+
 ;; ---------------------------------------------------------------------
 ;; Project Configuration
 ;; ---------------------------------------------------------------------
@@ -563,7 +563,8 @@ value is not used if a custom find command is set in
              ;; generate absolute filenames.
              (relative-tags (string= (file-name-as-directory mk-proj-basedir)
                                      (file-name-directory mk-proj-tags-file)))
-             (default-directory (file-name-directory mk-proj-tags-file))
+             (default-directory (file-name-as-directory
+                                 (file-name-directory mk-proj-tags-file)))
              (default-find-cmd (concat "find " (if relative-tags "." mk-proj-basedir)
                                        " -type f "
                                        (mk-proj-find-cmd-src-args mk-proj-src-patterns)))
@@ -606,7 +607,10 @@ With C-u prefix, start from the current directory."
                   (read-string "Grep project for: ")))
          (find-cmd "find . -type f")
          (grep-cmd (concat "grep -i -n \"" regex "\""))
-         (default-directory (if (mk-proj-has-univ-arg) default-directory mk-proj-basedir)))
+         (default-directory (file-name-as-directory
+                             (if (mk-proj-has-univ-arg)
+                                 default-directory
+                               mk-proj-basedir))))
     (when mk-proj-ignore-patterns
       (setq find-cmd (concat find-cmd (mk-proj-find-cmd-ignore-args mk-proj-ignore-patterns))))
     (when mk-proj-tags-file
@@ -646,7 +650,10 @@ With C-u prefix, start ack from the current directory."
                   (read-string "Ack project for: ")))
          (whole-cmd (mk-proj-ack-cmd regex))
          (confirmed-cmd (read-string "Ack command: " whole-cmd nil whole-cmd))
-         (default-directory (if (mk-proj-has-univ-arg) default-directory mk-proj-basedir)))
+         (default-directory (file-name-as-directory
+                             (if (mk-proj-has-univ-arg)
+                                 default-directory
+                               mk-proj-basedir))))
     (compilation-start confirmed-cmd 'ack-mode)))
 
 ;; ---------------------------------------------------------------------

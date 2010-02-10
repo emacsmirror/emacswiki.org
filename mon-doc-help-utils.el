@@ -25,7 +25,7 @@
 ;;; `mon-help-function-arity', `mon-help-parse-interactive-spec',
 ;;; `mon-help-view-file', `mon-help-temp-docstring-display',
 ;;; `mon-help-get-mon-help-buffer', `mon-help-overlay-result',
-;;; `mon-help-find-result-for-overlay',
+;;; `mon-help-find-result-for-overlay', `mon-help-overlay-on-region',
 ;;; `mon-help-propertize-tags', `mon-help-propertize-tags-TEST',
 ;;; `mon-help-mon-tags', `mon-help-insert-tags',
 ;;; `mon-tags-apropos', `mon-tags-naf-apropos',
@@ -356,7 +356,7 @@ EXAMPLE:\n
 (defvar *mon-help-docstring-help-bffr* "*MON-HELP*"
   "*A buffer name in which to check `mon-help-*' related docstrings.
 Default is *MON-HELP*\n
-:SEE-ALSO `mon-help-view-file', `mon-help-temp-docstring-display'\n►►►")
+:SEE-ALSO `mon-help-view-file', `mon-help-temp-docstring-display'.\n►►►")
 ;;
 ;;; :TEST-ME *mon-help-docstring-help-bffr*
 ;;;(progn (makunbound *mon-help-docstring-help-bffr*)
@@ -524,6 +524,8 @@ For `help-mode' views of MON functions, in particular those from
 ;;;        (unintern '*regexp-mon-doc-help-docstring-tags*))
 
 ;;; ==============================
+;;; :TODO Build face and parsing routine for these. 
+;;;       Should recognize "^;; " and "^;;; " by syntax _then_ regexp.
 ;;; :CREATED <Timestamp: #{2009-11-21T13:51:13-05:00Z}#{09476} - by MON>
 (defvar *regexp-mon-doc-help-comment-tags*
   (regexp-opt
@@ -564,7 +566,7 @@ For `help-mode' views of MON functions, in particular those from
      "<SYMBOL>" "<VARIABLE>") t)
   "*Regexp for locating \"meta-syntactic\" type tags.
 For `help-mode' views of MON functions, in particular those from
-:FILE `mon-doc-help-utils.el'.\n
+:FILE mon-doc-help-utils.el.\n
 :SEE-ALSO `*regexp-mon-doc-help-docstring-tags-DYNAMIC*'
 `*regexp-mon-doc-help-docstring-tags-TABLES*'
 `*regexp-mon-doc-help-docstring-tags*',`*regexp-mon-doc-help-comment-tags*'
@@ -574,6 +576,33 @@ For `help-mode' views of MON functions, in particular those from
 ;;; (progn (makunbound '*regexp-mon-doc-help-meta-tags*)
 ;;;        (unintern '*regexp-mon-doc-help-meta-tags*))
 
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-02-06T11:43:27-05:00Z}#{10056} - by MON KEY>
+(defgroup mon-doc-help-utils nil
+  ""
+  :group 'mon-doc-help-utils)
+  
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-02-06T11:26:37-05:00Z}#{10056} - by MON KEY>
+(defgroup mon-help-faces nil
+  "The faces used with mon-doc-help-utils.
+;; :REGEXP-LIST                                :FACE 
+`*regexp-mon-doc-help-pointer-tags*'           `mon-help-PNTR-tag'
+`*regexp-mon-doc-help-docstring-tags-DYNAMIC*' `mon-help-DYNATAB-tag'
+`*regexp-mon-doc-help-docstring-tags-TABLES*'
+`*regexp-mon-doc-help-docstring-tags*'          `mon-help-KEY-tag'
+`*regexp-mon-doc-help-comment-tags*'
+`*regexp-mon-doc-help-meta-tags*'               `mon-help-META-tag'
+:SEE :FILE mon-doc-help-utils.el
+:SEE-ALSO  `mon-help-propertize-tags', `mon-help-mon-tags', `mon-help-insert-tags',
+`*mon-help-mon-tags-alist*', `mon-help-view-file', `mon-help-temp-docstring-display',
+`*mon-help-docstring-help-bffr*'.\n►►►"
+  :group 'mon-doc-help-utils
+  :group 'faces)
+
+;;; SlateBlue3
+;;mon-help-faces
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-11-21T16:41:30-05:00Z}#{09476} - by MON>
 (defface mon-help-KEY-tag
@@ -628,6 +657,7 @@ For `help-mode' views of MON functions, in particular those from
 ;;; :TEST-ME (describe-face 'mon-help-PNTR-tag)
 ;;
 ;;; (progn (makunbound 'mon-help-PNTR-tag) (unintern 'mon-help-PNTR-tag))
+
 
 ;;; ==============================
 ;;; :NOTE (*VAR* MATCH-GRP FACE)  ;COLOR
@@ -777,8 +807,9 @@ When LINE-REGION-OR-LIST is region evaluate FUN-LAY with bound of entire region.
 :EXAMPLE
 \(mon-help-overlay-for-example 'mon-make-lastname-firstname 3 'line\)\n
 ►\nFirstname1 Lastname1\nFirstname2 Firstname2\nFirstname3 Lastname3\n◄\n\n
-:SEE-ALSO `mon-help-overlay-result', `mon-help-find-result-for-overlay', 
-`momentary-string-display', `mon-help-overlay-functions'.\n►►►"
+:SEE-ALSO `mon-help-overlay-result', `mon-help-find-result-for-overlay',
+`mon-help-overlay-on-region', `mon-nuke-overlay-buffer', `mon-help-overlay-functions',
+`momentary-string-display'.\n►►►"
   (declare (indent 2) (debug t))
   (let ((mhor-start   (make-symbol "mhor-start"))
         (mhor-end     (make-symbol "mhor-end"))
@@ -830,7 +861,30 @@ When LINE-REGION-OR-LIST is region evaluate FUN-LAY with bound of entire region.
                                  (funcall ,fun-lay (pop ,mhor-lst-pop) ,@fun-lay-args)))))
              (when (eq ,lrol 'li) (line-move-1 1))))))))
 
+
 ;;; ==============================
+;;; :CREATED <Timestamp: #{2010-02-09T11:57:07-05:00Z}#{10062} - by MON KEY>
+(defun mon-help-overlay-on-region (ostring)
+  "Display an overlay for region containing OSTRING delimited by `►' and `◄'.
+Display for 2 seconds then remove overlay.\n
+Overlay displayed with the face `minibuffer-prompt'.\n
+:EXAMPLE\n\n(mon-help-overlay-on-region \"Some string\")\n
+►\nSome string\n◄\n
+\(mon-help-overlay-on-region \"Some string\"\)\n
+►Some string◄\n
+:SEE-ALSO `mon-help-overlay-result', `mon-help-overlay-for-example',
+`mon-nuke-overlay-buffer', `mon-help-find-result-for-overlay',
+`mon-help-overlay-functions'.\n►►►"
+  (unwind-protect
+       (let* ((sb (save-excursion 
+                    (search-forward-regexp (concat "^►\n?.*" ostring ".*\n?◄$")  nil t)))
+              (molay (make-overlay (match-beginning 0) (match-end 0) (current-buffer) t t )))
+         (overlay-put molay 'face 'minibuffer-prompt)
+         (sit-for 2))
+    (remove-overlays (buffer-end 0) (buffer-end 1) 'face 'minibuffer-prompt)))
+
+;;; ==============================
+;;; :TODO Factor out the face def to a defface.
 ;;; :MODIFICATIONS <Timestamp: #{2010-01-12T12:36:15-05:00Z}#{10022} - by MON>
 ;;; :CREATED <Timestamp: #{2010-01-08T23:28:40-05:00Z}#{10015} - by MON>
 (defun mon-help-overlay-result (show-here to-here exit-c &optional show-str) ;for-secs 
@@ -853,7 +907,8 @@ When function is invoked place the overlay and message user to:\n
 bounds error checking and restricts exiting from the loop until user provides
 EXIT-CHAR or enters \7.\n
 :CALLED-BY `mon-help-find-result-for-overlay'.\n
-:SEE-ALSO `mon-help-overlay-for-example', `mon-help-overlay-functions'.\n►►►"
+:SEE-ALSO `mon-help-overlay-for-example', `mon-help-overlay-on-region',
+`mon-nuke-overlay-buffer', `mon-help-overlay-functions'.\n►►►"
   (let ((showlay (make-overlay show-here to-here nil t t))
         (max-mini-window-height 1))
     (unwind-protect
@@ -862,11 +917,11 @@ EXIT-CHAR or enters \7.\n
                (progn
                  (overlay-put showlay 'display show-str)
                  (overlay-put showlay 'face '(:foreground "lime green"
-                                            :background "black"
-                                            :weight bold
-                                            :box (:line-width 1
-                                                  :color "lime green"
-                                                  :style raised-button))))
+                                              :background "black"
+                                              :weight bold
+                                              :box (:line-width 1
+                                                    :color "lime green"
+                                                    :style raised-button))))
                (overlay-put showlay 'face '(:foreground "lime green"
                                             :background "black" 
                                             :weight ultra-bold 
@@ -918,7 +973,8 @@ Matches the following:
  ->   ;->  ; -> \n =>   ;=>  ; => \n -->  ;-->  ; --> --->\n <--  <--  ; <--  <---
  <--  ;<-- ; <--  <--- \n ==>  ;==> ; ==>  ===>\n
 :SEE-ALSO `mon-help-overlay-for-example', `mon-help-overlay-result',
-`momentary-string-display', `mon-help-overlay-functions'.\n►►►"
+`mon-nuke-overlay-buffer', `momentary-string-display',
+`mon-help-overlay-functions'.\n►►►"
   (progn
     (search-forward-regexp search-it nil t)
     (let ((mb (match-beginning (or match-b 0)))
@@ -943,7 +999,8 @@ Matches the following:
 ;;; :NOTE See the hidden fnctn: `make-help-screen' .
 ;;; :MODIFICATIONS <Timestamp: #{2010-02-03T15:16:13-05:00Z}#{10053} - by MON>
 ;;; :CREATED <Timestamp: #{2009-12-20T17:50:49-05:00Z}#{09517} - by MON>
-(defun mon-help-temp-docstring-display (the-help-doc &optional some-other-buffer kill-em-before-they-grow)
+(defun mon-help-temp-docstring-display (the-help-doc &optional some-other-buffer
+                                        kill-em-before-they-grow)
   "Display THE-HELP-DOC string formatted as per help-mode.
 Leave existing *Help* buffer untouched.\n
 Docstring is displayed in the buffer named by the the value of 
@@ -972,7 +1029,7 @@ Useful when temporarily editing docstrings.\n
     (with-help-window dhb 
       (with-current-buffer dhb
         (insert the-help-doc)
-        (help-window-setup-finish (selected-window)))))) 
+        (help-window-setup-finish (selected-window))))))
 ;;
 ;;; :TEST-ME (mon-help-temp-docstring-display
 ;;;           (documentation 'mon-help-temp-docstring-display))
@@ -3798,7 +3855,7 @@ It has the following format:\n
 |  :box                       | | :font - (a font object)                |
 |  :inverse-video             | | :SEE info node `(elisp)Font Selection' |
 |  :stipple                   | | :SEE info node `(elisp)Fontsets'       |
-|                             | |________________________________________|
+| `face-attribute-name-alist' | |________________________________________|
 |_____________________________| |                                        |
 |                             | | :height - (integer, floating point)    |
 |  :FACE-ATTRIBUTE-FUNCTIONS  | | {1/10 point, float}                    |
@@ -4037,14 +4094,16 @@ cases of text, and how to highlight those cases:\n
 `window'             
 `wrap-prefix'\n
 ;; :OVERLAY-FUNCTIONS-MON-LOCAL
+`mon-help-find-result-for-overlay'
 `mon-help-overlay-for-example'
+`mon-help-overlay-on-region'
 `mon-help-overlay-result'
-`mon-help-find-result-for-overlay'\n
+`mon-nuke-overlay-buffer'\n
 :SEE :FILE buffer.c textprop.c
 :SEE-ALSO `mon-help-text-property-functions',
 `mon-help-text-property-stickyness', `mon-help-plist-functions'.\n►►►"
 (interactive "i\nP")
-  (if (or insertp intrp)
+  (if (or insrtp intrp)
       (mon-help-function-spit-doc 'mon-help-overlay-functions :insertp t)
     (message "Pass non-nil for optional arg INTRP")))
 ;;

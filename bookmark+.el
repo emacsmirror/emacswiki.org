@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Feb  8 15:41:20 2010 (-0800)
+;; Last-Updated: Tue Feb  9 14:55:08 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 10435
+;;     Update #: 10498
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -44,6 +44,7 @@
 ;;    (@> "Bookmark+ Features")
 ;;    (@> "Different Types of Jump Commands")
 ;;    (@> "Bookmark Tags")
+;;    (@> "Bookmark Tags Can Have Values")
 ;;    (@> "Function and Sequence Bookmarks")
 ;;    (@> "Bookmark-List Views - Saving and Restoring State")
 ;;      (@> "Quitting Saves the Bookmark-List State")
@@ -285,13 +286,14 @@
 ;;    `bookmarkp-file-remote-p', `bookmarkp-float-time',
 ;;    `bookmarkp-full-tag', `bookmarkp-function-bookmark-p',
 ;;    `bookmarkp-get-buffer-name', `bookmarkp-get-end-position',
-;;    `bookmarkp-get-tags', `bookmarkp-get-visit-time',
-;;    `bookmarkp-get-visits-count', `bookmarkp-gnus-alist-only',
-;;    `bookmarkp-gnus-bookmark-p', `bookmarkp-gnus-cp',
-;;    `bookmarkp-goto-position', `bookmarkp-handler-cp',
-;;    `bookmarkp-handle-region-default', `bookmarkp-has-tag-p',
-;;    `bookmarkp-info-alist-only', `bookmarkp-info-bookmark-p',
-;;    `bookmarkp-info-cp', `bookmarkp-isearch-bookmarks' (Emacs 23+),
+;;    `bookmarkp-get-tag-value', `bookmarkp-get-tags',
+;;    `bookmarkp-get-visit-time', `bookmarkp-get-visits-count',
+;;    `bookmarkp-gnus-alist-only', `bookmarkp-gnus-bookmark-p',
+;;    `bookmarkp-gnus-cp', `bookmarkp-goto-position',
+;;    `bookmarkp-handler-cp', `bookmarkp-handle-region-default',
+;;    `bookmarkp-has-tag-p', `bookmarkp-info-alist-only',
+;;    `bookmarkp-info-bookmark-p', `bookmarkp-info-cp',
+;;    `bookmarkp-isearch-bookmarks' (Emacs 23+),
 ;;    `bookmarkp-isearch-bookmarks-regexp' (Emacs 23+),
 ;;    `bookmarkp-isearch-next-bookmark-buffer' (Emacs 23+),
 ;;    `bookmarkp-jump-1', `bookmarkp-jump-bookmark-list',
@@ -679,11 +681,11 @@
 ;;(@* "Bookmark Tags Can Have Values")
 ;;  ** Bookmark Tags Can Have Values **
 ;;
-;;  Bookmark tags are simply name (strings) when you create them.
+;;  Bookmark tags are simply names (strings) when you create them.
 ;;  Nearly all of the predefined operations that use tags use these
-;;  names: sorting, marking, and so on.  But you can in fact add
-;;  associated values to tags.  This means that a tag can act just
-;;  like an object attribute: a name/value pair.
+;;  names: sorting, marking, and so on.  But you can in fact add an
+;;  associated value to each tag.  This means that a tag can act just
+;;  like an object attribute or property: it can be a name/value pair.
 ;;
 ;;  To add a value to a tag, or to change the current value, you use
 ;;  command `bookmarkp-set-tag-value', bound to `T v' in the bookmark
@@ -691,23 +693,42 @@
 ;;  value.
 ;;
 ;;  A tag value can be a number, symbol, string, list, vector, and so
-;;  on.  It can be any Emacs-Lisp object that has read syntax, that
-;;  is, that is readable by the Lisp reader.  (Everything that is
-;;  saved as part of a bookmark must be readable; otherwise, your
-;;  bookmark file could not be read (loaded).)
+;;  on.  It can be as complex as you like.  It can be any Emacs-Lisp
+;;  object that has read syntax, that is, that is readable by the Lisp
+;;  reader.  (Everything that is saved as part of a bookmark must be
+;;  readable; otherwise, your bookmark file could not be read
+;;  (loaded).)
 ;;
 ;;  Because tag values can be pretty much anything, you are pretty
 ;;  much on your own when it comes to making use of them.  Bookmark+
-;;  does not provide any predefined functions for this.  In general,
-;;  tag values are something you will use with home-grown Lisp code
-;;  for your own purposes.
+;;  does not provide predefined functions for using tag values.  In
+;;  general, tag values are something you will use with home-grown
+;;  Lisp code for your own purposes.
 ;;
 ;;  However, you can easily make some interactive use of tag values
 ;;  with little effort.  You can, for example, define a predicate that
 ;;  tests whether a bookmark has a tag value that satisfies some
-;;  property (e.g. is a number > 3.14159265358979), and then you can
-;;  use command `bookmarkp-bmenu-mark-bookmarks-satisfying' to mark
-;;  those bookmarks.
+;;  property (e.g. is a number greater than 3.14159265358979), and
+;;  then you can use command
+;;  `bookmarkp-bmenu-mark-bookmarks-satisfying' to mark those
+;;  bookmarks.
+;;
+;;  Tags that have the prefix "bookmarkp-" are reserved - do not name
+;;  your own tags using this prefix.
+;;
+;;  Currently, "bookmarkp-jump" is the only predefined bookmark tag.
+;;  You can give this tag a value that is a function - it is called
+;;  whenever the tagged bookmark is visited.  Any Lisp-readable
+;;  function value is allowed: a symbol or a lambda expression.
+;;
+;;  For example, you can use `T v (lambda () (message "Hello!"))' to
+;;  display `Hello!' whenever the bookmark with this tag is visited.
+;;
+;;  The function that is the value of a "bookmarkp-jump" tag is called
+;;  just after the the standard hook `bookmark-jump-hook' is invoked.
+;;  You can use this tag to invoke functions that are specific to
+;;  individual bookmarks; bookmarks can thus have their own, extra
+;;  jump functions.
 ;;
 ;;
 ;;(@* "Function and Sequence Bookmarks")
@@ -1394,6 +1415,9 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2010/02/09 dadams
+;;     Added: bookmarkp-get-tag-value.
+;;     bookmark--jump-via: Handle special bookmark tag bookmarkp-jump.
 ;; 2010/02/08 dadams
 ;;     Renamed: bookmarkp-bmenu-dired-marked-local to bookmarkp-bmenu-dired-marked.
 ;;     bookmarkp-bmenu-dired-marked: Handle remote bookmarks if Emacs > 23.1.
@@ -3262,9 +3286,9 @@ Newline characters are stripped out."
 ;; `bookmark-handle-bookmark'.
 ;;
 (defun bookmark--jump-via (bookmark display-function)
-  "Helper function for `bookmark-jump(-other-window)'.
-BOOKMARK is a bookmark name or a bookmark record.
-DISPLAY-FUNCTION is the function that displays the bookmark."
+  "Display BOOKMARK using DISPLAY-FUNCTION.
+Then run `bookmark-after-jump-hook' and show annotations for BOOKMARK.
+BOOKMARK is a bookmark name or a bookmark record."
   (bookmarkp-record-visit bookmark 'batch)
   (setq bookmarkp-jump-display-function  display-function)
   (bookmark-handle-bookmark bookmark)
@@ -3273,6 +3297,8 @@ DISPLAY-FUNCTION is the function that displays the bookmark."
   ;; VANILLA EMACS FIXME: we used to only run `bookmark-after-jump-hook' in
   ;; `bookmark-jump' itself, but in none of the other commands.
   (run-hooks 'bookmark-after-jump-hook)
+  (let ((jump-fn  (bookmarkp-get-tag-value bookmark "bookmarkp-jump")))
+    (when jump-fn (funcall jump-fn)))
   (when bookmark-automatically-show-annotations (bookmark-show-annotation bookmark)))
 
 
@@ -5078,7 +5104,13 @@ you left off."
 BOOKMARK is a bookmark name or a bookmark record."
   (bookmark-prop-get bookmark 'tags))
 
-;; NOT USED currently.
+(defun bookmarkp-get-tag-value (bookmark tag &optional msgp)
+  "Return value of BOOKMARK's tag TAG.
+BOOKMARK is a bookmark name or a bookmark record.
+TAG is a string.
+Return nil if BOOKMARK has no such TAG or if TAG has no value."
+  (assoc-default tag (bookmarkp-get-tags bookmark)))
+
 (defun bookmarkp-has-tag-p (bookmark tag &optional msgp)
   "Return non-nil if BOOKMARK is tagged with TAG.
 BOOKMARK is a bookmark name or a bookmark record.

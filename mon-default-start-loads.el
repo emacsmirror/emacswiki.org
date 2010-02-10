@@ -14,7 +14,7 @@
 ;;;
 ;;; FUNCTIONS:►►►
 ;;; `bld-path-for-load-path', `mon-switch-bookmark-file', `mon-conkeror',
-;;; `mon-firefox',`mon-terminal', `mon-cmd', `mon-actvt-show-point-mode'
+;;; `mon-firefox',`mon-terminal', `mon-cmd', `mon-toggle-show-point-mode'
 ;;; `mon-update-tags-tables', `mon-buffer-local-comment-start'
 ;;; FUNCTIONS:◄◄◄
 ;;; 
@@ -25,7 +25,7 @@
 ;;; VARIABLES:
 ;;; `*mon-tags-table-list*'
 ;;;
-;;; ADVISE:
+;;; ADVISED:
 ;;; `find-function-search-for-symbol' , `find-variable-noselect' 
 ;;;
 ;;; ALIASED/ADIVISED/SUBST'D:
@@ -33,6 +33,7 @@
 ;;; DEPRECATED:
 ;;;
 ;;; RENAMED:
+;;; `mon-actvt-show-point-mode' -> `mon-toggle-show-point-mode'
 ;;;
 ;;; MOVED:
 ;;; `mon-cmd'         -> mon-utils.el
@@ -172,8 +173,8 @@
 ;;; :COURTESY stefan@xsteve.at :VERSION 23.01.2001 :HIS xsteve-functions.el
 ;;; :MODIFICATIONS <Timestamp: 2009-08-09-W32-7T03:31:36-0400Z - by MON KEY>
 (defun mon-switch-bookmark-file (file)
-  "Relocate where Emacs stores the bookmark file.
-bookmark file typically has a .bmk extension.\n
+  "Relocate where Emacs stores the bookmark file.\n
+:NOTE The bookmark file typically has a .bmk extension.\n
 :SEE-ALSO `bookmark-load', `bookmark-default-file'.\n►►►"
   (bookmark-load file t)
   (setq bookmark-default-file file))
@@ -182,33 +183,14 @@ bookmark file typically has a .bmk extension.\n
  (concat (file-name-as-directory mon-user-emacsd) ".emacs.bmk"))
 
 ;;; ==============================
-;; :WOMAN-PATH
-;;; :NOTE New cygwin/mingw/emacs installs and twiddling keep manpath wacky on w32.
-;;; :MODIFICATIONS <Timestamp: #{2009-10-26T19:12:52-04:00Z}#{09441} - by MON>
-;;; :MODIFICATIONS <Timestamp: #{2009-08-14T12:35:21-04:00Z}#{09335} - by MON>
-(cond ((and IS-MON-P-W32
-       (file-exists-p (concat (getenv "HG_REPOS") "\\cross-site-man")))
-       (require 'woman)
-       (let ((wmn-p (mapcar 
-                     (lambda (x) 
-                       (replace-regexp-in-string  "\\\\" "/" x))
-                     `(,(concat  (getenv "HG_REPOS") "\\cross-site-man")
-                        ,(concat (getenv "HG_REPOS") "\\cross-site-man\\")
-                        ,(concat (getenv "HOME") "\\bin\\Emacs\\EmacsW32\\gnuwin32\\man")
-                        "C:/usr/share/man"
-                        "C:/usr/local/share/man"
-                        "C:/usr/X11R6/share/man" 
-                        "C:/usr/ssl/man"
-                        "C:/usr/local/man"))))
-         (mapc (lambda (x) (add-to-list 'woman-manpath x)) wmn-p))))
-;;
-;;; :TEST-ME woman-manpath
-
-;;; ==============================
 ;; :HELP-MODE-MODS
 ;;; :NOTE I don't like the new 23.0 style UPCASE args in help.
-;;;       Nicer to map them for clarity to a face.
+;;; Where clarity is the concern would be nicer to map them to a face.
 (setq help-downcase-arguments t)
+;;
+;;; :NOTE Ensure evaluating examples in help mode returns a nice long list.
+(add-hook 'help-mode-hook 
+          #'(lambda () (set (make-local-variable 'print-length) nil)))
 
 ;;; ==============================
 ;;; :COURTESY Tom Rauchenwald  
@@ -225,6 +207,42 @@ bookmark file typically has a .bmk extension.\n
   (after mon-adv2 last (variable &optional file) activate)
   (with-current-buffer (car ad-return-value)
     (view-mode 1)))
+
+;;; ==============================
+;; :WOMAN-PATH
+;;; :NOTE New cygwin/mingw/emacs installs and twiddling keep manpath wacky on w32.
+;;; :MODIFICATIONS <Timestamp: #{2009-10-26T19:12:52-04:00Z}#{09441} - by MON>
+;;; :MODIFICATIONS <Timestamp: #{2009-08-14T12:35:21-04:00Z}#{09335} - by MON>
+(when IS-MON-P-W32
+  ;;: WAS (file-exists-p (concat (getenv "HG_REPOS") "\\cross-site-man")))
+  (require 'woman)
+  (let* ((csm (concat (nth 5 (assoc 1 *mon-emacsd*)) "/cross-site-man"))
+         (wmn-p (mapcar 
+                 #'(lambda (x) 
+                     ;; :WAS (replace-regexp-in-string  "\\\\" "/" x))
+                     (when (file-exists-p x) (file-truename x)))
+                 `(,csm
+                   ,(concat csm "/")
+                   ;; :GNUWIN32
+                   ,(concat (getenv "HOME")"\\bin\\GNU\\man")
+                   ;;; c:/home/sp/bin/Emacs/emacsW32-09-10-14/EmacsW32/gnuwin32/man
+                   ;;; ,(file-truename 
+                   ;;;   (concat 
+                   ;;;    (format "" (assoc 'the-emacs-vars
+                   ;;,(concat (getenv "HOME") "\\Emacs\\EmacsW32\\gnuwin32\\man")
+                   ;; :CYGWIN
+                   "c:/usr/share/man"
+                   "c:/usr/local/share/man"
+                   "c:/usr/X11R6/share/man" 
+                   "c:/usr/ssl/man"
+                   "c:/usr/local/man"))))
+    (mapc #'(lambda (addp) (unless (not addp) (add-to-list 'woman-manpath addp))) wmn-p)))
+;;
+;;; :TEST-ME woman-manpath
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-10-21T20:01:43-04:00Z}#{09434} - by MON>
+(when IS-W32-P (setq thumbs-conversion-program  (executable-find "imconvert.exe")))
 
 ;;; ==============================
 ;; :CUSTOM-FILE
@@ -245,10 +263,34 @@ bookmark file typically has a .bmk extension.\n
 (load custom-file)
 
 ;;; ==============================
-(cond ((or IS-MON-P-W32 IS-BUG-P)
-       (require 'mon-w32-load))
-      (IS-MON-P-GNU 
-       (load (require 'mon-GNU-load))))
+;;; :NOTE Make sure that calling functions tack on the ``file://'' prefix.
+;;; Also, make sure to check that the path is constrcted correctly for browsers.
+;;;       (concat "file://" common-lisp-hyperspec-root)
+;;;       (substring (concat "file://" common-lisp-hyperspec-root) 7)
+;;;       (concat "file://" common-lisp-hyperspec-root "Body/03_da.htm")
+;;; "http://www.ai.mit.edu/projects/iiip/doc/CommonLISP/HyperSpec/"
+;;; "http://www.lispworks.com/documentation/HyperSpec/"
+;;; "http://www.cs.cmu.edu/afs/cs/project/ai-repository/ai/html/hyperspec/HyperSpec/"
+;;; "http://www.ai.mit.edu/projects/iiip/doc/CommonLISP/HyperSpec/"
+;;; 
+;; :BEFORE-SLIME
+;;; :NOTE This _should_ be set in site-local-private.el but just in case.
+;;; `common-lisp-hyperspec-root', `common-lisp-hyperspec-issuex-table'
+;;; `common-lisp-hyperspec-symbol-table'
+(when (or IS-MON-P-GNU IS-MON-P-W32)
+  (unless (and (bound-and-true-p common-lisp-hyperspec-root)
+               (bound-and-true-p common-lisp-hyperspec-issuex-table)
+               (bound-and-true-p common-lisp-hyperspec-symbol-table)))
+  (setq common-lisp-hyperspec-root (nth 8 (mon-get-mon-emacsd-paths)))
+  (setq common-lisp-hyperspec-issuex-table 
+	(concat common-lisp-hyperspec-root "Data/Map_IssX.txt")) ;; "Issue-Cross-Refs.text"))
+  (setq common-lisp-hyperspec-symbol-table 
+	(concat common-lisp-hyperspec-root "Data/Map_Sym.txt"))) ;; "Symbol-Table.text"))))
+
+
+;;; ==============================
+(cond ((or IS-MON-P-W32 IS-BUG-P) (require 'mon-w32-load))
+      (IS-MON-P-GNU (require 'mon-GNU-load)))
 
 ;;; ==============================
 ;; :TAGS-TABLES
@@ -258,10 +300,10 @@ bookmark file typically has a .bmk extension.\n
 (defvar *mon-tags-table-list* 
   `(,mon-emacs-root ,mon-naf-mode-root ,mon-ebay-tmplt-mode-root ,mon-site-lisp-root)
   "*List of path for setting `tags-table-list'.
-Look for TAGS files in `mon-emacs-root', `mon-naf-mode-root', and 
-`mon-ebay-tmplt-mode-root'.\n
-:SEE-ALSO `mon-tags-apropos', `mon-tags-naf-apropos', `mon-update-tags-tables'.
-►►►")
+Look for TAGS files in directories specified by return values of:
+ `mon-emacs-root', `mon-site-lisp-root'
+ `mon-naf-mode-root', `mon-ebay-tmplt-mode-root'\n
+:SEE-ALSO `mon-tags-apropos', `mon-tags-naf-apropos', `mon-update-tags-tables'.\n►►►")
 ;;
 ;;; :TEST-ME *mon-tags-table-list* 
 ;;
@@ -321,7 +363,7 @@ Look for TAGS files in `mon-emacs-root', `mon-naf-mode-root', and
 
 ;;; ==============================
 ;; :SLIME
-(when IS-MON-P-W32 (load-file "./slime-loads.el"))
+(when IS-MON-P-W32 (load-file "slime-loads.el"))
 
 ;;; ==============================
 ;; :EMACS-LISP-MODE-HOOKS
@@ -353,6 +395,10 @@ Look for TAGS files in `mon-emacs-root', `mon-naf-mode-root', and
   (when proced-available
     (proced)
     (proced-toggle-auto-update 1)))
+
+;; Lets see the tty's when on a GNU/Linux box.
+(when IS-MON-P-GNU
+  (setq proced-format 'medium))
 
 ;;; ==============================
 ;; :DIRED-DETAILS
@@ -430,11 +476,22 @@ Look for TAGS files in `mon-emacs-root', `mon-naf-mode-root', and
 ;;; ==============================
 ;; :DVC
 (add-to-list 'load-path (bld-path-for-load-path mon-site-lisp-root "dvc/lisp"))
-(require 'dvc-autoloads)
+(if (featurep 'dvc-core)
+    (dvc-reload)
+    (require 'dvc-autoloads))
 
 ;;; :NOTE When win32p dvc needs a sh executable.
 (when (or IS-MON-P-W32 IS-BUG-P) 
   (setq dvc-sh-executable (cadr (assoc 'the-sh-pth *mon-misc-path-alist*))))
+
+;;; (dvc-current-active-dvc)
+
+;;; :NOTE :SEE :FILE bzr-core.el :VARIABLE `bzr-executable'
+;;; :CREATED <Timestamp: #{2010-01-01T11:58:49-05:00Z}#{10535} - by MON KEY>
+(if (eq system-type 'windows-nt)
+    (if (executable-find "bzr")
+        (setq bzr-executable (executable-find "bzr"))
+        (setq bzr-executable "bzr")))
 
 ;;; :NOTE Turn off the ever so pervasive dvc-tips buffer.
 (setq dvc-tips-enabled nil)
@@ -450,22 +507,30 @@ Look for TAGS files in `mon-emacs-root', `mon-naf-mode-root', and
 (require 'show-point-mode)
 
 ;;; ==============================
-(defun mon-actvt-show-point-mode ()
+;;; :NOTE Heep this here b/c it is needed when debugging.
+;;; (add-hook 'emacs-lisp-mode-hook (function (lambda () (mon-toggle-show-point-mode)))
+;;; :RENAMED `mon-actvt-show-point-mode' -> `mon-toggle-show-point-mode' 
+(defun mon-toggle-show-point-mode ()
   "Toggle show-point-mode for current-buffer.\n
-Used for hooks othwerwise is equivalent to calling `show-point-mode'.\n►►►"
+Used for hooks othwerwise is equivalent to calling `show-point-mode'.
+:SEE-ALSO `mon-toggle-dired-dwim-target', `mon-toggle-eval-length',
+`mon-toggle-menu-bar', `mon-toggle-truncate-line',
+`mon-naf-mode-toggle-restore-llm', `mon-toggle-read-only-point-motion'
+`mon-inhibit-modification-hooks', `mon-inhibit-point-motion-hooks',
+`mon-inhibit-read-only'.\n►►►"
   (let ((is-show-point-mode 
          (buffer-local-value show-point-mode (current-buffer))))
     (cond ((not is-show-point-mode)(show-point-mode)))))
 ;;
-;;; :TEST-ME (mon-actvt-show-point-mode)
-;;; (add-hook 'emacs-lisp-mode-hook 'mon-actvt-show-point-mode)
+;;; :TEST-ME (mon-toggle-show-point-mode)
+;;
+
 
 ;;; ==============================
 ;; :TRAVERSELISP
 ;;; :NOTE Thiery's traverselisp is still a moving target. Should periodically
 ;;;       check that we've pulled a current version.
-(add-to-list 'load-path 
-             (bld-path-for-load-path mon-site-lisp-root "traverselisp"))
+(add-to-list 'load-path (bld-path-for-load-path mon-site-lisp-root "traverselisp"))
 (require 'traverselisp)
 (add-to-list 'traverse-ignore-files ".naf~")
 
@@ -488,27 +553,30 @@ Used for hooks othwerwise is equivalent to calling `show-point-mode'.\n►►►
 ;;; ==============================
 
 ;;; ==============================
+;;; :TODO Entire conditional can be replaced with one call to `mon-get-mon-emacsd-paths'.
 ;; :WEB-BROWSER-RELATED
-(cond 
- (IS-BUG-P
-  (setq browse-url-browser-function 'browse-url-generic)
-  (setq	browse-url-generic-program 
-        "c:/Program Files/Mozilla Firefox/firefox.exe"))
- (IS-MON-P-W32 
-  (setq browse-url-browser-function 'browse-url-generic)
-  (setq browse-url-generic-program 
-        "c:/Program Files/Conkeror/conkeror-master/conkeror/conkeror.exe"))
- (IS-MON-P-GNU
-  (setq browse-url-browser-function 'browse-url-generic)
-  (setq	browse-url-generic-program "/usr/local/bin/conkeror")))
+(cond (IS-BUG-P
+       (custom-set-default 'browse-url-browser-function 'browse-url-generic)
+       (custom-set-default 'browse-url-generic-program (nth 10 (mon-get-mon-emacsd-paths))))
+      (IS-BUG-P-REMOTE
+       (custom-set-default 'browse-url-browser-function 'browse-url-generic)
+       (custom-set-default 'browse-url-generic-program (nth 10 (mon-get-mon-emacsd-paths))))
+      (IS-MON-P-W32 
+       (custom-set-default 'browse-url-browser-function 'browse-url-generic)
+       (custom-set-default 'browse-url-generic-program (nth 9 (mon-get-mon-emacsd-paths))))
+      (IS-MON-P-GNU
+       (custom-set-default 'browse-url-browser-function 'browse-url-generic)
+       (custom-set-default 'browse-url-generic-program (nth 9 (mon-get-mon-emacsd-paths)))))
 
 ;;; ==============================
-(cond (IS-MON-P-W32 
-       (setq browse-url-firefox-program 
-             "C:/Program Files/Mozilla Firefox/firefox.exe"))
-      (IS-BUG-P 
-       (setq browse-url-firefox-program  
-             "C:/Program Files/Mozilla Firefox/firefox.exe")))
+;;; :MODIFICATIONS <Timestamp: #{2010-01-29T16:00:47-05:00Z}#{10045} - by MON KEY>
+(custom-set-default 'browse-url-firefox-program (nth 10 (mon-get-mon-emacsd-paths)))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-01-21T20:39:57-05:00Z}#{10035} - by MON KEY>
+(when (or IS-MON-P-GNU IS-MON-P-W32)
+  (custom-set-default 'ffap-rfc-directories
+                      (concat (nth 5 (mon-get-mon-emacsd-paths)) "/RFCS-HG")))
 
 ;;; ==============================
 ;; :LONG-LINES-MODE->AUTO-MODE-ALIST
@@ -553,6 +621,21 @@ Used for hooks othwerwise is equivalent to calling `show-point-mode'.\n►►►
 	    (when (not (bound-and-true-p lonlines-mode))
 	      (longlines-mode))))
     (when test (message "longlines-mode initialized at startup"))))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-01-29T14:12:23-05:00Z}#{10045} - by MON KEY>
+(add-hook 'rst-mode-hook
+	  (function (lambda ()
+            (progn
+              (set-face-background 'rst-level-1-face  "SteelBlue")
+              (set-face-foreground 'rst-level-2-face  "dark slate gray")
+              (set-face-background 'rst-level-2-face  "slate blue")
+              (set-face-foreground 'rst-level-2-face  "dark slate gray")
+              (set-face-background 'rst-level-3-face  "medium slate blue")
+              (set-face-foreground 'rst-level-3-face  "dark slate gray")
+              (set-face-background 'rst-level-4-face  "light late blue")
+              (set-face-foreground 'rst-level-4-face  "dark slate gray")))))
+
 
 ;;; ==============================
 ;;; :NOTE Load keybindings last to ensure everything is loaded in first.

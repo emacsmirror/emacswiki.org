@@ -41,6 +41,7 @@
 ;;; `mon-plist-remove!', `mon-plist-remove-consing', `mon-plist-remove-if'
 ;;; `mon-nuke-text-properties-buffer', `mon-remove-text-property',
 ;;; `mon-remove-single-text-property', `mon-nuke-text-properties-region',
+;;; `mon-nuke-overlay-buffer', 
 ;;; `mon-elt->', `mon-elt-<', `mon-elt->elt', `mon-elt-<elt',
 ;;; `mon-flatten', `mon-combine', `mon-recursive-apply',
 ;;; `mon-escape-lisp-string-region', `mon-unescape-lisp-string-region',
@@ -75,6 +76,7 @@
 ;;; `mon-get-env-vars-strings',  `mon-get-env-vars-symbols',
 ;;; `mon-get-env-vars-emacs', `mon-get-emacsd-paths'
 ;;; `mon-string-replace-char', `mon-string-to-hex-list'
+;;; `mon-buffer-exists-so-kill'
 ;;; FUNCTIONS:◄◄◄
 ;;; 
 ;;; MACROS:
@@ -219,7 +221,7 @@
   (require 'mon-mysql-utils)
   (require 'naf-mode-sql-skeletons) ;; Load here instead of from :FILE naf-mode.el
   (require 'mon-bzr-utils)
-  (when IS-W32-P (eval-after-load 'mon-utils '(require 'mon-boxcutter))))
+  )
 
 ;;; ==============================
 ;;; :COURTESY Pascal J. Bourguignon :HIS pjb-cl.el :LICENSE LGPL
@@ -285,7 +287,7 @@ string of kind variable.\n
 ;;; :CREATED <Timestamp: #{2009-10-23T15:17:35-04:00Z}#{09435} - by MON KEY>
 (defmacro mon-with-file-buffer (buffer-var file &rest body)
   "Evaluate BODY with BUFFER-VAR bound to buffer visiting FILE.\n
-:SEE-ALSO `mon-buffer-exists-p',`mon-buffer-written-p', `mon-with-file-buffer',
+:SEE-ALSO `mon-buffer-exists-p',`mon-buffer-written-p', `mon-buffer-exists-so-kill',
 `mon-get-buffers-parent-dir', `mon-get-proc-buffers-directories',
 `mon-get-buffers-directories', `mon-split-string-buffer-name',
 `mon-split-string-buffer-parent-dir' `with-current-buffer', `with-temp-file',
@@ -311,10 +313,10 @@ When INSRTP is non-nil or called-interactively with prefix arg insert
 buffer-name at point. Does not move point.\n
 :EXAMPLE\n(mon-buffer-name->kill-ring)
 \(call-interactively 'mon-buffer-name->kill-ring)\n
-:SEE-ALSO `mon-buffer-exists-p', `mon-buffer-written-p', `mon-with-file-buffer',
-`mon-get-buffers-parent-dir', `mon-get-proc-buffers-directories',
-`mon-get-buffers-directories', `mon-split-string-buffer-name',
-`mon-split-string-buffer-parent-dir'.\n►►►"
+:SEE-ALSO `mon-buffer-exists-p',`mon-buffer-exists-so-kill',
+`mon-buffer-written-p', `mon-with-file-buffer', `mon-get-buffers-parent-dir',
+`mon-get-proc-buffers-directories', `mon-get-buffers-directories',
+`mon-split-string-buffer-name', `mon-split-string-buffer-parent-dir'.\n►►►"
   (interactive "i\nP")
   (let ((kn (kill-new (format "%S" (buffer-name or-buffer)))))
     (if insrtp 
@@ -331,11 +333,12 @@ buffer-name at point. Does not move point.\n
 \(prog2 \(get-buffer-create \"*BAD-IF-NOT-KILLED*\"\)
     \(mon-buffer-exists-p \"*BAD-IF-NOT-KILLED*\"\)
   \(kill-buffer \(mon-buffer-exists-p \"*BAD-IF-NOT-KILLED*\"\)\)\)\n
-:SEE-ALSO `mon-with-file-buffer', `mon-buffer-written-p',
-`mon-buffer-name->kill-ring' `mon-get-buffers-parent-dir',
-`mon-get-proc-buffers-directories', `mon-get-buffers-directories',
-`mon-split-string-buffer-name', `mon-split-string-buffer-parent-dir',
-`with-current-buffer', `with-temp-file', `with-temp-buffer'.\n►►►"
+:SEE-ALSO `mon-buffer-exists-so-kill', `mon-with-file-buffer',
+`mon-buffer-written-p', `mon-buffer-name->kill-ring', 
+`mon-get-buffers-parent-dir', `mon-get-proc-buffers-directories',
+`mon-get-buffers-directories', `mon-split-string-buffer-name',
+`mon-split-string-buffer-parent-dir', `with-current-buffer', `with-temp-file',
+`with-temp-buffer'.\n►►►"
   (let ((buff-p (make-symbol "buff-p")))
     `(let ((,buff-p ,buffer-to-check))
        (when ,buff-p
@@ -347,6 +350,24 @@ buffer-name at point. Does not move point.\n
 ;;; (prog2 (get-buffer-create "*BAD-IF-NOT-KILLED*")
 ;;;     (mon-buffer-exists-p "*BAD-IF-NOT-KILLED*")
 ;;;   (kill-buffer (mon-buffer-exists-p "*BAD-IF-NOT-KILLED*")))
+
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-02-05T14:21:16-05:00Z}#{10055} - by MON KEY>
+(defun mon-buffer-exists-so-kill (buffer-to-kill)
+  "If BUFFER-TO-KILL exists kill it.\n
+Return `#<killed buffer>' if buffered killed, else nil.\n
+:EXAMPLE\n\n\(let \(\(not-much-longer \(get-buffer-create \"not-much-longer\"\)\)\)
+  \(mon-buffer-exists-so-kill \(buffer-name not-much-longer\)\)\)\n
+:SEE-ALSO `mon-buffer-exists-p', `mon-with-file-buffer',
+`mon-buffer-written-p', `mon-buffer-name->kill-ring'
+`mon-get-buffers-parent-dir', `mon-get-proc-buffers-directories',
+`mon-get-buffers-directories', `mon-split-string-buffer-name',
+`mon-split-string-buffer-parent-dir', `with-current-buffer', `with-temp-file',
+`with-temp-buffer'.\n►►►"
+  (let ((mbep (mon-buffer-exists-p buffer-to-kill)))
+    (if (when mbep (kill-buffer mbep))        
+        (get-buffer mbep))))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-12-09T11:54:07-05:00Z}#{09503} - by MON>
@@ -4241,12 +4262,35 @@ When BUFFER is non-nil list its text-properties instead.\n
 (defun mon-nuke-text-properties-buffer ()
 "Remove text-properites in buffer.\n
 :SEE-ALSO `mon-remove-text-property', `mon-remove-single-text-property', 
-`mon-nuke-text-properties-region', `mon-help-text-property-functions'.\n►►►"
+`mon-nuke-text-properties-region', `mon-help-text-property-functions',
+`mon-nuke-overlay-buffer'.\n►►►"
   (interactive)
   (remove-list-of-text-properties
    (point-min)
    (point-max)
    (mon-list-all-properties-in-buffer (current-buffer))))
+
+;;; ==============================
+;;; :NOTE First Implemented to zap linger `color-occur' overlays when occur buffer
+;;;  is killed with kill-buffer as `color-occur-remove-overlays' doesn't get invoked.
+;;; :CREATED <Timestamp: #{2010-02-09T11:11:52-05:00Z}#{10062} - by MON KEY>
+(defun mon-nuke-overlay-buffer (overlay-prop overlay-val)
+  "Remove all overlay props with OVERLAY-NAME and OVERLAY-VAL in current-buffer.\n
+:EXAMPLE\n\n\(unwind-protect
+     \(let* \(\(sb \(save-excursion \(search-forward-regexp \"^►.*◄$\"  nil t\)\)\)
+            \(molay \(make-overlay \(match-beginning 0\) \(match-end 0\) \(current-buffer\)\)\)\)
+       \(overlay-put molay 'face 'minibuffer-prompt\)
+       \(sit-for 2\)\)
+  \(mon-nuke-overlay-buffer 'face 'minibuffer-prompt\)\)\n
+►I'm lingering◄\n
+:SEE-ALSO `mon-help-find-result-for-overlay', `mon-help-overlay-for-example',
+`mon-help-overlay-on-region', `mon-help-overlay-result', `mon-nuke-overlay-buffer'\n►►►"
+ (remove-overlays (buffer-end 0) (buffer-end 1) overlay-prop overlay-val))
+;;
+;;; `mon-nuke-overlay-buffer'
+;;; :TODO add a hook using to `kill-buffer-hook' or some such that removes the 
+;;; `color-occur-face' correctly e.g.
+;;;  (mon-nuke-overlay-buffer 'face 'color-occur-face)
 
 ;;; ==============================
 ;;; :COURTESY  ../emacs/lisp/font-lock.el 
@@ -4265,7 +4309,7 @@ Return t if the property was actually removed, nil otherwise.\n
 :SEE-ALSO `mon-remove-single-text-property', `remove-text-property',
 `mon-nuke-text-properties-region', `add-text-properties', `put-text-property',
 `next-single-property-change', `mon-list-all-properties-in-buffer',
-`mon-help-text-property-functions'.\n►►►"
+`mon-help-text-property-functions', `mon-nuke-overlay-buffer'.\n►►►"
   (remove-text-properties start end (list property) object))
 ;;
 ;;; :WAS `remove-single-text-property' -> ../emacs/lisp/font-lock.el
@@ -4275,7 +4319,7 @@ Arguments PROP and VALUE specify the property and value to remove.  The
 resulting property values are not equal to VALUE nor lists containing VALUE.
 Optional argument OBJECT is the string or buffer containing the text.
 :SEE-ALSO `remove-text-property', `mon-nuke-text-properties-region',
-`mon-nuke-text-properties-region', `add-text-properties', `put-text-property',
+`mon-nuke-overlay-buffer', `add-text-properties', `put-text-property',
 `next-single-property-change', `mon-list-all-properties-in-buffer',
 `mon-help-text-property-functions'.\n►►►"
  (let ((start (text-property-not-all start end prop nil object)) next prev)
@@ -4300,7 +4344,7 @@ Optional argument OBJECT is the string or buffer containing the text.
   "Eliminate all text properties in current buffer from BEG to END.\n
 :NOTE Only removes text properties, does not remove overlays.\n
 :SEE-ALSO `remove-text-property', `mon-remove-single-text-property'
-`mon-nuke-text-properties-region', `add-text-properties', `put-text-property',
+`mon-nuke-overlay-buffer', `add-text-properties', `put-text-property',
 `next-single-property-change', `mon-list-all-properties-in-buffer',
 `mon-help-text-property-functions'.\n►►►"
   (interactive "r")
@@ -4315,6 +4359,7 @@ Optional argument OBJECT is the string or buffer containing the text.
                                (point-max))))
           (remove-text-properties (point) next-change plist (current-buffer))
           (goto-char next-change))))))
+
 
 ;;; ==============================
 ;;; :ELISP-RELATED
@@ -5095,7 +5140,6 @@ load-warning buffer in case of failure.\n►►►"
       (fit-window-to-buffer (get-buffer-window buf))
       (set-buffer-modified-p nil))
     nil))
-
 
 ;;; ==============================
 (provide 'mon-utils)

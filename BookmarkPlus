@@ -9,6 +9,9 @@ With '''Bookmark+''' you can use bookmarks that were created with any Emacs vers
 
 
 
+
+
+
 [:FeatureOverview]
 == Overview of Features ==
 
@@ -178,6 +181,7 @@ The same menu is available on '''`C-mouse-3''''.
 
 
 
+
 === Multiple bookmark files. ===
 
 Although vanilla Emacs lets you load different bookmark
@@ -318,9 +322,9 @@ do quite a lot using bookmark tags.  Use your imagination!  See [[#TagCommandsAn
 
 Bookmark tags are simply names (strings) when you create them.  Nearly all
 of the predefined operations that use tags use these names:
-sorting, marking, and so on.  But you can in fact add associated
-values to tags.  This means that a tag can act just like an object
-''attribute'': a name/value pair.
+sorting, marking, and so on.  But you can in fact add an associated
+value to each tag.  This means that a tag can act just like an object
+''attribute'' or property: it can be a name/value pair.
 
 To add a value to a tag, or to change the current value, you use
 command '''`bookmarkp-set-tag-value'''', bound to '''`##T v##'''' in the bookmark
@@ -328,23 +332,39 @@ list.  You are prompted for the bookmark, the tag, and the new
 value.
 
 A tag value can be a number, symbol, string, list, vector, and so
-on.  It can be any EmacsLisp object that has read syntax, that is, that
+on.  It can be as complex as you like.  It can be any EmacsLisp object that has read syntax, that is, that
 is readable by the Lisp reader.  (Everything that is saved as part
 of a bookmark must be readable; otherwise, your bookmark file
 could not be read (loaded).)
 
 Because tag values can be pretty much anything, you are pretty
 much on your own when it comes to making use of them.  '''Bookmark+'''
-does not provide any predefined functions for this.  In general,
+does not provide predefined functions for using tag values.  In general,
 tag values are something you will use with home-grown Lisp code
 for your own purposes.
 
 However, you can easily make some interactive use of tag values
 with little effort.  You can, for example, define a predicate that
 tests whether a bookmark has a tag value that satisfies some
-property (e.g. is a number > 3.14159265358979), and then you can
+property (e.g. is a number greater than 3.14159265358979), and then you can
 use command '''`bookmarkp-bmenu-mark-bookmarks-satisfying'''' to mark
 those bookmarks.
+
+Tags that have the prefix '''##"bookmarkp-"##''' are reserved -- do not name
+your own tags using this prefix.
+Currently, '''##"bookmarkp-jump"##''' is the only predefined bookmark tag.
+You can give this tag a value that is a function -- it is called
+whenever the tagged bookmark is visited.  Any Lisp-readable
+function value is allowed: a symbol or a lambda expression.
+
+For example, you can use `##T v (lambda () (message "Hello!"))##' to
+display ##Hello!## whenever the bookmark with this tag is visited.
+
+The function that is the value of a ##"bookmarkp-jump"## tag is called
+just after the the standard hook `bookmark-jump-hook' is invoked.
+You can use this tag to invoke functions that are specific to
+individual bookmarks; bookmarks can thus have their own, extra
+jump functions.
 
 
 

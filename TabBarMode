@@ -205,7 +205,6 @@ You could put something like (delete-other-windows) at the end of your .emacs or
 
 Matiyam -- sounds like swbuff/swbuff-y. It's a different interface, though, but I've used shift-left/right to switch buffers with swbuff for awhile. I didn't like the re-ordering, which is what led me to tabbar...
 
-[new]
 For emacs 23.1 I have to changed above codes to get list all buffers as one group:
 
  (setq tabbar-buffer-groups-function
@@ -214,7 +213,12 @@ For emacs 23.1 I have to changed above codes to get list all buffers as one grou
 
 - dixiecko
 
-The function expects one argument; a buffer.
+The function expects one argument; the buffer name. Here is how the example above looks with a regular expression:
+<pre>
+(lambda (a-buffer-name)
+        (cond ((string-match "^\\*.+\\*$" a-buffer-name) '("Emacs"))
+              (t '("Rest"))))
+</pre>
 - Grant Rettke
 ----
 CategoryModes
