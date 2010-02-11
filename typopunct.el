@@ -122,7 +122,7 @@ strings."
   (nth 4 (assq lang
 	       typopunct-language-alist)))
 
-(defvar typopunct-buffer-language 'deutsch
+(defcustom typopunct-buffer-language 'deutsch
   "Default language of a buffer.
 When inserting quotation marks, TypoPunct mode relies on the
 typographical conventions used by that language.  See the variable

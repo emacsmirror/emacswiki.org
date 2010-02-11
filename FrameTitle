@@ -114,5 +114,28 @@ My Emacs (emacs-snapshot on Ubuntu, version 1:20090730-1~intrepid1) says TERM is
 
 (Note: xterm-title-mode does not seem to work with urxvt.  It does work fine with other xterm-compatibles like gnome-terminal.)
 
+By wisnij:
+
+I wasn't able to get xterm-title working with my Cygwin xterm for some reason.  As a stopgap, using xterm-frobs directly seems to work well enough:
+
+  (if (and (not window-system)
+           (string-match "^xterm" (getenv "TERM")))
+      (progn
+        (require 'xterm-frobs)
+        (defun my-xterm-title-hook ()
+          (xterm-set-window-title
+           (concat
+            (cond (buffer-read-only "%  ")
+                  ((buffer-modified-p) "*  "))
+            (buffer-name)
+            "  (" invocation-name "@" system-name ")")))
+        (add-hook 'post-command-hook  'my-xterm-title-hook))
+      (setq frame-title-format
+            '(""
+              (:eval (cond (buffer-read-only "%%  ")
+                           ((buffer-modified-p) "*  ")))
+              "%b  (" invocation-name "@" system-name ")")))
+
+
 ----
 CategoryFrames CategoryDisplay FrameModes

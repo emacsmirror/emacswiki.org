@@ -67,6 +67,8 @@ From <http://www.gnu.org/gnu/rms-lisp.html>:
 
 : We're willing to extend it some now, but we don't want to extend it to the level of common Lisp. I implemented Common Lisp once on the Lisp machine, and I'm not all that happy with it. One thing I don't like terribly much is keyword arguments. They don't seem quite Lispy to me; I'll do it sometimes but I minimize the times when I do that.
 
+[new]
+I can't find any of the links pointing to the nocrew.org site that are actually valid. Does anyone know if this project is still active in any way? --[[mon_key]]
 
 ----
 CategoryCode

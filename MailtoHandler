@@ -78,7 +78,8 @@ Configure mozex addon in firefox to call gnumail script below.
 <pre>
 #!/bin/bash
 # gnumail
-mailto=$(printf '%s\n' "$1" | sed -e 's/[\"]/\\&/g')
+#mailto=$(printf '%s\n' "$1" | sed -e 's/[\"]/\\&/g') ;; sed substitution that cleans all "\" but leaves "mailto:" before email address if it is there.
+mailto=$(printf '%s\n' "$1" | sed -e 's/mailto:/\\/' |sed -e 's/[\"]//g') ;; this cleans both "mailto:" and any occurrence of "\"
 elisp_expr=$(printf '(rgr/mailto "%s")' "$mailto")
  
  emacsclient --alternate-editor="" -c -n \

@@ -97,6 +97,11 @@ I made a patch(http://rix3.8.je/blog/2009/12/16/emacs%e7%9a%84weblogger1-4-4%e7%
 
 I found the opposite of what Xah found.  weblogger (1.4.3) worked easily while e-blog never quite worked.  Maybe different versions are involved.
 
+[new]
+
+I have applied rix's patch to 1.4.4 and posting to my Wordpress blog is good except for one thing - all my posts are 5 hours early.  Is this a weird interaction between the Date string (which contains -0500, since I'm in the Eastern TZ) and the API?  If I post from weblogger.el at 1pm, the post on the web says it was posted at 8am on the blog.  If I fix the posting time via the web interface to be 1pm and use weblogger-fetch-entries, it shows 8am in the date string of the fetched entry. --duckpuppy
+
+
 ----
 
 CategoryJournaling

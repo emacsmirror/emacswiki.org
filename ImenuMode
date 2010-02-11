@@ -236,6 +236,8 @@ Use the following to use imenu with ido completion instead of the default one.
 
 -- shjk (updated by MattKeller to handle overlays as 'positions')
 
+Another version using ido, allowing navigating sub-items: Lisp:idomenu.el by GeorgBrandl.
+
 == Discussion ==
 
 === Can I make Imenu index the whole buffer even if using FoldingMode and all folds are folded? ===

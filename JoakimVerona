@@ -38,6 +38,8 @@ I can already sucessfully load .djvu files.
 
 * dragbox.el -- draw a bounding box interactively in an image, and have it ocr:d
 
+* emsane.el -- An Emacs SANE frontend, SANE is the scanner interface for free operating systems.
+
 I've used Emacs since '88, but I only realised the potential of emacs nirvana in '04 when I migrated nearly all
 my applications to emacs, except multimedia. Slow learner I suppose. Recently I've even been interested in moving 
 musical and graphical workflows to Emacs.

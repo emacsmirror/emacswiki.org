@@ -38,6 +38,7 @@ EevMode is my partner for years.
 ** Lisp:ac-anything.el -- Narrow AutoComplete candidates with [[Anything]]
 ** Lisp:anything-ipa.el -- InPlaceAnnotations with [[Anything]]
 ** Lisp:anything-kyr.el -- Show context-aware commands
+** Lisp:anything-rurima.el -- Ruby Reference Manual searcher in Japanese
 *** Lisp:anything-kyr-config.el -- Configuration of anything-kyr.el
 ** Lisp:anything-show-completion.el -- Show selection in buffer for anything completion
 * EmacsLispExpectations -- Simple unit testing framework
@@ -57,6 +58,7 @@ EevMode is my partner for years.
 * Lisp:sticky.el -- Sticky Shift
 * Lisp:display-buffer-for-wide-screen.el -- Set `display-buffer-function' for wide-screen display
 * Lisp:recentf-ext.el -- Extension of RecentFiles package.
+* Lisp:display-hatebu.el -- Display hatena bookmarks (in Japanese)
 * I maintained
 ** OddmuseMode -- Edit oddmuse wikis (including EmacsWiki) in Emacs
 
