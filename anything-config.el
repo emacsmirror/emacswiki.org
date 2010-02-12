@@ -7,10 +7,10 @@
 ;; Maintainer: Tassilo Horn <tassilo@member.fsf.org>
 ;;             rubikitch    <rubikitch@ruby-lang.org>
 ;;             Thierry Volpiatto <thierry.volpiatto@gmail.com>
-;; Copyright (C) 2007 ~ 2009, Tassilo Horn, all rights reserved.
+;; Copyright (C) 2007 ~ 2010, Tassilo Horn, all rights reserved.
 ;; Copyright (C) 2009, Andy Stewart, all rights reserved.
-;; Copyright (C) 2009, rubikitch, all rights reserved.
-;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
+;; Copyright (C) 2009 ~ 2010, rubikitch, all rights reserved.
+;; Copyright (C) 2009 ~ 2010, Thierry Volpiatto, all rights reserved.
 ;; Created: 2009-02-16 21:38:23
 ;; Version: 0.4.1
 ;; URL: http://www.emacswiki.org/emacs/download/anything-config.el
@@ -557,6 +557,23 @@ When set to 0 don't show tramp messages in anything.
 If you want to have the default tramp messages set it to 3."
   :type 'integer
   :group 'anything-config)
+
+;;; Documentation
+(defun anything-c-describe-anything-bindings ()
+  "Describe `anything' bindings."
+  (interactive)
+  (anything-run-after-quit
+   #'(lambda ()
+       (with-current-buffer (get-buffer-create "*Anything Help*")
+         (erase-buffer)
+         (insert
+          (substitute-command-keys
+           "The keys that are defined for `anything' are:
+       \\{anything-map}")))
+       (pop-to-buffer "*Anything Help*")
+       (goto-char (point-min)))))
+
+(define-key anything-map (kbd "C-h m") 'anything-c-describe-anything-bindings)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Preconfigured Anything ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun anything-for-files ()
@@ -3378,8 +3395,7 @@ removed."
     (candidates . anything-c-bbdb-candidates)
     (action ("Send a mail" . (lambda (candidate)
                                (bbdb-send-mail (anything-c-bbdb-get-record candidate))))
-            ("View person's data" . (lambda (candidate)
-                                      (bbdb-redisplay-one-record (anything-c-bbdb-get-record candidate)))))
+            ("View person's data" . anything-c-bbdb-view-person-action))
     (filtered-candidate-transformer . (lambda (candidates source)
                                         (setq anything-c-bbdb-name anything-pattern)
                                         (if (not candidates)
@@ -3389,6 +3405,16 @@ removed."
                             (anything-c-bbdb-create-contact actions candidate)))))
 ;; (anything 'anything-c-source-bbdb)
 
+(defun anything-c-bbdb-view-person-action (candidate)
+  "View BBDB data of single CANDIDATE or marked candidates."
+  (let* ((cand-list (anything-marked-candidates))
+         (len (length cand-list)))
+    (if (> len 1)
+        (let ((bbdb-append-records len))
+          (dolist (i cand-list)
+            (bbdb-redisplay-one-record (anything-c-bbdb-get-record i))))
+        (bbdb-redisplay-one-record (anything-c-bbdb-get-record candidate)))))
+  
 ;;; Evaluation Result
 (defvar anything-c-source-evaluation-result
   '((name . "Evaluation Result")

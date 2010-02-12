@@ -1,6 +1,5 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; mon-default-start-loads.el --- 
 ;; -*- mode: EMACS-LISP; no-byte-compile: t; -*-
-;;; this is mon-default-start-loads.el
 ;;; ================================================================
 ;;; DESCRIPTION:
 ;;; Provides functions required when initializing the Emacs startup 
@@ -225,7 +224,6 @@
                    ,(concat csm "/")
                    ;; :GNUWIN32
                    ,(concat (getenv "HOME")"\\bin\\GNU\\man")
-                   ;;; c:/home/sp/bin/Emacs/emacsW32-09-10-14/EmacsW32/gnuwin32/man
                    ;;; ,(file-truename 
                    ;;;   (concat 
                    ;;;    (format "" (assoc 'the-emacs-vars

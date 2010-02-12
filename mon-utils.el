@@ -1,4 +1,4 @@
-;;; This is mon-utils.el
+;;; mon-utils.el --- common utilities and BIG require for other of MON packages
 ;;; ================================================================
 ;;; DESCRIPTION:
 ;;; Provides common utilities and BIG require for other of MON's packages.
@@ -76,7 +76,7 @@
 ;;; `mon-get-env-vars-strings',  `mon-get-env-vars-symbols',
 ;;; `mon-get-env-vars-emacs', `mon-get-emacsd-paths'
 ;;; `mon-string-replace-char', `mon-string-to-hex-list'
-;;; `mon-buffer-exists-so-kill'
+;;; `mon-buffer-exists-so-kill', `mon-string-wonkify'
 ;;; FUNCTIONS:◄◄◄
 ;;; 
 ;;; MACROS:
@@ -103,6 +103,7 @@
 ;;; `mon-indent-lines-from-to-col' -> `mon-line-indent-from-to-col'
 ;;; `mon-replace-char-in-string'   -> `mon-string-replace-char'
 ;;; `mon-remove-char-in-string'    -> `mon-string-replace-char'
+;;; `mon-generate-wonky'           -> `mon-string-wonkify'
 ;;;
 ;;; DEPRECATED:
 ;;; `mon-string-from-sequence2' ;; :REMOVED
@@ -175,16 +176,14 @@
 ;;; Foundation Web site at:
 ;;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ================================================================
-;;; Copyright © 2009 MON KEY 
+;;; Copyright © 2009, 2010 MON KEY 
 ;;; ==============================
 ;;; CODE:
 
 ;;; ==============================
 (eval-when-compile (require 'cl)) ;; `mon-word-iterate-over', `mon-loop'
 ;;
-(when (locate-library "mon-cl-compat")
-  (eval-when-compile (require 'mon-cl-compat)))
-;;; ==============================
+(eval-when-compile (require 'mon-cl-compat t)))
 
 ;;; ==============================
 ;;; :NOTE The :CONSTANT `IS-MON-SYSTEM-P' is bound in:
@@ -475,7 +474,7 @@ when generating the return value.\n
                          (mon-get-env-vars-symbols)
                          (append 
                           ;; MON-LOCAL-VARS                          
-                          (when (boundp '*mon-misc-path-alist*)
+                          (when (bound-and-true-p *mon-misc-path-alist*)
                             (cadr (assoc 'the-emacs-vars *mon-misc-path-alist*)))
                           (do* ((i '(;; :LENNART-EMACS-W32-VARS
                                      EMACSCLIENT_STARTING_SERVER emacs_dir EMACS_SERVER_FILE ;SHELL ?
@@ -517,7 +516,7 @@ when generating the return value.\n
 `mon-get-env-vars-strings', `mon-get-env-vars-symbols'
 `mon-get-env-vars-emacs', `mon-get-system-specs',
 `mon-help-emacs-introspect', `emacs-pid'.\n►►►"
-  (mapcar (lambda (x) (process-attributes x))
+  (mapcar #'(lambda (x) (process-attributes x))
            (list-system-processes)))
 ;;
 ;;; :TEST-ME (mon-get-sys-proc-list)
@@ -553,7 +552,7 @@ On w32 it is not required give the .exe suffix.\n
 :SEE-ALSO `mon-get-process', `mon-get-sys-proc-list',`mon-get-sys-proc-list'.
 ►►►"
   (let (fnd-proc gthr)
-   (mapc (lambda (x)
+   (mapc #'(lambda (x)
            (let ((t-aso (assoc 'comm x)))
              (if (string-match comm (cdr t-aso)) ;"emacs.exe"
                  (setq fnd-proc (cons x fnd-proc)))))
@@ -1012,7 +1011,7 @@ Insertion does not move point. Insertion is whitespace agnostic.\n
   (let ((accum-string '())
 	(accum-event '())
 	(self 'mon-test-keypresses))
-    (mapc (lambda (x) 
+    (mapc #'(lambda (x) 
             (cond ((= x 13) nil)
                   ((or (eql (car (event-modifiers x)) 'meta)
                        (eql (car (event-modifiers x)) 'control))
@@ -1709,9 +1708,9 @@ of being entirely self contained, and therefor does not rely on external calls.\
                       (push `(,cD . ,(pop plcD)) abet)) (pop plcD))))
      (setq abet (nreverse abet)))
     (list-stringD ;; (mon-alphabet-as-type 'list-stringD)
-     (setq abet (mapcar 'cdr (mon-alphabet-as-type 'cons-keyD->stringD))))
+     (setq abet (mapcar #'cdr (mon-alphabet-as-type 'cons-keyD->stringD))))
     (list-stringU ;; (mon-alphabet-as-type 'list-stringU)
-     (setq abet (mapcar 'cdr (mon-alphabet-as-type 'cons-keyU->stringU))))
+     (setq abet (mapcar #'cdr (mon-alphabet-as-type 'cons-keyU->stringU))))
     (list-symbolU ;; (mon-alphabet-as-type 'list-symbolU)
      (let ((tmp-obu (make-vector 26 nil))
            (poplsu (mon-alphabet-as-type 'list-stringU)))
@@ -1723,13 +1722,13 @@ of being entirely self contained, and therefor does not rely on external calls.\
        (while poplsd (push (intern (pop poplsd) tmp-obd) abet))
        (setq abet (nreverse abet))))
     (stringU-w-spc ;; (mon-alphabet-as-type 'stringU-w-spc)
-     (mapconcat 'identity (mon-alphabet-as-type 'list-stringU) " "))
+     (mapconcat #'identity (mon-alphabet-as-type 'list-stringU) " "))
     (stringU-w-nl ;; (mon-alphabet-as-type 'stringU-w-nl)
-     (mapconcat 'identity (mon-alphabet-as-type 'list-stringU) "\n"))
+     (mapconcat #'identity (mon-alphabet-as-type 'list-stringU) "\n"))
     (stringD-w-spc ;; (mon-alphabet-as-type 'stringD-w-spc)
-     (mapconcat 'identity (mon-alphabet-as-type 'list-stringD) " "))
+     (mapconcat #'identity (mon-alphabet-as-type 'list-stringD) " "))
     (stringD-w-nl ;; (mon-alphabet-as-type 'stringD-w-nl)
-     (mapconcat 'identity (mon-alphabet-as-type 'list-stringD) "\n")))))
+     (mapconcat #'identity (mon-alphabet-as-type 'list-stringD) "\n")))))
 ;;
 ;;; :TEST-ME (mon-alphabet-as-type 'cons-keyU->num)
 ;;; :TEST-ME (mon-alphabet-as-type 'cons-keyD->num)
@@ -2396,7 +2395,7 @@ Neither SPLIT-ON nor DELIM have an effect when Invoked interactively.\n
 	     (progn 
 	       (kill-line)
                 ;; :WAS (mapcar '(lambda (x) (princ (format "%s%s%s " dlm x dlm) (current-buffer))) ss)
-                (mapc '(lambda (x) (princ (format "%s%s%s " dlm x dlm) (current-buffer))) ss)
+                (mapc #'(lambda (x) (princ (format "%s%s%s " dlm x dlm) (current-buffer))) ss)
 	       (delete-char -1)))ss)
 	  ((and intrp buffer-read-only)
 	   (progn
@@ -2405,7 +2404,7 @@ Neither SPLIT-ON nor DELIM have an effect when Invoked interactively.\n
 	  ((and (not intrp) dlm)
 	   (let (ss2)
 	   (setq ss2 nil)
-	     (mapc '(lambda (x) (setq ss2 (cons (format "%s%s" dlm x) ss2)))ss)
+	     (mapc #'(lambda (x) (setq ss2 (cons (format "%s%s" dlm x) ss2)))ss)
        	     ;; :WAS (mapcar '(lambda (x) (setq ss2 (cons (format "%s%s" dlm x) ss2)))ss)
 	     ss2))
 	  (t ss))))
@@ -3085,7 +3084,7 @@ holding a string containing one nameform.\n
 ;;; :TEST-ME (mon-line-string-rotate-name "Thomas Pollock Anshutz")
 ;;; :TEST-ME (mon-line-string-rotate-name "Thomas Pollock Anshutz" t)
 ;;; :TEST-ME (mon-line-string-rotate-name '("Thomas Pollock Anshutz") t)
-;;; :TEST-ME (mapc (lambda (x) (princ (concat "\n" (mon-line-string-rotate-name x)) (current-buffer)))
+;;; :TEST-ME (mapc #'(lambda (x) (princ (concat "\n" (mon-line-string-rotate-name x)) (current-buffer)))
 ;;;        '(("George Charles Aid")("Thomas Pollock Anshutz")("Cecilia Beaux")("Frank Weston Benson")
 ;;;          ("Thomas Hart Benton")("Saul Bernstein")("George Biddle")("Gutzon Borglum")))
 
@@ -3106,14 +3105,14 @@ Does not move point.\n
 	(r-nms-end  end)
 	(get-namestrings))
     (setq get-namestrings 
-	  (mapconcat (lambda (x) (mon-line-string-rotate-name (car x))) 
+	  (mapconcat #'(lambda (x) (mon-line-string-rotate-name (car x))) 
      		     (read (mon-line-strings-to-list r-nms-strt r-nms-end)) "\n"))
     (if (or insrtp intrp)
         (progn
           (save-excursion
 	  (delete-region r-nms-strt r-nms-end)
 	  (if as-strings
-              (mapc (lambda (x) (newline) (prin1 x (current-buffer)))
+              (mapc #'(lambda (x) (newline) (prin1 x (current-buffer)))
                     (split-string get-namestrings "\n"))
               (insert get-namestrings)))
           (when as-strings (delete-char 1)))
@@ -3181,14 +3180,14 @@ Lovett (Robert Abercrombie)\n◄\n
             (delete-region s-r e-r)
             (if as-strings
                 (let ((as-str (read go-temp)))
-                  (mapc (lambda (x) (newline)(prin1 (car x) (current-buffer))) as-str))
+                  (mapc #'(lambda (x) (newline)(prin1 (car x) (current-buffer))) as-str))
               (insert go-temp)))
           (when as-strings (delete-char 1)))
       ;; elseif
       (if as-strings
           (let ((as-str (read go-temp))
                 (rtn-str))
-            (setq rtn-str (mapcar (lambda (x) (car x)) as-str))
+            (setq rtn-str (mapcar #'(lambda (x) (car x)) as-str))
             rtn-str)
         go-temp))))
 ;;
@@ -3229,11 +3228,11 @@ Charles Julius Guiteau\n◄\n\n:SEE-ALSO
     (with-temp-buffer
       (progn
         (save-excursion
-          (mapc (lambda (x) (newline) (princ x (current-buffer))) rotd-nms))
+          (mapc #'(lambda (x) (newline) (princ x (current-buffer))) rotd-nms))
         (delete-char 1))
       (setq unrotd-nms
             (mon-line-string-unrotate-namestrings (point-min) (point-max) t)))
-    (mapc (lambda (x)
+    (mapc #'(lambda (x)
             (let ((orig (pop rotd-nms)))
               (setq combined (cons `(,x ,orig) combined))))
           unrotd-nms)
@@ -3426,7 +3425,7 @@ Finally, return nil forever.\n►►►"
        (setq result (cons (cons value (gethash key st)) result)))
      nb)
     ;; Sort and display it.
-    (mapc (lambda (x)
+    (mapc #'(lambda (x)
             (if (and (> (car x) 3)
                      ;; No leading backslash and at least four characters.
                      (string-match "^[^\\]\\{4,\\}" (cdr x)))
@@ -3516,7 +3515,7 @@ This means:\n
  b) where UID assignment occurs in parallel with time-stamping we can infer
     when the UID was generated relative the index of previous/subsequent elts.
     This is a Featured-Bug®.\n
-:SEE-ALSO `mon-string-to-hex-string', `mon-generate-WPA-key'.\n►►►"
+:SEE-ALSO `mon-string-to-hex-string', `mon-generate-WPA-key', `mon-string-wonkify'.\n►►►"
   (eval-when-compile (require 'sha1))
   (let ((gthr)
         (ccnt (if cnt cnt 1)))
@@ -3547,7 +3546,7 @@ On MON system a min. 0.85 seconds is needed between calls to produce unique id's
     \(setq k \(cons `\(,\(mon-generate-prand-id\)\) k\)\)
     \(setq i \(1- i\)\)\)
 \(prin1 k\)\)\n
-:SEE-ALSO `mon-generate-prand-seed'.\n►►►"
+:SEE-ALSO `mon-generate-WPA-key', `mon-string-wonkify'.\n►►►"
   (eval-when-compile (require 'cookie1))
   (let* ((pseudo-r #'(lambda () (mon-string-to-sequence (number-to-string (abs (random t))))))
          (seq->v #'(lambda (x) (apply 'vector x)))
@@ -3583,6 +3582,50 @@ On MON system a min. 0.85 seconds is needed between calls to produce unique id's
 ;;;               (prin1 k))
 
 ;;; ==============================
+;;; :NOTE Used in :FILE mon-site-local-defaults.el 
+;;; This function shadows that symbol so it can be compiled.
+;;; :CREATED <Timestamp: #{2010-02-10T19:47:57-05:00Z}#{10064} - by MON KEY>
+(defun mon-string-wonkify (wonk-words wonkify-n-times)
+  "Wonkify the string WONK-WORDS.\n
+:EXAMPLE\n\n\(mon-string-wonkify \"These are some wonky words\" 10\)\n
+\(mon-string-wonkify \"These are some wonky words\" 3\)\n
+:SEE-ALSO `mon-zippify-region', `mon-generate-prand-seed', `mon-generate-prand-id',
+ `mon-generate-WPA-key', \n►►►" 
+  (eval-when-compile (require 'cookie1))
+  (let ((wonkify wonk-words)
+        (wonk-usr #'(lambda (l eo) 
+                      (let (new-round)
+                        (dolist (u l)
+                          (let ((U u))
+                            (dotimes (i (random (length U)))
+                              (let ((rnd (random (length U))))
+                                (setf (nth rnd U)
+                                      (if eo (upcase (nth rnd U)) (downcase (nth rnd U))))))
+                            (push (apply 'string U) new-round)))
+                        (setq wonkify new-round))))
+        (seqify #'(lambda (q)
+                    (let (reseq)
+                      (mapc #'(lambda (s) (push (string-to-sequence s 'list) reseq)) 
+                            (cond ((listp q) q)
+                                  ((stringp q) (list q))))
+                      reseq))))
+    (setq wonkify (make-list wonkify-n-times (car (funcall seqify  wonkify))))
+    (do ((w wonkify-n-times))
+         ((< w 0)  wonkify)
+      (setq w (1- w))
+      (setq wonkify (apply 'vector wonkify))
+      (setq wonkify (shuffle-vector wonkify))
+      (setq wonkify (append wonkify nil))
+      (when (stringp (car wonkify))
+        (setq wonkify (funcall seqify wonkify)))
+      (funcall wonk-usr wonkify (if (eq (gcd w 2) 2) t)))))
+;;  :)
+(defalias 'mon-generate-wonky 'mon-string-wonkify)
+;;
+;;; :TEST-ME (mon-string-wonkify "These are some wonky words" 10)
+;;; :TEST-ME (mon-string-wonkify "These are some wonky words" 3)
+
+;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-11-06T17:41:33-05:00Z}#{09455} - by MON>
 (defun* mon-string-to-hex-string (&key hxify-str w-dlim prand-hex-len)
   "Return HXIFY-STR as a string of hex numbers.  When keyword W-DLIM is non-nil
@@ -3601,10 +3644,10 @@ non-nil, return a pseudo-random string of length N generated with
   (let (xx)
     (unless prand-hex-len
       ;; :NOTE Consider using (append hxify-str nil) instead of the mapping.
-      (mapc (lambda (x) (setq xx (cons x xx)))  hxify-str)
+      (mapc #'(lambda (x) (setq xx (cons x xx)))  hxify-str)
       (setq xx (reverse xx))
       (setq xx
-            (mapconcat (lambda (x) (format "%x" x))
+            (mapconcat #'(lambda (x) (format "%x" x))
                        xx (if (and w-dlim (stringp w-dlim)) w-dlim ""))))
     (when prand-hex-len 
       (if (<= prand-hex-len 80)
@@ -3638,9 +3681,9 @@ Useful for working with w32 registry keys of type REG_BINARY.
       :DECIMAL     0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
 :SEE-ALSO `mon-string-to-hex-string', `hexl-hex-string-to-integer'.\n►►►"
   (let (hex-key-as-strings hex-key-as-int)
-    (mapc (lambda (hk-s) (push (format "%s" hk-s) hex-key-as-strings))
+    (mapc #'(lambda (hk-s) (push (format "%s" hk-s) hex-key-as-strings))
           hx-l)
-    (mapc (lambda (hs-i) (push (hexl-hex-string-to-integer hs-i) hex-key-as-int))
+    (mapc #'(lambda (hs-i) (push (hexl-hex-string-to-integer hs-i) hex-key-as-int))
           hex-key-as-strings)
     (mon-string-from-sequence hex-key-as-int)))
 ;;
@@ -3685,7 +3728,8 @@ Useful for working with w32 registry keys of type REG_BINARY.
 When INSRTP is non-nil or called-interactively insert string at point.
 Does not move point.\n
 :EXAMPLE\n(mon-generate-WPA-key)\n
-:SEE-ALSO `mon-generate-prand-id', `mon-string-from-hex-list',
+:SEE-ALSO `mon-generate-prand-id', `mon-generate-prand-seed'
+`mon-string-wonkify', `mon-string-from-hex-list',
 `mon-string-to-hex-list', `mon-string-to-hex-string'.\n►►►"
   (interactive "i\np")
   (let ((wk (mon-string-to-hex-string :prand-hex-len 64)))
@@ -4525,18 +4569,27 @@ When optional arg DO-EQ uses `memq'.\n
 ;;; ==============================
 ;;; :COURTESY Jared D. :WAS `assoc-replace'
 ;;; (URL `http://curiousprogrammer.wordpress.com/2009/07/26/emacs-utility-functions/')
+;;; :MODIFICATIONS <Timestamp: #{2010-02-10T20:17:04-05:00Z}#{10064} - by MON KEY>
+;;; Now returns the full association not just the value of key.
 ;;; :CREATED <Timestamp: #{2009-08-19T20:00:51-04:00Z}#{09344} - by MON KEY>
-(defun mon-assoc-replace (seq values)
-  "Replace an element within an association list where the cars match.\n
+(defun mon-assoc-replace (seq1 seq2)
+  "Return an alist with elts of the alist SEQ substituted with the element of VALUES
+where the car of elt SEQ matches the car of elt VALUES.\n
+:EXAMPLE\n\n\(mon-assoc-replace '\(\(a \(a c d\)\) \(b \(c d e\)\) \(c \(f g h\)\)\)
+                   '\(\(a \(c d g\)\) \(b \(c d f\)\) \(g \(h g f\)\)\)\)\n
 :SEE-ALSO `mon-intersection', `mon-combine', `mon-map-append', `mon-maptree',
 `mon-transpose', `mon-flatten', `mon-recursive-apply', `mon-sublist',
 `mon-sublist-gutted', `mon-remove-dups', `mon-assoc-replace', `mon-moveq',
 `mon-elt->', `mon-elt-<', `mon-elt->elt', `mon-elt-<elt'.\n►►►"
-  (mapcar (lambda (elem)
-            (let* ((key (car elem))
-                   (val (assoc key values)))
-              (if val (cadr val) elem))) seq))
-
+  (mapcar #'(lambda (elem)
+                    (let* ((key (car elem))
+                           (val (assoc key seq2)))
+                      ;; :WAS (if (cadr val) val elem))) seq1)) 
+                      (if val val elem))) seq1))
+;;                          
+;;; :TEST-ME (mon-assoc-replace '((a (a c d)) (b (c d e)) (c (f g h)))
+;;;                             '((a (c d g)) (b (c d f)) (g (h g f))))
+    
 ;;; ==============================
 ;;; :COURTESY Jared D. :WAS `remove-dupes'
 ;;; (URL `http://curiousprogrammer.wordpress.com/2009/07/26/emacs-utility-functions/')
@@ -5063,7 +5116,7 @@ and property list.\n►►►"
   (interactive (list 
                 (completing-read "Variable: "
                                  (loop for s being the symbols
-                                       when (boundp s) collect (list (symbol-name s))))))
+                                    when (boundp s) collect (list (symbol-name s))))))
   (makunbound (if (stringp symbol) (intern symbol) symbol)))
 ;;
 ;;; ==============================

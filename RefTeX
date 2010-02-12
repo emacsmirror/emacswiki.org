@@ -1,4 +1,4 @@
-RefTex is maintained by the AUCTeX Team: http://www.gnu.org/software/auctex/reftex.html
+RefTeX is maintained by the AUCTeX Team: http://www.gnu.org/software/auctex/reftex.html
 
 RefTeX provides distinct support for doing labels, references and citations in LaTeX. It works with both Emacs and XEmacs and runs as a minor mode with any of the LaTeX major modes around, most notably AUCTeX.
 

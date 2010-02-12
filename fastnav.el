@@ -1,6 +1,6 @@
 ;; fastnav.el -- Fast navigation and editing routines.
 ;;
-;; Version 1.02
+;; Version 1.03
 ;;
 ;; Copyright (C) 2008, 2009, 2010  Zsolt Terek <zsolt@google.com>
 ;;
@@ -38,6 +38,7 @@
 ;; Changes:
 ;;   2010-02-05: Fix for org mode, all commands were broken.
 ;;               Fix for electric characters in certain modes.
+;;   2010-02-11: Yet another minor fix for switching to next/previous char.
 ;;
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License
@@ -128,7 +129,7 @@ search of occurences."
 		 (delta 0)
 		 (command (key-binding (vector event))))
 	    (if (or
-		 (and (numberp char) (< char 256) (>= char 32))
+		 (and (numberp event) (< event 256))
 		 (member command
 			 ;; which commands have a keystroke
 			 ;; that is valid for search

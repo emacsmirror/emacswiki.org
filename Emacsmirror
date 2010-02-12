@@ -425,6 +425,14 @@ an email.
 What about ColorTheme? -- DrewAdams
 [new]
 I have imported it now from an archive on the homepage. That page also mentions that bazaar is now used for development but the bazaar repo does not exist and the cvs one doesn't work. Also every link on the homepage points back to itself. So much "about ColorTheme" |-). I have contacted the maintainer, but someone else has done the same on the mailing list without a response. -- JonasBernoulli
+[new:DanielHackney:2010-02-11 13:55 UTC]
+I found the ColorTheme repository! It's here:
+
+    bzr branch http://bzr.savannah.nongnu.org/r/color-theme/trunk
+
+I also imported it to git and added it to GitHub:
+
+    http://github.com/haxney/color-theme
 [new]
 Thanks to everyone who provided links so far. I have imported most of these packages now. However those that are hosted on the Emacswiki won't be imported until I import all packages from it. I have removed them above. They were: mysql, notify, unbound, weblogger, xml-rpc. The last to were reported to live in http://bzr.savannah.nongnu.org/r/emacsweblogs but that does not work for me. -- JonasBernoulli
 [new:DanielHackney:2010-02-10 03:04 UTC]

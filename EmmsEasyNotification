@@ -1,0 +1,88 @@
+= Preface =
+
+This page is a clone of my wiki page at [[http://wiki.santoro.tk/index.cgi/EmmsEasyNotification]].
+
+Thus, it may be outdate.
+
+Screenshot is at [[http://santoro.tk/pics/emms-easy-notify.png]]
+
+= Emms-notification and easy-notify =
+
+easy-notify is a small python script which draws notification widgets on the screen
+using libnotify (python-notify in debian). It provides -t option for widget title, 
+and -m option for widget message.
+
+I've then written some elisp code and hooks to call it nicely... I so get popup very
+nice notification when another songs is being played.
+
+I'll group all that code in a repository, some day of theese.
+
+easy-notify code is:
+
+<pre>
+#! /usr/bin/env python
+
+"""
+easy-notify: simply draw notification widgets on the screen.
+Depends on: python and python-notify (libnotify)
+
+Tested on: Debian GNU/Linux Squeeze (testing)
+
+Copyright 2010 Emanuele Santoro <santoro@autistici.org>
+License is GNU GPL version three or any later publishied 
+by the free software foundation.
+"""
+
+import sys
+import pynotify
+from optparse import *
+
+parser = OptionParser()
+
+parser.add_option("-t", "--title", help="title of the notification widget",
+		  metavar="TEXT", dest="title")
+
+parser.add_option("-m", "--message", help="message of the notification widget",
+		  metavar="MESSAGE", dest="message")
+
+(options, args) = parser.parse_args() 
+
+if pynotify.init("emms-notifier"):
+	n = pynotify.Notification(options.title, options.message)
+	n.show()
+	sys.exit(0)
+else:
+	print "there was a problem initializing the pynotify module"
+	sys.exit(1)
+</pre>
+
+Save this code in a file called **easy-notify**, mark it as executable and
+install it in a directory which is in your **{{{$PATH}}}** environment variable.
+I've installed it in **~/.bin/**, which is in my **$PATH**
+
+
+Elisp code is:
+
+<pre>
+;; system-notify: make a nice notification widget on the screen
+(defun system-notify (title message)
+  "invoke easy-notify with a title and shows a message"
+  (interactive "")
+  (start-process-shell-command "*Output*" nil 
+			       (concat "easy-notify -t \"" title "\" -m \"" message "\"")))
+;; use system-notify with emms
+(add-hook 
+ 'emms-player-started-hook 
+ '(lambda ()(system-notify 
+	     "emms is now playing..." 
+	     (emms-track-description (emms-playlist-current-selected-track)))))
+</pre>
+
+
+= Further ideas... =
+Well, none at the moment.
+
+But i've written system-notify lisp function qite generally, so I think i'll
+bind it to other hooks. Because I love to use Emacs... From outside emacs, 
+too ;-)
+

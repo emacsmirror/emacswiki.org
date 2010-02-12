@@ -161,6 +161,9 @@ Selects among the files listed in the [[tags file]]. Similar to "find file in pr
 [new:DrewAdams:2009-04-27 20:31 UTC]
 [[Icicles]] command `icicle-find-file-in-tag-table' does this also. See [[Icicles - Support for Projects#TagsFileProject|Icicles - Tags File Projects]].
 
+=== Completing Imenu tags ===
+Lisp:idomenu.el
+
 === Ido on steroids (make it to complete everything) ===
 
 Hocus pocus, abracadabra, presto!
@@ -304,10 +307,6 @@ Icicles lets you change the sort order on the fly during completion. There are m
 You cannot use Ido and Icicles together (with both turned on) -- they use the minibuffer differently. Icicles uses it pretty much the same as vanilla Emacs, but Ido does not.
 
 
-----
-CategoryCommands
-CategoryBufferSwitching
-CategoryCompletion
 
 == Ido History ==
 
@@ -377,4 +376,9 @@ Sometimes I think it would be convenient to be able to bury buffer. I can use bu
 
 The relevant zsh config is here: http://zshwiki.org/home/examples/compquickstart
 -- DenisMartinez
+
+----
+CategoryCommands
+CategoryBufferSwitching
+CategoryCompletion
 

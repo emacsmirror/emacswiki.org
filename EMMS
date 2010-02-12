@@ -145,9 +145,15 @@ Use knotify to display the current song. Requires Emacs with dbus:
 (setq emms-player-next-function 'ts/showsong)
 </pre>
 
+=== Fluxbox/Gnome (and gtk-based wm) notification ===
+
+See [[EmacsEasyNotification]] ;-)
+
 == Screenshots ==
 
 [http://www.gnu.org/software/emms/screenshots.html]
+
+[[EmmsEasyNotification]] produces notification like: [[http://santoro.tk/pics/emms-easy-notify.png|this]]
 
 == Questions ==
 

@@ -1,4 +1,4 @@
-;;; This is mon-doc-help-utils.el
+;;; mon-doc-help-utils.el --- documentation enabling and generation extensions
 ;;; ================================================================
 ;;; DESCRIPTION:
 ;;; mon-doc-help-utils consolidates functions that offer documentation and or
@@ -57,6 +57,7 @@
 ;;; `mon-emacs-wiki-escape-lisp-string-region',
 ;;; `mon-emacs-wiki-unescape-lisp-string-region'
 ;;; `mon-help-overlay-functions'
+;;; `mon-help-regexp-symbol-defs-TEST', `mon-help-propertize-regexp-symbol-defs-TEST'
 ;;; FUNCTIONS:◄◄◄
 ;;;
 ;;; MACROS:
@@ -143,7 +144,6 @@
 ;;;
 ;;; :FILE mon-regexp-symbols.el 
 ;;;       | -> `*regexp-symbol-defs*'          
-;;;       | -> `mon-test->*regexp-symbol-defs*'
 ;;; :SEE (URL `http://www.emacswiki.org/emacs/mon-regexp-symbols.el')
 ;;;
 ;;; :FILE mon-utils.el
@@ -292,16 +292,13 @@
 ;;; Foundation Web site at:
 ;;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ================================================================
-;;; Copyright © 2009 MON KEY 
+;;; Copyright © 2009, 2010 MON KEY 
 ;;; ==============================
 ;;; CODE:
 
 ;;; ==============================
 ;;; `defun*' `intersection' in `mon-help-function-spit-doc'
 (eval-when-compile (require 'cl))
-
-;; `cl::intersection'
-(eval-when-compile (require 'mon-cl-compat))
 
 ;; :USED-BY `mon-emacs-wiki-fy-reference-keys'
 (require 'regexpl)
@@ -608,7 +605,6 @@ For `help-mode' views of MON functions, in particular those from
 (defface mon-help-KEY-tag
     '(( ((class color) (min-colors 88)) 
        (:foreground "light steel blue" :weight extrabold)) )
-          
   "*A mon-help-symbol mon-help-symbol KEY face.\n
 :KEYWORD-REGEXPS-IN `*regexp-mon-doc-help-docstring-tags*'\n
 :SEE-ALSO `mon-help-META-tag', `mon-help-PNTR-tag', 
@@ -1343,6 +1339,10 @@ value returned is of the form:
     sym-type-val))
 
 ;;; ==============================
+;;; :NOTE The do-var arg doesn't work for byte-compiled vars in .elc fils on:
+;;; "GNU Emacs 23.1.50.1 (i386-mingw-nt5.1.2600)
+;;;  of 2009-06-30 on LENNART-69DE564 (patched)"
+;;;  Not sure what is happening with that. Interpreted vars are fine...
 ;;; :CREATED <Timestamp: Thursday July 02, 2009 @ 05:16.20 PM - by MON KEY>
 (defun* mon-help-function-spit-doc (sym-name &key alt-cookie do-var insertp
                                              do-face do-group do-theme)
@@ -1373,6 +1373,7 @@ inside a defgroup form.\n
 :SEE-ALSO `mon-insert-doc-help-cookie', `mon-insert-doc-help-tail'
 `mon-help-xref-symbol-value', `mon-help-function-args'
 `mon-help-insert-documentation'.\n►►►"
+(eval-when-compile (require 'mon-cl-compat t))
   (let (mk-docstr)
     (save-excursion
       (setq mk-docstr
@@ -1380,12 +1381,14 @@ inside a defgroup form.\n
               (emacs-lisp-mode)
               (let* ((check-opt (if alt-cookie (string-to-list alt-cookie)))
                      (dc (if (and alt-cookie (stringp alt-cookie))
-                             (cond ((cl::intersection
-                                     (string-to-list "[*?^.+$\\")
-                                     check-opt)
+                             (cond (;;; ((if (fboundp 'cl::intersection)
+                                    ;;;      cl::intersection
+                                    ;;;      intersection)
+                                    (intersection
+                                     (string-to-list "[*?^.+$\\") check-opt)
                                     (regexp-quote alt-cookie))
                                    (t alt-cookie))
-                           *doc-cookie*))
+                             *doc-cookie*))
                      (st-mrk (make-marker))
                      (cookie-mrk (make-marker))
                      (put-help)
@@ -1428,10 +1431,9 @@ inside a defgroup form.\n
     mk-docstr))
 ;;
 ;;; :TEST-ME (mon-help-function-spit-doc 'mon-help-function-spit-doc :alt-cookie nil :do-var nil :insertp t)
-;;; :TEST-ME (mon-help-function-spit-doc '*doc-cookie* :do-var t :insertp t)
+;;; :TEST-ME (mon-help-function-spit-doc '*regexp-mon-doc-help-pointer-tags* :do-var t :insertp t)
 ;;; :TEST-ME (mon-help-function-spit-doc 'font-lock-keyword-face :do-face t :insertp t)
 ;;; :TEST-ME (mon-help-function-spit-doc 'apropos :do-group t :insertp t)
-;;; :TEST-ME (mon-help-function-spit-doc 'completions-merging-modes :do-var t)
 
 ;;; ==============================
 ;;; :TODO
@@ -1459,7 +1461,7 @@ Default test-me-cnt is 3 'test-me's.
 When called programmatically INSERTP is non-nil or if called interactively insert
 code template in buffer at point. Does not move point.
 Regexp held by global var `*regexp-symbol-defs*'.\n
-:SEE-ALSO `mon-insert-lisp-testme', `mon-test->*regexp-symbol-defs*'.\n►►►"
+:SEE-ALSO `mon-insert-lisp-testme', `mon-help-regexp-symbol-defs-TEST'.\n►►►"
   (interactive "i\ni\ni\np")
   (let* ((the-sym (if fname
                    fname
@@ -1509,6 +1511,168 @@ Regexp held by global var `*regexp-symbol-defs*'.\n
 ;;; :TEST-ME (call-interactively 'mon-insert-doc-help-tail)
 ;;
 ;;;(mon-insert-lisp-testme nil 3 nil)
+
+;;; ==============================
+;;; :RENAMED `mon-help-regexp-symbol-defs-TEST' -> `mon-help-regexp-symbol-defs-TEST'
+;;; :MODIFICATIONS <Timestamp: #{2010-02-11T20:01:41-05:00Z}#{10065} - by MON KEY>
+;;; :CREATED <Timestamp: #{2009-09-02T16:11:07-04:00Z}#{09363} - by MON KEY>
+(defun mon-help-regexp-symbol-defs-TEST (&optional dis-p)
+  "Return overlays for matches of regexp `*regexp-symbol-defs*' in region.\n
+When optional arg DIS-P is non-nil or when called-interactively return formatted
+results to the buffer named *REGEXP-SYMBOL-DEFS-REPORT*.
+:EXAMPLE\n\n(mon-help-regexp-symbol-defs-TEST t)\n
+►
+\(defun some-function \(&optional optional\)
+\(defun some-function-22 \(&optional optional\)
+\(defun *some/-symbol:->name<-2* \(somevar
+\(defmacro some-macro \(\)
+\(defmacro some-macro*:22 \(&rest\)
+\(defun *some/-symbol:->name<-2* \(somevar
+\(defvar *some-var* 'var
+\(defun *some/-symbol:->name<-2* 'somevar
+\(defmacro some-macro*:22 \(&rest\)
+\(defun *some/-symbol:->name<-2* \(somevar
+\(defvar *some-var* 'var
+\(defun *some/-symbol:->name<-2* 'somevar
+\(defmacro* some-macro*:22 \(&rest\)
+\(defun* *some/-symbol:->name<-2* \(somevar
+\(defsubst *some/subtst-symbol:->name<-2* \(
+\(defsubst* *some/subtst-symbol:->name<-2* \(
+\(defcustom *some/-custom-symbol:->name<-2* 'somecustom
+\(defconst *some/-symbol:->name<-2* \(someconst
+\(defface *some/-face-symbol:->name<-2* \(someface
+\(defgroup *some/-group-symbol:->name<-2* \(somegroup
+\(deftheme *some/-theme-symbol:->name<-2* \(sometheme
+◄
+
+:SEE-ALSO `mon-help-propertize-regexp-symbol-defs-TEST', `mon-help-overlay-result'.\n►►►"
+  (interactive "p")
+  (eval-when-compile (require 'boxquote t))
+  (let ((botp   #'(lambda () `(,(line-beginning-position) . ,(line-end-position))))
+        (mhor   #'(lambda (bd) (mon-help-overlay-result (car bd) (cdr bd) 78)))
+        (srcher #'(lambda (srch bnds) (search-forward-regexp srch bnds t)))
+        (srched *regexp-symbol-defs*)
+        (bnd-s (make-marker))
+        (bnd-e (make-marker))
+        match-report cnt)
+    (save-excursion
+      (funcall srcher "^►" nil)
+      (set-marker bnd-s (point))
+      (funcall srcher "◄$" nil)
+      (set-marker bnd-e (point)))
+    (setq cnt (- (line-number-at-pos (- (marker-position bnd-e) 2))
+                 (line-number-at-pos (1+ (marker-position bnd-s)))))
+    (save-excursion
+      (goto-char bnd-s)
+      (while (> cnt 0)
+        (funcall srcher srched bnd-e)
+        (funcall mhor (funcall botp))
+        (push (concat 
+               "------------------------------------\n"
+               "Match iteration: " (format "%d\n" cnt)
+               ;; font-lock-keyword-face
+               "\nmatch-string1: " (match-string-no-properties 2) " start2: " 
+               (number-to-string (match-beginning 2)) " end2: " 
+               (number-to-string (match-end 2)) "\nmatch-string3: "
+               ;; font-lock-type-face, font-lock-variable-name-face, font-lock-function-name-face
+               (match-string-no-properties 3)" start3: " 
+               (number-to-string (match-beginning 3))  " end3: " 
+               (number-to-string (match-end 3))"\nmatch-string4: "
+               (match-string-no-properties 4) " start4: " 
+               (number-to-string (match-beginning 4))  " end4: " 
+               (number-to-string (match-end 4))"\n")
+              match-report)
+        (setq cnt (1- cnt))))
+    ;; (push          (match-report
+    ;;(setq match-report (nreverse match-report))
+    (setq srched (buffer-substring-no-properties (1- bnd-s) bnd-e))
+    (setq srched 
+          (with-temp-buffer
+            (save-excursion
+              (princ srched (current-buffer)))
+            (if (fboundp 'boxquote-region)
+                (boxquote-region (buffer-end 0)(buffer-end 1))
+                (comment-region (buffer-end 0)(buffer-end 1)))
+            (goto-char (buffer-end 0))
+            (princ ";;; Regexp Match Report for the following lines:\n" (current-buffer))
+            (buffer-substring-no-properties (buffer-end 0)(buffer-end 1))))    
+    (push srched match-report)
+    (prog1
+        (setq match-report 
+              (concat (mapconcat #'identity match-report "\n") 
+                      "------------------------------------\n"))
+      (when (or dis-p intrp)
+        (with-current-buffer (get-buffer-create "*REGEXP-SYMBOL-DEFS-REPORT*")
+          (unwind-protect 
+               (let ((buffer-read-only nil))
+                 (erase-buffer)
+                 (save-excursion (princ match-report (current-buffer)))
+                 (mon-help-propertize-regexp-symbol-defs-TEST)
+                 (display-buffer (current-buffer) t t))
+            (set (make-local-variable 'buffer-read-only) t)))
+        ))))
+;;
+;; ,---- :UNCOMMENT-BELOW-TO-TEST
+;; | (mon-help-regexp-symbol-defs-TEST t)
+;; |
+;; | ►
+;; | (defun some-function (&optional optional)
+;; | (defun some-function-22 (&optional optional)
+;; | (defun *some/-symbol:->name<-2* (somevar
+;; | (defmacro some-macro ()
+;; | (defmacro some-macro*:22 (&rest)
+;; | (defun *some/-symbol:->name<-2* (somevar
+;; | (defvar *some-var* 'var
+;; | (defun *some/-symbol:->name<-2* 'somevar
+;; | (defmacro some-macro*:22 (&rest)
+;; | (defun *some/-symbol:->name<-2* (somevar
+;; | (defvar *some-var* 'var
+;; | (defun *some/-symbol:->name<-2* 'somevar
+;; | (defmacro* some-macro*:22 (&rest)
+;; | (defun* *some/-symbol:->name<-2* (somevar
+;; | (defsubst *some/subtst-symbol:->name<-2* (
+;; | (defsubst* *some/subtst-symbol:->name<-2* (
+;; | (defcustom *some/-custom-symbol:->name<-2* 'somecustom
+;; | (defconst *some/-symbol:->name<-2* (someconst
+;; | (defface *some/-face-symbol:->name<-2* (someface
+;; | (defgroup *some/-group-symbol:->name<-2* (somegroup
+;; | (deftheme *some/-theme-symbol:->name<-2* (sometheme
+;; | ◄
+;; `----
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-02-11T20:48:23-05:00Z}#{10065} - by MON KEY>
+(defun mon-help-propertize-regexp-symbol-defs-TEST ()
+  "Helper function for `mon-help-regexp-symbol-defs-TEST'.\n
+Propertize symbols matched by regexp `*regexp-symbol-defs*'.
+:SEE-ALSO `mon-help-overlay-result'.\n►►►"
+  (let ((fnf ;; `font-lock-function-name-face'
+         '(defun defun* defmacro defmacro* defsubst defsubst* defclass defadvice
+           defgeneric defmethod defsetf defalias))
+        (ftf ;; `font-lock-type-face'
+         '(defclass deftheme defgroup deftype defpackage defstruct))
+        (fvf ;; `font-lock-variable-name-face'
+         '(defface defconstant defconst defvar defparameter defvaralias))
+        (next-ms #'(lambda (n) (search-forward-regexp 
+                                (concat "match-string" n ": ") nil t)))
+        (got-sym-tp #'(lambda (fc) (let ((botap (bounds-of-thing-at-point 'symbol)))
+                                     ;;(with-syntax-table emacs-lisp-mode-syntax-table <- fails why??
+                                     (put-text-property (car botap) (cdr botap) 'face fc))))
+        bro)
+    (unwind-protect
+         (when (buffer-local-value 'buffer-read-only (current-buffer))
+           (set 'buffer-read-only nil)
+           (setq bro t))
+      (set-syntax-table emacs-lisp-mode-syntax-table)
+      (while (funcall next-ms "1")
+        (setq got-def (symbol-at-point))
+        (funcall got-sym-tp 'font-lock-keyword-face)
+        (funcall next-ms "3")
+        (when (looking-at "'") (forward-char))
+        (cond ((memq got-def fnf)(funcall got-sym-tp 'font-lock-function-name-face))
+              ((memq got-def ftf)(funcall got-sym-tp 'font-lock-type-face))
+              ((memq got-def fvf)(funcall got-sym-tp 'font-lock-variable-name-face))))
+      (when bro (set 'buffer-read-only t)))))
 
 ;;; ==============================
 ;;; :COURTESY Dave Love <fx@gnu.org> :HIS fx-misc.el :WAS `function-arity'
@@ -2124,38 +2288,39 @@ x 	      The X Window system.\n►►►"
   "Regexp Syntax overview - simplified!\n
 :SEE info node `(elisp)Syntax of Regexps' for discussion.\n
 ;; :REGEXP-SPECIAL-CHARS
-\.          -> match ANY
-\*          -> match Preceeding - ALL
-\+          -> match Preceeding - AT LEAST once.
-\?          -> match Preceeding - once OR not at all
-\*\? \+\? \?\?   -> match Preceeding - NON-GREEDY
-\\=[...\]      -> Character ALTERNATIVE
-\\=[^...\]     -> COMPLEMENTed Character Alternative
-^          -> match BOL
-$          -> match EOL
-\\          -> backslash QUOTE special chars\n
+\.              -> match ANY
+\*              -> match Preceeding - ALL
+\+              -> match Preceeding - AT LEAST once.
+\?              -> match Preceeding - once OR not at all
+\*\? \+\? \?\?       -> match Preceeding - NON-GREEDY
+\\=[...\]          -> Character ALTERNATIVE
+\\=[^...\]         -> COMPLEMENTed Character Alternative
+^              -> match BOL
+$              -> match EOL
+\\              -> backslash QUOTE special chars\n
 ;; :REGEXP-BACKSLASH-CONSTRUCTS
-\\|         -> ALTERNATIVE
-\\\\={m\\}      -> REPEAT match exactly N times
-\\\\={m,n\\}    -> REPEAT match n-N times
-\\( ... \\)  -> GROUPING Construct
-\\(\? ... \\\) -> SHY Grouping Construct
-\\digit     -> match DIGITH occurence
-\\w         -> match any WORD CONSTITUENT char
-\\W         -> match any char NOT a Word Constituent
-\\Scode     -> match any char with SYNTAX code
-\\Scode     -> match any char NOT with Syntax code
-\\cc        -> match any char with CATEGORY
-\\Cc        -> match any char NOT with Category
-\\`         -> match EMPTY String
-\\\\\='         -> match Empty String only at EOB
-\\\\==         -> match Empty String only at POINT
-\\b         -> match Empty String only at BEGINNING OR END of Word
-\\B         -> match Empty String NOT at beginning or end of Word
-\\=\\<         -> match Empty String only at BEGINNING of Word
-\\=\\>         -> match Empty String only at END of Word
-\\_<        -> match Empty String only at BEGINNING of Symbol
-\\_>        -> match Empty String only at END of Symbol\n
+\\|             -> ALTERNATIVE
+\\\\={m\\}          -> REPEAT match exactly N times
+\\\\={m,n\\}        -> REPEAT match n-N times
+\\( ... \\)      -> GROUPING construct
+\\(\?: ... \\\)    -> SHY Grouping construct
+\\(\?NUM: ... \\) -> Explicitly NUMBERED Group
+\\digit         -> match DIGITH occurence
+\\w             -> match any WORD CONSTITUENT char
+\\W             -> match any char NOT a Word Constituent
+\\Scode         -> match any char with SYNTAX code
+\\Scode         -> match any char NOT with Syntax code
+\\cc            -> match any char with CATEGORY
+\\Cc            -> match any char NOT with Category
+\\`             -> match EMPTY String
+\\\\\='             -> match Empty String only at EOB
+\\\\==             -> match Empty String only at POINT
+\\b             -> match Empty String only at BEGINNING OR END of Word
+\\B             -> match Empty String NOT at beginning or end of Word
+\\=\\<             -> match Empty String only at BEGINNING of Word
+\\=\\>             -> match Empty String only at END of Word
+\\_<            -> match Empty String only at BEGINNING of Symbol
+\\_>            -> match Empty String only at END of Symbol\n
 ;; :REGEXP-CHARACTER-CLASSES
 \\=[:ascii:] [:nonascii:]
 \\=[:alnum:] [:digit:] [:xdigit:]

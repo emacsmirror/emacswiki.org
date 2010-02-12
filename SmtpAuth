@@ -46,20 +46,7 @@ For some reason I found I needed to set the GNU TLS parameters explicitly, becau
 == Using a File ==
 
 The variable `smtpmail-auth-credentials' is set to a filename by default: "~/.authinfo".
-This is a file in netrc(5)
-format, or list of four-element lists that contain, in order,
-`servername' (a string), `port' (an integer), `user' (a string) and
-`password' (a string, or nil to query the user when needed).  If you
-need to enter a `realm' too, add it to the user string, so that it
-looks like `user@realm'.
-
-Netrc files have entries that look as follows:
-
-    machine mail.example.com login alex password tu5894j30fufg9rw
-
-Note that ordinarily you could have each of these tokens on a separate
-line.  Emacs' netrc.el library only parses it correctly if all tokens
-belonging to a machine are on the same line, however.
+See GnusAuthinfo.
 
 == Other Mail Transfer Agent ==
 
