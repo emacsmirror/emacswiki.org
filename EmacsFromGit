@@ -1,6 +1,6 @@
 = Get Emacs with Git =
 
-A Git mirror of the Emacs CVS repository is available.
+A Git mirror of the Emacs Bazaar repository is available.
 
 <pre>
  git clone git://repo.or.cz/emacs.git
@@ -9,6 +9,10 @@ or for those behind a proxy:
 <pre>
  git clone http://repo.or.cz/r/emacs.git
 </pre>
+You can also browse the repository at http://repo.or.cz/w/emacs.git.
+
+Mirrors of the above git repository exist on [http://github.com/emacsmirror/emasc Github] and
+[http://gitorious.org/emacsmirror/emacs Gitorious]. But be aware that these currently lag behind a bit.
 
 Beware that this (by design) includes the entire history and therefore weighs about 300MB.
 

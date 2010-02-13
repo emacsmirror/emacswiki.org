@@ -10,6 +10,8 @@
 
     (add-hook 'after-make-frame-functions 'fullscreen)
 
+Note: this hook doesn't do anything to the inital frame if it's in your .emacs, since that file is read _after_ the inital frame is created.
+
 == X Windows ==
 === Send X Messages to the Window Manager ===
 
@@ -86,6 +88,14 @@ The following line can be added to your .emacs
 }}}
 
 The current CVS version of Emacs-23 does not support the above technique.
+
+Use [ftp://ftp.math.s.chiba-u.ac.jp/emacs/ Emacs 23 Mac Port Patch].
+
+The following line can be added to your .emacs
+{{{
+(set-frame-parameter nil 'fullscreen 'fullboth)
+}}}
+
 Use [http://github.com/jmjeong/my-dot-emacs/blob/master/maxframe.el patched maxframe.el]. You can see the original version from [http://files.emacsblog.org/ryan/elisp/maxframe.el maxframe.el].
 
 {{{

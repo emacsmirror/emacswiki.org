@@ -47,6 +47,23 @@ Notice that after the `##\##'  there is a whitespace character (actually the bac
 * "\" -- the default character (which you wanted to eliminate anyway, so you obviously don't need this minihowto for doing it) :)
 * "?<character>" could also be replaced by "0", but it may show the bug mentioned above
 
+[new:IainDalton:2010-02-12 20:24 UTC]
+Is there any code floating about that does "virtual indenting"--which is to indenting what visual-line-mode is to wrapping--like KDE's Kate?  The information needed to display lines at the right indentation may already be there--fill-paragraph does indentation as well as wrapping.  This would make editing someone else's non-wrapped code nicer, and make paragraphs in lists in markup languages (MarkDown, LaTeX, HTML) look nice without hard-wrapping, like:
+
+<pre>
+- This is a long paragraph in a list.  The quick brown fox jumped over
+  the lazy dog.
+</pre>
+
+instead of
+
+<pre>
+- This is a long paragraph in a list.  The quick brown fox jumped over
+the lazy dog.
+</pre>
+
+--- IainDalton
+
 ----
 CategoryFilling
 CategoryGlossary

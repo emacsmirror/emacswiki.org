@@ -136,7 +136,7 @@ This is buffer `##*Bookmark List*##', aka the bookmark "menu list" (a misnomer),
 * You can regexp-search (`M-a') or query-replace (`M-q') the
      targets (destination files or buffers) of the marked bookmarks, in the
      current bookmark-list sort order.  For Emacs 23 and later, you can even search
-     incrementally (`M-x a C-s', or `M-x a C-M-s' for [[regexp]]).
+     incrementally (`M-s a C-s', or `M-s a C-M-s' for [[regexp]]).
 
 * You can save the current bookmark-list state and return to it
   later.  There are a few ways to do this, including
@@ -215,7 +215,7 @@ bookmark visiting and setting.  In ''Icicle'' mode, several of the '''Bookmark+'
 [:TypeSpecificJumpCommands]
 == Different Types of Jump Commands ==
 
-When you jump to a bookmark, you can use completion to specify the
+When you jump to a bookmark, you can use [[completion]] to specify the
 bookmark name.  With '''Bookmark+''' you can easily have a large number
 of bookmarks.  If you want to jump to a bookmark of a specific
 type, such as Info, you can use a '''Bookmark+''' command that is
@@ -267,6 +267,24 @@ command, `bookmarkp-dired-jump-current', whose destinations all
 use the current Dired directory.  The aim of `C-j' is not to
 change directories but to change to a different set of markings,
 switches, inserted subdirectories, or hidden subdirectories for the same Dired directory.
+
+
+Finally, in addition to the predefined bookmark types, which you
+can use as described above, you can define a "type"-specific jump
+command for any set of bookmarks.  That is, you can use any
+specific set of bookmarks as the completion candidates for a new
+jump command.  Such a set is really only a pseudo-type: the actual
+bookmarks can each be of any type.
+
+You could use this feature, for example, to define a jump command
+for the bookmarks that belong to a given project.
+
+To define such a command, you first mark the bookmarks that you
+want to be the completion candidates, then you use '''`M-c'''' (command
+'''`bookmarkp-bmenu-define-jump-marked-command'''') in the bookmark
+list.
+
+
 
 
 
@@ -558,7 +576,7 @@ the current bookmark file.
 
 You can turn off the automatic saving of the current bookmark
 file, by customizing option '''`bookmark-save-flag'''' to `nil'.  And you
-can toggle this option at any time, using '''`M-s'''' in the bookmark
+can toggle this option at any time, using '''`##M-~##'''' in the bookmark
 list (command '''`bookmarkp-toggle-saving-bookmark-file'''').
 
 Besides using multiple bookmark files as alternatives,
@@ -673,10 +691,8 @@ In other words:
 You'll figure it out ;-).
 
 Remember that '''`C-h RET'''' shows you the tags that belong to the
-current bookmark (under the [[cursor]]).  Alternatively, you can use
-'''`##T -##'''' and then `TAB' to see the tags belonging to the bookmark as
-[[completion]] candidates.  (If you use '''[[Icicles]]''', you can type an input
-pattern to filter the tag completions.)
+current bookmark (under the [[cursor]]).  And '''`C-u C-h RET'''' shows you
+the full internal form of the tags, that is, the name+value pairs.
 
 You can also sort bookmarks according to how they are tagged, even
 in complex ways.  See [[#SortingBookmarks]].
@@ -789,7 +805,7 @@ in Dired at any time to operate on them.
 
 If you use '''[[Dired+]]''' (library <tt>[[dired+.el]]</tt>), then a similar feature is
 available for the marked files and directories: You can use
-'''`##C-M-*##'''' in Dired to open a separate Dired buffer for only them
+'''`##C-M-*##'''' in Dired to open a separate Dired buffer for them
 only.  You can of course then bookmark that resulting Dired
 buffer, if you like.
 

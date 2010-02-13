@@ -29,7 +29,7 @@ Similarly, to get timestamps:
 
 And to deactivate this, call
 
-    (ad-disable-advice 'message 'before 'who-said-that)
+    (ad-disable-advice 'message 'before 'when-was-that)
     (ad-update 'message)
 
 ----

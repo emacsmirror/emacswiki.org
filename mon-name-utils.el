@@ -1,18 +1,17 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; mon-name-utils.el --- procedures to rotatate or permutie string-like name forms.
 ;; -*- mode: EMACS-LISP; -*-
-;;; this is naf-name-utils.el
 ;;; ================================================================
 ;;; DESCRIPTION:
 ;;; Utils for rotation on name-forms. Used with `naf-mode'
 ;;;
 ;;; FUNCTIONS:►►►
-;;; `naf-unrotate-canonical', `naf-make-name-return', `naf-make-name-for-lisp'
+;;; `mon-string-rotate-name', `mon-make-name-return', `mon-make-name-lispy'
 ;;; `mon-make-names-list', `mon-permute-combine', `mon-permute-combine-2',
 ;;; `mon-variations', `mon-permutations', `mon-perms',
 ;;; `mon-test-permute-combine-functions', `mon-string-csv-regexp',
 ;;; `mon-string-csv-rotate', `mon-csv-to-perms', `mon-string-permute-line'
 ;;; `mon-string-splice-sep', `mon-string->strings-splice-sep'
-;;; `mon-convert-list-regexp', `mon-string-infix'
+;;; `mon-string-to-regexp', `mon-string-infix'
 ;;; `mon-rotate-region', `mon-rotate-string', `mon-rotate-next'
 ;;; `mon-rotate-get-rotations-for', `mon-string-rotate-to-regexp', 
 ;;; `mon-rotate-flatten-list',`mon-indent-or-rotate', `mon-string-permute'
@@ -42,7 +41,7 @@
 ;;; `mon-csv-string-to-regexp'      -> `mon-string-csv-regexp'
 ;;; `mon-rotate-keywords'           -> `mon-string-csv-rotate'
 ;;; `mon-perm-words'                -> `mon-string-permute-line'
-;;;
+;;; `naf-unrotate-canonical'        -> `mon-string-rotate-name'
 ;;; MOVED:
 ;;;
 ;;; REQUIRES:
@@ -59,7 +58,7 @@
 ;;; AUTHOR: MON KEY
 ;;; MAINTAINER: MON KEY
 ;;;
-;;; PUBLIC-LINK: (URL `http://www.emacswiki.org/emacs/naf-name-utils.el')
+;;; PUBLIC-LINK: (URL `http://www.emacswiki.org/emacs/mon-name-utils.el')
 ;;; FILE-PUBLISHED: <Timestamp: #{2009-09-22} - by MON KEY>
 ;;; 
 ;;; FILE-CREATED:
@@ -121,15 +120,14 @@ Else uses @artist:\n
        (insert ,texttoinsert))))
 
 ;;; ==============================
-;;; :TODO :RENAME-ME
 ;;; :NOTE Needs nested capture-groups for ", Jr." ", Sr." ", II" etc.
 ;;; :MODIFICATIONS <Timestamp: #{2009-08-13T16:37:24-04:00Z}#{09334} - by MON KEY>
-(defun naf-unrotate-canonical (&optional start end to-rotate insertp intrp)
+(defun mon-string-rotate-name (&optional start end to-rotate insertp intrp)
   "Return an unrotated nameform withe namestring in region.\n
-:EXAMPLE\n\(naf-unrotate-canonical nil nil \"Cappiello \(Leonetto Doctorow\)\")\n
+:EXAMPLE\n\(mon-string-rotate-name nil nil \"Cappiello \(Leonetto Doctorow\)\")\n
 :SEE-ALSO; `mon-line-string-unrotate-namestrings'
 `mon-line-string-rotate-namestrings' `mon-line-strings-to-list', 
-`mon-make-lastname-firstname', `naf-make-name-for-lisp', `mon-make-names-list'.\n
+`mon-make-lastname-firstname', `mon-make-name-lispy', `mon-make-names-list'.\n
 Used in `naf-mode'.\n►►►"
   (interactive "r\ni\ni\np")
   (let (mystr)
@@ -164,9 +162,9 @@ Used in `naf-mode'.\n►►►"
           ((and to-rotate (not insertp) (not intrp) (not (use-region-p)))
            mystr))))
 ;;
-;;; :TEST-ME (naf-unrotate-canonical nil nil "Cappiello (Leonetto Doctorow)" )
-;;; :TEST-ME (naf-unrotate-canonical nil nil "Cappiello (Leonetto Doctorow)" t)
-;;; :TEST-ME (apply 'naf-unrotate-canonical nil '(nil "Cappiello (Leonetto Doctorow)"))
+;;; :TEST-ME (mon-string-rotate-name nil nil "Cappiello (Leonetto Doctorow)" )
+;;; :TEST-ME (mon-string-rotate-name nil nil "Cappiello (Leonetto Doctorow)" t)
+;;; :TEST-ME (apply 'mon-string-rotate-name nil '(nil "Cappiello (Leonetto Doctorow)"))
 
 ;;; ==============================
 ;;; :TODO :RENAME-ME mon-line-string-rotate-namestrings-fast
@@ -185,7 +183,7 @@ Region should contain two name instances \"Firstname\" \"Lastname\"  per line.\n
         \(line-move-1 1\)\)\)\)\)\n
 ►\nFirstname1 Lastname1\nFirstname2 Firstname2\nFirstname3 Lastname3\n◄\n
 :SEE-ALSO `mon-line-strings-to-list', `mon-line-string-rotate-namestrings'
-`mon-line-string-unrotate-namestrings', `naf-make-name-for-lisp',
+`mon-line-string-unrotate-namestrings', `mon-make-name-lispy',
 `mon-make-names-list'.\n►►►"
   (interactive "r\np")
   (let ((get-mmlf (buffer-substring-no-properties start end)))
@@ -204,21 +202,6 @@ Region should contain two name instances \"Firstname\" \"Lastname\"  per line.\n
         get-mmlf)))
 
 ;;; ==============================
-;;; :TODO :RENAME-ME -> `mon-make-name-for-lisp'
-(defun naf-make-name-for-lisp (the-region)
-  "Return a list as a stringified name rotated as:
- (\"Lastname\" (\"&restnames\")) to parens with quote ' escaped by two slashes.\n
-:SEE-ALSO `mon-line-strings-to-list', `mon-line-string-rotate-namestrings'
-`mon-line-string-unrotate-namestrings', `mon-make-lastname-firstname',
-`naf-make-name-for-lisp', `mon-make-names-list'.\n►►►"
-  (setq the-region  (if (string-match "'" the-region)
-                        (replace-match "\\'" nil t the-region)))
-  (let* ((region the-region)
-         (temp-name (split-string region))
-         (to-put (reverse (cons (butlast temp-name) (last temp-name)))))
-    to-put))
-
-;;; ==============================
 ;;; :MODIFICATIONS <Timestamp: Wednesday July 22, 2009 @ 01:07.15 PM - by MON KEY>
 ;;; :MODIFICATIONS <Timestamp: #{2009-09-24T13:08:18-04:00Z}#{09394} - by MON KEY>
 (defun mon-make-names-list (start end &optional insrtp intrp)
@@ -228,7 +211,7 @@ Region should contain two name instances \"Firstname\" \"Lastname\"  per line.\n
 ►\nSome \(Dude1 Name1\)\nSome \(Dude2 Name2\)\nSome \(Dude3 Name3\)\n►\n
 :SEE-ALSO `mon-line-strings-to-list', `mon-line-string-rotate-namestrings'
 `mon-line-string-unrotate-namestrings', `mon-make-lastname-firstname',
-`naf-make-name-for-lisp'.\n►►►"
+`mon-make-name-lispy'.\n►►►"
   (interactive "r\nP\np")
   (let ((rspr3
          (mon-replace-string-pairs-region-no-insert start end
@@ -568,12 +551,12 @@ When INSERTP is non-nil and INSERT-STR nil print as with prin1.
           ((and (not intrp) (not insert-str) (not insertp))
            str))))
 ;;
-;;; TEST-ME (MON-STRING-SPLICE-SEP '("AAOA" "AAOA" "AAOA" "AAOA" "AAOA" "AAOA" "AAOA") " " )
-;;; TEST-ME (MON-STRING-SPLICE-SEP '("AAOA" "AAOA" "AAOA" "AAOA" "AAOA" "AAOA" "AAOA") "|" NIL T)
-;;; TEST-ME (MON-STRING-SPLICE-SEP '("AAOA" "AAOA" "AAOA" "AAOA" "AAOA" "AAOA" "AAOA") "|" T T)
-;;; TEST-ME (MON-STRING-SPLICE-SEP '("AAOA" "AAOA" "AAOA" "AAOA" "AAOA" "AAOA" "AAOA") "| ")
-;;; TEST-ME (MON-STRING-SPLICE-SEP '("AAOA" "AAOA" "AAOA" "AAOA" "AAOA" "AAOA" "AAOA") " |")
-;;; TEST-ME (MON-STRING-SPLICE-SEP '("AAOA" "AAOA" "AAOA" "AAOA" "AAOA" "AAOA" "AAOA") "_")
+;;; TEST-ME (mon-string-splice-sep '("AAOA" "AAOA" "AAOA" "AAOA" "AAOA" "AAOA" "AAOA") " " )
+;;; TEST-ME (mon-string-splice-sep '("AAOA" "AAOA" "AAOA" "AAOA" "AAOA" "AAOA" "AAOA") "|" NIL T)
+;;; TEST-ME (mon-string-splice-sep '("AAOA" "AAOA" "AAOA" "AAOA" "AAOA" "AAOA" "AAOA") "|" T T)
+;;; TEST-ME (mon-string-splice-sep '("AAOA" "AAOA" "AAOA" "AAOA" "AAOA" "AAOA" "AAOA") "| ")
+;;; TEST-ME (mon-string-splice-sep '("AAOA" "AAOA" "AAOA" "AAOA" "AAOA" "AAOA" "AAOA") " |")
+;;; TEST-ME (mon-string-splice-sep '("AAOA" "AAOA" "AAOA" "AAOA" "AAOA" "AAOA" "AAOA") "_")
 ;;; TEST-ME (mon-string-splice-sep '("aaoa" "aaoa" "aaoa" "aaoa" "aaoa" "aaoa" "aaoa") " - ")
 
 ;;; ==============================
@@ -607,10 +590,12 @@ Called with prefix arg or when W-PRINC non-nil insert as with princ.\n
 ;;; :TEST-ME (call-interactively 'mon-string->strings-splice-sep)
 
 ;;; =======================
-(defun mon-convert-list-regexp (string-to-cnv &optional insertp intrp)
+;;; :RENAMED `mon-convert-list-regexp' -> `mon-string-to-regexp'
+(defun mon-string-to-regexp (string-to-cnv &optional insertp intrp)
 "Return a regex-opt'd list of strings.\n
 String obtained by splitting read-string from mini-buffer.\n
-:SEE-ALSO .\n►►►"
+:EXAMPLE\n\n(mon-string-to-regexp \"Return a regexp-opt list of strings splitting\")\n
+:SEE-ALSO `mon-string-rotate-to-regexp', `mon-string-ify-list'.\n►►►"
   (interactive "sstring to convert :\nP\np")
   (let*  ((stringify (mon-string-ify-list string-to-cnv))
 	  (converted (mon-string-rotate-to-regexp stringify)))
@@ -618,111 +603,40 @@ String obtained by splitting read-string from mini-buffer.\n
 	(prin1 converted (current-buffer))
       converted)))
 
-;;; :TEST-ME (mon-convert-list-regexp 
+;;; :TEST-ME (mon-string-to-regexp 
 ;;;  "Returns a regex opt list of strings obtained by breaking the string the user entered at the")
 ;;; 
-;;; :TEST-ME (mon-convert-list-regexp "Returns a regexp-opt list of strings splitting" t)
-;;; :TEST-ME (mon-convert-list-regexp "Returns a regexp-opt list of strings splitting" t)
-;;; :TEST-ME (call-interactively 'mon-convert-list-regexp)
+;;; :TEST-ME (mon-string-to-regexp "Returns a regexp-opt list of strings splitting" t)
+;;; :TEST-ME (mon-string-to-regexp "Returns a regexp-opt list of strings splitting" t)
+;;; :TEST-ME (call-interactively 'mon-string-to-regexp)
 
 ;;; ==============================
 ;;; :COURTESY Marc Tfardy  
-;;; :SOURCE Newsgroups: comp.emacs :SUBJECT Re: re-search-forward and assoc list
-;;; "Definition of string-infix: 
-;;; (I know, there is a ELISP function that do the same thing, but I can't remember
-;;;  its name so I wrote it myself and put to my private lisp lib.)
+;;; :SOURCE Newsgroups: comp.emacs 
+;;; :SUBJECT Re: re-search-forward and assoc list
+
 ;;; :MODIFICATONS <Timestamp: Sunday May 31, 2009 @ 08:22.06 AM - by MON KEY>
 ;;; :CREATED <Timestamp: Friday March 27, 2009 @ 04:50.09 PM - by MON KEY>
 ;;; ==============================
 (defun mon-string-infix (string-list infix)
-   "Creates a string by all from the STRING-LIST, which are separated by INFIX.\n
-EXAMPLE:\n{A function that changes certain strings according to a-list key-value pairs.} 
+   "Create a string by all from the STRING-LIST, which are separated by INFIX.\n
+EXAMPLE:\n;; 
 \(defun foo \(\)
-   \(interactive\)
-   \(setq replace-alist '\(\(\"x\" . \"bar\"\) \(\"y\" . \"foo\"\)\)\)
-   \(while \(re-search-forward 
-             \(concat \"\\\\(\" (string-infix (mapcar 'car replace-alist) \"\\\\|\") \"\\\\)\") nil t)
-     \(replace-match \(cdr \(assoc-string \(match-string 1\) replace-alist\)\)\)\)\)\n
+\"Convert certain strings according to a-list key-value pairs.\"
+  \(interactive\)
+  \(setq replace-alist '\(\(\"x\" . \"bar\"\) \(\"y\" . \"foo\"\)\)\)
+  \(while \(re-search-forward 
+          \(concat \"\\\\\(\" \(mon-string-infix \(mapcar #'car replace-alist\) \"\\\\|\"\) \"\\\\\)\"\) nil t\)
+    \(replace-match \(cdr \(assoc-string \(match-string 1\) replace-alist\)\)\)\)\)\n
 :SEE-ALSO .\n►►►"
    (cond ((null string-list)
           "")
          ((null (cdr string-list))
           (car string-list))
          ((cdr string-list)
-          (concat (car string-list) infix (mon-string-infix (cdr string-list) infix)))))
+          (concat (car string-list) infix 
+                  (mon-string-infix (cdr string-list) infix)))))
 
-;;; ==============================
-
-;;; ==============================
-;;; :WORKG-AS-OF
-;;; :CREATED <Timestamp: Friday February 13, 2009 @ 09:16.54 PM - by MON KEY>
-;;; ==============================
-;;; Regexp template for finding nameforms in regions - used in `mon-cln-ulan'.
-;;;            (region-name (when (and transient-mark-mode mark-active)
-;;; 	      (buffer-substring-no-properties (region-beginning) (region-end))))
-;;;              (test-name (when (and region-name)
-;;; 	       (cond
-;;; 		((string-match "\\(\\([A-Z][a-z]+\\)\\([: :](\\)\\([A-Z][a-z]+\\)\\()\\)\\)" region-name) 
-;;; 		 (concat (match-string 2 region-name) "%2C+"  (match-string 4 region-name)))
-;;; 		((string-match "\\(\\([A-Z][a-z]+\\)\\(,[: :]\\)\\([A-Z][a-z]+\\)\\)" region-name)
-;;; 		 (concat (match-string 2 region-name) "%2C+" (match-string 4 region-name)))
-;;; 		((string-match "\\(\\([A-Z][a-z]+\\)\\([: :]\\)\\([A-Z][a-z]+\\)\\)" region-name)
-;;; 		 (concat (match-string 4 region-name) "%2C+" (match-string 2 region-name))))))
-;;; ==============================
-
-;;; ==============================
-;;; Function is correct. but,
-;;; :NOT-WORKING-AS-OF
-;;; :CREATED <Timestamp: Monday February 16, 2009 @ 08:38.20 PM - by MON KEY>
-;;;(defun make-list-of-string ()
-;;; (interactive)
-;;; (with-temp-buffer 
-;;;   (goto-char (point-min))
-;;;   (while (and (line-move-1 1))
-;;;     (let ((bol (beginning-of-line))
-;;;	   (eol (end-of-line)))
-;;;       ;; is replace-string-region supposed to call here? was it defined?
-;;; ;;       (replace-string-region bol eol)))))  
-
-;;; ==============================
-;;; :WAS Works but don't use.
-;;; (defun naf-make-name-for-lisp (the-region)
-;;;   (let* ((region the-region)
-;;; 	 (temp-name (split-string region))
-;;; 	 (to-put (reverse (cons (butlast temp-name) (last temp-name)))))
-;;; 	;  to-put)
-;;;     (format "%s %s"
-;;; 	    (car to-put)
-;;; 	    (cadr to-put))))
-
-;;; =======================
-;;; (defun naf-canonical-name-form (Lastname Firstname &optional Middlename &rest Restname)
-;;; "conditionally test on a function called naf-canonical-name-form which takes
-;;; four args returning the list accoriding to
-;;; the position of names - to be used  ina functional style"
-;;; `(,Lastname ,Firstname ,Middlename ,Restname))
-;;; ;
-;;; (....
-;;; (let* (;(name-form `(,Lastname ,Firstname ,Middlename ,Restname))
-;;;         (LN (first name-form))
-;;;         (FN (second name-form))
-;;;         (MN (third name-form))
-;;;         (RN (fourth name-form)))
-;;;   (print (not LN)) ;evaluates to nil if set - t if not
-;;;   (print (not FN)) ;evaluates to nil if set - t if not
-;;;   (print (not MN)) ;evaluates to nil if set - t if not
-;;;   (print (not RN)) ;evaluates to nil if set - t if not
-;;;   (format "%s %s %s %s" LN FN MN RN))
-
-;;; ==============================
-;;; This isn't working but almost.
-;;(setq the-region "Firstname d'Middlename MoreName AnotherName Lastname")
-;;; (defun naf-make-name ()
-;;; (let* ((region the-region)
-;;;        (temp-name (split-string region))
-;;;        (to-put (reverse (cons (butlast temp-name) (last temp-name)))))
-;;; (princ to-put (current-buffer))))
-;;; ==============================
 ;;; ==============================
 
 ;;; ============================================
@@ -810,7 +724,7 @@ EXAMPLE:\n{A function that changes certain strings according to a-list key-value
 
 
 ;;; ==============================
-;;; :RENAMED `rotate-string' -> `mon-rotate-string' -> naf-name-utils.el
+;;; :RENAMED `rotate-string' -> `mon-rotate-string' -> mon-name-utils.el
 ;;; :CREATED <Timestamp: Tuesday June 02, 2009 @ 05:52.27 PM - by MON KEY>
 (defun mon-rotate-string (string &optional rotations)
   "Rotate all matches in STRING using associations in ROTATIONS.
@@ -857,7 +771,7 @@ If ROTATIONS are not given it defaults to `*rotate-text-rotations*'.
 
 
 ;;; ==============================
-;;; :RENAMED `rotate-get-rotations-for' -> `mon-rotate-get-rotations-for' -> naf-name-utils.el
+;;; :RENAMED `rotate-get-rotations-for' -> `mon-rotate-get-rotations-for' -> mon-name-utils.el
 ;;; :CREATED <Timestamp: Tuesday June 02, 2009 @ 05:52.27 PM - by MON KEY>
 (defun mon-rotate-get-rotations-for (string &optional rotations)
   "Return the string rotations for STRING in ROTATIONS.
@@ -892,7 +806,7 @@ EXAMPLE1:
 
 
 ;;; ==============================
-;;; :RENAMED: `rotate-flatten-list' -> `mon-rotate-flatten-list' -> naf-name-utils.el
+;;; :RENAMED: `rotate-flatten-list' -> `mon-rotate-flatten-list' -> mon-name-utils.el
 (defun mon-rotate-flatten-list (list-of-lists)
   "Flattens LIST-OF-LISTS - a list of lists.\n
 :EXAMPLE\n\(mon-rotate-flatten-list '\(\(a b c\) \(1 \(\(2 3\)\)\)\)\)\n
@@ -910,7 +824,7 @@ EXAMPLE1:
 
 ;;; ==============================
 ;;; :NOTE (local-set-key [tab] 'indent-or-rotate)
-;;; :RENAMED `indent-or-rotate' -> `mon-rotate-or-indent' -> naf-name-utils.el
+;;; :RENAMED `indent-or-rotate' -> `mon-rotate-or-indent' -> mon-name-utils.el
 (defun mon-indent-or-rotate ()
   "If point is at end of a word, then else indent the line.\n
 :SEE-ALSO `mon-rotate-string', `mon-rotate-next', `mon-rotate-region',
@@ -922,21 +836,95 @@ EXAMPLE1:
                          (point))
       (indent-for-tab-command)))
 
+;;; =======================
+;;; :RENAMED `naf-make-name-return' -> `mon-make-name-return'
+;;; :NOTE The dog looked to me and said, "Why are you here?"
+(defun mon-make-name-return (the-region)
+   (let* ((region the-region)
+          (temp-name (save-match-data (split-string region)))
+          (to-put (reverse (cons (butlast temp-name) (last temp-name)))))
+     (insert (format "\n%s %s" (car to-put) (cadr to-put)))))
+
+;;; ==============================
+(defun mon-make-name-lispy (the-region)
+  "Return a list as a stringified name rotated as:
+ (\"Lastname\" (\"&restnames\")) to parens with quote ' escaped by two slashes.\n
+:SEE-ALSO `mon-line-strings-to-list', `mon-line-string-rotate-namestrings'
+`mon-line-string-unrotate-namestrings', `mon-make-lastname-firstname',
+`mon-make-name-lispy', `mon-make-names-list'.\n►►►"
+  (setq the-region  (if (string-match "'" the-region)
+                        (replace-match "\\'" nil t the-region)))
+  (let* ((region the-region)
+         (temp-name (split-string region))
+         (to-put (reverse (cons (butlast temp-name) (last temp-name)))))
+    to-put))
+
+;;; ==============================
+;;; :WORKG-AS-OF
+;;; :CREATED <Timestamp: Friday February 13, 2009 @ 09:16.54 PM - by MON KEY>
+;;; ==============================
+;;; Regexp template for finding nameforms in regions - used in `mon-cln-ulan'.
+;;;            (region-name (when (and transient-mark-mode mark-active)
+;;; 	      (buffer-substring-no-properties (region-beginning) (region-end))))
+;;;              (test-name (when (and region-name)
+;;; 	       (cond
+;;; 		((string-match "\\(\\([A-Z][a-z]+\\)\\([: :](\\)\\([A-Z][a-z]+\\)\\()\\)\\)" region-name) 
+;;; 		 (concat (match-string 2 region-name) "%2C+"  (match-string 4 region-name)))
+;;; 		((string-match "\\(\\([A-Z][a-z]+\\)\\(,[: :]\\)\\([A-Z][a-z]+\\)\\)" region-name)
+;;; 		 (concat (match-string 2 region-name) "%2C+" (match-string 4 region-name)))
+;;; 		((string-match "\\(\\([A-Z][a-z]+\\)\\([: :]\\)\\([A-Z][a-z]+\\)\\)" region-name)
+;;; 		 (concat (match-string 4 region-name) "%2C+" (match-string 2 region-name))))))
+;;; ==============================
+
+;;; ==============================
+;;; Function is correct. but,
+;;; :NOT-WORKING-AS-OF
+;;; :CREATED <Timestamp: Monday February 16, 2009 @ 08:38.20 PM - by MON KEY>
+;;;(defun make-list-of-string ()
+;;; (interactive)
+;;; (with-temp-buffer 
+;;;   (goto-char (point-min))
+;;;   (while (and (line-move-1 1))
+;;;     (let ((bol (beginning-of-line))
+;;;	   (eol (end-of-line)))
+;;;       ;; is replace-string-region supposed to call here? was it defined?
+;;; ;;       (replace-string-region bol eol)))))  
+
 
 ;;; =======================
-;;; :NOTE The dog looked to me and said, "Why are you here?"
-(defun naf-make-name-return (the-region)
-   (let* ((region the-region)
-          (temp-name (split-string region))
-          (to-put (reverse (cons (butlast temp-name) (last temp-name)))))
-     (insert (format "\n%s %s"
-                     (car to-put)
-                     (cadr to-put)))))
+;;; (defun naf-canonical-name-form (Lastname Firstname &optional Middlename &rest Restname)
+;;; "conditionally test on a function called naf-canonical-name-form which takes
+;;; four args returning the list accoriding to
+;;; the position of names - to be used  ina functional style"
+;;; `(,Lastname ,Firstname ,Middlename ,Restname))
+;;; ;
+;;; (....
+;;; (let* (;(name-form `(,Lastname ,Firstname ,Middlename ,Restname))
+;;;         (LN (first name-form))
+;;;         (FN (second name-form))
+;;;         (MN (third name-form))
+;;;         (RN (fourth name-form)))
+;;;   (print (not LN)) ;evaluates to nil if set - t if not
+;;;   (print (not FN)) ;evaluates to nil if set - t if not
+;;;   (print (not MN)) ;evaluates to nil if set - t if not
+;;;   (print (not RN)) ;evaluates to nil if set - t if not
+;;;   (format "%s %s %s %s" LN FN MN RN))
 
 ;;; ==============================
-(provide 'naf-name-utils)
+;;; This isn't working but almost.
+;;(setq the-region "Firstname d'Middlename MoreName AnotherName Lastname")
+;;; (defun naf-make-name ()
+;;; (let* ((region the-region)
+;;;        (temp-name (split-string region))
+;;;        (to-put (reverse (cons (butlast temp-name) (last temp-name)))))
+;;; (princ to-put (current-buffer))))
+;;; ==============================
 ;;; ==============================
 
 ;;; ==============================
-;;; naf-name-utils.el ends here
+(provide 'mon-name-utils)
+;;; ==============================
+
+;;; ==============================
+;;; mon-name-utils.el ends here
 ;;; EOF

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2010, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 22.1
-;; Last-Updated: Fri Jan 15 13:16:03 2010 (-0800)
+;; Last-Updated: Fri Feb 12 14:18:19 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 405
+;;     Update #: 408
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help-fns+.el
 ;; Keywords: help, faces
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -48,6 +48,10 @@
 ;;    `help-var-is-of-type-p', `help-var-matches-type-p',
 ;;    `help-var-val-satisfies-type-p'.
 ;;
+;;  Internal variables defined here:
+;;
+;;    `variable-name-history'.
+;;
 ;; 
 ;;  ***** NOTE: The following functions defined in `help-fns.el'
 ;;              have been REDEFINED HERE:
@@ -68,6 +72,8 @@
 ;; 
 ;;; Change log:
 ;;
+;; 2010/02/12 dadams
+;;     Added variable-name-history.
 ;; 2009/08/30 dadams
 ;;     describe-keymap: Don't print nil if the map has no doc.
 ;; 2009/05/26 dadams
@@ -176,6 +182,8 @@
 (defvar help-window-point-marker)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defvar variable-name-history () "Minibuffer history for variable names.")
 
 ;;;###autoload
 (define-key help-map "c" 'describe-command)

@@ -1,9 +1,10 @@
 also known as [::legumbre] on #emacs
  
-I use emacs. A lot. I use it for mail (gnus), IM (ERC+bitlbee), gtd (OrgMode) and pretty much everything else.
-I use it to write C, Objective-C, java, elisp and ocasionally some vhdl.
+I use emacs. A lot. I use it for mail (gnus), IM (erc, bitlbee), gtd (org-mode) and pretty much everything else.
+I use it to write c, obj-c, elisp and ocasionally some vhdl. 
 
-In case you're wondering, these are some things I can't live without
+== Misc stuff I can't live without ==
+[:misc-stuff]
 
 * iswitchb and its virtual buffers
 * dabbrev-expand and its more promiscuous cousin hippie-expand
@@ -13,6 +14,73 @@ In case you're wondering, these are some things I can't live without
 * re-builder for testing your regexes interactively
 * [[uniquify]] with reverse style and pipe separator
 * savehist-mode
+
+== Objc coding tips and customizations ==
+[:objc-stuff]
+
+I've been coding obj-c lately, here are some customizations and tips that make life easier.
+
+   ;;; ----------------------------------------------------------------
+   ;;; insert a pair of square brackets
+   (defun leo-insert-square-brackets (&optional arg)
+     "Insert a pair of square brackets []."
+     (interactive "P")
+     (let (parens-require-spaces)
+       (insert-pair arg ?[ ?])))
+   (define-key global-map (kbd "M-[") 'leo-insert-square-brackets)
+
+
+
+   ;;; ----------------------------------------------------------------
+   ;; load objc-mode for .h files, which default to c-mode
+   (add-to-list 'magic-mode-alist
+                `(,(lambda ()
+                     (and (string= (file-name-extension buffer-file-name) "h")
+                          (re-search-forward "@\\<interface\\>" magic-mode-regexp-match-limit t)))
+                  . objc-mode))
+
+
+
+   ;;; ----------------------------------------------------------------
+   ;;; set .m <-> .h correspondence for ff-find-other-file
+   (add-hook 'objc-mode-hook
+             (lambda ()
+               (set (make-local-variable 'cc-other-file-alist)  '(("\\.m\\'" (".h")) ("\\.h\\'" (".m" ".c" ".cpp"))))))
+
+
+
+   ;;; word movement for camelCasey names
+   (add-hook 'objc-mode-hook 'c-subword-mode)
+
+
+   ;;; ----------------------------------------------------------------
+   ;;; I use my linux box to write code, so I use remote-compile to compile 
+   ;;; the project on an actual mac
+   (defun my-remote-compile ()
+     (interactive)
+     (let ((split-width-threshold most-positive-fixnum))
+       (call-interactively 'remote-compile)))
+   (define-key global-map (kbd "C-c C-v") 'my-remote-compile)
+
+   ;;; a sample .dir-locals.el for the project. Ignore the mangled-comint-file-name-prefix,
+   ;;; it's just a hack to fool tramp dir tracking since I usually use sshfs to access the sources 
+   ;;; and errors in the compilation buffer make use of tramp access for file tracking.
+   ;;;
+   ;; ((nil . ((remote-compile-user . "leo")
+   ;;         (remote-compile-host . "minileo")
+   ;;         (compile-command . " cd ~/path/to/project && xcodebuild -sdk macosx10.5 -configuration Debug")
+   ;;         (mangled-comint-file-name-prefix . "/mnt/mac")
+   ;;         )))
+
+*Other random objc dev tips*
+
+Since method calls (well, message sending actually) are basically square bracket balanced expressions, you can use the sexp smart movement functions and friends.
+For example, let's say you have the line
+
+<code>[[NSFileManager defaultManager] fileExistsAtPath:filename];</code>
+
+You can use C-M-u and C-M-d to move up and down the [] expressions. Better yet, you can use C-M-k and kill the [] expression you're looking at. Try it and see.
+
 ----
 
 [new]

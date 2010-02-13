@@ -22,11 +22,14 @@ The wiki tries to automatically determine the language a page is written in usin
 
 This heuristic is far from perfect, but at least it's automatic. :)
 
-== Translation links
+[new]
+Let me know if you want changes to this list. -- AlexSchroeder
+
+== Translation links ==
 
 This is a translation link: ##[[de:SeitenÜbersetzen]]##. It tells the wiki that the German translation of the current page is on the page called SeitenÜbersetzen. The wiki will offer a link to this German translation at the bottom of the current page.
 
-== Languages offered
+== Languages offered ==
 
 When you click on the _Add Translation_ link, you'll be offered the list of known languages listed above minus the languages that already have a translation link. If there is but one remaining language that is not accounted for, the wiki assumes that this is the copy you’re looking at, and doesn’t offer it anymore.
 
@@ -34,7 +37,7 @@ It is always possible to edit a page and change the translation links manually.
 
 Using the _Add Translation_ link will automatically add a translation link based on the information you provided to the page you just left.
 
-== How to translate the interface
+== How to translate the interface ==
 
 The wiki interface also needs translation. Check Oddmuse:Translations. Every language needs one of these files.
 

@@ -1,4 +1,5 @@
-[::Filling] is the term used by Emacs to describe word wrapping: breaking
+[::Filling]
+is the term used by Emacs to describe word wrapping: breaking
 lines before they get too long and run off the screen.
 
 The usual way to fill paragraphs are:
@@ -18,7 +19,7 @@ There are a few more minor modes that may be useful:
 
 Usually, Emacs does not make a difference between "hard" and "soft" carriage
 returns. The end of each line is delineated with a newline character (\n) on
-Unix. (Mac OS uses a carriage return (\r), and DOS uses both. This EndOfLine
+Unix. (Old versions of Mac OS use a carriage return (\r), and DOS and Windows use both (\r\n, not \n\r). This EndOfLine
 convention can be adjusted in Emacs.) Because the newlines are part of the
 text, the lines may look odd (too long or too short) if you later view the
 file using another editor.

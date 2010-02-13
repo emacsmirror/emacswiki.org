@@ -1,5 +1,5 @@
 ;;;; display-hatebu.el --- はてなブックマークでブックマークされた数をモードラインに表示する
-;; $Id: display-hatebu.el,v 1.5 2010/02/11 09:23:38 rubikitch Exp $
+;; $Id: display-hatebu.el,v 1.6 2010/02/12 20:23:08 rubikitch Exp $
 
 ;; Copyright (C) 2010  rubikitch
 
@@ -70,6 +70,9 @@
 ;;; History:
 
 ;; $Log: display-hatebu.el,v $
+;; Revision 1.6  2010/02/12 20:23:08  rubikitch
+;; `update-display-hatebu-string': append space
+;;
 ;; Revision 1.5  2010/02/11 09:23:38  rubikitch
 ;; 未ブックマーク時のエラーを修正。
 ;;
@@ -89,7 +92,7 @@
 
 ;;; Code:
 
-(defvar display-hatebu-version "$Id: display-hatebu.el,v 1.5 2010/02/11 09:23:38 rubikitch Exp $")
+(defvar display-hatebu-version "$Id: display-hatebu.el,v 1.6 2010/02/12 20:23:08 rubikitch Exp $")
 (eval-when-compile (require 'cl))
 (defgroup display-hatebu nil
   "display-hatebu"
@@ -125,7 +128,7 @@
     (start-process-to-variable
      'display-hatebu-string
      display-hatebu-ruby-program "-rjson" "-ropen-uri" "-e" 
-     (format "puts(((JSON.parse(open('%s').read)['count'] rescue '0')) << 'users')"
+     (format "puts(((JSON.parse(open('%s').read)['count'] rescue '0')) << 'users ')"
              display-hatebu-api-url))))
 
 ;; (update-display-hatebu-string)

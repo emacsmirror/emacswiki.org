@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Feb 11 14:06:19 2010 (-0800)
+;; Last-Updated: Sat Feb 13 00:17:24 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 10614
+;;     Update #: 10703
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -103,6 +103,7 @@
 ;;    `bookmarkp-bmenu-change-sort-order-repeat',
 ;;    `bookmarkp-bmenu-define-command',
 ;;    `bookmarkp-bmenu-define-full-snapshot-command',
+;;    `bookmarkp-bmenu-define-jump-marked-command',
 ;;    `bookmarkp-bmenu-delete-marked',
 ;;    `bookmarkp-bmenu-describe-this-bookmark',
 ;;    `bookmarkp-bmenu-describe-this+move-down',
@@ -531,8 +532,8 @@
 ;;     - You can regexp-search (`M-a') or query-replace (`M-q') the
 ;;       targets (destination file or buffers) of the marked
 ;;       bookmarks, in the current bookmark-list sort order.  For
-;;       Emacs 23 and later, you can even search incrementally (`M-x a
-;;       C-s', or `M-x a C-M-s' for regexp).
+;;       Emacs 23 and later, you can even search incrementally (`M-s a
+;;       C-s', or `M-s a C-M-s' for regexp).
 ;;
 ;;     - You can save the current bookmark-list state and return to it
 ;;       later.  There are a few ways to do this, including
@@ -637,6 +638,21 @@
 ;;  change directories but to change to a different set of markings,
 ;;  switches, inserted subdirectories, or hidden subdirectories for
 ;;  the same Dired directory.
+;;
+;;  Finally, in addition to the predefined bookmark types, which you
+;;  can use as described above, you can define a "type"-specific jump
+;;  command for any set of bookmarks.  That is, you can use any
+;;  specific set of bookmarks as the completion candidates for a new
+;;  jump command.  Such a set is really only a pseudo-type: the actual
+;;  bookmarks can each be of any type.
+;;
+;;  You could use this feature, for example, to define a jump command
+;;  for the bookmarks that belong to a given project.
+;;
+;;  To define such a command, you first mark the bookmarks that you
+;;  want to be the completion candidates, then you use `M-c' (command
+;;  `bookmarkp-bmenu-define-jump-marked-command') in the bookmark
+;;  list.
 ;;
 ;;
 ;;(@* "Bookmark Tags")
@@ -906,7 +922,7 @@
 ;;
 ;;  You can turn off the automatic saving of the current bookmark
 ;;  file, by customizing option `bookmark-save-flag' to nil.  And you
-;;  can toggle this option at any time, using `M-s' in the bookmark
+;;  can toggle this option at any time, using `M-~' in the bookmark
 ;;  list (command `bookmarkp-toggle-saving-bookmark-file').
 ;;
 ;;  Besides using multiple bookmark files as alternatives, you can
@@ -1015,10 +1031,8 @@
 ;;  You'll figure it out ;-).
 ;;
 ;;  Remember that `C-h RET' shows you the tags that belong to the
-;;  current bookmark (under the cursor).  Alternatively, you can use
-;;  `T -' and then `TAB' to see the tags belonging to the bookmark as
-;;  completion candidates.  (If you use Icicles, you can type an input
-;;  pattern to filter the tag completions.)
+;;  current bookmark (under the cursor).  And `C-u C-h RET' shows you
+;;  the full internal form of the tags, that is, the name+value pairs.
 ;;
 ;;  You can also sort bookmarks according to how they are tagged, even
 ;;  in complex ways.  See (@> "Sorting Bookmarks").
@@ -1132,9 +1146,9 @@
 ;;
 ;;  If you use Dired+ (library `dired+.el'), then a similar feature is
 ;;  available for the marked files and directories: You can use
-;;  `C-M-*' in Dired to open a separate Dired buffer for only them
-;;  only.  You can of course then bookmark that resulting Dired
-;;  buffer, if you like.
+;;  `C-M-*' in Dired to open a separate Dired buffer for them only.
+;;  You can of course then bookmark that resulting Dired buffer, if
+;;  you like.
 ;;
 ;;  If you use Icicles, then whenever you use a command that reads a
 ;;  file (or directory) name, you can use `M-|' during file-name
@@ -1415,6 +1429,10 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2010/02/12 dadams
+;;     Added: bookmarkp-bmenu-define-jump-marked-command.  Bound to M-c and added to menu.
+;;     Changed bookmarkp-toggle-saving-bookmark-file binding to M-~ (M-s conflicts w isearch-multi).
+;;     Updated bookmark-bmenu-mode doc string.
 ;; 2010/02/11 dadams
 ;;     Added: bookmarkp-types-alist,
 ;;            bookmarkp-(dired|gnus|info|man|region|w3m|(non-|local-|remote-)file)-history.
@@ -2449,13 +2467,14 @@ You can use `\\[bookmarkp-list-defuns-in-commands-file]' to list the
 commands defined in the file and how many times each is defined.
 
 NOTE: Each time you define a command using \\<bookmark-bmenu-mode-map>\
-`\\[bookmarkp-bmenu-define-command]' or `\\[bookmarkp-bmenu-define-full-snapshot-command]', \
-it is saved in
-the file.  A new definition of the same command is simply appended to
-the file, so you might want to clean the file up occasionally, to
-remove any old, unused definitions.  This is especially advisable if
-you used `\\[bookmarkp-bmenu-define-full-snapshot-command]', because such \
-command definitions can be very large."
+`\\[bookmarkp-bmenu-define-command]', `\\[bookmarkp-bmenu-define-full-snapshot-command]', \
+`\\[bookmarkp-bmenu-define-jump-marked-command], or `\\[bookmarkp-define-tags-sort-command]',
+it is saved in the file.  The new definition is simply appended to the
+file - old definitions of the same command are not overwritten.  So
+you might want to clean up the file occasionally, to remove any old,
+unused definitions.  This is especially advisable if you used \
+`\\[bookmarkp-bmenu-define-full-snapshot-command]',
+because such command definitions can be very large."
   :type '(file  :tag "File for saving menu-list state") :group 'bookmarkp)
 
 ;;;###autoload
@@ -4320,7 +4339,7 @@ this command has no effect."
              "Autosaving of bookmark list state is now OFF")))
 
 ;;;###autoload
-(defun bookmarkp-toggle-saving-bookmark-file () ; `M-s' in bookmark list
+(defun bookmarkp-toggle-saving-bookmark-file () ; `M-~' in bookmark list
   "Toggle the value of option `bookmark-save-flag'.
 If the initial value of `bookmark-save-flag' is nil, then this
 command has no effect."
@@ -5780,6 +5799,37 @@ Sorted:\t\t%s\nFiltering:\t%s\nMarked:\t\t%d\nOmitted:\t%d\nBookmark file:\t%s\n
           (insert "\n\n\n"))))))
 
 ;;;###autoload
+(defun bookmarkp-bmenu-define-jump-marked-command () ; `M-c' in bookmark list
+  "Define a command to jump to a bookmark that is one of those now marked.
+The bookmarks marked now will be those that are completion candidates
+for the command (but omitted bookmarks are excluded).
+Save the command definition in `bookmarkp-bmenu-commands-file'."
+  (interactive)
+  (bookmarkp-barf-if-not-in-menu-list)
+  (let* ((cands  (mapcar #'list (bookmarkp-remove-if
+                                 #'(lambda (bmk) (member bmk bookmarkp-bmenu-omitted-list))
+                                 bookmarkp-bmenu-marked-bookmarks)))
+         (fn     (intern (read-string "Define command to jump to a bookmark now marked: " nil
+                                      'bookmarkp-bmenu-define-command-history)))
+         (def    `(defun ,fn (bookmark-name &optional use-region-p)
+                   (interactive (list (bookmarkp-read-bookmark-for-type nil ',cands t)
+                                 current-prefix-arg))
+                   (bookmarkp-jump-1 bookmark-name 'switch-to-buffer-other-window use-region-p))))
+    (eval def)
+    (with-current-buffer (get-buffer-create " *User Bookmark List Commands*")
+      (goto-char (point-min))
+      (delete-region (point-min) (point-max))
+      (let ((print-length  nil)
+            (print-level   nil))
+        (pp def (current-buffer))
+        (insert "\n")
+        (condition-case nil
+            (write-region (point-min) (point-max) bookmarkp-bmenu-commands-file 'append)
+          (file-error (error "Cannot write `%s'" bookmarkp-bmenu-commands-file)))
+        (kill-buffer (current-buffer))))
+    (message "Command `%s' defined and saved in file `%s'" fn bookmarkp-bmenu-commands-file)))
+
+;;;###autoload
 (defun bookmarkp-bmenu-define-command () ; `c' in bookmark list
   "Define a command to use the current sort order, filter, and omit list.
 Prompt for the command name.  Save the command definition in
@@ -5789,7 +5839,7 @@ The current sort order, filter function, omit list, and title for
 buffer `*Bookmark List*' are encapsulated as part of the command.
 Use the command at any time to restore them."
   (interactive)
-  (let* ((fn   (intern (read-string "New sort+filter command: " nil
+  (let* ((fn   (intern (read-string "Define sort+filter command: " nil
                                     'bookmarkp-bmenu-define-command-history)))
          (def  `(defun ,fn ()
                  (interactive)
@@ -5831,7 +5881,7 @@ bookmarks, marked bookmarks, etc.).  For a lighter weight command, use
 `bookmarkp-bmenu-define-full-snapshot-command' instead.  That records
 only the omit list and the sort & filter information."
   (interactive)
-  (let* ((fn   (intern (read-string "New restore-snapshot command: " nil
+  (let* ((fn   (intern (read-string "Define restore-snapshot command: " nil
                                     'bookmarkp-bmenu-define-command-history)))
          (def  `(defun ,fn ()
                  (interactive)
@@ -8343,6 +8393,8 @@ candidate."
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "C"    'bookmarkp-bmenu-define-full-snapshot-command)
 ;;;###autoload
+(define-key bookmark-bmenu-mode-map "\M-c" 'bookmarkp-bmenu-define-jump-marked-command)
+;;;###autoload
 (define-key bookmark-bmenu-mode-map "D"    'bookmarkp-bmenu-delete-marked)
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "\M-d" nil) ; For Emacs 20
@@ -8523,7 +8575,7 @@ candidate."
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "\M-l" 'bookmarkp-toggle-saving-menu-list-state)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "\M-s" 'bookmarkp-toggle-saving-bookmark-file)
+(define-key bookmark-bmenu-mode-map "\M-~" 'bookmarkp-toggle-saving-bookmark-file)
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "\M-t" 'bookmark-bmenu-toggle-filenames) ; `t' in Emacs
 ;;;###autoload
@@ -8713,9 +8765,6 @@ internal form)
 \\[bookmarkp-bmenu-describe-this+move-up]\t- Show the info, then move to previous bookmark
 \\[bookmarkp-bmenu-dired-marked]\t- Open Dired for the marked files and directories
 \\[bookmarkp-bmenu-delete-marked]\t- Delete visible bookmarks marked `>' (not `D')
-\\[bookmarkp-bmenu-define-command]\t- Define a command to restore the current sort order & filter
-\\[bookmarkp-bmenu-define-full-snapshot-command]\t- Define a command to restore the current \
-bookmark-list state
 \\[bookmarkp-bmenu-edit-bookmark]\t- Edit the current bookmark name and file name
 \\[bookmarkp-switch-bookmark-file]\t- Switch to (load) a different bookmark file
 \\[bookmark-bmenu-save]\t- Save bookmarks (`C-u': prompt for the bookmark file to use)
@@ -8730,6 +8779,17 @@ bookmark-list state
 \t- Create a sequence bookmark from the marked bookmarks
 \\[bookmarkp-list-defuns-in-commands-file]
 \t- List the commands defined in `bookmarkp-bmenu-commands-file'
+
+
+Define your own commands for the `*Bookmark List*'
+--------------------------------------------------
+
+\\[bookmarkp-bmenu-define-command]\t- Define a command to restore the current sort order & filter
+\\[bookmarkp-bmenu-define-full-snapshot-command]\t- Define a command to restore the current \
+bookmark-list state
+\\[bookmarkp-define-tags-sort-command]\t- Define a command to sort bookmarks by tags
+\\[bookmarkp-bmenu-define-jump-marked-command]\t- Define a command to jump to a bookmark that is \
+now marked
 
 
 Mark/unmark bookmarks (see also `Tags', next)
@@ -8792,8 +8852,8 @@ Search-and-replace bookmark locations (in sort order)
 \\[bookmarkp-bmenu-search-marked-bookmarks-regexp]\t\t- Regexp-search the marked file bookmarks
 \\[bookmarkp-bmenu-query-replace-marked-bookmarks-regexp]\t\t- Query-replace the marked file \
 bookmarks
-M-x a C-s\t- Isearch the marked bookmarks (Emacs 23+)
-M-x a C-M-s\t- Regexp Isearch the marked bookmarks (Emacs 23+)
+M-s a C-s\t- Isearch the marked bookmarks (Emacs 23+)
+M-s a C-M-s\t- Regexp Isearch the marked bookmarks (Emacs 23+)
 
 
 Sort bookmarks (repeat to cycle normal/reversed/off, except as noted)
@@ -8949,14 +9009,18 @@ bookmarkp-sequence-jump-display-function - How to display components")
   (cons "Define Command" bookmarkp-bmenu-define-command-menu))
 
 (define-key bookmarkp-bmenu-define-command-menu [bookmarkp-bmenu-define-full-snapshot-command]
-  '(menu-item "To Restore Full Bookmark List" bookmarkp-bmenu-define-full-snapshot-command
+  '(menu-item "To Restore Full Bookmark-List State" bookmarkp-bmenu-define-full-snapshot-command
     :help "Define a command to restore the current bookmark-list state"))
 (define-key bookmarkp-bmenu-define-command-menu [bookmarkp-bmenu-define-command]
-  '(menu-item "To Restore Sort, Filter" bookmarkp-bmenu-define-command
+  '(menu-item "To Restore Current Order and Filter" bookmarkp-bmenu-define-command
     :help "Define a command to use the current sort order, filter, and omit list"))
 (define-key bookmarkp-bmenu-define-command-menu [bookmarkp-define-tags-sort-command]
   '(menu-item "To Sort by Specific Tags" bookmarkp-define-tags-sort-command
-    :help "Define a command to sort bookmarks in the bookmark list by tags"))
+    :help "Define a command to sort bookmarks in the bookmark list by certain tags"))
+(define-key bookmarkp-bmenu-define-command-menu [bookmarkp-bmenu-define-jump-marked-command]
+  '(menu-item "To Jump to a Bookmark Now Marked" bookmarkp-bmenu-define-jump-marked-command
+    :help "Define a command to jump to one of the bookmarks that is now marked"
+    :enable bookmarkp-bmenu-marked-bookmarks))
 
 (defvar bookmarkp-bmenu-jump-menu (make-sparse-keymap "Jump To"))
 (define-key bookmarkp-bmenu-menubar-menu [jump] (cons "Jump To" bookmarkp-bmenu-jump-menu))

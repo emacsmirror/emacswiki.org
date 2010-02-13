@@ -67,7 +67,7 @@ statements for loading the other naf-mode-* packages below.
 * Lisp:naf-mode-faces.el -- 
 * Lisp:naf-mode-insertion-utils.el -- 
 * Lisp:naf-mode-replacements.el -- 
-* Lisp:naf-name-utils.el -- 
+* Lisp:mon-name-utils.el -- procedures to rotatate, combine, an permute string-like name forms
 * Lisp:naf-mode-classes.el -- 
 * Lisp:naf-mode-db-fields.el -- 
 * Lisp:naf-mode-db-flags.el -- 
@@ -126,7 +126,7 @@ Roughly the sequence with which MON brings his Emacs' systems up.
 ¦►►►► mon-tramp-utils.el
 ¦►►►► naf-skeletons.el
 ¦►►►► naf-mode.el
-¦►►►►► naf-name-utils.el
+¦►►►►► mon-name-utils.el
 ¦►►►►► naf-mode-faces.el
 ¦►►►►► naf-mode-institution ;; :AFTER naf-mode-faces.el
 ¦►►►►► naf-mode-db-fds.el
