@@ -1,7 +1,7 @@
 ;;; el-expectations.el --- minimalist unit testing framework
-;; $Id: el-expectations.el,v 1.49 2009/10/10 09:19:40 rubikitch Exp rubikitch $
+;; $Id: el-expectations.el,v 1.50 2010/02/13 20:20:53 rubikitch Exp $
 
-;; Copyright (C) 2008  rubikitch
+;; Copyright (C) 2008, 2009, 2010  rubikitch
 
 ;; Author: rubikitch <rubikitch@ruby-lang.org>
 ;; Keywords: lisp, testing, unittest
@@ -118,6 +118,9 @@
 ;;; History:
 
 ;; $Log: el-expectations.el,v $
+;; Revision 1.50  2010/02/13 20:20:53  rubikitch
+;; font-lock support for lisp-interaction-mode
+;;
 ;; Revision 1.49  2009/10/10 09:19:40  rubikitch
 ;; Fixed a displabug of `exps-display'
 ;;
@@ -749,11 +752,12 @@ Compatibility function for \\[next-error] invocations."
 (put 'expectations 'lisp-indent-function 0)
 
 ;; (edit-list (quote font-lock-keywords-alist))
-(font-lock-add-keywords
- 'emacs-lisp-mode
- '(("\\<\\(expectations\\|expect\\)\\>" 0 font-lock-keyword-face)
-   (exps-font-lock-desc 0 font-lock-warning-face prepend)
-   (exps-font-lock-expected-value 0 font-lock-function-name-face prepend)))
+(dolist (mode '(emacs-lisp-mode lisp-interaction-mode))
+  (font-lock-add-keywords
+   mode
+   '(("\\<\\(expectations\\|expect\\)\\>" 0 font-lock-keyword-face)
+     (exps-font-lock-desc 0 font-lock-warning-face prepend)
+     (exps-font-lock-expected-value 0 font-lock-function-name-face prepend))))
 
 (defun exps-font-lock-desc (limit)
   (when (re-search-forward "(desc\\s " limit t)

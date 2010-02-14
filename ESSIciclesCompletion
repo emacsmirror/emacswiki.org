@@ -1,0 +1,7 @@
+This is a member of CategoryESS
+
+You can use [[Icicles]] [[completion]] in various ESS modes. Whenever there are multiple completion candidates, Icicles completion is used (if Icicle minor mode is on). This means you can [[Icicles - Cycling Completions|cycle]] to choose a candidate, complete using one or more substrings or [[regexp]]s ([[progressive completion]]), and so on. See [[Icicles - Completion in Other Buffers#ShellCommandCompletion|Icicles - Completion in Comint Modes]].
+
+
+----
+CategoryESS

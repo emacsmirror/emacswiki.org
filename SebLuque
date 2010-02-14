@@ -2,7 +2,7 @@ I use Emacs and have been doing so for about two years now. Fairly new to wikis,
 : Welcome on the wiki !
 
 More information can be retrieved from
-http://sebmags.homelinux.org/~sluque, where I've included my ~/.emacs and
+http://sebmags.homelinux.org/~sluque, where I've included my [[init file]] and
 other customizations of my emacs environment.  Below are some bits and
 pieces of those customizations, but please refer to the aforementioned
 website for the latest versions.
@@ -10,9 +10,9 @@ website for the latest versions.
 ==ESS and R==
 
 If you use the GNU R statistical computing system
-(http://www.r-project.org), you can benefit enormously by using ESS (Emacs
+(http://www.r-project.org), you can benefit enormously by using [[ESS]] (Emacs
 Speaks Statistics; http://stat.ethz.ch/ESS) for using R and benefit from
-all of Emacs editing facilities.  I set up ESS in ~/.emacs like so:
+all of Emacs editing facilities.  I set up ESS in ##~/.emacs## like so:
 
 <pre>
 (load "~/emacs/site-lisp/ess-5.2.8/lisp/ess-site") ; local version
@@ -140,3 +140,4 @@ This file is not available in all Emacsen, so I included it in my
 
 ----
 CategoryHomepage
+CategoryESS

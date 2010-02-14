@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Jan 26 14:47:36 2010 (-0800)
+;; Last-Updated: Sat Feb 13 10:40:51 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 3448
+;;     Update #: 3475
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -576,7 +576,26 @@ whatever OLD is bound to in MAP, or in OLDMAP, if provided."
      icicle-bookmark-remote-file-other-window  t) ; `C-x 4 j t'
     (bookmark-set                   icicle-bookmark-cmd             t) ; `C-x r m'
     (bookmark-jump                  icicle-bookmark                 t) ; `C-x r b'
-    (bookmark-jump-other-window     icicle-bookmark-other-window    t)
+    (bookmark-jump-other-window     icicle-bookmark-other-window    t) ; `C-x 4 j j'
+    ;; These are available only if you use library `bookmark+.el'.
+    ;; They are bound to `C-x 4 j' followed by: `K', `d', `f', `g', `i', `w', `r', `l', `b', `n'.
+    (bookmarkp-desktop-jump             icicle-bookmark-desktop-other-window
+     (featurep 'bookmark+))             ; The "other-window" aspect means nothing for a desktop.
+    (bookmarkp-desktop-jump-other-window icicle-bookmark-desktop-other-window
+     (featurep 'bookmark+))
+    (bookmarkp-dired-jump-other-window  icicle-bookmark-dired-other-window (featurep 'bookmark+))
+    (bookmarkp-file-jump-other-window   icicle-bookmark-file-other-window  (featurep 'bookmark+))
+    (bookmarkp-gnus-jump-other-window   icicle-bookmark-gnus-other-window  (featurep 'bookmark+))
+    (bookmarkp-info-jump-other-window   icicle-bookmark-info-other-window  (featurep 'bookmark+))
+    (bookmarkp-w3m-jump-other-window    icicle-bookmark-w3m-other-window   (featurep 'bookmark+))
+    (bookmarkp-region-jump-other-window icicle-bookmark-region-other-window
+     (featurep 'bookmark+))
+    (bookmarkp-local-file-jump-other-window   icicle-bookmark-local-file-other-window
+     (featurep 'bookmark+))
+    (bookmarkp-non-file-jump-other-window     icicle-bookmark-non-file-other-window
+     (featurep 'bookmark+))
+    (bookmarkp-remote-file-jump-other-window  icicle-bookmark-remote-file-other-window
+     (featurep 'bookmark+))
     ;; Don't let Emacs 20 or 21 use `substitute-key-definition' on `M-.' or `M-*', since we need
     ;; these keys for the minibuffer.  Leave them unbound in `icicle-mode-map' until Emacs 22+.
     (pop-tag-mark        icicle-pop-tag-mark          (fboundp 'command-remapping)) ; `M-*'

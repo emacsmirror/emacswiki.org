@@ -1,0 +1,25 @@
+== Outline mode for .R files ==
+
+I now have the following in my [[init file]] to enable Emacs' standard OutlineMode for ##.R## files:
+
+<pre>
+  (add-hook 'ess-mode-hook
+            '(lambda ()
+               (outline-minor-mode)
+               (setq outline-regexp "\\(^#\\{4,5\\} \\)\\|\\(^[a-zA-Z0-9_\.]+ ?<- ?function(.*{\\)")
+               (defun outline-level
+                 (lambda () (interactive) (cond ((looking-at "^##### ") 1)((looking-at "^#### ") 2)((looking-at "^[a-zA-Z0-9_\.]+ ?<- ?function(.*{") 3) (t 1000)))
+               )))
+</pre>
+This can be seen as an adapted version of Heinz Tuechler's outline suggestion he posted to the ESS-help mailing list on 2007-05-11. The above will define the following heading levels in ##.R## files:
+<pre>
+  lines starting with #####  --> level 1
+  lines starting with ####   --> level 2
+  R functions                --> level 3
+</pre>
+Although R functions are not "headings" really, I still imagine this could be a nice way of getting an overview over a larger ##.R## file. I can't yet say whether it will prove useful for me in the long run. -- Sven
+
+
+
+----
+CategoryESS

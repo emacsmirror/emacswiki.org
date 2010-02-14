@@ -1,0 +1,28 @@
+This page is about '''[::Emacs Speaks Statistics]''', also sometimes called EmacsStatisticalSystem, but usually called '''[::ESS]'''. As always, you can click the page heading to list all pages related to ESS.
+
+ESS is a package that integrates various statistical software with Emacs. S, R (a free implementation of S), Stata, and SAS modes are all supported by ESS, making it possible to hook writing and programming in Emacs right into your stats. It's pretty slick.
+
+* ESS: http://ESS.R-project.org/
+
+* R: http://www.r-project.org/
+
+Consider using the prefix "ESS" for new ESS-related pages. -- PaulJohnson
+
+
+
+== Tips about Using ESS ==
+
+* [[ESSIciclesCompletion|Icicles Completion]] -- Completion for ESS.
+
+
+* [[ESSShiftEnter|Configure Shift+Enter]] -- The [[key sequence]] `##S-<return>##' can launch R and send commands to R (by FelipeCsaszar)
+
+* [[ESSToolTips|Create Tooltips to describe objects]] -- Tooltips are handy!
+
+* [[ESSAutoParens|Automatic Brackets]] -- Configure ESS to automatically close Brackets and Parentheses (by anonymous)
+
+* [[ESSOutlineMode|Configure ESS for Outline Mode]] -- Use the Outline Mode With R Code in Emacs (by Sven)
+
+* [[ESSWindowsAdvice|Configure Emacs for R in Windows]] -- Concrete advice for Emacs Users Who are Forced to use MS Windows (by PaulJohnson).
+
+

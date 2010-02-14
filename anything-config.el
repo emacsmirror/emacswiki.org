@@ -412,6 +412,7 @@
 ;;; Require
 (require 'anything)
 (require 'thingatpt)
+(require 'ffap)
 
 ;;; Code:
 
@@ -1265,9 +1266,8 @@ buffer that is not the current buffer."
 ;;; Anything replacement of file name completion for `find-file' and friends.
 
 (defvar anything-c-source-find-files
-  '((name . "Find Files")
+  '((name . "Find Files (`C-z':expand directory, `C-.':Go to precedent level)")
     (init . (lambda ()
-              (require 'ffap)
               (setq ffap-newfile-prompt t)))
     (candidates . anything-find-files-get-candidates)
     (candidate-transformer anything-c-highlight-ffiles)
@@ -1311,13 +1311,15 @@ If EXPAND is non--nil expand-file-name."
 
 (defun anything-find-files-or-dired-p ()
   "Test if current source is a dired or find-files source."
-  (or (equal (cdr (assoc 'name (anything-get-current-source))) "Find Files")
-      (equal (cdr (assoc 'name (anything-get-current-source))) "Copy Files")
-      (equal (cdr (assoc 'name (anything-get-current-source))) "Rename Files")
-      (equal (cdr (assoc 'name (anything-get-current-source))) "Symlink Files")
-      (equal (cdr (assoc 'name (anything-get-current-source))) "Hardlink Files")
-      (equal (cdr (assoc 'name (anything-get-current-source))) "Write File")
-      (equal (cdr (assoc 'name (anything-get-current-source))) "Insert File")))
+  (let ((doc        " (`C-z':expand directory, `C-.':Go to precedent level)")
+        (ff-sources '("Find Files" "Copy Files"
+                      "Rename Files" "Symlink Files"
+                      "Hardlink Files" "Write File" "Insert File"))
+        (cur-source (cdr (assoc 'name (anything-get-current-source)))))
+    (catch 'break
+      (dolist (i ff-sources)
+        (when (equal cur-source (concat i doc))
+          (throw 'break t))))))
 
 (defun anything-find-files-down-one-level (arg)
   "Go down one level like unix command `cd ..'.
@@ -1393,8 +1395,12 @@ If CANDIDATE is not a directory open this file."
              (delete-minibuffer-contents)
              (set-text-properties 0 (length elm) nil elm)
              (insert elm))))
-    (cond ((file-directory-p candidate)
+    (cond ((and (file-directory-p candidate) (file-symlink-p candidate))
            (insert-in-minibuffer (file-name-as-directory
+                                  (file-truename
+                                   (expand-file-name candidate)))))
+           ((file-directory-p candidate)
+            (insert-in-minibuffer (file-name-as-directory
                                   (expand-file-name candidate))))
           ((file-symlink-p candidate)
            (insert-in-minibuffer (file-truename candidate)))
@@ -1416,7 +1422,7 @@ If CANDIDATE is not a directory open this file."
 
 ;;; Anything completion for `write-file'.==> C-x C-w
 (defvar anything-c-source-write-file
-  '((name . "Write File")
+  '((name . "Write File (`C-z':expand directory, `C-.':Go to precedent level)")
     (candidates . anything-find-files-get-candidates)
     (candidate-transformer anything-c-highlight-ffiles)
     (persistent-action . anything-find-files-persistent-action)
@@ -1434,7 +1440,7 @@ If CANDIDATE is not a directory open this file."
 
 ;;; Anything completion for `insert-file'.==> C-x i
 (defvar anything-c-source-insert-file
-  '((name . "Insert File")
+  '((name . "Insert File (`C-z':expand directory, `C-.':Go to precedent level)")
     (candidates . anything-find-files-get-candidates)
     (candidate-transformer anything-c-highlight-ffiles)
     (persistent-action . anything-find-files-persistent-action)
@@ -1454,7 +1460,7 @@ If CANDIDATE is not a directory open this file."
 
 ;;; Anything completion for copy, rename and (rel)sym/hard/link files from dired.
 (defvar anything-c-source-copy-files
-  '((name . "Copy Files")
+  '((name . "Copy Files (`C-z':expand directory, `C-.':Go to precedent level)")
     (candidates . anything-find-files-get-candidates)
     (candidate-transformer anything-c-highlight-ffiles)
     (persistent-action . anything-find-files-persistent-action)
@@ -1465,7 +1471,7 @@ If CANDIDATE is not a directory open this file."
 
 
 (defvar anything-c-source-rename-files
-  '((name . "Rename Files")
+  '((name . "Rename Files (`C-z':expand directory, `C-.':Go to precedent level)")
     (candidates . anything-find-files-get-candidates)
     (candidate-transformer anything-c-highlight-ffiles)
     (persistent-action . anything-find-files-persistent-action)
@@ -1475,7 +1481,7 @@ If CANDIDATE is not a directory open this file."
                          (anything-dired-action candidate :action 'rename)))))))
 
 (defvar anything-c-source-symlink-files
-  '((name . "Symlink Files")
+  '((name . "Symlink Files (`C-z':expand directory, `C-.':Go to precedent level)")
     (candidates . anything-find-files-get-candidates)
     (candidate-transformer anything-c-highlight-ffiles)
     (persistent-action . anything-find-files-persistent-action)
@@ -1488,7 +1494,7 @@ If CANDIDATE is not a directory open this file."
 
 
 (defvar anything-c-source-hardlink-files
-  '((name . "Hardlink Files")
+  '((name . "Hardlink Files (`C-z':expand directory, `C-.':Go to precedent level)")
     (candidates . anything-find-files-get-candidates)
     (candidate-transformer anything-c-highlight-ffiles)
     (persistent-action . anything-find-files-persistent-action)

@@ -1,3 +1,9 @@
+
+Notice: The content from this page is being migrated to:
+
+http://www.emacswiki.org/emacs/CategoryESS
+
+
 Emacs Speaks Statistics (also sometimes called EmacsStatisticalSystem, but usually called ESS) is a package that integrates various statistical software with Emacs. S, R (a free implementation of S), Stata, and SAS modes are all supported by ESS, making it possible to hook writing and programming in Emacs right into your stats. It's pretty slick.
 
 * ESS: http://ESS.R-project.org/

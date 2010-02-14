@@ -77,6 +77,7 @@ General Use:
 ** [[CategorySql|Sql]] -- SQL and databases
 ** [[CategoryTables|Tables]] -- working with tabular data
 ** [[CategoryTex|Tex]] -- !TeX and !LaTeX stuff
+** [[CategoryESS|ESS]] -- Emacs Speaks Statistics
 * [[CategoryMenus|Menus]] -- Emacs menus, (menu-bar and pop-up)
 * [[CategoryPrinting|Printing]] -- printing files, buffers, regions, ...
 * [[CategoryProgramming|Programming]] -- using Emacs in programming

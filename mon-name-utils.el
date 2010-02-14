@@ -1,4 +1,4 @@
-;;; mon-name-utils.el --- procedures to rotatate or permutie string-like name forms.
+;;; mon-name-utils.el --- procedures to rotatate or permute string-like name forms
 ;; -*- mode: EMACS-LISP; -*-
 ;;; ================================================================
 ;;; DESCRIPTION:
@@ -259,9 +259,9 @@ CSV-STRING may be a comma-separated string.\n
   ;;(let* ((l (mon-perms (split-string str ",\\s-*"))))
   (let* ((l (mon-permutations 
              (save-match-data (split-string csv-string ",\\s-*")))))
-    (mapconcat #'(lambda (n) (mapconcat 'identity n ".*"))) l "\\|")))
+    (mapconcat #'(lambda (n) (mapconcat 'identity n ".*")) l "\\|")))
 ;;
-;;; :TEST-ME (MON-STRING-CSV-REGEXP "A,B,C")
+;;; :TEST-ME (mon-string-csv-regexp "A,B,C")
 ;;; :TEST-ME (mon-string-csv-regexp "Somedudes, name")
 
 ;;; ==============================

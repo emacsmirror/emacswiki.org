@@ -13,7 +13,7 @@ Get the <code>emacs-lisp-intro</code> file from any GNU ftp mirror or from:
 * http://www.gnu.org/software/emacs/emacs-lisp-intro/html_mono/emacs-lisp-intro.html
 * Available in print from the GnuPress.
 
-Here is some more information about the ''Emacs Lisp Introduction'' (PDF format): http://www.gnupress.org/Intro-Elisp-Review1.pdf.
+Here is some more information about the ''Emacs Lisp Introduction'' (PDF format): http://www.gnupress.org/Intro-Elisp-Review1.pdf (link down as of 2010-02-14, but see [http://web.archive.org/web/20070728115705/http://www.gnupress.org/Intro-Elisp-Review1.pdf archive.org]).
 
 You will also want the EmacsLispReference as you start to learn how
 Emacs Lisp works.  Note: EmacsLispIntro is for beginners;

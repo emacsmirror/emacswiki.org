@@ -130,7 +130,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 261 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 264 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.  I  have  also  received
@@ -1230,8 +1230,16 @@ automatically:
   (setq sr-panes-height (sr-get-panes-size height))
   (sr-setup-windows)
   (setq sr-windows-locked t))
-(defun sr-max-lock-panes () (interactive) (sr-lock-panes 'max))
-(defun sr-min-lock-panes () (interactive) (sr-lock-panes 'min))
+
+(defmacro sr-save-width (form)
+  "Restores the width of the panes after a windows setup."
+  `(let ((saved-width (window-width sr-left-window)) (delta))
+     ,form
+     (setq delta (- saved-width (window-width sr-left-window)))
+     (bw-adjust-window sr-left-window delta t)))
+ 
+(defun sr-max-lock-panes () (interactive) (sr-save-width (sr-lock-panes 'max)))
+(defun sr-min-lock-panes () (interactive) (sr-save-width (sr-lock-panes 'min)))
 
 ;;; ============================================================================
 ;;; File system navigation functions:

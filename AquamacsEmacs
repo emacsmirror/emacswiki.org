@@ -31,10 +31,11 @@ You can use specific fonts and colors for specific major modes, e.g., always edi
 
 Aquamacs comes with a nice manual (easy to access via the Apple Help system), and we provide the GNU EmacsManual via the same Help system.
 
-Aquamacs is a cutting-edge Emacs based on  GNU Emacs (stable branch, version 22.x), patched to contain better Mac-like features and augmented with numerous EmacsLisp-based customization packages.  It comes in binary form so it's dead-easy to install and upgrade, and of course it's tested for compatibility Aquamacs provides an integrated development environment and support, among many common formalisms, Java, Ruby, XML (nXML), HTML, LaTeX (AUCTeX), R and SPlus (ESS) editing without further installation or configuration.  
+Aquamacs is a cutting-edge Emacs based on  GNU Emacs (stable branch, version 22.x), patched to contain better Mac-like features and augmented with numerous EmacsLisp-based customization packages.  It comes in binary form so it's dead-easy to install and upgrade, and of course it's tested for compatibility Aquamacs provides an integrated development environment and support, among many common formalisms, Java, Ruby, XML (nXML), HTML, LaTeX (AUCTeX), R and SPlus ([[ESS]]) editing without further installation or configuration.  
 
 Aquamacs is maintained by DavidReitter. A number of people have contributed.
 
 ----
 CategoryPorts
 EmacsForMacOS
+CategoryESS

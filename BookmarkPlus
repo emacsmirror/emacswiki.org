@@ -63,8 +63,8 @@ objects as their values.
 
 * You can bookmark the current [[DeskTop|desktop]], as defined by library
 ##desktop.el## -- use command '''`bookmarkp-set-desktop-bookmark''''
-('''`C-x p K'''').  You can "jump" to (that is, restore) any number
-of saved desktops.  A desktop includes:
+('''`C-x p K'''').  You can "jump" to (that is, restore) a 
+saved desktop.  A desktop includes:
 
 ** Some global [[variable]]s.  To exclude variables normally saved, see option '''`bookmarkp-desktop-no-save-vars''''.
 
@@ -196,6 +196,46 @@ same session, accumulating their bookmark definitions.
 
 
 
+[:BookmarkPrefixKeys]
+=== Dedicated prefix keys. ===
+
+Prefix '''`C-x p'''' is used for bookmark keys, in general.  The
+vanilla keys on prefix `C-x r' are still available also, but that
+prefix is shared with [[register]] commands, making it less convenient for bookmarks.  Using `C-x p' lets
+you focus on bookmarks.
+
+Prefixes '''`C-x j'''' and '''`C-x 4 j'''' (for other-window) are used for bookmark jump commands. Again, a dedicated prefix key
+helps you focus on one kind of action (jumping).
+
+
+
+
+
+[:BookmarkHelp]
+=== Helpful help. ===
+
+It's easy to get information about individual bookmarks, in
+addition to information about the current bookmark list
+(buffer `##*Bookmark List*##').
+
+* Command '''`bookmarkp-describe-bookmark'''' ('''`##C-x p ?##'''') describes
+any bookmark.  With a [[prefix argument]], it shows you the
+full information that defines it (internal form).
+
+* In the bookmark list, '''`C-h RET'''' (or '''`C-h C-RET'''') describes
+the bookmark under the [[cursor]].  Again, a prefix arg means
+show the full (internal) information.
+
+* In the bookmark list, '''`##?##'''' or '''`C-h m'''' shows you detailed
+information about the current state of the bookmark list.
+
+
+
+
+
+
+
+
 [:Icicles]
 === Synergy with Icicles. ===
 
@@ -203,7 +243,9 @@ If you use '''[[Icicles]]''', then you can use `S-delete' during
      completion for a bookmark name, to delete selected bookmarks on the fly.  You can delete any number of bookmarks this way, during a single invocation of a bookmark command.
 
 In addition, '''Icicles''' provides enhanced
-bookmark visiting and setting.  In ''Icicle'' mode, several of the '''Bookmark+''' keys are remapped to corresponding '''Icicles''' [[multi-command]]s.
+bookmark jumping (visiting) and setting.  In ''Icicle'' mode, several of the '''Bookmark+''' keys are remapped to corresponding '''Icicles''' [[multi-command]]s.  This means that a bookmark jump key becomes
+a bookmarks browser.  For example, you can use `C-x 4 j d' to
+browse among any number of Dired bookmarks.
 
 
 
@@ -243,7 +285,7 @@ prefix key '''`##C-x j t %##''''.  The key suffix is '''`##*##'''' for "all" and
 for "some".
 
 
-There is an other-window version of each jump command, and it is
+There is an other-window version of most jump commands, and it is
 bound to the same key as the same-window command, except the prefix is '''`C-x 4 j'''', not `C-x j'.  for instance, `bookmarkp-dired-jump-other-window' is bound to
 `C-x 4 j d'.
 

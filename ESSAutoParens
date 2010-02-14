@@ -1,0 +1,21 @@
+== How can I get Emacs to automatically close brackets and parentheses? ==
+
+Add the following to your .emacs file (from ESS mailing list https://stat.ethz.ch/pipermail/ess-help/2009-June/005411.html)
+<pre>
+  ;; enable skeleton-pair insert globally
+   (setq skeleton-pair t)
+  ;;(setq skeleton-pair-on-word t)
+   (global-set-key (kbd "(") 'skeleton-pair-insert-maybe)
+   (global-set-key (kbd "[") 'skeleton-pair-insert-maybe)
+   (global-set-key (kbd "{") 'skeleton-pair-insert-maybe)
+   (global-set-key (kbd "\"") 'skeleton-pair-insert-maybe)
+   (global-set-key (kbd "\'") 'skeleton-pair-insert-maybe)
+   (global-set-key (kbd "\`") 'skeleton-pair-insert-maybe)
+   (global-set-key (kbd "<") 'skeleton-pair-insert-maybe)
+</pre>
+See also AutoPairs.
+
+
+
+----
+CategoryESS CategoryTemplates CategoryParentheses
