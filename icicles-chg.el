@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Dec 21 20:36:17 2009 (-0800)
+;; Last-Updated: Sun Feb 14 09:40:55 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 4684
+;;     Update #: 4800
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,31 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2010/02/14 dadams
+;;     Added: icicle-bookmark-bookmark-list-other-window, icicle-bookmark-bookmark-list-narrow.
+;;     icicle-bookmark(-other-window):
+;;       Bound to C-M- prefix: icicle-bookmark-bookmark-list-narrow.  Updated doc string.
+;; 2010/02/13 dadams
+;;     Added: icicle-bookmark-(desktop|man)-other-window,
+;;            icicle-bookmark-(dired|desktop|man)-narrow.
+;;     icicle-define-bookmark-other-window-command: Raise error if bookmark+.el not found.
+;;     icicle-bookmark(-other-window):
+;;       Bound to C-M- prefix: icicle-bookmark-(dired|desktop|man)-narrow.
+;;     icicle-bookmark-propertize-candidate:
+;;       Handle also: sequence, function, bookmark list, desktop, man, buffer, bad bookmarks.
+;; 2010/02/02 dadams
+;;     icicle-bookmark-jump-1: Don't select minibuffer window and give it focus.
+;; 2010/01/30 dadams
+;;     icicle-dired(-other-window), icicle-(find|recent|locate)-file(-absolute)(-other-window)
+;;       icicle-find-file-in-tags-table(-other-window):
+;;         Bind icicle-all-candidates-list-alt-action-fn to open Dired on matching files.
+;; 2010/01/13 dadams
+;;     icicle-recent-file(-other-window):
+;;       Restore C-S-RET as icicle-remove-from-recentf-candidate-action (accidentally removed).
+;; 2010/01/12 dadams
+;;     Added: icicle-pp-display-expression.
+;;     icicle-pp-eval-expression: Use icicle-pp-display-expression.
+;;     icicle-bbdb-complete-name: save-excursion + set-buffer -> with-current-buffer.
 ;; 2009/12/21 dadams
 ;;     fset -> defalias.
 ;; 2009/12/13 dadams
@@ -153,6 +178,14 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2010/02/06 dadams
+;;     icicle-where-is: Make sure orig-buff is current when look up the bindings.
+;; 2010/01/12 dadams
+;;     icicle-insert-thesaurus-entry-cand-fn, icicle-marker+text,
+;;       icicle-search-(bookmark|region)-action, icicle-char-properties-in-buffer,
+;;       icicle-search-char-property-scan:
+;;         save-excursion + set-buffer -> with-current-buffer (+ save-excursion).
+;;     icicle-search-regexp-scan: set-buffer -> with-current-buffer.
 ;; 2009/12/13 dadams
 ;;     icicle-Info-read-node-name: Bind C-x m to icicle-bookmark-info-other-window.
 ;; 2009/11/24 dadams
@@ -305,6 +338,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2010/01/12 dadams
+;;     icicle-display-candidates-in-Completions: set-buffer -> with-current-buffer.
+;; 2009/12/25 dadams
+;;     icicle-strip-ignored-files-and-sort:
+;;       Call completion-ignored-build-apply and icicle-update-ignored-extensions-regexp.
 ;; 2009/12/21 dadams
 ;;     fset -> defalias.
 ;; 2009/12/07 dadams
@@ -1678,6 +1716,16 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2010/01/12 dadams
+;;     icicle-mouse-choose-completion, icicle-insert-string-at-point,
+;;       icicle-mouse-candidate-action-1, icicle-mouse-remove-candidate,
+;;       icicle-mouse-candidate-read-fn-invoke, icicle-Completions-mouse-3-menu,
+;;       icicle-mouse-save/unsave-candidate:
+;;         set-buffer -> with-current-buffer.
+;;     icicle-mouse-candidate-read-fn-invoke, icicle-Completions-mouse-3-menu,
+;;       icicle-mouse-save/unsave-candidate:
+;;         Removed unused local var BUFFER.
+;;     icicle-mouse-choose-completion: Removed unused local var ORIG-BUFFER.
 ;; 2009/12/21 dadams
 ;;     icicle-narrow-candidates:
 ;;       Add fn to minibuffer-setup-hook to make the reference buffer be the new minibuffer.
@@ -2642,6 +2690,19 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2010/02/13 dadams
+;;     icicle-mode:
+;;       Fill icicle-advice-info-list from advised fns among icicle-redefined-functions.
+;;       Reactivate advised fns (in icicle-advice-info-list) when turn mode off.
+;;       Added to doc string: icicle-bookmark-(dired|desktop|bookmark-list|man)-other-window.
+;;     icicle-define-icicle-maps: Use (featurep 'recentf) instead of soft-requiring it.
+;;     icicle(-bookmark)-menu-map: Added type-specific bookmark jump commands.
+;;     eval-after-load's: Add (when (featurep 'icicles-mode)...) to ensure this file was loaded.
+;; 2010/01/28 dadams
+;;     icicle-define-minibuffer-maps, icicle-restore-completion-keys:
+;;       Restore C-g correctly if delete-selection-mode.
+;; 2009/12/25 dadams
+;;     icicle-mode: Call completion-ignored-build-disable to disable the advice.
 ;; 2009/12/21 dadams
 ;;     Final dolist: Move loaded-library test outside of eval-after-load.
 ;;                   Update the test for Emacs 22+ (not just assoc).  Thx to Kevin Ryde.
@@ -3497,6 +3558,15 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2010/02/13 dadams
+;;     icicle-top-level-key-bindings: Bound icicle-bookmark-*-jump-other-window.
+;; 2010/01/24 dadams
+;;     icicle-thing-at-point-functions:
+;;       Use region-or-word-nearest-point, not word-nearest-point.  Change order.
+;; 2010/01/17 dadams
+;;     icicle-top-level-key-bindings: Added Icicles remappings for bookmarkp-*-jump-other-*.
+;; 2009/12/25 dadams
+;;     icicle-top-level-key-bindings: Bind ESC-M-x to lacarte-execute-command.
 ;; 2009/12/13 dadams
 ;;     icicle-top-level-key-bindings: Map dired(-other-window) to icicle-dired(-other-window).
 ;; 2009/12/07 dadams
@@ -3945,6 +4015,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2010/02/14 dadams
+;;     Added: icicle-advice-info-list, icicle-redefined-functions.
 ;; 2009/11/07 dadams
 ;;     Applied doremi cmd renamings (added +) to help text.
 ;; 2009/10/25 dadams

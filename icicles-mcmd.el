@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Dec 25 12:02:55 2009 (-0800)
+;; Last-Updated: Sun Feb 14 09:29:19 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 15096
+;;     Update #: 15331
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -579,30 +579,30 @@ Return the number of the candidate: 0 for first, 1 for second, ..."
   ;; $$$$$ (unless (active-minibuffer-window) (error "Minibuffer is not active"))
   ;; Give temporary modes such as isearch a chance to turn off.
   (run-hooks 'mouse-leave-buffer-hook)
-  (let* ((buffer       (window-buffer))
-         (orig-buffer  buffer)
-         choice base-size)
-    (save-excursion
-      (set-buffer (window-buffer (posn-window (event-start event))))
-      (when completion-reference-buffer (setq buffer  completion-reference-buffer))
-      (setq base-size  completion-base-size)
+  (let ((buffer  (window-buffer))
+         ;; $$$$$$ (orig-buffer  buffer)
+        choice base-size)
+    (with-current-buffer (window-buffer (posn-window (event-start event)))
       (save-excursion
-        (goto-char (posn-point (event-start event)))
-        (let (beg end)
-          (when (and (not (eobp)) (get-text-property (point) 'mouse-face))
-            (setq end  (point)
-                  beg  (1+ (point))))
-          (unless beg (error "No completion here"))
-          (setq beg  (previous-single-property-change beg 'mouse-face)
-                end  (or (next-single-property-change end 'mouse-face) (point-max)))
-          ;; `icicle-insert-candidates' doesn't put `mouse-face' on the final \n of a candidate
-          ;; in *Completions*. Add the newline back. `icicle-insert-candidates' puts property
-          ;; `icicle-keep-newline' on the newline if it is part of the candidate, as opposed to
-          ;; being just part of the display in columns.
-          (when (and (eq ?\n (char-after end)) (get-text-property end 'icicle-keep-newline))
-            (setq end  (1+ end)))
-          ;; $$$$$$ (setq choice  (buffer-substring-no-properties beg end)))))
-          (setq choice  (buffer-substring beg end)))))
+        (when completion-reference-buffer (setq buffer  completion-reference-buffer))
+        (setq base-size  completion-base-size)
+        (save-excursion
+          (goto-char (posn-point (event-start event)))
+          (let (beg end)
+            (when (and (not (eobp)) (get-text-property (point) 'mouse-face))
+              (setq end  (point)
+                    beg  (1+ (point))))
+            (unless beg (error "No completion here"))
+            (setq beg  (previous-single-property-change beg 'mouse-face)
+                  end  (or (next-single-property-change end 'mouse-face) (point-max)))
+            ;; `icicle-insert-candidates' doesn't put `mouse-face' on the final \n of a candidate
+            ;; in *Completions*. Add the newline back. `icicle-insert-candidates' puts property
+            ;; `icicle-keep-newline' on the newline if it is part of the candidate, as opposed to
+            ;; being just part of the display in columns.
+            (when (and (eq ?\n (char-after end)) (get-text-property end 'icicle-keep-newline))
+              (setq end  (1+ end)))
+            ;; $$$$$$ (setq choice  (buffer-substring-no-properties beg end)))))
+            (setq choice  (buffer-substring beg end))))))
     ;; $$$$$ (if (eq orig-buffer (get-buffer "*Completions*"))
     ;;    (icicle-remove-Completions-window)
     ;;    (save-selected-window (icicle-remove-Completions-window)))
@@ -2112,8 +2112,8 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
                  0))
          (let ((thing   "")
                (alt-fn  (nth icicle-thing-at-pt-fns-pointer alt-fns)))
-           (save-excursion (set-buffer icicle-pre-minibuffer-buffer)
-                           (setq thing  (funcall alt-fn)))
+           (save-excursion (with-current-buffer icicle-pre-minibuffer-buffer
+                             (setq thing  (funcall alt-fn))))
            (setq thing  (or thing "nil"))
            (icicle-insert-thing thing)
            (icicle-msg-maybe-in-minibuffer (format "`%s'" alt-fn))))
@@ -2150,11 +2150,11 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
              (setq icicle-successive-grab-count  1))) ; First `M-.' - reset count.
          (let ((things  ""))
            (save-excursion
-             (set-buffer (cadr (buffer-list)))
-             (setq things  (buffer-substring-no-properties
-                            (point)
-                            (save-excursion (funcall fwd-thing-fn icicle-successive-grab-count)
-                                            (point)))))
+             (with-current-buffer (cadr (buffer-list))
+               (setq things  (buffer-substring-no-properties
+                              (point)
+                              (save-excursion (funcall fwd-thing-fn icicle-successive-grab-count)
+                                              (point))))))
            (icicle-insert-thing things)))))))
 
 (defun icicle-signum (num)
@@ -3497,8 +3497,7 @@ You can use this command only from buffer *Completions* (`\\<completion-list-mod
      (point) (next-single-property-change (point) 'mouse-face nil end)
      'icicle-current-completion-candidate-overlay 'icicle-current-candidate-highlight
      100 (current-buffer)))
-  (unless no-minibuffer-follow-p
-    (save-excursion (save-window-excursion (icicle-insert-completion)))))
+  (unless no-minibuffer-follow-p (save-excursion (save-window-excursion (icicle-insert-completion)))))
 
 (defun icicle-nb-Completions-cols ()
   "Return the number of candidate columns in *Completions*."
@@ -3905,30 +3904,30 @@ performed: display help on the candidate - see
         (posn-row  (cdr (posn-col-row (event-start event))))
         choice)
     (read-event)                        ; Swallow mouse up event.
-    (save-excursion
-      (set-buffer posn-buf)
-      (goto-char posn-pt)
-      (let (beg end)
-        (when (and (not (eobp)) (get-text-property (point) 'mouse-face))
-          (setq end  (point)
-                beg  (1+ (point))))
-        (unless beg (error "No completion here"))
-        (setq beg  (previous-single-property-change beg 'mouse-face)
-              end  (or (next-single-property-change end 'mouse-face) (point-max)))
-        ;; `icicle-insert-candidates' doesn't put `mouse-face' on the final \n of a candidate
-        ;; in *Completions*. Add the newline back. `icicle-insert-candidates' puts property
-        ;; `icicle-keep-newline' on the newline if it is part of the candidate, as opposed to
-        ;; being just part of the display in columns.
-        (when (and (eq ?\n (char-after end)) (get-text-property end 'icicle-keep-newline))
-          (setq end  (1+ end)))
-        (setq choice  (if (and (icicle-file-name-input-p) insert-default-directory
-                               (or (not (member (buffer-substring-no-properties beg end)
-                                                icicle-extra-candidates))
-                                   icicle-extra-candidates-dir-insert-p))
-                          (concat default-directory (buffer-substring-no-properties beg end))
-                        ;; $$$$$$ (buffer-substring-no-properties beg end))))))
-                        (buffer-substring beg end)))
-        (remove-text-properties 0 (length choice) '(mouse-face nil) choice)))
+    (with-current-buffer posn-buf
+      (save-excursion
+        (goto-char posn-pt)
+        (let (beg end)
+          (when (and (not (eobp)) (get-text-property (point) 'mouse-face))
+            (setq end  (point)
+                  beg  (1+ (point))))
+          (unless beg (error "No completion here"))
+          (setq beg  (previous-single-property-change beg 'mouse-face)
+                end  (or (next-single-property-change end 'mouse-face) (point-max)))
+          ;; `icicle-insert-candidates' doesn't put `mouse-face' on the final \n of a candidate
+          ;; in *Completions*. Add the newline back. `icicle-insert-candidates' puts property
+          ;; `icicle-keep-newline' on the newline if it is part of the candidate, as opposed to
+          ;; being just part of the display in columns.
+          (when (and (eq ?\n (char-after end)) (get-text-property end 'icicle-keep-newline))
+            (setq end  (1+ end)))
+          (setq choice  (if (and (icicle-file-name-input-p) insert-default-directory
+                                 (or (not (member (buffer-substring-no-properties beg end)
+                                                  icicle-extra-candidates))
+                                     icicle-extra-candidates-dir-insert-p))
+                            (concat default-directory (buffer-substring-no-properties beg end))
+                          ;; $$$$$$ (buffer-substring-no-properties beg end))))))
+                          (buffer-substring beg end)))
+          (remove-text-properties 0 (length choice) '(mouse-face nil) choice))))
     (save-window-excursion
       (select-window (active-minibuffer-window))
       (delete-region (icicle-minibuffer-prompt-end) (point-max))
@@ -3986,23 +3985,23 @@ See `icicle-remove-candidate' for more information."
         (posn-pt   (posn-point (event-start event)))
         beg end)
     (read-event)                        ; Swallow mouse up event.
-    (save-excursion
-      (set-buffer posn-buf)
-      (goto-char posn-pt)
-      (when (and (not (eobp)) (get-text-property (point) 'mouse-face))
-        (setq end  (point)
-              beg  (1+ (point))))
-      (unless beg (error "No completion here"))
-      (setq beg  (previous-single-property-change beg 'mouse-face)
-            end  (or (next-single-property-change end 'mouse-face) (point-max)))
-      ;; `icicle-insert-candidates' doesn't put `mouse-face' on the final \n of a candidate
-      ;; in *Completions*. Add the newline back. `icicle-insert-candidates' puts property
-      ;; `icicle-keep-newline' on the newline if it is part of the candidate, as opposed to
-      ;; being just part of the display in columns.
-      (when (and (eq ?\n (char-after end)) (get-text-property end 'icicle-keep-newline))
-        (setq end  (1+ end)))
-      (setq icicle-candidate-nb               (icicle-nb-of-candidate-in-Completions posn-pt)
-            icicle-last-completion-candidate  (buffer-substring beg end))))
+    (with-current-buffer posn-buf
+      (save-excursion
+        (goto-char posn-pt)
+        (when (and (not (eobp)) (get-text-property (point) 'mouse-face))
+          (setq end  (point)
+                beg  (1+ (point))))
+        (unless beg (error "No completion here"))
+        (setq beg  (previous-single-property-change beg 'mouse-face)
+              end  (or (next-single-property-change end 'mouse-face) (point-max)))
+        ;; `icicle-insert-candidates' doesn't put `mouse-face' on the final \n of a candidate
+        ;; in *Completions*. Add the newline back. `icicle-insert-candidates' puts property
+        ;; `icicle-keep-newline' on the newline if it is part of the candidate, as opposed to
+        ;; being just part of the display in columns.
+        (when (and (eq ?\n (char-after end)) (get-text-property end 'icicle-keep-newline))
+          (setq end  (1+ end)))
+        (setq icicle-candidate-nb               (icicle-nb-of-candidate-in-Completions posn-pt)
+              icicle-last-completion-candidate  (buffer-substring beg end)))))
   (icicle-remove-candidate-display-others))
 
 (defun icicle-remove-candidate-display-others (&optional allp)
@@ -4418,18 +4417,17 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
 (defun icicle-mouse-candidate-read-fn-invoke (event) ; Bound to `M-mouse-2' in *Completions*.
   "Read function name.  Invoke function on candidate clicked by mouse."
   (interactive "e")
-  (run-hooks 'mouse-leave-buffer-hook) ; Give temp modes such as isearch a chance to turn off.
-  (let ((buffer    (window-buffer))
+  (run-hooks 'mouse-leave-buffer-hook)  ; Give temp modes such as isearch a chance to turn off.
+  (let (;;$$$$$$ (buffer    (window-buffer))
         (posn-win  (posn-window (event-start event)))
         (posn-col  (car (posn-col-row (event-start event))))
         (posn-row  (cdr (posn-col-row (event-start event))))
         choice base-size)
     ;; (read-event)                 ; Swallow mouse up event. $$ Not needed if bound to up event.
-    (save-excursion
-      (set-buffer (window-buffer posn-win))
-      (when completion-reference-buffer (setq buffer  completion-reference-buffer))
-      (setq base-size  completion-base-size)
+    (with-current-buffer (window-buffer posn-win)
       (save-excursion
+        ;; $$$$$$ (when completion-reference-buffer (setq buffer  completion-reference-buffer))
+        (setq base-size  completion-base-size)
         (goto-char (posn-point (event-start event)))
         (let (beg end)
           (when (and (not (eobp)) (get-text-property (point) 'mouse-face))
@@ -4507,17 +4505,16 @@ which can position mouse pointer on a standalone minibuffer frame."
   "Pop-up menu on `C-mouse-3' for the current candidate in *Completions*."
   (interactive "e")
   (run-hooks 'mouse-leave-buffer-hook)  ; Give temp modes such as isearch a chance to turn off.
-  (let ((buffer    (window-buffer))
+  (let (;; $$$$$$ (buffer    (window-buffer))
         (posn-win  (posn-window (event-start event)))
         (posn-col  (car (posn-col-row (event-start event))))
         (posn-row  (cdr (posn-col-row (event-start event))))
         candidate base-size menu-choice)
     ;; (read-event)                 ; Swallow mouse up event. $$ Not needed if bound to up event.
-    (save-excursion
-      (set-buffer (window-buffer posn-win))
-      (when completion-reference-buffer (setq buffer  completion-reference-buffer))
-      (setq base-size  completion-base-size)
+    (with-current-buffer (window-buffer posn-win)
       (save-excursion
+        ;; $$$$$$ (when completion-reference-buffer (setq buffer  completion-reference-buffer))
+        (setq base-size  completion-base-size)
         (goto-char (posn-point (event-start event)))
         (let (beg end)
           (when (and (not (eobp)) (get-text-property (point) 'mouse-face))
@@ -5217,17 +5214,16 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
 If the candidate is already saved, then unsave it; otherwise, save it."
   (interactive "e")
   (run-hooks 'mouse-leave-buffer-hook)  ; Give temp modes such as isearch a chance to turn off.
-  (let ((buffer    (window-buffer))
+  (let (;; $$$$$$ (buffer    (window-buffer))
         (posn-win  (posn-window (event-start event)))
         (posn-col  (car (posn-col-row (event-start event))))
         (posn-row  (cdr (posn-col-row (event-start event))))
         choice base-size)
     (read-event)                        ; Swallow mouse up event.
-    (save-excursion
-      (set-buffer (window-buffer posn-win))
-      (when completion-reference-buffer (setq buffer  completion-reference-buffer))
-      (setq base-size  completion-base-size)
+    (with-current-buffer (window-buffer posn-win)
       (save-excursion
+        ;; $$$$$$ (when completion-reference-buffer (setq buffer  completion-reference-buffer))
+        (setq base-size  completion-base-size)
         (goto-char (posn-point (event-start event)))
         (let (beg end)
           (when (and (not (eobp)) (get-text-property (point) 'mouse-face))

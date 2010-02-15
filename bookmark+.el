@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Feb 13 15:27:33 2010 (-0800)
+;; Last-Updated: Sun Feb 14 22:45:47 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 10833
+;;     Update #: 11073
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -236,13 +236,16 @@
 ;;
 ;;  Faces defined here:
 ;;
+;;    `bookmarkp->-mark', `bookmarkp-a-mark',
 ;;    `bookmarkp-bad-bookmark', `bookmarkp-bookmark-list',
-;;    `bookmarkp-buffer', `bookmarkp-desktop', `bookmarkp-function',
-;;    `bookmarkp-gnus', `bookmarkp-info', `bookmarkp-local-directory',
+;;    `bookmarkp-buffer', `bookmarkp-D-mark', `bookmarkp-desktop',
+;;    `bookmarkp-function', `bookmarkp-gnus', `bookmarkp-heading',
+;;    `bookmarkp-info', `bookmarkp-local-directory',
 ;;    `bookmarkp-local-file-without-region',
 ;;    `bookmarkp-local-file-with-region', `bookmarkp-man',
 ;;    `bookmarkp-non-file', `bookmarkp-remote-file',
-;;    `bookmarkp-sequence', `bookmarkp-su-or-sudo', `bookmarkp-w3m'.
+;;    `bookmarkp-sequence', `bookmarkp-su-or-sudo',
+;;    `bookmarkp-t-mark', `bookmarkp-w3m'.
 ;;
 ;;  Macros defined here:
 ;;
@@ -259,7 +262,7 @@
 ;;    `bookmarkp-bmenu-filter-alist-by-bookmark-name-regexp',
 ;;    `bookmarkp-bmenu-filter-alist-by-file-name-regexp',
 ;;    `bookmarkp-bmenu-filter-alist-by-tags-regexp',
-;;    `bookmarkp-bmenu-goto-bookmark-named', `bookmark-bmenu-list-1',
+;;    `bookmarkp-bmenu-goto-bookmark-named', `bookmarkp-bmenu-list-1',
 ;;    `bookmarkp-bmenu-mark/unmark-bookmarks-tagged-all/none',
 ;;    `bookmarkp-bmenu-mark/unmark-bookmarks-tagged-some/not-all',
 ;;    `bookmarkp-bmenu-propertize-item',
@@ -391,12 +394,13 @@
 ;;
 ;;    `bookmark-bmenu-execute-deletions', `bookmark-bmenu-list',
 ;;    `bookmark-bmenu-mark', `bookmark-bmenu-other-window',
-;;    `bookmark-bmenu-rename', `bookmark-bmenu-unmark',
-;;    `bookmark-delete', `bookmark-insert',
+;;    `bookmark-bmenu-rename', `bookmark-bmenu-show-annotation',
+;;    `bookmark-bmenu-unmark', `bookmark-delete', `bookmark-insert',
 ;;    `bookmark-insert-location', `bookmark-jump',
 ;;    `bookmark-jump-other-window' (Emacs 20-21), `bookmark-load',
 ;;    `bookmark-relocate', `bookmark-rename', `bookmark-save',
-;;    `bookmark-set', `bookmark-yank-word'.
+;;    `bookmark-send-edited-annotation', `bookmark-set',
+;;    `bookmark-yank-word'.
 ;;
 ;;
 ;;  ***** NOTE: The following non-interactive functions defined in
@@ -416,7 +420,8 @@
 ;;    20-22), `bookmark-location', `bookmark-make-record' (Emacs
 ;;    20-22), `bookmark-make-record-default', `bookmark-maybe-message'
 ;;    (Emacs 20-21), `bookmark-prop-get' (Emacs 20-22),
-;;    `bookmark-prop-set', `bookmark-store' (Emacs 20-22),
+;;    `bookmark-prop-set', `bookmark-show-annotation',
+;;    `bookmark-show-all-annotations', `bookmark-store' (Emacs 20-22),
 ;;    `bookmark-write-file'.
 ;;
 ;;
@@ -510,7 +515,7 @@
 ;;     - As mentioned above, a bookmark can represent a sequence of
 ;;       other bookmarks.
 ;;
-;;     - You can bookmark buffer *Bookmark List* itself.  Jumping to
+;;     - You can bookmark buffer `*Bookmark List*' itself.  Jumping to
 ;;       such a bookmark restores the recorded sort order, filter,
 ;;       title, and omit list (see (@> "Omitting Bookmarks from
 ;;       Display")).
@@ -827,7 +832,7 @@
 ;;(@* "Bookmark-List Views - Saving and Restoring State")
 ;;  ** Bookmark-List Views - Saving and Restoring State **
 ;;
-;;  The bookmark list (buffer *Bookmark List*) provides a view into
+;;  The bookmark list (buffer `*Bookmark List*') provides a view into
 ;;  the set of bookmarks.  You can mark, sort, and hide (filter, omit)
 ;;  bookmarks - see (@> "Bookmark List (Display)").  The state of the
 ;;  displayed bookmark list can thus change.
@@ -876,14 +881,15 @@
 ;;
 ;;  There are two ways to do this:
 ;;
-;;  * Create a bookmark for the *Bookmark List* buffer itself.
+;;  * Create a bookmark for the `*Bookmark List*' buffer itself.
 ;;  * Define a command that restores the bookmark-list state.
 ;;
-;;  When you use `C-x r m' (`bookmark-set') in buffer *Bookmark List*
-;;  to create a bookmark, the current sort order, filter, title, and
-;;  omit list are saved as part of the bookmark.  (These concepts are
-;;  described below - see (@> "Bookmark List (Display)").)  Jumping to
-;;  such a bookmark restores all of these.
+;;  When you use `C-x r m' (`bookmark-set') in buffer `*Bookmark
+;;  List*' to create a bookmark, the current sort order, filter,
+;;  title, and omit list are saved as part of the bookmark.  (These
+;;  concepts are described below -
+;;  see (@> "Bookmark List (Display)").)  Jumping to such a bookmark
+;;  restores all of these.
 ;;
 ;;  Alternatively, you can define a command that does the same thing,
 ;;  but without creating another bookmark - use `c'
@@ -995,9 +1001,13 @@
 ;;
 ;;  Bookmark+ enhances the bookmark list (aka the bookmark "menu
 ;;  list", a misnomer) that is displayed in buffer `*Bookmark List*'
-;;  when you use `C-x r l' (command `bookmark-bmenu-list').  Bookmarks
-;;  are highlighted to indicate their type. You can mark and unmark
-;;  bookmarks, show or hide bookmarks of particular types, and more.
+;;  when you use `C-x r l' (command `bookmark-bmenu-list').
+;;
+;;  Bookmarks are highlighted to indicate their type. You can mark and
+;;  unmark bookmarks, show or hide bookmarks of particular types, and
+;;  more.  Bookmarks that have tags are marked with a `t'.  Bookmarks
+;;  that have an annotation are marked with an `a' (not with a `*' as
+;;  in vanilla `bookmark.el').
 ;;
 ;;  Use `?' or `C-h m' in buffer `*Bookmark List*' for more
 ;;  information about the bookmark list, including:
@@ -1469,6 +1479,16 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2010/02/14 dadams
+;;     Renamed bookmark-bmenu-list-1 to bookmarkp-bmenu-list-1.
+;;     Added faces: bookmarkp-(a|t|>|D)-mark, bookmarkp-heading (don't use bookmark-menu-heading).
+;;     Added redefinitions: bookmark-send-edited-annotation, bookmark(-bmenu)-show-annotation,
+;;                          bookmark-show-all-annotations.
+;;     *-bmenu-mark, *-bmenu-delete, *-bmenu-list-1: Add faces to marks.
+;;     *-bmenu-list-1 and everywhere: Get rid of "% " before menu-list title.
+;;     *-bmenu-list-1: Use "a", not "*", as annotation mark.
+;;                     Add "t" mark for tags.  Add an extra space before bookmark name.
+;;     *-bmenu-marks-width: change value from 2 to 4, for the tags column and the extra space.
 ;; 2010/02/13 dadams
 ;;     Added: bookmarkp-desktop-history,
 ;;            bookmarkp-desktop-jump (bound to C-x j K; added to menu),
@@ -2387,10 +2407,19 @@ then the rest."
 ;;(@* "Faces (Customizable)")
 ;;; Faces (Customizable) ---------------------------------------------
 
+(defface bookmarkp->-mark
+    '((t (:background "PaleGreen")))
+  "*Face used for a `>' mark in the bookmark list."
+  :group 'bookmarkp)
+
+(defface bookmarkp-a-mark
+    '((t (:background "SkyBlue")))
+  "*Face used for an annotation mark (`a') in the bookmark list."
+  :group 'bookmarkp)
+
 (defface bookmarkp-bad-bookmark
     '((t (:foreground "Red" :background "Chartreuse1")))
-  "*Face used for a bookmark that seems to be bad: e.g., nonexistent file.
-Also used for `D' (deletion) flags."
+  "*Face used for a bookmark that seems to be bad: e.g., nonexistent file."
   :group 'bookmarkp)
 
 (defface bookmarkp-bookmark-list
@@ -2403,6 +2432,11 @@ Also used for `D' (deletion) flags."
     '((((background dark)) (:foreground "green"))
       (t (:foreground "DarkGreen")))
   "*Face used for a bookmarked existing buffer not associated with a file."
+  :group 'bookmarkp)
+
+(defface bookmarkp-D-mark
+    '((t (:foreground "Yellow" :background "Red")))
+  "*Face used for a deletion mark (`D') in the bookmark list."
   :group 'bookmarkp)
 
 (defface bookmarkp-desktop
@@ -2476,17 +2510,22 @@ Also used for `D' (deletion) flags."
   "*Face used for a bookmarked tramp file (/su: or /sudo:)."
   :group 'bookmarkp)
 
+(defface bookmarkp-t-mark
+    '((t (:background "Pink")))
+  "*Face used for a tags mark (`t') in the bookmark list."
+  :group 'bookmarkp)
+
 (defface bookmarkp-w3m
     '((((background dark)) (:foreground "yellow"))
       (t (:foreground "DarkMagenta")))
   "*Face used for a bookmarked w3m url."
   :group 'bookmarkp)
 
-(when (< emacs-major-version 22)
-  (defface bookmark-menu-heading
-      '((t (:foreground "ForestGreen")))
-    "Face used to highlight the heading in bookmark menu buffers."
-    :group 'bookmarkp :version "22.1"))
+;; Instead of vanilla `bookmark-menu-heading' (defined in Emacs 22+), to use a better default.
+(defface bookmarkp-heading
+    '((t (:foreground "Blue")))
+  "*Face used to highlight the headings in various Bookmark+ buffers."
+  :group 'bookmarkp :version "22.1")
  
 ;;(@* "User Options (Customizable)")
 ;;; User Options (Customizable) --------------------------------------
@@ -2534,7 +2573,7 @@ because such command definitions can be very large."
 
 ;;;###autoload
 (defcustom bookmarkp-bmenu-state-file (convert-standard-filename "~/.emacs-bmk-bmenu-state.el")
-  "*File for saving`*Bookmark List*' state when you quit bookmark list.
+  "*File for saving `*Bookmark List*' state when you quit bookmark list.
 This must be an absolute file name or nil (it is not expanded).
 
 The state is also saved when you quit Emacs, even if you don't quit
@@ -2578,7 +2617,7 @@ as part of the bookmark definition."
 
 ;;;###autoload
 (defcustom bookmarkp-sequence-jump-display-function 'pop-to-buffer
-  "Function used to display the bookmarks in a bookmark sequence."
+  "*Function used to display the bookmarks in a bookmark sequence."
   :type 'function :group 'bookmarkp)
 
 ;;;###autoload
@@ -2799,10 +2838,10 @@ Each alist element has the form (SORT-ORDER . COMPARER):
   "Name to use for `filename' entry, for non-file bookmarks.")
 
 (defconst bookmarkp-bmenu-header-lines 2
-  "Number of lines used for the *Bookmark List* header.")
+  "Number of lines used for the `*Bookmark List*' header.")
 
-(defconst bookmarkp-bmenu-marks-width 2
-  "Number of columns (chars) used for the *Bookmark List* marks column.")
+(defconst bookmarkp-bmenu-marks-width 4
+  "Number of columns (chars) used for the `*Bookmark List*' marks columns.")
 
 (defconst bookmarkp-types-alist '(("bookmark-list" . bookmarkp-bookmark-list-history)
                                   ("desktop"       . bookmarkp-desktop-history)
@@ -3181,6 +3220,32 @@ See `bookmark-jump-other-window'."
  
 ;;(@* "Core Replacements (`bookmark-*' except `bookmark-bmenu-*')")
 ;;; Core Replacements (`bookmark-*' except `bookmark-bmenu-*') -------
+
+
+;; REPLACES ORIGINAL in `bookmark.el'.
+;;
+;; BUG fix: Put point back where it was (on the bookmark just annotated).
+;;
+(defun bookmark-send-edited-annotation ()
+  "Use buffer contents as annotation for a bookmark.
+Lines beginning with `#' are ignored."
+  (interactive)
+  (unless (eq major-mode 'bookmark-edit-annotation-mode)
+    (error "Not in bookmark-edit-annotation-mode"))
+  (goto-char (point-min))
+  (while (< (point) (point-max))
+    (if (looking-at "^#")
+        (bookmark-kill-line t)
+      (forward-line 1)))
+  (let ((annotation  (buffer-substring-no-properties (point-min) (point-max)))
+	(bookmark    bookmark-annotation-name))
+    (bookmark-set-annotation bookmark annotation)
+    (setq bookmark-alist-modification-count
+          (1+ bookmark-alist-modification-count))
+    (bookmark-bmenu-surreptitiously-rebuild-list)
+    (kill-buffer (current-buffer))
+    (pop-to-buffer "*Bookmark List*")
+    (bookmarkp-bmenu-goto-bookmark-named bookmark)))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -3886,23 +3951,56 @@ bookmark files that were created using the bookmark functions."
   (let ((bmklistbuf  (get-buffer "*Bookmark List*")))
     (when bmklistbuf (with-current-buffer bmklistbuf (bookmarkp-bmenu-refresh-menu-list)))))
 
-;;;###autoload
-(defun bookmarkp-switch-bookmark-file (file &optional no-msg)
-  "Switch to a different bookmark file, FILE.
-Replace all currently existing bookmarks with the newly loaded
-bookmarks.  Change the value of `bookmarkp-current-bookmark-file' to
-FILE, so bookmarks will subsequently be saved to FILE.
-  
-`bookmark-default-file' is unaffected, so your next Emacs session will
-still use `bookmark-default-file' for the initial set of bookmarks."
-  (interactive
-   (list (read-file-name
-          "Switch to bookmark file: " "~/"
-          ;; Default file as default choice, unless it's already current.
-          (and (not (bookmarkp-same-file-p bookmark-default-file bookmarkp-current-bookmark-file))
-               bookmark-default-file)
-          'confirm)))
-  (bookmark-load file t no-msg))
+
+;; REPLACES ORIGINAL in `bookmark.el'.
+;;
+;; Added optional arg MSGP.  Show message if no annotation.
+;; Name buffer after the bookmark.
+;; Do not `save-excursion' (makes no sense, since we `pop-to-buffer').
+;; Raise error if no annotation.
+;; Use `view-mode'.  `q' uses `quit-window'.
+;; Fit frame to buffer if `one-windowp'.
+;;
+(defun bookmark-show-annotation (bookmark &optional msgp)
+  "Display the annotation for BOOKMARK."
+  (let* ((bmk       (bookmark-get-bookmark bookmark))
+         (bmk-name  (bookmark-name-from-full-record bmk))
+         (ann       (bookmark-get-annotation bmk)))
+    (if (not (and ann (not (string-equal ann ""))))
+        (when msgp (message "Bookmark has no annotation"))
+      (pop-to-buffer (get-buffer-create (format "*`%s' Annotation*" bmk-name)) t)
+      (delete-region (point-min) (point-max))
+      (insert (concat "Annotation for bookmark '" bookmark "':\n\n"))
+      (put-text-property (line-beginning-position -1) (line-end-position 1) 'face 'bookmarkp-heading)
+      (insert ann)
+      (goto-char (point-min))
+      (view-mode-enter (cons (selected-window) (cons nil 'quit-window)))
+      (when (fboundp 'fit-frame-if-one-window) (fit-frame-if-one-window)))))
+
+
+;; REPLACES ORIGINAL in `bookmark.el'.
+;;
+;; Do not `save-selected-window' (makes no sense, since we `pop-to-buffer').
+;; Use name `*Bookmark Annotations*', not `*Bookmark Annotation*'.
+;; Don't list bookmarks with no annotation.
+;; Highlight bookmark names.  Don't indent annotations.  Add a blank line after each annotation.
+;; Use `view-mode'.  `q' uses `quit-window'.
+;; Fit frame to buffer if `one-windowp'.
+;;
+(defun bookmark-show-all-annotations ()
+  "Display the annotations for all bookmarks."
+  (pop-to-buffer (get-buffer-create "*Bookmark Annotations*") t)
+  (setq buffer-read-only  nil)
+  (delete-region (point-min) (point-max))
+  (dolist (full-record  bookmark-alist)
+    (let ((ann  (bookmark-get-annotation full-record)))
+      (when (and ann (not (string-equal ann "")))
+        (insert (concat (bookmark-name-from-full-record full-record) ":\n"))
+        (put-text-property (line-beginning-position 0) (line-end-position 0) 'face 'bookmarkp-heading)
+        (insert ann) (unless (bolp) (insert "\n\n")))))
+  (goto-char (point-min))
+  (view-mode-enter (cons (selected-window) (cons nil 'quit-window)))
+  (when (fboundp 'fit-frame-if-one-window) (fit-frame-if-one-window)))
  
 ;;(@* "Menu List Replacements (`bookmark-bmenu-*')")
 ;;; Menu List Replacements (`bookmark-bmenu-*') ----------------------
@@ -3941,6 +4039,7 @@ still use `bookmark-default-file' for the initial set of bookmarks."
   (let ((inhibit-read-only  t))
     (push (bookmark-bmenu-bookmark) bookmarkp-bmenu-marked-bookmarks)
     (delete-char 1) (insert ?>)
+    (put-text-property (1- (point)) (point) 'face 'bookmarkp->-mark)
     (forward-line 1)))
 
 
@@ -3983,7 +4082,7 @@ the deletions."
   (bookmark-bmenu-ensure-position)
   (let ((inhibit-read-only  t))
     (delete-char 1) (insert ?D)
-    (put-text-property (1- (point)) (point) 'face 'bookmarkp-bad-bookmark)
+    (put-text-property (1- (point)) (point) 'face 'bookmarkp-D-mark)
     (setq bookmarkp-bmenu-marked-bookmarks  (delete (bookmark-bmenu-bookmark)
                                                     bookmarkp-bmenu-marked-bookmarks))
     (forward-line 1)))
@@ -4022,7 +4121,7 @@ Optional arg DONT-TOGGLE-FILENAMES-P is passed to
   "Display a list of existing bookmarks, in buffer `*Bookmark List*'.
 The leftmost column of a bookmark entry shows `D' if the bookmark is
  flagged for deletion, or `>' if it is marked normally.
-The second column shows `*' if the bookmark has an annotation.
+The second column shows `a' if the bookmark has an annotation.
 
 The following faces are used for the list entries.
 Use `customize-face' if you want to change the appearance.
@@ -4083,16 +4182,16 @@ file.  Switch to the last file used, `%s'? " last-bookmark-file))
                    (sit-for 4))))))
          (setq bookmarkp-bmenu-first-time-p  nil)
          (let ((bookmark-alist  (or bookmarkp-latest-bookmark-alist bookmark-alist)))
-           (bookmark-bmenu-list-1 'filteredp nil (interactive-p)))
+           (bookmarkp-bmenu-list-1 'filteredp nil (interactive-p)))
          (when bookmarkp-last-bmenu-bookmark
            (with-current-buffer (get-buffer "*Bookmark List*")
              (bookmarkp-bmenu-goto-bookmark-named bookmarkp-last-bmenu-bookmark))))
         (t
          (setq bookmarkp-bmenu-first-time-p  nil)
-         (bookmark-bmenu-list-1
+         (bookmarkp-bmenu-list-1
           filteredp  (or (interactive-p) (not (get-buffer "*Bookmark List*")))  (interactive-p)))))
 
-(defun bookmark-bmenu-list-1 (filteredp reset-marked-p interactivep)
+(defun bookmarkp-bmenu-list-1 (filteredp reset-marked-p interactivep)
   "Helper for `bookmark-bmenu-list'.
 See `bookmark-bmenu-list' for the description of FILTEREDP.
 Non-nil RESET-MARKED-P resets `bookmarkp-bmenu-marked-bookmarks'.
@@ -4107,35 +4206,38 @@ Non-nil INTERACTIVEP means `bookmark-bmenu-list' was called
         (when one-win-p (delete-other-windows)))
     (set-buffer (get-buffer-create "*Bookmark List*")))
   (let* ((inhibit-read-only  t)
-         (real-title         (if (and filteredp bookmarkp-bmenu-title
-				      (> (length bookmarkp-bmenu-title)
-                                         bookmarkp-bmenu-marks-width))
+         (title              (if (and filteredp bookmarkp-bmenu-title)
 				 bookmarkp-bmenu-title
-			       "% All Bookmarks"))
-         (len-title          (- (length real-title) bookmarkp-bmenu-marks-width)))
+			       "All Bookmarks")))
     (erase-buffer)
-    (insert (format "%s\n- %s\n" real-title (make-string len-title ?-)))
-    (add-text-properties (point-min) (point) (bookmarkp-face-prop 'bookmark-menu-heading))
+    (insert (format "%s\n%s\n" title (make-string (length title) ?-)))
+    (add-text-properties (point-min) (point) (bookmarkp-face-prop 'bookmarkp-heading))
     (let ((max-width     0)
           (sorted-alist  (bookmarkp-sort-and-remove-dups
                           bookmark-alist
                           (and (not (eq bookmarkp-bmenu-filter-function
                                         'bookmarkp-omitted-alist-only))
                                bookmarkp-bmenu-omitted-list)))
-          name annotation markedp start)
+          name markedp taggedp annotation start)
       (dolist (bmk  sorted-alist)
         (setq max-width  (max max-width (length (bookmark-name-from-full-record bmk)))))
       (setq max-width  (+ max-width bookmarkp-bmenu-marks-width))
       (dolist (bmk  sorted-alist)
         (setq name        (bookmark-name-from-full-record bmk)
-              annotation  (bookmark-get-annotation bmk)
               markedp     (bookmarkp-marked-bookmark-p bmk)
-              start       (point))
-        (insert (cond ((and annotation (not (string-equal annotation "")) markedp)  ">*")
-                      ((and annotation (not (string-equal annotation "")))          " *")
-                      (markedp                                                      "> ")
-                      (t                                                            "  "))
-                name)
+              taggedp     (bookmarkp-get-tags bmk)
+              annotation  (bookmark-get-annotation bmk)
+              start       (+ bookmarkp-bmenu-marks-width (point)))
+        (if (not markedp)
+            (insert " ")
+          (insert ">") (put-text-property (1- (point)) (point) 'face 'bookmarkp->-mark))
+        (if (not taggedp)
+            (insert " ")
+          (insert "t") (put-text-property (1- (point)) (point) 'face 'bookmarkp-t-mark))
+        (if (not (and annotation (not (string-equal annotation ""))))
+            (insert " ")
+          (insert "a") (put-text-property (1- (point)) (point) 'face 'bookmarkp-a-mark))
+        (insert " " name)
         (move-to-column max-width t)
         (bookmarkp-bmenu-propertize-item name start (point))
         (insert "\n")))
@@ -4249,6 +4351,18 @@ non-nil, then do nothing."
   (let ((bookmark                                 (bookmark-bmenu-bookmark))
         (bookmark-automatically-show-annotations  t)) ; FIXME: needed?
     (bookmark--jump-via bookmark 'pop-to-buffer)))
+
+
+;; REPLACES ORIGINAL in `bookmark.el'.
+;;
+;; Added optional arg MSGP.
+;; Call `bookmark-show-annotation' with arg MSGP.
+;;
+(defun bookmark-bmenu-show-annotation (msgp)
+  "Show the annotation for the current bookmark in another window."
+  (interactive "p")
+  (let ((bookmark  (bookmark-bmenu-bookmark)))
+    (bookmark-show-annotation bookmark msgp)))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -4429,6 +4543,24 @@ Returns the new bookmark (internal record)."
     (bookmark-bmenu-surreptitiously-rebuild-list)
     new))
 
+;;;###autoload
+(defun bookmarkp-switch-bookmark-file (file &optional no-msg)
+  "Switch to a different bookmark file, FILE.
+Replace all currently existing bookmarks with the newly loaded
+bookmarks.  Change the value of `bookmarkp-current-bookmark-file' to
+FILE, so bookmarks will subsequently be saved to FILE.
+  
+`bookmark-default-file' is unaffected, so your next Emacs session will
+still use `bookmark-default-file' for the initial set of bookmarks."
+  (interactive
+   (list (read-file-name
+          "Switch to bookmark file: " "~/"
+          ;; Default file as default choice, unless it's already current.
+          (and (not (bookmarkp-same-file-p bookmark-default-file bookmarkp-current-bookmark-file))
+               bookmark-default-file)
+          'confirm)))
+  (bookmark-load file t no-msg))
+
 
 ;;(@* "Menu-List (`*-bmenu-*') Filter Commands")
 ;;  *** Menu-List (`*-bmenu-*') Filter Commands ***
@@ -4439,7 +4571,7 @@ Returns the new bookmark (internal record)."
   (interactive)
   (bookmarkp-barf-if-not-in-menu-list)
   (setq bookmarkp-bmenu-filter-function  'bookmarkp-desktop-alist-only
-        bookmarkp-bmenu-title            "% Desktop Bookmarks")
+        bookmarkp-bmenu-title            "Desktop Bookmarks")
   (let ((bookmark-alist  (funcall bookmarkp-bmenu-filter-function)))
     (setq bookmarkp-latest-bookmark-alist  bookmark-alist)
     (bookmark-bmenu-list 'filteredp))
@@ -4452,7 +4584,7 @@ Returns the new bookmark (internal record)."
   (interactive)
   (bookmarkp-barf-if-not-in-menu-list)
   (setq bookmarkp-bmenu-filter-function  'bookmarkp-dired-alist-only
-        bookmarkp-bmenu-title            "% Dired Bookmarks")
+        bookmarkp-bmenu-title            "Dired Bookmarks")
   (let ((bookmark-alist  (funcall bookmarkp-bmenu-filter-function)))
     (setq bookmarkp-latest-bookmark-alist  bookmark-alist)
     (bookmark-bmenu-list 'filteredp))
@@ -4469,8 +4601,8 @@ With a prefix argument, do not include remote files or directories."
                                              'bookmarkp-local-file-alist-only
                                            'bookmarkp-file-alist-only)
         bookmarkp-bmenu-title            (if arg
-                                             "% Local File and Directory Bookmarks"
-                                           "% File and Directory Bookmarks"))
+                                             "Local File and Directory Bookmarks"
+                                           "File and Directory Bookmarks"))
   (let ((bookmark-alist  (funcall bookmarkp-bmenu-filter-function)))
     (setq bookmarkp-latest-bookmark-alist  bookmark-alist)
     (bookmark-bmenu-list 'filteredp))
@@ -4483,7 +4615,7 @@ With a prefix argument, do not include remote files or directories."
   (interactive)
   (bookmarkp-barf-if-not-in-menu-list)
   (setq bookmarkp-bmenu-filter-function  'bookmarkp-non-file-alist-only
-        bookmarkp-bmenu-title            "% Non-File Bookmarks")
+        bookmarkp-bmenu-title            "Non-File Bookmarks")
   (let ((bookmark-alist  (funcall bookmarkp-bmenu-filter-function)))
     (setq bookmarkp-latest-bookmark-alist  bookmark-alist)
     (bookmark-bmenu-list 'filteredp))
@@ -4496,7 +4628,7 @@ With a prefix argument, do not include remote files or directories."
   (interactive)
   (bookmarkp-barf-if-not-in-menu-list)
   (setq bookmarkp-bmenu-filter-function  'bookmarkp-gnus-alist-only
-        bookmarkp-bmenu-title            "% Gnus Bookmarks")
+        bookmarkp-bmenu-title            "Gnus Bookmarks")
   (let ((bookmark-alist  (funcall bookmarkp-bmenu-filter-function)))
     (setq bookmarkp-latest-bookmark-alist  bookmark-alist)
     (bookmark-bmenu-list 'filteredp))
@@ -4509,7 +4641,7 @@ With a prefix argument, do not include remote files or directories."
   (interactive)
   (bookmarkp-barf-if-not-in-menu-list)
   (setq bookmarkp-bmenu-filter-function  'bookmarkp-info-alist-only
-        bookmarkp-bmenu-title            "% Info Bookmarks")
+        bookmarkp-bmenu-title            "Info Bookmarks")
   (let ((bookmark-alist  (funcall bookmarkp-bmenu-filter-function)))
     (setq bookmarkp-latest-bookmark-alist  bookmark-alist)
     (bookmark-bmenu-list 'filteredp))
@@ -4522,7 +4654,7 @@ With a prefix argument, do not include remote files or directories."
   (interactive)
   (bookmarkp-barf-if-not-in-menu-list)
   (setq bookmarkp-bmenu-filter-function  'bookmarkp-man-alist-only
-        bookmarkp-bmenu-title            "% `man' Page Bookmarks")
+        bookmarkp-bmenu-title            "`man' Page Bookmarks")
   (let ((bookmark-alist  (funcall bookmarkp-bmenu-filter-function)))
     (setq bookmarkp-latest-bookmark-alist  bookmark-alist)
     (bookmark-bmenu-list 'filteredp))
@@ -4535,7 +4667,7 @@ With a prefix argument, do not include remote files or directories."
   (interactive)
   (bookmarkp-barf-if-not-in-menu-list)
   (setq bookmarkp-bmenu-filter-function  'bookmarkp-region-alist-only
-        bookmarkp-bmenu-title            "% Region Bookmarks")
+        bookmarkp-bmenu-title            "Region Bookmarks")
   (let ((bookmark-alist  (funcall bookmarkp-bmenu-filter-function)))
     (setq bookmarkp-latest-bookmark-alist  bookmark-alist)
     (bookmark-bmenu-list 'filteredp))
@@ -4549,7 +4681,7 @@ With a prefix argument, do not include remote files or directories."
   (interactive)
   (bookmarkp-barf-if-not-in-menu-list)
   (setq bookmarkp-bmenu-filter-function  'bookmarkp-w3m-alist-only
-        bookmarkp-bmenu-title            "% W3M Bookmarks")
+        bookmarkp-bmenu-title            "W3M Bookmarks")
   (let ((bookmark-alist  (funcall bookmarkp-bmenu-filter-function)))
     (setq bookmarkp-latest-bookmark-alist  bookmark-alist)
     (bookmark-bmenu-list 'filteredp))
@@ -4565,7 +4697,7 @@ To revert the list, use `\\<bookmark-bmenu-mode-map>\\[bookmarkp-bmenu-refresh-m
   (interactive)
   (bookmarkp-barf-if-not-in-menu-list)
   (setq bookmarkp-bmenu-filter-function  nil
-        bookmarkp-bmenu-title            "% All Bookmarks"
+        bookmarkp-bmenu-title            "All Bookmarks"
         bookmarkp-latest-bookmark-alist  bookmark-alist)
   (bookmark-bmenu-list)
   (when (interactive-p)
@@ -4599,8 +4731,8 @@ current filtering or sorting of the displayed list."
 (defun bookmarkp-bmenu-filter-alist-by-bookmark-name-regexp ()
   "Filter bookmarks by bookmark name, then refresh the bookmark list."
   (setq bookmarkp-bmenu-filter-function  'bookmarkp-regexp-filtered-bookmark-name-alist-only
-        bookmarkp-bmenu-title
-        (format "%% Bookmarks with Names Matching Regexp `%s'" bookmarkp-bmenu-filter-pattern))
+        bookmarkp-bmenu-title            (format "Bookmarks with Names Matching Regexp `%s'"
+                                                 bookmarkp-bmenu-filter-pattern))
   (let ((bookmark-alist  (funcall bookmarkp-bmenu-filter-function)))
     (setq bookmarkp-latest-bookmark-alist  bookmark-alist)
     (bookmark-bmenu-list 'filteredp)))
@@ -4620,9 +4752,8 @@ current filtering or sorting of the displayed list."
 (defun bookmarkp-bmenu-filter-alist-by-file-name-regexp ()
   "Filter bookmarks by file name, then refresh the bookmark list."
   (setq bookmarkp-bmenu-filter-function  'bookmarkp-regexp-filtered-file-name-alist-only
-        bookmarkp-bmenu-title
-        (format "%% Bookmarks with File Names Matching Regexp `%s'"
-                bookmarkp-bmenu-filter-pattern))
+        bookmarkp-bmenu-title            (format "Bookmarks with File Names Matching Regexp `%s'"
+                                                 bookmarkp-bmenu-filter-pattern))
   (let ((bookmark-alist  (funcall bookmarkp-bmenu-filter-function)))
     (setq bookmarkp-latest-bookmark-alist  bookmark-alist)
     (bookmark-bmenu-list 'filteredp)))
@@ -4642,8 +4773,8 @@ current filtering or sorting of the displayed list."
 (defun bookmarkp-bmenu-filter-alist-by-tags-regexp ()
   "Filter bookmarks by tags, then refresh the bookmark list."
   (setq bookmarkp-bmenu-filter-function  'bookmarkp-regexp-filtered-tags-alist-only
-        bookmarkp-bmenu-title
-        (format "%% Bookmarks with Tags Matching Regexp `%s'" bookmarkp-bmenu-filter-pattern))
+        bookmarkp-bmenu-title            (format "Bookmarks with Tags Matching Regexp `%s'"
+                                                 bookmarkp-bmenu-filter-pattern))
   (let ((bookmark-alist  (funcall bookmarkp-bmenu-filter-function)))
     (setq bookmarkp-latest-bookmark-alist  bookmark-alist)
     (bookmark-bmenu-list 'filteredp)))
@@ -5057,7 +5188,7 @@ They will henceforth be available for display in the bookmark list.
     (if (<= count 0)
         (message "No marked bookmarks")
       (setq bookmarkp-bmenu-filter-function  nil
-            bookmarkp-bmenu-title            "% All Bookmarks"
+            bookmarkp-bmenu-title            "All Bookmarks"
             bookmarkp-latest-bookmark-alist  bookmark-alist)
       (bookmark-bmenu-surreptitiously-rebuild-list)
       (message "UN-omitted %d bookmarks" count)))
@@ -5090,7 +5221,7 @@ You can then mark some of them and use `bookmarkp-bmenu-unomit-marked'
   (bookmarkp-barf-if-not-in-menu-list)
   (unless bookmarkp-bmenu-omitted-list (error "No omitted bookmarks"))
   (setq bookmarkp-bmenu-filter-function  'bookmarkp-omitted-alist-only
-        bookmarkp-bmenu-title            "% Omitted Bookmarks")
+        bookmarkp-bmenu-title            "Omitted Bookmarks")
   (let ((bookmark-alist  (funcall bookmarkp-bmenu-filter-function)))
     (setq bookmarkp-latest-bookmark-alist  bookmark-alist)
     (bookmark-bmenu-list 'filteredp))
@@ -5816,8 +5947,7 @@ Sorted:\t\t%s\nFiltering:\t%s\nMarked:\t\t%d\nOmitted:\t%d\nBookmark file:\t%s\n
                                     bookmarkp-reverse-sort-p)
                                "; order of predicate groups reversed")
                               (t ""))))))
-                 (or (and bookmarkp-bmenu-filter-function
-                          (downcase (substring bookmarkp-bmenu-title 2)))
+                 (or (and bookmarkp-bmenu-filter-function (downcase bookmarkp-bmenu-title))
                      "None")
                  (length bookmarkp-bmenu-marked-bookmarks)
                  (length bookmarkp-bmenu-omitted-list)
@@ -5972,7 +6102,7 @@ only the omit list and the sort & filter information."
                   bookmarkp-current-bookmark-file   ',bookmarkp-current-bookmark-file)
                  ;;(bookmarkp-bmenu-refresh-menu-list)
                  (let ((bookmark-alist  (or bookmarkp-latest-bookmark-alist bookmark-alist)))
-                   (bookmark-bmenu-list-1 'filteredp nil (interactive-p)))
+                   (bookmarkp-bmenu-list-1 'filteredp nil (interactive-p)))
                  (when bookmarkp-last-bmenu-bookmark
                    (with-current-buffer (get-buffer "*Bookmark List*")
                      (bookmarkp-bmenu-goto-bookmark-named bookmarkp-last-bmenu-bookmark)))
@@ -9027,8 +9157,8 @@ Omitting/un-omitting bookmarks
 \\[bookmarkp-unomit-all]\t- Un-omit all omitted bookmarks
 
 
-Options affecting *Bookmark List* display
------------------------------------------
+Options affecting `*Bookmark List*' display
+-------------------------------------------
 
 bookmarkp-sort-comparer          - Initial sort
 bookmarkp-sort-orders-for-cycling-alist

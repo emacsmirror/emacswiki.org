@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Jan 15 13:21:13 2010 (-0800)
+;; Last-Updated: Sun Feb 14 09:05:40 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 22624
+;;     Update #: 22626
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -921,7 +921,7 @@
 ;;  Internal variables and constants defined in Icicles:
 ;;
 ;;    `icicle-abs-file-candidates', `icicle-acting-on-next/prev',
-;;    `icicle-all-candidates-action-p',
+;;    `icicle-advice-info-list', `icicle-all-candidates-action-p',
 ;;    `icicle-all-candidates-list-action-fn',
 ;;    `icicle-all-candidates-list-alt-action-fn',
 ;;    `icicle-anychar-regexp', `icicle-apply-nomsg',
@@ -995,9 +995,9 @@
 ;;    `icicle-previous-raw-non-file-name-inputs',
 ;;    `icicle-progressive-completing-p',
 ;;    `icicle-proxy-candidate-regexp', `icicle-proxy-candidates',
-;;    `icicle-read-expression-map', `icicle-re-no-dot',
-;;    `icicle-require-match-p', `icicle-reverse-sort-p',
-;;    `icicle-saved-candidate-overlays',
+;;    `icicle-read-expression-map', `icicle-redefined-functions',
+;;    `icicle-re-no-dot', `icicle-require-match-p',
+;;    `icicle-reverse-sort-p', `icicle-saved-candidate-overlays',
 ;;    `icicle-saved-candidates-variables-obarray',
 ;;    `icicle-saved-completion-candidate',
 ;;    `icicle-saved-completion-candidates',

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Feb 13 10:40:51 2010 (-0800)
+;; Last-Updated: Sat Feb 13 12:03:55 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 3475
+;;     Update #: 3480
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -577,11 +577,15 @@ whatever OLD is bound to in MAP, or in OLDMAP, if provided."
     (bookmark-set                   icicle-bookmark-cmd             t) ; `C-x r m'
     (bookmark-jump                  icicle-bookmark                 t) ; `C-x r b'
     (bookmark-jump-other-window     icicle-bookmark-other-window    t) ; `C-x 4 j j'
-    ;; These are available only if you use library `bookmark+.el'.
-    ;; They are bound to `C-x 4 j' followed by: `K', `d', `f', `g', `i', `w', `r', `l', `b', `n'.
-    (bookmarkp-desktop-jump             icicle-bookmark-desktop-other-window
-     (featurep 'bookmark+))             ; The "other-window" aspect means nothing for a desktop.
-    (bookmarkp-desktop-jump-other-window icicle-bookmark-desktop-other-window
+    ;; These are available only if you use library `bookmark+.el'.  They are bound to `C-x 4 j'
+    ;; followed by: `B', `K', `d', `f', `g', `i', `w', `r', `l', `b', `n'.
+    (bookmarkp-bookmark-list-jump              icicle-bookmark-bookmark-list-other-window
+     (featurep 'bookmark+))             ; "other-window" means nothing for a bookmark list.
+    (bookmarkp-bookmark-list-jump-other-window icicle-bookmark-bookmark-list-other-window
+     (featurep 'bookmark+))
+    (bookmarkp-desktop-jump                    icicle-bookmark-desktop-other-window
+     (featurep 'bookmark+))             ; "other-window" means nothing for a desktop.
+    (bookmarkp-desktop-jump-other-window       icicle-bookmark-desktop-other-window
      (featurep 'bookmark+))
     (bookmarkp-dired-jump-other-window  icicle-bookmark-dired-other-window (featurep 'bookmark+))
     (bookmarkp-file-jump-other-window   icicle-bookmark-file-other-window  (featurep 'bookmark+))

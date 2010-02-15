@@ -1,7 +1,7 @@
-Turn your Mozilla based web browser into an almost Emacs. Essentially this makes it totally keyboard controlled. 
-You can even use emacs keybindings for wiki text editing, such as this article.
-
-http://conkeror.org/
+Conkeror is a Mozilla based web browser whose design is largely inspired by Emacs, notwithstanding a few unique
+features of its own for dealing with those problems unique to the domain of gui web browsing.  It embraces a
+prime directive to make every aspect of web browsing available via keyboard control.  For more information,
+visit http://conkeror.org/
 
 ----
 FireFox CategoryRelated

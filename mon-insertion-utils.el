@@ -482,7 +482,7 @@ Does not move point.\n
 ;;; ==============================
 ;;; :CREATED <Timestamp: Tuesday February 03, 2009 @ 03:41.17 PM - by MON KEY>
 (defun mon-string-incr (start-w end-w step-w &optional w-delim delimiter
-                               w-newln w-wspc insertp intrp)
+                        w-newln w-wspc insertp intrp)
   "Increment a range of numbers from START-W to END-W by STEP-W.\n
 START-W a number to increment from.\n
 END-W a number to increment to.\n
@@ -532,17 +532,16 @@ When both \"With delimiter?\" and \"Insert newlines?\" are nil prompt:\n
     (let* ((this-func ":FUNCTION mon-insert-string-incr")
            (start-incr (if intrp start-w 
                            (cond ((numberp start-w) start-w)
-                                 (stringp start-w (string-to-number start-w))
-                                 (error "%s - Arg START-W not a number" this-func))))
-                                  
+                                 ((stringp start-w) (string-to-number start-w))
+                                 (t (error "%s - Arg START-W not a number" this-func)))))
            (end-incr  (if intrp end-w
                           (cond ((numberp end-w) end-w)
-                                (stringp end-w (string-to-number end-w))
-                                (error "%s - Arg END-W not a number" this-func))))
+                                ((stringp end-w) (string-to-number end-w))
+                                (t (error "%s - Arg END-W not a number" this-func)))))
            (step-value (if intrp step-w
                            (cond ((numberp step-w) step-w)
-                                 (stringp step-w (string-to-number step-w))
-                                 (error "%s - Arg STEP-W not a number" this-func))))
+                                 ((stringp step-w) (string-to-number step-w))
+                                 (t (error "%s - Arg STEP-W not a number" this-func)))))
            (range (- end-incr start-incr))
            (range-check
             (when  (> (+ (/ range step-value) (mod range step-value)) 1000)
@@ -1435,54 +1434,6 @@ helps ensure multi-os portability.\n
 ;;; :TEST-ME (mon-insert-file-template)
 ;;; :TEST-ME (mon-insert-file-template t)
 ;;; :TEST-ME (call-interactively 'mon-insert-file-template)
-
-;;; ==============================
-;;; :CREATED <Timestamp: #{2010-02-01T14:38:38-05:00Z}#{10051} - by MON KEY>
-(defun mon-build-copyright-string-license (&optional mit-bsd-gfdl)
-  "Return a copyright license string of type GPL, MIT, BSD, or GFDL.
-When optional arg GPL, MIT, BSD, or GFDL \(quoted symbol\) is non-nil generate that
-license. In no license is specified use the default arg GPL with `GNU-GPLv3'.\n
-:EXAMPLE\n\n\(mon-build-copyright-string-license\)
-\(mon-build-copyright-string-license t\)
-\(mon-build-copyright-string-license nil t\)
-\(mon-build-copyright-string-license nil nil t\)\n
-License are mapped from the list of strings in:
-:VARIALBE `*mon-mit-license-header*'
-:VARIALBE `*mon-bsd-license-header*'
-:VARIALBE `*mon-gnu-license-header-gfdl*'\n
-:VARIALBE `*mon-gnu-license-header*'\n
-:SEE-ALSO `*mon-gnu-license-header*',`*mon-bsd-license-header*',
-`mon-insert-file-template', `mon-insert-gnu-licence',
-`mon-insert-gnu-licence-gfdl'.\n►►►"
-  (let ((lic (if mit-bsd-gfdl 
-                (cond ((eq mit-bsd-gfdl 'mit)  'mit)
-                      ((eq mit-bsd-gfdl 'bsd)  'bsd)
-                      ((eq mit-bsd-gfdl 'gfdl) 'gfdl)
-                      (t 'gpl))
-                'gpl)))    
-    (concat (unless (eq lic 'gfdl)
-              (replace-regexp-in-string " $" ". All rights reserved." 
-                                        (mon-build-copyright-string nil nil t t)))
-            (mapconcat #'(lambda (s)
-                           (if (eq lic 'bsd)
-                               (replace-regexp-in-string  "<COPYRIGHT HOLDER>" 
-                                                          (cadr (assoc 6 *MON-NAME*)) s)
-                               (identity s)))
-                       (case lic 
-                         ('mit  *mon-mit-license-header*)     
-                         ('bsd  *mon-bsd-license-header*)     
-                         ('gfdl *mon-gnu-license-header-gfdl*)
-                         ('gpl  *mon-gnu-license-header*))
-                       "\n;; " ))))
-;;
-;;;`mon-build-copyright-string-license'
-;;
-;;; :TEST-ME (mon-build-copyright-string-license)
-;;; :TEST-ME (mon-build-copyright-string-license 'mit)
-;;; :TEST-ME (mon-build-copyright-string-license 'bsd)
-;;; :TEST-ME (mon-build-copyright-string-license 'gfdl)
-;;; :TEST-ME (mon-build-copyright-string-license 'gpl)
-
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-08-09T11:26:24-04:00Z}#{09327} - by MON KEY>
 (defvar *mon-gnu-license-header* nil
@@ -1633,6 +1584,53 @@ Insertion provides GFDL clause.\n
 ;;; :TEST-ME *mon-gnu-license-header-gfdl*
 ;;; (progn (makunbound '*mon-gnu-lincense-header-gfdl*)
 ;;;        (unintern '*mon-gnu-license-header-gfdl*) )
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-02-01T14:38:38-05:00Z}#{10051} - by MON KEY>
+(defun mon-build-copyright-string-license (&optional mit-bsd-gfdl)
+  "Return a copyright license string of type GPL, MIT, BSD, or GFDL.
+When optional arg GPL, MIT, BSD, or GFDL \(quoted symbol\) is non-nil generate that
+license. In no license is specified use the default arg GPL with `GNU-GPLv3'.\n
+:EXAMPLE\n\n\(mon-build-copyright-string-license\)
+\(mon-build-copyright-string-license t\)
+\(mon-build-copyright-string-license nil t\)
+\(mon-build-copyright-string-license nil nil t\)\n
+License are mapped from the list of strings in:
+:VARIALBE `*mon-mit-license-header*'
+:VARIALBE `*mon-bsd-license-header*'
+:VARIALBE `*mon-gnu-license-header-gfdl*'\n
+:VARIALBE `*mon-gnu-license-header*'\n
+:SEE-ALSO `*mon-gnu-license-header*',`*mon-bsd-license-header*',
+`mon-insert-file-template', `mon-insert-gnu-licence',
+`mon-insert-gnu-licence-gfdl'.\n►►►"
+  (let ((lic (if mit-bsd-gfdl 
+                (cond ((eq mit-bsd-gfdl 'mit)  'mit)
+                      ((eq mit-bsd-gfdl 'bsd)  'bsd)
+                      ((eq mit-bsd-gfdl 'gfdl) 'gfdl)
+                      (t 'gpl))
+                'gpl)))    
+    (concat (unless (eq lic 'gfdl)
+              (replace-regexp-in-string " $" ". All rights reserved." 
+                                        (mon-build-copyright-string nil nil t t)))
+            (mapconcat #'(lambda (s)
+                           (if (eq lic 'bsd)
+                               (replace-regexp-in-string  "<COPYRIGHT HOLDER>" 
+                                                          (cadr (assoc 6 *MON-NAME*)) s)
+                               (identity s)))
+                       (case lic 
+                         ('mit  *mon-mit-license-header*)     
+                         ('bsd  *mon-bsd-license-header*)     
+                         ('gfdl *mon-gnu-license-header-gfdl*)
+                         ('gpl  *mon-gnu-license-header*))
+                       "\n;; " ))))
+;;
+;;;`mon-build-copyright-string-license'
+;;
+;;; :TEST-ME (mon-build-copyright-string-license)
+;;; :TEST-ME (mon-build-copyright-string-license 'mit)
+;;; :TEST-ME (mon-build-copyright-string-license 'bsd)
+;;; :TEST-ME (mon-build-copyright-string-license 'gfdl)
+;;; :TEST-ME (mon-build-copyright-string-license 'gpl)
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-08-09T11:26:16-04:00Z}#{09327} - by MON KEY>

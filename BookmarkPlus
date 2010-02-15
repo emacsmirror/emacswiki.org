@@ -656,9 +656,11 @@ using `d' plus `x' or marking then `D'.
 [:BookmarkListDisplay]
 == Bookmark List (Display) ==
 
-'''Bookmark+''' enhances the bookmark list (aka the bookmark "menu list", a misnomer) that is displayed in buffer `##*Bookmark List*##' when you use `C-x r l' (command `bookmark-bmenu-list'). Bookmarks are highlighted to
+'''Bookmark+''' enhances the bookmark list (aka the bookmark "menu list", a misnomer) that is displayed in buffer `##*Bookmark List*##' when you use `C-x r l' (command `bookmark-bmenu-list').
+
+Bookmarks are highlighted to
 indicate their type. You can mark and unmark bookmarks, show or
-hide bookmarks of particular types, and more.
+hide bookmarks of particular types, and more.  Bookmarks that have tags are marked with a '''`t''''.  Bookmarks that have an annotation are marked with an '''`a'''' (not with a `##*##' as in vanilla ##bookmark.el##).
 
 Use `##?##' or `##C-h m##' in buffer `##*Bookmark List*##' for more
 information about the bookmark list, including:

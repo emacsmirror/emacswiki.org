@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Feb 13 11:09:56 2010 (-0800)
+;; Last-Updated: Sat Feb 13 11:59:42 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 20176
+;;     Update #: 20193
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -57,11 +57,13 @@
 ;;    (+)`icicle-add-buffer-config',
 ;;    `icicle-add-entry-to-saved-completion-set',
 ;;    `icicle-bbdb-complete-name', (+)`icicle-bookmark',
+;;    (+)`icicle-bookmark-bookmark-list-other-window',
+;;    `icicle-bookmark-bookmark-list-narrow',
 ;;    (+)`icicle-bookmark-cmd',
-;;    (+)`icicle-bookmark-dired-other-window',
-;;    `icicle-bookmark-dired-narrow',
 ;;    (+)`icicle-bookmark-desktop-other-window',
 ;;    `icicle-bookmark-desktop-narrow',
+;;    (+)`icicle-bookmark-dired-other-window',
+;;    `icicle-bookmark-dired-narrow',
 ;;    (+)`icicle-bookmark-file-other-window',
 ;;    `icicle-bookmark-file-narrow',
 ;;    (+)`icicle-bookmark-gnus-other-window',
@@ -2840,6 +2842,7 @@ If you also use library `bookmark+.el', then:
    given type:
 
    `C-M-b' - non-file (buffer) bookmarks
+   `C-M-B' - bookmark-list bookmarks
    `C-M-d' - Dired bookmarks
    `C-M-f' - file bookmarks
    `C-M-F' - local-file bookmarks
@@ -2857,20 +2860,21 @@ If you also use library `bookmark+.el', then:
  * In *Completions*, the candidate bookmarks are highlighted according
    to their type.  You can customize the highlighting faces used:
 
+  `bookmarkp-bad-bookmark'              - possibly bad bookmark
+  `bookmarkp-bookmark-list'             - bookmark list
+  `bookmarkp-buffer'                    - buffer
   `bookmarkp-desktop'                   - desktop
+  `bookmarkp-function'                  - function bookmark
+  `bookmarkp-gnus'                      - Gnus article
+  `bookmarkp-info'                      - Info node
   `bookmarkp-local-directory'           - local directory
   `bookmarkp-local-file-with-region'    - local file with a region
   `bookmarkp-local-file-without-region' - local file without a region
-  `bookmarkp-remote-file'               - remote-file
-  `bookmarkp-buffer'                    - buffer
-  `bookmarkp-non-file'                  - non-file (no current buffer)
-  `bookmarkp-gnus'                      - Gnus article
-  `bookmarkp-info'                      - Info node
   `bookmarkp-man'                       - `man' page
-  `bookmarkp-w3m'                       - W3m URL
-  `bookmarkp-function'                  - function bookmark
+  `bookmarkp-non-file'                  - non-file (no current buffer)
+  `bookmarkp-remote-file'               - remote-file
   `bookmarkp-sequence'                  - sequence bookmark
-  `bookmarkp-bad-bookmark'              - possibly bad bookmark
+  `bookmarkp-w3m'                       - W3m URL
 
 If you also use library `crosshairs.el', then the visited bookmark
 position is highlighted."               ; Doc string
@@ -2901,6 +2905,8 @@ position is highlighted."               ; Doc string
       (define-key minibuffer-local-must-match-map "\C-\M-r" 'icicle-bookmark-region-narrow)
       (define-key minibuffer-local-must-match-map "\C-\M-w" 'icicle-bookmark-w3m-narrow)
       (define-key minibuffer-local-must-match-map "\C-\M-@" 'icicle-bookmark-remote-file-narrow)
+      (define-key minibuffer-local-must-match-map [(control meta ?B)] ; `C-M-B'
+        'icicle-bookmark-bookmark-list-narrow)
       (define-key minibuffer-local-must-match-map [(control meta ?F)] ; `C-M-F'
         'icicle-bookmark-local-file-narrow)
       (define-key minibuffer-local-must-match-map [(control meta ?K)] ; `C-M-K'
@@ -2939,6 +2945,8 @@ Same as `icicle-bookmark', but uses another window." ; Doc string
       (define-key minibuffer-local-must-match-map "\C-\M-r" 'icicle-bookmark-region-narrow)
       (define-key minibuffer-local-must-match-map "\C-\M-w" 'icicle-bookmark-w3m-narrow)
       (define-key minibuffer-local-must-match-map "\C-\M-@" 'icicle-bookmark-remote-file-narrow)
+      (define-key minibuffer-local-must-match-map [(control meta ?B)] ; `C-M-B'
+        'icicle-bookmark-bookmark-list-narrow)
       (define-key minibuffer-local-must-match-map [(control meta ?F)] ; `C-M-F'
         'icicle-bookmark-local-file-narrow)
       (define-key minibuffer-local-must-match-map [(control meta ?K)] ; `C-M-K'
@@ -3053,6 +3061,12 @@ Remove crosshairs highlighting and unbind filtering keys."
 
 ;;; These are minibuffer commands, but we define them here instead of in `icicles-mcmd.el'.
 
+(defun icicle-bookmark-bookmark-list-narrow () ; Bound to `C-M-B' in minibuffer for completion.
+  "Narrow the bookmark candidates to bookmark-list bookmarks."
+  (interactive)
+  (icicle-narrow-candidates-with-predicate
+   #'(lambda (x) (bookmarkp-bookmark-list-bookmark-p (car x)))))
+
 (defun icicle-bookmark-desktop-narrow ()   ; Bound to `C-M-K' in minibuffer for bookmark completion.
   "Narrow the bookmark candidates to desktop bookmarks."
   (interactive)
@@ -3141,6 +3155,7 @@ You need library `bookmark+.el' for this command." type type) ; Doc string
     (icicle-bookmark-cleanup)))         ; Last code
 
 ;; The following sexps macro-expand to define these commands:
+;;  `icicle-bookmark-bookmark-list-other-window',
 ;;  `icicle-bookmark-desktop-other-window',
 ;;  `icicle-bookmark-dired-other-window',
 ;;  `icicle-bookmark-file-other-window',
@@ -3152,6 +3167,7 @@ You need library `bookmark+.el' for this command." type type) ; Doc string
 ;;  `icicle-bookmark-region-other-window',
 ;;  `icicle-bookmark-remote-file-other-window',
 ;;  `icicle-bookmark-w3m-other-window'.
+(icicle-define-bookmark-other-window-command "bookmark-list")
 (icicle-define-bookmark-other-window-command "desktop")
 (icicle-define-bookmark-other-window-command "dired")
 (icicle-define-bookmark-other-window-command "file")

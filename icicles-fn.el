@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Dec 21 08:52:22 2009 (-0800)
+;; Last-Updated: Sun Feb 14 10:03:58 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 11460
+;;     Update #: 11522
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2205,6 +2205,8 @@ Call `icicle-read-shell-command-completing', passing PROMPT and FILES."
 
 ;; Similar to `minibuffer-default-add-dired-shell-commands', but if Dired-X is available
 ;; we include also the commands from `dired-guess-default'.
+;;
+;; Free var here: `files' is bound in `icicle-dired-read-shell-command'.
 (defun icicle-minibuffer-default-add-dired-shell-commands ()
   "Return a list of all commands associated with current dired files.
 The commands are from `minibuffer-default-add-dired-shell-commands',
@@ -2488,171 +2490,173 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                (error nil)))
            (save-excursion
              (save-window-excursion
-               (set-buffer (get-buffer "*Completions*"))
-               (let ((buffer-read-only  nil)
-                     (eob               (point-max))
-                     (dir               (and (icicle-file-name-input-p) icicle-last-input
-                                             (icicle-file-name-directory icicle-last-input)))
-                     (hist              (and (symbolp minibuffer-history-variable)
-                                             (boundp minibuffer-history-variable)
-                                             (symbol-value minibuffer-history-variable)))
-                     (case-fold-search
-                      ;; Don't bother with buffer completion, `read-buffer-completion-ignore-case'.
-                      (if (and (icicle-file-name-input-p)
-                               (boundp 'read-file-name-completion-ignore-case))
-                          read-file-name-completion-ignore-case
-                        completion-ignore-case)))
-                 (goto-char (icicle-start-of-candidates-in-Completions))
-                 (while (not (eobp))
-                   (let* ((beg    (point))
-                          (end    (next-single-property-change beg 'mouse-face nil eob))
-                          (next   (next-single-property-change end 'mouse-face nil eob))
-                          (faces  ()))
+               (with-current-buffer (get-buffer "*Completions*")
+                 (let ((buffer-read-only  nil)
+                       (eob               (point-max))
+                       (dir               (and (icicle-file-name-input-p) icicle-last-input
+                                               (icicle-file-name-directory icicle-last-input)))
+                       (hist              (and (symbolp minibuffer-history-variable)
+                                               (boundp minibuffer-history-variable)
+                                               (symbol-value minibuffer-history-variable)))
+                       (case-fold-search
+                        ;; Don't bother with buffer completion, `read-buffer-completion-ignore-case'.
+                        (if (and (icicle-file-name-input-p)
+                                 (boundp 'read-file-name-completion-ignore-case))
+                            read-file-name-completion-ignore-case
+                          completion-ignore-case)))
+                   (goto-char (icicle-start-of-candidates-in-Completions))
+                   (while (not (eobp))
+                     (let* ((beg    (point))
+                            (end    (next-single-property-change beg 'mouse-face nil eob))
+                            (next   (next-single-property-change end 'mouse-face nil eob))
+                            (faces  ()))
 
-                     ;; Highlight candidate specially if it is a proxy candidate.
-                     (let ((candidate  (icicle-current-completion-in-Completions)))
-                       ;;$$$ (when dir (setq candidate  (expand-file-name candidate dir)))
-                       (when (member candidate icicle-proxy-candidates)
-                         (setq faces  (cons 'icicle-proxy-candidate faces))
-                         (if (not icicle-proxy-candidate-regexp)
-                             (add-text-properties beg end (cons 'face (list faces)))
-                           (save-match-data
-                             (when (string-match icicle-proxy-candidate-regexp candidate)
-                               (add-text-properties (+ beg (match-beginning 0)) (+ beg (match-end 0))
-                                                    (cons 'face (list faces))))))))
-
-                     ;; Highlight candidate specially if it is an extra candidate.
-                     (let ((candidate  (icicle-current-completion-in-Completions)))
-                       ;;$$$ (when dir (setq candidate  (expand-file-name candidate dir)))
-                       (save-match-data
-                         (when (member candidate icicle-extra-candidates)
-                           (setq faces  (cons 'icicle-extra-candidate faces))
-                           (add-text-properties beg end (cons 'face (list faces))))))
-
-                     ;; Highlight candidate specially if it is a special candidate.
-                     (let ((candidate  (icicle-current-completion-in-Completions)))
-                       ;;$$$ (when dir (setq candidate  (expand-file-name candidate dir)))
-                       (save-match-data
-                         (when (and icicle-special-candidate-regexp
-                                    (string-match icicle-special-candidate-regexp candidate))
-                           (setq faces  (cons 'icicle-special-candidate faces))
-                           (if (not icicle-special-candidate-regexp)
+                       ;; Highlight candidate specially if it is a proxy candidate.
+                       (let ((candidate  (icicle-current-completion-in-Completions)))
+                         ;;$$$ (when dir (setq candidate  (expand-file-name candidate dir)))
+                         (when (member candidate icicle-proxy-candidates)
+                           (setq faces  (cons 'icicle-proxy-candidate faces))
+                           (if (not icicle-proxy-candidate-regexp)
                                (add-text-properties beg end (cons 'face (list faces)))
-                             (add-text-properties (+ beg (match-beginning 0)) (+ beg (match-end 0))
-                                                  (cons 'face (list faces)))))))
-
-                     ;; Highlight candidate (`*-historical-candidate') if it was used previously.
-                     (when icicle-highlight-historical-candidates-flag
-                       (let ((candidate  (icicle-current-completion-in-Completions)))
-                         (when dir (setq candidate  (expand-file-name candidate dir)))
-                         (when (and (consp hist) (member candidate hist)
-                                    (not (member candidate icicle-hist-cands-no-highlight)))
-                           (add-text-properties
-                            beg end
-                            `(face ,(setq faces  (cons 'icicle-historical-candidate faces)))))))
-
-                     ;; Highlight, inside the candidate, the expanded common match.
-                     (when (and (or icicle-expand-input-to-common-match-flag
-                                    (eq icicle-current-completion-mode 'prefix))
-                                icicle-current-input (not (string= "" icicle-current-input)))
-                       (save-excursion
-                         (save-restriction
-                           (narrow-to-region beg end) ; Restrict to the completion candidate.
-                           (when (re-search-forward (regexp-quote (icicle-minibuf-input-sans-dir
-                                                                   icicle-current-input))
-                                                    nil t)
-                             (setq faces  (cons 'icicle-common-match-highlight-Completions faces))
-                             (put-text-property (match-beginning 0) (point) 'face faces)))))
-
-                     ;; Hide match for `icicle-current-input' (expanded common match, if available),
-                     ;; if `icicle-hide-common-match-in-Completions-flag' is non-nil.
-                     (save-excursion
-                       (save-restriction
-                         (narrow-to-region beg end) ; Restrict to the completion candidate.
-                         (when (and icicle-hide-common-match-in-Completions-flag
-                                    icicle-common-match-string)
-                           (when (re-search-forward (regexp-quote icicle-common-match-string) nil t)
-                             (if (> emacs-major-version 20)
-                                 (put-text-property (match-beginning 0) (point) 'display "...")
-                               (put-text-property (match-beginning 0) (point) 'invisible t))))))
-
-                     ;; Highlight, inside the candidate, what the input expression matches.
-                     (unless (and icicle-current-raw-input (string= "" icicle-current-raw-input)
-                                  icicle-apropos-complete-match-fn) ; Do nothing if no match fn.
-                       (save-excursion
-                         (save-restriction
-                           (narrow-to-region beg end) ; Restrict to the completion candidate.
-                           (let ((fn  (if (and (eq 'prefix icicle-current-completion-mode)
-                                               (not (memq icicle-current-TAB-method '(fuzzy swank))))
-                                          ;; $$$$$$ What is best for `vanilla' (Emacs 23) completion?
-                                          'search-forward
-                                        (case icicle-apropos-complete-match-fn
-                                          (icicle-scatter-match
-                                           (lambda (input bound noerror)
-                                             (re-search-forward (icicle-scatter input) bound noerror)))
-                                          (icicle-levenshtein-match
-                                           (if (= icicle-levenshtein-distance 1)
-                                               (lambda (input bound noerror)
-                                                 (re-search-forward (icicle-levenshtein-one-regexp
-                                                                     input)
-                                                                    bound noerror))
-                                             're-search-forward))
-                                          (otherwise 're-search-forward)))))
-                             (when (funcall fn (icicle-minibuf-input-sans-dir icicle-current-raw-input)
-                                            nil t)
-                               (setq faces  (cons 'icicle-match-highlight-Completions faces))
-                               (put-text-property (match-beginning 0) (point) 'face faces))))))
-
-                     ;; Highlight candidate if it has been saved.
-                     (when icicle-saved-completion-candidates
-                       (let ((candidate  (icicle-current-completion-in-Completions)))
-                         (when (member candidate icicle-saved-completion-candidates)
-                           (let ((ov  (make-overlay beg end (current-buffer))))
-                             (push ov icicle-saved-candidate-overlays)
-                             (overlay-put ov 'face 'icicle-saved-candidate)
-                             (overlay-put ov 'priority '10)))))
-
-                     ;; Treat `icicle-candidate-properties-alist'.
-                     ;; A `face' prop will unfortunately wipe out any `face' prop we just applied.
-                     (when icicle-candidate-properties-alist
-                       (save-excursion
-                         (save-restriction
-                           (narrow-to-region beg end) ; Restrict to the completion candidate.
-                           (let* ((candidate  (buffer-substring (point-min) (point-max)))
-                                  (orig-pt    (point))
-                                  (start      0)
-                                  (end        0)
-                                  (partnum    1)
-                                  (join       (concat "\\(" icicle-list-join-string "\\|$\\)"))
-                                  (len        (length candidate))
-                                  notfirst)
                              (save-match-data
-                               (while (and (string-match
-                                            join candidate
-                                            (if (and notfirst (= end (match-beginning 0))
-                                                     (< end (length candidate)))
-                                                (1+ end)
-                                              end))
-                                           (< end len))
-                                 (setq notfirst  t
-                                       end       (or (match-beginning 0) len))
-                                 (let* ((entry
-                                         (assq partnum icicle-candidate-properties-alist))
-                                        (properties              (cadr entry))
-                                        (propertize-join-string  (car (cddr entry))))
-                                   (when properties
-                                     (add-text-properties
-                                      (+ start orig-pt) (+ end orig-pt) properties))
-                                   (when propertize-join-string
-                                     (add-text-properties
-                                      (+ end orig-pt)
-                                      (+ end orig-pt (length icicle-list-join-string))
-                                      properties)))
-                                 (setq partnum  (1+ partnum)
-                                       start    (match-end 0))))))))
-                     (goto-char next))))
-               (set-buffer-modified-p nil)
-               (setq buffer-read-only  t)))
+                               (when (string-match icicle-proxy-candidate-regexp candidate)
+                                 (add-text-properties (+ beg (match-beginning 0)) (+ beg (match-end 0))
+                                                      (cons 'face (list faces))))))))
+
+                       ;; Highlight candidate specially if it is an extra candidate.
+                       (let ((candidate  (icicle-current-completion-in-Completions)))
+                         ;;$$$ (when dir (setq candidate  (expand-file-name candidate dir)))
+                         (save-match-data
+                           (when (member candidate icicle-extra-candidates)
+                             (setq faces  (cons 'icicle-extra-candidate faces))
+                             (add-text-properties beg end (cons 'face (list faces))))))
+
+                       ;; Highlight candidate specially if it is a special candidate.
+                       (let ((candidate  (icicle-current-completion-in-Completions)))
+                         ;;$$$ (when dir (setq candidate  (expand-file-name candidate dir)))
+                         (save-match-data
+                           (when (and icicle-special-candidate-regexp
+                                      (string-match icicle-special-candidate-regexp candidate))
+                             (setq faces  (cons 'icicle-special-candidate faces))
+                             (if (not icicle-special-candidate-regexp)
+                                 (add-text-properties beg end (cons 'face (list faces)))
+                               (add-text-properties (+ beg (match-beginning 0)) (+ beg (match-end 0))
+                                                    (cons 'face (list faces)))))))
+
+                       ;; Highlight candidate (`*-historical-candidate') if it was used previously.
+                       (when icicle-highlight-historical-candidates-flag
+                         (let ((candidate  (icicle-current-completion-in-Completions)))
+                           (when dir (setq candidate  (expand-file-name candidate dir)))
+                           (when (and (consp hist) (member candidate hist)
+                                      (not (member candidate icicle-hist-cands-no-highlight)))
+                             (add-text-properties
+                              beg end
+                              `(face ,(setq faces  (cons 'icicle-historical-candidate faces)))))))
+
+                       ;; Highlight, inside the candidate, the expanded common match.
+                       (when (and (or icicle-expand-input-to-common-match-flag
+                                      (eq icicle-current-completion-mode 'prefix))
+                                  icicle-current-input (not (string= "" icicle-current-input)))
+                         (save-excursion
+                           (save-restriction
+                             (narrow-to-region beg end) ; Restrict to the completion candidate.
+                             (when (re-search-forward (regexp-quote (icicle-minibuf-input-sans-dir
+                                                                     icicle-current-input))
+                                                      nil t)
+                               (setq faces  (cons 'icicle-common-match-highlight-Completions faces))
+                               (put-text-property (match-beginning 0) (point) 'face faces)))))
+
+                       ;; Hide match for `icicle-current-input' (expanded common match, if available),
+                       ;; if `icicle-hide-common-match-in-Completions-flag' is non-nil.
+                       (save-excursion
+                         (save-restriction
+                           (narrow-to-region beg end) ; Restrict to the completion candidate.
+                           (when (and icicle-hide-common-match-in-Completions-flag
+                                      icicle-common-match-string)
+                             (when (re-search-forward (regexp-quote icicle-common-match-string) nil t)
+                               (if (> emacs-major-version 20)
+                                   (put-text-property (match-beginning 0) (point) 'display "...")
+                                 (put-text-property (match-beginning 0) (point) 'invisible t))))))
+
+                       ;; Highlight, inside the candidate, what the input expression matches.
+                       (unless (and icicle-current-raw-input (string= "" icicle-current-raw-input)
+                                    icicle-apropos-complete-match-fn) ; Do nothing if no match fn.
+                         (save-excursion
+                           (save-restriction
+                             (narrow-to-region beg end) ; Restrict to the completion candidate.
+                             (let ((fn  (if (and (eq 'prefix icicle-current-completion-mode)
+                                                 (not (memq icicle-current-TAB-method '(fuzzy swank))))
+                                            ;; $$$$$$ What is best for `vanilla' (Emacs 23) completion?
+                                            'search-forward
+                                          (case icicle-apropos-complete-match-fn
+                                            (icicle-scatter-match
+                                             (lambda (input bound noerror)
+                                               (re-search-forward (icicle-scatter input)
+                                                                  bound noerror)))
+                                            (icicle-levenshtein-match
+                                             (if (= icicle-levenshtein-distance 1)
+                                                 (lambda (input bound noerror)
+                                                   (re-search-forward (icicle-levenshtein-one-regexp
+                                                                       input)
+                                                                      bound noerror))
+                                               're-search-forward))
+                                            (otherwise 're-search-forward)))))
+                               (when (funcall fn (icicle-minibuf-input-sans-dir
+                                                  icicle-current-raw-input)
+                                              nil t)
+                                 (setq faces  (cons 'icicle-match-highlight-Completions faces))
+                                 (put-text-property (match-beginning 0) (point) 'face faces))))))
+
+                       ;; Highlight candidate if it has been saved.
+                       (when icicle-saved-completion-candidates
+                         (let ((candidate  (icicle-current-completion-in-Completions)))
+                           (when (member candidate icicle-saved-completion-candidates)
+                             (let ((ov  (make-overlay beg end (current-buffer))))
+                               (push ov icicle-saved-candidate-overlays)
+                               (overlay-put ov 'face 'icicle-saved-candidate)
+                               (overlay-put ov 'priority '10)))))
+
+                       ;; Treat `icicle-candidate-properties-alist'.
+                       ;; A `face' prop will unfortunately wipe out any `face' prop we just applied.
+                       (when icicle-candidate-properties-alist
+                         (save-excursion
+                           (save-restriction
+                             (narrow-to-region beg end) ; Restrict to the completion candidate.
+                             (let* ((candidate  (buffer-substring (point-min) (point-max)))
+                                    (orig-pt    (point))
+                                    (start      0)
+                                    (end        0)
+                                    (partnum    1)
+                                    (join       (concat "\\(" icicle-list-join-string "\\|$\\)"))
+                                    (len        (length candidate))
+                                    notfirst)
+                               (save-match-data
+                                 (while (and (string-match
+                                              join candidate
+                                              (if (and notfirst (= end (match-beginning 0))
+                                                       (< end (length candidate)))
+                                                  (1+ end)
+                                                end))
+                                             (< end len))
+                                   (setq notfirst  t
+                                         end       (or (match-beginning 0) len))
+                                   (let* ((entry
+                                           (assq partnum icicle-candidate-properties-alist))
+                                          (properties              (cadr entry))
+                                          (propertize-join-string  (car (cddr entry))))
+                                     (when properties
+                                       (add-text-properties
+                                        (+ start orig-pt) (+ end orig-pt) properties))
+                                     (when propertize-join-string
+                                       (add-text-properties
+                                        (+ end orig-pt)
+                                        (+ end orig-pt (length icicle-list-join-string))
+                                        properties)))
+                                   (setq partnum  (1+ partnum)
+                                         start    (match-end 0))))))))
+                       (goto-char next))))
+                 (set-buffer-modified-p nil)
+                 (setq buffer-read-only  t))))
            (with-current-buffer (get-buffer "*Completions*")
              (set (make-local-variable 'mode-line-frame-identification)
                   (format "  %d candidates  " nb-cands))
@@ -3420,7 +3424,7 @@ occurrence of `*'.  Otherwise, this is just `file-name-directory'."
   "If short help for CANDIDATE is available, show it in the mode-line.
 Do this only if `icicle-help-in-mode-line-flag' is non-nil."
   (when icicle-help-in-mode-line-flag
-    (let* ((cand       (cond (;; Call to `lacarte-execute-menu-command' (in `lacarte.el').
+    (let* ((cand       (cond (;; Call to `lacarte-execute(-menu)-command' (in `lacarte.el').
                               ;; Use command associated with menu item.
                               (consp lacarte-menu-items-alist)
                               (cdr (assoc candidate lacarte-menu-items-alist)))
@@ -3561,7 +3565,7 @@ file name, or `icicle-previous-raw-non-file-name-inputs', otherwise."
 If there is a previous input and we are cycling, then restore the last
  input.  (Cycled completions don't count as input.)
 Otherwise, save the current input for use by `C-l', and then compute
-  the expanded common match.
+ the expanded common match.
 
 There are several particular cases that modulate the behavior - see
 the code."
@@ -3749,6 +3753,10 @@ property and a value."
 (defun icicle-strip-ignored-files-and-sort (candidates)
   "Remove file names with ignored extensions, and \".\".  Sort CANDIDATES.
 If `icicle-sort-function' is nil, then do not sort."
+  (when (fboundp 'completion-ignored-build-apply) ; In `completion-ignored-build.el'.
+    (let ((completion-ignored-extensions  completion-ignored-extensions))
+      (completion-ignored-build-apply)
+      (icicle-update-ignored-extensions-regexp)))
   (let* ((pred1           (lambda (cand) (or (save-match-data
                                                (string-match icicle-ignored-extensions-regexp cand))
                                              (string= "./" cand))))

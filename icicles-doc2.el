@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Jan 17 18:36:58 2010 (-0800)
+;; Last-Updated: Mon Feb  1 17:10:17 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 26137
+;;     Update #: 26138
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5453,17 +5453,17 @@
 ;;                      `icicle-previous-apropos-candidate', which
 ;;                      cycle candidate apropos completions.
 ;;
-;;                     (The documentation always refers to the keys
-;;                     that cycle completion candidates as `down',
-;;                     `up', `next', and `prior'.  Actually, these are
-;;                     the cycling keys only by default.  You can
-;;                     customize the cycling keys, using options
-;;                     `icicle-prefix-cycle-next-keys',
-;;                     `icicle-modal-cycle-down-keys' (modal),
-;;                     `icicle-prefix-cycle-previous-keys',
-;;                     `icicle-modal-cycle-up-keys' (modal),
-;;                     `icicle-apropos-cycle-next-keys', and
-;;                     `icicle-apropos-cycle-previous-keys'.)
+;;                      (The documentation always refers to the keys
+;;                      that cycle completion candidates as `down',
+;;                      `up', `next', and `prior'.  Actually, these
+;;                      are the cycling keys only by default.  You can
+;;                      customize the cycling keys, using options
+;;                      `icicle-prefix-cycle-next-keys',
+;;                      `icicle-modal-cycle-down-keys' (modal),
+;;                      `icicle-prefix-cycle-previous-keys',
+;;                      `icicle-modal-cycle-up-keys' (modal),
+;;                      `icicle-apropos-cycle-next-keys', and
+;;                      `icicle-apropos-cycle-previous-keys'.)
 ;;
 ;;    Keys bound globally to commands that perform simple text
 ;;    insertion, deletion, and transposition operations - commands

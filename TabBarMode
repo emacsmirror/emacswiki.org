@@ -109,7 +109,10 @@ The following will provide windows style (shift-)control tab behaviour and autol
 
 By adding the following code snippet to the .emacs file only the non-scratch buffers can be made to be displayed:
 
-    (when (require ‘tabbar nil t)
+ ;; 1- if remove-if is not found, add here (require 'cl)
+ ;; 2- in my emacs 23, I had to remove the "b" from "lambda (b)"
+
+    (when (require 'tabbar nil t)
       (setq tabbar-buffer-groups-function
     	(lambda (b) (list "All Buffers")))
       (setq tabbar-buffer-list-function

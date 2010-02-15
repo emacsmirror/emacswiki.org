@@ -183,7 +183,7 @@
 ;;; ==============================
 (eval-when-compile (require 'cl)) ;; `mon-word-iterate-over', `mon-loop'
 ;;
-(eval-when-compile (require 'mon-cl-compat t)))
+(eval-when-compile (require 'mon-cl-compat t))
 
 ;;; ==============================
 ;;; :NOTE The :CONSTANT `IS-MON-SYSTEM-P' is bound in:

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Nov  7 15:10:01 2009 (-0700)
+;; Last-Updated: Sun Feb 14 09:06:12 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 1030
+;;     Update #: 1042
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -18,8 +18,9 @@
 ;; Features that might be required by this library:
 ;;
 ;;   `apropos', `apropos-fn+var', `cl', `color-theme', `cus-face',
-;;   `easymenu', `ffap', `ffap-', `hexrgb', `icicles-opt', `kmacro',
-;;   `levenshtein', `thingatpt', `thingatpt+', `wid-edit', `widget'.
+;;   `easymenu', `el-swank-fuzzy', `ffap', `ffap-', `fuzzy-match',
+;;   `hexrgb', `icicles-opt', `kmacro', `levenshtein', `reporter',
+;;   `sendmail', `thingatpt', `thingatpt+', `wid-edit', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -32,7 +33,7 @@
 ;;  Internal variables defined here:
 ;;
 ;;    `icicle-abs-file-candidates', `icicle-acting-on-next/prev',
-;;    `icicle-all-candidates-action-p',
+;;    `icicle-advice-info-list', `icicle-all-candidates-action-p',
 ;;    `icicle-all-candidates-list-action-fn',
 ;;    `icicle-all-candidates-list-alt-action-fn',
 ;;    `icicle-apply-nomsg', `icicle-apropos-complete-match-fn',
@@ -102,9 +103,9 @@
 ;;    `icicle-previous-raw-non-file-name-inputs',
 ;;    `icicle-progressive-completing-p',
 ;;    `icicle-proxy-candidate-regexp', `icicle-proxy-candidates',
-;;    `icicle-read-expression-map', `icicle-re-no-dot',
-;;    `icicle-require-match-p', `icicle-reverse-sort-p',
-;;    `icicle-saved-candidate-overlays',
+;;    `icicle-read-expression-map', `icicle-redefined-functions',
+;;    `icicle-re-no-dot', `icicle-require-match-p',
+;;    `icicle-reverse-sort-p', `icicle-saved-candidate-overlays',
 ;;    `icicle-saved-candidates-variables-obarray',
 ;;    `icicle-saved-completion-candidate',
 ;;    `icicle-saved-completion-candidates',
@@ -200,6 +201,12 @@
   "Non-nil means this command acts on the previous or next candidate.
 The particular non-nil value indicates the navigation direction:
 `forward' or `backward'.")
+
+(defvar icicle-advice-info-list ()
+  "List of advice information for functions that Icicles redefines.
+If such redefined functions are advised, then Icicles deactivates the
+advice when you turn on Icicle mode.  It restores the recorded advice
+activation state when you turn off Icicle mode.")
 
 (defvar icicle-all-candidates-action-p nil
   "Non-nil means that we are acting on all candidates.
@@ -951,6 +958,18 @@ Several Emacs-Lisp mode key bindings are used.")
     ;;(define-key map "\177" 'backward-delete-char-untabify)
     (set-keymap-parent map minibuffer-local-map)
     (setq icicle-read-expression-map  map)))
+
+(defvar icicle-redefined-functions
+  '(choose-completion choose-completion-string completing-read
+    completion-setup-function dired-smart-shell-command
+    display-completion-list exit-minibuffer face-valid-attribute-values
+    minibuffer-complete-and-exit mouse-choose-completion
+    next-history-element read-face-name read-file-name read-number
+    shell-command shell-command-on-region switch-to-completions
+    completing-read-multiple)
+  "Standard functions that Icicles redefines.
+This is used to turn off any advice for such functions, and restore it
+when you leave Icicle mode.")
 
 (defvar icicle-re-no-dot "^\\([^.]\\|\\.\\([^.]\\|\\..\\)\\).*"
   "Regexp that matches anything except `.' and `..'.")
