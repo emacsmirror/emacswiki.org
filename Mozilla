@@ -9,6 +9,8 @@ MozMacs helps a little.
 
 [https://addons.mozilla.org/en-US/firefox/addon/4141 Firemacs] (firefox add-on) provides some Emacs-like key bindings for Firefox.
 
+[http://wiki.github.com/mooz/keysnail/ KeySnail] is the yet another firefox add-on for Emacs junkies which is similar to [http://vimperator.org/ Vimperator].
+
 == Emacs Wiki Quicksearch ==
 
 Create a new bookmark using the Bookmark Manager.

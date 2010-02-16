@@ -10,6 +10,7 @@ Language-specific:
 * EmacsEclim -- tight eclipse integration for emacs.
 * JavaDevelopmentEnvironment -- a great set of tools for Java programmers.
 * MozillaDevelopmentEnvironmentforEmacs -- support for Mozilla technologies in Emacs.
+* MythrylLanguage -- Mythryl specific programming
 * PerlLanguage -- Perl specific programming.
 * RubyLanguage -- Ruby specific programming.
 

@@ -17,6 +17,16 @@ Please see the projects [http://www.emacsmirror.org homepage] for more informati
 You can contribute to the mirror by reporting new packages and filling out
 missing information in the below lists.
 
+=== Your packages ===
+
+Please check that your packages are included in the mirror.  If not add your package to this list (providing the expected information):
+
+** foo http://path/to/foo.el http://home/page
+
+But do not add packages that you are distributing on the Emacswiki - these will be imported anyway very soon.
+
+Note that the path to the file might actually be the path to an archive. If it is the path to some vcs repository please specify so if this is not clear from the url.
+
 === Missing packages ===
 
 Below you find a list of missing packages.  These are packages that that were
@@ -421,24 +431,19 @@ people don't waste their time trying to find the same package.
 Please feel free to discuss this project here or send [mailto:jonas@emacsmirror.org me]
 an email.
 
-[new:DrewAdams:2010-02-06 23:15 UTC]
-What about ColorTheme? -- DrewAdams
-[new]
-I have imported it now from an archive on the homepage. That page also mentions that bazaar is now used for development but the bazaar repo does not exist and the cvs one doesn't work. Also every link on the homepage points back to itself. So much "about ColorTheme" |-). I have contacted the maintainer, but someone else has done the same on the mailing list without a response. -- JonasBernoulli
-[new:DanielHackney:2010-02-11 13:55 UTC]
-I found the ColorTheme repository! It's here:
+---
 
-    bzr branch http://bzr.savannah.nongnu.org/r/color-theme/trunk
+Thanks to everyone who provided links so far. I have imported most of these packages now. However those that are hosted on the Emacswiki won't be imported until I import all packages from it. I have removed them above. They were: mysql, notify and unbound. -- JonasBernoulli
 
-I also imported it to git and added it to GitHub:
+---
 
-    http://github.com/haxney/color-theme
-[new]
-Thanks to everyone who provided links so far. I have imported most of these packages now. However those that are hosted on the Emacswiki won't be imported until I import all packages from it. I have removed them above. They were: mysql, notify, unbound, weblogger, xml-rpc. The last to were reported to live in http://bzr.savannah.nongnu.org/r/emacsweblogs but that does not work for me. -- JonasBernoulli
 [new:DanielHackney:2010-02-10 03:04 UTC]
 For weblogger and xml-rpc, the web interface for browsing the sources didn't work for me either, but I was able to successfully branch the bzr repo with:
 
     bzr branch http://bzr.savannah.gnu.org/r/emacsweblogs/
 
 This gave me a working checkout with history, though the files are both in a subdirectory called "lisp", which doesn't seem to jive well with the general guidelines for a project.
+
+[new]
+I contacted the maintainer. -- JonasBernoulli
 

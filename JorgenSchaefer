@@ -144,5 +144,8 @@ As recommended in a .screenrc sample i use <code>C-p</code>. -- AnalphaBestie
 I also use the Dvorak layout but with some changes, e.g. unshifted parentheses.  I also implemented some of the tweaks from http://ratpoison.elektrubadur.se/Tweaks.  Nice tips there...
  --EmilioLopes
 
+[new]
+I'm using your mudel mode for my MUSH endeavours, and find it quite nice save for a thing: highlighting. I'd like to be able to add a list of words to highlight in either one or several colours, so that (for example) when a certain user speaks (or when someone whispers/pages) the line or the username stands out. I don't know how to really implement this, though... Is it supported already in mudel?
+
 ----
 CategoryHomepage

@@ -1,0 +1,50 @@
+python-mode.el is part of the Python distribution. You can also download it from launchpad:
+
+    * https://launchpad.net/python-mode
+
+The relevant page also has installation instructions. The following was enough for me, though:
+
+    * Add python-mode.el to the LoadPath.
+    * Add the following to your InitFile
+
+ (autoload 'python-mode "python-mode" "Python Mode." t)
+ (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
+ (add-to-list 'interpreter-mode-alist '("python" . python-mode))
+
+: It should be noted that python-mode.el, since it is part of python, doesn't usually need to be seperately installed. Also, many distros will also add relevant autoload code; Gentoo adds it too site-lisp/site-gentoo.el or possibly site-lisp/site-gentoo.d  -- CH
+
+For Emacs 22 and after, consider ProgrammingWithPythonDotEl
+
+== some more commands ===
+
+ (defun py-next-block ()
+   "go to the next block.  Cf. `forward-sexp' for lisp-mode"
+   (interactive)
+   (py-mark-block nil 't)
+   (back-to-indentation))
+
+ElDoc works with the python mode in GNU Emacs 22.
+(For Emacs 21, see the [http://www.loveshack.ukfsn.org/emacs/eldoc.el back-port] of Eldoc.)
+To enable it by default in your python mode buffers, you might want something like:
+
+   (add-hook 'python-mode-hook
+          '(lambda () (eldoc-mode 1)) t)
+
+'py-help-at-point' can be used to get the internal python documentation on the function at point.
+
+For Emacs 23: 
+C-c C-f	"sys" -- this works, and describes the "sys" module in a separate Emacs help buffer.
+: If I define function "zoot", help doesn't on it -- it's only for global things.
+
+== other things you may be interested in ===
+
+* Some rudimentary completion support is available from http://www.python.org/cgi-bin/moinmoin/EmacsPythonCompletion
+* use C-c ! to start ipython instead of python: http://ipython.scipy.org/
+* press F1 to check your code with pylint: http://www.logilab.org/projects/pylint
+* Pretty good completion and refactoring support from: http://rope.sourceforge.net/ropemacs.html
+* Debugging within Emacs: PdbNotes
+* Another debugger, which contains Emacs interface: pydb (http://bashdb.sourceforge.net/pydb/). It even has multiple-windows interface :)
+* Python autocompletion using pycomplete: http://groups.google.com/group/comp.lang.python/msg/048168c675ff0c68
+* More on completion: http://www.rwdev.eu/articles/emacspyeng
+* Yasnippet: http://code.google.com/p/yasnippet/ for Python, Django, django-templates snippets
+

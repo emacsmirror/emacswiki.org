@@ -1,0 +1,304 @@
+Information for creating a usable Python programming environment in emacs...
+
+== El file ===
+
+: It seems to me a big divide is whether to use python.el or python-mode.el, so maybe the page should have versions that address each? --CH
+:: I've copied most of the stuff from PythonMode so as not to disrupt that page with major edits, but I figured the Python page needs breaking up, and more structure added to settle confusion; recommendations anyone? The stuff below needs confirmations as to which of python/-mode/.el they are appropriate for.  -- CH
+
+ProgrammingWithPythonDotEl
+
+ProgrammingWithPythonModeDotEl
+
+: Though I personally use python.el --CH
+
+I also found these useful:
+
+[http://www.enigmacurry.com/2008/05/09/emacs-as-a-powerful-python-ide/ Emacs as a powerful Python IDE]
+
+[http://www.enigmacurry.com/2009/01/21/autocompleteel-python-code-completion-in-emacs/ AutoComplete.el : Python Code Completion in Emacs]
+
+see [http://www.enigmacurry.com/2009/01/19/my-emacs-config-on-github/ My Emacs config on Github] for dotfiles
+
+[[RichardRiley]]s [http://richardriley.net/projects/emacs/dotprogramming#sec-1.5 python dotfiles]
+
+== Comment/Uncomment Region ==
+
+If you have `transient-mark-mode' on, you can just use `comment-dwim': select a region and hit `M-;'.  The DoWhatIMean means that it will comment or uncomment the region as appropriate.
+
+If you don't have TMM on, you can use `comment-region'.  Pass it a PrefixArgument to uncomment.  If it's not bound to a key, add this to your InitFile:
+
+ (add-hook 'python-mode-hook (lambda () 
+   (define-key py-mode-map "\C-c#" 'comment-region)))
+
+You can also use rectangles.  `C-x r d'  with a highlighted rectangle of comments uncomments.  Relatedly, `C-x r o' can be used to indent code (as you need to after making it conditional or putting it in a loop).  `indent-rigidly' (`C-x TAB') also works, and there is also the intelligent `indent-code-rigidly'.
+
+== Search the python documentation in Emacs ==
+
+Search the python online/offline documentations with convenience in Emacs
+
+Github : http://github.com/tsgates/pylookup
+
+Pylookup Mode : http://taesoo.org/Opensource/Pylookup
+
+== Using Flymake with Python ===
+= Using flymake with pylint, pychecker, and pep8.py =
+
+: I added this code to pastebins (didn't know which to prefer, so chose three) which should be better than dumping the code here. -- CH
+
+[http://python.pastebin.com/f627691e0 This] or 
+[http://pastebin.ca/1797770 this] or
+[http://paste.uni.cc/20534 this] are all
+
+a script which runs and parses the output of various
+Python code checking programs to work with flymake.  It has 
+lots of issues, one being that flymake does not seem to show 
+more than one error message per line of code, meaning that
+an error or warning which is intentionally left unfixed can
+mask an error or warning that would get more attention.
+
+Additionally, the scripts which check python code are either 
+rather anemic, and don't notice too much (pychecker) or are 
+aggressive, and warn about all sorts of things that they 
+should not (pylint).  pep8.py tends to be annoyingly aggressive
+about whitespace.  
+
+You must have pep8.py, pychecker and pylint in PATH for this script
+to find them.  Additionally this script attempts to support 
+virtual environments, but this is largely untested.
+
+= Using flymake with pylint =
+
+The flymake mode in Emacs 22 does not understand Python, but it can be
+made to work with [http://www.logilab.org/projects/pylint pylint].  To
+do this, first you'll need to create a script somewhere along your
+PATH called 'epylint'.  That script is [http://pastebin.ca/1797788 here]
+: more pastebins needed? -- CH
+
+It might appear that for some combinations of flymake, pylint and epylint
+the above script might not work properly (it didn't for me). Debugging showed that
+the regexp wasn't matching the output of pylint, ever, so the lines were being
+printed from pylint verbatim, meaning that flymake was doing a "best effort"
+match, and everything was coming up as an error, even minor warnings.
+
+[http://pastebin.ca/1797794 Here] is an alternative version of the epylint script that works great for me.
+It doesn't throw away all the R and C errors, just the most annoying ones. You can easily
+modify it to include or exclude messages to your preference. I find it easier to have
+the messages in the script rather than messing about with .pylintrc and the like
+
+(I've also got a version that inserts the overall code quality metric, as determined
+by pylint, so you can see at a glance how close you are to pylint perfection; holler
+here if you want to see it).
+: that would be useful *holler* --CH
+    
+Once you test that this works on sample Python files, then add the
+following to your InitFile to enable flymake checking of Python scripts
+using pylint:
+
+    (when (load "flymake" t)
+      (defun flymake-pylint-init ()
+        (let* ((temp-file (flymake-init-create-temp-buffer-copy
+                           'flymake-create-temp-inplace))
+           (local-file (file-relative-name
+                        temp-file
+                        (file-name-directory buffer-file-name))))
+          (list "epylint" (list local-file))))
+    
+      (add-to-list 'flymake-allowed-file-name-masks
+               '("\\.py\\'" flymake-pylint-init)))
+
+Now if you turn on `flymake-mode' inside a Python file, you should see
+lines with warnings highlighted in blue, and lines with errors
+highlighted in red.  Just hover your mouse over either type of line
+for a few seconds and you'll see a tooltip describing the
+error/warning.  Plus, the modeline will show you two numbers, X/Y,
+where X is the number of errors in your script, and Y is the total
+number of warnings. -- JohnWiegley
+: wait, this is for XEmacs, right?  -- CH
+
+You can customise the way flymake highlights your Python by running
+'M-x customize-face' on 'flymake-errline' or 'flymake-warnline'. For
+example, you can remove the background highlight and make the face
+be just a subtle coloured underline.
+
+= Using flymake with pyflakes =
+
+Found a desciption on how to use this pair at http://www.plope.com/Members/chrism/flymake-mode
+I did a copy 'n paste for simplicity.
+
+{{{
+(when (load "flymake" t) 
+  (defun flymake-pyflakes-init () 
+     ; Make sure it's not a remote buffer or flymake would not work
+     (when (not (subsetp (list (current-buffer)) (tramp-list-remote-buffers)))
+      (let* ((temp-file (flymake-init-create-temp-buffer-copy 
+                         'flymake-create-temp-inplace)) 
+             (local-file (file-relative-name 
+                          temp-file 
+                          (file-name-directory buffer-file-name)))) 
+        (list "pyflakes" (list local-file)))))
+  (add-to-list 'flymake-allowed-file-name-masks 
+               '("\\.py\\'" flymake-pyflakes-init))) 
+}}}
+
+There are some comments regarding using flymake-cursor to show the error in minibuffer [http://paste.lisp.org/display/60617,1/raw flymake-cursor.el] (the same idea is now available in [NxhtmlMode nXhtml] in the file <b>util/flymakemsg.el</b>).
+
+== Integrating python-mode's pdbtrack with xpdb and making it aware of generator expressions ==
+
+AlexCoventry
+
+I have found the following settings helpful in using xpdb:
+
+{{{
+;; Let python-mode know about xpdb and generator expressions.
+(setq py-pdbtrack-input-prompt "\n[(<]*x?pdb[>)]+ "
+      py-pdbtrack-stack-entry-regexp
+      (concat "^> \\(.*\\)(\\([0-9]+\\))"
+	      "\\([?a-zA-Z0-9_]+\\|<genexpr>\\)()"))
+}}}
+
+xpdb is a fork of the standard library pdb, available here: https://code.launchpad.net/~eyal-lotem+launchpad/xpdb/main
+
+
+
+
+
+: For ##python-mode.el## or ##python.el##:
+
+* PyIndent
+
+== Issues ==
+This is a known bug (emacs 21.3): python-mode interferes with gud in such a way as to make the overlay arrow not work when debugging (even C source).
+
+Disable auto-loading python-mode to get around this bug.
+
+: This is one of the things fixed by the patch to python-mode.el mentioned above.
+
+== iPython Emacs 23 ==
+
+RichardRiley
+
+I found this which got me up and running with iPython integrated nicely into emacs 23. 
+
+http://lists.ipython.scipy.org/pipermail/ipython-user/2008-September/005791.html
+
+The important file, ipython.el, can be found here : http://ipython.scipy.org/dist/ipython.el
+
+If you load it, ipython becomes the default python shell assuming the ipython executable is available.
+
+my python integration is now like this:
+
+<pre>
+(setq load-path
+      (append (list nil
+                    "~/.emacs.d/python-mode-1.0/"
+		    "~/.emacs.d/pymacs/"
+		    "~/.emacs.d/ropemacs-0.6"
+                    )
+              load-path))
+
+(require 'ipython)
+(setq py-python-command-args '( "-colors" "Linux"))
+
+(require 'python-mode)
+
+(require 'pymacs)
+(pymacs-load "ropemacs" "rope-")
+
+;; (defadvice py-execute-buffer (around python-keep-focus activate)
+;;   "Thie advice to make focus python source code after execute command `py-execute-buffer'."
+;;   (let ((remember-window (selected-window))
+;;         (remember-point (point)))
+;;     ad-do-it
+;;     (select-window remember-window)
+;;     (goto-char remember-point)))
+
+;; (defun rgr/python-execute()
+;;   (interactive)
+;;   (if mark-active
+;;       (py-execute-string (buffer-substring-no-properties (region-beginning) (region-end)))
+;;     (py-execute-buffer)))
+
+;; (global-set-key (kbd "C-c C-e") 'rgr/python-execute)
+
+(add-hook 'python-mode-hook
+          '(lambda () (eldoc-mode 1)) t)
+
+(provide 'python-programming)
+</pre>
+
+More iPython info here: http://ipython.scipy.org/moin/FrontPage
+
+My own python files are here : http://richardriley.net/projects/emacs/dotprogramming#sec-1.4
+
+Having got iPython working in emacs, I found the following "howto tutorial" videos to be superb for the beginner (me!) :
+
+http://showmedo.com/videos/video?name=1000010&fromSeriesID=100
+(This does not seem to work with Firefox. Can't we try to use something that works with Firefox instead of something that only works with IE?)
+
+== Ipython completion ==
+
+Ipython provide good completion support without extra dependencies.
+
+However, to make it working in emacs, you will have to add this line to your .emacs:
+
+<pre>
+(setq ipython-completion-command-string "print(';'.join(__IP.Completer.all_completions('%s')))\n")
+</pre>
+
+The definition in ipython.el is wrong (or deprecated may be).
+
+Note that Lisp:anything-ipython.el already fix this.
+
+To have an even better completion, you should install also rlcompleter2.
+
+http://codespeak.net/rlcompleter2/
+
+Lisp:anything-ipython.el provide an anything interface for ipython completion in your python buffer.
+
+You will find all instructions to install Lisp:anything-ipython.el in the headers of file.
+
+You will need of course a complete Anything install, look how to install Anything at
+
+http://www.emacswiki.org/cgi-bin/emacs/Anything
+
+Screenshot of anything-ipython in action:
+
+http://farm4.static.flickr.com/3459/3760695525_887356961c.jpg
+
+-- ThierryVolpiatto
+
+Q: How does this compare to rope and the other myriad of completion methods. company-mode compares how?
+
+== Ipython debugging/pdbtrack ==
+
+I made the following changes to python-mode.el to make debugging work again with current IPython (0.9.1):
+
+[...]
+
+ ;; pdbtrack constants
+ (defconst py-pdbtrack-stack-entry-regexp
+  "^> \\(.*\\)(\\([0-9]+\\))\\([?a-zA-Z0-9_<>]+\\)()"; this is new
+ ;  "^> \\([^(]+\\)(\\([0-9]+\\))\\([?a-zA-Z0-9_]+\\)()"
+ ;  "^> \\(.*\\)(\\([0-9]+\\))\\([?a-zA-Z0-9_]+\\)()"
+   "Regular expression pdbtrack uses to find a stack trace entry.")
+ 
+ ;(defconst py-pdbtrack-input-prompt "\n[(<]*[Pp]db[>)]+ "
+ (defconst py-pdbtrack-input-prompt "\n[(<]*[Ii]?[Pp]db[>)]+ "; this is new
+   "Regular expression pdbtrack uses to recognize a pdb prompt.")
+
+[...]
+
+            (py-pdbtrack-overlay-arrow nil)
+
+          (setq block (ansi-color-filter-apply block)) ; this is new
+          (setq target (py-pdbtrack-get-source-buffer block))
+
+[...]
+
+Now when I debug in the IPython console (using %run -d, or %pdb on, etc.) pdbtrack makes sure to show me the current source code and corresponding line. Note that these changes may break debugging in a standard python-shell, I have not tested this.
+
+
+
+----
+ProgrammingModes
+
