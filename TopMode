@@ -1,10 +1,10 @@
-top-mode.el can run the unix programm "<tt>top</tt>" from Emacs.
+top-mode.el can run the Unix program "<tt>top</tt>" from Emacs.
 
 You can find it here: Lisp:top-mode.el
 
 === Installation ===
 
-Load it with <tt>auoload</tt> or <tt>require</tt>.
+Load it with <tt>autoload</tt> or <tt>require</tt>.
 The enter
 
  M-x top-mode

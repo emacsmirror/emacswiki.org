@@ -28,16 +28,17 @@ The package mon-utils is the entry point which loads the rest of the system and 
 === :MON-STANDARDS ===
 * Lisp:mon-cl-compat.el -- This is intendeed to be used as a drop-in replacement for the cl-seq.el When compiling your packages: (eval-when-compile (require 'mon-cl-compat))
 * Lisp:mon-cl-compat-regexps.el -- Provides regular expressions for replacing the symbol-names from the cl-seq.el package with a `cl::' prefix
-* Lisp:mon-empty-registers.el (EmptyRegisters) -- Provides utilities for filling/emptying register locations en masse. Also provides interactive tools for register centric coercion, manipulation, roundtripping of chars, strings, etc.
+* Lisp:mon-empty-registers.el (EmptyRegisters) -- Provides utilities for filling/emptying register locations en masse. Also provides interactive tools for register centric coercion, manipulation, round-tripping of chars, strings, etc.
 * Lisp:mon-hash-utils.el -- Provides a collection of procedures to extend Emacs lisp hash table functionality.
+* Lisp:mon-name-utils.el -- procedures to rotate, combine, and permute string-like name forms
 * Lisp:mon-rename-image-utils.el (RenameImageUtils) -- Provides utility functions for working with images and EmacsImageManipulation.
-* Lisp:mon-tramp-utils.el -- Provides cross platform utilities for working with tramp. This package should be compatible with both GNU/LINUX and w32 systems and helps MON with Emacs portability across envirionments.
+* Lisp:mon-tramp-utils.el -- Provides cross platform utilities for working with tramp. This package should be compatible with both GNU/LINUX and w32 systems and helps MON with Emacs portability across environments.
 
 === :MON-EXTRAS ===
 
-* Lisp:mon-boxcutter.el -- For initializing w32 screencaptures from Emacs using Matthew D. Rasmussen's Boxcutter screen-capture executables: boxcutter-fs.exe and boxcutter.exe
+* Lisp:mon-boxcutter.el -- For initializing w32 screen captures from Emacs using Matthew D. Rasmussen's Boxcutter screen-capture executables: boxcutter-fs.exe and boxcutter.exe
 * Lisp:mon-color-utils.el -- Provides an assembled set of routines for manipulations/examinations of 'color'.
-* Lisp:mon-mysql-utils.el (MySqlHelp) -- Provides interactive procedures for stripping content from MySQL query result tables.  Also, provides an alist of MySQL help categorys and topics and a rudimentary completion functionality for accessing MySQL's `mysql' client help facility.
+* Lisp:mon-mysql-utils.el (MySqlHelp) -- Provides interactive procedures for stripping content from MySQL query result tables.  Also, provides an alist of MySQL help categories and topics and a rudimentary completion functionality for accessing MySQL's `mysql' client help facility.
 * Lisp:mon-rename-image-utils-supplemental.el --
 * Lisp:mon-url-utils.el -- Provides utilities for interactively calling URL data lookups and for in
 ;;; buffer modification of web/internet scrapes.
@@ -50,7 +51,8 @@ The package mon-utils is the entry point which loads the rest of the system and 
 * Lisp:mon-doc-help-utils-supplemental.el -- Provides functions and vars required to bootstrap mon-doc-help-utils 
 * Lisp:mon-doc-help-pacman.el -- Some help functions for using the package manager with the GNU/Linux Arch distribution.
 * Lisp:mon-doc-help-CL.el -- Some Emacs Lisp help functions for using Common-Lisp functions (loop, do, etc.)
-* Lisp:mon-iptables-regexps.el -- Provides interactive utilities for converting iptables short flags to long flags.  Also provides procedures for using Emacs help-mode to documentat the order of position for the symbols, flags, etc. used with `iptables' AKA `netfilter'.
+* Lisp:mon-doc-help-proprietary.el -- Extends mon-doc-help-utils with ms w32 related docs.
+* Lisp:mon-iptables-regexps.el -- Provides interactive utilities for converting iptables short flags to long flags.  Also provides procedures for using Emacs help-mode to document the order of position for the symbols, flags, etc. used with `iptables' AKA `netfilter'.
 * Lisp:mon-iptables-vars.el -- Provides gigantic alist `*mon-iptables-alst*' needed for use with mon-iptables-regexps
 * Lisp:perlisisms.el (Perlisisms) -- 
 * Lisp:STING-software-engineering-glossary.el --
@@ -62,12 +64,11 @@ The package mon-utils is the entry point which loads the rest of the system and 
 
 === :NAF-MODE ====
 
-* Lisp:naf-mode.el -- naf-mode is a major mode for editing NAFs (Name Authority Files). naf-mode provides utilities for working with and unifying authority records of various public accesible datasets LOC, BNF, ULAN, OCLC, Wikipedia, IMDB, etc. This package provides the core naf-mode facilities and require
+* Lisp:naf-mode.el -- naf-mode is a major mode for editing NAFs (Name Authority Files). naf-mode provides utilities for working with and unifying authority records of various public accessible datasets LOC, BNF, ULAN, OCLC, Wikipedia, IMDB, etc. This package provides the core naf-mode facilities and require
 statements for loading the other naf-mode-* packages below.
 * Lisp:naf-mode-faces.el -- 
 * Lisp:naf-mode-insertion-utils.el -- 
 * Lisp:naf-mode-replacements.el -- 
-* Lisp:mon-name-utils.el -- procedures to rotatate, combine, an permute string-like name forms
 * Lisp:naf-mode-classes.el -- 
 * Lisp:naf-mode-db-fields.el -- 
 * Lisp:naf-mode-db-flags.el -- 
@@ -99,7 +100,7 @@ statements for loading the other naf-mode-* packages below.
 [:MonLoadOrder]
 == :MON-LOAD-ORDER ==
 
-Roughly the sequence with which MON brings his Emacs' systems up.
+Roughly the sequence with which MON brings his Emacs' systems up. Note, not all of these libraries are required to get a working system but as MON stacks dependencies it may be helpful to remember that anything loaded from naf-mode.el or that has the ``naf-'' prefix can be ommitted. Libraries with a ``-utils' suffix will most likely get pulled in by a require statement. Libraries with a ``supplemental'' suffix are an attempt to provide feature subsets without requiring you to load the full Monty. Eventually with some judicious use of autoloads MON should be able to provide these with a lighter footprint. Likewise, if/when a transition to defcustoms occurs you might be able to rule out using a heavy set. Though, at that point you'll be stuck in defcustom hell :P ...
 
 <pre>
 
@@ -112,16 +113,22 @@ Roughly the sequence with which MON brings his Emacs' systems up.
 ¦►►►►► slime-loads.el
 ¦►►►►► mon-keybindings.el
 ¦►►► mon-utils.el
+¦►►►► mon-cl-compat.el
+¦►►►►► mon-cl-compat-regexps.el
 ¦►►►► mon-regexp-symbols.el
 ¦►►►► mon-time-utils.el
 ¦►►►► mon-replacement-utils ;; :BEFORE mon-dir-utils.el naf-mode-insertion-utils.el
 ¦►►►► mon-dir-locals-alist.el
 ¦►►►► mon-dir-utils.el
+¦►►►► mon-cifs-utils.el
 ¦►►►► mon-insertion-utils.el
+¦►►►► mon-testme-utils.el
 ¦►►►► naf-mode-insertion-utils.el
 ¦►►►► mon-url-utils.el
 ¦►►►► mon-hash-utils.el
 ¦►►►► mon-doc-help-utils.el
+¦►►►►► mon-doc-help-proprietary.el
+¦►►►►► mon-doc-help-pacman.el
 ¦►►►► mon-doc-help-CL.el
 ¦►►►► mon-tramp-utils.el
 ¦►►►► naf-skeletons.el
@@ -155,7 +162,7 @@ Roughly the sequence with which MON brings his Emacs' systems up.
 	Following naf-mode files are still in development/transition but also loaded from naf-mode.el
 ¦¦►►►►► naf-mode-abbrevs.el
 ¦¦►►►►► naf-mode-awards-prizes.el
-¦¦►►►►► naf-mode-bibliograpbhic-entry.el
+¦¦►►►►► naf-mode-bibliographic-entry.el
 ¦¦►►►►► naf-mode-classes.el
 ¦¦►►►►► naf-mode-ulan-help-docs.el
 ¦¦►►►►► naf-mode-xrefs.el
@@ -164,8 +171,10 @@ Roughly the sequence with which MON brings his Emacs' systems up.
 ¦►►►► mon-iptables-vars.el
 ¦►►►► mon-iptables-regexps.el
 ¦►►►► mon-mysql-utils.el
-¦¦►►►► naf-mode-sql-skeletons.el -- This package isn't provide here. It is mostly a collection of SQL statement.
-¦¦►►►► smith-poster-utils.el --  This package isn't provide here.
+¦►►►► mon-bzr-utils.el -- Not provided here yet.
+¦►►►► mon-eight-bit-raw-utils.el -- Not provided here yet.
+¦¦►►►► naf-mode-sql-skeletons.el -- Not provided here. It is mostly a collection of SQL statement.
+¦¦►►►► smith-poster-utils.el --  Not provided here.
 
 </pre>
 

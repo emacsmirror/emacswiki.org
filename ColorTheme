@@ -534,6 +534,9 @@ How can I filter the themes to find those suitable for console/tty?  Recently I'
 Screen supports 256 colors.  It's a compile-time option disabled by default in Debian and Ubuntu packages. -- TrentBuck
 
 [new]
+This hasn't been the case since 2007.  4.0.3-5 onward include 256 color support, which means Etch and Dapper, respectively, were the last releases to have non-256 color support in screen.
+
+[new]
 I suggest you use no theme at all.  Most themes are not designed to degrade gracefully.
 They all use a spec that says "for all display types".  So you have to rely on the fall-back
 mechanism that reduces millions of colors to 16.  Not good.  All of themes I know except for

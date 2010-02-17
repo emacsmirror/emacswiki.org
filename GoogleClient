@@ -6,6 +6,9 @@ http://emacspeak.blogspot.com/2007/03/emacs-client-for-google-services.html
 
 http://groups.google.com/group/emacs-g-client
 
+Getting it to post to a blog is slightly tricky.  You have to first know the special URL for posting via Atom API.  
+This interface could be easier.  Instructions are here:
+http://splash-of-open-sauce.blogspot.com/2009/08/how-to-use-g-client-from-emacs-for.html
 
 http://bc.tech.coop/blog/070306.html - Bill Clementson mentions g-client in passing (as method of accessing google-calendar), and touches on his installation method.
 

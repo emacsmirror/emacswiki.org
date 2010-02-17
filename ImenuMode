@@ -198,43 +198,57 @@ I prefer using selection buffer. -- Anonymous
 
 == Using Ido ==
 
-Use the following to use imenu with ido completion instead of the default one.
+Use the following command to use imenu with [InteractivelyDoThings Ido] completion instead.
 
-  (defun ido-goto-symbol ()
-    "Will update the imenu index and then use ido to select a symbol to navigate to"
-    (interactive)
-    (imenu--make-index-alist)
-    (let ((name-and-pos '())
-          (symbol-names '()))
-      (flet ((addsymbols (symbol-list)
-                         (when (listp symbol-list)
-                           (dolist (symbol symbol-list)
-                             (let ((name nil) (position nil))
-                               (cond
-                                ((and (listp symbol) (imenu--subalist-p symbol))
-                                 (addsymbols symbol))
-   
-                                ((listp symbol)
-                                 (setq name (car symbol))
-                                 (setq position (cdr symbol)))
-   
-                                ((stringp symbol)
-                                 (setq name symbol)
-                                 (setq position (get-text-property 1 'org-imenu-marker symbol))))
-   
-                               (unless (or (null position) (null name))
-                                 (add-to-list 'symbol-names name)
-                                 (add-to-list 'name-and-pos (cons name position))))))))
-        (addsymbols imenu--index-alist))
-      (let* ((selected-symbol (ido-completing-read "Symbol? " symbol-names))
-             (position (cdr (assoc selected-symbol name-and-pos))))
-        (cond
-         ((overlayp position)
-          (goto-char (overlay-start position)))
-         (t
-          (goto-char position))))))
+    (defun ido-goto-symbol (&optional symbol-list)
+      "Refresh imenu and jump to a place in the buffer using Ido."
+      (interactive)
+      (unless (featurep 'imenu)
+        (require 'imenu nil t))
+      (cond
+       ((not symbol-list)
+        (let ((ido-mode ido-mode)
+              (ido-enable-flex-matching
+               (if (boundp 'ido-enable-flex-matching)
+                   ido-enable-flex-matching t))
+              name-and-pos symbol-names position)
+          (unless ido-mode
+            (ido-mode 1)
+            (setq ido-enable-flex-matching t))
+          (while (progn
+                   (imenu--cleanup)
+                   (setq imenu--index-alist nil)
+                   (ido-goto-symbol (imenu--make-index-alist))
+                   (setq selected-symbol
+                         (ido-completing-read "Symbol? " symbol-names))
+                   (string= (car imenu--rescan-item) selected-symbol)))
+          (setq position (cdr (assoc selected-symbol name-and-pos)))
+          (cond
+           ((overlayp position)
+            (goto-char (overlay-start position)))
+           (t
+            (goto-char position)))))
+       ((listp symbol-list)
+        (dolist (symbol symbol-list)
+          (let (name position)
+            (cond
+             ((and (listp symbol) (imenu--subalist-p symbol))
+              (ido-goto-symbol symbol))
+             ((listp symbol)
+              (setq name (car symbol))
+              (setq position (cdr symbol)))
+             ((stringp symbol)
+              (setq name symbol)
+              (setq position
+                    (get-text-property 1 'org-imenu-marker symbol))))
+            (unless (or (null position) (null name)
+                        (string= (car imenu--rescan-item) name))
+              (add-to-list 'symbol-names name)
+              (add-to-list 'name-and-pos (cons name position))))))))
 
--- shjk (updated by MattKeller to handle overlays as 'positions')
+    (global-set-key "\C-ci" 'ido-goto-symbol)
+
+-- shjk (updated by MattKeller to handle overlays as "positions"; updated by VegardOye to not use [CommonLispForEmacs cl]).
 
 Another version using ido, allowing navigating sub-items: Lisp:idomenu.el by GeorgBrandl.
 

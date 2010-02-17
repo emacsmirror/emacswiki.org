@@ -50,7 +50,7 @@ support. They can be fixed by using a snapshot from the CVS repository. For a wo
 == How can I change which headers wl displays when viewing a message? ==
 
 The headers wl displays when viewing and editing a message are
-controlled by two variables: `wl-message-ignored-filed-list' and
+controlled by two variables: `wl-message-ignored-field-list' and
 `wl-message-visible-field-list'.  Both are lists whose elements are
 regular expressions that are used to determine which headers are
 displayed and which are not.

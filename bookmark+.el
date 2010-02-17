@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Feb 15 22:30:32 2010 (-0800)
+;; Last-Updated: Tue Feb 16 07:22:52 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 11307
+;;     Update #: 11311
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1480,6 +1480,9 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2010/02/16 dadams
+;;     bookmarkp-define-sort-command: Add msg suffix about repeating.
+;;     bookmarkp-msg-about-sort-order: Added optional arg SUFFIX-MSG.
 ;; 2010/02/15 dadams
 ;;     Added: bookmark-bmenu-switch-other-window (redefinition for Emacs 20-22).
 ;;     *-bmenu-mode: Added redefinition, instead of advising.
@@ -2327,8 +2330,7 @@ sort, and unsorted.")
                      bookmarkp-reverse-sort-p  nil))
               (;; This sort order reversed.  Change to unsorted.
                bookmarkp-reverse-sort-p
-               (setq bookmarkp-sort-comparer   nil
-                     bookmarkp-reverse-sort-p  t))
+               (setq bookmarkp-sort-comparer   nil))
               (t;; This sort order - reverse it.
                (setq bookmarkp-reverse-sort-p  t)))
         (message "Sorting...")
@@ -2336,7 +2338,14 @@ sort, and unsorted.")
         (let ((current-bmk  (bookmark-bmenu-bookmark)))
           (bookmark-bmenu-surreptitiously-rebuild-list)
           (bookmarkp-bmenu-goto-bookmark-named current-bmk)) ; Put cursor back on right line.
-        (when (interactive-p) (bookmarkp-msg-about-sort-order ,sort-order))))))
+        (when (interactive-p)
+          (bookmarkp-msg-about-sort-order
+           ,sort-order
+           nil
+           (cond ((and (not bookmarkp-reverse-sort-p)
+                       (equal bookmarkp-sort-comparer ',comparer)) "(Repeat: reverse)")
+                 ((equal bookmarkp-sort-comparer ',comparer)       "(Repeat: unsorted)")
+                 (t                                                "(Repeat: sort)"))))))))
 
 (defmacro bookmarkp-define-file-sort-predicate (att-nb)
   "Define a predicate for sorting bookmarks by file attribute ATT-NB.
@@ -6881,22 +6890,23 @@ for using multi-sorting predicates."
 ;; always intuitive, but it can often be useful.  What's not always intuitive is the placement
 ;; (the order) of bookmarks that are not sorted by the PREDs.
 ;; 
-(defun bookmarkp-msg-about-sort-order (order &optional prefix-msg)
+(defun bookmarkp-msg-about-sort-order (order &optional prefix-msg suffix-msg)
   "Display a message mentioning the current sort ORDER and direction.
 Optional arg PREFIX-MSG is prepended to the constructed message, and
-terminated with a period."
+terminated with a period.
+Similarly, SUFFIX-MSG is appended, after appending \".  \"."
   (let ((msg  (if (not bookmarkp-sort-comparer)
-                  "Bookmarks not sorted"
+                  "Bookmarks NOT sorted"
                 (format
                  "%s%s" (concat "Sorted " order)
                  (if (not (and (consp bookmarkp-sort-comparer) ; Ordinary single predicate.
                                (consp (car bookmarkp-sort-comparer))))
-                     (if bookmarkp-reverse-sort-p "; reversed" "")
+                     (if bookmarkp-reverse-sort-p "; REVERSED" "")
                    (if (not (cadr (car bookmarkp-sort-comparer)))
                        ;; Single PRED.
                        (if (or (and bookmarkp-reverse-sort-p (not bookmarkp-reverse-multi-sort-p))
                                (and bookmarkp-reverse-multi-sort-p (not bookmarkp-reverse-sort-p)))
-                           "; reversed"
+                           "; REVERSED"
                          "")
 
                      ;; In case we want to distinguish:
@@ -6908,13 +6918,14 @@ terminated with a period."
 
                      ;; At least two PREDs.
                      (cond ((and bookmarkp-reverse-sort-p (not bookmarkp-reverse-multi-sort-p))
-                            "; reversed")
+                            "; REVERSED")
                            ((and bookmarkp-reverse-multi-sort-p (not bookmarkp-reverse-sort-p))
                             "; each predicate group reversed")
                            ((and bookmarkp-reverse-multi-sort-p bookmarkp-reverse-sort-p)
                             "; order of predicate groups reversed")
                            (t ""))))))))
     (when prefix-msg (setq msg  (concat prefix-msg ".  " msg)))
+    (when suffix-msg (setq msg  (concat msg ".  " suffix-msg)))
     (message msg)))
 
 

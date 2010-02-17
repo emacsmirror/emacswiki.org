@@ -10,6 +10,14 @@ When a question is answered--and sometimes before it is answered, it is moved to
 The [EmacsWiki:action=rc;rcidonly=OpenQuestions;from=1;showedit=1 change log] should usually say where a question was moved to.
 
 
+==Emacs_as_Programming_Tool==
+
+[new]
+
+Can Emacs, other tools make it easier to work with the programming languages?
+Rtfm and learn that language is one answer. Use the applicable emacs mode a
+second. But learning five or more languages, syntaxes and quirks?
+
 ==Newly Created Files are Invisible on Vista (64)==
 
 [new]

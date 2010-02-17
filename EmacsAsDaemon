@@ -416,7 +416,10 @@ nil are ignored."
 
 }}}
 
+== Alternate shutdown method (e.g. via gnome-session-manager) ==
 
+see the discussion at 
+http://stackoverflow.com/questions/1167484/how-to-gracefully-shutdown-emacs-daemon/2270603
 
 ----
 

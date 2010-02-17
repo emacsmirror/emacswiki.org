@@ -1,26 +1,30 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; mon-hash-utils.el ---  procedures to extend Emacs lisp hashtables
 ;; -*- mode: EMACS-LISP; -*-
-;;; this is mon-hash-utils.el.el
 ;;; ================================================================
 ;;; DESCRIPTION:
 ;;; mon-hash-utils provides a collection of procedures to extend Emacs lisp hash
-;;; table functionality.
-;;; The various authors/sources of routines are identified below and inline.
+;;; table functionality. 
 ;;;
-;;; !!!The MON KEY does not claim authorship of _any_ of the individual 
-;;; components included of this file. The only act of authorship on MON's part
-;;; is their assembly in the aggregaate.!!!
+;;; The majority of the procedures included of this file were gleaned from
+;;; various authors/sources. Specific authorship of these routines is identified
+;;; in the header sections below and inline. Thus, where a function is indicated
+;;; as having been sourced from a third party the MON KEY does not claim
+;;; authorship of the individual components included of this file. In general,
+;;; the only act of authorship on MON's part are minor symbol changes additions
+;;; of gensyms and the assembly of these routines in the aggregaate.
 ;;; 
 ;;; FUNCTIONS:►►►
 ;;; `mon-hash-all-values',`mon-hash-all-keys',`mon-hash-to-list'
 ;;; `mon-hash-key-onto-list',`mon-hash-describe',`mon-hash-describe-descend'
 ;;; `mon-hash-readlines-file' , `mon-hash-readlines-buffer'
 ;;; `mon-hash-make-size', `mon-hash<-vector', `mon-hash-add-uniquify'
+;;; `mon-hash-table-complete'
 ;;; FUNCTIONS:◄◄◄
 ;;;
 ;;; MACROS:
-;;; `mon-hash-get-items',`mon-hash-get-values', `mon-hash-get-symbol-keys', 
-;;; `mon-hash-has-key', `mon-hash-get-string-keys', `cl-put-hash'
+;;; `mon-hash-get-items',`mon-hash-get-values', `mon-hash-get-symbol-keys',
+;;; `mon-hash-get-keys', `mon-hash-has-key', `mon-hash-get-string-keys',
+;;; `cl-put-hash'
 ;;;
 ;;; METHODS:
 ;;;
@@ -92,6 +96,10 @@
 ;;; :FROM                      -> :TO 
 ;;; `xsteve-add-hash-uniquify' -> `mon-hash-add-uniquify' 
 ;;;  
+;;; :COURTESY Sam Steingold :HIS clhs.el GPL'd with GNU CLISP
+;;; :FROM                 -> :TO
+;;; `hash-table-complete' -> `mon-hash-table-complete'
+;;;
 ;;; MAINTAINER: MON KEY
 ;;;
 ;;; PUBLIC-LINK: (URL `http://www.emacswiki.org/emacs/mon-hash-utils.el')
@@ -117,6 +125,9 @@
 ;;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
 ;;; Floor, Boston, MA 02110-1301, USA.
 ;;; ================================================================
+;;; Copyright © 2009, 2010
+;;; ======================
+
 ;;; CODE:
 
 (eval-when-compile (require 'cl)) ;; :NOTE Used in Thierry's macros
@@ -241,6 +252,11 @@ When KEY is already present in TABLE generate a new KEY such that:
 ;;; `hash-all-keys'   -> `mon-hash-all-keys'
 ;;; `hash-to-list'    -> `mon-hash-to-list'
 ;;; ==============================
+;;; :MODIFICATIONS <Timestamp: #{2010-02-08T20:32:53-05:00Z}#{10062} - by MON KEY>
+;;; Xah functions `mon-hash-to-list', `mon-hash-all-keys', `mon-hash-all-values'
+;;; Now use: (push `(, . ,) sym) idiom instead of:
+;;; (setq sym cons (list k v) sym)
+;;; ==============================
 ;;
 (defun mon-hash-all-values (hashtable)
   "Return all values in HASHTABLE.\n
@@ -251,10 +267,9 @@ When KEY is already present in TABLE generate a new KEY such that:
 `mon-hash-has-key', `mon-hash-get-symbol-keys', `mon-hash-get-string-keys',
 `mon-hash-put-CL', `mon-hash-describe', `mon-hash-describe-descend'.\n►►►"
   (let (allvals)
-    (maphash 
-     (lambda (kk vv) 
-       (setq allvals (cons vv allvals)))
-     hashtable)
+    (maphash #'(lambda (kk vv) 
+                 (push vv allvals))
+             hashtable)
     allvals))
 ;;
 (defun mon-hash-all-keys (hashtable)
@@ -266,10 +281,9 @@ When KEY is already present in TABLE generate a new KEY such that:
 `mon-hash-get-symbol-keys', `mon-hash-get-string-keys', `mon-hash-put-CL',
 `mon-hash-describe', `mon-hash-describe-descend'.\n►►►"
   (let (allkeys)
-    (maphash 
-     (lambda (kk vv) 
-       (setq allkeys (cons kk allkeys)))
-     hashtable)
+    (maphash #'(lambda (kk vv)
+                 (push kk allkeys))
+             hashtable)
     allkeys))
 ;;
 (defun mon-hash-to-list (hashtable)
@@ -281,15 +295,34 @@ When KEY is already present in TABLE generate a new KEY such that:
 `mon-hash-has-key' , `mon-hash-get-symbol-keys', `mon-hash-get-string-keys',
 `mon-hash-put-CL', `mon-hash-describe', `mon-hash-describe-descend'.\n►►► "
   (let (mylist)
-    (maphash 
-     (lambda (kk vv) 
-       (setq mylist (cons (list kk vv) mylist)))
-     hashtable)
+    (maphash #'(lambda (kk vv) 
+                 (push `(,kk . ,vv) mylist))
+             hashtable)
     mylist))
 ;;
 ;;; ==============================
 ;;; End Xah-lee Section
 ;;; ==============================
+
+;;; ==============================
+;;; :COURTESY MON KEY :HIS mon-hash-utils.el
+;;; :CREATED <Timestamp: #{2010-02-16T16:11:53-05:00Z}#{10072} - by MON KEY>
+(defmacro mon-hash-get-keys (hashtable)
+  "Return all keys in HASHTABLE.\n
+Macromatic version of `mon-hash-all-keys'. Unlike `mon-hash-get-string-keys' and
+`mon-hash-get-symbol-keys' doesn't try to distinguish between string or symbols.
+:SEE `mon-help-hash-functions'.\n
+:SEE-ALSO `mon-hash<-vector', `mon-hash-make-size', `mon-hash-add-uniquify',
+`mon-hash-readlines-buffer', `mon-hash-readlines-file', `mon-hash-all-values',
+`mon-hash-to-list', `mon-hash-get-items', `mon-hash-get-values', `mon-hash-has-key',
+`mon-hash-get-symbol-keys', `mon-hash-get-string-keys', `mon-hash-put-CL',
+`mon-hash-describe', `mon-hash-describe-descend'.\n►►►"
+  (let ((mhgk-keys (make-symbol "mhgk-keys")))
+    `(let (,mhgk-keys)
+       (maphash #'(lambda (kk vv)
+                    (push kk ,mhgk-keys))
+                ,hashtable)
+       (setq ,mhgk-keys (nreverse ,mhgk-keys)))))
 
 ;;; ==============================
 ;;; COURTESY: Thierry Volpiatto HIS: macros-func-thierry.el
@@ -301,9 +334,18 @@ When KEY is already present in TABLE generate a new KEY such that:
 ;;; `hash-get-symbol-keys' -> `mon-hash-get-symbol-keys'
 ;;; `hash-get-string-keys' -> `mon-hash-get-string-keys'
 ;;; `cl-put-hash'          -> `mon-hash-put-CL'
+;;; :MODIFICATIONS 
+;;; `mon-hash-get-items' Added gensym mhgi-items
+;;; `mon-hash-get-values' Added gensyms mhgv-val mhgv-all
+;;; `mon-hash-get-symbol-keys' Added gensyms mhgsk-keys mhgsk-all. 
+;;;  Added optional arg COERCE-STRINGS which reads a string -> symbol if present.
+;;; `mon-hash-get-string-keys' Added gensyms mhgSk-keys, mhgSk-all,  mhgSk-str
+;;;  Added conditional to tests if key is already a string. 
+;;; `mon-hash-has-key' Added gensym mhhk-keys-l
 ;;; ==============================
 
 ;;; ==============================
+;;; :MODIFICATIONS <Timestamp: #{2010-02-16T16:30:02-05:00Z}#{10072} - by MON KEY>
 (defmacro mon-hash-get-items (hashtable)
   "Return a list of all keys/value pairs in HASHTABLE.\n
 :NOTE Each key's value returned as a strings.\n
@@ -313,12 +355,14 @@ When KEY is already present in TABLE generate a new KEY such that:
 `mon-hash-all-keys', `mon-hash-to-list', `mon-hash-get-values' ,
 `mon-hash-has-key' , `mon-hash-get-symbol-keys', `mon-hash-get-string-keys',
 `mon-hash-put-CL', `mon-hash-describe', `mon-hash-describe-descend'.\n►►►"
-  `(let ((li-items nil)) 
-     (maphash #'(lambda (x y) (push (list x y) li-items))
+  (let ((mhgi-items (make-symbol "mhgi-items")))
+  `(let ((,mhgi-items nil)) 
+     (maphash #'(lambda (x y) (push (list x y) ,mhgi-items))
               ,hashtable)
-     li-items))
+     ,mhgi-items)))
 ;;
 ;;; ==============================
+;;; :MODIFICATIONS <Timestamp: #{2010-02-16T16:28:11-05:00Z}#{10072} - by MON KEY>
 (defmacro mon-hash-get-values (hashtable)
   "Return a list of all HASHTABLE values as strings.\n
 :SEE `mon-help-hash-functions'.\n
@@ -327,27 +371,41 @@ When KEY is already present in TABLE generate a new KEY such that:
 `mon-hash-all-keys', `mon-hash-to-list', `mon-hash-get-items',
 `mon-hash-has-key' , `mon-hash-get-symbol-keys', `mon-hash-get-string-keys',
 `mon-hash-put-CL', `mon-hash-describe', `mon-hash-describe-descend'.\n►►►"
-  `(let ((li-values nil)
-         (li-all (mon-hash-get-items ,hashtable)))
-     (setq li-values (mapcar #'cadr li-all))
-     li-values))
-;;
+  (let ((mhgv-val (make-symbol "mhgv-val"))
+        (mhgv-all (make-symbol "mhgv-all")))
+    `(let ((,mhgv-val nil)
+           (,mhgv-all (mon-hash-get-items ,hashtable)))
+       (setq ,mhgv-val (mapcar #'cadr ,mhgv-all))
+       ,mhgv-val)))
+
 ;;; ==============================
-(defmacro mon-hash-get-symbol-keys (hashtable)
+;;; :MODIFICATIONS <Timestamp: #{2010-02-16T16:18:46-05:00Z}#{10072} - by MON KEY>
+(defmacro mon-hash-get-symbol-keys (hashtable &optional coerce-strings)
   "Reuturn a list of all keys in HASHTABLE.\n
-Like `mon-hash-get-string-keys' but return keys as symbols.\n
+Like `mon-hash-get-string-keys' but return keys that are symbols.\n
+When optional arg COERCE-STRINGS is non-nil when a hashtable key is a string
+read that string -> symbol.\n
 :SEE `mon-help-hash-functions'.\n
 :SEE-ALSO `mon-hash<-vector', `mon-hash-make-size', `mon-hash-add-uniquify',
 `mon-hash-readlines-buffer', `mon-hash-readlines-file', `mon-hash-all-values' ,
 `mon-hash-all-keys', `mon-hash-to-list', `mon-hash-get-items',
 `mon-hash-get-values' , `mon-hash-has-key' , `mon-hash-get-string-keys',
 `mon-hash-put-CL', `mon-hash-describe', `mon-hash-describe-descend'.\n►►►"
-  `(let ((li-keys nil)
-         (li-all (mon-hash-get-items ,hashtable)))
-     (setq li-keys (mapcar #'car li-all))
-     li-keys))
+  (let ((mhgsk-keys (make-symbol "mhgsk-keys"))
+        (mhgsk-all (make-symbol "mhgsk-all")))
+    `(let ((,mhgsk-keys nil)
+           (,mhgsk-all (mon-hash-get-items ,hashtable)))
+       (setq ,mhgsk-keys (mapcar #'(lambda (mhgsk)
+                                     (if coerce-strings
+                                         (if (stringp (car mhgsk))
+                                             (car (read-from-string (car mhgsk)))
+                                             (car mhgsk))
+                                         (car mhgsk)))
+                                 ,mhgsk-all))
+       ,mhgsk-keys)))
 ;;
 ;;; ==============================
+;;; :MODIFICATIONS <Timestamp: #{2010-02-16T16:10:26-05:00Z}#{10072} - by MON KEY>
 (defmacro mon-hash-get-string-keys (hashtable)
   "Return a list of all the keys in HASHTABLE.\n
 Like `mon-hash-get-symbol-keys' but return keys as strings.\n
@@ -357,18 +415,26 @@ Like `mon-hash-get-symbol-keys' but return keys as strings.\n
 `mon-hash-all-keys', `mon-hash-to-list', `mon-hash-get-items',
 `mon-hash-get-values' , `mon-hash-has-key' , `mon-hash-get-symbol-keys',
 `mon-hash-put-CL', `mon-hash-describe', `mon-hash-describe-descend'.\n►►► "
-  `(let ((li-keys nil)
-         (li-all (mon-hash-get-items ,hashtable))
-         (li-keys-str nil))
-     (setq li-keys (mapcar #'car li-all))
-     (dolist (i li-keys)
-       (push (symbol-name i) li-keys-str))
-     li-keys-str))
+  (let ((mhgSk-keys (make-symbol "mhgSk-keys"))
+        (mhgSk-all  (make-symbol "mhgSk-all"))
+        (mhgSk-str  (make-symbol "mhgSk-str")))
+  `(let ((,mhgSK-keys nil)
+         (,mhgSK-all (mon-hash-get-items ,hashtable))
+         (,mhgSK-keys-str nil))
+     (setq ,mhgSK-keys (mapcar #'car ,mhgSK-all))
+     (dolist (i ,mhgSK-keys)
+       (if (stringp i)
+           (push i ,mhgSK-keys-str)
+           (push (symbol-name i) ,mhgSK-keys-str)))
+     ,mhgSK-keys-str)))
 ;;
 ;;; (defalias 'hash-get-string-keys 'mon-hash-get-string-keys)
 ;;;(progn (fmakunbound 'hash-get-string-keys) (unintern 'hash-get-string-keys) )
 ;;
 ;;; ==============================
+
+;;; ==============================
+;;; :MODIFICATIONS <Timestamp: #{2010-02-16T16:23:21-05:00Z}#{10072} - by MON KEY>
 (defmacro mon-hash-has-key (key hashtable)
   "Return non-nil if HASHTABLE contains KEY.\n
 KEY must be a symbol \(not a string\) as test uses `memq'/`eq'.\n
@@ -379,10 +445,11 @@ KEY must be a symbol \(not a string\) as test uses `memq'/`eq'.\n
 `mon-hash-all-keys', `mon-hash-to-list', `mon-hash-get-items',
 `mon-hash-get-values' , `mon-hash-get-symbol-keys', `mon-hash-get-string-keys',
 `mon-hash-put-CL', `mon-hash-describe', `mon-hash-describe-descend'.\n►►►"
-  `(let ((keys-list (mon-hash-get-symbol-keys ,hashtable)))
-     (if (memq ,key keys-list)
-         t
-       nil)))
+  (let ((mhhk-keys-l (make-symbol "mhhk-keys-l")))
+    `(let ((,mhhk-keys-l (mon-hash-get-symbol-keys ,hashtable)))
+       (if (memq ,key ,mhhk-keys-l)
+           t
+           nil))))
 ;;
 ;;; ==============================
 (defmacro mon-hash-put-CL (key table value)
@@ -456,11 +523,11 @@ it is displayed along with the global value.\n
 	       (terpri))
 	     (symbol-value variable))))
 ;;
-;;; :CREATED <Timestamp: Wednesday May 13, 2009 @ 07:40.02 PM - by MON KEY>
 ;;; :COURTESY Peter Sanford 
 ;;; :SEE (URL `http://github.com/psanford/emacs-oauth.git')
+;;; :CREATED <Timestamp: Wednesday May 13, 2009 @ 07:40.02 PM - by MON KEY>
 (defun mon-hash-describe-descend (hash)
-  "Recursive describe hash func for nested hash-tables.\n
+  "Recursive describe hash function for nested hash-tables.\n
 :SEE `mon-help-hash-functions'.\n
 :SEE-ALSO `mon-hash<-vector', `mon-hash-make-size', `mon-hash-add-uniquify',
 `mon-hash-readlines-buffer', `mon-hash-readlines-file', `mon-hash-all-values' ,
@@ -479,6 +546,33 @@ it is displayed along with the global value.\n
 	       (pp value))
 	     (terpri))
 	   hash))
+
+;;; ==============================
+;;; :COURTESY Sam Steingold :HIS clhs.el :WAS `hash-table-complete'
+(defun mon-hash-table-complete (string table how)
+  "This makes it possible to use hash-tables with `completing-read'.\n
+:NOTE `completing-read' in Emacs 22 accepts hash-tables natively.
+:SEE `mon-help-hash-functions'.\n
+:SEE-ALSO `mon-hash<-vector', `mon-hash-make-size', `mon-hash-add-uniquify',
+`mon-hash-readlines-buffer', `mon-hash-readlines-file', `mon-hash-all-values' ,
+`mon-hash-all-keys', `mon-hash-to-list', `mon-hash-get-items',
+`mon-hash-get-values' , `mon-hash-has-key' , `mon-hash-get-symbol-keys',
+`mon-hash-get-string-keys', `mon-hash-put-CL', `mon-hash-describe'.\n►►►"
+  (let ((res nil) 
+        (st (upcase string)) 
+        (len (length string)))
+    (maphash #'(lambda (key val)
+                 (when (and (<= len (length key))
+                            (string= st (substring key 0 len)))
+                 (push key res)))
+             table)
+    (if how
+        res                       ; `all-completions'
+        (if (cdr res)
+            (try-completion st (mapcar #'list res))
+            (if (string= st (car res))
+                t
+                (car res))))))
 
 ;;; ==============================
 (provide 'mon-hash-utils)
