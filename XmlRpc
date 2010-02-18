@@ -9,6 +9,8 @@ make asynchronous remote procedure calls over http.
 
 * http://bzr.savannah.gnu.org/lh/emacsweblogs/annotate/head%3A/lisp/xml-rpc.el
 
+: that link doesn't work, there's a file at http://www.emacswiki.org/emacs/xml-rpc.el but is this the newest one? 
+
 To fix a bug in that causes double escaping of string parameters in Emacs 23, apply the patch from the following bug report: http://savannah.nongnu.org/bugs/?25314
 
 If you want CVS access, please contact hexmode on Savannah.

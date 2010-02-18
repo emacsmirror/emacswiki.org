@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:19:43 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Aug  1 15:32:21 2009 (-0700)
+;; Last-Updated: Wed Feb 17 09:17:51 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 503
+;;     Update #: 512
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-face.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -17,8 +17,9 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `cl', `color-theme', `cus-face', `easymenu', `ffap', `ffap-',
-;;   `hexrgb', `icicles-opt', `kmacro', `levenshtein', `thingatpt',
+;;   `cl', `color-theme', `cus-face', `easymenu', `el-swank-fuzzy',
+;;   `ffap', `ffap-', `fuzzy-match', `hexrgb', `icicles-opt',
+;;   `kmacro', `levenshtein', `reporter', `sendmail', `thingatpt',
 ;;   `thingatpt+', `wid-edit', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -63,6 +64,11 @@
 ;;    `icicle-search-main-regexp-others', `icicle-special-candidate',
 ;;    `icicle-whitespace-highlight', `minibuffer-prompt'.
 ;;
+;;  Functions defined here:
+;;
+;;    `icicle-increment-color-hue',
+;;    `icicle-increment-color-saturation'.
+;;
 ;;  For descriptions of changes to this file, see `icicles-chg.el'.
  
 ;;(@> "Index")
@@ -97,9 +103,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Code:
-
-(require 'icicles-opt) ;; icicle-increment-color-hue,
-                       ;; icicle-increment-color-saturation
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  
@@ -418,6 +421,49 @@ Not used for versions of Emacs before version 21."
   "*Face used to highlight current match of your search context regexp.
 This highlighting is done during Icicles searching."
   :group 'Icicles-Searching :group 'faces)
+
+;; This is essentially a version of `doremi-increment-color-component' for hue only.
+;; Must be before `icicle-search-context-level-1'.
+(defun icicle-increment-color-hue (color increment)
+  "Increase hue component of COLOR by INCREMENT."
+  (unless (featurep 'hexrgb) (error "`icicle-increment-color-hue' requires library `hexrgb.el'"))
+  (unless (string-match "#" color)      ; Convert color name to #hhh...
+    (setq color  (hexrgb-color-values-to-hex (x-color-values color))))
+  ;; Convert RGB to HSV
+  (let* ((rgb         (x-color-values color))
+         (red         (/ (float (nth 0 rgb)) 65535.0)) ; Convert from 0-65535 to 0.0-1.0
+         (green       (/ (float (nth 1 rgb)) 65535.0))
+         (blue        (/ (float (nth 2 rgb)) 65535.0))
+         (hsv         (hexrgb-rgb-to-hsv red green blue))
+         (hue         (nth 0 hsv))
+         (saturation  (nth 1 hsv))
+         (value       (nth 2 hsv)))
+    (setq hue  (+ hue (/ increment 100.0)))
+    (when (> hue 1.0) (setq hue  (1- hue)))
+    (hexrgb-color-values-to-hex (mapcar (lambda (x) (floor (* x 65535.0)))
+                                        (hexrgb-hsv-to-rgb hue saturation value)))))
+
+;; This is essentially a version of `doremi-increment-color-component' for saturation only.
+;; Must be before `icicle-search-context-level-1'.
+(defun icicle-increment-color-saturation (color increment)
+  "Increase saturation component of COLOR by INCREMENT."
+  (unless (featurep 'hexrgb)
+    (error "`icicle-increment-color-saturation' requires library `hexrgb.el'"))
+  (unless (string-match "#" color)      ; Convert color name to #hhh...
+    (setq color  (hexrgb-color-values-to-hex (x-color-values color))))
+  ;; Convert RGB to HSV
+  (let* ((rgb         (x-color-values color))
+         (red         (/ (float (nth 0 rgb)) 65535.0)) ; Convert from 0-65535 to 0.0-1.0
+         (green       (/ (float (nth 1 rgb)) 65535.0))
+         (blue        (/ (float (nth 2 rgb)) 65535.0))
+         (hsv         (hexrgb-rgb-to-hsv red green blue))
+         (hue         (nth 0 hsv))
+         (saturation  (nth 1 hsv))
+         (value       (nth 2 hsv)))
+    (setq saturation  (+ saturation (/ increment 100.0)))
+    (when (> saturation 1.0) (setq saturation  (1- saturation)))
+    (hexrgb-color-values-to-hex (mapcar (lambda (x) (floor (* x 65535.0)))
+                                        (hexrgb-hsv-to-rgb hue saturation value)))))
 
 (defface icicle-search-context-level-1
     (let ((context-bg  (face-background 'icicle-search-main-regexp-current)))

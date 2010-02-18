@@ -196,9 +196,13 @@ I prefer using selection buffer. -- Anonymous
 
 </pre>
 
+[:Ido]
 == Using Ido ==
 
-Use the following command to use imenu with [InteractivelyDoThings Ido] completion instead.
+Lisp:idomenu.el by GeorgBrandl lets you use [InteractivelyDoThings Ido] with imenu.
+
+[new]
+Alternatively, add the following command to ##.emacs##:
 
     (defun ido-goto-symbol (&optional symbol-list)
       "Refresh imenu and jump to a place in the buffer using Ido."
@@ -246,11 +250,9 @@ Use the following command to use imenu with [InteractivelyDoThings Ido] completi
               (add-to-list 'symbol-names name)
               (add-to-list 'name-and-pos (cons name position))))))))
 
-    (global-set-key "\C-ci" 'ido-goto-symbol)
+    (global-set-key "\C-ci" 'ido-goto-symbol) ; or any key you see fit
 
--- shjk (updated by MattKeller to handle overlays as "positions"; updated by VegardOye to not use [CommonLispForEmacs cl]).
-
-Another version using ido, allowing navigating sub-items: Lisp:idomenu.el by GeorgBrandl.
+-- shjk (updated by MattKeller to handle overlays as "positions"; updated by VegardOye not to use ##flet##).
 
 == Discussion ==
 

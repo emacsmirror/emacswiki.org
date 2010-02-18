@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Feb 13 12:05:57 2010 (-0800)
+;; Last-Updated: Wed Feb 17 08:52:08 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 6336
+;;     Update #: 6337
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -449,7 +449,7 @@ bindings are not available to you."
                    (when icicle-populate-interactive-history-flag
                      (ad-enable-advice 'call-interactively 'after 'icicle-save-to-history))
                    (ad-activate 'call-interactively))
-                 (dolist (fn  icicle-redefined-functions)
+                 (dolist (fn  icicle-inhibit-advice-functions)
                    (when (and (fboundp fn) (ad-is-active fn))
                      (push (cons fn (ad-copy-advice-info fn)) icicle-advice-info-list)
                      (ad-deactivate fn))))
@@ -484,7 +484,7 @@ bindings are not available to you."
                  (when (> emacs-major-version 22)
                    (ad-disable-advice 'call-interactively 'after 'icicle-save-to-history)
                    (ad-activate 'call-interactively))
-                 (dolist (fn  icicle-redefined-functions)
+                 (dolist (fn  icicle-inhibit-advice-functions)
                    (let ((info  (memq fn icicle-advice-info-list)))
                      (when (and (fboundp fn) info)
                        (ad-set-advice-info fn info)
@@ -673,7 +673,7 @@ bindings are not available to you."
            (if icicle-menu-items-to-history-flag
                (add-hook 'pre-command-hook 'icicle-add-menu-item-to-cmd-history)
              (remove-hook 'pre-command-hook 'icicle-add-menu-item-to-cmd-history))
-           (dolist (fn  icicle-redefined-functions)
+           (dolist (fn  icicle-inhibit-advice-functions)
              (when (and (fboundp fn) (ad-is-active fn))
                (push (cons fn (ad-copy-advice-info fn)) icicle-advice-info-list)
                (ad-deactivate fn)))
@@ -704,7 +704,7 @@ bindings are not available to you."
            (unless (eq icicle-guess-commands-in-path 'load)
              (setq icicle-shell-command-candidates-cache  ())) ; Reset - toggle Icy to update.
            (remove-hook 'pre-command-hook 'icicle-add-menu-item-to-cmd-history)
-           (dolist (fn  icicle-redefined-functions)
+           (dolist (fn  icicle-inhibit-advice-functions)
              (let ((info  (memq fn icicle-advice-info-list)))
                (when (and (fboundp fn) info)
                  (ad-set-advice-info fn info)

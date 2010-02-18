@@ -1975,7 +1975,7 @@ This is for the other eproject that can be found here:
                                  (mapcar (lambda (f) (format "\\(?:%s\\)" f))
                                          (eproject-get-project-metadatum
                                           (eproject-type) :relevant-files))))))
-    (eproject--search-directory-tree (eproject-root) matcher)))
+    (eproject--search-directory-tree (eproject-root) matcher "$^")))
 
 (defvar anything-eproject-source
   '((name . "eproject")

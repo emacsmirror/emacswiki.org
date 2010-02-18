@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Feb 14 09:40:55 2010 (-0800)
+;; Last-Updated: Wed Feb 17 11:20:30 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 4800
+;;     Update #: 4816
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -263,6 +263,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-face.el'")
 ;;
+;; 2010/02/17 dadams
+;;     Moved functions here from icicles-opt.el: icicle-increment-color-(hue|saturation). 
+;;     So no longer require icicles-opt.el.
 ;; 2009/04/18 dadams
 ;;     Removed load-time warning about using Icicles in a text terminal.
 ;; 2009/04/12 dadams
@@ -2690,6 +2693,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2010/02/17 dadams
+;;     Applied rename of icicl-redefined-functions to icicle-inhibit-advice-functions.
 ;; 2010/02/13 dadams
 ;;     icicle-mode:
 ;;       Fill icicle-advice-info-list from advised fns among icicle-redefined-functions.
@@ -3558,6 +3563,12 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2010/02/17 dadams
+;;     Moved icicle-redefined-functions here from icicles-var.el
+;;       and renamed to icicle-inhibit-advice-functions.
+;;     Moved to icicles-face.el: icicle-increment-color-(hue|saturation).
+;;     So now require icicles-face.el.
+;;     Corrected alphabetical order.
 ;; 2010/02/13 dadams
 ;;     icicle-top-level-key-bindings: Bound icicle-bookmark-*-jump-other-window.
 ;; 2010/01/24 dadams
@@ -4015,6 +4026,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2010/02/17 dadams
+;;     Moved icicle-redefined-functions to icicles-opt.el
+;;       and renamed to icicle-inhibit-advice-functions
 ;; 2010/02/14 dadams
 ;;     Added: icicle-advice-info-list, icicle-redefined-functions.
 ;; 2009/11/07 dadams
