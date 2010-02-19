@@ -157,7 +157,9 @@ mentions download/setup-type stuff...
 [new]
 If you open a file with the suffix .tex or .latex, you should get the basic mode.  For more features, use AUCTeX. -- AlexSchroeder
 
-
+----
+[new:jpkotta:2010-02-19 02:23 UTC]
+I like to use Makefiles to run pdflatex on my .tex files, which means I can just M-x compile to generate the document.  If you give pdflatex the -file-line-error option, Emacs automatically recognizes the errors and lets you jump to them just like with compiler errors.
 
 ----
 CategoryModes CategoryTex

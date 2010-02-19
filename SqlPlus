@@ -59,7 +59,7 @@ Simplified usage:
 in filesystem (use arrow button on toolbar to go back).
 
 Tested in Linux only for now, feedback from other sys users expected.  
-Please use Emacs22.
+Please use Emacs 22+.
 
 = As Ide Skel plugin =
 

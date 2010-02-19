@@ -7,8 +7,6 @@ Well :-) Seeing as ShaeErisson is so enthused about me creating a page on the Wi
 
 I've been using Linux for the last 6 years or so now. I only seriously got into Emacs about 18 months ago [ed: 3 years now], having used VIM up until then for the better half of 5 years. Once I got over the initial learning curve, I was hooked, and I've been proselytising to friends about the virtues of the one true editor since.
 
-Here's the latest (as of writing) version of my ~/.emacs. The accompanying files and latest versions can always be found at [http://repose.cx/conf/ my website]
-
 : ''I want '''color-theme-resolve'''! -- KevinTurner''
 : [it's in color-theme.el now]
 
@@ -45,7 +43,7 @@ I recently took over maintainership of EmacsWikiMode from JohnWiegley, and I've 
 My memory is reasonably good. But I have a tendency of getting side-tracked and forgetting about something I should have done. This is where the diary functionality comes in handy. I have a two-tier system to remind me of upcoming events:
 
 * Every morning, a cron job runs which mails me a 7-day outline of events I have on. 
-* For diary entries with an explicit time, a message pops up in emacs a few minutes before the appointment time. Since I'm almost always in emacs these days, I always spot it - though I should hook it into http://repose.cx/pyosd sometime.
+* For diary entries with an explicit time, a message pops up in emacs a few minutes before the appointment time. Since I'm almost always in emacs these days, I always spot it - though I should hook it into http://ichi2.net/pyosd sometime.
 
 == Gnus ==
 

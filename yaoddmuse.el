@@ -5,9 +5,10 @@
 ;; Author: Andy Stewart lazycat.manatee@gmail.com
 ;; Maintainer: Andy Stewart lazycat.manatee@gmail.com
 ;; Copyright (C) 2009, Andy Stewart, all rights reserved.
+;; Copyright (C) 2009, 2010 rubikitch, all rights reserved.
 ;; Created: 2009-01-06 12:41:17
 ;; Version: 0.1.1
-;; Last-Updated: 2009-10-08 00:28:09
+;; Last-Updated: 2010-02-19 04:51:59
 ;;           By: rubikitch
 ;; URL: http://www.emacswiki.org/emacs/download/yaoddmuse.el
 ;; Keywords: yaoddmuse, oddmuse
@@ -369,6 +370,9 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2010/02/19
+;;      * Add new key binding:  C-x C-v (`yaoddmuse-revert')
 ;;
 ;; 2009/10/08
 ;;      * imenu support.
@@ -892,6 +896,7 @@ It must print the page to stdout.
     (define-key map (kbd "C-c C-S-'") 'yaoddmuse-browse-page-diff)
     (define-key map (kbd "C-c C-s") 'yaoddmuse-browse-current-page)
     (define-key map (kbd "C-c C-r") 'yaoddmuse-revert)
+    (define-key map (kbd "C-x C-v") 'yaoddmuse-revert)
     ;; Navigation.
     (define-key map (kbd "C-c C-n") 'yaoddmuse-navi-next-heading)
     (define-key map (kbd "C-c C-p") 'yaoddmuse-navi-prev-heading)

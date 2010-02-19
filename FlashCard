@@ -97,6 +97,12 @@ I have implemened the SM5 algorithm as a flashcard method and would appreciate f
 
 * You could use a learning algorithm to approach your forgetting curve. [http://memaid.sourceforge.net/ Memaid] uses a neuronal network, for example (but the code is difficult to read). As input values, I managed to come up with (how-many-times-right, how-many-times-wrong, time-since-last-time-asked, planned-time, current-time (to adjust to different day phases), current-weekday (to adjust to the living cycle). Not all of these might be useful.
 
+[new:JohnSturdy:2010-02-18 18:27 UTC]
+
+I'd be interested to see a method that has a queue of words you haven't yet started on, and starts on the next one on the list when you're doing well enough on all your current words.  This is with the intention of throwing in a substantial vocabulary list (perhaps in order of usefulness) and having the program take me through it gradually, automatically.  Has anyone done something like this?  If not, I'll probably get round to it sometime, but I don't want to duplicate work.
+
+[new]
+
 == How to write a new import function ==
 
 An import function is trivial. It's just an interactive function that
@@ -197,9 +203,7 @@ http://sourceforge.net/projects/memaid/ - memaid
 
 == Changes ==
 
-As of Oct 10, 2006, I (DamienElmes) have taken over maintenence of flashcard from JorgenSchaefer.
-* [http://repose.cx/emacs/flashcard/ChangeLog recent changes]
-* [http://repose.cx/emacs/flashcard/ChangeLog.old old changes]
+On Oct 10, 2006 DamienElmes took over maintenance of flashcard.el. Work on that developed into a standalone python program and flashcard.el is no longer actively maintained. If anyone wants to update it, please get in contact with Damien or JorgenSchaefer
 
 ----
 CategoryEducation

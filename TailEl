@@ -1,5 +1,7 @@
 Lisp:tail.el is a small interface for the unix tool tail.
 
+(Alternatively, those with emacs 22 or later can use M-x auto-revert-tail-mode)
+
 == Configuration ==
 
 Put tail.el in your <code>load-path</code> and this in your .emacs file:
@@ -16,11 +18,6 @@ Alternatively you can use <code>autoload</code> (replace <code><path></code> wit
 Using the <code>tail-file</code> command with /var/log/syslog:
 
 http://www.knittig.de/img/tailel.png
-
-
-== Alternatives ==
-
- M-x auto-revert-tail-mode
 
 == Old Sources ==
 

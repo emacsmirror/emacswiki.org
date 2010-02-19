@@ -15,6 +15,7 @@ Here are some things which enhance <code>html-mode</code>,
 * HtmlToc -- show a table of contents buffer for your document
 * IndentingHtml -- indent based on document structure
 * IndentRegionAsOtherMode -- Indent the region with another mode, but then return to the current mode.
+* [[http://www.emacswiki.org/emacs/tidy.el tidy.el]] -- Interface to the HTML Tidy program. (There is a newer version of this program called tidy-xhtml.el in [NxhtmlMode nXhtml].)
 * PredictiveMode -- "Intellisense" for HTML: predictive, context-sensitive completion of HTML tags, attributes, and other entities
 [new]
 ** I do not think Predictive Mode can do that. It is not a parser. Maybe it still belongs here because it is quite nice in predicting words when writing text in a HTML page - and it has a built in intellisense type UI. (And you can use it with CompanyMode intellisense style completion too.)

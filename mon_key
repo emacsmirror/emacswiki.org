@@ -42,6 +42,8 @@ The package mon-utils is the entry point which loads the rest of the system and 
 * Lisp:mon-rename-image-utils-supplemental.el --
 * Lisp:mon-url-utils.el -- Provides utilities for interactively calling URL data lookups and for in
 ;;; buffer modification of web/internet scrapes.
+* Lisp:mon-wget-utils.el -- Provides lightweight routines for pulling files with wget.
+* Lisp:mon-get-mon-packages.el 
 * Lisp:mon-cifs-utils.el -- (MonCifsUtils) Provides utilities for mapping and mounting a CIFS domain using auth-source. Common Internet File System protocol, e.g. successor to the SMB (Server Message Block) protocol with the Samba Server.
 * Lisp:google-define-redux.el -- Provides extensions for Lisp:google-define.el
 

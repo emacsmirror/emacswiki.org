@@ -1,4 +1,4 @@
-Timestamp: Sun Jan  3 20:10:14 GMT 2010
+Timestamp: Thu Feb 18 15:53:52 GMT 2010
 
 This page is based on the EmacsLispList by StephenEglen and updated automatically.
 
@@ -498,7 +498,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://www.newartisans.com/johnw/Emacs dictation.el] --- enable voice dictation within emacs (by John Wiegley)
 
-[http://www.informatik.uni-freiburg.de/~utcke/English/Software/index.html diction.el] --- minor mode to interface the command diction (by Sven Utcke)
+[http://ftp.sunet.se/pub/gnu/emacs-lisp/archive/diction.el diction.el] --- minor mode to interface the command diction (by Sven Utcke)
 
 [http://me.in-berlin.de/~myrkr/dictionary/index.html dictionary.el] --- an interface to RFC 2229 dictionary server (by Torsten Hilbrich)
 
