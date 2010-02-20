@@ -7,7 +7,7 @@ GnuEmacs user (aka [::rph]).  I use Emacs for:
 * interfacing with [[Git]] ([[Magit]])
 
 = Elisp =
-; Lisp:remind-to-diary.el:  A very modest library that converts remind's simple calendar output into diary entries.  My first!  Comments welcome.
+; Lisp:remind-to-diary.el:  A modest library to convert remind's simple calendar output to diary entries.  My first!  Comments welcome.
 
 = Talk =
 [new:DrewAdams:2010-02-08 22:56 UTC]

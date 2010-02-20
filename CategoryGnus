@@ -132,6 +132,7 @@ Suggestions:
 * GnusStripes -- stripes in the summary buffer
 * MyGnus -- a Gnus community which no longer exists
 * GnusComposeMailFromOutsideOfEmacs -- compose mails in Gnus from outside of emacs
+* GnusNetworkManager -- Integration between Gnus agent and !NetworkManager
 
 == Getting Gnus ==
 

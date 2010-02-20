@@ -21,5 +21,7 @@ If you want to use windmove on Xemacs, look at:
 http://groups.google.com/groups?hl=en&lr=&ie=UTF-8&th=52b56e235ffba787
 
 --> Is possible to make windmove jump between frames? 
+
+*Yes* To jump between frames, see FrameMove (which can integrate seamlessly with windmove)
 ----
 CategoryWindows

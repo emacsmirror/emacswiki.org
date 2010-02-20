@@ -1,0 +1,23 @@
+Similar to WindMove, this package allows you to move between frames using arrow keys.
+Additionally, it can hook into WindMove's keys so that when you can't move window (because
+you reached the edge of the frame), the next event jumps frames.
+
+To install framemove on its own:
+
+    (require 'framemove)
+    (framemove-default-keybindings) ;; default prefix is Meta
+
+But you might want to use this in conjunction with WindMove, in which case this is the integration
+code to add to your .emacs:
+
+    (require 'framemove)
+    (windmove-default-keybindings)
+    (setq framemove-hook-into-windmove t)
+
+Currently, when focus shifts to a new frame - the point does not change inside the frame.
+
+Download from Lisp:framemove.el
+
+----
+CategoryFrames CategoryWindows
+

@@ -18,6 +18,11 @@ M-x `latex-math-preview-save-image-file' make an image for the same object
 as `latex-math-preview-expression' and save it as a file which is png or eps.
 When making an image, this command may remove number of mathematical formulas.
 
+Buffer local variable `latex-math-preview-usepackage-cache' has
+the values of \usepackage for previewing.
+If you want to reload this variable, you use
+M-x `latex-math-preview-reload-usepackage'.
+
 latex-math-preview.el is a modified version which is based on
 tex-math-preview.el and has been created at July 2009.
 This emacs lisp is made by reducing some features of tex-math-preview.el
@@ -28,6 +33,8 @@ Please see http://user42.tuxfamily.org/tex-math-preview/index.html
 for details of tex-math-preview.el.
 
 == Requirements ==
+You need to install the following softwares.
+
 * Emacs (version 22 or 23) on Linux or Meadow3 on Windows.
 * dvipng
 * dvips
@@ -237,6 +244,9 @@ write the following in ~/.emacs.el.
 == Download ==
 * [Lisp:latex-math-preview.el latex-math-preview.el]
 * [Lisp:latex-math-preview-extra-data.el latex-math-preview-extra-data.el]
+
+== Repository ==
+* http://gitorious.org/latex-math-preview/
 
 == Discussion ==
 [new]

@@ -14,22 +14,21 @@ vim-mode currently supports the following aspects:
 
 * standard Vi key-bindings in normal-mode/operator-pending-mode
 * window-commands (Ctrl-W + ...)
-* character-wise, line-wise and block visual-mode
+* character-wise, line-wise and block visual-mode with
+* mouse actions activate visual-mode
+* visual-mode interacts with several Emacs-region-commands
+* registers and marks
 * changable key-bindings
 * framework for easy definition of new commands and motions
-* ex-mode (only latest revision)
+* ex-mode
+* runs on Emacs 22, 23 and XEmacs 21.4
 
 == TODO ==
 
 The following aspects are currently not implemented, but should be in future:
 
-* marks
-* registers
 * most of the text-object motions
 * some ex-mode stuff (interactive substitute)
-* XEmacs compatibility
-* mouse-handling in visual-mode
-* better interaction of pure Emacs commands with vim-mode (region, ...)
 * How about invisible text? That is currently a problem in Viper.
 ** //Can you give examples of how viper behaves on invisible text and what you would expect?//
 *** If you for example in org-mode are in on a header line with an invisible body and press "o" then the invisible text should be made visible. That does not happen in Viper yet. Searching should open invisible parts just as isearch does.

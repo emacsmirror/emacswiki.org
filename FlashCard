@@ -201,6 +201,8 @@ http://sourceforge.net/projects/memaid/ - memaid
 [new]
 * Japanese Language Proficiency Test vocabulary for levels 1, 2, and 3 as found in edict Lisp:jlpt-decks.tar.gz
 
+* US States and their capitals, import using flashcard-import-from-colon-file. http://chrispoole.com/other/capitals-all.gz
+
 == Changes ==
 
 On Oct 10, 2006 DamienElmes took over maintenance of flashcard.el. Work on that developed into a standalone python program and flashcard.el is no longer actively maintained. If anyone wants to update it, please get in contact with Damien or JorgenSchaefer

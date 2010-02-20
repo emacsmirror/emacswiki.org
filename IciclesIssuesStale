@@ -56,6 +56,65 @@ Better yet, use this to separate threads (puts space before and after the horizo
 
 
 
+
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+<pre>
+(add-to-list 'load-path "path/to/icicles")
+(load-library "icicles")
+
+Debugger entered--Lisp error: (void-variable icicle-mode-map)
+</pre>
+
+I get an error when I try to load the icicles library.
+
+1. I am using a recent build of Emacs 23.1.90.1 on Mac OS X 10.5
+
+2. The error only happens if I have byte-compiled the icicles code.  If there are nothing but .el files in the directory it is fine.
+
+3. If I evaluate (load-library "icicles") again it works fine and the package is loaded.
+
+4. (Side note: the discussion on [[IciclesIswitchb]] does not apply to my environment.  The only way I've been able to get iswitchb functionality working is to use all of (iswitchb-mode), (require 'icicles), (iswitchb-default-keybindings), (require 'icicles-iswitchb).)
+
+Perhaps 23.1 isn't supported yet? -- [[rmolinari]]
+
+
+[new:DrewAdams:2009-12-14 01:33 UTC]
+Sorry for your trouble. Thanks for your report, but I will need more info.
+
+1. I do support the release (23.1), but I do not officially support the CVS development code, which is what you are using (23.1.90.1) -- it is too much of a moving target. Nevertheless, I know that there are '''Icicles''' users who do use the latest CVS Emacs with no problem.
+
+2. Make sure that all of the '''Icicles''' files you have are the latest versions. Be sure to start with ##emacs -Q## for a bug recipe.
+
+3. With byte-compiled code, make sure that you load the source files before compiling. It is at least important to load <tt>[[icicles-mac.el]]</tt> before byte-compiling the other files, since it contains macros that they use.
+
+4. If you can get hold of an official release (e.g. Emacs 23.1 or 22.3), see if you can reproduce the problem with it. That might save time if you cannot. It's possible that there is a change in the CVS code that affects this. But I doubt it. Usually, problems of this kind come from compiling and loading sequencing.
+
+5. I'm afraid you will need to do some debugging to figure out what is happening. The load order in <tt>[[icicles.el]]</tt> should be correct. You can try turning on `debug-on-error'. You can try loading each of the byte-compiled files, in turn (in the order given in <tt>[[icicles.el]]</tt>. You can try loading all of the source files except for a single byte-compiled file, in turn.
+
+6. Wrt [[IswitchBuffers|IswitchB]], I'm afraid I can't help. I don't use it, myself. I sanity-tested it briefly with '''Icicles''' long ago, but I don't retest the combination. All I know is what others have written on page IciclesIswitchb. Feel free to update that page if you have additional info. -- DrewAdams
+
+[new]
+Hi Drew.  Thanks for the quick reply.  Loading icicles before byte-compiling didn't help so there must be something squirrelly in my setup.  I don't have time to investigate more carefully right now but will try to find time later in the week.  Thanks for a great product!  -- [[rmolinari]]
+
+
+[new:DrewAdams:2009-12-14 04:38 UTC]
+OK, let me know what you find out. Even more details about what you did helps. -- DrewAdams
+
+
+
+
+
+
 <pre>
 
 </pre>

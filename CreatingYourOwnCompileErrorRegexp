@@ -1,6 +1,6 @@
 <code>compilation-error-regexp-alist</code> is used to parse the CompilationMode buffer, and allow you to jump from compile error messages directly to the problem in the source line.
 
-The default entries in Emacs work for many compilers, but not all, so here's some tips to allow you to add support for your own compiler.  Or you might find it useful if you have your own wierd parser, custom build scripts, or even perl HTML templating engine, you can use this method to filter through the compile output, and take you directly to the problem.
+The default entries in Emacs work for many compilers, but not all, so here's some tips to allow you to add support for your own compiler.  Or you might find it useful if you have your own weird parser, custom build scripts, or even perl HTML templating engine, you can use this method to filter through the compile output, and take you directly to the problem.
 
 The operative part should be a simple regexp, and it is, but the tricky bit is getting it to work.  Some subtle differences between Emacs and XEmacs are particularly tedious.  In Emacs you can just add to <code>compilation-error-regexp-alist</code>, but in XEmacs you're supposed to add to <code>compilation-error-regexp-alist-alist</code> and then call <code>compilation-build-compilation-error-regexp-alist</code> to construct the plain list.  And for extra confusion Emacs 22 also has a <code>compilation-error-regexp-alist-alist</code>, but in a different format (and not needing an explicit "build").
 

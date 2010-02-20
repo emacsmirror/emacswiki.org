@@ -106,6 +106,11 @@ Automatically byte compile elisp files when they are saved, by MichaelAbrahamShu
 
 * [http://web.archive.org/web/20021216070753/http://kurukshetra.cjb.net/elisp/auto-recomp.el auto-recomp.el] (was http://kurukshetra.cjb.net/elisp/auto-recomp.el but that is down)
 
+[new]
+[http://web.archive.org/web/20021216070753/http://kurukshetra.cjb.net/elisp/auto-recomp.el auto-recomp.el] requires [http://edward.oconnor.cx/elisp/read-char-spec.el read-char-spec.el] to work.
+
+Why don't you guys put this stuff on the wiki?
+
 ----
 
 Here is my slightly modified version of the byte compile on buffer save solution. Compared to the one in auto-recomp.el this one tries to be less distracting by pre-splitting the window with a smaller ##*Compile-Log*## buffer, auto-scroll to the last line to quickly show a potential error and then auto-close the ##*Compile-Log*## window. It would be better to have a real error detection with a notification message rather than a dumb auto-scroll. Next time perhaps.  -PierreJeanTurpeau

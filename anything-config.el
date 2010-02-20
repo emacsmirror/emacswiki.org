@@ -1276,12 +1276,13 @@ buffer that is not the current buffer."
     (candidate-transformer anything-c-highlight-ffiles)
     (persistent-action . anything-find-files-persistent-action)
     (volatile)
-    (action . (("Find File" . find-file-at-point)
-               ("Find file other window" . find-file-other-window)
-               ("Find file in Dired" . anything-c-point-file-in-dired)
-               ("Find file in Elscreen"  . elscreen-find-file)
-               ("Find file as root" . anything-find-file-as-root)
-               ("Delete File(s)" . anything-delete-marked-files)))))
+    (action . ,(delq nil `(("Find File" . find-file-at-point)
+                           ("Find file other window" . find-file-other-window)
+                           ("Find file in Dired" . anything-c-point-file-in-dired)
+                           ,(when (require 'elscreen nil t)
+                                  '("Find file in Elscreen"  . elscreen-find-file))
+                           ("Find file as root" . anything-find-file-as-root)
+                           ("Delete File(s)" . anything-delete-marked-files))))))
 
 ;; (anything 'anything-c-source-find-files)
 
@@ -1360,17 +1361,41 @@ If prefix numeric arg is given go ARG level down."
         (tramp-verbose anything-tramp-verbose) ; No tramp message when 0.
         ;; Don't try to tramp connect before entering the second ":".
         (tramp-file-name-regexp "\\`/\\([^[/:]+\\|[^/]+]\\):.*:"))
-    (set-text-properties 0 (length path) nil path)
-    (setq anything-pattern path)
-    (cond ((or (file-regular-p path)
-               (and ffap-url-regexp (string-match ffap-url-regexp path)))
-           (list path))
-          ((string= anything-pattern "") (directory-files "/" t))
-          ((file-directory-p path) (directory-files path t))
-          (t
-           (append
-            (list path)
-            (directory-files (file-name-directory path) t))))))
+    ;; Inlined version (<2010-02-18 Jeu.>.) of `tramp-handle-directory-files'
+    ;; to fix bug in tramp that doesn't show the dot file names(i.e "." "..")
+    ;; and sorting.
+    (flet ((tramp-handle-directory-files
+               (directory &optional full match nosort files-only)
+             "Like `directory-files' for Tramp files."
+             ;; FILES-ONLY is valid for XEmacs only.
+             (when (file-directory-p directory)
+               (setq directory (file-name-as-directory (expand-file-name directory)))
+               (let ((temp (nreverse (file-name-all-completions "" directory)))
+                     result item)
+
+                 (while temp
+                   (setq item (directory-file-name (pop temp)))
+                   (when (and (or (null match) (string-match match item))
+                              (or (null files-only)
+                                  ;; Files only.
+                                  (and (equal files-only t) (file-regular-p item))
+                                  ;; Directories only.
+                                  (file-directory-p item)))
+                     (push (if full (concat directory item) item)
+                           result)))
+                 (if nosort result (sort result 'string<))))))
+
+      (set-text-properties 0 (length path) nil path)
+      (setq anything-pattern path)
+      (cond ((or (file-regular-p path)
+                 (and ffap-url-regexp (string-match ffap-url-regexp path)))
+             (list path))
+            ((string= anything-pattern "") (directory-files "/" t))
+            ((file-directory-p path) (directory-files path t))
+            (t
+             (append
+              (list path)
+              (directory-files (file-name-directory path) t)))))))
 
 (defface anything-dired-symlink-face
   '((t (:foreground "DarkOrange")))

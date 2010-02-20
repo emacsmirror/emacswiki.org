@@ -8,5 +8,6 @@ Click the heading to find all pages related to [[Frame]]s in Emacs.
 * OneOnOneEmacs -- making Emacs more frame-oriented, and less (Emacs-)window oriented
 * DoReMi -- incrementally adjust or set frame properties using the arrow keys; return to previous frame configurations (undo)
 * FisheyeWithThumbs -- thumbnail frames: a fisheye view of your frames and an alternative to iconifying
-* FrameConfig -- save and restore some basic frame properties.
+* FrameConfig -- save and restore some basic frame properties
+* FrameMove -- move between frames with arrow keys 
 
