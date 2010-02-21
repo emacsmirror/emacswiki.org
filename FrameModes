@@ -1,46 +1,51 @@
-This is a subpage of CategoryFrames and CategoryModes. It describes [[Frame]] setups, [[Commands]], and functions.
+This is a subpage of CategoryFrames and CategoryModes. It describes [[frame]] setups, frame [[command]]s, and frame functions.
+
+
 
 [:ShrinkWrappedFrames]
-= Shrink-Wrapped Frames =
+== Shrink-Wrapped Frames ==
 
-DrewAdams has written libraries of functions that resize frames so they fit their buffer(s):
+These libraries provide functions that resize frames so they fit their buffer(s):
  
-* Lisp:autofit-frame.el -- Automatically fit each frame.
-* Lisp:fit-frame.el -- Manually resize a frame. Shrink-wrap it to fit its buffer(s).
+* <tt>[[autofit-frame.el]]</tt> -- Automatically fit each frame.
+* <tt>[[fit-frame.el]]</tt>  -- Manually resize a frame. Shrink-wrap it to fit its [[buffer]](s).
 
 Use these libraries especially if you use frames, instead of Emacs windows, by default -- that is, if you have <code>(setq pop-up-frames t)</code>.
 
 See [[Shrink-Wrapping Frames]] for more information.
 
-= Customized Frames Setup =
 
-DrewAdams has written several libraries that make Emacs more ''frame-oriented''.
+
+== Custom Frames Setup ==
+
+Library <tt>[[oneonone.el]]</tt> makes Emacs more ''frame-oriented''.
 See OneOnOneEmacs for more information. Here is a summary:
 
-Lisp:oneonone.el is a library that sets up Emacs to do the following:
-* Use frames, by default, instead of windows.
+* Use frames, by default, instead of [[window]]s.
 * Define default properties for normal frames and "special" frames (see EmacsManual for info on special frames -- e.g. `special-display-frame-alist').
 * Create three predefined frames:
 ** <code>*Help*</code> buffer frame
 ** <code>*Completions*</code> buffer frame
-** `1on1-minibuffer-frame' -- a standalone MiniBuffer frame
+** `1on1-minibuffer-frame' -- a standalone [[minibuffer]] frame
 
 :: This is the only frame to have a minibuffer. By default, it is automatically sized to the full width of your display and placed at the bottom of the display. It changes background color, depending on what you're doing: searching, typing in the minibuffer, or nothing (inactive).
 
-This library is especially useful if used in combination with libraries Lisp:autofit-frame.el, which automatically fits frames to their selected window (buffer), and Lisp:fit-frame.el, which lets you fit a frame manually or resize it incrementally. See [[#ShrinkWrappedFrames]].
+This library is especially useful if used in combination with libraries <tt>[[autofit-frame.el]]</tt>, which automatically fits frames to their selected window (buffer), and <tt>[[fit-frame.el]]</tt>, which lets you fit a frame manually or resize it incrementally. See [[#ShrinkWrappedFrames]].
 
-'''Note:''' Because Emacs is not really designed to be frame-oriented, there are some built-in and standard functions that produce less-than-desirable results when frames, instead of windows, are the default. In other libraries, I have fixed most of these functions to play well with this library. See my libraries that are named ''<file>''-.el and ''<file>''+.el, where ''<file>'' is the name of a standard Emacs library.
+'''Note:''' Because Emacs is not really designed to be frame-oriented, there are some built-in and standard functions that produce less-than-desirable results when frames, instead of windows, are the default. In other libraries, I have fixed most of these functions to play well with this library. See the libraries by DrewAdams that are named ''<file>''-.el and ''<file>''+.el, where ''<file>'' is the name of a standard Emacs library.
 
 The properties of all frames are user-configurable using variables.
 
+
+
 [:FrameCommands]
-= Frame Commands =
+== Frame Commands ==
 
 This section describes commands (interactive functions) dealing with frames.
 
-== Lisp:frame-cmds.el ==
+== frame-cmds.el ==
 
-DrewAdams has written Lisp:frame-cmds.el, a library of frame commands. Using the suggested key bindings, you can:
+DrewAdams has written <tt>[[frame-cmds.el]]</tt>, a library of frame commands. Using the suggested key bindings, you can:
 
 * Use `C-M-' with the arrow keys (up, down, left, right) to resize a frame incrementally.
 * Use `M-' with the arrow keys to move a frame incrementally.
@@ -51,7 +56,7 @@ DrewAdams has written Lisp:frame-cmds.el, a library of frame commands. Using the
 * Use `C-mouse-1' in Dired to mark/unmark a file -- see `mouse-show-hide-mark-unmark', below.
 * Use `C-mouse-3' on the mode line to remove window from frame -- see `mouse-remove-window', below.
 
-These are the commands in Lisp:frame-cmds.el:
+These are the commands in <tt>[[frame-cmds.el]]</tt>:
 
 * `enlarge-frame', `enlarge-frame-horizontally', `shrink-frame', and `shrink-frame-horizontally' -- Resize a frame incrementally.
 * `tile-frames-horizontally' and `tile-frames-vertically' -- Tile the visible frames horizontally and vertically.
@@ -59,7 +64,7 @@ These are the commands in Lisp:frame-cmds.el:
 ** Otherwise, all visible frames are tiled (except a standalone
 minibuffer frame, if any).
 * `move-frame-up', `move-frame-down', `move-frame-left', and `move-frame-right', -- Move a frame incrementally.
-* `enlarge-font' -- Incrementally change the size of a frame's font. See also these frame-zooming commands in library Lisp:zoom-frm.el: `zoom-frm-in', `zoom-frm-out', `zoom-frm-unzoom', `toggle-zoom-frame'. 
+* `enlarge-font' -- Incrementally change the size of a frame's font. See also these frame-zooming commands in library <tt>[[zoom-frm.el]]</tt>: `zoom-frm-in', `zoom-frm-out', `zoom-frm-unzoom', `toggle-zoom-frame'. 
 * `set-frame-alist-parameter-from-frame' and `set-all-frame-alist-parameters-from-frame' -- Update a frame-parameter alist, such as `default-frame-alist', using the parameters of the current frame.
 * `tell-customize-var-has-changed' -- Tell customize to consider that a given variable has been set (changed).
 * `show-hide' -- If only one frame is visible then call `show-hide-show-function'; else call `hide-everything' (see below). By default, `show-hide-show-function' is `jump-to-frame-config-register', which restores the frame configuration saved when you `iconify-everything' or `hide-everything'.
@@ -89,9 +94,11 @@ minibuffer frame, if any).
 * `show-*Help*-buffer' -- Raise a frame showing buffer `*Help*', without selecting it.
 * `delete-1-window-frames-on' -- Delete all visible 1-window frames showing buffer.
 
+
+
 == fit-frame.el, autofit-frame.el ==
 
-For commands to resize a frame to fit its selected window, see libraries Lisp:fit-frame.el and Lisp:autofit-frame.el (and more info at [[Shrink-Wrapping Frames]]). In Windows, library Lisp:fit-frame.el also has commands to maximize and restore a frame.
+For commands to resize a frame to fit its selected window, see libraries <tt>[[fit-frame.el]]</tt> and <tt>[[autofit-frame.el]]</tt> (and more info at [[Shrink-Wrapping Frames]]). In Windows, library ##fit-frame.el## also has commands to maximize and restore a frame.
 
 ----
 CategoryFrames CategoryModes CategoryDisplay

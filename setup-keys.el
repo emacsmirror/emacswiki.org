@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Tue Jan 12 17:26:32 2010 (-0800)
+;; Last-Updated: Sat Feb 20 09:55:01 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 983
+;;     Update #: 986
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -67,6 +67,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/02/20 dradams
+;;     Bound framemove keys: M-S-(up|down|left|right).
 ;; 2009/11/07 dadams
 ;;     Bound doremi-face-bg+ to k.  Applied doremi cmd renamings (added +).
 ;; 2009/08/26 dadams
@@ -389,6 +391,12 @@
   (global-set-key [mode-line mouse-3] 'mouse-iconify/map-frame)
   (global-set-key [mode-line C-mouse-3] 'mouse-remove-window)
   )
+
+(when (featurep 'framemove)
+  (global-set-key [(shift meta up)]    'fm-up-frame)
+  (global-set-key [(shift meta down)]  'fm-down-frame)
+  (global-set-key [(shift meta left)]  'fm-left-frame)
+  (global-set-key [(shift meta right)] 'fm-right-frame))
 
 (when (featurep 'zoom-frm)              ; `zoom-frm.el' requires `frame-cmds.el'.
   (global-set-key [S-mouse-1] 'zoom-in)

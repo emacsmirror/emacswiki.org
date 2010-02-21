@@ -1,6 +1,8 @@
 [:Introduction]
 == Introduction ==
 
+Some features described on EmacsWiki are available only in the latest '''[::EmacsDevelopmentVersion]'''. To obtain those features, you will need to build Emacs using the development source code. This page is about that source code and how to use it.
+
 This is a quick-start guide to using [http://bazaar-vcs.org Bazaar] for Emacs development.  It assumes familiarity with the old CVS ways.  The focus at present is on /easing the transition/ from CVS to Bazaar, /not/ on teaching you how to be a power Bazaar user.  However, once you have read this, you will have a basic understanding of distributed version control and Bazaar.
 
 This guide presents a simple Bazaar workflow oriented toward the "regular contributor," whether a "core" committer, a maintainer of a well-defined package (/e.g./, a major mode), or simply someone who enjoys occasionally hacking on Emacs and then contributing those improvements to the community.  The emphasis is on /necessary/ and /simple/, not on "general" nor on maximal efficiency.  Emacs developers will surely need various other workflows at times, and there are in most cases more highly performant ways of accomplishing most tasks.  However, the ways presented here are intended to be straightforward, effective, reasonably efficient, and relatively simple.

@@ -1,6 +1,5 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; naf-mode-insertion-utils.el --- insertion procedures for working in `naf-mode' buffer
 ;; -*- mode: EMACS-LISP; -*-
-;;; this is naf-mode-insertion-utils.el
 ;;; ================================================================
 ;;; DESCRIPTION:
 ;;; naf-insertion-utils common insertion procedures and miscellaneous
@@ -12,16 +11,19 @@
 ;;; `non-posting-wiki-source', `non-posting-ebay-source',
 ;;; `non-posting-imdb-source', `non-posting-benezit-source',
 ;;; `non-posting-internet-source', `mon-insert-naf-mode-constant-template',
-;;; `mon-insert-naf-mode-face-template', `mon-insert-face-as-displayed',
+;;; `mon-insert-naf-mode-face-template', `mon-insert-naf-mode-faces-as-displayed',
 ;;; `mon-insert-naf-file-in-dirs',
 ;;; `mon-insert-naf-mode-xref-template', `mon-build-naf-mode-xref'
-;;; `mon-insert-naf-mode-var-const-templt'
+;;; `mon-insert-naf-mode-var-const-template', `mon-insert-naf-mode-class-template'
 ;;; FUNCTIONS:◄◄◄
 ;;;
 ;;; MACROS:
 ;;;
+;;; CLASSES:
+;;;
 ;;; CONSTANTS: 
 ;;; `*naf-mode-faces-as-displayed*'
+;;;
 ;;; VARIABLES:
 ;;;
 ;;; ALIASED/ADVISED/SUBST'D:
@@ -34,9 +36,11 @@
 ;;; DEPRECATED:
 ;;; `npps' -> `mon-cln-philsp'
 ;;; `mon-insert-naf-mode-constant-template' 
-;;;   -> `mon-insert-mon-insert-naf-mode-var-const-templt'
+;;;   -> `mon-insert-mon-insert-naf-mode-var-const-template'
 ;;;
 ;;; RENAMED: 
+;;; `mon-insert-naf-mode-var-const-templt' -> `mon-insert-naf-mode-var-const-template'
+;;; `mon-insert-face-as-displayed'         -> `mon-insert-naf-mode-faces-as-displayed'
 ;;;
 ;;; MOVED:
 ;;;
@@ -53,16 +57,6 @@
 ;;; <Timestamp: #{2009-09-26T18:19:57-04:00Z}#{09396} - by MON KEY>
 ;;;
 ;;; SNIPPETS:
-;;; Snippet for dealing with longlines-mode.
-;;; 	 (test-llm (buffer-local-value longlines-mode (current-buffer)))
-;;; 	 (is-on (and test-llm))
-;;; 	 (llm-off))
-;;; (if (or insertp intrp)
-;;; 	(save-excursion
-;;; 	  (when is-on (longlines-mode 0) (setq llm-off 't))
-;;; 	  (insert non-ps)
-;;; 	  (when llm-off (longlines-mode 1) (setq llm-off 'nil)))
-;;;   non-ps)))
 ;;;
 ;;; THIRD PARTY CODE:
 ;;;
@@ -76,41 +70,48 @@
 ;;; FILE-CREATED:
 ;;; <Timestamp: #{2009-08-25T19:46:02-04:00Z}#{09352} - by MON KEY>
 ;;; ================================================================
-;;; This file is not part of GNU Emacs.
-;;;
-;;; This program is free software; you can redistribute it and/or
-;;; modify it under the terms of the GNU General Public License as
-;;; published by the Free Software Foundation; either version 3, or
-;;; (at your option) any later version.
-;;;
-;;; This program is distributed in the hope that it will be useful,
-;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-;;; General Public License for more details.
-;;;
-;;; You should have received a copy of the GNU General Public License
-;;; along with this program; see the file COPYING.  If not, write to
-;;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
-;;; Floor, Boston, MA 02110-1301, USA.
+;; This file is not part of GNU Emacs.
+;;
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 3, or
+;; (at your option) any later version.
+;;
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with this program; see the file COPYING.  If not, write to
+;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
+;; Floor, Boston, MA 02110-1301, USA.
 ;;; ================================================================
-;;; Permission is granted to copy, distribute and/or modify this
-;;; document under the terms of the GNU Free Documentation License,
-;;; Version 1.3 or any later version published by the Free Software
-;;; Foundation; with no Invariant Sections, no Front-Cover Texts,
-;;; and no Back-Cover Texts. A copy of the license is included in
-;;; the section entitled "GNU Free Documentation License".
+;; Permission is granted to copy, distribute and/or modify this
+;; document under the terms of the GNU Free Documentation License,
+;; Version 1.3 or any later version published by the Free Software
+;; Foundation; with no Invariant Sections, no Front-Cover Texts,
+;; and no Back-Cover Texts. A copy of the license is included in
+;; the section entitled ``GNU Free Documentation License''.
+;; 
+;; A copy of the license is also available from the Free Software
+;; Foundation Web site at:
+;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;;; Copyright © 2009 MON KEY
+;;; Copyright © 2009, 2010 MON KEY
 ;;; ==============================
 ;;; CODE:
 
+(eval-when-compile (require 'cl))
+
 ;;; ==============================
-;;; CREATED: <Timestamp: #{2009-09-29T20:02:37-04:00Z}#{09403} - by MON KEY>
+;;; :CREATED <Timestamp: #{2009-09-29T20:02:37-04:00Z}#{09403} - by MON KEY>
 (defvar *naf-mode-insertion-utils-xrefs* nil
-"*Xrefing list of functions and variables defined in file naf-mode-insertion-utils.el\n
-EXAMPLE:\n\*naf-mode-insertion-utils-xrefs*\n
+"*Xrefing list of functions and variables for naf-mode-insertion-utils.\n
+:EXAMPLE\n\*naf-mode-insertion-utils-xrefs*\n
 \(nth 3 *naf-mode-insertion-utils-xrefs*\)\n
-See also; `*naf-mode-xref-of-xrefs*'\n►►►.")
+:SEE :FILE naf-mode-insertion-utils.el\n
+:SEE-ALSO `*naf-mode-xref-of-xrefs*'\n►►►.")
 ;;
 (unless (bound-and-true-p *naf-mode-insertion-utils-xrefs*)
   (setq *naf-mode-insertion-utils-xrefs*
@@ -132,19 +133,20 @@ See also; `*naf-mode-xref-of-xrefs*'\n►►►.")
           mon-insert-naf-mode-var-const-templ
           mon-insert-naf-mode-constant-template
           mon-insert-naf-mode-face-template
-          mon-insert-face-as-displayed
+          mon-insert-naf-mode-faces-as-displayed
           *naf-mode-faces-as-displayed* 
           *naf-mode-insertion-utils-xrefs*)))
 ;;
-;;;test-me;(symbol-value '*naf-mode-insertion-utils-xrefs*)
-;;;test-me;(nth 3 *naf-mode-insertion-utils-xrefs*)
+;;; :TEST-ME (symbol-value '*naf-mode-insertion-utils-xrefs*)
+;;; :TEST-ME (nth 3 *naf-mode-insertion-utils-xrefs*)
 ;;
 ;;;(progn (makunbound '*naf-mode-insertion-utils-xrefs*)
-;;;       (unintern '*naf-mode-insertion-utils-xrefs*))
+;;;       (unintern '*naf-mode-insertion-utils-xrefs*) )
 
 ;;; ==============================
 (defun naf-tab-region (beg end &optional arg)   
-  "Indent region by one tab in a `naf-mode' buffer.\n►►►"
+  "Indent region by one tab in a `naf-mode' buffer.\n
+:SEE-ALSO \n►►►"
   (interactive "r\nP")
   (indent-rigidly beg end tab-width)
   (exchange-point-and-mark))
@@ -152,28 +154,29 @@ See also; `*naf-mode-xref-of-xrefs*'\n►►►.")
 ;;; =======================
 (defun naf-comment-line ()
   "Comment line in a NAF file.\n
-See also; `naf-uncomment-line', `naf-comment-prefix', `naf-uncomment-region',
-`naf-comment-region'.\nUsed in `naf-mode'.\n►►►"
+:SEE-ALSO `naf-uncomment-line', `naf-comment-prefix', `naf-uncomment-region',
+`naf-comment-region'.\n:USED-IN `naf-mode'.\n►►►"
   (interactive)
-  (save-excursion
-    (back-to-indentation)
-  	(insert naf-comment-prefix)))
+  (save-excursion 
+    (back-to-indentation) 
+    (insert naf-comment-prefix)))
 
 ;;; =======================
 (defun naf-uncomment-line ()
   "Uncomment line in a NAF file.\n
-See also; `naf-comment-prefix',`naf-uncomment-line', `naf-uncomment-region',
-`naf-comment-region'.\nUsed in `naf-mode'.\n►►►"
+:SEE-ALSO `naf-comment-prefix',`naf-uncomment-line', `naf-uncomment-region',
+`naf-comment-region'.\n:USED-IN `naf-mode'.\n►►►"
   (interactive)
-  (save-excursion
+  (save-excursion 
     (back-to-indentation)
     (while (eq (char-after) 59) (delete-char 1))))
+
 
 ;;; =======================
 (defun naf-comment-region (beg end &optional arg)
   "Comment out region in a NAF file.\n
-See also;`naf-comment-prefix', `naf-uncomment-region',`naf-comment-line',
-`naf-uncomment-line'.\nUsed in `naf-mode'.\n►►►"
+:SEE-ALSO`naf-comment-prefix', `naf-uncomment-region',`naf-comment-line',
+`naf-uncomment-line'.\n:USED-IN `naf-mode'.\n►►►"
   (interactive "r\nP")
   (let ((comment-start naf-comment-prefix))
     (comment-region beg end arg)))
@@ -181,278 +184,247 @@ See also;`naf-comment-prefix', `naf-uncomment-region',`naf-comment-line',
 ;;; =======================
 (defun naf-uncomment-region (beg end &optional arg)
   "Uncomment region in a NAF file.\n
-See also; `naf-comment-prefix',`naf-comment-region',
-`naf-comment-line',`naf-uncomment-line'.\nUsed in `naf-mode'.\n►►►"
+:SEE-ALSO `naf-comment-prefix',`naf-comment-region', `naf-comment-line',
+`naf-uncomment-line'.
+:USED-IN `naf-mode'.\n►►►"
   (interactive "r\nP")
   (let ((comment-start naf-comment-prefix))
     (comment-region beg end -1)))
 
 ;;; ==============================
-;;; MODIFICATIONS: <Timestamp: 2009-08-01-W31-6T12:53:18-0400Z - by MON KEY>
-(defun non-posting-source (&optional insertp intrp)
-  "Insert vanilla non-posting-source flag.
-When INSERTP is non-nin or called-interactively insert w/ newline after :(colon).
-EXAMPLE:\n\(non-posting-source\)\n
-See also; `nps', `non-posting-internet-source', `non-posting-wiki-source',
-`non-posting-ebay-source', `non-posting-imdb-source', `non-posting-philsp-source',
-`non-posting-benezit-source',`benezit-naf-template'.\nUsed in `naf-mode'.\n►►►"
+;;; :MODIFICATIONS <Timestamp: 2009-08-01-W31-6T12:53:18-0400Z - by MON KEY>
+(defun non-posting-source (&optional insrtp intrp)
+  "Return vanilla non-posting-source flag.\n
+When INSRTP is non-nil or called-interactively insert w/ newline after :(colon).
+:EXAMPLE\n\(non-posting-source\)\n
+:SEE-ALSO `nps', `non-posting-internet-source', `non-posting-wiki-source',
+`non-posting-ebay-source', `non-posting-imdb-source',
+`non-posting-philsp-source', `non-posting-benezit-source',
+`benezit-naf-template'.
+:USED-IN `naf-mode'.\n►►►"
   (interactive "i\np")
-(mon-naf-mode-toggle-restore-llm
- (let* ((non-ps (format "\n-\nnon-posting-source:\n")))
-   ;; (test-llm (buffer-local-value longlines-mode (current-buffer)))
-   ;; (is-on (and test-llm))
-   ;; (llm-off))
-   (if (or insertp intrp)
-       (save-excursion
-         ;;(when is-on (longlines-mode 0) (setq llm-off 't))
-         (insert non-ps))
-     ;;(when llm-off (longlines-mode 1) (setq llm-off 'nil)))
-     non-ps))))
+  (mon-naf-mode-toggle-restore-llm
+      (let ((non-ps (format "\n-\nnon-posting-source:\n")))
+        (if (or insrtp intrp)
+            (save-excursion (insert non-ps))
+            non-ps))))
 ;;
-;; NOTE: This defalias is probably better as an abbrev.
+;; :NOTE This defalias is probably better as an abrev.
 (defalias 'nps 'non-posting-source)
 ;;
-;;;test-me;(non-posting-source)
-;;;test-me;(non-posting-source t)
-;;;test-me;(call-interactively 'non-posting-source)
+;;; :TEST-ME (non-posting-source)
+;;; :TEST-ME (non-posting-source t)
+;;; :TEST-ME (call-interactively 'non-posting-source)
 
 ;;; =======================
-;;; CREATED: <Timestamp: Monday March 30, 2009 @ 04:32.15 PM - by MON KEY>
-;;; MODIFICATIONS: <Timestamp: 2009-08-01-W31-6T13:00:15-0400Z - by MON KEY>
-(defun non-posting-ebay-source (&optional insertp intrp)
-  "Insert non-posting ebay stamp into a NAF buffer.\n
-EXAMPLE:\n(non-posting-ebay-source)\n
-See also; `non-posting-source', `non-posting-internet-source',
+;;; :MODIFICATIONS <Timestamp: #{2010-02-20T18:15:51-05:00Z}#{10076} - by MON KEY>
+;;; :MODIFICATIONS <Timestamp: 2009-08-01-W31-6T13:00:15-0400Z - by MON KEY>
+;;; :CREATED <Timestamp: Monday March 30, 2009 @ 04:32.15 PM - by MON KEY>
+(defun non-posting-ebay-source (&optional insrtp intrp)
+  "Return a non-posting ebay stamp.\n
+When INSRTP is non-nil or called-interactively insert return value at point.
+Does not move point.\n
+:EXAMPLE\n(non-posting-ebay-source)\n
+:SEE-ALSO `non-posting-source', `non-posting-internet-source',
 `non-posting-wiki-source', `non-posting-imdb-source',
-`non-posting-philsp-source',`non-posting-benezit-source',
-`benezit-naf-template'.\n\nUsed in `naf-mode'.\n►►►"
+`non-posting-philsp-source', `non-posting-benezit-source',
+`benezit-naf-template'.
+:USED-IN `naf-mode'.\n►►►"
   (interactive "i\np")
-(mon-naf-mode-toggle-restore-llm
-(let* ((non-pes 
-       (concat 
-        "-\n"                         ;; (insert "-")(newline)                                  
-        "non-posting-ebay-source:\n"  ;; (insert "non-posting-ebay-source:")(newline) 
-        "ebay-item-number: \n"        ;; (insert "ebay-item-number: ") (newline)      
-        "ebay-item-seller: \n"        ;; (insert "ebay-item-seller: ") (newline)      
-        "ebay-item-realized: \n"      ;; (insert "ebay-item-realized: ") (newline)    
-        "ebay-item-ended: \n"         ;; (insert "ebay-item-ended: ") (newline)       
-        (mon-accessed-stamp)"\n"     ;; (mon-accessed-stamp t)                      
-        "---"))
- 	 ;; (test-llm (buffer-local-value longlines-mode (current-buffer)))
- 	 ;; (is-on (and test-llm))
- 	 ;; (llm-off)
-       )
-  (if (or insertp intrp)
-      (save-excursion
-	;;(when is-on (longlines-mode 0) (setq llm-off 't))
-	(insert non-pes))
-    ;; (when llm-off (longlines-mode 1) (setq llm-off 'nil)))
-   non-pes))))
+  (mon-naf-mode-toggle-restore-llm
+      (let ((non-pes (mapconcat #'identity 
+                                `("-" 
+                                  "non-posting-ebay-source:" 
+                                  "ebay-item-number: " 
+                                  "ebay-item-seller: "
+                                  "ebay-item-realized: " 
+                                  "ebay-item-ended: " 
+                                  ,(mon-accessed-stamp) 
+                                  "---") "\n")))
+        (if (or insrtp intrp)
+            (save-excursion (insert non-pes))
+            non-pes))))
 ;;
 ;; This defalias is probably better as an abbrev.
 (defalias 'npes 'non-posting-ebay-source)
 ;;
-;;;test-me:(non-posting-ebay-source)
-;;;test-me:(non-posting-ebay-source t)
-;;;test-me:(call-interactively 'non-posting-ebay-source)
+;;; :TEST-ME (non-posting-ebay-source)
+;;; :TEST-ME (non-posting-ebay-source t)
+;;; :TEST-ME (call-interactively 'non-posting-ebay-source)
 
 ;;; ==============================
-;;; MODIFICATIONS: <Timestamp: 2009-08-01-W31-6T13:04:43-0400Z - by MON KEY>
-(defun non-posting-wiki-source (&optional insertp intrp)
-  "Inserts the non-posting-wiki-source timestamp in a NAF buffer.\n
-EXAMPLE:\n(non-posting-wiki-source)\n
-See also; `non-posting-source', `non-posting-internet-source',
+;;; :MODIFICATIONS <Timestamp: 2009-08-01-W31-6T13:04:43-0400Z - by MON KEY>
+(defun non-posting-wiki-source (&optional insrtp intrp)
+  "Return a non-posting Wikipedia source timestamp.\n
+When INSRTP is non-nil or called-interactively insert return value at point.
+Does not move point.\n
+:EXAMPLE\n(non-posting-wiki-source)\n
+:SEE-ALSO `non-posting-source', `non-posting-internet-source',
 `non-posting-ebay-source', `non-posting-imdb-source', `non-posting-philsp-source',
-`non-posting-benezit-source',`non-posting-philsp-source',`benezit-naf-template'.\n
-Used in `naf-mode'.\n►►►"
+`non-posting-benezit-source', `non-posting-philsp-source', `benezit-naf-template'.
+:USED-IN `naf-mode'.\n►►►"
   (interactive "i\np") 
-(mon-naf-mode-toggle-restore-llm
-(let* ((non-pws 
-       (concat "-\n"                        ;;(insert "-")(newline)
-               "non-posting-wiki-source:\n" ;;(insert "non-posting-wiki-source:")(newline)
-               (mon-accessed-stamp)"\n"    ;;(mon-accessed-stamp t) (newline)
-               "---"))
- 	 ;; (test-llm (buffer-local-value longlines-mode (current-buffer)))
- 	 ;; (is-on (and test-llm))
- 	 ;; (llm-off)
-	 )
-  (if (or insertp intrp)
-      (save-excursion
-	;;(when is-on (longlines-mode 0) (setq llm-off 't))
-	(insert non-pws))
-    ;;(when llm-off (longlines-mode 1) (setq llm-off 'nil)))
-   non-pws))))
+  (mon-naf-mode-toggle-restore-llm
+      (let ((non-pws (mapconcat #'identity `("-"
+                                             "non-posting-wiki-source:"
+                                             ,(mon-accessed-stamp)) "\n")))
+        (if (or insrtp intrp)
+            (save-excursion (insert non-pws))
+            non-pws))))
 ;;
-;; This defalias is probably better as an abbrev. 
+;;; :NOTE This defalias is probably better as an abbrev. 
 (defalias 'npws 'non-posting-wiki-src)
 ;;
-;;;test-me;(non-posting-wiki-source)
-;;;test-me;(non-posting-wiki-source t)
-;;;test-me;(call-interactively 'non-posting-wiki-source)
+;;; :TEST-ME (non-posting-wiki-source)
+;;; :TEST-ME (non-posting-wiki-source t)
+;;; :TEST-ME (call-interactively 'non-posting-wiki-source)
 
 ;;; ==============================
-;;; WAS: `npps'
-;;; MODIFICATIONS: <Timestamp: 2009-08-01-W31-6T13:09:26-0400Z - by MON KEY>
-(defun non-posting-philsp-source (&optional insertp intrp)
-  "DEPRECATED: use `mon-cln-philsp'. Used only after manual cleansing.
-Insert philsp non-posting-source timestamp.\n
-EXAMPLE:\n(non-posting-philsp-source\)\n
-See also; `non-posting-source', `non-posting-wiki-source',
+;;; :WAS `npps'
+;;; :MODIFICATIONS <Timestamp: 2009-08-01-W31-6T13:09:26-0400Z - by MON KEY>
+(defun non-posting-philsp-source (&optional insrtp intrp)
+  "Return a philsp non-posting-source timestamp.\n
+When INSRTP is non-nil or called-interactively insert return value at point.
+Does not move point.\n
+:EXAMPLE\n(non-posting-philsp-source\)\n
+:DEPRECATED Should only be invoked after manual cleansing.
+:USE `mon-cln-philsp' which both replaces and stamps.\n
+:SEE-ALSO `non-posting-source', `non-posting-wiki-source',
 `non-posting-internet-source', `non-posting-ebay-source',
 `non-posting-benezit-source', `benezit-naf-template' 
-`non-posting-imdb-source'\nUsed in `naf-mode'.\n►►►"
+`non-posting-imdb-source'\n:USED-IN `naf-mode'.\n►►►"
   (interactive "i\np") 
   (mon-naf-mode-toggle-restore-llm
-   (let* ((non-pps  (concat 
-		     "-\n"                                                
-		     "non-posting-philsp-source:\n"
-		     "(URL `http://www.philsp.com/homeville/FMI/a7.htm')\n"
-		     (mon-accessed-stamp)"\n"
-		     "---"))
-	  ;;WAS:
-	  ;;(insert "-")(newline)                                                 
-	  ;;(insert "non-posting-philsp-source:")(newline)                        
-	  ;;(insert "(URL `http://www.philsp.com/homeville/FMI/a7.htm')")(newline) 
-	  ;;(mon-accessed-stamp t)(newline)                                      
-	  ;;(insert "---")))                                                       
-	  ;; ==============================
-	  ;; (test-llm (buffer-local-value longlines-mode (current-buffer)))
-	  ;; (is-on (and test-llm))
-	  ;; (llm-off)
-	  )
-     (if (or insertp intrp)
-	 (save-excursion
-	   ;;(when is-on (longlines-mode 0) (setq llm-off 't))
-	   (insert non-pps))
-       ;;(when llm-off (longlines-mode 1) (setq llm-off 'nil)))
-       non-pps))))
+   (let ((non-pps (mapconcat #'identity 
+                             `("-"
+                               "non-posting-philsp-source:"
+                               "(URL `http://www.philsp.com/homeville/FMI/a7.htm')"
+                               ,(mon-accessed-stamp)
+                               "---") "\n")))
+     (if (or insrtp intrp)
+         (save-excursion (insert non-pps))
+         non-pps))))
 ;;
-;; NOTE: This defalias is probably better as an abbrev.
+;; :NOTE This defalias is probably better as an abbrev.
 (defalias 'npps 'non-posting-philsp-source)
 ;;
-;;;test-me;(non-posting-philsp-source) 
-;;;test-me;(non-posting-philsp-source t) 
-;;;test-me;(call-interactively 'non-posting-philsp-source) 
+;;; :TEST-ME (non-posting-philsp-source) 
+;;; :TEST-ME (non-posting-philsp-source t) 
+;;; :TEST-ME (call-interactively 'non-posting-philsp-source) 
 
 ;;; ==============================
-;;; CREATED: <Timestamp: Monday March 30, 2009 @ 04:32.15 PM - by MON KEY>
-(defun non-posting-imdb-source (&optional insertp interp)
-  "Insert the IMDB non-posting-source timestamp.\n
-EXAMPLE:\n(non-posting-imdb-source)\n -\n non-posting-imdb-source:
+;;; :CREATED <Timestamp: Monday March 30, 2009 @ 04:32.15 PM - by MON KEY>
+(defun non-posting-imdb-source (&optional insrtp intrp)
+  "Return an IMDB non-posting-source timestamp.\n
+When INSRTP is non-nil or called-interactively insert return value at point.
+Does not move point.\n
+:EXAMPLE\n(non-posting-imdb-source)\n -\n non-posting-imdb-source:
 \(URL `http://www.IMDB.com'\)\n accessed: Monday March 30, 2009 - MON\n
-See also; `non-posting-source', `non-posting-wiki-source',
+:SEE-ALSO `non-posting-source', `non-posting-wiki-source',
 `non-posting-internet-source', `non-posting-ebay-source',
 `non-posting-benezit-source', `benezit-naf-template'
-`non-posting-philsp-source'.\nUsed in `naf-mode'.\n►►►"
+`non-posting-philsp-source'.\n:USED-IN `naf-mode'.\n►►►"
   (interactive "i\np")
   (mon-naf-mode-toggle-restore-llm
-   (let* ((npis (concat
-                 "\n-\n"
-                 "non-posting-imdb-source:\n"
-                 "(URL `http://www.IMDB.com')\n"
-                 (mon-accessed-stamp) "\n"))
-          ;; (test-llm (buffer-local-value longlines-mode (current-buffer)))
-          ;; (is-on (and test-llm))
-          ;; (llm-off)
-          )
-     (if (or insertp intrp)
-         (save-excursion
-           ;; (when is-on (longlines-mode 0) (setq llm-off 't))
-           (insert non-pis))
-       ;; (when llm-off (longlines-mode 1) (setq llm-off 'nil)))
+   (let ((npis (mapconcat #'identity 
+                             `("" ;; preceding newline
+                               "-"
+                               "non-posting-imdb-source:"
+                               "(URL `http://www.IMDB.com')"
+                               ,(mon-accessed-stamp)) "\n")))
+     (if (or intrp intrp)
+         (save-excursion (insert npis))
        npis))))
 ;;
-;;;test-me;(non-posting-imdb-source)
-;;;test-me;(non-posting-imdb-source t)
-;;;test-me;(call-interactively 'non-posting-imdb-source)
+;;; :TEST-ME (non-posting-imdb-source)
+;;; :TEST-ME (non-posting-imdb-source t)
+;;; :TEST-ME (call-interactively 'non-posting-imdb-source)
 
 ;;; ==============================
-;;; CREATED: <Timestamp: Monday March 30, 2009 @ 04:32.15 PM - by MON KEY>
-;;; MODIFICATIONS: <Timestamp: 2009-08-01-W31-6T13:18:40-0400Z - by MON KEY>
-(defun non-posting-benezit-source (benezit-name volume page &optional insertp intrp)
-  "Insert the non-posting-benezit-source stamp.\n
-EXAMPLE:\n\(non-posting-benezit-source \"Cappiello, Leonetto\" \"3\" \"444\" t\)
-\n-\nnon-posting-benezit-source:
-Cappiello, Leonetto - Benezit Volume 3 page 210\naccessed: Wednsday April 1, 2009 - MON\n
-See also; `non-posting-source', `non-posting-wiki-source', `non-posting-internet-source',
+;;; :MODIFICATIONS <Timestamp: 2009-08-01-W31-6T13:18:40-0400Z - by MON KEY>
+;;; :CREATED <Timestamp: Monday March 30, 2009 @ 04:32.15 PM - by MON KEY>
+(defun non-posting-benezit-source (benezit-name volume page &optional insrtp intrp)
+  "Return Benezit non-posting-source timestamp with VOLUME and PAGE details.\n
+VOLUME is a Benezit volume PAGE is a page reference therein.\n
+When called-interactively prompt for VOLUME and PAGE.\n
+When INSRTP is non-nil or called-interactively insert return value at point.
+Does not move point.\n
+:EXAMPLE\n\n\(non-posting-benezit-source \"Cappiello, Leonetto\" 3 444\)\n
+\(non-posting-benezit-source \"Cappiello, Leonetto\" \"3\" \"444\"\)\n
+:SEE-ALSO `non-posting-source', `non-posting-wiki-source', `non-posting-internet-source',
 `non-posting-ebay-source', `non-posting-imdb-source', `benezit-naf-template'.
-Used in `naf-mode'.\n►►►"
+:USED-IN `naf-mode'.\n►►►"
   (interactive "sArtist Name (Lastname, Firstname):\nnVolume number:\nnPage number: \ni\np")
   (mon-naf-mode-toggle-restore-llm
-   (let* ((non-pbs
-           (concat
-            "\n-\n"
-            "non-posting-benezit-source:\n"
-            benezit-name 
-            " - Benezit: Volume " (if (numberp volume) (number-to-string volume) volume)
-            " page" (cond ((numberp page) (concat " " (number-to-string page)))
-                          ((not (eq (string-to-char (subseq page 0 1)) 32))(concat " " page)))
-            "\n"
-            (mon-accessed-stamp)"\n"
-            "-\n"))
-          ;; (test-llm (buffer-local-value longlines-mode (current-buffer)))
-          ;; (is-on (and test-llm))
-          ;; (llm-off)
-          )
-     (if (or insertp intrp)
-         (save-excursion
-           ;;(when is-on (longlines-mode 0) (setq llm-off 't))
-           (insert non-pbs))
-       ;;(when llm-off (longlines-mode 1) (setq llm-off 'nil)))
+   (let ((non-pbs
+          (mapconcat #'identity 
+                     `("" ;; preceding newline
+                       "-"
+                       "non-posting-benezit-source:"
+                       ,(concat benezit-name " - Benezit: Volume "
+                                (if (numberp volume) 
+                                    (number-to-string volume) 
+                                    volume)
+                               " page" (cond ((numberp page) 
+                                               (concat " " (number-to-string page)))
+                                              ((not (eq (string-to-char (subseq page 0 1)) 32))
+                                               (concat " " page))))
+                       ,(mon-accessed-stamp)
+                       "-") "\n")))
+     (if (or insrtp intrp)
+         (save-excursion (insert non-pbs))
        non-pbs))))
 ;;
-;;;test-me;(non-posting-benezit-source "Cappiello, Leonetto" 3 444 t)
-;;;test-me;(non-posting-benezit-source "Cappiello, Leonetto" "3" "444" t)
-;;;test-me;(call-interactively 'non-posting-benezit-source)
+;;; :TEST-ME (non-posting-benezit-source "Cappiello, Leonetto" 3 444)
+;;; :TEST-ME (non-posting-benezit-source "Cappiello, Leonetto" "3" "444")
+;;; :TEST-ME (non-posting-benezit-source "Cappiello, Leonetto" "3" "444" t)
+;;; :TEST-ME (call-interactively 'non-posting-benezit-source)
 
 ;;; ==============================
-;;; CREATED: <Timestamp: Monday March 30, 2009 @ 04:32.15 PM - by MON KEY>
-;;; MODIFICATIONS: <Timestamp: 2009-08-01-W31-6T13:59:43-0400Z - by MON KEY>
-(defun non-posting-internet-source (&optional non-posting-url insertp intrp)
-  "Return a timestamped Emacs style url reference. 
-Called interactively prompts for a URL name to wrap. 
+;;; :MODIFICATIONS <Timestamp: 2009-08-01-W31-6T13:59:43-0400Z - by MON KEY>
+;;; :CREATED <Timestamp: Monday March 30, 2009 @ 04:32.15 PM - by MON KEY>
+(defun non-posting-internet-source (&optional non-posting-url insrtp intrp)
+  "Return a timestamped Emacs style URL reference.\n
+Called interactively prompts for a URL name to wrap.
 When NON-POSTING-URL is non-nil wraps URL name.
-When INSERTP is non-nil or when called interactively inserts the wrapped url.
+When INSRTP is non-nil or when called interactively inserts the wrapped url.
 When NON-POSTING-URL is nil defaults to \"(URL `')\".\n
-EXAMPLE:\n\(non-posting-internet-source \"http://www.emacswiki.com\")\n
+When INSRTP is non-nil or called-interactively insert return value at point.
+Does not move point.\n
+:EXAMPLE\n\(non-posting-internet-source \"http://www.emacswiki.com\")\n
 \(non-posting-internet-source)\n
-See also; `non-posting-source', `non-posting-wiki-source', `non-posting-imdb-source',
+:SEE-ALSO `non-posting-source', `non-posting-wiki-source', `non-posting-imdb-source',
 `non-posting-benezit-source', `non-posting-ebay-source', `benezit-naf-template'.\n
-Used in `naf-mode'.\n►►►"
+:USED-IN `naf-mode'.\n►►►"
   (interactive "sURL:\ni\np")
   (mon-naf-mode-toggle-restore-llm
-   (let* ((non-pis (concat 
-		    "\n-\n"
-		    "non-posting-internet-source:\n"
-		    (cond (intrp (concat "(URL `" non-posting-url "')\n"))
-			  (insertp (if non-posting-url 
-				       (concat "(URL `" non-posting-url "')\n")
-				     "(URL `')\n"))
-			  ((and non-posting-url (not insertp) (not intrp))
-			   (concat "(URL `" non-posting-url "')\n"))
-			  (t "(URL `')\n"))
-		    (mon-accessed-stamp)))
-	  ;; (test-llm (buffer-local-value longlines-mode (current-buffer)))
-	  ;; (is-on (and test-llm))
-	  ;; (llm-off)
-	  )
-     (if (or insertp intrp)
-	 (save-excursion
-	   ;;(when is-on (longlines-mode 0) (setq llm-off 't))
-	   (insert non-pis))
-       ;;(when llm-off (longlines-mode 1) (setq llm-off 'nil)))
-       non-pis))))
+      (let ((non-pis 
+             (mapconcat #'identity
+                        `("" "-" "non-posting-internet-source:"
+                             ,(cond (intrp (concat "(URL `" non-posting-url "')"))
+                                    (insrtp (if non-posting-url 
+                                                (concat "(URL `" non-posting-url "')")
+                                                "(URL `')\n"))
+                                    ((and non-posting-url (not insrtp) (not intrp))
+                                     (concat "(URL `" non-posting-url "')"))
+                                    ;; Assume this is http as `naf-mode-url-flag'
+                                    ;;;  and `naf-mode-url-wrapper-flag' expect.
+                                    (t "(URL `http:// {... INSERT-URL-HERE... } ')"))
+                             ,(mon-accessed-stamp)) "\n")))
+        (if (or insrtp intrp)
+            (save-excursion (insert non-pis))
+            non-pis))))
 ;;
-;;;test-me;(non-posting-internet-source)
-;;;test-me;(non-posting-internet-source nil t)
-;;;test-me;(non-posting-internet-source "http://www.derbycityprints.com")
-;;;test-me;(non-posting-internet-source "http://www.derbycityprints.com" t)
-;;;test-me;(call-interactively 'non-posting-internet-source)
+;;; :TEST-ME (non-posting-internet-source)
+;;; :TEST-ME (non-posting-internet-source nil t)
+;;; :TEST-ME (non-posting-internet-source "http://www.derbycityprints.com")
+;;; :TEST-ME (non-posting-internet-source "http://www.derbycityprints.com" t)
+;;; :TEST-ME (call-interactively 'non-posting-internet-source)
 
 ;;; ==============================
-;;; TODO: take an optional STARTING-DIR arg to default-dir and possibly an alt.
+;;; :TODO Add optional STARTING-DIR arg to default-dir and possibly an alt.
 ;;; conditional insertion routine of file's text e.g. artist-naf, brand-naf, etc.
-;;; CREATED: <Timestamp: Thursday April 16, 2009 @ 07:48.26 PM - by MON KEY>
+;;; :CREATED <Timestamp: Thursday April 16, 2009 @ 07:48.26 PM - by MON KEY>
 ;;; ==============================
 (defun mon-insert-naf-file-in-dirs (make-dir-list) ;&optional starting-dir
   "Each element in list MAKE-DIR-LIST inserts a directory and a file in directory.
@@ -467,13 +439,13 @@ Format of list for MAKE-DIR-LIST should be as follows:\n
 	\"Lastname3 (Firstname3 Middlename3 Other3)\"
 	\"Lastname4 (Firstname4 Middlename4 Other4)\"))\n
 Invokation for creating dirname/filename. Assuming buffer's default directory is
-\"c:/home/my-dirs\"
+\"/home/my-dirs\"
 Invoking the form with symbol list 'make-my-dirs' as argument to MAKE-DIR-LIST:\n
    \(mon-insert-naf-file-in-dirs make-my-dirs)\n
 Or, interactively; M-x mon-insert-naf-file-in-dirs 
                    minibuffer-prompt: Give Symbol holind dir/file list :make-my-dirs\n
-Creates the following directors and files in c:/home/my-dirs\n
-  c:/home/my-dirs:
+Creates the following directors and files in /home/my-dirs\n
+   /home/my-dirs:
   |-- Lastname (Firstname Middlename Other)
   |   `-- Lastname, Firstname Middlename Other.naf
   |-- Lastname2 (Firstname2 Middlename2 Other2)
@@ -502,46 +474,79 @@ Creates the following directors and files in c:/home/my-dirs\n
     (pop make-dir-list)))
 
 ;;; ==============================
-;;; CREATED: <Timestamp: #{2009-09-26T20:00:09-04:00Z}#{09397} - by MON KEY>
+;;; :CREATED <Timestamp: #{2009-10-04T10:16:59-04:00Z}#{09407} - by MON>
+(defun mon-insert-naf-mode-class-template (&optional class-sfx slot-count insrtp intrp)
+  "Return an eieio `defclass' template for use with `naf-mode'.\n
+When non-nil CLASS-SFX is a suffix to concatenate onto `naf-mode-'.
+Default is 'naf-mode-'. SLOT-COUNT is the number of slot templates returned.
+When INSRTP in non-nil or called-interactively insert template at point.
+Does not move point.\n\n:EXAMPLE\n\(mon-insert-naf-mode-class-template\)\n
+:SEE-ALSO `mon-insert-defclass-template', `mon-help-eieio-defclass'.\n►►►"
+  (interactive "P\ni\ni\np")
+  (mon-insert-defclass-template 
+   (if class-sfx
+       (cond (intrp
+              (concat 
+               "naf-mode-"
+               (read-string "class-suffix to concatenate onto `naf-made-' :")))
+             (t (concat "naf-mode-" (format "%s" class-sfx))))
+       "naf-mode-")
+   slot-count insrtp intrp))
+;;
+;;; :TEST-ME (mon-insert-naf-mode-class-template)
+;;; :TEST-ME (mon-insert-naf-mode-class-template nil nil t)
+;;; :TEST-ME (mon-insert-naf-mode-class-template "bubba" 3)
+;;; :TEST-ME (mon-insert-naf-mode-class-template "bubba" 3 t)
+;;; :TEST-ME (mon-insert-naf-mode-class-template "bubba" nil t)
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-09-26T20:00:09-04:00Z}#{09397} - by MON KEY>
 (defun mon-build-naf-mode-xref ()
-  "Return a list suitable for naf-mode variable xref template creation.
+  "Return a list suitable for naf-mode variable xref template creation.\n
 variable name is generated from current naf-mode filename.
 Signals an error if filename is void or not a filename with 'naf-mode-' prefix.
-Elements of list are returned as three strings:
-\(\"*naf-mode-insertion-utils-xrefs*\"  ;xref-name
- \"naf-mode-insertion-utils\"           ;pkg-name
- \"naf-mode-insertion-utils.el\"\)      ;filename
-CALLED-BY: `mon-insert-naf-mode-xref-template'
-           `mon-insert-naf-mode-var-const-templt'.\n►►►"
+Elements of list are returned as three strings:\n
+ \(\"*naf-mode-insertion-utils-xrefs*\"  ; <- :XREF-NAME
+   \"naf-mode-insertion-utils\"         ; <- :PKG-NAME
+   \"naf-mode-insertion-utils.el\"\)     ; <- :FILENAME\n
+:EXAMPLE\n\n\(let \(\(buffer-file-name \"naf-mode-xref-example.el\"\)\)
+  \(mon-build-naf-mode-xref\)\)\n
+:CALLED-BY `mon-insert-naf-mode-xref-template'
+:CALLED-BY `mon-insert-naf-mode-var-const-template'
+:SEE-ALSO .\n►►►"
   (if (buffer-file-name)
     (let* ((nm-match-str (file-name-nondirectory (file-name-sans-extension (buffer-file-name))))
            (nm-match-on  (string-match "naf-mode-" nm-match-str))
            (the-nm-matched (if nm-match-on (match-string nm-match-on nm-match-str)))
-           (to-next-let))
-           (setq to-next-let
-                 (if the-nm-matched (cons nm-match-str
-                                          (cadr (split-string nm-match-str the-nm-matched)))))
-           (let* ((xref-p (if to-next-let;(mon-build-naf-mode-xref)
-                              to-next-let;(mon-build-naf-mode-xref)
-                            (error "not a naf-mode-file")))
-                  (xref-fname (if xref-p (concat (car xref-p) ".el")))
-                  (xref-pkg (if xref-p (car xref-p)))
-                  (xref-var (if xref-p (concat "*naf-mode-" (cdr xref-p) "-xrefs*")))
-                  );; (test-xref-no-bnd (read xref-concat)))
-             `(,xref-var ,xref-pkg ,xref-fname)))
+           to-next-let)
+      (when the-nm-matched (setq to-next-let
+                                 `(,nm-match-str 
+                                   . ,(cadr (save-match-data
+                                              (split-string nm-match-str the-nm-matched))))))
+            (let* ((xref-p (if to-next-let ;; (mon-build-naf-mode-xref)
+                               to-next-let ;; (mon-build-naf-mode-xref)
+                               (error "not a naf-mode-file")))
+                   (xref-fname (if xref-p (concat (car xref-p) ".el")))
+                   (xref-pkg (if xref-p (car xref-p)))
+                   (xref-var (if xref-p (concat "*naf-mode-" (cdr xref-p) "-xrefs*")))
+                   );; (test-xref-no-bnd (read xref-concat)))
+              `(,xref-var ,xref-pkg ,xref-fname)))
     (error "not a naf-mode-file")))
 ;;
-;;;test-me;(mon-build-naf-mode-xref)
-;;=> ("*naf-mode-insertion-utils-xrefs*" 
-;;    "naf-mode-insertion-utils" 
-;;    "naf-mode-insertion-utils.el")
+;;; :TEST-ME (mon-build-naf-mode-xref)
+;;; :TEST-ME (let ((buffer-file-name "naf-mode-xref-example.el"))
+;;;            (mon-build-naf-mode-xref))
 
 ;;; ==============================
-;;; CREATED: <Timestamp: #{2009-09-26T20:59:14-04:00Z}#{09397} - by MON KEY>
-(defun mon-insert-naf-mode-xref-template (&optional insertp intrp)
+;;; :CREATED <Timestamp: #{2009-09-26T20:59:14-04:00Z}#{09397} - by MON KEY>
+(defun mon-insert-naf-mode-xref-template (&optional insrtp intrp)
   "Return a naf-mode variable template for xrefing variable names in current
 `naf-mode' file.\n
-See also; `mon-build-naf-mode-xref', `mon-insert-naf-mode-xref-template'.\n►►►"
+When INSRTP is non-nil or called-interactively insert xref template at point.
+Does not move point.\n
+:EXAMPLE\n\n\(let \(\(buffer-file-name \"naf-mode-dir/naf-mode-xref-example.el\"\)\)
+  \(mon-insert-naf-mode-xref-template\)\)\n
+:SEE-ALSO `mon-build-naf-mode-xref', `mon-insert-naf-mode-xref-template'.\n►►►"
   (interactive "i\np")
   (let* ((xref-l (mon-build-naf-mode-xref))
          (xref-sym (car xref-l))
@@ -549,35 +554,37 @@ See also; `mon-build-naf-mode-xref', `mon-insert-naf-mode-xref-template'.\n►�
          (fnm (caddr xref-l))
          (xref-template
           (concat
+           ";; Make sure where using CL's `eval-when'\n"
+           "(eval-when-compile (require 'cl))\n\n"
            (mon-lisp-stamp)
            "\n(eval-and-compile\n"
            "(defvar " xref-sym "\n"
            "  '(" xref-sym "\n"
            "    mon-help-naf-mode-faces)\n"
            "  \"*List of symbol names of variables which xref each other in the\n"
-          "`" pkg-nm"' package.\nSee FILE: \\\"./" fnm "\\\".\"))\n"
-           ";;\n;;;test-me; " xref-sym "\n;;\n;;;(progn (makunbound '"xref-sym ")\n"
-           ";;;       (unintern '" xref-sym "))")))
-    (if (or insertp intrp)
-        (save-excursion 
-          (newline)
-          (princ xref-template (current-buffer)))
+           "`" pkg-nm"' package.\n:SEE :FILE " fnm "\"" "))\n"
+           ";;\n;;; :TEST-ME " xref-sym "\n;;\n;;;(progn (makunbound '" xref-sym ")\n"
+           ";;;       (unintern '" xref-sym ") \)")))
+    (if (or insrtp intrp)
+        (save-excursion (newline) (princ xref-template (current-buffer)))
       xref-template)))
 ;;
-;;;test-me;(mon-insert-naf-mode-xref-template)
-;;;test-me;(mon-insert-naf-mode-xref-template t)
+;;; :TEST-ME (mon-insert-naf-mode-xref-template)
+;;; :TEST-ME (mon-insert-naf-mode-xref-template t)
+
 
 ;;; ==============================
-;;; TODO: Add subr to search backward for xref-name to see if it already exists.
-;;; CREATED: <Timestamp: #{2009-09-26T21:27:46-04:00Z}#{09397} - by MON KEY>
-(defun mon-insert-naf-mode-var-const-templt (naf-symbol-name &optional insertp intrp)
-  "Return code building template for variable and constant with NAF-SYMBOL-NAME.
+;;; :RENAMED `mon-insert-naf-mode-var-const-templt' -> `mon-insert-naf-mode-var-const-template'
+;;; :TODO Add subr to search backward for xref-name to see if it already exists.
+;;; :CREATED <Timestamp: #{2009-09-26T21:27:46-04:00Z}#{09397} - by MON KEY>
+(defun mon-insert-naf-mode-var-const-template (naf-symbol-name &optional insrtp intrp)
+  "Return code building template for variable and constant with NAF-SYMBOL-NAME.\n
 NAF-SYMBOL-NAME - a string - should be suitable for concatenation as:
 *naf-<NAF-SYMBOL-NAME>*    ;VARIABLE\nnaf-mode-<NAF-SYMBOL-NAME> ;CONSTANT
 Do not include `-', `*', etc. This function does not check the value given.
-When INSERTP is non-nil or called-interactively insert templates at point.
-Does not move point. 
-See also; `mon-build-naf-mode-xref', `mon-insert-naf-mode-xref-template'.\n►►►"
+When INSRTP is non-nil or called-interactively insert templates at point.
+Does not move point.\n
+:SEE-ALSO `mon-build-naf-mode-xref', `mon-insert-naf-mode-xref-template'.\n►►►"
   (interactive "sSymbol name for template do not prefix with -, *, etc. :\np")
   (let* ((v-name (concat "*naf-" naf-symbol-name "*"))
          (c-name (concat "naf-mode-" naf-symbol-name))
@@ -602,30 +609,30 @@ See also; `mon-build-naf-mode-xref', `mon-insert-naf-mode-xref-template'.\n►�
            "      " xref-name "  )) ;; <INSERT-FACE-NAME-AFTER-XREF>\n"
            ";;\n"
            ";;(progn (makunbound '" v-name ") (unintern '" v-name ")\n"
-           ";;       (makunbound '" c-name ") (unintern '" c-name "))")))
-    (if (or insertp intrp)
+           ";;       (makunbound '" c-name ") (unintern '" c-name ") \)")))
+    (if (or insrtp intrp)
         (save-excursion 
           (newline) 
           (princ v-c-template (current-buffer)))
       v-c-template)))
 ;;
-;;;test-me;(mon-insert-naf-mode-var-const-templt "test-template")
-;;;test-me;(mon-insert-naf-mode-var-const-templt "test-template" t)
+;;; :TEST-ME (mon-insert-naf-mode-var-const-template "test-template")
+;;; :TEST-ME (mon-insert-naf-mode-var-const-template "test-template" t)
 
 ;;; ==============================
-;;; CREATED: <Timestamp: Thursday April 09, 2009 @ 05:52.20 PM - by MON KEY>
-;;; MODIFICATIONS: <Timestamp: 2009-08-01-W31-6T14:36:47-0400Z - by MON KEY>
-;;; DEPRECATED: USE: `mon-insert-naf-mode-var-const-templt'
-(defun mon-insert-naf-mode-constant-template (&optional constant-name insertp intrp)
-  "Insert Elisp template for defining new font-lock constants for `naf-mode'.\n
-EXAMPLE:\n(mon-insert-naf-mode-constant-template \"some-constant\")\n
-See also; `*naf-mode-faces-as-displayed*', `mon-insert-face-as-displayed',
+;;; :DEPRECATED :USE: `mon-insert-naf-mode-var-const-template'
+;;; :MODIFICATIONS <Timestamp: 2009-08-01-W31-6T14:36:47-0400Z - by MON KEY>
+;;; :CREATED <Timestamp: Thursday April 09, 2009 @ 05:52.20 PM - by MON KEY>
+(defun mon-insert-naf-mode-constant-template (&optional constant-name insrtp intrp)
+  "Insert elisp template for defining new font-lock constants for `naf-mode'.\n
+:EXAMPLE\n(mon-insert-naf-mode-constant-template \"some-constant\")\n
+:SEE-ALSO `*naf-mode-faces-as-displayed*', `mon-insert-naf-mode-faces-as-displayed',
 `mon-insert-naf-mode-face-template'.\n►►►"
   (interactive "sGive the value for * naf-mode-*-flags: \ni\np")
   (let* ((cnst (if constant-name constant-name "!CONSTANT!"))
          (lcl (replace-regexp-in-string  " " "-" (concat "naf-" cnst "-flags")))
 	 (con (replace-regexp-in-string " " "-" (concat "naf-mode-" cnst "-flags")))
-	 (naf-lcl (replace-regexp-in-string "--" "-" lcl)) ;catch on trailing whitespace 
+	 (naf-lcl (replace-regexp-in-string "--" "-" lcl)) ; Match on trailing whitespace.
 	 (naf-con (replace-regexp-in-string "--" "-" con))
 	 (put-temp
 	  (concat
@@ -640,26 +647,27 @@ See also; `*naf-mode-faces-as-displayed*', `mon-insert-face-as-displayed',
           ";;; (concat \"^\"  (regexp-opt " naf-lcl" 'paren) )                ;Anchors at head of line\n"
           ";;; (concat \"\\\\<\" \(regexp-opt " naf-lcl " 'paren) \"\\\\>\"\)          ;Empty string word boundaries\n"
           "    \"Keywords for {describe " naf-lcl "}.\n"
-          "Used in `naf-mode' for font-locking with `NAF-MODE-*-FFACE'.\"\)\)\n\n"
-          ";;;test-me; " naf-con "\n\n"
+          ":USED-IN `naf-mode' for font-locking with `NAF-MODE-*-FFACE'.\"\)\)\n\n"
+          ";;; :TEST-ME " naf-con "\n\n"
           ";;(progn (makunbound \'" naf-con"\)\n"
-          ";;  (unintern \'" naf-con "\)\n"
+          ";;  (unintern \'" naf-con "\) \)\n"
+          ;; (mon-comment-divider-w-len 30)
           ";;; ==============================")))
-    (when (or insertp intrp) (save-excursion (insert put-temp)))
+    (when (or insrtp intrp) (save-excursion (insert put-temp)))
     put-temp))
 ;;
-;;;test-me;(mon-insert-naf-mode-constant-template "some-constant")
-;;;test-me;(mon-insert-naf-mode-constant-template "some-constant" t)
-;;;test-me;(mon-insert-naf-mode-constant-template nil)
-;;;test-me;(mon-insert-naf-mode-constant-template nil t)
-;;;test-me;(call-interactively 'mon-insert-naf-mode-constant-template)
+;;; :TEST-ME (mon-insert-naf-mode-constant-template "some-constant")
+;;; :TEST-ME (mon-insert-naf-mode-constant-template "some-constant" t)
+;;; :TEST-ME (mon-insert-naf-mode-constant-template nil)
+;;; :TEST-ME (mon-insert-naf-mode-constant-template nil t)
+;;; :TEST-ME (call-interactively 'mon-insert-naf-mode-constant-template)
 
 ;;; ==============================
-(defun mon-insert-naf-mode-face-template (&optional face-name insertp intrp)
-  "Insert Elisp template for new face definitions and constants.
-Used to make face templates for fontlocking `naf-mode' keywords.\n
-EXAMPLE:\n\(mon-insert-naf-mode-face-template \"some-face-name\")
-See also; `*naf-mode-faces-as-displayed*',`mon-insert-face-as-displayed' 
+(defun mon-insert-naf-mode-face-template (&optional face-name insrtp intrp)
+  "Insert Elisp template for new face definitions and constants.\n
+Use to make face templates for fontlocking `naf-mode' keywords.\n
+:EXAMPLE\n\(mon-insert-naf-mode-face-template \"some-face-name\")
+:SEE-ALSO `*naf-mode-faces-as-displayed*',`mon-insert-naf-mode-faces-as-displayed' 
 `mon-insert-naf-mode-constant-template'.\n►►►"
   (interactive "sGive the value for * in naf-mode-*-face: \ni\np")
   (let* ((fc-nme   (if face-name face-name "!FACE-NAME!"))
@@ -675,84 +683,121 @@ See also; `*naf-mode-faces-as-displayed*',`mon-insert-face-as-displayed'
           "    ;; \(\(\(class color\) \(background dark\)\) \(:foreground \"SOME-COLOR\"\)\)\n"
           "    ;;   \(t \(:bold t :italic t\)\)\)\n"
           "    \"*Face for font-locking of {DESCRIBE} in .naf files.\n"
-	  "KEYWORD-REGEXPS-IN:\n"
-          "KEYWORD-LISTS-IN:\n"
-          "FACE-DOCUMENTED-IN: `" the-fface"'.\nSee also;\nUsed in `naf-mode'.\"\n"
+	  ":KEYWORD-REGEXPS-IN\n"
+          ":KEYWORD-LISTS-IN\n"
+          ":FACE-DOCUMENTED-IN `" the-fface"'.\n:SEE-ALSO\n:USED-IN `naf-mode'.\"\n"
           "  	    :group \'naf-mode\n"
           "  	    :group \'naf-mode-faces\)\n;;\n"
           "(defvar " the-fface " '" the-face "\n"
           "    \"*Face for font-locking of {DESCRIBE} in `naf-mode'.\n"
-	  "KEYWORD-REGEXPS-IN:\n"
-          "KEYWORD-LISTS-IN:\n"
-          "FACE-DEFINED-IN: `" the-face "'.\nSee also;\n.\")\n\n"
-          ";;;test-me;(describe-face '" the-face ")\n\n"
+	  ":KEYWORD-REGEXPS-IN\n"
+          ":KEYWORD-LISTS-IN\n"
+          ":FACE-DEFINED-IN `" the-face "'.\n:SEE-ALSO\n.\")\n\n"
+          ";;; :TEST-ME (describe-face '" the-face ")\n\n"
           ";;(progn (makunbound \'" the-face "\)\n" 
           ";;  (makunbound \'" the-fface"\)\n"
           ";;  (unintern \'" the-face "\)\n"
-          ";;  (unintern \'" the-fface "\))\n\n"
+          ";;  (unintern \'" the-fface "\) \)\n\n"
+          ;; (mon-comment-divider-w-len 30)
           ";;; ==============================")))
-    (when (or insertp intrp) (save-excursion (insert put-fc-temp)))
+    (when (or insrtp intrp) (save-excursion (insert put-fc-temp)))
     put-fc-temp))
 ;;
-;;;test-me;(mon-insert-naf-mode-face-template "some-face-name" t)
-;;;test-me;(mon-insert-naf-mode-face-template  nil t)
-;;;test-me;(call-interactively 'mon-insert-naf-mode-face-template)
-;;;test-me;(mon-insert-naf-mode-face-template "some-face-name")
+;;; :TEST-ME (mon-insert-naf-mode-face-template "some-face-name" t)
+;;; :TEST-ME (mon-insert-naf-mode-face-template  nil t)
+;;; :TEST-ME (call-interactively 'mon-insert-naf-mode-face-template)
+;;; :TEST-ME (mon-insert-naf-mode-face-template "some-face-name")
 
 ;;; ==============================
-;;; MODIFICATIONS: <Timestamp: #{2009-09-01T15:47:05-04:00Z}#{09362} - by MON KEY>
-(defun mon-insert-face-as-displayed (&optional insertp intrp)
-  "Insert font-locked keywords to test fruitsaladness `naf-mode' face/constants.
-See also; `*naf-mode-faces-as-displayed*',`mon-insert-naf-mode-face-template',
+;;; :MODIFICATIONS <Timestamp: #{2010-02-20T17:47:38-05:00Z}#{10076} - by MON KEY>
+;;; :MODIFICATIONS <Timestamp: #{2009-09-01T15:47:05-04:00Z}#{09362} - by MON KEY>
+(defun mon-insert-naf-mode-faces-as-displayed (&optional insrtp intrp)
+  "Insert font-locked keywords to test fruitsaladness `naf-mode' face/constants.\n
+:SEE-ALSO `*naf-mode-faces-as-displayed*',`mon-insert-naf-mode-face-template',
 `mon-insert-naf-mode-constant-template'.\n►►►"
  (interactive "i\np")
- (let* ((i-fad *naf-mode-faces-as-displayed*)
-	(is-on (mon-is-naf-mode-and-llm-p))
-	(llm-off))
-   (setq i-fad (mapconcat 'identity i-fad "\n"))
-   (if (or insertp intrp)
-      (save-excursion
-	(when is-on (longlines-mode 0) (setq llm-off 't))
-	(insert i-fad))
-	(when llm-off (longlines-mode 1) (setq llm-off 'nil)))
-     i-fad))
+ (let ((i-fad (mapconcat #'identity *naf-mode-faces-as-displayed* "\n")))
+   (if (or insrtp intrp)
+       (mon-naf-mode-toggle-restore-llm
+           (save-excursion (insert i-fad)))
+       i-fad)))             
 ;;
-;;;test-me;(mon-insert-face-as-displayed)
-;;;test-me;(mon-insert-face-as-displayed t)
-;;;test-me;(call-interactively 'mon-insert-face-as-displayed)
+;;; :TEST-ME (mon-insert-naf-mode-faces-as-displayed)
+;;; :TEST-ME (mon-insert-naf-mode-faces-as-displayed t)
+;;; :TEST-ME (call-interactively 'mon-insert-naf-mode-faces-as-displayed)
 
 ;;; ==============================
-;;; CREATED: <Timestamp: #{2009-09-01T17:56:21-04:00Z}#{09362} - by MON KEY>
-(eval-and-compile
+;;; :CREATED <Timestamp: #{2009-09-01T17:56:21-04:00Z}#{09362} - by MON KEY>
 (defvar *naf-mode-faces-as-displayed* 
   '(";;; =============================="
-    "FRBNF14942139 ;naf-mode-field-face-db-entry"
-    "Uploaded-by: ;naf-mode-field-face"
-    "Artist-naf: ;naf-mode-db-entry-face"
-    "Bauhaus ;naf-mode-group-period-style-face"
-    "Salon de ; naf-mode-event-face"
-    "Royal Academy ;naf-mode-institution-face"
-    "français ;naf-mode-nationality-face"
-    "Lastname, Firstname | Fname Lname | F. Lname ;naf-mode-name-divider-face" 
-    "--- ;naf-mode-delim-face"
-    "Washington ;naf-mode-place-face"
-    "\(1885-1940\);naf-mode-date-face"
-    "affichiste ;naf-mode-secondary-role-face"
-    "Auteur ;naf-mode-primary-role-face"
-    "illustrations ;naf-mode-art-keywords-role-face"
-    "VENTES PUBLIQUES :;naf-mode-benezit-face"
-    "Portrait de; naf-mode-alternate-name-face"
-    "Berliner Illustrierte ;naf-mode-publication-periodical-face"
-    "Design Centre Awards Scheme ;naf-mode-awards-prizes-face"
-    "<Timestamp: #{2009-08-13T17:30:19-04:00Z}#{09334} - by MON>  ;naf-mode-timestamp-face"
+    "---"
+    ":NAF-MODE-FACE `naf-mode-field-face-db-entry'"
+    "FRBNF14942139 "
+    "---"
+    ":NAF-MODE-FACE `naf-mode-field-face'"
+    "Uploaded-by: "
+    "---"
+    ":NAF-MODE-FACE `naf-mode-db-entry-face'"
+    "Artist-naf: "
+    "---"
+    ":NAF-MODE-FACE `naf-mode-group-period-style-face'"
+    "Bauhaus "
+    "---"
+    ":NAF-MODE-FACE `naf-mode-event-face'"
+    "Salon de "
+    "---"
+    ":NAF-MODE-FACE `naf-mode-institution-face'"
+    "Royal Academy "
+    "---"
+    ":NAF-MODE-FACE `naf-mode-nationality-face'"
+    "français "
+    "---"
+    ":NAF-MODE-FACE `naf-mode-name-divider-face'"
+    "Lastname, Firstname | Fname Lname | F. Lname " 
+    "---"
+    ":NAF-MODE-FACE `naf-mode-delim-face'"
+    "---"
+    "\n---"
+    ":NAF-MODE-FACE "
+    "Washington ;`naf-mode-place-face'"
+    "---"
+    ":NAF-MODE-FACE `naf-mode-date-face'"
+    "\(1885-1940\)"
+    "---"
+    ":NAF-MODE-FACE `naf-mode-secondary-role-face'"
+    "affichiste "
+    "---"
+    ":NAF-MODE-FACE `naf-mode-primary-role-face'"
+    "Auteur "
+    "---"
+    ":NAF-MODE-FACE `naf-mode-art-keywords-role-face'"
+    "illustrations "
+    "---"
+    ":NAF-MODE-FACE `naf-mode-benezit-face'"
+    "VENTES PUBLIQUES :"
+    "---"
+    ":NAF-MODE-FACE `naf-mode-alternate-name-face'"
+    "Portrait de "
+    "---"
+    ":NAF-MODE-FACE `naf-mode-publication-periodical-face'"
+    "Berliner Illustrierte "
+    "---"
+    ":NAF-MODE-FACE `naf-mode-awards-prizes-face'"
+    "Design Centre Awards Scheme "
+    "---"
+    ":NAF-MODE-FACE `naf-mode-timestamp-face'"
+    "<Timestamp: #{2009-08-13T17:30:19-04:00Z}#{09334} - by MON>"
     "accessed: #{2009-09-01T16:31:39-04:00Z}#{09362} - MON KEY"
     "(URL `http://catalog.loc.gov/')"
     "(URL `http://authorities.loc.gov/')"
     "(URL `http://catalogue.bnf.fr/ark:/12148/cb123349648/PUBLIC')"
     "accessed:"
+    ""
     "---"
-    "`naf-mode-field-names' using ;`naf-mode-db-entry-face'"
+    ":NAF-MODE-VARIABLE `naf-mode-field-names'"
+    ":NAF-MODE-FACE     `naf-mode-db-entry-face'"
     "---"
+    ""
     ";; -\*- mode: NAF; -\*-"
     "BNF:"
     "DNB:"
@@ -789,9 +834,12 @@ See also; `*naf-mode-faces-as-displayed*',`mon-insert-naf-mode-face-template',
     ";;; book-naf EOF"
     ";;; author-naf EOF"
     ";;; item-naf EOF"
+    ""
     "---"
-    "`naf-mode-db-entry' using `naf-mode-db-field-face'"
+    ":NAF-MODE-VARIABLE `naf-mode-db-entry'"
+    ":NAF-MODE-FACE `naf-mode-db-field-face'"
     "---"
+    ""
     "Abbreviated Title:"
     "Accession No:"
     "Author(s):"
@@ -826,7 +874,11 @@ See also; `*naf-mode-faces-as-displayed*',`mon-insert-naf-mode-face-template',
     "Identifier:"
     "Language:"
     "Location-country:"
-    "MEDIUM:"
+    ""
+    "---"
+    ":NAF-MODE-FIELDS-MEDIUM"
+    "---"
+    ""
     "Main Title:"
     "Main author:"
     "Material Type:"
@@ -872,7 +924,11 @@ See also; `*naf-mode-faces-as-displayed*',`mon-insert-naf-mode-face-template',
     "Subjects:"
     "Succeeding Title:"
     "Summary:"
-    "TITLE:"
+    ""
+    "---"
+    ":NAF-MODE-FIELDS-TITLE"
+    "---"
+    ""
     "Title details:"
     "Title:"
     "Type :"
@@ -881,175 +937,196 @@ See also; `*naf-mode-faces-as-displayed*',`mon-insert-naf-mode-face-template',
     "Update:"
     "Used For/See From:"
     "Year:"
+    ""
     "---"
-    "NAF-FIELDS"
+    ":NAF-MODE-FIELDS-NAF"
     "---"
-    "Ads-for:                                          ;NAF-FIELD"
-    "Appeared-in:                                      ;NAF-FIELD"
-    "Artists-associated:                               ;NAF-FIELD"
-    "Auction-records:                                  ;NAF-FIELD"
-    "Authors-associated:                               ;NAF-FIELD"
-    "Book-notes:                                       ;NAF-FIELD"
-    "Brand-name:                                       ;NAF-FIELD"
-    "Contents:                                         ;NAF-FIELD"
-    "Date-founded:                                     ;NAF-FIELD"
-    "Founded-by:                                       ;NAF-FIELD"
-    "Full-title:                                       ;NAF-FIELD"
-    "Location-published:                               ;NAF-FIELD"
-    "Products-associated:                              ;NAF-FIELD"
-    "Publisher:                                        ;NAF-FIELD"
-    "Slogans:                                          ;NAF-FIELD"
-    "Uploaded-by:                                      ;NAF-FIELD"
-    "Used-for:                                         ;NAF-FIELD"
-    "ebay-item-ended:                                  ;NAF-FIELD"
-    "ebay-item-number:                                 ;NAF-FIELD"
-    "ebay-item-realized:                               ;NAF-FIELD"
-    "ebay-item-seller:                                 ;NAF-FIELD"
+    ""
+    "Ads-for:                                          ; :NAF-FIELD"
+    "Appeared-in:                                      ; :NAF-FIELD"
+    "Artists-associated:                               ; :NAF-FIELD"
+    "Auction-records:                                  ; :NAF-FIELD"
+    "Authors-associated:                               ; :NAF-FIELD"
+    "Book-notes:                                       ; :NAF-FIELD"
+    "Brand-name:                                       ; :NAF-FIELD"
+    "Contents:                                         ; :NAF-FIELD"
+    "Date-founded:                                     ; :NAF-FIELD"
+    "Founded-by:                                       ; :NAF-FIELD"
+    "Full-title:                                       ; :NAF-FIELD"
+    "Location-published:                               ; :NAF-FIELD"
+    "Products-associated:                              ; :NAF-FIELD"
+    "Publisher:                                        ; :NAF-FIELD"
+    "Slogans:                                          ; :NAF-FIELD"
+    "Uploaded-by:                                      ; :NAF-FIELD"
+    "Used-for:                                         ; :NAF-FIELD"
+    "ebay-item-ended:                                  ; :NAF-FIELD"
+    "ebay-item-number:                                 ; :NAF-FIELD"
+    "ebay-item-realized:                               ; :NAF-FIELD"
+    "ebay-item-seller:                                 ; :NAF-FIELD"
+    ""
     "---"
-    "SHARED FIELDS:"
+    ":NAF-MODE-FIELDS-SHARED"
     "---"
-    "Born:                                             ;NAF-FIELD, ;ULAN"
-    "Died:                                             ;NAF-FIELD, ;ULAN"
-    "Roles:                                            ;NAF-FIELD, ;ULAN"
+    ""
+    "Born:                                             ; :NAF-FIELD :ULAN-FIELD"
+    "Died:                                             ; :NAF-FIELD :ULAN-FIELD"
+    "Roles:                                            ; :NAF-FIELD :ULAN-FIELD"
+    ""
     "---"
-    "ULAN-FIELDS:"
+    ":NAF-MODE-FIELDS-ULAN"
     "---"
-    "Biographies:                                      ;ULAN"
-    "Birth and Death Places:                           ;ULAN"
-    "Events:                                           ;ULAN"
-    "Gender:                                           ;ULAN"
-    "ID:                                               ;ULAN"
-    "List/Hierarchical Position:                       ;ULAN"
-    "Names:                                            ;ULAN"
-    "Nationalities:                                    ;ULAN"
-    "Record Type:                                      ;ULAN"
+    ""
+    "Biographies:                                      ; :ULAN-FIELD"
+    "Birth and Death Places:                           ; :ULAN-FIELD"
+    "Events:                                           ; :ULAN-FIELD"
+    "Gender:                                           ; :ULAN-FIELD"
+    "ID:                                               ; :ULAN-FIELD"
+    "List/Hierarchical Position:                       ; :ULAN-FIELD"
+    "Names:                                            ; :ULAN-FIELD"
+    "Nationalities:                                    ; :ULAN-FIELD"
+    "Record Type:                                      ; :ULAN-FIELD"
     "Related Names:"
-    "Related People and Corporate Bodies:              ;ULAN"
-    "Related People or Corporate Bodies:               ;ULAN"
-    "Sources and Contributors:                         ;ULAN"
-    "Subject:                                          ;ULAN"
-    "education:                                        ;ULAN *TRL-WSP"
+    "Related People and Corporate Bodies:              ; :ULAN-FIELD"
+    "Related People or Corporate Bodies:               ; :ULAN-FIELD"
+    "Sources and Contributors:                         ; :ULAN-FIELD"
+    "Subject:                                          ; :ULAN-FIELD"
+    "education:                                        ; :ULAN-FIELD :TRL-WSPC"
+    ""
     "---"
-    "LOC-FIELDS:"
+    ":NAF-MODE-FIELDS-LOC"
     "---"
-    "Biographical/Historical Note:                     ;LOC-field"
-    "LC Class Number:                                  ;LOC-field"
-    "LC Classification:                                ;LOC-field"
-    "LC Control No.                                    ;LOC-field"
-    "LC Control Number:                                ;LOC-field"
-    "LC Copy:                                          ;LOC-field"
+    ""
+    "Biographical/Historical Note:                     ; :LOC-FIELD"
+    "LC Class Number:                                  ; :LOC-FIELD"
+    "LC Classification:                                ; :LOC-FIELD"
+    "LC Control No.                                    ; :LOC-FIELD"
+    "LC Control Number:                                ; :LOC-FIELD"
+    "LC Copy:                                          ; :LOC-FIELD"
     "LCCN Permalink:"
+    ""
     "---"
-    "`naf-mode-field-names-bnf' using `naf-mode-field-bnf-face'"
+    ":NAF-MODE-VARIABLE `naf-mode-field-names-bnf'"
+    ":NAF-MODE-FACE     `naf-mode-field-bnf-face'"
     "---"
+    ""
     "<Employé pour :"
     "Appartient au recueil :"
-    "Auteur(s) :                                       ;BNF *TRL-WSP"
-    "Autre(s) auteur(s) :                              ;BNF"
-    "Autre(s) forme(s) du titre :                      ;BNF"
-    "Circuit de distribution :                         ;BNF  *TRL-WSP"
-    "Classement géographique :                         ;BNF"
-    "Comprend :                                        ;BNF  *TRL-WSP"
-    "Coordonnées géographiques :                       ;BNF"
-    "Cote(s) BnF :                                     ;BNF"
-    "Création :                                        ;BNF"
-    "Description matérielle :                          ;BNF"
-    "Distributeur :                                    ;BNF *TRL-WSP"
-    "Domaine(s) :                                      ;BNF *TRL-WSP"
-    "Domaine(s) :                                      ;BNF"
-    "Domaine(s) d'expression artistique :              ;BNF"
-    "Enregistrement :                                  ;BNF"
-    "Forme(s) rejetée(s) :                             ;BNF"
-    "Genre :                                           ;BNF *TRL-WSP"
-    "Indice de l'Histoire de France :                  ;BNF"
-    "Indice(s) Dewey :                                 ;BNF"
-    "Interprète(s) :                                   ;BNF"
-    "Langue(s) :                                       ;BNF"
-    "Lien au titre d'ensemble :                        ;BNF"
-    "Lien à la collection :                            ;BNF"
-    "Marque :                                          ;BNF *TRL-WSP"
-    "Mort :                                            ;BNF"
-    "Naissance :                                       ;BNF"
-    "Nation(s) :                                       ;BNF *TRL-WSP"
-    "Nationalité(s) :                                  ;BNF"
-    "Note(s) :                                         ;BNF"
-    "Notice n° :                                       ;BNF"
-    "Numérotation :                                    ;BNF"
-    "Participant(s) :                                  ;BNF *TRL-WSP"
-    "Producteur(s) :                                   ;BNF"
-    "Profession(s) :                                   ;BNF"
-    "Projection :                                      ;BNF *TRL-WSP"
-    "Publication :                                     ;BNF *TRL-WSP"
-    "Périodicité :                                     ;BNF"
-    "Responsabilité(s) exercée(s) sur les documents :  ;BNF"
-    "Référence(s) commerciale(s) :                     ;BNF"
-    "Réunit :                                          ;BNF *TRL-WSP"
-    "Sexe :                                            ;BNF"
-    "Source(s) :                                       ;BNF *TRL-WSP"
-    "Sujet(s) :                                        ;BNF"
-    "Sujet(s) géographique(s) :                        ;BNF"
-    "Technique(s) privilégiée(s) :                     ;BNF"
-    "Thème(s) :                                        ;BNF *TRL-WSP"
-    "Titre clé :                                       ;BNF"
-    "Titre d'ensemble :                                ;BNF"
-    "Titre(s) :                                        ;BNF"
-    "Titre(s) en liaison :                             ;BNF"
-    "Type de la collectivité officielle :              ;BNF"
-    "Type de publication :                             ;BNF"
-    "Type de ressource électronique :                  ;BNF"
-    "Typologie :                                       ;BNF *TRL-WSP"
-    "Échelle(s) :                                      ;BNF"
-    "Éditeur :                                         ;BNF *TRL-WSP"
-    "Édition :                                         ;BNF *TRL-WSP"
+    "Auteur(s) :                                       ; :BNF-FIELD :TRL-WSPC"
+    "Autre(s) auteur(s) :                              ; :BNF-FIELD"
+    "Autre(s) forme(s) du titre :                      ; :BNF-FIELD"
+    "Circuit de distribution :                         ; :BNF-FIELD :TRL-WSPC"
+    "Classement géographique :                         ; :BNF-FIELD"
+    "Comprend :                                        ; :BNF-FIELD :TRL-WSPC"
+    "Coordonnées géographiques :                       ; :BNF-FIELD"
+    "Cote(s) BnF :                                     ; :BNF-FIELD"
+    "Création :                                        ; :BNF-FIELD"
+    "Description matérielle :                          ; :BNF-FIELD"
+    "Distributeur :                                    ; :BNF-FIELD :TRL-WSPC"
+    "Domaine(s) :                                      ; :BNF-FIELD :TRL-WSPC"
+    "Domaine(s) :                                      ; :BNF-FIELD"
+    "Domaine(s) d'expression artistique :              ; :BNF-FIELD"
+    "Enregistrement :                                  ; :BNF-FIELD"
+    "Forme(s) rejetée(s) :                             ; :BNF-FIELD"
+    "Genre :                                           ; :BNF-FIELD :TRL-WSPC"
+    "Indice de l'Histoire de France :                  ; :BNF-FIELD"
+    "Indice(s) Dewey :                                 ; :BNF-FIELD"
+    "Interprète(s) :                                   ; :BNF-FIELD"
+    "Langue(s) :                                       ; :BNF-FIELD"
+    "Lien au titre d'ensemble :                        ; :BNF-FIELD"
+    "Lien à la collection :                            ; :BNF-FIELD"
+    "Marque :                                          ; :BNF-FIELD :TRL-WSPC"
+    "Mort :                                            ; :BNF-FIELD"
+    "Naissance :                                       ; :BNF-FIELD"
+    "Nation(s) :                                       ; :BNF-FIELD :TRL-WSPC"
+    "Nationalité(s) :                                  ; :BNF-FIELD"
+    "Note(s) :                                         ; :BNF-FIELD"
+    "Notice n° :                                       ; :BNF-FIELD"
+    "Numérotation :                                    ; :BNF-FIELD"
+    "Participant(s) :                                  ; :BNF-FIELD :TRL-WSPC"
+    "Producteur(s) :                                   ; :BNF-FIELD"
+    "Profession(s) :                                   ; :BNF-FIELD"
+    "Projection :                                      ; :BNF-FIELD :TRL-WSPC"
+    "Publication :                                     ; :BNF-FIELD :TRL-WSPC"
+    "Périodicité :                                     ; :BNF-FIELD"
+    "Responsabilité(s) exercée(s) sur les documents :  ; :BNF-FIELD"
+    "Référence(s) commerciale(s) :                     ; :BNF-FIELD"
+    "Réunit :                                          ; :BNF-FIELD :TRL-WSPC"
+    "Sexe :                                            ; :BNF-FIELD"
+    "Source(s) :                                       ; :BNF-FIELD :TRL-WSPC"
+    "Sujet(s) :                                        ; :BNF-FIELD"
+    "Sujet(s) géographique(s) :                        ; :BNF-FIELD"
+    "Technique(s) privilégiée(s) :                     ; :BNF-FIELD"
+    "Thème(s) :                                        ; :BNF-FIELD :TRL-WSPC"
+    "Titre clé :                                       ; :BNF-FIELD"
+    "Titre d'ensemble :                                ; :BNF-FIELD"
+    "Titre(s) :                                        ; :BNF-FIELD"
+    "Titre(s) en liaison :                             ; :BNF-FIELD"
+    "Type de la collectivité officielle :              ; :BNF-FIELD"
+    "Type de publication :                             ; :BNF-FIELD"
+    "Type de ressource électronique :                  ; :BNF-FIELD"
+    "Typologie :                                       ; :BNF-FIELD :TRL-WSPC"
+    "Échelle(s) :                                      ; :BNF-FIELD"
+    "Éditeur :                                         ; :BNF-FIELD :TRL-WSPC"
+    "Édition :                                         ; :BNF-FIELD :TRL-WSPC"
+    ""
     "---"
-    "`naf-mode-db-field-flags-bnf'"
+    ":NAF-MODE-VARIABLE `naf-mode-db-field-flags-bnf'"
     "---"
-    "forme internationale                              ;BNF-FIELD-ENTRY"
-    "Mise à jour :                                     ;BNF-FIELD-ENTRY"
-    "masculin                                          ;BNF-FIELD-ENTRY"
-    "féminin                                           ;BNF-FIELD-ENTRY"
+    ""
+    "forme internationale                              ; :BNF-FIELD-ENTRY"
+    "Mise à jour :                                     ; :BNF-FIELD-ENTRY"
+    "masculin                                          ; :BNF-FIELD-ENTRY"
+    "féminin                                           ; :BNF-FIELD-ENTRY"
+    ""
     "---"
-    "[500006383] ;naf-mode-db-field-entry-ulan-face    ;ULAN-FIELD-ENTRY"
-    "NAFL2001060907 NAFR8914343 NAFR907811             ;ULAN-FIELD-ENTRY"
-    "(preferred, index, display, V)                    ;ULAN-FIELD-ENTRY"
-    "(inhabited place)                                 ;ULAN-FIELD-ENTRY"
-    "(preferred, index, V)                             ;ULAN-FIELD-ENTRY"
-    "(preferred, index)                                ;ULAN-FIELD-ENTRY"
-    "(preferred)                                       ;ULAN-FIELD-ENTRY"
-    "(display, V)                                      ;ULAN-FIELD-ENTRY"
-    "(display)                                         ;ULAN-FIELD-ENTRY"
-    "(index)                                           ;ULAN-FIELD-ENTRY"
-    "(V)                                               ;ULAN-FIELD-ENTRY"
+    ":NAF-MODE-FACE `naf-mode-db-field-entry-ulan-face'"
+    "---"
+    ""
+    "[500006383]                                       ; :ULAN-FIELD-ENTRY"
+    "NAFL2001060907 NAFR8914343 NAFR907811             ; :ULAN-FIELD-ENTRY"
+    "(preferred, index, display, V)                    ; :ULAN-FIELD-ENTRY"
+    "(inhabited place)                                 ; :ULAN-FIELD-ENTRY"
+    "(preferred, index, V)                             ; :ULAN-FIELD-ENTRY"
+    "(preferred, index)                                ; :ULAN-FIELD-ENTRY"
+    "(preferred)                                       ; :ULAN-FIELD-ENTRY"
+    "(display, V)                                      ; :ULAN-FIELD-ENTRY"
+    "(display)                                         ; :ULAN-FIELD-ENTRY"
+    "(index)                                           ; :ULAN-FIELD-ENTRY"
+    "(V)                                               ; :ULAN-FIELD-ENTRY"
     "---"
     "#{American painter, illustrator, and printmaker, 1879-1941} #{500008013})"
     "(:TEACHER-OF #{Weber, Sarah S. Stilwell}"
+    ""
     "---"
-    ";naf-mode-ulan-ppl-corp-face"
+    ":NAF-MODE-FACE `naf-mode-ulan-ppl-corp-face'"
     "---"
-    ":APPRENTICE-OF                                    ;ULAN-FIELD-ENTRY"
-    ":APPRENTICE-WAS                                   ;ULAN-FIELD-ENTRY"
-    ":ASSISTED-BY                                      ;ULAN-FIELD-ENTRY"
-    ":ASSOCIATE-OF                                     ;ULAN-FIELD-ENTRY"
-    ":CHILD-OF                                         ;ULAN-FIELD-ENTRY"
-    ":COLLABORATED-WITH                                ;ULAN-FIELD-ENTRY"
-    ":FOUNDER-OF                                       ;ULAN-FIELD-ENTRY"
-    ":GRANDCHILD-OF                                    ;ULAN-FIELD-ENTRY"
-    ":GRANDPARENT-OF                                   ;ULAN-FIELD-ENTRY"
-    ":GRANDPARENT-WAS                                  ;ULAN-FIELD-ENTRY"
-    ":INFLUENCE                                        ;ULAN-FIELD-ENTRY"
-    ":MEMBER-OF                                        ;ULAN-FIELD-ENTRY"
-    ":PARENT-OF                                        ;ULAN-FIELD-ENTRY"
-    ":PARTNER-OF                                       ;ULAN-FIELD-ENTRY"
-    ":SIBLING-OF                                       ;ULAN-FIELD-ENTRY"
-    ":SPOUSE-OF                                        ;ULAN-FIELD-ENTRY"
-    ":STUDENT-OF                                       ;ULAN-FIELD-ENTRY"
-    ":STUDENT-WAS                                      ;ULAN-FIELD-ENTRY"
-    ":TEACHER-OF                                       ;ULAN-FIELD-ENTRY"
-    ":TEACHER-WAS                                      ;ULAN-FIELD-ENTRY"
-    ":WORKED-WITH                                      ;ULAN-FIELD-ENTRY"
+    ""
+    ":APPRENTICE-OF                                    ; :ULAN-FIELD-ENTRY"
+    ":APPRENTICE-WAS                                   ; :ULAN-FIELD-ENTRY"
+    ":ASSISTED-BY                                      ; :ULAN-FIELD-ENTRY"
+    ":ASSOCIATE-OF                                     ; :ULAN-FIELD-ENTRY"
+    ":CHILD-OF                                         ; :ULAN-FIELD-ENTRY"
+    ":COLLABORATED-WITH                                ; :ULAN-FIELD-ENTRY"
+    ":FOUNDER-OF                                       ; :ULAN-FIELD-ENTRY"
+    ":GRANDCHILD-OF                                    ; :ULAN-FIELD-ENTRY"
+    ":GRANDPARENT-OF                                   ; :ULAN-FIELD-ENTRY"
+    ":GRANDPARENT-WAS                                  ; :ULAN-FIELD-ENTRY"
+    ":INFLUENCE                                        ; :ULAN-FIELD-ENTRY"
+    ":MEMBER-OF                                        ; :ULAN-FIELD-ENTRY"
+    ":PARENT-OF                                        ; :ULAN-FIELD-ENTRY"
+    ":PARTNER-OF                                       ; :ULAN-FIELD-ENTRY"
+    ":SIBLING-OF                                       ; :ULAN-FIELD-ENTRY"
+    ":SPOUSE-OF                                        ; :ULAN-FIELD-ENTRY"
+    ":STUDENT-OF                                       ; :ULAN-FIELD-ENTRY"
+    ":STUDENT-WAS                                      ; :ULAN-FIELD-ENTRY"
+    ":TEACHER-OF                                       ; :ULAN-FIELD-ENTRY"
+    ":TEACHER-WAS                                      ; :ULAN-FIELD-ENTRY"
+    ":WORKED-WITH                                      ; :ULAN-FIELD-ENTRY"
+    ""
     "---"
-    "Currencies:"
+    ":NAF-MODE-CURRENCIES"
     "---"
+    ""
     "USD 50 000 000"
     "USD 5,000,000"
     "GBP 5 000"
@@ -1086,10 +1163,16 @@ See also; `*naf-mode-faces-as-displayed*',`mon-insert-naf-mode-face-template',
     "USD 5,000"
     "UYU 500 100 000"
     "ZAR 5,000"
+    ""
     "---"
-    ;;; `*naf-mode-dates-xref*' `naf-mode-french-days' 
-    ;;; `naf-weekday-alist', `naf-mode-english-dates' 
-    ;;; `naf-month-abbrev-alist', `naf-weekday-alist'
+    ":NAF-MODE-VARIABLE-DATE `*naf-mode-dates-xref*'"
+    ":NAF-MODE-VARIABLE-DATE `naf-mode-french-days'"
+    ":NAF-MODE-VARIABLE-DATE `naf-weekday-alist'"
+    ":NAF-MODE-VARIABLE-DATE `naf-mode-english-dates'"
+    ":NAF-MODE-VARIABLE-DATE `naf-month-abbrev-alist'"
+    ":NAF-MODE-VARIABLE-DATE `naf-weekday-alist'"
+    "---"
+    ""
     "Jan." "January"           "Jan. 01, 1899" "January 10, 1946"		          "Janvier"  
     "Feb." "February" 	       "Feb. 22, 1922" "February 29, 1704"		          "Février"  
     "Mar." "March"	       "Mar. 15, 1917" "March 5, 1933"			          "Mars"     
@@ -1102,7 +1185,9 @@ See also; `*naf-mode-faces-as-displayed*',`mon-insert-naf-mode-face-template',
     "Oct." "October" 	       "Oct. 24th, 1928" "October 19, 1987" "October 3rd, 2008"   "Octobre"  
     "Nov." "November"	       "Nov. 4th, 1901" "November 21st, 1920"		          "Novembre" 
     "Dec." "December"          "Dec. 3rd, 1901" "December 14, 1825"                       "Décembre" 
+    ""
     "---"
+    ""
     "Monday     Lundi"	  
     "Tuesday    Mardi"	  
     "Wednesday  Mercredi"
@@ -1110,7 +1195,13 @@ See also; `*naf-mode-faces-as-displayed*',`mon-insert-naf-mode-face-template',
     "Friday     Vendredi"
     "Saturday   Samedi"  
     "Sunday     Dimanche"
+    ""
     "---"
+    ":NAF-MODE-DATE-VARIABLE `naf-mode-active-date'"
+    ":NAF-MODE-DATE-VARIABLE `naf-mode-active-date-flags-solo'"
+    ":NAF-MODE-DATE-VARIABLE `naf-mode-circa-dates'"
+    "---"
+    ""
     " Actif en"
     " Actif à"
     " actif en "
@@ -1145,16 +1236,17 @@ See also; `*naf-mode-faces-as-displayed*',`mon-insert-naf-mode-face-template',
     " (cca. "
     "  cca. "
     "  ca. ")
-  "List of `naf-mode' keywords. 
+  "List of `naf-mode' keywords.\n
 List includes the vars that define them or hold regexps that do.
 List also identifies the type of field and and faces that light them up.
-Use to test naf-mode font-locking.
-CALLED-BY: `mon-insert-face-as-displayed'.
-See also;
-`mon-insert-naf-mode-face-template',`mon-insert-naf-mode-constant-template'.\n►►►"))
+Use to test naf-mode font-locking.\n
+:CALLED-BY `mon-insert-naf-mode-faces-as-displayed'.
+:SEE-ALSO `mon-insert-naf-mode-face-template',
+`mon-insert-naf-mode-constant-template'.\n►►►")
 ;;
-;;;test-me; *naf-mode-faces-as-displayed* 
-;;;(progn (makunbound '*naf-mode-faces-as-displayed*) (unintern '*naf-mode-faces-as-displayed*)) 
+;;; :TEST-ME  *naf-mode-faces-as-displayed* 
+;;;(progn (makunbound '*naf-mode-faces-as-displayed*)
+;;;       (unintern '*naf-mode-faces-as-displayed*) )
 
 ;;; ==============================
 (provide 'naf-mode-insertion-utils)

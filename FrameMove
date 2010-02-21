@@ -18,6 +18,20 @@ Currently, when focus shifts to a new frame - the point does not change inside t
 
 Download from Lisp:framemove.el
 
+[new:DrewAdams:2010-02-20 17:44 UTC]
+
+1. I like it. I bind your change-focus keys to `M-S-up', etc., since I bind `M-up' etc. to the frame movement commands `move-frame-up' etc. from <tt>[[frame-cmds.el]]</tt>.
+
+2. Suggestion: Let `fm-left-frame' etc. cycle (wrap) around to the rightmost frame when the end is reached, instead of just showing the message "##No frame in that direction##". That would make this feature more useful.
+
+3. Consider adding to the file header of <tt>[[framemove.el]]</tt>:
+
+ ;; Compatibility: GNU Emacs 22.x, 23.x
+
+For GnuEmacs, I checked that release 22 is the earliest supported (because you use `window-inside-pixel-edges' and `posn-at-point'). (Also, ##windmove.el## is available starting with release 22.)
+
+4. Consider making it a bit clearer in the file's ##Commentary## and on this wiki page that, in spite of the names, this is ''not'' about ''moving frames''; it is about moving (changing) the input '''''focus''''' from one frame to the next. The function and libraries names are a bit unfortunate, IMO, but I suppose they are modeled on ##windmove.el##, which also uses unfortunate terminology. But for windows, actual "moving" makes less sense than for frames. The only way you can "move" a window is relative to others: exchange them. Not so, for frames. -- DrewAdams
+
 ----
 CategoryFrames CategoryWindows
 

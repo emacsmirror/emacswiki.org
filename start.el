@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2010, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 21.1
-;; Last-Updated: Tue Jan 12 12:37:13 2010 (-0800)
+;; Last-Updated: Sat Feb 20 09:55:55 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 2829
+;;     Update #: 2831
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -87,6 +87,8 @@
 ;;
 ;; Change log:
 ;;
+;; 2010/02/20 dadams
+;;     Soft-require framemove.el.
 ;; 2010/01/12 dadams
 ;;     Commented out *scratch* buffer text hack.
 ;; 2009/11/28 dadams
@@ -359,6 +361,7 @@
 (autoload 'libreq-insert-lib-requires-as-comment "lib-requires"
   "Insert a comment listing all libraries ultimately required by LIBRARY." t)
 (require 'frame-cmds nil t)             ; Frame and window commands.
+(when (fboundp 'window-inside-pixel-edges) (require 'framemove nil t)) ; Move frame focus.
 (when (if (fboundp 'display-graphic-p) (display-graphic-p) window-system)
   (require 'autofit-frame nil t))       ; Automatically fit frames to sole window.
 (unless (> emacs-major-version 22)

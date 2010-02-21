@@ -1,0 +1,18 @@
+== Defining Cursor Properties Using Xresources ==
+
+When using the X Window System, you can set the cursor color in the [[Xresource]] `Emacs.cursorColor', for example with this command:
+
+<pre>
+echo 'Emacs.cursorColor: #a00000' | xrdb -override
+</pre>
+
+or persistently by adding the <code>Emacs.cursorColor: #a00000</code> line to your <code>~/.Xresources</code> file.
+
+If you are using [[ViperMode]], this setting practically takes precedence over any Emacs-internal customization settings; ''I think'' Viper restores the Xresource whenever switching to vi-mode.
+
+
+See also: [[WikiPedia:Cursor (computing)]]
+
+
+----
+CategoryDisplay
