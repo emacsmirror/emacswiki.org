@@ -120,3 +120,6 @@ Localized, national holidays, lunar/solar term based holidays, highlight holiday
 
 http://xwl.appspot.com/ref/cal-china-x.el
 
+Modified version of the above using traditional Chinese characters (plus some nit picks):
+
+http://github.com/stepnem/emacs-libraries/blob/master/cal-china-x.el

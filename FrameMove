@@ -18,6 +18,25 @@ Currently, when focus shifts to a new frame - the point does not change inside t
 
 Download from Lisp:framemove.el
 
+----
+does not work when emacs was started with --daemon. use the following patch:
+
+  diff --git a/emacs.d/vendor/framemove.el b/emacs.d/vendor/framemove.el
+  index a325d38..15e477a 100644
+  --- a/emacs.d/vendor/framemove.el
+  +++ b/emacs.d/vendor/framemove.el
+  @@ -60,6 +60,8 @@
+  
+   (defun fm-frame-is-to-dir-of (refframe dir otherframe)
+     (cond
+  +   ((not (eq (frame-parameter refframe 'display) (frame-parameter otherframe 'display)))
+  +    nil)
+      ((eq refframe otherframe)
+       nil)
+      ((memq dir '(left up))
+
+----
+
 [new:DrewAdams:2010-02-20 17:44 UTC]
 
 1. I like it. I bind your change-focus keys to `M-S-up', etc., since I bind `M-up' etc. to the frame movement commands `move-frame-up' etc. from <tt>[[frame-cmds.el]]</tt>.

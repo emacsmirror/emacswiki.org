@@ -1,13 +1,13 @@
 ;;; shell-pop.el --- Helps you pop up and pop out shell buffer easily.
-;;; $Id: shell-pop.el,v 1.5 2009/06/03 09:57:40 kyagi Exp $
+;;; $Id: shell-pop.el,v 1.10 2010/02/21 14:19:26 kyagi Exp kyagi $
 
 ;; Copyright (C) 2009 Free Software Foundation, Inc.
 
 ;; Author:        Kazuo YAGI <kyagi@1liner.jp>
 ;; Maintainer:    Kazuo YAGI <kyagi@1liner.jp>
 ;; Created:       2009-05-31
-;; Last-Updated:  $Date: 2009/06/03 09:57:40 $
-;; Revision:      $Revision: 1.5 $
+;; Last-Updated:  $Date: 2010/02/21 14:19:26 $
+;; Revision:      $Revision: 1.10 $
 ;; Keywords:      shell, terminal, tools
 ;; Compatibility: GNU Emacs 23.x
 
@@ -37,7 +37,7 @@
 ;; I hope this is useful for you, and ENJOY YOUR HAPPY HACKING!
 ;;
 
-;;; Configration;
+;;; Configuration;
 ;;
 ;; You can choose your favorite internal mode such as `shell', `terminal',
 ;; `ansi-term', and `eshell'. Also you can use any shell such as
@@ -59,24 +59,27 @@
 ;;; Update Info;
 ;;
 ;; $Log: shell-pop.el,v $
-;; Revision 1.5  2009/06/03 09:57:40  kyagi
-;; - Minor changes for comment part.
+;; Revision 1.10  2010/02/21 14:19:26  kyagi
+;; bug fix
 ;;
-;; Revision 1.4  2009/06/03 09:46:13  kyagi
-;; - Minor changes for comment part.
+;; Revision 1.9  2010/02/21 14:03:43  kyagi
+;; bug fix
 ;;
-;; Revision 1.3  2009/06/01 15:41:23  kyagi
-;; - Minor changes for comment part.
+;; Revision 1.8  2010/02/21 12:55:28  kyagi
+;; bug fix
 ;;
-;; Revision 1.2  2009/06/01 15:34:33  kyagi
-;; - Added support for 'terminal', 'ansi-term', 'eshell'.
-;; - Added support for customizing user's favorite shell such as '/bin/*sh'.
+;; Revision 1.7  2010/02/21 11:29:56  kyagi
+;; add a function shell-pop-set-window-position
+;;
+;; Revision 1.6  2010/02/21 11:25:01  kyagi
+;; add a option shell-pop-window-position
 ;;
 
 ;;; Code:
 (defvar shell-pop-last-buffer nil)
 (defvar shell-pop-last-window nil)
 (defvar shell-pop-window-height 30) ; percentage for shell-buffer window height
+(defvar shell-pop-window-position "bottom")
 
 (defvar shell-pop-internal-mode "shell")
 (defvar shell-pop-internal-mode-buffer "*shell*")
@@ -93,8 +96,12 @@
 
 (defun shell-pop-set-window-height (number)
   (interactive "nInput the number for the percentage of \
-selected window height (10-90): ")
+selected window height (10-100): ")
   (setq shell-pop-window-height number))
+
+(defun shell-pop-set-window-position (position)
+  (interactive "sInput the position for shell-pop (top|bottom): ")
+  (setq shell-pop-window-position position))
 
 (defun shell-pop-set-internal-mode (mode)
   (interactive "sInput your favorite mode (shell|terminal|ansi-term|eshell): ")
@@ -127,17 +134,25 @@ selected window height (10-90): ")
         ; save shell-pop-last-buffer and shell-pop-last-window to return
           (setq shell-pop-last-buffer (buffer-name))
           (setq shell-pop-last-window (selected-window))
-          (split-window (selected-window)
-                        (round (* (window-height)
-                                  (/ (- 100 shell-pop-window-height) 100.0))))
-          (other-window 1)
+          (if (not (eq shell-pop-window-height 100))
+              (progn
+                (split-window (selected-window)
+                              (if (string= shell-pop-window-position "bottom")
+                                  (round (* (window-height)
+                                            (/ (- 100 shell-pop-window-height) 100.0)))
+                                (round (* (window-height) (/ shell-pop-window-height 100.0)))))
+                (if (string= shell-pop-window-position "bottom")
+                    (other-window 1))))
           (if (not (get-buffer shell-pop-internal-mode-buffer))
               (funcall (eval shell-pop-internal-mode-func))
             (switch-to-buffer shell-pop-internal-mode-buffer))))))
 
 (defun shell-pop-out ()
-  (delete-window)
-  (select-window shell-pop-last-window)
+  (if (not (eq shell-pop-window-height 100))
+      (progn
+        (delete-window)
+        (if (string= shell-pop-window-position "bottom")
+            (select-window shell-pop-last-window))))
   (switch-to-buffer shell-pop-last-buffer))
 
 (provide 'shell-pop)

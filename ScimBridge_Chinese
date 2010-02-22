@@ -13,7 +13,7 @@ scim-bridge.el 可以保存不同缓存里面的输入状态, 这样你可以在
 :: sudo aptitude install scim-pinyin -y
 
 * 安装 scim-bridge.el:
-** 从 [http://www11.atwiki.jp/s-irie/pages/12.html scim-bridge] 里下载最新的压缩包.
+** 从 [https://launchpad.net/scim-bridge.el scim-bridge.el project on Launchpad] 里下载最新的压缩包.
 ** 让 Emacs 禁用 XIM:
 *** 加入以下的命令到 ~/.Xresources:
 ::: Emacs*useXIM: false

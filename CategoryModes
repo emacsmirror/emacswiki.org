@@ -147,4 +147,4 @@ See also CategoryCode if you want to write a new major mode, or if
 you are looking for Emacs features that augment the the basic modes
 listed on this page.
 
-
+For a list of orphaned modes that might need a new maintainer, see AbandonnedMode.

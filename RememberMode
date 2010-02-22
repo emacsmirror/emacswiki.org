@@ -155,7 +155,7 @@ Note that <tt>-c</tt> is not passed to <tt>emacsclient</tt> such that finishing 
 ==== Setting up for PlannerMode ====
 
 [new]
-PlannerMode is somewhat obsoleted by OrgMode, specially since the former is now included in Emacs (as of Emacs 23).
+PlannerMode is somewhat obsoleted by OrgMode, specially since the latter is now included in Emacs (as of Emacs 23).
 
 See http://www.asynchronous.org/blog/archives/2006/11/24/org-mode-vs-planner-mode for a comparison.
 [new]

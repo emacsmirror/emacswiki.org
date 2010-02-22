@@ -4,4 +4,4 @@ Rexx-mode is a major mode for editing Rexx files under Emacs. Originally written
 http://gnu.manticore.es/pagina-replica-rexx-emacs
 
 
-
+Also, for consistency, I've decided to do a "fake" release with version number 1.2, including the missing texinfo sources and the Info documents (not only in English, but also in Spanish). 

@@ -19,3 +19,10 @@ I tried to get rid of the Buffer-* functions and replaced it by a
 simpler method invoking `read-file-name'. This works but many orther
 functions won't work anymore. Anyway, that will let other start using
 this mode and maybe adopt it :)
+
+== Comments ==
+
+* The name of this wiki page may be misleading; I thought that there is abandonned-mode.  It should be renamed as ListOfAbandonnedModes etc, shouldn't it?
+
+----
+CategoryModes
