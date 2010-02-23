@@ -27,11 +27,15 @@
 ;;; Commentary:
 ;;  ==========
 
-;; Developped and tested on:
-;; GNU Emacs 23.1.50.1 (i686-pc-linux-gnu, GTK+ Version 2.18.3) of 2009-11-07 on tux
+;; Developped and tested on Emacs23+ (CVS)
 
 ;; Compatibility: Emacs23.*
 ;; =============
+
+;; Dependencies:
+;; ============
+;;
+;; iterator.el (part of traverselisp package).
 
 ;; Install:
 ;; =======
@@ -40,14 +44,16 @@
 ;; (If you don't do that you will have error as traverse
 ;; use code that work only at compile time.)
 ;;
+;; You will need also iterator.el to be in your load path and compiled.
+;;
 ;; Add to your .emacs:
 ;;
 ;; (require 'traverselisp)
 ;;
 ;; Set up your prefered keys for dired and globals as usual.
-;;
-;; Here is my config with version-1.1.31:
-;; =====================================
+
+;; Suggested config:
+;; ================
 ;;
 ;; (require 'traverselisp)
 ;; (setq traverse-use-avfs t)
@@ -62,7 +68,7 @@
 ;; (add-to-list 'traverse-ignore-dirs "emacs_backup")
 ;; (global-set-key (kbd "C-c C-f") 'anything-traverse)
 ;; (global-set-key (kbd "C-M-|") 'traverse-toggle-split-window-h-v)
-;;
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;  Traverse auto documentation
@@ -149,8 +155,8 @@
 ;; `traverse-incremental-quit-flag'
 ;; `traverse-incremental-current-buffer'
 ;; `traverse-incremental-occur-overlay'
-;; `traverse-incremental-read-fn'
 ;; `traverse-incremental-exit-and-quit-p'
+;; `traverse-incremental-history'
 ;; `traverse-incremental-face'
 
 ;;  * Faces defined here:
@@ -244,13 +250,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Version:
-(defconst traverse-version "1.1.57")
+(defconst traverse-version "1.1.62")
 
 ;;; Code:
 
 (require 'derived)
 (eval-when-compile (require 'cl))
-
+(require 'iterator)
 
 (defvar traverse-mode-map
   (let ((map (make-sparse-keymap)))
@@ -1121,6 +1127,13 @@ Special commands:
   :group 'traverse
   :type  'string)
 
+(defcustom traverse-incremental-docstring
+  "     [RET:exit, C-g:quit, C-k:kill, C-z:Jump, C-j:Jump&quit, C-n/p:next/prec-line, M-p/n:hist]"
+  "*Documentation of `traverse-incremental-occur' prompt.
+Set it to nil to remove doc in prompt."
+  :group 'traverse
+  :type  'string)
+
 (defcustom traverse-incremental-length-line 80
   "*Length of the line dispalyed in traverse incremental buffer."
   :group 'traverse
@@ -1132,9 +1145,8 @@ Special commands:
 (defvar traverse-incremental-quit-flag nil)
 (defvar traverse-incremental-current-buffer nil)
 (defvar traverse-incremental-occur-overlay nil)
-(defvar traverse-incremental-read-fn
-  (if (fboundp 'read-key) 'read-key 'traverse-read-char-or-event))
 (defvar traverse-incremental-exit-and-quit-p nil)
+(defvar traverse-incremental-history nil)
 
 (defun traverse-goto-line (numline)
   "Non--interactive version of `goto-line.'"
@@ -1202,63 +1214,101 @@ Special commands:
   (traverse-incremental-scroll -1))
 
 (defun traverse-read-char-or-event (prompt)
-  "Use `read-char' to read keyboard input, if input is not a char use `read-event' instead."
-  (let* ((chr (condition-case nil (read-char prompt) (error nil)))
-         (evt (unless chr (read-event))))
-    (or chr evt)))
+  "Read keyboard input with `read-char' and `read-event' if `read-key' not available."
+  (if (fboundp 'read-key)
+      (read-key prompt)
+      (let* ((chr (condition-case nil (read-char prompt) (error nil)))
+             (evt (unless chr (read-event))))
+        (or chr evt))))
 
 (defun traverse-incremental-read-search-input (initial-input)
   "Read each keyboard input and add it to `traverse-incremental-search-pattern'."
-  (let* ((prompt       (propertize traverse-incremental-search-prompt 'face '((:foreground "cyan"))))
-         (doc          "     [RET:exit, C-g:quit, C-k:kill, C-z:Jump, C-j:Jump&quit, C-n/p:next/prec-line]")
-         (inhibit-quit (unless (eq traverse-incremental-read-fn 'read-key) t))
-         (tmp-list     ()))
+  (let* ((prompt       (propertize traverse-incremental-search-prompt 'face 'minibuffer-prompt))
+         (inhibit-quit (not (fboundp 'read-key)))
+         (tmp-list     ())
+         (it           (iter-list traverse-incremental-history))
+         (cur-hist-elm (car traverse-incremental-history))
+         (start-hist   nil)) ; Flag to notify if cycling history started.
     (unless (string= initial-input "")
       (loop for char across initial-input do (push char tmp-list)))
     (setq traverse-incremental-search-pattern initial-input)
-    (while (let ((char (funcall traverse-incremental-read-fn
-                                (concat prompt traverse-incremental-search-pattern doc))))
-             (case char
-               ((down ?\C-n) ; Next line
-                (when traverse-incremental-search-timer
-                  (traverse-incremental-cancel-search))
-                (traverse-incremental-next-line)
-                (traverse-incremental-occur-color-current-line) t)
-               ((up ?\C-p) ; precedent line
-                (when traverse-incremental-search-timer
-                  (traverse-incremental-cancel-search))
-                (traverse-incremental-precedent-line)
-                (traverse-incremental-occur-color-current-line) t)
-               ((?\e ?\r) (message nil) nil) ; RET or ESC break and exit code.
-               (?\d ; Delete last char of `traverse-incremental-search-pattern' with DEL.
-                (unless traverse-incremental-search-timer
-                  (traverse-incremental-start-timer))
-                (pop tmp-list))         
-               (?\C-g ; Quit and restore buffers.
-                (setq traverse-incremental-quit-flag t) nil)
-               ((or right ?\C-z) ; persistent action
-                (traverse-incremental-jump) (other-window 1) t)
-               ((left ?\C-j) ; Jump to candidate and kill search buffer.
-                (setq traverse-incremental-exit-and-quit-p t) nil)
-               (?\C-v ; Scroll down
-                (scroll-other-window 1) t)
-               (?\C-k ; Kill input
-                (kill-new traverse-incremental-search-pattern) 
-                (setq tmp-list ()) t)
-               (?\M-v ; Scroll up
-                (scroll-other-window -1) t)
-               (t ; Store character
-                (unless traverse-incremental-search-timer
-                  (traverse-incremental-start-timer))
-                (if (characterp char)
-                    (push char tmp-list)
-                    ;; Else, a non--character event is entered, not listed above.
-                    ;; add it to `unread-command-events' and exit (nil) .
-                    (setq unread-command-events
-                          (nconc (mapcar 'identity (this-single-command-raw-keys))
-                                 unread-command-events))
-                    nil))))
-      (setq traverse-incremental-search-pattern (apply 'string (reverse tmp-list))))))
+    (flet ((cycle-hist (arg)
+             (if traverse-incremental-history
+                 (progn
+                   ;; Cycle history started
+                   ;; We build a new iterator based on a sublist
+                   ;; starting at the current element of history.
+                   (when start-hist
+                     (if (< arg 0) ; M-p (move from left to right in ring).
+                         (setq it (sub-iter-next traverse-incremental-history
+                                                 cur-hist-elm :test 'equal))
+                         (setq it (sub-iter-prec traverse-incremental-history
+                                                 cur-hist-elm :test 'equal))))
+                   (setq tmp-list nil)
+                   (let ((next (iter-next it)))
+                     ;; If no more elements in list
+                     ;; rebuild a new iterator based on the whole history list
+                     ;; and restart from beginning or end of list.
+                     (unless next
+                       (setq it (iter-list (if (< arg 0)
+                                               traverse-incremental-history
+                                               (reverse traverse-incremental-history))))
+                       (setq next (iter-next it)) (setq start-hist nil))
+                     (setq initial-input (or next "")))
+                   (unless (string= initial-input "")
+                     (loop for char across initial-input do (push char tmp-list))
+                     (setq cur-hist-elm initial-input))
+                   (setq traverse-incremental-search-pattern initial-input)
+                   (setq start-hist t))
+                 (message "No history available.") (sit-for 2) t)))
+      (while (let ((char (traverse-read-char-or-event
+                          (concat prompt traverse-incremental-search-pattern
+                                  traverse-incremental-docstring))))
+               (case char
+                 ((down ?\C-n)                 ; Next line
+                  (when traverse-incremental-search-timer
+                    (traverse-incremental-cancel-search))
+                  (traverse-incremental-next-line)
+                  (traverse-incremental-occur-color-current-line) t)
+                 ((up ?\C-p)                   ; Precedent line
+                  (when traverse-incremental-search-timer
+                    (traverse-incremental-cancel-search))
+                  (traverse-incremental-precedent-line)
+                  (traverse-incremental-occur-color-current-line) t)
+                 ((?\e ?\r) (message nil) nil) ; RET or ESC break and exit code.
+                 (?\d                          ; Delete backward with DEL.
+                  (unless traverse-incremental-search-timer
+                    (traverse-incremental-start-timer))
+                  (pop tmp-list))         
+                 (?\C-g                        ; Quit and restore buffers.
+                  (setq traverse-incremental-quit-flag t) nil)
+                 ((or right ?\C-z)             ; persistent action
+                  (traverse-incremental-jump) (other-window 1) t)
+                 ((left ?\C-j)                 ; Jump to candidate and kill search buffer.
+                  (setq traverse-incremental-exit-and-quit-p t) nil)
+                 (?\C-v                        ; Scroll down
+                  (scroll-other-window 1) t)
+                 (?\C-k                        ; Kill input
+                  (kill-new traverse-incremental-search-pattern) 
+                  (setq tmp-list ()) t)
+                 (?\M-v                        ; Scroll up
+                  (scroll-other-window -1) t)
+                 (?\M-p                        ; Precedent history elm.
+                  (cycle-hist -1))
+                 (?\M-n                        ; Next history elm.
+                  (cycle-hist 1))
+                 (t                            ; Store character
+                  (unless traverse-incremental-search-timer
+                    (traverse-incremental-start-timer))
+                  (if (characterp char)
+                      (push char tmp-list)
+                      ;; Else, a non--character event is entered, not listed above.
+                      ;; add it to `unread-command-events' and exit (nil) .
+                      (setq unread-command-events
+                            (nconc (mapcar 'identity (this-single-command-raw-keys))
+                                   unread-command-events))
+                      nil))))
+        (setq traverse-incremental-search-pattern (apply 'string (reverse tmp-list)))))))
 
 
 (defun traverse-incremental-filter-alist-by-regexp (regexp buffer-name)
@@ -1335,6 +1385,9 @@ for commands provided in the search buffer."
                        (kill-buffer "*traverse search*") (message nil))
                 (traverse-incremental-jump) (other-window 1)))
         (setq traverse-count-occurences 0)
+        (unless (or (member traverse-incremental-search-pattern traverse-incremental-history)
+                    (string= traverse-incremental-search-pattern ""))
+          (push traverse-incremental-search-pattern traverse-incremental-history))
         (setq traverse-incremental-quit-flag nil)))))
 
 (defun traverse-incremental-cancel-search ()

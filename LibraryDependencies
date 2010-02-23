@@ -117,7 +117,7 @@ Otherwise, for libraries that were successfully loaded, there is '''''no way to 
 
 == Library elisp-depend.el ==
 
-ElispDepend is similar in some ways to <tt>[[lib-requires.el]]</tt>. A difference is that <tt>[[elisp-depend.el]]</tt> considers also autoloaded definitions (not just loaded libraries) to be dependencies. It parses the code in the current buffer, using `symbol-file' to determine the defining (possibly autoloaded) library for each symbol. Like ##lib-requires.el##, you can use ##elisp-depend.el## to insert a comment about libraries that might be needed, but you can also use it to insert appropriate `require' and `autload' code.
+ElispDepend is similar in some ways to <tt>[[lib-requires.el]]</tt>. A difference is that <tt>[[elisp-depend.el]]</tt> considers also autoloaded definitions (not just loaded libraries) to be dependencies. It parses the code in the current buffer, using `symbol-file' to determine the defining (possibly autoloaded) library for each symbol. Like ##lib-requires.el##, you can use ##elisp-depend.el## to insert a comment about libraries that might be needed, but you can also use it to insert appropriate `require' and `autoload' code.
 
 
 

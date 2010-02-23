@@ -1,5 +1,5 @@
 ;;; -*- indent-tabs-mode:nil -*-
-;;;; Copyright (c) 2007,2008,2009 Jeremy English <jhe@jeremyenglish.org>
+;;;; Copyright (c) 2007,2008,2009,2010 Jeremy English <jhe@jeremyenglish.org>
 ;;;;
 ;;;; Permission to use, copy, modify, distribute, and sell this
 ;;;; software and its documentation for any purpose is hereby granted
@@ -42,6 +42,9 @@
 ;;;; 2009-05-24 Added support for Aquamacs
 ;;;;
 ;;;; 2009-08-12 Bartuer sent in a patch for multiple language output.
+;;;;
+;;;; 2010-02-19 Kevin Brubeck Unhammer added code to clear read-only
+;;;; properties on things at point.
 
 (require 'font-lock)
 
@@ -185,6 +188,11 @@ google, and print in a temp-buffer"
             (buffer-string))))))
    (message header)))
 
+(defun google-define-word-at-point ()
+ (let ((word-at-point (thing-at-point 'word)))
+   (set-text-properties 0 (length word-at-point) nil word-at-point)
+   word-at-point))
+
 (defun google-define ()
   "Ask google for the definition of a word.
 
@@ -192,7 +200,7 @@ If we have a current region use it's value as the default."
   (interactive)
   (let* ((search-word
           (read-from-minibuffer "Define: "
-                                (thing-at-point 'word)))
+                                (google-define-word-at-point)))
         (data-buffer
          (google-define-get-command "www.google.com"
                           (concat
@@ -215,4 +223,3 @@ If we have a current region use it's value as the default."
   (font-lock-fontify-buffer))
 
 (provide 'google-define)
-

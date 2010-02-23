@@ -97,9 +97,9 @@ If you use this, keep in mind a couple things:
 
 BTW, you can get the same library-dependency information interactively or by program, using these commands:
 
-* `insert-lib-requires-as-comment' -- insert a `<code>Features that might be required</cod>' comment like that shown above.
+* `insert-lib-requires-as-comment' -- insert a `<code>Features that might be required</code>' comment like that shown above.
 
-* `lib-requires-tree' -- return (and display, if interactive) a tree showing the structure of all library dependences, from this library on down.
+* `lib-requires-tree' -- return (and display, if interactive) a tree showing the structure of all library dependencies, from this library on down.
 
 * `lib-requires' -- a flat version of `lib-requires-tree', with duplicates removed. This is the same list that is inserted in comment form by `insert-lib-requires-as-comment'.
 

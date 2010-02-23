@@ -6,6 +6,10 @@ Homepage: http://www.gnu.org/software/auctex/preview-latex.html
 
 By far the easiest way to get this combination going is by downloading th latest precompiled Emacs for NT including AUCTeX from ftp://alpha.gnu.org/pub/gnu/auctex and adhering to the installation instructions in the same place.
 
+=== precompiled Emacs including AUCTeX no longer available ===
+
+The ftp site linked above is empty. Does anyone know if precompiled Emacs with AUCTeX is still available?
+
 == LatexMk as alternative to preview-latex ==
 
 As an alternative a useful perl program known as latexmk.pl works well under cygwin, and provides a dvi "preview window" which updates on every page save. This gives a more stable "realtime" preview of your Latex document. 

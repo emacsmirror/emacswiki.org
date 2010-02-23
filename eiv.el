@@ -29,7 +29,9 @@
 ;;; Commentary: 
 
 ;; Dependencies: - traverselisp.el:
-;;                 http://www.emacswiki.org/cgi-bin/emacs/traverselisp.el
+;;                 http://mercurial.intuxication.org/hg/traverselisp
+;;               - iterator.el
+;;                 that is part of traverselisp package.
 ;;               - the ImageMagick package that provide "mogrify":
 ;;                 http://www.imagemagick.org/
 
@@ -62,6 +64,7 @@
 
 (require 'cl)
 (require 'traverselisp)
+(require 'iterator)
 
 ;;; User variables
 
@@ -182,35 +185,14 @@ With prefix arg don't preserve the aspect ratio."
                                          event))))))
 
 
-;;; Iterators
-(defmacro iter-list (list-obj)
-  "Return an iterator from list `list-obj'."
-  `(lexical-let ((lis ,list-obj))
-     (lambda ()
-       (let ((elm (car lis)))
-         (setq lis (cdr lis))
-         elm))))
+(defun eiv-display-external (&optional fname)
+  "Display FNAME or file at point using an external viewer."
+  (interactive)
+  (let ((file (or fname (dired-get-filename))))
+    (call-process shell-file-name nil nil nil shell-command-switch
+		  (format "%s \"%s\"" image-dired-external-viewer file))))
 
-(defun iter-next (iterator)
-  "Return next elm of `iterator'.
-create `iterator' with `tve-list-iterator'."
-  (funcall iterator))
-
-(defmacro sub-iter-next (seq elm)
-  "Create iterator from position of `elm' to end of `seq'."
-  `(lexical-let* ((pos      (position ,elm ,seq))
-                  (sub      (subseq ,seq (1+ pos)))
-                  (iterator (iter-list sub)))
-     (lambda ()
-       (iter-next iterator))))
-
-(defmacro sub-iter-prec (seq elm)
-  "Create iterator from position of `elm' to beginning of `seq'."
-  `(lexical-let* ((pos      (position ,elm ,seq))
-                  (sub      (reverse (subseq ,seq 0 pos)))
-                  (iterator (iter-list sub)))
-     (lambda ()
-       (iter-next iterator))))
+(defvar eiv-view-external nil)
 
 ;;; Image navigation
 
@@ -240,6 +222,7 @@ your initial image will be LOST."
                                                       (when only (list only))))
          (flist-iterator (iter-list flist))
          (diapo-run      nil)
+         (display-fn     (if eiv-view-external 'eiv-display-external 'view-file))
          (diapo-speed    eiv-default-diaporama-delay)
          action cur-elm flag-move fnext-elm bnext-elm)
     (flet ((eiv-viewer-goto-next-file ()
@@ -252,14 +235,14 @@ your initial image will be LOST."
                    (setq fnext-elm (iter-next flist-iterator))
                    (setq cur-elm fnext-elm)
                    (if fnext-elm
-                       (view-file fnext-elm)
+                       (funcall display-fn fnext-elm)
                        (throw 'break
                          (message "Finish! no more images"))))
                  ;; Use initial iterator unless we change direction
                  (let ((next-elm (iter-next flist-iterator)))
                    (setq cur-elm next-elm)
                    (if next-elm
-                       (view-file next-elm)
+                       (funcall display-fn next-elm)
                        (throw 'break
                          (message "Finish! no more images"))))))
            (eiv-viewer-goto-prec-file ()
@@ -271,7 +254,7 @@ your initial image will be LOST."
              (setq cur-elm bnext-elm)
              (setq flag-move t)
              (if bnext-elm
-                 (view-file bnext-elm)
+                 (funcall display-fn bnext-elm)
                  (throw 'break
                    (message "Finish! no more images"))))
            (eiv-save-file (fn)

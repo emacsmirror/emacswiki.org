@@ -44,10 +44,10 @@
 
 ;;; Code:
 
-(require 'cl)
+(eval-when-compile (require 'cl))
 
 (defmacro iter-list (list-obj)
-  "Return an iterator from list `list-obj'."
+  "Return an iterator from list LIST-OBJ."
   `(lexical-let ((lis ,list-obj))
      (lambda ()
        (let ((elm (car lis)))
@@ -55,8 +55,7 @@
          elm))))
 
 (defmacro iter-apply-fun-on-list (fun list-obj)
-  "Create an iterator that apply function `fun'
-on each elm of `list-obj'."
+  "Create an iterator that apply function FUN on each elm of LIST-OBJ."
   `(lexical-let ((lis ,list-obj)
                  (fn ,fun))
      (lambda ()
@@ -66,23 +65,23 @@ on each elm of `list-obj'."
          elm))))
 
 (defun iter-next (iterator)
-  "Return next elm of `iterator'.
-create `iterator' with `tve-list-iterator'."
+  "Return next elm of ITERATOR.
+create ITERATOR with `iter-list'."
   (funcall iterator))
 
-(defmacro sub-iter-next (seq elm)
-  "Create iterator from position of `elm' to end of `seq'."
-  `(lexical-let* ((pos (position ,elm ,seq))
-                  (sub (subseq ,seq (1+ pos)))
-                  (iterator (iter-list sub)))
+(defun* sub-iter-next (seq elm &key (test 'eq))
+  "Create iterator from position of ELM to end of SEQ."
+  (lexical-let* ((pos      (position elm seq :test test))
+                 (sub      (subseq seq (1+ pos)))
+                 (iterator (iter-list sub)))
      (lambda ()
        (iter-next iterator))))
 
-(defmacro sub-iter-prec (seq elm)
-  "Create iterator from position of `elm' to beginning of `seq'."
-  `(lexical-let* ((pos (position ,elm ,seq))
-                  (sub (reverse (subseq ,seq 0 pos)))
-                  (iterator (iter-list sub)))
+(defun* sub-iter-prec (seq elm &key (test 'eq))
+  "Create iterator from position of ELM to beginning of SEQ."
+  (lexical-let* ((pos      (position elm seq :test test))
+                 (sub      (reverse (subseq seq 0 pos)))
+                 (iterator (iter-list sub)))
      (lambda ()
        (iter-next iterator))))
 

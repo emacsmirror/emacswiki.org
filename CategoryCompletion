@@ -56,6 +56,7 @@ These libraries provide completion of text in a buffer other than the minibuffer
 * CompleteFileName -- Complete a file name when writing it in a buffer.
 * Thinking Machines' completion system TmcCompletion -- complete with M-RET based on buffer contents and auto-saved dictionary.  Simple to use, not invasive, and useful.  Focused on programming language completion, but useful for human languages as well.
 * MagpieExpansion provides a method for copying useful bits of text from the buffer to where you are editing. In particular, it provides dynamic expansion of acronyms to phrases previously typed. The code can be found in Lisp:magpie.el
+* CompanyMode -- Popup-menu completion which can get completions from multiple sources, including semantic (for C/C++), eclim (for Java), Xcode (for Objective C), Rope (for Python).
 * AutoComplete -- Completion based on popup menu.
 * AutoCompletePlus -- Enhancement of AutoComplete.
 * DynamicAbbreviationsInMiddle -- Like DynamicAbbreviations, but works in the middle (and at the beginning/end) of a word instead of only at the end
