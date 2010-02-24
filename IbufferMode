@@ -103,6 +103,7 @@ find a quick way to turn them off. So here is an advice that does the trick:
   
   (ad-activate 'ibuffer-update-title-and-summary)
 
+
 == Sort by pathname ==
 
 I'm not quite sure where to add this, but to be able to sort by pathname (thereby grouping file buffers with dired buffers). PeterMielke

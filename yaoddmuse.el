@@ -8,8 +8,8 @@
 ;; Copyright (C) 2009, 2010 rubikitch, all rights reserved.
 ;; Created: 2009-01-06 12:41:17
 ;; Version: 0.1.1
-;; Last-Updated: 2010-02-19 04:51:59
-;;           By: rubikitch
+;; Last-Updated: 2010-02-24 02:06:20
+;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/yaoddmuse.el
 ;; Keywords: yaoddmuse, oddmuse
 ;; Compatibility: GNU Emacs 22 ~ 23
@@ -370,6 +370,9 @@
 ;;
 
 ;;; Change log:
+;; 2010/02/24
+;;      * Please don't use `C-x` key to avoid conflict with Default Emacs binding.
+;;         If you need that, please customize `yaoddmuse-mode-map`, thanks!
 ;;
 ;; 2010/02/19
 ;;      * Add new key binding:  C-x C-v (`yaoddmuse-revert')
@@ -896,7 +899,6 @@ It must print the page to stdout.
     (define-key map (kbd "C-c C-S-'") 'yaoddmuse-browse-page-diff)
     (define-key map (kbd "C-c C-s") 'yaoddmuse-browse-current-page)
     (define-key map (kbd "C-c C-r") 'yaoddmuse-revert)
-    (define-key map (kbd "C-x C-v") 'yaoddmuse-revert)
     ;; Navigation.
     (define-key map (kbd "C-c C-n") 'yaoddmuse-navi-next-heading)
     (define-key map (kbd "C-c C-p") 'yaoddmuse-navi-prev-heading)

@@ -13,16 +13,16 @@ please email ee are aye plus ee el eye es pea at eye kay eye dot ef eye.
 
 [new:TomBreton:2010-02-19 20:11 UTC]
 
-Works well in my experience.  It echoes Debian's design for /etc/emacs/ - not sure which came first.
+Works well in my experience.  It echoes Debian's design for <tt>%%/etc/emacs/%%</tt> - not sure which came first.
 
-It's theoretically neat to be able to activate a package for personal use just by symlinking its startup file into ~/.emacs.d/site-start.d/, but I don't know of any package that uses this method of installing or
+It's theoretically neat to be able to activate a package for personal use just by symlinking its startup file into <tt>%%~/.emacs.d/site-start.d/%%</tt>, but I don't know of any package that uses this method of installing or
 which supports soft-linking correctly in its startup file.  In order to set the load-path correctly even when visited thru a soft symlink, you can write:
-
+{{{
 (if load-file-name
    (add-to-list 
       'load-path 
       (file-name-directory (file-truename load-file-name))))
-
+}}}
 For multi-file packages, there is unfortunately no convention to indicate to the user which file is the Right File to symlink.
 
 ----------

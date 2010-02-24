@@ -2,7 +2,7 @@
 ;;
 ;; Copyright 2008  Helmut Eller <eller.helmut@gmail.com>.
 ;;
-;; Version: 0.5 (2008-Dec-21)
+;; Version: 0.6 (2009-Nov-04)
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -21,8 +21,8 @@
 ;;
 ;; Parsing Expression Grammars (PEG) are a formalism in the spirit of
 ;; Context Free Grammars (CFG) with some simplifications which makes
-;; the implementation of PEGs as top-down parser particularly simple
-;; and easy to understand [Ford, Baker].
+;; the implementation of PEGs as recursive descent parser particularly
+;; simple and easy to understand [Ford, Baker].
 ;;
 ;; This file implements a macro `peg-parse' which parses the current
 ;; buffer according to a PEG.  E.g. we can match integers with a PEG
@@ -32,12 +32,12 @@
 ;;             (sign     (or "+" "-" ""))
 ;;             (digit    [0-9]))
 ;;
-;; In contrast to regexps, PEGs allow us to define recursive rules.  A
-;; PEG is a list of rules.  A rule is written as (NAME PE ...).
+;; In contrast to regexps, PEGs allow us to define recursive "rules".
+;; A "grammar" is a list of rules.  A rule is written as (NAME PEX...)
 ;; E.g. (sign (or "+" "-" "")) is a rule with the name "sign".  The
-;; syntax for Parsing Expression (PE) is a follows:
+;; syntax for PEX (Parsing Expression) is a follows:
 ;;
-;; Description   	Lisp		Haskell, as in Ford's paper
+;; Description   	Lisp		Traditional, as in Ford's paper
 ;; Sequence 		(and e1 e2)    	e1 e2
 ;; Prioritized Choice   (or e1 e2)	e1 / e2
 ;; Not-predicate 	(not e)		!e
@@ -62,7 +62,7 @@
 ;; Syntax-Class       	(syntax-class NAME)
 ;;
 ;; `peg-parse' also supports parsing actions, i.e. Lisp snippets which
-;; are executed when a PE matches.  This can be used to construct
+;; are executed when a pex matches.  This can be used to construct
 ;; syntax trees or for similar tasks.  Actions are written as
 ;;
 ;;  (action FORM)          ; evaluate FORM
@@ -81,11 +81,11 @@
 ;; (substring E)  ; match E and push the substring for the matched region
 ;; (region E)     ; match E and push the corresponding start and end positions
 ;; (replace E RPL); match E and replace the matched region with RPL.
-;; (list E)       ; match E and push a list of all items that E produces.
+;; (list E)       ; match E and push a list out of the items that E produces.
 ;;
 ;; Regexp equivalents:
 ;;
-;; Here a some examples for regexps and how those could be written as PE.
+;; Here a some examples for regexps and how those could be written as pex.
 ;; [Most are taken from rx.el]
 ;;
 ;; "^[a-z]*"
@@ -128,9 +128,11 @@
 ;; Syntactic Foundation. In POPL'04: Proceedings of the 31st ACM
 ;; SIGPLAN-SIGACT symposium on Principles of Programming Languages,
 ;; pages 111-122, New York, NY, USA, 2004. ACM Press.
+;; http://pdos.csail.mit.edu/~baford/packrat/
 ;;
 ;; [Baker] Baker, Henry G. "Pragmatic Parsing in Common Lisp".  ACM Lisp
 ;; Pointers 4(2), April--June 1991, pp. 3--15.
+;; http://home.pipeline.com/~hbaker1/Prag-Parse.html
 ;;
 
 (unless (>= emacs-major-version 22)
@@ -159,6 +161,11 @@ Note: a PE can't \"call\" rules by name."
 ;; executed in a postprocessing step, not during parsing.
 (defvar peg-thunks)
 
+;; used at runtime to track the right-most error location.  It's a
+;; pair (POSITION . EXPS ...).  POSITION is the buffer position and
+;; EXPS is a list of rules/expressions that failed.
+(defvar peg-errors)
+
 ;; The basic idea is to translate each rule to a lisp function.
 ;; The result looks like
 ;;   (let ((rule1 (lambda () code-for-rule1))
@@ -176,15 +183,22 @@ Note: a PE can't \"call\" rules by name."
     (dolist (rule rules)
       (puthash (car rule) (peg-normalize `(and . ,(cdr rule))) peg-rules))
     (peg-check-cycles peg-rules)
-    `(let ((peg-thunks '()) . ,(mapcar #'car rules))
+    `(let ((peg-thunks '()) (peg-errors '(-1))
+	   . ,(mapcar #'car rules))
        ,@(mapcar (lambda (rule)
 		   (let ((name (car rule)))
 		     `(setq ,name
 			    (lambda ()
 			      ,(peg-translate-exp (gethash name peg-rules))))))
 		 rules)
-       (when (funcall ,(car (car rules)))
-	 (peg-postprocess peg-thunks)))))
+       (cond ((funcall ,(car (car rules)))
+	      (peg-postprocess peg-thunks))
+	     (t
+	      (goto-char (car peg-errors))
+	      (error "Parse error at %d (expecting %S)"
+		     (car peg-errors)
+		     (peg-merge-errors (cdr peg-errors))))))))
+
 
 (eval-and-compile 
   (defun peg-method-table-name (method-name)
@@ -225,7 +239,7 @@ Note: a PE can't \"call\" rules by name."
 	 (error "Invalid parsing expression: %S" exp))))
 
 (defvar peg-leaf-types '(null fail any call action char range str set
-			      bob eob bol eol bow eow bos eos syntax-class))
+			      bob eob bol eol bow eow bos eos syntax-class =))
 
 (dolist (type peg-leaf-types)
   (puthash type `(lambda (&rest args) (cons ',type args)) 
@@ -365,8 +379,17 @@ Note: a PE can't \"call\" rules by name."
   "Return the ELisp code to match the PE EXP."
   (let ((translator (or (gethash (car exp) peg-translate-methods)
 			(error "No translator for: %S" (car exp)))))
-    (apply translator (cdr exp))))
+    `(or ,(apply translator (cdr exp))
+	 (progn
+	   (peg-record-failure ',exp) ; for error reporting
+	   nil))))
 
+(defun peg-record-failure (exp)
+  (cond ((= (point) (car peg-errors))
+	 (setcdr peg-errors (cons exp (cdr peg-errors))))
+	((> (point) (car peg-errors))
+	 (setq peg-errors (list (point) exp)))))
+  
 (peg-add-method translate and (e1 e2)
   `(and ,(peg-translate-exp e1)
 	,(peg-translate-exp e2)))
@@ -421,6 +444,12 @@ Note: a PE can't \"call\" rules by name."
 	  (t (error "Invalid syntax class: %S\nMust be one of: %s" class
 		    (mapcar #'car peg-syntax-classes))))))
 
+(peg-add-method translate = (string)
+  `(let ((str ,string))
+     (when (zerop (length str)) 
+       (error "Empty strings not allowed for ="))
+     (search-forward str (+ (point) (length str)) t)))
+
 (peg-add-method translate * (e)
   (let ((cp (peg-make-choicepoint)))
     `(progn (while (,@(peg-save-choicepoint cp)
@@ -465,12 +494,11 @@ Note: a PE can't \"call\" rules by name."
 	(minus (member ?- chars))
 	(hat (member ?^ chars)))
     (dolist (c '(?\] ?- ?^))
-      (setq chars (delete c chars)))
+      (setq chars (remove c chars)))
     (format "[%s%s%s%s%s%s]"
 	    (if rbracket "]" "")
 	    (if minus "-" "")
-	    (mapconcat (lambda (x) (format "%c-%c" (car x) (cdr x)))
-		       ranges "")
+	    (mapconcat (lambda (x) (format "%c-%c" (car x) (cdr x))) ranges "")
 	    (mapconcat (lambda (c) (format "[:%s:]" c)) classes "")
 	    (mapconcat (lambda (c) (format "%c" c)) chars "")
 	    (if hat "^" ""))))
@@ -507,9 +535,9 @@ Note: a PE can't \"call\" rules by name."
 			   (reverse thunks)))
       (goto-char (car thunk))
       (funcall (cdr thunk)))
-    (list t peg-stack)))
+    peg-stack))
 
-;; Left recursion is presumably a common mistate when using PEGs.
+;; Left recursion is presumably a common mistake when using PEGs.
 ;; Here we try to detect such mistakes.  Essentailly we traverse the
 ;; graph as long as we can without consuming input.  When we find a
 ;; recursive call we signal an error.
@@ -584,16 +612,69 @@ input.  PATH is the list of rules that we have visited so far."
 (peg-add-method detect-cycles eow   (path)       t)
 (peg-add-method detect-cycles bos   (path)       t)
 (peg-add-method detect-cycles eos   (path)       t)
+(peg-add-method detect-cycles =     (path s)     nil)
 (peg-add-method detect-cycles syntax-class (p n) nil)
 (peg-add-method detect-cycles action (path form) t)
 
+(peg-define-method-table merge-error)
+
+(defun peg-merge-errors (exps)
+  "Build a more readable error message out of failed expression."
+  (let ((merged '()))
+    (dolist (exp exps)
+      (setq merged (peg-merge-error exp merged)))
+    merged))
+
+(defun peg-merge-error (exp merged)
+  (apply (or (gethash (car exp) peg-merge-error-methods)
+	     (error "No merge-error method for: %S" exp))
+	 merged (cdr exp)))
+
+(peg-add-method merge-error or (merged e1 e2)
+  (peg-merge-error e2 (peg-merge-error e1 merged)))
+
+(peg-add-method merge-error and (merged e1 e2)
+  (peg-merge-error e1 merged))
+
+(peg-add-method merge-error str (merged str)
+  (add-to-list 'merged str))
+
+(peg-add-method merge-error call (merged rule)
+  (add-to-list 'merged rule))
+
+(peg-add-method merge-error char (merged char)
+  (add-to-list 'merged (string char)))
+
+(peg-add-method merge-error set (merged r c k)
+  (add-to-list 'merged (peg-make-charset-regexp r c k)))
+
+(peg-add-method merge-error range (merged from to)
+  (add-to-list 'merged (format "[%c-%c]" from to)))
+
+(peg-add-method merge-error * (merged exp)
+  (peg-merge-error exp merged))
+
+(peg-add-method merge-error any (merged)
+  (add-to-list 'merged '(any)))
+
+(peg-add-method merge-error action (merged _) merged)
+(peg-add-method merge-error null (merged) merged)
+
 ;;; Tests:
 
-(defmacro peg-parse-string (rules string)
+(defmacro peg-parse-string (rules string &optional noerror)
+  "Parse STRING according to RULES.
+If NOERROR is non-nil, push nil resp. t if the parse failed
+resp. succeded instead of signaling an error."
   `(with-temp-buffer 
      (insert ,string)
      (goto-char (point-min))
-     (peg-parse . ,rules)))
+     ,(if noerror
+	  (let ((entry (make-symbol "entry"))
+		(start (caar rules)))
+	    `(peg-parse (entry (or (and ,start `(-- t)) ""))
+			. ,rules))
+	`(peg-parse . ,rules))))
 
 ;; We can't expand the macro at compile time, because it needs helper
 ;; functions which aren't available yet.  Delay the expansion to
@@ -603,76 +684,82 @@ input.  PATH is the list of rules that we have visited so far."
 
 (defun peg-test ()
   (interactive)
-  (assert (peg-parse-string ((s "a")) "a"))
-  (assert (not (peg-parse-string ((s "a")) "b")))
-  (assert (peg-parse-string ((s (not "a"))) "b"))
-  (assert (not (peg-parse-string ((s (not "a"))) "a")))
-  (assert (peg-parse-string ((s (if "a"))) "a"))
-  (assert (not (peg-parse-string ((s (if "a"))) "b")))
-  (assert (peg-parse-string ((s "ab")) "ab"))
-  (assert (not (peg-parse-string ((s "ab")) "ba")))
-  (assert (not (peg-parse-string ((s "ab")) "a")))
-  (assert (peg-parse-string ((s (range ?0 ?9))) "0"))
-  (assert (not (peg-parse-string ((s (range ?0 ?9))) "a")))
-  (assert (peg-parse-string ((s [0-9])) "0"))
-  (assert (not (peg-parse-string ((s [0-9])) "a")))
-  (assert (not (peg-parse-string ((s [0-9])) "")))
-  (assert (peg-parse-string ((s (any))) "0"))
-  (assert (not (peg-parse-string ((s (any))) "")))
-  (assert (peg-parse-string ((s (eob))) ""))
-  (assert (peg-parse-string ((s (not (eob)))) "a"))
-  (assert (peg-parse-string ((s (or "a" "b"))) "a"))
-  (assert (peg-parse-string ((s (or "a" "b"))) "b"))
-  (assert (not (peg-parse-string ((s (or "a" "b"))) "c")))
-  (assert (peg-parse-string ((s (and "a" "b"))) "ab"))
-  (assert (peg-parse-string ((s (and "a" "b"))) "abc"))
-  (assert (not (peg-parse-string ((s (and "a" "b"))) "ba")))
-  (assert (peg-parse-string ((s (and "a" "b" "c"))) "abc"))
-  (assert (peg-parse-string ((s (* "a") "b" (eob))) "b"))
-  (assert (peg-parse-string ((s (* "a") "b" (eob))) "ab"))
-  (assert (peg-parse-string ((s (* "a") "b" (eob))) "aaab"))
-  (assert (not (peg-parse-string ((s (* "a") "b" (eob))) "abc")))
-  (assert (peg-parse-string ((s "")) "abc"))
-  (assert (peg-parse-string ((s "" (eob))) ""))
-  (assert (peg-parse-string ((s (opt "a") "b")) "abc"))
-  (assert (peg-parse-string ((s (opt "a") "b")) "bc"))
-  (assert (not (peg-parse-string ((s (or))) "ab")))
-  (assert (peg-parse-string ((s (and))) "ab"))
-  (assert (peg-parse-string ((s (and))) ""))
-  (assert (peg-parse-string ((s ["^"])) "^"))
-  (assert (peg-parse-string ((s ["^a"])) "a"))
-  (assert (peg-parse-string ((s ["-"])) "-"))
-  (assert (peg-parse-string ((s ["]-"])) "]"))
-  (assert (peg-parse-string ((s ["^]"])) "^"))
-  (assert (peg-parse-string ((s [alpha])) "z"))
-  (assert (not (peg-parse-string ((s [alpha])) "0")))
-  (assert (not (peg-parse-string ((s [alpha])) "")))
-  (assert (not (peg-parse-string ((s ["][:alpha:]"])) "z")))
-  (assert (peg-parse-string ((s (bob))) ""))
-  (assert (peg-parse-string ((s (bos))) "x"))
-  (assert (not (peg-parse-string ((s (bos))) " x")))
-  (assert (peg-parse-string ((s "x" (eos))) "x"))
-  (assert (peg-parse-string ((s (syntax-class whitespace))) " "))
-  (assert (equal (peg-parse-string ((s `(-- 1 2))) "") '(t (2 1))))
-  (assert (equal (peg-parse-string ((s `(-- 1 2) `(a b -- a b))) "")
-		 '(t (2 1))))
+  (assert (peg-parse-string ((s "a")) "a" t))
+  (assert (not (peg-parse-string ((s "a")) "b" t)))
+  (assert (peg-parse-string ((s (not "a"))) "b" t))
+  (assert (not (peg-parse-string ((s (not "a"))) "a" t)))
+  (assert (peg-parse-string ((s (if "a"))) "a" t))
+  (assert (not (peg-parse-string ((s (if "a"))) "b" t)))
+  (assert (peg-parse-string ((s "ab")) "ab" t))
+  (assert (not (peg-parse-string ((s "ab")) "ba" t)))
+  (assert (not (peg-parse-string ((s "ab")) "a" t)))
+  (assert (peg-parse-string ((s (range ?0 ?9))) "0" t))
+  (assert (not (peg-parse-string ((s (range ?0 ?9))) "a" t)))
+  (assert (peg-parse-string ((s [0-9])) "0" t))
+  (assert (not (peg-parse-string ((s [0-9])) "a" t)))
+  (assert (not (peg-parse-string ((s [0-9])) "" t)))
+  (assert (peg-parse-string ((s (any))) "0" t))
+  (assert (not (peg-parse-string ((s (any))) "" t)))
+  (assert (peg-parse-string ((s (eob))) "" t))
+  (assert (peg-parse-string ((s (not (eob)))) "a" t))
+  (assert (peg-parse-string ((s (or "a" "b"))) "a" t))
+  (assert (peg-parse-string ((s (or "a" "b"))) "b" t))
+  (assert (not (peg-parse-string ((s (or "a" "b"))) "c" t)))
+  (assert (peg-parse-string ((s (and "a" "b"))) "ab" t))
+  (assert (peg-parse-string ((s (and "a" "b"))) "abc" t))
+  (assert (not (peg-parse-string ((s (and "a" "b"))) "ba" t)))
+  (assert (peg-parse-string ((s (and "a" "b" "c"))) "abc" t))
+  (assert (peg-parse-string ((s (* "a") "b" (eob))) "b" t))
+  (assert (peg-parse-string ((s (* "a") "b" (eob))) "ab" t))
+  (assert (peg-parse-string ((s (* "a") "b" (eob))) "aaab" t))
+  (assert (not (peg-parse-string ((s (* "a") "b" (eob))) "abc" t)))
+  (assert (peg-parse-string ((s "")) "abc" t))
+  (assert (peg-parse-string ((s "" (eob))) "" t))
+  (assert (peg-parse-string ((s (opt "a") "b")) "abc" t))
+  (assert (peg-parse-string ((s (opt "a") "b")) "bc" t))
+  (assert (not (peg-parse-string ((s (or))) "ab" t)))
+  (assert (peg-parse-string ((s (and))) "ab" t))
+  (assert (peg-parse-string ((s (and))) "" t))
+  (assert (peg-parse-string ((s ["^"])) "^" t))
+  (assert (peg-parse-string ((s ["^a"])) "a" t))
+  (assert (peg-parse-string ((s ["-"])) "-" t))
+  (assert (peg-parse-string ((s ["]-"])) "]" t))
+  (assert (peg-parse-string ((s ["^]"])) "^" t))
+  (assert (peg-parse-string ((s [alpha])) "z" t))
+  (assert (not (peg-parse-string ((s [alpha])) "0" t)))
+  (assert (not (peg-parse-string ((s [alpha])) "" t)))
+  (assert (not (peg-parse-string ((s ["][:alpha:]"])) "z" t)))
+  (assert (peg-parse-string ((s (bob))) "" t))
+  (assert (peg-parse-string ((s (bos))) "x" t))
+  (assert (not (peg-parse-string ((s (bos))) " x" t)))
+  (assert (peg-parse-string ((s "x" (eos))) "x" t))
+  (assert (peg-parse-string ((s (syntax-class whitespace))) " " t))
+  (assert (peg-parse-string ((s (= "foo"))) "foo" t))
+  (assert (let ((f "foo")) (peg-parse-string ((s (= f))) "foo" t)))
+  (assert (not (peg-parse-string ((s (= "foo"))) "xfoo" t)))
+  (assert (equal (peg-parse-string ((s `(-- 1 2))) "") '(2 1)))
+  (assert (equal (peg-parse-string ((s `(-- 1 2) `(a b -- a b))) "") '(2 1)))
+  (assert (equal (peg-parse-string ((s (or (and (any) s)
+					   (substring [0-9]))))
+				   "ab0cd1ef2gh")
+		 '("2")))
   (assert (equal (peg-parse-string ((s (list x y))
 				    (x `(-- 1))
 				    (y `(-- 2)))
 				   "")
-		 '(t ((1 2)))))
+		 '((1 2))))
   (assert (equal (peg-parse-string ((s (list (* x)))
 				    (x "x" `(-- 'x)))
 				   "xxx")
-		 '(t ((x x x)))))
+		 '((x x x))))
   (assert (equal (peg-parse-string ((s (region (* x)))
 				    (x "x" `(-- 'x)))
 				   "xxx")
-		 '(t (4 x x x 1))))
+		 '(4 x x x 1)))
   (assert (equal (peg-parse-string ((s (region (list (* x))))
 				    (x "x" `(-- 'x 'y)))
 				   "xxx")
-		 '(t (4 (x y x y x y) 1))))
+		 '(4 (x y x y x y) 1)))
   (assert (equal (with-temp-buffer 
 		   (save-excursion (insert "abcdef"))
 		   (list
@@ -681,7 +768,7 @@ input.  PATH is the list of rules that we have visited so far."
 				  (replace "de" "y")
 				  "f"))
 		    (buffer-string)))
-		 '((t nil) "axyf")))
+		 '(nil "axyf")))
   )
 
 (when (featurep 'cl) 
@@ -694,38 +781,37 @@ input.  PATH is the list of rules that we have visited so far."
 ;; characters from 0 to 9.
 ;;
 ;; Notes: 
-;; 1) "" matches the empty sequence, i.e. matches without
-;; consuming input.  
+;; 1) "" matches the empty sequence, i.e. matches without consuming
+;;    input.
 ;; 2) [0-9] is the character range from 0 to 9.  This can also be
-;; written as (range ?0 ?9). [Note that 0-9 is a symbol.]
+;;    written as (range ?0 ?9).  Note that 0-9 is a symbol.
 (defun peg-ex-recognize-int ()
   (peg-parse (number   sign digit (* digit))
 	     (sign     (or "+" "-" ""))
 	     (digit    [0-9])))
 
 ;; peg-ex-parse-int recognizes integers and computes the corresponding
-;; value.  The grammer is the same as for `peg-ex-recognize-int' added
-;; with parsing actions.  Unfortunaletly, the actions add quite a bit
-;; of clutter.
+;; value.  The grammer is the same as for `peg-ex-recognize-int'
+;; augmented with parsing actions.  Unfortunaletly, the actions add
+;; quite a bit of clutter.
 ;;
-;; The action for the sign rule pushes t on the stack for a minus sign
-;; and nil for plus or no sign.
+;; The actions for the sign rule push -1 on the stack for a minus sign
+;; and 1 for plus or no sign.
 ;;
 ;; The action for the digit rule pushes the value for a single digit.
 ;;
 ;; The action `(a b -- (+ (* a 10) b)), takes two items from the stack
-;; and pushes the first digit times 10 added to second digit.
+;; and pushes the first digit times 10 added to the second digit.
 ;;
-;; The action `(minus val -- (if minus (- val) val)), negates the
-;; value if the minus flag is true.
+;; The action `(sign val -- (* sign val)), multiplies val with the
+;; sign (1 or -1).
 (defun peg-ex-parse-int ()
-  (peg-parse (number sign
-		     digit
-		     (* digit `(a b -- (+ (* a 10) b)))
-		     `(minus val -- (if minus (- val) val)))
-	     (sign (or (and "+" `(-- nil))
-		       (and "-" `(-- t))
-		       (and "" `(-- nil))))
+  (peg-parse (number sign digit (* digit 
+				   `(a b -- (+ (* a 10) b)))
+		     `(sign val -- (* sign val)))
+	     (sign (or (and "+" `(-- 1))
+		       (and "-" `(-- -1))
+		       (and ""  `(-- 1))))
 	     (digit [0-9] `(-- (- (char-before) ?0)))))
 
 ;; Put point after the ) and press C-x C-e
@@ -734,26 +820,19 @@ input.  PATH is the list of rules that we have visited so far."
 ;; Parse arithmetic expressions and compute the result as side effect.
 (defun peg-ex-arith ()
   (peg-parse 
-   (expr (or (and ws sum eol)
-	     (and (* (not eol) (any)) eol error)))
-   (sum product (* (or (and plus product `(a b -- (+ a b)))
-		       (and minus product `(a b -- (- a b))))))
-   (product value (* (or (and times value `(a b -- (* a b)))
-			 (and divide value `(a b -- (/ a b))))))
+   (expr _ sum eol)
+   (sum product (* (or (and "+" _ product `(a b -- (+ a b)))
+		       (and "-" _ product `(a b -- (- a b))))))
+   (product value (* (or (and "*" _ value `(a b -- (* a b)))
+			 (and "/" _ value `(a b -- (/ a b))))))
    (value (or (and (substring number) `(string -- (string-to-number string)))
-	      (and open sum close)))
-   (number (+ [0-9]) ws)
-   (plus "+" ws)
-   (minus "-" ws)
-   (times "*" ws)
-   (divide "/" ws)
-   (open "(" ws)
-   (close ")" ws)
-   (ws (* (or " " "\t")))
-   (eol (or "\n" "\r\n" "\r"))
-   (error (action (error "Parse error at: %s" (point))))))
+	      (and "(" _ sum ")" _)))
+   (number (+ [0-9]) _)
+   (_ (* [" \t"]))
+   (eol (or "\n" "\r\n" "\r"))))
 
 ;; (peg-ex-arith)   1 + 2 * 3 * (4 + 5)
+;; (peg-ex-arith)   1 + 2 ^ 3 * (4 + 5)  ; fails to parse
 
 ;; Parse URI according to RFC 2396.
 (defun peg-ex-uri ()
@@ -818,8 +897,17 @@ input.  PATH is the list of rules that we have visited so far."
    (upalpha [A-Z])
    (digit [0-9])))
 
-;; (peg-ex-uri)file:/bar/baz.html?foo=df#x
 ;; (peg-ex-uri)http://luser@www.foo.com:8080/bar/baz.html?x=1#foo
+;; (peg-ex-uri)file:/bar/baz.html?foo=df#x
+
+;; Split STRING where SEPARATOR occurs.
+(defun peg-ex-split (string separator)
+  (peg-parse-string ((s (list (* (* sep) elt)))
+		     (elt (substring (+ (not sep) (any))))
+		     (sep (= separator)))
+		    string))
+
+;; (peg-ex-split "-abc-cd-" "-")
 
 ;; Parse a lisp style Sexp.
 ;; [To keep the example short, ' and . are handled as ordinary symbol.]
@@ -855,6 +943,34 @@ input.  PATH is the list of rules that we have visited so far."
   (eval '(peg-parse (exp (* (or "x"
 				"y"
 				(action (foo))))))))
+
+;; Some efficecy problems:
+
+;; Find the last digit in a string.
+;; Recursive definition with excessive stack usage.
+(defun peg-ex-last-digit (string)
+  (peg-parse-string ((s (or (and (any) s)
+			    (substring [0-9]))))
+		    string))
+
+;; (peg-ex-last-digit "ab0cd1ef2gh")
+;; (peg-ex-last-digit (make-string 50 ?-))
+;; (peg-ex-last-digit (make-string 1000 ?-))
+
+;; Find the last digit without recursion.  Doesn't run out of stack,
+;; but probably still too inefficient for large inputs.
+(defun peg-ex-last-digit2 (string)
+  (peg-parse-string ((s `(-- nil) 
+			(+ (* (not digit) (any))
+			   (substring digit)
+			   `(d1 d2 -- d2)))
+		     (digit [0-9]))
+		    string))
+
+;; (peg-ex-last-digit2 "ab0cd1ef2gh")
+;; (peg-ex-last-digit2 (concat (make-string 500000 ?-) "8a9b"))
+;; (peg-ex-last-digit2 (make-string 500000 ?-))
+;; (peg-ex-last-digit2 (make-string 500000 ?5))
 
 )) ; end of eval-when-load
 

@@ -1,3 +1,4 @@
+[[fr:OownSuhWoquXMIgQUan]]
 ;;; centered-cursor-mode.el --- cursor stays vertically centered
 
 ;; Copyright (C) 2007  André Riemann

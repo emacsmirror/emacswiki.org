@@ -1,19 +1,18 @@
 ;;; iterator.el --- A library to create and use elisp iterators objects.
- 
-;; Filename: iterator.el
+
+;; Copyright (C) 2008, 2009, 2010 Thierry Volpiatto, all rights reserved.
+;; Author:     Thierry Volpiatto - thierry dot volpiatto at gmail dot com 
+
 ;; Description: Create objects that iterate on themself. 
 ;; Author: Thierry Volpiatto
 ;; Maintainer: Thierry Volpiatto
 
 ;; Created: jeu fév  5 15:48:16 2009 (+0100)
 
-;; X-URL: 
+;; X-URL: http://mercurial.intuxication.org/hg/traverselisp 
 
-;; Keywords: 
+ ;; This file is not part of GNU Emacs.
 
-;; Compatibility: 
- 
- 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
 ;; published by the Free Software Foundation; either version 3, or
@@ -30,16 +29,33 @@
 ;; Floor, Boston, MA 02110-1301, USA.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
-;;; Commentary: 
-;; 
-;; 
-;; 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
-;;; Change log:
-;; 
-;; 
+;;
+;; Traverse auto documentation:
+;; ---------------------------
+
+;;  [UPDATE ALL EVAL] (traverse-auto-update-documentation)
+
+;;  * Macros defined here are:
+;; [EVAL] (traverse-auto-document-lisp-buffer :type 'macro :prefix "iter")
+;; `iter-list'
+;; `iter-apply-fun-on-list'
+;; `iter-scroll-list'
+;; `iter-scroll-up'
+;; `iter-scroll-down'
+;; `iter-mapc'
+;; `iter-mapcar'
+
+;; * functions defined here are:
+;; [EVAL] (traverse-auto-document-lisp-buffer :type 'function :prefix "iter")
+;; `iter-next'
+;; `iter-position'
+;; `iter-sub-next'
+;; `iter-sub-prec'
+;; `iter-map'
+;; `eshell-iterator'
+;; `flines-iterator'
+
+;;  *** END auto-documentation
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Code:
@@ -69,17 +85,22 @@
 create ITERATOR with `iter-list'."
   (funcall iterator))
 
-(defun* sub-iter-next (seq elm &key (test 'eq))
+(defsubst* iter-position (item seq &key (test 'eq))
+  "A simple replacement of CL `position'."
+  (loop for i in seq for index from 0
+     when (funcall test i item) return index))
+
+(defun* iter-sub-next (seq elm &key (test 'eq))
   "Create iterator from position of ELM to end of SEQ."
-  (lexical-let* ((pos      (position elm seq :test test))
+  (lexical-let* ((pos      (iter-position elm seq :test test))
                  (sub      (subseq seq (1+ pos)))
                  (iterator (iter-list sub)))
      (lambda ()
        (iter-next iterator))))
 
-(defun* sub-iter-prec (seq elm &key (test 'eq))
+(defun* iter-sub-prec (seq elm &key (test 'eq))
   "Create iterator from position of ELM to beginning of SEQ."
-  (lexical-let* ((pos      (position elm seq :test test))
+  (lexical-let* ((pos      (iter-position elm seq :test test))
                  (sub      (reverse (subseq seq 0 pos)))
                  (iterator (iter-list sub)))
      (lambda ()
@@ -98,14 +119,14 @@ create ITERATOR with `iter-list'."
          (remove nil sub)))))
 
 (defmacro iter-scroll-up (seq elm size)
-  `(lexical-let* ((pos (position (car (last ,elm)) ,seq))
+  `(lexical-let* ((pos (iter-position (car (last ,elm)) ,seq))
                   (sub (reverse (subseq ,seq 0 pos)))
                   (iterator (iter-scroll-list sub ,size)))
      (lambda ()
        (reverse (iter-next iterator)))))
 
 (defmacro iter-scroll-down (seq elm size)
-  `(lexical-let* ((pos (position (car (last ,elm)) ,seq))
+  `(lexical-let* ((pos (iter-position (car (last ,elm)) ,seq))
                   (sub (subseq ,seq pos))
                   (iterator (iter-scroll-list sub ,size)))
      (lambda ()

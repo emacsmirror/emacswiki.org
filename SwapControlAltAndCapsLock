@@ -1,0 +1,53 @@
+Swapping Control and CapsLock is all well and good, but it often feels like it doesn't go far enough.  Keyboard shortcuts seem to have been written with old Unix and Sun keyboards in mind, where Control and Alt were reversed.  Since resoldering a keyboard isn't an option for most people, why not just swap Control and Alt programatically to use the keyboard the way it was meant to be used?
+
+This works especially well if you turn CapsLock into a Control key, effectively giving you two Control keys under your thumbs and three Alt keys, one of which is immediately under your left pinky.
+
+Warning:  This really will blow your mind for a week or so, especially if you're a touch-typist or use Emacs through muscle-memory (you think of keystrokes conceptually, like "new file", not as keystrokes, like "opening a new file is C-x C-f").  However, it's so much easier to use that I think it's worth it.
+
+== Windows ==
+
+=== Registry and AutoHotKey Method ===
+
+This method is two steps long.  First, you map the CapsLock key to a Control key (Left-Control, I believe), and then you swap the Control and Alt keys (including your new CapsLock-now-Control key).
+
+==== Converting Caps to Control ====
+
+Save the following as ``caps2ctrl.reg`` and then run it::
+
+<pre>
+REGEDIT4
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Keyboard Layout]
+"Scancode Map"=hex:00,00,00,00,00,00,00,00,02,00,00,00,1d,00,3a,00,00,00,00,00
+</pre>
+
+==== Swapping ALL Control and Alt Keys ====
+
+Install AutoHotKey and save the following as "swap_ctrl_alt.ahk" and then run it:
+
+<pre>
+LCtrl::Alt
+LAlt::Ctrl
+RCtrl::Alt
+RAlt::Ctrl
+</pre>
+
+You'll have to put "swap_ctrl_alt.ahk" in your Startup folder if you want the keys swapped every time you log in.
+
+== Linux Virutal Terminals ==
+
+=== Debian ===
+
+Download "lisp-emacs-us.kmap.gz" from my Emacs Keymap project [http://bitbucket.org/nickdaly/emacs-keymap/src/].
+
+Put that file in:
+
+<pre>
+/usr/share/keymaps/i386/qwerty/
+</pre>
+
+Then, edit your "/etc/rc.local" file to include the line:
+
+<pre>
+loadkeys /usr/share/keymaps/i386/qwerty/lisp-emacs-us.kmap.gz
+</pre>

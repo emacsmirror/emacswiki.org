@@ -2,6 +2,8 @@ For some, remapping Control and CapsLock is one of the most important customizat
 
 Old Unix keyboards had these keys' positions inverted, and Sun keyboards always have.  It seems the current layout became standard about the same time cheap x86 hardware became ubiquitous, although why is beyond me.  [Note that the original IBM PC keyboards also had the Control key in the right place; it was only with the 101-key "enhanced" keyboards that it was moved to its currently useless position.]
 
+It is possible to embrace this "new" keyboard layout, however, and go a step further than just swapping Control and CapsLock keys - and SwapControlAltAndCapsLock for an old Unix or Sun keyboard-like experience.  It's a mindblowing change for the first few days, but it makes keyboard usage much simpler and easier.
+
 There are many, many different ways to make CapsLock work as an additional control key.  You only need to pick one of the following from the list, usually whichever one seems easiest to you.  Do note, however, that the keyboard mappings are separate for X (graphical) applications and for Linux virtual terminals.  (Sidenote: This problem may be alleviated soon as Debian's <code>/etc/default/keyboard</code> file appears designed to work for both virtual terminals and X.)
 
 

@@ -1,7 +1,7 @@
 ;;; color-moccur.el ---  multi-buffer occur (grep) mode
 ;; -*- Mode: Emacs-Lisp -*-
 
-;; $Id: color-moccur.el,v 2.63 2009/03/07 15:03:32 akihisa Exp $
+;; $Id: color-moccur.el,v 2.66 2010-02-23 14:17:11 Akihisa Exp $
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -224,7 +224,7 @@
 ;;;; moccur-split-word
 ;; non-nil means to input word splited by space. You can search
 ;; "defun color-moccur (regexp)" by "defun regexp" or "regexp defun".
-;; You don't need to input complicated  regexp.
+;; You don't need to input complicated regexp.
 ;; And you can search "defun" in buffers whose name match "moccur".
 
 ;;;; dmoccur-use-list
@@ -349,6 +349,12 @@
 
 ;;; History:
 ;;
+
+;; 2010/02/23
+;; Bug fix.
+;; line 2199
+;; (cdr (reverse inputs))) -> (reverse (cdr (reverse inputs))))
+;; Thanks for patch!
 
 ;; 2008/7/27
 ;; Bug fix.
@@ -550,13 +556,19 @@ Per default, this var contains only a \".*\" catchall-regexp."
   '( ;; binary
     "\\.elc$" "\\.exe$" "\\.dll$" "\\.lib$" "\\.lzh$"
     "\\.zip$" "\\.deb$" "\\.gz$" "\\.pdf$" "\\.tar$"
-    "\\.gz$" "\\.7z$" "\\.mp3$" "\\.wma$" "\\.mpg$"
-    "\\.mpeg$" "\\.aac$" "\\.o$" "\\.a$" "\\.mod$"
+    "\\.gz$" "\\.7z$" "\\.o$" "\\.a$" "\\.mod$"
     "\\.nc$" "\\.obj$" "\\.ai$" "\\.fla$" "\\.swf$"
     "\\.dvi$" "\\.pdf$" "\\.bz2$" "\\.tgz$" "\\.cab$"
-     "\\.sea$"
+    "\\.sea$" "\\.bin$" "\\.fon$" "\\.fnt$" "\\.scr$"
+    "\\.tmp$" "\\.wrl$" "\\.Z$"
+    ;; sound & movie
+    "\\.aif$" "\\.aiff$"  "\\.mp3$"  "\\.wma$" "\\.mpg$"
+    "\\.mpeg$" "\\.aac$" "\\.mid$"  "\\.au$"  "\\.avi$"  "\\.dcr$"
+    "\\.dir$"  "\\.dxr$" "\\.midi$"  "\\.mov$"  "\\.ra$"  "\\.ram$"
+    "\\.vdo$" "\\.wav$"
     ;; Microsoft
     "\\.doc$" "\\.xls$" "\\.ppt$" "\\.mdb$" "\\.adp$"
+    "\\.wri$"
     ;; image
     "\\.jpg$" "\\.gif$" "\\.tiff$" "\\.tif$" "\\.bmp$"
     "\\.png$" "\\.pbm$" "\\.jpeg$" "\\.xpm$" "\\.pbm$"
@@ -566,7 +578,7 @@ Per default, this var contains only a \".*\" catchall-regexp."
     ;; backup file
     "\\~$"
     ;; version control
-    "\\.svn/.+" "CVS/.+"
+    "\\.svn/.+" "CVS/.+" "\\.git/.+"
     )
   "*List of file extensions which are excepted to search by dmoccur and moccur-grep(-find)."
   :group 'color-moccur
@@ -2186,7 +2198,7 @@ It serves as a menu to find any of the occurrences in this buffer.
           (mapconcat 'concat
                      (if (= 1 (length inputs))
                          inputs
-                       (cdr (reverse inputs)))
+                       (reverse (cdr (reverse inputs))))
                      " "))
     (setq mask
           (if (= 1 (length inputs))

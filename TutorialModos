@@ -1,0 +1,551 @@
+[[en:ModeTutorial]]
+
+La traducción original se encuentra en 
+
+* http://gnu.manticore.es/guia-modos-mayores-borton    --SuSo
+
+
+
+'''Una guía para la creación de modos para lenguajes en Emacs'''
+
+Guía de los modos escrita por ScottAndrewBorton y localizada
+originalmente en
+
+* ##http://two-wugs.net/emacs/mode-tutorial.html##
+
+Hay disponible una copia archivada más abajo -- //pero primero// una
+introducción del autor:
+
+[new]
+He escrito unos cuantos modos para Emacs para varios lenguajes oscuros
+o domésticos.  Cuando empecé con mi primer modo, descubrí que no había
+demasiada cantidad de explicaciones lúcidas sobre cómo escribir modos
+destinados a la edición de lenguajes.  Incluso ''Writing GNU Emacs
+Extensions'' ISBN: 1565922611 no cubría temas como los del resaltado
+de la sintaxis o del sangrado.  Y el ##generic-mode##, distribuido en
+las versiones recientes de Emacs, no maneja las sangrías.
+
+Aquí voy paseando a través de mi [[wpdl-mode.el]], un modo para la
+edición de ficheros [http://www.wfmc.org Workflow Process Definition
+Language].  Me limito a ir a cada línea del modo y a explicar lo que
+hace.  También puede ser de utilidad remitirse a este ejemplo WPDL
+[[[ex1-wpd.txt]]], para ver cómo se aplican los conceptos.  Espero que
+el ##wpdl-mode## sea lo suficientemente claro y simple para que el
+lector aprenda lo básico acerca de cómo escribir sus propios modos.
+
+La información siguiente se escribió con las versiones 20 o 21 de GNU
+Emacs en mente.  '''NB:''' Ya que no soy un hacker profesional de
+Emacs, algo de lo que aquí presento podría ser como lo del ciego que
+conduce a otro ciego.  La gente más experimentada en Emacs podrían
+ofenderse con el estilo o la terminología, y espero que
+[mailto:scott-web@two-wugs.net corrijan mi ignorancia.]  Gracias a los
+lectores de [[comp.emacs]] y [[gnu.emacs.help]] por las sugerencias
+facilitadas -- ScottAndrewBorton
+
+[new]
+Recuérdese que esta guía construye un modo nuevo desde la base.  Si
+los modos en sí son algo relativamente simple, comenzar a partir de un
+GenericMode o un DerivedMode tiene más sentido.  Incluso si se decide
+escribir personalmente la mayor parte del código, hacerlo a partir de
+SampleMode podría ser una buena idea.  
+Lo que hace esta guía y no el resto de sugerencias es explicar las
+cosas.  Esto es muy importante; así que el lector ávido de aprender
+quizás tenga en la Tutoría una mejor elección.  Incluso se zambulle en
+temas como RegexpOpt.  La recomiendo.
+
+
+==Configuración básica del modo==
+
+{{{
+(defvar wpdl-mode-hook nil)
+}}}
+
+Primero definimos algunas variables que todos los modos deberían
+definir.  `wpdl-mode-hook' permite al usuario ejecutar su propio
+código cuando esté en funcionamiento el modo.
+
+{{{
+(defvar wpdl-mode-map
+  (let ((wpdl-mode-map (make-keymap)))
+    (define-key wpdl-mode-map "\C-j" 'newline-and-indent)
+    wpdl-mode-map)
+  "Keymap for WPDL major mode")
+}}}
+
+Ahora creamos un mapa de teclas.  Este mapa, llamado aquí
+`wpdl-mode-map', permite tanto al creador como a los usuarios definir
+sus propios mapas de teclas.  El mapa se esteblece inmediatamente como
+predeterminado.  Entonces, al emplear `define-key', insertamos un
+ejemplo de asociaciones de teclas dentro del mapa de teclas, que mapea
+la función `newline-and-indent' en Control-j (que es de hecho la
+asociación predeterminada para esta función, pero se incluye de todas
+maneras como ejemplo).  Por supuesto, se pueden definir tantas
+asociaciones de teclas como se desee.
+
+Si el mapa de teclas va a tener muy pocas entradas, entonces se podría
+considerar `make-sparse-keymap' en vez de `make-keymap'.
+
+{{{
+(add-to-list 'auto-mode-alist '("\\.wpd\\'" . wpdl-mode))
+}}}
+
+Aquí agregamos una definición de `auto-mode-alist'.  Esto le dice a
+Emacs que cuando se abra un búfer con un nombre que termine en
+##.wpd##, entonces se iniciaría ##wpdl-mode## en ese búfer.  Algunos
+modos dejan este paso en manos del usuario.
+
+==Resaltado de sintaxis empleando palabras clave==
+
+{{{
+(defconst wpdl-font-lock-keywords-1
+  (list
+   '("\\<\\(A\\(CTIVITY\\|PPLICATION\\)\\|DATA\\|END_\\(A\\(CTIVITY\\|PPLICATION\\)\\|DATA\\|MODEL\\|PARTICIPANT\\|T\\(OOL_LIST\\|RANSITION\\)\\|WORKFLOW\\)\\|MODEL\\|PARTICIPANT\\|T\\(OOL_LIST\\|RANSITION\\)\\|WORKFLOW\\)\\>" . font-lock-builtin-face)
+   '("\\('\\w*'\\)" . font-lock-variable-name-face))
+  "Minimal highlighting expressions for WPDL mode")
+}}}
+
+Ahora hemos definido nuestro conjunto mínimo de palabras clave a
+resaltar por Emacs.  Una variable `font-lock-keyword' es una lista de
+palabra clave a resaltar.  Existen muchas vías para especificar esta
+lista.  Yo he usado la forma ##(matcher . facename)##.  Con esta
+forma, he especificado un patrón para concordancias, y después un
+nombre de rostro a usar para el resaltado.
+
+Hay dos elementos en la lista: el primero contrasta las palabras clave
+del lenguaje WPDL y el segundo lo hace con los nombres de
+identificador de WPDL (nombres de variables).  He seleccionado los
+nombres de resaltado apropiados para cada tipo de palabra clave
+(`font-lock-builtin-face' y `font-lock-variable-name-face',
+respectivamente).
+
+Para mi lista de palabras clave he seleccionado aquellas palabras
+clave WPDL que se más se beneficiarían al ser resaltadas: las que
+delimitan bloques de información.  Uno pude advertir que la expresión
+regular usada para especificar estas palabras clave está optimizada.
+No tuve que hacerlo a mano.  Emacs proporciona la función `regexp-opt'
+para ahorrarnos el tedioso trabajo de crear expresiones regulares
+complicadas.  `regexp-opt' toma una lista de cadenas y un argumento
+optativo suplementario.  Este argumento optativo controla si vamos a
+envolver o no la expresión regular al completo entre paréntesis.  En
+nuestro caso, lo hacemos.  Por ejemplo, la expresión siguiente:
+
+{{{
+(regexp-opt '("PARTICIPANT" "END_PARTICIPANT" "MODEL" "END_MODEL"
+"WORKFLOW" "END_WORKFLOW" "ACTIVITY" "END_ACTIVITY" "TRANSITION"
+"END_TRANSITION" "APPLICATION" "END_APPLICATION" "DATA" "END_DATA"
+"TOOL_LIST" "END_TOOL_LIST") t)
+}}}
+
+resulta en esta expresión regular:
+
+##"\\(A\\(CTIVITY\\|PPLICATION\\)\\|DATA\\|END_\\(A\\(CTIVITY\\|PPLICATION\\)\\|DATA\\|MODEL\\|PARTICIPANT\\|T\\(OOL_LIST\\|RANSITION\\)\\|WORKFLOW\\)\\|MODEL\\|PARTICIPANT\\|T\\(OOL_LIST\\|RANSITION\\)\\|WORKFLOW\\)"##
+
+Debido a que font-lock consume tantos recursos, proporcionarle
+expresiones regulares optimizadas debería acelerar el rendimiento.
+
+Finalmente, la expresión regular queda rodeada por ##<## y ##>##, lo
+que indica que la expresión regular sólo habrá de coincidir con
+palabras clave que estén rodeadas ya sea por un espacio o por un
+comienzo/final de fichero.  Esto asegura que, por ejemplo, la palabra
+clave ##if## no quede resaltada en la palabra ##difference##.
+
+{{{
+(defconst wpdl-font-lock-keywords-2
+  (append wpdl-font-lock-keywords-1
+		  (list
+		   '("\\<\\(AUTHOR\\|C\\(ONDITION\\|REATED\\)\\|DE\\(FAULT_VALUE\\|SCRIPTION\\)\\|EXTENDED_ATTRIBUTE\\|FROM\\|I\\(MPLEMENTATION\\|N_PARAMETERS\\)\\|JOIN\\|NAME\\|O\\(THERWISE\\|UT_PARAMETERS\\)\\|PERFORMER\\|ROUTE\\|S\\(PLIT\\|TATUS\\)\\|T\\(O\\(OLNAME\\)?\\|YPE\\)\\|VENDOR\\|WPDL_VERSION\\)\\>" . font-lock-keyword-face)
+		   '("\\<\\(TRUE\\|FALSE\\)\\>" . font-lock-constant-face)))
+  "Additional Keywords to highlight in WPDL mode")
+}}}
+
+Ahora he definido el segundo nivel de resaltado.  Véase que este
+segundo nivel se agrega al primero, resultando en una sola variable de
+palabra clave que coinciden con cualquier cosa en ambos niveles.  Aquí
+he especificado incluso más palabras clave, junto con dos valores
+constantes comunes de WPDL, TRUE y FALSE.
+
+{{{
+(defconst wpdl-font-lock-keywords-3
+  (append wpdl-font-lock-keywords-2
+		  (list
+		   '("\\<\\(A\\(ND\\|PPLICATIONS\\)\\|BOOLEAN\\|HUMAN\\|INTEGER\\|NO\\|OR\\(GANISATIONAL_UNIT\\)?\\|R\\(EFERENCE\\|OLE\\)\\|S\\(TRING\\|YNCHR\\)\\|UNDER_REVISION\\|WORKFLOW\\|XOR\\)\\>" . font-lock-constant-face)))
+  "Balls-out highlighting in WPDL mode")
+}}}
+
+Ahora he definido más constantes WPDL.  Esto completa la lista de las
+palabras clave WPDL.
+
+{{{
+(defvar wpdl-font-lock-keywords wpdl-font-lock-keywords-3
+  "Default highlighting expressions for WPDL mode")
+}}}
+
+Aquí he definido que el nivel predeterminado de resaltado sea lo
+máximo.  Es tan solo una preferencia; el usuario puede cambiar esta
+variable (¡si sabe como hacerlo!  Esto es algo que puede ponerse en la
+documentación del modo).
+
+==Sangrías==
+
+La sintaxis de WPDL es del estilo Pascal.  Esto proporciona una base
+natural para el sangrado.  Los bloques de información pueden sangrarse
+a partir de sus padres, lo que no es muy difícil de conseguir con
+Emacs; el código para el sangrado del ##wpdl-mode## es tan sólo de 28
+líneas.  Este es un ejemplo de código WPDL que incluye sangrías:
+
+{{{
+WORKFLOW	'In_the_Mail_Room'
+    CREATED	1998-07-15
+    NAME	"In the Mail Room"
+
+    ACTIVITY	'MailRoom'
+        NAME	"Mail Room"
+        TOOL_LIST 
+            'scan_document'
+            'identify_document'
+            'send_document'
+        END_TOOL_LIST
+        PERFORMER 'Joe'
+    END_ACTIVITY
+
+END_WORKFLOW
+}}}
+
+He identificado cinco reglas para sangrar el código WPDL.  Son las
+siguientes:
+
+* Al principio del búfer sangra a la columna 0.
+
+* Si está en una línea ##END_## line, entonces desangra en relación a
+  la línea previa.
+
+* Si "primero" vemos una línea ##END_## antes de nuestra línea en
+  curso, entonces deberíamos sangrar nuestra línea con la misma
+  sangría que ##END_##.
+
+* Si "primero" vemos una "línea de inicio" como ##PARTICIPANT##,
+  entonces necesitamos "incrementar" nuestra sangría en relación con
+  esa línea.
+
+* Si nada de lo de arriba es de aplicación, entonces no se sangra nada.
+
+El siguiente código de ejemplo WPDL, con comentarios, puede clarificar
+estas ideas:
+
+{{{
+// My activity              // Rule 1 applies
+ACTIVITY    'MailRoom'      // Rule 5 applies
+    NAME    "Mail Room"     // Rule 4 (based on "ACTIVITY")
+    TOOL_LIST               // Rule 4 (based on "ACTIVITY")
+        'scan_document'     // Rule 4 (based on "TOOL_LIST")
+        'identify_document' // Rule 4 (based on "TOOL_LIST")
+        'send_document'     // Rule 4 (based on "TOOL_LIST")
+    END_TOOL_LIST           // Rule 2
+    PERFORMER 'Joe'         // Rule 3
+END_ACTIVITY                // Rule 2
+}}}
+{{{
+(defun wpdl-indent-line ()
+  "Indent current line as WPDL code"
+  (interactive)
+  (beginning-of-line)
+}}}
+
+Empezamos definiendo una función sencilla para determinar cómo debe
+sangrarse una línea dada.  Puede ser de ayuda hacerla interactiva,
+para ayudar a probar nuestra función de sangrado.  Al hacerla
+interactiva, posibilita llamarla directamente con `M-x
+nuestra-función'.  También pone el punto al principio de la línea.
+
+{{{
+(if (bobp)  ; Check for rule 1
+      (indent-line-to 0)
+}}}
+
+La primera cosa relacionada con el sangrado que hacemos es comprobar
+si esta es la primera línea del búfer, usando la función `bobp'.  Si
+lo es, establecemos el nivel de la sangría en 0, usando
+`indent-line-to'.  `indent-line-to' sangra la línea en curso en la
+columna dada.  Téngase presente que si esta condición es cierta,
+entonces el resto del código de sangrado no se tendrá en cuenta.
+
+{{{
+  (let ((not-indented t) cur-indent)
+}}}
+
+Ahora declaramos dos variables.  Almacenaremos el valor de nuestro
+nivel de sangrado pretendido para esta línea en `cur-indent'.
+Después, cuando todas las opciones de sangrado hayan sido consideradas
+(regls 2-5), haremos finalmente la sangría.
+
+Más tarde quedará mejor clarificado el uso de `not-indented'.
+
+{{{
+        (if (looking-at "^[ \t]*END_") ; Check for rule 2
+            (progn
+              (save-excursion
+                (forward-line -1)
+                (setq cur-indent (- (current-indentation) default-tab-width)))
+}}}
+
+Si "no" estamos al comienzo del búfer, entonces comenzamos a
+considerar otras opciones de sangrado.  Lo que hacemos aquí es ver si
+estamos al final de un bloque. En WPDL, los bloques finalizan con
+palabras clave que empiezan con ##END_##.  Así, comprobamos si estamos
+en una línea así usando la función `looking-at', con una expresión
+regular que detectará si estamos en una línea que comience con
+##END_##.  Recuérdese, estamos al comienzo de la línea, así que
+necesitamos incluir cualquier espacio o tabulación en la expresión
+regular.
+
+Si vemos que estamos al final de un bloque, entonces establecemos el
+nivel de sangrado.  Lo hacemos yendo a la línea "previa" (usando la
+función `forward-line'), y después usamos la función
+`current-indentation' para ver cómo está sangrada esa línea.  Después
+establecemos `cur-indent' en el valor de la sangría de la línea
+anterior, "menos" la `default-tab-width'.
+
+{{{
+              (if (< cur-indent 0)
+                  (setq cur-indent 0)))
+}}}
+
+También incluimos una comprobación de seguridad, tal que no intentemos
+sangrar más allá del margen izquierdo.
+
+{{{
+        (save-excursion 
+          (while not-indented
+            (forward-line -1)
+            (if (looking-at "^[ \t]*END_") ; Check for rule 3
+                (progn
+                  (setq cur-indent (current-indentation))
+                  (setq not-indented nil))
+              ; Check for rule 4
+              (if (looking-at "^[ \t]*\\(PARTICIPANT\\|MODEL\\|APPLICATION\\|WORKFLOW\\|ACTIVITY\\|DATA\\|TOOL_LIST\\|TRANSITION\\)")
+                  (progn
+                    (setq cur-indent (+ (current-indentation) default-tab-width))
+                    (setq not-indented nil))
+                (if (bobp) ; Check for rule 5
+                    (setq not-indented nil)))))))
+}}}
+
+Si no estamos mirando una línea ##END_## line, entonces iteramos hacia
+atrás a través del código para encontrar una "sugerencia de sangrado".
+Una sugerencia de sangrado es un trocito de texto en nuestro fichero
+que puede decirnos cómo sangrar la línea en la que estamos "en esos
+momentos".  Las reglas que he proporcionado antes nos dicen lo que son
+las sugerencias de sangrado.  A estas alturas sólo necesitamos
+encontrar las sugerencias para las reglas 3-5, ya que las dos primeras
+reglas han sido cubiertas por el código anterior.
+
+No hay muchas funciones Emacs lisp nuevas que se hayan introducido
+aquí.  La única cosa que vale la pena indicar es el uso de
+`not-indented' como centinela para nuestro bucle while.
+
+{{{
+      (if cur-indent
+          (indent-line-to cur-indent)
+        (indent-line-to 0))))) ; If we didn't see an indentation hint, then allow no indentation
+}}}
+
+Finalmente, ejecutamos la sangría, "si" hemos identificado realmente
+un caso de sangrado.  Ya tenemos (con toda probabilidad) almacenado el
+valor de la sangría en `cur-value'.  Si `cur-indent' está vacía,
+entonces siempre sangramos a la columna 0.
+
+Y esto concluye el código de sangrado para  WPDL. 
+
+'''Exercise''': Este código de sangrado es bastante simple.  ¿En qué
+casos fallaría el código para crear una sangría apropiada en el código
+WPDL?
+
+==La tabla de sintaxis==
+
+Ahora configuraremos una tabla de sintaxis para WPDL.  Las tablas de
+sintaxis le dicen a Emacs cómo debe tratar varios fragmentos del texto
+mediante varias funciones, incluyendo el movimiento dentro del búfer y
+el resaltado de la sintaxis.  Por ejemplo, ¿cómo sabe Emacs que hay
+que moverse hacia adelante una palabra (como se hace en la función
+`forward-word')?  La tabla de sintaxis le proporciona a Emacs este
+tipo de información.  También la usa el paquete de resaltado de
+sintaxis.  Es por esta razón que queremos modificar la tabla de
+sintaxis del ##wpdl-mode##.
+
+{{{
+(defvar wpdl-mode-syntax-table
+  (let ((wpdl-mode-syntax-table (make-syntax-table)))
+}}}
+
+Utilizaremos la función `make-syntax-table' para crear una tabla de
+sintaxis vacía.  Esta función crea una tabla de sintaxis que es un
+buen comienzo para la mayoría de los modos, ya que hereda o copia las
+entradas de la tabla de sintaxis estándar.
+
+{{{
+
+    (modify-syntax-entry ?_ "w" wpdl-mode-syntax-table)
+}}}
+
+La primera modificación que hacemos a la tabla de sintaxis es declarar
+que el carácter de subrayado o guión bajo '##_##' es parte válida de
+las palabras.  Así que ahora una cadena como ##foo_bar## será
+considerada como una sola palabra y no dos (el comportamiento
+predeterminado de Emacs).  Hacemos esto porque queremos facilitar el
+tratamiento de los nombres de las variables WPDL (que usan guiones
+bajos por convención), y, más importante aún, de las palabras clave,
+como palabras únicas. '''NB''': El tratamiento de los guiones bajos
+como caracteres que no son espacios en blanco no es el comportamiento
+predeterminado de Emacs.  Aquí me siento justificado al incluir esta
+modificación, pues muchas palabras clave de WPDL incluyen guiones
+bajos.
+
+La función `modify-syntax-entry' toma un carácter como su primer
+argumento, una clase sintáctica como segundo argumento y la tabla de
+sintaxis a modificar como el tercer argumento.  En Emacs Lisp, los
+caracteres se representan usando el símbolo ##'?'## seguido por el
+carácter en sí, así que usamos ##?_## para representar el guión bajo.
+La clase sintáctica indica cómo se trata un carácter en particular.
+Los ejemplos de clases sintácticas incluirían a los "signos de
+puntuación", "indicardor de apertura de paréntesis" y "constituyentes
+de palabras".  ##'w'## es el símbolo para las "constituyentes de
+palabras".
+
+{{{
+    (modify-syntax-entry ?/ ". 124b" wpdl-mode-syntax-table)
+    (modify-syntax-entry ?* ". 23" wpdl-mode-syntax-table)
+    (modify-syntax-entry ?\n "> b" wpdl-mode-syntax-table)
+}}}
+
+Los comentarios en WPDL son como los de C++.  Así, nuestro objetivo es
+programar los comentarios C++ en la tabla de sintaxis de WPDL.  Para
+hacerlo, necesitamos usar algunos parámetros extra de clase sintáctica
+denominados banderillas sintácticas.  Algunas clases sintácticas
+tienen estos parámetros extra para refinar más el lugar del carácter
+dentro de las clases.  La clase sintáctica usada aquí es ##'.'##, que
+significa "signo de puntuación".
+
+Si consultamos la guía de programación en Emacs lisp y miramos lo que
+significan las banderillas sintácticas, veremos que hemos hecho los
+siguientes ajustes a la tabla de sintaxis:
+
+1) Que el carácter ##'/'## es el "comienzo" de una secuencia de
+comentario de dos caracteres (##'1'##), que también puede ser el
+segundo carácter de una secuencia de comienzo de comentario de dos
+caracteres (##'2'##), que es el "final" de una secuencia de inicio de
+comentario de dos caracteres (##'4'##), y que las secuencias de
+comentarios que tengan este carácter como el segundo de la secuencia
+es un comentario al estilo "b" (##'b'##).  Es una regla que los
+comentarios que comiencen con una secuencia al estilo "b" deban
+finalizar ya sea con la misma u otra secuencia al estilo "b".
+
+2) Que el carácter ##'*'## es el segundo de una secuencia de comienzo
+de comentario de dos caracteres (##'2'##) y que es el "inicio" de una
+secuencia de "finalización de comentario" de dos caracteres (##'3'##).
+
+3) Que el carácter ##'\n'## (que es el de salto de línea) "finaliza"
+un comentario al estilo "b".
+
+Ahora hemos programado nuestro estilo de comentarios dentro de la
+tabla de sintaxis.  El mecanismo de resaltado de sintaxis
+(##font-lock##) leerá ahora la tabla de sintaxis y resaltará
+adecuadamente los comentarios WPDL.
+
+{{{
+
+    wpdl-mode-syntax-table)
+  "Syntax table for wpdl-mode")
+}}}
+
+Estas líneas finalizan la definición de la tabla de sintaxis,
+incluyendo la cadena de documentación.
+
+==La función de entrada al modo==
+
+Finalmente, crearemos la función que ha de ser llamada por Emacs
+cuando se inicie el modo.
+
+{{{
+(defun wpdl-mode ()
+  "Major mode for editing Workflow Process Description Language files"
+  (interactive)
+  (kill-all-local-variables)
+  (set-syntax-table wpdl-mode-syntax-table)
+  (use-local-map wpdl-mode-map)
+}}}
+
+Aquí definimos nuestra función de entrada, le damos una cadena de
+documentación, la hacemos interactiva y llamamos a nuestra función de
+creación de la tabla de sintaxis.  También establecemos el mapa de
+teclas para nuestro modo.
+
+{{{
+  (set (make-local-variable 'font-lock-defaults) '(wpdl-font-lock-keywords))
+}}}
+
+Ahora especificamos las palabras clave del resaltado de sintaxis
+predeterminado.  Téngase presente que si el usuario ha especificado su
+propio nivel de resaltado de palabras clave mediante la redefinición
+de  `wpdl-font-lock-keywords', que será la que se emplee en lugar de
+la predeterminada.
+
+{{{
+  (set (make-local-variable 'indent-line-function) 'wpdl-indent-line)  
+}}}
+
+Aquí registramos nuestra función de sangrado en Emacs.  Ahora Emacs
+llamará a nuestra función cada vez que se requiera sangrar una línea
+(como cuando el usuario llama a `indent-region').
+
+{{{
+  (setq major-mode 'wpdl-mode)
+  (setq mode-name "WPDL")
+  (run-hooks 'wpdl-mode-hook))
+}}}
+
+Los últimos pasos de la función de entrada son establecer la variable
+`major-mode' con el valor de nuestro modo, estbablecer la variable
+`mode-name' (que determina el nombre que aparecerá en la línea de modo
+y en el menú de búferes, por ejemplo), y finalmente llamar a
+`run-hooks' tal que los ganchos del propio modo del usuario llamados.
+
+==La línea más importante== 
+
+{{{ (provide 'wpdl-mode) }}}
+
+Finalmente usamos `provide'
+
+Para exponer nuestro modo al entorno de Emacs, los usuarios
+probablemente usarán la función `require' en el fichero ##.emacs##
+para cargar el modo en el entorno.
+
+==Una palabra acerca del estilo==
+
+El manual de Emacs Lisp tiene una sección denominada "Consejos y
+Convenciones", que incluye una sección acerca del estilo para los
+modos mayores titulada "Major Mode conventions".  Además de seguir
+estas líneas maestras, se podría usar la herramienta CheckDoc para
+ayudarse a mantener los asuntos de estilo bajo control, especialmente
+los concernientes al formato del bloque de comentario inicial.
+
+==Implementaciones alternativas==
+
+Stefan Monnier, uno de los mantenedores de Emacs, ha sugerido
+aproximaciones alternativas para el sangrado y la función de entrada.
+Su SampleMode proporciona un esquema de dichas aproximaciones.  Por
+ejemplo, nuestra función de entrada podría simplificarse enormemente
+haciendo derivar el ##wpdl-mode## del ##fundamental-mode##, véase
+DerivedMode.  El código para hacerlo es este:
+
+{{{
+; This can replace (defun wpdl-mode ()...
+(define-derived-mode wpdl-mode fundamental-mode "WPDL"
+  "Major mode for editing Workflow Process Description Language files."
+  (set (make-local-variable 'font-lock-defaults) '(wpdl-font-lock-keywords))
+  (set (make-local-variable 'indent-line-function) 'wpdl-indent-line))
+}}}
+
+==Reconocimientos==
+Gracias a StefanMonnier, ColinMarquardt, AlanMackenzie, Alex,
+AlanEliasen, YoniRabkinKatzenell, Matt, Cyril y otros por hacer
+sugerencias y correcciones o por hacer preguntas pertinentes.

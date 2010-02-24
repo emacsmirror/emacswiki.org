@@ -179,6 +179,7 @@
 ;; `traverse-avfs-default-directory'
 ;; `traverse-incremental-search-delay'
 ;; `traverse-incremental-search-prompt'
+;; `traverse-incremental-docstring'
 ;; `traverse-incremental-length-line'
 
 ;;  *** END auto-documentation
@@ -250,7 +251,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Version:
-(defconst traverse-version "1.1.62")
+(defconst traverse-version "1.1.66")
 
 ;;; Code:
 
@@ -1240,9 +1241,9 @@ Set it to nil to remove doc in prompt."
                    ;; starting at the current element of history.
                    (when start-hist
                      (if (< arg 0) ; M-p (move from left to right in ring).
-                         (setq it (sub-iter-next traverse-incremental-history
+                         (setq it (iter-sub-next traverse-incremental-history
                                                  cur-hist-elm :test 'equal))
-                         (setq it (sub-iter-prec traverse-incremental-history
+                         (setq it (iter-sub-prec traverse-incremental-history
                                                  cur-hist-elm :test 'equal))))
                    (setq tmp-list nil)
                    (let ((next (iter-next it)))
@@ -1339,17 +1340,32 @@ Set it to nil to remove doc in prompt."
 
 ;;;###autoload
 (defun traverse-incremental-occur (&optional initial-input)
-  "Incremental search of lines in current buffer matching `traverse-incremental-search-pattern'.
-With a prefix arg search symbol at point.
+  "Incremental search of lines in current buffer matching \
+`traverse-incremental-search-pattern' which is given by \
+`traverse-incremental-read-search-input'.
+
+With a prefix arg search symbol at point(INITIAL-INPUT).
+
 While you are incremental searching, commands provided are:
-C-n or <down>:  next line.
-C-p or <up>:    precedent line.
-C-v and M-v:    scroll up and down.
-C-z or <right>: jump without quitting loop.
-C-j or <left>:  jump and exit search buffer.
-RET or ESC:     exit but don't quit search buffer.
-DEL:            remove last character entered.
-C-g:            quit and restore buffer.
+
+C-n or <down>  next line.
+C-p or <up>    precedent line.
+C-v and M-v    scroll up and down.
+C-z or <right> jump without quitting loop.
+C-j or <left>  jump and exit search buffer.
+RET or ESC     exit but don't quit search buffer.
+DEL            remove last character entered.
+C-g            quit and restore buffer.
+M-p/n          Precedent and next `traverse-incremental-history' element:
+
+M-p ,-->A B C D E F G H I---,
+    |                       |
+    `---I H G F E D C B A<--'
+
+M-n ,-->I H G F E D C B A---,
+    |                       |
+    `---A B C D E F G H I<--'
+
 When you quit incremental search with RET or ESC, see `traverse-incremental-mode'
 for commands provided in the search buffer."
   (interactive "P")
@@ -1369,27 +1385,38 @@ for commands provided in the search buffer."
          (progn
            (traverse-incremental-start-timer)
            (traverse-incremental-read-search-input str-no-prop))
+      
       (progn
         (traverse-incremental-cancel-search)
         (when (equal (buffer-substring (point-at-bol) (point-at-eol)) "")
           (setq traverse-incremental-quit-flag t))
-        (if traverse-incremental-quit-flag
+        (if traverse-incremental-quit-flag ; C-g
             (progn
               (kill-buffer "*traverse search*")
               (switch-to-buffer traverse-incremental-current-buffer)
               (when traverse-occur-overlay
                 (delete-overlay traverse-occur-overlay))
               (delete-other-windows) (goto-char curpos) (message nil))
+            
             (if traverse-incremental-exit-and-quit-p
                 (progn (traverse-incremental-jump-and-quit)
                        (kill-buffer "*traverse search*") (message nil))
-                (traverse-incremental-jump) (other-window 1)))
+                (traverse-incremental-jump) (other-window 1))
+            ;; Push elm in history if not already there or empty.
+            (unless (or (member traverse-incremental-search-pattern traverse-incremental-history)
+                        (string= traverse-incremental-search-pattern ""))
+              (push traverse-incremental-search-pattern traverse-incremental-history))
+            ;; If elm already exists in history ring push it on top of stack.
+            (let ((pos-hist-elm (iter-position traverse-incremental-search-pattern
+                                               traverse-incremental-history :test 'equal)))
+              (unless (string= (car traverse-incremental-history)
+                               traverse-incremental-search-pattern)
+                (push (pop (nthcdr pos-hist-elm traverse-incremental-history))
+                      traverse-incremental-history))))
         (setq traverse-count-occurences 0)
-        (unless (or (member traverse-incremental-search-pattern traverse-incremental-history)
-                    (string= traverse-incremental-search-pattern ""))
-          (push traverse-incremental-search-pattern traverse-incremental-history))
         (setq traverse-incremental-quit-flag nil)))))
 
+        
 (defun traverse-incremental-cancel-search ()
   "Cancel timer used for traverse incremental searching."
   (when traverse-incremental-search-timer
