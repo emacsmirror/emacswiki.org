@@ -31,7 +31,7 @@ To define a visible anchor, use square brackets and two colons:
 
 When this anchor is rendered in the browser, it appears like this: [::MyVisibleAnchor].
 
-**Note**: As of 2009-07-16, a visible anchor cannot start a page and be on a line with other text because of a bug in the Wiki engine.  As a workaround, either have a single newline after the anchor, or wrap the anchor in triple quotes as <code>'''[::MyVisibleAnchor]'''</code>  as a workaround.  The latter is sufficient since an alias that starts a page can and should have '''bold emphasis''' anyway.  Some visible anchors are acronyms or abbreviations for things about Emacs.  Consider putting them after the expanded phrase in parentheses.
+**Note**: As of 2009-07-16, a visible anchor cannot start a page and be on a line with other text because of a bug in the Wiki engine.  As a workaround, either have a single newline after the anchor, or wrap the anchor in triple quotes as <code>'''[::MyVisibleAnchor]'''</code>.  The latter is sufficient since an alias that starts a page can and should have '''bold emphasis''' anyway.  Some visible anchors are acronyms or abbreviations for things about Emacs.  Consider putting them after the expanded phrase in parentheses.
 
 You can link to a visible anchor as usual, just as if it were the name of a Wiki page: MyVisibleAnchor. If you are not using mixed uppper- and lowercase letters in your anchor, or if you need to include spaces, use double brackets around the link.
 

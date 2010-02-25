@@ -226,6 +226,8 @@ Alternatively, add the following command to ##.emacs##:
                    (setq selected-symbol
                          (ido-completing-read "Symbol? " symbol-names))
                    (string= (car imenu--rescan-item) selected-symbol)))
+          (unless (and (boundp 'mark-active) mark-active)
+            (push-mark nil t nil))
           (setq position (cdr (assoc selected-symbol name-and-pos)))
           (cond
            ((overlayp position)
@@ -252,7 +254,7 @@ Alternatively, add the following command to ##.emacs##:
 
     (global-set-key "\C-ci" 'ido-goto-symbol) ; or any key you see fit
 
--- shjk (updated by MattKeller to handle overlays as "positions"; updated by VegardOye not to use ##flet##).
+-- shjk (updated by MattKeller to handle overlays as "positions"; updated by VegardOye to set the mark before jumping).
 
 == Discussion ==
 

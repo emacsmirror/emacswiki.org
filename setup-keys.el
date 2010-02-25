@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Sat Feb 20 09:55:01 2010 (-0800)
+;; Last-Updated: Wed Feb 24 22:34:26 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 986
+;;     Update #: 990
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -67,7 +67,9 @@
 ;;
 ;;; Change log:
 ;;
-;; 2010/02/20 dradams
+;; 2010/02/24 dadams
+;;     Bound C-; to iedit-mode, globally and in isearch-mode-map.
+;; 2010/02/20 dadams
 ;;     Bound framemove keys: M-S-(up|down|left|right).
 ;; 2009/11/07 dadams
 ;;     Bound doremi-face-bg+ to k.  Applied doremi cmd renamings (added +).
@@ -426,6 +428,10 @@
 (when (featurep 'fit-frame)
   (global-set-key [(control ?x) (control ?_)] 'fit-frame)
   (global-set-key [vertical-line down-mouse-1] 'fit-frame-or-mouse-drag-vertical-line))
+
+(when (featurep 'iedit)                 ; `iedit.el'
+  (define-key global-map       (kbd "C-;") 'iedit-mode)
+  (define-key isearch-mode-map (kbd "C-;") 'iedit-mode))
 
 ;;; Put *Help* buffer in `help-minor-mode'.
 ;;(save-excursion (set-buffer (get-buffer-create "*Help*")) (help-minor-mode 1))

@@ -22,6 +22,7 @@ The [[active region]] is essentially what some other programs call the "selectio
 * SelectiveUndo -- Undoes stuff in the region only.
 * ShiftSelectMode -- Expand regions with Shift and a navigation command.
 * SwapRegions -- Swapping two regions.
+* Lisp:trans-regions.el -- Transpose regions command.
 
 ===Emacs Has Multiple Regions===
 

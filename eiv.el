@@ -231,7 +231,7 @@ your initial image will be LOST."
                  (quit-window t))
              (if flag-move ;; direction changed we use a new iterator
                  (progn
-                   (setq flist-iterator (sub-iter-next flist cur-elm))
+                   (setq flist-iterator (iter-sub-next flist cur-elm))
                    (setq fnext-elm (iter-next flist-iterator))
                    (setq cur-elm fnext-elm)
                    (if fnext-elm
@@ -249,7 +249,7 @@ your initial image will be LOST."
              (clear-image-cache t)
              (if (eq major-mode 'image-mode)
                  (quit-window t))
-             (setq flist-iterator (sub-iter-prec flist cur-elm))
+             (setq flist-iterator (iter-sub-prec flist cur-elm))
              (setq bnext-elm (iter-next flist-iterator))
              (setq cur-elm bnext-elm)
              (setq flag-move t)

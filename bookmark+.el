@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Feb 16 07:22:52 2010 (-0800)
+;; Last-Updated: Wed Feb 24 22:07:46 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 11311
+;;     Update #: 11318
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1480,6 +1480,9 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2010/02/24 dadams
+;;     *-bmenu-list: Handle case null last-bookmark-file (due to old file format).  Thx to Seb Luque.
+;;     *-make-record-default: protect dired-buffers with boundp.  Thx to Janek Schwarz.
 ;; 2010/02/16 dadams
 ;;     bookmarkp-define-sort-command: Add msg suffix about repeating.
 ;;     bookmarkp-msg-about-sort-order: Added optional arg SUFFIX-MSG.
@@ -2276,6 +2279,7 @@
 (defvar desktop-dirname)                ; Defined in `desktop.el'.
 (defvar desktop-file-modtime)           ; Defined in `desktop.el'.
 (defvar desktop-globals-to-save)        ; Defined in `desktop.el'.
+(defvar dired-buffers)                  ; Defined in `dired.el'.
 (defvar gnus-article-current)           ; Defined in `gnus-sum.el'.
 (defvar Info-current-node)              ; Defined in `info.el'.
 (defvar Info-current-file)              ; Defined in `info.el'.
@@ -3350,7 +3354,7 @@ candidate."
 Point must be where the bookmark is to be set.
 If POINT-ONLY is non-nil, return only the subset of the record that
 pertains to the location within the buffer."
-  (let* ((dired-p  (car (rassq (current-buffer) dired-buffers)))
+  (let* ((dired-p  (and (boundp 'dired-buffers) (car (rassq (current-buffer) dired-buffers))))
          (buf      (buffer-name))
          (ctime    (current-time))
 
@@ -4214,7 +4218,8 @@ Non-nil FILTEREDP means the bookmark list has been filtered, so:
                    bookmarkp-bmenu-before-hide-unmarked-alist
                    (cdr (assq 'last-bmenu-before-hide-unmarked-alist state)))
              (let ((last-bookmark-file  (cdr (assq 'last-bookmark-file state))))
-               (unless (bookmarkp-same-file-p last-bookmark-file bookmarkp-current-bookmark-file)
+               (unless (or (not last-bookmark-file)
+                           (bookmarkp-same-file-p last-bookmark-file bookmarkp-current-bookmark-file))
                  (if (y-or-n-p
                       (format "Saved bookmark-list state does not match the current bookmark \
 file.  Switch to the last file used, `%s'? " last-bookmark-file))

@@ -1,4 +1,4 @@
-;;; this is mon-doc-help-utils-supplemental.el
+;;; mon-doc-help-utils-supplemental.el --- functions to bootstrap mon-doc-help-utils
 ;;; ================================================================
 ;;; DESCRIPTION:
 ;;; mon-doc-help-utils-supplemental is required and should be present in Emacs
@@ -16,7 +16,6 @@
 ;;;
 ;;; :FILE mon-regexp-symbols.el 
 ;;;       | -> `*regexp-symbol-defs*'          
-;;;       | -> `mon-test->*regexp-symbol-defs*'
 ;;; :SEE (URL `http://www.emacswiki.org/emacs/mon-regexp-symbols.el')
 ;;;
 ;;; :FILE mon-utils.el
@@ -25,6 +24,10 @@
 ;;;       | -> `mon-string-after-index'
 ;;;       | -> `mon-string-justify-left'
 ;;; :SEE (URL `http://www.emacswiki.org/emacs/mon-utils.el')
+;;;
+;;; :FILE mon-cl-compat.el
+;;;       | -> `cl::subseq'
+;;; :SEE (URL `http://www.emacswiki.org/emacs/mon-cl-compat.el')
 ;;;
 ;;; :NOTE While mon-doc-help-utils-supplemental.el will provide the necessary
 ;;; features in order to get mon-doc-help-utils bootstrapped wherever possible
@@ -64,38 +67,44 @@
 ;;; (URL `http://www.emacswiki.org/emacs/mon-doc-help-utils-supplemental.el')
 ;;; FIRST-PUBLISHED: <Timestamp: #{2009-12-21T21:20:06-05:00Z}#{09522} - by MON>
 ;;;
+;;; PUBLIC-LINK: (URL `http://www.emacswiki.org/emacs/mon-doc-help-utils.el')
+;;; FILE-PUBLISHED: <Timestamp: #{2009-08-15} - by MON KEY>
+;;;
+;;; PUBLIC-LINK: (URL `http://www.emacswiki.org/emacs/MonDocHelpUtilsDictionary')
+;;; FIRST-PUBLISHED <Timestamp: #{2010-01-09T01:03:52-05:00Z}#{10016} - by MON>
+;;;
 ;;; FILE-CREATED:
 ;;; <Timestamp: #{2009-12-21T13:15:00-05:00Z}#{09521} - by MON>
 ;;; ================================================================
-;;; This file is not part of GNU Emacs.
-;;;
-;;; This program is free software; you can redistribute it and/or
-;;; modify it under the terms of the GNU General Public License as
-;;; published by the Free Software Foundation; either version 3, or
-;;; (at your option) any later version.
-;;;
-;;; This program is distributed in the hope that it will be useful,
-;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-;;; General Public License for more details.
-;;;
-;;; You should have received a copy of the GNU General Public License
-;;; along with this program; see the file COPYING.  If not, write to
-;;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
-;;; Floor, Boston, MA 02110-1301, USA.
-;;; ================================================================
-;;; Permission is granted to copy, distribute and/or modify this
-;;; document under the terms of the GNU Free Documentation License,
-;;; Version 1.3 or any later version published by the Free Software
-;;; Foundation; with no Invariant Sections, no Front-Cover Texts,
-;;; and no Back-Cover Texts. A copy of the license is included in
-;;; the section entitled "GNU Free Documentation License".
-;;; A copy of the license is also available from the Free Software
-;;; Foundation Web site at:
-;;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
-;;; ================================================================
-;;; Copyright © 2009 MON KEY 
-;;; ==============================
+;; This file is not part of GNU Emacs.
+;;
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 3, or
+;; (at your option) any later version.
+;;
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with this program; see the file COPYING.  If not, write to
+;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
+;; Floor, Boston, MA 02110-1301, USA.
+;; ================================================================
+;; Permission is granted to copy, distribute and/or modify this
+;; document under the terms of the GNU Free Documentation License,
+;; Version 1.3 or any later version published by the Free Software
+;; Foundation; with no Invariant Sections, no Front-Cover Texts,
+;; and no Back-Cover Texts. A copy of the license is included in
+;; the section entitled "GNU Free Documentation License".
+;; A copy of the license is also available from the Free Software
+;; Foundation Web site at:
+;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
+;; ================================================================
+;; Copyright © 2009, 2010 MON KEY 
+;; ==============================
 ;;; CODE:
 
 (eval-when-compile (require 'cl))
@@ -108,16 +117,20 @@
 ;;; :MODIFICATIONS <Timestamp: #{2009-08-25T14:09:37-04:00Z}#{09352} - by MON KEY>
 (defun comment-divider (&optional not-insert intrp)
   "Insert default comment divider at point.
-When called-interactively inserts at point:\n
+When called-interactively insert the following at point:\n
 ;;; ==============================\n
-When optional arg not-insert is non-nil return comment divider as string.\n
+When NOT-INSERT is non-nil return comment divider as string.\n
 :EXAMPLE\n\(comment-divider t\)\n
-:SEE-ALSO `mon-comment-divide->col', `mon-lisp-comment-to-col'
-`mon-insert-php-comment-divider', `mon-insert-lisp-stamp'. ►►►"
+:SEE-ALSO `*mon-default-comment-divider*' `mon-comment-divide->col',
+`mon-comment-lisp-to-col' `mon-insert-php-comment-divider',
+`mon-insert-lisp-stamp'.\n►►►"
   (interactive "i\np")
+  (let ((*mon-default-comment-divider* ;; bound in :FILE mon-time-utils.el
+         (or (bound-and-true-p *mon-default-comment-divider*)
+             ";;; ==============================")))
   (if (or (not not-insert) intrp)
-      (insert ";;; ==============================")
-    ";;; =============================="))
+      (insert *mon-default-comment-divider*)
+      *mon-default-comment-divider*)))
 ) ;; :CLOSE fboundp comment-divider
 ;;
 ;;; :TEST-ME (comment-divider t)
@@ -137,10 +150,10 @@ strings prompting y-or-n-p if we want to include the function name in insertion.
 When INSERTP is non-nil insert the test-me string(s) in current buffer at point.\n
 Use at the end of newly created elisp functions to provide example test cases.\n
 Regexp held by global var `*regexp-symbol-defs*'.\n
-:SEE-ALSO `mon-insert-doc-help-tail', `mon-test->*regexp-symbol-defs*'
+:SEE-ALSO `mon-insert-doc-help-tail', `mon-help-regexp-symbol-defs-TEST'
 `mon-insert-doc-help-tail', `mon-insert-lisp-stamp', `mon-insert-copyright',
 `mon-insert-lisp-CL-file-template', `comment-divider',
-`comment-divider-to-col-four', `mon-insert-lisp-evald'.\n►►►"
+`mon-comment-divider-to-col-four', `mon-insert-lisp-evald'.\n►►►"
   (interactive "i\np\ni\np")
   (let* ((get-func)
          (tmc (cond ((and intrp (> test-me-count 1))
@@ -208,15 +221,16 @@ Regexp held by global var `*regexp-symbol-defs*'.\n
 
 ;;; ==============================
 ;;; :LOAD-SPECIFIC-PROCEDURES :IF-NOT-FEATURE-P `mon-regexp-symbols.el'
-;;; `*regexp-symbol-defs*', `mon-test->*regexp-symbol-defs*'
+;;; `*regexp-symbol-defs*', `mon-help-regexp-symbol-defs-TEST'
 ;; 
 (unless (featurep 'mon-regexp-symbols)
-(unless (bound-and-true-p *regexp-symbol-defs*)
+  (unless (bound-and-true-p *regexp-symbol-defs*)
+;;; :NOTE make sure this reflects current state of var. Changes with some frequency.
 ;;; :CREATED <Timestamp: 2009-08-03-W32-1T11:04:11-0400Z - by MON KEY>
 (defvar *regexp-symbol-defs* nil
   "*Regexp for finding lisp definition forms defun, defmacro, defvar.\n
 :CALLED-BY `mon-insert-lisp-testme',`mon-insert-doc-help-tail',
-`mon-test->*regexp-symbol-defs*'.\n►►►")
+`mon-help-regexp-symbol-defs-TEST'.\n►►►")
 ;;
 (when (not (bound-and-true-p *regexp-symbol-defs*))
   (setq *regexp-symbol-defs*
@@ -236,66 +250,10 @@ Regexp held by global var `*regexp-symbol-defs*'.\n
 ) ;; :CLOSE BATP *regexp-symbol-defs*
 ;;
 ;;; :TEST-ME  *regexp-symbol-defs*
-;;; :SEE-BELOW for-additional-tests-with `mon-test->*regexp-symbol-defs*'
+;;; :SEE-BELOW for-additional-tests-with `mon-help-regexp-symbol-defs-TEST'
 ;;
 ;;;(progn (makunbound '*regexp-symbol-defs*) (unintern '*regexp-symbol-defs*))
-
-;;; ==============================
-;;; :CREATED <Timestamp: #{2009-09-02T16:11:07-04:00Z}#{09363} - by MON KEY>
-(unless (fboundp 'mon-test->*regexp-symbol-defs*)
-(defun mon-test->*regexp-symbol-defs* (&optional insertp intrp)
-  "Test function to ensure that the regexp in var `*regexp-symbol-defs*' works.\n
-:SEE-ALSO `mon-insert-lisp-testme',`mon-insert-doc-help-tail'. ►►►"
-  (interactive "i\np")
-  (let ((find-def* *regexp-symbol-defs*)
-        (the-str))
-    (save-excursion  (search-backward-regexp find-def*))
-    (setq the-str
-          (concat "\nmatch-string1: "(match-string-no-properties 2) " start2: "
-                  (number-to-string (match-beginning 2)) " end2: "
-                  (number-to-string (match-end 2)) "\nmatch-string3: "
-                  (match-string-no-properties 3)" start3: "
-                  (number-to-string (match-beginning 3))  " end3: "
-                  (number-to-string (match-end 3))"\nmatch-string4: "
-                  (match-string-no-properties 4) " start4: "
-                  (number-to-string (match-beginning 4))  " end4: "
-                  (number-to-string (match-end 4))))
-    (if (or insertp intrp)
-        (save-excursion (princ  the-str (current-buffer)))
-      (momentary-string-display the-str (point)))))
-) ;; :CLOSE BATP mon-test->*regexp-symbol-defs*
 ) ;; :CLOSE featurep mon-regexp-symbols
-;;;
-;;; :TEST-ME  *regexp-symbol-defs*
-;;; (progn (makunbound '*regexp-symbol-defs*)
-;;;        (unintern '*regexp-symbol-defs*) )
-;;
-;;; ,---- :UNCOMMENT-TO-TEST
-;;; | (defun some-function (&optional optional)
-;;; | (defun some-function-22 (&optional optional)
-;;; | (defun *some/-symbol:->name<-2* (somevar
-;;; | (defmacro some-macro ()
-;;; | (defmacro some-macro*:22 (&rest)
-;;; | (defun *some/-symbol:->name<-2* (somevar
-;;; | (defvar *some-var* 'var
-;;; | (defun *some/-symbol:->name<-2* 'somevar
-;;; | (defmacro some-macro*:22 (&rest)
-;;; | (defun *some/-symbol:->name<-2* (somevar
-;;; | (defvar *some-var* 'var
-;;; | (defun *some/-symbol:->name<-2* 'somevar
-;;; | (defmacro* some-macro*:22 (&rest)
-;;; | (defun* *some/-symbol:->name<-2* (somevar
-;;; | (defsubst *some/subtst-symbol:->name<-2* (
-;;; | (defsubst* *some/subtst-symbol:->name<-2* (
-;;; | (defconst *some/-symbol:->name<-2* (somevar
-;;; | (defcustom *some/-custom-symbol:->name<-2* 'somecustom
-;;; | (defconst *some/-symbol:->name<-2* (someconst
-;;; | (defface *some/-face-symbol:->name<-2* (someface
-;;; | (defgroup *some/-group-symbol:->name<-2* (somegroup
-;;; | (deftheme *some/-theme-symbol:->name<-2* (sometheme
-;;; `----
-;;;
-;;; :TEST-ME (mon-test->*regexp-symbol-defs*)
 
 ;;; ==============================
 ;;; :LOAD-SPECIFIC-PROCEDURES :IF-NOT-FEATURE-P `mon-utils.el'
@@ -349,23 +307,36 @@ AFTER-STR is a simple string. No regexps, chars, numbers, lists, etc.\n
              (fboundp 'mon-string-justify-left))
 ;;; ==============================
 ;;; :COURTESY Pascal Bourguignon :HIS pjb-strings.el :WAS `string-justify-left'
-(defun mon-string-justify-left (string &optional width left-margin)
-  "Return a left-justified string built from string.\n
-:NOTE The default width is 72 characters, the default left-margin is 0.  
-      The width is counted from column 0.
-      The word separators are those of split-string:
+(defun mon-string-justify-left (string &optional width lft-margin no-rmv-trail-wspc)
+  "Return a left-justified string built from STRING.\n
+:NOTE The default WIDTH is `current-column'.
+      The default LFT-MARGIN is `left-margin'.
+      The WIDTH is counted from column 0.
+      The word separators are those of `split-string':
       [ \\f\\t\\n\\r\\v]+
-      Which means that the string is justified as one paragraph.\n
+      Which means that STRING is justified as one paragraph.\n
+Default is to remove any trailing whiespace at end of lines.
+When NO-RMV-TRAIL-WSPC is non-nil do not remove trailing whitespace.\n
+:EXAMPLE\n\n\(mon-string-justify-left 
+ \(let \(jnk\)
+   \(dotimes \(i 8 jnk\) 
+     \(dolist \(i '\(64 94\)\)
+       \(setq jnk 
+             \(concat 
+              \" \" 
+              \(make-string \(elt \(shuffle-vector [7 5 3 9]\) 3\) i\) jnk\)\)\)\)\) 68 4 t\)\n
 :SEE-ALSO `mon-string-fill-to-col'.\n►►►"
-  (if (null width) (setq width 72))
-  (if (null left-margin) (setq left-margin 0))
-  (if (not (stringp string)) 
-      (error "string-justify-left: The first argument must be a string."))
-  (if (not (and (integerp width) (integerp left-margin)))
-      (error "string-justify-left: The optional arguments must be integers."))
-  (let* ((margin (make-string left-margin 32))
-         (splited (split-string string))
-         (col left-margin)
+  (let* ((lft-margin (if (null lft-margin) (or left-margin 0) lft-margin))
+         (width (if (null width) (or fill-column 72) width))         
+         (string (if (not (stringp string)) 
+                     (error "string-justify-left: The first argument must be a string")
+                     string))
+
+         (col (if (not (and (integerp width) (integerp lft-margin)))
+                  (error "string-justify-left: The optional arguments must be integers")
+                  lft-margin))
+         (splited (save-match-data (split-string string)))
+         (margin (make-string lft-margin 32))
          (justified (substring margin 0 col))
          (word)
          (word-length 0)
@@ -379,13 +350,15 @@ AFTER-STR is a simple string. No regexps, chars, numbers, lists, etc.\n
               (progn
                 (setq justified (concat justified "\n" margin word))
                 (setq col (+ left-margin word-length)))
-            (progn
-              (setq justified (concat justified separator word))
-              (setq col (+ col 1 word-length)))))
+              (progn
+                (setq justified (concat justified separator word))
+                (setq col (+ col 1 word-length)))))
       (setq separator " "))
-    (if (< col width)
-        (setq justified (concat justified (make-string (- width col) 32))))
-    justified))
+    (when (< col width) (setq justified (concat justified (make-string (- width col) 32))))
+    ;;))
+    (if no-rmv-trail-wspc
+        justified
+        (setq justified (replace-regexp-in-string "[[:space:]]+$" "" justified)))))
 ) ;; :CLOSE 4th foundp `mon-string-justify-left'
 ;;
 ;;; :TEST-ME (mon-string-upto-index "string before ### string after" "###")
@@ -399,9 +372,42 @@ AFTER-STR is a simple string. No regexps, chars, numbers, lists, etc.\n
 ;;;        (setq jnk (concat " " (make-string (elt (shuffle-vector [7 5 3 9]) 3) i) jnk))))) 68)
 
 ;;; ==============================
+;;; :LOAD-SPECIFIC-PROCEDURES :IF-NOT-FEATURE-P `mon-cl-compat.el'
+;;; `cl::subseq'
+(unless (and (featurep 'mon-cl-compat)
+             (fboundp 'cl::subseq))
+(defun cl::subseq (seq start &optional end)
+  "Return the subsequence of SEQ from START to END.
+If END is omitted, it defaults to the length of the sequence.
+If START or END is negative, it counts from the end."
+  (if (stringp seq) (substring seq start end)
+    (let (len)
+      (and end (< end 0) (setq end (+ end (setq len (length seq)))))
+      (if (< start 0) (setq start (+ start (or len (setq len (length seq))))))
+      (cond ((listp seq)
+	     (if (> start 0) (setq seq (nthcdr start seq)))
+	     (if end
+		 (let ((res nil))
+		   (while (>= (setq end (1- end)) start)
+		     (push (pop seq) res))
+		   (nreverse res))
+	       (copy-sequence seq)))
+	    (t
+	     (or end (setq end (or len (length seq))))
+	     (let ((res (make-vector (max (- end start) 0) nil))
+		   (i 0))
+	       (while (< start end)
+		 (aset res i (aref seq start))
+		 (setq i (1+ i) start (1+ start)))
+	       res))))))
+) ;; :CLOSE foundp `cl::subseq'
+
+;;; ==============================
 (provide 'mon-doc-help-utils-supplemental)
 ;;; ==============================
 
 ;;; ================================================================
 ;;; mon-doc-help-utils-supplemental.el ends here
 ;;; EOF
+
+

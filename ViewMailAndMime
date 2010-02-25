@@ -2,7 +2,7 @@
 
 **A:** The customization variable `vm-mime-alternative-select-method' can be used specify the choice.  A value of 'best will allow the best alternative to be displayed, typically html.  For this to work, however, you should have configured your Emacs to display html, using packages such as w3 or w3m.  The default value is 'best-internal, which means choose the best alternative that can be displayed internally in Emacs.  Again, if you have configured your Emacs to display html, it will be chosen.  Otherwise, text/plain alternative will be displayed.
 
-The variable `vm-mime-show-alternatives' can be used to show '''all''' the alternatives, either in full form or as buttons.
+The variable can also be set to 'all, in which case '''all''' the alternatives are shown, either in full form or as buttons.
 
 **Q:** Can one use lynx to convert html to plain text and display it in VM?
 

@@ -9,11 +9,19 @@ If you don't have Ibuffer, you can get it from CVS:ibuffer.el (there's also a pr
 See also: BufferMenuPlus, which also provides highlighting and other enhancements of BufferMenu.
 
 
+== Search all marked buffers ==
+
+* '''`M-s a C-s'''' - Do incremental search in the marked buffers.
+* '''`M-s a C-M-s'''' - Isearch for regexp in the marked buffers.
+* '''`U'''' - Replace by regexp in each of the marked buffers.
+* '''`Q'''' - Query replace in each of the marked buffers.
+* '''`I'''' - As above, with a regular expression.
+
+
 == Search All Marked Buffers with Icicles ==
 
 With [[Icicles]], you can use '''`M-s i'''' in Ibuffer to search all marked buffers  and possibly replace search hits.  You have
 available all of the [[Icicles - Search Commands, Overview|Icicles Search]] features, including accessing search hits directly, in any order.
-
 
 
 == Hide certain buffers ==

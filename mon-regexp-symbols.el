@@ -44,7 +44,8 @@
 ;;; `*regexp-cp1252-to-latin1*', `regexp-clean-url-utf-escape',
 ;;; `regexp-clean-html-escape', `*regexp-clean-xml-parse*',
 ;;; `*regexp-clean-gilt-group*',`*regexp-clean-benezit-fields*'
-;;; `*regexp-clean-mon-file-keywords*'
+;;; `*regexp-clean-mon-file-keywords*', `*regexp-rgb-hex*'
+;;; `*regexp-symbol-defs-big*', `*regexp-symbol-defs*'
 ;;;
 ;;; ALIASED/ADVISED/SUBST'D:
 ;;; `regexp-version-alist' -> `version-regexp-alist'
@@ -192,6 +193,7 @@ loops without querying the user, it is easy to alter procedures accidentally.\n
 ;;;(progn (makunbound '*regexp-clean-mon-file-keywords*)
 ;;;       (unintern '*regexp-clean-mon-file-keywords*) )
 
+;;; ==============================
 ;;; :STANDARD
 ;;; `defun', `defmacro'  `defsubst' `defsubst*' 
 ;;; `defvar' `defconst' 
@@ -220,7 +222,7 @@ followed by the symbol they define:\n
  `defcustom' `defface' `deftheme'
 :NOTE Tests can be run on this regexp with `mon-help-regexp-symbol-defs-TEST'.\n
 :CALLED-BY `mon-insert-lisp-testme',`mon-insert-doc-help-tail'.\n
-:SEE-ALSO .\n►►►")
+:SEE-ALSO `*regexp-symbol-defs-big*'.\n►►►")
 ;;
 (when (not (bound-and-true-p *regexp-symbol-defs*))
   (setq *regexp-symbol-defs*
@@ -229,13 +231,13 @@ followed by the symbol they define:\n
          ;;...1..         
          "^\\((" ;;opening paren
          ;;grp 2 -> 
-         ;; `defun' `defun*' `defmacro' `defmacro*' `defsubst'
-         ;; `defconst' `defvar'
+         ;; `defun' `defun*' `defmacro' `defmacro*' `defsubst' `defsubst*'
+         ;; `defconst' `defvar' 
          ;; `defcustom' `defface' `deftheme'
          ;;..2................................................
          ;; :WAS
          "\\(def\\(?:c\\(?:onst\\|ustom\\)\\|face\\|macro\\*?\\|subst\\*?\\|theme\\|un\\*?\\|var\\)\\)"  
-         ;;. .3....................     ;; :NOTE leading whitepspace
+         ;;^2^^^^^^^^^....................     ;; :NOTE leading whitepspace
          ;; :WAS 
          " \\([A-Za-z0-9/><:*-]+\\)"      ;; grp 3 -> *some/-symbol:->name<-2*
          ;;...4........................
@@ -245,6 +247,39 @@ followed by the symbol they define:\n
 ;;; :TEST-ME  *regexp-symbol-defs*
 ;;
 ;;;(progn (makunbound '*regexp-symbol-defs*) (unintern '*regexp-symbol-defs*) )
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-02-24T20:04:49-05:00Z}#{10084} - by MON KEY>
+(defvar *regexp-symbol-defs-big* nil
+  "*Regexp list to match lisp operator forms that define.\n
+Match values include following symbols occuring at BOL prefixed by `(' and
+followed by the symbol they define. 
+Like `*regexp-symbol-defs-big*' but covers a broader range of operators.\n
+ `defadvice' `defalias' `defclass' `defconst' `defconstant' `defcustom'
+ `defface' `defgeneric' `defgroup' `defimage' `defmacro' `defmacro*'
+ `defmethod' `defpackage' `defparameter' `defsetf' `defstruct' `defsubst'
+ `defsubst*' `deftheme' `deftype' `defun' `defun*' `defvar' `defvaralias'
+:NOTE Tests can be run on this regexp with `mon-help-regexp-symbol-defs-TEST'.\n
+:SEE-ALSO `*regexp-symbol-defs-big*'.\n►►►")
+;;
+(when (not (bound-and-true-p *regexp-symbol-defs-big*))
+  (setq *regexp-symbol-defs-big*
+(concat "^\\((" ;; grp1
+        "\\(?2:"
+        (substring
+         (regexp-opt
+          '("defadvice" "defalias" "defclass" "defconst" "defconstant"
+           "defcustom" "defface" "defgeneric" "defgroup" "defimage" "defmacro"
+           "defmacro*" "defmethod" "defpackage" "defparameter" "defsetf"
+           "defstruct" "defsubst" "defsubst*" "deftheme" "deftype" "defun"
+           "defun*" "defvar" "defvaralias"))
+         4) ;; grp2
+        ;;" \\('?[A-Za-z0-9/><:*-]+\\)" ;; grp3 -> *some/-symbol:->name<-2*
+        " \\('?[A-Za-z0-9/><:*-]+\\)" ;; grp3 -> *some/-symbol:->name<-2*
+        "\\(\\( ([^()&\"]\\)\\| \\('\\|t\\|nil\\|\"\\|((\\|()\\|(&\\|`(\\)\\)\\)"  ;grp4 5,6
+        )))
+;;
+;;; (progn (makunbound '*regexp-symbol-defs-big*) (unintern '*regexp-symbol-defs-big*) )
 
 ;;; ==============================
 ;;; :NOTE Matches short years at BOL in bib entries 'YY "^'\\([0-9]\\{2,2\\}\\) "YY".
@@ -378,22 +413,22 @@ Aug-10-09 09:16:14 PDT       <-style3\n
                 ;;mon-get-current-year-isn't loaded yet from mon-utils.el
                 ;;(subseq (mon-get-current-year) 2 4)) 
                 ;;(sub-cent (subseq (mon-get-current-year) 0 2))
-                (Mmm-))
+                Mmm-)
             (setq Mmm- '())
-            (mapcar (lambda (x)
-                      (let* ((bld-rgxp 
-			      (concat 
-			       "\\("			     ; 1 
-			       "\\(%s\\)"		     ; 2 -> Mmm-
-			       "\\([0-9]\\{2,2\\}\\)"	     ; 3 -> DD
-			       "\\(-\\)"	 ; 4 -> hyphen post DD
-			       "\\(%s\\)"	 ; 5 -> sub-yr
-			       "\\( [0-9]\\{2,2\\}:[0-9]\\{2,2\\}:[0-9]\\{2,2\\} \\)" ; 6 -> " HH:MM:SS "
-			       "\\(.*\\)" ; 7 -> TimeZone/ whatevers left 
-			       "\\)"))
-                             (splc-rgxp (format bld-rgxp (car x) sub-yr)))
-                        (setq Mmm- 
-                              (cons (list splc-rgxp (cadr x)) Mmm-))))
+            ;; :TODO make this a `dolist'
+            (mapcar #'(lambda (x)
+                        (let* ((bld-rgxp 
+                                (concat 
+                                 "\\("                ; 1 
+                                 "\\(%s\\)"           ; 2 -> Mmm-
+                                 "\\([0-9]\\{2,2\\}\\)" ; 3 -> DD
+                                 "\\(-\\)"              ; 4 -> hyphen post DD
+                                 "\\(%s\\)"             ; 5 -> sub-yr
+                                 "\\( [0-9]\\{2,2\\}:[0-9]\\{2,2\\}:[0-9]\\{2,2\\} \\)" ; 6 -> " HH:MM:SS "
+                                 "\\(.*\\)" ; 7 -> TimeZone/ whatevers left 
+                                 "\\)"))
+                               (splc-rgxp (format bld-rgxp (car x) sub-yr)))
+                          (setq Mmm- (cons (list splc-rgxp (cadr x)) Mmm-))))
                     from-style2)
           (nreverse Mmm-)))))
 ;;
@@ -1303,6 +1338,30 @@ Elements of list are wrapped as follows:
 ;;
 ;;;(progn (makunbound '*mon-wrap-url-schemes*)(unintern '*mon-wrap-url-schemes*) )
 
+
+;;; ==============================
+;;; :NOTE :SEE :FILE faces.el :FUNCTION `read-color'
+;;; :CREATED <Timestamp: #{2010-02-17T11:28:46-05:00Z}#{10073} - by MON KEY>
+(defvar *regexp-rgb-hex*
+  '((bol->eol . ;; "^#?\\([a-fA-F0-9][a-fA-F0-9][a-fA-F0-9]\\)+$")
+     "^#?\\([[:xdigit:]]\\{6,6\\}\\)$")
+    (bol-wspc->eol . ;; "^ #?\\([a-fA-F0-9][a-fA-F0-9][a-fA-F0-9]\\)+")
+     "^ #?\\([[:xdigit:]]\\{6,6\\}\\)$")
+    (leading-wspc->eol . ;; " #?\\([a-fA-F0-9][a-fA-F0-9][a-fA-F0-9]\\)+$")
+     " #?\\([[:xdigit:]]\\{6,6\\}\\)$")
+    (bol->trailing-wspc . ;; " #?\\([a-fA-F0-9][a-fA-F0-9][a-fA-F0-9]\\)+$")
+     "^#?\\([[:xdigit:]]\\{6,6\\}\\) ")
+     (wspc-bracketed . ;; " #?\\([a-fA-F0-9][a-fA-F0-9][a-fA-F0-9]\\)+ ")
+      " ?#?\\([[:xdigit:]]\\{6,6\\}\\) ?"))
+  "*Regexp alist key value pairs to match RGB hex strings.
+Elements of list are conses of the form:
+ \(SYMBOL-REGEXP-TYPE . \"REGEXP-STRING\")\n
+Various keys are provided for matching RGB hex strings at bol, eol, with/without
+leading/trailing whitespace.\n
+:EXAMPLE\n
+:SEE-ALSO .\n►►►")
+
+
 ;;; ==============================
 ;;; :NOTE Percent-encoding reserved characters:
 ;;; reserved    = gen-delims / sub-delims
@@ -2051,7 +2110,7 @@ Used in `naf-mode'.\n►►►")
 
 ;;; ==============================
 ;;; :NOTE Regexp template for finding nameforms in regions. 
-;;; Template has also been pasted into "naf-name-utils.el" :CALLED-BY `mon-cln-ulan'.
+;;; Template has also been pasted into "mon-name-utils.el" :CALLED-BY `mon-cln-ulan'.
 ;;; :WORKING-AS-OF <Timestamp: Friday February 13, 2009 @ 09:18.35 PM - by MON KEY>
 ;;; ==============================
 ;;;        (region-name (when (and transient-mark-mode mark-active)

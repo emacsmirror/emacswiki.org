@@ -195,6 +195,15 @@ referenced in the comments of some of my other files so I display them. I don't
 believe there is anything in these files which should be of any interest to
 others. Have you found a requirement for them that is causing you problems?
 
+  [Note: thank you for your reply (which I only noticed now -- I was using the RSS
+  feed of RecentChanges in a mistaken belief that it would "work"). Unfortunately its
+  length and form make it a bit hard to continue the discussion, so I'm doing so
+  in-place like this -- stepnem]
+
+  No, I just found it weird: the lines *look* like a Lisp: link, but in fact are
+  not -- they're missing the colon. Now I know it was intentional and not an error,
+  but I still find that somewhat confusing. Whatever.
+
 Regarding my headers. 
 
 I use a template to generate them 
@@ -207,6 +216,8 @@ For the most part I agree, my packages _should_ adhere to the header conventions
 When I first wrote the template I wasn't aware of the rationale behind using a
 canonical header. I glanced at the docs and what I saw felt ugly so I rolled my
 own.
+
+  That's a rather lame reason for rolling one's own.
 
 Since then, the need for adhering to this convention has become more clear to me.  
 Unfortunately it will be a bit tedious adjusting my existing headers to
@@ -231,6 +242,21 @@ remained workable. In practice adherence to this convention places unwarranted
 power into the hands of the emacs-devels/maintainers allowing them to enforce
 an unspecified specification. I.e. MON, your headers aren't compliant :) 
 
+  IIUC the only convention we are speaking about here is the library headers
+  section.
+  If you look at the actual code (lisp-mnt.el), you see it only relies on section
+  headers having at least three semicolons followed by some amount of
+  whitespace, which actually leaves a lot of space for adjustment (see esp. the
+  docstring of `lm-header-prefix' in the same file).
+
+  That being said, I personally see no problem with the de-facto standard either
+  (i.e. three semicolons for a heading, two for the rest). Although it is different
+  from usual Lisp code commenting conventions, I don't think that's really
+  a problem -- it's a header section, not a normal comment. The only inconvenience
+  I can think of off the top of my head is using outlining, e.g. if you would define
+  the highest level with four semicolons -- but as said above, the implementation
+  actually makes that possible even now.
+
 When one considers adopting an alternative form of field delimiter for package
 headers it is clear that reliance on semi-colon padding and whitespace
 placement alone is a stupid and error prone way to facilitate header parsing.
@@ -240,6 +266,9 @@ would be even better to provide package authors to declare _their_ preferred
 delimiting tokens in the file header. These might be placed in the mode `-*-'
 or `file-local-variables-alist' and might be useful for directing
 `hack-local-variables' to identify the users preferred delimiter tags.
+
+  Well, maybe. I haven't felt the need. If you do, just implement it and fight for its
+  adoption.
 
 It is worth considering, that my consistent use of only the three colon BOL is
 easily remedied with a quick rectangle crop. The same can not be said of the
@@ -265,8 +294,15 @@ continue.
 The `Version' line usage is compromised in lieu of contemporary distributed
 VCS'.
 	
+  I don't think so. I see the two as orthogonal -- you can use whatever VCS you
+  want for development, but it still makes sense to release the package and use
+  the Version header.
+
 The `History' line line usage is compromised in lieu of contemporary
 distributed VCS'.
+
+  Same as above -- you shouldn't expect every user to be interested in checking
+  out your repository just to see what changed since the last version.
 
 The `Created' line should use a more robust time stamp and should be mandatory
 with _strong_ emphasis encouraging on ISO-8601 conformity. 
@@ -278,9 +314,15 @@ more data than either the `Version' line or `History' lines.
 
 The `Author' line convention is spammer fodder.
 
+  I don't see how; and the Maintainer: header makes it possible to send bug reports
+  semi-automatically.
+
 There are any number of better ways to implement a central registry of package
 authors that might allow users to contact a packages author and that would
 protect both the authors privacy and the users.
+
+  Definitely. There is nearly always any number of better ways to do _anything_.
+  Just do it.
 
 I also have a firm belief that when AI occurs it will wish to introspect.
 I've no reason to suspect that such a thing will necessarily be well
@@ -296,6 +338,27 @@ dictionary, thesaurus, etc. The literature re these mechanism and their
 correct implementation is vast and well explored. The conventional idioms
 explored in the literature are robust and reliable.
 
+  Yes, the current implementation of `finder-by-keywor' is braindead (actually, the
+  whole finder.el leaves much to be desired). I'm probably going to post to
+  emacs-devel about it in near future.
+  Here is a possible implementation doing something actually useful (just a POC,
+  relies on some cl functionality). Note it uses the `Keywords:' header:
+</pre>
+
+{{{
+ (defun finder-by-keyword (key)
+  "List packages matching a given keyword."
+  (interactive
+   (list
+    (completing-read
+     "Keyword: "
+     (mapcar (lambda (x) (and (symbolp x) (symbol-name x)))
+             (remove-duplicates (apply 'append (mapcar 'caddr finder-package-info))))
+     nil t)))
+  (finder-list-matches key))
+}}}
+
+<pre>
 Emacs is _embarrassingly_ capable of integrating these idioms, yet it doesn't
 because doing so would increase the memory footprint by a MB or two. This is
 so unbelievably unfortunate that I find it difficult to play along. This
@@ -342,6 +405,12 @@ the only program processing/parsing a package. Obv. inserting a literal Control-
 Emacs but by substituting the literal with a simple text token like EOF one can
 convey the same information and remain unencumbered by whitespace issues.
 
+  ASCII ^D being EOF is a common misconception. Read up about ASCII and EOF.
+  Google is your friend.
+
+  The main purpose of the `foo ends here' line is just to be sure it's the whole thing,
+  i.e. not truncated.
+
 You'll note, I also don't use defcustom forms. I'm not sure that I can ever
 fully transition to using that facility as currently provided.
 
@@ -365,11 +434,18 @@ game changer for Emacs - collectively they will radically alter the scope of how
 Emacs extensions are delivered. I simply can not believe that the current
 defcustom facility will be capable of supporting this change.
 
+  I also believe custom is horrible. I usually only use it sometimes to browse
+  through available variables, then simply add the needed forms into my init file.
+  It's a standard, nevertheless, and I don't see any problem in using `defcustom'
+  instead of `defvar' when writing Emacs packages.
+
 So, to come full circle, Emacs' existing header conventions are a complicated
 issue for me and I'm not convinced that the header conventions aren't due for a
 correction first. Obv. this would be *a lot* of work. So the cruft persists. It
 may be worth asking why it is that you feel compelled to have your header files
 conform to Emacs conventions? What are the benefits?
+
+  See above. Even from purely esthetic point of view, I find them nicer than yours.
 
 The only rationale that I can find is to consistently comport with third party
 packaging tools.  To the extent that none of these are yet blessed why should

@@ -1,5 +1,6 @@
 I use emacs(meadow).
 
+* Lisp:trans-regions.el -- Transpose regions command.
 * Lisp:lcomp.el -- list completion hacks!
 * Lisp:highlight-cl.el -- Highlighting `cl' functions.
 * Lisp:anything-yaetags.el -- Yet another etags interface with anything.

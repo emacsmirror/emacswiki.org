@@ -1,5 +1,5 @@
-[http://www.emacswiki.org/elisp/anchored-transpose.el
-anchored-transpose.el] defines an interactive autoloaded function to
+[http://www.emacswiki.org/elisp/anchored-transpose.el anchored-transpose.el] (a newer version is in [NxhtmlMode nXhtml] - but it might miss the fuzziness)
+defines an interactive autoloaded function to
 transpose portions of a region around an anchor phrase.  
 
 <b>In other words it swaps 2 regions.</b>  For example:

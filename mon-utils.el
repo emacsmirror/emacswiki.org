@@ -52,7 +52,7 @@
 ;;; `mon-byte-compile-and-load', `mon-compile-when-needed',
 ;;; `mon-load-or-alert', `mon-cmd', `mon-terminal', `mon-string-to-symbol'
 ;;; `mon-line-find-duplicates', `mon-test-keypresses', `mon-line-strings-one-list'
-;;; `mon-line-strings-to-list', `mon-line-strings-to-list-*test*',
+;;; `mon-line-strings-to-list', `mon-line-strings-to-list-TEST',
 ;;; `mon-line-string-rotate-name', `mon-line-string-rotate-namestrings',
 ;;; `mon-line-string-unrotate-namestrings', `mon-symbol-to-string',
 ;;; `mon-line-string-rotate-namestrings-combine', `mon-intersection',
@@ -77,12 +77,14 @@
 ;;; `mon-get-env-vars-emacs', `mon-get-emacsd-paths'
 ;;; `mon-string-replace-char', `mon-string-to-hex-list'
 ;;; `mon-buffer-exists-so-kill', `mon-string-wonkify'
+;;; `mon-after-mon-utils-loadtime', 
 ;;; FUNCTIONS:◄◄◄
 ;;; 
 ;;; MACROS:
 ;;; `mon-foreach', `mon-for', `mon-loop', `mon-moveq', `mon-line-dolines'
 ;;; `defconstant', `defparameter', 
 ;;; `mon-get-face-at-posn', `mon-buffer-exists-p'
+;;; `mon-check-feature-for-loadtime'
 ;;; METHODS:
 ;;;
 ;;; CLASSES:
@@ -109,10 +111,13 @@
 ;;; `mon-string-from-sequence2' ;; :REMOVED
 ;;;
 ;;; RENAMED:
-;;; `mon-trunc'                   -> `mon-toggle-truncate-line'
-;;; `mon-stringify-list'          -> `mon-string-ify-list'
-;;; `mon-split-string-line'       -> `mon-string-split-line'
-;;; `mon-what-face'               -> `mon-get-face-at-point'
+;;; `mon-trunc'                       -> `mon-toggle-truncate-line'
+;;; `mon-stringify-list'              -> `mon-string-ify-list'
+;;; `mon-split-string-line'           -> `mon-string-split-line'
+;;; `mon-what-face'                   -> `mon-get-face-at-point'
+;;; `mon-line-strings-to-list-*test*' -> `mon-line-strings-to-list-TEST'
+;;; `scroll-up-in-place'              -> `mon-scroll-up-in-place'
+;;; `scroll-down-in-place'            -> `mon-scroll-down-in-place'
 ;;;
 ;;; MOVED:
 ;;; `mon-coerce->char'            -> mon-empty-registers.el
@@ -206,6 +211,7 @@
   (require 'mon-insertion-utils)
   (require 'mon-testme-utils)
   (require 'naf-mode-insertion-utils)
+  (require 'mon-wget-utils) ;; mon-get-mon-packages :AFTER-LOAD
   (require 'mon-url-utils)
   (require 'mon-hash-utils)
   (require 'mon-doc-help-utils)
@@ -219,8 +225,103 @@
   (require 'mon-iptables-regexps)
   (require 'mon-mysql-utils)
   (require 'naf-mode-sql-skeletons) ;; Load here instead of from :FILE naf-mode.el
-  (require 'mon-bzr-utils)
   )
+
+;;; ==============================
+;;; :NOTE Adding an optional arg W-SIGNAL-ERROR doesn't really make sense as the
+;;; check for filename is made explicit with this marcro.
+;;; :CREATED <Timestamp: #{2010-02-24T15:15:25-05:00Z}#{10083} - by MON KEY>
+(defmacro mon-check-feature-for-loadtime (feature-as-symbol &optional req-w-filname)
+  "Test if library FEATURE-AS-SYMBOL is in load path if so require feature.\n
+The arg FEATURE-AS-SYMBOL is a quoted symbol.\n
+When optional arg REQ-W-FILNAME is non-nil second arg to `require' will given as
+the filename of feature FEATURE-AS-SYMBOL when it is in loadpath.\n
+:EXAMPLE\n\n\(pp-macroexpand-expression 
+          '\(mon-check-feature-for-loadtime 'mon-test-feature-fl\)\)\n
+:SEE-ALSO `mon-unbind-command', `mon-unbind-symbol', `mon-unbind-function',
+`mon-unbind-variable', `mon-unbind-defun', `mon-after-mon-utils-loadtime',
+`mon-compile-when-needed' `mon-load-or-alert', `mon-byte-compile-and-load',
+`mon-dump-object-to-file', `mon-nuke-and-eval',
+`mon-after-mon-utils-loadtime'.\n►►►"
+  (declare (indent 2) (debug t))
+  (let ((mcffl (make-symbol "mcffl")))
+    `(let (,mcffl)
+       (setq ,mcffl (locate-library (format "%s" ,feature-as-symbol)))
+       (if ,mcffl
+           (unless (featurep ,feature-as-symbol)
+             (if ,req-w-filname
+                 (require ,feature-as-symbol ,mcffl t) ;;,(if w-signal-error nil t))
+                 (require ,feature-as-symbol nil t))) ;;,(if w-signal-error t nil))))
+             (error ":MACRO - arg feature-as-symbol does not find a file")))))
+;;
+;;; :TEST-ME (pp-macroexpand-expression 
+;;;           '(mon-check-feature-for-loadtime 'mon-test-feature-fl))
+;;; :TEST-ME (pp-macroexpand-expression 
+;;;           '(mon-check-feature-for-loadtime 'mon-test-feature-fl t))
+;; 
+;;; :TEST-ME 
+;;; (let ((mtff (concat default-directory "mon-test-feature-fl.el")))
+;;;   (unwind-protect   
+;;;        (progn
+;;;          (with-temp-file mtff
+;;;            (insert 
+;;;             (concat 
+;;;              "\(defvar *mon-test-feature-var* t\n"
+;;;              "\"Docstring present if `mon-test-feature-fl' is feature in environment.\"\)\n"
+;;;              "\(provide 'mon-test-feature-fl\)"))
+;;;            (mon-check-feature-for-loadtime 'mon-test-feature-fl)
+;;;            (message (documentation-property '*mon-test-feature-var* 'variable-documentation))
+;;;            (sit-for 4))
+;;;          (progn (unload-feature 'mon-test-feature-fl) (delete-file mtff)))))
+
+;;; ==============================
+;;; :TODO Build additional fncn/macro to populate docstrings at loadtime.
+;;; :CREATED <Timestamp: #{2010-02-24T15:15:09-05:00Z}#{10083} - by MON KEY>
+(defun mon-after-mon-utils-loadtime ()
+  "List of packages to load up once mon-utils.el is in the current environment.\n
+Called with \(eval-after-load \"mon-utils\" '\(mon-after-mon-utils-loadtime\)\)\n
+Evaluates the following functions per feature:
+ `mon-bind-nefs-photos-at-loadtime'    <- mon-dir-utils 
+ `mon-bind-cifs-vars-at-loadtime'      <- mon-cifs-utils
+ `mon-set-register-tags-loadtime'      <- mon-empty-registers
+ `mon-help-utils-loadtime'             <- mon-doc-help-utils
+ `mon-CL-cln-colon-swap'               <- mon-cl-compat-regexps
+ `mon-bind-iptables-vars-at-loadtime'  <- mon-iptables-regexps
+ `mon-bind-doc-help-proprietery-vars-at-loadtime' <- mon-doc-help-proprietary\n
+Adds feature requirements:\n
+ mon-get-mon-packages <- :AFTER mon-wget-utils
+ mon-boxcutter
+ google-define-redux
+ mon-bzr-utils
+ mon-eight-bit-raw-utils\n
+:SEE-ALSO `mon-check-feature-for-loadtime', `mon-unbind-command',
+`mon-unbind-symbol', `mon-unbind-function', `mon-unbind-variable',
+`mon-unbind-defun', `mon-after-mon-utils-loadtime', `mon-compile-when-needed'
+`mon-load-or-alert', `mon-byte-compile-and-load', `mon-dump-object-to-file',
+`mon-nuke-and-eval'.\n►►►"
+  (progn 
+    (eval-after-load "mon-dir-utils" '(mon-bind-nefs-photos-at-loadtime))
+    (eval-after-load "mon-doc-help-utils" '(mon-help-utils-loadtime))
+    ;; :NOTE See docs `mon-bind-cifs-vars-at-loadtime' and notes at BOF
+    ;; mon-cifs-utils.el for alternative application with args 
+    ;; NO-MISC-PATH NO-MAP-MOUNT-POINTS e.g.:
+    ;; (eval-after-load 'mon-cifs-utils '(mon-bind-cifs-vars-at-loadtime nil t)) 
+    (eval-after-load "mon-cifs-utils"           '(mon-bind-cifs-vars-at-loadtime))
+    (eval-after-load "mon-cl-compat-regexps"    '(mon-CL-cln-colon-swap t))    
+    (eval-after-load "mon-empty-registers"      '(mon-set-register-tags-loadtime))
+    (eval-after-load "mon-iptables-regexps"     '(mon-bind-iptables-vars-at-loadtime))
+    (eval-after-load "mon-doc-help-proprietary" 
+      '(progn
+        (mon-bind-doc-help-proprietery-vars-at-loadtime *mon-help-w32-CMD-commands-TEMP*)
+        (makunbound '*mon-help-w32-CMD-commands-TEMP*)
+        (unintern   '*mon-help-w32-CMD-commands-TEMP*)))
+    (eval-after-load "mon-wget-utils" 
+      '(mon-check-feature-for-loadtime 'mon-get-mon-packages))
+    (mon-check-feature-for-loadtime    'google-define-redux)
+    (mon-check-feature-for-loadtime    'mon-bzr-utils)
+    (mon-check-feature-for-loadtime    'mon-eight-bit-raw-utils)
+    (when IS-W32-P (mon-check-feature-for-loadtime 'mon-boxcutter))
+    ))
 
 ;;; ==============================
 ;;; :COURTESY Pascal J. Bourguignon :HIS pjb-cl.el :LICENSE LGPL
@@ -549,7 +650,7 @@ Does not move point.\n
 COMM (a string) is an executable name. 
 On w32 it is not required give the .exe suffix.\n
 :EXAMPLE\n\(mon-get-proc-w-name \"emacs\"\)\n
-:SEE-ALSO `mon-get-process', `mon-get-sys-proc-list',`mon-get-sys-proc-list'.
+:SEE-ALSO `mon-get-process', `mon-get-sys-proc-list', `mon-get-sys-proc-list'.
 ►►►"
   (let (fnd-proc gthr)
    (mapc #'(lambda (x)
@@ -653,7 +754,7 @@ But, this way MON has fine-grain control over the assigned name suffix.\n
 (defun mon-shell ()
   "Return *shell* buffer.\n
 If *shell* exists increment by 1 and return *shell-N*.\n
-:SEE-ALSO `mon-make-shell-buffer', `shell'.\n►►►"
+:SEE-ALSO `mon-make-shell-buffer', `mon-terminal', `shell'.\n►►►"
   (interactive)
   (shell (mon-make-shell-buffer)))
 ;;
@@ -666,7 +767,7 @@ If *shell* exists increment by 1 and return *shell-N*.\n
   "Return a sorted du \(big->small\)for DIR in buffer `*DU-<DIR>'.\n
 Invoke du as an asynchronous shell command.\n
 :EXAMPLE\n\n\(mon-async-du-dir data-directory)\n
-:SEE-ALSO `mon-help-du-incantation', `*regexp-clean-du-flags*'\n►►►"
+:SEE-ALSO `mon-help-du-incantation', `*regexp-clean-du-flags*'.\n►►►"
   (interactive "DDirectory to du :");(read-directory-name "Directory to du :" nil nil t)))
   (if (fboundp 'async-shell-command)      
       (let ((dir-du
@@ -704,7 +805,8 @@ This function will be :DEPRECATED once EMACS <-> CEDET merge is complete.\n►�
   "When `gnu-linuxp' launch a terminal.\n
 When `win32p' invoke Cygwin Bash in cmd console.\n
 :SEE-ALSO `mon-cmd' which when win32p returns the NT Command console.
-`w32shell-cmd-here', `w32shell-cmd', `w32shell-explorer'\n►►►"
+`mon-shell', `mon-make-shell-buffer', `w32shell-cmd-here', `w32shell-cmd',
+`w32shell-explorer'\n►►►"
   (interactive)
   (cond 
    (IS-BUG-P (message "You don't have the goods for this"))
@@ -713,10 +815,12 @@ When `win32p' invoke Cygwin Bash in cmd console.\n
 
 ;;; ==============================
 (defun mon-cmd ()
-  "When `win32p' launch the NT Command console. 
+  "When `win32p' launch the NT Command console.\n
 When `gnu-linuxp' return a terminal.\n
-:SEE-ALSO `mon-terminal' which when `win32p' gives a Cygwin bash shell wrapped
-in a cmd console.\n►►►"
+:SEE `mon-terminal' which when `win32p' gives a Cygwin bash shell wrapped
+in a cmd console.\n
+:SEE-ALSO `mon-shell', `mon-make-shell-buffer', `w32shell-cmd-here', `w32shell-cmd',
+`w32shell-explorer'.\n►►►"
   (interactive)
   (cond (win32p (w32-shell-execute "open" "cmd"))
         (gnu-linuxp (shell-command "terminal"))))
@@ -749,7 +853,7 @@ put following in conkerorrc file:
     (error "This function requires conkeror be set as browse-url-generic-program")))
 
 ;;; ==============================
-(defun scratch ()
+(defun mon-scratch ()
   "Switch to *scratch* buffer.\n
 Get \(or create\) a *scratch* buffer now!\n
 :SEE-ALSO `mon-switch-to-mesages', `mon-kill-completions'.\n►►►"
@@ -759,31 +863,29 @@ Get \(or create\) a *scratch* buffer now!\n
   (if current-prefix-arg
       (delete-region (point-min) (point-max))
     (goto-char (point-max))))
-;;
-(defalias 'mon-scratch 'scratch)
 
 ;;; ==============================
-(defun switch-to-messages ()
-  "Select buffer *message* in the current window.\n
+(defun mon-switch-to-messages ()
+  "Select buffer *Messages* in the current window.\n
 :SEE-ALSO `mon-scratch', `mon-kill-completions'\n►►►"
   (interactive)
   (switch-to-buffer "*Messages*"))
-;;
-(defalias 'mon-switch-to-messages 'switch-to-messages)
 
 ;;; ==============================
-(defun scroll-down-in-place (n)
+;;; :RENAMED `scroll-down-in-place' -> `mon-scroll-down-in-place'
+(defun mon-scroll-down-in-place (n)
   "Scroll with the cursor in place, moving the UP page instead.\n
-:SEE-ALSO `scroll-up-in-place'.\n►►►"
+:SEE-ALSO `mon-scroll-up-in-place', `scroll-up', `scroll-down'.\n►►►"
   (interactive "p")
   (forward-line (- n))
   ;; (previous-line n)
   (scroll-down n))
 
 ;;; ==============================
-(defun scroll-up-in-place (n)
-  "Scroll with the cursor in place, moving the DOWN page instead.
-:SEE-ALSO `scroll-down-in-place'.\n►►►"
+;;; :RENAMED `scroll-up-in-place' -> `mon-scroll-up-in-place'
+(defun mon-scroll-up-in-place (n)
+  "Scroll with the cursor in place, moving the DOWN page instead.\n
+:SEE-ALSO `mon-scroll-down-in-place', `scroll-up', `scroll-down'.\n►►►"
   (interactive "p")
   (forward-line n)
   ;; (next-line n)
@@ -794,7 +896,7 @@ Get \(or create\) a *scratch* buffer now!\n
 (defun mon-kill-appending (beg end)
   "Append the region current to the kill ring without killing it.\n
 Like `append-next-kill' but skips the C M-w M-w finger-chord hoop jump.
-:SEE=ALSO .\n►►►"
+:SEE-ALSO .\n►►►"
   (interactive "r")
   (progn 
     (append-next-kill)
@@ -870,8 +972,8 @@ Like `append-next-kill' but skips the C M-w M-w finger-chord hoop jump.
 ;;; :CREATED <Timestamp: #{2010-02-04T14:03:31-05:00Z}#{10054} - by MON KEY>
 (defmacro mon-get-face-at-posn (position)
   "Return a list of faces at POSITION.\n
-:SEE-ALSO `mon-get-face-at-point',`mon-help-faces',
-`mon-help-faces-basic', `mon-help-faces-themes'."
+:SEE-ALSO `mon-get-face-at-point', `mon-help-faces',
+`mon-help-faces-basic', `mon-help-faces-themes'.\n►►►"
   (let ((pos (make-symbol "pos")))
     `(let ((,pos ,position))
        (delq nil (cons (get-text-property ,pos 'face)
@@ -904,7 +1006,7 @@ When non-nil prefix arg DELETE-REGION-P will delete region as well.
 Called programaticaly, takes four args: REGISTER, START, END and DELETE-REGION-P.
 START and END are buffer positions indicating what to append.
 Redefines `append-to-register' with a \"\n\".\n
-:SEE-ALSO `mon-append-to-buffer', `mon-kill-appending'.\n►►►"
+:SEE-ALSO `mon-append-to-buffer', `mon-kill-appending', `mon-append-to-register'.\n►►►"
   (interactive "cAppend to register: \nr\nP")
   (let ((reg (get-register register))
         (text (filter-buffer-substring start end)))
@@ -944,7 +1046,8 @@ An alternative definition of `append-to-buffer' with a \"\n\".\n
 ;;; ==============================
 (defun mon-region-position ()
   "Return the postion of current region. 
-A stupid and mostly useless function.\n►►►"
+A stupid and mostly useless function.\n
+:SEE-ALSO \n►►►"
   (interactive)
   (message "current reg-beg is: %s reg-end is: %s"
            (region-beginning) (region-end)))
@@ -1231,7 +1334,7 @@ Look for a match starting at or before point.  Move back a character
 at a time while still looking at a match ending at the same point.  If
 no match is found at or before point, return the first match after
 point, or nil if there is no match in the buffer.\n
-:SEE=ALSO .\n►►►"
+:SEE-ALSO .\n►►►"
   (let ((backup nil) (start nil) (end nil))
     (save-excursion
       (setq backup
@@ -1493,9 +1596,8 @@ When not called-interactively MOVE-TIMES arg examines Nth previos line.\n
 ;;; :CREATED <Timestamp: Tuesday June 02, 2009 @ 05:36.44 PM - by MON KEY>
 ;;; ==============================
 (defun mon-line-end-or-code-end () 
-  "Move point to EOL. If point is already there, to EOL sans comments.
-That is, the end of the code, ignoring any trailing comment
-or whitespace.  
+  "Move point to EOL. If point is already there, to EOL sans comments.\n
+That is, the end of the code, ignoring any trailing comment or whitespace.\n
 :NOTE this does not handle 2 character  comment starters like // or /*.
 Instances of such chars are be skipped.\n
 :SEE-ALSO `mon-spacep-is-bol', `mon-spacep-not-bol',
@@ -1860,7 +1962,10 @@ Wants char literals.\n
 ;;; :MODIFICATIONS <Timestamp: #{2010-02-03T18:08:59-05:00Z}#{10053} - by MON KEY>
 ;;; :ADDED `save-match-data' for `split-string'
 ;;; :RENAMED LEFT-MARGIN arg -> lft-margin. `left-margin' is a global var.
-(defun mon-string-justify-left (string &optional width lft-margin)
+;;; :MODIFICATIONS <Timestamp: #{2010-02-20T14:55:40-05:00Z}#{10076} - by MON KEY>
+;;; Added optional arg NO-RMV-TRAIL-WSPC. Relocated save-match-data and
+;;; conditioal type error checks.
+(defun mon-string-justify-left (string &optional width lft-margin no-rmv-trail-wspc)
   "Return a left-justified string built from STRING.\n
 :NOTE The default WIDTH is `current-column'.
       The default LFT-MARGIN is `left-margin'.
@@ -1868,26 +1973,28 @@ Wants char literals.\n
       The word separators are those of `split-string':
       [ \\f\\t\\n\\r\\v]+
       Which means that STRING is justified as one paragraph.\n
-:EXAMPLE\n\(mon-string-justify-left 
+Default is to remove any trailing whiespace at end of lines.
+When NO-RMV-TRAIL-WSPC is non-nil do not remove trailing whitespace.\n
+:EXAMPLE\n\n\(mon-string-justify-left 
  \(let \(jnk\)
    \(dotimes \(i 8 jnk\) 
      \(dolist \(i '\(64 94\)\)
        \(setq jnk 
              \(concat 
               \" \" 
-              \(make-string \(elt \(shuffle-vector [7 5 3 9]\) 3\) i\) jnk\)\)\)\)\) 68 4\)\n
+              \(make-string \(elt \(shuffle-vector [7 5 3 9]\) 3\) i\) jnk\)\)\)\)\) 68 4 t\)\n
 :SEE-ALSO `mon-string-fill-to-col'.\n►►►"
-(save-match-data
-  (if ;; (or (null width) (< width lft-margin))
-   (null width) (setq width (or fill-column 72)))
-  (if (null lft-margin) (setq lft-margin (or left-margin 0)))
-  (if (not (stringp string)) 
-      (error "string-justify-left: The first argument must be a string"))
-  (if (not (and (integerp width) (integerp lft-margin)))
-      (error "string-justify-left: The optional arguments must be integers"))
-  (let* ((margin (make-string lft-margin 32))
-         (splited (split-string string))
-         (col lft-margin)
+  (let* ((lft-margin (if (null lft-margin) (or left-margin 0) lft-margin))
+         (width (if (null width) (or fill-column 72) width))         
+         (string (if (not (stringp string)) 
+                     (error "string-justify-left: The first argument must be a string")
+                     string))
+
+         (col (if (not (and (integerp width) (integerp lft-margin)))
+                  (error "string-justify-left: The optional arguments must be integers")
+                  lft-margin))
+         (splited (save-match-data (split-string string)))
+         (margin (make-string lft-margin 32))
          (justified (substring margin 0 col))
          (word)
          (word-length 0)
@@ -1901,13 +2008,15 @@ Wants char literals.\n
               (progn
                 (setq justified (concat justified "\n" margin word))
                 (setq col (+ left-margin word-length)))
-            (progn
-              (setq justified (concat justified separator word))
-              (setq col (+ col 1 word-length)))))
+              (progn
+                (setq justified (concat justified separator word))
+                (setq col (+ col 1 word-length)))))
       (setq separator " "))
-    (if (< col width)
-        (setq justified (concat justified (make-string (- width col) 32))))
-    justified)))
+    (when (< col width) (setq justified (concat justified (make-string (- width col) 32))))
+    ;;))
+    (if no-rmv-trail-wspc
+        justified
+        (setq justified (replace-regexp-in-string "[[:space:]]+$" "" justified)))))
 ;;
 ;;; :TEST-ME 
 ;;; (mon-string-justify-left 
@@ -1937,7 +2046,7 @@ Wants char literals.\n
 ;;; ==============================
 ;;; :NOTE Alias these and don't forget to use them!
 ;;; :CREATED <Timestamp: Wednesday July 01, 2009 @ 06:32.08 PM - by MON KEY>
-(defalias 'mon-string-combine-and-quote 'combine-and-quote-strings)
+(defalias 'mon-string-combine-and-quote 'combine-and-quote-strings) 
 ;;
 (defalias 'mon-string-split-and-unquote 'split-string-and-unquote)
 ;;
@@ -2310,7 +2419,7 @@ When optional INSERTP is non-nil or called-interactively insert STR at point.
 Does not move point. 
 When W/SPC is non-nil return string with whitespace interspersed.\n
 :EXAMPLE\n\(mon-string-repeat \"bubba\" 3 nil t\)\n
-:SEE-ALSO `mon-insert-string-ify', `mon-insert-string-incr', 
+:SEE-ALSO `mon-insert-string-ify', `mon-string-incr', 
 `mon-insert-string-n-fancy-times', `mon-insert-string-n-times'
 `mon-string-replace-char'.\n►►►"
   (interactive 
@@ -2424,8 +2533,9 @@ move point to START.\n
 ►\nHassan-i Sabbah\nTristan and Iseult\nBroder Rusche
 Pier Gerlofs Donia\nBöŏvarr Bjarki\n◄\n
 :SEE-ALSO `mon-line-strings-to-list', `mon-line-strings-region'
-`mon-line-strings-qt-region',`mon-line-drop-in-words'
-`mon-string-ify-list',`mon-string-ify-current-line'.\n►►►"  
+`mon-line-strings-region-delimited',
+`mon-line-strings-qt-region',`mon-line-drop-in-words',
+`mon-string-ify-list',`mon-string-ify-current-line'.\n►►►"
   (interactive "r\ni\np")
   (let ((st-beg (make-marker))
         (st-end (make-marker))
@@ -2474,8 +2584,8 @@ Use with concat for formated indentation in source.\n
 ►\nI-will-be-a-string\nI too will be a string.\nMe as well.
 More stringification here\n◄\n
 :SEE-ALSO `mon-line-strings', `mon-line-strings-to-list',
-`mon-line-strings-bq-qt-sym-bol', `mon-string-ify-list', 
-`mon-string-ify-current-line', `mon-string-split-line', 
+`mon-line-strings-region-delimited', `mon-line-strings-bq-qt-sym-bol',
+`mon-string-ify-list', `mon-string-ify-current-line', `mon-string-split-line',
 `mon-line-drop-in-words', `mon-cln-up-colon'.\n►►►"
   (interactive "r\ni\np")
   (let ((qt-lns)
@@ -2510,8 +2620,6 @@ More stringification here\n◄\n
 ;; |◄
 ;; `----
 
-;;; \(princ (mon-line-strings-qt-region
-;;;  \(1+ \(search-forward-regexp \"►\"\)\) \(- \(search-forward-regexp \"◄\"\) 2\)\)\)
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-10-23T16:16:47-04:00Z}#{09435} - by MON KEY>
 (defun mon-line-strings-qt-region (start end &optional insertp intrp)
@@ -2529,10 +2637,10 @@ When following characters are at BOL no replacement is peformed on symbol:
 \n►\nI-will-be-a-string\n\"I-am-almost-a-string\nI-am-a-half-string\"
 I-am-not-a-string'\n◄\n 
 :SEE-ALSO `mon-line-strings-bq-qt-sym-bol', `mon-line-strings-pipe-bol'
-`mon-cln-up-colon', `mon-line-strings',`mon-line-strings-indent-to-col',
-`mon-line-strings-to-list', `mon-line-strings-region', `mon-string-ify-list',
-`mon-string-ify-current-line' `mon-string-split-line',
-`mon-line-drop-in-words'.\n►►►"
+`mon-line-strings-region-delimited', `mon-cln-up-colon',
+`mon-line-strings',`mon-line-strings-indent-to-col', `mon-line-strings-to-list',
+`mon-line-strings-region', `mon-string-ify-list', `mon-string-ify-current-line'
+`mon-string-split-line', `mon-line-drop-in-words'.\n►►►"
   (interactive "r\ni\np")
   (let (rtn-v)
     (setq rtn-v (buffer-substring-no-properties start end))
@@ -2584,9 +2692,9 @@ call-next-method &rest replacement-args
 `call-next-method &rest replacement-args
 call-next-method' &rest replacement-args\n◄\n
 :SEE-ALSO `mon-line-strings', `mon-line-strings-qt-region', `mon-cln-up-colon',
-`mon-line-strings-pipe-bol',`mon-line-strings-indent-to-col', 
-`mon-line-strings-to-list', `mon-line-strings-region',
-`mon-string-ify-list', `mon-string-ify-current-line'
+`mon-line-strings-region-delimited', `mon-line-strings-pipe-bol',
+`mon-line-strings-indent-to-col', `mon-line-strings-to-list',
+`mon-line-strings-region', `mon-string-ify-list', `mon-string-ify-current-line'
 `mon-string-split-line', `mon-line-drop-in-words'.\n►►►"
   (interactive "r\ni\np")
   (let (rtn-v)
@@ -2705,7 +2813,7 @@ move point to region-beginning.\n
   tmp\)\n\n►\nCraig Balding\nEmmanuel Bouillon\nBernardo Damele Assumpcao Guimaraes
 Jean-Paul Fizaine\nRob Havelt\nChris Wysopal\n◄\n
 :SEE-ALSO `mon-line-indent-from-to-col', `mon-line-strings-pipe-to-col'
-`mon-comment-divider->col', `mon-lisp-comment-to-col',
+`mon-comment-divider->col', `mon-comment-lisp-to-col',
 `mon-line-strings', `mon-string-fill-to-col',
 `mon-line-strings-qt-region', `mon-line-strings-region', 
 `mon-line-strings-bq-qt-sym-bol',`mon-line-strings-to-list'\n►►►"
@@ -2765,7 +2873,7 @@ When called-interactively prompt for column numer of FROM-COL and TO-COL.\n
 :SEE :FILE align.el for alternative approaches.\n
 :SEE-ALSO `mon-line-strings-indent-to-col', `mon-line-strings-pipe-to-col'
 `mon-string-fill-to-col',`mon-comment-divider->col',
-`mon-lisp-comment-to-col'.\n►►►"
+`mon-comment-lisp-to-col'.\n►►►"
   (interactive "i\ni\ni\ni\np")
   (let ((frm-c (cond (from-col from-col)
                      ((or intrp t)
@@ -2773,7 +2881,7 @@ When called-interactively prompt for column numer of FROM-COL and TO-COL.\n
                                    (car (posn-actual-col-row (posn-at-point)))))))
         (to-c (cond (to-col to-col)
                     ((or intrp t)
-                     (read-number "col to start from: " 
+                     (read-number "col to indent to: " 
                                   (car (posn-actual-col-row (posn-at-point)))))))
         (c-start (cond (start start)
                        ((region-active-p) (region-beginning))))
@@ -2884,7 +2992,7 @@ Erik Gordon Corley\n◄\n
 :SEE :FILE align.el for alternative approaches.\n
 :SEE-ALSO `mon-line-strings-pipe-bol', `mon-line-strings-indent-to-col',
 `mon-line-strings', `mon-line-indent-from-to-col',
-`mon-comment-divider->col', `mon-lisp-comment-to-col'.\n►►►"
+`mon-comment-divider->col', `mon-comment-lisp-to-col'.\n►►►"
   (interactive "i\n\i\nP\ni\np")
   (let  ((rg-b (make-marker))
          (rg-e (make-marker))
@@ -2936,15 +3044,15 @@ Mon Key\nMON\nMon\nMON KEY\n\n;; When W-CDR nil:
 =>\((\"Mon Key\"\)\n   \(\"MON\"\)\n   \(\"Mon\"\)\n   \(\"MON KEY\"\)\)\n
 ;; When W-CDR non-nil:\n=>\(\(\"Mon Key\" \"\"\)\n   \(\"MON\" \"\"\)
    (\"Mon\" \"\"\)\n   \(\"MON KEY\" \"\"\)\)\n
-\(mon-line-strings-to-list-*test* t nil\)\n
-\(mon-line-strings-to-list-*test*\)\n
-:SEE-ALSO `mon-line-strings-to-list-*test*', `mon-line-strings-one-list',
-`mon-line-string-rotate-name', `mon-line-string-rotate-namestrings',
-`mon-line-string-unrotate-namestrings', `mon-line-string-rotate-namestrings-combine',
-`mon-make-lastname-firstname', `naf-make-name-for-lisp', `mon-make-names-list',
-`mon-string-ify-current-line', `mon-line-strings-qt-region',
-`mon-string-ify-list', `mon-string-split-line', `mon-line-strings',
-`mon-line-strings-region', `mon-line-drop-in-words'.\n►►►"
+\(mon-line-strings-to-list-TEST t nil\)\n
+\(mon-line-strings-to-list-TEST\)\n
+:SEE-ALSO `mon-line-strings-to-list-TEST', `mon-line-strings-one-list',
+`mon-line-strings-region-delimited', `mon-line-string-rotate-name',
+`mon-line-string-rotate-namestrings', `mon-line-string-unrotate-namestrings',
+`mon-line-string-rotate-namestrings-combine', `mon-make-lastname-firstname',
+`mon-make-name-lispy', `mon-make-names-list', `mon-string-ify-current-line',
+`mon-line-strings-qt-region', `mon-string-ify-list', `mon-string-split-line',
+`mon-line-strings', `mon-line-strings-region', `mon-line-drop-in-words'.\n►►►"
   (interactive "r\ni\nP\ni\np") ;; (interactive "r\nP\ni\ni\np") make w-cdr the pref arg
   (let ((start-reg start)
         (end-reg end)
@@ -2974,9 +3082,14 @@ Mon Key\nMON\nMon\nMON KEY\n\n;; When W-CDR nil:
 	rgn-l)))
 
 ;;; ==============================
+;;; :RENAMED `mon-line-strings-to-list-*test*' -> `mon-line-strings-to-list-TEST'
 ;;; :CREATED <Timestamp: #{2009-09-13T09:28:46-04:00Z}#{09377} - by MON>
-(defun mon-line-strings-to-list-*test* (&optional with-cdr with-wrap insertp)
-  "Test function for `mon-line-strings-to-list'.\n►►►"
+(defun mon-line-strings-to-list-TEST (&optional with-cdr with-wrap insertp)
+  "Test function for `mon-line-strings-to-list'.\n
+:SEE-ALSO `mon-build-copyright-string-TEST', `mon-help-regexp-symbol-defs-TEST', 
+`mon-help-propertize-regexp-symbol-defs-TEST', 
+`mon-help-regexp-symbol-defs-TEST', `mon-help-wget-cl-pkgs-TEST', 
+`mon-help-propertize-tags-TEST', `mon-insert-test-cases'.\n►►►"
   (let ((st01 (make-marker))
         (en01 (make-marker))
         (t-str (concat "hendr erit\norci\nultrices\naugue\nAliquam\n"
@@ -2992,21 +3105,21 @@ Mon Key\nMON\nMon\nMON KEY\n\n;; When W-CDR nil:
            (goto-char st01)
            (mon-line-strings-to-list st01 en01 with-cdr with-wrap t)))))
 ;;
-;;; :TEST-ME (mon-line-strings-to-list-*test*)
-;;; :TEST-ME (mon-line-strings-to-list-*test* t nil)
-;;; :TEST-ME (mon-line-strings-to-list-*test* t t)
-;;; :TEST-ME (mon-line-strings-to-list-*test* t nil t)
-;;; :TEST-ME (mon-line-strings-to-list-*test* t t t)
+;;; :TEST-ME (mon-line-strings-to-list-TEST)
+;;; :TEST-ME (mon-line-strings-to-list-TEST t nil)
+;;; :TEST-ME (mon-line-strings-to-list-TEST t t)
+;;; :TEST-ME (mon-line-strings-to-list-TEST t nil t)
+;;; :TEST-ME (mon-line-strings-to-list-TEST t t t)
 ;;
-;;;(progn (newline) (mon-line-strings-to-list-*test* t t))
-;;;(progn (newline) (mon-line-strings-to-list-*test* nil t))
+;;;(progn (newline) (mon-line-strings-to-list-TEST t t))
+;;;(progn (newline) (mon-line-strings-to-list-TEST nil t))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-01-17T12:48:16-05:00Z}#{10027} - by MON>
 (defun mon-line-strings-one-list (start end &optional rep-rgn-w-list intrp)
   "Return lines in region from START TO END as a list of strings.\n
 :SEE-ALSO `mon-line-strings-to-list', `mon-line-strings',
-`mon-string-ify-list'.\n►►►"
+`mon-line-strings-region-delimited', `mon-string-ify-list'.\n►►►"
 (interactive "r\n\i\np")
 (let (lstr1l)
 (setq lstr1l (buffer-substring-no-properties start end))
@@ -3040,7 +3153,7 @@ holding a string containing one nameform.\n
 :SEE-ALSO `mon-line-strings', `mon-line-strings-to-list',
 `mon-line-string-rotate-namestrings', `mon-line-string-unrotate-namestrings',
 `mon-line-string-rotate-namestrings-combine', `mon-make-lastname-firstname',
-`naf-make-name-for-lisp', `mon-make-names-list', `mon-line-strings-region'.\n►►►"
+`mon-make-name-lispy', `mon-make-names-list', `mon-line-strings-region'.\n►►►"
 (let* ((nm-or-elt (if (atom name-str-or-elt)
                       name-str-or-elt
                       (let ((get-head name-str-or-elt))
@@ -3098,7 +3211,7 @@ When INSRTP is non-nil or called-interactively insert rotated names at point.
 Does not move point.\n
 :SEE-ALSO `mon-line-string-unrotate-namestrings', `mon-line-string-rotate-name', 
 `mon-line-string-rotate-namestrings-combine', `mon-line-strings-to-list',
-`mon-make-lastname-firstname', `mon-make-names-list', `naf-make-name-for-lisp',
+`mon-make-lastname-firstname', `mon-make-names-list', `mon-make-name-lispy',
 `mon-line-strings-region'.\n►►►"
   (interactive "r\nP\ni\np")
   (let ((r-nms-strt start)
@@ -3142,7 +3255,7 @@ Does not move point.\n
 ;; ==============================
 ;;; :CREATED <Timestamp: #{2009-09-23T20:12:26-04:00Z}#{09394} - by MON KEY>
 (defun mon-line-string-unrotate-namestrings (start end &optional as-strings insrtp intrp)
-  "Unrotate namestrings in region. 
+  "Unrotate namestrings in region.\n
 Namestrings are formatted name per line e.g. `Lastname (Firstname Middlenames)'
 Return `Firstname Middlename Lastname'
 When INSRTP is non-nil or Called-interactively insert rotated names at point.
@@ -3154,7 +3267,7 @@ Harriman (William Averell)\nMcCloy (John Jay)\nBohlen (Charles Eustis)
 Lovett (Robert Abercrombie)\n◄\n
 :SEE-ALSO `mon-line-string-rotate-name', `mon-line-string-rotate-namestrings'
 `mon-line-string-rotate-namestrings-combine' `mon-line-strings-to-list',
-`mon-make-lastname-firstname', `naf-make-name-for-lisp', `mon-make-names-list',
+`mon-make-lastname-firstname', `mon-make-name-lispy', `mon-make-names-list',
 `mon-line-strings-region'.\n►►►"
   (interactive "r\nP\ni\np")
   (let ((s-r start)
@@ -3218,7 +3331,7 @@ Elements of list returned have the form:
 Dmitry Grigoriyevich Bogrov\nPaul Gorguloff\nJohn Bellingham
 Charles Julius Guiteau\n◄\n\n:SEE-ALSO
 `mon-line-string-rotate-namestrings' `mon-line-string-unrotate-namestrings',
-`mon-make-lastname-firstname', `naf-make-name-for-lisp' `mon-make-names-list',
+`mon-make-lastname-firstname', `mon-make-name-lispy' `mon-make-names-list',
 `mon-line-string-rotate-name', `mon-line-strings-to-list',
 `mon-line-string-insert-chars-under'.\n►►►"
   (interactive "r\ni\np")
@@ -3264,7 +3377,7 @@ Charles Julius Guiteau\n◄\n\n:SEE-ALSO
 Inserted string has the length of current line. Does not move point.
 When WITH-CHAR (char or string) is non-nil insert that char instead.
 When called-interactively with prefix-arg prompt for a char to use.\n
-:SEE-ALSO `mon-line-strings-to-list',.\n►►►"
+:SEE-ALSO `mon-line-strings-to-list', `mon-line-strings-region-delimited'.\n►►►"
   (interactive "P\np")
   (let ((ln-spec
          (if (looking-at "^$")
@@ -3299,10 +3412,11 @@ When called-interactively with prefix-arg prompt for a char to use.\n
 in a new buffer *Word List*, where a word is defined by `forward-word'
 according to the syntax-table settings.  You can apply `sort-lines' and
 unique-lines to this to obtain a list of all the unique words in a
-document.\n\n:SEE-ALSO `mon-line-strings-to-list', `mon-string-ify-current-line',
+document.\n
+:SEE-ALSO `mon-line-strings-to-list', `mon-string-ify-current-line',
 `mon-stringify-list', `mon-dropin-line-word', `mon-insert-string-ify',
-`mon-word-count-analysis' `mon-word-count-occurrences', 
-`mon-word-count-region', `mon-word-count-chars-region'.\n►►►"
+`mon-word-count-analysis' `mon-word-count-occurrences', `mon-word-count-region',
+`mon-word-count-chars-region'.\n►►►"
   (interactive)
   (let (word)
     (with-output-to-temp-buffer "*Word List*"
@@ -3316,9 +3430,10 @@ document.\n\n:SEE-ALSO `mon-line-strings-to-list', `mon-string-ify-current-line'
 ;;; :WAS `get-next-word' -> `mon-word-get-next'
 (defun mon-word-get-next ()
   "Return the next 'word' in the buffer, where a word is defined by
-`forward-word' according to the syntax-table settings.  Point is left
-following the word.  At `end-of-buffer', nil is returned and point is
-unchanged.\n\n:SEE-ALSO `mon-line-get-next', `mon-word-get-list-in-buffer'.\n►►►"
+`forward-word' according to the syntax-table settings.
+Point is left following the word.
+At `end-of-buffer', nil is returned and point is unchanged.\n
+:SEE-ALSO `mon-line-get-next', `mon-word-get-list-in-buffer'.\n►►►"
   (let (start end)
     (if (eobp)
 	nil
@@ -3350,14 +3465,15 @@ unchanged.\n\n:SEE-ALSO `mon-line-get-next', `mon-word-get-list-in-buffer'.\n►
 ;;; :SEE (URL `http://blog.jrock.us/articles/Iterators%20in%20elisp.pod')
 ;;; :REQUIRES (require 'cl)
 (defun mon-word-iterate-over (buffer)
-  "Return an iterator that gets the next word in buffer.
+  "Return an iterator that gets the next word in buffer.\n
 Uses lexical-let for a lambda closure over buf and pos.
 Extract one word at a time by calling (funcall next-word).\n
 :EXAMPLE For BUFFER test-buffer containing \"This is text.\"
 \(setq next-word \(mon-word-iterate-over-in \(get-buffer \"test buffer\")))
 The first time next-word is called, return \"This\".
 The next time, retrun \" is\". Then, \" text.\". 
-Finally, return nil forever.\n►►►"
+Finally, return nil forever.\n
+:SEE-ALSO .\n►►►"
   (lexical-let ((buf buffer)(pos 1))
     (lambda ()
       (save-excursion
@@ -3373,6 +3489,7 @@ Finally, return nil forever.\n►►►"
           (switch-to-buffer cur) result)))))
 
 ;;; =======================
+;;; :NOTE Not urrenlty `syntax-table' aware. 
 (defun mon-word-count-analysis (start end)
   "Count number of times each word is used in the region. Ignores punctuation.\n
 :SEE-ALSO `mon-line-count-region', `mon-word-count-chars-region',
@@ -3420,10 +3537,9 @@ Finally, return nil forever.\n►►►"
     (setq show-trailing-whitespace nil)
     (erase-buffer)
     ;; Build a list from the hash-table.
-    (maphash
-     (lambda (key value)
-       (setq result (cons (cons value (gethash key st)) result)))
-     nb)
+    (maphash #'(lambda (key value)
+                 (setq result (cons (cons value (gethash key st)) result)))
+             nb)
     ;; Sort and display it.
     (mapc #'(lambda (x)
             (if (and (> (car x) 3)
@@ -3590,9 +3706,9 @@ On MON system a min. 0.85 seconds is needed between calls to produce unique id's
 :EXAMPLE\n\n\(mon-string-wonkify \"These are some wonky words\" 10\)\n
 \(mon-string-wonkify \"These are some wonky words\" 3\)\n
 :SEE-ALSO `mon-zippify-region', `mon-generate-prand-seed', `mon-generate-prand-id',
- `mon-generate-WPA-key', \n►►►" 
+ `mon-generate-WPA-key'.\n►►►" 
   (eval-when-compile (require 'cookie1))
-  (let ((wonkify wonk-words)
+  (let* ((wonkify wonk-words)
         (wonk-usr #'(lambda (l eo) 
                       (let (new-round)
                         (dolist (u l)
@@ -3605,7 +3721,7 @@ On MON system a min. 0.85 seconds is needed between calls to produce unique id's
                         (setq wonkify new-round))))
         (seqify #'(lambda (q)
                     (let (reseq)
-                      (mapc #'(lambda (s) (push (string-to-sequence s 'list) reseq)) 
+                      (mapc #'(lambda (s) (push (string-to-list s) reseq)) 
                             (cond ((listp q) q)
                                   ((stringp q) (list q))))
                       reseq))))
@@ -3618,7 +3734,7 @@ On MON system a min. 0.85 seconds is needed between calls to produce unique id's
       (setq wonkify (append wonkify nil))
       (when (stringp (car wonkify))
         (setq wonkify (funcall seqify wonkify)))
-      (funcall wonk-usr wonkify (if (eq (gcd w 2) 2) t)))))
+      (funcall wonk-usr wonkify (if (eq (cl::gcd w 2) 2) t)))))
 ;;  :)
 (defalias 'mon-generate-wonky 'mon-string-wonkify)
 ;;
@@ -3819,7 +3935,7 @@ in order to get the cursor there?\n
 ;;; ==============================
 ;;; :CREATED <Timestamp: Friday June 05, 2009 @ 07:03.00 PM - by MON KEY>
 (defun mon-rectangle-columns (start end)
-  "Return column positions at START and END.
+  "Return column positions at START and END.\n
 Mostly useful as a code template for rectangle related functions.\n
 :SEE-ALSO `mon-rectangle-sum-column'.\n►►►"
   (interactive "r")
@@ -3842,8 +3958,8 @@ Mostly useful as a code template for rectangle related functions.\n
   "Add all integer, decimal, and floating-point numbers in selected rectangle.\n
 Numbers which can be read include (nonexhaustive):\n
  2 +2 -2 2. +2. -2. 2.0 +2.0 -2.0 2e0 +2e0 -2e0 2E0 2e+0 2e-0, 2.e0, 2.0e0, etc.\n
-:SEE-ALSO `mon-rectangle-columns', `mon-insert-numbers-padded',
-`mon-number-lines-region',`mon-insert-string-incr',`mon-re-number-region'.\n►►►"
+:SEE-ALSO `mon-rectangle-columns', `mon-string-incr-padded',
+`mon-line-number-region', `mon-string-incr', `mon-line-number-region-incr'.\n►►►"
   (interactive "r")
   (save-excursion
     (kill-rectangle start end)
@@ -3953,8 +4069,9 @@ When NO-STRIP in non-nil or called-interactively with prefix arg do not strip
 leading `#'.\n
 :NOTE Function is yank-handler agnostic w/re to 2nd optional arg of `kill-new'.\n
 :SEE-ALSO `mon-line-test-content', `mon-list-all-properties-in-buffer'
-`mon-nuke-text-properties-buffer',`mon-nuke-text-properties-region'
-`mon-remove-text-property'`mon-remove-single-text-property'.\n►►►"
+`mon-nuke-text-properties-buffer', `mon-nuke-text-properties-region'
+`mon-remove-text-property', `mon-remove-single-text-property'
+`mon-help-text-property-functions', `mon-help-text-property-function-ext'.\n►►►"
   (interactive "r\nP")
   (let (get-str) 
     (setq get-str (format "%S" (buffer-substring start end)))
@@ -5027,7 +5144,7 @@ Subsequent calls mark higher levels of sexps.
  "Show a numbered column display above the current line.\n
 With ARG, begin column display at current column, not at left margin.\n
 :SEE-ALSO `mon-indent-lines-from-to-col', `mon-line-strings-pipe-to-col',
-`mon-string-fill-to-col', `mon-lisp-comment-to-col',
+`mon-string-fill-to-col', `mon-comment-lisp-to-col',
 `mon-mysql-cln-pipes-map-col-field', `mon-mysql-csv-map-col-field',
 `mon-mysql-get-field-col', `mon-rectangle-columns',
 `mon-rectangle-sum-column', `show-point-mode'.\n►►►"
@@ -5058,7 +5175,11 @@ With ARG, begin column display at current column, not at left margin.\n
 ;;; :NOTE Nukes and reevaluates an elisp buffer. 
 ;;; ==============================
 (defun mon-nuke-and-eval ()
-  "Attempt to cleanly re-evaluate a buffer of elisp code.\n►►►"
+  "Attempt to cleanly re-evaluate a buffer of elisp code.\n
+:SEE-ALSO `mon-unbind-command', `mon-unbind-symbol', `mon-unbind-function',
+`mon-unbind-variable', `mon-compile-when-needed' `mon-load-or-alert',
+`mon-byte-compile-and-load', `mon-dump-object-to-file',
+`mon-after-mon-utils-loadtime'.\n►►►"
   (interactive)
   (save-excursion
     (setf (point) (point-min))
@@ -5086,7 +5207,12 @@ With ARG, begin column display at current column, not at left margin.\n
 ;;; :NOTE Commands for unbinding things.
 ;;; ==============================
 (defun mon-unbind-defun ()
-  "Unbind the `defun' near `point' in `current-buffer'.\n►►►"
+  "Unbind the `defun' near `point' in `current-buffer'.
+:SEE-ALSO `mon-unbind-command', `mon-unbind-symbol', `mon-unbind-function',
+`mon-unbind-variable', `mon-after-mon-utils-loadtime',
+`mon-compile-when-needed' `mon-load-or-alert', `mon-byte-compile-and-load',
+`mon-dump-object-to-file', `mon-nuke-and-eval',
+`mon-after-mon-utils-loadtime'.\n►►►"
   (interactive)
   (save-excursion
     (if (and (beginning-of-defun) (looking-at "(defun"))
@@ -5094,31 +5220,52 @@ With ARG, begin column display at current column, not at left margin.\n
       (error "No defun found near point"))))
 ;; :KEEP-WITH-ABOVE
 (defun mon-unbind-symbol (symbol)
-  "Totally unbind SYMBOL. Includes unbinding function binding, variable binding,
-and property list.\n►►►"
+  "Totally unbind SYMBOL.\n
+Includes unbinding function binding, variable binding, and property list.\n
+:SEE-ALSO `mon-unbind-command', `mon-unbind-symbol', `mon-unbind-function',
+`mon-unbind-variable', `mon-unbind-defun', `mon-after-mon-utils-loadtime',
+`mon-compile-when-needed' `mon-load-or-alert', `mon-byte-compile-and-load',
+`mon-dump-object-to-file', `mon-nuke-and-eval',
+`mon-after-mon-utils-loadtime'.\n►►►"
   (interactive "SSymbol: ")
   (fmakunbound symbol)
   (makunbound symbol)
   (setf (symbol-plist symbol) nil))
 ;; :KEEP-WITH-ABOVE
-(defun mon-unbind-function (symbol)
-  "Remove the function binding of SYMBOL.\n►►►"
+(defun mon-unbind-function (fncn-symbol)
+  "Remove the function binding of FNCN-SYMBOL.\n
+:SEE-ALSO `mon-unbind-command', `mon-unbind-symbol', `mon-unbind-function',
+`mon-unbind-variable', `mon-unbind-defun', `mon-after-mon-utils-loadtime',
+`mon-compile-when-needed' `mon-load-or-alert', `mon-byte-compile-and-load',
+`mon-dump-object-to-file', `mon-nuke-and-eval',
+`mon-after-mon-utils-loadtime'.\n►►►"
   (interactive "aFunction: ")
-  (fmakunbound symbol))
+  (fmakunbound fncn-symbol))
 ;; :KEEP-WITH-ABOVE
-(defun mon-unbind-command (symbol)
-  "Remove the command binding of SYMBOL.\n►►►"
+(defun mon-unbind-command (cmd-symbol)
+  "Remove the command binding of CMD-SYMBOL.\n
+:SEE-ALSO `mon-unbind-command', `mon-unbind-symbol', `mon-unbind-function',
+`mon-unbind-variable', `mon-unbind-defun', `mon-after-mon-utils-loadtime',
+`mon-compile-when-needed' `mon-load-or-alert', `mon-byte-compile-and-load',
+`mon-dump-object-to-file', `mon-nuke-and-eval',
+`mon-after-mon-utils-loadtime'.\n►►►"
   (interactive "CCommand: ")
-  (fmakunbound symbol))
+  (fmakunbound cmd-symbol))
 ;; :KEEP-WITH-ABOVE
-(defun mon-unbind-variable (symbol)
-  "Remove the variable binding of SYMBOL.\n►►►"
+(defun mon-unbind-variable (var-symbol)
+  "Remove the variable binding of VAR-SYMBOL.\n
+:SEE-ALSO `mon-unbind-command', `mon-unbind-symbol', `mon-unbind-function',
+`mon-unbind-variable', `mon-unbind-defun', `mon-after-mon-utils-loadtime',
+`mon-compile-when-needed' `mon-load-or-alert', `mon-byte-compile-and-load',
+`mon-dump-object-to-file', `mon-nuke-and-eval',
+`mon-after-mon-utils-loadtime'.\n►►►"
   (interactive (list 
                 (completing-read "Variable: "
                                  (loop for s being the symbols
                                     when (boundp s) collect (list (symbol-name s))))))
-  (makunbound (if (stringp symbol) (intern symbol) symbol)))
-;;
+  (makunbound (if (stringp var-symbol) (intern var-symbol) var-symbol)))
+;;; 
+;; 
 ;;; ==============================
 ;;; :END Pearson's commands for unbinding things.
 ;;; ==============================
@@ -5128,14 +5275,19 @@ and property list.\n►►►"
 ;;; :SEE (URL `http://lists.gnu.org/archive/html/emacs-devel/2009-09/msg00846.html')
 ;;; :CREATED <Timestamp: #{2009-10-01T12:31:29-04:00Z}#{09404} - by MON>
 (defun mon-dump-object-to-file (obj file)
-  "Save symbol object OBJ to the byte compiled version of FILE.
+  "Save symbol object OBJ to the byte compiled version of FILE.\n
 OBJ can be any lisp object, list, hash-table, etc.
 FILE is an elisp file with ext *.el.
 Loading the *.elc file will re-institute object.\n
 :NOTE This function utilizes an documented feature of `eval-when-compile'. It
 can be interesting way to save a persistent elisp object. Using `setf' combined
 with `eval-when-compile' is a convenient way to save lisp objects like
-hash-table."
+hash-table.
+:SEE-ALSO `mon-unbind-command', `mon-unbind-symbol', `mon-unbind-function',
+`mon-unbind-variable', `mon-unbind-defun', `mon-after-mon-utils-loadtime',
+`mon-compile-when-needed' `mon-load-or-alert', `mon-byte-compile-and-load',
+`mon-dump-object-to-file', `mon-nuke-and-eval',
+`mon-after-mon-utils-loadtime'.\n►►►"
   (require 'cl)          ;; Be sure we use the CL version of `eval-when-compile'.
   (if (file-exists-p file)
       (error "File already exists.")
@@ -5152,22 +5304,33 @@ hash-table."
 ;;; ==============================
 (defun mon-byte-compile-and-load ()
   "Byte compile and load the current .el file.
-This was only easily accesible from the menu.\n►►►"
+This was only easily accesible from the menu.
+:SEE-ALSO `mon-unbind-command', `mon-unbind-symbol', `mon-unbind-function',
+`mon-unbind-variable', `mon-unbind-defun', `mon-after-mon-utils-loadtime',
+`mon-compile-when-needed' `mon-load-or-alert', `mon-byte-compile-and-load',
+`mon-dump-object-to-file', `mon-nuke-and-eval',
+`mon-after-mon-utils-loadtime'.\n►►►"
   (interactive)
   (byte-compile-file buffer-file-name t))
+
 
 ;;; ==============================
 ;;; :COURTESY Francois Fleuret <fleuret@idiap.ch> :HIS fleuret.emacs.el
 ;;; :SEE (URL `http://www.idiap.ch/~fleuret/files/fleuret.emacs.el')
 ;;; :WAS `ff/compile-when-needed' -> `mon-compile-when-needed'
 ;;; ==============================
-(defun mon-compile-when-needed (name)
-  "Compile the given file only if needed. 
-Add .el if required, and use `load-path' to find it.\n►►►"
-  (if (not (string-match "\.el$" name))
-      (mon-compile-when-needed (concat name ".el"))
+(defun mon-compile-when-needed (comp-fname)
+  "Compile the given file with COMP-FNAME only if needed.\n
+Add .el if required, and use `load-path' to find it.
+:SEE-ALSO `mon-unbind-command', `mon-unbind-symbol', `mon-unbind-function',
+`mon-unbind-variable', `mon-unbind-defun', `mon-after-mon-utils-loadtime',
+`mon-compile-when-needed' `mon-load-or-alert', `mon-byte-compile-and-load',
+`mon-dump-object-to-file', `mon-nuke-and-eval',
+`mon-after-mon-utils-loadtime'.\n►►►"
+  (if (not (string-match "\.el$" comp-fname))
+      (mon-compile-when-needed (concat comp-fname ".el"))
     (mapc (lambda (dir)
-            (let* ((src (concat dir "/" name)))
+            (let* ((src (concat dir "/" comp-fname)))
               (when (file-newer-than-file-p src (concat src "c"))
                 (if (let ((byte-compile-verbose nil))
                       (condition-case nil
@@ -5182,8 +5345,13 @@ Add .el if required, and use `load-path' to find it.\n►►►"
 ;;; This is useful when using the same .emacs in many places.
 ;;; ==============================
 (defun mon-load-or-alert (name &optional compile-when-needed)
-  "Try to load the specified file and insert a warning message in a
-load-warning buffer in case of failure.\n►►►"
+  "Try to load the specified file.\n
+Insert a warning message in a load-warning buffer in case of failure.\n
+:SEE-ALSO `mon-unbind-command', `mon-unbind-symbol', `mon-unbind-function',
+`mon-unbind-variable', `mon-unbind-defun', `mon-after-mon-utils-loadtime',
+`mon-compile-when-needed' `mon-load-or-alert', `mon-byte-compile-and-load',
+`mon-dump-object-to-file', `mon-nuke-and-eval',
+`mon-after-mon-utils-loadtime'.\n►►►"
   (when compile-when-needed (mon-compile-when-needed name))
   (if (load name t nil) t
     (let ((buf (get-buffer-create "*loading warnings*")))
@@ -5197,6 +5365,8 @@ load-warning buffer in case of failure.\n►►►"
 ;;; ==============================
 (provide 'mon-utils)
 ;;; ==============================
+
+(eval-after-load "mon-utils" '(mon-after-mon-utils-loadtime))
 
 ;;; ==============================
 ;;; mon-utils.el ends here

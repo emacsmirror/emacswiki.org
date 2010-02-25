@@ -67,6 +67,13 @@ http://ourcomments.org/Emacs/nXhtml/doc/img/foldit-temp-opened.png
 === Quick Start ===
 
 Installation is easy, just unzip the archive and add one line to your .emacs.
+
+: Unfortunately, that easy, one-line change is *not* included here....
+
+:: Because I thought it would be better to look in the README.txt ..., but here it is
+:: (load "YOUR-PATH-TO/nxhtml/autostart.el")
+
+
 After this nXhtml is ready for use.
 
 However for a little more and where to download it see

@@ -146,16 +146,17 @@ Besides enhancing Isearch completion (see [[#MoreIsearchKeys]], above), '''[[Ici
 
 
 
-= More Isearch Stuff =
+== More Isearch Stuff ==
 
-Here are some more EmacsWiki pages having to do with Isearch in some way:
+Here is some more info about Isearch:
 
 * IncrementalSearchHelp -- Get Isearch help interactively from Isearch.
+* [[Iedit]] -- Replace multiple occurrences of the Isearch string. [http://lists.gnu.org/archive/html/gnu-emacs-sources/2010-02/msg00000.html]
 * IsearchOtherEnd -- Use Isearch to navigate buffers by controlling the point behavior.
+* KillISearchMatch -- Bind C-k in isearch to kill the match
 * OccurFromIsearch -- Run `occur' with the current Isearch search string.
 * SearchingTheMinibuffer -- How to use Isearch in the mini-buffer.
 * SearchAtPoint -- A feature from VI that is useful to programmers.  Also shows how to extend Isearch.
-* KillISearchMatch -- Bind C-k in isearch to kill the match
 
 
 I often search for a string which I want to grab and paste elsewhere:

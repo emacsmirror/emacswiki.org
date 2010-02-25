@@ -45,6 +45,9 @@ Is there a way to get a search that will work across line boundaries as if they 
 * SearchAndReplaceDelimitedStrings -- Replace (only) the prefix and suffix of a pattern.
 * ReplaceGarbageChars -- Replace MS and other goofy/"garbage" characters with latin1.  Simple elisp code can be easily applied to LaTeX or HTML or other kinds of buffers.
 * QueryExchange -- Exchange two string interactively.
+* [[Iedit]] -- Replace multiple occurrences of the [[Isearch]] string. [http://lists.gnu.org/archive/html/gnu-emacs-sources/2010-02/msg00000.html]
+
+
 
 
 == Search Across Files ==

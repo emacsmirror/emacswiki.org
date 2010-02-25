@@ -340,27 +340,27 @@ You could call this "garbage-collecting" a directory.
 
 [new] it would be nice if ido could truename files.  ido blows away the truenaming of files that i had set up with ffap.  It can be very confusing to open a symlink and have the buffer name be the name of the symlink.  I fixed this in ffap with the following code, but I don't know where to fix it in ido since it does not seem to have a finder variable.
 
-;;finding file keeps buffer name as symlink name.  all the truename vars do
-;;not fix.  this does.  this should use before advice changing filename?
+  ;;finding file keeps buffer name as symlink name.  all the truename vars do
+  ;;not fix.  this does.  this should use before advice changing filename?
 
-(defun alpha-find-file-truename (filename &optional codesys)
-  "used for ffap."
-  (interactive "FFile name (will be truenamed): ")
-  (find-file (file-truename filename) codesys))
+  (defun alpha-find-file-truename (filename &optional codesys)
+    "used for ffap."
+    (interactive "FFile name (will be truenamed): ")
+    (find-file (file-truename filename) codesys))
 
-(setf ffap-file-finder 'alpha-find-file-truename)
+  (setf ffap-file-finder 'alpha-find-file-truename)
 
-;;here are variables.  they are insufficient for getting the ;;truename.  in emacs 22, you only get truename if you
-;;already had the original file in a buffer.  it is as if these
-;;variables are simply ignored.  there are no other variables.
+  ;;here are variables.  they are insufficient for getting the ;;truename.  in emacs 22, you only get truename if you
+  ;;already had the original file in a buffer.  it is as if these
+  ;;variables are simply ignored.  there are no other variables.
 
-(setf find-file-compare-truenames t)    ;xemacs
+  (setf find-file-compare-truenames t)    ;xemacs
 
-(setf find-file-existing-other-name t)  ;emacs and xemacs alias for ffct
+  (setf find-file-existing-other-name t)  ;emacs and xemacs alias for ffct
 
-;;find-file-use-truenames seems to default to t in xemacs but not in emacs.
-;;why can't they compare inode for hard links and what happens if these are nil?
-(setf find-file-visit-truename t)
+  ;;find-file-use-truenames seems to default to t in xemacs but not in emacs.
+  ;;why can't they compare inode for hard links and what happens if these are nil?
+  (setf find-file-visit-truename t)
 
 --gambarimasu
 
