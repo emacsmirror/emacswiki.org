@@ -122,6 +122,8 @@ it just returns the key."
 (control-lock-map-key "." "C-." "period")
 (control-lock-map-key "=" "C-=" "equals")
 (control-lock-map-key "-" "C--" "dash")
+; Uncomment to remap <return>.  Useful for Proof General.
+;(control-lock-map-key "\\r" "C-<return>" "return")
 
 
 (defun control-lock-keys ()
@@ -144,7 +146,8 @@ user uses to enable control-lock."
     (progn
       (setq control-lock-mode-p t)
       ; Save orig color and set to orange
-      (setq control-lock-orig-cursor-color (face-background 'cursor))
+      (setq control-lock-orig-cursor-color 
+        (face-background 'cursor nil 'default))
       (set-face-background 'cursor "#ff3300")
       (customize-set-variable 'cursor-type '(hbar . 3)))))
 

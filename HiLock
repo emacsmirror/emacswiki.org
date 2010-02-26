@@ -117,5 +117,14 @@ It is colored multiple `occur' in a sense. -- [[rubikitch]]
     nil))
 </pre>
 
+= Problem with hl-line =
+
+hl-line (see HighlightCurrentLine) overrides the background of hi-lock'ed text.  This is annoying if you have dark-on-light hi-lock faces and a dark background hl-line face (or vice-versa).  The following works around this issue:
+<pre>
+(defadvice hi-lock-set-pattern (around use-overlays activate)
+  (let ((font-lock-fontified nil))
+    ad-do-it))
+</pre>
+
 ----
 CategoryFaces HighlightTemporarily

@@ -1,17 +1,15 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; mon-cl-compat.el --- cl functions prefixed as cl::some-cl-function
 ;;-*- byte-compile-dynamic: t; -*-
-;;; this is mon-cl-compat.el
 ;;; ================================================================
 ;;; DESCRIPTION:
-;;; mon-cl-compat.el provides Common Lisp sequence and list functions which take
-;;; keyword arguments as provided by :FILE cl-seq.el.  Emacs signals
-;;; compile-time warnings if these functions are called at runtime from the CL
-;;; package (as distinguished from macros and aliases).  We reproduce the
-;;; entirety of that package here with all relevant `cl-symbol's prefixed with
-;;; `cl::symbol's. This is intended to be used as a drop-in replacement for
-;;; the cl-seq.el when compiling your package and therefor doesn't necessitate
-;;; declaration of file local variable constucts using `byte-compile-warnings'
-;;; e.g.: `byte-compile-warnings': (not cl-functions)
+;;; mon-cl-compat.el provides Common Lisp functions from cl-*.el files.
+;;; Emacs signals compile-time warnings if these functions are called at runtime
+;;; from the CL package (as distinguished from macros and aliases).  We
+;;; reproduce the entirety of that package here with all relevant `cl-symbol's
+;;; prefixed with `cl::symbol's. This is intended to be used as a drop-in
+;;; replacement for the cl-seq.el when compiling your package and therefor
+;;; doesn't necessitate declaration of file local variable constucts using
+;;; `byte-compile-warnings' e.g.: `byte-compile-warnings': (not cl-functions)
 ;;; Obv. we could silence the byte-compiler with: 
 ;;; (custom-set-default 'byte-compile-warnings (not cl-functions))
 ;;; Or, do like slime.el (let ((byte-compile-warnings '())) ... ,@body)
@@ -50,9 +48,9 @@
 ;;; FUNCTIONS:◄◄◄
 ;;;
 ;;; MACROS:
-;;; `cl::cl-parsing-keywords', `cl::check-key'
-;;; `cl::check-test-nokey', `cl::check-test'
-;;; `cl::check-match', `cl::cl-defun-expander', `cl::cl-do-proclaim',
+;;; `cl-parsing-keywords', `cl-check-key'
+;;; `cl-check-test-nokey', `cl-check-test'
+;;; `cl-check-match', `cl::cl-defun-expander', `cl::cl-do-proclaim',
 ;;; METHODS:
 ;;;
 ;;; CLASSES:
@@ -60,7 +58,7 @@
 ;;; CONSTANTS:
 ;;;
 ;;; VARIABLES:
-;;; `cl::test-not', `cl::test', `cl::if-not', `cl::if', `cl::key', `cl::alist'
+;;; `cl-test-not', `cl-test', `cl-if-not', `cl-if', `cl-key', `cl::alist'
 ;;;
 ;;; :NOTE Following are not prefixed but are present: 
 ;;; `bind-block', `bind-defs', `bind-enquote',
@@ -118,6 +116,7 @@
 ;;; REQUIRES:
 ;;; `mon-cl-compat-regexps.el' (only if present in load-path)
 ;;; `mon-CL-namespace-colonic', `mon-CL-cln-colon-swap'
+;;;
 ;;; THIRD-PARTY-CODE:
 ;;; This file is a duplicate of cl-*.el symbols renamed with suffix `cl::'. 
 ;;; They were sourced from the following files:
@@ -166,78 +165,6 @@
   (require 'mon-cl-compat-regexps))
 
 ;;; Assuming that any macros should come first in this file.
-
-;;; ==============================
-;;; Appears at _top_ of cl-seq. 
-;;; `cl-parsing-keywords' -> cl-seq.el
-(defmacro cl::cl-parsing-keywords (kwords other-keys &rest body)
-  (cons
-   'let*
-   (cons (mapcar
-	  (function
-	   (lambda (x)
-	     (let* ((var (if (consp x) (car x) x))
-		    (mem (list 'car (list 'cdr (list 'memq (list 'quote var)
-						     'cl-keys)))))
-	       (if (eq var :test-not)
-		   (setq mem (list 'and mem (list 'setq 'cl::test mem) t)))
-	       (if (eq var :if-not)
-		   (setq mem (list 'and mem (list 'setq 'cl::if mem) t)))
-	       (list (intern
-		      (format "cl-%s" (substring (symbol-name var) 1)))
-		     (if (consp x) (list 'or mem (car (cdr x))) mem)))))
-	  kwords)
-	 (append
-	  (and (not (eq other-keys t))
-	       (list
-		(list 'let '((cl-keys-temp cl-keys))
-		      (list 'while 'cl-keys-temp
-			    (list 'or (list 'memq '(car cl-keys-temp)
-					    (list 'quote
-						  (mapcar
-						   (function
-						    (lambda (x)
-						      (if (consp x)
-							  (car x) x)))
-						   (append kwords
-							   other-keys))))
-				  '(car (cdr (memq (quote :allow-other-keys)
-						   cl-keys)))
-				  '(error "Bad keyword argument %s"
-					  (car cl-keys-temp)))
-			    '(setq cl-keys-temp (cdr (cdr cl-keys-temp)))))))
-	  body))))
-
-(put 'cl::cl-parsing-keywords 'lisp-indent-function 2)
-(put 'cl::cl-parsing-keywords 'edebug-form-spec '(sexp sexp &rest form))
-
-(defmacro cl::check-key (x)
-  (list 'if 'cl::key (list 'funcall 'cl::key x) x))
-
-(defmacro cl::check-test-nokey (item x)
-  (list 'cond
-	(list 'cl::test
-	      (list 'eq (list 'not (list 'funcall 'cl::test item x))
-		    'cl::test-not))
-	(list 'cl::if
-	      (list 'eq (list 'not (list 'funcall 'cl::if x)) 'cl::if-not))
-	(list 't (list 'if (list 'numberp item)
-		       (list 'equal item x) (list 'eq item x)))))
-
-(defmacro cl::check-test (item x)
-  (list 'cl::check-test-nokey item (list 'cl::check-key x)))
-
-(defmacro cl::check-match (x y)
-  (setq x (list 'cl::check-key x) y (list 'cl::check-key y))
-  (list 'if 'cl::test
-	(list 'eq (list 'not (list 'funcall 'cl::test x y)) 'cl::test-not)
-	(list 'if (list 'numberp x)
-	      (list 'equal x y) (list 'eq x y))))
-
-(put 'cl::check-key 'edebug-form-spec 'edebug-forms)
-(put 'cl::check-test 'edebug-form-spec 'edebug-forms)
-(put 'cl::check-test-nokey 'edebug-form-spec 'edebug-forms)
-(put 'cl::check-match 'edebug-form-spec 'edebug-forms)
 
 ;;; ==============================
 ;;; Following functions from cl-macs.el
@@ -499,7 +426,7 @@ The name is made by appending a number to PREFIX, default \"G\"."
 				 (nreverse bind-forms) body)))))))
 
 ;;; ==============================
-;;; :NOTE `lambda-list-keywords' is a variable
+;;; :NOTE `lambda-list-keywords' is a variable in cl-macs.el 
 ;;; `cl-do-arglist' -> cl-macs.el
 (defun cl::cl-do-arglist (args expr &optional num)   ; uses bind-*
   (if (nlistp args)
@@ -754,29 +681,25 @@ The name is made by appending a number to PREFIX, default \"G\"."
 	  ((eq (car type) 'satisfies) (list (cadr type) val))
 	  (t (error "Bad type spec: %s" type)))))
 
-(defvar cl::test) (defvar cl::test-not)
-(defvar cl::if) (defvar cl::if-not)
-(defvar cl::key)
-
 ;;;###autoload
 (defun cl::reduce (cl-func cl-seq &rest cl-keys)
   "Reduce two-argument FUNCTION across SEQ.
 \nKeywords supported:  :start :end :from-end :initial-value :key
 \n(fn FUNCTION SEQ [KEYWORD VALUE]...)"
-  (cl::cl-parsing-keywords (:from-end (:start 0) :end :initial-value :key) ()
+  (cl-parsing-keywords (:from-end (:start 0) :end :initial-value :key) ()
     (or (listp cl-seq) (setq cl-seq (append cl-seq nil)))
     (setq cl-seq (cl::subseq cl-seq cl-start cl-end))
     (if cl-from-end (setq cl-seq (nreverse cl-seq)))
     (let ((cl-accum (cond ((memq :initial-value cl-keys) cl-initial-value)
-			  (cl-seq (cl::check-key (pop cl-seq)))
+			  (cl-seq (cl-check-key (pop cl-seq)))
 			  (t (funcall cl-func)))))
       (if cl-from-end
 	  (while cl-seq
-	    (setq cl-accum (funcall cl-func (cl::check-key (pop cl-seq))
+	    (setq cl-accum (funcall cl-func (cl-check-key (pop cl-seq))
 				    cl-accum)))
 	(while cl-seq
 	  (setq cl-accum (funcall cl-func cl-accum
-				  (cl::check-key (pop cl-seq))))))
+				  (cl-check-key (pop cl-seq))))))
       cl-accum)))
 
 ;;;###autoload
@@ -784,7 +707,7 @@ The name is made by appending a number to PREFIX, default \"G\"."
   "Fill the elements of SEQ with ITEM.
 \nKeywords supported:  :start :end
 \n(fn SEQ ITEM [KEYWORD VALUE]...)"
-  (cl::cl-parsing-keywords ((:start 0) :end) ()
+  (cl-parsing-keywords ((:start 0) :end) ()
     (if (listp seq)
 	(let ((p (nthcdr cl-start seq))
 	      (n (if cl-end (- cl-end cl-start) 8000000)))
@@ -805,7 +728,7 @@ The name is made by appending a number to PREFIX, default \"G\"."
 SEQ1 is destructively modified, then returned.
 \nKeywords supported:  :start1 :end1 :start2 :end2
 \n(fn SEQ1 SEQ2 [KEYWORD VALUE]...)"
-  (cl::cl-parsing-keywords ((:start1 0) :end1 (:start2 0) :end2) ()
+  (cl-parsing-keywords ((:start1 0) :end1 (:start2 0) :end2) ()
     (if (and (eq cl-seq1 cl-seq2) (<= cl-start2 cl-start1))
 	(or (= cl-start1 cl-start2)
 	    (let* ((cl-len (length cl-seq1))
@@ -849,7 +772,7 @@ This is a non-destructive function; it makes a copy of SEQ if necessary
 to avoid corrupting the original SEQ.
 \nKeywords supported:  :test :test-not :key :count :start :end :from-end
 \n(fn ITEM SEQ [KEYWORD VALUE]...)"
-  (cl::cl-parsing-keywords (:test :test-not :key :if :if-not :count :from-end
+  (cl-parsing-keywords (:test :test-not :key :if :if-not :count :from-end
 			(:start 0) :end) ()
     (if (<= (or cl-count (setq cl-count 8000000)) 0)
 	cl-seq
@@ -868,14 +791,14 @@ to avoid corrupting the original SEQ.
 	(setq cl-end (- (or cl-end 8000000) cl-start))
 	(if (= cl-start 0)
 	    (while (and cl-seq (> cl-end 0)
-			(cl::check-test cl-item (car cl-seq))
+			(cl-check-test cl-item (car cl-seq))
 			(setq cl-end (1- cl-end) cl-seq (cdr cl-seq))
 			(> (setq cl-count (1- cl-count)) 0))))
 	(if (and (> cl-count 0) (> cl-end 0))
 	    (let ((cl-p (if (> cl-start 0) (nthcdr cl-start cl-seq)
 			  (setq cl-end (1- cl-end)) (cdr cl-seq))))
 	      (while (and cl-p (> cl-end 0)
-			  (not (cl::check-test cl-item (car cl-p))))
+			  (not (cl-check-test cl-item (car cl-p))))
 		(setq cl-p (cdr cl-p) cl-end (1- cl-end)))
 	      (if (and cl-p (> cl-end 0))
 		  (nconc (cl::ldiff cl-seq cl-p)
@@ -912,7 +835,7 @@ to avoid corrupting the original SEQ.
 This is a destructive function; it reuses the storage of SEQ whenever possible.
 \nKeywords supported:  :test :test-not :key :count :start :end :from-end
 \n(fn ITEM SEQ [KEYWORD VALUE]...)"
-  (cl::cl-parsing-keywords (:test :test-not :key :if :if-not :count :from-end
+  (cl-parsing-keywords (:test :test-not :key :if :if-not :count :from-end
 			(:start 0) :end) ()
     (if (<= (or cl-count (setq cl-count 8000000)) 0)
 	cl-seq
@@ -932,7 +855,7 @@ This is a destructive function; it reuses the storage of SEQ whenever possible.
 		(progn
 		  (while (and cl-seq
 			      (> cl-end 0)
-			      (cl::check-test cl-item (car cl-seq))
+			      (cl-check-test cl-item (car cl-seq))
 			      (setq cl-end (1- cl-end) cl-seq (cdr cl-seq))
 			      (> (setq cl-count (1- cl-count)) 0)))
 		  (setq cl-end (1- cl-end)))
@@ -940,7 +863,7 @@ This is a destructive function; it reuses the storage of SEQ whenever possible.
 	    (if (and (> cl-count 0) (> cl-end 0))
 		(let ((cl-p (nthcdr cl-start cl-seq)))
 		  (while (and (cdr cl-p) (> cl-end 0))
-		    (if (cl::check-test cl-item (car (cdr cl-p)))
+		    (if (cl-check-test cl-item (car (cdr cl-p)))
 			(progn
 			  (setcdr cl-p (cdr (cdr cl-p)))
 			  (if (= (setq cl-count (1- cl-count)) 0)
@@ -982,14 +905,14 @@ This is a destructive function; it reuses the storage of SEQ whenever possible.
 
 (defun cl::cl-delete-duplicates (cl-seq cl-keys cl-copy)
   (if (listp cl-seq)
-      (cl::cl-parsing-keywords (:test :test-not :key (:start 0) :end :from-end :if)
+      (cl-parsing-keywords (:test :test-not :key (:start 0) :end :from-end :if)
 	  ()
 	(if cl-from-end
 	    (let ((cl-p (nthcdr cl-start cl-seq)) cl-i)
 	      (setq cl-end (- (or cl-end (length cl-seq)) cl-start))
 	      (while (> cl-end 1)
 		(setq cl-i 0)
-		(while (setq cl-i (cl::cl-position (cl::check-key (car cl-p))
+		(while (setq cl-i (cl::cl-position (cl-check-key (car cl-p))
 					       (cdr cl-p) cl-i (1- cl-end)))
 		  (if cl-copy (setq cl-seq (copy-sequence cl-seq)
 				    cl-p (nthcdr cl-start cl-seq) cl-copy nil))
@@ -1001,13 +924,13 @@ This is a destructive function; it reuses the storage of SEQ whenever possible.
 	      cl-seq)
 	  (setq cl-end (- (or cl-end (length cl-seq)) cl-start))
 	  (while (and (cdr cl-seq) (= cl-start 0) (> cl-end 1)
-		      (cl::cl-position (cl::check-key (car cl-seq))
+		      (cl::cl-position (cl-check-key (car cl-seq))
 				   (cdr cl-seq) 0 (1- cl-end)))
 	    (setq cl-seq (cdr cl-seq) cl-end (1- cl-end)))
 	  (let ((cl-p (if (> cl-start 0) (nthcdr (1- cl-start) cl-seq)
 			(setq cl-end (1- cl-end) cl-start 1) cl-seq)))
 	    (while (and (cdr (cdr cl-p)) (> cl-end 1))
-	      (if (cl::cl-position (cl::check-key (car (cdr cl-p)))
+	      (if (cl::cl-position (cl-check-key (car (cdr cl-p)))
 			       (cdr (cdr cl-p)) 0 (1- cl-end))
 		  (progn
 		    (if cl-copy (setq cl-seq (copy-sequence cl-seq)
@@ -1027,7 +950,7 @@ This is a non-destructive function; it makes a copy of SEQ if necessary
 to avoid corrupting the original SEQ.
 \nKeywords supported:  :test :test-not :key :count :start :end :from-end
 \n(fn NEW OLD SEQ [KEYWORD VALUE]...)"
-  (cl::cl-parsing-keywords (:test :test-not :key :if :if-not :count
+  (cl-parsing-keywords (:test :test-not :key :if :if-not :count
 			(:start 0) :end :from-end) ()
     (if (or (eq cl-old cl-new)
 	    (<= (or cl-count (setq cl-from-end nil cl-count 8000000)) 0))
@@ -1066,14 +989,14 @@ to avoid corrupting the original SEQ.
 This is a destructive function; it reuses the storage of SEQ whenever possible.
 \nKeywords supported:  :test :test-not :key :count :start :end :from-end
 \n(fn NEW OLD SEQ [KEYWORD VALUE]...)"
-  (cl::cl-parsing-keywords (:test :test-not :key :if :if-not :count
+  (cl-parsing-keywords (:test :test-not :key :if :if-not :count
 			(:start 0) :end :from-end) ()
     (or (eq cl-old cl-new) (<= (or cl-count (setq cl-count 8000000)) 0)
 	(if (and (listp cl-seq) (or (not cl-from-end) (> cl-count 4000000)))
 	    (let ((cl-p (nthcdr cl-start cl-seq)))
 	      (setq cl-end (- (or cl-end 8000000) cl-start))
 	      (while (and cl-p (> cl-end 0) (> cl-count 0))
-		(if (cl::check-test cl-old (car cl-p))
+		(if (cl-check-test cl-old (car cl-p))
 		    (progn
 		      (setcar cl-p cl-new)
 		      (setq cl-count (1- cl-count))))
@@ -1082,12 +1005,12 @@ This is a destructive function; it reuses the storage of SEQ whenever possible.
 	  (if cl-from-end
 	      (while (and (< cl-start cl-end) (> cl-count 0))
 		(setq cl-end (1- cl-end))
-		(if (cl::check-test cl-old (elt cl-seq cl-end))
+		(if (cl-check-test cl-old (elt cl-seq cl-end))
 		    (progn
 		      (cl-set-elt cl-seq cl-end cl-new)
 		      (setq cl-count (1- cl-count)))))
 	    (while (and (< cl-start cl-end) (> cl-count 0))
-	      (if (cl::check-test cl-old (aref cl-seq cl-start))
+	      (if (cl-check-test cl-old (aref cl-seq cl-start))
 		  (progn
 		    (aset cl-seq cl-start cl-new)
 		    (setq cl-count (1- cl-count))))
@@ -1141,7 +1064,7 @@ Return the matching item, or nil if not found.
 Return the index of the matching item, or nil if not found.
 \nKeywords supported:  :test :test-not :key :start :end :from-end
 \n(fn ITEM SEQ [KEYWORD VALUE]...)"
-  (cl::cl-parsing-keywords (:test :test-not :key :if :if-not
+  (cl-parsing-keywords (:test :test-not :key :if :if-not
 			(:start 0) :end :from-end) ()
     (cl::cl-position cl-item cl-seq cl-start cl-end cl-from-end)))
 
@@ -1151,7 +1074,7 @@ Return the index of the matching item, or nil if not found.
 	(or cl-end (setq cl-end 8000000))
 	(let ((cl-res nil))
 	  (while (and cl-p (< cl-start cl-end) (or (not cl-res) cl-from-end))
-	    (if (cl::check-test cl-item (car cl-p))
+	    (if (cl-check-test cl-item (car cl-p))
 		(setq cl-res cl-start))
 	    (setq cl-p (cdr cl-p) cl-start (1+ cl-start)))
 	  cl-res))
@@ -1159,10 +1082,10 @@ Return the index of the matching item, or nil if not found.
     (if cl-from-end
 	(progn
 	  (while (and (>= (setq cl-end (1- cl-end)) cl-start)
-		      (not (cl::check-test cl-item (aref cl-seq cl-end)))))
+		      (not (cl-check-test cl-item (aref cl-seq cl-end)))))
 	  (and (>= cl-end cl-start) cl-end))
       (while (and (< cl-start cl-end)
-		  (not (cl::check-test cl-item (aref cl-seq cl-start))))
+		  (not (cl-check-test cl-item (aref cl-seq cl-start))))
 	(setq cl-start (1+ cl-start)))
       (and (< cl-start cl-end) cl-start))))
 
@@ -1187,13 +1110,13 @@ Return the index of the matching item, or nil if not found.
   "Count the number of occurrences of ITEM in SEQ.
 \nKeywords supported:  :test :test-not :key :start :end
 \n(fn ITEM SEQ [KEYWORD VALUE]...)"
-  (cl::cl-parsing-keywords (:test :test-not :key :if :if-not (:start 0) :end) ()
+  (cl-parsing-keywords (:test :test-not :key :if :if-not (:start 0) :end) ()
     (let ((cl-count 0) cl-x)
       (or cl-end (setq cl-end (length cl-seq)))
       (if (consp cl-seq) (setq cl-seq (nthcdr cl-start cl-seq)))
       (while (< cl-start cl-end)
 	(setq cl-x (if (consp cl-seq) (pop cl-seq) (aref cl-seq cl-start)))
-	(if (cl::check-test cl-item cl-x) (setq cl-count (1+ cl-count)))
+	(if (cl-check-test cl-item cl-x) (setq cl-count (1+ cl-count)))
 	(setq cl-start (1+ cl-start)))
       cl-count)))
 
@@ -1218,14 +1141,14 @@ Return nil if the sequences match.  If one sequence is a prefix of the
 other, the return value indicates the end of the shorter sequence.
 \nKeywords supported:  :test :test-not :key :start1 :end1 :start2 :end2 :from-end
 \n(fn SEQ1 SEQ2 [KEYWORD VALUE]...)"
-  (cl::cl-parsing-keywords (:test :test-not :key :from-end
+  (cl-parsing-keywords (:test :test-not :key :from-end
 			(:start1 0) :end1 (:start2 0) :end2) ()
     (or cl-end1 (setq cl-end1 (length cl-seq1)))
     (or cl-end2 (setq cl-end2 (length cl-seq2)))
     (if cl-from-end
 	(progn
 	  (while (and (< cl-start1 cl-end1) (< cl-start2 cl-end2)
-		      (cl::check-match (elt cl-seq1 (1- cl-end1))
+		      (cl-check-match (elt cl-seq1 (1- cl-end1))
 				      (elt cl-seq2 (1- cl-end2))))
 	    (setq cl-end1 (1- cl-end1) cl-end2 (1- cl-end2)))
 	  (and (or (< cl-start1 cl-end1) (< cl-start2 cl-end2))
@@ -1233,7 +1156,7 @@ other, the return value indicates the end of the shorter sequence.
       (let ((cl-p1 (and (listp cl-seq1) (nthcdr cl-start1 cl-seq1)))
 	    (cl-p2 (and (listp cl-seq2) (nthcdr cl-start2 cl-seq2))))
 	(while (and (< cl-start1 cl-end1) (< cl-start2 cl-end2)
-		    (cl::check-match (if cl-p1 (car cl-p1)
+		    (cl-check-match (if cl-p1 (car cl-p1)
 				      (aref cl-seq1 cl-start1))
 				    (if cl-p2 (car cl-p2)
 				      (aref cl-seq2 cl-start2))))
@@ -1249,15 +1172,15 @@ Return the index of the leftmost element of the first match found;
 return nil if there are no matches.
 \nKeywords supported:  :test :test-not :key :start1 :end1 :start2 :end2 :from-end
 \n(fn SEQ1 SEQ2 [KEYWORD VALUE]...)"
-  (cl::cl-parsing-keywords (:test :test-not :key :from-end
+  (cl-parsing-keywords (:test :test-not :key :from-end
 			(:start1 0) :end1 (:start2 0) :end2) ()
     (or cl-end1 (setq cl-end1 (length cl-seq1)))
     (or cl-end2 (setq cl-end2 (length cl-seq2)))
     (if (>= cl-start1 cl-end1)
 	(if cl-from-end cl-end2 cl-start2)
       (let* ((cl-len (- cl-end1 cl-start1))
-	     (cl-first (cl::check-key (elt cl-seq1 cl-start1)))
-	     (cl::if nil) cl-pos)
+	     (cl-first (cl-check-key (elt cl-seq1 cl-start1)))
+	     (cl-if nil) cl-pos)
 	(setq cl-end2 (- cl-end2 (1- cl-len)))
 	(while (and (< cl-start2 cl-end2)
 		    (setq cl-pos (cl::cl-position cl-first cl-seq2
@@ -1277,12 +1200,12 @@ This is a destructive function; it reuses the storage of SEQ if possible.
 \n(fn SEQ PREDICATE [KEYWORD VALUE]...)"
   (if (nlistp cl-seq)
       (cl::replace cl-seq (apply 'cl::sort* (append cl-seq nil) cl-pred cl-keys))
-    (cl::cl-parsing-keywords (:key) ()
-      (if (memq cl::key '(nil identity))
+    (cl-parsing-keywords (:key) ()
+      (if (memq cl-key '(nil identity))
 	  (sort cl-seq cl-pred)
 	(sort cl-seq (function (lambda (cl-x cl-y)
-				 (funcall cl-pred (funcall cl::key cl-x)
-					  (funcall cl::key cl-y)))))))))
+				 (funcall cl-pred (funcall cl-key cl-x)
+					  (funcall cl-key cl-y)))))))))
 
 ;;;###autoload
 (defun cl::stable-sort (cl-seq cl-pred &rest cl-keys)
@@ -1301,11 +1224,11 @@ sequences, and PREDICATE is a `less-than' predicate on the elements.
 \n(fn TYPE SEQ1 SEQ2 PREDICATE [KEYWORD VALUE]...)"
   (or (listp cl-seq1) (setq cl-seq1 (append cl-seq1 nil)))
   (or (listp cl-seq2) (setq cl-seq2 (append cl-seq2 nil)))
-  (cl::cl-parsing-keywords (:key) ()
+  (cl-parsing-keywords (:key) ()
     (let ((cl-res nil))
       (while (and cl-seq1 cl-seq2)
-	(if (funcall cl-pred (cl::check-key (car cl-seq2))
-		     (cl::check-key (car cl-seq1)))
+	(if (funcall cl-pred (cl-check-key (car cl-seq2))
+		     (cl-check-key (car cl-seq1)))
 	    (push (pop cl-seq2) cl-res)
 	  (push (pop cl-seq1) cl-res)))
       (cl::coerce (nconc (nreverse cl-res) cl-seq1 cl-seq2) cl-type))))
@@ -1317,8 +1240,8 @@ Return the sublist of LIST whose car is ITEM.
 \nKeywords supported:  :test :test-not :key
 \n(fn ITEM LIST [KEYWORD VALUE]...)"
   (if cl-keys
-      (cl::cl-parsing-keywords (:test :test-not :key :if :if-not) ()
-	(while (and cl-list (not (cl::check-test cl-item (car cl-list))))
+      (cl-parsing-keywords (:test :test-not :key :if :if-not) ()
+	(while (and cl-list (not (cl-check-test cl-item (car cl-list))))
 	  (setq cl-list (cdr cl-list)))
 	cl-list)
     (if (and (numberp cl-item) (not (integerp cl-item)))
@@ -1344,8 +1267,8 @@ Return the sublist of LIST whose car matches.
 ;;; :NOTE `adjoin' is a `define-compiler-macro' in cl-macs.el
 ;;;###autoload
 (defun cl::cl-adjoin (cl-item cl-list &rest cl-keys)
-  (if (cl::cl-parsing-keywords (:key) t
-	(apply 'cl::member* (cl::check-key cl-item) cl-list cl-keys))
+  (if (cl-parsing-keywords (:key) t
+	(apply 'cl::member* (cl-check-key cl-item) cl-list cl-keys))
       cl-list
     (cons cl-item cl-list)))
 
@@ -1356,10 +1279,10 @@ Return the sublist of LIST whose car matches.
 \nKeywords supported:  :test :test-not :key
 \n(fn ITEM LIST [KEYWORD VALUE]...)"
   (if cl-keys
-      (cl::cl-parsing-keywords (:test :test-not :key :if :if-not) ()
+      (cl-parsing-keywords (:test :test-not :key :if :if-not) ()
 	(while (and cl-alist
 		    (or (not (consp (car cl-alist)))
-			(not (cl::check-test cl-item (car (car cl-alist))))))
+			(not (cl-check-test cl-item (car (car cl-alist))))))
 	  (setq cl-alist (cdr cl-alist)))
 	(and cl-alist (car cl-alist)))
     (if (and (numberp cl-item) (not (integerp cl-item)))
@@ -1386,10 +1309,10 @@ Return the sublist of LIST whose car matches.
 \nKeywords supported:  :test :test-not :key
 \n(fn ITEM LIST [KEYWORD VALUE]...)"
   (if (or cl-keys (numberp cl-item))
-      (cl::cl-parsing-keywords (:test :test-not :key :if :if-not) ()
+      (cl-parsing-keywords (:test :test-not :key :if :if-not) ()
 	(while (and cl-alist
 		    (or (not (consp (car cl-alist)))
-			(not (cl::check-test cl-item (cdr (car cl-alist))))))
+			(not (cl-check-test cl-item (cdr (car cl-alist))))))
 	  (setq cl-alist (cdr cl-alist)))
 	(and cl-alist (car cl-alist)))
     (rassq cl-item cl-alist)))
@@ -1450,18 +1373,18 @@ to avoid corrupting the original LIST1 and LIST2.
 \n(fn LIST1 LIST2 [KEYWORD VALUE]...)"
   (and cl-list1 cl-list2
        (if (equal cl-list1 cl-list2) cl-list1
-	 (cl::cl-parsing-keywords (:key) (:test :test-not)
-	   (let ((cl-res nil))
-	     (or (>= (length cl-list1) (length cl-list2))
-		 (setq cl-list1 (prog1 cl-list2 (setq cl-list2 cl-list1))))
-	     (while cl-list2
-	       (if (if (or cl-keys (numberp (car cl-list2)))
-		       (apply 'cl::member* (cl::check-key (car cl-list2))
-			      cl-list1 cl-keys)
-		     (memq (car cl-list2) cl-list1))
-		   (push (car cl-list2) cl-res))
-	       (pop cl-list2))
-	     cl-res)))))
+           (cl-parsing-keywords (:key) (:test :test-not)
+                                    (let ((cl-res nil))
+                                      (or (>= (length cl-list1) (length cl-list2))
+                                          (setq cl-list1 (prog1 cl-list2 (setq cl-list2 cl-list1))))
+                                      (while cl-list2
+                                        (if (if (or cl-keys (numberp (car cl-list2)))
+                                                (apply 'cl::member* (cl-check-key (car cl-list2))
+                                                       cl-list1 cl-keys)
+                                                (memq (car cl-list2) cl-list1))
+                                            (push (car cl-list2) cl-res))
+                                        (pop cl-list2))
+                                      cl-res)))))
 
 ;;;###autoload
 (defun cl::nintersection (cl-list1 cl-list2 &rest cl-keys)
@@ -1482,11 +1405,11 @@ to avoid corrupting the original LIST1 and LIST2.
 \nKeywords supported:  :test :test-not :key
 \n(fn LIST1 LIST2 [KEYWORD VALUE]...)"
   (if (or (null cl-list1) (null cl-list2)) cl-list1
-      (cl::cl-parsing-keywords (:key) (:test :test-not)
+      (cl-parsing-keywords (:key) (:test :test-not)
       (let ((cl-res nil))
 	(while cl-list1
 	  (or (if (or cl-keys (numberp (car cl-list1)))
-		  (apply 'cl::member* (cl::check-key (car cl-list1))
+		  (apply 'cl::member* (cl-check-key (car cl-list1))
 			 cl-list2 cl-keys)
 		(memq (car cl-list1) cl-list2))
 	      (push (car cl-list1) cl-res))
@@ -1538,9 +1461,9 @@ I.e., if every element of LIST1 also appears in LIST2.
 \n(fn LIST1 LIST2 [KEYWORD VALUE]...)"
   (cond ((null cl-list1) t) ((null cl-list2) nil)
 	((equal cl-list1 cl-list2) t)
-	(t (cl::cl-parsing-keywords (:key) (:test :test-not)
+	(t (cl-parsing-keywords (:key) (:test :test-not)
 	     (while (and cl-list1
-			 (apply 'cl::member* (cl::check-key (car cl-list1))
+			 (apply 'cl::member* (cl-check-key (car cl-list1))
 				cl-list2 cl-keys))
 	       (pop cl-list1))
 	     (null cl-list1)))))
@@ -1594,13 +1517,13 @@ Any element of TREE which matches is changed to NEW (via a call to `setcar').
 Return a copy of TREE with all matching elements replaced.
 \nKeywords supported:  :test :test-not :key
 \n(fn ALIST TREE [KEYWORD VALUE]...)"
-  (cl::cl-parsing-keywords (:test :test-not :key :if :if-not) ()
+  (cl-parsing-keywords (:test :test-not :key :if :if-not) ()
     (cl::cl-sublis-rec cl-tree)))
 
 (defvar cl::alist)
 (defun cl::cl-sublis-rec (cl-tree)   ; uses cl-alist/key/test*/if*
-  (let ((cl-temp (cl::check-key cl-tree)) (cl-p cl::alist))
-    (while (and cl-p (not (cl::check-test-nokey (car (car cl-p)) cl-temp)))
+  (let ((cl-temp (cl-check-key cl-tree)) (cl-p cl::alist))
+    (while (and cl-p (not (cl-check-test-nokey (car (car cl-p)) cl-temp)))
       (setq cl-p (cdr cl-p)))
     (if cl-p (cdr (car cl-p))
       (if (consp cl-tree)
@@ -1617,20 +1540,20 @@ Return a copy of TREE with all matching elements replaced.
 Any matching element of TREE is changed via a call to `setcar'.
 \nKeywords supported:  :test :test-not :key
 \n(fn ALIST TREE [KEYWORD VALUE]...)"
-  (cl::cl-parsing-keywords (:test :test-not :key :if :if-not) ()
+  (cl-parsing-keywords (:test :test-not :key :if :if-not) ()
     (let ((cl-hold (list cl-tree)))
       (cl::cl-nsublis-rec cl-hold)
       (car cl-hold))))
 
 (defun cl::cl-nsublis-rec (cl-tree)   ; uses cl-alist/temp/p/key/test*/if*
   (while (consp cl-tree)
-    (let ((cl-temp (cl::check-key (car cl-tree))) (cl-p cl::alist))
-      (while (and cl-p (not (cl::check-test-nokey (car (car cl-p)) cl-temp)))
+    (let ((cl-temp (cl-check-key (car cl-tree))) (cl-p cl::alist))
+      (while (and cl-p (not (cl-check-test-nokey (car (car cl-p)) cl-temp)))
 	(setq cl-p (cdr cl-p)))
       (if cl-p (setcar cl-tree (cdr (car cl-p)))
 	(if (consp (car cl-tree)) (cl::cl-nsublis-rec (car cl-tree))))
-      (setq cl-temp (cl::check-key (cdr cl-tree)) cl-p cl::alist)
-      (while (and cl-p (not (cl::check-test-nokey (car (car cl-p)) cl-temp)))
+      (setq cl-temp (cl-check-key (cdr cl-tree)) cl-p cl::alist)
+      (while (and cl-p (not (cl-check-test-nokey (car (car cl-p)) cl-temp)))
 	(setq cl-p (cdr cl-p)))
       (if cl-p
 	  (progn (setcdr cl-tree (cdr (car cl-p))) (setq cl-tree nil))
@@ -1642,14 +1565,14 @@ Any matching element of TREE is changed via a call to `setcar'.
 Atoms are compared by `eql'; cons cells are compared recursively.
 \nKeywords supported:  :test :test-not :key
 \n(fn TREE1 TREE2 [KEYWORD VALUE]...)"
-  (cl::cl-parsing-keywords (:test :test-not :key) ()
+  (cl-parsing-keywords (:test :test-not :key) ()
     (cl::cl-tree-equal-rec cl-x cl-y)))
 
 (defun cl::cl-tree-equal-rec (cl-x cl-y)
   (while (and (consp cl-x) (consp cl-y)
 	      (cl::cl-tree-equal-rec (car cl-x) (car cl-y)))
     (setq cl-x (cdr cl-x) cl-y (cdr cl-y)))
-  (and (not (consp cl-x)) (not (consp cl-y)) (cl::check-match cl-x cl-y)))
+  (and (not (consp cl-x)) (not (consp cl-y)) (cl-check-match cl-x cl-y)))
 
 ;;; ==============================
 ;;; CL.EL
@@ -1657,8 +1580,8 @@ Atoms are compared by `eql'; cons cells are compared recursively.
 
 
 ;;; ==============================
-;; `cl-set-substring' -> cl.e.
-(defun cl-set-substring (str start end val)
+;; `cl-set-substring' -> cl.el
+(defun cl::cl-set-substring (str start end val)
   (if end (if (< end 0) (incf end (length str)))
     (setq end (length str)))
   (if (< start 0) (incf start (length str)))
@@ -2421,7 +2344,7 @@ This also does some trivial optimizations to make the form prettier."
 ;;; ==============================
 ;;; :NOTE Not sure whether to evaluate this or not. 
 ;;;       Yes, I should be more sure... less cavalier :[
-;;;(run-hooks 'cl-seq-load-hook)
+;; (run-hooks 'cl-seq-load-hook)
       
 ;;; ==============================
 (provide 'mon-cl-compat)

@@ -68,7 +68,10 @@ For current cvs version, I have write a [[EmacsdInitScript]] to put in /etc/init
 
 === Microsoft Windows (in Emacs often called w32) ===
 
-'''Note: On Windows, GnuClient works better than %%EmacsClient%%. The instructions below apply to %%EmacsClient%%; head over to GnuClient for a less cumbersome solution.'''
+'''Note: On Windows, GnuClient works better than %%EmacsClient%% (for versions prior to 22.1). The instructions below apply to %%EmacsClient%%; head over to GnuClient for a less cumbersome solution.'''
+
+(I haven't found GnuClient less cumberson than EmacsClient, and in fact have always had trouble getting GnuClient set up on Windows. Not big trouble, but enough to be frustrating when I have to get it set up.  Once running, both GnuClient and EmacsClient (for 22.1 and later) work fine.  With EmacsClient, once Emacs is started, I only use emacsclient to send file edit requests.  I only use the vbs script below to launch Emacs from quicklaunch or a PowerPro script.)
+--RobDavenport
 
 ==== Starting Emacs automatically from a context menu on w32 ====
 (A trivial version of this, not using %%EmacsClient%%, is at [MsWindowsGlobalContextMenu MsWindowsGlobalContextMenu].)
@@ -299,6 +302,15 @@ You can open a file in Emacs via Windows Send To by placing a shortcut to emacsc
 
 - Glen Cordrey
 
+==== Editing with Emacs from Web Browsers ====
+
+*Edit with Emacs - a Google Chrome browser extension*: http://github.com/stsquad/emacs_chrome
+This extension by Alex Bennee allows users to edit web-page TEXTAREAs with Emacs.  It's nice to use Emacs when typing in posts or editing Wiki pages.  It uses its own edit-server.el instead of gnuclient or emacsclient currently, and doesn't let you edit page source yet.  //(This is not strictly about emacsclient, but seems related.)//
+
+*MozEx* is a Firefox extension which allows the user to use external programs for editing TEXTAREAs, viewing page source, handling mailto, news, telnet and FTP links.  http://mozex.mozdev.org/
+
+--RobDavenport
+
 = Using the patched version of EmacsW32 to start Emacs automatically =
 
 The patched version of Emacs + [[EmacsW32]] may start Emacs automatically and opens the given file name.
@@ -308,7 +320,6 @@ The patched version of Emacs client does this for you.
 
 The installation of Emacs + [[EmacsW32]] also does some file associations etc,
 but see also WThirtyTwoFileAssociations.
-
 
 
 = Opening a New Emacs Frame on the Current Terminal =
