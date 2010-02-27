@@ -3,7 +3,7 @@ A '''[::page break]''', or '''[::form feed]''' character (ASCII ##^L##, which is
 To insert ##^L## in an Emacs buffer, hit `C-q C-l'. In EmacsLisp, the form-feed character is written `##?\f##', and `##\f##' represents it in strings. (`##\f##' is also used in C.)
 
 A page break can also be used for a logical separation of source-code sections. Emacs has [[command]]s and [[key binding]]s that use page breaks, such as
-`forward-page' (`##C-]##'), `backward-page' (`##C-[##'), and `narrow-to-page (`C-x n p').  Other functions, such as `mark-page', operate on the content of a page.  See also PageMode.
+`forward-page' (`##C-x ]##' or `##C-]##'), `backward-page' (`##C-x [##' or `##C-[##'), and `narrow-to-page (`C-x n p').  Other functions, such as `mark-page', operate on the content of a page.  See also PageMode.
 
 
 == Display Page Breaks in Alternative Ways ==

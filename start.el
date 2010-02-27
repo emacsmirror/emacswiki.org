@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2010, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 21.1
-;; Last-Updated: Wed Feb 24 22:29:54 2010 (-0800)
+;; Last-Updated: Fri Feb 26 07:25:38 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 2833
+;;     Update #: 2837
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -87,8 +87,8 @@
 ;;
 ;; Change log:
 ;;
-;; 2010/02/24 dadams
-;;     Soft-require iedit.el.
+;; 2010/02/26 dadams
+;;     Soft-require iedit.el.  Autoload insert-time-string.el.
 ;; 2010/02/20 dadams
 ;;     Soft-require framemove.el.
 ;; 2010/01/12 dadams
@@ -620,7 +620,7 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
 (autoload 'info-emacs-manual "info+" "Access the Emacs manual via \"Info\"." t)
 (eval-after-load "macros" '(require 'macros+ nil t)) ; Extensions to `macros.el'.
 (require 'mouse+ nil t)                       ; Extensions to `mouse.el'.
-(when (> emacs-major-mode 21) (require 'iedit nil t))
+(when (> emacs-major-version 21) (require 'iedit nil t))
 (eval-after-load "novice" '(require 'novice+ nil t)) ; Extensions to `novice.el'.
 (when (< emacs-major-version 21)
   (eval-after-load "options" '(require 'options+ nil t))) ; Extensions to `options.el'.
@@ -643,6 +643,7 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
                                     (error nil)))))))
 (when (> emacs-major-version 21) (eval-after-load "find-func" '(require 'find-func+ nil t)))
 ;(eval-after-load "vc" '(require 'vc+)) ; Extensions to `vc.el'.
+(autoload 'insert-time-string "insert-time-string" t "Insert current time at point.")
 (autoload 'display-line-numbers "line-num"
   "Temporarily display line numbers in left margin of current buffer." t)
 (autoload 'setup-training-cc "training-cc" "Set up for code display with projector." t)

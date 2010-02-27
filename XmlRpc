@@ -13,7 +13,7 @@ make asynchronous remote procedure calls over http.
 
 To fix a bug in that causes double escaping of string parameters in Emacs 23, apply the patch from the following bug report: http://savannah.nongnu.org/bugs/?25314
 
-If you want CVS access, please contact hexmode on Savannah.
+If you want CVS (Bazaar I guess since CVS is no longer used) access, please contact hexmode on Savannah.
 
 It could probably be useful for communicating with EmacsWiki using the
 MeatBall:XmlRpcToWiki API.  See the WikiRemote for further discussion

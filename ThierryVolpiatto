@@ -2,9 +2,7 @@ Hi, i am Thierry Volpiatto and I use Emacs on Gentoo GNU/linux.
 
 My nickname on IRC is thiedlec.
 
-I contribute to DistributedVersionControl (DVC).
-
-I am also one of the maintainers of 
+I am one of the maintainers of 
 
 * Lisp:anything-config.el
 
@@ -12,47 +10,24 @@ Here are some elisp codes i wrote:
 
 * Lisp:warn-mail.el Warn you when you have a new mail in your mail directory
 
-* SerialRename is a little code to rename files sequentially
-
-* Lisp:planner-notes-index-page.el To have an index of your notes for each planner page.
-
-(i don't use planner anymore, so this file is not maintened)
-
 * Lisp:thumb-page.el To create a muse page with thumbs from a picture directory
 
-* Lisp:w3m-meteo.el To have link to meteo and possibility to bookmark city meteo
-
-* Lisp:traverselisp.el The complete elisp version of traverse. Nothing else is needed
-Look at TraverseDirectory for more info.
+* [http://mercurial.intuxication.org/hg/traverselisp traverselisp] Look at TraverseDirectory for more info.
 
 * [http://mercurial.intuxication.org/hg/emacs-bookmark-extension bookmark-extensions.el]: Extensions for standard Emacs bookmarks.
   Use hg clone http://mercurial.intuxication.org/hg/emacs-bookmark-extension
 
-  If you want the development branch use:
-<pre> 
-
-hg update -C development.
-
-</pre>
-
-
-See BookmarkExtension
+  See BookmarkExtension
 
 * Lisp:anything-traverse.el Anything interface for some functionalities of traverse.
 
-Screenshot: http://farm4.static.flickr.com/3070/3170487688_cbd3049287.jpg
-
 * Lisp:anything-delicious.el Anything interface to delicious bookmarks.
-
-Screenshot: http://farm4.static.flickr.com/3430/3237847025_1221e94db4.jpg
 
 * Lisp:anything-mercurial.el Anything interface to mercurial qpatchs with DistributedVersionControl (DVC)
 
 * Lisp:anything-ipython.el Anything interface to ipython completion. See PythonMode.
 
 * Lisp:eiv.el Emacs-Image-Viewer - A small image viewer that allow simples manipulations.
-
-Screenshot: http://farm4.static.flickr.com/3458/3363516850_69b3099ae6.jpg
 
 Browse Gentoo packages in Emacs with Anything (Include in Lisp:anything-config.el)
 
@@ -61,35 +36,14 @@ Screenshot: http://farm4.static.flickr.com/3458/3403904091_3d27229f6b.jpg
 * Lisp:xml-weather.el Import xml-weather info in an emacs buffer or with a rolling message in minibuffer.
 
 Screenshot: http://farm3.static.flickr.com/2480/3806776285_223ab2281c.jpg
+
+* Lisp:iterator.el Now part of traverselisp.
  
-* Lisp:macros-func-thierry.el Some useful functions or macros. (not updated)
-
 My config files:
-
-* Lisp:.emacs-thierry.el My emacs config. Last updated: <2009-07-30 Jeu. 11:58>
-
-* Lisp:init-anything-thierry.el My anything startup file (To use with anything-config).
-
-* Lisp:.emacs-emms-thierry-mpd.el Myconfig for emms with mpd. (not updated)
-
-* Lisp:.emacs-w3m-thierry.el (not updated)
-
-* Lisp:tv-utils.el Some useful emacs functions. To use async functions with slime, you need tv-fad-extensions: http://mercurial.intuxication.org/hg/tv-fad-extensions.
-
-* Lisp:iterator.el Kind of python iterators for elisp.(Don't use that if you need speed: it's slow) Some of these functions are in eiv.el.
 
 * Lisp:eev-thierry.el Some facilities to use eev hyperlinks.
 
-* Lisp:org-config-thierry.el My org config.
-
 * Lisp:dvc-init.el My DVC config.
-
-
-Here are my projects (python) 
-
-* http://gna.org/projects/python-calendar 
-
-(Old no more maintened, but working fine, it's a kind of planner wrote in Tk with a calendar, tasks, cyclics tasks, etc...)
 
 
 Contact: thierry dot volpiatto from gmail dot com

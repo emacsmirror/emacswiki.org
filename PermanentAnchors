@@ -23,7 +23,7 @@ The name of a hidden anchor must be unique on its page; it need not be unique th
 [:VisibleAnchors]
 == Visible Anchors ==
 
-You can create a visible anchor on a page to serve as the target of links. A visible anchor is different from an HTML named anchor such as <code><A NAME="..."></code>, which is hidden unless you use some special CSS to do otherwise.
+You can [::Create a Visible Anchor] on a page to serve as the target of links. A visible anchor is different from an HTML named anchor such as <code><A NAME="..."></code>, which is hidden unless you use some special CSS to do otherwise.
 
 To define a visible anchor, use square brackets and two colons:
 
@@ -37,11 +37,15 @@ You can link to a visible anchor as usual, just as if it were the name of a Wiki
 
 Example:
 
-    [::Creating a Page Alias]
+    [::Create a Visible Anchor]
 
-The link would look as follows:
+The link would appear as follows:
 
-    [[Creating a Page Alias]]
+[[Create a Visible Anchor]]
+
+It should be formatted as:
+
+   [[Create a Visible Anchor]]
 
 Clicking the ''anchor definition'' itself runs a ''search for the anchor text'', just as if you had typed it into the '''Search''' field at the bottom of the page.
 

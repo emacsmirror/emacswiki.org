@@ -304,7 +304,7 @@ You can open a file in Emacs via Windows Send To by placing a shortcut to emacsc
 
 ==== Editing with Emacs from Web Browsers ====
 
-*Edit with Emacs - a Google Chrome browser extension*: http://github.com/stsquad/emacs_chrome
+*Edit with Emacs - a Google Chrome browser extension*: Source: http://github.com/stsquad/emacs_chrome or https://chrome.google.com/extensions/detail/ljobjlafonikaiipfkggjbhkghgicgoh to install in Chrome.
 This extension by Alex Bennee allows users to edit web-page TEXTAREAs with Emacs.  It's nice to use Emacs when typing in posts or editing Wiki pages.  It uses its own edit-server.el instead of gnuclient or emacsclient currently, and doesn't let you edit page source yet.  //(This is not strictly about emacsclient, but seems related.)//
 
 *MozEx* is a Firefox extension which allows the user to use external programs for editing TEXTAREAs, viewing page source, handling mailto, news, telnet and FTP links.  http://mozex.mozdev.org/

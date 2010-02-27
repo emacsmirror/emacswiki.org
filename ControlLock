@@ -37,3 +37,11 @@ Note that when in control-lock, M-a behaves as M-a (etc) but S-a behaves as just
 [new]
 This looks great. Alternatively, Viper mode is in the same spirit: having two locking modes, one for inserting text (insert mode), the other one to navigate and execute complex operations (vi mode). The Esc key would be Viper mode's control-lock.
 -- SebastienRoccaSerra
+
+[new] The code could use some cleanup.  Basically put the parens where
+they belong, it's annoying for a Lisper to see a line containing only
+parens...  In addition the first line of the docstring should be a complete
+sentence by itself.  That's because the first line is what is displayed
+by commands like `apropos'.  Also: "Return whether ..." is preferred over
+"Returns whether ..." (note the verb form).  See the Elisp manual for
+more, it has a whole chapter on tips and conventions.  -- EmilioLopes

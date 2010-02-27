@@ -7,6 +7,8 @@ This is a quick-start guide to using [http://bazaar-vcs.org Bazaar] for Emacs de
 
 This guide presents a simple Bazaar workflow oriented toward the "regular contributor," whether a "core" committer, a maintainer of a well-defined package (/e.g./, a major mode), or simply someone who enjoys occasionally hacking on Emacs and then contributing those improvements to the community.  The emphasis is on /necessary/ and /simple/, not on "general" nor on maximal efficiency.  Emacs developers will surely need various other workflows at times, and there are in most cases more highly performant ways of accomplishing most tasks.  However, the ways presented here are intended to be straightforward, effective, reasonably efficient, and relatively simple.
 
+"VCS means never having to say you're sorry."  It's true, but it's still worth being careful, even with bzr.  In the workflows described below, a quick "bzr status" is inserted before each commit.  This is optional, of course, but it's generally a good idea if (a) you haven't committed in that branch within your short-term memory, or (b) you've done a merge.  For more detail but less than a full diff, you can substitute "bzr diffstat" (requires an optional plugin).
+
 [:StopGap]
 
 === CVS-like workflow ===
@@ -36,10 +38,6 @@ As Emacs needs some of the improvements provided by 1.17 release, this quick-sta
 === Where is Emacs? ===
 
 You can browse Emacs in loggerhead (the Bazaar web front-end) here: http://bzr.savannah.gnu.org/lh/emacs/ .  Unfortunately, the Savannah installation of loggerhead is broken sometimes; see [[https://savannah.gnu.org/support/index.php?107142 sr #107142]].  Fortunately, you can [http://bazaar.launchpad.net/~vcs-imports/emacs/trunk/files browse the Emacs sources at Launchpad] too; the Launchpad copy is kept up-to-date by automated means.
-
-[new:DrewAdams:2010-01-25 05:31 UTC]
-The launchpad site has been down for some time now. At least I cannot get to some of the directories, in particular ##lisp## and ##src##. I just get an ##Internal Server Error## (very user friendly). I reported it to ##emacs-devel@gnu.org## on 2010/01/15, but never got a reply. FWIW, the repository is useless to me, if I cannot download source files from it using http. -- DrewAdams
-[new]
 
 To make a local branch or branches based on upstream Emacs, start at [[#InitializingYourBzrRepo]] and follow instructions from there.  (This is the Bazaar equivalent of `cvs checkout`.)
 
@@ -126,6 +124,7 @@ You can do quick, self-contained fixes (one-line patches and the like) directly 
       cd $DEVHOME/emacs/trunk
       bzr update                  # get in sync with the upstream master
       <<<make your edit>>>
+      bzr status                  # (optional) sanity check -- lists changed and unknown files
       bzr commit -m "Fix silly typo in README."
 
 Because ##trunk## is "bound" to upstream, this commit will automatically push the changes upstream.
@@ -157,6 +156,7 @@ Once you have created and bootstrapped the ##quickfixes## branch, the routine wo
       cd $DEVHOME/emacs/quickfixes
       bzr update                  # get in sync with the upstream master
       <<<make your edit>>>
+      bzr status                  # (optional) sanity check -- lists changed and unknown files
       bzr commit -m "Fix silly typo in README."
 
 Because ##trunk## is "bound" to upstream, this commit will automatically push the changes upstream.
@@ -180,6 +180,7 @@ When you are working on a task that touches many files, or requires a lot of tho
 
 At this point, you're ready to do work.  You edit the source files, build and test as needed.  When you've accomplished a subtask, it's a good idea to stop and commit your work to the branch.  Here, you often have a larger ChangeLog than can comfortably be entered on the command line with ##-m##.  In this case, you put the log message in a file we'll call ##log-message.txt##.  Then
 
+      bzr status                  # (optional) sanity check -- lists changed and unknown files
       bzr commit -F log-message.txt
 
 You can also do ##bzr commit -m "blah blah blah"##, if your log message is short enough to fit on one line.  Remember, these commits are local: they affect only the task branch, since it is not bound to upstream.  The commits don't affect the upstream master branch, and they don't even affect your local trunk mirror.  No one else will see the commits until you send them upstream.
@@ -188,6 +189,7 @@ You can also do ##bzr commit -m "blah blah blah"##, if your log message is short
 
 If the task isn't done yet, keep working.  Edit yet more source files, until you reach a good stopping point:
 
+      bzr status                              # (optional) sanity check -- lists changed and unknown files
       bzr commit -F another-log-message.txt
 
 etc.  You can commit any time you reach a good checkpoint.  We recommend committing much more frequently than you might with CVS or Subversion.
@@ -202,18 +204,20 @@ And after refreshing the mirror, you'll want to get those changes into your task
 
       # Back in the TASKNAME branch
       bzr merge
+      bzr status                  # (recommended) sanity check -- lists changed and unknown files
       bzr commit -m "Merge from mainline."
 
 The reason you use "##merge##" instead of "##update##" in the task branch is that your task branch is an independent branch (not bound to anything else) and has its own local commits.  In other words, it has diverged (a bit) from the upstream master, and so any changes from upstream have to be merged with your local changes.
 
-The merge may fail due to an upstream change that conflicts with your branch.  You'll need to fix the problem (looking for conflict markers and editing, just as in CVS).  When you save the files which had conflict markers, Emacs will automatically invoke "bzr resolve" for you, to tell Bazaar that conflicts were resolved.  If for some reason you don't use Emacs  to fix the conflicts (what? how? can't be!), you will need to do it manually:
+The merge may fail due to an upstream change that conflicts with your branch.  You'll need to fix the problem (looking for conflict markers and editing, just as in CVS).  When you save the files which had conflict markers, Emacs will automatically invoke "bzr resolve" for you, to tell Bazaar that conflicts were resolved.  If for some reason you don't use Emacs to fix the conflicts, you will need to do it manually:
 
       bzr resolve file-you-changed ...      # Mark these conflicts as resolved.
-                                               # Bazaar keeps track of unresolved conflicts,
-                                               # and won't let you commit until all are resolved.
+                                            # Bazaar keeps track of unresolved conflicts,
+                                            # and won't let you commit until all are resolved.
 
 Once you have achieved a clean merge, commit it:
 
+      bzr status                  # (recommended) sanity check -- lists changed and unknown files
       bzr commit -m "Merge from mainline."
 
 Note that you will need this ##commit## command even if there were no conflicts detected during the merge.
@@ -253,6 +257,7 @@ Another way to post changes for review is to create a "bundle", which is a file 
 
 where ##PATCHNAME## is some brief mnemonic name for the change.  Send a mail to the Emacs Devel list describing the change; attach ##PATCHNAME.txt## to that mail (please use MIME type ##text/plain##).  If the reviewers ask for further tweaks, repeat the cycle.  Edit the files, build and test as necessary, and 
 
+      bzr status                  # (optional) sanity check -- lists changed and unknown files
       bzr commit -m "Address reviewer comments."
 
 Now generate a new bundle:
@@ -275,6 +280,7 @@ If you are a committer, you can merge to the upstream master directly.  To do th
 
 and then commit
 
+      bzr status                  # (recommended) sanity check -- lists changed and unknown files
       bzr commit -m "Merge: fix bla bla bla (closes Bug #1)."
 
 which automatically merges all your new commits to the upstream master, because the mirror is set up as bound branch.  In this process, updating your ##trunk## with ##bzr update## is not really optional.  There is a race condition here, just as in CVS: if your mirror is not up-to-date because another developer has committed since you last updated, your commit will fail.  In this case you should abort the merge
@@ -285,7 +291,7 @@ do another ##bzr update##, merge from the ##TASKNAME## branch again, and commit.
 
 It might occur to you to save some effort by just doing ##bzr push## directly to the upstream master from inside the ##TASKNAME## branch:
 
-      cd $DEVHOME/emacs/TASKNAMe
+      cd $DEVHOME/emacs/TASKNAME
       bzr push sftp://USERNAME@bzr.savannah.gnu.org/srv/bzr/emacs/trunk/
 
 //Do not do this// --- it can cause history to be displayed in a strange way in the upstream master, any mirrors or branches of it, and your own branch later. Search for the word "hidden" in [http://lists.gnu.org/archive/html/emacs-devel/2009-11/msg01021.html this mail] for more details.

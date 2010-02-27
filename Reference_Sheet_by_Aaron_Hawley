@@ -2,54 +2,54 @@
 
 This is a reference card that is unlike other ReferenceCards in that it will not fit on a conveniently sized card.  Instead it tries to tell you everything about doing things in Emacs.
 
-||||**open**||
+||||'''[::OPEN-KEY-BINDINGS]'''||
 ||##emacs& RET##||or click a graphical icon||
 ||##emacs -nw RET##||open in terminal, not in a window||
 ||##q##||clear splash screen||
-||||**exit**||
+||||'''[::EXIT-KEY-BINDINGS]'''||
 ||##C-x C-c##||save buffers and quit||
 ||##C-]##||recursive edit||
-||||**cancel**||
+||||'''[::CANCEL-KEY-BINDINGS]'''||
 ||##C-g##||a command||
 ||##C-M-c##||recursive edit||
-||##M-x top-level##||all recursive edits||
-||||**recursive edit**||
+||##M-x `top-level'##||all recursive edits||
+||||'''[::RECURSIVE-EDIT-KEY-BINDINGS]'''||
 ||##C-]##||exit recursive edit||
 ||##C-M-c##||cancel recursive edit||
 ||##M-x top-level##||cancel all recursive edits||
-||||**customize**||
+||||'''[::CUSTOMIZE-KEY-BINDINGS]'''||
 ||##C-x C-f ~/.emacs RET##||Emacs initialization file||
-||##M-x customize##||main menu||
-||##M-x customize-variable##||variable||
-||##M-x customize-apropos##||search||
-||##M-x customize-mode##||mode||
-||##M-x global-set-key##||define key binding||
-||##M-x local-set-key##||define key binding for current buffer||
-||##M-x display-time##||show clock, system load and email flag in mode line||
-||##M-x display-battery-mode##||show system power||
-||##M-x size-indication-mode##||show size in mode line||
-||##M-x column-number-mode##||show column number in mode line||
-||##M-x ruler-mode##||add a ruler to the current buffer's window||
-||##M-x auto-revert-mode##||update file if changes on disk||
-||##M-x global-auto-revert-mode##||update any buffer's file||
-||##M-x menu-bar-mode##||toggle existence of drop-down menu||
-||##M-x tool-bar-mode##||toggle existence of clickable tool bar||
-||##M-x scroll-bar-mode##||toggle scroll bar||
-||##M-x toggle-scroll-bar##||toggle scroll bar in current frame||
-||##M-x blink-cursor-mode##||toggle blinking of cursor||
-||||**menu**||
+||##M-x `customize'##||main menu||
+||##M-x `customize-variable'##||variable||
+||##M-x `customize-apropos'##||search||
+||##M-x `customize-mode'##||mode||
+||##M-x `global-set-key'##||define key binding||
+||##M-x `local-set-key'##||define key binding for current buffer||
+||##M-x `display-time'##||show clock, system load and email flag in mode line||
+||##M-x `display-battery-mode'##||show system power||
+||##M-x `size-indication-mode'##||show size in mode line||
+||##M-x `column-number-mode'##||show column number in mode line||
+||##M-x `ruler-mode'##||add a ruler to the current buffer's window||
+||##M-x `auto-revert-mode'##||update file if changes on disk||
+||##M-x `global-auto-revert-mode'##||update any buffer's file||
+||##M-x `menu-bar-mode'##||toggle existence of drop-down menu||
+||##M-x `tool-bar-mode'##||toggle existence of clickable tool bar||
+||##M-x `scroll-bar-mode'##||toggle scroll bar||
+||##M-x `toggle-scroll-bar'##||toggle scroll bar in current frame||
+||##M-x `blink-cursor-mode'##||toggle blinking of cursor||
+||||'''[::MENU-KEY-BINDINGS]'''||
 ||##M-`##||text interaction with drop-down menu||
 ||##F10##||same as previous||
-||##M-x menu-bar-mode##||toggle existence of drop-down menu||
-||##M-x tool-bar-mode##||toggle existence of clickable tool bar||
-||||**help**||
+||##M-x `menu-bar-mode'##||toggle existence of drop-down menu||
+||##M-x `tool-bar-mode'##||toggle existence of clickable tool bar||
+||||'''[::HELP-KEY-BINDINGS]'''||
 ||##C-h ?##||menu||
 ||##C-h C-h##||menu||
 ||##SPC##||scroll down menu||
 ||##DEL##||scroll up menu||
 ||##q##||close menu||
 ||##C-h t##||tutorial||
-||##C-h r##||Emacs info manual (see "info" below)||
+||##C-h r##||Emacs info manual (See [[INFO-HELP-KEY-BINDINGS]])||
 ||##C-h F##||Emacs FAQ||
 ||##C-h c <KEY>##||what is command for KEY||
 ||##C-h k <KEY>##||describe command for KEY||
@@ -66,7 +66,7 @@ This is a reference card that is unlike other ReferenceCards in that it will not
 ||##C-c C-c##||follow cross-reference||
 ||##C-c C-b##||go back||
 ||##q##||quit||
-||||**info help**||
+||||'''[::INFO-HELP-KEY-BINDINGS]'''||
 ||##C-h i##||open directory of manuals||
 ||##C-h r##||open Emacs manual||
 ||##q##||close||
@@ -90,19 +90,19 @@ This is a reference card that is unlike other ReferenceCards in that it will not
 ||##i RET##||go to index node||
 ||##s <PATTERN>##||search forward for regular expression PATTERN||
 ||##S <PATTERN>##||case-insensitive search for regular expression PATTERN||
-||##C-s <SEARCH>##||forward to SEARCH (see "search" below)||
+||##C-s <SEARCH>##||forward to SEARCH (See [[SEARCH-KEY-BINDINGS]])||
 ||##C-r <SEARCH>##||reverse to SEARCH||
-||##M-n##||make a duplicate buffer in other window (see "window" below)||
-||||**minibuffer**||
+||##M-n##||make a duplicate buffer in other window (See [[WINDOW-KEY-BINDINGS]])||
+||||'''[::MINIBUFFER-KEY-BINDINGS]'''||
 ||##M-p##||previous input||
 ||##M-n##||recent input||
-||##TAB##||complete name of buffer, file, symbol (see "completion" below)||
+||##TAB##||complete name of buffer, file, symbol (See [[COMPLETION-KEY-BINDINGS]])||
 ||##C-i##||same as previous||
 ||##M-r##||search for previous input||
 ||##M-s##||search for previous input||
 ||##C-h e##||show recently echoed messages||
 ||##C-g##||exit||
-||||**completion**||
+||||'''[::COMPLETION-KEY-BINDINGS]'''||
 ||##TAB##||complete name of buffer, file, function, variable, ...||
 ||##SPC##||completion, unless a file||
 ||##?##||list completions||
@@ -111,16 +111,16 @@ This is a reference card that is unlike other ReferenceCards in that it will not
 ||##<left>##||previous completion||
 ||##RET##||select completion||
 ||##ESC ESC ESC##||exit back to minibuffer||
-||||**mode**||
-||##C-h m##||help with current (see "help" above)||
-||##M-x text-mode##||for writing||
-||##M-x fundamental-mode##||a simple default||
-||##M-x normal-mode##||change back to what Emacs thought it was||
-||##M-x customize-mode##||customize current (see "customize" above)||
-||||**file**||
+||||'''[::MODE-KEY-BINDINGS]'''||
+||##C-h m##||help with current (See [[HELP-KEY-BINDINGS]])||
+||##M-x `text-mode'##||for writing||
+||##M-x `fundamental-mode'##||a simple default||
+||##M-x `normal-mode'##||change back to what Emacs thought it was||
+||##M-x `customize-mode'##||customize current (See [[CUSTOMIZE-KEY-BINDINGS]])||
+||||'''[::FILE-KEY-BINDINGS]'''||
 ||##C-x C-f##||open||
 ||##C-x C-f##||new||
-||##M-x make-directory RET RET##||including parent directories||
+||##M-x `make-directory' RET RET##||including parent directories||
 ||##C-x C-v##||close current and open another||
 ||##C-x C-s##||save||
 ||##C-x s##||prompt to save any buffer that has been modified||
@@ -131,71 +131,71 @@ This is a reference card that is unlike other ReferenceCards in that it will not
 ||##C-x C-f archive.tar RET##||list contents of archive||
 ||##C-x C-f file.gz RET##||open compressed Gzip||
 ||##C-x C-f file.zip RET##||list contents of zip file||
-||##M-x rename-file##||rename current||
-||##M-x view-file##||(see "read only" below)||
+||##M-x `rename-file'##||rename current||
+||##M-x `view-file'##||view file (See [[READ-ONLY-KEY-BINDINGS]])||
 ||##<insert>##||change whether to use overwrite or switch back to insert mode||
-||##M-x overwrite-mode##||same as previous||
-||##M-x binary-overwrite-mode##||edit file as literal bytes||
+||##M-x `overwrite-mode'##||same as previous||
+||##M-x `binary-overwrite-mode'##||edit file as literal bytes||
 ||##C-x d M-p RET R##||rename previously saved or opened||
 ||##C-x i##||insert other file into current buffer||
-||##M-x write-region##||save region||
+||##M-x `write-region'##||save region||
 ||##C-x h M-x write-region##||save buffer once to alternate||
-||##M-x find-file-at-point##||open file name at point||
-||##M-x revert-buffer##||restore buffer with file on disk||
-||##M-x recover-file##||recover auto-save data after a crash||
-||##M-x recover-session##||recover all files with auto-save data||
-||##M-x size-indication-mode##||show size in mode line||
-||##M-x auto-revert-mode##||update file if changes on disk||
-||##M-x global-auto-revert-mode##||update any buffer's file||
-||##M-x auto-revert-tail-mode##||update end of file with changes on disk||
-||||**buffer**||
-||##M-<##||beginning of buffer||
-||##M->##||end of buffer||
+||##M-x `find-file-at-point'##||open file name at point||
+||##M-x `revert-buffer'##||restore buffer with file on disk||
+||##M-x `recover-file'##||recover auto-save data after a crash||
+||##M-x `recover-session'##||recover all files with auto-save data||
+||##M-x `size-indication-mode'##||show size in mode line||
+||##M-x `auto-revert-mode'##||update file if changes on disk||
+||##M-x `global-auto-revert-mode'##||update any buffer's file||
+||##M-x `auto-revert-tail-mode'##||update end of file with changes on disk||
+||||'''[::BUFFER-KEY-BINDINGS]'''||
+||##M-<##||`beginning-of-buffer'||
+||##M->##||end-of-buffer||
 ||##C-x h##||mark||
 ||##C-x k <BUFFER> RET##||kill BUFFER||
 ||##C-x k RET##||kill current||
 ||##C-x b RET##||switch to last buffer||
 ||##C-x b <BUFFER> RET##||switch to BUFFER or make new BUFFER||
-||##C-x 4 b##||switch to a buffer in other window (see "window" below)||
-||##C-x 4 C-o##||show a buffer in other window (see "window" below)||
-||##C-x C-b##||list all (see "buffer menu" below)||
-||##M-x bury-buffer##||avoid switching to current buffer||
+||##C-x 4 b##||switch to a buffer in other window (See [[WINDOW-KEY-BINDINGS]])||
+||##C-x 4 C-o##||show a buffer in other window (See [[WINDOW-KEY-BINDINGS]])||
+||##C-x C-b##||list all (See [[BUFFER-MENU-KEY-BINDINGS]])||
+||##M-x `bury-buffer'##||avoid switching to current buffer||
 ||##C-x b M-p##||switch to previously switched buffer||
 ||##C-x C-s##||save current contents to file on disk||
 ||##C-x s##||save modified files||
-||##M-x rename-buffer RET <NAME>##||rename current to NAME||
-||##M-x rename-uniquely##||remove "<X>" suffix from buffer name if possible||
-||##M-x revert-buffer##||restore contents with file on disk (see "undo" below)||
-||##M-x erase-buffer##||delete everything (see "delete" below)||
-||##M-x clone-indirect-buffer##||open an indirect buffer based on current||
+||##M-x `rename-buffer' RET <NAME>##||rename current to NAME||
+||##M-x `rename-uniquely'##||remove "<X>" suffix from buffer name if possible||
+||##M-x `revert-buffer'##||restore contents with file on disk (See [[UNDO-KEY-BINDINGS]])||
+||##M-x `erase-buffer'##||delete everything (See [[DELETE-KEY-BINDINGS]])||
+||##M-x `clone-indirect-buffer'##||open an indirect buffer based on current||
 ||##C-x 4 c##||open an indirect buffer but in another window||
 ||##C-h f car RET C-x o M-x clone-buffer RET C-h f cdr RET##||compare two functions||
-||||**read only**||
+||||'''[::READ-ONLY-KEY-BINDINGS]'''||
 ||##C-x C-r <FILE> RET##||open FILE as read only||
 ||##C-x C-q##||toggle write status||
-||##M-x view-mode##||view mode for current buffer||
-||##M-x view-file <FILE> RET##||open FILE in view mode||
-||##M-x view-buffer##||view mode for other buffer||
-||##SPC##||scroll down||
-||##DEL##||scroll up||
+||##M-x `view-mode'##||view mode for current buffer||
+||##M-x `view-file' <FILE> RET##||open FILE in view mode||
+||##M-x `view-buffer'##||view mode for other buffer||
+||##SPC##||`scroll-down'||
+||##DEL##||`scroll-up'||
 ||##h##||view mode help||
 ||##q##||turn off view mode||
-||##M-x normal-mode##||turn off view mode||
-||||**window**||
+||##M-x `normal-mode'##||turn off `view-mode'||
+||||'''[::WINDOW-KEY-BINDINGS]'''||
 ||##C-v##||scroll down||
 ||##M-v##||scroll up||
 ||##C-M-v##||scroll other window down||
-||##M-<##||beginning of buffer||
-||##M->##||end of buffer||
-||##M-x beginning-of-buffer-other-window##||beginning of other buffer||
-||##M-x end-of-buffer-other-window##||end of other buffer||
+||##M-<##||`beginning-of-buffer'||
+||##M->##||`end-of-buffer'||
+||##M-x `beginning-of-buffer-other-window'##||beginning of other buffer||
+||##M-x `end-of-buffer-other-window'##||end of other buffer||
 ||##M-r##||move to first column of center line in display||
 ||##C-0 M-r##||move to first column of first displayed line||
 ||##M-- M-r##||move to first column of last displayed line||
 ||##C-4 M-r##||move to first column of fourth displayed line||
 ||##C-u - 3 M-r##||move to first column of third to last displayed line||
-||##C-x 2##||split vertically in two||
-||##C-x o##||switch between windows||
+||##C-x 2##||`split-window-vertically' in two||
+||##C-x o##||`switch between-windows'||
 ||##C-x 4 b##||switch to a buffer in other window||
 ||##C-x 4 C-o##||show a buffer in other window||
 ||##C-x 0##||close current||
@@ -210,8 +210,8 @@ This is a reference card that is unlike other ReferenceCards in that it will not
 ||##M- 5 C-x }##||shrink 5 columns narrower||
 ||##C-x <##||scroll horizontally right||
 ||##C-x >##||scroll horizontally left||
-||##M-x toggle-truncate-lines##||change if long lines fold or are truncated||
-||||**buffer menu**||
+||##M-x `toggle-truncate-lines'##||change if long lines fold or are truncated||
+||||'''[::BUFFER-MENU-KEY-BINDINGS]'''||
 ||##C-x C-b##||list||
 ||##C-u C-x C-b##||list only buffers associated with files||
 ||##SPC##||move down||
@@ -219,18 +219,18 @@ This is a reference card that is unlike other ReferenceCards in that it will not
 ||##C-n##||move down||
 ||##p##||move up||
 ||##C-p##||move up||
-||##%##||toggle current as read only (see "read only" above)||
+||##%##||toggle current as read only (See [[READ-ONLY-KEY-BINDINGS]]) ||
 ||##?##||show modes for current||
 ||##g##||update list||
 ||##T##||toggle list to buffers associated with files||
-||##C-o##||view current in other window (see "window" above)||
+||##C-o##||view current in other window (See [[WINDOW-KEY-BINDINGS]])||
 ||##RET##||view current in this window||
 ||##e##||goto current in this window||
 ||##f##||goto current in this window||
 ||##1##||goto current in only 1 window||
 ||##2##||goto current in only 1 window||
-||##V##||open current buffer in View mode (see "read only" above)||
-||##b##||bury current (see "buffer" above)||
+||##V##||open current buffer in View mode (See [[READ-ONLY-KEY-BINDINGS]]) ||
+||##b##||bury current (See [[BUFFER-KEY-BINDINGS]]) ||
 ||##m##||mark current and move down||
 ||##C-d##||mark to delete current and move up||
 ||##d##||mark to delete current and move down||
@@ -238,22 +238,22 @@ This is a reference card that is unlike other ReferenceCards in that it will not
 ||##C-k##||mark to delete current and move down||
 ||##x##||execute marks||
 ||##q##||quit||
-||||**redisplay**||
+||||'''[::REDISPLAY-KEY-BINDINGS]'''||
 ||##C-l##||with line at center of window||
 ||##C-0 C-l##||with current line at top of window||
 ||##M-- C-l##||with current line at bottom of window||
 ||##C-u -1 C-l##||same as previous||
 ||##C-M-l##||try to make the top of the current function visible in the window||
 ||##C-M-l C-M-l##||with current line at top of window||
-||||**command**||
+||||'''[::COMMAND-KEY-BINDINGS]'''||
 ||##C-h l##||show recently typed keys||
 ||##C-h e##||show recently echoed messages||
 ||##C-x z##||repeat last command||
 ||##C-x M-ESC##||edit and re-evaluate last command as Emacs Lisp||
 ||##C-x M-:##||same as previous||
-||##M-x command-history##||show recently run commands||
+||##M-x `command-history'##||show recently run commands||
 ||##x##||run command at line in history||
-||||**iterative command**||
+||||'''[::ITERATIVE-COMMAND-KEY-BINDINGS]'''||
 ||##C-u##||repeat next command 4 times||
 ||##M--##||next command once in opposite direction||
 ||##C-u 8##||repeat next command 8 times||
@@ -266,27 +266,28 @@ This is a reference card that is unlike other ReferenceCards in that it will not
 ||##C-u C-u##||repeat next command 16 times||
 ||##C-u C-u C-u##||repeat next command 64 times||
 ||##C-u 369 C-u 0##||insert 369 zeros||
-||||**non-iterative command**||
+||||'''[::NON-ITERATIVE-COMMAND-KEY-BINDINGS]'''||
 ||##C-u##||toggle behavior of next command||
 ||##M--##||toggle behavior of next command with negative value||
-||||**macro**||
+||||'''[::MACRO-KEY-BINDINGS]'''||
 ||##C-x (##||start recording macro||
 ||##F3 ##||same as previous||
 ||##C-x )##||finish recording macro||
 ||##F4 ##||same as previous||
 ||##C-x e##||finish recording macro and run macro||
 ||##C-x e##||run last macro||
-||##C-x C-k r##||go to each line in region and run last macro||
+||##C-x C-k r##||go to each line in region and run last macro - `apply-macro-to-region-lines'||
 ||##C-x C-k n##||name last macro||
 ||##M-x <MACRO>##||run macro MACRO||
-||##C-x C-k e C-x e##||edit last macro||
+||##C-x C-k b##||bind last macro to a key `kmacro-bind-to-key'||
+||##C-x C-k e##||edit last macro - `edit-kbd-macro'||
 ||##C-x C-k e M-x <MACRO>##||edit named MACRO||
 ||##C-x C-k e C-h l##||edit and make recently typed keys||
 ||##C-x C-f ~/.emacs RET M-x insert-kbd-macro##||save macro||
-||||**key**||
+||||'''[::KEYS-KEY-BINDINGS]'''||
 ||##C-h l##||show recently typed keys||
-||##M-x global-set-key##||set for all buffers||
-||##M-x local-set-key##||set for current buffer||
+||##M-x `global-set-key'##||set for all buffers||
+||##M-x `local-set-key'##||set for current buffer||
 ||##C-q##||insert next character literally||
 ||##C-q TAB##||insert literal tab character||
 ||##C-q C-j##||insert literal newline||
@@ -298,16 +299,16 @@ This is a reference card that is unlike other ReferenceCards in that it will not
 ||##C-x @ h##||modify next key with Hyper||
 ||##C-x @ s##||modify next key with Super||
 ||##C-x @ a##||modify next key with Alt||
-||||**undo**||
-||##C-x u##||undo, repeat to further undo||
+||||'''[::UNDO-KEY-BINDINGS]'''||
+||##C-x u##||`undo', repeat to further undo||
 ||##C-_##||undo, repeat to further undo||
 ||##C-/##||undo, repeat to further undo||
 ||##C-/ C-g C-/##||undo, then redo||
 ||##C-/ C-/ C-g C-/ C-/##||undo, undo, then redo, redo||
-||##M-x revert-buffer##||restore buffer with file on disk||
-||##M-x buffer-disable-undo##||turn off for current buffer||
-||##M-x buffer-enable-undo##||turn on for current buffer||
-||||**search**||
+||##M-x `revert-buffer'##||restore buffer with file on disk||
+||##M-x `buffer-disable-undo'##||turn off for current buffer||
+||##M-x `buffer-enable-undo'##||turn on for current buffer||
+||||'''[::SEARCH-KEY-BINDINGS]'''||
 ||##C-s <MATCH>##||forward to end of MATCH||
 ||##C-r <MATCH>##||reverse to front of MATCH||
 ||##C-r C-s <MATCH>##||forward to end of MATCH||
@@ -334,8 +335,8 @@ This is a reference card that is unlike other ReferenceCards in that it will not
 ||##C-s C-w C-w DEL##||search for rest of current word||
 ||##C-s C-y##||search for rest of current line||
 ||##C-s C-y DEL##||undo search for rest of current line||
-||##C-s M-y##||search for last killed text (see "kill" below)||
-||##C-s M-y##||search for last killed text (see "kill" below)||
+||##C-s M-y##||search for last killed text (See [[KILL-CUT-KEY-BINDINGS]])||
+||##C-s M-y##||search for last killed text (See [[KILL-CUT-KEY-BINDINGS]])||
 ||##C-s M-p##||show previous search||
 ||##C-s M-n##||show oldest stored search||
 ||##C-s M-TAB <BEGINNING> ##||complete for BEGINNING of stored searches||
@@ -344,30 +345,30 @@ This is a reference card that is unlike other ReferenceCards in that it will not
 ||##M-e##||edit search||
 ||##M-r##||toggle regular expression search||
 ||##M-c##||toggle case-sensitivity of search||
-||##M-%##||search, query, and replace (see "replace" below)||
+||##M-%##||search, query, and replace (See [[REPLACE-KEY-BINDINGS]])||
 ||##C-s <SEARCH> M-% <REPLACE>##||interactive query SEARCH and REPLACE||
 ||##M-x isearch-toggle-case-fold##||change case-sensitivity of all searches||
 ||##C-h f isearch-forward RET##||help||
-||||**non-interactive search**||
+||||'''[::NON-INTERACTIVE-SEARCH-KEY-BINDINGS]'''||
 ||##C-s RET##||forward case-sensitive||
 ||##C-r RET##||backward case-sensitive||
 ||##C-s RET C-w##||forward word-based ignoring punctuation and whitespace||
 ||##C-r RET C-w##||backward word-based ignoring punctuation and whitespace||
-||||**regular expression**||
+||||'''[::REGULAR-EXPRESSION-KEY-BINDINGS]'''||
 ||##C-M-s##||search forward||
 ||##C-M-r##||search reverse||
 ||##M-r##||toggle off regexp||
 ||##C-M-s C-s##||repeat last regexp forward||
 ||##C-M-r C-s##||repeat last regexp backward||
 ||##C-r##||suspend replacement and editing buffer||
-||##C-M-c##||resume query and replace (see "recursive edit" above)||
+||##C-M-c##||resume query and replace (See [[RECURSIVE-EDIT-KEY-BINDINGS]]) ||
 ||##C-M-%##||regexp replace||
-||##C-M-s <SEARCH> M-% <REPLACE>##||interactive query replace (see "replace" below)||
+||##C-M-s <SEARCH> M-% <REPLACE>##||interactive query replace (See [[REPLACE-KEY-BINDINGS]])||
 ||##M-x occur##||show matches in buffer||
 ||##M-x count-matches##||count matches||
 ||##M-x flush-lines##||delete matching lines||
 ||##M-x keep-lines##||keep matching lines delete the rest||
-||||**replace**||
+||||'''[::REPLACE-KEY-BINDINGS]'''||
 ||##M-%##||search, query, and replace||
 ||##C-M-%##||search regular expression, query, and replace||
 ||##M-% RET##||resume last||
@@ -387,7 +388,7 @@ This is a reference card that is unlike other ReferenceCards in that it will not
 ||##RET##||stop||
 ||##q##||stop||
 ||##C-x d *.c RET Q int RET long##||replace "long" for "int" in .c files||
-||||**delete**||
+||||'''[::DELETE-KEY-BINDINGS]'''||
 ||##C-d##||current character||
 ||##C-u C-d##||next 4 characters||
 ||##C-u 8 C-d##||next 8 characters||
@@ -396,9 +397,9 @@ This is a reference card that is unlike other ReferenceCards in that it will not
 ||##M-- C-d##||same as previous||
 ||##C-u C-u C-u DEL##||previous 64 characters||
 ||##C-u 5 DEL##||previous 5 characters||
-||##M-x delete-region##||region||
-||##M-x erase-buffer##||entire buffer||
-||||**kill (cut)**||
+||##M-x `delete-region'##||region||
+||##M-x `erase-buffer'##||entire buffer||
+||||'''[::KILL-CUT-KEY-BINDINGS]'''||
 ||##C-SPC C-f C-w##||character||
 ||##M-d##||word||
 ||##C-k##||to end of line||
@@ -407,11 +408,11 @@ This is a reference card that is unlike other ReferenceCards in that it will not
 ||##C-1 C-k##||line including newline||
 ||##M-- C-k##||to beginning of previous line||
 ||##C-u C-k##||next 4 lines||
-||##M-k##||sentence (see "sentence" below)||
-||##C-w##||region (see "region" below)||
+||##M-k##||sentence (See [[SENTENCE-KEY-BINDINGS]])||
+||##C-w##||region (See [[REGION-KEY-BINDINGS]])||
 ||##M-w##||region but don't delete (copy)||
-||##M-d##||word (see "word" below)||
-||##C-M-k##||sexp (see "sexp" below)||
+||##M-d##||word (See [[WORD-KEY-BINDINGS]])||
+||##C-M-k##||sexp (See [[SEXP-AND-PAREN-KEY-BINDINGS]])||
 ||##M-DEL##||sexp backwards||
 ||##C-M-w C-w##||append to next||
 ||##C-M-w##||append to next||
@@ -420,7 +421,7 @@ This is a reference card that is unlike other ReferenceCards in that it will not
 ||##C-M-w C-k##||line appending to previous||
 ||##C-M-w M-d##||word appending to previous||
 ||##C-M-w M-k##||sentence appending to previous||
-||##C-M-w M-kill-paragraph##||paragraph appending to previous||
+||##C-M-w M-x `kill-paragraph'##||paragraph appending to previous||
 ||##C-M-w C-M-k##||sexp appending to previous||
 ||##C-M-w M-DEL##||sexp backward appending to previous||
 ||##M-z##||delete everything to a character||
@@ -428,10 +429,10 @@ This is a reference card that is unlike other ReferenceCards in that it will not
 ||##M-- M-z##||delete everything to a character backwards||
 ||##C-u -1 M-z##||same as previous||
 ||##C-u 3 M-z##||delete everything to 3rd occurrence of a character||
-||||**yank (paste)**||
+||||'''[::YANK-PASTE-KEY-BINDINGS]'''||
 ||##C-y##||the last kill sequence||
 ||##M-y##||the 2nd to last kill sequence||
-||||**mark**||
+||||'''[::MARK-KEY-BINDINGS]'''||
 ||##C-SPC##||set at current point||
 ||##C-@##||set at current point||
 ||##C-x C-x##||toggle between current point and mark||
@@ -442,11 +443,11 @@ This is a reference card that is unlike other ReferenceCards in that it will not
 ||##C-M-h##||function||
 ||##C-x C-p##||page separated by form feed||
 ||##M-@##||word||
-||##C-M-@##||sexp (see "sexp" below)||
+||##C-M-@##||sexp (See [[SEXP-AND-PAREN-KEY-BINDINGS]])||
 ||##C-M-SPC##||sexp||
 ||##C-SPC C-SPC##||temporarily turn on transient mark mode||
-||##M-x transient-mark-mode##||turn on transient mark mode||
-||||**region**||
+||##M-x `transient-mark-mode'##||turn on transient mark mode||
+||||'''[::REGION-KEY-BINDINGS]'''||
 ||##C-SPC##||set end-point of region||
 ||##C-@##||set end-point of region||
 ||##C-w##||kill||
@@ -454,17 +455,17 @@ This is a reference card that is unlike other ReferenceCards in that it will not
 ||##M-=##||count lines and characters||
 ||##C-x n n##||narrow||
 ||##C-x n w##||widen||
-||||**whitespace**||
+||||'''[::WHITESPACE-KEY-BINDINGS]'''||
 ||##SPC##||insert space||
-||##TAB##||indent or insert tab (see "indent" below)||
+||##TAB##||indent or insert tab (See [[INDENT-KEY-BINDINGS]])||
 ||##C-q TAB##||insert literal tab character||
 ||##C-q C-l##||insert page separator||
 ||##C-q 0 RET##||insert null||
 ||##M-SPC##||remove all whitespace at point except one space||
-||##M-x delete-trailing-whitespace##||remove at end of all lines in buffer||
-||##C-a M-x delete-whitespace-rectangle##||remove at beginning of all lines in region||
-||##C-x h M-x delete-whitespace-rectangle##||remove at beginning of all lines||
-||||**indent**||
+||##M-x `delete-trailing-whitespace'##||remove at end of all lines in buffer||
+||##C-a M-x `delete-whitespace-rectangle'##||remove at beginning of all lines in region||
+||##C-x h M-x `delete-whitespace-rectangle'##||remove at beginning of all lines||
+||||'''[::INDENT-KEY-BINDINGS]'''||
 ||##TAB##||line with mode-specific rules||
 ||##C-i##||line with mode-specific rules||
 ||##M-m##||go to indentation at beginning of line||
@@ -478,8 +479,8 @@ This is a reference card that is unlike other ReferenceCards in that it will not
 ||##C-x TAB##||region by one column||
 ||##C-u 5 C-x TAB##||region by 5 columns||
 ||##C-u - 2 C-x TAB##||region by 2 columns less||
-||##M-x tabify##||convert spaces to tabs||
-||||**newline**||
+||##M-x `tabify'##||convert spaces to tabs||
+||||'''[::NEWLINE-KEY-BINDINGS]'''||
 ||##RET##||one||
 ||##C-m##||one||
 ||##C-j##||one and indent||
@@ -490,7 +491,7 @@ This is a reference card that is unlike other ReferenceCards in that it will not
 ||##C-u 3 C-j##||three and indent||
 ||##C-u 3 C-o##||three below current and indent||
 ||##C-u 3 C-M-o##||move text following point at same column three lines down||
-||||**line**||
+||||'''[::LINE-KEY-BINDINGS]'''||
 ||##C-n##||next||
 ||##C-p##||previous||
 ||##C-a##||beginning||
@@ -512,30 +513,30 @@ This is a reference card that is unlike other ReferenceCards in that it will not
 ||##C-x C-o##||when only empty line, remove all empty lines||
 ||##C-x C-o##||when empty, remove all but one empty lines||
 ||##M-=##||count lines in region||
-||##M-x occur##||show lines matches in buffer (see "occur" below)||
-||##M-x count-matches##||count matches||
-||##M-x flush-lines##||delete matching lines||
-||##M-x keep-lines##||keep matching lines delete the rest||
-||##M-x what-line##||display number||
+||##M-x occur##||show lines matches in buffer (See [[OCCUR-KEY-BINDINGS]])||
+||##M-x `count-matches'##||count matches||
+||##M-x `flush-lines'##||delete matching lines||
+||##M-x `keep-lines'##||keep matching lines delete the rest||
+||##M-x `what-line'##||display number||
 ||##C-x RET f unix RET##||change file to UNIX style line endings||
 ||##C-x RET f dos RET##||change file to DOS||
 ||##C-x RET f dos RET##||change file to Mac||
-||##M-x line-number-mode##||show line number in mode line||
-||##M-x toggle-truncate-lines##||change if long lines fold or are truncated||
-||||**character**||
+||##M-x `line-number-mode'##||show line number in mode line||
+||##M-x `toggle-truncate-lines'##||change if long lines fold or are truncated||
+||||'''[::CHAR-KEY-BINDINGS]'''||
 ||##C-f##||forward||
 ||##C-b##||backward||
 ||##C-d##||delete||
 ||##M-SPC##||remove all whitespace at point except one space||
-||##M-x describe-char##||properties||
+||##M-x `describe-char'##||properties||
 ||##C-q 0 RET##||insert null||
 ||##C-q 40 RET##||insert space using octal value 40||
 ||##M-x set-variable RET read-quoted-char-radix 16##||use hex for C-q||
 ||##C-q 20 RET##||insert space using hex value 20||
-||##M-x set-variable RET read-quoted-char-radix 10##||use decimal for C-q||
+||##M-x `set-variable' RET read-quoted-char-radix 10##||use decimal for C-q||
 ||##C-q 32 RET##||insert space using decimal value 32||
 ||##C-u 8 C-q 0 RET##||insert 8 null characters||
-||||**word**||
+||||'''[::WORD-KEY-BINDINGS]'''||
 ||##M-f##||forward||
 ||##M-b##||backward||
 ||##M-d##||kill forward||
@@ -545,7 +546,7 @@ This is a reference card that is unlike other ReferenceCards in that it will not
 ||##M-@##||mark||
 ||##C-u 100 M-@##||mark next 100||
 ||##M-- 3 M-@##||mark previous 3||
-||||**capitalization**||
+||||'''[::CAPITALIZATION-KEY-BINDINGS]'''||
 ||##M-l##||lowercase next word||
 ||##M-- M-l##||lowercase previous word||
 ||##C-u M-l##||lowercase next 4 words||
@@ -557,37 +558,37 @@ This is a reference card that is unlike other ReferenceCards in that it will not
 ||##C-u 2 M-c##||capitalize next 2||
 ||##C-x C-l##||lowercase region||
 ||##C-x C-u##||uppercase region||
-||##M-x capitalize-region##||capitalize region||
-||||**sentence**||
+||##M-x `capitalize-region'##||capitalize region||
+||||'''[::SENTENCE-KEY-BINDINGS]'''||
 ||##M-a##||beginning||
 ||##M-e##||end||
 ||##M-k##||kill||
-||||**paragraph**||
+||||'''[::PARAGRAPH-KEY-BINDINGS]'''||
 ||##M-}##||forward||
 ||##M-{##||backward||
 ||##M-h##||mark||
 ||##M-g##||fill||
 ||##C-u M-g##||fill and full justify||
-||##M-x fill-region##||fill all in region||
+||##M-x `fill-region'##||fill all in region||
 ||##C-u 72 C-x f##||set fill column to 72||
-||##M-x kill-paragraph##||kill to end||
+||##M-x `kill-paragraph'##||kill to end||
 ||##M-{ M-x kill-paragraph##||kill||
-||##M-x transpose-paragraphs##||transpose||
+||##M-x `transpose-paragraphs'##||transpose||
 ||##M-S##||center||
-||##M-x sort-paragraphs##||alphabetically||
-||##M-x reverse-region##||sort||
-||##M-x paragraph-indent-text-mode##||expect leading space rather than empty lines||
-||##M-x auto-refill-mode##||automatically fill at the end of the line||
-||##M-x refill-mode##||automatically fill entire paragraph after each edit||
-||||**page**||
+||##M-x `sort-paragraphs'##||alphabetically||
+||##M-x `reverse-region'##||sort||
+||##M-x `paragraph-indent-text-mode'##||expect leading space rather than empty lines||
+||##M-x `auto-refill-mode'##||automatically fill at the end of the line||
+||##M-x `refill-mode'##||automatically fill entire paragraph after each edit||
+||||'''[::PAGE-KEY-BINDINGS]'''||
 ||##C-q C-l##||insert separator||
 ||##C-x ]##||forward page||
 ||##C-x l##||count lines||
 ||##C-x n p##||narrow||
 ||##C-x n w##||widen||
-||##M-x sort-pages##||alphabetically||
-||##M-x what-page##||display number||
-||||**sexp (parenthetical expressions)**||
+||##M-x `sort-pages'##||alphabetically||
+||##M-x `what-page'##||display number||
+||||'''[::SEXP-AND-PAREN-KEY-BINDINGS]'''||
 ||##M-(##||insert opening and closing parentheses||
 ||##C-M-f##||move to the next||
 ||##C-M-b##||move backward||
@@ -595,29 +596,29 @@ This is a reference card that is unlike other ReferenceCards in that it will not
 ||##M-x up-list##||move forward and up and outside the current||
 ||##C-M-k##||kill||
 ||##C-M-DEL##||kill backward||
-||##C-M-@##||mark||
-||##C-M-t##||transpose||
-||##M-x check-parens##||match all open and closed parentheses in buffer||
-||||**comment**||
+||##C-M-@##||`mark' ||
+||##C-M-t##||`transpose-sexps' - transpose S-exprressions||
+||##M-x `check-parens'##||match all open and closed parentheses in buffer||
+||||'''[::COMMENT-KEY-BINDINGS]'''||
 ||##C-u M-;##||kill||
 ||##C-SPC##||set end point of region||
-||##M-x comment-region##||||
-||##M-x uncomment-region##||||
-||##M-x comment-kill##||kill||
+||##M-x `comment-region'##||comment the region||
+||##M-x `uncomment-region'##||uncomment the region ||
+||##M-x `comment-kill'##||kill||
 ||##C-x ;##||set comments to start at point||
 ||##M-- C-x ;##||kill comment on this line||
 ||##C-u C-x ;##||insert and align or just align to column of previous comment||
-||||**occur**||
-||##M-x occur##||show regexp match in buffer||
+||||'''[::OCCUR-KEY-BINDINGS]'''||
+||##M-x `occur'##||show regexp match in buffer||
 ||##C-u 3 M-x occur##||show matches with 3 lines of context||
 ||##C-u - 3 M-x occur##||show matches with 3 lines before match||
-||||**spell check**||
+||||'''[::SPELL-CHECK-KEY-BINDINGS]'''||
 ||##M-$##||word||
-||##M-x ispell-buffer##||buffer||
-||##M-x ispell-region##||region||
-||##M-x ispell-comments-and-strings##||words and comments in source file||
+||##M-x `ispell-buffer'##||buffer||
+||##M-x `ispell-region'##||region||
+||##M-x `ispell-comments-and-strings'##||words and comments in source file||
 ||##q##||quit||
-||##M-x ispell-continue##||resume suspended session||
+||##M-x `ispell-continue'##||resume suspended session||
 ||##M-r##||edit word at point in buffer with recursive edit||
 ||##C-M-c##||return to spell check by exiting recursive edit||
 ||##4##||use third suggested choice||
@@ -629,19 +630,19 @@ This is a reference card that is unlike other ReferenceCards in that it will not
 ||##r##||replace word with typed version||
 ||##R##||replace every occurrence of word with typed version||
 ||##X##||suspend||
-||##M-x ispell-change-dictionary##||change default dictionary||
-||||**transpose**||
-||##C-t##||characters (see "character" above)||
+||##M-x `ispell-change-dictionary'##||change default dictionary||
+||||'''[::TRANSPOSE-KEY-BINDINGS]'''||
+||##C-t##||characters (See [[CHAR-KEY-BINDINGS]]) ||
 ||##M-- C-t##||previous with its previous||
 ||##C-u 3 C-t##||forward 3 characters||
 ||##C-u C-t##||forward 4 characters||
 ||##M-- 3 C-t##||backward 3 characters||
 ||##C-u C-t##||backward 4 characters||
-||##M-t##||words (see "word" above)||
-||##C-x C-t##||lines (see "line" above)||
-||##M-x transpose-paragraphs##||paragraphs (see "paragraph" above)||
+||##M-t##||words (See [[WORD-KEY-BINDINGS]]) ||
+||##C-x C-t##||lines (See [[LINE-KEY-BINDINGS]]) ||
+||##M-x `transpose-paragraphs'##||paragraphs (See [[PARAGRAPH-KEY-BINDINGS]])||
 ||##C-M-t##||parenthetical expressions||
-||||**composition**||
+||||'''[::COMPOSITION-KEY-BINDINGS]'''||
 ||##C-\ france-postfix RET##||set to French characters||
 ||##C-\##||disable input method, subsequent re-enables||
 ||##C-h C-\ RET##||help with current input method||
@@ -675,56 +676,57 @@ This is a reference card that is unlike other ReferenceCards in that it will not
 ||##u e e##||insert the letters U and E, no umlaut||
 ||##s z##||insert the ligature eszett||
 ||##s z z##||insert the letters S and Z||
-||||**text register**||
+||||'''[::TEXT-REGISTER-KEY-BINDINGS]'''||
 ||##C-x r s a##||store region as "a"||
 ||##C-x r i a##||insert region stored in "a"||
 ||##C-x r r a##||store rectangle as "a"||
-||||**point register**||
+||||'''[::POINT-REGISTER-KEY-BINDINGS]'''||
 ||##C-x r SPC a##||store current as "a"||
 ||##C-x r j a##||move to point in "a"||
-||||**window register**||
+||||'''[::WINDOW-REGISTER-KEY-BINDINGS]'''||
 ||##C-x r w a##||store configuration of windows in frame||
 ||##C-x r j a##||restore window configurations||
-||||**frame register**||
+||||'''[::FRAME-REGISTER-KEY-BINDINGS]'''||
 ||##C-x r f a##||store window configuration for all frames||
 ||##C-x r j a##||restore all window configurations||
-||||**number register**||
+||||'''[::NUMBER-REGISTER-KEY-BINDINGS]'''||
 ||##C-u 1 C-x r n a##||store 1 in "a"||
 ||##C-u 1 C-x r + a##||add 1 to number in "a"||
 ||##C-x r i a##||insert number in "a"||
-||||**position register**||
+||||'''[::POSITION-REGISTER-KEY-BINDINGS]'''||
 ||##C-x r m RET##||save default||
 ||##C-x r m <NAME> RET##||save as NAME||
 ||##C-x r b RET##||move to default||
 ||##C-x r b <NAME> RET##||move to NAME||
 ||##C-x r l##||list||
 ||##M-x bookmark-save##||save positions to file||
-||||**column**||
-||##M-x column-number-mode##||show column number in mode line||
+||||'''[::COLUMN-KEY-BINDINGS]'''||
+||##M-x `column-number-mode'##||show column number in mode line||
 ||##C-u C-x C-n##||set column for line motion commands||
 ||##C-x C-n##||unset goal column for line motion commands||
-||##M-x ruler-mode##||add a ruler to the current buffer's window||
-||||**rectangle**||
+||##M-x `ruler-mode'##||add a ruler to the current buffer's window||
+||||'''[::RECTANGLE-KEY-BINDINGS]'''||
 ||##C-x r d##||delete, no kill||
 ||##C-x r k##||kill||
-||##C-x r y##||yank||
+||##C-x r y##||`yank'||
 ||##C-x r c##||blank out||
 ||##C-x r t <STRING>##||replace each line with STRING||
-||##M-x string-insert-rectangle##||insert STRING at each line||
-||##M-x delete-whitespace-rectangle##||remove leading whitespace||
+||##M-x `string-insert-rectangle'##||insert STRING at each line||
+||##M-x `delete-whitespace-rectangle'##||remove leading whitespace||
 ||##C-x r r a##||store to register "a"||
-||||**table**||
-||##M-x table-recognize-table##||activate table at point||
-||##C-u M-x table-recognize-table##||inactivate table at point||
-||##C-u 3 table-insert-column##||insert 3 columns||
-||##C-u 3 table-delete-column##||delete 3 columns||
-||||**delimited text**||
-||##M-x delimit-columns-customize##||change settings||
-||##M-x delimit-columns-rectangle##||format rectangle||
-||##M-x delimit-columns-region##||format region||
-||||**directory (folder)**||
+||||'''[::TABLE-KEY-BINDINGS]'''||
+||##M-x `table-recognize-table'##||activate table at point||
+||##C-u M-x `table-recognize-table'##||inactivate table at point||
+||##C-u 3 `table-insert-column'##||insert 3 columns||
+||##C-u 3 `table-delete-column'##||delete 3 columns||
+||||'''[::DELIMITED-TEXT-KEY-BINDINGS]'''||
+||##M-x `delimit-columns-customize'##||change settings||
+||##M-x `delimit-columns-rectangle'##||format rectangle||
+||##M-x `delimit-columns-region'##||format region||
+||||'''[::ALIGN-KEY-BINDINGS]'''||
+||||'''[::DIRECTORY-KEY-BINDINGS]'''||
 ||##M-x cd##||change working||
-||##M-x make-directory RET <PATH> RET##||make PATH including any missing parents||
+||##M-x `make-directory' RET <PATH> RET##||make PATH including any missing parents||
 ||##C-x d RET##||list current||
 ||##C-x C-f RET##||same as previous||
 ||##C-x d .. RET##||list parent||
@@ -733,16 +735,16 @@ This is a reference card that is unlike other ReferenceCards in that it will not
 ||##C-x C-d RET C-x C-j##||same as previous||
 ||##C-x d <PATH> RET##||list PATH||
 ||##C-x C-f <PATH> RET##||same as previous||
-||##M-x dired-jump RET##||go to current file in the listing||
+||##M-x `dired-jump' RET##||go to current file in the listing||
 ||##j##||move to file in listing||
 ||##g##||reread the listing||
-||##C-s##||search listings (see "search" above)||
+||##C-s##||search listings (See [[SEARCH-KEY-BINDINGS]]) ||
 ||##RET##||open file or directory||
 ||##+##||add new||
 ||##i##||show listing of current subdirectory||
 ||##>##||skip between directory listings||
 ||##<##||skip between directory listings||
-||##C-x C-f <FILE> RET##||visit FILE (see "file" above)||
+||##C-x C-f <FILE> RET##||visit FILE (See [[FILE-KEY-BINDINGS]]) ||
 ||##M o+r RET##||make current file world-readable||
 ||##G <GROUP> RET##||change current file to GROUP||
 ||##O <OWNER> RET##||change current file to OWNER||
@@ -764,17 +766,17 @@ This is a reference card that is unlike other ReferenceCards in that it will not
 ||##U##||unmark all files||
 ||##C##||copy marked files to another directory||
 ||##R##||move marked files to another directory||
-||##M-x wdired-change-to-wdired-mode##||manually edit listing with WDired||
+||##M-x `wdired-change-to-wdired-mode'##||manually edit listing with WDired||
 ||##C-c C-c##||Exit WDired and commit the edits made to the listing||
-||||**tramp**||
+||||'''[::TRAMP-KEY-BINDINGS]'''||
 ||##C-x C-f /HOST:DIR/FILE##||open FILE in DIR on remote HOST||
 ||##C-x C-f /scp:HOST:DIR/FILE##||same but use secure copy (SCP)||
 ||##C-x C-f /ssh:HOST:DIR/FILE##||same but demand the use of SSH||
 ||##C-x C-f /ssh1:HOST:DIR/FILE##||same but demand version 1 of SSH||
 ||##C-x C-f /HOST:DIR##||list contents of DIR on remote HOST||
 ||##C-x d /HOST:DIR##||same as previous||
-||||**shell**||
-||##M-x shell##||new window||
+||||'''[::SHELL-KEY-BINDINGS]'''||
+||##M-x `shell'##||new window||
 ||##C-u M-x shell##||prompt for buffer name of new window||
 ||##M-!##||run command||
 ||##C-u M-!##||insert output of command||
@@ -782,10 +784,10 @@ This is a reference card that is unlike other ReferenceCards in that it will not
 ||##M-|##||send region to command||
 ||##C-u##||replace region with output of command||
 ||##C-x C-w <FILE> RET##||save session transcript to FILE||
-||||**shell script**||
+||||'''[::SHELL-SCRIPT-KEY-BINDINGS]'''||
 ||##C-x C-f file.sh RET##||start a script named file.sh||
-||##M-x shell-script-mode##||use shell script mode for current buffer||
-||##M-x sh-mode##||same as previous||
+||##M-x `shell-script-mode'##||use shell script mode for current buffer||
+||##M-x `sh-mode'##||same as previous||
 ||##C-c :##||specify shell and insert header||
 ||##C-c C-x##||run the script||
 ||##C-M-x##||execute region||
@@ -804,9 +806,9 @@ This is a reference card that is unlike other ReferenceCards in that it will not
 ||##C-c C-c##||insert case statement||
 ||##C-c C-t##||insert syntax for temporary file||
 ||##C-c (##||insert syntax for function||
-||||**compile**||
-||##M-x compile##||execute a compilation command||
-||##M-x recompile##||execute last compilation command||
+||||'''[::COMPILE-KEY-BINDINGS]'''||
+||##M-x `compile'##||execute a compilation command||
+||##M-x `recompile'##||execute last compilation command||
 ||##C-c C-k##||kill||
 ||##RET##||go to source code for error specified at point||
 ||##C-c C-c##||same as previous||
@@ -815,14 +817,14 @@ This is a reference card that is unlike other ReferenceCards in that it will not
 ||##M-}##||errors for next file||
 ||##M-{##||errors for previous file||
 ||##C-x `##||go to source code for next error||
-||||**lisp**||
+||||'''[::LISP-KEY-BINDINGS]'''||
 ||##C-M-a##||beginning of defun||
 ||##C-M-e##||end of defun||
 ||##C-M-n##||forward sexp||
 ||##C-M-p##||backward sexp||
 ||##C-M-u##||upward sexp||
 ||##C-M-d##||down sexp||
-||##M-x up-list##||upward sexp and forward||
+||##M-x `up-list'##||upward sexp and forward||
 ||##M-(##||insert parens for sexp||
 ||##C-m-t##||transpose sexp||
 ||##C-M-SPC##||mark sexp||
@@ -830,7 +832,7 @@ This is a reference card that is unlike other ReferenceCards in that it will not
 ||##C-M-x##||eval expression at point||
 ||##M-;##||insert new comment||
 ||##C-u M-;##||kill current comment||
-||||**emacs lisp**||
+||||'''[::EMACS-LISP-KEY-BINDINGS]'''||
 ||##C-x C-e##||evaluate expression before point||
 ||##C-u C-x C-e##||evaluate expression and insert result at point||
 ||##C-M-x##||evaluate current defun||
@@ -839,34 +841,34 @@ This is a reference card that is unlike other ReferenceCards in that it will not
 ||##TAB##||indent||
 ||##C-M-q##||indent expression after point||
 ||##M-TAB##||complete symbol at point||
-||##M-x eval-region##||evaluate expressions in region||
-||##M-x eval-buffer##||evaluate buffer||
-||##M-x load-file RET <FILE> RET##||load FILE||
-||##M-x load-file RET RET##||load current file||
-||##M-x load-libary##||load library||
-||##M-x byte-compile-file RET <FILE> RET##||byte compile current FILE||
-||##M-x byte-compile-file RET RET##||same as previous||
-||##M-x byte-recompile-directory RET##||byte compile every file, recursively||
-||##M-x find-function RET <FUNCTION> RET##||go to definition of FUNCTION||
-||##M-x find-function RET RET##||go to definition of function at point||
-||##M-x find-variable RET <VARIABLE> RET##||go to definition of VARIABLE||
-||##M-x find-variable RET RET##||go to definition of variable at point||
-||##M-x find-library <LIBRARY>##||go to LIBRARY||
-||##M-x emacs-lisp-mode##||start Emacs Lisp mode if not started||
-||##M-x checkdoc##||validate coding style||
-||##M-x checkdoc-ispell##||and spell check comments and documentation strings||
-||##M-x set-variable RET debug-on-error RET t RET##||enable debugger on error||
-||##M-x set-variable RET debug-on-quit RET t RET##||enable debugger on quit||
-||##M-x set-variable RET debug-on-error RET nil RET##||disable debugger on error||
-||##M-x set-variable RET debug-on-quit RET nil RET##||enable debugger on quit||
-||||**(e)lisp interaction**||
-||##M-x lisp-interaction-mode##||evaluate expressions interactively||
+||##M-x `eval-region'##||evaluate expressions in region||
+||##M-x `eval-buffer'##||evaluate buffer||
+||##M-x `load-file' RET <FILE> RET##||load FILE||
+||##M-x `load-file' RET RET##||load current file||
+||##M-x `load-libary'##||load library||
+||##M-x `byte-compile-file' RET <FILE> RET##||byte compile current FILE||
+||##M-x `byte-compile-file' RET RET##||same as previous||
+||##M-x `byte-recompile-directory' RET##||byte compile every file, recursively||
+||##M-x `find-function' RET <FUNCTION> RET##||go to definition of FUNCTION||
+||##M-x `find-function' RET RET##||go to definition of function at point||
+||##M-x `find-variable' RET <VARIABLE> RET##||go to definition of VARIABLE||
+||##M-x `find-variable' RET RET##||go to definition of variable at point||
+||##M-x `find-library' <LIBRARY>##||go to LIBRARY||
+||##M-x `emacs-lisp-mode'##||start Emacs Lisp mode if not started||
+||##M-x `checkdoc'##||validate coding style||
+||##M-x `checkdoc-ispell'##||and spell check comments and documentation strings||
+||##M-x `set-variable' RET debug-on-error RET t RET##||enable debugger on error||
+||##M-x `set-variable' RET debug-on-quit RET t RET##||enable debugger on quit||
+||##M-x `set-variable' RET debug-on-error RET nil RET##||disable debugger on error||
+||##M-x `set-variable' RET debug-on-quit RET nil RET##||enable debugger on quit||
+||||'''[::ELISP-INTERACTION-KEY-BINDINGS]'''||
+||##M-x `lisp-interaction-mode'##||evaluate expressions interactively||
 ||##C-j##||evaluate sexp before point and insert results on next line||
-||##C-M-x##||evaluate current defun (see "emacs lisp" above)||
-||||**debug elisp**||
-||##M-x toggle-debug-on-error##||change whether to start session on error||
-||##M-x toggle-debug-on-quit##||change whether C-g starts session||
-||##M-x debug-on-entry RET <FUNCTION> RET##||debug FUNCTION||
+||##C-M-x##||evaluate current defun (See [[EMACS-LISP-KEY-BINDINGS]]) ||
+||||'''[::ELISP-DEBUG-KEY-BINDINGS]'''||
+||##M-x `toggle-debug-on-error'##||change whether to start session on error||
+||##M-x `toggle-debug-on-quit'##||change whether C-g starts session||
+||##M-x `debug-on-entry' RET <FUNCTION> RET##||debug FUNCTION||
 ||##h##||help||
 ||##SPC##||move down||
 ||##C-n##||move down||
@@ -887,10 +889,10 @@ This is a reference card that is unlike other ReferenceCards in that it will not
 ||##e##||prompt for expression then evaluate||
 ||##R##||prompt for expression then evaluate and record it||
 ||##l##||list functions debugged on entry||
-||##M-x cancel-debug-on-entry <FUNCTION> RET##||don't debug FUNCTION||
+||##M-x `cancel-debug-on-entry' <FUNCTION> RET##||don't debug FUNCTION||
 ||##M-x cancel-debug-on-entry RET RET##||don't debug for any function||
-||||**source-level debugger**||
-||##M-x edebug-defun##||turn on instrumentation for current function definition||
+||||'''[::SOURCE-LEVEL-DEBUGGER-KEY-BINDINGS]'''||
+||##M-x `edebug-defun'##||turn on instrumentation for current function definition||
 ||##C-u C-M-x##||same as previous||
 ||##C-M-x##||turn off instrumentation for current function definition||
 ||##SPC##||step expression in source||
@@ -928,9 +930,9 @@ This is a reference card that is unlike other ReferenceCards in that it will not
 ||##C-]##||abort||
 ||##q##||quit||
 ||##Q##||quit||
-||||**finder**||
+||||'''[::FINDER-KEY-BINDINGS]'''||
 ||##C-h P##||list keywords||
-||##M-x finder-commentary RET <LIBRARY> RET##||Describe LIBRARY||
+||##M-x `finder-commentary' RET <LIBRARY> RET##||Describe LIBRARY||
 ||##?##||help||
 ||##n##||move down||
 ||##p##||move up||
@@ -940,27 +942,29 @@ This is a reference card that is unlike other ReferenceCards in that it will not
 ||##SPC##||same as previous||
 ||##d##||back to beginning of package directory||
 ||##q##||quit||
-||||**tag**||
+||||'''[::C-KEY-BINDINGS]'''||
+||||'''[::ETAGS-KEY-BINDINGS]'''||
 ||##M-! etags *.[ch]##||index .c and .h files in current directory||
-||##C-u M-x visit-tags-table##||set index file for current buffer||
-||##M-x visit-tags-table##||globally set index file||
+||##C-u M-x `visit-tags-table'##||set index file for current buffer||
+||##M-x `visit-tags-table'##||globally set index file||
 ||##M-.##||go to definition of symbol in index||
 ||##C-M-.##||go to definition for a regular expression in index||
 ||##C-u M-.##||go to next definition||
 ||##M-- M-.##||go to previous definition||
 ||##M-*##||return back to before you started||
-||##M-x tags-search##||go to entry for regular expression in index||
+||##M-x `tags-search'##||go to entry for regular expression in index||
 ||##M-,##||go to next entry in index||
-||##M-x tags-query-replace##||search and replace for regular expression||
+||##M-x `tags-query-replace'##||search and replace for regular expression||
 ||##M-TAB##||complete tag at point||
 ||##C-u M-TAB##||complete language symbol, avoid tags, at point||
-||||**diff**||
-||##M-x diff RET <OLD> RET <NEW> RET##||compare OLD file with NEW file||
-||##C-u M-x diff##||compare files but prompt for Diff switches||
-||##M-x diff-buffer-with-file##||compare buffer with file on disk||
-||##M-x diff-backup##||compare current file with backup on disk||
+||||'''[::GDB-KEY-BINDINGS]'''||
+||||'''[::DIFF-KEY-BINDINGS]'''||
+||##M-x `diff' RET <OLD> RET <NEW> RET##||compare OLD file with NEW file||
 ||##M-x diff RET RET##||same as previous||
-||##M-x diff-mode##||start Diff Mode if not already started for a file||
+||##C-u M-x diff##||compare files but prompt for Diff switches||
+||##M-x `diff-buffer-with-file'##||compare buffer with file on disk||
+||##M-x `diff-backup'##||compare current file with backup on disk||
+||##M-x `diff-mode'##||start Diff Mode if not already started for a file||
 ||##C-c C-c##||go to corresponding location in target (new) file||
 ||##C-u C-c C-c##||go to corresponding location in source (old) file||
 ||##C-u C-u C-c C-c##||always go to corresponding location in source file||
@@ -985,7 +989,7 @@ This is a reference card that is unlike other ReferenceCards in that it will not
 ||##C-u C-c C-u##||convert the entire buffer from context to unified format||
 ||##C-c C-u##||convert the entire buffer||
 ||##C-c C-e##||start ediff session||
-||||**version control (vc)**||
+||||'''[::VC-VERSION-CONTROL-KEY-BINDINGS]'''||
 ||##C-x v i##||register file||
 ||##C-x v v##||check in or out, depending on the current state||
 ||##C-c C-c##||finish editing log for check in||
@@ -1001,19 +1005,19 @@ This is a reference card that is unlike other ReferenceCards in that it will not
 ||##C-x v s RET <NAME> RET##||tag all the files in directory with NAME||
 ||##C-u C-x v s RET <NAME> RET##||tag files and create branch||
 ||##C-x v r <NAME>##||recursively checkout files for a snapshot||
-||##C-x v a##||update ChangeLog (see "changelog" below)||
+||##C-x v a##||update ChangeLog (See [[CHANGELOG-KEY-BINDINGS]])||
 ||##C-x v m##||merge two revisions||
 ||##C-x v h##||insert revision header keyword||
-||##M-x vc-resolve-conflicts##||start ediff-merge session on a file with conflict markers||
-||||**changelog**||
+||##M-x `vc-resolve-conflicts'##||start ediff-merge session on a file with conflict markers||
+||||'''[::CHANGELOG-KEY-BINDINGS]'''||
 ||##C-x 4 a##||start new entry using context of current file||
 ||##C-x 4 a##||start new entry in current log file||
 ||##C-c C-p##||insert previous log from version control||
 ||##M-q##||fill paragraph following syntax rules||
-||##M-x change-log-merge RET <FILE> RET##||merge current with log FILE||
+||##M-x `change-log-merge' RET <FILE> RET##||merge current with log FILE||
 ||##C-x v a##||generate entries from version control||
-||||**merge conflict**||
-||##M-x smerge-mode##||start Smerge Mode if not started||
+||||'''[::MERGE-CONFLICT-KEY-BINDINGS]'''||
+||##M-x `smerge-mode'##||start Smerge Mode if not started||
 ||##C-c ^ n##||move to next||
 ||##C-c ^ p##||move to previous||
 ||##C-c ^ b##||keep base||
@@ -1023,10 +1027,10 @@ This is a reference card that is unlike other ReferenceCards in that it will not
 ||##C-c ^ a##||keep all||
 ||##C-c ^ c##||combine current with next||
 ||##C-c ^ r##||auto resolve||
-||##M-x smerge-resolve-all##||auto resolve entire buffer||
-||||**grep**||
-||##M-x grep RET <REGEXP> SPC <FILES> RET##||show matches in FILES for REGEXP||
-||##M-x lgrep RET <REGEXP> RET <FILES> RET##||show matches in FILES for REGEXP||
+||##M-x `smerge-resolve-all'##||auto resolve entire buffer||
+||||'''[::GREP-KEY-BINDINGS]'''||
+||##M-x `grep'  RET <REGEXP> SPC <FILES> RET##||show matches in FILES for REGEXP||
+||##M-x `lgrep' RET <REGEXP> RET <FILES> RET##||show matches in FILES for REGEXP||
 ||##M-x lgrep RET <REGEXP> RET RET##||show matches in all C files||
 ||##M-x lgrep RET <REGEXP> RET ch RET##||same as previous||
 ||##M-x lgrep RET <REGEXP> RET c RET##||show matches in C source files||
@@ -1035,29 +1039,40 @@ This is a reference card that is unlike other ReferenceCards in that it will not
 ||##M-x lgrep RET <REGEXP> RET m RET##||show matches in Make files||
 ||##M-x lgrep RET <REGEXP> RET tex RET##||show matches in TeX files||
 ||##M-x lgrep RET <REGEXP> RET *.html RET##||show matches in HTML files||
-||##M-x egrep RET <REGEXP> RET <FILES> RET##||extended regular expressions||
-||##M-x igrep RET <REGEXP> RET <FILES> RET##||case insensitive matching||
-||##M-x grep-find RET <REGEXP> RET##||show matches in entire directory tree||
-||##M-x rgrep RET <REGEXP> RET *.html RET RET##||same, but HTML files||
+||##M-x `egrep' RET <REGEXP> RET <FILES> RET##||extended regular expressions||
+||##M-x `igrep' RET <REGEXP> RET <FILES> RET##||case insensitive matching||
+||##M-x `grep-find' RET <REGEXP> RET##||show matches in entire directory tree||
+||##M-x `rgrep' RET <REGEXP> RET *.html RET RET##||same, but HTML files||
 ||##M-x rgrep RET <REGEXP> RET RET RET##||same, but C files||
 ||##M-x rgrep RET <REGEXP> RET el RET RET##||same, but Emacs Lisp files||
-||||**locate**||
-||##M-x locate RET <PATTERN> RET##||show files matching PATTERN||
-||##M-x locate-with-filter RET <PATTERN> RET <REGEXP>##||same, but also match REGEXP||
+||||'''[::LOCATE-KEY-BINDINGS]'''||
+||##M-x `locate' RET <PATTERN> RET##||show files matching PATTERN||
+||##M-x `locate-with-filter' RET <PATTERN> RET <REGEXP>##||same, but also match REGEXP||
 ||##M-x locate-with-filter##||show||
 ||##C-n##||next matched file||
 ||##C-p##||previous matched file||
 ||##RET##||visit current file at||
 ||##C-o##||open file in other window||
-||##V##||open current file in dired (see "directory" above)||
-||||**HTML**||
+||##V##||open current file in dired (See [[DIRECTORY-KEY-BINDINGS]]) ||
+||||'''[::CALENDAR-KEY-BINDINGS]'''||
+||||'''[::DIARY-KEY-BINDINGS]'''||
+||||'''[::ABBREV-KEY-BINDINGS]'''||
+||||'''[::DABBREV-KEY-BINDINGS]'''||
+||||'''[::AUTOINSERT-KEY-BINDINGS]'''||
+||||'''[::EDIFF-KEY-BINDINGS]'''||
+||||'''[::EMERGE-KEY-BINDINGS]'''||
+||||'''[::SORT-KEY-BINDINGS]'''||
+||||'''[::BROWSE-URL-KEY-BINDINGS]'''||
+||||'''[::EMAIL-KEY-BINDINGS]'''||
+||##;; :W3-KEY-BINDINGS##||||
+||||'''[::HTML-KEY-BINDINGS]'''||
 ||##C-h m##||help||
 ||##C-c C-v##||view current file in Web browser||
 ||##C-c C-s##||toggle to view in Web browser on each save||
 ||##C-c 8##||toggle inserting of non-ASCII characters as entities||
 ||##C-c TAB##||toggle invisibility of tags||
-||##M-x html-imenu-index##||add index menu to menu bar for current file||
-||##M-x set-variable RET sgml-xml-mode RET t##||turn on XHTML tags||
+||##M-x `html-imenu-index'##||add index menu to menu bar for current file||
+||##M-x `set-variable' RET `sgml-xml-mode' RET t##||turn on XHTML tags||
 ||##C-c C-d##||delete current tag||
 ||##C-c DEL##||delete current tag||
 ||##C-u C-c C-d##||delete next 4 tags||
@@ -1107,36 +1122,40 @@ This is a reference card that is unlike other ReferenceCards in that it will not
 ||##C-c C-n M-SPC##||insert non-breaking space entity||
 ||##M-;##||insert comment||
 ||##C-u M-;##||kill comment||
-||##M-x sgml-show-context##||display hierarchy of tags for point||
-||##M-x sgml-validate##||check markup with external tool||
-||||**timeclock**||
-||##M-x timeclock-in##||start a project||
-||##M-x timeclock-out##||stop working on the current project||
-||##M-x timeclock-when-to-leave-string##||report time to leave||
-||##M-x timeclock-visit-timelog##||visit timelog file||
-||##M-x timeclock-reread-log##||reread timelog file after crash||
+||##M-x `sgml-show-context'##||display hierarchy of tags for point||
+||##M-x `sgml-validate'##||check markup with external tool||
+||||'''[::OUTLINE-KEY-BINDINGS]'''||
+||||'''[::SQL-KEY-BINDINGS]'''||
+||||'''[::CALC-KEY-BINDINGS]'''||
+||||'''[::TIMECLOCK-KEY-BINDINGS]'''||
+||##M-x `timeclock-in'##||start a project||
+||##M-x `timeclock-out'##||stop working on the current project||
+||##M-x `timeclock-when-to-leave-string'##||report time to leave||
+||##M-x `timeclock-visit-timelog'##||visit timelog file||
+||##M-x `timeclock-reread-log'##||reread timelog file after crash||
 ||##M-x timeclock-reread-log##||reread timelog file after edited||
 ||##M-x timeclock-reread-log##||reread timelog file after restarting emacs||
-||||**games**||
-||##M-x 5x5##||fill a 5-by-5 grid||
-||##M-x blackbox##||find balls in a box||
-||##M-x doctor##||psychoanalysis||
-||##M-x dunnet##||text adventure||
-||##M-x gomoku##||try to get 5 in a row||
-||##M-x mpuz##||multiplication puzzle||
-||##M-x pong##||classic video tennis||
-||##M-x snake##||eat dots but not yourself or the walls||
-||##M-x tetris##||stack blocks||
-||##M-x type-break-mode##||be told when to take breaks||
-||||**animation**||
-||##M-x animate-birthday-present RET <NAME> RET##||Birthday wishes to NAME||
-||##M-x butterfly-mode##||strike the drive platter and flip the desired bit||
-||##M-x dissociated-press##||scramble current text in another buffer||
-||##M-x hanoi##||towers of hanoi||
-||##M-x life##||the game of life||
-||##M-x studlify-buffer##||give text in buffer strange capitalization||
-||##M-x studlify-region##||give text in region strange capitalization||
-||##M-x zone##||display text tricks||
+||||'''[::GAMES-KEY-BINDINGS]'''||
+||##M-x `5x5'##||fill a 5-by-5 grid||
+||##M-x `blackbox'##||find balls in a box||
+||##M-x `doctor'##||psychoanalysis||
+||##M-x `dunnet'##||text adventure||
+||##M-x `gomoku'##||try to get 5 in a row||
+||##M-x `mpuz'##||multiplication puzzle||
+||##M-x `pong'##||classic video tennis||
+||##M-x `snake'##||eat dots but not yourself or the walls||
+||##M-x `tetris'##||stack blocks||
+||##M-x `type-break-mode'##||be told when to take breaks||
+||||'''[::ANIMATION-KEY-BINDINGS]'''||
+||##M-x `animate-birthday-present' RET <NAME> RET##||Birthday wishes to NAME||
+||##M-x `butterfly-mode'##||strike the drive platter and flip the desired bit||
+||##M-x `dissociated-press'##||scramble current text in another buffer||
+||##M-x `hanoi'##||towers of hanoi||
+||##M-x `life'##||the game of life||
+||##M-x `studlify-buffer'##||give text in buffer strange capitalization||
+||##M-x `studlify-region'##||give text in region strange capitalization||
+||##M-x `zone'##||display text tricks||
+
 
 == Reference Sheet Source and Utility Functions==
 

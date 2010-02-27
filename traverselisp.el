@@ -1,7 +1,7 @@
 ;;; traverselisp.el --- walk through directories and perform actions on files.
 
 ;; Copyright (C) 2008, 2009, 2010 Thierry Volpiatto, all rights reserved.
-;; Author:     Thierry Volpiatto - thierry dot volpiatto at gmail dot com 
+;; Author:     Thierry Volpiatto - thierry dot volpiatto at gmail dot com
 ;; Maintainer: Thierry Volpiatto
 ;; Keywords:   data, regexp, occur.
 
@@ -13,12 +13,12 @@
 ;; modify it under the terms of the GNU General Public License as
 ;; published by the Free Software Foundation; either version 3, or
 ;; (at your option) any later version.
-;; 
+;;
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ;; General Public License for more details.
-;; 
+;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program; see the file COPYING.  If not, write to
 ;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
@@ -124,6 +124,8 @@
 ;; `traverse-list-directories-in-tree'
 ;; `traverse-list-files-in-tree'
 ;; `traverse-auto-document-default-prefix'
+;; `traverse-macro-p'
+;; `traverse-get-first-line-documentation'
 ;; `traverse-goto-line'
 ;; `traverse-incremental-forward-line'
 ;; `traverse-incremental-jump'
@@ -244,14 +246,14 @@
 ;; hg update -C 1.1.0
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Change log:
 ;;  http://mercurial.intuxication.org/hg/traverselisp
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Version:
-(defconst traverse-version "1.1.66")
+(defconst traverse-version "1.1.70")
 
 ;;; Code:
 
@@ -407,7 +409,7 @@ You must specify at list one of these 2 functions:
 :DIR-FN ==> function to apply on DIRECTORIES
 
 Files or/and directories in these lists will be skipped:
-:EXCLUDES-FILES ==> list of .ext or files to ignore.  
+:EXCLUDES-FILES ==> list of .ext or files to ignore.
 :EXCLUDE-DIRS ==> list of directory to ignore.
 
 Example of use:
@@ -418,7 +420,7 @@ See `traverse-ignore-files' and `traverse-ignore-dirs'."
   (labels
       ((walk (name)
          (cond ((eq t (car (file-attributes name))) ; DIR PROCESSING don't follow symlinks.
-                ;; Faster than: (and (file-directory-p name)(not (file-symlink-p name))) 
+                ;; Faster than: (and (file-directory-p name)(not (file-symlink-p name)))
                 (when dir-fn (funcall dir-fn name))
                 (if exclude-dirs
                     (dolist (x (traverse-list-directory name t))
@@ -429,7 +431,7 @@ See `traverse-ignore-files' and `traverse-ignore-dirs'."
                     (dolist (x (traverse-list-directory name t))
                       (when (stringp x)
                         (walk x))))) ; Return to TOP and take the good cond
-               ((and (file-regular-p name) (not (file-symlink-p name))) ; 
+               ((and (file-regular-p name) (not (file-symlink-p name))) ;
                 (when file-fn
                   (if exclude-files
                       (unless (traverse-check-only-lists name exclude-files)
@@ -474,7 +476,7 @@ Each element of LIS is compared with the filename STR."
 (defun traverse-file-process (regex fname &optional full-path insert-fn)
   "Default function to process files and insert matched lines in *traverse-lisp* buffer."
   (let ((matched-lines (traverse-find-readlines fname regex :insert-fn (or insert-fn 'file))))
-    (when matched-lines 
+    (when matched-lines
       (dolist (i matched-lines) ; each element is of the form '(key value)
         (let ((line-to-print (if traverse-keep-indent
                                  (second i)
@@ -525,11 +527,11 @@ Each element of LIS is compared with the filename STR."
   "Function to process buffer in external program like anything."
   (setq traverse-count-occurences 0)
   (let ((matched-lines (traverse-find-readlines buffer regex :insert-fn 'buffer)))
-    (when matched-lines 
-      (dolist (i matched-lines) ;; each element is of the form '(key value)
+    (when matched-lines
+      (dolist (i matched-lines) ; Each element is of the form '(key value)
         (let* ((ltp           (second i))
                (replace-reg   (if (string-match "^\t" ltp) "\\(^\t*\\)" "\\(^ *\\)"))
-               (new-ltp       (replace-regexp-in-string replace-reg "" ltp)) 
+               (new-ltp       (replace-regexp-in-string replace-reg "" ltp))
                (line-to-print (if traverse-keep-indent ltp new-ltp)))
           (incf traverse-count-occurences)
           (insert (concat " " (propertize (int-to-string (+ (first i) 1))
@@ -565,7 +567,7 @@ Each element of LIS is compared with the filename STR."
                            'face 'traverse-match-face)
                (propertize regexp
                            'face 'traverse-regex-face))
-      (highlight-regexp regexp) 
+      (highlight-regexp regexp)
       (setq traverse-count-occurences 0)))
   (switch-to-buffer-other-window "*traverse-lisp*"))
 
@@ -666,7 +668,7 @@ Called with prefix-argument (C-u) absolute path is displayed"
       (message "%s Occurences found for %s in %s seconds"
                (int-to-string traverse-count-occurences)
                regexp (- (cadr (current-time)) init-time))
-      (highlight-regexp regexp) 
+      (highlight-regexp regexp)
       (setq traverse-count-occurences 0)))
   (switch-to-buffer-other-window "*traverse-lisp*"))
 
@@ -722,7 +724,7 @@ traverse-use-avfs to non--nil"
                      (read-string "CheckOnly: ")))
   (when traverse-use-avfs
     (let ((file-at-point (dired-get-filename)))
-      (if (file-compressed-p file-at-point)          
+      (if (file-compressed-p file-at-point)
           (progn
             (when (not (cddr (directory-files traverse-avfs-default-directory)))
               (shell-command "mountavfs"))
@@ -754,7 +756,7 @@ if no marked files use file at point."
                            'face 'traverse-match-face)
                (propertize regexp
                            'face 'traverse-regex-face))
-      (highlight-regexp regexp) 
+      (highlight-regexp regexp)
       (setq traverse-count-occurences 0)))
   (switch-to-buffer-other-window "*traverse-lisp*"))
 
@@ -787,7 +789,7 @@ except compressed files and symlinks"
                            'face 'traverse-match-face)
                (propertize regexp
                            'face 'traverse-regex-face))
-      (highlight-regexp regexp) 
+      (highlight-regexp regexp)
       (setq traverse-count-occurences 0)))
   (switch-to-buffer-other-window "*traverse-lisp*"))
 
@@ -989,27 +991,35 @@ PRED is a function that take one arg."
 
 ;;; Traverselisp auto documentation
 
-(defmacro* traverse-auto-document-lisp-buffer (&key type prefix)
+(defmacro* traverse-auto-document-lisp-buffer (&key type prefix docstring)
   "Auto document tool for lisp code.
+
 TYPE can be one of:
-    - command           
-    - nested-command    
-    - function          
-    - nested-function   
-    - macro             
-    - internal-variable 
-    - nested-variable   
-    - user-variable     
-    - faces             
+    - command
+    - nested-command
+    - function
+    - nested-function
+    - macro
+    - internal-variable
+    - nested-variable
+    - user-variable
+    - faces
     - anything-source
-PREFIX let you define a special name (e.g match only function with PREFIX \"^traverse-\")
+
+PREFIX let you define a special name by regexp,
+\(e.g match only function with PREFIX \"^traverse-\")
 
 Example: (traverse-auto-document-lisp-buffer :type 'function :prefix \"traverse\").
 
-It's better to use `traverse-auto-documentation-insert-header' to setup your headers.
-Don't forget to add this line at the end of your traverse-auto-documentation:
+It's better and more convenient to use `traverse-auto-documentation-insert-header'
+to setup your headers. However if you write your headers manually,
+don't forget to add this line at the end of your traverse-auto-documentation:
 
     ;;  *** END auto-documentation
+
+DOCSTRING, if set to non--nil, will display first line of docstring.
+
+Example: (traverse-auto-document-lisp-buffer :type 'function :prefix \"^traverse-\" :docstring t).
 
 See headers of traverselisp.el for example."
   `(let* ((boundary-regexp "^;; +\\*+ .*")
@@ -1030,11 +1040,20 @@ See headers of traverselisp.el for example."
                            regexp
                            :insert-fn 'buffer))
          beg end)
+     
     (flet ((maybe-insert-with-prefix (name)
-             (if ,prefix
-                 (when (string-match ,prefix name)
-                   (insert (concat ";; \`" name "\'\n")))
-                 (insert (concat ";; \`" name "\'\n")))))
+             (let ((doc (or (traverse-get-first-line-documentation (intern name))
+                            "Not documented.")))
+               (if ,docstring
+                   (if ,prefix
+                       (when (string-match ,prefix name)
+                         (insert (concat ";; \`" name "\'\n;; " doc "\n")))
+                       (insert (concat ";; \`" name "\'\n;; " doc "\n")))
+                   (if ,prefix
+                       (when (string-match ,prefix name)
+                         (insert (concat ";; \`" name "\'\n")))
+                       (insert (concat ";; \`" name "\'\n")))))))
+                   
       (insert "\n") (setq beg (point))
       (save-excursion (when (re-search-forward boundary-regexp)
                         (forward-line -1) (setq end (point))))
@@ -1075,23 +1094,40 @@ See headers of traverselisp.el for example."
 
 
 (defun traverse-auto-document-default-prefix ()
-  "Return file name without extension as default prefix"
+  "Return file name without extension as default prefix."
   (file-name-sans-extension (buffer-name (current-buffer))))
 
+
+(defun traverse-get-first-line-documentation (sym)
+  "Return first line documentation of symbol SYM."
+  (let ((doc (cond ((fboundp sym)
+                    (documentation sym t))
+                   ((boundp sym)
+                    (documentation-property sym 'variable-documentation t))
+                   ((facep sym)
+                    (face-documentation sym))
+                   (t nil))))
+    (when doc
+      (car (split-string doc "\n")))))
+
 ;;;###autoload
-(defun traverse-auto-documentation-insert-header (title &optional nstar)
+(defun traverse-auto-documentation-insert-header (title &optional docstring)
   "Insert an auto documentation line of commented code to eval.
+With prefix arg insert also the docstring argument.
 See headers of `traverselisp.el' for example."
-  (interactive "sTitle: \np")
-  (let ((ttype (completing-read "Type: " '("command " "nested-command "
-                                           "function " "nested-function "
-                                           "macro " "internal-variable "
-                                           "nested-variable " "faces "
-                                           "anything-source ") nil t)))
-    (insert (concat ";;  " (make-string nstar ?*) " " title "\n"
+  (interactive "sTitle: \nP")
+  (let* ((ttype      (completing-read "Type: " '("command" "nested-command"
+                                                 "function" "nested-function"
+                                                 "macro" "internal-variable"
+                                                 "nested-variable" "faces"
+                                                 "anything-source") nil t))
+         (prefix     (read-string "Prefix: " (traverse-auto-document-default-prefix)))
+         (prefix-arg (concat " :prefix " "\"" prefix "\"")))
+    (insert (concat ";;  * " title "\n"
                     ";; [EVAL] (traverse-auto-document-lisp-buffer :type \'"
                     ttype
-                    ":prefix " "\"" (traverse-auto-document-default-prefix) "\")")
+                    (unless (string= prefix "") prefix-arg)
+                    (when docstring " :docstring t") ")")
             (if (save-excursion (re-search-forward "^;; +\\*+ .*" nil t))
                 "" "\n\n\n;;  *** END auto-documentation"))))
 
@@ -1119,7 +1155,7 @@ Special commands:
 
 
 (defcustom traverse-incremental-search-delay 0.2
-  "*During incremental searching display is updated all `traverse-incremental-search-delay' seconds."
+  "*During incremental searching, display is updated all these seconds."
   :group 'traverse
   :type  'integer)
 
@@ -1136,7 +1172,7 @@ Set it to nil to remove doc in prompt."
   :type  'string)
 
 (defcustom traverse-incremental-length-line 80
-  "*Length of the line dispalyed in traverse incremental buffer."
+  "*Length of the line displayed in traverse incremental buffer."
   :group 'traverse
   :type 'integer)
 
@@ -1158,7 +1194,7 @@ Set it to nil to remove doc in prompt."
   (let (pos)
     (save-excursion
       (forward-line n) (forward-line 0)
-      (when (looking-at "^ [0-9]+") (forward-line 0) (setq pos (point)))) 
+      (when (looking-at "^ [0-9]+") (forward-line 0) (setq pos (point))))
   (when pos (goto-char pos) (traverse-incremental-occur-color-current-line))))
 
 ;;;###autoload
@@ -1183,7 +1219,7 @@ Set it to nil to remove doc in prompt."
         (setq pos (string-to-number (match-string 0 line))))
       (pop-to-buffer traverse-incremental-current-buffer)
       (traverse-goto-line pos) (traverse-occur-color-current-line))))
-      
+
 
 ;;;###autoload
 (defun traverse-incremental-jump-and-quit ()
@@ -1194,7 +1230,7 @@ Set it to nil to remove doc in prompt."
     (sit-for 0.3)
     (when traverse-occur-overlay
       (delete-overlay traverse-occur-overlay))))
-    
+
 (defun traverse-incremental-scroll (n)
   "Scroll other buffer and move overlay accordingly."
   (traverse-incremental-forward-line n)
@@ -1280,7 +1316,7 @@ Set it to nil to remove doc in prompt."
                  (?\d                          ; Delete backward with DEL.
                   (unless traverse-incremental-search-timer
                     (traverse-incremental-start-timer))
-                  (pop tmp-list))         
+                  (pop tmp-list))
                  (?\C-g                        ; Quit and restore buffers.
                   (setq traverse-incremental-quit-flag t) nil)
                  ((or right ?\C-z)             ; persistent action
@@ -1290,13 +1326,17 @@ Set it to nil to remove doc in prompt."
                  (?\C-v                        ; Scroll down
                   (scroll-other-window 1) t)
                  (?\C-k                        ; Kill input
-                  (kill-new traverse-incremental-search-pattern) 
+                  (kill-new traverse-incremental-search-pattern)
                   (setq tmp-list ()) t)
                  (?\M-v                        ; Scroll up
                   (scroll-other-window -1) t)
                  (?\M-p                        ; Precedent history elm.
+                  (unless traverse-incremental-search-timer
+                    (traverse-incremental-start-timer))
                   (cycle-hist -1))
                  (?\M-n                        ; Next history elm.
+                  (unless traverse-incremental-search-timer
+                    (traverse-incremental-start-timer))
                   (cycle-hist 1))
                  (t                            ; Store character
                   (unless traverse-incremental-search-timer
@@ -1326,10 +1366,10 @@ Set it to nil to remove doc in prompt."
                  (propertize regexp 'face 'traverse-incremental-regexp-face)
                  (propertize (format " in %s" buffer-name) 'face 'underline) "\n\n"))
         (traverse-incremental-occur-color-current-line))))
-        
+
 
 (defun traverse-incremental-start-timer ()
-  "Start traverse incremental timer and set it to `traverse-incremental-search-timer'."
+  "Start traverse incremental timer."
   (setq traverse-incremental-search-timer
         (run-with-idle-timer
          traverse-incremental-search-delay 'repeat
@@ -1340,11 +1380,9 @@ Set it to nil to remove doc in prompt."
 
 ;;;###autoload
 (defun traverse-incremental-occur (&optional initial-input)
-  "Incremental search of lines in current buffer matching \
-`traverse-incremental-search-pattern' which is given by \
-`traverse-incremental-read-search-input'.
+  "Incremental search of lines in current buffer matching input.
 
-With a prefix arg search symbol at point(INITIAL-INPUT).
+With a prefix arg search symbol at point (INITIAL-INPUT).
 
 While you are incremental searching, commands provided are:
 
@@ -1385,7 +1423,7 @@ for commands provided in the search buffer."
          (progn
            (traverse-incremental-start-timer)
            (traverse-incremental-read-search-input str-no-prop))
-      
+
       (progn
         (traverse-incremental-cancel-search)
         (when (equal (buffer-substring (point-at-bol) (point-at-eol)) "")
@@ -1397,7 +1435,7 @@ for commands provided in the search buffer."
               (when traverse-occur-overlay
                 (delete-overlay traverse-occur-overlay))
               (delete-other-windows) (goto-char curpos) (message nil))
-            
+
             (if traverse-incremental-exit-and-quit-p
                 (progn (traverse-incremental-jump-and-quit)
                        (kill-buffer "*traverse search*") (message nil))
@@ -1416,7 +1454,7 @@ for commands provided in the search buffer."
         (setq traverse-count-occurences 0)
         (setq traverse-incremental-quit-flag nil)))))
 
-        
+
 (defun traverse-incremental-cancel-search ()
   "Cancel timer used for traverse incremental searching."
   (when traverse-incremental-search-timer
