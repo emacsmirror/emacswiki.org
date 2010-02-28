@@ -537,7 +537,7 @@ I have updated it.
 The `w3m-el' package is not fully compatible with Emacs 23. Installing `w3m-el-snapshot' instead worked for me. No additional setup like ##(require 'w3m-load)## was necessary.
 
 <pre>
-sudo apt-get install w3m-el-snapshot
+sudo aptitude install w3m-el-snapshot
 </pre>
 
 If you already have `w3m-el', it will be removed.

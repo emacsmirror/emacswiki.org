@@ -2,7 +2,7 @@
 
 Emacs now uses Bazaar as its version control system.
 
-If you are an Emacs contributor without experience on Bazaar in
+If you are an Emacs contributor without experience using Bazaar in
 particular and Distributed Version Control Systems (dVCS) in general,
 this document tells you how to use Bazaar in a simple, CVS-like way.
 
@@ -12,9 +12,9 @@ The "workflow" described in this document allows you to:
 * Get conversant with the Bazaar UI.
 * Have a starting point for learning the full capabilities of Bazaar.
 
-There is a separate document, [[BzrForEmacsDevs]], that describes a
-different workflow that takes advantage of the fact that Bazaar is a
-*distributed* version control system.  That workflow is particularly
+There is a separate document, [[BzrForEmacsDevs]], that describes
+several workflows that take advantage of the fact that Bazaar is a
+*distributed* version control system.  Such workflows are particularly
 useful if you are making substantial changes to Emacs.
 
 === Conventions and basic info ===
@@ -23,7 +23,8 @@ useful if you are making substantial changes to Emacs.
   /mainline/ aka /HEAD/) on the GNU servers, we'll use
   *URL_TO_UPSTREAM_TRUNK*. At the time of this writing, it is
   ##sftp://<username>@bzr.savannah.gnu.org/srv/bzr/emacs/trunk## but
-  it may change at any moment.
+  that may change (in particular, to provide the more efficient
+  ##bzr+ssh## protocol).
 
 * ##bzr help /command/## is an easy way to get documentation about
     /command/. Use this for learning useful command line options.
@@ -78,6 +79,21 @@ It is fairly similar to CVS.  If you're using the command-line:
 * ##bzr up##
 * ##bzr commit##
 
+Optionally, before doing a commit, you can do ##bzr status## to
+view the changed which will be committed by ##bzr commit## (with no
+filename arguments) and unknown files which will be ignored by ##bzr
+commit##.  "Unknown" means that the file neither matches a pattern in
+.bzrignore nor is registered with Bazaar.  Typically unknown files
+are newly added.  In order to track changes in them, use the ##bzr add##
+command:
+
+##bzr add new-file ...##
+
+then commit them as usual with the rest of the appropriate changeset.
+Warning: ##bzr add## with no filename arguments will add everything in
+your tree that's currently unknown.  It is highly recommended to check
+what will be committed with ##bzr status## after you do a "bare" add.
+Alternatively, just specify all files to add explicitly.
 You can also commit using VC-dir:
 
 * ##M-x vc-dir RET##
@@ -90,6 +106,8 @@ If Bazaar complains about conflicts after the update, fix them and use
 
 : ##bzr resolve <file>##
 
+(##bzr resolve## cannot fix any conflicts itself; it only marks a file
+as being ready to commit after *you* fix the conflicts.)
 You can list a series of name files after each command for restricting
 its scope. If omitted, all files are assumed, except in the case of
 ##bzr resolve##, which requires the file names or the switch ##--all##
@@ -109,7 +127,12 @@ or just
 
 * ##bzr commit##
 
-if those are the only changed files. This is very important because
+if those are the only changed files.
+(It is recommended to do a ##bzr status## before a commit without
+filename arguments to check for inadvertant changes that would be
+committed.)
+
+This is very important because
 every commit creates a *changeset*, which is a discrete step on the
 history of the code base. A changeset should correspond to one
 well-defined purpose which is completely achieved with the
@@ -159,7 +182,10 @@ download all the history from upstream again.
 You have in your disk a copy of the VC history of the /trunk/ branch
 since the last ##bzr update##. Hence, Bazaar does not need to contact
 a server upstream for displaying logs, reverting edited files,
-annotating, etc. This is useful for working off-line.
+annotating, etc. This is useful for working off-line.  [I believe this
+is false; to work offline you need to unbind the branch, at least if
+Bazaar can reach the Internet.  Unbinding has some unintuitive
+consequences; be careful.]
 
 Bazaar makes possible to commit changes off-line to your local history
 and send them upstream in one batch. There are several options with

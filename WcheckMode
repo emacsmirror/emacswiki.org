@@ -8,7 +8,7 @@ Wcheck mode can be used with spell-checker programs such as Ispell, Aspell and E
 
 == Features ==
 
-In Wcheck configuration different semantical units are called "languages". Each language can use its own external program, command-line arguments and other settings, such as the regular expressions and syntax table that are used to match words (or other text elements) in Emacs buffer. User can choose which "face" is used to mark text elements in buffer. All settings are per language and user is free to interpret the semantics of text analyzing: it's left open what marked text elements in the buffer actually mean.
+In Wcheck configuration different semantical units are called "languages". Each language can use its own external program, command-line arguments and other settings, such as the regular expressions and syntax table that are used to match words (or other text elements) in Emacs buffer. User can choose which "face" is used to mark text elements in buffer. All settings are per language and user is free to interpret the semantics of text analyzing: it's left open what marked text elements in the buffer actually mean. User can also create major mode specific settings defining which "faces" to read or skip in the buffer. A typical use for this feature is to spell-check only the message body (and possibly Subject header) in email messages or spell-check only documentation strings and comments in programming modes etc.
 
 == How does it compare to other spell-checkers? ==
 

@@ -35,9 +35,47 @@ If a minor consensus could be met with regards to the base set of default Emacs 
 ((situtational-spaces conceptual-nodes keymaps/keybindings) (situtational-spaces keymaps/keybindings conceptual-nodes) (conceptual-nodes situtational-spaces keymaps/keybindings) (conceptual-nodes keymaps/keybindings situtational-spaces) (keymaps/keybindings situtational-spaces conceptual-nodes) (keymaps/keybindings conceptual-nodes situtational-spaces))
 </code>
 
-Thus far Aaron has identified 117 different 'conceptual nodes' of interest, these include:
+Thus far Aaron has identified ~100 different 'conceptual nodes' of interest, these include:
 
-'open:', 'exit:', 'cancel:', 'open:', 'exit:', 'cancel:', 'recursive edit:', 'customize:', 'menu:', 'help:', 'info help:', 'minibuffer:', 'completion:', 'mode:', 'file:', 'buffer:', 'read only:', 'window:', 'buffer menu:', 'redisplay:', 'command:', 'iterative command:', 'non-iterative command:', 'macro:', 'key:', 'undo:', 'search:', 'non-interactive search:', 'regular expression:', 'replace:', 'delete:', 'kill (cut):', 'yank (paste):', 'mark:', 'region:', 'whitespace:', 'indent:', 'newline:', 'line:', 'character:', 'word:', 'capitalization:', 'sentence:', 'paragraph:', 'page:', 'sexp (parenthetical expressions):', 'comment:', 'occur:', 'spell check:', 'transpose:', 'composition:', 'text register:', 'point register:', 'window register:', 'frame register:', 'number register:', 'position register:', 'column:', 'rectangle:', 'table:', 'delimited text:', 'directory (folder):', 'tramp:', 'shell:', 'shell script:', 'compile:', 'lisp:', 'emacs lisp:', '(e)lisp interaction:', 'debug elisp:', 'source-level debugger:', 'finder:', 'tag:', 'diff:', 'version control (vc):', 'changelog:', 'merge conflict:', 'grep:', 'locate:', 'HTML:', 'timeclock:', 'games:', 'animation:'
+[[ABBREV-KEY-BINDINGS]], [[ALIGN-KEY-BINDINGS]], [[ANIMATION-KEY-BINDINGS]],
+[[AUTOINSERT-KEY-BINDINGS]], [[BROWSE-URL-KEY-BINDINGS]],
+[[BUFFER-KEY-BINDINGS]], [[BUFFER-MENU-KEY-BINDINGS]], [[C-KEY-BINDINGS]],
+[[CALC-KEY-BINDINGS]], [[CALENDAR-KEY-BINDINGS]], [[CANCEL-KEY-BINDINGS]],
+[[CAPITALIZATION-KEY-BINDINGS]], [[CHANGELOG-KEY-BINDINGS]],
+[[CHAR-KEY-BINDINGS]], [[COLUMN-KEY-BINDINGS]], [[COMMAND-KEY-BINDINGS]],
+[[COMMENT-KEY-BINDINGS]], [[COMPILE-KEY-BINDINGS]], [[COMPLETION-KEY-BINDINGS]],
+[[COMPOSITION-KEY-BINDINGS]], [[CUSTOMIZE-KEY-BINDINGS]],
+[[DABBREV-KEY-BINDINGS]], [[DELETE-KEY-BINDINGS]],
+[[DELIMITED-TEXT-KEY-BINDINGS]], [[DIARY-KEY-BINDINGS]], [[DIFF-KEY-BINDINGS]],
+[[DIRECTORY-KEY-BINDINGS]], [[EDIFF-KEY-BINDINGS]],
+[[ELISP-DEBUG-KEY-BINDINGS]], [[ELISP-INTERACTION-KEY-BINDINGS]],
+[[EMACS-LISP-KEY-BINDINGS]], [[EMAIL-KEY-BINDINGS]], [[EMERGE-KEY-BINDINGS]],
+[[ETAGS-KEY-BINDINGS]], [[EXIT-KEY-BINDINGS]], [[FILE-KEY-BINDINGS]],
+[[FINDER-KEY-BINDINGS]], [[FRAME-REGISTER-KEY-BINDINGS]],
+[[GAMES-KEY-BINDINGS]], [[GDB-KEY-BINDINGS]], [[GREP-KEY-BINDINGS]],
+[[HELP-KEY-BINDINGS]], [[HTML-KEY-BINDINGS]], [[INDENT-KEY-BINDINGS]],
+[[INFO-HELP-KEY-BINDINGS]], [[ITERATIVE-COMMAND-KEY-BINDINGS]],
+[[KEYS-KEY-BINDINGS]], [[KILL-CUT-KEY-BINDINGS]], [[LINE-KEY-BINDINGS]],
+[[LISP-KEY-BINDINGS]], [[LOCATE-KEY-BINDINGS]], [[MACRO-KEY-BINDINGS]],
+[[MARK-KEY-BINDINGS]], [[MENU-KEY-BINDINGS]], [[MERGE-CONFLICT-KEY-BINDINGS]],
+[[MINIBUFFER-KEY-BINDINGS]], [[MODE-KEY-BINDINGS]], [[NEWLINE-KEY-BINDINGS]],
+[[NON-INTERACTIVE-SEARCH-KEY-BINDINGS]], [[NON-ITERATIVE-COMMAND-KEY-BINDINGS]],
+[[NUMBER-REGISTER-KEY-BINDINGS]], [[OCCUR-KEY-BINDINGS]], [[OPEN-KEY-BINDINGS]],
+[[OUTLINE-KEY-BINDINGS]], [[PAGE-KEY-BINDINGS]], [[PARAGRAPH-KEY-BINDINGS]],
+[[POINT-REGISTER-KEY-BINDINGS]], [[POSITION-REGISTER-KEY-BINDINGS]],
+[[READ-ONLY-KEY-BINDINGS]], [[RECTANGLE-KEY-BINDINGS]],
+[[RECURSIVE-EDIT-KEY-BINDINGS]], [[REDISPLAY-KEY-BINDINGS]],
+[[REGION-KEY-BINDINGS]], [[REGULAR-EXPRESSION-KEY-BINDINGS]],
+[[REPLACE-KEY-BINDINGS]], [[SEARCH-KEY-BINDINGS]], [[SENTENCE-KEY-BINDINGS]],
+[[SEXP-AND-PAREN-KEY-BINDINGS]], [[SHELL-KEY-BINDINGS]],
+[[SHELL-SCRIPT-KEY-BINDINGS]], [[SORT-KEY-BINDINGS]],
+[[SOURCE-LEVEL-DEBUGGER-KEY-BINDINGS]], [[SPELL-CHECK-KEY-BINDINGS]],
+[[SQL-KEY-BINDINGS]], [[TABLE-KEY-BINDINGS]], [[TEXT-REGISTER-KEY-BINDINGS]],
+[[TIMECLOCK-KEY-BINDINGS]], [[TRAMP-KEY-BINDINGS]], [[TRANSPOSE-KEY-BINDINGS]],
+[[UNDO-KEY-BINDINGS]], [[VC-VERSION-CONTROL-KEY-BINDINGS]],
+[[WHITESPACE-KEY-BINDINGS]], [[WINDOW-KEY-BINDINGS]],
+[[WINDOW-REGISTER-KEY-BINDINGS]], [[WORD-KEY-BINDINGS]],
+[[YANK-PASTE-KEY-BINDINGS]]
 
 For the most part these nodes are relatively static. Take for example the conceptual space 'regular expression:'; barring a radical shift in the semantic underpinnings of finite state autonomata and right regular grammars the conceptual space of 'regular expression:' isn't likely to change any time soon. However, the same can't be said of the myriad 'situational spaces' for which one might wish to leverage Emacs regexp's. For me, these 'situational spaces' may change 10s of times in a given buffer, 100s of times in a given project, and have prob. changed 10s of 1000s times since I first encountered Emacs.
 
@@ -80,7 +118,7 @@ It would be immensely beneficial to leverage a framework that allows the Emacs c
 
 Approaching such a task from the perspective of the keybindings makes great sense.
 
-One recalls that in essence Emacs _is_ the keybindings: [http://www.softpanorama.org/People/Stallman/history_of_emacs_and_xemacs.shtml].  --mon_key
+One recalls that in essence Emacs _is_ the keybindings: [http://www.softpanorama.org/People/Stallman/history_of_emacs_and_xemacs.shtml].  --[[mon_key]]
  
 ----
 CategoryReferenceSheet CategoryDocumentation

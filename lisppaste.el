@@ -1,13 +1,13 @@
 ;;; lisppaste.el --- Interact with the lisppaste pastebot via XML-RPC.
 
-;; Copyright (C) 2004, 2005, 2006, 2007, 2008 Lawrence Mitchell <wence@gmx.li>
+;; Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009 Lawrence Mitchell <wence@gmx.li>
 ;; File: lisppaste.el
 ;; Author: Lawrence Mitchell <wence@gmx.li>
 ;; Created: 2004-04-25
-;; Version: 1.5
+;; Version: 1.8
 ;; Keywords: IRC xml rpc network
 ;; URL: http://purl.org/NET/wence/lisppaste.el
-;; Package-Requires: ((xml-rpc "1.6.4"))
+;; Package-Requires: ((xml-rpc "1.6.7"))
 
 ;;; Commentary:
 ;; This file provide an Emacs interface to the lisppaste bot running
@@ -25,38 +25,23 @@
 ;; a link for at <URL: http://www.emacswiki.org/cgi-bin/wiki/XmlRpc>.
 
 ;;; Code:
-
-(require 'cl)
+(eval-when-compile
+  (require 'erc)
+  (require 'cl)
+  (require 'rx))
 (require 'xml-rpc)
 
 (defconst lisppaste-url "http://common-lisp.net:8185/RPC2")
 
 (defun lisppaste-send-command (command &rest stuff)
   "Send COMMAND to the lisppaste bot with STUFF as arguments."
-  (let ((xml-entity-alist nil))         ; defeat xml.el encoding of entities
-    (apply #'xml-rpc-method-call lisppaste-url command stuff)))
+  (apply #'xml-rpc-method-call lisppaste-url command stuff))
 
 (defvar lisppaste-display-new-paste-url nil
   "*If non-nil, display a buffer showing the URL of newly created pastes.")
 
-(defun lisppaste-channels ()
-  "Return which channels the lisppaste bot runs on."
-  (lisppaste-send-command 'listchannels))
-
-(defvar lisppaste-channels nil
-  "Cached value of the channels lisppaste is running on.
-
-Initialised using the function `lisppaste-channels'.")
-
-(defsubst lisppaste-check-channel (channel)
-  "Check that CHANNEL is supported by lisppaste.
-
-Checks the cached value of the variable `lisppaste-channels' before
-requesting a new list."
-  (or lisppaste-channels (setq lisppaste-channels (lisppaste-channels)))
-  (unless (member channel lisppaste-channels)
-    (error "%s not a valid channel.  Try M-: (setq lisppaste-channels nil) RET"
-           channel)))
+(defvar lisppaste-add-paste-url-to-kill-ring nil
+  "*If non-nil, put the URL of a new paste at the head of the `kill-ring'.")
 
 (defun lisppaste-new-paste (channel nick title content &optional annotate)
   "Create a new paste with the specified arguments.
@@ -72,6 +57,12 @@ If ANNOTATE is non-nil, annotate that paste."
     (erase-buffer)
     (insert ret)
     (message ret)
+    (when (and lisppaste-add-paste-url-to-kill-ring
+               (string-match (rx (+ anything)
+                                 space (group (+ (not (in space))))
+                                 " ." eos)
+                             ret))
+      (kill-new (match-string 1 ret)))
     (when lisppaste-display-new-paste-url
       (display-buffer buf t))))
 
@@ -98,6 +89,25 @@ If CHANNEL is non-nil, only return pastes from that channel."
       (progn (lisppaste-check-channel channel)
              (lisppaste-send-command 'pasteheadersbychannel channel n start))
     (lisppaste-send-command 'pasteheaders n start)))
+
+(defun lisppaste-channels ()
+  "Return which channels the lisppaste bot runs on."
+  (lisppaste-send-command 'listchannels))
+
+(defvar lisppaste-channels nil
+  "Cached value of the channels lisppaste is running on.
+
+Initialised using the function `lisppaste-channels'.")
+
+(defsubst lisppaste-check-channel (channel)
+  "Check that CHANNEL is supported by lisppaste.
+
+Checks the cached value of the variable `lisppaste-channels' before
+requesting a new list."
+  (or lisppaste-channels (setq lisppaste-channels (lisppaste-channels)))
+  (unless (member channel lisppaste-channels)
+    (error "%s not a valid channel.  Try M-: (setq lisppaste-channels nil) RET"
+           channel)))
 
 (defsubst lisppaste-all-channels ()
   ;; Retardedness due to completing read requiring an alist.
@@ -163,37 +173,27 @@ C is the default channel to look for a nick in with `lisppaste-default-nick'."
   "Read a paste title."
   (read-string "Title: "))
 
-(defun lisppaste-clean-returned-paste (paste)
-  "Clean PASTE of HTML character entities."
-  (with-temp-buffer
-    (insert (format "%s" paste))
-    (goto-char (point-min))
-    ;; Remove spurious ^M's
-    (save-excursion (while (search-forward "&#xD;" nil t)
-                      (replace-match "")))
-    (while (re-search-forward "&\\(#x[^;]+\\);" nil t)
-      (insert (read (match-string 1)))
-      (replace-match ""))
-    (buffer-substring-no-properties (point-min) (point-max))))
-
 (defun lisppaste-clean-time-string (time)
   "Clean an iso8601 TIME string to return YYYY-MM-DD.
 
 Not very robust."
-  (if (listp time)                      ; new style xml-rpc
-      (format-time-string "%Y-%m-%d" (cadr time))
-
-  (if (string-match "^\\(....\\)\\(..\\)\\(..\\)T..:..:..$" time)
-      (format "%s-%s-%s" (match-string 1 time)
-                         (match-string 2 time)
-                         (match-string 3 time))
-    (error "Invalid time format `%s'" time))))
+  (cond ((and (consp time)
+              (eq :datetime (car time)))
+         (format-time-string "%Y-%m-%d" (cadr time)))
+        ((and (stringp time)
+              (string-match "^\\(....\\)\\(..\\)\\(..\\)T..:..:..$" time))
+         (format "%s-%s-%s"
+                 (match-string 1 time)
+                 (match-string 2 time)
+                 (match-string 3 time)))
+        (t
+         (error "Invalid time format `%s'" time))))
 
 (defvar lisppaste-creation-help
   (concat ";; Enter your paste below, and press C-c C-c to send.\n"
           ";; Press C-c C-d to cancel this paste.\n\n")
   "Paste creation help text.")
-  
+
 (defsubst lisppaste-buffer-substring (beg end)
   "Return part of the current buffer as a string.
 
@@ -265,7 +265,7 @@ If N is non-nil, display PASTE's Nth annotation."
                     user channel title
                     (lisppaste-clean-time-string time)
                     annotations))
-    (insert (lisppaste-clean-returned-paste content))
+    (insert content)
     (set-text-properties (point-min)
                          (point-max)
                          `(lisppaste-user ,user

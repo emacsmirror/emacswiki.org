@@ -22,6 +22,7 @@ Wiki modes to edit pages on a local wiki:
 * The original wiki-mode [http://www.s.netic.de/fg/wiki-mode/wiki.el] by FrankGerhardt. (*abandoned*)
 * FileWiki by AlexSchroeder -- vapor ware... (*abandoned*) -- use OrgMode instead!
 * OrgMode -- a wiki + outline + planner + todo lists all in one file.
+* WikipediaMode -- for MediaWiki syntax.
 
 Wiki modes to edit text files that might eventually end up on a wiki
 (usually a mode to use when Emacs acts as the external editor to a

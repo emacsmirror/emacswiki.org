@@ -11,9 +11,8 @@
 ;; Version: 1.6.8
 ;; Created: May 13 2001
 ;; Keywords: xml rpc network
-;; URL: http://emacswiki.org/emacs/xml-rpc.el
-;; Maintained-at: http://savannah.nongnu.org/bzr/?group=emacsweblogs
-;; Last Modified: <2010-02-10 15:20:21 mah>
+;; URL: http://launchpad.net/xml-rpc-el
+;; Last Modified: <2010-02-27 07:02:36 mah>
 
 (defconst xml-rpc-version "1.6.8"
   "Current version of xml-rpc.el")
@@ -111,16 +110,16 @@
 ;; Fetch the latest NetBSD news the past 5 days from O'reillynet
 
 ;; (xml-rpc-method-call "http://www.oreillynet.com/meerkat/xml-rpc/server.php"
-;;  		     'meerkat.getItems
-;;  		     '(("channel" . 1024)
-;;  		       ("search" . "/NetBSD/")
-;;  		       ("time_period" . "5DAY")
-;;  		       ("ids" . 0)
-;;  		       ("descriptions" . 200)
-;;  		       ("categories" . 0)
-;;  		       ("channels" . 0)
-;;  		       ("dates" . 0)
-;;  		       ("num_items" . 5)))
+;;                   'meerkat.getItems
+;;                   '(("channel" . 1024)
+;;                     ("search" . "/NetBSD/")
+;;                     ("time_period" . "5DAY")
+;;                     ("ids" . 0)
+;;                     ("descriptions" . 200)
+;;                     ("categories" . 0)
+;;                     ("channels" . 0)
+;;                     ("dates" . 0)
+;;                     ("num_items" . 5)))
 
 
 ;;; History:
@@ -249,15 +248,15 @@ Set it higher to get some info in the *Messages* buffer"
   "Return t if VALUE is an XML-RPC struct."
   (and (listp value)
        (let ((vals value)
-	     (result t)
-	     curval)
-	 (while (and vals result)
-	   (setq result (and
+             (result t)
+             curval)
+         (while (and vals result)
+           (setq result (and
                          (setq curval (car-safe vals))
                          (consp curval)
                          (stringp (car-safe curval))))
-	   (setq vals (cdr-safe vals)))
-	 result)))
+           (setq vals (cdr-safe vals)))
+         result)))
 
 ;; A somewhat lazy predicate for arrays
 (defsubst xml-rpc-value-arrayp (value)
@@ -339,7 +338,7 @@ interpreting and simplifying it while retaining its structure."
         (mapcar (lambda (member)
                   (let ((membername (cadr (cdaddr member)))
                         (membervalue (xml-rpc-xml-list-to-value
-				      (cdddr member))))
+                                      (cdddr member))))
                     (cons membername membervalue)))
                 (cddr (caddar xml-list))))
        ;; Fault
@@ -373,8 +372,8 @@ interpreting and simplifying it while retaining its structure."
   "Return XML representation of VALUE properly formatted for use with the  \
 functions in xml.el."
   (cond
-					;   ((not value)
-					;    nil)
+   ;;   ((not value)
+   ;;    nil)
    ((xml-rpc-value-booleanp value)
     `((value nil (boolean nil ,(xml-rpc-boolean-to-string value)))))
    ;; Date
@@ -383,7 +382,7 @@ functions in xml.el."
    ;; list
    ((xml-rpc-value-arrayp value)
     (let ((result nil)
-	  (xmlval nil))
+          (xmlval nil))
       (while (setq xmlval (xml-rpc-value-to-xml-list (car value))
                    result (if result (append result xmlval)
                             xmlval)
@@ -392,12 +391,12 @@ functions in xml.el."
    ;; struct
    ((xml-rpc-value-structp value)
     (let ((result nil)
-	  (xmlval nil))
+          (xmlval nil))
       (while (setq xmlval `((member nil (name nil ,(caar value))
-				    ,(car (xml-rpc-value-to-xml-list
-					   (cdar value)))))
-		   result (append result xmlval)
-		   value (cdr value)))
+                                    ,(car (xml-rpc-value-to-xml-list
+                                           (cdar value)))))
+                   result (append result xmlval)
+                   value (cdr value)))
       `((value nil ,(append '(struct nil) result)))))
    ;; Value is a scalar
    ((xml-rpc-value-intp value)
@@ -405,11 +404,11 @@ functions in xml.el."
    ((xml-rpc-value-stringp value)
     (let ((charset-list (find-charset-string value)))
       (if (or xml-rpc-allow-unicode-string
-	      (and (eq 1 (length charset-list))
-		   (eq 'ascii (car charset-list)))
-	      (not xml-rpc-base64-encode-unicode))
-	  `((value nil (string nil ,value)))
-	`((value nil (base64 nil ,(if xml-rpc-base64-encode-unicode
+              (and (eq 1 (length charset-list))
+                   (eq 'ascii (car charset-list)))
+              (not xml-rpc-base64-encode-unicode))
+          `((value nil (string nil ,value)))
+        `((value nil (base64 nil ,(if xml-rpc-base64-encode-unicode
                                       (base64-encode-string
                                        (encode-coding-string
                                         value xml-rpc-use-coding-system))
@@ -422,15 +421,15 @@ functions in xml.el."
 (defun xml-rpc-xml-to-string (xml)
   "Return a string representation of the XML tree as valid XML markup."
   (let ((tree (xml-node-children xml))
-	(result (concat "<" (symbol-name (xml-node-name xml)) ">")))
+        (result (concat "<" (symbol-name (xml-node-name xml)) ">")))
     (while tree
       (cond
        ((listp (car tree))
-	(setq result (concat result (xml-rpc-xml-to-string (car tree)))))
+        (setq result (concat result (xml-rpc-xml-to-string (car tree)))))
        ((stringp (car tree))
-	(setq result (concat result (car tree))))
+        (setq result (concat result (car tree))))
        (t
-	(error "Invalid XML tree")))
+        (error "Invalid XML tree")))
       (setq tree (cdr tree)))
     (setq result (concat result "</" (symbol-name (xml-node-name xml)) ">"))
     result))
@@ -478,25 +477,6 @@ the parsed XML response is returned."
       (xml-rpc-xml-list-to-value valpart)))))
 
 ;;
-;; Misc
-;;
-
-(defun xml-rpc-get-temp-buffer-name ()
-  "Get a working buffer name such as ` *XML-RPC-<i>*' without a live process \
-and empty it"
-  (let ((num 1)
-	name buf)
-    (while (progn (setq name (format " *XML-RPC-%d*" num)
-			buf (get-buffer name))
-		  (and buf (or (get-buffer-process buf)
-			       (with-current-buffer buf
-					       (> (point-max) 1)))))
-      (setq num (1+ num)))
-    name))
-
-
-
-;;
 ;; Method handling
 ;;
 
@@ -515,66 +495,66 @@ or nil if called with ASYNC-CALLBACK-FUNCTION."
                     url-http-response-status))
   (unwind-protect
       (save-excursion
-	(let ((url-request-method "POST")
-	      (url-package-name "xml-rpc.el")
-	      (url-package-version xml-rpc-version)
-	      (url-request-data (concat "<?xml version=\"1.0\""
+        (let ((url-request-method "POST")
+              (url-package-name "xml-rpc.el")
+              (url-package-version xml-rpc-version)
+              (url-request-data (concat "<?xml version=\"1.0\""
                                         " encoding=\"UTF-8\"?>\n"
-					(with-temp-buffer
-					  (xml-print xml)
-					  (when xml-rpc-allow-unicode-string
-					    (encode-coding-region
-					     (point-min) (point-max) 'utf-8))
-					  (buffer-string))
-					"\n"))
-	      (url-mime-charset-string "utf-8;q=1, iso-8859-1;q=0.5")
-	      (url-request-coding-system xml-rpc-use-coding-system)
-	      (url-http-attempt-keepalives t)
-	      (url-request-extra-headers (list
+                                        (with-temp-buffer
+                                          (xml-print xml)
+                                          (when xml-rpc-allow-unicode-string
+                                            (encode-coding-region
+                                             (point-min) (point-max) 'utf-8))
+                                          (buffer-string))
+                                        "\n"))
+              (url-mime-charset-string "utf-8;q=1, iso-8859-1;q=0.5")
+              (url-request-coding-system xml-rpc-use-coding-system)
+              (url-http-attempt-keepalives t)
+              (url-request-extra-headers (list
                                           (cons "Connection" "keep-alive")
-					  (cons "Content-Type"
+                                          (cons "Content-Type"
                                                 "text/xml; charset=utf-8"))))
-	  (when (> xml-rpc-debug 1)
+          (when (> xml-rpc-debug 1)
             (print url-request-data (create-file-buffer "request-data")))
 
-	  (cond ((boundp 'url-be-asynchronous) ; Sniff for w3 lib capability
-		 (if async-callback-function
-		     (setq url-be-asynchronous t
-			   url-current-callback-data (list
-						      async-callback-function
-						      (current-buffer))
-			   url-current-callback-func
+          (cond ((boundp 'url-be-asynchronous) ; Sniff for w3 lib capability
+                 (if async-callback-function
+                     (setq url-be-asynchronous t
+                           url-current-callback-data (list
+                                                      async-callback-function
+                                                      (current-buffer))
+                           url-current-callback-func
                            'xml-rpc-request-callback-handler)
-		   (setq url-be-asynchronous nil))
-		 (url-retrieve server-url t)
+                   (setq url-be-asynchronous nil))
+                 (url-retrieve server-url t)
 
-		 (when (not url-be-asynchronous)
-		   (let ((result (xml-rpc-request-process-buffer
-				  (current-buffer))))
-		     (when (> xml-rpc-debug 1)
+                 (when (not url-be-asynchronous)
+                   (let ((result (xml-rpc-request-process-buffer
+                                  (current-buffer))))
+                     (when (> xml-rpc-debug 1)
                        (with-current-buffer (create-file-buffer "result-data")
                          (insert result)))
-		     result)))
-		(t			; Post emacs20 w3-el
-		 (if async-callback-function
-		     (url-retrieve server-url async-callback-function)
-		   (let ((buffer (url-retrieve-synchronously server-url))
-			 result)
-		     (with-current-buffer buffer
-		       (when (not (numberp url-http-response-status))
+                     result)))
+                (t                      ; Post emacs20 w3-el
+                 (if async-callback-function
+                     (url-retrieve server-url async-callback-function)
+                   (let ((buffer (url-retrieve-synchronously server-url))
+                         result)
+                     (with-current-buffer buffer
+                       (when (not (numberp url-http-response-status))
                          ;; this error may occur when keep-alive bug
                          ;; of url-http.el is not cleared.
                          (error "Why? url-http-response-status is %s"
                                 url-http-response-status))
-		       (when (> url-http-response-status 299)
+                       (when (> url-http-response-status 299)
                          (error "Error during request: %s"
                                 url-http-response-status)))
-		     (xml-rpc-request-process-buffer buffer)))))))))
+                     (xml-rpc-request-process-buffer buffer)))))))))
 
 
 (defun xml-rpc-clean-string (s)
   (if (string-match "\\`[ \t\n\r]*\\'" s)
-					;"^[ \t\n]*$" s)
+      ;;"^[ \t\n]*$" s)
       nil
     s))
 
@@ -582,32 +562,32 @@ or nil if called with ASYNC-CALLBACK-FUNCTION."
   (cond
    ((listp l)
     (let ((remain l)
-	  elem
-	  (result nil))
+          elem
+          (result nil))
       (while l
-					; iterate
-	(setq elem (car l)
-	      l (cdr l))
-					; test the head
-	(cond
-					; a string, so clean it.
-	 ((stringp elem)
-	  (let ((tmp (xml-rpc-clean-string elem)))
-	    (when (and tmp xml-rpc-allow-unicode-string)
+        ;; iterate
+        (setq elem (car l)
+              l (cdr l))
+        ;; test the head
+        (cond
+         ;; a string, so clean it.
+         ((stringp elem)
+          (let ((tmp (xml-rpc-clean-string elem)))
+            (when (and tmp xml-rpc-allow-unicode-string)
               (setq tmp (decode-coding-string tmp xml-rpc-use-coding-system)))
-	    (if tmp
-		(setq result (append result (list tmp)))
-	      result)))
-					; a list, so recurse.
-	 ((listp elem)
-	  (setq result (append result (list (xml-rpc-clean elem)))))
+            (if tmp
+                (setq result (append result (list tmp)))
+              result)))
+         ;; a list, so recurse.
+         ((listp elem)
+          (setq result (append result (list (xml-rpc-clean elem)))))
 
-					; everthing else, as is.
-	 (t
-	  (setq result (append result (list elem))))))
+         ;; everthing else, as is.
+         (t
+          (setq result (append result (list elem))))))
       result))
 
-   ((stringp l)			  ; will returning nil be acceptable ?
+   ((stringp l)                   ; will returning nil be acceptable ?
     nil)
 
    (t l)))
@@ -616,40 +596,40 @@ or nil if called with ASYNC-CALLBACK-FUNCTION."
   "Process buffer XML-BUFFER."
   (unwind-protect
       (with-current-buffer xml-buffer
-	(when (fboundp 'url-uncompress)
+        (when (fboundp 'url-uncompress)
           (let ((url-working-buffer xml-buffer))
             (url-uncompress)))
-	(goto-char (point-min))
-	(search-forward-regexp "<\\?xml" nil t)
-	(move-to-column 0)
-	;; Gather the results
-	(let* ((status (if (boundp 'url-http-response-status)
-                                        ; Old URL lib doesn't save the result.
+        (goto-char (point-min))
+        (search-forward-regexp "<\\?xml" nil t)
+        (move-to-column 0)
+        ;; Gather the results
+        (let* ((status (if (boundp 'url-http-response-status)
+                           ;; Old URL lib doesn't save the result.
                            url-http-response-status 200))
-	       (result (cond
-			;; A probable XML response
-			((looking-at "<\\?xml ")
-			 (xml-rpc-clean (xml-parse-region (point-min)
+               (result (cond
+                        ;; A probable XML response
+                        ((looking-at "<\\?xml ")
+                         (xml-rpc-clean (xml-parse-region (point-min)
                                                           (point-max))))
 
-			;; No HTTP status returned
-			((not status)
-			 (let ((errstart
-				(search-forward "\n---- Error was: ----\n")))
-			   (and errstart
-				(buffer-substring errstart (point-max)))))
+                        ;; No HTTP status returned
+                        ((not status)
+                         (let ((errstart
+                                (search-forward "\n---- Error was: ----\n")))
+                           (and errstart
+                                (buffer-substring errstart (point-max)))))
 
-			;; Maybe they just gave us an the XML w/o PI?
-			((search-forward "<methodResponse>" nil t)
-			 (xml-rpc-clean (xml-parse-region (match-beginning 0)
-							  (point-max))))
+                        ;; Maybe they just gave us an the XML w/o PI?
+                        ((search-forward "<methodResponse>" nil t)
+                         (xml-rpc-clean (xml-parse-region (match-beginning 0)
+                                                          (point-max))))
 
-			;; Valid HTTP status
-			(t
-			 (int-to-string status)))))
+                        ;; Valid HTTP status
+                        (t
+                         (int-to-string status)))))
           (when (< xml-rpc-debug 3)
             (kill-buffer (current-buffer)))
-	  result))))
+          result))))
 
 
 (defun xml-rpc-request-callback-handler (callback-fun xml-buffer)
@@ -662,21 +642,21 @@ handled from XML-BUFFER."
 
 
 (defun xml-rpc-method-call-async (async-callback-func server-url method
-						      &rest params)
+                                                      &rest params)
   "Call an XML-RPC method asynchronously at SERVER-URL named METHOD with \
 PARAMS as parameters. When the method returns, ASYNC-CALLBACK-FUNC will be \
 called with the result as parameter."
   (let* ((m-name (if (stringp method)
-		     method
-		   (symbol-name method)))
-	 (m-params (mapcar '(lambda (p)
-			      `(param nil ,(car (xml-rpc-value-to-xml-list
-						 p))))
-			   (if async-callback-func
-			       params
-			     (car-safe params))))
-	 (m-func-call `((methodCall nil (methodName nil ,m-name)
-				    ,(append '(params nil) m-params)))))
+                     method
+                   (symbol-name method)))
+         (m-params (mapcar '(lambda (p)
+                              `(param nil ,(car (xml-rpc-value-to-xml-list
+                                                 p))))
+                           (if async-callback-func
+                               params
+                             (car-safe params))))
+         (m-func-call `((methodCall nil (methodName nil ,m-name)
+                                    ,(append '(params nil) m-params)))))
     (when (> xml-rpc-debug 1)
       (print m-func-call (create-file-buffer "func-call")))
     (xml-rpc-request server-url m-func-call async-callback-func)))
@@ -685,11 +665,11 @@ called with the result as parameter."
   "Call an XML-RPC method at SERVER-URL named METHOD with PARAMS as \
 parameters."
   (let ((response
-	 (xml-rpc-method-call-async nil server-url method params)))
+         (xml-rpc-method-call-async nil server-url method params)))
     (cond ((stringp response)
-	   (list (cons nil (concat "URL/HTTP Error: " response))))
-	  (t
-	   (xml-rpc-xml-to-response response)))))
+           (list (cons nil (concat "URL/HTTP Error: " response))))
+          (t
+           (xml-rpc-xml-to-response response)))))
 
 (unless (fboundp 'xml-escape-string)
   (defun xml-debug-print (xml &optional indent-string)
@@ -705,58 +685,58 @@ The first line is indented with the optional INDENT-STRING."
   (when (not (boundp 'xml-entity-alist))
     (defvar xml-entity-alist
       '(("lt" . "<")
-	("gt" . ">")
-	("apos" . "'")
-	("quot" . "\"")
-	("amp" . "&"))))
+        ("gt" . ">")
+        ("apos" . "'")
+        ("quot" . "\"")
+        ("amp" . "&"))))
 
   (defun xml-escape-string (string)
     "Return the string with entity substitutions made from
 xml-entity-alist."
     (mapconcat (lambda (byte)
-		 (let ((char (char-to-string byte)))
-		   (if (rassoc char xml-entity-alist)
-		       (concat "&" (car (rassoc char xml-entity-alist)) ";")
-		     char)))
-	       ;; This differs from the non-unicode branch.  Just
-	       ;; grabbing the string works here.
-	       string ""))
+                 (let ((char (char-to-string byte)))
+                   (if (rassoc char xml-entity-alist)
+                       (concat "&" (car (rassoc char xml-entity-alist)) ";")
+                     char)))
+               ;; This differs from the non-unicode branch.  Just
+               ;; grabbing the string works here.
+               string ""))
 
   (defun xml-debug-print-internal (xml indent-string)
     "Outputs the XML tree in the current buffer.
 The first line is indented with INDENT-STRING."
     (let ((tree xml)
-	  attlist)
+          attlist)
       (insert indent-string ?< (symbol-name (xml-node-name tree)))
 
       ;;  output the attribute list
       (setq attlist (xml-node-attributes tree))
       (while attlist
-	(insert ?\  (symbol-name (caar attlist)) "=\""
-		(xml-escape-string (cdar attlist)) ?\")
-	(setq attlist (cdr attlist)))
+        (insert ?\  (symbol-name (caar attlist)) "=\""
+                (xml-escape-string (cdar attlist)) ?\")
+        (setq attlist (cdr attlist)))
 
       (setq tree (xml-node-children tree))
 
       (if (null tree)
-	  (insert ?/ ?>)
-	(insert ?>)
+          (insert ?/ ?>)
+        (insert ?>)
 
-	;;  output the children
-	(dolist (node tree)
-	  (cond
-	   ((listp node)
-	    (insert ?\n)
-	    (xml-debug-print-internal node (concat indent-string "  ")))
-	   ((stringp node)
-	    (insert (xml-escape-string node)))
-	   (t
-	    (error "Invalid XML tree"))))
+        ;;  output the children
+        (dolist (node tree)
+          (cond
+           ((listp node)
+            (insert ?\n)
+            (xml-debug-print-internal node (concat indent-string "  ")))
+           ((stringp node)
+            (insert (xml-escape-string node)))
+           (t
+            (error "Invalid XML tree"))))
 
-	(when (not (and (null (cdr tree))
-			(stringp (car tree))))
-	  (insert ?\n indent-string))
-	(insert ?< ?/ (symbol-name (xml-node-name xml)) ?>)))))
+        (when (not (and (null (cdr tree))
+                        (stringp (car tree))))
+          (insert ?\n indent-string))
+        (insert ?< ?/ (symbol-name (xml-node-name xml)) ?>)))))
 
 (let ((tdate (timezone-parse-date "20090101T010101Z")))
   (when (not (string-equal (aref tdate 0) "2009"))
@@ -779,102 +759,102 @@ Understands the following styles:
  (10) 19960624T211312"
       ;; Get rid of any text properties.
       (and (stringp date)
-	   (or (text-properties-at 0 date)
-	       (next-property-change 0 date))
-	   (setq date (copy-sequence date))
-	   (set-text-properties 0 (length date) nil date))
+           (or (text-properties-at 0 date)
+               (next-property-change 0 date))
+           (setq date (copy-sequence date))
+           (set-text-properties 0 (length date) nil date))
       (let ((date (or date ""))
-	    (year nil)
-	    (month nil)
-	    (day nil)
-	    (time nil)
-	    (zone nil))			;This may be nil.
-	(cond ((string-match
-		"\\([0-9]+\\)[ \t]+\\([^ \t,]+\\)[ \t]+\\([0-9]+\\)[ \t]+\\([0-9]+:[0-9:]+\\)[ \t]+\\([-+a-zA-Z0-9]+\\)" date)
-	       ;; Styles: (1) and (2) with timezone and buggy timezone
-	       ;; This is most common in mail and news,
-	       ;; so it is worth trying first.
-	       (setq year 3 month 2 day 1 time 4 zone 5))
-	      ((string-match
-		"\\([0-9]+\\)[ \t]+\\([^ \t,]+\\)[ \t]+\\([0-9]+\\)[ \t]+\\([0-9]+:[0-9:]+\\)[ \t]*\\'" date)
-	       ;; Styles: (1) and (2) without timezone
-	       (setq year 3 month 2 day 1 time 4 zone nil))
-	      ((string-match
-		"\\([^ \t,]+\\),[ \t]+\\([0-9]+\\)[ \t]+\\([^ \t,]+\\)[ \t]+\\([0-9]+:[0-9:]+\\)[ \t]+\\(T[ \t]+\\|\\)\\([0-9]+\\)[ \t]*\\'" date)
-	       ;; Styles: (6) and (7) without timezone
-	       (setq year 6 month 3 day 2 time 4 zone nil))
-	      ((string-match
-		"\\([^ \t,]+\\),[ \t]+\\([0-9]+\\)[ \t]+\\([^ \t,]+\\)[ \t]+\\([0-9]+:[0-9:]+\\)[ \t]+\\(T[ \t]+\\|\\)\\([0-9]+\\)[ \t]*\\([-+a-zA-Z0-9]+\\)" date)
-	       ;; Styles: (6) and (7) with timezone and buggy timezone
-	       (setq year 6 month 3 day 2 time 4 zone 7))
-	      ((string-match
-		"\\([^ \t,]+\\)[ \t]+\\([0-9]+\\)[ \t]+\\([0-9]+:[0-9:]+\\)[ \t]+\\([0-9]+\\)" date)
-	       ;; Styles: (3) without timezone
-	       (setq year 4 month 1 day 2 time 3 zone nil))
-	      ((string-match
-		"\\([^ \t,]+\\)[ \t]+\\([0-9]+\\)[ \t]+\\([0-9]+:[0-9:]+\\)[ \t]+\\([-+a-zA-Z0-9]+\\)[ \t]+\\([0-9]+\\)" date)
-	       ;; Styles: (3) with timezone
-	       (setq year 5 month 1 day 2 time 3 zone 4))
-	      ((string-match
-		"\\([0-9]+\\)[ \t]+\\([^ \t,]+\\)[ \t]+\\([0-9]+\\)[ \t]+\\([0-9]+\\)[ \t]*\\([-+a-zA-Z0-9]+\\)" date)
-	       ;; Styles: (4) with timezone
-	       (setq year 3 month 2 day 1 time 4 zone 5))
-	      ((string-match
-		"\\([0-9]+\\)-\\([A-Za-z]+\\)-\\([0-9]+\\)[ \t]+\\([0-9]+:[0-9]+:[0-9]+\\)\\(\\.[0-9]+\\)?[ \t]+\\([-+a-zA-Z0-9]+\\)" date)
-	       ;; Styles: (5) with timezone.
-	       (setq year 3 month 2 day 1 time 4 zone 6))
-	      ((string-match
-		"\\([0-9]+\\)-\\([A-Za-z]+\\)-\\([0-9]+\\)[ \t]+\\([0-9]+:[0-9]+:[0-9]+\\)\\(\\.[0-9]+\\)?" date)
-	       ;; Styles: (5) without timezone.
-	       (setq year 3 month 2 day 1 time 4 zone nil))
-	      ((string-match
-		"\\([0-9]+\\)-\\([0-9]+\\)-\\([0-9]+\\)[ \t]+\\([0-9]+:[0-9]+:[0-9]+\\)[ \t]+\\([-+a-zA-Z0-9]+\\)" date)
-	       ;; Styles: (8) with timezone.
-	       (setq year 1 month 2 day 3 time 4 zone 5))
-	      ((string-match
-		"\\([0-9]\\{4\\}\\)-?\\([0-9]\\{0,2\\}\\)-?\\([0-9]\\{0,2\\}\\)[T \t]+\\([0-9]\\{0,2\\}:?[0-9]\\{0,2\\}:?[0-9]\\{0,2\\}\\)[ \t]*\\([-+a-zA-Z]+[0-9:]*\\)" date)
-	       ;; Styles: (8) with timezone with a colon in it.
-	       (setq year 1 month 2 day 3 time 4 zone 5))
-	      ((string-match
-		"\\([0-9]\\{4\\}\\)-?\\([0-9]\\{0,2\\}\\)-?\\([0-9]\\{0,2\\}\\)[T \t]+\\([0-9]+:?[0-9]+:?[0-9]+\\)" date)
-	       ;; Styles: (8) without timezone.
-	       (setq year 1 month 2 day 3 time 4 zone nil)))
+            (year nil)
+            (month nil)
+            (day nil)
+            (time nil)
+            (zone nil))                 ;This may be nil.
+        (cond ((string-match
+                "\\([0-9]+\\)[ \t]+\\([^ \t,]+\\)[ \t]+\\([0-9]+\\)[ \t]+\\([0-9]+:[0-9:]+\\)[ \t]+\\([-+a-zA-Z0-9]+\\)" date)
+               ;; Styles: (1) and (2) with timezone and buggy timezone
+               ;; This is most common in mail and news,
+               ;; so it is worth trying first.
+               (setq year 3 month 2 day 1 time 4 zone 5))
+              ((string-match
+                "\\([0-9]+\\)[ \t]+\\([^ \t,]+\\)[ \t]+\\([0-9]+\\)[ \t]+\\([0-9]+:[0-9:]+\\)[ \t]*\\'" date)
+               ;; Styles: (1) and (2) without timezone
+               (setq year 3 month 2 day 1 time 4 zone nil))
+              ((string-match
+                "\\([^ \t,]+\\),[ \t]+\\([0-9]+\\)[ \t]+\\([^ \t,]+\\)[ \t]+\\([0-9]+:[0-9:]+\\)[ \t]+\\(T[ \t]+\\|\\)\\([0-9]+\\)[ \t]*\\'" date)
+               ;; Styles: (6) and (7) without timezone
+               (setq year 6 month 3 day 2 time 4 zone nil))
+              ((string-match
+                "\\([^ \t,]+\\),[ \t]+\\([0-9]+\\)[ \t]+\\([^ \t,]+\\)[ \t]+\\([0-9]+:[0-9:]+\\)[ \t]+\\(T[ \t]+\\|\\)\\([0-9]+\\)[ \t]*\\([-+a-zA-Z0-9]+\\)" date)
+               ;; Styles: (6) and (7) with timezone and buggy timezone
+               (setq year 6 month 3 day 2 time 4 zone 7))
+              ((string-match
+                "\\([^ \t,]+\\)[ \t]+\\([0-9]+\\)[ \t]+\\([0-9]+:[0-9:]+\\)[ \t]+\\([0-9]+\\)" date)
+               ;; Styles: (3) without timezone
+               (setq year 4 month 1 day 2 time 3 zone nil))
+              ((string-match
+                "\\([^ \t,]+\\)[ \t]+\\([0-9]+\\)[ \t]+\\([0-9]+:[0-9:]+\\)[ \t]+\\([-+a-zA-Z0-9]+\\)[ \t]+\\([0-9]+\\)" date)
+               ;; Styles: (3) with timezone
+               (setq year 5 month 1 day 2 time 3 zone 4))
+              ((string-match
+                "\\([0-9]+\\)[ \t]+\\([^ \t,]+\\)[ \t]+\\([0-9]+\\)[ \t]+\\([0-9]+\\)[ \t]*\\([-+a-zA-Z0-9]+\\)" date)
+               ;; Styles: (4) with timezone
+               (setq year 3 month 2 day 1 time 4 zone 5))
+              ((string-match
+                "\\([0-9]+\\)-\\([A-Za-z]+\\)-\\([0-9]+\\)[ \t]+\\([0-9]+:[0-9]+:[0-9]+\\)\\(\\.[0-9]+\\)?[ \t]+\\([-+a-zA-Z0-9]+\\)" date)
+               ;; Styles: (5) with timezone.
+               (setq year 3 month 2 day 1 time 4 zone 6))
+              ((string-match
+                "\\([0-9]+\\)-\\([A-Za-z]+\\)-\\([0-9]+\\)[ \t]+\\([0-9]+:[0-9]+:[0-9]+\\)\\(\\.[0-9]+\\)?" date)
+               ;; Styles: (5) without timezone.
+               (setq year 3 month 2 day 1 time 4 zone nil))
+              ((string-match
+                "\\([0-9]+\\)-\\([0-9]+\\)-\\([0-9]+\\)[ \t]+\\([0-9]+:[0-9]+:[0-9]+\\)[ \t]+\\([-+a-zA-Z0-9]+\\)" date)
+               ;; Styles: (8) with timezone.
+               (setq year 1 month 2 day 3 time 4 zone 5))
+              ((string-match
+                "\\([0-9]\\{4\\}\\)-?\\([0-9]\\{0,2\\}\\)-?\\([0-9]\\{0,2\\}\\)[T \t]+\\([0-9]\\{0,2\\}:?[0-9]\\{0,2\\}:?[0-9]\\{0,2\\}\\)[ \t]*\\([-+a-zA-Z]+[0-9:]*\\)" date)
+               ;; Styles: (8) with timezone with a colon in it.
+               (setq year 1 month 2 day 3 time 4 zone 5))
+              ((string-match
+                "\\([0-9]\\{4\\}\\)-?\\([0-9]\\{0,2\\}\\)-?\\([0-9]\\{0,2\\}\\)[T \t]+\\([0-9]+:?[0-9]+:?[0-9]+\\)" date)
+               ;; Styles: (8) without timezone.
+               (setq year 1 month 2 day 3 time 4 zone nil)))
 
-	(when year
-	  (setq year (match-string year date))
-	  ;; Guess ambiguous years.  Assume years < 69 don't predate the
-	  ;; Unix Epoch, so are 2000+.  Three-digit years are assumed to
-	  ;; be relative to 1900.
-	  (when (< (length year) 4)
-	    (let ((y (string-to-number year)))
-	      (when (< y 69)
-		(setq y (+ y 100)))
-	      (setq year (int-to-string (+ 1900 y)))))
-	  (setq month
-		(if (or (= (aref date (+ (match-beginning month) 2)) ?-)
-			(let ((n (string-to-number
-				  (char-to-string
-				   (aref date (+ (match-beginning month) 2))))))
-			  (= (aref (number-to-string n) 0)
-			     (aref date (+ (match-beginning month) 2)))))
-		    ;; Handle numeric months, spanning exactly two digits.
-		    (substring date
-			       (match-beginning month)
-			       (+ (match-beginning month) 2))
-		  (let* ((string (substring date
-					    (match-beginning month)
-					    (+ (match-beginning month) 3)))
-			 (monthnum
-			  (cdr (assoc (upcase string) timezone-months-assoc))))
-		    (when monthnum
-		      (int-to-string monthnum)))))
-	  (setq day (match-string day date))
-	  (setq time (match-string time date)))
-	(when zone (setq zone (match-string zone date)))
-	;; Return a vector.
-	(if (and year month)
-	    (vector year month day time zone)
-	  (vector "0" "0" "0" "0" nil))))))
+        (when year
+          (setq year (match-string year date))
+          ;; Guess ambiguous years.  Assume years < 69 don't predate the
+          ;; Unix Epoch, so are 2000+.  Three-digit years are assumed to
+          ;; be relative to 1900.
+          (when (< (length year) 4)
+            (let ((y (string-to-number year)))
+              (when (< y 69)
+                (setq y (+ y 100)))
+              (setq year (int-to-string (+ 1900 y)))))
+          (setq month
+                (if (or (= (aref date (+ (match-beginning month) 2)) ?-)
+                        (let ((n (string-to-number
+                                  (char-to-string
+                                   (aref date (+ (match-beginning month) 2))))))
+                          (= (aref (number-to-string n) 0)
+                             (aref date (+ (match-beginning month) 2)))))
+                    ;; Handle numeric months, spanning exactly two digits.
+                    (substring date
+                               (match-beginning month)
+                               (+ (match-beginning month) 2))
+                  (let* ((string (substring date
+                                            (match-beginning month)
+                                            (+ (match-beginning month) 3)))
+                         (monthnum
+                          (cdr (assoc (upcase string) timezone-months-assoc))))
+                    (when monthnum
+                      (int-to-string monthnum)))))
+          (setq day (match-string day date))
+          (setq time (match-string time date)))
+        (when zone (setq zone (match-string zone date)))
+        ;; Return a vector.
+        (if (and year month)
+            (vector year month day time zone)
+          (vector "0" "0" "0" "0" nil))))))
 
 (provide 'xml-rpc)
 

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 21.1
-;; Last-Updated: Tue Jan 12 15:39:29 2010 (-0800)
+;; Last-Updated: Sat Feb 27 07:48:34 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 4268
+;;     Update #: 4269
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/info+.el
 ;; Keywords: help, docs, internal
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -3906,7 +3906,7 @@ These are all of the current Info Mode bindings:
 
 (when (> emacs-major-version 21)
   (defcustom Info-saved-nodes ()
-    "List of Info node names you can visit using `\\<info-mode-map>\\[Info-virtual-book]'.
+    "List of Info node names you can visit using `\\<Info-mode-map>\\[Info-virtual-book]'.
 Each node name is a string.  The node name can be absolute, including
 a filename, such as \"(emacs)Basic\", or it can be relative, such as
 \"Basic\".
