@@ -12,6 +12,16 @@ Please see the projects [http://www.emacsmirror.org homepage] for more informati
 
 -- JonasBernoulli
 
+== Packages from the Emacswiki ==
+
+Most of the packages from the EmacsWiki are being mirrored also.  A few have
+have left out for various reasons.  The respective repositories contain the
+full history beginning with the 30th August 2009 though the commit messages
+are just timestamps.
+
+You might also be interested in the [[Git repository]] which mirrors all of
+the EmacsWiki.
+
 == Contributing ==
 
 You can contribute to the mirror by reporting new packages and filling out
@@ -22,8 +32,6 @@ missing information in the below lists.
 Please check that your packages are included in the mirror.  If not add your package to this list (providing the expected information):
 
 ** foo http://path/to/foo.el http://home/page
-
-But do not add packages that you are distributing on the Emacswiki - these will be imported anyway very soon.
 
 Note that the path to the file might actually be the path to an archive. If it is the path to some vcs repository please specify so if this is not clear from the url.
 
@@ -434,16 +442,3 @@ an email.
 ---
 
 Thanks to everyone who provided links so far. I have imported most of these packages now. However those that are hosted on the Emacswiki won't be imported until I import all packages from it. I have removed them above. They were: mysql, notify and unbound. -- JonasBernoulli
-
----
-
-[new:DanielHackney:2010-02-10 03:04 UTC]
-For weblogger and xml-rpc, the web interface for browsing the sources didn't work for me either, but I was able to successfully branch the bzr repo with:
-
-    bzr branch http://bzr.savannah.gnu.org/r/emacsweblogs/
-
-This gave me a working checkout with history, though the files are both in a subdirectory called "lisp", which doesn't seem to jive well with the general guidelines for a project.
-
-[new]
-I contacted the maintainer. -- JonasBernoulli
-

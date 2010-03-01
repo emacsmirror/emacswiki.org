@@ -1,0 +1,27 @@
+== Tumblr-Gist ==
+
+=== What: ===
+
+This is a binding to tie [[Tumblr]] to [http://github.com/defunkt/gist.el gist.el]
+
+Tumblr is problematic as including external scripts to embed widgets is generally disallowed. Moreover, they can mangle the usage of span tags to write your own syntax hilighting. The goal of this extension is to cleanly tie the [http://gist.github.com/ Gist] service to Tumblr in order to avoid these issues.
+
+=== To use: ===
+
+==== Customize Tumblr: ====
+
+Install [[Tumblr]]
+
+M-x customize-group tumblr and change the variables to match your account.
+You may also need to get http-get.el, http-post.el, and http-cookie.el.
+You can get all three here: http://cvs.savannah.gnu.org/viewvc/http-emacs/http-emacs/
+
+==== Customize Gist: ====
+
+Install [http://github.com/defunkt/gist.el gist.el]
+
+(Optional) Configure your local [http://github.com/blog/180-local-github-config Github Config]
+
+=== Procuring ===
+
+Latest revision is maintained on [http://github.com/dleslie/tumblr-gist.el Github].

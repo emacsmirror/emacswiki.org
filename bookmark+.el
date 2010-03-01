@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Feb 24 22:07:46 2010 (-0800)
+;; Last-Updated: Sun Feb 28 16:26:08 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 11318
+;;     Update #: 11521
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -179,6 +179,7 @@
 ;;    `bookmarkp-define-tags-sort-command',
 ;;    `bookmarkp-describe-bookmark',
 ;;    `bookmarkp-describe-bookmark-internals',
+;;    `bookmarkp-desktop-change-dir', `bookmarkp-desktop-delete',
 ;;    `bookmarkp-desktop-jump', `bookmarkp-desktop-read',
 ;;    `bookmarkp-dired-jump', `bookmarkp-dired-jump-current',
 ;;    `bookmarkp-dired-jump-current-other-window',
@@ -203,7 +204,7 @@
 ;;    `bookmarkp-remove-all-tags', `bookmarkp-remove-tags',
 ;;    `bookmarkp-remove-tags-from-all', `bookmarkp-rename-tag',
 ;;    `bookmarkp-reverse-multi-sort-order',
-;;    `bookmarkp-reverse-sort-order',
+;;    `bookmarkp-reverse-sort-order', `bookmarkp-send-bug-report',
 ;;    `bookmarkp-set-desktop-bookmark', `bookmarkp-set-tag-value',
 ;;    `bookmarkp-some-tags-jump',
 ;;    `bookmarkp-some-tags-jump-other-window',
@@ -271,9 +272,9 @@
 ;;    `bookmarkp-bookmark-list-alist-only',
 ;;    `bookmarkp-buffer-last-access-cp', `bookmarkp-cp-not',
 ;;    `bookmarkp-current-sort-order', `bookmarkp-desktop-alist-only',
-;;    `bookmarkp-desktop-bookmark-p', `bookmarkp-dired-alist-only',
-;;    `bookmarkp-dired-bookmark-p', `bookmarkp-dired-subdirs',
-;;    `bookmarkp-edit-bookmark',
+;;    `bookmarkp-desktop-bookmark-p', `bookmarkp-desktop-kill',
+;;    `bookmarkp-dired-alist-only', `bookmarkp-dired-bookmark-p',
+;;    `bookmarkp-dired-subdirs', `bookmarkp-edit-bookmark',
 ;;    `bookmarkp-end-position-post-context',
 ;;    `bookmarkp-end-position-pre-context', `bookmarkp-every',
 ;;    `bookmarkp-face-prop', `bookmarkp-file-alist-only',
@@ -518,8 +519,8 @@
 ;;
 ;;     - You can bookmark buffer `*Bookmark List*' itself.  Jumping to
 ;;       such a bookmark restores the recorded sort order, filter,
-;;       title, and omit list (see (@> "Omitting Bookmarks from
-;;       Display")).
+;;       title, and omit list
+;;       (see (@> "Omitting Bookmarks from Display")).
 ;;
 ;;  * Type-specific jump commands.
 ;;
@@ -611,6 +612,11 @@
 ;;
 ;;       . In the bookmark list, `?' or `C-h m' shows you detailed
 ;;         information about the current state of the bookmark list.
+;;         It also provides buttons that let you access all Bookmark+
+;;         doc and customize all Bookmark+ faces and options.
+;;
+;;         (`C-h m' in the bookmark list does not show you info about
+;;         minor modes.  If you want that, use `M-x describe-mode'.)
 ;;
 ;;  * Synergy with Icicles.
 ;;
@@ -787,10 +793,10 @@
 ;;  display `Hello!' whenever the bookmark with this tag is visited.
 ;;
 ;;  The function that is the value of a "bookmarkp-jump" tag is called
-;;  just after the the standard hook `bookmark-jump-hook' is invoked.
-;;  You can use this tag to invoke functions that are specific to
-;;  individual bookmarks; bookmarks can thus have their own, extra
-;;  jump functions.
+;;  just after the the standard hook `bookmark-after-jump-hook' is
+;;  invoked.  You can use this tag to invoke functions that are
+;;  specific to individual bookmarks; bookmarks can thus have their
+;;  own, extra jump functions.
 ;;
 ;;
 ;;(@* "Function and Sequence Bookmarks")
@@ -1011,7 +1017,7 @@
 ;;  in vanilla `bookmark.el').
 ;;
 ;;  Use `?' or `C-h m' in buffer `*Bookmark List*' for more
-;;  information about the bookmark list, including:
+;;  information about the bookmark list, including the following:
 ;;
 ;;  * The current status of sorting, filtering, and marking.
 ;;
@@ -1255,8 +1261,8 @@
 ;;
 ;;    Similarly, hit `P F' for bookmarks whose file names match a
 ;;    regexp, and `P T' for bookmarks with one or more tags that match
-;;    a regexp.  See (@> Bookmark Tags), above, for information about
-;;    tags.
+;;    a regexp.  See (@> "Bookmark Tags"), above, for information
+;;    about tags.
 ;;
 ;;  * Just as in Dired, use `% m' to mark the bookmarks that match a
 ;;    regexp.  Then use `>' to show only the marked bookmarks.  See
@@ -1349,8 +1355,8 @@
 ;;  `bookmarkp-sort-orders-for-cycling-alist'.
 ;;
 ;;  You can also change directly to one of the main sort orders
-;;  (without cycling) using `s n', `s f n', etc. - use `C-h m' for
-;;  more info.
+;;  (without cycling) using `s n', `s f n', etc. - use `C-h m' or `?'
+;;  for more info.
 ;;
 ;;  You can reverse the current sort direction (ascending/descending)
 ;;  using `s r'.  Also, repeating any of the main sort-order commands
@@ -1480,6 +1486,14 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2010/02/28 dadams
+;;     Added: bookmarkp-send-bug-report.
+;;     bookmarkp-bmenu-mode-status-help: Rewrote to provide only Bookmark+ help.  Added help buttons.
+;;     Fixed Commentary typos.
+;; 2010/02/26 dadams
+;;     Added: bookmarkp-desktop-change-dir, bookmarkp-desktop-kill, bookmarkp-desktop-delete.
+;;     *-jump-desktop: Call *-desktop-change-dir.
+;;     *-read-bookmark-for-type: Added optional arg ACTION.
 ;; 2010/02/24 dadams
 ;;     *-bmenu-list: Handle case null last-bookmark-file (due to old file format).  Thx to Seb Luque.
 ;;     *-make-record-default: protect dired-buffers with boundp.  Thx to Janek Schwarz.
@@ -2279,6 +2293,8 @@
 (defvar desktop-dirname)                ; Defined in `desktop.el'.
 (defvar desktop-file-modtime)           ; Defined in `desktop.el'.
 (defvar desktop-globals-to-save)        ; Defined in `desktop.el'.
+(defvar desktop-save-mode)              ; Defined in `desktop.el'.
+(defvar desktop-save)                   ; Defined in `desktop.el'.
 (defvar dired-buffers)                  ; Defined in `dired.el'.
 (defvar gnus-article-current)           ; Defined in `gnus-sum.el'.
 (defvar Info-current-node)              ; Defined in `info.el'.
@@ -4543,6 +4559,16 @@ ALIST."
     name))
 
 ;;;###autoload
+(defun bookmarkp-send-bug-report ()
+  "Send a bug report about a Bookmark+ problem."
+  (interactive)
+  (browse-url (format (concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
+Bookmark+ bug: \
+&body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
+Be sure to mention the `Update #' from the `bookmark+.el' file header.%%0A%%0AEmacs version: %s")
+                      (emacs-version))))
+
+;;;###autoload
 (defun bookmarkp-toggle-saving-menu-list-state () ; `M-l' in bookmark list
   "Toggle the value of option `bookmarkp-bmenu-state-file'.
 Tip: You can use this before quitting Emacs, to not save the state.
@@ -5964,97 +5990,149 @@ use `\\[bookmarkp-switch-bookmark-file]' (`bookmarkp-switch-bookmark-file')."
 (defun bookmarkp-bmenu-mode-status-help () ; `C-h m' and `?' in bookmark list
   "`describe-mode' + current status of `*Bookmark List*' + face legend."
   (interactive)
-  (bookmarkp-barf-if-not-in-menu-list)
-  (describe-mode)
-  (with-current-buffer "*Help*"
-    (let ((buffer-read-only  nil))
-      (save-excursion
-        (goto-char (point-min))
-        (search-forward "***************************** Bookmark+ " nil t)
-        (forward-line 2)
-        (insert
-         (format "\nCurrent Status of Bookmark List\n-------------------------------\n
-Sorted:\t\t%s\nFiltering:\t%s\nMarked:\t\t%d\nOmitted:\t%d\nBookmark file:\t%s\n\n"
-                 (if (not bookmarkp-sort-comparer)
-                     "no"
-                   (format
-                    "%s%s" (bookmarkp-current-sort-order)
-                    ;; Code essentially the same as found in `bookmarkp-msg-about-sort-order'.
-                    (if (not (and (consp bookmarkp-sort-comparer) ; Ordinary single predicate
-                                  (consp (car bookmarkp-sort-comparer))))
-                        (if bookmarkp-reverse-sort-p "; reversed" "")
-                      (if (not (cadr (car bookmarkp-sort-comparer)))
-                          ;; Single PRED.
-                          (if (or (and bookmarkp-reverse-sort-p (not bookmarkp-reverse-multi-sort-p))
-                                  (and bookmarkp-reverse-multi-sort-p (not bookmarkp-reverse-sort-p)))
-                              "; reversed"
-                            "")
-                        ;; In case we want to distinguish:
-                        ;; (if (and bookmarkp-reverse-sort-p
-                        ;;          (not bookmarkp-reverse-multi-sort-p))
-                        ;;     "; reversed"
-                        ;;   (if (and bookmarkp-reverse-multi-sort-p
-                        ;;            (not bookmarkp-reverse-sort-p))
-                        ;;       "; reversed +"
-                        ;;     ""))
+  (unless (string= (buffer-name) "*Help*") (bookmarkp-barf-if-not-in-menu-list))
+  (with-current-buffer (get-buffer-create "*Help*")
+    (with-output-to-temp-buffer "*Help*"
+      (let ((buffer-read-only  nil)
+            top)
+        (erase-buffer)
+        (save-excursion
+          (let ((standard-output  (current-buffer)))
+            (if (> emacs-major-version 21)
+                (describe-function-1 'bookmark-bmenu-mode)
+              (describe-function-1 'bookmark-bmenu-mode nil t)))
+          (help-setup-xref (list #'bookmarkp-bmenu-mode-status-help) (interactive-p))
+          (goto-char (point-min))
+          ;; This text must be the same as the last line of `bookmark-bmenu-mode' doc string.
+          (search-forward "Each line represents an Emacs bookmark.\n\n\n" nil t)
+          (delete-region (point-min) (point)) ; Get rid of intro from `describe-function'.
+          (insert "*************************** Bookmark List ***************************\n\n")
+          (insert "Major mode for editing a list of bookmarks.\n")
+          (insert "Each line represents an Emacs bookmark.\n\n")
+          (setq top  (point))
+          ;; Add buttons to access help and Customize.
+          ;; Not for Emacs 21.3 - its `help-insert-xref-button' signature is different.
+          (when (and (> emacs-major-version 21) ; In `help-mode.el'.
+                     (require 'help-mode nil t) (fboundp 'help-insert-xref-button))
+            (help-insert-xref-button "[Doc in Commentary]" 'bookmarkp-commentary-button)
+            (insert "           ")
+            (help-insert-xref-button "[Doc on the Web]" 'bookmarkp-help-button)
+            (insert "           ")
+            (help-insert-xref-button "[Customize]" 'bookmarkp-customize-button)
+            (insert "\n\n")
+            (setq top  (point))
+            (goto-char (point-max))
+            (insert "\nSend a Bookmark+ bug report: `\\[icicle-send-bug-report]'.\n\n")
+            (help-insert-xref-button "[Doc in Commentary]" 'bookmarkp-commentary-button)
+            (insert "           ")
+            (help-insert-xref-button "[Doc on the Web]" 'bookmarkp-help-button)
+            (insert "           ")
+            (help-insert-xref-button "[Customize]" 'bookmarkp-customize-button)
+            (insert "\n\n")
+            (goto-char (point-min))
+            (forward-line 2))
+          (goto-char top)
+          (insert
+           (format
+            "\nCurrent Status\n-------------------------------\n
+Sorted:\t\t%s\nFiltering:\t%s\nMarked:\t\t%d\nOmitted:\t%d\nBookmark file:\t%s\n\n\n"
+            (if (not bookmarkp-sort-comparer)
+                "no"
+              (format
+               "%s%s" (bookmarkp-current-sort-order)
+               ;; Code essentially the same as found in `bookmarkp-msg-about-sort-order'.
+               (if (not (and (consp bookmarkp-sort-comparer) ; Ordinary single predicate
+                             (consp (car bookmarkp-sort-comparer))))
+                   (if bookmarkp-reverse-sort-p "; reversed" "")
+                 (if (not (cadr (car bookmarkp-sort-comparer)))
+                     ;; Single PRED.
+                     (if (or (and bookmarkp-reverse-sort-p (not bookmarkp-reverse-multi-sort-p))
+                             (and bookmarkp-reverse-multi-sort-p (not bookmarkp-reverse-sort-p)))
+                         "; reversed"
+                       "")
+                   ;; In case we want to distinguish:
+                   ;; (if (and bookmarkp-reverse-sort-p
+                   ;;          (not bookmarkp-reverse-multi-sort-p))
+                   ;;     "; reversed"
+                   ;;   (if (and bookmarkp-reverse-multi-sort-p
+                   ;;            (not bookmarkp-reverse-sort-p))
+                   ;;       "; reversed +"
+                   ;;     ""))
 
-                        ;; At least two PREDs.
-                        (cond ((and bookmarkp-reverse-sort-p
-                                    (not bookmarkp-reverse-multi-sort-p))
-                               "; reversed")
-                              ((and bookmarkp-reverse-multi-sort-p
-                                    (not bookmarkp-reverse-sort-p))
-                               "; each predicate group reversed")
-                              ((and bookmarkp-reverse-multi-sort-p
-                                    bookmarkp-reverse-sort-p)
-                               "; order of predicate groups reversed")
-                              (t ""))))))
-                 (or (and bookmarkp-bmenu-filter-function (downcase bookmarkp-bmenu-title))
-                     "None")
-                 (length bookmarkp-bmenu-marked-bookmarks)
-                 (length bookmarkp-bmenu-omitted-list)
-                 bookmarkp-current-bookmark-file))
-        (let ((info             "Info node\n")
-              (gnus             "Gnus\n")
-              (w3m              "W3M (URL)\n")
-              (local-no-region  "Local file with no region\n")
-              (local-w-region   "Local file with a region\n")
-              (no-buf           "No current buffer\n")
-              (bad              "Possibly invalid bookmark\n")
-              (remote           "Remote file or directory\n")
-              (sudo             "Remote accessed by `su' or `sudo'\n")
-              (local-dir        "Local directory\n")
-              (bookmark-list    "*Bookmark List*\n")
-              (desktop          "Desktop\n")
-              (function         "Function\n")
-              (man              "Man page\n")
-              (sequence         "Sequence\n")
-              (buffer           "Buffer\n"))
-          (put-text-property 0 (1- (length info))     'face 'bookmarkp-info           info)
-          (put-text-property 0 (1- (length gnus))     'face 'bookmarkp-gnus           gnus)
-          (put-text-property 0 (1- (length w3m))      'face 'bookmarkp-w3m            w3m)
-          (put-text-property 0 (1- (length local-no-region))
-                             'face 'bookmarkp-local-file-without-region               local-no-region)
-          (put-text-property 0 (1- (length local-w-region))
-                             'face 'bookmarkp-local-file-with-region                  local-w-region)
-          (put-text-property 0 (1- (length no-buf))   'face 'bookmarkp-non-file       no-buf)
-          (put-text-property 0 (1- (length bad))      'face 'bookmarkp-bad-bookmark   bad)
-          (put-text-property 0 (1- (length remote))   'face 'bookmarkp-remote-file    remote)
-          (put-text-property 0 (1- (length sudo))     'face 'bookmarkp-su-or-sudo     sudo)
-          (put-text-property 0 (1- (length local-dir))
-                             'face 'bookmarkp-local-directory                         local-dir)
-          (put-text-property 0 (1- (length bookmark-list))
-                             'face 'bookmarkp-bookmark-list                           bookmark-list)
-          (put-text-property 0 (1- (length desktop))  'face 'bookmarkp-desktop        desktop)
-          (put-text-property 0 (1- (length function)) 'face 'bookmarkp-function       function)
-          (put-text-property 0 (1- (length man))      'face 'bookmarkp-man            man)
-          (put-text-property 0 (1- (length sequence)) 'face 'bookmarkp-sequence       sequence)
-          (put-text-property 0 (1- (length buffer))   'face 'bookmarkp-buffer         buffer)
-          (insert "Legend for Bookmark Types\n-------------------------\n\n") (insert info)
-          (insert gnus) (insert w3m) (insert local-no-region) (insert local-w-region) (insert no-buf)
-          (insert bad) (insert remote) (insert sudo) (insert local-dir) (insert bookmark-list)
-          (insert desktop) (insert function) (insert man) (insert sequence) (insert buffer)
-          (insert "\n\n\n"))))))
+                   ;; At least two PREDs.
+                   (cond ((and bookmarkp-reverse-sort-p (not bookmarkp-reverse-multi-sort-p))
+                          "; reversed")
+                         ((and bookmarkp-reverse-multi-sort-p (not bookmarkp-reverse-sort-p))
+                          "; each predicate group reversed")
+                         ((and bookmarkp-reverse-multi-sort-p bookmarkp-reverse-sort-p)
+                          "; order of predicate groups reversed")
+                         (t ""))))))
+            (or (and bookmarkp-bmenu-filter-function (downcase bookmarkp-bmenu-title)) "None")
+            (length bookmarkp-bmenu-marked-bookmarks)
+            (length bookmarkp-bmenu-omitted-list)
+            bookmarkp-current-bookmark-file))
+          ;; Add face legend.
+          (let ((info             "Info node\n")
+                (gnus             "Gnus\n")
+                (w3m              "W3M (URL)\n")
+                (local-no-region  "Local file with no region\n")
+                (local-w-region   "Local file with a region\n")
+                (no-buf           "No current buffer\n")
+                (bad              "Possibly invalid bookmark\n")
+                (remote           "Remote file or directory\n")
+                (sudo             "Remote accessed by `su' or `sudo'\n")
+                (local-dir        "Local directory\n")
+                (bookmark-list    "*Bookmark List*\n")
+                (desktop          "Desktop\n")
+                (function         "Function\n")
+                (man              "Man page\n")
+                (sequence         "Sequence\n")
+                (buffer           "Buffer\n"))
+            (put-text-property 0 (1- (length info))     'face 'bookmarkp-info         info)
+            (put-text-property 0 (1- (length gnus))     'face 'bookmarkp-gnus         gnus)
+            (put-text-property 0 (1- (length w3m))      'face 'bookmarkp-w3m          w3m)
+            (put-text-property 0 (1- (length local-no-region))
+                               'face 'bookmarkp-local-file-without-region             local-no-region)
+            (put-text-property 0 (1- (length local-w-region))
+                               'face 'bookmarkp-local-file-with-region                local-w-region)
+            (put-text-property 0 (1- (length no-buf))   'face 'bookmarkp-non-file     no-buf)
+            (put-text-property 0 (1- (length bad))      'face 'bookmarkp-bad-bookmark bad)
+            (put-text-property 0 (1- (length remote))   'face 'bookmarkp-remote-file  remote)
+            (put-text-property 0 (1- (length sudo))     'face 'bookmarkp-su-or-sudo   sudo)
+            (put-text-property 0 (1- (length local-dir))
+                               'face 'bookmarkp-local-directory                       local-dir)
+            (put-text-property 0 (1- (length bookmark-list))
+                               'face 'bookmarkp-bookmark-list                         bookmark-list)
+            (put-text-property 0 (1- (length desktop))  'face 'bookmarkp-desktop      desktop)
+            (put-text-property 0 (1- (length function)) 'face 'bookmarkp-function     function)
+            (put-text-property 0 (1- (length man))      'face 'bookmarkp-man          man)
+            (put-text-property 0 (1- (length sequence)) 'face 'bookmarkp-sequence     sequence)
+            (put-text-property 0 (1- (length buffer))   'face 'bookmarkp-buffer       buffer)
+            (insert "Face Legend for Bookmark Types\n------------------------------\n\n")
+            (insert info) (insert gnus) (insert w3m) (insert local-no-region) (insert local-w-region)
+            (insert no-buf) (insert bad) (insert remote) (insert sudo) (insert local-dir)
+            (insert bookmark-list) (insert desktop) (insert function) (insert man) (insert sequence)
+            (insert buffer) (insert "\n\n")))))))
+
+(when (and (> emacs-major-version 21)
+           (require 'help-mode nil t) (get 'help-xref 'button-category-symbol)) ; In `button.el'
+  (define-button-type 'bookmarkp-help-button
+      :supertype 'help-xref
+      'help-function #'(lambda () (browse-url "http://www.emacswiki.org/emacs/BookmarkPlus"))
+      'help-echo
+      (purecopy "mouse-2, RET: Bookmark+ documentation on the Emacs Wiki (requires Internet access)"))
+  (define-button-type 'bookmarkp-commentary-button
+      :supertype 'help-xref
+      'help-function #'(lambda ()
+                         (message "Getting Bookmark+ doc from file commentary...")
+                         (finder-commentary "bookmark+")
+                         (when (require 'linkd nil t) (linkd-mode 1))
+                         (when (require 'fit-frame nil t) (fit-frame)))
+      'help-echo (purecopy "mouse-2, RET: Bookmark+ documentation (no Internet needed)"))
+  (define-button-type 'bookmarkp-customize-button
+      :supertype 'help-xref
+      'help-function #'(lambda () (customize-group-other-window 'bookmarkp))
+      'help-echo (purecopy "mouse-2, RET: Customize/Browse Bookmark+ Options & Faces")))
 
 ;;;###autoload
 (defun bookmarkp-bmenu-define-jump-marked-command () ; `M-c' in bookmark list
@@ -7959,7 +8037,52 @@ BOOKMARK is a bookmark name or a bookmark record.
 Handler function for record returned by `bookmarkp-make-desktop-record'."
   (let ((desktop-file  (bookmark-prop-get bookmark 'desktop-file)))
     (unless (require 'desktop nil t) (error "You must have library `desktop.el' to use this command"))
+    ;; (unless desktop-file (error "Not a desktop-bookmark: %S" bookmark)) ; Shouldn't happen.
+    (bookmarkp-desktop-change-dir desktop-file)
     (unless (bookmarkp-desktop-read desktop-file) (error "Could not load desktop file"))))
+
+;; Derived from code in `desktop-change-dir'.
+;;;###autoload
+(defun bookmarkp-desktop-change-dir (desktop-file)
+  "Change to desktop saved in DESKTOP-FILE.
+Kill the desktop as specified by variables `desktop-save-mode' and
+ `desktop-save' (starting with Emacs 22).
+Clear the desktop and load DESKTOP-FILE DIRNAME."
+  (interactive (list (read-file-name "Change to desktop file: ")))
+  (set-text-properties 0 (length desktop-file) nil desktop-file)
+  (unless (file-name-absolute-p desktop-file) (setq desktop-file  (expand-file-name desktop-file)))
+  (unless (require 'desktop nil t) (error "You must have library `desktop.el' to use this command"))
+  (let ((desktop-basefilename     (file-name-nondirectory desktop-file)) ; Emacs < 22
+        (desktop-base-file-name   (file-name-nondirectory desktop-file)) ; Emacs 23+
+        (desktop-dir              (file-name-directory desktop-file))
+        (desktop-restore-eager    t)    ; Don't bother with lazy restore.
+        (desktop-globals-to-save  (bookmarkp-remove-if
+                                   #'(lambda (elt) (memq elt bookmarkp-desktop-no-save-vars))
+                                   desktop-globals-to-save)))
+    (bookmarkp-desktop-kill)
+    (desktop-clear)
+    (desktop-read desktop-dir)))
+    
+;; Derived from code in `desktop-kill'.
+(defun bookmarkp-desktop-kill ()
+  "If `desktop-save-mode' is non-nil, do what `desktop-save' says to do.
+This does nothing in Emacs versions prior to Emacs 22."
+  ;; We assume here: `desktop.el' has been loaded and `desktop-dirname' is defined.
+  (when (and (and (boundp 'desktop-save-mode) desktop-save-mode) ; Not defined in Emacs 20-21.
+             (let ((exists  (file-exists-p (desktop-full-file-name))))
+               (or (eq desktop-save t)
+                   (and exists (memq desktop-save '(ask-if-new if-exists)))
+                   (and (or (memq desktop-save '(ask ask-if-new))
+                            (and exists (eq desktop-save 'ask-if-exists)))
+                        (y-or-n-p "Save current desktop? ")))))
+    (condition-case err
+	(if (< emacs-major-version 22)
+            (desktop-save desktop-dirname) ; Emacs < 22 has no locking.
+          (desktop-save desktop-dirname 'RELEASE))
+      (file-error (unless (yes-or-no-p "Error while saving the desktop.  Ignore? ")
+                    (signal (car err) (cdr err))))))
+  ;; Just release lock, regardless of whether this Emacs process is the owner.
+  (desktop-release-lock))
 
 ;; Derived from code in `desktop-read'.
 ;;;###autoload
@@ -7998,6 +8121,24 @@ Return t if FILE was loaded, nil otherwise."
                      (format ", %d to be restored lazily" (length desktop-buffer-args-list))
                    "")))
       t)))                              ; Return t, meaning successfully loaded.
+
+;;;###autoload
+(defun bookmarkp-desktop-delete (bookmark-name)
+  "Delete desktop bookmark BOOKMARK-NAME, and delete its desktop file.
+Release the lock file in that desktop's directory.
+\(This means that if you currently have locked a different desktop
+in the same directory, then you will need to relock it.)"
+  (interactive (let ((alist  (bookmarkp-desktop-alist-only)))
+                 (list (bookmarkp-read-bookmark-for-type
+                        "desktop " alist nil nil 'bookmarkp-desktop-history "Delete "))))
+  (let ((desktop-file  (bookmark-prop-get bookmark-name 'desktop-file)))
+    (unless desktop-file (error "Not a desktop-bookmark: `%s'" bookmark-name))
+    ;; Release the desktop lock file in the same directory as DESKTOP-FILE.
+    ;; This will NOT be the right thing to do if a desktop file different from DESKTOP-FILE
+    ;; is currently locked in the same directory.
+    (let ((desktop-dir  (file-name-directory desktop-file))) (desktop-release-lock))
+    (when (file-exists-p desktop-file) (delete-file desktop-file)))
+  (bookmark-delete bookmark-name))
 
 ;; W3M support
 (defun bookmarkp-make-w3m-record ()
@@ -8174,16 +8315,18 @@ Handler function for record returned by `bookmarkp-make-dired-record'."
                               hidden-dirs)))
     (goto-char (bookmark-get-position bookmark))))
 
-(defun bookmarkp-read-bookmark-for-type (type alist &optional other-win pred hist)
+(defun bookmarkp-read-bookmark-for-type (type alist &optional other-win pred hist action)
   "Read name of a bookmark of type TYPE.
 ALIST is the alist used for completion - nil means `bookmark-alist'.
-OTHER-WIN means append \" in another window\" to the prompt.
-PRED is a predicate used for completion.
-HIST is a history symbol.  Default is `bookmark-history'."
+Non-nil OTHER-WIN means append \" in another window\" to the prompt.
+Non-nil PRED is a predicate used for completion.
+Non-nil HIST is a history symbol.  Default is `bookmark-history'.
+ACTION is the action to mention in the prompt.  `Jump to ', if nil."
   (unless alist (error "No bookmarks of type %s" type))
-  (bookmark-completing-read (concat "Jump to " type "bookmark" (and other-win " in another window"))
-                            (bookmarkp-default-bookmark-name alist)
-                            alist pred hist))
+  (bookmark-completing-read
+   (concat (or action "Jump to ") type "bookmark" (and other-win " in another window"))
+   (bookmarkp-default-bookmark-name alist)
+   alist pred hist))
 
 ;;;###autoload
 (defun bookmarkp-jump-to-type (bookmark-name &optional use-region-p) ; `C-x j :'

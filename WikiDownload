@@ -8,7 +8,4 @@ Here is how to download the wiki:
 
 * [[Rsync repository]] -- help making decentralized backups of the entire setup. Great for mirrors, forks, and the like.
 
-* [[Git repository]] -- for those of you who prefer using git, here's another way of getting the entire setup.
-
-----
-CategoryEmacsWikiSite
+* [[Git repository]] of the raw EmacsWiki pages.  Also contains branches with only subsets of all pages but still full history.

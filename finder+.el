@@ -7,9 +7,9 @@
 ;; Copyright (C) 2008-2010, Drew Adams, all rights reserved.
 ;; Created: Wed Mar 12 10:00:16 2008 (Pacific Standard Time)
 ;; Version: 21.0
-;; Last-Updated: Fri Jan 15 13:06:44 2010 (-0800)
+;; Last-Updated: Sun Feb 28 12:27:20 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 93
+;;     Update #: 98
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/finder+.el
 ;; Keywords: help
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -28,6 +28,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/02/28 dadams
+;;     finder-commentary: Delete any trailing blank lines.
 ;; 2009/05/02 dadams
 ;;     finder-commentary: Fixed typo: foundp -> fboundp.
 ;; 2009/02/12 dadams
@@ -146,8 +148,7 @@ FILE should be in a form suitable for passing to `locate-library'."
                      (finder-find-library (concat file ".el"))
                      (error "Can't find library %s" file))))))
     (unless str	(error "No Commentary section in `%s'" file))
-    (pop-to-buffer
-     (concat "*Commentary, " (file-name-sans-extension file) "*"))
+    (pop-to-buffer (concat "*Commentary, " (file-name-sans-extension file) "*"))
     (setq buffer-read-only nil)
     (erase-buffer)
     (insert str)
@@ -157,6 +158,10 @@ FILE should be in a form suitable for passing to `locate-library'."
     (delete-blank-lines)
     (goto-char (point-min))
     (while (re-search-forward "^;+ ?" nil t) (replace-match "" nil nil))
+    (goto-char (point-max))             ; Delete any trailing blank lines.
+    (when (re-search-backward "\\S-" nil t)
+      (forward-line 1)
+      (delete-blank-lines))
     (goto-char (point-min))
     (when (and (fboundp 'make-text-button) ; Emacs 23.
                (get 'finder-xref 'button-category-symbol))

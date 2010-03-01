@@ -8,6 +8,7 @@ RecentChangesJunkie.
 * [EmacsWiki:action=rc;all=1;showedit=1;days=1Show all changes for today]
 * [EmacsWiki:action=rc;all=1;showedit=1;days=1;newtop=0 Show all changes for today, most recent last] -- ''Doesn't work''
 * [http://www.emacswiki.org/elisp/changelog.html Show changes to Elisp files and packages]
+* RecentChangesMinusIcicles for strategies to avoid recent changes entries related to [[Icicles]].
 
 Language specific -- languages are identified using an implementation similar to GuessBufferLanguage.
 

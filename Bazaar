@@ -13,24 +13,5 @@ Bazaar is available from http://bazaar-vcs.org.
 
 see EmacsFromBazaar or BzrForEmacsDevs
 
-== Questions ==
-
-[new:XavierMaillard:2009-04-13 07:23 UTC]
-Let say I have a repo "foo".
-
-foo contains my stable developement tree and contains also a directory
-with experimental stuff. I want to get rid of the experimental stuff
-and put it in another branch. How would you do that with [[Bazaar]] ?
-
-In the end, I think I should have this layout:
-
-foo/trunk => main repo
-foo/experimental => a branch containing only experimental stuff
-
-regards
-
--- XavierMaillard
-
-
 ----
 CategoryVersionControl

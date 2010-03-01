@@ -1,3 +1,5 @@
+== Automatically selection of a language ==
+
 The language used on this wiki depends on the language preferences of your browser, and these usually depend on the setup of your operating system.
 
 If you visit http://www.emacswiki.org/ you will see a main page corresponding to your language preferences, if it exists. If it doesn't, you will see the English main page, SiteMap.
@@ -8,13 +10,17 @@ See LanguageIdentification for how the language of a page is identified for lang
 
 Note that all the various languages are in a single wiki. There are not enough non-English pages to warrant a separate wiki.
 
-== How To Change Default Language Persistently ==
+== How to change default language persistently ==
 
 If you follow the _English_ link on the SiteMap, you should end up on the English script.
 
 You can also use the English prefix (eg. English:DrewAdams) to specifically link to a page using the English interface.
 
 If you want readers following a link to the wiki to use a particular interface, use the ISO language code in the URL: http://www.emacswiki.org/cgi-bin/emacs-en will use the English interface.
+
+== How to translate a page ==
+
+See TranslationHelp.
 
 ----
 CategoryEmacsWikiSite

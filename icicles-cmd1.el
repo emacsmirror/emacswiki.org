@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Feb 13 11:59:42 2010 (-0800)
+;; Last-Updated: Sun Feb 28 15:55:16 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 20193
+;;     Update #: 20194
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -20,10 +20,10 @@
 ;;   `apropos', `apropos-fn+var', `avoid', `cl', `color-theme',
 ;;   `cus-edit', `cus-face', `cus-load', `cus-start', `doremi',
 ;;   `easymenu', `el-swank-fuzzy', `ffap', `ffap-', `frame-cmds',
-;;   `frame-fns', `fuzzy-match', `hexrgb', `icicles-fn',
-;;   `icicles-mcmd', `icicles-opt', `icicles-var', `kmacro',
-;;   `levenshtein', `misc-fns', `mwheel', `pp', `pp+', `reporter',
-;;   `ring', `ring+', `sendmail', `strings', `thingatpt',
+;;   `frame-fns', `fuzzy-match', `hexrgb', `icicles-face',
+;;   `icicles-fn', `icicles-mcmd', `icicles-opt', `icicles-var',
+;;   `kmacro', `levenshtein', `misc-fns', `mwheel', `pp', `pp+',
+;;   `reporter', `ring', `ring+', `sendmail', `strings', `thingatpt',
 ;;   `thingatpt+', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1430,7 +1430,7 @@ considered."
   (browse-url (format (concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
 Icicles bug: \
 &body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
-Each Icicles file has a header `Update #' that you can use to identify it.  %s.")
+Each Icicles file has a header `Update #' that you can use to identify it.%%0A%%0AEmacs version: %s.")
                       (emacs-version))))
 
 

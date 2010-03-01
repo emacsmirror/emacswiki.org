@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Feb 17 11:20:30 2010 (-0800)
+;; Last-Updated: Sun Feb 28 15:56:17 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 4816
+;;     Update #: 4817
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2010/02/28 dadams
+;;     icicle-send-bug-report: Formatted body a bit.
 ;; 2010/02/14 dadams
 ;;     Added: icicle-bookmark-bookmark-list-other-window, icicle-bookmark-bookmark-list-narrow.
 ;;     icicle-bookmark(-other-window):

@@ -67,10 +67,8 @@ Use Excite, Google and so translation site.
           (cond
            (last
             text-translator-last-string)
-           (mark-active
-            (buffer-substring-no-properties (region-beginning) (region-end)))
            (t
-            (read-string
+            (text-translator-region-or-read-string
              (format "Enter string translated by %s: " engine)))))
     (text-translator-client
      (text-translator-check-valid-translation-engine
@@ -104,17 +102,22 @@ I choose with the character string that I translated in the last time."
   (interactive)
   (text-translator nil t))
 
-(defun text-translator-all (arg)
+
+(defun text-translator-region-or-read-string (&optional prompt)
+  "If mark is active, return the region, otherwise, read string with PROMPT."
+  (cond
+   (mark-active
+    (buffer-substring-no-properties (region-beginning) (region-end)))
+   (t
+    (read-string (or prompt "Enter string: ")))))
+
+(defun text-translator-all (arg &optional key str)
   "The function to translate in all of translate sites that matches
 the selected type."
   (interactive "P")
   (let ((hash text-translator-sitedata-hash)
-        (str (cond
-              (mark-active
-               (buffer-substring-no-properties (region-beginning) (region-end)))
-              (t
-               (read-string "Enter string: "))))
-        keys key)
+        keys)
+    (setq str (or str (text-translator-region-or-read-string)))
     (when (or (null hash)
               arg)
       (setq text-translator-sitedata-hash
@@ -123,7 +126,7 @@ the selected type."
     (maphash '(lambda (x y)
                 (setq keys (cons x keys)))
              hash)
-    (setq key (completing-read "Select type: " keys nil t))
+    (setq key (or key (completing-read "Select type: " keys nil t)))
     (when key
       (save-selected-window
         (pop-to-buffer text-translator-buffer)
@@ -136,6 +139,16 @@ the selected type."
               (concat "_" key))
         (dolist  (i sites)
           (text-translator-client i str t))))))
+
+(defun text-translator-all-by-auto-selection (arg)
+  "The function to translate in all of translate sites, whose translation engine is selected automatically.
+The selection function is the value of `text-translator-auto-selection-func'."
+  (interactive "P")
+  (let ((str (text-translator-region-or-read-string)))
+    (text-translator-all
+     arg
+     (substring (funcall text-translator-auto-selection-func "" str) 1)
+     str)))
 
 (defun text-translator-client (engine str &optional all)
   "Function that throws out words and phrases that want to translate into

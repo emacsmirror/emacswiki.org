@@ -42,7 +42,7 @@ objects as their values.
 
 * You can bookmark a ''[[region]]'' of text, not just a position.  When
      you jump to a bookmark that records a region, the region is
-     activated (see option '''`bookmarkp-use-region-flag'''').  (Region
+     activated (see [[option]] '''`bookmarkp-use-region-flag'''').  (Region
      activation is not supported for Gnus bookmarks.)
 
 * Bookmarks are relocated better than for vanilla Emacs when the contextual text changes.  By default, when you visit a bookmark that requires relocation, the bookmark is then saved with the new, relocated position information. If you want to turn off this automatic saving, then customize user option '''`bookmark-save-new-location-flag'''' to `nil'.
@@ -227,7 +227,7 @@ the bookmark under the [[cursor]].  Again, a prefix arg means
 show the full (internal) information.
 
 * In the bookmark list, '''`##?##'''' or '''`C-h m'''' shows you detailed
-information about the current state of the bookmark list.
+information about the current state of the bookmark list.  It also provides buttons that let you access all '''Bookmark+''' doc and customize all '''Bookmark+''' [[face]]s and [[option]]s. (`C-h m' in the bookmark list does not show you info about minor modes.  If you want that, use `M-x describe-mode'.)
 
 
 
@@ -421,7 +421,7 @@ For example, you can use `##T v (lambda () (message "Hello!"))##' to
 display ##Hello!## whenever the bookmark with this tag is visited.
 
 The function that is the value of a ##"bookmarkp-jump"## tag is called
-just after the the standard hook `bookmark-jump-hook' is invoked.
+just after the the standard hook `bookmark-after-jump-hook' is invoked.
 You can use this tag to invoke functions that are specific to
 individual bookmarks; bookmarks can thus have their own, extra
 jump functions.
@@ -663,7 +663,7 @@ indicate their type. You can mark and unmark bookmarks, show or
 hide bookmarks of particular types, and more.  Bookmarks that have tags are marked with a '''`t''''.  Bookmarks that have an annotation are marked with an '''`a'''' (not with a `##*##' as in vanilla ##bookmark.el##).
 
 Use `##?##' or `##C-h m##' in buffer `##*Bookmark List*##' for more
-information about the bookmark list, including:
+information about the bookmark list, including the following:
 
 * The current status of sorting, filtering, and marking.
 * A legend for the faces used for different bookmark types.

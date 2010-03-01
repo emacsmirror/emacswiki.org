@@ -10,9 +10,9 @@
 ;; Copyright (C) 2009, Shaun Johnson.
 ;; Created: Fri Mar 14 07:56:32 2008 (Pacific Daylight Time)
 ;; Version: $Id: linkd.el,v 1.64 2008/03/14 $
-;; Last-Updated: Thu Mar 12 19:33 2009
-;;           By: sjohnson
-;;     Update #: 618
+;; Last-Updated: Sun Feb 28 12:42:32 2010 (-0800)
+;;           By: dradams
+;;     Update #: 623
 ;; Package-Version: 0.9
 ;; Website, original version: http://dto.github.com/notebook/linkd.html
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/linkd.el
@@ -73,6 +73,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/02/28 dadams
+;;     linkd-match: Incorporated bug fix from Emacs Wiki by eeeickythump: Ensure sexp is symbol.
+;;     Incorporated addition of autoloads by Daniel Hackney (from Emacs Wiki 2010-02-06).
 ;; 2009/03/12 sjohnson
 ;;     Updated embedded URLs.
 ;; 2009/02/17 sjohnson
@@ -411,7 +414,8 @@ Return non-nil if a link is found.  Set match-data appropriately."
     (when (search-forward (concat "(" "@") limit t) (backward-char 2))
     (let ((begin-point (point)))
       (condition-case nil (setq sexp (read (current-buffer))) ((error nil)))
-      (when (string-match "@.*" (symbol-name (car-safe sexp)))
+      (when (and (symbolp (car-safe sexp))
+                 (string-match "@.*" (symbol-name (car-safe sexp))))
         (let ((begin-marker (make-marker))
               (end-marker (make-marker)))
           (set-marker begin-marker begin-point)
