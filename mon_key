@@ -81,7 +81,7 @@ The package mon-utils is the entry point which loads the rest of the system and 
 * Lisp:naf-mode-replacements.el -- 
 * Lisp:naf-mode-classes.el -- 
 * Lisp:naf-mode-db-fields.el -- 
-* Lisp:naf-mode-db-flags.el -- 
+* Lisp:naf-mode-db-flags.el -- keyword lists and regexps for font-locking in `naf-mode'
 * Lisp:naf-mode-dates.el -- 
 * Lisp:naf-mode-french-months.el -- 
 * Lisp:naf-mode-nation-english.el -- 
@@ -342,8 +342,8 @@ development. Indeed when ESR was most active as an Emacs hack the GNU/Linux
 ``OS'' was still very much in it's infancy.
 
 None the less, Emacs' roots are firmly tied to MacLisp, Lisp Machines and PDP-10.
-This is not a lineage in line with ESR's bazaar of Unix/C development as ESR
-himself makes explicit:
+This is not a lineage in line with Raymond's ``bazaar'' of Unix/C development which
+he makes explicit in the following:
 
  ,----
  | When DEC canceled development on the PDP-10's successor machine (Jupiter) in

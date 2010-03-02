@@ -148,3 +148,28 @@ project is more appropriate.
 == Questions and Feedback ==
 
 /Paste questions and feedback here./
+
+== Contributed Code ==
+
+=== Send Chat Messages (obby Protocol only) ===
+
+Since this was requested once but is not suitable for Rudel itself, it's probably the best solution  to share it here:
+{{{
+(defun rudel-chat-send-message (text)
+  (interactive
+   (list (read-string "Text: ")))
+  (let ((connection (oref rudel-current-session :connection)))
+    (rudel-send connection "obby_message" text)))
+
+(defun rudel-chat-send-current-line ()
+  (interactive)
+  (let ((end   (point))
+	(start (save-excursion
+		 (beginning-of-line)
+		 (point))))
+    (rudel-chat-send-message (buffer-substring start end))
+    (delete-region start end)))
+
+;; eval in *rudel-chat-log-buffer*:
+(local-set-key (kbd "RET") #'rudel-chat-send-current-line)
+}}}

@@ -1034,7 +1034,7 @@ or sorted in different ways, for easy recognition, comparison, and
 access.
 
 Bookmarks shown in the bookmark list are sorted using the current
-value of option '''`bookmark-sort-function''''.  (If that is `nil', they are
+value of option '''`bookmarkp-sort-comparer''''.  (If that is `nil', they are
 unsorted, which means they appear in reverse chronological
 order of their creation.)
 

@@ -155,6 +155,8 @@ To set the default font for all buffers, use emacs face customization menu: ##M-
 
 == A nice mono-spaced (non-proportional) font for Aquamacs ==
 
+Snow Leopard users, try Menlo, Apple's new new standard fixed-width font.  Others, read on...
+
 Try "Monaco" or [http://www.bitstream.com/font_rendering/products/dev_fonts/vera.html "Vera Sans Mono"].
 Both appear in the font appear - the latter one may need to be installed first. 
 Non-english users can also try [http://dejavu.sourceforge.net/wiki/index.php/Main_Page "DejaVu Sans Mono"] that support wider range of characters  (it has cyrillic, at least).

@@ -2,13 +2,15 @@
 
 ;; Copyright (C) 2008, 2009, 2010 Mark A. Hershberger
 
-;; Original Authors: Jerry <unidevel@yahoo.com.cn>, Chong Yidong <cyd at stupidchicken com> for wikipedia.el
+;; Original Authors: Jerry <unidevel@yahoo.com.cn>,
+;;      Chong Yidong <cyd at stupidchicken com> for wikipedia.el,
+;;      Uwe Brauer <oub at mat.ucm.es> for wikimedia.el
 ;; Author: Mark A. Hershberger <mah@everybody.org>
 ;; Version: 2.0
 ;; Created: Sep 17 2004
 ;; Keywords: mediawiki wikipedia network wiki
 ;; URL: http://launchpad.net/mediawiki-el
-;; Last Modified: <2010-02-27 16:20:41 mah>
+;; Last Modified: <2010-02-28 20:31:45 mah>
 
 (defconst mediawiki-version "2.0"
   "Current version of mediawiki.el")
@@ -127,6 +129,7 @@
 (require 'url-http)
 (require 'mml)
 (require 'mm-url)
+(require 'ring)
 
 (when (not (fboundp 'url-user-for-url))
   (require 'url-parse)
@@ -235,12 +238,14 @@ string: \"%\" followed by two lowercase hex digits."
 (defun url-http-response-post-process (status &optional bufname
                                               callback cbargs)
   "Post process on HTTP response."
+  (declare (special url-http-end-of-headers))
   (let ((kill-this-buffer (current-buffer)))
     (when (and (integerp status) (not (< status 300)))
       (kill-buffer kill-this-buffer)
       (error "Oops! Invalid status: %d" status))
 
-    (when (not url-http-end-of-headers)
+    (when (or (not (boundp 'url-http-end-of-headers))
+              (not url-http-end-of-headers))
       (kill-buffer kill-this-buffer)
       (error "Oops! Don't see end of headers!"))
 
@@ -856,9 +861,7 @@ get a cookie."
                                         ; logged in
 
   ;; Possibly save info once we have it, eh?
-  (let ((url (or (mediawiki-site-url sitename)
-                 (read-string "URL: ")))
-        (user (or (mediawiki-site-username sitename)
+  (let ((user (or (mediawiki-site-username sitename)
                   username
                   (read-string "Username: ")))
         (pass (or (mediawiki-site-password sitename)
@@ -889,8 +892,6 @@ get a cookie."
   "Save the current page to a MediaWiki wiki."
   (let ((page-uri (mediawiki-make-url title "submit&externaledit=true"
                                       mediawiki-site))
-        (document (if content content
-                      (buffer-string)))
         (args mediawiki-edit-form-vars))
 
     (mapc
@@ -953,8 +954,7 @@ the current buffer is used."
 anything enclosed in [[PAGE]]."
   (let ((pos (point))
         (eol (point-at-eol))
-        (bol (point-at-bol))
-        page)
+        (bol (point-at-bol)))
     (save-excursion
       (let* ((start  (when (search-backward "[[" bol t)
                        (+ (point) 2)))
@@ -1171,77 +1171,48 @@ not work very well will longlines-mode."
     (newline nil)
     (insert ":*")))
 
+(defun mediawiki-insert (pre post)
+  (if (or (and (boundp 'zmacs-region-active-p) zmacs-region-active-p)
+          (and (boundp 'transient-mark-mode) transient-mark-mode mark-active))
+      (save-excursion
+       (goto-char (region-beginning))
+       (insert pre)
+       (goto-char (region-end))
+       (insert post))
+    (insert (concat pre " " post))
+    (backward-char (+ 1 (string-width post)))))
+
 (defun mediawiki-insert-strong-emphasis ()
   "Insert strong emphasis italics via four
 apostrophes (e.g. ''''FOO''''.) When mark is active, surrounds
 region."
   (interactive)
-  (if (or (and (boundp 'zmacs-region-active-p) zmacs-region-active-p)
-          (and (boundp 'transient-mark-mode) transient-mark-mode mark-active))
-      (save-excursion
-        (goto-char (point))
-        (insert "''''")
-        (goto-char (mark))
-        (insert "''''"))
-    (insert "'''' ''''")
-    (backward-char 5)))
+  (mediawiki-insert "''''" "''''"))
 
 (defun mediawiki-insert-bold ()
   "Insert bold via three apostrophes (e.g. '''FOO'''.)
 When mark is active, surrounds region."
   (interactive)
-  (if (or (and (boundp 'zmacs-region-active-p) zmacs-region-active-p)
-          (and (boundp 'transient-mark-mode) transient-mark-mode mark-active))
-      (save-excursion
-        (goto-char (point))
-        (insert "'''")
-        (goto-char (mark))
-        (insert "'''"))
-    (insert "''' '''")
-    (backward-char 4)))
+  (mediawiki-insert "'''" "'''"))
+
 
 (defun mediawiki-insert-italics ()
   "Insert bold via TWO apostrophes (e.g. ''FOO''.) When mark is active,
 surrounds region."
   (interactive)
-  (if (or (and (boundp 'zmacs-region-active-p) zmacs-region-active-p)
-          (and (boundp 'transient-mark-mode) transient-mark-mode mark-active))
-      (save-excursion
-        (goto-char (point))
-        (insert "''")
-        (goto-char (mark))
-        (insert "''"))
-    (insert "'' ''")
-    (backward-char 3)))
+  (mediawiki-insert "''" "''"))
 
 (defun mediawiki-insert-quotation-with-signature ()
   "Insert bold via TWO apostrophes (e.g. ''FOO''.) When mark is active,
 surrounds region."
   (interactive)
-  (if (or (and (boundp 'zmacs-region-active-p) zmacs-region-active-p)
-          (and (boundp 'transient-mark-mode) transient-mark-mode mark-active))
-      (save-excursion
-        (goto-char (point))
-        (insert "{{Quotation|}}")
-        (goto-char (mark))
-        (insert "{{~~~~}}"))
-    (insert "{{Quotation| }}{{~~~~}}")
-    (backward-sexp 1)
-    (backward-char 3)))
+  (mediawiki-insert "{{Quotation|}}" "{{~~~~}}"))
 
 (defun mediawiki-insert-quotation ()
   "Quotation box of the form {{Quotation}}{{}}. When mark is active,
 surrounds region."
   (interactive)
-  (if (or (and (boundp 'zmacs-region-active-p) zmacs-region-active-p)
-          (and (boundp 'transient-mark-mode) transient-mark-mode mark-active))
-      (save-excursion
-        (goto-char (point))
-        (insert "{{Quotation|}}")
-        (goto-char (mark))
-        (insert "{{}}"))
-    (insert "{{Quotation|}}{{ }}")
-    (backward-char 3)))
+  (mediawiki-insert "{{Quotation|}}{{" "}}"))
 
 (defun mediawiki-insert-bible-verse-template ()
   "Insert a template for the quotation of bible verses."
@@ -1285,70 +1256,33 @@ surrounds region."
 (defun mediawiki-insert-header ()
   "Insert subheader  via  == (e.g. == FOO ==.)"
   (interactive)
-  (insert "==   ==")
-  (backward-char 4))
+  (mediawiki-insert "==" "=="))
 
 (defun mediawiki-insert-link ()
   "Insert link via [[ (e.g. [[FOO]].) When mark is active, surround region."
   (interactive)
-  (if (or (and (boundp 'zmacs-region-active-p) zmacs-region-active-p)
-          (and (boundp 'transient-mark-mode) transient-mark-mode mark-active))
-      (save-excursion
-        (goto-char (point))
-        (insert "]]")
-        (goto-char (mark))
-        (insert "[["))
-    (insert "[[ ]]")
-    (backward-char 3)))
+  (mediawiki-insert "[[" "]]"))
 
 (defun mediawiki-insert-link-www ()
   "Insert link via [[ (e.g. [http://FOO].) When mark is active, surround region."
   (interactive)
-  (if (or (and (boundp 'zmacs-region-active-p) zmacs-region-active-p)
-          (and (boundp 'transient-mark-mode) transient-mark-mode mark-active))
-      (save-excursion
-        (goto-char (point))
-        (insert "]")
-        (goto-char (mark))
-        (insert "[http://"))
-    (insert "[http:// ]")
-    (backward-char 2)))
+  (mediawiki-insert "[http://" "]"))
 
 (defun mediawiki-insert-image ()
   "Insert link image  [[ (e.g. [[Image:FOO]].) Check the variable
 mediawiki-english-or-german. When mark is active, surround region."
   (interactive)
-  (if (or (and (boundp 'zmacs-region-active-p) zmacs-region-active-p)
-          (and (boundp 'transient-mark-mode) transient-mark-mode mark-active))
-      (save-excursion
-        (goto-char (point))
-        (insert "]]")
-        (goto-char (mark))
-        (if mediawiki-english-or-german
-            (insert "[[Image:")
-          (insert "[[Bild:")))
-    (if mediawiki-english-or-german
-        (insert "[[Image: ]]")
-      (insert "[[Bild: ]]"))
-    (backward-char 3)))
+  (mediawiki-insert (if mediawiki-english-or-german
+                        "[[Image:"
+                      "[[Bild:") "]]"))
 
 (defun mediawiki-insert-audio ()
   "Insert link image  [[ (e.g. [[Image:FOO]].) Check the variable
 mediawiki-english-or-german. When mark is active, surround region."
   (interactive)
-  (if (or (and (boundp 'zmacs-region-active-p) zmacs-region-active-p)
-          (and (boundp 'transient-mark-mode) transient-mark-mode mark-active))
-      (save-excursion
-        (goto-char (point))
-        (insert "]]")
-        (goto-char (mark))
-        (if mediawiki-english-or-german
-            (insert "[[Media:")
-          (insert "[[Bild:"))
-    (if mediawiki-english-or-german
-        (insert "[[Media: ]]")
-      (insert "[[Bild: ]]"))
-    (backward-char 3)))
+  (mediawiki-insert (if mediawiki-english-or-german
+                        "[[Media:"
+                      "[[Bild:") "]]"))
 
 (defun mediawiki-insert-signature ()
   "Insert \"~~~~:\"  "
@@ -1413,12 +1347,8 @@ starting point. Generalise to make `previous-long-line'."
 (defun mediawiki-unfill-paragraph-simple ()
   "A very simple function for unfilling a paragraph."
   (interactive)
-  (if (functionp 'filladapt-mode)
-      (filladapt-mode nil))
   (let ((fill-column (point-max)))
-    (fill-paragraph nil)
-    (if (functionp 'filladapt-mode)
-        (filladapt-mode nil))))
+    (fill-paragraph nil)))
 
 ;; See http://staff.science.uva.nl/~dominik/Tools/outline-magic.el
 (defun mediawiki-outline-magic-keys ()
@@ -1449,26 +1379,24 @@ starting point. Generalise to make `previous-long-line'."
 does not promote the whole tree!"
   (interactive)
   (save-excursion
-    (progn
-      (beginning-of-line 1)
-      (search-forward "=")
-      (delete-char 1 nil)
-      (end-of-line 1)
-      (search-backward "=")
-      (delete-char 1 nil))))
+    (beginning-of-line 1)
+    (search-forward "=")
+    (delete-char 1 nil)
+    (end-of-line 1)
+    (search-backward "=")
+    (delete-char 1 nil)))
 
 (defun mediawiki-simple-outline-demote ()
   "Function simple adds \"=\" and the end and the beginning of line,
 does not promote the whole tree!"
   (interactive)
   (save-excursion
-    (progn
-      (beginning-of-line 1)
-      (search-forward "=")
-      (insert "=")
-      (end-of-line 1)
-      (search-backward "=")
-      (insert "="))))
+    (beginning-of-line 1)
+    (search-forward "=")
+    (insert "=")
+    (end-of-line 1)
+    (search-backward "=")
+    (insert "=")))
 
 (defun mediawiki-rename-buffer ()
   "Make sure that the option UNIQUE is used."
@@ -1500,8 +1428,7 @@ does not promote the whole tree!"
 (defun mediawiki-draft-append-to-file ()
   "Add a header together with a subject to the text and add it to the
 draft file. It might be better if longlines-mode is off."
-  (let ((text (buffer-string))
-        (desc (mediawiki-draft-buffer-desc)))
+  (let ((text (buffer-string)))
     (with-temp-buffer
       (insert (concat "\n\n"  mediawiki-draft-leader-text "Draft: "
                       (read-string "Enter Subject: ") " "
@@ -1517,7 +1444,7 @@ draft file. It might be better if longlines-mode is off."
               (goto-char (point-max))
               (insert (concat "\n" mediawiki-draft-text "\n"))
               (save-buffer)))
-        (append-to-file (point-min) (point-max) mediawiki-draft-data-file))))))
+        (append-to-file (point-min) (point-max) mediawiki-draft-data-file)))))
 
 ;;;###autoload
 (defun mediawiki-draft ()
@@ -1586,8 +1513,8 @@ application."
   (re-search-backward "^")
   (set-mark (point))
   (re-search-backward (concat "== "  "[a-z,A-z \t]*" " "))
-  (if (featurep 'xemacs)
-      (zmacs-activate-region)))
+  (when (fboundp 'zmacs-activate-region)
+    (zmacs-activate-region)))
 
 (defun mediawiki-mark-signature ()
   "Set mark at end of current logical section, and point at top."
@@ -1596,7 +1523,7 @@ application."
   (re-search-backward "^")
   (set-mark (point))
   (re-search-backward "[[")
-  (when (featurep 'xemacs)
+  (when (fboundp 'zmacs-activate-region)
     (zmacs-activate-region)))
 
 (defun mediawiki-draft-copy-page-to-register ()
@@ -1620,35 +1547,35 @@ If it is t, then additionally the text will be archived in the
 draft.wiki file. Check longlines-mode, it might be better if it
 is set off."
   (interactive "bTarget buffer: ")
-  (let ((src-buf (current-buffer)))
-	(mediawiki-draft-copy-page-to-register)
-	(switch-to-buffer target-buffer)
-	(end-of-line 1)
-	(newline 1)
-    (mediawiki-draft-yank-page-to-register)
-	(message "The page has been sent (copied) to the mozex file!")
-	(switch-to-buffer "*MW-Draft*")
-    (when mediawiki-draft-send-archive
-	  (let ((text (buffer-string))
-			(desc (mediawiki-draft-buffer-desc)))
-		(with-temp-buffer
-		  (insert (concat "\n\n" mediawiki-draft-leader-text)
-		  (insert-register mediawiki-draft-reply-register 1)
-		  (insert (concat " " (current-time-string) " " mediawiki-draft-leader-text  "\n\n\f\n\n"
-                                  text "\n\f\n"))
-		  (if (not (bolp))
-			  (insert "\n\n"))
-		  (if (find-buffer-visiting mediawiki-draft-data-file)
-			  (let ((mediawiki-draft-text (buffer-string)))
-				(set-buffer (get-file-buffer mediawiki-draft-data-file))
-				(save-excursion
-				  (goto-char (point-max))
-				  (insert (concat "\n" mediawiki-draft-text "\n"))
-				  (save-buffer)))
-			(append-to-file (point-min) (point-max) mediawiki-draft-data-file)))))
+  (mediawiki-draft-copy-page-to-register)
+  (switch-to-buffer target-buffer)
+  (end-of-line 1)
+  (newline 1)
+  (mediawiki-draft-yank-page-to-register)
+  (message "The page has been sent (copied) to the mozex file!")
+  (switch-to-buffer "*MW-Draft*")
+  (when mediawiki-draft-send-archive
+    (let ((text (buffer-string)))
+      (with-temp-buffer
+	(insert (concat "\n\n" mediawiki-draft-leader-text)
+		(insert-register mediawiki-draft-reply-register 1)
+		(insert (concat " " (current-time-string) " " 
+				mediawiki-draft-leader-text  "\n\n\f\n\n"
+				text "\n\f\n"))
+		(if (not (bolp))
+		    (insert "\n\n"))
+		(if (find-buffer-visiting mediawiki-draft-data-file)
+		    (let ((mediawiki-draft-text (buffer-string)))
+		      (set-buffer (get-file-buffer mediawiki-draft-data-file))
+		      (save-excursion
+			(goto-char (point-max))
+			(insert (concat "\n" mediawiki-draft-text "\n"))
+			(save-buffer)))
+		  (append-to-file (point-min) (point-max)
+				  mediawiki-draft-data-file)))))
     (when (equal mediawiki-draft-buffer (buffer-name))
-	  (kill-buffer (current-buffer)))
-	(switch-to-buffer target-buffer))))
+      (kill-buffer (current-buffer)))
+    (switch-to-buffer target-buffer)))
 
 (define-derived-mode mediawiki-draft-mode text-mode "MW-Draft"
   "Major mode for output from \\[mediawiki-draft].
@@ -1739,7 +1666,8 @@ Some simple editing commands.
   ;; Support for outline-minor-mode. No key conflicts, so we'll use
   ;; the normal outline-mode prefix.
   (set (make-local-variable 'outline-regexp) "==+")
-  (set (make-local-variable 'outline-minor-mode-prefix) "\C-c\C-o")
+  (when (boundp 'outline-minor-mode-prefix)
+    (set (make-local-variable 'outline-minor-mode-prefix) "\C-c\C-o"))
 ; (set (make-local-variable 'outline-regexp) "=+")
 ; (set (make-local-variable 'outline-regexp) ":")
 

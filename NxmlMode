@@ -233,6 +233,26 @@ I'd like to be able to see the current XML path in the modeline in addition to o
 [new]
 I have included nxml-where.el in NxhtmlMode. Please grab it there.
 
+[new]
+Here is a simple function to show the current path in the echo area:
+
+    (defun nxml-where ()
+      "Display the hierarchy of XML elements the point is on as a path."
+      (interactive)
+      (let ((path nil))
+        (save-excursion
+          (save-restriction
+            (widen)
+            (while (condition-case nil
+                       (progn
+                         (nxml-backward-up-element) ; always returns nil
+                         t)       
+                     (error nil))
+              (setq path (cons (xmltok-start-tag-local-name) path)))
+            (message "/%s" (mapconcat 'identity path "/"))))))
+
+Barely tested, improvements welcome. -- EmilioLopes
+
 == False-positive validation errors ==
 
 Labels and inputs in forms are incorrectly flagged as invalid.  In this valid sample document, the label and input will be considered errors:

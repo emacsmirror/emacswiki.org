@@ -104,13 +104,13 @@ Here are some other places to download and distribute elisp code:
 
 == Tips ==
 
-Additional tips can be found on ElispAreaDiscussion
+Additional tips can be found on ElispAreaDiscussions
 
 === Version keyword ===
 
 If you put a percent sign (%), then "Id:" (the colon is necessary), then another %, in a page of elisp code, it will end up being expanded into a revision number and look like this:
 
-%Id: 255%
+%Id: 256%
 
 So you can have lisp files on the wiki be version-numbered automatically instead of manually.
 

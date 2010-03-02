@@ -35,7 +35,7 @@
 ;;; `bug-cln-gilt-group', `mon-cln-csv-fields', `mon-cln-xml<-parsed',
 ;;; `mon-cln-tgm-xml-LF', `mon-is-naf-mode-and-llm-p', `mon-is-naf-mode-p'
 ;;; `mon-replace-string-pairs-region-no-insert', `mon-cln-xml<-parsed-strip-nil'
-;;; `mon-cln-up-colon', `mon-regexp-map-match'
+;;; `mon-cln-up-colon', `mon-regexp-map-match', `mon-regexp-map-match-in-region'
 ;;; FUNCTIONS:◄◄◄
 ;;; 
 ;;; MACROS:
@@ -61,6 +61,7 @@
 ;;;
 ;;; ALIASED/ADVISED/SUBST'd:
 ;;; `naf-delete-back-up-list' -> `mon-delete-back-up-list'
+;;; `mon-map-regexp-matches'  -> `mon-regexp-map-match'
 ;;;
 ;;; REQUIRES:
 ;;; Regexps for functions defined here are set with defvar forms in the file:
@@ -76,7 +77,7 @@
 ;;; `*regexp-defranc-places*', `*regexp-defranc-benezit*', `*regexp-common-abbrevs*', 
 ;;; `regexp-MM2month-whitespace-aware'
 ;;;
-;;; 'cl used by `iso-latin-1-replacements', `deftransmogrify', etc. 
+;;; `mon-regexp-map-match-in-region' <- boxquote.el
 ;;;
 ;;; TODO:
 ;;; Instances of longlines-mode checks, e.g.:
@@ -196,7 +197,7 @@ to test for active naf-mode before evaluating body.\n
 ;;; immediately drop into to llm.
 ;;; :CREATED <Timestamp: #{2009-09-08T13:18:17-04:00Z}#{09372} - by MON KEY>
 (defvar *naf-mode-buffer-local-llm* nil
-  "Test if `longlines-mode' is active in buffer.
+  "Test if `longlines-mode' is active in buffer.\n
 Automatically becomes buffer-local whenever `naf-mode' initiated in buffer.\n
 :SEE-ALSO `mon-is-naf-mode-p' `mon-is-naf-mode-and-llm-p'.\n
 :USED-IN `naf-mode'.\n►►►")
@@ -254,7 +255,7 @@ Automatically becomes buffer-local whenever `naf-mode' initiated in buffer.\n
 ;;
 ;;; :COURTESY Pascal J. Bourguignon :HIS pjb-strings.el :WAS `string-remove-accents'
 (defun mon-cln-iso-latin-1 (string)
-  "Replace in string all accented characters with an unaccented version.
+  "Replace in string all accented characters with an unaccented version.\n
 This is done only for ISO-5581-1 characters. Return the modified string.\n
 :SEE-ALSO `*iso-latin-1-approximation*', `mon-make-iso-latin-1-approximation',
 `mon-trans-cp1252-to-latin1'.\n►►►"
@@ -285,8 +286,7 @@ This is done only for ISO-5581-1 characters. Return the modified string.\n
 ;;; :SEE (URL `http://www.informatimago.com/develop/emacs/index.html')
 (defun mon-transmogrify (table language string)
   "Lookup in TABLE the STRING, return the translated version for LANGUAGE.\n
-:EXAMPLE
-\(defvar *transmog-ex* nil \"Localization data for this module.\"\)
+:EXAMPLE\n\n\(defvar *transmog-ex* nil \"Localization data for this module.\"\)\n
 \(mapcar \(lambda \(slt\) \(deftransmogrify *transmog-ex* \(nth 0 slt\) \(nth 1 slt\) \(nth 2 slt\)\)\)
 	'\(\(\"Phone:\" :en :idem\)
 	  \(\"Phone:\" :fr \"Téléphone :\"\)
@@ -299,29 +299,22 @@ This is done only for ISO-5581-1 characters. Return the modified string.\n
 	  \(\"Billing address:\" :es \"Dirección de factura :\"\)
 	  \(\"Dirección de factura :\" :es :idem\)
 	  \(\"Dirección de factura :\" :fr \"Adresse de facturation :\"\)
-	  \(\"Dirección de factura :\" :en \"Billing address:\"\)\)\)
-\(mon-transmogrify *transmog-ex* :fr  \"Billing address:\"\)
-=>\"Adresse de facturation :\"
-\(mon-transmogrify *transmog-ex* :es  \"Billing address:\"\)
-=>\"Dirección de factura :\"
-\(mon-transmogrify *transmog-ex* :en  \"Dirección de factura :\"\)
-\"Billing address:\"
-\(mon-transmogrify *transmog-ex*  :es  \"Phone:\" \)
-=>\"Teléfono :\"
-\(mon-transmogrify *transmog-ex*  :fr  \"Phone:\" \)
-=>\"Téléphone :\"
-\(mon-transmogrify *transmog-ex*  :en \"Téléphone :\"\)
-=>\"Phone:\"
+	  \(\"Dirección de factura :\" :en \"Billing address:\"\)\)\)\n
+\(mon-transmogrify *transmog-ex* :fr  \"Billing address:\"\)\n ;=>\"Adresse de facturation :\"
+\(mon-transmogrify *transmog-ex* :es  \"Billing address:\"\)\n ;=>\"Dirección de factura :\"
+\(mon-transmogrify *transmog-ex* :en  \"Dirección de factura :\"\)\n ;=>\"Billing address:\"
+\(mon-transmogrify *transmog-ex*  :es  \"Phone:\" \)\n ;=>\"Teléfono :\"
+\(mon-transmogrify *transmog-ex*  :fr  \"Phone:\" \)\n ;=>\"Téléphone :\"
+\(mon-transmogrify *transmog-ex*  :en \"Téléphone :\"\)\n ;=>\"Phone:\"
 Pascal Bourguignon's functions have extensive examples:
 :SEE `invoice-strings' in :HIS
 :FILE ../site-lisp/pjb/emacs-files/pjb-invoices.el.restore\n
 :SEE-ALSO `deftransmogrify'.\n►►►"
   (let ((sym (intern-soft string table)))
-    (if sym 
-        (let ((result (get sym language))) 
-          (if result 
-              result
-              (mon-transmogrify table :en string)))
+    (if sym (let ((result (get sym language))) 
+              (if result 
+                  result
+                  (mon-transmogrify table :en string)))
         string)))
 
 ;;; ==============================
@@ -565,8 +558,6 @@ lists at invocation. Body is now incorporated in:
     head-norp))
 
 ;;; ==============================
-;;; :TODO Rebuild this to actually take a `start' and `end' arg. 
-;;; :WORKING-AS-OF (but WRONG!!)
 ;;; :CREATED <Timestamp: Wednesday February 04, 2009 @ 07:04.30 PM - by MON KEY>
 (defun mon-replace-region-regexp-lists-nonint (start end hd &rest rst)
   "Non-interactive version of `mon-replace-region-regexp-lists'.
@@ -618,11 +609,15 @@ BIG-GRP-END is the match-group to map from.\n
 \(defun some-function \(&optional optional\)
 \(defun some-function-22 \(&optional optional\)
 \(defun *some/-symbol:->name<-2* \(somevar\n
-:SEE-ALSO .\n►►►"
+:ALIASED-BY `mon-map-regexp-matches'\n
+:SEE-ALSO `mon-regexp-map-match-in-region'.\n►►►"
   (progn (search-forward-regexp big-regexp nil t)
        (mapcar #'(lambda (n)
                    (cons n (match-string-no-properties n)))
                (number-sequence big-grp-start big-grp-end))))
+;;
+(defalias 'mon-map-regexp-matches 'mon-regexp-map-match)
+;;
 ;;
 ;;; :NOTE Not a realistic test example. But a nice loop so keeping.
 ;;; (let* ((big-string (documentation 'lisp-interaction-mode))
@@ -641,6 +636,93 @@ BIG-GRP-END is the match-group to map from.\n
 ;;;                                            tst-str)))
 ;;;                                  (nreverse split-str)) "")))
 ;;;     (push (substring big-string j k) split-str)))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-03-01T17:05:04-05:00Z}#{10091} - by MON KEY>
+(defun mon-regexp-map-match-in-region (start end w-regexp &optional no-new-buffer)
+  "Map the regexp W-REGEXP for each line in region START to END.\n
+When W-REGEXP is a symbol holding a regexp.\n
+Return value is as per `mon-regexp-map-match' e.g. a list of match groups.\n
+Return value is displayed in the buffer named \"*MON-REGEXP-MAP-MATCH-RESULTS*\".
+When optional arg NO-NEW-BUFFER in non-nil and not called-interactively
+insert return value in current-buffer at END or region. Does not move point.\n
+:EXAMPLE\n
+\(let \(\(mrm-wr-eg ;; regexp from `naf-mode-db-numbers-flag'
+       \(concat 
+        \"\\\\\(\\\\\(\\\\\(FRBNF\\\\\)\"              ; <- grp1, grp2, grp3
+        ;;^1^^2^^3^^^^^^^^
+        \"\\\\|\\\\\(\\\\\(n\\\\|n\\\\.\\\\|no\\\\|no\\\\.\\\\\)[ ?]\\\\\)\" ; <- grp4 & grp5
+        ;;^^^^4^^5^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        \"\\\\|\\\\\(\\\\\\=[\\\\\)\\\\\)\"               ; <- grp6
+        ;;^^^^6^^^^^^^^
+        \"\\\\\([0-9]\\\\\\={8,10\\\\}\\\\\(]?\\\\\)\"    ; <- grp7 & grp8
+        ;;^7^^^^^^^^^^^^^^^^^8^^^^^
+        \"\\\\\)\"                           ; <- grp2 :CLOSE
+        \"\\\\\)\"                           ; <- grp1 :CLOSE
+        \"\\\\|\\\\\\=<[0-9\]\\\\\\={8,10\\\\}\\\\>\"\)\)
+      \(mrm-bnd \(nth 1 \(mapcar 'cadr \(mon-help-delimited-region t\)\)\)\)\)
+      \(mon-regexp-map-match-in-region \(car mrm-bnd\) \(cdr mrm-bnd\) mrm-wr-eg\)\)\n
+►\n80126308\nno. 80126308\nn. 80126308\nno 94031775\nn 2005065776
+unk84240548\n\[500006383]\nFRBNF12656015\nFRBNF32759170\n◄\n
+:ALIASED-BY `mon-map-regexp-matches-in-region'\n
+:SEE-ALSO .\n►►►"
+  (eval-when-compile (require 'boxquote))
+  (interactive (list (if (use-region-p) (region-beginning)
+                         (error ":FUNCTION `mon-regexp-map-match-in-region' - region not active"))
+                     (if (use-region-p) (region-end)
+                         (error ":FUNCTION `mon-regexp-map-match-in-region' - region not active"))
+                     (let ((shr-mbr '("symbol-holding-regexp" "mini-buffer-read")))
+                       (if (equal (completing-read 
+                                   "Use symbol-holding-regexp or mini-buffer-read: " shr-mbr nil t)
+                                  "symbol-holding-regexp")
+                           (symbol-value (car (read-from-string (read-string "Which symbol: "))))
+                           (read-regexp "Provide a regexp: ")))
+                     nil))
+  (let* ((rsd w-regexp)
+         (rod (regexp-opt-depth rsd))
+         rsd-collect  rsd-cnt)
+    (save-excursion
+      (save-restriction
+        (narrow-to-region start end)
+        (setq rsd-cnt (count-lines start end))
+        (goto-char start)
+        (dotimes (r rsd-cnt)
+          (push `(,(car (read-from-string (format ":REGEXP-ITER-%d" r)))
+                   ,(mon-regexp-map-match rsd 0 rod)) rsd-collect))))
+    (setq rsd-collect (nreverse rsd-collect))
+    (with-temp-buffer
+      (prin1 rsd-collect (current-buffer))
+      (pp-buffer)
+      (setq rsd-collect (buffer-substring-no-properties (buffer-end 0)(buffer-end 1))))
+    (if no-new-buffer
+        (save-excursion (goto-char end)
+                        (newline)
+                        (princ rsd-collect (current-buffer)))
+        (let ((mrmmir (buffer-name (current-buffer)))
+              (mrmmir-region (buffer-substring-no-properties start end))
+              (mrmmir-rslt-bfr (get-buffer-create "*MON-REGEXP-MAP-MATCH-RESULTS*")))
+          (with-temp-buffer 
+            (boxquote-text mrmmir-region)
+            (let ((comment-start ";")
+                  (comment-padding 1))
+              (comment-region (buffer-end 0)(buffer-end 1) 2))
+            (setq mrmmir-region (buffer-substring (buffer-end 0)(buffer-end 1))))
+          (with-current-buffer mrmmir-rslt-bfr
+            (erase-buffer)
+            (princ (format (concat
+                            ";; :MAPPING-RESULTS-W-REGEXP\n;;  %s\n;; \n"
+                            ";; :MAPPED-RESULTS-N-TIMES %d\n;;\n"
+                            ";; :IN-BUFFER\n;;  %s\n;; \n"
+                            ";; :WITH-REGION \n;; \n"
+                            "%s\n\n%s")
+                           w-regexp rsd-cnt mrmmir mrmmir-region rsd-collect)
+                   (current-buffer))
+            (goto-char (buffer-end 0))
+            (emacs-lisp-mode)
+            (display-buffer mrmmir-rslt-bfr t))))))
+;;
+(defalias 'mon-map-regexp-matches-in-region 'mon-regexp-map-match-in-region)
+;; 
 
 ;;; ==============================
 ;;; :MODIFICATIONS <Timestamp: #{2009-08-31T12:12:52-04:00Z}#{09361} - by MON KEY>
@@ -961,31 +1043,71 @@ Does not move point.
         
 ;;; ==============================
 ;;; :GLOBAL-KEYBINDING (global-set-key "\C-cu:" 'mon-cln-up-colon)
+;;; :MODIFICATIONS <Timestamp: #{2010-03-01T15:29:58-05:00Z}#{10091} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-12-19T02:39:48-05:00Z}#{09516} - by MON>
-(defun mon-cln-up-colon (start end &optional intrp)
-  "Insert colonized string in region at BOL.\n
-When region's string contains a trailing `:' remove it before inserting.\n
+(defun mon-cln-up-colon (start end &optional insrtp intrp)
+  "Return colonized string in region at BOL.\n
+When region's string contains a trailing `:' or wspc remove it.\n
+When INSRTP is non-nil or called-interactively insert return value at point.
+Does not move point.\n
+When called-interactively and the region is not active test but point is at BOL
+and line is not longer 34 chars use `line-beginning-position' and
+`line-end-position' instead.\n
+:EXAMPLE\n\n(mon-cln-up-colon (line-beginning-position 3) (line-end-position 3))\n
+upcase and colonize me \n
+\(let \(\(buffer-read-only nil\)\) ; :NOTE point is calculated from end of let form.
+  \(goto-char \(line-beginning-position 3\)\)
+  \(mon-cln-up-colon nil nil nil t\)\)\n
+upcase and colonize me \n
 :SEE-ALSO `mon-upcase-commented-lines', `mon-downcase-commented-lines'
 `mon-line-strings-bq-qt-sym-bol', `mon-line-strings-indent-to-col',
 `mon-line-strings-pipe-bol', `mon-line-strings-pipe-to-col',
 `mon-line-strings-qt-region'.\n►►►"
-  (interactive "i\ni\np")
+  (interactive "i\ni\ni\np") ;; "r\ni\np")
   (let ((bl (make-marker))
         (el (make-marker))
-        (sstr))
-    (set-marker bl (if start start (region-beginning)))
-    (set-marker el (if end end (region-end)))
-    ;;(save-excursion
-      (goto-char bl) (princ ":" (current-buffer))
-      (setq sstr (delete-and-extract-region bl el))
-      (subst-char-in-string 32 45 sstr t)
-      (setq sstr (upcase sstr))
-      ;; (setq sstr (replace-regexp-in-string "\\(.*\\):" "\\1" sstr ))
-      (setq sstr (if (string-match ":" sstr (1- (length sstr)))
-                     (substring sstr 0 (1- (length sstr)))
-                     sstr))
-      (goto-char bl)
-      (princ sstr (current-buffer))))
+        regn-ln-if sstr)
+    (setq regn-ln-if
+          (cond ((and start end) `(,start . ,end))
+                ((and intrp (use-region-p))
+                 `(,(region-beginning) (region-end)))
+                ((and intrp (not (use-region-p)) (bolp) (not (or (eolp) (eobp)))
+                      ;; Half of 68 columns seems a reasonable length to clamp at.
+                      (> 34 (- (line-end-position) (line-beginning-position))))
+                 `(,(line-beginning-position) . ,(line-end-position)))
+                (t (error ":FUNCTION `mon-cln-up-colon' INTRP but no start end values found"))))
+    (set-marker bl (car regn-ln-if))
+    (set-marker el (cdr regn-ln-if))
+    (setq sstr (upcase (buffer-substring-no-properties bl el)))
+    (setq sstr (upcase sstr))
+    (let ((chop-sstr (string-to-sequence sstr 'list))
+          (chop-tail #'(lambda (ss) (car (last ss))))
+          (chop-head #'(lambda (ss) (car ss))))
+      ;; 58 -> `:' 32 -> ` ' 45 -> `-' 59 -> `;'
+      (while (memq (funcall chop-head chop-sstr) '(59 32 58 45))
+        (setq chop-sstr (cdr chop-sstr)))
+      (while (memq (funcall chop-tail chop-sstr) '(32 58 45))
+        (setq chop-sstr (butlast chop-sstr)))
+      (unless (eq (length chop-sstr) (length sstr))
+        (setq sstr (apply 'string chop-sstr))))
+    (setq sstr (concat ":" (subst-char-in-string 32 45 sstr t)))
+    (if intrp 
+        (save-excursion 
+          (goto-char bl)
+          (delete-and-extract-region bl el)
+          (princ sstr (current-buffer)))
+        sstr)))
+;;
+;;; :TEST-ME (mon-cln-up-colon (+ (line-beginning-position 2) 4) (line-end-position 2))
+;;; mon cln up colon
+;;;  
+;; ,---- :UNCOMMENT-TO-TEST
+;; | (progn  ; :NOTE point is calculated from end of progn form.                                     
+;; |   (goto-char (line-beginning-position 3))    
+;; |   (apply 'mon-cln-up-colon nil '(nil nil t)))
+;; | 
+;; | ;;; upcase and colonize me 
+;; `----
 
 ;;; ==============================
 ;;; :COURTESY Stefan Reichor :HIS xsteve-functions.el
@@ -1022,7 +1144,7 @@ Exchange in region when region-active-p is non-nil.\n
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-09-17T22:09:21-04:00Z}#{09385} - by MON KEY>
 (defun mon-upcase-commented-lines () ;(start end)
-  "Upcase everthing in lines that begin with three semicolons \"^;;; \".
+  "Upcase everything in lines that begin with three semicolons \"^;;; \".
 Does not move point.\n:NOTE Does not do error checking - so be smart about it.\n
 :SEE-ALSO `mon-downcase-commented-lines', `mon-downcase-region-regexp'
 `mon-downcase-hex-values' `mon-cln-up-colon', `mon-line-strings-bq-qt-sym-bol',
@@ -1177,6 +1299,8 @@ When W-RESULTS is non-nil or called-interactively message results.\n
 ;; | #FFFFCC
 ;; `----
 
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-02-13T16:44:19-05:00Z}#{10066} - by MON KEY>
 (defun mon-downcase-regexp-region (dc-start dc-end toggle-case-regexp
                                    &optional limit-to insrtp intrp)
   "Downcase each match of TOGGLE-CASE-REGEXP in region from DC-START to DC-END.
@@ -1196,6 +1320,8 @@ were upcased.\n
       (eval `(mon-toggle-case-regexp-region ,dc-start ,dc-end ,toggle-case-regexp 'down
                                             ,limit-to))))
 
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-02-13T16:44:19-05:00Z}#{10066} - by MON KEY>
 (defun mon-upcase-regexp-region (uc-start uc-end toggle-case-regexp
                                  &optional limit-to insrtp intrp)
   "Upcase each match of TOGGLE-CASE-REGEXP in region from UC-START to UC-END.

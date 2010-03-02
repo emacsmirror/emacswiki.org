@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Feb 28 16:26:08 2010 (-0800)
+;; Last-Updated: Mon Mar  1 14:17:36 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 11521
+;;     Update #: 11527
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1344,7 +1344,7 @@
 ;;  access.
 ;;
 ;;  Bookmarks shown in the bookmark list are sorted using the current
-;;  value of option `bookmark-sort-function'.  (If that is nil, they
+;;  value of option `bookmarkp-sort-comparer'.  (If that is nil, they
 ;;  are unsorted, which means they appear in reverse chronological
 ;;  order of their creation.)
 ;;
@@ -1888,6 +1888,7 @@
 ;;     Added: bookmarkp-bmenu-delete-marked.  Bound it to D.
 ;;            bookmarkp-sort-orders-for-cycling-alist.
 ;;     Renamed: bookmarkp-sort-functions-alist to bookmarkp-sort-orders-alist,
+;;              bookmarkp-sort-function to bookmarkp-sort-comparer.
 ;;     bookmark-bmenu-execute-deletions: Added optional arg, for *-bmenu-delete-marked.
 ;;     *-sort-function: Changed default value to sorting by bookmark type (`s k').
 ;;     *-bmenu-change-sort-order: Use *-sort-orders-for-cycling-alist, not all sort orders.
@@ -7068,7 +7069,7 @@ If you combine this with \\<bookmark-bmenu-mode-map>\
 (defun bookmarkp-reverse-multi-sort-order () ; `s C-r' in bookmark list
   "Reverse the application of multi-sorting predicates.
 These are the PRED predicates described for option
-`bookmark-sort-function'.
+`bookmarkp-sort-comparer'.
 
 This reverses the order in which the predicates are tried, and it
 also complements the truth value returned by each predicate.

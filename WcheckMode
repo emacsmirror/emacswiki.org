@@ -2,13 +2,13 @@ Lisp:wcheck-mode.el
 
 == Introduction ==
 
-Wcheck mode is a minor mode for on-the-fly (spell-)checking and marking words or other text elements in Emacs buffer. Wcheck sends parts of buffer's content to an external text-filtering program and, based on its output, decides if some parts of text should be marked.
-
-Wcheck mode can be used with spell-checker programs such as Ispell, Aspell and Enchant. Then the semantics of operation is that the external spelling checker tells which words are misspellings and Wcheck mode marks them as such in Emacs buffer. However, Wcheck mode can also be useful with other kind of external tools. Any tool that can receive text stream from standard input and send text to standard output can be used.
+Wcheck mode is a minor mode for on-the-fly (spell-)checking and marking words or other text elements in Emacs buffer. Wcheck sends parts of buffer's content to an external text-filtering program and, based on its output, decides if some parts of text should be marked. Wcheck mode can be used with spell-checker programs such as Enchant, Ispell and Hunspell but actually any tool that can receive text stream from standard input and send text to standard output can be used.
 
 == Features ==
 
-In Wcheck configuration different semantical units are called "languages". Each language can use its own external program, command-line arguments and other settings, such as the regular expressions and syntax table that are used to match words (or other text elements) in Emacs buffer. User can choose which "face" is used to mark text elements in buffer. All settings are per language and user is free to interpret the semantics of text analyzing: it's left open what marked text elements in the buffer actually mean. User can also create major mode specific settings defining which "faces" to read or skip in the buffer. A typical use for this feature is to spell-check only the message body (and possibly Subject header) in email messages or spell-check only documentation strings and comments in programming modes etc.
+In Wcheck configuration different semantical units are called "languages". Each language can use its own external program, command-line arguments and other settings, such as the regular expressions and syntax table that are used to match words (or other text elements) in Emacs buffer. User can choose which "face" is used to mark text elements in buffer. All these settings are language specific and user is free to interpret the semantics of text analyzing: it's left open what marked text elements in the buffer actually mean.
+
+User can also create major mode specific settings defining which "faces" to read or skip in the buffer. A typical use for this feature is to spell-check only those areas in the buffer which are written in human language. For example, in email messages usually the message body and Subject header are important enough to spell-check. In programming modes user could spell-check only documentation strings and comments (or the opposite if you want to use Wcheck mode to check keywords and syntax of the programming language itself).
 
 == How does it compare to other spell-checkers? ==
 

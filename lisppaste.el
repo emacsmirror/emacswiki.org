@@ -43,6 +43,31 @@
 (defvar lisppaste-add-paste-url-to-kill-ring nil
   "*If non-nil, put the URL of a new paste at the head of the `kill-ring'.")
 
+(defun lisppaste-channels ()
+  "Return which channels the lisppaste bot runs on."
+  (lisppaste-send-command 'listchannels))
+
+(defvar lisppaste-channels nil
+  "Cached value of the channels lisppaste is running on.
+
+Initialised using the function `lisppaste-channels'.")
+
+(defsubst lisppaste-all-channels ()
+  ;; Retardedness due to completing read requiring an alist.
+  (mapcar #'list
+          (or lisppaste-channels
+              (setq lisppaste-channels (lisppaste-channels)))))
+
+(defsubst lisppaste-check-channel (channel)
+  "Check that CHANNEL is supported by lisppaste.
+
+Checks the cached value of the variable `lisppaste-channels' before
+requesting a new list."
+  (or lisppaste-channels (setq lisppaste-channels (lisppaste-channels)))
+  (unless (member channel lisppaste-channels)
+    (error "%s not a valid channel.  Try M-: (setq lisppaste-channels nil) RET"
+           channel)))
+
 (defun lisppaste-new-paste (channel nick title content &optional annotate)
   "Create a new paste with the specified arguments.
 CHANNEL is the channel the paste will appear in.
@@ -89,31 +114,6 @@ If CHANNEL is non-nil, only return pastes from that channel."
       (progn (lisppaste-check-channel channel)
              (lisppaste-send-command 'pasteheadersbychannel channel n start))
     (lisppaste-send-command 'pasteheaders n start)))
-
-(defun lisppaste-channels ()
-  "Return which channels the lisppaste bot runs on."
-  (lisppaste-send-command 'listchannels))
-
-(defvar lisppaste-channels nil
-  "Cached value of the channels lisppaste is running on.
-
-Initialised using the function `lisppaste-channels'.")
-
-(defsubst lisppaste-check-channel (channel)
-  "Check that CHANNEL is supported by lisppaste.
-
-Checks the cached value of the variable `lisppaste-channels' before
-requesting a new list."
-  (or lisppaste-channels (setq lisppaste-channels (lisppaste-channels)))
-  (unless (member channel lisppaste-channels)
-    (error "%s not a valid channel.  Try M-: (setq lisppaste-channels nil) RET"
-           channel)))
-
-(defsubst lisppaste-all-channels ()
-  ;; Retardedness due to completing read requiring an alist.
-  (mapcar #'list
-          (or lisppaste-channels
-              (setq lisppaste-channels (lisppaste-channels)))))
 
 (defvar lisppaste-default-nick nil
   "*The default nick for pastes.

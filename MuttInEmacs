@@ -75,6 +75,24 @@ Following snippet opens any file having name "mutt" in it in message mode, sets 
                                                  (server-edit)))                                                              
                                                                                   
 
+Usage report: Tried code above on debian using emacs 23 but the keybinding doesn't work. Error is 'Symbol's value as variable is void: message-mode-map'. Unfortunately I hardly know any elisp so could anyone please correct it (if it is easily correctable)? 
+
+Response: I haven't tested the below extensively, but I believe it solves your problem (which was mine as well).
+
+  (add-to-list 'auto-mode-alist '(".*mutt.*" . message-mode))
+  (setq mail-header-separator "")
+  (add-hook 'message-mode-hook 'auto-fill-mode)
+  (defvar message-mode-map
+    (let ((map (make-sparse-keymap)))
+      (define-key map (kbd "C-c C-c")  '(lambda ()
+                                        "save and exit quickly"
+                                        (interactive)
+                                        (save-buffer)
+                                        (server-edit)))
+      map)
+    "Add Mutt C-c C-c command to message-mode keymap (creating it if needed)"
+  )
+
 
 == Switching window focus between mutt and emacs when using emacsclient ==
 
