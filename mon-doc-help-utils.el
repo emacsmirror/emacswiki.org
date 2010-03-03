@@ -54,8 +54,7 @@
 ;;; `mon-help-tar-incantation', `mon-help-rename-incantation',
 ;;; `mon-help-du-incantation' ,`mon-help-hg-archive',
 ;;; `mon-help-diacritics', `mon-help-keys-wikify',
-;;; `mon-help-escape-for-ewiki',
-;;; `mon-help-unescape-for-ewiki'
+;;; `mon-help-escape-for-ewiki', `mon-help-unescape-for-ewiki'
 ;;; `mon-help-overlay-functions',
 ;;; `mon-help-regexp-symbol-defs-TEST', `mon-help-propertize-regexp-symbol-defs-TEST',
 ;;; `mon-help-overlay-for-example', `mon-help-delimited-region',
@@ -63,7 +62,7 @@
 ;;; `mon-help-utils-loadtime', `mon-help-char-functions',
 ;;; `mon-help-key-functions', `mon-help-custom-keywords',
 ;;; `mon-help-keys-wikify-anchors', `mon-help-keys-wikify-heading'
-;;; `mon-help-keys-wikify-TEST' 
+;;; `mon-help-keys-wikify-TEST', 
 ;;; `mon-get-next-face-property-change', `mon-get-next-face-property-change-if'
 ;;; `mon-get-all-face-property-change', 
 ;;; FUNCTIONS:◄◄◄
@@ -135,9 +134,9 @@
 ;;; REQUIRES:
 ;;; cl.el `intersection' in `mon-help-function-spit-doc'
 ;;;
-;;; regexpl.el 
-;;; :SEE (URL `http://www.emacswiki.org/emacs/regexpl.el')
-;;;
+;;; :FILE boxquote.el 
+;;;       | ->`mon-help-regexp-symbol-defs-TEST'
+;;;  
 ;;; mon-doc-help-pacman.el (Loaded only if it exists in load-path)
 ;;; :SEE (URL `http://www.emacswiki.org/emacs/mon-doc-help-pacman.el')
 ;;;
@@ -324,9 +323,6 @@
 ;;; :NOTE `mon-help-function-spit-doc' has failover inlined but defaults to `intersection'
 ;;; :REQUIRED-BY `mon-help-function-spit-doc', `mon-help-parse-interactive-spec'
 (eval-when-compile (require 'mon-cl-compat nil t))
-
-;;; :REQUIRED-BY `mon-help-keys-wikify'
-(require 'regexpl)
 
 ;;; ==============================
 ;; :EMACS-WIKI - So we don't require more than you want/need.
@@ -1238,51 +1234,193 @@ TEST-AT-POSN position to test at.\n
 ;;; :TEST-ME (mon-get-next-face-property-change-if 'font-lock-comment-face (point));;
 
 ;;; ==============================
+;;; :TODO If possible figure out what is causing the peculiar return values w/re
+;;; the 2nd :NOTE in docstring below and if there is a reasonable workaround.
+;;; Is it possible that the `looking-at' in `font-lock-syntactic-face-function'
+;;; isn't `save-match-data'ing??? 
+;; (font-lock-syntactic-face-function . lisp-font-lock-syntactic-face-function)
+;; This problem is some bogus BULLSHIT! It is clear the face properties are set as one
+;; can immediately yank the text and _SEE_ that they are present throughout the
+;; buffer's string immediatley so I don't think this is a display problem.
 ;;; :CREATED <Timestamp: #{2010-02-27T19:38:29-05:00Z}#{10087} - by MON KEY>
-(defun mon-get-all-face-property-change (search-face-symbol get-from-posn)
-  "Find all start end locations of SEARCH-FACE-SYMBOL at or after get-from-posn.\n
-SEARCH-FACE-SYMBOL symbol naming a face to find.\n
-GET-FROM-POSN position to begin finding from.\n
-:EXAMPLE\n\n\(mon-get-all-face-property-change 'help-argument-name \(buffer-end 0\)\)\n
-:NOTE Won't find 'button faces in *Help*.\n
-:SEE-ALSO `mon-kill-ring-save-w-props', `mon-test-props',
-`mon-line-test-content', `mon-get-next-face-property-change',
-`mon-get-next-face-property-change-if', `mon-get-all-face-property-change'
-`mon-list-all-properties-in-buffer', `mon-nuke-text-properties-buffer',
-`mon-nuke-text-properties-region', `mon-remove-text-property',
-`mon-remove-single-text-property'.\n►►►"
-  (save-excursion
-    (let ((sfc search-face-symbol)
-          top-st bot-st fc-bnds)
-      (when (mon-get-next-face-property-change-if sfc get-from-posn)
-        (setq top-st 
-              (1- (previous-single-property-change 
-                   (point) 'face nil (line-beginning-position)))))
-      (if (integerp top-st)
-          (setq top-st (mon-get-next-face-property-change sfc top-st))
-          (setq top-st (mon-get-next-face-property-change sfc get-from-posn)))
-      (while top-st
-        (setq bot-st 
-              (mon-get-next-face-property-change sfc (car top-st)))
-        (when (caadr top-st)
-          (push `(,(car top-st) . ,(car bot-st)) fc-bnds))
-        (when bot-st 
-          (setq top-st (mon-get-next-face-property-change sfc (car bot-st)))
-          (goto-char (car bot-st)))
-        (when (and (null (caadr top-st)) (null (caadr bot-st)))
-          (while (and top-st 
-                      (not (eq (cadadr 
-                                (mon-get-next-face-property-change 'font-lock-constant-face (point)))
-                               font-lock-constant-face)))
-            (if (car (mon-get-next-face-property-change 'font-lock-constant-face (point)))
-                (goto-char (car (mon-get-next-face-property-change 'font-lock-constant-face (point))))
-                (setq top-st nil)))))
-          (setq fc-bnds (nreverse fc-bnds))
-          ;; Uncomment when debug.
-          ;; (goto-char (buffer-end 1)) (prin1 fc-bnds (current-buffer))
-          )))
+;; (defun mon-get-all-face-property-change (search-face-symbol get-from-posn)
+;;   "Find all start end locations of SEARCH-FACE-SYMBOL at or after get-from-posn.\n
+;; SEARCH-FACE-SYMBOL symbol naming a face to find.\n
+;; GET-FROM-POSN position to begin finding from.\n
+;; :EXAMPLE\n\n\(mon-get-all-face-property-change 'help-argument-name \(buffer-end 0\)\)\n
+;; :NOTE Won't find 'button faces in *Help*.\n
+;; :NOTE Won't find 'button faces in *Help*.\n
+;; :NOTE Invoked in large (e)lisp-mode buffers won't reliably find faces
+;; `font-lock-string-face' and `font-lock-comment-face' if these have been
+;; font-locked with font-lock syntactic voodo
+;; e.g. `lisp-font-lock-syntactic-face-function's conditional on \(nth 3 state\)
+;; vis a vis `font-lock-syntactic-face-function', `font-lock-syntactic-keywords'
+;; which the `jit-lock-*' fncns appear to be frobbing in complicated ways.\n
+;; :SEE-ALSO `mon-kill-ring-save-w-props', `mon-test-props',
+;; `mon-line-test-content', `mon-get-next-face-property-change',
+;; `mon-get-next-face-property-change-if', `mon-get-all-face-property-change'
+;; `mon-list-all-properties-in-buffer', `mon-nuke-text-properties-buffer',
+;; `mon-nuke-text-properties-region', `mon-remove-text-property',
+;; `mon-remove-single-text-property'.\n►►►"
+;;   (save-excursion
+;;     (let ((sfc search-face-symbol)
+;;           top-st bot-st fc-bnds)
+;;       (when (mon-get-next-face-property-change-if sfc get-from-posn)
+;;         (setq top-st 
+;;               (1- (previous-single-property-change 
+;;                    (point) 'face nil (line-beginning-position)))))
+;;       (if (integerp top-st)
+;;           (setq top-st (mon-get-next-face-property-change sfc top-st))
+;;           (setq top-st (mon-get-next-face-property-change sfc get-from-posn)))
+;;       (while top-st
+;;         (setq bot-st 
+;;               (mon-get-next-face-property-change sfc (car top-st)))
+;;         (when (caadr top-st)
+;;           (push `(,(car top-st) . ,(car bot-st)) fc-bnds))
+;;         (when bot-st 
+;;           (setq top-st (mon-get-next-face-property-change sfc (car bot-st)))
+;;           (goto-char (car bot-st)))
+;;         (when (and (null (caadr top-st)) (null (caadr bot-st)))
+;;           (while (and top-st 
+;;                       (not (eq (cadadr 
+;;                                 (mon-get-next-face-property-change 'font-lock-constant-face (point)))
+;;                                font-lock-constant-face)))
+;;             (if (car (mon-get-next-face-property-change 'font-lock-constant-face (point)))
+;;                 (goto-char (car (mon-get-next-face-property-change 'font-lock-constant-face (point))))
+;;                 (setq top-st nil)))))
+;;           (setq fc-bnds (nreverse fc-bnds))
+;;           ;; Uncomment when debug.
+;;           ;; (goto-char (buffer-end 1)) (prin1 fc-bnds (current-buffer))
+;;           )))
+
+;;; :NOTE File created to parse syntax properties in a buffer after i found that 
+;;; `mon-get-all-face-property-change' fails because of some weird. 
+;;; return values when invoked in large (e)lisp-mode buffers and won't reliably find faces
+;;; `font-lock-string-face' and `font-lock-comment-face' if these have been
+;;; font-locked with font-lock syntactic voodo
+;;; e.g. `lisp-font-lock-syntactic-face-function's conditional on (nth 3 state)
+;;; vis a vis `font-lock-syntactic-face-function', `font-lock-syntactic-keywords'
+;;; which the `jit-lock-*' fncns appear to be frobbing in complicated ways.
+;;; Is it possible that the `looking-at' in `font-lock-syntactic-face-function'
+;;; isn't `save-match-data'ing???  See at EOB for a redefinition of
+;;; `lisp-font-lock-syntactic-face-function' to `save-match-data' as
+;;; `mon-lisp-font-lock-syntactic-face-function'
+;;; :TODO If possible figure out what is causing if there is a reasonable workaround.
+;;; (mon-get-all-face-property-change 'font-lock-constant-face (buffer-end 0))
+;;; invoke in the string buffer returned by 
+;;; `mon-get-text-properties-from-elisp-syntactic-pp'
+;;; to see the problem.
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-03-02T20:08:34-05:00Z}#{10093} - by MON KEY>
+(defun mon-get-text-properties-print (start end tp-buff &optional intrp)
+  "Return buffer-string START END with text-properties.
+TP-BUFF is a buffer name to print to as with prin1.\n
+When called-interactively insert at point. Moves point.
+:SEE-ALSO `mon-get-text-properties-print',
+`mon-get-text-properties-read-temp',
+`mon-get-text-properties-elisp-string',
+`mon-get-text-properties-elisp-string-pp'.\n►►►"
+  (interactive "r\ni\np")
+  (let* (mgtpfs-get
+         (standard-output mgtpfs-get)
+         mgtpfs)
+    (setq mgtpfs (buffer-substring start end))
+    (setq mgtpfs-get (prin1 mgtpfs mgtpfs-get))
+    (if intrp 
+        (prin1 mgtpfs-get (current-buffer))
+        (prin1 mgtpfs-get tp-buff))))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-03-02T20:08:44-05:00Z}#{10093} - by MON KEY>
+(defun mon-get-text-properties-read-temp (&optional tp-buff)
+  "Read list from `mon-get-text-properties-print' and strip leading #.\n
+Car of return value is a new list formulated as with `read-from-string'.
+When non-nil optional arg TP-BUFF names a buffer as required by
+`mon-get-text-properties-elisp-string'.\n
+:SEE-ALSO `mon-get-text-properties-print',
+`mon-get-text-properties-read-temp',
+`mon-get-text-properties-elisp-string',
+`mon-get-text-properties-elisp-string-pp'.\n►►►"
+  (let ((mgtprt-new 
+         (if tp-buff tp-buff 
+             (get-buffer-create "*MGTPRT-NEW*")))
+        re-str 
+        str-props)
+    (with-current-buffer mgtprt-new
+      (goto-char (buffer-end 0))
+      (delete-char 1)
+      (setq re-str (read-from-string (car (sexp-at-point))))
+      (setq str-props (cdr (sexp-at-point)))
+      (setq re-str `(,re-str ,str-props)))
+    (unless tp-buff (kill-buffer mgtprt-new))
+    re-str))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-03-02T20:07:17-05:00Z}#{10093} - by MON KEY>
+(defun mon-get-text-properties-elisp-string-pp (syn-list split-buff)
+  "Pretty print the string and text property list extracted with
+`mon-get-text-properties-elisp-string'.\n
+:SEE-ALSO `mon-get-text-properties-print',
+`mon-get-text-properties-read-temp',
+`mon-get-text-properties-elisp-string'.►►►"
+  (let* ((mgtpfes-split (buffer-name split-buff))
+         (mgtpfes-buf2
+          (concat 
+           (substring mgtpfes-split 0 (1- (length mgtpfes-split))) "-STRING*")) 
+         (mgtpfes-syn-list
+          (concat "(" 
+                  (replace-regexp-in-string ") " ")) (" 
+                                            (format "%S" (cadr syn-list)))
+               ")"))
+         chck-syn-list)
+    (with-temp-buffer 
+      (princ mgtpfes-syn-list (current-buffer))
+      (pp-buffer)
+      (setq mgtpfes-syn-list 
+            (buffer-substring-no-properties (buffer-end 0) (buffer-end 1))))
+    (with-current-buffer split-buff
+      (erase-buffer)
+      (save-excursion (princ mgtpfes-syn-list (current-buffer)))
+      (princ (format ";; :IN-BUFFER %s\n;;\n" mgtpfes-buf2) (current-buffer))
+      (emacs-lisp-mode))
+    ;; (mon-get-all-face-property-change 'font-lock-constant-face (buffer-end 0))
+    (get-buffer-create mgtpfes-buf2)
+    (with-current-buffer mgtpfes-buf2
+      (prin1 (caar syn-list) (current-buffer))
+       (emacs-lisp-mode))
+    (display-buffer split-buff t)
+    (display-buffer mgtpfes-buf2 t)))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-03-02T20:07:24-05:00Z}#{10093} - by MON KEY>
+(defun mon-get-text-properties-elisp-string (&optional some-el-string)
+  "Extract the text properties from the elisp SOME-EL-STRING.
+:EXAMPLE\n\n\(mon-get-text-properties-elisp-string\\n
+ \(documentation 'mon-help-mon-help\)\)\n
+:SEE-ALSO `mon-get-text-properties-print',
+`mon-get-text-properties-read-temp',
+`mon-get-text-properties-elisp-string',
+`mon-get-text-properties-elisp-string-pp'.\n►►►"
+  (let ((mgtpfes-buf (get-buffer-create "*MGTPFES*"))
+        mgtpfes-rd)
+    (unless (stringp some-el-string)
+      (error 
+       ":FUNCTION `mon-get-text-properties-elisp-string' - arg SOME-EL-STRING is not"))
+    (with-current-buffer mgtpfes-buf (erase-buffer))
+    (with-temp-buffer 
+      (save-excursion (print some-el-string (current-buffer)))
+    (emacs-lisp-mode)
+    (font-lock-fontify-syntactically-region  (buffer-end 0) (buffer-end 1))
+    (font-lock-fontify-buffer)
+    (mon-get-text-properties-print (buffer-end 0) (buffer-end 1) mgtpfes-buf))
+  (setq mgtpfes-rd (mon-get-text-properties-read-temp mgtpfes-buf))
+  (mon-get-text-properties-elisp-string-pp mgtpfes-rd mgtpfes-buf)))
 ;;
-;;; :TEST-ME (mon-get-all-face-property-change 'font-lock-constant-face (buffer-end 0))
+;;; :TEST-ME (mon-get-text-properties-elisp-string *mon-help-reference-keys*)
+;;; :TEST-ME (mon-get-text-properties-elisp-string (documentation 'mon-help-mon-help))
+
+;;; ==============================
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-11-20T17:55:35-05:00Z}#{09475} - by MON>
@@ -1755,7 +1893,7 @@ otherwise.\n
 
 ;;; ==============================
 ;;; :TODO Consider where `documentation-property' can be used instead of `plist-get'.
-;;; :NOTE
+;;; :NOTE Also take a look at `lisp-doc-string-elt-property'.
 ;;; :NOTE This idiom works for byte compiling in docstrings.
 ;;; (eval-and-compile
 ;;;  (<THE-DEFVAR>))
@@ -2195,7 +2333,8 @@ When optional arg DO-BIG-REGEXP is non-nil use regxp in variable
 \(deftheme *some/-theme-symbol:->name<-2* \(sometheme
 ◄
 
-:SEE-ALSO `mon-help-propertize-regexp-symbol-defs-TEST', `mon-help-overlay-result'.\n►►►"
+:SEE-ALSO `mon-help-propertize-regexp-symbol-defs-TEST', `mon-help-overlay-result'
+`lisp-font-lock-keywords', `lisp-font-lock-keywords-1', `lisp-font-lock-keywords-2'.\n►►►"
   (interactive "p")
   (eval-when-compile (require 'boxquote))
   (let ((botp          #'(lambda () `(,(line-beginning-position) . ,(line-end-position))))
@@ -3281,7 +3420,7 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 :SYNTAX-CLASS comment ender; \(designated by `>'\)
 :SYNTAX-CLASS inherit standard syntax; \(designated by `@'\)
 :SYNTAX-CLASS generic comment delimiter; \(designated by `!'\)
-:SYNTAX-CLASS generic string delimiter; \(designated by `|'\)
+:SYNTAX-CLASS generic string delimiter; \(designated by `|'\)\n
 :SEE-ALSO `mon-help-syntax-functions', `mon-help-search-functions',
 `mon-help-regexp-syntax'.\n►►►"
   (interactive "i\nP")
@@ -3308,7 +3447,6 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 `get-char-property'
 `char-syntax'
 `describe-syntax'
-`syntax-class'
 `syntax-after'
 `syntax-class'
 `syntax-table'
@@ -4760,6 +4898,104 @@ A generic form can be interrogated with `eieio-generic-form':\n
 ;;: :TEST-ME (mon-help-type-predicates t)
 ;;; :TEST-ME (describe-function 'mon-help-type-predicates)
 ;;; :TEST-ME (apply 'mon-help-type-predicates '(t))
+
+;;; :SEQUENCE-GENERAL
+;;; `atom'
+;;; `elt'
+;;; `nth'
+;;; `copy-sequence'
+;;; `length'
+;;; `safe-length'
+;;; `sequencep'
+;;; `append'
+;;; `concat'
+;;; :SEQUENCE-VECTOR
+;;; `vconcat'
+;;; `vectorp'
+;;; `string-to-vector'
+;;; `make-vector'
+;;; :SEQUENCE-BOOL-VECTOR
+;;; `make-bool-vector'
+;;; `bool-vector-p'
+;;; :SEQUENCE-ARRAY
+;;; `arrayp'
+;;; `aset'
+;;; `aref'
+;;; `fillarray'
+;;; :SEQUENCE-CONS
+;;; `string-to-list'
+;;; `car-safe'
+;;; `cdr-safe'
+;;; `nlistp'
+;;; `listp'
+;;; `null'
+;;; `nthcdr'
+;;; `last'
+;;; `butlast'
+;;; `nbutlast'
+;;; `list'
+;;; `make-list'
+;;; `reverse'
+;;; `nreverse'
+;;; `copy-tree'
+;;; `number-sequence'
+;;; `setcar'
+;;; `setcdr'
+;;; `pop'
+;;; `push'
+;;; `nconc'
+;;; `add-to-list'
+;;; `add-to-ordered-list'
+;;; `delq'
+;;; `remq'
+;;; `delete'
+;;; `delete-dups'
+;;; `sort'
+;;; `memq'
+;;; `memql'
+;;; `member'
+;;; `member-ignore-case'
+;;; :SEQUENCE-ALIST
+;;; `assoc'
+;;; `rassoc'
+;;; `assoc-string'
+;;; `assq'
+;;; `rassq'
+;;; `assoc-default'
+;;; `copy-alist'
+;;; `assq-delete-all'
+;;; `rassq-delete-all'
+;;; assoc.el
+;;; `asort'
+;;; `aelement'
+;;; `aheadsym'
+;;; `anot-head-p'
+;;; `aput'
+;;; `adelete'
+;;; `aget'
+;;; `amake'
+;;; mule-util.el
+;;; `lookup-nested-alist'
+;;; `set-nested-alist'
+;;; `nested-alist-p'
+;;; :SEQUENCE-RING
+;;; `make-ring'
+;;; `ring-p'
+;;; `ring-size'
+;;; `ring-length'
+;;; `ring-elements'
+;;; `ring-copy'
+;;; `ring-empty-p'
+;;; `ring-ref'
+;;; `ring-insert'
+;;; `ring-remove'
+;;; `ring-insert-at-beginning'
+
+;;; ==============================
+;;; caar 
+;;; cadr
+;;; cdar
+;;; cddr 
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-02-25T16:33:59-05:00Z}#{10084} - by MON KEY>
@@ -9324,8 +9560,7 @@ Return value is a three elt list with the form:\n
             ;; (mon-get-next-face-property-change 'font-lock-constant-face from-posn)
             ;; (while (plist-conses
             ;; (add-text-properties 
-
-                   (let ((regexp-replace-list
+            (let ((regexp-replace-list
                           '(("^\\(\"?\\)\\(#:START:REFERENCE-SHEET#\\)" . "")
                             ("^\\(#:END:REFERENCE-SHEET#\\)\\(\"?\\)" . "")
                             ;; :WAS ("^\\(.*\\):$" . "||||**\\1**||")
@@ -9357,8 +9592,6 @@ Return value is a three elt list with the form:\n
                                (get-buffer-create "*MON-HELP-KEYS-WIKIFY*")))) ;)
         in-bfr)))
 ;;
-;;; :TEST-ME (progn(mon-help-keys t)(mon-help-keys-wikify))
-;;; :TEST-ME (progn(mon-help-keys t)(mon-help-keys-wikify nil t))
 ;;; :TEST-ME (mon-help-keys-wikify t t)
 ;;
 ;; (search-forward-regexp "^\\(.+?\\)\\( -- \\(.*\\)\\)?$")

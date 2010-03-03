@@ -1,4 +1,4 @@
-ERC is fully equipped to connect to SSL/TLS-enabled servers (eg. OFTC) however, Certificate Authentication support is rather untested.
+ERC is fully equipped to connect to SSL/TLS-enabled servers (e.g. OFTC and [[Freenode]]) however, Certificate Authentication support is rather untested.
 
 For the purposes of this guide, head on over to the following OFTC page to get an idea on how to create the necessary certificates
 

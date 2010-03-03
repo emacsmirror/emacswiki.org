@@ -253,7 +253,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Version:
-(defconst traverse-version "1.1.70")
+(defconst traverse-version "1.1.74")
 
 ;;; Code:
 
@@ -1023,65 +1023,65 @@ Example: (traverse-auto-document-lisp-buffer :type 'function :prefix \"^traverse
 
 See headers of traverselisp.el for example."
   `(let* ((boundary-regexp "^;; +\\*+ .*")
-         (regexp          (case ,type
-                            ('command           "^\(def\\(un\\|subst\\)")
-                            ('nested-command    "^ +\(def\\(un\\|subst\\)")
-                            ('function          "^\(def\\(un\\|subst\\|advice\\)")
-                            ('nested-function   "^ +\(def\\(un\\|subst\\|advice\\)")
-                            ('macro             "^\(defmacro")
-                            ('internal-variable "^\(defvar")
-                            ('nested-variable   "^ +\(defvar")
-                            ('user-variable     "\(defcustom")
-                            ('faces             "\(defface")
-                            ('anything-source   "^\(defvar anything-c-source")
-                            (t (error           "Unknow type"))))
-         (fn-list         (traverse-find-readlines
-                           (current-buffer)
-                           regexp
-                           :insert-fn 'buffer))
-         beg end)
+          (regexp          (case ,type
+                             ('command           "^\(def\\(un\\|subst\\)")
+                             ('nested-command    "^ +\(def\\(un\\|subst\\)")
+                             ('function          "^\(def\\(un\\|subst\\|advice\\)")
+                             ('nested-function   "^ +\(def\\(un\\|subst\\|advice\\)")
+                             ('macro             "^\(defmacro")
+                             ('internal-variable "^\(defvar")
+                             ('nested-variable   "^ +\(defvar")
+                             ('user-variable     "\(defcustom")
+                             ('faces             "\(defface")
+                             ('anything-source   "^\(defvar anything-c-source")
+                             (t (error           "Unknow type"))))
+          (fn-list         (traverse-find-readlines
+                            (current-buffer)
+                            regexp
+                            :insert-fn 'buffer))
+          beg end)
      
-    (flet ((maybe-insert-with-prefix (name)
-             (let ((doc (or (traverse-get-first-line-documentation (intern name))
-                            "Not documented.")))
-               (if ,docstring
-                   (if ,prefix
-                       (when (string-match ,prefix name)
-                         (insert (concat ";; \`" name "\'\n;; " doc "\n")))
-                       (insert (concat ";; \`" name "\'\n;; " doc "\n")))
-                   (if ,prefix
-                       (when (string-match ,prefix name)
-                         (insert (concat ";; \`" name "\'\n")))
-                       (insert (concat ";; \`" name "\'\n")))))))
-                   
-      (insert "\n") (setq beg (point))
-      (save-excursion (when (re-search-forward boundary-regexp)
-                        (forward-line -1) (setq end (point))))
-      (delete-region beg end)
-      (when (eq ,type 'anything-source) (setq regexp "\(defvar"))
-      (dolist (i fn-list)
-        (let* ((elm     (cadr i))
-               (elm1    (replace-regexp-in-string "\*" "" elm))
-               (elm-mod (replace-regexp-in-string regexp "" elm1))
-               (elm-fin (replace-regexp-in-string "\(\\|\)" ""(car (split-string elm-mod)))))
-          (case ,type
-            ('command
-             (when (commandp (intern elm-fin))
-               (maybe-insert-with-prefix elm-fin)))
-            ('nested-command
-             (when (commandp (intern elm-fin))
-               (maybe-insert-with-prefix elm-fin)))
-            ('function
-             (when (not (commandp (intern elm-fin)))
-               (maybe-insert-with-prefix elm-fin)))
-            ('nested-function
-             (when (not (commandp (intern elm-fin)))
-               (maybe-insert-with-prefix elm-fin)))
-            ('internal-variable
-             (unless (string-match "anything-c-source" elm-fin)
-               (maybe-insert-with-prefix elm-fin)))
-            (t
-             (maybe-insert-with-prefix elm-fin))))))))
+     (flet ((maybe-insert-with-prefix (name)
+              (let ((doc (or (traverse-get-first-line-documentation (intern name))
+                             "Not documented.")))
+                (if ,docstring
+                    (if ,prefix
+                        (when (string-match ,prefix name)
+                          (insert (concat ";; \`" name "\'\n;; " doc "\n")))
+                        (insert (concat ";; \`" name "\'\n;; " doc "\n")))
+                    (if ,prefix
+                        (when (string-match ,prefix name)
+                          (insert (concat ";; \`" name "\'\n")))
+                        (insert (concat ";; \`" name "\'\n")))))))
+       
+       (insert "\n") (setq beg (point))
+       (save-excursion (when (re-search-forward boundary-regexp)
+                         (forward-line -1) (setq end (point))))
+       (delete-region beg end)
+       (when (eq ,type 'anything-source) (setq regexp "\(defvar"))
+       (dolist (i fn-list)
+         (let* ((elm     (cadr i))
+                (elm1    (replace-regexp-in-string "\*" "" elm))
+                (elm-mod (replace-regexp-in-string regexp "" elm1))
+                (elm-fin (replace-regexp-in-string "\(\\|\)" ""(car (split-string elm-mod)))))
+           (case ,type
+             ('command
+              (when (commandp (intern elm-fin))
+                (maybe-insert-with-prefix elm-fin)))
+             ('nested-command
+              (when (commandp (intern elm-fin))
+                (maybe-insert-with-prefix elm-fin)))
+             ('function
+              (when (not (commandp (intern elm-fin)))
+                (maybe-insert-with-prefix elm-fin)))
+             ('nested-function
+              (when (not (commandp (intern elm-fin)))
+                (maybe-insert-with-prefix elm-fin)))
+             ('internal-variable
+              (unless (string-match "anything-c-source" elm-fin)
+                (maybe-insert-with-prefix elm-fin)))
+             (t
+              (maybe-insert-with-prefix elm-fin))))))))
 
 ;;;###autoload
 (defun traverse-auto-update-documentation ()
@@ -1119,8 +1119,8 @@ See headers of `traverselisp.el' for example."
   (let* ((ttype      (completing-read "Type: " '("command" "nested-command"
                                                  "function" "nested-function"
                                                  "macro" "internal-variable"
-                                                 "nested-variable" "faces"
-                                                 "anything-source") nil t))
+                                                 "user-variable" "nested-variable"
+                                                 "faces" "anything-source") nil t))
          (prefix     (read-string "Prefix: " (traverse-auto-document-default-prefix)))
          (prefix-arg (concat " :prefix " "\"" prefix "\"")))
     (insert (concat ";;  * " title "\n"
@@ -1165,7 +1165,7 @@ Special commands:
   :type  'string)
 
 (defcustom traverse-incremental-docstring
-  "     [RET:exit, C-g:quit, C-k:kill, C-z:Jump, C-j:Jump&quit, C-n/p:next/prec-line, M-p/n:hist]"
+  "     [RET:exit, C-g:quit, C-k:kill, C-z:Jump, C-j:Jump&quit, C-n/p:next/prec-line, M-p/n:hist, C/M-v/C-,/;:Scroll]"
   "*Documentation of `traverse-incremental-occur' prompt.
 Set it to nil to remove doc in prompt."
   :group 'traverse
@@ -1302,33 +1302,43 @@ Set it to nil to remove doc in prompt."
                           (concat prompt traverse-incremental-search-pattern
                                   traverse-incremental-docstring))))
                (case char
-                 ((down ?\C-n)                 ; Next line
+                 ((down ?\C-n)                 ; Next line.
                   (when traverse-incremental-search-timer
                     (traverse-incremental-cancel-search))
                   (traverse-incremental-next-line)
                   (traverse-incremental-occur-color-current-line) t)
-                 ((up ?\C-p)                   ; Precedent line
+                 ((up ?\C-p)                   ; Precedent line.
                   (when traverse-incremental-search-timer
                     (traverse-incremental-cancel-search))
                   (traverse-incremental-precedent-line)
                   (traverse-incremental-occur-color-current-line) t)
+                 (?\C-\;                       ; Scroll both windows down.
+                  (when traverse-incremental-search-timer
+                    (traverse-incremental-cancel-search))
+                  (traverse-incremental-scroll-down) t)
+                 (?\C-\,                       ; Scroll both windows up.
+                  (when traverse-incremental-search-timer
+                    (traverse-incremental-cancel-search))
+                  (traverse-incremental-scroll-up) t)
                  ((?\e ?\r) (message nil) nil) ; RET or ESC break and exit code.
                  (?\d                          ; Delete backward with DEL.
                   (unless traverse-incremental-search-timer
                     (traverse-incremental-start-timer))
-                  (pop tmp-list))
+                  (pop tmp-list) t)
                  (?\C-g                        ; Quit and restore buffers.
                   (setq traverse-incremental-quit-flag t) nil)
-                 ((or right ?\C-z)             ; persistent action
+                 ((or right ?\C-z)             ; persistent action.
                   (traverse-incremental-jump) (other-window 1) t)
                  ((left ?\C-j)                 ; Jump to candidate and kill search buffer.
                   (setq traverse-incremental-exit-and-quit-p t) nil)
-                 (?\C-v                        ; Scroll down
+                 (?\C-v                        ; Scroll down.
                   (scroll-other-window 1) t)
-                 (?\C-k                        ; Kill input
+                 (?\C-k                        ; Kill input.
+                  (unless traverse-incremental-search-timer
+                    (traverse-incremental-start-timer))
                   (kill-new traverse-incremental-search-pattern)
                   (setq tmp-list ()) t)
-                 (?\M-v                        ; Scroll up
+                 (?\M-v                        ; Scroll up.
                   (scroll-other-window -1) t)
                  (?\M-p                        ; Precedent history elm.
                   (unless traverse-incremental-search-timer
@@ -1338,7 +1348,7 @@ Set it to nil to remove doc in prompt."
                   (unless traverse-incremental-search-timer
                     (traverse-incremental-start-timer))
                   (cycle-hist 1))
-                 (t                            ; Store character
+                 (t                            ; Store character.
                   (unless traverse-incremental-search-timer
                     (traverse-incremental-start-timer))
                   (if (characterp char)

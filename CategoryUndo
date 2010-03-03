@@ -6,6 +6,7 @@ In Emacs, '''[::undo]''' means undoing changes to buffers. However, this page in
 
 * GotoLastChange, GotoChg  -- move [[point]] through `buffer-undo-list' positions
 * RedoMode -- simplify the current undo mechanism to be more MS Windows like (and thus less powerful)
+* RedoPlus -- a fork of redo.el which can correctly work in newer version of Emacs
 * SelectiveUndo -- only undo changes in a certain region
 * UndoBrowse -- powerful undo system (back/forth/movie/redo/hilight)
 * TrackChanges -- view changes to a file

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Feb 14 09:29:19 2010 (-0800)
+;; Last-Updated: Tue Mar  2 22:52:51 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 15331
+;;     Update #: 15391
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -19,10 +19,10 @@
 ;;
 ;;   `apropos', `apropos-fn+var', `cl', `color-theme', `cus-face',
 ;;   `doremi', `easymenu', `el-swank-fuzzy', `ffap', `ffap-',
-;;   `fuzzy-match', `hexrgb', `icicles-fn', `icicles-opt',
-;;   `icicles-var', `kmacro', `levenshtein', `mwheel', `pp', `pp+',
-;;   `reporter', `ring', `ring+', `sendmail', `thingatpt',
-;;   `thingatpt+', `wid-edit', `wid-edit+', `widget'.
+;;   `fuzzy-match', `hexrgb', `icicles-face', `icicles-fn',
+;;   `icicles-opt', `icicles-var', `kmacro', `levenshtein', `mwheel',
+;;   `pp', `pp+', `reporter', `ring', `ring+', `sendmail',
+;;   `thingatpt', `thingatpt+', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -1331,7 +1331,7 @@ order instead, updating `icicle-alternative-sort-function'."
     (if (and arg (not (consp arg)))
         (icicle-reverse-sort-order)
       (let (next-order)
-        (cond ((or (and icicle-change-sort-order-completion-flag (not arg))
+        (cond ((or (and icicle-change-sort-order-completion-flag (not arg)) ; Use completion.
                    (and (not icicle-change-sort-order-completion-flag) arg))
                (setq next-order  (let ((icicle-whole-candidate-as-text-prop-p  nil)
                                        (enable-recursive-minibuffers           t))
@@ -1341,7 +1341,7 @@ order instead, updating `icicle-alternative-sort-function'."
                                     nil t)))
                (set (if alternativep 'icicle-alternative-sort-function 'icicle-sort-function)
                     (cdr (assoc next-order icicle-sort-functions-alist))))
-              (t
+              (t                        ; Cycle to next sort order.
                (let ((orders  (mapcar #'car (icicle-current-sort-functions))))
                  (setq next-order  (or (cadr (memq (icicle-current-sort-order alternativep) orders))
                                        (car orders)))
@@ -6324,10 +6324,10 @@ Bound to `C-A' in the minibuffer, that is, `C-S-a'."
 (defun icicle-remove-Completions-window () ; `icicle-delete-window' (`C-x 0') does this in minibuffer.
   "Remove the *Completions* window."
   (interactive)
-  ;; Ignore error, in particular, "Attempt to delete the sole visible or iconified frame".
-  (condition-case nil
-      (icicle-delete-windows-on "*Completions*")
-    (error nil)))
+  (when (and (get-buffer-window "*Completions*" 'visible) ; Only if visible and not the selected window.
+             (not (eq (window-buffer (selected-window)) (get-buffer "*Completions*"))))
+    ;; Ignore error, in particular, "Attempt to delete the sole visible or iconified frame".
+    (condition-case nil (icicle-delete-windows-on "*Completions*")  (error nil))))
 
 ;; This is actually a top-level command, but it is in this file because it is used by
 ;; `icicle-remove-Completions-window'.
@@ -6335,26 +6335,29 @@ Bound to `C-A' in the minibuffer, that is, `C-S-a'."
 (defun icicle-delete-windows-on (buffer)
   "Delete all windows showing BUFFER.
 If such a window is alone in its frame, then delete the frame - unless
-it is a standalone minibuffer frame."
+it is the only frame or a standalone minibuffer frame."
   (interactive
    (list (let ((enable-recursive-minibuffers  t))
            (read-buffer "Remove all windows showing buffer: " (current-buffer) 'existing))))
   (setq buffer  (get-buffer buffer))    ; Convert to buffer.
   (when buffer                          ; Do nothing if null BUFFER.
     ;; Avoid error message "Attempt to delete minibuffer or sole ordinary window".
-    (let ((frames  (icicle-frames-on buffer t)))
-      (unless (and frames (null (cdr frames)) ; One frame shows buffer.
-                   (cdr (assoc 'minibuffer (frame-parameters (car frames)))) ; Has a minibuffer.
-                   (eq (cdr (assoc 'minibuffer (frame-parameters (car frames)))) ; It's the active one.
-                       (active-minibuffer-window))
+    (let* ((this-buffer-frames  (icicle-frames-on buffer t))
+           (this-frame          (car this-buffer-frames)))
+      (unless (and this-frame (frame-visible-p this-frame)
+                   (null (cdr this-buffer-frames)) ; Only one frame shows BUFFER.
+                   (eq (cdr (assoc 'minibuffer (frame-parameters this-frame)))
+                       (active-minibuffer-window)) ; Has an active minibuffer.
                    (save-window-excursion
-                     (select-frame (car frames))
-                     (one-window-p t 'selected-frame))) ; Only one window.
+                     (select-frame this-frame)
+                     (one-window-p t 'SELECTED-FRAME-ONLY))) ; Only one window.
         (let (win)
-          (dolist (fr frames)
+          (dolist (fr  this-buffer-frames)
             (setq win  (get-buffer-window buffer fr))
             (select-window win)
-            (if (one-window-p t) (delete-frame) (delete-window (selected-window)))))))))
+            (if (and (one-window-p t) (cdr (visible-frame-list))) ; Sole window but not sole frame.
+                (delete-frame)
+              (delete-window (selected-window)))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

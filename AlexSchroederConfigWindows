@@ -5,7 +5,7 @@
 ;; Currently for GNU Emacs 23.0.60.1 (i386-mingw-nt5.1.2600) of 2008-09-09 on LENNART-69DE564 (patched)
 
 (add-to-list 'load-path (expand-file-name "elisp" (getenv "HOME")))
-;; (add-to-list 'exec-path "c:/Program Files/GnuWin32/bin")
+(add-to-list 'exec-path "c:/cygwin/bin")
 (add-to-list 'exec-path "c:/Programme/GnuWin32/bin")
 (add-to-list 'exec-path "C:/oracle/product/10.2.0/db_1/bin")
 (server-start)
@@ -74,8 +74,11 @@
 		 (list from (query-replace-read-to from "Replace" nil))))
   (query-replace from to))
 
-;; printing to NRG DSc445 PCL 5c
-(setq ps-printer-name "\\\\fileserver03\\NRGDSc44")
+;; printing PDF
+(setq ps-printer-name "\\\\fileserver03\\PDF_FOR_ALL"
+      ps-spool-duplex t
+      ps-print-header nil
+      ps-use-face-background t)
 
 ;; iswitchb
 (iswitchb-mode 1)
@@ -529,7 +532,7 @@ Each line consists of a lastname, a tab, and a firstname."
       ;; "#emacs-fu" "#haskell" "#openfire" "##jabber" "#tentacle"
       ;; "#openbsd" "#hcoop" "#scrum" "#eclipse" "#eclipse-de" "#osgi"
       rcirc-decode-coding-system 'undecided
-      rcirc-ignore-list '()
+      rcirc-ignore-list '("ams" "consolers")
       rcirc-authinfo (let ((file "~/.rcirc-authinfo"))
 		       (when (file-readable-p file)
 			 (with-temp-buffer
@@ -930,13 +933,9 @@ br.page {
 (setq calendar-week-start-day 1
       calendar-day-name-array ["Sonntag" "Montag" "Dienstag" "Mittwoch"
 			       "Donnerstag" "Freitag" "Samstag"]
-      calendar-month-name-array
-      (apply 'vector
-	     (mapcar (lambda (s)
-		       (encode-coding-string s 'latin-1))
-		     '("Januar" "Februar" "März" "April" "Mai"
+      calendar-month-name-array ["Januar" "Februar" "März" "April" "Mai"
 		       "Juni" "Juli" "August" "September"
-		       "Oktober" "November" "Dezember"))))
+		       "Oktober" "November" "Dezember"])
 
 ;;; Working with the edic and kanjidic files
 

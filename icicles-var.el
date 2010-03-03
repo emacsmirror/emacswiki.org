@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Feb 17 08:54:10 2010 (-0800)
+;; Last-Updated: Tue Mar  2 23:50:20 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 1050
+;;     Update #: 1056
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -19,8 +19,9 @@
 ;;
 ;;   `apropos', `apropos-fn+var', `cl', `color-theme', `cus-face',
 ;;   `easymenu', `el-swank-fuzzy', `ffap', `ffap-', `fuzzy-match',
-;;   `hexrgb', `icicles-opt', `kmacro', `levenshtein', `reporter',
-;;   `sendmail', `thingatpt', `thingatpt+', `wid-edit', `widget'.
+;;   `hexrgb', `icicles-face', `icicles-opt', `kmacro',
+;;   `levenshtein', `reporter', `sendmail', `thingatpt',
+;;   `thingatpt+', `wid-edit', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -104,8 +105,8 @@
 ;;    `icicle-progressive-completing-p',
 ;;    `icicle-proxy-candidate-regexp', `icicle-proxy-candidates',
 ;;    `icicle-read-expression-map', `icicle-re-no-dot',
-;;    `icicle-require-match-p', `icicle-reverse-sort-p',
-;;    `icicle-saved-candidate-overlays',
+;;    `icicle-require-match-p', `icicle-reverse-multi-sort-p',
+;;    `icicle-reverse-sort-p', `icicle-saved-candidate-overlays',
 ;;    `icicle-saved-candidates-variables-obarray',
 ;;    `icicle-saved-completion-candidate',
 ;;    `icicle-saved-completion-candidates',
@@ -123,7 +124,7 @@
 ;;    `icicle-search-overlays', `icicle-search-refined-overlays',
 ;;    `icicle-search-replacement',
 ;;    `icicle-search-replacement-history',
-;;    `icicle-successive-grab-count',
+;;    `icicle-sorted-bookmark-alist', `icicle-successive-grab-count',
 ;;    `icicle-text-property-value-history',
 ;;    `icicle-thing-at-pt-fns-pointer',
 ;;    `icicle-universal-argument-map',
@@ -549,7 +550,7 @@ noted in parentheses.
 * `icicle-show-Completions-help-flag'    - Show *Completions* help?
 * `icicle-show-Completions-initially-flag'- Show *Completions* first?
 * `icicle-sort-function'                 - Sort candidates (`C-,')
-* `icicle-sort-functions-alist'          - Functions for sorting
+* `icicle-sort-orders-alist'             - Predicates for sorting
 * `icicle-special-candidate-regexp'      - To highlight special cands
 * `icicle-TAB-shows-candidates-flag'     - 1st `TAB' shows candidates?
 * `icicle-test-for-remote-files-flag'    - Check remote files? (`C-^')
@@ -967,6 +968,12 @@ Several Emacs-Lisp mode key bindings are used.")
 Starting with Emacs 23, this is no longer enough to tell whether a
 match is required - use function `icicle-require-match-p' instead.")
 
+(defvar icicle-reverse-multi-sort-p nil
+  "Non-nil means the truth values returned by predicates are complemented.
+This changes the order of the sorting groups, but it does not in
+general reverse that order.  The order within each group is unchanged
+\(not reversed).")
+
 (defvar icicle-reverse-sort-p nil
   "Non-nil means that candidates are being sorted in the reverse order.")
 
@@ -1059,6 +1066,10 @@ a single overlay (or nil).  Otherwise, this is a list of overlays.")
 
 (defvar icicle-search-replacement-history nil
   "History variable for reading replacement string for `icicle-search'.")
+
+(defvar icicle-sorted-bookmark-alist ()
+  "Copy of current bookmark alist, sorted, and with faces for types.
+Has the same structure as `bookmark-alist'.")
 
 (defvar icicle-successive-grab-count 0
   "Number of text things to be grabbed by next `\\<minibuffer-local-map>\

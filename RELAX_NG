@@ -1,0 +1,13 @@
+RELAX NG (REgular LAnguage for XML Next Generation) is a schema language for XML. See [http://en.wikipedia.org/wiki/RELAX_NG Wikipedia article].
+
+= Editing modes =
+
+RELAX NG has both an XML syntax and a compact non-XML syntax.
+
+You can find Emacs related stuff into http://relaxng.org/ page.
+
+== RNC Emacs Mode ==
+
+[http://www.pantor.com/download.html home page]
+
+A small emacs mode for editing RELAX NG schemas in the compact syntax. XML syntax not supported. Written by David Rosenborg. Open source (BSD license).

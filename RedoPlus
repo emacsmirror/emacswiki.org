@@ -1,0 +1,26 @@
+redo.el provides a linear undo/redo system which is easy to understand for many people. However, redo.el is out-of-date and often destroys the contents of buffer because the behavior of `primitive-undo' has been slightly different from old one since Emacs 22. redo+.el is a fork of redo.el and correctly works in newer version of Emacs. This program also adds items to menubar/toolbar.
+
+== Downloading ==
+
+* Lisp:redo+.el
+* [http://www11.atwiki.jp/s-irie/pages/18.html Web site (in Japanese)]
+
+== Installation ==
+
+To use redo+.el, save this file in a directory listed in load-path and add the following to your ~/.emacs:
+
+  (require 'redo+)
+  (global-set-key (kbd "C-?") 'redo)
+
+If you'd like to discard the old undo branch immediately, put an additional line as:
+
+  (setq undo-no-redo t)
+
+Have fun!
+
+== Screenshot ==
+
+[[image:RedoPlusScreenshot]]
+
+----
+CategoryUndo

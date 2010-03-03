@@ -61,6 +61,19 @@ Then in your ~/.emacs:
  (when (equal "23" (substring emacs-version 0 2))
      (global-set-key '[8711] 'dabbrev-expand))
 
+== Using CapsLock as Hyper Modifier ==
+
+More modifiers are always good :-)
+
+In ~/.Xmodmap, remap the Caps_Lock key to some suitable key:
+
+ ! Caps Lock -> Nabla
+ keycode 66 = nabla
+
+If you add this to your .emacs you will get an Hyper key in gtk and in an xterm!
+                                                                                                                                                       (define-key key-translation-map [8711] 'event-apply-hyper-modifier)
+
+
 == Undo / Redo mapping on win32 ==
 
 [new:MathiasDahl:2004-11-19 12:47 UTC]

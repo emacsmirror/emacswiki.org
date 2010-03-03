@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Mar  1 14:17:36 2010 (-0800)
+;; Last-Updated: Tue Mar  2 22:35:25 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 11527
+;;     Update #: 11569
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -385,9 +385,10 @@
 ;;    `bookmarkp-last-save-flag-value',
 ;;    `bookmarkp-latest-bookmark-alist',
 ;;    `bookmarkp-non-file-filename', `bookmarkp-reverse-multi-sort-p',
-;;    `bookmarkp-reverse-sort-p', `bookmarkp-tag-history',
-;;    `bookmarkp-tags-list', `bookmarkp-types-alist',
-;;    `bookmarkp-use-w32-browser-p', `bookmarkp-version-number'.
+;;    `bookmarkp-reverse-sort-p', `bookmarkp-sorted-alist',
+;;    `bookmarkp-tag-history', `bookmarkp-tags-list',
+;;    `bookmarkp-types-alist', `bookmarkp-use-w32-browser-p',
+;;    `bookmarkp-version-number'.
 ;;
 ;;
 ;;  ***** NOTE: The following commands defined in `bookmark.el'
@@ -1486,6 +1487,13 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2010/03/02 dadams
+;;     Added: bookmarkp-sorted-alist.
+;;     *-bmenu-list-1: Use bookmarkp-sorted-alist.
+;;     *-sort-and-remove-dups: Set result to bookmarkp-sorted-alist.
+;;     All *-cp (and hence *-define-file-sort-predicate):
+;;       Accept bookmark names as args, in addition to bookmarks.
+;;     bookmark-alpha-p: Don't use bookmarkp-make-plain-predicate, to avoid infinite recursion.
 ;; 2010/02/28 dadams
 ;;     Added: bookmarkp-send-bug-report.
 ;;     bookmarkp-bmenu-mode-status-help: Rewrote to provide only Bookmark+ help.  Added help buttons.
@@ -2387,9 +2395,14 @@ not.  A file bookmark sorts before a non-file bookmark.  Only local
 files are tested for attributes - remote-file bookmarks are treated
 here like non-file bookmarks."
   `(defun ,(intern (format "bookmarkp-file-attribute-%d-cp" att-nb)) (b1 b2)
-    ,(format "Sort files by attribute %d, then file names with no files, \
-then the rest."
+    ,(format "Sort file bookmarks by attribute %d.
+B1 and B2 are bookmarks or bookmark names.
+Sort bookmarks with file attributes before those without attributes
+Sort file bookmarks before non-file bookmarks.
+Treat remote file bookmarks like non-file bookmarks."
              att-nb)
+    (setq b1  (bookmark-get-bookmark b1))
+    (setq b2  (bookmark-get-bookmark b2))
     (let (a1 a2)
       (cond (;; Both are file bookmarks.
              (and (bookmarkp-file-bookmark-p b1)
@@ -2775,9 +2788,9 @@ or nil) into an ordinary predicate, by using function
 `bookmarkp-make-plain-predicate'.  That lets you reuse elsewhere, as
 ordinary predicates, any PRED-type predicates you define.
 
-For example, this defines a plain predicate to compare bookmark names:
- (defalias 'bookmarkp-alpha-p
-           (bookmarkp-make-plain-predicate 'bookmarkp-alpha-cp))
+For example, this defines a plain predicate to compare by W3M URL:
+ (defalias 'bookmarkp-w3m-p
+           (bookmarkp-make-plain-predicate 'bookmarkp-w3m-cp))
 
 Note: As a convention, predefined Bookmark+ PRED-type predicate names
 have the suffix `-cp' (for \"component predicate\") instead of `-p'.
@@ -2981,6 +2994,12 @@ The first time the list is displayed, it is set to nil.")
 
 (defvar bookmarkp-last-save-flag-value nil
   "Last value of option `bookmark-save-flag'.")
+
+(defvar bookmarkp-sorted-alist ()
+  "Copy of current bookmark alist, as sorted for buffer `*Bookmark List*'.
+Has the same structure as `bookmark-alist'.
+This is set by function `bookmarkp-sort-and-remove-dups'.
+Use that function to update the value.")
 
 (defvar bookmarkp-tag-history ()
   "History of tags read from the user.")
@@ -4277,16 +4296,14 @@ Non-nil INTERACTIVEP means `bookmark-bmenu-list' was called
     (insert (format "%s\n%s\n" title (make-string (length title) ?-)))
     (add-text-properties (point-min) (point) (bookmarkp-face-prop 'bookmarkp-heading))
     (let ((max-width     0)
-          (sorted-alist  (bookmarkp-sort-and-remove-dups
-                          bookmark-alist
-                          (and (not (eq bookmarkp-bmenu-filter-function
-                                        'bookmarkp-omitted-alist-only))
-                               bookmarkp-bmenu-omitted-list)))
           name markedp taggedp annotation start)
-      (dolist (bmk  sorted-alist)
+      (bookmarkp-sort-and-remove-dups bookmark-alist (and (not (eq bookmarkp-bmenu-filter-function
+                                                                   'bookmarkp-omitted-alist-only))
+                                                          bookmarkp-bmenu-omitted-list))
+      (dolist (bmk  bookmarkp-sorted-alist)
         (setq max-width  (max max-width (length (bookmark-name-from-full-record bmk)))))
       (setq max-width  (+ max-width bookmarkp-bmenu-marks-width))
-      (dolist (bmk  sorted-alist)
+      (dolist (bmk  bookmarkp-sorted-alist)
         (setq name        (bookmark-name-from-full-record bmk)
               markedp     (bookmarkp-marked-bookmark-p bmk)
               taggedp     (bookmarkp-get-tags bmk)
@@ -6845,7 +6862,7 @@ the plain-predicate equivalent of `bookmarkp-alpha-cp' is used as the
 final predicate."
   `(lambda (b1 b2)
     (let ((res  (funcall ',pred b1 b2)))
-      (if res  (car res)  (funcall ',(or final-pred 'bookmarkp-alpha-p) b1 b2)))))
+      (if res (car res) (funcall ',(or final-pred 'bookmarkp-alpha-p) b1 b2)))))
 
 ;;; If you need this for some reason, uncomment it.
 ;;; (defun bookmarkp-fix-bookmark-alist-and-save ()
@@ -6919,25 +6936,29 @@ BOOKMARK is a bookmark name or a bookmark record."
 ;;  *** Sorting - General Functions ***
 
 (defun bookmarkp-sort-and-remove-dups (alist &optional omit)
-  "Return a sorted copy of ALIST, with no duplicates.
-Only the first element with a given key is kept.
-Keys are compared using `equal'.
-If optional arg OMIT is non-nil, then omit from the return value any
-elements with keys in list OMIT.
-Sorting is done using using `bookmarkp-sort-comparer'.
+  "Remove duplicates from a copy of ALIST, then sort it.
+Set variable `bookmarkp-sorted-alist' to the result, and return it.
 Do not sort if `bookmarkp-sort-comparer' is nil.
-If `bookmarkp-reverse-sort-p' is non-nil, then reverse the sort order."
-  (let ((newlist  (bookmarkp-remove-assoc-dups alist omit))
-        (sort-fn  (and bookmarkp-sort-comparer
+Always remove duplicates.  Keep only the first element with a given
+key.  This is a non-destructive operation: ALIST is not modified.
+
+Sorting is done using using `bookmarkp-sort-comparer'.
+If `bookmarkp-reverse-sort-p' is non-nil, then reverse the sort order.
+Keys are compared for sorting using `equal'.
+If optional arg OMIT is non-nil, then omit from the return value any
+elements with keys in list OMIT."
+  (setq bookmarkp-sorted-alist  (bookmarkp-remove-assoc-dups alist omit))
+  (let ((sort-fn  (and bookmarkp-sort-comparer
                        (if (and (not (functionp bookmarkp-sort-comparer))
                                 (consp bookmarkp-sort-comparer))
                            'bookmarkp-multi-sort
                          bookmarkp-sort-comparer))))
     (when sort-fn
-      (setq newlist  (sort newlist (if bookmarkp-reverse-sort-p
-                                       (lambda (a b) (not (funcall sort-fn a b)))
-                                     sort-fn))))
-    newlist))
+      (setq bookmarkp-sorted-alist
+            (sort bookmarkp-sorted-alist (if bookmarkp-reverse-sort-p
+                                             (lambda (a b) (not (funcall sort-fn a b)))
+                                           sort-fn))))
+    bookmarkp-sorted-alist))
 
 ;;; KEEP this simpler version also.  This uses `run-hook-with-args-until-success', but it
 ;;; does not respect `bookmarkp-reverse-multi-sort-p'.
@@ -7267,9 +7288,12 @@ this value."
 
 (defun bookmarkp-marked-cp (b1 b2)
   "True if bookmark B1 is marked and bookmark B2 is not.
+B1 and B2 are bookmarks or bookmark names.
 Reverse the roles of B1 and B2 for a false value.
 A true value is returned as `(t)', a false value as `(nil)'.
 Return nil if incomparable as described."
+  (setq b1  (bookmark-get-bookmark b1)
+        b2  (bookmark-get-bookmark b2))
   (let ((m1  (bookmarkp-marked-bookmark-p b1))
         (m2  (bookmarkp-marked-bookmark-p b2)))
     (cond ((and m1 m2) nil)
@@ -7279,10 +7303,13 @@ Return nil if incomparable as described."
 
 (defun bookmarkp-visited-more-cp (b1 b2)
   "True if bookmark B1 was visited more often than B2.
+B1 and B2 are bookmarks or bookmark names.
 True also if B1 was visited but B2 was not.
 Reverse the roles of B1 and B2 for a false value.
 A true value is returned as `(t)', a false value as `(nil)'.
 Return nil if incomparable as described."
+  (setq b1  (bookmark-get-bookmark b1)
+        b2  (bookmark-get-bookmark b2))
   (let ((v1  (bookmarkp-get-visits-count b1))
         (v2  (bookmarkp-get-visits-count b2)))
     (cond ((and v1 v2)
@@ -7295,10 +7322,13 @@ Return nil if incomparable as described."
 
 (defun bookmarkp-bookmark-last-access-cp (b1 b2)
   "True if bookmark B1 was visited more recently than B2.
+B1 and B2 are bookmarks or bookmark names.
 True also if B1 was visited but B2 was not.
 Reverse the roles of B1 and B2 for a false value.
 A true value is returned as `(t)', a false value as `(nil)'.
 Return nil if incomparable as described."
+  (setq b1  (bookmark-get-bookmark b1)
+        b2  (bookmark-get-bookmark b2))
   (let ((t1  (bookmarkp-get-visit-time b1))
         (t2  (bookmarkp-get-visit-time b2)))
     (cond ((and t1 t2)
@@ -7313,6 +7343,7 @@ Return nil if incomparable as described."
 
 (defun bookmarkp-buffer-last-access-cp (b1 b2)
   "True if bookmark B1's buffer or file was visited more recently than B2's.
+B1 and B2 are bookmarks or bookmark names.
 A bookmark to an existing buffer sorts before a file bookmark, even if
 the buffer has not been visited during this session.
 
@@ -7320,6 +7351,8 @@ True also if B1 has a buffer but B2 does not.
 Reverse the roles of B1 and B2 for a false value.
 A true value is returned as `(t)', a false value as `(nil)'.
 Return nil if incomparable as described."
+  (setq b1  (bookmark-get-bookmark b1)
+        b2  (bookmark-get-bookmark b2))
   (let ((buf1  (bookmarkp-get-buffer-name b1))
         (buf2  (bookmarkp-get-buffer-name b2))
         f1 f2 t1 t2)
@@ -7344,12 +7377,15 @@ Return nil if incomparable as described."
 
 (defun bookmarkp-handler-cp (b1 b2)
   "True if bookmark B1's handler name sorts alphabetically before B2's.
+B1 and B2 are bookmarks or bookmark names.
 Two bookmarks with handlers are compared alphabetically, by their
 handler-function names, respecting `case-fold-search'.
 True also if B1 has a handler but B2 has not.
 Reverse the roles of B1 and B2 for a false value.
 A true value is returned as `(t)', a false value as `(nil)'.
 Return nil if neither sorts before the other."
+  (setq b1  (bookmark-get-bookmark b1)
+        b2  (bookmark-get-bookmark b2))
   (let ((h1  (bookmark-get-handler b1))
         (h2  (bookmark-get-handler b2)))
     (cond ((and h1 h2 (symbolp h1) (symbolp h2))
@@ -7369,12 +7405,15 @@ Return nil if neither sorts before the other."
 
 (defun bookmarkp-info-cp (b1 b2)
   "True if bookmark B1 sorts as an Info bookmark before B2.
+B1 and B2 are bookmarks or bookmark names.
 Two Info bookmarks are compared first by file name (corresponding to
 the manual), then by node name, then by position.
 True also if B1 is an Info bookmark but B2 is not.
 Reverse the roles of B1 and B2 for a false value.
 A true value is returned as `(t)', a false value as `(nil)'.
 Return nil if neither sorts before the other."
+  (setq b1  (bookmark-get-bookmark b1)
+        b2  (bookmark-get-bookmark b2))
   (let ((i1  (bookmarkp-info-bookmark-p b1))
         (i2  (bookmarkp-info-bookmark-p b2)))
     (cond ((and i1 i2)
@@ -7401,12 +7440,15 @@ Return nil if neither sorts before the other."
 
 (defun bookmarkp-gnus-cp (b1 b2)
   "True if bookmark B1 sorts as a Gnus bookmark before B2.
+B1 and B2 are bookmarks or bookmark names.
 Two Gnus bookmarks are compared first by Gnus group name, then by
 article number, then by message ID.
 True also if B1 is a Gnus bookmark but B2 is not.
 Reverse the roles of B1 and B2 for a false value.
 A true value is returned as `(t)', a false value as `(nil)'.
 Return nil if neither sorts before the other."
+  (setq b1  (bookmark-get-bookmark b1)
+        b2  (bookmark-get-bookmark b2))
   (let ((g1  (bookmarkp-gnus-bookmark-p b1))
         (g2  (bookmarkp-gnus-bookmark-p b2)))
     (cond ((and g1 g2)
@@ -7431,11 +7473,14 @@ Return nil if neither sorts before the other."
 
 (defun bookmarkp-w3m-cp (b1 b2)
   "True if bookmark B1 sorts as a W3M URL bookmark before B2.
+B1 and B2 are bookmarks or bookmark names.
 Two W3M URL bookmarks are compared alphabetically, by their URLs.
 True also if B1 is a W3M bookmark but B2 is not.
 Reverse the roles of B1 and B2 for a false value.
 A true value is returned as `(t)', a false value as `(nil)'.
 Return nil if neither sorts before the other."
+  (setq b1  (bookmark-get-bookmark b1)
+        b2  (bookmark-get-bookmark b2))
   (let ((w1  (bookmarkp-w3m-bookmark-p b1))
         (w2  (bookmarkp-w3m-bookmark-p b2)))
     (cond ((and w1 w2)
@@ -7450,10 +7495,13 @@ Return nil if neither sorts before the other."
 
 (defun bookmarkp-alpha-cp (b1 b2)
   "True if bookmark B1's name sorts alphabetically before B2's.
+B1 and B2 are bookmarks or bookmark names.
 The bookmark names are compared, respecting `case-fold-search'.
 Reverse the roles of B1 and B2 for a false value.
 A true value is returned as `(t)', a false value as `(nil)'.
 Return nil if neither sorts before the other."
+  (setq b1  (bookmark-get-bookmark b1)
+        b2  (bookmark-get-bookmark b2))
   (let ((s1  (car b1))
         (s2  (car b2)))
     (when case-fold-search (setq s1  (bookmarkp-upcase s1)
@@ -7462,7 +7510,15 @@ Return nil if neither sorts before the other."
           ((string-lessp s2 s1) '(nil))
           (t nil))))
 
-(defalias 'bookmarkp-alpha-p (bookmarkp-make-plain-predicate 'bookmarkp-alpha-cp))
+;; Do not use `bookmarkp-make-plain-predicate', because it falls back on `bookmark-alpha-p'.
+;; Return nil if `bookmark-alpha-cp' cannot decide.
+(defun bookmarkp-alpha-p (b1 b2)
+  "True if bookmark B1's name sorts alphabetically before B2's.
+B1 and B2 are bookmarks or bookmark names.
+The bookmark names are compared, respecting `case-fold-search'."
+  (setq b1  (bookmark-get-bookmark b1)
+        b2  (bookmark-get-bookmark b2))
+  (car (bookmarkp-alpha-cp b1 b2)))
 
 
 ;;(@* "Sorting - File-Name Predicates")
@@ -7470,12 +7526,15 @@ Return nil if neither sorts before the other."
 
 (defun bookmarkp-file-alpha-cp (b1 b2)
   "True if bookmark B1's file name sorts alphabetically before B2's.
+B1 and B2 are bookmarks or bookmark names.
 The file names are shortened using `abbreviate-file-name', then they
 are compared respecting `case-fold-search'.
 
 Reverse the roles of B1 and B2 for a false value.
 A true value is returned as `(t)', a false value as `(nil)'.
 Return nil if neither sorts before the other."
+  (setq b1  (bookmark-get-bookmark b1)
+        b2  (bookmark-get-bookmark b2))
   (let ((f1  (bookmarkp-file-bookmark-p b1))
         (f2  (bookmarkp-file-bookmark-p b2)))
     (cond ((and f1 f2)
@@ -7521,6 +7580,7 @@ Return nil if neither sorts before the other."
 
 (defun bookmarkp-local-file-accessed-more-recently-cp (b1 b2)
   "True if bookmark B1's local file was accessed more recently than B2's.
+B1 and B2 are bookmarks or bookmark names.
 A local file sorts before a remote file, which sorts before other
 bookmarks.  Two remote files are considered incomparable - their
 access times are not examined.
@@ -7528,6 +7588,8 @@ access times are not examined.
 Reverse the roles of B1 and B2 for a false value.
 A true value is returned as `(t)', a false value as `(nil)'.
 Return nil if neither sorts before the other."
+  (setq b1  (bookmark-get-bookmark b1)
+        b2  (bookmark-get-bookmark b2))
   (cond ((and (bookmarkp-local-file-bookmark-p b1) (bookmarkp-local-file-bookmark-p b2))
          (bookmarkp-cp-not (bookmarkp-file-attribute-4-cp b1 b2)))
         ((bookmarkp-local-file-bookmark-p b1) '(t))
@@ -7539,6 +7601,7 @@ Return nil if neither sorts before the other."
 
 (defun bookmarkp-local-file-updated-more-recently-cp (b1 b2)
   "True if bookmark B1's local file was updated more recently than B2's.
+B1 and B2 are bookmarks or bookmark names.
 A local file sorts before a remote file, which sorts before other
 bookmarks.  Two remote files are considered incomparable - their
 update times are not examined.
@@ -7546,6 +7609,8 @@ update times are not examined.
 Reverse the roles of B1 and B2 for a false value.
 A true value is returned as `(t)', a false value as `(nil)'.
 Return nil if neither sorts before the other."
+  (setq b1  (bookmark-get-bookmark b1)
+        b2  (bookmark-get-bookmark b2))
   (cond ((and (bookmarkp-local-file-bookmark-p b1) (bookmarkp-local-file-bookmark-p b2))
          (bookmarkp-cp-not (bookmarkp-file-attribute-5-cp b1 b2)))
         ((bookmarkp-local-file-bookmark-p b1) '(t))
@@ -7557,6 +7622,7 @@ Return nil if neither sorts before the other."
 
 (defun bookmarkp-local-file-size-cp (b1 b2)
   "True if bookmark B1's local file is larger than B2's.
+B1 and B2 are bookmarks or bookmark names.
 A local file sorts before a remote file, which sorts before other
 bookmarks.  Two remote files are considered incomparable - their
 sizes are not examined.
@@ -7564,6 +7630,8 @@ sizes are not examined.
 Reverse the roles of B1 and B2 for a false value.
 A true value is returned as `(t)', a false value as `(nil)'.
 Return nil if neither sorts before the other."
+  (setq b1  (bookmark-get-bookmark b1)
+        b2  (bookmark-get-bookmark b2))
   (cond ((and (bookmarkp-local-file-bookmark-p b1) (bookmarkp-local-file-bookmark-p b2))
          (bookmarkp-cp-not (bookmarkp-file-attribute-7-cp b1 b2)))
         ((bookmarkp-local-file-bookmark-p b1) '(t))
@@ -7575,6 +7643,7 @@ Return nil if neither sorts before the other."
 
 (defun bookmarkp-local-file-type-cp (b1 b2)
   "True if bookmark B1 sorts by local file type before B2.
+B1 and B2 are bookmarks or bookmark names.
 For two local files, a file sorts before a symlink, which sorts before
 a directory.
 
@@ -7585,6 +7654,8 @@ types are not examined.
 Reverse the roles of B1 and B2 for a false value.
 A true value is returned as `(t)', a false value as `(nil)'.
 Return nil if neither sorts before the other."
+  (setq b1  (bookmark-get-bookmark b1)
+        b2  (bookmark-get-bookmark b2))
   (cond ((and (bookmarkp-local-file-bookmark-p b1) (bookmarkp-local-file-bookmark-p b2))
          (bookmarkp-file-attribute-0-cp b1 b2))
         ((bookmarkp-local-file-bookmark-p b1) '(t))

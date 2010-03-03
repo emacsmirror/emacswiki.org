@@ -13,7 +13,7 @@ scim-bridge.el can keep local input status of buffer, you can use it input vario
 :: sudo aptitude install scim-pinyin -y
 
 * Install scim-bridge.el:
-** Download newest version from [https://launchpad.net/scim-bridge.el scim-bridge.el project on Launchpad].
+** Download newest version from [https://launchpad.net/scim-bridge.el scim-bridge.el project in Launchpad].
 ** Disable XIM with Emacs:
 *** Add below in ~/.Xresources:
 ::: Emacs*useXIM: false

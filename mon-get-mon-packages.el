@@ -88,7 +88,7 @@
 
 (eval-when-compile (require 'cl))
 
-(require 'mon-wget-utils.el)
+(require 'mon-wget-utils)
 
 ;;; ==============================
 ;;; :NOTE Intent in keeping this list to ease bundling of working tarballs.
