@@ -66,4 +66,28 @@ Why not?
 
 The cygwin documentation itself seems to disagree: http://cygwin.com/cygwin-ug-net/setup-env.html
 ----
+M-x rgrep may generate a find command which includes the null-device, and NTEmacs uses "NUL" (the Windows null device) rather than "/dev/null".
+
+e.g.: <code>C-u C-u M-x rgrep RET</code> results in the following prompt:
+<code>Run: find . -type f -exec grep -nH  {} NUL \;</code>
+
+This causes the rgrep output to output numerous "grep: NUL: No such file or directory" errors.
+
+We can advise the grep-compute-defaults function to make it see the cygwin null device when establishing the find command. Interestingly enough, this causes it to drop any mention of the null device, and pipe the find results through xargs instead of using -exec. I couldn't follow the logic, but the resulting command prompt is certainly fine.
+
+<code>Run: find . -type f -print0 | xargs -0 -e grep -nH -e </code>
+
+You should restart emacs after adding this to your .emacs file (rather than just reloading .emacs), as the default find command is cached once it has been established, and will not be re-generated otherwise.
+
+<pre>
+;; Prevent issues with the Windows null device (NUL)
+;; when using cygwin find with rgrep.
+(defadvice grep-compute-defaults (around grep-compute-defaults-advice-null-device)
+  "Use cygwin's /dev/null as the null-device."
+  (let ((null-device "/dev/null"))
+	ad-do-it))
+(ad-activate 'grep-compute-defaults)
+</pre>
+
+----
 CygWin

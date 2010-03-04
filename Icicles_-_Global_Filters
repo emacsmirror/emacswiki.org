@@ -135,7 +135,7 @@ For example, here is the core definition of `icicle-buffer':
    (icicle-must-not-match-regexp icicle-buffer-no-match-regexp)
    (icicle-must-pass-predicate icicle-buffer-predicate)
    (icicle-extra-candidates icicle-buffer-extras)
-   (icicle-sort-function icicle-buffer-sort)))
+   (icicle-sort-comparer icicle-buffer-sort)))
 
 If you define a command that uses completion, but you don't use
 `icicle-define-command' or `icicle-define-file-command', then you

@@ -50,7 +50,7 @@ as a simple command, but not vice versa.  See [[Icicles - Multi-Commands]]  and 
 This lets users complete their input against previously entered
 input.  Completion is [[lax]], so they can also enter new input.
 
-'''6.''' You can bind '''`icicle-sort-function'''' temporarily to any sort
+'''6.''' You can bind '''`icicle-sort-comparer'''' temporarily to any sort
 function you need.
 
 '''7.''' Function '''`icicle-next-candidate'''' is a ''general framework'' for

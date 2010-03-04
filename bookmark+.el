@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Mar  2 22:35:25 2010 (-0800)
+;; Last-Updated: Wed Mar  3 15:27:52 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 11569
+;;     Update #: 11578
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1487,10 +1487,13 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2010/03/03 dadams
+;;     *-sort-and-remove-dups: Do not set bookmarkp-sorted-alist to the result.
+;;     *-bmenu-list-1: Set bookmarkp-sorted-alist to the result of calling *-sort-and-remove-dups.
 ;; 2010/03/02 dadams
 ;;     Added: bookmarkp-sorted-alist.
 ;;     *-bmenu-list-1: Use bookmarkp-sorted-alist.
-;;     *-sort-and-remove-dups: Set result to bookmarkp-sorted-alist.
+;;     *-sort-and-remove-dups: Set bookmarkp-sorted-alist to the result.
 ;;     All *-cp (and hence *-define-file-sort-predicate):
 ;;       Accept bookmark names as args, in addition to bookmarks.
 ;;     bookmark-alpha-p: Don't use bookmarkp-make-plain-predicate, to avoid infinite recursion.
@@ -2997,9 +3000,7 @@ The first time the list is displayed, it is set to nil.")
 
 (defvar bookmarkp-sorted-alist ()
   "Copy of current bookmark alist, as sorted for buffer `*Bookmark List*'.
-Has the same structure as `bookmark-alist'.
-This is set by function `bookmarkp-sort-and-remove-dups'.
-Use that function to update the value.")
+Has the same structure as `bookmark-alist'.")
 
 (defvar bookmarkp-tag-history ()
   "History of tags read from the user.")
@@ -4297,9 +4298,11 @@ Non-nil INTERACTIVEP means `bookmark-bmenu-list' was called
     (add-text-properties (point-min) (point) (bookmarkp-face-prop 'bookmarkp-heading))
     (let ((max-width     0)
           name markedp taggedp annotation start)
-      (bookmarkp-sort-and-remove-dups bookmark-alist (and (not (eq bookmarkp-bmenu-filter-function
-                                                                   'bookmarkp-omitted-alist-only))
-                                                          bookmarkp-bmenu-omitted-list))
+      (setq bookmarkp-sorted-alist  (bookmarkp-sort-and-remove-dups
+                                     bookmark-alist
+                                     (and (not (eq bookmarkp-bmenu-filter-function
+                                                   'bookmarkp-omitted-alist-only))
+                                          bookmarkp-bmenu-omitted-list)))
       (dolist (bmk  bookmarkp-sorted-alist)
         (setq max-width  (max max-width (length (bookmark-name-from-full-record bmk)))))
       (setq max-width  (+ max-width bookmarkp-bmenu-marks-width))
@@ -6936,8 +6939,7 @@ BOOKMARK is a bookmark name or a bookmark record."
 ;;  *** Sorting - General Functions ***
 
 (defun bookmarkp-sort-and-remove-dups (alist &optional omit)
-  "Remove duplicates from a copy of ALIST, then sort it.
-Set variable `bookmarkp-sorted-alist' to the result, and return it.
+  "Remove duplicates from a copy of ALIST, then sort it and return it.
 Do not sort if `bookmarkp-sort-comparer' is nil.
 Always remove duplicates.  Keep only the first element with a given
 key.  This is a non-destructive operation: ALIST is not modified.
@@ -6947,18 +6949,17 @@ If `bookmarkp-reverse-sort-p' is non-nil, then reverse the sort order.
 Keys are compared for sorting using `equal'.
 If optional arg OMIT is non-nil, then omit from the return value any
 elements with keys in list OMIT."
-  (setq bookmarkp-sorted-alist  (bookmarkp-remove-assoc-dups alist omit))
-  (let ((sort-fn  (and bookmarkp-sort-comparer
+  (let ((new-alist  (bookmarkp-remove-assoc-dups alist omit))
+        (sort-fn  (and bookmarkp-sort-comparer
                        (if (and (not (functionp bookmarkp-sort-comparer))
                                 (consp bookmarkp-sort-comparer))
                            'bookmarkp-multi-sort
                          bookmarkp-sort-comparer))))
     (when sort-fn
-      (setq bookmarkp-sorted-alist
-            (sort bookmarkp-sorted-alist (if bookmarkp-reverse-sort-p
-                                             (lambda (a b) (not (funcall sort-fn a b)))
-                                           sort-fn))))
-    bookmarkp-sorted-alist))
+      (setq new-alist  (sort new-alist (if bookmarkp-reverse-sort-p
+                                           (lambda (a b) (not (funcall sort-fn a b)))
+                                         sort-fn))))
+    new-alist))
 
 ;;; KEEP this simpler version also.  This uses `run-hook-with-args-until-success', but it
 ;;; does not respect `bookmarkp-reverse-multi-sort-p'.

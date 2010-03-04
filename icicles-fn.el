@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Feb 14 10:03:58 2010 (-0800)
+;; Last-Updated: Wed Mar  3 23:27:57 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 11522
+;;     Update #: 11588
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -19,9 +19,9 @@
 ;;
 ;;   `apropos', `apropos-fn+var', `cl', `color-theme', `cus-face',
 ;;   `easymenu', `el-swank-fuzzy', `ffap', `ffap-', `fuzzy-match',
-;;   `hexrgb', `icicles-opt', `icicles-var', `kmacro', `levenshtein',
-;;   `reporter', `sendmail', `thingatpt', `thingatpt+', `wid-edit',
-;;   `wid-edit+', `widget'.
+;;   `hexrgb', `icicles-face', `icicles-opt', `icicles-var',
+;;   `kmacro', `levenshtein', `reporter', `sendmail', `thingatpt',
+;;   `thingatpt+', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -34,7 +34,7 @@
 ;;  Non-interactive functions defined here:
 ;;
 ;;    `assq-delete-all', `icicle-2nd-part-string-less-p',
-;;    `icicle-abbreviate-or-expand-file-name',
+;;    `icicle-abbreviate-or-expand-file-name', `icicle-alpha-p',
 ;;    `icicle-alt-act-fn-for-type', `icicle-any-candidates-p',
 ;;    `icicle-apropos-any-candidates-p',
 ;;    `icicle-apropos-any-file-name-candidates-p',
@@ -108,7 +108,8 @@
 ;;    `icicle-levenshtein-strict-match',
 ;;    `icicle-lisp-vanilla-completing-read',
 ;;    `icicle-local-keys-first-p', `icicle-make-color-candidate',
-;;    `icicle-major-mode-name-less-p', `icicle-make-face-candidate',
+;;    `icicle-make-plain-predicate', `icicle-major-mode-name-less-p',
+;;    `icicle-make-face-candidate',
 ;;    `icicle-maybe-sort-and-strip-candidates', `icicle-mctize-all',
 ;;    `icicle-mctized-display-candidate',
 ;;    `icicle-mctized-full-candidate',
@@ -117,8 +118,8 @@
 ;;    `icicle-minibuffer-default-add-dired-shell-commands',
 ;;    `icicle-minibuffer-prompt-end', `icicle-mode-line-name-less-p',
 ;;    `icicle-most-recent-first-p', `icicle-msg-maybe-in-minibuffer',
-;;    `icicle-ms-windows-NET-USE', `icicle-next-candidate',
-;;    `icicle-not-basic-prefix-completion-p',
+;;    `icicle-ms-windows-NET-USE', `icicle-multi-sort',
+;;    `icicle-next-candidate', `icicle-not-basic-prefix-completion-p',
 ;;    `icicle-part-1-cdr-lessp', `icicle-part-1-lessp',
 ;;    `icicle-part-2-lessp', `icicle-part-3-lessp',
 ;;    `icicle-part-4-lessp', `icicle-part-N-lessp',
@@ -273,7 +274,7 @@
   ;; icicle-incremental-completion-threshold, icicle-default-value, icicle-list-end-string,
   ;; icicle-list-join-string, icicle-mark-position-in-candidate, icicle-point-position-in-candidate,
   ;; icicle-regexp-quote-flag, icicle-require-match-flag,
-  ;; icicle-show-Completions-help-flag, icicle-sort-function, icicle-special-candidate-regexp,
+  ;; icicle-show-Completions-help-flag, icicle-sort-comparer, icicle-special-candidate-regexp,
   ;; icicle-transform-function, icicle-use-~-for-home-dir-flag
 (require 'icicles-var)
   ;; icicle-candidate-nb, icicle-candidate-action-fn, icicle-candidate-properties-alist,
@@ -333,7 +334,8 @@
 
 (defvar filesets-data)                  ; Defined in `filesets.el'
 (defvar shell-completion-execonly)      ; Defined in `shell.el'
-(defvar recentf-menu-filter-commands)   ; Defined in `recentf.el'
+(defvar recentf-list)                   ; Defined in `recentf.el'
+(defvar recentf-menu-filter-commands)
 (defvar recentf-menu-filter)
 (defvar recentf-max-menu-items)
 (defvar recentf-menu-open-all-flag)
@@ -2259,7 +2261,7 @@ shell command guessed to be appropriate), help is provided by the
 the file's properties."
   (let* ((dired-guess-files                           (and files (fboundp 'dired-guess-default)
                                                            (dired-guess-default files)))
-         (icicle-sort-function                        'icicle-extra-candidates-first-p)
+         (icicle-sort-comparer                        'icicle-extra-candidates-first-p)
          (completion-ignore-case                      (memq system-type '(ms-dos windows-nt cygwin)))
          (insert-default-directory                    nil)
          (icicle-extra-candidates-dir-insert-p        nil)
@@ -2276,7 +2278,7 @@ the file's properties."
          (icicle-must-not-match-regexp                icicle-file-no-match-regexp)
          (icicle-must-pass-predicate                  icicle-file-predicate)
          (icicle-transform-function                   'icicle-remove-dups-if-extras)
-         (icicle-sort-function                        (or icicle-file-sort icicle-sort-function))
+         ;; (icicle-sort-comparer                        (or icicle-file-sort icicle-sort-comparer))
          (icicle-require-match-flag                   icicle-file-require-match-flag)
          (icicle-default-value          ; Let user get default via `M-n', but don't insert it.
           (and (memq icicle-default-value '(t nil)) icicle-default-value)))
@@ -2359,7 +2361,7 @@ This is a menu filter function which ignores the MENU argument."
     (append (or file-items '(["No files" t :help "No recent file to open" :active nil]))
             (if recentf-menu-open-all-flag
                 '(["All..." recentf-open-files :help "Open recent files through a dialog" :active t])
-              (and (< recentf-max-menu-items (length recentf-list))
+              (and (< recentf-max-menu-items (length recentf-list)) ; `recentf-list' is free here.
                    '(["More..." recentf-open-more-files
                       :help "Open files not in the menu through a dialog" :active t])))
             (and recentf-menu-filter-commands '("---")) recentf-menu-filter-commands
@@ -2881,7 +2883,7 @@ INPUT is a string.  Each candidate is a string."
         (quit (top-level)))             ; Let `C-g' stop it.
     (let ((cands  (icicle-unsorted-prefix-candidates input)))
       (cond (icicle-abs-file-candidates  (icicle-strip-ignored-files-and-sort cands))
-            (icicle-sort-function        (icicle-reversible-sort cands))
+            (icicle-sort-comparer        (icicle-reversible-sort cands))
             (t                           cands)))))
 
 (defun icicle-fuzzy-candidates (input)
@@ -3028,7 +3030,7 @@ INPUT is a string.  Each candidate is a string."
   (setq icicle-candidate-nb  nil)
   (let ((cands  (icicle-unsorted-apropos-candidates input)))
     (cond (icicle-abs-file-candidates  (icicle-strip-ignored-files-and-sort cands))
-          (icicle-sort-function        (icicle-reversible-sort cands))
+          (icicle-sort-comparer        (icicle-reversible-sort cands))
           (t                           cands))))
 
 (defun icicle-unsorted-apropos-candidates (input)
@@ -3752,7 +3754,7 @@ property and a value."
 
 (defun icicle-strip-ignored-files-and-sort (candidates)
   "Remove file names with ignored extensions, and \".\".  Sort CANDIDATES.
-If `icicle-sort-function' is nil, then do not sort."
+If `icicle-sort-comparer' is nil, then do not sort."
   (when (fboundp 'completion-ignored-build-apply) ; In `completion-ignored-build.el'.
     (let ((completion-ignored-extensions  completion-ignored-extensions))
       (completion-ignored-build-apply)
@@ -3765,7 +3767,7 @@ If `icicle-sort-function' is nil, then do not sort."
                                             candidates)))
     ;; If the only candidates have ignored extensions, then use them.
     (unless new-candidates (setq new-candidates  (icicle-remove-if pred2 candidates)))
-    (if icicle-sort-function (icicle-reversible-sort new-candidates) new-candidates)))
+    (if icicle-sort-comparer (icicle-reversible-sort new-candidates) new-candidates)))
 
 (defun icicle-transform-candidates (candidates)
   "Apply `icicle-transform-function' to CANDIDATES.
@@ -4083,7 +4085,7 @@ MESSAGE is the confirmation message to display in the minibuffer."
   (if (or (icicle-file-name-input-p) icicle-abs-file-candidates) ; File names: relative or absolute.
       (setq icicle-completion-candidates
             (icicle-strip-ignored-files-and-sort icicle-completion-candidates))
-    (when icicle-sort-function
+    (when icicle-sort-comparer
       (setq icicle-completion-candidates  (icicle-reversible-sort icicle-completion-candidates)))))
 
 (defun icicle-scroll-or-update-Completions (msg)
@@ -4108,7 +4110,7 @@ MESSAGE is the confirmation message to display in the minibuffer."
       (message "Displaying completion candidates..."))
     (with-output-to-temp-buffer "*Completions*"
       (display-completion-list
-       (if icicle-sort-function (icicle-reversible-sort completions) completions)))))
+       (if icicle-sort-comparer (icicle-reversible-sort completions) completions)))))
 
 ;; From `cl-seq.el', function `union', without keyword treatment.
 ;; Same as `simple-set-union' in `misc-fns.el'.
@@ -4831,15 +4833,72 @@ it (treat it as nil)."
   (if icicle-use-~-for-home-dir-flag (abbreviate-file-name filename) filename))
 
 (defun icicle-reversible-sort (list)
-  "`sort' using `icicle-sort-function', or the reverse.
-Sort LIST using `icicle-sort-function'.
-Reverse the result if `icicle-reverse-sort-p' is non-nil."
-;;$$ (when (and icicle-edit-update-p icicle-completion-candidates
-;;              (> (length icicle-completion-candidates) icicle-incremental-completion-threshold))
-;;     (message "Sorting candidates..."))
-   (sort list (if icicle-reverse-sort-p
-                 (lambda (a b) (not (funcall icicle-sort-function a b)))
-               icicle-sort-function)))
+  "`sort' LIST using `icicle-sort-comparer'.
+Reverse the result if `icicle-reverse-sort-p' is non-nil.
+If `icicle-sort-comparer' is a cons (other than a lambda form), then
+ use `icicle-multi-sort' as the sort predicate.
+Otherwise, use `icicle-sort-comparer' as the sort predicate."
+  ;;$$ (when (and icicle-edit-update-p icicle-completion-candidates
+  ;;              (> (length icicle-completion-candidates) icicle-incremental-completion-threshold))
+  ;;     (message "Sorting candidates..."))
+  (let ((sort-fn  (and icicle-sort-comparer
+                       (lambda (s1 s2)
+                         ;; If we have an inappropriate sort order, get rid of it.  This can happen if
+                         ;; the user chooses a sort appropriate to one kind of candidate and then
+                         ;; tries completion for a different kind of candidate.
+                         (condition-case nil
+                             (and icicle-sort-comparer ; nil in case of error earlier in list.
+                                  (if (and (not (functionp icicle-sort-comparer))
+                                           (consp icicle-sort-comparer))
+                                      (icicle-multi-sort s1 s2)
+                                    (funcall icicle-sort-comparer s1 s2)))
+                           (error (message "Inappropriate sort order - reverting to unsorted")
+                                  (sit-for 1)
+                                  (setq icicle-sort-comparer  nil)
+                                  nil))))))
+    (when sort-fn
+      (sort list (if icicle-reverse-sort-p (lambda (a b) (not (funcall sort-fn a b))) sort-fn)))))
+
+(defun icicle-multi-sort (s1 s2)
+  "Try predicates in `icicle-sort-comparer', in order, until one decides.
+The (binary) predicates are applied to S1 and S2.
+See the description of `icicle-sort-comparer'.
+If `icicle-reverse-multi-sort-p' is non-nil, then reverse the order
+for using multi-sorting predicates."
+  (let ((preds       (car icicle-sort-comparer))
+        (final-pred  (cadr icicle-sort-comparer))
+        (result      nil))
+    (when icicle-reverse-multi-sort-p (setq preds  (reverse preds)))
+    (catch 'icicle-multi-sort
+      (dolist (pred  preds)
+        (funcall pred s1 s2)
+        (when (consp result)
+          (when icicle-reverse-multi-sort-p (setq result  (list (not (car result)))))
+          (throw 'icicle-multi-sort (car result))))
+      (and final-pred  (if icicle-reverse-multi-sort-p
+                           (not (funcall final-pred s1 s2))
+                         (funcall final-pred s1 s2))))))
+
+(defun icicle-make-plain-predicate (pred &optional final-pred)
+  "Return a plain predicate that corresponds to component-predicate PRED.
+PRED and FINAL-PRED correspond to their namesakes in
+`icicle-sort-comparer' (which see).
+
+PRED should return `(t)', `(nil)', or nil.
+
+Optional arg FINAL-PRED is the final predicate to use if PRED cannot
+decide (returns nil).  If FINAL-PRED is nil, then `icicle-alpha-p' is
+used as the final predicate."
+  `(lambda (b1 b2)
+    (let ((res  (funcall ',pred b1 b2)))
+      (if res  (car res)  (funcall ',(or final-pred 'icicle-alpha-p) b1 b2)))))
+
+(defun icicle-alpha-p (s1 s2)
+  "True if string S1 sorts alphabetically before string S2.
+Comparison respects `case-fold-search'."
+  (when case-fold-search (setq s1  (icicle-upcase s1)
+                               s2  (icicle-upcase s2)))
+  (string-lessp s1 s2))
 
 (defun icicle-get-alist-candidate (string &optional no-error-p)
   "Return full completion candidate that corresponds to displayed STRING.
@@ -5116,7 +5175,7 @@ Return STRING, whether propertized or not."
   string)
 
 ;; Free vars here: `prompt', `icicle-candidate-help-fn', `completion-ignore-case',
-;;                 `icicle-transform-function', `icicle-sort-functions-alist',
+;;                 `icicle-transform-function', `icicle-sort-orders-alist',
 ;;                 `icicle-list-nth-parts-join-string', `icicle-list-join-string',
 ;;                 `icicle-list-end-string', `icicle-proxy-candidate-regexp', `named-colors',
 ;;                 `icicle-proxy-candidates'.
@@ -5127,7 +5186,7 @@ Sets these variables, which are assumed to be already `let'-bound:
   `icicle-candidate-help-fn'
   `completion-ignore-case'
   `icicle-transform-function'
-  `icicle-sort-functions-alist'
+  `icicle-sort-orders-alist'
   `icicle-list-nth-parts-join-string'
   `icicle-list-join-string'
   `icicle-list-end-string'
@@ -5143,7 +5202,7 @@ Puts property `icicle-fancy-candidates' on string `prompt'."
   (icicle-highlight-lighter)
   (setq icicle-candidate-help-fn           'icicle-color-help
         completion-ignore-case             t
-        icicle-sort-functions-alist
+        icicle-sort-orders-alist
         '(("by color name" . icicle-part-1-lessp)
           ("by color hue"  . (lambda (s1 s2) (not (icicle-color-hue-lessp s1 s2))))
           ("by color purity (saturation)"
@@ -5280,7 +5339,7 @@ current before user input is read from the minibuffer."
                                (icicle-remove-if-not #'functionp
                                                      (cdr (assoc ,type icicle-type-actions-alist)))))
                (lambda (a1 a2) (funcall 'string-lessp (car a1) (car a2)))))
-             (icicle-sort-function             'string-lessp) ; Must be the same order as actions.
+             (icicle-sort-comparer             'string-lessp) ; Must be the same order as actions.
              (icicle-candidate-action-fn ; For "how".
               (lambda (fn)
                 (let ((icicle-candidate-alt-action-fn  (icicle-alt-act-fn-for-type "function"))

@@ -95,11 +95,6 @@ You can also check out [[Smex]]. On top of a M-x Ido interface it features ranki
 
 -- hfwang, modified by nsq
 
-The following was fixed in the latest Smex release: -- nsq
-
-Minor issue both with this solution and Smex: M-x commands are no longer recorded in the command history (see for yourself via M-x command-history or C-x ESC ESC).  M-p M-n still work in the minibuffer though, so you can access command history that way.
--- LVA
-
 === Invoking Bookmarks From Ido ===
 
 Did you ever want to use [[bookmark]]s from within ido? I just did a little mashup of bookmark and ido code, just M-C-b from your ido file selection. -- AnselmHelbig

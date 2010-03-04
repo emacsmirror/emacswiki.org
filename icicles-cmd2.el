@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sat Feb  6 13:25:38 2010 (-0800)
+;; Last-Updated: Wed Mar  3 02:01:51 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 1256
+;;     Update #: 1264
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -21,10 +21,10 @@
 ;;   `cus-edit', `cus-face', `cus-load', `cus-start', `doremi',
 ;;   `easymenu', `el-swank-fuzzy', `ffap', `ffap-', `frame-cmds',
 ;;   `frame-fns', `fuzzy-match', `hexrgb', `icicles-cmd1',
-;;   `icicles-fn', `icicles-mcmd', `icicles-opt', `icicles-var',
-;;   `kmacro', `levenshtein', `misc-fns', `mwheel', `pp', `pp+',
-;;   `reporter', `ring', `ring+', `sendmail', `strings', `thingatpt',
-;;   `thingatpt+', `wid-edit', `wid-edit+', `widget'.
+;;   `icicles-face', `icicles-fn', `icicles-mcmd', `icicles-opt',
+;;   `icicles-var', `kmacro', `levenshtein', `misc-fns', `mwheel',
+;;   `pp', `pp+', `reporter', `ring', `ring+', `sendmail', `strings',
+;;   `thingatpt', `thingatpt+', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -256,13 +256,13 @@
   ;; icicle-search-current-overlay, icicle-search-final-choice, icicle-search-overlays,
   ;; icicle-search-refined-overlays
 (require 'icicles-opt)
-  ;; icicle-alternative-sort-function, icicle-buffer-extras, icicle-buffer-ignore-space-prefix-flag,
+  ;; icicle-alternative-sort-comparer, icicle-buffer-extras, icicle-buffer-ignore-space-prefix-flag,
   ;; icicle-buffer-match-regexp, icicle-buffer-no-match-regexp, icicle-buffer-predicate,
   ;; icicle-buffer-require-match-flag, icicle-buffer-sort, icicle-complete-keys-self-insert-flag,
   ;; icicle-ignore-space-prefix-flag, icicle-key-descriptions-use-<>-flag, icicle-region-alist,
   ;; icicle-regions-name-length-max, icicle-require-match-flag, icicle-saved-completion-sets,
   ;; icicle-search-cleanup-flag, icicle-search-highlight-all-current-flag,
-  ;; icicle-search-highlight-threshold, icicle-search-hook, icicle-sort-function,
+  ;; icicle-search-highlight-threshold, icicle-search-hook, icicle-sort-comparer,
   ;; icicle-transform-function
 (require 'icicles-fn) ;; icicle-candidate-short-help, icicle-completing-read-history,
   ;; icicle-highlight-lighter, icicle-insert-cand-in-minibuffer, icicle-kill-a-buffer
@@ -416,7 +416,7 @@ This command is intended only for use in Icicle mode." ; Doc string
     (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "color")))
 
    icicle-candidate-help-fn     completion-ignore-case             icicle-transform-function
-   icicle-sort-functions-alist  icicle-list-nth-parts-join-string  icicle-list-join-string
+   icicle-sort-orders-alist     icicle-list-nth-parts-join-string  icicle-list-join-string
    icicle-list-end-string       icicle-proxy-candidate-regexp      named-colors
    icicle-proxy-candidates)
 
@@ -443,7 +443,7 @@ See `icicle-frame-bg' - but this is for foreground, not background." ; Doc strin
     (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "color")))
 
    icicle-candidate-help-fn     completion-ignore-case             icicle-transform-function
-   icicle-sort-functions-alist  icicle-list-nth-parts-join-string  icicle-list-join-string
+   icicle-sort-orders-alist     icicle-list-nth-parts-join-string  icicle-list-join-string
    icicle-list-end-string       icicle-proxy-candidate-regexp      named-colors
    icicle-proxy-candidates)
 
@@ -527,7 +527,7 @@ Note: In Emacs versions prior to version 22, this runs `Info-index'."
   ((opoint                                 (point)) ; Additional bindings
    (completion-ignore-case                 t)
    (case-fold-search                       t)
-   (icicle-sort-function                   nil)
+   (icicle-sort-comparer                   nil)
    (icicle-whole-candidate-as-text-prop-p  t)
    (Info-complete-menu-buffer              (current-buffer))
    (icicle-candidates-alist                (mapcar #'(lambda (m) (cons m (Info-extract-menu-item m)))
@@ -592,11 +592,11 @@ This is an Icicles command - see command `icicle-mode'."
           (info-window                      (selected-window))
           (icicle-candidate-action-fn       'icicle-Info-goto-node-action)
           (icicle-Info-only-rest-of-book-p  (< (prefix-numeric-value current-prefix-arg) 0))
-          (icicle-sort-functions-alist      (cons '("in book order" .  icicle-Info-book-order-p)
-                                                  icicle-sort-functions-alist))
-          (icicle-sort-function             (if icicle-Info-only-rest-of-book-p
+          (icicle-sort-orders-alist         (cons '("in book order" .  icicle-Info-book-order-p)
+                                                  icicle-sort-orders-alist))
+          (icicle-sort-comparer             (if icicle-Info-only-rest-of-book-p
                                                 #'icicle-Info-book-order-p
-                                              icicle-sort-function)))
+                                              icicle-sort-comparer)))
      (list (icicle-Info-read-node-name "Go to node: " (consp current-prefix-arg))
            current-prefix-arg)))
   (icicle-Info-goto-node-1 nodename arg))
@@ -1556,7 +1556,7 @@ for function `emacs-lisp-mode'.
 NOTE: `icicle-apply' does not, by itself, impose any particular sort
 order.  Neither does it inhibit sorting.  If you call this function
 from Lisp code and you want it to use a certain sort order or you want
-no sorting, then bind `icicle-sort-function' accordingly.
+no sorting, then bind `icicle-sort-comparer' accordingly.
 
 During completion you can use multi-command keys.  Each displays the
 value of applying FN to an alist element whose key is a completion
@@ -1724,9 +1724,9 @@ Use `mouse-2', `RET', or `S-RET' to choose a candidate as the final
 destination, or `C-g' to quit.  This is an Icicles command - see
 command `icicle-mode'."
   (interactive)
-  (let ((icicle-sort-functions-alist  (cons '("by position" .  icicle-cdr-lessp)
-                                            icicle-sort-functions-alist))
-        (icicle-sort-function         'icicle-cdr-lessp))
+  (let ((icicle-sort-orders-alist  (cons '("by position" .  icicle-cdr-lessp)
+                                         icicle-sort-orders-alist))
+        (icicle-sort-comparer      'icicle-cdr-lessp))
     (icicle-goto-marker-1 mark-ring)))
 
 ;;;###autoload
@@ -1739,10 +1739,10 @@ marker's buffer, to facilitate orientation."
   (let ((icicle-list-nth-parts-join-string  "\t")
         (icicle-list-join-string            "\t")
         (icicle-list-end-string             "")
-        (icicle-sort-functions-alist
+        (icicle-sort-orders-alist
          (cons '("by buffer, then by position" . icicle-part-1-cdr-lessp)
-               icicle-sort-functions-alist))
-        (icicle-sort-function               'icicle-part-1-cdr-lessp)
+               icicle-sort-orders-alist))
+        (icicle-sort-comparer               'icicle-part-1-cdr-lessp)
         (icicle-candidate-properties-alist  (and icicle-add-buffer-name-flag
                                                  '((1 (face icicle-candidate-part))))))
     (icicle-goto-marker-1 global-mark-ring)))
@@ -1760,8 +1760,8 @@ RING is the marker ring to use."
                #'(lambda (cand)
                    (let ((mrkr+txt  (funcall icicle-get-alist-candidate-function cand)))
                      (move-marker (cdr mrkr+txt) nil))))
-              (icicle-alternative-sort-function  nil)
-              (icicle-last-sort-function         nil)
+              (icicle-alternative-sort-comparer  nil)
+              (icicle-last-sort-comparer         nil)
               (orig-buff                         (current-buffer)))
          (unless (consp markers)
            (error (if global-ring-p "No global markers" "No markers in this buffer")))
@@ -1947,7 +1947,7 @@ are treated as bookmarks in every respect." ; Doc string
    (icicle-list-join-string                "\t")
    (icicle-list-end-string                 "")
    (icicle-list-use-nth-parts              '(1))
-   (icicle-sort-function                   nil)
+   (icicle-sort-comparer                   nil)
    (icicle-transform-function              (if (interactive-p) nil icicle-transform-function))
    (icicle-inhibit-sort-p                  t)
    (icicle-whole-candidate-as-text-prop-p  t)
@@ -2010,7 +2010,7 @@ To add a region to `icicle-region-alist', do one of the following:
    (icicle-list-join-string                "\t")
    (icicle-list-end-string                 "")
    (icicle-list-use-nth-parts              '(1))
-   (icicle-sort-function                   nil)
+   (icicle-sort-comparer                   nil)
    (icicle-transform-function              (if (interactive-p) nil icicle-transform-function))
    (icicle-inhibit-sort-p                  t)
    (icicle-whole-candidate-as-text-prop-p  t)
@@ -2091,8 +2091,8 @@ BUFFER is the name of a buffer."
   (let ((unsorted-regions  (icicle-remove-if #'(lambda (reg) (and (not (car (cddr reg))) ; No file.
                                                                   (not (get-buffer (cadr reg)))))
                                              icicle-region-alist)))
-    (if icicle-sort-function
-        (sort unsorted-regions #'(lambda (a b) (funcall icicle-sort-function (car a) (car b))))
+    (if icicle-sort-comparer
+        (sort unsorted-regions #'(lambda (a b) (funcall icicle-sort-comparer (car a) (car b))))
       unsorted-regions)))
 
 ;;;###autoload
@@ -2447,7 +2447,7 @@ This command is intended for use only in Icicle mode."
         (icicle-list-join-string            "\t")
         (icicle-list-end-string             "")
         (icicle-list-use-nth-parts          '(1))
-        (icicle-sort-function               nil)
+        (icicle-sort-comparer               nil)
         (icicle-inhibit-sort-p              t)
         (completion-ignore-case             case-fold-search)
         (replace-count                      0)) ; Defined in `replace.el'.  Used for replacement.
@@ -3266,7 +3266,7 @@ are treated as bookmarks in every respect." ; Doc string
    (icicle-list-join-string                "\t")
    (icicle-list-end-string                 "")
    (icicle-list-use-nth-parts              '(1))
-   (icicle-sort-function                   nil)
+   (icicle-sort-comparer                   nil)
    (icicle-transform-function              (if (interactive-p) nil icicle-transform-function))
    (icicle-inhibit-sort-p                  t)
    (icicle-whole-candidate-as-text-prop-p  t)
@@ -4488,7 +4488,7 @@ The display string for each action is highlighted using face
               (push (cons faced-act (cdr action)) all-sources-actions)))))
       (setq icicle-candidates-alist  (sort all-sources-actions
                                            #'(lambda (a1 a2)
-                                               (funcall icicle-sort-function (car a1) (car a2))))))))
+                                               (funcall icicle-sort-comparer (car a1) (car a2))))))))
 (when (> emacs-major-version 21)
   (defun icicle-choose-anything-candidate (type candidates default-actions actions)
     "Read an Anything object of type TYPE with completion, and return it.
@@ -4498,7 +4498,7 @@ CANDIDATES is the list of candidates of type TYPE.
 DEFAULT-ACTIONS is the list of default actions for type TYPE.
 ACTIONS is the list of all actions for type TYPE."
     (let* ((win                                         (selected-window))
-           (icicle-sort-function                        nil)
+           (icicle-sort-comparer                        nil)
            (icicle-transform-function                   nil)
            (icicle-Completions-display-min-input-chars  (icicle-get-anything-req-pat-chars type))
            (icicle-incremental-completion-delay         (icicle-get-anything-input-delay type))
@@ -4605,7 +4605,7 @@ The value returned is also always at least as big as
             (push (car this-source-actions) all-sources-actions))))
       (setq icicle-candidates-alist
             (sort all-sources-actions   ; Must sort, or `icicle-candidate-nb' will be wrong.
-                  #'(lambda (a1 a2) (funcall icicle-sort-function (car a1) (car a2))))))))
+                  #'(lambda (a1 a2) (funcall icicle-sort-comparer (car a1) (car a2))))))))
 
 (defun icicle-choose-candidate-of-type (type)
   "Read an object of type TYPE (a symbol) with completion, and return it.
@@ -4628,8 +4628,8 @@ filtering:
              (icicle-must-pass-predicate      icicle-buffer-predicate)
              (icicle-extra-candidates         icicle-buffer-extras)
              (icicle-transform-function       'icicle-remove-dups-if-extras)
-             (icicle-sort-function            (or icicle-buffer-sort icicle-sort-function))
-             (icicle-sort-functions-alist
+             (icicle-sort-comparer            (or icicle-buffer-sort icicle-sort-comparer))
+             (icicle-sort-orders-alist
               (append (list '("by last access") ; Renamed from "turned OFF'.
                             '("*...* last" . icicle-buffer-sort-*...*-last)
                             '("by buffer size" . icicle-buffer-smaller-p)
@@ -4637,7 +4637,7 @@ filtering:
                             (and (fboundp 'icicle-mode-line-name-less-p)
                                  '("by mode-line mode name" . icicle-mode-line-name-less-p))
                             '("by file/process name" . icicle-buffer-file/process-name-less-p))
-                      (delete '("turned OFF") icicle-sort-functions-alist)))
+                      (delete '("turned OFF") icicle-sort-orders-alist)))
              (icicle-candidate-alt-action-fn
               (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "buffer")))
              (icicle-all-candidates-list-alt-action-fn
@@ -4831,9 +4831,9 @@ Use `mouse-2', `RET', or `S-RET' to finally choose a candidate, or
            (orig-buff-key-complete                  (current-buffer))
            (orig-win-key-complete                   (selected-window))
            (icicle-completing-keys-p                t) ; Provide a condition to test key completion.
-           (icicle-sort-function                    'icicle-local-keys-first-p)
-           (icicle-alternative-sort-function        'icicle-prefix-keys-first-p)
-           (icicle-sort-functions-alist
+           (icicle-sort-comparer                    'icicle-local-keys-first-p)
+           (icicle-alternative-sort-comparer        'icicle-prefix-keys-first-p)
+           (icicle-sort-orders-alist
             '(("by key name, local bindings first" . icicle-local-keys-first-p)
               ("by key name, prefix keys first" . icicle-prefix-keys-first-p)
               ("by command name" . icicle-command-names-alphabetic-p)
@@ -5218,7 +5218,7 @@ used with `C-u', with Icicle mode turned off)."
             (mouse-pseudo-color-p  nil)
 
             icicle-candidate-help-fn           completion-ignore-case
-            icicle-transform-function          icicle-sort-functions-alist
+            icicle-transform-function          icicle-sort-orders-alist
             icicle-list-nth-parts-join-string  icicle-list-join-string
             icicle-list-end-string             icicle-proxy-candidate-regexp
             named-colors                       icicle-proxy-candidates)

@@ -4,6 +4,8 @@
 
 The variable can also be set to 'all, in which case '''all''' the alternatives are shown, either in full form or as buttons.
 
+Before ViewMail 8.1.x, the variable `vm-mime-show-alternatives' can be used to show all the alternatives.
+
 **Q:** Can one use lynx to convert html to plain text and display it in VM?
 
 **A:** Yes.  You should first ensure that text/html is not declared as an extenal content-type, by setting `vm-mime-external-content-types' and/or `vm-mime-external-content-type-exceptions' appropriately.  Include the following lines in your .vm file to convert html to plain text.

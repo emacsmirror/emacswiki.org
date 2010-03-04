@@ -40,6 +40,9 @@ I can already sucessfully load .djvu files.
 
 * emsane.el -- An Emacs SANE frontend, SANE is the scanner interface for free operating systems.
 
+I seem to lack a convenient way to publish these things. So far I've publisehed the Emacs patches on the emacs development list, and the other packages on gnu.emacs.sources.
+The xwidget patch is currently on github.
+
 I've used Emacs since '88, but I only realised the potential of emacs nirvana in '04 when I migrated nearly all
 my applications to emacs, except multimedia. Slow learner I suppose. Recently I've even been interested in moving 
 musical and graphical workflows to Emacs.

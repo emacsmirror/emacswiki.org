@@ -110,7 +110,7 @@ element in the minibuffer.
    establish an explicit candidate set.  If you use `C-u M-pause',
    then the previously used candidates are ordered
    chronologically, most recent first.  Without `C-u', the normal
-   sort order is used (`icicle-sort-function').
+   sort order is used (`icicle-sort-comparer').
 
 [:M-h]
 '''6.''' Command '''`icicle-history'''' ('''`M-h'''' in the minibuffer) matches the
@@ -180,7 +180,7 @@ to the main completion.
 === Putting Previous Candidates First: `C-M-,' ===
 
 At any time,  two of the '''Icicles''' sort orders are immediately available.  These are the values of user options
-'''`<tt>[[Icicles - Customization and General Tips#icicle-sort-function|icicle-sort-function]]</tt>'''' and '''`<tt>[[Icicles - Customization and General Tips#icicle-alternative-sort-function|icicle-alternative-sort-function]]</tt>''''.  By
+'''`<tt>[[Icicles - Customization and General Tips#icicle-sort-comparer|icicle-sort-comparer]]</tt>'''' and '''`<tt>[[Icicles - Customization and General Tips#icicle-alternative-sort-comparer|icicle-alternative-sort-comparer]]</tt>''''.  By
 default, the former sorts alphabetically, and the latter puts all
 previously used inputs first, before the candidates you have not
 yet used.  Each of these groups, used and unused candidates, is then 
@@ -191,7 +191,7 @@ first listed in `*Completions*' and the first available for cycling.
 
 If you prefer, by customizing these user options, you can use
 `icicle-historical-alphabetic-p' as the main sort function (option
-`icicle-sort-function') and some other sort function
+`icicle-sort-comparer') and some other sort function
 (e.g. `icicle-case-string-less-p') as the alternative sort function.
 
 You can toggle at any time between normal sorting and alternative

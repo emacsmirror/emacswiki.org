@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon Feb  1 17:10:17 2010 (-0800)
+;; Last-Updated: Wed Mar  3 01:16:52 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 26138
+;;     Update #: 26141
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4305,21 +4305,21 @@
 ;;    Emacs down.  (This option is only available starting with Emacs
 ;;    23.)
 ;;
-;;  * User option `icicle-sort-function' controls the order of
+;;  * User option `icicle-sort-comparer' controls the order of
 ;;    completion candidates during cycling and in buffer
 ;;    `*Completions*'.  If nil, then no sorting is done.  If non-nil,
 ;;    then the value must be a string-comparison function - the
 ;;    function is passed to the standard function `sort' to do the
-;;    sorting.  The default value for `icicle-sort-function' is
+;;    sorting.  The default value for `icicle-sort-comparer' is
 ;;    `icicle-case-string-less-p', which sorts alphabetically,
 ;;    possibly ignoring letter case.  During completion, you can
 ;;    toggle sorting using `C-,'.  If you are an Emacs-Lisp programmer
 ;;    and you write new commands using Icicles functionalities, you
-;;    can bind `icicle-sort-function' temporarily to any sort function
+;;    can bind `icicle-sort-comparer' temporarily to any sort function
 ;;    you need.
 ;;
-;;  * User option `icicle-alternative-sort-function' is an alternative
-;;    to `icicle-sort-function, providing a different sort order.  By
+;;  * User option `icicle-alternative-sort-comparer' is an alternative
+;;    to `icicle-sort-comparer, providing a different sort order.  By
 ;;    default, it is `icicle-historical-alphabetic-p', a function that
 ;;    sorts previously used completion candidates before candidates
 ;;    that have not yet been used, and sorts alphabetically within
@@ -4337,9 +4337,9 @@
 ;;    override the current setting at any time by using `C-u C-,'.
 ;;    See (@> "Sorting Candidates").
 ;;
-;;  * User option `icicle-sort-functions-alist' is an alist of
-;;    possible sort orders for user to choose from using `C-,' or
-;;    `M-,'.  See (@> "Sorting Candidates").
+;;  * User option `icicle-sort-orders-alist' is an alist of possible
+;;    sort orders for user to choose from using `C-,' or `M-,'.
+;;    See (@> "Sorting Candidates").
 ;;
 ;;  * The value of user option `icicle-transform-function' is a
 ;;    function that is applied to the list of completion candidates,
@@ -4672,7 +4672,7 @@
 ;;
 ;;     ("Files and Scratch" nil nil
 ;;      (lambda (bufname) (buffer-file-name (get-buffer bufname)))
-;;      ("*scratch*") icicle-sort-function)
+;;      ("*scratch*") icicle-sort-comparer)
 ;;
 ;;    The idea of buffer-option configurations was borrowed from
 ;;    library `bs.el', by Olaf Sylvester <olaf@geekware.de>.
@@ -5057,7 +5057,7 @@
 ;;  directory names.
 ;;
 ;;  * Function `icicle-dirs-last-p' is provided as a possible value
-;;    for user option `icicle-sort-function'.  It treats file and
+;;    for user option `icicle-sort-comparer'.  It treats file and
 ;;    directory names specially, sorting directory names after file
 ;;    names; otherwise, it is the same as `icicle-case-string-less-p'.
 ;;    (You can of course reach directory names before, instead of
@@ -5071,7 +5071,7 @@
 ;;
 ;;    non-nil - When this option is non-nil, you might want to use a
 ;;          function such as `icicle-dirs-last-p' for option
-;;          `icicle-sort-function', to prevent cycling depth-first
+;;          `icicle-sort-comparer', to prevent cycling depth-first
 ;;          into the subdirectories.
 ;;
 ;;    nil - When this option is nil, you can still choose to cycle
@@ -7740,7 +7740,7 @@
 ;;     (icicle-must-not-match-regexp  icicle-buffer-no-match-regexp)
 ;;     (icicle-must-pass-predicate    icicle-buffer-predicate)
 ;;     (icicle-extra-candidates       icicle-buffer-extras)
-;;     (icicle-sort-function          icicle-buffer-sort)))
+;;     (icicle-sort-comparer          icicle-buffer-sort)))
 ;;
 ;;  If you define a command that uses completion, but you don't use
 ;;  `icicle-define-command' or `icicle-define-file-command', then you
@@ -7934,7 +7934,7 @@
 ;;     This lets users complete their input against previously entered
 ;;     input.  Completion is lax, so they can also enter new input.
 ;;
-;;  6. You can bind `icicle-sort-function' temporarily to any sort
+;;  6. You can bind `icicle-sort-comparer' temporarily to any sort
 ;;     function you need.
 ;;
 ;;  7. Function `icicle-next-candidate' is a general framework for

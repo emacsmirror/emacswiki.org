@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Feb 17 11:29:39 2010 (-0800)
+;; Last-Updated: Wed Mar  3 01:18:19 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 3517
+;;     Update #: 3536
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -43,7 +43,7 @@
 ;;    `icicle-act-before-cycle-flag', `icicle-add-buffer-name-flag',
 ;;    `icicle-add-proxy-candidates-flag',
 ;;    `icicle-alternative-actions-alist',
-;;    `icicle-alternative-sort-function',
+;;    `icicle-alternative-sort-comparer',
 ;;    `icicle-apropos-complete-keys',
 ;;    `icicle-apropos-complete-no-display-keys',
 ;;    `icicle-apropos-cycle-next-keys',
@@ -156,7 +156,7 @@
 ;;    `icicle-shell-command-candidates-cache',
 ;;    `icicle-show-Completions-help-flag',
 ;;    `icicle-show-Completions-initially-flag',
-;;    `icicle-sort-function', `icicle-sort-functions-alist',
+;;    `icicle-sort-comparer', `icicle-sort-orders-alist',
 ;;    `icicle-special-candidate-regexp',
 ;;    `icicle-S-TAB-completion-methods-alist',
 ;;    `icicle-swank-prefix-length', `icicle-swank-timeout',
@@ -320,10 +320,10 @@ that is, `M-|', but it does affect `C-|'."
   :group 'Icicles-Miscellaneous)
 
 ;;;###autoload
-(defcustom icicle-alternative-sort-function ; Toggle with `C-M-,'.
+(defcustom icicle-alternative-sort-comparer ; Toggle with `C-M-,'.
   'icicle-historical-alphabetic-p
-  "*An alternative sort function, in place of `icicle-sort-function'.
-You can swap this with `icicle-sort-function' at any time by using
+  "*An alternative sort function, in place of `icicle-sort-comparer'.
+You can swap this with `icicle-sort-comparer' at any time by using
 `icicle-toggle-alternative-sorting' (\\<minibuffer-local-completion-map>\
 `\\[icicle-toggle-alternative-sorting]' in the minibuffer)."
   :type '(choice (const :tag "None" nil) function) :group 'Icicles-Completions-Display)
@@ -534,7 +534,7 @@ You probably do not want to set this globally, but you can."
   "*A sort function for buffer names, or nil.
 Examples of sort functions are `icicle-buffer-sort-*...*-last' and
 `string<'.  If nil, then buffer names are not sorted.  Option
-`icicle-sort-function' is bound to `icicle-buffer-sort' by command
+`icicle-sort-comparer' is bound to `icicle-buffer-sort' by command
 `icicle-buffer'."
   :type '(choice (const :tag "None" nil) function)
   :group 'Icicles-Buffers :group 'Icicles-Completions-Display)
@@ -816,7 +816,7 @@ save the current value, you can set this to your function."
 (defcustom icicle-cycle-into-subdirs-flag nil
   "*Non-nil means minibuffer-input cycling explores subdirectories.
 If this is non-nil, then you might want to use a function such as
-`icicle-dirs-last-p' for option `icicle-sort-function', to prevent
+`icicle-dirs-last-p' for option `icicle-sort-comparer', to prevent
 cycling into subdirectories depth first.  Command
 `icicle-sort-by-directories-last' does that."
   :type 'boolean :group 'Icicles-Miscellaneous)
@@ -2174,34 +2174,113 @@ nor t.  That displays buffer *Completions* as soon as you type or
 delete input, but not initially."
   :type 'boolean :group 'Icicles-Completions-Display)
 
+;; This is similar to `bookmarkp-sort-comparer'.
 ;;;###autoload
-(defcustom icicle-sort-function 'icicle-case-string-less-p ; Toggle with `C-,'.
-  "*Comparison function passed to `sort', to sort completion candidates.
-This sorting determines the order of candidates when cycling and their
-order in buffer *Completions*.  If the value is nil, then no sorting
-is done.
+(defcustom icicle-sort-comparer 'icicle-case-string-less-p ; Cycle with `C-,'.
+  "*Predicate or predicates for sorting (comparing) two items.
+Used in particular to sort completion candidates.  In that case, this
+determines the order of candidates when cycling and their order in
+buffer *Completions*.
 
 When `icicle-cycle-into-subdirs-flag' is non-nil, you might want to
 use a function such as `icicle-dirs-last-p' for this option, to
 prevent cycling into subdirectories depth first.  Command
 `icicle-sort-by-directories-last' does that.
 
-You can toggle sorting at any time using command
-`icicle-toggle-sorting', bound to `C-,' in the minibuffer.
+You can cycle completion sort orders at any time using `C-,' in the
+minibuffer.
 
-Note: Although this is a user option, it may be changed by program
+Although this is a user option, it may be changed by program
 locally, for use in particular contexts.  In particular, you can bind
 this to nil in an Emacs-Lisp function, to inhibit sorting in that
-context."
-  :type '(choice (const :tag "None" nil) function) :group 'Icicles-Completions-Display)
+context.
+
+Various sorting commands change the value of this option dynamically
+\(but they do not save the changed value).
+
+The value must be one of the following:
+
+* nil, meaning do not sort
+
+* a predicate that takes two items as args
+
+* a list of the form ((PRED...) FINAL-PRED), where each PRED and
+  FINAL-PRED are binary predicates
+
+If the value is a list of predicates, then each PRED is tried in turn
+until one returns a non-nil value.  In that case, the result is the
+car of that value.  If no non-nil value is returned by any PRED, then
+FINAL-PRED is used and its value is the result.
+
+Each PRED should return `(t)' for true, `(nil)' for false, or nil for
+undecided.  A nil value means that the next PRED decides (or
+FINAL-PRED, if there is no next PRED).
+
+Thus, a PRED is a special kind of predicate that indicates either a
+boolean value (as a singleton list) or \"I cannot decide - let the
+next guy else decide\".  (Essentially, each PRED is a hook function
+that is run using `run-hook-with-args-until-success'.)
+
+Examples:
+
+ nil           - No sorting.
+
+ string-lessp  - Single predicate that returns nil or non-nil.
+
+ ((p1 p2))     - Two predicates `p1' and `p2', which each return
+                 (t) for true, (nil) for false, or nil for undecided.
+
+ ((p1 p2) string-lessp)
+               - Same as previous, except if both `p1' and `p2' return
+                 nil, then the return value of `string-lessp' is used.
+
+Note that these two values are generally equivalent, in terms of their
+effect (*):
+
+ ((p1 p2))
+ ((p1) p2-plain) where p2-plain is (icicle-make-plain-predicate p2)
+
+Likewise, these three values generally act equivalently:
+
+ ((p1))
+ (() p1-plain)
+ p1-plain        where p1-plain is (icicle-make-plain-predicate p1)
+
+The PRED form lets you easily combine predicates: use `p1' unless it
+cannot decide, in which case try `p2', and so on.  The value ((p2 p1))
+tries the predicates in the opposite order: first `p2', then `p1' if
+`p2' returns nil.
+
+Using a single predicate or FINAL-PRED makes it easy to reuse an
+existing predicate that returns nil or non-nil.
+
+You can also convert a PRED-type predicate (which returns (t), (nil),
+or nil) into an ordinary predicate, by using function
+`icicle-make-plain-predicate'.  That lets you reuse elsewhere, as
+ordinary predicates, any PRED-type predicates you define.
+
+Note: As a convention, predefined Icicles PRED-type predicate names
+have the suffix `-cp' (for \"component predicate\") instead of `-p'."
+  ;; We don't bother to define a `icicle-reverse-multi-sort-order' analogous to
+  ;; `bookmarkp-reverse-multi-sort-order'.  If we did, the doc string would need to be updated to say
+  ;; what the doc string of `bookmarkp-sort-comparer' says about `bookmarkp-reverse-multi-sort-order'.
+  :type '(choice
+          (const    :tag "None (do not sort)" nil)
+          (function :tag "Sorting Predicate")
+          (list     :tag "Sorting Multi-Predicate"
+           (repeat (function :tag "Component Predicate"))
+           (choice
+            (const    :tag "None" nil)
+            (function :tag "Final Predicate"))))
+  :group 'Icicles-Matching :group 'Icicles-Completions-Display)
 
 ;;;###autoload
 (defcustom icicle-buffer-configs
-  `(("All" nil nil nil nil ,icicle-sort-function)
+  `(("All" nil nil nil nil ,icicle-sort-comparer)
     ("Files" nil nil (lambda (bufname) (buffer-file-name (get-buffer bufname))) nil
-     ,icicle-sort-function)
+     ,icicle-sort-comparer)
     ("Files and Scratch" nil nil (lambda (bufname) (buffer-file-name (get-buffer bufname)))
-     ("*scratch*") ,icicle-sort-function)
+     ("*scratch*") ,icicle-sort-comparer)
     ("All, *...* Buffers Last" nil nil nil nil icicle-buffer-sort-*...*-last))
   "*List of option configurations available for `icicle-buffer-config'.
 The form is (CONFIG...), where CONFIG is a list of these items:
@@ -2233,37 +2312,56 @@ completion and their order."
       (or (string-match "^\\*" b2) (string< b1 b2)))))
 
 (when (> emacs-major-version 20)
-  (defcustom icicle-sort-functions-alist ()
-    "*Alist of sort functions.
-You probably do not want to customize this option.  Instead, use macro
-`icicle-define-sort-command' to define a new sort function and add it
-to this alist.
-Each alist element has the form (SORT-ORDER . COMPARISON-FUNCTION).
-SORT-ORDER is a short string (or symbol) describing the sort order.
+  (defcustom icicle-sort-orders-alist ()
+    "*Alist of available sort functions.
+This is a pseudo option - you probably do NOT want to customize this.
+Instead, use macro `icicle-define-sort-command' to define a new sort
+function and automatically add it to this list.
+
+Each alist element has the form (SORT-ORDER . COMPARER):
+
+ SORT-ORDER is a short string or symbol describing the sort order.
  Examples: \"by date\", \"alphabetically\", \"directories first\".
-COMPARISON-FN is a function that compares two strings, returning
- non-nil if and only if the first string sorts before the second."
+
+ COMPARER compares two items.  It must be acceptable as a value of
+ `icicle-sort-comparer'."
     :type '(alist
             :key-type (choice :tag "Sort order" string symbol)
-            :value-type
-            (choice (function :tag "Comparison function") (const :tag "Do not sort" nil)))
+            :value-type (choice
+                         (const    :tag "None (do not sort)" nil)
+                         (function :tag "Sorting Predicate")
+                         (list     :tag "Sorting Multi-Predicate"
+                          (repeat (function :tag "Component Predicate"))
+                          (choice
+                           (const    :tag "None" nil)
+                           (function :tag "Final Predicate")))))
     :group 'Icicles-Completions-Display :group 'Icicles-Matching))
 
-(unless (> emacs-major-version 20)      ; Emacs 20 version - type `alist' doesn't exist.
-  (defcustom icicle-sort-functions-alist ()
-    "*Alist of sort functions.
-You probably do not want to customize this option.  Instead, use macro
-`icicle-define-sort-command' to define a new sort function and add it
-to this alist.
-Each alist element has the form (SORT-ORDER . COMPARISON-FUNCTION).
-SORT-ORDER is a short string (or symbol) describing the sort order.
+(unless (> emacs-major-version 20)      ; Emacs 20: custom type `alist' doesn't exist.
+  (defcustom icicle-sort-orders-alist ()
+    "*Alist of available sort functions.
+This is a pseudo option - you probably do NOT want to customize this.
+Instead, use macro `icicle-define-sort-command' to define a new sort
+function and automatically add it to this list.
+
+Each alist element has the form (SORT-ORDER . COMPARER):
+
+ SORT-ORDER is a short string or symbol describing the sort order.
  Examples: \"by date\", \"alphabetically\", \"directories first\".
-COMPARISON-FN is a function that compares two strings, returning
- non-nil if and only if the first string sorts before the second."
+
+ COMPARER compares two items.  It must be acceptable as a value of
+ `icicle-sort-comparer'."
     :type '(repeat
             (cons
              (choice :tag "Sort order" string symbol)
-             (choice (function :tag "Comparison function") (const :tag "Do not sort" nil))))
+             (choice
+              (const    :tag "None (do not sort)" nil)
+              (function :tag "Sorting Predicate")
+              (list     :tag "Sorting Multi-Predicate"
+               (repeat (function :tag "Component Predicate"))
+               (choice
+                (const    :tag "None" nil)
+                (function :tag "Final Predicate"))))))
     :group 'Icicles-Completions-Display :group 'Icicles-Matching))
 
 ;;;###autoload

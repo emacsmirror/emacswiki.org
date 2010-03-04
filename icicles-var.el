@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Mar  2 23:50:20 2010 (-0800)
+;; Last-Updated: Wed Mar  3 02:00:05 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 1056
+;;     Update #: 1060
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -87,7 +87,7 @@
 ;;    `icicle-last-apropos-complete-match-fn',
 ;;    `icicle-last-completion-candidate',
 ;;    `icicle-last-completion-command', `icicle-last-input',
-;;    `icicle-last-sort-function', `icicle-last-top-level-command',
+;;    `icicle-last-sort-comparer', `icicle-last-top-level-command',
 ;;    `icicle-last-transform-function', `icicle-list-use-nth-parts',
 ;;    `icicle-menu-map', `icicle-minibuffer-message-ok-p',
 ;;    `icicle-minor-mode-map-entry', `icicle-ms-windows-drive-hash',
@@ -174,7 +174,7 @@
 
 (require 'apropos-fn+var nil t) ;; (no error if not found): apropos-command,
                                 ;; apropos-function, apropos-option, apropos-variable
-(require 'icicles-opt) ;; icicle-sort-function
+(require 'icicles-opt) ;; icicle-sort-comparer
 
 ;;; Defvars to quiet byte-compiler:
 (defvar kmacro-ring-max)                ; Defined in `kmacro.el' in Emacs 22+.
@@ -480,7 +480,7 @@ noted in parentheses.
 * `completion-ignored-extensions'        - Ignored filenames (`C-.')
 * `icicle-add-buffer-name-flag'          - Add candidate's buffer?
 * `icicle-add-proxy-candidates-flag'     - Include proxies? (`C-M-_')
-* `icicle-alternative-sort-function'     - Other sort (`M-,', `C-M-,')
+* `icicle-alternative-sort-comparer'     - Other sort (`M-,', `C-M-,')
 * `icicle-top-level-key-bindings'        - Bind top-level commands
 * `icicle-buffer-*'                      - `icicle-buffer' options
 * `icicle-candidate-width-factor'        - Width %%, candidate columns
@@ -549,7 +549,7 @@ noted in parentheses.
 * `icicle-search-whole-word-flag'        - Find whole words? (`M-q')
 * `icicle-show-Completions-help-flag'    - Show *Completions* help?
 * `icicle-show-Completions-initially-flag'- Show *Completions* first?
-* `icicle-sort-function'                 - Sort candidates (`C-,')
+* `icicle-sort-comparer'                 - Sort candidates (`C-,')
 * `icicle-sort-orders-alist'             - Predicates for sorting
 * `icicle-special-candidate-regexp'      - To highlight special cands
 * `icicle-TAB-shows-candidates-flag'     - 1st `TAB' shows candidates?
@@ -796,8 +796,8 @@ RING-ITEM is an item in `kmacro-ring' or `(kmacro-ring-head)'.")
 
 (defvar icicle-last-input "" "Last minibuffer input typed (not from cycling).")
 
-(defvar icicle-last-sort-function (or icicle-sort-function 'icicle-case-string-less-p)
-  "Local copy of `icicle-sort-function', so we can restore it.")
+(defvar icicle-last-sort-comparer (or icicle-sort-comparer 'icicle-case-string-less-p)
+  "Local copy of `icicle-sort-comparer', so we can restore it.")
 
 (defvar icicle-last-top-level-command nil "Last top-level command used.")
 

@@ -1,138 +1,155 @@
 ;;; mon-insertion-utils.el --- insertion utils, licences, file templates, etc.
+;; -*- mode: EMACS-LISP; -*-
+
 ;;; ================================================================
-;;; DESCRIPTION:
-;;; mon-insertion-utils.el Provides insertion related utilities, templates and
-;;; string building/manipulation procedures that ease routine chores and
-;;; interactive command invocation.
-;;; Many larger 'texty' functions are included here because they have become to
-;;; unwieldly or are otherwise to large to maintain in their original source
-;;; location.
-;;;
-;;; FUNCTIONS:►►►
-;;; `mon-insert-string-n-fancy-times', `mon-line-number-region',
-;;; `mon-string-incr-padded', `mon-string-incr', `mon-line-drop-in-words',
-;;; `mon-insert-string-n-times', `mon-lisp-evald', `comment-divider',
-;;; `mon-comment-divider-to-col-four', `php-comment-divider', `mon-insert-copyright',
-;;; `mon-insert-file-in-dirs', `mon-insert-dirs-in-path', `mon-insert-wht-spc',
-;;; `mon-insert-newlines', `mon-insert-defclass-template'
-;;; `mon-insert-regexp-template-yyyy'`mon-insert-regexp-template'
-;;; `mon-insert-CL-file-template', `mon-insert-CL-package-template',
-;;; `mon-insert-user-name-cond', `mon-insert-system-type-cond',
-;;; `mon-insert-gnu-licence', `mon-insert-gnu-licence-gfdl' 
-;;; `mon-build-copyright-string', `mon-comput-33', `mon-comput-45'
-;;; `mon-split-designator', `mon-build-copyright-string-TEST'
-;;; `mon-build-copyright-string-license'
-;;; FUNCTIONS:◄◄◄
-;;;
-;;; MACROS: 
-;;; `mon-print-in-buffer-if-p'
-;;;
-;;; METHODS:
-;;;
-;;; CLASSES: 
-;;;
-;;; CONSTANTS:
-;;;
-;;; VARIABLES:
-;;; `*mon-gnu-licences-header*'
-;;; `*mon-gnu-license-header-gfdl*'
-;;; 
-;;; ALIASED/ADIVISED/SUBST'D:
-;;; `mon-comment-divider->col' -> `mon-comment-divider-to-col'
-;;; `bug-insert-copyright'     -> `mon-insert-copyright'
-;;;
-;;; RENAMED:
-;;; `mon-lisp-comment-to-col'             -> `mon-comment-lisp-to-col'
-;;; `split-designator'                    -> `mon-split-designator'
-;;; `mon-interactively-stringify'         -> `mon-insert-string-ify'
-;;; `php-comment-divider'                 -> `mon-insert-php-comment-divider'
-;;; `mon-insert-naf-mode-file-template'   -> `mon-insert-file-template'
-;;; `mon-insert-string-incr'              -> `mon-string-incr'
-;;; `mon-insert-numbers-padded'           -> `mon-string-incr-padded'
-;;;
-;;; RENAMED-AND-MOVED:
-;;; Following moved to `mon-doc-help-utils.el' and renamed *insert* -> *help*
-;;; `mon-insert-file-dir-functions'       -> `mon-help-file-dir-functions'
-;;; `mon-insert-install-info-incantation' -> `mon-help-install-info-incantation'
-;;; `mon-insert-rename-incantation'       -> `mon-help-rename-incantation'
-;;; `mon-insert-tar-incantation'          -> `mon-help-tar-incantation'
-;;; `mon-insert-info-incantation'         -> `mon-help-info-incantation'
-;;; `mon-insert-diacritics'               -> `mon-help-diacritics'
-;;; `mon-insert-naf-mode-file-template'   -> `mon-insert-file-template'
-;;; `mon-user-evald'                      -> `mon-lisp-evald'
-;;; `mon-incr'                            -> `mon-string-incr'
-;;;
-;;; MOVED: 
-;;; `mon-insert-user-name-cond'       <- mon-w32-load.el
-;;; `mon-insert-system-type-cond'     <- mon-w32-load.el
-;;; `mon-insert-regexp-template-yyyy' <- naf-mode-replacement-utils.el
-;;; `mon-accessed-stamp'              -> mon-time-utils.el
-;;; `mon-stamp'                       -> mon-time-utils.el
-;;; `mon-timestamp'                   -> mon-time-utils.el
-;;; `mon-accessed-time-stamp'         -> mon-time-utils.el
-;;; `*mon-hgignore-template*'         -> mon-bzr-utils.el
-;;; `mon-insert-hgignore-template'    -> mon-bzr-utils.el
-;;; `mon-insert-lisp-testme-fancy'    -> mon-testme-utils.el
-;;; `mon-insert-test-cases'           -> mon-testme-utils.el
-;;; `mon-insert-lisp-testme'          -> mon-testme-utils.el
-;;;
-;;; REQUIRES:
-;;; :FILE ./mon-time-utils.el  
-;;; :LINK (URL `http://www.emacswiki.org/emacs/mon-time-utils.el')
-;;; :CALLED-BY 'anything-that-uses-a-time-stamp'
-;;;
-;;; :FILE ./mon-utils.el 
-;;; :LINK (URL `http://www.emacswiki.org/emacs/mon-utils.el')
-;;; :FUNCTION `mon-sublist-gutted' :CALLED-BY `mon-insert-gnu-licence-gfdl' 
-;;;
-;;; :FILE ./mon-site-local
-;;; *MON-NAME*
-;;; 
-;;; TODO:
-;;; Build a wget template.
-;;; (defun mon-wget-url (extension url put-in)
-;;; wget -nd -r -l1 --noparent -A."file-extension" "url"
-;;; See; Stefan Reichor's defun in `mon-url-utils' (commented - not active)
-;;;
-;;; Build a progn makunbound unintern template, e.g.:
-;;; ;;;(progn (makunbound 'VAR-OR-FUNCTION) 
-;;; ;;; (unintern 'VAR-OR-FUNCTION))
-;;; 
-;;; PUBLIC-LINK: (URL `http://www.emacswiki.org/emacs/mon-insertion-utils.el')
-;;; FILE-PUBLISHED: <Timestamp: #{2009-08-27} - by MON>
-;;;
-;;; FILE-CREATED: 
-;;; <Timestamp: Wednesday April 08, 2009 @ 12:37.06 PM - by MON KEY>
+;; Copyright © 2010 MON KEY. All rights reserved.
 ;;; ================================================================
-;;; This file is not part of GNU Emacs.
-;;;
-;;; This program is free software; you can redistribute it and/or
-;;; modify it under the terms of the GNU General Public License as
-;;; published by the Free Software Foundation; either version 3, or
-;;; (at your option) any later version.
-;;;
-;;; This program is distributed in the hope that it will be useful,
-;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-;;; General Public License for more details.
-;;;
-;;; You should have received a copy of the GNU General Public License
-;;; along with this program; see the file COPYING.  If not, write to
-;;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
-;;; Floor, Boston, MA 02110-1301, USA.
+
+;; FILENAME: mon-insertion-utils.el
+;; AUTHOR: MON KEY
+;; MAINTAINER: MON KEY
+;; CREATED: 2010-03-03T16:13:41-05:00Z
+;; VERSION: 1.0.0
+;; COMPATIBILITY: Emacs23.*
+;; KEYWORDS: convenience, editing, 
+
 ;;; ================================================================
-;;; Permission is granted to copy, distribute and/or modify this
-;;; document under the terms of the GNU Free Documentation License,
-;;; Version 1.3 or any later version published by the Free Software
-;;; Foundation; with no Invariant Sections, no Front-Cover Texts,
-;;; and no Back-Cover Texts. A copy of the license is included in
-;;; the section entitled "GNU Free Documentation License".
-;;; A copy of the license is also available from the Free Software
-;;; Foundation Web site at:
-;;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
+
+;;; COMMENTARY: 
+
+;; ================================================================
+;; DESCRIPTION:
+;; mon-insertion-utils.el Provides insertion related utilities, templates and
+;; string building/manipulation procedures that ease routine chores and
+;; interactive command invocation.
+;; Many larger 'texty' functions are included here because they have become to
+;; unwieldly or are otherwise to large to maintain in their original source
+;; location.
+;;
+;; FUNCTIONS:►►►
+;; `mon-insert-string-n-fancy-times', `mon-line-number-region',
+;; `mon-string-incr-padded', `mon-string-incr', `mon-line-drop-in-words',
+;; `mon-insert-string-n-times', `mon-lisp-evald', `comment-divider',
+;; `mon-comment-divider-to-col-four', `php-comment-divider', `mon-insert-copyright',
+;; `mon-insert-file-in-dirs', `mon-insert-dirs-in-path', `mon-insert-wht-spc',
+;; `mon-insert-newlines', `mon-insert-defclass-template'
+;; `mon-insert-regexp-template-yyyy'`mon-insert-regexp-template'
+;; `mon-insert-CL-file-template', `mon-insert-CL-package-template',
+;; `mon-insert-user-name-cond', `mon-insert-system-type-cond',
+;; `mon-insert-gnu-licence', `mon-insert-gnu-licence-gfdl' 
+;; `mon-build-copyright-string', `mon-comput-33', `mon-comput-45'
+;; `mon-split-designator', `mon-build-copyright-string-TEST'
+;; `mon-build-copyright-string-license'
+;; FUNCTIONS:◄◄◄
+;;
+;; MACROS: 
+;; `mon-print-in-buffer-if-p'
+;;
+;; METHODS:
+;;
+;; CLASSES: 
+;;
+;; CONSTANTS:
+;;
+;; VARIABLES:
+;; `*mon-gnu-license-header*', `*mon-gnu-license-header-emacs*',
+;; `*mon-mit-license-header*', `*mon-bsd-license-header*',
+;; `*mon-gnu-license-header-gfdl*',
+;; 
+;; ALIASED/ADIVISED/SUBST'D:
+;; `mon-comment-divider->col' -> `mon-comment-divider-to-col'
+;; `bug-insert-copyright'     -> `mon-insert-copyright'
+;;
+;; RENAMED:
+;; `mon-lisp-comment-to-col'             -> `mon-comment-lisp-to-col'
+;; `split-designator'                    -> `mon-split-designator'
+;; `mon-interactively-stringify'         -> `mon-insert-string-ify'
+;; `php-comment-divider'                 -> `mon-insert-php-comment-divider'
+;; `mon-insert-naf-mode-file-template'   -> `mon-insert-file-template'
+;; `mon-insert-string-incr'              -> `mon-string-incr'
+;; `mon-insert-numbers-padded'           -> `mon-string-incr-padded'
+;;
+;; RENAMED-AND-MOVED:
+;; Following moved to `mon-doc-help-utils.el' and renamed *insert* -> *help*
+;; `mon-insert-file-dir-functions'       -> `mon-help-file-dir-functions'
+;; `mon-insert-install-info-incantation' -> `mon-help-install-info-incantation'
+;; `mon-insert-rename-incantation'       -> `mon-help-rename-incantation'
+;; `mon-insert-tar-incantation'          -> `mon-help-tar-incantation'
+;; `mon-insert-info-incantation'         -> `mon-help-info-incantation'
+;; `mon-insert-diacritics'               -> `mon-help-diacritics'
+;; `mon-insert-naf-mode-file-template'   -> `mon-insert-file-template'
+;; `mon-user-evald'                      -> `mon-lisp-evald'
+;; `mon-incr'                            -> `mon-string-incr'
+;;
+;; MOVED: 
+;; `mon-insert-user-name-cond'       <- mon-w32-load.el
+;; `mon-insert-system-type-cond'     <- mon-w32-load.el
+;; `mon-insert-regexp-template-yyyy' <- naf-mode-replacement-utils.el
+;; `mon-accessed-stamp'              -> mon-time-utils.el
+;; `mon-stamp'                       -> mon-time-utils.el
+;; `mon-timestamp'                   -> mon-time-utils.el
+;; `mon-accessed-time-stamp'         -> mon-time-utils.el
+;; `*mon-hgignore-template*'         -> mon-bzr-utils.el
+;; `mon-insert-hgignore-template'    -> mon-bzr-utils.el
+;; `mon-insert-lisp-testme-fancy'    -> mon-testme-utils.el
+;; `mon-insert-test-cases'           -> mon-testme-utils.el
+;; `mon-insert-lisp-testme'          -> mon-testme-utils.el
+;;
+;; REQUIRES:
+;; :FILE mon-time-utils.el  
+;; :LINK (URL `http://www.emacswiki.org/emacs/mon-time-utils.el')
+;; :CALLED-BY 'anything-that-uses-a-time-stamp'
+;;
+;; :FILE mon-utils.el 
+;; :LINK (URL `http://www.emacswiki.org/emacs/mon-utils.el')
+;; :FUNCTION `mon-sublist-gutted' :CALLED-BY `mon-insert-gnu-licence-gfdl' 
+;;
+;; :FILE mon-site-local-defaults.el
+;; `*MON-NAME*'
+;; 
+;; TODO:
+;; Build a progn makunbound unintern template, e.g.:
+;; ;;;(progn ([f]makunbound 'VAR-OR-FUNCTION) 
+;; ;;;       (unintern 'VAR-OR-FUNCTION))
+;; 
+;; PUBLIC-LINK: (URL `http://www.emacswiki.org/emacs/mon-insertion-utils.el')
+;; FILE-PUBLISHED: <Timestamp: #{2009-08-27} - by MON>
+;;
+;; FILE-CREATED: 
+;; <Timestamp: Wednesday April 08, 2009 @ 12:37.06 PM - by MON KEY>
+;;
+;; ================================================================
+
+;; This file is not part of GNU Emacs.
+;;
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 3, or
+;; (at your option) any later version.
+;;
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with this program; see the file COPYING.  If not, write to
+;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
+;; Floor, Boston, MA 02110-1301, USA.
+;; ================================================================
+;; Permission is granted to copy, distribute and/or modify this
+;; document under the terms of the GNU Free Documentation License,
+;; Version 1.3 or any later version published by the Free Software
+;; Foundation; with no Invariant Sections, no Front-Cover Texts,
+;; and no Back-Cover Texts. A copy of the license is included in
+;; the section entitled "GNU Free Documentation License".
+;; A copy of the license is also available from the Free Software
+;; Foundation Web site at:
+;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ================================================================
-;;; Copyright © 2009 MON KEY 
+;; Copyright © 2009, 2010 MON KEY 
 ;;; ==============================
+
 ;;; CODE:
 
 ;;; ==============================
@@ -757,9 +774,9 @@ Does not move point.\n\n:EXAMPLE\n\n(split-designator\)\n\n
 ;;; ==============================
 ;;; :MODIFICATIONS <Timestamp: #{2009-08-25T14:09:37-04:00Z}#{09352} - by MON KEY>
 (defun comment-divider (&optional not-insert intrp)
-  "Insert default comment divider at point.
+  "Insert default comment divider at point.\n
 When called-interactively insert the following at point:\n
-;;; ==============================\n
+ ;;; ==============================\n
 When NOT-INSERT is non-nil return comment divider as string.\n
 :EXAMPLE\n\(comment-divider t\)\n
 :SEE-ALSO `*mon-default-comment-divider*' `mon-comment-divide->col',
@@ -1065,7 +1082,7 @@ top of file.\n
                        ;; (mon-comment-divider-w-len 64) "\n"
                        ;; :WAS *mon-gnu-license-header* "\n"
                        (mon-build-copyright-string-license 'bsd) "\n"
-                       (mon-insert-gnu-licence-gfdl t) "\n"
+                       (mon-insert-gnu-licence-gfdl t) "\n\n"
                        ";;; CODE:\n\n"
                        ";;; \n"
                        ";;; {...}\n"
@@ -1214,10 +1231,12 @@ chars depending value of arg MONKEY or W-ORG.\n
                     (IS-BUG-P (cadr (assoc 1 *BUG-NAME*)))
                     (IS-BUG-P-REMOTE (cadr (assoc 1 *BUG-NAME*)))
                     (t "<NAME>")))
-        (w-org (cond (monkey 
-                      (if w-org (substring (cadr (assoc 1 *MON-ORG-NAME*)) 1) ""))
-                     (w-org (cadr (assoc 2 *MON-ORG-NAME*)))
-                     (t "")))
+        (w-org 
+         (let ((*MON-ORG-NAME* (or *MON-ORG-NAME* '((1 " <SOME-ORGANIZATION>")
+                                                    (2 " <SOME-ORGANIZATION>")))))
+           (cond (monkey 
+                  (if w-org (substring (cadr (assoc 1 *MON-ORG-NAME*)) 1) ""))
+                 (w-org (cadr (assoc 2 *MON-ORG-NAME*))))))
         (year (mon-get-current-year))   ;(format-time-string "%Y"))
         (cls-comment (cond ((and short-form (not monkey) (not w-org))
                             *mon-default-comment-divider*) ;; 34
@@ -1228,7 +1247,8 @@ chars depending value of arg MONKEY or W-ORG.\n
                            ((and short-form monkey w-org) 
                             (mon-comment-divider-w-len 50)) ;; 54
                            (t (mon-comment-divider-w-len 64)))) ;; 68
-        (cpy))
+        cpy)
+    ;; (an(or w-org All Rights Reserverd.
     (setq cpy
           (if no-nl
               (concat
@@ -1239,6 +1259,9 @@ chars depending value of arg MONKEY or W-ORG.\n
                "\n" cls-comment "\n"
                ";; Copyright © "  year " " name " " w-org "\n"
                cls-comment "\n")))
+     (unless (and w-org short-form)
+       ;; Don't bother with re-entrant tricks here...
+       (setq cpy (replace-regexp-in-string " $" ". All rights reserved." cpy)))
     (when (or insrtp intrp) 
       (save-excursion (insert cpy)))
     cpy))
@@ -1255,10 +1278,13 @@ chars depending value of arg MONKEY or W-ORG.\n
 ;;; :TEST-ME (mon-build-copyright-string nil nil t t t t)
 ;;; :TEST-ME (mon-build-copyright-string nil nil nil t t t)
 ;;; :TEST-ME (mon-build-copyright-string nil nil t t nil t)
+;;; :TEST-ME (let ((IS-MON-P nil)) (mon-build-copyright-string))
+;;; :TEST-ME (let ((IS-MON-P nil)) (mon-build-copyright-string nil nil t))
 ;;; :TEST-ME (let ((IS-MON-P nil) (IS-BUG-P t)) (mon-build-copyright-string nil nil t))
 ;;; :TEST-ME (call-interactively 'mon-build-copyright-string)
 
 ;;; ==============================
+;;; :MODIFICATIONS <Timestamp: #{2010-03-03T14:42:53-05:00Z}#{10093} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2010-02-10T12:24:33-05:00Z}#{10063} - by MON KEY>
 (defun mon-build-copyright-string-TEST ()
   "Test function for `mon-build-copyright-string'.\n
@@ -1274,48 +1300,74 @@ chars depending value of arg MONKEY or W-ORG.\n
   (interactive)
   (let* ((mbcst (get-buffer-create "*COPYRIGHT-STRING-TEST*"))
          (mbcs-args (format "%s\n" (help-function-arglist 'mon-build-copyright-string)))
-           (formt-tests `(,(mapconcat #'identity
-                                      (save-match-data 
-                                        (split-string
-                                         (concat 
-                                          "| Arglist for `mon-build-copyright-string':\n"
-                                          mbcs-args "\n\n"
-                                          "Documentation:\n\n"
-                                          (documentation 'mon-build-copyright-string)
-                                           ) "\n"))
-                                       "\n| ")
-                           ;; (&optional insertp intrp monkey no-nl w-org short-form)
-                        (":DEFAULT" 
-                         . ,(mon-build-copyright-string))
-                       (":WITH MONKEY" 
-                        . ,(mon-build-copyright-string nil nil t))
-                       (":WITH MONKEY :WITH SHORT-FORM" 
-                        . ,(mon-build-copyright-string nil nil t nil nil t))
-                       (":WITH MONKEY :WITH NO-NL" 
-                        . ,(mon-build-copyright-string nil nil t t))
-                       (":WITH MONKEY :WITH W-ORG" 
-                        . ,(mon-build-copyright-string nil nil t nil t ))
-                       (":WITH MONKEY :WITH W-ORG :WITH SHORT-FORM" 
-                        . ,(mon-build-copyright-string nil nil t nil t t))
-                       (":WITH MONKEY :WITH NO-NL :WITH SHORT-FORM"  
-                        . ,(mon-build-copyright-string nil nil t t nil t))
-                       (":WITH SHORT-FORM" 
-                        . ,(mon-build-copyright-string nil nil nil nil nil t))
-                       (":WITH MONKEY :WITH NO-NL :WITH W-ORG :WITH SHORT-FORM" 
-                        . ,(mon-build-copyright-string nil nil t t t t))
-                       (":WITH NO-NL :WITH W-ORG :WITH SHORT-FORM" 
-                        . ,(mon-build-copyright-string nil nil nil t t t))))
-         (divd (make-string 67 95)))
-        ;;formt-tests)
+         (divd (make-string 67 95))        
+         (formt-tests `(,(mapconcat #'identity
+                                    (save-match-data 
+                                      (split-string
+                                       (concat 
+                                        "| Arglist for `mon-build-copyright-string':\n"
+                                        mbcs-args "\n\n"
+                                        "Documentation:\n\n"
+                                        (documentation 'mon-build-copyright-string)
+                                        ) "\n"))
+                                    "\n| ")
+                         ,(let ((IS-MON-P nil))
+                               `(":DEFAULT" 
+                                 . ,(mon-build-copyright-string)))
+                         (,(concat ":THESE-ARGS nil nil t\n"
+                                   "| :WITH MONKEY")
+                           . ,(mon-build-copyright-string nil nil t))
+                         ,(let ((IS-MON-P nil))
+                               `(,(concat ":THESE-ARGS nil nil t" 
+                                          "| :DEFAULT :WITH MONKEY (and IS-MON-P nil)")
+                                  . ,(mon-build-copyright-string nil nil t)))
+                         (,(concat ":THESE-ARGS nil nil t nil nil t\n" 
+                                   "| :WITH MONKEY :WITH SHORT-FORM")
+                           . ,(mon-build-copyright-string nil nil t nil nil t))
+                         (,(concat ":THESE-ARGS nil nil t t\n"  
+                                   "| :WITH MONKEY :WITH NO-NL")
+                           . ,(mon-build-copyright-string nil nil t t))
+                         ,(let ((*MON-ORG-NAME* nil))
+                               `(,(concat  ":THESE-ARGS nil nil t nil t\n" 
+                                           "| :WITH MONKEY :WITH W-ORG (and *MON-ORG-NAME* nil)")
+                                  . ,(mon-build-copyright-string nil nil t nil t )))
+                         (,(concat ":THESE-ARGS nil nil t nil t\n"
+                                   "| :WITH MONKEY :WITH W-ORG")
+                           . ,(mon-build-copyright-string nil nil t nil t ))
+                         (,(concat  ":THESE-ARGS nil nil t nil t t\n"
+                                    "| :WITH MONKEY :WITH W-ORG :WITH SHORT-FORM" )
+                           . ,(mon-build-copyright-string nil nil t nil t t))
+                         (,(concat ":THESE-ARGS nil nil t t nil t\n"
+                                   "| :WITH MONKEY :WITH NO-NL :WITH SHORT-FORM")
+                           . ,(mon-build-copyright-string nil nil t t nil t))
+                         (,(concat ":THESE-ARGS nil nil nil nil nil t\n"
+                                   "| :WITH SHORT-FORM")
+                           . ,(mon-build-copyright-string nil nil nil nil nil t))
+                         (,(concat ":THESE-ARGS nil nil nil nil t\n"
+                                   "| :WITH MONKEY :WITH NO-NL :WITH W-ORG :WITH SHORT-FORM" )
+                           . ,(mon-build-copyright-string nil nil t t t t))
+                         (,(concat ":THESE-ARGS nil nil nil t t t\n" 
+                                   "| :WITH NO-NL :WITH W-ORG :WITH SHORT-FORM")
+                           . ,(mon-build-copyright-string nil nil nil t t t)))))
     (with-current-buffer mbcst
       (erase-buffer)
-      (princ (concat (pop formt-tests) "\n") (current-buffer))
-      (princ (concat 
-              (mapconcat #'(lambda (e) 
-                            (concat " " divd "\n|\n| " mbcs-args "| " (car e) "\n| =>\n" (cdr e)))
-                         formt-tests "\n")
-              "\n" divd)
-             (current-buffer)))
+      (save-excursion
+        (princ (concat " " divd "\n| \n" (pop formt-tests) "\n") (current-buffer))
+        (princ (concat 
+                (mapconcat #'(lambda (e) 
+                               (concat " " divd "\n|\n| " mbcs-args "| " (car e) "\n| =>\n" (cdr e)))
+                           formt-tests "\n")
+                "\n " divd)
+               (current-buffer))
+      (when (fboundp 'mon-help-propertize-tags) 
+        (mon-help-propertize-tags
+         '(":WITH\\|:DEFAULT" 0 mon-help-DYNATAB-tag)
+         '(":THESE-ARGS" 0 mon-help-DYNATAB-tag)
+         '("&optional" 0 font-lock-type-face)
+         '("^ _\\{67,67\\}$" 0 mon-help-INNER-KEY-tag)
+         '("^|" 0 mon-help-INNER-KEY-tag)
+         '("\\( \\(MONKEY\\|NO-NL\\|SHORT-FORM\\|W-ORG\\)\\)" 2 mon-help-BUILTIN-tag)
+         '("<SOME-ORGANIZATION>" 0 mon-help-META-tag)))))
     (display-buffer mbcst t)))
 ;;
 ;;; :TEST-ME (mon-build-copyright-string-TEST)
@@ -1363,12 +1415,13 @@ Conditional upon `IS-BUG-P' returning t.\n
 ;;;  ``known'' files.  If this is dont the curent elisp specific version should
 ;;;  be renamed `mon-insert-file-template-elisp'
 ;;;
+;;; :RENAMED `mon-insert-naf-mode-file-template' -> `mon-insert-file-template'
+;;; :MODIFICATIONS <Timestamp: #{2010-03-03T15:34:05-05:00Z}#{10093} - by MON KEY>
 ;;; :MODIFICATIONS <Timestamp: #{2010-02-01T16:33:23-05:00Z}#{10051} - by MON KEY>
 ;;; :MODIFICATIONS <Timestamp: #{2009-10-24T13:49:28-04:00Z}#{09436} - by MON KEY>
-;;; :MODIFICATIONS <Timestamp: #{2009-10-02T16:06:03-04:00Z}#{09405} - by MON KEY>
 ;;; :MODIFICATIONS <Timestamp: #{2009-10-05T15:53:51-04:00Z}#{09411} - by MON KEY>
+;;; :MODIFICATIONS <Timestamp: #{2009-10-02T16:06:03-04:00Z}#{09405} - by MON KEY>
 ;;; :CREATED <Timestamp: Thursday April 09, 2009 @ 05:52.10 PM - by MON KEY>
-;;; :RENAMED `mon-insert-naf-mode-file-template' ->`mon-insert-file-template'
 (defun mon-insert-file-template (&optional w-fname insrtp intrp)
   "Insert an elisp file template.\n
 Template includes GPLv3+ clause from `*mon-gnu-license-header*'
@@ -1396,47 +1449,61 @@ helps ensure multi-os portability.\n
          (fname-sans (file-name-sans-extension fname))
          (fl-template
           (concat
-           ";;; " fname " --- <one-line description of " fname-sans "\n"
+           ";;; " fname " --- { A one line description of: " fname-sans ". }\n"
            ";; -*- mode: EMACS-LISP; -*-\n"
-           (mon-comment-divider-w-len 64)"\n"
-           ";;; DESCRIPTION:\n"
-           ";;; " fname-sans " provides {description here}.\n;;;\n"
-           ";;; AUTHOR: MON KEY\n"
-           ";;; MAINTAINER: MON KEY\n;;;\n"
-           ";;; FUNCTIONS:►►►\n;;;\n;;; FUNCTIONS:◄◄◄\n;;;\n"
-           ";;; MACROS:\n;;;\n"
-           ";;; METHODS:\n;;;\n"
-           ";;; CLASSES:\n;;;\n"
-           ";;; CONSTANTS:\n;;;\n"
-           ";;; FACES:\n;;;\n"
-           ";;; VARIABLES:\n;;;\n"
-           ";;; ALIASED/ADVISED/SUBST'D:\n;;;\n"
-           ";;; DEPRECATED:\n;;;\n"
-           ";;; RENAMED:\n;;;\n"
-           ";;; MOVED:\n;;;\n"
-           ";;; TODO:\n;;;\n"
-           ";;; NOTES:\n;;;\n"
-           ";;; SNIPPETS:\n;;;\n"
-           ";;; REQUIRES:\n;;;\n"
-           ";;; THIRD-PARTY-CODE:\n;;;\n" 
+           (mon-build-copyright-string nil nil t) "\n"
+           ";; FILENAME: " fname "\n"
+           ";; AUTHOR: MON KEY\n"
+           ";; MAINTAINER: MON KEY\n"
+           ";; CREATED: "
+           (replace-regexp-in-string "#{\\(.*\\)}#.*" "\\1" (mon-timestamp :naf t)) "\n"
+           ";; VERSION: 1.0.0\n"
+           ";; COMPATIBILITY: " (concat "Emacs" (format "%s" emacs-major-version) ".*") "\n"
+           ";; KEYWORDS: \n\n"
+           (mon-comment-divider-w-len 64)"\n\n"
+           ";;; COMMENTARY: \n\n"
+           (substring (mon-comment-divider-w-len 65 ) 1) "\n"
+           ";; DESCRIPTION:\n"
+           ";; " fname-sans " provides { some description here. }\n;;\n"
+           ";; FUNCTIONS:►►►\n;;\n;; FUNCTIONS:◄◄◄\n;;\n"
+           ";; MACROS:\n;;\n"
+           ";; METHODS:\n;;\n"
+           ";; CLASSES:\n;;\n"
+           ";; CONSTANTS:\n;;\n"
+           ";; FACES:\n;;\n"
+           ";; VARIABLES:\n;;\n"
+           ";; ALIASED/ADVISED/SUBST'D:\n;;\n"
+           ";; DEPRECATED:\n;;\n"
+           ";; RENAMED:\n;;\n"
+           ";; MOVED:\n;;\n"
+           ";; TODO:\n;;\n"
+           ";; NOTES:\n;;\n"
+           ";; SNIPPETS:\n;;\n"
+           ";; REQUIRES:\n;;\n"
+           ";; THIRD-PARTY-CODE:\n;;\n" 
            ";; URL: http://www.emacswiki.org/emacs/" fname "\n"
-           ";;; FIRST-PUBLISHED:\n;;;\n"
-           ";; EMACSWIKI: {URL of an EmacsWiki describing " fname-sans ".}\n"
-           ";; CREATED:\n;;; <Timestamp: " (mon-timestamp :naf t) "\n"
-           (mon-comment-divider-w-len 64) "\n"
-           (mon-build-copyright-string-license 'gpl) "\n"
-           (mon-insert-gnu-licence-gfdl t) "\n"
+           ";; FIRST-PUBLISHED:\n;;\n"
+           ";; EMACSWIKI: { URL of an EmacsWiki describing " fname-sans ". }\n;;\n"
+           ";; FILE-CREATED:\n;; <Timestamp: " (mon-timestamp :naf t) "\n;;\n"
+           (substring (mon-comment-divider-w-len 65 ) 1) "\n\n"
+           ";;; LICENSCE:\n\n"
+           (substring (mon-comment-divider-w-len 65 ) 1)
+           (mon-build-copyright-string-license 'gpl-emacs t) "\n"
+           (substring (mon-comment-divider-w-len 65 ) 1) "\n"
+           (mon-insert-gnu-licence-gfdl) "\n"
+           (mon-build-copyright-string nil nil t t nil t) "\n\n"
            ";;; CODE:\n\n"
            "\(eval-when-compile \(require 'cl\)\)\n\n"
            *mon-default-comment-divider*
-           "\n;   {...\n;   " fname-sans " Contents here\n;   ...}\n\n"
+           "\n;;  { ...\n;;   "  fname-sans " Contents here\n;;   ... }\n\n"
            *mon-default-comment-divider* "\n" 
            ";;; (provide '" fname-sans ")\n"
            *mon-default-comment-divider* "\n\n"
-           (mon-comment-divider-w-len 64) "\n"
+           (mon-comment-divider-w-len 68) "\n"
            ";;; " fname " ends here\n;;; EOF")))
     (if (or insrtp intrp)
-        (insert fl-template)
+        (progn (goto-char (buffer-end 0))
+               (save-excursion (insert fl-template)))
         fl-template)))
 ;;
 (defalias 'mon-insert-naf-mode-file-template 'mon-insert-file-template)
@@ -1452,8 +1519,8 @@ helps ensure multi-os portability.\n
   "Default GNU license to insert in newly created file headers.\n
 Presented with the GPLv3+ clause.\n
 :EXAMPLE\n*mon-gnu-license-header*\n
-
-:SEE-ALSO `*mon-mit-license-header*',`*mon-bsd-license-header*',
+:SEE-ALSO `*mon-gnu-license-header-emacs*',
+`*mon-mit-license-header*',`*mon-bsd-license-header*',
 `*mon-gnu-license-header-gfdl*', `mon-insert-gnu-licence-gfdl',
 `mon-insert-gnu-licence', `mon-build-copyright-string',
 `mon-build-copyright-string-license', `mon-build-copyright-string-TEST',
@@ -1462,8 +1529,6 @@ Presented with the GPLv3+ clause.\n
 (unless (bound-and-true-p *mon-gnu-license-header*)
   (setq *mon-gnu-license-header*
         '(;;""
-          "\n;; This file is not part of GNU Emacs.\n"
-          ;;""
           "This program is free software; you can redistribute it and/or"
           "modify it under the terms of the GNU General Public License as"
           "published by the Free Software Foundation; either version 3, or"
@@ -1479,21 +1544,44 @@ Presented with the GPLv3+ clause.\n
           "the Free Software Foundation, Inc., 51 Franklin Street, Fifth"
           "Floor, Boston, MA 02110-1301, USA.")))
 ;;
-;;; :TEST-ME *mon-gnu-license-header*
+;;; :TEST-ME (mapconcat #'identity *mon-gnu-license-header* "\n")
+;;
 ;;; (progn (makunbound '*mon-gnu-license-header*)
 ;;;        (unintern '*mon-gnu-license-header*) )
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-03-03T12:10:38-05:00Z}#{10093} - by MON KEY>
+(defvar *mon-gnu-license-header-emacs* nil
+  "Default GNU Emacs license to insert in newly created file headers.\n
+Presented with the GPLv3+ clause.\n
+:EXAMPLE\n\n\(mapconcat #'identity *mon-gnu-license-header-emacs* \"\\n\"\)\n
+:SEE-ALSO `*mon-mit-license-header*',`*mon-bsd-license-header*',
+`*mon-gnu-license-header-gfdl*', `mon-insert-gnu-licence-gfdl',
+`mon-insert-gnu-licence', `mon-build-copyright-string',
+`mon-build-copyright-string-license', `mon-build-copyright-string-TEST',
+`mon-insert-file-template'.\n►►►")
+;;
+(unless (bound-and-true-p *mon-gnu-license-header-emacs*)
+  (setq *mon-gnu-license-header-emacs*
+        `("\n;; This file is not part of GNU Emacs.\n"
+          ,@*mon-gnu-license-header*)))
+;;
+;;; :TEST-ME (mapconcat #'identity *mon-gnu-license-header-emacs* "\n")
+;; 
+;;;(progn (makunbound '*mon-gnu-license-header-emacs*)
+;;;       (unintern   '*mon-gnu-license-header-emacs*) )
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-02-01T13:34:04-05:00Z}#{10051} - by MON KEY>
 (defvar *mon-mit-license-header* nil
   "Default MIT license aka x11 License for insertion in newly created file headers.\n
-:EXAMPLE\n*mon-mit-license-header*\n
+:EXAMPLE\n\n\(mapconcat #'identity *mon-mit-license-header* \"\\n\"\)\n
 :CALLED-BY .\n
-:SEE-ALSO `*mon-mit-license-header*', `*mon-bsd-license-header*',
-`*mon-gnu-license-header-gfdl*', `mon-insert-gnu-licence-gfdl',
-`mon-insert-gnu-licence', `mon-build-copyright-string',
-`mon-build-copyright-string-license', `mon-build-copyright-string-TEST',
-`mon-insert-file-template'.\n►►►")
+:SEE-ALSO `*mon-gnu-license-header-emacs*', `*mon-mit-license-header*',
+`*mon-bsd-license-header*', `*mon-gnu-license-header-gfdl*',
+`mon-insert-gnu-licence-gfdl', `mon-insert-gnu-licence',
+`mon-build-copyright-string', `mon-build-copyright-string-license',
+`mon-build-copyright-string-TEST', `mon-insert-file-template'.\n►►►")
 ;;
 (unless (bound-and-true-p *mon-min-license-header*)
   (setq *mon-mit-license-header*
@@ -1519,6 +1607,8 @@ Presented with the GPLv3+ clause.\n
           "FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR"
           "OTHER DEALINGS IN THE SOFTWARE.")))
 ;;
+;;; :TEST-ME (mapconcat #'identity *mon-mit-license-header* "\n")
+;;
 ;;; (progn (makunbound '*mon-mit-license-header*)
 ;;;        (unintern '*mon-mit-license-header*) )
 
@@ -1528,12 +1618,13 @@ Presented with the GPLv3+ clause.\n
   "Default BSD sytle license to insert in newly created file headers.\n
 The Simplified two clause BSD License aka the FreeBSD License without
 advertising clause three.\n
-:EXAMPLE\n*mon-bsd-license-header*\n
-:SEE-ALSO `*mon-mit-license-header*', `*mon-bsd-license-header*',
-`*mon-gnu-license-header-gfdl*', `*mon-gnu-license-header*',
-`mon-insert-gnu-licence-gfdl', `mon-insert-gnu-licence',
-`mon-build-copyright-string', `mon-build-copyright-string-license',
-`mon-build-copyright-string-TEST', `mon-insert-file-template'.\n►►►")
+:EXAMPLE\n\n\(mapconcat #'identity *mon-bsd-license-header* \"\\n\"\)\n
+:SEE-ALSO `*mon-gnu-license-header-emacs*', `*mon-mit-license-header*',
+`*mon-bsd-license-header*', `*mon-gnu-license-header-gfdl*',
+`*mon-gnu-license-header*', `mon-insert-gnu-licence-gfdl',
+`mon-insert-gnu-licence', `mon-build-copyright-string',
+`mon-build-copyright-string-license', `mon-build-copyright-string-TEST',
+`mon-insert-file-template'.\n►►►")
 ;;
 (unless (bound-and-true-p *mon-bsd-license-header*)
   (setq *mon-bsd-license-header*        
@@ -1568,6 +1659,8 @@ advertising clause three.\n
           "as representing official policies, either expressed or implied, of"
           "<COPYRIGHT HOLDER>.")))
 ;;
+;;; :TEST-ME (mapconcat #'identity *mon-bsd-license-header* "\n")
+;;
 ;;; (progn (makunbound '*mon-bsd-license-header*)
 ;;;        (unintern '*mon-bsd-license-header*) )
 
@@ -1576,12 +1669,13 @@ advertising clause three.\n
 (defvar *mon-gnu-license-header-gfdl* nil
   "Insert default GNU Free Documentation license in newly created file headers.
 Insertion provides GFDL clause.\n
-:EXAMPLE\n*mon-gnu-license-header-gfdl*\n
+:EXAMPLE\n\n\(mapconcat #'identity *mon-gnu-license-header-gfdl* \"\\n\"\)\n
 :CALLED-BY `mon-insert-file-template', `mon-insert-gnu-licence-gfdl'\n.
 :SEE `*mon-gnu-license-header*', `mon-insert-gnu-licence' for GPLv3+ clause.
-:SEE-ALSO `*mon-mit-license-header*', `*mon-bsd-license-header*',
-`mon-insert-gnu-licence', `mon-build-copyright-string',
-`mon-build-copyright-string-license', `mon-build-copyright-string-TEST'.\n►►►")
+:SEE-ALSO `*mon-gnu-license-header-emacs*', `*mon-mit-license-header*',
+`*mon-bsd-license-header*', `mon-insert-gnu-licence',
+`mon-build-copyright-string', `mon-build-copyright-string-license',
+`mon-build-copyright-string-TEST'.\n►►►")
 ;;
 (unless (bound-and-true-p *mon-gnu-license-header-gfdl*)
   (setq *mon-gnu-license-header-gfdl*
@@ -1597,10 +1691,10 @@ Insertion provides GFDL clause.\n
           "Foundation Web site at:"
           "(URL `http://www.gnu.org/licenses/fdl-1.3.txt').")))
 ;;
-;;; :TEST-ME *mon-gnu-license-header-gfdl*
-;;; (progn (makunbound '*mon-gnu-lincense-header-gfdl*)
+;;; :TEST-ME (mapconcat #'identity *mon-gnu-license-header-gfdl* "\n")
+;;
+;;; (progn (makunbound '*mon-gnu-lincese-header-gfdl*)
 ;;;        (unintern '*mon-gnu-license-header-gfdl*) )
-
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-02-01T14:38:38-05:00Z}#{10051} - by MON KEY>
@@ -1611,15 +1705,17 @@ license. If no license is specified use the default arg GPL with `GNU-GPLv3'.\n
 If W-OUT-COPY-DELIM is non-nil or value of GPL-MIT-BSD-GFDL is 'GFDL do not prepend 
 value of \(mon-build-copyright-string nil nil t t\).
 :EXAMPLE\n\n\(mon-build-copyright-string-license\)\n
-\(mon-build-copyright-string-license 'mit\)\n
-\(mon-build-copyright-string-license 'gfdl\)\n
+\(mon-build-copyright-string-license 'gpl-emacs\)\n
 \(mon-build-copyright-string-license 'gpl\)\n
+\(mon-build-copyright-string-license 'gfdl\)\n
+\(mon-build-copyright-string-license 'mit\)\n
 \(mon-build-copyright-string-license 'bsd\)\n
 License are mapped from the list of strings in:
-:VARIALBE `*mon-mit-license-header*'
-:VARIALBE `*mon-bsd-license-header*'
+:VARIALBE `*mon-gnu-license-header*'
+:VARIABLE `*mon-gnu-license-header-emacs*'
 :VARIALBE `*mon-gnu-license-header-gfdl*'
-:VARIALBE `*mon-gnu-license-header*'\n
+:VARIALBE `*mon-mit-license-header*'
+:VARIALBE `*mon-bsd-license-header*'\n
 :SEE-ALSO `mon-build-copyright-string', `mon-build-copyright-string-TEST',
 `mon-insert-gnu-licence', `mon-insert-gnu-licence-gfdl',
 `mon-insert-file-template'.\n►►►"
@@ -1628,49 +1724,55 @@ License are mapped from the list of strings in:
                        ((eq gpl-mit-bsd-gfdl 'mit)  'mit)
                        ((eq gpl-mit-bsd-gfdl 'bsd)  'bsd)
                        ((eq gpl-mit-bsd-gfdl 'gfdl) 'gfdl)
-                       (t 'gpl))
-                 'gpl)))
+                       (t 'gpl-emacs))
+                 'gpl-emacs)))
     (concat (unless (or (eq lic 'gfdl) w-out-copy-delim)
-              (replace-regexp-in-string " $" ". All rights reserved." 
-                                        (mon-build-copyright-string nil nil t t)))
+              (mon-build-copyright-string nil nil t t))
             (mapconcat #'(lambda (lic-hdr)
                            (if (eq lic 'bsd)
                                (replace-regexp-in-string 
                                 "<COPYRIGHT HOLDER>" (cadr (assoc 6 *MON-NAME*)) lic-hdr)
                                (identity lic-hdr)))
                        (case lic 
-                         ('mit  *mon-mit-license-header*)
-                         ('bsd  *mon-bsd-license-header*)     
-                         ('gfdl *mon-gnu-license-header-gfdl*)
-                         ('gpl  *mon-gnu-license-header*))
+                         ('gpl-emacs  *mon-gnu-license-header-emacs*)
+                         ('gpl        *mon-gnu-license-header*)
+                         ('gfdl       *mon-gnu-license-header-gfdl*)
+                         ('mit        *mon-mit-license-header*)
+                         ('bsd        *mon-bsd-license-header*))
                        "\n;; " ))))
 ;;
 ;;; :TEST-ME (mon-build-copyright-string-license)
+;;; :TEST-ME (mon-build-copyright-string-license 'gpl-emacs)
+;;; :TEST-ME (mon-build-copyright-string-license 'gpl)
+;;; :TEST-ME (mon-build-copyright-string-license 'gfdl)
 ;;; :TEST-ME (mon-build-copyright-string-license 'mit)
 ;;; :TEST-ME (mon-build-copyright-string-license 'mit t)
 ;;; :TEST-ME (mon-build-copyright-string-license 'bsd)
-;;; :TEST-ME (mon-build-copyright-string-license 'gpl)
-;;; :TEST-ME (mon-build-copyright-string-license 'gfdl)
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-08-09T11:26:16-04:00Z}#{09327} - by MON KEY>
-(defun mon-insert-gnu-licence (&optional insrtp intrp)
-  "Return `*mon-gnu-license-header*'.\n 
+(defun mon-insert-gnu-licence (&optional insrtp intrp not-emacs)
+  "Return `*mon-gnu-license-header-emacs*'.\n 
+When optional arg NOT-EMACS return `*mon-gnu-license-header*'.\n
 When INSRTP non-nil or called-interactively insert GNU license at point, but
 does not move point.\n
-:EXAMPLE\n\n(mon-insert-gnu-licenceg-gfdl)\n
+:EXAMPLE\n\n(mon-insert-gnu-licence)\n
+\(mon-insert-gnu-licence nil nil t\)\n
 :SEE-ALSO `mon-insert-gnu-licence-gfdl', `mon-build-copyright-string-license',
 `mon-insert-file-template', `mon-build-copyright-string',
 `mon-build-copyright-string-license', `mon-build-copyright-string-TEST',
-`mon-insert-file-template', `*mon-gnu-license-header*',
-`*mon-gnu-license-header-gfdl*', `*mon-mit-license-header*',
-`*mon-bsd-license-header*'.\n►►►"
+`mon-insert-file-template', `*mon-gnu-license-header-emacs*',
+`*mon-gnu-license-header*', `*mon-gnu-license-header-gfdl*',
+`*mon-mit-license-header*', `*mon-bsd-license-header*'.\n►►►"
   (interactive "i\np")
-  (if (or insrtp intrp)
-      (save-excursion
-        (newline)
-        (insert (mon-build-copyright-string-license 'gpl)))
-      (mon-build-copyright-string-license 'gpl)))
+  (let ((migl (if not-emacs 
+                  (mon-build-copyright-string-license 'gpl)
+                  (mon-build-copyright-string-license 'gpl-emacs))))
+    (if (or insrtp intrp)
+        (save-excursion
+          (newline)
+          (insert migl))
+     migl)))
 ;;
 ;;; :TEST-ME (mon-insert-gnu-licence)
 ;;; :TEST-ME (mon-insert-gnu-licence t)

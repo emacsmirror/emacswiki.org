@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Jan 30 12:49:27 2010 (-0800)
+;; Last-Updated: Wed Mar  3 01:16:42 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 24834
+;;     Update #: 24838
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2994,9 +2994,9 @@
 ;;  remind yourself of the current sort order.
 ;;
 ;;  In addition to the current sort order, which is defined by the
-;;  value of user option `icicle-sort-function', an alternative sort
+;;  value of user option `icicle-sort-comparer', an alternative sort
 ;;  order is available at all times.  It is the value of option
-;;  `icicle-alternative-sort-function'.  By default, this sorts
+;;  `icicle-alternative-sort-comparer'.  By default, this sorts
 ;;  candidates into two alphabetical groups: those previously used as
 ;;  accepted input, followed by those not yet used.
 ;;
@@ -3012,7 +3012,7 @@
 ;;
 ;;  Commands that read buffer names with completion can use another
 ;;  sort-function user option, `icicle-buffer-sort'.  It has the same
-;;  meaning as `icicle-sort-function', but it applies only to those
+;;  meaning as `icicle-sort-comparer', but it applies only to those
 ;;  commands.  It is provided so that you can customize it separately.
 ;;  You can also define buffer configurations that are used for
 ;;  completion: named sets of buffers, sort functions, and other
@@ -3022,9 +3022,9 @@
 ;;  ** Defining New Sort Orders **
 ;;
 ;;  When you use `C-,' or `M-,', the sort orders that you can choose
-;;  from are those in user option `icicle-sort-functions-alist'.  You
-;;  can customize this option to add or remove available sort orders.
-;;  A better way to define a new sort order is to use macro
+;;  from are those in user option `icicle-sort-orders-alist'.  You can
+;;  customize this option to add or remove available sort orders.  A
+;;  better way to define a new sort order is to use macro
 ;;  `icicle-define-sort-command' in your Emacs init file (~/.emacs).
 ;;  This defines a new Icicles command, named `icicle-sort-ORDER',
 ;;  where `ORDER' is the name of the new sort order.  The definition
@@ -3051,7 +3051,7 @@
 ;;
 ;;  1. The creation of command `icicle-sort-alphabetical'.
 ;;  2. The addition of an entry for the new sort order in option
-;;     `icicle-sort-functions-alist'.  The entry associates sort order
+;;     `icicle-sort-orders-alist'.  The entry associates sort order
 ;;     "alphabetical" with comparison function
 ;;     `icicle-case-string-less-p'.
 ;;
@@ -5962,7 +5962,7 @@
 ;;     establish an explicit candidate set.  If you use `C-u M-pause',
 ;;     then the previously used candidates are ordered
 ;;     chronologically, most recent first.  Without `C-u', the normal
-;;     sort order is used (`icicle-sort-function').
+;;     sort order is used (`icicle-sort-comparer').
 ;;
 ;;  6. Command `icicle-history' (`M-h' in the minibuffer) matches the
 ;;     current input against the minibuffer history directly.  It can
@@ -6029,7 +6029,7 @@
 ;;
 ;;  At any time, two of the Icicles sort orders are immediately
 ;;  available.  These are the values of user options
-;;  `icicle-sort-function' and `icicle-alternative-sort-function'.  By
+;;  `icicle-sort-comparer' and `icicle-alternative-sort-comparer'.  By
 ;;  default, the former sorts alphabetically, and the latter puts all
 ;;  previously used inputs first, before the candidates you have not
 ;;  yet used.  Each of these groups, used and unused candidates, is
@@ -6041,7 +6041,7 @@
 ;;
 ;;  If you prefer, by customizing these user options, you can use
 ;;  `icicle-historical-alphabetic-p' as the main sort function (option
-;;  `icicle-sort-function') and some other sort function
+;;  `icicle-sort-comparer') and some other sort function
 ;;  (e.g. `icicle-case-string-less-p') as the alternative sort
 ;;  function.
 ;;

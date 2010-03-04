@@ -779,14 +779,14 @@ Emacs down.  (This option is only available starting with Emacs
 
 
 ----
-[:icicle-sort-function]
-==== Option icicle-sort-function ====
+[:icicle-sort-comparer]
+==== Option icicle-sort-comparer ====
 
-User option '''`icicle-sort-function'''' controls the ''order of
+User option '''`icicle-sort-comparer'''' controls the ''order of
 completion candidates'' during [[Icicles - Cycling Completions|cycling]]and in buffer `*Completions*'.
 If `nil', then no sorting is done.  If non-`nil', then the value must be a
 string-comparison function -- the function is passed to the
-standard function `sort' to do the sorting.  The default value for `icicle-sort-function' is `icicle-case-string-less-p',
+standard function `sort' to do the sorting.  The default value for `icicle-sort-comparer' is `icicle-case-string-less-p',
 which sorts alphabetically, possibly ignoring letter case.  During completion, you can ''toggle''
 sorting using '''`##C-,##''''.  If
 you are an Emacs-Lisp programmer and you write new commands using
@@ -794,11 +794,11 @@ you are an Emacs-Lisp programmer and you write new commands using
 any sort function you need. See [[Icicles - Sorting Candidates]].
 
 ----
-[:icicle-alternative-sort-function]
-==== Option icicle-alternative-sort-function ====
+[:icicle-alternative-sort-comparer]
+==== Option icicle-alternative-sort-comparer ====
 
-User option '''`icicle-alternative-sort-function'''' is an alternative
-to `<tt>[[#icicle-sort-function]]</tt>', providing a different sort order.  By
+User option '''`icicle-alternative-sort-comparer'''' is an alternative
+to `<tt>[[#icicle-sort-comparer]]</tt>', providing a different sort order.  By
 default, it is `icicle-historical-alphabetic-p', a function that
 sorts previously used completion candidates before candidates
 that have not yet been used, and sorts alphabetically within
@@ -814,10 +814,10 @@ using '''`##M-,##''''.  See also `<tt>[[Icicles - History Enhancements#icicle-to
 User option '''`icicle-change-sort-order-completion-flag'''' specifies whether `##C-,##' cycles among available sort orders or lets you choose a sort order using '''Icicles''' completion.  Non-`nil' means to use completion; `nil' (the default value) means to cycle.  You can override the current setting at any time by using `##C-u C-,##'. See [[Icicles - Sorting Candidates]].
 
 ----
-[:icicle-sort-functions-alist]
-==== Option icicle-sort-functions-alist ====
+[:icicle-sort-orders-alist]
+==== Option icicle-sort-orders-alist ====
 
-User option `icicle-sort-functions-alist' is an [[alist]] of possible
+User option `icicle-sort-orders-alist' is an [[alist]] of possible
 sort orders for user to choose from using `##C-,##' or `##M-,##'.  See
 [[Icicles - Sorting Candidates]].
 
@@ -1254,7 +1254,7 @@ defines `icicle-buffer-extras' to include the extra buffer
 
   ("Files and Scratch" nil nil
    (lambda (bufname) (buffer-file-name (get-buffer bufname)))
-   ("*scratch*") icicle-sort-function)
+   ("*scratch*") icicle-sort-comparer)
 
 The idea of buffer-option configurations was borrowed from library
 `<code>bs.el</code>', by Olaf Sylvester <code><olaf@geekware.de></code>.

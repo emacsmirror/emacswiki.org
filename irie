@@ -1,12 +1,12 @@
 I use Emacs.
 
-== Programs ==
+== Programs I wrote ==
 
 * [ScimBridge scim-bridge.el]
 * [RedoPlus redo+.el]
 * etc.
 
-== Links ==
+== Web sites I maintain ==
 
 * [http://www11.atwiki.jp/s-irie/ Home Page (in Japanese)]
 * [http://d.hatena.ne.jp/iRiE/ Blog (in Japanese)]
@@ -14,9 +14,12 @@ I use Emacs.
 
 [new]
 Welcome to the wiki! Too bad I abandoned my attempts at learning Japanese years ago. :) -- AlexSchroeder
+: Thanks! -- [[irie]]
 
 [new]
 Hi, Irie, remember me? :) -- AndyStewart
+: Yes, of course. How are you? -- [[irie]]
+:: Not bad, long time no see. :) scim-bridge.el is awesome, do you want write an Emacs interface for [http://code.google.com/p/ibus/ ibus] ? -- AndyStewart
 
 ----
 CategoryHomepage

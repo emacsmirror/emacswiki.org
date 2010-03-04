@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Mar  2 22:52:51 2010 (-0800)
+;; Last-Updated: Wed Mar  3 02:02:39 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 15391
+;;     Update #: 15398
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -321,13 +321,14 @@
      (require 'icicles-mac)))           ; Require, so can load separately if not on `load-path'.
   ;; icicle-define-sort-command
 (require 'icicles-opt)
-  ;; icicle-alternative-sort-function, icicle-Completions-frame-at-right-flag,
+  ;; icicle-alternative-sort-comparer, icicle-Completions-frame-at-right-flag,
   ;; icicle-cycling-respects-completion-mode, icicle-default-thing-insertion,
   ;; icicle-expand-input-to-common-match-flag, icicle-ignore-space-prefix-flag,
   ;; icicle-incremental-completion-flag, icicle-input-string, icicle-key-descriptions-use-<>-flag,
   ;; icicle-regexp-quote-flag, icicle-saved-completion-sets,
-  ;; icicle-search-cleanup-flag, icicle-search-highlight-all-current-flag, icicle-sort-function,
-  ;; icicle-TAB-shows-candidates-flag, icicle-thing-at-point-functions, icicle-transform-function
+  ;; icicle-search-cleanup-flag, icicle-search-highlight-all-current-flag, icicle-sort-comparer,
+  ;; icicle-sort-orders-alist, icicle-TAB-shows-candidates-flag, icicle-thing-at-point-functions,
+  ;; icicle-transform-function
 (eval-and-compile (require 'icicles-var))
   ;; lacarte-menu-items-alist, icicle-candidate-action-fn, icicle-candidate-nb,
   ;; icicle-complete-keys-alist, icicle-completion-candidates, 
@@ -337,7 +338,7 @@
   ;; icicle-get-alist-candidate-function, icicle-ignored-extensions, icicle-ignored-extensions-regexp,
   ;; icicle-incremental-completion-p, icicle-insert-string-at-pt-end, `icicle-insert-string-at-pt-start,
   ;; icicle-last-completion-candidate, icicle-last-completion-command, icicle-last-input,
-  ;; icicle-last-sort-function, icicle-last-transform-function, 
+  ;; icicle-last-sort-comparer, icicle-last-transform-function, 
   ;; icicle-nb-of-other-cycle-candidates, icicle-pre-minibuffer-buffer,
   ;; icicle-saved-candidates-variables-obarray, icicle-saved-completion-candidates,
   ;; icicle-saved-ignored-extensions, icicle-successive-grab-count, icicle-thing-at-pt-fns-pointer,
@@ -1072,9 +1073,9 @@ but the `display' string is unique for each call."
 ;; We don't bother to define a command for the sort functions `icicle-prefix-keys-first-p' and
 ;; `icicle-command-names-alphabetic-p'.  They are bound in `icicle-complete-keys'.
 
-;; The order here defines the reverse order of `icicle-sort-functions-alist'.
+;; The order here defines the reverse order of `icicle-sort-orders-alist'.
 ;; The first here is also the default sort order.  Entries are traversed by `C-,' in
-;; `icicle-sort-functions-alist' order.
+;; `icicle-sort-orders-alist' order.
 
 ;;;###autoload
 (icicle-define-sort-command "alphabetical" ; `icicle-sort-alphabetical'
@@ -1321,11 +1322,11 @@ If plain `C-u' is used or `C-u' is not used at all:
 
 - Otherwise, just cycle to the next sort order.
 
-This command updates `icicle-sort-function'.  Non-interactively,
+This command updates `icicle-sort-comparer'.  Non-interactively,
 optional arg ALTERNATIVEP means change the current alternative sort
-order instead, updating `icicle-alternative-sort-function'."
+order instead, updating `icicle-alternative-sort-comparer'."
   (interactive "P")
-  (setq icicle-sort-functions-alist  (delq nil icicle-sort-functions-alist)) ; Purge any nil entries.
+  (setq icicle-sort-orders-alist  (delq nil icicle-sort-orders-alist)) ; Purge any nil entries.
   (if (and (interactive-p) icicle-inhibit-sort-p)
       (icicle-msg-maybe-in-minibuffer "Cannot sort candidates now")
     (if (and arg (not (consp arg)))
@@ -1339,14 +1340,14 @@ order instead, updating `icicle-alternative-sort-function'."
                                     (format "New %ssort order: " (if alternativep "alternative " ""))
                                     (icicle-current-sort-functions)
                                     nil t)))
-               (set (if alternativep 'icicle-alternative-sort-function 'icicle-sort-function)
-                    (cdr (assoc next-order icicle-sort-functions-alist))))
+               (set (if alternativep 'icicle-alternative-sort-comparer 'icicle-sort-comparer)
+                    (cdr (assoc next-order icicle-sort-orders-alist))))
               (t                        ; Cycle to next sort order.
                (let ((orders  (mapcar #'car (icicle-current-sort-functions))))
                  (setq next-order  (or (cadr (memq (icicle-current-sort-order alternativep) orders))
                                        (car orders)))
-                 (set (if alternativep 'icicle-alternative-sort-function 'icicle-sort-function)
-                      (cdr (assoc next-order icicle-sort-functions-alist))))))
+                 (set (if alternativep 'icicle-alternative-sort-comparer 'icicle-sort-comparer)
+                      (cdr (assoc next-order icicle-sort-orders-alist))))))
         (icicle-complete-again-update)
         (icicle-msg-maybe-in-minibuffer
          "%sorting is now %s%s.  Reverse: `C-9 C-,'"
@@ -1354,7 +1355,7 @@ order instead, updating `icicle-alternative-sort-function'."
          (if icicle-reverse-sort-p ", REVERSED" ""))))))
 
 (defun icicle-current-sort-functions ()
-  "Subset of `icicle-sort-functions-alist' that is currently appropriate."
+  "Subset of `icicle-sort-orders-alist' that is currently appropriate."
   (icicle-remove-if (lambda (pred)
                       (setq pred  (cdr pred))
                       (and pred (symbolp pred)
@@ -1374,7 +1375,7 @@ order instead, updating `icicle-alternative-sort-function'."
                                ;; or it could be a list of multi-completions.
                                (and (get pred 'icicle-multi-completion-sort-predicate)
                                     (not (icicle-maybe-multi-completion-completing-p))))))
-                    icicle-sort-functions-alist))
+                    icicle-sort-orders-alist))
 
 (defun icicle-maybe-multi-completion-completing-p ()
   "Returns non-nil if we might currently be multi-completion completing.
@@ -1437,8 +1438,8 @@ alternative sort order, not the current sort order."
 (defun icicle-current-sort-order (alternativep)
   "Current sort order, or nil if sorting is inactive.
 If ALTERNATIVEP is non-nil, the alternative sort order is returned."
-  (car (rassq (if alternativep icicle-alternative-sort-function icicle-sort-function)
-              icicle-sort-functions-alist)))
+  (car (rassq (if alternativep icicle-alternative-sort-comparer icicle-sort-comparer)
+              icicle-sort-orders-alist)))
 
 ;;;###autoload
 (defun icicle-reverse-sort-order ()
@@ -1715,9 +1716,9 @@ It also provides some of the Emacs-Lisp key bindings during expression
 editing."
              icicle-highlight-historical-candidates-flag
              icicle-transform-function
-             (and icicle-sort-function (car (rassoc icicle-sort-function icicle-sort-functions-alist)))
-             (and icicle-alternative-sort-function (car (rassoc icicle-sort-function
-                                                                icicle-sort-functions-alist)))
+             (and icicle-sort-comparer (car (rassoc icicle-sort-comparer icicle-sort-orders-alist)))
+             (and icicle-alternative-sort-comparer (car (rassoc icicle-sort-comparer
+                                                                icicle-sort-orders-alist)))
              (not case-fold-search)
              icicle-regexp-quote-flag
              (string= icicle-dot-string icicle-anychar-regexp)
@@ -5633,7 +5634,7 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   (when (interactive-p) (icicle-barf-if-outside-Completions-and-minibuffer))
   (if (and recent-first (interactive-p) icicle-inhibit-sort-p)
       (icicle-msg-maybe-in-minibuffer "Cannot sort candidates now")
-    (let ((icicle-sort-function  (if recent-first 'icicle-most-recent-first-p icicle-sort-function)))
+    (let ((icicle-sort-comparer  (if recent-first 'icicle-most-recent-first-p icicle-sort-comparer)))
       (when (or recent-first (eq icicle-last-completion-command 'icicle-keep-only-past-inputs))
         (icicle-complete-again-update 'no-display))
       (if (null icicle-completion-candidates)
@@ -5963,31 +5964,31 @@ Bound to `M-g' in the minibuffer."
 ;;;###autoload
 (defun icicle-toggle-alternative-sorting () ; Bound to `C-M-,' in the minibuffer.
   "Toggle alternative sorting of minibuffer completion candidates.
-This swaps `icicle-alternative-sort-function' and `icicle-sort-function'.
+This swaps `icicle-alternative-sort-comparer' and `icicle-sort-comparer'.
 Bound to `C-M-,' in the minibuffer."
   (interactive)
-  (let ((alt-sort-fn  icicle-alternative-sort-function))
-    (setq icicle-alternative-sort-function  (or icicle-sort-function icicle-last-sort-function)
-          icicle-sort-function              (or alt-sort-fn icicle-last-sort-function))
+  (let ((alt-sort-fn  icicle-alternative-sort-comparer))
+    (setq icicle-alternative-sort-comparer  (or icicle-sort-comparer icicle-last-sort-comparer)
+          icicle-sort-comparer              (or alt-sort-fn icicle-last-sort-comparer))
     (icicle-complete-again-update)
     (icicle-msg-maybe-in-minibuffer
      (format "Sorting: `%s', Alternative: `%s'"
-             icicle-sort-function icicle-alternative-sort-function))))
+             icicle-sort-comparer icicle-alternative-sort-comparer))))
 
 (defalias 'toggle-icicle-sorting 'icicle-toggle-sorting)
 ;;;###autoload
 (defun icicle-toggle-sorting ()         ; Not bound to a key.
   "Toggle sorting of minibuffer completion candidates.
-When sorting is active, comparison is done by `icicle-sort-function'."
+When sorting is active, comparison is done by `icicle-sort-comparer'."
   (interactive)
   (if (and (interactive-p) icicle-inhibit-sort-p)
       (icicle-msg-maybe-in-minibuffer "Cannot sort candidates now")
-    (if icicle-sort-function
-        (setq icicle-last-sort-function  icicle-sort-function ; Save it, for restoring.
-              icicle-sort-function       nil)
-      (setq icicle-sort-function  icicle-last-sort-function)) ; Restore it.
+    (if icicle-sort-comparer
+        (setq icicle-last-sort-comparer  icicle-sort-comparer ; Save it, for restoring.
+              icicle-sort-comparer       nil)
+      (setq icicle-sort-comparer  icicle-last-sort-comparer)) ; Restore it.
     (icicle-complete-again-update)
-    (icicle-msg-maybe-in-minibuffer (if icicle-sort-function
+    (icicle-msg-maybe-in-minibuffer (if icicle-sort-comparer
                                         "Completion-candidate sorting is now ON"
                                       "Completion-candidate sorting is now OFF"))))
 

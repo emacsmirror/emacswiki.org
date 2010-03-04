@@ -20,42 +20,40 @@
 
 ;;; Commentary:
 
-;; カーソル下の単語の意味をミニバッファへと表示するマイナーモード。
+;; The minor-mode for show the meaning of word under the
+;; point to minibuffer.
 
-;; 設定:
+;; Config:
 ;;
-;; まず、sdic と sdic 形式の辞書ファイルが必要。次に、このファ
-;; イルを `load-path' の通った場所へと置き、以下の設定を加え
-;; る。
+;; You have to have the `sdic' elisp program and dictionary
+;; files of sdic type.  Next, you place this file to
+;; `load-path' passing directory.  And, add following
+;; setting.
 ;;
 ;; (require 'sdic-inline)
-;; (sdic-inline-mode t)
+;; (sdic-inline-mode t)   ; enable sdic-inline.
 ;;
-;; また、辞書ファイルの設定を行う。
-;;
+;; ;; Setting dictionary path.
 ;; (setq sdic-inline-eiwa-dictionary "/home/khiker/lib/dict/eijirou.sdic")
 ;; (setq sdic-inline-waei-dictionary "/home/khiker/lib/dict/waeijirou.sdic")
 ;;
-;; 適宜、sdic-inline を使用したいモードを、
-;; `sdic-inline-enable-modes' に加える。
+;; You can select enabling `sdic-inline' by following variables.
 ;;
-;; ミニバッファへと表示する特性上、フレームの横幅よりも長くなっ
-;; てしまうテキスト(辞書の意味)については、ミニバッファに1単
-;; 語につき1行で収まるように途中でカットしてしまっています。
-;; 詳細な意味を表示したい場合、`sdic-inline-display-popup' 関
-;; 数を呼び出して下さい。キーは C-cC-p に割り当てられています。
-;; なお、使用するには、popup ライブラリが必要です。
-;; # http://github.com/m2ym/auto-complete
+;; * sdic-inline-enable-modes
+;; * sdic-inline-enable-faces
+;; * sdic-inline-enable-filename-regex
+;; * sdic-inline-enable-func
+;;
+;; This package can popup the detailed meaning of word under
+;; the point by C-cC-p. It's necessary to load `popup' library.
+;; ;; http://github.com/m2ym/auto-complete
 ;;
 ;; (require 'popup)
-
+;;
 ;; Todo:
 ;;
-;; * 辞書ファイルを sdic とは別に指定しなくても良くする事。
-;; * 複数の辞書ファイルを指定できるようにする事。
-;; * sdic-mode を起動するかどうかをファイル名からも設定できるようにする事。
-;; * docstring の追加
-;; * translate document to English.
+;; * Integrate sdic-inline dictionary setting and sdic dictionary setting.
+;; * Specify multiple dictionary files.
 
 ;;; Code:
 
@@ -64,25 +62,45 @@
 
 ;;; Variables:
 
-(defconst sdic-inline-version "0.1")
+(defconst sdic-inline-version "0.2.1"
+  "Version of sdic-inline.")
 
-(defvar sdic-inline-eiwa-dictionary nil)
 
-(defvar sdic-inline-waei-dictionary nil)
+(defvar sdic-inline-eiwa-dictionary nil
+  "*Path of EIWA (English to Japanese) Dictionary.")
 
-(defvar sdic-inline-dictionary-encoding 'euc-jp)
+(defvar sdic-inline-waei-dictionary nil
+  "*Path of WAEI (Japanese to English) Dictionary.")
 
-(defvar sdic-inline-search-method 'grep)
+(defvar sdic-inline-dictionary-encoding 'euc-jp
+  "*Encoding of Dictionary.")
+
+(defvar sdic-inline-search-method 'grep
+  "*Method of sdic search type.
+Detail is docstring of `sdicf-open'.")
 
 (defvar sdic-inline-display-func
-  'sdic-inline-display-minibuffer)
+  'sdic-inline-display-minibuffer
+  "*Function that show the meaning of word.")
 
-(defvar sdic-inline-delay 0.50)
+(defvar sdic-inline-delay 0.50
+  "*Time in seconds to delay before showing a meaning of word.")
 
 (defvar sdic-inline-enable-modes
-  '(text-mode outline-mode fundamental-mode))
+  '(text-mode outline-mode fundamental-mode)
+  "*Major-mode that enable the `sdic-inline'.")
 
-(defvar sdic-inline-display-popup-key "\C-c\C-p")
+(defvar sdic-inline-enable-faces
+  '(font-lock-string-face font-lock-comment-face)
+  "*Faces that enable the `sdic-inline'.")
+
+(defvar sdic-inline-enable-filename-regex
+  ".*\\.txt$"
+  "*Filename regexp that enable the `sdic-inline'.")
+
+(defvar sdic-inline-enable-func nil
+  "*Specify user definition function.
+If specified function returns t, sdic-inline-mode is enabled.")
 
 
 (defvar sdic-inline-last-entry nil)
@@ -98,9 +116,7 @@
 ;; Functions:
 
 (define-minor-mode sdic-inline-mode
-  "sdic-inline-mode"
-  :init-value t
-  :global nil
+  "sdic-inline-mode. Display the meaning of word under the point."
   :keymap sdic-inline-map
   :lighter " SDIC"
   (if sdic-inline-mode
@@ -121,26 +137,53 @@
     (setq sdic-inline-timer nil)))
 
 (defun sdic-inline-hook ()
+  "running or not running `sdic-inline'."
   (cond
    ((and (not (minibufferp))
-         (member major-mode sdic-inline-enable-modes))
+         (or (member major-mode sdic-inline-enable-modes)
+             (sdic-inline-enable-regex)
+             (sdic-inline-enable-face)
+             (sdic-inline-enable-func)))
     (condition-case err
-        (sdic-inline-function)
+        (progn
+          (unless sdic-inline-mode
+            (setq sdic-inline-mode t))
+          (sdic-inline-function))
       (error
        (unwind-protect
            (message "Error: %S; sdic-inline-mode now disabled." err)
-         (progn
-           (setq sdic-inline-mode nil))))))
+         (setq sdic-inline-mode nil)))))
    (t
     (setq sdic-inline-mode nil))))
 
+(defun sdic-inline-enable-regex ()
+  (and sdic-inline-enable-filename-regex
+       (buffer-file-name)
+       (string-match sdic-inline-enable-filename-regex
+                     (buffer-file-name))))
+
+(defun sdic-inline-enable-face ()
+  (when sdic-inline-enable-faces
+    (let ((prop (text-properties-at (point))))
+      (catch 'ok
+        (dolist (i sdic-inline-enable-faces)
+          (when (member i prop)
+            (throw 'ok t)))))))
+
+(defun sdic-inline-enable-func ()
+  (and sdic-inline-enable-func
+       (funcall sdic-inline-enable-func)))
+
 (defun sdic-inline-word-at-point ()
+  "Get word under the point."
   (let ((cw (current-word))
         (sw (sdic-word-at-point)))
     (when (and cw sw)
       sw)))
 
 (defun sdic-inline-function ()
+  "Get entry of the word under the point.
+and call `sdic-inline-display-func'."
   (let ((w (sdic-inline-word-at-point))
         jp)
     (when w
@@ -151,19 +194,23 @@
           (funcall sdic-inline-display-func entry))))))
 
 (defun sdic-inline-search-word (word jp)
+  "Get entry of the specified word."
   (when (or (and (not jp) sdic-inline-eiwa-dictionary)
             (and jp sdic-inline-waei-dictionary))
-    (unwind-protect
-        (let ((dic (sdicf-open (if jp
-                                   sdic-inline-waei-dictionary
-                                 sdic-inline-eiwa-dictionary)
-                               sdic-inline-dictionary-encoding
-                               sdic-inline-search-method)))
-          (sdicf-search dic 'exact word))
-      (when (boundp 'dic)
-        (sdicf-close dic)))))
+    (let (dic)
+      (unwind-protect
+          (progn
+            (setq dic (sdicf-open (if jp
+                                      sdic-inline-waei-dictionary
+                                    sdic-inline-eiwa-dictionary)
+                                  sdic-inline-dictionary-encoding
+                                  sdic-inline-search-method))
+            (sdicf-search dic 'exact word))
+        (when (boundp 'dic)
+          (sdicf-close dic))))))
 
 (defun sdic-inline-display-minibuffer (entry)
+  "Display meaning of word to the minibuffer."
   (let ((msg "")
         (num 0)
         head text cut)
@@ -176,10 +223,12 @@
       (when cut
         (setq text (concat text "...")))
       (setq msg (concat msg (if (> num 0) "\n") text))
-      (setq num (1+ num)))
+      (setq num (1+ num)
+            cut nil))
     (message "%s" msg)))
 
 (defun sdic-inline-display-popup ()
+  "Popup detailed meaning of word."
   (interactive)
   (when (and (fboundp 'popup-cascade-menu)
              'sdic-inline-last-entry)
@@ -201,3 +250,4 @@
 (provide 'sdic-inline)
 
 ;;; sdic-inline.el ends here
+

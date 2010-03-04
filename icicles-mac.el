@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Dec 21 08:53:01 2009 (-0800)
+;; Last-Updated: Wed Mar  3 00:52:00 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 522
+;;     Update #: 526
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -190,8 +190,8 @@ before the others."
     (icicle-require-match-flag        icicle-buffer-require-match-flag)
     (icicle-extra-candidates          icicle-buffer-extras)
     (icicle-transform-function        'icicle-remove-dups-if-extras)
-    (icicle-sort-function             (or icicle-buffer-sort icicle-sort-function))
-    (icicle-sort-functions-alist
+    (icicle-sort-comparer             (or icicle-buffer-sort icicle-sort-comparer))
+    (icicle-sort-orders-alist
      (append (list
               '("by last access")       ; Renamed from "turned OFF'.
               '("*...* last" . icicle-buffer-sort-*...*-last)
@@ -200,7 +200,7 @@ before the others."
               (and (fboundp 'icicle-mode-line-name-less-p)
                '("by mode-line mode name" . icicle-mode-line-name-less-p))
               '("by file/process name" . icicle-buffer-file/process-name-less-p))
-      (delete '("turned OFF") icicle-sort-functions-alist)))
+      (delete '("turned OFF") icicle-sort-orders-alist)))
     (icicle-ignore-space-prefix-flag  icicle-buffer-ignore-space-prefix-flag)
     (icicle-candidate-alt-action-fn
      (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "buffer")))
@@ -228,7 +228,7 @@ before the others."
     (icicle-require-match-flag        icicle-file-require-match-flag)
     (icicle-extra-candidates          icicle-file-extras)
     (icicle-transform-function        'icicle-remove-dups-if-extras)
-    (icicle-sort-function             (or icicle-file-sort icicle-sort-function))
+    (icicle-sort-comparer             (or icicle-file-sort icicle-sort-comparer))
     (icicle-ignore-space-prefix-flag  icicle-buffer-ignore-space-prefix-flag)
     (icicle-candidate-alt-action-fn
      (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "file")))
@@ -533,13 +533,14 @@ DOC-STRING is the doc string of the new command."
   (let ((command  (intern (concat "icicle-sort-"
                                   (replace-regexp-in-string "\\s-+" "-" sort-order)))))
     `(progn
-      (setq icicle-sort-functions-alist  (icicle-assoc-delete-all
-                                          ,sort-order icicle-sort-functions-alist))
-      (push (cons ,sort-order ',comparison-fn) icicle-sort-functions-alist)
+      (setq icicle-sort-orders-alist  (icicle-assoc-delete-all
+                                       ,sort-order
+                                       icicle-sort-orders-alist))
+      (push (cons ,sort-order ',comparison-fn) icicle-sort-orders-alist)
       (defun ,command ()
         ,doc-string
         (interactive)
-        (setq icicle-sort-function  #',comparison-fn)
+        (setq icicle-sort-comparer  #',comparison-fn)
         (message "Sorting is now %s%s" ,sort-order (if icicle-reverse-sort-p ", REVERSED" ""))
         (icicle-complete-again-update)))))
  

@@ -1,318 +1,333 @@
 ;;; mon-doc-help-utils.el --- documentation enabling and generation extensions
+;; -*- mode: EMACS-LISP; -*-
+
 ;;; ================================================================
-;;; DESCRIPTION:
-;;; mon-doc-help-utils consolidates functions that offer documentation and or
-;;; enable generation of documentation. Generally these are for assistance
-;;; generating Elisp as opposed to programmatic use in Elisp functions and
-;;; programs.
-;;;
-;;; Additional utilities are provided to help with modification of Aaron
-;;; Hawley's Reference card page on the EmacsWiki.
-;;; :SEE (URL `http://www.emacswiki.org/emacs/Reference_Sheet_by_Aaron_Hawley')
-;;; :SEE (URL `http://www.emacswiki.org/emacs/Reference_Sheet_by_Aaron_Hawley_source')
-;;;
-;;; :MOTIVATIONS :FROM :FILE /etc/TODO:
-;;; ,----
-;;; | ** Have a command suggestion help system that recognizes patterns
-;;; |    of commands which could be replaced with a simpler common command.
-;;; |    It should not make more than one suggestion per 10 minutes.
-;;; `----
-;;;
-;;; FUNCTIONS:►►►
-;;; `mon-help-insert-documentation', `mon-insert-doc-help-tail',
-;;; `mon-insert-doc-help-cookie', `mon-help-function-spit-doc',
-;;; `mon-help-function-args', `mon-help-xref-symbol-value',
-;;; `mon-help-function-arity', `mon-help-parse-interactive-spec',
-;;; `mon-help-view-file', `mon-help-temp-docstring-display',
-;;; `mon-help-get-mon-help-buffer', `mon-help-overlay-result',
-;;; `mon-help-find-result-for-overlay', `mon-help-overlay-on-region',
-;;; `mon-help-propertize-tags', `mon-help-propertize-tags-TEST',
-;;; `mon-help-mon-tags', `mon-help-insert-tags',
-;;; `mon-tags-apropos', `mon-tags-naf-apropos',
-;;; `mon-help-regexp-syntax', `mon-help-syntax-class', `mon-help-search-functions',
-;;; `mon-help-type-predicates', `mon-help-plist-functions',
-;;; `mon-help-text-property-functions', `mon-help-text-property-stickyness',
-;;; `mon-help-text-property-function-ext', 
-;;; `mon-help-buffer-functions', `mon-help-frame-functions' ,
-;;; `mon-help-window-functions',
-;;; `mon-help-faces', `mon-help-faces-basic', `mon-help-faces-themes',
-;;; `mon-help-font-lock', `mon-help-easy-menu', `mon-help-widgets',
-;;; `mon-help-file-dir-functions-usage', `mon-help-read-functions', `mon-help-print',
-;;; `mon-help-process-functions', `mon-help-server-functions', 
-;;; `mon-help-xml-functions', 
-;;; `mon-help-color-functions', `mon-help-color-chart',
-;;; `mon-help-char-representation', `mon-help-ISO-8859-1-chars', 
-;;; `mon-help-ASCII-chars', `mon-help-cntl->hex->ecma-35',
-;;; `mon-help-cntl->hex->ecma-48', `mon-help-format-width'
-;;; `mon-help-package-keywords', `mon-index-elisp-symbol',
-;;; `mon-help-mon-help', `mon-help-emacs-introspect',
-;;; `mon-help-crontab', `mon-help-permissions', `mon-help-ipv4-header',
-;;; `mon-help-unix-commands', `mon-help-w32-env',
-;;; `mon-help-eieio-defclass', `mon-help-eieio-functions', `mon-help-eieio-methods',
-;;; `mon-help-nclose-functions', `mon-help-iso-8601',
-;;; `mon-help-info-incantation', `mon-help-install-info-incantation',
-;;; `mon-help-tar-incantation', `mon-help-rename-incantation',
-;;; `mon-help-du-incantation' ,`mon-help-hg-archive',
-;;; `mon-help-diacritics', `mon-help-keys-wikify',
-;;; `mon-help-escape-for-ewiki', `mon-help-unescape-for-ewiki'
-;;; `mon-help-overlay-functions',
-;;; `mon-help-regexp-symbol-defs-TEST', `mon-help-propertize-regexp-symbol-defs-TEST',
-;;; `mon-help-overlay-for-example', `mon-help-delimited-region',
-;;; `mon-help-font-lock-functions', `mon-help-syntax-functions',
-;;; `mon-help-utils-loadtime', `mon-help-char-functions',
-;;; `mon-help-key-functions', `mon-help-custom-keywords',
-;;; `mon-help-keys-wikify-anchors', `mon-help-keys-wikify-heading'
-;;; `mon-help-keys-wikify-TEST', 
-;;; `mon-get-next-face-property-change', `mon-get-next-face-property-change-if'
-;;; `mon-get-all-face-property-change', 
-;;; FUNCTIONS:◄◄◄
-;;;
-;;; MACROS:
-;;; `mon-help-swap-var-doc-const-val', `mon-help-put-var-doc-val->func'
-;;; 
-;;; METHODS:
-;;;
-;;; CLASSES:
-;;;
-;;; FACES:
-;;; `mon-help-KEY-tag', `mon-help-DYNATAB-tag', `mon-help-META-tag',
-;;; `mon-help-PNTR-tag' `mon-help-INNER-KEY-tag' `mon-help-COMMENT-tag',
-;;; `mon-help-URL-wrap-tag', `mon-help-BUILTIN-tag'
-;;; `mon-help-OLAY-RESULT', `mon-help-OLAY-RESULT-string-show'
-;;; `mon-help-OLAY-RESULT-match-show'
-;;;
-;;; CONSTANTS:
-;;;
-;;; VARIABLES:
-;;; `*mon-help-mon-tags-alist*',
-;;; `*regexp-mon-doc-help-docstring-tags-DYNAMIC*', 
-;;; `*regexp-mon-doc-help-docstring-tags-TABLES*',
-;;; `*regexp-mon-doc-help-docstring-tags*', `*regexp-mon-doc-help-meta-tags*',
-;;; `*regexp-mon-doc-help-comment-tags*', `*regexp-mon-doc-help-pointer-tags*',
-;;; `*regexp-mon-doc-help-docstring-tags-URL*'
-;;; `*regexp-symbol-defs*' `*mon-help-interactive-spec-alist*'
-;;; `*doc-cookie*' `*mon-help-docstring-help-bffr*'
-;;; `*regexp-clean-du-flags*' `*mon-help-reference-keys*' `*w32-env-variables-alist'
-;;; `*regexp-mon-doc-help-builtin-dynamic-tags*', 
-;;; `*mon-help-custom-faces-builtins-tags*',
-;;; `*regexp-mon-doc-help-builtin-static-tags*',
-;;; `*mon-help-reference-keywords*'
-;;;
-;;; ALIASED/ADVISED/SUBST'D:
-;;; `mon-insert-documentation'                -> `mon-help-insert-documentation'
-;;; `mon-help-reference-sheet'                -> `mon-help-mon-help'
-;;; `*mon-help-keys-reference*'               -> `*mon-help-reference-keys*'
-;;; `mon-help-dir-file-function-usage'        -> `mon-help-file-dir-functions-usage'
-;;; `mon-line-strings-region-delimited'       -> `mon-help-delimited-region'
-;;; `mon-help-face-next-property-change'      -> `mon-get-next-face-property-change'
-;;; `mon-help-directory-file-functions-usage' -> `mon-help-file-dir-functions-usage'
-;;;
-;;; RENAMED:
-;;; `*emacs-reference-sheet-A-HAWLEY*'        -> `*mon-help-reference-keys*'
-;;; `emacs-wiki-fy-reference-sheet'           -> `mon-help-keys-wikify'
-;;; `emacs-wiki-escape-lisp-string-region'    -> `mon-help-escape-for-ewiki'
-;;; `emacs-wiki-unescape-lisp-string-region'  -> `mon-help-unescape-for-ewiki'
-;;; `mon-help-make-faces'                     -> `mon-help-faces'
-;;; `mon-help-basic-faces'                    -> `mon-help-faces-basic'
-;;; `mon-help-file-dir-functions'             -> `mon-help-file-dir-functions-usage'
-;;;
-;;; MOVED:
-;;; `mon-help-CL-time', `mon-help-CL-loop', `mon-help-slime-keys' -> mon-doc-help-CL.el
-;;; `mon-index-elisp-symbol' <- mon-utils.el
-;;;
-;;; `mon-help-pacman-Q', `mon-help-pacman-S' `mon-help-pacman-commands',
-;;; `*regexp-clean-pacman-Q*'`*regexp-clean-pacman-S*' -> mon-doc-help-pacman.el
-;;; 
-;;; Following moved from `mon-insertion-utils.el' and :RENAMED *insert* -> *help*
-;;; `mon-insert-file-dir-functions'           -> `mon-help-file-dir-functions-usage'
-;;; `mon-insert-install-info-incantation'     -> `mon-help-install-info-incantation'
-;;; `mon-insert-rename-incantation'           -> `mon-help-rename-incantation'
-;;; `mon-insert-tar-incantation'              -> `mon-help-tar-incantation'
-;;; `mon-insert-info-incantation'             -> `mon-help-info-incantation'
-;;; `mon-insert-diacritics'                   -> `mon-help-diacritics'
-;;;
-;;; REQUIRES:
-;;; cl.el `intersection' in `mon-help-function-spit-doc'
-;;;
-;;; :FILE boxquote.el 
-;;;       | ->`mon-help-regexp-symbol-defs-TEST'
-;;;  
-;;; mon-doc-help-pacman.el (Loaded only if it exists in load-path)
-;;; :SEE (URL `http://www.emacswiki.org/emacs/mon-doc-help-pacman.el')
-;;;
-;;; mon-doc-help-proprietary.el (Loaded only if it exists in load-path)
-;;; :NOTE This packages provides documentation functions which can't possibly be
-;;; GPL/GFDL e.g MS-C0RP API etc. Contact MON if you wish to have this package
-;;; made avaiable to you.
-;;;
-;;; mon-doc-help-utils-supplemental.el
-;;; :SEE (URL `http://www.emacswiki.org/emacs/mon-doc-help-utils-supplemental.el')
-;;; This package is required and should be present in Emacs load-path when using
-;;; mon-doc-help-utils. It provides the specific subfeatures required to
-;;; bootstrap mon-doc-help-utils.  In order to load and byte-compile
-;;; mon-doc-help-utils a few subfeatures need to be present. If you do not wish
-;;; to load the full feauture set of the following packages
-;;; mon-doc-help-utils-supplemental.el is careful to load only the neccesary
-;;; functions and variables listed below:
-;;;
-;;; :FILE mon-testme-utils.el
-;;;       | -> `mon-insert-lisp-testme'
-;;; :FILE mon-insertion-utils.el 
-;;;       | -> `comment-divider'
-;;; :SEE (URL `http://www.emacswiki.org/emacs/mon-insertion-utils.el')
-;;;
-;;; :FILE mon-regexp-symbols.el 
-;;;       | -> `*regexp-symbol-defs*'          
-;;; :SEE (URL `http://www.emacswiki.org/emacs/mon-regexp-symbols.el')
-;;;
-;;; :FILE mon-utils.el
-;;;       | -> `mon-string-index'      
-;;;       | -> `mon-string-upto-index' 
-;;;       | -> `mon-string-after-index'
-;;;       | -> `mon-string-justify-left'
-;;; :SEE (URL `http://www.emacswiki.org/emacs/mon-utils.el')
-;;;
-;;; :NOTE While mon-doc-help-utils-supplemental.el will provide the necessary
-;;; features in order to get mon-doc-help-utils bootstrapped wherever possible
-;;; MON encourages you to also use the above required packages in addition to the
-;;; supplemental. As such, where those packages are present the supplemental
-;;; will not shadow any additional functionality extensions which they provide.
-;;; 
-;;; TODO:
-;;; Hopefully sometime in the near future the Emacs-devels will begin using the
-;;; bzr and Launchpad features of distributed version control to build a better
-;;; Emacs Lisp 'packaging' tool that can aid in some of this minor dependency
-;;; issues and this type of stuff won't be quite as big a problem (and instead
-;;; we'll all move to grokking DAGs with recursive dependency cycles). In the
-;;; interim MON is still using Mercurial. Contact MON for access to a stripped
-;;; hg archive of all MON's current Elisp source.
-;;;
-;;; NOTES:
-;;; 
-;;; :NOTE MON doesn't like the new 23.0 style UPCASE args in *Help*.
-;;;
-;;; (setq help-downcase-arguments t)
-;;;
-;;; Where clarity is the concern it is nicer to font-lock arguments in
-;;; `help-mode' with a face that readily stands out from the surrounding
-;;; docstring. Following are the face customizations for `button' and
-;;; `help-argument-name' which MON finds help make help-mode more helpful.
-;;;  These are provided as quoted forms straight from MON's custom file:
-;;;
-;;; '(button 
-;;;   ((((supports :underline t)) (:background "gray5" 
-;;;                                :foreground "LightSkyBlue" 
-;;;                                :underline "Aquamarine" 
-;;;                                :weight normal))))
-;;;
-;;; '(help-argument-name 
-;;;   ((((supports :slant italic)) (:inherit italic 
-;;;                                 :foreground "SteelBlue" 
-;;;                                 :weight normal))))
-;;;
-;;; :NOTE MON doesn't like not getting back a reasonably long list and when
-;;; evaluating `:EXAMPLE's in help-mode *Help* buffers. Following hook ensures
-;;; that these types of evaluations return a nice long list:
+;; Copyright © 2010 MON KEY. All rights reserved.
+;;; ================================================================
+
+;; FILENAME: mon-doc-help-utils.el
+;; AUTHOR: MON KEY
+;; MAINTAINER: MON KEY
+;; CREATED: 2009-06-17T11:29:15-05:00Z
+;; VERSION: 1.0.0
+;; COMPATIBILITY: Emacs23.*
+;; KEYWORDS: docs, matching, lisp
+
+;;; ================================================================
+
+;;; COMMENTARY: 
+
+;; ================================================================
+;; DESCRIPTION:
+;; mon-doc-help-utils consolidates functions that offer documentation and or
+;; enable generation of documentation. Generally these are for assistance
+;; generating Elisp as opposed to programmatic use in Elisp functions and
+;; programs.
 ;;
-;;; (add-hook 'help-mode-hook 
-;;;          #'(lambda () (set (make-local-variable 'print-length) nil)))
-;;;
-;;;
-;;; KEYBINDINGS:
-;;; Assigning a keybinding for `mod-doc-help-insert-cookie'
-;;; and make inserting the `*doc-cookie*' variable easier esp. when
-;;; the doc-cookie is not default and/or you have trouble remembering
-;;; the ucs char-code for inserting '►►►' \(ucs-insert \"25BA\"\) ;=> ►
-;;;
-;;; Assigning a keybinding for `mon-insert-lisp-testme'
-;;; will make insertion of ';;;test-me;(.*)' strings at end of function defuns
-;;; easier. This utility trys to DWIM.
-;;;
-;;; Alternatively, assigning a keybinding for `mon-insert-doc-help-tail'
-;;; will give most of the functionality of `mon-insert-lisp-testme'
-;;; by helping in generation of introspecting function bodies which utilize the
-;;; tools included herein.
-;;;
-;;; :COURTESY Pascal Bourguignon :WAS `space-doc'
-;;; :SUBJECT Re: How to see that a variable holds t :DATE 2010-01-04
-;;; :SEE (URL `http://lists.gnu.org/archive/html/help-gnu-emacs/2010-01/msg00060.html')
-;;; "You could even bind space to automatically find the doc for you:
-;;;      (global-set-key (kbd "SPC") 'space-doc)
-;;;  Or, use local-set-key in mode hooks where you write emacs lisp code
-;;;  such as emacs-lisp-mode-hook."
-;;; (defun mon-space-doc ()
-;;;   (interactive)
-;;;   (save-excursion
-;;;     (backward-sexp) (backward-char)
-;;;     (when (looking-at "(")
-;;;       (forward-char)
-;;;       (when (thing-at-point 'symbol)
-;;;         (let* ((start (point))
-;;;                (end (progn (forward-sexp) (point)))
-;;;                (symname (buffer-substring start end)))
-;;;           (ignore-errors (describe-function (intern symname)))))))
-;;;   (insert " "))
-;;;
-;;; SNIPPETS:
-;;; (while (search-forward-regexp "\\(mon-help-function-spit-doc '\\(.*\\) nil nil t\\)")
-;;;   (replace-match "mon-help-function-spit-doc '\\2 :insertp t"))
-;;; :COMPILE-COMMAND 
-;;; "emacs -batch -L . -eval '(byte-compile-file \"mon-doc-help-utils.el\")' 
-;;;  rm -v mon-doc-help-utils.elc"
-;;;
-;;; THIRD PARTY CODE:
-;;; Portions herein from Aaron Hawley :HIS Reference Sheet By Aaron Hawley:
-;;; :SEE (URL `http://www.emacswiki.org/emacs/Reference_Sheet_by_Aaron_Hawley_source')
-;;;
-;;; I think I remember lifting the `mon-help-escape-for-ewiki'
-;;; from Pascal Bourguignon but I can no longer find the reference
-;;; to the source... I have it elsewhere as `escape-lisp-string-region'.
-;;;
-;;; AUTHOR: MON KEY
-;;; MAINTAINER: MON KEY
-;;;
-;;; PUBLIC-LINK: (URL `http://www.emacswiki.org/emacs/mon-doc-help-utils.el')
-;;; FILE-PUBLISHED: <Timestamp: #{2009-08-15} - by MON KEY>
-;;;
-;;; PUBLIC-LINK (URL `http://www.emacswiki.org/emacs/MonDocHelpUtilsDictionary')
-;;; FIRST-PUBLISHED <Timestamp: #{2010-01-09T01:03:52-05:00Z}#{10016} - by MON>
-;;;
-;;; PUBLIC-LINK: 
-;;; (URL `http://www.emacswiki.org/emacs/mon-doc-help-utils-supplemental.el')
-;;; FIRST-PUBLISHED: <Timestamp: #{2009-12-21T21:20:06-05:00Z}#{09522} - by MON>
-;;;
-;;; FILE-CREATED:
-;;; <Timestamp: Wednesday June 17, 2009 @ 11:29.15 AM - by MON KEY>
+;; Additional utilities are provided to help with modification of Aaron
+;; Hawley's Reference card page on the EmacsWiki.
+;; :SEE (URL `http://www.emacswiki.org/emacs/Reference_Sheet_by_Aaron_Hawley')
+;; :SEE (URL `http://www.emacswiki.org/emacs/Reference_Sheet_by_Aaron_Hawley_source')
+;;
+;; :MOTIVATIONS :FROM :FILE /etc/TODO:
+;; ,----
+;; | ** Have a command suggestion help system that recognizes patterns
+;; |    of commands which could be replaced with a simpler common command.
+;; |    It should not make more than one suggestion per 10 minutes.
+;; `----
+;;
+;; FUNCTIONS:►►►
+;; `mon-help-insert-documentation', `mon-insert-doc-help-tail',
+;; `mon-insert-doc-help-cookie', `mon-help-function-spit-doc',
+;; `mon-help-function-args', `mon-help-xref-symbol-value',
+;; `mon-help-function-arity', `mon-help-parse-interactive-spec',
+;; `mon-help-view-file', `mon-help-temp-docstring-display',
+;; `mon-help-get-mon-help-buffer', `mon-help-overlay-result',
+;; `mon-help-find-result-for-overlay', `mon-help-overlay-on-region',
+;; `mon-help-propertize-tags', `mon-help-propertize-tags-TEST',
+;; `mon-help-mon-tags', `mon-help-insert-tags', `mon-tags-apropos',
+;; `mon-tags-naf-apropos', `mon-help-regexp-syntax', `mon-help-syntax-class',
+;; `mon-help-search-functions', `mon-help-type-predicates',
+;; `mon-help-plist-functions', `mon-help-text-property-functions',
+;; `mon-help-text-property-stickyness', `mon-help-text-property-function-ext',
+;; `mon-help-buffer-functions', `mon-help-frame-functions',
+;; `mon-help-window-functions', `mon-help-faces', `mon-help-faces-basic',
+;; `mon-help-faces-themes', `mon-help-font-lock', `mon-help-easy-menu',
+;; `mon-help-widgets', `mon-help-file-dir-functions-usage',
+;; `mon-help-read-functions', `mon-help-print', `mon-help-process-functions',
+;; `mon-help-server-functions', `mon-help-xml-functions',
+;; `mon-help-color-functions', `mon-help-color-chart',
+;; `mon-help-char-representation', `mon-help-ISO-8859-1-chars',
+;; `mon-help-ASCII-chars', `mon-help-cntl->hex->ecma-35',
+;; `mon-help-cntl->hex->ecma-48', `mon-help-format-width'
+;; `mon-help-package-keywords', `mon-index-elisp-symbol', `mon-help-mon-help',
+;; `mon-help-emacs-introspect', `mon-help-crontab', `mon-help-permissions',
+;; `mon-help-ipv4-header', `mon-help-unix-commands', `mon-help-w32-env',
+;; `mon-help-eieio-defclass', `mon-help-eieio-functions',
+;; `mon-help-eieio-methods', `mon-help-nclose-functions', `mon-help-iso-8601',
+;; `mon-help-info-incantation', `mon-help-install-info-incantation',
+;; `mon-help-tar-incantation', `mon-help-rename-incantation',
+;; `mon-help-du-incantation' ,`mon-help-hg-archive', `mon-help-diacritics',
+;; `mon-help-keys-wikify', `mon-help-escape-for-ewiki',
+;; `mon-help-unescape-for-ewiki', `mon-help-overlay-functions',
+;; `mon-help-regexp-symbol-defs-TEST',
+;; `mon-help-propertize-regexp-symbol-defs-TEST',
+;; `mon-help-overlay-for-example', `mon-help-delimited-region',
+;; `mon-help-font-lock-functions', `mon-help-syntax-functions',
+;; `mon-help-utils-loadtime', `mon-help-char-functions',
+;; `mon-help-key-functions', `mon-help-custom-keywords',
+;; `mon-help-keys-wikify-anchors', `mon-help-keys-wikify-heading',
+;; `mon-help-keys-wikify-TEST', `mon-get-next-face-property-change',
+;; `mon-get-next-face-property-change-if', `mon-get-all-face-property-change',
+;; FUNCTIONS:◄◄◄
+;;
+;; MACROS:
+;; `mon-help-swap-var-doc-const-val', `mon-help-put-var-doc-val->func',
+;; 
+;; METHODS:
+;;
+;; CLASSES:
+;;
+;; FACES:
+;; `mon-help-KEY-tag', `mon-help-DYNATAB-tag', `mon-help-META-tag',
+;; `mon-help-PNTR-tag', `mon-help-INNER-KEY-tag', `mon-help-COMMENT-tag',
+;; `mon-help-URL-wrap-tag', `mon-help-BUILTIN-tag', `mon-help-OLAY-RESULT',
+;; `mon-help-OLAY-RESULT-string-show', `mon-help-OLAY-RESULT-match-show',
+;;
+;; CONSTANTS:
+;;
+;; VARIABLES:
+;; `*mon-help-mon-tags-alist*', `*regexp-mon-doc-help-docstring-tags-DYNAMIC*',
+;; `*regexp-mon-doc-help-docstring-tags-TABLES*',
+;; `*regexp-mon-doc-help-docstring-tags*', `*regexp-mon-doc-help-meta-tags*',
+;; `*regexp-mon-doc-help-comment-tags*', `*regexp-mon-doc-help-pointer-tags*',
+;; `*regexp-mon-doc-help-docstring-tags-URL*', `*regexp-symbol-defs*'
+;; `*mon-help-interactive-spec-alist*', `*doc-cookie*',
+;; `*mon-help-docstring-help-bffr*', `*regexp-clean-du-flags*',
+;; `*mon-help-reference-keys*', `*w32-env-variables-alist',
+;; `*regexp-mon-doc-help-builtin-dynamic-tags*',
+;; `*mon-help-custom-faces-builtins-tags*',
+;; `*regexp-mon-doc-help-builtin-static-tags*', `*mon-help-reference-keywords*',
+;;
+;; ALIASED/ADVISED/SUBST'D:
+;; `mon-insert-documentation'                -> `mon-help-insert-documentation'
+;; `mon-help-reference-sheet'                -> `mon-help-mon-help'
+;; `*mon-help-keys-reference*'               -> `*mon-help-reference-keys*'
+;; `mon-help-dir-file-function-usage'        -> `mon-help-file-dir-functions-usage'
+;; `mon-line-strings-region-delimited'       -> `mon-help-delimited-region'
+;; `mon-help-face-next-property-change'      -> `mon-get-next-face-property-change'
+;; `mon-help-directory-file-functions-usage' -> `mon-help-file-dir-functions-usage'
+;; `mon-help-finder-keywords'                -> `mon-help-package-keywords'
+;;
+;; RENAMED:
+;; `*emacs-reference-sheet-A-HAWLEY*'        -> `*mon-help-reference-keys*'
+;; `emacs-wiki-fy-reference-sheet'           -> `mon-help-keys-wikify'
+;; `emacs-wiki-escape-lisp-string-region'    -> `mon-help-escape-for-ewiki'
+;; `emacs-wiki-unescape-lisp-string-region'  -> `mon-help-unescape-for-ewiki'
+;; `mon-help-make-faces'                     -> `mon-help-faces'
+;; `mon-help-basic-faces'                    -> `mon-help-faces-basic'
+;; `mon-help-file-dir-functions'             -> `mon-help-file-dir-functions-usage'
+;;
+;; MOVED:
+;; `mon-help-CL-time', `mon-help-CL-loop', `mon-help-slime-keys' -> mon-doc-help-CL.el
+;; `mon-index-elisp-symbol'                 <- mon-utils.el
+;;
+;; `mon-help-pacman-Q', `mon-help-pacman-S' `mon-help-pacman-commands',
+;; `*regexp-clean-pacman-Q*'`*regexp-clean-pacman-S*' -> mon-doc-help-pacman.el
+;; 
+;; Following moved from `mon-insertion-utils.el' and :RENAMED *insert* -> *help*
+;; `mon-insert-file-dir-functions'           -> `mon-help-file-dir-functions-usage'
+;; `mon-insert-install-info-incantation'     -> `mon-help-install-info-incantation'
+;; `mon-insert-rename-incantation'           -> `mon-help-rename-incantation'
+;; `mon-insert-tar-incantation'              -> `mon-help-tar-incantation'
+;; `mon-insert-info-incantation'             -> `mon-help-info-incantation'
+;; `mon-insert-diacritics'                   -> `mon-help-diacritics'
+;;
+;; REQUIRES:
+;; cl.el `intersection' in `mon-help-function-spit-doc'
+;;
+;; :FILE boxquote.el 
+;;       | ->`mon-help-regexp-symbol-defs-TEST'
+;;  
+;; mon-doc-help-pacman.el (Loaded only if it exists in load-path)
+;; :SEE (URL `http://www.emacswiki.org/emacs/mon-doc-help-pacman.el')
+;;
+;; mon-doc-help-proprietary.el (Loaded only if it exists in load-path)
+;; :NOTE This packages provides documentation functions which can't possibly be
+;; GPL/GFDL e.g MS-C0RP API etc. Contact MON if you wish to have this package
+;; made avaiable to you.
+;;
+;; mon-doc-help-utils-supplemental.el
+;; :SEE (URL `http://www.emacswiki.org/emacs/mon-doc-help-utils-supplemental.el')
+;; This package is required and should be present in Emacs load-path when using
+;; mon-doc-help-utils. It provides the specific subfeatures required to
+;; bootstrap mon-doc-help-utils.  In order to load and byte-compile
+;; mon-doc-help-utils a few subfeatures need to be present. If you do not wish
+;; to load the full feauture set of the following packages
+;; mon-doc-help-utils-supplemental.el is careful to load only the neccesary
+;; functions and variables listed below:
+;;
+;; :FILE mon-testme-utils.el
+;;       | -> `mon-insert-lisp-testme'
+;; :FILE mon-insertion-utils.el 
+;;       | -> `comment-divider'
+;; :SEE (URL `http://www.emacswiki.org/emacs/mon-insertion-utils.el')
+;;
+;; :FILE mon-regexp-symbols.el 
+;;       | -> `*regexp-symbol-defs*'          
+;; :SEE (URL `http://www.emacswiki.org/emacs/mon-regexp-symbols.el')
+;;
+;; :FILE mon-utils.el
+;;       | -> `mon-string-index'      
+;;       | -> `mon-string-upto-index' 
+;;       | -> `mon-string-after-index'
+;;       | -> `mon-string-justify-left'
+;; :SEE (URL `http://www.emacswiki.org/emacs/mon-utils.el')
+;;
+;; :NOTE While mon-doc-help-utils-supplemental.el will provide the necessary
+;; features in order to get mon-doc-help-utils bootstrapped wherever possible
+;; MON encourages you to also use the above required packages in addition to the
+;; supplemental. As such, where those packages are present the supplemental
+;; will not shadow any additional functionality extensions which they provide.
+;; 
+;; TODO:
+;; Hopefully sometime in the near future the Emacs-devels will begin using the
+;; bzr and Launchpad features of distributed version control to build a better
+;; Emacs Lisp 'packaging' tool that can aid in some of this minor dependency
+;; issues and this type of stuff won't be quite as big a problem (and instead
+;; we'll all move to grokking DAGs with recursive dependency cycles). In the
+;; interim MON is still using Mercurial. Contact MON for access to a stripped
+;; hg archive of all MON's current Elisp source.
+;;
+;; NOTES:
+;; 
+;; :NOTE MON doesn't like the new 23.0 style UPCASE args in *Help*.
+;;
+;; (setq help-downcase-arguments t)
+;;
+;; Where clarity is the concern it is nicer to font-lock arguments in
+;; `help-mode' with a face that readily stands out from the surrounding
+;; docstring. Following are the face customizations for `button' and
+;; `help-argument-name' which MON finds help make help-mode more helpful.
+;;  These are provided as quoted forms straight from MON's custom file:
+;;
+;; '(button 
+;;   ((((supports :underline t)) (:background "gray5" 
+;;                                :foreground "LightSkyBlue" 
+;;                                :underline "Aquamarine" 
+;;                                :weight normal))))
+;;
+;; '(help-argument-name 
+;;   ((((supports :slant italic)) (:inherit italic 
+;;                                 :foreground "SteelBlue" 
+;;                                 :weight normal))))
+;;
+;; :NOTE MON doesn't like not getting back a reasonably long list and when
+;; evaluating `:EXAMPLE's in help-mode *Help* buffers. Following hook ensures
+;; that these types of evaluations return a nice long list:
+;
+;; (add-hook 'help-mode-hook 
+;;          #'(lambda () (set (make-local-variable 'print-length) nil)))
+;;
+;;
+;; KEYBINDINGS:
+;; Assigning a keybinding for `mod-doc-help-insert-cookie'
+;; and make inserting the `*doc-cookie*' variable easier esp. when
+;; the doc-cookie is not default and/or you have trouble remembering
+;; the ucs char-code for inserting '►►►' \(ucs-insert \"25BA\"\) ;=> ►
+;;
+;; Assigning a keybinding for `mon-insert-lisp-testme'
+;; will make insertion of ';;;test-me;(.*)' strings at end of function defuns
+;; easier. This utility trys to DWIM.
+;;
+;; Alternatively, assigning a keybinding for `mon-insert-doc-help-tail'
+;; will give most of the functionality of `mon-insert-lisp-testme'
+;; by helping in generation of introspecting function bodies which utilize the
+;; tools included herein.
+;;
+;; :COURTESY Pascal Bourguignon :WAS `space-doc'
+;; :SUBJECT Re: How to see that a variable holds t :DATE 2010-01-04
+;; :SEE (URL `http://lists.gnu.org/archive/html/help-gnu-emacs/2010-01/msg00060.html')
+;; "You could even bind space to automatically find the doc for you:
+;;      (global-set-key (kbd "SPC") 'space-doc)
+;;  Or, use local-set-key in mode hooks where you write emacs lisp code
+;;  such as emacs-lisp-mode-hook."
+;; (defun mon-space-doc ()
+;;   (interactive)
+;;   (save-excursion
+;;     (backward-sexp) (backward-char)
+;;     (when (looking-at "(")
+;;       (forward-char)
+;;       (when (thing-at-point 'symbol)
+;;         (let* ((start (point))
+;;                (end (progn (forward-sexp) (point)))
+;;                (symname (buffer-substring start end)))
+;;           (ignore-errors (describe-function (intern symname)))))))
+;;   (insert " "))
+;;
+;; SNIPPETS:
+;; (while (search-forward-regexp "\\(mon-help-function-spit-doc '\\(.*\\) nil nil t\\)")
+;;   (replace-match "mon-help-function-spit-doc '\\2 :insertp t"))
+;; :COMPILE-COMMAND 
+;; "emacs -batch -L . -eval '(byte-compile-file \"mon-doc-help-utils.el\")' 
+;;  rm -v mon-doc-help-utils.elc"
+;;
+;; THIRD-PARTY-CODE:
+;; Portions herein from Aaron Hawley :HIS Reference Sheet By Aaron Hawley:
+;; :SEE (URL `http://www.emacswiki.org/emacs/Reference_Sheet_by_Aaron_Hawley_source')
+;;
+;; I think I remember lifting the `mon-help-escape-for-ewiki'
+;; from Pascal Bourguignon but I can no longer find the reference
+;; to the source... I have it elsewhere as `escape-lisp-string-region'.
+;;
+;; URL: http://www.emacswiki.org/emacs/mon-doc-help-utils.el
+;; FILE-PUBLISHED: <Timestamp: #{2009-08-15} - by MON KEY>
+;;
+;; PUBLIC-LINK (URL `http://www.emacswiki.org/emacs/MonDocHelpUtilsDictionary')
+;; FIRST-PUBLISHED <Timestamp: #{2010-01-09T01:03:52-05:00Z}#{10016} - by MON>
+;;
+;; PUBLIC-LINK: 
+;; (URL `http://www.emacswiki.org/emacs/mon-doc-help-utils-supplemental.el')
+;; FIRST-PUBLISHED: <Timestamp: #{2009-12-21T21:20:06-05:00Z}#{09522} - by MON>
+;;
+;; FILE-CREATED:
+;; <Timestamp: Wednesday June 17, 2009 @ 11:29.15 AM - by MON KEY>
+;;
+;; ================================================================
+
+;;; LICENSE:
+
+;; ================================================================
+;; This file is not part of GNU Emacs.
+
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 3, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program; see the file COPYING.  If not, write to
+;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
+;; Floor, Boston, MA 02110-1301, USA.
+;; ================================================================
+;; Permission is granted to copy, distribute and/or modify this
+;; document under the terms of the GNU Free Documentation License,
+;; Version 1.3 or any later version published by the Free Software
+;; Foundation; with no Invariant Sections, no Front-Cover Texts,
+;; and no Back-Cover Texts. A copy of the license is included in
+;; the section entitled "GNU Free Documentation License".
+;; A copy of the license is also available from the Free Software
+;; Foundation Web site at:
+;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ================================================================
-;;; This file is not part of GNU Emacs.
-;;;
-;;; This program is free software; you can redistribute it and/or
-;;; modify it under the terms of the GNU General Public License as
-;;; published by the Free Software Foundation; either version 3, or
-;;; (at your option) any later version.
-;;;
-;;; This program is distributed in the hope that it will be useful,
-;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-;;; General Public License for more details.
-;;;
-;;; You should have received a copy of the GNU General Public License
-;;; along with this program; see the file COPYING.  If not, write to
-;;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
-;;; Floor, Boston, MA 02110-1301, USA.
-;;; ================================================================
-;;; Permission is granted to copy, distribute and/or modify this
-;;; document under the terms of the GNU Free Documentation License,
-;;; Version 1.3 or any later version published by the Free Software
-;;; Foundation; with no Invariant Sections, no Front-Cover Texts,
-;;; and no Back-Cover Texts. A copy of the license is included in
-;;; the section entitled "GNU Free Documentation License".
-;;; A copy of the license is also available from the Free Software
-;;; Foundation Web site at:
-;;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
-;;; ================================================================
-;;; Copyright © 2009, 2010 MON KEY 
+;; Copyright © 2009, 2010 MON KEY 
 ;;; ==============================
+
 ;;; CODE:
 
 ;;; ==============================
@@ -3313,6 +3328,8 @@ x 	      The X Window system.\n
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-package-keywords :insertp t)
     (message "Pass non-nil for optional arg INTRP")))
+;;
+(defalias 'mon-help-finder-keywords 'mon-help-package-keywords)
 ;;
 ;;; :TEST-ME (mon-help-package-keywords)
 ;;; :TEST-ME (mon-help-package-keywords t)

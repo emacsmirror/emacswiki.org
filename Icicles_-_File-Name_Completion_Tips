@@ -13,7 +13,7 @@ This page contains some tips about [[completion|completing]] file and directory 
 [:icicle-sort-dirs-last]
 ==== Sort Function icicle-dirs-last-p ====
 Function '''`icicle-dirs-last-p'''' is
-provided as a possible value for [[user option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-sort-function|icicle-sort-function]]</tt>''''.  It treats
+provided as a possible value for [[user option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-sort-comparer|icicle-sort-comparer]]</tt>''''.  It treats
 file and directory names specially, sorting directory names ''after''
 file names; otherwise, it is the same as `icicle-case-string-less-p'.  (You can
 of course reach directory names ''before'', instead of after, file
@@ -29,7 +29,7 @@ subdirectories.
 
 * non-`nil' -- When this option is non-`nil', you might want to use a
 function such as `icicle-dirs-last-p' for option
-`icicle-sort-function', to prevent cycling depth-first
+`icicle-sort-comparer', to prevent cycling depth-first
 into the subdirectories.
 
 * `nil' -- When this option is `nil', you can still choose to cycle

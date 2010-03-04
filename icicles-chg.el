@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Feb 28 15:56:17 2010 (-0800)
+;; Last-Updated: Wed Mar  3 23:30:07 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 4817
+;;     Update #: 4880
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,16 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2010/03/03 dadams
+;;     icicle-bookmark(-other-window), icicle-define-bookmark-other-window-command:
+;;       Use bookmarkp-sort-and-remove-dups.
+;;       Bind icicle-sort-orders-alist, using bookmarkp predicates.
+;;     icicle-bookmark(-other-window):
+;;       Set icicle-sorted-bookmark-alist and bookmarkp-sorted-alist.
+;;       Use bookmarkp-sorted-alist.
+;;       Don't append original icicle-sort-orders-alist.  Just include a couple of its entries.
+;;     Applied renamings: icicle-sort-function to icicle-sort-comparer,
+;;                        icicle-sort-functions-alist to icicle-sort-orders-alist.
 ;; 2010/02/28 dadams
 ;;     icicle-send-bug-report: Formatted body a bit.
 ;; 2010/02/14 dadams
@@ -180,6 +190,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2010/03/03 dadams
+;;     Applied renamings: icicle-sort-function to icicle-sort-comparer
+;;                        icicle-sort-functions-alist to icicle-sort-orders-alist,
+;;                        icicle-alternative-sort-function to icicle-alternative-sort-comparer,
+;;                        icicle-last-sort-function to icicle-last-sort-comparer.
 ;; 2010/02/06 dadams
 ;;     icicle-where-is: Make sure orig-buff is current when look up the bindings.
 ;; 2010/01/12 dadams
@@ -343,6 +358,13 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2010/03/03 dadams
+;;     Added: icicle-multi-sort, icicle-make-plain-predicate, icicle-alpha-p.
+;;     icicle-reversible-sort: Use icicle-sort-comparer and icicle-multi-sort.
+;;                             Reset to unsorted if an error is raised.
+;;     Applied renamings: icicle-sort-function to icicle-sort-comparer,
+;;                        icicle-sort-functions-alist to icicle-sort-orders-alist.
+;;     icicle-read-shell-command-completing: Removed extra binding for icicle-sort-function.
 ;; 2010/01/12 dadams
 ;;     icicle-display-candidates-in-Completions: set-buffer -> with-current-buffer.
 ;; 2009/12/25 dadams
@@ -1639,6 +1661,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mac.el'")
 ;;
+;; 2010/03/03 dadams
+;;     Applied renamings: icicle-sort-function to icicle-sort-comparer,
+;;                        icicle-sort-functions-alist to icicle-sort-orders-alist.
 ;; 2009/12/21 dadams
 ;;     fset -> defalias.
 ;; 2009/12/13 dadams
@@ -1721,6 +1746,15 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2010/03/03 dadams
+;;     Applied renamings: icicle-sort-function to icicle-sort-comparer
+;;                        icicle-sort-functions-alist to icicle-sort-orders-alist,
+;;                        icicle-alternative-sort-function to icicle-alternative-sort-comparer,
+;;                        icicle-last-sort-function to icicle-last-sort-comparer.
+;; 2010/03/02 dadams
+;;     icicle-remove-Completions-window: Do nothing unless *Completions* is shown.
+;;     icicle-delete-windows-on: Do nothing unless buffer is visible.
+;;                               Do not delete frame if it is the only one.
 ;; 2010/01/12 dadams
 ;;     icicle-mouse-choose-completion, icicle-insert-string-at-point,
 ;;       icicle-mouse-candidate-action-1, icicle-mouse-remove-candidate,
@@ -3565,6 +3599,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2010/03/03 dadams
+;;     Renamed: icicle-sort-function to icicle-sort-comparer,
+;;              icicle-sort-functions-alist to icicle-sort-orders-alist
+;;              icicle-alternative-sort-function to icicle-alternative-sort-comparer.
+;;     Redefined to allow multi-sorting: icicle-sort-comparer, icicle-sort-orders-alist.
 ;; 2010/02/17 dadams
 ;;     Moved icicle-redefined-functions here from icicles-var.el
 ;;       and renamed to icicle-inhibit-advice-functions.
@@ -4028,6 +4067,13 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2010/03/03 dadams
+;;     Added: icicle-sorted-bookmark-alist, icicle-reverse-multi-sort-p.
+;;     Renamed: icicle-last-sort-function to icicle-last-sort-comparer.
+;;     icicle-general-help-string: Applied renaming to icicle-sort-orders-alist.
+;;     Applied renamings: icicle-sort-function to icicle-sort-comparer,
+;;                        icicle-sort-functions-alist to icicle-sort-orders-alist,
+;;                        icicle-alternative-sort-function to icicle-alternative-sort-comparer.
 ;; 2010/02/17 dadams
 ;;     Moved icicle-redefined-functions to icicles-opt.el
 ;;       and renamed to icicle-inhibit-advice-functions

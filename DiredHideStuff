@@ -1,0 +1,26 @@
+`dired-listing-switches' says that `-l' is mandatory.
+
+Here's a function to hide everything up to the filename:
+
+{{{
+(defun dired-hide-crap ()
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (let ((start (point))
+	  (inhibit-read-only t))
+      (while (let ((end (next-property-change (point))))
+	       (when end
+		 (goto-char end)))
+	(when (plist-get (text-properties-at (point)) 'dired-filename)
+	  (put-text-property start (point) 'invisible t)
+	  (forward-line 1)
+	  (setq start (point)))))))
+
+(add-hook 'dired-after-readin-hook 'dired-hide-crap)
+}}}
+
+For a fancier implementation, see DiredDetails.
+
+----
+DiredMode

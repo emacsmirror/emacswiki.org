@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Feb 28 15:55:16 2010 (-0800)
+;; Last-Updated: Wed Mar  3 11:39:23 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 20194
+;;     Update #: 20250
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -324,7 +324,7 @@
   ;; icicle-buffer-ignore-space-prefix-flag, icicle-buffer-match-regexp,
   ;; icicle-buffer-no-match-regexp, icicle-buffer-predicate, icicle-buffer-require-match-flag,
   ;; icicle-buffer-sort, icicle-color-themes, icicle-saved-completion-sets,
-  ;; icicle-sort-function, icicle-transform-function
+  ;; icicle-sort-comparer, icicle-transform-function
 (require 'icicles-fn)
   ;; icicle-assoc-delete-all, icicle-highlight-lighter, icicle-read-from-minibuf-nil-default
 
@@ -2363,7 +2363,7 @@ need match only a prefix.  For example, nil means that abbreviation
   icicle-command-abbrev-action          ; Function to perform the action
   prompt obarray  'commandp             ; `completing-read' args
   nil nil 'icicle-command-abbrev-history nil nil
-  ((icicle-sort-function     'icicle-command-abbrev-used-more-p) ; Bindings.
+  ((icicle-sort-comparer     'icicle-command-abbrev-used-more-p) ; Bindings.
    (prompt                   "Command or abbrev: ")
    (icicle-proxy-candidates  (let ((ipc  ())
                                    abv)
@@ -2402,7 +2402,7 @@ If ABBREV-OR-CMD is not an abbreviation or a command, raise an error."
     (cond ((and not-cmdp (null icicle-commands-for-abbrev))
            (error "No such command or abbreviation `%s'" abbrev-or-cmd))
           (icicle-commands-for-abbrev
-           (let* ((icicle-sort-function  'icicle-command-abbrev-used-more-p)
+           (let* ((icicle-sort-comparer  'icicle-command-abbrev-used-more-p)
                   (cmd
                    (if (null (cdr icicle-commands-for-abbrev))
                        (prog1 (intern (caar icicle-commands-for-abbrev))
@@ -2876,20 +2876,65 @@ If you also use library `bookmark+.el', then:
   `bookmarkp-sequence'                  - sequence bookmark
   `bookmarkp-w3m'                       - W3m URL
 
+ * You can use `C-,' to sort bookmarks in many different ways,
+   according to their properties.
+
 If you also use library `crosshairs.el', then the visited bookmark
 position is highlighted."               ; Doc string
   icicle-bookmark-jump                  ; Function to perform the action
   prompt                                ; `completing-read' args
-  (mapcar #'(lambda (cand)
-              (list (icicle-candidate-short-help (icicle-bookmark-help-string cand)
-                                                 (icicle-bookmark-propertize-candidate cand))))
-          (bookmark-all-names))         ; This loads bookmarks file, populating `bookmark-alist'.
+  (or icicle-sorted-bookmark-alist
+      (setq icicle-sorted-bookmark-alist
+            (if (not (fboundp 'bookmarkp-sort-and-remove-dups))
+                (mapcar #'(lambda (cand)
+                            (list (icicle-candidate-short-help
+                                   (icicle-bookmark-help-string cand)
+                                   (icicle-bookmark-propertize-candidate cand))))
+                        (bookmark-all-names)) ; Loads bookmarks file, defining `bookmark-alist'.
+              (bookmark-maybe-load-default-file) ; Loads bookmarks file, defining `bookmark-alist'.
+              (mapcar #'(lambda (bmk)
+                          (let ((name  (bookmark-name-from-full-record bmk))
+                                (guts  (bookmark-get-bookmark-record bmk)))
+                            (cons (icicle-candidate-short-help
+                                   (icicle-bookmark-help-string name)
+                                   (icicle-bookmark-propertize-candidate name))
+                                  guts)))
+                      (or bookmarkp-sorted-alist
+                          (setq bookmarkp-sorted-alist
+                                (bookmarkp-sort-and-remove-dups bookmark-alist)))))))
   nil t nil (if (boundp 'bookmark-history) 'bookmark-history 'icicle-bookmark-history)
   (and (boundp 'bookmark-current-bookmark) bookmark-current-bookmark)
   nil
   ((enable-recursive-minibuffers    t)  ; In case we read input, e.g. File changed on disk...
    (completion-ignore-case          bookmark-completion-ignore-case)
    (prompt                          "Bookmark: ")
+   (icicle-sort-orders-alist
+    (append '(("in *Bookmark List* order") ; Renamed from "turned OFF'.
+              ("by bookmark name" . icicle-alpha-p))
+            (and (featurep 'bookmark+)
+                 '(("by last bookmark access" (bookmarkp-bookmark-last-access-cp) icicle-alpha-p)
+                   ("by bookmark visit frequency" (bookmarkp-visited-more-cp) icicle-alpha-p)
+                   ("by last buffer or file access" (bookmarkp-buffer-last-access-cp
+                                                     bookmarkp-local-file-accessed-more-recently-cp)
+                    icicle-alpha-p)
+                   ("marked before unmarked (in *Bookmark List*)" (bookmarkp-marked-cp)
+                    icicle-alpha-p)
+                   ("by local file type" (bookmarkp-local-file-type-cp) icicle-alpha-p)
+                   ("by file name" (bookmarkp-file-alpha-cp) icicle-alpha-p)
+                   ("by local file size" (bookmarkp-local-file-size-cp) icicle-alpha-p)
+                   ("by last local file access" (bookmarkp-local-file-accessed-more-recently-cp)
+                    icicle-alpha-p)
+                   ("by last local file update" (bookmarkp-local-file-updated-more-recently-cp)
+                    icicle-alpha-p)
+                   ("by Info location" (bookmarkp-info-cp) icicle-alpha-p)
+                   ("by Gnus thread" (bookmarkp-gnus-cp) icicle-alpha-p)
+                   ("by w3m url" (bookmarkp-w3m-cp) icicle-alpha-p)
+                   ("by bookmark type" (bookmarkp-info-cp bookmarkp-gnus-cp bookmarkp-w3m-cp
+                                        bookmarkp-local-file-type-cp bookmarkp-handler-cp)
+                    icicle-alpha-p)))
+            '(("by previous use alphabetically" . icicle-historical-alphabetic-p)
+              ("case insensitive" . icicle-case-insensitive-string-less-p))))
+   ;; (delete '("turned OFF") icicle-sort-orders-alist)))
    (icicle-candidate-help-fn        #'(lambda (cand) (icicle-msg-maybe-in-minibuffer
                                                       (icicle-bookmark-help-string cand))))
    (icicle-delete-candidate-object  'bookmark-delete))
@@ -2920,16 +2965,58 @@ position is highlighted."               ; Doc string
 Same as `icicle-bookmark', but uses another window." ; Doc string
   icicle-bookmark-jump-other-window     ; Function to perform the action
   prompt                                ; `completing-read' args
-  (mapcar #'(lambda (cand)
-              (list (icicle-candidate-short-help (icicle-bookmark-help-string cand)
-                                                 (icicle-bookmark-propertize-candidate cand))))
-          (bookmark-all-names))         ; This loads bookmarks file, populating `bookmark-alist'.
+  (or icicle-sorted-bookmark-alist
+      (setq icicle-sorted-bookmark-alist
+            (if (not (fboundp 'bookmarkp-sort-and-remove-dups))
+                (mapcar #'(lambda (cand)
+                            (list (icicle-candidate-short-help
+                                   (icicle-bookmark-help-string cand)
+                                   (icicle-bookmark-propertize-candidate cand))))
+                        (bookmark-all-names)) ; Loads bookmarks file, defining `bookmark-alist'.
+              (bookmark-maybe-load-default-file) ; Loads bookmarks file, defining `bookmark-alist'.
+              (mapcar #'(lambda (bmk)
+                          (let ((name  (bookmark-name-from-full-record bmk))
+                                (guts  (bookmark-get-bookmark-record bmk)))
+                            (cons (icicle-candidate-short-help
+                                   (icicle-bookmark-help-string name)
+                                   (icicle-bookmark-propertize-candidate name))
+                                  guts)))
+                      (or bookmarkp-sorted-alist
+                          (setq bookmarkp-sorted-alist
+                                (bookmarkp-sort-and-remove-dups bookmark-alist)))))))
   nil t nil (if (boundp 'bookmark-history) 'bookmark-history 'icicle-bookmark-history)
   (and (boundp 'bookmark-current-bookmark) bookmark-current-bookmark)
   nil
   ((enable-recursive-minibuffers    t)  ; In case we read input, e.g. File changed on disk...
    (completion-ignore-case          bookmark-completion-ignore-case)
    (prompt                          "Bookmark: ")
+   (icicle-sort-orders-alist
+    (append '(("in *Bookmark List* order") ; Renamed from "turned OFF'.
+              ("by bookmark name" . icicle-alpha-p))
+            (and (featurep 'bookmark+)
+                 '(("by last bookmark access" (bookmarkp-bookmark-last-access-cp) icicle-alpha-p)
+                   ("by bookmark visit frequency" (bookmarkp-visited-more-cp) icicle-alpha-p)
+                   ("by last buffer or file access" (bookmarkp-buffer-last-access-cp
+                                                     bookmarkp-local-file-accessed-more-recently-cp)
+                    icicle-alpha-p)
+                   ("marked before unmarked (in *Bookmark List*)" (bookmarkp-marked-cp)
+                    icicle-alpha-p)
+                   ("by local file type" (bookmarkp-local-file-type-cp) icicle-alpha-p)
+                   ("by file name" (bookmarkp-file-alpha-cp) icicle-alpha-p)
+                   ("by local file size" (bookmarkp-local-file-size-cp) icicle-alpha-p)
+                   ("by last local file access" (bookmarkp-local-file-accessed-more-recently-cp)
+                    icicle-alpha-p)
+                   ("by last local file update" (bookmarkp-local-file-updated-more-recently-cp)
+                    icicle-alpha-p)
+                   ("by Info location" (bookmarkp-info-cp) icicle-alpha-p)
+                   ("by Gnus thread" (bookmarkp-gnus-cp) icicle-alpha-p)
+                   ("by w3m url" (bookmarkp-w3m-cp) icicle-alpha-p)
+                   ("by bookmark type" (bookmarkp-info-cp bookmarkp-gnus-cp bookmarkp-w3m-cp
+                                        bookmarkp-local-file-type-cp bookmarkp-handler-cp)
+                    icicle-alpha-p)))
+            '(("by previous use alphabetically" . icicle-historical-alphabetic-p)
+              ("case insensitive" . icicle-case-insensitive-string-less-p))))
+   ;; (delete '("turned OFF") icicle-sort-orders-alist)))
    (icicle-candidate-help-fn        #'(lambda (cand) (icicle-msg-maybe-in-minibuffer
                                                       (icicle-bookmark-help-string cand))))
    (icicle-delete-candidate-object  'bookmark-delete))
@@ -3125,7 +3212,7 @@ Remove crosshairs highlighting and unbind filtering keys."
 
 ;; A little macro just to save some source code.
 (defmacro icicle-define-bookmark-other-window-command (type &optional prompt)
-  "Define Icicles multi-command for jumping to bookmarks of type TYPE.
+  "Define an Icicles multi-command for jumping to bookmarks of type TYPE.
 TYPE is a string to be used for the doc string, default prompt, and in
  function names.  It should be lowercase and contain no spaces.
 Optional arg PROMPT is the completion prompt."
@@ -3136,15 +3223,63 @@ Like `icicle-bookmark-other-window', but with %s bookmarks only.
 You need library `bookmark+.el' for this command." type type) ; Doc string
     icicle-bookmark-jump-other-window   ; Function to perform the action
     prompt                              ; `completing-read' args
-    (mapcar #'(lambda (cand)
-                (list (icicle-candidate-short-help
-                       (icicle-bookmark-help-string (car cand)) (car cand))))
-     (funcall ',(intern (format "bookmarkp-%s-alist-only" type))))
+    (if (not (fboundp 'bookmarkp-sort-and-remove-dups))
+        (mapcar #'(lambda (cand)
+                    (list (icicle-candidate-short-help
+                           (icicle-bookmark-help-string (car cand))
+                           (icicle-bookmark-propertize-candidate (car cand)))))
+                (funcall ',(intern (format "bookmarkp-%s-alist-only" type))))
+      (bookmark-maybe-load-default-file) ; Loads bookmark file, defines `bookmark-alist'.
+      (mapcar #'(lambda (bmk)
+                  (let ((name  (bookmark-name-from-full-record bmk))
+                        (guts  (bookmark-get-bookmark-record bmk)))
+                    (cons (icicle-candidate-short-help
+                           (icicle-bookmark-help-string name)
+                           (icicle-bookmark-propertize-candidate name))
+                          guts)))
+              (bookmarkp-sort-and-remove-dups
+               (funcall ',(intern (format "bookmarkp-%s-alist-only" type))))))
     nil t nil (if (boundp 'bookmark-history) 'bookmark-history 'icicle-bookmark-history) nil nil
     ((enable-recursive-minibuffers    t) ; In case we read input, e.g. File changed on disk...
      (completion-ignore-case          bookmark-completion-ignore-case) ; Additional bindings
      (prompt                          ,(format "%s%s bookmark: " (capitalize (substring type 0 1))
                                                (substring type 1 (length type))))
+     (icicle-sort-orders-alist
+      (append '(("in *Bookmark List* order") ; Renamed from "turned OFF'.
+                ("by bookmark name" . icicle-alpha-p))
+       (and (featurep 'bookmark+)
+        (append
+         '(("by last bookmark access" (bookmarkp-bookmark-last-access-cp) icicle-alpha-p)
+           ("by bookmark visit frequency" (bookmarkp-visited-more-cp) icicle-alpha-p))
+         (and (member ,type '("info" "region"))
+          '(("by Info location" (bookmarkp-info-cp) icicle-alpha-p)))
+         (and (member ,type '("gnus" "region"))
+          '(("by Gnus thread" (bookmarkp-gnus-cp) icicle-alpha-p)))
+         (and (member ,type '("w3m" "region"))
+          '(("by w3m url" (bookmarkp-w3m-cp) icicle-alpha-p)))
+         (and (not (member ,type '("bookmark-list" "desktop" "gnus" "info" "man" "w3m")))
+          '(("by bookmark type" (bookmarkp-info-cp bookmarkp-gnus-cp bookmarkp-w3m-cp
+                                 bookmarkp-local-file-type-cp bookmarkp-handler-cp)
+             icicle-alpha-p)))
+         (and (not (member ,type '("bookmark-list" "desktop" "dired" "non-file")))
+          '(("by file name" (bookmarkp-file-alpha-cp) icicle-alpha-p)))
+         (and (member ,type '("local-file" "file" "dired" "region"))
+          '(("by local file type" (bookmarkp-local-file-type-cp) icicle-alpha-p)
+            ("by local file size" (bookmarkp-local-file-size-cp) icicle-alpha-p)
+            ("by last local file access" (bookmarkp-local-file-accessed-more-recently-cp)
+             icicle-alpha-p)
+            ("by last local file update" (bookmarkp-local-file-updated-more-recently-cp)
+             icicle-alpha-p)))
+         (and (not (string= ,type "desktop"))
+          '(("by last buffer or file access" (bookmarkp-buffer-last-access-cp
+                                              bookmarkp-local-file-accessed-more-recently-cp)
+             icicle-alpha-p)))
+         (and (get-buffer "*Bookmark List*")
+          '(("marked before unmarked (in *Bookmark List*)" (bookmarkp-marked-cp)
+             icicle-alpha-p)))))
+       '(("by previous use alphabetically" . icicle-historical-alphabetic-p)
+         ("case insensitive" . icicle-case-insensitive-string-less-p))))         
+     ;;(delete '("turned OFF") icicle-sort-orders-alist)))
      (icicle-candidate-help-fn        #'(lambda (cand) (icicle-msg-maybe-in-minibuffer
                                                         (icicle-bookmark-help-string cand))))
      (icicle-delete-candidate-object  'bookmark-delete))
@@ -3295,7 +3430,7 @@ If `crosshairs.el' is loaded, then the target position is highlighted."
 
   (unwind-protect
        (let* ((icicle-whole-candidate-as-text-prop-p  t)
-              (icicle-sort-function                   nil)
+              (icicle-sort-comparer                   nil)
               (icicle-inhibit-sort-p                  t)
               (icicle-candidate-action-fn             'icicle-find-tag-action)
               (icicle-candidate-help-fn               'icicle-find-tag-help)
@@ -3986,8 +4121,8 @@ the behavior."                          ; Doc string
    (icicle-must-pass-predicate            icicle-buffer-predicate)
    (icicle-extra-candidates               icicle-buffer-extras)
    (icicle-transform-function             'icicle-remove-dups-if-extras)
-   (icicle-sort-function                  (or icicle-buffer-sort icicle-sort-function))
-   (icicle-sort-functions-alist
+   (icicle-sort-comparer                  (or icicle-buffer-sort icicle-sort-comparer))
+   (icicle-sort-orders-alist
     (append (list '("by last access")   ; Renamed from "turned OFF'.
                   '("*...* last" . icicle-buffer-sort-*...*-last)
                   '("by buffer size" . icicle-buffer-smaller-p)
@@ -3995,7 +4130,7 @@ the behavior."                          ; Doc string
                   (and (fboundp 'icicle-mode-line-name-less-p)
                        '("by mode-line mode name" . icicle-mode-line-name-less-p))
                   '("by file/process name" . icicle-buffer-file/process-name-less-p))
-            (delete '("turned OFF") icicle-sort-functions-alist)))
+            (delete '("turned OFF") icicle-sort-orders-alist)))
    (icicle-candidate-alt-action-fn
     (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "buffer")))
    (icicle-all-candidates-list-alt-action-fn
@@ -4121,7 +4256,7 @@ from the `kill-ring'."                  ; Doc string
   "Insert: " (mapcar #'list kill-ring) nil t nil 'icicle-kill-history ; `completing-read' args
   (car kill-ring) nil
   ((icicle-transform-function       'icicle-remove-duplicates) ; Additional bindings
-   (icicle-sort-function            nil)
+   (icicle-sort-comparer            nil)
    (icicle-delete-candidate-object  'kill-ring)))
 
 (defun icicle-insert-for-yank (string)

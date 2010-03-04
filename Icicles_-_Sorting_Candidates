@@ -65,9 +65,9 @@ The new sort order is echoed, so you can use this twice to just
 remind yourself of the current sort order.
 
 In addition to the current sort order, which is defined by the
-value of user option '''`<tt>[[Icicles - Customization and General Tips#icicle-sort-function|icicle-sort-function]]</tt>'''', an alternative sort
+value of user option '''`<tt>[[Icicles - Customization and General Tips#icicle-sort-comparer|icicle-sort-comparer]]</tt>'''', an alternative sort
 order is available at all times.  It is the value of option
-'''`<tt>[[Icicles - Customization and General Tips#icicle-alternative-sort-function|icicle-alternative-sort-function]]</tt>''''.  By default, this sorts
+'''`<tt>[[Icicles - Customization and General Tips#icicle-alternative-sort-comparer|icicle-alternative-sort-comparer]]</tt>''''.  By default, this sorts
 candidates into two alphabetical groups: those previously used as accepted input,
 followed by those not yet used.
 
@@ -82,7 +82,7 @@ to toggle sorting on and off.
 
 Commands that read buffer names with completion can use another
 sort-function user option, '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-sort|icicle-buffer-sort]]</tt>''''.  It has the same
-meaning as `icicle-sort-function', but it applies only to those commands.  It is
+meaning as `icicle-sort-comparer', but it applies only to those commands.  It is
 provided so that you can customize it separately.  You can also
 define buffer configurations that are used for completion: named
 sets of buffers, sort functions, and other parameters that control
@@ -95,7 +95,7 @@ completion of buffer names.
 === Defining New Sort Orders ===
 
 When you use `##C-,##' or `##M-,##', the sort orders that you can choose
-from are those in user option '''`<tt>[[Icicles - Customization and General Tips#icicle-sort-functions-alist|icicle-sort-functions-alist]]</tt>''''.  You
+from are those in user option '''`<tt>[[Icicles - Customization and General Tips#icicle-sort-orders-alist|icicle-sort-orders-alist]]</tt>''''.  You
 can customize this option to add or remove available sort orders.
 A better way to define a new sort order is to use macro
 '''`icicle-define-sort-command'''' in your Emacs init file (##~/.emacs##).
@@ -122,7 +122,7 @@ The result of this definition is:
 # The creation of command `##icicle-sort-##'''##alphabetical##''''.
 
 # The addition of an entry for the new sort order in option
-   `icicle-sort-functions-alist'.  The entry associates sort order
+   `icicle-sort-orderss-alist'.  The entry associates sort order
    ##alphabetical## with comparison function `icicle-case-string-less-p'.
 
 You can invoke the new sorting command any time using `M-x', but
