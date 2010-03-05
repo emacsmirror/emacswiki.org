@@ -124,7 +124,6 @@
 ;; `traverse-list-directories-in-tree'
 ;; `traverse-list-files-in-tree'
 ;; `traverse-auto-document-default-prefix'
-;; `traverse-macro-p'
 ;; `traverse-get-first-line-documentation'
 ;; `traverse-goto-line'
 ;; `traverse-incremental-forward-line'
@@ -182,6 +181,7 @@
 ;; `traverse-incremental-search-delay'
 ;; `traverse-incremental-search-prompt'
 ;; `traverse-incremental-docstring'
+;; `traverse-incremental-mode-line-string'
 ;; `traverse-incremental-length-line'
 
 ;;  *** END auto-documentation
@@ -242,8 +242,8 @@
 ;; You can get the development version of the file with hg:
 ;;
 ;; hg clone http://mercurial.intuxication.org/hg/traverselisp
-;; For the current development branch:(Always better!)
-;; hg update -C 1.1.0
+;; For the current development branch:
+;; hg update -C development
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -253,7 +253,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Version:
-(defconst traverse-version "1.1.74")
+(defconst traverse-version "2.6")
 
 ;;; Code:
 
@@ -1138,8 +1138,8 @@ See headers of `traverselisp.el' for example."
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "q") 'traverse-quit)
     (define-key map (kbd "RET") 'traverse-incremental-jump-and-quit)
-    (define-key map (kbd "<S-down>") 'traverse-incremental-scroll-down)
-    (define-key map (kbd "<S-up>") 'traverse-incremental-scroll-up)
+    (define-key map (kbd "<C-down>") 'traverse-incremental-scroll-down)
+    (define-key map (kbd "<C-up>") 'traverse-incremental-scroll-up)
     (define-key map (kbd "<down>") 'traverse-incremental-next-line)
     (define-key map (kbd "<up>") 'traverse-incremental-precedent-line)
     (define-key map (kbd "C-n") 'traverse-incremental-next-line)
@@ -1147,11 +1147,17 @@ See headers of `traverselisp.el' for example."
     map)
   "Keymap used for traverse commands.")
 
-(define-derived-mode traverse-incremental-mode text-mode "traverse-incremental"
-                     "Major mode to search occurences of regexp in current buffer.
+(define-derived-mode traverse-incremental-mode
+    text-mode "traverse-incremental"
+    "Major mode to search occurences of regexp in current buffer.
 
 Special commands:
-\\{traverse-incremental-mode-map}")
+\\{traverse-incremental-mode-map}"
+    (if traverse-incremental-mode-line-string
+        (setq mode-line-format
+              '(" " mode-line-buffer-identification " "
+                (line-number-mode "%l") " " traverse-incremental-mode-line-string "-%-"))
+        (kill-local-variable 'mode-line-format)))
 
 
 (defcustom traverse-incremental-search-delay 0.2
@@ -1165,9 +1171,18 @@ Special commands:
   :type  'string)
 
 (defcustom traverse-incremental-docstring
-  "     [RET:exit, C-g:quit, C-k:kill, C-z:Jump, C-j:Jump&quit, C-n/p:next/prec-line, M-p/n:hist, C/M-v/C-,/;:Scroll]"
+  "     [RET:exit, C-g:quit, C-k:kill, C-z:Jump, C-j:Jump&quit, C-n/p:next/prec-line, M-p/n:hist, C/M-v C-down/up:Scroll]"
   "*Documentation of `traverse-incremental-occur' prompt.
-Set it to nil to remove doc in prompt."
+Set it to nil to remove doc in prompt.
+If you use this you will want maybe to set `traverse-incremental-mode-line-string' to nil."
+  :group 'traverse
+  :type  'string)
+
+(defcustom traverse-incremental-mode-line-string
+  " RET:Exit, C-g:Quit, C-k:Kill, C-z:Jump, C-j:Jump&quit, C-n/p:Next/Prec-line, M-p/n:Hist, C/M-v C-down/up:Scroll, C-w:Yank tap"
+  "*Documentation of `traverse-incremental-occur' prompt displayed in mode-line.
+Set it to nil to remove doc in mode-line.
+If you use this you will want maybe to set `traverse-incremental-docstring' to nil"
   :group 'traverse
   :type  'string)
 
@@ -1258,14 +1273,16 @@ Set it to nil to remove doc in prompt."
              (evt (unless chr (read-event))))
         (or chr evt))))
 
-(defun traverse-incremental-read-search-input (initial-input)
+(defun traverse-incremental-read-search-input (initial-input start-point)
   "Read each keyboard input and add it to `traverse-incremental-search-pattern'."
-  (let* ((prompt       (propertize traverse-incremental-search-prompt 'face 'minibuffer-prompt))
-         (inhibit-quit (not (fboundp 'read-key)))
-         (tmp-list     ())
-         (it           (iter-list traverse-incremental-history))
-         (cur-hist-elm (car traverse-incremental-history))
-         (start-hist   nil)) ; Flag to notify if cycling history started.
+  (let* ((prompt         (propertize traverse-incremental-search-prompt 'face 'minibuffer-prompt))
+         (inhibit-quit   (not (fboundp 'read-key)))
+         (tmp-list       ())
+         (it             (iter-list traverse-incremental-history))
+         (cur-hist-elm   (car traverse-incremental-history))
+         (start-hist     nil) ; Flag to notify if cycling history started.
+         (old-yank-point start-point)
+         yank-point)
     (unless (string= initial-input "")
       (loop for char across initial-input do (push char tmp-list)))
     (setq traverse-incremental-search-pattern initial-input)
@@ -1312,11 +1329,11 @@ Set it to nil to remove doc in prompt."
                     (traverse-incremental-cancel-search))
                   (traverse-incremental-precedent-line)
                   (traverse-incremental-occur-color-current-line) t)
-                 (?\C-\;                       ; Scroll both windows down.
+                 (C-down                       ; Scroll both windows down.
                   (when traverse-incremental-search-timer
                     (traverse-incremental-cancel-search))
                   (traverse-incremental-scroll-down) t)
-                 (?\C-\,                       ; Scroll both windows up.
+                 (C-up                         ; Scroll both windows up.
                   (when traverse-incremental-search-timer
                     (traverse-incremental-cancel-search))
                   (traverse-incremental-scroll-up) t)
@@ -1324,10 +1341,13 @@ Set it to nil to remove doc in prompt."
                  (?\d                          ; Delete backward with DEL.
                   (unless traverse-incremental-search-timer
                     (traverse-incremental-start-timer))
+                  (with-current-buffer traverse-incremental-current-buffer
+                    (goto-char old-yank-point)
+                    (setq yank-point old-yank-point))
                   (pop tmp-list) t)
                  (?\C-g                        ; Quit and restore buffers.
                   (setq traverse-incremental-quit-flag t) nil)
-                 ((or right ?\C-z)             ; persistent action.
+                 ((or right ?\C-z)             ; Persistent action.
                   (traverse-incremental-jump) (other-window 1) t)
                  ((left ?\C-j)                 ; Jump to candidate and kill search buffer.
                   (setq traverse-incremental-exit-and-quit-p t) nil)
@@ -1336,8 +1356,22 @@ Set it to nil to remove doc in prompt."
                  (?\C-k                        ; Kill input.
                   (unless traverse-incremental-search-timer
                     (traverse-incremental-start-timer))
+                  (with-current-buffer traverse-incremental-current-buffer
+                    (goto-char old-yank-point)
+                    (setq yank-point old-yank-point))
                   (kill-new traverse-incremental-search-pattern)
                   (setq tmp-list ()) t)
+                 (?\C-w                        ; Yank stuff at point.
+                  (unless traverse-incremental-search-timer
+                    (traverse-incremental-start-timer))
+                  (with-current-buffer traverse-incremental-current-buffer
+                    (unless old-yank-point (setq old-yank-point (point)))
+                    (setq yank-point (point))
+                    (forward-word 1)
+                    (setq initial-input (buffer-substring yank-point (point))))
+                  (unless (string= initial-input "")
+                    (loop for char across initial-input do (push char tmp-list)))
+                  (setq traverse-incremental-search-pattern initial-input) t)
                  (?\M-v                        ; Scroll up.
                   (scroll-other-window -1) t)
                  (?\M-p                        ; Precedent history elm.
@@ -1403,6 +1437,8 @@ C-z or <right> jump without quitting loop.
 C-j or <left>  jump and exit search buffer.
 RET or ESC     exit but don't quit search buffer.
 DEL            remove last character entered.
+C-k            Kill current input.
+C-w            Yank stuff at point.
 C-g            quit and restore buffer.
 M-p/n          Precedent and next `traverse-incremental-history' element:
 
@@ -1427,20 +1463,22 @@ for commands provided in the search buffer."
          str-no-prop)
     (set-text-properties 0 len nil init-str)
     (setq str-no-prop init-str)
-    (pop-to-buffer (get-buffer-create "*traverse search*"))
+    (pop-to-buffer (get-buffer-create "*traverse occur*"))
     (traverse-incremental-mode)
     (unwind-protect
+         ;; Start incremental search.
          (progn
            (traverse-incremental-start-timer)
-           (traverse-incremental-read-search-input str-no-prop))
-
+           (traverse-incremental-read-search-input str-no-prop curpos))
+      ;; At this point incremental search loop is exited.
       (progn
         (traverse-incremental-cancel-search)
+        (kill-local-variable 'mode-line-format)
         (when (equal (buffer-substring (point-at-bol) (point-at-eol)) "")
           (setq traverse-incremental-quit-flag t))
         (if traverse-incremental-quit-flag ; C-g
             (progn
-              (kill-buffer "*traverse search*")
+              (kill-buffer "*traverse occur*")
               (switch-to-buffer traverse-incremental-current-buffer)
               (when traverse-occur-overlay
                 (delete-overlay traverse-occur-overlay))
@@ -1448,7 +1486,7 @@ for commands provided in the search buffer."
 
             (if traverse-incremental-exit-and-quit-p
                 (progn (traverse-incremental-jump-and-quit)
-                       (kill-buffer "*traverse search*") (message nil))
+                       (kill-buffer "*traverse occur*") (message nil))
                 (traverse-incremental-jump) (other-window 1))
             ;; Push elm in history if not already there or empty.
             (unless (or (member traverse-incremental-search-pattern traverse-incremental-history)

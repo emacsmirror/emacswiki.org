@@ -1,9 +1,10 @@
+[[de:indonesia]]
 == Description ==
 
 Folding mode is a MinorMode that uses a special string to find the regions to hide:
 <nowiki>{{{ and }}}</nowiki>.
 The variable <code>fold-mode-marks-alist</code> defines the strings for each MajorMode separately.
-From the folding menu you can enter, show, hide, etc. regions. With the Mouse-3 (ther rightmost mouse button) when there is no other context menu defined a right mouse click will toggle the visibility of fold.
+From the folding menu you can enter, show, hide, etc. regions. With the Mouse-3 (the rightmost mouse button) when there is no other context menu defined a right mouse click will toggle the visibility of fold.
 
 
 == Download ==

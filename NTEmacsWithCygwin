@@ -89,5 +89,11 @@ You should restart emacs after adding this to your .emacs file (rather than just
 (ad-activate 'grep-compute-defaults)
 </pre>
 
+[new]
+Another option may be to use the <i>-r</i> option to /grep/ (this works with GNU grep) instead of piping to /find/.
+I believe this should work for both the gnuwin32 grep and the cygwin grep.
+There is an implementation of this in /w32-grep.el/ in [[EmacsW32]].
+Could someone please test it with Cygwin?
+(The file /w32-grep.el/ is only available in [[EmacsW32]], but you could mail me if you want a copy for testing.)
 ----
 CygWin

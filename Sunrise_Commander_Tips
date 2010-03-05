@@ -33,7 +33,7 @@ Unfortunately  AFAIK  there's  no AVFS for Windows. BTW Archlinux offers Sunrise
 with AVFS and other goodies conveniently placed in one single package.
 
 # Explore all the configurable settings Sunrise offers by typing:
-            //M-x configure-group RET sunrise RET//
+            //M-x customize-group RET sunrise RET//
 
 # Master Emacs Dired. After all, Sunrise  is nothing more than a fancy front end
 for all  the amazing capabilities Dired  offers. One aspect of  dired I've found

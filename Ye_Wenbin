@@ -126,4 +126,23 @@ First thanks for all your work on emacs. I am a long-term user of your type-test
            (setq line-move-visual nil))
 
 ----
+Hi,
+
+I'm a beginner as far as elisp is concerned, so check whether I overlooked something here :) I think the compiler warnings in help-dwim.el can be fixed by changing:
+
+  (defun help-dwim-build-woman-obarray (&optional re-cache)
+    ...
+    (require 'woman)
+
+to
+
+  (defun help-dwim-build-woman-obarray (&optional re-cache)
+    ...
+    (eval-and-compile (require 'woman))
+
+the elisp manual claims that `require' is automatically `eval-and-compile'd, but apparently that's only true for toplevel `require's?
+
+DanielSchüssler
+
+----
 CategoryHomepage

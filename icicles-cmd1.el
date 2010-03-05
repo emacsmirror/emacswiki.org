@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Mar  3 11:39:23 2010 (-0800)
+;; Last-Updated: Thu Mar  4 23:34:07 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 20250
+;;     Update #: 20266
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2838,6 +2838,14 @@ During completion, you can use `S-delete' on a bookmark to delete it.
 
 If you also use library `bookmark+.el', then:
 
+ * `C-M-RET' shows detailed info about the current bookmark.
+   `C-u C-M-RET' shows the complete, internal info for the bookmark.
+   Likewise, for the other candidate help keys: `C-M-down' etc.
+   (And the mode line always shows summary info about the bookmark.)
+   
+ * You can use `C-,' to sort bookmarks in many different ways,
+   according to their properties.
+
  * You can narrow the current completion candidates to bookmarks of a
    given type:
 
@@ -2875,9 +2883,6 @@ If you also use library `bookmark+.el', then:
   `bookmarkp-remote-file'               - remote-file
   `bookmarkp-sequence'                  - sequence bookmark
   `bookmarkp-w3m'                       - W3m URL
-
- * You can use `C-,' to sort bookmarks in many different ways,
-   according to their properties.
 
 If you also use library `crosshairs.el', then the visited bookmark
 position is highlighted."               ; Doc string
@@ -2935,10 +2940,16 @@ position is highlighted."               ; Doc string
             '(("by previous use alphabetically" . icicle-historical-alphabetic-p)
               ("case insensitive" . icicle-case-insensitive-string-less-p))))
    ;; (delete '("turned OFF") icicle-sort-orders-alist)))
-   (icicle-candidate-help-fn        #'(lambda (cand) (icicle-msg-maybe-in-minibuffer
-                                                      (icicle-bookmark-help-string cand))))
+   (icicle-candidate-help-fn        #'(lambda (cand)
+                                        (if (featurep 'bookmark+)
+                                            (if current-prefix-arg
+                                                (bookmarkp-describe-bookmark-internals cand)
+                                              (bookmarkp-describe-bookmark cand))
+                                          (icicle-msg-maybe-in-minibuffer
+                                           (icicle-bookmark-help-string cand)))))
    (icicle-delete-candidate-object  'bookmark-delete))
   (progn                                ; First code
+    (require 'bookmark)
     (when (featurep 'bookmark+)         ; Bind keys to narrow bookmark candidates by type.
       (put-text-property 0 1 'icicle-fancy-candidates t prompt)
       (define-key minibuffer-local-must-match-map "\C-\M-b" 'icicle-bookmark-non-file-narrow)
@@ -3017,10 +3028,16 @@ Same as `icicle-bookmark', but uses another window." ; Doc string
             '(("by previous use alphabetically" . icicle-historical-alphabetic-p)
               ("case insensitive" . icicle-case-insensitive-string-less-p))))
    ;; (delete '("turned OFF") icicle-sort-orders-alist)))
-   (icicle-candidate-help-fn        #'(lambda (cand) (icicle-msg-maybe-in-minibuffer
-                                                      (icicle-bookmark-help-string cand))))
+   (icicle-candidate-help-fn        #'(lambda (cand)
+                                        (if (featurep 'bookmark+)
+                                            (if current-prefix-arg
+                                                (bookmarkp-describe-bookmark-internals cand)
+                                              (bookmarkp-describe-bookmark cand))
+                                          (icicle-msg-maybe-in-minibuffer
+                                           (icicle-bookmark-help-string cand)))))
    (icicle-delete-candidate-object  'bookmark-delete))
   (progn                                ; First code
+    (require 'bookmark)
     (when (featurep 'bookmark+)         ; Bind keys to narrow bookmark candidates by type.
       (put-text-property 0 1 'icicle-fancy-candidates t prompt)
       (define-key minibuffer-local-must-match-map "\C-\M-b" 'icicle-bookmark-non-file-narrow)

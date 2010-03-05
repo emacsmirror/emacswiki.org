@@ -6,6 +6,8 @@ I also added 'ffs-grep', a function that performs a basic grep on the indexed fi
 
 *Update 2009-11-09*: I added support for multiple file indexes, as well as a simpler mechanism for creating/refreshing them (and some minor bug fixes).
 
+*Update 2010-03-02*: I thought of a smarter way to determine which file index to use at startup (if startup dir is a sub-dir of a given file index, then it should have the focus).
+
 You can get it from http://find-file-suggest.googlecode.com
 
 [new]

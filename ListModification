@@ -16,7 +16,9 @@ Here's the corresponding box diagram:
           +-------+---+    +------+---+  +-------+-----+
 </pre>
 
-(The ELISP prompt is from InferiorEmacsLispMode, `M-x ielm'.)
+See ListStructure if you don't feel comfortable with the box diagram above.
+
+The ELISP prompt is from InferiorEmacsLispMode, `M-x ielm'.
 
 == delete ==
 

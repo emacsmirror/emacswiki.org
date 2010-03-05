@@ -102,4 +102,41 @@ This version is a bit simpler than the above because it only has two SMTP accoun
 Are there plans to integrate this (the first solution) in the official distribution?
 
 ----
+
+A good solution to this multiple-smpt-accounts problem could be to use msmtp (http://msmtp.sourceforge.net/) to send your mails, using gnus-posting-styles to tell him what account you wanna use. It's in my opinion the simplest way and maybe the most useful because gnus will determine itself the mail account you want to use, thanks to the group you're reading.
+
+ (setq sendmail-program "/usr/bin/msmtp")
+
+ ;; default account
+ (setq message-sendmail-extra-arguments '("-a" "defaultuser"))
+ (setq user-full-name "Default User")
+ (setq user-mail-address "defaultuser@mail.net")
+ 
+ (setq gnus-posting-styles
+       '((".*"
+          (signature-file "~/.signature.default"))
+         ("nnml:user2"
+          (name "User2")
+          (address "user2@mail2.net")
+          (signature-file "~/.signature.user2")
+          (eval (setq message-sendmail-extra-arguments '("-a" "user2"))))
+         (... place here other mail accounts ...)))
+
+While your msmpt configuration would be
+
+ account defaultuser
+ host smpt.mail.net
+ from defaultuser@mail.net
+ user defaultuser
+ password ******
+
+ account user2
+ host smpt.mail2.net
+ from user2@mail2.net
+ user user2
+ password ******
+
+ ...
+
+----
 CategoryGnus

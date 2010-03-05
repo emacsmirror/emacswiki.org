@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Mar  3 23:30:07 2010 (-0800)
+;; Last-Updated: Thu Mar  4 23:32:32 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 4880
+;;     Update #: 4883
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2010/03/04 dadams
+;;     icicle-bookmark(-other-window): Use bookmarkp-describe-bookmark(-internals) for C-M-RET.
 ;; 2010/03/03 dadams
 ;;     icicle-bookmark(-other-window), icicle-define-bookmark-other-window-command:
 ;;       Use bookmarkp-sort-and-remove-dups.

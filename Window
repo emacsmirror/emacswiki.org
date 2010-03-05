@@ -8,6 +8,8 @@ Here is a screenshot showing a frame with three windows:
 
 [[image:DrewsEmacsWindowCallouts]]
 
+Emacs may be thought of as a [http://en.wikipedia.org/wiki/Tiling_window_manager tiling window manager]: the screen is organized into mutually non-overlapping windows, as opposed to the more popular approach of "floating" windows.
+
 Commonly used window commands include these:
 
     C-x 0 delete the current window

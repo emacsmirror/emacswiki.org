@@ -1,4 +1,5 @@
-: Please send bug report or suggestions to FENG Jiabin (benplusplus at gmail dot com), he's the new maintainer. Thanks! -- AndyStewart 
+: Have many people use this extension, but i haven't time maintain it anymore, i'm looking Emacs hacker take over this extension. 
+: If you want take over it and have enough elisp knowledge, please send mail to me. Thanks! -- AndyStewart 
 
 ==What is multi-term.el ?==
 : MultiTerm is a mode based on term.el, for managing multiple terminal buffers in Emacs.
@@ -122,6 +123,11 @@ If `others' scroll only those that are not the selected window.
 :: "multi-term-dedicated-skip-other-window-p" controls whether to skip dedicated terminal window when using the command `other-window' to cycle through windows.
 This useful when you have complex window layout for programming. Note that you can use the command "multi-term-dedicated-select" to select the dedicated window in any time.
 
+** Select deciated window after open:
+
+:: "multi-term-dedicated-select-after-open-p" Default, multi-term won't focus terminal window after you open dedicated window.
+Please make this option with t if you want focus terminal window.
+
 ==Related==
 * Color setup of term-mode:
 : Have many people asked "How to setup color of multi-term?", option `term-default-bg-color' and `term-default-fg-color' control foreground color and background color, so just setup like below:
@@ -144,5 +150,35 @@ This useful when you have complex window layout for programming. Note that you c
 ==Comment==
 Please write at below if you have any suggestion or bug, or mail to me. Thanks! -- AndyStewart
 
+{{{
+Hi Andy.
+Thank you for a great mode. I love it and now use it all the time.
+However I found one deficiency:
+- I bound (multi-term-dedicated-toggle) to a function key and use it all the time when I quickly need to do something in a term
+- I set (setq multi-term-dedicated-select t) to have the dedicated buffer selected and ready to be used once it opens
+- When I am done I run (multi-term-dedicated-toggle) again to get rid of the terminal. At this point I'd like the cursor return to the position it was before I opened the dedicated terminal window. However If I had more than one buffer, the cursor doesn't always return back to the old position. I worked around it with this (this is my first lisp function; sorry if it is not pretty):
+
+(defun it-multi-term-dedicated-toggle ()
+  "jump back to previous location after toggling ded term off"
+  (interactive)
+  (if (multi-term-dedicated-exist-p)
+      (progn
+	(multi-term-dedicated-toggle)
+	(switch-to-buffer-other-window old-buf))
+    (progn
+      (setq old-buf (current-buffer))
+      (multi-term-dedicated-toggle))
+    )
+  )
+
+It may be a good idea to add this functionality to multi-term.el
+}}}
+
+[new]
+Sorry Ilya, i have [http://www.emacswiki.org/emacs/AndyStewart#toc14 LeaveEmacs] , 
+haven't time write any elisp code even i really want help you.
+So sorry.
+
+   -- AndyStewart
 ----
 CategoryShell
