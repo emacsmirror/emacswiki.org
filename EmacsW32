@@ -1150,6 +1150,18 @@ I do not know how to solve the problem with the privileges.
 The only solution I currently can see is to disable starting Emacs from the installer.
 Can anyone else see a better solution?
 
+=== "Waiting for Emacs server to start" is ownership problem on ~/.emacs.d/server === 
+
+The problem is the ownership of the directory ~/.emacs.d/server when you also have "Administrators" rights on your account. Create the directory ~/.emacs.d/server and set the owner of this directory to your login name and the problem is gone. As I have a "Dutch" version of Windows 7 I don't know the English terms exactly but here's the procedure:
+
+Click R-mouse on ~/.emacs.d/server and select "Properties" (last item in menu). From Properties select the Tab "Security" and then select the button "Advanced". Then select the Tab "Owner" and change the owner from "Administrators (<your-pc-name>\Administrators)" into "<your-login-name> (<your-pc-name>\<your-login-name>". Now the server code will accept this directory as secure because you are the owner.
+
+Hope this helps for all you guys, it solved the problem for me anyway.
+
+W.K.R. Reutefleut 
+ 
+
+
 
 === Windows 7 Taskbar ===
 
@@ -1214,6 +1226,9 @@ There are just too few hands there I think.
 Contributors are welcome!
 
 ----
+[new]
+
+
 Related subjects
 CategoryKeys
 CategoryPorts
@@ -1222,3 +1237,4 @@ EmacsMacro
 EmacsNewbie
 PrintWithWebBrowser
 WThirtyTwoDotEmacs
+

@@ -1,3 +1,4 @@
+[[de:cQnldvrRirlNHG]]
 ;;; exec-abbrev-cmd.el --- Execute commands by giving an abbreviation
 
 ;; Copyright 2007 Tassilo Horn

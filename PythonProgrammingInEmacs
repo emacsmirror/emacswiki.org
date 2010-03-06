@@ -41,30 +41,26 @@ Github : http://github.com/tsgates/pylookup
 Pylookup Mode : http://taesoo.org/Opensource/Pylookup
 
 == Using Flymake with Python ===
-= Using flymake with pylint, pychecker, and pep8.py =
+
+= Using flymake with multiple lint, style and syntax checkers =
+
+More than one code checking tool can be applied in flymake by using a
+wrapper script that runs the desired tools and combines their output.  One
+issue is that flymake reporting seems to show only the last message
+per line of code, meaning that an error or warning which is
+intentionally left unfixed can mask an error or warning that would get
+more attention.
+
+There are several scripts around to do this, supporting various tools.
+Each expects to find the code checking tools in your path (pep8.py,
+pychecker, pylint, pyflakes, etc.)
+
+* [http://python.pastebin.com/f627691e0 This] runs pylint + pychecker + pep8
+* [http://pastebin.ca/1797770 This] runs pylint + pychecker + pep8
+* [http://paste.uni.cc/20534 This] runs pylint + pychecker + pep8
+* [http://bitbucket.org/jek/sandbox/src/tip/pycheckers pycheckers] runs pyflakes, pep8, pydo (configurable)
 
 : I added this code to pastebins (didn't know which to prefer, so chose three) which should be better than dumping the code here. -- CH
-
-[http://python.pastebin.com/f627691e0 This] or 
-[http://pastebin.ca/1797770 this] or
-[http://paste.uni.cc/20534 this] are all
-
-a script which runs and parses the output of various
-Python code checking programs to work with flymake.  It has 
-lots of issues, one being that flymake does not seem to show 
-more than one error message per line of code, meaning that
-an error or warning which is intentionally left unfixed can
-mask an error or warning that would get more attention.
-
-Additionally, the scripts which check python code are either 
-rather anemic, and don't notice too much (pychecker) or are 
-aggressive, and warn about all sorts of things that they 
-should not (pylint).  pep8.py tends to be annoyingly aggressive
-about whitespace.  
-
-You must have pep8.py, pychecker and pylint in PATH for this script
-to find them.  Additionally this script attempts to support 
-virtual environments, but this is largely untested.
 
 = Using flymake with pylint =
 

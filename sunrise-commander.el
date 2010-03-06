@@ -130,7 +130,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 264 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 265 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.  I  have  also  received
@@ -200,6 +200,11 @@
   toggle hidden files display pressing C-o. You can also  customize  what  files
   are considered hidden by setting dired-omit-files and dired-omit-extensions in
   your .emacs file"
+  :group 'sunrise
+  :type 'boolean)
+
+(defcustom sr-terminal-kill-buffer-on-exit t
+  "Whether to kill terminal buffers after their shell process ends."
   :group 'sunrise
   :type 'boolean)
 
@@ -503,7 +508,7 @@ substitution may be about to happen."
         @! ............ fast backup files (but not dirs!), each to [filename].bak
 
         C-c t ......... open new terminal or switch to already open one
-        C-c T ......... open terminal AND change directory to current
+        C-c T ......... open terminal AND/OR change directory to current
         C-c C-t ....... open always a new terminal in current directory
         q ............. quit Sunrise Commander, restore previous window setup
         M-q ........... quit Sunrise Commander, don't restore previous windows
@@ -2660,7 +2665,7 @@ or (c)ontents? ")
 
 (defun sr-term-extern (&optional cd newterm)
   "This is the implementation of sr-term for external terminal programs."
-  (let ((dir default-directory))
+  (let ((dir (if sr-running sr-this-directory default-directory)))
     (sr-term-excursion newterm (term sr-terminal-program))
     (when cd
       (term-send-raw-string
@@ -2669,7 +2674,7 @@ or (c)ontents? ")
 
 (defun sr-term-eshell (&optional cd newterm)
   "This is the implementation of sr-term when using eshell."
-  (let ((dir default-directory))
+  (let ((dir (if sr-running sr-this-directory default-directory)))
     (sr-term-excursion newterm (eshell))
     (when cd
       (insert (concat "cd " (shell-quote-wildcard-pattern dir)))
@@ -2726,6 +2731,11 @@ or (c)ontents? ")
   "Switches focus to the currently active pane."
   (interactive)
   (sr-select-window sr-selected-window))
+
+(defun sr-ti-change-pane ()
+  "Changes selection of active pane to passive one."
+  (interactive)
+  (sr-ti (sr-change-window)))
 
 (defun sr-ti-newterm ()
   "Opens a new terminal after renaming the previous one."
@@ -2829,30 +2839,42 @@ or (c)ontents? ")
                 (kill-backward-chars 2)
                 (insert expansion)))))))
 
-(defvar sr-term-keys '(([M-up]          . sr-ti-previous-line)
-                       ([A-up]          . sr-ti-previous-line)
-                       ("\M-P"          . sr-ti-previous-line)
-                       ([M-down]        . sr-ti-next-line)
-                       ([A-down]        . sr-ti-next-line)
-                       ("\M-N"          . sr-ti-next-line)
-                       ("\M-\C-m"       . sr-ti-select)
-                       ("\C-\M-j"       . sr-ti-select)
-                       ([M-return]      . sr-ti-select)
-                       ("\M-M"          . sr-ti-mark)
-                       ([M-backspace]   . sr-ti-unmark)
-                       ("\M-\d"         . sr-ti-unmark)
-                       ("\M-J"          . sr-ti-prev-subdir)
-                       ("\M-U"          . sr-ti-unmark-all-marks)
-                       ([(control tab)] . sr-ti-change-window)
-                       ("\C-c\t"        . sr-ti-change-window)
-                       ("\C-ct"         . sr-ti-newterm)
-                       ("%"             . sr-clex-start))
+(defvar sr-term-keys '(([M-up]        . sr-ti-previous-line)
+                       ([A-up]        . sr-ti-previous-line)
+                       ("\M-P"        . sr-ti-previous-line)
+                       ([M-down]      . sr-ti-next-line)
+                       ([A-down]      . sr-ti-next-line)
+                       ("\M-N"        . sr-ti-next-line)
+                       ("\M-\C-m"     . sr-ti-select)
+                       ("\C-\M-j"     . sr-ti-select)
+                       ([M-return]    . sr-ti-select)
+                       ("\M-M"        . sr-ti-mark)
+                       ([M-backspace] . sr-ti-unmark)
+                       ("\M-\d"       . sr-ti-unmark)
+                       ("\M-J"        . sr-ti-prev-subdir)
+                       ("\M-U"        . sr-ti-unmark-all-marks)
+                       ([C-tab]       . sr-ti-change-window)
+                       ("\C-c\t"      . sr-ti-change-window)
+                       ("\M-\t"       . sr-ti-change-pane)
+                       ("\C-ct"       . sr-ti-newterm)
+                       ("%"           . sr-clex-start))
   "Keybindings for terminal integration and command line expansion")
 
 (defun sr-define-ti-keys (mode-map)
   (mapcar (lambda (key)
             (define-key mode-map (car key) (cdr key)))
           sr-term-keys))
+
+;; This takes care of killing terminal buffers on exit:
+(defadvice term-sentinel (around sr-advice-term-sentinel (proc msg))
+  (if (and sr-terminal-kill-buffer-on-exit
+           (memq (process-status proc) '(signal exit)))
+      (let ((buffer (process-buffer proc)))
+        ad-do-it
+        (bury-buffer buffer)
+        (kill-buffer buffer))
+    ad-do-it))
+(ad-activate 'term-sentinel)
 
 ;;; ============================================================================
 ;;; Miscellaneous functions:

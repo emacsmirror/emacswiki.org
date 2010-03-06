@@ -218,6 +218,9 @@ This is a refinement of the above. It adds two features:
                                    nil require-match initial-input hist def))
             ad-do-it))))
 
+===== Problem using advice to reset to completing-read =====
+I like using ido for (almost) everything a lot but it gets slow for a long list of possible completions (e.g. for describe-function). Using the defadvice as described does not work for me? Is it just me or is this a bug? TIA
+-- sebhofer
 
 == Ido Hacks (modifying Ido's behavior) ==
 

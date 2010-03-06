@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Mar  3 15:27:52 2010 (-0800)
+;; Last-Updated: Fri Mar  5 23:30:33 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 11578
+;;     Update #: 11698
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -58,7 +58,8 @@
 ;;      (@> "Only Visible Bookmarks Are Affected")
 ;;      (@> "Omitting Bookmarks from Display")
 ;;      (@> "Sorting Bookmarks")
-;;      (@> "Open Bookmarks Using Windows File Associations")
+;;    (@> "Use Bookmark+ with Icicles")
+;;    (@> "Open Bookmarks Using Windows File Associations")
 ;;    (@> "Bookmark Compatibility with Vanilla Emacs (`bookmark.el')")
 ;;    (@> "New Bookmark Structure")
 ;;  (@> "Change log")
@@ -621,17 +622,9 @@
 ;;
 ;;  * Synergy with Icicles.
 ;;
-;;     - If you use Icicles, then you can use `S-delete' during
-;;       completion for a bookmark name, to delete the current
-;;       bookmark candidate.  You can delete any number of bookmarks
-;;       this way, during a single invocation of a bookmark command.
-;;
-;;       In addition, Icicles provides enhanced bookmark jumping
-;;       (visiting) and setting.  In Icicle mode, several of the
-;;       Bookmark+ keys are remapped to corresponding Icicles
-;;       multi-commands.  This means that a bookmark jump key becomes
-;;       a bookmarks browser.  For example, you can use `C-x 4 j d' to
-;;       browse among any number of Dired bookmarks.  See
+;;     - Icicles works with Bookmark+ to provide enhanced bookmark
+;;       jumping (visiting), setting, and help.  It gives you a
+;;       bookmark browser.  See (@> "Use Bookmark+ with Icicles") and
 ;;       http://www.emacswiki.org/cgi-bin/wiki/Icicles.
 ;;
 ;;
@@ -1403,9 +1396,85 @@
 ;;  `alpha', `beta', `gamma', `delta', and then sort according to tag
 ;;  `tag2', which represents the set of tags `beta', `delta'.
 ;;
+;;  See also (@> "Use Bookmark+ with Icicles") - the same technique is
+;;  used in Icicles for sorting bookmarks as completion candidates.
+;;
+;;
+;;(@* "Use Bookmark+ with Icicles")
+;;  ** Use Bookmark+ with Icicles **
+;;
+;;  Icicles (http://www.emacswiki.org/cgi-bin/wiki/Icicles) enhances
+;;  your use of Bookmark+ in several ways.
+;;
+;;  When jumping to a bookmark, you can narrow the completion
+;;  candidates to bookmarks of a particular type (e.g. Info, using
+;;  `C-M-i'; remote, using `C-M-@'; region, using `C-M-r').  You can
+;;  narrow again (and again), to another bookmark type, to get the
+;;  intersection (e.g. remote Info bookmarks that define a region).
+;;
+;;  You can also narrow against different bookmark-name patterns
+;;  (e.g. regexps) - so-called "progressive completion".  And take the
+;;  complement (e.g., bookmarks whose names do not match
+;;  `foo.*2010.*bar').  (This is not special to bookmarks; it is
+;;  standard Icicles practice.)
+;;
+;;  In Icicle mode, several of the Bookmark+ keys are remapped to
+;;  corresponding Icicles multi-commands.  A bookmark jump key thus
+;;  becomes a bookmarks browser.  For example, `C-x j d' browses among
+;;  any number of Dired bookmarks.
+;;
+;;  When you browse among bookmarks, visiting them, the current
+;;  destination (position) is highlighted temporarily using
+;;  crosshairs, to make it stand out.
+;;
+;;  A single key can set a bookmark or visit bookmarks.  This key is
+;;  whatever command `bookmark-set' would normally be bound to -
+;;  e.g. `C-x r m'.  A prefix arg controls what it does.  If negative
+;;  (`M--'), jump to (browse) bookmarks.  Otherwise, set a bookmark,
+;;  as follows:
+;;
+;;  * Numeric prefix arg (non-negative): No prompt.  Use the buffer
+;;    name plus the text of the region (if active) or the current line
+;;    as the bookmark name.  Quickest way to set a bookmark.
+;;
+;;  * No prefix arg (as usual): Prompt for bookmark name.  But if the
+;;    region is active, use the buffer name plus the region text as
+;;    the default name.
+;;
+;;  * Plain `C-u' (as usual): Prompt for name; no bookmark overwrite.
+;;
+;;  During completion of a bookmark name, many features of the
+;;  bookmark-list display (see (@> "Bookmark List (Display)")) are
+;;  available on the fly.
+;;
+;;  * Candidates are highlighted in the `*Completions*' window
+;;    according to their type.
+;;
+;;  * You can sort completion candidates using the Bookmark+ sort
+;;    orders.  Use `C-,' to cycle among sort orders.
+;;
+;;  * You can use Icicles candidate-help keys (`C-M-RET', `C-M-down',
+;;    etc.) to get detailed information about the current bookmark
+;;    candidate.  `C-u C-M-RET' shows the complete, internal info
+;;    defining the bookmark.  And without doing anything, summary info
+;;    about the current candidate is available in the mode line of
+;;    buffer `*Completions*'.
+;;
+;;  * You can use Icicles candidate-action keys (`C-RET', `C-mouse-2',
+;;    `C-down', etc.) to visit any number of bookmarks.  For example,
+;;    holding down `C-down' cycles among the current bookmark
+;;    candidates, opening each in turn.
+;;
+;;  * You can use `S-delete' to delete the bookmark named by the
+;;    current candidate.  You can delete any number of bookmarks this
+;;    way, during a single invocation of a bookmark command.
+;;
+;;  * You can define Icicles sets of bookmarks, persistent or not, and
+;;    act on their members in various ways.
+;;
 ;;
 ;;(@* "Open Bookmarks Using Windows File Associations")
-;;  *** Open Bookmarks Using Windows File Associations ***
+;;  ** Open Bookmarks Using Windows File Associations **
 ;;
 ;;  If you use Emacs on Microsoft Windows, then you can take advantage
 ;;  of Windows file associations to open bookmarks.  To do this, you

@@ -2,7 +2,7 @@
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
-;; Copyright © 2010 MON KEY. All rights reserved.
+;; Copyright © 2009, 2010 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: mon-doc-help-utils.el
@@ -79,6 +79,15 @@
 ;; `mon-help-keys-wikify-anchors', `mon-help-keys-wikify-heading',
 ;; `mon-help-keys-wikify-TEST', `mon-get-next-face-property-change',
 ;; `mon-get-next-face-property-change-if', `mon-get-all-face-property-change',
+;; `mon-get-text-properties-print', `mon-get-text-properties-read-temp',
+;; `mon-get-text-properties-region',
+;; `mon-get-text-properties-elisp-string',
+;; `mon-get-text-properties-elisp-string-pp',
+;; `mon-get-text-properties-parse-prop-val-type-chk',
+;; `mon-get-text-properties-parse-buffer',
+;; `mon-get-text-properties-parse-sym',
+;; `mon-get-text-properties-parse-buffer-or-sym', 
+;; `mon-get-text-properties-map-ranges'
 ;; FUNCTIONS:◄◄◄
 ;;
 ;; MACROS:
@@ -1207,7 +1216,7 @@ Default is to search from point.\n
  'help-argument-name \(line-beginning-position -11\)\)\n
 \(mon-get-next-face-property-change 'button \(point\)\)\n
 :ALIASED-BY `mon-help-face-next-property-change'\n
-:SEE-ALSO `mon-kill-ring-save-w-props', `mon-test-props',
+:SEE-ALSO `mon-get-text-properties-region-to-kill-ring', `mon-test-props',
 `mon-line-test-content', `mon-get-next-face-property-change',
 `mon-get-next-face-property-change-if', `mon-get-all-face-property-change'
 `mon-list-all-properties-in-buffer', `mon-nuke-text-properties-buffer',
@@ -1227,14 +1236,13 @@ Default is to search from point.\n
 ;;
 (defalias 'mon-help-face-next-property-change 'mon-get-next-face-property-change)
 
-
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-02-27T19:58:23-05:00Z}#{10087} - by MON KEY>
 (defun mon-get-next-face-property-change-if (test-face-symbol test-at-posn)
   "Text if the face we're looking for is at position.
 TEST-FACE-SYMBOL symbol naming a face to test.\n
 TEST-AT-POSN position to test at.\n
-:SEE-ALSO `mon-kill-ring-save-w-props', `mon-test-props',
+:SEE-ALSO `mon-get-text-properties-region-to-kill-ring', `mon-test-props',
 `mon-line-test-content', `mon-get-next-face-property-change',
 `mon-get-next-face-property-change-if', `mon-get-all-face-property-change'
 `mon-list-all-properties-in-buffer', `mon-nuke-text-properties-buffer',
@@ -1251,12 +1259,26 @@ TEST-AT-POSN position to test at.\n
 ;;; ==============================
 ;;; :TODO If possible figure out what is causing the peculiar return values w/re
 ;;; the 2nd :NOTE in docstring below and if there is a reasonable workaround.
+;;;
+;;; `mon-get-all-face-property-change' fails because of some weird. 
+;;; return values when invoked in large (e)lisp-mode buffers and won't reliably find faces
+;;; `font-lock-string-face' and `font-lock-comment-face' if these have been
+;;; font-locked with font-lock syntactic voodo
+;;; e.g. `lisp-font-lock-syntactic-face-function's conditional on (nth 3 state)
+;;; vis a vis `font-lock-syntactic-face-function', `font-lock-syntactic-keywords'
+;;; which the `jit-lock-*' fncns appear to be frobbing in complicated ways.
+;;;
 ;;; Is it possible that the `looking-at' in `font-lock-syntactic-face-function'
-;;; isn't `save-match-data'ing??? 
-;; (font-lock-syntactic-face-function . lisp-font-lock-syntactic-face-function)
-;; This problem is some bogus BULLSHIT! It is clear the face properties are set as one
-;; can immediately yank the text and _SEE_ that they are present throughout the
-;; buffer's string immediatley so I don't think this is a display problem.
+;;; isn't `save-match-data'ing???  See at EOB for a redefinition of
+;;; `lisp-font-lock-syntactic-face-function' to `save-match-data' as
+;;; `mon-lisp-font-lock-syntactic-face-function'.
+;;;
+;;; NO. That isn't it... this problem is some bogus BULLSHIT! It is clear the
+;;; face properties are set as one can immediately yank the text and _SEE_ that
+;;; they are present throughout the buffer's string immediatley so I don't think
+;;; this is a display problem.
+;;;
+;;;
 ;;; :CREATED <Timestamp: #{2010-02-27T19:38:29-05:00Z}#{10087} - by MON KEY>
 ;; (defun mon-get-all-face-property-change (search-face-symbol get-from-posn)
 ;;   "Find all start end locations of SEARCH-FACE-SYMBOL at or after get-from-posn.\n
@@ -1271,7 +1293,7 @@ TEST-AT-POSN position to test at.\n
 ;; e.g. `lisp-font-lock-syntactic-face-function's conditional on \(nth 3 state\)
 ;; vis a vis `font-lock-syntactic-face-function', `font-lock-syntactic-keywords'
 ;; which the `jit-lock-*' fncns appear to be frobbing in complicated ways.\n
-;; :SEE-ALSO `mon-kill-ring-save-w-props', `mon-test-props',
+;; :SEE-ALSO `mon-get-text-properties-region-to-kill-ring', `mon-test-props',
 ;; `mon-line-test-content', `mon-get-next-face-property-change',
 ;; `mon-get-next-face-property-change-if', `mon-get-all-face-property-change'
 ;; `mon-list-all-properties-in-buffer', `mon-nuke-text-properties-buffer',
@@ -1308,34 +1330,45 @@ TEST-AT-POSN position to test at.\n
 ;;           ;; (goto-char (buffer-end 1)) (prin1 fc-bnds (current-buffer))
 ;;           )))
 
-;;; :NOTE File created to parse syntax properties in a buffer after i found that 
-;;; `mon-get-all-face-property-change' fails because of some weird. 
-;;; return values when invoked in large (e)lisp-mode buffers and won't reliably find faces
-;;; `font-lock-string-face' and `font-lock-comment-face' if these have been
-;;; font-locked with font-lock syntactic voodo
-;;; e.g. `lisp-font-lock-syntactic-face-function's conditional on (nth 3 state)
-;;; vis a vis `font-lock-syntactic-face-function', `font-lock-syntactic-keywords'
-;;; which the `jit-lock-*' fncns appear to be frobbing in complicated ways.
-;;; Is it possible that the `looking-at' in `font-lock-syntactic-face-function'
-;;; isn't `save-match-data'ing???  See at EOB for a redefinition of
-;;; `lisp-font-lock-syntactic-face-function' to `save-match-data' as
-;;; `mon-lisp-font-lock-syntactic-face-function'
-;;; :TODO If possible figure out what is causing if there is a reasonable workaround.
-;;; (mon-get-all-face-property-change 'font-lock-constant-face (buffer-end 0))
-;;; invoke in the string buffer returned by 
-;;; `mon-get-text-properties-from-elisp-syntactic-pp'
-;;; to see the problem.
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-03-05T17:35:32-05:00Z}#{10095} - by MON KEY>
+(defun mon-get-text-properties-region (start end)
+  "Return region as a two elt list string and strings text properties.\n
+:EXAMPLE\n\n\(let \(\(sbr \(save-excursion (goto-char (buffer-end 0))
+             \(search-forward-regexp \"\(mon.*\)$\" nil t\)\)\)\)
+  \(setq sbr `\(,\(match-beginning 0\) . ,\(match-end 0\)\)\)
+  \(mon-get-text-properties-region \(car sbr\) \(cdr sbr\)\)\)\n
+:NOTE Indexes are into string not buffer as with return value of:
+ `mon-get-text-properties-print' & `mon-get-text-properties-read-temp'
+:SEE-ALSO `mon-get-text-properties-region-to-kill-ring'.\n►►►"
+  (interactive "r\np")
+  (let (get-str nw-tl) 
+    (setq get-str (substring (format "%S" (buffer-substring start end)) 1))
+    (setq get-str (car (read-from-string get-str)))
+    (setq get-str `(,(car get-str) ,(cdr get-str)))
+    (setq nw-tl (substring (format "%S" (cdr get-str)) 1 -1))
+    (setq nw-tl (replace-regexp-in-string " ?\\([0-9]+ [0-9]+\\( (\\)\\)" ")(\\1" nw-tl t))
+    (setq nw-tl (substring nw-tl 1))
+    (setq nw-tl (concat "(" (substring nw-tl 1) ")"))
+    (setq nw-tl (list (car (read-from-string nw-tl))))
+    (setcdr get-str nw-tl)
+    get-str))
+;;
+;;; :TEST-ME (let ((sfr (save-excursion (search-forward-regexp "(defun.*$"))))
+;;;               (setq sfr `(,(match-beginning 0). ,(match-end 0)))
+;;;               (mon-get-text-properties-region (car sfr) (cdr sfr)))
+
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-03-02T20:08:34-05:00Z}#{10093} - by MON KEY>
 (defun mon-get-text-properties-print (start end tp-buff &optional intrp)
-  "Return buffer-string START END with text-properties.
+  "Return buffer-string START END with text-properties.\n
 TP-BUFF is a buffer name to print to as with prin1.\n
 When called-interactively insert at point. Moves point.
-:SEE-ALSO `mon-get-text-properties-print',
-`mon-get-text-properties-read-temp',
-`mon-get-text-properties-elisp-string',
-`mon-get-text-properties-elisp-string-pp'.\n►►►"
+:SEE-ALSO `mon-get-text-properties-region', `mon-get-text-properties-print',
+`mon-get-text-properties-read-temp', `mon-get-text-properties-elisp-string',
+`mon-get-text-properties-elisp-string-pp',
+`mon-get-text-properties-region-to-kill-ring'.\n►►►"
   (interactive "r\ni\np")
   (let* (mgtpfs-get
          (standard-output mgtpfs-get)
@@ -1350,13 +1383,16 @@ When called-interactively insert at point. Moves point.
 ;;; :CREATED <Timestamp: #{2010-03-02T20:08:44-05:00Z}#{10093} - by MON KEY>
 (defun mon-get-text-properties-read-temp (&optional tp-buff)
   "Read list from `mon-get-text-properties-print' and strip leading #.\n
-Car of return value is a new list formulated as with `read-from-string'.
+The car of return value is a new list formulated as with `read-from-string'.
+The cdr is a list of index pairs and text-propery prop/val pairs e.g.:\n
+ \(idx1 idx2 \(p1 p1-val p2 p2-val p3-val \(p3-lv1 p3-lv2 p3-lv3\)\)
+  ;; { ... lots more here ... } 
+  idx3 idx4 \(p1 p1-val p2 p2-val p3-val \(p3-lv1 p3-lv2 p3-lv3\)\)\)\n
 When non-nil optional arg TP-BUFF names a buffer as required by
 `mon-get-text-properties-elisp-string'.\n
-:SEE-ALSO `mon-get-text-properties-print',
-`mon-get-text-properties-read-temp',
-`mon-get-text-properties-elisp-string',
-`mon-get-text-properties-elisp-string-pp'.\n►►►"
+:SEE-ALSO `mon-get-text-properties-region', `mon-get-text-properties-print',
+`mon-get-text-properties-read-temp', `mon-get-text-properties-elisp-string',
+`mon-get-text-properties-elisp-string-pp'.►►►"
   (let ((mgtprt-new 
          (if tp-buff tp-buff 
              (get-buffer-create "*MGTPRT-NEW*")))
@@ -1376,48 +1412,50 @@ When non-nil optional arg TP-BUFF names a buffer as required by
 (defun mon-get-text-properties-elisp-string-pp (syn-list split-buff)
   "Pretty print the string and text property list extracted with
 `mon-get-text-properties-elisp-string'.\n
-:SEE-ALSO `mon-get-text-properties-print',
-`mon-get-text-properties-read-temp',
-`mon-get-text-properties-elisp-string'.►►►"
-  (let* ((mgtpfes-split (buffer-name split-buff))
-         (mgtpfes-buf2
+:SEE-ALSO `mon-get-text-properties-region', `mon-get-text-properties-print',
+`mon-get-text-properties-read-temp', `mon-get-text-properties-elisp-string'.\n►►►"
+  (let* ((mgppespp-split (buffer-name split-buff))
+         (mgppespp-buf2
           (concat 
-           (substring mgtpfes-split 0 (1- (length mgtpfes-split))) "-STRING*")) 
-         (mgtpfes-syn-list
+           (substring mgppespp-split 0 (1- (length mgppespp-split))) "-STRING*")) 
+         (mgppespp-syn-list
           (concat "(" 
                   (replace-regexp-in-string ") " ")) (" 
                                             (format "%S" (cadr syn-list)))
                ")"))
          chck-syn-list)
     (with-temp-buffer 
-      (princ mgtpfes-syn-list (current-buffer))
+      (princ mgppespp-syn-list (current-buffer))
       (pp-buffer)
-      (setq mgtpfes-syn-list 
+      (setq mgppespp-syn-list 
             (buffer-substring-no-properties (buffer-end 0) (buffer-end 1))))
     (with-current-buffer split-buff
       (erase-buffer)
-      (save-excursion (princ mgtpfes-syn-list (current-buffer)))
-      (princ (format ";; :IN-BUFFER %s\n;;\n" mgtpfes-buf2) (current-buffer))
+      (save-excursion (princ mgppespp-syn-list (current-buffer)))
+      (princ (format ";; :IN-BUFFER %s\n;;\n" mgppespp-buf2) (current-buffer))
       (emacs-lisp-mode))
     ;; (mon-get-all-face-property-change 'font-lock-constant-face (buffer-end 0))
-    (get-buffer-create mgtpfes-buf2)
-    (with-current-buffer mgtpfes-buf2
+    (get-buffer-create mgppespp-buf2)
+    (with-current-buffer mgppespp-buf2
       (prin1 (caar syn-list) (current-buffer))
        (emacs-lisp-mode))
     (display-buffer split-buff t)
-    (display-buffer mgtpfes-buf2 t)))
+    (display-buffer mgppespp-buf2 t)))
+    
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-03-02T20:07:24-05:00Z}#{10093} - by MON KEY>
 (defun mon-get-text-properties-elisp-string (&optional some-el-string)
-  "Extract the text properties from the elisp SOME-EL-STRING.
-:EXAMPLE\n\n\(mon-get-text-properties-elisp-string\\n
+  "Extract the text properties from the elisp SOME-EL-STRING.\n
+:EXAMPLE\n\n\(mon-get-text-properties-elisp-string
  \(documentation 'mon-help-mon-help\)\)\n
-:SEE-ALSO `mon-get-text-properties-print',
-`mon-get-text-properties-read-temp',
-`mon-get-text-properties-elisp-string',
-`mon-get-text-properties-elisp-string-pp'.\n►►►"
+\(mon-get-text-properties-elisp-string *mon-help-reference-keys*\)\n
+:SEE-ALSO `mon-get-text-properties-region', `mon-get-text-properties-print',
+`mon-get-text-properties-read-temp', `mon-get-text-properties-elisp-string',
+`mon-get-text-properties-elisp-string-pp'.
+►►►"
   (let ((mgtpfes-buf (get-buffer-create "*MGTPFES*"))
+        mgtpes-buf2
         mgtpfes-rd)
     (unless (stringp some-el-string)
       (error 
@@ -1428,19 +1466,249 @@ When non-nil optional arg TP-BUFF names a buffer as required by
     (emacs-lisp-mode)
     (font-lock-fontify-syntactically-region  (buffer-end 0) (buffer-end 1))
     (font-lock-fontify-buffer)
+    ;; (current-buffer)
     (mon-get-text-properties-print (buffer-end 0) (buffer-end 1) mgtpfes-buf))
-  (setq mgtpfes-rd (mon-get-text-properties-read-temp mgtpfes-buf))
-  (mon-get-text-properties-elisp-string-pp mgtpfes-rd mgtpfes-buf)))
+    ;; (substring mgtpfes-buf 0 (1- (length mgtpfes-buf))) "-STRING*"))
+    (setq mgtpfes-rd (mon-get-text-properties-read-temp mgtpfes-buf))
+    (mon-get-text-properties-elisp-string-pp mgtpfes-rd mgtpfes-buf)))
 ;;
 ;;; :TEST-ME (mon-get-text-properties-elisp-string *mon-help-reference-keys*)
 ;;; :TEST-ME (mon-get-text-properties-elisp-string (documentation 'mon-help-mon-help))
 
 ;;; ==============================
+;;; :CREATED <Timestamp: #{2010-03-05T19:07:34-05:00Z}#{10096} - by MON KEY>
+(defun mon-get-text-properties-parse-prop-val-type-chk (prop-val)
+  "Check that PROP-VAL's type is suitable.
+Return eq, eql, equal depending on type of PROP-VAL.
+Signal an error if PROP-VAL is not of the type:
+ string, integer, symbol, float, vector, or buffer.
+For use with:
+ `mon-get-text-properties-parse-buffer'
+ `mon-get-text-properties-parse-sym'
+ `mon-get-text-properties-parse-buffer-or-sym'\n
+:EXAMPLE\n
+\(let \(\(bubba-type 
+       `\(\"bubba\" bubba  8 8.8 [b u b b a] ,\(get-buffer \(current-buffer\)\)\)\)
+      bubba-types\)
+  \(dolist \(the-bubba bubba-type \(setq bubba-types \(nreverse bubba-types\)\)\)
+    \(push `\(,the-bubba 
+            . ,\(mon-get-text-properties-parse-prop-val-type-chk the-bubba\)\)
+          bubba-types\)\)\)\n
+:SEE-ALSO .\n►►►"
+  (typecase prop-val
+    (string  'equal)           
+    (integer 'eq)
+    (symbol  'eq) 
+    (float   'eql)
+    (vector  'equal)
+    (buffer  'eq)
+    ;; cons can't happen '(a b c) 
+    (t (error 
+        (concat
+         ":FUNCTION mon-get-text-properties-parse-sym"
+         "- PROPS-IN-SYM not string, integer, float, vector, buffer, or symbol")))))
+;;
+;;; :TEST-ME 
+;; (let ((bubba-type 
+;;        `("bubba" bubba  8 8.8 [b u b b a] ,(get-buffer (current-buffer))))
+;;       bubba-types)
+;;   (dolist (the-bubba bubba-type (setq bubba-types (nreverse bubba-types)))
+;;     (push `(,the-bubba 
+;;             . ,(mon-get-text-properties-parse-prop-val-type-chk the-bubba))
+;;           bubba-types)))
+
+;;; ==============================
+;;; (insert-buffer-substring "*MGTPFES*")
+;;; :CREATED <Timestamp: #{2010-03-05T12:21:29-05:00Z}#{10095} - by MON KEY>
+(defun mon-get-text-properties-parse-buffer (prop prop-val prop-buffer)
+  "Filter the text-property list for sublists containing the text-property PROP
+  and PROP-VAL.\n
+PROP is a property to filter.
+PROP-VAL is a property value of PROP to filter.
+PROP-BUFFER names a buffer name from which to read from a list of sublists.
+Sublists contain two index values and text-property plist of prop val pairs e.g.\n
+ \(idx1 idx2 \(p1 p1-val p2 p2-val p3-val \(p3-lv1 p3-lv2 p3-lv3\)\)\)\n
+:NOTE Reading begins from `point-min'. Reading does not move point.\n
+:SEE `mon-get-text-properties-parse-buffer-or-sym' for usage example.
+:SEE `mon-get-text-properties-parse-prop-val-type-chk' for PROP-VAL types.\n
+:SEE-ALSO `mon-get-text-properties-region', `mon-get-text-properties-parse-sym',
+`mon-get-text-properties-parse-buffer-or-sym'.\n►►►"
+  (unless (buffer-live-p (get-buffer prop-buffer))
+    (error ":FUNCTION mon-get-text-properties-parse-buffer - PROP-BUFFER does not exist"))
+  (let ((rd-prop-marker (make-marker))
+        (prop-st-marker (make-marker))
+        (comp-type 
+         (mon-get-text-properties-parse-prop-val-type-chk prop-val))
+        rd-prop-times i-red im-reding)
+    (with-current-buffer  prop-buffer
+      (set-marker prop-st-marker (point))
+      (set-marker rd-prop-marker (buffer-end 0))
+      (unwind-protect
+           (progn
+             (goto-char (marker-position rd-prop-marker))
+             (cond ((> (skip-syntax-forward "^(") 0)
+                    (set-marker rd-prop-marker (point)))
+                   ((bobp)
+                    (set-marker rd-prop-marker (point)))
+                    ;; Anything else if prob. funky
+                    (t (error ":FUNCTION mon-get-text-properties-parse-buffer - bounds of sexp unknown")))
+             (if (eq (car (syntax-after (1+ (marker-position rd-prop-marker)))) 4)
+                 (progn 
+                   (setq rd-prop-times (length (sexp-at-point)))
+                   (forward-char)
+                   (set-marker rd-prop-marker (point)))
+                 (error ":FUNCTION mon-get-text-properties-parse-buffer - bounds of sexp unknown"))
+             ;;(marker-position rd-prop-marker)
+             (dotimes (rd rd-prop-times (setq i-red (nreverse i-red)))
+               (setq im-reding (read rd-prop-marker))
+               (let* ((red-prop (plist-member (caddr im-reding) prop))
+                      (red-prop-val (cadr red-prop)))
+                 (when red-prop 
+                   (cond ((consp red-prop-val)
+                          (when (member prop-val red-prop-val)
+                            (push im-reding i-red)))
+                         ((and (not (null red-prop-val)) (atom red-prop-val))
+                          (when (funcall comp-type prop-val red-prop-val)
+                            (push im-reding i-red))))))))
+        (goto-char prop-st-marker)))))
+;;
+;;; :TEST-ME (mon-get-text-properties-parse-buffer 'face 'font-lock-constant-face "*MGTPFES*")
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-03-05T14:10:07-05:00Z}#{10095} - by MON KEY>
+(defun mon-get-text-properties-parse-sym (prop prop-val props-in-sym)
+  "Filter the text-property list for sublists containing the text-property PROP and PROP-VAL.\n
+PROP is a property to filter.
+PROP-VAL is a property value of PROP to filter. 
+It is one of the types:
+ string, integer, symbol, float, vector, buffer
+PROPS-IN-SYM is a symbol to parse.\n
+Format of PROPS-IN-SYM are as per `mon-get-text-properties-parse-buffer-or-sym'.\n
+:SEE `mon-get-text-properties-parse-buffer-or-sym' for usage example.
+:SEE `mon-get-text-properties-parse-prop-val-type-chk' for PROP-VAL types.\n
+:SEE-ALSO `mon-get-text-properties-region', `mon-get-text-properties-parse-buffer'.
+\n►►►"
+  (let ((comp-type 
+         (mon-get-text-properties-parse-prop-val-type-chk prop-val))
+        i-red)
+    (mapc #'(lambda (im-reding)
+              (let* ((red-prop (plist-member (caddr im-reding) prop))
+                     (red-prop-val (cadr red-prop)))
+                (when red-prop 
+                  (cond ((consp red-prop-val)
+                         (when (member prop-val red-prop-val)
+                           (push im-reding i-red)))
+                        ((and (not (null red-prop-val)) (atom red-prop-val))
+                         (when (funcall comp-type prop-val red-prop-val)
+                           (push im-reding i-red)))))))
+          props-in-sym)
+    (setq i-red (nreverse i-red))))
+;;
+;;; :TEST-ME 
+;;; (let ((mgtppb (mon-get-text-properties-parse-buffer 'face 'font-lock-constant-face "*MGTPFES*")))
+;;;   (mon-get-text-properties-parse-sym 'face 'font-lock-string-face mgtppb))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-03-05T13:41:29-05:00Z}#{10095} - by MON KEY>
+(defun* mon-get-text-properties-parse-buffer-or-sym (prop prop-val &key read-prop-sym read-prop-buffer)
+  "Filter the text-property list for sublists containing the text-property PROP and PROP-VAL.\n
+Return a two valued list. 
+The car is a list of conses of only the indexes for each matching sublist.
+The cadr is a list of each each matching sublist.
+PROP is a property to filter.
+PROP-VAL is a property value of PROP to filter.
+Keyword READ-PROP-SYM names a symbol to parse.
+Keyword READ-PROP-BUFFER names a buffer to read from.
+When keyword READ-PROP-BUFFER is non-nil reading begins from `point-min' does
+not move point.\n
+Contents of READ-PROP-SYM or READ-PROP-BUFFER should hold a list with sublists.
+Sublists contain two index values and text-property plist of prop val pairs e.g.\n
+ \(idx1 idx2 \(p1 p1-val p2 p2-val p3-val \(p3-lv1 p3-lv2 p3-lv3\)\)\)\n
+:EXAMPLE\n\n\(let \(\(mgtppbos-example
+       '\(\(34 35   \(fontified t hard t rear-nonsticky t face some-face\)\)
+         \(idx1 idx2 \(p1 p1-val p2 p2-val p3-val \(p3-lv1 p3-lv2 p3-lv3\)\)\)
+         \(388 391 \(some-boolean-prop t face \(some-first-face second-face\)\)\)
+         ;; { ... lots more here ... }
+         \(3862 3884 \(face \(font-lock-constant-face second-face\)\)\)\)\)\)
+  \(mon-get-text-properties-parse-buffer-or-sym 
+   'face 'second-face :read-prop-sym mgtppbos-example\)\)\n
+\(let \(\(mgtppbos-example
+       '\(\(34 35     \(fontified t p2 p2-val rear-nonsticky t face some-face\)\)
+         \(idx1 idx2 \(p1 p1-val p2 p2-val p3-val \(p3-lv1 p3-lv2 p3-lv3\)\)\)
+         \(388 391   \(some-boolean-prop t face \(some-first-face second-face\)\)\)
+         ;; { ... lots more here ... }
+         \(3862 3884 \(face \(font-lock-constant-face second-face\)\)\)\)\)\)
+  \(prin1 mgtppbos-example \(get-buffer-create \"*MGTPPBOS-EXAMPLE*\"\)\)
+  \(setq mgtppbos-example
+        \(mon-get-text-properties-parse-buffer-or-sym 
+         'p2 'p2-val :read-prop-buffer \"*MGTPPBOS-EXAMPLE*\"\)\)
+  \(kill-buffer \"*MGTPPBOS-EXAMPLE*\"\)
+  mgtppbos-example\)\n
+:SEE-ALSO `mon-get-text-properties-parse-sym', `mon-get-text-properties-parse-buffer',
+`mon-get-text-properties-region'.\n►►►"
+  (let (mgtpbos)
+    (cond (read-prop-sym
+           (setq mgtpbos (mon-get-text-properties-parse-sym 
+                          prop prop-val read-prop-sym)))
+          (read-prop-buffer
+           (setq mgtpbos (mon-get-text-properties-parse-buffer 
+                          prop prop-val read-prop-buffer))))
+    (setq mgtpbos `(,(mon-get-text-properties-map-ranges mgtpbos) ,mgtpbos))))
+;;
+;;; :TEST-ME (mon-get-text-properties-parse-buffer-or-sym 
+;;;               'face 'font-lock-constant-face :read-prop-buffer "*MGTPFES*")
+;;; :TEST-ME (let ((mgtppb 
+;;;                    (mon-get-text-properties-parse-buffer 
+;;;                     'face 'font-lock-constant-face "*MGTPFES*")))
+;;;               (mon-get-text-properties-parse-buffer-or-sym 
+;;;                'face 'font-lock-string-face :read-prop-sym mgtppb))
+
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-03-05T19:04:53-05:00Z}#{10096} - by MON KEY>
+(defun mon-get-text-properties-map-ranges (text-prop-list)
+  "Map the indexes at head of each sublist of TEXT-PROP-LIST to a consed list.
+Return value is a list of sublists of the form:
+ ( (idx1a idx1b) (idx2a idx2b) (idx3a idx3b) { ... } )\n
+:CALLED-BY `mon-get-text-properties-parse-buffer-or-sym'.\n
+:SEE-ALSO \n►►►"
+  (let (mgtpmmr)
+    (setq mgtpmmr
+          (mapcar #'(lambda (top) 
+                      (let ((bt (butlast top 1)))
+                        (setq bt `(,(car bt) . ,(cadr bt)))))
+                  text-prop-list))))
+;;
+;; (let ((mgtppb
+;;        (mon-get-text-properties-parse-buffer 'face 'font-lock-constant-face "*MGTPFES*")))
+;;   (setq mgtppb
+;;         (mon-get-text-properties-parse-sym 'face 'font-lock-string-face mgtppb))
+;;   (setq mgtppb `(,(mon-get-text-properties-map-ranges mgtppb) ,mgtppb)))
+
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-03-05T20:16:13-05:00Z}#{10096} - by MON KEY>
+(defun mon-get-text-properties-map-ranges-string (string-range-buffer range-buffer)
+  "
+:SEE-ALSO .\n►►►"
+(let (rr the-str str-range)
+  (setq rr (with-current-buffer string-range-buffer ;;"*MGTPFES-STRING*"
+             (mon-get-text-properties-region (buffer-end 0) (buffer-end 1))))
+  (setq the-str (car rr))
+  (setq rr (cadr rr))
+  (setq rr (mon-get-text-properties-parse-buffer-or-sym 
+            'face 'font-lock-constant-face :read-prop-sym rr))
+  (setq rr (mapcar #'(lambda (idx-pair)
+                       `(,idx-pair ,(substring the-str (car idx-pair) (cdr idx-pair))))
+                   (car rr)))
+  (princ rr (get-buffer range-buffer))))
+
+;p(current-buffer)))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-11-20T17:55:35-05:00Z}#{09475} - by MON>
 (defun* mon-help-mon-tags (&key comment docs meta)
-  "Alist of MON's commonly used tags.\n
+  "A list of MON's commonly used tags.\n
 :EXAMPLE\n\(mon-help-mon-tags :docs t\)\n
 \(mon-help-mon-tags :comment t\)\n
 \(mon-help-mon-tags :meta t\)\n
@@ -3134,7 +3402,15 @@ Default is `*doc-cookie*'.\n
 `mon-get-all-face-property-change'
 `mon-get-next-face-property-change'
 `mon-get-next-face-property-change-if'
-`mon-kill-ring-save-w-props'
+`mon-get-text-properties-region'
+`mon-get-text-properties-region-to-kill-ring'
+`mon-get-text-properties-print'
+`mon-get-text-properties-read-temp'
+`mon-get-text-properties-parse-buffer'
+`mon-get-text-properties-parse-sym'
+`mon-get-text-properties-parse-buffer-or-sym'
+`mon-get-text-properties-elisp-string'
+`mon-get-text-properties-elisp-string-pp'
 `mon-list-all-properties-in-buffer'
 `mon-nuke-text-properties-buffer'
 `mon-nuke-text-properties-region'
@@ -6125,7 +6401,7 @@ provided in third party packages.\n
 `mon-get-all-face-property-change'
 `mon-get-next-face-property-change'
 `mon-get-next-face-property-change-if'
-`mon-kill-ring-save-w-props'
+`mon-get-text-properties-region-to-kill-ring'
 `mon-line-test-content'
 `mon-list-all-properties-in-buffer'
 `mon-nuke-text-properties-buffer'

@@ -44,6 +44,11 @@
 ;; * sdic-inline-enable-filename-regex
 ;; * sdic-inline-enable-func
 ;;
+;; If you want to do stemming (for example, "enabled" -> "enable"),
+;; set following variable.
+;;
+;; (setq sdic-inline-search-func 'sdic-inline-search-word-with-stem)
+;;
 ;; This package can popup the detailed meaning of word under
 ;; the point by C-cC-p. It's necessary to load `popup' library.
 ;; ;; http://github.com/m2ym/auto-complete
@@ -62,7 +67,7 @@
 
 ;;; Variables:
 
-(defconst sdic-inline-version "0.2.1"
+(defconst sdic-inline-version "0.4.1"
   "Version of sdic-inline.")
 
 
@@ -79,9 +84,24 @@
   "*Method of sdic search type.
 Detail is docstring of `sdicf-open'.")
 
+(defvar sdic-inline-get-word-func
+  'sdic-inline-word-at-point-or-region
+  "*Function that get the word at point.")
+
+(defvar sdic-inline-search-func
+  'sdic-inline-search-word
+  "*Function that search specified word")
+
 (defvar sdic-inline-display-func
   'sdic-inline-display-minibuffer
   "*Function that show the meaning of word.")
+
+(defvar sdic-inline-not-search-style
+  'point
+  "*Word search style.
+Set `word', `sdic-inline-last-word' == current word -> do not search.
+Set `point', `sdic-inline-last-point' == current point -> do not search.
+Others, Always search.")
 
 (defvar sdic-inline-delay 0.50
   "*Time in seconds to delay before showing a meaning of word.")
@@ -103,6 +123,10 @@ Detail is docstring of `sdicf-open'.")
 If specified function returns t, sdic-inline-mode is enabled.")
 
 
+(defvar sdic-inline-last-word nil)
+
+(defvar sdic-inline-last-point nil)
+
 (defvar sdic-inline-last-entry nil)
 
 (defvar sdic-inline-timer nil)
@@ -110,6 +134,7 @@ If specified function returns t, sdic-inline-mode is enabled.")
 (defvar sdic-inline-display-popup-now nil)
 
 (defvar sdic-inline-map (make-sparse-keymap))
+(define-key sdic-inline-map "\C-c\@\C-c" 'sdic-inline-clear-last-word)
 (define-key sdic-inline-map "\C-c\C-p" 'sdic-inline-display-popup)
 
 
@@ -174,6 +199,16 @@ If specified function returns t, sdic-inline-mode is enabled.")
   (and sdic-inline-enable-func
        (funcall sdic-inline-enable-func)))
 
+(defun sdic-inline-word-at-point-or-region ()
+  (or (sdic-inline-word-region)
+      (sdic-inline-word-at-point)))
+
+(defun sdic-inline-word-region ()
+  (when (and transient-mark-mode
+             mark-active)
+    (buffer-substring-no-properties
+     (region-beginning) (region-end))))
+
 (defun sdic-inline-word-at-point ()
   "Get word under the point."
   (let ((cw (current-word))
@@ -181,15 +216,29 @@ If specified function returns t, sdic-inline-mode is enabled.")
     (when (and cw sw)
       sw)))
 
+(defun sdic-inline-do-search (w)
+  (or (null sdic-inline-last-word)
+      (null sdic-inline-last-point)
+      (cond
+       ((eq sdic-inline-not-search-style 'word)
+        (not (string= sdic-inline-last-word w)))
+       ((eq sdic-inline-not-search-style 'point)
+        (not (eq sdic-inline-last-point (point))))
+       (t
+        t))))
+
 (defun sdic-inline-function ()
   "Get entry of the word under the point.
 and call `sdic-inline-display-func'."
-  (let ((w (sdic-inline-word-at-point))
+  (let ((w (funcall sdic-inline-get-word-func))
         jp)
-    (when w
+    (when (and w
+               (sdic-inline-do-search w))
       (setq jp (string-match "\\cj" w))
-      (let ((entry (sdic-inline-search-word w jp)))
+      (let ((entry (funcall sdic-inline-search-func w jp)))
         (when entry
+          (setq sdic-inline-last-word w)
+          (setq sdic-inline-last-point (point))
           (setq sdic-inline-last-entry entry)
           (funcall sdic-inline-display-func entry))))))
 
@@ -209,6 +258,22 @@ and call `sdic-inline-display-func'."
         (when (boundp 'dic)
           (sdicf-close dic))))))
 
+(defun sdic-inline-search-word-with-stem (word jp)
+  "Get entry of the specified word with stemming"
+  (cond
+   ((not jp)
+    (let* ((stemed-list (stem-english word))
+           entry entries)
+      (dolist (i stemed-list)
+        (setq entry (sdic-inline-search-word i jp))
+        (when (and entry
+                   (not (member (car entry) entries)))
+          (setq entries (append entries entry))))
+      entries))
+   (t
+    ;; Japanese was specified.
+    (sdic-inline-search-word word jp))))
+
 (defun sdic-inline-display-minibuffer (entry)
   "Display meaning of word to the minibuffer."
   (let ((msg "")
@@ -226,6 +291,11 @@ and call `sdic-inline-display-func'."
       (setq num (1+ num)
             cut nil))
     (message "%s" msg)))
+
+(defun sdic-inline-clear-last-word ()
+  "Set nil to `sdic-inline-last-word'"
+  (interactive)
+  (setq sdic-inline-last-word nil))
 
 (defun sdic-inline-display-popup ()
   "Popup detailed meaning of word."

@@ -5,6 +5,8 @@ total order on an existing partial order.  There is nothing
 earth-shattering here, but it might be of interest to some.
 
 
+
+
 == `sort' and Its Predicate ==
 
 The built-in EmacsLisp function '''`<tt>[[Sorting#SortFunction|sort]]</tt>'''' takes a [[list]] and a binary predicate
@@ -47,13 +49,18 @@ want.
 2. The definition is tailor-made.
 
 The latter point means that the various component comparisons are not
-obvious in the definition, that is, we don't see a clear and simple
+obvious in the definition; that is, we don't see a clear and simple
 combination of them to produce the overall `pred'.  If we want to
 reorder the priorities, we must rewrite the function definition pretty
 much from scratch.
 
 
-== Yes, No, Dunno ==
+
+
+
+
+
+== Yes, No, Dunno (Bottom) ==
 
 We would like to be able to clearly and simply combine simple
 predicates that might be appropriate only when certain qualities are
@@ -64,9 +71,8 @@ things in common.
 
 One way to do this is to let each component predicate do only what it
 knows how to do, and to be agnostic otherwise.  IOW, let each of them
-return one of three possible "truth" values: true, false, and dunno
-(maybe), the latter meaning "I can't tell; maybe someone else can
-decide".
+return one of three possible truth values: ''true'', ''false'', and ''dunno'', the last one meaning "I can't tell; maybe someone else can
+decide". Another word for "dunno" here is "maybe" -- it's a ''bottom'' truth value.
 
 In Lisp, we can use, for example, `##(t)##' for true, `##(nil)##' for false, and
 `nil' for dunno.  Dunno as `nil' means we can keep trying predicates until
@@ -99,7 +105,7 @@ essentially need to rewrite the entire predicate.
 What we need is for each component predicate to clearly distinguish
 true and false from dunno.
 
-So we rewrite it to use ternary-valued component predicates:
+So we rewrite it to use three-valued component predicates:
 
   (defun pred4 (a b)
     (let ((decision  (or (size-cp a b) (core-cp a b) (date-cp a b))))
@@ -108,7 +114,7 @@ So we rewrite it to use ternary-valued component predicates:
         (fallback a b))))
 
 I use the suffix `-cp' (for "component predicate") here to indicate a
-ternary-valued predicate.  Here, function `fallback' could be an ordinary, binary-valued predicate, returning `nil' or non-`nil' to arbitrarily sort
+three-valued predicate.  Here, function `fallback' could be an ordinary, two-valued predicate, returning `nil' or non-`nil' to arbitrarily sort
 otherwise incomparables in some way, or it could raise an error or do something else.
 
 Each of the component predicates does only what it knows how to
@@ -149,27 +155,27 @@ comparers that use any priorities we want.  E.g.:
     (or (core-cp a b) (date-cp a b) (size-cp a b)))
 
 What about `fallback'?  Typically, that would be some ordinary,
-binary-valued (not ternary-valued) predicate.  One way of specifying a
+two-valued (not three-valued) predicate.  One way of specifying a
 composite predicate would thus be as a pair: a list of component
-(ternary-valued) predicates and a fallback (binary-valued) predicate.
+(three-valued) predicates and a fallback (two-valued) predicate.
 
 An example application of this approach is the sorting code of
-'''[[BookmarkPlus|Bookmark+]]'''.  Bookmarks come in lots of flavors.  In general, they are
+'''[[BookmarkPlus|Bookmark+]]''' (also '''[[BookmarkPlus#UseBookmarkPlusWithIcicles|Icicles]]''').  Bookmarks come in lots of flavors.  In general, they are
 comparable in some attributes and incomparable in others.  You can
 sort them using any number of component predicates (and you can easily
 define your own).
 
 A data structure like that just described is used to specify the
-composite predicate to use: a list of ternary-valued predicates and
-possibly a fallback binary-valued predicate.  This is [[user option]]
+composite predicate to use: a list of three-valued predicates and
+possibly a fallback two-valued predicate.  This is [[user option]]
 '''`bookmarkp-sort-comparer''''.  Its default value is this list:
 
   ((bookmarkp-info-cp bookmarkp-gnus-cp bookmarkp-w3m-cp
     bookmarkp-local-file-type-cp)
    bookmarkp-alpha-p)
 
-The fallback binary-valued predicate `bookmarkp-alpha-p' just
-compares bookmarks by their names, alphabetically.  The ternary-valued predicates collectively compare bookmarks, in order, in
+The fallback two-valued predicate `bookmarkp-alpha-p' just
+compares bookmarks by their names, alphabetically.  The three-valued predicates collectively compare bookmarks, in order, in
 this way:
 
 1. If bookmarks `a' and `b' are both [[Info]] bookmarks, they are compared
@@ -197,15 +203,19 @@ In essence, each component predicate is a hook function, and they are run using 
 
 
 
+
+
+
+
 == Reusing a Component Predicate as an Ordinary One ==
 
-We've made a case for defining ternary-valued predicates, to be
+We've made a case for defining three-valued predicates, to be
 combined at will for applications such as sorting.  But what if you
-need an ordinary, binary-valued predicate that does pretty much the
+need an ordinary, two-valued predicate that does pretty much the
 same thing?
 
-You don't have to define a binary-valued predicate from scratch, if
-you already have a ternary-valued one that will do the job.  You can just convert it to a function that returns the determined truth value
+You don't have to define a two-valued predicate from scratch, if
+you already have a three-valued one that will do the job.  You can just convert it to a function that returns the determined truth value
 or a fallback truth value if indeterminate.
 
 The following function, for example, does that for a component predicate `PRED' that compares bookmarks.
@@ -230,6 +240,15 @@ final predicate."
 </pre>
 
 
+
+
+
+
+
+
+
+
+----
 
 == Discussion ==
 
@@ -325,7 +344,7 @@ I'm glad that my writing on this topic has interested you, but AFAICT you have m
 
 It's not about providing a "panacea" for anything or "interrogating unknowns" or reifying predicates or "focusing Emacs lisp development efforts" in any way or accumulating "user-level predicate utilities".
 
-No one is suggesting to build a library of predicates. I assume as given that you have apples and oranges (and...) to sort, and that you already have (or will anyway need) predicates that compare apples to apples, oranges to oranges, etc. The point is that if those are ordinary binary-valued predicates, then there is no easy, manageable way to combine them, but that ternary-valued predicates do the job nicely.
+No one is suggesting to build a library of predicates. I assume as given that you have apples and oranges (and...) to sort, and that you already have (or will anyway need) predicates that compare apples to apples, oranges to oranges, etc. The point is that if those are ordinary two-valued predicates, then there is no easy, manageable way to combine them, but that three-valued predicates do the job nicely.
 
 The reason that ordinary predicates don't help is that their mission is to decide definitively, rather than to decide or delegate. Combining implies cooperating, which in turn implies relinquishing some control.
 
@@ -391,9 +410,9 @@ I said "I'm not interested in a wide-ranging, abstract discussion in unclear ter
 
 Suffice it to say that I disagree that anything in CL, including `values', `multiple-value-bind', and the higher-order sequence functions, adds anything to the party or changes anything wrt the ideas presented here. 
 
-Whether you use explicit lists or `values' to return multiple values is irrelevant. One way or another, you still have to let the component predicates indicate whether they have decided definitively or not (and binary-valued predicates always decide definitively). In CL, you might choose to use `values' to do that (or you might choose to use a list or a structure or...). In EmacsLisp, `values' is not an option, but that changes nothing essential. If all you are saying is that if one were implementing these ideas in CL then one might choose a different implementation, then sure, that's obvious. 
+Whether you use explicit lists or `values' to return multiple values is irrelevant. One way or another, you still have to let the component predicates indicate whether they have decided definitively or not (and two-valued predicates always decide definitively). In CL, you might choose to use `values' to do that (or you might choose to use a list or a structure or...). In EmacsLisp, `values' is not an option, but that changes nothing essential. If all you are saying is that if one were implementing these ideas in CL then one might choose a different implementation, then sure, that's obvious. 
 
-But show me how you would use existing ''binary''-valued predicates to accomplish this (in CL or any other language). Employ `values', `m-v-b', and anything else you want. Show me how to combine binary-valued predicates `size', `core', and `date' to compare apples and oranges. Show me something that moves beyond `<tt>[[#pred1]]</tt>' and `<tt>[[#pred2]]</tt>' above, so that one can easily change the order of predicate application (hence sorting) etc.
+But show me how you would use existing ''two''-valued predicates to accomplish this (in CL or any other language). Employ `values', `m-v-b', and anything else you want. Show me how to combine two-valued predicates `size', `core', and `date' to compare apples and oranges. Show me something that moves beyond `<tt>[[#pred1]]</tt>' and `<tt>[[#pred2]]</tt>' above, so that one can easily change the order of predicate application (hence sorting) etc.
 
 Again, if you want to present specific, alternative code snippets (e.g. CL code) to the code in <tt>[[bookmark+.el]]</tt>, we can discuss that -- in ''specific'' terms. I am not interested in a hand-waving, abstract discussion.
 

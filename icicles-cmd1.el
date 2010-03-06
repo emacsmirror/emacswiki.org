@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Mar  4 23:34:07 2010 (-0800)
+;; Last-Updated: Fri Mar  5 07:25:44 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 20266
+;;     Update #: 20267
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2838,7 +2838,7 @@ During completion, you can use `S-delete' on a bookmark to delete it.
 
 If you also use library `bookmark+.el', then:
 
- * `C-M-RET' shows detailed info about the current bookmark.
+ * `C-M-RET' shows detailed info about the current bookmark candidate.
    `C-u C-M-RET' shows the complete, internal info for the bookmark.
    Likewise, for the other candidate help keys: `C-M-down' etc.
    (And the mode line always shows summary info about the bookmark.)
