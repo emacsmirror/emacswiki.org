@@ -1,0 +1,45 @@
+The standard library tooltip.el provides the function for displaying a tooltip at mouse position which allows users to easily show it. However, locating tooltip at arbitrary buffer position in window is not easy. This program provides such function to be used by other frontend programs.
+
+== Downloading ==
+
+: Lisp:pos-tip.el
+
+== Installation ==
+
+To use pos-tip.el, save this file in a directory listed in load-path together with the programs which use this library.
+
+== Sample program ==
+
+Here is an example, named `sdic-inline-pos-tip.el'. This program provides the tooltip showing word meanings at cursor position like `[https://addons.mozilla.org/en-US/firefox/addon/2471?from=%2Fja%2Ffirefox%2Faddon%2F2471 rikaichan]' Firefox extension, using Lisp:sdic-inline.el which was written by [[khiker]].
+
+=== Downloading ===
+
+: Lisp:sdic-inline-pos-tip.el
+
+=== Screenshot ===
+
+[[image:PosTipScreenshot]]
+
+=== Setting ===
+
+ (require 'sdic-inline-pos-tip)
+
+ ;; *Change the following lines according to your environment*
+ (setq sdic-inline-eiwa-dictionary "/usr/share/dict/gene.sdic")
+ (setq sdic-inline-waei-dictionary "/usr/share/dict/jedict.sdic")
+
+ ;; The following is optional. Uncomment if necessary.
+ ;; (mapc (lambda (mode)
+ ;;         (add-to-list 'sdic-inline-enable-modes mode))
+ ;;       '(help-mode Info-mode))
+ ;; (mapc (lambda (face)
+ ;;         (add-to-list 'sdic-inline-enable-faces face))
+ ;;       '(font-lock-doc-face))
+
+ (setq sdic-inline-search-func 'sdic-inline-search-word-with-stem)
+ (setq sdic-inline-display-func 'sdic-inline-pos-tip-show)
+
+ (define-key sdic-inline-map "\C-c\C-p" 'sdic-inline-pos-tip-show)
+
+ (sdic-inline-mode 1)
+

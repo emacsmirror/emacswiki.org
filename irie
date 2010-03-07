@@ -2,8 +2,9 @@ I use Emacs.
 
 == Programs I wrote ==
 
-* [ScimBridge scim-bridge.el]
-* [RedoPlus redo+.el]
+* [ScimBridge scim-bridge.el] -- SCIM-Bridge client for GNU Emacs.
+* [RedoPlus redo+.el] -- a fork of redo.el which can correctly work in newer version of Emacs
+* [PosTip pos-tip.el] -- a library for easily showing tooltip at arbitrary buffer position
 * etc.
 
 == Web sites I maintain ==

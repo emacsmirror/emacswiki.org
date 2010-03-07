@@ -31,6 +31,7 @@ Code navigation and information:
 Development environments:
 
 * CollectionOfEmacsDevelopmentEnvironmentTools -- complete development environment
+* DebuggingWithEmacs -- Debug within Emacs.
 * EmacsBrowse -- simpler than ObjectOrientedBrowser, but comes with Emacs
 * EmacsForDevStudioUsers-- will make your MSVC-using friend envious of your comfortable development environment
 * [[eproject]] - project workspaces for emacs

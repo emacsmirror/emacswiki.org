@@ -165,10 +165,10 @@ lisp code, that func extract *\"runargs* as the name of debugee(gud-common-init 
 
 == Using GUD with cdb ==
 
-M$'s command line debuggger that can debug any executable built by M$'s compiler.
+Microsoft's command line debuggger that can debug any executable built by Microsoft's compiler.
 It also can debug .NET code.
 
-Use Lisp:cdb-gud.el to debug w32 programs with M$'s cdb.exe.
+Use Lisp:cdb-gud.el to debug w32 programs with Microsoft's cdb.exe.
 
 
 == Icicles Enhancements to GUD ==

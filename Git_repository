@@ -15,7 +15,6 @@ The following branches exist:
   (same as the [[SVN repository]])
 * *all-clean* -- like master but with cruft removed
 * *all-pages* -- contains most webpages
-  (excluding homepages, news and obsolete stuff)
 * *all-elisp* -- contains most Emacs Lisp files
 * *packages* -- contains actual Emacs Lisp packages
 * *snippets* -- contains Emacs Lisp files that don't qualify as packages

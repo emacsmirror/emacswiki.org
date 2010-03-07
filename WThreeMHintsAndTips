@@ -137,6 +137,31 @@ sessions with desktop.el
  (add-to-list 'desktop-buffer-misc-functions 'desktop-buffer-w3m-misc-data)
  (add-to-list 'desktop-buffer-modes-to-save 'w3m-mode)
 
+[new:stepnem:2010-03-06 22:30 UTC]
+The above does not work with Emacs 22.1 and later, due to changes in
+desktop.el API. This works for me with Emacs 23:
+
+{{{
+(defun w3m-register-desktop-save () 
+  "Set `desktop-save-buffer' to a function returning the current URL."
+  (setq desktop-save-buffer (lambda (desktop-dirname) w3m-current-url)))
+
+(add-hook 'w3m-mode-hook 'w3m-register-desktop-save)
+
+(defun w3m-restore-desktop-buffer (d-b-file-name d-b-name d-b-misc)
+  "Restore a `w3m' buffer on `desktop' load."
+  (when (eq 'w3m-mode desktop-buffer-major-mode)
+    (let ((url d-b-misc))
+      (when url
+        (require 'w3m)
+        (if (string-match "^file" url)
+            (w3m-find-file (substring url 7))
+          (w3m-goto-url-new-session url))
+        (current-buffer)))))
+
+(add-to-list 'desktop-buffer-mode-handlers '(w3m-mode . w3m-restore-desktop-buffer))
+}}}
+
 == Using TextMode for textareas ==
 (by DavidEdmondson)
 
@@ -459,3 +484,17 @@ RichardRiley
 
 A Python script to transfer bookmarks exported from Firefox in the JSON format to the html format used by emacs-w3m, optionally merging them with an existing emacs-w3m bookmarks file (normally ~/.w3m/bookmark.html): http://jim.sdf-eu.org/etc/ffox2w3m.py . Written for my own purposes and not heavily tested, let me know if you have problems. 
 JimBurton
+
+[new]
+Firefox can export his bookmarks to an html file, no need to use complex code to parse JSON.
+You can do that by using about:config or adding this to your user.js file:
+
+<pre>
+// Export bookmarks form places.sqlite ==> bookmark.html
+user_pref("browser.bookmarks.autoExportHTML", true);
+</pre>
+
+When that done, you can see these bookmarks with bookmark-extensions.el (See BookmarkExtension) and/or you will find sources in Lisp:anything-config.el
+to show firefox bookmarks.
+
+-- ThierryVolpiatto
