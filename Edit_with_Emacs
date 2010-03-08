@@ -1,0 +1,34 @@
+Edit with Emacs is an extension for editing text areas in [[Google Chrome]].
+
+* Extension: https://chrome.google.com/extensions/detail/ljobjlafonikaiipfkggjbhkghgicgoh
+* Development: http://github.com/stsquad/emacs_chrome
+
+=== Customisation ===
+
+The extension has a number of variables that allow various behaviours to be customised. Currently they are:
+
+* edit-server-new-frame - If not nil, edit each buffer in a new frame (and raise it).
+* edit-server-new-frame-minibuffer - Show the emacs frame's minibuffer if set to t; hide if nil."
+* edit-server-new-frame-menu-bar - Show the emacs frame's menu-bar if set to t; hide if nil
+* edit-server-new-frame-mode-line - Show the emacs frame's mode-line if set to t; hide if nil.
+
+=== Controlling invocation ===
+
+If you're already running an instance of Emacs in <code>--daemon</code> mode then you can wrap the code in something like:
+<pre>
+ (if (and (daemonp) (locate-library "edit-server"))
+     (progn
+       (require 'edit-server)
+       (edit-server-start)))
+</pre>
+
+The edit
+To open pages for editing in a new buffer instead of a new frame on
+your running Emacs instance do:
+<pre>
+(if (locate-library "edit-server")
+    (progn
+      (require 'edit-server)
+      (setq edit-server-new-frame nil)
+      (edit-server-start)))
+</pre>

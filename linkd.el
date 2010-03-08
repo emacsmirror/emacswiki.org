@@ -10,9 +10,9 @@
 ;; Copyright (C) 2009, Shaun Johnson.
 ;; Created: Fri Mar 14 07:56:32 2008 (Pacific Daylight Time)
 ;; Version: $Id: linkd.el,v 1.64 2008/03/14 $
-;; Last-Updated: Sun Feb 28 12:42:32 2010 (-0800)
+;; Last-Updated: Sun Mar  7 11:48:30 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 623
+;;     Update #: 629
 ;; Package-Version: 0.9
 ;; Website, original version: http://dto.github.com/notebook/linkd.html
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/linkd.el
@@ -73,6 +73,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/03/07 dadams
+;;     linkd-render-link:
+;;       Don't render unless the (@...) is really a function call.  Thx to eeeickythump.
 ;; 2010/02/28 dadams
 ;;     linkd-match: Incorporated bug fix from Emacs Wiki by eeeickythump: Ensure sexp is symbol.
 ;;     Incorporated addition of autoloads by Daniel Hackney (from Emacs Wiki 2010-02-06).
@@ -735,7 +738,7 @@ Returns the file-name to the icon image file."
     (lambda () (linkd-find-next-tag-or-star ,tag-name))
     :render
     (lambda (beg end) (linkd-overlay beg end ,tag-name 'linkd-tag-name
-                                     ">" 'linkd-tag ,(linkd-icon "tag")))))
+                                ">" 'linkd-tag ,(linkd-icon "tag")))))
 
 
 ;; (@* "Processing Blocks") ------------------------------------------
@@ -1247,12 +1250,15 @@ These key bindings are in effect on a link:\n
   (unless (get-text-property beg 'linkd-fontified)
     (save-excursion
       (goto-char beg)
-      (add-text-properties beg (+ beg 1) (list 'linkd-fontified t))
-      (let* ((sexp (read (current-buffer)))
-             (plist (eval sexp))
-             (renderer (plist-get plist :render)))
-        (unless renderer (error "No renderer for link."))
-        (funcall renderer beg end)))))
+      (let ((sexp  (read (current-buffer))))
+        ;; For a Linkd link, the sexp is always a list whose car is a function
+        ;; name that begins with `@'.
+        (when (and sexp (fboundp (car sexp)))
+          (add-text-properties beg (+ beg 1) (list 'linkd-fontified t))
+          (let* ((plist     (eval sexp))
+                 (renderer  (plist-get plist :render)))
+            (unless renderer (error "No renderer for link."))
+            (funcall renderer beg end)))))))
 
 ;; Interface with the Emacs font-locking system.  You can configure
 ;; `linkd-do-font-lock' to add or remove font-locking rules that cause

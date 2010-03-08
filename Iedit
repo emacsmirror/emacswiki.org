@@ -1,7 +1,7 @@
 This page is about library ##iedit.el##.
 
 You can obtain it here:
-http://lists.gnu.org/archive/html/gnu-emacs-sources/2010-02/msg00000.html.
+Lisp:iedit.el
 
 It lets you edit one occurrence of some text in a buffer (possibly narrowed), and simultaneously have all other occurrences edited the same way. All occurrences are highlighted.
 

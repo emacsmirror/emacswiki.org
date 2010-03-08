@@ -346,13 +346,13 @@ described. To update site-data, evalute `text-translator-site-data-init`."
      "/cgi-bin/traduku HTTP/1.0"
      "eo_en&t=%s"
      utf-8
-     "<div lang=\"en\">\\(\\(.\\|\n\\)*?\\)</div>")
+     " id=\"rezulto\">\\(\\(.\\|\n\\)*?\\)</div>")
     ("traduku.net_eneo"
      "traduku.net"
      "/cgi-bin/traduku HTTP/1.0"
-     "en_eo&t=%s"
+     "en_eo_trukilo&t=%s"
      utf-8
-     "<div id=\"rezulto\">\\(\\(.\\|\n\\)*?\\)</div>"))
+     " id=\"rezulto\">\\(\\(.\\|\n\\)*?\\)</div>"))
 
   "*The alist where setting of the site which is used for text translation is
 described. To update site-data, evalute `text-translator-site-data-init`."

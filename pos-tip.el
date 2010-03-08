@@ -6,7 +6,7 @@
 ;; Maintainer: S. Irie
 ;; Keywords: Tooltip
 
-(defconst pos-tip-version "0.0.1")
+(defconst pos-tip-version "0.0.2")
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -50,6 +50,10 @@
 ;;
 
 ;;; History:
+;; 2010-03-08  S. Irie
+;;         * Modified to move out mouse pointer
+;;         * Version 0.0.2
+;;
 ;; 2010-03-07  S. Irie
 ;;         * First release
 ;;         * Version 0.0.1
@@ -94,6 +98,7 @@ If FRAME is omitted, use selected-frame."
       (call-process shell-file-name nil t nil shell-command-switch
 		    (concat "xwininfo -id " (frame-parameter frame 'window-id)))
       (goto-char (point-min))
+      (search-forward "\n  Absolute")
       (setq pos-tip-saved-frame-coordinates
 	    (cons (progn (string-to-number (buffer-substring-no-properties
 					    (search-forward "X: ")
@@ -152,6 +157,40 @@ after calling this function."
 	      (cancel-timer timer)))
 	timer-list))
 
+(defun pos-tip-avoid-mouse (left right top bottom &optional frame)
+  "Move out mouse pointer if it is inside region (LEFT RIGHT TOP BOTTOM)
+in FRAME."
+  (let* ((mpos (mouse-pixel-position))
+	 (mframe (pop mpos))
+	 (mx (car mpos))
+	 (my (cdr mpos))
+	 (large-number (+ (x-display-pixel-width) (x-display-pixel-height)))
+	 (dl (if (> left 2)
+		 (1+ (- mx left))
+	       large-number))
+	 (dr (if (< (1+ right) (x-display-pixel-width))
+		 (- right mx)
+	       large-number))
+	 (dt (if (> top 2)
+		 (1+ (- my top))
+	       large-number))
+	 (db (if (< (1+ bottom) (x-display-pixel-height))
+		 (- bottom my)
+	       large-number))
+	 (d (min dl dr dt db)))
+    (when (and mpos
+	       (eq (or frame (selected-frame)) mframe)
+	       (> d -2))
+      (cond
+       ((= d dl)
+	(set-mouse-pixel-position mframe (- left 2) my))
+       ((= d dr)
+	(set-mouse-pixel-position mframe (1+ right) my))
+       ((= d dt)
+	(set-mouse-pixel-position mframe mx (- top 2)))
+       (t
+	(set-mouse-pixel-position mframe mx (1+ bottom)))))))
+
 (defun pos-tip-show-no-propertize
   (string &optional tip-color pos window timeout pixel-width pixel-height frame-coordinates)
   "Show STRING in a tooltip at POS in WINDOW.
@@ -186,6 +225,8 @@ See `pos-tip-show' for details."
 					      frame-coordinates))
 	 (ax (car x-y))
 	 (ay (cdr x-y))
+	 (rx (- ax (car pos-tip-saved-frame-coordinates)))
+	 (ry (- ay (cdr pos-tip-saved-frame-coordinates)))
 	 (fg (or (car-safe tip-color)
 		 (face-attribute tip-color :foreground)))
 	 (bg (or (cdr-safe tip-color)
@@ -199,8 +240,11 @@ See `pos-tip-show' for details."
 			    (+ (frame-char-height frame)
 			       (or (default-value 'line-spacing) 0))))
 		     (cdr x-max-tooltip-size)))))
-    (x-show-tip string
-		(window-frame (or window (selected-window)))
+    (and pixel-width pixel-height
+	 (pos-tip-avoid-mouse rx (+ rx pixel-width)
+			      ry (+ ry pixel-height)
+			      frame))
+    (x-show-tip string frame
 		`((border-width . ,pos-tip-border-width)
 		  (internal-border-width . ,pos-tip-internal-border-width)
 		  (left . ,ax)
@@ -210,8 +254,7 @@ See `pos-tip-show' for details."
 		(and timeout (> timeout 0) timeout))
     (if (and timeout (<= timeout 0))
 	(pos-tip-cancel-timer))
-    (cons (- ax (car pos-tip-saved-frame-coordinates))
-	  (- ay (cdr pos-tip-saved-frame-coordinates)))))
+    (cons rx ry)))
 
 (defun pos-tip-show
   (string &optional pos window timeout pixel-width pixel-height frame-coordinates)

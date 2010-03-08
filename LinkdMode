@@ -170,6 +170,39 @@ Return non-nil if a link is found.  Set match-data appropriately."
 </pre>
 
 ----
+[new:eeeickythump:2010-03-07 19:27 UTC]
+
+Linkd assumes ##(@...)## *always* represents a linkd link. This can be a problem in lisp code if it calls a function
+or macro whose name starts with ##@##, as linkd unfortunately does not restrict itself to comments and strings.
+
+Changing `linkd-render-link' to the version below, at least stops linkd from falling in a heap and breaking
+font-lock when it finds that a ##@...## function does not exist. The ideal solution would be to force linkd to 
+only search in non-'code' parts of a buffer.
+
+<pre>
+(defun linkd-render-link (beg end)
+  "Invoke a link's rendering code."
+  (unless (get-text-property beg 'linkd-fontified)
+    (save-excursion
+      (goto-char beg)
+      (let ((sexp (read (current-buffer))))
+        ;; The sexp is always a function call, where the name of the
+        ;; function begins with '@'
+        (when (and sexp (fboundp (car sexp)))
+          (add-text-properties beg (+ beg 1) (list 'linkd-fontified t))
+          (let* ((plist (eval sexp))
+                 (renderer (plist-get plist :render)))
+            (unless renderer (error "No renderer for link."))
+            (funcall renderer beg end)))))))
+</pre>
+
+-- [[eeeickythump]]
+
+[new:DrewAdams:2010-03-07 19:33 UTC]
+I'm not the maintainer of Linkd, but I applied your fix to the Wiki copy of <tt>[[linkd.el]]</tt>, and I informed the maintainer. Thanks.
+
+Wrt your comment about not rendering in non-code sections: I'm not sure that's always appropriate. We could check for comment syntax, but Linkd is also useful for buffers that have no notion of comments (e.g. text files). -- DrewAdams
+
 
 CategoryHypermedia CategoryModes 
 

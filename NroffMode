@@ -54,9 +54,7 @@ Or similarly with WomanMode
     M-x woman-find-file
     myfilename.1
 
-Or <code>man-preview.el</code> runs <code>man</code> straight out of the buffer, good for editing or TarMode browsing
-
-: http://user42.tuxfamily.org/man-preview/index.html
+Or ManPreview runs <code>man</code> straight out of the buffer, so you don't have to save or even have a file for the buffer.
 
 ----
 CategoryModes

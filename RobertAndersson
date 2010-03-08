@@ -1,0 +1,31 @@
+== ∃x∀y(Emacs(x)∧(Person(y)→♥(y,x))) ==
+
+portrait:http://www2.gslt.hum.gu.se/~robert/images/robert.48x48.jpeg
+
+I have been using Emacs since 1994 and use it on Mac OS X, Linux,
+Solaris, and sometimes on Windows. It has not been the smoothest ride,
+I have tried to exchange Emacs for other tools like Eclipse,
+!NetBeans, Thunderbird, Mail.app etc, but I have given up. Emacs is for
+me.
+
+== Emacs Daily Usage ==
+
+I use Emacs daily for
+* [CategoryViewMail reading/writing my Email],
+* [OrgMode organising] my life,
+* [AUCTeX writing papers], and of course for
+* programming.
+
+== Init Files ==
+
+* RobertAnderssonConfig -- the Mac Mini @ work running Mac OS 10.5; and
+the !ThinkPad @ work running Mandriva 2010 and Windows 7
+
+
+
+
+[new:DrewAdams:2010-03-07 23:12 UTC]
+Welcome to the wiki. -- DrewAdams
+
+----
+CategoryHomepage

@@ -1,0 +1,565 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;; Emacs init file by
+;;; Robert Andersson, robert.andersson¬¬@gu.se
+;;;
+;;; This is my init file for Emacs version 22 and
+;;; 23 on both MacOSX and Linux
+;;;
+;;; TODO: Solaris & Windows
+;;;
+;;; N.B. Alot of this is reused from other Emacs 
+;;; users that have published their init-files on
+;;; the Internet. Thank you! :)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Load-path, exec-path, info-path
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(setq load-path (cons "~/.emacs.d" load-path))
+(load "~/.emacs.d/local.el")
+
+(if (eq system-type 'darwin)
+    (setq exec-path
+          (append 
+           '("/Applications/Firefox3.app/Contents/MacOS"
+             "/usr/local/bin"
+             "/opt/local/bin")
+           exec-path)))
+
+;; I only want my info-pages
+(setq Info-default-directory-list (quote ("~/.emacs.d/info"))
+      Info-directory-list (quote ("~/.emacs.d/info")))
+
+;; Setting PATH... why... my Emacs does not seem to inherit PATH from
+;; .MacOSX/environment.plist, ~/.bash_profile, nor /etc/bashrc on my Mac :(
+(setenv "PATH" "/usr/local/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Environment
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Some things I do not want...
+(setq inhibit-startup-echo-area-message "robert"
+      inhibit-startup-screen t
+      initial-scratch-message nil)
+(menu-bar-mode nil)
+(tool-bar-mode -1)
+(tooltip-mode nil)
+(set-scroll-bar-mode nil)
+(blink-cursor-mode -1)
+
+;; ...other things I do
+(column-number-mode t)
+(global-font-lock-mode t)
+(transient-mark-mode t)
+(setq mark-even-if-inactive t)
+(auto-compression-mode t)
+
+;; Frames, colours etc
+(setq default-frame-alist 
+      (cond 
+       ((eq system-type 'darwin)
+        '((scroll-bar-width . 2) 
+          (foreground-color . "gray15")
+          (background-color . "antiquewhite1")
+          (cursor-color . "gray30")
+          (left-fringe . 2)
+          (right-fringe . 2)
+          (width . 141) 
+          (height . 60)
+          (left . 400)))          
+       ((eq system-type 'gnu/linux)
+        '((scroll-bar-width . 2)
+          (foreground-color . "gray15")
+          (background-color . "antiquewhite2")
+          (cursor-color . "gray50")
+          (left-fringe . 2)
+          (right-fringe . 2)
+          (width . 99)
+          (height . 50)
+          (left . 100)))))
+
+;; Faces
+(if (eq system-type 'gnu/linux)
+    (custom-set-faces
+     '(default
+       ((t (:inherit nil
+            :stipple nil
+            :background "#ffffff"
+            :foreground "Black"
+            :inverse-video nil
+            :box nil
+            :strike-through nil
+            :overline nil
+            :underline nil
+            :slant normal
+            :weight normal
+            :height 100
+            :width normal
+            :foundry "unknown"
+            :family "DejaVu Sans Mono"))))
+     '(org-column
+       ((t (:inherit default
+            :background "grey90"
+            :height 100
+            :family "DejaVu Sans Mono"))))))
+
+;; This is needed when running emacs 23, vm-mail otherwise crashes
+;; emacs -nw when setting frame name, Fatal Error (10). Reported, see
+;; http://debbugs.gnu.org/cgi/bugreport.cgi?bug=4765
+(if window-system (set-frame-name 
+                   ;; everybody loves emacs :)
+                   ;; (concat "∀x(person(x)→∃y(emacs(y)∧♥(x,y)))")
+                   ;; emacs is loved by everybody :)
+                   (concat "∃x∀y(emacs(x)∧(person(y)→♥(y,x)))")
+                   ))
+
+;; Character encoding
+(prefer-coding-system 'utf-8-unix)
+(if (eq system-type 'darwin)
+    (progn
+      (set-default-coding-systems 'utf-8-unix)
+      (if (< emacs-major-version 23)
+          (set-keyboard-coding-system 'utf-8))
+      (set-clipboard-coding-system 'utf-8)
+      (set-terminal-coding-system 'utf-8)))
+(if (eq system-type 'gnu/linux)
+    (load-library "iso-transl"))
+(define-coding-system-alias 'utf-8-emacs 'utf-8) ; needed by bbdb...
+
+;; Fullscreen, does not work on my Emacs for Mac... yet...
+(cond 
+ ((eq system-type 'darwin) 
+  (defun fullscreen (&optional f)
+    (interactive)
+    (set-frame-parameter f 'fullscreen
+                         (if (frame-parameter f 'fullscreen) nil 'fullboth))))
+  ((eq system-type 'gnu/linux)
+   (require 'fullscreen)))
+(add-hook 'after-make-frame-functions 'fullscreen)
+
+;; Text
+(setq sentence-end-double-space nil)
+
+;; Misc
+(setq-default tab-width 2 indent-tabs-mode nil)
+(setq initial-major-mode (quote org-mode)) ; move to org-mode section?
+(setq password-cache-expiry 7200)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Persona
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(setq user-full-name    "Robert Andersson"
+      user-mail-address "robert.andersson¬¬@gu.se")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Calendar/Diary
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(setq diary-file "~/.diary"
+      calendar-date-style 'iso
+      diary-show-holidays-flag nil
+      calendar-week-start-day 1
+      calendar-mark-diary-entries-flag t
+      ;; calendar-time-display-form (quote (24-hours ":" minutes (if time-zone " (") time-zone (if time-zone ")")))
+      )
+
+;; TODO: Fix function calling python-script for syncing with Google
+;; calendar
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Printing
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(setq ps-paper-type 'a4
+      ps-line-number nil
+      ps-line-number-step 3
+      ps-n-up-printing 1
+      ps-header-lines 0
+      )
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Global keys
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; When using emacs version > 22 on darwin
+(if (and (> emacs-major-version 22)
+         (eq system-type 'darwin))
+    (progn 
+      (setq mac-command-modifier 'meta)
+      (setq mac-option-modifier nil)
+      ;; (one-buffer-one-frame-mode 0)
+      ))
+
+;; Global keyboard tweaks
+(global-set-key "\C-xf" 'find-file) ; i always hit the wrong key-combo
+(global-set-key "\C-xm" 'vm-mail)
+(global-set-key (kbd "C-c a") 'org-agenda)
+(global-set-key (kbd "C-c r") 'remember)
+(global-set-key [f9] "[")
+(global-set-key [f10] "]")
+(global-set-key [f11] "{")
+(global-set-key [f12] "}")
+(global-set-key [f5] 'fullscreen)
+(global-set-key "\C-cg" 'gtd)
+
+;; Wheel mouse
+(defun up-slightly () (interactive) (scroll-up 5))
+(defun down-slightly () (interactive) (scroll-down 5))
+(global-set-key [mouse-4] 'down-slightly)
+(global-set-key [mouse-5] 'up-slightly)
+
+;; Scroll with C-next/prev
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Filename extensions
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(setq auto-mode-alist
+      (append
+       '(("\\.ale$" . ale-prolog-mode) ;; file.ale loads ale-prolog-mode
+         ("\\.pl$" . prolog-mode)      ;; file.pl loads prolog-mode
+         ("\\.dcg$" . prolog-mode)     ;; file.dcg loads prolog-mode
+         ("\\.\\(cgi\\|pe?rl\\)" . cperl-mode)
+         ("\\.vm$" . emacs-lisp-mode)
+         ("\\.cl$" . lisp-mode)
+         ("\\.script$" . fst-mode)
+         ("\\.html\\...$" . html-helper-mode)
+         ("environment" . shell-script-mode)
+         ("alias" . shell-script-mode)
+         ("path" . shell-script-mode)
+         ("cshrc.final" . shell-script-mode)
+         ("\\.xml$" . nxml-mode)
+         ("\\.xsl$" . nxml-mode)
+         ("cms\\.it\\.gu\\.se.*\\.txt$" . nxhtml-mumamo-mode)
+         ("\\.org$" . org-mode)
+         ("\\.org.old$" . org-mode)
+         ("\\.pho$" . mbrola-mode)
+         ) auto-mode-alist))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Email
+;;
+;; I use VM, please check my .vm file for 
+;; additional settings.
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(setq mail-archive-file-name "~/mail/SENT")
+
+;; smtp to smtpgw.gu.se
+(setq send-mail-function 'smtpmail-send-it
+      message-send-mail-function 'smtpmail-send-it
+      smtpmail-starttls-credentials
+      '(("smtpgw.gu.se" 587 nil nil))
+      smtpmail-auth-credentials
+      '(("smtpgw.gu.se" 587 "USERNAME" nil))
+      smtpmail-default-smtp-server "smtpgw.gu.se"
+      smtpmail-smtp-server "smtpgw.gu.se"
+      smtpmail-smtp-service 587
+      smtpmail-sendto-domain "gslt.hum.gu.se"
+      smtpmail-debug-info t
+      )
+
+;; smtp to google
+;; (setq send-mail-function 'smtpmail-send-it
+;;       message-send-mail-function 'smtpmail-send-it
+;;       smtpmail-starttls-credentials
+;;       '(("smtp.gmail.com" 587 nil nil))
+;;       smtpmail-auth-credentials
+;;       '(("smtp.gmail.com" 587 "USERNAME" nil))
+;;       smtpmail-default-smtp-server "smtp.gmail.com"
+;;       smtpmail-smtp-server "smtp.gmail.com"
+;;       smtpmail-smtp-service 587
+;;       smtpmail-debug-info t)
+
+(require 'smtpmail)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Modes
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; GNUS
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; should be in ~/.gnus.el?
+
+(setq gnus-select-method 
+      '(nntp "oravannahka.helsinki.fi"))
+;;      '(nntp "news.gnus.org"))
+
+(setq gnus-secondary-select-methods
+      '((nntp "news.gmane.org")))
+
+(setq gnus-posting-styles
+      '((".*"
+         (name "Robert Andersson")
+         (address "robert.andersson¬¬@gu.se")
+         (organization "University of Gothenburg")
+         (signature-file "~/.signature.gnus")))) ; one less row
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Supercite
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'filladapt)
+(autoload 'sc-cite-original     "supercite" "Supercite 3.1" t)
+(autoload 'sc-submit-bug-report "supercite" "Supercite 3.1" t)
+(add-hook 'mail-citation-hook 'sc-cite-original)
+(add-hook 'sc-load-hook 'sc-setup-filladapt)
+(setq message-cite-function 'sc-cite-original
+      news-reply-header-hook nil
+      sc-citation-leader ""
+      sc-preferred-attribution-list 
+      '("sc-lastchoice"
+        "x-attribution"
+        "sc-consult"
+        "initials"
+        "firstname"
+        "lastname")
+      sc-electric-references-p t	; allows me to select header n,p,RET
+      sc-cite-region-limit t		  ; no default citing to avoid filling
+      sc-nested-citation-p nil
+      sc-auto-fill-region-p nil
+      sc-blank-lines-after-headers nil
+      ;; sc-attrib-selection-list
+      ;; '(("sc-from-address" ((".*" . (bbdb/sc-consult-attr (sc-mail-field "sc-from-address"))))))
+      ;; sc-mail-glom-frame
+      ;; '((begin                        (setq sc-mail-headers-start (point)))
+      ;;   ("^x-attribution:[ \t]+.*$"   (sc-mail-fetch-field t) nil t)
+      ;;   ("^\\S +:.*$"                 (sc-mail-fetch-field) nil t)
+      ;;   ("^$"                         (progn (bbdb/sc-default)
+      ;;                                        (list 'abort '(step . 0))))
+      ;;   ("^[ \t]+"                    (sc-mail-append-field))
+      ;;   (sc-mail-warn-if-non-rfc822-p (sc-mail-error-in-mail-field))
+      ;;   (end                          (setq sc-mail-headers-end (point))))
+      )
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; BBDB
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(setq bbdb-file "~/mail/.database.bbdb"
+      bbdb-send-mail-style 'vm
+      bbdb-offer-save 'automatic
+      bbdb-use-pop-up nil
+      bbdb-completion-display-record nil
+      bbdb/mail-auto-create-p 'bbdb-ignore-most-messages-hook
+      bbdb-change-hook 'bbdb-timestamp-hook
+      bbdb-auto-notes-alist
+      '(("Subject" (".*" last-subj 0 t))
+        ("From" ("@filosofi.gu.se" company "University of Gothenburg, Department of Philosopy, Linguistics, and Theory of Science"))
+        ("From" ("@gslt.hum.gu.se" company "University of Gothenburg, Department of Philosopy, Linguistics, and Theory of Science, Swedish National Graduate School of Language Technology"))
+        ("From" ("@flov.gu.se" company "University of Gothenburg, Department of Philosopy, Linguistics, and Theory of Science"))
+        ("From" ("@ling.gu.se" company "University of Gothenburg, Department of Philosopy, Linguistics, and Theory of Science"))
+        ("From" ("@cling.gu.se" company "University of Gothenburg, Educational Programme in Language Technology, Department of Philosopy, Linguistics, and Theory of Science"))
+        ("From" ("@cs.chalmers.se" company "Chalmers University of Technology, Department of Computer Science and Engineering "))
+        ("From" ("@sics.se" company "SICS"))
+        ("From" ("@svenska.gu.se" company "University of Gothenburg, Department of Swedish Language"))
+        ("Organization" (".*" company 0 t)))
+      bbdb-notice-hook 'bbdb-auto-notes-hook
+      bbdb-ignore-most-messages-alist
+      '(("To" . "cl4rande")
+        ("To" . "robert")
+        ("To" . "robert\.andersson")
+        ("To" . "ra@c?ling")
+        ("Cc" . "cl4rande")
+        ("Cc" . "ra@c?ling")))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; NXML and NXHTML
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Use as external editor when
+(setq as-external-alist 
+      '(("/itsalltext/.*wiki" as-external-for-wiki)
+        ;; ("cms\\.it\\.gu\\.se.*\\.txt" as-external-its-all-text-default)
+        (as-external-its-all-text-regexp as-external-its-all-text-default))
+      nxhtml-skip-welcome t
+      nxml-slash-auto-complete-flag t)
+
+(add-hook 'nxhtml-mumamo-mode-hook
+          (lambda ()
+            ;; (setq nxhtml-validation-header-if-mumamo 1)
+            (nxhtml-validation-header-mode 1)
+            (rng-validate-mode nil)
+            (mumamo-post-command)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; LaTeX
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(setq TeX-PDF-mode t
+      font-latex-title-fontify 'color      ; this gets rid of
+      font-latex-title-fontity 'color      ; the large fonts
+      font-latex-fontify-sectioning 'color ; in sections etc
+      TeX-output-view-style
+      (cond 
+       ((eq system-type 'darwin) 
+        (quote 
+         (("^pdf$" "." "open -a preview %s.pdf")
+          ("^html?$" "." "open %o"))))
+       ((eq system-type 'gnu/linux)
+        (quote
+         (("^pdf$" "." "okular %s.pdf")
+          ("^html?$" "." "open %o"))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; GPG
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'epa-setup)
+(setq epg-gpg-program "gpg") ; why?
+
+;; hack to setenv GnuPG info in Emacs 23 on Mac,
+;; TODO: need alternative solution
+
+;; (setq ra/gpg-agent-info-file "~/.gpg-agent-info")
+;; (defun ra/gpg-agent-info-from-file (file)
+;;   "Reads the GnuPG agent info file and returns a list"
+;;   (with-temp-buffer
+;;     (insert-file-contents file)
+;;     (split-string (buffer-string) "\n" t)))
+;; (defun ra/gpg-agent-info (file)
+;;   "Sets environment variables in the GnuPG agent info file"
+;;   (mapcar '(lambda (gpg-info-pair) 
+;;              (setenv (nth 0 gpg-info-pair) (nth 1 gpg-info-pair)))
+;;            (mapcar '(lambda (gpg-info-row)
+;;                       (split-string gpg-info-row "=" t))
+;;                    (ra/gpg-agent-info-from-file file))))
+;; (if (and (eq system-type 'darwin)
+;;          (file-readable-p ra/gpg-agent-info-file))
+;;     (ra/gpg-agent-info ra/gpg-agent-info-file)
+;;   )
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Org-mode and remember
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'org-install)
+
+;; functions for special org-files
+(defun gtd ()
+   (interactive)
+   (find-file "~/gtd/tasks.org")
+   (delete-other-windows)
+)
+(defun order ()
+  (interactive)
+  (find-file "~/Documents/admin/orders.org")
+  (delete-other-windows)
+)
+
+;; org setup
+(setq org-modules 
+      '(org-bbdb org-bibtex org-vm org-crypt)
+      ;; where things go
+      org-directory "~/gtd"
+      org-archive-location "archive/%s.old::* Archive"
+      ;; logging
+      org-log-done nil ; using the logbook instead
+      org-log-into-drawer "LOGBOOK"
+      org-clock-into-drawer t
+      ;; refiling
+      org-refile-targets
+      '(("someday.org" :level . 1)
+        ("inbox.org" :level . 1)
+        ("tasks.org" :level . 1)
+        ("projects.org" :maxlevel . 2))
+      ;; setup todo keywords and efforts
+      org-todo-keywords 
+      '("TODO(t!)" "NEXT(n!)" "WAITING(w@/!)" "|" "CANCELLED(c@)" "DEFERRED(m@)" "DONE(d!)")
+      org-effort-property "effort"
+      org-global-properties 
+      '(("effort_ALL" . "0:10 0:30 1:00 2:00 3:00 4:00 5:00 6:00 8:00"))
+      ;; global tags
+      org-tag-alist '(("@home" . ?h) ("@office" . ?o) ("@phone" . ?p) ("@cms" . ?w) ("@computer" . ?c) ("@errands" . ?e) ("@bvc" . ?b) ("@ltlunch" . ?l) ("@2020" . ?2)  ("someday" . ?s) ("@emacs" . ?g) ("flov" . ?f))
+      ;; agenda setup
+      org-agenda-files
+      (list
+       "~/gtd/inbox.org"
+       "~/gtd/tasks.org"
+       "~/gtd/projects.org")
+      org-agenda-include-diary t
+      org-agenda-include-all-todo t
+      org-columns-default-format "%60ITEM %TODO %TAGS %6effort(EFFORT){:}"
+      org-tags-column -90
+      ;; blank lines
+      org-cycle-separator-lines 2
+      org-blank-before-new-entry
+      '((heading)
+        (plain-list-item))
+      ;; links
+      org-link-mailto-program '(vm-mail "%a" "%s")
+      org-link-frame-setup
+      '((vm . vm-visit-folder)
+        (gnus . gnus)
+        (file . find-file-other-window)))
+
+(add-hook 'org-mode-hook 
+          (lambda () 
+            (auto-fill-mode 1)
+            (local-set-key (kbd "C-c t") 'org-todo)
+            (local-set-key (kbd "C-c e") 'org-set-effort)
+            (local-set-key (kbd "C-c C-r") 'org-decrypt-entry)))
+
+;; publish web pages
+(require 'org-publish)
+(setq org-publish-project-alist
+      '(("org-web"
+         :base-directory "~/web"
+         :base-extension "org"
+         :publishing-directory "/Volumes/robert/.www"
+         :recursive t
+         :publishing-function org-publish-org-to-html
+         :headline-levels 4
+         :auto-preamble t)
+        ("org-web-static"
+         :base-directory "~/web"
+         :base-extension "css\\|js\\|png\\|jpg\\|jpeg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
+         :publishing-directory "/Volumes/robert/.www"
+         :recursive t
+         :publishing-function org-publish-attachment)
+        ("web" :components ("org-web" "org-web-static"))))
+
+;; latex export
+(setq org-export-latex-classes
+      '(("article"
+         "\\documentclass{article}
+\\usepackage[utf8x]{inputenc}
+\\usepackage{graphicx}
+\\usepackage{longtable}
+\\usepackage{hyperref}"
+         ("\\section{%s}" . "\\section*{%s}")
+         ("\\subsection{%s}" . "\\subsection*{%s}")
+         ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+         ("\\paragraph{%s}" . "\\paragraph*{%s}")
+         ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
+
+;; remember-mode
+(require 'remember-autoloads)
+(setq remember-annotation-functions
+      '(org-remember-annotation)
+      remember-handler-functions
+      '(org-remember-handler)
+      org-remember-templates
+      '(("Task" ?y "* TODO %^{description} %^g%^{effort}p\n  :LOGBOOK:\n  - State \"TODO\"       from \"\"           %U\n  :END:\n\n  %?%i \n  :%a:" "inbox.org" "Inbox")
+        ("Task woL" ?t "* TODO %^{description} %^g%^{effort}p\n  :LOGBOOK:\n  - State \"TODO\"       from \"\"           %U\n  :END:\n\n  %?%i \n" "inbox.org" "Inbox")
+        ("Someday" ?s "* %^{description} :someday:%^g%^{effort}p\n  :PROPERTIES:\n  :added:    %U\n  :END:\n\n  %?%i \n" "inbox.org" "Inbox")))
+
+(eval-after-load 'remember
+  '(add-hook 'remember-mode-hook 'org-remember-apply-template))
+
+;; We also want to be able to encrypt subtrees in org-mode, requires
+;; the epa-setup package
+(require 'org-crypt)
+(org-crypt-use-before-save-magic)
+(setq org-crypt-key "93A4BE9DEAB7218E")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; SQL-mode
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(setq sql-sqlite-program "sqlite3")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; No more debug on error
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(setq debug-on-error nil)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Temp
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; while working on the mailmove project
+
+(setq auto-mode-alist
+      (append
+       '(("\\.gu.se$" . org-mode)
+         ) auto-mode-alist))

@@ -1,6 +1,7 @@
 ;;; pastebin.el --- A simple interface to the www.pastebin.com webservice
 
 ;;; Copyright (C) 2008 by Tapsell-Ferrier Limited
+;;; Copyright (C) 2010 by Ivan Korotkov <twee@tweedle-dee.org>
 
 ;;; This program is free software; you can redistribute it and/or modify
 ;;; it under the terms of the GNU General Public License as published by
@@ -35,25 +36,103 @@
 
 ;;; Code:
 
-(defvar pastebin-type-assoc
-  '((emacs-lisp-mode . "lisp")
-    (scheme-mode . "lisp")
+(defgroup pastebin nil
+  "Pastebin -- pastebin.com client"
+  :tag "Pastebin"
+  :group 'tools)
+
+(defcustom pastebin-default-subdomain ""
+  "Pastebin subdomain to use by default"
+  :type 'string
+  :group 'pastebin)
+
+(defcustom pastebin-type-assoc
+  '((actionscript-mode . " actionscript")
+    (ada-mode . "ada")
+    (asm-mode . "asm")
+    (bibtex-mode . "bibtex")
+    (cmake-mode . "cmake")
+    (c-mode . "c")
+    (c++-mode . "cpp")
+    (cobol-mode . "cobol")
+    (conf-colon-mode . "properties")
+    (conf-javaprop-mode . "properties")
+    (conf-mode . "ini")
+    (conf-space-mode . "properties")
+    (conf-unix-mode . "ini")
+    (conf-windows-mode . "ini")
+    (cperl-mode . "perl")
+    (csharp-mode . "csharp")
+    (css-mode . "css")
+    (delphi-mode . "delphi")
+    (diff-mode . "diff")
+    (eiffel-mode . "eiffel")
+    (emacs-lisp-mode . "lisp")
+    (erlang-mode . "erlang")
+    (erlang-shell-mode . "erlang")
+    (espresso-mode . "javascript")
+    (fortran-mode . "fortran")
+    (glsl-mode . "glsl")
+    (gnuplot-mode . "gnuplot")
+    (graphviz-dot-mode . "dot")
+    (haskell-mode . "haskell")
+    (html-mode . "html4strict")
+    (idl-mode . "idl")
+    (inferior-haskell-mode . "haskell")
+    (inferior-octave-mode . "octave")
+    (inferior-python-mode . "python")
+    (inferior-ruby-mode . "ruby")
+    (java-mode . "java")
+    (js2-mode . "javascript")
+    (jython-mode . "python")
+    (latex-mode . "latex")
+    (lisp-mode . "lisp")
+    (lua-mode . "lua")
+    (makefile-mode . "make")
+    (matlab-mode . "matlab")
+    (nxml-mode . "xml")
+    (oberon-mode . "oberon2")
+    (objc-mode . "objc")
+    (ocaml-mode . "ocaml")
+    (octave-mode . "matlab")
+    (pascal-mode . "pascal")
+    (perl-mode . "perl")
+    (php-mode . "php")
+    (plsql-mode . "plsql")
+    (po-mode . "gettext")
+    (prolog-mode . "prolog")
+    (python-2-mode . "python")
+    (python-3-mode . "python")
+    (python-basic-mode . "python")
     (python-mode . "python")
-    (nxml-mode . "XML")))
+    (ruby-mode . "ruby")
+    (scheme-mode . "lisp")
+    (shell-mode . "bash")
+    (sh-mode . "bash")
+    (smalltalk-mode . "smalltalk")
+    (sql-mode . "sql")
+    (tcl-mode . "tcl")
+    (visual-basic-mode . "vb")
+    (xml-mode . "xml")
+    (yaml-mode . "properties"))
+  "Alist composed of major-mode names and corresponding pastebin highlight formats."
+  :type '(alist :key-type symbol :value-tupe string)
+  :group 'pastebin)
 
-(defvar pastebin-retrieved nil)
+(defvar pastebin-subdomain-history '())
 
-(defvar pastebin-prefix-history '())
-
-(defun pastebin-buffer (&optional prefix)
+(defun pastebin-buffer (&optional subdomain)
   "Send the whole buffer to pastebin.com.
-Optional argument PREFIX will request the virtual host to use,
+Optional argument subdomain will request the virtual host to use,
  eg:'emacs' for 'emacs.pastebin.com'."
-  (interactive (if current-prefix-arg
-                   (list (read-string "pastebin prefix:" nil 'pastebin-prefix-history))))
-  (pastebin (point-min) (point-max) prefix))
+  (interactive
+   (let ((pastebin-subdomain
+      (if current-prefix-arg
+          (read-string "pastebin subdomain:" nil 'pastebin-subdomain-history) pastebin-default-subdomain)))
+     (list pastebin-subdomain)))
+  (pastebin (point-min) (point-max) subdomain))
 
-(defun pastebin (start end &optional prefix)
+(defun pastebin (start end &optional subdomain)
   "An interface to the pastebin code snippet www service.
 
 See pastebin.com for more information about pastebin.
@@ -65,37 +144,37 @@ buffer is sent.
 Argument START is the start of region.
 Argument END is the end of region.
 
-If PREFIX is used pastebin prompts for a prefix to be used as the
+If subdomain is used pastebin prompts for a subdomain to be used as the
 virtual host to use.  For example use 'emacs' for 'emacs.pastebin.com'."
   (interactive
-   (let ((pastebin-prefix
+   (let ((pastebin-subdomain
           (if current-prefix-arg
-              (read-string "pastebin prefix:" nil 'pastebin-prefix-history))))
+              (read-string "pastebin subdomain:" nil 'pastebin-subdomain-history) pastebin-default-subdomain)))
      (if (mark)
-         (list (region-beginning) (region-end) pastebin-prefix)
-       (list (point-min) (point-max) pastebin-prefix))))
+         (list (region-beginning) (region-end) pastebin-subdomain)
+       (list (point-min) (point-max) pastebin-subdomain))))
   ;; Main function
   (let* ((data (buffer-substring-no-properties start end))
-         (pastebin-url (format "http://%spastebin.com/pastebin.php" (if prefix
-                                                                        (concat prefix ".") "")))
+         (pastebin-url "http://pastebin.com/api_public.php")
          (url-request-method "POST")
          (url-request-extra-headers
           '(("Content-Type" . "application/x-www-form-urlencoded")))
          (url-request-data
-          (concat (format "paste=Send&format=%s&expiry=d&poster=%s&code2=%s"
-                          (assoc-default major-mode pastebin-type-assoc nil "text")
-                          (user-full-name)
+
+          (concat (format "submit=submit&paste_private=0&paste_expire_date=N&paste_subdomain=%s&paste_format=%s&paste_name=%s&paste_code=%s"
+              subdomain
+                          (or (assoc-default major-mode pastebin-type-assoc) "text")
+                          (url-hexify-string (user-full-name))
                           (url-hexify-string data))))
          (content-buf (url-retrieve pastebin-url
                                     (lambda (arg)
                                       (cond
                                        ((equal :error (car arg))
-                                        (signal (cdr arg)))
-                                       ((equal :redirect (car arg))
-                                        (setq pastebin-retrieved (cadr arg))
-                                        (with-temp-buffer
-                                          (insert pastebin-retrieved)
-                                          (clipboard-kill-ring-save (point-min) (point-max)))))))))))
+                                        (signal 'pastebin-error (cdr arg)))
+                                       (t
+                    (re-search-forward "\n\n")
+                    (clipboard-kill-ring-save (point) (point-max))
+                        (message "Pastebin URL: %s" (buffer-substring (point) (point-max)))))))))))
 
 (provide 'pastebin)
 ;;; pastebin.el ends here

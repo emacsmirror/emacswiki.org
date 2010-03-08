@@ -4,5 +4,12 @@ of Unix or GNU/Linux manual (`man') pages (see ManMode) matching the search inst
 
 * http://gnufans.net/~deego/emacspub/site-lisp/sys-apropos.el
 
+In the 2002 version <code>sys-apropos-line-regexp</code> is a bit too tight and you may find some pages not displayed, including Perl modules, pages with "." dots, and alphanumeric sections like "(3ncurses)".  Here's a more relaxed setting which should catch everything
+
+    (setq sys-apropos-line-regexp
+      "^\\([^ \t]+?\\)[ \t]*(\\([0-9].*?\\))[ \t-]+\\(.*\\)")
+
+See also ManMode where "<code>M-x man -k pattern</code>" does a similar apropos run and display.
+
 ----
 CategoryExternalUtilities

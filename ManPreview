@@ -1,0 +1,8 @@
+<code>man-preview.el</code> formats and displays manpage source out of an Emacs buffer.  You can use it when editing page source, or when browsing page sources in for instance a TarMode subfile.  Get it from
+
+: http://user42.tuxfamily.org/man-preview/index.html
+
+When editing the best feature is that a re-preview keeps the preview buffer at the same line position, so you can make a change and re-preview to see how it comes out.
+
+----
+NroffMode ManMode

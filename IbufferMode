@@ -223,6 +223,21 @@ Hi, see above (my original group suggestion) for the answer -- PhilJackson
       (setq ad-return-value (nreverse ad-return-value)))
 
 
+----
+
+When used with ElScreen, Ibuffer tends to remove it's header line with tabs. 
+
+To prevent it, set <code>ibuffer-use-header-line</code> to nil and use the following:
+
+  (defadvice ibuffer-update (around ibuffer-preserve-prev-header activate)
+    "Preserve line-header used before Ibuffer if it doesn't set one"
+    (let ((prev-line-header header-line-format))
+      ad-do-it
+      (unless header-line-format
+        (setq header-line-format prev-line-header))))
+
+
+IvanKorotkov
 
 ----
 CategoryBufferSwitching

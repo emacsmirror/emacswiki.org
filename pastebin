@@ -7,3 +7,14 @@ You can use it to send little snippets of code (or whole buffers) to the web for
 pastebin allows sending of regions or whole buffers and let's you specify the virtual host for pastebin. So you can send code to emacs.pastebin.com or myproject.pastebin.com.
 
 The code is downloadable from the wiki here: [[pastebin.el]]
+
+----
+
+File updated to match new [http://pastebin.com/api.php pastebin.com API]. It also has customization group added allowing to set default prefix (subdomain) and modes-alist. 
+
+Newest version can be reached at [http://tweedle-dee.org/svn/emacs.d/site-lisp/pastebin.el pastebin.el]
+
+IvanKorotkov
+
+----
+CategoryModes

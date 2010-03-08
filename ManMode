@@ -1,15 +1,19 @@
-You can read man pages using <code>M-x man</code> (if you have man installed) or using <code>M-x woman</code> (if you don't).  See [[Manual:manual page]] for basic information.
+You can read man pages using <code>M-x man</code> (if you have man installed) or using <code>M-x woman</code> (if you don't).  See [[Manual:manual page]] for basic information, or WomanMode for the elisp-only alternative.
 
-<code>M-x man</code> can prepare man pages in the
-background using the external man program, so it might be a bit nicer
-to use when reading long man pages, or when the system is very slow.
+<code>M-x man</code> prepares pages in the
+background using the external <code>man</code> program, which is good for a big man page, or when the system is very slow.
 On the other hand, the man page will pop up seconds later, and some
-find that disturbing, too.  See WomanMode for the elisp-only
-alternative.
+find that disturbing, too.  (See the <code>Man-notify-method</code> variable for how aggressively it displays.)
 
-The man program will use the <code>MANWIDTH</code> or <code>COLUMNS</code> environment variables
-to determine how wide man pages are.  Emacs sets the <code>COLUMNS</code>
-environment variable to the frame width, if neither is set.
+What you enter for <code>M-x man</code> basically goes straight to the man command line, so "<code>-l /some/file.1</code>" can format a particular file.  See ManPreview for similar on a buffer.
+
+You can search for pages with "<code>-k pattern</code>" and press Ret to go to one that's found.  (A feature which has existed for quite a while, but been kept secret in the manual and docstrings!)  See SystemApropos for similar as a separate command.
+
+= Formatting Width =
+
+The man program uses the <code>MANWIDTH</code> or <code>COLUMNS</code> environment variables
+for how wide man pages are.
+Emacs sets <code>COLUMNS</code> to the window width by default, or per the <code>Man-width</code> variable.  You can also force a setting with
 
     (setenv "MANWIDTH" "72")
 
@@ -30,7 +34,8 @@ See also:
 * [[Iman]] -- Completion for InfoManuals and ManPages when running InfoMode and ManMode.
 * SystemApropos -- running the <code>apropos</code> command to search for man pages
 
-* NroffMode -- editing manpage source (including previewing it)
+* NroffMode -- editing manpage source
+* ManPreview -- formatting manpage source from a buffer
 
 ----
 CategoryExternalUtilities
