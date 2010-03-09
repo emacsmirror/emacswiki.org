@@ -95,7 +95,8 @@ I believe this should work for both the gnuwin32 grep and the cygwin grep.
 There is an implementation of this in /w32-grep.el/ in [[EmacsW32]].
 Could someone please test it with Cygwin?
 (The file /w32-grep.el/ is only available in [[EmacsW32]], but you could mail me if you want a copy for testing.)
-----
+
+[new]
 I found w32-grep.el in the latest zip file in the [http://ourcomments.org/Emacs/DL/EmacsW32-only/ EmacsW32-only] directory listing. That could be easier to find (the home page says "This download is no longer available").
 
 After loading w32-grep.el, <code>C-u C-u M-x rgrep RET</code> returns an invalid prompt:

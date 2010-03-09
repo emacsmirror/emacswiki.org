@@ -26,5 +26,35 @@ documentation buffers, and any buffer with view-mode activated.
 Do you know midnight.el in Emacs distribution?
 It provides clean-buffer-list function. -- [[rubikitch]]
 
+[new:offby1:2010-03-09 21:43 UTC]
+Here's a patch that will enable users of this mode to provide an alternate function for notifying of a closing buffer. I use Growl, for example. YMMV, but it works for me so far.
+<pre>
+diff -r 2e783f454a3b .emacs.d/vendor/tempbuf.el
+--- a/.emacs.d/vendor/tempbuf.el	Mon Mar 08 14:42:34 2010 -0700
++++ b/.emacs.d/vendor/tempbuf.el	Mon Mar 08 14:45:35 2010 -0700
+@@ -128,6 +128,11 @@
+   :group 'tempbuf :type '(choice (const :tag "No message." nil)
+ 				 string))
+ 
++(defcustom tempbuf-kill-message-function nil
++  "Function used to deliver the message that a buffer was killed.
++If nil, use the default emacs messaging facility"
++  :group 'tempbuf :type 'function)
++
+ (defcustom tempbuf-mode-hook nil
+   "Hook run after tempbuf mode is activated in a buffer."
+   :group 'tempbuf :type 'hook)
+@@ -265,8 +270,7 @@
+ 	    (kill-buffer buffer))
+ 	  (when tempbuf-kill-message
+ 	    (unless (buffer-live-p buffer)
+-	      (message tempbuf-kill-message
+-		       name))))))))
++          (funcall (or tempbuf-kill-message-function 'message) (format tempbuf-kill-message name)))))))))
+ 
+ (defun tempbuf-post-command ()
+   "Update `tempbuf-last-time'."
+</pre>
+
 ------
 CategoryModes

@@ -22,7 +22,7 @@ It consists of three files:
   (This is part of Emacs since version 22.2 (released in March 2008);
   see also [http://www.gnuvola.org/wip/] for experimental hacks by ttn.)
 
-Clarification here: Git, as in "Git support", IS included in emacs 22 and 23. Certainly loading the above caused issues with Emacs 23.0. The vc-git which comes with the emacs package works well for me and especially well with git-emacs http://github.com/tsgates/git-emacs/tree/master which provided status bar icons for git status. It appears VC has been rewritten and the common front end for multiple VC backends is a definite boon. While not seeming to support staging it does include a fairly full git feature set but is well documented in the version control info file.
+Clarification here [1]: Git, as in "Git support", IS included in emacs 22 and 23. Certainly loading the above caused issues with Emacs 23.0. The vc-git which comes with the emacs package works well for me and especially well with git-emacs http://github.com/tsgates/git-emacs/tree/master which provided status bar icons for git status. It appears VC has been rewritten and the common front end for multiple VC backends is a definite boon. While not seeming to support staging it does include a fairly full git feature set but is well documented in the version control info file.
 
 In emacs 23 the command showing the repository status C-x v d has been rewritten, it supports checking in multiple files/directories at a time, and has fancy display.  It can be extended with git specific functions.
 vc-git-grep can be used and a UI for git grep.
@@ -163,7 +163,17 @@ Answer: With vc-git.el 2007-11-29 or later, you can do
 * `m' to mark files to add; and finally
 * `v v' to do the next action (i.e, commit)
 
+NOTE: This does not seem to work with remote repos (vc-git.el 2010-03-09).
+
 Question: How do I revert an uptodate file to a previous version? How do I manage branches?
+
+[1]: Sorry, but it is absolutely unclear what vc-git.el (coming with emacs23) provides. Neither Info nor vc-git.el give any information about what works with remote repositories and how (cloning, staging, registering, commiting, ...).
+What is stash?
+What is the master-file?
+Why does vc-dir not show the remote-url?
+
+
+
 
 ----
 CategoryVersionControl

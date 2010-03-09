@@ -6,7 +6,7 @@
 ;; Maintainer: S. Irie
 ;; Keywords: Tooltip
 
-(defconst pos-tip-version "0.0.2")
+(defconst pos-tip-version "0.0.4")
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -51,6 +51,14 @@
 
 ;;; History:
 ;; 2010-03-08  S. Irie
+;;         * Added optional argument DX
+;;         * Version 0.0.4
+;;
+;; 2010-03-08  S. Irie
+;;         * Bug fix
+;;         * Version 0.0.3
+;;
+;; 2010-03-08  S. Irie
 ;;         * Modified to move out mouse pointer
 ;;         * Version 0.0.2
 ;;
@@ -90,7 +98,10 @@
   "Return the pixel coordinates of FRAME as a cons cell (LEFT . TOP),
 which are relative to top left corner of screen.
 
-If FRAME is omitted, use selected-frame."
+If FRAME is omitted, use selected-frame.
+
+Users can also get the frame coordinates by referring the variable
+`pos-tip-saved-frame-coordinates' just after calling this function."
   (with-current-buffer (get-buffer-create "*xwininfo*")
     (let ((case-fold-search nil))
       (buffer-disable-undo)
@@ -108,7 +119,7 @@ If FRAME is omitted, use selected-frame."
 					    (line-end-position)))))))))
 
 (defun pos-tip-compute-pixel-position
-  (&optional pos window pixel-width pixel-height frame-coordinates)
+  (&optional pos window pixel-width pixel-height frame-coordinates dx)
   "Return the screen pixel position of POS in WINDOW as a cons cell (X . Y).
 Its values show the coordinates of lower left corner of the character.
 
@@ -125,7 +136,9 @@ target frame as a cons cell like (LEFT . TOP). If omitted, it's automatically
 obtained by `pos-tip-frame-top-left-coordinates', but slightly slower than
 when explicitly specified. Users can get the latest frame coordinates for
 next call by referring the variable `pos-tip-saved-frame-coordinates' just
-after calling this function."
+after calling this function.
+
+DX specifies horizontal offset in pixel."
   (unless frame-coordinates
     (pos-tip-frame-top-left-coordinates
      (window-frame (or window (selected-window)))))
@@ -133,7 +146,8 @@ after calling this function."
 		  '(0 0)))
 	 (ax (+ (car pos-tip-saved-frame-coordinates)
 		(car (window-inside-pixel-edges))
-		(car x-y)))
+		(car x-y)
+		(or dx 0)))
 	 (ay (+ (cdr pos-tip-saved-frame-coordinates)
 		(cadr (window-pixel-edges))
 		(cadr x-y)))
@@ -145,7 +159,7 @@ after calling this function."
 			       (frame-char-height))
 			  (cdr (posn-object-width-height
 				(posn-at-x-y (max (car x-y) 0) (cadr x-y)))))))
-    (cons (min ax (- (x-display-pixel-width) (or pixel-width 0)))
+    (cons (max 0 (min ax (- (x-display-pixel-width) (or pixel-width 0))))
 	  (if (> (+ ay char-height (or pixel-height 0)) (x-display-pixel-height))
 	      (- ay (or pixel-height 0))
 	    (+ ay char-height)))))
@@ -163,36 +177,37 @@ in FRAME."
   (let* ((mpos (mouse-pixel-position))
 	 (mframe (pop mpos))
 	 (mx (car mpos))
-	 (my (cdr mpos))
-	 (large-number (+ (x-display-pixel-width) (x-display-pixel-height)))
-	 (dl (if (> left 2)
-		 (1+ (- mx left))
-	       large-number))
-	 (dr (if (< (1+ right) (x-display-pixel-width))
-		 (- right mx)
-	       large-number))
-	 (dt (if (> top 2)
-		 (1+ (- my top))
-	       large-number))
-	 (db (if (< (1+ bottom) (x-display-pixel-height))
-		 (- bottom my)
-	       large-number))
-	 (d (min dl dr dt db)))
-    (when (and mpos
-	       (eq (or frame (selected-frame)) mframe)
-	       (> d -2))
-      (cond
-       ((= d dl)
-	(set-mouse-pixel-position mframe (- left 2) my))
-       ((= d dr)
-	(set-mouse-pixel-position mframe (1+ right) my))
-       ((= d dt)
-	(set-mouse-pixel-position mframe mx (- top 2)))
-       (t
-	(set-mouse-pixel-position mframe mx (1+ bottom)))))))
+	 (my (cdr mpos)))
+    (when (numberp mx)
+      (let* ((large-number (+ (x-display-pixel-width) (x-display-pixel-height)))
+	     (dl (if (> left 2)
+		     (1+ (- mx left))
+		   large-number))
+	     (dr (if (< (1+ right) (x-display-pixel-width))
+		     (- right mx)
+		   large-number))
+	     (dt (if (> top 2)
+		     (1+ (- my top))
+		   large-number))
+	     (db (if (< (1+ bottom) (x-display-pixel-height))
+		     (- bottom my)
+		   large-number))
+	     (d (min dl dr dt db)))
+	(when (and mpos
+		   (eq (or frame (selected-frame)) mframe)
+		   (> d -2))
+	  (cond
+	   ((= d dl)
+	    (set-mouse-pixel-position mframe (- left 2) my))
+	   ((= d dr)
+	    (set-mouse-pixel-position mframe (1+ right) my))
+	   ((= d dt)
+	    (set-mouse-pixel-position mframe mx (- top 2)))
+	   (t
+	    (set-mouse-pixel-position mframe mx (1+ bottom)))))))))
 
 (defun pos-tip-show-no-propertize
-  (string &optional tip-color pos window timeout pixel-width pixel-height frame-coordinates)
+  (string &optional tip-color pos window timeout pixel-width pixel-height frame-coordinates dx)
   "Show STRING in a tooltip at POS in WINDOW.
 Analogous to `pos-tip-show' except don't propertize STRING by `pos-tip' face.
 
@@ -222,7 +237,7 @@ Example:
 
 See `pos-tip-show' for details."
   (let* ((x-y (pos-tip-compute-pixel-position pos window pixel-width pixel-height
-					      frame-coordinates))
+					      frame-coordinates dx))
 	 (ax (car x-y))
 	 (ay (cdr x-y))
 	 (rx (- ax (car pos-tip-saved-frame-coordinates)))
@@ -257,9 +272,8 @@ See `pos-tip-show' for details."
     (cons rx ry)))
 
 (defun pos-tip-show
-  (string &optional pos window timeout pixel-width pixel-height frame-coordinates)
-  "Show STRING in a tooltip at POS in WINDOW. The tooltip is a small
-X window. Automatically hide the tooltip after TIMEOUT seconds.
+  (string &optional pos window timeout pixel-width pixel-height frame-coordinates dx)
+  "Show STRING in a tooltip, which is a small X window, at POS in WINDOW.
 
 Return pixel position of tooltip relative to top left corner of frame as
 a cons cell like (X . Y).
@@ -267,8 +281,9 @@ a cons cell like (X . Y).
 Omitting POS and WINDOW means use current position and selected window,
 respectively.
 
-Omitting TIMEOUT means use the default timeout of 5 seconds.
-Not-positive TIMEOUT means don't hide tooltip automatically.
+Automatically hide the tooltip after TIMEOUT seconds. Omitting TIMEOUT means
+use the default timeout of 5 seconds. Non-positive TIMEOUT means don't hide
+tooltip automatically.
 
 If PIXEL-WIDTH and PIXEL-HEIGHT are given, they specify the size of tooltip,
 which will be located around the point character, and are used to adjust
@@ -282,10 +297,12 @@ target frame as a cons cell like (LEFT . TOP). If omitted, it's automatically
 obtained by `pos-tip-frame-top-left-coordinates', but slightly slower than
 when explicitly specified. Users can get the latest frame coordinates for
 next call by referring the variable `pos-tip-saved-frame-coordinates' just
-after calling this function."
+after calling this function.
+
+DX specifies horizontal offset in pixel."
   (pos-tip-show-no-propertize (propertize string 'face 'pos-tip) 'pos-tip
 			      pos window timeout pixel-width pixel-height
-			      frame-coordinates))
+			      frame-coordinates dx))
 
 (defalias 'pos-tip-hide 'x-hide-tip
   "Hide pos-tip's tooltip.")

@@ -1,3 +1,5 @@
+I threw together a quick [http://blog.patshead.com/blog/2010/03/a-quick-port-of-appeditortools-to-emacs.html wrapper] around App::EditorTools.  App::EditorTools exposes some of the Perl refactoring functionality of the [http://padre.perlide.org/ Padre] editor.  The script probably needs a better name that editortools-vim.el, though.
+
 I have a short and simple [http://blog.patshead.com/blog/2009/10/screencast-yasnippet-for-emacs-now-supports-snippet-in-a-snippet.html screencast] posted on my [http://blog.patshead.com/blog/ blog] showing off [[Yasnippet]] mode's new snippet-in-a-snippet feature.
 
 [new]
@@ -6,4 +8,8 @@ Welcome to the wiki. :) I really should start setting up some templating stuff f
 I thought the screencast was rather good as well. If you have yasnippet templates and related Emacs configuration, perhaps they could be in a respository for viewing? What is the onscreen keypress indicator software used in the screencast?
 
 ----
+I should have looked back here sooner, I didn't know there were comments!  I had a hard drive crash since I recorded that screencast and the onscreen keyboard application was in my scratch directory (which I do not back up).  I'll search around for it this week and see if I can find it.
+
+I'm not sure my snippets have enough thought put into them to be much use to anyone besides me, but I will see if I can throw them into a repository this week as well.
+---
 CategoryHomepage

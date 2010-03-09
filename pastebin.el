@@ -36,6 +36,7 @@
 
 ;;; Code:
 
+;;;###autoload
 (defgroup pastebin nil
   "Pastebin -- pastebin.com client"
   :tag "Pastebin"
@@ -50,6 +51,7 @@
   '((actionscript-mode . " actionscript")
     (ada-mode . "ada")
     (asm-mode . "asm")
+    (autoconf-mode . "bash")
     (bibtex-mode . "bibtex")
     (cmake-mode . "cmake")
     (c-mode . "c")
@@ -66,6 +68,7 @@
     (css-mode . "css")
     (delphi-mode . "delphi")
     (diff-mode . "diff")
+    (ebuild-mode . "bash")
     (eiffel-mode . "eiffel")
     (emacs-lisp-mode . "lisp")
     (erlang-mode . "erlang")
@@ -89,6 +92,11 @@
     (lisp-mode . "lisp")
     (lua-mode . "lua")
     (makefile-mode . "make")
+    (makefile-automake-mode . "make")
+    (makefile-gmake-mode . "make")
+    (makefile-makepp-mode . "make")
+    (makefile-bsdmake-mode . "make")
+    (makefile-imake-mode . "make")
     (matlab-mode . "matlab")
     (nxml-mode . "xml")
     (oberon-mode . "oberon2")
@@ -121,6 +129,7 @@
 
 (defvar pastebin-subdomain-history '())
 
+;;;###autoload
 (defun pastebin-buffer (&optional subdomain)
   "Send the whole buffer to pastebin.com.
 Optional argument subdomain will request the virtual host to use,
@@ -132,6 +141,7 @@ Optional argument subdomain will request the virtual host to use,
      (list pastebin-subdomain)))
   (pastebin (point-min) (point-max) subdomain))
 
+;;;###autoload
 (defun pastebin (start end &optional subdomain)
   "An interface to the pastebin code snippet www service.
 

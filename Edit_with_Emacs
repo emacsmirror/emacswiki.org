@@ -3,14 +3,20 @@ Edit with Emacs is an extension for editing text areas in [[Google Chrome]].
 * Extension: https://chrome.google.com/extensions/detail/ljobjlafonikaiipfkggjbhkghgicgoh
 * Development: http://github.com/stsquad/emacs_chrome
 
+== Tips and Tricks ==
+
 === Customisation ===
 
 The extension has a number of variables that allow various behaviours to be customised. Currently they are:
 
-* edit-server-new-frame - If not nil, edit each buffer in a new frame (and raise it).
-* edit-server-new-frame-minibuffer - Show the emacs frame's minibuffer if set to t; hide if nil."
+* edit-server-new-frame - If not nil, edit each buffer in a new frame (and raise it)
+* edit-server-new-frame-minibuffer - Show the emacs frame's minibuffer if set to t; hide if nil
 * edit-server-new-frame-menu-bar - Show the emacs frame's menu-bar if set to t; hide if nil
-* edit-server-new-frame-mode-line - Show the emacs frame's mode-line if set to t; hide if nil.
+* edit-server-new-frame-mode-line - Show the emacs frame's mode-line if set to t; hide if nil
+
+There is currently one hook
+
+* edit-server-done-hook - called when the user has finished editing and exited the edit buffer
 
 === Controlling invocation ===
 
@@ -32,3 +38,7 @@ your running Emacs instance do:
       (setq edit-server-new-frame nil)
       (edit-server-start)))
 </pre>
+
+=== Integrating with other modes ===
+
+TODO: Look at integrating as-external...

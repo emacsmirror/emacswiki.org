@@ -25,7 +25,7 @@ This works out of the box in Emacsen using its ForceBackups framework:
 
 The above is the bare basics.  You can get much more fancy by playing with `make-backup-file-name-function' user customizable option.
 
-When editing files on a remote machine, the backup files are put on the remote machine in the same directory as the file itself. To change the behavior, including keeping them on the hard drive of the local machine with all other backup files, use `tramp-backup-directory-alist'.  See the section [http://emacs.traduc.org/fusion/info/tramp/Auto_002dsave-and-Backup.html
+When editing files on a remote machine, the backup files are put on the remote machine in the same directory as the file itself. To change the behavior, including keeping them on the hard drive of the local machine with all other backup files, use `tramp-backup-directory-alist'.  See the section [http://www.gnu.org/software/emacs/manual/html_node/tramp/Auto_002dsave-and-Backup.html
  "Auto-save and Backup" in the Tramp manual].
 
 == Placing all files in one directory ==

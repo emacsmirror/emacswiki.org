@@ -16,8 +16,7 @@ point.
 
 Let your major mode be called foo-mode.  
 
-Now, advise your users to (add-hook 'foo-mode-hook
-'pcomplete-foo-setup)
+Now, advise your users to ##(add-hook 'foo-mode-hook 'pcomplete-foo-setup)##
 
     (defvar foo-all-completions <list of completions as strings>)
     (defvar foo-all-completions '("foo" "bar" "baz"))
