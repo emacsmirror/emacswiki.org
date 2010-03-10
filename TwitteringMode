@@ -113,5 +113,9 @@ Sorry for my rudeness. At last, I found tor+privoxy can make a http proxy. privo
 
 [new]
 hayamiz has merged my patches into the main repository. The main repository http://github.com/hayamiz/twittering-mode/tree/master now supports icon-mode without external programs. --Tadashi MATSUO
+
+[new]
+Any chance we can have a count of characters while tweeting in the minibuffer? (twit.el has this, I should look at how it's done) 
+
 ----
 See also: [[Twitter]] [[Identica-mode]]

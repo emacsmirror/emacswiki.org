@@ -1,0 +1,18 @@
+One particulary nasty thing with VersionControl and such version control systems as git or Bazaar, is that <code>vc-dir</code> invoked on a sub-directory shows status for whole repository. 
+
+Not only does it list files you probably don't want to see, it makes all paths in <code>vc-dir</code> buffer invalid: suppose you have directory A with directory B. <code>vc-dir</code> buffer on A will have A/B entry but if you click on it, it will try to open A/A/B and complain about no such file existing.
+
+There are some workarounds for particular control systems, like [http://debbugs.gnu.org/cgi/bugreport.cgi?bug=1589#15 this one].
+
+The following code can be used as general workaround. It makes <code>vc-dir</code> buffer always open top-level directory of the repository, thus at least making all entries have correct path. Tested with (please add other VCS if it works):
+* Git
+* Bazaar
+
+----
+
+  (defadvice vc-dir-prepare-status-buffer (before my-vcs-goto-top-directory activate compile)
+    (let* ((backend (ad-get-arg 2))
+           (vcs-dir (ad-get-arg 1))
+           (vcs-top-dir (vc-call-backend backend 'responsible-p vcs-dir)))
+      (when (stringp vcs-top-dir)
+        (ad-set-arg 1 vcs-top-dir))))

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Mar  3 01:18:19 2010 (-0800)
+;; Last-Updated: Tue Mar  9 08:59:10 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 3536
+;;     Update #: 3537
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -638,18 +638,7 @@ inputs.  You can override the behavior by using `C-u' with `\\[icicle-retrieve-p
 ;; `directory-files', but not for Emacs 20.  Until this `color-theme.el' bug is fixed, Emacs 20
 ;; users will need to manually load `color-theme-libraries.el'.
 ;;;###autoload
-(defcustom icicle-color-themes (and (prog1 (require 'color-theme nil t)
-                                      (when (and (fboundp 'color-theme-initialize)
-                                                 (not color-theme-initialized))
-                                        (condition-case nil
-					    (let ((color-theme-load-all-themes  t))
-					      (color-theme-initialize)
-					      (setq color-theme-initialized  t))
-					  (error nil))))
-                                    (delete '("bury-buffer")
-                                            (mapcar (lambda (entry)
-                                                      (list (symbol-name (car entry))))
-                                                    color-themes)))
+(defcustom icicle-color-themes ()
   "*List of color themes to cycle through using `M-x icicle-color-theme'.
 Note: Starting with Color Theme version 6.6.0, you will need to put
 library `color-theme-library.el', as well as library `color-theme.el',

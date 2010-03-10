@@ -53,7 +53,7 @@ There is a Ubuntu repository with the latest for non-cvs Emacs.  Add the followi
 * [http://repo.or.cz/w/org-mode.git?a=blob_plain;f=lisp/org-w3m.el;hb=HEAD CVS:org-w3m.el] -- Copy and paste from w3m buffer to [[OrgMode]].
 
 * [http://www.emacswiki.org/emacs/OrgMode-OSD Display Appointments Using OSD on Gnome]
-* [http://gitorious.org/bkuhn-small-hacks/planner2org-mode A small Perl script that will convert data to orgmode] format from PlannerMode format.
+* [http://gitorious.org/bkuhn-small-hacks/org-mode/blobs/master/planner2org.plx A small Perl script that will convert data to orgmode] format from PlannerMode format.
 * Lisp:org-assoc-tags.el Allow user to have list of associated tags, that are automatically assigned to the item.
 * inlimg.el in [NxhtmlMode nXhtml] (> v 1.88) lets you display images inline in org files.
 * FreeMind lets you import/export between org-mode and freemind file format.

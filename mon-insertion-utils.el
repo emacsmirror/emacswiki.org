@@ -2,13 +2,13 @@
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
-;; Copyright © 2010 MON KEY. All rights reserved.
+;; Copyright © 2009, 2010 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: mon-insertion-utils.el
 ;; AUTHOR: MON KEY
 ;; MAINTAINER: MON KEY
-;; CREATED: 2010-03-03T16:13:41-05:00Z
+;; CREATED: 2009-04-08T12:37:06-05:00Z
 ;; VERSION: 1.0.0
 ;; COMPATIBILITY: Emacs23.*
 ;; KEYWORDS: convenience, editing, 
@@ -112,7 +112,7 @@
 ;; ;;;(progn ([f]makunbound 'VAR-OR-FUNCTION) 
 ;; ;;;       (unintern 'VAR-OR-FUNCTION))
 ;; 
-;; PUBLIC-LINK: (URL `http://www.emacswiki.org/emacs/mon-insertion-utils.el')
+;; URL: http://www.emacswiki.org/emacs/mon-insertion-utils.el
 ;; FILE-PUBLISHED: <Timestamp: #{2009-08-27} - by MON>
 ;;
 ;; FILE-CREATED: 
@@ -120,6 +120,9 @@
 ;;
 ;; ================================================================
 
+;;; LICENSE:
+
+;; ================================================================
 ;; This file is not part of GNU Emacs.
 ;;
 ;; This program is free software; you can redistribute it and/or
@@ -1486,7 +1489,7 @@ helps ensure multi-os portability.\n
            ";; EMACSWIKI: { URL of an EmacsWiki describing " fname-sans ". }\n;;\n"
            ";; FILE-CREATED:\n;; <Timestamp: " (mon-timestamp :naf t) "\n;;\n"
            (substring (mon-comment-divider-w-len 65 ) 1) "\n\n"
-           ";;; LICENSCE:\n\n"
+           ";;; LICENSE:\n\n"
            (substring (mon-comment-divider-w-len 65 ) 1)
            (mon-build-copyright-string-license 'gpl-emacs t) "\n"
            (substring (mon-comment-divider-w-len 65 ) 1) "\n"

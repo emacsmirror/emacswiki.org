@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2010, Drew Adams, all rights reserved.
 ;; Created: Sun Sep 12 17:13:58 2004
 ;; Version: 21.0
-;; Last-Updated: Fri Jan 15 12:53:59 2010 (-0800)
+;; Last-Updated: Tue Mar  9 13:57:40 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 320
+;;     Update #: 326
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/doremi-cmd.el
 ;; Keywords: keys, cycle, repeat
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -145,6 +145,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/03/09 dadams
+;;     doremi-color-themes: Initialize to ().
+;;     doremi-color-themes+: Do the real init of var doremi-color-themes here.
 ;; 2009/11/22 dadams
 ;;     Use color-theme-initialize instead of load-library, to load themes.
 ;; 2009/11/21 dadams
@@ -237,15 +240,7 @@ Don't forget to mention your Emacs and library versions."))
 ;; `directory-files', but not for Emacs 20.  Until this `color-theme.el' bug is
 ;; fixed, Emacs 20 users will need to manually load `color-theme-libraries.el'.
 ;;;###autoload
-(defcustom doremi-color-themes (and (prog1 (require 'color-theme nil t)
-                                      (when (and (fboundp 'color-theme-initialize)
-                                                 (not color-theme-initialized))
-                                        (condition-case nil
-                                            (let ((color-theme-load-all-themes  t))
-                                              (color-theme-initialize)
-                                              (setq color-theme-initialized  t))
-                                          (error nil))))
-                                    (delq 'bury-buffer (mapcar 'car color-themes)))
+(defcustom doremi-color-themes ()
   "*List of color themes to cycle through using `doremi-color-themes+'."
   :type 'hook :group 'doremi-misc-commands)
  
@@ -262,8 +257,17 @@ Alternatively, after using `doremi-color-themes+' you can use
 same thing.  Note that in either case, some things might not be
 restored."
   (interactive)
-  (unless (require 'color-theme nil t)
+  (unless (prog1 (require 'color-theme nil t)
+            (when (and (fboundp 'color-theme-initialize)
+                       (not color-theme-initialized))
+              (condition-case nil
+                  (let ((color-theme-load-all-themes  t))
+                    (color-theme-initialize)
+                    (setq color-theme-initialized  t))
+                (error nil))))
     (error "This command requires library `color-theme.el'"))
+  (unless doremi-color-themes
+    (setq doremi-color-themes  (delq 'bury-buffer (mapcar 'car color-themes))))
   ;; Create the snapshot, if not available.  Do this so users can undo using
   ;; pseudo-theme `[Reset]'.
   (when (or (not (assq 'color-theme-snapshot color-themes))

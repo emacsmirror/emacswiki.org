@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Mar  5 07:25:44 2010 (-0800)
+;; Last-Updated: Tue Mar  9 09:08:18 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 20267
+;;     Update #: 20273
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4210,6 +4210,9 @@ candidate from the list of color themes.
 If you use `C-g' during this command, the previous color-theme
 snapshot is used to restore that color theme.
 
+Remember too that you can use the pseudo-theme [Reset] to restore the
+last theme: `M-x color-theme-select [Reset]'.
+
 By default, each time you invoke this command, a snapshot is first
 made of the current color theme (or current colors, if no theme is
 used).  Thus, by default, if you use `C-g', the colors restored are
@@ -4225,7 +4228,7 @@ To use this command, you must have loaded library `color-theme.el',
 available from http://www.emacswiki.org/cgi-bin/wiki.pl?ColorTheme." ; Doc string
   (lambda (theme)
     (when (string= "" theme) (error "No theme name entered (empty input)"))
-    (funcall  (intern theme))) ; Action - just call the theme.
+    (funcall  (intern theme)))          ; Action - just call the theme.
   "Theme: " icicle-color-themes nil t nil ; `completing-read' args
   (if (boundp 'color-theme-history) 'color-theme-history 'icicle-color-theme-history)
   nil nil
@@ -4246,6 +4249,10 @@ available from http://www.emacswiki.org/cgi-bin/wiki.pl?ColorTheme." ; Doc strin
                            (setq color-theme-initialized  t))
                        (error nil))))
            (error "This command requires library `color-theme.el'"))
+         (unless icicle-color-themes
+           (setq icicle-color-themes  (delete '("bury-buffer")
+                                              (mapcar (lambda (entry) (list (symbol-name (car entry))))
+                                                      color-themes))))
          ;; Create the snapshot, if not available.  Do this so users can also undo using
          ;; pseudo-theme `[Reset]'.
          (when (or (not prefix-arg)

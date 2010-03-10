@@ -8,9 +8,36 @@ The standard library tooltip.el provides the function for displaying a tooltip a
 
 To use pos-tip.el, save this file in a directory listed in load-path together with the programs which use this library.
 
-== Sample program ==
+== Sample program 1: Describe function in tooltip ==
 
-Here is an example, named `sdic-inline-pos-tip.el'. This program provides the tooltip showing word meanings at cursor position like `[https://addons.mozilla.org/en-US/firefox/addon/2471?from=%2Fja%2Ffirefox%2Faddon%2F2471 rikaichan]' Firefox extension, using Lisp:sdic-inline.el which was written by [[khiker]].
+=== Code ===
+
+ (require 'pos-tip)
+
+ (defun my-describe-function (function)
+   "Display the full documentation of FUNCTION (a symbol) in tooltip."
+   (interactive (list (function-called-at-point)))
+   (if (null function)
+       (pos-tip-show
+        "** You didn't specify a function! **" '("red"))
+     (pos-tip-show
+      (with-temp-buffer
+        (let ((standard-output (current-buffer)))
+          (prin1 function)
+          (princ " is ")
+          (describe-function-1 function)
+          (buffer-string)))
+      nil nil nil 0)))
+
+ (define-key emacs-lisp-mode-map (kbd "C-;") 'my-describe-function)
+
+=== Screenshot ===
+
+[[image:PosTipScreenshotDescFun]]
+
+== Sample program 2: sdic-inline-pos-tip.el ==
+
+This program provides the tooltip showing word meanings at cursor position like `[https://addons.mozilla.org/en-US/firefox/addon/2471?from=%2Fja%2Ffirefox%2Faddon%2F2471 rikaichan]' Firefox extension, using Lisp:sdic-inline.el which was written by [[khiker]].
 
 === Downloading ===
 
@@ -43,3 +70,34 @@ Here is an example, named `sdic-inline-pos-tip.el'. This program provides the to
 
  (sdic-inline-mode 1)
 
+
+
+
+== Discussion ==
+
+[new:DrewAdams:2010-03-09 16:19 UTC]
+Some unsolicited feedback. ;-)
+
+* In the Commentary, you say ##(pos-tip "foo bar" POS WINDOW)##. Presumaby that should be `pos-tip-show' or something, since function `pos-tip' doesn't exist.
+
+* Doesn't work for me. This is what I have in buffer ##*xwininfo*##, after the `call-process': ##/usr/bin/bash: xwininfo: command not found##. I'm using Cygwin (and Windows). Please state in the file's Commentary what the prerequisites are (and which Emacs versions are supported).
+
+* Just out of curiosity, why not just add some optional parameters ##left## and ##top## to `tooltip-show' (calling it, e.g. `my-tooltip-show'), and then add this to the body:
+
+        (when left (setq params  (tooltip-set-param params 'left left)))
+        (when top  (setq params  (tooltip-set-param params 'top top)))
+
+: That's simple and seems to work. And you could also convert between window/buffer position and pixels, if you like.
+
+I agree that it is too bad that there is no simple way to show a tooltip at a specified position. The code should not be tightly coupled to a mouse position, as it is currently. Perhaps you can suggest a change to the Emacs developers, to allow passing the display position explicitly. -- DrewAdams
+
+[new]
+There is a simple function point-to-coord in ourcomments-util.el in [NxhtmlMode nXhtml] that I have suggested adding to Emacs (without success yet) which I have been using for poping up a menu at point. Maybe this can be merged with pos-tip-compute-pixel-position here?
+-- LennartBorgman
+
+[new]
+Since ##pos-tip.el## uses UTF-8, the first line should read
+
+    pos-tip.el -- Show tooltip at point -*- coding: utf-8 -*-
+
+-- VegardOye

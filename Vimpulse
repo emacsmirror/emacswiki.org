@@ -1,0 +1,37 @@
+'''Vimpulse''' extends [ViperMode Viper] with Vim features like Visual mode and text objects.
+
+: '''Latest release: [[vimpulse.el|Vimpulse 0.3.1]]''' (always on !EmacsWiki)
+
+If you want bleeding edge, you can check out the [http://my-svn.assembla.com/svn/vimpulse/trunk/ current SVN revision].
+
+== Installation ==
+
+Place ##vimpulse.el## in your ##site-lisp## directory (or anywhere in your ##load-path##). Then add the following line to ##.emacs##:
+
+    (require 'vimpulse)
+
+If you want linear undo/redo, download and install [http://wonderworks.com/download/redo.el redo.el] (included with XEmacs).
+
+Vimpulse automatically enables [ViperMode Viper]. You can temporarily disable Viper (and Vimpulse) with `C-z'.
+
+== News ==
+
+* Emacs-compatible Visual selection (normal, line and block).
+* New movement keys: `C-o', `C-i', `C-w hjkl', `gb', `gd', `N%', `+', `_'.
+* Modal keybinding functions: `vimpulse-map', `vimpulse-imap' and `vimpulse-vmap'.
+* Improved text objects support.
+
+== Feedback ==
+
+Feel free to edit this page with bug reports, suggestions and improvements. You can also [https://www.assembla.com/user/signup sign up] with our [http://my-trac.assembla.com/vimpulse/report/1 bug tracker] and create a ticket there.
+
+== External links ==
+
+* [http://www.assembla.com/spaces/vimpulse/ Vimpulse's Assembla space]
+** [http://my-svn.assembla.com/svn/vimpulse SVN repository]
+** [http://my-trac.assembla.com/vimpulse/report/1 Bug tracker]
+** [http://my-trac.assembla.com/vimpulse/wiki/Documentation Documentation wiki]
+* [http://lists.ourproject.org/cgi-bin/mailman/listinfo/implementations-list Mailing list]
+
+----
+CategoryKeys CategoryEmulation

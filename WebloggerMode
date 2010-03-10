@@ -16,13 +16,11 @@ WebloggerMode requires Lisp:xml-rpc.el .
 
 =Download location=
 
-The current version (1.43, last modified 9/13/09) is available at Lisp:weblogger.el.
-
-The download area at http://savannah.nongnu.org/projects/emacsweblogs is empty.
+The current version (1.4.4, released on 2010-03-05) is available at https://launchpad.net/weblogger-el
 
 =Discussion=
 
-(please improve this section)
+If you run into a bug in WebloggerMode, please report it using Savannah or M-x weblogger-submit-bug-report but make sure that I (MarkHershberger) know about it.  Another good way to get support is to join the Emacs Weblogs mailing list (https://savannah.nongnu.org/mail/?group=emacsweblogs).  Posting rants and fixes on various blogs across the Internet won't get your problem fixed.  (2010-03-09 -- MarkHershberger)
 
 After getting WebloggerMode, the user should either run
 
@@ -30,38 +28,14 @@ After getting WebloggerMode, the user should either run
 
 or define `weblogger-config-alist' manually to define the blogs (s)he wishes to post to.  
 
+You'll need the "Server Endpoint".  Here are the values for various popular weblogging platforms:
 
-The biggest problem I had was when it asked me for the "Server Endpoint (URL)".  I'm using blogger.com, but I had no idea what to put here.  After a fair bit of hunting around, I found that this worked: "http://www2.blogger.com/api"
-
-[new]
-
-There is also another version available at http://jwickers.wordpress.com/2007/09/20/webloggerel-enhanced/ which includes patches and also:
-* support categories (only for metaWebBlog)
-* fix the date formating for Wordpress (and maybe others)
-
-Please note that i only test it with the Wordpress used on my blog, but feedback is appreciated. 
-There are also some oddities in regard of whether the post get published or not and sometimes may come back as Draft .. so i will  go on working on it when i have free time. 
-
-[new]
-
-Here's a page which describes how to setup weblogger with Drupal:
-
-http://www.randomsample.de/dru5/node/76
-
-[new]
-
-I found that the easiest way to set it up was to say:
-
- M-x customize-apropos weblogger
-
-===Does It Work?===
-
-I spent about 2 hours in frustration trying to get  blogger.el  or weblogger.el to work.
-For detail, see  http://xahlee.org/UnixResource_dir/writ/emacs_blogger_package_pain.html . In the end, i found http://code.google.com/p/e-blog/ that works fantastically. And if you want livejournal,http://code.google.com/p/ljupdate/ works wonders. — [[Xah Lee]]
-
-[new]
-Thanks Xah, we need to know what works and what does not.
-I think this is one of the big problems with the elisp files out in the wild.
+  Blogger.com: http://www.blogger.com/api
+  Wordpress: http://BLOG-URL/xmlrpc.php (For http://hexmode.wordpress.com/, this is http://hexmode.wordpress.com/xmlrpc.php.  For a blog hosted at http://example.com/weblog/ it would be http://example.com/weblog/xmlrpc.php)
+  LiveJournal: http://www.livejournal.com/interface/blogger/
+  OpenWeblog: http://www.openweblog.com/interface/blogger/
+  MovableType: http://CGI-URL/mt-xmlrpc.cgi.  If your CGI root is http://www.example.com/cgi-bin/mt/ then the Server Endpoint would be http://www.example.com/cgi-bin/mt/mt-xmlrpc.cgi.
+  Drupal: Enable the Blogger API and use http://DRUPAL-URL/xmlrpc.php (like Wordpress).
 
 [new]
 I've played around with this and find it to be functional for WordPress. Posts made are in raw HTML, allowing for links and &lt;!--more--&gt; parsing without a hitch during posting (but not during editing; see below). Categories (via "Keywords") also worked fairly well.
@@ -73,17 +47,6 @@ That said, I found this package to be quite functional after getting over those 
 I also fixed up handling of &lt;!--more--&gt; tag functionality (in WordPress) and added the Keywords header to new entries by default. You can find my changes over at [[weblogger.el]]. Feel free to drop me a line on whether they work for you. :) -- [[Tom Robinson]]
 
 [new]
-Tom, et al, I'm using ;; Version: 1.4.1 ;; Last Modified: <2009-09-09 21:08:45 mah> of weblogger.el.  For the most part, it works great!  I have a Wordpress blog, hosted on Wordpress.com.  Posting entries went fine, but when it came to fetching, weblogger-fetch-entries returned "Invalid Header: `Newsgroup'" in the minibuffer, and did not fetch the post.  I commented out 		    
-                    ;; (list "Newsgroup"
-		    ;; 	  (concat (weblogger-weblog-name-from-id 
-		    ;; 		   (weblogger-weblog-id))))
-
-from (weblogger-entry-setup-headers) but do not have time right now to debug.  It did fix my problem, at least for now :)  Thanks! --ErikIverson
-
-[new]
-I tried to post a message, but I had HTML code in my text, and I received the error message "parse error. not well formed" when I tried to post. without the HTML code it worked fine. Switching to emacs 23.1 from 22 fixed it. --NicolauWerneck
-
-[new]
 
 I'm using version 1.4.3, with Emacs 23.1, Drupal 6.13 and Slackware 13.0. In spite of some odd behavior (e.g., <title> tags end up displayed as part of the post and I have to delete them manually when I revise), it's a very useful addition to emacs. I had problems getting it to work initially but solved them by updating an old copy of xml-rpc.el.
 
@@ -92,10 +55,6 @@ It's worth noting, as usage quirks, that if you're revising an entry and do C-x 
 [new]
 
 I made a patch(http://rix3.8.je/blog/2009/12/16/emacs%e7%9a%84weblogger1-4-4%e7%9a%84wordpress-patch/) about 1.4.4 for wordpress(2.8.6) like Tom Robinson, fixed the Categories bug and date bug(for me). At least, it worked very well for me. --rix
-
-[new]
-
-I found the opposite of what Xah found.  weblogger (1.4.3) worked easily while e-blog never quite worked.  Maybe different versions are involved.
 
 [new]
 

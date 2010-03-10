@@ -62,7 +62,7 @@ have a link to the file in the buffer.  PlannerMode helps take the drudgery out 
 
 == Migrating to Org-Mode ==
 
-A small Perl program to convert Planner files into something suitable for OrgMode [http://gitorious.org/bkuhn-small-hacks/planner2org-mode is available].
+A small Perl program to convert Planner files into something suitable for OrgMode [http://gitorious.org/bkuhn-small-hacks/org-mode/blobs/master/planner2org.plx is available].
 
 == People who use planner.el ==
 

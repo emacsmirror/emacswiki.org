@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Mar  4 23:32:32 2010 (-0800)
+;; Last-Updated: Tue Mar  9 13:38:58 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 4883
+;;     Update #: 4895
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2010/03/09 dadams
+;;     icicle-color-theme: Initialize variable icicle-color-themes here, not in icicles-opt.el.
 ;; 2010/03/04 dadams
 ;;     icicle-bookmark(-other-window): Use bookmarkp-describe-bookmark(-internals) for C-M-RET.
 ;; 2010/03/03 dadams
@@ -192,6 +194,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2010/03/09 dadams
+;;     icicle-regions: Use icicle-reversible-sort (with KEY arg), not sort.
 ;; 2010/03/03 dadams
 ;;     Applied renamings: icicle-sort-function to icicle-sort-comparer
 ;;                        icicle-sort-functions-alist to icicle-sort-orders-alist,
@@ -360,6 +364,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2010/03/09 dadams
+;;     icicle-reversible-sort: Added optional KEY arg.  Set LIST to sort result and return it.
+;;     icicle-multi-sort: Set RESULT to funcall result.
 ;; 2010/03/03 dadams
 ;;     Added: icicle-multi-sort, icicle-make-plain-predicate, icicle-alpha-p.
 ;;     icicle-reversible-sort: Use icicle-sort-comparer and icicle-multi-sort.
@@ -3601,6 +3608,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2010/03/09 dadams
+;;     icicle-color-themes: Initialize to nil.  Do real init in cmd icicle-color-theme.
 ;; 2010/03/03 dadams
 ;;     Renamed: icicle-sort-function to icicle-sort-comparer,
 ;;              icicle-sort-functions-alist to icicle-sort-orders-alist

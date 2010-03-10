@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Wed Mar  3 02:01:51 2010 (-0800)
+;; Last-Updated: Tue Mar  9 12:38:54 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 1264
+;;     Update #: 1267
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2087,13 +2087,12 @@ BUFFER is the name of a buffer."
              (and file (format "', file `%s" file)) (format "', %d chars" (- end start))))))
 
 (defun icicle-regions ()
-  "Variable `icicle-region-alist', but without non-existent non-file buffers."
+  "Variable `icicle-region-alist', but without non-existent non-file buffers.
+The list is also sorted according to `icicle-sort-comparer'."
   (let ((unsorted-regions  (icicle-remove-if #'(lambda (reg) (and (not (car (cddr reg))) ; No file.
                                                                   (not (get-buffer (cadr reg)))))
                                              icicle-region-alist)))
-    (if icicle-sort-comparer
-        (sort unsorted-regions #'(lambda (a b) (funcall icicle-sort-comparer (car a) (car b))))
-      unsorted-regions)))
+    (icicle-reversible-sort unsorted-regions 'car)))
 
 ;;;###autoload
 (defun icicle-search-generic ()         ; Bound to `C-x `'.

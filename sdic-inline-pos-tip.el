@@ -6,7 +6,7 @@
 ;; Maintainer: S. Irie
 ;; Keywords: Tooltip, Dictionary
 
-(defconst sdic-inline-pos-tip-version "0.0.2")
+(defconst sdic-inline-pos-tip-version "0.0.3")
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -46,6 +46,11 @@
 ;;
 
 ;;; History:
+;; 2010-03-09  S. Irie
+;;         * Changed to use `pos-tip-split-string'
+;;              (*Require pos-tip.el ver. 0.1.0 or higher*)
+;;         * Version 0.0.3
+;;
 ;; 2010-03-08  S. Irie
 ;;         * Added options to use substitutive functions in non-X frame
 ;;         * Version 0.0.2
@@ -100,25 +105,8 @@ See `pos-tip-show' for details.")
   "Function used as substitute for manual-popup in non-X frame.")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Functions
+;; Function
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun sdic-inline-pos-tip-split-string (string &optional left-margin)
-  "Split STRING into fixed width strings. Return a list of these strings."
-  (let* ((display-width (/ (x-display-pixel-width) (frame-char-width)))
-	 (width (or (and sdic-inline-pos-tip-max-width
-			 (min sdic-inline-pos-tip-max-width
-			      display-width))
-		    display-width))
-	 (margin (and left-margin
-		      (make-string left-margin ?\s)))
-	 row list)
-    (while (progn
-	     (setq string (concat margin string)
-		   row (truncate-string-to-width string width)
-		   list (cons row list))
-	     (if (not (= (length row) (length string)))
-		 (setq string (substring string (length row))))))
-    (nreverse list)))
 
 (defun sdic-inline-pos-tip-show (&optional entry)
   "Show tooltip which describes the word meanings at current point."
@@ -137,8 +125,8 @@ See `pos-tip-show' for details.")
 	 (mapconcat
 	  (lambda (item)
 	    (let ((head (sdicf-entry-headword item))
-		  (desc (sdic-inline-pos-tip-split-string
-			 (sdicf-entry-text item) 1)))
+		  (desc (pos-tip-split-string (sdicf-entry-text item)
+					      sdic-inline-pos-tip-max-width 1)))
 	      ;; Record all row width in order to calculate tooltip width
 	      (setq width-list (cons (string-width head)
 				     (nconc (mapcar 'string-width desc)

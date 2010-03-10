@@ -42,7 +42,7 @@ If you are sufficiently open-minded to appreciate the eloquence and economy of a
 
 The most notable is '''ViperMode'''. It does an excellent job of emulating vi and ex commands.
 
-[[vimpulse.el]] extends !ViperMode with Vim features. It is [EmacsWiki:vimpulse somewhat buggy], though.
+[[Vimpulse]] extends !ViperMode with Vim features like text objects and visual selection.
 
 ''If you want basic vi emulation'', you might find that '''vip''' provides a nice togglable vi emulation without the complexity of Viper. Try ##(load "vip")## in your InitFile and toggle it with `C-z'. (Last time I checked, vip was not bundled with XEmacs.)
 

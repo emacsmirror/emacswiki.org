@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Mar  3 23:27:57 2010 (-0800)
+;; Last-Updated: Tue Mar  9 13:30:51 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 11588
+;;     Update #: 11597
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4832,15 +4832,19 @@ it (treat it as nil)."
     (setq filename (expand-file-name filename dir)))
   (if icicle-use-~-for-home-dir-flag (abbreviate-file-name filename) filename))
 
-(defun icicle-reversible-sort (list)
+(defun icicle-reversible-sort (list &optional key)
   "`sort' LIST using `icicle-sort-comparer'.
 Reverse the result if `icicle-reverse-sort-p' is non-nil.
 If `icicle-sort-comparer' is a cons (other than a lambda form), then
  use `icicle-multi-sort' as the sort predicate.
-Otherwise, use `icicle-sort-comparer' as the sort predicate."
+Otherwise, use `icicle-sort-comparer' as the sort predicate.
+
+Optional arg KEY is a selector function to apply to each item to be be
+compared.  If nil, then the entire item is used."
   ;;$$ (when (and icicle-edit-update-p icicle-completion-candidates
   ;;              (> (length icicle-completion-candidates) icicle-incremental-completion-threshold))
   ;;     (message "Sorting candidates..."))
+  (unless key (setq key  'identity))
   (let ((sort-fn  (and icicle-sort-comparer
                        (lambda (s1 s2)
                          ;; If we have an inappropriate sort order, get rid of it.  This can happen if
@@ -4850,15 +4854,19 @@ Otherwise, use `icicle-sort-comparer' as the sort predicate."
                              (and icicle-sort-comparer ; nil in case of error earlier in list.
                                   (if (and (not (functionp icicle-sort-comparer))
                                            (consp icicle-sort-comparer))
-                                      (icicle-multi-sort s1 s2)
-                                    (funcall icicle-sort-comparer s1 s2)))
+                                      (icicle-multi-sort (funcall key s1) (funcall key s2))
+                                    (funcall icicle-sort-comparer (funcall key s1) (funcall key s2))))
                            (error (message "Inappropriate sort order - reverting to unsorted")
                                   (sit-for 1)
                                   (setq icicle-sort-comparer  nil)
                                   nil))))))
     (when sort-fn
-      (sort list (if icicle-reverse-sort-p (lambda (a b) (not (funcall sort-fn a b))) sort-fn)))))
+      (setq list  (sort list (if icicle-reverse-sort-p
+                                 (lambda (a b) (not (funcall sort-fn a b)))
+                               sort-fn)))))
+  list)
 
+;; Essentially the same as `bookmarkp-multi-sort'.
 (defun icicle-multi-sort (s1 s2)
   "Try predicates in `icicle-sort-comparer', in order, until one decides.
 The (binary) predicates are applied to S1 and S2.
@@ -4871,7 +4879,7 @@ for using multi-sorting predicates."
     (when icicle-reverse-multi-sort-p (setq preds  (reverse preds)))
     (catch 'icicle-multi-sort
       (dolist (pred  preds)
-        (funcall pred s1 s2)
+        (setq result  (funcall pred s1 s2))
         (when (consp result)
           (when icicle-reverse-multi-sort-p (setq result  (list (not (car result)))))
           (throw 'icicle-multi-sort (car result))))

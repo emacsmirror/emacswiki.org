@@ -6,17 +6,7 @@ levels of emulation to help Vi addicts kick the habit.
 * See the section "Emulation" in the EmacsManual.
 * http://www.cs.sunysb.edu/~kifer/emacs.html
 
-See also ViKeys and, in particular, [[vimpulse.el]] and [[VimMode]].
-
-[new]
-Is there a way to deactivate Viper for a single buffer in a function? That is, why doesn't the following work?
-
-    (defun test ()
-      (interactive)
-      (text-mode)
-      (viper-change-state-to-emacs))
-
-<code>M-x test</code>
+[[Vimpulse]] extends Viper with Vim features. See also ViKeys and [[VimMode]].
 
 == Tips ==
 
@@ -37,7 +27,7 @@ Here is how to colorize Viper's mode-line mode indicator to make it more promine
 
 === Using different color themes for Viper ===
 
-The above didn't work for me so well.  Here is a method to use different color themes for viper's different insertion modes (also supports vimpulse's visual mode)
+The above didn't work for me so well.  Here is a method to use different color themes for viper's different insertion modes (also supports Vimpulse's Visual mode)
 
   (require 'color-theme)
   (when (not (commandp 'color-theme-snapshot))
@@ -199,9 +189,17 @@ This ensures me that I leave every buffer in Normal Mode.
 
 == Questions ==
 
+Is there a way to deactivate Viper for a single buffer in a function? That is, why doesn't the following work?
+
+    (defun test ()
+      (interactive)
+      (text-mode)
+      (viper-change-state-to-emacs))
+
+<code>M-x test</code>
+
 === How to skip "File ... is checked. Check it out? (y or n)" on :w for SVN files? ===
 
-[new]
 Hi, we use SVN, and everytime I write a version controled file (with ":w"), Viper asks me if I want to check it out.
 
 Since it doesn't make sense for SVN files, I added:
@@ -233,7 +231,6 @@ This seems to work for me, at least.  Until upstream viper gets fixed. -- Jeremy
 
 === "Inner Word" commands? ===
 
-[new]
 How do you get Vim's "ciw" (= Change Inner Word) command?
 
 I mean, you are in Normal Mode, in an Emacs Lisp Mode buffer, 'viper-syntax-preference' is set to 'extended' and, in the following code:
@@ -243,11 +240,12 @@ I mean, you are in Normal Mode, in an Emacs Lisp Mode buffer, 'viper-syntax-pref
 the Cursor is over the "i". Then ,'cw' will kill "inner-word", whilst 'ciw' will kill "inner" only.
 
 [new]
-There is something at the [http://www.emacswiki.org/emacs/vimpulse discussion page for vimpulse.el].
+[[Vimpulse]] provides text objects (e.g., `ciw') for Viper.
 
-[new]
-'''Bug''': `==' doesn't work on viper 3.14 (Viper Bell in minibuffer and no effect).
-You can fix it modifying viper-prefix-arg-com: 
+=== Bugs ===
+
+`==' doesn't work on viper 3.14 (Viper Bell in minibuffer and no effect).
+You can fix it modifying ##viper-prefix-arg-com##: 
 {{{
       (if (atom com)
 	  ;; `com' is a single char, so we construct the command argument

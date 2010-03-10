@@ -1,4 +1,3 @@
-
 Notice: The content from this page is being migrated to:
 
 http://www.emacswiki.org/emacs/CategoryESS
@@ -67,6 +66,15 @@ This is quite useful, saves many keystrokes, especially starting R.
   (require 'ess-site)
 
 -- FelipeCsaszar
+
+[new]
+Be careful with the code above: 
+(setq comint-prompt-read-only t)
+appears to break ESS in the case where your prompt looks something like this as a result of successive evaluations from source code buffer:
+> + + + > foo
+>
+Now if you put the cursor on this line and do C-c <RET>, which should normally copy foo to the current input line, you will lose the ability to communicate with R, and the only solution is to kill it.  Furthermore, it breaks some other modes that rely on comint (for instance, matlab.el).  I'd recommend commenting out that line.
+
 
 == Show a tooltip summarizing the object at point ==
 
