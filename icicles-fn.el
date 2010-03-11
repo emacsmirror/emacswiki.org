@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Mar  9 13:30:51 2010 (-0800)
+;; Last-Updated: Wed Mar 10 14:15:55 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 11597
+;;     Update #: 11623
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -17,10 +17,9 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos-fn+var', `cl', `color-theme', `cus-face',
-;;   `easymenu', `el-swank-fuzzy', `ffap', `ffap-', `fuzzy-match',
-;;   `hexrgb', `icicles-face', `icicles-opt', `icicles-var',
-;;   `kmacro', `levenshtein', `reporter', `sendmail', `thingatpt',
+;;   `apropos', `apropos-fn+var', `cl', `el-swank-fuzzy', `ffap',
+;;   `ffap-', `fuzzy-match', `hexrgb', `icicles-face', `icicles-opt',
+;;   `icicles-var', `kmacro', `levenshtein', `thingatpt',
 ;;   `thingatpt+', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -3445,32 +3444,39 @@ Do this only if `icicle-help-in-mode-line-flag' is non-nil."
                               (icicle-transform-multi-completion candidate))
                              (t         ; Convert to symbol or nil.
                               (intern-soft (icicle-transform-multi-completion candidate)))))
-           (doc        (cond ((and cand (symbolp cand) ; If no symbol help, try string.
-                                   (cond ((get cand 'icicle-mode-line-help))
-                                         ((fboundp cand)
-                                          (or (documentation cand t)
-                                              (if (string-match "^menu-function-[0-9]+$" ; easy-menu
-                                                                (symbol-name cand))
-                                                  (format "%s" (symbol-function cand))
-                                                (format "Command `%s'" cand))))
-                                         ((facep cand) (face-documentation cand))
-                                         (t (documentation-property cand 'variable-documentation t)))))
-                             ((and (consp cand) (eq (car cand) 'lambda)) (format "%s" cand))
-                             ((and (stringp cand) (member cand '("Prefix key" "GO UP")))
-                              cand) ; e.g. Prefix key.
-                             ((stringp candidate)
-                              (setq candidate  (icicle-transform-multi-completion candidate))
-                              (cond ((get-text-property 0 'icicle-mode-line-help candidate))
-                                    ((and (or (icicle-file-name-input-p) icicle-abs-file-candidates)
-                                          (file-exists-p candidate))
-                                     (if (get-buffer candidate)
-                                         (concat (icicle-help-line-buffer candidate 'no-bytes-p) " "
-                                                 (icicle-help-line-file cand))
-                                       (icicle-help-line-file candidate)))
-                                    ((get-buffer candidate) (icicle-help-line-buffer candidate))
-                                    (t nil))))) ; Punt.
+           (doc        (progn (when (stringp candidate)
+                                (setq candidate  (icicle-transform-multi-completion candidate)))
+                              (cond ((and (stringp candidate) ; String with help as property.
+                                          (get-text-property 0 'icicle-mode-line-help candidate)))
+                                    ((and cand (symbolp cand) ; Symbol.
+                                          (cond ((get cand 'icicle-mode-line-help)) ; Help prop.
+                                                ((fboundp cand) ; Function.
+                                                 (or (documentation cand t) ; Functon's doc string.
+                                                     (if (string-match ; Easy-menu item.
+                                                          "^menu-function-[0-9]+$" (symbol-name cand))
+                                                         (format "%s" (symbol-function cand))
+                                                       (format "Command `%s'" cand))))
+                                                ((facep cand) (face-documentation cand)) ; Face.
+                                                (t (documentation-property ; Variable.
+                                                    cand 'variable-documentation t)))))
+                                    ((and (consp cand) (eq (car cand) 'lambda)) ; Lambda form.
+                                     (format "%s" cand))
+                                    ((and (stringp cand) ; Prefix key, `..'.
+                                          (member cand '("Prefix key" "GO UP")))
+                                     cand)
+                                    ((stringp candidate) ; String without help property.
+                                     (cond ((and (or (icicle-file-name-input-p) ; File name.
+                                                     icicle-abs-file-candidates)
+                                                 (file-exists-p candidate))
+                                            (if (get-file-buffer candidate)
+                                                (concat (icicle-help-line-buffer
+                                                         (get-file-buffer candidate) 'no-bytes-p) " "
+                                                         (icicle-help-line-file cand))
+                                              (icicle-help-line-file candidate)))
+                                           ((get-buffer candidate) ; Non-file buffer.
+                                            (icicle-help-line-buffer candidate))
+                                           (t nil)))))) ; Punt.
            (doc-line1  (and (stringp doc)  (string-match ".+$" doc)  (match-string 0 doc))))
-
       (when doc-line1
         (put-text-property 0 (length doc-line1) 'face 'icicle-mode-line-help doc-line1)
         (icicle-show-in-mode-line

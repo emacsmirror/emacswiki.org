@@ -43,5 +43,10 @@ The three modes are really quite similar, so it would be best to combine all des
 [new]
 I think it is better to autoload dos-mode? i.e., put a ";;;###autoload" before its definition. -- WilliamXu
 
+[new]
+While ##dos-mode## does have navigation support, the current version does it through generic emacs outline-mode, while ##cmd-mode## does it through native, integrated navigation.  The problem with the
+native emacs outline-mode is that you don't get syntax highlighting, for one thing, while you are in outline mode.  So I prefer ##cmd-mode## just because of that. (Eli Boling) 
+
+
 ----
 CategoryProgramming

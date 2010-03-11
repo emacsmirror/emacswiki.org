@@ -1,4 +1,4 @@
-;;; pos-tip.el -- Show tooltip at point
+;;; pos-tip.el -- Show tooltip at point -*- coding: utf-8 -*-
 
 ;; Copyright (C) 2010 S. Irie
 
@@ -6,7 +6,7 @@
 ;; Maintainer: S. Irie
 ;; Keywords: Tooltip
 
-(defconst pos-tip-version "0.1.0")
+(defconst pos-tip-version "0.1.2")
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -31,6 +31,8 @@
 ;; is not easy. This program provides such function to be used by other
 ;; frontend programs.
 
+;; *** Note that this program can work only under X window system. ***
+
 ;;
 ;; Installation:
 ;;
@@ -43,13 +45,22 @@
 ;;
 ;; We can display a tooltip at POS in WINDOW by following:
 ;;
-;;   (pos-tip "foo bar" POS WINDOW)
+;;   (pos-tip-show "foo bar" '(FG-COLOR . BG-COLOR) POS WINDOW)
 ;;
-;; Here, POS and WINDOW can be omitted, means use current position
-;; and selected window, respectively.
+;; Here, '(FG-COLOR . BG-COLOR), POS and WINDOW can be omitted, means
+;; use default colors, current position and selected window, respectively.
 ;;
 
 ;;; History:
+;; 2010-03-11  S. Irie
+;;         * Modified commentary
+;;         * Version 0.1.2
+;;
+;; 2010-03-11  S. Irie
+;;         * Re-implemented `pos-tip-string-width-height'
+;;         * Added indicator variable `pos-tip-upperside-p'
+;;         * Version 0.1.1
+;;
 ;; 2010-03-09  S. Irie
 ;;         * Re-implemented `pos-tip-show' (*incompatibly changed*)
 ;;             - Use frame default font
@@ -125,6 +136,8 @@ Users can also get the frame coordinates by referring the variable
 					    (search-forward "Y: ")
 					    (line-end-position)))))))))
 
+(defvar pos-tip-upperside-p nil)
+
 (defun pos-tip-compute-pixel-position
   (&optional pos window pixel-width pixel-height frame-coordinates dx)
   "Return the screen pixel position of POS in WINDOW as a cons cell (X . Y).
@@ -136,7 +149,9 @@ respectively.
 If PIXEL-WIDTH and PIXEL-HEIGHT are given, this function assumes these
 values as the size of small window like tooltip which is located around the
 point character. These value are used to adjust the position in order that
-the window doesn't disappear by sticking out of the display.
+the window doesn't disappear by sticking out of the display. By referring
+the variable `pos-tip-upperside-p' after calling this function, user can
+examine whether the window will be located above POS.
 
 FRAME-COORDINATES specifies the pixel coordinates of top left corner of the
 target frame relative to the display as a cons cell like (LEFT . TOP). If
@@ -168,7 +183,9 @@ DX specifies horizontal offset in pixel."
 			  (cdr (posn-object-width-height
 				(posn-at-x-y (max (car x-y) 0) (cadr x-y)))))))
     (cons (max 0 (min ax (- (x-display-pixel-width) (or pixel-width 0))))
-	  (if (> (+ ay char-height (or pixel-height 0)) (x-display-pixel-height))
+	  (if (setq pos-tip-upperside-p
+		    (> (+ ay char-height (or pixel-height 0))
+		       (x-display-pixel-height)))
 	      (max 0 (- ay (or pixel-height 0)))
 	    (+ ay char-height)))))
 
@@ -332,12 +349,13 @@ Example:
     (insert string)
     (goto-char (point-min))
     (end-of-line)
-    (let ((width-list (list (current-column))))
+    (let ((width (current-column))
+	  (height 1))
       (while (< (point) (point-max))
 	(end-of-line 2)
-	(push (current-column) width-list))
-      (cons (apply 'max width-list)
-	    (length width-list)))))
+	(setq width (max (current-column) width)
+	      height (1+ height)))
+      (cons width height))))
 
 (defun pos-tip-tooltip-width (width char-width)
   "Calculate tooltip pixel width."

@@ -6,7 +6,7 @@
 ;; Maintainer: S. Irie
 ;; Keywords: Tooltip, Dictionary
 
-(defconst sdic-inline-pos-tip-version "0.0.3")
+(defconst sdic-inline-pos-tip-version "0.0.4")
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -46,9 +46,14 @@
 ;;
 
 ;;; History:
+;; 2010-03-11  S. Irie
+;;         * Modified to simplify implementation
+;;         * Fixed typo
+;;         * Version 0.0.4
+;;
 ;; 2010-03-09  S. Irie
 ;;         * Changed to use `pos-tip-split-string'
-;;              (*Require pos-tip.el ver. 0.1.0 or higher*)
+;;              (*Require pos-tip.el ver. 0.1.0 or later*)
 ;;         * Version 0.0.3
 ;;
 ;; 2010-03-08  S. Irie
@@ -118,26 +123,28 @@ See `pos-tip-show' for details.")
     (when entry
       ;; Use the same font as selected frame in tooltip
       (set-face-font 'sdic-inline-pos-tip (frame-parameter nil 'font))
-      (let (width-list)
-	;; Main part
+      ;; Main part
+      (let ((width 0)
+	    (height 0))
 	(pos-tip-show-no-propertize
-	 ;; Arange string
+	 ;; Arrange string
 	 (mapconcat
 	  (lambda (item)
 	    (let ((head (sdicf-entry-headword item))
-		  (desc (pos-tip-split-string (sdicf-entry-text item)
-					      sdic-inline-pos-tip-max-width 1)))
-	      ;; Record all row width in order to calculate tooltip width
-	      (setq width-list (cons (string-width head)
-				     (nconc (mapcar 'string-width desc)
-					    width-list)))
+		  (desc (sdicf-entry-text item)))
+	      (setq width (max (string-width head) width)
+		    height (1+ height))
 	      ;; Propertize entry string by appropriate faces
 	      (concat (propertize head 'face 'sdic-inline-pos-tip-entry)
 		      "\n"
 		      (mapconcat
 		       (lambda (row)
+			 (setq width (max (string-width row) width)
+			       height (1+ height))
 			 (propertize row 'face 'sdic-inline-pos-tip))
-		       desc "\n"))))
+		       (pos-tip-split-string
+			desc sdic-inline-pos-tip-max-width 1)
+		       "\n"))))
 	  entry "\n")
 	 ;; Face which specifies tooltip's background color
 	 'sdic-inline-pos-tip
@@ -148,8 +155,8 @@ See `pos-tip-show' for details.")
 	     sdic-inline-pos-tip-timeout-man
 	   sdic-inline-pos-tip-timeout-auto)
 	 ;; Calculate tooltip's pixel size
-	 (pos-tip-tooltip-width (apply 'max width-list) (frame-char-width))
-	 (pos-tip-tooltip-height (length width-list) (frame-char-height))))))
+	 (pos-tip-tooltip-width width (frame-char-width))
+	 (pos-tip-tooltip-height height (frame-char-height))))))
    ;; If non-X frame, use substitutive function
    ((interactive-p)
     (if (commandp sdic-inline-pos-tip-subst-func-man)

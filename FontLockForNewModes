@@ -40,5 +40,8 @@ This is gross.  It is also the reason why sometimes (very seldom) a buffer will 
 * [http://two-wugs.net/emacs/mode-tutorial.html Tutorial by Scott Andrew Borton for creating a new mode with fontification]
 
 (this link is unfortunately dead as far as I can tell.  However, [http://web.archive.org/web/20070702002238/http://two-wugs.net/emacs/mode-tutorial.html the WaybackMachine] has it. --CharlesSebold)
+
+[new:diesch:2010-03-10 12:30 UTC]
+Steffen Schwigon made it [http://renormalist.net/Renormalist/EmacsLanguageModeCreationTutorial available] again. --[[diesch]]
 ----
 CategoryFaces CategoryCode

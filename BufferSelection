@@ -52,6 +52,47 @@ fix it:
       (server-kill-buffer (get-buffer buffer))
       (not (buffer-name (get-buffer buffer))))
 
+==Match buffers by arbitrary regexp==
+The following code gives you an extra configuration called ##regexp## to match buffer names against an arbitrary [[regular expression]]. You can change the regexp by pressing `C-r' in the ##*buffer-selection*## buffer (use up/down arrow keys to navigate regexp history), and you can select the ##regexp## configuration by pressing `R'. -- JoeBloggs
+
+    (defvar joebloggs/bs-regexp ".*"
+      "regexp with which to match buffer names for buffer show `regexp' configuration.")
+    
+    (defvar joebloggs/bs-regexp-history '()
+      "history list for use in joebloggs/bs-set-regexp.")
+
+    (defun joebloggs/bs-set-regexp (regexp)
+      "Set the value of joebloggs/bs-regexp - a regexp to match buffer names for 
+      the `regexp' configuration of buffer show."
+      (interactive (list (read-string "Regexp to match buffer names: " nil 'joebloggs/bs-regexp-history)))   
+      (setq joebloggs/bs-regexp regexp))
+    
+    (defun joebloggs/bs-select-configuration (configname)
+      "Apply configuration named configname and refresh buffer list."
+      (bs-set-configuration configname)
+      (setq bs-default-configuration bs-current-configuration)
+      (bs--redisplay t)
+      (bs--set-window-height)
+      (bs-message-without-log "Selected configuration: %s" configname))
+    
+    
+    (add-to-list 'bs-configurations
+    	     '("regexp" nil 
+    	       (lambda (buf) (string-match joebloggs/bs-regexp (buffer-name buf)))
+    	       nil
+    	       (lambda (buf) (not (string-match joebloggs/bs-regexp (buffer-name buf))))
+    	       nil))
+    
+    (add-hook 'bs-mode-hook
+        	  (function (lambda ()
+        		      (local-set-key (kbd "R")
+        				     (function (lambda nil (interactive) 
+    						 (joebloggs/bs-select-configuration "regexp"))))
+        		      (local-set-key (kbd "C-r")
+        				     (function (lambda nil (interactive) 
+        						 (call-interactively 'joebloggs/bs-set-regexp)))))))
+
+
 = Problems, questions and hopefully some answers too =
 
 == bs-dont-show-regexp ==
@@ -72,7 +113,7 @@ Thank you. :)
 
 * CategoryBufferSwitching for information on other ways to select buffers.
 
-* [[Icicles]], which also has buffer configurations -- see command `icicle-buffer-config' and user option `icicle-buffer-configs'.
+* [[Icicles]], which also has buffer configurations -- see command `icicle-buffer-config' and user option `icicle-buffer-configs'. It also lets you match buffer names using [[regexp]]s, even multiple regexps.
 
 * KillingBuffers, for an example of using '''Icicles''' to write a command to kill all Dired buffers. The same command also shows you all Dired buffers (via `S-TAB') -- no need for a separate Dired-buffers configuration.
 [new]

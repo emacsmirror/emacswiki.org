@@ -101,7 +101,14 @@ Running 'M-x epa-decrypt-file RET FILENAME' on the same file gives the following
 epg-decrypt-file: Wrong type argument: listp, exit
 '
 
- Any thoughts or comments would be much appreciated!!   
+ Any thoughts or comments would be much appreciated!!
+
+You can use public key to save(encrypt) a *.gpg file, and only use private key to (re)open(or decrypt) it. If you are the public key's owner, you can use command 
+
+   gpg -o [fn] --export-private-keys -a
+
+to get it and import it to your system.
+
 
 == Documentation ==
 

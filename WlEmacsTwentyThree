@@ -1,3 +1,5 @@
 Wanderlust has some problems with Emacs 23:
 
 * UTF-8 text is misencoded
+
+Use the CVS version to avoid this problem.

@@ -60,5 +60,16 @@ As I often need to switch between English and German I use this function:
 
 - [[diesch]] -
 
+[new]
+Flyspell comes with a mode to check comments and strings in programming modes. Just type M-x flyspell-prog-mode or add it to your mode hooks
+
+  (add-hook 'c++-mode-hook
+          (lambda ()
+            (flyspell-prog-mode)
+            ; ...
+          ))
+
+- [[ruediger]] -
+
 ----
 CategoryModes | CategorySpelling

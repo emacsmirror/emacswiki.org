@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Mar  5 23:30:33 2010 (-0800)
+;; Last-Updated: Wed Mar 10 15:44:39 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 11698
+;;     Update #: 11748
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -153,6 +153,7 @@
 ;;    `bookmarkp-bmenu-show-only-w3m-urls',
 ;;    `bookmarkp-bmenu-sort-by-bookmark-name',
 ;;    `bookmarkp-bmenu-sort-by-bookmark-visit-frequency',
+;;    `bookmarkp-bmenu-sort-by-creation-time',
 ;;    `bookmarkp-bmenu-sort-by-file-name',
 ;;    `bookmarkp-bmenu-sort-by-Gnus-thread',
 ;;    `bookmarkp-bmenu-sort-by-Info-location',
@@ -269,8 +270,10 @@
 ;;    `bookmarkp-bmenu-mark/unmark-bookmarks-tagged-some/not-all',
 ;;    `bookmarkp-bmenu-propertize-item',
 ;;    `bookmarkp-bmenu-read-filter-input',
+;;    `bookmarkp-bookmark-creation-cp',
 ;;    `bookmarkp-bookmark-last-access-cp',
 ;;    `bookmarkp-bookmark-list-alist-only',
+;;    `bookmarkp-bookmark-list-bookmark-p',
 ;;    `bookmarkp-buffer-last-access-cp', `bookmarkp-cp-not',
 ;;    `bookmarkp-current-sort-order', `bookmarkp-desktop-alist-only',
 ;;    `bookmarkp-desktop-bookmark-p', `bookmarkp-desktop-kill',
@@ -1556,6 +1559,10 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2010/03/10 dadams
+;;     Added: bookmarkp-bookmark-creation-cp, bookmarkp-bmenu-sort-by-creation-time (bind: s0, menu).
+;;     *-make-record-default: Add entry: created.
+;;     *-describe-bookmark: Add creation time to description.
 ;; 2010/03/03 dadams
 ;;     *-sort-and-remove-dups: Do not set bookmarkp-sorted-alist to the result.
 ;;     *-bmenu-list-1: Set bookmarkp-sorted-alist to the result of calling *-sort-and-remove-dups.
@@ -3480,15 +3487,16 @@ pertains to the location within the buffer."
                                                  (bookmark-buffer-file-name))
                                                 (dired-p  nil)
                                                 (t        bookmarkp-non-file-filename)))))
-      (buffer-name . ,buf)
-      (front-context-string . ,fcs)
-      (rear-context-string . ,rcs)
+      (buffer-name                 . ,buf)
+      (front-context-string        . ,fcs)
+      (rear-context-string         . ,rcs)
       (front-context-region-string . ,fcrs)
-      (rear-context-region-string . ,ecrs)
-      (visits . 0)
-      (time . ,ctime)
-      (position . ,beg)
-      (end-position . ,end))))
+      (rear-context-region-string  . ,ecrs)
+      (visits                      . 0)
+      (time                        . ,ctime)
+      (created                     . ,ctime)
+      (position                    . ,beg)
+      (end-position                . ,end))))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -5276,7 +5284,7 @@ Returns the bookmark (internal record) created or updated."
                       `((filename . ,bookmarkp-non-file-filename)
                         (position . 0)
                         (sequence ,@new-seq)
-                        (handler . bookmarkp-jump-sequence))
+                        (handler  . bookmarkp-jump-sequence))
                       nil)))
   (let ((new  (bookmark-get-bookmark bookmark-name 'noerror)))
     (unless (memq new bookmarkp-latest-bookmark-alist)
@@ -7136,6 +7144,7 @@ With a prefix arg, reverse the current sort order."
         (setq next-order  (or (cadr (member (bookmarkp-current-sort-order) orders))  (car orders))
               bookmarkp-sort-comparer  (cdr (assoc next-order
                                                    bookmarkp-sort-orders-for-cycling-alist))))
+      (message "Sorting...")
       (bookmark-bmenu-surreptitiously-rebuild-list)
       (bookmarkp-bmenu-goto-bookmark-named current-bmk) ; Put cursor back on the right line.
       (when (interactive-p) (bookmarkp-msg-about-sort-order next-order)))))
@@ -7297,6 +7306,13 @@ by bookmark name.")
 When two bookmarks are not comparable by visit time, compare them
 by bookmark name.")
 
+(bookmarkp-define-sort-command          ; `s 0' in bookmark list
+ "by creation time"            ; `bookmarkp-bmenu-sort-by-creation-time'
+ ((bookmarkp-bookmark-creation-cp) bookmarkp-alpha-p)
+ "Sort bookmarks by the time of their creation.
+When one or both of the bookmarks does not have a `created' entry),
+compare them by bookmark name.")
+
 (bookmarkp-define-sort-command          ; `s n' in bookmark list
  "by bookmark name"                     ; `bookmarkp-bmenu-sort-by-bookmark-name'
  bookmarkp-alpha-p
@@ -7388,6 +7404,27 @@ Return nil if incomparable as described."
                  (t nil)))
           (v1 '(t))
           (v2 '(nil))
+          (t nil))))
+
+(defun bookmarkp-bookmark-creation-cp (b1 b2)
+  "True if bookmark B1 was created more recently than B2.
+B1 and B2 are bookmarks or bookmark names.
+True also if B1 has a `created' entry but B2 has none.
+Reverse the roles of B1 and B2 for a false value.
+A true value is returned as `(t)', a false value as `(nil)'.
+Return nil if incomparable as described."
+  (setq b1  (bookmark-get-bookmark b1)
+        b2  (bookmark-get-bookmark b2))
+  (let ((t1  (bookmark-prop-get b1 'created))
+        (t2  (bookmark-prop-get b2 'created)))
+    (cond ((and t1 t2)
+           (setq t1  (bookmarkp-float-time t1)
+                 t2  (bookmarkp-float-time t2))
+           (cond ((> t1 t2) '(t))
+                 ((> t2 t1) '(nil))
+                 (t nil)))
+          (t1 '(t))
+          (t2 '(nil))
           (t nil))))
 
 (defun bookmarkp-bookmark-last-access-cp (b1 b2)
@@ -7785,6 +7822,7 @@ BOOKMARK is a bookmark name or a bookmark record."
           (file        (bookmark-get-filename bookmark))
           (start       (bookmark-get-position bookmark))
           (end         (bookmarkp-get-end-position bookmark))
+          (created     (bookmark-prop-get bookmark 'created))
           (time        (bookmarkp-get-visit-time bookmark))
           (visits      (bookmarkp-get-visits-count bookmark))
           (tags        (mapcar #'bookmarkp-tag-name (bookmarkp-get-tags bookmark)))
@@ -7842,16 +7880,17 @@ Inserted subdirs:\t%s\nHidden subdirs:\t\t%s\n"
                                 marked inserted hidden)))
                      ((equal file bookmarkp-non-file-filename)
                       (format "Buffer:\t\t\t%s\n" (bookmarkp-get-buffer-name bookmark)))
-                     (file    (format "File:\t\t\t%s\n" (expand-file-name file)))
-                     (t       "Unknown\n"))
+                     (file        (format "File:\t\t\t%s\n" (expand-file-name file)))
+                     (t           "Unknown\n"))
                (unless no-position-p
                  (if (bookmarkp-region-bookmark-p bookmark)
                      (format "Region:\t\t\t%d to %d (%d chars)\n" start end (- end start))
                    (format "Position:\t\t%d\n" start)))
-               (if visits (format "Visits:\t\t\t%d\n" visits) "")
-               (if time   (format "Last visit:\t\t%s\n" (format-time-string "%c" time)) "")
-               (if tags   (format "Tags:\t\t\t%S\n" tags) "")
-               (if annot  (format "\nAnnotation:\n%s" annot)))))
+               (if visits  (format "Visits:\t\t\t%d\n" visits) "")
+               (if time    (format "Last visit:\t\t%s\n" (format-time-string "%c" time)) "")
+               (if created (format "Creation:\t\t%s\n" (format-time-string "%c" created)) "")
+               (if tags    (format "Tags:\t\t\t%S\n" tags) "")
+               (if annot   (format "\nAnnotation:\n%s" annot)))))
         (with-output-to-temp-buffer "*Help*" (princ help-text))
         help-text))))
 
@@ -9078,6 +9117,8 @@ candidate."
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "s>"   'bookmarkp-bmenu-sort-marked-before-unmarked)
 ;;;###autoload
+(define-key bookmark-bmenu-mode-map "s0"   'bookmarkp-bmenu-sort-by-creation-time)
+;;;###autoload
 (define-key bookmark-bmenu-mode-map "sb"   'bookmarkp-bmenu-sort-by-last-buffer-or-file-access)
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "sfd"  'bookmarkp-bmenu-sort-by-local-file-type)
@@ -9509,6 +9550,7 @@ access
 \\[bookmarkp-bmenu-sort-by-Info-location]\t- Sort by Info manual, node, position
 \\[bookmarkp-bmenu-sort-by-bookmark-type]\t- Sort by bookmark type
 \\[bookmarkp-bmenu-sort-by-bookmark-name]\t- Sort by bookmark name
+\\[bookmarkp-bmenu-sort-by-creation-time]\t- Sort by bookmark creation time
 \\[bookmarkp-bmenu-sort-by-last-bookmark-access]\t- Sort by last bookmark access time
 \\[bookmarkp-bmenu-sort-by-bookmark-visit-frequency]\t- Sort by bookmark visit frequency
 \\[bookmarkp-bmenu-sort-by-w3m-url]\t- Sort by W3M URL
@@ -9782,6 +9824,9 @@ bookmark-menu-length             - Max size of bookmark-name menu item"
 (define-key bookmarkp-bmenu-sort-menu [bookmarkp-bmenu-sort-by-bookmark-name]
   '(menu-item "By Bookmark Name" bookmarkp-bmenu-sort-by-bookmark-name
     :help "Sort bookmarks by bookmark name, respecting `case-fold-search'"))
+(define-key bookmarkp-bmenu-sort-menu [bookmarkp-bmenu-sort-by-creation-time]
+  '(menu-item "By Creation Time" bookmarkp-bmenu-sort-by-creation-time
+    :help "Sort bookmarks by the time of their creation"))
 (define-key bookmarkp-bmenu-sort-menu [bookmarkp-bmenu-sort-by-last-bookmark-access]
   '(menu-item "By Last Bookmark Access" bookmarkp-bmenu-sort-by-last-bookmark-access
     :help "Sort bookmarks by the time of their last visit as bookmarks"))

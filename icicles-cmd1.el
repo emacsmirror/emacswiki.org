@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Mar  9 09:08:18 2010 (-0800)
+;; Last-Updated: Wed Mar 10 13:29:32 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 20273
+;;     Update #: 20325
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -17,14 +17,14 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos-fn+var', `avoid', `cl', `color-theme',
-;;   `cus-edit', `cus-face', `cus-load', `cus-start', `doremi',
-;;   `easymenu', `el-swank-fuzzy', `ffap', `ffap-', `frame-cmds',
-;;   `frame-fns', `fuzzy-match', `hexrgb', `icicles-face',
-;;   `icicles-fn', `icicles-mcmd', `icicles-opt', `icicles-var',
-;;   `kmacro', `levenshtein', `misc-fns', `mwheel', `pp', `pp+',
-;;   `reporter', `ring', `ring+', `sendmail', `strings', `thingatpt',
-;;   `thingatpt+', `wid-edit', `wid-edit+', `widget'.
+;;   `apropos', `apropos-fn+var', `avoid', `cl', `cus-edit',
+;;   `cus-face', `cus-load', `cus-start', `doremi', `easymenu',
+;;   `el-swank-fuzzy', `ffap', `ffap-', `frame-cmds', `frame-fns',
+;;   `fuzzy-match', `hexrgb', `icicles-face', `icicles-fn',
+;;   `icicles-mcmd', `icicles-opt', `icicles-var', `kmacro',
+;;   `levenshtein', `misc-fns', `mwheel', `pp', `pp+', `ring',
+;;   `ring+', `strings', `thingatpt', `thingatpt+', `wid-edit',
+;;   `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -3128,19 +3128,59 @@ You probably don't want to use this.  Use
 
 (defun icicle-bookmark-help-string (bookmark-name)
   "Return a help string for BOOKMARK-NAME."
-  (let* ((bmk    (bookmark-get-bookmark bookmark-name))
-         (buf    (and (fboundp 'bookmarkp-get-buffer-name) ; Defined in `bookmark+.el'.
-                      (bookmarkp-get-buffer-name bmk)))
-         (file   (bookmark-get-filename bmk))
-         (start  (bookmark-get-position bmk))
-         (end    (and (fboundp 'bookmarkp-get-end-position) ; Defined in `bookmark+.el'.
-                      (bookmarkp-get-end-position bmk)))
-         (annot  (bookmark-get-annotation bmk)))
-    (concat (or (and file (format "File `%s', " file)) (and buf (format "Buffer `%s', " buf)))
-            (if (and end (> (- end start) 0))
-                (format "from %d to %d (%d chars)" start end (- end start))
-              (format "position %d" start))
-            (and annot (format ",\n%s" annot)))))
+  (let* ((bmk         (bookmark-get-bookmark bookmark-name))
+         (buf         (and (fboundp 'bookmarkp-get-buffer-name) ; Defined in `bookmark+.el'.
+                           (bookmarkp-get-buffer-name bmk)))
+         (file        (bookmark-get-filename bmk))
+         (start       (bookmark-get-position bmk))
+         (end         (and (fboundp 'bookmarkp-get-end-position) ; Defined in `bookmark+.el'.
+                           (bookmarkp-get-end-position bmk)))
+         (annot       (bookmark-get-annotation bmk))
+         (sequence-p  (and (fboundp 'bookmarkp-sequence-bookmark-p) ; Defined in `bookmark+.el'.
+                           (bookmarkp-sequence-bookmark-p bmk)))
+         (function-p  (and (fboundp 'bookmarkp-function-bookmark-p) ; Defined in `bookmark+.el'.
+                           (bookmarkp-function-bookmark-p bmk)))
+         (blist-p     (and (fboundp 'bookmarkp-bookmark-list-bookmark-p)
+                           (bookmarkp-bookmark-list-bookmark-p bmk))) ; Defined in `bookmark+.el'.
+         (desktop-p   (and (fboundp 'bookmarkp-desktop-bookmark-p) ; Defined in `bookmark+.el'.
+                           (bookmarkp-desktop-bookmark-p bmk)))
+         (dired-p     (and (fboundp 'bookmarkp-dired-bookmark-p) ; Defined in `bookmark+.el'.
+                           (bookmarkp-dired-bookmark-p bmk)))
+         (gnus-p      (and (fboundp 'bookmarkp-gnus-bookmark-p) ; Defined in `bookmark+.el'.
+                           (bookmarkp-gnus-bookmark-p bmk)))
+         (info-p      (and (fboundp 'bookmarkp-info-bookmark-p) ; Defined in `bookmark+.el'.
+                           (bookmarkp-info-bookmark-p bmk)))
+         (man-p       (and (fboundp 'bookmarkp-man-bookmark-p) ; Defined in `bookmark+.el'.
+                           (bookmarkp-man-bookmark-p bmk)))
+         (w3m-p       (and (fboundp 'bookmarkp-w3m-bookmark-p) ; Defined in `bookmark+.el'.
+                           (bookmarkp-w3m-bookmark-p bmk)))
+         type-info-p no-position-p)
+    (when (or sequence-p function-p) (setq no-position-p  t))
+    (concat (setq type-info-p
+                  (cond (sequence-p (format "Sequence: %S" (bookmark-prop-get bmk 'sequence)))
+                        (function-p (let ((fn  (bookmark-prop-get bmk 'function)))
+                                      (if (symbolp fn) (format "Function: `%s'" fn) "Function")))
+                        (desktop-p  "Desktop, ")
+                        (dired-p    (format "Dired %s, " file))
+                        (gnus-p     "Gnus, ")
+                        (info-p     "Info, ")
+                        (man-p      (let ((man-args  (bookmark-prop-get bmk 'man-args)))
+                                      (if man-args
+                                          (format "`man %s', " man-args)
+                                        ;; WoMan has no variable for the cmd name.
+                                        (format "%s, " (bookmark-prop-get bmk 'buffer-name)))))
+                        (w3m-p      "W3M URL, ")
+                        (t nil)))
+            (and (not dired-p)
+                 (or (and file (or (not (boundp 'bookmarkp-non-file-filename))
+                                   (not (equal file bookmarkp-non-file-filename)))
+                          (format (if type-info-p "file `%s', " "File `%s', ") file))
+                     (and buf (format (if type-info-p "buffer `%s', " "Buffer `%s', ") buf))))
+            (and (not no-position-p)
+                 (if (and end (> (- end start) 0))
+                     (format "from %d to %d (%d chars)" start end (- end start))
+                   (format "position %d" start)))
+            (and annot (format ", %s" annot)))))
 
 (defun icicle-bookmark-cleanup ()
   "Cleanup code for `icicle-bookmark'.

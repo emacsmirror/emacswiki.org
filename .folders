@@ -1,0 +1,24 @@
+This is my ~/.folders config file for WanderLust, with an example of connecting to an MS Exchange Server.
+JimBurton
+<pre>
+#
+# Folder definition file
+# This file is generated automatically by Wanderlust/2.15.6 (Almost Unreal).
+#
+# If you edit this file by hand, be sure that comment lines
+# will be washed out by wl-fldmgr.
+#
+
+#IMAP account with no encryption
+%inbox:user@mail.sdf-eu.org	"sdf-eu"
+#IMAP on an MS Exchange Server with encryption
+%inbox:user/clear@exchange1.university.hom.ac.uk:143	"uni"
+out{
+	+~/Mail/queue	"queue"
+	+~/Mail/draft	"drafts"
+	+~/Mail/outbox/out	"sent"
+}
++~/Mail/trash	"rubbish"
+
+# end of file.
+</pre>

@@ -1,5 +1,7 @@
 The standard library tooltip.el provides the function for displaying a tooltip at mouse position which allows users to easily show it. However, locating tooltip at arbitrary buffer position in window is not easy. This program provides such function to be used by other frontend programs.
 
+Note that this program can work only under X window system.
+
 == Downloading ==
 
 : Lisp:pos-tip.el
@@ -78,8 +80,6 @@ This program provides the tooltip showing word meanings at cursor position like 
 [new:DrewAdams:2010-03-09 16:19 UTC]
 Some unsolicited feedback. ;-)
 
-* In the Commentary, you say ##(pos-tip "foo bar" POS WINDOW)##. Presumaby that should be `pos-tip-show' or something, since function `pos-tip' doesn't exist.
-
 * Doesn't work for me. This is what I have in buffer ##*xwininfo*##, after the `call-process': ##/usr/bin/bash: xwininfo: command not found##. I'm using Cygwin (and Windows). Please state in the file's Commentary what the prerequisites are (and which Emacs versions are supported).
 
 * Just out of curiosity, why not just add some optional parameters ##left## and ##top## to `tooltip-show' (calling it, e.g. `my-tooltip-show'), and then add this to the body:
@@ -92,12 +92,27 @@ Some unsolicited feedback. ;-)
 I agree that it is too bad that there is no simple way to show a tooltip at a specified position. The code should not be tightly coupled to a mouse position, as it is currently. Perhaps you can suggest a change to the Emacs developers, to allow passing the display position explicitly. -- DrewAdams
 
 [new]
+: I think your solution for `tooltip-show' is insufficient because tooltip immediately vanishes if it overlaps with mouse pointer. `pos-tip-show' can move out mouse pointer. -- [[irie]]
+
+[new:DrewAdams:2010-03-11 07:57 UTC]
+:: There is apparently an Emacs 23 bug -- I just filed a report (#5703). It works fine in Emacs 22, but Emacs 23 ignores the specified `left' and `top' locations, contradicting the doc strings of both `tooltip-show' and `tooltip-frame-parameters'. In Emacs 23, it always uses the mouse [[pointer]] location, which is wrong. -- DrewAdams
+
+
+----
+[new]
 There is a simple function point-to-coord in ourcomments-util.el in [NxhtmlMode nXhtml] that I have suggested adding to Emacs (without success yet) which I have been using for poping up a menu at point. Maybe this can be merged with pos-tip-compute-pixel-position here?
 -- LennartBorgman
 
 [new]
+: It seems that `point-to-coord' returns the pixel position relative to top left corner of *frame*, but tooltip must be specified it relative to top left corner of *display* because tooltip itself is a small frame. -- [[irie]]
+
+----
+[new]
 Since ##pos-tip.el## uses UTF-8, the first line should read
 
     pos-tip.el -- Show tooltip at point -*- coding: utf-8 -*-
+
+[new]
+: Thanks. I modified. -- [[irie]]
 
 -- VegardOye
