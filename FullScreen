@@ -139,6 +139,16 @@ Use [http://github.com/jmjeong/my-dot-emacs/blob/master/maxframe.el patched maxf
 	(my-fullscreen)))
 }}}
 
+== Starting in fullscreen mode ==
+
+At least on my Ubuntu installation, directly calling (fullscreen) from the .emacs gives weird layout behaviour.
+It seems that window resizes have to take place after something which is evaluated after the .emacs, so this did the job for me:
+{{{
+(run-with-idle-timer 0.1 nil 'fullscreen)
+}}}
+
+Note that an after-init-hook didn't work for me.
+
 == Q&A ==
 
 ** Under Fvwm 2.5.23 I get a little band of background at the bottom

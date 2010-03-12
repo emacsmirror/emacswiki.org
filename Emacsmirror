@@ -85,7 +85,6 @@ people don't waste their time trying to find the same package.
 ** [http://turingmachine.org/elisp/anaya.el anaya]
 ** [http://pbreton.ne.client2.attbi.com/emacs/ ant]
 ** [http://www.keelhaul.me.uk/linux/apache-mode.el apache-mode]
-** apt-sources no-direct-download http://packages.debian.org/unstable/debian-el
 ** [http://ignotus.hixsplit.hu/AptUpgrade.html apt-upgrade]
 ** [http://web.verbum.org/~walters/ ascii-display]
 ** [http://www.ugcs.caltech.edu/~shulman/pub/Main/Software/auto-define.el auto-define]
@@ -124,7 +123,6 @@ people don't waste their time trying to find the same package.
 ** [http://panix.com/~tehom/my-code/comient-redirect.el comient-redirect]
 ** [http://pbreton.ne.mediaone.net/emacs/comint-redirect.el comint-redirect]
 ** [http://www.csis.ul.ie/staff/JohnSturdy/research-elisp/command-log.el command-log]
-** [http://np-salesman.net/programs/software/commented-info.el commented-info]
 ** [http://staff.science.uva.nl/~dominik/Tools/constants/constants.el constants]
 ** [http://www.ugcs.caltech.edu/~shulman/pub/Main/Software/coroutine.el coroutine]
 ** [http://freefriends.org/~karl/crypt++/ crypt++]
@@ -213,7 +211,6 @@ people don't waste their time trying to find the same package.
 ** [http://www.emacs.mirkolinkonline.de/umlaut.html html-umlaute-mode]
 ** [http://rtfm.etla.org/emacs/htmlfontify/ htmlfontify]
 ** [http://www.sixfingeredman.net/proj/xemacs/human.el human]
-** [http://np-salesman.net/programs/software/hyper-compile.el hyper-compile]
 ** [http://sourcery.naggum.no/emacs/hyperspec.el hyperspec]
 
 * I
@@ -242,7 +239,6 @@ people don't waste their time trying to find the same package.
 
 * K
 
-** [http://www.gnusoftware.com/Emacs/Lisp/keep-buffers.el keep-buffers]
 ** [http://www.geocrawler.com/archives/3/338/1998/6/0/1875116/ keywords]
 
 * L
@@ -288,7 +284,7 @@ people don't waste their time trying to find the same package.
 ** [http://www.jeanbaptiste-bourgoin.com/ mpcel]
 ** [http://www.mts.jhu.edu/~kapur/emacs/msn.el msn]
 ** [http://mathias.dahl.net/pgm/emacs/elisp/mss.el mss]
-** [http://np-salesman.net/programs/software/multi-mode-mode.el]
+** [http://np-salesman.net/programs/software/multi-mode-mode.el multi-mode-mode]
 ** [http://homepages.cs.ncl.ac.uk/phillip.lord/download/emacs/muse-definitions.el muse-definitions]
 ** [http://www.ma.utexas.edu/~jcorneli/a/elisp/musical-letters.el musical-letters]
 
@@ -306,8 +302,6 @@ people don't waste their time trying to find the same package.
 * O
 
 ** [http://pbreton.ne.mediaone.net/emacs/orbix.el orbix]
-** [http://home.attbi.com/~shannon1679/organizer-mode.html organizer-mode]
-** [http://www.astro.uva.nl/~dominik/Tools/outline-magic.el outline-magic]
 
 * P
 
@@ -315,7 +309,7 @@ people don't waste their time trying to find the same package.
 ** [http://www.csis.ul.ie/staff/JohnSturdy/research-elisp/papers.el papers]
 ** [http://www.bluetail.com/~luke/misc/emacs/pbook.el pbook]
 ** [http://www.gnusoftware.com/Emacs/Lisp/perldoc.el perldoc]
-** [http://ee.usyd.edu.au/~thlai/emacs/pifont.el.gz]
+** [http://ee.usyd.edu.au/~thlai/emacs/pifont.el.gz pifont]
 ** [http://www.cb1.com/~john/computing/emacs/lisp/natural-language/pinyin-conversions.el pinyin-conversions]
 ** [http://www.pmichaud.com/wiki/Cookbook/Pmwiki-mode pmwiki]
 ** [http://astro.utoronto.ca/~reid/mutt/ post]
@@ -326,7 +320,6 @@ people don't waste their time trying to find the same package.
 
 * Q
 
-** [http://www.qfs.de/en/projects/elisp/index.html qflib]
 ** [ftp://vh213601.truman.edu/pub/Quotes/quotes.el quotes]
 
 * R
@@ -364,7 +357,6 @@ people don't waste their time trying to find the same package.
 ** [http://www.chungkuo.org/elisp/speedread.el speedread]
 ** [http://www.dwwc.com/sql-mode/ sql-mode]
 ** [http://www.sics.se/~lofgren/emacs/sr-mode.el sr-mode]
-** [http://np-salesman.net/programs/software/super-fold.el super-fold]
 ** [http://www.glug.org/people/ttn/software/ttn-pers-elisp survey]
 
 * T
@@ -386,24 +378,14 @@ people don't waste their time trying to find the same package.
 
 * U
 
-** [http://ulf.epplejasper.de/downloads/u-mandelbrot.el u-mandelbrot]
 ** [http://www.tfkp.physik.uni-erlangen.de/~winkler/src/umlaute.el umlaute]
 ** [http://www.cs.uu.nl/~otfried/Mule/ unicode]
-** [http://www.csis.ul.ie/staff/JohnSturdy/research-elisp/unplugged/unplugged-transfers.el unplugged-transfer]
 ** [http://www.zanshin.com/~bobg/unscroll.html unscroll]
 
 * V
 
-** [https://intrigeri.boum.org/svn/pub/verbiste/verbiste.el verbiste]
 ** [http://www.gnusoftware.com/Emacs/Lisp/version-info.el version-info]
 ** [http://www.newartisans.com/johnw/Emacs visit-url]
-** [ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/vm-advice.el vm-advice]
-** [http://www.robf.de/Hacking/elisp/vm-biff.el vm-biff]
-** [http://www.robf.de/Hacking/elisp/vm-grepmail.el vm-grepmail]
-** [http://www.robf.de/Hacking/ vm-pcrisis]
-** [http://www.robf.de/Hacking/ vm-pine]
-** [http://www.robf.de/Hacking/elisp/vm-ps-print.el vm-ps-print]
-** [http://www.robf.de/Hacking/elisp/vm-serial.el vm-serial]
 ** [http://np-salesman.net/programs/software/vov-mode.el vov-mode]
 
 * W
@@ -427,12 +409,6 @@ people don't waste their time trying to find the same package.
 ** [http://www.newartisans.com/johnw/Emacs/xml-parse.el xml-parse]
 ** [http://www.pwstephenson.fsnet.co.uk/computing/ xref]
 ** [http://www.menteith.com/xslide/ xslide]
-
-* Y
-
-** [http://madbat.mine.nu/public/yaham/yaham.tar.gz yaham]
-
-* Z
 
 == Discussion ==
 

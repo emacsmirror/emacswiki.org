@@ -93,6 +93,23 @@ Response: I haven't tested the below extensively, but I believe it solves your p
     "Add Mutt C-c C-c command to message-mode keymap (creating it if needed)"
   )
 
+Update: Thank you very much, above code works but you completely replace message-mode's keymap so all other message-mode-bindings (for adding headers, jumping to body etc.) are gone. I finally managed to correct the first solution by wrapping the keybinding in a hook (problem seemed to be, that the 'message-mode-map'-variable is only available when in message mode). The complete snippet now reads:
+
+  (add-to-list 'auto-mode-alist '(".*mutt.*" . message-mode))                                                                   
+  (setq mail-header-separator "")                                                                                               
+  (add-hook 'message-mode-hook 'auto-fill-mode) 
+  (add-hook 'message-mode-hook
+          (function
+           (lambda ()
+             (progn
+               (local-unset-key "\C-c\C-c")
+               (define-key message-mode-map "\C-c\C-c" '(lambda ()
+                                                          "save and exit quickly"
+                                                          (interactive)
+                                                          (save-buffer)
+                                                          (server-edit)))))))
+
+I'm sure this can be written more concisely by combining the two hooks but as I said, I hardly know anything about elisp and don't want to fiddle any furher... At least everything works as it should now :-) 
 
 == Switching window focus between mutt and emacs when using emacsclient ==
 

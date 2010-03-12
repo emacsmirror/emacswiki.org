@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Mar 10 15:44:39 2010 (-0800)
+;; Last-Updated: Thu Mar 11 10:38:18 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 11748
+;;     Update #: 11756
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1559,6 +1559,9 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2010/03/11 dadams
+;;     Define bookmarkp-jump-woman also for Emacs 20 (just raise an error).
+;;     *-show-annotation: Typo: bookmark -> bmk-name.
 ;; 2010/03/10 dadams
 ;;     Added: bookmarkp-bookmark-creation-cp, bookmarkp-bmenu-sort-by-creation-time (bind: s0, menu).
 ;;     *-make-record-default: Add entry: created.
@@ -4130,7 +4133,7 @@ bookmark files that were created using the bookmark functions."
         (when msgp (message "Bookmark has no annotation"))
       (pop-to-buffer (get-buffer-create (format "*`%s' Annotation*" bmk-name)) t)
       (delete-region (point-min) (point-max))
-      (insert (concat "Annotation for bookmark '" bookmark "':\n\n"))
+      (insert (concat "Annotation for bookmark '" bmk-name "':\n\n"))
       (put-text-property (line-beginning-position -1) (line-end-position 1) 'face 'bookmarkp-heading)
       (insert ann)
       (goto-char (point-min))
@@ -8412,16 +8415,6 @@ BOOKMARK is a bookmark name or a bookmark record."
                                  (set (make-local-variable 'bookmark-make-record-function)
                                       'bookmarkp-make-woman-record)))
 
-  (defalias 'bmkext-jump-woman 'bookmarkp-jump-woman)
-  (defun bookmarkp-jump-woman (bookmark)
-    "Handler function for `man' page bookmark created by `woman'."
-    (unless (> emacs-major-version 20)
-      (error "`woman' bookmarks not supported in Emacs prior to Emacs 21"))
-    (bookmark-default-handler
-     `("" (buffer . ,(save-window-excursion (woman-find-file (bookmark-get-filename bookmark))
-                                            (current-buffer)))
-       . ,(bookmark-get-bookmark-record bookmark)))))
-
 (defun bookmarkp-make-man-record ()
   "Create bookmark record for `man' page bookmark created by `man'."
   `(,@(bookmark-make-record-default 'point-only)
@@ -8430,6 +8423,16 @@ BOOKMARK is a bookmark name or a bookmark record."
 
 (add-hook 'Man-mode-hook #'(lambda () (set (make-local-variable 'bookmark-make-record-function)
                                            'bookmarkp-make-man-record)))
+
+(defalias 'bmkext-jump-woman 'bookmarkp-jump-woman)
+(defun bookmarkp-jump-woman (bookmark)
+  "Handler function for `man' page bookmark created by `woman'."
+  (unless (> emacs-major-version 20)
+    (error "`woman' bookmarks not supported in Emacs prior to Emacs 21"))
+  (bookmark-default-handler
+   `("" (buffer . ,(save-window-excursion (woman-find-file (bookmark-get-filename bookmark))
+                                          (current-buffer)))
+     . ,(bookmark-get-bookmark-record bookmark)))))
 
 (defalias 'bmkext-jump-man 'bookmarkp-jump-man)
 (defun bookmarkp-jump-man (bookmark)

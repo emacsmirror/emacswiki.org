@@ -11,7 +11,7 @@ or for those behind a proxy:
 </pre>
 You can also browse the repository at http://repo.or.cz/w/emacs.git.
 
-Mirrors of the above git repository exist on [http://github.com/emacsmirror/emasc Github] and
+Mirrors of the above git repository exist on [http://github.com/emacsmirror/emacs Github] and
 [http://gitorious.org/emacsmirror/emacs Gitorious]. But be aware that these currently lag behind a bit.
 
 Beware that this (by design) includes the entire history and therefore weighs about 300MB.

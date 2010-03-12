@@ -97,6 +97,8 @@ I agree that it is too bad that there is no simple way to show a tooltip at a sp
 [new:DrewAdams:2010-03-11 07:57 UTC]
 :: There is apparently an Emacs 23 bug -- I just filed a report (#5703). It works fine in Emacs 22, but Emacs 23 ignores the specified `left' and `top' locations, contradicting the doc strings of both `tooltip-show' and `tooltip-frame-parameters'. In Emacs 23, it always uses the mouse [[pointer]] location, which is wrong. -- DrewAdams
 
+[new]
+::: Hmm... I can't reproduce such bug. -- [[irie]]
 
 ----
 [new]
@@ -112,7 +114,9 @@ Since ##pos-tip.el## uses UTF-8, the first line should read
 
     pos-tip.el -- Show tooltip at point -*- coding: utf-8 -*-
 
+-- VegardOye
+
 [new]
 : Thanks. I modified. -- [[irie]]
 
--- VegardOye
+
