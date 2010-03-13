@@ -11,7 +11,7 @@ Lisp:slime-company.el
 It can display docstrings and display the source of a completion candidate.
 Please note that it needs a Slime not older than 2009-11-07.
 
-A variant that works with the current Slime ELPA package (20091016) is available at:
+A variant that is always kept compatible with the latest Slime ELPA package is available at:
 http://gist.github.com/179847
 
 The first version of this file, for use with an older Slime, can be found at:

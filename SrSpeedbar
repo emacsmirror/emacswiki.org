@@ -61,3 +61,24 @@ Re-opening speedbar fixes the problem. Emacs 23.1.
 ----
 Setting the width doesn't appear to work (Emacs 23.1, Ubuntu 8.10). 
 
+----
+A few problems.  First, this is being tested on GNU Emacs 23.1.50.1 (i386-mingw-nt5.1.2600).
+# As noted above, window width setting does not seem to work.
+# The speedbar starts in a file mode, and does react to navigating folders but fails to show individual files.
+# Entering vhdl-mode made the initial window become the speedbar contents rather than the file that was selected in dired.
+# In vhdl-mode, it would not show subcontent of projects (likely a similar issue as with not showing files under a hierarchy.)
+
+Hard to know if this routine is being actively supported.  Your mileage may vary.
+
+A few addendums.  Not showing the files is due to the fundamental speedbar setting for showing files it does not know about.  Once that is set, it will show other files when navigating directories.  However, a few bugs remain
+# Window width still does not appear to work.
+# In VHDL mode, it does not support the other display modes (like projects) and so it'll show the project as a directory, but will not permit those to open and display.
+# When selecting a file in the speedbar, it'll load it into a buffer, but it doesn't load the mode correctly somehow.  The vhdl file is still in fundamental mode, and I have to manually toggle vhdl-mode on for that file.  Then things like syntax coloring appear.  I wonder if the vhdl-mode is getting loaded for the speedbar window rather than the buffer for the file you selected.
+
+Further further addendums.  I might need to clean this up a bit.
+
+# The issue with the speedbar, file selection, and loading a new mode appears to be a fundamental bug in speedbar itself.  I removed sr-speedbar from being loaded and just had emacs open speedbar in a new frame immediately upon opening.  When opening like this, it picks up the menu bar (bad), defaults to showing files (good), and upon selecting a file, the mode gets loaded for the speedbar frame, NOT the buffer.  This is readily apparent due to the menu bar issue.  The speedbar frame picks up the VHDL menu that gets added for that mode, while the buffer that was loaded is still in Fundamental mode.
+
+-- Mark
+
+

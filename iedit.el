@@ -2,11 +2,11 @@
 
 ;; Copyright (C) 2010 Victor Ren
 
-;; Time-stamp: <2010-03-07 22:48:30 Victor Ren>
+;; Time-stamp: <2010-03-13 17:17:16 Victor Ren>
 ;; Author: Victor Ren <victorhge@gmail.com>
 ;; Keywords: occurrence region replace simultaneous
-;; Version: 0.60
-;; X-URL: 
+;; Version: 0.70
+;; X-URL: http://www.emacswiki.org/emacs/iedit.el
 ;; Compatibility: GNU Emacs: 22.x, 23.x
 
 ;; This file is not part of GNU Emacs, but it is distributed under
@@ -56,13 +56,10 @@
 ;; (define-key isearch-mode-map (kbd "C-;") 'iedit-mode)
 
 ;;; todo:
-;; - wrapping around navigating 
-;; - Lazy highlight feature (from isearch)
+;; - Lazy highlight feature (from isearch)?
 ;; - Help information
-;; - Option of enabling linum-mode when unmatched lines are hided.
 ;; - face for current occurrence
 ;; - blank line between matched lines
-;; - fix problem of iedit-next-occurrence with linum-mode
 
 ;;; Code:
 
@@ -85,7 +82,8 @@
   :group 'iedit)
 
 (defcustom iedit-unmatched-lines-invisible-default nil
-  "If no-nil, hide lines that do not cover any occurrences by default."
+  "If no-nil, hide lines that do not cover any occurrences by
+default."
   :type 'boolean
   :group 'iedit)
 
@@ -104,21 +102,27 @@
 	   (list '(iedit-mode iedit-mode))))
 
 (defvar iedit-occurrences-overlays nil
-  "The occurrences slot contains a list of overlays used to indicate
-the position of each occurrence.  In addition, the occurrence overlay is
-used to provide a different face configurable via
-`iedit-occurrence-face'."  )
+  "The occurrences slot contains a list of overlays used to
+indicate the position of each occurrence.  In addition, the
+occurrence overlay is used to provide a different face
+configurable via `iedit-occurrence-face'.")
 
 (defvar iedit-unmatched-lines-invisible nil
-  "This is buffer local variable which indicates whether unmatched
-lines are hided.")
+  "This is buffer local variable which indicates whether
+unmatched lines are hided.")
 
 (defvar iedit-last-occurrence-in-history nil
   "This is buffer local variable which is the occurrence when
-  iedit mode is turned off last time.")
+iedit mode is turned off last time.")
+
+(defvar iedit-forward-success t
+  "This is buffer local variable which indicate the moving
+forward or backward successful")
 
 (make-variable-buffer-local 'iedit-occurrences-overlays)
 (make-variable-buffer-local 'iedit-unmatched-lines-invisible)
+(make-variable-buffer-local 'iedit-last-occurrence-in-history)
+(make-variable-buffer-local 'iedit-forward-success)
 
 (defconst iedit-occurrence-overlay-name 'iedit-occurrence-overlay-name)
 (defconst iedit-invisible-overlay-name 'iedit-invisible-overlay-name)
@@ -265,8 +269,9 @@ occurrences if the user starts typing."
 
 (defun iedit-occurrence-update (occurrence after beg end &optional change)
   "Update all occurrences.
-This modification hook is triggered when a user edits any occurrence
-and is responsible for updating all other occurrences."
+This modification hook is triggered when a user edits any
+occurrence and is responsible for updating all other
+occurrences."
   (when (and after (not undo-in-progress)) ; undo will do all the work
     (let ((value (buffer-substring (overlay-start occurrence) (overlay-end occurrence)))
           (inhibit-modification-hooks t))
@@ -280,31 +285,59 @@ and is responsible for updating all other occurrences."
               (insert value))))))))
 
 (defun iedit-next-occurrence ()
-  "Move point forward to the next occurrence in the `iedit'.
-If there are no more occurrences, point stays at the last
-occurrence."
+  "Move forward to the next occurrence in the `iedit'.
+If the point is already in the last occurrences, you ask to type
+another `iedit-next-occurrence', it starts again from the
+beginning of the buffer."
   (interactive)
-  (let* ((occurrences iedit-occurrences-overlays)
-         (next-pos (loop for occurrence in occurrences
-                         for start = (overlay-start occurrence)
-                         when (< (point) start)
-                         return start)))
-    (if (not (null next-pos))
-        (goto-char next-pos)
-      )))
+  (let ((pos (point))
+        (in-occurrence (get-char-property (point) 'iedit-occurrence-overlay-name)))
+    (when in-occurrence
+      (setq pos  (next-single-char-property-change pos 'iedit-occurrence-overlay-name)))
+    (setq pos (next-single-char-property-change pos 'iedit-occurrence-overlay-name))
+    
+    (if (/= pos (point-max))
+        (setq iedit-forward-success t)
+      (if (and iedit-forward-success in-occurrence)
+          (progn (message "This is the last occurrence.")
+                 (setq iedit-forward-success nil))
+        (progn 
+          (if (get-char-property (point-min) 'iedit-occurrence-overlay-name)
+              (setq pos (point-min))
+            (setq pos (next-single-char-property-change (point-min) 'iedit-occurrence-overlay-name)))
+          (setq iedit-forward-success t)
+          (message "Located the first occurrence."))))
+    (when iedit-forward-success
+      (goto-char pos))))
 
 (defun iedit-prev-occurrence ()
-  "Move point backward to the previous occurrence in the `iedit'.
-If there are no more occurrences, point stays at the first
-occurrence."
+  "Move backward to the previous occurrence in the `iedit'.
+If the point is already in the first occurrences, you ask to type
+another `iedit-prev-occurrence', it starts again from the end of
+the buffer."
   (interactive)
-  (let* ((occurrences iedit-occurrences-overlays)
-         (prev-pos (loop for occurrence in (reverse occurrences)
-                         for end = (overlay-end occurrence)
-                         when  (> (point) end)
-                         return (overlay-start occurrence))))
-    (if (not (null prev-pos))
-        (goto-char prev-pos))))
+  (let ((pos (point))
+        (in-occurrence (get-char-property (point) 'iedit-occurrence-overlay-name)))
+    (when in-occurrence
+      (setq pos (previous-single-char-property-change pos 'iedit-occurrence-overlay-name)))
+    (setq pos (previous-single-char-property-change pos 'iedit-occurrence-overlay-name))
+    ;; at the start of the first occurrence
+    (if (or (and (eq pos (point-min))
+                 (not (get-char-property (point-min) 'iedit-occurrence-overlay-name)))
+            (and (eq (point) (point-min)) 
+                 in-occurrence))
+        (if (and iedit-forward-success in-occurrence)
+            (progn (message "This is the first occurrence.")
+                   (setq iedit-forward-success nil))
+          (progn 
+            (setq pos (previous-single-char-property-change (point-max) 'iedit-occurrence-overlay-name))
+            (if (not (get-char-property (- (point-max) 1) 'iedit-occurrence-overlay-name))
+                (setq pos (previous-single-char-property-change pos 'iedit-occurrence-overlay-name)))
+            (setq iedit-forward-success t)
+            (message "Located the last occurrence.")))
+      (setq iedit-forward-success t))
+    (when iedit-forward-success
+      (goto-char pos))))
 
 (defun iedit-toggle-unmatched-lines-visible ()
   "Toggle whether to display unmatched lines."

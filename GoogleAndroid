@@ -6,3 +6,73 @@ For development there are currently only a few approaches:
 
 * EmDroid
 * RemVee's [http://github.com/remvee/android-mode/blob/master/android-mode.el android-mode]
+
+[new]
+
+<b>Help!</b> When I invoked the command <code>android-ant-install</code>, I got the following error message, anyone has seen that, but there is no problem when I invoke ant in the console:
+
+<pre>
+-dex:
+     [echo] Converting compiled files and external libraries into /home/justin/projects/android-projects/test/bin/classes.dex...
+     [echo]          
+    [apply] 
+    [apply] trouble processing:
+    [apply] invalid constant pool index 0000
+    [apply] ...while parsing attributes[1]
+    [apply] ...while parsing Code attribute at offset 00000146
+    [apply] ...while parsing attributes[0]
+    [apply] ...while parsing methods[0]
+    [apply] ...while parsing com/test/R.class
+    [apply] ...while processing com/test/R.class
+    [apply] 
+    [apply] trouble processing:
+    [apply] invalid constant pool index 0000
+    [apply] ...while parsing attributes[1]
+    [apply] ...while parsing Code attribute at offset 00000123
+    [apply] ...while parsing attributes[0]
+    [apply] ...while parsing methods[0]
+    [apply] ...while parsing com/test/R$drawable.class
+    [apply] ...while processing com/test/R$drawable.class
+    [apply] 
+    [apply] trouble processing:
+    [apply] invalid constant pool index 0000
+    [apply] ...while parsing attributes[1]
+    [apply] ...while parsing Code attribute at offset 00000144
+    [apply] ...while parsing attributes[0]
+    [apply] ...while parsing methods[0]
+    [apply] ...while parsing com/test/Test.class
+    [apply] ...while processing com/test/Test.class
+    [apply] 
+    [apply] trouble processing:
+    [apply] invalid constant pool index 0000
+    [apply] ...while parsing attributes[1]
+    [apply] ...while parsing Code attribute at offset 0000011d
+    [apply] ...while parsing attributes[0]
+    [apply] ...while parsing methods[0]
+    [apply] ...while parsing com/test/R$layout.class
+    [apply] ...while processing com/test/R$layout.class
+    [apply] 
+    [apply] trouble processing:
+    [apply] invalid constant pool index 0000
+    [apply] ...while parsing attributes[1]
+    [apply] ...while parsing Code attribute at offset 00000121
+    [apply] ...while parsing attributes[0]
+    [apply] ...while parsing methods[0]
+    [apply] ...while parsing com/test/R$string.class
+    [apply] ...while processing com/test/R$string.class
+    [apply] 
+    [apply] trouble processing:
+    [apply] invalid constant pool index 0000
+    [apply] ...while parsing attributes[1]
+    [apply] ...while parsing Code attribute at offset 000000e7
+    [apply] ...while parsing attributes[0]
+    [apply] ...while parsing methods[0]
+    [apply] ...while parsing com/test/R$attr.class
+    [apply] ...while processing com/test/R$attr.class
+    [apply] 6 warnings
+    [apply] no classfiles specified
+
+BUILD FAILED
+
+</pre>
+

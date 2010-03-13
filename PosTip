@@ -98,7 +98,19 @@ I agree that it is too bad that there is no simple way to show a tooltip at a sp
 :: There is apparently an Emacs 23 bug -- I just filed a report (#5703). It works fine in Emacs 22, but Emacs 23 ignores the specified `left' and `top' locations, contradicting the doc strings of both `tooltip-show' and `tooltip-frame-parameters'. In Emacs 23, it always uses the mouse [[pointer]] location, which is wrong. -- DrewAdams
 
 [new]
-::: Hmm... I can't reproduce such bug. -- [[irie]]
+::: Hmm... I can't reproduce such bug.
+::: Anyway, Emacs should provide functions which return absolute coordinates of buffer position or window origin. Otherwise the `left' and `top' properties of tooltip are useless in non-X environments. -- [[irie]]
+
+[new:DrewAdams:2010-03-12 14:50 UTC]
+:::: It's probably a Windows-specific bug.
+:::: ##(frame-parameters)## in a console (i.e. non-graphic) frame does not have `left' and `top' to let you know where it is or let you position it. I suppose there's no way to let you (Emacs) control this.
+:::: Function `window-edges' will give you the location of a window wrt its frame, and `frame-parameters' will give you the location of the frame (except for a console frame). -- DrewAdams
+
+[new]
+::::: Of course I've known them. To calculate absolute coordinates under X window system, users must also obtain the pixel height of menu-bar and tool-bar and the pixel width of frame extents, because `window-edges' returns the location of window relative to a X window corresponding to `window-id', but `frame-parameter' returns the location of a X window corresponding to `outer-window-id' or `parent-id'. That is, these two functions regard the different X windows as `frame'. Unfortunately, there is no way to obtain the tool-bar height etc. without calling external programs like ##xwininfo##. -- [[irie]]
+
+[new:DrewAdams:2010-03-12 17:32 UTC]
+:::::: Agreed. Consider filing a bug (enhancement request): ##M-x report-emacs-bug## -- DrewAdams
 
 ----
 [new]
@@ -107,6 +119,9 @@ There is a simple function point-to-coord in ourcomments-util.el in [NxhtmlMode 
 
 [new]
 : It seems that `point-to-coord' returns the pixel position relative to top left corner of *frame*, but tooltip must be specified it relative to top left corner of *display* because tooltip itself is a small frame. -- [[irie]]
+
+[new]
+Yes, but shouldn't it be easy to translate to that format? -- LennartBorgman
 
 ----
 [new]
