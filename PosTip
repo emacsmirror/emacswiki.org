@@ -123,6 +123,9 @@ There is a simple function point-to-coord in ourcomments-util.el in [NxhtmlMode 
 [new]
 Yes, but shouldn't it be easy to translate to that format? -- LennartBorgman
 
+[new]
+:: No, it's probably impossible. I investigated the behaviors of `frame-parameters', `window-pixel-edges' and `posn-at-point' in Emacs for MS-Windows by using Wine, and found that the calculation of absolute coordinates need additional information, the menu-bar height and the width of frame extents (including the title-bar height). At least Emacs doesn't provide functions which return these amounts. -- [[irie]]
+
 ----
 [new]
 Since ##pos-tip.el## uses UTF-8, the first line should read

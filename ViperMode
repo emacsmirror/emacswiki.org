@@ -1,6 +1,4 @@
-Viper-mode or just [::Viper] is an Emacs mode that emulates Vi key bindings.
-Besides being the newest variety of Vi emulation, it also provides users different
-levels of emulation to help Vi addicts kick the habit.
+Viper-mode or just [::Viper] is an Emacs mode that emulates vi key bindings. Besides being the newest variety of vi emulation, it also provides users different levels of emulation to help vi addicts kick the habit.
 
 * CVS:emulation/viper.el
 * See the section "Emulation" in the EmacsManual.
@@ -16,138 +14,107 @@ Here is how to colorize Viper's mode-line mode indicator to make it more promine
 
   (eval-after-load 'viper
     '(progn
-      (setq viper-vi-state-id (concat (propertize "<V>" 'face 'hi-blue-b) " "))
-      (setq viper-emacs-state-id (concat (propertize "<E>" 'face 'hi-red-b) " "))
-      (setq viper-insert-state-id (concat (propertize "<I>" 'face 'hi-blue-b) " "))
-      (setq viper-replace-state-id (concat (propertize "<R>" 'face 'hi-blue-b) " "))
-
-      ;; the property `risky-local-variable' is a security measure for mode line
-      ;; variables that have properties.
-      (put 'viper-mode-string 'risky-local-variable t)))
+       (setq viper-vi-state-id (concat (propertize "<V>" 'face 'hi-blue-b) " "))
+       (setq viper-emacs-state-id (concat (propertize "<E>" 'face 'hi-red-b) " "))
+       (setq viper-insert-state-id (concat (propertize "<I>" 'face 'hi-blue-b) " "))
+       (setq viper-replace-state-id (concat (propertize "<R>" 'face 'hi-blue-b) " "))
+       ;; The property `risky-local-variable' is a security measure
+       ;; for mode line variables that have properties
+       (put 'viper-mode-string 'risky-local-variable t)))
 
 === Using different color themes for Viper ===
 
-The above didn't work for me so well.  Here is a method to use different color themes for viper's different insertion modes (also supports Vimpulse's Visual mode)
+The above didn't work for me so well. Here is a method to use different color themes for Viper's different insertion modes (also supports Vimpulse's Visual mode):
 
-  (require 'color-theme)
-  (when (not (commandp 'color-theme-snapshot))
-    (fset 'color-theme-snapshot (color-theme-make-snapshot)))
+    (require 'color-theme)
+    (when (not (commandp 'color-theme-snapshot))
+      (fset 'color-theme-snapshot (color-theme-make-snapshot)))
 
-  (defgroup esn-viper nil
-    "* Options for Viper Color theme."
-    )
-  (defvar esn-viper-last-mode 0
-    "* Defines the last mode for Viper")
-  (defcustom esn-viper-insert-color-theme "(color-theme-shaman)"
-    "* Defines the color-theme used for Insert mode."
-    :type 'string
-    :group 'esn-viper 
-    )
-  (defcustom esn-viper-emacs-color-theme "(color-theme-robin-hood)"
-    "* Defines the color-theme used for Emacs mode."
-    :type 'string
-    :group 'esn-viper
-    )
-  (defcustom esn-viper-vi-color-theme "(color-theme-vim-colors)"
-    "* Defines the color-theme used for VI mode."
-    :type 'string
-    :group 'esn-viper
-    )
-  (defcustom esn-viper-vi-visual-color-theme "(color-theme-vim-colors)"
-    "* Defines the color-theme used for VI visual mode."
-    :type 'string
-    :group 'esn-viper
-    )
-  (defun esn-viper-pre-command-hook ()
-    (interactive)
-    (let ((deactivate-mark nil) (esn-keybinding 2) )
-    (when (not (minibufferp))
-      (when (and (= 2 esn-keybinding) (boundp 'viper-current-state) viper-current-state)
-	(when (and (not (= 1 esn-viper-last-mode))
-		   (eq viper-current-state 'emacs-state)
-		   )
-	  ;; Emacs
-	  (setq esn-viper-last-mode 1)
-	  (color-theme-snapshot)
-	  (with-temp-buffer
-	    (insert esn-viper-emacs-color-theme)
-	    (eval-buffer)
-	    )
-	  )
-	(when (and (not (= 2 esn-viper-last-mode))
-		   (eq viper-current-state 'insert-state)
-		   )
-	  ;; Insert
-	  (setq esn-viper-last-mode 2)
-	  (color-theme-snapshot)
-	  (with-temp-buffer
-	    (insert esn-viper-insert-color-theme)
-	    (eval-buffer)
-	    )
-	  )
-	(when (and (not (= 3 esn-viper-last-mode))
-		   (eq viper-current-state 'vi-state)
-		   (or (not (boundp 'viper-visual-mode))
-		       (not viper-visual-mode))
-		   )
-	  ;; Vi Normal
-	  (setq esn-viper-last-mode 3)
-	  (color-theme-snapshot)
-	  (with-temp-buffer
-	    (insert esn-viper-vi-color-theme)
-	    (eval-buffer)
-	    )
-	  )
-	(when (and (not (= 4 esn-viper-last-mode))
-		   (eq viper-current-state 'vi-state)
-		   (boundp 'viper-visual-mode)
-		   viper-visual-mode)
-					; Vi visual
-	  (setq esn-viper-last-mode 4)
-	  (color-theme-snapshot)
-	  (with-temp-buffer
-	    (insert esn-viper-vi-visual-color-theme)
-	    (eval-buffer)
-	    )
-	  )
-	)
-      )
-    ))
-  (add-hook 'pre-command-hook 'esn-viper-pre-command-hook)
-  (add-hook 'post-command-hook 'esn-viper-pre-command-hook)
+    (defgroup esn-viper nil
+      "* Options for Viper Color theme.")
+    (defvar esn-viper-last-mode 0
+      "* Defines the last mode for Viper")
+    (defcustom esn-viper-insert-color-theme "(color-theme-shaman)"
+      "* Defines the color-theme used for Insert mode."
+      :type 'string
+      :group 'esn-viper)
+    (defcustom esn-viper-emacs-color-theme "(color-theme-robin-hood)"
+      "* Defines the color-theme used for Emacs mode."
+      :type 'string
+      :group 'esn-viper)
+    (defcustom esn-viper-vi-color-theme "(color-theme-vim-colors)"
+      "* Defines the color-theme used for VI mode."
+      :type 'string
+      :group 'esn-viper)
+    (defcustom esn-viper-vi-visual-color-theme "(color-theme-vim-colors)"
+      "* Defines the color-theme used for VI visual mode."
+      :type 'string
+      :group 'esn-viper)
+    (defun esn-viper-pre-command-hook ()
+      (interactive)
+      (let ((deactivate-mark nil) (esn-keybinding 2) )
+        (when (not (minibufferp))
+          (when (and (= 2 esn-keybinding) (boundp 'viper-current-state) viper-current-state)
+            (when (and (not (= 1 esn-viper-last-mode))
+                       (eq viper-current-state 'emacs-state))
+              ;; Emacs
+              (setq esn-viper-last-mode 1)
+              (color-theme-snapshot)
+              (with-temp-buffer
+                (insert esn-viper-emacs-color-theme)
+                (eval-buffer)))
+            (when (and (not (= 2 esn-viper-last-mode))
+                       (eq viper-current-state 'insert-state))
+              ;; Insert
+              (setq esn-viper-last-mode 2)
+              (color-theme-snapshot)
+              (with-temp-buffer
+                (insert esn-viper-insert-color-theme)
+                (eval-buffer)))
+            (when (and (not (= 3 esn-viper-last-mode))
+                       (eq viper-current-state 'vi-state)
+                       (or (not (boundp 'viper-visual-mode))
+                           (not viper-visual-mode)))
+              ;; vi Normal
+              (setq esn-viper-last-mode 3)
+              (color-theme-snapshot)
+              (with-temp-buffer
+                (insert esn-viper-vi-color-theme)
+                (eval-buffer)))
+            (when (and (not (= 4 esn-viper-last-mode))
+                       (eq viper-current-state 'vi-state)
+                       (boundp 'viper-visual-mode)
+                       viper-visual-mode)
+              ;; vi visual
+              (setq esn-viper-last-mode 4)
+              (color-theme-snapshot)
+              (with-temp-buffer
+                (insert esn-viper-vi-visual-color-theme)
+                (eval-buffer)))))))
+    (add-hook 'pre-command-hook 'esn-viper-pre-command-hook)
+    (add-hook 'post-command-hook 'esn-viper-pre-command-hook)
 
-
--- Matt F. 
+-- Matt F.
 
 === Viper and CUA, deleting region ===
 
-When using CuaMode the delete and backspace keys normally deletes the region if it is active. However when using Viper this does not work. Put this in your .emacs if you want it to work:
+When using CuaMode, the delete and backspace keys normally deletes the region if it is active. However, when using Viper, this does not work. Put this in your ##.emacs## if you want it to work:
 
-  (defun viper-cua-region-fix()
-    (define-key viper-vi-global-user-map [backspace] 'backward-delete-char-untabify)
-    (define-key viper-vi-global-user-map "\C-d" 'delete-char)
-    (define-key viper-insert-global-user-map [backspace] 'backward-delete-char-untabify)
-    (define-key viper-insert-global-user-map "\C-d" 'delete-char))
+    (defun viper-cua-region-fix()
+      (define-key viper-vi-global-user-map [backspace] 'backward-delete-char-untabify)
+      (define-key viper-vi-global-user-map "\C-d" 'delete-char)
+      (define-key viper-insert-global-user-map [backspace] 'backward-delete-char-untabify)
+      (define-key viper-insert-global-user-map "\C-d" 'delete-char))
 
-  (eval-after-load 'viper '(viper-cua-region-fix))
+    (eval-after-load 'viper '(viper-cua-region-fix))
 
-I hope this will be fixed in the CVS soon. The fix there will be different however (the above is not entirely correct, but maybe a good workaround).
+I hope this will be fixed in the CVS soon. The fix there will be different, however (the above is not entirely correct, but maybe a good workaround).
 
 === Using Viper with Icicles ===
 
-[[Icicles]] redefines some functions when you are in ''Icicle''
-mode (it restores them when you leave ''Icicle'' mode).  It
-generally does not use `defadvice' to alter the functions; it
-redefines them instead.  Because of this, there can be
-incompatibilities with other libraries that also change the same
-functions (using `defadvice' or otherwise).  An example is Viper
-mode.  
+[[Icicles]] redefines some functions when you are in ''Icicle'' mode (it restores them when you leave ''Icicle'' mode). It generally does not use `defadvice' to alter the functions; it redefines them instead. Because of this, there can be incompatibilities with other libraries that also change the same functions (using `defadvice' or otherwise). An example is Viper mode.
 
-If you load Viper before Icicles, then you will run into
-problems with function `read-file-name' because it is tweaked by
-both Viper and Icicles.  If you load Icicles before Viper, you
-should not encounter this problem. But you might encounter other
-problems -- both Icicles and Viper try to control the minibuffer. If you do, please report them using ##M-x icicle-send-bug-report##. -- DrewAdams
+If you load Viper before Icicles, then you will run into problems with function `read-file-name' because it is tweaked by both Viper and Icicles. If you load Icicles before Viper, you should not encounter this problem. But you might encounter other problems -- both Icicles and Viper try to control the minibuffer. If you do, please report them using ##M-x icicle-send-bug-report##. -- DrewAdams
 
 [new:DrewAdams:2008-05-02 15:04 UTC]
 I have changed Icicles so that it now uses `read-file-name-function'. This means that it should no longer matter which library you load or use first, Icicles or Viper. -- DrewAdams
@@ -163,23 +130,23 @@ From a [http://www.reddit.com/r/programming/comments/8lfx7/what_emacs_commands_d
     (define-key dired-mode-map "k" 'dired-previous-line)
     (define-key dired-mode-map "K" 'dired-do-kill-lines)
 
-=== Vi Tutorial for Viper ===
+=== vi Tutorial for Viper ===
 
-There is now a Viper/vi tutorial included in [NxhtmlMode nXhtml].
-You find this in the nxml/util/viper-tut.el
+There is now a Viper/vi tutorial included in [NxhtmlMode nXhtml]. You find it in ##nxml/util/viper-tut.el##.
 
 Eh, yes. It is a rather strange place to put it in.
 
 === Switching buffers ===
 
-There is a way to make Viper state and Viper insert state global, like in Vim (and probably Vi).  In Vim (and probably Vi), you start in Normal Mode. You can switch buffer, and Vim stays in Normal Mode. Pressing "i" puts Vim in Insert Mode. Then if you switch buffers by clicking on another window, Vim stays in Insert Mode. You don't have to remember which buffer is in what mode, you only need to remember in which mode Vim is.
+There is a way to make Viper state and Viper insert state global, like in Vim (and probably vi). In Vim (and probably vi), you start in Normal Mode. You can switch buffer, and Vim stays in Normal Mode. Pressing "i" puts Vim in Insert Mode. Then if you switch buffers by clicking on another window, Vim stays in Insert Mode. You don't have to remember which buffer is in what mode, you only need to remember in which mode Vim is.
 
-In Viper, you start in Viper state. Pressing "i" puts Viper in Insert state. But this state is buffer local: if you switch buffers, Viper switches to whatever state the other buffer is. So when you switch buffers a lot, you can quickly lose track of which buffer is in what state, and start messing up buffers, inserting ":w" everywhere - or unwillingly executing commands like 'i' or 'a'...
+In Viper, you start in Viper state. Pressing "i" puts Viper in Insert state. But this state is buffer local: if you switch buffers, Viper switches to whatever state the other buffer is. So when you switch buffers a lot, you can quickly lose track of which buffer is in what state, and start messing up buffers, inserting ":w" everywhere -- or unwillingly executing commands like `i' or `a' ...
 
-Some don't want modes to be changed stealthily. Additionally, Viper also has a replacement mode, which Vim does not have (but Vi used to have).
+Some don't want modes to be changed stealthily. Additionally, Viper also has a replacement mode, which Vim does not have (but vi used to have).
 
 However, some like the idea since:
-* It can be hard to keep track of ten (and often much more - one for each buffer) buffer-local Viper modes. Especially for buffers I visit less often.
+
+* It can be hard to keep track of ten (and often much more -- one for each buffer) buffer-local Viper modes. Especially for buffers I visit less often.
 * Having to check which mode Viper is in everytime after swiching buffers (meaning 10 times a minute) is really something one could do without
 * One doesn't always understand what is stealthy: It's hard to always notice when one hit "Esc", "i", or "R"...
 
@@ -218,59 +185,57 @@ Thanks! -- SebastienRoccaSerra
 
 [new]
 Here:
-{{{
-(defadvice viper-maybe-checkout (around viper-svn-checkin-fix activate)
-  "Advise viper-maybe-checkout to ignore svn files."
-  (let ((file (expand-file-name (buffer-file-name buf))))
-    (when (and (featurep 'vc-hooks)
-               (not (memq (vc-backend file) '(nil SVN))))
-      ad-do-it)))
-}}}
 
-This seems to work for me, at least.  Until upstream viper gets fixed. -- JeremyHankins
+    (defadvice viper-maybe-checkout (around viper-svn-checkin-fix activate)
+      "Advise viper-maybe-checkout to ignore svn files."
+      (let ((file (expand-file-name (buffer-file-name buf))))
+        (when (and (featurep 'vc-hooks)
+                   (not (memq (vc-backend file) '(nil SVN))))
+          ad-do-it)))
+
+This seems to work for me, at least. Until upstream Viper gets fixed. -- JeremyHankins
 
 === "Inner Word" commands? ===
 
 How do you get Vim's "ciw" (= Change Inner Word) command?
 
-I mean, you are in Normal Mode, in an Emacs Lisp Mode buffer, 'viper-syntax-preference' is set to 'extended' and, in the following code:
+I mean, you are in Normal Mode, in an Emacs Lisp Mode buffer, `viper-syntax-preference' is set to `extended' and, in the following code:
 
-   (change-inner-word)
+    (change-inner-word)
 
-the Cursor is over the "i". Then ,'cw' will kill "inner-word", whilst 'ciw' will kill "inner" only.
+the Cursor is over the "i". Then, `cw' will kill "inner-word", whilst `ciw' will kill "inner" only.
 
 [new]
 [[Vimpulse]] provides text objects (e.g., `ciw') for Viper.
 
 === Bugs ===
 
-`==' doesn't work on viper 3.14 (Viper Bell in minibuffer and no effect).
-You can fix it modifying ##viper-prefix-arg-com##: 
+`==' doesn't work in Viper 3.14 ("Viper Bell" in minibuffer and no effect). You can fix it modifying ##viper-prefix-arg-com##:
 {{{
       (if (atom com)
-	  ;; `com' is a single char, so we construct the command argument
-	  ;; and if `char' is `?', we describe the arg; otherwise
-	  ;; we prepare the command that will be executed at the end.
-	  (progn
-	    (setq cmd-info (cons value com))
-	    (while (viper= char ?U)
-	      (viper-describe-arg cmd-info)
-	      (setq char (read-char)))
-	    ;; `char' is a movement cmd, a digit arg cmd, or a register cmd---so
-	    ;; we execute it at the very end
-	    (or (viper-movement-command-p char)
-		(viper-digit-command-p char)
-		(viper-regsuffix-command-p char)
-		(viper= char ?!) ; bang command
-		(viper= char ?g) ; the gg command (like G0)
-		(viper= char ?=) ; the == command  <<<<<<<<<< ADD THIS LINE
-		(error "Viper bell"))
-	    (setq cmd-to-exec-at-end
-		  (viper-exec-form-in-vi
-		   `(key-binding (char-to-string ,char)))))
+      ;; `com' is a single char, so we construct the command argument
+      ;; and if `char' is `?', we describe the arg; otherwise
+      ;; we prepare the command that will be executed at the end.
+      (progn
+        (setq cmd-info (cons value com))
+        (while (viper= char ?U)
+          (viper-describe-arg cmd-info)
+          (setq char (read-char)))
+        ;; `char' is a movement cmd, a digit arg cmd, or a register cmd---so
+        ;; we execute it at the very end
+        (or (viper-movement-command-p char)
+        (viper-digit-command-p char)
+        (viper-regsuffix-command-p char)
+        (viper= char ?!) ; bang command
+        (viper= char ?g) ; the gg command (like G0)
+        (viper= char ?=) ; the == command  <<<<<<<<<< ADD THIS LINE
+        (error "Viper bell"))
+        (setq cmd-to-exec-at-end
+          (viper-exec-form-in-vi
+           `(key-binding (char-to-string ,char)))))
 }}}
 
-=== How can you remap prefix keys like 'c' and 'd'? ===
+=== How can you remap prefix keys like `c' and `d'? ===
 
 This doesn't seem to be possible with simple configuration, as the prefix keys have been hardcoded into Viper source (http://stackoverflow.com/questions/2145562/how-can-i-remap-the-prefix-keys-c-d-etc-in-emacs-viper-mode)
 

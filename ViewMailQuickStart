@@ -42,7 +42,12 @@ For tidiness, you should set vm-init-file to nil.
     (setq vm-init-file nil)
 
 ----
-== Most Important Variables ==
+== Local folders or Server folders? ==
+
+An early decision you need to make is whether you will store your email on the local file system or keep it on mail servers (POP or IMAP).  POP allows a single folder called `INBOX' to be kept on the server but IMAP allows any number of folders in addition to `INBOX'.  The advantage of keeping email on the servers is that you can read it and update it from multiple locations.  VM allows you to keep your email on the mail servers (but cached locally for speed and convenience) or to download it to local folders.
+
+----
+== Most Important Variables - Local folders ==
 
 === vm-primary-inbox ===
 
@@ -98,6 +103,57 @@ See ViewMailAndImap for more details.
 ==== Adding Spools ====
 
 To add another spool apart from the primary, simply add another (INBOX-PATH SPOOL CRASH-BOX-PATH) form to the <code>vm-spool-files</code> list.  Multiple spools may go into the same inbox.  Spools that go to different inboxes should use different crash-boxes.
+
+----
+== Most Important Variables - POP ==
+
+=== vm-primary-inbox ===
+
+If you receive your main incoming mail via a POP server, use:
+
+    (setq vm-primary-inbox "pop:HOST:PORT:AUTH:USER:PASSWORD")
+
+See ViewMailAndPop for more details.
+
+=== Additional POP mail boxes ===
+
+If you would like to visit additional POP mail boxes on other servers, define them in `vm-pop-folder-alist'.  For example,
+
+     (setq vm-pop-folder-alist
+           '(
+              ("pop:pop.mail.yahoo.com:110:pass:someuser:*" "Yahoo! mail")
+              ("pop:localhost:110:pass:someuser:*" "local mail")
+            )
+     )
+
+The first string in each of the inner lists is a POP mailbox specification in the format "pop:HOST:PORT:AUTH:USER:PASSWORD", and the second string is a short name.  
+
+You can visit the folders defined here using `M-x vm-visit-pop-folder'.
+----
+== Most Important Variables - IMAP ==
+
+=== vm-primary-inbox ===
+
+If you receive your main incoming mail via an IMAP server, use:
+
+    (setq vm-primary-inbox "imap:HOST:PORT:Inbox:AUTH:USER:PASSWORD")
+
+See ViewMailAndImap for more details.
+
+=== vm-imap-account-alist ===
+
+All your IMAP accounts should be defined in the variable `vm-imap-account-alist'.  For example,
+
+     (setq vm-imap-account-alist
+           '(
+             ("imap-ssl:mail.foocorp.com:993:*:login:becky:*" "becky")
+             ("imap:crickle.lex.ky.us:143:*:login:becky:*" "crickle")
+            )
+     )
+
+The first string in each of the inner lists is an IMAP mailbox specification in the format "pop:HOST:PORT:*:AUTH:USER:PASSWORD", and the second string is a short name.  
+
+You can visit folders on the declared IMAP accounts using `M-x vm-visit-imap-folder'.  When prompted for the folder name, input it in the format ACCOUNT:MAILBOX.  Here, ACCOUNT is the short name declared in the alist, e.g., `becky'.  MAILBOX is the name of a folder on the IMAP server.  File name completion is available for typing the MAILBOX name.
 
 ----
 == Other Basic Setup ==

@@ -130,7 +130,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 265 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 266 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.  I  have  also  received
@@ -859,6 +859,8 @@ automatically:
 (define-key sr-mode-map "\M-q"                'sunrise-cd)
 (define-key sr-mode-map "h"                   'sr-describe-mode)
 (define-key sr-mode-map "?"                   'sr-summary)
+(define-key sr-mode-map "k"                   'dired-do-kill-lines)
+(define-key sr-mode-map [backspace]           'dired-unmark-backward)
 
 (define-key sr-mode-map [mouse-2]             (lambda ()
                                                 (interactive)

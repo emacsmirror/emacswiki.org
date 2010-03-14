@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Mar  9 08:59:10 2010 (-0800)
+;; Last-Updated: Sat Mar 13 14:44:37 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 3537
+;;     Update #: 3566
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -17,9 +17,8 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `cl', `color-theme', `cus-face', `easymenu', `el-swank-fuzzy',
-;;   `ffap', `ffap-', `fuzzy-match', `hexrgb', `icicles-face',
-;;   `kmacro', `levenshtein', `reporter', `sendmail', `thingatpt',
+;;   `cl', `el-swank-fuzzy', `ffap', `ffap-', `fuzzy-match',
+;;   `hexrgb', `icicles-face', `kmacro', `levenshtein', `thingatpt',
 ;;   `thingatpt+', `wid-edit', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -40,7 +39,7 @@
 ;;
 ;;  User options defined here (in Custom group `Icicles'):
 ;;
-;;    `icicle-act-before-cycle-flag', `icicle-add-buffer-name-flag',
+;;    `icicle-act-before-cycle-flag',
 ;;    `icicle-add-proxy-candidates-flag',
 ;;    `icicle-alternative-actions-alist',
 ;;    `icicle-alternative-sort-comparer',
@@ -156,8 +155,8 @@
 ;;    `icicle-shell-command-candidates-cache',
 ;;    `icicle-show-Completions-help-flag',
 ;;    `icicle-show-Completions-initially-flag',
-;;    `icicle-sort-comparer', `icicle-sort-orders-alist',
-;;    `icicle-special-candidate-regexp',
+;;    `icicle-show-multi-completion-flag', `icicle-sort-comparer',
+;;    `icicle-sort-orders-alist', `icicle-special-candidate-regexp',
 ;;    `icicle-S-TAB-completion-methods-alist',
 ;;    `icicle-swank-prefix-length', `icicle-swank-timeout',
 ;;    `icicle-TAB-completion-methods',
@@ -264,24 +263,6 @@ This affects keys such as the following\\<minibuffer-local-completion-map>:
 Note: A few Icicles commands ignore this setting, in order to \"do the
 right thing\"."
   :type 'boolean :group 'Icicles-Key-Bindings :group 'Icicles-Miscellaneous)
-
-;;;###autoload
-(defcustom icicle-add-buffer-name-flag t
-  "*Non-nil means to add the buffer name to completion candidates.
-This means that for some Icicles commands, such as `icicle-search' and
-`icicle-select-region', the normal completion candidate is treated as
-a multi-completion: the name of the buffer associated with it is added
-to the candidate and highlighted.
-
-The main advantage is that you can easily see which buffer a candidate
-applies to.  Also, the buffer name is part of the candidate, so you
-can match against it.
-
-Note: Even when the value is nil, you can use `C-M-mouse-2' and so on
-to see information about a candidate, and this information includes
-its buffer name whenever a non-nil value would have shown the buffer
-name."
-  :type 'boolean :group 'Icicles-Completions-Display)
 
 ;;;###autoload
 (defcustom icicle-add-proxy-candidates-flag nil ; Toggle with `C-M-_'.
@@ -2161,6 +2142,31 @@ For an alternative but similar behavior to using non-nil for
 `icicle-incremental-completion-flag' to a value that is neither nil
 nor t.  That displays buffer *Completions* as soon as you type or
 delete input, but not initially."
+  :type 'boolean :group 'Icicles-Completions-Display)
+
+;;;###autoload
+(defcustom icicle-show-multi-completion-flag t
+  "*Non-nil means to show completion candidates as multi-completions.
+This has an effect only where multi-completion is available.
+Also, some commands, such as `icicle-locate-file', use a prefix arg to
+determine whether to show multi-completions.  Such commands generally
+ignore this option.
+
+A typical example of showing multi-completions is adding buffer names
+to candidates to show which buffer they are associated with.  Some
+commands, such as `icicle-search', append the name of the associated
+buffer, highlighted, to the normal completion candidate.  This lets
+you easily see which buffer the candidate applies to.  Also, the
+buffer name is part of the candidate, so you can match against it.
+
+Note: Even when the option value is nil, you can use `C-M-mouse-2' and
+so on to see information about a candidate.  This information
+typically includes whatever a non-nil value of the option would have
+shown.
+
+You can toggle this option from the minibuffer using `M-m'.  The new
+value takes effect after you exit the minibuffer (i.e., for the next
+command)."
   :type 'boolean :group 'Icicles-Completions-Display)
 
 ;; This is similar to `bookmarkp-sort-comparer'.

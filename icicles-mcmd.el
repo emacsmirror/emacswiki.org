@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Mar  3 02:02:39 2010 (-0800)
+;; Last-Updated: Sat Mar 13 14:57:55 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 15398
+;;     Update #: 15409
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -17,11 +17,10 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos-fn+var', `cl', `color-theme', `cus-face',
-;;   `doremi', `easymenu', `el-swank-fuzzy', `ffap', `ffap-',
-;;   `fuzzy-match', `hexrgb', `icicles-face', `icicles-fn',
-;;   `icicles-opt', `icicles-var', `kmacro', `levenshtein', `mwheel',
-;;   `pp', `pp+', `reporter', `ring', `ring+', `sendmail',
+;;   `apropos', `apropos-fn+var', `cl', `doremi', `el-swank-fuzzy',
+;;   `ffap', `ffap-', `fuzzy-match', `hexrgb', `icicles-face',
+;;   `icicles-fn', `icicles-opt', `icicles-var', `kmacro',
+;;   `levenshtein', `mwheel', `pp', `pp+', `ring', `ring+',
 ;;   `thingatpt', `thingatpt+', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -181,7 +180,8 @@
 ;;    `icicle-toggle-search-cleanup',
 ;;    `icicle-toggle-search-replace-common-match',
 ;;    `icicle-toggle-search-replace-whole',
-;;    `icicle-toggle-search-whole-word', `icicle-toggle-sorting',
+;;    `icicle-toggle-search-whole-word',
+;;    `icicle-toggle-show-multi-completion', `icicle-toggle-sorting',
 ;;    `icicle-toggle-transforming',
 ;;    `icicle-toggle-WYSIWYG-Completions', `icicle-transpose-chars',
 ;;    `icicle-transpose-sexps', `icicle-transpose-words',
@@ -209,7 +209,8 @@
 ;;    `toggle-icicle-search-cleanup',
 ;;    `toggle-icicle-search-replace-common-match',
 ;;    `toggle-icicle-search-replace-whole',
-;;    `toggle-icicle-search-whole-word', `toggle-icicle-sorting',
+;;    `toggle-icicle-search-whole-word',
+;;    `toggle-icicle-show-multi-completion', `toggle-icicle-sorting',
 ;;    `toggle-icicle-transforming',
 ;;    `toggle-icicle-WYSIWYG-Completions'.
 ;;
@@ -1355,10 +1356,13 @@ order instead, updating `icicle-alternative-sort-comparer'."
          (if icicle-reverse-sort-p ", REVERSED" ""))))))
 
 (defun icicle-current-sort-functions ()
-  "Subset of `icicle-sort-orders-alist' that is currently appropriate."
+  "Subset of `icicle-sort-orders-alist' that is currently appropriate.
+For some common kinds of completion, remove simple sort functions (not
+multi-sort comparers) that are not pertinent for the current kind of
+completion."
   (icicle-remove-if (lambda (pred)
                       (setq pred  (cdr pred))
-                      (and pred (symbolp pred)
+                      (and pred (symbolp pred) ; Do not handle multi-sort comparers.
                            (or (and (get pred 'icicle-proxy-sort-predicate)
                                     (not icicle-add-proxy-candidates-flag))
                                (and (get pred 'icicle-file-name-sort-predicate)
@@ -6136,6 +6140,19 @@ Bound to `C-M-.' in the minibuffer."
   (icicle-msg-maybe-in-minibuffer (if icicle-hide-common-match-in-Completions-flag
                                       "Hiding common match in *Completions* is now ON"
                                     "Hiding common match in *Completions* is now OFF")))
+
+(defalias 'toggle-icicle-show-multi-completion 'icicle-toggle-show-multi-completion)
+;;;###autoload
+(defun icicle-toggle-show-multi-completion () ; Bound to `M-m' in the minibuffer.
+  "Toggle `icicle-show-multi-completion-flag'.
+Bound to `M-m' in the minibuffer."
+  (interactive)
+  (setq icicle-show-multi-completion-flag  (not icicle-show-multi-completion-flag))
+  (icicle-complete-again-update)
+  (icicle-msg-maybe-in-minibuffer
+   (if icicle-show-multi-completion-flag
+       "Showing multi-completions (when available) is now ON"
+     "Showing multi-completions (when available) is now OFF")))
 
 (defalias 'toggle-icicle-ignored-space-prefix 'icicle-toggle-ignored-space-prefix)
 ;;;###autoload

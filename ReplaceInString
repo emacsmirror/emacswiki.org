@@ -97,7 +97,7 @@ puts Benchmark::measure {
 </pre>
 
 While the same procedure in Ruby, which is a SLOW script language, takes about 0.02 secs.
-Needless to say, String#gsub is written in C for speed.
+Needless to say, String#gsub is written in C for speed (and therefore the slowness of Ruby is irrelevant).
 It is 30 TIMES FASTER than EmacsLisp version.
 
 [new]
@@ -112,7 +112,12 @@ This benchmark says that some string manipulation in emacs-lisp is UNBEARABLY sl
 I think your dynamic loading patch should be in Emacs CVS.
 It will enable each developer to write the bottleneck in C and increase processing speed dramatically.
 
+[new]
+Are you not just comparing apples and oranges here?
+Ruby is not an interactive editor. -- LennartBorgman
 
+[new:DrewAdams:2010-03-14 00:03 UTC]
+: Not to be confused with comparing ApplesAndOranges. :-D -- DrewAdams
 
 ----
 CategoryCode

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Mar 10 14:15:55 2010 (-0800)
+;; Last-Updated: Sat Mar 13 10:00:46 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 11623
+;;     Update #: 11631
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3787,7 +3787,7 @@ of `icicle-transform-sole-candidate'."
 
 (defun icicle-transform-multi-completion (candidate)
   "Transform display CANDIDATE according to `icicle-list-use-nth-parts'.
-If CANDIDATE is not a multi-completion, do nothing.
+If CANDIDATE is not a multi-completion, return CANDIDATE unchanged.
 Return the possibly transformed candidate."
   (if icicle-list-use-nth-parts
       (let ((parts  (split-string candidate icicle-list-join-string)))  (icicle-join-nth-parts parts))
@@ -4853,6 +4853,9 @@ compared.  If nil, then the entire item is used."
   (unless key (setq key  'identity))
   (let ((sort-fn  (and icicle-sort-comparer
                        (lambda (s1 s2)
+                         (when icicle-transform-before-sort-p
+                           (setq s1  (icicle-transform-multi-completion s1)
+                                 s2  (icicle-transform-multi-completion s2)))
                          ;; If we have an inappropriate sort order, get rid of it.  This can happen if
                          ;; the user chooses a sort appropriate to one kind of candidate and then
                          ;; tries completion for a different kind of candidate.

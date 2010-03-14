@@ -144,11 +144,34 @@ Use knotify to display the current song. Requires Emacs with dbus:
 
 (setq emms-player-next-function 'ts/showsong)
 </pre>
+[new]
+Don't know why above code doesn't work for me. Hence, I came with another simple (and maybe rude one ;)
+
+<pre>
+;;; A rude way to make use of KNotify.  Tested on Debian/Squeeze. --lgfang
+(when (and window-system (executable-find "kdialog"))
+  (setq emms-player-next-function
+        (lambda ()
+          (emms-next-noerror)
+          (call-process "kdialog" nil nil nil "--title" "Emacs - EMMS"
+                        "--passivepopup" (emms-show) "5"))))
+</pre>
 
 === Fluxbox/Gnome (and gtk-based wm) notification ===
 
 See [[EmacsEasyNotification]] ;-)
+=== In dired buffer, "!" to add track to playlist ===
+Inspired by http://tanstaafl.cn/Home/EmacsEmms.html
 
+<pre>
+;;; Add music file to playlist on '!', --lgfang
+(add-to-list 'dired-guess-shell-alist-user
+             (list "\\.\\(flac\\|mp3\\|ogg\\|wav\\)\\'"
+                   '(if (y-or-n-p "Add to emms playlist?")
+                        (progn (emms-add-file (dired-get-filename))
+                               (keyboard-quit))
+                      "mplayer")))
+</pre>
 == Screenshots ==
 
 [http://www.gnu.org/software/emms/screenshots.html]
@@ -423,6 +446,23 @@ used that). What might be causing this abnormal behavior?
 
 [new]The playlist uses a different size image by default. Have a
 look at the variable `emms-browser-covers'
+
+[new]
+By default, emms will insert cover_small.jpg into browser buffer and
+ cover_med.jpg into playlist.  Therefore, you need to make sure there
+ are such image files for each directory.
+
+Here is the script I used to create such files from images:
+<pre>
+#!/bin/bash
+# Modified: Fang lungang 03/13/2010 21:55>
+for afile in "$@"; do
+    path=$(dirname "$afile")
+    convert -resize 60x60 "$afile" "$path/cover_small.jpg"
+    convert -resize 120x120 "$afile" "$path/cover_med.jpg"
+    # large cover not used
+done
+</pre>
 
 === EMMS and WMA ===
 For one reason or another I have a bunch of WMA files. However, EMMS does not read the tags.

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Mar 10 14:26:25 2010 (-0800)
+;; Last-Updated: Sat Mar 13 15:26:55 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 4904
+;;     Update #: 4925
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,12 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2010/03/13 dadams
+;;     icicle-bookmark(-other-window):
+;;       If Bookmark+ available then, depending on icicle-show-multi-completion-flag, use a
+;;         multi-completion showing file or buffer.  Use icicle-candidates-alist to do that.
+;;       Don't put icicle-fancy-candidates prop on prompt.
+;;       Don't use icicle-sorted-bookmark-alist (removed).  Recompute each time.
 ;; 2010/03/10 dadams
 ;;     icicle-bookmark-help-string:
 ;;       Mention the type in the help: sequence, function, bookmark list, desktop, etc.
@@ -198,6 +204,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2010/03/13 dadams
+;;     Applied renaming of icicle-add-buffer-name-flag to icicle-show-multi-completion-flag.
 ;; 2010/03/09 dadams
 ;;     icicle-regions: Use icicle-reversible-sort (with KEY arg), not sort.
 ;; 2010/03/03 dadams
@@ -290,6 +298,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-face.el'")
 ;;
+;; 2010/03/13 dadams
+;;     Made icicle-candidate-part paler (light background): #EF84FFEAF427, not #DB17FFF4E581.
 ;; 2010/02/17 dadams
 ;;     Moved functions here from icicles-opt.el: icicle-increment-color-(hue|saturation). 
 ;;     So no longer require icicles-opt.el.
@@ -368,6 +378,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2010/03/13 dadams
+;;     icicle-reversible-sort: Respect icicle-transform-before-sort-p.
 ;; 2010/03/10 dadams
 ;;     icicle-show-help-in-mode-line:
 ;;       Put this test first: If candidate is a string with a help property, use that.
@@ -1763,6 +1775,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2010/03/13 dadams
+;;     Added: icicle-toggle-show-multi-completion.
 ;; 2010/03/03 dadams
 ;;     Applied renamings: icicle-sort-function to icicle-sort-comparer
 ;;                        icicle-sort-functions-alist to icicle-sort-orders-alist,
@@ -2746,6 +2760,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2010/03/13 dadams
+;;     icicle-define-icicle-maps:
+;;       Bound icicle-toggle-show-multi-completion to M-m in minibuffer, and added to menus.
+;;     Applied renaming of icicle-add-buffer-name-flag to icicle-show-multi-completion-flag.
 ;; 2010/02/17 dadams
 ;;     Applied rename of icicl-redefined-functions to icicle-inhibit-advice-functions.
 ;; 2010/02/13 dadams
@@ -3616,6 +3634,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2010/03/13 sadams
+;;     Renamed icicle-add-buffer-name-flag to icicle-show-multi-completion-flag.  Doc string.
 ;; 2010/03/09 dadams
 ;;     icicle-color-themes: Initialize to ().  Do real init in cmd icicle-color-theme.
 ;; 2010/03/03 dadams
@@ -4086,6 +4106,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2010/03/13 dadams
+;;     Added: icicle-transform-before-sort-p.
+;;     Removed: icicle-sorted-bookmark-alist.
+;;     Applied renaming of icicle-add-buffer-name-flag to icicle-show-multi-completion-flag.
 ;; 2010/03/03 dadams
 ;;     Added: icicle-sorted-bookmark-alist, icicle-reverse-multi-sort-p.
 ;;     Renamed: icicle-last-sort-function to icicle-last-sort-comparer.

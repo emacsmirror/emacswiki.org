@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Mar  3 02:00:05 2010 (-0800)
+;; Last-Updated: Sat Mar 13 14:33:10 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 1060
+;;     Update #: 1066
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -17,11 +17,10 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos-fn+var', `cl', `color-theme', `cus-face',
-;;   `easymenu', `el-swank-fuzzy', `ffap', `ffap-', `fuzzy-match',
-;;   `hexrgb', `icicles-face', `icicles-opt', `kmacro',
-;;   `levenshtein', `reporter', `sendmail', `thingatpt',
-;;   `thingatpt+', `wid-edit', `widget'.
+;;   `apropos', `apropos-fn+var', `cl', `el-swank-fuzzy', `ffap',
+;;   `ffap-', `fuzzy-match', `hexrgb', `icicles-face', `icicles-opt',
+;;   `kmacro', `levenshtein', `thingatpt', `thingatpt+', `wid-edit',
+;;   `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -124,9 +123,10 @@
 ;;    `icicle-search-overlays', `icicle-search-refined-overlays',
 ;;    `icicle-search-replacement',
 ;;    `icicle-search-replacement-history',
-;;    `icicle-sorted-bookmark-alist', `icicle-successive-grab-count',
+;;    `icicle-successive-grab-count',
 ;;    `icicle-text-property-value-history',
 ;;    `icicle-thing-at-pt-fns-pointer',
+;;    `icicle-transform-before-sort-p',
 ;;    `icicle-universal-argument-map',
 ;;    `icicle-use-candidates-only-once-alt-p',
 ;;    `icicle-vardoc-last-initial-cand-set',
@@ -478,7 +478,7 @@ noted in parentheses.
   (`C-u') `read-file-name-completion-ignore-case'
                                          - Case sensitivity? (`C-A')
 * `completion-ignored-extensions'        - Ignored filenames (`C-.')
-* `icicle-add-buffer-name-flag'          - Add candidate's buffer?
+* `icicle-show-multi-completion-flag'    - Show extra candidate info?
 * `icicle-add-proxy-candidates-flag'     - Include proxies? (`C-M-_')
 * `icicle-alternative-sort-comparer'     - Other sort (`M-,', `C-M-,')
 * `icicle-top-level-key-bindings'        - Bind top-level commands
@@ -1067,10 +1067,6 @@ a single overlay (or nil).  Otherwise, this is a list of overlays.")
 (defvar icicle-search-replacement-history nil
   "History variable for reading replacement string for `icicle-search'.")
 
-(defvar icicle-sorted-bookmark-alist ()
-  "Copy of current bookmark alist, sorted, and with faces for types.
-Has the same structure as `bookmark-alist'.")
-
 (defvar icicle-successive-grab-count 0
   "Number of text things to be grabbed by next `\\<minibuffer-local-map>\
 \\[icicle-insert-string-at-point]'.")
@@ -1165,6 +1161,11 @@ Has the same structure as `bookmark-alist'.")
 (defvar icicle-thing-at-pt-fns-pointer 0
   "Current index into the car of `icicle-thing-at-point-functions'.
 This points to the current function in the list.")
+
+(defvar icicle-transform-before-sort-p nil
+  "Non-nil means transform each multi-completion candidate before sorting.
+Bind this to non-nil if you do not want sorting to use the whole
+multi-completion.")
 
 (defvar icicle-universal-argument-map
   (let ((map  (make-sparse-keymap)))

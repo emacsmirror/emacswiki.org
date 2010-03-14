@@ -97,8 +97,8 @@ Update: Thank you very much, above code works but you completely replace message
 
   (add-to-list 'auto-mode-alist '(".*mutt.*" . message-mode))                                                                   
   (setq mail-header-separator "")                                                                                               
-  (add-hook 'message-mode-hook 'auto-fill-mode) 
   (add-hook 'message-mode-hook
+          'turn-on-auto-fill
           (function
            (lambda ()
              (progn
@@ -109,7 +109,7 @@ Update: Thank you very much, above code works but you completely replace message
                                                           (save-buffer)
                                                           (server-edit)))))))
 
-I'm sure this can be written more concisely by combining the two hooks but as I said, I hardly know anything about elisp and don't want to fiddle any furher... At least everything works as it should now :-) 
+I'm sure this can be written more concisely but as I said, I hardly know anything about elisp and don't want to fiddle any furher... At least everything works as it should now :-) 
 
 == Switching window focus between mutt and emacs when using emacsclient ==
 

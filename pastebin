@@ -21,4 +21,8 @@ IvanKorotkov
 There are interfaces for other sites like codepad.org available http://github.com/ruediger/emacs-codepad
 
 ----
+
+There's also an interface to App::Nopaste which can access pastebin and more using plugins: http://github.com/avar/nopaste
+
+----
 CategoryModes

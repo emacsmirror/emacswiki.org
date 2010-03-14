@@ -17,10 +17,9 @@ The following branches exist:
 * *all-pages* -- contains most webpages
 * *all-elisp* -- contains most Emacs Lisp files
 * *packages* -- contains actual Emacs Lisp packages
-* *snippets* -- contains Emacs Lisp files that don't qualify as packages
 
 More branches might be created in the future. For example it would
-be very easy to create branches containing only [News wikinews] or
+be very easy to create branches containing only [[News]] or
 [CategoryHomepage homepages].  Other branches (e.g only English pages
 or only pages describing packages) could also be created but this would
 be more work.  As of now I do not see any use for such branches so I have

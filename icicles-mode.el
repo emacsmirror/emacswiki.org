@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Feb 17 08:52:08 2010 (-0800)
+;; Last-Updated: Sat Mar 13 13:19:27 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 6337
+;;     Update #: 6344
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -18,19 +18,19 @@
 ;; Features that might be required by this library:
 ;;
 ;;   `apropos', `apropos+', `apropos-fn+var', `avoid', `cl',
-;;   `color-theme', `cus-edit', `cus-face', `cus-load', `cus-start',
-;;   `custom', `dired', `dired+', `dired-aux', `dired-x', `doremi',
-;;   `easymenu', `ediff-diff', `ediff-help', `ediff-init',
-;;   `ediff-merg', `ediff-mult', `ediff-util', `ediff-wind',
-;;   `el-swank-fuzzy', `ffap', `ffap-', `fit-frame', `frame-cmds',
-;;   `frame-fns', `fuzzy-match', `help+20', `hexrgb', `icicles-cmd1',
-;;   `icicles-cmd2', `icicles-fn', `icicles-mcmd', `icicles-opt',
-;;   `icicles-var', `info', `info+', `kmacro', `levenshtein',
-;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `mkhtml',
-;;   `mkhtml-htmlize', `mwheel', `pp', `pp+', `reporter', `ring',
-;;   `ring+', `second-sel', `sendmail', `strings', `thingatpt',
-;;   `thingatpt+', `unaccent', `w32-browser', `w32browser-dlgopen',
-;;   `wid-edit', `wid-edit+', `widget'.
+;;   `cus-edit', `cus-face', `cus-load', `cus-start', `custom',
+;;   `dired', `dired+', `dired-aux', `dired-x', `doremi', `easymenu',
+;;   `ediff-diff', `ediff-help', `ediff-init', `ediff-merg',
+;;   `ediff-mult', `ediff-util', `ediff-wind', `el-swank-fuzzy',
+;;   `ffap', `ffap-', `fit-frame', `frame-cmds', `frame-fns',
+;;   `fuzzy-match', `help+20', `hexrgb', `icicles-cmd1',
+;;   `icicles-cmd2', `icicles-face', `icicles-fn', `icicles-mcmd',
+;;   `icicles-opt', `icicles-var', `info', `info+', `kmacro',
+;;   `levenshtein', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
+;;   `mkhtml', `mkhtml-htmlize', `mwheel', `pp', `pp+', `ring',
+;;   `ring+', `second-sel', `strings', `thingatpt', `thingatpt+',
+;;   `unaccent', `w32-browser', `w32browser-dlgopen', `wid-edit',
+;;   `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -393,6 +393,7 @@ The following top-level commands are also available in Icicle mode:
 `icicle-toggle-regexp-quote'           - Toggle regexp escaping
 `icicle-toggle-search-cleanup'         - Toggle search highlighting
 `icicle-toggle-search-replace-common-match' - Toggle ECM replacment
+`icicle-toggle-show-multi-completion'  - Toggle multi-completions
 `icicle-toggle-sorting'                - Toggle sorting of completions
 `icicle-toggle-transforming'           - Toggle duplicate removal
 `icicle-toggle-WYSIWYG-Completions'    - Toggle WYSIWYG *Completions*
@@ -623,6 +624,7 @@ The following top-level commands are also available in Icicle mode:
 `icicle-toggle-regexp-quote'           - Toggle regexp escaping
 `icicle-toggle-search-cleanup'         - Toggle search highlighting
 `icicle-toggle-search-replace-common-match' - Toggle ECM replacment
+`icicle-toggle-show-multi-completion'  - Toggle multi-completions
 `icicle-toggle-sorting'                - Toggle sorting of completions
 `icicle-toggle-transforming'           - Toggle duplicate removal
 `icicle-toggle-WYSIWYG-Completions'    - Toggle WYSIWYG *Completions*
@@ -1022,6 +1024,9 @@ Used on `pre-command-hook'."
            (define-key icicle-options-menu-map [icicle-toggle-incremental-completion]
              '(menu-item "Toggle Incremental Completion"
                icicle-toggle-incremental-completion :visible icicle-mode :keys "C-#"))
+           (define-key icicle-options-menu-map [icicle-toggle-show-multi-completion]
+             '(menu-item "Toggle Showing Multi-Completions"
+               icicle-toggle-show-multi-completion :visible icicle-mode))
            (define-key icicle-options-menu-map [icicle-toggle-hiding-common-match]
              '(menu-item "Toggle Hiding Common Match"
                icicle-toggle-hiding-common-match :visible icicle-mode :keys "C-x ."))
@@ -1135,6 +1140,8 @@ Used on `pre-command-hook'."
            (define-key icicle-menu-map [icicle-toggle-incremental-completion]
              '(menu-item "Toggle Incremental Completion" icicle-toggle-incremental-completion
                :keys "C-#"))
+           (define-key icicle-menu-map [icicle-toggle-show-multi-completion]
+             '(menu-item "Toggle Showing Multi-Completions" icicle-toggle-show-multi-completion))
            (define-key icicle-menu-map [icicle-toggle-hiding-common-match]
              '(menu-item "Toggle Hiding Common Match" icicle-toggle-hiding-common-match
                :keys "C-x ."))
@@ -2652,6 +2659,7 @@ complete)"))
   (define-key map "\C-v"                     'icicle-scroll-Completions) ; `C-v'
   (define-key map "\M-v"                     'icicle-scroll-Completions-up) ; `M-v'
   (define-key map "."                        'icicle-insert-dot-command) ; `.'
+  (define-key map "\M-m"                     'icicle-toggle-show-multi-completion) ; `M-m'
   (define-key map "\C-x."                    'icicle-toggle-hiding-common-match) ; `C-x .'
   (when (fboundp 'doremi)
     (define-key map "\C-xw"                  'icicle-doremi-candidate-width-factor+) ; `C-x w'
@@ -2876,6 +2884,7 @@ MAP is `minibuffer-local-completion-map',
   (define-key map "\C-v"                     nil)
   (define-key map "\M-v"                     nil)
   (define-key map "."                        nil)
+  (define-key map "\M-m"                     nil)
   (define-key map "\C-x."                    nil)
   (when (fboundp 'doremi)
     (define-key map "\C-xw"                  nil)

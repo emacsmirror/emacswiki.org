@@ -1157,16 +1157,20 @@ these commands open the files only as you access them by
 choosing a region candidate.  You can also open all such files at any time, using command `icicle-region-open-all-files'.
 
 ----
-[:icicle-add-buffer-name-flag]
-==== Option icicle-add-buffer-name-flag ====
+[:icicle-show-multi-completion-flag]
+==== Option icicle-show-multi-completion-flag ====
 
-Non-`nil' user option '''`icicle-add-buffer-name-flag'''' means that for some commands, such as `icicle-search' and `icicle-select-region', the name of the buffer associated with each completion candidate is added
-to the candidate and highlighted. The default value is `t'.  When present, 
-you can match against the buffer name, as well as the rest of the candidate. 
+Non-`nil' user option '''`icicle-show-multi-completion-flag'''' means that for some commands additional information is shown along
+with each completion candidate.  That is, a [[multi-completion]] is
+used.  You can match against any parts of the multi-completion.
+The default value is `t'.
+
+For example, for command `icicle-search', the name of the buffer associated with each completion candidate is added
+to the candidate and highlighted. You can match against the buffer name, as well as the search hit within the buffer. 
 
 Note that even when the value of this option is `nil',
-you can often see the buffer name in the [[mode-line]] when you
-[[Icicles - Cycling Completions|cycle]] candidates, and you can typically see the name in the help that is 
+you can often see the multi-completion information in the [[mode line]] when you
+[[Icicles - Cycling Completions|cycle]] candidates, and you can typically see it in the help that is 
 displayed by `C-M-mouse-2' and so on.
 
 

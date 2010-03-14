@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:19:43 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Feb 17 09:17:51 2010 (-0800)
+;; Last-Updated: Sat Mar 13 13:56:29 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 512
+;;     Update #: 513
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-face.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -17,10 +17,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `cl', `color-theme', `cus-face', `easymenu', `el-swank-fuzzy',
-;;   `ffap', `ffap-', `fuzzy-match', `hexrgb', `icicles-opt',
-;;   `kmacro', `levenshtein', `reporter', `sendmail', `thingatpt',
-;;   `thingatpt+', `wid-edit', `widget'.
+;;   None
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -298,7 +295,7 @@ Don't forget to mention your Emacs and Icicles library versions."))
 
 (defface icicle-candidate-part
     '((((background dark)) (:background "#451700143197")) ; a very dark magenta
-      (t (:background "#DB17FFF4E581"))) ; A light green.
+      (t (:background "#EF84FFEAF427"))) ; A light green.
   "*Face used to highlight part(s) of a candidate in *Completions*."
   :group 'Icicles-Completions-Display :group 'faces)
 

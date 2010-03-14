@@ -5,7 +5,7 @@ Lisp:iedit.el
 
 It lets you edit one occurrence of some text in a buffer (possibly narrowed), and simultaneously have all other occurrences edited the same way. All occurrences are highlighted.
 
-In Iedit mode, you can use `TAB' and `S-TAB' to move through the occurrences (e.g. so you can see different contexts better).
+In Iedit mode, you can use `TAB' and `S-TAB' to move through the occurrences (e.g. so you can see different contexts better). (They wrap around from the last and first occurrence.)
 
 You can also use Iedit mode as a quick way to temporarily show only the buffer lines that match the current text being edited. This gives you the effect of a temporary `keep-lines' or `occur'. To get this effect, hit `##C-'##' when in Iedit mode -- it toggles hiding non-matching lines.
 

@@ -87,7 +87,7 @@ positions...).
 its completion candidates are buffers, not regions.)
 
 For commands `icicle-select-region' and `icicle-search-region', if
-user option '''`<tt>[[Icicles - Customization and General Tips#icicle-add-buffer-name-flag|icicle-add-buffer-name-flag]]</tt>'''' is non-`nil' (the default value), then each region-name candidate is annotated with the name of the region's buffer, highlighted, to help orient you. The buffer name is actually part of the ([[multi-completion]]) candidate, so you can match against it.
+user option '''`<tt>[[Icicles - Customization and General Tips#icicle-show-multi-completion-flag|icicle-show-multi-completion-flag]]</tt>'''' is non-`nil' (the default value), then each region-name candidate is annotated with the name of the region's buffer, highlighted, to help orient you. The buffer name is actually part of the ([[multi-completion]]) candidate, so you can match against it.
 
 
 '''See Also:'''

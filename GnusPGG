@@ -34,7 +34,7 @@ Then you can tell to nmml how you want it to act when facing a signed/encrypted 
     ;; Here we make button for the multipart 
     (setq gnus-buttonized-mime-types '("multipart/encrypted" "multipart/signed"))
     
-    ;; Automcatically sign when sending mails
+    ;; Automatically sign when sending mails
     (add-hook 'message-send-hook 'mml-secure-message-sign-pgpmime)
     
     ;; Enough explicit settings

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Tue Mar  9 12:38:54 2010 (-0800)
+;; Last-Updated: Sat Mar 13 14:51:17 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 1267
+;;     Update #: 1282
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -17,14 +17,14 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos-fn+var', `avoid', `cl', `color-theme',
-;;   `cus-edit', `cus-face', `cus-load', `cus-start', `doremi',
-;;   `easymenu', `el-swank-fuzzy', `ffap', `ffap-', `frame-cmds',
-;;   `frame-fns', `fuzzy-match', `hexrgb', `icicles-cmd1',
-;;   `icicles-face', `icicles-fn', `icicles-mcmd', `icicles-opt',
-;;   `icicles-var', `kmacro', `levenshtein', `misc-fns', `mwheel',
-;;   `pp', `pp+', `reporter', `ring', `ring+', `sendmail', `strings',
-;;   `thingatpt', `thingatpt+', `wid-edit', `wid-edit+', `widget'.
+;;   `apropos', `apropos-fn+var', `avoid', `cl', `cus-edit',
+;;   `cus-face', `cus-load', `cus-start', `doremi', `easymenu',
+;;   `el-swank-fuzzy', `ffap', `ffap-', `frame-cmds', `frame-fns',
+;;   `fuzzy-match', `hexrgb', `icicles-cmd1', `icicles-face',
+;;   `icicles-fn', `icicles-mcmd', `icicles-opt', `icicles-var',
+;;   `kmacro', `levenshtein', `misc-fns', `mwheel', `pp', `pp+',
+;;   `ring', `ring+', `strings', `thingatpt', `thingatpt+',
+;;   `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -1732,8 +1732,8 @@ command `icicle-mode'."
 ;;;###autoload
 (defun icicle-goto-global-marker ()     ; Bound to `C-- C-x C-@', `C-- C-x C-SPC'.
   "Like `icicle-goto-marker', but visits global, not local, markers.
-If user option `icicle-add-buffer-name-flag' is non-nil, then each
-completion candidate is annotated (prefixed) with the name of the
+If user option `icicle-show-multi-completion-flag' is non-nil, then
+each completion candidate is annotated (prefixed) with the name of the
 marker's buffer, to facilitate orientation."
   (interactive)
   (let ((icicle-list-nth-parts-join-string  "\t")
@@ -1743,7 +1743,7 @@ marker's buffer, to facilitate orientation."
          (cons '("by buffer, then by position" . icicle-part-1-cdr-lessp)
                icicle-sort-orders-alist))
         (icicle-sort-comparer               'icicle-part-1-cdr-lessp)
-        (icicle-candidate-properties-alist  (and icicle-add-buffer-name-flag
+        (icicle-candidate-properties-alist  (and icicle-show-multi-completion-flag
                                                  '((1 (face icicle-candidate-part))))))
     (icicle-goto-marker-1 global-mark-ring)))
 
@@ -1786,24 +1786,24 @@ RING is the marker ring to use."
   "Cons of text line that includes MARKER with MARKER itself.
 If the marker is on an empty line, then text \"<EMPTY LINE>\" is used.
 If both optional argument GLOBALP and option
-`icicle-add-buffer-name-flag' are non-nil, then the text is prefixed
-by MARKER's buffer name."
+`icicle-show-multi-completion-flag' are non-nil, then the text is
+prefixed by MARKER's buffer name."
   (with-current-buffer (marker-buffer marker)
     (save-excursion
       (goto-char marker)
       (let ((line  (let ((inhibit-field-text-motion  t)) ; Just to be sure, for `end-of-line'.
                      (buffer-substring-no-properties (save-excursion (beginning-of-line) (point))
                                                      (save-excursion (end-of-line) (point)))))
-            (buff  (and globalp icicle-add-buffer-name-flag (buffer-name)))
+            (buff  (and globalp icicle-show-multi-completion-flag (buffer-name)))
             (help  (and (or icicle-help-in-mode-line-flag ; Get it only if user will see it.
                             (and (boundp 'tooltip-mode) tooltip-mode))
                         (format "Line: %d, Char: %d" (line-number-at-pos) (point)))))
         (when (string= "" line) (setq line  "<EMPTY LINE>"))
         (when help
           (icicle-candidate-short-help help line)
-          (when (and globalp icicle-add-buffer-name-flag)
+          (when (and globalp icicle-show-multi-completion-flag)
             (icicle-candidate-short-help help buff)))
-        (if (and globalp icicle-add-buffer-name-flag)
+        (if (and globalp icicle-show-multi-completion-flag)
             (cons (list buff line) marker)
           (cons line marker))))))
 
@@ -1914,13 +1914,13 @@ region's buffer has changed, then the text used to identify the region
 might no longer correspond to the text at the beginning of the
 region.
 
-If user option `icicle-add-buffer-name-flag' is non-nil, then each
-completion candidate is annotated with the name of the region's
+If user option `icicle-show-multi-completion-flag' is non-nil, then
+each completion candidate is annotated with the name of the region's
 buffer, to facilitate orientation.  Note that even when the value is
 nil, you can use `C-M-mouse-2' and so on to see the buffer name, as
 well as the start and end points of the region and its length.
 
-Completion is lax if `icicle-add-buffer-name-flag' is non-nil;
+Completion is lax if `icicle-show-multi-completion-flag' is non-nil;
 otherwise, it is strict.
 
 You can use `S-delete' during completion to delete a region from
@@ -1935,9 +1935,9 @@ which requires library `bookmark+.el'.  In that case, saved regions
 are treated as bookmarks in every respect." ; Doc string
   icicle-select-region-action           ; Function to perform the action
   "Select region: " icicle-candidates-alist ; `completing-read' args
-  nil (not icicle-add-buffer-name-flag) nil nil (if icicle-add-buffer-name-flag
-                                                    (car (caar icicle-candidates-alist))
-                                                  (caar icicle-candidates-alist))
+  nil (not icicle-show-multi-completion-flag) nil nil (if icicle-show-multi-completion-flag
+                                                          (car (caar icicle-candidates-alist))
+                                                        (caar icicle-candidates-alist))
   nil
   ((IGNORED--FOR-SIDE-EFFECT               (when icicle-region-auto-open-files-flag ; Bindings
                                              (icicle-region-open-all-files)))
@@ -1977,8 +1977,8 @@ are treated as bookmarks in every respect." ; Doc string
                                    (and (string= buf1 buf2) (string-lessp (car x1) (car x2))))))))
 
 (defun icicle-region-add-buffers (region-list)
-  "Add buffer names to REGION-LIST, if `icicle-add-buffer-name-flag'."
-  (if icicle-add-buffer-name-flag
+  "Add buffer names to REGION-LIST, if `icicle-show-multi-completion-flag'."
+  (if icicle-show-multi-completion-flag
       (mapcar #'(lambda (entry)
                   (let ((buf  (copy-sequence (cadr entry))))
                     (put-text-property 0 (length buf) 'face 'icicle-candidate-part buf)
@@ -2001,9 +2001,9 @@ To add a region to `icicle-region-alist', do one of the following:
 * Customize `icicle-region-alist'."     ; Doc string
   icicle-delete-region-from-alist       ; Function to perform the action
   "Remove region from saved regions: " icicle-candidates-alist ; `completing-read' args
-  nil (not icicle-add-buffer-name-flag) nil nil (if icicle-add-buffer-name-flag
-                                                    (car (caar icicle-candidates-alist))
-                                                  (caar icicle-candidates-alist))
+  nil (not icicle-show-multi-completion-flag) nil nil (if icicle-show-multi-completion-flag
+                                                          (car (caar icicle-candidates-alist))
+                                                        (caar icicle-candidates-alist))
   nil
   ((icicle-candidate-help-fn               'icicle-region-help) ; Additional bindings
    (icicle-list-nth-parts-join-string      "\t")
@@ -2378,13 +2378,13 @@ regexps from variables.
 Additional Information
 ----------------------
 
-If user option `icicle-add-buffer-name-flag' is non-nil, then each
-candidate is annotated with the name of the buffer where the hit
-occurs, to facilitate orientation.  Note that even when the value is
-nil, you can use `C-M-mouse-2' and so on to see the buffer name, as
-well as the position of the hit in the buffer.
+If user option `icicle-show-multi-completion-flag' is non-nil, then
+each candidate is annotated with the name of the buffer where the
+search hit occurs, to facilitate orientation.  Note that even when the
+value is nil, you can use `C-M-mouse-2' and so on to see the buffer
+name, as well as the position of the hit in the buffer.
 
-Completion is lax if `icicle-add-buffer-name-flag' is non-nil;
+Completion is lax if `icicle-show-multi-completion-flag' is non-nil;
 otherwise, it is strict.
 
 After you visit a completion candidate, the hooks in variable
@@ -2428,7 +2428,7 @@ This command is intended for use only in Icicle mode."
                  ,(if icicle-search-whole-word-flag
                       (icicle-search-read-word)
                       (icicle-search-read-context-regexp))
-                 ,(not icicle-add-buffer-name-flag)
+                 ,(not icicle-show-multi-completion-flag)
                  ,(icicle-search-where-arg)))
   (setq icicle-search-context-regexp  (and (stringp scan-fn-or-regexp) scan-fn-or-regexp))
   (let ((icicle-candidate-action-fn         (or icicle-candidate-action-fn 'icicle-search-action))
@@ -2614,7 +2614,7 @@ If PREDICATE is non-nil, then push only the hits for which it holds.
 
 Highlight the matches in face `icicle-search-main-regexp-others'."
   (setq regexp  (or regexp (icicle-search-read-context-regexp)))
-  (let ((add-bufname-p  (and buffer icicle-add-buffer-name-flag))
+  (let ((add-bufname-p  (and buffer icicle-show-multi-completion-flag))
         (temp-list      ())
         (last-beg       nil))
     (unless buffer (setq buffer  (current-buffer)))
@@ -3088,9 +3088,9 @@ documentation."
   (interactive
    `(,@(icicle-region-or-buffer-limits)
      ,(icicle-group-regexp (mapconcat #'icicle-group-regexp (icicle-keyword-list) "\\|"))
-     ,(not icicle-add-buffer-name-flag)
+     ,(not icicle-show-multi-completion-flag)
      ,(icicle-search-where-arg)))
-  (icicle-search beg end keywords (not icicle-add-buffer-name-flag) where))
+  (icicle-search beg end keywords (not icicle-show-multi-completion-flag) where))
 
 (defalias 'icicle-regexp-list 'icicle-keyword-list)
 ;;;###autoload
@@ -3237,13 +3237,13 @@ region's buffer has changed, then the text used to identify the region
 might no longer correspond to the text at the beginning of the
 region.
 
-If user option `icicle-add-buffer-name-flag' is non-nil, then each
-completion candidate is annotated with the name of the region's
+If user option `icicle-show-multi-completion-flag' is non-nil, then
+each completion candidate is annotated with the name of the region's
 buffer, to facilitate orientation.  Note that even when the value is
 nil, you can use `C-M-mouse-2' and so on to see the buffer name, as
 well as the start and end points of the region and its length.
 
-Completion is lax if `icicle-add-buffer-name-flag' is non-nil;
+Completion is lax if `icicle-show-multi-completion-flag' is non-nil;
 otherwise, it is strict.
 
 NOTE: An alternative to using `icicle-search-region' and
@@ -3252,9 +3252,9 @@ which requires library `bookmark+.el'.  In that case, saved regions
 are treated as bookmarks in every respect." ; Doc string
   icicle-search-region-action           ; Function to perform the action
   "Search region: " icicle-candidates-alist ; `completing-read' args
-  nil (not icicle-add-buffer-name-flag) nil nil (if icicle-add-buffer-name-flag
-                                                    (car (caar icicle-candidates-alist))
-                                                  (caar icicle-candidates-alist))
+  nil (not icicle-show-multi-completion-flag) nil nil (if icicle-show-multi-completion-flag
+                                                          (car (caar icicle-candidates-alist))
+                                                        (caar icicle-candidates-alist))
   nil
   ((IGNORED--FOR-SIDE-EFFECT               (when icicle-region-auto-open-files-flag ; Bindings
                                              (icicle-region-open-all-files)))
@@ -3348,7 +3348,7 @@ That is, do not also search an overlay property."
                          (if faces (mapcar #'intern faces) (face-list))) ; Default: all faces.
                      (list (intern (icicle-completing-read-history
                                     "Property value: " 'icicle-char-property-value-history))))))
-    `(,beg1 ,end1 ,(not icicle-add-buffer-name-flag) ,where ,prop ,values)))
+    `(,beg1 ,end1 ,(not icicle-show-multi-completion-flag) ,where ,prop ,values)))
 
 (defun icicle-char-properties-in-buffers (where beg end &optional type)
   "List of all character properties in WHERE.
@@ -3423,7 +3423,7 @@ If PREDICATE is non-nil, then push only the hits for which it holds.
 PREDICATE is nil or a Boolean function that takes these arguments:
   - the search-context string
   - a marker at the end of the search-context"
-  (let ((add-bufname-p  (and buffer icicle-add-buffer-name-flag))
+  (let ((add-bufname-p  (and buffer icicle-show-multi-completion-flag))
         (temp-list      ())
         (zone-end       nil))
     (unless buffer (setq buffer  (current-buffer)))
@@ -3446,7 +3446,8 @@ PREDICATE is nil or a Boolean function that takes these arguments:
                 (setq zone-end  (or (icicle-next-single-char-property-change beg prop nil end) end))
                 (let* ((hit-string  (buffer-substring-no-properties beg zone-end))
                        (end-marker  (copy-marker zone-end)))
-                  (when (or (not predicate) (save-match-data (funcall predicate hit-string end-marker)))
+                  (when (or (not predicate)
+                            (save-match-data (funcall predicate hit-string end-marker)))
                     (icicle-candidate-short-help
                      (concat (and add-bufname-p
                                   (format "Buffer: `%s', " (buffer-name (marker-buffer end-marker))))
@@ -3565,9 +3566,9 @@ search multiple regions, buffers, or files, see the doc for command
 `icicle-search'."
   (interactive `(,@(icicle-region-or-buffer-limits)
                  ,(icicle-search-read-word)
-                 ,(not icicle-add-buffer-name-flag)
+                 ,(not icicle-show-multi-completion-flag)
                  ,(icicle-search-where-arg)))
-  (icicle-search beg end word-regexp (not icicle-add-buffer-name-flag) where))
+  (icicle-search beg end word-regexp (not icicle-show-multi-completion-flag) where))
 
 ;;;###autoload
 (defun icicle-search-all-regions (scan-fn-or-regexp require-match &rest args)
@@ -3578,7 +3579,7 @@ BEG, END, and WHERE."
   (interactive `(,(if icicle-search-whole-word-flag
                       (icicle-search-read-word)
                       (icicle-search-read-context-regexp))
-                 ,(not icicle-add-buffer-name-flag)))
+                 ,(not icicle-show-multi-completion-flag)))
   (apply #'icicle-search nil nil scan-fn-or-regexp require-match icicle-region-alist args))
 
 ;;;###autoload
@@ -3592,7 +3593,7 @@ BEG, END, and WHERE."
   (interactive `(,(if icicle-search-whole-word-flag
                       (icicle-search-read-word)
                       (icicle-search-read-context-regexp))
-                 ,(not icicle-add-buffer-name-flag)))
+                 ,(not icicle-show-multi-completion-flag)))
   (apply #'icicle-search nil nil scan-fn-or-regexp require-match
          (let ((icicle-show-Completions-initially-flag  t))
            (mapcar #'get-buffer (let ((icicle-buffer-require-match-flag  'partial-match-ok))
@@ -3610,7 +3611,7 @@ without arguments BEG, END, and WHERE."
   (interactive `(,(if icicle-search-whole-word-flag
                       (icicle-search-read-word)
                       (icicle-search-read-context-regexp))
-                 ,(not icicle-add-buffer-name-flag)))
+                 ,(not icicle-show-multi-completion-flag)))
   (apply #'icicle-search nil nil scan-fn-or-regexp require-match
          (let ((icicle-show-Completions-initially-flag  t)) (icicle-file-list))
          args))
@@ -3623,7 +3624,7 @@ BEG, END, and WHERE."
   (interactive `(,(if icicle-search-whole-word-flag
                       (icicle-search-read-word)
                       (icicle-search-read-context-regexp))
-                 ,(not icicle-add-buffer-name-flag)))
+                 ,(not icicle-show-multi-completion-flag)))
   (unless (eq major-mode 'dired-mode)
     (error "Command `icicle-search-dired-marked' must be called from a Dired buffer"))
   (apply #'icicle-search nil nil scan-fn-or-regexp require-match (dired-get-marked-files) args))
@@ -3636,7 +3637,7 @@ BEG, END, and WHERE."
   (interactive `(,(if icicle-search-whole-word-flag
                       (icicle-search-read-word)
                       (icicle-search-read-context-regexp))
-                 ,(not icicle-add-buffer-name-flag)))
+                 ,(not icicle-show-multi-completion-flag)))
   (unless (eq major-mode 'ibuffer-mode)
     (error "Command `icicle-search-ibuffer-marked' must be called from an Ibuffer buffer"))
   (let ((marked-bufs (nreverse (ibuffer-get-marked-buffers))))
@@ -3651,7 +3652,7 @@ BEG, END, and WHERE."
   (interactive `(,(if icicle-search-whole-word-flag
                       (icicle-search-read-word)
                       (icicle-search-read-context-regexp))
-                 ,(not icicle-add-buffer-name-flag)))
+                 ,(not icicle-show-multi-completion-flag)))
   (unless (eq major-mode 'Buffer-menu-mode)
     (error "Command `icicle-search-buff-menu-marked' must be called from a Buffer Menu buffer"))
   (let ((marked-bufs  ()))
@@ -3693,7 +3694,7 @@ using `icicle-search'.  For more information, see the doc for command
     (unwind-protect
          (progn (set-face-foreground 'icicle-search-main-regexp-others nil)
                 (set-face-background 'icicle-search-main-regexp-others nil)
-                (icicle-search beg end ".*" (not icicle-add-buffer-name-flag) buffers))
+                (icicle-search beg end ".*" (not icicle-show-multi-completion-flag) buffers))
       (when icicle-search-cleanup-flag (icicle-search-highlight-cleanup))
       (set-face-foreground 'icicle-search-main-regexp-others fg)
       (set-face-background 'icicle-search-main-regexp-others bg))))
@@ -3729,7 +3730,7 @@ using `icicle-search'.  For more information, see the doc for command
          (progn (set-face-foreground 'icicle-search-main-regexp-others nil)
                 (set-face-background 'icicle-search-main-regexp-others nil)
                 (icicle-search beg end (concat "[A-Z][^.?!]+[.?!]")
-                               (not icicle-add-buffer-name-flag) buffers))
+                               (not icicle-show-multi-completion-flag) buffers))
       (when icicle-search-cleanup-flag (icicle-search-highlight-cleanup))
       (set-face-foreground 'icicle-search-main-regexp-others fg)
       (set-face-background 'icicle-search-main-regexp-others bg))))
@@ -3764,7 +3765,8 @@ using `icicle-search'.  For more information, see the doc for command
     (unwind-protect
          (progn (set-face-foreground 'icicle-search-main-regexp-others nil)
                 (set-face-background 'icicle-search-main-regexp-others nil)
-                (icicle-search beg end "\\(.+\n\\)+" (not icicle-add-buffer-name-flag) buffers))
+                (icicle-search beg end "\\(.+\n\\)+"
+                               (not icicle-show-multi-completion-flag) buffers))
       (when icicle-search-cleanup-flag (icicle-search-highlight-cleanup))
       (set-face-foreground 'icicle-search-main-regexp-others fg)
       (set-face-background 'icicle-search-main-regexp-others bg))))
@@ -3800,7 +3802,7 @@ using `icicle-search'.  For more information, see the doc for command
          (progn (set-face-foreground 'icicle-search-main-regexp-others nil)
                 (set-face-background 'icicle-search-main-regexp-others nil)
                 (icicle-search beg end "\\([^\f]*[\f]\\|[^\f]+$\\)"
-                               (not icicle-add-buffer-name-flag) buffers))
+                               (not icicle-show-multi-completion-flag) buffers))
       (when icicle-search-cleanup-flag (icicle-search-highlight-cleanup))
       (set-face-foreground 'icicle-search-main-regexp-others fg)
       (set-face-background 'icicle-search-main-regexp-others bg))))
@@ -4002,7 +4004,7 @@ information about the arguments and the use of a prefix argument to
 search multiple regions, buffers, or files, see the doc for command
 `icicle-search'."
   (interactive `(,@(icicle-region-or-buffer-limits)
-                 ,(not icicle-add-buffer-name-flag)
+                 ,(not icicle-show-multi-completion-flag)
                  ,(icicle-search-where-arg)))
   (unless imenu-generic-expression (error "No Imenu for this buffer"))
   (let ((case-fold-search  (if (or (local-variable-p 'imenu-case-fold-search)
@@ -4049,7 +4051,7 @@ information about the arguments and the use of a prefix argument to
 search multiple regions, buffers, or files, see the doc for command
 `icicle-search'."
   (interactive `(,@(icicle-region-or-buffer-limits)
-                 ,(not icicle-add-buffer-name-flag)
+                 ,(not icicle-show-multi-completion-flag)
                  ,(icicle-search-where-arg)))
   (unless (or where (eq major-mode 'emacs-lisp-mode))
     (error "This command is only for Emacs-Lisp mode"))
@@ -4096,7 +4098,7 @@ information about the arguments and the use of a prefix argument to
 search multiple regions, buffers, or files, see the doc for command
 `icicle-search'."
   (interactive `(,@(icicle-region-or-buffer-limits)
-                 ,(not icicle-add-buffer-name-flag)
+                 ,(not icicle-show-multi-completion-flag)
                  ,(icicle-search-where-arg)))
   (unless (or where (eq major-mode 'emacs-lisp-mode))
     (error "This command is only for Emacs-Lisp mode"))

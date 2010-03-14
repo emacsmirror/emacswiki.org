@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Mar  3 01:16:52 2010 (-0800)
+;; Last-Updated: Sat Mar 13 15:29:41 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 26141
+;;     Update #: 26153
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -650,8 +650,8 @@
 ;;  You can customize the following user options, to control search
 ;;  and replacement behavior.
 ;;
-;;  * If `icicle-add-buffer-name-flag' is non-nil (the default value),
-;;    then, whenever you use a prefix argument, Icicles search
+;;  * If `icicle-show-multi-completion-flag' is non-nil (the default
+;;    value), then, whenever you use a prefix argument, Icicles search
 ;;    functions annotate each candidate with the name of the buffer
 ;;    where the search hit occurs, highlighted, to help orient you.
 ;;    The buffer name is actually part of the (multi-completion)
@@ -1476,11 +1476,11 @@
 ;;  regions.)
 ;;
 ;;  For commands `icicle-select-region' and `icicle-search-region', if
-;;  user option `icicle-add-buffer-name-flag' is non-nil (the default
-;;  value), then each region-name candidate is annotated with the name
-;;  of the region's buffer, highlighted, to help orient you.  The
-;;  buffer name is actually part of the (multi-completion) candidate,
-;;  so you can match against it.
+;;  user option `icicle-show-multi-completion-flag' is non-nil (the
+;;  default value), then each region-name candidate is annotated with
+;;  the name of the region's buffer, highlighted, to help orient you.
+;;  The buffer name is actually part of the (multi-completion)
+;;  candidate, so you can match against it.
 ;;
 ;;  See Also:
 ;;
@@ -4585,18 +4585,21 @@
 ;;    choosing a region candidate.  You can also open all such files
 ;;    at any time, using command `icicle-region-open-all-files'.
 ;;
-;;  * Non-nil user option `icicle-add-buffer-name-flag' means that for
-;;    some commands, such as `icicle-search' and
-;;    `icicle-select-region', the name of the buffer associated with
-;;    each completion candidate is added to the candidate and
-;;    highlighted.  The default value is t.  When present, you can
-;;    match against the buffer name, as well as the rest of the
-;;    candidate.
+;;  * Non-nil user option `icicle-show-multi-completion-flag' means
+;;    that for some commands additional information is shown along
+;;    with each completion candidate.  That is, a multi-completion is
+;;    used.  You can match against any parts of the multi-completion.
+;;    The default value is t.
+;;
+;;    For example, for command `icicle-search', the name of the buffer
+;;    associated with each completion candidate is added to the
+;;    candidate and highlighted.  You can match against the buffer
+;;    name, as well as the search hit within the buffer.
 ;;
 ;;    Note that even when the value of this option is nil, you can
-;;    often see the buffer name in the mode-line when you cycle
-;;    candidates, and you can typically see the buffer name in the
-;;    help that is displayed by `C-M-mouse-2' and so on.
+;;    often see the multi-completion information in the mode-line when
+;;    you cycle candidates, and you can typically see it in the help
+;;    that is displayed by `C-M-mouse-2' and so on.
 ;;
 ;;  * User options `icicle-buffer-match-regexp',
 ;;    `icicle-buffer-no-match-regexp', `icicle-buffer-predicate', and
