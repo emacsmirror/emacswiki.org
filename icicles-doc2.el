@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Mar 13 15:29:41 2010 (-0800)
+;; Last-Updated: Sun Mar 14 14:34:48 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 26153
+;;     Update #: 26162
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4573,9 +4573,19 @@
 ;;    purposes.  See (@> "Multiple Regions").
 ;;
 ;;  * User option `icicle-bookmark-name-length-max' is the maximum
-;;    number of characters to use when `icicle-bookmark-cmd' with a
-;;    non-negative numeric prefix argument automatically names a
-;;    bookmark.
+;;    number of characters to use when `icicle-bookmark-cmd' (`C-x r
+;;    m') with a non-negative numeric prefix argument automatically
+;;    names a bookmark.
+;;
+;;  * User option `icicle-bookmark-refresh-cache-flag' determines
+;;    whether commands `icicle-bookmark' and
+;;    `icicle-bookmark-other-window' refresh the bookmark-list cache.
+;;    The default value of nil, meaning do not refresh, speeds things
+;;    up in case you have a lot of bookmarks, at the cost of having
+;;    the bookmark list possibly not be up to date.  A plain prefix
+;;    argument (`C-u') overrides the default setting for the duration
+;;    of the command.  Thus, if the value is nil, you can use `C-u'
+;;    occasionally to refresh the list on demand.
 ;;
 ;;  * Non-nil user option `icicle-region-auto-open-files-flag' means
 ;;    that commands that access `icicle-region-alist' first open all

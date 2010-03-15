@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Mar 13 13:19:27 2010 (-0800)
+;; Last-Updated: Sun Mar 14 13:44:29 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 6344
+;;     Update #: 6346
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2087,19 +2087,19 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
      ;; `minibuffer-local-must-match-filename-map' is an alias for
      ;; `minibuffer-local-filename-must-match-map'.  But for Emacs 23.2, there is no such alias!
      (when (boundp 'minibuffer-local-filename-completion-map)
-       (when (and (require 'bookmark+ nil t) (fboundp 'icicle-bookmark-file-other-window))
+       (when (and (featurep 'bookmark+) (fboundp 'icicle-bookmark-file-other-window))
          (define-key minibuffer-local-filename-completion-map
              "\C-xm" 'icicle-bookmark-file-other-window))
        (define-key minibuffer-local-filename-completion-map
          [(control backspace)] 'icicle-up-directory))
      (when (boundp 'minibuffer-local-must-match-filename-map)
-       (when (and (require 'bookmark+ nil t) (fboundp 'icicle-bookmark-file-other-window))
+       (when (and (featurep 'bookmark+) (fboundp 'icicle-bookmark-file-other-window))
          (define-key minibuffer-local-must-match-filename-map
              "\C-xm" 'icicle-bookmark-file-other-window))
        (define-key minibuffer-local-must-match-filename-map ; Use the old name, for Emacs 22-23.1.
          [(control backspace)] 'icicle-up-directory))
      (when (boundp 'minibuffer-local-filename-must-match-map)
-       (when (and (require 'bookmark+ nil t) (fboundp 'icicle-bookmark-file-other-window))
+       (when (and (featurep 'bookmark+) (fboundp 'icicle-bookmark-file-other-window))
          (define-key minibuffer-local-filename-must-match-map
              "\C-xm" 'icicle-bookmark-file-other-window))
        (define-key minibuffer-local-filename-must-match-map ; Use the new name, for Emacs 23.2+.
@@ -3434,7 +3434,7 @@ if `icicle-change-region-background-flag' is non-nil."
 
 
 ;; When these libraries are first loaded, toggle Icicle mode to pick up the definitions
-(dolist (library '("buff-menu" "comint" "dired" "ess-site" "gud" "ibuffer"
+(dolist (library '("bookmark+" "buff-menu" "comint" "dired" "ess-site" "gud" "ibuffer"
                    "idlw-shell"         ; (untested - I don't have an `idl' program)
                    "ielm" "info" "net-utils" "rlogin" "shell" "sh-script" "tcl"))
   (unless (if (fboundp 'load-history-regexp) ; Emacs 22+

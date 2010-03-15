@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Mar 13 14:44:37 2010 (-0800)
+;; Last-Updated: Sun Mar 14 14:12:50 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 3566
+;;     Update #: 3591
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -54,7 +54,8 @@
 ;;    `icicle-apropos-cycle-previous-alt-action-keys',
 ;;    `icicle-apropos-cycle-previous-help-keys',
 ;;    `icicle-anything-transform-candidates-flag',
-;;    `icicle-bookmark-name-length-max', `icicle-buffer-configs',
+;;    `icicle-bookmark-name-length-max',
+;;    `icicle-bookmark-refresh-cache-flag', `icicle-buffer-configs',
 ;;    `icicle-buffer-extras',
 ;;    `icicle-buffer-ignore-space-prefix-flag',
 ;;    `icicle-buffer-match-regexp', `icicle-buffer-no-match-regexp',
@@ -443,6 +444,22 @@ different keyboards."
 When `icicle-bookmark-cmd' is used with a non-negative numeric prefix
 arg, the name of the bookmark that is set has at most this many chars."
   :type 'integer :group 'Icicles-Miscellaneous)
+
+;;;###autoload
+(defcustom icicle-bookmark-refresh-cache-flag nil
+  "*Non-nil means `icicle-bookmark' refreshes the bookmark-list cache.
+Use nil to speed up `icicle-bookmark(-other-window)' if you have a lot
+of bookmarks, at the cost of having the bookmark list possibly not be
+up to date.  Use non-nil if you want to be sure the list is refreshed.
+
+If nil, the list of bookmarks is updated only if you use `C-u'.
+If non-nil, the list is always updated unless you use `C-u'.
+
+This affects only `icicle-bookmark(-other-window)'.  It does not
+affect more specific Icicles bookmark jump commands such as
+`\\[icicle-bookmark-dired-other-window]' or the use of a negative prefix arg with \
+`\\[icicle-bookmark-cmd]'."
+  :type 'boolean :group 'Icicles-Completions-Display :group 'Icicles-Matching)
 
 ;;;###autoload
 (defcustom icicle-buffer-extras nil
@@ -2257,8 +2274,9 @@ ordinary predicates, any PRED-type predicates you define.
 Note: As a convention, predefined Icicles PRED-type predicate names
 have the suffix `-cp' (for \"component predicate\") instead of `-p'."
   ;; We don't bother to define a `icicle-reverse-multi-sort-order' analogous to
-  ;; `bookmarkp-reverse-multi-sort-order'.  If we did, the doc string would need to be updated to say
-  ;; what the doc string of `bookmarkp-sort-comparer' says about `bookmarkp-reverse-multi-sort-order'.
+  ;; `bookmarkp-reverse-multi-sort-order'.  If we did, the doc string would need
+  ;; to be updated to say what the doc string of `bookmarkp-sort-comparer' says
+  ;; about `bookmarkp-reverse-multi-sort-order'.
   :type '(choice
           (const    :tag "None (do not sort)" nil)
           (function :tag "Sorting Predicate")

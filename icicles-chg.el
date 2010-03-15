@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Mar 13 15:26:55 2010 (-0800)
+;; Last-Updated: Sun Mar 14 14:45:59 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 4925
+;;     Update #: 4948
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,15 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2010/03/14 dadams
+;;     icicle-bookmark(-other-window):
+;;       Copy file/buffer name string for candidate-part face, so we don't touch bookmark-alist.
+;;       Handle icicle-bookmark-refresh-cache-flag and C-u.
+;;       Bind the narrow keys in minibuffer-local-completion also (lax for multi-completion).
+;;     icicle-bookmark-*-narrow: Use icicle-get-alist-candidate-function.
+;;     icicle-define-bookmark-other-window-command: Rewrote to handle multi-completion.
+;;     icicle-bookmark-non-file-narrow: Use bookmarkp-non-file-bookmark-p.
+;;     icicle-bookmark-propertize-candidate: Typo in a face name.
 ;; 2010/03/13 dadams
 ;;     icicle-bookmark(-other-window):
 ;;       If Bookmark+ available then, depending on icicle-show-multi-completion-flag, use a
@@ -2760,6 +2769,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2010/03/14 dadams
+;;     icicle-define-minibuffer-maps: Use featurep, not soft-require, for bookmark+.el.
+;;     Added bookmark+ to final dolist for eval-after-load.
 ;; 2010/03/13 dadams
 ;;     icicle-define-icicle-maps:
 ;;       Bound icicle-toggle-show-multi-completion to M-m in minibuffer, and added to menus.
@@ -3634,6 +3646,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2010/03/14 dadams
+;;     Added: icicle-bookmark-refresh-cache-flag.
 ;; 2010/03/13 sadams
 ;;     Renamed icicle-add-buffer-name-flag to icicle-show-multi-completion-flag.  Doc string.
 ;; 2010/03/09 dadams

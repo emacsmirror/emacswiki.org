@@ -1141,9 +1141,23 @@ the region for completion purposes.  See [[Icicles - Multiple Regions]].
 ==== Option icicle-bookmark-name-length-max ====
 
 User option '''`icicle-bookmark-name-length-max'''' is the maximum
-number of characters to use when `icicle-bookmark-cmd'
+number of characters to use when `icicle-bookmark-cmd'  (`C-x r m')
 with a non-negative [[numeric prefix argument]] automatically names a bookmark.
 
+
+----
+[:icicle-bookmark-refresh-cache-flag]
+==== Option icicle-bookmark-refresh-cache-flag ====
+
+User option '''`icicle-bookmark-refresh-cache-flag'''' determines
+whether commands `icicle-bookmark' and `icicle-bookmark-other-window'
+refresh the bookmark-list cache.  The default value of `nil',
+meaning do not refresh, speeds things up in case you have a lot
+of bookmarks, at the cost of having the bookmark list possibly
+not be up to date.  A plain [[prefix argument]] (`C-u') overrides
+the default setting for the duration of the command.  Thus, if
+the value is `nil', you can use `C-u' occasionally to refresh the
+list on demand.
 
 ----
 [:icicle-region-auto-open-files-flag]

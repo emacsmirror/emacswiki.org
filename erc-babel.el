@@ -192,7 +192,7 @@ It will add/alter the entry in erc-babel-alist corresponding to this buffer."
 (defun erc-babel-translate-outgoing-msg (msg)
   "Translate outgoing `msg' using Babel if possible. The languages to translate between are obtained 
 from the element of erc-babel-alist corresponding to the current buffer."
-  (if erc-babel-enable  
+  (if (and erc-babel-enable (not (equal (substring msg 0 1) "/")))  
       (let* ((backend (symbol-name (cdr (assoc erc-babel-backend babel-backends))))
 	     (fetchfunc (intern (concat "babel-" backend "-fetch")))
 	     (washfunc (intern (concat "babel-" backend "-wash")))

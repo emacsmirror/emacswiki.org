@@ -2,7 +2,7 @@
 
 It's like <code>find-file</code> crossed with <code>iswitchb</code> or InteractivelyDoThings, but with a larger and more easily readable dedicated window for completions instead of the minibuffer.
 
-[http://viewglob.sourceforge.net/lusty-explorer.el.animated.gif Here's a 3.4 MB animated gif showing it in action]
+[http://viewglob.sourceforge.net/lusty-explorer.el.animated.gif Here's a 3.4 MB animated gif showing it in action] (Note: 2.0+ uses fuzzy matching instead of tab completion) 
 
 After copying the file into your load-path, put this in your .emacs:
 
@@ -21,6 +21,13 @@ Lisp:lusty-explorer.el
 [http://github.com/sjbach/lusty/tree/master Development repository]
 
 = Changelist =
+
+Version 2.0:
+* Introduced a flex/fuzzy matching algorithm, [http://github.com/rmm5t/liquidmetal/tree/master LiquidMetal].
+* Added custom keymap and setup hook.
+* Faster implementation of lusty-columnize.  Thanks to Volkan Yazici.
+* Catch an error when enlarging the completions buffer.
+* Many small changes.
 
 Version 1.0.2:
 * Fixed a bug in completion-ignored-extensions matching.  Thanks to Hugo Schmitt.

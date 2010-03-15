@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Mar 13 14:33:19 2010 (-0800)
+;; Last-Updated: Sun Mar 14 14:15:43 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 22646
+;;     Update #: 22650
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -501,7 +501,8 @@
 ;;    `icicle-apropos-cycle-previous-action-keys',
 ;;    `icicle-apropos-cycle-previous-alt-action-keys',
 ;;    `icicle-apropos-cycle-previous-help-keys',
-;;    `icicle-bookmark-name-length-max', `icicle-buffer-configs',
+;;    `icicle-bookmark-name-length-max',
+;;    `icicle-bookmark-refresh-cache-flag', `icicle-buffer-configs',
 ;;    `icicle-buffer-extras',
 ;;    `icicle-buffer-ignore-space-prefix-flag',
 ;;    `icicle-buffer-match-regexp', `icicle-buffer-no-match-regexp',
