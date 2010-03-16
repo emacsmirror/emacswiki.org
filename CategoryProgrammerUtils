@@ -1,4 +1,4 @@
-Cette page est aussi disponible en français: Français:CatégorieOutilsDuProgrammeur
+[[fr:CatégorieOutilsDuProgrammeur]]
 
 This page collects tools that help programmers be more
 productive with programs written in languages such as C,
@@ -120,4 +120,3 @@ Related tools and information:
 * PopupRuler -- Measure strings report layouts etc. in source files.
 * RemoteProgramDevelopment -- Edit and run code on a remote host.
 * <tt>[[vhdl-goto-def.el]]</tt>, <tt>[[vhdl-process-wave.el]]</tt> -- For VHDL coders.
-

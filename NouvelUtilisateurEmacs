@@ -31,7 +31,7 @@ la manière dont `C-h' ou `F1' sont interprétés.
 
 Pour lire le tutoriel dans une langue autre que l'anglais, utilisez
 la commande `help-with-tutorial-spec-language' 
-(pressez `Alt' pendant que vous tapiez sur `x', 
+(gardez `Alt' enfoncé, puis tapez sur `x', 
 puis saisissez `help-with-tutorial-spec-language'). 
 Actuellement les tutoriels disponibles couvrent : `bg', `cn', `cs', `de', `es', `fr', `it', `ja', `ko', `nl', `pl', `ro', `ru', `sk', `sl', `sv',
 `th', et `zh'.
@@ -50,7 +50,7 @@ Dans la documentation Emacs :
 : '''ESC''' veut dire la touche d'echappement: Escape
 : '''TAB''' veut dire la touche Tab
 
-Une combinaison comme `C-M-' (ou `M-C-') veut dire appuyez en même temps sur  les touches Control et Meta (Alt).
+Une combinaison comme `C-M-' (ou `M-C-') veut dire 'appuyez en même temps sur  les touches Control et Meta (Alt)'.
 
 
 == Emacs-Speak (Jargon) ==
@@ -73,7 +73,7 @@ En termes Emacs :
 * Le '''pointeur''' (de la souris -- MousePointer) montre la position de la souris ; c'est une flèche par défaut.
 * La position du curseur est la valeur du '''[[Point]]'''. Par exemple, si le curseur est sur la troisième caractère d'un buffer, alors point = 3.
 * Les boutons de la souris s'appellent '''MB1''', '''MB2''', et '''MB3''' (de gauche à droite normalement). On les appelle aussi '''mouse-1''', '''mouse-2''', et '''mouse-3'''.
-* Un '''raccourci clavier''' ('''key binding''' en anglais) est une relation entre une commande et une séquence de touches. La même commande peut être liée a plus d'une séquence de touches. Une séquence de touches ne s'applique qu'a une seule commande.
+* Un '''raccourci clavier''' ('''key binding''' en anglais) est une relation entre une commande et une séquence de touches. La même commande peut être liée à plus d'une séquence de touches. Une séquence de touches ne s'applique qu'à une seule commande.
 
 '''NB :''' Les commandes des menus et les actions de la souris sont aussi appelés parfois des '''séquences de touches''', par extension. Si Emacs vous demande d'entrer une séquence de touches, vous pouvez aussi choisir une commande de menu ou utiliser (par ex. cliquer) la souris.
 
@@ -86,16 +86,16 @@ En termes Emacs :
 
 == Exemple Discours Emacs ==
 
-Si vous savez suivre l'exemple, vous comprenez le langage Emacs. Si vous comprenez toutes les actions décrites, vous comprenez vraiment bien la façon d'utiliser Emacs. Bonne chance :D !
+Si vous parvenez à suivre l'exemple, vous comprenez le langage Emacs. Si vous comprenez toutes les actions décrites, vous comprenez vraiment bien la façon d'utiliser Emacs. Bonne chance :D !
 
 # Je sauvegarde le buffer <code>foobar</code> dans son fichier en utilisant la ''séquence de touches'' `C-x C-s', qui est ''liée'' à la commande `save-buffer'.
 # Ayant oublié le ''raccourci'' et le nom complet de la commande `split-window-horizontally', j'utilise la séquence `M-x' (en appuyant sur la touche Alt en tapant <code>x</code>), puis <code>s-p-l-i-t---w-i-n</code>. Ce que je tape apparaît dans le ''minibuffer'': <code>split-win</code>. 
 # Je tape <code>TAB</code>, au minibuffer s'est ajouté <code>split-window</code>, signifiant qu'il existe une commande dont le nom commence par "split-window".
 # Je tape <code>TAB</code> à nouveau, et à côté de la commande s'affiche "<code>[Complete, but not unique]</code>", c'est à dire que "split-window" est le nom complet d'une commande, mais aussi qu'il y a d'autres commandes dont le nom débute par "split-window".
-# Je tape <code>TAB</code> à nouveau. Ce qui ouvre une nouvelle fenêtre dans la même cadre, affichant le buffer <code>*Completions*</code> qui affiche les commandes dont le nom commence par "split-window". Je clique sur le nom recherché : <code>split-window-horizontally</code>, en utilisant ''MB2''. 
-# Le buffer <code>*Completions*</code> (and its window) a disparu et le cadre à été divisé en deux fenêtre, côte à côte -- chacune affichant le buffer <code>foobar</code>. C'est le résultat de l'exécution de la commande <code>split-window-horizontally</code> in the window of buffer <code>foobar</code>.
-# Ensuite, je coupe la fenêtre de gauche en utilisant `split-window-vertically' - ou, plus facilement, son raccourci : la séquence `C-x 2' de ce que je m'en rappelle. A ce point, the frame had three windows, chacune contenant le buffer <code>foobar</code>: Je peux voir son nom dans la ''mode-line'' of each window.
-# Je clique ''MB1'' dans la fenêtre en haut à gauche pour y placer le ''curseur'' -- et y donner le focus --. Puis j'y ouvre le fichier <code>toto</code>, en utilisant la séquence-clé `C-x C-f' (pour la commande `find-file'). Je peux voir, au nom, dans la ModeLine de la fenêtre que son buffer est désormais <code>toto</code>. Je tracte la ModeLine, en utilisant MB1, pour redimensionner buffer <code>toto's</code> window in the frame.
+# Je tape <code>TAB</code> à nouveau. Ce qui ouvre une nouvelle fenêtre dans le même cadre, affichant le buffer <code>*Completions*</code> qui affiche les commandes dont le nom commence par "split-window". Je clique sur le nom recherché : <code>split-window-horizontally</code>, en utilisant ''MB2''. 
+# Le buffer <code>*Completions*</code> (et sa fenêtre) a disparu et le cadre à été divisé en deux fenêtre, côte à côte -- chacune affichant le buffer <code>foobar</code>. C'est le résultat de l'exécution de la commande <code>split-window-horizontally</code> dans la fenêtre du buffer <code>foobar</code>.
+# Ensuite, je coupe la fenêtre de gauche en utilisant `split-window-vertically' - ou, plus facilement, son raccourci : la séquence `C-x 2', de ce que je m'en rappelle. A ce point, le cadre possède trois fenêtres, chacune contenant le buffer <code>foobar</code>: Je peux voir son nom dans la ''mode-line'' de chaque fenêtre.
+# Je clique ''MB1'' dans la fenêtre en haut à gauche pour y placer le ''curseur'' -- et y donner le focus --. Puis j'y ouvre le fichier <code>toto</code>, en utilisant la séquence-clé `C-x C-f' (pour la commande `find-file'). Je peux voir, au nom, dans la ModeLine de la fenêtre que son buffer est désormais <code>toto</code>. Je tracte la ModeLine, en utilisant MB1, pour redimensionner le buffer <code>toto's</code> window dans le cadre.
 # Dans le buffer <code>toto</code>, je tracte MB1 sur le texte pour créer une ''région''. J'utilise la ''séquence de touche'' `C-w' pour ''kill'' le texte de la région.
 # Je clique MB1 dans le buffer <code>foobar</code>. Ce qui déplace le curseur où le ''pointeur'' à été cliqué. Ensuite je  ''coupe'' le texte tué (coupé) du buffer <code>toto</code> au ''point'' du buffer <code>foobar</code>.
 
@@ -105,24 +105,24 @@ Si vous savez suivre l'exemple, vous comprenez le langage Emacs. Si vous compren
 == Annuler (Abandonner) ==
 
 Vous pouvez utiliser `C-g' pour interrompre toute action entamée.
-Pour certaines commandes il peut-être parfois nécessaire de répéter une seconde cette combinaison.
-(If even this doesn't clear things up entirely, then try `C-]' or the command `top-level'; that should do the trick.)
+Pour certaines commandes, il peut-être parfois nécessaire de répéter une seconde fois cette combinaison.
+(Si même ceci ne le nettoie pas entièrement, essayez `C-]' ou la commande `top-level'.)
 
 '''Exemple 1:''' Vous commencez à entrer une commande avec `M-x commande-quelconque'. Avant de valider (avec la touche <code>RET</code>), utilisez `C-g' pour abandonner la commande que vous avez commencé.
 
-'''Exemple 2:''' Vous tapez `M-x commande-quelconque' et validez. Celà parait prendre du temps... vous êtes circonspect... Utilisez `C-g' pour interrompre l'exécution.
+'''Exemple 2:''' Vous tapez `M-x commande-quelconque' et validez. Cela parait prendre du temps... vous êtes circonspect... Utilisez `C-g' pour interrompre l'exécution.
 
 
 == Aide ==
 
 Essayer `C-h C-h' (`help-for-help') pour accéder à ''toute'' l'aide d'Emacs. Vous pouvez aussi utiliser le menu `Help'. Le manuel d'Emacs est disponible par `Help' > `Info' > `Emacs'.
 
-Parmis les commandes utiles on trouvera : (information disponible via `C-h C-h'):
+Parmi les commandes utiles on trouvera : (information disponible via `C-h C-h'):
 * '''C-h k''' (`describe-key') - Décrit la commande que le raccourci/menu/souris désigne: Entrez une séquence; Emacs en donne la signification.
 * '''C-h w''' (`where-is') - Liste les raccourcis/commandes menu/actions souris qui déclenchent une commande donnée. C'est l'inverse de `C-h k'.
 * '''C-h f''' (`describe-function') - Décrit une commande ou autre fonction.
-* '''C-h a''' (`apropos') - Liste tout les commandes dont le nom contient la chaine de caractères. Exemple: `C-h a-file' liste les commandes contenant "file".
-* '''C-h m''' (`describe-mode') - Décrit le(s) mode(s) du buffer actif : décris les séquences importantes disponibles dans le buffer et donne quelques informations supplémentaires spécifiques au buffer.
+* '''C-h a''' (`apropos') - Liste toutes les commandes dont le nom contient la chaîne de caractères. Exemple: `C-h a-file' liste les commandes contenant "file".
+* '''C-h m''' (`describe-mode') - Décrit le(s) mode(s) du buffer actif : décrit les séquences importantes disponibles dans le buffer et donne quelques informations supplémentaires spécifiques au buffer.
 * '''C-h i''' (`info') - Lancer Info, le navigateur de documentation: Accès au Manuel Emacs (et autres documentations).
 
 
@@ -130,30 +130,30 @@ Parmis les commandes utiles on trouvera : (information disponible via `C-h C-h')
 
 Emacs a des '''commandes''', dont certaines sont liées à des '''séquences de touches''' ou '''séquences''' tout court. Par exemple la commande `forward-char' qui signifie "avance le curseur d'un caractère" est associée à la séquence `C-f'.
 
-Une séquence peut-être une combinaison de touches comme `C-x C-c'. Mais elle n'a pas besoin de se limiter au clavier, la souris et les sélections dans le menu en font parti.
+Une séquence peut-être une combinaison de touches comme `C-x C-c'. Mais elle n'a pas besoin de se limiter au clavier, la souris et les sélections dans le menu en font partie.
 
 ; '''Exemples''':
-La commande `indent-code-rigidly' n'est (par défaut) liée à aucune séquences. La commande `grep' n'est (par défaut) liée à aucune séquences de touches, mais on peut la sélectionner dans le menu '''Tools''' > '''Search Files''' (= ##[menu-bar tools grep]##).
+La commande `indent-code-rigidly' n'est (par défaut) liée à aucune séquence. La commande `grep' n'est (par défaut) liée à aucune séquence de touches, mais on peut la sélectionner dans le menu '''Tools''' > '''Search Files''' (= ##[menu-bar tools grep]##).
 
-Vous pouvez lancer une commande, quelle soit liée ou pas à une séquence, en la précédant de `M-x'. Exemple: `M-x grep' lance la commande `grep'.
+Vous pouvez lancer une commande, qu'elle soit ou non liée à une séquence, en la précédant de `M-x'. Exemple: `M-x grep' lance la commande `grep'.
 
 Après avoir tapé `M-x', les commandes entrées précédemment sont disponibles, pour être éditées ou réexécutées, via les séquences `M-p' ('''p'''revious) et `M-n' ('''n'''ext).  Voir aussi `C-x ESC ESC' pour l'édition des commandes complexes.
 
-Vous pouvez attribuer n'importe quelle commande à n'importe quel séquence de touches. C'est la raison pour laquel nous avons dit que la commande `indent-code-rigidly' n'est pas liée ''par défaut''. Vous pouvez également délier n'importe quel séquence de touches.
+Vous pouvez attribuer n'importe quelle commande à n'importe quelle séquence de touches. C'est la raison pour laquelle nous avons dit que la commande `indent-code-rigidly' n'est pas liée ''par défaut''. Vous pouvez également délier n'importe quelle séquence de touches.
 
 
 == Entrée ==
 
 Certaines actions nécessitent que vous entriez du texte dans le minibuffer (la où vous tapez les commandes). Un texte par défaut (généralement le texte entourant le curseur), modifiable, peut déjà y être présent.  Si vous le voulez, vous pouvez le supprimer rapidement avec la séquence `M-C-DEL' ou `C-x DEL'.  Utilisez `RET' pour confirmer l'entrée désirée.
 
-Par exemple, la commande `grep' (menu `Tools' > `Search Files', ou simplement `M-x grep') réclame un motif de recherche (généralement une expression régulière) et au moins un nom de fichier dans lequel chercher. Par défaut, cette commande utilise le texte situé autour du curseur comme motif de recherche. Si ce n'est pas ce que vous vouliez chercher, tapez `M-C-DEL' (ou simplement plusieurs fois `DEL's) pour le supprimez du minibuffer, et tapez ensuite le motif et le nom du fichier désiré et confirmez avec `RET'.
+Par exemple, la commande `grep' (menu `Tools' > `Search Files', ou simplement `M-x grep') réclame un motif de recherche (généralement une expression régulière) et au moins un nom de fichier dans lequel chercher. Par défaut, cette commande utilise le texte situé autour du curseur comme motif de recherche. Si ce n'est pas ce que vous vouliez chercher, tapez `M-C-DEL' (ou simplement plusieurs fois `DEL's) pour le supprimer du minibuffer, et tapez ensuite le motif et le nom du fichier désiré et confirmez avec `RET'.
 
 
 == Modes Buffer ==
 
 Chaque buffer possède son propre mode d'édition (commandes spécifiques au buffer et raccourcis clavier). Les informations sur le mode du buffer courant sont disponibles depuis le menu `Help' > `Describe' >  `Describe Buffer Modes' ou par la séquence `C-h m'.
 
-'''Remarque :''' Si vous utilisez la bibliothèque Lisp:menu-bar+.el de DrewAdams, les menus spécifiques au buffer sont séparés du menu général : Les menus spécifiques au buffer sont placé sur la gauche du séparateur '''||'''. Les menus sur la droite (`Buffers', `Files', `Tools', `Edit', `Search', `Frames', `Help') sont commun à tous les modes. Un clic sur la barre affiche une explication: "<-- Current mode menus to left.   ||   Common menus to right -->":
+'''Remarque :''' Si vous utilisez la bibliothèque Lisp:menu-bar+.el de DrewAdams, les menus spécifiques au buffer sont séparés du menu général : Les menus spécifiques au buffer sont placés sur la gauche du séparateur '''||'''. Les menus sur la droite (`Buffers', `Files', `Tools', `Edit', `Search', `Frames', `Help') sont communs à tous les modes. Un clic sur la barre affiche une explication: "<-- Current mode menus to left.   ||   Common menus to right -->":
 
 [[image:DrewsEmacsMenuBarBar]]
 
@@ -167,7 +167,7 @@ Vous pouvez défaire toutes vos actions depuis le menu `Edit' > `Undo' (ou avec 
 Pour arrêtez de défaire, commencez une autre action.
 Si vous recommencez à défaire, Emacs refait ce que vous veniez de défaire (puisque qu'il défait ce qui a été défait!)
 
-Vous pouvez savoir que vous avez défait toutes les modifications non sauvegardés quand la partie en bas à  gauche de la ligne de mode affiche `--' à la place de `**'. Vous pouvez également défaire toutes les modifications non sauvegardés avec la commande `M-x revert-buffer'.
+Vous pouvez savoir que vous avez défait toutes les modifications non sauvegardées quand la partie en bas à  gauche de la ligne de mode affiche `--' à la place de `**'. Vous pouvez également défaire toutes les modifications non sauvegardées avec la commande `M-x revert-buffer'.
 
 
 == Souris ==
@@ -177,7 +177,7 @@ Vous pouvez utiliser votre souris comme d'habitude : clic gauche et déplacer po
 
 == Chercher et Remplacer ==
 
-Vous pouvez utiliser le menu `Search'. Néanmoins, généralement il vaut mieux effectuer une recherche incrémental (plus pratique et plus puissante). Elle est accessible avec les raccourcis `C-s' et `C-r'. Other search options are available, including regular expression (wildcard) searches and searching (`M-x grep') or replacing (`Q' in Dired) in multiple files.
+Vous pouvez utiliser le menu `Search'. Néanmoins, généralement il vaut mieux effectuer une recherche incrémentale (plus pratique et plus puissante). Elle est accessible avec les raccourcis `C-s' et `C-r'. D'autres options de recherche sont disponibles, incluant les recherches par expression régulière (wildcard), et la recherche(`M-x grep') ou le remplacement (`Q' in Dired) dans des fichiers multiples.
 
 
 == Région (Sélection) ==
@@ -187,7 +187,7 @@ Le curseur du texte (pas le pointeur de la souris) définit la position du '''po
 Vous pouvez attribuer la position d'un point avec un clic gauche (MB1) ou en utilisant les touches avec les flèches. Vous pouvez attribuer la position du mark d'une de ces façons :
 * `C-SPC' (le point reste où il était)
 * en déplaçant le point avec MB1 (l'ancien point devient le mark)
-* en cliquant sur MB3 (la nouvelle position devient le point; l'ancien point devient le mark)
+* en cliquant sur MB3 (la nouvelle position devient le point ; l'ancien point devient le mark)
 
 Si vous définissez une région sans utiliser la souris, elle peut-être invisible; pour la rendre visible effectuez la séquence `C-x C-x', qui intervertit également le point et le mark.
 

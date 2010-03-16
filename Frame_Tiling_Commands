@@ -1,10 +1,6 @@
+[[fr:Carrelage de Frames]]
+
 '''This page is part of the description of OneOnOneEmacs, by DrewAdams'''
-
-Cette page est aussi disponible en franglais ;-) : Français:[[Carrelage de Frames]]
-
-* 
-* 
-* 
 
 I created two commands to tile the visible [[Frame]]s either horizontally
 or vertically: `tile-frames-horizontally' and

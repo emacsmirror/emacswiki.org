@@ -14,8 +14,12 @@ Signalez la version française dans la page en anglais (et vice versa),
 les personnes accédant directement à la page (via google ou autre)
 pourront ainsi facilement avoir le choix de la langue. exemple :
 
-* This page is also available in english: English:RecentChanges
-* Cette page est aussi disponible en français: Français:NouvelUtilisateurEmacs
+The "new" way to do it is this (see http://www.emacswiki.org/emacs/EmacsWikiSuggestions#toc18):
+
+At the very top of the file add something like this:
+
+    [[en:RecentChanges]]
+    [[fr:NouvelUtilisateurEmacs]]
 
 Notez que le préfixe de la langue change aussi l'interface.
 

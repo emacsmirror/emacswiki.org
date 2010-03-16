@@ -4,9 +4,7 @@ That's the place where you can get the latest copy of Gnus.  You can find pointe
 
 The list of topics relating to Gnus is in the page '''[[CategoryGnus]]'''.
 
-Here's a picture of two Gnus users.  Gnus is a great way to sort the high-volume <code>alt.risks.lion</code> group.
-
-http://www.bushland.de/gnus.jpg
+Gnus is a great way to sort the high-volume 
 
 ----
-CategoryGnus
+CategoryGnus CategoryMail

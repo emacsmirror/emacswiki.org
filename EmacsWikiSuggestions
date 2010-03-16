@@ -359,5 +359,19 @@ There are many pages that start with a line like this.  On other pages that are 
 [new]
 Yes, you are right. These links are the old way of doing it. Feel free to replace them. Thanks! -- AlexSchroeder
 
+[new]
+Done!  At least for French and a few English ones.  I might do some more languages another time - but this time programmatically.  Also could someone tell we what strings I have to grep for for other languages, please.  -- JonasBernoulli
+
+[new:DrewAdams:2010-03-16 00:00 UTC]
+I disagree that the new is a full replacement for the old. The new assumes that if you are reading the wiki in, say, French, then you just want to see the French version of a page. However, in some cases there are significant differences between the versions of the same page in different languages. 
+
+I have nothing against changing to the new as a general default. But there is no reason not to allow explicit references to a different version in another language, especially if the text calling that out indicates clearly that the other-language version might not be as up-to-date as the English version. In sum, there is nothing wrong with using explicit links, if one thinks they can help users. -- DrewAdams
+
+== Click the heading to search for pages in this category / that link here ==
+
+This bothers me similarly to the above since it just adds clutter for anyone who knows what clicking on a header does.  I would like to remove this too but this would probably not be well received.  I would suggest that this information is somehow shown on all pages but in an less intrusive way.
+
+Maybe somewhere in the footer close to where the language links are too.  Then again this link ("Pages linking here") as well as the links to the translations can easily be missed.  Maybe both kinds should be placed somewhere more visible?  But if you do this please do so in a way that makes it easy to hide it using a style sheet.  -- JonasBernoulli
+
 ----
 CategoryEmacsWikiSite

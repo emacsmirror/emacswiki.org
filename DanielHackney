@@ -10,15 +10,17 @@ I work primarily in Ruby, Java, PHP, JavaScript, and Bash, plus a little bit of 
 
 = My Emacs files =
 
-* [http://github.com/chrono325/dot-emacs/tree/master My .emacs.d and included libraries]
+* [http://github.com/haxney/emacs-starter-kit My .emacs.d and included libraries]
 [new] :NOTE above link is dead as of: 2009-12-19T12:43:12-05:00Z
 Maybe try [http://github.com/dhax Here instead] --[[mon_key]]
 
+[new] Fixed it. I changed my GitHub username, so it broke all my old links :(
+
 = See also =
 
-* TabCompletion - I recently created a [http://github.com/cdhax/smart-tab/tree/master repository] for Smart Tab.
+* TabCompletion - I recently created a [http://github.com/haxney/smart-tab/tree/master repository] for Smart Tab.
 * [[anything-eproject.el]]
-* [http://github.com/dhax/ezbl Ezbl], a wrapper for the WebKit-based [http://www.uzbl.org Uzbl] web browser.
+* [http://github.com/haxney/ezbl Ezbl], a wrapper for the WebKit-based [http://www.uzbl.org Uzbl] web browser.
 
 [new:DrewAdams:2009-05-25 08:45 UTC]
 Welcome to the wiki. -- DrewAdams

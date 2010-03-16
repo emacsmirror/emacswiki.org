@@ -1,4 +1,4 @@
-Cette page est aussi disponible en français: Français:RecréerLeBufferScratch
+[[fr:RecréerLeBufferScratch]]
 
 The scratch buffer is useful for "notes you don't want to save, and for Lisp evaluation".
 
@@ -77,4 +77,3 @@ I also wrote a command to create or switch to scratch buffer. This is also helpf
 
 ----
 CategoryBufferSwitching
-

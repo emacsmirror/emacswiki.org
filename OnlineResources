@@ -1,3 +1,5 @@
+[[fr:AideSurInternet]]
+
 If you are looking for information about Emacs, the first place to look is Emacs itself.  See SelfDocumentation.
 
 A lot of information can be found online:
@@ -51,16 +53,6 @@ specially about <code>replace-regexp</code> use.
 ** [http://www-128.ibm.com/developerworks/edu/au-dw-au-emacs6-i.html Part 6: Customize your Emacs world].
 ** [http://www-128.ibm.com/developerworks/edu/au-dw-au-emacs7-i.html Part 7: Let Emacs help you out].
 * [http://www.cb1.com/~john/computing/emacs/beyond-tutorial.html Beyond the tutorial] -- Consise summary of [[key]]s, [[command]]s, terminology, [[regexp]] syntax....
-
-
-== Defunct ==
-
-The Ohio State Elisp Archive
-[http://www.cis.ohio-state.edu/emacs-lisp/] is no longer active.  See
-ElispArchive for an explanation. LispmeraldaArchive was supposed to replace Ohio, 
-but the project was cancelled.
-
-Cette page est aussi disponible en français: Français:AideSurInternet
 
 ----
 CategoryHelp, CategoryDocumentation 

@@ -1,10 +1,4 @@
-Newer emacsen have the ability to use authentication when SendingMail.
-
-EmacsCvs already has the following patch applied:
-
-* http://josefsson.org/emacs-rfc2554.html
-
-The above patch is for SmtpMail, a mail transfer agent implementation written in EmacsLisp.
+Newer Emacsen have the ability to use authentication when SendingMail built-in.
 
 == Configuration ==
 

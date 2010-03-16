@@ -1,4 +1,4 @@
-Cette page est aussi disponible en franglais ;-) : PackagesElispDeDrew, mais cette page ci est peut-etre plus a jour.
+[[fr:PackagesElispDeDrew]]
 
 This page describes the Emacs Lisp libraries by DrewAdams that you can find on the EmacsWiki (at http://www.emacswiki.org/elisp) and how to use them. It includes a brief list of recent changes to the list of files. For information on changes to individual files, see the change logs in the files.
 
@@ -6,6 +6,10 @@ This page has the following sections:
 * '''[[#DrewsLibraries]]''' -- describes the libraries
 * '''[[#HowToUseDrewsLibraries]]''' describes how to use the libraries
 * '''[[#Discussion]]''' -- your feedback and discussion about the libraries
+
+Cette page est aussi disponible en franglais ;-) : PackagesElispDeDrew, mais cette page ci est plus a jour.
+
+
 ----
 
 [:DrewsLibraries]

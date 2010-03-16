@@ -1,3 +1,5 @@
+[[en:SelfDocumentation]]
+
 Emacs est un éditeur qui auto-documente.
 Cette documentation est principalement disponible en anglais seulement.
 
@@ -17,7 +19,5 @@ Par exemple, si vous vous rappelez que <code>C-x r</code> est le
 préfixe pour diverses commandes relatives aux registres et en voulez
 la liste, vous tapez <code>C-x r C-h</code>
 
-----
-Cette page est aussi disponible en anglais: SelfDocumentation
 ----
 CatégorieAide

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Mar 14 14:34:48 2010 (-0700)
+;; Last-Updated: Mon Mar 15 10:12:01 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 26162
+;;     Update #: 26174
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5130,6 +5130,11 @@
 ;;      it is ignored completely; it is not shown in `*Completions*'.
 ;;      But in Icicles you can toggle this ignoring off or on at any
 ;;      time during completion, using `C-.' in the minibuffer.
+;;
+;;    In addition, if you load library `completion-ignored-build.el',
+;;    by Kevin Ryde, then Icicles automatically takes advantage of
+;;    that library's dynamic adjustment of ignored extensions.  (Just
+;;    load the library - do not enable its minor mode or advice.)
 ;;
 ;;  * User option `icicle-use-~-for-home-dir-flag' controls whether
 ;;    your home directory is written in the minibuffer using `~' or in

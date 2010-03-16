@@ -302,6 +302,8 @@ Emacs version is:
 
 GNU Emacs 23.1.1 (x86_64-pc-linux-gnu, GTK+ Version 2.12.12) of 2009-10-19 on debian-build.int-office-er.priv, modified by Debian
 
+This is still true with csharp-mode 0.7.2.
+
 -- Richard Kettlewell.
 
 === VJ Complete and XEmacs===

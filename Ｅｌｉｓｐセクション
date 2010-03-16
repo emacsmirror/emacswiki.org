@@ -1,6 +1,5 @@
-Here is the japanese page for ElispArea. 英語ページは[EmacsWiki:ElispArea こちら]。
-
-----
+[[en:ElispArea]]
+[[fr:SectionElisp]]
 
 [[Ｅｌｉｓｐセクション]] / ElispArea は EmacsLisp で書かれた "Free Software" のページです。
 
@@ -85,8 +84,6 @@ If you are still having problems downloading elisp packages from this site, you 
 Note the size, however.
 
 See EmacsWiki for links to the source of the upload script.
-
-Cette page est aussi disponible en français: Français:SectionElisp
 
 == Example of Program Development Using Emacs and ILISP ==
 

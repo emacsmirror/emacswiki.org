@@ -1,3 +1,5 @@
+[[fr:AutresModificationsRécentes]]
+
 Here are alternatives for the RecentChanges link which you might
 want to bookmark, if you are a
 RecentChangesJunkie.
@@ -27,7 +29,3 @@ your browser (or if you use NewsTicker):
 * [EmacsWiki:action=rss;rsslimit=all RSS feed with major changes only]
 * [EmacsWiki:action=rss;newtop=0;rsslimit=all RSS feed with major changes only, most recent last] -- ''Doesn't work''
 * [EmacsWiki:action=rss;all=1;days=3;showedit=1;rsslimit=all RSS feed for the last three days with all changes] -- including every single change.
-
-
-Cette page est aussi disponible en français: Français:AutresModificationsRécentes
-

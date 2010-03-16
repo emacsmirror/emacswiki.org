@@ -25,54 +25,12 @@ For development there are currently only a few approaches:
     [apply] ...while parsing com/test/R.class
     [apply] ...while processing com/test/R.class
     [apply] 
-    [apply] trouble processing:
-    [apply] invalid constant pool index 0000
-    [apply] ...while parsing attributes[1]
-    [apply] ...while parsing Code attribute at offset 00000123
-    [apply] ...while parsing attributes[0]
-    [apply] ...while parsing methods[0]
-    [apply] ...while parsing com/test/R$drawable.class
-    [apply] ...while processing com/test/R$drawable.class
-    [apply] 
-    [apply] trouble processing:
-    [apply] invalid constant pool index 0000
-    [apply] ...while parsing attributes[1]
-    [apply] ...while parsing Code attribute at offset 00000144
-    [apply] ...while parsing attributes[0]
-    [apply] ...while parsing methods[0]
-    [apply] ...while parsing com/test/Test.class
-    [apply] ...while processing com/test/Test.class
-    [apply] 
-    [apply] trouble processing:
-    [apply] invalid constant pool index 0000
-    [apply] ...while parsing attributes[1]
-    [apply] ...while parsing Code attribute at offset 0000011d
-    [apply] ...while parsing attributes[0]
-    [apply] ...while parsing methods[0]
-    [apply] ...while parsing com/test/R$layout.class
-    [apply] ...while processing com/test/R$layout.class
-    [apply] 
-    [apply] trouble processing:
-    [apply] invalid constant pool index 0000
-    [apply] ...while parsing attributes[1]
-    [apply] ...while parsing Code attribute at offset 00000121
-    [apply] ...while parsing attributes[0]
-    [apply] ...while parsing methods[0]
-    [apply] ...while parsing com/test/R$string.class
-    [apply] ...while processing com/test/R$string.class
-    [apply] 
-    [apply] trouble processing:
-    [apply] invalid constant pool index 0000
-    [apply] ...while parsing attributes[1]
-    [apply] ...while parsing Code attribute at offset 000000e7
-    [apply] ...while parsing attributes[0]
-    [apply] ...while parsing methods[0]
-    [apply] ...while parsing com/test/R$attr.class
-    [apply] ...while processing com/test/R$attr.class
-    [apply] 6 warnings
+            ...
     [apply] no classfiles specified
 
 BUILD FAILED
 
 </pre>
+
+<b>Solution:</b> add the $JAVA_HOME/bin to the path environment variable
 

@@ -78,6 +78,12 @@ Standard Emacs user option '''`completion-ignored-extensions'''' is a list of fi
 
 * In '''Icicles''' this is not the case.  When a file name is ignored it is ignored completely; it is not shown in `*Completions*'.  But in '''Icicles''' you can toggle this ignoring off or on at any time during completion, using '''`##C-.##'''' in the minibuffer.
 
+In addition, if you load library <tt>[[http://user42.tuxfamily.org/completion-ignored-build/index.html|
+completion-ignored-build.el]]</tt>, by KevinRyde, then '''Icicles'''
+automatically takes advantage of that library's dynamic adjustment of
+ignored extensions.   (Just load the library -- do not enable its minor mode or advice.)
+
+
 ----
 [:icicle-use-tilde-for-home-dir-flag]
 ==== Option icicle-use-~-for-home-dir-flag ====

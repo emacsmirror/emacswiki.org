@@ -6,7 +6,7 @@
 ;; Maintainer: S. Irie
 ;; Keywords: Tooltip, Dictionary
 
-(defconst sdic-inline-pos-tip-version "0.0.4")
+(defconst sdic-inline-pos-tip-version "0.0.5")
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -46,6 +46,10 @@
 ;;
 
 ;;; History:
+;; 2010-03-16  S. Irie
+;;         * Bug fix
+;;         * Version 0.0.5
+;;
 ;; 2010-03-11  S. Irie
 ;;         * Modified to simplify implementation
 ;;         * Fixed typo
@@ -125,7 +129,10 @@ See `pos-tip-show' for details.")
       (set-face-font 'sdic-inline-pos-tip (frame-parameter nil 'font))
       ;; Main part
       (let ((width 0)
-	    (height 0))
+	    (height 0)
+	    ;; "\n" should be propertized by the same face as the text
+	    ;; because their height also affect tooltip height.
+	    (nl (propertize "\n" 'face 'sdic-inline-pos-tip)))
 	(pos-tip-show-no-propertize
 	 ;; Arrange string
 	 (mapconcat
@@ -136,7 +143,7 @@ See `pos-tip-show' for details.")
 		    height (1+ height))
 	      ;; Propertize entry string by appropriate faces
 	      (concat (propertize head 'face 'sdic-inline-pos-tip-entry)
-		      "\n"
+		      nl
 		      (mapconcat
 		       (lambda (row)
 			 (setq width (max (string-width row) width)
@@ -144,8 +151,8 @@ See `pos-tip-show' for details.")
 			 (propertize row 'face 'sdic-inline-pos-tip))
 		       (pos-tip-split-string
 			desc sdic-inline-pos-tip-max-width 1)
-		       "\n"))))
-	  entry "\n")
+		       nl))))
+	  entry nl)
 	 ;; Face which specifies tooltip's background color
 	 'sdic-inline-pos-tip
 	 ;; Display current point, then omit POS and WINDOW

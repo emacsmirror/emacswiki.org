@@ -1,3 +1,5 @@
+[[fr:CatégorieAide]]
+
 このページでは、'''''Emacs'''''のヘルプに関する項目について説明します。 
 カテゴリ・ドキュメント/CategoryDocumentation も参照してください。
 
@@ -46,8 +48,3 @@ Emacsのすべての機能について学ぶにはどうすればよいでしょ
 * GtkLook --　Gtk/Glib/Gnome用のCまたはSchemeの関数／変数についてのドキュメントを検索する
 * CommonLispHyperspec -- lookup CL functions and variables in the spec
 * CommonLispTheLanguage -- lookup CL functions and variables in GuySteele's book EmacsReflector(speak-freely conference server)
-
-----
-Pour les francophones: Cette page est aussi disponible en fran~ais:
-Fran~ais:Cat~gorieAide
-

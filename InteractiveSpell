@@ -97,6 +97,12 @@ functionality. Fortunately, using Aspell with Emacs is very easy:
 
     (setq ispell-program-name "aspell")
 
+Flyspell uses "-l" with ispell for faster region checking. The equivalent aspell command is "list":
+
+    (setq ispell-list-command "list")
+
+The %%*Flyspell-region%%* buffer will contain the message 'Error: You must specify a parameter for "-l".' when aspell fails because this parameter is not set.
+
 (Aspell has an Ispell-emulation mode, so it behaves like ispell.el expects.)
 
 For lots more information on Aspell, see the Aspell website:

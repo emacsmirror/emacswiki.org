@@ -1,3 +1,5 @@
+[[fr:JavaDevelopmentEnvironmentFrançais]]
+
 The Java Development Environment for Emacs ([::JDEE]) is an integrated development environment for Emacs. It interfaces Emacs to command-line Java development tools, for instance Sun's JDK.
 
 [new]
@@ -127,8 +129,6 @@ I don't know much about it myself. Since this project is last active in Dec 2007
 
 Did you install it correctly as documented?
 The website says: "Nearly all the JDEE problems that I have seen are caused by faulty setups," and "Most problems reported by users are installation/setup problems."  See the [http://jdee.sunsite.dk/trouble-shooting.htm Trouble Shooting Guide] (Dead link).
-
-Cette page est aussi disponible en français: Français:JavaDevelopmentEnvironmentFrançais
 
 == Comments ==
 

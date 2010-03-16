@@ -100,6 +100,23 @@ Has this code been introduced into core CVS ?
 [new]
 As of 2008-04-28, I have no knowledge that this has been accepted.  Looking at CVS:calendar/cal-iso.el and CVS:calendar/calendar.el it wouldn't appear so.  It hasn't been formally submitted, either.  I predict the patch would need some cleaning up to be accepted.  -- AaronHawley
 
+[new]
+In emacs 23.1 there is a variable calendar-intermonth-text that can be used for this purpose.  From 
+the variable's documentation:
+{{{
+  (setq calendar-week-start-day 1
+        calendar-intermonth-text
+        '(propertize
+          (format "%2d"
+                  (car
+                   (calendar-iso-from-absolute
+                    (calendar-absolute-from-gregorian (list month day year)))))
+          'font-lock-face 'font-lock-function-name-face))
+}}}
+
+
+
+
 ----
 CategoryCalendar
 

@@ -1,5 +1,3 @@
-Click on the header to see a list of mail-related pages.
-
 * GettingMail -- the most important one for beginners
 ** GetMailsWithFetchmail -- a function to run fetchmail
 * WritingMail -- message composition
@@ -8,23 +6,41 @@ Click on the header to see a list of mail-related pages.
 ** SmtpAuth -- how to do authentication using SMTP
 * MailtoHandler -- how to configure Emacs to be system's default email application
 * CategoryMailAddons -- many mail-related tools and modes
+* CategoryMailDiscussion
 
-Here's a list of mail packages in alphabetical order.
-MarkusKnittig has planned to spawn an objective ComparisonOfMuas.
+Many packages exist for reading mail in Emacs.  Even out of the box Emacs
+comes with several competing solutions.  These are all well tested and
+have a large user base, which certainly is a major advantage if search for
+documentation or need help.
 
-* CMail is a mail reader for Emacs, documented in Japanese only -- http://cmail.sourceforge.jp/ (Last Release: 2.62 2003/01/27)
+Note that several of the mail packages use incompatible mailbox storage
+formats.  While there are programs for converting between formats, it is
+best you already take your time to consider the supported formats when
+choosing your mail client. 
+
+The packages that come with Emacs are:
+
+* [[Rmail]] -- GNU Emacs default mail reader
+* [[Gnus]] -- the news and mail reader with likely the largest user base
+* [[MH-E]] -- interface to the MH mail system
+
+Some other packages that are distributed seperately are also commonly
+used:
+
+* WanderLust -- very good IMAP4 and Offline support
+* [[Mew]] -- good IMAP4 support
+* [[CategoryViewMail|VM]] -- offers virtual folders and good documentation
+
+Some people also like to use a non-elisp mail client from within Emacs:
+
+* MuttInEmacs
+
+And then there are some less commonly used and/or badly maintained
+packages:
+
+* [http://cmail.sourceforge.jp/ CMail] -- is only documented in Japanese
+  and hasn't been updated in a long time
 * [[imapua]] -- an IMAP mua based on gnus' imap library
-* [[Gnus]] is a news and mail reader -- http://www.gnus.org/ and CategoryGnus (Last Release: ngnus 0.3 2005/05/01)
-* KaMail -- http://www1.mirai.ne.jp/~gyo/xyzzy/kamail.html (Japanese) (dead link?)
-* mailx.el is a front-end to mailx for Emacs -- http://www.sfu.ca/~sabetts/mailx.el (dead link? Local copy: Lisp:mailx.el)
-* [[Mew]] Messaging in the Emacs World -- http://www.mew.org (Last Release 6.3 2009/11/20)
-* [[MH-E]], Emacs interface to the MH mail system -- http://mh-e.sourceforge.net/ (Last Release: 8.2 2009/06/13)
-* [[Rmail]] GNU Emacs default mail reader.
-* SimpleIMAPClient -- for entertainment purposes only.  
-* [[CategoryViewMail|VM]], offers virtual folders and good documentation. -- CategoryViewMail, http://www.nongnu.org/viewmail/ (Last Release: 8.0.3 2007/08/15)
-* WanderLust, a Mail and News reader with very good IMAP4 and Offline support -- http://www.gohome.org/wl/ (Last Release: 2.14.0 2005/03/25)
-
-Note that several of the mail packages use incompatible mailbox storage formats (mbox, babyl, MH, etc...).  There are programs for converting your email between formats, but do be sure to test that you are happy with the format works for you.
-
-See also MuttInEmacs CategoryMailDiscussion
-----
+* [[http://www1.mirai.ne.jp/~gyo/xyzzy/kamail.html KaMail]] (dead link) -- is only documented in Japanese
+* [[http://www.sfu.ca/~sabetts/mailx.el mailx.el]] (dead link) -- a front-end to mailx
+* SimpleIMAPClient -- for entertainment purposes only

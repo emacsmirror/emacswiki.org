@@ -2,14 +2,8 @@ This page describes how to effectively retrieve mail (from remote
 machines, spool files, ...) and also how you can read them.
 
 == Getting Mail ==
-Here's a slightly edited answer. -- AlexSchroeder
 
- From: those who know me have no need of my name
- Subject: Re: How do I setup the email client / MUA
- Newsgroups: comp.emacs
- Date: 02 Jul 2001 15:08:38 GMT
-
-to help get you started here is how you specify a pop3 hosted maildrop for
+To help get you started here is how you specify a pop3 hosted maildrop for
 ...
 
 [[Rmail]]:

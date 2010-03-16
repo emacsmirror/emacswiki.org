@@ -8,7 +8,7 @@ For undoing editing changes caused by commands, see CategoryUndo.
 See also CategoryCode
 
 
-=About Emacs commands:=
+=About Emacs commands=
 
 * [[Command]] -- What a command is.  What turns an ordinary Emacs function into a command. `M-x' and `<code>M-:</code>'.
 * DisabledCommands -- Hiding certain commands from the user.
@@ -18,7 +18,7 @@ See also CategoryCode
 * RepeatingCommands -- Repeating an individual command or a sequence of commands (e.g. keyboard macros).
 * KeyboardMacros -- Record your commands then play them back.
 
-= Packages for command manipulation:= 
+= Packages for command manipulation= 
 * CommandLogMode -- Demonstrate your Emacs editing skills to other people
 * DoReMi -- Define commands that change things incrementally.
 * ExecAbbrevCmd -- Execute emacs commands by giving an abbreviation

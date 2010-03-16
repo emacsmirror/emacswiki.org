@@ -1,13 +1,7 @@
+[[fr:Supprimer des Frames Facilement - Mais Pas Trop]]
+
 '''This page is part of the description of OneOnOneEmacs, by DrewAdams.'''
 
-Cette page est aussi disponible en franglais ;-): [[Supprimer des Frames Facilement - Mais Pas Trop]]
-
-
-*  
-* 
-* 
-   
-   
 == Delete Frames Easily ==
 
 Emacs commands `kill-buffer' (`C-x k'),

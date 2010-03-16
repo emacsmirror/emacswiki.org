@@ -1,4 +1,4 @@
-Cette page est aussi disponible en français: Français:RépertoireDeSauvegarde
+[[fr:RépertoireDeSauvegarde]]
 
 By default Emacs saves backup files under the original name with a
 tilde `~' appended.  Example: Editing ##README## will result in ##README## and

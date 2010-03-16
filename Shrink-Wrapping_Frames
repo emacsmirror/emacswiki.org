@@ -1,10 +1,6 @@
+[[fr:Tailler des Frames Automatiquement]]
+
 '''This page is part of the description of OneOnOneEmacs, by DrewAdams.'''
-
-Cette page est aussi disponible en franglais ;-) : Français:[[Tailler des Frames Automatiquement]]
-
-*  
-*  
-*  
 
 One advantage a [[Frame]] has over an Emacs [[Window]] is that the frame can
 be made to fit the buffer it displays. With windows, this wouldn't

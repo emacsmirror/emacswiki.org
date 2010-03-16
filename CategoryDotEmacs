@@ -1,3 +1,5 @@
+[[fr:CatégoriePointEmacs]]
+
 Click the heading to list all pages related to writing your own .emacs file, see InitFile.
 
 Specific Init issues:
@@ -66,5 +68,3 @@ Some Complete Init packages:
 * [http://user42.tuxfamily.org/startup-file-name-history/index.html startup-file-name-history.el] -- put command line files into the ##find-file## history
 
 See also DotEmacsDotD, DumpingEmacs, CategoryPersistence, SessionManagement.
-
-Cette page est aussi disponible en français: Français:CatégoriePointEmacs

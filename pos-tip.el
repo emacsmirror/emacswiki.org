@@ -6,7 +6,7 @@
 ;; Maintainer: S. Irie
 ;; Keywords: Tooltip
 
-(defconst pos-tip-version "0.1.2")
+(defconst pos-tip-version "0.1.3")
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -52,6 +52,12 @@
 ;;
 
 ;;; History:
+;; 2010-03-16  S. Irie
+;;         * Bug fix
+;;         * Changed calculation for `x-max-tooltip-size'
+;;         * Modified docstring
+;;         * Version 0.1.3
+;;
 ;; 2010-03-11  S. Irie
 ;;         * Modified commentary
 ;;         * Version 0.1.2
@@ -153,13 +159,15 @@ the window doesn't disappear by sticking out of the display. By referring
 the variable `pos-tip-upperside-p' after calling this function, user can
 examine whether the window will be located above POS.
 
-FRAME-COORDINATES specifies the pixel coordinates of top left corner of the
-target frame relative to the display as a cons cell like (LEFT . TOP). If
-omitted, it's automatically obtained by `pos-tip-frame-top-left-coordinates'.
-This argument is used for better performance, but can be used only when
-it's clear that frame isn't moved since previous call. Users can obtain the
-latest frame coordinates to use for next call by referring the variable
-`pos-tip-saved-frame-coordinates' just after calling this function.
+If FRAME-COORDINATES is omitted, automatically obtain the absolute
+coordinates of the top left corner of frame which WINDOW is on. Here,
+`top left corner of frame' represents the origin of `window-pixel-edges'
+and its coordinates are essential for calculating the return value. If
+non-nil, specifies the frame location as a cons cell like (LEFT . TOP).
+This option makes the calculations slightly faster, but can be used only
+when it's clear that frame is in the specified position. Users can get the
+latest values of frame location for using in the next call by referring the
+variable `scim-saved-frame-coordinates' just after calling this function.
 
 DX specifies horizontal offset in pixel."
   (unless frame-coordinates
@@ -231,6 +239,17 @@ in FRAME."
 	   (t
 	    (set-mouse-pixel-position mframe mx (1+ bottom)))))))))
 
+(defvar pos-tip-default-char-width-height
+  (let ((f (x-create-frame '((visibility . nil)
+			     (minibuffer . nil)
+			     (menu-bar-lines . nil)
+			     (tool-bar-lines . nil)
+			     (vertical-scroll-bars . nil)))))
+    (prog1
+	(with-selected-frame f
+	  (cons (frame-char-width) (frame-char-height)))
+      (delete-frame f))))
+
 (defun pos-tip-show-no-propertize
   (string &optional tip-color pos window timeout pixel-width pixel-height frame-coordinates dx)
   "Show STRING in a tooltip at POS in WINDOW.
@@ -284,11 +303,12 @@ Example:
 		 pos-tip-background-color))
 	 (frame (window-frame (or window (selected-window))))
 	 (x-max-tooltip-size
-	  ;; Set quite large values because this variable's behavior is incorrect
-	  (cons (/ (ash (x-display-pixel-width) 1)
-		   (frame-char-width frame))
-		(/ (ash (x-display-pixel-height) 1)
-		   (frame-char-height frame)))))
+	  (cons (1+ (/ (or pixel-width
+			   (x-display-pixel-width))
+		       (car pos-tip-default-char-width-height)))
+		(1+ (/ (or pixel-height
+			   (x-display-pixel-height))
+		       (cdr pos-tip-default-char-width-height))))))
     (and pixel-width pixel-height
 	 (pos-tip-avoid-mouse rx (+ rx pixel-width)
 			      ry (+ ry pixel-height)
@@ -366,11 +386,18 @@ Example:
 
 (defun pos-tip-tooltip-height (height char-height)
   "Calculate tooltip pixel height."
-  (+ (* height (+ char-height
-		  (or (default-value 'line-spacing) 0)))
-     (ash (+ pos-tip-border-width
-	     pos-tip-internal-border-width)
-	  1)))
+  (let ((spacing (default-value 'line-spacing)))
+    (+ (* height (+ char-height
+		    (cond
+		     ((integerp spacing)
+		      spacing)
+		     ((floatp spacing)
+		      (truncate (* (cdr pos-tip-default-char-width-height)
+				   spacing)))
+		     (t 0))))
+       (ash (+ pos-tip-border-width
+	       pos-tip-internal-border-width)
+	    1))))
 
 (make-face 'pos-tip-temp)
 
@@ -396,13 +423,15 @@ tooltip automatically.
 
 MAX-WIDTH specifies the maximum number of columns, if non-nil.
 
-FRAME-COORDINATES specifies the pixel coordinates of top left corner of the
-target frame relative to the display as a cons cell like (LEFT . TOP). If
-omitted, it's automatically obtained by `pos-tip-frame-top-left-coordinates'.
-This argument is used for better performance, but can be used only when
-it's clear that frame isn't moved since previous call. Users can obtain the
-latest frame coordinates to use for next call by referring the variable
-`pos-tip-saved-frame-coordinates' just after calling this function.
+If FRAME-COORDINATES is omitted, automatically obtain the absolute
+coordinates of the top left corner of frame which WINDOW is on. Here,
+`top left corner of frame' represents the origin of `window-pixel-edges'
+and its coordinates are essential for calculating the return value. If
+non-nil, specifies the frame location as a cons cell like (LEFT . TOP).
+This option makes the calculations slightly faster, but can be used only
+when it's clear that frame is in the specified position. Users can get the
+latest values of frame location for using in the next call by referring the
+variable `scim-saved-frame-coordinates' just after calling this function.
 
 DX specifies horizontal offset in pixel.
 

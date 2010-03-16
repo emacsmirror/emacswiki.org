@@ -1,10 +1,6 @@
+[[fr:Frame Minibuffer Dedie]]
+
 '''This page is part of the description of OneOnOneEmacs.'''
-
-Cette page est aussi disponible en franglais ;-): Français:[[Frame Minibuffer Dedie]]
-
-*  
-*  
-*  
 
 When you have multiple [[frame]]s, there is no advantage (that I can see)
 for each frame to have its own MiniBuffer. In fact, it can sometimes

@@ -52,6 +52,10 @@ which is pretty close to XEmacs' definition of that function w/o narrowing. -- S
 ; [http://www.skamphausen.de/cgi-bin/ska/tex-letter texletter.el]:  generates a menu from a directory full of LaTeX (letter) templates
 (this is one of my very early elisp-works and thus quite simple)
 
+== Clojure ==
+
+My current obsession (2010) ist [ClojureMode Clojure].  If you tend to distrust automatic installation of things in general, you may be interested in [http://www.skamphausen.de/cgi-bin/ska/My_Clojure_Setup My Clojure Setup].  And if you're speaking German, may I humbly point you to the book that I am writing: [http://www.clojure-buch.de Deutsches Clojure buch]
+
 == What I have done to this wiki ==
 http://www.emacswiki.org/cgi-bin/wiki?action=rc&all=1&showedit=1&from=1&rcuseronly=StefanKamphausen
 

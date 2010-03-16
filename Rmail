@@ -8,9 +8,6 @@ unimportant."// -- RichardStallman
 
 See GettingMail, WritingMail, and SendingMail for setup examples.
 
-See also EmacsAppRmail for bugs and possible workarounds when using EmacsApp with
-Rmail.
-
 == Basic Usage ==
 
 Start it using `M-x rmail'.  This moves all your mail from your local
