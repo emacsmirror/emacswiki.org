@@ -1,4 +1,4 @@
-You can resize windows using the keyboard (eg. C-x ^ to make the current windows taller and C-x { to make it wider). The default keybindings might
+You can resize windows using the keyboard (eg. C-x ^ to make the current windows taller (and C-x } to make it wider ({ to make it shrink-horizontally)). The default keybindings might
 not be appropriate for you, however.  Here is a very simple suggestion
 to make them more accessible.
 
@@ -8,7 +8,7 @@ to make them more accessible.
     (global-set-key (kbd "S-C-<up>") 'enlarge-window)
 
 Note that by default only the enlarging functions are bound to keys.
-In order to shrink a window, you can enlarge an ''other'' window or you can use a negative prefix argument (eg. C-u -1 C-x ^ behaves exactly like shrink-window). 
+In order to shrink a window, you can enlarge an ''other'' window or you can use a negative prefix argument (eg. C-u -1 C-x ^ behaves exactly like shrink-window (or even nicer M -1 C-x ^)). 
 
 ##C-x -## (which runs the command ##shrink-window-if-larger-than-buffer##) is a convenient way to shrink windows to the length of the buffer.
 

@@ -159,7 +159,7 @@ DavidKågedal contributed a Subversion mode called [::dsvn], which is also influ
 
 Download it from the "contributed" section of the official Subversion repository:
 
-* [http://svn.collab.net/repos/svn/trunk/contrib/client-side/emacs/dsvn.el dsvn.el]
+* [http://svn.apache.org/repos/asf/subversion/trunk/contrib/client-side/emacs/dsvn.el dsvn.el]
 
 == Discussion ==
 

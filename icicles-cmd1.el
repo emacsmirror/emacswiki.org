@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Mar 14 17:40:37 2010 (-0700)
+;; Last-Updated: Tue Mar 16 16:07:52 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 20495
+;;     Update #: 20543
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2853,25 +2853,6 @@ If you also use library `bookmark+.el', then:
  * You can use `C-,' to sort bookmarks in many different ways,
    according to their properties.
 
- * You can narrow the current completion candidates to bookmarks of a
-   given type:
-
-   `C-M-b' - non-file (buffer) bookmarks
-   `C-M-B' - bookmark-list bookmarks
-   `C-M-d' - Dired bookmarks
-   `C-M-f' - file bookmarks
-   `C-M-F' - local-file bookmarks
-   `C-M-g' - Gnus bookmarks
-   `C-M-i' - Info bookmarks
-   `C-M-K' - desktop bookmarks
-   `C-M-m' - `man' pages
-   `C-M-r' - bookmarks with regions
-   `C-M-w' - W3m bookmarks
-   `C-M-@' - remote-file bookmarks
-
-   See also the individual multi-commands for different bookmark
-   types: `icicle-bookmark-info-other-window' etc.
-
  * In *Completions*, the candidate bookmarks are highlighted according
    to their type.  You can customize the highlighting faces used:
 
@@ -2892,10 +2873,38 @@ If you also use library `bookmark+.el', then:
   `bookmarkp-w3m'                       - W3m URL
 
  * In *Completions*, if option `icicle-show-multi-completion-flag' is
-   non-nil, then bookmarks are shown together with their file (or
-   buffer) names as multi-completions.  You can match against both
-   parts of the multi-completion.  You can toggle this option (for the
-   next command) using `M-m' during completion.
+   non-nil, then each completion candidate is a multi-completion:
+
+    a. the bookmark name
+    b. the bookmark file or buffer name
+    c. any tags
+
+   You can match any parts of the multi-completion.  You can toggle
+   the option (for the next command) using `M-m' during completion.
+   For example, you can match all bookmarks that have tags by typing:
+
+     C-M-j . * C-M-j S-TAB
+
+   (Each `C-M-j' inserts `^G\n', which is `icicle-list-join-string'.)
+
+ * You can narrow the current completion candidates to bookmarks of a
+   given type:
+
+   `C-M-b' - non-file (buffer) bookmarks
+   `C-M-B' - bookmark-list bookmarks
+   `C-M-d' - Dired bookmarks
+   `C-M-f' - file bookmarks
+   `C-M-F' - local-file bookmarks
+   `C-M-g' - Gnus bookmarks
+   `C-M-i' - Info bookmarks
+   `C-M-K' - desktop bookmarks
+   `C-M-m' - `man' pages
+   `C-M-r' - bookmarks with regions
+   `C-M-w' - W3m bookmarks
+   `C-M-@' - remote-file bookmarks
+
+   See also the individual multi-commands for different bookmark
+   types: `icicle-bookmark-info-other-window' etc.
 
 If you also use library `crosshairs.el', then the visited bookmark
 position is highlighted."               ; Doc string
@@ -2906,10 +2915,13 @@ position is highlighted."               ; Doc string
   ((enable-recursive-minibuffers           t) ; In case we read input, e.g. File changed on disk...
    (completion-ignore-case                 bookmark-completion-ignore-case)
    (prompt                                 "Bookmark: ")
-   (icicle-list-nth-parts-join-string      "\t")
-   (icicle-list-join-string                "\t")
-   (icicle-list-end-string                 "")
    (icicle-list-use-nth-parts              '(1))
+   (icicle-candidate-properties-alist      (if (not icicle-show-multi-completion-flag)
+                                               nil
+                                             (if (facep 'file-name-shadow)
+                                                 '((2 (face file-name-shadow))
+                                                   (3 (face bookmark-menu-heading)))
+                                               '((3 (face bookmark-menu-heading))))))
    (icicle-transform-function              (if (interactive-p) nil icicle-transform-function))
    (icicle-whole-candidate-as-text-prop-p  t)
    (icicle-transform-before-sort-p         t)
@@ -2949,34 +2961,29 @@ position is highlighted."               ; Doc string
             (if current-prefix-arg
                 (bookmarkp-describe-bookmark-internals cand)
               (bookmarkp-describe-bookmark cand))
-          (icicle-msg-maybe-in-minibuffer
-           (icicle-bookmark-help-string cand)))))
+          (icicle-msg-maybe-in-minibuffer (icicle-bookmark-help-string cand)))))
    (icicle-candidates-alist
     (if (not (featurep 'bookmark+))
         (mapcar #'(lambda (cand)
-                    (list (icicle-candidate-short-help
-                           (icicle-bookmark-help-string cand)
-                           (icicle-bookmark-propertize-candidate cand))))
+                    (list (icicle-candidate-short-help (icicle-bookmark-help-string cand)
+                                                       (icicle-bookmark-propertize-candidate cand))))
                 (bookmark-all-names))   ; Loads bookmarks file, defining `bookmark-alist'.
       (bookmark-maybe-load-default-file) ; Loads bookmarks file, defining `bookmark-alist'.
       (mapcar (if icicle-show-multi-completion-flag
                   #'(lambda (bmk)
-                      (let* ((bname  (bookmark-name-from-full-record bmk))
-                             (guts   (bookmark-get-bookmark-record bmk))
-                             (file   (bookmark-get-filename bmk))
-                             (buf    (bookmarkp-get-buffer-name bmk))
-                             (info   (copy-sequence ; Don't put the face on `bookmark-alist' itself!
-                                      (if (and buf (equal file bookmarkp-non-file-filename))
-                                          buf
-                                        file))))
-                        ;; Took this out.  Too distracting.
-                        ;; (put-text-property 0 (length info) 'face 'icicle-candidate-part info)
-                        (when (facep 'file-name-shadow)
-                          (put-text-property 0 (length info) 'face 'file-name-shadow info))
-                        (cons (list (icicle-candidate-short-help
-                                     (icicle-bookmark-help-string bname)
-                                     (icicle-bookmark-propertize-candidate bname))
-                                    info)
+                      (let* ((bname     (bookmark-name-from-full-record bmk))
+                             (guts      (bookmark-get-bookmark-record bmk))
+                             (file      (bookmark-get-filename bmk))
+                             (buf       (bookmarkp-get-buffer-name bmk))
+                             (file/buf  (if (and buf (equal file bookmarkp-non-file-filename))
+                                            buf
+                                          file))
+                             (tags      (bookmarkp-get-tags bmk)))
+                        (cons `(,(icicle-candidate-short-help
+                                  (icicle-bookmark-help-string bname)
+                                  (icicle-bookmark-propertize-candidate bname))
+                                ,file/buf
+                                ,@(and tags (list (format "%S" tags))))
                               guts)))
                 #'(lambda (bmk)
                     (let ((bname  (bookmark-name-from-full-record bmk))
@@ -3025,10 +3032,13 @@ Same as `icicle-bookmark', but uses another window." ; Doc string
   ((enable-recursive-minibuffers           t) ; In case we read input, e.g. File changed on disk...
    (completion-ignore-case                 bookmark-completion-ignore-case)
    (prompt                                 "Bookmark: ")
-   (icicle-list-nth-parts-join-string      "\t")
-   (icicle-list-join-string                "\t")
-   (icicle-list-end-string                 "")
    (icicle-list-use-nth-parts              '(1))
+   (icicle-candidate-properties-alist      (if (not icicle-show-multi-completion-flag)
+                                               nil
+                                             (if (facep 'file-name-shadow)
+                                                 '((2 (face file-name-shadow))
+                                                   (3 (face bookmark-menu-heading)))
+                                               '((3 (face bookmark-menu-heading))))))
    (icicle-transform-function              (if (interactive-p) nil icicle-transform-function))
    (icicle-whole-candidate-as-text-prop-p  t)
    (icicle-transform-before-sort-p         t)
@@ -3072,29 +3082,25 @@ Same as `icicle-bookmark', but uses another window." ; Doc string
    (icicle-candidates-alist
     (if (not (featurep 'bookmark+))
         (mapcar #'(lambda (cand)
-                    (list (icicle-candidate-short-help
-                           (icicle-bookmark-help-string cand)
-                           (icicle-bookmark-propertize-candidate cand))))
+                    (list (icicle-candidate-short-help (icicle-bookmark-help-string cand)
+                                                       (icicle-bookmark-propertize-candidate cand))))
                 (bookmark-all-names))   ; Loads bookmarks file, defining `bookmark-alist'.
       (bookmark-maybe-load-default-file) ; Loads bookmarks file, defining `bookmark-alist'.
       (mapcar (if icicle-show-multi-completion-flag
                   #'(lambda (bmk)
-                      (let* ((bname  (bookmark-name-from-full-record bmk))
-                             (guts   (bookmark-get-bookmark-record bmk))
-                             (file   (bookmark-get-filename bmk))
-                             (buf    (bookmarkp-get-buffer-name bmk))
-                             (info   (copy-sequence ; Don't put the face on `bookmark-alist' itself!
-                                      (if (and buf (equal file bookmarkp-non-file-filename))
-                                          buf
-                                        file))))
-                        ;; Took this out.  Too distracting.
-                        ;; (put-text-property 0 (length info) 'face 'icicle-candidate-part info)
-                        (when (facep 'file-name-shadow)
-                          (put-text-property 0 (length info) 'face 'file-name-shadow info))
-                        (cons (list (icicle-candidate-short-help
-                                     (icicle-bookmark-help-string bname)
-                                     (icicle-bookmark-propertize-candidate bname))
-                                    info)
+                      (let* ((bname     (bookmark-name-from-full-record bmk))
+                             (guts      (bookmark-get-bookmark-record bmk))
+                             (file      (bookmark-get-filename bmk))
+                             (buf       (bookmarkp-get-buffer-name bmk))
+                             (file/buf  (if (and buf (equal file bookmarkp-non-file-filename))
+                                            buf
+                                          file))
+                             (tags      (bookmarkp-get-tags bmk)))
+                        (cons `(,(icicle-candidate-short-help
+                                  (icicle-bookmark-help-string bname)
+                                  (icicle-bookmark-propertize-candidate bname))
+                                ,file/buf
+                                ,@(and tags (list (format "%S" tags))))
                               guts)))
                 #'(lambda (bmk)
                     (let ((bname  (bookmark-name-from-full-record bmk))
@@ -3201,33 +3207,26 @@ You probably don't want to use this.  Use
 ;; $$$$$$   (select-frame-set-input-focus (selected-frame)))
 
 (defun icicle-bookmark-help-string (bookmark-name)
-  "Return a help string for BOOKMARK-NAME."
+  "Return a help string for BOOKMARK-NAME." ; `bookmarkp-*' functions are defined in `bookmark+.el'.
   (let* ((bmk         (bookmark-get-bookmark bookmark-name))
-         (buf         (and (fboundp 'bookmarkp-get-buffer-name) ; Defined in `bookmark+.el'.
-                           (bookmarkp-get-buffer-name bmk)))
+         (buf         (and (fboundp 'bookmarkp-get-buffer-name) (bookmarkp-get-buffer-name bmk)))
          (file        (bookmark-get-filename bmk))
          (start       (bookmark-get-position bmk))
-         (end         (and (fboundp 'bookmarkp-get-end-position) ; Defined in `bookmark+.el'.
-                           (bookmarkp-get-end-position bmk)))
+         (end         (and (fboundp 'bookmarkp-get-end-position) (bookmarkp-get-end-position bmk)))
          (annot       (bookmark-get-annotation bmk))
-         (sequence-p  (and (fboundp 'bookmarkp-sequence-bookmark-p) ; Defined in `bookmark+.el'.
+         (sequence-p  (and (fboundp 'bookmarkp-sequence-bookmark-p)
                            (bookmarkp-sequence-bookmark-p bmk)))
-         (function-p  (and (fboundp 'bookmarkp-function-bookmark-p) ; Defined in `bookmark+.el'.
+         (function-p  (and (fboundp 'bookmarkp-function-bookmark-p)
                            (bookmarkp-function-bookmark-p bmk)))
          (blist-p     (and (fboundp 'bookmarkp-bookmark-list-bookmark-p)
-                           (bookmarkp-bookmark-list-bookmark-p bmk))) ; Defined in `bookmark+.el'.
-         (desktop-p   (and (fboundp 'bookmarkp-desktop-bookmark-p) ; Defined in `bookmark+.el'.
+                           (bookmarkp-bookmark-list-bookmark-p bmk)))
+         (desktop-p   (and (fboundp 'bookmarkp-desktop-bookmark-p)
                            (bookmarkp-desktop-bookmark-p bmk)))
-         (dired-p     (and (fboundp 'bookmarkp-dired-bookmark-p) ; Defined in `bookmark+.el'.
-                           (bookmarkp-dired-bookmark-p bmk)))
-         (gnus-p      (and (fboundp 'bookmarkp-gnus-bookmark-p) ; Defined in `bookmark+.el'.
-                           (bookmarkp-gnus-bookmark-p bmk)))
-         (info-p      (and (fboundp 'bookmarkp-info-bookmark-p) ; Defined in `bookmark+.el'.
-                           (bookmarkp-info-bookmark-p bmk)))
-         (man-p       (and (fboundp 'bookmarkp-man-bookmark-p) ; Defined in `bookmark+.el'.
-                           (bookmarkp-man-bookmark-p bmk)))
-         (w3m-p       (and (fboundp 'bookmarkp-w3m-bookmark-p) ; Defined in `bookmark+.el'.
-                           (bookmarkp-w3m-bookmark-p bmk)))
+         (dired-p     (and (fboundp 'bookmarkp-dired-bookmark-p) (bookmarkp-dired-bookmark-p bmk)))
+         (gnus-p      (and (fboundp 'bookmarkp-gnus-bookmark-p) (bookmarkp-gnus-bookmark-p bmk)))
+         (info-p      (and (fboundp 'bookmarkp-info-bookmark-p) (bookmarkp-info-bookmark-p bmk)))
+         (man-p       (and (fboundp 'bookmarkp-man-bookmark-p) (bookmarkp-man-bookmark-p bmk)))
+         (w3m-p       (and (fboundp 'bookmarkp-w3m-bookmark-p) (bookmarkp-w3m-bookmark-p bmk)))
          type-info-p no-position-p)
     (when (or sequence-p function-p) (setq no-position-p  t))
     (concat (setq type-info-p

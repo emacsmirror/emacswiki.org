@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Mar 11 10:38:18 2010 (-0800)
+;; Last-Updated: Tue Mar 16 16:34:39 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 11756
+;;     Update #: 11795
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1446,12 +1446,36 @@
 ;;
 ;;  * Plain `C-u' (as usual): Prompt for name; no bookmark overwrite.
 ;;
-;;  During completion of a bookmark name, many features of the
+;;  During completion of a bookmark name, most features of the
 ;;  bookmark-list display (see (@> "Bookmark List (Display)")) are
-;;  available on the fly.
+;;  available on the fly.  Buffer `*Completions*' acts like a dynamic
+;;  version of `*Bookmark List*':
 ;;
 ;;  * Candidates are highlighted in the `*Completions*' window
-;;    according to their type.
+;;    according to their bookmark type.
+;;
+;;  * Candidates are Icicles multi-completions with up to three parts:
+;;
+;;     a. the bookmark name
+;;     b. the bookmark file or buffer name
+;;     c. any tags
+;;
+;;    You can match any or all of the parts.  For example, you can
+;;    match bookmarks that have tags by typing this regexp:
+;;
+;;    C-M-j . * C-M-j S-TAB
+;;
+;;    Each `C-M-j' inserts `^G\n', which is `icicle-list-join-string',
+;;    the string used to join the parts.  This regexp says, "match the
+;;    completion candidates that have all three parts (two join
+;;    strings), hence some tags.
+;;
+;;    You can turn off the use of multi-completion candidates for
+;;    subsequent commands, so only bookmark names are used, by hitting
+;;    `M-m' in the minibuffer.  You can think of this as similar to
+;;    using `M-t' in `*Bookmark List*' to toggle showing file names.
+;;    You can make not showing files and tags the default behavior by
+;;    customizing `icicle-show-multi-completion-flag'.
 ;;
 ;;  * You can sort completion candidates using the Bookmark+ sort
 ;;    orders.  Use `C-,' to cycle among sort orders.
@@ -1559,6 +1583,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2010/03/16 dadams
+;;     Fixed parens placement (typo) for last change to define *-jump-woman for Emacs 20.
 ;; 2010/03/11 dadams
 ;;     Define bookmarkp-jump-woman also for Emacs 20 (just raise an error).
 ;;     *-show-annotation: Typo: bookmark -> bmk-name.
@@ -6825,7 +6851,7 @@ A new list is returned (no side effects)."
     (nreverse new)))
   
 (defun bookmarkp-remove-assoc-dups (alist &optional omit)
-  "Copy of ALIST without elements that have duplicate keys.
+  "Shallow copy of ALIST without elements that have duplicate keys.
 Only the first element of those with the same key is kept.
 Keys are compared using `equal'.
 If optional arg OMIT is non-nil, then omit from the return value any
@@ -8413,7 +8439,7 @@ BOOKMARK is a bookmark name or a bookmark record."
 
   (add-hook 'woman-mode-hook #'(lambda ()
                                  (set (make-local-variable 'bookmark-make-record-function)
-                                      'bookmarkp-make-woman-record)))
+                                      'bookmarkp-make-woman-record))))
 
 (defun bookmarkp-make-man-record ()
   "Create bookmark record for `man' page bookmark created by `man'."
@@ -8421,18 +8447,18 @@ BOOKMARK is a bookmark name or a bookmark record."
     (filename . ,bookmarkp-non-file-filename)
     (man-args . ,Man-arguments) (handler . bookmarkp-jump-man)))
 
-(add-hook 'Man-mode-hook #'(lambda () (set (make-local-variable 'bookmark-make-record-function)
-                                           'bookmarkp-make-man-record)))
+  (add-hook 'Man-mode-hook #'(lambda () (set (make-local-variable 'bookmark-make-record-function)
+                                             'bookmarkp-make-man-record)))
 
 (defalias 'bmkext-jump-woman 'bookmarkp-jump-woman)
 (defun bookmarkp-jump-woman (bookmark)
   "Handler function for `man' page bookmark created by `woman'."
   (unless (> emacs-major-version 20)
-    (error "`woman' bookmarks not supported in Emacs prior to Emacs 21"))
+    (error "`woman' bookmarks are not supported in Emacs prior to Emacs 21"))
   (bookmark-default-handler
    `("" (buffer . ,(save-window-excursion (woman-find-file (bookmark-get-filename bookmark))
                                           (current-buffer)))
-     . ,(bookmark-get-bookmark-record bookmark)))))
+     . ,(bookmark-get-bookmark-record bookmark))))
 
 (defalias 'bmkext-jump-man 'bookmarkp-jump-man)
 (defun bookmarkp-jump-man (bookmark)

@@ -82,14 +82,9 @@ Using python-complete-symbol in the inferior python buffer causes an infinite lo
 
 == Comment/Uncomment Region ==
 
-If you have `transient-mark-mode' on, you can just use `comment-dwim': select a region and hit `M-;'.  The DoWhatIMean means that it will comment or uncomment the region as appropriate.
+If you have `transient-mark-mode' on, you can just use `comment-dwim': select a region and hit `M-;'.  The DoWhatIMean means that it will comment or uncomment the region as appropriate.  If you do not have `transient-mark-mode' on by default, you can hit C-SPC twice to activate it temporarily.
 
-If you don't have TMM on, you can use `comment-region'.  Pass it a PrefixArgument to uncomment.  If it's not bound to a key, add this to your InitFile:
-
- (add-hook 'python-mode-hook (lambda () 
-   (define-key py-mode-map "\C-c#" 'comment-region)))
-
-You can also use rectangles.  `C-x r d'  with a highlighted rectangle of comments uncomments.  Relatedly, `C-x r o' can be used to indent code (as you need to after making it conditional or putting it in a loop).  `indent-rigidly' (`C-x TAB') also works, and there is also the intelligent `indent-code-rigidly'.
+You can also use "rectangles" to comment or uncomment mode (among other things that you can do with rectangles).  See RectangleCommands or "(emacs) Rectangles" in the Emacs manual.  To get to that part of the manual, hit the following keys in Emacs: M-: (info "(emacs) Rectangles") RET.
 
 == Get the python documentation on the function/module at point ==
 

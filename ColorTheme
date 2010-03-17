@@ -468,6 +468,9 @@ Example usage:
 
 After the generated X resource settings have been written out to your .Xresources file, you'll need run either xrdb -merge .Xresources or xrdb -load .Xresources (depending on the desired effect). You will have to restart your Emacs to have the new X resources take effect. 
 
+[new:MathieuBasille:2010-03-16 14:50 UTC] Using GNU Emacs 23.1.1 (i486-pc-linux-gnu, GTK+ Version 2.18.2) of 2009-11-01 on raven, modified by Debian, I'm not able to use properly that package. It loads fine, but when I'm invoking one of the example commands, I get the following error message: 'assoc: Wrong type argument: listp, color-theme-classic', and the buffer *color-theme-xresources* is practically empty. Am I doing something wrong? -- MathieuBasille
+
+
 == Saving a Color Theme in the Windows Registry ==
 
 Lisp:color-theme-reg.el -- convert color-theme to win32 reg. by Kyle M. Lee, based on color-theme-x.

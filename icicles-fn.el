@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Mar 13 10:00:46 2010 (-0800)
+;; Last-Updated: Tue Mar 16 15:30:22 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 11631
+;;     Update #: 11661
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2629,18 +2629,21 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                                     (end        0)
                                     (partnum    1)
                                     (join       (concat "\\(" icicle-list-join-string "\\|$\\)"))
-                                    (len        (length candidate))
-                                    notfirst)
+                                    (len-cand   (length candidate))
+                                    (len-join   (length icicle-list-join-string))
+                                    (first      t))
                                (save-match-data
-                                 (while (and (string-match
-                                              join candidate
-                                              (if (and notfirst (= end (match-beginning 0))
-                                                       (< end (length candidate)))
-                                                  (1+ end)
-                                                end))
-                                             (< end len))
-                                   (setq notfirst  t
-                                         end       (or (match-beginning 0) len))
+                                 (while (and (or first  (not (= end (match-beginning 0)))
+                                                 (< (+ end len-join) len-cand))
+                                             (string-match join candidate
+                                                           (if (and (not first)
+                                                                    (= end (match-beginning 0))
+                                                                    (< end len-cand))
+                                                               (+ end len-join)
+                                                             end))
+                                             (< end len-cand))
+                                   (setq first  nil
+                                         end    (or (match-beginning 0) len-cand))
                                    (let* ((entry
                                            (assq partnum icicle-candidate-properties-alist))
                                           (properties              (cadr entry))
@@ -2651,7 +2654,7 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                                      (when propertize-join-string
                                        (add-text-properties
                                         (+ end orig-pt)
-                                        (+ end orig-pt (length icicle-list-join-string))
+                                        (+ end orig-pt len-join)
                                         properties)))
                                    (setq partnum  (1+ partnum)
                                          start    (match-end 0))))))))
@@ -5181,13 +5184,12 @@ Non-nil if current REQUIRE-MATCH arg to `completing-read' or
 
 (defun icicle-candidate-short-help (help string)
   "Put string of text HELP on STRING as text properties.
-Text properties `icicle-mode-line-help' and `help-echo' are used.
-Do nothing if either `icicle-help-in-mode-line-flag' or `tooltip-mode'
-is nil.
+Put `help-echo' property if `tooltip-mode' is non-nil.
+Put `icicle-mode-line-help' property (on the first character only) if
+ `icicle-help-in-mode-line-flag' is non-nil.
 Return STRING, whether propertized or not."
-  (when (or icicle-help-in-mode-line-flag ; Put help only if user will see it.
-            (and (boundp 'tooltip-mode) tooltip-mode))
-    (put-text-property 0 1 'icicle-mode-line-help help string)
+  (when icicle-help-in-mode-line-flag (put-text-property 0 1 'icicle-mode-line-help help string))
+  (when (and (boundp 'tooltip-mode) tooltip-mode)
     (put-text-property 0 (length string) 'help-echo help string))
   string)
 

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Mar 14 14:45:59 2010 (-0700)
+;; Last-Updated: Tue Mar 16 16:38:56 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 4948
+;;     Update #: 4966
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,11 +75,18 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2010/03/16 dadams
+;;     icicle-bookmark(-other-window):
+;;       Use tags, not just file names, in the multi-completions.
+;;       Use the default join string, ^G^J, and end string, ^J^J.
+;;       Use just icicle-candidate-properties-alist to highlight the file name.
+;;       Remove extra quote marks from face names.
 ;; 2010/03/14 dadams
 ;;     icicle-bookmark(-other-window):
 ;;       Copy file/buffer name string for candidate-part face, so we don't touch bookmark-alist.
 ;;       Handle icicle-bookmark-refresh-cache-flag and C-u.
 ;;       Bind the narrow keys in minibuffer-local-completion also (lax for multi-completion).
+;;       Use face file-name-shadow, not icicle-candidate-part (too distracting).
 ;;     icicle-bookmark-*-narrow: Use icicle-get-alist-candidate-function.
 ;;     icicle-define-bookmark-other-window-command: Rewrote to handle multi-completion.
 ;;     icicle-bookmark-non-file-narrow: Use bookmarkp-non-file-bookmark-p.
@@ -387,6 +394,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2010/03/16 dadams
+;;     icicle-display-candidates-in-Completions, treating icicle-candidate-properties-alist:
+;;       For subsequent matches of join string, skip over the last join string (not 1 char).
+;;     icicle-candidate-short-help: Treat each property individually.
 ;; 2010/03/13 dadams
 ;;     icicle-reversible-sort: Respect icicle-transform-before-sort-p.
 ;; 2010/03/10 dadams

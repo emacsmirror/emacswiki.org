@@ -80,8 +80,7 @@ you "jump" to the bookmark.
 other bookmarks.
 
 * You can bookmark buffer `##*Bookmark List*##' itself.  Jumping to such a
-  bookmark restores the recorded sort order, filter, title, and omit
-  list (see [[#OmittingBookmarks]]).
+  bookmark restores the recorded [[#SortingBookmarks|sort]] order, [[#FilteringBookmarks|filter]], title, and [[#OmittingBookmarks|omit list]].
 
 
 
@@ -105,7 +104,7 @@ This is buffer `##*Bookmark List*##', aka the bookmark "menu list" (a misnomer),
 
 * The last display state is saved (by default), and is restored
      the next time you show the list.  (''Tip:'' Use the bookmark list
-     as your '''Home''' page at Emacs startup.)
+     as your ''Home'' page at Emacs startup.)
 
 * ''Marking''/unmarking is enhanced.  It is similar to [[DiredMode|Dired]]'s.
 
@@ -122,15 +121,15 @@ This is buffer `##*Bookmark List*##', aka the bookmark "menu list" (a misnomer),
 ** local directories
 ** remote files or directories
 ** remote files or directories that must be accessed by `su' or `sudo' (`root')
-** bookmark-list bookmarks
+** [[#BookmarkListViews|bookmark-list]] bookmarks
 ** [[DeskTop|desktop]] bookmarks
-** function bookmarks
-** sequence bookmarks
+** [[#FunctionAndSequenceBookmarks|function]] bookmarks
+** [[#FunctionAndSequenceBookmarks|sequence]] bookmarks
 ** non-file buffers
 ** buffers that don't currently exist
 ** possibly invalid bookmarks
 
-* You can ''sort'' bookmarks in many ways.  You can easily define
+* You can ''[[#SortingBookmarks|sort]]'' bookmarks in many ways.  You can easily define
      your own sort orders, even complex ones.
 
 * You can regexp-search (`M-a') or query-replace (`M-q') the
@@ -413,7 +412,7 @@ whenever the tagged bookmark is visited.  Any Lisp-readable
 function value is allowed: a symbol or a lambda expression.
 
 For example, you can use `##T v (lambda () (message "Hello!"))##' to
-display ##Hello!## whenever the bookmark with this tag is visited.
+display ##Hello!## whenever a bookmark with this tag is visited.
 
 The function that is the value of a ##"bookmarkp-jump"## tag is called
 just after the the standard hook `bookmark-after-jump-hook' is invoked.
@@ -496,7 +495,7 @@ default, then '''Bookmark+'''
 remembers the last state of the bookmark list when you quit it or
 you quit Emacs, and it restores that state when you show the list
 again (which could be in the next Emacs session).  You can think of
-this feature as your '''Home''' page for bookmarks, giving you a
+this feature as your ''Home'' page for bookmarks, giving you a
 stepping stone to the files and directories you use most.
 
 If, for example, when you quit the bookmark list you are showing only bookmarks to [[Info]] nodes and UNIX manual pages, sorted in a particular way, and with some of them marked for particular processing, then the next time you open the list the same state is restored: the same set of bookmarks is shown, in the same order, with the same markings.
@@ -545,7 +544,7 @@ session.
 
 The state that is saved and restored using a bookmark-list bookmark or a
 command defined using `c' is only a partial state.  The current
-set of markings and some other information is not saved, in order
+set of markings and some other information are not saved, in order
 to save disk space and save/restore time.
 
 [:bookmarkp-bmenu-define-full-snapshot-command]
@@ -1151,12 +1150,31 @@ as follows:
 
 * Plain `C-u' (as usual): Prompt for name; no bookmark overwrite.
 
-During completion of a bookmark name, many features of the
-bookmark-list display (see [[#BookmarkListDisplay|Bookmark List (Display)]]) are
-available on the fly.
+During completion of a bookmark name, most features of the
+bookmark-list display (see [[#BookmarkListDisplay|Bookmark List (Display)]]) are available on the fly.  Buffer `*Completions*' acts like a dynamic version of `##*Bookmark List*##':
 
 * Candidates are highlighted in the `*Completions*' window
-  according to their type.
+  according to their bookmark type.
+
+* Candidates are '''Icicles''' [[multi-completion]]s with up to three parts: (a) the bookmark ''name'', the bookmark ''file'' or buffer name, and (c) any ''tags''.
+
+:: You can match any or all of the parts.  For example, you can match bookmarks that have tags by typing this [[regexp]]: `##C-M-j . * C-M-j S-TAB##'.
+
+:: Each `C-M-j' inserts `##^G\n##', which is `<tt>[[Icicles - Customization and General Tips#icicle-list-join-string|icicle-list-join-string]]</tt>',
+the string used to join the parts.  This regexp says, "match the
+completion candidates that have all three parts (two join
+strings), hence some tags.
+
+:: You can turn off the use of multi-completion candidates for
+subsequent commands, so only bookmark names are used, by hitting
+`M-m' in the [[minibuffer]].  You can think of this as similar to
+using `M-t' in `##*Bookmark List*##' to toggle showing file names.
+You can make not showing files and tags the default behavior by
+customizing `<tt>[[Icicles - Customization and General Tips#icicle-show-multi-completion-flag|icicle-show-multi-completion-flag]]</tt>'.
+
+
+
+
 
 * You can sort completion candidates using the '''Bookmark+''' sort
   orders.  Use '''`##C-,##'''' to cycle among sort orders.

@@ -49,7 +49,7 @@ Other Requirements:
 
 [[SEMI]] 1.14.3 or later (for SEMI you need [[APEL]] and [[FLIM]]).  Recommended combination of APEL, FLIM and SEMI are following.
 
-* APEL 10.6, FLIM 1.14.5 and SEMI 1.14.5 
+* APEL 10.7, FLIM 1.14.5 and SEMI 1.14.5 
 
 == Configuration (Quickstart) ==
 To get started, add the following line to your InitFile:

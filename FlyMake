@@ -20,7 +20,7 @@ Flymake is part of Emacs 23 and some of the tips below works OTB there.
 
 == PHP ==
 
-[http://www.blik.it/2007/02/21/syntax-checking-for-php-in-emacs/ PHP syntax checking for Flymake]
+[http://sachachua.com/wp/2008/07/emacs-and-php-on-the-fly-syntax-checking-with-flymake/ PHP syntax checking for Flymake]
 
 == Ruby ==
 

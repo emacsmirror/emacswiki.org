@@ -4,7 +4,7 @@ See also CategoryFrames and CategoryDisplay for info on ''fonts'' and things rel
 
 Here are some of the pages in CategoryFaces.
 
-* AngryFruitSalad -- Get more modest font-lock faces.
+* AngryFruitSalad -- Get more modest font-lock faces (i.e. colorization)
 * AnsiColor -- have Emacs interpret nasty escape sequences from subprocesses such as shells
 * AnSys -- make Emacs highlight your Ansys-Files
 * BufferBackgroundColor -- a temporary solution for buffer background color

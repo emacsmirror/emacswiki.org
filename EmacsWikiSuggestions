@@ -367,6 +367,18 @@ I disagree that the new is a full replacement for the old. The new assumes that 
 
 I have nothing against changing to the new as a general default. But there is no reason not to allow explicit references to a different version in another language, especially if the text calling that out indicates clearly that the other-language version might not be as up-to-date as the English version. In sum, there is nothing wrong with using explicit links, if one thinks they can help users. -- DrewAdams
 
+[new]
+(Also see suggestion below.)
+
+If think that the English page Foo should not have a link/text like "There is also a French page but it is totally not up-to-date: Fôô" that is pretty much useless to any one not speaking French and of little value to those actually speaking French.  Instead Fôô should have something like "This the French translation of: Foo. Unfortunately it is not up-to-date, so you might want to have a look at the English version also". (All this in French of course.) -- JonasBernoulli
+
+[new:DrewAdams:2010-03-16 14:41 UTC]
+I think we ''should'' not worry so much about what "''should''" be the case on individual pages. ;-)
+
+Someone who more easily reads French might nevertheless find herself on the English page Foo (for various reasons). She might welcome the knowledge that there is also a French page Fôô, and might consult it even knowing that it might not be up to date -- for comparison on some particular point, for example. It is not unusual to be able to read a second language (e.g. English) but still feel more comfortable in one's native language.
+
+The point is that people are different, and explicit indication helps people, themselves, decide. As I said, "I have nothing against changing to the new as a general default." It's about letting page readers (and writers) judge for themselves. Letting readers know that a version of the page in another language is not up to date helps them decide. -- DrewAdams
+ 
 == Click the heading to search for pages in this category / that link here ==
 
 This bothers me similarly to the above since it just adds clutter for anyone who knows what clicking on a header does.  I would like to remove this too but this would probably not be well received.  I would suggest that this information is somehow shown on all pages but in an less intrusive way.
