@@ -555,7 +555,7 @@ With prefix argument, do `batch-expectations-in-emacs'."
                  (and (eq (car e) (car err))
                       (or (eq (cadr e) '*)
                        (equal (setq actual-errdata (eval (cadr e)))
-                              (cdr err)))))
+                              (cadr err)))))
                 (e
                  (equal e err))
                 (t

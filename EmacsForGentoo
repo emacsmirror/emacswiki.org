@@ -1,6 +1,6 @@
 == Emacs, XEmacs and related packages in Gentoo GNU/Linux ==
 
-[http://www.gentoo.org Gentoo] is a distribution of GNU/Linux.  Gentoo includes packages for GNU Emacs, CVS GNU Emacs and XEmacs.
+[http://www.gentoo.org Gentoo] is a distribution of GNU/Linux.  Gentoo includes packages for GNU Emacs, BZR GNU Emacs and XEmacs.
 
 [http://www.gentoo.org/proj/en/lisp/emacs/ Gentoo Emacs/Elisp project]
 
@@ -26,9 +26,9 @@ in your InitFile.  This is especially handy if you're on a multi-user system, as
   (load "/usr/share/emacs/site-lisp/site-gentoo.d/50slime-cvs-gentoo.el")
   (load "/usr/share/emacs/site-lisp/site-gentoo.d/50xcscope-gentoo.el")
 
-* CVS GNU Emacs
+* BZR GNU Emacs
 
-Gentoo has a CVS GNU Emacs package which integrates seamlessly into your filesystem.  Obviously, it cannot be supported by either Gentoo or upstream -- it is there for your convenience only.
+Gentoo has a BZR GNU Emacs package which integrates seamlessly into your filesystem.  Obviously, it cannot be supported by either Gentoo or upstream -- it is there for your convenience only.
 
 * General Notes
 

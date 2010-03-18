@@ -531,6 +531,10 @@ Well, I'm not sure, but if some words like ##buffer##, ##point##, ##frame##, ##w
 No problem -- I just thought you might have made the substitution automatically somehow (global replacement) and might not be aware of it. -- DrewAdams
 
 
+-----
+[new]
+Thanks for your excellent stuffs. By the way, There is a tiny bug in switch-file.el, line 220. The parameters of string-match are in reverse order. -- SeungcheolJung
+
 ------
 
 CategoryHomepage

@@ -82,6 +82,13 @@ In addition to being bound to keys `C-RET' and `M-RET', these operations are add
 
 * <tt>[[wuxch-dired.el]]</tt>, <tt>[[wuxch-dired-copy-paste.el]]</tt> -- libraries by WuXiaochun that build on Dired Plus
 
+----
+
+'''Bug reports:'''
+
+[new:Kiwon:2010-03-18 07:31 UTC]
+I found a bug of this useful extension. I'm using the latest dired+, Last-updated: Sun Jan 31 14:06:37 2010 (-0800). The font-lock for date and time invades the area for size of file. -- Kiwon
+[new]
 
 ----
 CategoryDirectories

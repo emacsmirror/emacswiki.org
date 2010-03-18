@@ -41,6 +41,7 @@ Getting started:
 * SupportTamil -- How to read and write in Tamil language using Emacs
 * TypographicalPunctuationMarks -- en-dashes, em-dashes and typographical quotation marks (aka "smart quotes")
 * TextTranslator -- text translation package
+* TransEJ -- English-Japanese translator using multiple Web translation services
 
 Coding System stuff:
 

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Mar 16 16:34:39 2010 (-0700)
+;; Last-Updated: Wed Mar 17 11:25:37 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 11795
+;;     Update #: 11825
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -215,6 +215,7 @@
 ;;    `bookmarkp-switch-bookmark-file',
 ;;    `bookmarkp-toggle-saving-bookmark-file',
 ;;    `bookmarkp-toggle-saving-menu-list-state',
+;;    `bookmarkp-toggle-bookmark-set-refreshes',
 ;;    `bookmarkp-unomit-all', `bookmarkp-version',
 ;;    `bookmarkp-w3m-jump', `bookmarkp-w3m-jump-other-window',
 ;;    `old-bookmark-insert', `old-bookmark-relocate'.
@@ -340,6 +341,7 @@
 ;;    `bookmarkp-position-pre-context-region', `bookmarkp-read-tags',
 ;;    `bookmarkp-read-tag-completing',
 ;;    `bookmarkp-read-tags-completing', `bookmarkp-record-visit',
+;;    `bookmarkp-refresh-latest-bookmark-list',
 ;;    `bookmarkp-regexp-filtered-bookmark-name-alist-only',
 ;;    `bookmarkp-regexp-filtered-file-name-alist-only',
 ;;    `bookmarkp-regexp-filtered-tags-alist-only',
@@ -363,6 +365,7 @@
 ;;
 ;;  Internal variables defined here:
 ;;
+;;    `bookmarkp-after-set-hook',
 ;;    `bookmarkp-bmenu-before-hide-marked-alist',
 ;;    `bookmarkp-bmenu-before-hide-unmarked-alist',
 ;;    `bookmarkp-bmenu-define-command-menu',
@@ -787,7 +790,7 @@
 ;;  function value is allowed: a symbol or a lambda expression.
 ;;
 ;;  For example, you can use `T v (lambda () (message "Hello!"))' to
-;;  display `Hello!' whenever the bookmark with this tag is visited.
+;;  display `Hello!' whenever a bookmark with this tag is visited.
 ;;
 ;;  The function that is the value of a "bookmarkp-jump" tag is called
 ;;  just after the the standard hook `bookmark-after-jump-hook' is
@@ -911,7 +914,7 @@
 ;;
 ;;  The state that is saved and restored using a bookmark-list
 ;;  bookmark or a command defined using `c' is only a partial state.
-;;  The current set of markings and some other information is not
+;;  The current set of markings and some other information are not
 ;;  saved, in order to save disk space and save/restore time.
 ;;
 ;;  Sometimes, however, you really want to save the entire
@@ -1583,6 +1586,9 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2010/03/17 dadams
+;;     Added: bookmarkp-toggle-bookmark-set-refreshes, bookmarkp-refresh-latest-bookmark-list,
+;;            bookmarkp-after-set-hook.
 ;; 2010/03/16 dadams
 ;;     Fixed parens placement (typo) for last change to define *-jump-woman for Emacs 20.
 ;; 2010/03/11 dadams
@@ -3032,6 +3038,9 @@ Keys are bookmark type names.  Values are corresponding history variables.")
 (defvar bookmarkp-remote-file-history ()   "History for remote-file bookmarks.")
 (defvar bookmarkp-w3m-history ()           "History for W3M bookmarks.")
 
+(defvar bookmarkp-after-set-hook nil
+  "Hook run after `bookmark-set' sets a bookmark.")
+
 (defvar bookmarkp-current-bookmark-file bookmark-default-file
   "Current bookmark file.
 When you start Emacs, this is the same as `bookmark-default-file'.
@@ -3534,7 +3543,7 @@ pertains to the location within the buffer."
 ;; 2. Use special default prompts for active region, W3M, and Gnus.
 ;;
 (defun bookmark-set (&optional name parg) ; `C-x r m'
-  "Set a bookmark named NAME.
+  "Set a bookmark named NAME, then run `bookmarkp-after-set-hook'.
 If the region is active (`transient-mark-mode') and nonempty, then
 record the region limits in the bookmark.
 
@@ -3573,7 +3582,7 @@ you decide to delete the most recent one.
 
 Use `\\[bookmark-delete]' to remove bookmarks (you give it a name, and it removes
 only the first instance of a bookmark with that name from the list of
-bookmarks.)"
+bookmarks)."
   (interactive (list nil current-prefix-arg))
   (bookmark-maybe-load-default-file)
   (setq bookmark-current-point   (point)
@@ -3616,6 +3625,7 @@ bookmarks.)"
                         nil nil defname))))
     (when (string-equal bname "") (setq bname  defname))
     (bookmark-store bname (cdr record) parg)
+    (run-hooks 'bookmarkp-after-set-hook)
     (if bookmark-use-annotations
         (bookmark-edit-annotation bname)
       (goto-char bookmark-current-point))))
@@ -4330,7 +4340,7 @@ Non-nil FILTEREDP means the bookmark list has been filtered, so:
   (bookmark-maybe-load-default-file)
   (when (and bookmarkp-bmenu-first-time-p bookmarkp-bmenu-commands-file
              (file-readable-p bookmarkp-bmenu-commands-file))
-    (with-current-buffer (let ((enable-local-variables  nil)
+    (with-current-buffer (let ((enable-local-variables  ())
                                (emacs-lisp-mode-hook    nil))
                            (find-file-noselect bookmarkp-bmenu-commands-file))
       (goto-char (point-min))
@@ -4696,6 +4706,22 @@ Be sure to mention the `Update #' from the `bookmark+.el' file header.%%0A%%0AEm
                       (emacs-version))))
 
 ;;;###autoload
+(defun bookmarkp-toggle-bookmark-set-refreshes ()
+  (interactive)
+  "Toggle `bookmark-set' refreshing `bookmarkp-latest-bookmark-alist'.
+Add/remove `bookmarkp-refresh-latest-bookmark-list' to/from
+`bookmarkp-after-set-hook'."
+  (if (member 'bookmarkp-refresh-latest-bookmark-list bookmarkp-after-set-hook)
+      (remove-hook 'bookmarkp-after-set-hook 'bookmarkp-refresh-latest-bookmark-list)
+    (add-hook 'bookmarkp-after-set-hook 'bookmarkp-refresh-latest-bookmark-list)))
+
+(defun bookmarkp-refresh-latest-bookmark-list ()
+  "Refresh `bookmarkp-latest-bookmark-alist' to reflect `bookmark-alist'."
+  (setq bookmarkp-latest-bookmark-alist  (if bookmarkp-bmenu-filter-function
+                                             (funcall bookmarkp-bmenu-filter-function)
+                                           bookmark-alist)))
+
+;;;###autoload
 (defun bookmarkp-toggle-saving-menu-list-state () ; `M-l' in bookmark list
   "Toggle the value of option `bookmarkp-bmenu-state-file'.
 Tip: You can use this before quitting Emacs, to not save the state.
@@ -4907,7 +4933,10 @@ To revert the list, use `\\<bookmark-bmenu-mode-map>\\[bookmarkp-bmenu-refresh-m
 (defun bookmarkp-bmenu-refresh-menu-list () ; `g' in bookmark list
   "Refresh (revert) the bookmark list (\"menu list\").
 This brings the displayed list up to date.  It does not change the
-current filtering or sorting of the displayed list."
+current filtering or sorting of the displayed list.
+
+If you want setting a bookmark to refresh the list automatically, you
+can use command `bookmarkp-toggle-bookmark-set-refreshes'."
   (interactive)
   (bookmarkp-barf-if-not-in-menu-list)
   (let ((bmk-name  (bookmark-bmenu-bookmark)))
@@ -9474,6 +9503,8 @@ General
 \\[bookmarkp-toggle-saving-bookmark-file]\t- Toggle autosaving the bookmark file
 \\[bookmarkp-toggle-saving-menu-list-state]\t- Toggle autosaving the bookmark-list display state
 
+\\[bookmarkp-toggle-bookmark-set-refreshes]
+\t- Toggle whether `bookmark-set' refreshes the bookmark list
 \\[bookmarkp-make-function-bookmark]
 \t- Create a function bookmark
 \\[bookmarkp-bmenu-make-sequence-from-marked]

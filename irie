@@ -5,6 +5,7 @@ I use Emacs.
 * [ScimBridge scim-bridge.el] -- SCIM-Bridge client for GNU Emacs.
 * [RedoPlus redo+.el] -- a fork of redo.el which can correctly work in newer version of Emacs
 * [PosTip pos-tip.el] -- a library for easily showing tooltip at arbitrary buffer position
+* [TransEJ trans-ej.el] -- English-Japanese translator using multiple Web translation services
 * etc.
 
 == Web sites I maintain ==
