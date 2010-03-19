@@ -4,3 +4,5 @@ If you want to use ert.el there are examples at the end of the file that are use
 
 You can also find examples in [NxhtmlMode nXhtml] which uses a slightly modified version for tests.
 Note that we are currently trying to enhance ert.el and offer it to Emacs for inclusion.
+----
+See also UnitTesting

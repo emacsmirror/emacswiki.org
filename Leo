@@ -1,5 +1,8 @@
 I use Emacs. I started using GNU Emacs emacs-unicode-2 branch somewhere in Dec. 2005 for emails and TeX/LaTeX documents. [2010-02-10] These days I am running Emacs 64bit on Snow Leopard. It is handling over 80% of my computing tasks, reliably and efficiently.
 -----
+kmacro-ring-list.el:
+http://permalink.gmane.org/gmane.emacs.sources/3395
+-----
 * Make M-w do more intelligently.
 If region is active, behave like normal. Otherwise, do the following:
 ** M-w copy url, email or current line, in that order

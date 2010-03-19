@@ -15,6 +15,7 @@ Get ##browse-kill-ring.el## here:
 
 See Also: 
 
+* KillRingSearch - incremental search of the kill ring
 * <tt>[[browse-kill-ring+.el]]</tt> -- Enhancements to ##browse-kill-ring.el##. ( Sent to NickHurley for possible inclusion in ##browse-kill-ring.el##.)
 ** You can toggle the display style (new command and key binding).
 ** You can browse (or pop) other rings, in addition to the `kill-ring'. For example, the `secondary-selection-ring' (see [[SecondarySelection#secondary-sel.el|secondary-sel.el]]).

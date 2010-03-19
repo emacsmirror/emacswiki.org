@@ -373,6 +373,12 @@ I've fixed a small (very small) bug and would like to add two things:
 3x.
 -- [[ahei]]
 
+[new]
+The compress-url function doesn't work in 0.3.12; I believe (substring returned-request url-idx -1) should instead read (substring returned-request url-idx nil). 
+
+--ss
+
+
 == Archived Discussion ==
 I don't personally do the cell phone thing (it sounds irritating), but anyway, they got slashdotted yesterday.  I had never heard of them.  But it looked cool, so i joined and wrote twit.el.  I think i would like to broaden it--generalize it a bit and let users read friend's posts.  I am working on that....
 

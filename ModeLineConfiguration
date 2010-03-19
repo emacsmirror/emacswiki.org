@@ -14,6 +14,7 @@ Here are particular enhancements to the mode-line:
 * HideModeLine -- Hide the mode-line, to save screen real estate.
 * LunarModeLine -- Display current lunar phase in the modeline.
 * ModeLineDirtrack -- show the buffer's current directory in the mode-line.
+* SmlModeLine -- Indicate in the mode-line, in a scrollbar-like way, the portion of the buffer that is visible in the window.
 
 How to customize the mode-line further:
 

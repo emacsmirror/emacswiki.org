@@ -46,7 +46,7 @@ Note how the function executes everytime C mode runs.
 
 === project-root.el ===
 
-[http://www.shellarchive.co.uk/content/emacs.html project-root.el]
+[http://www.shellarchive.co.uk/content/emacs.html project-root.el] (Updated version with new features: [http://hg.piranha.org.ua/project-root/file/tip/project-root.el project-root.el])
 
 Project-root is a very simple module that allows you to define
 projects like this:

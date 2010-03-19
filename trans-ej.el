@@ -1,3 +1,5 @@
+;;; -*- Mode: Emacs-Lisp ; Coding: utf-8 -*-
+
 ;;; trans-ej.el --- English-Japanese translator using web translation service
 
 ;; Copyright (c) 2009, 2010  S. Irie
@@ -6,7 +8,7 @@
 ;; Maintainer: S. Irie
 ;; Keywords: multilingual, translation
 
-(defconst trans-ej-version "0.0.7")
+(defconst trans-ej-version "0.1.1")
 
 ;; This program is free software.
 
@@ -61,6 +63,15 @@
 
 ;;; ChangeLog:
 
+;; 2010-03-18  S. Irie
+;;        * Version 0.1.1
+;;        * Bug fix
+;; 2010-03-18  S. Irie
+;;        * Version 0.1.0
+;;        * trans-ej-mode: Added major mode for displaying the results
+;;        * Changed to make hyperlinks to each Web site
+;;        * Changed to propertize error messages by `shadow' face
+;;        * Separated `trans-ej-make-request-data' from `trans-ej-string-1'
 ;; 2010-03-17  S. Irie
 ;;        * Version 0.0.7
 ;;        * trans-ej: Changed first argument to STRING
@@ -102,8 +113,11 @@
 ;;; Code:
 
 (require 'url-util)
+(require 'button)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Settings
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defvar trans-ej-site-orders-alist
   '(((en ja) excite yahoojp ocn livedoor fresheye google)
@@ -138,7 +152,9 @@ source language and target language, respectively.")
   "If non-nil, dump the whole of returned HTML when the translated text
 cannot be recognized.")
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Site profiles
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defvar trans-ej-languages-alist
   '((en "English"
@@ -351,7 +367,9 @@ requests.
 DICT-ALIST is an alist of the dictionary names used for HTTP requests.
 The keys and values of this alist must be short strings.")
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Utility functions
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun trans-ej-encode-url (string coding-system)
   "This is the analogue of `url-hexify-string', but STRING is converted
@@ -419,7 +437,53 @@ the URI-encoded characters."
       (skip-chars-forward "\n")
       (buffer-substring (point) (+ (point-max) tail)))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Main part
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun trans-ej-make-request-data (string site from to)
+  "Return a string to add to the end of URL as the request parameters.
+
+STRING is a source text.
+
+SITE, FROM and TO must be symbols. See `trans-ej-site-profs-alist' for
+details. For example, to translate from English to Japanese by using Yahoo!
+JAPAN, call as (trans-ej-string-1 \"foo is a bar.\" 'yahoojp 'en 'ja).
+
+Note that this function should be called from the buffer which STRING
+is included in, otherwise auto-uncomment mechanism can't correctly work."
+  (let ((site-prof (cdr (assoc (list site from to) trans-ej-site-profs-alist))))
+    (unless site-prof
+      (error "Your desired translation cannot be done. (%s: %s -> %s)"
+	     site from to))
+    (let ((pos 0))
+      (while (setq pos (string-match "^[ \t]*\\s<+" string pos))
+	(setq string (replace-match "" t t string)))) ;; auto-uncomment
+    (let* ((format-string (nth 2 site-prof))
+	   (coding-system (nth 3 site-prof))
+	   (before-replaces (nth 5 site-prof))
+	   (retval (format format-string
+			   (trans-ej-encode-url
+			    (with-temp-buffer
+			      (insert string)
+			      (mapc (lambda (replace)
+				      (when (eq replace 'join-lines)
+					(setq replace
+					      (nth 2 (assq from trans-ej-languages-alist))))
+				      (goto-char (point-min))
+				      (while (re-search-forward (car replace) nil t)
+					(replace-match (cdr replace) t)))
+				    before-replaces)
+			      (buffer-string))
+			    coding-system)))
+	   (dicts (cdr (assq site trans-ej-dictionaries-selections-alist))))
+      (when dicts
+	(let ((dict (cdr (assoc (cdr (assq site
+					   trans-ej-selected-dictionaries-alist))
+				(cdr dicts)))))
+	  (when dict
+	    (setq retval (concat retval "&" (car dicts) "=" dict)))))
+      retval)))
 
 (defun trans-ej-string-1 (string site from to &optional callback cbargs)
   "Translate STRING between languages specified by FROM and TO.
@@ -433,56 +497,49 @@ If optional arguments are not given, retrieve the response synchronously
 and return the translation as a string. Otherwise, CALLBACK is called when
 the translation has been retrieved and extracted. It is called as
 \(apply CALLBACK STRING STATUS CBARGS). STRING is the translation.
-Concerning STATUS, this function is the same as `url-retrieve'."
-  (let ((site-prof (cdr (assoc (list site from to)
-			       trans-ej-site-profs-alist))))
-    (unless site-prof
-      (error "Your desired translation cannot be done. (%s: %s -> %s)"
-	     site from to))
-    (let ((pos 0))
-      (while (setq pos (string-match "^[ \t]*\\s<+" string pos))
-	(setq string (replace-match "" t t string)))) ;; auto-uncomment
-    (let* ((url (nth 1 site-prof))
-	   (url-request-method "POST")
-	   (url-request-extra-headers
-	    '(("Content-Type" . "application/x-www-form-urlencoded")))
-	   (coding-system (nth 3 site-prof))
-	   (url-request-data
-	    (format (nth 2 site-prof)
-		    (trans-ej-encode-url
-		     (with-temp-buffer
-		       (insert string)
-		       (mapc (lambda (replace)
-			       (when (eq replace 'join-lines)
-				 (setq replace
-				       (caddr (assq from trans-ej-languages-alist))))
-			       (goto-char (point-min))
-			       (while (re-search-forward (car replace) nil t)
-				 (replace-match (cdr replace) t)))
-			     (nth 5 site-prof))
-		       (buffer-string))
-		     coding-system)))
-	   (coding-system (nth 3 site-prof))
-	   (regexp (nth 4 site-prof))
-	   (dicts (assq site trans-ej-dictionaries-selections-alist)))
-      (when dicts
-	(let ((dict (cdr (assoc (cdr (assq site
-					   trans-ej-selected-dictionaries-alist))
-				(cddr dicts)))))
-	  (when dict
-	    (setq url-request-data
-		  (concat url-request-data "&" (cadr dicts) "=" dict)))))
-      (save-excursion
-	(if callback
-	    (url-retrieve url
-			  (lambda (status decode coding-system regexp callback cbargs)
-			    (apply callback
-				   (funcall decode coding-system regexp)
-				   status cbargs))
-			  (list 'trans-ej-decode-response coding-system regexp
-				callback cbargs))
-	  (with-current-buffer (url-retrieve-synchronously url)
-	    (funcall 'trans-ej-decode-response coding-system regexp)))))))
+Concerning STATUS, this function is the same as `url-retrieve'.
+
+Note that this function should be called from the buffer which STRING
+is included in, otherwise auto-uncomment mechanism can't correctly work."
+  (let* ((url-request-data (trans-ej-make-request-data string site from to))
+	 (site-prof (cdr (assoc (list site from to) trans-ej-site-profs-alist)))
+	 (url (nth 1 site-prof))
+	 (url-request-method "POST")
+	 (url-request-extra-headers
+	  '(("Content-Type" . "application/x-www-form-urlencoded")))
+	 (coding-system (nth 3 site-prof))
+	 (filters (nth 4 site-prof)))
+    (save-excursion
+      (if callback
+	  (url-retrieve url
+			(lambda (status decode coding-system filters callback cbargs)
+			  (apply callback
+				 (funcall decode coding-system filters)
+				 status cbargs))
+			(list #'trans-ej-decode-response coding-system filters
+			      callback cbargs))
+	(with-current-buffer (url-retrieve-synchronously url)
+	  (trans-ej-decode-response coding-system filters))))))
+
+;; Translate using multiple Web sites
+
+(define-derived-mode trans-ej-mode fundamental-mode "Trans-EJ"
+  "Major mode for Trans-EJ English-Japanese translator."
+  (use-local-map button-buffer-map)
+  (set (make-local-variable 'truncate-partial-width-windows) nil))
+
+(define-button-type 'trans-ej-browse
+  'follow-link t
+  'action (lambda (button)
+	    (let* ((args (button-get button 'trans-ej-browse-args))
+		   (site-prof (cdr (assoc (cdr args) trans-ej-site-profs-alist))))
+	      (with-current-buffer (button-get button 'trans-ej-current-buffer)
+		(browse-url (concat (nth 1 site-prof)
+				    "?"
+				    (apply #'trans-ej-make-request-data args))))))
+  'help-echo (purecopy "mouse-2, RET: View this Web site in a browser"))
+
+(put (button-category-symbol 'trans-ej-browse) 'face 'link)
 
 (defun trans-ej-result-buffer-setup (from to)
   "Create the buffer, if necessary, which name is specified by
@@ -492,7 +549,7 @@ The window is not selected."
 	      (format trans-ej-result-buffer-name from to))))
     (with-current-buffer buf
       (erase-buffer)
-      (set (make-local-variable 'truncate-partial-width-windows) nil)
+      (trans-ej-mode)
       (display-buffer buf))
     buf))
 
@@ -507,12 +564,13 @@ multiple asynchronous translations. Don't call directly."
     (delete-region beg end)
     (goto-char beg)
     (while status
-      (when (eq (pop status) :error)
-	(insert (format "%s: %s\n" (caar status) (cadar status))))
-      (setq status (cdr status))) ;; discards one elt.
+      (let* ((key (pop status))
+	     (val (pop status)))
+	(when (eq key :error)
+	  (insert (format "%s: %s\n" (car val) (cadr val))))))
     (if str
 	(insert (trans-ej-strip-empty-lines str) "\n")
-      (insert "error: Couldn't recognize translation.\n"))
+      (insert (propertize "error: Couldn't recognize translation.\n" 'face 'shadow)))
     (set-marker beg nil)
     (set-marker end nil))
   (unless (setq trans-ej-wait-responses-list
@@ -527,19 +585,26 @@ asynchronously. The results are inserted into the buffer specified by
 
 The order of the requests to server and displaying in the result buffer
 can be specified by `trans-ej-site-orders-alist'."
-  (let ((buf (trans-ej-result-buffer-setup from to))
+  (let ((curbuf (current-buffer))
+	(buf (trans-ej-result-buffer-setup from to))
 	(sites (cdr (assoc (list from to) trans-ej-site-orders-alist)))
 	(msg (format "Translating into %s..."
 		     (cadr (assq to trans-ej-languages-alist))))
 	beg end)
-    (setq trans-ej-wait-responses-list (copy-sequence sites))
+    (setq trans-ej-wait-responses-list sites)
     (mapc (lambda (site)
 	    (with-current-buffer buf
-	      (insert "●"
-		      ( or (cadr (assoc (list site from to)
-					trans-ej-site-profs-alist))
-			   "Unknown service")
-		      "\n\n")
+	      (insert "●")
+	      (let ((site-prof (cdr (assoc (list site from to)
+					   trans-ej-site-profs-alist))))
+		(if site-prof
+		    (insert-text-button (nth 0 site-prof)
+					'type 'trans-ej-browse
+					'trans-ej-current-buffer curbuf
+					'trans-ej-browse-args
+					(list string site from to))
+		  (insert (propertize "Unknown service" 'face 'shadow))))
+	      (insert "\n\n")
 	      (setq beg (point-marker))
 	      (insert msg "\n")
 	      (setq end (point-marker))
@@ -554,17 +619,20 @@ can be specified by `trans-ej-site-orders-alist'."
 	      (error (with-current-buffer buf
 		       (delete-region beg end)
 		       (goto-char beg)
-		       (insert (format "%s: %s\n\n" (car err) (cadr err))))
+		       (insert (propertize (format "%s: %s\n\n" (car err) (cadr err))
+					   'face 'shadow)))
 		     (set-marker beg nil)
 		     (set-marker end nil)
 		     (setq trans-ej-wait-responses-list
-			   (delq site trans-ej-wait-responses-list)))))
+			   (cdr trans-ej-wait-responses-list)))))
 	  sites)
     (if trans-ej-wait-responses-list
 	(message msg)
       (message "Failed to translate"))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; User interface
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun trans-ej-en2ja-string (string)
   "Translate STRING from English to Japanese."

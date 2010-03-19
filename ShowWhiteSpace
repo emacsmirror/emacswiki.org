@@ -77,6 +77,16 @@ you want this for. Put the following in your init file:
  (add-hook 'text-mode-hook
 	   (lambda () (font-lock-add-keywords nil my-extra-keywords)))
 
+[new]
+To show tabs in the same color as trailing whitespace:
+
+    ;; Draw tabs with the same color as trailing whitespace  
+    (add-hook 'font-lock-mode-hook  
+              (lambda ()  
+                (font-lock-add-keywords  
+                  nil  
+                  '(("\t" 0 'trailing-whitespace prepend)))))
+
 == Show TABs Using a String (^I) ==
 
 To make TAB display as ##^I##, you can do this:

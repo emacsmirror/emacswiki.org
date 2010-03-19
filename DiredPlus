@@ -87,8 +87,206 @@ In addition to being bound to keys `C-RET' and `M-RET', these operations are add
 '''Bug reports:'''
 
 [new:Kiwon:2010-03-18 07:31 UTC]
-I found a bug of this useful extension. I'm using the latest dired+, Last-updated: Sun Jan 31 14:06:37 2010 (-0800). The font-lock for date and time invades the area for size of file. -- Kiwon
+I found a bug of this useful extension. I'm using the latest dired+, Last-updated: Sun Jan 31 14:06:37 2010 (-0800). The font-lock for date and time invades the area for size of file. My settings for the test are very simple. -- KiwonUm
+
+    
+    > emacs -Q or emacs -Q -nw
+    M-x version : GNU Emacs 24.0.50.1 (i686-pc-linux-gnu, GTK+ Version 2.16.6) ...
+    (add-to-list 'load-path "~/.emacs.d")
+    (require 'dired+)
+
+
+[new:DrewAdams:2010-03-18 14:42 UTC]
+I don't see that. Please provide more info about your settings, or at least a screenshot. Thx -- DrewAdams
+
 [new]
+Here is the screenshot:
+
+[[image:diredpBugSH]]
+
+-- KiwonUm
+
+[new:DrewAdams:2010-03-19 01:57 UTC]
+
+Are you using the latest version of '''Dired+'''? If not, please download it and try it: <tt>[[dired+.el]]</tt>. I ask because (1) I don't see your file size highlighted at all, and (2) your face for the date+time is not the default face (in the latest version), yet you say that you used ##emacs -Q## (so the default faces should be shown). And the only default face for a filename that has a red foreground is for a file flagged `D'. I see no way that your date+time could be red.
+
+Also, your Emacs version is something I don't recognize. It is a development version that is different from the current pretest. It's possible they have changed something recently in the Dired code. Can you test using a different Emacs version -- perhaps download Emacs 23.1 and try with that? 
+
+The fontification of the date+time and for the file name are done using the same regexp, the value of `dired-move-to-filename-regexp'. What is your value of that variable? Dunno if I can help much, I'm afraid. That's a very hairy regexp. I would start by trying to figure out why your file size is not getting fontified. -- DrewAdams
+
+[new]
+
+Sure. I'm using the latest dired+.el, last-updated: Sun Jan 31 14:06:37 2010 (-0800). And the screenshot was taken from xterm (emacs -Q -nw), so the color might be red. In GUI emacs (emacs -Q), the color is the same with the default color what you expect, but the problem persists.
+
+My emacs version is the latest bzr updated, it's exactly development version of emacs. Let me try it with the other version of emacs soon.
+
+The 'dired-move-to-filename-regexp' value is so hairy that I cannot copy&paste here. Instead, let me put a screenshot. ;)
+
+[[image:diredpBugVar]]
+
+-- Kiwon Um
+
+[new:DrewAdams:2010-03-19 03:54 UTC]
+OK, understood. I suspect it is because of some change they've made to the development version. I can't really do much about this until I have such a version. And even then it's not easy to decipher that regexp and make the right changes -- but at least I'll be able to experiment. For now, the most important help will be for you to confirm that it works OK for you with a release version (e.g. 23.1). That will at least tell me where the problem is, in general. And if it's not OK for you in 23.1, then we can try to investigate further. Sorry for your trouble. 
+
+
+BTW, I already see that that regexp has changed considerably. This is the value I have from the Emacs pretest 23.1.92:
+
+[[image:DiredFilenameRegexp23-1-92]]
+
+What is the value of variable `dired-actual-switches' in the Dired buffer? It's weird that your listing shows a period, `##.##', after the file permissions. Perhaps that is something new and it throws off some of the regexps.
+
+However, I just downloaded the latest development ##dired.el##, and it is identical to the version in 23-1-92, which is the pretest I use. Of course, that regexp is defined in file ##files.el##. I'll take a look there also. 
+
+It could also be a difference of platforms. I use Windows, which uses ##ls-lisp.el## -- the `ls' listing software is different. But I don't recall seeing that `##.##' before, even on UNIX/Linux. Any idea what it represents? 
+
+Another thing you can try is to use `C-u C-x d' and specify various different switches, to see what happens. Let me know about your switches (see above).
+
+Just for fun, another thing you can try is to evaluate this, to change back to the regexp used in 23.1.92, and see if that "fixes" the problem. If so, that will confirm that the problem is to adapt the code to the new regexp you have:
+
+   (setq directory-listing-before-filename-regexp
+         (let* ((l "\\([A-Za-z]\\|[^\0-\177]\\)")
+	        (l-or-quote "\\([A-Za-z']\\|[^\0-\177]\\)")
+                (month (concat l-or-quote l-or-quote "+\\.?"))
+                (s " ")
+                (yyyy "[0-9][0-9][0-9][0-9]")
+                (dd "[ 0-3][0-9]")
+                (HH:MM "[ 0-2][0-9][:.][0-5][0-9]")
+                (seconds "[0-6][0-9]\\([.,][0-9]+\\)?")
+                (zone "[-+][0-2][0-9][0-5][0-9]")
+                (iso-mm-dd "[01][0-9]-[0-3][0-9]")
+                (iso-time (concat HH:MM "\\(:" seconds "\\( ?" zone "\\)?\\)?"))
+                (iso (concat "\\(\\(" yyyy "-\\)?" iso-mm-dd "[ T]" iso-time
+		      "\\|" yyyy "-" iso-mm-dd "\\)"))
+                (western (concat "\\(" month s "+" dd "\\|" dd "\\.?" s month "\\)"
+			  s "+"
+			  "\\(" HH:MM "\\|" yyyy "\\)"))
+                (western-comma (concat month s "+" dd "," s "+" yyyy))
+                (mm "[ 0-1]?[0-9]")
+                (east-asian
+                  (concat "\\(" mm l "?" s dd l "?" s "+"
+		  "\\|" dd s mm s "+" "\\)"
+		  "\\(" HH:MM "\\|" yyyy l "?" "\\)")))
+            (purecopy (concat ".*[0-9][BkKMGTPEZY]?" s
+	      "\\(" western "\\|" western-comma "\\|" east-asian "\\|" iso "\\)"
+	      s "+"))))
+
+I've now compared the new regexp value with the old. Essentially, the new regexp just has an extra level of grouping (parens). I don't have a real understanding yet, but try this, just for the heck of it:
+
+In <tt>[[dired+.el]]</tt>, find the `defvar' for `diredp-font-lock-keywords-1'. Copy the defining sexp, which starts with ##(list '("^  \.+:\\)$"...##, and paste it into buffer ##*scratch*##. Put ##(setq 
+diredp-font-lock-keywords-1 ## in front of it and add a ##)## after it. Change this: 
+
+  (list dired-move-to-filename-regexp '(1 diredp-date-time t t)...
+
+to this:
+
+  (list dired-move-to-filename-regexp '(2 diredp-date-time t t)...
+
+Then put the cursor after the overall sexp and hit `C-x C-e' to evaluate it. Who knows? Maybe that's all that's needed. ;-)
+
+It's likely, however, that the extra level of parens in the new regexp will require adjusting several of the other elements of `diredp-font-lock-keywords-1' the same way. If that first test makes a positive difference, then you can try incrementing each of the other font-lock regexp indexes by one as well, to see the effect. -- DrewAdams
+
+[new]
+
+Oh my god! You wrote a lot during I were testing your code. :) The `dired-actual-switches' value is "-al". And I have no idea about the period. My system is Linux Fedora 11. Then if it is really problematic, it shouldn't work well in emacs 23.1 either, but it works fine there. As you advised above, after evaluating the following codes, the invasion get disapeered.
+
+    (add-to-list 'load-path "~/.emacs.d")
+    (require 'dired+)
+    
+    (setq directory-listing-before-filename-regexp
+          (let* ((l "\\([A-Za-z]\\|[^\0-\177]\\)")
+                 (l-or-quote "\\([A-Za-z']\\|[^\0-\177]\\)")
+                 (month (concat l-or-quote l-or-quote "+\\.?"))
+                 (s " ")
+                 (yyyy "[0-9][0-9][0-9][0-9]")
+                 (dd "[ 0-3][0-9]")
+                 (HH:MM "[ 0-2][0-9][:.][0-5][0-9]")
+                 (seconds "[0-6][0-9]\\([.,][0-9]+\\)?")
+                 (zone "[-+][0-2][0-9][0-5][0-9]")
+                 (iso-mm-dd "[01][0-9]-[0-3][0-9]")
+                 (iso-time (concat HH:MM "\\(:" seconds "\\( ?" zone "\\)?\\)?"))
+                 (iso (concat "\\(\\(" yyyy "-\\)?" iso-mm-dd "[ T]" iso-time
+                              "\\|" yyyy "-" iso-mm-dd "\\)"))
+                 (western (concat "\\(" month s "+" dd "\\|" dd "\\.?" s month "\\)"
+                                  s "+"
+                                  "\\(" HH:MM "\\|" yyyy "\\)"))
+                 (western-comma (concat month s "+" dd "," s "+" yyyy))
+                 (mm "[ 0-1]?[0-9]")
+                 (east-asian
+                  (concat "\\(" mm l "?" s dd l "?" s "+"
+                          "\\|" dd s mm s "+" "\\)"
+                          "\\(" HH:MM "\\|" yyyy l "?" "\\)")))
+            (purecopy (concat ".*[0-9][BkKMGTPEZY]?" s
+                              "\\(" western "\\|" western-comma "\\|" east-asian "\\|" iso "\\)"
+                              s "+"))))
+    
+    (setq diredp-font-lock-keywords-1
+          (list
+           '("^  \\(.+:\\)$" 1 diredp-dir-heading) ; Directory headers
+           '("^  wildcard.*$" 0 'default)       ; Override others, e.g. `l' for `diredp-other-priv'.
+           '("^  (No match).*$" 0 'default)     ; Override others, e.g. `t' for `diredp-other-priv'.
+           '("[^ .]\\.\\([^. /]+\\)$" 1 diredp-file-suffix) ; Suffix
+           '("\\([^ ]+\\) -> [^ ]+$" 1 diredp-symlink) ; Symbolic links
+           ;; 1) Date/time and 2) filename w/o suffix:
+           (list dired-move-to-filename-regexp  '(1 diredp-date-time t t) ; Date/time
+                 (list "\\(.+\\)$" nil nil (list 0 diredp-file-name 'keep t))) ; Filename
+           ;; Files to ignore
+           (list (concat "^  \\(.*\\("
+                         (concat (mapconcat 'regexp-quote
+                                            (or (and (boundp 'dired-omit-extensions)
+                                                     dired-omit-extensions)
+                                                completion-ignored-extensions)
+                                            "[*]?\\|")
+                                 "[*]?")        ; Allow for executable flag (*).
+                         "\\|\\.\\(g?z\\|Z\\)[*]?\\)\\)$") ; Compressed.
+                 1 diredp-ignored-file-name t)
+           '("[^ .]\\.\\([bg]?[zZ]2?\\)[*]?$" 1 diredp-compressed-file-suffix t) ; Compressed (*.z)
+           '("\\([*]\\)$" 1 diredp-executable-tag t) ; Executable (*)
+           '(" \\([0-9]+\\(\\.[0-9]+\\)?[kKMGTPEZY]?\\)" 1 diredp-inode+size) ; File inode number & size
+           ;; Directory names
+           (list "^..\\([0-9]* \\)*d"
+                 (list dired-move-to-filename-regexp nil nil)
+                 (list "\\(.+\\)" nil nil '(0 diredp-dir-priv t t)))
+           '("^..\\([0-9]* \\)*.........\\(x\\)" 2 diredp-exec-priv) ;o x
+           '("^..\\([0-9]* \\)*.........\\([lsStT]\\)" 2 diredp-other-priv) ; o misc
+           '("^..\\([0-9]* \\)*........\\(w\\)" 2 diredp-write-priv) ; o w
+           '("^..\\([0-9]* \\)*.......\\(r\\)" 2 diredp-read-priv)   ; o r
+           '("^..\\([0-9]* \\)*......\\(x\\)" 2 diredp-exec-priv)    ; g x
+           '("^..\\([0-9]* \\)*....[^0-9].\\([lsStT]\\)" 2 diredp-other-priv) ; g misc
+           '("^..\\([0-9]* \\)*.....\\(w\\)" 2 diredp-write-priv) ; g w
+           '("^..\\([0-9]* \\)*....\\(r\\)" 2 diredp-read-priv)   ; g r
+           '("^..\\([0-9]* \\)*...\\(x\\)" 2 diredp-exec-priv)    ; u x
+           '("^..\\([0-9]* \\)*...\\([lsStT]\\)" 2 diredp-other-priv) ; u misc
+           '("^..\\([0-9]* \\)*..\\(w\\)" 2 diredp-write-priv) ; u w
+           '("^..\\([0-9]* \\)*.\\(r\\)" 2 diredp-read-priv)   ; u r
+           '("^..\\([0-9]* \\)*.\\([-rwxlsStT]+\\)" 2 diredp-no-priv keep) ;-
+           '("^..\\([0-9]* \\)*\\([bcsmpS]\\)[-rwxlsStT]" 2 diredp-rare-priv) ; (rare)
+           '("^..\\([0-9]* \\)*\\(l\\)[-rwxlsStT]" 2 diredp-link-priv) ; l
+           (list (concat "^\\([^\n " (char-to-string dired-del-marker) "].*$\\)")
+                 1 diredp-flag-mark-line t) ; Flag/mark lines
+           (list (concat "^\\([" (char-to-string dired-del-marker) "]\\)") ; Deletion flags (D)
+                 '(1 diredp-deletion t)
+                 '(".+" (dired-move-to-filename) nil (0 diredp-deletion-file-name t)))
+           (list (concat "^\\([^\n " (char-to-string dired-del-marker) "]\\)") ; Flags, marks (except D)
+                 1 diredp-flag-mark t)
+           ))
+
+Without any change, these codes are just two setq calls from yours.
+
+[[image:diredpNewRegexp]]
+
+-- Kiwon Um
+
+[new:DrewAdams:2010-03-19 06:43 UTC]
+
+OK, so you've confirmed that the new regexp is the problem. The code you just wrote is simply the 23.1 regexp and the current '''Dired+''' font-lock keywords (so no need to eval that second sexp).
+
+But we need to make '''Dired+''' work with the ''new'' regexp, which I wrote above. To do that, we'll need to modify the '''Dired+''' font-lock keywords.
+
+Can you try using the new regexp (IOW, don't eval any code to redefine the regexp) while modifying the font-lock keywords as I suggested? We might get lucky.
+
+The new regexp basically just adds another level of grouping, so at least some (maybe all) of the indexes in the font-lock keywords will need to be incremented by one. No need to increment the 0 indexes, probably, but some of the others. Start with the one for `diredp-date-time', as I suggested: change it from 1 to 2. That might be all that's needed. -- DrewAdams
+
 
 ----
 CategoryDirectories

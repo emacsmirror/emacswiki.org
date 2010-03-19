@@ -1,3 +1,17 @@
-I have moved the the library to Lisp:sml-modeline.el (see http://www.emacswiki.org/emacs/ElispArea#toc6).
+Show scrollbar like position indicator in mode line.
+Idea and part of this code is adapted from DavidEngster's and DrewAdams's code in these mail messages:
 
-Please add some documentation about it here or delete this page again (Delete all content and add "DeletedPage").
+   http://lists.gnu.org/archive/html/emacs-devel/2010-03/msg00523.html
+   http://permalink.gmane.org/gmane.emacs.devel/122038
+
+[new]
+I have moved the the library to Lisp:sml-modeline.el (see http://www.emacswiki.org/emacs/ElispArea#toc6).
+*Note: This is already an old version and I will delete it in a while.*
+
+[new]
+The file [http://bazaar.launchpad.net/~nxhtml/nxhtml/main/annotate/head%3A/util/sml-modeline.el sml-modeline.el] contains the global minor mode /sml-modeline-mode/ that turns this feature on.
+
+This is distributed as part of [NxhtmlMode nXhtml] where you find the latest version (the link above points to the latest version in the repository at Launchpad).
+
+----
+ModeLineConfiguration
