@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Mar 16 16:38:56 2010 (-0700)
+;; Last-Updated: Fri Mar 19 15:31:39 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 4966
+;;     Update #: 4971
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2010/03/19 dadams
+;;     icicle-define-bookmark-other-window-command: Rich multi-completions per icicle-bookmark.
 ;; 2010/03/16 dadams
 ;;     icicle-bookmark(-other-window):
 ;;       Use tags, not just file names, in the multi-completions.

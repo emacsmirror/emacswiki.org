@@ -7,6 +7,8 @@ Yaoddmuse stands for "Yet Another Oddmuse Mode" for Emacs. It is a
 rewrite of the oddmuse.el code with modularity and extensibility in
 mind. 
 
+: I have leave Emacs long time, haven't time maintain this package, please contact me if you want take over it. Thanks -- AndyStewart
+
 ==Why yaoddmuse.el ?==
 # *The goal* of yaoddmuse mode is to help increase both the amount and
 quality of documentation and code on Emacswiki, by making it easy,
@@ -475,6 +477,10 @@ there was no prompt. Probably, I had used yaoddmuse-toogle-minor previously. Is 
 any way to have yaoddmuse-delete //always// prompt me for a comment, regardless of the 
 minor state? If there is one, is there a reason this is not default? I think no matter which
 wiki you edit, deleting a page demands for an explanation, no?
+
+[new]
+Is there any way to preview the on-going editing page in browser? -- Kiwon Um
+
 ----
 CategoryHypermedia
 

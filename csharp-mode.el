@@ -825,7 +825,7 @@ your `csharp-mode-hook' function:
 
     ;; check if two prior chars were slash
     (if (and
-         (= ?/ char ?/)
+         (= char ?/)
          cb0 (= ?/ cb0)
          cb1 (= ?/ cb1)
          )

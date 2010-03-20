@@ -194,6 +194,8 @@ M-x *twit-mode* RET, if you want to bother, just binds the interactive functions
 * Posting with a popup buffer.
 
 == Discussion ==
+Does anyone have any thoughts on why I can't see friends pictures as in the screenshots?  I think I built emacs with image support, I can certainly look at png and eps files.  -IzaakBeekman
+
 Love it!  Thanks!  Made a small patch to show timestamps of tweets in the local timezone; http://gist.github.com/12509
 
 Awesmoe! Thanks a lot!  I've added it to the yet-unreleased 0.16 version.  (Update, due it being lost in the shuffle, it never got applied.  It is on 0.3 now however)  -- JonathanArkell

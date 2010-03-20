@@ -216,7 +216,7 @@ then create the file /usr/share/wscons/keymaps/pckbd.c2c with the single line:
 This can also be tested immediately (doesn't require reboot) and temporarily (won't survive a reboot) with:
 wsconsctl -w map+="keysym Caps_Lock = Control_L"
 
-== MAC OS X ==
+== OS X ==
 
 Check out uControl http://gnufoo.org/ucontrol/ for switching
 keys on a mac; it does Caps/Ctrl but other switches too.
@@ -225,7 +225,7 @@ Starting with Mac OS 10.4 (Tiger) you can remap modifier keys (including "Caps L
 
 In Emacs 22 (Carbon Port, CVS version) you can use the variable `mac-control-modifier' to remap the Control key.
 
-Use the menu item: "<Apple Menu>/System Preferences...", select the "Keyboard & Mouse" panel, select the "Keyboard" tab and press the "Modifier Keys..." button at the lower left to bring up a remapping dialog where you can make the desired changes.  The remapping is effective throughout the Mac OS X UI including within Apple's X11 implementation.
+Use the menu item: "<Apple Menu>/System Preferences...", select the "Keyboard & Mouse" panel, select the "Keyboard" tab and press the "Modifier Keys..." button at the lower left to bring up a remapping dialog where you can make the desired changes.  The remapping is effective throughout the OS X UI including within Apple's X11 implementation.
 
 
 == Microsoft Windows ==

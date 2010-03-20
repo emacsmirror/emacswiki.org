@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Mar 16 16:07:52 2010 (-0700)
+;; Last-Updated: Fri Mar 19 15:10:03 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 20543
+;;     Update #: 20563
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3378,10 +3378,13 @@ You need library `bookmark+.el' for this command." type type) ; Doc string
      (prompt                                 ,(format "%s%s bookmark: "
                                                       (capitalize (substring type 0 1))
                                                       (substring type 1 (length type))))
-     (icicle-list-nth-parts-join-string      "\t")
-     (icicle-list-join-string                "\t")
-     (icicle-list-end-string                 "")
      (icicle-list-use-nth-parts              '(1))
+     (icicle-candidate-properties-alist      (if (not icicle-show-multi-completion-flag)
+                                                 nil
+                                               (if (facep 'file-name-shadow)
+                                                   '((2 (face file-name-shadow))
+                                                     (3 (face bookmark-menu-heading)))
+                                                 '((3 (face bookmark-menu-heading))))))
      (icicle-transform-function              (if (interactive-p) nil icicle-transform-function))
      (icicle-whole-candidate-as-text-prop-p  t)
      (icicle-transform-before-sort-p         t)
@@ -3440,18 +3443,20 @@ You need library `bookmark+.el' for this command." type type) ; Doc string
         (bookmark-maybe-load-default-file) ; Loads bookmarks file, defining `bookmark-alist'.
         (mapcar (if icicle-show-multi-completion-flag
                     #'(lambda (bmk)
-                        (let* ((bname  (bookmark-name-from-full-record bmk))
-                               (guts   (bookmark-get-bookmark-record bmk))
-                               (file   (bookmark-get-filename bmk))
-                               (buf    (bookmarkp-get-buffer-name bmk))
-                               (info   (if (and buf (equal file bookmarkp-non-file-filename))
-                                           buf
-                                         file)))
-                          (put-text-property 0 (length info) 'face 'icicle-candidate-part info)
-                          (cons (list (icicle-candidate-short-help
-                                       (icicle-bookmark-help-string bname)
-                                       (icicle-bookmark-propertize-candidate bname))
-                                      info)
+                        (let* ((bname     (bookmark-name-from-full-record bmk))
+                               (guts      (bookmark-get-bookmark-record bmk))
+                               (file      (bookmark-get-filename bmk))
+                               (buf       (bookmarkp-get-buffer-name bmk))
+                               (file/buf  (if (and buf (equal file bookmarkp-non-file-filename))
+                                              buf
+                                            file))
+                               (tags      (bookmarkp-get-tags bmk)))
+                          ;; Emacs 20 byte-compiler bug prevents using backslash syntax here.
+                          (cons (append (list (icicle-candidate-short-help
+                                               (icicle-bookmark-help-string bname)
+                                               (icicle-bookmark-propertize-candidate bname))
+                                              file/buf)
+                                        (and tags (list (format "%S" tags))))
                                 guts)))
                   #'(lambda (bmk)
                       (let ((bname  (bookmark-name-from-full-record bmk))

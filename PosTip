@@ -37,7 +37,40 @@ To use pos-tip.el, save this file in a directory listed in load-path together wi
 
 [[image:PosTipScreenshotDescFun]]
 
-== Sample program 2: sdic-inline-pos-tip.el ==
+== Sample program 2: Show quick help of popup.el by real tooltip ==
+
+popup.el, written by [[Matsuyama]], is a library which provides useful functions to easily show popup menu using overlays and is used by [AutoComplete auto-complete.el] etc.
+
+popup.el itself can show tooltip to display annotation of the menu items, but it's unreadable when window is small. Here is solution for this problem.
+
+=== Code ===
+
+ (require 'pos-tip)
+
+ (defadvice popup-menu-show-quick-help
+   (around pos-tip-popup-menu-show-quick-help () activate)
+   "Show quick help using `pos-tip-show'."
+   (if (eq window-system 'x)
+       (let ((doc (popup-menu-document
+                   menu (or item
+                            (popup-selected-item menu)))))
+         (when (stringp doc)
+           (pos-tip-show doc nil
+                         (if (popup-hidden-p menu)
+                             (or (plist-get args :point)
+                                 (point))
+                           (overlay-end (popup-line-overlay
+                                         menu (+ (popup-offset menu)
+                                                 (popup-selected-line menu)))))
+                         nil 0)
+           nil))
+     ad-do-it))
+
+=== Screenshot ===
+
+[[image:PosTipScreenshotAutoComplete]]
+
+== Sample program 3: sdic-inline-pos-tip.el ==
 
 This program provides the tooltip showing word meanings at cursor position like `[https://addons.mozilla.org/en-US/firefox/addon/2471?from=%2Fja%2Ffirefox%2Faddon%2F2471 rikaichan]' Firefox extension, using Lisp:sdic-inline.el which was written by [[khiker]].
 

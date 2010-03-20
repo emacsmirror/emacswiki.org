@@ -4,7 +4,7 @@ MacChan came up with a couple of ways to get the same behavior in Emacs. (It is 
 
 == Advice ==
 
-The most elegant solution is to [AdvisingFunctions advice] ##kill-ring-save## and ##kill-region## (Emacs' default copy and cut commands). The code below can be put in <tt>[InitFile .emacs]</tt>:
+The most elegant solution is to [AdvisingFunctions advise] ##kill-ring-save## and ##kill-region## (Emacs' default copy and cut commands). The code below can be put in <tt>[InitFile .emacs]</tt>:
 
     (defadvice kill-ring-save (before slick-copy activate compile)
       "When called interactively with no active region, copy a single line instead."
@@ -21,13 +21,7 @@ The most elegant solution is to [AdvisingFunctions advice] ##kill-ring-save## an
          (list (line-beginning-position)
                (line-beginning-position 2)))))
 
-    (defadvice yank (before slick-copy activate)
-      "Position point when yanking lines."
-      (let ((kill (current-kill 0 t)))
-        (when (eq ?\n (elt kill (1- (length kill))))
-          (beginning-of-line))))
-
-The advice of ##yank## positions point correctly when pasting lines. Thus, `M-w' with no selection copies the current line, `C-w' kills it entirely, and `M-w C-y' duplicates it (compare with `dd' and `yyp' in [ViKeys vi]). Below is a comparison of default behavior for deleting lines among editors.
+Thus, `M-w' with no selection copies the current line, `C-w' kills it entirely, and `C-a M-w C-y' duplicates it (compare with `dd' and `yyp' in [ViKeys vi]). Below is a comparison of default behavior for deleting lines among editors.
 
 * Emacs: `C-S-backspace' (or `C-a C-k C-k')
 * Vim: `dd'
@@ -39,8 +33,7 @@ The advice of ##yank## positions point correctly when pasting lines. Thus, `M-w'
 Someone asked: "Doing this as advice (as opposed to a new function bound to `C-w') seems like a bad idea -- what happens if some other elisp function calls ##kill-region##?" This shouldn't be a problem, however, since the advice only takes effect when the functions are called [InteractiveFunction interactively].
 
 [new]
-
-If you use PcSelectionMode you have to advise `copy-region-as-kill-nomark' instead of `kill-ring-save'.
+If you use PcSelectionMode, you have to advise `copy-region-as-kill-nomark' instead of `kill-ring-save'.
 
 == Functions ==
 

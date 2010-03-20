@@ -287,6 +287,46 @@ Can you try using the new regexp (IOW, don't eval any code to redefine the regex
 
 The new regexp basically just adds another level of grouping, so at least some (maybe all) of the indexes in the font-lock keywords will need to be incremented by one. No need to increment the 0 indexes, probably, but some of the others. Start with the one for `diredp-date-time', as I suggested: change it from 1 to 2. That might be all that's needed. -- DrewAdams
 
+[new]
+Alright. I just modified:
+
+<code>(list dired-move-to-filename-regexp  '(1 diredp-date-time t t) ; Date/time</code>
+
+to
+
+<code>(list dired-move-to-filename-regexp  '(2 diredp-date-time t t) ; Date/time</code>.
+
+It really works well without any change of the directory-listing-before-filename-regexp value. Thx. :) Are you going to check-in this to the ##dired+.el##? Or, after the official release for the emacs24? -- Kiwon Um
+
+[new:DrewAdams:2010-03-19 11:16 UTC]
+Thanks for testing. Dunno. If you're pretty sure it works OK and doesn't have any negative effects, then I might as well update it now.
+
+The problem will be how to test for the Emacs version. Your dev version has major-version 24, but then next Emacs release will be 23.2, not 24. It's not clear to me what the right test in the code would be. -- DrewAdams
+
+[new:DrewAdams:2010-03-19 20:24 UTC]
+
+OK, I just uploaded a new version, which should work with the next release (Emacs 23.2). Please test it with your development version, after changing this:
+
+  (if (and (fboundp 'version<=) (version<= emacs-version "23.2"))
+      (list 2 'diredp-date-time t t)
+    (list 1 'diredp-date-time t t)) ; Date/time
+
+to this:
+
+  (if t
+      (list 2 'diredp-date-time t t)
+    (list 1 'diredp-date-time t t)) ; Date/time
+
+Thx -- DrewAdams
+
+[new]
+Fine. It works well. Thx. :) -- KiwonUm
+
+[new:DrewAdams:2010-03-20 06:40 UTC]
+Oops. I had the version test backward. Using `t' for you should have worked, but downloading what I had uploaded should not have worked. I just fixed it. Please download the latest and try it (without changing anything). Sorry about that. -- DrewAdams
+
+[new]
+No problem. I was little weird about that. ;) The new version works for me without any change. Thx. :)
 
 ----
 CategoryDirectories

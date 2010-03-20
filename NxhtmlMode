@@ -1,9 +1,7 @@
 [new]
 ----
 <b><i>
-Warning: CVS Emacs from 2009-12-03 or later breaks indentation for php-mode when used in multi major mode buffers.
-We are working on it, but it may take some time.
-(The latest beta 2.07 of nXhtml works around this, but it can probably break later.)
+Last chance to test beta 2.07 of nXhtml before release (which will be 2.08).
 </i></b>
 ----
 
