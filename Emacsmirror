@@ -32,6 +32,7 @@ missing information in the below lists.
 Please check that your packages are included in the mirror.  If not add your package to this list (providing the expected information):
 
 ** foo http://path/to/foo.el http://home/page
+** bbdb-vcard git://github.com/trebb/bbdb-vcard.git http://github.com/trebb/bbdb-vcard
 
 Note that the path to the file might actually be the path to an archive. If it is the path to some vcs repository please specify so if this is not clear from the url.
 

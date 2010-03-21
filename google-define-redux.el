@@ -1,114 +1,227 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; this is google-define-redux.el
+;;; google-define-redux.el --- extends google-define.el 
+;; -*- mode: EMACS-LISP; -*-
+
 ;;; ================================================================
-;;; DESCRIPTION:
-;;; google-define-redux provides extensions for google-define.el
-;;; Extends google-define with fontification of definition buffer.
-;;; No longer relies on `with-output-to-temp-buffer'
-;;; Adds parsing tokens for programatically extracting definitions.
-;;; FUNCTIONS:►►►
-;;; `google-define-get-command', `google-define-parse-buffer', `google-define',
-;;; `google-define-font-lock', `google-define-kill-def-buffers'
-;;; FUNCTIONS:◄◄◄
-;;;
-;;; MACROS:
-;;;
-;;; METHODS:
-;;;
-;;; CLASSES:
-;;;
-;;; FACES:
-;;; `gg-def-base', `gg-def-delim', `gg-def-defined', `gg-def-num',
-;;; `gg-def-inition',
-;;;
-;;; CONSTANTS:
-;;;
-;;; VARIABLES:
-;;; `*google-define-view-map*', `*url-get-buffer*', 
-;;; `*google-define-buffer-suffix*'
-;;;
+;; Copyright (c) 2007,2008,2009,2010 Jeremy English <jhe@jeremyenglish.org>
+;; Copyright © 2010 MON KEY. All rights reserved.
+;;; ================================================================
+
+;; FILENAME: google-define-redux.el
+;; AUTHOR: MON KEY, Jeremy English
+;; MAINTAINER: MON KEY
+;; CREATED: 
+;; VERSION: 1.0.0
+;; COMPATIBILITY: Emacs23.*
+;; KEYWORDS: 
+
+;;; ================================================================
+
+;;; COMMENTARY: 
+
+;; =================================================================
+;; DESCRIPTION:
+;; google-define-redux provides extensions for google-define.el
+;; Extends google-define with fontification of definition buffer.
+;; No longer relies on `with-output-to-temp-buffer'
+;; Adds parsing tokens for programatically extracting definitions.
+;
+;; FUNCTIONS:►►►
+;; `google-define-get-command', `google-define-parse-buffer', `google-define',
+;; `google-define-font-lock', `google-define-kill-def-buffers', 
+;; `google-define-word-at-point'
+;; FUNCTIONS:◄◄◄
+;;
+;; MACROS:
+;;
+;; METHODS:
+;;
+;; CLASSES:
+;;
+;; FACES:
+;; `gg-def-base', `gg-def-delim', `gg-def-defined', `gg-def-num',
+;; `gg-def-inition',
+;;
+;; CONSTANTS:
+;; `*google-define-html-entry-table*'
+;;
+;; VARIABLES:
+;; `*google-define-view-map*', `*url-get-buffer*', 
+;; `*google-define-buffer-suffix*'
+;;
 ;;; ALIASED/ADVISED/SUBST'D:
-;;;
-;;; DEPRECATED:
-;;;
-;;; RENAMED:
-;;;
-;;; MOVED:
-;;;
-;;; TODO:
-;;;
-;;; NOTES:
-;;;
-;;; SNIPPETS:
-;;;
-;;; REQUIRES:
-;;; `mon-string-justify-left'          <- :FILE mon-utils.el
-;;; `mon-buffer-exists-p'              <- :FILE mon-utils.el
-;;; `mon-buffer-exists-so-kill'        <- :FILE mon-utils.el
-;;; `mon-help-temp-docstring-display'  <- :FILE mon-doc-help-utils.el
-;;; `mon-help-KEY-tag'                 <- :FILE mon-doc-help-utils.el
-;;;
-;;;
-;;; THIRD-PARTY-CODE:
-;;;
-;;; AUTHOR: MON KEY
-;;; MAINTAINER: MON KEY
-;;;
-;;; PUBLIC-LINK: (URL `http://www.emacswiki.org/emacs/google-define-redux.el')
-;;; FIRST-PUBLISHED: <Timestamp: #{2010-02-04T21:39:15-05:00Z}#{10055} - by MON>
-;;; 
-;;; FILE-CREATED:
-;;; <Timestamp: #{2010-02-03T13:41:11-05:00Z}#{10053} - by MON>
-;;; ================================================================
-;;; This file is not part of GNU Emacs.
-;;;
-;;; This program is free software; you can redistribute it and/or
-;;; modify it under the terms of the GNU General Public License as
-;;; published by the Free Software Foundation; either version 3, or
-;;; (at your option) any later version.
-;;;
-;;; This program is distributed in the hope that it will be useful,
-;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-;;; General Public License for more details.
-;;;
-;;; You should have received a copy of the GNU General Public License
-;;; along with this program; see the file COPYING.  If not, write to
-;;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
-;;; Floor, Boston, MA 02110-1301, USA.
-;;; ================================================================
-;;; Permission is granted to copy, distribute and/or modify this
-;;; document under the terms of the GNU Free Documentation License,
-;;; Version 1.3 or any later version published by the Free Software
-;;; Foundation; with no Invariant Sections, no Front-Cover Texts,
-;;; and no Back-Cover Texts. A copy of the license is included in
-;;; the section entitled ``GNU Free Documentation License''.
-;;; 
-;;; A copy of the license is also available from the Free Software
-;;; Foundation Web site at:
-;;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
-;;; ================================================================
-;;; Copyright © 2010 MON KEY 
+;;
+;; DEPRECATED:
+;;
+;; RENAMED:
+;;
+;; MOVED:
+;;
+;; TODO:
+;;
+;; NOTES:
+;; The Required functions listed below are also provided in a dedicated library
+;; with :FILE google-define-redux-supplemental.el Though this may not always be
+;; current and it is recommended to load the required libraries instead.
+;; 
+;; SNIPPETS:
+;;
+;; REQUIRES:
+;; `mon-g2be'                         <- :FILE mon-utils.el
+;; `mon-string-justify-left'          <- :FILE mon-utils.el
+;; `mon-buffer-exists-p'              <- :FILE mon-utils.el
+;; `mon-buffer-exists-so-kill'        <- :FILE mon-utils.el
+;; `mon-help-temp-docstring-display'  <- :FILE mon-doc-help-utils.el
+;; `mon-help-KEY-tag'                 <- :FILE mon-doc-help-utils.el
+;;
+;;
+;; THIRD-PARTY-CODE:
+;; Following are the modifications made to Jeremy English's google-define.el 
+;; :SEE (URL `http://www.emacswiki.org/emacs/google-define')
+;; :SEE (URL `http://www.emacswiki.org/emacs/google-define.el')
+;; SEE BOF for original versions.
+;; These are provided verbatim:
+;; `google-define-word-at-point'
+;; `*google-define-html-entry-table*'
+;; Following functions are modified:
+;; `google-define-get-command'
+;; `google-define-parse-buffer'
+;; `google-define'
+;; Following functions were replaced with inline forms:
+;; `google-define-replace-unicode'
+;; `google-define-replace-html'
+;; `google-define-replace-string'
+;; `google-define-ascii-entry'
+;; `google-define-number-entry'
+;;
+;; URL: "http://www.emacswiki.org/emacs/google-define-redux.el"
+;; FIRST-PUBLISHED: <Timestamp: #{2010-02-04T21:39:15-05:00Z}#{10055} - by MON>
+;;
+;; EMACSWIKI: 
+;;
+;; FILE-CREATED:
+;; <Timestamp: #{2010-02-03T13:41:11-05:00Z}#{10053} - by MON>
+;;
+;; =================================================================
+
+;;; LICENSE:
+
+;; =================================================================
+;; This file is not part of GNU Emacs.
+
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 3, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program; see the file COPYING.  If not, write to
+;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
+;; Floor, Boston, MA 02110-1301, USA.
+;; =================================================================
+;; Permission is granted to copy, distribute and/or modify this
+;; document under the terms of the GNU Free Documentation License,
+;; Version 1.3 or any later version published by the Free Software
+;; Foundation; with no Invariant Sections, no Front-Cover Texts,
+;; and no Back-Cover Texts. A copy of the license is included in
+;; the section entitled ``GNU Free Documentation License''.
+;; 
+;; A copy of the license is also available from the Free Software
+;; Foundation Web site at:
+;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
+;; Copyright © 2010 MON KEY 
+;;; ==============================
+
 ;;; CODE:
 
 (eval-when-compile (require 'cl))
-(require 'google-define)
+
+(require 'font-lock)
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-03-20T11:44:49-04:00Z}#{10116} - by MON KEY>
+(defgroup google-define-redux nil
+  "*Extensions for google-define.\n
+:SEE-ALSO \n►►►"
+  :group 'google-define
+  :prefix "google-define-"
+  :link '(url-link :tag "EmacsWiki" "http://www.emacswiki.org/emacs/google-define-redux.el"))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-03-20T11:44:49-04:00Z}#{10116} - by MON KEY>
+(defgroup google-define-redux-faces nil
+  "*Face definitions for google-define-redux extensions to google-define.\n
+:SEE-ALSO `gg-def-base', `gg-def-delim', `gg-def-num', `gg-def-inition',
+`gg-def-defined', `mon-doc-help-utils-faces'.\n►►►"
+  :group 'google-define-redux
+  :group 'faces
+  :group  (or (when (featurep 'mon-doc-help-utils)  'mon-doc-help-utils-faces) nil)
+  :prefix "gg-def-")
+
+;;; ==============================
+;;; :COURTESY Jeremy English :HIS google-define.el 
+;;; :MODIFICATIONS <Timestamp: #{2010-03-20T12:34:07-04:00Z}#{10116} - by MON KEY>
+;;;  Replaced Character literal for SOFT HYPHEN (173, #o255, #xad) with hex representation.
+;;; :CREATED <Timestamp: #{2010-03-20T12:15:24-04:00Z}#{10116} - by MON KEY>
+(defconst *google-define-html-entry-table*
+  (list
+   '("&#34;" "&quot;" "\"")   '("&#38;" "&amp;" "&")     '("&#39;" "&yow;" "'")
+   '("&#62;" "&gt;" ">")      '("&#160;" "&nbsp;" " ")   '("&#161;" "&iexcl;" "¡")
+   '("&#162;" "&cent;" "¢")   '("&#163;" "&pound;" "£")  '("&#164;" "&curren;" "¤")
+   '("&#165;" "&yen;" "¥")    '("&#166;" "&brvbar;" "¦") '("&#167;" "&sect;" "§")
+   '("&#168;" "&uml;" "¨")    '("&#169;" "&copy;" "©")   '("&#170;" "&ordf;" "ª")
+   '("&#171;" "&laquo;" "«")  '("&#172;" "&not;" "¬")    '("&#173;" "&shy;" "\xad") ;<- :CHANGED
+   '("&#174;" "&reg;" "®")    '("&#175;" "&macr;" "¯")   '("&#176;" "&deg;" "°")
+   '("&#177;" "&plusmn;" "±") '("&#178;" "&sup2;" "²")   '("&#179;" "&sup3;" "³")
+   '("&#180;" "&acute;" "´")  '("&#181;" "&micro;" "µ")  '("&#182;" "&para;" "¶")
+   '("&#183;" "&middot;" "·") '("&#184;" "&cedil;" "¸")  '("&#185;" "&sup1;" "¹")
+   '("&#186;" "&ordm;" "º")   '("&#187;" "&raquo;" "»")  '("&#188;" "&frac14;" "¼")
+   '("&#189;" "&frac12;" "½") '("&#190;" "&frac34;" "¾") '("&#191;" "&iquest;" "¿")
+   '("&#192;" "&Agrave;" "À") '("&#193;" "&Aacute;" "Á") '("&#194;" "&Acirc;" "Â")
+   '("&#195;" "&Atilde;" "Ã") '("&#196;" "&Auml;" "Ä")   '("&#197;" "&Aring;" "Å")
+   '("&#198;" "&AElig;" "Æ")  '("&#199;" "&Ccedil;" "Ç") '("&#200;" "&Egrave;" "È")
+   '("&#201;" "&Eacute;" "É") '("&#202;" "&Ecirc;" "Ê")  '("&#203;" "&Euml;" "Ë")
+   '("&#204;" "&Igrave;" "Ì") '("&#205;" "&Iacute;" "Í") '("&#206;" "&Icirc;" "Î")
+   '("&#207;" "&Iuml;" "Ï")   '("&#208;" "&ETH;" "Ð")    '("&#209;" "&Ntilde;" "Ñ")
+   '("&#210;" "&Ograve;" "Ò") '("&#211;" "&Oacute;" "Ó") '("&#212;" "&Ocirc;" "Ô")
+   '("&#213;" "&Otilde;" "Õ") '("&#214;" "&Ouml;" "Ö")   '("&#215;" "&times;" "×")
+   '("&#216;" "&Oslash;" "Ø") '("&#217;" "&Ugrave;" "Ù") '("&#218;" "&Uacute;" "Ú")
+   '("&#219;" "&Ucirc;" "Û")  '("&#220;" "&Uuml;" "Ü")   '("&#221;" "&Yacute;" "Ý")
+   '("&#222;" "&THORN;" "Þ")  '("&#223;" "&szlig;" "ß")  '("&#224;" "&agrave;" "à")
+   '("&#225;" "&aacute;" "á") '("&#226;" "&acirc;" "â")  '("&#227;" "&atilde;" "ã")
+   '("&#228;" "&auml;" "ä")   '("&#229;" "&aring;" "å")  '("&#230;" "&aelig;" "æ")
+   '("&#231;" "&ccedil;" "ç") '("&#232;" "&egrave;" "è") '("&#233;" "&eacute;" "é")
+   '("&#234;" "&ecirc;" "ê")  '("&#235;" "&euml;" "ë")   '("&#236;" "&igrave;" "ì")
+   '("&#237;" "&iacute;" "í") '("&#238;" "&icirc;" "î")  '("&#239;" "&iuml;" "ï")
+   '("&#240;" "&eth;" "ð")    '("&#241;" "&ntilde;" "ñ") '("&#242;" "&ograve;" "ò")
+   '("&#243;" "&oacute;" "ó") '("&#244;" "&ocirc;" "ô")  '("&#245;" "&otilde;" "õ")
+   '("&#246;" "&ouml;" "ö")   '("&#247;" "&divide;" "÷") '("&#248;" "&oslash;" "ø")
+   '("&#249;" "&ugrave;" "ù") '("&#250;" "&uacute;" "ú") '("&#251;" "&ucirc;" "û")
+   '("&#252;" "&uuml;" "ü")   '("&#253;" "&yacute;" "ý") '("&#254;" "&thorn;" "þ")
+   '("&#255;" "&yuml;" "ÿ")   '("&#60;" "&lt;" "<")))
+
+;;; ==============================
+;;; :GOOGLE-DEFINE-ADDITIONS-EXTENSIONS-MODIFICATIONS
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-02-03T16:20:02-05:00Z}#{10053} - by MON>
 (defvar *google-define-view-map* (cons (string-to-char "Q") 'View-kill-and-leave)
-  "Keybinding for `view-mode' in google-define help buffers.
+  "Keybinding for `view-mode' in `google-define' help buffers.
 :SEE-ALSO `*google-define-get-command'\n.►►►")
 ;;
 ;;; :TEST-ME *google-define-view-map* 
-;;;(progn (makunbound '*google-define-view-map*) (unintern '*google-define-view-map*))
+;;;(progn (makunbound '*google-define-view-map*) (unintern '*google-define-view-map*) )
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-02-03T13:43:28-05:00Z}#{10053} - by MON>
 (defvar *google-define-get-buffer* nil 
   "*Name of buffer `google-define-get-command' should return results in.
-:SEE-ALSO \n.►►►")
+:SEE-ALSO `*google-define-buffer-suffix*'.\n►►►")
 ;;
 (unless (bound-and-true-p *google-define-get-buffer*)
   (setq *google-define-get-buffer* (symbol-name '*google-define-get-buffer*)))
@@ -120,8 +233,8 @@
 ;;; :CREATED <Timestamp: #{2010-02-05T14:55:41-05:00Z}#{10055} - by MON>
 (defvar *google-define-buffer-suffix* '("*" . ":gg-definition*")
   "*Prefix and suffix to attach to defition buffers created with `google-define'.\n
-:CALLED-BY `google-define-kill-def-buffers' when cleaning up definition buffers.
-:SEE-ALSO .\n►►►")
+:CALLED-BY `google-define-kill-def-buffers' when cleaning up definition buffers.\n
+:SEE-ALSO `*google-define-get-buffer*'.\n►►►")
 ;;
 ;;; :TEST-ME *google-define-buffer-suffix*
 ;;;(progn (makunbound '*google-define-buffer-suffix*) (unintern '*google-define-buffer-suffix*) )
@@ -132,33 +245,40 @@
 (defface gg-def-base
     (if (featurep 'mon-doc-help-utils)
         '((t :inherit mon-help-KEY-tag))
+        ;; Else
         '(( ((class color) (min-colors 88)) 
-           (:foreground "light steel blue" :weight extrabold)) ))
-  "*
+           (:foreground "light steel blue" :weight extrabold)) )
+        )
+  "*Base face for font-locking buffers returned by `google-define'.\n
 :SEE-ALSO `gg-def-base', `gg-def-delim', `gg-def-defined', `gg-def-num',
-`gg-def-inition'.\n►►►")
+`gg-def-inition'.\n►►►"
+  :group 'google-define-redux-faces)
 ;;
 ;;; :TEST-ME (describe-face 'gg-def-base)
 ;;;(progn (makunbound 'gg-def-base) (unintern 'gg-def-base) )
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-02-05T16:06:13-05:00Z}#{10055} - by MON KEY>
-(defface gg-def-delim '((t :inherit gg-def-base :foreground "sky blue"))
+(defface gg-def-delim 
+    '((t :inherit gg-def-base :foreground "sky blue"))
   "*Provides fontlocking of space seperated delmiter charcaters.\n
 Delimiters characters include: ►, |, ◄ preceded and followed by whitespace e.g.:
  \" ► \" \" | \" \" ◄ \"\n
 :SEE-ALSO `gg-def-base', `gg-def-delim', `gg-def-defined', `gg-def-num',
-`gg-def-inition'.\n►►►")
+`gg-def-inition'.\n►►►"
+  :group 'google-define-redux-faces)
 ;;
 ;;; :TEST-ME (describe-face 'gg-def-delim)
 ;;;(progn (makunbound 'gg-def-delim) (unintern 'gg-def-delim) )
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-02-05T16:06:16-05:00Z}#{10055} - by MON KEY>
-(defface gg-def-num '((t :inherit gg-def-base  :foreground "powder blue"))
+(defface gg-def-num 
+    '((t :inherit gg-def-base  :foreground "powder blue"))
   "*Provides fontlocking of enumerated numbers preceding a definition.\n
 :SEE-ALSO `gg-def-base', `gg-def-delim', `gg-def-defined', `gg-def-num',
-`gg-def-inition'.\n►►►")
+`gg-def-inition'.\n►►►"
+  :group 'google-define-redux-faces)
 ;;
 ;;; :TEST-ME (describe-face 'gg-def-num)
 ;;;(progn (makunbound 'gg-def-num) (unintern 'gg-def-num) )
@@ -166,11 +286,13 @@ Delimiters characters include: ►, |, ◄ preceded and followed by whitespace e
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-02-05T16:06:20-05:00Z}#{10055} - by MON KEY>
 (defface gg-def-inition
-    '((t ;:inherit gg-def-base
-       :foreground "wheat1" :weight normal))
+    ;; :WAS '((t ;:inherit gg-def-base
+    ;;           :foreground "wheat1" :weight normal))
+    '( (((class color) (min-colors 88)) (:foreground "wheat1" :weight normal)) )
   "*Provides fontlocking of definition content e.g. anything after \"    | \".\n
 :SEE-ALSO `gg-def-base', `gg-def-delim', `gg-def-defined', `gg-def-num',
-`gg-def-inition'.\n►►►")
+`gg-def-inition'.\n►►►"
+  :group 'google-define-redux-faces)
 ;;
 ;;; :TEST-ME (describe-face 'gg-def-inition)
 ;;;(progn (makunbound 'gg-def-inition) (unintern 'gg-def-inition) )
@@ -178,10 +300,12 @@ Delimiters characters include: ►, |, ◄ preceded and followed by whitespace e
 ;;; ==============================
 ;;; :TODO See notes below about matching alternate reasonable suffixes.
 ;;; :CREATED <Timestamp: #{2010-02-05T16:05:47-05:00Z}#{10055} - by MON KEY>
-(defface gg-def-defined '((t :inherit gg-def-base :foreground "cadet blue"))
-  "*Provides fontlocking of word defined by definition.
+(defface gg-def-defined 
+    '((t :inherit gg-def-base :foreground "cadet blue"))
+  "*Provides fontlocking of word defined by definition.\n
 :SEE-ALSO `gg-def-base', `gg-def-delim', `gg-def-defined', `gg-def-num',
-`gg-def-inition'.\n►►►")
+`gg-def-inition'.\n►►►"
+  :group 'google-define-redux-faces)
 ;;
 ;;; :TEST-ME (describe-face 'gg-def-defined)
 ;;;(progn (makunbound 'gg-def-defined) (unintern 'gg-def-defined) )
@@ -209,38 +333,39 @@ Delimiters characters include: ►, |, ◄ preceded and followed by whitespace e
                   "Accept-Charset: ISO-8859-1;q=0.7,*;q=0.7\r\n"
                   "\r\n"))
          proc buf)
-    (unwind-protect
-         (progn
-           (when (get-buffer *google-define-get-buffer*)
-             (kill-buffer *google-define-get-buffer*))
-           (setq proc (open-network-stream "url-get-command"
-                                           *google-define-get-buffer*
-                                           host
-                                           port)
-                 buf (process-buffer proc))
-           (process-send-string proc post-cmd)
-           (message "Getting information from %s: waiting for response..." host)
-           (while (equal (process-status proc) 'open)
-             (unless (accept-process-output proc timeout)
-               (delete-process proc)
-               (error "Server error: timed out while waiting!")))
-           (message "Response received: processing...")))
-    ;; unwind-protect
+    (progn
+      (when (get-buffer *google-define-get-buffer*)
+        (kill-buffer *google-define-get-buffer*))
+      (setq proc (open-network-stream "url-get-command"
+                                      *google-define-get-buffer*
+                                      host
+                                      port))
+      (setq buf (process-buffer proc))
+      (process-send-string proc post-cmd)
+      (message "Getting information from %s: waiting for response..." host)
+      (while (equal (process-status proc) 'open)
+        (unless (accept-process-output proc timeout)
+          (delete-process proc)
+          (error "Server error: timed out while waiting!")))
+      (message "Response received: processing..."))
     buf))
-;; (google-define-get-command)
+
+;;; (google-define-get-command)
 
 ;;; ==============================
+;;; REQUIRES `mon-g2be' mon-string-justify-left'
 ;;; :MODIFICATIONS <Timestamp: #{2010-02-03T13:41:22-05:00Z}#{10053} - by MON>
 (defun google-define-parse-buffer (search-word def-disp-buffer)
-  "Pull all of the definitions out of the data returned from google.
+  "Pull all of the definitions out of the data returned from google.\n
 Print in a temp-buffer, parse, and convert for presentation.\n
 :SEE-ALSO `google-define', `google-define-get-command',
 `google-define-parse-buffer', `google-define-font-lock',
 `google-define-kill-def-buffers', `*google-define-get-buffer*',
 `mon-string-justify-left'.\n►►►"
   (let* ((count 0)
-         (accum-buffer  ;; <- *standard-output* is here
-          (prog1 def-disp-buffer
+         (accum-buffer ;; <- *standard-output* is here
+          (prog1 
+              def-disp-buffer
             (when (buffer-live-p (get-buffer def-disp-buffer))
               (with-current-buffer (get-buffer def-disp-buffer)
                 (let ((buffer-read-only nil))
@@ -248,46 +373,77 @@ Print in a temp-buffer, parse, and convert for presentation.\n
          ;; :NOTE `accum-buffer' _should_ be empty, don't bother checking.
          (standard-output (get-buffer-create accum-buffer)))
     (princ (format "Definitions for: %s\n\n" search-word))
+    
+    ;; (with-current-buffer  ??
     (set-buffer (google-define-get-command 
                  "www.google.com" 
                  (concat "/search?num=100&hl=en&q=define%3A%22"
                          (replace-regexp-in-string " +" "+" search-word)
                          "%22&btnG=Search")))
     (unwind-protect
-      (goto-char (point-min))
-      (while (search-forward-regexp "<li>\\([^<]+\\)" nil t)
-        (incf count)
-        (let ((definition 
-               (replace-regexp-in-string "\\(\n\\|\r\\|\t\\)" "" (match-string 1))))
-          (princ  ;; <- spitting to our *Definitions:<SEARCH-WORD>* buffer.
-           (with-temp-buffer
-             (let ((>pnt (make-marker))
-                   (<pnt (make-marker))
-                   (fill-column 68)
-                   (fill-prefix "    | "))
-               (save-excursion              
-                 (insert (format "%3d ►\n" count))               
-                 (set-marker >pnt (point))
-                 (insert ;; :NOTE `mon-string-justify-left' <- :FILE mon-utils.el
-                  (replace-regexp-in-string  
-                   "^    " "    | " (mon-string-justify-left definition 64 4)))
-                 (set-marker <pnt (point))
-                 (insert "\n    ◄\n\n"))
-               (fill-region-as-paragraph >pnt <pnt)
-               (google-define-replace-html)
-               (google-define-replace-unicode))
-             ;; mon-help-PNTR-tag
-             (buffer-substring (buffer-end 0) (buffer-end 1))))))
+         (progn
+           (mon-g2be) ;; :WAS (goto-char (point-min))
+           (while (search-forward-regexp "<li>\\([^<]+\\)" nil t)
+             (incf count)
+             (let ((definition 
+                    (replace-regexp-in-string "\\(\n\\|\r\\|\t\\)" "" (match-string 1))))
+               (princ ;; <- spitting to our *Definitions:<SEARCH-WORD>* buffer.
+                (with-temp-buffer
+                  (let ((>pnt (make-marker))
+                        (<pnt (make-marker))
+                        (fill-column 68)
+                        (fill-prefix "    | ")
+                        (gdrh ;; :WAS `google-define-replace-html'
+                         #'(lambda ()
+                             (dolist (x *google-define-html-entry-table*)
+                               (let ((ascii (caddr x))
+                                     (gd-rps #'(lambda (frm-str to-str) 
+                                                 (progn 
+                                                   (mon-g2be) ;; mon-g2be <- mon-utils.el
+                                                   (while (search-forward frm-str nil t)
+                                                     (replace-match to-str nil t))))))
+                                 (funcall gd-rps (car x) ascii)
+                                 (funcall gd-rps (cadr x) ascii)))))
+                        (gdru ;; :WAS `google-define-replace-unicode'
+                         #'(lambda ()
+                             (mon-g2be)
+                             (while (search-forward-regexp "&#\\([0-9]+\\);" nil t)
+                               (let* ((ucs (string-to-number (match-string 1)))
+                                      (rep (char-to-string (or (decode-char 'ucs ucs) ?~))))
+                                 (replace-match rep nil t))))))
+                    (save-excursion              
+                      (insert (format "%3d ►\n" count))               
+                      (set-marker >pnt (point))
+                      (insert ;; :NOTE `mon-string-justify-left' <- :FILE mon-utils.el
+                       (replace-regexp-in-string  
+                        "^    " "    | " (mon-string-justify-left definition 64 4)))
+                      (set-marker <pnt (point))
+                      (insert "\n    ◄\n\n"))
+                    (fill-region-as-paragraph >pnt <pnt)
+                    (funcall gdrh)  ;; :WAS (google-define-replace-html)
+                    (funcall gdru)) ;; :WAS  (google-define-replace-unicode))
+                  (buffer-substring (buffer-end 0) (buffer-end 1)))
+                (get-buffer accum-buffer))))
+           (set-buffer accum-buffer)) ; :CLOSE progn
+
+      ;;;;;;;;;;;;;;
       ;; Close current TCP process of current `google-define-get-command' buffer.
-        (delete-process nil))
-    (set-buffer accum-buffer)
-    ;; Make _sure_ we closed the process.
-    (when (get-buffer *google-define-get-buffer*) 
-      (kill-buffer *google-define-get-buffer*))
+      ;; (process-buffer (process-buffer "url-get-command"))
+      ;; "url-get-command"
+      ;; :WAS (delete-process nil))
+      ;; (delete-process (process-buffer "url-get-command"))
+      ;;;;;;;;;;;;;;
+      
+      ;; Make _sure_ we closed the process.
+      (when (get-buffer *google-define-get-buffer*)
+        (kill-buffer *google-define-get-buffer*))
+      ) ;; :CLOSE unwind-protect
+
     (setq accum-buffer 
           (with-current-buffer accum-buffer 
             (google-define-font-lock search-word)
             (buffer-substring (buffer-end 0) (buffer-end 1))))
+    
     ;; Put name of `accum-buffer' on the `count' var and kill that buffer too. 
     (setq count (current-buffer))
     (when (get-buffer count) (kill-buffer count))
@@ -298,7 +454,7 @@ Print in a temp-buffer, parse, and convert for presentation.\n
 ;;; e.g. affixed -> "ed\\_w" "ing\\_w" "ing\\_w" ".tion\\_w" "edness\\_w"
 ;;; :CREATED <Timestamp: #{2010-02-04T21:33:14-05:00Z}#{10055} - by MON>
 (defun google-define-font-lock (search-word)
-  "Add fontification text-properties to the definitions.
+  "Add fontification text-properties to the definitions.\n
 Fontify with the following faces:
  `gg-def-base', `gg-def-num', `gg-def-delim',
  `gg-def-inition', `gg-def-defined'\n
@@ -313,7 +469,8 @@ Fontify with the following faces:
             (,(concat " \\(" search-word "\\)[\\[:punct:]\\[:blank:]\n]") 1 (face gg-def-defined)))
              ))
       (mapc #'(lambda (x)
-                (goto-char (buffer-end 0))
+                ;; :WAS (goto-char (buffer-end 0))
+                (mon-g2be) ;; <- mon-utils.el
                 (while (search-forward-regexp  (elt x 0) nil t)
                   (add-text-properties 
                    (match-beginning (elt x 1)) (match-end (elt x 1)) 
@@ -348,38 +505,10 @@ If there is a word at point us it as default value for prompt.\n
          (defs (google-define-parse-buffer sw dfb)))
     (prog1 (message header)
       (mon-help-temp-docstring-display defs dfb t))))
+      
 ;;
 ;;; :TEST-ME (google-define "define")
 ;;; :TEST-ME (google-define nil t)define
-
-;;; ==============================
-;;; :NOTE `mon-buffer-exists-p' is macro in :FILE mon-utils.el 
-;;; If that feature isn't preste we should provide it here now.
-;;; :BEFORE `google-define-kill-def-buffers'
-(unless (fboundp 'mon-buffer-exists-p)
-;;; ==============================
-;;; :COURTESY :FILE gnus-util.el :WAS `gnus-buffer-exists-p'
-;;; :ADDED let wrapper gensym for local var BUFF-P
-;;; :CREATED <Timestamp: #{2010-02-04T14:17:59-05:00Z}#{10054} - by MON KEY>
-(defmacro mon-buffer-exists-p (buffer-to-check)
-  "Return buffer-name of BUFFER-TO-CHECK if exists.\n
-:EXAMPLE\n\n\(mon-buffer-exists-p \(current-buffer\)\)\n
-\(prog2 \(get-buffer-create \"*BAD-IF-NOT-KILLED*\"\)
-    \(mon-buffer-exists-p \"*BAD-IF-NOT-KILLED*\"\)
-  \(kill-buffer \(mon-buffer-exists-p \"*BAD-IF-NOT-KILLED*\"\)\)\)\n
-:SEE-ALSO `mon-buffer-exists-so-kill', `mon-with-file-buffer',
-`mon-buffer-written-p', `mon-buffer-name->kill-ring', 
-`mon-get-buffers-parent-dir', `mon-get-proc-buffers-directories',
-`mon-get-buffers-directories', `mon-split-string-buffer-name',
-`mon-split-string-buffer-parent-dir', `with-current-buffer', `with-temp-file',
-`with-temp-buffer'.\n►►►"
-  (let ((buff-p (make-symbol "buff-p")))
-    `(let ((,buff-p ,buffer-to-check))
-       (when ,buff-p
-         (funcall (if (stringp ,buffer-to-check) 'get-buffer 'buffer-name)
-                  ,buff-p)))))
-) ;; :CLOSE unless
-;;; ==============================
 
 ;;; ==============================
 ;;; :REQUIRES `mon-buffer-exists-p'
@@ -401,7 +530,7 @@ When called-interactively message with the buffers killed.\n
         (def-buffs))
     (mapc #'(lambda (mb) 
               (when ;; (string-match ".*:gg-definition\\*" mb)
-                  (string-match (concat ".*" (cdr *google-define-buffer-suffix*)))
+                  (string-match (concat ".*" (cdr *google-define-buffer-suffix*)) mb)
                 (push mb def-buffs)))
           buffs)
     (setq buffs nil)  
@@ -420,140 +549,6 @@ When called-interactively message with the buffers killed.\n
 ;;;                     (google-define-kill-def-buffers t))
 ;;;              (google-define i)))
 
-
-;;; ==============================
-;; `mon-buffer-exists-so-kill' <- :FILE mon-untils.el
-(unless (fboundp 'mon-buffer-exists-so-kill)
-;;; ==============================
-;;; :CREATED <Timestamp: #{2010-02-05T14:21:16-05:00Z}#{10055} - by MON KEY>
-(defun mon-buffer-exists-so-kill (buffer-to-kill)
-  "If BUFFER-TO-KILL exists kill it.\n
-Return `#<killed buffer>' if buffered killed, else nil.\n
-:EXAMPLE\n\n\(let \(\(not-much-longer \(get-buffer-create \"not-much-longer\"\)\)\)
-  \(mon-buffer-exists-so-kill \(buffer-name not-much-longer\)\)\)\n
-:SEE-ALSO `mon-buffer-exists-p', `mon-with-file-buffer',
-`mon-buffer-written-p', `mon-buffer-name->kill-ring'
-`mon-get-buffers-parent-dir', `mon-get-proc-buffers-directories',
-`mon-get-buffers-directories', `mon-split-string-buffer-name',
-`mon-split-string-buffer-parent-dir', `with-current-buffer', `with-temp-file',
-`with-temp-buffer'.\n►►►"
-  (let ((mbep (mon-buffer-exists-p buffer-to-kill)))
-    (if (when mbep (kill-buffer mbep))        
-        (get-buffer mbep))))
-) ;; :CLOSE unless
-;;; ==============================
-
-;;; ==============================
-;;; `mon-string-justify-left' <- :FILE mon-utils.el
-(unless (fboundp 'mon-string-justify-left)
-;;; ==============================
-;;; :COURTESY Pascal Bourguignon :HIS pjb-strings.el :WAS `string-justify-left'
-;;; :MODIFICATIONS <Timestamp: #{2010-02-03T18:08:59-05:00Z}#{10053} - by MON KEY>
-;;; :ADDED `save-match-data' for `split-string'
-;;; :RENAMED LEFT-MARGIN arg -> lft-margin. `left-margin' is a global var.
-(defun mon-string-justify-left (string &optional width lft-margin)
-    "Return a left-justified string built from STRING.\n
-:NOTE The default WIDTH is `current-column'.
-      The default LFT-MARGIN is `left-margin'.
-      The WIDTH is counted from column 0.
-      The word separators are those of `split-string':
-      [ \\f\\t\\n\\r\\v]+
-      Which means that STRING is justified as one paragraph.\n
-:EXAMPLE\n\(mon-string-justify-left 
- \(let \(jnk\)
-   \(dotimes \(i 8 jnk\) 
-     \(dolist \(i '\(64 94\)\)
-       \(setq jnk 
-             \(concat 
-              \" \" 
-              \(make-string \(elt \(shuffle-vector [7 5 3 9]\) 3\) i\) jnk\)\)\)\)\) 68 4\)\n
-:SEE-ALSO `mon-string-fill-to-col'.\n►►►"
-    (save-match-data
-      (if ;; (or (null width) (< width lft-margin))
-       (null width) (setq width (or fill-column 72)))
-      (if (null lft-margin) (setq lft-margin (or left-margin 0)))
-      (if (not (stringp string)) 
-          (error "string-justify-left: The first argument must be a string"))
-      (if (not (and (integerp width) (integerp lft-margin)))
-          (error "string-justify-left: The optional arguments must be integers"))
-      (let* ((margin (make-string lft-margin 32))
-             (splited (split-string string))
-             (col lft-margin)
-             (justified (substring margin 0 col))
-             (word)
-             (word-length 0)
-             (separator ""))
-        (while splited
-          (setq word (car splited))
-          (setq splited (cdr splited))
-          (setq word-length (length word))
-          (if (> word-length 0)
-              (if (>= (+ col (length word)) width)
-                  (progn
-                    (setq justified (concat justified "\n" margin word))
-                    (setq col (+ left-margin word-length)))
-                  (progn
-                    (setq justified (concat justified separator word))
-                    (setq col (+ col 1 word-length)))))
-          (setq separator " "))
-        (if (< col width)
-            (setq justified (concat justified (make-string (- width col) 32))))
-        justified)))
-;;;
-;;; :TEST-ME 
-;;; (mon-string-justify-left 
-;;;  (let (jnk)
-;;;    (dotimes (i 8 jnk) 
-;;;      (dolist (i '(64 94))
-;;;        (setq jnk (concat " " (make-string (elt (shuffle-vector [7 5 3 9]) 3) i) jnk))))) 68)
-) ;; :CLOSE unless
-;;; ==============================
-
-;;; ==============================
-;;; `mon-help-temp-docstring-display' <- :FILE mon-doc-help-utils.el
-(unless (fboundp 'mon-help-temp-docstring-display)
-;;; ==============================
-;;; :NOTE See the hidden fnctn: `make-help-screen' .
-;;; :MODIFICATIONS <Timestamp: #{2010-02-03T15:16:13-05:00Z}#{10053} - by MON>
-;;; :CREATED <Timestamp: #{2009-12-20T17:50:49-05:00Z}#{09517} - by MON>
-(defun mon-help-temp-docstring-display (the-help-doc &optional some-other-buffer
-                                        kill-em-before-they-grow)
-  "Display THE-HELP-DOC string formatted as per help-mode.
-Leave existing *Help* buffer untouched.\n
-Docstring is displayed in the buffer named by the the value of 
-:VARIABLE `*mon-help-docstring-help-bffr*'.\n
-When optional arg SOME-OTHER-BUFFER is non-nil display THE-HELP-DOC in that buffer instead.
-When optional arg KILL-EM-BEFORE-THEY-GROW is non-nil kill any existing
-SOME-OTHER-BUFFER with name before displaying contentsthere.
-Useful when temporarily editing docstrings.\n
-:EXAMPLE\n\(mon-help-temp-docstring-display
- \(documentation 'mon-help-temp-docstring-display\)\)\n 
-:CALLED-BY `google-define' \(MON's VERSION\)\n
-:SEE-ALSO `mon-help-view-file'.\n►►►"
-  (let ((help-window-select 'always)
-        (dhb (buffer-name 
-              (if some-other-buffer
-                 ;; :NOTE Going into view-mode don't know whats there or how it got there. 
-                 ;;;      Don't try to erase the contents - Kill them. 
-                  (if (and kill-em-before-they-grow
-                           (buffer-live-p (get-buffer some-other-buffer)))
-                      (progn 
-                        (kill-buffer (get-buffer some-other-buffer))
-                        (get-buffer-create some-other-buffer))
-                        (get-buffer-create some-other-buffer))
-                 ;; *mon-help-docstring-help-bffr* -> "*MON-HELP*"
-                 *mon-help-docstring-help-bffr*))))
-    (with-help-window dhb 
-      (with-current-buffer dhb
-        (insert the-help-doc)
-        (help-window-setup-finish (selected-window))))))
-;;
-;;; :TEST-ME (mon-help-temp-docstring-display
-;;;           (documentation 'mon-help-temp-docstring-display))
-) ;; :CLOSE unless
-;;; ==============================
-
-
 ;;; ==============================
 (provide 'google-define-redux)
 ;;; ==============================
@@ -561,3 +556,77 @@ Useful when temporarily editing docstrings.\n
 ;;; ================================================================
 ;;; google-define-redux.el ends here
 ;;; EOF
+
+;;; ==============================
+;;; :NOTE simplified version of `google-define-replace-html' with all functions inlined.
+;;; :CREATED <Timestamp: #{2010-03-20T12:16:04-04:00Z}#{10116} - by MON KEY>
+;;; (defun google-define-replace-html ()
+;;;   (dolist (x *google-define-html-entry-table*)
+;;;     (let ((ascii (caddr x))
+;;;           (gd-rps #'(lambda (frm-str to-str) 
+;;;                       (progn 
+;;;                         (mon-g2be) ;; mon-g2be <- mon-utils.el
+;;;                         (while (search-forward frm-str nil t)
+;;;                           (replace-match to-str nil t))))))
+;;;       (funcall gd-rps (car x) ascii)
+;;;       (funcall gd-rps (cadr x) ascii))))
+;;; ==============================
+
+;;; ==============================
+;;; `google-define-replace-html' as lambda form:
+;;; (let ((gd-nam ;; :WAS `google-define-name-entry'
+;;;        #'(lambda (nam-entry) (cadr nam-entry)))
+;;;       (gd-num ;; :WAS `google-define-number-entry'
+;;;        #'(lambda (num-entry) (car num-entry)))
+;;;       (gd-asc ;; :WAS google-define-ascii-entry
+;;;        #'(lambda (asc-entry) (caddr asc-entry))))
+;;;
+;;;            (google-define-ascii-entry x)))
+;;;            (funcall asc-entry x)))
+;;;
+;;;       (google-define-replace-string (google-define-number-entry x) ascii)
+;;;       (google-define-replace-string (funcall gd-num x) ascii)
+;;;       (google-define-replace-string (car x) ascii)
+;;;
+;;;       (google-define-replace-string (google-define-name-entry x) ascii)
+;;;       (google-define-replace-string (funcall gd-nam x) ascii)
+;;;       (google-define-replace-string (cadr x) ascii)
+;;; ==============================
+
+;;; ==============================
+;;; :COURTESY Jeremy English :HIS google-define.el 
+;;; (defun google-define-number-entry (entry)
+;;;   (car entry))
+;;; 
+;;; (defun google-define-name-entry (entry)
+;;;   (cadr entry))
+;;; 
+;;; (defun google-define-ascii-entry (entry)
+;;;   (cadr (cdr entry)))
+;;; 
+;;; (defun google-define-replace-string (from-string to-string)
+;;;   (goto-char (point-min))
+;;;   (while (search-forward from-string nil t)
+;;;     (replace-match to-string nil t)))
+;;; 
+;;; (defun google-define-replace-html ()
+;;;   (dolist (x *google-define-html-entry-table*)
+;;;     (let ((ascii (google-define-ascii-entry x)))
+;;;       (google-define-replace-string
+;;;        (google-define-number-entry x) ascii)
+;;;       (google-define-replace-string
+;;;        (google-define-name-entry x) ascii))))
+;;;
+;;; (defun google-define-replace-unicode ()
+;;;   (goto-char (point-min))
+;;;   (while (search-forward-regexp "&#\\([0-9]+\\);" nil t)
+;;;     (let* ((ucs (string-to-number (match-string 1)))
+;;;            (rep (char-to-string (or (decode-char 'ucs ucs) ?~))))
+;;;     (replace-match rep nil t))))
+;;;
+;;; (defun google-define-word-at-point ()
+;;;  (let ((word-at-point (thing-at-point 'word)))
+;;;    (set-text-properties 0 (length word-at-point) nil word-at-point)
+;;;    word-at-point))
+;;; ==============================
+

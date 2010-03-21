@@ -142,7 +142,7 @@ He uses Emacs. He's also known as [::snogglethorpe].
 	   (goto-char (point-min)))
 	 (display-buffer buf))))
 
-[:mode-line-bell]
+[:echo-area-bell]
 == Alternative visual bell; flashes the echo-area in red ==
 
     ;; --------------------------------------------------------

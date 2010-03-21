@@ -1,6 +1,7 @@
 ;;; handbook.el --- Quick access to the FreeBSD handbook
 
 ;; Author: Rhoderick Espineda <padik@users.sourceforge.net>
+;; Website: http://padik.co.cc
 ;; Version: 1.0.0
 ;; Keywords: FreeBSD Handbook
 ;; URL: http://www.emacswiki.org/elisp/handbook.el

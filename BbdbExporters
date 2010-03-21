@@ -36,7 +36,20 @@ Norman Walsh published [http://www.mail-archive.com/bbdb-info@lists.sourceforge.
 Toby Speight and others have written http://www.cs.utah.edu/~karra/ps94/bbdb-xml-print.el (last update May 24 2005) .
 
 
-== Writing a directory full of vCards ==
+== vCard Export == [:VcardExport]
+
+=== With bbdb-vcard.el === 
+
+[http://github.com/trebb/bbdb-vcard bbdb-vcard.el] exports BBDB records of (almost) arbitrary content into vCards version 3.0.
+
+In buffer %%*BBDB*%%, press v to export the record under point. Press %%*v%%
+to export all records in buffer into one vCard file.  Press %%* C-u v%% to
+export them into one file each.
+
+Cf. [[BbdbImporters#VcardImport]] for the import functionality of [http://github.com/trebb/bbdb-vcard bbdb-vcard.el].
+
+
+=== Writing a directory full of vCards ===
 
 Use Lisp:bbdb-vcard-export.el to write your entire BBDB into a directory, one entry per line.
 Per default `M-x bbdb-vcard-export-update-all' writes the data encoded in UTF-16, because

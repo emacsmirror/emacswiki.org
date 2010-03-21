@@ -130,7 +130,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 266 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 267 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.  I  have  also  received
@@ -1632,8 +1632,12 @@ automatically:
   (unless (featurep 'browse-url)
     (error "ERROR: Feature browse-url not available!"))
   (setq file (or file (dired-get-filename)))
-  (sr-quit)
-  (browse-url (concat "file://" file))
+  (save-selected-window
+    (sr-select-viewer-window)
+    (let ((buff (current-buffer)))
+      (browse-url (concat "file://" file))
+      (unless (eq buff (current-buffer))
+        (sr-scrollable-viewer (current-buffer)))))
   (message "Browsing \"%s\" in web browser" file))
 
 (defun sr-revert-buffer ()

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Fri Mar 19 23:31:51 2010 (-0700)
+;; Last-Updated: Sat Mar 20 07:33:12 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 2375
+;;     Update #: 2377
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1393,7 +1393,7 @@ Don't forget to mention your Emacs and library versions."))
    '("\\([^ ]+\\) -> [^ ]+$" 1 diredp-symlink) ; Symbolic links
    ;; 1) Date/time and 2) filename w/o suffix:
    (list dired-move-to-filename-regexp
-         (if (and (fboundp 'version<=) (version<= emacs-version "23.2"))
+         (if (or (not (fboundp 'version<)) (version< emacs-version "23.2"))
              (list 1 'diredp-date-time t t)
            (list 2 'diredp-date-time t t)) ; Date/time
          (list "\\(.+\\)$" nil nil (list 0 diredp-file-name 'keep t))) ; Filename

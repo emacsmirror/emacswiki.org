@@ -134,7 +134,7 @@ The most important links are '''bold''' here.
 * [[Icicles - Other Search Commands]] -- searching text with certain properties (e.g. [[face]]s); browsing code definitions (Imenu); browsing compilation and `grep' hits; reusing inputs in `*shell*'
 * [[Icicles - Multiple Regions]] -- using multiple, persistent [[region]]s, in multiple [[buffer]]s or files
 * '''[[Icicles - Tags Enhancements]]''' -- finding source-code definitions ([[tags]])
-* '''[[Icicles - Shell-Command Enhancements]]''' -- completion for shell commands
+* [[Icicles - Shell-Command Enhancements]] -- completion for shell commands
 * [[Icicles - Dired Enhancements]] -- '''Icicles''' enhancements to DiredMode
 * [[Icicles - Info Enhancements]] -- '''Icicles''' enhancements to InfoMode
 * '''[[Icicles - Support for Projects]]''' -- features that help you work with a software project

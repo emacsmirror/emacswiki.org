@@ -173,4 +173,13 @@ Since ##pos-tip.el## uses UTF-8, the first line should read
 [new]
 : Thanks. I modified. -- [[irie]]
 
+----
+[new]
+The function `pos-tip-show-no-propertize' passes a `foreground-color' property to `x-show-tip' (line 364), but it has no effect at all, at least in my system. So I'm using this temporal fix:
 
+    (defadvice pos-tip-show-no-propertize (before fix-pos-tip-foreground-color)
+       (let ((fg (...)))
+       (ad-set-arg 0 (propertize (ad-get-arg 0)
+                              'face `(cons (foreground-color . ,fg) 'pos-tip-temp)))))
+
+Is this a real bug? or is there any better solution? -- SeungcheolJung

@@ -275,7 +275,7 @@ Jabber.el is my XMPP client for last year. Before I used gaim, tkabber, but I no
 
 
 [new]
-With emacs-jabber-0.7.92 put
+With emacs-jabber-0.7.92 or emacs-jabber-0.8.0 put
 
 <pre>
 ;; For debug purpose.
@@ -294,7 +294,9 @@ With emacs-jabber-0.7.92 put
                             ))
 </pre>
 
-in your .emacs in order to connect to gtalk. And press "C-x C-j C-c"! -- [[gavenkoa]]
+in your .emacs in order to connect to gtalk. And press "C-x C-j C-c"!
+
+I have issue with jabber on Windows - 100% CPU load or roster not appear, with openssl it not work in all case. I post to list [http://sourceforge.net/mailarchive/message.php?msg_name=hfjp9i%24n2t%241%40ger.gmane.org 100% cpu load with GNUTLS on Windows] and finally found solution - Emacs 23.1 + gnutls-cli form Cygwin! -- [[gavenkoa]]
 
 [new]
 Setting urgency hint for Emacs frame (only for X Window System).

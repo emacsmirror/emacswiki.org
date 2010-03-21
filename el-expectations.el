@@ -1,5 +1,5 @@
 ;;; el-expectations.el --- minimalist unit testing framework
-;; $Id: el-expectations.el,v 1.50 2010/02/13 20:20:53 rubikitch Exp $
+;; $Id: el-expectations.el,v 1.51 2010/03/20 21:42:54 rubikitch Exp rubikitch $
 
 ;; Copyright (C) 2008, 2009, 2010  rubikitch
 
@@ -118,6 +118,12 @@
 ;;; History:
 
 ;; $Log: el-expectations.el,v $
+;; Revision 1.51  2010/03/20 21:42:54  rubikitch
+;; Apply patch by DanielHackney:
+;; Allow (error) expectation to accept an optional second argument,
+;; the symbol `*', to ignore an error message.
+;; It would be used as (error error *), and would pass for the body (error "some string").
+;;
 ;; Revision 1.50  2010/02/13 20:20:53  rubikitch
 ;; font-lock support for lisp-interaction-mode
 ;;
@@ -554,8 +560,8 @@ With prefix argument, do `batch-expectations-in-emacs'."
           (cond ((cadr e)
                  (and (eq (car e) (car err))
                       (or (eq (cadr e) '*)
-                       (equal (setq actual-errdata (eval (cadr e)))
-                              (cadr err)))))
+                          (equal (setq actual-errdata (eval (cadr e)))
+                                 (cdr err)))))
                 (e
                  (equal e err))
                 (t

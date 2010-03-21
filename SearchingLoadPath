@@ -13,3 +13,6 @@ Here scour-load-path-for will search for a file in the load-path returning its p
 	  return (format "%s/%s" (directory-file-name dir)
 			 filename))))
 </pre>
+
+[new]
+Why not ##locate-library##?

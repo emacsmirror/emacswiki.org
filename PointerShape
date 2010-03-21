@@ -18,5 +18,7 @@ This article by ThienThiNguyen defines a new command that uses
 mouse-avoidance to browse the available shapes and set them
 interactively: Groups:browse-pointer-shapes
 
+The value of x-pointer-shape does not always correspond to the mouse pointer shape while the pointer is located in an emacs windows. Default cursor shapes and colors may also be used. For default cursor shapes, X windows looks at the Xcursor.theme value (e.g., in ~/.Xdefaults). See 'man xcursor' for more details.
+
 ----
 CategoryMouse CategoryKeys CategoryFrames CategoryDisplay
