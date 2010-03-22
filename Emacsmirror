@@ -32,7 +32,6 @@ missing information in the below lists.
 Please check that your packages are included in the mirror.  If not add your package to this list (providing the expected information):
 
 ** foo http://path/to/foo.el http://home/page
-** bbdb-vcard git://github.com/trebb/bbdb-vcard.git http://github.com/trebb/bbdb-vcard
 
 Note that the path to the file might actually be the path to an archive. If it is the path to some vcs repository please specify so if this is not clear from the url.
 
@@ -230,12 +229,8 @@ people don't waste their time trying to find the same package.
 
 * J
 
-** [http://www.tapsellferrier.co.uk/nics-blog/emacs-java-completion.html java-complete]
-** [http://home.nc.rr.com/nascifandelaine/jde-jalopy.el jde-jalopy]
 ** [http://home.nc.rr.com/nascifandelaine/jde-transmogrify.zip jde-transmogrify]
-** [http://www.hgsc.bcm.tmc.edu/~harley/elisp/jhg-pine.el jhg-pine]
 ** [http://www.djefer.com/jlog/index.htm jlog]
-** [http://home.nc.rr.com/nascifandelaine/jswat.el jswat]
 ** [http://www.djefer.com/~jtemplate jtemplate]
 
 * K
@@ -291,14 +286,7 @@ people don't waste their time trying to find the same package.
 
 * N
 
-** [http://home.ivm.de/~Klaus.Schilling/naos.el naos]
-** [http://www.davh.dk/script/nesc.el necs]
-** [http://www.ma.utexas.edu/~jcorneli/a/elisp/nero.el nero]
-** [http://www.phys.ntnu.no/~hove/lisp/ newmail-modeline]
 ** [http://www.mts.jhu.edu/~kapur/emacs/nnir-grepmail.el nnir-grepmail]
-** [http://v2.noniq.at/tech/emacs/lisp/ nqmbm]
-** [http://homepages.inf.ed.ac.uk/sterratt/progs/neuron nrnhoc]
-** [http://hjem.get2net.dk/storm/emacs/nt-url.el nt-url]
 
 * O
 

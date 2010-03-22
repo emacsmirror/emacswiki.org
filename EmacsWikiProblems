@@ -9,6 +9,15 @@ Note that this page is not about EmacsWikiMode.
 '''Add your problem descriptions below this line'''
 
 ----
+== Homepage rolled back after I edited/updated it ==
+
+I updated my homepage. Rolled back by an admin. So I saved the correct revision. How do I avoid the rollback, the false assumption "this is spam?"
+
+[new:DrewAdams:2010-03-22 07:59 UTC]
+Are you SteveTaylor? I rolled back changes that I thought were spam. I probably didn't read the diff carefully enough. I think I probably just saw the non-Emacs http URL and jumped to a wrong conclusion. Sorry for the mistake. -- DrewAdams
+
+
+
 == Internal Server Errors When Try to Save a Page ==
 
 I'm getting errors like this:

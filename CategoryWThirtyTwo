@@ -12,7 +12,7 @@ Where to get it:
 
 * Unofficial/CVS Emacs (which means the Emacs currently in development, it is however normally very stable):
 ** **2009-11-04** -- [[EmacsW32]] -- **CVS Emacs 23.1.50.1**
-*** Does some extra setup to work better on w32 (MS-Windows) and includes some unix programs (grep etc) from gnuwin32. It is also slightly patched for the same reason.
+*** Does some extra setup to work better on MS-Windows and includes some unix programs (grep etc) from gnuwin32. It is also slightly patched for the same reason.
 *** For other reasons the packages also includes [NxmlMode nXhtml].
 *** There is also an unpatched version of Emacs available and a zip file with just the unpatched Emacs. (But please see above for official release and pretest binaries.)
 ** **2009-09-23** -- http://ntemacs.sourceforge.net/ -- **CVS Emacs 23.1.50.1 Win32**
@@ -59,11 +59,11 @@ MS Tips and Tricks:
 * WThirtyTwoNetSend -- send messages using the NT command net send
 * WThirtyTwoSwitchToWindows -- switch to a window by its name
 * MsdnHelp -- Get MSDN help right from Emacs.
-* EdiffOnWThirtyTwo -- using ediff in a W32 environment
+* EdiffOnWThirtyTwo -- using ediff in an MS-Windows environment
 * WThirtyTwoFontifiedRegionToClipboard -- well...
 * WThirtyTwoBrowseNetDrives -- To browse the net drives!
 * WThirtyTwoMsgBox -- make emacs bring up a simple message box using vbscript
-* WThirtyTwoFindDired -- simple w32-version of find-dired
+* WThirtyTwoFindDired -- simple Windows-version of find-dired
 * WThirtyTwoFindDiredWithUnixUtils -- find-dired on win32 using "real" unix find
 * WThirtyTwoSymlinks -- parse .lnk files
 * IEViewSource -- Use emacs as the Internet Explorer "View Source" application
@@ -96,7 +96,7 @@ See also http://lists.gnu.org/archive/html/emacs-devel/2006-05/msg01022.html
 * From Explorer: PrintFromWindowsExplorer
 * From Word (as straight text or converting to RTF): PrintUsingWord
 
-W32 development:
+MS-Windows development:
 
 * MSVisualStudio -- Dev Env Command Line builds
 * CygWin -- using Emacs with (or within) Cygwin

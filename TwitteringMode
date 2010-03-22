@@ -117,5 +117,7 @@ hayamiz has merged my patches into the main repository. The main repository http
 [new]
 Any chance we can have a count of characters while tweeting in the minibuffer? (twit.el has this, I should look at how it's done) 
 
+[new]
+I can't see my followee's retweets. I'm following @ebertchicago(Roger Ebert, a film critik), but can't see his massive retweets. Can anybody tell me how can I fix it? -Jeongtae Roh
 ----
 See also: [[Twitter]] [[Identica-mode]]

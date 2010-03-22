@@ -5,7 +5,7 @@ highlighted area in the minibar.
 
 You can configure the size/readability of the sidebar freely by specifying the font familiy and height. Here are two screenshots of the minibar in action:
 
-With Bitstream Vera Sans, Height 40:
+With Bitstream Vera Sans, Height 30. Note that function names can be displayed in normal size:
 
 http://randomsample.de/minimap1.jpg 
 
@@ -29,6 +29,13 @@ Usage:
 * Use `M-x minimap-create' in a buffer you're currently editing.
 * Use `M-x minimap-kill' to kill the minimap.
 * Use `M-x customize-group RET minimap RET' to adapt minimap to your needs.
+
+Things you can customize:
+
+* Recenter strategies - always keep active region in the middle, or scroll dependent on the position in the buffer.
+* Display certain faces in their normal size so that you can still read them (function names, for instance).
+* Position on the left or right.
+* Set minimap-update-delay to 0 if you want an immediate reaction to scrolling (slows down scrolling, though).
 
 KNOWN BUGS:
 
@@ -112,4 +119,10 @@ It seems linum-mode displays line numbers at normal size and thus only displays 
 Done. I also changed the overlay-syncing, so that only the 'face and 'invisible property will be synced - otherwise, linum-mode would still change the line spacing in the minimap buffer.
 
 ----
+[new]
+Unable to load this file:
+Declare internal variables before all defcustom(s) fix that as you use some of them in your defcustoms.
+
+----
+  
 CategoryWindows   CategoryDisplay
