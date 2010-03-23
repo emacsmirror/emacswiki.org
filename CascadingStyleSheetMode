@@ -1,6 +1,6 @@
 == Overview ==
 
-A CSS mode is now included in Emacs version 22.2.2. This is the version from Stefan Monnier:
+A CSS mode is now included in Emacs version 22.2.2. The version from Stefan Monnier was formerly available at:
 
 * http://www.iro.umontreal.ca/~monnier/elisp
 

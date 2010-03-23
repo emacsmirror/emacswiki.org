@@ -107,7 +107,7 @@ Once you completed installation, type M-x load-library RET sql RET to load sql.e
 * Peter D. Pezaris' huge mode with extensive XEmacs support: http://www.dwwc.com/sql-mode/ (doesn't work, use this: http://www.pezaris.com/sql-mode/)
 [RR] Warning - there have not been any updates since v0.922 and this doesn't work on the recent XEmacs (uses obsolete functions). I can only imagine that it is not under active development.
 
-* Oracle's PL/SQL pls-mode. It used to be on the Oracle web site.  Contact the author: DmitryNizhegorodov <mailto:Dmitry.Nizhegorodov@oracle.com> or get a download from his site: Geocities:dmitrynizh/
+* Oracle's PL/SQL pls-mode. It used to be on the Oracle web site.  Contact the author: DmitryNizhegorodov <mailto:Dmitry.Nizhegorodov@oracle.com> or get a download from his site: http://www.dmitrynizh.com
 Older sql-modes such as the one by JimLange can be found in the ElispArchive.
 
 * Oracle 10g Documentation: http://www.oracle-10g.de/oracle_10g_documentation

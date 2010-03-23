@@ -22,6 +22,14 @@ Lisp:lusty-explorer.el
 
 = Changelist =
 
+Version 2.1:
+* Vast performance improvement.
+* Fixed sort order of matches.
+* Smarter match layout algorithm; faster, and makes better use of available space.
+* Print TRUNCATED indicator reliably.
+* Determine maximum window height reliably.
+* List buffers in MRU order when first presented.
+
 Version 2.0:
 * Introduced a flex/fuzzy matching algorithm, [http://github.com/rmm5t/liquidmetal/tree/master LiquidMetal].
 * Added custom keymap and setup hook.

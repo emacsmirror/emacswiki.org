@@ -1,8 +1,8 @@
 ;;; usage-memo.el --- integration of Emacs help system and memo
 
-;; $Id: usage-memo.el,v 1.11 2007/08/30 19:00:46 rubikitch Exp $
+;; $Id: usage-memo.el,v 1.12 2010/03/23 08:26:53 rubikitch Exp $
 
-;; Copyright (C) 2007  rubikitch
+;; Copyright (C) 2007, 2010  rubikitch
 
 ;; Author: rubikitch <rubikitch@ruby-lang.org>
 ;; Keywords: convenience, languages, lisp, help, tools, docs
@@ -30,6 +30,20 @@
 ;; Emacs help system (ie. describe-function). Do you want to take a
 ;; note in the *Help* buffer and want Emacs to show your note later?
 ;; In other words, integration of Emacs help and your memo!
+
+;;; Commands:
+;;
+;; Below are complete command list:
+;;
+;;  `umemo-save'
+;;    Save current usage memo(annotation) into file.
+;;  `usage-memo-mode'
+;;    Automatically enabled minor mode to add usage-memo feature by `define-usage-memo'.
+;;
+;;; Customizable Options:
+;;
+;; Below are customizable option list:
+;;
 
 ;; Annotation files are stored below ~/memo/umemo by default. Its
 ;; subdirectories are categories. And their subdirectories are entry
@@ -83,6 +97,9 @@
 ;;; History:
 
 ;; $Log: usage-memo.el,v $
+;; Revision 1.12  2010/03/23 08:26:53  rubikitch
+;; `describe-mode' support
+;;
 ;; Revision 1.11  2007/08/30 19:00:46  rubikitch
 ;; *** empty log message ***
 ;;
@@ -302,7 +319,9 @@ See also `umemo-initialize' definition.
   ;; calls slime-show-description.
   (define-usage-memo slime-show-description "cl" 0 "*SLIME Description*" umemo-make-entry-name:slime)
   (define-usage-memo describe-function "elisp" 0 "*Help*")
-  (define-usage-memo describe-variable "elisp" 0 "*Help*"))
+  (define-usage-memo describe-variable "elisp" 0 "*Help*")
+  (define-usage-memo describe-mode "elisp" 0 "*Help*"
+    (lambda (arg) major-mode)))
 
 ;; (ad-delete 'slime-describe-symbol 'around 'usage-memo)
 

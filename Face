@@ -38,6 +38,22 @@ Is it possible to add the `invisible' property to a face?  I want to be able to 
 : No, because `face' and `invisible' are different text properties.  The `face' property can have a value such as `bold', and the `invisible' porperty can have a value such as `t'.  But there is no face that makes text invisible.  Adding such a face was discussed on emacs-devel.  You can emulate such a thing though with some elisp.
 See the EmacsManual (`<code>C-h i RET g (emacs)faces RET</code>') -- AlexSchroeder
 
+[new]
+Is it possible to undefine a face, using something like `<code>makunbound</code>'? I'd like to experiment with different calls to defface, but only the first one takes effect. -- EthanGlasserCamp
+
+[new:DrewAdams:2010-03-23 06:02 UTC]
+It probably is possible, but I don't know how. You can look in library ##faces.el##, but you might also need to check some C code. Dunno.
+
+But what you describe needing is not really to undefine a face in the sense of `makunbound' (so that `facep' will return `nil') but simply to either (a) redefine it or (b) set all of its attributes to `undefined'.
+
+For (a), you can just put the cursor inside a given `defface' definition for the face and then hit `C-M-x' to put that definition into effect. This is just like using `C-M-x' on a `defun'.
+
+For (b), you can use `set-face-attribute' or you can just do ''either'' of these, where `the-face' is the face for which you want to reset all the attributes to `unspecified':
+
+  M-: (face-spec-reset-face 'the-face)
+  M-: (modify-face 'the-face)
+
+-- DrewAdams
 
 
 ----

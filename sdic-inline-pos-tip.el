@@ -6,7 +6,7 @@
 ;; Maintainer: S. Irie
 ;; Keywords: Tooltip, Dictionary
 
-(defconst sdic-inline-pos-tip-version "0.0.5")
+(defconst sdic-inline-pos-tip-version "0.0.7")
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -30,6 +30,8 @@
 ;; like `rikaichan' Firefox extension, using sdic-inline.el library
 ;; which was written by khiker.
 
+;; *** This program requires pos-tip.el version 0.2.0 or later ***
+
 ;;
 ;; Installation:
 ;;
@@ -46,6 +48,16 @@
 ;;
 
 ;;; History:
+;; 2010-03-23  S. Irie
+;;         * Changed to perform full justification
+;;              (** Require pos-tip.el ver. 0.2.0 or later **)
+;;         * Version 0.0.7
+;;
+;; 2010-03-22  S. Irie
+;;         * Changed to perform word wrap or kinsoku shori
+;;              (** Require pos-tip.el ver. 0.1.8 or later **)
+;;         * Version 0.0.6
+;;
 ;; 2010-03-16  S. Irie
 ;;         * Bug fix
 ;;         * Version 0.0.5
@@ -57,7 +69,7 @@
 ;;
 ;; 2010-03-09  S. Irie
 ;;         * Changed to use `pos-tip-split-string'
-;;              (*Require pos-tip.el ver. 0.1.0 or later*)
+;;              (** Require pos-tip.el ver. 0.1.0 or later **)
 ;;         * Version 0.0.3
 ;;
 ;; 2010-03-08  S. Irie
@@ -69,8 +81,6 @@
 ;;         * Version 0.0.1
 
 ;; ToDo:
-
-;;         * Word wrap
 
 ;;; Code:
 
@@ -132,27 +142,26 @@ See `pos-tip-show' for details.")
 	    (height 0)
 	    ;; "\n" should be propertized by the same face as the text
 	    ;; because their height also affect tooltip height.
-	    (nl (propertize "\n" 'face 'sdic-inline-pos-tip)))
+	    (nl-head (propertize "\n" 'face 'sdic-inline-pos-tip-entry))
+	    (nl-desc (propertize "\n" 'face 'sdic-inline-pos-tip)))
 	(pos-tip-show-no-propertize
 	 ;; Arrange string
 	 (mapconcat
 	  (lambda (item)
-	    (let ((head (sdicf-entry-headword item))
-		  (desc (sdicf-entry-text item)))
-	      (setq width (max (string-width head) width)
-		    height (1+ height))
+	    (let* ((head (sdicf-entry-headword item))
+		   ;; Split and justify the description if longer than max-width
+		   (desc (pos-tip-fill-string (sdicf-entry-text item)
+					      sdic-inline-pos-tip-max-width
+					      1 'full))
+		   (w-h (pos-tip-string-width-height desc)))
+	      ;; Calculate tooltip width and height
+	      (setq width (max width (string-width head) (car w-h))
+		    height (+ height 1 (cdr w-h)))
 	      ;; Propertize entry string by appropriate faces
 	      (concat (propertize head 'face 'sdic-inline-pos-tip-entry)
-		      nl
-		      (mapconcat
-		       (lambda (row)
-			 (setq width (max (string-width row) width)
-			       height (1+ height))
-			 (propertize row 'face 'sdic-inline-pos-tip))
-		       (pos-tip-split-string
-			desc sdic-inline-pos-tip-max-width 1)
-		       nl))))
-	  entry nl)
+		      nl-head
+		      (propertize desc 'face 'sdic-inline-pos-tip))))
+	  entry nl-desc)
 	 ;; Face which specifies tooltip's background color
 	 'sdic-inline-pos-tip
 	 ;; Display current point, then omit POS and WINDOW

@@ -825,6 +825,11 @@ This is using the following config:
 scpwrapper is just a script that converts arguments of the form ##"c:/"## to ##"/cygdrive/c"##.
 
 ----
+
+One of the neat things about using TRAMP via a remote shell, is that emacs will then automatically invoke other remote shell commands directly on that server. e.g. When viewing a remote file, try <code>M-x shell</code>, <code>M-x rgrep</code>, etc...
+
+
+----
 CategoryExternalUtilities
 CategoryFiles
 CategoryRemoteEmacs

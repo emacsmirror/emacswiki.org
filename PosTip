@@ -183,3 +183,6 @@ The function `pos-tip-show-no-propertize' passes a `foreground-color' property t
                               'face `(cons (foreground-color . ,fg) 'pos-tip-temp)))))
 
 Is this a real bug? or is there any better solution? -- SeungcheolJung
+
+[new]
+: Hmm... I can't reproduce such problem. Can you describe more detail? Anyway, your solution isn't good, because it overrides the faces of STRING and `pos-tip-show-no-propertize' always shows tooltip text with `default' face.

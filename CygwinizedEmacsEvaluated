@@ -38,5 +38,14 @@ this should really not be a problem.
 
 So my conclusion is that it's stable and works perfect.
 
+--------
+Just to make sure, this information applies to the X11 Emacs.
+I just downloaded the current (March 2010, v.23.1.10), terminal version (emacs-nox.exe) using
+Cygwin setup to give it a quick try, and found that it runs in the same window as it
+is started from, has no mouse support, and a quick inspection
+indicates that it has lots of deficiencies. See also 
+[[NTEmacsWithCygwin]] and [[CygwinizedEmacsHOWTO]]. 
+-- KristjánJónasson
 ----
 CategoryPorts
+----

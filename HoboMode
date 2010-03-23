@@ -7,4 +7,80 @@ The latest version of Hobo can be found at:
 * http://www.northbound-train.com/emacs.html
 
 ----
+
+	;;; Existential Background:
+	;;
+	;;  Hobo's raison d'être can best be defined in terms of what it's
+	;;  not, and that can best be accomplished by looking at TRAMP
+	;;  (http://tramp.sf.net).  Hobo is the antithesis of what TRAMP
+	;;  stands for (literally): "Transparent Remote Access, Multiple
+	;;  Protocol".  From the TRAMP homepage, TRAMP seeks to provide a way
+	;;
+	;;      to access files on remote machines as though they were
+	;;      local. Access to the remote file system for editing files,
+	;;      version control, and dired are transparently enabled.  Your
+	;;      access to the remote machine can be with the rsh, rlogin,
+	;;      telnet programs or with any similar connection method.
+	;;
+	;;  Hobo does not provide a transparent interface, nor does it support
+	;;  multiple protocols.  It has no support for version control (and
+	;;  none planned) and no support for dired (though that may come
+	;;  someday).  It has no facility for file completion, does not
+	;;  support any protocols other then 'scp', cannot tell when the file
+	;;  you're visiting has changed on the remote system and cannot be
+	;;  used to edit local files as a different user via 'su'.  If you
+	;;  must have dired, must know when a file changes on the remote
+	;;  system and update the local buffer automatically, need to use rcp
+	;;  and so on, then Hobo is not for you.
+	;;
+	;;  So why use Hobo at all?  A couple of reasons.  With the power and
+	;;  flexibility of TRAMP comes a certain amount of complexity and
+	;;  overhead.  For some uses/users, TRAMP setup and configuration is
+	;;  very straight-forward, but for others it can be quite complex.  In
+	;;  my case the complexity was caused and/or compounded by the
+	;;  protocol I chose (ssh/scp) and the limitations of the available
+	;;  tools for the Win32 platform (the Cygwin version of SSH has ptty
+	;;  problems).
+	;;
+	;;  When I tried & failed recently to get TRAMP to work (my fourth or
+	;;  fifth try), I came to the conclusion that part of the problem, for
+	;;  me, had to do with stuff that I didn't need.  The only thing I
+	;;  wanted was a nice easy way to bring a file located on a remote
+	;;  machine into my local Emacs session, work on it and, when I save
+	;;  it locally, have it automatically go back to the remote system.
+	;;  Everything else that TRAMP does would have been nice, but I could
+	;;  live without it.
+	;;
+	;;  So I wrote Hobo (playing on the vagabond definition of tramp; I'm
+	;;  sure I could have had more fun with some other definitions :).
+	;;  It's basic and straight-forward, there's very little setup or
+	;;  configuration and it works.  And that for me was the most
+	;;  important thing.
+	;;
+	;;  There are a couple of things that Hobo has that TRAMP doesn't (at
+	;;  least that I know of).  One is the concept of aliases, where
+	;;  instead of typing in "user@some.host.com:/some/default/path", you
+	;;  can store all of that in an alias called "foo" and then just
+	;;  provide "foo" as the connection info.  See `hobo-alias-alist' and
+	;;  `hobo-find-file' for more info.
+	;;
+	;;  The second feature that Hobo has that TRAMP does not is the
+	;;  ability to save the file locally and NOT transmit it back to the
+	;;  remote site.  Ok, it's not earth-shattering, but it is something.
+
+	;;; Statement of intent re: TRAMP
+	;;
+	;;  Just to be clear, Hobo will never be anything more than a
+	;;  utilitarian replacement for TRAMP.  Hobo is the bottem-end
+	;;  sub-compact to TRAMP's ultra-high-end SUV.  The sub-compact is
+	;;  cheap, easy to use, and reliable, but lacking in comfort features.
+	;;  The SUV is powerful, fun, and much more feature-rich, but requires
+	;;  lots of resources and some TLC.  Both have their place.  Sure, the
+	;;  sub-compact will get you where you need to be if you're desperate
+	;;  and can't get the SUV started because it's out of gas or in the
+	;;  shop.  But honestly, wouldn't you rather be driving around in the
+	;;  SUV?
+
+
+----
 CategoryFiles CategoryExternalUtilities CategoryRemoteEmacs

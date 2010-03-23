@@ -3,12 +3,13 @@ For precompiled versions and instructions on how to build see CategoryWThirtyTwo
 
 Why use NTEmacs with Cygwin?
 
-Because Cygwin is wonderful ... but the Emacs that comes with it suffers from a few problems:
+Because Cygwin is wonderful ... but the Emacsen that come with it suffer from a few problems:
 * It's kinda slow (although recent Cygwin builds of X seem faster -- 4.3.0-61, e.g.)
-* I can't remember specific details, but I'm pretty sure the Cygwin X server is unreliable
-* Using it under the Win32 console, as opposed to under X, is too painful, since the Meta key doesn't work properly (see CygwinMeta).
+* "I can't remember specific details, but I'm pretty sure the Cygwin X server is unreliable" (according to the original author of this page)
+* Using it under the Win32 console, as opposed to under X, is too painful, since there is no mouse support and the Meta key doesn't work properly (see CygwinMeta).
 
-So I find myself using venerable NTEmacs, which is a native Win32 app (hence fast) with the Cygwin tools.
+So I find myself using venerable NTEmacs, which is a native Win32 app (hence fast) with the Cygwin tools (again by the first author).
+The second editor of this page uses NTEmacs quite successfully with Cygwin with little changes.
 
 The following code will produce a reasonable approximation of Unix Emacs on NT:
 
@@ -49,6 +50,14 @@ Note that this is substantially the same as the bit of code given in
 the Cygwin FAQ: http://www.cygwin.com/faq/faq_3.html#SEC63
 
 See CustomizingBoth to get fancier.
+
+
+[new:DrewAdams:2010-03-22 21:29 UTC]
+FWIW, I have been using Cygwin with vanilla native GnuEmacs on Windows for years. To do that, I just load <tt>[[cygwin-mount.el]]</tt> and <tt>[[setup-cygwin.el]]</tt>, in that order.
+
+EliZaretskii, who is very knowledgable about Emacs on Windows (among other things), advises against doing that, however. I don't make heavy use of Cygwin, and I don't use it much outside Emacs, so maybe that's why I've never encountered a problem. HTH -- DrewAdams
+
+
 
 == Problems ==
 summary: cmd.exe can't deal with cygwin 'links'.

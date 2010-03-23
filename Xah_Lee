@@ -1,30 +1,37 @@
-My name is Xah Lee.  I use Emacs, and have since 1997, daily, and love it.
+My name is Xah Lee.  I use Emacs, and have since 1997, live in emacs daily since 1998, and love it.
 
 I have some emacs and elisp tutorial here:
 
-* http://xahlee.org/emacs/emacs.html
-* http://xahlee.org/emacs/elisp.html
+* [[http://xahlee.org/emacs/emacs.html Xah's Emacs Tutorial]]
+* [[http://xahlee.org/emacs/elisp.html Xah's Emacs Lisp Tutorial]]
 
 Here's some elisp code i wrote:
 
-* A emacs keybinding set based on ergonomics. Google Code url: [[http://code.google.com/p/ergoemacs/ Ergoemacs]]
-* xlsl-mode, a mode for Linden Scripting Language. Google Code url: [[http://code.google.com/p/lsl-mode/ xlsl-mode]]. Emacs wiki page here: [[LSLMode]]
+* ErgoEmacs. A emacs distribution, together with David Capello. Download at [[http://ergoemacs.org/ ergoemacs.org]].
+* ErgoEmacs Keybinding. A emacs keybinding set based on ergonomics. Download at [[http://xahlee.org/emacs/ergonomic_emacs_keybinding.html ErgoEmacs Keybinding home]].
+* bbcode mode (xbbcode-mode). For editing lighweight markup BBCode. Download at [[http://xahlee.org/emacs/xbbcode-mode.html xbbcode-mode home]].
+* AutoHotKey mode (xahk-mode). A mode for editing AutoHotKey script. Download at [[http://xahlee.org/mswin/emacs_autohotkey_mode.html xahk-mode home]].
+* LSL mode (xlsl-mode). A mode for editing Linden Scripting Language. Download at [[http://code.google.com/p/lsl-mode/ xlsl-mode home]]. Emacs wiki page here: [[LSLMode]]
 
-I am a mild supporter of FSF/GNU. I urge programers to take a class in college on sociology, economics, history, philosophy. (or, read some *text book* on these, as opposed to prose work on these subjects or science fiction.) Most Open Sourcers are basically poor ignorant youngsters who's got nothing to loose and “freedom” is just their brand to get ahead of the world for themselves. (freedom fighters are almost always losers to begin with, and invariably they are the primary beneficiary of the “freedom” they clamour.)
+I am a mild supporter of FSF/GNU. I urge programers to take a class in college on sociology, economics, history, philosophy.
+
+Most Open Source or FSF proponents are youngsters who's got nothing to loose, and “freedom” is just their execuse to advance their self interests. (freedom fighters are almost always losers to begin with, and invariably they are the primary beneficiary of the “freedom” they clamour. When you are poor, student, no ability or interest in business, then, you are likely to love opinions advanced by orgnization such as FSF, e.g. no patent, open source. But if you do have business abilities, have commercially valuable software, have patents, you are not likely to believe in FSF's ideas. Most FSF fans are just another selfish person doing [[http://xahlee.org/Netiquette_dir/hackernews_xahleeorg_politics.html politics]], really nothing unusual when compared to the history of human animals (all the political upheavals, revolutions, social movements, ideologies). Also note, Richard Stallman's “Free” software, is just one philosophy on software's distribution and use, among a few. He abuses the word “free” and freely connect it with the concept of Freedom in the context of human rights. FSF's particular philosophy on software use really have little to do with general concept, or importance, of Human Rights or Freedom. The moral concept of “Human Rights” itself is just one among many philosophies.)
 
 Some essays related to Open Source and IT industry:
 
-• On Microsoft Hatred
-http://xahlee.org/UnixResource_dir/writ/mshatred155.html
+* [[http://xahlee.org/UnixResource_dir/writ/mshatred155.html On Microsoft Hatred]]
 
-• Responsible Licensing
-http://xahlee.org/UnixResource_dir/writ/responsible_license.html
+* [[http://xahlee.org/UnixResource_dir/writ/responsible_license.html Responsible Licensing]]
 
-• What Desires are Politically Important? (by Bertrand Russell)
-http://xahlee.org/Periodic_dosage_dir/_p2/russell-lecture.html
+* [[http://xahlee.org/Periodic_dosage_dir/_p2/russell-lecture.html What Desires are Politically Important?]] (by Bertrand Russell)
 
+Some essay about problems of emacswiki:
 
-== Comment Area ==
+* [[http://xahlee.org/emacs/emacs_wiki_problem.html Problems of Emacswiki]]
+
+Thanks for Alex Schroeder for starting emacswiki, and thanks for visiting my page on emacswiki!
+
+== Comments ==
 
 Hi, Xah.  Wondered if that was really you, based on the initial post. This update removes any doubt --ChristopherSmith. ;)
 
@@ -62,5 +69,4 @@ George
 ----
 
 CategoryHomepage
-
 

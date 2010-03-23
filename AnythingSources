@@ -527,6 +527,10 @@ I use this source to issue rake within Emacs.
 
 -- [[Matsuyama]]
 
+[new:IanYang:2010-03-23 03:53 UTC]
+To use in C++ with namespace, replace ##(string= type "class")## with
+##(or (string= type "class") (string= type "namespace"))##.
+
 == Linemark ==
 
 <pre>

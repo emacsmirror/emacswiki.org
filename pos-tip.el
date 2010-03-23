@@ -6,7 +6,7 @@
 ;; Maintainer: S. Irie
 ;; Keywords: Tooltip
 
-(defconst pos-tip-version "0.1.7")
+(defconst pos-tip-version "0.2.0")
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -54,6 +54,19 @@
 ;;
 
 ;;; History:
+;; 2010-03-23  S. Irie
+;;         * Changed argument WORD-WRAP to JUSTIFY
+;;         * Added optional argument SQUEEZE
+;;         * Added function `pos-tip-fill-string'
+;;         * Added option `pos-tip-tab-width' used to expand tab characters
+;;         * Bug fixes
+;;         * Version 0.2.0
+;;
+;; 2010-03-22  S. Irie
+;;         * Added optional argument WORD-WRAP to `pos-tip-split-string'
+;;         * Changed `pos-tip-show' to perform word wrap or kinsoku shori
+;;         * Version 0.1.8
+;;
 ;; 2010-03-20  S. Irie
 ;;         * Added optional argument DY
 ;;         * Bug fix
@@ -133,6 +146,10 @@
 
 (defvar pos-tip-background-color "lightyellow"
   "Default background color of pos-tip's tooltip.")
+
+(defvar pos-tip-tab-width nil
+  "Tab width used by `pos-tip-split-string' and `pos-tip-fill-string'.
+nil means use default value of `tab-width'.")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Functions
@@ -368,39 +385,86 @@ Example:
 	(pos-tip-cancel-timer))
     (cons rx ry)))
 
-(defun pos-tip-split-string (string &optional max-width left-margin)
+(defun pos-tip-split-string (string &optional width margin justify squeeze)
   "Split STRING into fixed width strings. Return a list of these strings.
 
-MAX-WIDTH specifies maximum column number of each row. MAX-WIDTH nil means
-use display-width. Note that this function doesn't add any padding characters
-at the end of the result.
+WIDTH specifies the width of filling each paragraph. WIDTH nil means use
+display width. Note that this function doesn't add any padding characters at
+the end of each row.
 
-The optional 3rd arg LEFT-MARGIN, if non-nil, specifies number of spece
-characters to add at the beginning of each row."
-  (let* ((display-width (/ (x-display-pixel-width) (frame-char-width)))
-	 (width (or (and max-width
-			 (min max-width display-width))
-		    display-width))
-	 (margin (and left-margin
-		      (make-string left-margin ?\s)))
-	 line row rows)
-    (with-temp-buffer
+MARGIN, if non-nil, specifies left margin width which is the number of spece
+characters to add at the beginning of each row.
+
+The optional fourth argument JUSTIFY specifies which kind of justification
+to do: `full', `left', `right', `center', or `none'. A value of t means handle
+each paragraph as specified by its text properties. Omitting JUSTIFY means
+don't perform justification, word wrap and kinsoku shori (禁則処理).
+
+SQUEEZE nil means leave whitespaces other than line breaks untouched."
+  (with-temp-buffer
+    (let* ((display-width (/ (x-display-pixel-width) (frame-char-width)))
+	   (tab-width (or pos-tip-tab-width tab-width))
+	   (fill-column (if width
+			    (min width display-width)
+			  display-width))
+	   (left-margin (or margin 0))
+	   (kinsoku-limit 1)
+	   indent-tabs-mode
+	   row rows)
       (insert string)
+      (untabify (point-min) (point-max))
+      (if word-wrap
+	  (fill-region (point-min) (point-max) justify (not squeeze))
+	(setq margin (make-string left-margin ?\s)))
       (goto-char (point-min))
-      (end-of-line)
       (while (prog2
-		 (let ((string (buffer-substring
-				(line-beginning-position) (point))))
-		   (while (progn
-			    (setq string (concat margin string)
-				  row (truncate-string-to-width string width)
-				  rows (cons row rows))
-			    (if (not (= (length row) (length string)))
-				(setq string (substring string (length row)))))))
+		 (let ((line (buffer-substring
+			      (point) (progn (end-of-line) (point)))))
+		   (if word-wrap
+		       (push line rows)
+		     (while (progn
+			      (setq line (concat margin line)
+				    row (truncate-string-to-width line fill-column))
+			      (push row rows)
+			      (if (not (= (length row) (length line)))
+				  (setq line (substring line (length row))))))))
 		 (< (point) (point-max))
-	       (end-of-line 2))))
-    (nreverse rows)))
+	       (beginning-of-line 2)))
+      (nreverse rows))))
 
+(defun pos-tip-fill-string (string &optional width margin justify squeeze)
+  "Fill each of the paragraphs in STRING.
+
+WIDTH specifies the width of filling each paragraph. WIDTH nil means use
+display width. Note that this function doesn't add any padding characters at
+the end of each row.
+
+MARGIN, if non-nil, specifies left margin width which is the number of spece
+characters to add at the beginning of each row.
+
+The optional fourth argument JUSTIFY specifies which kind of justification
+to do: `full', `left', `right', `center', or `none'. A value of t means handle
+each paragraph as specified by its text properties. Omitting JUSTIFY means
+don't perform justification, word wrap and kinsoku shori (禁則処理).
+
+SQUEEZE nil means leave whitespaces other than line breaks untouched."
+  (if justify
+      (with-temp-buffer
+	(let* ((display-width (/ (x-display-pixel-width) (frame-char-width)))
+	       (tab-width (or pos-tip-tab-width tab-width))
+	       (fill-column (if width
+				(min width display-width)
+			      display-width))
+	       (left-margin (or margin 0))
+	       (kinsoku-limit 1)
+	       indent-tabs-mode)
+	  (insert string)
+	  (untabify (point-min) (point-max))
+	  (fill-region (point-min) (point-max) justify (not squeeze))
+	  (buffer-string)))
+    (mapconcat 'identity
+	       (pos-tip-split-string string width margin)
+	       "\n")))
 
 (defun pos-tip-string-width-height (string)
   "Count columns and rows of STRING. Return a cons cell like (WIDTH . HEIGHT).
@@ -446,7 +510,7 @@ Example:
 (make-face 'pos-tip-temp)
 
 (defun pos-tip-show
-  (string &optional tip-color pos window timeout max-width frame-coordinates dx dy)
+  (string &optional tip-color pos window timeout width frame-coordinates dx dy)
   "Show STRING in a tooltip, which is a small X window, at POS in WINDOW
 using frame's default font with TIP-COLOR.
 
@@ -465,7 +529,7 @@ Automatically hide the tooltip after TIMEOUT seconds. Omitting TIMEOUT means
 use the default timeout of 5 seconds. Non-positive TIMEOUT means don't hide
 tooltip automatically.
 
-MAX-WIDTH specifies the maximum number of columns, if non-nil.
+WIDTH, if non-nil, specifies the width of filling each paragraph.
 
 If FRAME-COORDINATES is omitted, automatically obtain the absolute
 coordinates of the top left corner of frame which WINDOW is on. Here,
@@ -484,13 +548,10 @@ object at POS and show tooltip at appropriate location not to hide the
 object.
 
 See also `pos-tip-show-no-propertize'."
+  (if width
+      (setq string (pos-tip-fill-string string width nil 'none)))
   (let ((frame (window-frame (or window (selected-window))))
-	(w-h (if max-width
-		 (let ((rows (pos-tip-split-string string max-width)))
-		   (setq string (mapconcat 'identity rows "\n"))
-		   (cons (apply 'max (mapcar 'length rows))
-			 (length rows)))
-	       (pos-tip-string-width-height string))))
+	(w-h (pos-tip-string-width-height string)))
     (face-spec-reset-face 'pos-tip-temp)
     (set-face-font 'pos-tip-temp (frame-parameter frame 'font))
     (pos-tip-show-no-propertize

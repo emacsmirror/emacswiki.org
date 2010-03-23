@@ -9,14 +9,13 @@ Note that this page is not about EmacsWikiMode.
 '''Add your problem descriptions below this line'''
 
 ----
-== Homepage rolled back after I edited/updated it ==
 
-I updated my homepage. Rolled back by an admin. So I saved the correct revision. How do I avoid the rollback, the false assumption "this is spam?"
+== Apostrophes etc. not prettified in links ==
 
-[new:DrewAdams:2010-03-22 07:59 UTC]
-Are you SteveTaylor? I rolled back changes that I thought were spam. I probably didn't read the diff carefully enough. I think I probably just saw the non-Emacs http URL and jumped to a wrong conclusion. Sorry for the mistake. -- DrewAdams
+* ##ain't -- it -- "nice"## => ain't -- it -- "nice"
+* ##[EmacsWikiProblems ain't -- it -- "nice"]## => [EmacsWikiProblems ain't -- it -- "nice"]
 
-
+The link text retains its crude ASCII formatting. -- VegardOye
 
 == Internal Server Errors When Try to Save a Page ==
 
@@ -45,46 +44,6 @@ Are the changes from 21:40 UTC -> 21:55 UTC your attempts to reproduce the probl
 If not then the 20+ uploads between then 20:48 and 21:16 UTC may be more than this little wiki can handle.
 Weird internal server errors can also indicate a looming hard-disk failure...  --[[mon_key]]
 
-== Elisp Alphabetic Index is in Catalan? ==
-
-I use IE 6, with Google toolbar. When I visit a Web page in some language other than English, a bar pops up with a `Translate' button. That is happening now on the Elisp page with alphabetic sorting [http://www.emacswiki.org/cgi-bin/wiki?action=index;match=%5C.(el%7Ctar)(%5C.gz)%3F%24] -- the bar says that the page is in "Catalan (Spain)". The page appears to be in English, however. Dunno if this is a wiki problem, an IE problem, or a Google toolbar problem, but I thought I'd mention it. This problem just started. -- DrewAdams
-
-[new]
-My guess is all the "el" articles! :)
-
-On a more technical note, it's true that the wiki engine tries to guess the language(s) of the wiki page so that RecentChanges can be filtered, but this meta information is not added to the page HTML itself. Thus whatever you're seeing is not using any broken language guessing of our own. -- AlexSchroeder
-
-
-[new:DrewAdams:2009-12-03 01:39 UTC]
-That's interesting :-). Thanks for taking a look at it. It's odd that it just started, but maybe there is one `el' more than some threshold now, or maybe Google updated the toolbar so that changed things. You can close this "problem", in any case. -- DrewAdams
-
-== (Minor) Problem(?) with user names on RecentChanges ==
-
-Click the link for ##José Alfredo Romero L.## on RecentChanges ---e.g. for 2009-11-11, ##13:37 UTC (new) (history) sunrise-x-tabs.el . . . . José Alfredo Romero L. – Added source for the sunrise-x-tabs extension. [en]##
-
-You get to the normal "This page does not exist" page, but the link to create it has this text: <tt>This page does not exist, but you can __[Self:action=edit;id=Jos%c3%a9_Alfredo_Romero_L.__ create it now].</tt> I underlined the link part. -- DrewAdams
-
-[new]
-Indeed. Thanks for reporting it. Hopefully fixed. -- AlexSchroeder
-
-== Problems with Download Link ==
-
-I found, now in lisp el page, e.g. http://www.emacswiki.org/emacs/tie-mode.el, there have a download button, not a download link, 
-but It does not work in IE and firefox browser, I have to first edit page, then copy it. also, I think a download link is better than 
-a download button, because we can copy link url easily, then use other download tool, e.g. wget. -- [[ahei]]
-
-[new:DrewAdams:2009-11-04 05:10 UTC]
-(Ahei reported this problem on page DoReMi. Dunno why he posted it there, but I moved it here. -- DrewAdams)
-
-[new:DrewAdams:2009-11-21 10:28 UTC]
-I can confirm the problem [[ahei]] reports: the ##Download## link/button does not work for IE (IE 6, in any case). What was the reason we switched from a textual link to the giant button? -- DrewAdams
-
-[new]
-The reason I added it was [http://www.emacswiki.org/emacs/EmacsWikiSuggestions#toc10 a suggestion regarding download links]. The simple links were considered "a little too easy to ignore and accidentally scroll past" -- so I started looking for some HTML markup that wasn't as ugly as the proposed green table. I'll use an ordinary link with some CSS. As soon as you upload a new revision of the elisp file, the button markup should be replaced with what you see [http://www.emacswiki.org/emacs/AlexSchroederErcConfig?cache=0 in this example with cache disabled]. -- AlexSchroeder
-
-[new:DrewAdams:2009-11-22 01:17 UTC]
-Thanks; it works for me. -- DrewAdams
-
 == Cannot Download Previous Versions of a File ==
 
 At this page, I click the `Download' link, and I get this message:
@@ -109,6 +68,8 @@ Alex, did you accidently restore some old version of the wiki software? -- Lenna
 [new:DrewAdams:2009-12-27 00:28 UTC]
 It seems that page still has the old (less new) Download button. Alex, can you run some script to update all of the Elisp pages so they use your new pseudo-button? If not, what do we need to do? Do we need to edit each library with a fictitious change and then save? That will take quite a while. Thx -- DrewAdams
 
+[new]
+I deleted the cached HTML for each page. It'll be regenerated as people visit the pages, and therefore all these download links will be fixed. Theoretically it is possible that pages that haven't been changed in years now look different because the markup rules might have changed since their cached HTML has last been generated. Those pages would have changed anyway once somebody edited them. -- AlexSchroeder
 
 [:StalePagesServed]
 == Browser Cache Not Refreshed - Stale Pages Served ==
@@ -138,87 +99,18 @@ If you look at the revisions of BookmarkPlus between Revision 53 and Revision 58
 I used to think this problem had something to do with the browser cache, but now I'm thinking it has something to do with major and minor edits. HTH. -- DrewAdams
 
 
+[new:DrewAdams:2010-03-22 17:24 UTC]
+Dunno if this is strictly related to the browser cache problem that I've been assuming exists, but there is a fine example of losing page updates that just occurred. See the revisions of this very page, EmacsWikiProblems, today.
 
-== Cannot save pages ==
+You'll see that this sequence of events took place:
 
-I cannot save page Lisp:icicles-cmd.el (which has been replaced by other files) after replacing the content. I replaced all of the content by ##DeletedPage## and tried to save. I see only a blank page with this URL in the address field: http://www.emacswiki.org/cgi-bin/emacs. And the save never took place. I tried saving again, but was told the wiki was locked. I unlocked the wiki and tried again. Same thing. Did this a couple of times. Tried previewing first; still no luck. Apparently it's impossible to save and thus delete the page. 
+# I updated the page to reply to SteveTaylor about the mistaken rollback: revision 608.
+# VegardOye updated the page to add a new item: revision 609.
 
-I then had the same problem trying to save this page, with this new entry. Unlocking the wiki didn't help. Eventually I succeeded in saving this page, after unlocking several times, but I still can't save the updated (DeletedPage) file Lisp:icicles-cmd.el. -- DrewAdams
-
-[new:DrewAdams:2009-05-22 22:26 UTC]
-Now I'm seeing the same thing for other files -- e.g. Lisp:icicles-mode.el. The problem is not deleting pages but saving pages. Cannot make a small change and then save it. The save seems to abort (?) -- I just see a blank white browser window, and the page never comes back. And the wiki gets locked. -- DrewAdams
-
-[new]
-I'm not sure what causes this. It must be rather new. I wonder whether the host has installed something new or fiddled with the webserver configuration. Right now I cannot reproduce it. :( -- AlexSchroeder
-
-[new:DrewAdams:2009-05-23 14:05 UTC]
-It's very simple to reproduce -- in fact, it's impossible not to reproduce. Edit this page (file): Lisp:icicles-cmd.el. Replace all of the code by this: ##DeletedPage##. Try to save. I get the symptom described above or this is displayed:
-
-: The XML page cannot be displayed 
-: Cannot view XML input using style sheet. Please correct the error and then click the Refresh button, or try again later. 
-
-  --------------------------------------------------------------------------------
-
-: The server did not understand the request, or the request was invalid. Error processing resource 'http://www.w3.org/TR/xhtm...
-
-And the wiki becomes locked. Perhaps it has to do with the size of the delta: from a large file down to almost nothing. (I'm splitting the file because a small addition to it made it too large to save.) -- DrewAdams
+Vegard's update wiped out my previous update. -- DrewAdams
 
 [new]
-I found the following in my cgi-bin/.htaccess file and commented it out:
-
-{{{
-# about 50MB should be enough (reading log files and all that)
-RLimitMEM 50000000
-}}}
-
-Apparently everything seems to work right now. I'm just surprised that
-we're hitting a 50MB RAM limit.
-
-In the process of trying to figure out what caused the problem I disabled the elisp fontification.
-Does anybody think the fontification of Elisp Code is valuable? I'm inclined
-to leave it deactivated. I know I never read source code on the web
-pages themselves unless it's very short and embedded into some explanatory text.
-The only value of displaying source files at all is to make them visible to search engines, I think. -- AlexSchroeder
-
-[new:DrewAdams:2009-05-23 23:17 UTC]
-''Thanks!''
-
-Yes, I sometimes look at a new Lisp page before deciding whether to download it. The fontification helps -- at least for comments and doc strings. But I don't feel strongly about it. Thanks again for the prompt fix. -- DrewAdams
-
-[new]
-Fontification is back, as bad as it is. :) -- AlexSchroeder
-
-[new:DrewAdams:2009-05-24 02:22 UTC]
-Thx -- DrewAdams
-
-
-
-== No Longer See Tooltip for [new:YourName:2009-03-30 21:07 UTC] ==
-
-At least on IE6, Google Chrome, and FireFox, I no longer see a tooltip displayed when I mouseover a [new:YourName:2009-03-30 21:07 UTC] entry. Dunno when this broke. It works only when there is a portrait. -- DrewAdams
-
-[new:Alex:2009-03-31]
-I'm not sure what you mean. I'm interpreting that you think it should also work when there is no portrait. But in those cases there is no image to mouseover. Do you think there was a title attribute on the div itself instead of the image in those cases? I don't think that was ever the case. -- AlexSchroeder
-
-[new:DrewAdams:2009-03-31 14:48 UTC]
-Yes, I thought so. Maybe I misremember, but I thought that mousing over the shaded area would show the tooltip. Anyway, not important. -- DrewAdams
-
-== Title of Recent-Changes Pages ==
-
-The page title for RecentChanges is still '''%%RecentChanges%%''', but if you click any of the links such as '''Include rollbacks''', '''Include minor changes''', and '''List later changes''', the page title now changes to '''All Changes for SiteMap'''. This is new. And that same (inaccurate) title is used when you click different such links -- it doesn't seem to distinguish anything. -- DrewAdams
-
-[new]
-Thanks for spotting this. I'll fix that ASAP. A recent change to the cookie handling code had several unintended consequences that my test suite did not pick up. :) -- AlexSchroeder
-
-[new:DrewAdams:2009-03-16 20:50 UTC]
-Thanks for the quick fix. -- DrewAdams
-
-== Visible permanent anchors go only to the page, not to the anchor ==
-
-I thought that this worked before, but perhaps it never worked.  When you follow a link ##[[foobar]]## to a permanent anchor defined using ##[::foobar]##, the URL produced uses ''##<pageURL>##''###foobar##, but that anchor is not the destination, at least in IE 6. Instead, the top of the (destination) page is shown. For example, just open this MyVisibleAnchor link in another window. You will see the top of the page PermanentAnchors, not the part of the page where the anchor is. -- DrewAdams
-
-[new]
-Hm. It works for me. Are you sure your browser window is small enough? If your window is big, and the target page is small, then there's no way the browser can "scroll down" to the named anchor. -- AlexSchroeder
+Hm, maybe this is unrelated. Possibly it just took him more than nine minutes to edit the page before he saved it? Perhaps diff3 will sometimes merge things and drop changes without marking them as a conflict? Or he used a raw client that interacts with the wiki text directly, didn't post back the last modification date, thus diff3 was unable to determine the ancestor for conflict resolution, and he ended up overwriting what you had done. I think the caching problem you reported earlier is something else (and much trickier, apparently). -- AlexSchroeder
 
 == w3m ==
 
@@ -287,9 +179,10 @@ english pages only, and let each locale deal with the problem
 in the appropriate way. Or better, just leave the ~/.emacs references, 
 which do not depend on the locale.
 
-== Search loses Username ==
-
-I searched for "viper", then clicked ViperMode. I edited the page, and my name was lost from the Username field (didn't notice at the time). -- DrewAdams
+[new]
+Yeah, I'm not a big fan of large-scale changes myself. Hopefully that
+person used a user name while doing the changes and then you can contact
+them on their name page? -- AlexSchroeder
 
 == RecentChanges doesn't reflect recent changes ==
 
@@ -298,70 +191,6 @@ I just edited and saved a reply someone posted at DrewsElispLibraries. I refrefr
 == Rogue file in Elisp area ==
 
 I noticed by accident that there is a file Lisp:find-dired++.el listed in the Elisp area. But clicking on it brings up a blank page -- no header, nothing. I imagine that it can be deleted, but I don't know how to delete it. (Please don't delete the similarly named <tt>[[find-dired+.el]]</tt>.) -- DrewAdams
-
-== Saving EmacsLisp file changes its name ==
-
-I go to ##http://www.emacswiki.org/cgi-bin/wiki/## type ##help+20.el## at the end, hit return, and it says that it is at page ##help+20.el##, as I expect. I edit (create) the page, which contains a Lisp library. I save. The page was renamed to ##help 20.el## (with a space). That name is useless, and it doesn't correspond to the library name. 
-
-This is a new problem. I have other libraries (e.g. Lisp:compile+20.el) that I created similarly. This is a problem for me. -- DrewAdams
-
-[new:DrewAdams:2007-12-14 17:42 UTC]
-I was able to work around the bug, by seeing what the URL for editing Lisp:compile+20.el is and using a similar URL to edit (create) Lisp:help+20.el.  The bug is that when you try to edit the new page, the URL does not use ##%2b## in place of ##+##, so it effectively renames the page, replacing a ##+## with a space character. -- DrewAdams
-
-[new]
-I think there is nothing I can do about it. In URL keywords and parameters, the + does in fact encode a space. Repeat the same procedure but use a question mark at the end: ##http://www.emacswiki.org/cgi-bin/wiki?## -- you'll see that you will end up on ##help 20.el## instead! The only safe way to create a page is by creating a link to the page first, and then following the link. Theoretically you have the same problem with non-ASCII characters. Assume you type an URL containing "Schröder" into the address bar of your newly started browser. Since the standard says you have to encode the ö, and since you haven't visited an page yet, the browser must guess the encoding system. But every website is free to pick Latin-1, UTF-8, Shift-JIS, or any other encoding system. There's no way for the browser to do the right thing as long as the user is allowed to type the URL directly.
-
-That's why I think this is not worth fixing. If creating a link to the new page and following the link does not work for you, then it's a bug. Until then... it's an artifact of the exposure of low-level infrastructure using tricky protocols to humans. It works 80% of the time if you're an English speaker, but I'm not going to encourage anybody to do it. -- AlexSchroeder
-
-[new:DrewAdams:2007-12-16 00:22 UTC]
-OK, thanks for the explanation. That works for me. I wonder if there might be some (easy) way to let someone know that the saved name changed (or will change, before you save?). If there's no easy way to do that, don't worry about it; I understand what you're saying. Thx -- DrewAdams
-
-[new:DrewAdams:2007-12-25 23:10 UTC]
-FWIW -- Using the '''Edit this page''' link at the page bottom does not manifest the problem. It is only the '''create it now''' link that has the problem. -- DrewAdams
-
-[new]
-Hopefully fixed now. Thanks for spotting it. -- AlexSchroeder
-
-== Upload ==
-
-Tried to upload a tar.gz file (consisting of linkd.el & its associated icons) and got the error "Files of type application/gzip are not allowed." Do I really have to find somewhere else for this? -- ShaunJohnson
-
-[new]
-Check out Self:action=mimetypes for the supported ones. I added more to that list. -- Alex
-
-[new]
-Thanks, works fine now. -- ShaunJohnson.
-
-== Search lists non-English pages in English ==
-
-I searched for "##helpplus##".  I got hits such as this:
-
-* EmacsWiki: HelpPlusHelpPlus · DrewAdams has written library help+.el, which provides various enhancements to the help that is built into Emacs. This library works with Emacs ...
-www.emacswiki.org/cgi-bin/emacs-fr/HelpPlus - 14k - Cached 
-
-* EmacsWiki: HelpFnsPlusHelpModePlus – extensions to standard library ‘help-mode’; HelpMenuBarPlus – extensions to the MenuBar Help menu; HelpPlus – similar to Lisp:help-fns+.el, ...
-www.emacswiki.org/cgi-bin/emacs-se/HelpFnsPlus - 9k - Cached 
-
-It's not obvious that these pages are accessed in French and Swedish, since the text is in English. I guess you need to notice the `##-fr##' and `##-se##' in the URLs. I visited the second one, didn't notice anything special at first, and then was surprised to see "Redigera sidan" in place of "Edit this page".
-
-Perhaps we need a third radio button for Search that will find only pages in the current language (and that would be the default). Maybe this problem is not new, but I never noticed it before -- perhaps because of the way search hits are now sorted (?). 
-
-BTW -- How to get to the corresponding English page from a non-English page? And how to get back into English once the pages are coming up in some other language? -- DrewAdams
-
-[new]
-Right now Emacs Wiki has two ways to determine the interface language: The URL if you use ##/cgi-bin/emacs-XX## where XX is a language code, or your browser language preferences if you use ##/cgi-bin/emacs## or ##/cgi-bin/wiki##. On http://www.oddmuse.org/ I've been testing a different implementation that relies on cookies. Maybe I'll install it for EmacsWiki as well. Alternatively we figure out how Google identifies the language of a page, or figure out what language Google is asking for (assuming a French googlebot is actually requesting French pages)... Or we figure out a way to tell Google what the "canonical" page is... Now that we're tied more intimately to Google we're realizing that not all problems have gone away. :) -- Alex
-
-[new:DrewAdams:2007-11-23 01:31 UTC]
-Yeah, I kinda figured this was due to the switch to Google. I hope a solution can be found, since search is important and the move to Google is otherwise a great improvement. -- DrewAdams
-
-[new:DrewAdams:2007-12-08 17:42 UTC]
-Still hoping this can be fixed. We've lost an important functionality (while gaining another with Google search). -- DrewAdams
-
-[new:AlexSchroeder:2007-12-09 09:49 UTC]
-I guess one solution would be to only index pages whose URL ends in "wiki", meaning that the interface language will be determined by the user once he clicks on the link. I'll try that and we'll see how good it is. -- AlexSchroeder
-
-[new:DrewAdams:2007-12-15 19:28 UTC]
-Seems to fix it. Haven't yet noticed any drawbacks. Thanks. -- DrewAdams
 
 == TOC heading in wrong language ==
 
@@ -404,6 +233,9 @@ Alright, I'll just use `C-m C-i'.  I'll have to try and find time to investigate
 This might not be the best setup, Google-juice-wise. Permanently redirecting from one to the other seems like the way to go.
 
 Additionally, even with a domain, pages lack a canonical URI; ##/cgi-bin/emacs/foo##, ##/cgi-bin/emacs-en/foo##, and ##/cgi-bin/wiki/foo## all work. I suggest redirecting all of those to ##/wiki/foo##.
+
+[new]
+Yeah, I think you're right. I'm not comfortable enough with mod_alias, mod_rewrite, and all those and I don't have an automated test suite that would point out how changes to .htaccess are affecting the site. That's why I hesitate to fix these. -- AlexSchroeder
 
 == emacswiki and w3m ==
 
@@ -513,6 +345,9 @@ When I look at the RSS feed, I get to see the latest revision of the page. I mus
 == File type "data" ==
 
 file (see man file) returns "Lisp/Scheme program text" for most of the hosted libraries. However for Lisp:cscope.el, Lisp:less.el, Lisp:php-completion.el and Lisp:rcirc.el it returns "data". The files look okay at first glance. Might there be a problem with encoding? What else? Could this possibly be fixed by simply editing and resaving these files? The page BuildingEmacsWithMinGW is also reported as "data". This problem occurs regardless whether I download the file manually or get it using the subversion mirror.  -- JonasBernoulli
+
+[new]
+Well, I don't understand what file(1) actually does -- all I know is that it's unrelated to Emacs Wiki itself. I'm assuming that these files either contain non-ASCII bytes that throw file(1) off (page feed ^L? Latin-1 characters? wrong end of line encoding?). There's nothing I can do about that. -- AlexSchroeder
 
 == Empty files in subversion mirror ==
 

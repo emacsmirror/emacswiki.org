@@ -1,7 +1,7 @@
 ;;; lispxmp.el --- Automagic emacs lisp code annotation
-;; $Id: lispxmp.el,v 1.9 2009/03/17 09:23:41 rubikitch Exp $
+;; $Id: lispxmp.el,v 1.11 2010/03/23 03:17:57 rubikitch Exp $
 
-;; Copyright (C) 2009  rubikitch
+;; Copyright (C) 2009, 2010  rubikitch
 
 ;; Author: rubikitch <rubikitch@ruby-lang.org>
 ;; Keywords: lisp, convenience
@@ -82,8 +82,14 @@
 ;;; History:
 
 ;; $Log: lispxmp.el,v $
+;; Revision 1.11  2010/03/23 03:17:57  rubikitch
+;; `lispxmp-comment-advice': tiny bug fix
+;;
+;; Revision 1.10  2010/03/20 21:31:37  rubikitch
+;; `=>' check in `comment-dwim' and `paredit-comment-dwim' advice
+;;
 ;; Revision 1.9  2009/03/17 09:23:41  rubikitch
-;; Enter debugger if debug-on-error is non-nil.
+;; Enter debugger if `debug-on-error' is non-nil.
 ;;
 ;; Revision 1.8  2009/03/17 08:42:38  rubikitch
 ;; *** empty log message ***
@@ -112,7 +118,7 @@
 
 ;;; Code:
 
-(defvar lispxmp-version "$Id: lispxmp.el,v 1.9 2009/03/17 09:23:41 rubikitch Exp $")
+(defvar lispxmp-version "$Id: lispxmp.el,v 1.11 2010/03/23 03:17:57 rubikitch Exp $")
 (require 'cl)
 (require 'newcomment)
 (defgroup lispxmp nil
@@ -204,14 +210,17 @@
   (lispxmp-out-remove))
 ;; (with-new-window (find-epp lispxmp-results))
 
-(defadvice comment-dwim (around lispxmp-hack activate)
-  "If comment-dwim is successively called, add => mark."
-  (if (and (eq major-mode 'emacs-lisp-mode)
-           (eq last-command 'comment-dwim)
-           ;; TODO =>check
-           )
-      (insert " =>")
-    ad-do-it))
+(defmacro lispxmp-comment-advice (func)
+  `(defadvice ,func (around lispxmp-hack activate)
+     ,(format "If `%s' is successively called, add => mark." func)
+     (if (and (eq major-mode 'emacs-lisp-mode)
+              (eq last-command ',func)
+              (not (member "=>" (list (ignore-errors (buffer-substring (- (point) 2) (point)))
+                                      (ignore-errors (buffer-substring (point) (+ (point) 2)))))))
+         (insert " =>")
+       ad-do-it)))
+(lispxmp-comment-advice comment-dwim)
+(lispxmp-comment-advice paredit-comment-dwim)
 
 (provide 'lispxmp)
 

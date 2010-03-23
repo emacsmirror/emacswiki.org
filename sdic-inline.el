@@ -67,7 +67,7 @@
 
 ;;; Variables:
 
-(defconst sdic-inline-version "0.4.1"
+(defconst sdic-inline-version "0.4.2"
   "Version of sdic-inline.")
 
 
@@ -213,7 +213,7 @@ If specified function returns t, sdic-inline-mode is enabled.")
   "Get word under the point."
   (let ((cw (current-word))
         (sw (sdic-word-at-point)))
-    (when (and cw sw)
+    (when (and (string-match "\\w" cw) sw)
       sw)))
 
 (defun sdic-inline-do-search (w)
