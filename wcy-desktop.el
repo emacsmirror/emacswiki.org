@@ -29,7 +29,7 @@
 ;; only loaded after you press any key.
 ;; installation: 
 ;; (require 'wcy-desktop) 
-;; (wcy-destop-init)
+;; (wcy-desktop-init)
 ;;; Code:
 
 ;;;###autoload 

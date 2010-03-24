@@ -26,6 +26,15 @@ Where "edit" is the small script above. The key is the "" for alternate-editor. 
 
 This does not work for me. With emacs 23, I get the message "--alternate-editor ot ALTERNATE_EDITOR variable cannot be an empty string"
 
+
+OweAndersson : Think this works fine, only I get a warning: "Emacsclient ERROR, No connection could be made because the target machine actively refused it"
+
+Under Windows I used someting like this wedit.bat:
+
+"\emacs-22.3\bin\emacsclientw.exe" --alternate-editor="\emacs-22.3-bin-i386\emacs-22.3\bin\runemacs.exe" "%1"
+
+
+
 = Starting Emacs automatically =
 
 The tips for doing this are platform specific.
@@ -721,6 +730,10 @@ Is emacs-server protocol compatible with gnuclient or are they totally different
 
 Is this possible? 
 I read how to do it in linux here: http://blog.lathi.net/articles/2007/10/09/remote-pair-programming
+
+[new]
+You may want to try [[Rudel]] for realtime collaborative editing.
+[new]
 
 == multiple emacs clients ==
 

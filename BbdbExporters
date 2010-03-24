@@ -42,9 +42,11 @@ Toby Speight and others have written http://www.cs.utah.edu/~karra/ps94/bbdb-xml
 
 [http://github.com/trebb/bbdb-vcard bbdb-vcard.el] exports BBDB records of (almost) arbitrary content into vCards version 3.0.
 
-In buffer %%*BBDB*%%, press v to export the record under point. Press %%*v%%
+In buffer %%*BBDB*%%, press %%v%% to export the record under point. Press %%* v%%
 to export all records in buffer into one vCard file.  Press %%* C-u v%% to
 export them into one file each.
+
+To put one or all vCard(s) into the kill ring, press %%V%% or %%* V%% respectively.
 
 Cf. [[BbdbImporters#VcardImport]] for the import functionality of [http://github.com/trebb/bbdb-vcard bbdb-vcard.el].
 

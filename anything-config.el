@@ -415,6 +415,7 @@
 (require 'anything)
 (require 'thingatpt)
 (require 'ffap)
+(require 'cl)
 
 ;;; Code:
 
@@ -588,9 +589,9 @@ If you want to have the default tramp messages set it to 3."
        (pop-to-buffer "*Anything Help*")
        (goto-char (point-min)))))
 
-;; rubikitch: I think many people binds `delete-backward-char' to C-h.
-;;            So I rebound `anything-c-describe-anything-bindings' to C-c ?.
-(define-key anything-map (kbd "C-c ?") 'anything-c-describe-anything-bindings)
+;; Use `describe-mode' key in `global-map'
+(dolist (k (where-is-internal 'describe-mode global-map))
+  (define-key anything-map k 'anything-c-describe-anything-bindings))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Preconfigured Anything ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun anything-for-files ()
@@ -1294,8 +1295,7 @@ buffer that is not the current buffer."
     (volatile)
     (action . ,(delq nil `(("Find File" . find-file-at-point)
                            ("Find file in Dired" . anything-c-point-file-in-dired)
-                           ,(when (require 'elscreen nil t)
-                                  '("Find file in Elscreen"  . elscreen-find-file))
+                           ,(and (locate-library "elscreen") '("Find file in Elscreen"  . anything-elscreen-find-file))
                            ("Complete at point" . anything-c-insert-file-name-completion-at-point)
                            ("Delete File(s)" . anything-delete-marked-files)
                            ("Find file as root" . anything-find-file-as-root)
@@ -2752,7 +2752,8 @@ http://ctags.sourceforge.net/")
                          (let ((type (semantic-tag-type tag))
                                (class (semantic-tag-class tag)))
                            (if (or (and (stringp type)
-                                        (string= type "class"))
+                                        (or (string= type "class")
+                                            (string= type "namespace")))
                                    (eq class 'function)
                                    (eq class 'variable))
                                (cons (cons (concat (make-string (* depth 2) ?\s)
@@ -4047,8 +4048,11 @@ See also `anything-create--actions'."
 ;;; Xfont selection
 (defun anything-c-persistent-xfont-action (elm)
   "Show current font temporarily"
-  (let ((default-font elm))
-    (set-default-font default-font)))
+  (let ((current-font (cdr (assoc 'font (frame-parameters))))
+        (default-font elm))
+    (unwind-protect
+         (progn (set-frame-font default-font 'keep-size) (sit-for 2))
+      (set-frame-font current-font))))
 
 (defvar anything-c-xfonts-cache nil)
 (defvar anything-c-source-xfonts
@@ -4062,7 +4066,7 @@ See also `anything-create--actions'."
                                         (kill-new elm)))
                ("Set Font" . (lambda (elm)
                                (kill-new elm)
-                               (set-default-font elm 'keep-size)
+                               (set-frame-font elm 'keep-size)
                                (message "New font have been copied to kill ring")))))
     (persistent-action . anything-c-persistent-xfont-action)))
   
@@ -5056,8 +5060,13 @@ Return nil if bmk is not a valid bookmark."
                 (setq deactivate-mark nil)))))
       (error nil))))
 
+(defun anything-require-or-error (feature function)
+  (or (require feature nil t)
+      (error "Need %s to use `%s'." feature function)))
+
 (defun anything-find-buffer-on-elscreen (candidate)
   "Open buffer in new screen, if marked buffers open all in elscreens."
+  (anything-require-or-error 'elscreen 'anything-find-buffer-on-elscreen)
   (anything-aif (anything-marked-candidates)
       (dolist (i it)
         (let ((target-screen (elscreen-find-screen-by-buffer
@@ -5066,6 +5075,10 @@ Return nil if bmk is not a valid bookmark."
     (let ((target-screen (elscreen-find-screen-by-buffer
                           (get-buffer candidate) 'create)))
       (elscreen-goto target-screen))))
+
+(defun anything-elscreen-find-file (file)
+  (anything-require-or-error 'elscreen 'anything-elscreen-find-file)
+  (elscreen-find-file file))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Setup ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -5078,8 +5091,7 @@ Return nil if bmk is not a valid bookmark."
          '(("Switch to buffer" . switch-to-buffer)
            ("Switch to buffer other window" . switch-to-buffer-other-window)
            ("Switch to buffer other frame" . switch-to-buffer-other-frame)))
-     ,@(when (require 'elscreen nil t)
-             '(("Display buffer in Elscreen" . anything-find-buffer-on-elscreen)))
+     ,(and (locate-library "elscreen") '("Display buffer in Elscreen" . anything-find-buffer-on-elscreen))
      ("Display buffer"   . display-buffer)
      ("Revert buffer" . anything-revert-buffer)
      ("Revert Marked buffers" . anything-revert-marked-buffers)
