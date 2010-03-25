@@ -103,6 +103,10 @@ Projects (code) -- Creating and managing:
 * SrSpeedbar
 * [http://www.ozymandias.dk/emacs/emacs.html#vps vps] Projects as directory sets (by VagnJohansen).
 
+Bug tracking:
+
+* DitzMode -- Interface to the Ditz distributed bug tracker.
+
 Package management and installers:
 
 * PortageMode -- Search and install Gentoo packages -- see also EmacsForGentoo.

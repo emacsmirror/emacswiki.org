@@ -55,6 +55,17 @@ For (b), you can use `set-face-attribute' or you can just do ''either'' of these
 
 -- DrewAdams
 
+[new:EthanGlasserCamp:2010-03-25 01:13 UTC]
+No, I actually do want it to be undefined, because defface won't take effect if the face already exists. (This is true even in emacs version 23.1.50 from emacs-snapshot.) Checking the C code was a good idea, and it looks like I should be able to remove the face from face-new-frame-defaults, but if I do that, I get into a weird undefined state where the face is in the frame-face-alist and I still can't define a new face. Oh well, I guess I'll just defface a bunch of new faces until I get to a definition I like, and then restart emacs and only use that one. -- EthanGlasserCamp
+
+[new:DrewAdams:2010-03-25 04:43 UTC]
+Why do you say that the `defface' won't take effect? Did you try it? If you put the cursor inside a `defface' expression and hit `C-M-x' then the `defface' does take effect anew. You can see this easily by changing some setting in the `defface' and doing it again. This will not work with old versions of Emacs (e.g. Emacs 20), but it works starting at least with Emacs 22. You can see this mentioned in node `Lisp Eval' of the Emacs manual: [[Manual:Lisp Eval]]. It says this: 
+
+  Typing C-M-x on a defface expression reinitializes the
+  face according to the defface specification.
+
+-- DrewAdams
+
 
 ----
 CategoryGlossary

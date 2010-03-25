@@ -1,11 +1,8 @@
 [::Calc]
 comes with GNU Emacs starting with version 22.
 
-The latest (1997-01-05) distribution is ftp://ftp.gnu.org/pub/gnu/calc/calc-2.02f.tar.gz.
-
-Calc doesn't work out of the box for any recent Emacs.  It works for NT Emacs, but the installation might not be straight forward if you haven't installed make.  The version that works is the one that comes with newer version of GNU Emacs and with EmacsFromCVS.
-
-Note that calc is part of CVS Emacs, so as soon as the next non-bugfix release comes out, calc will be part of it.
+The latest (1997-01-05) version not included in Emacs is ftp://ftp.gnu.org/pub/gnu/calc/calc-2.02f.tar.gz.
+That version doesn't work out of the box for any recent Emacs.  It works for NT Emacs, but the installation might not be straight forward if you haven't installed make.  The version that works is the one that comes with newer version of GNU Emacs and with EmacsFromCVS.
 
 == Quick tutorial ==
 
@@ -77,12 +74,31 @@ provides very good bignum capabilities.
 
 If must make sure that calc is loaded before you start using it.
 
-    (require 'calc)
-    (require 'calc-ext)
-    (defvar calc-command-flags)
+{{{
+(require 'calc-ext)
+(defvar calc-command-flags)
+}}}
 
-The last command defines calc-command-flags as nil.  If you don't,
-calc won't work...  I think this a bug in calc. -- DeepakGoel
+The last command defines calc-command-flags as nil.  If this is not defined 
+Calc won't work (but this will be taken care of as of Emacs 23.2).
+
+If you want to make sure that any personal Calc settings are also loaded, you
+might want to run:
+
+{{{
+(load calc-settings-file t)
+}}}
+
+or, if you want to be more careful (the following is from calc-mode in calc.el):
+
+{{{
+(or calc-loaded-settings-file
+    (null calc-settings-file)
+    (equal calc-settings-file user-init-file)
+    (progn
+        (setq calc-loaded-settings-file t)
+	(load (file-name-sans-extension calc-settings-file) t)))
+}}}
 
 Now stuff like (math-add 1 2), (Math-lessp (math-expt 2 100)
 (math-expt 3 50)) will work.

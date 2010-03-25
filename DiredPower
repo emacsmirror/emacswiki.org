@@ -190,3 +190,5 @@ To omit unmarked files, just type tk. This toggles the mark and then kills all t
 <code>[prior]</code> to cycle among them. When you find one you want to act on, use `C-o' -- or use `<code>C-!</code>' to act on all matching files. The "action" here can be anything you like. See command `icicle-delete-file' for an example: delete one matching file or all of them.
 
 * WThirtyTwoSymlinks -- Emacs module making Emacs handle shortcuts as if they were real symlinks.
+
+* [[Sunrise_Commander]] -- Two-pane file manager for Emacs based on Dired and inspired by the Midnight Commander.

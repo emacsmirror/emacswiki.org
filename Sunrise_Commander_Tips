@@ -48,6 +48,13 @@ expressions, serial  numbering... your imagination  is the only limit.  Just one
 warning: be careful  and play a LOT with  it before using it for  real, so there
 are no surprises later and you don't shoot yourself in the foot.
 
+#  Learn  how  to  use the "find" utility. Finding files by name (C-c C-n) or by
+contents (C-c C-g) is cool, but it's in the raw find command (C-c C-f) where the
+real power is. Most file managers can only dream of providing such a rich search
+capability. If you need a place to get you started,
+[http://www.softpanorama.org/Tools/Find/find_mini_tutorial.shtml  here is a good
+tutorial]. Also take the time to study the manual page (M-x man<RET>find<RET> ).
+
 # Learn how to define and execute [KeyboardMacros Keyboard Macros]. Whenever you
 notice you're pressing the same keys you did a while ago, and you suspect you'll
 have  to repeat the same actions over and over again, at least a few more times,

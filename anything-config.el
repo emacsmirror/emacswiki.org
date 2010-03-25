@@ -75,8 +75,9 @@
 ;; buffer, because M-x anything-resume revives anything command.
 
 ;;
+;; Anything sources can be tested by M-x `anything-call-source'.
 ;; Below are complete source list you can setup in the first argument
-;; of `anything-other-buffer' (or `anything-sources'):
+;; of `anything-other-buffer':
 ;;
 ;;  Buffer:
 ;;     `anything-c-source-buffers'          (Buffers)
@@ -302,6 +303,8 @@
 ;;    Do many create actions from STRING.
 ;;  `anything-top'
 ;;    Preconfigured `anything' for top command.
+;;  `anything-select-xfont'
+;;    Preconfigured `anything' to select Xfont.
 ;;  `anything-apt'
 ;;    The `anything' frontend of APT package manager.
 ;;  `anything-c-set-variable'
@@ -420,7 +423,7 @@
 ;;; Code:
 
 ;; version check
-(let ((version "1.244"))
+(let ((version "1.256"))
   (when (and (string= "1." (substring version 0 2))
              (string-match "1\.\\([0-9]+\\)" anything-version)
              (< (string-to-number (match-string 1 anything-version))
@@ -3820,12 +3823,14 @@ A list of search engines."
 (defvar anything-source-select-buffer "*anything source select*")
 (defvar anything-c-source-call-source
   `((name . "Call anything source")
-    (candidate-number-limit . 9999)
+    (candidate-number-limit)
     (candidates . (lambda ()
                     (loop for vname in (all-completions "anything-c-source-" obarray)
                           for var = (intern vname)
                           for name = (ignore-errors (assoc-default 'name (symbol-value var)))
-                          if name collect (cons (format "%s (%s)" name vname) var))))
+                          if name collect (cons (format "%s `%s'"
+                                                        name (propertize vname 'face 'font-lock-variable-name-face))
+                                                var))))
     (action . (("Invoke anything with selected source" .
                 (lambda (candidate)
                   (setq anything-candidate-number-limit 9999)
@@ -4069,7 +4074,12 @@ See also `anything-create--actions'."
                                (set-frame-font elm 'keep-size)
                                (message "New font have been copied to kill ring")))))
     (persistent-action . anything-c-persistent-xfont-action)))
-  
+
+(defun anything-select-xfont ()
+  "Preconfigured `anything' to select Xfont."
+  (interactive)
+  (anything-other-buffer 'anything-c-source-xfonts "*anything select* xfont"))
+
 ;; (anything 'anything-c-source-xfonts)
 
 ;; Source for Debian/Ubuntu users
@@ -4606,9 +4616,12 @@ file.  Else return ACTIONS unmodified."
 (defun anything-c-transform-file-browse-url (actions candidate)
   "Add an action to browse the file CANDIDATE if it in a html
 file or URL.  Else return ACTIONS unmodified."
-  (if (string-match "^http\\|^ftp\\|\\.html?$" candidate)
-      (cons '("Browse with Browser" . browse-url) actions )
-    actions))
+  (let ((browse-action '("Browse with Browser" . browse-url)))
+    (cond ((string-match "^http\\|^ftp" candidate)
+           (cons browse-action actions))
+          ((string-match "\\.html?$" candidate)
+           (append actions (list browse-action)))
+          (t actions))))
 
 ;;;; Function
 (defun anything-c-transform-function-call-interactively (actions candidate)
@@ -4884,8 +4897,7 @@ candidate can be in (DISPLAY . REAL) format."
 (defun anything-p-candidats-file-init ()
   (destructuring-bind (file &optional updating)
       (anything-mklist (anything-attr 'candidates-file))
-    (when (symbolp file)
-      (setq file (symbol-value file)))
+    (setq file (anything-interpret-value file))
     (with-current-buffer (anything-candidate-buffer (find-file-noselect file))
       (when updating
         (buffer-disable-undo)
@@ -4895,6 +4907,7 @@ candidate can be in (DISPLAY . REAL) format."
 (anything-document-attribute 'candidates-file "candidates-file plugin"
   "Use a file as the candidates buffer.
 
+1st argument is a filename, string or function name or variable name.
 If optional 2nd argument is non-nil, the file opened with `auto-revert-mode'.")
 
 ;; Plug-in: headline

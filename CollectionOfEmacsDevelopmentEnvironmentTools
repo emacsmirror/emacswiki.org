@@ -50,5 +50,12 @@ Another component of CEDET is "Senator". Someone with better knowledge should de
 Here's a description of one function Senator provides and it's use:
 [http://sourceforge.net/mailarchive/forum.php?thread_name=200804280303.m3S33anF007841%40projectile.siege-engine.com&forum_name=cedet-devel senator-copy-tag] - Puts a "tag" (an item definition) into a special "tag ring."
 
+==How to enable the CEDET tools which were merged with Emacs==
+In Emacs 23.2, CEDET was merged into the main Emacs distribution.
+The configuration code which is explained in CEDET tutorials doesn't work anymore. For instance you cannot use (semantic-load-enable-gaudy-code-helpers) to enable the useful features.
+
+TODO: please explain what code you need to load the most useful IDE tools provided by CEDET
+
+
 ----
 CategoryProgrammerUtils

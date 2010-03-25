@@ -1,5 +1,5 @@
 ;;; lispxmp.el --- Automagic emacs lisp code annotation
-;; $Id: lispxmp.el,v 1.11 2010/03/23 03:17:57 rubikitch Exp $
+;; $Id: lispxmp.el,v 1.13 2010/03/25 07:10:58 rubikitch Exp rubikitch $
 
 ;; Copyright (C) 2009, 2010  rubikitch
 
@@ -57,8 +57,14 @@
 ;;
 ;; Below are customizable option list:
 ;;
+;;  `lispxmp-string-no-properties'
+;;    *When non-nil, remove text priperties of strings in annotation.
+;;    default = t
 
 ;;; Installation:
+;;
+;; paredit.el is optional. Get it from here:
+;; http://mumble.net/~campbell/emacs/paredit.el
 ;;
 ;; Put lispxmp.el to your load-path.
 ;; The load-path is usually ~/elisp/.
@@ -82,6 +88,13 @@
 ;;; History:
 
 ;; $Log: lispxmp.el,v $
+;; Revision 1.13  2010/03/25 07:10:58  rubikitch
+;; Fix escape bug
+;;
+;; Revision 1.12  2010/03/25 06:14:57  rubikitch
+;; New option: `lispxmp-string-no-properties'
+;;   When non-nil, remove text priperties of strings in annotation.
+;;
 ;; Revision 1.11  2010/03/23 03:17:57  rubikitch
 ;; `lispxmp-comment-advice': tiny bug fix
 ;;
@@ -118,12 +131,20 @@
 
 ;;; Code:
 
-(defvar lispxmp-version "$Id: lispxmp.el,v 1.11 2010/03/23 03:17:57 rubikitch Exp $")
+(defvar lispxmp-version "$Id: lispxmp.el,v 1.13 2010/03/25 07:10:58 rubikitch Exp rubikitch $")
 (require 'cl)
 (require 'newcomment)
 (defgroup lispxmp nil
   "lispxmp"
   :group 'emacs)
+
+(defcustom lispxmp-string-no-properties t
+  "*When non-nil, remove text priperties of strings in annotation.
+
+Need paredit.el.
+http://mumble.net/~campbell/emacs/paredit.el"
+  :type 'boolean  
+  :group 'lispxmp)
 
 (defvar lispxmp-temp-buffer " *lispxmp tmp*")
 (defvar lispxmp-results nil)
@@ -193,20 +214,55 @@
   (push (cons index result) lispxmp-results)
   result)
 
+(defun %lispxmp-prin1-to-string (object)
+  (if (and lispxmp-string-no-properties
+           (require 'paredit nil t))
+      (%lispxmp-prin1-to-string-no-properties object)
+    (prin1-to-string object)))
+
+(defun %lispxmp-prin1-to-string-no-properties (object)
+  (with-temp-buffer
+    (let ((standard-output (current-buffer)))
+      (save-excursion (prin1 object)))
+    (while (search-forward "#(\"" nil t)
+      (forward-char -1)
+      (paredit-raise-sexp)
+      (delete-backward-char 1)
+      (forward-sexp 1))
+    (buffer-string)))
+
+;;;; unit test
+;; (install-elisp "http://www.emacswiki.org/cgi-bin/wiki/download/el-expectations.el")
+;; (install-elisp "http://www.emacswiki.org/cgi-bin/wiki/download/el-mock.el")
+(dont-compile
+  (when (fboundp 'expectations)
+    (expectations
+      (desc "%lispxmp-prin1-to-string")
+      (expect "\"aaaa\""
+        (%lispxmp-prin1-to-string-no-properties (propertize "aaaa" 'face 'match)))
+      (expect "(\"a\" \"b\")"
+        (%lispxmp-prin1-to-string-no-properties
+         (list (propertize "a" 'face 'match) (propertize "b" 'face 'match))))
+      )))
+
+
 (defun lispxmp-create-annotations (buf results)
   (set-buffer buf)
   (save-excursion
     (goto-char (point-min))
     (while (re-search-forward "\\(;+\\) <<%lispxmp-out-marker \\([0-9]+\\)>> *$" nil t)
-      (let ((index (string-to-number (match-string 2))))
-        (replace-match
-         (concat (match-string 1)       ; semicolons
-                 " => "
-                 ;; pair := (INDEX . VALUE)
-                 (mapconcat (lambda (pair) (prin1-to-string (cdr pair)))
-                            (remove-if-not (lambda (pair) (= index (car pair)))
-                                           (reverse results))
-                            ", "))))))
+      (let ((index (string-to-number (match-string 2)))
+            (semicolons (match-string 1)))
+        ;; I do not use `replace-match', because it interprets backslashes.
+        ;; Insert replacement string literally.
+        (delete-region (match-beginning 0) (match-end 0))
+        (insert semicolons
+                " => "
+                ;; pair := (INDEX . VALUE)
+                (mapconcat (lambda (pair) (%lispxmp-prin1-to-string (cdr pair)))
+                           (remove-if-not (lambda (pair) (= index (car pair)))
+                                          (reverse results))
+                           ", ")))))
   (lispxmp-out-remove))
 ;; (with-new-window (find-epp lispxmp-results))
 

@@ -9,9 +9,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Wed Jan 10 14:31:50 1996
 ;; Version: 20.0
-;; Last-Updated: Fri Jan 15 13:04:31 2010 (-0800)
+;; Last-Updated: Wed Mar 24 14:29:06 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 557
+;;     Update #: 568
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/find-dired+.el
 ;; Keywords: internal, unix, tools, matching, local
 ;; Compatibility: GNU Emacs 20.x
@@ -23,7 +23,7 @@
 ;;   `ediff-merg', `ediff-mult', `ediff-util', `ediff-wind',
 ;;   `find-dired', `find-dired-', `fit-frame', `info', `info+',
 ;;   `misc-fns', `mkhtml', `mkhtml-htmlize', `strings', `thingatpt',
-;;   `thingatpt+', `w32-browser'.
+;;   `thingatpt+', `w32-browser', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -75,6 +75,11 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/03/24 dadams
+;;     find-grep-dired:
+;;       Added missing DEFAULT arg for read-from-minibuffer.
+;;       Thx to Sascha Friedmann.
+;;     find(-name)-dired: Use nil as INITIAL-CONTENTS arg to read-from-minibuffer.
 ;; 2006/03/20 dadams
 ;;     menu-bar-dired-subdir-menu -> diredp-menu-bar-subdir-menu.
 ;; 2000/09/27 dadams
@@ -204,7 +209,7 @@ The `find' command run (after changing into DIR) is:
    (let ((default (and find-dired-default-fn
                        (funcall find-dired-default-fn))))
      (list (read-file-name "Run `find' in directory: " nil "" t)
-           (read-from-minibuffer "Run `find' (with args): " default
+           (read-from-minibuffer "Run `find' (with args): " nil
                                  nil nil 'find-args-history default t))))
   (let ((dired-buffers dired-buffers))
     ;; Expand DIR ("" means default-directory), and make sure it has a
@@ -267,7 +272,7 @@ The command run (after changing into DIR) is: find . -name 'PATTERN' -ls"
    (let ((default (and find-dired-default-fn
                        (funcall find-dired-default-fn))))
    (list (read-file-name "Find-name (directory): " nil "" t)
-         (read-from-minibuffer "Find-name (filename wildcard): " default
+         (read-from-minibuffer "Find-name (filename wildcard): " nil
                                nil nil 'dired-regexp-history default t))))
   (find-dired dir (concat "-name '" pattern "'")))
 
@@ -288,7 +293,7 @@ Thus REGEXP can also contain additional grep options."
    (let ((default (and find-dired-default-fn
                        (funcall find-dired-default-fn))))
      (list (read-file-name "Find-grep (directory): " nil "" t)
-           (read-from-minibuffer "Find-grep (grep regexp): "
+           (read-from-minibuffer "Find-grep (grep regexp): " nil
                                  nil nil 'dired-regexp-history default t))))
   ;; find -exec doesn't allow shell i/o redirections in the command,
   ;; or we could use `grep -l >/dev/null'

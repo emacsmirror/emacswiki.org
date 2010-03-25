@@ -114,6 +114,10 @@ For jde itself, add these to .emacs, change the dirs to fit your install of cour
 
 I don't know much about it myself. Since this project is last active in Dec 2007. I guess there are more problems waiting.
 
+[new]
+'''How to load JDE in Emacs >=23.2 (after CEDET integration into Emacs trunk)''':
+I fear it is complex, as the CEDET inclusion changed package names but JDEE is still using the old ones (tested in branches 2.4 and trunk). For instance (require 'semantic-ctxt) is the old name (standalone CEDET), but in the Emacs-included CEDET it should be transformed to (require 'semantic/ctxt). Someone must update JDEE. 24.m3.2010, [[DanielClemente]]
+
 == Distributions ==
 
 * Debian Etch - installed and loaded correctly

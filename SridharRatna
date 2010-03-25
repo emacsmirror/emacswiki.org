@@ -1,12 +1,6 @@
-(name "Sridhar Ratnakumar")
-
 (irc-nick "[::srid]")
 
-(loc  "Vancouver, BC")
-
-(www  "http://nearfar.org/")
-
-(.emacs "http://repo.or.cz/w/srid.dotfiles.git?a=tree;f=emacs;hb=HEAD")
+(www  "http://srid.nearfar.org/")
 
 Welcome to the wiki! Bangalore was interesting... :)
 

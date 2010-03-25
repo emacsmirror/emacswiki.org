@@ -6,11 +6,14 @@ Install Aquamacs-specific preferences and packages in <tt>Aquamacs Emacs</tt> pa
 These preferences are loaded, in the given order:
 
  ~/.emacs  (deprecated -- meaning 'should not be used for new installations, but will continue to be supported' -- in Aquamacs on OS X)
+ customizations saved by request or automatically by Aquamacs in customizations.el
  /Library/Preferences/Emacs/Preferences.el
  /Library/Preferences/Aquamacs Emacs/Preferences.el
  ~/Library/Preferences/Emacs/Preferences.el
  ~/Library/Preferences/Aquamacs Emacs/Preferences.el
 
 Manual user-specific customizations should go into <tt>~/Library/Preferences/Aquamacs Emacs/Preferences.el</tt> 
+
+Note that code in Preferences.el (but not .emacs) will override any settings in customizations saved by Aquamacs (Options / Save Options, and saving at the end of a session when quitting Aquamacs).
 
 *Warning: this is not the page to describe miscellaneous extensions to Aquamacs. Go to CustomizeAquamacs for that.*

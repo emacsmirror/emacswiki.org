@@ -72,6 +72,7 @@ that colors and [[Face]]s belong in CategoryFaces.
 * GoodFonts -- what fonts for what screen resolutions
 * SetFonts -- how to set them
 * HideModeLine -- don't display the ModeLine
+* DiminishedModes -- Abbreviate minor modes appearing in the ModeLine.
 * LineSpacing -- how to set it
 * TheFringe -- In graphical Emacs there's a space between the buffer and the window.  You either like it, or you don't.
 
