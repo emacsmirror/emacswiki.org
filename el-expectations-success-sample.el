@@ -63,7 +63,9 @@
   (desc "error-message")
   (expect (error-message "ERROR!!")
     (error "ERROR!!"))
-
+  (desc "no-error")
+  (expect (no-error)
+    1)
   (desc "eval")
   (expect '(1 2)
     (list 1 2))

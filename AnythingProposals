@@ -81,6 +81,14 @@ Implemented in anything-config.el! Use `anything-c-source-files-in-all-dired'. -
 [new:sunilpatel:2010-01-15 18:04 UTC]
 Awesome!! Thanks :) . -- sunilpatel
 
+[new:Memnon Anon:2010-03-26 02:16 UTC]
+== Org-Agenda-Headlines ==
+As far as I can see, anything-c-source-org-headline only works on one file.
+Orgmode users usually define a set of files they are currently very much interested in:
+The Agenda files, saved in org-agenda-files. These files are the core org files to this 
+user. Would it be possible to extend the functionality of org-headline to work on all
+files in org-agenda-files? -- [[Memnon_Anon]]
+
 == Other Anything-related proposals ==
 
 === Mailing list ===

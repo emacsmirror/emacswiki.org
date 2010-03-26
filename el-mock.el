@@ -1,7 +1,7 @@
 ;;; el-mock.el --- Tiny Mock and Stub framework in Emacs Lisp
-;; $Id: el-mock.el,v 1.17 2008/08/28 19:04:48 rubikitch Exp $
+;; $Id: el-mock.el,v 1.20 2010/03/26 06:25:08 rubikitch Exp $
 
-;; Copyright (C) 2008  rubikitch
+;; Copyright (C) 2008, 2010  rubikitch
 
 ;; Author: rubikitch <rubikitch@ruby-lang.org>
 ;; Keywords: lisp, testing, unittest
@@ -29,6 +29,16 @@
 ;; conjunction with Emacs Lisp Expectations, but it can be used in
 ;; other contexts.
 
+;;; Commands:
+;;
+;; Below are complete command list:
+;;
+;;
+;;; Customizable Options:
+;;
+;; Below are customizable option list:
+;;
+
 ;; Emacs Lisp Mock provides two scope interface of mock and stub:
 ;; `with-mock' and `mocklet'. `with-mock' only defines a
 ;; scope. `mocklet' is more sophisticated interface than `with-mock':
@@ -48,6 +58,15 @@
 ;;; History:
 
 ;; $Log: el-mock.el,v $
+;; Revision 1.20  2010/03/26 06:25:08  rubikitch
+;; more mock :times support
+;;
+;; Revision 1.19  2010/03/26 02:52:01  rubikitch
+;; document
+;;
+;; Revision 1.18  2010/03/26 02:48:34  rubikitch
+;; mock :times support / refactoring
+;;
 ;; Revision 1.17  2008/08/28 19:04:48  rubikitch
 ;; Implement `not-called' mock.
 ;;
@@ -114,18 +133,23 @@
 (eval-when-compile (require 'cl))
 (require 'advice)
 
+(defvar -stubbed-functions nil)
+(defvar -mocked-functions nil)
+(defvar mock-verify-list nil)
+(defvar in-mocking nil)
+
 ;;;; stub setup/teardown
 (defun stub/setup (funcsym value)
   (mock-suppress-redefinition-message
    (lambda ()
      (when (fboundp funcsym)
-       (put 'mock-original-func funcsym (symbol-function funcsym)))
+       (put funcsym 'mock-original-func (symbol-function funcsym)))
      (ad-safe-fset funcsym `(lambda (&rest x) ,value)))))
 
 (defun stub/teardown (funcsym)
   (mock-suppress-redefinition-message
    (lambda ()
-     (let ((func (get 'mock-original-func funcsym)))
+     (let ((func (get funcsym 'mock-original-func)))
        (if (not func)
            (fmakunbound funcsym)
          (ad-safe-fset funcsym func)
@@ -133,18 +157,18 @@
          )))))
     
 ;;;; mock setup/teardown
-(defun mock/setup (func-spec value)
+(defun mock/setup (func-spec value times)
   (mock-suppress-redefinition-message
    (lambda ()
      (let ((funcsym (car func-spec)))
        (when (fboundp funcsym)
-         (put 'mock-original-func funcsym (symbol-function funcsym)))
-       (put 'mock-not-yet-called funcsym t)
+         (put funcsym 'mock-original-func (symbol-function funcsym)))
+       (put funcsym 'mock-call-count 0)
        (ad-safe-fset funcsym
                      `(lambda (&rest actual-args)
-                        (put 'mock-not-yet-called ',funcsym nil)
+                        (incf (get ',funcsym 'mock-call-count))
                         (add-to-list 'mock-verify-list
-                                     (list ',funcsym ',(cdr func-spec) actual-args))
+                                     (list ',funcsym ',(cdr func-spec) actual-args ,times))
                         ,value))))))
 
 (defun not-called/setup (funcsym)
@@ -152,7 +176,7 @@
    (lambda ()
      (let ()
        (when (fboundp funcsym)
-         (put 'mock-original-func funcsym (symbol-function funcsym)))
+         (put funcsym 'mock-original-func (symbol-function funcsym)))
        (ad-safe-fset funcsym
                      `(lambda (&rest actual-args)
                         (signal 'mock-error '(called))))))))
@@ -163,26 +187,27 @@
 (put 'mock-error 'error-conditions '(mock-error error))
 (put 'mock-error 'error-message "Mock error")
 (defun mock-verify ()
-  (when (loop for f in -mocked-functions
-              thereis (get 'mock-not-yet-called f))
-    (signal 'mock-error '(not-called)))
-  (loop for (funcsym expected-args actual-args) in mock-verify-list
+  (loop for f in -mocked-functions
+        when (equal 0 (get f 'mock-call-count))
+        do (signal 'mock-error (list 'not-called f)))
+  (loop for args in mock-verify-list
         do
-        (mock-verify-args funcsym expected-args actual-args)))
+        (apply 'mock-verify-args args)))
 
-(defun mock-verify-args (funcsym expected-args actual-args)
+(defun mock-verify-args (funcsym expected-args actual-args expected-times)
   (loop for e in expected-args
         for a in actual-args
         do
         (unless (eq e '*)               ; `*' is wildcard argument
           (unless (equal (eval e) a)
             (signal 'mock-error (list (cons funcsym expected-args)
-                                      (cons funcsym actual-args)))))))
+                                      (cons funcsym actual-args))))))
+  (let ((actual-times (or (get funcsym 'mock-call-count) 0)))
+    (and expected-times (/= expected-times actual-times)
+         (signal 'mock-error (list (cons funcsym expected-args)
+                                   :expected-times expected-times
+                                   :actual-times actual-times)))))
 ;;;; stub/mock provider
-(defvar -stubbed-functions nil)
-(defvar -mocked-functions nil)
-(defvar mock-verify-list nil)
-(defvar in-mocking nil)
 (defun mock-protect (body-fn)
   "The substance of `with-mock' macro.
 Prepare for mock/stub, call BODY-FN, and teardown mock/stub.
@@ -193,14 +218,14 @@ When you adapt Emacs Lisp Mock to a testing framework, wrap test method around t
         -stubbed-functions
         -mocked-functions
         (in-mocking t))
-    (setplist 'mock-original-func nil)
-    (setplist 'mock-not-yet-called nil)
+    ;; (setplist 'mock-original-func nil)
+    ;; (setplist 'mock-call-count nil)
     (unwind-protect
         (funcall body-fn)
-      (mapcar #'stub/teardown -stubbed-functions)
+      (mapc #'stub/teardown -stubbed-functions)
       (unwind-protect
           (mock-verify)
-        (mapcar #'mock/teardown -mocked-functions)))))
+        (mapc #'mock/teardown -mocked-functions)))))
 
 ;;;; message hack
 (defun mock-suppress-redefinition-message (func)
@@ -244,8 +269,7 @@ Example:
     (stub bar => 1)
     (and (null (foo)) (= (bar 7) 1)))     ; => t
 "
-  (let ((value (cond ((eq '=> (car rest))
-                      (cadr rest))
+  (let ((value (cond ((plist-get rest '=>))
                      ((null rest) nil)
                      (t (signal 'mock-syntax-error '("Use `(stub FUNC)' or `(stub FUNC => RETURN-VALUE)'"))))))
     `(if (not in-mocking)
@@ -264,6 +288,11 @@ Synopsis:
   Create a FUNCTION mock which returns nil.
 * (mock (FUNCTION ARGS...) => RETURN-VALUE)
   Create a FUNCTION mock which returns RETURN-VALUE.
+* (mock (FUNCTION ARGS...) :times N)
+  FUNCTION must be called N times.
+* (mock (FUNCTION ARGS...) => RETURN-VALUE :times N)
+  Create a FUNCTION mock which returns RETURN-VALUE.
+  FUNCTION must be called N times.
 
 Wildcard:
 The `*' is a special symbol: it accepts any value for that argument position.
@@ -277,13 +306,13 @@ Example:
     (mock (g 3))
     (g 7))                                ; (mock-error (g 3) (g 7))
 "
-  (let ((value (cond ((eq '=> (car rest))
-                      (cadr rest))
-                     ((null rest) nil)
-                     (t (signal 'mock-syntax-error '("Use `(mock FUNC-SPEC)' or `(mock FUNC-SPEC => RETURN-VALUE)'"))))))
+  (let* ((times (plist-get rest :times))
+         (value (cond ((plist-get rest '=>))
+                      ((null rest) nil)
+                      ((not times) (signal 'mock-syntax-error '("Use `(mock FUNC-SPEC)' or `(mock FUNC-SPEC => RETURN-VALUE)'"))))))
     `(if (not in-mocking)
          (error "Do not use `mock' outside")
-       (mock/setup ',func-spec ',value)
+       (mock/setup ',func-spec ',value ,times)
        (push ',(car func-spec) -mocked-functions))))
 
 (defmacro not-called (function)
@@ -337,6 +366,8 @@ Synopsis of spec:
 Spec is arguments of `mock', `not-called' or `stub'.
 * ((FUNCTION ARGS...))                  : mock which returns nil
 * ((FUNCTION ARGS...) => RETURN-VALUE)  ; mock which returns RETURN-VALUE
+* ((FUNCTION ARGS...) :times N )        ; mock to be called N times
+* ((FUNCTION ARGS...) => RETURN-VALUE :times N )  ; mock to be called N times
 * (FUNCTION)                            : stub which returns nil
 * (FUNCTION => RETURN-VALUE)            ; stub which returns RETURN-VALUE
 * (FUNCTION not-called)                 ; not-called FUNCTION
@@ -458,10 +489,10 @@ Example:
           (mock (foo 5) => 2)
           (mock (bar 7) => 1)
           (+ (foo 5) (bar 8))))
-      (expect (error mock-error '(not-called))
+      (expect (error mock-error '(not-called foo))
         (with-mock
           (mock (foo 5) => 2)))
-      (expect (error mock-error '(not-called))
+      (expect (error mock-error '(not-called foo))
         (with-mock
           (mock (vi 5) => 2)
           (mock (foo 5) => 2)
@@ -644,8 +675,77 @@ Example:
                    "not-called")
                  (equal orig (symbol-function 'fugaga)))
              (fmakunbound 'fugaga)))))
-
-      
+      (desc ":times mock")
+      (expect 'ok
+        (with-mock
+          (mock (foo 1) => 2 :times 2)
+          (foo 1)
+          (foo 1)
+          'ok))
+      (expect 'ok
+        (with-mock
+          (mock (foo *) => 2 :times 2)
+          (foo 1)
+          (foo 2)
+          'ok))
+      (expect 'ok
+        (with-mock
+          (mock (foo 1) :times 2)
+          (foo 1)
+          (foo 1)
+          'ok))
+      (expect 'ok
+        (with-mock
+          (mock (foo *) :times 2)
+          (foo 1)
+          (foo 2)
+          'ok))
+      ;; FIXME
+      ;; (expect 'ok
+      ;;   (with-mock
+      ;;     (mock (foo 1) => 2 :times 2)
+      ;;     (foo 1)
+      ;;     (foo 1)
+      ;;     (foo 2)
+      ;;     'ok))
+      (expect (error mock-error '((foo 1) :expected-times 2 :actual-times 1))
+        (with-mock
+          (mock (foo 1) :times 2)
+          (foo 1)
+          'ok))
+      (expect (error mock-error '((foo *) :expected-times 2 :actual-times 1))
+        (with-mock
+          (mock (foo *) :times 2)
+          (foo 1)
+          'ok))
+      (expect (error mock-error '((foo 1) (foo 2)))
+        (with-mock
+          (mock (foo 1) :times 2)
+          (foo 2)
+          'ok))
+      (expect (error mock-error '(not-called foo))
+        (with-mock
+          (mock (foo 1) :times 2)
+          'ok))
+      (expect (error mock-error '((foo 1) :expected-times 2 :actual-times 1))
+        (with-mock
+          (mock (foo 1) => 2 :times 2)
+          (foo 1)
+          'ok))
+      (expect (error mock-error '((foo *) :expected-times 2 :actual-times 1))
+        (with-mock
+          (mock (foo *) => 2 :times 2)
+          (foo 1)
+          'ok))
+      (expect (error mock-error '((foo 1) (foo 2)))
+        (with-mock
+          (mock (foo 1) => 2 :times 2)
+          (foo 2)
+          'ok))
+      (expect (error mock-error '(not-called foo))
+        (with-mock
+          (mock (foo 1) => 2 :times 2)
+          'ok))
       )))
 
 (provide 'el-mock)

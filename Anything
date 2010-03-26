@@ -56,6 +56,8 @@ You can use Lisp:auto-install.el install [[Anything]] packages with following:
 # Input "anything"
 
 (How to install Lisp:auto-install.el, see AutoInstall)
+
+It would be great if it was installable with [[ELPA]].
                 
 == Snarf Anything (and pals) with wget ==
 
@@ -110,4 +112,3 @@ CategoryRegexp
 CategorySearchAndReplace
 CategoryShell
 CategoryWebBrowser
-

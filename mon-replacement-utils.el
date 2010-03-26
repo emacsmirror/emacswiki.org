@@ -1,150 +1,177 @@
-;;; mon-replacement-utils.el --- common regexp and subsititution procedures 
+;;; mon-replacement-utils.el --- common regexp and subsitiution procedures 
 ;; -*- mode: EMACS-LISP; -*-
+
 ;;; ================================================================
-;;; DESCRIPTON:
-;;; mon-replacement-utils provides a collection of routines and commands and
-;;; abstracts some commonly encountered procedures for processing regexps with
-;;; their replacements.
-;;;
-;;; :NOTE This file used to be named naf-mode-replacements.el
-;;; :AS-OF <Timestamp: #{2009-12-19T14:11:23-05:00Z}#{09516} - by MON>
-;;; It has been renamed to mon-replacement-utils.el
-;;;
-;;; FUNCTIONS:►►►
-;;; `mon-replace-regexp-while', `mon-replace-string-while'
-;;; `replace-string-pairs-region3', `replace-string-pairs-region-no-props',
-;;; `mon-get-list-yorp', `mon-get-list-norp',
-;;; `mon-replace-region-regexp-lists-nonint', `mon-replace-region-regexp-lists',
-;;; `mon-exchange-slash-and-backslash', `mon-cln-file-name-string',
-;;; `mon-regexp-filter', `mon-cln-html-chars',
-;;; `mon-cln-html-tags', `mon-canonical-string', 
-;;; `mon-toggle-case-regexp-region', 
-;;; `mon-toggle-case-query-user', `mon-toggle-case-regexp',
-;;; `mon-downcase-region-regexp', `mon-downcase-regexp',
-;;; `mon-upcase-regexp', `mon-upcase-regexp-region'
-;;; `mon-line-number-region-incr', `mon-pipe-list', `mon-cln-piped-list',
-;;; `mon-delete-back-up-list', `naf-backup-the-list', `mon-cln-philsp',
-;;; `mon-cln-ulan', `mon-cln-imdb', `mon-cln-loc', `mon-cln-wiki',
-;;; `mon-cln-bib', `mon-cln-BIG-whitespace', `mon-cln-whitespace',
-;;; `mon-cln-trail-whitespace', `mon-kill-whitespace', `mon-cln-blank-lines',
-;;; `mon-cln-uniq-lines', `mon-cln-spc-tab-eol', `mon-cln-spc-tab-at-eol-in-region',
-;;; `mon-cln-control-M', `mon-num-to-month', `mon-num-to-month-whitespace',
-;;; `mon-month-to-num', `mon-abr-to-month', `mon-trans-cp1252-to-latin1',
-;;; `mon-ital-date-to-eng', `mon-defranc-dates', `mon-defranc-places',
-;;; `mon-defranc-benezit', `mon-replace-common-abbrevs', `mon-zippify-region',
-;;; `bug-cln-gilt-group', `mon-cln-csv-fields', `mon-cln-xml<-parsed',
-;;; `mon-cln-tgm-xml-LF', `mon-is-naf-mode-and-llm-p', `mon-is-naf-mode-p'
-;;; `mon-replace-string-pairs-region-no-insert', `mon-cln-xml<-parsed-strip-nil'
-;;; `mon-cln-up-colon', `mon-regexp-map-match', `mon-regexp-map-match-in-region'
-;;; FUNCTIONS:◄◄◄
-;;; 
-;;; MACROS:
-;;; `mon-naf-mode-toggle-restore-llm'
-;;;
-;;; METHODS:
-;;;
-;;; CLASSES:
-;;;
-;;; VARIABLES:
-;;; `*iso-latin-1-approximation*'
-;;;
-;;; CONSTANTS:
-;;;
-;;; RENAMED: 
-;;; `naf-delete-back-up-list' -> `mon-delete-back-up-list'
-;;; `mon-clnBIG-whitespace'   -> `mon-cln-BIG-whitespace'
-;;; `mon-re-number-region'    -> `mon-line-number-region-incr'
-;;;
-;;; MOVED:
-;;; `mon-query-replace-register1<-reg2' -> mon-empty-registers.el
-;;; `mon-insert-regexp-template-yyyy'   -> mon-insertion-utils.el
-;;;
-;;; ALIASED/ADVISED/SUBST'd:
-;;; `naf-delete-back-up-list' -> `mon-delete-back-up-list'
-;;; `mon-map-regexp-matches'  -> `mon-regexp-map-match'
-;;;
-;;; REQUIRES:
-;;; Regexps for functions defined here are set with defvar forms in the file:
-;;; (URL `./naf-mode/mon-regexp-symbols.el')
-;;;
-;;; References the following: CONSTANTS OR VARIABLES:
-;;; `philsp-months', `philsp-months',`philsp-apos', `philsp-location' 
-;;; `philsp-swap-location' `philsp-fix-month-dates', `*regexp-clean-ulan*',
-;;; `regexp-clean-imdb', `regexp-clean-loc', `regexp-clean-wikipedia',
-;;; `*regexp-clean-bib*', `regexp-cleanBIG-whitespace', `regexp-clean-whitespace',
-;;; `regexp-MM2month', `regexp-MM2month-whitespace-aware', `regexp-month2MM',
-;;; `*regexp-cp1252-to-latin1*', `*regexp-ital-to-eng*', `*regexp-defranc-dates*',
-;;; `*regexp-defranc-places*', `*regexp-defranc-benezit*', `*regexp-common-abbrevs*', 
-;;; `regexp-MM2month-whitespace-aware'
-;;;
-;;; `mon-regexp-map-match-in-region' <- boxquote.el
-;;;
-;;; TODO:
-;;; Instances of longlines-mode checks, e.g.:
-;;;    (and (buffer-local-value longlines-mode (current-buffer)))
-;;; should _maybe_ be updated with:
-;;;    (and (boundp 'longlines-mode) (bound-and-true-p longlines-mode))
-;;; 
-;;; Need function to show whitespace, tab, _and_ `longlines-mode's
-;;; hardlines using `longlines-show-hard-newlines'.
-;;;
-;;; NOTES:
-;;; ,----
-;;; | :FROM ../emacs/etc/TODO
-;;; | ** Implement intelligent search/replace, going beyond query-replace
-;;; |    :SEE (URL `http://groups.csail.mit.edu/uid/chi04.pdf'). 
-;;; | ,----
-;;; | | :NOTE The above link is dead but:
-;;; | | :SEE (URL `http://web.mit.edu/noto/Public/thesis/alisa_proposal.html')
-;;; | | :SEE (URL `http://groups.csail.mit.edu/uid/projects/clustering/alisa_m-thesis.pdf')
-;;; | `----
-;;; `----
-;;;
-;;; SNIPPETS:
-;;; Test if we are in a `naf-mode' buffer:
-;;; (eq (buffer-local-value 'major-mode (current-buffer)) 'naf-mode)
-;;;
-;;; THIRD PARTY CODE:
-;;;
-;;; AUTHOR: MON KEY
-;;; MAINTAINER: MON KEY
-;;;
-;;; PUBLIC-LINK:
-;;; (URL `http://www.emacswiki.org/emacs/mon-replacement-utils.el')
-;;; FIRST-PUBLISHED: <Timestamp: #{2009-09-20} - by MON KEY>
-;;;
-;;; FILE-CREATED:
-;;; <Timestamp: Wednesday April 08, 2009 @ 01:16.02 PM - by MON KEY>
+;; Copyright © 2009, 2010 MON KEY. All rights reserved.
 ;;; ================================================================
-;;; This file is not part of GNU Emacs.
-;;;
-;;; This program is free software; you can redistribute it and/or
-;;; modify it under the terms of the GNU General Public License as
-;;; published by the Free Software Foundation; either version 3, or
-;;; (at your option) any later version.
-;;;
-;;; This program is distributed in the hope that it will be useful,
-;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-;;; General Public License for more details.
-;;;
-;;; You should have received a copy of the GNU General Public License
-;;; along with this program; see the file COPYING.  If not, write to
-;;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
-;;; Floor, Boston, MA 02110-1301, USA.
+
+;; FILENAME: mon-replacement-utils.el
+;; AUTHOR: MON KEY
+;; MAINTAINER: MON KEY
+;; CREATED: 2009-03-08T13:16:02-04:00Z
+;; VERSION: 1.0.0
+;; COMPATIBILITY: Emacs23.*
+;; KEYWORDS: lisp, convenience, data
+
 ;;; ================================================================
-;;; Permission is granted to copy, distribute and/or modify this
-;;; document under the terms of the GNU Free Documentation License,
-;;; Version 1.3 or any later version published by the Free Software
-;;; Foundation; with no Invariant Sections, no Front-Cover Texts,
-;;; and no Back-Cover Texts. A copy of the license is included in
-;;; the section entitled "GNU Free Documentation License".
-;;; A copy of the license is also available from the Free Software
-;;; Foundation Web site at:
-;;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
-;;; ================================================================
-;;; Copyright © 2009, 2010 MON KEY 
+
+;;; COMMENTARY: 
+
+;; =================================================================
+;; DESCRIPTION:
+;; mon-replacement-utils provides a collection of routines and commands and
+;; abstracts some commonly encountered procedures for processing regexps with
+;; their replacements.
+;;
+;; :NOTE This file used to be named naf-mode-replacements.el
+;; :AS-OF <Timestamp: #{2009-12-19T14:11:23-05:00Z}#{09516} - by MON>
+;; It has been renamed to mon-replacement-utils.el
+;;
+;; FUNCTIONS:►►►
+;; `mon-replace-regexp-while', `mon-replace-string-while',
+;; `replace-string-pairs-region3', `replace-string-pairs-region-no-props',
+;; `mon-get-list-yorp', `mon-get-list-norp',
+;; `mon-replace-region-regexp-lists-nonint', `mon-replace-region-regexp-lists',
+;; `mon-exchange-slash-and-backslash', `mon-cln-file-name-string',
+;; `mon-regexp-filter', `mon-cln-html-chars',
+;; `mon-cln-html-tags', `mon-canonical-string', 
+;; `mon-toggle-case-regexp-region', 
+;; `mon-toggle-case-query-user', `mon-toggle-case-regexp',
+;; `mon-downcase-region-regexp', `mon-downcase-regexp',
+;; `mon-upcase-regexp', `mon-upcase-regexp-region',
+;; `mon-line-number-region-incr', `mon-pipe-list', `mon-cln-piped-list',
+;; `mon-delete-back-up-list', `naf-backup-the-list', `mon-cln-philsp',
+;; `mon-cln-ulan', `mon-cln-imdb', `mon-cln-loc', `mon-cln-wiki',
+;; `mon-cln-bib', `mon-cln-BIG-whitespace', `mon-cln-whitespace',
+;; `mon-cln-trail-whitespace', `mon-kill-whitespace', `mon-cln-blank-lines',
+;; `mon-cln-uniq-lines', `mon-cln-spc-tab-eol', `mon-cln-spc-tab-at-eol-in-region',
+;; `mon-cln-control-M', `mon-num-to-month', `mon-num-to-month-whitespace',
+;; `mon-month-to-num', `mon-abr-to-month', `mon-trans-cp1252-to-latin1',
+;; `mon-ital-date-to-eng', `mon-defranc-dates', `mon-defranc-places',
+;; `mon-defranc-benezit', `mon-replace-common-abbrevs', `mon-zippify-region',
+;; `bug-cln-gilt-group', `mon-cln-csv-fields', `mon-cln-xml<-parsed',
+;; `mon-cln-tgm-xml-LF', `mon-is-naf-mode-and-llm-p', `mon-is-naf-mode-p',
+;; `mon-replace-string-pairs-region-no-insert', `mon-cln-xml<-parsed-strip-nil',
+;; `mon-cln-up-colon', `mon-regexp-map-match', `mon-regexp-map-match-in-region',
+;; `mon-walk-regexps-in-file', `mon-replace-regexps-in-file-list',
+;; `mon-cln-mail-headers'
+;; FUNCTIONS:◄◄◄
+;; 
+;; MACROS:
+;; `mon-naf-mode-toggle-restore-llm'
+;;
+;; METHODS:
+;;
+;; CLASSES:
+;;
+;; VARIABLES:
+;; `*iso-latin-1-approximation*'
+;;
+;; CONSTANTS:
+;;
+;; RENAMED: 
+;; `naf-delete-back-up-list' -> `mon-delete-back-up-list'
+;; `mon-clnBIG-whitespace'   -> `mon-cln-BIG-whitespace'
+;; `mon-re-number-region'    -> `mon-line-number-region-incr'
+;;
+;; MOVED:
+;; `mon-query-replace-register1<-reg2' -> mon-empty-registers.el
+;; `mon-insert-regexp-template-yyyy'   -> mon-insertion-utils.el
+;;
+;; ALIASED/ADVISED/SUBST'd:
+;; `naf-delete-back-up-list' -> `mon-delete-back-up-list'
+;; `mon-map-regexp-matches'  -> `mon-regexp-map-match'
+;;
+;; REQUIRES:
+;; Regexps for functions defined here are set with defvar forms in the file:
+;; :SEE (URL `http://www.emacswiki.org/emacs/mon-regexp-symbols.el')
+;;
+;; References the following: CONSTANTS OR VARIABLES:
+;; `*regexp-philsp-months*',`*regexp-philsp-apos*', `*regexp-philsp-location*' 
+;; `*regexp-philsp-swap-location*' `*regexp-philsp-fix-month-dates*', `*regexp-clean-ulan*',
+;; `*regexp-clean-imdb*', `*regexp-clean-loc*', `*regexp-clean-wikipedia*',
+;; `*regexp-clean-bib*', `regexp-cleanBIG-whitespace', `*regexp-clean-whitespace*',
+;; `*regexp-MM->month*', `*regexp-MM->month-whitespace-aware*', `*regexp-month->MM*',
+;; `*regexp-cp1252-to-latin1*', `*regexp-ital-to-eng*', `*regexp-defranc-dates*',
+;; `*regexp-defranc-places*', `*regexp-defranc-benezit*', `*regexp-common-abbrevs*', 
+;;
+;; :FILE boxquote.el - `mon-regexp-map-match-in-region' 
+;;
+;; :FILE 
+;; `mon-replace-regexps-in-file-list'
+;; `mon-walk-regexps-in-file'
+;;
+;; TODO:
+;; Instances of longlines-mode checks, e.g.:
+;;    (and (buffer-local-value longlines-mode (current-buffer)))
+;; should _maybe_ be updated with:
+;;    (and (boundp 'longlines-mode) (bound-and-true-p longlines-mode))
+;; 
+;; Need function to show whitespace, tab, _and_ `longlines-mode's
+;; hardlines using `longlines-show-hard-newlines'.
+;;
+;; NOTES:
+;; ,----
+;; | :FROM ../emacs/etc/TODO
+;; | ** Implement intelligent search/replace, going beyond query-replace
+;; |    :SEE (URL `http://groups.csail.mit.edu/uid/chi04.pdf'). 
+;; | ,----
+;; | | :NOTE The above link is dead but:
+;; | | :SEE (URL `http://web.mit.edu/noto/Public/thesis/alisa_proposal.html')
+;; | | :SEE (URL `http://groups.csail.mit.edu/uid/projects/clustering/alisa_m-thesis.pdf')
+;; | `----
+;; `----
+;;
+;; SNIPPETS:
+;; Test if we are in a `naf-mode' buffer:
+;; (eq (buffer-local-value 'major-mode (current-buffer)) 'naf-mode)
+;;
+;; THIRD PARTY CODE:
+;;
+;; URL: http://www.emacswiki.org/emacs/mon-replacement-utils.el
+;; FIRST-PUBLISHED: <Timestamp: #{2009-09-20} - by MON KEY>
+;;
+;; EMACSWIKI:
+;;
+;; FILE-CREATED:
+;; <Timestamp: #{2009-03-08T13:16:02-04:00Z} - by MON KEY>
+;;
+;; =================================================================
+
+;;; LICENSE:
+
+;; =================================================================
+;; This file is not part of GNU Emacs.
+
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 3, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program; see the file COPYING.  If not, write to
+;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
+;; Floor, Boston, MA 02110-1301, USA.
+;; =================================================================
+;; Permission is granted to copy, distribute and/or modify this
+;; document under the terms of the GNU Free Documentation License,
+;; Version 1.3 or any later version published by the Free Software
+;; Foundation; with no Invariant Sections, no Front-Cover Texts,
+;; and no Back-Cover Texts. A copy of the license is included in
+;; the section entitled ``GNU Free Documentation License''.
+;; 
+;; A copy of the license is also available from the Free Software
+;; Foundation Web site at:
+;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
+;; Copyright © 2009, 2010 MON KEY 
+;;; ==============================
+
 ;;; CODE:
 
 ;;; ==============================
@@ -163,31 +190,54 @@
 (defalias 'replace-in-string-mon      'subst-char-in-string)
 
 ;;; ==============================
+;;; :MODIFICATIONS <Timestamp: #{2010-03-12T14:14:46-05:00Z}#{10105} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-09-08T12:56:12-04:00Z}#{09372} - by MON KEY>
-(defun mon-is-naf-mode-p ()
-  "Test if current-buffer is in `naf-mode'.\n
-:EXAMPLE\n(mon-is-naf-mode-p)\n
+(defun mon-is-naf-mode-p (&optional check-naf-buffer) 
+  "Test if buffer is in `naf-mode'.\n
+When optional arg CHECK-NAF-BUFFER is non-nil check that buffer.\n
+Signal an error if CHECK-NAF-BUFFER does not exist. Default is `current-buffer'.\n
+:EXAMPLE\n\n(mon-is-naf-mode-p)\n
+\(with-temp-buffer \(naf-mode\) \(mon-is-naf-mode-p\)\)\n
+\(let* \(nmtb-chk
+       \(nmtb \(get-buffer-create \"*NAF-MODE-TEST*\"\)\)
+       \(do-nmtb #'\(lambda \(no\) 
+                    \(with-current-buffer nmtb 
+                      \(if no \(fundamental-mode\) \(naf-mode\)\)
+                      \(push \(mon-is-naf-mode-p \(get-buffer nmtb\)\) nmtb-chk\)\)\)\)\)
+       \(progn 
+         \(funcall do-nmtb nil\)
+         \(funcall do-nmtb t\)
+         \(with-current-buffer nmtb \(kill-buffer\)\)
+         \(nreverse nmtb-chk\)\)\)\n
 :CALLED-BY `mon-is-naf-mode-and-llm-p', and other functions which invoke
 `mon-naf-mode-toggle-restore-llm' to test for active naf-mode before running
-additional longlines-mode checks.
-:SEE-ALSO \n►►►"
-  (eq (buffer-local-value 'major-mode (current-buffer)) 'naf-mode))
+additional longlines-mode checks.\n
+:SEE-ALSO `mon-longlines-mode-p', `mon-toggle-restore-llm'.
+:USED-IN `naf-mode'.\n►►►"
+  ;; :WAS  (eq (buffer-local-value 'major-mode (current-buffer)) 'naf-mode))
+  (eq (buffer-local-value 
+       'major-mode 
+       (cond ((and check-naf-buffer (get-buffer check-naf-buffer))
+              (get-buffer check-naf-buffer))
+             ((and check-naf-buffer (not (get-buffer check-naf-buffer)))
+              (error ":FUNCTION `mon-is-naf-mode-p' - Arg CHECK-NAF-BUFFER not a buffer"))
+             (t (current-buffer))))
+      'naf-mode))
 ;;
 ;;; :TEST-ME (mon-is-naf-mode-p)
-
-;;; ==============================
-;;; :CREATED <Timestamp: #{2009-09-08T12:59:41-04:00Z}#{09372} - by MON KEY>
-(defun mon-is-naf-mode-and-llm-p ()
-  "Test if current-buffer is in `naf-mode' and `longlines-mode' is enabled.\n
-:EXAMPLE\n(mon-is-naf-mode-and-llm-p)\n
-CELLED-BY: `mon-naf-mode-toggle-restore-llm' and other functions which invoke
-to test for active naf-mode before evaluating body.\n
-:SEE-ALSO `mon-is-naf-mode-p'.\n►►►"
-  (if (mon-is-naf-mode-p)
-      (buffer-local-value longlines-mode (current-buffer))
-    nil))
-;;
-;;; :TEST-ME (mon-is-naf-mode-and-llm-p)
+;;; :TEST-ME (with-temp-buffer (naf-mode) (mon-is-naf-mode-p))n
+;;;
+;; ,---- :UNCOMMENT-TO-TEST
+;; | (let* (nmtb-chk
+;; |        (nmtb (get-buffer-create "*NAF-MODE-TEST*"))
+;; |        (do-nmtb #'(lambda (no) (with-current-buffer nmtb (if no (fundamental-mode) (naf-mode))
+;; |                          (push (mon-is-naf-mode-p (get-buffer nmtb)) nmtb-chk)))))
+;; |        (progn 
+;; |          (funcall do-nmtb nil)
+;; |          (funcall do-nmtb t)
+;; |          (with-current-buffer nmtb (kill-buffer))
+;; |          (nreverse nmtb-chk)))
+;; `----
 
 ;;; ==============================
 ;;; :NOTE <Timestamp: #{2010-02-20T17:49:20-05:00Z}#{10076} - by MON KEY>
@@ -201,29 +251,200 @@ to test for active naf-mode before evaluating body.\n
 Automatically becomes buffer-local whenever `naf-mode' initiated in buffer.\n
 :SEE-ALSO `mon-is-naf-mode-p' `mon-is-naf-mode-and-llm-p'.\n
 :USED-IN `naf-mode'.\n►►►")
-;;
+
 ;;; ==============================
-;;; :NOTE It appears the macro for toggling longlines mode was yanked
-;;;       incorrectly as: `mon-is-naf-mode-and-llm-p' ;<-wrong! It should have
-;;;       been: `mon-naf-mode-toggle-restore-llm' So, MON wound up inadverdently
-;;;       _undoing_ all of the macro wraps in this file :TESTING this again in:
-;;;       :FILE naf-insertion-utils.el 
-;;;       :AS-OF <Timestamp: #{2009-09-26T18:19:57-04:00Z}#{09396} - by MON>
-;;; :CREATED <Timestamp: #{2009-09-08T15:52:50-04:00Z}#{09372} - by MON KEY>
-(defmacro mon-naf-mode-toggle-restore-llm (&rest body)
-  "Wrapper macro to temporarily toggle `longlines-mode' in `naf-mode' buffers.\n
-:EXAMPLE\n\n
-\(pp-macroexpand-expression '\(mon-naf-mode-toggle-restore-llm \"bubba\"\)\)\n
+;;; :NOTE Weird stuff happens with longlines-mode checks:
+;;;  (memq 'longlines-mode (assoc 'longlines-mode (buffer-local-variables (get-buffer <THE-BUFFER>))))
+;;; :CREATED <Timestamp: #{2010-03-12T13:26:58-05:00Z}#{10105} - by MON KEY>
+(defun mon-longlines-mode-p (&optional llm-in-buffer)
+  "Return non-nil if buffer is in `longlines-mode'.
+When optional arg LLM-IN-BUFFER is non-nil check value in that buffer.
+Signal an error if that buffer does not exist. Default is current-buffer.\n
+:EXAMPLE\n\n\(mon-longlines-mode-p\)\n
+\(let \(chk\) 
+  \(with-temp-buffer 
+    \(longlines-mode\) \(push \(mon-longlines-mode-p\) chk\) 
+    \(longlines-mode\) \(push \(mon-longlines-mode-p\) chk\)
+    \(nreverse chk\)\)\)\n
+\(let* \(ltb-chk
+       \(ltb \(get-buffer-create \"*LLM-TEST*\"\)\)
+       \(do-ltb #'\(lambda \(\) \(with-current-buffer ltb \(longlines-mode\)\)
+                         \(push \(mon-longlines-mode-p \(get-buffer ltb\)\) ltb-chk\)\)\)\)
+  \(dotimes \(l 2 \(progn \(with-current-buffer ltb \(kill-buffer\)\)
+                       \(nreverse ltb-chk\)\)\)
+    \(funcall do-ltb\)\)\)\n
+:SEE-ALSO `mon-toggle-restore-llm', `mon-naf-mode-toggle-restore-llm',
+`mon-is-naf-mode-and-llm-p', `mon-is-naf-mode-p'.\n►►►"
+  (let (llm-check)
+    (cond ((and llm-in-buffer (get-buffer llm-in-buffer))
+           (setq llm-check
+                 (buffer-local-value 'longlines-mode (get-buffer llm-in-buffer))))
+          ((and llm-in-buffer (not (get-buffer llm-in-buffer))
+                (error ":FUNCTION `mon-longlines-mode-p' - Arg LLM-IN-BUFFER is not a buffer")))
+          (t (setq llm-check
+                   (buffer-local-value 'longlines-mode (current-buffer)))))))
+;;
+;; ,---- :UNCOMMENT-TO-TEST
+;; | (let (chk) 
+;; |   (with-temp-buffer 
+;; |     (longlines-mode) (push (mon-longlines-mode-p) chk) 
+;; |     (longlines-mode) (push (mon-longlines-mode-p) chk)
+;; |     (nreverse chk)))
+;; `----
+;;
+;; ,---- :UNCOMMENT-TO-TEST
+;; | (let* ((ltb (get-buffer-create "*llm-test-buffer*"))
+;; |        ltb-chk
+;; |        (do-ltb #'(lambda () (with-current-buffer ltb (longlines-mode))
+;; |                          (push (mon-longlines-mode-p (get-buffer ltb)) ltb-chk))))
+;; |   (dotimes (l 2 (progn (with-current-buffer ltb (kill-buffer))
+;; |                        (nreverse ltb-chk)))
+;; |     (funcall do-ltb)))
+;; `----
+;; 
+;;; :TEST-ME (mon-longlines-mode-p)
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-09-08T12:59:41-04:00Z}#{09372} - by MON KEY>
+(defun mon-is-naf-mode-and-llm-p (&optional naf-buffer-name)
+  "Test if buffer is in `naf-mode' and `longlines-mode' is enabled.\n
+When NAF-BUFFER-NAME is non-nil chack it, signal an error if does not exist.
+Default is `current-buffer'.\n
+:EXAMPLE\n\n(mon-is-naf-mode-and-llm-p)\n
+\(with-temp-buffer \(naf-mode\) \(mon-is-naf-mode-and-llm-p\)\)\n
+\(let* \(nmtb-chk
+       \(nmtb \(get-buffer-create \"*NAF-MODE-TEST*\"\)\)
+       \(do-nmtb #'\(lambda \(no\) 
+                    \(with-current-buffer nmtb 
+                      \(if no \(fundamental-mode\) \(naf-mode\)\)
+                      \(push \(mon-is-naf-mode-and-llm-p \(get-buffer nmtb\)\)
+                               nmtb-chk\)\)\)\)\)
+       \(progn 
+         \(funcall do-nmtb nil\)
+         \(funcall do-nmtb t\)
+         \(with-current-buffer nmtb \(kill-buffer\)\)
+         \(nreverse nmtb-chk\)\)\)\n
+:CALLED-BY `mon-naf-mode-toggle-restore-llm' and other functions which invoke
+to test for active naf-mode before evaluating body.\n
+:SEE-ALSO `mon-toggle-restore-llm', `mon-naf-mode-toggle-restore-llm',
+`mon-is-naf-mode-p'.\n:USED-IN `naf-mode'.\n►►►"
+  (let ((do-nbn 
+           (if naf-buffer-name
+               (if (and naf-buffer-name (get-buffer naf-buffer-name))
+                   (get-buffer naf-buffer-name)
+                   (error ":FUNCTION `mon-is-naf-mode-and-llm-p' - Arg NAF-BUFFER-NAME is not a buffer"))
+                   (current-buffer))))
+    (and (mon-is-naf-mode-p do-nbn) (mon-longlines-mode-p do-nbn))))
+;;
+;;; :TEST-ME (mon-is-naf-mode-and-llm-p)
+;;; :TEST-ME (with-temp-buffer (naf-mode) (mon-is-naf-mode-and-llm-p))
+;;;
+;; ,---- :UNCOMMENT-TO-TEST
+;; | (let* (nmtb-chk
+;; |        (nmtb (get-buffer-create "*NAF-MODE-TEST*"))
+;; |        (do-nmtb #'(lambda (no) 
+;; |                     (with-current-buffer nmtb 
+;; |                       (if no (fundamental-mode) (naf-mode))
+;; |                       (push (mon-is-naf-mode-and-llm-p (get-buffer nmtb))
+;; |                                nmtb-chk)))))
+;; |        (progn 
+;; |          (funcall do-nmtb nil)
+;; |          (funcall do-nmtb t)
+;; |          (with-current-buffer nmtb (kill-buffer))
+;; |          (nreverse nmtb-chk)))
+;; `----
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-03-12T13:23:06-05:00Z}#{10105} - by MON KEY>
+;;; :WAS
+;;; (defmacro mon-toggle-restore-llm (&optional toggle-in-buffer &rest body)
+;;;   "Wrapper macro to temporarily toggle `longlines-mode' in current-buffer.\n
+;;; Like `mon-naf-mode-toggle-restore-llm' but doesn't perform `naf-mode' check.
+;;; :EXAMPLE\n\n\(pp-macroexpand-expression '\(mon-naf-mode-toggle-restore-llm \"bubba\"\)\)\n
+;;; :SEE-ALSO `mon-is-naf-mode-and-llm-p', `mon-is-naf-mode-p'.\n►►►"
+;;;   (declare (indent 1) (debug t))
+;;;   (let ((llm-toggled (make-symbol "llm-toggled")))
+;;;     `(let ((,llm-toggled 
+;;;             (if (mon-is-naf-mode-and-llm-p) t nil)))
+;;;        (when ,llm-toggled (longlines-mode 0))
+;;;        (unwind-protect
+;;;             ,@body
+;;; 	 (when ,llm-toggled (longlines-mode 1))))))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-03-17T16:36:06-04:00Z}#{10113} - by MON KEY>
+(defmacro mon-toggle-restore-llm (&optional toggle-in-buffer &rest body)
+  "Wrapper macro to temporarily toggle `longlines-mode' in current-buffer.\n
+When optional arg TOGGLE-IN-BUFFER is non-nil check value in that buffer and
+exectute BODY there. Default is `current-buffer'.
+:EXAMPLE\n\n\(pp-macroexpand-expression '\(mon-naf-mode-toggle-restore-llm \"bubba\"\)\)\n
+\(progn \(get-buffer-create \"*MON-TOGGLE-RESTORE-LLM-TEST*\"\)
+       \(pp-macroexpand-expression 
+        '\(mon-toggle-restore-llm \"*MON-TOGGLE-RESTORE-LLM-TEST*\" 
+          \(with-current-buffer \"*MON-TOGGLE-RESTORE-LLM-TEST*\" 
+            \(longlines-mode\) 
+           \(prog1 \(buffer-name\)\(kill-buffer \"*MON-TOGGLE-RESTORE-LLM-TEST*\"\)\)\)\)\)
+       \(display-buffer \"*Pp Macroexpand Output*\"\)\)\n
 :SEE-ALSO `mon-is-naf-mode-and-llm-p', `mon-is-naf-mode-p'.\n►►►"
   (declare (indent 1) (debug t))
   (let ((llm-toggled (make-symbol "llm-toggled")))
-    `(let ((,llm-toggled (if (mon-is-naf-mode-and-llm-p) t nil)))
-       (when ,llm-toggled (longlines-mode 0))
+    `(let ((,llm-toggled 
+            (cond (,toggle-in-buffer
+                   (cond ((mon-is-naf-mode-p ,toggle-in-buffer)
+                          (mon-is-naf-mode-and-llm-p ,toggle-in-buffer))
+                         ((mon-longlines-mode-p ,toggle-in-buffer))))
+                  ((not ,toggle-in-buffer)
+                   (if (mon-is-naf-mode-p (get-buffer (current-buffer))) ;; ,(current-buffer))
+                       (mon-is-naf-mode-and-llm-p (get-buffer (current-buffer)));; ,(current-buffer))
+                       (mon-longlines-mode-p (get-buffer (current-buffer))))))))
+                       ;;,(current-buffer)))))))
+       (when ,llm-toggled 
+         (with-current-buffer 
+             (or ,toggle-in-buffer (get-buffer (current-buffer)));;,(current-buffer))
+           (longlines-mode 0)))
        (unwind-protect
             ,@body
-	 (when ,llm-toggled (longlines-mode 1))))))
+         (when ,llm-toggled 
+           (with-current-buffer 
+               (or ,toggle-in-buffer (get-buffer (current-buffer)))
+             (longlines-mode 1)))))))
+;;
+;;; :TEST-ME \(progn \(get-buffer-create \"mmm\"\)
+;;;                    \(pp-macroexpand-expression 
+;;;                     '\(mon-toggle-restore-llm \"mmm\" 
+;;;                       \(with-current-buffer \"mmm\" \(buffer-name\)\)\)\)
+;;;                    \(display-buffer \"*Pp Macroexpand Output*\"\)\)
+
+;;; ==============================
+;;; :MODIFICATIONS <Timestamp: #{2010-03-17T17:48:29-04:00Z}#{10113} - by MON KEY>
+;;; :CREATED <Timestamp: #{2009-09-08T15:52:50-04:00Z}#{09372} - by MON KEY>
+;; :WAS
+;;; (defmacro mon-naf-mode-toggle-restore-llm (&rest body)
+;;;   "Wrapper macro to temporarily toggle `longlines-mode' in `naf-mode' buffers.\n
+;;; :EXAMPLE\n\n\(pp-macroexpand-expression '\(mon-naf-mode-toggle-restore-llm \"bubba\"\)\)\n
+;;; :SEE-ALSO `mon-toggle-restore-llm', `mon-naf-mode-toggle-restore-llm',
+;;; `mon-is-naf-mode-and-llm-p', `mon-is-naf-mode-p'.\n►►►"
+;;;   (declare (indent 1) (debug t))
+;;;   (let ((llm-toggled (make-symbol "llm-toggled")))
+;;;     `(let ((,llm-toggled (if (mon-is-naf-mode-and-llm-p) t nil)))
+;;;        (when ,llm-toggled (longlines-mode 0))
+;;;        (unwind-protect
+;;;             ,@body
+;;; 	 (when ,llm-toggled (longlines-mode 1))))))
+;;
+(defmacro mon-naf-mode-toggle-restore-llm (&optional toggle-buffer &rest naf-body)
+  "Wrapper macro to temporarily toggle `longlines-mode' in `naf-mode' buffers.\n
+When optional arg TOGGLE-BUFFER is non-nil check value in that buffer and
+exectute BODY there. Default is `current-buffer'.
+:EXAMPLE\n\n\(pp-macroexpand-expression '\(mon-naf-mode-toggle-restore-llm nil \"bubba\"\)\)\n
+:SEE-ALSO `mon-toggle-restore-llm', `mon-naf-mode-toggle-restore-llm',
+`mon-is-naf-mode-and-llm-p', `mon-is-naf-mode-p'.\n►►►"
+  `(mon-toggle-restore-llm ,toggle-buffer ,@naf-body))
 ;;
 ;;; :TEST-ME (pp-macroexpand-expression '(mon-naf-mode-toggle-restore-llm "bubba"))
+;;
+;;;(defun mon-naf-mode-toggle-restore-llm (&optional toggle-buffer &rest body)
+;;;(
 
 ;;; ==============================
 ;; :REGEXP-OPERATIONS-ON-REGION-AND-BUFFER
@@ -258,7 +479,10 @@ Automatically becomes buffer-local whenever `naf-mode' initiated in buffer.\n
   "Replace in string all accented characters with an unaccented version.\n
 This is done only for ISO-5581-1 characters. Return the modified string.\n
 :SEE-ALSO `*iso-latin-1-approximation*', `mon-make-iso-latin-1-approximation',
-`mon-trans-cp1252-to-latin1'.\n►►►"
+`mon-trans-cp1252-to-latin1', `deftransmogrify', `mon-cln-mail-headers'
+`mon-cln-csv-fields' `mon-cln-file-name-string' `mon-cln-up-colon'
+`mon-cln-whitespace' `mon-cln-uniq-lines' `mon-cln-control-M'
+`mon-cln-piped-list' `mon-delete-back-up-list' `mon-cln-iso-latin-1'.\n►►►"
   (unless *iso-latin-1-approximation* 
     (mon-make-iso-latin-1-approximation))
   (let ((result (make-string (length string) 0)))
@@ -273,7 +497,7 @@ This is done only for ISO-5581-1 characters. Return the modified string.\n
 (defmacro deftransmogrify (table string language translated-string)
   "A transmogrifier.\n
 :SEE `mon-transmogrify' for implementation details.\n
-:SEE-ALSO .\n►►►"
+:SEE-ALSO `mon-cln-iso-latin-1'.\n►►►"
   `(progn
      (unless (and (boundp (quote ,table)) ,table)
        (setq ,table (make-vector 7 0)))
@@ -318,6 +542,74 @@ Pascal Bourguignon's functions have extensive examples:
         string)))
 
 ;;; ==============================
+;;; :CREATED <Timestamp: #{2010-03-11T19:30:38-05:00Z}#{10105} - by MON KEY>
+(defun mon-walk-regexps-in-file (w-fl w-rep bfr-mrkr)
+  "Helper function for `mon-replace-regexps-in-file-list'.
+W-FL is a file to find.
+W-REP is a list of regexp/replace pairs
+BFR-MRKR is a buffer marker to print match/replace logs to.
+:SEE-ALSO .\n►►►"
+  (let ((the-rg w-rep)
+        (map-rg #'(lambda (rg-list bmrk)
+                    (let (this-rep-cnt)
+                      (mapc #'(lambda (this-rgx)
+                                (mon-g2be 0)
+                                (setq this-rep-cnt 0)
+                                (while (search-forward-regexp (car this-rgx) nil t)
+                                  (incf this-rep-cnt)
+                                  (replace-match (cadr this-rgx)))
+                                (when (> this-rep-cnt 0)
+                                  (princ (format "\n\n:%d-TIMES\n:W-REGEXP %S\n:REPLACED %S"
+                                                 this-rep-cnt (car this-rgx) (cadr this-rgx)) bmrk)))
+                            rg-list)))))
+    (find-file w-fl)
+    (mon-g2be 0)
+    (funcall map-rg the-rg bfr-mrkr)))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-03-11T19:30:29-05:00Z}#{10105} - by MON KEY>
+(defun mon-replace-regexps-in-file-list (file-list regexp-list)
+"Replace in FILE-LIST the match/replace pairs in REGEXP-LIST.
+FILE-LIST is a list of files to replace in it has the form:
+ \(\"<FILENAME>\" \"<FILENAME1>\" \"<FILENAME2>\"\)
+REGEXP-LIST is a list of match replace pairs with the form:
+ \(\(<REGEXP-STRING> <REPLACE-STRING>)
+   \(<REGEXP-STRING1> <REPLACE-STRING1>)
+   \(<REGEXP-STRING2> <REPLACE-STRING2>)\)
+Display a log of replacement results in the buffer named
+`*REGEXP-REPLACE-HISTORY*'
+Files in FILE-LIST are visited as with `find-file' and are not written to disk
+they must be saved manually.\n
+:NOTE This is an aggressive procedure be carefull looping over large file-sets
+with poorly formed regexps and consider invoking this procedure on backups
+first.\n
+:SEE-ALSO `mon-walk-regexps-in-file', `mon-get-file-mod-times'.\n►►►"
+  (let ((fl file-list)
+        (rl regexp-list)
+        (rep-reg-hist (get-buffer-create "*REGEXP-REPLACE-HISTORY*"))
+        (rrh-mrk (make-marker))
+        (in-fl-mods #'(lambda (flmod) 
+                        (concat "\n\n" (make-string 68 59) "\n"
+                                (mon-get-file-mod-times flmod)
+                                "\n" (make-string 68 59)))))
+    (with-current-buffer rep-reg-hist
+      (set (make-local-variable 'comment-start) ";;")
+      (erase-buffer)  
+      (mon-g2be 0)
+      (princ (concat 
+              ":INVOCATION-TIME " (mon-format-iso-8601-time) "\n\n"
+              ":WITH-REGEXP-LIST\n" (pp-to-string rl) "\n" 
+              ":IN-THESE-FILES\n" (mapconcat #'identity fl "\n") "\n")
+             (current-buffer))
+      (set-marker rrh-mrk (point))
+      (comment-region (buffer-end 0) (marker-position rrh-mrk)))
+    (mapc #'(lambda (in-fl)
+              (princ (funcall in-fl-mods in-fl) rrh-mrk)
+              (mon-walk-regexps-in-file in-fl rl rrh-mrk))
+          fl)
+    (display-buffer rep-reg-hist t)))
+
+;;; ==============================
 ;;; :COURTESY :FILE format.el
 ;;; :CREATED <Timestamp: #{2009-08-20T16:58:13-04:00Z}#{09344} - by MON KEY>
 (defun mon-replace-strings (alist &optional reverse beg end)
@@ -327,7 +619,7 @@ ALIST is a list of \(FROM . TO\) pairs, which should be proper arguments to
 When REVERSE is non-nil the pairs are (TO . FROM), which allows use of the same
 list in both directions if it contains only literal strings. 
 Optional args BEG and END specify a region of the buffer on which to operate.\n
-:SEE-ALSO `mon-replace-regexp-while'.\n►►►"
+:SEE-ALSO `mon-replace-regexp-while', `mon-replace-regexps-in-file-list'.\n►►►"
   (save-excursion
     (save-restriction
       (or beg (setq beg (buffer-end 0)))
@@ -438,7 +730,8 @@ NOTE: To clean discarding text-properties use:
 :EXAMPLE\n(replace-string-pairs-region3 start end 
  '((\"alpha\" \"A\") (\"beta\" \"B\")))\n
 :SEE-ALSO `replace-string-pairs-region', `mon-replace-region-regexp-lists'
-`mon-replace-region-regexp-lists-nonint'.\n\n:USED-IN `naf-mode'.\n►►►"
+`mon-replace-region-regexp-lists-nonint', `mon-replace-regexps-in-file-list'.
+\n:USED-IN `naf-mode'.\n►►►"
   (let (mystr)
     ;;  (setq mystr (buffer-substring start end))
     ;;    (setq mystr (filter-buffer-substring start end nil t)) 
@@ -571,26 +864,24 @@ Used as a helper function to search over symbol bound regexp lists.\n
 	 (rep-tail (mapcar #'cadr my-list))
          rep-count
          rep-region)
-    (mon-naf-mode-toggle-restore-llm
-        (setq rep-region 
-              (buffer-substring-no-properties start end))
-      (setq rep-region 
-            (with-temp-buffer
-              (insert rep-region)
-              (goto-char (buffer-end 0))
-              (setq rep-count 0)
-              (while rep-tip
-                (while (search-forward-regexp (car rep-tip) nil t)
-                  (replace-match (car rep-tail))
-                  (setq rep-count (+ rep-count 1)))
-                ;;(message "Replaced regexp \'%s\' %d times with \'%s\'\n"
-                ;;           (car rep-tip) rep-count (car rep-tail)))
-                (when (not (search-forward-regexp (car rep-tip) nil t))
-                  (setq rep-count 0)
-                  (setq rep-tip (cdr rep-tip))
-                  (setq rep-tail (cdr rep-tail))
-                  (goto-char (buffer-end 0))))
-              (buffer-string)))
+    (mon-naf-mode-toggle-restore-llm nil
+      (setq rep-region (buffer-substring-no-properties start end)) 
+      (setq rep-region (with-temp-buffer
+                         (insert rep-region)
+                         (goto-char (buffer-end 0))
+                         (setq rep-count 0)
+                         (while rep-tip
+                           (while (search-forward-regexp (car rep-tip) nil t)
+                             (replace-match (car rep-tail))
+                             (setq rep-count (+ rep-count 1)))
+                           ;;(message "Replaced regexp \'%s\' %d times with \'%s\'\n"
+                           ;;           (car rep-tip) rep-count (car rep-tail)))
+                           (when (not (search-forward-regexp (car rep-tip) nil t))
+                             (setq rep-count 0)
+                             (setq rep-tip (cdr rep-tip))
+                             (setq rep-tail (cdr rep-tail))
+                             (goto-char (buffer-end 0))))
+                         (buffer-string)))
       (delete-region start end)
     (insert rep-region))))
 
@@ -610,7 +901,7 @@ BIG-GRP-END is the match-group to map from.\n
 \(defun some-function-22 \(&optional optional\)
 \(defun *some/-symbol:->name<-2* \(somevar\n
 :ALIASED-BY `mon-map-regexp-matches'\n
-:SEE-ALSO `mon-regexp-map-match-in-region'.\n►►►"
+:SEE-ALSO `mon-regexp-map-match-in-region', `mon-walk-regexps-in-file'.\n►►►"
   (progn (search-forward-regexp big-regexp nil t)
        (mapcar #'(lambda (n)
                    (cons n (match-string-no-properties n)))
@@ -641,7 +932,7 @@ BIG-GRP-END is the match-group to map from.\n
 ;;; :CREATED <Timestamp: #{2010-03-01T17:05:04-05:00Z}#{10091} - by MON KEY>
 (defun mon-regexp-map-match-in-region (start end w-regexp &optional no-new-buffer)
   "Map the regexp W-REGEXP for each line in region START to END.\n
-When W-REGEXP is a symbol holding a regexp.\n
+W-REGEXP is a symbol holding a regexp.\n
 Return value is as per `mon-regexp-map-match' e.g. a list of match groups.\n
 Return value is displayed in the buffer named \"*MON-REGEXP-MAP-MATCH-RESULTS*\".
 When optional arg NO-NEW-BUFFER in non-nil and not called-interactively
@@ -665,8 +956,7 @@ insert return value in current-buffer at END or region. Does not move point.\n
 ►\n80126308\nno. 80126308\nn. 80126308\nno 94031775\nn 2005065776
 unk84240548\n\[500006383]\nFRBNF12656015\nFRBNF32759170\n◄\n
 :ALIASED-BY `mon-map-regexp-matches-in-region'\n
-:SEE-ALSO .\n►►►"
-  (eval-when-compile (require 'boxquote))
+:SEE-ALSO `mon-walk-regexps-in-file', `mon-replace-regexps-in-file-list'.\n►►►"
   (interactive (list (if (use-region-p) (region-beginning)
                          (error ":FUNCTION `mon-regexp-map-match-in-region' - region not active"))
                      (if (use-region-p) (region-end)
@@ -678,6 +968,7 @@ unk84240548\n\[500006383]\nFRBNF12656015\nFRBNF32759170\n◄\n
                            (symbol-value (car (read-from-string (read-string "Which symbol: "))))
                            (read-regexp "Provide a regexp: ")))
                      nil))
+  (eval-when-compile (require 'boxquote))
   (let* ((rsd w-regexp)
          (rod (regexp-opt-depth rsd))
          rsd-collect  rsd-cnt)
@@ -734,7 +1025,7 @@ Replace elts of REGEXP-LIST a symbol holding a list of regexp/replace pairs.
 Forms of symbol are searched across region until elements of supplied lists
 are exhausted. When WITH-RSULTS is non-nil spit replacement results for each
 elt of REGEXP-LIST to *Messages*.\n
-:SEE-ALSO `mon-get-list-yorp', `mon-get-list-norp'.\n►►►"
+:SEE-ALSO `mon-get-list-yorp', `mon-get-list-norp', `mon-replace-regexps-in-file-list'.\n►►►"
   (interactive "r\n\i\nP\np")
   (let* ((rep-region)
 	 (rep-region-temp)
@@ -774,6 +1065,148 @@ elt of REGEXP-LIST to *Messages*.\n
                 ((not intrp) (format "%s" rep-repl-msg))))))
 
 ;;; ==============================
+;;; :CREATED <Timestamp: #{2010-03-23T13:32:14-04:00Z}#{10122} - by MON>
+(defun mon-cln-mail-headers (start end)
+  "Clean manually yanked email header \(Gmail centric\) in region from START to END.\n
+Replace Email header fields at BOL e.g.:\n
+ from reply-to to cc date subject mailed-by signed-by\n
+With:\n
+;;; :FIELD <SOME-FIELD-VALUE>\n
+When required add whitespace padding before <SOME-FIELD-VALUE> such that all
+field values begin at column 17.\n
+Insert value of `*mon-default-comment-divider*' and replace BOL occurences of:\n
+ show details Mmm 12 \(18 days ago\)\n hide details Mmm 9 \(1 day ago\)
+ show details 3:25 AM \(7 hours ago\)\n hide details 12:25 PM \(1 hour ago\)
+ hide details 4:55 AM \(0 minutes ago\)\n show details 1:55 PM \(0 minutes ago\)
+ hide details 8:55 PM \(1 minute ago\)\n show details 12:55 AM \(12 minutes ago\)\n
+:EXAMPLE\n
+\(let* \(\(dlm \(nth 1 \(mapcar #'cadr \(mon-help-delimited-region t\)\)\)\)
+       \(eg-str \(buffer-substring-no-properties \(car dlm\) \(cdr dlm\)\)\)\)
+  \(with-temp-buffer 
+    \(insert eg-str\)
+    \(mon-cln-mail-headers \(buffer-end 0\)\(buffer-end 1\)\)
+    \(setq eg-str \(buffer-substring-no-properties \(buffer-end 0\)\(buffer-end 1\)\)\)\)
+  \(mon-help-overlay-result \(car dlm\) \(cdr dlm\) 78 eg-str\)\)\n
+►
+from	some-name <some-name@some-domain.com>\nreply-to	reply-val <reply-val@some-domain.com>
+to	other-name@other-domain.com\ncc	more-names <more-names@more-domain.com>
+date	Mon, Jan 00, 2010 at 12:00 AM\nsubject	Some Engaging Subject Matter
+mailed-by	some-mailing-domain.com\nsigned-by	some-signing-domain.com\n
+show details Mar 2 \(18 day ago\)\nhide details Mar 9 \(1 day ago\)
+show details Mar 22 \(18 day ago\)\nhide details Mar 29 \(1 day ago\)
+show details 3:25 AM \(7 hours ago\)\nhide details 3:25 AM \(7 hours ago\)
+show details 12:25 AM \(7 hours ago\)\nhide details 3:25 AM \(1 hour ago\)
+hide details 12:55 PM \(0 minutes ago\)\nshow details 3:55 PM \(0 minutes ago\)
+hide details 12:55 PM \(1 minute ago\)\nshow details 12:55 AM \(1 minute ago\)
+◄\n
+:SEE RFC-2822 (URL `http://tools.ietf.org/html/rfc2822').
+:SEE RFC-5322 (URL `http://tools.ietf.org/html/rfc5322').\n
+:SEE-ALSO `mon-cln-csv-fields', `mon-cln-file-name-string', `mon-cln-up-colon',
+`mon-cln-whitespace', `mon-cln-uniq-lines', `mon-cln-control-M',
+`mon-cln-piped-list', `mon-delete-back-up-list', `mon-cln-iso-latin-1'.\n►►►"
+  (interactive "r")
+  (let ((ml-bol-rplc
+         '(;; :CapCased-common
+           "Date" "Cc" "Subject" "To" "From" "Bcc"
+           "Authentication-Results" 
+           "Content-Transfer-Encoding" "Content-Disposition" "Content-Type"
+           "DKIM-Signature" "Delivered-To" "DomainKey-Signature" "Errors-To" "List-Archive"
+           "List-Help" "List-Id" "List-Post" "List-Subscribe" "List-Unsubscribe"
+           "MIME-Version" "Message-ID" "Precedence" "Received-SPF" "Received" "References"
+           "Return-Path" "Sender" "X-BeenThere:" "X-Forwarded-For" "X-Forwarded-To"
+           "X-Generated-By" "X-Mailman-Version" "X-Trak-Extra-Language"
+           ;; :CapCased ommitted
+           ;; "Comments" "Keywords"
+           ;; :downcased-common
+           "bcc"
+           "from" "reply-to" "to" "cc" "date" "subject" "mailed-by" "signed-by"
+           ;; :downcased-ommitted
+           ;; "in-reply-to" "comments" "keywords" "message-id"
+           ))
+        ml-lngst-str
+        ml-bol-rplc-lngst
+        ml-bol-hd-shw)
+    (setq ml-lngst-str (car (mon-string-sort-descending (copy-sequence ml-bol-rplc))))
+    (setq ml-bol-rplc-lngst (length ml-lngst-str))
+    (setq ml-bol-rplc 
+          (concat
+           "^\\("
+           ;;"\\(from\\|reply-to\\|to\\|cc\\|date\\|subject\\|mailed-by\\|signed-by\\|MIME-Version\\)" ;<-grp2
+           "\\(" (regexp-opt ml-bol-rplc) ":?\\)" ;<-grp2
+           "\\([[:blank:]]+\\)"                   ;<-grp3
+           "\\(.*\\)"                             ;<-grp4
+           "\\)"))
+    (setq ml-bol-hd-shw
+          (concat
+           "^\\("
+           "\\(hide\\|show\\) details "
+           "\\(" ;; Gmail displays by: Month N day|Time hour/minute
+           "\\([A-Z][a-z]\\{2,2\\} [0-9]\\{1,2\\} ([0-9]+ days? ago)\\)"
+           "\\|"
+           "\\([0-9]\\{1,2\\}:[0-9]\\{2,2\\} [AP]M ([0-9]\\{1,2\\} \\(hour\\|minute\\)s? ago)\\)"
+           "\\)" ;; :CLOSE time regexp
+           "\\)"))
+    (unwind-protect 
+         (progn
+           (narrow-to-region start end)
+           (goto-char start)
+           (while
+               (search-forward-regexp ml-bol-rplc nil t)
+             (let* ((m2 (match-string-no-properties 2))
+                    (m4 (match-string-no-properties 4))
+                    (m2-len (length m2))
+                    (m2-add-pad 
+                       (if (or (equal (concat ml-lngst-str":") m2)
+                               (equal ml-lngst-str m2)
+                               (eq m2-len ml-bol-rplc-lngst))
+                           1
+                           (- ml-bol-rplc-lngst m2-len)))
+                    (m2-pad (make-string m2-add-pad 32))
+                    (pad-frmt (format ";;; :%s %s %s" (upcase m2) m2-pad m4)))
+               (replace-match pad-frmt)))
+           (princ (format "\n%s\n" *mon-default-comment-divider*)(current-buffer))
+           (while (search-forward-regexp ml-bol-hd-shw nil t)
+             (replace-match ""))
+           (mon-g2be)
+           (while (unless (eobp) (search-forward-regexp "^$" nil t))
+             (delete-blank-lines)))
+      (widen))))
+;;
+;;,---- :UNCOMMENT-BELOW-TO-TEST
+;;| (let* ((dlm (nth 1 (mapcar #'cadr (mon-help-delimited-region t))))
+;;|        (eg-str (buffer-substring-no-properties (car dlm) (cdr dlm))))
+;;|   (with-temp-buffer 
+;;|     (insert eg-str)
+;;|     (mon-cln-mail-headers (buffer-end 0)(buffer-end 1))
+;;|     (setq eg-str (buffer-substring-no-properties (buffer-end 0)(buffer-end 1))))
+;;|   (mon-help-overlay-result (car dlm) (cdr dlm) 78 eg-str))
+;;| 
+;;| ►
+;;| from	some-name <some-name@some-domain.com>
+;;| reply-to	reply-val <reply-val@some-domain.com>
+;;| to	other-name@other-domain.com
+;;| cc	more-names <more-names@more-domain.com>
+;;| date	Mon, Jan 00, 2010 at 12:00 AM
+;;| subject	Some Engaging Subject Matter
+;;| mailed-by	some-mailing-domain.com
+;;| signed-by	some-signing-domain.com
+;;| 
+;;| show details Mar 2 (18 day ago)
+;;| hide details Mar 9 (1 day ago)
+;;| show details Mar 22 (18 day ago)
+;;| hide details Mar 29 (1 day ago)
+;;| show details 3:25 AM (7 hours ago)
+;;| hide details 3:25 AM (7 hours ago)
+;;| show details 12:25 AM (7 hours ago)
+;;| hide details 3:25 AM (1 hour ago)
+;;| hide details 12:55 PM (0 minutes ago)
+;;| show details 3:55 PM (0 minutes ago)
+;;| hide details 12:55 PM (1 minute ago)
+;;| show details 12:55 AM (1 minute ago)
+;;| ◄
+;;`----
+
+;;; ==============================
 ;;; :CREATED <Timestamp: Monday May 25, 2009 @ 11:46.00 AM - by MON KEY>
 (defun mon-cln-csv-fields (field-list &optional delim-slot-w delim-row-w no-list)
   "Clean data pre-formatted for generation of .csv files.
@@ -810,7 +1243,11 @@ Zipcode: 99999\n
 \(mon-cln-csv-fields\n '\(\"Name: \" \"Title: \" \"Institution: \"\"Address: \"
    \"City: \" \"State: \" \"Zipcode: \"\) \"@\" \"_\"\)\n
 \(mon-cln-csv-fields\n '\(\"Name: \" \"Title: \" \"Institution: \" \"Address: \"
-    \"City: \" \"State: \" \"Zipcode: \"\) \"`\" \"|\" t\) \n►►►"
+    \"City: \" \"State: \" \"Zipcode: \"\) \"`\" \"|\" t\)\n\n
+:SEE-ALSO `mon-cln-mail-headers', `mon-cln-csv-fields',
+`mon-cln-file-name-string', `mon-cln-up-colon', `mon-cln-whitespace',
+`mon-cln-uniq-lines', `mon-cln-control-M', `mon-cln-piped-list',
+`mon-delete-back-up-list', `mon-cln-iso-latin-1'.\n►►►"
   (interactive)
   (save-excursion
     (let* ((csv-maker field-list)
@@ -895,7 +1332,11 @@ Zipcode: 99999\n
   "Replace chars not allowed in w32 filenams `-'.\n
 Chars Cleaned include:\n
 `/',  `:',  `*', `?', `\"', `<', `>', `|, `\\'\n
-:SEE-ALSO `mon-exchange-slash-and-backslash'.\n►►►"
+:SEE-ALSO `mon-exchange-slash-and-backslash', `convert-standard-filename'
+`mon-cln-mail-headers', `mon-cln-csv-fields',
+`mon-cln-file-name-string', `mon-cln-up-colon', `mon-cln-whitespace',
+`mon-cln-uniq-lines', `mon-cln-control-M', `mon-cln-piped-list',
+`mon-delete-back-up-list', `mon-cln-iso-latin-1'.\n►►►"
   (let* ((ff-prefix '("/"  ":"  "*"  "?" "\"" "<" ">" "|" "\\\\" ))
 	 (to-fix fix-string))
 	 ;;"\\/:*?\"<>|"))
@@ -933,7 +1374,11 @@ Replace  & ,  > ,  <  with their respective encoded representation.\n
 (defun mon-cln-html-tags (beg end)
   "Replace common HTML tags with either newline or nil. Poor man's html formatter.\n
 :SEE-ALSO `mon-cln-html-chars', `mon-cln-wiki', `mon-cln-philsp', `mon-cln-imdb',
-`mon-cln-ulan', `mon-cln-wiki', `mon-cln-imdb',`mon-cln-bib', `mon-cln-loc'.\n►►►"
+`mon-cln-ulan', `mon-cln-wiki', `mon-cln-imdb',`mon-cln-bib', `mon-cln-loc'.
+`mon-cln-xml<-parsed', `mon-cln-mail-headers', `mon-cln-csv-fields',
+`mon-cln-file-name-string', `mon-cln-up-colon', `mon-cln-whitespace',
+`mon-cln-uniq-lines', `mon-cln-control-M', `mon-cln-piped-list',
+`mon-delete-back-up-list', `mon-cln-iso-latin-1'.\n►►►"
   (interactive "r")
   (let ((table '(("\n"                               . nil) ;; :NOTE is this correct? - MON
 		 ("\\(\\(.>+\\)\\([A-Za-z0-9: :]*\\)\\(</a>\\)\\)" . "\\2 \\3")
@@ -948,25 +1393,27 @@ Replace  & ,  > ,  <  with their respective encoded representation.\n
 		 ("\\(&[^ <]*;\\)\\|\\(<[^>]*>\\)" . nil)
 		 ("\\([a-z]\\{1,1\\}\\)\\([:.:]\\)\\([A-Z]\\{1,1\\}\\)" . "\\1\\2 \\3")))
         re sub)
-    (let* ((test-llm (mon-is-naf-mode-and-llm-p))
-           (is-on test-llm)
-           (llm-off))
-      (progn
-        (when is-on (longlines-mode 0) (setq llm-off 't))
-	(save-excursion
-	  (save-restriction
-	    (narrow-to-region beg end)
-	    (while table
-	      (setq re (car (car table)))
-	      (setq sub (cdr (car table)))
-	      (setq table (cdr table))
-	      (goto-char (buffer-end 0))
-	      (cond (sub
-		     (while (search-forward-regexp re nil t)
-		       (replace-match sub)))
-		    (t (while (search-forward-regexp re nil t)
-                         (delete-region (match-beginning 0) (match-end 0))))))))
-        (when llm-off (longlines-mode 1) (setq llm-off 'nil))))))
+    (mon-toggle-restore-llm nil
+      ;; :WAS (let* ((test-llm (mon-is-naf-mode-and-llm-p))
+      ;;        (is-on test-llm)
+      ;;        (llm-off))
+      ;;   (progn
+      ;;     (when is-on (longlines-mode 0) (setq llm-off 't))
+      (save-excursion
+        (save-restriction
+          (narrow-to-region beg end)
+          (while table
+            (setq re (car (car table)))
+            (setq sub (cdr (car table)))
+            (setq table (cdr table))
+            (goto-char (buffer-end 0))
+            (cond (sub
+                   (while (search-forward-regexp re nil t)
+                     (replace-match sub)))
+                  (t (while (search-forward-regexp re nil t)
+                       (delete-region (match-beginning 0) (match-end 0))))))))
+      ;;(when llm-off (longlines-mode 1) (setq llm-off 'nil))))))
+      )))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-11-17T15:36:11-05:00Z}#{09472} - by MON KEY>
@@ -1040,7 +1487,7 @@ Does not move point.
     get-xml)))
 ;;
 ;;; :TEST-ME (call-interactively 'mon-cln-xml<-parsed-strip-nil)
-        
+
 ;;; ==============================
 ;;; :GLOBAL-KEYBINDING (global-set-key "\C-cu:" 'mon-cln-up-colon)
 ;;; :MODIFICATIONS <Timestamp: #{2010-03-01T15:29:58-05:00Z}#{10091} - by MON KEY>
@@ -1062,7 +1509,8 @@ upcase and colonize me \n
 :SEE-ALSO `mon-upcase-commented-lines', `mon-downcase-commented-lines'
 `mon-line-strings-bq-qt-sym-bol', `mon-line-strings-indent-to-col',
 `mon-line-strings-pipe-bol', `mon-line-strings-pipe-to-col',
-`mon-line-strings-qt-region'.\n►►►"
+`mon-line-strings-qt-region', `mon-cln-mail-headers', 
+`mon-cln-file-name-string'.\n►►►"
   (interactive "i\ni\ni\np") ;; "r\ni\np")
   (let ((bl (make-marker))
         (el (make-marker))
@@ -1070,17 +1518,19 @@ upcase and colonize me \n
     (setq regn-ln-if
           (cond ((and start end) `(,start . ,end))
                 ((and intrp (use-region-p))
-                 `(,(region-beginning) (region-end)))
+                 `(,(region-beginning) . ,(region-end)))
                 ((and intrp (not (use-region-p)) (bolp) (not (or (eolp) (eobp)))
                       ;; Half of 68 columns seems a reasonable length to clamp at.
                       (> 34 (- (line-end-position) (line-beginning-position))))
                  `(,(line-beginning-position) . ,(line-end-position)))
-                (t (error ":FUNCTION `mon-cln-up-colon' INTRP but no start end values found"))))
+                (t (error ":FUNCTION `mon-cln-up-colon' - INTRP but no start end values found"))))
     (set-marker bl (car regn-ln-if))
     (set-marker el (cdr regn-ln-if))
     (setq sstr (upcase (buffer-substring-no-properties bl el)))
     (setq sstr (upcase sstr))
-    (let ((chop-sstr (string-to-sequence sstr 'list))
+    (let ((chop-sstr 
+           ;; :WAS (string-to-sequence sstr 'list))
+           (string-to-list sstr))
           (chop-tail #'(lambda (ss) (car (last ss))))
           (chop-head #'(lambda (ss) (car ss))))
       ;; 58 -> `:' 32 -> ` ' 45 -> `-' 59 -> `;'
@@ -1114,7 +1564,7 @@ upcase and colonize me \n
 (defun mon-exchange-slash-and-backslash ()
   "Exchange / with \\ and in the current line.\n
 Exchange in region when region-active-p is non-nil.\n
-:SEE-ALSO `mon-cln-file-name-string'.\n►►►"
+:SEE-ALSO `mon-cln-file-name-string', `convert-standard-filename'.\n►►►"
   (interactive)
   (save-match-data
     (save-excursion
@@ -1400,12 +1850,13 @@ Useful for re-numbering out of sequence numbers in filenames.\n
 `mon-line-number-region', `mon-rectangle-sum-column'.\n
 :USED-IN `naf-mode'.\n►►►"
   (interactive "r\nP\np")
-  (let* ((test-llm (mon-is-naf-mode-and-llm-p))
-         (is-on test-llm)
-         (llm-off))
-    (when is-on (longlines-mode 0) (setq llm-off 't))
-    (unwind-protect
-         (let ((count-rep (cond (start-num start-num)
+  ;; :WAS (let* ((test-llm (mon-is-naf-mode-and-llm-p))
+  ;;      (is-on test-llm)
+  ;;      (llm-off))
+  ;; (when is-on (longlines-mode 0) (setq llm-off 't))
+  ;; (unwind-protect
+  (mon-toggle-restore-llm nil  
+       (let ((count-rep (cond (start-num start-num)
                                 ((not intrp) (not start-num) 0)
                                 (intrp (read-number "Start from number:" 0))))
                (regn-nums)
@@ -1428,7 +1879,8 @@ Useful for re-numbering out of sequence numbers in filenames.\n
                  (delete-region regn-start regn-end)
                  (insert regn-nums))
                regn-nums))
-      (when llm-off (longlines-mode 1) (setq llm-off 'nil)))))
+       ;; (when llm-off (longlines-mode 1) (setq llm-off 'nil)))))
+       ))
 ;;
 ;;(defalias ' ' )
 
@@ -1460,61 +1912,63 @@ More comprehensive than `mon-cln-whitespace' with treatement of leading and
 trailing whitespace but can't be trusted to DTRT.\n
 For interactive cleaning of trailing tabs and spaces in *<BUFFER>*:
 :SEE `mon-kill-whitespace', `mon-cln-trail-whitespace', `mon-cln-blank-lines'\n
-:SEE-ALSO `mon-cln-imdb', `mon-trans_cp1252_to_latin1',
+:SEE-ALSO `mon-cln-imdb', `mon-trans-cp1252-to-latin1',
 `mon-replace-common-abrevs', `mon-abr-to-month', `mon-num-to-month'.\n
 :USED-IN `naf-mode'.\n►►►"
   (interactive "r\np")
-  (let ((is-on (mon-is-naf-mode-and-llm-p))
-	(llm-off))
-    (when is-on (longlines-mode 0) (setq llm-off t))
-   (save-excursion
-     (let ((whsp-str)
-           (whsp-start start)
-           (whsp-end end))
-       (setq whsp-str (buffer-substring-no-properties whsp-start whsp-end))
-       (setq whsp-str
-             (with-temp-buffer
-               (insert whsp-str)
-               (progn
-                 (goto-char (buffer-end 0))
-                 (while (search-forward-regexp "[ \t]+$" nil t)
-                   (delete-region (match-beginning 0) (match-end 0)))
-                 (goto-char (buffer-end 0))
-                 (while (search-forward-regexp "[ \t]+$" nil t)
-                   (replace-match "" nil nil))
-                 (goto-char (buffer-end 0))
-                 (while (search-forward-regexp "^\\(\\([[:blank:]]+\\)\\([[:graph:]]\\)\\)"   nil t)
-                   (replace-match "\\3" nil nil))
-                 (goto-char (buffer-end 0))
-                 (while (search-forward "\t" nil t)
-                   (untabify (1- (point)) (buffer-end 1)))
-                 ;;; (let ((start (buffer-end 0))
-                 ;;;       (end (buffer-end 1)))
-                 (goto-char (buffer-end 0))
-                 (mon-replace-region-regexp-lists-nonint (buffer-end 0) (buffer-end 1)
-                                                         regexp-clean-big-whitespace)
-                 (goto-char (buffer-end 0))
-                 (while (search-forward-regexp "^\\([[:blank:]]+$\\)" nil t)
-                   (replace-match "\n\n" nil nil))
-                 (buffer-substring-no-properties (buffer-end 0) (buffer-end 1)))))
-       (delete-region whsp-start whsp-end)
-       (insert whsp-str)))
-   (when llm-off (longlines-mode 1) (setq llm-off nil))
-   (when intrp (message "big whitespace cleaned."))))
+  ;; :WAS (let ((is-on (mon-is-naf-mode-and-llm-p))
+  ;;       (llm-off))
+  ;;   (when is-on (longlines-mode 0) (setq llm-off t))
+    (mon-toggle-restore-llm nil  
+      (save-excursion
+        (let ((whsp-str)
+              (whsp-start start)
+              (whsp-end end))
+          (setq whsp-str (buffer-substring-no-properties whsp-start whsp-end))
+          (setq whsp-str
+                (with-temp-buffer
+                  (insert whsp-str)
+                  (progn
+                    (goto-char (buffer-end 0))
+                    (while (search-forward-regexp "[ \t]+$" nil t)
+                      (delete-region (match-beginning 0) (match-end 0)))
+                    (goto-char (buffer-end 0))
+                    (while (search-forward-regexp "[ \t]+$" nil t)
+                      (replace-match "" nil nil))
+                    (goto-char (buffer-end 0))
+                    (while (search-forward-regexp "^\\(\\([[:blank:]]+\\)\\([[:graph:]]\\)\\)"   nil t)
+                      (replace-match "\\3" nil nil))
+                    (goto-char (buffer-end 0))
+                    (while (search-forward "\t" nil t)
+                      (untabify (1- (point)) (buffer-end 1)))
+                    ;; (let ((start (buffer-end 0))
+                    ;;       (end (buffer-end 1)))
+                    (goto-char (buffer-end 0))
+                    (mon-replace-region-regexp-lists-nonint (buffer-end 0) (buffer-end 1)
+                                                            *regexp-clean-big-whitespace*)
+                    (goto-char (buffer-end 0))
+                    (while (search-forward-regexp "^\\([[:blank:]]+$\\)" nil t)
+                      (replace-match "\n\n" nil nil))
+                    (buffer-substring-no-properties (buffer-end 0) (buffer-end 1)))))
+          (delete-region whsp-start whsp-end)
+          (insert whsp-str)))
+   ;;(when llm-off (longlines-mode 1) (setq llm-off nil))
+      (when intrp (message "big whitespace cleaned."))))
 
 ;;; ==============================
 (defun mon-cln-whitespace (start end &optional intrp)
   "Clean whitespace in region.\n
 :NOTE A more function comprehensive is `mon-cln-BIG-whitespace' and is preferred. 
 It handles leading and trailing wspc, but can't always be trusted to DTRT.\n
-:REGEXPS-IN `regexp-clean-whitespace' 
+:REGEXPS-IN `*regexp-clean-whitespace*' 
 :SEE :FILE mon-regexp-symbols.el\n
 :SEE-ALSO `mon-kill-whitespace', `mon-cln-trail-whitespace',
-`mon-cln-blank-lines', `mon-cln-imdb', `mon-trans_cp1252_to_latin1',
-`mon-replace-common-abrevs', `mon-abr-to-month', `mon-num-to-month'.\n
+`mon-cln-blank-lines', `mon-cln-mail-headers', `mon-cln-up-colon'
+`mon-cln-imdb', `mon-trans-cp1252-to-latin1', `mon-replace-common-abrevs',
+`mon-abr-to-month', `mon-num-to-month'.\n
 :USED-IN `naf-mode'.\n►►►"
   (interactive "r\np")
-  (mon-replace-region-regexp-lists-nonint start end regexp-clean-whitespace)
+  (mon-replace-region-regexp-lists-nonint start end *regexp-clean-whitespace*)
   (when intrp (message "The whitespace has been rudely adjusted.")))
 
 ;;; ==============================
@@ -1568,7 +2022,6 @@ For interactive whitespace region adjustment use `mon-cln-BIG-whitespace',
 	      ((mon-spacep-is-bol) (delete-blank-lines)))
 	(forward-line -1)))))
 
-
 ;;; ==============================
 ;;; :NOTE Duplicate lines are killed to kill-ring. IOW, clobbers the ring.
 ;;;       Testing a kill-ring restore inside the unwind-protect.
@@ -1576,7 +2029,9 @@ For interactive whitespace region adjustment use `mon-cln-BIG-whitespace',
 (defun mon-cln-uniq-lines (beg end)
   "Return the unique lines in region, ommitting ducplicates.\n
 Called programmatically ARGS BEG and END denote the \(region to sort\) and uniquify.
-:SEE-ALSO `mon-cln-blank-lines', `delete-blank-lines'. 
+:SEE-ALSO `mon-cln-blank-lines', `delete-blank-lines', `mon-cln-mail-headers'
+`mon-cln-csv-fields' `mon-cln-file-name-string' `mon-cln-up-colon'
+`mon-cln-whitespace'.
 :SEE `uniq-remove-dup-lines' in :FILE uniq.el for additional spec.\n►►►"
   (interactive "r")
   (let ((the-ring kill-ring))
@@ -1634,26 +2089,25 @@ Called programmatically ARGS BEG and END denote the \(region to sort\) and uniqu
       (delete-region start end)
       (insert rtrn))))
 
+
 ;;; ==============================
 ;;; :COURTESY Stefan Reichor <stefan@xsteve.at> :HIS xsteve-functions.el
 (defun mon-cln-control-M (&optional intrp)
   "Remove ^M at EOL in current-buffer.\n
-:SEE-ALSO .\n►►►"
+:SEE-ALSO `untabify', `mon-cln-spc-tab-eol', `mon-cln-mail-headers'
+`mon-cln-csv-fields' `mon-cln-file-name-string' `mon-cln-up-colon'
+`mon-cln-whitespace' `mon-cln-uniq-lines'.\n►►►"
   (interactive "p")
-(let (msg)
-  (save-match-data
-    (save-excursion
-      (let ((remove-count 0))
-        (goto-char (buffer-end 0))
-        (while (search-forward-regexp "
-$" (buffer-end 1) t)
-          (setq remove-count (+ remove-count 1))
-          (replace-match "" nil nil))
-        (setq msg (format "%d \C-m removed from buffer." remove-count)))))
-  ;;(string-to-char "
-")
-  ;;(format "\C-m")
-  (when intrp (message msg))))
+  (let (msg)
+    (save-match-data
+      (save-excursion
+        (let ((remove-count 0))
+          (goto-char (buffer-end 0))
+          (while (search-forward-regexp "\xd$" (buffer-end 1) t)
+            (setq remove-count (+ remove-count 1))
+            (replace-match "" nil nil))
+          (setq msg (format "%d \C-m removed from buffer." remove-count)))))
+    (when intrp (message msg))))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: Tuesday April 07, 2009 @ 11:35.38 AM - by MON KEY>
@@ -1662,14 +2116,17 @@ $" (buffer-end 1) t)
 Piped lists are used in the naf-mode sections:
  Used-for: Appeared-in: Ads-for: Artist-associated: Authors-associated:
  Products-associated: Slogans: Content-and-subjects: etc.\n
-:SEE-ALSO `mon-pipe-list', `naf-backup-the-list',`mon-delete-back-up-list'
-`mon-line-strings-pipe-bol', `mon-line-strings-pipe-to-col'.\n
-:USED-IN `naf-mode'.\n►►►"
+:SEE-ALSO `mon-pipe-list', `naf-backup-the-list', `mon-delete-back-up-list'
+`mon-line-strings-pipe-bol', `mon-line-strings-pipe-to-col',
+`mon-cln-mail-headers' `mon-cln-csv-fields' `mon-cln-file-name-string'
+`mon-cln-up-colon' `mon-cln-whitespace' `mon-cln-uniq-lines'
+`mon-cln-control-M'.\n:USED-IN `naf-mode'.\n►►►"
   (interactive "r\np")
-  (let* ((test-llm (mon-is-naf-mode-and-llm-p));;(buffer-local-value longlines-mode (current-buffer)))
-         (is-on test-llm)
-         (llm-off))
-    (when is-on (longlines-mode 0) (setq llm-off t))
+  ;; :WAS (let* ((test-llm (mon-is-naf-mode-and-llm-p));;(buffer-local-value longlines-mode (current-buffer)))
+  ;;        (is-on test-llm)
+  ;;        (llm-off))
+  ;;   (when is-on (longlines-mode 0) (setq llm-off t))
+  (mon-toggle-restore-llm nil  
     (let ((pipe-start start)
 	  (pipe-end end)
 	  (regn-pipe))
@@ -1693,7 +2150,7 @@ Piped lists are used in the naf-mode sections:
 		(buffer-substring-no-properties (buffer-end 0) (buffer-end 1))))
 	(delete-region pipe-start pipe-end)
 	(insert regn-pipe)))
-    (when llm-off (longlines-mode 1) (setq llm-off nil))
+    ;; (when llm-off (longlines-mode 1) (setq llm-off nil))
     (when intrp  (message "Piped | list is clean."))))
 ;;
 ;;(defalias ' ' )
@@ -1706,17 +2163,19 @@ Piped lists are used in the naf-mode sections:
 point to BOL and deletes 1 char. This effecively puts point on the next line up.
 With each successive previous line deleting until point is no longer greater than point-min.
 :NOTE Be careful, function can wreck data, evaluate using `with-temp-buffer'.\n
-:SEE-ALSO `mon-pipe-list', `mon-cln-piped-list',`naf-backup-the-list',
+:SEE-ALSO `mon-pipe-list', `mon-cln-piped-list', `naf-backup-the-list',
 `mon-delete-back-up-list', `mon-line-strings-pipe-bol',
-`mon-line-strings-pipe-to-col'.
-:USED-IN `naf-mode'.\n►►►"
+`mon-line-strings-pipe-to-col',  `mon-cln-mail-headers', `mon-cln-csv-fields',
+`mon-cln-file-name-string', `mon-cln-up-colon', `mon-cln-whitespace',
+`mon-cln-uniq-lines', `mon-cln-control-M'.\n:USED-IN `naf-mode'.\n►►►"
   (interactive "r\np") 
-  (let* ((is-on (mon-is-naf-mode-and-llm-p))
-	 (llm-off)
+  (let* (;; (is-on (mon-is-naf-mode-and-llm-p))
+	 ;; (llm-off)
 	 (the-delim (cond ((eq delim 1) " ")
                            ((not delim) " ")
                            ((or delim) delim))))
-    (when is-on (longlines-mode 0) (setq llm-off t))
+    ;;(when is-on (longlines-mode 0) (setq llm-off t))
+    (mon-toggle-restore-llm nil  
     (let ((bak-start start)
 	  (bak-end end)
 	  (bak-pipe))
@@ -1742,8 +2201,8 @@ With each successive previous line deleting until point is no longer greater tha
                  (buffer-substring-no-properties (buffer-end 0) (buffer-end 1))))
          (delete-region bak-start bak-end)
          (insert bak-pipe)))
-    (when llm-off (longlines-mode 1) (setq llm-off nil))
-     ))
+    ;; (when llm-off (longlines-mode 1) (setq llm-off nil))
+    )))
 ;;
 (defalias 'naf-delete-back-up-list 'mon-delete-back-up-list)
 
@@ -1793,7 +2252,7 @@ Useful for building piped lists in sections of `naf-mode' .naf files including:
 		(insert " | ")
 		(beginning-of-line))))))
       (goto-char (buffer-end 1))
-      ;; Matches traling " | " on tail of returned piped-list.
+      ;; Matches trailing " | " on tail of returned piped-list.
       (progn		   
 	(re-search-backward "[[:space:]]|[[:space:]]$" nil t)
 	(replace-match ""))))
@@ -1812,8 +2271,8 @@ Useful for building piped lists in sections of `naf-mode' .naf files including:
 ;;; ==============================
 (defun mon-cln-philsp (start end &optional intrp)
   "Clean \(apos, date order, etc.\) in philsp scrapes.\n
-:REGEXPS-IN `philsp-months', `philsp-months', `philsp-apos',
-`philsp-location', `philsp-swap-location', `philsp-fix-month-dates'.
+:REGEXPS-IN `*regexp-philsp-months*', `*regexp-philsp-months*', `*regexp-philsp-apos*',
+`*regexp-philsp-location*', `*regexp-philsp-swap-location*', `*regexp-philsp-fix-month-dates*'.
 :SEE :FILE mon-regexp-symbols.el\n
 Following is the relevant URL containing content apropos this procedure:
 :SEE \(URL `http://www.philsp.com/homeville/FMI/a7.htm')\n
@@ -1821,11 +2280,11 @@ Following is the relevant URL containing content apropos this procedure:
 `mon-cln-ulan', `mon-cln-wiki', `mon-cln-imdb',`mon-cln-bib', `mon-cln-loc',
 `mon-cln-html-tags'.\n\n:USED-IN `naf-mode'.\n►►►"
   (interactive "r\np")
-  (mon-naf-mode-toggle-restore-llm
+  (mon-naf-mode-toggle-restore-llm nil
       (save-excursion
         (mon-replace-region-regexp-lists-nonint start end
-         philsp-months    philsp-apos    philsp-location
-         philsp-swap-location philsp-fix-month-dates)
+         *regexp-philsp-months*    *regexp-philsp-apos*    *regexp-philsp-location*
+         *regexp-philsp-swap-location* *regexp-philsp-fix-month-dates*)
         (insert (mapconcat #'identity 
                            `("" ;; preceding newline
                              "-"                                                
@@ -1854,70 +2313,70 @@ For additional specs:\n
 :SEE-ALSO .\n:USED-IN `naf-mode'.\n►►►"
   (interactive "r\nP\np")
    (let (;; (test-llm (buffer-local-value longlines-mode (current-buffer)))
-	 (is-on (mon-is-naf-mode-and-llm-p))
+	 ;; (is-on (mon-is-naf-mode-and-llm-p))
 	 (llm-off)
          (w/rslt with-results)
          (rslt-cnt))
-     (when is-on (longlines-mode 0) (setq llm-off t))
-	(save-excursion
-          (let ((ulanstr)
-                (ulan-start start)
-                (ulan-end end))
-            (setq ulanstr (buffer-substring-no-properties ulan-start ulan-end))
-            (setq ulanstr
-	      (with-temp-buffer
-		(insert ulanstr)
-		(let ((start-mrk (make-marker))
-                      (end-mrk (make-marker))
-                      lcl-start ;;start; (buffer-end 0))
-                      lcl-end  ;;end); (buffer-end 1)))
-                      )
-                  (set-marker start-mrk (buffer-end 0))
-                  (set-marker end-mrk (buffer-end 1))
-                  (setq lcl-start start-mrk)
-                  (setq lcl-end end-mrk)
-                  (if w/rslt
-                      (setq rslt-cnt 
-                            (cons `(,@(mon-replace-region-regexp-lists 
-                                       lcl-start lcl-end *regexp-clean-ulan* t))  rslt-cnt))
-                    (mon-replace-region-regexp-lists lcl-start lcl-end *regexp-clean-ulan*))
-		  (progn
-		    (goto-char (buffer-end 1))
-		    (while (> (point) 1)
-		      (if (and (eolp) (bolp))
-			  (delete-backward-char 1)
-			(beginning-of-line))
-		      (goto-char (1- (point))))
-		    (goto-char (buffer-end 1))
-		    (newline) (insert "-") (newline)
-		    (mon-accessed-stamp t) (newline)
-                    (goto-char (buffer-end 0)))
-                  (progn
-                  (set-marker start-mrk (buffer-end 0))   (set-marker end-mrk (buffer-end 1))
-                  (setq lcl-start start-mrk)           (setq lcl-end end-mrk)
-                  (if w/rslt
-                      (setq rslt-cnt 
-                            (cons `(,@(mon-replace-region-regexp-lists 
-                                       lcl-start lcl-end *regexp-clean-ulan-fields* t))  rslt-cnt))
-                    (mon-replace-region-regexp-lists lcl-start lcl-end *regexp-clean-ulan-fields*)))
-                  (progn
-                    (goto-char (buffer-end 0))
-                    (set-marker start-mrk (buffer-end 0))  (set-marker end-mrk (buffer-end 1))
-                    (setq lcl-start start-mrk)          (setq lcl-end end-mrk)
-                  (if w/rslt
-                      (setq rslt-cnt 
-                            (cons `(,@(mon-replace-region-regexp-lists 
-                                       lcl-start lcl-end *regexp-clean-ulan-dispatch-chars* t)) rslt-cnt))
-                    (mon-replace-region-regexp-lists lcl-start lcl-end *regexp-clean-ulan-dispatch-chars*)))
-		(buffer-substring-no-properties (buffer-end 0) (buffer-end 1)))))
-	       (delete-region ulan-start ulan-end)
-	       (insert ulanstr)))
-         (when llm-off (longlines-mode 1) (setq llm-off nil))
-	  (when w/rslt
-	    (setq rslt-cnt (nreverse rslt-cnt))
-	    (setq rslt-cnt (mapconcat 'identity rslt-cnt "\n"))
-	    (cond ((intrp (message "%s" rslt-cnt)))
-		  ((not intrp) (format "%s" rslt-cnt))))))
+     ;; (when is-on (longlines-mode 0) (setq llm-off t))
+     (mon-toggle-restore-llm nil  
+       (save-excursion
+         (let ((ulanstr)
+               (ulan-start start)
+               (ulan-end end))
+           (setq ulanstr (buffer-substring-no-properties ulan-start ulan-end))
+           (setq ulanstr
+                 (with-temp-buffer
+                   (insert ulanstr)
+                   (let ((start-mrk (make-marker))
+                         (end-mrk (make-marker))
+                         lcl-start ;;start; (buffer-end 0))
+                         lcl-end)  ;;end); (buffer-end 1)))
+                     (set-marker start-mrk (buffer-end 0))
+                     (set-marker end-mrk (buffer-end 1))
+                     (setq lcl-start start-mrk)
+                     (setq lcl-end end-mrk)
+                     (if w/rslt
+                         (setq rslt-cnt 
+                               (cons `(,@(mon-replace-region-regexp-lists 
+                                          lcl-start lcl-end *regexp-clean-ulan* t))  rslt-cnt))
+                         (mon-replace-region-regexp-lists lcl-start lcl-end *regexp-clean-ulan*))
+                     (progn
+                       (goto-char (buffer-end 1))
+                       (while (> (point) 1)
+                         (if (and (eolp) (bolp))
+                             (delete-backward-char 1)
+                             (beginning-of-line))
+                         (goto-char (1- (point))))
+                       (goto-char (buffer-end 1))
+                       (newline) (insert "-") (newline)
+                       (mon-accessed-stamp t) (newline)
+                       (goto-char (buffer-end 0)))
+                     (progn
+                       (set-marker start-mrk (buffer-end 0))   (set-marker end-mrk (buffer-end 1))
+                       (setq lcl-start start-mrk)           (setq lcl-end end-mrk)
+                       (if w/rslt
+                           (setq rslt-cnt 
+                                 (cons `(,@(mon-replace-region-regexp-lists 
+                                            lcl-start lcl-end *regexp-clean-ulan-fields* t))  rslt-cnt))
+                           (mon-replace-region-regexp-lists lcl-start lcl-end *regexp-clean-ulan-fields*)))
+                     (progn
+                       (goto-char (buffer-end 0))
+                       (set-marker start-mrk (buffer-end 0))  (set-marker end-mrk (buffer-end 1))
+                       (setq lcl-start start-mrk)          (setq lcl-end end-mrk)
+                       (if w/rslt
+                           (setq rslt-cnt 
+                                 (cons `(,@(mon-replace-region-regexp-lists 
+                                            lcl-start lcl-end *regexp-clean-ulan-dispatch-chars* t)) rslt-cnt))
+                           (mon-replace-region-regexp-lists lcl-start lcl-end *regexp-clean-ulan-dispatch-chars*)))
+                     (buffer-substring-no-properties (buffer-end 0) (buffer-end 1)))))
+           (delete-region ulan-start ulan-end)
+           (insert ulanstr)))
+          ) ;;(when llm-off (longlines-mode 1) (setq llm-off nil))
+     (when w/rslt
+       (setq rslt-cnt (nreverse rslt-cnt))
+       (setq rslt-cnt (mapconcat 'identity rslt-cnt "\n"))
+       (cond (intrp (message "%s" rslt-cnt))
+             ((not intrp) (format "%s" rslt-cnt))))))
 
 ;;; ==============================
 ;;; :NOTE New version to test for longlines.
@@ -1925,21 +2384,22 @@ For additional specs:\n
 (defun mon-cln-imdb (start end &optional intrp)
   "Clean Internet Movie Database scrapes from IMDB.
 Insert the `non-posting-imdb-source' at end of cleaned region.
-:REGEXPS-IN `regexp-clean-imdb'
+:REGEXPS-IN `*regexp-clean-imdb*'
 :SEE :FILE mon-regexp-symbols.el\n
 :SEE (URL `http://www.IMDB.com').\n
 :SEE-ALSO `mon-cln-wiki', `mon-cln-imdb',`mon-cln-bib',`mon-cln-ulan',
 `mon-cln-loc', `mon-cln-philsp', `mon-cln-html-tags',
 `mon-replace-common-abrevs', `mon-abr-to-month', `mon-num-to-month',
-`mon-trans_cp1252_to_latin1'.\n\n:USED-IN `naf-mode'.\n►►►"
+`mon-trans-cp1252-to-latin1'.\n\n:USED-IN `naf-mode'.\n►►►"
   (interactive "r\np")
-  (let ((is-on (mon-is-naf-mode-and-llm-p))
-	(llm-off))
-    (when is-on (longlines-mode 0) (setq llm-off 't))
-     (mon-replace-region-regexp-lists-nonint start end regexp-clean-imdb)
-     (non-posting-imdb-source)
-     (when llm-off (longlines-mode 1)); (setq llm-off 'nil))
-     (when intrp (message "IMDB refs are cleaned."))))
+  ;; :WAS (let ((is-on (mon-is-naf-mode-and-llm-p))
+  ;;       (llm-off))
+  ;;   (when is-on (longlines-mode 0) (setq llm-off 't))
+  (mon-toggle-restore-llm nil  
+    (mon-replace-region-regexp-lists-nonint start end *regexp-clean-imdb*)
+    (non-posting-imdb-source)
+    );;     (when llm-off (longlines-mode 1)); (setq llm-off 'nil))
+  (when intrp (message "IMDB refs are cleaned.")))
 
 ;;; ==============================
 ;;; :NOTE New version to test for longlines.
@@ -1947,18 +2407,19 @@ Insert the `non-posting-imdb-source' at end of cleaned region.
 (defun mon-cln-loc (start end &optional intrp)
   "Fix combining character diacritics from LOC Authority display scrapes.\n
 :SEE \(URL `http://authorities.loc.gov/cgi-bin/Pwebrecon.cgi?DB=local&PAGE=First')\n
-:REGEXPS-IN `regexp-clean-loc' in mon-regexp-symbols.el\n
+:REGEXPS-IN `*regexp-clean-loc*' in mon-regexp-symbols.el\n
 :SEE-ALSO `mon-cln-wiki', `mon-cln-imdb', `mon-cln-bib', `mon-cln-ulan',
 `mon-cln-philsp', `mon-cln-html-tags', `mon-replace-common-abrevs',
-`mon-abr-to-month', `mon-num-to-month', `mon-trans_cp1252_to_latin1'.\n
+`mon-abr-to-month', `mon-num-to-month', `mon-trans-cp1252-to-latin1'.\n
 :USED-IN `naf-mode'.\n►►►"
   (interactive "r\np")
- (let ((is-on (mon-is-naf-mode-and-llm-p))
-        (llm-off))
-   (when is-on (longlines-mode 0) (setq llm-off 't))
-   (mon-replace-region-regexp-lists-nonint start end regexp-clean-loc)
-   (when llm-off (longlines-mode 1)); (setq llm-off 'nil))
-   (when intrp (message "LOC cruft cleaned."))))
+  ;; (let ((is-on (mon-is-naf-mode-and-llm-p))
+  ;;        (llm-off))
+  ;;   (when is-on (longlines-mode 0) (setq llm-off 't))
+  (mon-toggle-restore-llm nil   
+    (mon-replace-region-regexp-lists-nonint start end *regexp-clean-loc*)
+    );(when llm-off (longlines-mode 1)); (setq llm-off 'nil))
+  (when intrp (message "LOC cruft cleaned.")))
 
 ;;; ==============================
 ;;; :TODO Build a subr to gather the sections of WIKI `Contents' table and
@@ -1969,20 +2430,16 @@ Insert the `non-posting-imdb-source' at end of cleaned region.
 ;;; :CREATED <Timestamp: Saturday March 21, 2009 @ 02:57.37 PM - by MON KEY>
 (defun mon-cln-wiki (start end &optional intrp)
   "Replace unwanted wikipedia formatting in region containing scraped wiki text.\n
-:REGEXPS-IN `regexp-clean-wikipedia' 
+:REGEXPS-IN `*regexp-clean-wikipedia*' 
 :SEE :FILE mon-regexp-symbols.el\n
 :SEE-ALSO `non-posting-wiki-source', `mon-cln-html-tags', `mon-cln-bib',
 `mon-cln-loc', `mon-cln-ulan', `mon-cln-philsp', `mon-cln-imdb',
 `mon-cln-whitespace', `mon-replace-common-abrevs', `mon-abr-to-month',
-`mon-num-to-month', `mon-trans_cp1252_to_latin1'.\n\n:USED-IN `naf-mode'.\n►►►"
+`mon-num-to-month', `mon-trans-cp1252-to-latin1'.\n\n:USED-IN `naf-mode'.\n►►►"
   (interactive "r\np")
-  ;;; (let ((is-on (mon-is-naf-mode-and-llm-p))
-  ;;;       (llm-off))
-  ;;;   (when is-on (longlines-mode 0) (setq llm-off t))
-  (mon-naf-mode-toggle-restore-llm
-      (mon-replace-region-regexp-lists-nonint start end regexp-clean-wikipedia))
-  ;; (when llm-off (longlines-mode 1) (setq llm-off nil))
-    (when intrp (message "Wiki-refs are cleaned.")))
+  (mon-naf-mode-toggle-restore-llm nil
+    (mon-replace-region-regexp-lists-nonint start end *regexp-clean-wikipedia*))
+  (when intrp (message "Wiki-refs are cleaned.")))
 
 ;;; ==============================
 (defun mon-cln-bib (start end &optional intrp)
@@ -1993,12 +2450,13 @@ VARIABLE in :FILE mon-regexp-symbols.el\n
 `mon-cln-ulan', `mon-cln-philsp', `mon-cln-html-tags'.\n
 :USED-IN `naf-mode'.\n►►►"
   (interactive "r\np")
-  (let ((is-on (mon-is-naf-mode-and-llm-p))
-	(llm-off))
-    (when is-on (longlines-mode 0) (setq llm-off t))
+  ;;; (let ((is-on (mon-is-naf-mode-and-llm-p))
+  ;;;       (llm-off))
+  ;;;   (when is-on (longlines-mode 0) (setq llm-off t))
+  (mon-toggle-restore-llm nil  
     (mon-replace-region-regexp-lists-nonint start end *regexp-clean-bib*)
-    (when llm-off(longlines-mode 1) (setq llm-off 'nil))
-    (when intrp (message "Bib cruft cleaned."))))
+    );(when llm-off(longlines-mode 1) (setq llm-off 'nil))
+    (when intrp (message "Bib cruft cleaned.")))
 
 ;;; ==============================
 (defun mon-num-to-month (start end &optional intrp)
@@ -2006,13 +2464,13 @@ VARIABLE in :FILE mon-regexp-symbols.el\n
 Number of form MM includes leading 0.
 Only match on month nums 0-9 when zero padded e.g.\n
 01 02 03 04 05 06 07 08 09.\n
-:REGEXPS-IN `regexp-MM2month' 
+:REGEXPS-IN `*regexp-MM->month*' 
 :SEE :FILE mon-regexp-symbols.el.\n
-:SEE-ALSO `regexp-month2MM', `regexp-month2canonical-ws',
-`regexp-abrv-dotted-month2canonical', `regexp-simple-abrv-month2canonical',
-`philsp-fix-month-dates'.\n\n:USED-IN `naf-mode'.\n►►►"
+:SEE-ALSO `*regexp-month->MM*', `*regexp-month->canonical-ws*',
+`*regexp-abrv-dotted-month->canonical*', `regexp-simple-abrv-month2canonical',
+`*regexp-philsp-fix-month-dates*'.\n\n:USED-IN `naf-mode'.\n►►►"
   (interactive "r\np")
-  (mon-replace-region-regexp-lists-nonint start end regexp-MM2month)
+  (mon-replace-region-regexp-lists-nonint start end *regexp-MM->month*)
   (when intrp (message "Month Number to Month Names Strings Complete.")))
 ;;
 ;;(defalias ' ' )
@@ -2023,35 +2481,37 @@ Only match on month nums 0-9 when zero padded e.g.\n
 Only match on month nums 0-9 when zero padded e.g.:\n
 01 02 03 04 05 06 07 08 09.\n
 :NOTE This is a more whitespace aware version of `mon-num-to-month'.
-:REGEXPS-IN `regexp-MM2month-whitespace-aware' 
+:REGEXPS-IN `*regexp-MM->month-whitespace-aware*' 
 :SEE :FILE mon-regexp-symbols.el\n
-:SEE-ALSO `regexp-MM2month', `regexp-month2canonical-ws', 
-`regexp-abrv-dotted-month2canonical',`regexp-simple-abrv-month2canonical',
-`philsp-fix-month-dates'.\n\n:USED-IN `naf-mode'.\n►►►"
+:SEE-ALSO `*regexp-MM->month*', `*regexp-month->canonical-ws*', 
+`*regexp-abrv-dotted-month->canonical*',`regexp-simple-abrv-month2canonical',
+`*regexp-philsp-fix-month-dates*'.\n\n:USED-IN `naf-mode'.\n►►►"
   (interactive "r\np")
-  (let ((is-on (mon-is-naf-mode-and-llm-p))
-	(llm-off))
-    (when is-on (longlines-mode 0) (setq llm-off t))
-   (mon-replace-region-regexp-lists-nonint start end regexp-MM2month-whitespace-aware)
-   (when llm-off (longlines-mode 1))
-   (when intrp 
-     (message "Month Number (whitespace aware) to Month Names Strings Complete."))))
+  ;; :WAS (let ((is-on (mon-is-naf-mode-and-llm-p))
+  ;;       (llm-off))
+  ;;   (when is-on (longlines-mode 0) (setq llm-off t))
+  (mon-toggle-restore-llm nil  
+    (mon-replace-region-regexp-lists-nonint start end *regexp-MM->month-whitespace-aware*)
+    ) ;(when llm-off (longlines-mode 1))
+  (when intrp (message "Month Number (whitespace aware) to Month Names Strings Complete.")))
+     
 
 ;;; ==============================
 (defun mon-month-to-num (start end &optional intrp)
   "Replace Months with number of Month. Number of form MM includes leading 0.\n
-:REGEXPS-IN `regexp-month2MM' 
+:REGEXPS-IN `*regexp-month->MM*' 
 :SEE :FILE mon-regexp-symbols.el\n
-:SEE-ALSO `regexp-MM2month', `regexp-month2canonical-ws', 
-`regexp-abrv-dotted-month2canonical', `regexp-simple-abrv-month2canonical',
-`philsp-fix-month-dates'.\n\n:USED-IN `naf-mode'.\n►►►"
+:SEE-ALSO `*regexp-MM->month*', `*regexp-month->canonical-ws*', 
+`*regexp-abrv-dotted-month->canonical*', `regexp-simple-abrv-month2canonical',
+`*regexp-philsp-fix-month-dates*'.\n\n:USED-IN `naf-mode'.\n►►►"
   (interactive "r\np")
-  (let ((is-on (mon-is-naf-mode-and-llm-p))
-	(llm-off))
-    (when is-on (longlines-mode 0) (setq llm-off t))
-  (mon-replace-region-regexp-lists-nonint start end regexp-month2MM)
-  (when llm-off (longlines-mode 1))
-  (when intrp (message "Month Names to Number Strings Complete."))))
+  ;; :WAS (let ((is-on (mon-is-naf-mode-and-llm-p))
+  ;;       (llm-off))
+  ;;      (when is-on (longlines-mode 0) (setq llm-off t))
+  (mon-toggle-restore-llm nil  
+    (mon-replace-region-regexp-lists-nonint start end *regexp-month->MM*)
+    );;(when llm-off (longlines-mode 1))
+  (when intrp (message "Month Names to Number Strings Complete.")))
 ;;
 ;;(defalias ' ' )
 
@@ -2060,18 +2520,19 @@ Only match on month nums 0-9 when zero padded e.g.:\n
   "De-abbreviate English months into canonical form.
 Match abbreviated months - with/out trailing `.'
 Additionally, will match with/out leading/trailing whitespace.\n
-:REGEXPS-IN `regexp-month2MM' 
+:REGEXPS-IN `*regexp-month->canonical-ws*' 
 :SEE :FILE mon-regexp-symbols.el\n
 :SEE-ALSO `mon-num-to-month', `mon-cln-wiki', `mon-cln-imdb',
-`mon-trans_cp1252_to_latin1', `mon-replace-common-abrevs'.\n
+`mon-trans-cp1252-to-latin1', `mon-replace-common-abrevs'.\n
 :USED-IN `naf-mode'.\n►►►"
  (interactive "r\np")
- (let ((is-on (mon-is-naf-mode-and-llm-p))
-       (llm-off))
-   (when is-on (longlines-mode 0) (setq llm-off t))
-  (mon-replace-region-regexp-lists-nonint start end regexp-month2canonical-ws)
-  (when llm-off (longlines-mode 1))
-  (when intrp (message "Replaced buffer's abbreviated months with canonical form."))))
+ ;; :WAS (let ((is-on (mon-is-naf-mode-and-llm-p))
+ ;;       (llm-off))
+ ;;     (when is-on (longlines-mode 0) (setq llm-off t))
+ (mon-toggle-restore-llm nil  
+   (mon-replace-region-regexp-lists-nonint start end *regexp-month->canonical-ws*)
+   ) ;; (when llm-off (longlines-mode 1))
+ (when intrp (message "Replaced buffer's abbreviated months with canonical form.")))
 ;;
 ;;(defalias ' ' )
 
@@ -2085,15 +2546,16 @@ Additionally, will match with/out leading/trailing whitespace.\n
 `mon-replace-common-abrevs', `mon-abr-to-month',`mon-num-to-month'.\n
 :USED-IN `naf-mode'.\n►►►"
   (interactive "r\np")
-  (let ((is-on (mon-is-naf-mode-and-llm-p))
-	(llm-off))
-    (when is-on (longlines-mode 0) (setq llm-off t))
-   (mon-replace-region-regexp-lists-nonint start end *regexp-cp1252-to-latin1*)
-   (when llm-off (longlines-mode 1))
-   (when intrp
-     (message (concat
-	       "Crappy w32 cp1252 converted into a less crappy iso-8891-1. \n"
-	       "Eventually you will find yourself converting this to utf-8 - *sigh*...")))))
+  ;;; (let ((is-on (mon-is-naf-mode-and-llm-p))
+  ;;;       (llm-off))
+  ;;;   (when is-on (longlines-mode 0) (setq llm-off t))
+  (mon-toggle-restore-llm nil  
+    (mon-replace-region-regexp-lists-nonint start end *regexp-cp1252-to-latin1*)
+    );(when llm-off (longlines-mode 1))
+  (when intrp
+    (message (concat
+              "Crappy w32 cp1252 converted into a less crappy iso-8891-1. \n"
+              "Eventually you will find yourself converting this to utf-8 - *sigh*..."))))
 ;;
 ;;(defalias ' ' )
 
@@ -2106,12 +2568,13 @@ Additionally, will match with/out leading/trailing whitespace.\n
 `mon-abr-to-month', `mon-num-to-month',`mon-defranc-places'.\n
 :USED-IN `naf-mode'.\n►►►"
   (interactive "r")
-  (let ((is-on (mon-is-naf-mode-and-llm-p))
-	(llm-off))
-    (when is-on (longlines-mode 0) (setq llm-off t))
-   (mon-replace-region-regexp-lists-nonint start end *regexp-ital-to-eng*)
-   (when llm-off (longlines-mode 1))
-   (when intrp  (message "'Italian Date string converted to Engrish."))))
+  ;; :WAS (let ((is-on (mon-is-naf-mode-and-llm-p))
+  ;;       (llm-off))
+  ;;   (when is-on (longlines-mode 0) (setq llm-off t))
+  (mon-toggle-restore-llm nil  
+    (mon-replace-region-regexp-lists-nonint start end *regexp-ital-to-eng*)
+    ) ;; (when llm-off (longlines-mode 1))
+  (when intrp  (message "'Italian Date string converted to Engrish.")))
 ;;
 ;;(defalias ' ' )
 
@@ -2123,13 +2586,14 @@ Matches day of the week, months, abbrevd months, and months with/out diacritics.
 :SEE :FILE mon-regexp-symbols.el\n
 :SEE-ALSO `naf-mode-french-months', `mon-defranc-places', `mon-defranc-benezit'
 `non-posting-benezit-source',`mon-ital-date-to-eng'.\n\n:USED-IN `naf-mode'.\n►►►"
- (interactive "r\np")
- (let ((is-on (mon-is-naf-mode-and-llm-p))
-       (llm-off))
-   (when is-on (longlines-mode 0) (setq llm-off t))
-   (mon-replace-region-regexp-lists-nonint start end *regexp-defranc-dates*)
-   (when llm-off (longlines-mode 1))
-   (when intrp  (message "'Buffer has been de-francified"))))
+  (interactive "r\np")
+  ;; :WAS (let ((is-on (mon-is-naf-mode-and-llm-p))
+  ;;       (llm-off))
+  ;;   (when is-on (longlines-mode 0) (setq llm-off t))
+  (mon-toggle-restore-llm nil  
+    (mon-replace-region-regexp-lists-nonint start end *regexp-defranc-dates*)
+    ) ;;(when llm-off (longlines-mode 1))
+  (when intrp  (message "'Buffer has been de-francified")))
 ;;
 ;;;(progn (makunbound 'mon-defranc-dates) (unintern 'mon-defranc-dates))
 ;;
@@ -2146,12 +2610,13 @@ Conversions include with/out all uppercase styled names - for Benezit auctions.\
 `non-posting-benezit-source', `naf-mode-french-months'.\n
 :USED-IN `naf-mode'.\n►►►"
   (interactive "r\np")
-  (let ((is-on (mon-is-naf-mode-and-llm-p))
-	(llm-off))
-    (when is-on (longlines-mode 0) (setq llm-off t))
+  ;; :WAS (let ((is-on (mon-is-naf-mode-and-llm-p))
+  ;;       (llm-off))
+  ;;   (when is-on (longlines-mode 0) (setq llm-off t))
+  (mon-toggle-restore-llm nil  
     (mon-replace-region-regexp-lists-nonint start end *regexp-defranc-places*)
-  (when llm-off (longlines-mode 1))
-  (when intrp (message "Buffers place names have been de-francified."))))
+    ) ;; (when llm-off (longlines-mode 1))
+  (when intrp (message "Buffers place names have been de-francified.")))
 ;;
 ;;(defalias ' ' )
 
@@ -2164,13 +2629,14 @@ Trie to conservatively catch on terms with diacrtics.\n
 :SEE-ALSO `mon-clean-benezit-fields', `*regexp-clean-benezit-fields*'
 `mon-defranc-dates',`mon-defranc-places', `non-posting-benezit-source'.\n
 :USED-IN `naf-mode'.\n►►►"
- (interactive "r\np")
- (let ((is-on (mon-is-naf-mode-and-llm-p))
-       (llm-off))
-   (when is-on (longlines-mode 0) (setq llm-off t))
-  (mon-replace-region-regexp-lists-nonint start end *regexp-defranc-benezit*)
-  (when llm-off (longlines-mode 1))
-  (when intrp (message "Benezit terms have been de-francified."))))
+  (interactive "r\np")
+  ;; :WAS (let ((is-on (mon-is-naf-mode-and-llm-p))
+  ;;       (llm-off))
+  ;;   (when is-on (longlines-mode 0) (setq llm-off t))
+  (mon-toggle-restore-llm nil  
+    (mon-replace-region-regexp-lists-nonint start end *regexp-defranc-benezit*)
+    ) ;;(when llm-off (longlines-mode 1))
+  (when intrp (message "Benezit terms have been de-francified.")))
 ;;
 ;;; :ALIAS :CREATED <Timestamp: #{2009-09-18T15:21:40-04:00Z}#{09385} - by MON KEY>
 (defalias 'mon-defranc-benezit 'mon-cln-benezit)
@@ -2184,12 +2650,13 @@ Trie to conservatively catch on terms with diacrtics.\n
 :SEE-ALSO `mon-defranc-benezit', `mon-defranc-dates',`mon-defranc-places', 
 `non-posting-benezit-source'.\n\n:USED-IN `naf-mode'.\n►►►"
  (interactive "r\np")
- (let ((is-on (mon-is-naf-mode-and-llm-p))
-       (llm-off))
-   (when is-on (longlines-mode 0) (setq llm-off t))
+ ;; :WAS (let ((is-on (mon-is-naf-mode-and-llm-p))
+ ;;       (llm-off))
+ ;;   (when is-on (longlines-mode 0) (setq llm-off t))
+ (mon-toggle-restore-llm nil  
    (mon-replace-region-regexp-lists-nonint start end *regexp-clean-benezit-fields*)
-   (when llm-off (longlines-mode 1))
-   (when intrp (message "Benezit fields have been normalized."))))
+   ) ;;(when llm-off (longlines-mode 1))
+ (when intrp (message "Benezit fields have been normalized.")))
 ;;
 (defalias 'mon-defranc-benezit-fields 'mon-cln-benezit-fields)
 
@@ -2200,14 +2667,15 @@ Useful for those with `.' at end of string.\n
 :REGEXPS-IN `*regexp-common-abbrevs*'
 :SEE :FILE mon-regexp-symbols.el\n
 :SEE-ALSO `mon-cln-wiki', `mon-cln-imdb',`mon-abr-to-month', `mon-num-to-month'
-`mon-trans_cp1252_to_latin1'.\n\n:USED-IN `naf-mode'.\n►►►"
+`mon-trans-cp1252-to-latin1'.\n\n:USED-IN `naf-mode'.\n►►►"
   (interactive "r\np")
-  (let ((is-on (mon-is-naf-mode-and-llm-p))
-	(llm-off))
-    (when is-on (longlines-mode 0) (setq llm-off t))
+  ;; :WAS (let ((is-on (mon-is-naf-mode-and-llm-p))
+  ;;       (llm-off))
+  ;;   (when is-on (longlines-mode 0) (setq llm-off t))
+  (mon-toggle-restore-llm nil  
     (mon-replace-region-regexp-lists-nonint start end *regexp-common-abbrevs*)
-    (when llm-off (longlines-mode 1))
-    (when intrp (message "Buffer's pesky abbreviations now fully expanded words aka readable Engrish."))))
+    ) ;;(when llm-off (longlines-mode 1))
+  (when intrp (message "Buffer's pesky abbreviations now fully expanded words aka readable Engrish.")))
 ;;
 ;;; :CREATED <Timestamp: #{2009-09-18T15:31:19-04:00Z}#{09385} - by MON KEY>
 (defalias 'mon-cln-common-abbrevs 'mon-replace-common-abbrevs)
@@ -2219,7 +2687,7 @@ Useful for those with `.' at end of string.\n
 ;;;       account for rename rules on files wget pulls.
 ;;; :MODIFICATIONS <Timestamp: #{2009-08-11T16:52:26-04:00Z}#{09332} - by MON KEY>
 (defun bug-cln-gilt-group (start end)
-  "Clean image links from html source at (URL `http://www.gilt.com').
+  "Clean image links from html source at (URL `http://www.gilt.com').\n
 Useful to get a working list to pass to a useable wget file e.g.:\n
 \"wget -np -A.jpg -i wget-file\".\n
 :SEE-ALSO `*regexp-clean-gilt-group*'.\n►►►"

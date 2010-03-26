@@ -48,18 +48,20 @@
 ;; `mon-help-mon-tags', `mon-help-insert-tags', `mon-tags-apropos',
 ;; `mon-tags-naf-apropos', `mon-help-regexp-syntax', `mon-help-syntax-class',
 ;; `mon-help-search-functions', `mon-help-type-predicates',
-;; `mon-help-plist-functions', `mon-help-text-property-functions',
-;; `mon-help-text-property-stickyness', `mon-help-text-property-function-ext',
-;; `mon-help-buffer-functions', `mon-help-frame-functions',
-;; `mon-help-window-functions', `mon-help-faces', `mon-help-faces-basic',
-;; `mon-help-faces-themes', `mon-help-font-lock', `mon-help-easy-menu',
-;; `mon-help-widgets', `mon-help-file-dir-functions-usage',
-;; `mon-help-read-functions', `mon-help-print', `mon-help-process-functions',
-;; `mon-help-server-functions', `mon-help-xml-functions',
-;; `mon-help-color-functions', `mon-help-color-chart',
-;; `mon-help-char-representation', `mon-help-ISO-8859-1-chars',
-;; `mon-help-ASCII-chars', `mon-help-cntl->hex->ecma-35',
-;; `mon-help-cntl->hex->ecma-48', `mon-help-format-width'
+;; `mon-help-plist-functions', `mon-help-plist-properties',
+;; `mon-help-text-property-functions', `mon-help-text-property-stickyness',
+;; `mon-help-text-property-functions-ext', `mon-help-text-property-properties',
+;; `mon-help-frame-functions', `mon-help-window-functions', 
+;; `mon-help-easy-menu', `mon-help-widgets', `mon-help-buffer-functions',
+;; `mon-help-faces-basic', `mon-help-faces-themes', `mon-help-faces',
+;; `mon-help-faces-font-lock', `mon-help-font-lock',
+;; `mon-help-font-lock-functions',
+;; `mon-help-file-dir-functions-usage', `mon-help-read-functions',
+;; `mon-help-print', `mon-help-process-functions', `mon-help-server-functions',
+;; `mon-help-xml-functions', `mon-help-color-functions', `mon-help-color-chart',
+;; `mon-help-char-representation', `mon-help-char-iso-8859-1',
+;; `mon-help-char-ascii', `mon-help-char-ecma-35',
+;; `mon-help-char-ecma-48', `mon-help-format-width',
 ;; `mon-help-package-keywords', `mon-index-elisp-symbol', `mon-help-mon-help',
 ;; `mon-help-emacs-introspect', `mon-help-crontab', `mon-help-permissions',
 ;; `mon-help-ipv4-header', `mon-help-unix-commands', `mon-help-w32-env',
@@ -73,21 +75,20 @@
 ;; `mon-help-regexp-symbol-defs-TEST',
 ;; `mon-help-propertize-regexp-symbol-defs-TEST',
 ;; `mon-help-overlay-for-example', `mon-help-delimited-region',
-;; `mon-help-font-lock-functions', `mon-help-syntax-functions',
+;; `mon-help-syntax-functions',
 ;; `mon-help-utils-loadtime', `mon-help-char-functions',
 ;; `mon-help-key-functions', `mon-help-custom-keywords',
+;; `mon-help-sequence-functions',
 ;; `mon-help-keys-wikify-anchors', `mon-help-keys-wikify-heading',
 ;; `mon-help-keys-wikify-TEST', `mon-get-next-face-property-change',
 ;; `mon-get-next-face-property-change-if', `mon-get-all-face-property-change',
 ;; `mon-get-text-properties-print', `mon-get-text-properties-read-temp',
-;; `mon-get-text-properties-region',
-;; `mon-get-text-properties-elisp-string',
+;; `mon-get-text-properties-region', `mon-get-text-properties-elisp-string',
 ;; `mon-get-text-properties-elisp-string-pp',
 ;; `mon-get-text-properties-parse-prop-val-type-chk',
-;; `mon-get-text-properties-parse-buffer',
-;; `mon-get-text-properties-parse-sym',
-;; `mon-get-text-properties-parse-buffer-or-sym', 
-;; `mon-get-text-properties-map-ranges'
+;; `mon-get-text-properties-parse-buffer', `mon-get-text-properties-parse-sym',
+;; `mon-get-text-properties-parse-buffer-or-sym',
+;; `mon-get-text-properties-map-ranges',
 ;; FUNCTIONS:◄◄◄
 ;;
 ;; MACROS:
@@ -124,9 +125,14 @@
 ;; `*mon-help-keys-reference*'               -> `*mon-help-reference-keys*'
 ;; `mon-help-dir-file-function-usage'        -> `mon-help-file-dir-functions-usage'
 ;; `mon-line-strings-region-delimited'       -> `mon-help-delimited-region'
+;; `mon-line-strings-get-delimited-region'   -> `mon-help-delimited-region'
 ;; `mon-help-face-next-property-change'      -> `mon-get-next-face-property-change'
 ;; `mon-help-directory-file-functions-usage' -> `mon-help-file-dir-functions-usage'
 ;; `mon-help-finder-keywords'                -> `mon-help-package-keywords'
+;; `mon-help-ecma-48-chars-cntl->hex'        -> `mon-help-char-ecma-48'
+;; `mon-help-ecma-48-chars-cntl->hex'        -> `mon-help-char-ecma-48'
+;; `mon-help-ascii-chars'                    -> `mon-help-char-ascii' 
+;; `mon-help-iso-8859-1-chars'               -> `mon-help-char-iso-8859-1'
 ;;
 ;; RENAMED:
 ;; `*emacs-reference-sheet-A-HAWLEY*'        -> `*mon-help-reference-keys*'
@@ -136,6 +142,10 @@
 ;; `mon-help-make-faces'                     -> `mon-help-faces'
 ;; `mon-help-basic-faces'                    -> `mon-help-faces-basic'
 ;; `mon-help-file-dir-functions'             -> `mon-help-file-dir-functions-usage'
+;; `mon-help-ASCII-chars'                    -> `mon-help-char-ascii'
+;; `mon-help-ISO-8859-1-chars'               -> `mon-help-char-iso-8859-1'
+;; `mon-help-cntl->hex->ecma-48'             -> `mon-help-char-ecma-48'
+;; `mon-help-cntl->hex->ecma-35'             -> `mon-help-char-ecma-35' 
 ;;
 ;; MOVED:
 ;; `mon-help-CL-time', `mon-help-CL-loop', `mon-help-slime-keys' -> mon-doc-help-CL.el
@@ -498,13 +508,17 @@ docstrings to indicated metasyntactic or idiomatic forms and types.\n
             "<MATCH>" "<METHOD>" "<NAME>" "<NEW>" "<OLD>" "<PATH>" "<PATTERN>"
             "<PRINTER>" "<PROPERTY>" "<REGEXP>" "<STRING>" "<SYMBOL>" "<TERM>"
             "<TERMS>" "<TITLE>" "<VARIABLE>"))
-          ;; :NOTE Push onto the cdr of this keys list to add new values. 
+          ;; :NOTE Push/append onto the cdr of this keys list to add new values.
           ;; This lets us partition `meta-tags-keybindings' from `meta-tags'
           ;; where the `meta-tags' key is the superset.
           (meta-tags ;; `*regexp-mon-doc-help-meta-tags*'
+           ("<BOOLEAN>")
            )))
-  (push (cadr (assoc 'meta-tags-keybindings *mon-help-mon-tags-alist*))
-        (cdr (assoc 'meta-tags *mon-help-mon-tags-alist*))))
+  (setf (cdr (assoc 'meta-tags *mon-help-mon-tags-alist*))
+        `(,(append
+            (cadr (assoc 'meta-tags *mon-help-mon-tags-alist*))
+            (cadr (assoc 'meta-tags-keybindings *mon-help-mon-tags-alist*)))))
+  ) ;; :CLOSE unless
 ;;
 ;;; :TEST-ME (assoc 'comment-tags *mon-help-mon-tags-alist*)
 ;;; :TEST-ME (assoc 'docstr-tags *mon-help-mon-tags-alist*)
@@ -788,7 +802,7 @@ two ``keyword'' regexps. Calling functions (or their expanders) should let-bind
   (regexp-opt *mon-help-custom-faces-builtins-tags*)
   "*Regexp for font-locking builtin keyword symbol tags.\n
 For `help-mode' views of MON functions, in particular those from
-:FILE mon-doc-help-utils.el.\n
+:FILE mon-doc-help-utils.el\n
 :NOTE When used alongside `*regexp-mon-doc-help-docstring-tags-TABLES*'
 and `*regexp-mon-doc-help-docstring-tags-DYNAMIC*' and `case-fold-search' is
 non-nil this regexp _will match_ but do so incorrectly by also matching
@@ -809,7 +823,8 @@ two ``keyword'' regexps. Calling functions (or their expanders) should let-bind
   "*Extensions for help and documentation related procedures.\n
 :SEE (URL `http://www.emacswiki.org/emacs/MonDocHelpUtilsDictionary')\n
 :SEE-ALSO `mon-doc-help-utils-faces'.\n►►►"
-  ;;:link 
+  :link '(url-link :tag "EmacsWiki" "http://www.emacswiki.org/emacs/mon-doc-help-utils.el")
+  :link '(url-link :tag "EmacsWiki" "http://www.emacswiki.org/emacs/MonDocHelpUtilsDictionary")
   :prefix "mon-help-"
   :group 'docs)
 
@@ -845,7 +860,7 @@ two ``keyword'' regexps. Calling functions (or their expanders) should let-bind
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-11-21T16:41:30-05:00Z}#{09476} - by MON>
 (defface mon-help-KEY-tag
-    '(( ((class color) (min-colors 88)) 
+    '(( ((class color) (min-colors 88))
        (:foreground "light steel blue" :weight extrabold)) )
   "*A mon-help-symbol mon-help-symbol KEY face.\n
 :KEYWORD-REGEXPS-IN `*regexp-mon-doc-help-docstring-tags*'\n
@@ -854,7 +869,6 @@ two ``keyword'' regexps. Calling functions (or their expanders) should let-bind
 `mon-help-OLAY-RESULT', `mon-help-OLAY-RESULT-string-show',
 `mon-help-OLAY-RESULT-match-show'.\n►►►"
   :group 'mon-doc-help-utils-faces)
-
 ;;
 ;;; :TEST-ME (describe-face 'mon-help-KEY-tag)
 ;;
@@ -1452,8 +1466,7 @@ When non-nil optional arg TP-BUFF names a buffer as required by
 \(mon-get-text-properties-elisp-string *mon-help-reference-keys*\)\n
 :SEE-ALSO `mon-get-text-properties-region', `mon-get-text-properties-print',
 `mon-get-text-properties-read-temp', `mon-get-text-properties-elisp-string',
-`mon-get-text-properties-elisp-string-pp'.
-►►►"
+`mon-get-text-properties-elisp-string-pp'.\n►►►"
   (let ((mgtpfes-buf (get-buffer-create "*MGTPFES*"))
         mgtpes-buf2
         mgtpfes-rd)
@@ -1734,8 +1747,10 @@ Return value is a list of sublists of the form:
 ;;; :TEST-ME (mon-help-mon-tags)
 
 ;;; ==============================
+;;; :TODO Factor out the read-only-ness checks below to a dedicated macro/defsubst.
+;;; :MODIFICATIONS <Timestamp: #{2010-03-23T15:29:06-04:00Z}#{10122} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-11-20T18:20:17-05:00Z}#{09475} - by MON>
-(defun mon-help-insert-tags ()
+(defun mon-help-insert-tags (&optional no-insrt intrp)
   "Insert a \"MON-TAG\" at point. Does not move point.\n
 Prompt twice:\n
  i) Complete from a choice of tag-type:
@@ -1743,20 +1758,38 @@ Prompt twice:\n
  ii) With selected tag-type complete from a choice of tags.\n
 Use to keep scope of MON-TAG's as a loosely \"controlled-vocabulary\".
 Choice of tag type completed with `mon-help-mon-tags'.\n
+When optional arg NO-INSRT is non-nil do not insert tag when called interactively.\n
+When current-buffer is in not `view-mode' or `help-mode' do not insert tag. 
+When called interactively with NO-INSRT omitted and current-buffer is `buffer-read-only'
+but not in not `view-mode' or `help-mode' insert tag with `inhibit-read-only' bound t.\n
 :EXAMPLE\n(mon-help-insert-tags)\n
+\(apply 'mon-help-insert-tags nil '\(t\)\)\n
 :SEE-ALSO `*mon-help-mon-tags-alist*', `mon-help-propertize-tags',
 `mon-help-propertize-tags-TEST'.\n►►►"
-  (interactive)
-  (save-excursion
-    (princ   
-     (completing-read "Which tag :" (cadr (mon-help-mon-tags)))
-     (if (and (buffer-file-name)
-              (file-writable-p (buffer-file-name))
-              (file-exists-p (buffer-file-name)))
-         (current-buffer)))))
+  (interactive "P\np")
+  (let ((mhit (completing-read "Which tag :" (cadr (mon-help-mon-tags))))
+        ;; :NOTE Verbose lambda forms below are here future adaptation to macro/defsubst:
+        (mhit-prnc-here #'(lambda (&optional inhbt-rd-only) ;; (prn-val &optional inhbt-rd-only)
+                            (if inhbt-rd-only
+                                (let ((inhibit-read-only t))
+                                  (save-excursion (princ mhit (current-buffer))))
+                                (save-excursion (princ mhit (current-buffer))))))
+        ;;; (mhit-wrtbl-p #'(lambda () (and (file-writable-p (buffer-file-name))
+        ;;;                                 (file-exists-p   (buffer-file-name)))))
+        (mhit-chk-mode #'(lambda (val &optional val-check)
+                           (let ((chk-v (buffer-local-value val (current-buffer))))
+                             (if val-check (eql chk-v val-check) chk-v)))))
+    (if (or no-insrt (not intrp)
+            (funcall mhit-chk-mode 'major-mode 'help-mode)
+            (funcall mhit-chk-mode 'view-mode))
+        (princ mhit)
+        (with-current-buffer (current-buffer)
+          (if (funcall mhit-chk-mode 'buffer-read-only)
+              (funcall mhit-prnc-here t)
+              (funcall mhit-prnc-here))))))
 ;;
 ;;; :TEST-ME (mon-help-insert-tags)
-;;; :TEST-ME (apply 'mon-help-insert-tags '(t))
+;;; :TEST-ME (apply 'mon-help-insert-tags nil '(t))
 
 ;;; ==============================
 ;;; :NOTE It is not entirely clear if the 'list arg is needed.
@@ -1839,8 +1872,7 @@ When LINE-REGION-OR-LIST is region evaluate FUN-LAY with bound of entire region.
                               (funcall #'(lambda ()
                                            (eval `(,fun-lay ,(pop mhor-lst-pop) ,@fun-lay-args))))))))
                    (when (eq lrol 'li) (line-move-1 1)))))))
-;; (2523 2634 2636)
-;;; cadr ((2521 . 2522) (2523 . 2633) (2634 . 2635))
+
 ;;; ==============================
 ;;; :NOTE when NO-DROP-NL is non-nil newlines can be removed with:
 ;;; (mon-replace-char-in-string 10 (match-string-no-properties 1))
@@ -1873,7 +1905,8 @@ MATCH2-LINE2\nMATCH2-LINE3\"\) \(match-beg-2 . match-end-2\)\)
 ;; Does move point. Does not drop newlines.
 \(mon-help-delimited-region nil t\)\n
 ►\nMATCH2-LINE0\nMATCH2-LINE1\nMATCH2-LINE2\nMATCH2-LINE3\n◄\n
-:ALIASED-BY `mon-line-strings-region-delimited'\n
+:ALIASED-BY `mon-line-strings-region-delimited'
+:ALIASED-BY `mon-line-strings-get-delimited-region'\n
 :SEE-ALSO `mon-help-overlay-result', `mon-help-find-result-for-overlay',
 `mon-help-overlay-on-region', `mon-help-overlay-for-example',
 `mon-help-overlay-functions'.\n►►►"
@@ -1900,6 +1933,7 @@ MATCH2-LINE2\nMATCH2-LINE3\"\) \(match-beg-2 . match-end-2\)\)
           (t (funcall mhdr)))))
 ;;
 (defalias 'mon-line-strings-region-delimited 'mon-help-delimited-region)
+(defalias 'mon-line-strings-get-delimited-region 'mon-help-delimited-region)
 ;;
 ;; ,---- :UNCOMMENT-BELOW-TO-TEST
 ;; | (mon-help-delimited-region t t)
@@ -3052,8 +3086,10 @@ Default is `*doc-cookie*'.\n
 `mon-help-mon-functions'
 `mon-help-mon-help'
 `mon-help-plist-functions'
+`mon-help-plist-properties'
 `mon-help-print'
 `mon-help-process-functions'
+`mon-help-sequence-functions'
 `mon-help-server-functions'
 `mon-help-type-predicates'
 `mon-help-read-functions'
@@ -3090,10 +3126,13 @@ Default is `*doc-cookie*'.\n
 `mon-help-faces'
 `mon-help-faces-basic'
 `mon-help-faces-themes'
+`mon-help-faces-font-lock'
+`mon-help-font-lock'
 `mon-help-font-lock-functions'
 `mon-help-overlay-functions'
 `mon-help-text-property-functions'
-`mon-help-text-property-function-ext'
+`mon-help-text-property-properties'
+`mon-help-text-property-functions-ext'
 `mon-help-text-property-stickyness'\n
 ;; :MON-DOC-KEYS
 `mon-help-key-functions'
@@ -3103,10 +3142,10 @@ Default is `*doc-cookie*'.\n
 `mon-help-char-functions'
 `mon-help-char-representation'
 `mon-help-diacritics'
-`mon-help-ASCII-chars'
-`mon-help-ISO-8859-1-chars'
-`mon-help-cntl->hex->ecma-35'
-`mon-help-cntl->hex->ecma-48'\n
+`mon-help-char-ascii'
+`mon-help-char-iso-8859-1'
+`mon-help-char-ecma-35'
+`mon-help-char-ecma-48'\n
 ;; :MON-DOC-RECIPES
 `mon-help-crontab'
 `mon-help-du-incantation'
@@ -3253,29 +3292,35 @@ Default is `*doc-cookie*'.\n
 `mon-regexp-filter'
 `mon-replace-region-regexp-lists'
 `mon-replace-region-regexp-lists-nonint'
+`mon-walk-regexps-in-file'
+`mon-replace-regexps-in-file-list'
 `replace-string-pairs-region-no-props'
 `replace-string-pairs-region3'\n
 `mon-replace-string-pairs-region-no-insert'
 `mon-exchange-slash-and-backslash'
+`mon-cln-control-M'
 `mon-cln-csv-fields'
 `mon-cln-file-name-string'
 `mon-cln-html-chars'
 `mon-cln-html-tags'
-`mon-cln-xml<-parsed'
-`mon-cln-xml<-parsed-strip-nil'
+`mon-cln-iso-latin-1'
+`mon-cln-mail-headers'
 `mon-cln-up-colon'
 `mon-cln-uniq-lines'
-`mon-cln-control-M'\n
+`mon-cln-whitespace'
+`mon-cln-xml<-parsed'
+`mon-cln-xml<-parsed-strip-nil'\n
 ;; MON-REPLACE-NAF-MODE
 `mon-cln-tgm-xml-LF'
-`mon-replace-common-abbrevs'
 `mon-cln-piped-list'
 `mon-cln-philsp'
 `mon-cln-ulan'
 `mon-cln-imdb'
 `mon-cln-loc'
 `mon-cln-wiki'
-`mon-cln-bib'\n
+`mon-cln-bib'
+`mon-delete-back-up-list'
+`mon-replace-common-abbrevs'\n
 ;; :MON-REPLACE-DATES
 `mon-ital-date-to-eng'
 `mon-num-to-month'
@@ -3361,6 +3406,7 @@ Default is `*doc-cookie*'.\n
 `mon-insert-system-type-cond'
 `mon-help-emacs-introspect'\n
 ;; :MON-FILE-DIRECTORY
+`mon-build-path-for-load-path'
 `mon-cln-file-name-string'\n
 ;; :MON-PROCESS
 `mon-insert-sys-proc-list'
@@ -3418,6 +3464,7 @@ Default is `*doc-cookie*'.\n
 `mon-remove-text-property'
 `mon-test-props'\n
 ;; :MON-TEST
+`mon-build-user-name-example-TEST'
 `mon-build-copyright-string-TEST'
 `mon-help-propertize-regexp-symbol-defs-TEST'
 `mon-help-propertize-tags-TEST'
@@ -3428,7 +3475,8 @@ Default is `*doc-cookie*'.\n
 `mon-help-keys-wikify-TEST'
 `mon-insert-lisp-testme-fancy'
 `mon-insert-lisp-testme'
-`mon-insert-test-cases'\n
+`mon-insert-test-cases'
+`mon-user-system-conditionals-TEST'\n
 ;; :MON-WORD\n\n
 :SEE-ALSO `mon-help-mon-help'.\n►►►"
 (interactive "i\nP")
@@ -3441,6 +3489,9 @@ Default is `*doc-cookie*'.\n
 ;;; :TEST-ME (describe-function 'mon-help-mon-functions)
 ;;; :TEST-ME (apply 'mon-help-mon-functions nil '(t))
 
+;;; load-read-function
+;;; load-source-file-function
+;;; read-symbol-positions-list
 ;;; ==============================
 ;;; :CREATED <Timestamp: Thursday July 02, 2009 @ 02:34.14 PM - by MON KEY>
 (defun mon-help-emacs-introspect (&optional insertp intrp)
@@ -3458,8 +3509,10 @@ Unless indicated as a '<FUNCTION>' items listed are '<VARIABLE>'.\n
 `system-shell'
 `system-type'\n
 ;; :EMACS-ENVIRONMENT-PATHS-FILES
+`current-load-list'
 `load-path'
 `load-history'
+`load-force-doc-strings'
 `invocation-directory'
 `invocation-name'
 `exec-path'\n
@@ -3490,6 +3543,7 @@ Unless indicated as a '<FUNCTION>' items listed are '<VARIABLE>'.\n
 `global-map'
 `null-device'\n
 ;; :EMACS-BUILD
+`preloaded-file-list'
 `emacs-build-system'
 `emacs-build-time'
 `emacs-major-version'
@@ -3812,6 +3866,7 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 ;;; :CREATED <Timestamp: #{2009-08-07T18:16:16-04:00Z}#{09325} - by MON KEY>
 (defun mon-help-search-functions (&optional insertp intrp)
   "Common functions, vars, commands for searching, replacing, substituting.\n
+:SEE info node `(elisp)Regexp Search'.\n
 ;; :SEARCH
 `serach-forward'
 `search-backward'
@@ -3899,6 +3954,8 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 ;; :SEARCH-MON-LOCAL
 `replace-in-string-mon'
 `replace-char-in-string-mon'
+`mon-walk-regexps-in-file'
+`mon-replace-regexps-in-file-list'
 `mon-string-split-on-regexp'
 `mon-string-csv-regexp'
 `mon-string-rotate-to-regexp'
@@ -4524,7 +4581,6 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 (defun mon-help-frame-functions (&optional insertp intrp)
   "Functions for working with frames.\n
 :SEE info node `(elisp)Frames'
-:SEE-ALSO `mon-help-window-functions', `mon-help-buffer-functions'.\n►►►\n
 ;; :FRAME-PARAMS
 `frame-height'
 `frame-width'
@@ -4593,7 +4649,8 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 `frame-initial-geometry-arguments'
 `frame-name-history'
 `frame-notice-user-settings'
-`frame-title-format'"
+`frame-title-format'\n
+:SEE-ALSO `mon-help-window-functions', `mon-help-buffer-functions'.\n►►►"
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-frame-functions :insertp t)
@@ -4608,7 +4665,6 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 ;;; :CREATED <Timestamp: #{2009-10-21T12:41:44-04:00Z}#{09433} - by MON>
 (defun mon-help-window-functions (&optional insertp intrp)
   "Functions for working with windows.\n
-:SEE-ALSO `mon-help-frame-functions', `mon-help-buffer-functions'.\n►►►
 ;; :WINDOW-SIZE-PIXEL
 `window-pixel-edges'        ; LIST <LEFT TOP RIGHT BOTTOM>
 `window-inside-pixel-edges' ; LIST <LEFT TOP RIGHT BOTTOM>
@@ -4728,7 +4784,8 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 `window-system'                      ; :NOTE also a <FUNCTION>
 `window-system-initialization-alist'
 `window-system-version'
-`window-text-change-functions'"
+`window-text-change-functions'\n
+:SEE-ALSO `mon-help-frame-functions', `mon-help-buffer-functions'.\n►►►"
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-window-functions :insertp t)
@@ -4743,7 +4800,7 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 ;;; :TODO add other XML related material from xml-rpc, and ./lisp/nxml
 ;;; :CREATED <Timestamp: #{2009-09-17T12:06:53-04:00Z}#{09384} - by MON KEY>
 (defun mon-help-xml-functions (&optional insertp intrp)
-  "XML related functions.\n►►►
+  "XML related functions.\n
 ;; :XML-FILE.lisp.xml
 `xml-get-children'
 `xml-parse-attlist'
@@ -4770,7 +4827,8 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 ;; :XML-FILE.eieio-xml
 `eieio-xml-override-prin1'
 `eieio-xml-list-prin1'
-`object-write-xml'"
+`object-write-xml'\n
+:SEE-ALSO .\n►►►"
   (interactive "i\np")
     (mon-help-function-spit-doc 'mon-help-xml-functions :insertp t)
   (message "Pass non-nil for optional arg INTRP"))
@@ -4834,7 +4892,7 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 ;;; :CREATED <Timestamp: #{2009-10-06T16:41:17-04:00Z}#{09412} - by MON KEY>
 (defun mon-help-eieio-functions (&optional insertp intrp)
   "Interface functions for working with EIEIO system of CEDET.\n
-:SEE info node `(eieio)Function Index'.\n►►►\n
+:SEE info node `(eieio)Function Index'.\n
 ;; :EIEIO-CLASSES               :SEE-ALSO `mon-help-eieio-defclass'
 `defclass'                       NAME SUPERCLASS SLOTS &rest OPTIONS-AND-DOC
 `eieio-hook'                    ;<VARIABLE>
@@ -4950,7 +5008,8 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 `describe-object'               :SEE `object-write'\n
 ;; :EIEIO-UNINMPLEMENTED
 `destructor'
-`eieio-read-xml'\n"
+`eieio-read-xml'\n
+:SEE-ALSO .\n►►►"
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-eieio-functions :insertp t)
@@ -5123,8 +5182,7 @@ A generic form can be interrogated with `eieio-generic-form':\n
 (defun mon-help-type-predicates (&optional insertp intrp)
   "List of predicate functions for interrogating elisp types.\n
 :SEE info node `(elisp)Type Predicates'\n:SEE info node `(CL)Type Predicates'
-:SEE-ALSO `typep' `deftype' `typecase' `check-type'\n
-     `functionp' `keywordp' `commandp'                              70.\n
+                                                                    70.
       _______________________                                         
      |                       |                                        
      | :TYPE-PREDICATES-SEQS |                                        
@@ -5173,14 +5231,26 @@ A generic form can be interrogated with `eieio-generic-form':\n
   | symbol       <- `symbolp'       |                                 
   | vector       <- `vectorp'       |                                 
   | window       <- `windowp'       |                                 
-  |                                 |                                 
-  |   :COMPILED-FUNCTION            |        `window-live-p'          
-  |  `byte-code-function-p'         |       `user-variable-p'         
-  |                                 |     `frame-configuration-p'     
-  |   :WINDOW-CONFIGURATION         |        `frame-live-p'           
-  | `window-configuration-p'        |                                 
-  |_________________________________|                               70.
+  |_________________________________|                               70^
 
+;; :TYPE-PREDICATE-COMPILED-FUNCTION
+`byte-code-function-p'\n
+;; TYPE-PREDICATE-DISPLAY-CONFIG
+`custom-theme-p'
+`window-live-p'         
+`window-configuration-p'
+`user-variable-p'  
+`frame-configuration-p'
+`frame-live-p'\n
+;; :TYPE-PREDICATE-FUNCTIONS
+`typep'
+`deftype'
+`etypecase'
+`typecase'
+`check-type'
+`functionp'
+`keywordp'
+`commandp'
 :SEE-ALSO .\n►►►"
   (interactive "i\nP")
   (if (or insertp intrp)
@@ -5192,103 +5262,114 @@ A generic form can be interrogated with `eieio-generic-form':\n
 ;;; :TEST-ME (describe-function 'mon-help-type-predicates)
 ;;; :TEST-ME (apply 'mon-help-type-predicates '(t))
 
-;;; :SEQUENCE-GENERAL
-;;; `atom'
-;;; `elt'
-;;; `nth'
-;;; `copy-sequence'
-;;; `length'
-;;; `safe-length'
-;;; `sequencep'
-;;; `append'
-;;; `concat'
-;;; :SEQUENCE-VECTOR
-;;; `vconcat'
-;;; `vectorp'
-;;; `string-to-vector'
-;;; `make-vector'
-;;; :SEQUENCE-BOOL-VECTOR
-;;; `make-bool-vector'
-;;; `bool-vector-p'
-;;; :SEQUENCE-ARRAY
-;;; `arrayp'
-;;; `aset'
-;;; `aref'
-;;; `fillarray'
-;;; :SEQUENCE-CONS
-;;; `string-to-list'
-;;; `car-safe'
-;;; `cdr-safe'
-;;; `nlistp'
-;;; `listp'
-;;; `null'
-;;; `nthcdr'
-;;; `last'
-;;; `butlast'
-;;; `nbutlast'
-;;; `list'
-;;; `make-list'
-;;; `reverse'
-;;; `nreverse'
-;;; `copy-tree'
-;;; `number-sequence'
-;;; `setcar'
-;;; `setcdr'
-;;; `pop'
-;;; `push'
-;;; `nconc'
-;;; `add-to-list'
-;;; `add-to-ordered-list'
-;;; `delq'
-;;; `remq'
-;;; `delete'
-;;; `delete-dups'
-;;; `sort'
-;;; `memq'
-;;; `memql'
-;;; `member'
-;;; `member-ignore-case'
-;;; :SEQUENCE-ALIST
-;;; `assoc'
-;;; `rassoc'
-;;; `assoc-string'
-;;; `assq'
-;;; `rassq'
-;;; `assoc-default'
-;;; `copy-alist'
-;;; `assq-delete-all'
-;;; `rassq-delete-all'
-;;; assoc.el
-;;; `asort'
-;;; `aelement'
-;;; `aheadsym'
-;;; `anot-head-p'
-;;; `aput'
-;;; `adelete'
-;;; `aget'
-;;; `amake'
-;;; mule-util.el
-;;; `lookup-nested-alist'
-;;; `set-nested-alist'
-;;; `nested-alist-p'
-;;; :SEQUENCE-RING
-;;; `make-ring'
-;;; `ring-p'
-;;; `ring-size'
-;;; `ring-length'
-;;; `ring-elements'
-;;; `ring-copy'
-;;; `ring-empty-p'
-;;; `ring-ref'
-;;; `ring-insert'
-;;; `ring-remove'
-;;; `ring-insert-at-beginning'
-
 ;;; ==============================
-;;; caar 
-;;; cadr
-;;; cdar
-;;; cddr 
+;;; :CREATED <Timestamp: #{2010-03-08T13:28:30-05:00Z}#{10101} - by MON KEY>
+(defun mon-help-sequence-functions (&optional insertp intrp)
+  "List of functions related to sequences list, alist, array, vector, ring, etc.\n
+:SEE info node `(elisp)Sequences Arrays Vectors'.
+:SEE info node (elisp)Lists'.\n
+;; :SEQUENCE-GENERAL
+`atom'
+`elt'
+`nth'
+`copy-sequence'
+`length'
+`safe-length'
+`sequencep'
+`append'
+`concat'\n
+;; :SEQUENCE-CONS
+`string-to-list'
+`car-safe'
+`cdr-safe'
+`nlistp'
+`listp'
+`null'
+`nthcdr'
+`last'
+`butlast'
+`nbutlast'
+`list'
+`make-list'
+`reverse'
+`nreverse'
+`copy-tree'
+`number-sequence'
+`setcar'
+`setcdr'
+`pop'
+`push'
+`nconc'
+`add-to-list'
+`add-to-ordered-list'
+`delq'
+`remq'
+`delete'
+`delete-dups'
+`sort'
+`memq'
+`memql'
+`member'
+`member-ignore-case'\n
+;; :SEQUENCE-ALIST
+`assoc'
+`rassoc'
+`assoc-string'
+`assq'
+`rassq'
+`assoc-default'
+`copy-alist'
+`assq-delete-all'
+`rassq-delete-all'\n
+;; :SEQUENCE-ALIST-FILE.lisp.emacs-lisp.assoc
+`asort'
+`aelement'
+`aheadsym'
+`anot-head-p'
+`aput'
+`adelete'
+`aget'
+`amake'\n
+;; :SEQUENCE-ALIST-FILE.lisp.international.mule-util
+`lookup-nested-alist'
+`set-nested-alist'
+`nested-alist-p'\n
+;; :SEQUENCE-VECTOR
+`vconcat'
+`vectorp'
+`string-to-vector'
+`make-vector'\n
+;; :SEQUENCE-BOOL-VECTOR
+`make-bool-vector'
+`bool-vector-p'\n
+;; :SEQUENCE-ARRAY
+`arrayp'
+`aset'
+`aref'
+`fillarray'\n
+;; :SEQUENCE-RING
+`make-ring'
+`ring-p'
+`ring-size'
+`ring-length'
+`ring-elements'
+`ring-copy'
+`ring-empty-p'
+`ring-ref'
+`ring-insert'
+`ring-remove'
+`ring-insert-at-beginning'\n
+:SEE-ALSO .\n►►►"
+;;; caar, cadr, cdar, cddr 
+(interactive "i\nP")
+  (if (or insertp intrp)
+      (mon-help-function-spit-doc 'mon-help-sequence-functions :insertp t)
+    (message "Pass non-nil for optional arg INTRP")))
+;;
+;;; :TEST-ME (mon-help-sequence-functions)
+;;; :TEST-ME (mon-help-sequence-functions t)
+;;; :TEST-ME (describe-function 'mon-help-sequence-functions)
+;;; :TEST-ME (apply 'mon-help-sequence-functions nil '(t))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-02-25T16:33:59-05:00Z}#{10084} - by MON KEY>
@@ -5302,7 +5383,7 @@ A generic form can be interrogated with `eieio-generic-form':\n
 `lookup-key'
 `minor-mode-key-binding'
 `where-is'
-`where-is-internal'
+`where-is-internal'\n
 ;; :KEY-FUNCTIONS-READ-EVENT
 `event-basic-type'
 `event-convert-list'
@@ -5320,13 +5401,13 @@ A generic form can be interrogated with `eieio-generic-form':\n
 `this-command-keys'
 `this-command-keys-vector'
 `unread-command-char'
-`unread-command-events'
+`unread-command-events'\n
 ;; :KEY-FUNCTIONS-STATE
 `discard-input'
 `input-pending-p'
 `keyboard-quit'
 `while-no-input'
-`with-local-quit'
+`with-local-quit'\n
 ;; :KEY-FUNCTIONS-BIND
 `define-key'
 `define-prefix-command'
@@ -5337,7 +5418,7 @@ A generic form can be interrogated with `eieio-generic-form':\n
 `keypad-setup'
 `local-key-binding'
 `local-set-key'
-`local-unset-key'
+`local-unset-key'\n
 ;; :KEY-FUNCTIONS-MAP-HANDLERS
 `copy-keymap'
 `make-keymap'
@@ -5347,7 +5428,7 @@ A generic form can be interrogated with `eieio-generic-form':\n
 `suppress-keymap'
 `use-global-map'
 `use-local-map'
-`use-local-map'
+`use-local-map'\n
 ;; :KEY-FUNCTIONS-MAP-INSPECT
 `accessible-keymaps'
 `command-remapping'
@@ -5356,7 +5437,7 @@ A generic form can be interrogated with `eieio-generic-form':\n
 `current-local-map'
 `current-minor-mode-maps'
 `keymap-parent'
-`keymapp'
+`keymapp'\n
 ;; :KEY-VARIABLES-PREFIX-LAST
 `current-prefix-arg'
 `inhibit-quit'
@@ -5366,7 +5447,7 @@ A generic form can be interrogated with `eieio-generic-form':\n
 `num-nonmacro-input-events'
 `prefix-arg'
 `quit-flag'
-`this-command-keys-shift-translated'
+`this-command-keys-shift-translated'\n
 ;; :KEY-VARIABLES-INPUT-MOD
 `extra-keyboard-modifiers'
 `input-decode-map'
@@ -5379,15 +5460,15 @@ A generic form can be interrogated with `eieio-generic-form':\n
 `set-keyboard-coding-system'
 `special-event-map'
 `translation-table-for-input'
-`where-is-preferred-modifier'
+`where-is-preferred-modifier'\n
 ;; :KEY-VARIABLES-MODE-MAPS
 `emulation-mode-map-alists'
 `minor-mode-map-alist'
 `minor-mode-overriding-map-alist'
 `overriding-local-map'
 `overriding-local-map-menu-flag'
-`overriding-terminal-local-map'
-;; :KEY-KEYMAPS :SEE info node `(elisp)Standard Keymaps'
+`overriding-terminal-local-map'\n
+;; :KEY-KEYMAPS                   :SEE info node `(elisp)Standard Keymaps'
 `Buffer-menu-mode-map'
 `Helper-help-map'
 `Info-edit-map'
@@ -5439,7 +5520,7 @@ A generic form can be interrogated with `eieio-generic-form':\n
 `search-map'
 `text-mode-map'
 `tool-bar-map'
-`view-mode-map'
+`view-mode-map'\n
 ;; :KEY-FUNCTIONS-MON-LOCAL
 `mon-test-keypresses'
 :SEE-ALSO `mon-help-keys', `mon-help-diacritics'.\n►►►"
@@ -5458,45 +5539,45 @@ A generic form can be interrogated with `eieio-generic-form':\n
 (defun mon-help-read-functions (&optional insrtp intrp)
   "List of functions for reading.\n
 Unless indicated all items in list are functions.\n
-      _______                       ____________________    62.
-     |       |                     |                    |
-     | :READ |                     | :STANDARD-READERS  |
-   __|_______|_______________     _|____________________|_
-  |                          |   |                        |
-  | `read'                   |   | `read-color'           |
-  | `read-from-string'       |   | `read-kbd-macro'       |
-  | `read-from-whole-string' |   | `read-number'          |
-  |__________________________|   | `read-passwd'          |
-        _________________        | `read-regexp'          |
-       |                 |       | `read-string'          |
-       | :STANDARD-INPUT |       | `read-shell-command'   |
-       |  READ STREAMS   |       |________________________|
-   ____|_________________|________________________________
-  |                                                       |
-  |  `standard-input'--+ <VARIABLE>                       |
-  |    |                 ______________________________   |
-  |    |-+ <BUFFER>     |                              |  |
-  |    |-+ <MARKER>     | `read-circle'                |  |
-  |    |-+ <STRING>     |  |-+ <VARIABLE>              |  |
-  |    |-+ <FUNCTION>   | `read-with-symbol-positions' |  |
-  |    |-+ <SYMBOL>     |  |-+ <VARIABLE>              |  |
-  |    |-+ t            | `read-symbol-positions-list' |  |
-  |    |-+ nil          |  |-+ <VARIABLE>              |  |
-  |                     |______________________________|  |
-  |_______________________________________________________|
-     ______________                          __________
-    |              |                        |          |
-    | :MINI-BUFFER |                        | :BUFFERS |
-   _|______________|_______      ___________|__________|__
-  |                        |    |                         |
-  | `read-minibuffer'      |    | `read-buffer'           |
-  | `read-from-minibuffer' |    | `read-buffer-function'  |
-  | `read-no-blanks-input' |    | `read-buffer-to-switch' |
-  |________________________|    |_________________________|
-     ________                                  ________
-    |        |                                |        |
-    | :FILES |                                | :CHARS |
-   _|________|________________    ____________|________|____
+      _______                       ____________________  60.
+     |       |                     |                    |   
+     | :READ |                     | :STANDARD-READERS  |   
+   __|_______|_______________     _|____________________|_  
+  |                          |   |                        | 
+  | `read'                   |   | `read-color'           | 
+  | `read-from-string'       |   | `read-kbd-macro'       | 
+  | `read-from-whole-string' |   | `read-number'          | 
+  |__________________________|   | `read-passwd'          | 
+        _________________        | `read-regexp'          | 
+       |                 |       | `read-string'          | 
+       | :STANDARD-INPUT |       | `read-shell-command'   | 
+       | :READ-STREAMS   |       |________________________| 
+   ____|_________________|________________________________  
+  |                                                       | 
+  |  `standard-input'--+ <VARIABLE>                       | 
+  |    |                 ______________________________   | 
+  |    |-+ <BUFFER>     |                              |  | 
+  |    |-+ <MARKER>     | `read-circle'                |  | 
+  |    |-+ <STRING>     |  |-+ <VARIABLE>              |  | 
+  |    |-+ <FUNCTION>   | `read-with-symbol-positions' |  | 
+  |    |-+ <SYMBOL>     |  |-+ <VARIABLE>              |  | 
+  |    |-+ t            | `read-symbol-positions-list' |  | 
+  |    |-+ nil          |  |-+ <VARIABLE>              |  | 
+  |                     |______________________________|  | 
+  |_______________________________________________________| 
+     ______________                          __________     
+    |              |                        |          |    
+    | :MINI-BUFFER |                        | :BUFFERS |    
+   _|______________|_______      ___________|__________|__  
+  |                        |    |                         | 
+  | `read-minibuffer'      |    | `read-buffer'           | 
+  | `read-from-minibuffer' |    | `read-buffer-function'  | 
+  | `read-no-blanks-input' |    | `read-buffer-to-switch' | 
+  |________________________|    |_________________________|   
+     ________                                  ________      
+    |        |                                |        |     
+    | :FILES |                                | :CHARS |     
+   _|________|________________    ____________|________|____ 
   |                           |  |                          |
   | `read-file-name'          |  | `read-char'              |
   | `read-directory-name'     |  | `read-char-by-name'      |
@@ -5517,19 +5598,19 @@ Unless indicated all items in list are functions.\n
 | `read-command'             | | `read-all-face-attributes' |
 | `unread-command-events'    | | `read-face-and-attribute'  |
 |  |-+ <VARIABLE>            | |____________________________|
-|____________________________|  ______________
-                               |              |
-                               | :ENVIRONMENT |
-                      _________|______________|_____
-                     |                              |
-                     | `read-coding-system'         |
-                     | `read-non-nil-coding-system' |
-                     | `read-input-method-name'     |
-                     | `read-multilinlual-string'   |
-                     | `read-language-name'         |
-                     | `read-envvar-name'           |
-                     |______________________________|
-                                                            62^\n
+|____________________________|          ______________       
+                                       |              |      
+                                       | :ENVIRONMENT |      
+                              _________|______________|_____ 
+                             |                              |
+                             | `read-coding-system'         |
+                             | `read-non-nil-coding-system' |
+                             | `read-input-method-name'     |
+                             | `read-multilinlual-string'   |
+                             | `read-language-name'         |
+                             | `read-envvar-name'           |
+                             |______________________________|
+                                                          60^\n
 :SEE :FILE `lread.c'
 :SEE info node `(elisp)Read and Print'.
 :SEE-ALSO `mon-help-key-functions', `mon-help-print',
@@ -5564,7 +5645,7 @@ Unless indicated all items in list are functions.\n
 `terpri'
 `with-output-to-string'
 `write-char'\n
-;; :PRINT-PRETTY-FUNCTIONS    :SEE :FILE pp.el
+;; :PRINT-PRETTY-FUNCTIONS.lisp.emacs-lisp.pp
 `pp'
 `pp-buffer'
 `pp-display-expression'
@@ -5694,9 +5775,10 @@ Unless indicated all items in list are functions.\n
       (mon-help-function-spit-doc 'mon-help-hash-functions :insertp t)
       (message "Pass non-nil for optional arg INTRP")))
 ;;
-;;; :TEST-ME (mon-help-hash-functions )
-;;; :TEST-ME (mon-help-hash-functions )
-;;; :TEST-ME (mon-help-hash-functions )
+;;; :TEST-ME (mon-help-hash-functions)
+;;; :TEST-ME (mon-help-hash-functions t)
+;;; :TEST-ME (describe-function 'mon-help-hash-functions)
+;;; :TEST-ME (apply 'mon-help-hash-functions nil '(t))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-09-19T17:02:02-04:00Z}#{09386} - by MON KEY>
@@ -5704,57 +5786,110 @@ Unless indicated all items in list are functions.\n
   "Help for plist and property list related functions.\n
 :SEE info node `(elisp)Property Lists'.
 :SEE info node `(elisp)Symbol Plists'.
-:SEE info node `(elisp)Other Plists'.
-;; :PLIST-FUNCTIONS
+:SEE info node `(elisp)Other Plists'.\n
+;; :PLIST-FUNCTIONS-GETTERS
 `get'
 `plist-get'
 `lax-plist-get'
+;; :PLIST-FUNCTIONS-SETTERS
+`setplist'
 `put'
 `plist-put'
 `lax-plist-put'
-`setplist'
-`plist-member'
+;; :PLIST-FUNCTION-INSPECT
 `symbol-plist'
+`plist-member'
+;; :PLIST-FUNCTION-PROCESS
 `process-plist'
 `process-put'
 `process-get'
+;; :PLIST-FUNCTION-CHARACTER        :SEE info node `(elisp)Character Properties'
 `charset-plist'
 `char-code-property-description'
 `put-char-code-property'
-`get-char-code-property'    :SEE `mon-help-char-representation'
+`get-char-code-property'            :SEE `mon-help-char-representation'
 `documentation-property'\n
 ;; :PLIST-FUNCTIONS-MON-LOCAL
 `mon-plist-keys'
 `mon-plist-remove'\n
-;; :PLIST-PROPERTIES-COMMON
-`buffer-access-fontified-property'  ;<PROPERTY>
-`char-code-property-documentation'  ;<PROPERTY>
-`syntax-table'                      ;<PROPERTY>
-`doc-string-elt'                    ;<PROPERTY>
-`lisp-doc-string-elt-property'      ;<VARIABLE>
-`lisp-indent-function'              ;<PROPERTY> 
-`face-documentation'                ;<PROPERTY> 
-`function-documentation'            ;<PROPERTY>
-`theme-documentation'               ;<PROPERTY>
-`variable-documentation'            ;<PROPERTY>\n
-;; :PLIST-ERROR-PROPERTIES
-`error' ;; <PLIST> (symbol-plist 'error)
- |
- |----+ `error-conditions'          ;<PROPERTY>
- |
- |----+ `error-message'             ;<PROPERTY>
- |
- |----+ `byte-compile-format-like'  ;<PROPERTY>\n
-:SEE-ALSO `mon-help-text-property-functions'.\n►►►"
+:SEE-ALSO `mon-help-plist-properties', `mon-help-text-property-functions'.\n►►►"
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-plist-functions :insertp t)
     (message "Pass non-nil for optional arg INTRP")))
 ;;
-;;; :TEST-ME (mon-help-plist-functions )
+;;; :TEST-ME (mon-help-plist-functions)
 ;;; :TEST-ME (mon-help-plist-functions t)
 ;;; :TEST-ME (call-interatively 'mon-help-plist-functions)
 ;;; :TEST-ME (describe-function 'mon-help-plist-functions)
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-03-08T12:07:55-05:00Z}#{10101} - by MON KEY>
+(defun mon-help-plist-properties (&optional insertp intrp)
+  "List of common Emacs elisp ``built-in'' properties appearing on plists.\n
+:NOTE Unless indicated following otherwise, following list enumerates a property
+;; :PLIST-PROPERTIES
+`buffer-access-fontified-property' ; :NOTE also a <FUNCTION>
+`lisp-indent-function'\n
+;; :PLIST-PROPERTIES-DOC
+`doc-string-elt'
+`lisp-doc-string-elt-property'
+`char-code-property-documentation'
+`face-documentation'               ; :NOTE also a <FUNCTION>
+`function-documentation'
+`theme-documentation'
+`variable-documentation'\n
+;; :PLIST-PROPERTIES-FACE
+`customized-face'         
+`face-alias'  
+`face-defface-spec'
+`face-documentation'        
+`saved-face'
+;; :PLIST-PROPERTIES-SYNTAX
+`syntax-table'
+`text-clone-syntax'\n
+;; :PLIST-PROPERTIES-CHARACTER
+`bidi-class'
+`canonical-combining-class'
+`decimal-digit-value'
+`decomposition'
+`digit'
+`general-category'
+`iso-10646-comment'
+`lowercase'
+`mirrored'
+`name'
+`numeric-value'              
+`old-name'
+`titlecase'
+`uppercase'
+;; :PLIST-PROPERTIES-OVERLAY
+`after-string'
+`before-string'
+`evaporate'
+`isearch-open-invisible'
+`isearch-open-invisible-temporary'
+`priority'
+`window'\n
+;; :PLIST-PROPERTIES-TEXT-PROPERTIES-SPECIAL
+:SEE `mon-help-text-property-properties'
+;; :PLIST-PROPERTIES-ERROR
+`error' 
+       <PLIST> (symbol-plist 'error)
+      ¦ `error-conditions'
+      ¦ `error-message'
+      ¦ `byte-compile-format-like'\n
+:SEE-ALSO `mon-help-plist-functions', `mon-help-text-property-functions',
+`mon-help-text-property-properties'.\n►►►"
+(interactive "i\nP")
+  (if (or insertp intrp)
+      (mon-help-function-spit-doc 'mon-help-plist-properties :insertp t)
+    (message "Pass non-nil for optional arg INTRP")))
+;;
+;;; :TEST-ME (mon-help-plist-properties)
+;;; :TEST-ME (mon-help-plist-properties t)
+;;; :TEST-ME (describe-function 'mon-help-plist-properties)
+;;; :TEST-ME (apply 'mon-help-plist-functions nil '(t))
 
 ;;; ==============================
 ;;; :SOURCE from commented sections of :FILE `cus-face.el' and :FILE `custom.el'
@@ -5776,9 +5911,7 @@ Unless indicated all items in list are functions.\n
 `custom-reset-faces'
 `custom-declare-face'
 `custom-face-attributes-get'
-`custom-face-attributes'      ;<CONSTANT>
-`custom-enabled-themes'       ;<VARIABLE>
-`custom-enabling-themes'      ;<VARIABLE>
+;; :FACE-CUSTOM-THEME
 `custom-declare-theme'
 `customize-create-theme'
 `custom-push-theme'
@@ -5786,14 +5919,18 @@ Unless indicated all items in list are functions.\n
 `custom-check-theme'
 `custom-variable-theme-value'
 `custom-theme-recalc-variable'
-`custom-theme-directory'      ;<VARIABLE>
-`custom-known-themes'         ;<VARIABLE>
 `custom-theme-p'
 `custom-theme-set-faces'
 `custom-theme-reset-faces'
 `custom-theme-recalc-face'
-`custom-theme-set-variables'\n
-:SEE :FILES `cus-face.el', `custom.el', `cus-edit.el'.\n
+`custom-theme-set-variables'
+;; :FACE-CUSTOM-VARIABLES
+`custom-face-attributes'      ;<CONSTANT>
+`custom-enabled-themes'
+`custom-enabling-themes'
+`custom-theme-directory'
+`custom-known-themes'\n
+:SEE :FILE `cus-face.el', `custom.el', `cus-edit.el'.\n
 ;; :THEME-CUSTOM
 Custom themes are collections of settings that can be enabled or
 disabled as a unit.\n
@@ -5881,112 +6018,112 @@ It has the following format:\n
 ;;; :CREATED <Timestamp: #{2009-09-26T13:23:36-04:00Z}#{09396} - by MON KEY>
 (defun mon-help-faces (&optional insertp intrp)
 "Functions, Variables, Properties, etc. for defining faces.\n
-:SEE info node `(elisp)Defining Faces'.\n:SEE info node `(elisp)Face Attributes'.
-                         _________________                                 
-                        |                 |                              
-                        | :FACE-DEFINING  |                              
- _______________________|_________________|____________________________73.
+    _________________                                 
+   |                 | :SEE info node `(elisp)Defining Faces'            
+   | :FACE-DEFINING  | :SEE info node `(elisp)Face Functions'                             
+ __|_________________|_________________________________________________73.
 |                                         |                              |
 | `defface' <MACRO>                       |   :FACE-DEFINING-FUNCTIONS   |
 |  :SPEC                                  |______________________________|
 |  | :DISPLAY                             |                              |
-|  | |-+ defalut                          |                              |
-|  | |-+ t                                | `make-face'                  |
-|  | |-+ list -> elts of form (Key Value) | `face-list'                  |
-|  |   | (type {graphic x pc w32 tty})    | `copy-face'                  |
-|  |   | (class {color grayscale mono})   | `face-id'                    |
-|  |   | (background {light dark})        | `face-documentation'         |
-|  |   | (min-colors {INTEGER})           | `face-equal'                 |
-|  |   | (supports {VALUE})               | `face-differs-from-default-p'|
-|  |                                      |                              |
-|  +--------------------------------+     |______________________________|
-|                                   |                                    |
-|_____________________________   ___V____________________________________|
-|                             | |                                        |
-|  :FACE-ATTRIBUTE-KEYWORDS   | | :family - (a string)                   |
-|_____________________________| | {Fontset name, Font family}            |
+|  | |-+ defalut                          | `make-face'                  |
+|  | |-+ t                                | `face-list'                  |
+|  | |-+ <LIST> -> of form: (Key Value)   | `copy-face'                  |
+|  |   ¦ (type {graphic, x, pc, w32, tty})| `face-id'                    |
+|  |   ¦ (class [color|grayscale|mono})   | `face-documentation'         |
+|  |   ¦ (background [light|dark])        | `face-equal'                 |
+|  |   ¦ (min-colors <INTEGER>)           | `face-differs-from-default-p'|
+|  |   ¦ (supports   <VALUE>)             |______________________________|
+|  |                                                                     |
+|  `---------------------.                                               |
+|                         \\                                              |
+|                          \\     :SEE info node `(elisp)Face Attributes' |
+|__________________________ \\    ________________________________________|
+|                          | `->|                                        |
+| :FACE-ATTRIBUTE-KEYWORDS |    | :family - <STRING>                     |
+|__________________________|__  |  { Fontset name, Font family }         |
 |                             | |  :NOTE `*' and `?' wildcards allowed.  |
 |  :family :foundry           | |  :SEE `font-family-list'               |
-|  :font :fontset             | |________________________________________|
+|  :font   :fontset           | |________________________________________|
 |  :height                    | |                                        |
-|  :width :weight :slant      | | :foundry - (a string)                  |
-|  :foreground :background    | | :NOTE `*' `?' wildcards allowed.       |
-|  :underline :overline       | |________________________________________|
+|  :width :weight :slant      | | :foundry - <STRING>                    |
+|  :foreground :background    | | :NOTE `*' and `?' wildcards allowed.   |
+|  :underline  :overline      | |________________________________________|
 |  :strike-through            | |                                        |
 |  :box                       | | :font - (a font object)                |
 |  :inverse-video             | | :SEE info node `(elisp)Font Selection' |
 |  :stipple                   | | :SEE info node `(elisp)Fontsets'       |
 | `face-attribute-name-alist' | |________________________________________|
 |_____________________________| |                                        |
-|                             | | :height - (integer, floating point)    |
-|  :FACE-ATTRIBUTE-FUNCTIONS  | | {1/10 point, float}                    |
+|                             | | :height - [<INTEGER>|<FLOAT>]          |
+| :FACE-ATTRIBUTE-FUNCTIONS   | |  { 1/10 point, float }                 |
 |                             | |________________________________________|
 |-----------------------------| |                                        |
-|                             | | :width - (a symbol)                    |
-| `font-family-list'          | | {normal, condensed, expanded           |
-| `face-attribute'            | |  semi-condensed, semi-expanded         |
-| `set-face-attribute'        | |  extra-condensed, extra-expanded       |
-| `face-all-attributes'       | |  ultra-condensed, ultra-expanded}      |
+|                             | | :width - <SYMBOL>                      |
+| `font-family-list'          | |  { normal, condensed, expanded         |
+| `face-attribute'            | |    semi-condensed, semi-expanded       |
+| `set-face-attribute'        | |    extra-condensed, extra-expanded     |
+| `face-all-attributes'       | |    ultra-condensed, ultra-expanded }   |
 | `merge-face-attribute'      | |________________________________________|
 | `face-attribute-relative-p' | |                                        |
-| `invert-face'               | | :weight - (a symbol)                   |
-| `face-foreground'           | | {normal, bold, light                   |
-| `face-background'           | |  semi-bold, semi-light                 |
-| `face-stipple'              | |  extra-bold, extra-light               |
-| `face-font'                 | |  ultra-bold, utltra-light}             |
+| `invert-face'               | | :weight - <SYMBOL>                     |
+| `face-foreground'           | |  { normal, bold, light                 |
+| `face-background'           | |    semi-bold, semi-light               |
+| `face-stipple'              | |    extra-bold, extra-light             |
+| `face-font'                 | |    ultra-bold, utltra-light }          |
 | `face-bold-p'               | |________________________________________|
 | `face-italic-p'             | |                                        |
-| `face-underline-p'          | | :slant - (a symbol)                    |
-| `face-inverse-video-p'      | |  {normal, italic, oblique,             |
-|                             | |   reverse-italic, reverse-oblique}     |
+| `face-underline-p'          | | :slant - <SYMBOL>                      |
+| `face-inverse-video-p'      | |  { normal, italic, oblique,            |
+|                             | |   reverse-italic, reverse-oblique }    |
 |_____________________________| |________________________________________|
 |                             | |                                        |
-|  :FACE-ATTRIBUTE-VARIABLES  | | :foreground - (a string)               |
-|                             | | :background - (a string)               |
+| :FACE-ATTRIBUTE-VARIABLES   | | :foreground - [<STRING>|<HEX-VAL>]     |
+|                             | | :background - [<STRING>|<HEX-VAL>]     |
 |-----------------------------| | :SEE info node `(elisp)Color Names'    |
 |                             | |             `mon-help-color-chart'     |
 | `bitmap-spec-p'             | |         `mon-help-color-functions'     |
 | `face-attribute-name-alist' | |________________________________________|
 | `custom-face-attributes'    | |                                        |
-| `frame-background-mode'     | | :underline - (a boolean or string)     |
-| `underline-minimum-offset'  | | :overline - (a boolean or string)      |
-| `x-bitmap-file-path'        | | :strike-through - (boolean or string)  |
-|                             | | {t - using face's color                |
-|_____________________________| |  string - using specified color        |
-|                             | |  nil - do not apply effect}            |
-|  :FACE-PROPERTY-ATTRIBUTES  | |________________________________________|
-| (on face's symbol property) | |                                        |
-|                             | | :box - (a boolean, string, list)       |
-|-----------------------------| | {nil - no box                          |
-|                             | |  t -  linewidth 1 in :foreground color |
-| `face-alias'                | |  color - box w/ line width in COLOR    |
-| `face-defface-spec'         | |  (:line-width WIDTH                    |
-| `customized-face'           | |   :color COLOR                         |
-| `face-documentation'        | |   :style STYLE)}                       |
+| `frame-background-mode'     | | :underline - [<BOOLEAN>|<STRING>]      |
+| `underline-minimum-offset'  | | :overline  - [<BOOLEAN>|<STRING>]      |
+| `x-bitmap-file-path'        | | :strike-through - [<BOOLEAN>|<STRING>] |
+|                             | |  { t - using face's color              |
+|_____________________________| |    <STRING> - Using specified <COLOR>  |
+|                             | |    nil - do not apply effect }         |
+| :FACE-PROPERTY-ATTRIBUTES   | |________________________________________|
+|  (face symbol properties)   | |                                        |
+|                             | | :box - [<BOOLEAN>|<STRING>|<LIST>]     |
+|-----------------------------| |  { nil - no box                        |
+|                             | |   t - linewidth in :foreground <COLOR> |
+| `face-alias'                | |   color - box w/ line width in <COLOR> |
+| `face-defface-spec'         | |   ( :line-width <WIDTH>                |
+| `customized-face'           | |     :color <COLOR>                     |
+| `face-documentation'        | |     :style <STYLE> ) }                 |
 | `saved-face'                | |________________________________________|
 |                             | |                                        |
-|_____________________________| | :inverse-video - (a boolean)           |
-                                | {t - yes                               |
-                                |  nil - no}                             |
-                                |________________________________________|
+|_____________________________| | :inverse-video - <BOOLEAN>             |
+                                |  { t - yes                             |
+                                |    nil - no }                          |
+ _____________________________  |________________________________________|
+|                             | |                                        |
+|      :FACE-READERS          | | :stipple - [<BOOLEAN>|<STRING>]        |
+|_____________________________| |  { <BITMAP> :SEE `x-bitmap-file-path'  |
+|                             | |   ,----                                |
+| `read-face-font'            | |   | <WIDTH>  - Width in pixels         |
+| `read-face-name'            | |   | <HEIGHT> - Height in pixels        |
+| `read-face-attribute'       | |   | <DATA>   - Data string of raw bits |
+| `read-all-face-attributes'  | |   `----                                |
+| `read-face-and-attribute'   | |  nil - no stipple }                    |
+|_____________________________| |________________________________________|
                                 |                                        |
-                                | :stipple - (a string)                  |
-                                | {bitmap -  :SEE `x-bitmap-file-path'   |
-                                |  ,----                                 |
-                                |  | WIDTH - Width in pixels             |
-                                |  | HEIGHT - Height in pixels           |
-                                |  | DATA - Data string of raw bits.     |
-                                |  `----                                 |
-                                |  nil - no stipple}                     |
-                                |________________________________________|
-                                |                                        |
-                                | :inherit - (string or list)            |
-                                | {face name, or list of face names}     |
-                                |______________________________________73.\n
+                                | :inherit - [<STRING>|<LIST>]           |
+                                |  { face name, or list of face names }  |
+                                |______________________________________73^\n
 :SEE-ALSO `mon-help-faces-basic', `mon-help-font-lock', `mon-help-faces-themes',
 `mon-help-color-chart', `mon-help-custom-keywords', `mon-help-widgets',
-`mon-help-easy-menu', `mon-help-plist-functions', `mon-help-color-chart',
-`mon-help-eieio-defclass', `mon-help-eieio-functions',
+`mon-help-easy-menu', `mon-help-plist-functions', `mon-help-plist-properties'
+`mon-help-color-chart', `mon-help-eieio-defclass', `mon-help-eieio-functions',
 `mon-help-eieio-methods'.\n►►►"
 (interactive "i\nP")
   (if (or insertp intrp)
@@ -6005,7 +6142,7 @@ It has the following format:\n
   "The custom-group `basic-faces' is utilized for inheriting faces.\n
 These are the standard Emacs faces are defined in :FILE faces.el\n
 :NOTE As of 23.1 there is no _formal_ indication that newly defined faces must
-inherit from one of the basic-faces this practice is encouraged.
+inherit from one of the basic-faces this practice is encouraged.\n
 :SEE \(URL `http://lists.gnu.org/archive/html/emacs-devel/2009-08/msg00525.html').\n►►►
 ;; :FACE-BASIC
 \(describe-face 'default\)
@@ -6051,9 +6188,54 @@ inherit from one of the basic-faces this practice is encouraged.
 ;;; :TEST-ME (describe-function 'mon-help-faces-basic)
 
 ;;; ==============================
+;;; :CREATED <Timestamp: #{2010-03-08T15:36:26-05:00Z}#{10101} - by MON KEY>
+(defun mon-help-faces-font-lock (&optional insertp intrp)
+  "List of faces defined specifically for Font Lock mode.\n
+:SEE info node `(elisp)Faces for Font Lock'.\n
+;; :FACE-FONT-LOCK
+\(describe-face 'font-lock-comment-face\)
+\(describe-face 'font-lock-comment-delimiter-face\)
+\(describe-face 'font-lock-doc-face\)
+\(describe-face 'font-lock-string-face\)
+\(describe-face 'font-lock-keyword-face\)
+\(describe-face 'font-lock-builtin-face\)
+\(describe-face 'font-lock-function-name-face\)
+\(describe-face 'font-lock-variable-name-face\)
+\(describe-face 'font-lock-type-face\)
+\(describe-face 'font-lock-constant-face\)
+\(describe-face 'font-lock-preprocessor-face\)
+\(describe-face 'font-lock-negation-char-face\)
+\(describe-face 'font-lock-warning-face\)\n
+;; :FACE-FONT-LOCK-VARIABLES
+`font-lock-builtin-face'
+`font-lock-comment-delimiter-face'
+`font-lock-constant-face'
+`font-lock-doc-face'
+`font-lock-function-name-face'
+`font-lock-keyword-face'
+`font-lock-negation-char-face'
+`font-lock-preprocessor-face'
+`font-lock-reference-face'
+`font-lock-string-face'
+`font-lock-type-face'
+`font-lock-variable-name-face'
+`font-lock-warning-face'\n
+:SEE-ALSO `mon-help-font-lock', `mon-help-font-lock-functions',
+`mon-help-faces', `mon-help-faces-themes', `mon-help-faces-basic'.\n►►►"
+(interactive "i\nP")
+  (if (or insertp intrp)
+      (mon-help-function-spit-doc 'mon-help-faces-font-lock :insertp t)
+    (message "Pass non-nil for optional arg INTRP")))
+;;
+;;; :TEST-ME (mon-help-faces-font-lock )
+;;; :TEST-ME (mon-help-faces-font-lock )
+;;; :TEST-ME (mon-help-faces-font-lock )
+
+;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-02-20T16:01:38-05:00Z}#{10076} - by MON KEY>
 (defun mon-help-font-lock-functions (&optional insertp intrp)
   "List of font-lock and jit-lock related functions.\n
+:SEE info node `(elisp)Font Lock Basics'.\n
 :FONT-LOCK-FUNCTIONS
 `font-lock-add-keywords'
 `font-lock-after-change-function'
@@ -6095,7 +6277,7 @@ inherit from one of the basic-faces this practice is encouraged.
 `font-lock-unfontify-buffer'
 `font-lock-unfontify-region'
 `font-lock-update-removed-keyword-alist'
-`font-lock-value-in-major-mode'
+`font-lock-value-in-major-mode'\n
 ;; :FONT-LOCK-JIT-LOCK-FUNCTIONS
 `jit-lock-after-change'
 `jit-lock-context-fontify'
@@ -6108,7 +6290,7 @@ inherit from one of the basic-faces this practice is encouraged.
 `jit-lock-register'
 `jit-lock-stealth-chunk-start'
 `jit-lock-stealth-fontify'
-`jit-lock-unregister'
+`jit-lock-unregister'\n
 ;; :FONT-LOCK-VARIABLES
 `font-lock-keywords'
 `font-lock-keywords-alist'
@@ -6129,7 +6311,7 @@ inherit from one of the basic-faces this practice is encouraged.
 `font-lock-syntax-table'
 `font-lock-unfontify-buffer-function'
 `font-lock-unfontify-region-function'
-`font-lock-verbose'
+`font-lock-verbose'\n
 ;; :FONT-LOCK-JIT-LOCK-VARIABLES
 `jit-lock-after-change-extend-region-functions'
 `jit-lock-chunk-size'
@@ -6149,7 +6331,7 @@ inherit from one of the basic-faces this practice is encouraged.
 `jit-lock-stealth-repeat-timer'
 `jit-lock-stealth-time'
 `jit-lock-stealth-timer'
-`jit-lock-stealth-verbose'
+`jit-lock-stealth-verbose'\n
 ;; :FONT-LOCK-VARIABLES-NAMING-FACES
 `font-lock-negation-char-face'
 `font-lock-variable-name-face'
@@ -6158,10 +6340,11 @@ inherit from one of the basic-faces this practice is encouraged.
 `font-lock-string-face'
 `font-lock-type-face'
 `font-lock-warning-face'\n
-:SEE-ALSO `mon-help-font-lock' `mon-help-faces', `mon-help-faces-basic',
-`mon-help-faces-themes', `mon-help-custom-keywords', `mon-help-widgets',
-`mon-help-easy-menu', `mon-help-plist-functions', `mon-help-color-chart',
-`mon-help-eieio-defclass', `mon-help-eieio-functions',
+:SEE :FILE font-lock.el :FILE jit-lock.el
+:SEE-ALSO `mon-help-font-lock', `mon-help-faces-font-lock', `mon-help-faces',
+`mon-help-faces-basic', `mon-help-faces-themes', `mon-help-custom-keywords',
+`mon-help-widgets', `mon-help-easy-menu', `mon-help-plist-functions',
+`mon-help-color-chart', `mon-help-eieio-defclass', `mon-help-eieio-functions',
 `mon-help-eieio-methods'.\n►►►"
 (interactive "i\nP")
   (if (or insertp intrp)
@@ -6176,7 +6359,9 @@ inherit from one of the basic-faces this practice is encouraged.
 ;;; ==============================
 ;;; :CREATED <Timestamp: Wednesday June 17, 2009 @ 05:37.52 PM - by MON KEY>
 (defun mon-help-font-lock (&optional insertp intrp)
-  "Each element of `font-lock-keywords' specifies how to find certain
+  "Display `font-lock-keywords' usgage.\n
+:SEE info node `(elsip)Search-based Fontification'.\n
+Each element of `font-lock-keywords' specifies how to find certain
 cases of text, and how to highlight those cases:\n
  ___________________________________________________________________________79.
 |                                                                             |
@@ -6221,9 +6406,9 @@ cases of text, and how to highlight those cases:\n
 |                                                                             |
 | [eval . FORM]                                                               |
 |___________________________________________________________________________79.\n
-:SEE-ALSO `mon-help-font-lock-functions', `mon-help-faces-basic',
-`mon-help-font-lock', `mon-help-faces-themes', `mon-help-naf-mode-faces',
-`mon-help-overlay-functions'.\n►►►"
+:SEE-ALSO `mon-help-font-lock-functions', `mon-help-faces-font-lock',
+`mon-help-faces-basic', `mon-help-font-lock', `mon-help-faces-themes',
+`mon-help-naf-mode-faces', `mon-help-overlay-functions'.\n►►►"
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-font-lock :insertp t)
@@ -6263,39 +6448,25 @@ cases of text, and how to highlight those cases:\n
 `overlay-arrow-position'
 `overlay-arrow-string'
 `overlay-arrow-variab'\n
-;; OVERLAY-PROPERTIES            :SEE info node `(elisp)Special Properties'
-`after-string'
-`before-string'
-`category'           
-`display'             
+;; :OVERLAY-PROPERTIES            :NOTE these are in addition to the 'special' text props:
+`after-string'                    :SEE info node `(elisp)Special Properties'
+`before-string'                   :SEE info node `(elisp)Overlay Properties'
 `evaporate'
-`face'               
-`help-echo'           
-`insert-behind-hooks'
-`insert-in-front-hooks'
-`intangible'
-`invisible'
 `isearch-open-invisible'
 `isearch-open-invisible-temporary'
-`keymap'
-`line-prefix'
-`local-map'
-`modification-hooks' 
-`mouse-face'         
-`priority'           
-`window'             
-`wrap-prefix'\n
+`priority'
+`window'\n
 ;; :OVERLAY-FUNCTIONS-MON-LOCAL
 `mon-help-find-result-for-overlay'
 `mon-help-overlay-for-example'
 `mon-help-overlay-on-region'
 `mon-help-overlay-result'
 `mon-nuke-overlay-buffer'\n
-:SEE :FILE buffer.c textprop.c
+:SEE :FILE buffer.c :FILE textprop.c
 :SEE-ALSO `mon-help-faces', `mon-help-font-lock',
 `mon-help-font-lock-functions', `mon-help-text-property-functions',
-`mon-help-text-property-function-ext', `mon-help-text-property-stickyness',
-`mon-help-plist-functions'.\n►►►"
+`mon-help-text-property-properties', `mon-help-text-property-functions-ext',
+`mon-help-text-property-stickyness', `mon-help-plist-functions'.\n►►►"
 (interactive "i\nP")
   (if (or insrtp intrp)
       (mon-help-function-spit-doc 'mon-help-overlay-functions :insertp t)
@@ -6308,12 +6479,11 @@ cases of text, and how to highlight those cases:\n
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-09-20T13:46:12-04:00Z}#{09387} - by MON>
 (defun mon-help-text-property-functions (&optional insrtp intrp)
-  "List of text-property related functions.\n
-:SEE info node `(elisp)Text Properties'\n
-    ________________________              __________________________
-   |                        |            |                          |
-   | :TEXT-PROPERTY-GETTERS |            | :TEXT-PROPERTY-SEARCHING |
- __|________________________|______    __|__________________________|________80.
+  "List of text-property related functions and variables.\n
+   ________________________               _______________________               
+  |                        |             |                       |              
+  | :TEXT-PROPERTY-GETTERS |             | :TEXT-PROPERTY-SEARCH |              
+ _|________________________|_______    __|_______________________|___________79.
 |                                  |  |                                        |
 | `filter-buffer-substring'        |  | `next-property-change'                 |
 | `buffer-substring-no-properties' |  | `next-single-property-change'          |
@@ -6323,34 +6493,48 @@ cases of text, and how to highlight those cases:\n
 | `get-char-property'              |  | `previous-single-property-change'      |
 | `get-char-property-and-overlay'  |  | `previous-char-property-change'        |
 |__________________________________|  | `previous-single-char-property-change' |
-  ________________________            | `text-properties-at'                   |
- |                        |           | `text-property-any'                    |
- | :TEXT-PROPERTY-SETTERS |           | `text-property-not-all'                |
- |________________________|___        | `describe-text-properties'             |
+    ________________________          | `text-properties-at'                   |
+   |                        |         | `text-property-any'                    |
+   | :TEXT-PROPERTY-SETTERS |         | `text-property-not-all'                |
+ __|________________________|_        | `describe-text-properties'             |
 |                             |       |________________________________________|
-| `propertize'                |                                                 
-| `add-text-properties'       |             _________________________           
-| `put-text-property'         |            |                         |          
-| `set-text-properties'       |            | :TEXT-PROPERTY-SPECIAL  |          
-| `with-silent-modifications' |           _|_________________________|_____     
-|_____________________________|          |                                 |    
-    ___________________________          | category      fontified         |    
-   |                           |         | display       help-echo         |    
-   | :TEXT-PROPERTY-VARIABLES  |         | syntax-table  composition       |    
- __|___________________________|______   | keymap        local-map         |     
-|                                     |  | face font-lock-face mouse-face  |     
-|  `buffer-access-fontified-property' |  | read-only invisible intangible  |     
-|  `buffer-access-fontify-functions'  |  | field     cursor    pointer     |     
-|  `default-text-properties'          |  | line-spacing        line-height |     
-|  `char-property-alias-alist'        |  | wrap-prefix         line-prefix |     
-|  `minibuffer-allow-text-properties' |  | modification-hooks              |     
-|  `text-property-default-nonsticky'  |  | insert-in-front-hooks           |     
-|  `buffer-substring-filters'         |  | insert-behind-hooks             |     
-|_____________________________________|  | point-entered point-left        |     
-                                         |_________________________________|  80.\n\n
-:SEE :FILE buffer.c textprop.c\n
-:SEE-ALSO `mon-help-text-property-stickyness', `mon-help-text-property-function-ext',
-`mon-help-overlay-functions', `mon-help-plist-functions'.\n►►►"
+| `propertize'                |              __________________________         
+| `add-text-properties'       |             |                          |        
+| `put-text-property'         |             | :TEXT-PROPERTY-VARIABLES |        
+| `set-text-properties'       |           __|__________________________|_______ 
+| `with-silent-modifications' |          |                                     |
+|_____________________________|          |  `buffer-access-fontified-property' |
+     _______________________             |  `buffer-access-fontify-functions'  |
+    |                       |            |  `buffer-substring-filters'         |
+    | :TEXT-PROPERTY-FIELDS |            |  `char-property-alias-alist'        |
+ ___|_______________________|__          |  `default-text-properties'          |
+|                              |         |  `inhibit-read-only'                |
+| `constrain-to-field'         |         |  `minibuffer-allow-text-properties' |
+| `delete-field'               |         |  `text-property-default-nonsticky'  |
+| `field-beginning'            |         |  `show-help-function'               |
+| `field-end'                  |         |  `use-hard-newlines'                |
+| `field-string'               |         |_____________________________________|
+| `field-string-no-properties' |             _________________________________  
+| `inhibit-field-text-motion'  |            |                                 | 
+|______________________________|            | :TEXT-PROPERTY-STICKY-VARIABLES | 
+        __________________________        __|_________________________________| 
+       |                          |      |                                     |
+       | :TEXT-PROPERTY-FONT-LOCK |      | `text-property-default-nonsticky'   |
+ ______|__________________________|_     | `buffer-access-fontified-property'  |
+|                                   |    |_____________________________________|
+| `font-lock-append-text-property'  |          _______________________          
+| `font-lock-extra-managed-props'   |         |                       |         
+| `font-lock-fillin-text-property'  |         | :TEXT-PROPERTY-STICKY |         
+| `font-lock-prepend-text-property' |     ____|_______________________|________ 
+|___________________________________|    |                                     |
+                                         | `insert-and-inherit'                |
+                                         | `insert-before-markers-and-inherit' |
+:SEE info node `(elisp)Text Properties'  |___________________________________79^\n
+:SEE :FILE buffer.c :FILE textprop.c\n
+:SEE-ALSO `mon-help-text-property-properties',
+`mon-help-text-property-stickyness', `mon-help-text-property-functions-ext',
+`mon-help-overlay-functions', `mon-help-plist-functions',
+`mon-help-plist-properties', `mon-help-widgets'.\n►►►"
   (interactive "i\nP")
   (if (or insrtp intrp)
       (mon-help-function-spit-doc 'mon-help-text-property-functions :insertp t)
@@ -6361,77 +6545,89 @@ cases of text, and how to highlight those cases:\n
 ;;; :TEST-ME (describe-function 'mon-help-text-property-functions)
 ;;; :TEST-ME (apply 'mon-help-text-property-functions '(t))
 
-;;; ==============================
-;;; :NOTE Emacs lisp and Scheme suffer a similiar affliction which requires
-;;; constant reinvention/reimplementation of common idioms. While the reasons
-;;; for this are slightly different the outcome is the same.
-;;; Emacs' lacks _primitive_ lexical scoping and has no _formal_ spec. 
-;;; Scheme has both of the abobe, but being a lisp 1 can't get em right...
-;;; For example of the later, consider Scheme's treatment of `call/cc' with
-;;; `dynamic-wind' e.g. the `unwind-protect' problem.
-;;; :SEE (URL `http://www.nhplace.com/kent/PFAQ/unwind-protect-vs-continuations-original.html')
-;;; :SEE (URL `http://list.cs.brown.edu/pipermail/plt-scheme/2009-July/034408.html')
-;;; :SEE (URL `http://mumble.net/~campbell/blag.txt')
-;;; For example of the former :SEE `mon-help-text-property-function-ext'
 
 ;;; ==============================
-;;; :TODO Add the third party package functions that also manipulate tp.
-;;; e.g. slime  erc, gnus, w3m, etc. 
-;;; Also, what about provided functions e.g. from :FILE font-lock.el
-;;; :CREATED <Timestamp: #{2010-02-04T13:03:36-05:00Z}#{10054} - by MON KEY>
-(defun mon-help-text-property-function-ext (&optional insertp intrp)
-"Text property related functions that are either not C level builtins or
-provided in third party packages.\n
-:FILE font-lock.el
-`font-lock-prepend-text-property'
-`font-lock-append-text-property'
-`font-lock-fillin-text-property'
-:FILE slime.el
-`slime-property-bounds'
-`slime-propertize-region'
-:FILE gnus/*.el
-`gnus-put-text-property'
-`gnus-put-text-property-excluding-characters-with-faces'
-`gnus-put-text-property-excluding-newlines'
-`gnus-remove-text-with-property'
-`gnus-add-text-properties-when'
-`gnus-remove-text-properties-when'
-`gnus-string-remove-all-properties'
-;; :TEXT-PROPERTY-FUNCTIONS-MON-LOCAL
-`mon-get-all-face-property-change'
-`mon-get-next-face-property-change'
-`mon-get-next-face-property-change-if'
-`mon-get-text-properties-region-to-kill-ring'
-`mon-line-test-content'
-`mon-list-all-properties-in-buffer'
-`mon-nuke-text-properties-buffer'
-`mon-nuke-text-properties-region'
-`mon-remove-single-text-property'
-`mon-remove-text-property'
-`mon-test-props'\n
-:FILE erc/*.el
-:FILE w3m/*.el.\n
-:SEE-ALSO 
-`mon-help-text-property-functions', `mon-help-text-property-stickyness',
-`mon-help-overlay-functions', `mon-help-plist-functions'.\n►►►"
+;;; :CREATED <Timestamp: #{2010-03-10T13:45:45-05:00Z}#{10103} - by MON KEY>
+(defun mon-help-text-property-properties (&optional insertp intrp)
+  "List of text-property properties.\n
+     __________________________       
+    |                          |      
+    | :TEXT-PROPERTIES-SPECIAL |  :SEE info node `(elisp)Special Properties'     
+ ___|__________________________|______________________________________________80. 
+|                                                                               |
+| `keymap' `local-map'                                                          |
+| `syntax-table' `category' `field'                                             |
+| `face' `font-lock-face' `fontified'                                           |
+| `pointer' `mouse-face'                                                        |
+| `insert-in-front-hooks' `insert-behind-hooks' `modification-hooks'            |
+| `isearch-open-invisible' `isearch-open-invisible-temporary'                   |
+| `line-height' `line-spacing'                                                  |
+| `line-prefix' `wrap-prefix'                                                   |
+| `point-entered' `point-left'                                                  |
+| `before-string' `after-string'                                                |
+| `read-only'                            :NOTE On error sigals `text-read-only' |
+| `composition' `intangible' `invisible' :NOTE These and `display' move point.  |
+|            ____________________________________                               |
+|           |                                    |                              |
+|           | :TEXT-PROPERTIES-SPECIAL-HELP-ECHO |                              |
+|  _________|____________________________________|____________________________  |
+| |                                                                           | |
+| | `help-echo'  [<STRING>|<FUNCTION>|<FORM>]                                 | |
+| |             ¦ <FUNCTION> with args <WINDOW>, <OJBECT>, <POSITION>         | |
+| |             ¦ <WINDOW>   <- <WINDOW-NAME>  ;e.g. (selected-window)        | |
+| |             ¦ <OBJECT>   <- [<BUFFER-NAME>|<OVERLAY-SYMBOL>|<STRING>]     | |
+| |             ¦ <POSITION> <- [<BUFFER-POSN>|<OVERLAY-POSN>|<STRING-POSN>]  | |
+| |___________________________________________________________________________| |
+|             :SEE info node `(emacs)Tooltips'                                  |       
+|            __________________________________                                 |
+|           |                                  |                                |
+|           | :TEXT-PROPERTIES-SPECIAL-DISPLAY |                                |
+|  _________|__________________________________|_____                           |
+| |                                                  |                          |
+| | `display'  <STRING>                              |                          |
+| |           ¦ (image . <IMAGE-PROPS>)              |                          |
+| |           ¦ (slice X Y <WIDTH> <HEIGHT>)         |                          |
+| |           ¦ ((margin nil) <STRING>)              |                          |
+| |           ¦ (space-width <FACTOR>)               |                          |
+| |           ¦ (height [(+ N)|(- N)|                |                          |
+| |           ¦           <NUMBER>|<SYMBOL>|<FORM>]) |                          |
+| |           ¦ (raise <FACTOR>                      |                          |
+| |__________________________________________________|                          |
+|      :SEE info node `(elisp)Display Property'                                 |
+|_______________________________________________________________________________|
+   __________________________          __________________________                
+  |                          |        |                          |               
+  | :PLIST-PROPERTIES-FORMAT |        | :PLIST-PROPERTIES-STICKY |               
+ _|__________________________|_      _|__________________________|_              
+|                              |    |                              |             
+|           `hard'             |    |       `front-sticky'         |             
+|      `right-margin'          |    |      `rear-nonsticky'        |             
+|       `left-margin'          |    |______________________________|             
+|      `justification'         |                                                
+|______________________________|                                                
+                                                                             80^
+:SEE-ALSO `mon-help-text-property-functions', `mon-help-text-property-functions-ext',
+`mon-help-overlay-functions', `mon-help-plist-functions',
+`mon-help-text-property-properties'.\n►►►"
 (interactive "i\nP")
   (if (or insertp intrp)
-      (mon-help-function-spit-doc 'mon-help-text-property-function-ext :insertp t)
+      (mon-help-function-spit-doc 'mon-help-text-property-properties :insertp t)
     (message "Pass non-nil for optional arg INTRP")))
 ;;
-;;; :TEST-ME (mon-help-text-property-function-ext )
-;;; :TEST-ME (mon-help-text-property-function-ext )
-;;; :TEST-ME (mon-help-text-property-function-ext )
+;;; :TEST-ME (mon-help-text-property-properties )
+;;; :TEST-ME (mon-help-text-property-properties )
+;;; :TEST-ME (mon-help-text-property-properties )
 
 ;;; ==============================
 ;;; :COURTESY :FILE /emacs/*/src/intervals.c
 ;;; :CREATED <Timestamp: #{2009-08-25T18:33:48-04:00Z}#{09352} - by MON KEY>
 (defun mon-help-text-property-stickyness (&optional insertp intrp)
-  "Any property might be front-sticky on the left, rear-sticky on the left,
+  "List of text property stickyness functions, variables, and their usage.\n
+;; :TEXT-PROPERTY-STICKYNESS-USAGE\n
+Any property might be front-sticky on the left, rear-sticky on the left,
 front-sticky on the right, or rear-sticky on the right; the 16 combinations
 can be arranged in a matrix with rows denoting the left conditions and
-columns denoting the right conditions:\n
-;; :TEXT-PROPERTY-STICKYNESS\n
+columns denoting the right conditions:
       _  __  _
 _     FR FR FR FR
 FR__   0  1  2  3
@@ -6463,8 +6659,8 @@ The optimizable special cases are:
 :NOTE `insert-char's optional arg INHERIT which allows inheriting
 text-properties of adjoining text with sticky properties.\n
 :SEE :FILE buffer.c textprop.c\n
-:SEE-ALSO `mon-help-text-property-functions', `mon-help-overlay-functions',
-`mon-help-plist-functions'.\n►►►"
+:SEE-ALSO `mon-help-text-property-functions', `mon-help-text-property-functions-ext',
+`mon-help-overlay-functions', `mon-help-plist-functions'.\n►►►"
   (interactive "i\nP")
   (if (or insertp intrp)
       (save-excursion
@@ -6475,6 +6671,69 @@ text-properties of adjoining text with sticky properties.\n
 ;;; :TEST-ME (mon-help-text-property-stickyness t)
 ;;; :TEST-ME (describe-function 'mon-help-text-property-stickyness)
 ;;; :TEST-ME (apply 'mon-help-text-property-stickyness '(t))
+
+;;; ==============================
+;;; :NOTE Emacs lisp and Scheme suffer a similiar affliction which requires
+;;; constant reinvention/reimplementation of common idioms. While the reasons
+;;; for this are slightly different the outcome is the same.
+;;; Emacs' lacks _primitive_ lexical scoping and has no _formal_ spec. 
+;;; Scheme has both of the abobe, but being a lisp 1 can't get em right...
+;;; For example of the later, consider Scheme's treatment of `call/cc' with
+;;; `dynamic-wind' e.g. the `unwind-protect' problem.
+;;; :SEE (URL `http://www.nhplace.com/kent/PFAQ/unwind-protect-vs-continuations-original.html')
+;;; :SEE (URL `http://list.cs.brown.edu/pipermail/plt-scheme/2009-July/034408.html')
+;;; :SEE (URL `http://mumble.net/~campbell/blag.txt')
+;;; For example of the former :SEE `mon-help-text-property-functions-ext'
+
+;;; ==============================
+;;; :TODO Add the third party package functions that also manipulate tp.
+;;; e.g. slime  erc, gnus, w3m, etc. 
+;;; Also, what about provided functions e.g. from :FILE font-lock.el
+;;; :CREATED <Timestamp: #{2010-02-04T13:03:36-05:00Z}#{10054} - by MON KEY>
+(defun mon-help-text-property-functions-ext (&optional insertp intrp)
+"Text property related functions that are either not C level builtins or
+provided in third party packages.\n
+;; :TEXT-PROPERTY-FUNCTIONS-FILE.lisp.font-lock
+`font-lock-prepend-text-property'
+`font-lock-append-text-property'
+`font-lock-fillin-text-property'\n
+;; :TEXT-PROPERTY-FUNCTIONS-FILE.lisp.gnus
+`gnus-put-text-property'
+`gnus-put-text-property-excluding-characters-with-faces'
+`gnus-put-text-property-excluding-newlines'
+`gnus-remove-text-with-property'
+`gnus-add-text-properties-when'
+`gnus-remove-text-properties-when'
+`gnus-string-remove-all-properties'\n
+;; :TEXT-PROPERTY-FUNCTIONS-FILE.*.slime
+`slime-property-bounds'
+`slime-propertize-region'\n
+;; :TEXT-PROPERTY-FUNCTIONS-FILE.lisp.erc\n
+;; :TEXT-PROPERTY-FUNCTIONS-FILE.*.w3m\n
+;; :TEXT-PROPERTY-FUNCTIONS-MON-LOCAL
+`mon-get-all-face-property-change'
+`mon-get-next-face-property-change'
+`mon-get-next-face-property-change-if'
+`mon-get-text-properties-region-to-kill-ring'
+`mon-line-test-content'
+`mon-list-all-properties-in-buffer'
+`mon-nuke-text-properties-buffer'
+`mon-nuke-text-properties-region'
+`mon-remove-single-text-property'
+`mon-remove-text-property'
+`mon-test-props'\n
+:SEE-ALSO `mon-help-text-property-functions',
+`mon-help-text-property-stickyness', `mon-help-overlay-functions',
+`mon-help-plist-functions'.\n►►►"
+(interactive "i\nP")
+  (if (or insertp intrp)
+      (mon-help-function-spit-doc 'mon-help-text-property-functions-ext :insertp t)
+    (message "Pass non-nil for optional arg INTRP")))
+;;
+;;; :TEST-ME (mon-help-text-property-functions-ext )
+;;; :TEST-ME (mon-help-text-property-functions-ext t)
+;;; :TEST-ME (describe-function 'mon-help-text-property-functions-ext)
+;;; :TEST-ME (apply 'mon-help-text-property-functions-ext nil '(t))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-09-04T17:54:39-04:00Z}#{09365} - by MON KEY>
@@ -6680,11 +6939,10 @@ text-properties of adjoining text with sticky properties.\n
 ;;; ==============================
 ;;; :CREATED <Timestamp: Wednesday June 17, 2009 @ 05:36.08 PM - by MON KEY>
 (defun mon-help-easy-menu (&optional insertp intrp)
-"Following is a mapping for building a menu with easy-menu's `easy-menu-define'.
-:SEE info node `(elisp)Defining Menus'\n
+"Following is a mapping for building a menu with easy-menu's `easy-menu-define'.\n
     ____________
    |            |                                                              
-   | :EASY-MENU |                                                              
+   | :EASY-MENU |          :SEE info node `(elisp)Defining Menus'               
  __|____________|____________________________________________________________79.
 |                                                                              |
 |                      ,-+ :MENU-ROOT                                          |
@@ -6734,11 +6992,11 @@ text-properties of adjoining text with sticky properties.\n
 (defun mon-help-widgets (&optional insertp intrp)
 "Help table for the widget interface.\n
  __________________________                                                  
-|                          | :SEE info node `(elisp)Documentation Tips'.     
+|                          | :SEE info node `(widget)Introduction'.
 | :WIDGET-TYPE-SYNTAX-OF   |                                                 
 |__________________________|______________________________________________77.
 |                                                                           |
-| NAME ::= (NAME [KEYWORD ARGUMENT]... ARGS)                                |
+| NAME ::= (NAME [KEYWORD ARGUMENT] ... ARGS)                               |
 |            |       |        |          |                                  |
 |      widget-name   |        |          + widget-specific                  |
 |                    |        + prop-val                                    |
@@ -7093,8 +7351,8 @@ cons             \(<CAR-TYPE> <CDR-TYPE>\)\n
 `put-char-code-property'\n
 :SEE-ALSO `mon-help-read-functions', `mon-help-print', 
 `mon-help-key-functions', `mon-help-char-representation',
-`mon-help-diacritics', `mon-help-ASCII-chars', `mon-help-ISO-8859-1-chars',
-`mon-help-cntl->hex->ecma-35', `mon-help-cntl->hex->ecma-48'.\n►►►"
+`mon-help-diacritics', `mon-help-char-ascii', `mon-help-char-iso-8859-1',
+`mon-help-char-ecma-35', `mon-help-char-ecma-48'.\n►►►"
 (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-char-functions :insertp t)
@@ -7154,8 +7412,8 @@ cons             \(<CAR-TYPE> <CDR-TYPE>\)\n
                  ?- ?_ ?. ?! ?~ ?* ?' ?\( ?\)))
  ;=> \"/abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.!~*'()\"\n
 :SEE-ALSO `mon-help-char-functions', `mon-help-key-functions',
-`mon-help-diacritics', `mon-help-ASCII-chars', `mon-help-ISO-8859-1-chars',
-`mon-help-cntl->hex->ecma-35', `mon-help-cntl->hex->ecma-48'.\n►►►"
+`mon-help-diacritics', `mon-help-char-ascii', `mon-help-char-iso-8859-1',
+`mon-help-char-ecma-35', `mon-help-char-ecma-48'.\n►►►"
 (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-char-representation :insertp t)
@@ -7166,8 +7424,9 @@ cons             \(<CAR-TYPE> <CDR-TYPE>\)\n
 ;;; :TEST-ME (describe-function 'mon-help-char-representation)
 
 ;;; ==============================
+;;; :RENAMED `mon-help-ASCII-chars' -> `mon-help-char-ascii'
 ;;; :CREATED <Timestamp: #{2009-09-01T17:34:29-04:00Z}#{09362} - by MON KEY>
-(defun mon-help-ASCII-chars (&optional insertp intrp)
+(defun mon-help-char-ascii (&optional insertp intrp)
   "ASCII Character Tables.\n
     _____________
    |             |                                                      
@@ -7227,23 +7486,26 @@ cons             \(<CAR-TYPE> <CDR-TYPE>\)\n
 |112  p |113  q |114  r |115  s |116  t |117  u |118  v |119  w   |
 |120  x |121  y |122  z |123  { |124  | |125  } |126  ~ |127 DEL  |
 |_______________________________________________________________67.\n
-:SEE-ALSO `mon-help-char-representation', `mon-help-diacritics',
-`mon-help-ISO-8859-1-chars', `mon-help-cntl->hex->ecma-35',
-`mon-help-cntl->hex->ecma-48'.\n►►►"
+:SEE-ALSO `mon-help-char-representation', `mon-help-char-functions',
+`mon-help-read-functions', `mon-help-diacritics', `mon-help-char-iso-8859-1',
+`mon-help-char-ecma-35', `mon-help-char-ecma-48'.\n►►►"
   (interactive "i\nP")
   (if (or insertp intrp)
-      (mon-help-function-spit-doc 'mon-help-ASCII-chars  :insertp t)
+      (mon-help-function-spit-doc 'mon-help-char-ascii  :insertp t)
     (message "Pass non-nil for optional arg INTRP")))
 ;;
-;;; :TEST-ME (mon-help-ASCII-chars)
-;;; :TEST-ME (mon-help-ASCII-chars t)
-;;; :TEST-ME (describe-function 'mon-help-ASCII-chars)
-;;; :TEST-ME (documentation 'mon-help-ASCII-chars)
-;;; :TEST-ME (apply 'mon-help-ASCII-chars '(t))
+(defalias 'mon-help-ascii-chars 'mon-help-char-ascii) 
+;;
+;;; :TEST-ME (mon-help-char-ascii)
+;;; :TEST-ME (mon-help-char-ascii t)
+;;; :TEST-ME (describe-function 'mon-help-char-ascii)
+;;; :TEST-ME (documentation 'mon-help-char-ascii)
+;;; :TEST-ME (apply 'mon-help-char-ascii '(t))
 
 ;;; ==============================
+;;; :RENAMED `mon-help-char-iso-8859-1' -> `mon-help-char-iso-8859-1'
 ;;; :CREATED <Timestamp: #{2009-09-01T17:34:24-04:00Z}#{09362} - by MON KEY>
-(defun mon-help-ISO-8859-1-chars (&optional insertp intrp)
+(defun mon-help-char-iso-8859-1 (&optional insertp intrp)
 "ISO-8859-1 Character Table.\n
                       __________________                                  
                      |                  |                                 
@@ -7285,28 +7547,30 @@ cons             \(<CAR-TYPE> <CDR-TYPE>\)\n
 | 142 S2   158 PM   174 Rg   190 34   206 I>   222 TH   238 i>   254 th  |
 | 143 S3   159 AC   175 'm   191 ?I   207 I:   223 ss   239 i:   255 y:  |
 |______________________________________________________________________73.\n
-:SEE-ALSO `mon-help-char-representation', `mon-help-diacritics',
-`mon-help-ASCII-chars', `mon-help-cntl->hex->ecma-35',
-`mon-help-cntl->hex->ecma-48'.\n►►►"
+:SEE-ALSO `mon-help-char-representation', `mon-help-read-functions',
+`mon-help-char-functions', `mon-help-diacritics', `mon-help-char-ascii',
+`mon-help-char-ecma-35', `mon-help-char-ecma-48'.\n►►►"
   (interactive "i\nP")
   (if (or insertp intrp)
-        (mon-help-function-spit-doc 'mon-help-ISO-8859-1-chars :insertp t)
+        (mon-help-function-spit-doc 'mon-help-char-iso-8859-1 :insertp t)
     (message "Pass non-nil for optional arg INTRP")))
 ;;
-;;; :TEST-ME (mon-help-ISO-8859-1-chars)
-;;; :TEST-ME (mon-help-ISO-8859-1-chars t)
-;;; :TEST-ME (describe-function 'mon-help-ISO-8859-1-chars)
-;;; :TEST-ME (documentation 'mon-help-ISO-8859-1-chars)
-;;; :TEST-ME (describe-function 'mon-help-ISO-8859-1-chars)
-;;; :TEST-ME (apply 'mon-help-ISO-8859-1-chars '(t))
+;;; :TEST-ME (mon-help-char-iso-8859-1)
+;;; :TEST-ME (mon-help-char-iso-8859-1 t)
+;;; :TEST-ME (describe-function 'mon-help-char-iso-8859-1)
+;;; :TEST-ME (documentation 'mon-help-char-iso-8859-1)
+;;; :TEST-ME (describe-function 'mon-help-char-iso-8859-1)
+;;; :TEST-ME (apply 'mon-help-char-iso-8859-1 '(t))
+
 
 ;;; ==============================
+;;; :RENAMED `mon-help-cntl->hex->ecma-48' -> `mon-help-char-ecma-48'
 ;;; :COURTESY Micah Cowan  :HIS teseq.info of GNU Teseq VERSION: 1.0.0
 ;;; :CREATED <Timestamp: 2009-08-13-W33-4T16:30:22-0400Z - by MON KEY>
-(defun mon-help-cntl->hex->ecma-48 (&optional insertp intrp)
+(defun mon-help-char-ecma-48 (&optional insertp intrp)
   "For reference, here's a table of the control characters (plus DEL). It
 is based on the information from Table 1 of ECMA-48 /ISO/IEC 6429 
-\(the control-key representation has been added\).
+\(the control-key representation has been added\).\n
                        _______________                
                       |               |               
                       | :CHAR-ECMA-48 |               
@@ -7333,30 +7597,33 @@ is based on the information from Table 1 of ECMA-48 /ISO/IEC 6429
 | x0F     ^O      SI             x1F     ^_      IS1 |
 | x7F     ^?      DEL                                |
 |__________________________________________________53.\n
-:SEE-ALSO `mon-help-char-representation', `mon-help-diacritics',
-`mon-help-ASCII-chars', `mon-help-ISO-8859-1-chars',
-`mon-help-cntl->hex->ecma-35'.\n►►►"
+:SEE-ALSO `mon-help-char-representation', `mon-help-read-functions',
+`mon-help-char-functions', `mon-help-diacritics', `mon-help-char-ascii',
+`mon-help-char-iso-8859-1', `mon-help-char-ecma-35'.\n►►►"
   (interactive "i\nP")
   (if (or insertp intrp)
-        (mon-help-function-spit-doc 'mon-help-cntl->hex->ecma-48 :insertp t)
+        (mon-help-function-spit-doc 'mon-help-char-ecma-48 :insertp t)
     (message "Pass non-nil for optional arg INTRP")))
 ;;
-;;; :TEST-ME (mon-help-cntl->hex->ecma-48)
-;;; :TEST-ME (mon-help-cntl->hex->ecma-48 t)
-;;; :TEST-ME (describe-function 'mon-help-cntl->hex->ecma-48)
-;;; :TEST-ME (documentation 'mon-help-cntl->hex->ecma-48)
-;;; :TEST-ME (describe-function 'mon-help-cntl->hex->ecma-48)
-;;; :TEST-ME (apply 'mon-help-cntl->hex->ecma-48 '(t))
+(defalias 'mon-help-ecma-48-chars-cntl->hex 'mon-help-char-ecma-48)
+;;
+;;; :TEST-ME (mon-help-char-ecma-48)
+;;; :TEST-ME (mon-help-char-ecma-48 t)
+;;; :TEST-ME (describe-function 'mon-help-char-ecma-48)
+;;; :TEST-ME (documentation 'mon-help-char-ecma-48)
+;;; :TEST-ME (describe-function 'mon-help-char-ecma-48)
+;;; :TEST-ME (apply 'mon-help-char-ecma-48 '(t))
 
 ;;; ==============================
+;;; :RENAMED `mon-help-cntl->hex->ecma-35' -> `mon-help-char-ecma-35' 
 ;;; :COURTESY Micah Cowan :HIS teseq.info of GNU Teseq :VERSION 1.0.0
 ;;; :CREATED <Timestamp: 2009-08-13-W33-4T16:30:22-0400Z - by MON>
-(defun mon-help-cntl->hex->ecma-35 (&optional insertp intrp)
+(defun mon-help-char-ecma-35 (&optional insertp intrp)
   "The ECMA-35/ISO/IEC 2200 standard defines an escape sequence to be a
 sequence of characters beginning with ESC, with a final byte in the
 range 'x30'-'x7E', and any number \(including zero\) of intermediate
 bytes in the range 'x20'-'x2F'.  The following table has been provided
-as a reference for finding which characters match which codes.
+as a reference for finding which characters match which codes.\n
                _______________                
               |               |               
               | :CHAR-ECMA-35 |               
@@ -7382,20 +7649,22 @@ as a reference for finding which characters match which codes.
 | xXE  |   .     >     N     ^     n     ~   |
 | xXF  |   /     ?     O     _     o    DEL  |
 |__________________________________________45.\n
-:SEE-ALSO `mon-help-char-representation', `mon-help-diacritics',
-`mon-help-ASCII-chars', `mon-help-ISO-8859-1-chars',
-`mon-help-cntl->hex->ecma-48'.\n►►►"
+:SEE-ALSO `mon-help-char-representation', `mon-help-char-functions',
+`mon-help-diacritics', `mon-help-char-ascii', `mon-help-char-iso-8859-1',
+`mon-help-char-ecma-48', `mon-help-read-functions'.\n►►►"
   (interactive "i\nP")
   (if (or insertp intrp)
     	(mon-help-function-spit-doc 'stan-help-cntl->hex->ecma-35 :insertp t)
     (message "Pass non-nil for optional arg INTRP")))
 ;;
-;;; :TEST-ME (mon-help-cntl->hex->ecma-35)
-;;; :TEST-ME (mon-help-cntl->hex->ecma-35 t)
-;;; :TEST-ME (describe-function 'mon-help-cntl->hex->ecma-35)
-;;; :TEST-ME (documentation 'mon-help-cntl->hex->ecma-35)
-;;; :TEST-ME (describe-function 'mon-help-cntl->hex->ecma-35)
-;;; :TEST-ME (apply 'mon-help-cntl->hex->ecma-35 '(t))
+(defalias 'mon-help-cntl->hex->ecma-35' 'mon-help-char-ecma-35) 
+;;
+;;; :TEST-ME (mon-help-char-ecma-35)
+;;; :TEST-ME (mon-help-char-ecma-35 t)
+;;; :TEST-ME (describe-function 'mon-help-char-ecma-35)
+;;; :TEST-ME (documentation 'mon-help-char-ecma-35)
+;;; :TEST-ME (describe-function 'mon-help-char-ecma-35)
+;;; :TEST-ME (apply 'mon-help-char-ecma-35 '(t))
 
 ;;; ==============================
 ;;; :NOTE `¦' -> BROKEN BAR (ucs-insert #xa6)
@@ -8186,10 +8455,14 @@ whatis\n►►►"
 :SEE info node `(elisp)Formatting Strings'\n
 :EXAMPLE
   \(let \(\(x 'test\) \(y \"\"\)\)
-     \(format \"This is a %-9s.\\nThis is a %9s.\\nThis is a %s %4s.\" x x x y\)\)
-;; =>This is a test     .
-;;   This is a      test.
-;;   This is a test     .\n►►►"
+     \(format \"This is a %-9s.\\nThis is a %9s.\\nThis is a %s %4s.\" x x x y\)\)\n
+ =>This is a test     .\n   This is a      test.\n   This is a test     .\n
+\(format \"%4c%s%4cbubba2\" 32 'bubba1 32\)\n
+ =>    bubba1    bubba2\n
+:SEE-ALSO `mon-help-read-functions', `mon-help-print',
+`mon-help-char-representation', `format', `mon-string-justify-left',
+`mon-string-fill-to-col', `mon-line-indent-from-to-col',
+`mon-line-strings-pipe-to-col'.\n►►►"
 (interactive "i\nP")
 (if (or insertp intrp)
     (mon-help-function-spit-doc 'mon-help-format-width :insertp t)
@@ -9650,28 +9923,34 @@ M-x `zone' -- display text tricks
 ;;; "I'm hungry. Maybe I'll vomit into my own mouth and eat that..."
 ;;; (food-p self-vomit) => t
 ;;; ==============================
-(let (self-puke)
-    (setq self-puke
-          (concat
-           "Other Emacs reference sheets fit on conveniently sized cards. This one won't.\n"
-           "Instead it tries to tell you everything about doing things in Emacs.\n\n"
-           ;; :WAS (symbol-value '*mon-help-reference-keys*)
-           *mon-help-reference-keys*
-           "\n\n;; :TAGS-MON-LOCAL-FOR-KEY-BINDINGS\n\n"
-           (mon-string-justify-left 
-            (mapconcat #'identity 
-                       (cadr (assoc 'meta-tags-keybindings *mon-help-mon-tags-alist*)) " ")
-            68 2) 
-            "\n\n:NOTE Use with `mon-help-keys-wikify' for rapid EmacsWiki-fication.\n" 
-            "The list above can be kept properly escaped by evaluating:\n"
-           "`mon-help-escape-for-ewiki' and `mon-help-unescape-for-ewiki' respectively.\n\n"
-           ":SEE \(URL `http://www.emacswiki.org/emacs/Reference_Sheet_by_Aaron_Hawley')\n"
-           ":SEE \(URL `http://www.emacswiki.org/emacs/Reference_Sheet_by_Aaron_Hawley_source'\).\n"
-           ":SEE-ALSO `*mon-help-reference-keywords*', `mon-help-keys'.\n►►►"))
+(let ((self-puke *mon-help-reference-keys*))
+  (dolist (i '(("^#:START:REFERENCE-SHEET#$" . "")
+               ("^#:END:REFERENCE-SHEET#$" . "")))
+    (setq self-puke (replace-regexp-in-string (car i) (cdr i) self-puke)))
+  (setq self-puke
+        (concat
+         "*Other Emacs reference sheets fit on conveniently sized cards. This one won't.\n"
+         "Instead it tries to tell you everything about doing things in Emacs.\n"
+         ;; :WAS (symbol-value '*mon-help-reference-keys*)
+         self-puke
+         ;; :WAS *mon-help-reference-keys*
+         "\n;; :TAGS-MON-LOCAL-FOR-KEY-BINDINGS\n\n"
+         (mon-string-justify-left 
+          (mapconcat #'identity 
+                     (cadr (assoc 'meta-tags-keybindings *mon-help-mon-tags-alist*)) " ")
+          68 2) 
+         "\n\n:NOTE Use with `mon-help-keys-wikify' for rapid EmacsWiki-fication.\n" 
+         "The list above can be kept properly escaped by evaluating:\n"
+         "`mon-help-escape-for-ewiki' and `mon-help-unescape-for-ewiki' respectively.\n\n"
+         ":SEE \(URL `http://www.emacswiki.org/emacs/Reference_Sheet_by_Aaron_Hawley')\n"
+         ":SEE \(URL `http://www.emacswiki.org/emacs/Reference_Sheet_by_Aaron_Hawley_source'\).\n\n"
+         ":SEE-ALSO `mon-help-keys', `mon-help-key-functions', `*mon-help-reference-keys*',\n"
+         "`*mon-help-reference-keywords*'.\n►►►"))
     (put '*mon-help-reference-keys* 'variable-documentation self-puke))
 ;;
 ;;; :TEST-ME (describe-variable '*mon-help-reference-keys*)
 
+;;; *mon-help-reference-keys*
 ;;; ==============================
 ;;; Function documents itself by snarfing from the variable-documentation
 ;;; property value of `*mon-help-reference-keys*' and putting that
@@ -9683,9 +9962,14 @@ M-x `zone' -- display text tricks
       (mon-help-function-spit-doc 'mon-help-keys :insertp t)
     (message "Pass non-nil for optional arg INTRP")))
 ;;
-(put 'mon-help-keys 'function-documentation
-     ;; :WAS (concat "" (plist-get (symbol-plist '*mon-help-reference-keys*) 'variable-documentation)))
-     (plist-get (symbol-plist '*mon-help-reference-keys*) 'variable-documentation))
+(let ((mhk-put 
+       (plist-get (symbol-plist '*mon-help-reference-keys*) 'variable-documentation)))
+  ;; Knock of the leading var `*'.
+  (setq mhk-put (substring mhk-put 1))
+  (setq mhk-put (replace-regexp-in-string " `mon-help-keys',?" "" mhk-put))
+  (put 'mon-help-keys 'function-documentation
+       ;; :WAS (concat "" (plist-get (symbol-plist '*mon-help-reference-keys*) 'variable-documentation)))
+       mhk-put))
 ;;
 ;;; :TEST-ME (mon-help-keys t)
 ;;; (fmakunbound 'mon-help-keys)
@@ -9769,7 +10053,7 @@ HEADING-TITLE a string used for the title of the return heading.\n
                                  (concat "* " anchr-l))
                              (mapcar 'caddr (cadr wk-lst))
                              "\n")))
-    (setq key-list `(,(concat hdng key-lst)
+    (setq key-lst `(,(concat hdng key-lst)
                       ,(car wk-lst)
                       ,(cadr wk-lst)))))
 
@@ -10008,16 +10292,16 @@ without the surrounding quotes.\n
 ;;; :REQUIRES `mon-check-feature-for-loadtime' <- mon-utils.el
 ;;; :CREATED <Timestamp: #{2010-02-24T14:22:02-05:00Z}#{10083} - by MON KEY>
 (defun mon-help-utils-loadtime ()
-"Loadtime function to pull in additional libraries after mon-doc-help-utils.\n
+  "Loadtime function to pull in additional libraries after mon-doc-help-utils.\n
 Following libraries pulled in by a require statement if present in load-path:\n
  mon-doc-help-pacman mon-doc-help-proprietary\n
 SEE-ALSO `mon-bind-nefs-photos-at-loadtime', `mon-bind-cifs-vars-at-loadtime',
 `mon-bind-doc-help-proprietery-vars-at-loadtime',
 `mon-bind-iptables-vars-at-loadtime', `mon-set-register-tags-loadtime',
 `mon-CL-cln-colon-swap'.\n►►►"
- (mon-check-feature-for-loadtime 'mon-doc-help-pacman) 
- ;; Load doc functions which can't possibly be GPL/GFDL e.g MS-C0RP API etc.
- (mon-check-feature-for-loadtime 'mon-doc-help-proprietary))
+  (mon-check-feature-for-loadtime 'mon-doc-help-pacman) 
+  ;; Load doc functions which can't possibly be GPL/GFDL e.g MS-C0RP API etc.
+  (mon-check-feature-for-loadtime 'mon-doc-help-proprietary))
 
 ;;; ==============================
 (provide 'mon-doc-help-utils)

@@ -1,122 +1,190 @@
-;;; mon-default-start-loads.el --- 
+;;; mon-default-start-loads.el --- fncns for initializing MON Emacs environment
 ;; -*- mode: EMACS-LISP; no-byte-compile: t; -*-
+
 ;;; ================================================================
-;;; DESCRIPTION:
-;;; Provides functions required when initializing the Emacs startup 
-;;; Environment. Makes numerous condtional tests on current user 
-;;; `IS-BUG-P', `IS-MON-P-GNU', `IS-MON-P-W32'. Accordingly, makes the initial
-;;; `require' calls for (among others) the following packages: 
-;;; mon-utils.el, mon-w32-load.el, mon-GNU-load.el, color-theme.el, naf-mode.el,
-;;; dired-details.el, mon-doremi.el, google-define.el, uniq.el, regexpl.el,
-;;; register-list.el, color-occur.el, boxquote.el, dvc-autoloads.el,
-;;; traverselisp.el, show-point-mode.el, apache-mode.el, mon-keybindings.el,
-;;;
-;;; FUNCTIONS:►►►
-;;; `bld-path-for-load-path', `mon-switch-bookmark-file', `mon-conkeror',
-;;; `mon-firefox',`mon-terminal', `mon-cmd', `mon-toggle-show-point-mode'
-;;; `mon-update-tags-tables', `mon-buffer-local-comment-start'
-;;; FUNCTIONS:◄◄◄
-;;; 
-;;; MACROS:
-;;;
-;;; CONSTANTS:
-;;;
-;;; VARIABLES:
-;;; `*mon-tags-table-list*'
-;;;
-;;; ADVISED:
-;;; `find-function-search-for-symbol' , `find-variable-noselect' 
-;;;
-;;; ALIASED/ADIVISED/SUBST'D:
-;;;
-;;; DEPRECATED:
-;;;
-;;; RENAMED:
-;;; `mon-actvt-show-point-mode' -> `mon-toggle-show-point-mode'
-;;;
-;;; MOVED:
-;;; `mon-cmd'         -> mon-utils.el
-;;; `mon-terminal'    -> mon-utils.el
-;;;
-;;; REQUIRES:
-;;;
-;;; TODO:
-;;;
-;;; NOTES:
-;;; == defavice for *Help* ==
-;;; :SEE (URL `http://www.emacswiki.org/emacs-en/OpenQuestions#toc24')
-;;; From *Help* buffer how to automatically examine *.el source in view-mode?
-;;; C-h f view-mode
-;;; With point over 'view.el' of Help buffer @ line 1
-;;; M-x describe-text-properties
-;;; :RETURNS
-;;; "Here is a 'help-function-def' button labeled `view.el'. There are text
-;;; properties here: button (t) category help-function-def-button help-args
-;;; (view-mode "../emacs/lisp/view.el")"
-;;; Most of the time, when I go to examine the source from Help I want to do so
-;;; without having to worry about mucking it up accidentally esp. when the source is
-;;; beneath "../emacs/lisp/*.el". In these situations I almost alwasy want to read
-;;; the source not edit it. View-mode is my prefered way of examining source when I
-;;; want only to read it as it allows me to page in a manner congruent with most
-;;; GNU/nix environments/vi/less/more etc. Is it possible to hook into the help button
-;;; actions to toggle view-mode when opening for an *.el file from Help? AFAICT Help
-;;; is already leveraging view-mode in a non extensible manner. How does one get
-;;; Emacs to jump over its own head?
-;;;
-;;; We used to add `.dbc'  extensions to `auto-mode-alist' with `longlines-mode'.
-;;; However, as '.dbc' extension are used for any and _all_ notes/data re: DBC
-;;; related material this was too broad a setting, and screwed up programmatic 
-;;; creation of files with '.dbc' extension. 
-;;;
-;;; SNIPPETS:
-;;;
-;;; THIRD PARTY CODE:
-;;;
-;;; AUTHOR: MON KEY
-;;; MAINTAINER: MON KEY
-;;;
-;;; PUBLIC-LINK: (URL `http://www.emacswiki.org/emacs/mon-defaul-start-loads.el')
-;;; FIRST-PUBLISHED: <Timestamp: #{2009-09-23T12:18:55-04:00Z}#{09393} - by MON>
-;;;
-;;; FILE-CREATED:
-;;; <Timestamp: Thursday January 15, 2009 @ 02:01.42 PM - by MON>
-;;; HEADER-ADDED: <Timestamp: #{2009-08-17T13:08:30-04:00Z}#{09341} - by MON>
+;; Copyright © 2009, 2010 MON KEY. All rights reserved.
 ;;; ================================================================
-;;; This file is not part of GNU Emacs.
-;;;
-;;; This program is free software; you can redistribute it and/or
-;;; modify it under the terms of the GNU General Public License as
-;;; published by the Free Software Foundation; either version 3, or
-;;; (at your option) any later version.
-;;;
-;;; This program is distributed in the hope that it will be useful,
-;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-;;; General Public License for more details.
-;;;
-;;; You should have received a copy of the GNU General Public License
-;;; along with this program; see the file COPYING.  If not, write to
-;;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
-;;; Floor, Boston, MA 02110-1301, USA.
-;;; ================================================================
-;;; Permission is granted to copy, distribute and/or modify this
-;;; document under the terms of the GNU Free Documentation License,
-;;; Version 1.3 or any later version published by the Free Software
-;;; Foundation; with no Invariant Sections, no Front-Cover Texts,
-;;; and no Back-Cover Texts. A copy of the license is included in
-;;; the section entitled "GNU Free Documentation License".
-;;; A copy of the license is also available from the Free Software
-;;; Foundation Web site at:
-;;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
+
+;; FILENAME: mon-default-start-loads.el
+;; AUTHOR: MON KEY
+;; MAINTAINER: MON KEY
+;; CREATED: 2009-01-15T14:01:42-04:00Z
+;; VERSION: 1.0.0
+;; COMPATIBILITY: Emacs23.*
+;; KEYWORDS: local, environment, installation, emacs
+
+;; ================================================================
+
+;;; COMMENTARY: 
+
+;; =================================================================
+;; DESCRIPTION:
+;; Provides functions required when initializing the Emacs startup 
+;; Environment. Makes numerous condtional tests on current user 
+;; `IS-BUG-P', `IS-MON-P-GNU', `IS-MON-P-W32'. Accordingly, makes the initial
+;; `require' calls for (among others) the following packages: 
+;; mon-utils.el, mon-w32-load.el, mon-GNU-load.el, color-theme.el, naf-mode.el,
+;; dired-details.el, mon-doremi.el, google-define.el, uniq.el, regexpl.el,
+;; register-list.el, color-occur.el, boxquote.el, dvc-autoloads.el,
+;; traverselisp.el, show-point-mode.el, apache-mode.el, mon-keybindings.el,
+;;
+;; FUNCTIONS:►►►
+;; `mon-build-path-for-load-path', `mon-set-bookmark-file', `mon-conkeror',
+;; `mon-firefox',`mon-terminal', `mon-cmd', `mon-toggle-show-point-mode'
+;; `mon-update-tags-tables', `mon-buffer-local-comment-start'
+;; FUNCTIONS:◄◄◄
+;; 
+;; MACROS:
+;;
+;; CONSTANTS:
+;;
+;; VARIABLES:
+;; `*mon-tags-table-list*'
+;;
+;; ADVISED:
+;; `find-function-search-for-symbol' , `find-variable-noselect' 
+;;
+;; ALIASED/ADIVISED/SUBST'D:
+;;
+;; DEPRECATED:
+;;
+;; RENAMED:
+;; `mon-actvt-show-point-mode' -> `mon-toggle-show-point-mode'
+;; `bld-path-for-load-path'    -> `mon-build-path-for-load-path'
+;; `mon-switch-bookmark-file'  -> `mon-set-bookmark-file'
+;;
+;; MOVED:
+;; `mon-cmd'         -> mon-utils.el
+;; `mon-terminal'    -> mon-utils.el
+;;
+;; REQUIRES:
+;; mon-color-occur.el 
+;; :NOTE mon-color-occur.el is a patched version of Matsushita Akihisa color-cccur.el
+;; :SEE (URL `http://www.bookshelf.jp/elc/color-occur.el')
+;;
+;; TODO:
+;; These should be hardwired to a more specific local path that we can keep our eye on.
+;; `temporary-file-directory'
+;; `small-temporary-file-directory'
+;; `thumbs-temp-dir'
+;; `thumbs-thumbsdir-auto-clean' 
+;; `thumbs-thumbsdir-max-size' 
+;; `thumbs-cleanup-thumbsdir'
+;;
+;; NOTES:
+;; == defavice for *Help* ==
+;; :SEE (URL `http://www.emacswiki.org/emacs-en/OpenQuestions#toc24')
+;; From *Help* buffer how to automatically examine *.el source in view-mode?
+;; C-h f view-mode
+;; With point over 'view.el' of Help buffer @ line 1
+;; M-x describe-text-properties
+;; :RETURNS
+;; "Here is a 'help-function-def' button labeled `view.el'. There are text
+;; properties here: button (t) category help-function-def-button help-args
+;; (view-mode "../emacs/lisp/view.el")"
+;; Most of the time, when I go to examine the source from Help I want to do so
+;; without having to worry about mucking it up accidentally esp. when the source is
+;; beneath "../emacs/lisp/*.el". In these situations I almost alwasy want to read
+;; the source not edit it. View-mode is my prefered way of examining source when I
+;; want only to read it as it allows me to page in a manner congruent with most
+;; GNU/nix environments/vi/less/more etc. Is it possible to hook into the help button
+;; actions to toggle view-mode when opening for an *.el file from Help? AFAICT Help
+;; is already leveraging view-mode in a non extensible manner. How does one get
+;; Emacs to jump over its own head?
+;;
+;; We used to add `.dbc'  extensions to `auto-mode-alist' with `longlines-mode'.
+;; However, as '.dbc' extension are used for any and _all_ notes/data re: DBC
+;; related material this was too broad a setting, and screwed up programmatic 
+;; creation of files with '.dbc' extension. 
+;;
+;; SNIPPETS:
+;;
+;; THIRD PARTY CODE:
+;;
+;; URL: http://www.emacswiki.org/emacs/mon-default-start-loads.el
+;; FIRST-PUBLISHED: <Timestamp: #{2009-09-23T12:18:55-04:00Z}#{09393} - by MON>
+;;
+;; EMACSWIKI:
+;;
+;; HEADER-ADDED: <Timestamp: #{2009-08-17T13:08:30-04:00Z}#{09341} - by MON>
+;;
+;; FILE-CREATED:
+;; <Timestamp: #{2009-01-15T14:01:42-04:00Z} - by MON>
+;;
+;; =================================================================
+
+;;; LICENSE:
+
+;; =================================================================
+;; This file is not part of GNU Emacs.
+
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 3, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program; see the file COPYING.  If not, write to
+;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
+;; Floor, Boston, MA 02110-1301, USA.
+;; =================================================================
+;; Permission is granted to copy, distribute and/or modify this
+;; document under the terms of the GNU Free Documentation License,
+;; Version 1.3 or any later version published by the Free Software
+;; Foundation; with no Invariant Sections, no Front-Cover Texts,
+;; and no Back-Cover Texts. A copy of the license is included in
+;; the section entitled ``GNU Free Documentation License''.
+;; 
+;; A copy of the license is also available from the Free Software
+;; Foundation Web site at:
+;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
+;; Copyright © 2009, 2010 MON KEY 
+;;; ==============================
+
 ;;; CODE:
+
+(eval-when-compile (require 'cl))
+
+;;; ==============================
+;; :INFOPATH-SETUP
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-03-22T17:31:14-04:00Z}#{10121} - by MON KEY>
+(defun mon-set-infopath ()
+  "Put current running Emacs' info directory on `Info-directory-list'.\n
+This is mostly a W32 related fncn. Currenlty Does nothing on GNU systems.\n
+:NOTE to reset info :SEE info node `(emacs)General Variables'.\n
+:SEE-ALSO `w32-init-info', `mon-get-env-vars-emacs', `Info-directory-list',
+`Info-default-directory-list', `Info-dir-contents'.\n►►►"
+  (when IS-MON-P-W32
+    (let ((this-emacs-info-path
+           (concat (file-name-directory (getenv "EMACSPATH")) "info")))
+      (when (file-directory-p this-emacs-info-path)
+        (add-to-list 'Info-directory-list 
+                     (convert-standard-filename this-emacs-info-path)))
+      (setq Info-dir-contents nil))))
+      
+;;
+;;; :TEST-ME Info-directory-list
+;;; :TEST-ME (member (convert-standard-filename (getenv "INFOPATH")) Info-directory-list)
+;;; :TEST-ME (member (convert-standard-filename 
+;;;             (concat (file-name-directory (getenv "EMACSPATH")) "info"))
+;;;           Info-directory-list)
 
 ;;; ==============================
 ;; :LOAD-PATH-SETUP
-;; 
-(defun bld-path-for-load-path (expand-path suffix-path) 
-  "Concatenate EXPAND-PATH and SUFFIX-PATH.\n
-:SEE-ALSO `mon-build-path'\n►►►"
+
+;;; ==============================
+;;; :RENAMED `bld-path-for-load-path' -> `mon-build-path-for-load-path'
+(defun mon-build-path-for-load-path (expand-path suffix-path) 
+  "Return a path for `load-path' by concat'ing EXPAND-PATH and SUFFIX-PATH.\n
+:SEE-ALSO `mon-build-path'.\n►►►"
   (concat (file-name-as-directory expand-path) suffix-path))
 
 (add-to-list 'load-path  mon-emacs-root)
@@ -124,12 +192,11 @@
 (add-to-list 'load-path  mon-user-emacsd)
 (add-to-list 'load-path  mon-naf-mode-root)
 (add-to-list 'load-path  mon-ebay-tmplt-mode-root)
-;;
-;;; :NOTE This may cause problems when (not IS-BUG-P-REMOTE).
-;;; (cond (IS-MON-P-W32  
-;;;       (setq user-emacs-directory (file-name-as-directory mon-user-emacsd))))
 
-(setq user-emacs-directory (file-name-as-directory mon-user-emacsd))
+
+;;; :NOTE This may cause problems when (not IS-BUG-P-REMOTE).
+(when (and (bound-and-true-p IS-MON-SYSTEM-P) IS-MON-SYSTEM-P)
+  (setq user-emacs-directory (file-name-as-directory mon-user-emacsd)))
 
 ;;; ==============================
 ;; :FONT-LOCK-FACES
@@ -169,16 +236,19 @@
 ;;; (add-to-list 'ido-ignore-buffers "\\*Completions\\*")
 
 ;;; ==============================
+;;; :RENAMED `mon-switch-bookmark-file' -> `mon-set-bookmark-file'
 ;;; :COURTESY stefan@xsteve.at :VERSION 23.01.2001 :HIS xsteve-functions.el
 ;;; :MODIFICATIONS <Timestamp: 2009-08-09-W32-7T03:31:36-0400Z - by MON KEY>
-(defun mon-switch-bookmark-file (file)
+(defun mon-set-bookmark-file (file)
   "Relocate where Emacs stores the bookmark file.\n
 :NOTE The bookmark file typically has a .bmk extension.\n
-:SEE-ALSO `bookmark-load', `bookmark-default-file'.\n►►►"
+:SEE info node `(emacs)Bookmarks'\n
+:SEE-ALSO `bookmark-load', `bookmark-default-file', `bookmark-all-names'
+`bookmark-save-flag', `bookmark-relocate'.\n►►►"
   (bookmark-load file t)
   (setq bookmark-default-file file))
 ;;
-(mon-switch-bookmark-file
+(mon-set-bookmark-file
  (concat (file-name-as-directory mon-user-emacsd) ".emacs.bmk"))
 
 ;;; ==============================
@@ -199,48 +269,67 @@
 ;; CLASS NAME   [POSITION] [ARGLIST]             FLAG
   (after mon-adv1 last     (symbol type library) activate)
   (with-current-buffer (car ad-return-value)
-    (view-mode 1)))
+    (unless view-mode (view-mode 1))))
 ;;
 (defadvice find-variable-noselect 
 ;; CLASS NAME   [POSITION] [ARGLIST]             FLAG
   (after mon-adv2 last (variable &optional file) activate)
   (with-current-buffer (car ad-return-value)
-    (view-mode 1)))
+    (unless view-mode (view-mode 1))))
 
 ;;; ==============================
 ;; :WOMAN-PATH
+
+;;; :TODO Consider adding `convert-standard-filename' here for W32 path frobbing.
 ;;; :NOTE New cygwin/mingw/emacs installs and twiddling keep manpath wacky on w32.
 ;;; :MODIFICATIONS <Timestamp: #{2009-10-26T19:12:52-04:00Z}#{09441} - by MON>
 ;;; :MODIFICATIONS <Timestamp: #{2009-08-14T12:35:21-04:00Z}#{09335} - by MON>
+
+;; C:\msys\share\man
+(require 'woman)
 (when IS-MON-P-W32
-  ;;: WAS (file-exists-p (concat (getenv "HG_REPOS") "\\cross-site-man")))
-  (require 'woman)
-  (let* ((csm (concat (nth 5 (assoc 1 *mon-emacsd*)) "/cross-site-man"))
-         (wmn-p (mapcar 
-                 #'(lambda (x) 
-                     ;; :WAS (replace-regexp-in-string  "\\\\" "/" x))
-                     (when (file-exists-p x) (file-truename x)))
-                 `(,csm
-                   ,(concat csm "/")
-                   ;; :GNUWIN32
-                   ,(concat (getenv "HOME")"\\bin\\GNU\\man")
-                   ;;; ,(file-truename 
-                   ;;;   (concat 
-                   ;;;    (format "" (assoc 'the-emacs-vars
-                   ;;,(concat (getenv "HOME") "\\Emacs\\EmacsW32\\gnuwin32\\man")
-                   ;; :CYGWIN
-                   "c:/usr/share/man"
-                   "c:/usr/local/share/man"
-                   "c:/usr/X11R6/share/man" 
-                   "c:/usr/ssl/man"
-                   "c:/usr/local/man"))))
-    (mapc #'(lambda (addp) (unless (not addp) (add-to-list 'woman-manpath addp))) wmn-p)))
+  (let ((wmn-p 
+         (mapcar #'(lambda (this-csf) 
+                     (let ((this-csf-file
+                           (convert-standard-filename (file-truename this-csf))))
+                       ;;(unless (null this-csf-file)
+                       (when (file-exists-p this-csf-file) this-csf-file)))
+                 `( ;; :CROSS-SITE-MAN
+                   ,(concat (nth 5 (assoc 1 *mon-emacsd*)) "/cross-site-man")
+                    
+                    ;; :GNUWIN32
+                    ,(when (getenv "SP_GNUW32")
+                      (concat (file-name-directory (getenv "SP_GNUW32")) "man"))
+
+                    ;; :MINGW
+                    ,(when (getenv "MINGW")
+                           (concat (file-name-directory (getenv "MINGW")) "share/man"))
+
+                    ;; :MSYS
+                    ,(when (getenv "MSYS") (concat (getenv "MSYS") "/share/man"))
+                 
+                    ;; :CYGWIN
+                    ,@(when (file-exists-p (getenv "SP_CYGWN"))
+                           (let ((cygman-root (file-name-directory (getenv"SP_CYGWN")))
+                                 (cygmans
+                                  '("usr/share/man" "usr/local/share/man" "usr/X11R6/share/man"
+                                    "usr/ssl/man" "usr/local/man"))
+                                 cygman-csf)
+                             (dolist (csf cygmans (setq cygman-csf (nreverse cygman-csf)))
+                               (push (concat cygman-root csf) cygman-csf))))))))
+    (mapc #'(lambda (addp) 
+              (unless (not addp) (add-to-list 'woman-manpath addp))) wmn-p)))
 ;;
 ;;; :TEST-ME woman-manpath
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-10-21T20:01:43-04:00Z}#{09434} - by MON>
-(when IS-W32-P (setq thumbs-conversion-program  (executable-find "imconvert.exe")))
+(when IS-W32-P
+  (setq thumbs-conversion-program
+        (if (getenv "SP_IMGCK")
+            (let ((xp-convert (car (directory-files (getenv "SP_IMGCK") t "imconvert"))))
+              (if xp-convert xp-convert (executable-find "imconvert")))
+            (executable-find "imconvert"))))
 
 ;;; ==============================
 ;; :CUSTOM-FILE
@@ -254,11 +343,22 @@
 (setq custom-file
       (let ((mon-user-emacsd (file-name-as-directory mon-user-emacsd)))
 	(cond 
-	 (IS-MON-P-W32 (concat mon-user-emacsd (nth 2(assoc 1 *mon-emacsd*))))
-	 (IS-BUG-P (concat mon-user-emacsd (nth 2(assoc 3 *mon-emacsd*))))
-	 (IS-MON-P-GNU (concat mon-user-emacsd (nth 2(assoc 2 *mon-emacsd*)))))))
+	 (IS-MON-P-W32 (concat mon-user-emacsd (nth 2 (assoc 1 *mon-emacsd*))))
+	 (IS-BUG-P (concat mon-user-emacsd (nth 2 (assoc 3 *mon-emacsd*))))
+	 (IS-MON-P-GNU (concat mon-user-emacsd (nth 2 (assoc 2 *mon-emacsd*)))))))
 ;; (load custom-file t) ;no-error
 (load custom-file)
+
+;;; ==============================
+;; :TEMP-FILES
+
+;;; :TODO These should be hardwired to a more specific local path that we can keep our eye on.
+;;; `temporary-file-directory'
+;;; `small-temporary-file-directory'
+;;; `thumbs-temp-dir'
+;;; `thumbs-thumbsdir-auto-clean' 
+;;; `thumbs-thumbsdir-max-size' 
+;;; `thumbs-cleanup-thumbsdir'
 
 ;;; ==============================
 ;;; :NOTE Make sure that calling functions tack on the ``file://'' prefix.
@@ -284,7 +384,6 @@
 	(concat common-lisp-hyperspec-root "Data/Map_IssX.txt")) ;; "Issue-Cross-Refs.text"))
   (setq common-lisp-hyperspec-symbol-table 
 	(concat common-lisp-hyperspec-root "Data/Map_Sym.txt"))) ;; "Symbol-Table.text"))))
-
 
 ;;; ==============================
 (cond ((or IS-MON-P-W32 IS-BUG-P) (require 'mon-w32-load))
@@ -384,15 +483,16 @@ Look for TAGS files in directories specified by return values of:
                    (set (make-local-variable 'eval-expression-print-length) nil))))))
 
 ;;; ==============================
-;; :PROCED
+;;; :PROCED :SEE also `proced-auto-update-flag', `proced-auto-update-interval'
 ;;; :NOTE Load `proced' package at startup and have it update automatically.
 ;;; :TODO Should be loaded in a dedicated frame and marked not to kill.
 ;;; :CREATED <Timestamp: #{2009-12-18T00:53:55-05:00Z}#{09515} - by MON>
 (progn
   (require 'proced)    
   (when proced-available
-    (proced)
-    (proced-toggle-auto-update 1)))
+    ;; :NOTE `proced-toggle-auto-update' related fncns which clobber `match-data'.
+    ;; (proced-toggle-auto-update 1)))
+    (proced)))
 
 ;; Lets see the tty's when on a GNU/Linux box.
 (when IS-MON-P-GNU
@@ -424,18 +524,21 @@ Look for TAGS files in directories specified by return values of:
 ;;;       from mon-*.el packages or which need to be in the environment before
 ;;;       loading them.  Also, useful when we are testing a new feature and not
 ;;;       sure if we want to use it for the long haul.
-(require 'google-define)
 (require 'uniq)
 (require 'regexpl)
 (require 'register-list)
-(require 'color-occur)
 (require 'boxquote)
 (require 'dired-efap)
 (require 'align-let)
+(require 'mon-color-occur)
+;;; :WAS (require 'color-occur)
+;;; :NOTE mon-color-occur.el is a patched version of Matsushita Akihisa color-cccur.el
+;;; :SEE (URL `http://www.bookshelf.jp/elc/color-occur.el')
 
 ;;; ==============================
 ;;; :NOTE No longer loading, but not deleting.
 ;;;
+;;; (require 'google-define)  ;; Now inlined with google-define-redux.el 
 ;;; (require 'sregex)
 ;;; (require 'moccur-edit)
 ;;; (require 'color-moccur)
@@ -473,20 +576,26 @@ Look for TAGS files in directories specified by return values of:
 
 ;;; ==============================
 ;; :DVC
-(add-to-list 'load-path (bld-path-for-load-path mon-site-lisp-root "dvc/lisp"))
+(add-to-list 'load-path (mon-build-path-for-load-path mon-site-lisp-root "dvc/lisp"))
 (if (featurep 'dvc-core)
     (dvc-reload)
     (require 'dvc-autoloads))
 
-;;; :NOTE When win32p dvc needs a sh executable.
+;;; :NOTE (dvc-current-active-dvc)
+;;; :MODIFICATIONS <Timestamp: #{2010-03-20T17:24:42-04:00Z}#{10116} - by MON KEY>
 (when (or IS-MON-P-W32 IS-BUG-P) 
-  (setq dvc-sh-executable (cadr (assoc 'the-sh-pth *mon-misc-path-alist*))))
-
-;;; (dvc-current-active-dvc)
+  (setq dvc-sh-executable 
+        ;; :WAS (cadr (assoc 'the-sh-pth *mon-misc-path-alist*))))
+        (cond (IS-BUG-P
+               ;; (plist-get (cadr (assoc 'the-sh-pth *mon-misc-path-alist*)) :cygwin))
+               (cadr (assoc 'cygwin (cadr (assoc 'the-sh-pth *mon-misc-path-alist*)))))
+              (IS-MON-P-W32
+               ;;(plist-get (cadr (assoc 'the-sh-pth *mon-misc-path-alist*)) :msys)))))
+               (cadr (assoc 'msys (cadr (assoc 'the-sh-pth *mon-misc-path-alist*))))))))
 
 ;;; :NOTE :SEE :FILE bzr-core.el :VARIABLE `bzr-executable'
 ;;; :CREATED <Timestamp: #{2010-01-01T11:58:49-05:00Z}#{10535} - by MON KEY>
-(if (eq system-type 'windows-nt)
+(if IS-W32-P ;(eq system-type 'windows-nt)
     (if (executable-find "bzr")
         (setq bzr-executable (executable-find "bzr"))
         (setq bzr-executable "bzr")))
@@ -505,7 +614,7 @@ Look for TAGS files in directories specified by return values of:
 (require 'show-point-mode)
 
 ;;; ==============================
-;;; :NOTE Heep this here b/c it is needed when debugging.
+;;; :NOTE Keep this here b/c it is needed when debugging.
 ;;; (add-hook 'emacs-lisp-mode-hook (function (lambda () (mon-toggle-show-point-mode)))
 ;;; :RENAMED `mon-actvt-show-point-mode' -> `mon-toggle-show-point-mode' 
 (defun mon-toggle-show-point-mode ()
@@ -528,7 +637,7 @@ Used for hooks othwerwise is equivalent to calling `show-point-mode'.
 ;; :TRAVERSELISP
 ;;; :NOTE Thiery's traverselisp is still a moving target. Should periodically
 ;;;       check that we've pulled a current version.
-(add-to-list 'load-path (bld-path-for-load-path mon-site-lisp-root "traverselisp"))
+(add-to-list 'load-path (mon-build-path-for-load-path mon-site-lisp-root "traverselisp"))
 (require 'traverselisp)
 (add-to-list 'traverse-ignore-files ".naf~")
 
@@ -597,10 +706,11 @@ Used for hooks othwerwise is equivalent to calling `show-point-mode'.
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-09-26T19:08:09-04:00Z}#{09396} - by MON>
-(defun mon-buffer-local-comment-start (&optional intrp)
+(defun mon-buffer-local-comment-start ()
   "Make \";;;\" a buffer-local-value for comment-start in fundamental-mode.\n
 :CALLED-BY `'.\n►►►" 
-  (let ((is-fundamental (eq (cdr (assoc 'major-mode (buffer-local-variables)))'fundamental-mode)))
+  (let ((is-fundamental 
+         (eq (cdr (assoc 'major-mode (buffer-local-variables)))'fundamental-mode)))
     (when is-fundamental
       (unless (buffer-local-value 'comment-start (current-buffer))
         (set (make-local-variable 'comment-start) ";;;")))))
@@ -613,12 +723,12 @@ Used for hooks othwerwise is equivalent to calling `show-point-mode'.
 ;;; Make sure we set `longlines-mode' at least once at Emacs startup.
 ;;; This is _necessary_ because a lot of `naf-mode' procedures DTWT otherwise.
 (save-excursion
-  (let (test)
-    (setq test
+  (let (llm-test)
+    (setq llm-test
 	  (with-temp-buffer
 	    (when (not (bound-and-true-p lonlines-mode))
 	      (longlines-mode))))
-    (when test (message "longlines-mode initialized at startup"))))
+    (when llm-test (message "longlines-mode initialized at startup"))))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-01-29T14:12:23-05:00Z}#{10045} - by MON KEY>
@@ -634,7 +744,6 @@ Used for hooks othwerwise is equivalent to calling `show-point-mode'.
               (set-face-background 'rst-level-4-face  "light late blue")
               (set-face-foreground 'rst-level-4-face  "dark slate gray")))))
 
-
 ;;; ==============================
 ;;; :NOTE Load keybindings last to ensure everything is loaded in first.
 (require 'mon-keybindings)
@@ -646,7 +755,9 @@ Used for hooks othwerwise is equivalent to calling `show-point-mode'.
 (provide 'mon-default-start-loads)
 ;;; ==============================
 
+(eval-after-load "mon-default-start-loads" '(mon-after-mon-utils-loadtime))
+
 ;;; ================================================================
-;;; default-start-loads.el ends here
+;;; mon-default-start-loads.el ends here
 ;;; EOF
 

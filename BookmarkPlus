@@ -1282,6 +1282,13 @@ Bottom line: Use '''Bookmark+''' to access bookmarks created using
 '''Bookmark+'''.
 
 
+==Comments==
+[new]
+I am finding this very useful, but it would be nice if there was a quicker way to add tags, e.g. similar to org-mode's C-c C-c C-c method. -- JoeBloggs
+
+[new:DrewAdams:2010-03-25 23:58 UTC]
+Can you describe what you envision? -- DrewAdams
+
 
 ----
 CategoryHypermedia CategoryPersistence 

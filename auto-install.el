@@ -8,9 +8,9 @@
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Copyright (C) 2009, rubikitch, all rights reserved.
 ;; Created: 2008-12-11 13:56:50
-;; Version: $Revision: 1.24 $
-;; Last-Updated: Fri May 22 13:07:04 2009 (-0700)
-;;           By: dradams
+;; Version: $Revision: 1.25 $
+;; Last-Updated: [2010/03/26 08:44]
+;;           By: rubikitch
 ;; URL: http://www.emacswiki.org/emacs/download/auto-install.el
 ;; Keywords: auto-install
 ;; Compatibility: GNU Emacs 22 ~ 23
@@ -25,7 +25,7 @@
 ;;   `url-util', `url-vars'.
 ;;
 
-(defvar auto-install-version "$Id: auto-install.el,v 1.24 2010/01/05 09:40:04 rubikitch Exp $")
+(defvar auto-install-version "$Id: auto-install.el,v 1.25 2010/03/26 00:07:27 rubikitch Exp $")
 ;;; This file is NOT part of GNU Emacs
 
 ;;; License
@@ -268,6 +268,9 @@
 ;;; Change log:
 ;;
 ;; $Log: auto-install.el,v $
+;; Revision 1.25  2010/03/26 00:07:27  rubikitch
+;; `url-http-end-of-headers' workaround
+;;
 ;; Revision 1.24  2010/01/05 09:40:04  rubikitch
 ;; fixed error of auto-complete development version in `auto-install-batch-list'
 ;;
@@ -962,7 +965,12 @@ HANDLE-FUNCTION is function for handle download content."
     (insert
      (with-current-buffer auto-install-download-buffer
        (set-buffer-multibyte t)
-       (goto-char (1+ url-http-end-of-headers))
+       ;; I do not know why the case url-http-end-of-headers is nil exists!!
+       ;; I HATE url-retrieve.
+       (if (numberp url-http-end-of-headers)
+           (goto-char (1+ url-http-end-of-headers))
+         ;; workaround
+         (search-forward "\n\n"))
        (decode-coding-region
         (point) (point-max)
         (coding-system-change-eol-conversion

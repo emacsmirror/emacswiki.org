@@ -1,5 +1,5 @@
 ;;; el-expectations.el --- minimalist unit testing framework
-;; $Id: el-expectations.el,v 1.51 2010/03/20 21:42:54 rubikitch Exp rubikitch $
+;; $Id: el-expectations.el,v 1.53 2010/03/26 00:36:30 rubikitch Exp $
 
 ;; Copyright (C) 2008, 2009, 2010  rubikitch
 
@@ -118,6 +118,12 @@
 ;;; History:
 
 ;; $Log: el-expectations.el,v $
+;; Revision 1.53  2010/03/26 00:36:30  rubikitch
+;; no-error assertion
+;;
+;; Revision 1.52  2010/03/26 00:23:57  rubikitch
+;; small fix
+;;
 ;; Revision 1.51  2010/03/20 21:42:54  rubikitch
 ;; Apply patch by DanielHackney:
 ;; Allow (error) expectation to accept an optional second argument,
@@ -381,6 +387,13 @@ Synopsis of EXPECTED-VALUE:
     (expect (error-message \"ERROR!!\")
       (error \"ERROR!!\"))
 
+* (no-error)
+  Body should not raise any error.
+
+  Example:
+    (expect (no-error)
+      1)
+
 * (mock MOCK-FUNCTION-SPEC => MOCK-RETURN-VALUE)
   Body should call MOCK-FUNCTION-SPEC and returns MOCK-RETURN-VALUE.
   Mock assertion depends on `el-mock' library.
@@ -490,6 +503,7 @@ With prefix argument, do `batch-expectations-in-emacs'."
     exps-assert-type
     exps-assert-error
     exps-assert-error-message
+    exps-assert-no-error
     exps-assert-mock
     exps-assert-not-called
     exps-assert-equal-eval))
@@ -579,6 +593,19 @@ With prefix argument, do `batch-expectations-in-emacs'."
                (t
                 (format "FAIL: should raise any error%s" actual-err-string)))))
      #'cdr)))
+
+(defun exps-assert-no-error (expected actual)
+  (let (actual-error-string)
+    (exps-do-assertion
+     expected actual 'no-error nil
+     (lambda (e a)
+       (condition-case err
+           (progn (exps-eval-sexps a) t)
+         (error
+          (setq actual-error-string (error-message-string err))
+          nil)))
+     (lambda (e a)
+       (format "FAIL: Expected no error, but error <%s> was raised" actual-error-string)))))
 
 (defun exps-assert-error-message (expected actual)
   (let (actual-error-string)

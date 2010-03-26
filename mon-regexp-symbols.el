@@ -1,5 +1,23 @@
 ;;; mon-regexp-symbols.el --- Regexp lists of common match/replace a pairs
-;;; ==============================
+;; -*- mode: EMACS-LISP; -*-
+
+;;; ================================================================
+;; Copyright © 2008-2010 MON KEY. All rights reserved.
+;;; ================================================================
+
+;; FILENAME: mon-regexp-symbols.el
+;; AUTHOR: MON KEY
+;; MAINTAINER: MON KEY
+;; CREATED: 2008-07
+;; VERSION: 1.0.0
+;; COMPATIBILITY: Emacs23.*
+;; KEYWORDS: lisp, calendar, i18n
+
+;;; ================================================================
+
+;;; COMMENTARY: 
+
+;; =================================================================
 ;;; DESCRIPTION:
 ;;; mon-regexp-symbols provides a collection of Symbols bound to lisp lists of
 ;;; regexp/replacement pairs. Allows simple easy interactive command invocation
@@ -26,23 +44,23 @@
 ;;; CONSTANTS:
 ;;;
 ;;; VARIABLES:
-;;; `regexp-abrv-dotted-month2canonical', `regexp-simple-abrv-month2canonical',
-;;; `regexp-clean-ebay-time-chars', `regexp-clean-ebay-month2canonical',
-;;; `regexp-clean-ebay-month2canonical-style1',
-;;; `regexp-clean-ebay-month2canonical-style2', `regexp-bound-month2canonical',
-;;; `regexp-month2canonical-ws', `regexp-month2MM', `regexp-MM2month',
-;;; `regexp-MM2month-whitespace-aware', `philsp-months', `philsp-apos',
-;;; `philsp-location', `philsp-swap-location', `philsp-fix-month-dates',
-;;; `regexp-clean-wikipedia', `regexp-clean-whitespace',
-;;; `regexp-clean-big-whitespace', `regexp-clean-imdb', `regexp-clean-loc',
+;;; `*regexp-abrv-dotted-month->canonical*', `*regexp-simple-abrv-month->canonical*',
+;;; `*regexp-clean-ebay-time-chars*',
+;;; `*regexp-clean-ebay-month->canonical-style1*',
+;;; `*regexp-clean-ebay-month->canonical-style2*', `*regexp-bound-month->canonical*',
+;;; `*regexp-month->canonical-ws*', `*regexp-month->MM*', `*regexp-MM->month*',
+;;; `*regexp-MM->month-whitespace-aware*', `*regexp-philsp-months*', `*regexp-philsp-apos*',
+;;; `*regexp-philsp-location*', `*regexp-philsp-swap-location*', `*regexp-philsp-fix-month-dates*',
+;;; `*regexp-clean-wikipedia*', `*regexp-clean-whitespace*',
+;;; `*regexp-clean-big-whitespace*', `*regexp-clean-imdb*', `*regexp-clean-loc*',
 ;;; `*regexp-clean-ulan*', `*regexp-clean-ulan-fields*', `*regexp-ulan-contribs*'
 ;;; `*regexp-clean-ulan-diacritics*', `*regexp-clean-ulan-dispatch-chars*'
 ;;; `*regexp-ital-to-eng*', `*regexp-defranc-dates*', `*regexp-defranc-places*',
 ;;; `*regexp-defranc-benezit*', `*regexp-german-to-eng*', `*regexp-clean-bib*',
 ;;; `*regexp-common-abbrevs*', `*mon-wrap-url-schemes*', 
-;;; `regexp-percent-encoding-reserved-chars', 
-;;; `*regexp-cp1252-to-latin1*', `regexp-clean-url-utf-escape',
-;;; `regexp-clean-html-escape', `*regexp-clean-xml-parse*',
+;;; `*regexp-percent-encoding-reserved-chars*', 
+;;; `*regexp-cp1252-to-latin1*', `*regexp-clean-url-utf-escape*',
+;;; `*regexp-clean-html-escape*', `*regexp-clean-xml-parse*',
 ;;; `*regexp-clean-gilt-group*',`*regexp-clean-benezit-fields*'
 ;;; `*regexp-clean-mon-file-keywords*', `*regexp-rgb-hex*'
 ;;; `*regexp-symbol-defs-big*', `*regexp-symbol-defs*'
@@ -71,36 +89,53 @@
 ;;; does not in any way represent the ULAN, J.P. Getty Trust, www.getty.edu, nor
 ;;; their assocates or affiliatets.
 ;;;
-;;; AUTHOR: MON KEY
-;;; MAINTAINER: MON KEY
-;;;
-;;; PUBLIC-LINK: (URL `http://www.emacswiki.org/emacs/mon-regexp-symbols.el')
+;;; URL: http://www.emacswiki.org/emacs/mon-regexp-symbols.el
 ;;; FIRST-PUBLISHED: 
+;;
+;;; HEADER-ADDED: <Timestamp: #{2009-09-15T11:02:46-04:00Z}#{09382} - by MON KEY>
 ;;;
 ;;; FILE-CREATED:
 ;;; <Timestamp: Summer 2008 - by MON KEY>
-;;; HEADER-ADDED: <Timestamp: #{2009-09-15T11:02:46-04:00Z}#{09382} - by MON KEY>
-;;; ================================================================
-;;; This file is not part of GNU Emacs.
-;;;
-;;; This program is free software; you can redistribute it and/or
-;;; modify it under the terms of the GNU General Public License as
-;;; published by the Free Software Foundation; either version 3, or
-;;; (at your option) any later version.
-;;;
-;;; This program is distributed in the hope that it will be useful,
-;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-;;; General Public License for more details.
-;;;
-;;; You should have received a copy of the GNU General Public License
-;;; along with this program; see the file COPYING.  If not, write to
-;;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
-;;; Floor, Boston, MA 02110-1301, USA.
-;;; ================================================================
-;;; Copyright © 2009, 2010 MON KEY 
+;;
+;; =================================================================
+
+;;; LICENSE:
+
+;; =================================================================
+;; This file is not part of GNU Emacs.
+
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 3, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program; see the file COPYING.  If not, write to
+;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
+;; Floor, Boston, MA 02110-1301, USA.
+;; =================================================================
+;; Permission is granted to copy, distribute and/or modify this
+;; document under the terms of the GNU Free Documentation License,
+;; Version 1.3 or any later version published by the Free Software
+;; Foundation; with no Invariant Sections, no Front-Cover Texts,
+;; and no Back-Cover Texts. A copy of the license is included in
+;; the section entitled ``GNU Free Documentation License''.
+;; 
+;; A copy of the license is also available from the Free Software
+;; Foundation Web site at:
+;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
+;; Copyright © 2008-2010 MON KEY 
+;;; ==============================
+
 ;;; CODE:
+
+(eval-when-compile (require 'cl))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: Wednesday July 01, 2009 @ 06:39.55 PM - by MON KEY>
@@ -115,14 +150,16 @@
                                    (" nil " " ")
                                    (" nil" " "))
 "*Regexp list to match clean strings generated with `xml-parse-file'.\n
-:CALLED-BY `mon-cln-parsed-xml'.
-:SEE-ALSO .\n►►►")
+:CALLED-BY `mon-cln-xml<-parsed'\n
+:SEE-ALSO `mon-cln-xml<-parsed-strip-nil', `mon-cln-html-tags',
+`*regexp-percent-encoding-reserved-chars*', `*regexp-clean-url-utf-escape*',
+`*regexp-clean-html-escape*'.\n►►►")
 ;;
 ;;; :TEST-ME  *regexp-clean-xml-parse*
 ;;
 ;;;(progn (makunbound '*regexp-clean-xml-parse*)
 ;;;       (unintern '*regexp-clean-xml-parse*) )
-
+;;; 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-10-12T13:03:45-04:00Z}#{09421} - by MON>
 (defvar *regexp-clean-mon-file-keywords*
@@ -186,7 +223,10 @@ Typically these appear comments or docstrings of file.
 :NOTE Check the contents of file's lisp forms before evaluating this symbol as
 an argument to `mon-replace-region-regexp-lists' or any other function which 
 loops without querying the user, it is easy to alter procedures accidentally.\n
-:SEE-ALSO .\n►►►")
+:SEE-ALSO `mon-help-insert-tags', `mon-help-mon-tags',
+`*mon-help-mon-tags-alist*', `*regexp-mon-doc-help-meta-tags*',
+`*regexp-mon-doc-help-comment-tags*', `*regexp-mon-doc-help-docstring-tags*',
+`*regexp-mon-doc-help-pointer-tags*'.\n►►►")
 ;;
 ;;; :TEST-ME *regexp-clean-mon-file-keywords*
 ;;
@@ -222,7 +262,8 @@ followed by the symbol they define:\n
  `defcustom' `defface' `deftheme'
 :NOTE Tests can be run on this regexp with `mon-help-regexp-symbol-defs-TEST'.\n
 :CALLED-BY `mon-insert-lisp-testme',`mon-insert-doc-help-tail'.\n
-:SEE-ALSO `*regexp-symbol-defs-big*'.\n►►►")
+:SEE-ALSO `*regexp-symbol-defs-big*',
+`lisp-font-lock-keywords', `lisp-font-lock-keywords-1', `lisp-font-lock-keywords-2'.\n►►►")
 ;;
 (when (not (bound-and-true-p *regexp-symbol-defs*))
   (setq *regexp-symbol-defs*
@@ -260,7 +301,8 @@ Like `*regexp-symbol-defs-big*' but covers a broader range of operators.\n
  `defmethod' `defpackage' `defparameter' `defsetf' `defstruct' `defsubst'
  `defsubst*' `deftheme' `deftype' `defun' `defun*' `defvar' `defvaralias'
 :NOTE Tests can be run on this regexp with `mon-help-regexp-symbol-defs-TEST'.\n
-:SEE-ALSO `*regexp-symbol-defs-big*'.\n►►►")
+:SEE-ALSO `*regexp-symbol-defs-big*',
+`lisp-font-lock-keywords', `lisp-font-lock-keywords-1', `lisp-font-lock-keywords-2'.\n►►►")
 ;;
 (when (not (bound-and-true-p *regexp-symbol-defs-big*))
   (setq *regexp-symbol-defs-big*
@@ -283,41 +325,41 @@ Like `*regexp-symbol-defs-big*' but covers a broader range of operators.\n
 
 ;;; ==============================
 ;;; :NOTE Matches short years at BOL in bib entries 'YY "^'\\([0-9]\\{2,2\\}\\) "YY".
-(defvar regexp-abrv-dotted-month2canonical ;; *regexp-abrv-dotted-month2canonical*
+(defvar *regexp-abrv-dotted-month->canonical*
   '(("\\<Jan\\." "January") ("\\<Feb\\." "February") ("\\<Mar\\." "March")
     ("\\<Apr\\." "April") ("\\<Jun\\." "June") ("\\<Jul\\." "July")
     ("\\<Aug\\." "August") ("\\<Sep\\." "September") ("\\<Sept\\." "September")
     ("\\<Oct\\." "October") ("\\<Nov\\." "November") ("\\<Dec\\." "December"))
 "*Regexp for use with date related strings.\n
-:SEE-ALSO `regexp-bound-month2canonical', `regexp-simple-abrv-month2canonical',
-`regexp-month2MM', `regexp-MM2month', `regexp-MM2month-whitespace-aware',
-`philsp-fix-month-dates',`philsp-months'.\n►►►")
+:SEE-ALSO `*regexp-bound-month->canonical*', `*regexp-simple-abrv-month->canonical*',
+`*regexp-month->MM*', `*regexp-MM->month*', `*regexp-MM->month-whitespace-aware*',
+`*regexp-philsp-fix-month-dates*',`*regexp-philsp-months*'.\n►►►")
 ;;
-;;; :TEST-ME  regexp-abrv-dotted-month2canonical
+;;; :TEST-ME  *regexp-abrv-dotted-month->canonical*
 ;;
-;;;(progn (makunbound 'regexp-abrv-dotted-month2canonical) 
-;;;       (unintern 'regexp-abrv-dotted-month2canonical) )
+;;;(progn (makunbound '*regexp-abrv-dotted-month->canonical*) 
+;;;       (unintern '*regexp-abrv-dotted-month->canonical*) )
 
 ;;; ==============================
-(defvar regexp-simple-abrv-month2canonical ;; *regexp-simple-abrv-month2canonical*
+(defvar *regexp-simple-abrv-month->canonical*
  '((" Jan " "January")  (" Feb " "February")  (" Mar " "March")   (" April "  "April")
   (" Jun " "June")  (" Jul " "July")  (" Aug " "August")  (" Sep " "September")
   (" Oct " "October")  (" Nov " "November")  (" Dec " "December"))
- "*Regexp alist for abreviated months with leading and trailing whitespace.
+ "*Regexp alist for abreviated months with leading and trailing whitespace.\n
 Regexp's are of the form:
 \" Mmm \" -> \"Mmmmmmm\"\n
-:SEE-ALSO `regexp-bound-month2canonical', `regexp-simple-abrv-month2canonical',
-`regexp-month2MM' `regexp-MM2month', `regexp-MM2month-whitespace-aware',
-`philsp-fix-month-dates', `philsp-months'.\n►►►")
+:SEE-ALSO `*regexp-bound-month->canonical*', `*regexp-simple-abrv-month->canonical*',
+`*regexp-month->MM*' `*regexp-MM->month*', `*regexp-MM->month-whitespace-aware*',
+`*regexp-philsp-fix-month-dates*', `*regexp-philsp-months*'.\n►►►")
 ;;
-;;; :TEST-ME  regexp-simple-abrv-month2canonical
+;;; :TEST-ME  *regexp-simple-abrv-month->canonical*
 ;;
-;;;(progn (makunbound 'regexp-simple-abrv-month2canonical) 
-;;;       (unintern 'regexp-simple-abrv-month2canonical) )
+;;;(progn (makunbound '*regexp-simple-abrv-month->canonical*) 
+;;;       (unintern '*regexp-simple-abrv-month->canonical*) )
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: Wednesday July 29, 2009 @ 06:19.33 PM - by MON KEY>
-(defvar regexp-clean-ebay-time-chars  ;; *regexp-clean-ebay-time-chars*
+(defvar *regexp-clean-ebay-time-chars*  
   '((44  32)
     (40  32)
     (41  32))
@@ -326,24 +368,23 @@ Chars are all associated with char 32 SPC.
 44 -> ,\n40 -> (\n41 -> )\n
 :EXAMPLE\n(August 07, 200913:52:24 PDT\)\n
 :NOTE This type of string corresponds to the regexps of:
-`regexp-clean-ebay-month2canonical-style1'.\n
+`*regexp-clean-ebay-month->canonical-style1*'.\n
 :CALLED-BY `mon-cln-ebay-time-string'.\n
-:SEE-ALSO `regexp-clean-ebay-month2canonical',
-`regexp-clean-ebay-month2canonical-style1',
-`regexp-clean-ebay-month2canonical-style2'.\n►►►")
+:SEE-ALSO `*regexp-clean-ebay-month->canonical-style1*',
+`*regexp-clean-ebay-month->canonical-style2*'.\n►►►")
 ;;
 ;;; :TEST-ME 
 ;;(let (pop-list)
-;;   (setq pop-list regexp-clean-ebay-time-chars)
+;;   (setq pop-list *regexp-clean-ebay-time-chars*)
 ;;   (while pop-list
 ;;     (princ (char-to-string (car (pop pop-list))) (current-buffer))))
 ;;
-;;;(progn (makunbound 'regexp-clean-ebay-time-chars)
-;;;       (unintern 'regexp-clean-ebay-time-chars) )
+;;;(progn (makunbound '*regexp-clean-ebay-time-chars*)
+;;;       (unintern '*regexp-clean-ebay-time-chars*) )
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: Wednesday July 29, 2009 @ 06:58.52 PM - by MON KEY>
-(defvar regexp-clean-ebay-month2canonical-style1 ;; *regexp-clean-ebay-month2canonical-style1*
+(defvar *regexp-clean-ebay-month->canonical-style1*
   '(("(Jan " "January ") 
     ("(Feb " "February ") 
     ("(Mar " "March ") 
@@ -359,108 +400,105 @@ Chars are all associated with char 32 SPC.
 "*Regexp alist to clean ebay timestrings from eBay webpage.\n
 :EXAMPLE\n\(Aug 07, 200913:52:24 PDT\)\n
 :CALLED-BY `mon-cln-ebay-time-string'.\n
-:SEE-ALSO: `regexp-clean-ebay-time-chars' `regexp-clean-ebay-month2canonical',
-`regexp-clean-ebay-month2canonical-style2'.\n►►►")
+:SEE-ALSO: `*regexp-clean-ebay-time-chars*', `*regexp-clean-ebay-month->canonical-style3*',
+`*regexp-clean-ebay-month->canonical-style2*'.\n►►►")
 ;;
-;;; :TEST-ME  regexp-clean-ebay-month2canonical-style1
+;;; :TEST-ME  *regexp-clean-ebay-month->canonical-style1*
 ;;
-;;;(progn (makunbound 'regexp-clean-ebay-month2canonical-style1) 
-;;;       (unintern 'regexp-clean-ebay-month2canonical-style1) )
+;;;(progn (makunbound '*regexp-clean-ebay-month->canonical-style1*) 
+;;;       (unintern '*regexp-clean-ebay-month->canonical-style1*) )
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: Wednesday July 29, 2009 @ 06:58.46 PM - by MON KEY>
-(defvar regexp-clean-ebay-month2canonical-style2 ;; *regexp-clean-ebay-month2canonical-style2* 
-  '(("Jan-" "January ") 
-    ("Feb-" "February ") 
-    ("Mar-" "March ") 
-    ("Apr-" "April ") 
-    ("Jun-" "June ") 
-    ("Jul-" "July ") 
-    ("Aug-" "August ") 
-    ("Sept-" "September ") 
-    ("Sep-" "September ") 
-    ("Oct-" "October ") 
-    ("Nov-" "November ") 
-    ("Dec-" "December "))
+(defvar *regexp-clean-ebay-month->canonical-style2* nil
 "*Regexp alist to clean ebay timestrings from eBay.\n
 Style2 from eBay listing manager.\n
 :EXAMPLE\nJul-29 11:05                 <-style2\n
 :CALLED-BY `mon-cln-ebay-time-string'.\n
-:SEE-ALSO: `regexp-clean-ebay-time-chars' `regexp-clean-ebay-month2canonical-style3',
-`regexp-clean-ebay-month2canonical-style1'.\n►►►")
+:SEE-ALSO: `*regexp-clean-ebay-time-chars*', `*regexp-clean-ebay-month->canonical-style3*',
+`*regexp-clean-ebay-month->canonical-style1*'.\n►►►")
+(unless (bound-and-true-p *regexp-clean-ebay-month->canonical-style2*)
+  (setq *regexp-clean-ebay-month->canonical-style2*
+        '(("Jan-" "January ") 
+          ("Feb-" "February ") 
+          ("Mar-" "March ") 
+          ("Apr-" "April ") 
+          ("Jun-" "June ") 
+          ("Jul-" "July ")
+          ("Aug-" "August ") 
+          ("Sept-" "September ") 
+          ("Sep-" "September ") 
+          ("Oct-" "October ") 
+          ("Nov-" "November ") 
+          ("Dec-" "December "))))
 ;;
-;;; :TEST-ME  regexp-clean-ebay-month2canonical-style2 
+;;; :TEST-ME  *regexp-clean-ebay-month->canonical-style2* 
 ;;
-;;;(progn (makunbound 'regexp-clean-ebay-month2canonical-style2) 
-;;;       (unintern 'regexp-clean-ebay-month2canonical-style2) )
+;;;(progn (makunbound '*regexp-clean-ebay-month->canonical-style2*) 
+;;;       (unintern '*regexp-clean-ebay-month->canonical-style2*) )
 
 ;;; ==============================
+;;; :MODIFICATIONS <Timestamp: #{2010-03-11T16:44:22-05:00Z}#{10104} - by MON KEY>
 ;;; :CREATED <Timestamp: Wednesday July 29, 2009 @ 05:12.02 PM - by MON KEY>
-(defvar regexp-clean-ebay-month2canonical-style3 nil ;; *regexp-clean-ebay-month2canonical-style3*
+(defvar *regexp-clean-ebay-month->canonical-style3* nil 
   "*Regexp alist to clean ebay timestrings from eBay.\n
 Style3 from eBay post listing email confirmations.\n
 Aug-10-09 09:16:14 PDT       <-style3\n
 :CALLED-BY `mon-cln-ebay-time-string'\n
-:SEE-ALSO `regexp-clean-ebay-time-chars',
-`regexp-clean-ebay-month2canonical-style1',
-`regexp-clean-ebay-month2canonical-style2'.\n►►►")
+:SEE-ALSO `*regexp-clean-ebay-time-chars*',
+`*regexp-clean-ebay-month->canonical-style1*',
+`*regexp-clean-ebay-month->canonical-style2*'.\n►►►")
  ;;
-(eval-when-compile ;;?needed?
-  (when (not (bound-and-true-p regexp-clean-ebay-month2canonical-style3))
-    (setq regexp-clean-ebay-month2canonical-style3
-          (let ((from-style2 regexp-clean-ebay-month2canonical-style2)
-                (sub-yr (substring (current-time-string) -2))
-                ;;mon-get-current-year-isn't loaded yet from mon-utils.el
-                ;;(subseq (mon-get-current-year) 2 4)) 
-                ;;(sub-cent (subseq (mon-get-current-year) 0 2))
-                Mmm-)
-            (setq Mmm- '())
-            ;; :TODO make this a `dolist'
-            (mapcar #'(lambda (x)
-                        (let* ((bld-rgxp 
-                                (concat 
-                                 "\\("                ; 1 
-                                 "\\(%s\\)"           ; 2 -> Mmm-
-                                 "\\([0-9]\\{2,2\\}\\)" ; 3 -> DD
-                                 "\\(-\\)"              ; 4 -> hyphen post DD
-                                 "\\(%s\\)"             ; 5 -> sub-yr
-                                 "\\( [0-9]\\{2,2\\}:[0-9]\\{2,2\\}:[0-9]\\{2,2\\} \\)" ; 6 -> " HH:MM:SS "
-                                 "\\(.*\\)" ; 7 -> TimeZone/ whatevers left 
-                                 "\\)"))
-                               (splc-rgxp (format bld-rgxp (car x) sub-yr)))
-                          (setq Mmm- (cons (list splc-rgxp (cadr x)) Mmm-))))
-                    from-style2)
-          (nreverse Mmm-)))))
+(unless (bound-and-true-p *regexp-clean-ebay-month->canonical-style3*)
+  (setq *regexp-clean-ebay-month->canonical-style3*
+        (let ((from-style2 *regexp-clean-ebay-month->canonical-style2*)
+              (sub-yr (substring (current-time-string) -2))
+              ;; :NOTE `mon-get-current-year' isn't loaded yet from mon-utils.el
+              ;;(subseq (mon-get-current-year) 2 4)) 
+              ;;(sub-cent (subseq (mon-get-current-year) 0 2))
+              (bld-rgxp (concat 
+                         "\\("                    ;grp1 
+                         "\\(%s\\)"               ;<- grp2 Mmm-
+                         "\\([0-9]\\{2,2\\}\\)"   ;<- grp3 DD
+                         "\\(-\\)"                ;<- grp4 hyphen post DD
+                         "\\(%s\\)"               ;<- grp5 sub-yr
+                         "\\( [0-9]\\{2,2\\}:[0-9]\\{2,2\\}:[0-9]\\{2,2\\} \\)" ;<- grp6 " HH:MM:SS "
+                         "\\(.*\\)"     ;<- grp7  TimeZone/whatevers-left 
+                         "\\)"))  
+              Mmm-)
+          (mapc #'(lambda (x) 
+                    (push `(,(format bld-rgxp (car x) sub-yr) ,(cadr x)) Mmm-))
+                from-style2)
+          (setq Mmm- (nreverse Mmm-)))))
 ;;
-;;; :TEST-ME  regexp-clean-ebay-month2canonical-style3
-;;; :TEST-ME (car regexp-clean-ebay-month2canonical-style3) 
-;;; :TEST-ME (caar regexp-clean-ebay-month2canonical-style3) 
-;;; :TEST-ME (cdar regexp-clean-ebay-month2canonical-style3) 
+;;; :TEST-ME  *regexp-clean-ebay-month->canonical-style3*
+;;; :TEST-ME (car *regexp-clean-ebay-month->canonical-style3*) 
+;;; :TEST-ME (caar *regexp-clean-ebay-month->canonical-style3*) 
+;;; :TEST-ME (cdar *regexp-clean-ebay-month->canonical-style3*) 
 ;;
-;;;(progn (makunbound 'regexp-clean-ebay-month2canonical-style3) 
-;;;       (unintern 'regexp-clean-ebay-month2canonical-style3) )
+;;;(progn (makunbound '*regexp-clean-ebay-month->canonical-style3*) 
+;;;       (unintern '*regexp-clean-ebay-month->canonical-style3*) )
 
 ;;; ==============================
-(defvar regexp-bound-month2canonical ;; *regexp-bound-month2canonical*
+(defvar *regexp-bound-month->canonical*
   '(("\\bJan\\b" "January") ("\\bFeb\\b" "February") ("\\bMar\\b" "March")
     ("\\bApr\\b" "April") ("\\bJun\\b" "June") ("\\bJul\\b" "July")
     ("\\bAug\\b" "August") ("\\bSep\\b" "September") ("\\bSept\\b" "September")
     ("\\bOct\\b" "October") ("\\bNov\\b" "November") ("\\bDec\\b" "December"))
 "*Regexp alist of abbreviated months with trailing and leading whitespace. 
-A nearly identical set of expressions set in `philsp-months' but adds a prefix
+A nearly identical set of expressions set in `*regexp-philsp-months*' but adds a prefix
 \"- \" before the month name for used in `mon-cln-philsp'.\n
-:SEE-ALSO `regexp-abrv-dotted-month2canonical',
-`regexp-simple-abrv-month2canonical', `regexp-MM2month-whitespace-aware',
-`regexp-month2MM', `regexp-MM2month', `philsp-fix-month-dates',
-`philsp-months'.\n►►►")
+:SEE-ALSO `*regexp-abrv-dotted-month->canonical*',
+`*regexp-simple-abrv-month->canonical*', `*regexp-MM->month-whitespace-aware*',
+`*regexp-month->MM*', `*regexp-MM->month*', `*regexp-philsp-fix-month-dates*'.\n►►►")
 ;;
-;;; :TEST-ME  regexp-bound-month2canonical
+;;; :TEST-ME  *regexp-bound-month->canonical*
 ;;
-;;;(progn (makunbound 'regexp-bound-month2canonical) 
-;;;       (unintern 'regexp-bound-month2canonical) )
+;;;(progn (makunbound '*regexp-bound-month->canonical*) 
+;;;       (unintern '*regexp-bound-month->canonical*) )
 
 ;;; ==============================
-(defvar regexp-month2canonical-ws  ;; *regexp-month2canonical-ws*
+(defvar *regexp-month->canonical-ws*
   '(("\\bJan\\." "January")("\\bFeb\\." "February")
     ("\\bMar\\." "March") ("\\bApr\\." "April")
     ("\\bJun\\." "June") ("\\bJul\\." "July")
@@ -518,52 +556,53 @@ List includes combinations for:
     \" Jan \" \" January \"
     \"Jan[: :]\" \"January \"\n
 :Note This variable combines regexps from the following variables:
-`regexp-simple-abrv-month2canonical', `regexp-abrv-dotted-month2canonical',
-`regexp-bound-month2canonical'.\n
-:SEE-ALSO `regexp-MM2month', `regexp-month2MM',
-`regexp-MM2month-whitespace-aware', `philsp-months',
-`philsp-fix-month-dates'.\n►►►")
+`*regexp-simple-abrv-month->canonical*', `*regexp-abrv-dotted-month->canonical*',
+`*regexp-bound-month->canonical*'.\n
+:SEE-ALSO `*regexp-MM->month*', `*regexp-month->MM*',
+`*regexp-MM->month-whitespace-aware*', `*regexp-philsp-months*',
+`*regexp-philsp-fix-month-dates*'.\n►►►")
 ;;    
-;;; :TEST-ME  regexp-month2canonical-ws
+;;; :TEST-ME  *regexp-month->canonical-ws*
 ;;
-;;;(progn (makunbound 'regexp-month2canonical-ws) 
-;;;       (unintern 'regexp-month2canonical-ws) )
+;;;(progn (makunbound '*regexp-month->canonical-ws*) 
+;;;       (unintern '*regexp-month->canonical-ws*) )
 
 ;;; ==============================
-(defvar regexp-month2MM ;; *regexp-month2MM*
+(defvar *regexp-month->MM*
   '(("January" "01")("February"  "02")("March"  "03")("April"  "04")
     ("May"  "05") ("June"  "06")("July"  "07")("August"  "08")
     ("September"  "09")("October"  "10")("November"  "11")("December"  "12"))
 "*Regexp for use with date related strings.\n
-:SEE-ALSO `regexp-bound-month2canonical', `regexp-abrv-dotted-month2canonical',
-`regexp-simple-abrv-month2canonical', `regexp-MM2month',
-`regexp-MM2month-whitespace-aware',
-`philsp-months',`philsp-fix-month-dates'.\n►►►")
+:SEE-ALSO `*regexp-bound-month->canonical*',
+`*regexp-abrv-dotted-month->canonical*',
+`*regexp-simple-abrv-month->canonical*', `*regexp-MM->month*',
+`*regexp-MM->month-whitespace-aware*', `*regexp-philsp-months*',
+`*regexp-philsp-fix-month-dates*'.\n►►►")
 ;;
-;;; :TEST-ME  regexp-month2MM
+;;; :TEST-ME  *regexp-month->MM*
 ;;
-;;;(progn (makunbound 'regexp-month2MM) (unintern 'regexp-month2MM) )
+;;;(progn (makunbound '*regexp-month->MM*) (unintern '*regexp-month->MM*) )
 
 ;;; ==============================
 ;;; :NOTE Matches MMwhitepspace Month forms.
-(defvar regexp-MM2month ;; *regexp-MM2month*
+(defvar *regexp-MM->month*
     '(("\\([: :]01\\)"  " January") ("\\([: :]02\\)"  " February")
       ("\\([: :]03\\)"  " March") ("\\([: :]04\\)"  " April")("\\([: :]05\\)"  " May")
       ("\\([: :]06\\)"  " June") ("\\([: :]07\\)"  "July") ("\\([: :]08\\)"  " August")
       ("\\([: :]09\\)"  " September") ("\\([: :]10\\)"  " October")
       ("\\([: :]11\\)"  " November") ("\\([: :]12\\)"  " December"))
     "*Regexp for use with date related strings.\n
-:SEE-ALSO `regexp-bound-month2canonical', `regexp-abrv-dotted-month2canonical',
-`regexp-simple-abrv-month2canonical', `regexp-month2MM',
-`regexp-MM2month-whitespace-aware', `philsp-months',
-`philsp-fix-month-dates'.\n►►►")
+:SEE-ALSO `*regexp-bound-month->canonical*', `*regexp-abrv-dotted-month->canonical*',
+`*regexp-simple-abrv-month->canonical*', `*regexp-month->MM*',
+`*regexp-MM->month-whitespace-aware*', `*regexp-philsp-months*',
+`*regexp-philsp-fix-month-dates*'.\n►►►")
 ;;
-;;; :TEST-ME  regexp-MM2month
+;;; :TEST-ME  *regexp-MM->month*
 ;;
-;;;(progn (makunbound 'regexp-MM2month) (unintern 'regexp-MM2month) )
+;;;(progn (makunbound '*regexp-MM->month*) (unintern '*regexp-MM->month*) )
 
 ;;; ==============================
-(defvar regexp-MM2month-whitespace-aware ;; *regexp-MM2month-whitespace-aware*
+(defvar *regexp-MM->month-whitespace-aware*
   '(("^\\(01[: :]\\)" "January ")       ("^\\(01\\)" "January")  
     ("^\\(02[: :]\\)" "February ")      ("^\\(02\\)" "February") 
     ("^\\(03[: :]\\)" "March ")	        ("^\\(03\\)" "March")    
@@ -604,14 +643,14 @@ List includes combinations for:
     ("\\([: :]12[: :]\\)" " December "))
   ;; ==============================
   "*Regexp that is whitespace aware to replace numbered lists to Month Name.\n
-:SEE-ALSO `regexp-MM2month', `regexp-month2MM', `regexp-bound-month2canonical',
-`regexp-abrv-dotted-month2canonical', `regexp-simple-abrv-month2canonical',
-`philsp-months', `philsp-fix-month-dates'.\n►►►")
+:SEE-ALSO `*regexp-MM->month*', `*regexp-month->MM*', `*regexp-bound-month->canonical*',
+`*regexp-abrv-dotted-month->canonical*', `*regexp-simple-abrv-month->canonical*',
+`*regexp-philsp-months*', `*regexp-philsp-fix-month-dates*'.\n►►►")
 ;;
-;;; :TEST-ME  regexp-MM2month-whitespace-aware
+;;; :TEST-ME  *regexp-MM->month-whitespace-aware*
 ;;
-;;;(progn (makunbound 'regexp-MM2month-whitespace-aware) 
-;;;       (unintern 'regexp-MM2month-whitespace-aware) )
+;;;(progn (makunbound '*regexp-MM->month-whitespace-aware*) 
+;;;       (unintern '*regexp-MM->month-whitespace-aware*) )
 
 ;;; ==============================
 ;;; :NOTE Fixes matches for code point: 0x2019 char 8217 i.e.:
@@ -620,16 +659,16 @@ List includes combinations for:
 ;;; ==============================
 ;;; Following kbd macro philsp keyboard-macros definitions for matching
 ;;; apos data in artist/authors fixing junk definitions are deprecated:
-;;; `philsp-all', `philsp-alld', `philsp-bol' `philsp-eol' `philsp-auth-rplc-apos'
-;;; `philsp-rplc-auth-bol', `philsp-apos' `philsp-mag-bol' `philsp-mag-brackets'
-;;; `philsp-mag-ebay' `philsp-mag-contents'
+;;; `philsp-all', `philsp-alld', `philsp-bol', `philsp-eol', `philsp-auth-rplc-apos',
+;;; `philsp-rplc-auth-bol', `*regexp-philsp-apos*', `philsp-mag-bol', `philsp-mag-brackets'
+;;; `philsp-mag-ebay', `philsp-mag-contents',
 ;;; These used to appear in :FILE naf-skeletons.el
 ;;; They have been replaced by `mon-cln-philsp' which calls the variables:
-;;; `philsp-months'`philsp-months' `philp-apos' `philsp-location'
-;;; `philsp-swap-location' `philsp-fix-month-dates'
+;;; `*regexp-philsp-months*', `philp-apos', `*regexp-philsp-location*',
+;;; `*regexp-philsp-swap-location*', `*regexp-philsp-fix-month-dates*',
 ;;; `mon-cln-philsp' lives in :FILE mon-replacement-utils.el
 ;;; ==============================
-(defvar philsp-months  ;; *philsp-months*
+(defvar *regexp-philsp-months*
   '(("\\bJan\\b" "- January") ("\\bFeb\\b" "- February") ("\\bMar\\b" "- March")
     ("\\bApr\\b" "- April") ("\\bJun\\b" "- June") ("\\bJul\\b" "- July")
     ("\\bAug\\b" "- August") ("\\bSep\\b" "- September") ("\\bSept\\b" "- September")
@@ -637,17 +676,19 @@ List includes combinations for:
   "*Regexp to replace bounded abbreviated months \"\\bMMM\\b\".\n
 Replace matches with fully canonical form prefixed by \"- \".\n
 :CALLED-BY `mon-cln-philsp'.\n
-:SEE-ALSO `philsp-fix-month-dates', `regexp-bound-month2canonical',
-`regexp-abrv-dotted-month2canonical', `regexp-simple-abrv-month2canonical',
-`regexp-month2MM', `regexp-MM2month'.\n►►►")
+:SEE-ALSO `*regexp-philsp-fix-month-dates*', `*regexp-philsp-months*',
+`*regexp-philsp-apos', `*regexp-philsp-location*',
+`*regexp-bound-month->canonical*', `*regexp-abrv-dotted-month->canonical*',
+`*regexp-simple-abrv-month->canonical*', `*regexp-month->MM*',
+`*regexp-MM->month*'.\n:USED-IN `naf-mode'.\n►►►")
 ;;
-;;; :TEST-ME  philsp-months
+;;; :TEST-ME  *regexp-philsp-months*
 ;;
-;;;(progn (makunbound 'philsp-months)
-;;;       (unintern 'philsp-months) )
+;;;(progn (makunbound '*regexp-philsp-months*)
+;;;       (unintern '*regexp-philsp-months*) )
 
 ;;; ==============================
-(defvar philsp-apos ;; *philsp-apos*
+(defvar *regexp-philsp-apos*
   '(("\\(\\(’\\)\\([0-9]\\{2,2\\}\\)\\)" "19\\3")
     ("\\(\\([a-z]\\)\\(’\\)\\([a-z]\\)\\)" "\\2\'\\4"))
   "*Regexp to match occurences of code point 0x2019.\n
@@ -655,47 +696,52 @@ Matches for (0x2019 - RIGHT SINGLE QUOTATION MARK) replaced by
 ASCII char (39 - APOSTROPHE).\
 Replacements of abbreviated YY inserts the prefix 19 to yield 19YY.\n
 :CALLED-BY `mon-cln-philsp'.
-:SEE-ALSO\n
-Used in `naf-mode'.\n►►►")
+:SEE-ALSO `*regexp-philsp-months*', `*regexp-philsp-location*',
+`*regexp-philsp-swap-location*', `*regexp-philsp-fix-month-dates*'\n
+:USED-IN `naf-mode'.\n►►►")
 ;;
-;;; :TEST-ME  philsp-apos
+;;; :TEST-ME  *regexp-philsp-apos*
 ;;
-;;;(progn (makunbound 'philsp-apos)
-;;;       (unintern 'philsp-apos) )
+;;;(progn (makunbound '*regexp-philsp-apos*)
+;;;       (unintern '*regexp-philsp-apos*) )
 
 ;;; ==============================
-(defvar philsp-location ;; *philsp-location*
-  '(((concat "\\(^[: :]\\{4,4\\}\\*[: :]?\\)"
-"\\(\\(Cover[: :]Artist\\)\\|\\(Interior[: :]Artwork\\)\\)"
-"\\([:;:]?[: :]?\\)") "#(\\2)#"))
+(defvar *regexp-philsp-location*
+  `((,(concat 
+       "\\(^[: :]\\{4,4\\}\\*[: :]?\\)"
+       "\\(\\(Cover[: :]Artist\\)\\|\\(Interior[: :]Artwork\\)\\)"
+       "\\([:;:]?[: :]?\\)") 
+      "#(\\2)#"))
   "*Regexp to discard the \"    * \" string at BOL.\n
 Replace matches and wrap \"Cover Artist;\" and \"Interior Artwork;\".\n
 Discard trailing (semi-colon;) and wrap target string with #hash-symbols#.\n
-:CALLED-BY `mon-cln-philsp' in preparation for `philsp-swap-location'.\n
-:SEE-ALSO\n
-Used in `naf-mode'.\n►►►")
+:CALLED-BY `mon-cln-philsp' in preparation for `*regexp-philsp-swap-location*'.\n
+:SEE-ALSO `*regexp-philsp-months*', `*regexp-philsp-apos',
+`*regexp-philsp-swap-location*', `*regexp-philsp-fix-month-dates*'\n
+:USED-IN `naf-mode'.\n►►►")
 ;;
-;;; :TEST-ME  philsp-location
+;;; :TEST-ME  *regexp-philsp-location*
 ;;
-;;;(progn (makunbound 'philsp-location)
-;;;       (unintern 'philsp-location) )
+;;;(progn (makunbound '*regexp-philsp-location*)
+;;;       (unintern '*regexp-philsp-location*) )
 
 ;;; ==============================
-(defvar philsp-swap-location ;; *philsp-swap-location*
+(defvar *regexp-philsp-swap-location*
   '(("^\\(#\\(.*\\)#\\)\\(.*$\\)" "\\3 - \\2"))
   "*Regexp to swap the location of the \"Cover Artist\" and \"Interior Artwork\".\n
 Shift the former to the EOL position and the later to BOL.\n
-:CALLED-BY `mon-cln-philsp' :AFTER `philsp-location'.\n
-:SEE-ALSO\n
-Used in `naf-mode'.\n►►►")
+:CALLED-BY `mon-cln-philsp' :AFTER `*regexp-philsp-location*'.\n
+:SEE-ALSO `*regexp-philsp-months*', `*regexp-philsp-apos',
+`*regexp-philsp-location*', `*regexp-philsp-fix-month-dates*'\n
+:USED-IN `naf-mode'.\n►►►")
 ;;
-;;; :TEST-ME  philsp-swap-location
+;;; :TEST-ME  *regexp-philsp-swap-location*
 ;;
-;;;(progn (makunbound 'philsp-swap-location)
-;;;       (unintern 'philsp-swap-location) )
+;;;(progn (makunbound '*regexp-philsp-swap-location*)
+;;;       (unintern '*regexp-philsp-swap-location*) )
 
 ;;; ==============================
-(defvar philsp-fix-month-dates ;; *philsp-fix-month-dates*
+(defvar *regexp-philsp-fix-month-dates* 
   '(("\\(\\(January\\)\\([: :]\\([0123][0-9]\\)\\{1,1\\}[: :]\\)\\)" "\\2 \\4, ")
     ("\\(\\(February\\)\\([: :]\\([0123][0-9]\\)\\{1,1\\}[: :]\\)\\)" "\\2 \\4, ")
     ("\\(\\(March\\)\\([: :]\\([0123][0-9]\\)\\{1,1\\}[: :]\\)\\)" "\\2 \\4, ")
@@ -708,16 +754,19 @@ Used in `naf-mode'.\n►►►")
     ("\\(\\(November\\)\\([: :]\\([0123][0-9]\\)\\{1,1\\}[: :]\\)\\)" "\\2 \\4, ")
     ("\\(\\(December\\)\\([: :]\\([0123][0-9]\\)\\{1,1\\}[: :]\\)\\)" "\\2 \\4, "))
   "*Regexp for use with `mon-cln-philsp'.\n
-:SEE-ALSO `regexp-bound-month2canonical', `regexp-abrv-dotted-month2canonical',
-`regexp-simple-abrv-month2canonical', `regexp-month2MM', `regexp-MM2month'.\n►►►")
+:SEE-ALSO `*regexp-philsp-months*', `*regexp-philsp-apos',
+`*regexp-philsp-location*', `*regexp-philsp-swap-location*',
+`*regexp-bound-month->canonical*', `*regexp-abrv-dotted-month->canonical*',
+`*regexp-simple-abrv-month->canonical*', `*regexp-month->MM*',
+`*regexp-MM->month*'.\n:USED-IN `naf-mode'.\n►►►")
 ;;
-;;; :TEST-ME  philsp-fix-month-dates
+;;; :TEST-ME  *regexp-philsp-fix-month-dates*
 ;;
-;;;(progn (makunbound 'philsp-fix-month-dates)
-;;;       (unintern 'philsp-fix-month-dates) )
+;;;(progn (makunbound '*regexp-philsp-fix-month-dates*)
+;;;       (unintern '*regexp-philsp-fix-month-dates*) )
 
 ;;; ==============================
-(defvar regexp-clean-wikipedia ;; *regexp-clean-wikipedia*
+(defvar *regexp-clean-wikipedia*
   '(("\[[0-9]+\]" "")
     ("Aller à : Navigation, rechercher" "") ;; :WIKI-FRANCE
     ("Collection privée" "Private Collection") ;; :WIKI-FRANCE
@@ -791,15 +840,15 @@ Add wiki related regexps to this list to replace other wikipedia cruft.\n
 unique to Wikpedia's mutli-user entered text.
 :CALLED-BY `mon-cln-wiki'
 :SEE-ALSO `mon-cln-imdb', `mon-trans_cp1252_to_latin1', `mon-cln-loc'.\n
-Used in `naf-mode'.\n►►►")
+:USED-IN `naf-mode'.\n►►►")
 ;;
-;;; :TEST-ME  regexp-clean-wikipedia
+;;; :TEST-ME  *regexp-clean-wikipedia*
 ;;
-;;;(progn (makunbound 'regexp-clean-wikipedia)
-;;;       (unintern 'regexp-clean-wikipedia) )
+;;;(progn (makunbound '*regexp-clean-wikipedia*)
+;;;       (unintern '*regexp-clean-wikipedia*) )
 
 ;;; ==============================
-(defvar regexp-clean-whitespace  ;; *regexp-clean-whitespace*
+(defvar *regexp-clean-whitespace*
   '(("\\(\\> +\\)" " ") ("\\(\\_> +\\)" " "))
   ;; A more exact but ascii perverted approach:
   ;; \([A-z]\)\([:  :]+?\)\([A-z]\)  \1 \3
@@ -807,15 +856,15 @@ Used in `naf-mode'.\n►►►")
 :CALLED-BY `mon-cln-whitespace'.\n
 :SEE-ALSO `mon-cln-imdb',  `mon-abr-to-month', `mon-num-to-month'\n
 `mon-replace-common-abrevs',`mon-trans_cp1252_to_latin1'.\n
-Used in `naf-mode'.\n►►►")
+:USED-IN `naf-mode'.\n►►►")
 ;;
-;;; :TEST-ME  regexp-clean-whitespace
+;;; :TEST-ME  *regexp-clean-whitespace*
 ;;
-;;;(progn (makunbound  'regexp-clean-whitespace)
-;;;       (unintern 'regexp-clean-whitespace) )
+;;;(progn (makunbound  '*regexp-clean-whitespace*)
+;;;       (unintern '*regexp-clean-whitespace*) )
 
 ;;; ==============================
-(defvar regexp-clean-big-whitespace ;; *regexp-clean-big-whitespace*
+(defvar *regexp-clean-big-whitespace*
    '(("\\(\\> +\\)" " ")
      ("\\(\\_> +\\)" " ")
      ("\\([[:blank:]][[:blank:]]+\\)" " "))
@@ -824,15 +873,15 @@ Used in `naf-mode'.\n►►►")
 :SEE-ALSO `mon-cln-whitespace',`mon-kill-whitespace',
 `mon-cln-trail-whitespace',`mon-cln-imdb', `mon-trans_cp1252_to_latin1',
 `mon-replace-common-abrevs',`mon-abr-to-month', `mon-num-to-month'.
-Used in `naf-mode'.\n►►►")
+:USED-IN `naf-mode'.\n►►►")
 ;;
-;;; :TEST-ME  regexp-clean-big-whitespace
+;;; :TEST-ME  *regexp-clean-big-whitespace*
 ;;
-;;;(progn (makunbound 'regexp-clean-big-whitespace)
-;;;        (unintern 'regexp-clean-big-whitespace) )
+;;;(progn (makunbound '*regexp-clean-big-whitespace*)
+;;;        (unintern '*regexp-clean-big-whitespace*) )
 
 ;;; ==============================
-(defvar regexp-clean-imdb  ;; *regexp-clean-imdb*
+(defvar *regexp-clean-imdb*
    '((" More at IMDb Pro »" "")
      ("^advertisement$" "")
      ("^Jump to filmography as:.*$" "")
@@ -845,14 +894,14 @@ Used in `naf-mode'.\n►►►")
 :CALLED-BY `mon-cln-imdb'\n
 :SEE \(URL `http://www.imdb.com').
 :SEE-ALSO\n
-Used in `naf-mode'.\n►►►")
+:USED-IN `naf-mode'.\n►►►")
 ;;
-;;; :TEST-ME  regexp-clean-imdb
+;;; :TEST-ME  *regexp-clean-imdb*
 ;;;
-;;;(progn (makunbound 'regexp-clean-imdb) (unintern 'regexp-clean-imdb) )
+;;;(progn (makunbound '*regexp-clean-imdb*) (unintern '*regexp-clean-imdb*) )
 
 ;;; ==============================
-(defvar regexp-clean-loc ;; *regexp-clean-loc*
+(defvar *regexp-clean-loc*
   `(("è" "è")            ;; :NAME COMBINING GRAVE ACCENT :CODE-POINT 0x0300
     ("è" "è")            ;; :NAME COMBINING GRAVE ACCENT :CODE-POINT 0x0300
     ("È" "È")            ;; :NAME COMBINING ACUTE ACCENT :CODE-POINT 0x0301
@@ -885,12 +934,12 @@ Used in `naf-mode'.\n►►►")
 :NOTE Add LOC scrape cruft here :BEFORE creating dedicated variable.\n
 :CALLED-BY `mon-cln-loc'\n
 :SEE-ALSO `mon-cln-wiki', `mon-cln-imdb',`regexp-ulan-diacritics',
-`mon-trans_cp1252_to_latin1'.\nUsed in `naf-mode'.\n►►►")
+`mon-trans_cp1252_to_latin1'.\n:USED-IN `naf-mode'.\n►►►")
 ;;
-;;; :TEST-ME  regexp-clean-loc
+;;; :TEST-ME  *regexp-clean-loc*
 ;;
-;;;(progn (makunbound 'regexp-clean-loc) 
-;;;       (unintern 'regexp-clean-loc) )
+;;;(progn (makunbound '*regexp-clean-loc*) 
+;;;       (unintern '*regexp-clean-loc*) )
 
 ;;; ==============================
 (defvar *regexp-clean-gilt-group* 
@@ -928,7 +977,7 @@ Invoke to get a working list to pass to a useable wget include file.
   "*Regexp list to match and replace Italian dates and place names with Engrish.\n
 :CALLED-BY `mon-ital-date-to-eng'.\n
 :SEE-ALSO `mon-cln-wiki', `mon-cln-imdb', `mon-defranc-places',
-`mon-replace-common-abrevs'.\nUsed in `naf-mode'.\n►►►")
+`mon-replace-common-abrevs'.\n:USED-IN `naf-mode'.\n►►►")
 ;;
 ;;; :TEST-ME  *regexp-ital-to-eng*
 ;;
@@ -984,7 +1033,7 @@ Match these with and without out diacritics to convert French date strings
 \(months, days\) to equivalent Engrish strings.\n
 :CALLED-BY `mon-defranc-dates'\n
 :SEE-ALSO `naf-mode-french-months' `mon-ital-date-to-eng'.\n
-Used in `naf-mode'.\n►►►")
+:USED-IN `naf-mode'.\n►►►")
 ;;
 ;;; :TEST-ME  *regexp-defranc-dates*
 ;;
@@ -1107,7 +1156,7 @@ Used in `naf-mode'.\n►►►")
   "*Regexps to match French place names with and without diacrtits.
 Match with and without out all uppercase styled names - for Bénézit auctions.\n
 :CALLED-BY `mon-defranc-places'.
-:SEE-ALSO .\n►►►")
+:SEE-ALSO `*regexp-defranc-benezit*', `*regexp-clean-benezit-fields*'.\n►►►")
 ;;
 ;;; :TEST-ME  *regexp-defranc-places*
 ;;
@@ -1121,7 +1170,7 @@ Match with and without out all uppercase styled names - for Bénézit auctions.\
 ;;; :REMOVED Benezit specific fields to `*regexp-clean-benezit-fields*'
 ;;; :MODIFICATIONS <Timestamp: #{2009-09-18T15:07:44-04:00Z}#{09385} - by MON KEY>
 (defvar *regexp-defranc-benezit*
-  '(;; :BENEZIT-HEADERS-FRENCH
+  '( ;; :BENEZIT-HEADERS-FRENCH
     ("Actif à" "Active in") 
     ("siècle" "Century")
     ("Mort en" "Died in")
@@ -1178,7 +1227,7 @@ Match with and without out all uppercase styled names - for Bénézit auctions.\
     ("Peintre Verrier" "glass painter")
     ("Peintre" "Painter")
     ("peintre" "painter"))
-"*Regexps to match and convert French Bénézit term to equivalent English term. 
+  "*Regexps to match and convert French Bénézit term to equivalent English term.\n
 :NOTE Tries to conservatively match on terms with diacrtics.
 :CALLED-BY `mon-defranc-benezit'.\n
 :SEE-ALSO `*regexp-clean-benezit-fields*', `mon-cln-benezit-fields'.\n►►►")
@@ -1208,7 +1257,7 @@ Match with and without out all uppercase styled names - for Bénézit auctions.\
 :CALLED-BY `mon-cln-benezit-fields'.\n
 Fontlocked with `naf-mode-benezit-section-flag'.\n
 :SEE-ALSO `*regexp-defranc-benezit*', `mon-defranc-benezit'.\n
-Used in `naf-mode'.\n►►►")
+:USED-IN `naf-mode'.\n►►►")
 ;;
 ;;; :TEST-ME  *regexp-clean-benezit-fields*
 ;;
@@ -1216,7 +1265,7 @@ Used in `naf-mode'.\n►►►")
 ;;;       (unintern '*regexp-clean-benezit-fields*) )
 
 ;;; ==============================
-(defvar *regexp-german-to-eng* ;; *regexp-german-to-eng*
+(defvar *regexp-german-to-eng*
  '(;; :PLACE-NAMES-GERMAN
    ("Kopenhagen" "Copenhagen") 
    ("München" "Munich")
@@ -1227,7 +1276,7 @@ Used in `naf-mode'.\n►►►")
    ("Architekt" "Architect"))
 "*A list of translation pairs for translating place names from German to Engrish.\n
 :SEE-ALSO .\n
-Used in `naf-mode'.\n►►►")
+:USED-IN `naf-mode'.\n►►►")
 ;;
 ;;; :TEST-ME  *regexp-german-to-eng*
 ;;
@@ -1303,7 +1352,7 @@ Especially useful for those with `.' at end of string.
 The Etude Bios Composers Musicians Bios - Etude July 1933 p 434.\n
 :CALLED-BY `mon-replace-common-abbrevs'.\n
 :SEE-ALSO .\n
-Used in `naf-mode'.\n►►►")
+:USED-IN `naf-mode'.\n►►►")
 ;;
 ;;; :TEST-ME  *regexp-common-abbrevs*
 ;;
@@ -1332,7 +1381,9 @@ Elements of list are wrapped as follows:
 :CALLED-BY `mon-wrap-all-urls' to identify URLs in buffer.\n
 :SEE (URL `http://www.iana.org/assignments/uri-schemes.html').\n
 :SEE-ALSO `mon-wrap-one-url' `mon-wrap-url', `mon-wrap-text',`mon-wrap-span',
-`mon-wrap-selection', `mon-wrap-with', `thing-at-point-url-at-point'.\n►►►")
+`mon-wrap-selection', `mon-wrap-with', `thing-at-point-url-at-point',
+`*regexp-clean-xml-parse*',`*regexp-percent-encoding-reserved-chars*',
+`*regexp-clean-url-utf-escape*', `*regexp-clean-html-escape*'.\n►►►")
 ;;
 ;;; :TEST-ME  *mon-wrap-url-schemes*
 ;;
@@ -1358,9 +1409,8 @@ Elements of list are conses of the form:
  \(SYMBOL-REGEXP-TYPE . \"REGEXP-STRING\")\n
 Various keys are provided for matching RGB hex strings at bol, eol, with/without
 leading/trailing whitespace.\n
-:EXAMPLE\n
-:SEE-ALSO .\n►►►")
-
+:EXAMPLE\n\n(assoc 'wspc-bracketed *regexp-rgb-hex*)\n
+:SEE-ALSO `*regexp-hexcolor-keywords*', `mon-hexcolor-add-to-font-lock'.\n►►►")
 
 ;;; ==============================
 ;;; :NOTE Percent-encoding reserved characters:
@@ -1370,23 +1420,25 @@ leading/trailing whitespace.\n
 ;;;                   / "*" / "+" / "," / ";" / "="
 ;;; :SEE: RFC 3986
 ;;; ==============================
-(defvar regexp-percent-encoding-reserved-chars ;; *regexp-percent-encoding-reserved-chars*
+(defvar *regexp-percent-encoding-reserved-chars*
   '(("%21" "!")    ("%2A" "*")    ("%27" "'")    ("%28" "(")
     ("%29" ")")    ("%3B" ";")    ("%3A" ":")    ("%40" "@")
     ("%26" "&")    ("%3D" "=")    ("%2B" "+")    ("%24" "$")
     ("%2C" ",")    ("%2F" "/")    ("%3F" "?")    ("%25" "%")
     ("%23" "#")    ("%5B" "[")    ("%5D" "]"))
 "*Regexp list to match and normalize percent encoded chars.\n.
-:SEE-ALSO .\n►►►")
+:SEE-ALSO `*mon-wrap-url-schemes*', `*regexp-clean-xml-parse*',
+`*regexp-percent-encoding-reserved-chars*', `*regexp-clean-url-utf-escape*',
+`*regexp-clean-html-escape*'.\n►►►")
 ;;
-;;; :TEST-ME  regexp-percent-encoding-reserved-chars
+;;; :TEST-ME  *regexp-percent-encoding-reserved-chars*
 ;;
-;;;(progn (makunbound 'regexp-percent-encoding-reserved-chars) 
-;;;       (unintern 'regexp-percent-encoding-reserved-chars ) )
+;;;(progn (makunbound '*regexp-percent-encoding-reserved-chars*) 
+;;;       (unintern '*regexp-percent-encoding-reserved-chars* ) )
 
 ;;; ==============================
 ;;; :TODO Needs to be adjusted for UTF-8
-(defvar *regexp-cp1252-to-latin1* ;; **regexp-cp1252-to-latin1**
+(defvar *regexp-cp1252-to-latin1*
   '(("\x80" "e")     ("\x81" " ")       ("\x82" "'")    ("\x83" "f")
     ("\x84" "\"")    ("\x85" "...")     ("\x86" "+")    ("\x87" "#")
     ("\x88" "^")     ("\x89" "0/00")    ("\x8A" "S")    ("\x8B" "<")
@@ -1395,28 +1447,74 @@ leading/trailing whitespace.\n
     ("\x94" "\"")    ("\x95" "*")       ("\x96" "-")    ("\x97" "--")
     ("\x98" "~")     ("\x99" "\(TM\)")  ("\x9A" "s")    ("\x9B" ">")
     ("\x9C" "oe")    ("\x9D" " ")       ("\x9E" "z")    ("\x9F" "Y"))
-"*Regexp list to convert cp1252 enchoded chars to latin1-iso-8859-*.
+"*Regexp list to convert cp1252 enchoded chars to latin1-iso-8859-*.\n
 :CALLED-BY `mon-trans-cp1252-to-latin1'.\n
-:SEE-ALSO .\n►►►")
+:SEE-ALSO `mon-make-iso-latin-1-approximation', `mon-cln-iso-latin-1',
+`*iso-latin-1-approximation*'.\n►►►")
 ;;
 ;;; :TEST-ME  *regexp-cp1252-to-latin1*
 ;;
 ;;;(progn (makunbound '*regexp-cp1252-to-latin1*)
 ;;;       (unintern '*regexp-cp1252-to-latin1*) )
 
+
 ;;; ==============================
 ;;; :COURTESY Jeremy English's <jhe@jeremyenglish.org> :HIS google-define.el
 ;;; :WAS `*google-define-html-entry-table*'.
+;;; :CREATED <Timestamp: #{2010-03-22T11:51:35-04:00Z}#{10121} - by MON KEY>
+(defconst 
+`( ("&#34;"  "&quot;" "\"")  ("&#38;"  "&amp;" "&")    ("&#39;" "&yow;" "'")
+   ("&#62;"  "&gt;" ">")     ("&#160;" "&nbsp;" " ")   ("&#161;" "&iexcl;" "¡")
+   ("&#162;" "&cent;" "¢")   ("&#163;" "&pound;" "£")  ("&#164;" "&curren;" "¤")
+   ("&#165;" "&yen;" "¥")    ("&#166;" "&brvbar;" "¦") ("&#167;" "&sect;" "§")
+   ("&#168;" "&uml;" "¨")    ("&#169;" "&copy;" "©")   ("&#170;" "&ordf;" "ª")
+   ("&#171;" "&laquo;" "«")  ("&#172;" "&not;" "¬")    ("&#173;" "&shy;" "\xad") ;<- :CHANGED
+   ("&#174;" "&reg;" "®")    ("&#175;" "&macr;" "¯")   ("&#176;" "&deg;" "°")
+   ("&#177;" "&plusmn;" "±") ("&#178;" "&sup2;" "²")   ("&#179;" "&sup3;" "³")
+   ("&#180;" "&acute;" "´")  ("&#181;" "&micro;" "µ")  ("&#182;" "&para;" "¶")
+   ("&#183;" "&middot;" "·") ("&#184;" "&cedil;" "¸")  ("&#185;" "&sup1;" "¹")
+   ("&#186;" "&ordm;" "º")   ("&#187;" "&raquo;" "»")  ("&#188;" "&frac14;" "¼")
+   ("&#189;" "&frac12;" "½") ("&#190;" "&frac34;" "¾") ("&#191;" "&iquest;" "¿")
+   ("&#192;" "&Agrave;" "À") ("&#193;" "&Aacute;" "Á") ("&#194;" "&Acirc;" "Â")
+   ("&#195;" "&Atilde;" "Ã") ("&#196;" "&Auml;" "Ä")   ("&#197;" "&Aring;" "Å")
+   ("&#198;" "&AElig;" "Æ")  ("&#199;" "&Ccedil;" "Ç") ("&#200;" "&Egrave;" "È")
+   ("&#201;" "&Eacute;" "É") ("&#202;" "&Ecirc;" "Ê")  ("&#203;" "&Euml;" "Ë")
+   ("&#204;" "&Igrave;" "Ì") ("&#205;" "&Iacute;" "Í") ("&#206;" "&Icirc;" "Î")
+   ("&#207;" "&Iuml;" "Ï")   ("&#208;" "&ETH;" "Ð")    ("&#209;" "&Ntilde;" "Ñ")
+   ("&#210;" "&Ograve;" "Ò") ("&#211;" "&Oacute;" "Ó") ("&#212;" "&Ocirc;" "Ô")
+   ("&#213;" "&Otilde;" "Õ") ("&#214;" "&Ouml;" "Ö")   ("&#215;" "&times;" "×")
+   ("&#216;" "&Oslash;" "Ø") ("&#217;" "&Ugrave;" "Ù") ("&#218;" "&Uacute;" "Ú")
+   ("&#219;" "&Ucirc;" "Û")  ("&#220;" "&Uuml;" "Ü")   ("&#221;" "&Yacute;" "Ý")
+   ("&#222;" "&THORN;" "Þ")  ("&#223;" "&szlig;" "ß")  ("&#224;" "&agrave;" "à")
+   ("&#225;" "&aacute;" "á") ("&#226;" "&acirc;" "â")  ("&#227;" "&atilde;" "ã")
+   ("&#228;" "&auml;" "ä")   ("&#229;" "&aring;" "å")  ("&#230;" "&aelig;" "æ")
+   ("&#231;" "&ccedil;" "ç") ("&#232;" "&egrave;" "è") ("&#233;" "&eacute;" "é")
+   ("&#234;" "&ecirc;" "ê")  ("&#235;" "&euml;" "ë")   ("&#236;" "&igrave;" "ì")
+   ("&#237;" "&iacute;" "í") ("&#238;" "&icirc;" "î")  ("&#239;" "&iuml;" "ï")
+   ("&#240;" "&eth;" "ð")    ("&#241;" "&ntilde;" "ñ") ("&#242;" "&ograve;" "ò")
+   ("&#243;" "&oacute;" "ó") ("&#244;" "&ocirc;" "ô")  ("&#245;" "&otilde;" "õ")
+   ("&#246;" "&ouml;" "ö")   ("&#247;" "&divide;" "÷") ("&#248;" "&oslash;" "ø")
+   ("&#249;" "&ugrave;" "ù") ("&#250;" "&uacute;" "ú") ("&#251;" "&ucirc;" "û")
+   ("&#252;" "&uuml;" "ü")   ("&#253;" "&yacute;" "ý") ("&#254;" "&thorn;" "þ")
+   ("&#255;" "&yuml;" "ÿ")   ("&#60;" "&lt;" "<") )
+"
+:CALLED-BY `*regexp-clean-url-utf-escape*', `*regexp-clean-html-escape*'
+:SEE-ALSO `*mon-wrap-url-schemes*', `*regexp-clean-xml-parse*',
+`*regexp-percent-encoding-reserved-chars*', `*regexp-clean-url-utf-escape*',
+`*regexp-clean-ulan-diacritics*', `*regexp-cp1252-to-latin1*'.\n►►►")
+
+;;; ==============================
 ;;; :TODO Conversion code-slide for `naf-mode' related code remains (unfinished) in:
 ;;; :FILE /notes/naf-url-googl-code-slide.el
 ;;; :MOVED <- mon-url-utils.el <Timestamp: Tuesday February 17, 2009>
+;;; :MODIFICATIONS <Timestamp: #{2010-03-22T11:51:21-04:00Z}#{10121} - by MON KEY>
 ;;; ==============================
-(defvar regexp-clean-url-utf-escape ;;*regexp-clean-url-utf-escape*
+(defvar *regexp-clean-url-utf-escape*
   '(("&#34;"   "\"") ("&#38;"    "&") ("&#39;"    "'") ("&#60;"    "<")
     ("&#62;"    ">") ("&#160;"   " ") ("&#161;"   "¡") ("&#162;"   "¢")
     ("&#163;"   "£") ("&#164;"   "¤") ("&#165;"   "¥") ("&#166;"   "¦")
     ("&#167;"   "§") ("&#168;"   "¨") ("&#169;"   "©") ("&#170;"   "ª")
-    ("&#171;"   "«") ("&#172;"   "¬") ("&#173;"   "­") ("&#174;"   "®")
+    ("&#171;"   "«") ("&#172;"   "¬") ("&#173;"   "\xad") ("&#174;"   "®")
     ("&#175;"   "¯") ("&#176;"   "°") ("&#177;"   "±") ("&#178;"   "²")
     ("&#179;"   "³") ("&#180;"   "´") ("&#181;"   "µ") ("&#182;"   "¶")
     ("&#183;"   "·") ("&#184;"   "¸") ("&#185;"   "¹") ("&#186;"   "º")
@@ -1437,21 +1535,25 @@ leading/trailing whitespace.\n
     ("&#243;"   "ó") ("&#244;"   "ô") ("&#245;"   "õ") ("&#246;"   "ö")
     ("&#247;"   "÷") ("&#248;"   "ø") ("&#249;"   "ù") ("&#250;"   "ú")
     ("&#251;"   "û") ("&#252;"   "ü") ("&#253;"   "ý") ("&#254;"   "þ")
-    ("&#255;"   "ÿ")))
+    ("&#255;"   "ÿ"))
+  "*Regexp to match replace utf8-escaped strings with character-representation.\n
+:SEE-ALSO `*google-define-html-entry-table*', `*regexp-clean-html-escape*',
+`*mon-wrap-url-schemes*', `*regexp-clean-xml-parse*',
+`*regexp-percent-encoding-reserved-chars*',
+`*regexp-clean-url-utf-escape*', `*regexp-clean-ulan-diacritics*'.\n►►►")
 ;;
-;;; :TEST-ME  regexp-clean-url-utf-escape
+;;; :TEST-ME  *regexp-clean-url-utf-escape*
 ;;
-;;;(progn (makunbound 'regexp-clean-url-utf-escape)
-;;;       (unintern 'regexp-clean-url-utf-escape) )
+;;;(progn (makunbound '*regexp-clean-url-utf-escape*)
+;;;       (unintern '*regexp-clean-url-utf-escape*) )
 
 ;;; ==============================
-;;; :COURTESY Jeremy English's <jhe@jeremyenglish.org> :HIS google-define.el
-(defvar regexp-clean-html-escape  ;;*regexp-clean-html-escape*
+(defvar *regexp-clean-html-escape*
   '(("&quot;"   "\"") ("&amp;"     "&") ("&yow;"     "'") ("&lt;"      "<")
     ("&gt;"      ">") ("&nbsp;"    " ") ("&iexcl;"   "¡") ("&cent;"    "¢")
     ("&pound;"   "£") ("&curren;"  "¤") ("&yen;"     "¥") ("&brvbar;"  "¦")
     ("&sect;"    "§") ("&uml;"     "¨") ("&copy;"    "©") ("&ordf;"    "ª")
-    ("&laquo;"   "«") ("&not;"     "¬") ("&shy;"     "­") ("&reg;"     "®") 
+    ("&laquo;"   "«") ("&not;"     "¬") ("&shy;"     "\xad") ("&reg;"     "®") 
     ("&macr;"    "¯") ("&deg;"     "°") ("&plusmn;"  "±") ("&sup2;"    "²") 
     ("&sup3;"    "³") ("&acute;"   "´") ("&micro;"   "µ") ("&para;"    "¶") 
     ("&middot;"  "·") ("&cedil;"   "¸") ("&sup1;"    "¹") ("&ordm;"    "º") 
@@ -1472,12 +1574,17 @@ leading/trailing whitespace.\n
     ("&oacute;"  "ó") ("&ocirc;"   "ô") ("&otilde;"  "õ") ("&ouml;"    "ö") 
     ("&divide;"  "÷") ("&oslash;"  "ø") ("&ugrave;"  "ù") ("&uacute;"  "ú") 
     ("&ucirc;"   "û") ("&uuml;"    "ü") ("&yacute;"  "ý") ("&thorn;"   "þ") 
-    ("&yuml;"    "ÿ")))
+    ("&yuml;"    "ÿ"))
+  "*List of regexp match/replace pairs for HTML escaped chars.\n
+:SEE-ALSO `*google-define-html-entry-table*', `*regexp-clean-html-escape*',
+`*mon-wrap-url-schemes*', `*regexp-clean-xml-parse*',
+`*regexp-percent-encoding-reserved-chars*', `*regexp-clean-url-utf-escape*',
+`*regexp-clean-ulan-diacritics*', `*regexp-cp1252-to-latin1*'.\n►►►")
 ;;
-;;; :TEST-ME  regexp-clean-html-escape
+;;; :TEST-ME  *regexp-clean-html-escape*
 ;;
-;;;(progn (makunbound 'regexp-clean-html-escape)
-;;;        (unintern 'regexp-clean-html-escape) )
+;;;(progn (makunbound '*regexp-clean-html-escape*)
+;;;        (unintern '*regexp-clean-html-escape*) )
 
 ;;; ==============================
 (defvar *regexp-clean-ulan-diacritics*
@@ -1552,8 +1659,9 @@ leading/trailing whitespace.\n
     ("$38E" "Ễ")  ("$47S" "Ș"))
   "*Regexp list to match and normalize ULAN encoded chars.\n
 :SEE-ALSO `mon-cln-ulan', `*regexp-clean-ulan*', `*regexp-clean-ulan-fields*',
-`*regexp-clean-ulan-dispatch-chars*'.
-Used in `naf-mode'.\n►►►")
+`*regexp-clean-ulan-dispatch-chars*', `*regexp-percent-encoding-reserved-chars*',
+`*regexp-clean-url-utf-escape*', `*regexp-clean-html-escape*', `*regexp-clean-loc*',
+`*regexp-cp1252-to-latin1*'.\n:USED-IN `naf-mode'.\n►►►")
 ;;
 ;;; :TEST-ME  *regexp-clean-ulan-diacritics*
 ;;
@@ -1594,7 +1702,7 @@ For additional specifications:
 :SEE \(URL `http://www.getty.edu/research/conducting_research/vocabularies/ulan/').
 :NOTE ULAN is ©J.Paul Getty Trust
 :SEE-ALSO `*regexp-clean-ulan-fields*',`*regexp-clean-ulan-dispatch-chars*',
-`*regexp-clean-ulan-diacritics*', `*regexp-ulan-contribs*'.\nUsed in `naf-mode'.\n►►►")
+`*regexp-clean-ulan-diacritics*', `*regexp-ulan-contribs*'.\n:USED-IN `naf-mode'.\n►►►")
 ;;
 ;;; :TEST-ME  *regexp-clean-ulan*
 ;;
@@ -1644,7 +1752,7 @@ For additional specifications:
 :NOTE ULAN is ©J.Paul Getty Trust
 :SEE-ALSO `*regexp-clean-ulan*',`*regexp-clean-ulan-dispatch-chars*',
 `*regexp-clean-ulan-diacritics*', `*regexp-ulan-contribs*'.\n
-Used in `naf-mode'.\n►►►")
+:USED-IN `naf-mode'.\n►►►")
 ;;
 ;;; :TEST-ME  *regexp-clean-ulan-fields*
 ;;;(progn (makunbound '*regexp-clean-ulan-fields*)
@@ -1753,7 +1861,7 @@ For additional specifications:
 :NOTE ULAN is ©J.Paul Getty Trust.
 :SEE-ALSO `*regexp-clean-ulan*', `*regexp-clean-ulan-diacritics*',
 `*regexp-ulan-contribs*'.\n
-Used in `naf-mode'.\n►►►")
+:USED-IN `naf-mode'.\n►►►")
 ;;
 ;;; :TEST-ME  *regexp-clean-ulan-dispatch-chars*
 ;;
@@ -1930,7 +2038,7 @@ For additioanl specs SEE:
 :SEE-ALSO `*regexp-clean-ulan*', `*regexp-clean-ulan-fields*',
 `*regexp-clean-ulan-diacritics*',`*regexp-clean-ulan-dispatch-chars*',
 `mon-cln-ulan'.\n
-Used in `naf-mode'.\n►►►")
+:USED-IN `naf-mode'.\n►►►")
 ;;
 ;;; :TEST-ME  *regexp-ulan-contribs*
 ;;; :TEST-ME (assoc "YCBA" *regexp-ulan-contribs*)

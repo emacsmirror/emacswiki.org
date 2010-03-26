@@ -1,7 +1,7 @@
 ;;; shell-history.el --- integration with shell history
-;; $Id: shell-history.el,v 1.3 2009/10/21 09:43:55 rubikitch Exp rubikitch $
+;; $Id: shell-history.el,v 1.4 2010/03/26 06:33:08 rubikitch Exp $
 
-;; Copyright (C) 2008  rubikitch
+;; Copyright (C) 2008, 2009, 2010 rubikitch
 
 ;; Author: rubikitch <rubikitch@ruby-lang.org>
 ;; Keywords: processes, convenience
@@ -49,6 +49,9 @@
 ;;; History:
 
 ;; $Log: shell-history.el,v $
+;; Revision 1.4  2010/03/26 06:33:08  rubikitch
+;; Do not add same entry as previous entry to history.
+;;
 ;; Revision 1.3  2009/10/21 09:43:55  rubikitch
 ;; New command: `shell-add-to-history'
 ;;
@@ -61,7 +64,7 @@
 
 ;;; Code:
 
-(defvar shell-history-version "$Id: shell-history.el,v 1.3 2009/10/21 09:43:55 rubikitch Exp rubikitch $")
+(defvar shell-history-version "$Id: shell-history.el,v 1.4 2010/03/26 06:33:08 rubikitch Exp $")
 (eval-when-compile (require 'cl))
 
 (defvar shell-history-file
@@ -83,10 +86,13 @@
   (save-excursion (goto-char (point-min))
                   (re-search-forward "^: [0-9]+:" (point-at-eol) t)))
 
+(defvar shell-history-previous-entry nil)
 (defun add-to-shell-history (entry)
-  (when (or (not shell-history-add-ascii-only)
-            (string-match "^[\000-\177]+$" entry))
+  (when (and (not (equal entry shell-history-previous-entry))
+             (or (not shell-history-add-ascii-only)
+                 (string-match "^[\000-\177]+$" entry)))
     (with-current-buffer (shell-history-buffer)
+      (setq shell-history-previous-entry entry)
       (revert-buffer t t)
       (goto-char (point-max))
       (when (shell-history-zsh-extended-history-p)

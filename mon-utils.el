@@ -2,7 +2,7 @@
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
-;; Copyright © 2010 MON KEY. All rights reserved.
+;; Copyright © 2008-2010 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: mon-utils.el
@@ -96,6 +96,7 @@
 ;; `mon-string-replace-char', `mon-string-to-hex-list',
 ;; `mon-buffer-exists-so-kill', `mon-string-wonkify',
 ;; `mon-after-mon-utils-loadtime', `mon-line-count-buffer'
+;; `mon-g2be', `mon-string-sort-descending'
 ;; FUNCTIONS:◄◄◄
 ;; 
 ;; MACROS:
@@ -211,7 +212,7 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ===================================
-;; Copyright © 2008, 2009, 2010 MON KEY 
+;; Copyright © 2008-2010 MON KEY 
 ;;; ===================================
 
 ;;; CODE:
@@ -242,7 +243,7 @@
   (require 'mon-insertion-utils)
   (require 'mon-testme-utils)
   (require 'naf-mode-insertion-utils)
-  (require 'mon-wget-utils) ;; mon-get-mon-packages :AFTER-LOAD
+  (require 'mon-wget-utils) ;; :FILE mon-get-mon-packages.el :AFTER-LOAD
   (require 'mon-url-utils)
   (require 'mon-hash-utils)
   (require 'mon-doc-help-utils)
@@ -278,10 +279,9 @@ the filename of feature FEATURE-AS-SYMBOL when it is in loadpath.\n
 :EXAMPLE\n\n\(pp-macroexpand-expression 
           '\(mon-check-feature-for-loadtime 'mon-test-feature-fl\)\)\n
 :SEE-ALSO `mon-unbind-command', `mon-unbind-symbol', `mon-unbind-function',
-`mon-unbind-variable', `mon-unbind-defun', `mon-after-mon-utils-loadtime',
-`mon-compile-when-needed' `mon-load-or-alert', `mon-byte-compile-and-load',
-`mon-dump-object-to-file', `mon-nuke-and-eval',
-`mon-after-mon-utils-loadtime'.\n►►►"
+`mon-unbind-variable', `mon-unbind-defun', `mon-compile-when-needed'
+`mon-load-or-alert', `mon-byte-compile-and-load', `mon-dump-object-to-file',
+`mon-nuke-and-eval', `mon-after-mon-utils-loadtime'.\n►►►"
   (declare (indent 2) (debug t))
   (let ((mcffl (make-symbol "mcffl")))
     `(let (,mcffl)
@@ -317,13 +317,14 @@ the filename of feature FEATURE-AS-SYMBOL when it is in loadpath.\n
 ;;; :TODO Build additional fncn/macro to populate docstrings at loadtime.
 ;;; :CREATED <Timestamp: #{2010-02-24T15:15:09-05:00Z}#{10083} - by MON KEY>
 (defun mon-after-mon-utils-loadtime ()
-  "List of packages to load up once mon-utils.el is in the current environment.\n
+  "List of packages and functions to load or eval once mon-utils.el is in the current environment.\n
 Called with \(eval-after-load \"mon-utils\" '\(mon-after-mon-utils-loadtime\)\)\n
 Evaluates the following functions per feature:
  `mon-bind-nefs-photos-at-loadtime'    <- mon-dir-utils 
  `mon-bind-cifs-vars-at-loadtime'      <- mon-cifs-utils
  `mon-set-register-tags-loadtime'      <- mon-empty-registers
  `mon-help-utils-loadtime'             <- mon-doc-help-utils
+ `mon-help-utils-CL-loadtime'          <- mon-doc-help-CL
  `mon-CL-cln-colon-swap'               <- mon-cl-compat-regexps
  `mon-bind-iptables-vars-at-loadtime'  <- mon-iptables-regexps
  `mon-bind-doc-help-proprietery-vars-at-loadtime' <- mon-doc-help-proprietary\n
@@ -339,8 +340,9 @@ Adds feature requirements:\n
 `mon-load-or-alert', `mon-byte-compile-and-load', `mon-dump-object-to-file',
 `mon-nuke-and-eval'.\n►►►"
   (progn 
-    (eval-after-load "mon-dir-utils" '(mon-bind-nefs-photos-at-loadtime))
+    (eval-after-load "mon-dir-utils"      '(mon-bind-nefs-photos-at-loadtime))
     (eval-after-load "mon-doc-help-utils" '(mon-help-utils-loadtime))
+    (eval-after-load "mon-doc-help-CL"    '(mon-help-utils-CL-loadtime))
     ;; :NOTE See docs `mon-bind-cifs-vars-at-loadtime' and notes at BOF
     ;; mon-cifs-utils.el for alternative application with args 
     ;; NO-MISC-PATH NO-MAP-MOUNT-POINTS e.g.:
@@ -351,9 +353,9 @@ Adds feature requirements:\n
     (eval-after-load "mon-iptables-regexps"     '(mon-bind-iptables-vars-at-loadtime))
     (eval-after-load "mon-doc-help-proprietary" 
       '(progn
-        (mon-bind-doc-help-proprietery-vars-at-loadtime *mon-help-w32-CMD-commands-TEMP*)
-        (makunbound '*mon-help-w32-CMD-commands-TEMP*)
-        (unintern   '*mon-help-w32-CMD-commands-TEMP*)))
+        (unless (bound-and-true-p *mon-help-w32-CMD-commands-TEMP*)
+          (load-library "mon-doc-help-proprietary"))
+        (mon-bind-doc-help-proprietery-vars-at-loadtime *mon-help-w32-CMD-commands-TEMP*)))
     (eval-after-load "mon-wget-utils" 
       '(mon-check-feature-for-loadtime 'mon-get-mon-packages))
     (mon-check-feature-for-loadtime    'google-define-redux)
@@ -603,6 +605,7 @@ an identical value.\n
 :NOTE MON stores some local variables in `*mon-misc-path-alist*'. When this
 symbol is present values associated with the key ``the-emacs-vars'' will also included
 when generating the return value.\n
+:SEE info node `(emacs)General Variables'.\n
 :SEE-ALSO `mon-get-env-vars-strings', `mon-get-env-vars-symbols' `mon-get-system-specs',
 `mon-help-emacs-introspect', `mon-insert-sys-proc-list',
 `mon-get-sys-proc-list', `mon-get-proc-w-name', `mon-get-process',
@@ -615,9 +618,13 @@ when generating the return value.\n
                           (when (bound-and-true-p *mon-misc-path-alist*)
                             (cadr (assoc 'the-emacs-vars *mon-misc-path-alist*)))
                           (do* ((i '(;; :LENNART-EMACS-W32-VARS
-                                     EMACSCLIENT_STARTING_SERVER emacs_dir EMACS_SERVER_FILE ;SHELL ?
-                                     ;; :STANDARD-EMACS-VARS
-                                     EMACSLOADPATH EMACSDATA EMACSPATH EMACSDOC)   i)
+                                     EMACSCLIENT_STARTING_SERVER EMACS_SERVER_FILE
+                                     ;; :GNUS-MAIL
+                                     ;; MH NNTPSERVER REPLYTO SAVEDIR SMTPSERVER  MAIL
+                                     ;; ORGANIZATION VERSION_CONTROL HISTFILE EMAIL EMACS_UNIBYTE CDPATH
+                                     ;; :STANDARD-EMACS-VARS 
+                                     emacs_dir INFOPATH ESHELL  INCPATH
+                                     EMACSLOADPATH EMACSDATA EMACSPATH EMACSDOC SHELL TERM)   i)
                                 (j (pop i) (pop i))
                                 (k))
                                ((null j) (nreverse k))
@@ -650,9 +657,9 @@ when generating the return value.\n
 (defun mon-get-sys-proc-list ()
   "Return a full lisp list of current system-proceses.\n
 :EXAMPLE:\n(mon-get-sys-proc-list)\n
-:SEE-ALSO `mon-get-process',`mon-insert-sys-proc-list', 
-`mon-get-env-vars-strings', `mon-get-env-vars-symbols'
-`mon-get-env-vars-emacs', `mon-get-system-specs',
+:SEE-ALSO `mon-get-process',`mon-insert-sys-proc-list',
+`mon-help-process-functions', `mon-get-env-vars-strings',
+`mon-get-env-vars-symbols' `mon-get-env-vars-emacs', `mon-get-system-specs',
 `mon-help-emacs-introspect', `emacs-pid'.\n►►►"
   (mapcar #'(lambda (x) (process-attributes x))
            (list-system-processes)))
@@ -688,7 +695,7 @@ COMM (a string) is an executable name.
 On w32 it is not required give the .exe suffix.\n
 :EXAMPLE\n\(mon-get-proc-w-name \"emacs\"\)\n
 :SEE-ALSO `mon-get-process', `mon-get-sys-proc-list', `mon-get-sys-proc-list'.
-►►►"
+`mon-help-process-functions'.\n►►►"
   (let (fnd-proc gthr)
    (mapc #'(lambda (x)
            (let ((t-aso (assoc 'comm x)))
@@ -886,6 +893,7 @@ put following in conkerorrc file:
 `browse-url-generic-program',`browse-url-browser-function',
 `browse-url-generic'.\n►►►"
   (interactive "sWhat Url:")
+  (eval-when-compile (require 'browse-url))
   (if (string-match "conkeror" browse-url-generic-program)
       (cond 
        (IS-MON-P-W32 (browse-url-generic url))
@@ -1001,11 +1009,14 @@ Like `append-next-kill' but skips the C M-w M-w finger-chord hoop jump.
 :SEE-ALSO `mon-get-face-at-posn', `mon-help-faces', `mon-help-faces-basic',
 `mon-help-faces-themes'.\n►►►"
   (interactive "d")
-  (let ((face (or (get-char-property (point) 'read-face-name)
-		  (get-char-property (point) 'face))))
+  (let ((face (or (get-char-property (or pos (point)) 'read-face-name)
+		  (get-char-property (or pos (point)) 'face)
+                  (get-char-property (or pos (point)) 'font-lock-face)
+                  )))
     (if face
 	(message "Face: %s" face)
-      (message "No face at %d" pos))))
+        (message "No face at %d" (or pos (point))))))
+
 
 ;;; ==============================
 ;;; :COURTESY :FILE gnus-util.el :WAS `gnus-faces-at'
@@ -1083,6 +1094,20 @@ An alternative definition of `append-to-buffer' with a \"\n\".\n
 	(dolist (window windows)
 	  (when (= (window-point window) point)
 	    (set-window-point window (point))))))))
+
+;;; ==============================
+;;; :MODIFICATIONS <Timestamp: #{2010-03-20T12:59:35-04:00Z}#{10116} - by MON KEY>
+;;; :CREATED <Timestamp: #{2010-03-10T20:04:58-05:00Z}#{10104} - by MON KEY>
+(defun mon-g2be (&optional min/max)
+  "Move point as with `goto-char' to `point-max' or `point-min'.\n
+If optional arg MIN/MAX is non-nil and greater than 0 go to `point-max' else
+`point-min'.\n
+:EXAMPLE\n\n(mon-g2be)\n\n(mon-g2be 0)\n\n(mon-g2be 1)\n
+:SEE-ALSO `point-min', `point-max', `buffer-end'.\n►►►"
+  (goto-char
+   ;; :WAS (if (> min/max 0) (point-max) (point-min))))
+   (if (and min/max (> min/max 0))
+       (point-max) (point-min))))
 
 ;;; ==============================
 (defun mon-region-position ()
@@ -2428,6 +2453,26 @@ AFTER-STR is a simple string. No regexps, chars, numbers, lists, etc.\n
              (+ (mon-string-index in-str after-str) (length after-str))))
 ;;
 ;;; :TEST-ME (mon-string-after-index "string before ### string after" "###")
+
+;;; ==============================
+;;; :NOTE This is a slow implementation.
+;;; :CREATED <Timestamp: #{2010-03-23T17:38:29-04:00Z}#{10122} - by MON>
+(defun mon-string-sort-descending (list-to-sort)
+  "Destructively sort the list of strings by length in descending order.\n
+:EXAMPLE\n\n\(let \(\(mk-str-l\)\)
+  \(dotimes \(i 16 \(mon-string-sort-descending mk-str-l\)\)
+    \(push \(make-string \(random 24\) 42\) mk-str-l\)\)\)\n
+:SEE-ALSO .\n►►►"
+  (let ((mssd-srt-l list-to-sort)
+        (mssd-srt-pred #'(lambda (prd1 prd2) 
+                      (let ((prd1-l (length prd1))
+                            (prd2-l (length prd2)))
+                        (> prd1-l prd2-l)))))
+    (setq mssd-srt-l (sort mssd-srt-l mssd-srt-pred))))
+;;
+;;; :TEST-ME (let ((mk-str-l))
+;;;               (dotimes (i 16 (mon-string-sort-descending mk-str-l))
+;;;                 (push (make-string (random 24) 42) mk-str-l)))
 
 ;;; ==============================
 ;;; :COURTESY Pascal J. Bourguignon :HIS pjb-strings.el :WAS `string-position'
@@ -4008,9 +4053,9 @@ Does not move point.\n
 ;;; ==============================
 ;;; CREATED: <Timestamp: #{2009-10-21T14:27:09-04:00Z}#{09433} - by MON KEY>
 (defun mon-sha1-region (start end &optional insrtp intrp)
-  "Return the sha1sum for contents of region.
+  "Return the sha1sum for contents of region.\n
 When INSRTP is non-nil or called-interactively insert sha1 on newline.
-Does not move point.
+Does not move point.\n
 :SEE-ALSO `sha1-region', `sha1-string'.\n►►►."
   (interactive "r\ni\np")
   (eval-when-compile (require 'sha1))
@@ -4103,32 +4148,36 @@ Mostly useful as a code template for rectangle related functions.\n
 ;;; ==============================
 ;;; :COURTESY Alex Schroeder
 ;;; :MODIFICATIONS Charlie Hethcoat <- Improved number regex.
-(defun mon-rectangle-sum-column (start end)
+;;; :MODIFICATIONS <Timestamp: #{2010-03-09T14:47:59-05:00Z}#{10102} - by MON KEY>
+;;; Now dumps to temp-buffer. Added optional arg INTRP.
+(defun mon-rectangle-sum-column (start end &optional intrp)
   "Add all integer, decimal, and floating-point numbers in selected rectangle.\n
 Numbers which can be read include (nonexhaustive):\n
  2 +2 -2 2. +2. -2. 2.0 +2.0 -2.0 2e0 +2e0 -2e0 2E0 2e+0 2e-0, 2.e0, 2.0e0, etc.\n
 :SEE-ALSO `mon-rectangle-columns', `mon-string-incr-padded',
 `mon-line-number-region', `mon-string-incr', `mon-line-number-region-incr'.\n►►►"
-  (interactive "r")
-  (save-excursion
-    (kill-rectangle start end)
-    (exchange-point-and-mark)
-    (yank-rectangle)
-    (set-buffer (get-buffer-create "*calc-sum*"))
-    (erase-buffer)
-    (yank-rectangle)
-    (exchange-point-and-mark)
-    (let ((sum 0))
-      (while (re-search-forward
-              "[-+]?\\([0-9]+\\(\\.[0-9]*\\)?\\|\\.[0-9]+\\)\\([eE][-+]?[0-9]+\\)?"
-              nil t)
-        (setq sum (+ sum (string-to-number (match-string 0)))))
-      (message "Sum: %f" sum))))
+  (interactive "r\np")
+  (let ((rec-sumd 0))
+    (save-excursion
+      (kill-rectangle start end)
+      (exchange-point-and-mark)
+      (yank-rectangle)
+      ;; :WAS (set-buffer (get-buffer-create "*calc-sum*")) 
+      ;;        (erase-buffer) (yank-rectangle) (exchange-point-and-mark)
+      (with-temp-buffer
+        (save-excursion (yank-rectangle))
+        (while (re-search-forward
+                "[-+]?\\([0-9]+\\(\\.[0-9]*\\)?\\|\\.[0-9]+\\)\\([eE][-+]?[0-9]+\\)?"
+                nil t)
+          (setq rec-sumd (+ rec-sumd (string-to-number (match-string 0))))))
+      (if intrp
+          (message "Sum: %f" rec-sumd)
+          rec-sumd))))
 
 ;;; ==============================
-;;; :COURTESY Noah Friedman <friedman@splode.com> :HIS buffer-fns.el 
 ;;; :NOTE Functions for modifying buffer contents or display.
 ;;; Brings in `operation-on-rectangle' for the old-school holmessss.
+;;; :COURTESY Noah Friedman <friedman@splode.com> :HIS buffer-fns.el 
 ;;; :WAS `operate-on-rectangle' -> `apply-on-rectangle' -> `mon-rectangle-operate-on'
 ;;; ==============================
 (defun mon-rectangle-operate-on (function start end &rest args)
@@ -4136,9 +4185,9 @@ Numbers which can be read include (nonexhaustive):\n
 FUNCTION is called with two arguments: the start and end columns of the
 rectangle, plus ARGS extra arguments.  Point is at the beginning of line when
 the function is called.\n
+:SEE `apply-on-rectangle' in :FILE rect.el
 :SEE-ALSO `mon-rectangle-operate-on', `mon-rectangle-apply-on-region-points',
-`mon-rectangle-downcase', `mon-rectangle-upcase', `mon-rectangle-capitalize',
-and `apply-on-rectangle' in `rect.el'.\n►►►"
+`mon-rectangle-downcase', `mon-rectangle-upcase', `mon-rectangle-capitalize'.\n►►►"
   (let (startcol startpt endcol endpt)
     (save-excursion
       (goto-char start)
@@ -4358,6 +4407,7 @@ Helper function for `mon-view-help-source'\n
   "
 :SEE-ALSO `mon-test-props', `mon-line-test-content'.\n►►►"
   (interactive)
+  (eval-when-compile (require 'ffap))
   (unwind-protect			;body
        (let ((gb))
          (if (or (equal (buffer-name)(help-buffer))
@@ -4629,10 +4679,11 @@ When BUFFER is non-nil list its text-properties instead.\n
 Argument PROPERTY is the property to remove.
 Optional argument OBJECT is the string or buffer containing the text.
 Return t if the property was actually removed, nil otherwise.\n
-:SEE-ALSO `mon-remove-single-text-property', `remove-text-property',
+:SEE-ALSO `mon-remove-single-text-property', `remove-text-properties',
 `mon-nuke-text-properties-region', `add-text-properties', `put-text-property',
 `next-single-property-change', `mon-list-all-properties-in-buffer',
-`mon-help-text-property-functions', `mon-nuke-overlay-buffer'.\n►►►"
+`mon-nuke-overlay-buffer', `mon-help-text-property-functions', 
+`mon-help-text-property-functions-ext'.\n►►►"
   (remove-text-properties start end (list property) object))
 ;;
 ;;; :WAS `remove-single-text-property' -> ../emacs/lisp/font-lock.el
@@ -4644,7 +4695,7 @@ Optional argument OBJECT is the string or buffer containing the text.
 :SEE-ALSO `remove-text-property', `mon-nuke-text-properties-region',
 `mon-nuke-overlay-buffer', `add-text-properties', `put-text-property',
 `next-single-property-change', `mon-list-all-properties-in-buffer',
-`mon-help-text-property-functions'.\n►►►"
+`mon-help-text-property-functions', `mon-help-text-property-functions-ext'.\n►►►"
  (let ((start (text-property-not-all start end prop nil object)) next prev)
    (while start
      (setq next (next-single-property-change start prop object end)
@@ -4781,6 +4832,15 @@ When optional arg DO-EQ uses `memq'.\n
 	       (pop the-l2))
 	     (unless (null res)
                (setq res (nreverse res)))))))
+
+
+;;; (defun hfy-interq (set-a set-b)
+;;;   "Return the intersection \(using `eq'\) of 2 lists."
+;;;   (let ((sa set-a) (interq nil) (elt nil))
+;;;     (while sa
+;;;       (setq elt (car sa)
+;;;             sa  (cdr sa))
+;;;       (if (memq elt set-b) (setq interq (cons elt interq)))) interq))
 
 ;;; ==============================
 ;;; :COURTESY Jean-Marie Chauvet :HIS ncloseemacs-ml-dataset.el :WAS `sublist'
@@ -5369,11 +5429,10 @@ With ARG, begin column display at current column, not at left margin.\n
 ;;; :NOTE Commands for unbinding things.
 ;;; ==============================
 (defun mon-unbind-defun ()
-  "Unbind the `defun' near `point' in `current-buffer'.
+  "Unbind the `defun' near `point' in `current-buffer'.\n
 :SEE-ALSO `mon-unbind-command', `mon-unbind-symbol', `mon-unbind-function',
-`mon-unbind-variable', `mon-after-mon-utils-loadtime',
-`mon-compile-when-needed' `mon-load-or-alert', `mon-byte-compile-and-load',
-`mon-dump-object-to-file', `mon-nuke-and-eval',
+`mon-unbind-variable', `mon-compile-when-needed' `mon-load-or-alert',
+`mon-byte-compile-and-load', `mon-dump-object-to-file', `mon-nuke-and-eval',
 `mon-after-mon-utils-loadtime'.\n►►►"
   (interactive)
   (save-excursion
@@ -5385,10 +5444,9 @@ With ARG, begin column display at current column, not at left margin.\n
   "Totally unbind SYMBOL.\n
 Includes unbinding function binding, variable binding, and property list.\n
 :SEE-ALSO `mon-unbind-command', `mon-unbind-symbol', `mon-unbind-function',
-`mon-unbind-variable', `mon-unbind-defun', `mon-after-mon-utils-loadtime',
-`mon-compile-when-needed' `mon-load-or-alert', `mon-byte-compile-and-load',
-`mon-dump-object-to-file', `mon-nuke-and-eval',
-`mon-after-mon-utils-loadtime'.\n►►►"
+`mon-unbind-variable', `mon-unbind-defun', `mon-compile-when-needed'
+`mon-load-or-alert', `mon-byte-compile-and-load', `mon-dump-object-to-file',
+`mon-nuke-and-eval', `mon-after-mon-utils-loadtime'.\n►►►"
   (interactive "SSymbol: ")
   (fmakunbound symbol)
   (makunbound symbol)
@@ -5397,30 +5455,27 @@ Includes unbinding function binding, variable binding, and property list.\n
 (defun mon-unbind-function (fncn-symbol)
   "Remove the function binding of FNCN-SYMBOL.\n
 :SEE-ALSO `mon-unbind-command', `mon-unbind-symbol', `mon-unbind-function',
-`mon-unbind-variable', `mon-unbind-defun', `mon-after-mon-utils-loadtime',
-`mon-compile-when-needed' `mon-load-or-alert', `mon-byte-compile-and-load',
-`mon-dump-object-to-file', `mon-nuke-and-eval',
-`mon-after-mon-utils-loadtime'.\n►►►"
+`mon-unbind-variable', `mon-unbind-defun', `mon-compile-when-needed'
+`mon-load-or-alert', `mon-byte-compile-and-load', `mon-dump-object-to-file',
+`mon-nuke-and-eval', `mon-after-mon-utils-loadtime'.\n►►►"
   (interactive "aFunction: ")
   (fmakunbound fncn-symbol))
 ;; :KEEP-WITH-ABOVE
 (defun mon-unbind-command (cmd-symbol)
   "Remove the command binding of CMD-SYMBOL.\n
 :SEE-ALSO `mon-unbind-command', `mon-unbind-symbol', `mon-unbind-function',
-`mon-unbind-variable', `mon-unbind-defun', `mon-after-mon-utils-loadtime',
-`mon-compile-when-needed' `mon-load-or-alert', `mon-byte-compile-and-load',
-`mon-dump-object-to-file', `mon-nuke-and-eval',
-`mon-after-mon-utils-loadtime'.\n►►►"
+`mon-unbind-variable', `mon-unbind-defun', `mon-compile-when-needed'
+`mon-load-or-alert', `mon-byte-compile-and-load', `mon-dump-object-to-file',
+`mon-nuke-and-eval', `mon-after-mon-utils-loadtime'.\n►►►"
   (interactive "CCommand: ")
   (fmakunbound cmd-symbol))
 ;; :KEEP-WITH-ABOVE
 (defun mon-unbind-variable (var-symbol)
   "Remove the variable binding of VAR-SYMBOL.\n
 :SEE-ALSO `mon-unbind-command', `mon-unbind-symbol', `mon-unbind-function',
-`mon-unbind-variable', `mon-unbind-defun', `mon-after-mon-utils-loadtime',
-`mon-compile-when-needed' `mon-load-or-alert', `mon-byte-compile-and-load',
-`mon-dump-object-to-file', `mon-nuke-and-eval',
-`mon-after-mon-utils-loadtime'.\n►►►"
+`mon-unbind-variable', `mon-unbind-defun', `mon-compile-when-needed'
+`mon-load-or-alert', `mon-byte-compile-and-load', `mon-dump-object-to-file',
+`mon-nuke-and-eval', `mon-after-mon-utils-loadtime'.\n►►►"
   (interactive (list 
                 (completing-read "Variable: "
                                  (loop for s being the symbols
@@ -5446,10 +5501,9 @@ can be interesting way to save a persistent elisp object. Using `setf' combined
 with `eval-when-compile' is a convenient way to save lisp objects like
 hash-table.
 :SEE-ALSO `mon-unbind-command', `mon-unbind-symbol', `mon-unbind-function',
-`mon-unbind-variable', `mon-unbind-defun', `mon-after-mon-utils-loadtime',
-`mon-compile-when-needed' `mon-load-or-alert', `mon-byte-compile-and-load',
-`mon-dump-object-to-file', `mon-nuke-and-eval',
-`mon-after-mon-utils-loadtime'.\n►►►"
+`mon-unbind-variable', `mon-unbind-defun', `mon-compile-when-needed'
+`mon-load-or-alert', `mon-byte-compile-and-load', `mon-dump-object-to-file',
+`mon-nuke-and-eval', `mon-after-mon-utils-loadtime'.\n►►►"
   (require 'cl)          ;; Be sure we use the CL version of `eval-when-compile'.
   (if (file-exists-p file)
       (error "File already exists.")
@@ -5468,10 +5522,9 @@ hash-table.
   "Byte compile and load the current .el file.\n
 The function `byte-compile-file' was only easily accesible from the menu.\n
 :SEE-ALSO `mon-unbind-command', `mon-unbind-symbol', `mon-unbind-function',
-`mon-unbind-variable', `mon-unbind-defun', `mon-after-mon-utils-loadtime',
-`mon-compile-when-needed' `mon-load-or-alert', `mon-byte-compile-and-load',
-`mon-dump-object-to-file', `mon-nuke-and-eval',
-`mon-after-mon-utils-loadtime'.\n►►►"
+`mon-unbind-variable', `mon-unbind-defun', `mon-compile-when-needed'
+`mon-load-or-alert', `mon-byte-compile-and-load', `mon-dump-object-to-file',
+`mon-nuke-and-eval', `mon-after-mon-utils-loadtime'.\n►►►"
   (interactive)
   (byte-compile-file buffer-file-name t))
 
@@ -5485,10 +5538,9 @@ The function `byte-compile-file' was only easily accesible from the menu.\n
   "Compile the given file with COMP-FNAME only if needed.\n
 Add .el if required, and use `load-path' to find it.\n
 :SEE-ALSO `mon-unbind-command', `mon-unbind-symbol', `mon-unbind-function',
-`mon-unbind-variable', `mon-unbind-defun', `mon-after-mon-utils-loadtime',
-`mon-compile-when-needed' `mon-load-or-alert', `mon-byte-compile-and-load',
-`mon-dump-object-to-file', `mon-nuke-and-eval',
-`mon-after-mon-utils-loadtime'.\n►►►"
+`mon-unbind-variable', `mon-unbind-defun', `mon-compile-when-needed'
+`mon-load-or-alert', `mon-byte-compile-and-load', `mon-dump-object-to-file',
+`mon-nuke-and-eval', `mon-after-mon-utils-loadtime'.\n►►►"
   (if (not (string-match "\.el$" comp-fname))
       (mon-compile-when-needed (concat comp-fname ".el"))
     (mapc (lambda (dir)
@@ -5513,10 +5565,9 @@ When optional arg COMPILE-WHEN-NEEDED `mon-compile-when-needed' the file
 LIB-NAME first. Insert a warning message in a load-warning buffer in case of
 failure.\n
 :SEE-ALSO `mon-unbind-command', `mon-unbind-symbol', `mon-unbind-function',
-`mon-unbind-variable', `mon-unbind-defun', `mon-after-mon-utils-loadtime',
-`mon-compile-when-needed' `mon-load-or-alert', `mon-byte-compile-and-load',
-`mon-dump-object-to-file', `mon-nuke-and-eval',
-`mon-after-mon-utils-loadtime'.\n►►►"
+`mon-unbind-variable', `mon-unbind-defun', `mon-compile-when-needed'
+`mon-load-or-alert', `mon-byte-compile-and-load', `mon-dump-object-to-file',
+`mon-nuke-and-eval', `mon-after-mon-utils-loadtime'.\n►►►"
   (when compile-when-needed (mon-compile-when-needed lib-name))
   (if (load lib-name t nil) 
       t
@@ -5535,7 +5586,7 @@ failure.\n
 ;;; ==============================
 
 (eval-after-load "mon-utils" '(mon-after-mon-utils-loadtime))
-
+;;; mon-after-mon-utils-loadtime
 ;;; ==============================
 ;;; mon-utils.el ends here
 ;;; EOF

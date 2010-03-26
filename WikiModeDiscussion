@@ -6,7 +6,7 @@ There are two kinds of wiki modes:
 Wiki modes to edit pages on a remote wiki:
 
 * [http://launchpad.net/mediawiki-el
- MediaWiki] Mode - Edit Wikipedia and Mediawikis
+ MediaWiki] Mode - Edit Wikipedia and Mediawikis [[MediaWikiMode|Basic Documentation]]
 
 * ConfluenceMode -- tailored to the Confluence wiki software.
 * OddmuseMode -- tailored to Oddmuse wikis such as this one.

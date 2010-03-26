@@ -39,6 +39,11 @@ If you support other help systems, add `define-usage-memo' sexps in
   your annotation is shown when you look up the same entry!!
 
 == Dialog: ==
+[new:Memnon Anon:2010-03-26 02:17 UTC]
+This looks great, new user here ;).
+Just one question: I think it would be useful, if this functionality could be extended 
+to info pages. I have no insight into the interna of help and info, it could be very
+simple or just impossible. ... So I just have to ask ;). -- [[Memnon_Anon]]
 
 ---
 CategoryHelp
