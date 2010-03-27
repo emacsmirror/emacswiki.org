@@ -45,5 +45,6 @@ Just one question: I think it would be useful, if this functionality could be ex
 to info pages. I have no insight into the interna of help and info, it could be very
 simple or just impossible. ... So I just have to ask ;). -- [[Memnon_Anon]]
 
+Sorry, it is impossible for now, because help-mode does not use printable chars for input, but info-mode uses them for navigation. Thank you for your feedback :). -- [[rubikitch]]
 ---
 CategoryHelp

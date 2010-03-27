@@ -6,5 +6,12 @@ or Lisp:poker.el
 
 If you have ideas or code that you want to contribute, e-mail me at msabramo at yahoo dot com.
 
+
+Replace line 30 with :
+
+    (defconst poker-suits '(♥ ♦ ♠ ♣))
+
+and it look a litle bit nicer :-)
+
 ----
 CategoryGames

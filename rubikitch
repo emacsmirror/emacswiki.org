@@ -41,6 +41,7 @@ EevMode is my partner for years.
 *** Lisp:anything-kyr-config.el -- Configuration of anything-kyr.el
 ** Lisp:anything-rurima.el -- Ruby Reference Manual searcher in Japanese
 ** Lisp:anything-show-completion.el -- Show selection in buffer for anything completion
+** Lisp:eijiro.el -- Search Eijiro, Japanese <=> English dictionary, with [[Anything]]
 * EmacsLispExpectations -- Simple unit testing framework
 * EmacsLispMock -- Mock/Stub framework
 * Lisp:shell-history.el -- Add command of `shell-command'(etc) to shell history file

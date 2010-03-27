@@ -115,6 +115,11 @@
 
 ;;; Change log:
 ;;
+;; 2010/03/27
+;;   * rubikitch:
+;;      * Fix a bug of handling same tags. I tested in Ruby code.
+;;      * With that, slight changes in display.
+;;
 ;; 2009/04/04
 ;;   * Thierry Volpiatto:
 ;;      * Regexp change in `anything-c-etags-get-line'.
@@ -368,6 +373,7 @@ Try to find tag file in upper directory if haven't found in CURRENT-DIR."
 (defun anything-etags-find-tag (candidate)
   "Find tag that match CANDIDATE from `anything-etags-tag-buffer'.
 And switch buffer and jump tag position.."
+  (setq candidate (replace-regexp-in-string " +\177" "\177" candidate))
   (catch 'failed
     (let (file-name tag tag-info)
       (set-buffer (anything-candidate-buffer))
@@ -379,8 +385,9 @@ And switch buffer and jump tag position.."
         (message "failed")
         (throw 'failed nil))
       (re-search-backward "\x0c\n\\(.+\\),[0-9]+\n" nil t)
-      (setq file-name (expand-file-name (match-string 1)
-                                        anything-etags-tag-file-dir))
+      (setq file-name (and (match-string 1)
+                           (expand-file-name (match-string 1)
+                                             anything-etags-tag-file-dir)))
       (unless (and file-name
                    (file-exists-p file-name))
         (message "Can't find target file: %s" file-name)
@@ -390,11 +397,14 @@ And switch buffer and jump tag position.."
       (find-file file-name)
       (etags-goto-tag-location tag-info))))
 
-(defun anything-c-etags-get-line (s e)
+;;; Rationale: ~/memo/junk/2010-03-27-053504.anything-etags-test.rb
+(defun* anything-c-etags-get-line (s e &optional (width (- (window-width) 6)))
   (let ((substr (buffer-substring s e)))
     (unless (string-match "^/.*/.[^,]*\\|^\x0c\\|^\\<.*/.[^,]*" substr)
       (anything-aif (string-match "\177" substr)
-          (substring substr 0 it)
+          (concat (substring substr 0 (match-beginning 0))
+                  (or (ignore-errors (make-string (- width (length substr)) ? )) "")
+                  (substring substr (match-beginning 0)))
         substr))))
 
 (defun anything-c-etags-goto-location (candidate)

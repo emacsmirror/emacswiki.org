@@ -83,3 +83,140 @@ variable `wl-message-sort-field-list':
    "^To:"
    "^Cc:"))
 }}}
+
+== Can I send html messages? ==
+
+If you have to or it is appropriate: Yes, code below does the trick of
+converting the message body into html before sending.  It requires
+[OrgMode] to be installed because the conversion is done by Org mode's
+html export function.
+
+Org is shipped with Emacs since 22.1 (iirc); you might also profit of
+the minor modes orgstruc-mode, orgstruc++-mode and orgtbl-mode for
+editing messages even if you don't want to send html messages: these
+minor modes give the power of Org's outlining features (headlines,
+bullet lists) and the table editor.  For information on these minor
+modes see
+[http://orgmode.org/manual/Orgstruct-mode.html#Orgstruct-mode here]
+and [http://orgmode.org/manual/Orgtbl-mode.html#Orgtbl-mode here].
+
+Back to sending html messages: Putting code below in your startup file
+adds following four functions:
+
+   - dmj/wl-send-html-message
+
+     Function that does the job: Convert everything between "--text
+     follows this line--" and first mime entity (read: attachment) or
+     end of buffer into html markup using `org-export-region-as-html'
+     and replaces original body with a multipart MIME entity with the
+     plain text version of body and the html markup version.  Thus a
+     recipient that prefers html messages can see the html markup,
+     recipients that prefer or depend on plain text can see the plain
+     text.
+
+     Line breaks in the signature are preserved.
+
+     Cannot be called interactively: It is hooked into SEMI's
+     `mime-edit-translate-hook' if message should be html message.
+
+   - dmj/wl-send-html-message-draft-init
+
+     Cannot be called interactively: It is hooked into WL's
+     `wl-mail-setup-hook' and `wl-draft-reedit-hook' and provides a
+     buffer local variable to toggle.
+
+   - dmj/wl-send-html-message-draft-maybe
+
+     Cannot be called interactively: It is hooked into WL's
+     `wl-draft-send-hook' and hooks `dmj/wl-send-html-message' into
+     `mime-edit-translate-hook' depending on whether html message is
+     toggled on or off
+
+   - dmj/wl-send-html-message-toggle
+
+     Toggles sending of html message.  If toggled on, the letters
+     "HTML" appear in the mode line.
+
+     Call it interactively!  Or bind it to a key in `wl-draft-mode'.
+
+Everything besides a keybinding of `dmj/wl-send-html-message-toggle'
+is done upon loading the code.  If you have to send html messages
+regularily you can set a global variable
+`dmj/wl-send-html-message-toggled-p' to the string "HTML" to enable
+html messages by default.
+
+{{{
+(defun dmj/wl-send-html-message ()
+  "Send message as html message.
+  Convert body of message to html using
+  `org-export-region-as-html'."
+  (require 'org)
+  (save-excursion
+    (let (beg end html text)
+      (goto-char (point-min))
+      (re-search-forward "^--text follows this line--$")
+      ;; move to beginning of next line
+      (beginning-of-line 2)
+      (setq beg (point))
+      (if (not (re-search-forward "^--\\[\\[" nil t))
+          (setq end (point-max))
+        ;; line up
+        (end-of-line 0)
+        (setq end (point)))
+      ;; grab body
+      (setq text (buffer-substring-no-properties beg end))
+      ;; convert to html
+      (with-temp-buffer
+        (org-mode)
+        (insert text)
+        ;; handle signature
+        (when (re-search-backward "^-- \n" nil t)
+          ;; preserve link breaks in signature
+          (insert "\n#+BEGIN_VERSE\n")
+          (goto-char (point-max))
+          (insert "\n#+END_VERSE\n")
+          ;; grab html
+          (setq html (org-export-region-as-html
+                      (point-min) (point-max) t 'string))))
+      (delete-region beg end)
+      (insert
+       (concat
+	"--" "<<alternative>>-{\n"
+	"--" "[[text/plain]]\n" text
+        "--" "[[text/html]]\n"  html
+	"--" "}-<<alternative>>\n")))))
+
+(defun dmj/wl-send-html-message-toggle ()
+  "Toggle sending of html message."
+  (interactive)
+  (setq dmj/wl-send-html-message-toggled-p
+        (if dmj/wl-send-html-message-toggled-p
+            nil "HTML"))
+  (message "Sending html message toggled %s"
+           (if dmj/wl-send-html-message-toggled-p
+               "on" "off")))
+
+(defun dmj/wl-send-html-message-draft-init ()
+  "Create buffer local settings for maybe sending html message."
+  (unless (boundp 'dmj/wl-send-html-message-toggled-p)
+    (setq dmj/wl-send-html-message-toggled-p nil))
+  (make-variable-buffer-local 'dmj/wl-send-html-message-toggled-p)
+  (add-to-list 'global-mode-string
+               '(:eval (if (eq major-mode 'wl-draft-mode)
+                           dmj/wl-send-html-message-toggled-p))))
+
+(defun dmj/wl-send-html-message-maybe ()
+  "Maybe send this message as html message.
+
+If buffer local variable `dmj/wl-send-html-message-toggled-p' is
+non-nil, add `dmj/wl-send-html-message' to
+`mime-edit-translate-hook'."
+  (if dmj/wl-send-html-message-toggled-p
+      (add-hook 'mime-edit-translate-hook 'dmj/wl-send-html-message)
+    (remove-hook 'mime-edit-translate-hook 'dmj/wl-send-html-message)))
+
+(add-hook 'wl-draft-reedit-hook dmj/wl-send-html-message-draft-init)
+(add-hook 'wl-mail-setup-hook 'dmj/wl-send-html-message-draft-init)
+(add-hook 'wl-draft-send-hook 'dmj/wl-send-html-message-maybe)
+}}}
+

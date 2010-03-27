@@ -32,14 +32,14 @@
 ;; `mon-insert-string-n-times', `mon-lisp-evald', `comment-divider',
 ;; `mon-comment-divider-to-col-four', `php-comment-divider', `mon-insert-copyright',
 ;; `mon-insert-file-in-dirs', `mon-insert-dirs-in-path', `mon-insert-wht-spc',
-;; `mon-insert-newlines', `mon-insert-defclass-template'
-;; `mon-insert-regexp-template-yyyy'`mon-insert-regexp-template'
+;; `mon-insert-newlines', `mon-insert-defclass-template',
+;; `mon-insert-regexp-template-yyyy'`mon-insert-regexp-template',
 ;; `mon-insert-CL-file-template', `mon-insert-CL-package-template',
 ;; `mon-insert-user-name-cond', `mon-insert-system-type-cond',
-;; `mon-insert-gnu-licence', `mon-insert-gnu-licence-gfdl' 
-;; `mon-build-copyright-string', `mon-comput-33', `mon-comput-45'
-;; `mon-split-designator', `mon-build-copyright-string-TEST'
-;; `mon-build-copyright-string-license'
+;; `mon-insert-gnu-licence', `mon-insert-gnu-licence-gfdl' ,
+;; `mon-build-copyright-string', `mon-comput-33', `mon-comput-45',
+;; `mon-split-designator', `mon-build-copyright-string-TEST',
+;; `mon-build-copyright-string-license',
 ;; FUNCTIONS:◄◄◄
 ;;
 ;; MACROS: 
@@ -57,8 +57,8 @@
 ;; `*mon-gnu-license-header-gfdl*',
 ;; 
 ;; ALIASED/ADIVISED/SUBST'D:
-;; `mon-comment-divider->col' -> `mon-comment-divider-to-col'
-;; `bug-insert-copyright'     -> `mon-insert-copyright'
+;; `mon-comment-divider->col'            -> `mon-comment-divider-to-col'
+;; `bug-insert-copyright'                -> `mon-insert-copyright'
 ;;
 ;; RENAMED:
 ;; `mon-lisp-comment-to-col'             -> `mon-comment-lisp-to-col'
@@ -70,7 +70,7 @@
 ;; `mon-insert-numbers-padded'           -> `mon-string-incr-padded'
 ;;
 ;; RENAMED-AND-MOVED:
-;; Following moved to `mon-doc-help-utils.el' and renamed *insert* -> *help*
+;; Following moved to `mon-doc-help-utils.el' and renamed *insert* -> *Help*
 ;; `mon-insert-file-dir-functions'       -> `mon-help-file-dir-functions'
 ;; `mon-insert-install-info-incantation' -> `mon-help-install-info-incantation'
 ;; `mon-insert-rename-incantation'       -> `mon-help-rename-incantation'
@@ -82,18 +82,18 @@
 ;; `mon-incr'                            -> `mon-string-incr'
 ;;
 ;; MOVED: 
-;; `mon-insert-user-name-cond'       <- mon-w32-load.el
-;; `mon-insert-system-type-cond'     <- mon-w32-load.el
-;; `mon-insert-regexp-template-yyyy' <- naf-mode-replacement-utils.el
-;; `mon-accessed-stamp'              -> mon-time-utils.el
-;; `mon-stamp'                       -> mon-time-utils.el
-;; `mon-timestamp'                   -> mon-time-utils.el
-;; `mon-accessed-time-stamp'         -> mon-time-utils.el
-;; `*mon-hgignore-template*'         -> mon-bzr-utils.el
-;; `mon-insert-hgignore-template'    -> mon-bzr-utils.el
-;; `mon-insert-lisp-testme-fancy'    -> mon-testme-utils.el
-;; `mon-insert-test-cases'           -> mon-testme-utils.el
-;; `mon-insert-lisp-testme'          -> mon-testme-utils.el
+;; `mon-insert-user-name-cond'           <- mon-w32-load.el
+;; `mon-insert-system-type-cond'         <- mon-w32-load.el
+;; `mon-insert-regexp-template-yyyy'     <- naf-mode-replacement-utils.el
+;; `mon-accessed-stamp'                  -> mon-time-utils.el
+;; `mon-stamp'                           -> mon-time-utils.el
+;; `mon-timestamp'                       -> mon-time-utils.el
+;; `mon-accessed-time-stamp'             -> mon-time-utils.el
+;; `*mon-hgignore-template*'             -> mon-bzr-utils.el
+;; `mon-insert-hgignore-template'        -> mon-bzr-utils.el
+;; `mon-insert-lisp-testme-fancy'        -> mon-testme-utils.el
+;; `mon-insert-test-cases'               -> mon-testme-utils.el
+;; `mon-insert-lisp-testme'              -> mon-testme-utils.el
 ;;
 ;; REQUIRES:
 ;; :FILE mon-time-utils.el  
@@ -106,6 +106,9 @@
 ;;
 ;; :FILE mon-site-local-defaults.el
 ;; `*MON-NAME*'
+;;
+;; :LINK (URL `http://www.emacswiki.org/emacs/mon-doc-help-utils.el')
+;; :FUNCTION `mon-help-propertize-tags' :CALLED-BY `mon-build-copyright-string-TEST'
 ;; 
 ;; TODO:
 ;; Build a progn makunbound unintern template, e.g.:
@@ -172,7 +175,11 @@
 (defmacro mon-print-in-buffer-if-p (print-type form)
   "When buffer is writable print FORM with PRINT-TYPE.\n
 Otherwise, just return the printed value of form.\n
-:SEE-ALSO .\n►►►"
+:SEE-ALSO `mon-buffer-exists-so-kill', `mon-buffer-written-p',
+`mon-buffer-exists-p', `mon-buffer-name->kill-ring', `mon-with-file-buffer',
+`mon-get-buffers-parent-dir', `mon-get-proc-buffers-directories',
+`mon-get-buffers-directories', `mon-split-string-buffer-name',
+`mon-split-string-buffer-parent-dir'.\n►►►"
   `(,print-type 
     ,form
     ,(if (and (not buffer-read-only)
@@ -187,13 +194,13 @@ Otherwise, just return the printed value of form.\n
 ;;;        (progn
 ;;;          (set-buffer (get-buffer "*Help*"))
 ;;;          (mon-print-in-buffer-if-p princ (buffer-name)))
-;;;     (set-buffer this)))
+;;;     (set-buffer this))
 
 ;;; ==============================
 (defun mon-insert-dirs-in-path (dir-list dir-path)
   "Directory elts held by symbol DIR-LIST (list of strings) are inserted in DIR-PATH.\n
 Does minimal error checking, shouldn't be trusted for unfamilar pathnames.\n
-:SEE-ALSO .\n►►►"
+:SEE-ALSO `mon-insert-file-in-dirs'.\n►►►"
   (interactive "XSymbol holding list of directorys to create:\nDPath to insert to :")
   (let ((make-list dir-list) 
 	(into-path dir-path)	
@@ -258,7 +265,8 @@ Creates the following directorys and files in c:/home/my-dirs :
                   `-- Name-Part4.dbc\n
 :NOTE dir & file names with 'flagged' characters are transformed where
 appropriate.\n
-:SEE-ALSO .\n►►►"
+:SEE-ALSO `mon-write-jg-file-in-path' `mon-make-jg-dir-in-path'
+`mon-format-jg-file-for-write'.\n►►►"
   (interactive 
    "XGive Symbol holding dir/file list :\nXGive Symbol holing insert-text :\nsFile extenison :")
   (while make-dir-list 
@@ -323,6 +331,8 @@ newline is:\n- code point: '0x0A';\n- character: C-j (10, #o12, #xa);\n- old-nam
 ;;; ==============================
 ;;; :MODIFICATIONS <Timestamp: #{2010-02-12T15:30:25-05:00Z}#{10065} - by MON KEY>
 ;;; Cleaned up some un-needed local vars. Only insert return value when intrp insrtp.
+;;; :MODIFICATIONS <Timestamp: #{2010-03-17T17:56:25-04:00Z}#{10113} - by MON KEY>
+;;; Now uses `mon-naf-mode-toggle-restore-llm' macro.
 ;;; :CREATED <Timestamp: Tuesday April 07, 2009 @ 11:35.38 AM - by MON KEY>
 (defun mon-insert-string-n-fancy-times (&optional intrp put-count string-to-put
                                         w-newline w-delim delim w-whtspc insrtp)
@@ -406,15 +416,20 @@ Does not move point.\n
                     (insert (format "%s%s" put-string delim-put))
                     (setq put-cnt (1- put-cnt)))
                   (buffer-substring-no-properties (buffer-end 0)(buffer-end 1))))
-  (if (or insrtp intrp)
-      (let ((llm-tgl (buffer-local-value longlines-mode (current-buffer))))
-        (unwind-protect
-             (save-excursion
-               (when llm-tgl (longlines-mode 0))
-               (newline)
-               (insert rtn-put))
-          (when llm-tgl (longlines-mode))))
-      rtn-put)))
+    ;; :WAS 
+    ;;  (if (or insrtp intrp)
+    ;; (let ((llm-tgl (buffer-local-value longlines-mode (current-buffer))))
+    ;; (unwind-protect
+    ;;      (save-excursion
+    ;;        (when llm-tgl (longlines-mode 0))
+    ;;        (newline)
+    ;;        (insert rtn-put))
+    ;;   (when llm-tgl (longlines-mode))))
+    ;; rtn-put)))
+    (if (or insrtp intrp)
+        (mon-naf-mode-toggle-restore-llm nil 
+          (save-excursion (newline)(insert rtn-put)))
+        rtn-put)))
 ;;
 ;;; :TEST-ME (mon-insert-string-n-fancy-times nil 4 "bubba" nil nil nil)
 ;;; :TEST-ME (mon-insert-string-n-fancy-times nil 4 "bubba" nil nil nil t)
@@ -499,11 +514,11 @@ Does not move point.\n
 ;;
 ;;; :TEST-ME (mon-string-incr-padded 88 120 1)
 
-
 ;;; ==============================
+;;; :MODIFICATIONS <Timestamp: #{2010-03-17T17:59:42-04:00Z}#{10113} - by MON KEY>
 ;;; :CREATED <Timestamp: Tuesday February 03, 2009 @ 03:41.17 PM - by MON KEY>
 (defun mon-string-incr (start-w end-w step-w &optional w-delim delimiter
-                               w-newln w-wspc insertp intrp)
+                               w-newln w-wspc insrtp intrp)
   "Increment a range of numbers from START-W to END-W by STEP-W.\n
 START-W a number to increment from.\n
 END-W a number to increment to.\n
@@ -523,34 +538,34 @@ When \"With delimiter?: \" is non-nil prompt:\n\n \"Delimit range with: \"\n
 When both \"With delimiter?\" and \"Insert newlines?\" are nil prompt:\n
  \"Interleave range with whitespace?: \"\n
 :EXAMPLE\n\n;;  1-100 by 5
-\(mon-insert-string-incr 1 100 5\)\n
+\(mon-string-incr 1 100 5\)\n
 ;;  1-100 by 5 inteleaved with \" | \"
-\(mon-insert-string-incr 1 100 5 t \" | \"\)\n
+\(mon-string-incr 1 100 5 t \" | \"\)\n
 ;; 1-100 by 5 inteleaved with \".\" add newline
-\(mon-insert-string-incr 1 100 5 t \".\" t\)\n
+\(mon-string-incr 1 100 5 t \".\" t\)\n
 ;; 1-100 by 5 add whitespace
-\(mon-insert-string-incr 1 100 5 nil nil nil t\)\n
+\(mon-string-incr 1 100 5 nil nil nil t\)\n
 ;; 1-100 by 5 w/bogus args (but don't fail)
-\(mon-insert-string-incr 1 100 5 t nil nil t\)\n
-\(mon-insert-string-incr 1 100 5 t t nil nil\)\n
-\(mon-insert-string-incr 1 100 5 nil t nil t\)\n
-\(mon-insert-string-incr 1 100 5 nil nil t t\)\n
+\(mon-string-incr 1 100 5 t nil nil t\)\n
+\(mon-string-incr 1 100 5 t t nil nil\)\n
+\(mon-string-incr 1 100 5 nil t nil t\)\n
+\(mon-string-incr 1 100 5 nil nil t t\)\n
 ;; 1-5005 by 5 - Signal an error
-\(mon-insert-string-incr 1 5005 5\)\n
+\(mon-string-incr 1 5005 5\)\n
 :NOTE If the range specified will step over 1000 increments signal an error.\n
 :SEE-ALSO `mon-string-incr-padded', `mon-line-number-region', 
 `mon-line-number-region-incr', `mon-rectangle-sum-column'.\n►►►"
-  (interactive `(,(read-number "Increment from number: ")  ;;start-w
+  (interactive `(,(read-number "Increment from number: ")  ;; start-w
                   ,(read-number "Increment to number: ")   ;; end-w
                   ,(read-number "Step by increments of: ") ;; step-w
-                  ,(yes-or-no-p "With delimiter? ")        ;; w-delim
+                  ,(yes-or-no-p "With delimiter?: ")       ;; w-delim
                   ,(read-string "Delimit range with: ")    ;; delimiter
-                  ,(yes-or-no-p "Insert newlines? ")       ;; w-newln
+                  ,(yes-or-no-p "Insert newlines?: ")      ;; w-newln
                   nil                                      ;; w-wspc
                   nil                                      ;; insertp
                   t))                                      ;; intrp
   (catch 'mon-incr-big-range 
-    (let* ((this-func ":FUNCTION mon-insert-string-incr")
+    (let* ((this-func ":FUNCTION mon-string-incr")
            (start-incr (if intrp start-w 
                            (cond ((numberp start-w) start-w)
                                  ((stringp start-w) (string-to-number start-w))
@@ -571,7 +586,9 @@ When both \"With delimiter?\" and \"Insert newlines?\" are nil prompt:\n
                                            "for the little man in Emacs.\n"
                                            "He won't schlep that range!"))
                           (sit-for 2)
-                          (throw 'mon-incr-big-range (funcall 'mon-insert-string-incr)))
+                          ;; :WAS (throw 'mon-incr-big-range (funcall 'mon-string-incr)))
+                          (throw 'mon-incr-big-range 
+                            (call-interactively 'mon-string-incr)))
                   (error "%s - Arg STEP-W steps over 1000 times" this-func))))
            (dlm (if intrp delimiter
                     (cond ((stringp delimiter) delimiter)
@@ -608,52 +625,96 @@ When both \"With delimiter?\" and \"Insert newlines?\" are nil prompt:\n
                   (princ (format "%d%s" start-incr delim) (current-buffer)))
                 (setq start-incr (+ step-value start-incr)))
               (buffer-substring-no-properties (buffer-end 0) (buffer-end 1))))
-      (if (or insertp intrp)
-          (save-excursion 
-            (unwind-protect
-                 (let ((is-on (buffer-local-value longlines-mode (current-buffer)))
-                       llm-off)
-                   (when is-on (longlines-mode 0) (setq llm-off 't))
-                   (newline) (insert the-incr)
-                   (when llm-off (longlines-mode 1) (setq llm-off 'nil)))))
-          the-incr))))
+      ;; :WAS
+      ;; (if (or insertp intrp)
+      ;;     (save-excursion 
+      ;;       (unwind-protect
+      ;;            (let ((is-on (buffer-local-value longlines-mode (current-buffer)))
+      ;;                  llm-off)
+      ;;              (when is-on (longlines-mode 0) (setq llm-off 't))
+      ;;              (newline) (insert the-incr)
+      ;;              (when llm-off (longlines-mode 1) (setq llm-off 'nil)))))
+      ;;     the-incr)
+      (if (or insrtp intrp)
+          (mon-naf-mode-toggle-restore-llm nil 
+            (save-excursion 
+              (newline) (insert the-incr)))
+          the-incr)
+      )))
 ;;
 ;;;  1-100 by 5 
-;;; :TEST-ME  (mon-insert-string-incr 1 100 5)
+;;; :TEST-ME  (mon-string-incr 1 100 5)
 ;;;  1-100 by 5 inteleaved with " | "
-;;; :TEST-ME (mon-insert-string-incr 1 100 5 t " | ")
+;;; :TEST-ME (mon-string-incr 1 100 5 t " | ")
 ;;;  1-100 by 5 inteleaved with "." add newline
-;;; :TEST-ME (mon-insert-string-incr 1 100 5 t "." t)
+;;; :TEST-ME (mon-string-incr 1 100 5 t "." t)
 ;;;  1-100 by 5 add whitespace
-;;; :TEST-ME (mon-insert-string-incr 1 100 5 nil nil nil t)
+;;; :TEST-ME (mon-string-incr 1 100 5 nil nil nil t)
 ;;;  1-100 by 5 w/bogus args (but don't fail)
-;;; :TEST-ME (mon-insert-string-incr 1 100 5 t nil nil  t) 
-;;; :TEST-ME (mon-insert-string-incr 1 100 5 t t nil nil) 
-;;; :TEST-ME (mon-insert-string-incr 1 100 5 nil t nil t)
-;;; :TEST-ME (mon-insert-string-incr 1 100 5 nil nil t t)
+;;; :TEST-ME (mon-string-incr 1 100 5 t nil nil  t) 
+;;; :TEST-ME (mon-string-incr 1 100 5 t t nil nil) 
+;;; :TEST-ME (mon-string-incr 1 100 5 nil t nil t)
+;;; :TEST-ME (mon-string-incr 1 100 5 nil nil t t)
+
 
 ;;; ==============================
 ;;; :MODIFICATIONS-OF Drew Adams' :HIS strings.el
 ;;; :CREATED <Timestamp: Thursday February 19, 2009 @ 06:31.47 PM - by MON KEY>
-(defun mon-line-drop-in-words (&optional buffer) 
- "Split current line of text in BUFFER into single words.\n
-The split line inserted with each word on a new line.\n
+(defun mon-line-drop-in-words (&optional buffer-w-line split-on keep-nulls insrtp intrp)
+  "Split current line of text in the buffer BUFFER-W-LINE into single words.\n
+BUFFER-W-LINE names a buffer to get line from.
+When optional arg SPLIT-ON is non-nil `split-string' with SPLIT-ON else defaults
+to value of `split-string-default-separators'.
+When optional arg KEEP-NULLS is non-nil keep zero length substrings.
+The split line inserted with each word on a new line in `current-buffer'.\n
 :SEE-ALSO `mon-line-strings-to-list', `mon-string-ify-list',
 `mon-insert-string-ify',`mon-string-split-line', `mon-word-get-list-in-buffer'.\n►►►"
-  (interactive)
-  (let ((buffer (or buffer (current-buffer))))
-    (save-excursion
-      (set-buffer buffer)
-      (let* ((line-as-string (buffer-substring-no-properties
-			      (progn (end-of-line 1) (point))
-			      (progn (beginning-of-line 1) (point))))
-             (line-o-strings (split-string line-as-string)))
-	(progn 
-	  (newline)
-	  (mapc #'(lambda (arg)
-                    (princ arg (current-buffer))
-                    (newline))
-                line-o-strings))))))
+  (interactive "i\nP\ni\ni\np")
+  (let ((line-o-strings 
+         #'(lambda (str)
+             (let (str-rtn)
+               (cond ((and intrp split-on)
+                      (save-match-data 
+                        (setq str-rtn
+                              (split-string str (read-regexp "regexp to split with: ") (if keep-nulls nil t)))))
+                     (t (setq str-rtn
+                              (save-match-data (split-string str split-on (if keep-nulls nil t))))))
+               (setq str-rtn (mapconcat #'identity str-rtn "\n")))))
+        (in-bfr (cond ((and buffer-w-line (get-buffer buffer-w-line))
+                       (get-buffer buffer-w-line))
+                      ((and buffer-w-line (not (get-buffer buffer-w-line)))
+                       (error ":FUNCTION `mon-line-drop-in-words' - Arg BUFFER-W-LINE does not exist"))
+                      (t (current-buffer))))
+        (w-insrt #'(lambda (insrt-typ insrt-str &optional insrt-at)
+                     (case insrt-typ
+                       ;; Interactive calls don't pass BUFFER. 
+                       ;; Safe to move point and insert in `current-buffer'.                    
+                       (intrp (save-excursion 
+                                (goto-char (marker-position insrt-at))
+                                (newline)
+                                (princ insrt-str (current-buffer))))
+                       ;; We don't know which buffer we're in so move point.
+                       (insrtp 
+                        (goto-char (or (marker-position insrt-at) (line-end-position)))
+                        (princ insrt-str (current-buffer))))))
+        line-as-string)
+    (with-current-buffer (get-buffer in-bfr)
+      (setq line-as-string ;; :NOTE `inhibit-field-text-motion' here if reqd. Default binding is nil.
+            (buffer-substring-no-properties (line-end-position) (line-beginning-position)))
+      (setq line-as-string (funcall line-o-strings line-as-string)))
+    (if (or insrtp intrp)
+            ;; check if `mon-naf-mode-toggle-restore-llm' is avaialbe in environement.
+            ;; If we're in a `naf-mode' buffer we need to toggle `longlines-mode' first
+            ;; We need the marker to make sure that insertion happens at ``soft'' newlines.
+            (if (fboundp 'mon-naf-mode-toggle-restore-llm)
+                (let (mrk-eol-myb)
+                  (when intrp 
+                    (setq mrk-eol-myb (make-marker))
+                    (set-marker mrk-eol-myb (line-end-position)))
+                  (mon-naf-mode-toggle-restore-llm nil
+                    (funcall w-insrt (if insrtp 'insrtp 'intrp) line-as-string mrk-eol-myb)))
+                (funcall w-insrt (if insrtp 'insrtp 'intrp) line-as-string))
+            line-as-string)))
 
 ;;; =======================
 ;;; :RENAMED `mon-interactively-stringify' -> `mon-insert-string-ify'
@@ -695,7 +756,8 @@ option 2 w/ arg RIGHT SINGLE QUOTATION MARK => (\"’\" nil t)\n
 from Unicode charts :SEE (URL `http://www.decodeunicode.org/u+2019').\n
 For access/alteration to encoding/coding information
 :SEE `encode-coding-region', `describe-coding-system', `unicode-insert'.
-:SEE-ALSO .\n►►►"
+:SEE-ALSO `ucs-insert', `mon-help-char-functions', `mon-help-diacritics', 
+`mon-help-char-representation'.\n►►►"
   (interactive `(,@(let* ((rd-types (list "1 Unicode char in radix 16 e.g. '25BA'"
                                           "2 Unicode char by name w/ completion (octal, hex, decimal)"))
                           (rd-type (completing-read "read Unicode as " rd-types nil t))
@@ -795,7 +857,7 @@ When NOT-INSERT is non-nil return comment divider as string.\n
 ;;; :TEST-ME (call-interactively 'comment-divider)
 
 ;;; ==============================
-;; :TODO In lieu of the refactoring of commint-divider functions 
+;; :TODO In lieu of the refactoring of `comment-divider' functions 
 ;;; E.g. `*mon-default-comment-start*', `mon-comment-divider-w-len' 
 ;;; `*mon-default-comment-divider*', etc. some of this funcs subrs can be
 ;;; formulated differently and/or ommitted. For example, the local var `dvdr'
@@ -1058,7 +1120,7 @@ Yank it back from the kill-ring if that is what you want.\n
 ;;; :TEST-ME (call-interactively 'mon-insert-regexp-template-yyyy)
 
 ;;; ==============================
-;;; :MODIFICATIONS <Timestamp: #{2010-02-01T16:42:46-05:00Z}#{10051} - by MON KEY>r
+;;; :MODIFICATIONS <Timestamp: #{2010-02-01T16:42:46-05:00Z}#{10051} - by MON KEY>
 ;;; :MODIFICATIONS <Timestamp: 2009-08-01-W31-6T16:11:16-0400Z - by MON KEY>
 ;;; :CREATED <Timestamp: Saturday July 11, 2009 @ 12:15.02 PM - by MON KEY>
 (defun mon-insert-lisp-CL-file-template (&optional insrtp intrp)
@@ -1251,7 +1313,6 @@ chars depending value of arg MONKEY or W-ORG.\n
                             (mon-comment-divider-w-len 50)) ;; 54
                            (t (mon-comment-divider-w-len 64)))) ;; 68
         cpy)
-    ;; (an(or w-org All Rights Reserverd.
     (setq cpy
           (if no-nl
               (concat
@@ -1287,6 +1348,7 @@ chars depending value of arg MONKEY or W-ORG.\n
 ;;; :TEST-ME (call-interactively 'mon-build-copyright-string)
 
 ;;; ==============================
+;;; :NOTE Calls `mon-help-propertize-tags' when available.
 ;;; :MODIFICATIONS <Timestamp: #{2010-03-03T14:42:53-05:00Z}#{10093} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2010-02-10T12:24:33-05:00Z}#{10063} - by MON KEY>
 (defun mon-build-copyright-string-TEST ()
@@ -1362,7 +1424,7 @@ chars depending value of arg MONKEY or W-ORG.\n
                            formt-tests "\n")
                 "\n " divd)
                (current-buffer))
-      (when (fboundp 'mon-help-propertize-tags) 
+      (when (fboundp 'mon-help-propertize-tags)
         (mon-help-propertize-tags
          '(":WITH\\|:DEFAULT" 0 mon-help-DYNATAB-tag)
          '(":THESE-ARGS" 0 mon-help-DYNATAB-tag)

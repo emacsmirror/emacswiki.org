@@ -6,6 +6,8 @@ Smex is a ##M-x## enhancement for Emacs. Built on top of [InteractivelyDoThings 
 Extras: Limit commands to those relevant to the active major mode. Show frequently used commands that have no key bindings.
 
 == Download ==
+Via [[ELPA]]
+or
 http://github.com/nonsequitur/smex/blob/master/smex.el?raw=true
 
 == Documentation ==

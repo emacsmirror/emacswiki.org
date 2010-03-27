@@ -1,193 +1,269 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; mon-url-utils.el --- interactive utils for URL data lookups
 ;; -*- mode: EMACS-LISP; -*-
-;;; this is mon-url-utils.el
+
 ;;; ================================================================
-;;; DESCRIPTION:
-;;; Provides utilities to call urls for data lookup and modify web/internet 
-;;; related contents of buffer.
-;;;
-;;; FUNCTIONS:►►►
-;;; `mon-htmlfontify-buffer-to-firefox',`mon-htmlfontify-region-to-firefox'
-;;; `hexcolour-add-to-font-lock', `mon-search-ulan', `mon-search-ulan-for-name',
-;;; `mon-search-wikipedia', `mon-search-loc', `mon-search-bnf',
-;;; `mon-insert-dbc-link', `mon-insert-dbc-doc-link', `mon-wrap-all-urls',
-;;; `mon-wrap-one-url', `mon-wrap-url',`mon-wrap-span', 
-;;; `mon-make-html-table-string' 
-;;; `mon-make-html-table',`mon-tld-find-tld', `mon-tld-find-name',
-;;; `mon-tld', `mon-get-w3m-url-at-point-maybe', `mon-get-w3m-url-at-point'
-;;; `mon-w3m-read-gnu-lists-nxt-prv', `mon-url-encode', `mon-url-decode'
-;;; `mon-get-host-address'
-;;; FUNCTIONS:◄◄◄
-;;;
-;;; MACROS:
-;;;
-;;; METHODS:
-;;;
-;;; CLASSES:
-;;;
-;;; CONSTANTS:
-;;; `*mon-tld-list*'
-;;;
-;;; VARIABLES:
-;;; `*hexcolor-keywords*'
-;;; 
-;;; ALIASES:
-;;; `mon-search-wiki'                    ->  `mon-search-wikipedia'
-;;; `mon-url-escape'                     -> `mon-url-encode'
-;;; `mon-w3m-get-url-at-point-maybe'     -> `mon-get-w3m-url-at-point-maybe'
-;;; `mon-w3m-get-url-at-point'           -> `mon-get-w3m-url-at-point'
-;;; `mon-get-w3m-read-gnu-lists-nxt-prv' ->  `mon-w3m-read-gnu-lists-nxt-prv'
-;;;
-;;; SUBST:
-;;; `mon-tld-tld', `mon-tld-name' 
-;;;
-;;; RENAMED: 
-;;; `hexcolour-keywords' -> `*hexcolor-keywords*'
-;;; `hexcolor-add-to-font-lock' -> `hexcolour-add-to-font-lock'
-;;;
-;;; RENAMED: Dave Pearson's tld-* 
-;;; :SEE (URL `http://www.davep.org/emacs/tld.el')
-;;; `tld'           -> `mon-tld'
-;;; `tld-find-name' -> `mon-tld-find-name'
-;;;                 -> `mon-tld-find-tld'
-;;; `tld-name'      -> `mon-tld-name'
-;;; `tld-tld'       -> `mon-tld-tld'
-;;; `tld-list'      -> `*mon-tld-list*'
-;;; `tld-list'      -> `*mon-tld-list*'
-;;;
-;;; MOVED: 
-;;; `mon-get-image-dimensions'    -> ./mon-rename-image-utils.el
-;;; `mon-get-image-dimensions-im' -> ./mon-rename-image-utils.el
-;;; `mon-get-image-md5'           -> ./mon-rename-image-utils.el
-;;;
-;;; REQUIRES:
-;;; `mon-htmlfontify-buffer-to-firefox'  -> ./mon-dir-locals-alist.el <- *ebay-images-temp-path*
-;;; `mon-htmlfontify-region-to-firefox'  -> ./mon-dir-locals-alist.el <- *ebay-images-temp-path*
-;;; `mon-htmlfontify-buffer-to-firefox'  -> html-fontify.el
-;;; `mon-htmlfontify-region-to-firefox'  -> html-fontify.el
-;;; `hexcolor-add-to-font-lock'          -> `css-mode-hook' ;when active
-;;; `mon-get-w3m-url-at-point-maybe'     -> w3m
-;;; `mon-get-w3m-url-at-point'           -> w3m
-;;; `mon-w3m-read-gnu-lists-nxt-prv'     -> w3m
-;;; `mon-tld-*-'                         -> cl
-;;;
-;;; TODO:
-;;; Adjust `mon-search-ulan', `mon-search-ulan-for-name' to retrieve url (a)synchronously. 
-;;;
-;;; NOTES:
-;;;
-;;; AUTHOR: MON KEY
-;;; MAINTAINER: MON KEY
-;;;
-;;; PUBLIC-LINK: (URL `http://www.emacswiki.org/emacs/mon-url-utils.el')
-;;; FIRST-PUBLISHED: <Timestamp: #{2009-09-20}#{} - by MON>
-;;; 
-;;; FILE-CREATED:
-;;; <Timestamp: Tuesday June 16, 2009 @ 08:39.52 PM - by MON KEY>
+;; Copyright © 2009, 2010 MON KEY. All rights reserved.
 ;;; ================================================================
-;;; This file is not part of GNU Emacs.
-;;;
-;;; This program is free software; you can redistribute it and/or
-;;; modify it under the terms of the GNU General Public License as
-;;; published by the Free Software Foundation; either version 3, or
-;;; (at your option) any later version.
-;;;
-;;; This program is distributed in the hope that it will be useful,
-;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-;;; General Public License for more details.
-;;;
-;;; You should have received a copy of the GNU General Public License
-;;; along with this program; see the file COPYING.  If not, write to
-;;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
-;;; Floor, Boston, MA 02110-1301, USA.
+
+;; FILENAME: mon-url-utils.el
+;; AUTHOR: MON KEY
+;; MAINTAINER: MON KEY
+;; CREATED: 2009-06-16T08:39:52-04:00Z
+;; VERSION: 1.0.0
+;; COMPATIBILITY: Emacs23.*
+;; KEYWORDS: hypermedia, processes, convenience
+
 ;;; ================================================================
-;;; Permission is granted to copy, distribute and/or modify this
-;;; document under the terms of the GNU Free Documentation License,
-;;; Version 1.3 or any later version published by the Free Software
-;;; Foundation; with no Invariant Sections, no Front-Cover Texts,
-;;; and no Back-Cover Texts. A copy of the license is included in
-;;; the section entitled "GNU Free Documentation License".
-;;; A copy of the license is also available from the Free Software
-;;; Foundation Web site at:
-;;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
-;;; ================================================================
-;;; Copyright © 2009 MON KEY 
+
+;;; COMMENTARY: 
+
+;; =================================================================
+;; DESCRIPTION:
+;; Provides interactive utilities for URL data lookups and in-buffer
+;; modification of web/internet scrapes.
+;;
+;; FUNCTIONS:►►►
+;; `mon-htmlfontify-buffer-to-firefox',`mon-htmlfontify-region-to-firefox'
+;; `mon-htmlfontify-dir-purge-on-quit',
+;; `mon-hexcolor-add-to-font-lock', `mon-search-ulan',
+;; `mon-search-ulan-for-name', `mon-search-wikipedia', `mon-search-loc',
+;; `mon-search-bnf', `mon-insert-dbc-link', `mon-insert-dbc-doc-link',
+;; `mon-wrap-all-urls', `mon-wrap-one-url', `mon-wrap-url',`mon-wrap-span',
+;; `mon-make-html-table-string' `mon-make-html-table',`mon-tld-find-tld',
+;; `mon-tld-find-name', `mon-tld', `mon-get-w3m-url-at-point-maybe',
+;; `mon-get-w3m-url-at-point' `mon-w3m-read-gnu-lists-nxt-prv',
+;; `mon-url-encode', `mon-url-decode' `mon-get-host-address',
+;; `mon-url-retrieve-to-new-buffer'
+;; FUNCTIONS:◄◄◄
+;;
+;; MACROS:
+;;
+;; METHODS:
+;;
+;; CLASSES:
+;;
+;; CONSTANTS:
+;; `*mon-tld-list*'
+;;
+;; VARIABLES:
+;; `*hexcolor-keywords*'
+;; 
+;; ALIASES:
+;; `mon-search-wiki'                    ->  `mon-search-wikipedia'
+;; `mon-url-escape'                     -> `mon-url-encode'
+;; `mon-w3m-get-url-at-point-maybe'     -> `mon-get-w3m-url-at-point-maybe'
+;; `mon-w3m-get-url-at-point'           -> `mon-get-w3m-url-at-point'
+;; `mon-get-w3m-read-gnu-lists-nxt-prv' ->  `mon-w3m-read-gnu-lists-nxt-prv'
+;;
+;; SUBST:
+;; `mon-tld-tld', `mon-tld-name' 
+;;
+;; RENAMED: 
+;; `*hexcolor-keywords*'       -> `*regexp-hexcolor-keywords*'
+;; `hexcolor-add-to-font-lock' -> `mon-hexcolor-add-to-font-lock'
+;;
+;; RENAMED: Dave Pearson's tld-* 
+;; :SEE (URL `http://www.davep.org/emacs/tld.el')
+;; `tld'           -> `mon-tld'
+;; `tld-find-name' -> `mon-tld-find-name'
+;;                 -> `mon-tld-find-tld'
+;; `tld-name'      -> `mon-tld-name'
+;; `tld-tld'       -> `mon-tld-tld'
+;; `tld-list'      -> `*mon-tld-list*'
+;; `tld-list'      -> `*mon-tld-list*'
+;;
+;; MOVED: 
+;; `mon-get-image-dimensions'    -> mon-rename-image-utils.el
+;; `mon-get-image-dimensions-im' -> mon-rename-image-utils.el
+;; `mon-get-image-md5'           -> mon-rename-image-utils.el
+;; `mon-w3m-dired-file'          <- mon-dir-utils.el
+;; `mon-w3m-kill-url-at-point'   <- mon-dir-utils.el
+;;
+;; REQUIRES:
+;; `mon-htmlfontify-buffer-to-firefox'  -> ./mon-dir-locals-alist.el <- *ebay-images-temp-path*
+;; `mon-htmlfontify-region-to-firefox'  -> ./mon-dir-locals-alist.el <- *ebay-images-temp-path*
+;; `mon-htmlfontify-buffer-to-firefox'  -> html-fontify.el
+;; `mon-htmlfontify-region-to-firefox'  -> html-fontify.el
+;; `mon-get-w3m-url-at-point-maybe'     -> w3m
+;; `mon-get-w3m-url-at-point'           -> w3m
+;; `mon-w3m-read-gnu-lists-nxt-prv'     -> w3m
+;; `mon-url-retrieve-to-new-buffer'    -> url.el
+;; `mon-tld-*-'                         -> cl
+;;
+;; TODO:
+;; Adjust `mon-search-ulan', `mon-search-ulan-for-name' to retrieve url (a)synchronously. 
+;;
+;; NOTES:
+;;
+;; URL: `http://www.emacswiki.org/emacs/mon-url-utils.el'
+;; FIRST-PUBLISHED: <Timestamp: #{2009-09-20}#{} - by MON>
+;; 
+;; FILE-CREATED:
+;; <Timestamp: #{2009-06-16T08:39:52-04:00Z} - by MON KEY>
+;;
+;; =================================================================
+
+;;; LICENSE:
+
+;; =================================================================
+;; This file is not part of GNU Emacs.
+
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 3, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program; see the file COPYING.  If not, write to
+;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
+;; Floor, Boston, MA 02110-1301, USA.
+;; =================================================================
+;; Permission is granted to copy, distribute and/or modify this
+;; document under the terms of the GNU Free Documentation License,
+;; Version 1.3 or any later version published by the Free Software
+;; Foundation; with no Invariant Sections, no Front-Cover Texts,
+;; and no Back-Cover Texts. A copy of the license is included in
+;; the section entitled ``GNU Free Documentation License''.
+;; 
+;; A copy of the license is also available from the Free Software
+;; Foundation Web site at:
+;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
+;; Copyright © 2009, 2010 MON KEY 
+;;; ==============================
+
 ;;; CODE:
 
-;;; ==============================
+;; :REQUIRED-BY in `mon-tld-xxx' functions.
+(eval-when-compile (require 'cl))
+
 ;; :REQUIRED-BY `mon-htmlfontify-buffer-to-firefox'
 ;; :REQUIRED-BY `mon-htmlfontify-region-to-firefox'
-(eval-when-compile (when (locate-library "htmlfontify") (require 'htmlfontify)))  
+;(eval-when-compile 
+(when (locate-library "htmlfontify") (require 'htmlfontify))
+
 ;; :REQUIRED-BY `mon-get-w3m-url-at-point-maybe'
 ;; :REQUIRED-BY `mon-w3m-read-gnu-lists-nxt-prv'
 ;; :REQUIRED-BY `mon-get-w3m-url-at-point'
-(eval-when-compile  (when (locate-library "w3m")(require 'w3m)))
-;; :REQUIRED-BY in `mon-tld-xxx' functions.
-(eval-when-compile (require 'cl))
-;;; ==============================
+;(eval-when-compile  
+(when (locate-library "w3m") (require 'w3m))
 
-(when (featurep 'htmlfontfiy)
+;; :REQUIRED-BY `mon-url-retrieve-to-new-buffer'
+(require 'url)
+
+(when (featurep 'htmlfontify)
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-03-23T21:05:10-04:00Z}#{10123} - by MON KEY>
+(defun mon-htmlfontify-dir-purge-on-quit ()
+  "Delete files in `*emacs2html-temp*' matching \"emacs2firefox-.*\.html\".\n
+These are temp files generated with `mon-htmlfontify-buffer-to-firefox' and
+`mon-htmlfontify-region-to-firefox'.\n
+This procedure is meant to be run as a hook on `kill-emacs-hook'.\n
+:EXAMPLE\n\(directory-files *emacs2html-temp* t \"emacs2firefox-.*\.html\")\n
+\n\(mon-htmlfontify-dir-purge-on-quit\)\n
+:SEE-ALSO .\n►►►"
+  (interactive)
+  (let ((cln-emacs2html-temp 
+         (directory-files *emacs2html-temp* t "emacs2firefox-.*\.html")))
+    (dolist (prg cln-emacs2html-temp)
+      (delete-file prg))))
+;; Purge the directory on quit.
+(when (and IS-MON-SYSTEM-P (file-directory-p *emacs2html-temp*))
+  (add-hook 'kill-emacs-hook 'mon-htmlfontify-region-to-firefox))
+;;
+;;; :TEST-ME (mon-htmlfontify-dir-purge-on-quit)
+
 ;;; ==============================
 ;;; :COURTESY Thierry Volpiatto  :HIS tv-utils.el :WAS `tv-htmlfontify-buffer-to-firefox'
 ;;; :NOTE :REQUIRES :FILE `htmlfontify.el'
+;;; :MODIFICATIONS <Timestamp: #{2010-03-23T20:37:55-04:00Z}#{10123} - by MON KEY>
 ;;; :CREATED <Timestamp: Tuesday June 16, 2009 @ 08:28.49 PM - by MON>
 (defun mon-htmlfontify-buffer-to-firefox ()
-  "Converts fontified buffer to an html file with Firefox.\n
-:SEE-ALSO `mon-htmlfontify-region-to-firefox', `*emacs2html-temp*'.\n►►►"
+  "Convert fontified buffer to an HTML file display it with Firefox.\n
+:SEE `hfy-tags-cache', `hfy-load-tags-cache', `hfy-etags-cmd', `hfy-parse-tags-buffer'
+:SEE-ALSO `mon-htmlfontify-region-to-firefox', `*emacs2html-temp*',
+`mon-htmlfontify-dir-purge-on-quit'.\n►►►"
   (interactive)
-  (let ((fname (concat *emacs2html-temp* "/" (symbol-name (gensym "emacs2firefox")) ".html")))
-    (htmlfontify-buffer)
-    (with-current-buffer (current-buffer)
-      (write-file fname))
-    (browse-url-firefox (format "file://%s" fname))))
-);; :CLOSE E-W-C
-
-(when (featurep 'htmlfontfiy)
+  (let* ((ffox-fname (format "%s/emacs2firefox-%d.html" *emacs2html-temp* (random t)))
+         (this-bfr-file (buffer-file-name))
+         (this-bfr-dir 
+          (when this-bfr-file (directory-file-name (file-name-directory this-bfr-file))))
+         (this-bfr-has-TAGS 
+          (when this-bfr-dir (car (member "TAGS"  (directory-files  this-bfr-dir)))))
+         h-fnty-bfr)
+    (with-current-buffer 
+        (get-buffer    
+         (if this-bfr-has-TAGS 
+             (setq h-fnty-bfr ;; :SEE 
+                   (htmlfontify-buffer this-bfr-dir this-bfr-file))
+             (setq h-fnty-bfr (htmlfontify-buffer))))
+      (setq h-fnty-bfr (current-buffer))
+      (write-file ffox-fname))
+    (when (get-buffer h-fnty-bfr) (kill-buffer h-fnty-bfr))
+    (browse-url-firefox (format "file:///%s" ffox-fname))))
+;;
 ;;; ==============================
 ;;; :COURTESY Thierry Volpiatto :HIS tv-utils.el :WAS `tv-htmlfontify-region-to-firefox'
 ;;; :NOTE :REQUIRES :FILE `htmlfontify.el'
+;;; :MODIFICATIONS <Timestamp: #{2010-03-23T20:38:06-04:00Z}#{10123} - by MON KEY>
 ;;; :CREATED <Timestamp: Tuesday June 16, 2009 @ 08:28.49 PM - by MON>
-
-(defun mon-htmlfontify-region-to-firefox (beg end)
-  "Converts fontified region to an html file with Firefox.\n
-:SEE-ALSO `mon-htmlfontify-region-to-firefox', `*emacs2html-temp*'.\n►►►"
+(defun mon-htmlfontify-region-to-firefox (fontify-from fontify-to)
+  "Converts fontified region to an html file and display it with Firefox.\n
+:SEE-ALSO `mon-htmlfontify-region-to-firefox', `*emacs2html-temp*',
+`mon-htmlfontify-dir-purge-on-quit'.\n►►►"
   (interactive "r")
-  (let ((fname (concat *emacs2html-temp* "/"(symbol-name (gensym "emacs2firefox")) ".html"))
-        (buf (current-buffer)))
-    (with-temp-buffer
-      (insert-buffer-substring buf beg end)
-      (htmlfontify-buffer)
-      (write-file fname))
-    (browse-url-firefox (format "file://%s" fname))))
-);; :CLOSE E-W-C
+  (let ((ffox-rg-fname (format "%s/emacs2firefox-%d.html" *emacs2html-temp* (random t)))
+        mhr2f-fontify-this
+        h-fnty-bfr)
+    (setq mhr2f-fontify-this 
+          (buffer-substring fontify-from fontify-to))
+    (unwind-protect
+         (with-current-buffer (get-buffer-create ffox-rg-fname)
+           (insert mhr2f-fontify-this)
+           (emacs-lisp-mode)
+           ;; (font-lock-fontify-syntactically-region  (buffer-end 0) (buffer-end 1))
+           ;;  (font-lock-fontify-buffer)
+           (setq h-fnty-bfr
+                 (htmlfontify-buffer))
+           (write-file ffox-rg-fname)
+           (kill-buffer (get-buffer ffox-rg-fname)))
+      (when (get-buffer h-fnty-bfr)
+        (kill-buffer (get-buffer h-fnty-bfr))))
+    (browse-url-firefox (format "file:///%s" ffox-rg-fname))))
+);; :CLOSE htmlfontify
 
 ;;; ==============================
+;;; :RENAMED `*hexcolor-keywords*' -> `*regexp-hexcolor-keywords*'
 ;;; :COURTESY Xah Lee
 ;;; :SEE (URL `http://xahlee.org/emacs/emacs_html.html')
-(defvar *hexcolor-keywords* 'nil
-  "Keywords for fontification of hex code color values \(e.g. CSS\).\n
-:SEE-ALSO `hexcolor-add-to-font-lock'.\n►►►")
+(defvar *regexp-hexcolor-keywords* 'nil
+  "*Keywords for fontification of hex code color values \(e.g. CSS\).\n
+:SEE-ALSO `mon-hexcolor-add-to-font-lock', `*regexp-rgb-hex*'.\n►►►")
 ;;
-(when (not (bound-and-true-p *hexcolor-keywords*))
-(setq *hexcolor-keywords*
-  '(("#[abcdef[:digit:]]\\{6\\}"
+(when (not (bound-and-true-p *regexp-hexcolor-keywords*))
+(setq *regexp-hexcolor-keywords*
+  '(("#[abcdefABCDEF[:digit:]]\\{6\\}"
      (0 (put-text-property
          (match-beginning 0)
          (match-end 0)
          'face (list :background 
-                     (match-string-no-properties 0))))))))
+                     (match-string-no-properties 0)))))))) 
 
 ;;; ==============================
-(defun hexcolor-add-to-font-lock ()
+;;; :RENAMED `hexcolor-add-to-font-lock' -> `mon-hexcolor-add-to-font-lock'
+;;; :NOTE `naf-mode' is `derived-mode-p' -> t
+;;; To add them for derived modes we have to pass nil for
+;;; `font-lock-add-keywords' MODE arg and add the call to `naf-mode-hook'.
+;;; :NOTE We call (add-hook 'naf-mode-hook 'mon-hexcolor-add-to-font-lock) from `naf-mode'
+(defun mon-hexcolor-add-to-font-lock ()
   "Add font-lock keywords for hex code color values for fontification.\n
-:SEE-ALSO `*hexcolor-keywords*'.\n►►►"
-  (font-lock-add-keywords nil *hexcolor-keywords*))
-;;
-;(add-hook 'css-mode-hook 'hexcolour-add-to-font-lock)
-(add-hook 'naf-mode-hook 'hexcolor-add-to-font-lock)
-
+:SEE-ALSO `*regexp-hexcolor-keywords*', `*regexp-rgb-hex*'.\n►►►"
+  (font-lock-add-keywords nil *regexp-hexcolor-keywords*))
 
 ;;; ==============================
 ;;; :COURTESY Alex Schroeder :HIS ConfigConfusibombus :WAS `url-decode'
@@ -370,6 +446,9 @@ page URL.\nUsed in `naf-mode'.\n►►►"
     (insert  dbc-url)))
 
 ;;; ==============================
+;;; :TODO Needs to be re-written using:
+;;; (search-forward-regexp { ... } (replace-match { ... } 
+;;; instead of the existing wacko `replace-string' calls!
 ;;; :NOTE not 100% correct yet because doesn't detect pre-existing wrapped urls
 ;;; in _some_ buffer locations.
 ;;; :CREATED <Timestamp: Saturday April 18, 2009 @ 06:51.27 PM - by MON>
@@ -381,7 +460,6 @@ Won't replace recursively on pre-existing wrapped URLs.\n
 `mon-wrap-span', `mon-wrap-selection', `mon-wrap-with'.\n►►►"
   (interactive)
   (save-excursion
-    ;;(goto-char (point-min)) -not working
     (while
 	(if (search-forward-regexp *mon-wrap-url-schemes* nil t)
 	    (let* ((bnd-start (car (bounds-of-thing-at-point 'url)))
@@ -390,7 +468,7 @@ Won't replace recursively on pre-existing wrapped URLs.\n
 		   (url-rep (concat "(URL `" url-targ "')")))
 	      (cond
 	       ((< bnd-pre 0)
-		(replace-string url-targ url-rep)
+                (replace-string url-targ url-rep)
 		(skip-syntax-forward "^w"))
 	       ((not (string-match-p "(URL `" (buffer-substring bnd-pre bnd-start)))
 		(skip-syntax-backward "^-")
@@ -402,10 +480,10 @@ Won't replace recursively on pre-existing wrapped URLs.\n
 ;;; :TEST-ME http://www.somethign.xomthing.com/blamop
 
 ;;; ==============================
-;;; :TODO Add ability evaluate the region programatically and otherwise.
+;;; :TODO Add ability to evaluate the region programatically and otherwise.
 ;;; :MODIFICATIONS <Timestamp: Monday June 29, 2009 @ 06:22.48 PM - by MON>
 (defun mon-wrap-one-url () ;;(&optional start end insertp)
-  "Wrap 1\(one\)the URL  _after point_ with (URL `*').
+  "Wrap 1\(one\)the URL  _after point_ with (URL `*').\n
 Conditional prefix matching regexps in `*mon-wrap-url-schemes*' global.
 Won't replace recursively on pre-existing wrapped URLs.\n
 :SEE-ALSO `mon-wrap-all-urls', `thing-at-point-url-at-point',
@@ -416,11 +494,9 @@ Won't replace recursively on pre-existing wrapped URLs.\n
     (let* ((url-bnds (bounds-of-thing-at-point 'url))
            (bnd-start (car url-bnds))
            (bnd-end (cdr url-bnds))
-           (rep-url))
-      (setq rep-url (concat 
-                     "(URL `" 
-                     (buffer-substring-no-properties bnd-start bnd-end)
-                     "')"))
+           rep-url)
+      (setq rep-url 
+            (concat "(URL `" (buffer-substring-no-properties bnd-start bnd-end) "')"))
       (goto-char bnd-start)
       (delete-region bnd-start bnd-end)
       (insert rep-url))))
@@ -442,11 +518,9 @@ Or:\n'test' becomes <a href=\"test\">test</a>\n
   (interactive)
   (re-search-backward "[\n\t ()]" nil t)
   (looking-at "[\n\t ()]?\\([^\n\t ()]+\\)")
-  (let (
-        (p1 (match-beginning 1))
+  (let ((p1 (match-beginning 1))
         (p2 (match-end 1))
-        (url (match-string 1))
-        )
+        (url (match-string 1)))
     (delete-region p1 p2)
     (goto-char p1)
     (insert "<a href=\"" url "\">" url "</a>" )))
@@ -479,15 +553,26 @@ Uses MON's link_green_bold CSS.\n\n:EXAMPLE
 ;; (define-key html-mode-map "\M-5" 'wrap-url)))
 ;;  (global-set-key (kbd "<f6>") 'wrap-span-xnt)
 ;;; ==============================
-
 ;;; ==============================
 (defun mon-make-html-table-string (textblock delim)
-  "Turn a text string into an HTML table. 
-Helper function for `mon-make-html-table' which see.\n►►►"
-  (let ()
+  "Turn a text string into an HTML table.\n
+Helper function for `mon-make-html-table'.\n
+:EXAMPLE
+\(mon-make-html-table-string 
+ \(mon-string-justify-left
+ \(car \(mon-string-wonkify
+  \"THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ``AS IS''
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR\" 1\)\) 18 4\)\"A\"\)\n :)
+:SEE-ALSO .\n►►►"
+  (let (;; I really don't like setq'ing args outside of let bindings...
+        (textblock textblock)
+        (delim delim))
     (setq textblock (replace-regexp-in-string delim "</td><td>" textblock))
     (setq textblock (replace-regexp-in-string "\n" "</td></tr>\n<tr><td>" textblock))
-    (setq textblock (substring textblock 0 -8)) ;; delet the beginning "<tr><td>" in last line
+    ;; delete the beginning "<tr><td>" in last line
+    (setq textblock (substring textblock 0 -8)) 
     (concat "<table border=\"1\" cellpadding=\"5\" cellspacing=\"0\">\n<tr><td>" textblock "</table>")
     ))
 
@@ -514,15 +599,29 @@ Into the following html table:\n
     (delete-region p1 p2)
     (insert (mon-make-html-table-string myStr sep) "\n")))
 
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-03-23T19:33:48-04:00Z}#{10122} - by MON KEY>
+(defun mon-url-retrieve-to-new-buffer (fetch-this-url)
+  "Return FETCH-THIS-URL displayed in an new buffer-window.\n
+Fetches URL as with `url-retrieve-synchronously'.\n
+:EXAMPLE\n
+\(mon-url-retrieve-to-new-buffer \"http://tools.ietf.org/rfc/rfc2822.txt\")
+:SEE-ALSO `mon-get-w3m-url-at-point-maybe', `google-define',
+`mon-get-host-address', `mon-url-encode', `mon-url-decode'
+`mon-get-w3m-url-at-point', `mon-w3m-dired-file'\n►►►"
+(let ((the-buff (url-retrieve-synchronously fetch-this-url)))
+     (when (get-buff the-buff) (display-buffer the-buff t))))
+
 ;;; ==============================
 ;;; :COURTESY Dave Love <fx@gnu.org> :HIS fx-misc.el :WAS `gethostaddr'
 ;;; :CREATED <Timestamp: #{2009-12-19T00:53:06-05:00Z}#{09516} - by MON KEY>
 (defun mon-get-host-address (name-or-number)
-  "Return IP host name or address corresponding to NAME-OR-NUMBER using host(1).
+  "Return IP host name or address corresponding to NAME-OR-NUMBER using host\(1\).
 If the arg is an IP number, return the host name, else return the address
 corresponding to the host name arg.\n
-:EXAMPLE\n\(mon-get-host-address \"google.com\"\)
-\n►►►"
+:EXAMPLE\n\(mon-get-host-address \"google.com\"\)\n
+:SEE-ALSO `mon-url-retrieve-to-new-buffer'.\n►►►"
   (if (string-match "^[[:digit:]]+\\(\\.[[:digit:]]+\\)\\{3\\}$"
 		    name-or-number)
       name-or-number
@@ -534,24 +633,42 @@ corresponding to the host name arg.\n
 ;;; :TEST-ME (mon-get-host-address "google.com")
 
 ;;; ==============================
-;;; :NOTE This is buggy on w32 paths.
-;;; :USE wget.el instead. (locate-library "wget") 
-;;; :CREATED <Timestamp: Tuesday June 30, 2009 @ 02:30.21 PM - by MON KEY>
-(defun mon-fetch-rfc (rfc-num)
-"Fetches an RFC with RFC-NUM with wget.\n
-:NOTE This is buggy with w32 paths.\n►►►"
-(interactive "sRFC number :")
-  (let* ((the-rfc rfc-num)
-         (fetch-from (format 
-                      "http://tools.ietf.org/rfc/rfc%s.txt" the-rfc)))
-    (shell-command  (format "wget %s" fetch-from))))
-;;
-;;; :TEST-ME (mon-fetch-rfc 2616)
-
-;;; ==============================
 ;; :W3M-URL-GRABBER  
 
-(when (featurep 'w3m)
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-12-16T23:00:32-05:00Z}#{09513} - by MON KEY>
+(if (and (or (featurep 'w3m-load) (featurep 'w3m))
+         ;;(and (intern-soft "w3m-dired-file") (fboundp 'w3m-dired-file)))    
+         ;;(fboundp 'w3m-dired-file)
+         (executable-find "w3m"))
+(progn    
+(defun mon-w3m-dired-file (&optional file-to-w3m)
+  "Browse dired file at point with w3m.\n
+:SEE-ALSO `mon-w3m-kill-url-at-point', `mon-get-w3m-url-at-point-maybe',
+`mon-get-w3m-url-at-point', `mon-w3m-read-gnu-lists-nxt-prv',
+`mon-copy-file-dired-as-list', `mon-copy-file-dired-as-string',
+`dired-get-marked-files'.\n►►►"
+  (interactive)
+  (w3m-find-file 
+   (or file-to-w3m (car (dired-get-marked-files)))))
+;;
+(defalias 'mon-get-w3m-dired-file  'mon-w3m-dired-file)
+;;
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-02-17T23:18:19-05:00Z}#{10073} - by MON>
+(defun mon-w3m-kill-url-at-point ()
+  "Put the w3m URL at point on the kill ring.\n
+Examines for URL with `get-text-property' the 'w3m-href-anchor property if found
+the property value on the kill ring and message user.\n
+:SEE-ALSO `mon-get-w3m-dired-file', `mon-get-w3m-url-at-point-maybe',
+`mon-get-w3m-url-at-point', `mon-w3m-read-gnu-lists-nxt-prv',
+`mon-copy-file-dired-as-list', `mon-copy-file-dired-as-string',
+`dired-get-marked-files'.\n►►►"
+  (interactive)
+  (let ((w3mgtp (get-text-property (point) 'w3m-href-anchor)))
+      (when (and w3mgtp (stringp w3mgtp))
+        (kill-new w3mgtp)
+        (message w3mgtp))))
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-11-22T16:50:15-05:00Z}#{09477} - by MON>
 (defun mon-get-w3m-url-at-point-maybe ()
@@ -572,17 +689,15 @@ w3m-href-anchor value and is a 'file 'http 'https.\n
               (t nil)))))
 ;;
 (defalias 'mon-w3m-get-url-at-point-maybe 'mon-get-w3m-url-at-point-maybe)
-) ;; :CLOSE E-W-C
-
-(when (featurep 'w3m)
+;;
 ;;; ============================== 
 ;;; :CREATED <Timestamp: #{2009-11-22T16:59:12-05:00Z}#{09477} - by MON>
 (defun mon-get-w3m-url-at-point (&optional insrtp buffer intrp)
   "Return w3m-href-anchor value and is a 'file 'http 'https.
 When INSRTP in non-nil and BUFFER names an existing buffer insert the w3m URL in
 BUFFER. If BUFFER is nil or does no exist return URL.\n
-:SEE-ALSO `mon-get-w3m-url-at-point-maybe',`mon-w3m-read-gnu-lists-nxt-prv',
-`mon-w3m-dired-file'.\n►►►"
+:SEE-ALSO `mon-get-w3m-url-at-point-maybe', `mon-w3m-read-gnu-lists-nxt-prv',
+`mon-w3m-kill-url-at-point', `mon-w3m-dired-file', `mon-w3m-dired-file'.\n►►►"
   (interactive "i\ni\np")
   (let ((url-maybe (mon-get-w3m-url-at-point-maybe))
         (do-buff (if buffer (get-buffer buffer))))
@@ -594,9 +709,6 @@ BUFFER. If BUFFER is nil or does no exist return URL.\n
             (t url-maybe)))))
 ;;
 (defalias 'mon-w3m-get-url-at-point 'mon-get-w3m-url-at-point)
-) ;; :CLOSE E-W-C
-
-(when (featurep 'w3m)
 ;;; ==============================
 ;;; ;WORKING-BUT-BUGGY-AS-OF
 ;;; :CREATED <Timestamp: #{2009-11-22T19:00:33-05:00Z}#{09477} - by MON>
@@ -631,8 +743,7 @@ BUFFER. If BUFFER is nil or does no exist return URL.\n
                            (next (message "Can't locate next in thread")))))))))))
 ;;;
 (defalias 'mon-get-w3m-read-gnu-lists-nxt-prv 'mon-w3m-read-gnu-lists-nxt-prv)
-) ;; :CLOSE E-W-C
-
+;;
 ;;
 ;; (mon-w3m-read-gnu-lists-nxt-prv nil t)
 ;;
@@ -673,31 +784,13 @@ BUFFER. If BUFFER is nil or does no exist return URL.\n
 ;;; |             (message (format "%s is current URL." match-on))
 ;;; |               (w3m-view-this-url)))) ))
 ;;; `----
-;;;
-
+;;
+) ;; :CLOSE progn
+(message "Can not find the w3m executable")) ;; :CLOSE IF
 
 ;;; ==============================
-;;; :COURTESY Stefan Reichoer <stefan@xsteve.at> :HIS .emacs 
 ;;; ==============================
-;; ;;; wget
-;; (add-site-lisp-load-path "wget/")
-;; (autoload 'wget "wget" "wget interface for Emacs." t)
-;; (autoload 'wget-web-page "wget" "wget interface to download whole web page." t)
-;; (load "w3m-wget" t)
 
-;; ;;The file is downloaded to the folder wget-download-directory (= ~/download)
-;; (defun wget-open-downloaded-file ()
-;;   (let* ((dir  (cdr (assoc proc wget-process-dir-alist)))
-;;          (file (or (cdr (assoc proc wget-process-saved-alist))
-;;                    (wget-process-file-name proc)))
-;;          (full-file-name (expand-file-name file dir)))
-;;     (message "downloaded %s" full-file-name)
-;;     (find-file full-file-name)))
-
-;; ;; Open the file after the download
-;; (add-hook 'wget-after-hook 'wget-open-downloaded-file)
-;;; ==============================
-;;; ==============================
 
 ;;; ==============================
 ;;; :COURTESY Dave Pearson <davep@davep.org> :HIS tld.el 
@@ -1077,4 +1170,3 @@ Updated by the RIPE Network Coordination Centre.
 ;;; ==============================
 ;;; mon-url-utils.el ends here
 ;;; EOF
-

@@ -7,6 +7,12 @@ Major mode for editing PHP files
 * http://php-mode.sourceforge.net -- maintained by AaronHawley that supports Emacs 22 (CcMode 5.31).
 ** This is included in [NxhtmlMode nXhtml] with only slight modifications, and seems to be the most popular. (However this is still version 1.4.1)
 ** There is also Lisp:php-mode-improved.el, a version by DavidHouse branched from the version in nxhtml-mode that fixes a couple of annoying bugs (see the comments at the top of that file).
+** In order to get this mode to work with Emacs 23 I had to add the following lines to my .emacs rather than the ones in php-mode.el.  See http://stackoverflow.com/questions/898063/making-php-mode-compatible-with-emacs-23 for more information. 
+{{{
+(autoload 'php-mode "php-mode" "Major mode for editing php code." t)
+(add-to-list 'auto-mode-alist '("\\.php$" . php-mode))
+(add-to-list 'auto-mode-alist '("\\.inc$" . php-mode))
+}}}
 * http://www.ontosys.com/src/php-mode.el -- maintained by FredYankowski
 * http://www.loveshack.ukfsn.org/emacs/index.html#cc-php-js -- patch for CC mode from Emacs 22.1, and files byte-compiled for Emacs 21/22.  See http://www.loveshack.ukfsn.org/emacs/index.html#html-php.el for PHP embedded in HTML.
 * http://deboutv.free.fr/lisp/php/index.php - Deboutv php-mode, originally for Xemacs
@@ -153,5 +159,3 @@ Can they be merged?
 
 ----
 CategoryModes
-
-

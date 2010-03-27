@@ -1,8 +1,10 @@
 The code below is a hack to integrate Eshell and [[bookmark]]s, for changing directories. This could be integrated into eshell/cd (using a prefix like `:' in a similar way to how `=' can be used) but it was easier, especially considering completion, to create a new command. There is most certain room for enhancements and fixes, but it works quite well as it is. -- MaDa
 
+Rather than complain that a specified bookmark is not a directory, I suggest that we just execute 'bookmark-jump' with the specified bookmark. In this way, more of the default bookmark functionality is available via eshell/bmk'. -- guivho
+
 <pre>
 
-;; eshell/bmk - version 0.1.2
+;; eshell/bmk - version 0.1.3
 
 (defun pcomplete/eshell-mode/bmk ()
   "Completion for `bmk'"
@@ -16,8 +18,11 @@ For usage, execute without arguments."
         filename name)
     (cond
      ((eq nil args)
-      (format "Usage: bmk BOOKMARK to change directory pointed to by BOOKMARK
-    or bmk . BOOKMARK to bookmark current directory in BOOKMARK.
+      (format "Usage: 
+* bmk BOOKMARK to
+** either change directory pointed to by BOOKMARK
+** or bookmark-jump to the BOOKMARK if it is not a directory.
+* bmk . BOOKMARK to bookmark current directory in BOOKMARK.
 Completion is available."))
      ((string= "." bookmark)
       ;; Store current path in EShell as a bookmark
@@ -28,14 +33,13 @@ Completion is available."))
             (format "Saved current directory in bookmark %s" name))
         (error "You must enter a bookmark name")))
      (t
-       ;; Assume the user wants to go to the path pointed out by a bookmark.
+       ;; Check whether an existing bookmark has been specified
        (if (setq filename (cdr (car (bookmark-get-bookmark-record bookmark))))
+           ;; If it points to a directory, change to it.
            (if (file-directory-p filename)
                (eshell/cd filename)
-             ;; TODO: Handle this better and offer to go to directory
-             ;; where the file is located.
-             (error "Bookmark %s points to %s which is not a directory" 
-                    bookmark filename))
+             ;; otherwise, just jump to the bookmark 
+             (bookmark-jump bookmark))
          (error "%s is not a bookmark" bookmark))))))
 </pre>
 ----
