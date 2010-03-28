@@ -1,103 +1,130 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; mon-dir-locals-alist.el --- MON global vars bound to commonly used local-site paths
 ;; -*- mode: EMACS-LISP; -*-
-;;; this is mon-dir-locals-alist.el
+
 ;;; ================================================================
-;;; DESCRIPTION:
-;;; mon-dir-locals-alist provides global vars bound to commonly used paths
-;;; with user/site conditionals to path. Additionaly some subr's for quickload
-;;; from alists of some directory contents.
-;;;
-;;; FUNCTIONS:►►►
-;;;
-;;; FUNCTIONS:◄◄◄
-;;;
-;;; MACROS:
-;;;
-;;; CONSTANTS:
-;;;
-;;; VARIABLES:
-;;; `*artist-naf-path*', `*brand-naf-path*', `*nef-scan-path*', `*nef-scan-nefs-path*',
-;;; `*nef-scan-nef2-path*', `*ebay-images-path*', `*ebay-images-bmp-path*',
-;;; `*ebay-images-jpg-path*', `*ebay-images-temp-path*', `*emacs2html-temp*'
-;;; `*bug-HG-path*', `*mon-timestamp-cond-alist*', `*CL-scratch-path*'
-;;; `*buffer-mode-defaults*', `*mon-HG-root-path*', `*smith-poster-HG-path*' 
-;;; `*mon-record-current-directory*', `*mon-dir-locals-alist-xrefs*'
-;;; `*nef-scan-drive*', `*nef-scan-base-path*'
-;;;
-;;; ALIASES/ADVISED/SUBST'D:
-;;;
-;;; DEPRECATED:
-;;;
-;;; RENAMED:
-;;;
-;;; MOVED:
-;;; <Timestamp: Tuesday June 16, 2009 @ 04:21.18 PM - by MON KEY>
-;;; Directory-Path-Vars path-vars moved here from:
-;;; `*nef-scan-path*', `*nef-scan-nefs-path*', `*nef-scan-nef2-path*', 
-;;; `*ebay-images-path*', `*ebay-images-bmp-path*', `*ebay-images-jpg-path*', 
-;;; `*ebay-images-temp-path*'
-;;;
-;;; Naf-mode related Dired path-vars: 
-;;; `*artist-naf-path*'   <- ./ebay-template-tools.el
-;;; `*brand-naf-path*'    <- ./ebay-template-tools.el
-;;; 
-;;; `*mon-timestamp-cond-alist*' -> ./mon-time-utils.el
-;;;
-;;; REQUIRES:
-;;;
-;;; REQUIRED-BY: 
-;;; "./mon-dir-utils.el"
-;;; "./ebay-template-mode.el"
-;;; "./mon-rename-image-utils.el"
-;;; "./smith-poster-utils.el" 
-;;;
-;;; TODO:
-;;;
-;;; NOTES:
-;;;
-;;; SNIPPETS:
-;;;
-;;; THIRD PARTY CODE:
-;;;
-;;; AUTHOR: MON KEY
-;;; MAINTAINER: MON KEY 
-;;;
-;;; PUBLIC-LINK: (URL `http://www.emacswiki.org/emacs/mon-dir-locals-alist.el')
-;;; FILE-PUBLISHED: <Timestamp: #{2009-09-20} - by MON KEY>
-;;; 
-;;; FILE-CREATED:
-;;; <Timestamp: Thursday May 28, 2009 @ 04:43.15 PM - by MON-KEY>
+;; Copyright © 2009, 2010 MON KEY. All rights reserved.
 ;;; ================================================================
-;;; This file is not part of GNU Emacs.
-;;;
-;;; This program is free software; you can redistribute it and/or
-;;; modify it under the terms of the GNU General Public License as
-;;; published by the Free Software Foundation; either version 3, or
-;;; (at your option) any later version.
-;;;
-;;; This program is distributed in the hope that it will be useful,
-;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-;;; General Public License for more details.
-;;;
-;;; You should have received a copy of the GNU General Public License
-;;; along with this program; see the file COPYING.  If not, write to
-;;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
-;;; Floor, Boston, MA 02110-1301, USA.
+
+;; FILENAME: mon-dir-locals-alist.el
+;; AUTHOR: MON KEY
+;; MAINTAINER: MON KEY
+;; CREATED: 2009-05-28T16:43:15-04:00Z
+;; VERSION: 1.0.0
+;; COMPATIBILITY: Emacs23.*
+;; KEYWORDS: environment, local, installation, dired
+
 ;;; ================================================================
-;;; Permission is granted to copy, distribute and/or modify this
-;;; document under the terms of the GNU Free Documentation License,
-;;; Version 1.3 or any later version published by the Free Software
-;;; Foundation; with no Invariant Sections, no Front-Cover Texts,
-;;; and no Back-Cover Texts. A copy of the license is included in
-;;; the section entitled "GNU Free Documentation License".
-;;; A copy of the license is also available from the Free Software
-;;; Foundation Web site at:
-;;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
-;;; ================================================================
-;;; Copyright © 2009 MON KEY 
+
+;;; COMMENTARY: 
+
+;; =================================================================
+;; DESCRIPTION:
+;; mon-dir-locals-alist provides global vars bound to commonly used paths
+;; with user/site conditionals to path. Additionaly some subr's for quickload
+;; from alists of some directory contents.
+;;
+;; FUNCTIONS:►►►
+;; 
+;; FUNCTIONS:◄◄◄
+;;
+;; MACROS:
+;;
+;; CONSTANTS:
+;;
+;; VARIABLES:
+;; `*artist-naf-path*', `*brand-naf-path*', `*nef-scan-path*', `*nef-scan-nefs-path*',
+;; `*nef-scan-nef2-path*', `*ebay-images-path*', `*ebay-images-bmp-path*',
+;; `*ebay-images-jpg-path*', `*ebay-images-temp-path*', `*emacs2html-temp*'
+;; `*bug-HG-path*', `*CL-scratch-path*'
+;; `*buffer-mode-defaults*', `*mon-HG-root-path*', `*smith-poster-HG-path*' 
+;; `*mon-record-current-directory*', `*mon-dir-locals-alist-xrefs*'
+;; `*nef-scan-drive*', `*nef-scan-base-path*'
+;;
+;; ALIASES/ADVISED/SUBST'D:
+;;
+;; DEPRECATED:
+;;
+;; RENAMED:
+;;
+;; MOVED:
+;; <Timestamp: Tuesday June 16, 2009 @ 04:21.18 PM - by MON KEY>
+;; :DIRECTORY-PATH-VARS
+;; `*nef-scan-path*', `*nef-scan-nefs-path*', `*nef-scan-nef2-path*', 
+;; `*ebay-images-path*', `*ebay-images-bmp-path*', `*ebay-images-jpg-path*', 
+;; `*ebay-images-temp-path*'
+;;
+;; :NAF-MODE-RELATED-PATH-VARS 
+;; `*artist-naf-path*'    <- ebay-template-tools.el
+;; `*brand-naf-path*'     <- ebay-template-tools.el
+;; 
+;; `*mon-timestamp-cond*' -> mon-time-utils.el
+;;
+;; REQUIRES:
+;;
+;; REQUIRED-BY: 
+;;  :FILE mon-dir-utils.el
+;;  :FILE ebay-template-mode.el
+;;  :FILE mon-rename-image-utils.el
+;;  :FILE smith-poster-utils.el 
+;;
+;; TODO:
+;;
+;; NOTES:
+;;
+;; SNIPPETS:
+;;
+;; THIRD PARTY CODE:
+;;
+;; AUTHOR: MON KEY
+;; MAINTAINER: MON KEY 
+;;
+;; URL: http://www.emacswiki.org/emacs/mon-dir-locals-alist.el
+;; FILE-PUBLISHED: <Timestamp: #{2009-09-20} - by MON KEY>
+;; 
+;; EMACSWIKI: { URL of an EmacsWiki describing mon-dir-locals-alist. }
+;;
+;; FILE-CREATED:
+;; <Timestamp: #{2009-05-28T16:43:15-04:00Z} - by MON KEY>
+;;
+;; =================================================================
+
+;;; LICENSE:
+
+;; =================================================================
+;; This file is not part of GNU Emacs.
+
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 3, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program; see the file COPYING.  If not, write to
+;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
+;; Floor, Boston, MA 02110-1301, USA.
+;; =================================================================
+;; Permission is granted to copy, distribute and/or modify this
+;; document under the terms of the GNU Free Documentation License,
+;; Version 1.3 or any later version published by the Free Software
+;; Foundation; with no Invariant Sections, no Front-Cover Texts,
+;; and no Back-Cover Texts. A copy of the license is included in
+;; the section entitled ``GNU Free Documentation License''.
+;; 
+;; A copy of the license is also available from the Free Software
+;; Foundation Web site at:
+;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
+;; Copyright © 2009, 2010 MON KEY 
+;;; ==============================
+
 ;;; CODE:
+
+(eval-when-compile (require 'cl))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-09-28T16:02:00-04:00Z}#{09401} - by MON>
@@ -144,7 +171,7 @@
 :EXAMPLE\n(symbol-value '*mon-HG-root-path*)\n
 :SEE-ALSO `mon-emacs-root', `*mon-emacsd*'.\n►►►")
 ;;
-(when (not (bound-and-true-p *mon-HG-root-path*))
+(unless (bound-and-true-p *mon-HG-root-path*)
   (let ((mhrp (nth 5 (assoc (cond (IS-MON-P-W32     1)
                                   (IS-BUG-P-REMOTE  4)
                                   (IS-BUG-P         3)
@@ -162,27 +189,29 @@
 EXAMPLE:\n(symbol-value '*smith-poster-HG-path*)\n
 :SEE-ALSO `*mon-HG-root-path*'.\n►►►")
 ;;
-(when (not (bound-and-true-p *smith-poster-HG-path* ))
+(unless (bound-and-true-p *smith-poster-HG-path* )
   (setq *smith-poster-HG-path* 
         (cond ((or IS-MON-P-W32 IS-BUG-P IS-BUG-P-REMOTE)
                (concat *mon-HG-root-path* *smith-poster-docs*))
               (IS-MON-P-GNU nil))))
 ;;
-;;;test-me; *smith-poster-HG-path*
-;;;(progn (makunbound '*smith-poster-HG-path*) (unintern '*smith-poster-HG-path*))
+;;; :TEST-ME *smith-poster-HG-path*
+;;;(progn (makunbound '*smith-poster-HG-path*) (unintern '*smith-poster-HG-path*) )
               
 ;;; ==============================
 ;;; :CREATED <Timestamp: Monday July 20, 2009 @ 02:59.11 PM - by MON KEY>
 (defvar *CL-scratch-path* nil
   "Path for string CL-scratch files. Subdir of `mon-emacs-root'. 
 This is used to keep files transferable across machines with Mercurial.\n
-EXAMPLE:\n(symbol-value '*CL-scratch-path*)\n►►►")
+EXAMPLE:\n(symbol-value '*CL-scratch-path*)\n
+:SEE-ALSO `common-lisp-hyperspec-root'.\n►►►")
 ;;
-(when (not (bound-and-true-p *CL-scratch-path*))
+(unless (bound-and-true-p *CL-scratch-path*)
   (setq *CL-scratch-path*
         (if (or IS-MON-P-W32 IS-MON-P-GNU)
-             (concat mon-emacs-root (cadr (assoc 'the-CL-scratch-path *mon-misc-path-alist*))))))
-
+            (concat *mon-HG-root-path* 
+                    (cadr (assoc 'the-CL-scratch-path *mon-misc-path-alist*))))))
+;;
 ;;; :TEST-ME  *CL-scratch-path*
 ;;;(progn (makunbound '*CL-scratch-path*) (unintern '*CL-scratch-path*) )
 
@@ -195,7 +224,7 @@ Used primarily over ERC to exchange paths w32 network share paths.\n
 :SEE-ALSO `mon--local-url-for-bug', `mon-local-url-for-bug',
 `*mon-HG-root-path*'.\n►►►")
 ;;
-(when (not (bound-and-true-p *bug-HG-path*))
+(unless (bound-and-true-p *bug-HG-path*)
   (setq *bug-HG-path* (cond 
                        (IS-MON-P-W32 (nth 6 (assoc 3 *mon-emacsd* ))) ;; Get path from BUG alist.
                        ((or IS-BUG-P-REMOTE IS-BUG-P IS-MON-P-GNU) mon-emacs-root))))
@@ -206,9 +235,10 @@ Used primarily over ERC to exchange paths w32 network share paths.\n
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-08-11T18:12:47-04:00Z}#{09332} - by MON KEY>
 (defvar *mon-record-current-directory* nil
-  "Default filename to record buffer's current-directory.
+  "Default filename to record buffer's current-directory.\n
 EXAMPLE:\n(symbol-value '*mon-record-current-directory*)\n
-:CALLED-BY `mon-save-current-directory-to-file'.\n►►►")
+:CALLED-BY `mon-save-current-directory-to-file'.\n
+:SEE-ALSO .\n►►►")
 ;;
 (when (not (bound-and-true-p *mon-record-current-directory*))
   (setq *mon-record-current-directory* (concat mon-emacs-root "/current-directory")))
@@ -220,10 +250,11 @@ EXAMPLE:\n(symbol-value '*mon-record-current-directory*)\n
 
 ;;; ==============================
 (defvar *emacs2html-temp* nil
-  "Path to hold temp files transformed with `htmlfontify-buffer'.
+  "Path to hold temp files transformed with `htmlfontify-buffer'.\n
 :EXAMPLE\n(symbol-value '*emacs2html-temp*)\n
 :CALLED-BY `mon-htmlfontify-region-to-firefox', 
-`mon-htmlfontify-buffer-to-firefox'.\n►►►")
+`mon-htmlfontify-buffer-to-firefox'.
+:SEE-ALSO `*mon-misc-path-alist*'.\n►►►")
 ;;
 (when (not (bound-and-true-p *emacs2html-temp*))
   (let ((e2ht (concat mon-emacs-root 
@@ -239,8 +270,8 @@ EXAMPLE:\n(symbol-value '*mon-record-current-directory*)\n
   "Path to Brand NAF folders on local systems.
 Only relevant if specifed in `*mon-emacsd*'.\n
 :EXAMPLE\n(symbol-value '*artist-naf-path*)\n
-:CALLED-BY `naf-dired-artist-letter', `naf-explorer-brand',
-`naf-dired-image-dir'.\n►►►")
+:CALLED-BY `naf-dired-artist-letter', `naf-explorer-brand', `naf-dired-image-dir'.\n
+:SEE-ALSO .\n►►►")
 ;;
 (when (not (bound-and-true-p *artist-naf-path*))
   (let ((anp (nth 7 (assoc (cond (IS-MON-P-W32    1)
@@ -263,8 +294,8 @@ Only relevant if specifed in `*mon-emacsd*'.\n
   "Path to Brand NAF folders on local w32 systems.
 Only relevant if specifed, else throws an error.\n
 :EXAMPLE\n(symbol-value '*brand-naf-path*)\n
-:CALLED-BY `naf-dired-brand-letter', `naf-explorer-brand',
-`naf-dired-image-dir'.\n►►►")
+:CALLED-BY `naf-dired-brand-letter', `naf-explorer-brand', `naf-dired-image-dir'
+:SEE-ALSO .\n►►►")
 ;;
 (when (not (bound-and-true-p *brand-naf-path*))
   (setq *brand-naf-path*

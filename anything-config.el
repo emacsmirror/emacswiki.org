@@ -424,7 +424,7 @@
 ;;; Code:
 
 ;; version check
-(let ((version "1.256"))
+(let ((version "1.263"))
   (when (and (string= "1." (substring version 0 2))
              (string-match "1\.\\([0-9]+\\)" anything-version)
              (< (string-to-number (match-string 1 anything-version))
@@ -744,6 +744,7 @@ With two prefix args allow choosing in which symbol to search."
    (let ((common
           (anything-c-regexp-base "Query Replace Regexp: "
                                   '((name . "Lines matching Regexp")
+                                    (mode-line . "Set replace start line and type RET.")
                                     (action . anything-c-query-replace-args)))))
      (if (not common)
          (keyboard-quit))
@@ -765,6 +766,7 @@ With two prefix args allow choosing in which symbol to search."
   (anything-c-regexp-base
    "Regexp: "
    '((name . "Regexp Builder")
+     (mode-line . "Press TAB to select action.")
      (action
       ("Kill Regexp as sexp" .
        (lambda (x) (anything-c-regexp-kill-new (prin1-to-string (funcall (anything-attr 'regexp))))))
@@ -806,11 +808,12 @@ With two prefix args allow choosing in which symbol to search."
 ;; Shut up byte compiler
 (defun anything-goto-line (numline)
   "Replacement of `goto-line'."
-  (goto-char (point-min)) (forward-line (1- numline)))
+  (goto-char (point-min))
+  (forward-line (1- numline)))
 
-(defun anything-c-regexp-persistent-action (txt)
-  (anything-goto-line (anything-aif (string-match "^ *\\([0-9]+\\)" txt)
-                 (string-to-number (match-string 1 txt)))))
+(defun anything-c-regexp-persistent-action (pt)
+  (goto-char pt)
+  (anything-persistent-highlight-point))
 
 (defun anything-c-regexp-base (prompt attributes)
   (save-restriction
@@ -823,6 +826,7 @@ With two prefix args allow choosing in which symbol to search."
              (candidates-in-buffer)
              (get-line . anything-c-regexp-get-line)
              (persistent-action . anything-c-regexp-persistent-action)
+             (persistent-help . "Show this line")
              (multiline)
              (delayed))))
       (if (and transient-mark-mode mark-active)
@@ -1218,7 +1222,8 @@ buffer that is not the current buffer."
     (candidate-transformer anything-c-skip-current-buffer
                            anything-c-highlight-buffers
                            anything-c-skip-boring-buffers)
-    (persistent-action . anything-c-buffers+-persistent-action)))
+    (persistent-action . anything-c-buffers+-persistent-action)
+    (persistent-help . "Show this buffer / C-c \\[anything-execute-persistent-action]: Kill this buffer")))
 
 (defun anything-c-buffers+-persistent-action (name)
   (flet ((kill (item)
@@ -1470,6 +1475,7 @@ If CANDIDATE is not a directory open this file."
   (let* ((end         (point))
          (guess       (thing-at-point 'filename))
          (full-path-p (string-match (concat "^" (getenv "HOME")) guess)))
+    (set-text-properties 0 (length candidate) nil candidate)
     (condition-case nil
         (when (file-exists-p (file-name-directory guess))
           (search-backward guess (- (point) (length guess)))
@@ -1829,6 +1835,12 @@ source.")
                               (sort (mapcar 'car woman-topic-all-completions)
                                     'string-lessp))))))
     (action  ("Show with Woman" . woman))
+    ;; Woman does not work OS X
+    ;; http://xahlee.org/emacs/modernization_man_page.html
+    (action-transformer . (lambda (actions candidate)
+                            (if (eq system-type 'darwin)
+                                '(("Show with Man" . man))
+                              actions)))
     (requires-pattern . 2)))
 ;; (anything 'anything-c-source-man-pages)
 
@@ -2530,7 +2542,8 @@ See: <http://mercurial.intuxication.org/hg/emacs-bookmark-extension>."
     (persistent-action . (lambda (candidate)
                            (if current-prefix-arg
                                (anything-c-w3m-browse-bookmark candidate t)
-                             (anything-c-w3m-browse-bookmark candidate nil t))))))
+                             (anything-c-w3m-browse-bookmark candidate nil t))))
+    (persistent-help . "Open URL with FireFox / C-u \\[anything-execute-persistent-action]: Open URL with emacs-w3m")))
 
 ;; (anything 'anything-c-source-w3m-bookmarks)
 
@@ -2670,6 +2683,7 @@ STRING is string to match."
                            (anything-c-imenu-default-action elm)
                            (unless (fboundp 'semantic-imenu-tag-overlay)
                              (anything-match-line-color-current-line))))
+    (persistent-help . "Show this entry")
     (action . anything-c-imenu-default-action))
   "See (info \"(emacs)Imenu\")")
 
@@ -2789,6 +2803,7 @@ http://ctags.sourceforge.net/")
     (persistent-action . (lambda (elm)
                            (anything-semantic-default-action elm)
                            (anything-match-line-color-current-line)))
+    (persistent-help . "Show this entry")
     (action . anything-semantic-default-action)
   "Needs semantic in CEDET.
 
@@ -2812,6 +2827,7 @@ http://cedet.sourceforge.net/"))
     (multiline)
     (candidates . anything-c-simple-call-tree-candidates)
     (persistent-action . anything-c-simple-call-tree-persistent-action)
+    (persistent-help . "Show function definitions by rotation")
     (action ("Find definition selected by persistent-action" .
              anything-c-simple-call-tree-find-definition)))
   "Needs simple-call-tree.el.
@@ -2874,6 +2890,7 @@ http://www.emacswiki.org/cgi-bin/wiki/download/simple-call-tree.el")
     (multiline)
     (candidates . anything-c-simple-call-tree-candidates)
     (persistent-action . anything-c-simple-call-tree-persistent-action)
+    (persistent-help . "Show function definitions by rotation")
     (action ("Find definition selected by persistent-action" .
              anything-c-simple-call-tree-find-definition)))
   "Needs simple-call-tree.el.
@@ -3099,7 +3116,8 @@ If this action is executed just after `yank', replace with STR as yanked string.
                                 (anything-goto-line (string-to-number candidate))))))
     (persistent-action . (lambda (candidate)
                            (anything-goto-line (string-to-number candidate))
-                           (anything-match-line-color-current-line)))))
+                           (anything-match-line-color-current-line)))
+    (persistent-help . "Show this line")))
 
 ;; (anything 'anything-c-source-mark-ring)
 
@@ -3120,7 +3138,8 @@ If this action is executed just after `yank', replace with STR as yanked string.
                            (let ((items (split-string candidate ":")))
                              (switch-to-buffer (second items))
                              (anything-goto-line (string-to-number (car items)))
-                             (anything-match-line-color-current-line))))))
+                             (anything-match-line-color-current-line))))
+    (persistent-help . "Show this line")))
                              
 (defun anything-c-source-global-mark-ring-candidates ()
   (flet ((buf-fn (m)
@@ -3465,6 +3484,7 @@ If load is non--nil load the file and feed `yaoddmuse-pages-hash'."
     (persistent-action . (lambda (item)
                            (ee-to item)
                            (anything-match-line-color-current-line)))
+    (persistent-help . "Show this entry")
     (action . (("Goto link" . (lambda (item)
                                 (ee-to item)))))))
 
@@ -3478,6 +3498,7 @@ If load is non--nil load the file and feed `yaoddmuse-pages-hash'."
     (candidates . anything-c-org-keywords-candidates)
     (action . anything-c-org-keywords-insert)
     (persistent-action . anything-c-org-keywords-show-help)
+    (persistent-help . "Show an example and info page to describe this keyword.")
     (keywords-examples)
     (keywords)))
 ;; (anything 'anything-c-source-org-keywords)
@@ -3525,7 +3546,7 @@ If load is non--nil load the file and feed `yaoddmuse-pages-hash'."
                           (cons (match-string 2 x) (match-string 1 x)))
                         (org-split-string (org-get-current-options) "\n"))
                        (mapcar 'list org-additional-option-like-keywords)))
-    (anything-attrset 'keywords (mapcar 'car keywords-examples))))
+    (anything-attrset 'keywords (mapcar 'car (anything-attr 'keywords-examples)))))
 
 (defun anything-c-org-keywords-candidates ()
   (and (eq (buffer-local-value 'major-mode anything-current-buffer) 'org-mode)
@@ -3956,7 +3977,8 @@ A list of search engines."
                   (anything candidate nil nil nil nil
                             anything-source-select-buffer)))
                ("Describe variable" . describe-variable)))
-    (persistent-action . describe-variable)))
+    (persistent-action . describe-variable)
+    (persistent-help . "Show description of this source")))
 ;; (anything 'anything-c-source-call-source)
 
 (defun anything-call-source ()
@@ -4089,6 +4111,7 @@ See also `anything-create--actions'."
     (init . anything-c-top-init)
     (candidates-in-buffer)
     (display-to-real . anything-c-top-display-to-real)
+    (update . anything-c-top-update)
     (action
      ("kill (TERM)" . (lambda (pid) (anything-c-top-sh (format "kill -TERM %s" pid))))
      ("kill (KILL)" . (lambda (pid) (anything-c-top-sh (format "kill -KILL %s" pid))))
@@ -4108,11 +4131,9 @@ See also `anything-create--actions'."
 (defun anything-c-top-display-to-real (line)
   (car (split-string line)))
 
-(defun anything-c-top-refresh ()
-  (interactive)
+(defun anything-c-top-update ()
   (let ((anything-source-name (assoc-default 'name anything-c-source-top))) ;UGLY HACK
-    (anything-c-top-init))
-  (anything-update))
+    (anything-c-top-init)))
 
 (defun anything-top ()
   "Preconfigured `anything' for top command."
@@ -4120,9 +4141,7 @@ See also `anything-create--actions'."
   (let ((anything-samewindow t)
         (anything-enable-shortcuts)
         (anything-display-function 'anything-default-display-buffer)
-        (anything-map (copy-keymap anything-map))
         (anything-candidate-number-limit 9999))
-    (define-key anything-map "\C-c\C-u" 'anything-c-top-refresh)
     (save-window-excursion
       (delete-other-windows)
       (anything-other-buffer 'anything-c-source-top "*anything top*"))))
@@ -4192,7 +4211,8 @@ See also `anything-create--actions'."
                                (kill-new elm)
                                (set-frame-font elm 'keep-size)
                                (message "New font have been copied to kill ring")))))
-    (persistent-action . anything-c-persistent-xfont-action)))
+    (persistent-action . anything-c-persistent-xfont-action)
+    (persistent-help . "Switch to this font temporarily")))
 
 (defun anything-select-xfont ()
   "Preconfigured `anything' to select Xfont."
@@ -5036,7 +5056,8 @@ If optional 2nd argument is non-nil, the file opened with `auto-revert-mode'.")
                 (get-line-fn . buffer-substring)
                 (type . line))
               source
-              '((candidates-in-buffer)))
+              '((candidates-in-buffer)
+                (persistent-help . "Show this line")))
     source))
 (add-to-list 'anything-compile-source-functions 'anything-compile-source--anything-headline)
 
@@ -5122,6 +5143,29 @@ If optional 2nd argument is non-nil, the file opened with `auto-revert-mode'.")
 (defun anything-kill-marked-buffers (candidate)
   (dolist (i (anything-marked-candidates))
     (kill-buffer i)))
+
+;; Plug-in: persistent-help
+(defun anything-compile-source--persistent-help (source)
+  (append source '((header-line . anything-persistent-help-string))))
+(add-to-list 'anything-compile-source-functions 'anything-compile-source--persistent-help)
+
+(defun anything-persistent-help-string ()
+  (substitute-command-keys
+   (concat "\\<anything-map>\\[anything-execute-persistent-action]: "
+           (or (anything-attr 'persistent-help)
+               (anything-aif (assoc-default 'action (anything-get-current-source))
+                   (cond ((symbolp it) (symbol-name it))
+                         ((listp it) (or (ignore-errors (caar it) "")))))
+               "")
+           " (keeping session)")))
+
+(anything-document-attribute 'persistent-help "persistent-help plug-in"
+  "A string to explain persistent-action of this source.
+It also accepts a function or a variable name.")
+
+;; (anything '(((name . "persistent-help test")(candidates "a")(persistent-help . "TEST"))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun anything-delete-marked-files (candidate)
   (anything-aif (anything-marked-candidates)
@@ -5232,6 +5276,7 @@ Return nil if bmk is not a valid bookmark."
      ("Ediff Marked buffers" . anything-ediff-marked-buffers)
      ("Ediff Merge marked buffers" . (lambda (candidate)
                                        (anything-ediff-marked-buffers candidate t))))
+    (persistent-help . "Show this buffer")
     (candidate-transformer anything-c-skip-current-buffer anything-c-skip-boring-buffers))
   "Buffer or buffer name.")
 
@@ -5249,6 +5294,7 @@ Return nil if bmk is not a valid bookmark."
      ("Delete file(s)" . anything-delete-marked-files)
      ("Open file externally" . anything-c-open-file-externally)
      ("Open file with default tool" . anything-c-open-file-with-default-tool))
+    (persistent-help . "Show this file")
     (action-transformer anything-c-transform-file-load-el
                         anything-c-transform-file-browse-url)
     (candidate-transformer anything-c-w32-pathname-transformer

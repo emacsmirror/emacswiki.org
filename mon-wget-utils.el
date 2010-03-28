@@ -1,61 +1,78 @@
 ;;; mon-wget-utils.el --- routines for pulling files with wget 
 ;; -*- mode: EMACS-LISP; -*-
-;;; ================================================================
-;;; DESCRIPTION:
-;;; mon-wget-utils provides routines for pulling files with wget.
-;;;
-;;; AUTHOR: MON KEY
-;;; MAINTAINER: MON KEY
-;;;
-;;; FUNCTIONS:►►►
-;;; `mon-wget-list-to-script', `mon-wget-list-to-script-TEST',
-;;; `mon-wget-list-to-script-shell-command',
-;;; `mon-wget-list-give-script-to-shell-command'
-;;; `mon-wget-rfc'
-;;; FUNCTIONS:◄◄◄
-;;; MACROS:
-;;;
-;;; METHODS:
-;;;
-;;; CLASSES:
-;;;
-;;; CONSTANTS:
-;;;
-;;; FACES:
-;;;
-;;; VARIABLES:
-;;; `*mon-show-wget-script-temp*'
-;;;
-;;; ALIASED/ADVISED/SUBST'D:
-;;;
-;;; DEPRECATED:
-;;;
-;;; RENAMED:
-;;;
-;;; MOVED:
-;;;
-;;; TODO:
-;;;
-;;; NOTES:
-;;; There is wget.el for more extented functionality (locate-library "wget")
-;;;
-;;; SNIPPETS:
-;;;
-;;; REQUIRES:
-;;;
-;;; THIRD-PARTY-CODE:
-;;;
-;; URL: http://www.emacswiki.org/emacs/mon-wget-utils.el
-;;; FIRST-PUBLISHED: <Timestamp: #{2010-02-18T17:10:38-05:00Z}#{10074} - by MON>
-;;;
-;; EMACSWIKI: {URL of an EmacsWiki describing mon-wget-utils.}
-;;;
-;; CREATED: <Timestamp: #{2010-02-18T17:09:29-05:00Z}#{10074} - by MON KEY>
-;;; 
-;;; ================================================================
 
+;;; ================================================================
 ;; Copyright © 2010 MON KEY. All rights reserved.
+;;; ================================================================
 
+;; FILENAME: mon-wget-utils.el
+;; AUTHOR: MON KEY
+;; MAINTAINER: MON KEY
+;; CREATED: 2010-02-18T17:09:29-05:00Z
+;; VERSION: 1.0.0
+;; COMPATIBILITY: Emacs23.*
+;; KEYWORDS: execute, external, comm, hypermedia, processes, wget
+
+;;; ================================================================
+
+;;; COMMENTARY: 
+
+;; =================================================================
+;; DESCRIPTION:
+;; mon-wget-utils provides routines for pulling files with wget.
+;;
+;; FUNCTIONS:►►►
+;; `mon-wget-list-to-script', `mon-wget-list-to-script-TEST',
+;; `mon-wget-list-to-script-shell-command',
+;; `mon-wget-list-give-script-to-shell-command'
+;; `mon-wget-rfc'
+;; FUNCTIONS:◄◄◄
+;;
+;; MACROS:
+;;
+;; METHODS:
+;;
+;; CLASSES:
+;;
+;; CONSTANTS:
+;;
+;; FACES:
+;;
+;; VARIABLES:
+;; `*mon-show-wget-script-temp*'
+;;
+;; ALIASED/ADVISED/SUBST'D:
+;;
+;; DEPRECATED:
+;;
+;; RENAMED:
+;;
+;; MOVED:
+;;
+;; TODO:
+;;
+;; NOTES:
+;; There is wget.el for more extented functionality (locate-library "wget")
+;;
+;; SNIPPETS:
+;;
+;; REQUIRES:
+;;
+;; THIRD-PARTY-CODE:
+;;
+;; URL: http://www.emacswiki.org/emacs/mon-wget-utils.el
+;; FIRST-PUBLISHED: <Timestamp: #{2010-02-18T17:10:38-05:00Z}#{10074} - by MON>
+;;
+;; EMACSWIKI: { URL of an EmacsWiki describing mon-wget-utils. }
+;;
+;; FILE-CREATED:
+;; <Timestamp: #{2010-02-18T17:09:29-05:00Z}#{10074} - by MON KEY>
+;;
+;; =================================================================
+
+;;; LICENSE:
+
+;; =================================================================
 ;; This file is not part of GNU Emacs.
 
 ;; This program is free software; you can redistribute it and/or
@@ -72,23 +89,21 @@
 ;; along with this program; see the file COPYING.  If not, write to
 ;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
 ;; Floor, Boston, MA 02110-1301, USA.
-
-;;; ================================================================
-
+;; =================================================================
 ;; Permission is granted to copy, distribute and/or modify this
 ;; document under the terms of the GNU Free Documentation License,
 ;; Version 1.3 or any later version published by the Free Software
 ;; Foundation; with no Invariant Sections, no Front-Cover Texts,
 ;; and no Back-Cover Texts. A copy of the license is included in
 ;; the section entitled ``GNU Free Documentation License''.
-
+;; 
 ;; A copy of the license is also available from the Free Software
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
-
-;; Copyright © 2010 MON KEY 
-
 ;;; ==============================
+;; Copyright © 2010 MON KEY 
+;;; ==============================
+
 ;;; CODE:
 
 (eval-when-compile (require 'cl))
@@ -106,8 +121,8 @@
 ;;; :TODO Add &rest to allow incorporationg other flags, e.g. -w SECONDS
 ;;; :CREATED <Timestamp: #{2010-02-18T15:49:08-05:00Z}#{10074} - by MON KEY>
 (defun mon-wget-list-to-script (get-list &optional base-url wget-fname &rest flags)
-  "Return a wget script built from contents of GET-LIST.
-FILE-LIST is a list of files for wget to pull.\n
+  "Return a wget script built from contents of GET-LIST.\n
+GET-LIST is a list of files for wget to pull.\n
 BASE-URL is a url to prepend to each element fo FILE-LIST.
 WGET-FNAME filename to write the wget-script to, if ommitted a wget script is
 written to to a file name with the format \"wget-script-YYYY-NN-NN\" in
@@ -316,6 +331,10 @@ W-THIS-LIST, W-BASE-URL, W-WGET-FNAME, and  W-THESE-FLAGS are as per
 ;;; ==============================
 (provide 'mon-wget-utils)
 ;;; ==============================
+
+;;; :NOTE Now evaluated with `mon-after-mon-utils-loadtime' :SEE :FILE mon-utils.el
+;; (eval-after-load "mon-wget-utils" 
+;;   '(mon-check-feature-for-loadtime 'mon-get-mon-packages))
 
 ;;; ================================================================
 ;;; mon-wget-utils.el ends here

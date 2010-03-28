@@ -31,7 +31,7 @@
 ;; `mon-string-incr-padded', `mon-string-incr', `mon-line-drop-in-words',
 ;; `mon-insert-string-n-times', `mon-lisp-evald', `comment-divider',
 ;; `mon-comment-divider-to-col-four', `php-comment-divider', `mon-insert-copyright',
-;; `mon-insert-file-in-dirs', `mon-insert-dirs-in-path', `mon-insert-wht-spc',
+;; `mon-insert-file-in-dirs', `mon-insert-dirs-in-path', `mon-insert-whitespace',
 ;; `mon-insert-newlines', `mon-insert-defclass-template',
 ;; `mon-insert-regexp-template-yyyy'`mon-insert-regexp-template',
 ;; `mon-insert-CL-file-template', `mon-insert-CL-package-template',
@@ -68,6 +68,7 @@
 ;; `mon-insert-naf-mode-file-template'   -> `mon-insert-file-template'
 ;; `mon-insert-string-incr'              -> `mon-string-incr'
 ;; `mon-insert-numbers-padded'           -> `mon-string-incr-padded'
+;; `mon-insert-wht-spc'                  -> `mon-insert-whitespace'
 ;;
 ;; RENAMED-AND-MOVED:
 ;; Following moved to `mon-doc-help-utils.el' and renamed *insert* -> *Help*
@@ -301,32 +302,53 @@ appropriate.\n
       (pop make-dir-list))))
 
 ;;; ==============================
+;;; :RENAMED `mon-insert-wht-spc' -> `mon-insert-whitespace'
+;;; :MODIFICATIONS <Timestamp: #{2010-03-26T12:38:53-04:00Z}#{10125} - by MON KEY>
 ;;; :CREATED <Timestamp: Thursday June 11, 2009 @ 02:23.20 PM - by MON KEY>
-(defun mon-insert-wht-spc (spc-cnt)
-  "Insert a space char SPC-CNT times.
-When called-interactively SPC-CNT is a prefix arg.
-space is:\n- character: SPC (32, #o40, #x20);\n- code point: 0x20\n- name: SPACE\n
-:NOTE does not inherit stickiness of adjoining chars `text-properties-at'.\n
+(defun mon-insert-whitespace (spc-cnt &optional insrtp intrp)
+  "Return space char 32 SPC-CNT times.\n
+SPC-CNT is the number of whitespace chars to return.\n
+When called-interactively SPC-CNT may be given as prefix arg.\n
+When optional arg INSRTP is non-nil or called-interactively insert whitespace at
+point.  Moves point.\n
+A whitespace is:\n- character: SPC (32, #o40, #x20);\n- code point: 0x20\n- name: SPACE\n
+:NOTE Does not inherit stickiness of adjoining chars `text-properties-at'.\n
+:EXAMPLE\n(mon-insert-whitespace 8\)\n
+ (mon-inhibit-read-only (mon-insert-whitespace 8 t))
 :SEE-ALSO `mon-insert-newlines', `mon-insert-unicode',
 `mon-insert-string-n-times', `mon-insert-string-n-fancy-times'.\n►►►"
-  (interactive "N")
-  (insert-char ? spc-cnt nil))
+  (interactive "NNumber of spaces to insert: \ni\np")
+  (if (or intrp insrtp)
+      (insert-char ? spc-cnt nil)
+      (make-string spc-cnt 32)))
 ;;
-;;; :TEST-ME (mon-insert-wht-spc 8)
+;;; :TEST-ME (mon-insert-whitespace 8)
+;;; :TEST-ME (mon-insert-whitespace 8 t) 
+;;; :TEST-ME (call-interactively 'mon-insert-whitespace)
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: Friday June 12, 2009 @ 11:18.21 AM - by MON KEY>
-(defun mon-insert-newlines (nl-cnt)
-  "Insert a newline char NL-CNT times.
-When called-interactively NL-CNT is a prefix arg.
-newline is:\n- code point: '0x0A';\n- character: C-j (10, #o12, #xa);\n- old-name: LINE FEED (LF);\n
-:NOTE does not inherit stickiness of adjoining chars `text-properties-at'\n
-:SEE-ALSO `mon-insert-wht-spc', `mon-insert-unicode', 
+(defun mon-insert-newlines (nl-cnt &optional insrtp intrp)
+  "Return newline char NL-CNT times.\n
+NL-CNT is the number of newline chars to return.
+When called-interactively NL-CNT may be given as prefix arg.
+When optional arg INSRTP is non-nil or called-interactively insert newlines at
+point.  Moves point.\n
+A newline is:\n- code point: '0x0A';\n- character: C-j (10, #o12, #xa);\n- old-name: LINE FEED (LF);\n
+:NOTE Does not inherit stickiness of adjoining chars `text-properties-at'.\n
+:EXAMPLE\n\(mon-insert-newlines 5\)\n
+:SEE-ALSO `mon-insert-whitespace', `mon-insert-unicode', 
 `mon-insert-string-n-times', `mon-insert-string-n-fancy-times'.\n►►►"
-  (interactive "N")
-  (insert-char ?\n nl-cnt nil))
+  (interactive "NNumber of newlines to insert: \ni\np")
+  (if (or intrp insrtp)
+      (insert-char ?\n nl-cnt nil)
+      (make-string nl-cnt 10)))
 ;;
 ;;; :TEST-ME (mon-insert-newlines 3)
+;;; :TEST-ME (mon-insert-whitespace 3)
+;;; :TEST-ME (mon-insert-newlines 3 t) 
+;;; :TEST-ME (call-interactively 'mon-insert-newlines)
+
 
 ;;; ==============================
 ;;; :MODIFICATIONS <Timestamp: #{2010-02-12T15:30:25-05:00Z}#{10065} - by MON KEY>
@@ -366,7 +388,7 @@ Does not move point.\n
 ;; Put 3 bubba's delimit with each bubba \" \\|\" followed by newlines.
 \(mon-insert-string-n-fancy-times nil 3 \"bubba\" t t \" |\" nil t\)\n
 :SEE-ALSO `mon-insert-string-n-fancy-times', `mon-string-incr',
-`mon-line-number-region-incr', `mon-insert-wht-spc', `mon-insert-newlines',
+`mon-line-number-region-incr', `mon-insert-whitespace', `mon-insert-newlines',
 `mon-insert-unicode'.\n►►►"
   (interactive "p")
   (let*   ((this-func ":FUNCTION mon-insert-string-n-fancy-times")
@@ -445,7 +467,7 @@ Does not move point.\n
 Prompt for: How many puts? <-- number of times to put string.
              String to put: <--- String  to insert.\n
 :SEE-ALSO `mon-insert-string-n-fancy-times', `mon-string-incr', `mon-line-number-region-incr',
-`mon-insert-wht-spc', `mon-insert-newlines', `mon-insert-unicode'.\n►►►"
+`mon-insert-whitespace', `mon-insert-newlines', `mon-insert-unicode'.\n►►►"
   (interactive (list (read-number "How many puts?")
 		     (read-string "String to put:")))
     (dotimes (i put-count t)

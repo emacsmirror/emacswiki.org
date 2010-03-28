@@ -64,12 +64,17 @@
 ;;
 ;; TODO:
 ;; These should be hardwired to a more specific local path that we can keep our eye on.
+
 ;; `temporary-file-directory'
 ;; `small-temporary-file-directory'
 ;; `thumbs-temp-dir'
 ;; `thumbs-thumbsdir-auto-clean' 
 ;; `thumbs-thumbsdir-max-size' 
 ;; `thumbs-cleanup-thumbsdir'
+
+;; :NOTE `auto-save-file-name-transforms' 
+;;; (set (make-local-variable 'delete-auto-save-files) t)
+
 ;;
 ;; NOTES:
 ;; == defavice for *Help* ==
@@ -250,6 +255,9 @@ This is mostly a W32 related fncn. Currenlty Does nothing on GNU systems.\n
 ;;
 (mon-set-bookmark-file
  (concat (file-name-as-directory mon-user-emacsd) ".emacs.bmk"))
+
+(when IS-MON-SYSTEM-P
+  (setq bookmark-save-flag 1))
 
 ;;; ==============================
 ;; :HELP-MODE-MODS
@@ -755,7 +763,7 @@ Used for hooks othwerwise is equivalent to calling `show-point-mode'.
 (provide 'mon-default-start-loads)
 ;;; ==============================
 
-(eval-after-load "mon-default-start-loads" '(mon-after-mon-utils-loadtime))
+(eval-after-load "mon-default-start-loads" '(require 'mon-post-load-hooks))
 
 ;;; ================================================================
 ;;; mon-default-start-loads.el ends here

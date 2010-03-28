@@ -67,7 +67,7 @@
 
 ;;; Variables:
 
-(defconst sdic-inline-version "0.4.2"
+(defconst sdic-inline-version "0.4.3"
   "Version of sdic-inline.")
 
 
@@ -274,22 +274,30 @@ and call `sdic-inline-display-func'."
     ;; Japanese was specified.
     (sdic-inline-search-word word jp))))
 
+(defun sdic-inline-cut-string-1line (text)
+  "if width of `text' > (- (frame-wdith) 15) cut `text' to one line"
+  (let ((w (- (frame-width) 15))
+        (cutted-p nil))
+    (while (> (string-width text) w)
+      (setq text (substring text 0 (- (length text) 10))
+            cutted-p t))
+    (when cutted-p
+      (setq text (concat text "..."))))
+  text)
+
 (defun sdic-inline-display-minibuffer (entry)
   "Display meaning of word to the minibuffer."
-  (let ((msg "")
-        (num 0)
-        head text cut)
+  (let ((msg "") multiline-p)
     (dolist (i entry)
-      ;; (setq head (sdicf-entry-headword (nth i entry)))
-      (setq text (sdicf-entry-text i))
-      (while (> (string-width text) (- (frame-width) 15))
-        (setq text (substring text 0 (- (length text) 10))
-              cut t))
-      (when cut
-        (setq text (concat text "...")))
-      (setq msg (concat msg (if (> num 0) "\n") text))
-      (setq num (1+ num)
-            cut nil))
+      (setq msg (concat
+                 msg
+                 (if multiline-p "\n")
+                 (sdic-inline-cut-string-1line
+                  (concat (sdicf-entry-headword i)
+                          "："
+                          (sdicf-entry-text i)))))
+      (unless multiline-p
+        (setq multiline-p t)))
     (message "%s" msg)))
 
 (defun sdic-inline-clear-last-word ()
@@ -302,20 +310,21 @@ and call `sdic-inline-display-func'."
   (interactive)
   (when (and (fboundp 'popup-cascade-menu)
              'sdic-inline-last-entry)
-    (let ((cnt 0)
-          head text lst)
+    (let ((len (length sdic-inline-last-entry))
+          lst)
       (dolist (i sdic-inline-last-entry)
-        (setq head (sdicf-entry-headword i))
-        (setq text (sdicf-entry-text i))
-        (setq lst (cons (list head text) lst))
-        (setq cnt (1+ cnt)))
+        (setq lst (cons (list (sdicf-entry-headword i)
+                              (sdicf-entry-text i))
+                        lst)))
       (cond
-       ((> cnt 1)
+       ((> len 1)
         (message "Select item to show detail.")
-        (popup-tip (popup-cascade-menu lst)))
+        (popup-tip (popup-cascade-menu (nreverse lst))))
 ;;        (popup-cascade-menu lst))
+       ((= len 1)
+        (popup-tip (nth 1 (car lst))))
        (t
-        (popup-tip text))))))
+        nil)))))
 
 (provide 'sdic-inline)
 

@@ -135,6 +135,17 @@ Great package. I recommend adding a function similar to M-$, which runs the comm
 Thank you for your comment.
 
 I'll think about it. -- [[khiker]]
+[new]
+You could change to this function on text-translator it does something like what was last suggested:
+<pre>
+(defun text-translator-region-or-thing-at-point (&optional prompt)
+  "If mark is active, return the region, otherwise, thing at point."
+  (cond
+   (mark-active
+    (buffer-substring-no-properties (region-beginning) (region-end)))
+   (t
+    (thing-at-point 'symbol ))))
+</pre>
 
 ----
 CategoryInterface CategoryInternationalization

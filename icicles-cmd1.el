@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Mar 19 15:10:03 2010 (-0700)
+;; Last-Updated: Sat Mar 27 18:51:51 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 20563
+;;     Update #: 20568
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3369,15 +3369,16 @@ Optional arg PROMPT is the completion prompt."
 Like `icicle-bookmark-other-window', but with %s bookmarks only.
 You need library `bookmark+.el' for this command." type type) ; Doc string
     (lambda (cand) (icicle-bookmark-jump-other-window (icicle-transform-multi-completion cand)))
-    prompt icicle-candidates-alist nil  ; `completing-read' args
+    prompt1 icicle-candidates-alist nil  ; `completing-read' args
     (not icicle-show-multi-completion-flag)
     nil (if (boundp 'bookmark-history) 'bookmark-history 'icicle-bookmark-history)
     nil nil
     ((enable-recursive-minibuffers           t) ; In case we read input, e.g. File changed on disk...
      (completion-ignore-case                 bookmark-completion-ignore-case) ; Additional bindings
-     (prompt                                 ,(format "%s%s bookmark: "
-                                                      (capitalize (substring type 0 1))
-                                                      (substring type 1 (length type))))
+     (prompt1                                ,(or prompt
+                                                  (format "%s%s bookmark: "
+                                                          (capitalize (substring type 0 1))
+                                                          (substring type 1 (length type)))))
      (icicle-list-use-nth-parts              '(1))
      (icicle-candidate-properties-alist      (if (not icicle-show-multi-completion-flag)
                                                  nil
@@ -3485,18 +3486,18 @@ You need library `bookmark+.el' for this command." type type) ; Doc string
 ;;  `icicle-bookmark-region-other-window',
 ;;  `icicle-bookmark-remote-file-other-window',
 ;;  `icicle-bookmark-w3m-other-window'.
-(icicle-define-bookmark-other-window-command "bookmark-list")          ; `C-x 4 j B'
-(icicle-define-bookmark-other-window-command "desktop")                ; `C-x 4 j K'
-(icicle-define-bookmark-other-window-command "dired")                  ; `C-x 4 j d'
-(icicle-define-bookmark-other-window-command "file")                   ; `C-x 4 j f'
-(icicle-define-bookmark-other-window-command "gnus")                   ; `C-x 4 j g'
-(icicle-define-bookmark-other-window-command "info")                   ; `C-x 4 j i'
-(icicle-define-bookmark-other-window-command "local-file")             ; `C-x 4 j l'
-(icicle-define-bookmark-other-window-command "man")                    ; `C-x 4 j m'
-(icicle-define-bookmark-other-window-command "non-file")               ; `C-x 4 j b'
-(icicle-define-bookmark-other-window-command "region" "Select region") ; `C-x 4 j r'
-(icicle-define-bookmark-other-window-command "remote-file")            ; `C-x 4 j n'
-(icicle-define-bookmark-other-window-command "w3m")                    ; `C-x 4 j w'
+(icicle-define-bookmark-other-window-command "bookmark-list")            ; `C-x 4 j B'
+(icicle-define-bookmark-other-window-command "desktop")                  ; `C-x 4 j K'
+(icicle-define-bookmark-other-window-command "dired")                    ; `C-x 4 j d'
+(icicle-define-bookmark-other-window-command "file")                     ; `C-x 4 j f'
+(icicle-define-bookmark-other-window-command "gnus")                     ; `C-x 4 j g'
+(icicle-define-bookmark-other-window-command "info")                     ; `C-x 4 j i'
+(icicle-define-bookmark-other-window-command "local-file")               ; `C-x 4 j l'
+(icicle-define-bookmark-other-window-command "man")                      ; `C-x 4 j m'
+(icicle-define-bookmark-other-window-command "non-file")                 ; `C-x 4 j b'
+(icicle-define-bookmark-other-window-command "region" "Select region: ") ; `C-x 4 j r'
+(icicle-define-bookmark-other-window-command "remote-file")              ; `C-x 4 j n'
+(icicle-define-bookmark-other-window-command "w3m")                      ; `C-x 4 j w'
 (defalias 'icicle-select-bookmarked-region 'icicle-bookmark-region-other-window)
 
 ;;;###autoload

@@ -213,20 +213,25 @@ helps you focus on one kind of action (jumping).
 [:BookmarkHelp]
 === Helpful help. ===
 
-It's easy to get information about individual bookmarks, in
-addition to information about the current bookmark list
-(buffer `##*Bookmark List*##').
+* Information about individual bookmarks.
 
-* Command '''`bookmarkp-describe-bookmark'''' ('''`##C-x p ?##'''') describes
+** Anywhere in Emacs, '''`##C-x p ?##'''' (command '''`bookmarkp-describe-bookmark'''' describes
 any bookmark.  With a [[prefix argument]], it shows you the
 full information that defines it (internal form).
 
-* In the bookmark list, '''`C-h RET'''' (or '''`C-h C-RET'''') describes
+** In the bookmark list, '''`C-h RET'''' (or '''`C-h C-RET'''') describes
 the bookmark under the [[cursor]].  Again, a prefix arg means
 show the full (internal) information.
 
-* In the bookmark list, '''`##?##'''' or '''`C-h m'''' shows you detailed
-information about the current state of the bookmark list.  It also provides buttons that let you access all '''Bookmark+''' doc and customize all '''Bookmark+''' [[face]]s and [[option]]s. (`C-h m' in the bookmark list does not show you info about minor modes.  If you want that, use `M-x describe-mode'.)
+
+* General '''Bookmark+''' documentation.
+
+** Anywhere in Emacs, '''`##M-x bookmarkp-bmenu-mode-status-help##''''  shows detailed information about the current state of the bookmark list. Click button `##Doc in Commentary##' or button `##Doc on the Web##' to
+access the complete documentation.  (Use button `Customize' to customize all '''Bookmark+''' [[face]]s and [[option]]s.)
+
+** In the bookmark list, '''`##?##'''' and '''`C-h m'''' are the same as `M-x bookmarkp-bmenu-mode-status-help'.    (`C-h m' in the bookmark list does not show you info about minor modes. If you want that, use `M-x describe-mode'.)
+
+** In the `bookmark-plus' group customization buffer (`M-x customize-group bookmark-plus'), click button `Commentary'.
 
 
 

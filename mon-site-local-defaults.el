@@ -575,6 +575,7 @@ will be used to assign a global var with a similar name.
 :CALLED-BY `*mon-CIFS-mount-root*'   <- key 'the-mnt-prfx
 :CALLED-BY `*mon-CIFS-mount-points*' <- key 'the-mnt-maps
 :CALLED-BY `mon-open-images-ed-swap' <- key 'the-mon-img-ed-swp, 'the-bug-img-ed-swp
+:CALLED-BY `mon-its-all-text-purge-on-quit' <- key 'the-itsalltext-temp-dir
 :CALLED-BY `mon-get-env-vars-emacs'  <- key 'the-emacs-vars\n
 The 'the-emacs-vars key holds these environment variables (mostly W32 centric):
  EMC_BIN      <- The current Emacs' `bin' directory.
@@ -592,7 +593,11 @@ The 'the-emacs-vars key holds these environment variables (mostly W32 centric):
 \(assoc 'the-emacs-vars \(mon-build-misc-path-example\)\)\n
 \(assoc 'the-sub \(mon-build-misc-path-example\)\)\n
 \(assoc 'the-sub-1 \(assoc 'the-sub \(mon-build-misc-path-example\)\)\)
-:SEE-ALSO `mon-build-misc-path-example'.\n►►►")
+:SEE-ALSO `mon-get-mon-emacsd-paths', `mon-system-type-conditionals',
+`mon-user-name-conditionals' `IS-W32-P', `IS-GNU-P', `IS-MON-SYSTEM-P',
+`IS-MON-P-W32', `IS-MON-P-GNU', `IS-MON-P', `IS-BUG-P', `IS-BUG-P-REMOTE',
+`mon-emacs-root', `mon-site-lisp-root', `mon-user-emacsd', `mon-naf-mode-notes',
+`mon-naf-mode-root', `mon-ebay-tmplt-mode-root'.\n►►►")
 ;;
 ;;; :TEST-ME  *mon-misc-path-alist*
 ;;; :TEST-ME (assoc 'the-1-path *mon-misc-path-alist*)

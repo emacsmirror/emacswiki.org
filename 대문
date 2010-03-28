@@ -93,7 +93,7 @@ This is Korean page for SiteMap.  영어로 된 페이지를 보려면, [EmacsWi
 ** [EmacsWiki:CategoryTimeTracking 시간추적분류(CategoryTimeTracking)] -- 해야할 일에 들어갈 시간을 추적
 * [EmacsWiki:CategoryEducation 교육분류(CategoryEducation)] -- 새로운 것을 배우고, 사전으로 활용하고, 시험을 치는 기능들.
 * [EmacsWiki:CategoryExternalUtilities 외부유틸리티부류(CategoryExternalUtilities)] -- 소프트웨어 개발(즉, 프로그래밍)이외의 작업을 위해 사용할 만한 외부 유틸리티.
-** [EmacsWiki:CategoryCryptography 압호화분류(CategoryCryptography)] -- 이맥스를 사용해 편집하거나 읽을 파일을 암호화하기 및 해독하기.
+** [EmacsWiki:CategoryCryptography 암호화분류(CategoryCryptography)] -- 이맥스를 사용해 편집하거나 읽을 파일을 암호화하기 및 해독하기.
 ** [EmacsWiki:CategoryShell 쉘분류(CategoryShell)] -- 이맥스에 내장된 쉘 사용하기
 ** [EmacsWiki:CategoryEshell Eshell분류(CategoryEshell)] -- 완전히 [[EmacsLisp]]으로 구현된 또 다른 내장 쉘 환경.
 ** [EmacsWiki:CategoryVersionControl 버젼관리분류(CategoryVersionControl)] -- Emacs를 사용해 버젼관리하기(CVS, RCS, SCCS, SVN, GIT,...)

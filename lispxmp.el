@@ -1,5 +1,5 @@
 ;;; lispxmp.el --- Automagic emacs lisp code annotation
-;; $Id: lispxmp.el,v 1.13 2010/03/25 07:10:58 rubikitch Exp rubikitch $
+;; $Id: lispxmp.el,v 1.14 2010/03/28 04:52:56 rubikitch Exp $
 
 ;; Copyright (C) 2009, 2010  rubikitch
 
@@ -88,6 +88,10 @@
 ;;; History:
 
 ;; $Log: lispxmp.el,v $
+;; Revision 1.14  2010/03/28 04:52:56  rubikitch
+;; * Fix destructive function bug
+;; * New command: `lispxmp-debug-buffer'
+;;
 ;; Revision 1.13  2010/03/25 07:10:58  rubikitch
 ;; Fix escape bug
 ;;
@@ -131,7 +135,7 @@
 
 ;;; Code:
 
-(defvar lispxmp-version "$Id: lispxmp.el,v 1.13 2010/03/25 07:10:58 rubikitch Exp rubikitch $")
+(defvar lispxmp-version "$Id: lispxmp.el,v 1.14 2010/03/28 04:52:56 rubikitch Exp $")
 (require 'cl)
 (require 'newcomment)
 (defgroup lispxmp nil
@@ -184,6 +188,10 @@ http://mumble.net/~campbell/emacs/paredit.el"
           (lispxmp-out-make-sexp i)
           (insert (format "%s <<%%lispxmp-out-marker %d>>" semicolons i)))))
 ;; (progn (lispxmp-create-code (current-buffer))(display-buffer lispxmp-temp-buffer))
+(defun lispxmp-debug-buffer ()
+  (interactive)
+  (display-buffer lispxmp-temp-buffer))
+
 
 (defun lispxmp-annotation-p ()
   (save-match-data
@@ -211,7 +219,8 @@ http://mumble.net/~campbell/emacs/paredit.el"
 
 (defvar lispxmp-results nil)
 (defun %lispxmp-out (index result)
-  (push (cons index result) lispxmp-results)
+  (push (cons index (if (sequencep result) (copy-sequence result) result))
+        lispxmp-results)
   result)
 
 (defun %lispxmp-prin1-to-string (object)
@@ -230,20 +239,6 @@ http://mumble.net/~campbell/emacs/paredit.el"
       (delete-backward-char 1)
       (forward-sexp 1))
     (buffer-string)))
-
-;;;; unit test
-;; (install-elisp "http://www.emacswiki.org/cgi-bin/wiki/download/el-expectations.el")
-;; (install-elisp "http://www.emacswiki.org/cgi-bin/wiki/download/el-mock.el")
-(dont-compile
-  (when (fboundp 'expectations)
-    (expectations
-      (desc "%lispxmp-prin1-to-string")
-      (expect "\"aaaa\""
-        (%lispxmp-prin1-to-string-no-properties (propertize "aaaa" 'face 'match)))
-      (expect "(\"a\" \"b\")"
-        (%lispxmp-prin1-to-string-no-properties
-         (list (propertize "a" 'face 'match) (propertize "b" 'face 'match))))
-      )))
 
 
 (defun lispxmp-create-annotations (buf results)
@@ -277,6 +272,35 @@ http://mumble.net/~campbell/emacs/paredit.el"
        ad-do-it)))
 (lispxmp-comment-advice comment-dwim)
 (lispxmp-comment-advice paredit-comment-dwim)
+
+;;;; unit test
+;; (install-elisp "http://www.emacswiki.org/cgi-bin/wiki/download/el-expectations.el")
+;; (install-elisp "http://www.emacswiki.org/cgi-bin/wiki/download/el-mock.el")
+(dont-compile
+  (when (fboundp 'expectations)
+    (expectations
+      (desc "%lispxmp-prin1-to-string")
+      (expect "\"aaaa\""
+        (%lispxmp-prin1-to-string-no-properties (propertize "aaaa" 'face 'match)))
+      (expect "(\"a\" \"b\")"
+        (%lispxmp-prin1-to-string-no-properties
+         (list (propertize "a" 'face 'match) (propertize "b" 'face 'match))))
+      (desc "destructive annotation test")
+      (expect '(1 2)
+        (let (l)
+          (setq lispxmp-results nil)
+          (%lispxmp-out 0 (setq l (list 1 2)))
+          (%lispxmp-out 1 (setcar l 100))
+          (%lispxmp-out 2 l)
+          (cdr (assq 0 lispxmp-results))))
+      (expect "abcd"
+        (let (s)
+          (setq lispxmp-results nil)
+          (%lispxmp-out 0 (setq s "abcd"))
+          (%lispxmp-out 1 (aset s 0 ?A))
+          (%lispxmp-out 2 s)
+          (cdr (assq 0 lispxmp-results))))
+      )))
 
 (provide 'lispxmp)
 

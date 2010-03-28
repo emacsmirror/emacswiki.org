@@ -20,7 +20,7 @@ As you type a name, the list updates using a fuzzy matching algorithm.  Press <c
 = Download =
 Lisp:lusty-explorer.el
 
-[http://github.com/sjbach/lusty/tree/master Development repository]
+[http://github.com/sjbach/lusty-emacs Development repository]
 
 = Changelist =
 

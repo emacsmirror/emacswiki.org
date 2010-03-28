@@ -130,7 +130,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 268 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 269 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.  I  have  also  received
@@ -1016,12 +1016,7 @@ automatically:
 
   ;;select the correct window
   (sr-select-window sr-selected-window)
-  (when (and (equal sr-window-split-style 'horizontal)
-             (numberp sr-selected-window-width))
-    (enlarge-window-horizontally
-     (min (- sr-selected-window-width (window-width))
-          (- (frame-width) (window-width) window-min-width)))
-    (setq sr-selected-window-width nil))
+  (sr-restore-panes-width)
   (sr-force-passive-highlight)
   (run-hooks 'sr-start-hook))
 
@@ -1133,8 +1128,7 @@ automatically:
       (progn
         (setq sr-running nil)
         (sr-save-directories)
-        (unless sr-selected-window-width
-          (setq sr-selected-window-width (window-width)))
+        (sr-save-panes-width)
         (if norestore
             (progn
               (sr-select-viewer-window)
@@ -1155,7 +1149,7 @@ automatically:
              (if (and sr-running (eq frame sr-current-frame)) (sr-quit))))
 
 (defun sr-save-directories ()
-  "Save the current directories in the panes to use the next time sr starts up."
+  "Saves the current directories in the panes to use the next time sr starts up."
   (when (window-live-p sr-left-window)
     (set-buffer (window-buffer sr-left-window))
     (when (equal major-mode 'sr-mode)
@@ -1173,6 +1167,25 @@ automatically:
   (mapc (lambda (x)
           (bury-buffer (symbol-value (sr-symbol x 'buffer))))
         '(left right)))
+
+(defun sr-save-panes-width ()
+  "Saves the width of the panes to use the next time sr-starts up."
+  (unless sr-selected-window-width
+    (if (and (window-live-p sr-left-window)
+             (window-live-p sr-right-window))
+        (setq sr-selected-window-width
+              (window-width
+               (symbol-value (sr-symbol sr-selected-window 'window))))
+      (setq sr-selected-window-width t))))
+
+(defun sr-restore-panes-width ()
+  "Restores the last registered width of the panes on startup."
+  (when (and (equal sr-window-split-style 'horizontal)
+             (numberp sr-selected-window-width))
+    (enlarge-window-horizontally
+     (min (- sr-selected-window-width (window-width))
+          (- (frame-width) (window-width) window-min-width)))
+    (setq sr-selected-window-width nil)))
 
 (defun sr-resize-panes (&optional reverse)
   "Enlarges (or shrinks, if reverse is t) the left pane by 5 columns."
@@ -1250,16 +1263,16 @@ automatically:
   (unless height (setq sr-selected-window-width t))
   (sr-setup-windows)
   (setq sr-windows-locked t))
-
-(defmacro sr-save-width (form)
-  "Restores the width of the panes after a windows setup."
-  `(let ((saved-width (window-width sr-left-window)) (delta))
-     ,form
-     (setq delta (- saved-width (window-width sr-left-window)))
-     (bw-adjust-window sr-left-window delta t)))
  
-(defun sr-max-lock-panes () (interactive) (sr-save-width (sr-lock-panes 'max)))
-(defun sr-min-lock-panes () (interactive) (sr-save-width (sr-lock-panes 'min)))
+(defun sr-max-lock-panes ()
+  (interactive)
+  (sr-save-panes-width)
+  (sr-lock-panes 'max))
+
+(defun sr-min-lock-panes ()
+  (interactive)
+  (sr-save-panes-width)
+  (sr-lock-panes 'min))
 
 ;;; ============================================================================
 ;;; File system navigation functions:
@@ -1318,7 +1331,7 @@ automatically:
     (progn ;;the file is a regular file:
       (condition-case description
           (progn
-            (setq sr-selected-window-width (window-width))
+            (sr-save-panes-width)
             (find-file filename wildcards)
             (delete-other-windows)
             (setq sr-prior-window-configuration (current-window-configuration))

@@ -709,6 +709,23 @@ Display of centered dot, etc. did not work on my Unicode terminal until I replac
 Hi Vinicius,
 
 I tested these settings no Mac OS X 10.4 and 10.6 and they seem ok.
+
+[new]
+I am using GNU Emacs 23.1.1 and I have the following setting for whitespace-mode.
+
+{{{
+;; Whitespace mode.
+(require 'whitespace)
+(setq whitespace-style
+  '(empty lines-tail tabs tab-mark trailing))
+}}}
+
+I have issues with the 'empty' marker. When am I writing a new source code, whitespace mode marks the 'empty' line with yellow background face as I press have an empty line after the last line. That is fine. However, when I start typing the first non-empty line after the prvious empty line, I expect the mark to go away. But, it doesn't and it stays forever until I go to the beginning of the buffer and edit something. This is a big distraction for me. I am not sure if this is a whitespace mode issue, or I am doing something wrong. Any help is appreciated. Thanks!
+
+: [[image:WhiteSpaceEmptyLineIssue]]
+
+-- PraveenKumar
+
 ----
 
 CategoryCode,

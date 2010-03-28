@@ -57,6 +57,18 @@
 ;; MOVED:
 ;;
 ;; TODO:
+;; Integrate Wordnet features. 
+;; :SEE (URL `http://wordnet.cs.princeton.edu')
+;;
+;; Google's "define:<SOME-WORD>" returns wordnet definitions.  These appear in
+;; the `*google-define-get-buffer*' returned by `google-define-get-command' as:
+;; <a href="/url?q=http://wordnetweb.princeton.edu/perl/webwn{WORDNET-PARAMS}>
+;; It might be interesting to integrate/adapt William Xu's wordnet interface: 
+;; :SEE (URL `http://xwl.appspot.com/ref/wordnet.el')
+;; :SEE (URL `http://github.com/xwl/xwl-elisp/raw/master/wordnet.el')
+;; Or maybe Henry G. Weller's adaptation of above for use w/ `org-mode':
+;; :SEE (URL `http://www.emacswiki.org/emacs/wn-org.el')
+;; using the REST
 ;;
 ;; NOTES:
 ;; The Required functions listed below are also provided in a dedicated library
@@ -146,11 +158,19 @@
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-03-20T11:44:49-04:00Z}#{10116} - by MON KEY>
 (defgroup google-define-redux nil
-  "*Extensions for google-define.\n
-:SEE-ALSO \n►►►"
+  "*Extensions for `google-define'.\n
+:SEE-ALSO `google-define', `google-define-get-command',
+`google-define-parse-buffer', `google-define-font-lock',
+`google-define-kill-def-buffers', `mon-string-justify-left'
+`*google-define-buffer-suffix*' `*google-define-get-buffer*',
+`*google-define-html-entry-table*', `*google-define-get-command',
+`gg-def-base', `gg-def-num', `gg-def-delim', `gg-def-inition', `gg-def-defined'.\n►►►"
   :group 'google-define
   :prefix "google-define-"
   :link '(url-link :tag "EmacsWiki" "http://www.emacswiki.org/emacs/google-define-redux.el"))
+;;
+;;; :TEST-ME (symbol-plist 'google-define-redux)
+;;; :TEST-ME (documentation-property 'google-define-redux 'group-documentation)
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-03-20T11:44:49-04:00Z}#{10116} - by MON KEY>
@@ -162,48 +182,57 @@
   :group 'faces
   :group  (or (when (featurep 'mon-doc-help-utils)  'mon-doc-help-utils-faces) nil)
   :prefix "gg-def-")
+;;
+;;; :TEST-ME (symbol-plist 'google-define-redux-faces)
+;;; :TEST-ME (documentation-property 'google-define-redux-faces 'group-documentation)
 
 ;;; ==============================
 ;;; :COURTESY Jeremy English :HIS google-define.el 
 ;;; :MODIFICATIONS <Timestamp: #{2010-03-20T12:34:07-04:00Z}#{10116} - by MON KEY>
 ;;;  Replaced Character literal for SOFT HYPHEN (173, #o255, #xad) with hex representation.
 ;;; :CREATED <Timestamp: #{2010-03-20T12:15:24-04:00Z}#{10116} - by MON KEY>
+(unless (bound-and-true-p *google-define-html-entry-table*)
 (defconst *google-define-html-entry-table*
-  (list
-   '("&#34;" "&quot;" "\"")   '("&#38;" "&amp;" "&")     '("&#39;" "&yow;" "'")
-   '("&#62;" "&gt;" ">")      '("&#160;" "&nbsp;" " ")   '("&#161;" "&iexcl;" "¡")
-   '("&#162;" "&cent;" "¢")   '("&#163;" "&pound;" "£")  '("&#164;" "&curren;" "¤")
-   '("&#165;" "&yen;" "¥")    '("&#166;" "&brvbar;" "¦") '("&#167;" "&sect;" "§")
-   '("&#168;" "&uml;" "¨")    '("&#169;" "&copy;" "©")   '("&#170;" "&ordf;" "ª")
-   '("&#171;" "&laquo;" "«")  '("&#172;" "&not;" "¬")    '("&#173;" "&shy;" "\xad") ;<- :CHANGED
-   '("&#174;" "&reg;" "®")    '("&#175;" "&macr;" "¯")   '("&#176;" "&deg;" "°")
-   '("&#177;" "&plusmn;" "±") '("&#178;" "&sup2;" "²")   '("&#179;" "&sup3;" "³")
-   '("&#180;" "&acute;" "´")  '("&#181;" "&micro;" "µ")  '("&#182;" "&para;" "¶")
-   '("&#183;" "&middot;" "·") '("&#184;" "&cedil;" "¸")  '("&#185;" "&sup1;" "¹")
-   '("&#186;" "&ordm;" "º")   '("&#187;" "&raquo;" "»")  '("&#188;" "&frac14;" "¼")
-   '("&#189;" "&frac12;" "½") '("&#190;" "&frac34;" "¾") '("&#191;" "&iquest;" "¿")
-   '("&#192;" "&Agrave;" "À") '("&#193;" "&Aacute;" "Á") '("&#194;" "&Acirc;" "Â")
-   '("&#195;" "&Atilde;" "Ã") '("&#196;" "&Auml;" "Ä")   '("&#197;" "&Aring;" "Å")
-   '("&#198;" "&AElig;" "Æ")  '("&#199;" "&Ccedil;" "Ç") '("&#200;" "&Egrave;" "È")
-   '("&#201;" "&Eacute;" "É") '("&#202;" "&Ecirc;" "Ê")  '("&#203;" "&Euml;" "Ë")
-   '("&#204;" "&Igrave;" "Ì") '("&#205;" "&Iacute;" "Í") '("&#206;" "&Icirc;" "Î")
-   '("&#207;" "&Iuml;" "Ï")   '("&#208;" "&ETH;" "Ð")    '("&#209;" "&Ntilde;" "Ñ")
-   '("&#210;" "&Ograve;" "Ò") '("&#211;" "&Oacute;" "Ó") '("&#212;" "&Ocirc;" "Ô")
-   '("&#213;" "&Otilde;" "Õ") '("&#214;" "&Ouml;" "Ö")   '("&#215;" "&times;" "×")
-   '("&#216;" "&Oslash;" "Ø") '("&#217;" "&Ugrave;" "Ù") '("&#218;" "&Uacute;" "Ú")
-   '("&#219;" "&Ucirc;" "Û")  '("&#220;" "&Uuml;" "Ü")   '("&#221;" "&Yacute;" "Ý")
-   '("&#222;" "&THORN;" "Þ")  '("&#223;" "&szlig;" "ß")  '("&#224;" "&agrave;" "à")
-   '("&#225;" "&aacute;" "á") '("&#226;" "&acirc;" "â")  '("&#227;" "&atilde;" "ã")
-   '("&#228;" "&auml;" "ä")   '("&#229;" "&aring;" "å")  '("&#230;" "&aelig;" "æ")
-   '("&#231;" "&ccedil;" "ç") '("&#232;" "&egrave;" "è") '("&#233;" "&eacute;" "é")
-   '("&#234;" "&ecirc;" "ê")  '("&#235;" "&euml;" "ë")   '("&#236;" "&igrave;" "ì")
-   '("&#237;" "&iacute;" "í") '("&#238;" "&icirc;" "î")  '("&#239;" "&iuml;" "ï")
-   '("&#240;" "&eth;" "ð")    '("&#241;" "&ntilde;" "ñ") '("&#242;" "&ograve;" "ò")
-   '("&#243;" "&oacute;" "ó") '("&#244;" "&ocirc;" "ô")  '("&#245;" "&otilde;" "õ")
-   '("&#246;" "&ouml;" "ö")   '("&#247;" "&divide;" "÷") '("&#248;" "&oslash;" "ø")
-   '("&#249;" "&ugrave;" "ù") '("&#250;" "&uacute;" "ú") '("&#251;" "&ucirc;" "û")
-   '("&#252;" "&uuml;" "ü")   '("&#253;" "&yacute;" "ý") '("&#254;" "&thorn;" "þ")
-   '("&#255;" "&yuml;" "ÿ")   '("&#60;" "&lt;" "<")))
+  `(("&#34;"  "&quot;" "\"")  ("&#38;"  "&amp;" "&")    ("&#39;" "&yow;" "'")
+    ("&#62;"  "&gt;" ">")     ("&#160;" "&nbsp;" " ")   ("&#161;" "&iexcl;" "¡")
+    ("&#162;" "&cent;" "¢")   ("&#163;" "&pound;" "£")  ("&#164;" "&curren;" "¤")
+    ("&#165;" "&yen;" "¥")    ("&#166;" "&brvbar;" "¦") ("&#167;" "&sect;" "§")
+    ("&#168;" "&uml;" "¨")    ("&#169;" "&copy;" "©")   ("&#170;" "&ordf;" "ª")
+    ("&#171;" "&laquo;" "«")  ("&#172;" "&not;" "¬")    ("&#173;" "&shy;" "\xad") ;<- :CHANGED
+    ("&#174;" "&reg;" "®")    ("&#175;" "&macr;" "¯")   ("&#176;" "&deg;" "°")
+    ("&#177;" "&plusmn;" "±") ("&#178;" "&sup2;" "²")   ("&#179;" "&sup3;" "³")
+    ("&#180;" "&acute;" "´")  ("&#181;" "&micro;" "µ")  ("&#182;" "&para;" "¶")
+    ("&#183;" "&middot;" "·") ("&#184;" "&cedil;" "¸")  ("&#185;" "&sup1;" "¹")
+    ("&#186;" "&ordm;" "º")   ("&#187;" "&raquo;" "»")  ("&#188;" "&frac14;" "¼")
+    ("&#189;" "&frac12;" "½") ("&#190;" "&frac34;" "¾") ("&#191;" "&iquest;" "¿")
+    ("&#192;" "&Agrave;" "À") ("&#193;" "&Aacute;" "Á") ("&#194;" "&Acirc;" "Â")
+    ("&#195;" "&Atilde;" "Ã") ("&#196;" "&Auml;" "Ä")   ("&#197;" "&Aring;" "Å")
+    ("&#198;" "&AElig;" "Æ")  ("&#199;" "&Ccedil;" "Ç") ("&#200;" "&Egrave;" "È")
+    ("&#201;" "&Eacute;" "É") ("&#202;" "&Ecirc;" "Ê")  ("&#203;" "&Euml;" "Ë")
+    ("&#204;" "&Igrave;" "Ì") ("&#205;" "&Iacute;" "Í") ("&#206;" "&Icirc;" "Î")
+    ("&#207;" "&Iuml;" "Ï")   ("&#208;" "&ETH;" "Ð")    ("&#209;" "&Ntilde;" "Ñ")
+    ("&#210;" "&Ograve;" "Ò") ("&#211;" "&Oacute;" "Ó") ("&#212;" "&Ocirc;" "Ô")
+    ("&#213;" "&Otilde;" "Õ") ("&#214;" "&Ouml;" "Ö")   ("&#215;" "&times;" "×")
+    ("&#216;" "&Oslash;" "Ø") ("&#217;" "&Ugrave;" "Ù") ("&#218;" "&Uacute;" "Ú")
+    ("&#219;" "&Ucirc;" "Û")  ("&#220;" "&Uuml;" "Ü")   ("&#221;" "&Yacute;" "Ý")
+    ("&#222;" "&THORN;" "Þ")  ("&#223;" "&szlig;" "ß")  ("&#224;" "&agrave;" "à")
+    ("&#225;" "&aacute;" "á") ("&#226;" "&acirc;" "â")  ("&#227;" "&atilde;" "ã")
+    ("&#228;" "&auml;" "ä")   ("&#229;" "&aring;" "å")  ("&#230;" "&aelig;" "æ")
+    ("&#231;" "&ccedil;" "ç") ("&#232;" "&egrave;" "è") ("&#233;" "&eacute;" "é")
+    ("&#234;" "&ecirc;" "ê")  ("&#235;" "&euml;" "ë")   ("&#236;" "&igrave;" "ì")
+    ("&#237;" "&iacute;" "í") ("&#238;" "&icirc;" "î")  ("&#239;" "&iuml;" "ï")
+    ("&#240;" "&eth;" "ð")    ("&#241;" "&ntilde;" "ñ") ("&#242;" "&ograve;" "ò")
+    ("&#243;" "&oacute;" "ó") ("&#244;" "&ocirc;" "ô")  ("&#245;" "&otilde;" "õ")
+    ("&#246;" "&ouml;" "ö")   ("&#247;" "&divide;" "÷") ("&#248;" "&oslash;" "ø")
+    ("&#249;" "&ugrave;" "ù") ("&#250;" "&uacute;" "ú") ("&#251;" "&ucirc;" "û")
+    ("&#252;" "&uuml;" "ü")   ("&#253;" "&yacute;" "ý") ("&#254;" "&thorn;" "þ")
+    ("&#255;" "&yuml;" "ÿ")   ("&#60;" "&lt;" "<"))
+   "
+:CALLED-BY `*regexp-clean-url-utf-escape*', `*regexp-clean-html-escape*'
+:SEE-ALSO `*mon-wrap-url-schemes*', `*regexp-clean-xml-parse*',
+`*regexp-percent-encoding-reserved-chars*', `*regexp-clean-url-utf-escape*',
+`*regexp-clean-ulan-diacritics*', `*regexp-cp1252-to-latin1*'.\n►►►")
+) ;; :CLOSE unless
 
 ;;; ==============================
 ;;; :GOOGLE-DEFINE-ADDITIONS-EXTENSIONS-MODIFICATIONS
@@ -212,7 +241,7 @@
 ;;; :CREATED <Timestamp: #{2010-02-03T16:20:02-05:00Z}#{10053} - by MON>
 (defvar *google-define-view-map* (cons (string-to-char "Q") 'View-kill-and-leave)
   "Keybinding for `view-mode' in `google-define' help buffers.
-:SEE-ALSO `*google-define-get-command'\n.►►►")
+:SEE-ALSO `*google-define-get-command', `*google-define-html-entry-table*'\n.►►►")
 ;;
 ;;; :TEST-ME *google-define-view-map* 
 ;;;(progn (makunbound '*google-define-view-map*) (unintern '*google-define-view-map*) )
@@ -234,10 +263,12 @@
 (defvar *google-define-buffer-suffix* '("*" . ":gg-definition*")
   "*Prefix and suffix to attach to defition buffers created with `google-define'.\n
 :CALLED-BY `google-define-kill-def-buffers' when cleaning up definition buffers.\n
-:SEE-ALSO `*google-define-get-buffer*'.\n►►►")
+:SEE-ALSO `*google-define-get-buffer*' `*google-define-html-entry-table*',
+`*google-define-get-command'.\n►►►")
 ;;
 ;;; :TEST-ME *google-define-buffer-suffix*
 ;;;(progn (makunbound '*google-define-buffer-suffix*) (unintern '*google-define-buffer-suffix*) )
+
 
 ;;; ==============================
 ;;; `mon-help-KEY-tag' <- :FILE mon-doc-help-utils.el
@@ -251,7 +282,7 @@
         )
   "*Base face for font-locking buffers returned by `google-define'.\n
 :SEE-ALSO `gg-def-base', `gg-def-delim', `gg-def-defined', `gg-def-num',
-`gg-def-inition'.\n►►►"
+`gg-def-inition', `mon-doc-help-utils-faces'.\n►►►"
   :group 'google-define-redux-faces)
 ;;
 ;;; :TEST-ME (describe-face 'gg-def-base)
@@ -286,9 +317,8 @@ Delimiters characters include: ►, |, ◄ preceded and followed by whitespace e
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-02-05T16:06:20-05:00Z}#{10055} - by MON KEY>
 (defface gg-def-inition
-    ;; :WAS '((t ;:inherit gg-def-base
-    ;;           :foreground "wheat1" :weight normal))
-    '( (((class color) (min-colors 88)) (:foreground "wheat1" :weight normal)) )
+    ;; :WAS '( (((class color) (min-colors 88)) (:foreground "wheat1" :weight normal)) )
+    '((t :inherit gg-def-base  :foreground "wheat1" :weight normal))
   "*Provides fontlocking of definition content e.g. anything after \"    | \".\n
 :SEE-ALSO `gg-def-base', `gg-def-delim', `gg-def-defined', `gg-def-num',
 `gg-def-inition'.\n►►►"
@@ -298,7 +328,7 @@ Delimiters characters include: ►, |, ◄ preceded and followed by whitespace e
 ;;;(progn (makunbound 'gg-def-inition) (unintern 'gg-def-inition) )
 
 ;;; ==============================
-;;; :TODO See notes below about matching alternate reasonable suffixes.
+;;; :TODO See notes below about matching alternate reasonable definition suffixes.
 ;;; :CREATED <Timestamp: #{2010-02-05T16:05:47-05:00Z}#{10055} - by MON KEY>
 (defface gg-def-defined 
     '((t :inherit gg-def-base :foreground "cadet blue"))
@@ -350,7 +380,7 @@ Delimiters characters include: ►, |, ◄ preceded and followed by whitespace e
       (message "Response received: processing..."))
     buf))
 
-;;; (google-define-get-command)
+;;; :TEST-ME (google-define-get-command )
 
 ;;; ==============================
 ;;; REQUIRES `mon-g2be' mon-string-justify-left'
@@ -359,9 +389,10 @@ Delimiters characters include: ►, |, ◄ preceded and followed by whitespace e
   "Pull all of the definitions out of the data returned from google.\n
 Print in a temp-buffer, parse, and convert for presentation.\n
 :SEE-ALSO `google-define', `google-define-get-command',
-`google-define-parse-buffer', `google-define-font-lock',
-`google-define-kill-def-buffers', `*google-define-get-buffer*',
-`mon-string-justify-left'.\n►►►"
+`google-define-font-lock', `google-define-kill-def-buffers',
+`mon-string-justify-left' `*google-define-buffer-suffix*'
+`*google-define-get-buffer*', `*google-define-html-entry-table*',
+`*google-define-get-command'.\n►►►"
   (let* ((count 0)
          (accum-buffer ;; <- *standard-output* is here
           (prog1 
@@ -375,11 +406,14 @@ Print in a temp-buffer, parse, and convert for presentation.\n
     (princ (format "Definitions for: %s\n\n" search-word))
     
     ;; (with-current-buffer  ??
-    (set-buffer (google-define-get-command 
-                 "www.google.com" 
-                 (concat "/search?num=100&hl=en&q=define%3A%22"
-                         (replace-regexp-in-string " +" "+" search-word)
-                         "%22&btnG=Search")))
+    (set-buffer 
+     ;; :NOTE "http://www.google.com/search?num=100&hl=en&q=define%3A%22big%22&btnG=Search"
+     ;; e.g. equivalent to entering at th gg search form: define:"big"
+     (google-define-get-command                 
+      "www.google.com" 
+      (concat "/search?num=100&hl=en&q=define%3A%22"
+              (replace-regexp-in-string " +" "+" search-word)
+              "%22&btnG=Search")))
     (unwind-protect
          (progn
            (mon-g2be) ;; :WAS (goto-char (point-min))
@@ -397,7 +431,8 @@ Print in a temp-buffer, parse, and convert for presentation.\n
                          #'(lambda ()
                              (dolist (x *google-define-html-entry-table*)
                                (let ((ascii (caddr x))
-                                     (gd-rps #'(lambda (frm-str to-str) 
+                                     (gd-rps ;; :WAS `google-define-replace-string'
+                                      #'(lambda (frm-str to-str) 
                                                  (progn 
                                                    (mon-g2be) ;; mon-g2be <- mon-utils.el
                                                    (while (search-forward frm-str nil t)
@@ -408,9 +443,9 @@ Print in a temp-buffer, parse, and convert for presentation.\n
                          #'(lambda ()
                              (mon-g2be)
                              (while (search-forward-regexp "&#\\([0-9]+\\);" nil t)
-                               (let* ((ucs (string-to-number (match-string 1)))
-                                      (rep (char-to-string (or (decode-char 'ucs ucs) ?~))))
-                                 (replace-match rep nil t))))))
+                               (let* ((gdru-ucs (string-to-number (match-string 1)))
+                                      (gdru-rep (char-to-string (or (decode-char 'ucs gdru-ucs) ?~))))
+                                 (replace-match gdru-rep nil t))))))
                     (save-excursion              
                       (insert (format "%3d ►\n" count))               
                       (set-marker >pnt (point))

@@ -33,7 +33,7 @@
 ;; `mon-tld-find-name', `mon-tld', `mon-get-w3m-url-at-point-maybe',
 ;; `mon-get-w3m-url-at-point' `mon-w3m-read-gnu-lists-nxt-prv',
 ;; `mon-url-encode', `mon-url-decode' `mon-get-host-address',
-;; `mon-url-retrieve-to-new-buffer'
+;; `mon-url-retrieve-to-new-buffer', `mon-its-all-text-purge-on-quit'
 ;; FUNCTIONS:◄◄◄
 ;;
 ;; MACROS:
@@ -156,6 +156,30 @@
 ;; :REQUIRED-BY `mon-url-retrieve-to-new-buffer'
 (require 'url)
 
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-03-27T16:36:32-04:00Z}#{10126} - by MON KEY>
+(defun mon-its-all-text-purge-on-quit ()
+  "Remove .txt files in the current user's Mozilla profile itsalltext directory.
+To be run as a hook function on `kill-emacs-hook'.\n
+On w32 these may get left behind when remoting field text from Firefox using the
+itsalltext add-on extension. 
+This functions invokes file-expand-wildcards with the following pattern:
+ \"/Mozilla/Firefox/Profiles/*.default/itsalltext/*.txt*\"
+:NOTE You _should_ set/verify the path value associated with the key 
+the-itsalltext-temp-dir in the variable `*mon-misc-path-alist*'.\n
+:SEE (URL `https://addons.mozilla.org/en-US/firefox/addon/4125')
+:SEE (URL `http://trac.gerf.org/itsalltext')
+:SEE-ALSO `mon-htmlfontify-dir-purge-on-quit'.\n►►►"
+(when IS-W32-P
+  (let ((chk-i-a-t (cadr (assoc 'the-itsalltext-temp-dir *mon-misc-path-alist*))))
+    (when (and chk-i-a-t (file-exists-p chk-i-a-t))
+      (dolist (i-a-t (file-expand-wildcards (concat chk-i-a-t "/*.txt*") t))
+        (delete-file i-a-t))))))
+;;
+(when IS-MON-P-W32
+  (add-hook 'kill-emacs-hook 'mon-htmlfontify-dir-purge-on-quit))
+
 (when (featurep 'htmlfontify)
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-03-23T21:05:10-04:00Z}#{10123} - by MON KEY>
@@ -166,15 +190,15 @@ These are temp files generated with `mon-htmlfontify-buffer-to-firefox' and
 This procedure is meant to be run as a hook on `kill-emacs-hook'.\n
 :EXAMPLE\n\(directory-files *emacs2html-temp* t \"emacs2firefox-.*\.html\")\n
 \n\(mon-htmlfontify-dir-purge-on-quit\)\n
-:SEE-ALSO .\n►►►"
+:SEE-ALSO `mon-its-all-text-purge-on-quit'.\n►►►"
   (interactive)
   (let ((cln-emacs2html-temp 
-         (directory-files *emacs2html-temp* t "emacs2firefox-.*\.html")))
+         (directory-files *emacs2html-temp* t "emacs2firefox-.*\.html~?")))
     (dolist (prg cln-emacs2html-temp)
       (delete-file prg))))
 ;; Purge the directory on quit.
 (when (and IS-MON-SYSTEM-P (file-directory-p *emacs2html-temp*))
-  (add-hook 'kill-emacs-hook 'mon-htmlfontify-region-to-firefox))
+  (add-hook 'kill-emacs-hook 'mon-htmlfontify-dir-purge-on-quit))
 ;;
 ;;; :TEST-ME (mon-htmlfontify-dir-purge-on-quit)
 
@@ -202,6 +226,8 @@ This procedure is meant to be run as a hook on `kill-emacs-hook'.\n
              (setq h-fnty-bfr ;; :SEE 
                    (htmlfontify-buffer this-bfr-dir this-bfr-file))
              (setq h-fnty-bfr (htmlfontify-buffer))))
+      (set (make-local-variable 'delete-auto-save-files) t)
+      (set (make-local-variable 'backup-inhibited) t)
       (setq h-fnty-bfr (current-buffer))
       (write-file ffox-fname))
     (when (get-buffer h-fnty-bfr) (kill-buffer h-fnty-bfr))
@@ -224,6 +250,8 @@ This procedure is meant to be run as a hook on `kill-emacs-hook'.\n
           (buffer-substring fontify-from fontify-to))
     (unwind-protect
          (with-current-buffer (get-buffer-create ffox-rg-fname)
+           (set (make-local-variable 'delete-auto-save-files) t)
+           (set (make-local-variable 'backup-inhibited) t)
            (insert mhr2f-fontify-this)
            (emacs-lisp-mode)
            ;; (font-lock-fontify-syntactically-region  (buffer-end 0) (buffer-end 1))

@@ -1,5 +1,5 @@
 ;;;; anything.el --- open anything / QuickSilver-like candidate-selection framework
-;; $Id: anything.el,v 1.263 2010/03/27 02:34:40 rubikitch Exp $
+;; $Id: anything.el,v 1.265 2010/03/28 05:07:00 rubikitch Exp rubikitch $
 
 ;; Copyright (C) 2007              Tamas Patrovics
 ;;               2008, 2009, 2010  rubikitch <rubikitch@ruby-lang.org>
@@ -347,6 +347,12 @@
 
 ;; (@* "HISTORY")
 ;; $Log: anything.el,v $
+;; Revision 1.265  2010/03/28 05:07:00  rubikitch
+;; Change default `anything-sources'. It is only a sample, no problem.
+;;
+;; Revision 1.264  2010/03/27 19:02:52  rubikitch
+;; New attributes: `mode-line' and `header-line'
+;;
 ;; Revision 1.263  2010/03/27 02:34:40  rubikitch
 ;; doc
 ;;
@@ -1206,7 +1212,7 @@
 
 ;; ugly hack to auto-update version
 (defvar anything-version nil)
-(setq anything-version "$Id: anything.el,v 1.263 2010/03/27 02:34:40 rubikitch Exp $")
+(setq anything-version "$Id: anything.el,v 1.265 2010/03/28 05:07:00 rubikitch Exp rubikitch $")
 (require 'cl)
 
 ;; (@* "User Configuration")
@@ -1244,22 +1250,6 @@
                                             (directory-files
                                              anything-default-directory)))
                             (type . file))
-
-                           ((name . "Manual Pages")
-                            (candidates . ,(progn
-                                             ;; XEmacs doesn't have a woman :)
-                                             (declare (special woman-file-name
-                                                               woman-topic-all-completions))
-                                             (condition-case nil
-                                                 (progn
-                                                   (require 'woman)
-                                                   (woman-file-name "")
-                                                   (sort (mapcar 'car
-                                                                 woman-topic-all-completions)
-                                                         'string-lessp))
-                                               (error nil))))
-                            (action . (("Open Manual Page" . woman)))
-                            (requires-pattern . 2))
 
                            ((name . "Complex Command History")
                             (candidates . (lambda ()
@@ -1602,6 +1592,16 @@ Attributes:
 - update (optional)
 
   Function called with no parameters when \\<anything-map>\\[anything-force-update] is pressed.
+
+- mode-line (optional)
+
+  source local `anything-mode-line-string'. (included in `mode-line-format')
+  It accepts also variable/function name.
+
+- header-line (optional)
+
+  source local `header-line-format'.
+  It accepts also variable/function name.
 ")
 
 
@@ -1943,6 +1943,7 @@ It is `anything-default-display-buffer' by default, which affects `anything-same
 (defvar anything-mode-line-string "(\\<anything-map>\\[anything-help]:help \\[anything-select-action]:act \\[anything-exit-minibuffer]/\\[anything-select-2nd-action-or-end-of-line]/\\[anything-select-3rd-action]:nthact \\[anything-execute-persistent-action]:pers-act)"
   "Help string displayed in mode-line in `anything'.
 If nil, use default `mode-line-format'.")
+(make-variable-buffer-local 'anything-mode-line-string)
 
 (defvar anything-help-message
   "\\<anything-map>The keys that are defined for `anything' are:
@@ -2495,7 +2496,6 @@ already-bound variables. Yuck!
           (t
            (read-string (or any-prompt "pattern: ") any-input)))))
 
-(defvar anything-mode-line-string-real nil)
 (defun anything-create-anything-buffer (&optional test-mode)
   "Create newly created `anything-buffer'.
 If TEST-MODE is non-nil, clear `anything-candidate-cache'."
@@ -2504,15 +2504,9 @@ If TEST-MODE is non-nil, clear `anything-candidate-cache'."
   (with-current-buffer (get-buffer-create anything-buffer)
     (buffer-disable-undo)
     (erase-buffer)
-    (set (make-local-variable  'inhibit-read-only) t)
+    (set (make-local-variable 'inhibit-read-only) t)
     (set (make-local-variable 'anything-last-sources-local) anything-sources)
-    (if anything-mode-line-string
-        (setq anything-mode-line-string-real
-              (substitute-command-keys anything-mode-line-string)
-              mode-line-format
-              '(" " mode-line-buffer-identification " "
-                (line-number-mode "%l") " " anything-mode-line-string-real "-%-"))
-      (kill-local-variable 'mode-line-format))
+    
     (setq cursor-type nil)
     (setq mode-name "Anything"))
   (anything-initialize-overlays anything-buffer)
@@ -3091,7 +3085,24 @@ UNIT and DIRECTION."
         (set-window-start (selected-window)
                           (save-excursion (forward-line -1) (point))))
       (when (anything-get-previous-header-pos)
-        (anything-mark-current-line)))))
+        (anything-mark-current-line))
+      (anything-display-mode-line (anything-get-current-source)))))
+
+(defvar anything-mode-line-string-real nil)
+(defun anything-display-mode-line (source)
+  (setq anything-mode-line-string
+         (anything-interpret-value (or (assoc-default 'mode-line source)
+                                       anything-mode-line-string)
+                                   source))
+  (if anything-mode-line-string
+      (setq mode-line-format
+            '(" " mode-line-buffer-identification " "
+              (line-number-mode "%l") " " anything-mode-line-string-real "-%-")
+            anything-mode-line-string-real
+            (substitute-command-keys anything-mode-line-string))
+    (kill-local-variable 'mode-line-format))
+  (setq header-line-format
+        (anything-interpret-value (assoc-default 'header-line source) source)))
 
 (defun anything-previous-line ()
   "Move selection to the previous line."

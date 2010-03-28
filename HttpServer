@@ -14,4 +14,12 @@ Note the following if you use Emacs version 21.4 or lower: Since Emacs doesn't s
 [http://synthcode.com/emacs/ phase.el] is an HTTP server by AlexShinn under development, with cgi functionality and the ability to parse emacs lisp embedded in html documents.
 
 ----
+
+The first one above does not work for emacs23, and the second one redirects to a blank page.
+
+Here's one that I am using now - http://nullprogram.com/blog/2009/05/17/
+
+----
+
+
 CommonGatewayInterface EricMarsden EmacsHttpd

@@ -14,13 +14,14 @@ Following is organized roughly according to the load order whilst trying to conv
 * Lisp mon-GNU-load.el -- GNU/Linux specific features. Mostly for quick reconfiguration of Slime related stuff prior to slime-loads.el
 * Lisp slime-loads.el -- Slime is a moving target with multiple backends for multiple languages. This is for sanity.
 * Lisp:mon-keybindings.el -- Set global keybindings and mode specific stuff.
+* Lisp:mon-post-load-hooks.el -- functions to evaluate after initializing MON Emacsen
 
 [:MON-UTILS]
 == :MON-UTILS ==
 The package mon-utils is the entry point which loads the rest of the system and specifically any mon-*.el and naf-mode-*.el packages.
 
 * Lisp:mon-utils.el -- (MonUtils) This package is the entry point that loads everything else below.
-* Lisp:mon-dir-locals-alist.el --
+* Lisp:mon-dir-locals-alist.el -- MON global vars bound to commonly used local-site paths.
 * Lisp:mon-dir-utils.el -- Provides a collection of handy functions and interactive commands for working with directories and files.
 * Lisp:mon-insertion-utils.el -- Provides insertion related utilities, templates and string building/manipulation procedures that ease routine chores and interactive command invocation.
 * Lisp:mon-replacement-utils.el -- Provides a collection of routines and commands and abstracts some commonly encountered procedures for processing regexps with their replacements.
@@ -50,7 +51,8 @@ The package mon-utils is the entry point which loads the rest of the system and 
 ;;; buffer modification of web/internet scrapes.
 * Lisp:mon-jg-directory-creator.el -- utils for massive directory hierarchy creation.
 * Lisp:mon-wget-utils.el -- Provides lightweight routines for pulling files with wget.
-* Lisp:mon-get-mon-packages.el 
+* Lisp:mon-get-mon-packages.el -- Pull em all with wget
+* Lisp:mon-get-freenode-lisp-logs -- Pull freenode logs for #lisp with wget
 * Lisp:mon-cifs-utils.el -- (MonCifsUtils) Provides utilities for mapping and mounting a CIFS domain using auth-source. Common Internet File System protocol, e.g. successor to the SMB (Server Message Block) protocol with the Samba Server.
 * Lisp:google-define-redux.el -- Provides extensions for Lisp:google-define.el
 * Lisp:mon-color-occur.el -- A patched version of Matsushita Akihisa color-cccur.el :SEE http://www.bookshelf.jp/elc/color-occur.el

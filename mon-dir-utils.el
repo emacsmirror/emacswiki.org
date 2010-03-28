@@ -45,8 +45,7 @@
 ;; `mon-toggle-dired-dwim-target', `mon-get-relative-w-absolute',
 ;; `mon-copy-file-dired-as-list', `mon-copy-file-dired-as-string',
 ;; `mon-get-ps2ascii', `mon-get-pdftotext', `mon-get-pdfinfo',
-;; `mon-w3m-dired-file', `mon-w3m-kill-url-at-point', `mon-new-buffer-w-stamp',
-;; `mon-bind-nefs-photos-at-loadtime',
+;; `mon-new-buffer-w-stamp', `mon-bind-nefs-photos-at-loadtime',
 ;; FUNCTIONS:◄◄◄
 ;;
 ;; MACROS:
@@ -80,18 +79,20 @@
 ;; RENAMED:
 ;;
 ;; MOVED:
-;; `*artist-naf-path*'                -> `mon-dir-locals-alist.el'
-;; `*brand-naf-path*'                 -> `mon-dir-locals-alist.el'
-;; `mon-comp-times-flt-pnt'           -> `mon-time-utils.el'
-;; `mon-conv-time-flt-pnt'            -> `mon-time-utils.el'
-;; `mon-get-file-mod-times'           -> `mon-time-utils.el'
-;; `mon-file-older-than-file-p'       -> `mon-time-utils.el'
-;; `mon-dired-srt-alph'               <- `mon-dir-utils-switches.el'
-;; `mon-dired-srt-chrn'               <- `mon-dir-utils-switches.el'
-;; `mon-dired-srt-type'               <- `mon-dir-utils-switches.el'
-;; `mon-dired-srt-type-alph'          <- `mon-dir-utils-switches.el'
-;; `mon-dired-srt-type-chrn'          <- `mon-dir-utils-switches.el'
-;; `dired-up-directory-this-buffer'   <- `mon-dir-utils-switches.el'
+;; `*artist-naf-path*'                -> mon-dir-locals-alist.el
+;; `*brand-naf-path*'                 -> mon-dir-locals-alist.el
+;; `mon-comp-times-flt-pnt'           -> mon-time-utils.el
+;; `mon-conv-time-flt-pnt'            -> mon-time-utils.el
+;; `mon-get-file-mod-times'           -> mon-time-utils.el
+;; `mon-file-older-than-file-p'       -> mon-time-utils.el
+;; `mon-dired-srt-alph'               <- mon-dir-utils-switches.el
+;; `mon-dired-srt-chrn'               <- mon-dir-utils-switches.el
+;; `mon-dired-srt-type'               <- mon-dir-utils-switches.el
+;; `mon-dired-srt-type-alph'          <- mon-dir-utils-switches.el
+;; `mon-dired-srt-type-chrn'          <- mon-dir-utils-switches.el
+;; `dired-up-directory-this-buffer'   <- mon-dir-utils-switches.el
+;; `mon-w3m-dired-file'               -> mon-url-utils.el
+;; `mon-w3m-kill-url-at-point'        -> mon-url-utils.el
 ;;
 ;; REQUIRES:
 ;; 
@@ -351,41 +352,6 @@ copy file-names such that when yanked they are inserted as quoted strings.\n
 ;;
 (defalias 'mon-dired-kill-files-to-strings 'mon-copy-file-dired-as-string)
 (defalias 'mon-dired-copy-files-to-strings 'mon-copy-file-dired-as-string)
-
-;;; ==============================
-;;; :CREATED <Timestamp: #{2009-12-16T23:00:32-05:00Z}#{09513} - by MON KEY>
-(if (and (executable-find "w3m") 
-         (intern-soft "w3m-dired-file")         
-         (fboundp 'w3m-dired-file))
-(defun mon-w3m-dired-file (w3m-find-file)
-  "Browse dired file at point with w3m.\n
-:SEE-ALSO `mon-w3m-kill-url-at-point', `mon-get-w3m-url-at-point-maybe',
-`mon-get-w3m-url-at-point', `mon-w3m-read-gnu-lists-nxt-prv',
-`mon-copy-file-dired-as-list', `mon-copy-file-dired-as-string',
-`dired-get-marked-files'.\n►►►"
-  (interactive)
-  (w3m-find-file (car (dired-get-marked-files))))
-;;
-(message "Can not find the w3m executable"))
-;;
-(when (and (intern-soft "mon-w3m-dired-file") (fboundp 'mon-w3m-dired-file))
-  (defalias 'mon-get-w3m-dired-file  'mon-w3m-dired-file))
-
-;;; ==============================
-;;; :CREATED <Timestamp: #{2010-02-17T23:18:19-05:00Z}#{10073} - by MON>
-(defun mon-w3m-kill-url-at-point ()
-  "Put the w3m URL at point on the kill ring.\n
-Examines for URL with `get-text-property' the 'w3m-href-anchor property if found
-the property value on the kill ring and message user.\n
-:SEE-ALSO `mon-get-w3m-dired-file', `mon-get-w3m-url-at-point-maybe',
-`mon-get-w3m-url-at-point', `mon-w3m-read-gnu-lists-nxt-prv',
-`mon-copy-file-dired-as-list', `mon-copy-file-dired-as-string',
-`dired-get-marked-files'.\n►►►"
-  (interactive)
-  (let ((w3mgtp (get-text-property (point) 'w3m-href-anchor)))
-      (when (and w3mgtp (stringp w3mgtp))
-        (kill-new w3mgtp)
-        (message w3mgtp))))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: Tuesday July 21, 2009 @ 05:36.07 PM - by MON>
@@ -1328,7 +1294,7 @@ Default path held by global var: `*artist-naf-path*'.\n
 :SEE-ALSO `naf-explorer-brand',`naf-dired-artist-letter',
 `naf-dired-brand-letter', `mon-open-explorer'.\nUsed in `naf-mode'.\n►►►"
   (interactive "p")
-  (when (and win32p)
+  (when (and IS-W32-P)
     (let ((dl (format "%s-Artists names"
                        (if (numberp prefix)
 		       (upcase (read-string "Alphabetic Artists Directory:"))
@@ -1351,7 +1317,7 @@ Default path held in var: `*brand-naf-path*'.\n
 `naf-dired-brand-letter', `naf-dired-image-dir'`mon-open-explorer'.\n
 :USED-IN `naf-mode'.\n►►►"
   (interactive "p")
-  (when (and win32p)
+  (when (and IS-W32-P)
     (let* ((dl (format "%s-Brand-NAFs"
                        (if (numberp prefix)
                            (upcase (read-string "Alphabetic Artists Directory:"))
@@ -2250,3 +2216,6 @@ List value built with `mon-build-dir-list' per completion specs.\n
 ;;; (mon-nef-dir-conc-ranges *nefs_photos_nefs-alist*)
 ;;; (mon-nef-dir-keep-3      *nefs_photos_nefs-alist*)
 
+;;; ================================================================
+;;; mon-dir-utils.el ends here
+;;; EOF

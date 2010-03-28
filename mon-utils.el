@@ -96,14 +96,15 @@
 ;; `mon-string-replace-char', `mon-string-to-hex-list',
 ;; `mon-buffer-exists-so-kill', `mon-string-wonkify',
 ;; `mon-after-mon-utils-loadtime', `mon-line-count-buffer'
-;; `mon-g2be', `mon-string-sort-descending'
+;; `mon-g2be', `mon-string-sort-descending',
+;; `mon-with-inhibit-buffer-read-only-TEST'
 ;; FUNCTIONS:◄◄◄
 ;; 
 ;; MACROS:
 ;; `mon-foreach', `mon-for', `mon-loop', `mon-moveq', `mon-line-dolines'
 ;; `defconstant', `defparameter', 
 ;; `mon-get-face-at-posn', `mon-buffer-exists-p',
-;; `mon-check-feature-for-loadtime',
+;; `mon-check-feature-for-loadtime', `mon-with-inhibit-buffer-read-only'
 ;;
 ;; METHODS:
 ;;
@@ -278,10 +279,11 @@ When optional arg REQ-W-FILNAME is non-nil second arg to `require' will given as
 the filename of feature FEATURE-AS-SYMBOL when it is in loadpath.\n
 :EXAMPLE\n\n\(pp-macroexpand-expression 
           '\(mon-check-feature-for-loadtime 'mon-test-feature-fl\)\)\n
-:SEE-ALSO `mon-unbind-command', `mon-unbind-symbol', `mon-unbind-function',
-`mon-unbind-variable', `mon-unbind-defun', `mon-compile-when-needed'
-`mon-load-or-alert', `mon-byte-compile-and-load', `mon-dump-object-to-file',
-`mon-nuke-and-eval', `mon-after-mon-utils-loadtime'.\n►►►"
+:SEE-ALSO `mon-run-post-load-hooks', `mon-purge-cl-symbol-buffers-on-load',
+`mon-after-mon-utils-loadtime', `mon-unbind-command', `mon-unbind-symbol',
+`mon-unbind-function', `mon-unbind-variable', `mon-unbind-defun',
+`mon-compile-when-needed' `mon-load-or-alert', `mon-byte-compile-and-load',
+`mon-dump-object-to-file', `mon-nuke-and-eval'.\n►►►"
   (declare (indent 2) (debug t))
   (let ((mcffl (make-symbol "mcffl")))
     `(let (,mcffl)
@@ -336,6 +338,7 @@ Adds feature requirements:\n
  mon-eight-bit-raw-utils\n
 :SEE-ALSO `mon-check-feature-for-loadtime', `mon-unbind-command',
 `mon-unbind-symbol', `mon-unbind-function', `mon-unbind-variable',
+`mon-run-post-load-hooks', `mon-purge-cl-symbol-buffers-on-load',
 `mon-unbind-defun', `mon-after-mon-utils-loadtime', `mon-compile-when-needed'
 `mon-load-or-alert', `mon-byte-compile-and-load', `mon-dump-object-to-file',
 `mon-nuke-and-eval'.\n►►►"
@@ -428,11 +431,12 @@ string of kind variable.\n
 ;;; :CREATED <Timestamp: #{2009-10-23T15:17:35-04:00Z}#{09435} - by MON KEY>
 (defmacro mon-with-file-buffer (buffer-var file &rest body)
   "Evaluate BODY with BUFFER-VAR bound to buffer visiting FILE.\n
-:SEE-ALSO `mon-buffer-exists-p',`mon-buffer-written-p', `mon-buffer-exists-so-kill',
-`mon-get-buffers-parent-dir', `mon-get-proc-buffers-directories',
-`mon-get-buffers-directories', `mon-split-string-buffer-name',
-`mon-split-string-buffer-parent-dir' `with-current-buffer', `with-temp-file',
-`with-temp-buffer'.\n►►►"
+:SEE-ALSO `mon-buffer-exists-p',`mon-buffer-written-p',
+`mon-buffer-exists-so-kill', `mon-print-in-buffer-if-p',
+`mon-buffer-exists-so-kill', `mon-get-buffers-parent-dir',
+`mon-get-proc-buffers-directories', `mon-get-buffers-directories',
+`mon-split-string-buffer-name', `mon-split-string-buffer-parent-dir'
+`with-current-buffer', `with-temp-file', `with-temp-buffer'.\n►►►"
   (let ((file-var (make-symbol "file"))
         (buffer-already-there-p-var (make-symbol "buffer-already-there-p")))
     `(let* ((,file-var ,file)
@@ -454,10 +458,11 @@ When INSRTP is non-nil or called-interactively with prefix arg insert
 buffer-name at point. Does not move point.\n
 :EXAMPLE\n(mon-buffer-name->kill-ring)
 \(call-interactively 'mon-buffer-name->kill-ring)\n
-:SEE-ALSO `mon-buffer-exists-p',`mon-buffer-exists-so-kill',
-`mon-buffer-written-p', `mon-with-file-buffer', `mon-get-buffers-parent-dir',
-`mon-get-proc-buffers-directories', `mon-get-buffers-directories',
-`mon-split-string-buffer-name', `mon-split-string-buffer-parent-dir'.\n►►►"
+:SEE-ALSO `mon-buffer-exists-p', `mon-buffer-exists-so-kill',
+`mon-buffer-written-p', `mon-print-in-buffer-if-p', `mon-with-file-buffer',
+`mon-get-buffers-parent-dir', `mon-get-proc-buffers-directories',
+`mon-get-buffers-directories', `mon-split-string-buffer-name',
+`mon-split-string-buffer-parent-dir'.\n►►►"
   (interactive "i\nP")
   (let ((kn (kill-new (format "%S" (buffer-name or-buffer)))))
     (if insrtp 
@@ -475,7 +480,7 @@ buffer-name at point. Does not move point.\n
     \(mon-buffer-exists-p \"*BAD-IF-NOT-KILLED*\"\)
   \(kill-buffer \(mon-buffer-exists-p \"*BAD-IF-NOT-KILLED*\"\)\)\)\n
 :SEE-ALSO `mon-buffer-exists-so-kill', `mon-with-file-buffer',
-`mon-buffer-written-p', `mon-buffer-name->kill-ring', 
+`mon-buffer-written-p', `mon-print-in-buffer-if-p', `mon-buffer-name->kill-ring', 
 `mon-get-buffers-parent-dir', `mon-get-proc-buffers-directories',
 `mon-get-buffers-directories', `mon-split-string-buffer-name',
 `mon-split-string-buffer-parent-dir', `with-current-buffer', `with-temp-file',
@@ -500,8 +505,8 @@ buffer-name at point. Does not move point.\n
 Return `#<killed buffer>' if buffered killed, else nil.\n
 :EXAMPLE\n\n\(let \(\(not-much-longer \(get-buffer-create \"not-much-longer\"\)\)\)
   \(mon-buffer-exists-so-kill \(buffer-name not-much-longer\)\)\)\n
-:SEE-ALSO `mon-buffer-exists-p', `mon-with-file-buffer',
-`mon-buffer-written-p', `mon-buffer-name->kill-ring'
+:SEE-ALSO `mon-buffer-exists-p', `mon-with-file-buffer', `mon-buffer-written-p',
+`mon-buffer-name->kill-ring', `mon-print-in-buffer-if-p',
 `mon-get-buffers-parent-dir', `mon-get-proc-buffers-directories',
 `mon-get-buffers-directories', `mon-split-string-buffer-name',
 `mon-split-string-buffer-parent-dir', `with-current-buffer', `with-temp-file',
@@ -1175,7 +1180,7 @@ Insertion does not move point. Insertion is whitespace agnostic.\n
   "Use to test if additioanl optional prefix args have been passed to interactive.\n
 :EXAMPLE\nM-34 M-x mon-test-keypresses\n
 => \(\(meta . 51\) \(meta . 52\) \(meta . 120\) mon-test-keypresses\)
-:SEE=ALSO .\n►►►"
+:SEE-ALSO .\n►►►"
   (interactive "P\nP\np")
   (let ((accum-string '())
 	(accum-event '())
@@ -1202,8 +1207,15 @@ Insertion does not move point. Insertion is whitespace agnostic.\n
 Evaluation occurs inside an unwind protect so 'safe-enough' 
 for invoking 'one off functions' such-as `kill-line' without
 the tedium of building the entire scaffolding.\n
-:SEE-ALSO `mon-inhibit-modification-hooks', `mon-inhibit-point-motion-hooks',
-`mon-toggle-read-only-point-motion'.\n►►►"
+:EXAMPLE\n\n\(let \(\(tt \(propertize \"I'm read only!\" 'read-only t\)\)
+      \(buffer-read-only nil\)\)
+  \(line-move -5\) 
+  \(insert tt\)\(sit-for 2\)\(beginning-of-line\)
+  \(mon-inhibit-read-only 'kill-line\)\)\n
+:SEE-ALSO `mon-with-inhibit-buffer-read-only',
+`mon-with-inhibit-buffer-read-only-TEST', `mon-inhibit-modification-hooks',
+`mon-inhibit-point-motion-hooks', `mon-toggle-read-only-point-motion',
+`view-read-only'.\n►►►"
 (let ((re-inhibit (if (not inhibit-read-only) t nil)))
   (unwind-protect
       (progn 
@@ -1211,23 +1223,92 @@ the tedium of building the entire scaffolding.\n
 	(eval `(,func-arg)))
     (when re-inhibit (setq inhibit-read-only nil)))))
 ;;
-;;; (let (tt) (setq tt (propertize "I'm read only!" 'read-only t)) (newline)(insert tt))
-;;; :TEST-ME (progn (line-move -1) (beginning-of-line) (mon-inhibit-read-only 'kill-line))
+;;; :TEST-ME (let ((tt (propertize "I'm read only!" 'read-only t))
+;;;                   (buffer-read-only nil))
+;;;               (line-move -5) 
+;;;               (insert tt)(sit-for 2)(beginning-of-line)
+;;;               (mon-inhibit-read-only 'kill-line))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-03-26T14:56:18-04:00Z}#{10125} - by MON KEY>
+(defmacro mon-with-inhibit-buffer-read-only (&rest uninhibited-body)
+  "Temporairly set value of `buffer-read-only' nil in current-buffer.\n
+Execute the UNINHIBITED-BODY inside an unwind-protect form which restores value
+of `buffer-read-only'.\n
+:EXAMPLE\n\n\(with-current-buffer \(progn 
+                       \(describe-function 'mon-with-inhibit-buffer-read-only\) 
+                       \(get-buffer \"*Help*\"\)\)
+  \(mon-with-inhibit-buffer-read-only 
+      \(sit-for 1\) \(forward-line 3\)
+      \(dotimes \(i 3\) 
+        \(progn \(kill-line\) \(insert \"A LINE JUST DIED HERE\\n\"\) \(sit-for 1\)\)\)\)
+  \(message \"buffer-read-only value in *Help* buffer rebound -> %s\"
+           \(buffer-local-value 'buffer-read-only \(get-buffer \"*Help*\"\)\)\)\)\n
+\(mon-with-inhibit-buffer-read-only-TEST\)\n
+\(mon-with-inhibit-buffer-read-only-TEST t\)\n
+:SEE-ALSO `mon-inhibit-read-only', `mon-with-inhibit-buffer-read-only-TEST'.
+`mon-inhibit-modification-hooks', `mon-inhibit-point-motion-hooks',
+`mon-toggle-read-only-point-motion'.\n►►►"
+  (declare (indent 3) (debug t))
+  (let ((re-inhibit-bro (make-symbol "re-inhibit-bro")))
+    `(let ((,re-inhibit-bro (buffer-local-value buffer-read-only (current-buffer))))
+       (with-current-buffer (current-buffer)
+         (unwind-protect        
+              (progn
+                (set (make-local-variable 'buffer-read-only) nil)
+                ,@uninhibited-body)
+           (when ,re-inhibit-bro (set (make-local-variable 'buffer-read-only) t)))))))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-03-26T15:25:28-04:00Z}#{10125} - by MON KEY>
+(defun mon-with-inhibit-buffer-read-only-TEST (&optional w-display-buffer)
+  "Test function for `mon-with-inhibit-buffer-read-only'.
+:EXAMPLE\n\n(mon-with-inhibit-buffer-read-only-TEST)\n
+\(mon-with-inhibit-buffer-read-only-TEST t\)\n
+:SEE-ALSO `mon-build-copyright-string-TEST', `mon-help-keys-wikify-TEST',
+`mon-help-propertize-regexp-symbol-defs-TEST', `mon-help-propertize-tags-TEST',
+`mon-help-regexp-symbol-defs-TEST', `mon-help-wget-cl-pkgs-TEST',
+`mon-inhibit-read-only-TEST', `mon-line-strings-to-list-TEST',
+`mon-user-system-conditionals-TEST', `mon-wget-list-to-script-TEST'.\n►►►"
+  (let ((mwirot "*MON-WITH-INHIBIT-BUFFER-READ-ONLY-TEST*")
+        shw-msg)
+    (with-current-buffer (get-buffer-create mwirot)
+      (set (make-local-variable 'buffer-read-only) t)
+      (mon-with-inhibit-buffer-read-only
+          (save-excursion (dotimes (txt 14) (insert "These lines of text\n")))
+          (when w-display-buffer (display-buffer (current-buffer) t))
+          (when w-display-buffer (sit-for 1))
+        (dotimes (miro 4)
+          (mon-with-inhibit-buffer-read-only 
+              (forward-line 3) (kill-line)
+              (when w-display-buffer (sit-for 1)))))
+      (setq shw-msg 
+            (if (buffer-local-value buffer-read-only (current-buffer))
+                "Buffer is buffer-read-only - successfully re-inhibited buffer"
+                ":MACRO `mon-with-inhibit-buffer-read-only' - failed to re-inhibit buffer-read-only"))
+      (if (not w-display-buffer)
+          (when (eq (get-buffer mwirot) (current-buffer))
+            (kill-buffer mwirot))))
+    (message shw-msg)))
+;;
+;;; :TEST-ME (mon-with-inhibit-buffer-read-only-TEST)
+;;; :TEST-ME (mon-with-inhibit-buffer-read-only-TEST t)
 
 ;;; ==============================
 (defun mon-inhibit-modification-hooks (func-arg)
-  "Evaluate FUNC-ARG at point with `inhibit-modification-hooks' t.
+  "Evaluate FUNC-ARG at point with `inhibit-modification-hooks' t.\n
+FUNC-ARG is a function which evaluates without parameters.
 Evaluation occurs inside an unwind protect so 'safe-enough' 
 for invoking 'one off functions' such-as `kill-line' without
 the tedium of building the entire scaffolding.\n
 :SEE-ALSO `mon-inhibit-read-only', `mon-inhibit-point-motion-hooks',
 `mon-toggle-read-only-point-motion'.\n►►►"
-(let ((re-inhibit (if (not inhibit-modification-hooks) t nil)))
-  (unwind-protect
-      (progn 
-	(setq inhibit-modification-hooks t)
-	(eval `(,func-arg)))
-    (when re-inhibit (setq inhibit-modification-hooks nil)))))
+  (let ((re-inhibit (if (not inhibit-modification-hooks) t nil)))
+    (unwind-protect
+         (progn 
+           (setq inhibit-modification-hooks t)
+           (eval `(,func-arg)))
+      (when re-inhibit (setq inhibit-modification-hooks nil)))))
 
 ;;; ==============================
 (defun mon-inhibit-point-motion-hooks (func-arg)
@@ -1247,19 +1328,18 @@ the tedium of building the entire scaffolding.\n
 ;;; ==============================
 ;;; :CREATED <Timestamp: Monday June 15, 2009 @ 05:36.12 PM - by MON KEY>
 (defun mon-toggle-read-only-point-motion ()
-"Toggle `inhibit-read-only' and `inhibit-point-motion-hooks'.\n
+  "Toggle `inhibit-read-only' and `inhibit-point-motion-hooks'.\n
 :SEE-ALSO `mon-inhibit-read-only', `mon-inhibit-point-motion-hooks',
 `mon-inhibit-modification-hooks', `mon-naf-mode-toggle-restore-llm'.\n►►►"
   (interactive)
-  (if (or
-       (bound-and-true-p inhibit-read-only)
-       (bound-and-true-p inhibit-read-only))
+  (if (or (bound-and-true-p inhibit-read-only)
+          (bound-and-true-p inhibit-read-only))
       (progn
 	(setq inhibit-read-only nil)
 	(setq inhibit-point-motion-hooks nil))
-    (progn
-      (setq inhibit-read-only t)
-      (setq inhibit-point-motion-hooks t))))
+      (progn
+        (setq inhibit-read-only t)
+        (setq inhibit-point-motion-hooks t))))
 
 ;;; ==============================
 ;;; :COURTESY Stefan Reichor <stefan@xsteve.at> :HIS xsteve-functions.el
@@ -5586,7 +5666,7 @@ failure.\n
 ;;; ==============================
 
 (eval-after-load "mon-utils" '(mon-after-mon-utils-loadtime))
-;;; mon-after-mon-utils-loadtime
+
 ;;; ==============================
 ;;; mon-utils.el ends here
 ;;; EOF
