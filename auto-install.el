@@ -8,7 +8,7 @@
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Copyright (C) 2009, rubikitch, all rights reserved.
 ;; Created: 2008-12-11 13:56:50
-;; Version: $Revision: 1.25 $
+;; Version: $Revision: 1.27 $
 ;; Last-Updated: [2010/03/26 08:44]
 ;;           By: rubikitch
 ;; URL: http://www.emacswiki.org/emacs/download/auto-install.el
@@ -25,7 +25,7 @@
 ;;   `url-util', `url-vars'.
 ;;
 
-(defvar auto-install-version "$Id: auto-install.el,v 1.25 2010/03/26 00:07:27 rubikitch Exp $")
+(defvar auto-install-version "$Id: auto-install.el,v 1.27 2010/03/29 07:36:39 rubikitch Exp $")
 ;;; This file is NOT part of GNU Emacs
 
 ;;; License
@@ -124,6 +124,12 @@
 ;;  `auto-install-from-dired-confirm'
 ;;    Whether confirmation is needed to download marked files from Dired.
 ;;    default = t
+;;  `auto-install-wget-command'
+;;    *Wget command. Use only if `auto-install-use-wget' is non-nil.
+;;    default = "wget"
+;;  `auto-install-use-wget'
+;;    *Use wget instead of `url-retrieve'.
+;;    default = nil
 ;;  `auto-install-batch-list'
 ;;    This list contain packages information for batch install.
 ;;    default = (quote (("icicles" 21 10 ...) ("auto-complete development version" nil nil ...) ("anything" nil nil ...) ("sdcv" nil nil ...) ("lazy-search" nil nil ...) ...))
@@ -268,6 +274,12 @@
 ;;; Change log:
 ;;
 ;; $Log: auto-install.el,v $
+;; Revision 1.27  2010/03/29 07:36:39  rubikitch
+;; Stupid bug fix in auto-install-use-wget
+;;
+;; Revision 1.26  2010/03/29 02:38:46  rubikitch
+;; New option: `auto-install-use-wget', `auto-install-wget-command'
+;;
 ;; Revision 1.25  2010/03/26 00:07:27  rubikitch
 ;; `url-http-end-of-headers' workaround
 ;;
@@ -567,6 +579,16 @@ Nil means no confirmation is needed."
   "Whether confirmation is needed to download marked files from Dired.
 Nil means no confirmation is needed."
   :type 'boolean
+  :group 'auto-install)
+
+(defcustom auto-install-wget-command "wget"
+  "*Wget command. Use only if `auto-install-use-wget' is non-nil."
+  :type 'string  
+  :group 'auto-install)
+
+(defcustom auto-install-use-wget nil
+  "*Use wget instead of `url-retrieve'."
+  :type 'boolean  
   :group 'auto-install)
 
 (defcustom auto-install-batch-list
@@ -915,11 +937,28 @@ default is `auto-install-handle-download-content'."
       (add-to-list 'load-path auto-install-directory)) 
     (message "Create directory %s for install elisp file." auto-install-directory))
   ;; Download.
+  (funcall
+   (if auto-install-use-wget 'auto-install-download-by-wget 'auto-install-download-by-url-retrieve)
+   url handle-function (auto-install-get-buffer url)))
+
+(defun auto-install-download-by-wget (url handle-function download-buffer)
+  (with-current-buffer download-buffer
+    (setq auto-install-download-buffer (get-buffer-create (concat (buffer-name download-buffer)
+                                                "-wget")))
+    (setq auto-install-download-url url)
+    (set-process-sentinel
+     (start-process "auto-install-wget" (current-buffer)
+                    auto-install-wget-command "-q" "-O-" url)
+     (lexical-let ((handle-function handle-function))
+       (lambda (proc stat)
+         (auto-install-download-callback-continue (buffer-name (process-buffer proc))
+                                                  handle-function))))))
+
+(defun auto-install-download-by-url-retrieve (url handle-function download-buffer)
   (let* ((url-request-method "GET")
          (url-request-extra-headers nil)
          (url-mime-accept-string "*/*")
          (parsed-url (url-generic-parse-url url))
-         (download-buffer (auto-install-get-buffer url))
          (download-buffer-name (buffer-name download-buffer)))
     (with-current-buffer download-buffer
       ;; Bind download url with local buffer.
@@ -950,13 +989,16 @@ HANDLE-FUNCTION is function for handle download content."
         (message "Download from '%s' failed." auto-install-download-url)
         (kill-buffer download-buffer-name))
     ;; Otherwise continue install process.
-    (auto-install-retrieve-decode download-buffer-name) ;decode retrieve information.
-    (with-current-buffer (get-buffer download-buffer-name)
-      ;; Show successful message
-      (message "Download from '%s' successful." auto-install-download-url)
-      ;; Handle download content.
-      (funcall (or handle-function 'auto-install-handle-download-content)
-               (current-buffer)))))
+    (auto-install-download-callback-continue download-buffer-name handle-function)))
+
+(defun auto-install-download-callback-continue (download-buffer-name handle-function)
+  (auto-install-retrieve-decode download-buffer-name) ;decode retrieve information.
+  (with-current-buffer (get-buffer download-buffer-name)
+    ;; Show successful message
+    (message "Download from '%s' successful." auto-install-download-url)
+    ;; Handle download content.
+    (funcall (or handle-function 'auto-install-handle-download-content)
+             (current-buffer))))
 
 (defun auto-install-retrieve-decode (retrieve-buffer-name)
   "Decode the RETRIEVE-BUFFER-NAME with coding detection."
@@ -967,10 +1009,13 @@ HANDLE-FUNCTION is function for handle download content."
        (set-buffer-multibyte t)
        ;; I do not know why the case url-http-end-of-headers is nil exists!!
        ;; I HATE url-retrieve.
-       (if (numberp url-http-end-of-headers)
+       (if (and (boundp 'url-http-end-of-headers)
+                (numberp url-http-end-of-headers))
            (goto-char (1+ url-http-end-of-headers))
          ;; workaround
-         (search-forward "\n\n"))
+         (if auto-install-use-wget
+             (goto-char (point-min))
+           (search-forward "\n\n" nil t)))
        (decode-coding-region
         (point) (point-max)
         (coding-system-change-eol-conversion

@@ -544,6 +544,10 @@ If you already have `w3m-el', it will be removed.
 
 -- MarcoPiedra
 
+I confirm it. If you are on Ubuntu 9.10 and running Emacs 23, install w3m-el-snapshot. It works. Thank you, MarcoPiedra
+
+--JeongtaeRoh
+
 = w3m in Emacs23 (Cygwin) =
 As with Debian and Ubuntu, above, the official w3m-el installed with Cygwin doesn't seem to work with Emacs 23, the error message being "Cannot open load file: w3m-e22". One solution is to get the latest emacs-w3m source code from CVS (see the instructions at http://emacs-w3m.namazu.org/) and build and install it (see the README for instructions).
 

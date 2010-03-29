@@ -113,11 +113,11 @@
 ;;  `anything-timers'
 ;;    Preconfigured `anything' for timers.
 ;;  `anything-kill-buffers'
-;;    You can continuously kill buffer you selected.
+;;    Preconfigured `anything' to kill buffer you selected.
 ;;  `anything-query-replace-regexp'
-;;    Drop-in replacement of `query-replace-regexp' with building regexp visually.
+;;    Preconfigured `anything' : Drop-in replacement of `query-replace-regexp' with building regexp visually.
 ;;  `anything-regexp'
-;;    It is like `re-builder'. It helps buliding regexp and replacement.
+;;    Preconfigured `anything' : It is like `re-builder'. It helps buliding regexp and replacement.
 ;;  `anything-insert-buffer-name'
 ;;    Insert buffer name.
 ;;  `anything-insert-symbol'
@@ -151,23 +151,23 @@
 ;;  `anything-find-files-down-one-level'
 ;;    Go down one level like unix command `cd ..'.
 ;;  `anything-find-files'
-;;    Preconfigured anything for `find-file'.
+;;    Preconfigured `anything' for `find-file'.
 ;;  `anything-write-file'
-;;    Preconfigured anything providing completion for `write-file'.
+;;    Preconfigured `anything' providing completion for `write-file'.
 ;;  `anything-insert-file'
-;;    Preconfigured anything providing completion for `insert-file'.
+;;    Preconfigured `anything' providing completion for `insert-file'.
 ;;  `anything-dired-rename-file'
-;;    Preconfigured anything to rename files from dired.
+;;    Preconfigured `anything' to rename files from dired.
 ;;  `anything-dired-copy-file'
-;;    Preconfigured anything to copy files from dired.
+;;    Preconfigured `anything' to copy files from dired.
 ;;  `anything-dired-symlink-file'
-;;    Preconfigured anything to symlink files from dired.
+;;    Preconfigured `anything' to symlink files from dired.
 ;;  `anything-dired-hardlink-file'
-;;    Preconfigured anything to hardlink files from dired.
+;;    Preconfigured `anything' to hardlink files from dired.
 ;;  `anything-dired-bindings'
 ;;    Replace usual dired commands `C' and `R' by anything ones.
 ;;  `anything-bookmark-ext'
-;;    Preconfigured anything for bookmark-extensions sources.
+;;    Preconfigured `anything' for bookmark-extensions sources.
 ;;  `anything-simple-call-tree'
 ;;    Preconfigured `anything' for simple-call-tree. List function relationships.
 ;;  `anything-mark-ring'
@@ -177,27 +177,27 @@
 ;;  `anything-yaoddmuse-cache-pages'
 ;;    Fetch the list of files on emacswiki and create cache file.
 ;;  `anything-yaoddmuse-emacswiki-edit-or-view'
-;;    Edit or View EmacsWiki page.
+;;    Preconfigured `anything' to edit or view EmacsWiki page.
 ;;  `anything-yaoddmuse-emacswiki-post-library'
-;;    Post library to EmacsWiki.
+;;    Preconfigured `anything' to post library to EmacsWiki.
 ;;  `anything-emms-stream-edit-bookmark'
 ;;    Change the information of current emms-stream bookmark from anything.
 ;;  `anything-emms-stream-delete-bookmark'
 ;;    Delete an emms-stream bookmark from anything.
 ;;  `anything-call-source'
-;;    Call anything source.
+;;    Preconfigured `anything' to call anything source.
 ;;  `anything-call-source-from-anything'
 ;;    Call anything source within `anything' session.
 ;;  `anything-create-from-anything'
 ;;    Run `anything-create' from `anything' as a fallback.
 ;;  `anything-create'
-;;    Do many create actions from STRING.
+;;    Preconfigured `anything' to do many create actions from STRING.
 ;;  `anything-top'
 ;;    Preconfigured `anything' for top command.
 ;;  `anything-select-xfont'
 ;;    Preconfigured `anything' to select Xfont.
 ;;  `anything-apt'
-;;    The `anything' frontend of APT package manager.
+;;    Preconfigured `anything' : frontend of APT package manager.
 ;;  `anything-c-set-variable'
 ;;    Set value to VAR interactively.
 ;;  `anything-c-adaptive-save-history'
@@ -598,6 +598,79 @@ If you want to have the default tramp messages set it to 3."
 ;; (dolist (k (where-is-internal 'describe-mode global-map))
 ;;   (define-key anything-map k 'anything-c-describe-anything-bindings))
 
+;;; Help message
+(defun anything-c-list-preconfigured-anything ()
+  (loop with doc
+        with sym
+        for entry in (cdr (assoc (locate-library "anything-config") load-history))
+        if (and (consp entry)
+                (eq (car entry) 'defun)
+                (string-match "^Preconfigured.+$"
+                              (setq doc (or (documentation (setq sym (cdr entry)))
+                                            ""))))
+        collect (format "\\[%s] : %s\n" sym (match-string 0 doc))))
+
+(setq anything-help-message
+      (concat
+       "\\<anything-map>"
+       "`anything' is QuickSilver-like candidate-selection framework.
+
+Narrow the list by typing some pattern,
+Multiple patterns are allowed by splitting by space.
+Select with natural Emacs operations, choose with RET.
+
+== Basic Operations ==
+C-p, Up: Previous Line
+C-n, Down : Next Line
+M-v, PageUp : Previous Page
+C-v, PageDown : Next Page
+Enter : Execute first (default) action / Select 
+M-< : First Line
+M-> : Last Line
+M-PageUp, C-M-S-v, C-M-y : Previous Page (other-window)
+M-PageDown, C-M-v : Next Page (other-window)
+
+Tab, C-i : Show action list
+Left : Previous Source
+Right, C-o : Next Source
+C-k : Delete pattern
+C-z : Persistent Action (Execute action with anything session kept)
+
+== Shortcuts For 2nd/3rd Action ==
+\\[anything-select-2nd-action-or-end-of-line] : Execute 2nd Action (if the minibuffer cursor is at end of line)
+\\[anything-select-3rd-action] : Execute 3rd Action
+
+== Visible Marks ==
+Visible marks store candidate. Some actions uses marked candidates.
+
+\\[anything-toggle-visible-mark] : Toggle Visible Mark
+\\[anything-prev-visible-mark] : Previous Mark
+\\[anything-next-visible-mark] : Next Mark
+
+== Miscellaneous Commands ==
+\\[anything-toggle-resplit-window] : Toggle vertical/horizontal split anything window
+\\[anything-quit-and-find-file] : Drop into `find-file'
+\\[anything-delete-current-selection] : Delete Selected Item (visually)
+\\[anything-kill-selection-and-quit] : Set Item Into the kill-ring And Quit
+\\[anything-yank-selection] : Yank Selected Item Into Pattern
+\\[anything-follow-mode] : Toggle Automatical Execution Of Persistent Action
+\\[anything-force-update] : Recalculate And Redisplay Candidates
+
+== Global Commands ==
+\\<global-map>\\[anything-resume] revives last `anything' session.
+It is very useful, so you should bind any key.
+
+Simgle source is executed by \\[anything-call-source].
+
+== Preconfigured `anything' ==
+Preconfigured `anything' is commands that uses `anything' interface.
+You can use them without configuration.
+
+"
+       (apply 'concat (anything-c-list-preconfigured-anything))
+       "
+Enjoy!"))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Preconfigured Anything ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun anything-for-files ()
   "Preconfigured `anything' for opening files.
@@ -725,7 +798,7 @@ With two prefix args allow choosing in which symbol to search."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Anything Applications ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; kill buffers
 (defun anything-kill-buffers ()
-  "You can continuously kill buffer you selected."
+  "Preconfigured `anything' to kill buffer you selected."
   (interactive)
   (anything
    '(((name . "Kill Buffers")
@@ -739,7 +812,7 @@ With two prefix args allow choosing in which symbol to search."
 
 ;;; Regexp
 (defun anything-query-replace-regexp (&rest args)
-  "Drop-in replacement of `query-replace-regexp' with building regexp visually."
+  "Preconfigured `anything' : Drop-in replacement of `query-replace-regexp' with building regexp visually."
   (interactive
    (let ((common
           (anything-c-regexp-base "Query Replace Regexp: "
@@ -761,7 +834,7 @@ With two prefix args allow choosing in which symbol to search."
   (apply 'query-replace-regexp args))
 
 (defun anything-regexp ()
-  "It is like `re-builder'. It helps buliding regexp and replacement."
+  "Preconfigured `anything' : It is like `re-builder'. It helps buliding regexp and replacement."
   (interactive)
   (anything-c-regexp-base
    "Regexp: "
@@ -1223,7 +1296,7 @@ buffer that is not the current buffer."
                            anything-c-highlight-buffers
                            anything-c-skip-boring-buffers)
     (persistent-action . anything-c-buffers+-persistent-action)
-    (persistent-help . "Show this buffer / C-c \\[anything-execute-persistent-action]: Kill this buffer")))
+    (persistent-help . "Show this buffer / C-u \\[anything-execute-persistent-action]: Kill this buffer")))
 
 (defun anything-c-buffers+-persistent-action (name)
   (flet ((kill (item)
@@ -1485,16 +1558,16 @@ If CANDIDATE is not a directory open this file."
               (insert (abbreviate-file-name candidate))))
       (error nil))))
 
-
 (defun anything-find-files ()
-  "Preconfigured anything for `find-file'."
+  "Preconfigured `anything' for `find-file'."
   (interactive)
-  (let ((fap (ffap-guesser)))
+  (let* ((fap    (ffap-guesser))
+         (file-p (and fap (file-exists-p fap)))
+         (tap    (thing-at-point 'filename))
+         (input  (if file-p (expand-file-name tap) fap))) 
     (anything 'anything-c-source-find-files
-              (or (if (and fap (file-exists-p fap)) (expand-file-name fap) fap)
-                  (expand-file-name default-directory))
+              (or input (expand-file-name default-directory))
               "Find Files or Url: " nil nil "*Anything Find Files*")))
-
 
 ;;; Anything completion for `write-file'.==> C-x C-w
 (defvar anything-c-source-write-file
@@ -1508,7 +1581,7 @@ If CANDIDATE is not a directory open this file."
                         (write-file candidate 'confirm)))))))
 
 (defun anything-write-file ()
-  "Preconfigured anything providing completion for `write-file'."
+  "Preconfigured `anything' providing completion for `write-file'."
   (interactive)
   (anything 'anything-c-source-write-file
             (expand-file-name default-directory)
@@ -1528,7 +1601,7 @@ If CANDIDATE is not a directory open this file."
                           (insert-file candidate))))))))
 
 (defun anything-insert-file ()
-  "Preconfigured anything providing completion for `insert-file'."
+  "Preconfigured `anything' providing completion for `insert-file'."
   (interactive)
   (anything 'anything-c-source-insert-file
             (expand-file-name default-directory)
@@ -1633,22 +1706,22 @@ ACTION is a key that can be one of 'copy, 'rename, 'symlink, 'relsymlink."
 
 
 (defun anything-dired-rename-file ()
-  "Preconfigured anything to rename files from dired."
+  "Preconfigured `anything' to rename files from dired."
   (interactive)
   (anything-dired-do-action-on-file :action 'rename))
 
 (defun anything-dired-copy-file ()
-  "Preconfigured anything to copy files from dired."
+  "Preconfigured `anything' to copy files from dired."
   (interactive)
   (anything-dired-do-action-on-file :action 'copy))
 
 (defun anything-dired-symlink-file ()
-  "Preconfigured anything to symlink files from dired."
+  "Preconfigured `anything' to symlink files from dired."
   (interactive)
   (anything-dired-do-action-on-file :action 'symlink))
 
 (defun anything-dired-hardlink-file ()
-  "Preconfigured anything to hardlink files from dired."
+  "Preconfigured `anything' to hardlink files from dired."
   (interactive)
   (anything-dired-do-action-on-file :action 'hardlink))
 
@@ -2411,7 +2484,7 @@ Work both with standard Emacs bookmarks and bookmark-extensions.el."
 
 ;; All bookmark-extensions sources.
 (defun anything-bookmark-ext ()
-  "Preconfigured anything for bookmark-extensions sources.
+  "Preconfigured `anything' for bookmark-extensions sources.
 See: <http://mercurial.intuxication.org/hg/emacs-bookmark-extension>."
   (interactive)
   (anything '(anything-c-source-bookmark-files&dirs
@@ -3445,12 +3518,12 @@ If load is non--nil load the file and feed `yaoddmuse-pages-hash'."
       (load anything-c-yaoddmuse-cache-file))))
 
 (defun anything-yaoddmuse-emacswiki-edit-or-view ()
-  "Edit or View EmacsWiki page."
+  "Preconfigured `anything' to edit or view EmacsWiki page."
   (interactive)
   (anything 'anything-c-source-yaoddmuse-emacswiki-edit-or-view))
 
 (defun anything-yaoddmuse-emacswiki-post-library ()
-  "Post library to EmacsWiki."
+  "Preconfigured `anything' to post library to EmacsWiki."
   (interactive)
   (anything 'anything-c-source-yaoddmuse-emacswiki-post-library))
 
@@ -3982,7 +4055,7 @@ A list of search engines."
 ;; (anything 'anything-c-source-call-source)
 
 (defun anything-call-source ()
-  "Call anything source."
+  "Preconfigured `anything' to call anything source."
   (interactive)
   (anything 'anything-c-source-call-source nil nil nil nil
             anything-source-select-buffer))
@@ -4035,7 +4108,7 @@ See also `anything-create--actions'.")
   (anything-run-after-quit 'anything-create nil anything-pattern))
 
 (defun anything-create (&optional string initial-input)
-  "Do many create actions from STRING.
+  "Preconfigured `anything' to do many create actions from STRING.
 See also `anything-create--actions'."
   (interactive)
   (setq string (or string (read-string "Create Anything: " initial-input)))
@@ -4239,7 +4312,7 @@ See also `anything-create--actions'."
 (defvar anything-c-apt-install-command "xterm -e sudo apt-get install '%s' &")
 
 (defun anything-apt (query)
-  "The `anything' frontend of APT package manager."
+  "Preconfigured `anything' : frontend of APT package manager."
   (interactive "sAPT search: ")
   (let ((anything-c-apt-query query))
     (anything 'anything-c-source-apt)))

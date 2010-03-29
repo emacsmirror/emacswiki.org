@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Mar 27 10:10:13 2010 (-0700)
+;; Last-Updated: Sun Mar 28 13:20:28 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 11932
+;;     Update #: 11934
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1229,6 +1229,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2010/03/28 dadams
+;;     bookmark-default-handler: Don't funcall bookmarkp-jump-display-function if it is nil.
 ;; 2010/03/27 dadams
 ;;     Changed the customization group from bookmarkp to bookmark-plus.
 ;;     Moved doc and change history from bookmark+.el to this new file, bookmark+-doc.el.

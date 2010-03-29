@@ -207,6 +207,26 @@ fix for yasnippet >=0.7.0
     candidates))
 </pre>
 ----
+[new]
+I'm getting the following error message:
+
+Symbol's function definition is void: window-full-width-p
+
+I googled this message, and found the following (at [http://braeburn.aquamacs.org/code/master/etc/NEWS.22]):
+
+
+* Lisp Changes in Emacs 22.2.
+.
+.
+.
+
+** New function `window-full-width-p' returns t if a window is as wide
+as its frame.
+
+The manual states that GNU Emacs 22 or later is required, and the version I am using is GNU Emacs 22.1.1. Is my old version of emacs the source of the error, and if it is, should the manual be corrected to list a newer required version of emacs (at least 22.2)?
+
+
+----
 CategoryCompletion
 
 

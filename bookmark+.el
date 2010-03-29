@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Mar 27 09:31:15 2010 (-0700)
+;; Last-Updated: Sun Mar 28 10:03:38 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 11874
+;;     Update #: 11875
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1888,8 +1888,9 @@ Return nil or signal `file-error'."
               (signal 'file-error `("Jumping to bookmark" "No such file or directory"
                                     (bookmark-get-filename bmk)))))
           (set-buffer (or buf bufname))
-          (save-current-buffer (funcall bookmarkp-jump-display-function (current-buffer)))
-          (raise-frame)
+          (when bookmarkp-jump-display-function
+            (save-current-buffer (funcall bookmarkp-jump-display-function (current-buffer)))
+            (raise-frame))
           (goto-char (min pos (point-max)))
           (when (> pos (point-max)) (error "Bookmark position is beyond buffer end"))
           ;; Activate region.  Relocate it if it moved.  Save relocated bookmark if confirm.

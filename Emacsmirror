@@ -80,76 +80,43 @@ people don't waste their time trying to find the same package.
 
 * A
 
-** [http://www.hackGNU.org/files/advogato.el advogato]
-** [http://sugarshark.com/elisp/mylisp/amixer.el amixer]
-** [http://turingmachine.org/elisp/anaya.el anaya]
-** [http://pbreton.ne.client2.attbi.com/emacs/ ant]
-** [http://www.keelhaul.me.uk/linux/apache-mode.el apache-mode]
 ** [http://ignotus.hixsplit.hu/AptUpgrade.html apt-upgrade]
-** [http://web.verbum.org/~walters/ ascii-display]
 ** [http://www.ugcs.caltech.edu/~shulman/pub/Main/Software/auto-define.el auto-define]
-** [http://nschum.de/src/emacs/auto-dictionary-mode/auto-dictionary-mode.el auto-dictionary-mode]
-** [http://www.gnusoftware.com/Emacs/Lisp/auto-diff.el auto-diff]
-** [http://www.ugcs.caltech.edu/~shulman/pub/Main/Software/auto-recomp.el auto-recomp]
 ** [http://wiki.axiom-developer.org/AxiomEmacsMode axiommode]
 
 * B
 
 ** [http://www.jgk.org/src/background.el background]
-** [http://laurentdupuy.multimania.com/emacs/balance-mode.el balance-mode]
 ** [http://freebsd.sinica.edu.tw/~gugod/lisp/battery-freebsd.el battery-freebsd]
-** [http://www.esperi.demon.co.uk/nix/ bbdb-expire]
-** [http://people.debian.org/~psg/elisp/bib-cite.el bib-cite]
-** [http://www.mts.jhu.edu/~kapur/emacs/bibfind.el bibfind]
 ** [http://www.cs.utah.edu/~eeide/emacs/blink-extra.el.gz blink-extra]
 ** [http://elisp.info/package/blogger/blogger.el blogger]
-** [http://bookmall.hypermart.net/cinput/emacs.html boshiamy-cue]
 ** [http://www.coling.uni-freiburg.de/~schauer/resources/emacs/browse-cltl2.el.gz browse-cltl2]
-** [http://www.gelatinous.com/pld/bubblet.html bubblet]
-** [http://www.glug.org/people/ttn/software/personal-elisp/standalone/ buffer-thumbnail]
 ** [http://lgarc.narod.ru/xemacs/bugis.el bugis]
 
 * C
 
 ** [http://www.newartisans.com/johnw/Emacs c-includes]
-** [http://www.tardis.ed.ac.uk/~skx/win/catdoc.el catdoc]
-** [http://www.ccm.f2s.com/emacs ccm]
-** [http://staff.science.uva.nl/~dominik/Tools/cdlatex/cdlatex.el cdlatex]
 ** [ftp://ftp.cis.ohio-state.edu/pub/emacs-lisp/archive/cdrw.el cdrw]
 ** [http://www.newartisans.com/johnw/Emacs check-mail]
 ** [http://www.csis.ul.ie/staff/JohnSturdy/research-elisp/citation.el citation]
 ** [http://relativity.yi.org/el/clipper.el clipper]
-** [http://www.bright.net/~jonadab/emacs/ color-theme]
-** [http://panix.com/~tehom/my-code/comient-redirect.el comient-redirect]
 ** [http://pbreton.ne.mediaone.net/emacs/comint-redirect.el comint-redirect]
 ** [http://www.csis.ul.ie/staff/JohnSturdy/research-elisp/command-log.el command-log]
-** [http://staff.science.uva.nl/~dominik/Tools/constants/constants.el constants]
-** [http://www.ugcs.caltech.edu/~shulman/pub/Main/Software/coroutine.el coroutine]
-** [http://freefriends.org/~karl/crypt++/ crypt++]
-** [http://www.davh.dk/script/csharp-mode.el csharp-mode]
 ** [http://www.cs.utah.edu/~karra/code/cue.el.gz cue]
 ** [http://www.teaser.fr/~flepied/cvs.el.gz cvs]
 ** [http://relativity.yi.org/el/cvs-annotate.el cvs-annotate]
 ** [http://relativity.yi.org/el/cvs-commit.el cvs-commit]
-** [http://www.cs.ualberta.ca/~vladimir/emacs/cycle-buffer.el cycle-buffer]
-** [http://www.geocrawler.com/archives/3/338/1998/2/0/1875389/ cyclebuffer]
 
 * D
 
 ** [http://www.djefer.com/dacode/ dacode]
 ** [http://openmap.bbn.com/burstein/daml-emacs/ daml]
-** [http://www.newartisans.com/johnw/Emacs/darcsum.el darcsum]
-** [http://mail.gnu.org/pipermail/gnu-emacs-sources/2002-April/001129.html dash-outline-mode]
 ** [http://www.csis.ul.ie/staff/JohnSturdy/research-elisp/day-structure.el day-structure]
 ** [http://www.andersl.com/emacs/ demax]
 ** [http://www.bluetail.com/~luke/distel/ derl]
-** [http://www.jgk.org/src/di.el di]
 ** [http://www.informatik.uni-freiburg.de/~utcke/English/Software/#dic dic]
 ** [http://www.newartisans.com/johnw/Emacs dictation]
 ** [http://www.informatik.uni-freiburg.de/~utcke/English/Software/index.html diction]
-** [http://primate.net/~itz/public/dig-browser.el dig-browser]
-** [http://www.lickey.com/env/elisp/dirvars.el dirvars]
-** [http://www.brownale.demon.co.uk/dms-sig.el dms-sig]
 
 * E
 

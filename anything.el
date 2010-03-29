@@ -1,5 +1,5 @@
 ;;;; anything.el --- open anything / QuickSilver-like candidate-selection framework
-;; $Id: anything.el,v 1.265 2010/03/28 05:07:00 rubikitch Exp rubikitch $
+;; $Id: anything.el,v 1.268 2010/03/28 21:42:01 rubikitch Exp $
 
 ;; Copyright (C) 2007              Tamas Patrovics
 ;;               2008, 2009, 2010  rubikitch <rubikitch@ruby-lang.org>
@@ -347,6 +347,15 @@
 
 ;; (@* "HISTORY")
 ;; $Log: anything.el,v $
+;; Revision 1.268  2010/03/28 21:42:01  rubikitch
+;; Add some keys in `anything-help'
+;;
+;; Revision 1.267  2010/03/28 20:11:30  rubikitch
+;; Modify `anything-mode-line-string'
+;;
+;; Revision 1.266  2010/03/28 06:12:43  rubikitch
+;; process source and multiline: in the making (not usable)
+;;
 ;; Revision 1.265  2010/03/28 05:07:00  rubikitch
 ;; Change default `anything-sources'. It is only a sample, no problem.
 ;;
@@ -1212,7 +1221,7 @@
 
 ;; ugly hack to auto-update version
 (defvar anything-version nil)
-(setq anything-version "$Id: anything.el,v 1.265 2010/03/28 05:07:00 rubikitch Exp rubikitch $")
+(setq anything-version "$Id: anything.el,v 1.268 2010/03/28 21:42:01 rubikitch Exp $")
 (require 'cl)
 
 ;; (@* "User Configuration")
@@ -1940,7 +1949,7 @@ It is `anything-default-display-buffer' by default, which affects `anything-same
 
 (defvar anything-delayed-init-executed nil)
 
-(defvar anything-mode-line-string "(\\<anything-map>\\[anything-help]:help \\[anything-select-action]:act \\[anything-exit-minibuffer]/\\[anything-select-2nd-action-or-end-of-line]/\\[anything-select-3rd-action]:nthact \\[anything-execute-persistent-action]:pers-act)"
+(defvar anything-mode-line-string "(\\<anything-map>\\[anything-help]:help \\[anything-select-action]:ActionList \\[anything-exit-minibuffer]/\\[anything-select-2nd-action-or-end-of-line]/\\[anything-select-3rd-action]:NthAction"
   "Help string displayed in mode-line in `anything'.
 If nil, use default `mode-line-format'.")
 (make-variable-buffer-local 'anything-mode-line-string)
@@ -2763,7 +2772,7 @@ ie. cancel the effect of `anything-candidate-number-limit'."
                 `(,@anything-test-candidate-list
                   (,(assoc-default 'name source)
                    ,matches))))
-      (let ((multiline (assoc 'multiline source))
+      (let ((multiline (assq 'multiline source))
             (start (point))
             separate)
         (anything-insert-header-from-source source)
@@ -2951,7 +2960,9 @@ the real value in a text property."
                   (append process-info `((insertion-marker . ,(point-marker))))))
 
         (let ((lines (split-string string "\n"))
-              candidates)
+              (multiline (assq 'multiline process-info))
+              (start (point))
+              candidates separate)
           (while lines
             (if (not (cdr lines))
                 ;; store last incomplete line until new output arrives
@@ -2969,8 +2980,15 @@ the real value in a text property."
 
           (setq candidates (reverse candidates))
           (dolist (candidate (anything-transform-candidates candidates process-info))
+            ;; FIXME
+            ;; (if (and multiline separate)
+            ;;      (anything-insert-candidate-separator)
+            ;;   (setq separate t))
             (anything-insert-match candidate 'insert-before-markers)
             (incf (cdr item-count-info))
+            ;; FIXME
+            ;; (if multiline
+            ;;     (put-text-property start (point) 'anything-multiline t))
             (when (>= (cdr item-count-info) limit)
               (anything-kill-async-process process)
               (return)))))
@@ -3301,7 +3319,7 @@ UNIT and DIRECTION."
     (select-window (anything-window))
     (delete-other-windows)
     (switch-to-buffer (get-buffer-create " *Anything Help*"))
-    (setq mode-line-format "%b (SPC:NextPage b:PrevPage other:Exit)")
+    (setq mode-line-format "%b (SPC,C-v:NextPage  b,M-v:PrevPage  other:Exit)")
     (setq cursor-type nil)
     (erase-buffer)
     (insert (substitute-command-keys anything-help-message))
@@ -3309,8 +3327,8 @@ UNIT and DIRECTION."
     (ignore-errors
       (loop for event = (read-event) do
             (case event
-              (?  (scroll-up))
-              (?b (scroll-down))
+              ((?\C-v ? )  (scroll-up))
+              ((?\M-v ?b) (scroll-down))
               (t (return)))))))
 
 ;; (@* "Core: misc")
