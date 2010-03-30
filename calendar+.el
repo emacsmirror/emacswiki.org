@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 13:11:46 1996
 ;; Version: 20.0
-;; Last-Updated: Fri Jan 15 12:37:23 2010 (-0800)
+;; Last-Updated: Mon Mar 29 19:41:00 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 825
+;;     Update #: 832
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/calendar+.el
 ;; Keywords: calendar, mouse, local
 ;; Compatibility: GNU Emacs 20.x
@@ -18,19 +18,18 @@
 ;;
 ;;   `apropos', `apropos+', `apropos-fn+var', `avoid', `cal-dst',
 ;;   `cal-julian', `cal-menu', `cal-persia', `calendar', `calendar+',
-;;   `cl', `color-theme', `cus-edit', `cus-face', `cus-load',
-;;   `cus-start', `custom', `diary-lib', `dired', `dired+',
-;;   `dired-aux', `dired-x', `doremi', `easymenu', `ediff-diff',
-;;   `ediff-help', `ediff-init', `ediff-merg', `ediff-mult',
-;;   `ediff-util', `ediff-wind', `el-swank-fuzzy', `faces', `ffap',
-;;   `ffap-', `fit-frame', `frame-cmds', `frame-fns', `fuzzy-match',
-;;   `help+20', `hexrgb', `icicles', `icicles-cmd1', `icicles-cmd2',
-;;   `icicles-face', `icicles-fn', `icicles-mac', `icicles-mcmd',
-;;   `icicles-mode', `icicles-opt', `icicles-var', `info', `info+',
-;;   `kmacro', `levenshtein', `lisp-float-type', `menu-bar',
-;;   `menu-bar+', `misc-cmds', `misc-fns', `mkhtml',
-;;   `mkhtml-htmlize', `mwheel', `pp', `pp+', `reporter', `ring',
-;;   `ring+', `second-sel', `sendmail', `solar', `strings',
+;;   `cl', `cus-edit', `cus-face', `cus-load', `cus-start', `custom',
+;;   `diary-lib', `dired', `dired+', `dired-aux', `dired-x',
+;;   `doremi', `easymenu', `ediff-diff', `ediff-help', `ediff-init',
+;;   `ediff-merg', `ediff-mult', `ediff-util', `ediff-wind',
+;;   `el-swank-fuzzy', `faces', `ffap', `ffap-', `fit-frame',
+;;   `frame-cmds', `frame-fns', `fuzzy-match', `help+20', `hexrgb',
+;;   `icicles', `icicles-cmd1', `icicles-cmd2', `icicles-face',
+;;   `icicles-fn', `icicles-mac', `icicles-mcmd', `icicles-mode',
+;;   `icicles-opt', `icicles-var', `info', `info+', `kmacro',
+;;   `levenshtein', `lisp-float-type', `menu-bar', `menu-bar+',
+;;   `misc-cmds', `misc-fns', `mkhtml', `mkhtml-htmlize', `mwheel',
+;;   `pp', `pp+', `ring', `ring+', `second-sel', `solar', `strings',
 ;;   `thingatpt', `thingatpt+', `unaccent', `w32-browser',
 ;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
 ;;
@@ -42,8 +41,8 @@
 ;;    and `diary-lib.el'.  Calendar, diary, appointments stuff.
 ;;    See doc strings of functions `calendar-mode' and `calendar'.
 ;;
-;; Note: This code is quite old, and is likely obsolete now.  You
-;;       might find it useful in some way to mine - or not. ;-)
+;; NOTE: This code is quite old, and is likely obsolete now.  You
+;;       might find it useful in some way - or not. ;-)
 ;;
 ;; -------------------------------------------------------------------
 ;;
@@ -140,6 +139,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change log:
+;;
+;; 2010/03/29 dadams
+;;     Use calendar-(update-mode-line|generate-window). Thx to Jean-Luc Rene.
 ;;
 ;; RCS Revision 1.5  2001/01/02 23:00:37  dadams
 ;; RCS 1. Optional require of solar.el via 3rd arg=t now.
@@ -547,7 +549,9 @@ p\\[calendar-cursor-holidays] \\[view-diary-entries]i\
        '(calendar-date-string (calendar-current-date) t)
        (substitute-command-keys
         "\\<calendar-mode-map>\\[scroll-calendar-left-three-months]=>")))
-(update-calendar-mode-line)
+(if (fboundp 'calendar-update-mode-line)
+    (calendar-update-mode-line)
+  (update-calendar-mode-line))
 
 ;;;###autoload
 (defcustom diary-entry-marker
@@ -1217,7 +1221,9 @@ the window."
       (incf month 12) (decf year 1))
     (pop-to-buffer calendar-buffer)
     (increment-calendar-month month year (- calendar-offset))
-    (generate-calendar-window month year)
+    (if (fboundp 'calendar-generate-window)
+        (calendar-generate-window month year)
+      (generate-calendar-window month year))
     (when (and view-diary-entries-initially (calendar-date-is-visible-p date))
       (view-diary-entries
        (if (vectorp number-of-diary-entries)

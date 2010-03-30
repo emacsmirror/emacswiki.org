@@ -92,6 +92,14 @@ This is because of the `:' character... Here is the patch to apply on [[byte-cod
    "Return non-NIL iff STRING matches a regexp in BLIST.
 </pre>
 
+[new]
+Can anyone explain -
+<pre>
+Loading "/home/jg/.emacs.d/.byte-cache/!home!jg!.emacs.d!config-snippet.elc" as "/home/jg/.emacs.d/config-snippet.el"...done
+Loading /home/jg/.emacs.d/config-snippet.el (source)...done
+</pre>
+? I don't understand why it would successfully(?) load the compiled file and then load the source file.
+
 == Byte Compile on Buffer Save or Kill ==
 
 Library [http://github.com/tarsius/auto-compile auto-compile] byte compiles files either when saving or killing a buffer.  Not only can you configure when files are compiled but also exactly what files. Additionally you may choose to be asked whether you want to compile a file if no existing rule matches.  Then you may save your choice permanently or for the current session.

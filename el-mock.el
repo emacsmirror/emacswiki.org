@@ -1,5 +1,5 @@
 ;;; el-mock.el --- Tiny Mock and Stub framework in Emacs Lisp
-;; $Id: el-mock.el,v 1.20 2010/03/26 06:25:08 rubikitch Exp $
+;; $Id: el-mock.el,v 1.21 2010/03/29 12:17:35 rubikitch Exp $
 
 ;; Copyright (C) 2008, 2010  rubikitch
 
@@ -58,6 +58,9 @@
 ;;; History:
 
 ;; $Log: el-mock.el,v $
+;; Revision 1.21  2010/03/29 12:17:35  rubikitch
+;; Fix an error when stubbed value is nil
+;;
 ;; Revision 1.20  2010/03/26 06:25:08  rubikitch
 ;; more mock :times support
 ;;
@@ -270,6 +273,7 @@ Example:
     (and (null (foo)) (= (bar 7) 1)))     ; => t
 "
   (let ((value (cond ((plist-get rest '=>))
+                     ((memq '=> rest) nil)
                      ((null rest) nil)
                      (t (signal 'mock-syntax-error '("Use `(stub FUNC)' or `(stub FUNC => RETURN-VALUE)'"))))))
     `(if (not in-mocking)
@@ -308,6 +312,7 @@ Example:
 "
   (let* ((times (plist-get rest :times))
          (value (cond ((plist-get rest '=>))
+                      ((memq '=> rest) nil)
                       ((null rest) nil)
                       ((not times) (signal 'mock-syntax-error '("Use `(mock FUNC-SPEC)' or `(mock FUNC-SPEC => RETURN-VALUE)'"))))))
     `(if (not in-mocking)

@@ -5,9 +5,10 @@
 ;; Author: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2009, Andy Stewart, all rights reserved.
+;; Copyright (C) 2010, rubikitch, all rights reserved.
 ;; Created: 2009-02-09 17:48:01
 ;; Version: 0.2.3
-;; Last-Updated: 2009-05-30 05:10:14
+;; Last-Updated: [2010/03/29 18:08]
 ;;           By: rubikitch
 ;; URL: http://www.emacswiki.org/emacs/download/anything-auto-install.el
 ;; Keywords: auto-install, anything
@@ -174,11 +175,13 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Interactive Functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun anything-auto-install-from-emacswiki ()
+(defun anything-auto-install-from-emacswiki (&optional file)
   "Launch anything with auto-install separately."
   (interactive)
-  (anything 'anything-c-source-auto-install-from-emacswiki
-            nil nil nil nil anything-auto-install-buffer))
+  (if file
+      (auto-install-from-emacswiki file)
+    (anything 'anything-c-source-auto-install-from-emacswiki
+            nil nil nil nil anything-auto-install-buffer)))
 
 (defun anything-auto-install-from-library ()
   "Update library with `anything'."

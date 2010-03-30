@@ -8,7 +8,7 @@
 ;; Maintainer: S. Irie
 ;; Keywords: multilingual, translation
 
-(defconst trans-ej-version "0.1.1")
+(defconst trans-ej-version "0.1.2")
 
 ;; This program is free software.
 
@@ -63,6 +63,10 @@
 
 ;;; ChangeLog:
 
+;; 2010-03-29  S. Irie
+;;        * Version 0.1.2
+;;        * Modified docstring
+;;        * Minor changes
 ;; 2010-03-18  S. Irie
 ;;        * Version 0.1.1
 ;;        * Bug fix
@@ -447,8 +451,9 @@ the URI-encoded characters."
 STRING is a source text.
 
 SITE, FROM and TO must be symbols. See `trans-ej-site-profs-alist' for
-details. For example, to translate from English to Japanese by using Yahoo!
-JAPAN, call as (trans-ej-string-1 \"foo is a bar.\" 'yahoojp 'en 'ja).
+details. For example, to translate from English to Japanese by using
+Yahoo! JAPAN, call as
+\(trans-ej-make-request-data \"foo is a bar.\" 'yahoojp 'en 'ja).
 
 Note that this function should be called from the buffer which STRING
 is included in, otherwise auto-uncomment mechanism can't correctly work."
@@ -516,7 +521,7 @@ is included in, otherwise auto-uncomment mechanism can't correctly work."
 			  (apply callback
 				 (funcall decode coding-system filters)
 				 status cbargs))
-			(list #'trans-ej-decode-response coding-system filters
+			(list 'trans-ej-decode-response coding-system filters
 			      callback cbargs))
 	(with-current-buffer (url-retrieve-synchronously url)
 	  (trans-ej-decode-response coding-system filters))))))
@@ -536,7 +541,7 @@ is included in, otherwise auto-uncomment mechanism can't correctly work."
 	      (with-current-buffer (button-get button 'trans-ej-current-buffer)
 		(browse-url (concat (nth 1 site-prof)
 				    "?"
-				    (apply #'trans-ej-make-request-data args))))))
+				    (apply 'trans-ej-make-request-data args))))))
   'help-echo (purecopy "mouse-2, RET: View this Web site in a browser"))
 
 (put (button-category-symbol 'trans-ej-browse) 'face 'link)

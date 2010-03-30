@@ -41,9 +41,11 @@ To use pos-tip.el, save this file in a directory listed in load-path together wi
 
 popup.el, written by [[Matsuyama]], is a library which provides useful functions to easily show popup menu using overlays and is used by [AutoComplete auto-complete.el] etc.
 
-popup.el itself can show tooltip to display annotation of the menu items, but it's unreadable when window is small. Here is solution for this problem.
+popup.el itself can show tooltip to display annotation of the menu items, but it's unreadable when window is small. Here are two solutions for this problem.
 
-=== Code ===
+=== Solution 1 ===
+
+Put the following to your .emacs file:
 
  (require 'pos-tip)
 
@@ -64,6 +66,21 @@ popup.el itself can show tooltip to display annotation of the menu items, but it
                                                  (popup-selected-line menu)))))
                          nil 0)
            nil))
+     ad-do-it))
+
+=== Solution 2 (popup-pos-tip.el) ===
+
+popup-pos-tip.el is pos-tip.el wrapper library for programs using popup.el.
+
+: Lisp:popup-pos-tip.el
+
+Save this file as popup-pos-tip.el in a directory that is listed in load-path, and add the following to .emacs:
+
+ (require 'popup-pos-tip)
+ (defadvice popup-tip
+   (around popup-pos-tip-wrapper (string &rest args) activate)
+   (if (eq window-system 'x)
+       (apply 'popup-pos-tip string args)
      ad-do-it))
 
 === Screenshot ===

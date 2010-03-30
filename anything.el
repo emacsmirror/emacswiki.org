@@ -1,5 +1,5 @@
 ;;;; anything.el --- open anything / QuickSilver-like candidate-selection framework
-;; $Id: anything.el,v 1.268 2010/03/28 21:42:01 rubikitch Exp $
+;; $Id: anything.el,v 1.272 2010/03/29 21:05:47 rubikitch Exp rubikitch $
 
 ;; Copyright (C) 2007              Tamas Patrovics
 ;;               2008, 2009, 2010  rubikitch <rubikitch@ruby-lang.org>
@@ -347,6 +347,19 @@
 
 ;; (@* "HISTORY")
 ;; $Log: anything.el,v $
+;; Revision 1.272  2010/03/29 21:05:47  rubikitch
+;; `anything-mode-line-string': use `make-local-variable' instead
+;;
+;; Revision 1.271  2010/03/29 09:59:17  rubikitch
+;; stupid bug
+;;
+;; Revision 1.270  2010/03/29 09:56:12  rubikitch
+;; Call `filtered-candidate-transformer' functions even if process sources
+;;
+;; Revision 1.269  2010/03/29 08:42:23  rubikitch
+;; * New attribute `resume'
+;; * Fix a bug of `disable-shortcuts' plug-in
+;;
 ;; Revision 1.268  2010/03/28 21:42:01  rubikitch
 ;; Add some keys in `anything-help'
 ;;
@@ -1221,7 +1234,7 @@
 
 ;; ugly hack to auto-update version
 (defvar anything-version nil)
-(setq anything-version "$Id: anything.el,v 1.268 2010/03/28 21:42:01 rubikitch Exp $")
+(setq anything-version "$Id: anything.el,v 1.272 2010/03/29 21:05:47 rubikitch Exp rubikitch $")
 (require 'cl)
 
 ;; (@* "User Configuration")
@@ -1611,7 +1624,10 @@ Attributes:
 
   source local `header-line-format'.
   It accepts also variable/function name.
-")
+
+- resume (optional)
+
+  Function called with no parameters when `anything-resume' is started.")
 
 
 ;; This value is only provided as an example. Customize it to your own
@@ -1952,7 +1968,6 @@ It is `anything-default-display-buffer' by default, which affects `anything-same
 (defvar anything-mode-line-string "(\\<anything-map>\\[anything-help]:help \\[anything-select-action]:ActionList \\[anything-exit-minibuffer]/\\[anything-select-2nd-action-or-end-of-line]/\\[anything-select-3rd-action]:NthAction"
   "Help string displayed in mode-line in `anything'.
 If nil, use default `mode-line-format'.")
-(make-variable-buffer-local 'anything-mode-line-string)
 
 (defvar anything-help-message
   "\\<anything-map>The keys that are defined for `anything' are:
@@ -2396,7 +2411,8 @@ already-bound variables. Yuck!
   (unless (eq any-resume 'noresume)
     (anything-recent-push anything-buffer 'anything-buffers)
     (setq anything-last-buffer anything-buffer))
-  (when any-input (setq anything-input any-input anything-pattern any-input)))
+  (when any-input (setq anything-input any-input anything-pattern any-input))
+  (and (eq any-resume t) (anything-funcall-foreach 'resume)))
 
 (defun anything-execute-selection-action-1 ()
   (unwind-protect
@@ -2643,10 +2659,12 @@ SOURCE."
                         candidate-source)))))
          
 
-(defun anything-transform-candidates (candidates source)
+(defun anything-transform-candidates (candidates source &optional process-p)
   "Transform CANDIDATES according to candidate transformers."
   (anything-aif (assoc-default 'candidate-transformer source)
       (setq candidates (anything-composed-funcall-with-source source it candidates)))
+  (anything-aif (and process-p (assoc-default 'filtered-candidate-transformer source))
+      (setq candidates (anything-composed-funcall-with-source source it candidates source)))
   (anything-aif (assoc-default 'real-to-display source)
       (setq candidates (anything-funcall-with-source
                         source 'mapcar
@@ -2974,12 +2992,12 @@ the real value in a text property."
                           candidates)
                     (setcdr incomplete-line-info nil))
 
-              (push (car lines) candidates)))
+                (push (car lines) candidates)))
                   
             (pop lines))
 
           (setq candidates (reverse candidates))
-          (dolist (candidate (anything-transform-candidates candidates process-info))
+          (dolist (candidate (anything-transform-candidates candidates process-info t))
             ;; FIXME
             ;; (if (and multiline separate)
             ;;      (anything-insert-candidate-separator)
@@ -3108,17 +3126,18 @@ UNIT and DIRECTION."
 
 (defvar anything-mode-line-string-real nil)
 (defun anything-display-mode-line (source)
-  (setq anything-mode-line-string
-         (anything-interpret-value (or (assoc-default 'mode-line source)
-                                       anything-mode-line-string)
-                                   source))
+  (set (make-local-variable 'anything-mode-line-string)
+       (anything-interpret-value (or (assoc-default 'mode-line source)
+                                     (default-value 'anything-mode-line-string))
+                                 source))
   (if anything-mode-line-string
       (setq mode-line-format
             '(" " mode-line-buffer-identification " "
               (line-number-mode "%l") " " anything-mode-line-string-real "-%-")
             anything-mode-line-string-real
             (substitute-command-keys anything-mode-line-string))
-    (kill-local-variable 'mode-line-format))
+    (setq mode-line-format
+          (default-value 'mode-line-format)))
   (setq header-line-format
         (anything-interpret-value (assoc-default 'header-line source) source)))
 
@@ -3440,12 +3459,18 @@ UNIT and DIRECTION."
 
 ;; (@* "Built-in plug-in: disable-shortcuts")
 (defvar anything-orig-enable-shortcuts nil)
+(defun anything-save-enable-shortcuts ()
+  (setq anything-orig-enable-shortcuts anything-enable-shortcuts
+        anything-enable-shortcuts nil))
 (defun anything-compile-source--disable-shortcuts (source)
   (if (assoc 'disable-shortcuts source)
-      (append source
-              '((init . (lambda () (setq anything-orig-enable-shortcuts anything-enable-shortcuts
-                                         anything-enable-shortcuts nil)))
-                (cleanup . (lambda () (setq anything-enable-shortcuts anything-orig-enable-shortcuts)))))
+      (append `((init ,@(anything-mklist (assoc-default 'init source))
+                      anything-save-enable-shortcuts)
+                (resume ,@(anything-mklist (assoc-default 'resume source))
+                        anything-save-enable-shortcuts)
+                (cleanup ,@(anything-mklist (assoc-default 'cleanup source))
+                         (lambda () (setq anything-enable-shortcuts anything-orig-enable-shortcuts))))
+              source)
     source))
 
 ;; (@* "Built-in plug-in: candidates-in-buffer")

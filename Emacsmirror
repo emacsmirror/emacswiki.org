@@ -80,105 +80,79 @@ people don't waste their time trying to find the same package.
 
 * A
 
-** [http://ignotus.hixsplit.hu/AptUpgrade.html apt-upgrade]
-** [http://www.ugcs.caltech.edu/~shulman/pub/Main/Software/auto-define.el auto-define]
-** [http://wiki.axiom-developer.org/AxiomEmacsMode axiommode]
+** [http://ignotus.hixsplit.hu/AptUpgrade.html apt-upgrade] (again couldn't find)
+** [http://www.ugcs.caltech.edu/~shulman/pub/Main/Software/auto-define.el auto-define] (again couldn't find)
+** [http://wiki.axiom-developer.org/AxiomEmacsMode axiommode] (again couldn't find)
 
 * B
 
-** [http://www.jgk.org/src/background.el background]
-** [http://freebsd.sinica.edu.tw/~gugod/lisp/battery-freebsd.el battery-freebsd]
-** [http://www.cs.utah.edu/~eeide/emacs/blink-extra.el.gz blink-extra]
-** [http://elisp.info/package/blogger/blogger.el blogger]
-** [http://www.coling.uni-freiburg.de/~schauer/resources/emacs/browse-cltl2.el.gz browse-cltl2]
-** [http://lgarc.narod.ru/xemacs/bugis.el bugis]
+** [http://www.jgk.org/src/background.el background] (again couldn't find)
+** [http://freebsd.sinica.edu.tw/~gugod/lisp/battery-freebsd.el battery-freebsd] (again couldn't find)
+** [http://www.cs.utah.edu/~eeide/emacs/blink-extra.el.gz blink-extra] (again couldn't find)
+** [http://elisp.info/package/blogger/blogger.el blogger] (again couldn't find)
+** [http://www.coling.uni-freiburg.de/~schauer/resources/emacs/browse-cltl2.el.gz browse-cltl2] (again couldn't find)
+** [http://lgarc.narod.ru/xemacs/bugis.el bugis] (again couldn't find)
 
 * C
 
-** [http://www.newartisans.com/johnw/Emacs c-includes]
-** [ftp://ftp.cis.ohio-state.edu/pub/emacs-lisp/archive/cdrw.el cdrw]
-** [http://www.newartisans.com/johnw/Emacs check-mail]
-** [http://www.csis.ul.ie/staff/JohnSturdy/research-elisp/citation.el citation]
-** [http://relativity.yi.org/el/clipper.el clipper]
-** [http://pbreton.ne.mediaone.net/emacs/comint-redirect.el comint-redirect]
-** [http://www.csis.ul.ie/staff/JohnSturdy/research-elisp/command-log.el command-log]
-** [http://www.cs.utah.edu/~karra/code/cue.el.gz cue]
-** [http://www.teaser.fr/~flepied/cvs.el.gz cvs]
-** [http://relativity.yi.org/el/cvs-annotate.el cvs-annotate]
-** [http://relativity.yi.org/el/cvs-commit.el cvs-commit]
+** [http://www.newartisans.com/johnw/Emacs c-includes] (again couldn't find)
+** [ftp://ftp.cis.ohio-state.edu/pub/emacs-lisp/archive/cdrw.el cdrw] (again couldn't find)
+** [http://www.newartisans.com/johnw/Emacs check-mail] (again couldn't find)
+** [http://www.csis.ul.ie/staff/JohnSturdy/research-elisp/citation.el citation] (again couldn't find)
+** [http://relativity.yi.org/el/clipper.el clipper] (again couldn't find)
+** [http://pbreton.ne.mediaone.net/emacs/comint-redirect.el comint-redirect] (again couldn't find)
+** [http://www.csis.ul.ie/staff/JohnSturdy/research-elisp/command-log.el command-log] (author contacted)
+** [http://www.cs.utah.edu/~karra/code/cue.el.gz cue] (again couldn't find)
+** [http://www.teaser.fr/~flepied/cvs.el.gz cvs] (again couldn't find)
+** [http://relativity.yi.org/el/cvs-annotate.el cvs-annotate] (again couldn't find)
+** [http://relativity.yi.org/el/cvs-commit.el cvs-commit] (again couldn't find)
 
 * D
 
-** [http://www.djefer.com/dacode/ dacode]
-** [http://openmap.bbn.com/burstein/daml-emacs/ daml]
-** [http://www.csis.ul.ie/staff/JohnSturdy/research-elisp/day-structure.el day-structure]
-** [http://www.andersl.com/emacs/ demax]
-** [http://www.bluetail.com/~luke/distel/ derl]
-** [http://www.informatik.uni-freiburg.de/~utcke/English/Software/#dic dic]
-** [http://www.newartisans.com/johnw/Emacs dictation]
-** [http://www.informatik.uni-freiburg.de/~utcke/English/Software/index.html diction]
+** [http://www.djefer.com/dacode/ dacode] (again couldn't find)
+** [http://openmap.bbn.com/burstein/daml-emacs/ daml] (again couldn't find)
+** [http://www.csis.ul.ie/staff/JohnSturdy/research-elisp/day-structure.el day-structure] (author contacted)
+** [http://www.andersl.com/emacs/ demax] (again couldn't find)
+** [http://www.bluetail.com/~luke/distel/ derl] (again couldn't find)
+** [http://www.informatik.uni-freiburg.de/~utcke/English/Software/#dic dic] (again couldn't find)
+** [http://www.newartisans.com/johnw/Emacs dictation] (again couldn't find)
+** [http://www.informatik.uni-freiburg.de/~utcke/English/Software/index.html diction] (again couldn't find)
 
 * E
 
-** [http://people.debian.org/~psg/elisp/e-mh-alias.el e-mh-alias]
-** [http://relativity.yi.org/el/e-other-window.el e-other-window]
-** [http://feff.phys.washington.edu/~ravel/software/ease/Welcome.html ease]
-** [http://relativity.yi.org/el/ebackup.el ebackup]
-** [http://www.csis.ul.ie/staff/JohnSturdy/research-elisp/editing-behaviour-log.el editing-behaviour-log]
-** [http://www.eicq.org/ eicq]
-** [ftp://ftp.lysator.liu.se/pub/emacs/elib-1.0.tar.gz elib]
-** [http://www.bluetail.com/~luke/misc/emacs/elit/elit.el elit]
-** [http://www.zip.com.au/~peterm/download/else-mode.el else-mode]
-** [http://www.lisp.se/emacs-cl emacs-cl]
-** [http://www.tapsellferrier.co.uk/downloads/emacs-imap.el emacs-imap]
-** [http://sugarshark.com/elisp/mylisp/emacs-wiki-journal.el emacs-wiki-journal]
-** [http://www.messengers-of-messiah.org/~csebold/emacs/emacsvfaq.el emacsvfaq]
-** [http://paddington.ic.uva.nl/public/ep3m0995.zip epop3mail]
-** [http://www.bluetail.com/~luke/erlext.el erlext]
-** [http://members.chello.at/rene.weichselbaum/etask.html etask]
-** [http://www.teaser.fr/~flepied/expand.el.gz expand]
+** [http://relativity.yi.org/el/e-other-window.el e-other-window] (again couldn't find)
+** [http://feff.phys.washington.edu/~ravel/software/ease/Welcome.html ease] (again couldn't find)
+** [http://www.csis.ul.ie/staff/JohnSturdy/research-elisp/editing-behaviour-log.el editing-behaviour-log] (author contacted)
+** [http://www.bluetail.com/~luke/misc/emacs/elit/elit.el elit] (again couldn't find)
+** [http://www.tapsellferrier.co.uk/downloads/emacs-imap.el emacs-imap] (again couldn't find)
 
 * F
 
-** [http://liyu2000.nease.net/code/faq-mode.el faq-mode]
-** [http://people.debian.org/~psg/elisp/ff-paths.el ff-paths]
-** [http://www.teaser.fr/~flepied/file-log.el.gz file-log]
-** [http://relativity.yi.org/el/fileutils.el fileutils]
-** [http://www-sor.inria.fr/~giraud/emacs/fip.el fip]
-** [http://user.it.uu.se/~andersl/emacs.shtml folding]
-** [http://people.debian.org/~psg/elisp/font-latex.el font-latex]
-** [http://shasta.cs.uiuc.edu/~lrclause/footnotes.el footnotes]
-** [http://www.enberg.org/emacs/ from]
-** [http://www.glue.umd.edu/~milgram/ftnchekel.html ftnchek]
-** [http://lampwww.epfl.ch/~schinz/elisp/funnel-mode.el funnel-mode]
-** [http://24.71.17.22/wiki?HomeEmacs fvwm-command]
+** [http://liyu2000.nease.net/code/faq-mode.el faq-mode] (again couldn't find)
+** [http://www.teaser.fr/~flepied/file-log.el.gz file-log] (again couldn't find)
+** [http://relativity.yi.org/el/fileutils.el fileutils] (again couldn't find)
+** [http://www-sor.inria.fr/~giraud/emacs/fip.el fip] (again couldn't find)
+** [http://www.enberg.org/emacs/ from] (again couldn't find)
+** [http://lampwww.epfl.ch/~schinz/elisp/funnel-mode.el funnel-mode] (again couldn't find)
+** [http://24.71.17.22/wiki?HomeEmacs fvwm-command] (again couldn't find)
 
 * G
 
-** [http://users.ox.ac.uk/~wadh1342/gle-mode.el gle-mode]
-** [http://wuarchive.wustl.edu/usenet/gnu.emacs.sources/articles/6203482.Z glyph-highlight]
-** [http://www.comsecmilnavpac.net/elisp/ gnus-eyecandy]
-** [http://www.comsecmilnavpac.net/elisp/ gnus-filterhist]
-** [http://www.comsecmilnavpac.net/elisp/ gnus-pers]
-** [ftp://vh213601.truman.edu/pub/Grade/grade.el grade]
-** [http://people.debian.org/~psg/elisp/gri-mode.el gri-mode]
-** [http://www.antisleep.com/elisp/gse-create-date-file.el gse-create-date-file]
-** [http://www.djcbsoftware.nl/projecten/emacs/ gwizard]
+** [http://wuarchive.wustl.edu/usenet/gnu.emacs.sources/articles/6203482.Z glyph-highlight] (again couldn't find)
+** [http://www.comsecmilnavpac.net/elisp/ gnus-eyecandy] (again couldn't find)
+** [http://www.comsecmilnavpac.net/elisp/ gnus-filterhist] (again couldn't find)
+** [http://www.comsecmilnavpac.net/elisp/ gnus-pers] (again couldn't find)
+** [ftp://vh213601.truman.edu/pub/Grade/grade.el grade] (again couldn't find)
+** [http://www.antisleep.com/elisp/gse-create-date-file.el gse-create-date-file] (again couldn't find)
+** [http://www.djcbsoftware.nl/projecten/emacs/ gwizard] (again couldn't find)
 
 * H
 
-** [http://www.coling.uni-freiburg.de/~schauer/resources/emacs/header-action.el.gz header-action]
-** [http://www.tfkp.physik.uni-erlangen.de/~ralf/src/hhm-umlaute.el hhm-umlaute]
-** [http://xarch.tu-graz.ac.at/autocad/lsp_tools/ntemacs/hide-copyleft.el hide-copyleft]
-** [http://plig.net/~ture/emacs/hide-lines.el hide-lines]
-** [http://nic-nac-project.de/~necui/ht.html highlight-tail]
-** [http://www.tfkp.physik.uni-erlangen.de/~winkler/src/himark.el himark]
-** [http://www.hgsc.bcm.tmc.edu/~harley/elisp/html-helper-imenu.el html-helper-im]
-** [http://www.coling.uni-freiburg.de/~schauer/resources/emacs/html-lang-timestamp.el.gz html-lang-timestamp]
-** [http://www.emacs.mirkolinkonline.de/umlaut.html html-umlaute-mode]
-** [http://rtfm.etla.org/emacs/htmlfontify/ htmlfontify]
-** [http://www.sixfingeredman.net/proj/xemacs/human.el human]
-** [http://sourcery.naggum.no/emacs/hyperspec.el hyperspec]
+** [http://www.coling.uni-freiburg.de/~schauer/resources/emacs/header-action.el.gz header-action] (again couldn't find)
+** [http://www.tfkp.physik.uni-erlangen.de/~ralf/src/hhm-umlaute.el hhm-umlaute] (again couldn't find)
+** [http://www.coling.uni-freiburg.de/~schauer/resources/emacs/html-lang-timestamp.el.gz html-lang-timestamp] (again couldn't find)
+** [http://www.emacs.mirkolinkonline.de/umlaut.html html-umlaute-mode] (todo contact authore)
+** [http://www.sixfingeredman.net/proj/xemacs/human.el human] (again couldn't find)
 
 * I
 
@@ -208,7 +182,6 @@ people don't waste their time trying to find the same package.
 
 ** [http://homepages.cs.ncl.ac.uk/phillip.lord/download/emacs/language-tools.el language-tools]
 ** [http://www.newartisans.com/johnw/Emacs latex-markup]
-** [http://people.debian.org/~psg/elisp/latex-units.el latex-units]
 ** [http://www.geocrawler.com/archives/3/338/1999/2/0/1874725 lazy-look]
 ** [http://relativity.yi.org/el/links.el links]
 ** [http://www.gnusoftware.com/Emacs/Lisp/lisp-index.el lisp-index]
@@ -262,7 +235,7 @@ people don't waste their time trying to find the same package.
 * P
 
 ** [http://www.docs.uu.se/~mic/pager.el pager]
-** [http://www.csis.ul.ie/staff/JohnSturdy/research-elisp/papers.el papers]
+** [http://www.csis.ul.ie/staff/JohnSturdy/research-elisp/papers.el papers] (author contacted)
 ** [http://www.bluetail.com/~luke/misc/emacs/pbook.el pbook]
 ** [http://www.gnusoftware.com/Emacs/Lisp/perldoc.el perldoc]
 ** [http://ee.usyd.edu.au/~thlai/emacs/pifont.el.gz pifont]
@@ -364,6 +337,24 @@ people don't waste their time trying to find the same package.
 ** [http://www.newartisans.com/johnw/Emacs/xml-parse.el xml-parse]
 ** [http://www.pwstephenson.fsnet.co.uk/computing/ xref]
 ** [http://www.menteith.com/xslide/ xslide]
+
+* Merged into Emacs
+
+** [http://people.debian.org/~psg/elisp/ e-mh-alias] (renamed to mh-alias.el, part of mh)
+** [http://members.chello.at/rene.weichselbaum/etask.html etask]
+** [http://www.teaser.fr/~flepied/expand.el.gz expand]
+** [http://shasta.cs.uiuc.edu/~lrclause/footnotes.el footnotes]
+
+* Probably merged into Emacs
+
+** [http://www.lisp.se/emacs-cl emacs-cl] (is this really the cl package?)
+
+* Probably merged into other package (todo check)
+
+** [http://people.debian.org/~psg/elisp/ font-latex] (auctex)
+** [http://people.debian.org/~psg/elisp/ latex-units] (auctex)
+** [http://user.it.uu.se/~andersl/emacs.shtml folding] (tinytools)
+** [http://sourcery.naggum.no/emacs/hyperspec.el hyperspec] (slime-mode)
 
 == Discussion ==
 
