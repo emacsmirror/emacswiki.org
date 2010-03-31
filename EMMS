@@ -161,7 +161,8 @@ Don't know why above code doesn't work for me. Hence, I came with another simple
 
 === Fluxbox/Gnome (and gtk-based wm) notification ===
 
-See [[EmacsEasyNotification]] ;-)
+See [[EmmsEasyNotification]] ;-)
+
 === In dired buffer, "!" to add track to playlist ===
 Inspired by http://tanstaafl.cn/Home/EmacsEmms.html
 

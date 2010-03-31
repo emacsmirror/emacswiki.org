@@ -2,4 +2,8 @@ ClojureMode is a major mode that provides font-lock, indentation, and functions 
 
 It's more useful if used together with swank-clojure to interact with subprocesses. See http://technomancy.us/126 for a tutorial.
 
-Download it here: Lisp:clojure-mode.el
+Download it here: http://github.com/technomancy/clojure-mode
+
+Please note that http://github.com/jochu/clojure-mode is outdated and not actively developed although it is found on many websites.  
+
+Depending on the version of Clojure you use you may need to use a different branch.  See also [http://www.skamphausen.de/cgi-bin/ska/My_Clojure_Setup A manual setup] for old time Emacsers and SBCL-users.

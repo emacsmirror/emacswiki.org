@@ -6,19 +6,16 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Mar 28 13:20:28 2010 (-0700)
+;; Last-Updated: Tue Mar 30 13:47:59 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 11934
+;;     Update #: 11935
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `bookmark', `cl', `custom', `easymenu', `ffap', `gnus',
-;;   `gnus-ems', `gnus-mule', `gnus-util', `lisp-mode', `mail-utils',
-;;   `mailabbrev', `mailheader', `message', `nnheader', `nnoo',
-;;   `nntp', `pp', `sendmail', `timezone', `widget'.
+;;   None
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -1229,6 +1226,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2010/03/28 dadams
+;;     bookmarkp-goto-position: Don't funcall bookmarkp-jump-display-function if it is nil.
 ;; 2010/03/28 dadams
 ;;     bookmark-default-handler: Don't funcall bookmarkp-jump-display-function if it is nil.
 ;; 2010/03/27 dadams

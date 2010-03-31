@@ -1,0 +1,53 @@
+= find-function = 
+;;; Commentary:
+;;
+;; The funniest thing about this is that I can't imagine why a package
+;; so obviously useful as this hasn't been written before!!
+;; ;;; find-func
+;; (find-function-setup-keys)
+;;
+;; or just:
+;;
+;; (load "find-func")
+;;
+;; if you don't like the given keybindings and away you go!  It does
+;; pretty much what you would expect, putting the cursor at the
+;; definition of the function or variable at point.
+;;
+;; The code started out from `describe-function', `describe-key'
+;; ("help.el") and `fff-find-loaded-emacs-lisp-function' (Noah Friedman's
+;; "fff.el").
+
+== Suggestion ==
+
+=== widen before jump ===
+find-function/find-variable with widen does not work. -- [[rubikitch]]
+
+<pre>
+(defun find-function-do-it (symbol type switch-fn)
+  "Find Emacs Lisp SYMBOL in a buffer and display it.
+TYPE is nil to search for a function definition,
+or else `defvar' or `defface'.
+
+The variable `find-function-recenter-line' controls how
+to recenter the display.  SWITCH-FN is the function to call
+to display and select the buffer.
+See also `find-function-after-hook'.
+
+Set mark before moving, if the buffer already existed."
+  (let* ((orig-point (point))
+	(orig-buf (window-buffer))
+	(orig-buffers (buffer-list))
+	(buffer-point (save-excursion
+			(find-definition-noselect symbol type)))
+	(new-buf (car buffer-point))
+	(new-point (cdr buffer-point)))
+    (when buffer-point
+      (when (memq new-buf orig-buffers)
+	(push-mark orig-point))
+      (funcall switch-fn new-buf)
+      (widen)                           ;added!
+      (when new-point (goto-char new-point))
+      (recenter find-function-recenter-line)
+      (run-hooks 'find-function-after-hook))))
+</pre>

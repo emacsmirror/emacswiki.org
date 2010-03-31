@@ -1,6 +1,6 @@
 The standard library tooltip.el provides the function for displaying a tooltip at mouse position which allows users to easily show it. However, locating tooltip at arbitrary buffer position in window is not easy. This program provides such function to be used by other frontend programs.
 
-Note that this program can work only under X window system.
+This program is tested on GNU Emacs 22, 23 under X window system and Emacs 23 for MS-Windows.
 
 == Downloading ==
 
@@ -8,7 +8,17 @@ Note that this program can work only under X window system.
 
 == Installation ==
 
-To use pos-tip.el, save this file in a directory listed in load-path together with the programs which use this library.
+To use pos-tip.el, save this file in a directory listed in load-path together with the programs which use this library, and put the following in your .emacs file:
+
+ (require 'pos-tip)
+
+To use the full features of this program on MS-Windows, put the additional setting in .emacs file:
+
+ (pos-tip-w32-max-width-height)   ; Maximize frame temporarily
+
+or
+
+ (pos-tip-w32-max-width-height t) ; Keep frame maximized
 
 == Sample program 1: Describe function in tooltip ==
 
@@ -203,3 +213,6 @@ Is this a real bug? or is there any better solution? -- SeungcheolJung
 
 [new]
 : Hmm... I can't reproduce such problem. Can you describe more detail? Anyway, your solution isn't good, because it overrides the faces of STRING and `pos-tip-show-no-propertize' always shows tooltip text with `default' face.
+
+[new]
+:: Sorry for disturbing you. It works fine when I launch Emacs with `-q'... I'm not sure what other elisps mess up it.

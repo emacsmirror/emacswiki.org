@@ -598,7 +598,7 @@ When insrtp or called-interactively insert returned vars at point.\n
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-01-22T16:29:45-05:00Z}#{10035} - by MON>
-(defun mon-get-env-vars-emacs ()
+(defun mon-get-env-vars-emacs (&optional insrtp intrp)
   "Return an list of the current environmental variables of the running Emacs.\n
 Alist Keys have the form:\n
  \(:ENV-VAR \"VALUE-STRING\"\)
@@ -610,12 +610,15 @@ an identical value.\n
 :NOTE MON stores some local variables in `*mon-misc-path-alist*'. When this
 symbol is present values associated with the key ``the-emacs-vars'' will also included
 when generating the return value.\n
+When called-interactively pretty-print return value in buffer named
+\"*MON-EMACS-ENV-VARS*\".\n
 :SEE info node `(emacs)General Variables'.\n
 :SEE-ALSO `mon-get-env-vars-strings', `mon-get-env-vars-symbols' `mon-get-system-specs',
 `mon-help-emacs-introspect', `mon-insert-sys-proc-list',
 `mon-get-sys-proc-list', `mon-get-proc-w-name', `mon-get-process',
 `mon-help-process-functions' `emacs-pid', `process-environment',
 `initial-environment', `getenv', `setenv'.\n►►►"
+  (interactive "i\np")
   (let ((emacs-env-vars (mon-intersection 
                          (mon-get-env-vars-symbols)
                          (append 
@@ -650,7 +653,15 @@ when generating the return value.\n
                   this-var-list-pairs)))
         (setq this-var-list-pairs (nreverse this-var-list-pairs))
         (push (car this-var-list-pairs) gthr-env-vars)
-        (push (cadr this-var-list-pairs) gthr-env-vars)))))
+        (push (cadr this-var-list-pairs) gthr-env-vars)))
+    insrtp ;; Not currently evaluating INSRTP.
+    (when intrp 
+      (let ((meev (get-buffer-create "*MON-EMACS-ENV-VARS*")))
+        (with-current-buffer (buffer-name meev)
+          (erase-buffer)
+          (pp-display-expression gthr-env-vars (buffer-name meev))
+          (mon-g2be) 
+          (insert ";; :MON-EMACS-ENV-VARS output from:\n;; (mon-get-env-vars-emacs nil t)\n;;\n"))))))
 ;;
 ;;; :TEST-ME (mon-get-env-vars-emacs)
 ;;; :TEST-ME (mapcar 'car (mon-get-env-vars-emacs))

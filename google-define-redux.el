@@ -7,12 +7,12 @@
 ;;; ================================================================
 
 ;; FILENAME: google-define-redux.el
-;; AUTHOR: MON KEY, Jeremy English
+;; AUTHOR: Jeremy English, MON KEY 
 ;; MAINTAINER: MON KEY
-;; CREATED: 
+;; CREATED: 2010-02-03T13:41:11-05:00Z}#{10053
 ;; VERSION: 1.0.0
 ;; COMPATIBILITY: Emacs23.*
-;; KEYWORDS: 
+;; KEYWORDS: applications, comm, external, processes, hypermedia
 
 ;;; ================================================================
 
@@ -71,20 +71,37 @@
 ;; using the REST
 ;;
 ;; NOTES:
-;; The Required functions listed below are also provided in a dedicated library
-;; with :FILE google-define-redux-supplemental.el Though this may not always be
-;; current and it is recommended to load the required libraries instead.
+;; The required functions listed below are also provided in a dedicated library
+;; with :FILE google-define-redux-supplemental.el 
+;; :SEE (URL `http://www.emacswiki.org/emacs/google-define-redux-supplemental.el')
+;; Though, that package not always be current and it is preferred/recommended to
+;; load the required packages instead.
 ;; 
 ;; SNIPPETS:
 ;;
 ;; REQUIRES:
-;; `mon-g2be'                         <- :FILE mon-utils.el
-;; `mon-string-justify-left'          <- :FILE mon-utils.el
-;; `mon-buffer-exists-p'              <- :FILE mon-utils.el
-;; `mon-buffer-exists-so-kill'        <- :FILE mon-utils.el
-;; `mon-help-temp-docstring-display'  <- :FILE mon-doc-help-utils.el
-;; `mon-help-KEY-tag'                 <- :FILE mon-doc-help-utils.el
+;; font-lock.el 
 ;;
+;; :REQUIRES `mon-help-temp-docstring-display' <- :FILE mon-doc-help-utils.el
+;; :REQUIRED-BY `google-define'
+;;
+;; `*mon-help-docstring-help-bffr*'            <- :FILE mon-doc-help-utils.el
+;; :REQUIRED-BY `mon-help-temp-docstring-display'
+;;
+;; :REQUIRES `mon-help-KEY-tag'                <- :FILE mon-doc-help-utils.el
+;; :REQUIRED-BY `gg-def-base'
+;;
+;; :REQUIRES `mon-string-justify-left'         <- :FILE mon-utils.el
+;; :REQUIRED-BY `google-define-parse-buffer'
+;;
+;; :REQUIRES `mon-g2be'                        <- :FILE mon-utils.el
+;; :REQUIRED-BY `google-define-font-lock', `google-define-parse-buffer'
+;;
+;; :REQUIRES `mon-buffer-exists-p'             <- :FILE mon-utils.el
+;; :REQUIRED-BY `google-define-kill-def-buffers'
+;;
+;; :REQUIRES `mon-buffer-exists-so-kill'       <- :FILE mon-utils.el
+;; :REQUIRED-BY `google-define-kill-def-buffers'
 ;;
 ;; THIRD-PARTY-CODE:
 ;; Following are the modifications made to Jeremy English's google-define.el 
@@ -105,7 +122,7 @@
 ;; `google-define-ascii-entry'
 ;; `google-define-number-entry'
 ;;
-;; URL: "http://www.emacswiki.org/emacs/google-define-redux.el"
+;; URL: http://www.emacswiki.org/emacs/google-define-redux.el
 ;; FIRST-PUBLISHED: <Timestamp: #{2010-02-04T21:39:15-05:00Z}#{10055} - by MON>
 ;;
 ;; EMACSWIKI: 
@@ -188,6 +205,8 @@
 
 ;;; ==============================
 ;;; :COURTESY Jeremy English :HIS google-define.el 
+;;; :NOTE When `IS-MON-SYSTEM-P' this constant _should_ be bound in:
+;;; :FILE mon-regexp-symbols.el It is provided here for completentess.
 ;;; :MODIFICATIONS <Timestamp: #{2010-03-20T12:34:07-04:00Z}#{10116} - by MON KEY>
 ;;;  Replaced Character literal for SOFT HYPHEN (173, #o255, #xad) with hex representation.
 ;;; :CREATED <Timestamp: #{2010-03-20T12:15:24-04:00Z}#{10116} - by MON KEY>
@@ -228,6 +247,8 @@
     ("&#252;" "&uuml;" "ü")   ("&#253;" "&yacute;" "ý") ("&#254;" "&thorn;" "þ")
     ("&#255;" "&yuml;" "ÿ")   ("&#60;" "&lt;" "<"))
    "
+:NOTE When `IS-MON-SYSTEM-P' this constant _should_ be bound in:
+:FILE mon-regexp-symbols.el It is provided here for completeness.\n
 :CALLED-BY `*regexp-clean-url-utf-escape*', `*regexp-clean-html-escape*'
 :SEE-ALSO `*mon-wrap-url-schemes*', `*regexp-clean-xml-parse*',
 `*regexp-percent-encoding-reserved-chars*', `*regexp-clean-url-utf-escape*',
@@ -241,7 +262,7 @@
 ;;; :CREATED <Timestamp: #{2010-02-03T16:20:02-05:00Z}#{10053} - by MON>
 (defvar *google-define-view-map* (cons (string-to-char "Q") 'View-kill-and-leave)
   "Keybinding for `view-mode' in `google-define' help buffers.
-:SEE-ALSO `*google-define-get-command', `*google-define-html-entry-table*'\n.►►►")
+:SEE-ALSO `*google-define-get-command', `*google-define-html-entry-table*'.\n►►►")
 ;;
 ;;; :TEST-ME *google-define-view-map* 
 ;;;(progn (makunbound '*google-define-view-map*) (unintern '*google-define-view-map*) )
@@ -271,7 +292,7 @@
 
 
 ;;; ==============================
-;;; `mon-help-KEY-tag' <- :FILE mon-doc-help-utils.el
+;;; :REQUIRES `mon-help-KEY-tag' <- :FILE mon-doc-help-utils.el
 ;;; :CREATED <Timestamp: #{2010-02-04T20:22:51-05:00Z}#{10055} - by MON>
 (defface gg-def-base
     (if (featurep 'mon-doc-help-utils)
@@ -383,7 +404,7 @@ Delimiters characters include: ►, |, ◄ preceded and followed by whitespace e
 ;;; :TEST-ME (google-define-get-command )
 
 ;;; ==============================
-;;; REQUIRES `mon-g2be' mon-string-justify-left'
+;;; :REQUIRES `mon-g2be', `mon-string-justify-left' <- mon-utils.el
 ;;; :MODIFICATIONS <Timestamp: #{2010-02-03T13:41:22-05:00Z}#{10053} - by MON>
 (defun google-define-parse-buffer (search-word def-disp-buffer)
   "Pull all of the definitions out of the data returned from google.\n
@@ -416,7 +437,7 @@ Print in a temp-buffer, parse, and convert for presentation.\n
               "%22&btnG=Search")))
     (unwind-protect
          (progn
-           (mon-g2be) ;; :WAS (goto-char (point-min))
+           (mon-g2be) ;; :NOTE `mon-g2be' <- :FILE mon-utils.el
            (while (search-forward-regexp "<li>\\([^<]+\\)" nil t)
              (incf count)
              (let ((definition 
@@ -485,6 +506,7 @@ Print in a temp-buffer, parse, and convert for presentation.\n
     accum-buffer))
 
 ;;; ==============================
+;;; :REQUIRES `mon-g2be' <- :FILE mon-utils.el
 ;;; :TODO The word definition fontlocking should also find the prefix of word 
 ;;; e.g. affixed -> "ed\\_w" "ing\\_w" "ing\\_w" ".tion\\_w" "edness\\_w"
 ;;; :CREATED <Timestamp: #{2010-02-04T21:33:14-05:00Z}#{10055} - by MON>
@@ -546,8 +568,8 @@ If there is a word at point us it as default value for prompt.\n
 ;;; :TEST-ME (google-define nil t)define
 
 ;;; ==============================
-;;; :REQUIRES `mon-buffer-exists-p'
-;;; :REQUIRES `mon-buffer-exists-so-kill'
+;;; :REQUIRES `mon-buffer-exists-p'       <- :FILE mon-utils.el
+;;; :REQUIRES `mon-buffer-exists-so-kill' <- :FILE mon-utils.el
 ;;; :CREATED <Timestamp: #{2010-02-05T14:45:57-05:00Z}#{10055} - by MON>
 (defun google-define-kill-def-buffers (&optional intrp)
   "Kill all google define buffers with `*google-define-buffer-suffix*'.\n
@@ -664,4 +686,3 @@ When called-interactively message with the buffers killed.\n
 ;;;    (set-text-properties 0 (length word-at-point) nil word-at-point)
 ;;;    word-at-point))
 ;;; ==============================
-

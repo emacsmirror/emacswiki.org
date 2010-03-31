@@ -1,5 +1,5 @@
 ;;; anything-complete.el --- completion with anything
-;; $Id: anything-complete.el,v 1.83 2010/03/22 06:10:40 rubikitch Exp $
+;; $Id: anything-complete.el,v 1.85 2010/03/31 03:22:29 rubikitch Exp $
 
 ;; Copyright (C) 2008, 2009, 2010 rubikitch
 
@@ -109,6 +109,12 @@
 ;;; History:
 
 ;; $Log: anything-complete.el,v $
+;; Revision 1.85  2010/03/31 03:22:29  rubikitch
+;; anything attribute completion from M-x anything-lisp-complete-symbol(-partial-match)
+;;
+;; Revision 1.84  2010/03/27 02:43:45  rubikitch
+;; Use `anything-force-update' feature
+;;
 ;; Revision 1.83  2010/03/22 06:10:40  rubikitch
 ;; tidy
 ;;
@@ -386,12 +392,12 @@
 
 ;;; Code:
 
-(defvar anything-complete-version "$Id: anything-complete.el,v 1.83 2010/03/22 06:10:40 rubikitch Exp $")
+(defvar anything-complete-version "$Id: anything-complete.el,v 1.85 2010/03/31 03:22:29 rubikitch Exp $")
 (require 'anything-match-plugin)
 (require 'thingatpt)
 
 ;; version check
-(let ((version "1.244"))
+(let ((version "1.263"))
   (when (and (string= "1." (substring version 0 2))
              (string-match "1\.\\([0-9]+\\)" anything-version)
              (< (string-to-number (match-string 1 anything-version))
@@ -631,7 +637,8 @@ used by `anything-lisp-complete-symbol-set-timer' and `anything-apropos'"
     (type . apropos-variable)))
 
 (defvar anything-lisp-complete-symbol-sources
-  '(anything-c-source-complete-emacs-commands
+  '(anything-c-source-complete-anything-attributes
+    anything-c-source-complete-emacs-commands
     anything-c-source-complete-emacs-functions
     anything-c-source-complete-emacs-variables
     anything-c-source-complete-emacs-faces))
@@ -646,6 +653,7 @@ used by `anything-lisp-complete-symbol-set-timer' and `anything-apropos'"
   '((filtered-candidate-transformer . alcs-sort-maybe)
     (header-name . alcs-header-name)
     (persistent-action . alcs-describe-function)
+    (update . alcs-make-candidates)
     (action
      ("Describe Function" . alcs-describe-function)
      ("Find Function" . alcs-find-function))))
@@ -653,12 +661,14 @@ used by `anything-lisp-complete-symbol-set-timer' and `anything-apropos'"
   '((filtered-candidate-transformer . alcs-sort-maybe)
     (header-name . alcs-header-name)
     (persistent-action . alcs-describe-variable)
+    (update . alcs-make-candidates)
     (action
      ("Describe Variable" . alcs-describe-variable)
      ("Find Variable" . alcs-find-variable))))
 (define-anything-type-attribute 'apropos-face
   '((filtered-candidate-transformer . alcs-sort-maybe)
     (header-name . alcs-header-name)
+    (update . alcs-make-candidates)
     (persistent-action . alcs-describe-face)
     (action
      ("Describe Face" . alcs-describe-face))))
@@ -666,16 +676,19 @@ used by `anything-lisp-complete-symbol-set-timer' and `anything-apropos'"
   '((filtered-candidate-transformer alcs-sort-maybe alcs-transformer-prepend-spacer-maybe)
     (header-name . alcs-header-name)
     (action . ac-insert)
+    (update . alcs-make-candidates)
     (persistent-action . alcs-describe-function)))
 (define-anything-type-attribute 'complete-variable
   '((filtered-candidate-transformer alcs-sort-maybe alcs-transformer-prepend-spacer-maybe)
     (header-name . alcs-header-name)
     (action . ac-insert)
+    (update . alcs-make-candidates)
     (persistent-action . alcs-describe-variable)))
 (define-anything-type-attribute 'complete-face
   '((filtered-candidate-transformer alcs-sort-maybe alcs-transformer-prepend-spacer-maybe)
     (header-name . alcs-header-name)
     (action . ac-insert)
+    (update . alcs-make-candidates)
     (persistent-action . alcs-describe-face)))
 
 (defvar alcs-this-command nil)
@@ -686,9 +699,7 @@ used by `anything-lisp-complete-symbol-set-timer' and `anything-apropos'"
   (let (anything-samewindow
         (anything-input-idle-delay
          (or anything-lisp-complete-symbol-input-idle-delay
-             anything-input-idle-delay))
-        (anything-map (copy-keymap anything-map)))
-    (define-key anything-map "\C-c\C-u" 'alcs-update-restart)
+             anything-input-idle-delay)))
     (anything-noresume sources input nil nil nil "*anything complete*")))
 
 ;; Test alcs-update-restart (with-current-buffer alcs-commands-buffer (erase-buffer))
@@ -721,6 +732,73 @@ used by `anything-lisp-complete-symbol-set-timer' and `anything-apropos'"
   "`apropos' replacement using `anything'."
   (interactive "P")
   (anything-lisp-complete-symbol-1 update anything-apropos-sources nil))
+
+;; (@* "anything attribute completion")
+(defvar anything-c-source-complete-anything-attributes
+  '((name . "Anything Attributes")
+    (candidates . acaa-candidates)
+    (action . ac-insert)
+    (persistent-action . acaa-describe-anything-attribute)
+    (filtered-candidate-transformer alcs-sort-maybe alcs-transformer-prepend-spacer-maybe)
+    (header-name . alcs-header-name)
+    (action . ac-insert)))
+;; (anything 'anything-c-source-complete-anything-attributes)
+
+(defun acaa-describe-anything-attribute (str)
+  (anything-describe-anything-attribute (intern str)))
+
+(defun acaa-candidates ()
+  (with-current-buffer anything-current-buffer
+    (when (and (require 'yasnippet nil t)
+               (acaa-completing-attribute-p (point)))
+      (mapcar 'symbol-name anything-additional-attributes))))
+
+(defvar acaa-anything-commands-regexp
+  (concat "(" (regexp-opt '("anything" "anything-other-buffer")) " "))
+
+(defun acaa-completing-attribute-p (point)
+  (save-excursion
+    (goto-char point)
+    (ignore-errors
+      (or (save-excursion
+            (backward-up-list 3)
+            (looking-at (concat "(defvar anything-c-source-"
+                                "\\|"
+                                acaa-anything-commands-regexp)))
+          (save-excursion
+            (backward-up-list 4)
+            (looking-at acaa-anything-commands-regexp))))))
+
+;; (anything '(ini
+;;;; unit test
+;; (install-elisp "http://www.emacswiki.org/cgi-bin/wiki/download/el-expectations.el")
+;; (install-elisp "http://www.emacswiki.org/cgi-bin/wiki/download/el-mock.el")
+(dont-compile
+  (when (fboundp 'expectations)
+    (expectations
+      (desc "acaa-completing-attribute-p")
+      (expect t
+        (with-temp-buffer
+          (insert "(anything '(((na")
+          (acaa-completing-attribute-p (point))))
+      (expect t
+        (with-temp-buffer
+          (insert "(anything '((na")
+          (acaa-completing-attribute-p (point))))
+      (expect nil
+        (with-temp-buffer
+          (insert "(anything-hoge '((na")
+          (acaa-completing-attribute-p (point))))
+      (expect nil
+        (with-temp-buffer
+          (insert "(anything-hoge '(((na")
+          (acaa-completing-attribute-p (point))))
+      (expect t
+        (with-temp-buffer
+          (insert "(defvar anything-c-source-hoge '((na")
+          (acaa-completing-attribute-p (point))))
+
+      )))
 
 ;; (@* "anything-read-string-mode / read-* compatibility functions")
 ;; moved from anything.el
@@ -1078,6 +1156,7 @@ It accepts one argument, selected candidate.")
   '(((name . "Emacs Commands History")
      (candidates . extended-command-history)
      (action . identity)
+     (update . alcs-make-candidates)
      (persistent-action . alcs-describe-function))
     ((name . "Commands")
      (header-name . alcs-header-name)
@@ -1085,6 +1164,7 @@ It accepts one argument, selected candidate.")
                          (get-buffer-create alcs-commands-buffer))))
      (candidates-in-buffer)
      (action . identity)
+     (update . alcs-make-candidates)
      (persistent-action . alcs-describe-function))))
 
 ;; (with-current-buffer " *command symbols*" (erase-buffer))
@@ -1092,10 +1172,7 @@ It accepts one argument, selected candidate.")
   "Replacement of `execute-extended-command'."
   (interactive)
   (setq alcs-this-command this-command)
-  (let* ((anything-map
-          (prog1 (copy-keymap anything-map)
-            (define-key anything-map "\C-c\C-u" 'alcs-update-restart)))
-         (cmd (anything
+  (let* ((cmd (anything
               (if (and anything-execute-extended-command-use-kyr
                        (require 'anything-kyr-config nil t))
                   (cons anything-c-source-kyr

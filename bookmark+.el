@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Mar 28 10:03:38 2010 (-0700)
+;; Last-Updated: Tue Mar 30 13:47:20 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 11875
+;;     Update #: 11876
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -6241,7 +6241,8 @@ position, and the context strings for the position."
                 (and bufname (get-buffer bufname) (not (string= buf bufname))))
       (signal 'file-error `("Jumping to bookmark" "No such file or directory" file))))
   (set-buffer (or buf bufname))
-  (save-current-buffer (funcall bookmarkp-jump-display-function (current-buffer)))
+  (when bookmarkp-jump-display-function
+    (save-current-buffer (funcall bookmarkp-jump-display-function (current-buffer))))
   (setq deactivate-mark  t)
   (raise-frame)
   (goto-char pos)

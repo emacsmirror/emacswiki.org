@@ -290,7 +290,7 @@ hobbies and whatnot and keep them at hand in you home directory.
 
 *  Install  the  [Lisp:sunrise-x-tabs.el sunrise-x-tabs] extension to be able to
 put pane buffers in tabs and to keep them around with all their marks and  state
-untouched (tabs cannot be made persistent across sessions, though).
+untouched (tabs can be persisted across sessions using the [[DeskTop]] feature.)
 
 * Use //path projection// to quickly navigate within similar directory trees. If
 you have, say, the trunk version of a project from SVN in directory  trunk/  and

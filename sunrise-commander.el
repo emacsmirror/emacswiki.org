@@ -130,7 +130,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 269 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 270 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.  I  have  also  received
@@ -181,6 +181,7 @@
 (require 'dired-x)
 (require 'font-lock)
 (eval-when-compile (require 'cl)
+                   (require 'desktop)
                    (require 'esh-mode)
                    (require 'recentf)
                    (require 'term))
@@ -367,6 +368,9 @@
 (defvar sr-virtual-buffer nil
   "Local flag that indicates the current buffer was originally in VIRTUAL mode")
 
+(defvar sr-virtual-buffer-file-name nil
+  "Source file name in materialized VIRTUAL buffers (buffer-local).")
+
 (defvar sr-dired-directory ""
   "Directory inside which sr-mode is currently active")
 
@@ -379,6 +383,12 @@
 
 (defvar sr-current-path-face 'sr-active-path-face
   "Default face of the directory path (can be overridden buffer-locally)")
+
+(defvar sr-desktop-save-handlers nil
+  "List of handlers defined by extensions to save SR buffers with desktop.")
+
+(defvar sr-desktop-restore-handlers nil
+  "List of handlers defined by extensions to restore SR buffers from desktop.")
 
 (defconst sr-side-lookup (list '(left . right) '(right . left))
   "Trivial alist used by the Sunrise Commander to lookup its own passive side.")
@@ -573,6 +583,9 @@ automatically:
 
   (make-local-variable 'truncate-lines)
   (setq truncate-lines nil)
+
+  (make-local-variable 'desktop-save-buffer)
+  (setq desktop-save-buffer 'sr-desktop-save-buffer)
 )
 
 (define-derived-mode sr-virtual-mode dired-virtual-mode "Sunrise VIRTUAL"
@@ -587,7 +600,20 @@ automatically:
   (make-local-variable 'truncate-lines)
   (setq truncate-lines nil)
 
+  (make-local-variable 'desktop-save-buffer)
+  (setq desktop-save-buffer 'sr-desktop-save-buffer)
+
+  (make-local-variable 'sr-virtual-buffer-file-name)
+  (setq sr-virtual-buffer-file-name nil)
+
   (define-key sr-virtual-mode-map "\C-c\C-c" 'sr-virtual-dismiss))
+
+;; This transfers the value of (buffer-file-name) to the buffer-local variable
+;; sr-virtual-buffer-file-name:
+(add-hook 'after-save-hook
+          (lambda ()
+            (if (eq major-mode 'sr-virtual-mode)
+                (setq sr-virtual-buffer-file-name (buffer-file-name)))))
 
 (defmacro sr-within (dir form)
   "Puts the given form in Sunrise context."
@@ -623,7 +649,7 @@ automatically:
      ,form
      (setq sr-this-directory default-directory)
      (sr-keep-buffer)
-     (if dispose
+     (if (buffer-live-p dispose)
          (with-current-buffer dispose
            (bury-buffer)
            (set-buffer-modified-p nil)
@@ -1323,6 +1349,7 @@ automatically:
       (sr-save-aspect
        (sr-alternate-buffer (find-file filename)))
       (sr-history-push filename)
+      (setq sr-virtual-buffer-file-name filename)
       (set-visited-file-name nil t)
       (setq filename nil)))
 
@@ -2908,6 +2935,91 @@ or (c)ontents? ")
         (kill-buffer buffer))
     ad-do-it))
 (ad-activate 'term-sentinel)
+
+;;; ============================================================================
+;;; Desktop support:
+
+(defun sr-pure-virtual-p (&optional buffer)
+  "Determines  whether the given buffer (or the current one if none is given) is
+  a pure virtual buffer, i.e. is not attached neither to a directory or  a  file
+  in the filesystem."
+  (with-current-buffer (if (bufferp buffer) buffer (current-buffer))
+    (not
+     (or (eq 'sr-mode major-mode)
+         (and (local-variable-p 'sr-virtual-buffer-file-name)
+              (stringp sr-virtual-buffer-file-name)
+              (file-exists-p sr-virtual-buffer-file-name))))))
+
+(defun sr-desktop-save-buffer (desktop-dirname)
+  "Returns the additional data for saving a sunrise buffer to a desktop file."
+  (unless (sr-pure-virtual-p)
+    (apply
+     'append
+     (delq nil
+           (list
+            (if (eq major-mode 'sr-virtual-mode)
+                (list 'dirs sr-virtual-buffer-file-name)
+              (cons 'dirs (dired-desktop-buffer-misc-data desktop-dirname)))
+            (if (eq (current-buffer) sr-left-buffer) (cons 'left t))
+            (if (eq (current-buffer) sr-right-buffer) (cons 'right t))
+            (if (eq major-mode 'sr-virtual-mode) (cons 'virtual t))))
+     (mapcar (lambda (fun)
+               (funcall fun desktop-dirname))
+             sr-desktop-save-handlers))))
+
+(defun sr-desktop-restore-buffer (desktop-buffer-file-name
+                                  desktop-buffer-name
+                                  desktop-buffer-misc)
+  "Restores a Sunrise (normal or VIRTUAL) buffer from a description in a desktop
+  file."
+  (let* ((sr-running t)
+         (misc-data (cdr (assoc 'dirs desktop-buffer-misc)))
+         (is-virtual (assoc 'virtual desktop-buffer-misc))
+         (buffer
+          (if (not is-virtual)
+              (dired-restore-desktop-buffer desktop-buffer-file-name
+                                          desktop-buffer-name
+                                          misc-data)
+            (desktop-restore-file-buffer (car misc-data)
+                                         desktop-buffer-name
+                                         misc-data))))
+    (when is-virtual
+      (setq sr-virtual-buffer-file-name (buffer-file-name))
+      (set-visited-file-name nil t))
+    (mapc (lambda (side)
+            (when (cdr (assoc side desktop-buffer-misc))
+              (set (sr-symbol side 'buffer) (current-buffer))
+              (set (sr-symbol side 'directory) default-directory)))
+          '(left right))
+    (mapc (lambda (fun)
+            (funcall fun
+                     desktop-buffer-file-name
+                     desktop-buffer-name
+                     desktop-buffer-misc))
+          sr-desktop-restore-handlers)
+    buffer))
+
+(defun sr-reset-state ()
+  "Resets  some  environment  variables that control the behavior of the Sunrise
+  Commander (used for desktop support.)"
+  (setq sr-left-directory "~/" sr-right-directory "~/"
+        sr-this-directory "~/" sr-other-directory "~/")
+  (if sr-running (sr-quit))
+  nil)
+
+;; These register the previous functions in the desktop framework:
+(add-to-list 'desktop-buffer-mode-handlers
+             '(sr-mode . sr-desktop-restore-buffer))
+(add-to-list 'desktop-buffer-mode-handlers
+             '(sr-virtual-mode . sr-desktop-restore-buffer))
+
+;; This initializes (and sometimes starts) sunrise after desktop restoration:
+(add-hook 'desktop-after-read-hook
+          (lambda ()
+            (unless (assoc 'sr-running desktop-globals-to-clear)
+              (add-to-list 'desktop-globals-to-clear
+                           '(sr-running . (sr-reset-state))))
+            (if (memq major-mode '(sr-mode sr-virtual-mode)) (sunrise))))
 
 ;;; ============================================================================
 ;;; Miscellaneous functions:

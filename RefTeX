@@ -25,6 +25,18 @@ One nice feature of RefTeX is the ability to create custom labels in addition to
     (setq reftex-label-alist
 	    '(("\\poemtitle" ?P "poem:" "\\ref{%s}" nil ("poem" "poemtitle"))))
 
+'''Automatically insert non-breaking space before citation'''
+
+RefTeX automatically inserts a tilde before the \ref macro if it's needed, i.e. if the preceding character isn't whitespace or a tilde. I don't know why it doesn't do the same thing for the \cite macro, but you can add the behaviour by setting reftex-format-cite-function:
+
+    (setq reftex-format-cite-function 
+          '(lambda (key fmt)
+	     (let ((cite (replace-regexp-in-string "%l" key fmt)))
+	       (if (or (= ?~ (string-to-char fmt))
+		       (member (preceding-char) '(?\ ?\t ?\n ?~)))
+	           cite
+	         (concat "~" cite)))))
+
 ----
 
 Here's a small snippet I wrote which I find very handy. It's not directly related to RefTeX but it helps when dealing with bibliographic references.

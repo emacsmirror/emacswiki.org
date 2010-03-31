@@ -1,7 +1,7 @@
 Just another Emacs user; been using Emacs for about 15 years now.
 At home, I use EmacsFromCVS with XFT, and so on, on Fedora.  At work, I use [[EmacsW32]].
 
-I am currently co-maintaining [[Lisp:anything-config.el]].
+I am currently co-maintaining [[Identica-mode]], and have written a simple [[BbCode]] mode.
 
 I has a [http://www.carcosa.net/jason/ web page].
 

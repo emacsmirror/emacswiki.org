@@ -11,28 +11,45 @@ If you just want to change the indent levels, set `c-basic-offset'. Here is an e
 
     (setq-default c-basic-offset 3)
 
-Customizing the variables may have strange effects...
+[CategoryCustomize Customizing] the variables may have strange effects ...
 
-You can also set it within emacs: Options->Customize Emacs->Top-level Customization Group->Programming->Languages->C. Here, change 'C Basic Offset'. This will only affect buffers opened after setting, not the ones already open.
+You can also set it within emacs: Options->Customize Emacs->Top-level Customization Group->Programming->Languages->C. Here, change `C Basic Offset'. This will only affect buffers opened after setting, not the ones already open.
 
 == Different Styles ==
 
-Instead of just changing the basic offset, consider switching to a particular /style/. A style definies much more than just the basic offset. There are a number of predefined styles. Take a look at the variable `c-style-alist', if you want to see a list of them.
+Instead of just changing the basic offset, consider switching to a particular /style/. A style defines much more than just the basic offset. There are a number of predefined styles. Take a look at the variable `c-style-alist' to see a list of them.
 
-Here's how to switch to a particular style: Set `c-default-style' to one of the entries in `c-style-alist'. Add something like the following to your ~/.emacs:
+'''You probably don't want the default style.''' This is how Emacs indents out of the box:
 
-    (setq c-default-style "linux")
+    if(foo)
+      {
+        bar++;
+      }
 
-A partial list of the better known styles:
+That's the "##gnu##" style. If you don't want to indent the braces, add something like the following to your ##~/.emacs##:
 
-* "gnu": The default style for GNU projects
-* "k&r": What Kernighan and Ritchie, the authors of C used in their book
-* "bsd": What BSD developers use, aka "Allman style" after Eric Allman.
-* "stroustrup": What Stroustrup, the author of C++ used in his book
-* "linux": What the Linux developers use for kernel development
-* "python": What Python developers use for extension modules
-* "java": The default style for java-mode (see below)
-* "user": When you want to define your own style
+    (setq c-default-style "linux"
+          c-basic-offset 4)
+
+When this is in effect, Emacs will indent like below instead:
+
+    if(foo)
+    {
+        bar++;
+    }
+
+A lower-level way to achieve this is ##(c-set-offset 'substatement-open 0)##, where ##substatement-open## is the braces' ''syntactic context''. Press `C-c C-o' to see the syntax at point (and customize its indentation).
+
+A partial list of the better known C styles:
+
+* "##gnu##": The default style for GNU projects
+* "##k&r##": What Kernighan and Ritchie, the authors of C used in their book
+* "##bsd##": What BSD developers use, aka "Allman style" after Eric Allman.
+* "##stroustrup##": What Stroustrup, the author of C++ used in his book
+* "##linux##": What the Linux developers use for kernel development
+* "##python##": What Python developers use for extension modules
+* "##java##": The default style for java-mode (see below)
+* "##user##": When you want to define your own style
 
 == C-like Automatic Style Input (casi) ==
 

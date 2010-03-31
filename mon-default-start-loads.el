@@ -160,27 +160,41 @@
 ;; :INFOPATH-SETUP
 
 ;;; ==============================
+;;; :NOTE Evauluated by `mon-run-post-load-hooks'
 ;;; :CREATED <Timestamp: #{2010-03-22T17:31:14-04:00Z}#{10121} - by MON KEY>
 (defun mon-set-infopath ()
   "Put current running Emacs' info directory on `Info-directory-list'.\n
-This is mostly a W32 related fncn. Currenlty Does nothing on GNU systems.\n
+This is mostly a W32 related fncn. Currenlty does nothing on GNU systems.\n
+Evauluated by `mon-run-post-load-hooks'.\n
 :NOTE to reset info :SEE info node `(emacs)General Variables'.\n
-:SEE-ALSO `w32-init-info', `mon-get-env-vars-emacs', `Info-directory-list',
-`Info-default-directory-list', `Info-dir-contents'.\n►►►"
+:NOTE The hook: \(add-hook 'before-init-hook 'w32-init-info\)
+in :FILE lisp/w32-fns.el must be commented out for this to work properly.\n
+:SEE-ALSO `w32-init-info', `mon-get-env-vars-emacs',
+`Info-default-directory-list', `Info-directory-list',
+`Info-additional-directory-list', `Info-dir-contents'.\n►►►"
   (when IS-MON-P-W32
-    (let ((this-emacs-info-path
-           (concat (file-name-directory (getenv "EMACSPATH")) "info")))
-      (when (file-directory-p this-emacs-info-path)
-        (add-to-list 'Info-directory-list 
-                     (convert-standard-filename this-emacs-info-path)))
-      (setq Info-dir-contents nil))))
-      
+    (when (bound-and-true-p Info-dir-contents)
+      (setq Info-dir-contents nil))
+    (when (bound-and-true-p Info-dir-contents)
+      (setq Info-dir-contents-directory nil))
+    (let ((emc-pth (getenv "EMC_PTH"))
+          (info-pth (file-truename  (getenv "INFOPATH")))
+          gthr-info-pth)
+      ;; :NOTE Assume there is only one path specified by INFOPATH env-var.
+      ;; When there are more than one, this should be a `split-string' instead.
+      (when info-pth 
+        (push (concat (replace-regexp-in-string "[:;]$" ""  info-pth) "/") gthr-info-pth))
+      (when (and emc-pth (file-directory-p emc-pth))
+        (setq emc-pth (file-truename (concat (directory-file-name emc-pth) "/info/")))
+        (push emc-pth gthr-info-pth))
+      (dolist (gip gthr-info-pth)
+        (pushnew gip Info-default-directory-list :test 'equal))
+      (when (member "c:/emacs/info/" Info-default-directory-list)
+        (setq Info-default-directory-list 
+               (delete "c:/emacs/info/" Info-default-directory-list))))))
 ;;
 ;;; :TEST-ME Info-directory-list
-;;; :TEST-ME (member (convert-standard-filename (getenv "INFOPATH")) Info-directory-list)
-;;; :TEST-ME (member (convert-standard-filename 
-;;;             (concat (file-name-directory (getenv "EMACSPATH")) "info"))
-;;;           Info-directory-list)
+;;; :TEST-ME (mon-set-infopath)
 
 ;;; ==============================
 ;; :LOAD-PATH-SETUP
@@ -317,7 +331,7 @@ This is mostly a W32 related fncn. Currenlty Does nothing on GNU systems.\n
                     ,(when (getenv "MSYS") (concat (getenv "MSYS") "/share/man"))
                  
                     ;; :CYGWIN
-                    ,@(when (file-exists-p (getenv "SP_CYGWN"))
+                    ,@(when (and (getenv "SP_CYGWN") (file-exists-p (getenv "SP_CYGWN")))
                            (let ((cygman-root (file-name-directory (getenv"SP_CYGWN")))
                                  (cygmans
                                   '("usr/share/man" "usr/local/share/man" "usr/X11R6/share/man"

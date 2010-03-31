@@ -19,11 +19,12 @@
 
 ;; =================================================================
 ;; DESCRIPTION:
-;; mon-post-load-hooks provides { some description here. }
+;; mon-post-load-hooks provides fncns to perform after initializing MON Emacsen.
 ;;
 ;; FUNCTIONS:►►►
 ;; `mon-run-post-load-hooks'
 ;; `mon-purge-cl-symbol-buffers-on-load'
+;; `mon-purge-emacs-temp-files-on-quit'
 ;; FUNCTIONS:◄◄◄
 ;;
 ;; MACROS:
@@ -118,8 +119,9 @@
 ;;; :CREATED <Timestamp: #{2010-03-23T22:24:16-04:00Z}#{10122} - by MON KEY>
 (defun mon-purge-cl-symbol-buffers-on-load ()
   "Invoke post Emacs init. Remove buffers left by CL Hspec snarfage routines.\n
-:SEE-ALSO `mon-run-post-load-hooks', `mon-purge-cl-symbol-buffers-on-load'
-`*mon-post-load-hook-trigger-buffer*', `mon-check-feature-for-loadtime',
+:SEE-ALSO `mon-run-post-load-hooks', `mon-purge-cl-symbol-buffers-on-load',
+`*mon-post-load-hook-trigger-buffer*', `mon-purge-emacs-temp-files-on-quit',
+`mon-check-feature-for-loadtime',
 `mon-after-mon-utils-loadtime', `mon-set-register-tags-loadtime',
 `mon-bind-iptables-vars-at-loadtime', `mon-bind-cifs-vars-at-loadtime',
 `mon-CL-cln-colon-swap', `mon-bind-nefs-photos-at-loadtime',
@@ -130,6 +132,25 @@
                 "*CL-EXT-PKG-MAP*"))
     (when (get-buffer gb)
       (kill-buffer (get-buffer gb)))))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-03-29T20:46:44-04:00Z}#{10132} - by MON KEY>
+(defun mon-purge-emacs-temp-files-on-quit ()
+  "
+:SEE-ALSO `mon-htmlfontify-dir-purge-on-quit'.\n►►►"  
+(let* ((dir-map temporary-file-directory)
+         (tfd (directory-files dir-map t nil)))
+    (dolist (is-fl tfd tfd)
+      (unless (car (file-attributes is-fl))
+        (delete-file is-fl))))
+  (let ((thumbs-thumbsdir-max-size 0))
+    (thumbs-cleanup-thumbsdir))
+(when (file-directory-p doc-view-cache-directory)
+  (delete-file doc-view-cache-directory)))
+;;
+;; Purge the directory on quit.
+(when (and IS-MON-SYSTEM-P (file-directory-p *emacs2html-temp*))
+  (add-hook 'kill-emacs-hook 'mon-purge-emacs-temp-files-on-quit))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-03-23T22:58:12-04:00Z}#{10122} - by MON KEY>
@@ -166,7 +187,10 @@ Killing this buffer will run that buffers local `kill-buffer-hook'.\n
 ;;
 (with-current-buffer 
     (get-buffer-create *mon-post-load-hook-trigger-buffer*)
-  (add-hook 'kill-buffer-hook 'mon-purge-cl-symbol-buffers-on-load nil t))
+  (add-hook 'kill-buffer-hook 'mon-set-infopath nil t)
+  (add-hook 'kill-buffer-hook 'mon-purge-cl-symbol-buffers-on-load nil t)
+  (when (and IS-W32-P (fboundp 'mon-maximize-frame-w32))
+    (add-hook 'kill-buffer-hook 'mon-maximize-frame-w32)))
 ;;
 (eval-after-load "mon-utils"
   '(progn

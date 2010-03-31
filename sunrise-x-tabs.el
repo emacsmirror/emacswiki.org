@@ -63,7 +63,7 @@
 ;; Sunrise  panes.  It’s meant to be simple and to work nicely with Sunrise with
 ;; just a few tabs (up to 10‐15 per pane, maybe).
 
-;; This is version 1 $Rev: 260 $ of the Sunrise Commander Tabs Extension.
+;; This is version 1 $Rev: 270 $ of the Sunrise Commander Tabs Extension.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.
@@ -306,10 +306,15 @@
     (setq sr-tabs-labels-cache (append sr-tabs-labels-cache entry))
     label))
 
+(defun sr-tabs-trim-label (label)
+  "Remove all properties and trailing whitespace from the given string."
+  (replace-regexp-in-string "^\\s-+\\|\\s-+$"
+                            ""
+                            (substring-no-properties label)))
+
 (defun sr-tabs-redefine-label (name alias)
   "Allows to modify the pretty name (alias) of the label with the given name."
-  (let* ((alias (or alias ""))
-         (alias (replace-regexp-in-string "^\\s-+\\|\\s-+$" "" alias)))
+  (let* ((alias (sr-tabs-trim-label (or alias ""))))
     (if (string= "" alias)
         (error "Cancelled: invalid tab name")
       (progn
@@ -498,6 +503,62 @@
   (remove-hook 'sr-start-hook 'sr-tabs-start-once)
   (unintern 'sr-tabs-start-once))
 (add-hook 'sr-start-hook 'sr-tabs-start-once)
+
+;;; ============================================================================
+;;; Desktop support:
+
+(defun sr-tabs-desktop-save-buffer (desktop-dirname)
+  "Returns the additional data for saving the tabs of the current sunrise buffer
+  into a desktop file."
+  (let* ((left-tab (car (member (buffer-name) (assoc 'left sr-tabs))))
+         (left-label (cadr (assoc left-tab sr-tabs-labels-cache)))
+         (right-tab (car (member (buffer-name) (assoc 'right sr-tabs))))
+         (right-label (cadr (assoc right-tab sr-tabs-labels-cache))))
+    (delq
+     nil
+     (list
+      (if left-label (cons 'left-tab (sr-tabs-trim-label left-label)))
+      (if right-label (cons 'right-tab (sr-tabs-trim-label right-label)))))))
+
+(defun sr-tabs-desktop-restore-buffer (desktop-buffer-file-name
+                                       desktop-buffer-name
+                                       desktop-buffer-misc)
+  "Restores  all  the  tabs  in  a  Sunrise  (normal  or  VIRTUAL) buffer from a
+  description in a desktop file."
+  (let ((label-done nil))
+    (mapc (lambda (side)
+            (let* ((tab-symbol (intern (concat (symbol-name side) "-tab")))
+                   (name (buffer-name))
+                   (label (cdr (assoc tab-symbol desktop-buffer-misc)))
+                   (tab-set (assoc side sr-tabs)))
+              (when label
+                (setcdr tab-set (cons name (cdr tab-set)))
+                (unless label-done
+                  (sr-tabs-make-label name label)
+                  (setq label-done t)))))
+          '(left right))
+    (unless sr-tabs-on
+      (sr-tabs-engage))))
+
+(defun sr-tabs-reset-state ()
+  "Resets  some  environment  variables that control the behavior of tabs in the
+  Sunrise Commander (used for desktop support.)"
+  (setq sr-tabs-mode nil sr-tabs-labels-cache nil)
+  (mapc (lambda (x) (setcdr x nil)) sr-tabs)
+  nil)
+
+;; These append the previous functions to the generic desktop support in Sunrise:
+(add-to-list 'sr-desktop-save-handlers 'sr-tabs-desktop-save-buffer)
+(add-to-list 'sr-desktop-restore-handlers 'sr-tabs-desktop-restore-buffer)
+
+;; This activates the tabs support after desktop restoration:
+(add-hook
+ 'desktop-after-read-hook
+ (lambda ()
+   (unless (assq 'sr-tabs-on desktop-globals-to-clear)
+     (add-to-list 'desktop-globals-to-clear
+                  '(sr-tabs-on . (sr-tabs-reset-state))))))
+
 
 (provide 'sunrise-x-tabs)
 

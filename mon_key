@@ -55,6 +55,7 @@ The package mon-utils is the entry point which loads the rest of the system and 
 * Lisp:mon-get-freenode-lisp-logs -- Pull freenode logs for #lisp with wget
 * Lisp:mon-cifs-utils.el -- (MonCifsUtils) Provides utilities for mapping and mounting a CIFS domain using auth-source. Common Internet File System protocol, e.g. successor to the SMB (Server Message Block) protocol with the Samba Server.
 * Lisp:google-define-redux.el -- Provides extensions for Lisp:google-define.el
+* Lisp:google-define-redux-supplemental.el -- google-define-redux supplemental functions (avoid MON dependencies).
 * Lisp:mon-color-occur.el -- A patched version of Matsushita Akihisa color-cccur.el :SEE http://www.bookshelf.jp/elc/color-occur.el
 
 [:MON-DOC-UTILS]
@@ -201,7 +202,7 @@ defcustom hell :P ...
 ¦►►►► mon-eight-bit-raw-utils.el -- Not provided here yet.
 ¦¦►►►► naf-mode-sql-skeletons.el -- Not provided here. It is mostly a collection of SQL statement.
 ¦¦►►►► smith-poster-utils.el --  Not provided here.
-
+¦► mon-post-load-hooks.el
 </pre>
 
 [new:stepnem:2010-02-05 08:09 UTC]

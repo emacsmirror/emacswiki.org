@@ -96,6 +96,7 @@ Writing code that works on different versions of Emacs and XEmacs is Comparative
 
 == Emacs Lisp Tools and Tricks ==
 
+* FindFunc -- Find functions or variables.
 * AutomaticFileHeaders -- File headers that are automatically inserted and updated.
 * AutoRecompile - re-byte-compile Emacs lisp files.
 * CommonLispForEmacs -- How to use CommonLisp to program Emacs.

@@ -46,6 +46,7 @@
 ;; `mon-copy-file-dired-as-list', `mon-copy-file-dired-as-string',
 ;; `mon-get-ps2ascii', `mon-get-pdftotext', `mon-get-pdfinfo',
 ;; `mon-new-buffer-w-stamp', `mon-bind-nefs-photos-at-loadtime',
+;; `mon-dired-other-window'
 ;; FUNCTIONS:◄◄◄
 ;;
 ;; MACROS:
@@ -423,10 +424,24 @@ machine and the BUG'd system.\n
 ;;; :TEST-ME (call-interactively 'mon-local-url-for-bug)
 
 ;;; ==============================
+;;; :TODO fix command remapping in docstriing
+;;; :CREATED <Timestamp: #{2010-03-30T13:54:10-04:00Z}#{10132} - by MON KEY>
+(defun mon-dired-other-window ()
+  "Invoke dired with `default-directory' in other-window.\n
+:NOTE globaly bound to C-xd M-o in :FILE mon-keybindings.el.\n
+:SEE-ALSO `ido-dired', `mon-dired-copy-files-to-list',
+`mon-dired-copy-files-to-strings', `mon-dired-kill-files-to-list',
+`mon-dired-kill-files-to-strings', `mon-dired-nef-dir', `mon-dired-srt-alph',
+`mon-dired-srt-chrn', `mon-dired-srt-type', `mon-dired-srt-type-alph',
+`mon-dired-srt-type-chrn'.\n►►►"
+  (interactive)
+  (dired-other-window default-directory))
+
+;;; ==============================
 (defun mon-dired-srt-alph ()
   "Set ls switch to sort Dired direcotry alphebetically.\n
 :SEE-ALSO `mon-dired-srt-chrn', `mon-dired-srt-type', `mon-dired-srt-type',
-`mon-dired-srt-type-alph', `mon-dired-srt-type-chrn',
+`mon-dired-srt-type-alph', `mon-dired-srt-type-chrn', `mon-dired-other-window'
 `dired-insert-dirs-recursive', `dired-up-directory-this-buffer'.\n►►►"
   (interactive)
   (dired-sort-other "-la"))
@@ -435,7 +450,7 @@ machine and the BUG'd system.\n
 (defun mon-dired-srt-chrn ()
   "Set ls switch to sort Dired direcotry chronologically.\n
 :SEE-ALSO `mon-dired-srt-alph', `mon-dired-srt-type', `mon-dired-srt-type',
-`mon-dired-srt-type-alph', `mon-dired-srt-type-chrn',
+`mon-dired-srt-type-alph', `mon-dired-srt-type-chrn', `mon-dired-other-window',
 `dired-insert-dirs-recursive', `dired-up-directory-this-buffer'.\n►►►"
   (interactive)
   (dired-sort-other "-lt")) ;;mon-dired-srt-alph
@@ -444,7 +459,7 @@ machine and the BUG'd system.\n
 (defun mon-dired-srt-type ()
   "Set ls switch to sort Dired direcotry by type.\n
 :SEE-ALSO `mon-dired-srt-alph', `mon-dired-srt-chrn', `mon-dired-srt-type',
-`mon-dired-srt-type-alph', `mon-dired-srt-type-chrn',
+`mon-dired-srt-type-alph', `mon-dired-srt-type-chrn', `mon-dired-other-window',
 `dired-insert-dirs-recursive', `dired-up-directory-this-buffer'.\n►►►"
   (interactive)
   (dired-sort-other "-lX"))
@@ -453,7 +468,7 @@ machine and the BUG'd system.\n
 (defun mon-dired-srt-type-alph ()
   "Set ls switch to sort Dired direcotry by type -> alphabetically.\n
 :SEE-ALSO `mon-dired-srt-alph', `mon-dired-srt-chrn', `mon-dired-srt-type', 
-`mon-dired-srt-type', `mon-dired-srt-type-chrn',
+`mon-dired-srt-type', `mon-dired-srt-type-chrn', `mon-dired-other-window',
 `dired-insert-dirs-recursive', `dired-up-directory-this-buffer'.\n►►►"
   (interactive)
   (dired-sort-other "-lXa"))
@@ -462,7 +477,7 @@ machine and the BUG'd system.\n
 (defun mon-dired-srt-type-chrn ()
   "Set ls switch to sort Dired direcotry by type -> chronologically.\n
 :SEE-ALSO `mon-dired-srt-alph', `mon-dired-srt-chrn', `mon-dired-srt-type', 
-`mon-dired-srt-type', `mon-dired-srt-type-alph',
+`mon-dired-srt-type', `mon-dired-srt-type-alph', `mon-dired-other-window',
 `dired-insert-dirs-recursive', `dired-up-directory-this-buffer'.\n►►►"
   (interactive)
   (dired-sort-other "-lXt"))
@@ -476,8 +491,8 @@ machine and the BUG'd system.\n
   "Move up directory tree i.e. `../' to a new dired buffer killing current one.\n
 :ALIASED-BY `dired-up-here'
 :SEE-ALSO `mon-dired-srt-alph', `mon-dired-srt-type-alph', `mon-dired-srt-chrn',
-`mon-dired-srt-type', `mon-dired-srt-type', `mon-dired-srt-type-chrn'.
-`dired-insert-dirs-recursive'.\n►►►"
+`mon-dired-srt-type', `mon-dired-srt-type', `mon-dired-srt-type-chrn',
+`mon-dired-other-window', `dired-insert-dirs-recursive'.\n►►►"
   (interactive)
   (let ((buffer))
     (setq buffer (current-buffer))
@@ -494,7 +509,7 @@ machine and the BUG'd system.\n
   "In dired recursively inserts the subdirs of dir at point.\n
 :SEE-ALSO `mon-dired-srt-alph', `mon-dired-srt-type-alph', `mon-dired-srt-chrn',
 `mon-dired-srt-type', `mon-dired-srt-type', `mon-dired-srt-type-chrn',
-`dired-up-directory-this-buffer'.\n►►►"
+`mon-dired-other-window', `dired-up-directory-this-buffer'.\n►►►"
   (interactive (list (dired-get-filename)))
   (dired-maybe-insert-subdir dirname "-laR"))
 
@@ -708,28 +723,31 @@ When '+' is not added to directory name input is finished and function returns.\
 
 ;;; ==============================
 ;;; :COURTESY Thierry Volpiatto :HIS tv-utils.el :WAS `multi-read-name'
+;;; :MODIFICATIONS <Timestamp: #{2010-03-30T14:02:31-04:00Z}#{10132} - by MON KEY>
 (defun* mon-multi-read-name (&optional (fn 'read-string))
   "Prompt indefinely while a is `+' suffixed to read value.\n
 Return a list of all inputs in `var'.
 Accepts specification of an alternate input function to use.\n
+;;; :EXaMPLE (mon-multi-read-name)
 :SEE-ALSO `read-string', `read-directory-name'.\n►►►"
-  (labels ((multiread ()
-             (let ((stock)
-                   (str (funcall fn (cond ((eq fn 'read-string)
-                                           "String(add + to repeat): ")
-                                          ((eq fn 'read-directory-name)
-                                           "Directory(add + to repeat): ")
-                                          (t
-                                           "File(add + to repeat): ")))))
-               (push (replace-regexp-in-string "\+" "" str) stock)
-               (cond ((string-match "\+" str)
-                      (push (car stock) var)
-                      (multiread))
-                     (t
-                      (push (car stock) var)
-                      (nreverse var))))))
-    (let (var)
-      (multiread))))
+  (let ((mmrn-var (make-symbol "mmrn-var")))
+    (labels ((multiread ()
+               (let ((stock)
+                     (str (funcall fn (cond ((eq fn 'read-string)
+                                             "String(add + to repeat): ")
+                                            ((eq fn 'read-directory-name)
+                                             "Directory(add + to repeat): ")
+                                            (t
+                                             "File(add + to repeat): ")))))
+                 (push (replace-regexp-in-string "\+" "" str) stock)
+                 (cond ((string-match "\+" str)
+                        (push (car stock) mmrn-var) ;; var)
+                        (multiread))
+                       (t
+                        (push (car stock) mmrn-var);var)
+                        (nreverse mmrn-var))))));; var))))))
+      (let (mmrn-var)
+        (multiread)))))
 
 ;;; ==============================
 ;;; :COURTESY Thierry Volpiatto :HIS tv-utils.el :WAS `cat'
@@ -1425,7 +1443,7 @@ Unlike `mon-copy-file-path' path doesn't copy to file's path kill ring.\n
   (message "%s" buffer-file-name)
   (buffer-file-name)))
 ;;
-(make-obsolete 'mon-path 'mon-copy-file-path)
+(make-obsolete 'mon-path 'mon-copy-file-path "2010-03-30")
 ;;
 ;;; :TEST-ME (mon-path)
 ;;; :TEST-ME (mon-path t)
@@ -1478,7 +1496,7 @@ When INSERTP is non-nil or called with prefix arg insert path at point.\n
    (interactive)
    (mon-copy-file-path t))
 ;;
-(make-obsolete 'mon-insert-path 'mon-copy-file-path)
+(make-obsolete 'mon-insert-path 'mon-copy-file-path "2010-03-30")
 ;;
 ;;; :TEST-ME (mon-insert-file-path)
 
@@ -2025,7 +2043,8 @@ Return value includes those formatted with:
 Prompts for a directory using completions generated from
 `*nefs_photos_nefs-alist*'.\n
 :NOTE Use `naf-dired-image-dir' for extended dir options.\n
-:SEE-ALSO `mon-dired-nef-dir', `mon-nef-dir-big', `mon-nef-dir-converge',
+:SEE-ALSO `mon-dired-other-window', `mon-dired-nef-dir', `mon-nef-dir-big',
+`mon-nef-dir-converge',
 `mon-nef-dir-keep-3',`mon-nef-dir-fldr',`mon-nef-dir-conc-ranges',
 `mon-nef-dir-ranges',`mon-nef-dir-conc-dups',`mon-nef-dir-find-dups',
 `mon-nef-dir-rmv-empt'.\n►►►"

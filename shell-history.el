@@ -1,5 +1,5 @@
 ;;; shell-history.el --- integration with shell history
-;; $Id: shell-history.el,v 1.4 2010/03/26 06:33:08 rubikitch Exp $
+;; $Id: shell-history.el,v 1.5 2010/03/30 23:37:25 rubikitch Exp $
 
 ;; Copyright (C) 2008, 2009, 2010 rubikitch
 
@@ -49,6 +49,9 @@
 ;;; History:
 
 ;; $Log: shell-history.el,v $
+;; Revision 1.5  2010/03/30 23:37:25  rubikitch
+;; Fix for C-x C-m c
+;;
 ;; Revision 1.4  2010/03/26 06:33:08  rubikitch
 ;; Do not add same entry as previous entry to history.
 ;;
@@ -64,7 +67,7 @@
 
 ;;; Code:
 
-(defvar shell-history-version "$Id: shell-history.el,v 1.4 2010/03/26 06:33:08 rubikitch Exp $")
+(defvar shell-history-version "$Id: shell-history.el,v 1.5 2010/03/30 23:37:25 rubikitch Exp $")
 (eval-when-compile (require 'cl))
 
 (defvar shell-history-file
@@ -99,7 +102,8 @@
         (insert (format-time-string ": %s:0;" (current-time))))
       (insert entry "\n")
       ;; prevent from displaying message.
-      (write-region (point-min) (point-max) shell-history-file nil 'silently)
+      (let (coding-system-for-write)
+        (write-region (point-min) (point-max) shell-history-file nil 'silently))
       (set-visited-file-modtime (current-time))
       (set-buffer-modified-p nil))))
 
