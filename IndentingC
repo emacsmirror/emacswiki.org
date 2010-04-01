@@ -5,19 +5,19 @@ See also: TurnAllIndentingOff
 
 == CC mode for C, C++, Java ==
 
-The CC modes (C, C++, Java, etc.) have their own manual, the CC mode manual. Read it. It's good for you.
+The CC modes (C, C++, Java, etc.) have their own manual, the [http://cc-mode.sourceforge.net/html-manual/index.html CC mode manual]. Read it. It's good for you.
 
-If you just want to change the indent levels, set `c-basic-offset'. Here is an example for your ~/.emacs:
+If you just want to '''change the indentation level''', set `c-basic-offset':
 
-    (setq-default c-basic-offset 3)
+    (setq-default c-basic-offset 4)
 
-[CategoryCustomize Customizing] the variables may have strange effects ...
+Add it to your ##~/.emacs##.
 
-You can also set it within emacs: Options->Customize Emacs->Top-level Customization Group->Programming->Languages->C. Here, change `C Basic Offset'. This will only affect buffers opened after setting, not the ones already open.
+You can also set it within Emacs: Options -> Customize Emacs -> Top-level Customization Group -> Programming -> Languages -> C. Here, change `C Basic Offset' and save for future sessions. This will only affect buffers opened after setting, not the ones already open.
 
 == Different Styles ==
 
-Instead of just changing the basic offset, consider switching to a particular /style/. A style defines much more than just the basic offset. There are a number of predefined styles. Take a look at the variable `c-style-alist' to see a list of them.
+Instead of just changing the basic offset, consider switching to a particular '''style'''. A style defines much more than just the basic offset. There are a number of predefined styles. Take a look at the variable `c-style-alist' to see a list of them.
 
 '''You probably don't want the default style.''' This is how Emacs indents out of the box:
 

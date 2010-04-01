@@ -124,7 +124,7 @@ The environment has to be set up before devenv will build from the command line.
 Commands like..
 
 <pre>
-devenv SVIPRO/SVIPro/SVIPro.sln /project SVIPRO/SVIPro/SVIPro.vcproj /Config "Debug|x86" /Clean
+devenv Projects/MyProgram/Solution.sln /project Projects/MyProgram/Project.vcproj /Config "Debug|x86" /Clean
 </pre>
 
 ..can then be used in the shell buffer that is started by the command vc-x86-env. Obviously, paths may

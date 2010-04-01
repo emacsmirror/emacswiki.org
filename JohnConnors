@@ -7,12 +7,13 @@ I have posted my .emacs here for further reference. There ought to be a emacs pa
 [new]
 I guess you could just use OddmuseMode to save your ##.emacs## buffer to a wiki page; it would have to be a separate page, however. JohnFredCeeDotEmacs, for example. -- AlexSchroeder
 
+[new]
+Unfortunately I got an email from a technical director of a certain company asking me to obfuscate the page to remove any reference to them and their products. I hate being dragged into this. -- AlexSchroeder
+
 ----
 CategoryHomepage
 
 <pre>
-
-
 ;; WELCOME TO MY .EMACS ----------------------------------------
 
 (fset 'yes-or-no-p 'y-or-n-p)           ;replace y-e-s by y
@@ -273,7 +274,7 @@ Goes backward if ARG is negative; error if CHAR not found."
 (global-set-key "\C-h\C-w" 'wxhelp)
 (global-set-key "\C-h\C-o" 'show-oi-topic)
 
-(defconst ffa-c-style
+(defconst foo-c-style
   ;; Always indent c/c++ sources, never insert tabs
   '((c-tab-always-indent        . t)
     ;; Offset for line only comments
@@ -302,15 +303,15 @@ Goes backward if ARG is negative; error if CHAR not found."
                                    (knr-argdecl-intro . -)))
 ;;                                   (c-echo-syntactic-information-p . t)
 	)
-  "FFa C/C++ Programming Style")
+  "Foo C/C++ Programming Style")
 
-(c-add-style "ffa" ffa-c-style)
+(c-add-style "foo" foo-c-style)
 
 (add-hook 'c-mode-common-hook 
       (lambda ()
 		;; Do not check for old-style (K&R) function declarations;
 		;; this speeds up indenting a lot.
-		(c-set-style "ffa")
+		(c-set-style "foo")
 		(setq c-recognize-knr-p nil)	
 		(setq c-basic-offset 4)
 		(local-set-key [(control c) t] 'switch-cc-to-h)
@@ -377,7 +378,7 @@ Goes backward if ARG is negative; error if CHAR not found."
 
 (add-hook 'c++-mode-hook 
 	 (lambda ()
-		(c-set-style "ffa")
+		(c-set-style "foo")
 ;; automatic indent on return in cc-mode
 		(local-set-key "\r" 'newline-and-indent)
 		(local-set-key [(super k)] 'kill-c-scope)
@@ -467,7 +468,7 @@ Goes backward if ARG is negative; error if CHAR not found."
 		(insert-header-guard header-name))))
 
 ;; to do -- make this customizable? 
-(defvar *svi-pro-dir* "ffa_dev_ict")
+(defvar *svi-pro-dir* "foo_dev_ict")
 (defvar *svi-pro-branch* "BRANCH_DEV_ICT_PHASE_1")
 (defvar *svi-pro-branch-history* '("BRANCH_DEV_ICT_PHASE_1"))
 
@@ -477,7 +478,7 @@ Goes backward if ARG is negative; error if CHAR not found."
 	  (setq result (concat result "/" suffix)))
 	result))
 
-(setq ffap-c-path (list (concat (svi-pro-root "SVIPro") (svi-pro-root "cimages3d"))))
+(setq ffap-c-path (list (concat (svi-pro-root "Spro") (svi-pro-root "imagex"))))
 
 (defun update-svi-pro ()
   (cd (svi-pro-root))
@@ -487,7 +488,7 @@ Goes backward if ARG is negative; error if CHAR not found."
   (interactive)
   (setq *svi-pro-dir* (read-directory-name "Directory? " "D:/"))
   (setq *svi-pro-branch* (completing-read "Branch? " nil nil nil *svi-pro-branch-history*))
-  (setq ffap-c-path (list (concat (svi-pro-root "SVIPro") (svi-pro-root "cimages3d"))))
+  (setq ffap-c-path (list (concat (svi-pro-root "Spro") (svi-pro-root "imagex"))))
   (add-to-list '*svi-pro-branch-history* *svi-pro-branch*))
 
 
@@ -497,19 +498,19 @@ Goes backward if ARG is negative; error if CHAR not found."
 	(shell-command
 	 (concat 
 	  "find "  
-	  (svi-pro-root "SVIPRO") 
+	  (svi-pro-root "SPRO") 
 	  " -name \"*.h\" -o -name \"*.cpp\" | ectags --verbose -e -o "
-	  (svi-pro-root "SVIPRO/TAGS") 
+	  (svi-pro-root "SPRO/TAGS") 
 	  " --language-force=c++  --c++-kinds=cfnstunedm --extra=+q --options=d:/Experiments/ectags.cnf -L -&")))
 
-(defun tag-cimages3d ()
+(defun tag-imagex ()
   (interactive)
 	(shell-command
 	 (concat 
 	  "find "  
-	  (svi-pro-root "cimages3d")
+	  (svi-pro-root "imagex")
 	  " -name \"*.inl\" -name \"*.h\" -o -name \"*.cpp\" | ectags --verbose -e -o "
-	  (svi-pro-root "cimages3d/TAGS") 
+	  (svi-pro-root "imagex/TAGS") 
 	  " --language-force=c++  --c++-kinds=cfnstunedm --extra=+q --options=d:/Experiments/ectags.cnf -L -&")))
 
 
@@ -579,30 +580,30 @@ Goes backward if ARG is negative; error if CHAR not found."
 	    (concat (getenv "VCINSTALLDIR") "\\ATLMFC\\LIB"))))
 
 
-(defun build-cimages3d ()
+(defun build-imagex ()
   (interactive)
   (cd (svi-pro-root))
-  (shell-command "devenv  cimages3d\\3dlibs\\3dlibs.sln /Build \"Debug|Win32\"&"))
+  (shell-command "devenv  imagex\\3dlibs\\3dlibs.sln /Build \"Debug|Win32\"&"))
 
 (defun build-segy ()
   (interactive)
   (cd  (svi-pro-root))
   (shell-command "devenv  SEGY\\SEGY.sln /Build \"Debug|Win32\"&"))
 
-(defun build-svipro ()
+(defun build-spro ()
   (interactive)
   (cd (svi-pro-root))
-  (shell-command "devenv  SVIPRo\\SVIPro.sln /Build \"Debug|Win32\"&"))
+  (shell-command "devenv  Spro\\Spro.sln /Build \"Debug|Win32\"&"))
 
 (defun build-sviplus ()
   (interactive)
-  (cd (svi-pro-root "SVIPro"))
+  (cd (svi-pro-root "Spro"))
   (compile "devenv  SVIPlus\\SVIPlus.sln /Build \"Debug|Win32\"" t))
 
 
 (defun rebuild-sviplus ()
   (interactive)
-  (cd (svi-pro-root "SVIPro"))
+  (cd (svi-pro-root "Spro"))
   (compile "devenv  SVIPlus\\SVIPlus.sln /ReBuild \"Debug|Win32\"" t))
 
 
@@ -631,7 +632,7 @@ Goes backward if ARG is negative; error if CHAR not found."
 ;; needs to ask for root dir, config
 (defun run-attrib-test ()
   (interactive)
-  (cd "d:/ffa_dev_HEAD/cimages3d/3dlibs/vc8/x64/debug/")
+  (cd "d:/foo_dev_HEAD/imagex/3dlibs/vc8/x64/debug/")
   (let ((attrib-test
 		 (completing-read "Test: " 
 					 '(  ("arclength") ("arclength2D") ("complex") ("hilbert") ("fthilbert") ("pca") ("surfacein") ("fastrank") ("terrace") 	
@@ -641,7 +642,7 @@ Goes backward if ARG is negative; error if CHAR not found."
 						 ("vifreqdecomp2d") ("fftcomparison") ("gabor") ("ips") ("faultin") ("averagespectrum" ) 
 						 ( "jfc" ))
 					 nil t "radix2fft")))
-  (shell-command (concat "d:/ffa_dev/cimages3d/3dlibs/vc8/x64/debug/3dattribtest.exe " attrib-test "&") (generate-new-buffer "*test*"))))
+  (shell-command (concat "d:/foo_dev/imagex/3dlibs/vc8/x64/debug/3dattribtest.exe " attrib-test "&") (generate-new-buffer "*test*"))))
 
 
 (defun flatten (x)
@@ -659,7 +660,7 @@ Goes backward if ARG is negative; error if CHAR not found."
    (lambda (x) (string= (file-name-nondirectory x) fname))
    (all-included-files)))
 
-(defun edit-ffa-resource ()
+(defun edit-foo-resource ()
   (interactive)
   (let ((fname
 		 (if (equal (downcase (file-name-extension buffer-file-name)) "xrc")
@@ -719,13 +720,13 @@ Goes backward if ARG is negative; error if CHAR not found."
  '(browse-url-firefox-new-window-is-tab t)
  '(browse-url-firefox-program "D:\\\\Program Files (x86)\\\\Mozilla Firefox\\\\firefox.exe")
  '(c-basic-offset 4)
- '(c-default-style (quote ((c-mode . "ffa") (c++-mode . "ffa") (java-mode . "java") (awk-mode . "awk") (other . "gnu"))))
+ '(c-default-style (quote ((c-mode . "foo") (c++-mode . "foo") (java-mode . "java") (awk-mode . "awk") (other . "gnu"))))
  '(c-doc-comment-style (quote ((c-mode . autodoc) (c++-mode . autodoc) (java-mode . javadoc) (pike-mode . autodoc))))
  '(comint-password-prompt-regexp "\\(\\([Oo]ld \\|[Nn]ew \\|'s \\|login \\|Kerberos \\|UNIX \\| SMB \\|^\\)[Pp]assword\\( (again)\\)?\\|pass phrase\\|\\(Enter\\|Repeat\\|Bad\\) passphrase\\)\\(?:, try again\\)?\\(?: for [^:]+\\)?:\\s *\\'")
  '(cygwin-mount-cygwin-bin-directory "c://cygwin//bin//")
  '(cygwin-mount-table t)
  '(ecb-options-version "2.33beta1")
- '(ecb-source-path (quote (("d:/ffa_dev_ict" "ICT") ("c:/Documents and Settings/jconnors/Application Data" "home") (#("d:/Experiments" 0 14 (\.\.\. nil)) "Experiments") ("d:/wxWidgets-2.8.0-rc1" "wxWidgets") ("d:/OpenInventor" "OIV"))))
+ '(ecb-source-path (quote (("d:/foo_dev_ict" "ICT") ("c:/Documents and Settings/jconnors/Application Data" "home") (#("d:/Experiments" 0 14 (\.\.\. nil)) "Experiments") ("d:/wxWidgets-2.8.0-rc1" "wxWidgets") ("d:/OpenInventor" "OIV"))))
  '(global-semantic-idle-completions-mode nil nil (semantic-idle))
  '(grep-command "grep -n ")
  '(grep-find-command nil)
@@ -739,11 +740,11 @@ Goes backward if ARG is negative; error if CHAR not found."
  '(save-place t nil (saveplace))
  '(scroll-conservatively 1)
  '(scroll-step 1)
- '(semantic-default-c-path (quote ("d\\wxWidgets-2.8.0-rc1\\contrib\\include" "D:\\OpenInventor\\6.1\\VC8\\Win32\\OIV6.1\\include" "d:\\wxWidgets-2.8.0-rc1\\include" "d:\\ffa_dev\\SEGY" "d:\\ffa_dev\\cimages3d")))
+ '(semantic-default-c-path (quote ("d\\wxWidgets-2.8.0-rc1\\contrib\\include" "D:\\OpenInventor\\6.1\\VC8\\Win32\\OIV6.1\\include" "d:\\wxWidgets-2.8.0-rc1\\include" "d:\\foo_dev\\SEGY" "d:\\foo_dev\\imagex")))
  '(senator-minor-mode-hook nil)
  '(speedbar-use-images nil)
  '(tab-width 4)
- '(tags-table-list (quote ("d:/ffa_dev_ict/SVIPro/TAGS" "d:/ffa_dev_ict/cimages3d/TAGS")))
+ '(tags-table-list (quote ("d:/foo_dev_ict/Spro/TAGS" "d:/foo_dev_ict/imagex/TAGS")))
  '(tool-bar-mode nil)
  '(transient-mark-mode t)
  '(uniquify-buffer-name-style (quote forward) nil (uniquify))
@@ -758,10 +759,4 @@ Goes backward if ARG is negative; error if CHAR not found."
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
  '(default ((t (:stipple nil :background "black" :foreground "#00ff00" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 72 :width normal :family "droid sans mono")))))
-
-
-
-
 </pre>
-
-

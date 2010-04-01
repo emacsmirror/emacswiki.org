@@ -16,9 +16,9 @@ Here is a sample setup:
 
 This loads the libraries, tells ps-print to use the BDF fonts for
 everything but the latin fonts (since these are available on the
-printer), and it tells Emacs to use all the directories below
-c:/Emacs/intlfonts-1.1/ (substitute the directory where you installed
-the intlfonts package).
+printer), and it tells Emacs to use some of the directories below
+##/usr/local/src/intlfonts-1.2/## (substitute the directories you
+want to use from the *intlfonts* package).
 
 Note that the above works best if you are printing either latin texts,
 or texts requiring the BDF fonts.  For texts that require both, this

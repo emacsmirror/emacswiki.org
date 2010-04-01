@@ -1,0 +1,35 @@
+# -*- mode: snippet -*-
+# name: anything source
+# (emacswiki-post "anything-source.yasnippet")
+# Get from http://www.emacswiki.org/cgi-bin/wiki/download/anything-source.yasnippet
+# --
+(defvar anything-c-source-${1:name}
+  '((name . "${2:name}")
+    (init . anything-c-$1-init)
+$0    (candidates . anything-c-$1-candidates)
+    (candidates-in-buffer)
+    (type . ${3:type})
+    (action )
+    (display-to-real . anything-c-$1-display-to-real)
+    (real-to-display . anything-c-$1-real-to-display)
+    ${4:(delayed)}
+    ${5:(volatile)}
+    (persistent-action . anything-c-$1-persistent-action)
+    (persistent-help . ${7:help-string})))
+;; (anything 'anything-c-source-$1)
+
+(defun anything-c-$1-init ()
+  )
+
+(defun anything-c-$1-candidates ()
+  (with-current-buffer anything-current-buffer
+    ))
+
+(defun anything-c-$1-display-to-real (display)
+  )
+
+(defun anything-c-$1-real-to-display (real)
+  )
+
+(defun anything-c-$1-persistent-action (candidate)
+  )

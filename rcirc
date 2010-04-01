@@ -76,6 +76,7 @@ Please also consider visiting these pages in order to getting started:
 ; [[rcircAutoFillColumn]]: Have your rcirc windows dynamically set fill-column instead of always being too long or too short
 ; [[rcircNotifyMode]]: maintain an *rcirc-notify* buffer in rcirc-notify-mode (RET to follow notification to buffer of origin, in the same window, for example)
 ; [[rcircGroupMode]]: propose an *rcirc-groups* buffer ala gnus *Group*, with refresh and catchup options (and RET to follow), in order to manage notifications in rcirc
+; [[rcircJoinRestrictedChannel]]: how to automatically join a restricted channel
 
 ==Related stuff that might be of interest==
 

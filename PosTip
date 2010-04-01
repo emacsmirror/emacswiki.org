@@ -212,7 +212,11 @@ The function `pos-tip-show-no-propertize' passes a `foreground-color' property t
 Is this a real bug? or is there any better solution? -- SeungcheolJung
 
 [new]
-: Hmm... I can't reproduce such problem. Can you describe more detail? Anyway, your solution isn't good, because it overrides the faces of STRING and `pos-tip-show-no-propertize' always shows tooltip text with `default' face.
+: Hmm... I can't reproduce such problem. Can you describe more detail? Anyway, your solution isn't good, because it overrides the faces of STRING and `pos-tip-show-no-propertize' always shows tooltip text with `default' face. -- [[irie]]
 
 [new]
 :: Sorry for disturbing you. It works fine when I launch Emacs with `-q'... I'm not sure what other elisps mess up it.
+:: It seems that `foreground-color' in `default-frame-alist' affects foreground color of tooltips made by `x-show-tip'. Am I right? -- SeungcheolJung
+
+[new]
+::: Thanks, I confirmed it and released new version in which the problem is fixed. -- [[irie]]

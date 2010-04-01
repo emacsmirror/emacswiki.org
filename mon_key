@@ -46,7 +46,6 @@ The package mon-utils is the entry point which loads the rest of the system and 
 * Lisp:mon-boxcutter.el -- For initializing w32 screen captures from Emacs using Matthew D. Rasmussen's Boxcutter screen-capture executables: boxcutter-fs.exe and boxcutter.exe
 * Lisp:mon-color-utils.el -- Provides an assembled set of routines for manipulations/examinations of 'color'.
 * Lisp:mon-mysql-utils.el (MySqlHelp) -- Provides interactive procedures for stripping content from MySQL query result tables.  Also, provides an alist of MySQL help categories and topics and a rudimentary completion functionality for accessing MySQL's `mysql' client help facility.
-* Lisp:mon-rename-image-utils-supplemental.el --
 * Lisp:mon-url-utils.el -- Provides utilities for interactively calling URL data lookups and for in
 ;;; buffer modification of web/internet scrapes.
 * Lisp:mon-jg-directory-creator.el -- utils for massive directory hierarchy creation.
@@ -57,7 +56,8 @@ The package mon-utils is the entry point which loads the rest of the system and 
 * Lisp:google-define-redux.el -- Provides extensions for Lisp:google-define.el
 * Lisp:google-define-redux-supplemental.el -- google-define-redux supplemental functions (avoid MON dependencies).
 * Lisp:mon-color-occur.el -- A patched version of Matsushita Akihisa color-cccur.el :SEE http://www.bookshelf.jp/elc/color-occur.el
-
+* Lisp:mon-rename-image-utils-supplemental.el --
+* Lisp:mon-css-color.el -- This is css-color.el version "0.03" of 2008 e.g. CssColor without NxhtmlMode dependencies.
 [:MON-DOC-UTILS]
 === :MON-DOC-UTILS ===
 

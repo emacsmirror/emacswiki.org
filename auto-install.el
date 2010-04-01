@@ -1,4 +1,5 @@
 ;;; auto-install.el --- Auto install elisp file
+;; $Id: auto-install.el,v 1.31 2010/04/01 03:43:17 rubikitch Exp $
 
 ;; Filename: auto-install.el
 ;; Description: Auto install elisp file
@@ -8,9 +9,7 @@
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Copyright (C) 2009, rubikitch, all rights reserved.
 ;; Created: 2008-12-11 13:56:50
-;; Version: $Revision: 1.27 $
-;; Last-Updated: [2010/03/26 08:44]
-;;           By: rubikitch
+;; Version: $Revision: 1.31 $
 ;; URL: http://www.emacswiki.org/emacs/download/auto-install.el
 ;; Keywords: auto-install
 ;; Compatibility: GNU Emacs 22 ~ 23
@@ -25,7 +24,7 @@
 ;;   `url-util', `url-vars'.
 ;;
 
-(defvar auto-install-version "$Id: auto-install.el,v 1.27 2010/03/29 07:36:39 rubikitch Exp $")
+(defvar auto-install-version "$Id: auto-install.el,v 1.31 2010/04/01 03:43:17 rubikitch Exp $")
 ;;; This file is NOT part of GNU Emacs
 
 ;;; License
@@ -88,6 +87,8 @@
 ;;    Install Compatibility commands for install-elisp.el users.
 ;;  `auto-install-batch'
 ;;    Batch install many libraries in some extension.
+;;  `auto-install-batch-edit'
+;;    Edit auto-install-batch-list.el
 ;;  `auto-install-buffer-diff'
 ;;    View different between old version.
 ;;  `auto-install-buffer-save'
@@ -132,7 +133,7 @@
 ;;    default = nil
 ;;  `auto-install-batch-list'
 ;;    This list contain packages information for batch install.
-;;    default = (quote (("icicles" 21 10 ...) ("auto-complete development version" nil nil ...) ("anything" nil nil ...) ("sdcv" nil nil ...) ("lazy-search" nil nil ...) ...))
+;;    default = nil
 
 ;;; Tips:
 ;;
@@ -274,6 +275,19 @@
 ;;; Change log:
 ;;
 ;; $Log: auto-install.el,v $
+;; Revision 1.31  2010/04/01 03:43:17  rubikitch
+;; added RCS Id: tag
+;;
+;; Revision 1.30  2010/04/01 03:42:34  rubikitch
+;; document typo
+;;
+;; Revision 1.29  2010/04/01 03:28:39  rubikitch
+;; New command: `auto-install-batch-edit'
+;;
+;; Revision 1.28  2010/04/01 03:10:38  rubikitch
+;; The real value of `auto-install-batch-list' is moved to
+;; auto-install-batch-list.el to split program and data.
+;;
 ;; Revision 1.27  2010/03/29 07:36:39  rubikitch
 ;; Stupid bug fix in auto-install-use-wget
 ;;
@@ -592,85 +606,7 @@ Nil means no confirmation is needed."
   :group 'auto-install)
 
 (defcustom auto-install-batch-list
-  '(
-    ;; Icicles.
-    ("icicles" 21 10
-     (
-      "http://www.emacswiki.org/emacs/download/icicles.el"      ; Main library
-      "http://www.emacswiki.org/emacs/download/icicles-chg.el"  ; Change logs
-      "http://www.emacswiki.org/emacs/download/icicles-cmd1.el" ; Top-level Icicles commands, part 1
-      "http://www.emacswiki.org/emacs/download/icicles-cmd2.el" ; Top-level Icicles commands, part 2
-      "http://www.emacswiki.org/emacs/download/icicles-doc1.el" ; Doc, part 1
-      "http://www.emacswiki.org/emacs/download/icicles-doc2.el" ; Doc, part 2
-      "http://www.emacswiki.org/emacs/download/icicles-face.el" ; Faces
-      "http://www.emacswiki.org/emacs/download/icicles-fn.el"   ; Non-interactive functions
-      "http://www.emacswiki.org/emacs/download/icicles-mac.el"  ; Macros
-      "http://www.emacswiki.org/emacs/download/icicles-mcmd.el" ; Minibuffer commands
-      "http://www.emacswiki.org/emacs/download/icicles-mode.el" ; Icicle (Icy) mode
-      "http://www.emacswiki.org/emacs/download/icicles-opt.el"  ; User options
-      "http://www.emacswiki.org/emacs/download/icicles-var.el"  ; Internal variables
-      "http://www.emacswiki.org/emacs/download/lacarte.el"      ; Menu-bar access from keyboard
-      "http://www.emacswiki.org/emacs/download/icomplete+.el"   ; Enhancements to `icomplete.el'
-      "http://www.emacswiki.org/emacs/download/hexrgb.el"       ; Color manipulation
-      "http://www.emacswiki.org/emacs/download/synonyms.el"     ; Look up synonyms
-      ))
-    ;; AutoComplete development version.
-    ("auto-complete development version" nil nil
-     (
-      "http://github.com/m2ym/auto-complete/raw/master/popup.el"
-      "http://github.com/m2ym/auto-complete/raw/master/auto-complete.el"
-      "http://github.com/m2ym/auto-complete/raw/master/auto-complete-config.el"
-      ))
-    ;; Anything
-    ("anything" nil nil
-     (
-      "http://www.emacswiki.org/emacs/download/anything.el"        ; Main library
-      "http://www.emacswiki.org/emacs/download/anything-config.el" ; Configuration for anything.el
-      "http://www.emacswiki.org/emacs/download/anything-match-plugin.el" ; Matching algorithm humanely
-      "http://www.emacswiki.org/emacs/download/anything-migemo.el" ; Migemo extension for Japanese
-      "http://www.emacswiki.org/emacs/download/anything-complete.el" ; Completion
-      "http://www.emacswiki.org/emacs/download/anything-show-completion.el" ; Show completion prettily
-      "http://www.emacswiki.org/emacs/download/anything-auto-install.el" ; auto-install extension
-      "http://www.emacswiki.org/emacs/download/descbinds-anything.el" ; describe-key replacement
-      "http://www.emacswiki.org/emacs/download/anything-grep.el" ; Grep with anything
-      "http://www.emacswiki.org/emacs/download/anything-startup.el" ; Startup file
-      ))
-    ;; SDCV (Interface for StartDict console version)
-    ("sdcv" nil nil
-     (
-      "http://www.emacswiki.org/emacs/download/showtip.el" ; Basic tooltip show library
-      "http://www.emacswiki.org/emacs/download/sdcv.el"    ; sdcv.el
-      ))
-    ;; Lazy search
-    ("lazy-search" nil nil
-     (
-      "http://www.emacswiki.org/emacs/download/one-key.el"     ; Basic library for lazy-search.el
-      "http://www.emacswiki.org/emacs/download/lazy-search.el" ; Main library
-      ))
-    ;; PHP completion
-    ("php-completion" nil nil
-     (
-      "http://www.emacswiki.org/emacs/download/anything.el"
-      "http://www.emacswiki.org/emacs/download/anything-match-plugin.el"
-      "http://www.emacswiki.org/emacs/download/anything-show-completion.el"
-      "http://www.emacswiki.org/emacs/download/php-completion.el"
-      ))
-    ;; Perl completion
-    ("perl-completion" nil nil
-     (
-      "http://www.emacswiki.org/emacs/download/anything.el"
-      "http://www.emacswiki.org/emacs/download/anything-match-plugin.el"
-      "http://www.emacswiki.org/emacs/download/anything-show-completion.el"
-      "http://www.emacswiki.org/emacs/download/perl-completion.el"
-      ))
-    ;; Text Translator
-    ("text translator" nil nil
-     (
-      "http://www.emacswiki.org/emacs/download/text-translator.el"
-      "http://www.emacswiki.org/emacs/download/text-translator-vars.el"
-      "http://www.emacswiki.org/emacs/download/text-translator-load.el"
-      ))
-    )
+  nil
   "This list contain packages information for batch install.
 
 Have four arguments per list:
@@ -679,10 +615,19 @@ Second argument is delay time for batch install.
 Third argument is libraries number limit in delay time.
 Fourth argument is libraries url list.
 
-Anyone can add information in this list for batch install."
+If you want to add files, please edit auto-install-batch-list.el in EmacsWiki.
+Use M-x `auto-install-batch-edit'. "
   :group 'auto-install)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Variable ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defvar auto-install-batch-list-internal nil
+  "The real value of `auto-install-batch-list'. ")
+
+(defvar auto-install-batch-list-el-url
+  "http://www.rubyist.net/~rubikitch/archive/auto-install-batch-list.el"
+  "The url of auto-install-batch-list.el.
+It is downloaded and evaluated just after M-x `auto-install-batch'. ")
+
 (defvar auto-install-download-buffer nil
   "The download buffer used by `url-retrieve'.
 This variable is always buffer-local.")
@@ -877,6 +822,27 @@ install-elisp-from-gist      = %s"
   "Batch install many libraries in some extension.
 EXTENSION-NAME is extension name for batch install."
   (interactive)
+  (if (and auto-install-batch-list-internal extension-name)
+      (auto-install-batch-real extension-name)
+    (auto-install-download
+     auto-install-batch-list-el-url
+     (lambda (buf)
+       (with-current-buffer buf
+         (eval-buffer)
+         (run-at-time 0 nil 'auto-install-batch-real))))))
+
+(defun auto-install-batch-edit ()
+  "Edit auto-install-batch-list.el"
+  (interactive)
+  (cond ((fboundp 'yaoddmuse-edit)
+         (yaoddmuse-edit "EmacsWiki" "auto-install-batch-list.el"))
+        ((fboundp 'oddmuse-edit)
+         (oddmuse-edit "EmacsWiki" "auto-install-batch-list.el"))
+        (t
+         (browse-url "http://www.emacswiki.org/emacs/?action=edit;id=auto-install-batch-list.el"))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Utilities Functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun auto-install-batch-real (&optional extension-name)
   (let (extension-info-list)
     ;; Get extension information list.
     (setq extension-info-list
@@ -884,8 +850,8 @@ EXTENSION-NAME is extension name for batch install."
                   ;; Get information list from give extension name.
                   extension-name
                   ;; Otherwise completion from user select.
-                  (completing-read "Extension name: " (mapcar 'car auto-install-batch-list)))
-                 auto-install-batch-list))
+                  (completing-read "Extension name: " (mapcar 'car auto-install-batch-list-internal)))
+                 auto-install-batch-list-internal))
     (if extension-info-list
         ;; Install extension libraries.
         (let ((extension-delay-time (nth 1 extension-info-list))
@@ -925,7 +891,6 @@ EXTENSION-NAME is extension name for batch install."
       ;; for libraries that user given.
       (message "Haven't install information for `%s'." extension-name))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Utilities Functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun auto-install-download (url &optional handle-function)
   "Download elisp file from URL.
 HANDLE-FUNCTION for handle download content,

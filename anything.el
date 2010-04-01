@@ -1,5 +1,5 @@
 ;;;; anything.el --- open anything / QuickSilver-like candidate-selection framework
-;; $Id: anything.el,v 1.275 2010/03/31 02:46:09 rubikitch Exp $
+;; $Id: anything.el,v 1.280 2010/04/01 02:22:22 rubikitch Exp $
 
 ;; Copyright (C) 2007              Tamas Patrovics
 ;;               2008, 2009, 2010  rubikitch <rubikitch@ruby-lang.org>
@@ -180,6 +180,22 @@
 
 ;;; (@* "INCOMPATIBLE CHANGES")
 
+;; v1.277
+;; 
+;;   Default setting of `anything-save-configuration-functions' is changed.
+;;   Anything saves/restores window configuration instead of frame configuration now.
+;;   The default is changed because flickering is occurred in some environment.
+;;   
+;;   If you want to save and restore frame configuration, set this variable to
+;;    '(set-frame-configuration . current-frame-configuration)
+;;
+;; v1.276
+;;
+;;   Fitting frame is disabled by default, because some flickering occurred
+;;   in some environment.  To enable fitting, set both
+;;   `anything-inhibit-fit-frame-flag' and `fit-frame-inhibit-fitting' to
+;;   nil.
+;;
 ;; v1.114
 ;;
 ;;   `anything-attr' returns nil when the source attribute is defined
@@ -188,6 +204,16 @@
 ;;   defined.
 
 ;;; (@* "Tips")
+
+;;
+;; If you want to create anything sources, yasnippet would help you.
+;; http://yasnippet.googlecode.com/
+;;
+;; Then get the snippet from
+;; http://www.emacswiki.org/cgi-bin/wiki/download/anything-source.yasnippet
+;;
+;; Put it in ~/.emacs.d/plugins/yasnippet/snippets/text-mode/emacs-lisp-mode/
+
 
 ;;
 ;; `anything-interpret-value' is useful function to interpret value
@@ -349,6 +375,28 @@
 
 ;; (@* "HISTORY")
 ;; $Log: anything.el,v $
+;; Revision 1.280  2010/04/01 02:22:22  rubikitch
+;; `anything': new argument ANY-KEYMAP
+;;
+;; Revision 1.279  2010/03/31 09:22:58  rubikitch
+;; Add tips of yasnippet for source creators (no code change)
+;;
+;; Revision 1.278  2010/03/31 09:01:08  rubikitch
+;; Added info to INCOMPATIBLE CHANGES
+;;
+;; Revision 1.277  2010/03/31 08:56:53  rubikitch
+;; Anything saves/restores window configuration instead of frame configuration now.
+;; The default is changed because flickering is occurred in some environment.
+;;
+;; If you want to save and restore frame configuration, set this variable to
+;;  '(set-frame-configuration . current-frame-configuration)
+;;
+;; Revision 1.276  2010/03/31 08:52:50  rubikitch
+;; Fitting frame is disabled by default, because some flickering occurred
+;; in some environment.  To enable fitting, set both
+;; `anything-inhibit-fit-frame-flag' and `fit-frame-inhibit-fitting' to
+;; nil.
+;;
 ;; Revision 1.275  2010/03/31 02:46:09  rubikitch
 ;; (defvaralias 'anything-attributes 'anything-additional-attributes)
 ;;
@@ -1245,7 +1293,7 @@
 
 ;; ugly hack to auto-update version
 (defvar anything-version nil)
-(setq anything-version "$Id: anything.el,v 1.275 2010/03/31 02:46:09 rubikitch Exp $")
+(setq anything-version "$Id: anything.el,v 1.280 2010/04/01 02:22:22 rubikitch Exp $")
 (require 'cl)
 
 ;; (@* "User Configuration")
@@ -1619,9 +1667,12 @@ This flag makes `anything' a bit faster with many sources.")
   "`anything-buffer' of previously `anything' session.")
 
 (defvar anything-save-configuration-functions
-  '(set-frame-configuration . current-frame-configuration)
-  "If you hate flickering, set this variable to
- '(set-window-configuration . current-window-configuration)
+  '(set-window-configuration . current-window-configuration)
+  "If you want to save and restore frame configuration, set this variable to
+ '(set-frame-configuration . current-frame-configuration)
+
+Older version saves/restores frame configuration, but the default is changed now,
+because flickering is occurred in some environment.
 ")
 
 (defvar anything-persistent-action-use-special-display nil
@@ -1657,6 +1708,13 @@ If nil, use default `mode-line-format'.")
   "Detailed help message string for `anything'.")
 
 (put 'anything 'timid-completion 'disabled)
+
+(defvar anything-inhibit-fit-frame-flag t
+  "If non-nil, inhibit fitting anything frame to its buffer.
+It is nil by default because some flickering occurred in some environment.
+
+To enable fitting, set both `anything-inhibit-fit-frame-flag' and
+`fit-frame-inhibit-fitting' to nil.")
 
 ;; (@* "Internal Variables")
 (defvar anything-test-candidate-list nil)
@@ -2020,7 +2078,7 @@ This function allows easy sequencing of transformer functions."
 (defvar anything-buffers nil
   "All of `anything-buffer' in most recently used order.")
 
-(defun anything (&optional any-sources any-input any-prompt any-resume any-preselect any-buffer)
+(defun anything (&optional any-sources any-input any-prompt any-resume any-preselect any-buffer any-keymap)
   "Select anything. In Lisp program, some optional arguments can be used.
 
 Note that all the optional arguments are prefixed because of
@@ -2056,6 +2114,10 @@ already-bound variables. Yuck!
 - ANY-BUFFER
 
   `anything-buffer' instead of *anything*.
+
+- ANY-KEYMAP
+
+  `anything-map' for current `anything' session.
 "
   ;; TODO more document
   (interactive)
@@ -2068,7 +2130,8 @@ already-bound variables. Yuck!
               anything-quit anything-follow-mode
               (case-fold-search t)
               (anything-buffer (or any-buffer anything-buffer))
-              (anything-sources (anything-normalize-sources any-sources)))
+              (anything-sources (anything-normalize-sources any-sources))
+              (anything-map (or any-keymap anything-map)))
           (anything-initialize-1 any-resume any-input)
           (anything-hooks 'setup)
           (if (eq any-resume t)
@@ -3044,9 +3107,12 @@ UNIT and DIRECTION."
 
 (defun anything-maybe-fit-frame ()
   "Fit anything frame to its buffer, and put it at top right of display.
- To inhibit fitting, set `fit-frame-inhibit-fitting-flag' to t.
- You can set user options `fit-frame-max-width-percent' and
- `fit-frame-max-height-percent' to control max frame size."
+
+It is disabled by default because some flickering occurred in some environment.
+To enable fitting, set both `anything-inhibit-fit-frame-flag' and
+ `fit-frame-inhibit-fitting' to nil.
+You can set user options `fit-frame-max-width-percent' and
+`fit-frame-max-height-percent' to control max frame size."
   (declare (warn (unresolved 0)))
   (when (and (require 'fit-frame nil t)
              (boundp 'fit-frame-inhibit-fitting-flag)

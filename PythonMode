@@ -358,6 +358,11 @@ virtual environments, but this is largely untested.
 
 == Using flymake with pylint ==
 
+[new]
+Please note that pylint now comes with an executable "epylint" that is meant to be the interface to Emacs.
+[new:Anonymous:2010-03-31 15:16 UTC]
+
+
 The flymake mode in Emacs 22 does not understand Python, but it can be
 made to work with [http://www.logilab.org/projects/pylint pylint].  To
 do this, first you'll need to create a script somewhere along your

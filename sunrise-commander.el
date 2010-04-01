@@ -130,7 +130,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 270 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 271 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.  I  have  also  received
@@ -506,6 +506,7 @@ substitution may be about to happen."
         C-c C-n ....... execute find-name-dired in Sunrise VIRTUAL mode
         C-c C-g ....... execute find-grep-dired in Sunrise VIRTUAL mode
         C-c C-l ....... execute locate in Sunrise VIRTUAL mode
+        C-c / ......... narrow the contents of the current pane using fuzzy matching
         C-c C-r ....... browse list of recently visited files (requires recentf)
         C-c C-c ....... [after find, locate or recent] dismiss virtual buffer
         ; ............. follow file (go to same directory as selected file)
@@ -856,6 +857,7 @@ automatically:
 (define-key sr-mode-map "\C-c\C-n"            'sr-find-name)
 (define-key sr-mode-map "\C-c\C-g"            'sr-find-grep)
 (define-key sr-mode-map "\C-c\C-l"            'sr-locate)
+(define-key sr-mode-map "\C-c/"               'sr-fuzzy-narrow)
 (define-key sr-mode-map "\C-c\C-r"            'sr-recent-files)
 (define-key sr-mode-map "\C-c\C-d"            'sr-recent-directories)
 (define-key sr-mode-map "\C-c\C-v"            'sr-pure-virtual)
@@ -2548,6 +2550,42 @@ or (c)ontents? ")
    (sr-virtual-mode)
    (sr-keep-buffer)
    (kill-buffer "*Locate*")))
+
+(defun sr-fuzzy-narrow ()
+  "Interactively  narrows the contents of the current pane using fuzzy matching:
+  press Delete or Backspace to revert buffer to its previous state and Return or
+  C-g to exit and accept the current narrowed state."
+  (interactive)
+  (when sr-running
+    (sr-beginning-of-buffer)
+    (dired-change-marks ?* ?\t)
+    (let ((stack nil) (filter "") (regex "") (next-char nil) (matches nil))
+      (setq next-char (read-char "Fuzzy narrow: "))
+      (while next-char
+        (cond ((memq next-char '(?\n ?\r))
+               (setq next-char nil))
+              ((memq next-char '(?\b ?\d))
+               (when (eq 'sr-virtual-mode major-mode)
+                 (dired-undo)
+                 (setq next-char nil))
+               (sr-revert-buffer)
+               (setq stack (cdr stack) filter (caar stack) regex (cdar stack))
+               (unless stack (setq next-char nil)))
+              (t
+               (progn
+                 (setq filter (concat filter (char-to-string next-char))
+                       regex (concat regex "[^" (char-to-string next-char) "]*")
+                       stack (cons (cons filter regex) stack)))))
+        (when next-char
+          (setq matches (dired-mark-files-regexp (concat "^" regex "$")))
+          (if matches
+              (dired-do-kill-lines)
+            (progn
+              (message "Sunrise: Nothing left to filter out!")
+              (setq stack (cdr stack) filter (caar stack) regex (cdar stack))
+              (sit-for 1)))
+          (setq next-char (read-char (concat "Fuzzy narrow: " filter))))))
+    (dired-change-marks ?\t ?*)))
 
 (defun sr-recent-files ()
   "Displays the history of recent files maintained by recentf in sunrise virtual

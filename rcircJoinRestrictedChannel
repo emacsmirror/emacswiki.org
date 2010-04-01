@@ -1,0 +1,13 @@
+If you want to join #emacs-ops, you need to be *identified* to !NickServ. If you put the channel on to your `rcirc-server-alist', there's a race condition: Sometimes joining the channel will work, sometimes it will not. It will only work if the authentication information from `rcirc-authinfo' gets sent faster than the channel is joined.
+
+There are two solutions to this:
+
+# On some IRC servers, we could use our !NickServ password as the _server_ password when joining; this doesn't work in rcirc as distributed with Emacs 23.1 -- but a patch has been sent.
+# We could delay sending the join request. The code below does just that.
+
+{{{
+(defadvice rcirc-handler-JOIN (after rcirc-handler-JOIN-emacs-ops activate)
+  "Automatically join #emacs-ops if we join #emacs."
+  (when (string= (car args) "#emacs")
+    (rcirc-send-string process (concat "JOIN " "#emacs-ops"))))
+}}}

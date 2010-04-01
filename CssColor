@@ -22,3 +22,7 @@ cycling when at the end.
 ==Download==
 
 Css-color.el is now part of [NxhtmlMode nXhtml].
+
+== CSS Color sans nXhtml ==
+
+* Lisp:mon-css-color.el -- This is css-color.el version "0.03" of 2008 e.g. CssColor without the NxhtmlMode dependencies. This library is required for use with Lisp:mon-rename-image-utils.el if/when nXhtml's and it's css-color.el is not provided/required/desired.

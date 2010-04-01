@@ -66,6 +66,20 @@ excelsior, modified by Debian).  The font-locking is also a LOT better.
 Overall, this is a major improvement, so I hope this makes into Emacs
 proper soon!
 
+== CSS Extensions == 
+
+Niels Giesen offers some CSS related utils:
+* css-check.el
+* css-complete.el
+
+<pre>
+git://github.com/pft/elisp-assorted.git
+</pre>
+http://pft.github.com/
+
+Niels Giesen also appears to have been the original author of css-color.el CssColor which has been obsorbed by NxhtmlMode. It is available in an older form as:
+
+* Lisp:mon-css-color.el --- This is css-color.el version "0.03" of 2008 without the NxhtmlMode dependencies.
 
 ----
 MarkupModes,

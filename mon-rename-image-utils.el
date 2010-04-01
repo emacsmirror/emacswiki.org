@@ -1,354 +1,446 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;-*- mode: EMACS-LISP; -*-
-;;-*- mode: EMACS-LISP; -*-
-;;; This is mon-rename-image-utils.el
+;;; mon-rename-image-utils.el --- utility fncns for image manipulation
+;; -*- mode: EMACS-LISP; -*-
+
 ;;; ================================================================
-;;; DESCRIPTION:
-;;; mon-rename-image-utils.elprovides utility functions for working with images
-;;; and EmacsImageManipulation.
-;;;
-;;; EXTRACT CSS COLOR FROM IMAGES:
-;;;  The Image-Color->CSS Extraction routines in this file are:
-;;; `mon-cln-img-magic-hex'
-;;; `mon-get-ebay-img-css'
-;;; `mon-get-ebay-img-name-to-col'
-;;; `mon-get-ebay-css-pp-region-to-file'
-;;; `mon-get-ebay-css-pp'
-;;; `mon-insert-css-colors'
-;;;
-;;; This is a novel series of procedures which extract the most common colors in
-;;; an image and spit those out to a new buffer as CSS hex values. They are
-;;; useful (for example) for generation of per page CSS color schemes according
-;;; to a particular image or set of images.  For example, I have a set of three
-;;; images that I would like to use in an eBay auction listing and I would like
-;;; to build a one time color scheme/style for that listing according the colors
-;;; common to those three images.
-;;;
-;;; Another use for these routines, is for identifying an appropriate color for
-;;; watermarking an image(s).
-;;;
-;;; USE OF THE PROVIDED UTILITY:
-;;; The bulk of this work is performed with `mon-get-ebay-img-css'.  This is
-;;; essentially inlined elisp image-magik  script which analyzes the images by: 
-;;; Reducing-image-size -> Posterizing-image -> Extracting-image-colors
-;;;
-;;; The basic routine is as follows: Evaluating: (mon-get-ebay-css-pp)
-;;;
-;;; In the directory or buffer in directory for example:
-;;; "/NEFS_PHOTOS/Nef_Drive2/EBAY/BMP-Scans/e1002/BMP"
-;;;
-;;; Where that directory originally contained following .bmps: 
-;;; e1002-0.bmp
-;;; e1002-1.bmp
-;;; e1002-2.bmp
-;;; e1002-3.bmp 
-;;; e1002-4.bmp
-;;; e1002-5.bmp
-;;;
-;;; These are converted to low resolution .pngs: e1002-0.bmp -> e1002-0.png
-;;; e1002-1.bmp -> e1002-1.png
-;;; e1002-2.bmp -> e1002-2.png
-;;; e1002-3.bmp -> e1002-3.png
-;;; e1002-4.bmp -> e1002-4.png
-;;; e1002-5.bmp -> e1002-5.png
-;;;
-;;; Don't worry, the .bmps aren't destroyed! The .png's are _new_ file
-;;; instances.
-;;;
-;;; Next, an image-magick posterization routine is performed on the .png's.  The
-;;; output of this posterization is uniquified to 16 colors and returned as
-;;; text.  The uniquified text output is then cleaned up in a temp buffer.  This
-;;; is written to a file "BMP-hex-colors" in the current directory.  A new
-;;; buffer is opened which displays the 16 most common colors for each of the
-;;; .bmps->.png conversions.  The display presented is as as a per image
-;;; columnized display and leverages [[css-color.el]] for additional
-;;; functionality to allow tweaking the CSS values.
-;;;
-;;; CSS-EXTRACTION SCREENSHOTS: 
-;;; (URL `http://www.emacswiki.org/emacs/BMP-hex-colors-screenshot')
-;;; [picture: css color extraction buffer using `mon-get-ebay-css-pp' function.]
-;;; (URL `http://www.emacs-wiki/directory-and-hex-colors-annotated')
-;;; [picture: annotated image of css color extraction buffer and dired buffer
-;;; showing `mon-get-ebay-css-pp' function in use.]
-;;;
-;;; CSS-EXTRACTION REQUIREMENTS:
-;;;  I use a local copy of cssolor.elnamed mon-css-color.el. css-color.el was
-;;; originally made available at emacs-wiki but is now bundled with nXthml-mode.
-;;; See (URL `http://www.emacs-wiki/emacs/NxhtmlMode')
-;;; See (URL `http://ourcomments.org/Emacs/nXhtml/doc/nxhtml.html')
-;;;
-;;; The file can be acquired from that project's bazaar
-;;; repository. 
-;;; See (URL `http://bazaar.launchpad.net/~nxhtml/nxhtml/main/files/head%3A/')
-;;; I am not including a direct link to that library because I find the
-;;; mechanism unclear/unclean. Bazaar repos aren't particularly permalink
-;;; friendly and it isn't immediately obvious which revision should be linked
-;;; to. Use, incorporation, and requirement of css-color.el should change in a
-;;; future version of mon-rename-image-utils. Stay tuned :)
-;;;
-;;; You will also need a current Image Magick binary.  See (URL
-;;; `http://www.imagemagick.org/')
-;;;
-;;; CAVEATS USING IMAGE-MAGICK ON W32:
-;;;  Note, the `mon-get-ebay-img-css' function calls out to ImageMagick's
-;;; convert command using the alias `imconvert' (as per the recommendations by
-;;; the Image-Magick distributors).
-;;;
-;;; It is strongly recommended that W32 users of Image Magick adopt this
-;;; practice.
-;;;
-;;; This is for W32 compatibility as convert.exe is a system level command
-;;; gnu-linux systems should substitute `convert' for `imconvert'. Likewise, on
-;;; W32 running Image Magick's `convert' as a shell-process (synchronous or
-;;; otherwise) is much more difficult to configure when this renaming isn't
-;;; provided on.
-;;;
-;;; To wit, this is needed because on a W32 system:
-;;;
-;;; (executable-find "convert") 
-;;;  => "c:/WINDOWS/system32/convert.exe"
-;;;
-;;; (executable-find "imconvert") 
-;;;  => "c:/Program Files/imagemagick-6.5.1-q8/imconvert.exe"
-;;;
-;;; For those that think this aliasing is unnecessary _PLEASE-NOTE_ "convert" is
-;;; a W32 command in the W32 system directory. It is used for converting FAT32
-;;; to NTFS. It is suggested you rename the IM convert command to
-;;; "imconvert.exe" to distinguish the two commands. You can't rename the system
-;;; command, as a windows service pack would just restore it, ignoring the
-;;; renamed version. see additional discussion here:
-;;;
-;;; (URL `http://www.imagemagick.org/Usage/windows/index.html')
-;;;
-;;; !!!You've now been warned three times!!! :)
-;;;
-;;; RENAMING FACILITIES:
-;;; The image renaming facilities for generating an image renaming buffer are:
-;;;
-;;;   `mon-image-rename-propertize' `mon-rename-imgs-in-dir'
-;;;   `mon-parse-rename-lengths' `mon-parse-rename-images'
-;;;   `mon-pad-rename-lengths' `mon-build-rename-buffer'
-;;;   `mon-shorten-rename-image-path' `mon-check-image-type'
-;;;   `mon-ebay-image-directory-not-ok' `mon-ebay-image-directory-ok-p'
-;;;
-;;; All renaming routines aren't completed (yet).  Specifically, the
-;;; text-property parsing of `mon-build-rename-buffer'.  This should be trivial
-;;; but haven't gotten around to it yet.  Building the padding routine winded me
-;;; :(.
-;;;
-;;; RENAMING UTILITY SCREENSHOT: 
-;;; (URL `http://www.emacswiki.org/emacs/rename-utility-screenshot')
-;;; [picture: 4 window split showing output of (mon-build-rename-buffer ".bmp")]
-;;;
-;;; RENAME UTILITY USE:
-;;; Basically, you set up your vars for an image directory tree, then assuming
-;;; you are in a buffer-or-filename within that tree you can call:
-;;;   (mon-build-rename-buffer ".bmp") 
-;;;   (mon-build-rename-buffer ".jpg")
-;;;   (mon-build-rename-buffer ".nef")
-;;;
-;;; And Emacs will either prompt for a better directory in the tree, or snarf
-;;; the image file names from the current directory and return them in a pretty
-;;; *rename-buffer* buffer full of text properties for futher processing the
-;;; images.
-;;; As an example, say you are in the buffer-or-file:
-;;;  "<DRIVE-OR-ROOT:>/NEFS_PHOTOS/Nef_Drive2/EBAY/BMP-Scans/e1143/e1143.dbc"
-;;; and you want to rename all of the ".jpg" files associated with the '.bmps" in
-;;; the current buffer-or-file's current directory e.g.  
-;;;   .bmp's are in => "<DRIVE-OR-ROOT:>/NEFS_PHOTOS/Nef_Drive2/EBAY/BMP-Scans/e1143/ 
-;;;   .jpg's are in => "<DRIVE-OR-ROOT:>/NEFS_PHOTOS/Nef_Drive2/EBAY/BIG-cropped-jpg/e1143"
-;;;
-;;; If you call: 
-;;;   (mon-build-rename-buffer ".jpg") 
-;;; The procedure will return a 'rename-buffer' of all the .jpgs in the 'matching'
-;;; directory.  If there aren't any .jpgs in that file it prompts for a new
-;;; directory within that tree.
-;;;;
-;;; However, should you instead call:
-;;;  (mon-build-rename-buffer ".bmp") 
-;;; Assuming there are .bmps in the current dir Emacs will instead return a
-;;; '*rename-images*' buffer with all the .bmp's in the 'current' directory ready
-;;; for marking/further processing.
-;;;
-;;; To get an idea of the types of follow up actions which might be taken
-;;; checkout the myriad text properties in the *rename-buffer* presentation to
-;;; get an idea of the types of processing that can be accomplished. i.e. call
-;;; the `describe-text-properties' command with point at different places in the
-;;; buffer. If you have mon-utils.el 
-;;; See; (URL `http://www.emacswiki.org/emacs/mon-utils.el')
-;;; in you load-path you can look at the read-only buffer positions as well by
-;;; evaluating the `mon-toggle-read-only-point-motion' command.
-;;;
-;;; Currently `mon-build-rename-buffer' is only taking an IMAGE-TYPE arg.  
-;;; The helper function `mon-rename-imgs-in-dir' takes an alternate path arg
-;;; ALT-PATH that will soon allow you to do:
-;;;  (mon-build-rename-buffer ".bmp" (expand-file-name "../e1214/")
-;;; i.e. build a *rename-images* buffer from files in some other dir.
-;;;
-;;; Assuming your var paths are set right the functions have fairly intelligent
-;;; heuristics for how they navigate the paths and include completion facilities
-;;; and nice prompts which attemtp to DWIM.
-;;; I am particularly proud of the *rename-images* buffer generation code which
-;;; is smart about presentation padding according to the filename length of
-;;; images. Emacs-lisp `format' is not nearly as extensive a the format spec of
-;;; Common Lisp...
-;;;
-;;; CONFIGURE LOCAL SYSTEMS PATH VARS FOR RENAME UTILS:
-;;; Starting with `*nef-scan-drive*' the variables below will need to be
-;;; adjusted according to your local path and directory tree.  Ideally one would
-;;; mirrors those below. On MON local system these map out as follows:
-;;;
-;;; `*nef-scan-drive*' -> "<DRIVE-OR-ROOT:>" ;Optional, will be used if/when defcustom'd
-;;; `*nef-scan-path*' -> "<DRIVE-OR-ROOT:>/NEFS_PHOTOS"
-;;; `*nef-scan-nefs-path*' -> "<DRIVE-OR-ROOT:>/NEFS_PHOTOS/NEFS"
-;;; `*nef-scan-nef2-path*' -> "<DRIVE-OR-ROOT:>/NEFS_PHOTOS/Nef_Drive2"
-;;; `*ebay-images-path*' -> "<DRIVE-OR-ROOT:>/NEFS_PHOTOS/Nef_Drive2/EBAY"
-;;; `*ebay-images-bmp-path*' -> "<DRIVE-OR-ROOT:>/NEFS_PHOTOS/Nef_Drive2/EBAY/BMP-Scans"
-;;; `*ebay-images-jpg-path*' -> "<DRIVE-OR-ROOT:>/NEFS_PHOTOS/Nef_Drive2/EBAY/BIG-cropped-jpg"
-;;;
-;;; For additional discussion, see: 
-;;; (URL `http://www.emacswiki.org/downloads/mon-dir-locals-alist.el')
-;;;
-;;; That package has the above variable definitions ready made.  The vars there
-;;; are not (yet) defined as `defcustom's b/c I default these vars across
-;;; multiple systems but a defcustom interface for mon-rename-image-uitls ought
-;;; to be made available once developments of this package is no longer in flux.
-;;;
-;;; REQUIRED/RECOMMENDED PACKAGES:
-;;; Additional discussion for and usage notes re:
-;;; integration of this package into a local system is available in the header
-;;; of the following file: 
-;;; (URL `http://www.emacswiki.org/downloads/mon-rename-image-utils-supplemental.el')
-;;;
-;;; This `supplemental' package provides additional functions which may be
-;;; needed when using the current package (e.g. mon-rename-image-utils.el). 
-;;; The procedures of the supplemental package are esp. recommended if you aren't
-;;; already using the the litany of other `mon-*.el' packages e.g. those
-;;; packages made avaiable here:
-;;; (URL `http://www.emacswiki.org/emacs/mon_key')
+;; Copyright © 2009, 2010 MON KEY. All rights reserved.
+;;; ================================================================
+
+;; FILENAME: mon-rename-image-utils.el
+;; AUTHOR: MON KEY
+;; MAINTAINER: MON KEY
+;; CREATED: 2009-06-24T19:43:55-04:00Z
+;; VERSION: 1.0.0
+;; COMPATIBILITY: Emacs23.*
+;; KEYWORDS: external, execute, hypermedia, multimedia, tools,
+
+;;; ================================================================
+
+;;; COMMENTARY: 
+
+;; =================================================================
+;; DESCRIPTION:
+;; mon-rename-image-utils provides utility functions for converting, renaming
+;; and extracting usefull information from images and Emacs Image manipulation.
+;;
+;; FUNCTIONS:►►►
+;; `mon-check-image-type', `mon-rename-imgs-in-dir', `mon-check-image-type',
+;; `mon-ebay-image-directory-not-ok', `mon-ebay-image-directory-ok-p',
+;; `mon-image-rename-propertize', `mon-parse-rename-images',
+;; `mon-shorten-rename-image-path', `mon-parse-rename-lengths',
+;; `mon-pad-rename-lengths', `mon-build-rename-buffer' 
+;; `mon-get-image-dimensions', `mon-get-image-dimensions-im',
+;; `mon-get-image-md5',
+;; FUNCTIONS:◄◄◄
+;;
+;; :EXTERNAL-FUNCTIONS
+;; `mon-get-buffers-parent-dir'        -> mon-dir-utils.el
+;; `mon-split-string-buffer-name'      -> mon-dir-utils.el
+;; `mon-truncate-path-for-prompt'      -> mon-dir-utils.el
+;; `mon-buffer-written-p'              -> mon-dir-utils.el
+;; `mon-toggle-read-only-point-motion' -> mon-utils.el
+;; `mon-build-dir-list'                -> mon-dir-utils.el
+;; `mon-line-bol-is-eol'               -> mon-utils.el
+;; `mon-delete-back-up-list'           -> mon-replacement-utils.el
+;; `mon-cln-trail-whitespace'          -> mon-replacement-utils.el
+;;
+;; MACROS:
+;;
+;; METHODS:
+;;
+;; CLASSES:
+;;
+;; CONSTANTS:
+;;
+;; FACES:
+;;
+;; VARIABLES:
+;;
+;; :EXTERNAL-VARIABLES
+;; `*ebay-images-lookup-path*'         -> mon-dir-locals-alist.el
+;; `*nef-scan-path*'                   -> mon-dir-locals-alist.el
+;;
+;; ALIASED/ADVISED/SUBST'D:
+;;
+;; DEPRECATED:
+;;
+;; RENAMED:
+;;
+;; MOVED:
+;; `mon-get-image-dimensions'           <- mon-url-utils.el
+;; `mon-get-image-dimensions-im'        <- mon-url-utils.el
+;; `mon-get-image-md5'                  <- mon-url-utils.el
+;; `mon-get-ebay-bmps-in-dir'           <- ebay-template-tools.el
+;; `mon-get-nefs-in-dir'                <- ebay-template-tools.el
+;; `mon-get-ebay-jpgs-list'             <- ebay-template-tools.el
+;; `mon-insert-ebay-jpgs-in-file'       <- ebay-template-tools.el
+;; `mon-get-ebay-jpgs-count'            <- ebay-template-tools.el
+;; `mon-get-ebay-bmps-count'            <- ebay-template-tools.el
+;; `mon-get-ebay-img-count-verify'      <- ebay-template-tools.el
+;; `mon-cln-img-magic-hex'              <- ebay-template-tools.el
+;; `mon-get-ebay-img-css'               <- ebay-template-tools.el
+;; `mon-get-ebay-img-name-to-col'       <- ebay-template-tools.el
+;; `mon-get-ebay-css-pp-region-to-file' <- ebay-template-tools.el	
+;; `mon-get-ebay-css-pp'                <- ebay-template-tools.el
+;; `mon-insert-css-colors'              <- ebay-template-tools.el
+;;
+;; REQUIRES:
+;; mon-css-color.el (or the css-color.el provided with nXhtml)
+;; :SEE (URL `http://www.emacswiki.org/emacs/mon-css-color.el')
+;;
+;; mon-dir-locals-alist.el 
+;;  `*nef-scan-drive*', `*nef-scan-path*', `*nef-scan-nefs-path*', 
+;;  `*nef-scan-nef2-path*', `*ebay-images-path*', `*ebay-images-jpg-path*' 
+;;  `*ebay-images-bmp-path*'
+;; :SEE (URL `http://www.emacswiki.org/downloads/mon-dir-locals-alist.el')
+;;
+;; mon-utils.el
+;; | -> `mon-toggle-read-only-point-motion', `mon-line-bol-is-eol'
+;; :SEE (URL `http://www.emacswiki.org/emacs/mon-utils.el')
+;;
+;; mon-dir-utils.el
+;; | -> `mon-get-buffers-parent-dir', `mon-split-string-buffer-name'
+;; | -> `mon-truncate-path-for-prompt', `mon-buffer-written-p'
+;; | -> `mon-build-dir-list'
+;; :SEE (URL `http://www.emacswiki.org/emacs/mon-dir-utils.el')
+;;
+;; mon-replacement-utils.el
+;; |-> `mon-delete-back-up-list', `mon-cln-trail-whitespace'
+;; :SEE (URL `http://www.emacswiki.org/emacs/mon-replacement-utils.el')
+;; 
+;; mon-rename-image-utils-supplemental.el 
+;; :SEE (URL `http://www.emacswiki.org/emacs/mon-rename-image-utils-supplemental.el')
+;;
+;; :NOTE Additional discussion of required features is proved in the
+;; installation and notes below.
+;;
+;; TODO:
+;;
+;; NOTES:
+;; =================================================================
+;; :INSTALLATION-AND-USAGE-NOTES
+;;
+;; :EXTRACT-CSS-COLOR-FROM-IMAGES
+;; The Image-Color->CSS Extraction routines provided by this package are:
+;; `mon-cln-img-magic-hex', `mon-get-ebay-img-css'
+;; `mon-get-ebay-img-name-to-col', `mon-get-ebay-css-pp-region-to-file'
+;; `mon-get-ebay-css-pp', `mon-insert-css-colors'
+;;
+;; This is a novel series of procedures which extract the most common colors in
+;; an image and spit those out to a new buffer as CSS hex values. They are
+;; useful (for example) for generation of per page CSS color schemes according
+;; to a particular image or set of images.  For example, I have a set of three
+;; images that I would like to use in an eBay auction listing and I would like
+;; to build a one time color scheme/style for that listing according the colors
+;; common to those three images.
+;;
+;; Another possible use for these routines, would be to identify and extract an
+;; appropriate color for watermarking an image(s).
+;;
+;; :USE-OF-THE-PROVIDED-UTILITY
+;; The bulk of this work is performed with `mon-get-ebay-img-css'.  This is
+;; essentially inlined elisp image-magik  script which analyzes the images by: 
+;; Reducing-image-size -> Posterizing-image -> Extracting-image-colors
+;;
+;; The basic routine is as follows: 
+;;
+;; Evaluating: (mon-get-ebay-css-pp)
+;;
+;; In, for example, the directory (or buffer's `default-directory'):
+;; "/NEFS_PHOTOS/Nef_Drive2/EBAY/BMP-Scans/e1002/BMP" <- 
+;;
+;; Where that directory originally contained following .bmps: 
+;; e1002-0.bmp e1002-1.bmp e1002-2.bmp e1002-3.bmp e1002-4.bmp e1002-5.bmp
+;;
+;; These are converted to low resolution .pngs: e1002-0.bmp -> e1002-0.png
+;; e1002-1.bmp -> e1002-1.png e1002-2.bmp -> e1002-2.png
+;; e1002-3.bmp -> e1002-3.png e1002-4.bmp -> e1002-4.png
+;; e1002-5.bmp -> e1002-5.png
+;;
+;; Don't worry, the .bmps aren't destroyed! The .png's are new file instances.
+;;
+;; Next, an image-magick posterization routine is performed on the .png's.  The
+;; output of this posterization is uniquified to 16 colors and returned as text.
+;; The uniquified text output is then cleaned up in a temp buffer.  This is
+;; written to a file "BMP-hex-colors" in the current directory.  A new buffer is
+;; opened which displays the 16 most common colors for each of the .bmps->.png
+;; conversions.  The display presented is as as a per image columnized display
+;; and leverages `mon-css-color.el' for additional functionality to allow
+;; tweaking the CSS values.
+;;
+;; :CSS-EXTRACTION-SCREENSHOTS
+;; :SEE (URL `http://www.emacswiki.org/emacs/BMP-hex-colors-screenshot')
+;; [picture: css color extraction buffer using `mon-get-ebay-css-pp' function.]
+;; :SEE (URL `http://www.emacswiki.org/emacs/directory-and-hex-colors-annotated')
+;; [picture: annotated image of css color extraction buffer and dired buffer
+;; showing `mon-get-ebay-css-pp' function in use.]
+;;
+;; :RENAMING-FACILITIES
+;; The image renaming facilities for generating an image renaming buffer are:
+;;   `mon-image-rename-propertize' `mon-rename-imgs-in-dir'
+;;   `mon-parse-rename-lengths' `mon-parse-rename-images'
+;;   `mon-pad-rename-lengths' `mon-build-rename-buffer'
+;;   `mon-shorten-rename-image-path' `mon-check-image-type'
+;;   `mon-ebay-image-directory-not-ok' `mon-ebay-image-directory-ok-p'
+;;
+;; :NOTE All renaming routines aren't completed (yet).
+;; Specifically, the text-property parsing of `mon-build-rename-buffer'.
+;; This should be trivial but I haven't gotten to it yet.  Building the padding
+;; routine winded me :(.
+;;
+;; :RENAMING-UTILITY-SCREENSHOT
+;; :SEE (URL `http://www.emacswiki.org/emacs/rename-utility-screenshot')
+;; [picture: 4 window split showing output of (mon-build-rename-buffer ".bmp")]
+;;
+;; :RENAME-UTILITY-USE
+;; Basically, you set up your path vars for an image directory tree, then
+;; assuming you are in a buffer-or-filename within that tree you can call:
+;;
+;;   (mon-build-rename-buffer ".bmp") 
+;;   (mon-build-rename-buffer ".jpg")
+;;   (mon-build-rename-buffer ".nef")
+;;
+;; and Emacs will either prompt for a better directory in the tree, or snarf
+;; the image file names from the current directory and return them in a pretty
+;; *rename-buffer* buffer full of text properties for futher processing the
+;; images.
+;;
+;; As an example, say you are in the directory:
+;;
+;;  <YOUR-DRIVE-OR-ROOT:>/NEFS_PHOTOS/Nef_Drive2/EBAY/BMP-Scans/e1143/
+;;  e.g. path variable `*ebay-images-bmp-path*'/e1143/
+;; 
+;; or, in the buffer-file named:
+;;  <YOUR-DRIVE-OR-ROOT:>/NEFS_PHOTOS/Nef_Drive2/EBAY/BMP-Scans/e1143/e1143.dbc
+;;  e.g. path variable `*ebay-images-jpg-path*'/e1143/e1143.dbc
+;;
+;; and you want to rename all of the ".jpg" files associated with the '.bmps" in
+;; the current buffer-or-file's current directory e.g.:
+;;
+;;   .bmp's are in: 
+;;    | -> <YOUR-DRIVE-OR-ROOT:>/NEFS_PHOTOS/Nef_Drive2/EBAY/BMP-Scans/e1143/ 
+;;
+;;   .jpg's are in: 
+;;    | -> "<YOUR-DRIVE-OR-ROOT:>/NEFS_PHOTOS/Nef_Drive2/EBAY/BIG-cropped-jpg/e1143"
+;; 
+;; Evaluating the form: (mon-build-rename-buffer ".jpg") 
+;; returns a 'rename-buffer' of all the .jpgs in the 'matching' .bmp directory.
+;; If there aren't any .jpgs in that file it prompts for a new directory within
+;; that tree.
+;;
+;; However, should you instead evaluate: (mon-build-rename-buffer ".bmp") 
+;; Assuming there are .bmps in the current dir Emacs will instead return a
+;; `*rename-images*' buffer with all the .bmp's in the 'current' directory ready
+;; for marking for further processing.
+;;
+;; To get an idea of the types of follow up actions which might be taken
+;; checkout the myriad text properties in the *rename-buffer* presentation to
+;; get an idea of the types of processing that can be accomplished. i.e. call
+;; the `describe-text-properties' command with point at different places in the
+;; buffer. 
+;;
+;; If you have `mon-utils.el' in your load-path you can look at the read-only
+;; buffer positions as well by evaluating the command:
+;; `mon-toggle-read-only-point-motion' 
+;; :SEE (URL `http://www.emacswiki.org/emacs/mon-utils.el')
+;;
+;; Currently `mon-build-rename-buffer' is only accepts the arg IMAGE-TYPE.
+;;
+;; The helper function `mon-rename-imgs-in-dir' takes an alternate path arg
+;; ALT-PATH that will soon allow you to do:
+;;  (mon-build-rename-buffer ".bmp" (expand-file-name "../e1214/")
+;; i.e. build a *rename-images* buffer from files in some other dir.
+;;
+;; Assuming your var paths are set right the functions have fairly intelligent
+;; heuristics for how they navigate the paths and include completion facilities
+;; and nice prompts which attemtp to DWIM.
+;;
+;; I am particularly proud of the *rename-images* buffer generation code which
+;; is smart about presentation padding according to the filename length of
+;; images. Emacs-lisp `format' is not nearly as extensive a the format spec of
+;; Common Lisp...
+;;
+;; :CONFIGURING-YOUR-SYSTEM-FOR-RENAME-UTILS
+;;
+;; :PATH-VARIABLES
+;; The library mon-dir-locals-alist.el 
+;; :SEE (URL `http://www.emacswiki.org/downloads/mon-dir-locals-alist.el')
+;; supplies the following variables:
+;;  `*nef-scan-drive*', `*nef-scan-path*', `*nef-scan-nefs-path*', 
+;;  `*nef-scan-nef2-path*', `*ebay-images-path*', `*ebay-images-jpg-path*' 
+;;  `*ebay-images-bmp-path*'
+;;
+;; Starting with `*nef-scan-drive*' the variables below will need to be adjusted
+;; according to your local path and directory tree.  Ideally, one would mirror
+;; those indicated below. On MON local system path variables relevant to
+;; mon-rename-utils map out as follows:
+;;
+;; `*nef-scan-drive*'
+;;   | -> "<DRIVE-OR-ROOT:>" ; :NOTE Optional, will be used if/when defcustom'd
+;; `*nef-scan-path*'
+;;   | -> "<DRIVE-OR-ROOT:>/NEFS_PHOTOS"
+;; `*nef-scan-nefs-path*'
+;;   | -> "<DRIVE-OR-ROOT:>/NEFS_PHOTOS/NEFS"
+;; `*nef-scan-nef2-path*'
+;;   | -> "<DRIVE-OR-ROOT:>/NEFS_PHOTOS/Nef_Drive2"
+;; `*ebay-images-path*'
+;;   | -> "<DRIVE-OR-ROOT:>/NEFS_PHOTOS/Nef_Drive2/EBAY"
+;; `*ebay-images-bmp-path*'
+;;   | -> "<DRIVE-OR-ROOT:>/NEFS_PHOTOS/Nef_Drive2/EBAY/BMP-Scans"
+;; `*ebay-images-jpg-path*' 
+;;   | -> "<DRIVE-OR-ROOT:>/NEFS_PHOTOS/Nef_Drive2/EBAY/BIG-cropped-jpg"
+;;
+;; :NOTE The above variables there are not (yet) defined as `defcustom's b/c I
+;; default these vars across multiple systems. A defcustom interface for
+;; `mon-rename-image-utils' will be made available once development of this
+;; package is no longer in flux. Stay tuned.
+;;
+;; :CSS-COLOR-EXTRACTION-REQUIREMENTS
+;; I use a local copy of `css-color.el' named `mon-css-color.el' 
+;; This is a verbatim (re)incarnation of Niels Giesen's `css-color.el' :VERSION
+;; "0.03" of 2008.
+;; :SEE (URL `http://www.emacswiki.org/emacs/mon-css-color.el')
+;;
+;; The css-color package was originally made available on the EmacsWiki:
+;; :SEE (URL `http://www.emacswiki.org/emacs/CssColor')
+;; However, css-color.el is now distributed as part of the with nXhtml system
+;; and is therfor locked up in that systems associated Bazaar repository. 
+;; Use incorporation, and requirement for mon-css-color.el may
+;; change in a future version of `mon-rename-image-utils.el' so stay tuned.
+;;
+;; That said, if you _do_ use Nxhtml then you prob. won't need
+;; `mon-css-color.el' The css-color distributed with nXhtml can be acquired from
+;; that project's bazaar repository.  If you do not use or require the nXhtml
+;; features you may find it expedient to use `mon-css-color.el' rather than
+;; adding the entire Nxhtml distribution to your load-path.
+;;
+;; :NOTE Bazaar repos aren't particularly permalink friendly and it isn't
+;; immediately obvious which revision I should be hyperlinking to. Try these:
+;; :SEE (URL `http://bazaar.launchpad.net/%7Enxhtml/nxhtml/main/annotate/head%3A/util/css-color.el')
+;; :SEE (URL `http://bazaar.launchpad.net/~nxhtml/nxhtml/main/files/head%3A/')
+;; :SEE (URL `http://www.emacs-wiki/emacs/NxhtmlMode')
+;; :SEE (URL `http://ourcomments.org/Emacs/nXhtml/doc/nxhtml.html')
+;;
+;; :IMGAGE-MAGICK-REQUIREMENTS
+;; You will also need a current Image Magick binary.  
+;; :SEE (URL `http://www.imagemagick.org/')
+;;
+;; :CAVEATS-USING-IMAGE-MAGICK-ON-W32:
+;; :NOTE the `mon-get-ebay-img-css' function calls out to ImageMagick's
+;; convert command using the alias `imconvert' (as per the recommendations by
+;; the Image-Magick distributors).
+;;
+;; It is strongly recommended that W32 users of Image Magick adopt this
+;; practice.
+;;
+;; This is for W32 compatibility as convert.exe is a system level command
+;; gnu-linux systems should substitute `convert' for `imconvert'. Likewise, on
+;; W32 running Image Magick's `convert' as a shell-process (synchronous or
+;; otherwise) is much more difficult to configure when this renaming isn't
+;; provided on.
+;;
+;; To wit, this is needed because on a W32 system:
+;;
+;; (executable-find "convert") 
+;;  => "c:/WINDOWS/system32/convert.exe"
+;;
+;; (executable-find "imconvert") 
+;;  => "c:/Program Files/imagemagick-6.5.1-q8/imconvert.exe"
+;;
+;; For those that think this aliasing is unnecessary _PLEASE-NOTE_ "convert" is
+;; a W32 command in the W32 system directory. It is used for converting FAT32
+;; to NTFS. It is suggested you rename the IM convert command to
+;; "imconvert.exe" to distinguish the two commands. You can't rename the system
+;; command, as a Windoze service pack would just restore it, ignoring the
+;; renamed version. For additional discussion:
+;; :SEE (URL `http://www.imagemagick.org/Usage/windows/index.html')
+;;
+;; :REQUIRED/RECOMMENDED-PACKAGES
+;; Additional discussion for and usage notes regarding integration of this
+;; package into a local system is available in the header of the following file:
+;; :SEE (URL `http://www.emacswiki.org/downloads/mon-rename-image-utils-supplemental.el')
+;;
+;; This `supplemental' package provides additional functions which may be
+;; needed when using the current package (e.g. mon-rename-image-utils.el). 
+;; The procedures of the supplemental package are esp. recommended if you aren't
+;; already using the the litany of other `mon-*.el' packages e.g. those
+;; packages are avaiable at: 
+;; :SEE (URL `http://www.emacswiki.org/emacs/mon_key')
+;;
+;; =================================================================
+;;
+;; URL: http://www.emacswiki.org/emacs/mon-rename-image-utils.el
+;; FILE-PUBLISHED: <Timestamp: #{2009-09-20} - by MON KEY>
+;;
+;; EMACSWIKI: http://www.emacswiki.org/emacs/RenameImageUtils
+;; FILE-PUBLISHED: <Timestamp: #{2009-09-28} - by MON KEY>
+;;
+;; FILE-CREATED:
+;; <Timestamp: #{2009-06-24T19:43:55-04:00Z} - by MON KEY>
+;;
+;; =================================================================
+
+;;; LICENSE:
+
+;; =================================================================
+;; This file is not part of GNU Emacs.
+
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 3, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program; see the file COPYING.  If not, write to
+;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
+;; Floor, Boston, MA 02110-1301, USA.
+;; =================================================================
+;; Permission is granted to copy, distribute and/or modify this
+;; document under the terms of the GNU Free Documentation License,
+;; Version 1.3 or any later version published by the Free Software
+;; Foundation; with no Invariant Sections, no Front-Cover Texts,
+;; and no Back-Cover Texts. A copy of the license is included in
+;; the section entitled ``GNU Free Documentation License''.
+;; 
+;; A copy of the license is also available from the Free Software
+;; Foundation Web site at:
+;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;;;
-;;; FUNCTIONS:►►►
-;;; `mon-check-image-type', `mon-rename-imgs-in-dir', `mon-check-image-type',
-;;; `mon-ebay-image-directory-not-ok', `mon-ebay-image-directory-ok-p',
-;;; `mon-image-rename-propertize', `mon-parse-rename-images',
-;;; `mon-shorten-rename-image-path', `mon-parse-rename-lengths',
-;;; `mon-pad-rename-lengths', `mon-build-rename-buffer' 
-;;; `mon-get-image-dimensions', `mon-get-image-dimensions-im',
-;;; `mon-get-image-md5',
-;;; FUNCTIONS:◄◄◄
-;;;
-;;; EXTERNAL-FUNCTIONS:
-;;; `mon-get-buffers-parent-dir'        -> ./mon-dir-utils.el
-;;; `mon-split-string-buffer-name'      -> ./mon-dir-utils.el
-;;; `mon-truncate-path-for-prompt'      -> ./mon-dir-utils.el
-;;; `mon-buffer-written-p'              -> ./mon-dir-utils.el
-;;; `mon-toggle-read-only-point-motion' -> ./mon-utils.el
-;;; `mon-build-dir-list'                -> ./mon-dir-utils.el
-;;; `mon-line-bol-is-eol'               -> ./mon-utils.el
-;;; `mon-delete-back-up-list'           -> ./naf-mode-replacements.el
-;;; `mon-cln-trail-whitespace'          -> ./naf-mode-replacements.el
-;;;
-;;; EXTERNAL-VARIABLES:
-;;; `*ebay-images-lookup-path*'         -> ./mon-dir-locals-alist.el
-;;; `*nef-scan-path*'                   -> ./mon-dir-locals-alist.el
-;;;
-;;; CONSTANTS or VARIABLES:
-;;;
-;;; MACROS:
-;;;
-;;; SUBST or ALIASES:
-;;;
-;;; DEPRECATED:
-;;; RENAMED:
-;;;
-;;; MOVED:
-;;; `mon-get-image-dimensions'           <- mon-url-utils.el
-;;; `mon-get-image-dimensions-im'        <- mon-url-utils.el
-;;; `mon-get-image-md5'                  <- mon-url-utils.el
-;;; `mon-get-ebay-bmps-in-dir'           <- ebay-template-tools.el
-;;; `mon-get-nefs-in-dir'                <- ebay-template-tools.el
-;;; `mon-get-ebay-jpgs-list'             <- ebay-template-tools.el
-;;; `mon-insert-ebay-jpgs-in-file'       <- ebay-template-tools.el
-;;; `mon-get-ebay-jpgs-count'            <- ebay-template-tools.el
-;;; `mon-get-ebay-bmps-count'            <- ebay-template-tools.el
-;;; `mon-get-ebay-img-count-verify'      <- ebay-template-tools.el
-;;; `mon-cln-img-magic-hex'              <- ebay-template-tools.el
-;;; `mon-get-ebay-img-css'               <- ebay-template-tools.el
-;;; `mon-get-ebay-img-name-to-col'       <- ebay-template-tools.el
-;;; `mon-get-ebay-css-pp-region-to-file' <- ebay-template-tools.el	
-;;; `mon-get-ebay-css-pp'                <- ebay-template-tools.el
-;;; `mon-insert-css-colors'              <- ebay-template-tools.el
-;;;
-;;; REQUIRES:
-;;; css-color.el 
-;;; (URL `http://www.emacswiki.org/emacs/CssColor')
-;;; css-color is distributed with nXhtml which is locked up in bazaar @:
-;;; 
-;;; image-magik binary
-;;;
-;;; TODO:
-;;;
-;;; NOTES:
-;;; On MON machines gets loaded from mon-dir-utils package.
-;;;
-;;; SNIPPETS:
-;;;
-;;; THIRD PARTY CODE:
-;;;
-;;; AUTHOR: MON KEY
-;;; MAINTAINER: MON KEY
-;;;
-;;; PUBLIC-LINK: 
-;;; (URL `http://www.emacswiki.org/emacs/RenameImageUtils')
-;;; FILE-PUBLISHED: <Timestamp: #{2009-09-28} - by MON KEY>
-;;; (URL `http://www.emacswiki.org/emacs/mon-rename-image-utils.el')
-;;; FILE-PUBLISHED: <Timestamp: #{2009-09-20} - by MON KEY>
-;;;
-;;; FILE-CREATED:
-;;; <Timestamp: Wednesday June 24, 2009 @ 07:43.55 PM - by MON KEY>
-;;; ================================================================
-;;; This file is not part of GNU Emacs.
-;;;
-;;; This program is free software; you can redistribute it and/or
-;;; modify it under the terms of the GNU General Public License as
-;;; published by the Free Software Foundation; either version 3, or
-;;; (at your option) any later version.
-;;;
-;;; This program is distributed in the hope that it will be useful,
-;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-;;; General Public License for more details.
-;;;
-;;; You should have received a copy of the GNU General Public License
-;;; along with this program; see the file COPYING.  If not, write to
-;;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
-;;; Floor, Boston, MA 02110-1301, USA.
-;;; ================================================================
-;;; ©opyright (C) MON KEY  2009
-;;; ===========================
+;; Copyright © 2009, 2010 MON KEY 
+;;; ==============================
+
 ;;; CODE:
 
-;;; EMACS-WIKI:
+(eval-when-compile (require 'cl))
+
+;; `mon-rename-imgs-in-dir' uses :mapcar*
+(eval-when-compile (require 'cl))
+(require 'cl)
+
+;;; :EMACS-WIKI
 (unless (featurep 'mon-css-color)
   (require 'css-color))
 
 ;;; ==============================
-;;; TODO: needs to take an interactive arg with `mon-get-imgs-in-dir-int' see below.
-;;; CREATED: <Timestamp: Wednesday April 29, 2009 @ 04:03.46 PM - by MON KEY>
+;;; :TODO Needs to take an interactive arg with `mon-get-imgs-in-dir-int'.
+;;; :CREATED <Timestamp: Wednesday April 29, 2009 @ 04:03.46 PM - by MON KEY>
 (defun mon-get-ebay-bmps-in-dir (&optional full-path alt-path)
-  "Returns a list of .bmps in files directory.
+  "Return a list of .bmps in files directory.
 When FULL-PATH is non-nil, return absolute file names. 
 When ALT-PATH is non-nil use dir-path as value instead of current-buffers.
 CALLED-BY: `mon-insert-ebay-bmps-in-file' to build a .bmp insertion list.
-See also; `mon-get-ebay-nefs-in-dir', `mon-insert-ebay-bmps-in-file', 
+:SEE-ALSO `mon-get-ebay-nefs-in-dir', `mon-insert-ebay-bmps-in-file', 
 `mon-get-ebay-jpgs-list', `mon-insert-ebay-jpgs-in-file', 
 `mon-get-ebay-bmps-count', `mon-get-ebay-jpgs-count', 
-`mon-get-ebay-bmps-in-dir'."
+`mon-get-ebay-bmps-in-dir'.\n►►►"
   (let (this-dir get-files)
     (if (and alt-path
 	(file-exists-p alt-path))
-	(setq this-dir (file-name-as-directory alt-path));(file-name-directory alt-path))
+	(setq this-dir (file-name-as-directory alt-path))
       (setq this-dir (file-name-directory buffer-file-name)))
     (setq get-files (directory-files this-dir full-path "\\.bmp"))
     get-files))
@@ -357,20 +449,20 @@ See also; `mon-get-ebay-nefs-in-dir', `mon-insert-ebay-bmps-in-file',
 ;;
 (defalias 'mon-get-ebay-bmps-list 'mon-get-ebay-bmps-in-dir)
 ;;
-;;;test-me; (mon-get-ebay-bmps-in-dir)
-;;;test-me; (mon-get-ebay-bmps-in-dir t)
+;;; :TEST-ME  (mon-get-ebay-bmps-in-dir)
+;;; :TEST-ME  (mon-get-ebay-bmps-in-dir t)
 
 ;;; ==============================
-;;; TODO: Needs to take an interactive arg with `mon-get-imgs-in-dir-int' see below.
-;;; CREATED: <Timestamp: Wednesday May 06, 2009 @ 04:32.45 PM - by MON KEY>
+;;; :TODO Needs to take an interactive arg with `mon-get-imgs-in-dir-int' see below.
+;;; :CREATED <Timestamp: Wednesday May 06, 2009 @ 04:32.45 PM - by MON KEY>
 (defun mon-get-nefs-in-dir (&optional full-path alt-path)
   "Return a list of .nefs in buffers' directory.
 When FULL-PATH is non-nil, return absolute file names. 
 When ALT-PATH is non-nil use dir-path as value instead of current-buffers.
 CALLED-BY: `mon-insert-ebay-bmps-in-file' to build a .nef insertion list.
-See also; `mon-get-ebay-bmps-in-dir', `mon-insert-ebay-bmps-in-file', 
+:SEE-ALSO `mon-get-ebay-bmps-in-dir', `mon-insert-ebay-bmps-in-file', 
 `mon-get-ebay-jpgs-list', `mon-insert-ebay-jpgs-in-file', `mon-get-ebay-bmps-count', 
-`mon-get-ebay-jpgs-count', `mon-get-ebay-bmps-in-dir'."
+`mon-get-ebay-jpgs-count', `mon-get-ebay-bmps-in-dir'.\n►►►"
   (let (this-dir get-files)
     (if (and alt-path
 	(file-exists-p alt-path))	
@@ -382,72 +474,11 @@ See also; `mon-get-ebay-bmps-in-dir', `mon-insert-ebay-bmps-in-file',
 (defalias 'get-nefs-in-dir 'mon-get-nefs-in-dir)
 
 ;;; ==============================
-;;; TODO: finish below so `mon-get-nefs-in-dir' and `mon-get-ebay-bmps-in-dir'
-;;; can take an interactive arg. The definition below is different than the one
-;;; provided in ebay-template.el
-;; (defun mon-get-imgs-in-dir-int (bmp-or-nef fll-pth &optional alt-pth intp)
-;;   "Helper function for retrieving imgs in dir.
-;;  CALLED-BY: `get-bmps-in-dir' and `get-nefs-in-dir'."
-;; (interactive 
-;;  (list 
-;;   (let ((choice '("bmp" "nef")))
-;;     (completing-read "get img of type [bmp|nef]: " choice nil t "bmp"))
-;;   (yes-or-no-p "with full path:")
-;;   (yes-or-no-p "Use an alt path: ")
-;;   t))
-;;   (let* ((was-int intp)
-;; 	 (fp fll-pth)
-;; 	 (altp alt-pth)
-;; 	 (bmpORnef bmp-or-nef)
-;; 	 (def-dir (if (string= bmp-or-nef "bmp")
-;; 		     *ebay-images-bmp-path*
-;; 		    *nef-scan-nefs-path*))
-;; 	 (alt (cond ((and altp was-int)
-;; 		     (read-directory-name "Find in this path:" def-dir default-directory))
-;; 		    ((and (not intp) (not altp)) 
-;; 		     (
-;; 		      default-directory
-;; 			      )))
-;;
-;; (let* ((img-check  '("\\.bmp" "\\.nef"))
-;;        (path-check `(,default-directory ,*ebay-images-bmp-path* ,*nef-scan-nefs-path* ))
-;;        (test-imgp 
-;; 	(setq path-check (car patch-check)
-;; 	(setq img-check  (car img-check) ;(setq img-check (cdr img-check)
-;; 	(while (not (directory-files path-check nil img-check))
-;;      (setq path-check (lambda (img-check) 
-;; 	  (unless (directory-files default-directory nil img-check))
-;;
-;; ;(and  was-int altp))
-;; ;(mon-get-imgs-in-dir-int "bmp" nil nil)
-;; ;(concat *ebay-images-bmp-path* "/e1072/") t)
-;; ;
-;;
-;; 	 (alt (if (and altp was-int)
-;; 		     (read-directory-name "Find in this path:" def-dir default-directory)
-;; 		    altp))
-;; 	 (img-type
-;; 	  (if (string= bmp-or-nef "bmp")
-;; 	      (get-bmps-in-dir fp alt)
-;; 	    (get-nefs-in-dir fp alt)))
-;; 	 (vals-rtrn))
-;;     (setq vals-rtrn SOME_VAL)
-;;     (message "get imgs of type: %s | show full-path %s | in this path: %s" bmpORnef fp alt)
-;;   vals-rtrn))
-;;;
-;; (defalias 'get-imgs-in-dir 'mon-get-imgs-in-dir-int)
-;;
-;;;test-me;(mon-get-imgs-in-dir-int "bmp" t (concat *ebay-images-bmp-path* "/e1072/"))
-;;;test-me;(mon-get-imgs-in-dir-int "bmp" nil (concat *ebay-images-bmp-path* "/e1072/"))
-;;;test-me;(mon-get-imgs-in-dir-int "bmp" t nil)
-;;;test-me;(call-interacively 'mon-get-imgs-in-dir-int)
-
-;;; ==============================
-;;; CREATED: <Timestamp: Wednesday April 29, 2009 @ 04:12.25 PM - by MON KEY>
+;;; :CREATED <Timestamp: Wednesday April 29, 2009 @ 04:12.25 PM - by MON KEY>
 (defun mon-insert-ebay-bmps-in-file (&optional full-path)
   "Insert in buffer names of .bmp files in buffers' directory.
 When FULL-PATH non-nil insert full-path of .bmp files.
-See also; `*insert-ebay-template*', `mon-insert-ebay-dirs', 
+:SEE-ALSO  `*insert-ebay-template*', `mon-insert-ebay-dirs', 
 `mon-insert-ebay-photo-per-scan-descr', `mon-get-ebay-bmps-in-dir'."
   (interactive "p")
   (let ((bmp-files (if full-path
@@ -456,15 +487,15 @@ See also; `*insert-ebay-template*', `mon-insert-ebay-dirs',
     (while bmp-files 
       (insert (format "\n%s" (car bmp-files)))
 	(setq bmp-files (cdr bmp-files)))))
-
-;;;test-me;(mon-insert-ebay-bmps-in-file)
-;;;test-me;(mon-insert-ebay-bmps-in-file t)
+;;
+;;; :TEST-ME (mon-insert-ebay-bmps-in-file)
+;;; :TEST-ME (mon-insert-ebay-bmps-in-file t)
 
 ;;; ==============================
-;;; CREATED: <Timestamp: Wednesday April 29, 2009 @ 03:14.36 PM - by MON KEY>
+;;; :CREATED <Timestamp: Wednesday April 29, 2009 @ 03:14.36 PM - by MON KEY>
 (defun mon-get-ebay-jpgs-list (&optional full-path) 
   "Called from an ebay-template file, find items' .jpg path from relative dir.
-See also; `mon-insert-ebay-bmps-in-file', `mon-get-ebay-jpgs-list', 
+:SEE-ALSO  `mon-insert-ebay-bmps-in-file', `mon-get-ebay-jpgs-list', 
 `mon-insert-ebay-jpgs-in-file', `mon-get-ebay-bmps-count', 
 `mon-get-ebay-jpgs-count', `mon-get-ebay-bmps-in-dir'."
   (let ((jpg-path (concat (expand-file-name "../../") "BIG-cropped-jpg/" 
@@ -480,61 +511,59 @@ See also; `mon-insert-ebay-bmps-in-file', `mon-get-ebay-jpgs-list',
 	    (setq walk-files (cdr walk-files))))
       nil)
     collect-jpg-path))
-
-;;;test-me;(mon-get-ebay-jpgs-list t)
-;;;test-me;(mon-get-ebay-jpgs-list)
+;;
+;;; :TEST-ME (mon-get-ebay-jpgs-list t)
+;;; :TEST-ME (mon-get-ebay-jpgs-list)
 
 ;;; ==============================
-;;; MODIFICATIONS: <Timestamp: #{2009-09-05T15:51:57-04:00Z}#{09366} - by MON>
-;;; CREATED: <Timestamp: Wednesday April 29, 2009 @ 03:14.41 PM - by MON KEY>
+;;; :MODIFICATIONS <Timestamp: #{2009-09-05T15:51:57-04:00Z}#{09366} - by MON>
+;;; :CREATED <Timestamp: Wednesday April 29, 2009 @ 03:14.41 PM - by MON KEY>
 (defun mon-insert-ebay-jpgs-in-file ()
-  "Called from an ebay-template file insert the items' jpg path from relative dir.
-Return error message if items jpg path doesn't exist.
-See also; `mon-insert-ebay-bmps-in-file', `mon-get-ebay-jpgs-list'."
+  "Called from an ebay-template file insert the items' jpg path from relative dir.\n
+Return error message if items jpg path doesn't exist.\n
+:SEE-ALSO `mon-insert-ebay-bmps-in-file', `mon-get-ebay-jpgs-list'.\n►►►"
   (interactive)
   (let ((find-jpgs (nreverse (mon-get-ebay-jpgs-list)))
 	(jpg-dir (concat *ebay-images-jpg-path* "/"
 			 ;;WAS: (expand-file-name "../../")  "BIG-cropped-jpg/" 
 			 (file-name-nondirectory (directory-file-name default-directory)) "/"))
-	(gather-jpgs))
+	gather-jpgs)
     (while find-jpgs
-      (princ
-       (format "\n%s%s" jpg-dir (car find-jpgs))
-       (current-buffer))
+      (princ (format "\n%s%s" jpg-dir (car find-jpgs))(current-buffer))
       (setq find-jpgs (cdr find-jpgs)))))
-    
-;;;test-me;(mon-insert-ebay-jpgs-in-file)  
+;;    
+;;; :TEST-ME (mon-insert-ebay-jpgs-in-file)  
 
 ;;; ==============================
 (defun mon-get-ebay-jpgs-count ()
-  "Returns count of jpgs associated with ebay templates' buffer.
-See also; `mon-insert-ebay-bmps-in-file', `mon-get-ebay-jpgs-list', 
-`mon-insert-ebay-jpgs-in-file', `mon-get-ebay-bmps-count', 
-`mon-get-ebay-bmps-in-dir'."
+  "Return count of jpgs associated with ebay templates' buffer.\n
+:SEE-ALSO `mon-insert-ebay-bmps-in-file', `mon-get-ebay-jpgs-list',
+`mon-insert-ebay-jpgs-in-file', `mon-get-ebay-bmps-count',
+`mon-get-ebay-bmps-in-dir'.\n►►►"
   (interactive)
   (let ((jpg-count  (length (mon-get-ebay-jpgs-list t))))
     (message "%d" jpg-count)))
-
-;;;test-me;(mon-get-ebay-jpgs-count)
+;;
+;;; :TEST-ME (mon-get-ebay-jpgs-count)
 
 ;;; ==============================
 (defun mon-get-ebay-bmps-count ()
-  "Return count of bmps associated with ebay templates' buffer.
-See also; `mon-insert-ebay-bmps-in-file', `mon-get-ebay-jpgs-list', 
-`mon-insert-ebay-jpgs-in-file', `mon-get-ebay-jpgs-count', 
-`mon-get-ebay-bmps-in-dir'."
+  "Return count of bmps associated with ebay templates' buffer.\n
+ :SEE-ALSO `mon-insert-ebay-bmps-in-file', `mon-get-ebay-jpgs-list',
+`mon-insert-ebay-jpgs-in-file', `mon-get-ebay-jpgs-count',
+`mon-get-ebay-bmps-in-dir'.\n►►►"
   (interactive)
   (let ((bmp-count  (length (mon-get-ebay-bmps-in-dir))))
     (message "%d" bmp-count)))
-
-;;;test-me;(mon-get-ebay-bmp-count)
+;;
+;;; :TEST-ME (mon-get-ebay-bmp-count)
 
 ;;; ==============================
 (defun mon-get-ebay-img-count-verify ()
-  "Return message, and t or nil for image counts (bmp|jpg) of ebay buffers' dir.
-See also; `mon-insert-ebay-bmps-in-file', `mon-get-ebay-jpgs-list', 
-`mon-insert-ebay-jpgs-in-file', `mon-get-ebay-bmps-count', 
-`mon-get-ebay-jpgs-count'."
+  "Return message, and t or nil for image counts (bmp|jpg) of ebay buffers' dir.\n
+:SEE-ALSO `mon-insert-ebay-bmps-in-file', `mon-get-ebay-jpgs-list',
+`mon-insert-ebay-jpgs-in-file', `mon-get-ebay-bmps-count',
+`mon-get-ebay-jpgs-count'.\n►►►"
   (interactive)
   (if (equal (mon-get-ebay-bmps-count) (mon-get-ebay-jpgs-count))
       (prog1
@@ -547,14 +576,16 @@ See also; `mon-insert-ebay-bmps-in-file', `mon-get-ebay-jpgs-list',
       nil)))
 
 ;;; ==============================
-;;; BUGGY-AS-OF:
-;;; CREATED: <Timestamp: Thursday April 30, 2009 @ 05:38.49 PM - by MON KEY>
+;;; :MODIFICATIONS <Timestamp: #{2010-02-13T20:00:57-05:00Z}#{10067} - by MON KEY>
+;;; The semantics of `mon-downcase-region-regexp' changed. 
+;;; Now uses `mon-downcase-regexp'
+;;; :CREATED <Timestamp: Thursday April 30, 2009 @ 05:38.49 PM - by MON KEY>
 (defun mon-cln-img-magic-hex ()
-  "Clean the formatting from output of ImageMagick color analysis script.
-Return only hex color values.
-See also: `mon-get-ebay-img-name-to-col', `mon-get-ebay-img-css', 
+  "Clean the formatting from output of ImageMagick color analysis script.\n
+Return only hex color values.\n
+:SEE-ALSO `mon-get-ebay-img-name-to-col', `mon-get-ebay-img-css', 
 `mon-get-ebay-css-pp-region-to-file', `mon-get-ebay-bmps-count', 
-`mon-get-ebay-bmps-in-dir', `mon-insert-css-colors'."
+`mon-get-ebay-bmps-in-dir', `mon-insert-css-colors'.\n►►►"
   (interactive)
   (let ((count 4))
     (search-forward-regexp "^\\(# Image\\)") ;"\\(^# Image\\)")
@@ -567,22 +598,23 @@ See also: `mon-get-ebay-img-name-to-col', `mon-get-ebay-img-css',
 	(cond ((eq count 4) (replace-regexp  "# ImageMagick pixel enumeration: 1.,1,255,rgb" ""))
 	      ((eq count 3) (replace-regexp "^[0-9]\\{1,2\\},[0-9]\\{1,2\\}:[[:space:]].*\)[[:space:]]\\{2\\}" ""))
 	      ((eq count 2) (replace-regexp "\\([[:space:]]\\{2\\}\\(rgb\\|grey\\|white\\).*$\\)" ""))
-	      ((eq count 1) (mon-downcase-region-regexp "^\\(#[A-Z0-9]\\{6,6\\}$\\)")))
+	      ((eq count 1) (;; :WAS `mon-downcase-region-regexp'  
+                             mon-downcase-regexp "^\\(#[A-Z0-9]\\{6,6\\}$\\)")))
 	(setq count (- count 1))))))
 
 ;;; ================================================================
-;;; NOTE: the `mon-get-ebay-img-css' function calls image-magick's `convert'
+;;; :NOTE the `mon-get-ebay-img-css' function calls image-magick's `convert'
 ;;; command using the alias `imconvert'. 
-;;; (this is for W32 compatibility as convert.exe is a system level command
-;;; gnu-linux systems should substitute `convert' for `imconvert').
+;;; This is for W32 compatibility as convert.exe is a system level command
+;;; gnu-linux systems should substitute `convert' for `imconvert'.
 ;;; This is needed because on a W32 system:
-;;; (executable-find "convert") ;=> "c:/WINDOWS/system32/convert.exe"
+;;; (executable-find "convert") => "c:/WINDOWS/system32/convert.exe"
 ;;; (executable-find "imconvert") 
-;;; ;=> "c:/Program Files/imagemagick-6.5.1-q8/imconvert.exe"
-;;; CREATED: <Timestamp: Friday May 01, 2009 @ 04:24.15 PM - by MON KEY>
+;;;  => "c:/Program Files/imagemagick-6.5.1-q8/imconvert.exe"
+;;; :CREATED <Timestamp: Friday May 01, 2009 @ 04:24.15 PM - by MON KEY>
 (defun mon-get-ebay-img-css ()          ;(img-list)
-  "Return CSS hex colors of .bmps in current directory.
-See also: `mon-get-ebay-img-name-to-col', `mon-get-ebay-css-pp-region-to-file',
+  "Return CSS hex colors of .bmps in current directory.\n
+:SEE-ALSO `mon-get-ebay-img-name-to-col', `mon-get-ebay-css-pp-region-to-file',
 `mon-get-ebay-bmps-count', `mon-get-ebay-bmps-in-dir', `mon-insert-css-colors',
 `mon-cln-img-magic-hex'."
   (let ((buf-string) 
@@ -597,6 +629,7 @@ See also: `mon-get-ebay-img-name-to-col', `mon-get-ebay-css-pp-region-to-file',
 	(with-temp-buffer ;;(switch-to-buffer "*css-img*")
 	  (call-process-shell-command 
            (concat 
+            ;; (if 
             "\"imconvert\" \"./" img-bmp
             "\" +dither -resize 100 -modulate 105,120 -posterize 6 " 
             "\"./" img-png "\"") nil t t)
@@ -617,11 +650,12 @@ See also: `mon-get-ebay-img-name-to-col', `mon-get-ebay-css-pp-region-to-file',
 
 ;;; ==============================
 (defun mon-get-ebay-img-name-to-col ()
-  "Inserts img file name from buffers' directory in buffer.
+  "Inserts img file name from buffers' directory in buffer.\n
 Helper function for `mon-get-ebay-css-pp' don't evaluate elsewhere.
-See also: `mon-get-ebay-img-name-to-col', `mon-get-ebay-img-css', 
-`mon-get-ebay-css-pp-region-to-file', `mon-get-ebay-bmps-count', 
-`mon-get-ebay-bmps-in-dir', `mon-insert-css-colors', `mon-cln-img-magic-hex'."
+:SEE-ALSO `mon-get-ebay-img-name-to-col', `mon-get-ebay-img-css',
+`mon-get-ebay-css-pp-region-to-file', `mon-get-ebay-bmps-count',
+`mon-get-ebay-bmps-in-dir', `mon-insert-css-colors',
+`mon-cln-img-magic-hex'.\n►►►"
   (let ((put-cols (mon-get-ebay-bmps-in-dir))
 	(img-cnt (string-to-number (mon-get-ebay-bmps-count)))
 	(img-strt))
@@ -641,13 +675,13 @@ See also: `mon-get-ebay-img-name-to-col', `mon-get-ebay-img-css',
 	(setq img-strt (1+ img-strt)))))) 
 	
 ;;; ==============================
-;;; CREATED: <Timestamp: Tuesday May 05, 2009 @ 06:17.51 PM - by MON KEY>
+;;; :CREATED <Timestamp: Tuesday May 05, 2009 @ 06:17.51 PM - by MON KEY>
 (defun mon-get-ebay-css-pp-region-to-file ()
-  "Helper function for `mon-get-ebay-css-pp' don't evaluate elsewhere.
-See also: `mon-get-ebay-img-name-to-col', `mon-get-ebay-img-css', 
+  "Helper function for `mon-get-ebay-css-pp' don't evaluate elsewhere.\n
+:SEE-ALSO `mon-get-ebay-img-name-to-col', `mon-get-ebay-img-css', 
 `mon-get-ebay-css-pp-region-to-file', `mon-get-ebay-bmps-count', 
-`mon-get-ebay-bmps-in-dir', `mon-insert-css-colors'."
-  (let ((start-pnt) (end-pnt))
+`mon-get-ebay-bmps-in-dir', `mon-insert-css-colors'.\n►►►"
+  (let (start-pnt end-pnt)
     (previous-line)
     (beginning-of-line)
     (setq start-pnt (point))
@@ -656,37 +690,30 @@ See also: `mon-get-ebay-img-name-to-col', `mon-get-ebay-img-css',
     (setq end-pnt (point))
     (let ((css-start start-pnt)
 	  (css-end end-pnt)
-	  (atload ";;; -*- mode: html;  mode: css-color; -*-")
+	  (atload ";;; -*- mode: html;  mode: css-color; -*-\n")
 	  (splt "/************************************************************/\n")
-	  (css-stamp (format "/* Timestamp: %s %s" 
-                             (format-time-string "%A %B %d, %Y @ %I:%M.%S %p")
-			     (cond (IS-BUG-P " - by BUG */\n")
-				   (IS-MON-P " - by MON */\n")
-                                   (t (concat " - by " (upcase (user-login-name)) " */\n")))))
-          (css-name) (in-buffer))
+	  (css-stamp (format "/* %s */\n" (mon-stamp)))
+          css-name
+          in-buffer)
       (setq css-name 
 	    (concat (file-name-nondirectory (directory-file-name default-directory)) "-hex-colors"))
       (setq in-buffer (buffer-substring css-start css-end))
       (with-temp-buffer css-name 
-			(insert atload)	
-			(newline) 
-			(insert splt)
-			(insert css-stamp) 
-			(insert splt)
-			(insert in-buffer)
-			(write-file css-name))
+                        (dolist (nsert '(atload splt css-stamp splt in-buffer)
+                                 (write-file css-name))
+                          (insert nsert)))
       (delete-region css-start css-end)
     (find-file-other-window css-name))))
 
 ;;; ==============================
-;;; CREATED: <Timestamp: Tuesday May 05, 2009 @ 10:37.17 AM - by MON KEY>
+;;; :CREATED <Timestamp: Tuesday May 05, 2009 @ 10:37.17 AM - by MON KEY>
 (defun mon-get-ebay-css-pp ()
-  "Return columnized css from bmps in new buffer.
+  "Return columnized css from bmps in new buffer.\n
 0       8       16      24      32      40      48    
 #001a33 #001a33 #001a33 #001a33 #001a33 #001a33 #001a33\n
-See also: `mon-get-ebay-img-name-to-col', `mon-get-ebay-img-css', 
+:SEE-ALSO `mon-get-ebay-img-name-to-col', `mon-get-ebay-img-css', 
 `mon-get-ebay-css-pp-region-to-file', `mon-get-ebay-bmps-count', 
-`mon-get-ebay-bmps-in-dir', `mon-insert-css-colors'."
+`mon-get-ebay-bmps-in-dir', `mon-insert-css-colors'.\n►►►"
   (interactive)
   (let  ((assoc-bmp (mon-get-ebay-bmps-in-dir))
 	 (css-col (mon-get-ebay-img-css))
@@ -736,51 +763,62 @@ See also: `mon-get-ebay-img-name-to-col', `mon-get-ebay-img-css',
       (mon-get-ebay-css-pp-region-to-file))))
 
 ;;; ==============================
-;;; CREATED: <Timestamp: Thursday April 30, 2009 @ 07:39.25 PM - by MON KEY>
+;;; :CREATED <Timestamp: Thursday April 30, 2009 @ 07:39.25 PM - by MON KEY>
 (defun mon-insert-css-colors (css)
 "Inserts css hex colors bound to CSS.\n
-EXAMPLE:\n
+:EXAMPLE\n
 \(setq some-css\n'(\"#222220\" \"#663122\" \"#666631\" \"#576061\" \"#996631\" \"#ac5341\"))\n
 \(mon-insert-css-colors some-css)\n;=> #222220 #663122 #666631 #576061 #996631 #ac5341\n
-See also: `mon-get-ebay-css-pp'."
+:SEE-ALSO `mon-get-ebay-css-pp'.\n►►►"
 (interactive "X symbol holding list of css hex colors :")
-(let (my-css-insert)
-  (setq my-css-insert css)
+(let (my-css-insert css)
+  ;;(setq my-css-insert css)
   (while my-css-insert
     (princ (concat " " (car my-css-insert)) (current-buffer))
     (setq my-css-insert (cdr my-css-insert)))))
 
 ;;; ==============================
-;;; COURTESY: Xah Lee (URL `http://xahlee.org/emacs/elisp_image_tag.html')
-;;; CREATED: <Timestamp: Saturday April 25, 2009 @ 05:35.54 PM - by MON KEY>
+;;; :COURTESY: Xah Lee :SEE (URL `http://xahlee.org/emacs/elisp_image_tag.html')
+;;; :MODIFICATIONS <Timestamp: #{2010-03-30T20:02:13-04:00Z}#{10133} - by MON KEY>
+;;; :CREATED: <Timestamp: Saturday April 25, 2009 @ 05:35.54 PM - by MON KEY>
 (defun mon-get-image-dimensions (img-file-path)
-  "Return image file's width and height as a list using function `create-image'
-Se also; `mon-get-image-dimensions-im' for ImageMagick version that does same."
+  "Return image file's width and height as a list using function `create-image'.\n
+:NOTE `mon-get-image-dimensions-im' for ImageMagick version which does similarly.\n
+:SEE-ALSO .\n►►►"
   (let (tmp dimen)
-    (clear-image-cache)
-    (setq tmp (create-image img-file-path))
-    ;; WAS: (create-image (concat default-directory img-file-relative-path)))
-    (setq dimen (image-size tmp t))
-    (list (car dimen) (cdr dimen))))
+    (if (equal (file-name-extension img-file-path) "bmp")
+        (mon-get-image-dimensions-im img-file-path)
+        (progn
+          (clear-image-cache)
+          (setq tmp (create-image img-file-path))
+          ;; :WAS (create-image (concat default-directory img-file-relative-path)))
+          (setq dimen (image-size tmp t))
+          `(,(car dimen) ,(cdr dimen))))))
 ;;
 (defun mon-get-image-dimensions-im (img-file-path)
-  "Returns a image file's width and height as a list.
+  "Return a image file's width and height as a list.\n
 Function requires ImageMagick's \"identity\" shell command.
-See also; `mon-get-image-dimensions' which returns same bug uses Elisp's
-`create-image'."
-  (let (cmd-name sh-output width height)
-    (setq cmd-name "identify")
-    (setq sh-output (shell-command-to-string (concat cmd-name " " img-file-path)))
+:NOTE `mon-get-image-dimensions' which returns same but uses Elisp's
+`create-image'.
+:SEE-ALSO .\n►►►"
+  (let* ((cmd-name (executable-find "identify"))
+         (sh-output 
+          (if cmd-name
+              (shell-command-to-string (concat cmd-name " " img-file-path))
+              (error (concat ":FUNCTION `mon-get-image-dimensions-im'"
+                             " - Executable \"identify\" not in path"))))
+         width height)
     ;; sample output from “identify”:
     ;; xyz.png PNG 520x429+0+0 DirectClass 8-bit 9.1k 0.0u 0:01
     (string-match "^[^ ]+ [^ ]+ \\([0-9]+\\)x\\([0-9]+\\)" sh-output)
-    (setq width (match-string 1 sh-output))
+    (setq width  (match-string 1 sh-output))
     (setq height (match-string 2 sh-output))
-    (list (string-to-number width) (string-to-number height))))
+    `(,(string-to-number width) ,(string-to-number height))))
 ;;
 ;;; ==============================
 (defun mon-get-image-md5 (img-file-path)
-"Returns md5 checksum of image at IMG-FILE-PATH."
+"Return md5 checksum of image at IMG-FILE-PATH.\n
+:SEE-ALSO .\n►►►"
   (let (cmd-name sh-output sum)
     (setq cmd-name "md5sum")
     (setq sh-output (shell-command-to-string (concat cmd-name " " img-file-path)))
@@ -810,13 +848,13 @@ See also; `mon-get-image-dimensions' which returns same bug uses Elisp's
 ;;;; ==============================
 
 ;;; ==============================
-;;; FIXME: This case isn't working:
+;;; :FIXME This case isn't working:
 ;;; (mon-rename-imgs-in-dir ".jpg" (expand-file-name  "e1144" *ebay-images-bmp-path*))
 ;;; Called from buffers default-directory: (expand-file-name  "e1144" *ebay-images-bmp-path*)
 ;;; We should be changing default-directory when ALT-PATH passed in but the 
 ;;; `mon-ebay-image-directory-ok-p' isn't playing nice.
-;;; PARTIALLY-WORKING-AS-OF:
-;;; CREATED: <Timestamp: Thursday June 04, 2009 @ 08:01.23 PM - by MON KEY>
+;;; :PARTIALLY-WORKING-AS-OF
+;;; :CREATED <Timestamp: Thursday June 04, 2009 @ 08:01.23 PM - by MON KEY>
 (defun mon-rename-imgs-in-dir (image-type &optional alt-path) 
   "IMAGE-TYPE is a string of type `.bmp' `.nef' `.jpg'.
 When non-nil ALT-PATH specifies a directory conatining images of IMAGE-TYPE.
@@ -824,7 +862,8 @@ Else path defaults to;
 a) current buffer's dirs if it has images-of type.
 b) if not, get the image-type alist `mon-ebay-image-directory-ok-p' 
   and use `completing-read' to prompt for a dir beneath.
-build a list of filenames of IMAGE-type in resulting path."
+build a list of filenames of IMAGE-type in resulting path.
+:SEE-ALSO .\n►►►"
   (interactive "sRename images of type :")
   (let ((starting) (rnm-prompt)
 	(alt-p alt-path))
@@ -862,15 +901,16 @@ build a list of filenames of IMAGE-type in resulting path."
 				    (cons lng-pth-key  (substring lng-pth img-pth-len lng-pth-len)))) img-assoc-l))
       `(,img-assoc-s ,img-assoc-l))))
 
-;;;test-me;(mon-rename-imgs-in-dir ".bmp" (expand-file-name  "e1144" *ebay-images-bmp-path*))
+;;; :TEST-ME (mon-rename-imgs-in-dir ".bmp" (expand-file-name  "e1144" *ebay-images-bmp-path*))
 
 ;;; ==============================
-;;; CREATED: <Timestamp: Saturday May 23, 2009 @ 01:34.43 PM - by MON KEY>
+;;; :CREATED <Timestamp: Saturday May 23, 2009 @ 01:34.43 PM - by MON KEY>
 (defun mon-check-image-type (image-type)
   "Check IMAGE-TYPE matches the required format.
 When IMAGE-TYPE (a string) is not one of: \".bmp\", \".jpg\", or \".nef\" prompt
 for completion with require-match on choice defaults to \".bmp\".
-Helper function for `ebay-template-mode's image related functions."
+Helper function for `ebay-template-mode's image related functions.
+:SEE-ALSO .\n►►►"
 (let* ((img-typ '(".nef" ".jpg" ".bmp"))
        (prompt 
         (format "%s is not a valid image-type. Select a string of type %s - TAB completes :" 
@@ -879,13 +919,14 @@ Helper function for `ebay-template-mode's image related functions."
 	(completing-read prompt img-typ nil t nil t ".bmp")
       image-type)))
 
-;;;test-me;(mon-check-image-type ".mmm")
-;;;test-me;(mon-check-image-type ".bmp")
+;;; :TEST-ME (mon-check-image-type ".mmm")
+;;; :TEST-ME (mon-check-image-type ".bmp")
 
 ;;; ==============================
-;;; CREATED: <Timestamp: Friday May 29, 2009 @ 07:54.24 PM - by MON KEY>
+;;; :CREATED <Timestamp: Friday May 29, 2009 @ 07:54.24 PM - by MON KEY>
 (defun mon-ebay-image-directory-not-ok (image-type in-directory from-dir) 
-  "Helper function for `mon-ebay-image-directory-ok-p'."
+  "Helper function for `mon-ebay-image-directory-ok-p'.\n
+:SEE-ALSO .\n►►►"
   (let* ((img-type (mon-check-image-type image-type))
 	 (img-alist *ebay-images-lookup-path*)
 	 (dir-type (nth 1 (assoc img-type img-alist)))
@@ -915,7 +956,7 @@ Helper function for `ebay-template-mode's image related functions."
     make-ok))
 
 ;;; ==============================
-;;; CREATED: <Timestamp: Friday May 29, 2009 @ 07:54.24 PM - by MON KEY>
+;;; :CREATED <Timestamp: Friday May 29, 2009 @ 07:54.24 PM - by MON KEY>
 ;;; TODO: This procedure really needs to take an ALT-PATH arg and/or play nice
 ;;; with `mon-rename-imgs-in-dir' which can cond reset the default-directory.
 ;;; ==============================
@@ -924,10 +965,11 @@ Helper function for `ebay-template-mode's image related functions."
 IMAGE-TYPE is a string, one of `.bmp' `.nef' `.jpg'.
 When directory doesn't match a valid path name for IMAGE-TYPE prompts 
 for a better completion with `mon-ebay-image-directory-not-ok'.
-Returns a list of three elements:\n\car: image-type;\n
+Return a list of three elements:\n\car: image-type;\n
 \cadr: path containing the image type;\n
 \caddr: calling buffer's filename (if any, else nil)\n
-EXAMPLE:\n\(mon-ebay-image-directory-ok-p \".bmp\")"
+:EXAMPLE\n\(mon-ebay-image-directory-ok-p \".bmp\")\n
+:SEE-ALSO .\n►►►"
   (let* (;;(get-back-to-def (default-directory))
 	 (img-type (mon-check-image-type image-type))
 	 (img-alist *ebay-images-lookup-path*)
@@ -976,8 +1018,8 @@ EXAMPLE:\n\(mon-ebay-image-directory-ok-p \".bmp\")"
     ret))
 
 ;;; ==============================
-;;; WORKING-AS-OF:
-;;; CREATED: <Timestamp: Monday June 15, 2009 @ 08:21.27 PM - by MON KEY>
+;;; :WORKING-AS-OF
+;;; :CREATED <Timestamp: Monday June 15, 2009 @ 08:21.27 PM - by MON KEY>
 (defun mon-image-rename-propertize (&optional from-point)
   "Add text-properties to image-rename form.
 Characters to the left of '[' carry read-only,
@@ -987,7 +1029,7 @@ and intangible properites. Additionally specific fields get these properties:
 :image-rename-prefix-delim, :image-rename-prefix
 :image-rename-suffix-delim, :image-rename-suffix, 
 :image-rename-start-num-delim, :image-rename-start-num\n\n
-EXAMPLE:
+:EXAMPLE
 ------------------------------\nRenaming images in directory: 
 > ../some/path/to/somewhere\n------------------------------
 Renaming images of type:  .bmp\nNumber of images to rename: 00
@@ -999,9 +1041,9 @@ image-rename-suffix: [ ]\nimage-rename-start#: [ ]
 8) this-is-a-file-namexxxx ▪▪▪▪▪▪▪ [ ]\n10) this-is-a-file-namexxx ▪▪▪▪▪▪▪ [ ]
 03) this-is-a-file-namexx ▪▪▪▪▪▪▪▪ [ ]\n3) this-is-a-file-namexx ▪▪▪▪▪▪▪▪▪ [ ]
 06) this-is-a-file-name ▪▪▪▪▪▪▪▪▪▪ [ ]\n5) this-is-a-file-namex ▪▪▪▪▪▪▪▪▪▪ [ ]\n\n
-See also; `mon-rename-imgs-in-dir',`mon-parse-rename-images',
+:SEE-ALSO `mon-rename-imgs-in-dir',`mon-parse-rename-images',
 `mon-shorten-rename-image-path',`mon-parse-rename-lengths',
-`mon-pad-rename-lengths',`mon-build-rename-buffer'."
+`mon-pad-rename-lengths',`mon-build-rename-buffer'\n►►►"
   (unwind-protect
       (mon-toggle-read-only-point-motion)
     (save-excursion
@@ -1092,17 +1134,15 @@ See also; `mon-rename-imgs-in-dir',`mon-parse-rename-images',
             (setq walk-regexps (cdr walk-regexps)))))))
   (mon-toggle-read-only-point-motion))
 
-;;;test-me; -> See below.
-
 ;;; ==============================
-;;; CREATED: <Timestamp: Thursday June 18, 2009 @ 04:09.20 PM - by MON KEY>
-;;; The IMG-LIST arg acquired with: `mon-rename-imgs-in-dir'
+;;; :NOTE The IMG-LIST arg acquired with: `mon-rename-imgs-in-dir'
+;;; :CREATED <Timestamp: Thursday June 18, 2009 @ 04:09.20 PM - by MON KEY>
 (defun mon-parse-rename-images (img-list)
-"Parse IMG-LIST into three elt list of image-type, parent directory, image-path.
+  "Parse IMG-LIST into three elt list of image-type, parent directory, image-path.
 IMG-LIST acquired with: `mon-rename-imgs-in-dir'.\n\n
-See also; `mon-rename-imgs-in-dir',`mon-shorten-rename-image-path',
+:SEE-ALSO `mon-rename-imgs-in-dir',`mon-shorten-rename-image-path',
 `mon-parse-rename-lengths',`mon-pad-rename-lengths',
-`mon-image-rename-propertize',`mon-build-rename-buffer'."
+`mon-image-rename-propertize',`mon-build-rename-buffer'.\n►►►"
   (let* ((prs--rnm img-list)
 	 (shrt-pth-alist (car prs--rnm))
 	 (lng-pth-alist (cadr prs--rnm))
@@ -1113,32 +1153,28 @@ See also; `mon-rename-imgs-in-dir',`mon-shorten-rename-image-path',
 	 (parent-dir (car (last file-dir))))
     `(,file-ext ,parent-dir ,files-dir)))
 
-;;;test-me -> See below.
-
 ;;; ==============================
-;;; CREATED: <Timestamp: Thursday June 18, 2009 @ 06:19.14 PM - by MON KEY>
+;;; :CREATED <Timestamp: Thursday June 18, 2009 @ 06:19.14 PM - by MON KEY>
 (defun mon-shorten-rename-image-path (shorten-path)
   "Shorten a path for presentation in rename buffer.
-See also; `mon-rename-imgs-in-dir',`mon-parse-rename-images',
+:SEE-ALSO `mon-rename-imgs-in-dir',`mon-parse-rename-images',
 ,`mon-parse-rename-lengths',`mon-pad-rename-lengths',
-`mon-image-rename-propertize',`mon-build-rename-buffer'"
+`mon-image-rename-propertize',`mon-build-rename-buffer'.\n►►►"
   (let* ( ;;include `file-name-sans-extension' if we want to use this on files also
 	 (shorten  (last (split-string (directory-file-name shorten-path) "/" ) 3 ))
 	 (showpath (concat "../"(mapconcat 'identity shorten "/"))))
     showpath))
 
-;;;test-me -> See below.
-
 ;;; ==============================
-;;; CREATED: <Timestamp: Monday June 22, 2009 @ 04:36.16 PM - by MON KEY>
+;;; :CREATED <Timestamp: Monday June 22, 2009 @ 04:36.16 PM - by MON KEY>
 (defun mon-parse-rename-lengths (images)
-  "Returns a list of two alists. car is alist1, cdr is alist2.
+  "Return a list of two alists. car is alist1, cdr is alist2.
 Values of alist1 are string lengths of file names in second alist
 Keys of alist1 are shared alist2, so keys of alist1 are indexes into alist2.
 IMAGES should be a list of two alists generated with `mon-rename-imgs-in-dir'.\n\n
-See also; `mon-rename-imgs-in-dir',`mon-parse-rename-images',
+:SEE-ALSO `mon-rename-imgs-in-dir',`mon-parse-rename-images',
 `mon-shorten-rename-image-path', `mon-pad-rename-lengths',
-`mon-image-rename-propertize',`mon-build-rename-buffer'."
+`mon-image-rename-propertize',`mon-build-rename-buffer'.\n►►►"
   (let (get-imgs 
 	short-assoc 
 	parse-short-keys 
@@ -1159,16 +1195,14 @@ See also; `mon-rename-imgs-in-dir',`mon-parse-rename-images',
     (setq get-imgs (car get-imgs)
 	  get-imgs (cons (sort new-val '(lambda (x y) (> (cadr x) (cadr y)))) get-imgs))))
 
-;;;test-me -> See below.
-
 ;;; ==============================
-;;; CREATED: <Timestamp: Monday June 22, 2009 @ 07:29.14 PM - by MON KEY>
+;;; :CREATED <Timestamp: Monday June 22, 2009 @ 07:29.14 PM - by MON KEY>
 (defun mon-pad-rename-lengths (pad-list)
   "PAD-LIST is an alist of variable width strings padded to match > length string.
-Returns a PAD-LIST as a multi valued list of padded strings.
+Return a PAD-LIST as a multi valued list of padded strings.
 car of returned list is the length of the longest _padded_ string in alist.
 cdr is an alist of strings padded to match max-length of car.\n
-EXAMPLES:
+:EXAMPLE
 This is constant: \(length \"1)  ▪ [ ]\") ;=> 9\n
 This is constant maybe: \(length \"------------------------------\") ;=> 30\n
 This is variable: \(length \"image-xyzqqqqqqqqqqqq\") ;=> 21\n
@@ -1194,10 +1228,10 @@ So is this: \(length \"this-is-a-file-namexxxxxxxxxxxxx\") ;=> 32\n
 08) this-is-a-file-namexxxxxxxxxxxxx ▪ [ ]
 09) this-is-a-file-namexxxxxxxxx ▪▪▪▪▪ [ ]
 10) this-is-a-file-namexxxxxxx ▪▪▪▪▪▪▪ [ ]\n\n
-See also; `mon-rename-imgs-in-dir',`mon-parse-rename-images',
+:SEE-ALSO `mon-rename-imgs-in-dir',`mon-parse-rename-images',
 `mon-shorten-rename-image-path',`mon-parse-rename-lengths',
 `mon-pad-rename-lengths',`mon-image-rename-propertize',
-`mon-build-rename-buffer'."
+`mon-build-rename-buffer'.\n►►►"
   (let* ((cp-pad pad-list) ;;(cp-pad this-4)
          (to-pad (copy-tree cp-pad))
          (len-nms (car to-pad))
@@ -1229,25 +1263,24 @@ See also; `mon-rename-imgs-in-dir',`mon-parse-rename-images',
                                      ((and (= new-len 31) (= lngst-nm 21)(= comp-mod 10)) 1)
                                      ((and (>= new-len 31) (= len-x lngst-nm)) 1)
                                      ((and (>= new-len 31) (< len-x lngst-nm)) (1+ (- lngst-nm len-x)))
-                                     ;;we should not see this last one 
+                                     ;; :NOTE We should not see this last one 
                                      (t (1+ (- lngst-nm len-x))))
                                9642) 
-                              " [ ]"))) ;;this can be extended as an &optional arg
+                              " [ ]"))) ;; :NOTE This can be extended as an &optional arg
                 (setcdr (assoc id-x put-nms) pad-str)))
             len-nms)
     (setq put-nms (cons new-len put-nms))
   put-nms))
 
-;;;test-me -> See below.
-
 ;;; ==============================
-;;; CREATED: <Timestamp: Wednesday June 24, 2009 @ 05:54.11 PM - by MON KEY>
+;;; :CREATED <Timestamp: Wednesday June 24, 2009 @ 05:54.11 PM - by MON KEY>
 (defun mon-build-rename-buffer (image-type) ;&optional alt-path
-  "Generates a rename buffer for marking images to name.
-Generated with: `mon-rename-imgs-in-dir',`mon-parse-rename-images',
-`mon-shorten-rename-image-path',`mon-parse-rename-lengths',
-`mon-pad-rename-lengths',`mon-image-rename-propertize'.
-EXAMPLE:\n
+  "Generate a rename buffer for marking images to name.\n
+Return value generated with: 
+ `mon-rename-imgs-in-dir', `mon-parse-rename-images',
+ `mon-shorten-rename-image-path', `mon-parse-rename-lengths',
+ `mon-pad-rename-lengths', `mon-image-rename-propertize'\n
+:EXAMPLE\n
 --------------------------------------
 Renaming images in directory:\n> ../some/path/to/somewhere
 --------------------------------------
@@ -1260,7 +1293,8 @@ image-rename-prefix: [ ]\nimage-rename-suffix: [ ]\nimage-rename-start#: [ ]
 06) this-is-a-file-namex ▪▪▪▪▪▪▪▪▪ [ ]\n2) this-is-a-file-namexxxxxxxx ▪▪▪ [ ]
 9) this-is-a-file-namexxxxxx ▪▪▪▪▪ [ ]\n8) this-is-a-file-namexxxxx ▪▪▪▪▪▪ [ ]
 3) this-is-a-file-namexx ▪▪▪▪▪▪▪▪▪ [ ]\n5) this-is-a-file-namexx ▪▪▪▪▪▪▪▪▪ [ ]
---------------------------------------"
+--------------------------------------\n
+:SEE-ALSO .\n►►►"
   (let* ((get-images (mon-rename-imgs-in-dir image-type)) ;alt-path?
 	 (image-count (length (car get-images)))
 	 (parse-imgs (mon-parse-rename-images get-images))
@@ -1295,12 +1329,13 @@ image-rename-prefix: [ ]\nimage-rename-suffix: [ ]\nimage-rename-start#: [ ]
         (mon-image-rename-propertize (point-min))))
     (display-buffer "*rename-images*")))
 
+
 ;;; ==============================
 ;;; TEST-CASES:
 ;;; ==============================
 
 ;;; ==============================
-;;; NOTE:
+;;; :NOTE
 ;;; Before running tests build some test-cases in following path:
 ;;; (concat *ebay-images-bmp-path* "/e1444") if they don't already exist. Using:
 ;;;
@@ -1314,7 +1349,7 @@ image-rename-prefix: [ ]\nimage-rename-suffix: [ ]\nimage-rename-start#: [ ]
 ;;;
 ;;; ==============================
 
-;;; TESTING: `mon-parse-rename-lengths' 
+;;; :TESTING `mon-parse-rename-lengths' 
 ;;; Following symbols: 
 ;;; `this-3', `this-3-b', `this-3-c', `this-3-d' 
 ;;; Are omparable to return value of:
@@ -1354,10 +1389,10 @@ image-rename-prefix: [ ]\nimage-rename-suffix: [ ]\nimage-rename-start#: [ ]
 ;; `(,(acons  10 "e1456.bmp" (cdar this-3-c)) 
 ;; ,(acons  10 "u:/plv-1/plv2/plv3/e1144/e1456.bmp" (cadr this-3-c))))
 
-;;;test-me;(mon-parse-rename-lengths this-3)
-;;;test-me;(mon-parse-rename-lengths this-3-b) 
-;;;test-me;(mon-parse-rename-lengths this-3-c) 
-;;;test-me;(mon-parse-rename-lengths this-3-d)
+;;; :TEST-ME (mon-parse-rename-lengths this-3)
+;;; :TEST-ME (mon-parse-rename-lengths this-3-b) 
+;;; :TEST-ME (mon-parse-rename-lengths this-3-c) 
+;;; :TEST-ME (mon-parse-rename-lengths this-3-d)
 
 ;;; cadaar => 32  length of longest name
 ;;; car => ((7 32) (2 31) (4 30) (9 29) (1 28) (8 27) (10 26) (3 25) (5 24) (6 23))
@@ -1368,20 +1403,20 @@ image-rename-prefix: [ ]\nimage-rename-suffix: [ ]\nimage-rename-start#: [ ]
 ;;;         (9 . "this-is-a-file-namexxxxxxxxxx") (10 . "this-is-a-file-namexxxxxxx"))
 
 ;;; ==============================
-;;; testing `mon-parse-rename-images'
+;;; :TESTING `mon-parse-rename-images'
 ;;; Following symbols: 
 ;;; `this-3', `this-3-b', `this-3-c', `this-3-d' 
 ;;; comparable to return value of:
 ;;; (mon-parse-rename-images 
 ;;;  (mon-rename-imgs-in-dir ".bmp" "u:/plv-1/plv2/plv3/e1144")))
 
-;;;test-me;(mon-parse-rename-images this-3)
-;;;test-me;(mon-parse-rename-images this-3-b) 
-;;;test-me;(mon-parse-rename-images this-3-c) 
-;;;test-me;(mon-parse-rename-images this-3-d)
+;;; :TEST-ME (mon-parse-rename-images this-3)
+;;; :TEST-ME (mon-parse-rename-images this-3-b) 
+;;; :TEST-ME (mon-parse-rename-images this-3-c) 
+;;; :TEST-ME (mon-parse-rename-images this-3-d)
 
 ;;; ==============================
-;;; TESTING: `mon-pad-rename-lengths'
+;;; :TESTING `mon-pad-rename-lengths'
 ;;; Following symbols: 
 ;;; `this-4', `this-4-b', `this-4-c', `this-4-d' 
 ;;; Comparable to return value of:
@@ -1393,10 +1428,10 @@ image-rename-prefix: [ ]\nimage-rename-suffix: [ ]\nimage-rename-start#: [ ]
 ;; (setq this-4-c (mon-parse-rename-lengths this-3-c)) ; 9 elements <= 21
 ;; (setq this-4-d (mon-parse-rename-lengths this-3-d)) ; 10 elements <= 21
 
-;;;test-me;(mon-pad-rename-lengths this-4)
-;;;test-me;(mon-pad-rename-lengths this-4-b)
-;;;test-me;(mon-pad-rename-lengths this-4-c)
-;;;test-me;(mon-pad-rename-lengths this-4-d)
+;;; :TEST-ME (mon-pad-rename-lengths this-4)
+;;; :TEST-ME (mon-pad-rename-lengths this-4-b)
+;;; :TEST-ME (mon-pad-rename-lengths this-4-c)
+;;; :TEST-ME (mon-pad-rename-lengths this-4-d)
 
 ;;; ==============================
 ;;; TESTING: `mon-shorten-rename-image-path'
@@ -1412,17 +1447,17 @@ image-rename-prefix: [ ]\nimage-rename-suffix: [ ]\nimage-rename-start#: [ ]
 ;; (setq this-5-c (caddr (mon-parse-rename-images this-3-c)))
 ;; (setq this-5-d (caddr (mon-parse-rename-images this-3-d)))
 
-;;;test-me;(mon-shorten-rename-image-path  this-5)
-;;;test-me;(mon-shorten-rename-image-path  this-5-b)
-;;;test-me;(mon-shorten-rename-image-path  this-5-c)
-;;;test-me;(mon-shorten-rename-image-path  this-5-d)
-;;;test-me;(mon-shorten-rename-image-path  "u:/plv-1/plv2/plv3/e1144")
-;;;test-me;(mon-shorten-rename-image-path  "u:/plv-1/plv2/plv3/e1144/")
-;;;test-me;(mon-shorten-rename-image-path  (caddr '("bmp" "e1144" "u:/plv-1/plv2/plv3/e1144")))
-;;;test-me;(mon-shorten-rename-image-path  "u:/plv-1/plv2/plv3/e1144/e1456.bmp")  ;SHOULD-FAIL
+;;; :TEST-ME (mon-shorten-rename-image-path  this-5)
+;;; :TEST-ME (mon-shorten-rename-image-path  this-5-b)
+;;; :TEST-ME (mon-shorten-rename-image-path  this-5-c)
+;;; :TEST-ME (mon-shorten-rename-image-path  this-5-d)
+;;; :TEST-ME (mon-shorten-rename-image-path  "u:/plv-1/plv2/plv3/e1144")
+;;; :TEST-ME (mon-shorten-rename-image-path  "u:/plv-1/plv2/plv3/e1144/")
+;;; :TEST-ME (mon-shorten-rename-image-path  (caddr '("bmp" "e1144" "u:/plv-1/plv2/plv3/e1144")))
+;;; :TEST-ME (mon-shorten-rename-image-path  "u:/plv-1/plv2/plv3/e1144/e1456.bmp")  ;SHOULD-FAIL
 
 ;;; ==============================
-;;;test-me;(mon-image-rename-propertize)
+;;; :TEST-ME (mon-image-rename-propertize)
 ;; ------------------------------
 ;; Renaming images in directory: 
 ;; > ../some/path/to/somewhere
@@ -1447,7 +1482,7 @@ image-rename-prefix: [ ]\nimage-rename-suffix: [ ]\nimage-rename-start#: [ ]
 ;; 5) this-is-a-file-namexxxxx ▪▪▪▪▪▪▪▪▪▪ [ ]
 
 ;;; ==============================
-;;;test-me;(mon-build-rename-buffer ".bmp")
+;;; :TEST-ME (mon-build-rename-buffer ".bmp")
 ;; ------------------------------------------
 ;; Renaming images in directory:             
 ;; > ../BMP-Scans/e1144                      
@@ -1481,7 +1516,7 @@ image-rename-prefix: [ ]\nimage-rename-suffix: [ ]\nimage-rename-start#: [ ]
 ;;; ==============================
 
 ;;; ==============================
-;;; CLEANUP:
+;;; :CLEANUP
 ;; (mapc (lambda (x)(progn (makunbound x)(unintern x)))
 ;;  '(this-3 this-3-b this-3-c this-3-d
 ;;    this-4 this-4-b this-4-c this-4-d
@@ -1494,3 +1529,66 @@ image-rename-prefix: [ ]\nimage-rename-suffix: [ ]\nimage-rename-start#: [ ]
 ;;; ================================================================
 ;;; mon-rename-image-utils.el ends here
 ;;; EOF
+
+
+;;; ==============================
+;;; TODO: Finish below so `mon-get-nefs-in-dir' and `mon-get-ebay-bmps-in-dir'
+;;; can take an interactive arg. The definition below is different than the one
+;;; provided in ebay-template.el
+;;;
+;; (defun mon-get-imgs-in-dir-int (bmp-or-nef fll-pth &optional alt-pth intp)
+;;   "Helper function for retrieving imgs in dir.
+;;  CALLED-BY: `get-bmps-in-dir' and `get-nefs-in-dir'."
+;; (interactive 
+;;  (list 
+;;   (let ((choice '("bmp" "nef")))
+;;     (completing-read "get img of type [bmp|nef]: " choice nil t "bmp"))
+;;   (yes-or-no-p "with full path:")
+;;   (yes-or-no-p "Use an alt path: ")
+;;   t))
+;;   (let* ((was-int intp)
+;; 	 (fp fll-pth)
+;; 	 (altp alt-pth)
+;; 	 (bmpORnef bmp-or-nef)
+;; 	 (def-dir (if (string= bmp-or-nef "bmp")
+;; 		     *ebay-images-bmp-path*
+;; 		    *nef-scan-nefs-path*))
+;; 	 (alt (cond ((and altp was-int)
+;; 		     (read-directory-name "Find in this path:" def-dir default-directory))
+;; 		    ((and (not intp) (not altp)) 
+;; 		     (
+;; 		      default-directory
+;; 			      )))
+;;
+;; (let* ((img-check  '("\\.bmp" "\\.nef"))
+;;        (path-check `(,default-directory ,*ebay-images-bmp-path* ,*nef-scan-nefs-path* ))
+;;        (test-imgp 
+;; 	(setq path-check (car patch-check)
+;; 	(setq img-check  (car img-check) ;(setq img-check (cdr img-check)
+;; 	(while (not (directory-files path-check nil img-check))
+;;      (setq path-check (lambda (img-check) 
+;; 	  (unless (directory-files default-directory nil img-check))
+;;
+;; ;(and  was-int altp))
+;; ;(mon-get-imgs-in-dir-int "bmp" nil nil)
+;; ;(concat *ebay-images-bmp-path* "/e1072/") t)
+;; ;
+;;
+;; 	 (alt (if (and altp was-int)
+;; 		     (read-directory-name "Find in this path:" def-dir default-directory)
+;; 		    altp))
+;; 	 (img-type
+;; 	  (if (string= bmp-or-nef "bmp")
+;; 	      (get-bmps-in-dir fp alt)
+;; 	    (get-nefs-in-dir fp alt)))
+;; 	 (vals-rtrn))
+;;     (setq vals-rtrn SOME_VAL)
+;;     (message "get imgs of type: %s | show full-path %s | in this path: %s" bmpORnef fp alt)
+;;   vals-rtrn))
+;;;
+;; (defalias 'get-imgs-in-dir 'mon-get-imgs-in-dir-int)
+;;
+;;; :TEST-ME (mon-get-imgs-in-dir-int "bmp" t (concat *ebay-images-bmp-path* "/e1072/"))
+;;; :TEST-ME (mon-get-imgs-in-dir-int "bmp" nil (concat *ebay-images-bmp-path* "/e1072/"))
+;;; :TEST-ME (mon-get-imgs-in-dir-int "bmp" t nil)
+;;; :TEST-ME (call-interacively 'mon-get-imgs-in-dir-int)

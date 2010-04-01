@@ -30,3 +30,61 @@ Another option might be to compile the source here http://fmg-www.cs.ucla.edu/ge
 This inspired me to test with CVS Emacs. 
 To use ispell just install aspell from Cygwin.
 --LennartBorgman
+
+[new:AndreyBalaguta:2010-04-01 07:04 UTC]
+
+
+== Configuring Ispell with Russian Dictionary ==
+
+(This is a repost from my blog entry, hopefully someone will find it useful)
+
+Emacs <code>ispell</code> package is capable of running both Ispell and Aspell, but
+as far as I've tried Aspell, it gives some nonsensical results. Maybe this 
+was due to some misconfiguration, but I wasn't eager to sort it out.
+
+So I went with Ispell. Configuring it is also a bit of obscure process, so 
+I thought it would be good to have an installation guide step by step:
+
+Download Ispell from [ftp://ftp.franken.de/pub/win32/develop/gnuwin32/cygwin/porters/Humblet_Pierre_A/V1.1/ispell-3.2.06-cygwin-1.3-bin.tar.gz here].
+
+You should have Cygwin installed on your machine. Let's say, it is in folder <code>c:\Programs\Cygwin</code>.
+
+Unpack aforementioned Ispell to your Cygwin directory.
+
+Go to <code>c:\Programs\Cygwin\usr\local\bin</code> and copy <code>ispell.exe</code> to <code>c:\Programs\Cygwin\bin</code>. This is needed to run ispell directly from Windows, bypassing Cygwin shells.
+
+Download russian dictionaries from [ftp://scon155.phys.msu.su/pub/russian/ispell/rus-ispell.tar.gz here] and unpack them to some temporary folder. Let's say it would be <code>d:\temp</code>.
+
+Run Cygwin shell and perform the following commands (modify them appropriately):
+
+<pre>
+    cd /cygdrive/d/temp
+    make win
+    mv russian.hash russianw.hash
+    mv russian.aff russianw.aff
+    mv russianw.* /usr/local/lib
+</pre>
+
+From now on, you sould be able to check files encoded in windows-1251 charset directly under Cygwin, like that:
+
+<pre>
+    LANG=ru_RU ispell -drussianw file.txt
+</pre>
+
+Or, under <code>cmd.exe</code>:
+
+<pre>
+    set LANG=ru_RU.CP1251
+    c:\Programs\Cygwin\bin\ispell.exe -drussianw file.txt
+</pre>
+
+Now all we need to do is to configure Emacs correctly. Add the following lines to your dotemacs:
+
+
+    (setq ispell-program-name "c:\\Programs\\cygwin\\bin\\ispell.exe")
+    (setq ispell-dictionary "russianw")
+
+
+This should do the task. Now restart emacs and try running ispell on some file.
+
+--AndreyBalaguta

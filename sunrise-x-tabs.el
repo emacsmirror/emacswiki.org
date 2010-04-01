@@ -30,9 +30,8 @@
 ;; The  main  difference between tabs and other mechanisms is that once a buffer
 ;; has been assigned to a tab, it will not be killed automatically  by  Sunrise,
 ;; so  it’s  possible  to keep it around as long as necessary with all its marks
-;; and state untouched. On the  other  hand,  tabs  are  not  persistent  across
-;; sessions; if you need a persistent mechanism consider bookmarks, checkpoints,
-;; materialized virtual buffers or history listings.
+;; and state untouched.  Tabs can be persisted across sessions using the Desktop
+;; feature.
 
 ;; Creating, using and destroying tabs are fast and easy operations, either with
 ;; mouse or keyboard:
