@@ -1,12 +1,15 @@
-=BBCode Modes=
+[http://en.wikipedia.org/wiki/Bbcode BBCode] is a lightweight markup language used in web forums (typically PHP-based ones) for things like bolding text, title, links, etc. There is no official standard for BBCode, but it is generally agreed that ##[b][/b]## boldens text, ##[i][/i]## italicizes it, etc.
 
-To edit BBCode, you can use the xbbcode-mode, at  [http://xahlee.org/emacs/xbbcode-mode.html xbbcode-mode home page]
+== BBCode modes ==
 
-There is another simple BBCode mode at [http://bitbucket.org/jfm/emacs-bbcode/ bitbucket].
+Here are two major modes for editing BBCode:
+
+* '''[http://xahlee.org/emacs/xbbcode-mode.html xbbcode-mode.el]''' by [[Xah Lee]]
+* '''[http://bitbucket.org/jfm/emacs-bbcode/ bcode-mode.el]''' by Jason McBrayer ([[jfm]])
 
 == Other tips ==
 
-A collection of SkeletonMode commands for the commonly encountered "BB code" of web forums. Bind to appropriate keys (below) and use together with VisualLineMode to conveniently write forum posts in Emacs!
+If you don't want to use a major mode, you can use the following code together with SkeletonMode. Bind to appropriate keys (below) and use together with VisualLineMode.
 
     (setq skeleton-end-newline nil)
     (define-skeleton bb-italic
@@ -60,7 +63,7 @@ You might want to piece together a [[minor mode]] if !AUCTeX's keys are foreign 
 == See also ==
 
 * TypographicalPunctuationMarks to adorn your posts with "smart quotes", ap'strophes, en&ndash;dashes, ellipses... etc.
-* [[Yasnippet]] for an another way of entering BBCode tags.
+* [[Yasnippet]] for another way of entering BBCode tags.
 
 ----
 CategoryMarkup

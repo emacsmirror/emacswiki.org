@@ -1,99 +1,128 @@
 ;;; naf-mode-db-flags.el --- keyword lists and regexps for font-locking in `naf-mode'
 ;; -*- mode: EMACS-LISP; -*-
+
 ;;; ================================================================
-;;; DESCRIPTION:
-;;; naf-mode-db-flags provides keyword lists and regexps for font-locking in
-;;; `naf-mode' of generic db 'constants' e.g. words which appear routinely in
-;;; national DBs but are not headwords and which do not fall under another
-;;; broader class.
-;;;
-;;; FUNCTIONS:►►►
-;;;
-;;; FUNCTIONS:◄◄◄
-;;;
-;;; CONSTANTS:
-;;; `naf-mode-db-numbers-flag'    -> Flagging of national db number fields.
-;;; `*naf-mode-x-of*'             -> Keywords for name flags and x-of type relationships.
-;;; `naf-mode-timestamp-flag'     -> :DOCUMENT-ME
-;;; `naf-mode-accessed-by-flag'   -> :DOCUMENT-ME
-;;; `naf-mode-url-flag'           -> :DOCUMENT-ME
-;;;
-;;; VARIABLES:
-;;;
-;;; MACROS:
-;;;
-;;; ALIASED/ADVISED/SUBST'D:
-;;;
-;;; DEPRECATED:
-;;;
-;;; RENAMED: 
-;;;
-;;; MOVED:
-;;;
-;;; MOVED:
-;;; `naf-mode-db-field-flags-ulan-paren' -> ./naf-mode-ulan-utils.el
-;;; REQUIRES:
-;;;
-;;; TODO:
-;;; Following need to be :RENAMED   -> cannonical name
-;;; `naf-mode-db-field-flags'       -> :DOCUMENT-ME :RENAME-ME -> -flag
-;;; `naf-mode-alternate-name-flags' -> :DOCUMENT-ME :RENAME-ME -> -flag
-;;; `naf-mode-benezit-date'         -> :DOCUMENT-ME :RENAME-ME -> -benezit-date-flag
-;;; `*naf-mode-x-of*'               -> :DOCUMENT-ME :RENAME-ME -> -x-of-flag
-;;;
-;;;
-;;; NOTES:
-;;; This file uses the provide/require idiom because of the defconstant forms.
-;;;
-;;; SNIPPETS:
-;;; naf-mode-CONSTANT-NAME uses naf-mode-FACENAME.
-;;;
-;;; THIRD PARTY CODE:
-;;;
-;;; AUTHOR: MON KEY
-;;; MAINTAINER: MON KEY
-;;;
-;; URL: `http://www.emacswiki.org/emacs/naf-mode-db-flags.el')
-;;; FILE-PUBLISHED: <Timestamp: #{2009-11-21T20:42:32-05:00Z}#{09477} - by MON KEY>
-;;;
-;;; CREATED:
-;;; <Timestamp: Saturday April 11, 2009 @ 01:28.57 PM - by MON KEY>
-;;; HEADER-ADDED: <Timestamp: #{2009-08-09T12:13:36-04:00Z}#{09327} - by MON KEY>
+;; Copyright © 2009-2010 MON KEY. All rights reserved.
 ;;; ================================================================
-;;; This file is not part of GNU Emacs.
-;;;
-;;; This program is free software; you can redistribute it and/or
-;;; modify it under the terms of the GNU General Public License as
-;;; published by the Free Software Foundation; either version 3, or
-;;; (at your option) any later version.
-;;;
-;;; This program is distributed in the hope that it will be useful,
-;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-;;; General Public License for more details.
-;;;
-;;; You should have received a copy of the GNU General Public License
-;;; along with this program; see the file COPYING.  If not, write to
-;;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
-;;; Floor, Boston, MA 02110-1301, USA.
+
+;; FILENAME: naf-mode-db-flags.el
+;; AUTHOR: MON KEY
+;; MAINTAINER: MON KEY
+;; CREATED: 2009-04-11T13:28:57-04:00Z
+;; VERSION: 1.0.0
+;; COMPATIBILITY: Emacs23.*
+;; KEYWORDS: naf-mode, applications, matching, i18n, calendar
+
 ;;; ================================================================
-;;; Permission is granted to copy, distribute and/or modify this
-;;; document under the terms of the GNU Free Documentation License,
-;;; Version 1.3 or any later version published by the Free Software
-;;; Foundation; with no Invariant Sections, no Front-Cover Texts,
-;;; and no Back-Cover Texts. A copy of the license is included in
-;;; the section entitled "GNU Free Documentation License".
-;;; A copy of the license is also available from the Free Software
-;;; Foundation Web site at:
-;;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
-;;; ================================================================
-;;; Copyright © 2009, 2010 MON KEY 
+
+;;; COMMENTARY: 
+
+;; =================================================================
+;; DESCRIPTION:
+;; naf-mode-db-flags provides keyword lists and regexps for font-locking in
+;; `naf-mode' of generic db 'constants' e.g. words which appear routinely in
+;; national DBs but are not headwords and which do not fall under another
+;; broader class.
+;;
+;; FUNCTIONS:►►►
+;;
+;; FUNCTIONS:◄◄◄
+;;
+;; MACROS:
+;;
+;; METHODS:
+;;
+;; CLASSES:
+;;
+;; CONSTANTS:
+;; `naf-mode-db-numbers-flag'    -> Flagging of national db number fields.
+;; `*naf-mode-x-of*'             -> Keywords for name flags and x-of type relationships.
+;; `naf-mode-timestamp-flag'     -> :DOCUMENT-ME
+;; `naf-mode-accessed-by-flag'   -> :DOCUMENT-ME
+;; `naf-mode-url-flag'           -> :DOCUMENT-ME
+;;
+;; FACES:
+;;
+;; VARIABLES:
+;;
+;; ALIASED/ADVISED/SUBST'D:
+;;
+;; DEPRECATED:
+;;
+;; RENAMED:
+;;
+;; MOVED:
+;; `naf-mode-db-field-flags-ulan-paren' -> ./naf-mode-ulan-utils.el
+;;
+;; TODO:
+;; Following need to be :RENAMED   -> cannonical name
+;; `naf-mode-db-field-flags'       -> :DOCUMENT-ME :RENAME-ME -> -flag
+;; `naf-mode-alternate-name-flags' -> :DOCUMENT-ME :RENAME-ME -> -flag
+;; `naf-mode-benezit-date'         -> :DOCUMENT-ME :RENAME-ME -> -benezit-date-flag
+;; `*naf-mode-x-of*'               -> :DOCUMENT-ME :RENAME-ME -> -x-of-flag
+;;
+;; NOTES:
+;; This file uses the provide/require idiom because of the defconstant forms.
+;;
+;; SNIPPETS:
+;;
+;; REQUIRES:
+;;
+;; THIRD-PARTY-CODE:
+;;
+;; URL: http://www.emacswiki.org/emacs/naf-mode-db-flags.el
+;; FIRST-PUBLISHED: <Timestamp: #{2009-11-21T20:42:32-05:00Z}#{09477} - by MON>
+;; 
+;; EMACSWIKI: { URL of an EmacsWiki describing naf-mode-db-flags. }
+;;
+;; HEADER-ADDED: <Timestamp: #{2009-08-09T12:13:36-04:00Z}#{09327} - by MON>
+;;
+;; FILE-CREATED:
+;; <Timestamp: #{2009-04-11T13:28:57-04:00Z} - by MON KEY>
+;;
+;; =================================================================
+
+;;; LICENSE:
+
+;; =================================================================
+;; This file is not part of GNU Emacs.
+
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 3, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program; see the file COPYING.  If not, write to
+;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
+;; Floor, Boston, MA 02110-1301, USA.
+;; =================================================================
+;; Permission is granted to copy, distribute and/or modify this
+;; document under the terms of the GNU Free Documentation License,
+;; Version 1.3 or any later version published by the Free Software
+;; Foundation; with no Invariant Sections, no Front-Cover Texts,
+;; and no Back-Cover Texts. A copy of the license is included in
+;; the section entitled ``GNU Free Documentation License''.
+;; 
+;; A copy of the license is also available from the Free Software
+;; Foundation Web site at:
+;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
+;; Copyright © 2009-2010 MON KEY 
+;;; ==============================
+
 ;;; CODE:
 
 ;;; ==============================
 (provide 'naf-mode-db-flags)
 ;;; ==============================
+
+(eval-when-compile (require 'cl))
 
 ;;; ==============================
 ;;; :MODIFICATIONS <Timestamp: Wednesday July 29, 2009 @ 03:44.51 PM  - by MON KEY>
@@ -113,14 +142,13 @@
           ">\\)")
   "*Regexp matches name portion \" - NAME\" of time stamp.\n
 Used for fontlocking of timestamps generated with `mon-stamp'.
-EXAMPLE:\n
-<Timestamp: Wednesday July 29, 2009 @ 03:32.43 PM  - by MON KEY>\n
+EXAMPLE:\n\n<Timestamp: Wednesday July 29, 2009 @ 03:32.43 PM  - by MON KEY>\n
 :SEE-ALSO `mon-timestamp', `mon-accessed-time-stamp', `mon-accessed-stamp',
 `*mon-timestamp-cond*', `naf-mode-accessed-by-flag'.\n
-:USED-IN `naf-mode'\n.►►►")
-;; 
-;;; :TEST-ME naf-mode-timestamp-flag
-;;;(progn (makunbound 'naf-mode-timestamp-flag) (unintern 'naf-mode-timestamp-flag) )
+:USED-IN `naf-mode'.\n►►►")
+;;
+;;;(progn (makunbound 'naf-mode-timestamp-flag) 
+;;;       (unintern 'naf-mode-timestamp-flag) )
 
 ;;; ==============================
 ;;; :MODIFICATIONS <Timestamp: Wednesday July 29, 2009 @ 03:44.51 PM  - by MON KEY>
@@ -129,7 +157,7 @@ EXAMPLE:\n
           (regexp-opt
            (let ((mon-l (number-sequence 1 9))
                  (bug-l (number-sequence 1 7))
-                 (rtn-l))
+                 rtn-l)
              (dolist (i mon-l)
                (setq rtn-l (cons (cadr (assoc i *MON-NAME*)) rtn-l)))
              (dolist (i bug-l)
@@ -138,31 +166,46 @@ EXAMPLE:\n
            'paren))
   "*Regexp to match name portion \" - NAME\" of accessed stamp in `naf-mode'.\n
 Used for fontlocking of timestamps generated with `mon-accessed-stamp'.\n
-:EXAMPLE\n
+:EXAMPLE\n\n\(let \(gthr-eg\)
+  \(save-excursion
+    \(dotimes \(i 2\) 
+      \(search-forward-regexp naf-mode-accessed-by-flag nil t\)
+      \(push \(match-string-no-properties 0\) gthr-eg\)\)
+    \(nreverse gthr-eg\)\)\)\n
 accessed: Wednesday July 29, 2009 - MON
-.................................!______\n
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^!!!\n
+accessed: #{2010-04-01T17:35:01-04:00Z}#{10134} - MON KEY
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^!!!!!!!\n
 :SEE-ALSO `mon-stamp', `mon-timestamp', `mon-accessed-time-stamp',
 `*mon-timestamp-cond*', `naf-mode-timestamp-flag'.\n►►►")
 ;;
-;;; :TEST-ME naf-mode-accessed-by-flag
+;;,---- :UNCOMMENT-TO-TEST
+;;| (let ((nmabf (mapconcat 'identity 
+;;|                 '("accessed: Wednesday July 29, 2009 - MON"
+;;|                   "accessed: #{2010-04-01T17:27:24-04:00Z}#{10134} - MON KEY") "\n")))
+;;|   (with-temp-buffer 
+;;|     (save-excursion (insert nmabf))
+;;|     (dotimes (i 2) (search-forward-regexp naf-mode-accessed-by-flag))
+;;|     (when (eq (line-number-at-pos) 2) "BUBBA!")))
+;;`----
+;;
 ;;;(progn (makunbound 'naf-mode-accessed-by-flag) 
 ;;;       (unintern 'naf-mode-accessed-by-flag) )
 
 ;;; ==============================
 (defconst naf-mode-url-flag 
-  (concat
-   "\\(\\(http://\\)\\|\\(www\\.\\)\\)"
-   "\\(\\("
-   "\\(lccn.loc.gov/.*\\)\\|\\(catalogue.bnf.fr/\\).*\\(/PUBLIC\\)\\)"
-   "\\|.*\\(\\."
-   "\\(asp\\|aspx\\|cfm\\|com\\|edu\\|html\\|htm\\|gov"
-   "\\|jsp\\|org\\|net\\|php\\|xml\\|shtml\\|xhtml\\)"
-   "\\)\\)")
+  (concat "\\(\\(http://\\)\\|\\(www\\.\\)\\)"
+          "\\(\\("
+          "\\(lccn.loc.gov/.*\\)\\|\\(catalogue.bnf.fr/\\).*\\(/PUBLIC\\)\\)"
+          "\\|.*\\(\\."
+          "\\(asp\\|aspx\\|cfm\\|com\\|edu\\|html\\|htm\\|gov"
+          "\\|jsp\\|org\\|net\\|php\\|xml\\|shtml\\|xhtml\\)"
+          "\\)\\)")
   "*Regexp to match URL strings for `naf-mode' font-locking.\n
 :NOTE Specific to a limited set of naf-mode related URLs.\n
 :FACE-FONT-LOCKING-WITH `naf-mode-field-url-flag-face'.
 :FACE-DOCUMENTED-IN `naf-mode-field-url-flag-face'.
-:SEE-ALSO `*mon-wrap-url-schemes*'.\n►►►")
+:SEE-ALSO `*regexp-wrap-url-schemes*'.\n►►►")
 ;;
 ;;; :TEST-ME (search-forward-regexp naf-mode-url-flag)
 ;;; http://www.bubba.com/bubba.html
@@ -177,7 +220,7 @@ accessed: Wednesday July 29, 2009 - MON
 ;;; :TODO Build regexp for this: "#{2009-08-15T21:01:56-04:00Z}#{09337}"
 ;;; In naf mode is not getting flagged correctly as spat out by  `mon-accessed-stamp'.
 ;;;
-;;; (defconst naf-mode-time-stamp-ISO-flag
+;;; (defconst naf-mode-time-stamp-ISO-flag nil "")
 
 ;;; ==============================
 (defconst naf-mode-url-wrapper-flag "^\\(\\((URL `\\)\\(.*\\)\\(')\\)\\)[[:space:]]?$"
@@ -186,16 +229,18 @@ Capture groups \\2{...}\\4 catch one URL on line BOL->EOL with/out traiiling WSP
 e.g. \"^(URL {...}')\" _or_ \"^(URL {...}')    \".
 :FACE-FONT-LOCKING-WITH `naf-mode-delimit-url-flag-face'
 :FACE-DOCUMENTED-IN `naf-mode-delimit-url-flag-fface'.\n
-:SEE-ALSO `naf-mode-url-flag',`*mon-wrap-url-schemes*'.\n►►►")
+:SEE-ALSO `naf-mode-url-flag',`*regexp-wrap-url-schemes*'.\n►►►")
 ;;
-;;; :TEST-ME (search-forward-regexp naf-mode-url-wrapper-flag)
-;;
-;;;(progn (makunbound 'naf-mode-url-wrapper-flag)
+;;; :TEST-ME (with-temp-buffer 
+;;;            (save-excursion (insert "(URL `http://www.google.com')"))
+;;;            (if (search-forward-regexp naf-mode-url-wrapper-flag) "BUBBA!"))
+;;; 
+;;;(progn (makunbound 'naf-mode-url-wrapper-flag) 
 ;;;       (unintern 'naf-mode-url-wrapper-flag) )
 
 ;;; ==============================
 ;;; :TODO LOC also has this now: nb2007017414
-;;; :MODIFICATIONS: <Timestamp: Wednesday July 29, 2009 @ 03:54.19 PM  - by MON KEY>
+;;; :MODIFICATIONS <Timestamp: Wednesday July 29, 2009 @ 03:54.19 PM  - by MON KEY>
 (defconst naf-mode-db-numbers-flag
   (concat
    "\\(\\(\\(FRBNF\\)"                        ; <- grp1, grp2, grp3
@@ -209,17 +254,16 @@ e.g. \"^(URL {...}')\" _or_ \"^(URL {...}')    \".
    "\\)"                                ; <- grp2 :CLOSE
    "\\)"                                ; <- grp1 :CLOSE
    "\\|\\<[0-9]\\{8,10\\}\\>")
-;;; (concat "\\(\\(\\(FRBNF\\)\\|\\(\\(n\\|n\\.\\|no\\|no\\.\\)[ ?]\\)"
-;;;         "\\|\\(\\[\\)\\)\\([0-9]\\{8,10\\}\\(]?\\)\\)\\)"
-;;;         "\\|\\<[0-9]\\{8,10\\}\\>")
+  ;; (concat "\\(\\(\\(FRBNF\\)\\|\\(\\(n\\|n\\.\\|no\\|no\\.\\)[ ?]\\)"
+  ;;         "\\|\\(\\[\\)\\)\\([0-9]\\{8,10\\}\\(]?\\)\\)\\)"
+  ;;         "\\|\\<[0-9]\\{8,10\\}\\>")
   "*Regexps for fontlocking national database UID's.\n
 :EXAMPLEn 80126308\nno. 80126308\nn. 80126308\nno 94031775\nn 2005065776\nunk84240548
 \[500006383]\nFRBNF12656015\nFRBNF32759170\n
 :SEE-ALSO 
 :USED-IN `naf-mode'.\n►►►")
-
-;;; :TEST-ME naf-mode-db-numbers-flag
-;;;(progn (makunbound 'naf-mode-db-numbers-flag)
+;;
+;;;(progn (makunbound 'naf-mode-db-numbers-flag) 
 ;;;       (unintern 'naf-mode-db-numbers-flag) )
 
 ;;; ==============================
@@ -244,7 +288,7 @@ e.g. \"^(URL {...}')\" _or_ \"^(URL {...}')    \".
 ;;; ==============================
 
 ;;; ==============================
-;;; CREATED: <Timestamp: #{2009-09-10T14:36:43-04:00Z}#{09374} - by MON KEY>
+;;; :CREATED <Timestamp: #{2009-09-10T14:36:43-04:00Z}#{09374} - by MON KEY>
 (let ((naf-db-field-flags-bnf
        '("forme internationale"
          ;; ;Mise à jour :" ;;; not catching ':' is not a word const
@@ -261,11 +305,14 @@ EXAMPLE:\n\n\(search-forward-regexp naf-mode-db-field-flags-bnf nil t 3\)\)\n
 forme internationale\nMise à jour :\nmasculin\nféminin\n
 Fontlocking provided by `naf-mode-db-field-entry-bnf-fface'.\n
 :SEE-ALSO `naf-db-field-flags'\n:USED-IN `naf-mode'.\n►►►"))
+;;
+;;;(progn (makunbound 'naf-mode-db-field-flags-bnf)
+;;;       (unintern   'naf-mode-db-field-flags-bnf) )
 
 ;;; ==============================
 ;;; `naf-mode-db-field-flags'
-;;; This list can probably be anchored . highlighter later on...
-;;; MODIFICATIONS: <Timestamp: Wednesday July 29, 2009 @ 04:04.11 PM  - by MON KEY>
+;;; :NOTE This list can probably be anchored . highlighter later on...
+;;; :MODIFICATIONS <Timestamp: Wednesday July 29, 2009 @ 04:04.11 PM  - by MON KEY>
 (let ((naf-db-field-flags
        (list  "male"          ;;ULAN => ^\\(Gender: \\(male\\|female\\)\\)"
               "female")))
@@ -274,11 +321,11 @@ Fontlocking provided by `naf-mode-db-field-entry-bnf-fface'.\n
     (concat "\\<" (regexp-opt naf-db-field-flags 'paren) )
 "*Regexp for matching for those terms which appear in conjunction with
 db-field names but occur secondary place in those fields.\n
-EXAMPLE:\nforme internationale\nMise à jour :\nmasculin\nféminin\nmale\nfemale\n
-:SEE-ALSO\n:USED-IN `naf-mode'.\n►►►"))
-
-;;; :TEST-ME naf-mode-db-field-flags
-;;;(progn (makunbound 'naf-mode-db-field-flags) (unintern 'naf-mode-db-field-flags) )
+:EXAMPLE\n\nforme internationale\nMise à jour :\nmasculin\nféminin\nmale\nfemale\n
+:SEE-ALSO \n:USED-IN `naf-mode'.\n►►►"))
+;;
+;;;(progn (makunbound 'naf-mode-db-field-flags) 
+;;;       (unintern 'naf-mode-db-field-flags) )
 
 ;;; ==============================
 ;;; :MODIFICATIONS <Timestamp: Wednesday July 29, 2009 @ 04:01.11 PM  - by MON KEY>
@@ -320,21 +367,21 @@ alternative, pseudo. or pen names.
 :USED-IN `naf-mode'.\n►►►")
 ;;
 ;;;(progn (makunbound 'naf-mode-alternate-name-flags) 
-;;;       (unintern 'naf-mode-alternate-name-flags) )
+;;        (unintern 'naf-mode-alternate-name-flags) )
 
 ;;; ==============================
 ;;; :TODO
 ;;; '"\\(\\(\\(Né\\)\\|\\(Mort\\)\\) le \\)"
 ;;; '"\\<Né le\\>\\|\\<Mort le\\>"
-;;; CREATED: <Timestamp: Monday June 23, 2008 @ 12:35.49 PM - by MON KEY>
+;;; :CREATED <Timestamp: Monday June 23, 2008 @ 12:35.49 PM - by MON KEY>
 (defconst naf-mode-benezit-date  "\\<Né\\>\\|\\<Née\\>\\|\\<Mort\\>"
   "*Regexp to matchthe beginning of the Benezit lifespan string in `naf-mode'.\n
 :FACE-FONT-LOCKING-WITH `naf-mode-date-face'.
 :FACE-DOCUMENTED-IN `naf-mode-date-fface'.
-:SEE-ALSO \n:USED-IN `naf-mode'.")
+:SEE-ALSO \n:USED-IN `naf-mode'.\n►►►")
 ;;
 ;;;(progn (makunbound 'naf-mode-benezit-date) 
-;;;       (unintern 'naf-mode-benezit-date) )
+;;;        (unintern 'naf-mode-benezit-date) )
 
 ;;; ==============================
 ;;; `naf-mode-active-date'
@@ -353,7 +400,7 @@ alternative, pseudo. or pen names.
          "Active ca."
          "Active ca"
          "Active cca.")
-"*List of strings commonly used to designate when an entity was active.\n
+  "*List of strings commonly used to designate when an entity was active.\n
 :REGEXPS-IN `naf-mode-active-date'.
 :FACE-FONT-LOCKING-WITH `naf-mode-date-face'. 
 :FACE-DOCUMENTED-IN `naf-mode-date-fface'.
@@ -369,7 +416,8 @@ alternative, pseudo. or pen names.
 :SEE-ALSO `naf-mode-active-date-flags-paren',
 `naf-mode-active-date-flags-solo'.\n►►►")
 ;;
-;;;(progn (makunbound 'naf-mode-active-date) (unintern 'naf-mode-active-date) )
+;;;(progn (makunbound 'naf-mode-active-date) 
+;;;        (unintern 'naf-mode-active-date) )
 
 ;;; ==============================
 ;;; `naf-mode-active-date-flags-paren'
@@ -392,7 +440,7 @@ alternative, pseudo. or pen names.
     "(ca."
     "(ca"
     "(cca.")
-"*List of strings the active period string in `naf-mode'.\n
+  "*List of strings the active period string in `naf-mode'.\n
 :REGEXPS-IN `naf-mode-active-date-flags-paren'
 :FACE-FONT-LOCKING-WITH `naf-mode-date-face'. 
 :FACE-DOCUMENTED-IN `naf-mode-date-fface'.\n
@@ -404,14 +452,14 @@ alternative, pseudo. or pen names.
 :KEYWORD-LISTS-IN `naf-active-date-flags-paren'
 :FACE-FONT-LOCKING-WITH `naf-mode-date-face'. 
 :FACE-DOCUMENTED-IN `naf-mode-date-fface'.\n
-EXAMPLE:
+:EXAMPLE\n
 \(active circa\n\(active Circa\n\(active c.\n\(active ca.\n\(active ca
 \(active cca.\n\(Active c.\n\(Active ca.\n\(Active ca\n\(Active cca.
 \(c\n\(c.\n\(ca.\n\(ca\n\(cca.\n\(ca.\n\(ca\n\(cca.\n
 :SEE-ALSO `naf-mode-active-date', `naf-mode-active-date-flags-solo'.\n►►►")
 ;;
-;;;(progn (makunbound 'naf-mode-active-date-flags-paren)
-;;;        (unintern 'naf-mode-active-date-flags-paren) )
+;;;(progn (makunbound 'naf-mode-active-date-flags-paren) 
+;;;       (unintern 'naf-mode-active-date-flags-paren) )
 
 ;;; ==============================
 ;;; :MODIFICATIONS <Timestamp: Wednesday July 29, 2009 @ 04:12.28 PM  - by MON KEY>
@@ -450,7 +498,6 @@ EXAMPLE:\n\" c. \"\n\" ca. \"\n\" cca. \"\n\" ca. \"\n\" cca. \"\n
 :SEE-ALSO `*regexp-french-date-prefix*'.\n
 :USED-IN `naf-mode'.\n►►►")
 
-
 ;;; ==============================
 ;;; :TODO (mon-insert-unicode "COMBINING LATIN SMALL LETTER E" t) ;-> ͤ
 (defvar *regexp-french-date-siecle*
@@ -469,9 +516,8 @@ EXAMPLE:\n\" c. \"\n\" ca. \"\n\" cca. \"\n\" ca. \"\n\" cca. \"\n
 :SEE-ALSO `*regexp-french-date-prefix*'.\n
 :USED-IN `naf-mode'.\n►►►")
 
-
 ;;; ==============================
-;;; MODIFICATIONS: <Timestamp: Wednesday July 29, 2009 @ 04:11.23 PM  - by MON KEY>
+;;; :MODIFICATIONS <Timestamp: Wednesday July 29, 2009 @ 04:11.23 PM  - by MON KEY>
 (defvar *naf-x-of*
   '("Apprentice of"       "apprentice of"
     "Apprentice was"      "apprentice was"
@@ -522,8 +568,6 @@ postion. Likewise, those of *naf-mode-ulan-rltd-ppl-corp* are identified as
 having the capitalized form ':X-OF'\n
 :NOTE These are primarily from ULAN.\n
 :SEE-ALSO .\n►►►")
-
-;;; :TEST-ME *naf-mode-x-of*
 ;;
 ;;;(progn (makunbound '*naf-mode-x-of*) (unintern '*naf-mode-x-of*) )
 

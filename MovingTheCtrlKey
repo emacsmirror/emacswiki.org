@@ -231,14 +231,23 @@ Use the menu item: "<Apple Menu>/System Preferences...", select the "Keyboard & 
 == Microsoft Windows ==
 
 === AutoHotkey ===
-On Windows you can use [http://www.autohotkey.com/ AutoHotkey]. It is a little program that lets you write "scripts" to remap the keyboard. The nifty thing is that all scripts can be compiled to an <tt>.exe</tt> file which can be executed on a machine that doesn't have !AutoHotkey.
+On Windows you can use the [http://www.autohotkey.com/ AutoHotkey] program which uses "scripts" to remap the keyboard.
 
-For instance, to swap Caps Lock and Ctrl, you could write
+This method has a couple benefits.  One is scripts can be compiled to a stand alone <tt>.exe</tt> file which can be executed on a machine that doesn't have !AutoHotkey.  Another is, the key re-mapping can be set to only apply in emacs; the caps lock key will behave normaly in every other program. (If that's what you want.)
 
-    +Capslock::Capslock
-    Capslock::Ctrl
+To remap the Caps Lock key to Ctrl save the following to a file named <tt><i>script</i>.ahk</tt>.  Then execute the script with AutoHotKey by double clicking it.  See the [http://autohotkey.free.fr/docs/Scripts.htm#ahk2exe  AHK2EXE] documentation to learn how to make scripts into stand alone executables.
 
-and save as <tt><i>script</i>.ahk</tt>. (The original Caps Lock behavior is here mapped to Shift + Caps Lock.)
+    #IfWinActive emacs  ; if in emacs
+    +Capslock::Capslock ; make shift+Caps-Lock the Caps Lock toggle
+    Capslock::Control   ; make Caps Lock the control button
+    #IfWinActive        ; end if in emacs
+
+The original Caps Lock behavior is here mapped to Shift + Caps Lock.
+
+If you want the caps lock to be the control key everywhere remove the lines that begin with "#IfWinActive".
+
+If you want this AHK script to remain in effect across windows restarts place the script in your startup folder.
+See the [http://www.autohotkey.com/docs/FAQ.htm#Startup startup section of the AHK FAQ] for more specific directions.
 
 === Registry ===
 '''CAUTION'''

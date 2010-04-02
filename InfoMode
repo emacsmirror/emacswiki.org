@@ -49,6 +49,13 @@ Suppose you want to read an Info manual that is not in your InfoPath -- file ##m
 * InfoIndexDefaultEntry -- Make the Info-index ("i") command default to looking up the word at point.
 * [[Iman]] -- Completion for InfoManuals and ManPages when running InfoMode and ManMode.
 
+== Use with Anything ==
+[[Anything]] is a candidate selection framework.
+
+Start with M-x anything-info-at-point, narrow the list by typing some patterns(multiple patterns are space-delimited string),
+select with up/down/pgup/pgdown/C-p/C-n/C-v/M-v, choose with enter,
+With C-z description of selected symbol are displayed without quitting anything session.
+
 ----
 CategoryDocumentation
 CategoryHelp

@@ -24,6 +24,7 @@ EevMode is my partner for years.
 ** Lisp:d-insert-assert.el -- Automagical verbose assert insertion
 * UsageMemo -- Integration of Emacs help system and memo
 * InstallElisp -- Simple Emacs Lisp installer
+* [[AutoInstall]] -- Successor of InstallElisp
 * [[Anything]] (current maintainer)
 ** Lisp:anything-config.el -- Configurations for [[Anything]] (one of current maintainers)
 ** Lisp:anything-migemo.el -- [[Anything]] [[Migemo]] plug-in
@@ -42,6 +43,7 @@ EevMode is my partner for years.
 ** Lisp:anything-rurima.el -- Ruby Reference Manual searcher in Japanese
 ** Lisp:anything-show-completion.el -- Show selection in buffer for anything completion
 ** Lisp:eijiro.el -- Search Eijiro, Japanese <=> English dictionary, with [[Anything]]
+** Lisp:anything-menu.el -- Call [[Anything]] outside Emacs for candidate selection.
 * EmacsLispExpectations -- Simple unit testing framework
 * EmacsLispMock -- Mock/Stub framework
 * Lisp:shell-history.el -- Add command of `shell-command'(etc) to shell history file

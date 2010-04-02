@@ -16,5 +16,7 @@ Also, try map-lines -- it does what your code does, with regexps, and you get th
 
 * http://asf.void.at/emacs/map-lines.el
 
+
+Note- the above page is down.  You can get map-lines from the debian package emacs-goodies-el.
 ----
 CategoryEditing

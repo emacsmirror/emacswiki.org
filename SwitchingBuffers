@@ -23,7 +23,14 @@ Nothing is simpler or quicker. You are not limited to cycling: you can also use 
 
 [new]
 
+== Use with Anything ==
 You can also try [[Anything]] which can be used for switching buffers and also for anything else you can imagine.
+[[Anything]] is a candidate selection framework.
+
+Start with M-x anything-for-files, narrow the list by typing some patterns(multiple patterns are space-delimited string),
+select with up/down/pgup/pgdown/C-p/C-n/C-v/M-v, choose with enter,
+With TAB actions can be selected if the selected candidate has more than one possible action.
+With C-z contents of selected candidate are displayed.
 
 
 [:BufferCycling]

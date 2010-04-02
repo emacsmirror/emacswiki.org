@@ -33,7 +33,7 @@
 ;; The  extension  is  provided  as a minor mode, so you can enable / disable it
 ;; totally by issuing the command (M-x) sr-modeline.
 
-;; This is version 2 $Rev: 250 $ of the Sunrise Commander Modeline Extension.
+;; This is version 2 $Rev: 274 $ of the Sunrise Commander Modeline Extension.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.
@@ -55,10 +55,10 @@
 (require 'easymenu)
 (eval-when-compile (require 'cl))
 
-(defconst sr-modeline-norm-mark " ☼ ") ;; * 
-(defconst sr-modeline-sync-mark " ⚓ ") ;; &
-(defconst sr-modeline-edit-mark " ⚡ ") ;; !
-(defconst sr-modeline-virt-mark " ☯ ") ;; @
+(defconst sr-modeline-norm-mark " * ") ;; ☼ 
+(defconst sr-modeline-sync-mark " & ") ;; ⚓
+(defconst sr-modeline-edit-mark " ! ") ;; ⚡
+(defconst sr-modeline-virt-mark " @ ") ;; ☯
 
 ;;; ============================================================================
 ;;; Core functions:
@@ -216,5 +216,16 @@
   (remove-hook 'sr-start-hook 'sr-modeline-start-once)
   (unintern 'sr-modeline-start-once))
 (add-hook 'sr-start-hook 'sr-modeline-start-once)
+
+;;; ============================================================================
+;;; Desktop support:
+
+(defun sr-modeline-desktop-restore-buffer (desktop-buffer-file-name
+                                           desktop-buffer-name
+                                           desktop-buffer-misc)
+  "Activates the mode line when restoring sunrise buffers using desktop."
+  (unless (string-match "windows" (symbol-name system-type))
+    (sr-modeline)))
+(add-to-list 'sr-desktop-restore-handlers 'sr-modeline-desktop-restore-buffer)
 
 (provide 'sunrise-x-modeline)

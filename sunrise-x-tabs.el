@@ -30,8 +30,9 @@
 ;; The  main  difference between tabs and other mechanisms is that once a buffer
 ;; has been assigned to a tab, it will not be killed automatically  by  Sunrise,
 ;; so  it’s  possible  to keep it around as long as necessary with all its marks
-;; and state untouched.  Tabs can be persisted across sessions using the Desktop
-;; feature.
+;; and state untouched. On the  other  hand,  tabs  are  not  persistent  across
+;; sessions; if you need a persistent mechanism consider bookmarks, checkpoints,
+;; materialized virtual buffers or history listings.
 
 ;; Creating, using and destroying tabs are fast and easy operations, either with
 ;; mouse or keyboard:
@@ -62,7 +63,7 @@
 ;; Sunrise  panes.  It’s meant to be simple and to work nicely with Sunrise with
 ;; just a few tabs (up to 10‐15 per pane, maybe).
 
-;; This is version 1 $Rev: 270 $ of the Sunrise Commander Tabs Extension.
+;; This is version 1 $Rev: 273 $ of the Sunrise Commander Tabs Extension.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.
@@ -82,6 +83,7 @@
 
 (require 'sunrise-commander)
 (require 'easymenu)
+(eval-when-compile (require 'desktop))
 
 (defcustom sr-tabs-follow-panes t
   "Whether tabs should be swapped too when transposing the Sunrise panes."
@@ -386,8 +388,8 @@
         (setq header-line-format (first line-list))
 
         (when (buffer-live-p other-buffer)
-          (set-buffer other-buffer)
-          (setq header-line-format (second line-list))))))
+          (with-current-buffer other-buffer
+            (setq header-line-format (second line-list)))))))
   (force-window-update))
 
 ;;; ============================================================================

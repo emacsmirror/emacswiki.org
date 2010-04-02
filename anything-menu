@@ -1,0 +1,11 @@
+#!/bin/sh
+if [ "$1" = "" ]; then
+    echo "Specify filename!"
+else
+    # If you use gnuclient(gnuserv), comment emacsclient line and uncomment gnudoit line.
+    emacsclient --eval "(anything-menu-select-from-file \"$1\")" > /dev/null
+#    gnudoit "(anything-menu-select-from-file \"$1\")" > /dev/null
+    cat /tmp/.am-tmp-file
+    rm /tmp/.am-tmp-file
+fi  
+# (emacswiki-post "anything-menu")

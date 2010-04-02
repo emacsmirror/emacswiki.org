@@ -41,6 +41,9 @@ With org-mode, it make crash all emacs with a "Fatal error (10)Bus error" when y
 
 A similar problem was recently fixed in the Emacs core. Please try the most recent CVS version, and if the problem persists, please report it with M-x report-emacs-bug.
 
+== LinumPlus ==
+LinumPlus
+
 == Linum: Separating line numbers from text ==
 [new:ChrisDone:26-March-2008]
 I, personally, wanted a one-space separation between the line number display and the buffer contents. Couldn't find a way through the customisation settings. Perhaps it can only be done in Emacs in X, but I don't use X-based. I've found a simple way to do it, however:

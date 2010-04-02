@@ -130,7 +130,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 271 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 272 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.  I  have  also  received
@@ -368,9 +368,6 @@
 (defvar sr-virtual-buffer nil
   "Local flag that indicates the current buffer was originally in VIRTUAL mode")
 
-(defvar sr-virtual-buffer-file-name nil
-  "Source file name in materialized VIRTUAL buffers (buffer-local).")
-
 (defvar sr-dired-directory ""
   "Directory inside which sr-mode is currently active")
 
@@ -389,6 +386,10 @@
 
 (defvar sr-desktop-restore-handlers nil
   "List of handlers defined by extensions to restore SR buffers from desktop.")
+
+(defvar sr-backup-buffer nil
+  "Whenever a back-up buffer is created, it is assigned to this variable after
+  it's made buffer-local.")
 
 (defconst sr-side-lookup (list '(left . right) '(right . left))
   "Trivial alist used by the Sunrise Commander to lookup its own passive side.")
@@ -604,17 +605,7 @@ automatically:
   (make-local-variable 'desktop-save-buffer)
   (setq desktop-save-buffer 'sr-desktop-save-buffer)
 
-  (make-local-variable 'sr-virtual-buffer-file-name)
-  (setq sr-virtual-buffer-file-name nil)
-
   (define-key sr-virtual-mode-map "\C-c\C-c" 'sr-virtual-dismiss))
-
-;; This transfers the value of (buffer-file-name) to the buffer-local variable
-;; sr-virtual-buffer-file-name:
-(add-hook 'after-save-hook
-          (lambda ()
-            (if (eq major-mode 'sr-virtual-mode)
-                (setq sr-virtual-buffer-file-name (buffer-file-name)))))
 
 (defmacro sr-within (dir form)
   "Puts the given form in Sunrise context."
@@ -654,6 +645,7 @@ automatically:
          (with-current-buffer dispose
            (bury-buffer)
            (set-buffer-modified-p nil)
+           (sr-kill-backup-buffer)
            (unless (kill-buffer dispose)
              (kill-local-variable 'sr-current-path-face))))))
 
@@ -1351,9 +1343,9 @@ automatically:
       (sr-save-aspect
        (sr-alternate-buffer (find-file filename)))
       (sr-history-push filename)
-      (setq sr-virtual-buffer-file-name filename)
       (set-visited-file-name nil t)
-      (setq filename nil)))
+      (setq filename nil)
+      (sr-backup-buffer)))
 
   (if (null filename) ;;the file is a virtual directory:
       (sr-keep-buffer)
@@ -1697,9 +1689,17 @@ automatically:
   (message "Browsing \"%s\" in web browser" file))
 
 (defun sr-revert-buffer ()
-  "Refreshes the current pane."
+  "Reverts the current pane, using the  contents of the back-up buffer (if there
+  is one) to do so. If the buffer is non-virtual the back-up buffer is killed."
   (interactive)
-  (sr-save-aspect (revert-buffer)))
+  (if (buffer-live-p sr-backup-buffer)
+      (let ((inhibit-read-only t))
+        (kill-region (point-min) (point-max))
+        (insert-buffer-substring sr-backup-buffer)
+        (sr-beginning-of-buffer)
+        (sr-highlight)
+        (if (eq 'sr-mode major-mode) (sr-kill-backup-buffer)))
+    (sr-save-aspect (revert-buffer))))
 
 (defun sr-omit-mode (&optional force)
   "Toggles dired-omit-mode."
@@ -2496,7 +2496,8 @@ or (c)ontents? ")
     (sr-save-aspect
      (sr-alternate-buffer (apply fun (list default-directory pattern)))
      (sr-virtual-mode)
-     (sr-keep-buffer))))
+     (sr-keep-buffer))
+    (sr-backup-buffer)))
 
 (defun sr-find (pattern)
   "Runs find-dired passing the current directory as first parameter."
@@ -2549,7 +2550,8 @@ or (c)ontents? ")
    (toggle-read-only 1)
    (sr-virtual-mode)
    (sr-keep-buffer)
-   (kill-buffer "*Locate*")))
+   (kill-buffer "*Locate*"))
+  (sr-backup-buffer))
 
 (defun sr-fuzzy-narrow ()
   "Interactively  narrows the contents of the current pane using fuzzy matching:
@@ -2561,13 +2563,11 @@ or (c)ontents? ")
     (dired-change-marks ?* ?\t)
     (let ((stack nil) (filter "") (regex "") (next-char nil) (matches nil))
       (setq next-char (read-char "Fuzzy narrow: "))
+      (sr-backup-buffer)
       (while next-char
         (cond ((memq next-char '(?\n ?\r))
                (setq next-char nil))
               ((memq next-char '(?\b ?\d))
-               (when (eq 'sr-virtual-mode major-mode)
-                 (dired-undo)
-                 (setq next-char nil))
                (sr-revert-buffer)
                (setq stack (cdr stack) filter (caar stack) regex (cdar stack))
                (unless stack (setq next-char nil)))
@@ -2982,11 +2982,10 @@ or (c)ontents? ")
   a pure virtual buffer, i.e. is not attached neither to a directory or  a  file
   in the filesystem."
   (with-current-buffer (if (bufferp buffer) buffer (current-buffer))
-    (not
-     (or (eq 'sr-mode major-mode)
-         (and (local-variable-p 'sr-virtual-buffer-file-name)
-              (stringp sr-virtual-buffer-file-name)
-              (file-exists-p sr-virtual-buffer-file-name))))))
+    (not (or (eq 'sr-mode major-mode)
+             (and (eq 'sr-virtual-mode major-mode)
+                  buffer-file-truename
+                  (file-exists-p buffer-file-truename))))))
 
 (defun sr-desktop-save-buffer (desktop-dirname)
   "Returns the additional data for saving a sunrise buffer to a desktop file."
@@ -2996,7 +2995,7 @@ or (c)ontents? ")
      (delq nil
            (list
             (if (eq major-mode 'sr-virtual-mode)
-                (list 'dirs sr-virtual-buffer-file-name)
+                (list 'dirs buffer-file-truename)
               (cons 'dirs (dired-desktop-buffer-misc-data desktop-dirname)))
             (if (eq (current-buffer) sr-left-buffer) (cons 'left t))
             (if (eq (current-buffer) sr-right-buffer) (cons 'right t))
@@ -3016,13 +3015,12 @@ or (c)ontents? ")
          (buffer
           (if (not is-virtual)
               (dired-restore-desktop-buffer desktop-buffer-file-name
-                                          desktop-buffer-name
-                                          misc-data)
+                                            desktop-buffer-name
+                                            misc-data)
             (desktop-restore-file-buffer (car misc-data)
                                          desktop-buffer-name
                                          misc-data))))
     (when is-virtual
-      (setq sr-virtual-buffer-file-name (buffer-file-name))
       (set-visited-file-name nil t))
     (mapc (lambda (side)
             (when (cdr (assoc side desktop-buffer-misc))
@@ -3080,6 +3078,21 @@ or (c)ontents? ")
   (if (equal sr-selected-window 'left)
       (setq sr-left-buffer (current-buffer))
     (setq sr-right-buffer (current-buffer))))
+
+(defun sr-backup-buffer ()
+  "Creates a background clone of the current buffer to be used as a cache during
+  revert operations."
+  (if (buffer-live-p sr-backup-buffer) (sr-kill-backup-buffer))
+  (save-current-buffer
+    (set (make-local-variable 'sr-backup-buffer)
+         (clone-buffer "*Sunrise Backup*")))
+  (bury-buffer sr-backup-buffer))
+
+(defun sr-kill-backup-buffer ()
+  "Kills the back-up buffer associated to the current one, if there is any."
+  (when (buffer-live-p sr-backup-buffer)
+    (kill-buffer sr-backup-buffer)
+    (setq sr-backup-buffer nil)))
 
 (defun sr-scrollable-viewer (buffer)
   "Sets the other-window-scroll-buffer variable to the given buffer (or nil)."
