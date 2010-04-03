@@ -55,6 +55,7 @@ To use this for BSBufferSelection, consider the following keybinding:
 See also: KillKey
 
 [:UsingIbufferMode]
+
 === Using IbufferMode ===
 
 Killing all Dired buffers is easy with IbufferMode: simply type 
@@ -203,6 +204,15 @@ There is a MidnightMode to clear unused buffers at midnight. I find that I need 
     (setq clean-buffer-list-kill-never-regexps
 	  (append '("^\\*EMMS Playlist\\*.*$")
 		  clean-buffer-list-kill-never-regexps-init))
+
+== Killing Buffers with Anything ==
+[[Anything]] is a candidate selection framework.
+
+Start with M-x anything-kill-buffers, narrow the list by typing some patterns(multiple patterns are space-delimited string),
+select with up/down/pgup/pgdown/C-p/C-n/C-v/M-v, choose with enter,
+With TAB actions can be selected if the selected buffer has more than one possible action.
+With C-z kills buffer without quitting anything session.
+
 
 
 ----

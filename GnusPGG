@@ -202,7 +202,8 @@ Then Gnus will automatically deal with these entries.
 Sometimes, people have a common, company wide GPG key which is not associated with their real email address. E.g. mail to <foo@example.com> must be encrypted with <gpg-company-key@example.com>. Trying to send an encrypted mail to <foo.example.com> will fail in this situation as PGG/GPG can not resolve the recipient.  Unfortunately, there is no direct support in PGG, but you can workaround it by defining an own scheme:
 
 <pre>
-(defun pgg-ensc-gpg-encrypt-region (start end recipients &optional sign)
+(defun pgg-ensc-gpg-encrypt-region (start end recipients 
+					  &optional sign passphrase)
   (pgg-gpg-encrypt-region
    start end
    (mapcar (lambda (rcpt)
@@ -210,10 +211,10 @@ Sometimes, people have a common, company wide GPG key which is not associated wi
 	       (or (when bbrec (bbdb-get-field bbrec 'gpg-key))
 		   rcpt)))
 	   recipients)
-   sign))
+   sign passphrase))
 
-(defun pgg-ensc-gpg-decrypt-region (start end)
-  (pgg-gpg-decrypt-region start end))
+(defun pgg-ensc-gpg-decrypt-region (start end &optional passphrase)
+  (pgg-gpg-decrypt-region start end passphrase))
 
 (defun pgg-ensc-gpg-sign-region (start end &optional cleartext)
   (pgg-gpg-sign-region start end cleartext))
@@ -242,6 +243,8 @@ Then add a 'gpg-key' field to people in your BBDB database and PGG will use the 
 Sending...
 funcall: Wrong number of arguments: (lambda (start end recipients &optional sign) (pgg-gpg-encrypt-region start end (mapcar (lambda (rcpt) (let ((bbrec (bbdb-search-simple nil rcpt))) (or (when bbrec (bbdb-get-field bbrec (quote gpg-key))) rcpt))) recipients) sign)), 5
 
+[new]
+''funcall: Wrong number of arguments: ..., 5''. This error says that  pgg-gpg-encrypt-region needs five arguments. The last argument is PASSPHRASE. So, I have rewritten the pgg-ensc-gpg-encrypt-region.
 
 == Mapping newsgroups to keys ==
 

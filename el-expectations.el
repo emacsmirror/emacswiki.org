@@ -1,5 +1,5 @@
 ;;; el-expectations.el --- minimalist unit testing framework
-;; $Id: el-expectations.el,v 1.53 2010/03/26 00:36:30 rubikitch Exp $
+;; $Id: el-expectations.el,v 1.58 2010/04/02 22:01:43 rubikitch Exp $
 
 ;; Copyright (C) 2008, 2009, 2010  rubikitch
 
@@ -45,8 +45,8 @@
 ;; Below are customizable option list:
 ;;
 ;;  `expectations-execute-at-once'
-;;    If non-nil, execute selected expectation when pressing C-M-x
-;;    default = t
+;;    If non-nil, execute selected expectation when pressing C-M-x.
+;;    default = (quote all)
 
 ;; I love Jay Fields' expectations unit testing framework in Ruby. It
 ;; provides one syntax and can define various assertions. So I created
@@ -118,6 +118,22 @@
 ;;; History:
 
 ;; $Log: el-expectations.el,v $
+;; Revision 1.58  2010/04/02 22:01:43  rubikitch
+;; Set default `expectations-execute-at-once' to 'all.
+;; Execute all expectations blocks by C-M-x by default.
+;;
+;; Revision 1.57  2010/04/02 21:57:46  rubikitch
+;; `next-error' for multiple expectations block
+;;
+;; Revision 1.56  2010/04/02 20:22:29  rubikitch
+;; `expectations-eval-defun': Execute all expectations in this file if (eq expectations-execute-at-once 'all)
+;;
+;; Revision 1.55  2010/04/02 19:58:08  rubikitch
+;; add a newline (no code change)
+;;
+;; Revision 1.54  2010/04/01 01:12:52  rubikitch
+;; Enter debugger when error occurs in (eq debug-on-error t)
+;;
 ;; Revision 1.53  2010/03/26 00:36:30  rubikitch
 ;; no-error assertion
 ;;
@@ -302,11 +318,15 @@
 
 (defvar exps-last-testcase nil)
 (defvar exps-last-filename nil)
+(defvar exps-last-position nil)
 (defvar expectations-result-buffer "*expectations result*")
 
-(defcustom expectations-execute-at-once t
-  "If non-nil, execute selected expectation when pressing C-M-x"
+(defcustom expectations-execute-at-once 'all
+  "If non-nil, execute selected expectation when pressing C-M-x.
+If 'all, execute all expectations blocks in current file.
+If other non-nil value, execute current expectations block."
   :group 'el-expectations)
+
 (defmacro expectations (&rest body)
   "Define a expectations test case.
 Use `expect' and `desc' to verify the code.
@@ -461,38 +481,44 @@ Example:
      (foo (+ 2 (hoge 10)) 6 7))
    )
 "
-  (if noninteractive
+  (if (or noninteractive
+          (eq expectations-execute-at-once 'all))
       `(setq exps-last-testcase
              ',(append exps-last-testcase
                        '((new-expectations 1))
                       body)
-             exps-last-filename nil)
+             exps-last-filename ,(or load-file-name buffer-file-name))
     `(setq exps-last-testcase ',body
            exps-last-filename ,(or load-file-name buffer-file-name))))
+
+(defvar exps-new-expectations-message "+++++ New expectations +++++")
 
 (defun exps-execute-test (test)
   (destructuring-bind (expect expected . actual)
       test
     (case expect
       (expect
-          (condition-case e
+          (if debug-on-error
               (exps-assert expected actual)
-            (error (cons 'error e))))
+            (condition-case e
+                (exps-assert expected actual)
+              (error (cons 'error e)))))
       (desc
        (cons 'desc expected))
       (new-expectations
-       (cons 'desc (concat "+++++ New expectations +++++"))))))
+       (cons 'desc (concat exps-new-expectations-message))))))
 
 
+(defvar exps-last-error-position nil)
 (defun expectations-execute (&optional testcase)
   "Execute last-defined `expectations' test.
 With prefix argument, do `batch-expectations-in-emacs'."
   (interactive)
+  (setq exps-last-error-position nil)
   (if current-prefix-arg
       (batch-expectations-in-emacs)
     (exps-display
-     (loop for test in (or testcase exps-last-testcase)
-           collecting (exps-execute-test test)))))
+     (mapcar 'exps-execute-test (or testcase exps-last-testcase)))))
 
 ;;;; assertions
 (defvar exps-assert-functions
@@ -742,49 +768,75 @@ With prefix argument, do `batch-expectations-in-emacs'."
 (defun exps-goto-expect ()
   (interactive)
   ;; assumes that current-buffer is *expectations result*
-  (let ((n (progn
-             (forward-line 0)
-             (looking-at "^[0-9]+")
-             (string-to-number (match-string 0)))))
+  (let ((expectations-count 0)
+        (pt (point))
+        (n (exps-current-no))
+        this-new-expectations)
     (when exps-last-filename
-      (with-current-buffer (find-file-noselect exps-last-filename)
-        (pop-to-buffer (current-buffer))
+      (save-excursion
         (goto-char (point-min))
+        (while (search-forward exps-new-expectations-message pt t) ;TODO accurate message
+          (incf expectations-count))
+        (setq this-new-expectations
+              (exps-current-no)))
+
+      (with-current-buffer (find-file-noselect exps-last-filename)
+        (if (eq expectations-execute-at-once 'all)
+            (goto-char (point-min))
+          (goto-char exps-last-position)
+          (beginning-of-defun))
+        (when this-new-expectations
+          (decf n this-new-expectations)
+          (dotimes (i (1- this-new-expectations))
+            (search-forward "(expectations\n" nil t)))
+        (pop-to-buffer (current-buffer))
         (search-forward "(expectations\n" nil t)
         (forward-sexp n)
         (forward-sexp -1)))))
+
+(defun exps-current-no ()
+  (with-current-buffer (exps-result-buffer)
+    (and (forward-line 0)
+         (looking-at "^[0-9]+")
+         (string-to-number (match-string 0)))))
+
+(defun exps-result-buffer ()
+  (if (next-error-buffer-p (current-buffer))
+      (current-buffer)
+    (next-error-find-buffer nil nil
+                            (lambda ()
+                              (eq major-mode 'exps-display-mode)))))
 
 (defun exps-next-error (&optional argp reset)
   "Move to the Nth (default 1) next failure/error in *expectations result* buffer.
 Compatibility function for \\[next-error] invocations."
   (interactive "p")
   ;; we need to run exps-find-failure from within the *expectations result* buffer
-  (with-current-buffer
-      ;; Choose the buffer and make it current.
-      (if (next-error-buffer-p (current-buffer))
-	  (current-buffer)
-	(next-error-find-buffer nil nil
-				(lambda ()
-				  (eq major-mode 'exps-display-mode))))
-    (goto-char (cond (reset (point-min))
-		     ((< argp 0) (line-beginning-position))
-		     ((> argp 0) (line-end-position))
-		     ((point))))
-    (exps-find-failure
-     (abs argp)
-     (if (> 0 argp)
-	 #'re-search-backward
-       #'re-search-forward)
-     "No more failures")
+  (with-current-buffer (exps-result-buffer) 
     ;; In case the *expectations result* buffer is visible in a nonselected window.
     (let ((win (get-buffer-window (current-buffer) t)))
       (if win (set-window-point win (point))))
-    (exps-goto-expect)))
+    (and exps-last-error-position (goto-char exps-last-error-position))
+    (goto-char (cond (reset (point-min))
+		     ((< argp 0) (line-beginning-position))
+		     ((< 0 argp) (line-end-position))
+		     ((point))))
+    ;; (message (format "argp=%d reset=%S %s"argp reset (buffer-substring-no-properties (point-at-bol) (point-at-eol))))
+    (exps-find-failure
+     (abs argp)
+     (if (< argp 0)
+	 #'re-search-backward
+       #'re-search-forward)
+     "No more failures")
+    ;; (message (format "argp=%d reset=%S %s"argp reset (buffer-substring-no-properties (point-at-bol) (point-at-eol))))
+    (exps-goto-expect)
+    (setq exps-last-error-position (point))))
 
 (defun exps-find-failure (n search-func errmsg)
   (loop repeat n do
         (unless (funcall search-func "^[0-9]+ *:\\(ERROR\\|FAIL\\)" nil t)
-          (error errmsg))))
+          (error errmsg)))
+  (point))
 
 ;;;; edit support
 (put 'expect 'lisp-indent-function 1)
@@ -817,14 +869,23 @@ Compatibility function for \\[next-error] invocations."
   "Do `eval-defun'.
 If `expectations-execute-at-once' is non-nil, execute expectations if it is an expectations form."
   (interactive "P")
+  (setq exps-last-position (point))
   (eval-defun arg)
-  (when expectations-execute-at-once
-    (save-excursion
-      (beginning-of-defun)
-      (and (looking-at "(expectations\\|(.+(fboundp 'expectations)\\|(dont-compile\n.*expectations")
-           (expectations-execute)))))
+  (cond ((eq expectations-execute-at-once 'all)
+         (setq exps-last-testcase nil)
+         (save-excursion
+           (goto-char (point-min))
+           (while (re-search-forward "^\\s-*(expectations\n" nil t)
+             (eval-defun arg)))
+         (expectations-execute))
+        (expectations-execute-at-once
+         (save-excursion
+           (beginning-of-defun)
+           (and (looking-at "(expectations\\|(.+(fboundp 'expectations)\\|(dont-compile\n.*expectations")
+                (expectations-execute))))))
 
-(substitute-key-definition 'eval-defun 'expectations-eval-defun emacs-lisp-mode-map)(substitute-key-definition 'eval-defun 'expectations-eval-defun lisp-interaction-mode-map)
+(substitute-key-definition 'eval-defun 'expectations-eval-defun emacs-lisp-mode-map)
+(substitute-key-definition 'eval-defun 'expectations-eval-defun lisp-interaction-mode-map)
 
 ;;;; batch mode
 (defun batch-expectations ()

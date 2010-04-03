@@ -39,6 +39,14 @@ If you want to be able to toggle bookmarks by clicking in the fringe, this works
                                                       (bm-toggle))))
 </pre>
 
+== Use with Anything ==
+'''[[Anything]]''' is a candidate selection framework.
+
+Start with M-x anything-bm-list, narrow the list by typing some patterns(multiple patterns are space-delimited string),
+select with up/down/pgup/pgdown/C-p/C-n/C-v/M-v, choose with enter,
+With C-z contents of selected bookmark is displayed without quitting anything session.
+
+
 == See Also ==
 
 * Icicles commands for navigating among bookmarks and [[marker]]s. They too highlight the destinations as you visit them. See [[Icicles - Tripping]] and [[MarkCommands#IciclesGoToMarker|Icicles Commands to Go To a Marker]]. 

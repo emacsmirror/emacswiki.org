@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sat Mar 13 14:51:17 2010 (-0800)
+;; Last-Updated: Fri Apr  2 15:06:34 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 1282
+;;     Update #: 1606
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -53,13 +53,13 @@
 ;;
 ;;  Commands defined here - (+) means a multi-command:
 ;;
-;;    (+)`a', (+)`any', (+)`buffer', (+)`file', `icicle-add-region',
-;;    (+)`icicle-anything', (+)`icicle-apply', `icicle-apropos',
-;;    `icicle-apropos-command', `icicle-apropos-function',
-;;    `icicle-apropos-option', `icicle-apropos-variable',
-;;    `icicle-apropos-zippy', (+)`icicle-comint-command',
-;;    (+)`icicle-comint-search', (+)`icicle-compilation-search',
-;;    (+)`icicle-complete-keys', `icicle-complete-thesaurus-entry',
+;;    (+)`a', (+)`any', (+)`buffer', (+)`file', (+)`icicle-anything',
+;;    (+)`icicle-apply', `icicle-apropos', `icicle-apropos-command',
+;;    `icicle-apropos-function', `icicle-apropos-option',
+;;    `icicle-apropos-variable', `icicle-apropos-zippy',
+;;    (+)`icicle-comint-command', (+)`icicle-comint-search',
+;;    (+)`icicle-compilation-search', (+)`icicle-complete-keys',
+;;    `icicle-complete-thesaurus-entry',
 ;;    (+)`icicle-describe-option-of-type', (+)`icicle-doc',
 ;;    (+)`icicle-exchange-point-and-mark', (+)`icicle-font',
 ;;    (+)`icicle-frame-bg', (+)`icicle-frame-fg', (+)`icicle-fundoc',
@@ -76,16 +76,16 @@
 ;;    `icicle-insert-char', (+)`icicle-insert-thesaurus-entry',
 ;;    (+)`icicle-keyword-list', (+)`icicle-map',
 ;;    `icicle-non-whitespace-string-p', (+)`icicle-object-action',
-;;    (+)`icicle-occur', (+)`icicle-plist',
-;;    `icicle-purge-bad-file-regions', `icicle-read-color',
+;;    (+)`icicle-occur', (+)`icicle-plist', `icicle-read-color',
 ;;    `icicle-read-kbd-macro', (+)`icicle-regexp-list',
-;;    `icicle-region-open-all-files',
-;;    (+)`icicle-remove-all-regions-in-buffer',
-;;    (+)`icicle-remove-region', `icicle-save-string-to-variable',
-;;    (+)`icicle-search', (+)`icicle-search-all-regions',
-;;    (+)`icicle-search-bookmark', (+)`icicle-search-buffer',
-;;    (+)`icicle-search-buff-menu-marked',
+;;    `icicle-save-string-to-variable', (+)`icicle-search',
+;;    (+)`icicle-search-bookmark',
+;;    (+)`icicle-search-bookmark-list-bookmark',
+;;    (+)`icicle-search-bookmarks-together',
+;;    (+)`icicle-search-buffer', (+)`icicle-search-buff-menu-marked',
 ;;    (+)`icicle-search-char-property', (+)`icicle-search-defs',
+;;    (+)`icicle-search-desktop-bookmark',
+;;    (+)`icicle-search-dired-bookmark',
 ;;    (+)`icicle-search-dired-marked', (+)`icicle-search-file',
 ;;    (+)`icicle-search-file-bookmark', (+)`icicle-search-generic',
 ;;    (+)`icicle-search-gnus-bookmark',
@@ -94,16 +94,17 @@
 ;;    (+)`icicle-search-info-bookmark', (+)`icicle-search-keywords',
 ;;    (+)`icicle-search-lines',
 ;;    (+)`icicle-search-local-file-bookmark',
+;;    (+)`icicle-search-man-bookmark',
 ;;    (+)`icicle-search-non-file-bookmark',
 ;;    (+)`icicle-search-overlay-property',
 ;;    (+)`icicle-search-paragraphs', (+)`icicle-search-pages',
-;;    (+)`icicle-search-region', (+)`icicle-search-region-bookmark',
+;;    (+)`icicle-search-region-bookmark',
 ;;    (+)`icicle-search-remote-file-bookmark',
 ;;    (+)`icicle-search-sentences', (+)`icicle-search-text-property',
 ;;    (+)`icicle-search-w3m-bookmark', (+)`icicle-search-word',
 ;;    (+)`icicle-select-frame', `icicle-select-frame-by-name',
-;;    (+)`icicle-select-region', (+)`icicle-tags-search',
-;;    (+)`icicle-vardoc', (+)`icicle-where-is', (+)`what-which-how'.
+;;    (+)`icicle-tags-search', (+)`icicle-vardoc',
+;;    (+)`icicle-where-is', (+)`what-which-how'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -118,7 +119,7 @@
 ;;    `icicle-comint-search-send-input', `icicle-compilation-hook-fn',
 ;;    `icicle-compilation-search-in-context-fn',
 ;;    `icicle-complete-keys-1', `icicle-complete-keys-action',
-;;    `icicle-delete-region-from-alist', `icicle-describe-opt-action',
+;;    `icicle-describe-opt-action',
 ;;    `icicle-describe-opt-of-type-complete', `icicle-doc-action',
 ;;    `icicle-edmacro-parse-keys', `icicle-flat-list',
 ;;    `icicle-fn-doc-minus-sig', `icicle-font-w-orig-size',
@@ -143,10 +144,8 @@
 ;;    `icicle-keys+cmds-w-prefix', `icicle-marker+text',
 ;;    `icicle-markers', `icicle-next-single-char-property-change',
 ;;    `icicle-read-single-key-description',
-;;    `icicle-read-var-value-satisfying', `icicle-region-add-buffers',
-;;    `icicle-region-add-short-help', `icicle-region-help',
-;;    `icicle-region-or-buffer-limits', `icicle-region-sorted',
-;;    `icicle-remove-all-regions-action', `icicle-search-action',
+;;    `icicle-read-var-value-satisfying',
+;;    `icicle-region-or-buffer-limits', `icicle-search-action',
 ;;    `icicle-search-action-1', `icicle-search-bookmark-action',
 ;;    `icicle-search-char-property-scan',
 ;;    `icicle-search-choose-buffers', `icicle-search-cleanup',
@@ -159,14 +158,13 @@
 ;;    `icicle-search-in-context-default-fn',
 ;;    `icicle-search-property-args', `icicle-search-quit-or-error',
 ;;    `icicle-search-read-context-regexp', `icicle-search-read-word',
-;;    `icicle-search-regexp-scan', `icicle-search-region-action',
+;;    `icicle-search-regexp-scan',
 ;;    `icicle-search-replace-all-search-hits',
 ;;    `icicle-search-replace-cand-in-alist',
 ;;    `icicle-search-replace-cand-in-mct',
 ;;    `icicle-search-replace-fixed-case-p',
 ;;    `icicle-search-replace-match',
 ;;    `icicle-search-replace-search-hit', `icicle-search-where-arg',
-;;    `icicle-select-region-action',
 ;;    `icicle-this-command-keys-prefix'.
 ;;
 ;;
@@ -259,21 +257,18 @@
   ;; icicle-alternative-sort-comparer, icicle-buffer-extras, icicle-buffer-ignore-space-prefix-flag,
   ;; icicle-buffer-match-regexp, icicle-buffer-no-match-regexp, icicle-buffer-predicate,
   ;; icicle-buffer-require-match-flag, icicle-buffer-sort, icicle-complete-keys-self-insert-flag,
-  ;; icicle-ignore-space-prefix-flag, icicle-key-descriptions-use-<>-flag, icicle-region-alist,
-  ;; icicle-regions-name-length-max, icicle-require-match-flag, icicle-saved-completion-sets,
+  ;; icicle-ignore-space-prefix-flag, icicle-key-descriptions-use-<>-flag,
+  ;; icicle-require-match-flag, icicle-saved-completion-sets,
   ;; icicle-search-cleanup-flag, icicle-search-highlight-all-current-flag,
   ;; icicle-search-highlight-threshold, icicle-search-hook, icicle-sort-comparer,
   ;; icicle-transform-function
 (require 'icicles-fn) ;; icicle-candidate-short-help, icicle-completing-read-history,
   ;; icicle-highlight-lighter, icicle-insert-cand-in-minibuffer, icicle-kill-a-buffer
 (require 'icicles-cmd1) ;; custom-variable-p, icicle-bookmark-cleanup,
-  ;; icicle-bookmark-cleanup-on-quit, icicle-bookmark-cmd, icicle-bookmark-file-narrow,
-  ;; icicle-bookmark-gnus-narrow, icicle-bookmark-help-string, icicle-bookmark-history,
-  ;; icicle-bookmark-info-narrow, icicle-bookmark-local-file-narrow,
-  ;; icicle-bookmark-non-file-narrow, icicle-bookmark-propertize-candidate,
-  ;; icicle-bookmark-region-narrow, icicle-bookmark-remote-file-narrow, icicle-bookmark-w3m-narrow,
-  ;; icicle-buffer-list, icicle-explore, icicle-face-list, icicle-file-list,
-  ;; icicle-make-frame-alist, icicle-select-bookmarked-region
+  ;; icicle-bookmark-cleanup-on-quit, icicle-bookmark-cmd, icicle-bookmark-help-string,
+  ;; icicle-bookmark-history, icicle-bookmark-propertize-candidate, icicle-buffer-list,
+  ;; icicle-explore, icicle-face-list, icicle-file-list, icicle-make-frame-alist,
+  ;; icicle-select-bookmarked-region
 
 
 
@@ -1818,281 +1813,39 @@ prefixed by MARKER's buffer name."
     markers))
 
 ;;;###autoload
-(defun icicle-region-open-all-files ()
-  "Visit all files that contain regions in `icicle-region-alist'.
-The files are visited, but not displayed.
-If a file listed in `icicle-region-alist' does not exist or is not
-readable, then it is ignored."
-  (interactive)
-  (let ((alist  (icicle-remove-if-not #'(lambda (entry) (car (cddr entry))) icicle-region-alist)))
-    (unless alist (error "There are no file buffers in `icicle-region-alist'"))
-    (dolist (entry  alist)
-      (let ((file  (car (cddr entry)))) (when (file-readable-p file) (find-file-noselect file))))))
-
-;;;###autoload
 (defun icicle-exchange-point-and-mark (&optional arg) ; Bound to `C-x C-x'.
-  "`exchange-point-and-mark', save a region, or select a saved region.
-With no prefix arg: call `exchange-point-and-mark'.
-With a numeric prefix arg: save the active region.
-  If option `icicle-region-bookmarks-flag' is non-nil and feature
-  `bookmark+' is present, then save the region as a bookmark.
-  Otherwise, save the region to `icicle-region-alist'.
+  "`exchange-point-and-mark' or save a region or select a saved region.
+With no prefix arg, invoke `exchange-point-and-mark'.
+If you use library `bookmark+.el', then you can use a prefix arg.
 
-With a plain `C-u' prefix arg: select (activate) one or more saved
-regions.
-  If option `icicle-region-bookmarks-flag' is non-nil and feature
-  `bookmark+' is present, then use `icicle-select-bookmarked-region'
-  to choose from bookmarked regions.
-  Otherwise, use `icicle-select-region' to choose from the regions
-  saved in `icicle-region-alist'.
+ * Plain `C-u': select (activate) one or more bookmarked regions.
+
+ * Numeric prefix arg: bookmark (save) the active region using
+   `icicle-bookmark-cmd'.
+
+   Arg < 0: Prompt for the bookmark name.
+   Arg > 0: Do not prompt for the bookmark name.  Use the buffer name
+            plus a prefix of the region text as the bookmark name.
+   Arg = 0: Same as > 0, except do not overwrite any existing bookmark
+            with the same name.
 
 By default, Icicle mode remaps all key sequences that are normally
 bound to `exchange-point-and-mark' to
 `icicle-exchange-point-and-mark'.  If you do not want this remapping,
 then customize option `icicle-top-level-key-bindings'."
   (interactive "P")
-  (let ((bplus  (and icicle-region-bookmarks-flag (featurep 'bookmark+))))
-    (if arg
-        (cond ((atom arg)
-               (unless (and transient-mark-mode mark-active (not (eq (mark) (point))))
-                 (error "Cannot save region: you must activate it first"))
-               (if bplus (icicle-bookmark-cmd) (call-interactively #'icicle-add-region)))
-              (t
-               (when bplus (bookmark-maybe-load-default-file))
-               (unless (consp (if bplus (bookmarkp-region-alist-only) icicle-region-alist))
-                 (error "No saved region to select"))
-               (call-interactively
-                (if bplus #'icicle-select-bookmarked-region #'icicle-select-region))))
-      (call-interactively #'exchange-point-and-mark))))
-
-;;;###autoload
-(defun icicle-add-region (start end &optional tag) ; Bound to `C-N C-x C-x', N = whole number.
-  "Add current region to list of regions, `icicle-region-alist'.
-Save the updated option.
-
-With a prefix argument, you are prompted for a tag to name the region.
-Otherwise, the first `icicle-regions-name-length-max' characters of
-the region itself serve as the name.
-
-To remove a region from `icicle-region-alist', use command
-`icicle-remove-region' or customize `icicle-region-alist'."
-  (interactive "r\nP")
-  (when (= start end) (error "Cannot add region; it is empty"))
-  (when (> start end) (setq end  (prog1 start (setq start  end))))
-  (let ((region-prefix
-         (buffer-substring-no-properties start (+ start (min icicle-regions-name-length-max
-                                                             (- end start))))))
-    (add-to-list 'icicle-region-alist
-                 (list (setq tag  (if tag
-                                      (icicle-completing-read-history  "Add region (tag): "
-                                                                       nil nil nil region-prefix)
-                                    region-prefix))
-                       (buffer-name)
-                       (if (string= (buffer-name) "*info*")
-                           (concat "(" (file-name-nondirectory Info-current-file) ")"
-                                   Info-current-node)
-                         (buffer-file-name))
-                       start
-                       end))
-    (funcall icicle-customize-save-variable-function 'icicle-region-alist icicle-region-alist)
-    (message "Region added to `icicle-region-alist' with tag `%s'"
-             (if (> (length tag) 20) (concat (substring tag 0 17) "...") tag))))
-
-;;;###autoload
-(icicle-define-command icicle-select-region ; Bound to `C-u C-x C-x'
-  "Choose a region from the list of Icicles regions, and activate it.
-Completion is available.  The regions are sorted alphabetically by
-buffer, and then by tag; you cannot change the sort order.
-
-Candidate regions are those saved in option `icicle-region-alist'.
-
-Regions in `icicle-region-alist' that are in buffers that do not
-currently exist are ignored.
-
-Note that each region is defined by its limits, so that if the
-region's buffer has changed, then the text used to identify the region
-might no longer correspond to the text at the beginning of the
-region.
-
-If user option `icicle-show-multi-completion-flag' is non-nil, then
-each completion candidate is annotated with the name of the region's
-buffer, to facilitate orientation.  Note that even when the value is
-nil, you can use `C-M-mouse-2' and so on to see the buffer name, as
-well as the start and end points of the region and its length.
-
-Completion is lax if `icicle-show-multi-completion-flag' is non-nil;
-otherwise, it is strict.
-
-You can use `S-delete' during completion to delete a region from
-`icicle-region-alist'.
-
-You can use `icicle-add-region' to define the list of regions,
-`icicle-region-alist'.
-
-NOTE: An alternative to using `icicle-select-region' and
-`icicle-region-alist' is to use `icicle-select-bookmarked-region',
-which requires library `bookmark+.el'.  In that case, saved regions
-are treated as bookmarks in every respect." ; Doc string
-  icicle-select-region-action           ; Function to perform the action
-  "Select region: " icicle-candidates-alist ; `completing-read' args
-  nil (not icicle-show-multi-completion-flag) nil nil (if icicle-show-multi-completion-flag
-                                                          (car (caar icicle-candidates-alist))
-                                                        (caar icicle-candidates-alist))
-  nil
-  ((IGNORED--FOR-SIDE-EFFECT               (when icicle-region-auto-open-files-flag ; Bindings
-                                             (icicle-region-open-all-files)))
-   (icicle-candidate-help-fn               'icicle-region-help)
-   (icicle-delete-candidate-object         'icicle-delete-region-from-alist)
-   (icicle-list-nth-parts-join-string      "\t")
-   (icicle-list-join-string                "\t")
-   (icicle-list-end-string                 "")
-   (icicle-list-use-nth-parts              '(1))
-   (icicle-sort-comparer                   nil)
-   (icicle-transform-function              (if (interactive-p) nil icicle-transform-function))
-   (icicle-inhibit-sort-p                  t)
-   (icicle-whole-candidate-as-text-prop-p  t)
-   (icicle-candidates-alist                (icicle-region-add-buffers (icicle-region-add-short-help
-                                                                       (icicle-region-sorted))))))
-
-(defun icicle-select-region-action (reg-name)
-  "Action function for `icicle-select-region'."
-  (let* ((reg   (funcall icicle-get-alist-candidate-function reg-name))
-         (buf   (cadr reg))
-         (file  (car (cddr reg))))
-    (when (and (not (get-buffer buf)) file) ; If no buffer, try to open the file.  If no file, msg.
-      (cond ((string= buf "*info*") (info file))
-            ((file-readable-p file) (find-file-noselect file))
-            (t (message "No such file: `%s'" file))))
-    (when (get-buffer buf)
-      (pop-to-buffer buf) (raise-frame) (goto-char (cadr (cddr reg)))
-      (push-mark (car (cddr (cddr reg))) 'nomsg 'activate)))
-  (setq deactivate-mark  nil))
-
-(defun icicle-region-sorted ()
-  "`icicle-region-alist', sorted first by buffer name and then by tag."
-  (sort (icicle-regions) #'(lambda (x1 x2)
-                             (let ((buf1  (cadr x1))
-                                   (buf2  (cadr x2)))
-                               (or (string-lessp buf1 buf2)
-                                   (and (string= buf1 buf2) (string-lessp (car x1) (car x2))))))))
-
-(defun icicle-region-add-buffers (region-list)
-  "Add buffer names to REGION-LIST, if `icicle-show-multi-completion-flag'."
-  (if icicle-show-multi-completion-flag
-      (mapcar #'(lambda (entry)
-                  (let ((buf  (copy-sequence (cadr entry))))
-                    (put-text-property 0 (length buf) 'face 'icicle-candidate-part buf)
-                    (cons (list (car entry) buf) (cdr entry))))
-              region-list)
-    region-list))
-
-;;;###autoload
-(icicle-define-command icicle-remove-region ; Command name
-  "Remove a region from the list of regions, `icicle-region-alist'.
-Save the updated option.
-
-Completion is available.  The regions are sorted alphabetically by
-buffer, and then by tag; you cannot change the sort order.
-
-To add a region to `icicle-region-alist', do one of the following:
-
-* Use `\\[icicle-exchange-point-and-mark]' with a numeric prefix arg.
-* Use command `icicle-add-region'.
-* Customize `icicle-region-alist'."     ; Doc string
-  icicle-delete-region-from-alist       ; Function to perform the action
-  "Remove region from saved regions: " icicle-candidates-alist ; `completing-read' args
-  nil (not icicle-show-multi-completion-flag) nil nil (if icicle-show-multi-completion-flag
-                                                          (car (caar icicle-candidates-alist))
-                                                        (caar icicle-candidates-alist))
-  nil
-  ((icicle-candidate-help-fn               'icicle-region-help) ; Additional bindings
-   (icicle-list-nth-parts-join-string      "\t")
-   (icicle-list-join-string                "\t")
-   (icicle-list-end-string                 "")
-   (icicle-list-use-nth-parts              '(1))
-   (icicle-sort-comparer                   nil)
-   (icicle-transform-function              (if (interactive-p) nil icicle-transform-function))
-   (icicle-inhibit-sort-p                  t)
-   (icicle-whole-candidate-as-text-prop-p  t)
-   (icicle-candidates-alist                (icicle-region-add-buffers (icicle-region-add-short-help
-                                                                       (icicle-region-sorted))))))
-
-(defun icicle-delete-region-from-alist (reg-name)
-  "Delete the region named REG-NAME from `icicle-region-alist'."
-  (let ((alist-cand  (funcall icicle-get-alist-candidate-function reg-name)))
-    (setq icicle-region-alist
-          (delete (cons (caar alist-cand) (cdr alist-cand)) icicle-region-alist)))
-  (funcall icicle-customize-save-variable-function 'icicle-region-alist icicle-region-alist))
-
-;;;###autoload
-(defun icicle-purge-bad-file-regions ()
-  "Remove regions whose files do not exist from `icicle-region-alist'.
-Remove only regions that explicitly reference files.
-Save updated `icicle-region-alist'."
-  (interactive)
-  (let ((removedp  nil))
-    (dolist (reg  icicle-region-alist)
-      (when (and (car (cddr reg)) (not (string= (cadr reg) "*info*"))
-                 (not (file-exists-p (car (cddr reg)))))
-        (setq icicle-region-alist  (delete reg icicle-region-alist)
-              removedp             t)))
-    (funcall icicle-customize-save-variable-function 'icicle-region-alist icicle-region-alist)
-    (when (interactive-p)
-      (message (if removedp
-                   "Removed regions in files that no longer exist"
-                 "No regions needed to be removed")))))
-
-;;;###autoload
-(icicle-define-command icicle-remove-all-regions-in-buffer ; Command name
-  "Remove all regions in a buffer from `icicle-region-alist'.
-Save the updated option.
-To remove individual regions, use command `icicle-remove-region'.
-To add a region to `icicle-region-alist', use `icicle-add-region'.
-Alternatively, you can customize `icicle-region-alist'." ; Doc string
-  icicle-remove-all-regions-action      ; Function to perform the action
-  "Buffer: "                            ; `completing-read' args
-  (icicle-remove-duplicates (mapcar #'(lambda (reg) (list (cadr reg))) icicle-region-alist))
-  nil t nil nil (buffer-name) nil
-  ((icicle-use-candidates-only-once-flag  t))) ; Additional bindings
-
-(defun icicle-remove-all-regions-action (buffer)
-  "Action function for `icicle-remove-all-regions-in-buffer'.
-Remove all regions in BUFFER from `icicle-region-alist'.
-BUFFER is the name of a buffer."
-  (dolist (reg  icicle-region-alist)
-    (when (string= buffer (cadr reg)) (setq icicle-region-alist  (delete reg icicle-region-alist))))
-  (funcall icicle-customize-save-variable-function 'icicle-region-alist icicle-region-alist)
-  (message "Removed all regions in buffer `%s'" buffer))
-
-(defun icicle-region-add-short-help (reglist)
-  "Add mode-line and tooltip help for `icicle-region-*' commands."
-  (when (or icicle-help-in-mode-line-flag ; Put help only if user will see it.
-            (and (boundp 'tooltip-mode) tooltip-mode))
-    (mapcar #'(lambda (entry)
-                (let* ((start  (nth 3 entry))
-                       (end    (nth 4 entry))
-                       (help   (format "%d chars, from %d to %d" (- end start) start end)))
-                  (icicle-candidate-short-help help (car entry))))
-            reglist))
-  reglist)
-
-(defun icicle-region-help (reg-name)
-  "Use as `icicle-candidate-help-fn' for `icicle-region-alist' commands."
-  (icicle-msg-maybe-in-minibuffer
-   (let* ((reg    (funcall icicle-get-alist-candidate-function reg-name))
-          (file   (car (cddr reg)))
-          (start  (cadr (cddr reg)))
-          (end    (car (cddr (cddr reg)))))
-     (concat (format "%d to %d" start end) " in buffer `" (cadr reg)
-             (and file (format "', file `%s" file)) (format "', %d chars" (- end start))))))
-
-(defun icicle-regions ()
-  "Variable `icicle-region-alist', but without non-existent non-file buffers.
-The list is also sorted according to `icicle-sort-comparer'."
-  (let ((unsorted-regions  (icicle-remove-if #'(lambda (reg) (and (not (car (cddr reg))) ; No file.
-                                                                  (not (get-buffer (cadr reg)))))
-                                             icicle-region-alist)))
-    (icicle-reversible-sort unsorted-regions 'car)))
+  (let ((bplus  (featurep 'bookmark+)))
+    (if (not arg)
+        (call-interactively #'exchange-point-and-mark)
+      (unless bplus (error "You must load library `bookmark+.el' to use a prefix arg"))
+      (cond ((atom arg)
+             (unless (and transient-mark-mode mark-active (not (eq (mark) (point))))
+               (error "Cannot bookmark inactive region: you must activate it first"))
+             (icicle-bookmark-cmd (and (natnump (prefix-numeric-value arg)) 9)))
+            (t
+             (bookmark-maybe-load-default-file)
+             (unless (consp (bookmarkp-region-alist-only)) (error "No bookmarked regions"))
+             (call-interactively #'icicle-select-bookmarked-region))))))
 
 ;;;###autoload
 (defun icicle-search-generic ()         ; Bound to `C-x `'.
@@ -2158,30 +1911,26 @@ By default, search only the current buffer.  Search the active region,
 or, if there is none, then search the entire buffer.
 
 With a prefix argument, you can search multiple buffers, files, or
-regions, as follows:
+bookmarks, as follows:
 
-- With a simple prefix arg (`C-u'), search all of the regions in
-`icicle-region-alist'.  Those regions can be in any buffers.  If a
-region is in a buffer that does not exist, it is skipped.  You can
-always re-create the buffer (e.g. visit the file), and try again.
-
-Note: To search particular regions in `icicle-region-alist'
-individually, instead of searching them all, use multi-command
-`icicle-search-region'.
+- With a plain prefix arg (`C-u'), search bookmarks.  This is the
+same as command `icicle-search-bookmarks-together'.  (To search
+bookmarks one at a time instead of together, use multi-command
+`icicle-search-bookmark'.)
 
 - With a non-negative numeric prefix arg, search multiple buffers
 completely.  You are prompted for the buffers to search - all of each
 buffer is searched.  Any existing buffers can be chosen.  If the
 prefix arg is 99, then only buffers visiting files are candidates.
+This is the same as command `icicle-search-buffer'.
 
 - With a negative numeric prefix arg, search multiple files
 completely.  You are prompted for the files to search - all of each
 file is searched.  Any existing files in the current directory can be
-chosen.
+chosen.  This is the same as command `icicle-search-file'.
 
 
-Navigation and Help
--------------------
+Navigation and Help -------------------
 
 The use of completion for this command is special.  It is not unusual
 in this context to have multiple completion candidates that are
@@ -2413,8 +2162,8 @@ SCAN-FN-OR-REGEXP: Regexp or function that determines the set of
   region in that buffer, and ARGS.
 REQUIRE-MATCH is passed to `completing-read'.
 Optional arg WHERE is either a list of buffers or a list of region
-  entries that have the same form as `icicle-region-alist'.  If nil,
-  then only the current buffer is used.
+  bookmarks (in which case you must also use library `bookmark+.el').
+  If nil, then only the current buffer is used.
 ARGS are arguments that are passed to function SCAN-FN-OR-REGEXP.
 
 Note that if SCAN-FN-OR-REGEXP is a regexp string, then function
@@ -2494,16 +2243,16 @@ The arguments are for use by `completing-read' to read the regexp.
 (defun icicle-search-where-arg ()
   "Return WHERE arg for `icicle-search*' commands, based on prefix arg."
   (cond ((consp current-prefix-arg)
-         (message "Searching saved regions") (sit-for 1)
-         ;; @@@@@ NOT YET IMPLEMENTED
-;; @@@@@@   (if (and icicle-region-bookmarks-flag (featurep 'bookmark+))
-;;              (bookmarkp-region-alist-only)
-;;            icicle-region-alist))
-         icicle-region-alist)
+         (unless (require 'bookmark+ nil t) (error "This requires library `bookmark+.el'"))
+         (message "Searching multiple bookmarks...") (sit-for 1)
+         (let ((icicle-show-Completions-initially-flag  t)
+               (icicle-bookmark-types                   '(all)))
+           (save-selected-window (icicle-bookmark-list))))
         ((wholenump current-prefix-arg)
+         (message "Searching multiple buffers...") (sit-for 1)
          (icicle-search-choose-buffers (= 99 (prefix-numeric-value current-prefix-arg))))
         (current-prefix-arg
-         (message "Searching multiple files") (sit-for 1)
+         (message "Searching multiple files...") (sit-for 1)
          (let ((icicle-show-Completions-initially-flag  t))
            (save-selected-window (icicle-file-list))))
         (t nil)))
@@ -2512,7 +2261,6 @@ The arguments are for use by `completing-read' to read the regexp.
   "Choose multiple buffers to search.
 FILES-ONLY-P non-nil means that only buffers visiting files are
 candidates."
-  (message "Searching multiple buffers") (sit-for 1)
   (let ((icicle-show-Completions-initially-flag  t))
     (mapcar #'get-buffer (let ((icicle-buffer-require-match-flag  'partial-match-ok)
                                (current-prefix-arg                files-only-p))
@@ -2565,28 +2313,33 @@ The arguments are the same as for `icicle-search'."
   (cond ((and (consp where) (bufferp (car where))) ; List of buffers - search buffers.
          (dolist (buf  where)
            (icicle-search-define-candidates-1 buf nil nil scan-fn-or-regexp args)))
-        ((and (consp where)           ; List of files - search files.
-              (stringp (car where))
+        ((and (consp where) (stringp (car where)) ; List of files - search files.
               (file-exists-p (car where)))
          (dolist (file  where)
            (icicle-search-define-candidates-1 (find-file-noselect file 'nowarn) nil nil
                                               scan-fn-or-regexp args)))
-        ((consp where)                ; Search all regions in `icicle-region-alist'.
-         (when icicle-region-auto-open-files-flag (icicle-region-open-all-files))
-         (let ((non-existent-buffers  ()))
-           (dolist (reg  where)
-             (if (bufferp (get-buffer (cadr reg)))
-                 (icicle-search-define-candidates-1
-                  (get-buffer (cadr reg)) (cadr (cddr reg))
-                  (car (cddr (cddr reg))) scan-fn-or-regexp args)
-               (push (cadr reg) non-existent-buffers)))
+        ((consp where)                  ; Search all bookmarked regions.
+         (unless (require 'bookmark+ nil t) (error "This requires library `bookmark+.el'"))
+         (let ((non-existent-buffers  ())
+               buf+beg buf beg end)
+           (dolist (bmk  where)
+             (setq buf+beg  (bookmark-jump-noselect bmk)
+                   buf      (car buf+beg)
+                   beg      (cdr buf+beg)
+                   end      (bookmarkp-get-end-position bmk))
+             (if (bufferp buf)
+                 (icicle-search-define-candidates-1 buf beg end scan-fn-or-regexp args)
+               (push buf non-existent-buffers)))
            (when non-existent-buffers
              (message "Skipping regions in non-existent buffers: `%s'"
                       (mapconcat #'identity (icicle-remove-duplicates non-existent-buffers)
                                  "', `"))
              (sit-for 3))))
-        (t                            ; Search this buffer only.
-         (icicle-search-define-candidates-1 nil beg end scan-fn-or-regexp args))))
+        (t                              ; Search this buffer only.
+         (icicle-search-define-candidates-1 nil beg end scan-fn-or-regexp args)))
+  (unless icicle-candidates-alist  (if (functionp scan-fn-or-regexp)
+                                       (error "No search hits")
+                                     (error "No search hits for `%s'" scan-fn-or-regexp))))
 
 (defun icicle-search-define-candidates-1 (buffer beg end scan-fn-or-regexp args)
   "Helper function for `icicle-search-define-candidates'.
@@ -2594,11 +2347,7 @@ BUFFER is a buffer to scan for candidates.
 The other arguments are the same as for `icicle-search'."
   (if (functionp scan-fn-or-regexp)
       (apply scan-fn-or-regexp buffer beg end args)
-    (apply 'icicle-search-regexp-scan buffer beg end scan-fn-or-regexp args))
-  (unless icicle-candidates-alist
-    (if (functionp scan-fn-or-regexp)
-        (error "No search hits")
-      (error "No search hits for `%s'" scan-fn-or-regexp))))
+    (apply 'icicle-search-regexp-scan buffer beg end scan-fn-or-regexp args)))
 
 (defun icicle-search-regexp-scan (buffer beg end regexp &optional predicate)
   "Scan BUFFER for REGEXP, pushing hits onto `icicle-candidates-alist'.
@@ -3120,6 +2869,9 @@ the resulting regexp is usable for `icicle-search'." ; Doc string
 If you use library `bookmark+.el', and a bookmark specifies a nonempty
 region, then search only the text in that region.
 
+See also `icicle-search-bookmarks-together', which searches bookmarks
+together instead of one at a time.
+
 1. Enter a context regexp, to define the possible search-hit contexts.
 2. Choose a bookmark using completion.  It is opened.
 3. (Optional) Type some text to be matched in the search contexts.
@@ -3127,168 +2879,281 @@ region, then search only the text in that region.
 5. Finish with that bookmark using `RET' (stay) or `C-g' (skip).
 6. (Optional) Repeat steps 2-5 for other bookmarks." ; Doc string
   icicle-search-bookmark-action         ; Function to perform the action
-  prompt                                ; `completing-read' args
-  (mapcar #'(lambda (cand)
-              (list (icicle-candidate-short-help (icicle-bookmark-help-string cand)
-                                                 (icicle-bookmark-propertize-candidate cand))))
-          (bookmark-all-names))         ; This loads bookmarks file, populating `bookmark-alist'.
-  nil t nil (if (boundp 'bookmark-history) 'bookmark-history 'icicle-bookmark-history)
-  (and (boundp 'bookmark-current-bookmark) bookmark-current-bookmark)
-  nil
-  ((enable-recursive-minibuffers           t) ; In case we read input, e.g. File changed on disk...
-   (completion-ignore-case                 bookmark-completion-ignore-case)
-   (prompt                                 "Search bookmark: ")
-   (icicle-candidate-help-fn               #'(lambda (cand) (icicle-msg-maybe-in-minibuffer
-                                                             (icicle-bookmark-help-string cand))))
-   (icicle-delete-candidate-object         'bookmark-delete)
-   (regexp                                 (icicle-search-read-context-regexp)))
+  prompt icicle-candidates-alist nil (not icicle-show-multi-completion-flag) ; `completing-read' args
+  nil (if (boundp 'bookmark-history) 'bookmark-history 'icicle-bookmark-history)
+  (and (boundp 'bookmark-current-bookmark) bookmark-current-bookmark) nil
+  ((enable-recursive-minibuffers             t) ; In case we read input, e.g. File changed on disk...
+   (completion-ignore-case                   bookmark-completion-ignore-case)
+   (prompt                                   "Search bookmark: ")
+   (regexp                                   (icicle-search-read-context-regexp))
+   (icicle-list-use-nth-parts                '(1))
+   (icicle-candidate-properties-alist        (if (not icicle-show-multi-completion-flag)
+                                                 nil
+                                               (if (facep 'file-name-shadow)
+                                                   '((2 (face file-name-shadow))
+                                                     (3 (face bookmark-menu-heading)))
+                                                 '((3 (face bookmark-menu-heading))))))
+   (icicle-transform-function                (if (interactive-p) nil icicle-transform-function))
+   (icicle-whole-candidate-as-text-prop-p    t)
+   (icicle-transform-before-sort-p           t)
+   (icicle-delete-candidate-object           'bookmark-delete)
+   (bookmark-automatically-show-annotations  nil) ; Do not show annotations
+   (icicle-sort-orders-alist
+    (append '(("in *Bookmark List* order") ; Renamed from "turned OFF'.
+              ("by bookmark name" . icicle-alpha-p))
+            (and (featurep 'bookmark+)
+                 '(("by last bookmark access" (bookmarkp-bookmark-last-access-cp) icicle-alpha-p)
+                   ("by bookmark visit frequency" (bookmarkp-visited-more-cp) icicle-alpha-p)
+                   ("by last buffer or file access" (bookmarkp-buffer-last-access-cp
+                                                     bookmarkp-local-file-accessed-more-recently-cp)
+                    icicle-alpha-p)
+                   ("marked before unmarked (in *Bookmark List*)" (bookmarkp-marked-cp)
+                    icicle-alpha-p)
+                   ("by local file type" (bookmarkp-local-file-type-cp) icicle-alpha-p)
+                   ("by file name" (bookmarkp-file-alpha-cp) icicle-alpha-p)
+                   ("by local file size" (bookmarkp-local-file-size-cp) icicle-alpha-p)
+                   ("by last local file access" (bookmarkp-local-file-accessed-more-recently-cp)
+                    icicle-alpha-p)
+                   ("by last local file update" (bookmarkp-local-file-updated-more-recently-cp)
+                    icicle-alpha-p)
+                   ("by Info location" (bookmarkp-info-cp) icicle-alpha-p)
+                   ("by Gnus thread" (bookmarkp-gnus-cp) icicle-alpha-p)
+                   ("by w3m url" (bookmarkp-w3m-cp) icicle-alpha-p)
+                   ("by bookmark type" (bookmarkp-info-cp bookmarkp-gnus-cp bookmarkp-w3m-cp
+                                        bookmarkp-local-file-type-cp bookmarkp-handler-cp)
+                    icicle-alpha-p)))
+            '(("by previous use alphabetically" . icicle-historical-alphabetic-p)
+              ("case insensitive" . icicle-case-insensitive-string-less-p))))
+   (icicle-candidate-help-fn
+    #'(lambda (cand)
+        (when (and (featurep 'bookmark+) icicle-show-multi-completion-flag)
+          (setq cand  (funcall icicle-get-alist-candidate-function cand))
+          (setq cand  (cons (caar cand) (cdr cand))))
+        (if (featurep 'bookmark+)
+            (if current-prefix-arg
+                (bookmarkp-describe-bookmark-internals cand)
+              (bookmarkp-describe-bookmark cand))
+          (icicle-msg-maybe-in-minibuffer (icicle-bookmark-help-string cand)))))
+   (icicle-candidates-alist
+    (if (not (featurep 'bookmark+))
+        (mapcar #'(lambda (cand)
+                    (list (icicle-candidate-short-help (icicle-bookmark-help-string cand)
+                                                       (icicle-bookmark-propertize-candidate cand))))
+                (bookmark-all-names))   ; Loads bookmarks file, defining `bookmark-alist'.
+      (bookmark-maybe-load-default-file) ; Loads bookmarks file, defining `bookmark-alist'.
+      (mapcar (if icicle-show-multi-completion-flag
+                  #'(lambda (bmk)
+                      (let* ((bname     (bookmark-name-from-full-record bmk))
+                             (guts      (bookmark-get-bookmark-record bmk))
+                             (file      (bookmark-get-filename bmk))
+                             (buf       (bookmarkp-get-buffer-name bmk))
+                             (file/buf  (if (and buf (equal file bookmarkp-non-file-filename))
+                                            buf
+                                          file))
+                             (tags      (bookmarkp-get-tags bmk)))
+                        (cons `(,(icicle-candidate-short-help
+                                  (icicle-bookmark-help-string bname)
+                                  (icicle-bookmark-propertize-candidate bname))
+                                ,file/buf
+                                ,@(and tags (list (format "%S" tags))))
+                              guts)))
+                #'(lambda (bmk)
+                    (let ((bname  (bookmark-name-from-full-record bmk))
+                          (guts   (bookmark-get-bookmark-record bmk)))
+                      (cons (icicle-candidate-short-help
+                             (icicle-bookmark-help-string bname)
+                             (icicle-bookmark-propertize-candidate bname))
+                            guts))))
+              (or (and (or (and (not icicle-bookmark-refresh-cache-flag)
+                                (not (consp current-prefix-arg)))
+                           (and icicle-bookmark-refresh-cache-flag (consp current-prefix-arg)))
+                       bookmarkp-sorted-alist)
+                  (setq bookmarkp-sorted-alist
+                        (bookmarkp-sort-and-remove-dups bookmark-alist)))))))
   (progn                                ; First code
-    (when (featurep 'bookmark+)         ; Bind keys to narrow bookmark candidates by type.
-      (put-text-property 0 1 'icicle-fancy-candidates t prompt)
-      (define-key minibuffer-local-must-match-map "\C-\M-r" 'icicle-bookmark-region-narrow)
-      (define-key minibuffer-local-must-match-map "\C-\M-g" 'icicle-bookmark-gnus-narrow)
-      (define-key minibuffer-local-must-match-map "\C-\M-w" 'icicle-bookmark-w3m-narrow)
-      (define-key minibuffer-local-must-match-map "\C-\M-i" 'icicle-bookmark-info-narrow)
-      (define-key minibuffer-local-must-match-map "\C-\M-b" 'icicle-bookmark-non-file-narrow)
-      (define-key minibuffer-local-must-match-map "\C-\M-f" 'icicle-bookmark-file-narrow)
-      (define-key minibuffer-local-must-match-map "\C-\M-@" 'icicle-bookmark-remote-file-narrow)
-      (define-key minibuffer-local-must-match-map [(control meta ?F)]
-        'icicle-bookmark-local-file-narrow)))
+    (require 'bookmark)
+    (when (featurep 'bookmark+)
+      ;; Bind keys to narrow bookmark candidates by type.  Lax is for multi-completion case.
+      (dolist (map  '(minibuffer-local-must-match-map minibuffer-local-completion-map))
+        (define-key (symbol-value map) "\C-\M-b" 'icicle-bookmark-non-file-narrow)
+        (define-key (symbol-value map) "\C-\M-d" 'icicle-bookmark-dired-narrow)
+        (define-key (symbol-value map) "\C-\M-f" 'icicle-bookmark-file-narrow)
+        (define-key (symbol-value map) "\C-\M-g" 'icicle-bookmark-gnus-narrow)
+        (define-key (symbol-value map) "\C-\M-i" 'icicle-bookmark-info-narrow)
+        (define-key (symbol-value map) "\C-\M-m" 'icicle-bookmark-man-narrow)
+        (define-key (symbol-value map) "\C-\M-r" 'icicle-bookmark-region-narrow)
+        (define-key (symbol-value map) "\C-\M-w" 'icicle-bookmark-w3m-narrow)
+        (define-key (symbol-value map) "\C-\M-@" 'icicle-bookmark-remote-file-narrow)
+        (define-key (symbol-value map) [(control meta ?B)]
+          'icicle-bookmark-bookmark-list-narrow) ; `C-M-B'
+        (define-key (symbol-value map) [(control meta ?F)]
+          'icicle-bookmark-local-file-narrow) ; `C-M-F'
+        (define-key (symbol-value map) [(control meta ?K)]
+          'icicle-bookmark-desktop-narrow)))) ; `C-M-K'
   (icicle-bookmark-cleanup-on-quit)     ; Undo code
   (icicle-bookmark-cleanup))            ; Last code
 
 (defun icicle-search-bookmark-action (bookmark-name)
   "Action function for `icicle-search-bookmark'."
+  (setq bookmark-name  (icicle-transform-multi-completion bookmark-name))
   (bookmark-jump-other-window bookmark-name)
   (setq mark-active  nil)               ; Unhighlight region, so you can see search hits etc.
   (let ((icicle-show-Completions-initially-flag  t)
         (icicle-candidate-action-fn              'icicle-search-action)
         (enable-recursive-minibuffers            t)
         (beg
-         (or (and (featurep 'bookmark+) (bookmark-get-position bookmark-name)) (point-min)))
+         (or (and (featurep 'bookmark+) (bookmarkp-region-bookmark-p bookmark-name)
+                  (bookmark-get-position bookmark-name))
+             (point-min)))
         (end
-         (or (and (featurep 'bookmark+) (bookmarkp-get-end-position bookmark-name)) (point-max))))
+         (or (and (featurep 'bookmark+) (bookmarkp-region-bookmark-p bookmark-name)
+                  (bookmarkp-get-end-position bookmark-name))
+             (point-max))))
     (when (= beg end) (setq beg  (point-min)    end  (point-max)))
     (icicle-search beg end regexp t))
   (with-current-buffer (window-buffer (minibuffer-window)) (icicle-erase-minibuffer)))
 
 
 ;; A little macro just to save some source code.
-(defmacro icicle-define-search-bookmark-command (type)
+(defmacro icicle-define-search-bookmark-command (type &optional prompt)
   "Define Icicles multi-command for searching bookmarks of type TYPE.
-TYPE is a string to be used for the doc string, prompt, and in
+TYPE is a string to be used for the doc string, default prompt, and in
  function names.  It should be lowercase and contain no spaces.
 Optional arg PROMPT is the completion prompt."
   `(icicle-define-command
     ,(intern (format "icicle-search-%s-bookmark" type)) ; Command name
     ,(format "Search %s bookmark text.
-Like `icicle-search-bookmark', but with %s bookmarks only." type type) ; Doc string
+Like `icicle-search-bookmark', but with %s bookmarks only.
+You need library `bookmark+.el' for this command." type type) ; Doc string
     icicle-search-bookmark-action       ; Function to perform the action
-    prompt                              ; `completing-read' args
-    (mapcar #'(lambda (cand)
-                (list (icicle-candidate-short-help
-                       (icicle-bookmark-help-string (car cand)) (car cand))))
-     (funcall ',(intern (format "bookmarkp-%s-alist-only" type))))
-    nil t nil (if (boundp 'bookmark-history) 'bookmark-history 'icicle-bookmark-history) nil nil
-    ((enable-recursive-minibuffers    t) ; In case we read input, e.g. File changed on disk...
-     (completion-ignore-case          bookmark-completion-ignore-case) ; Additional bindings
-     (prompt                          ,(format "Search %s bookmark: " type))
-     (icicle-candidate-help-fn        #'(lambda (cand) (icicle-msg-maybe-in-minibuffer
-                                                        (icicle-bookmark-help-string cand))))
-     (icicle-delete-candidate-object  'bookmark-delete)
-     (regexp                          (icicle-search-read-context-regexp)))
-    (progn (require 'bookmark+) (bookmark-maybe-load-default-file)) ; First code
+    prompt1 icicle-candidates-alist nil ; `completing-read' args
+    (not icicle-show-multi-completion-flag)
+    nil (if (boundp 'bookmark-history) 'bookmark-history 'icicle-bookmark-history)
+    nil nil
+    ((enable-recursive-minibuffers             t) ; In case we read input, e.g. File changed on...
+     (completion-ignore-case                   bookmark-completion-ignore-case) ; Additional bindings
+     (prompt1                                  ,(or prompt (format "Search %s bookmark: " type)))
+     (icicle-list-use-nth-parts                '(1))
+     (icicle-candidate-properties-alist        (if (not icicle-show-multi-completion-flag)
+                                                   nil
+                                                 (if (facep 'file-name-shadow)
+                                                     '((2 (face file-name-shadow))
+                                                       (3 (face bookmark-menu-heading)))
+                                                   '((3 (face bookmark-menu-heading))))))
+     (icicle-transform-function                (if (interactive-p) nil icicle-transform-function))
+     (icicle-whole-candidate-as-text-prop-p    t)
+     (icicle-transform-before-sort-p           t)
+     (icicle-delete-candidate-object           'bookmark-delete)
+     (regexp                                   (icicle-search-read-context-regexp))
+     (bookmark-automatically-show-annotations  nil) ; Do not show annotations
+     (icicle-sort-orders-alist
+      (append '(("in *Bookmark List* order") ; Renamed from "turned OFF'.
+                ("by bookmark name" . icicle-alpha-p))
+       (and (featurep 'bookmark+)
+        (append
+         '(("by last bookmark access" (bookmarkp-bookmark-last-access-cp) icicle-alpha-p)
+           ("by bookmark visit frequency" (bookmarkp-visited-more-cp) icicle-alpha-p))
+         (and (member ,type '("info" "region"))
+          '(("by Info location" (bookmarkp-info-cp) icicle-alpha-p)))
+         (and (member ,type '("gnus" "region"))
+          '(("by Gnus thread" (bookmarkp-gnus-cp) icicle-alpha-p)))
+         (and (member ,type '("w3m" "region"))
+          '(("by w3m url" (bookmarkp-w3m-cp) icicle-alpha-p)))
+         (and (not (member ,type '("bookmark-list" "desktop" "gnus" "info" "man" "w3m")))
+          '(("by bookmark type" (bookmarkp-info-cp bookmarkp-gnus-cp bookmarkp-w3m-cp
+                                 bookmarkp-local-file-type-cp bookmarkp-handler-cp)
+             icicle-alpha-p)))
+         (and (not (member ,type '("bookmark-list" "desktop" "dired" "non-file")))
+          '(("by file name" (bookmarkp-file-alpha-cp) icicle-alpha-p)))
+         (and (member ,type '("local-file" "file" "dired" "region"))
+          '(("by local file type" (bookmarkp-local-file-type-cp) icicle-alpha-p)
+            ("by local file size" (bookmarkp-local-file-size-cp) icicle-alpha-p)
+            ("by last local file access" (bookmarkp-local-file-accessed-more-recently-cp)
+             icicle-alpha-p)
+            ("by last local file update" (bookmarkp-local-file-updated-more-recently-cp)
+             icicle-alpha-p)))
+         (and (not (string= ,type "desktop"))
+          '(("by last buffer or file access" (bookmarkp-buffer-last-access-cp
+                                              bookmarkp-local-file-accessed-more-recently-cp)
+             icicle-alpha-p)))
+         (and (get-buffer "*Bookmark List*")
+          '(("marked before unmarked (in *Bookmark List*)" (bookmarkp-marked-cp)
+             icicle-alpha-p)))))
+       '(("by previous use alphabetically" . icicle-historical-alphabetic-p)
+         ("case insensitive" . icicle-case-insensitive-string-less-p))))         
+     (icicle-candidate-help-fn
+      #'(lambda (cand)
+          (when (and (featurep 'bookmark+) icicle-show-multi-completion-flag)
+            (setq cand  (funcall icicle-get-alist-candidate-function cand))
+            (setq cand  (cons (caar cand) (cdr cand))))
+          (if (featurep 'bookmark+)
+              (if current-prefix-arg
+                  (bookmarkp-describe-bookmark-internals cand)
+                (bookmarkp-describe-bookmark cand))
+            (icicle-msg-maybe-in-minibuffer (icicle-bookmark-help-string cand)))))
+     (icicle-candidates-alist
+      (if (not (featurep 'bookmark+))
+          (mapcar #'(lambda (cand) (list (icicle-candidate-short-help
+                                          (icicle-bookmark-help-string cand)
+                                          (icicle-bookmark-propertize-candidate cand))))
+                  (funcall ',(intern (format "bookmarkp-%s-alist-only" type))))
+        (bookmark-maybe-load-default-file) ; Loads bookmarks file, defining `bookmark-alist'.
+        (mapcar (if icicle-show-multi-completion-flag
+                    #'(lambda (bmk)
+                        (let* ((bname     (bookmark-name-from-full-record bmk))
+                               (guts      (bookmark-get-bookmark-record bmk))
+                               (file      (bookmark-get-filename bmk))
+                               (buf       (bookmarkp-get-buffer-name bmk))
+                               (file/buf  (if (and buf (equal file bookmarkp-non-file-filename))
+                                              buf
+                                            file))
+                               (tags      (bookmarkp-get-tags bmk)))
+                          ;; Emacs 20 byte-compiler bug prevents using backslash syntax here.
+                          (cons (append (list (icicle-candidate-short-help
+                                               (icicle-bookmark-help-string bname)
+                                               (icicle-bookmark-propertize-candidate bname))
+                                              file/buf)
+                                        (and tags (list (format "%S" tags))))
+                                guts)))
+                  #'(lambda (bmk)
+                      (let ((bname  (bookmark-name-from-full-record bmk))
+                            (guts   (bookmark-get-bookmark-record bmk)))
+                        (cons (icicle-candidate-short-help
+                               (icicle-bookmark-help-string bname)
+                               (icicle-bookmark-propertize-candidate bname))
+                              guts))))
+                (bookmarkp-sort-and-remove-dups
+                 (funcall ',(intern (format "bookmarkp-%s-alist-only" type))))))))
+    (unless (require 'bookmark+ nil t)  ; First code
+      (error "You need library `bookmark+.el' for this command"))
     (icicle-bookmark-cleanup-on-quit)   ; Undo code
-    (icicle-bookmark-cleanup)))
+    (icicle-bookmark-cleanup)))         ; Last code
 
 ;; The following sexps macro-expand to define these commands:
+;;  `icicle-search-bookmark-list-bookmark', 
+;;  `icicle-search-desktop-bookmark', 
+;;  `icicle-search-dired-bookmark', 
 ;;  `icicle-search-file-bookmark', 
 ;;  `icicle-search-gnus-bookmark', 
 ;;  `icicle-search-info-bookmark', 
 ;;  `icicle-search-local-file-bookmark', 
+;;  `icicle-search-man-bookmark', 
 ;;  `icicle-search-non-file-bookmark', 
 ;;  `icicle-search-region-bookmark', 
 ;;  `icicle-search-remote-file-bookmark', 
 ;;  `icicle-search-w3m-bookmark'.
+(icicle-define-search-bookmark-command "bookmark-list")
+(icicle-define-search-bookmark-command "desktop")
+(icicle-define-search-bookmark-command "dired")
 (icicle-define-search-bookmark-command "file")
 (icicle-define-search-bookmark-command "gnus")
 (icicle-define-search-bookmark-command "info")
 (icicle-define-search-bookmark-command "local-file")
+(icicle-define-search-bookmark-command "man")
 (icicle-define-search-bookmark-command "non-file")
-(icicle-define-search-bookmark-command "region")
+(icicle-define-search-bookmark-command "region" "Search region: ")
 (icicle-define-search-bookmark-command "remote-file")
 (icicle-define-search-bookmark-command "w3m")
-
-;;;###autoload
-(icicle-define-command icicle-search-region ; Command name
-  "Search a region from the list of regions, `icicle-region-alist'.
-Completion is available.  The regions are sorted alphabetically by
-buffer, and then by tag; you cannot change the sort order.
-
-You can use `S-delete' during completion to delete a region from
-`icicle-region-alist'.
-
-You can use `icicle-add-region' to define the list of regions.
-Regions in `icicles-regions' that are in buffers that do not currently
-exist are ignored.
-
-Note that each region is defined by its limits, so that if the
-region's buffer has changed, then the text used to identify the region
-might no longer correspond to the text at the beginning of the
-region.
-
-If user option `icicle-show-multi-completion-flag' is non-nil, then
-each completion candidate is annotated with the name of the region's
-buffer, to facilitate orientation.  Note that even when the value is
-nil, you can use `C-M-mouse-2' and so on to see the buffer name, as
-well as the start and end points of the region and its length.
-
-Completion is lax if `icicle-show-multi-completion-flag' is non-nil;
-otherwise, it is strict.
-
-NOTE: An alternative to using `icicle-search-region' and
-`icicle-region-alist' is to use `icicle-search-region-bookmark',
-which requires library `bookmark+.el'.  In that case, saved regions
-are treated as bookmarks in every respect." ; Doc string
-  icicle-search-region-action           ; Function to perform the action
-  "Search region: " icicle-candidates-alist ; `completing-read' args
-  nil (not icicle-show-multi-completion-flag) nil nil (if icicle-show-multi-completion-flag
-                                                          (car (caar icicle-candidates-alist))
-                                                        (caar icicle-candidates-alist))
-  nil
-  ((IGNORED--FOR-SIDE-EFFECT               (when icicle-region-auto-open-files-flag ; Bindings
-                                             (icicle-region-open-all-files)))
-   (icicle-candidate-help-fn               'icicle-region-help)
-   (icicle-delete-candidate-object         'icicle-delete-region-from-alist)
-   (regexp                                 (icicle-search-read-context-regexp))
-   (icicle-list-nth-parts-join-string      "\t")
-   (icicle-list-join-string                "\t")
-   (icicle-list-end-string                 "")
-   (icicle-list-use-nth-parts              '(1))
-   (icicle-sort-comparer                   nil)
-   (icicle-transform-function              (if (interactive-p) nil icicle-transform-function))
-   (icicle-inhibit-sort-p                  t)
-   (icicle-whole-candidate-as-text-prop-p  t)
-   (icicle-candidates-alist                (icicle-region-add-buffers (icicle-region-add-short-help
-                                                                       (icicle-region-sorted))))))
-
-;; Free var here: `regexp' is bound in `icicle-search-region'.
-(defun icicle-search-region-action (reg-name)
-  "Action function for `icicle-search-region'."
-  (let* ((reg   (funcall icicle-get-alist-candidate-function reg-name))
-         (buf   (cadr reg))
-         (file  (car (cddr reg))))
-    (when (and (not (get-buffer buf)) file) ; If no buffer, try to open the file.  If no file, msg.
-      (cond ((string= buf "*info*") (info file))
-            ((file-readable-p file) (find-file-noselect file))
-            (t (message "No such file: `%s'" file))))
-    (pop-to-buffer buf) (raise-frame)
-    (let ((icicle-show-Completions-initially-flag  t)
-          (icicle-candidate-action-fn              'icicle-search-action)
-          (icicle-candidates-alist                 icicle-candidates-alist)
-          (enable-recursive-minibuffers            t))
-      (icicle-search (cadr (cddr reg)) (car (cddr (cddr reg))) regexp t))
-    (with-current-buffer (window-buffer (minibuffer-window)) (icicle-erase-minibuffer))))
 
 ;;;###autoload
 (defun icicle-search-char-property (beg end require-match
@@ -3355,8 +3220,8 @@ That is, do not also search an overlay property."
 The other arguments are passed to `icicle-char-properties-in-buffer'.
 Only the character properties are included, not their values.
 WHERE is a list of buffers, a list of files, or a list of region
-  entries that have the same form as `icicle-region-alist'.  If nil,
-  then only the current buffer is used.
+  bookmarks (in which case you must also use library `bookmark+.el').
+  If nil, then only the current buffer is used.
 TYPE can be `overlay', `text', or nil, meaning overlay properties,
 text properties, or both, respectively."
   (cond ((and (consp where) (bufferp (car where))) ; List of buffers - search buffers.
@@ -3366,12 +3231,15 @@ text properties, or both, respectively."
               (file-exists-p (car where)))
          (dolist (file  where)
            (icicle-char-properties-in-buffer (find-file-noselect file) nil nil type)))
-        ((consp where)                  ; Search all regions in `icicle-region-alist'.
-         (when icicle-region-auto-open-files-flag (icicle-region-open-all-files))
-         (dolist (reg  where)
-           (when (bufferp (get-buffer (cadr reg)))
-             (icicle-char-properties-in-buffer
-              (get-buffer (cadr reg)) (cadr (cddr reg)) (car (cddr (cddr reg))) type))))
+        ((consp where)                  ; Search bookmarked regions.
+         (unless (require 'bookmark+ nil t) (error "This requires library `bookmark+.el'"))
+         (let (buf+beg buf beg end)
+           (dolist (bmk  where)
+             (setq buf+beg  (bookmark-jump-noselect bmk)
+                   buf      (car buf+beg)
+                   beg      (cdr buf+beg)
+                   end      (bookmarkp-get-end-position bmk))
+             (when (bufferp buf) (icicle-char-properties-in-buffer (get-buffer buf) beg end type)))))
         (t                              ; Search this buffer only.
          (icicle-char-properties-in-buffer (current-buffer) beg end type))))
 
@@ -3571,16 +3439,27 @@ search multiple regions, buffers, or files, see the doc for command
   (icicle-search beg end word-regexp (not icicle-show-multi-completion-flag) where))
 
 ;;;###autoload
-(defun icicle-search-all-regions (scan-fn-or-regexp require-match &rest args)
-  "Search all saved regions.
-Same as using a simple prefix arg, `C-u', with `icicle-search'.
-Arguments are the same as for `icicle-search', but without arguments
-BEG, END, and WHERE."
+(defun icicle-search-bookmarks-together (scan-fn-or-regexp require-match &rest args)
+  "Search bookmarked regions (together).
+The arguments are the same as for `icicle-search', but without
+arguments BEG, END, and WHERE.
+
+This is the same as using a plain prefix arg, `C-u', with
+`icicle-search'.
+
+You first choose all of the bookmarked regions to search.  Then your
+input is matched against a multi-completion composed of (a) the region
+text that matches the regexp and (b) the region's buffer name.
+
+An alternative is multi-command `icicle-search-bookmark', which
+searches the bookmarked regions you choose one at a time."
   (interactive `(,(if icicle-search-whole-word-flag
                       (icicle-search-read-word)
                       (icicle-search-read-context-regexp))
                  ,(not icicle-show-multi-completion-flag)))
-  (apply #'icicle-search nil nil scan-fn-or-regexp require-match icicle-region-alist args))
+  (apply #'icicle-search nil nil scan-fn-or-regexp require-match
+         (let ((current-prefix-arg  '(4))) (icicle-search-where-arg))
+         args))
 
 ;;;###autoload
 (defun icicle-search-buffer (scan-fn-or-regexp require-match &rest args)

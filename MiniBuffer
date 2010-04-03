@@ -2,7 +2,7 @@ The '''[::minibuffer]''' is a special [[buffer]] for entering [[command]]s or in
 
 In many respects, the minibuffer is a buffer like any other: You can edit the text you are inputting there. Most editing [[KeySequence]]s are available for this.
 
-Everything you enter in the minibuffer (commands, input arguments) is added to a ''MinibufferHistory''. You can retrieve inputs from minibuffer histories to edit and reuse them.
+Everything you enter in the minibuffer (commands, input arguments) is added to a MinibufferHistory. You can retrieve inputs from minibuffer histories to edit and reuse them.
 
 To cancel whatever you're doing in the minibuffer, use `C-g'. See also: RefocusMinibuffer.
 

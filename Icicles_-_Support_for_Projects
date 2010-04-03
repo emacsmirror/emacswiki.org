@@ -6,10 +6,55 @@
 
 == Icicles Support for Projects ==
 
-This page presents little that is really new.  It mainly provides pointers to other
-'''Icicles''' pages that describe features that can help you work with a
-project that involves multiple files or [[buffer]]s, or named [[region]]s
-of text (e.g. code) within files and buffers.
+This page mainly provides pointers to other sections of the
+'''Icicles''' doc that describe features that can help you work with a
+project that involves multiple files, [[buffer]]s, or [[bookmark]]s.
+
+
+
+
+
+
+[:BookmarksForProjects]
+== Bookmarks for Project Access and Organization ==
+
+If you use '''[[Bookmark+]]''' (library <tt>[[bookmark+.el]]</tt>), then you can use
+bookmarks of various types, including the following, to help
+manage software projects:
+
+* [[Dired]] buffers, with specific sets of files and subdirectories
+ that are marked or omitted, and using specific listing switches.
+
+* `##*Bookmark List*##' buffers, with specific sets of bookmarks that
+  are marked or hidden.
+
+* Multiple alternative ''bookmark files''.  For example, use a
+  different one for each project.  Or use different ones for
+  subprojects and use them together for a full project.
+
+* [[DeskTop]]s, which include sets of [[variable]]s and visited [[buffer]]s
+  and files.
+
+* Composite, or sequence, bookmarks, which ''combine'' other
+  bookmarks.
+
+You can also associate ''tags'', in the [[http://delicious.com|del.icio.us]] sense, with most
+types of bookmarks.  (Such tags are unrelated to the Emacs
+source-code tags that use [[tags file]]s.)  A bookmark can have any
+number of tags, and multiple bookmarks can have the same tag,
+which means you can use them to organize their target objects.
+And tags can be more than just names: they can be user-defined
+''attributes'', with EmacsLisp objects as their values.
+
+These and other '''Bookmark+''' features give you different ways to
+save, restore, filter, access, and otherwise organize projects, as
+collections of information about source-code components and
+related software.
+
+'''Icicles''' enhances access to such features. See [[Icicles - Bookmark Enhancements]].
+
+
+
 
 
 
@@ -22,7 +67,7 @@ often be useful, and it has the advantage of being supported by several
 existing Emacs features.
 
 Another simple kind of project includes the files that are listed
-in a given [[tags file]].  This is obviously more complex and flexible than a directory listing.
+in a given Emacs [[tags file]].  This is obviously more complex and flexible than a directory listing.
 
 '''Icicles''' provides [[multi-command]]s for visiting one or more files
 that are listed in the current tags table:
@@ -32,6 +77,11 @@ part(s) of the absolute file name.
 
 '''See also'''
 [[Icicles - File Name Input#ReadingFileNames|Commands that Read File Names]].
+
+
+
+
+
 
 
 
@@ -53,6 +103,12 @@ these.  (A [[TagsFile|tags file]] is just a saved index for project files.)
 
 
 
+
+
+
+
+
+
 [:SearchingProjectFiles]
 == Searching Project Files ==
 
@@ -68,6 +124,11 @@ search to access parts of your projects.
 '''See also''' [[Icicles - Dired Enhancements]] for an easy way to
 search marked files in Dired with '''Icicles''' search.
 
+'''See also''' [[Icicles - Bookmark Enhancements#SearchingBookmarkedObjects|Icicles - Searching Bookmarked Objects]] for ways to search
+bookmarked objects, including the files that have a given set of
+del.icio.us-style tags and the bookmarks that are marked in a
+given bookmark-list state.
+
 And don't forget that all uses of '''Icicles''' search also let you do
 [[Icicles - Search-And-Replace|search-and-replace]] on the fly.  This applies to `grep' results,
 searching marked files in Dired, tags navigation, and Imenu
@@ -78,19 +139,29 @@ or just the part of it that matches your current input.
 
 
 [:DefiningAndSavingSets]
-== Defining and Saving Sets of Files, Buffers, Regions ==
+== Defining and Saving Sets of Files or Buffers ==
 
 Let's assume that you have one or more sets of files or buffers
-that you use frequently.  You give these sets names and [[Icicles - Persistent Completions|save the
-sets persistently]].  Later, you can retrieve a set by name,
-bringing you back to the context of working with just those
-particular files, buffers, or regions that belong to your project.
-You can search these or navigate among their significant parts.
+that you use frequently.  For each such set of objects, you create
+an Emacs [[option]] whose value is a list of the file or buffer names
+(strings). Later, you use the option value to refer to those objects by name.  This brings you back to the context of working with just those
+particular files or buffers that belong to your project.
+You can search such sets or navigate among their objects.
 '''Icicles''' has a number of features that can help with these tasks.
 
-But before you can name and save such a set, you must define its
-members: pick the files, buffers, or regions that you want to
-belong to a given project.  '''Icicles''' can help with this too.
+[new:DrewAdams:2010-04-03 01:23 UTC]
+'''Note:''' Bookmarks are also persistent references to files and
+buffers, and you can use sets of bookmarks similarly.  Bookmarking
+is a vanilla Emacs feature.  Being able to manipulate ''explicit
+sets'' of bookmarks is a '''[[Bookmark+]]''' feature (library <tt>[[bookmark+.el]]</tt>).
+Bookmarking features are described elsewhere, but they work in
+concert with '''Icicles''' to offer very good project support.
+See [[Icicles - Bookmark Enhancements]].
+[new]
+
+Before you can name and save a set of file or buffer names, you must define its
+members: pick the file or buffer names that you want to
+belong to a given project.  '''Icicles''' can help with this.
 
 For ''[[buffer]]s'', use [[command]]s `icicle-add-buffer-config' and
 `icicle-remove-buffer-config' to define one or more buffer
@@ -98,14 +169,6 @@ configurations.  These are named sets of buffers, sort functions,
 and other parameters that control [[completion]] of buffer names.
 Thereafter, you can use command `icicle-buffer-config' to choose a
 configuration to be current.
-
-For multiple ''[[region]]s'', use `##C-##''##N##''## C-x C-x##' (`icicle-add-region'),
-where ''##N##'' is a whole number, to add the current region to
-'''`<tt>[[Icicles - Customization and General Tips#icicle-region-alist|icicle-region-alist]]</tt>''''.  This user [[option]] is saved with your
-customizations.  You can later activate a saved region using `C-u C-x C-x' (`icicle-select-region').  You can search the text in one
-or more saved regions using command `icicle-search-region'.  Or
-you can search through all of the saved regions at once using `##C-##''##N##''## C-c `##' (`icicle-search' with a positive [[prefix argument]]).
-'''See Also:''' [[Icicles - Multiple Regions]].
 
 To define a set of ''files'', you use '''Icicles''' completion against file
 names.  You can use [[progressive completion]], [[Icicles - Nutshell View#ChippingAway|chip away the
@@ -135,6 +198,7 @@ use later with commands that operate on directories. Finally, you can also save 
 
 * [[Icicles - Candidate Sets]]
 * [[Icicles - Persistent Completions]]
+* [[Icicles - Bookmark Enhancements]]
 * [[Icicles - Progressive Completion]]
 * [[Icicles - Nutshell View#ChippingAway| Chipping Away the Non-Elephant]]
 * [[Icicles - File-Name Input]]
@@ -162,16 +226,24 @@ given project are scattered all over your file system, '''Icicles'''
 lets you access them together as a named unit.  For more
 information, see [[Icicles - Candidate Sets]].
 
+If you use library <tt>[[bookmark+.el]]</tt> then you can open a project that
+is defined by a set of bookmarks, by doing one of the following:
+
+* Using a project-specific ''bookmark file''.
+
+* Using a ''bookmark-list bookmark'' (it records a `##*Bookmark List*##'
+  buffer state, including which bookmarks are marked or omitted).
+
 You can also open Dired for a project or for a list of file names
 saved non-persistently as completion candidates -- only those files
 are listed in the Dired buffer. See [[Icicles - Dired Enhancements]].
 
 [:icicle-grep-saved-file-candidates]
-You can also run `grep' directly on a saved list of file names using command '''`icicle-grep-saved-file-candidates''''.  If you use library <tt>[[dired+.el]]</tt> (see '''DiredPlus'''), then you can also `grep' the files in a project or saved list of file names by opening it in Dired and then using `M-g' (`diredp-do-grep').
+You can also run `grep' on a saved list of file names using command '''`icicle-grep-saved-file-candidates''''.  If you use library <tt>[[dired+.el]]</tt> (see '''DiredPlus'''), then you can also `grep' the files in a project or saved list of file names by opening it in Dired and then using `M-g' (`diredp-do-grep').
 
 Finally, note that among the sets of completion candidates that
 you can save are '''Icicles''' search hits.  That's right.  '''Icicles'''
-search lets you search multiple buffers, files, or buffer regions,
+search lets you search multiple buffers, files, or bookmarks,
 and you can save selected search hits or all matching hits for
 later use.  When you ''save
 search hits'', '''Icicles''' records the buffer or file names and the hit

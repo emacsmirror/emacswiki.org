@@ -42,6 +42,8 @@ Emacs Interfaces to Online Utilities.
 * TinyUrl -- Easily convert the url at point to a tinyurl via tinyurl.com. 
 * TextTranslator -- text translation package
 * ArxivReader -- a tool to make slogging through arXiv abstracts more fun.  And makes it easy to grab the article pdfs.
+* [[Anything]] -- M-x anything-surfraw-only shows URLs of many search engines.
+
 
 Interfaces to code snippet sites on the Internet
 

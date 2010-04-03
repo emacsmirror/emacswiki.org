@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Mar 13 14:33:10 2010 (-0800)
+;; Last-Updated: Tue Mar 30 13:11:55 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 1066
+;;     Update #: 1098
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -37,11 +37,12 @@
 ;;    `icicle-all-candidates-list-action-fn',
 ;;    `icicle-all-candidates-list-alt-action-fn',
 ;;    `icicle-apply-nomsg', `icicle-apropos-complete-match-fn',
-;;    `icicle-bookmark-history', `icicle-buffer-config-history',
-;;    `icicle-candidate-action-fn', `icicle-candidate-alt-action-fn',
-;;    `icicle-candidate-entry-fn', `icicle-candidate-help-fn',
-;;    `icicle-candidate-nb', `icicle-candidate-properties-alist',
-;;    `icicle-candidates-alist', `icicle-char-property-value-history',
+;;    `icicle-bookmark-history', `icicle-bookmark-types',
+;;    `icicle-buffer-config-history', `icicle-candidate-action-fn',
+;;    `icicle-candidate-alt-action-fn', `icicle-candidate-entry-fn',
+;;    `icicle-candidate-help-fn', `icicle-candidate-nb',
+;;    `icicle-candidate-properties-alist', `icicle-candidates-alist',
+;;    `icicle-char-property-value-history',
 ;;    `icicle-cmd-calling-for-completion', `icicle-cmd-reading-input',
 ;;    `icicle-color-history', `icicle-color-theme-history',
 ;;    `icicle-command-abbrev-history', `icicle-commands-for-abbrev',
@@ -232,6 +233,12 @@ not filtered by the input, except possibly by a function-valued
 `minibuffer-completion-table'.")
 
 (defvar icicle-bookmark-history nil "History for bookmark names.")
+
+(defvar icicle-bookmark-types ()
+  "List of strings naming bookmark types.
+The list represents the set of all bookmarks of the given types.
+An empty list and the singleton list `(all)', where `all' is a symbol,
+are equivalent and stand for the set of all bookmarks (of any type).")
 
 (defvar icicle-buffer-config-history nil "History for buffer configuration names.")
 
@@ -525,11 +532,7 @@ noted in parentheses.
 * `icicle-redefine-standard-commands-flag'- Redefine std commands?
 * `icicle-regexp-quote-flag'             - Escape chars? (`C-`')
 * `icicle-regexp-search-ring-max'        - `regexp-search-ring-max'
-* `icicle-region-alist'                  - Alist of saved regions
-* `icicle-region-auto-open-files-flag'   - Open saved-region files?
 * `icicle-region-background'             - Background for region
-* `icicle-region-alist'                  - List of regions
-* `icicle-regions-name-length-max'       - # chars to name a region
 * `icicle-require-match-flag'            - Override REQUIRE-MATCH?
 * `icicle-saved-completion-sets'         - Completion sets for \
 `\\[icicle-candidate-set-retrieve]'
@@ -600,8 +603,6 @@ input prompt is prefixed by `+'.
 + `icicle-remove-buffer-candidate'     -   From same
   `icicle-add-buffer-config'           - To `icicle-buffer-configs'
 + `icicle-remove-buffer-config'        -   From same
-  `icicle-add-region'                  - To `icicle-region-alist'
-+ `icicle-remove-region'               -   From same
   `icicle-add/update-saved-completion-set' - To
                                         `icicle-saved-completion-sets'
 + `icicle-remove-saved-completion-set' -   From same
@@ -611,6 +612,18 @@ input prompt is prefixed by `+'.
   `icicle-apropos-variable'            - Enhanced `apropos-variable'
   `icicle-apropos-zippy'               - Show matching Zippy quotes
 + `icicle-bookmark'(`-other-window')   - Jump to bookmark
++ `icicle-bookmark-bookmark-list-other-window' - Jump: bookmark list
++ `icicle-bookmark-desktop-other-window' - Jump to desktop bookmark
++ `icicle-bookmark-dired-other-window' - Jump to a Dired bookmark
++ `icicle-bookmark-file-other-window'  - Jump to a file bookmark
++ `icicle-bookmark-gnus-other-window'  - Jump to a Gnus bookmark
++ `icicle-bookmark-info-other-window'  - Jump to an Info bookmark
++ `icicle-bookmark-local-file-other-window' - Jump to local file
++ `icicle-bookmark-man-other-window'   - Jump to a `man'-page bookmark
++ `icicle-bookmark-non-file-other-window' - Jump to buffer bookmark
++ `icicle-bookmark-region-other-window' - Jump to a region bookmark
++ `icicle-bookmark-remote-file-other-window' - Jump to remote file
++ `icicle-bookmark-w3m-other-window'   - Jump to a W3M bookmark
 + `icicle-buffer'(`-other-window')     - Switch to buffer (`C-x b')
 + `icicle-buffer-config'               - Pick `icicle-buffer' options
 + `icicle-buffer-list'                 - Choose a list of buffer names
@@ -641,6 +654,7 @@ input prompt is prefixed by `+'.
 + `icicle-find-file-absolute'(`-other-window') - same: absolute only
 + `icicle-find-file-in-tags-table'(`-other-window') - Tags-table file
 + `icicle-find-first-tag'(`-other-window') - Find source def (tag)
++ `icicle-find-tag'                    - Find definition (tag) (`M-.')
 + `icicle-font'                        - Change font of frame
 + `icicle-frame-bg'                    - Change background of frame
 + `icicle-frame-fg'                    - Change foreground of frame
@@ -669,13 +683,31 @@ input prompt is prefixed by `+'.
   `icicle-save-string-to-variable'     - Save text for use with \
 `\\[icicle-insert-string-from-variable]'
 + `icicle-search'                      - Search (`C-c `')
++ `icicle-search-bookmark'             - Search bookmarks separately
++ `icicle-search-bookmark-list-bookmark' - Search bookmark lists
++ `icicle-search-bookmarks-together'   - Search bookmarks together
++ `icicle-search-desktop-bookmark'     - Search desktop bookmarks
++ `icicle-search-dired-bookmark'       - Search Dired bookmarks
++ `icicle-search-dired-marked'         - Search marked files in Dired
++ `icicle-search-file'                 - Search multiple files
++ `icicle-search-file-bookmark'        - Search file bookmarks
++ `icicle-search-gnus-bookmark'        - Search Gnus bookmarks
++ `icicle-search-ibuffer-marked'       - Search marked bufs in Ibuffer
++ `icicle-search-info-bookmark'        - Search Info bookmarks
 + `icicle-search-keywords'             - Search for keywords (`C-c ^')
-+ `icicle-search-region'               - Search multiple regions
-+ `icicle-find-tag'                    - Find definition (tag) (`M-.')
++ `icicle-search-local-file-bookmark'  - Search local file bookmarks
++ `icicle-search-man-bookmark'         - Search `man'-page bookmarks
++ `icicle-search-non-file-bookmark'    - Search non-file bookmarks
++ `icicle-search-overlay-property'     - Search for overlay properties
++ `icicle-search-pages'                - Search Emacs pages
++ `icicle-search-paragraphs'           - Search Emacs paragraphs
++ `icicle-search-region-bookmark'      - Search bookmarked regions
++ `icicle-search-remote-file-bookmark' - Search remote bookmarks
++ `icicle-search-sentences'            - Search sentences as contexts
 + `icicle-search-text-property'        - Search for face... (`C-c \"')
++ `icicle-search-w3m-bookmark'         - Search W3M bookmarks
 + `icicle-search-word'                 - Search for whole word
 + `icicle-select-frame'                - Select a frame by name
-+ `icicle-select-region'               - Select a region
 + `icicle-select-window'               - Select window by buffer name
   `icicle-send-bug-report'             - Send Icicles bug report
 + `icicle-set-option-to-t'             - Set binary option to t

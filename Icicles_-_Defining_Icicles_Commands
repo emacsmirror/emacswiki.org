@@ -234,9 +234,26 @@ and then restore (lines 11-12) the original font and frame.
 Several top-level '''Icicles''' commands have been defined using
 `icicle-define-command' and `icicle-define-file-command'.  You can use their definitions as models for your own multi-commands.
 
+* '''`clear-option'''' (alias) -- Set value of a binary option to `nil'
 * '''`icicle-add-buffer-candidate'''' -- Add buffer to those always shown for completion
 * '''`icicle-add-buffer-config'''' -- Add config to `icicle-buffer-configs'
 * '''`icicle-bookmark''''    -- Jump to a [[bookmark]]
+* '''`icicle-bookmark-bookmark-list-*'''' -- Jump to a bookmark-list bookmark
+* '''`icicle-bookmark-desktop-*'''' -- Jump to a bookmarked DeskTop
+* '''`icicle-bookmark-dired-*'''' -- Jump to a bookmarked Dired state
+* '''`icicle-bookmark-file-*'''' -- Jump to a bookmarked file
+* '''`icicle-bookmark-gnus-*'''' -- Jump to a bookmarked Gnus message
+* '''`icicle-bookmark-info-*'''' -- Jump to a bookmarked [[Info]] node
+* '''`icicle-bookmark-list'''' -- Choose a list of bookmark names
+* '''`icicle-bookmark-local-file-*'''' -- Jump to a bookmarked local file
+* '''`icicle-bookmark-man-*'''' -- Jump to a bookmarked `man' page
+* '''`icicle-bookmark-non-file-*'''' -- Jump to a bookmarked [[buffer]]
+* '''`icicle-bookmark-region-*'''' -- Jump to a bookmarked [[region]]
+* '''`icicle-bookmark-remote-file-*'''' -- Jump to a bookmarked remote file
+* '''`icicle-bookmark-w3m-*'''' -- Jump to a bookmarked URL
+
+
+
 * '''`icicle-buffer''''      -- Switch to another buffer
 * '''`icicle-buffer-config'''' -- Choose a config of options for '''Icicles''' buffer commands
 * '''`icicle-buffer-list''''  -- Choose a [[list]] of buffer names
@@ -267,6 +284,8 @@ Several top-level '''Icicles''' commands have been defined using
 * '''`icicle-frame-fg''''    -- Change the frame foreground color
 * '''`icicle-fundoc''''      -- Display the doc of a function
 * '''`icicle-Info-menu''''   -- Go to an [[InfoMode|Info]] menu node
+* '''`icicle-increment-option'''' -- Increment an option value using arrows
+* '''`icicle-increment-variable'''' -- Increment a variable value using arrows
 * '''`icicle-insert-buffer'''' -- Insert a buffer
 * '''`icicle-insert-thesaurus-entry'''' -- Insert thesaurus entry
 * '''`icicle-keyword-list'''' -- Choose a list of keywords ([[regexps]])
@@ -275,16 +294,25 @@ Several top-level '''Icicles''' commands have been defined using
 * '''`icicle-locate-file'''' -- Open a file located anywhere
 * '''`icicle-plist''''       -- Choose a [[symbol]] and its [[property list]]
 * '''`icicle-recent-file'''' -- Open a recently used file
-* '''`icicle-remove-all-regions-in-buffer'''' -- Remove all saved [[region]]s for a buffer
 * '''`icicle-remove-buffer-candidate'''' -- Remove buffer from those always shown for completion
 * '''`icicle-remove-buffer-config'''' -- Remove config from `icicle-buffer-configs'
 * '''`icicle-remove-file-from-recentf-list'''' -- Remove files from recent-files list
-* '''`icicle-remove-region'''' -- Remove a region from saved regions list
 * '''`icicle-remove-saved-completion-set'''' -- Remove a [[Icicles - Candidate Sets|set]] from `icicle-saved-completion-sets'
 * '''`icicle-reset-option-to-nil'''' -- Set the value of a binary option to `nil'
-* '''`icicle-search-region'''' -- Search a region in saved regions list
+* '''`icicle-search-bookmark'''' -- Search a bookmark
+* '''`icicle-search-bookmark-list-bookmark'''' -- Search a bookmark-list bookmark
+* '''`icicle-search-desktop-bookmark'''' -- Search a desktop bookmark
+* '''`icicle-search-dired-bookmark'''' -- Search a Dired bookmark
+* '''`icicle-search-file-bookmark'''' -- Search a bookmarked file
+* '''`icicle-search-gnus-bookmark'''' -- Search a bookmarked Gnus message
+* '''`icicle-search-info-bookmark'''' -- Search a bookmarked Info node
+* '''`icicle-search-local-file-bookmark'''' -- Search a local-file bookmark
+* '''`icicle-search-man-bookmark'''' -- Search a bookmarked `man' page
+* '''`icicle-search-non-file-bookmark'''' -- Search a bookmarked buffer
+* '''`icicle-search-region-bookmark'''' -- Search a bookmarked region
+* '''`icicle-search-remote-file-bookmark'''' -- Search a remote bookmark
+* '''`icicle-search-w3m-bookmark'''' -- Search a bookmarked URL
 * '''`icicle-select-frame'''' -- Select frame by name and raise it
-* '''`icicle-select-region'''' -- Select a region from saved regions list
 * '''`icicle-select-window'''' -- Select window by its buffer name
 * '''`icicle-set-option-to-t'''' -- Set the value of a binary option to `t'
 * '''`icicle-toggle-option'''' -- Toggle the value of a binary option

@@ -190,12 +190,11 @@ named by the individual candidates you act on, using `C-RET'.
 But it also kills any buffer that you act on, using `S-delete'.  This
 is not the ''alternative'' action for the command (which is bound to
 `C-S-RET'); it is the ''deletion'' action.  Similarly, command
-`icicle-select-region', bound to `C-u C-x C-x', selects [[region]]s,
-but you can also use `S-delete' with it to remove individual
-regions from the list of saved regions, `icicle-region-alist'.
+`icicle-bookmark' jumps to a bookmark,
+but you can also use `S-delete' with it to delete individual
+bookmarks.
 
-When you use `S-delete' with commands, such as
-`icicle-select-region' (`C-u C-x C-x'), that allow duplicate
+When you use `S-delete' with a command that allow duplicate
 candidate names that represent different candidate objects, it
 deletes only the object associated with the current candidate
 (name).  
@@ -281,6 +280,9 @@ The same thing holds for [[Info]] bookmarks when you use
 `icicle-Info-goto-node' (`g' in Info mode); for [[buffer]] (non-file)
 bookmarks when you use `icicle-buffer' (`C-x b'); and for [[Dired]]
 bookmarks when you use `icicle-dired' (`C-x d').
+
+
+'''See Also: ''' [[Icicles - Bookmark Enhancements]]
 
 
 ----

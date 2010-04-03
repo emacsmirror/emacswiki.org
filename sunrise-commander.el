@@ -130,7 +130,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 272 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 275 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.  I  have  also  received
@@ -1298,66 +1298,79 @@ automatically:
 ;;; File system navigation functions:
 
 (defun sr-advertised-find-file (&optional filename)
-  "Manages the two basic cases of file name: directories are open inside Sunrise
-  itself, while regular files are passed to  sr-find-file.  A  special  case  of
-  directory is when the user presses return, f, or clicks on the path line."
+  "Handles the cases when the user presses  return, f or clicks on the path line
+  to access some object in the file system."
   (interactive)
   (save-excursion
-    (if (null filename)
-        (if (eq 1 (line-number-at-pos)) ;; <- Click or Enter on path line
-            (let* ((eol (save-excursion (end-of-line) (point)))
-                   (slash (re-search-forward "/" eol t)))
-              (if slash
-                  (setq filename (buffer-substring (+ 2 (point-min)) slash))
-                (setq filename default-directory)))
-          (setq filename (expand-file-name (dired-get-filename nil t)))))
-    (when filename
-      (unless (file-exists-p filename)
-        (error "ERROR: Nonexistent target"))
-      (if (file-directory-p filename)
-          (progn
-            (setq filename (file-name-as-directory filename))
-            (if (string= filename (expand-file-name "../"))
-                (sr-dired-prev-subdir)
-              (sr-goto-dir filename)))
-        (sr-find-file filename)))))
+    (unless filename
+      (if (eq 1 (line-number-at-pos)) ;; <- Click or Enter on path line
+          (let* ((eol (save-excursion (end-of-line) (point)))
+                 (slash (re-search-forward "/" eol t)))
+            (if slash
+                (setq filename (buffer-substring (+ 2 (point-min)) slash))
+              (setq filename default-directory)))
+        (setq filename (expand-file-name (dired-get-filename nil t)))))
+    (if (file-exists-p filename)
+        (sr-find-file filename)
+      (error "ERROR: Nonexistent target"))))
 
 (defun sr-find-file (filename &optional wildcards)
-  "Determines  the  proper  way  of handling a file. If the file is a compressed
-  archive and AVFS has been activated, first tries to display it as a  directory
-  in the VFS, otherwise just visits the file."
-  (interactive (find-file-read-args "Find file: " nil))
-  (let ((mode (assoc-default filename auto-mode-alist 'string-match)) vfile)
-    (when (and sr-avfs-root
-               (or (eq 'archive-mode mode)
-                   (eq 'tar-mode mode)
-                   (and (listp mode) (eq 'jka-compr (second mode)))
-                   (not (equal "." (sr-assoc-key filename
-                                                 sr-avfs-handlers-alist
-                                                 'string-match)))))
-      (setq vfile (sr-avfs-dir filename))
-      (when vfile
-        (sr-goto-dir vfile)
-        (setq filename nil)))
-    (when (eq 'sr-virtual-mode mode)
-      (sr-save-aspect
-       (sr-alternate-buffer (find-file filename)))
-      (sr-history-push filename)
-      (set-visited-file-name nil t)
-      (setq filename nil)
-      (sr-backup-buffer)))
+  "Determines the proper way of handling an object in the file system, which can
+  be either a regular file, a regular directory, a Sunrise VIRTUAL directory, or
+  a virtual directory served by AVFS."
+  (interactive (find-file-read-args "Find file or directory: " nil))
+  (cond ((file-directory-p filename) (sr-find-regular-directory filename))
+        ((sr-avfs-directory-p filename) (sr-find-avfs-directory filename))
+        ((sr-virtual-directory-p filename) (sr-find-virtual-directory filename))
+        (t (sr-find-regular-file filename wildcards))))
 
-  (if (null filename) ;;the file is a virtual directory:
-      (sr-keep-buffer)
-    (progn ;;the file is a regular file:
-      (condition-case description
-          (progn
-            (sr-save-panes-width)
-            (find-file filename wildcards)
-            (delete-other-windows)
-            (setq sr-prior-window-configuration (current-window-configuration))
-            (sr-quit))
-        (error (message "%s" (second description)))) )))
+(defun sr-virtual-directory-p (filename)
+  "Tell whether FILENAME is the path to a Sunrise VIRTUAL directory."
+  (eq 'sr-virtual-mode (assoc-default filename auto-mode-alist 'string-match)))
+
+(defun sr-avfs-directory-p (filename)
+  "Tell whether FILENAME is the path to an AVFS virtual directory."
+  (let ((mode (assoc-default filename auto-mode-alist 'string-match)))
+    (and sr-avfs-root
+         (or (eq 'archive-mode mode)
+             (eq 'tar-mode mode)
+             (and (listp mode) (eq 'jka-compr (second mode)))
+             (not (equal "." (sr-assoc-key filename
+                                           sr-avfs-handlers-alist
+                                           'string-match)))))))
+
+(defun sr-find-regular-directory (directory)
+  "Visit the given regular directory in the active pane."
+  (setq directory (file-name-as-directory directory))
+  (if (string= directory (expand-file-name "../"))
+      (sr-dired-prev-subdir)
+    (sr-goto-dir directory)))
+
+(defun sr-find-avfs-directory (avfs-dir)
+  "Visit the given AVFS virtual directory in the active pane."
+  (sr-goto-dir (sr-avfs-dir avfs-dir))
+  (sr-keep-buffer))
+
+(defun sr-find-virtual-directory (sr-virtual-dir)
+  "Visit the given Sunrise VIRTUAL directory in the active pane."
+  (sr-save-aspect
+   (sr-alternate-buffer (find-file sr-virtual-dir)))
+  (sr-history-push sr-virtual-dir)
+  (set-visited-file-name nil t)
+  (sr-keep-buffer)
+  (sr-backup-buffer))
+
+(defun sr-find-regular-file (filename &optional wildcards)
+  "Deactivate Sunrise and visit FILENAME as a regular file with WILDCARDS (see
+  find-file for more details on wildcard expansion)."
+  (condition-case description
+      (progn
+        (sr-save-panes-width)
+        (find-file filename wildcards)
+        (delete-other-windows)
+        (setq sr-prior-window-configuration (current-window-configuration))
+        (sr-quit))
+    (error (message "%s" (second description)))))
 
 (defun sr-avfs-dir (filename)
   "Returns the virtual path for accessing the given file through AVFS, or nil if

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Mar  3 01:16:42 2010 (-0800)
+;; Last-Updated: Fri Apr  2 16:39:21 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 24838
+;;     Update #: 24898
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -66,6 +66,7 @@
 ;;    in your `load-path'), but recommended.  They are all available
 ;;    at Emacs Wiki, http://www.emacswiki.org/cgi-bin/wiki/ElispArea.
 ;;
+;;      `bookmark+.el'     - many bookmark enhancements
 ;;      `col-highlight.el' - (required by `crosshairs.el') - Emacs 22+
 ;;      `crosshairs.el'    - highlight target positions    - Emacs 22+
 ;;      `hexrgb.el'        - color manipulation
@@ -272,7 +273,7 @@
 ;;    (@file :file-name "icicles-doc2.el" :to "Introduction: On Beyond Occur...")
 ;;    (@file :file-name "icicles-doc2.el" :to "How Icicles Search Works")
 ;;    (@file :file-name "icicles-doc2.el" :to "Why Use 2 Search Patterns?")
-;;    (@file :file-name "icicles-doc2.el" :to "Search Multiple Buffers, Files, and Saved Regions")
+;;    (@file :file-name "icicles-doc2.el" :to "Search Multiple Buffers, Files, and Bookmarks")
 ;;    (@file :file-name "icicles-doc2.el" :to "User Options for Icicles Searching")
 ;;    (@file :file-name "icicles-doc2.el" :to "Using Regexps with Icicles Search")
 ;;
@@ -285,7 +286,11 @@
 ;;    (@file :file-name "icicles-doc2.el" :to "Input Reuse in Interactive Interpreter Modes")
 ;;    (@file :file-name "icicles-doc2.el" :to "Define Your Own Icicles Search Commands")
 ;;
-;;  (@file :file-name "icicles-doc2.el" :to "Multiple Regions")
+;;  (@file :file-name "icicles-doc2.el" :to "Icicles Bookmark Enhancements")
+;;    (@file :file-name "icicles-doc2.el" :to "Saving Regions and Selecting Them")
+;;    (@file :file-name "icicles-doc2.el" :to "Setting a Bookmark and Jumping to a Bookmark")
+;;    (@file :file-name "icicles-doc2.el" :to "Jumping to a Bookmark")
+;;    (@file :file-name "icicles-doc2.el" :to "Searching Bookmarked Objects")
 ;;  (@file :file-name "icicles-doc2.el" :to "Icicles Tags Enhancements")
 ;;    (@file :file-name "icicles-doc2.el" :to "`icicle-find-tag': Find Tags in All Tags Tables")
 ;;    (@file :file-name "icicles-doc2.el" :to "`icicle-find-first-tag': Find First Tag in Current Table")
@@ -306,9 +311,11 @@
 ;;    (@file :file-name "icicles-doc2.el" :to "Using Icicle-Search With Info")
 ;;
 ;;  (@file :file-name "icicles-doc2.el" :to "Support for Projects")
-;;    (@file :file-name "icicles-doc2.el" :to "Defining and Saving Sets of Files, Buffers, Regions")
+;;    (@file :file-name "icicles-doc2.el" :to "Bookmarks for Project Access and Organization")
+;;    (@file :file-name "icicles-doc2.el" :to "A Tags File Can Define a Project")
 ;;    (@file :file-name "icicles-doc2.el" :to "Navigating Among Code Definitions")
 ;;    (@file :file-name "icicles-doc2.el" :to "Searching Project Files")
+;;    (@file :file-name "icicles-doc2.el" :to "Defining and Saving Sets of Files or Buffers")
 ;;    (@file :file-name "icicles-doc2.el" :to "Retrieving and Reusing a Saved Project")
 ;;    (@file :file-name "icicles-doc2.el" :to "Semantics? Roll Your Own?")
 ;;
@@ -3797,12 +3804,10 @@
 ;;  it also kills any buffer that you act on, using `S-delete'.  This
 ;;  is not the alternative action for the command (which is bound to
 ;;  `C-S-RET'); it is the deletion action.  Similarly, command
-;;  `icicle-select-region', bound to `C-u C-x C-x', selects regions,
-;;  but you can also use `S-delete' with it to remove individual
-;;  regions from the list of saved regions, `icicle-region-alist'.
+;;  `icicle-bookmark' jumps to a bookmark, but you can also use
+;;  `S-delete' with it to delete individual bookmarks.
 ;;
-;;  When you use `S-delete' with commands, such as
-;;  `icicle-select-region' (`C-u C-x C-x'), that allow duplicate
+;;  When you use `S-delete' with a command that allows duplicate
 ;;  candidate names that represent different candidate objects, it
 ;;  deletes only the object associated with the current candidate
 ;;  (name).
@@ -3887,6 +3892,9 @@
 ;;  `icicle-Info-goto-node' (`g' in Info mode); for buffer (non-file)
 ;;  bookmarks when you use `icicle-buffer' (`C-x b'); and for Dired
 ;;  bookmarks when you use `icicle-dired' (`C-x d').
+;;
+;;  See Also:
+;;  (@file :file-name "icicles-doc2.el" :to "Icicles Bookmark Enhancements")
  
 ;;(@* "Icicles Tripping")
 ;;
@@ -3929,18 +3937,23 @@
 ;;
 ;;  Here are some of the Icicles tripping commands:
 ;;
-;;  * `icicle-bookmark' (`C-- C-x r m') - Trip among bookmarks.
+;;  * `icicle-bookmark-other-window' - (`C-- C-x r m')
+;;    Trip among bookmarks of all types.  (Also bound to `C-x 4 j j'
+;;    if library `bookmark+.el' is used.)
 ;;  * Type-specific bookmark trips (requires library `bookmark+.el'):
-;;    `icicle-bookmark-non-file-other-window'    (`C-x 4 j b')
-;;    `icicle-bookmark-dired-other-window'       (`C-x 4 j d')
-;;    `icicle-bookmark-file-other-window'        (`C-x 4 j f')
-;;    `icicle-bookmark-gnus-other-window'        (`C-x 4 j g')
-;;    `icicle-bookmark-info-other-window'        (`C-x 4 j i')
-;;    `icicle-bookmark-local-file-other-window'  (`C-x 4 j l')
-;;    `icicle-bookmark-man-other-window'         (`C-x 4 j m')
-;;    `icicle-bookmark-region-other-window'      (`C-x 4 j r')
-;;    `icicle-bookmark-remote-file-other-window' (`C-x 4 j t')
-;;    `icicle-bookmark-w3m-other-window'         (`C-x 4 j w')
+;;    `icicle-bookmark-non-file-other-window'      (`C-x 4 j b')
+;;    `icicle-bookmark-bookmark-list-other-window' (`C-x 4 j B')
+;;    `icicle-bookmark-dired-other-window'         (`C-x 4 j d')
+;;    `icicle-bookmark-file-other-window'          (`C-x 4 j f')
+;;    `icicle-bookmark-gnus-other-window'          (`C-x 4 j g')
+;;    `icicle-bookmark-info-other-window'          (`C-x 4 j i')
+;;    `icicle-bookmark-desktop-other-window'       (`C-x 4 j K')
+;;    `icicle-bookmark-local-file-other-window'    (`C-x 4 j l')
+;;    `icicle-bookmark-man-other-window'           (`C-x 4 j m')
+;;    `icicle-bookmark-remote-file-other-window'   (`C-x 4 j n')
+;;    `icicle-bookmark-region-other-window'        (`C-x 4 j r',
+;;                                                  `C-u C-x C-x')
+;;    `icicle-bookmark-w3m-other-window'           (`C-x 4 j w')
 ;;  * `icicle-buffer' (`C-x b') - Trip among buffers.
 ;;  * `icicle-compilation-search' (`C-c `') - Trip among `grep' hits.
 ;;  * `icicle-dired' - Trip among directories in Dired mode.
@@ -3970,18 +3983,21 @@
 ;;    hits.
 ;;  * `icicle-search-overlay-property' - Trip among buffer strings
 ;;    with some overlay property.
-;;  * `icicle-search-region' - Trip among saved regions.
+;;  * `icicle-search-bookmarks-together' (`C-u C-c `'),
+;;    `icicle-search-bookmark',  - Search multiple bookmarks.
 ;;  * `icicle-search-text-property' (`C-c "') - Trip among buffer
 ;;    strings with some text property.
 ;;  * `icicle-search-word' (`C-c $') - Trip among word-search hits.
 ;;  * `icicle-select-frame' (`C-x 5 o') - Trip among frames, by name.
-;;  * `icicle-select-region' (`C-u C-x C-x') - Trip among saved
-;;    regions.
 ;;  * `icicle-select-window' (`C-0 C-x o') - Trip among windows, by
 ;;    buffer name.
 ;;
 ;;(@* "Highlighting the Destination")
 ;;  ** Highlighting the Destination **
+;;
+;;  `icicle-bookmark-region-other-window' activates the bookmarked
+;;  region (highlighting it) when you visit it, if you use Transient
+;;  Mark mode (or, e.g., Delete Selection mode).
 ;;
 ;;  Starting with Emacs 22, most Icicles commands that have single
 ;;  positions as their trip visits (e.g. `icicle-bookmark',
@@ -3992,11 +4008,6 @@
 ;;  requires are not in your `load-path', then no such highlighting
 ;;  occurs.
 ;;
-;;  The commands that have regions as their trip visits
-;;  (e.g. `icicle-select-region') highlight the currently visited
-;;  region if you use Transient Mark mode (or, e.g., Delete Selection
-;;  mode).
-;;
 ;;  See Also:
 ;;
 ;;  * (@* "Icicles Commands that Read File Names") for information
@@ -4006,12 +4017,11 @@
 ;;  * (@file :file-name "icicles-doc2.el" :to "Icicles Tags Enhancements")
 ;;    for information about `icicle-find-first-tag' and
 ;;    `icicle-find-tag'.
+;;  * (@file :file-name "icicles-doc2.el" :to "Icicles Bookmark Enhancements")
+;;    for information about the bookmark browsing commands.
 ;;  * (@file :file-name "icicles-doc2.el" :to "Icicles Info Enhancements")
 ;;    for information about `icicle-Info-goto-node',
 ;;    `icicle-Info-index', and `icicle-Info-menu'.
-;;  * (@file :file-name "icicles-doc2.el" :to "Multiple Regions") for
-;;    information about `icicle-search-region' and
-;;    `icicle-select-region'.
 ;;  * (@file :file-name "icicles-doc2.el" :to "Icicles Search Commands, Overview")
 ;;    for information about `icicle-occur' and `icicle-search'.
 ;;  * (@file :file-name "icicles-doc2.el" :to "Other Icicles Search Commands")

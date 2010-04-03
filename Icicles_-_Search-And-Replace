@@ -36,7 +36,7 @@ current input, throughout the search space, not just all
 matches that follow the [[cursor]].   (Remember too that
 you can activate the region to limit the search space.)
 
-* You can act across ''multiple'' [[buffer]]s, files, or saved [[region]]s -- see
+* You can act across ''multiple'' [[buffer]]s, files, or [[bookmark]]s -- see
 information about the `icicle-search' [[prefix argument]].
 
 * You can also replace matches within ''character-property'' search contexts -- just use `icicle-search-char-property' ('''`##C-c "##'''') as the search

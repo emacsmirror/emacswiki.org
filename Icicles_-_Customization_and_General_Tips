@@ -1125,24 +1125,12 @@ whether you move there by `RET', `C-RET', `C-next', or
 `C-prior'.   See [[Icicles - Search Commands, Overview]].
 
 ----
-[:icicle-region-alist][:icicle-regions-name-length-max]
-==== Options icicle-region-alist, icicle-regions-name-length-max ====
-
-User option '''`icicle-region-alist'''' is a list of regions, which you can
-act on individually or together.  The regions can be in any
-buffers.  As an alternative to customizing this option directly,
-you can use command `icicle-add-region' to add the current Emacs
-region to the list.  Option '''`icicle-regions-name-length-max'''' is
-the maximum length of the region-start string that identifies
-the region for completion purposes.  See [[Icicles - Multiple Regions]].
-
-----
 [:icicle-bookmark-name-length-max]
 ==== Option icicle-bookmark-name-length-max ====
 
 User option '''`icicle-bookmark-name-length-max'''' is the maximum
 number of characters to use when `icicle-bookmark-cmd'  (`C-x r m')
-with a non-negative [[numeric prefix argument]] automatically names a bookmark.
+with a non-negative [[numeric prefix argument]] automatically names a [[bookmark]].
 
 
 ----
@@ -1158,17 +1146,6 @@ not be up to date.  A plain [[prefix argument]] (`C-u') overrides
 the default setting for the duration of the command.  Thus, if
 the value is `nil', you can use `C-u' occasionally to refresh the
 list on demand.
-
-----
-[:icicle-region-auto-open-files-flag]
-==== Option icicle-region-auto-open-files-flag ====
-
-Non-`nil' user option '''`icicle-region-auto-open-files-flag'''' means
-that commands that access `<tt>[[#icicle-region-alist]]</tt>' first open all
-of the files associated with the recorded regions.  The files
-are not necessarily displayed.  If this option is `nil', then
-these commands open the files only as you access them by
-choosing a region candidate.  You can also open all such files at any time, using command `icicle-region-open-all-files'.
 
 ----
 [:icicle-show-multi-completion-flag]

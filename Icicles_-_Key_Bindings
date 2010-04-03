@@ -203,7 +203,7 @@ default, this value is `yank'.
 Option `icicle-top-level-key-bindings' remaps not only these standard
 Emacs commands but also some commands provided by other libraries.
 For example, if you use library <tt>[[bookmark+.el]]</tt>, then type-specific
-bookmark jump commands such as `bookmarkp-dired-jump-other-window'
+[[bookmark]] jump commands such as `bookmarkp-dired-jump-other-window'
 are remapped to '''Icicles''' multi-command versions.
 
 Here are some other '''Icicles''' commands that you might want to bind
@@ -281,22 +281,12 @@ to keys in ''Icicle'' mode -- they are ''not'' bound by '''Icicles''' (except to
 * `icicle-add-buffer-candidate' -- Add buffer to those always shown
 * `icicle-add-buffer-config' -- Add to `icicle-buffer-configs'
 * `icicle-add-entry-to-saved-completion-set' -- Add a completion candidate to a [[Icicles - Candidate Sets|saved set]]
-* `icicle-add-region' -- Add a region to `icicle-region-alist'
 * `icicle-add/update-saved-completion-set' -- Add a set to `icicle-saved-completion-sets'
 * `icicle-apply'        -- Apply function to [[alist]] items
 * `icicle-apropos'     --  Like `apropos', but shows matches
 * `icicle-apropos-command' -- Enhanced `apropos-command'
 * `icicle-apropos-variable' -- Enhanced `apropos-variable'
 * `icicle-apropos-zippy' -- Show matching Zippy quotes
-* `icicle-bookmark-dired-other-window' -- Jump to a [[Dired]] bookmark
-* `icicle-bookmark-file-other-window' -- Jump to a file bookmark
-* `icicle-bookmark-gnus-other-window' -- Jump to a Gnus bookmark
-* `icicle-bookmark-info-other-window' -- Jump to an [[Info]] bookmark
-* `icicle-bookmark-local-file-other-window' -- Jump to a local-file bookmark
-* `icicle-bookmark-non-file-other-window' -- Jump to a non-file (buffer) bookmark
-* `icicle-bookmark-region-other-window' -- Jump to a [[region]] bookmark
-* `icicle-bookmark-remote-file-other-window' -- Jump to remote-file bookmark
-* `icicle-bookmark-w3m-other-window' -- Jump to a W3M bookmark
 * `icicle-buffer-config' -- Pick options for '''Icicles''' buffer commands
 * `icicle-buffer-list'  -- Choose a [[list]] of buffer names
 * `icicle-clear-history' -- Clear minibuffer histories
@@ -321,25 +311,37 @@ to keys in ''Icicle'' mode -- they are ''not'' bound by '''Icicles''' (except to
 * `icicle-locate-file'  -- Open a file located anywhere
 * `icicle-minibuffer-help' -- Show '''Icicles''' minibuffer help
 * `icicle-plist' -- Choose symbols with matching property lists
-* `icicle-purge-bad-file-regions' -- Remove regions whose files do not exist from `icicle-region-alist'
 * `icicle-recent-file'  -- Open a recently used file
 * `icicle-recompute-shell-command-candidates' -- Update commands from search path
 * `icicle-remove-buffer-candidate' -- Remove buffer from those always shown
 * `icicle-remove-buffer-config' -- Remove from `icicle-buffer-configs'
 * `icicle-remove-entry-from-saved-completion-set' -- Remove a candidate from a saved set
 * `icicle-remove-file-from-recentf-list' -- Remove files from recent-files list
-* `icicle-remove-region'  -- Remove region from `icicle-region-alist'
 * `icicle-remove-saved-completion-set' -- Remove a set from `icicle-saved-completion-sets'
 * `icicle-reset-option-to-nil' --  Set value of binary option to `nil'
 * `icicle-save-string-to-variable' -- Save text for use with `C-='
+* `icicle-search-bookmark' -- Search bookmarks
+* `icicle-search-bookmark-list-bookmark' -- Search bookmark-list bookmarks
+* `icicle-search-buff-menu-marked' -- Search marked buffers, in order
+* `icicle-search-buffer' -- Search multiple buffers
+* `icicle-search-char-property' - Search for character properties
+* `icicle-search-desktop-bookmark-' -- Search desktop bookmarks
+* `icicle-search-dired-bookmark' -- Search Dired bookmarks
+* `icicle-search-dired-marked' -- Search the marked files in Dired
+* `icicle-search-file'  -- Search multiple files
 * `icicle-search-file-bookmark' -- Search file bookmarks
 * `icicle-search-gnus-bookmark' -- Search Gnus bookmarks
+* `icicle-search-ibuffer-marked' -- Search marked buffers in Ibuffer
 * `icicle-search-info-bookmark' -- Search Info bookmarks
 * `icicle-search-local-file-bookmark' -- Search local file bookmarks
+* `icicle-search-man-bookmark' -- Search `man'-page bookmarks
 * `icicle-search-non-file-bookmark' -- Search non-file bookmarks
-* `icicle-search-region' -- Search multiple regions
-* `icicle-search-region-bookmark' -- Search region bookmarks
+* `icicle-search-overlay-property' -- Search for overlay properties
+* `icicle-search-pages' -- Search Emacs pages (delimited by ^L chars)
+* `icicle-search-paragraphs' -- Search Emacs paragraphs
+* `icicle-search-region-bookmark' -- Search bookmarked regions
 * `icicle-search-remote-file-bookmark' -- Search remote files
+* `icicle-search-sentences' -- Search using sentences as contexts
 * `icicle-search-w3m-bookmark' -- Search W3M bookmarks
 * `icicle-select-window' -- Select a window by its buffer name
 * `icicle-set-option-to-t' -- Set value of binary option to `t'
@@ -905,6 +907,30 @@ a pop-up buffer, `##*Pp Eval Output*##'.  With a prefix arg (`C-u M-:'), it inse
 [:icicle-pp-eval-expression-in-minibuffer]
 
 * '''`##M-:##'''' -- `icicle-pp-eval-expression-in-minibuffer'
+
+
+
+
+Some additional bindings are made available in the minibuffer for
+;the duration of specific commands:
+
+* During completion of names of some kinds of objects (files,
+   buffers, directories, Info nodes), '''`C-x m'''' lets you complete
+   against bookmarks that have the same type as those objects (file
+   bookmarks, buffer bookmarks, Dired bookmarks, Info bookmarks)
+   This feature requires use of library `bookmark+.el'.
+
+* During completion of file names, '''`C-backspace'''' is bound to
+  `icicle-up-directory', which navigates to the parent directory
+  and completes there instead.
+
+* During completion of bookmark names for `icicle-bookmark',
+  various keys with the prefix `C-M-' are bound to commands that
+  narrow the available candidates to bookmarks of a specific type.
+  For example, `C-M-d' narrows the choices to Dired bookmarks.
+
+
+
 
 
 

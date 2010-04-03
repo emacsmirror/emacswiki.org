@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Mar 16 15:30:22 2010 (-0700)
+;; Last-Updated: Fri Apr  2 14:29:49 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 11661
+;;     Update #: 11664
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5033,7 +5033,8 @@ minibuffer."
                                         minibuffer-local-filename-must-match-map)
                                 (list minibuffer-local-completion-map
                                       minibuffer-local-must-match-map))))
-               (or (and parent (member parent maps)) (member loc-map maps))))))
+               (and (or (and parent (member parent maps)) (member loc-map maps))
+                    t)))))              ; Cache t, not the keymap portion.
 
 ;; This is just `substring-no-properties', defined also for Emacs < 22.
 (defun icicle-substring-no-properties (string &optional from to)

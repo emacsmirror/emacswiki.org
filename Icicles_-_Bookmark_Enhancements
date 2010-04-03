@@ -1,0 +1,325 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Other Search Commands]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Tags Enhancements]] ||
+
+----
+
+
+== Bookmark Enhancements ==
+
+Many of the enhancements described on this page are available
+only if you also use library <tt>[[bookmark+.el]]</tt> (which I recommend).
+'''[[Bookmark+]]''' is compatible with vanilla Emacs [[bookmark]]s across
+multiple Emacs versions.  It enhances the use of bookmarks in many
+ways.  The explanation here does not attempt to describe the
+'''Bookmark+''' enhancements; it describes only the '''Icicles''' features
+that make use of them.
+
+One of the main '''Bookmark+''' enhancements is support for new bookmark
+types.  '''Icicles''' provides type-specific bookmark commands and
+bookmark-candidate filtering.
+
+Regardless of the bookmark type, another '''Bookmark+''' feature that
+'''Icicles''' takes advantage of is the fact that a bookmark (any
+bookmark) can save not only a single position but a ''[[region]]'', that
+is, two positions.  You can think of this as bookmarking, or
+saving, regions.  When you jump to a region bookmark, the region
+is activated (if [[option]] '''`bookmarkp-use-region-flag'''' is non-`nil').
+
+These are the main '''Icicles''' bookmarking features:
+
+* Bookmarking the region and selecting a bookmarked region
+* Setting a bookmark and jumping to a bookmark
+* Searching the text of a bookmark's buffer or region
+
+Each is described in more detail below.
+
+In addition, when you [[completion|complete]] the names of some kinds of objects,
+you can use '''`C-x m'''' to choose objects of that type.  For example,
+when you use `icicle-dired' (`C-x d') to complete a directory
+name, you can use `C-x m' to choose among your Dired bookmarks.
+See [[Icicles - More About Multi-Commands#AccessingBookmarks|Accessing Saved Locations (Bookmarks) on the Fly]].
+
+
+
+
+
+
+
+
+
+[:SavingAndSelectingRegions]
+== Saving Regions and Selecting Them ==
+
+Saving the region just means bookmarking it.  As for any bookmark,
+it must have a name.  When you later jump to a region bookmark,
+the region is activated (provided option
+'''`bookmarkp-use-region-flag'''' is non-`nil').
+
+'''Icicles''' gives you quick ways to save a region and select
+(activate) a saved region.  You can do both using '''`C-x C-x''''.
+
+* With ''no'' prefix arg, `C-x C-x' exchanges point and mark
+  (activating the region), as usual.
+
+* With a ''plain'' prefix arg ('''`C-u''''), `C-x C-x' jumps to a region
+  bookmark that you choose using completion, and activates it.
+
+* With a ''numeric'' prefix arg, `C-x C-x' saves the region.  If the
+  prefix arg is ''negative'', then you are prompted for the name to
+  use.  Otherwise, the bookmark is ''named automatically'' using the
+  ''buffer'' name plus '''`##: ##'''' plus the first
+'''`<tt>[[Icicles - Customization and General Tips#icicle-bookmark-name-length-max|icicle-bookmark-name-length-max]]</tt>'''' characters of the region text. (Newline characters are changed to spaces for the name.)
+
+:: So if (a) you are visiting buffer `foo', (b) the region text
+  starts with "<tt>Arise, you wretched of the earth! For justice
+  thunders condemnation: A better world's in birth!</tt>", and (c) the
+  value of option `icicle-bookmark-name-length-max' is 15, then
+  `C-9 C-x C-x' sets the region bookmark named "'''<tt>foo: Arise, you</tt>''''".
+
+
+
+
+
+
+
+
+
+
+
+[:SettingOrJumpingToABookmark]
+== Setting a Bookmark and Jumping to a Bookmark ==
+
+Just as `C-x C-x' lets you either set or jump to a region
+bookmark, so '''`C-x r m'''' lets you either set or jump to ''any''
+bookmark.  `C-x r m' is the vanilla Emacs key for setting a
+bookmark.  In ''Icicle'' mode it is bound by default to command
+'''`icicle-bookmark-cmd''''. (By default, whatever keys are normally
+bound to `bookmark-set' are remapped in ''Icicle'' mode to
+`icicle-bookmark-cmd'.)
+
+* With ''no'' prefix arg or a ''plain'' prefix arg (`C-u'), `C-x r m' acts
+  just like `bookmark-set'.
+
+* With a ''negative'' prefix arg, `C-x r m' jumps to a bookmark (with
+  completion).  See [[#JumpingToABookmark]], below.
+
+* With a ''non-negative'' prefix arg, `C-x r m' sets a bookmark,
+  automatically naming it.  This is like the automatic naming for
+  a region bookmark, except that instead of including a prefix of
+  the ''region'' text, the name includes text from the ''current line''
+  that starts at [[point]].
+
+:: So if the cursor in buffer `foo' is on the `y' in a line with
+  the text "<tt>Arise, you wretched of the earth!</tt>", then the bookmark
+  will automatically be named "'''<tt>foo: you wretch</tt>'''".
+
+:: If the prefix argument is ''0'', then the new bookmark does not
+  overwrite any existing bookmark with the same name.
+
+
+
+
+
+
+
+
+
+
+
+[:JumpingToABookmark]
+== Jumping to a Bookmark ==
+
+'''Icicles''' commands that jump to a bookmark are [[multi-command]]s: you
+can use them to jump to any number of bookmarks in a single
+invocation.  Each jump command acts as a bookmark browser.
+
+As with most ''Icicles'' [[Icicles - Tripping|tripping]] commands, after you jump to a
+(non-region) bookmark, the [[cursor]] position is highlighted using
+cross hairs, if you also use library <tt>[[crosshairs.el]]</tt> (see CrosshairHighlighting).
+
+Bookmark names are highlighted in buffer `*Completions*' to
+indicate the bookmark type.  The faces used are those defined by
+'''Bookmark+'''.
+
+If option  '''`<tt>[[Icicles - Customization and General Tips#icicle-show-multi-completion-flag|icicle-show-multi-completion-flag]]</tt>'''' is non-`nil', then
+each completion candidate is a [[multi-completion]], with up to three
+parts: the bookmark ''name'', the bookmark ''file or buffer'' name, and
+any ([[http://delicious.com|del.icio.us]]-style) ''tags'' the bookmark has.  You can toggle
+option `icicle-show-multi-completion-flag' (for the next command)
+using '''`M-m'''' during completion.
+
+When using multi-completion candidates, you can match any of the
+multi-completion parts.  For example, you can match all bookmarks
+that have ''any tags'' by typing this when choosing a bookmark:
+
+  C-M-j . * C-M-j S-TAB
+
+Or match all bookmarks whose ''names'' match `P42' and whose ''tags''
+match `blue':
+
+  P 4 2 . * C-M-j . * C-M-j . * b l u e S-TAB
+
+(Each `C-M-j' inserts `##^G\n##', which is '''`<tt>[[Icicles - Customization and General Tips#icicle-list-join-string|icicle-list-join-string]]</tt>''''.)
+
+`C-M-RET' shows detailed info about the current bookmark
+completion candidate.  `C-u C-M-RET' shows the complete, internal
+info for the bookmark.  Likewise, for the other candidate help
+keys: `C-M-down' etc.  And the mode line always shows summary
+info about the current bookmark.
+
+During bookmark completion you can ''sort'' the candidates in various
+bookmark-specific ways:
+
+* By the current (latest) `##*Bookmark List*##' order
+* By bookmark name
+* By last access as a bookmark (date + time)
+* By bookmark visit frequency (number of times visited)
+* By last buffer or file access (date + time)
+* With marked bookmarks before unmarked (in `##*Bookmark List*##')
+* By file name
+* By (local) file type
+* By (local) file size
+* By last (local) file access (date + time)
+* By last (local) file update (date + time)
+* By Info location (manual and node)
+* By Gnus thread
+* By W3M URL
+* By bookmark type
+
+The most general ''Icicles'' jump commands are '''`icicle-bookmark'''' and
+'''`icicle-bookmark-other-window''''.  In ''Icicle'' mode these are bound to
+whatever `bookmark-jump' and `bookmark-jump-other-window' are
+normally bound to.  If you use '''Bookmark+''', the default bindings are
+'''`C-x j j'''' and '''`C-x 4 j j'''', respectively.
+
+When you use these commands, you can ''narrow'' the completion
+candidates to bookmarks of a specific ''type'' using these keys:
+
+* '''`C-M-b'''' -- non-file ('''<u>b</u>'''uffer) bookmarks
+* '''`C-M-B'''' -- '''<u>B</u>'''ookmark-list bookmarks
+* '''`C-M-d'''' -- '''<u>D</u>'''ired bookmarks
+* '''`C-M-f'''' -- '''<u>f</u>'''ile bookmarks
+* '''`C-M-F'''' -- local-'''<u>F</u>'''ile bookmarks
+* '''`C-M-g'''' -- '''<u>g</u>'''nus bookmarks
+* '''`C-M-i'''' -- '''<u>i</u>'''nfo bookmarks
+* '''`C-M-K'''' -- des'''<u>K</u>'''top bookmarks
+* '''`C-M-m'''' -- '''<u>m</u>'''an' pages
+* '''`C-M-r'''' -- bookmarks with '''<u>r</u>'''egions
+* '''`C-M-w'''' -- '''<u>w</u>'''3m bookmarks
+* '''`##C-M-@##'''' -- remote-file bookmarks
+
+In addition, there are individual ''jump'' commands for bookmarks of
+each of each type, and these commands are bound by default to keys
+with the prefix '''`C-x 4 j'''' that use the same mnemonic characters as
+for narrowing.  For example, `<tt>icicle-bookmark-</tt>'''<tt><u>i</u></tt>'''<tt>nfo-other-window</tt>'
+is bound to `C-x 4 j i'.
+
+By default, commands `icicle-bookmark' and
+`icicle-bookmark-other-window' use a ''cache'' for the set of
+available bookmarks.  This improves performance, especially if you
+have a lot of bookmarks.  The downside is that the list of
+completion candidates is not automatically updated when you add
+new bookmarks.
+
+You can turn off this caching by setting option '''`<tt>[[Icicles - Customization and General Tips#icicle-bookmark-refresh-cache-flag|icicle-bookmark-refresh-cache-flag]]</tt>'''' to non-`nil'.  Alternatively,
+you can use a prefix argument to reverse the effect of this
+option.  When the cache is temporarily turned off like that, the
+command refreshes (updates) the cache.  Typically, then, you will
+want to leave the option set to nil but update it occasionally by
+using `C-u' for bookmark completion.
+
+The type-specific bookmark jump commands
+(e.g. `icicle-bookmark-info-other-window') do not use the cache,
+since they typically use a smaller number of candidates.
+
+'''See Also:''' [[Icicles - Tripping]].
+
+
+
+
+
+
+
+
+
+
+[:SearchingBookmarkedObjects]
+== Searching Bookmarked Objects ==
+
+'''Icicles''' search (and replace) lets you search across multiple
+buffers, files, or bookmarks.  This is true for nearly all '''Icicles'''
+search commands.  You use a ''plain prefix argument'' to specify
+bookmark searching.  For command `icicle-search' itself (`##C-u C-c
+`##'), you can alternatively use the specific command
+'''`icicle-search-bookmarks-together''''.
+
+When you do this you ''first choose the bookmarks'' to search, using
+completion.  Use `C-RET' and similar multi-command actions to
+choose (use `RET' for the final choice).  Once you have chosen the
+bookmarks, you type a search pattern to narrow the set of
+candidates.
+
+(Multi-command '''`icicle-bookmark-list'''' similarly lets you choose
+bookmark names.  It returns them as a Lisp list of strings.)
+
+When you search the text of a ''region'' bookmark, the search is
+limited to the region.
+
+In addition to using `C-u' with the general '''Icicles''' search
+commands, you can use the following '''Icicles''' search commands that
+are specific to bookmarks:
+
+* '''`icicle-search-bookmark''''
+* '''`icicle-search-bookmark-list-bookmark''''
+* '''`icicle-search-desktop-bookmark''''
+* '''`icicle-search-dired-bookmark''''
+* '''`icicle-search-file-bookmark''''
+* '''`icicle-search-gnus-bookmark''''
+* '''`icicle-search-info-bookmark''''
+* '''`icicle-search-local-file-bookmark''''
+* '''`icicle-search-man-bookmark''''
+* '''`icicle-search-non-file-bookmark''''
+* '''`icicle-search-region-bookmark''''
+* '''`icicle-search-remote-file-bookmark''''
+* '''`icicle-search-w3m-bookmark''''
+
+All of these except `icicle-search-bookmark' act only on bookmarks
+of a specific type.  But all of them act the same way.  They are
+multi-commands, so you can use them to search multiple bookmarks.
+But unlike `icicle-search-bookmarks-together' (`##C-u C-c `##'), you
+do not first choose all of the bookmarks and then search them
+together.  Instead, you search them ''one at a time''.
+
+
+'''See Also:'''
+
+* [[Icicles - Search Commands, Overview]] for more information about command `icicle-search'
+
+* [[Icicles - Support for Projects]]
+
+
+
+----
+
+
+|| *Previous:*  [[Icicles - Other Search Commands]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Tags Enhancements]] ||
+
+
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+
+CategoryCommands 
+CategoryCompletion
+CategoryModes
+CategoryProgrammerUtils
+CategoryCode
+CategorySearchAndReplace
+CategoryShell
+CategoryRegion
+
+
+
+

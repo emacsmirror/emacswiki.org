@@ -25,6 +25,12 @@ Emacs command `find-file' (`C-x C-f') finds a file within a given directory -- y
 
 * [[Glimpse]] -- Search for files with glimpse
 
+* [[Anything]] -- `M-x anything-locate', narrow the list by typing some patterns(multiple patterns are space-delimited string),
+select with up/down/pgup/pgdown/C-p/C-n/C-v/M-v, choose with enter,
+With `TAB' actions can be selected if the selected file has more than one possible action.
+With `C-z' content of file is displayed without quitting anything session.
+
+
 
 == Comparison of Approaches ==
 

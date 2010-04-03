@@ -72,5 +72,11 @@ specs for different displays.
 [new]
 If you use MultiTty and want different colors for X and TTY, does customize work?
 
+== Use with Anything ==
+'''[[Anything]]''' is a candidate selection framework.
+
+Start with M-x anything-colors, narrow the face list by typing some patterns(multiple patterns are space-delimited string),
+select with up/down/pgup/pgdown/C-p/C-n/C-v/M-v, choose with enter to customize selected face,
+
 ----
 CategoryFaces CategoryFrames CategoryCustomize

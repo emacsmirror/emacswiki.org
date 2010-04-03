@@ -67,6 +67,13 @@ There are a few steps to set up a function to be repeated every now and again..
 These functions are quite similar, the main difference being that <code>run-with-timer</code> will call the callback function repeatedly whereas <code>run-with-idle-timer</code> does so only once (unless you specify the <code>REPEAT</code> parameter, that is)
 
 
+== Use with Anything ==
+'''[[Anything]]''' is a candidate selection framework.
+
+Start with M-x anything-timers, narrow the list by typing some patterns(multiple patterns are space-delimited string),
+select with up/down/pgup/pgdown/C-p/C-n/C-v/M-v, choose with enter to cancel,
+
+
 == Gotchas ==
 
 * Gnu Emacs allows a zero time, XEmacs does not.

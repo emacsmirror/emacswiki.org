@@ -27,11 +27,9 @@ See Also:
                                  (interactive)
                                  (popup-menu 'yank-menu)))
 
-== Similar function with Anything ==
-'''[[Anything]]''' is a candidate selection framework.
-
-Start with M-x anything-show-kill-ring, narrow the list by typing some patterns(multiple patterns are space-delimited string),
-select with up/down/pgup/pgdown/C-p/C-n/C-v/M-v, choose with enter to insert an element of kill-ring,
+* Similar function with 
+'''[[Anything]]''', a candidate selection framework. Start with `M-x anything-show-kill-ring', narrow the list by typing some patterns(multiple patterns are space-delimited string),
+select with up/down/pgup/pgdown/C-p/C-n/C-v/M-v, choose with enter to insert an element of `kill-ring',
 
 
 

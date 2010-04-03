@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon Mar 15 10:12:01 2010 (-0700)
+;; Last-Updated: Sat Apr  3 00:10:15 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 26174
+;;     Update #: 26801
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -188,7 +188,7 @@
 ;;    (@> "Introduction: On Beyond Occur...")
 ;;    (@> "How Icicles Search Works")
 ;;    (@> "Why Use 2 Search Patterns?")
-;;    (@> "Search Multiple Buffers, Files, and Saved Regions")
+;;    (@> "Search Multiple Buffers, Files, and Bookmarks")
 ;;    (@> "User Options for Icicles Searching")
 ;;    (@> "Using Regexps with Icicles Search")
 ;;
@@ -201,7 +201,12 @@
 ;;    (@> "Input Reuse in Interactive Interpreter Modes")
 ;;    (@> "Define Your Own Icicles Search Commands")
 ;;
-;;  (@> "Multiple Regions")
+;;  (@> "Icicles Bookmark Enhancements")
+;;    (@> "Saving Regions and Selecting Them")
+;;    (@> "Setting a Bookmark and Jumping to a Bookmark")
+;;    (@> "Jumping to a Bookmark")
+;;    (@> "Searching Bookmarked Objects")
+;;
 ;;  (@> "Icicles Tags Enhancements")
 ;;    (@> "`icicle-find-tag': Find Tags in All Tags Tables")
 ;;    (@> "`icicle-find-first-tag': Find First Tag in Current Table")
@@ -222,9 +227,11 @@
 ;;    (@> "Using Icicle-Search With Info")
 ;;
 ;;  (@> "Support for Projects")
-;;    (@> "Defining and Saving Sets of Files, Buffers, Regions")
+;;    (@> "Bookmarks for Project Access and Organization")
+;;    (@> "A Tags File Can Define a Project")
 ;;    (@> "Navigating Among Code Definitions")
 ;;    (@> "Searching Project Files")
+;;    (@> "Defining and Saving Sets of Files or Buffers")
 ;;    (@> "Retrieving and Reusing a Saved Project")
 ;;    (@> "Semantics? Roll Your Own?")
 ;;
@@ -315,8 +322,8 @@
 ;;  * (@> "Icicles Info Enhancements") for information about using
 ;;    Icicles to search in Info mode.
 ;;
-;;  * (@> "Multiple Regions") for information about searching
-;;    multiple regions.
+;;  * (@> "Icicles Bookmark Enhancements") for information about
+;;    searching bookmarks.
 ;;
 ;;  * (@> "Support for Projects") for information about using `grep'
 ;;    to search all of the files in a project.
@@ -398,16 +405,16 @@
 ;;
 ;;  `C-c '',  `icicle-occur' - An `occur' with icompletion.
 ;;  `C-c `'   `icicle-search' - Seach buffer areas that match regexp.
-;;            `icicle-search-buffer' - Search selected buffers.
-;;            `icicle-search-file' - Search selected files.
-;;            `icicle-search-region' - Search selected saved regions.
-;;            `icicle-search-all-regions' - Search all saved regions.
+;;            `icicle-search-buffer' (`C-1')- Search selected buffers.
+;;            `icicle-search-file' (`C--') - Search selected files.
+;;            `icicle-search-bookmarks-together' (`C-u'),
+;;            `icicle-search-bookmark' - Search bookmarks.
 ;;  `C-c $'   `icicle-search-word' - Search for a whole word.
 ;;  `C-c ^'   `icicle-search-keywords' - Search with regexp keywords.
 ;;  `C-c `'   `icicle-compilation-search' - Search compilation hits
 ;;                                          (e.g `grep' hits).
-;;  `C-c "'   ["] `icicle-search-char-property' -
-;;               Search for a given character property value.
+;;  `C-c "'   ["] `icicle-search-text-property' -
+;;               Search for a given text property value.
 ;;  `C-c ='   `icicle-imenu' - Navigate among Imenu entries.
 ;;            `icicle-imenu-command' -
 ;;               Navigate among Emacs command definitions.
@@ -423,8 +430,9 @@
 ;;     cursor.  If the region is active, however, then the search is
 ;;     confined to the region.  Some Icicles search commands let you
 ;;     search across multiple buffers, multiple files, or multiple
-;;     saved regions.  Searching within one or more regions of text is
-;;     a first way to limit the context of a search.
+;;     bookmarks, including region bookmarks.  Searching within one or
+;;     more such regions of text is a first way to limit the context
+;;     of a search.
 ;;
 ;;  2. You limit the search context in a second way, by providing some
 ;;     information, such as a regexp or a character property (text or
@@ -603,46 +611,47 @@
 ;;  using, say, `C-s C-w C-w...'.
 ;;
 ;;
-;;(@* "Search Multiple Buffers, Files, and Saved Regions")
-;;  ** Search Multiple Buffers, Files, and Saved Regions **
+;;(@* "Search Multiple Buffers, Files, and Bookmarks")
+;;  ** Search Multiple Buffers, Files, and Bookmarks **
 ;;
-;;  If you provide a plain prefix argument (only `C-u') to most
-;;  Icicles search functions, then you can search multiple regions,
-;;  which can be in multiple buffers.  The regions are those in user
-;;  option `icicle-region-alist', which you have previously defined
-;;  using command `icicle-add-region'.  See (@> "Multiple Regions").
+;;  If you provide a prefix argument to most Icicles search functions,
+;;  then you can search multiple buffers, files, or bookmarks.
 ;;
-;;  If you provide a non-negative numeric prefix argument (e.g. `C-9')
-;;  to most Icicles search functions, then you can search multiple
-;;  buffers - you are prompted for the buffers to search.  If the
-;;  prefix argument is 99, then only buffers that are visiting files
-;;  are candidates.  You can use `C-RET' and so on to choose
-;;  individual buffers with completion.  You can use `C-!' to choose
-;;  all buffers or all buffers that match a regexp.
-;;  (See (@file :file-name "icicles-doc1.el" :to "Multi-Commands").)
+;;  * Plain prefix argument (`C-u') - Search multiple bookmarks of
+;;    various kinds.  To use this feature, you must also use library
+;;    `bookmark+.el'.  See (@> "Icicles Bookmark Enhancements").
 ;;
-;;  Note: You can use `M-s i' in Ibuffer or Buffer Menu to search all
-;;  marked buffers using Icicles search.  In Ibuffer, menu item
-;;  `Icicles Search (and Replace)...' does the same thing as `M-s i'.
+;;  * Non-negative numeric prefix argument (e.g. `C-9') - Search
+;;    multiple buffers - you are prompted for the buffers to search.
+;;    If the prefix argument is 99, then only buffers that are
+;;    visiting files are candidates.  You can use `C-RET' and so on to
+;;    choose individual buffers with completion.  You can use `C-!' to
+;;    choose all buffers or all buffers that match a regexp.
+;;    (See (@file :file-name "icicles-doc1.el" :to "Multi-Commands").)
 ;;
-;;  If you provide a negative numeric prefix argument (e.g. `C--') to
-;;  most Icicles search functions, then you can search multiple files
-;;  in the current directory - you are prompted for the files to
-;;  search.  As for multiple-buffer searching, you can use `C-RET' and
-;;  so on.
+;;    Note: You can use `M-s i' in Ibuffer or Buffer Menu to search
+;;    all marked buffers using Icicles search.  In Ibuffer, menu item
+;;    `Icicles Search (and Replace)...' does the same thing as `M-s
+;;    i'.
 ;;
-;;  Note: You can use `M-s i' in Dired to search all marked files
-;;  using Icicles search.  Menu item `Search (and Replace)...' is
-;;  added to the Icicles submenu of menu `Multiple' (or `Operate'),
-;;  and it does the same thing as `M-s i'.
+;;  * Negative numeric prefix argument (e.g. `C--') - Search multiple
+;;    files in the current directory - you are prompted for the files
+;;    to search.  As for multiple-buffer searching, you can use
+;;    `C-RET' and so on.
 ;;
-;;  As a convenience, some specialized Icicles commands are defined,
-;;  corresponding to `icicle-search' with each of the prefix-argument
-;;  cases: `icicle-search-all-regions', `icicle-search-buffer', and
-;;  `icicle-search-file'.  If you often use `C-c `' with one of the
-;;  prefix argument options, then you might want to bind one or more
-;;  of these commands.  These commands are also available in the
-;;  Icicles menu-bar menu (or the Search menu, if it exists).
+;;    Note: You can use `M-s i' in Dired to search all marked files
+;;    using Icicles search.  Menu item `Search (and Replace)...' is
+;;    added to the Icicles submenu of menu `Multiple' (or `Operate'),
+;;    and it does the same thing as `M-s i'.
+;;
+;;  As a convenience, some specialized Icicles commands are defined
+;;  that correspond to `icicle-search' with the various
+;;  prefix-argument cases: `icicle-search-bookmarks-together',
+;;  `icicle-search-buffer', and `icicle-search-file'.  If you often
+;;  use `C-c `' with one of the prefix argument options, then you
+;;  might want to bind one or more of these commands.  These commands
+;;  are also available in the Icicles menu-bar menu (or the Search
+;;  menu, if it exists).
 ;;
 ;;(@* "User Options for Icicles Searching")
 ;;  ** User Options for Icicles Searching **
@@ -907,8 +916,8 @@
 ;;  * (@file :file-name "icicles-doc1.el" :to "Multi-Commands") for
 ;;    information about `C-RET', `C-mouse-2', `C-next', and `C-prior'.
 ;;
-;;  * (@> "Multiple Regions") for information about searching multiple
-;;    regions.
+;;  * (@> "Icicles Bookmark Enhancements") for information about
+;;    searching bookmarks.
 ;;
 ;;  * (@file :file-name "icicles-doc1.el" :to "Inserting a Regexp from a Variable or Register")
 ;;    for more about inserting a saved string.
@@ -954,7 +963,7 @@
 ;;     just all matches that follow the cursor.  (Remember too that
 ;;     you can activate the region to limit the search space.)
 ;;
-;;   * You can act across multiple buffers, files, or saved regions -
+;;   * You can act across multiple buffers, files, or bookmarks -
 ;;     see information about the `icicle-search' prefix arg.
 ;;
 ;;   * You can also replace matches within character-property search
@@ -1181,7 +1190,7 @@
 ;;
 ;;  As with other Icicles search commands, a prefix argument controls
 ;;  whether these character-property commands search the current
-;;  buffer, saved regions, selected files, or selected buffers.
+;;  buffer, selected bookmarks, selected files, or selected buffers.
 ;;  However, keep in mind that, since in this case you are searching
 ;;  character properties, you will find search hits only for buffers
 ;;  that already have such properties, for example, buffers that have
@@ -1218,7 +1227,7 @@
 ;;  * You can restrict the entries to browse using (regexp) pattern
 ;;    matching.
 ;;
-;;  * As for `icicle-search', you can search multiple saved regions,
+;;  * As for `icicle-search', you can search multiple bookmarks,
 ;;    multiple buffers, or multiple files.
 ;;
 ;;  In addition, for Emacs-Lisp function definitions, Icicles provides
@@ -1239,10 +1248,10 @@
 ;;    definitions.
 ;;
 ;;  Like Emacs tags, `icicle-imenu' lets you navigate among
-;;  definitions in multiple files - and also multiple saved regions
-;;  and non-file buffers.  Like Imenu, you need not build a tags file.
-;;  Unlike Imenu, Icicles provides regexp completion that lets you
-;;  filter Imenu hits that you want to visit.
+;;  definitions in multiple files - and also multiple bookmarks and
+;;  multiple non-file buffers.  Like Imenu, you need not build a tags
+;;  file.  Unlike Imenu, Icicles provides regexp completion that lets
+;;  you filter Imenu hits that you want to visit.
 ;;
 ;;  Another difference from Emacs tags, besides the need for a tags
 ;;  file, is that, since Icicles locates definitions using Imenu
@@ -1377,110 +1386,261 @@
 ;;  * (@> "Icicles Info Enhancements") for information about using
 ;;    Icicles with Info mode.
  
-;;(@* "Multiple Regions")
+;;(@* "Icicles Bookmark Enhancements")
 ;;
-;;  Multiple Regions
-;;  ----------------
+;;  Icicles Bookmark Enhancements
+;;  -----------------------------
 ;;
-;;  Icicles lets you define multiple regions, which you can then act
-;;  on individually or together.  The regions can be in any buffers:
-;;  any number of regions in any number of buffers.
+;;  Many of the enhancements described in this section are available
+;;  only if you also use library `bookmark+.el' (which I recommend).
+;;  Bookmark+ is compatible with vanilla Emacs bookmarks across
+;;  multiple Emacs versions.  It enhances the use of bookmarks in many
+;;  ways.  The explanation here does not attempt to describe the
+;;  Bookmark+ enhancements; it describes only the Icicles features
+;;  that make use of them.
 ;;
-;;  The multiple Icicles regions are saved persistently in user option
-;;  `icicle-region-alist'.  You can customize this option directly,
-;;  but it is usually easier and less error-prone to define the list
-;;  of regions incrementally, using command `icicle-add-region' (`C-N
-;;  C-x C-x', for N = 0,1,2,...), which adds the current Emacs region
-;;  to `icicle-region-alist'.  You can remove one or more regions from
-;;  `icicle-region-alist', using command `icicle-remove-region' or by
-;;  customizing the option.  You can remove all regions in a given
-;;  buffer, using command `icicle-remove-all-regions-in-buffer'.
+;;  One of the main Bookmark+ enhancements is support for new bookmark
+;;  types.  Icicles provides type-specific bookmark commands and
+;;  bookmark-candidate filtering.
 ;;
-;;  You can use multi-command `icicle-select-region' (`C-u C-x C-x) to
-;;  choose any region in `icicle-region-alist', navigate to it, and
-;;  activate it.  You can use this as a sort of bookmark mechanism,
-;;  retrieving saved regions later for operations in different Emacs
-;;  sessions.  Unlike vanilla Emacs bookmarks, Icicles regions are not
-;;  limited to being in file buffers - any buffer can be used.
+;;  Regardless of the bookmark type, another Bookmark+ feature that
+;;  Icicles takes advantage of is the fact that a bookmark (any
+;;  bookmark) can save not only a single position but a region, that
+;;  is, two positions.  You can think of this as bookmarking, or
+;;  saving, regions.  When you jump to a region bookmark, the region
+;;  is activated (if option `bookmarkp-use-region-flag' is non-nil).
 ;;
-;;  You can also think of Icicles region definition and selection as a
-;;  kind of tagging mechanism.  You can assign any identifying tag,
-;;  and you can assign the same tag to multiple regions, whether they
-;;  are in the same buffer or in different buffers.  You can also
-;;  assign multiple tags to the same region, but in that case there
-;;  will be multiple entries for that region in `icicle-region-alist':
-;;  each entry corresponds to a single tag and a single region.  The
-;;  default tag proposed when you add a region to
-;;  `icicle-region-alist' is the first
-;;  `icicle-regions-name-length-max' characters of the region itself.
+;;  These are the main Icicles bookmarking features:
 ;;
-;;  The tag text is not added to your buffers.  It is recorded,
-;;  together with the region limits, the buffer name, and the buffer's
-;;  associated file name, in variable `icicle-region-alist'.  Each
-;;  region is defined by its recorded limits.  Its tag is used only to
-;;  identify it as a completion candidate.  This means that if a
-;;  region tag was defined as the text at the beginning of the region
-;;  (the default tag value), and you have changed the region's buffer
-;;  (inserting or deleting text) since that definition, then the tag
-;;  might no longer correspond exactly to the current region prefix.
+;;  * Bookmarking the region and selecting a bookmarked region
+;;  * Setting a bookmark and jumping to a bookmark
+;;  * Searching the text of a bookmark's buffer or region
 ;;
-;;  For commands such as `icicle-select-region' that use
-;;  `icicle-region-alist', there is generally little sense in using
-;;  regions as completion candidates if they are in buffers that no
-;;  longer exist and are not associated with files.  For this reason,
-;;  such regions are filtered out for completion.  They remain
-;;  recorded in `icicle-region-alist', however, and if a non-existent
-;;  buffer is re-created, then it will once again be available as a
-;;  completion candidate.
+;;  Each is described in more detail below.
 ;;
-;;  Buffers associated with files are an important special case: the
-;;  files can be opened, re-creating the buffers, and then the regions
-;;  can be accessed.  For this reason, buffers associated with files
-;;  are always made available as completion candidates.  When you
-;;  choose such a candidate, the file is automatically visited,
-;;  provided it is readable.
+;;  In addition, when you complete the names of some kinds of objects,
+;;  you can use `C-x m' to choose objects of that type.  For example,
+;;  when you use `icicle-dired' (`C-x d') to complete a directory
+;;  name, you can use `C-x m' to choose among your Dired bookmarks.
+;;  See (@file :file-name "icicles-doc1.el" :to "Accessing Saved Locations (Bookmarks) on the Fly").
 ;;
-;;  In addition to this automatic opening of individual files on
-;;  demand, you can at any time open all of the (readable) files
-;;  listed in `icicle-region-alist', using command
-;;  `icicle-region-open-all-files'.  And, if user option
-;;  `icicle-region-auto-open-files-flag' is non-nil, then all files
-;;  listed in `icicle-region-alist' are visited automatically, as soon
-;;  as you invoke any Icicles command that uses that alist.
+;;(@* "Saving Regions and Selecting Them")
+;;  ** Saving Regions and Selecting Them **
 ;;
-;;  In Icicle mode, `C-x C-x' is bound to command
-;;  `icicle-exchange-point-and-mark'.  With no prefix argument, this
-;;  is the same as `exchange-point-and-mark': it swaps the position of
-;;  the text cursor and the mark and activates the region.  With a
-;;  numeric prefix argument, this is the same as `icicle-add-region':
-;;  it adds the current region to `icicle-region-alist'.  With a plain
-;;  `C-u' prefix argument, this is the same as `icicle-select-region'.
+;;  Saving the region just means bookmarking it.  As for any bookmark,
+;;  it must have a name.  When you later jump to a region bookmark,
+;;  the region is activated (provided option
+;;  `bookmarkp-use-region-flag' is non-nil).
 ;;
-;;  You can search any region in `icicle-region-alist' using command
-;;  `icicle-search-region'.  Because this is a multi-command, you can
-;;  search any number of the regions, one at a time.  You can also
-;;  search through all of the regions at once, using a special feature
-;;  of command `icicle-search' (`C-c `').  Provide a numeric prefix
-;;  argument to `icicle-search' (e.g. `C-9 C-c `'), and the regions in
-;;  `icicle-region-alist' become the search space.
+;;  Icicles gives you quick ways to save a region and select
+;;  (activate) a saved region.  You can do both using `C-x C-x'.
 ;;
-;;  Commands `icicle-remove-region', `icicle-search-region', and
-;;  `icicle-select-region' are multi-commands.  You can act on any
-;;  number of regions using `C-RET' and so on.  Mode-line help during
-;;  cycling, and on-demand candidate help (`C-M-RET' and so on), both
-;;  display information about a candidate region (length,
-;;  positions...).
+;;  * With no prefix arg, `C-x C-x' exchanges point and mark
+;;    (activating the region), as usual.
 ;;
-;;  (Command `icicle-remove-all-regions-in-buffer' is also a
-;;  multi-command, but its completion candidates are buffers, not
-;;  regions.)
+;;  * With a plain prefix arg (`C-u'), `C-x C-x' jumps to a region
+;;    bookmark that you choose using completion, and activates it.
 ;;
-;;  For commands `icicle-select-region' and `icicle-search-region', if
-;;  user option `icicle-show-multi-completion-flag' is non-nil (the
-;;  default value), then each region-name candidate is annotated with
-;;  the name of the region's buffer, highlighted, to help orient you.
-;;  The buffer name is actually part of the (multi-completion)
-;;  candidate, so you can match against it.
+;;  * With a numeric prefix arg, `C-x C-x' saves the region.  If the
+;;    prefix arg is negative, then you are prompted for the name to
+;;    use.  Otherwise, the bookmark is named automatically using the
+;;    buffer name plus ": " plus the first
+;;    `icicle-bookmark-name-length-max' characters of the region text.
+;;    (Newline characters are changed to spaces for the name.)
+;;
+;;    So if (a) you are visiting buffer `foo', (b) the region text
+;;    starts with "Arise, you wretched of the earth! For justice
+;;    thunders condemnation: A better world's in birth!", and (c) the
+;;    value of option `icicle-bookmark-name-length-max' is 15, then
+;;    `C-9 C-x C-x' sets the region bookmark named `foo: Arise, you'.
+;;
+;;(@* "Setting a Bookmark and Jumping to a Bookmark")
+;;  ** Setting a Bookmark and Jumping to a Bookmark **
+;;
+;;  Just as `C-x C-x' lets you either set or jump to a region
+;;  bookmark, so `C-x r m' lets you either set or jump to any
+;;  bookmark.  `C-x r m' is the vanilla Emacs key for setting a
+;;  bookmark.  In Icicle mode it is bound by default to command
+;;  `icicle-bookmark-cmd'. (By default, whatever keys are normally
+;;  bound to `bookmark-set' are remapped in Icicle mode to
+;;  `icicle-bookmark-cmd'.)
+;;
+;;  * With no prefix arg or a plain prefix arg (`C-u'), `C-x r m' acts
+;;    just like `bookmark-set'.
+;;
+;;  * With a negative prefix arg, `C-x r m' jumps to a bookmark (with
+;;    completion).  See (@> "Jumping to a Bookmark"), below.
+;;
+;;  * With a non-negative prefix arg, `C-x r m' sets a bookmark,
+;;    automatically naming it.  This is like the automatic naming for
+;;    a region bookmark, except that instead of including a prefix of
+;;    the region text, the name includes text from the current line
+;;    that starts at point.
+;;
+;;    So if the cursor in buffer `foo' is on the `y' in a line with
+;;    the text "Arise, you wretched of the earth!", then the bookmark
+;;    will automatically be named `foo: you wretch'.
+;;
+;;    If the prefix argument is 0, then the new bookmark does not
+;;    overwrite any existing bookmark with the same name.
+;;
+;;(@* "Jumping to a Bookmark")
+;;  ** Jumping to a Bookmark **
+;;
+;;  Icicles commands that jump to a bookmark are multi-commands: you
+;;  can use them to jump to any number of bookmarks in a single
+;;  invocation.  Each jump command acts as a bookmark browser.
+;;
+;;  As with most Icicles tripping commands, after you jump to a
+;;  (non-region) bookmark, the cursor position is highlighted using
+;;  cross hairs, if you also use library `crosshairs.el'.
+;;
+;;  Bookmark names are highlighted in buffer `*Completions*' to
+;;  indicate the bookmark type.  The faces used are those defined by
+;;  Bookmark+.
+;;
+;;  If option `icicle-show-multi-completion-flag' is non-nil, then
+;;  each completion candidate is a multi-completion, with up to three
+;;  parts: the bookmark name, the bookmark file or buffer name, and
+;;  any (del.icio.us-style) tags the bookmark has.  You can toggle
+;;  option `icicle-show-multi-completion-flag' (for the next command)
+;;  using `M-m' during completion.
+;;
+;;  When using multi-completion candidates, you can match any of the
+;;  multi-completion parts.  For example, you can match all bookmarks
+;;  that have any tags by typing this when choosing a bookmark:
+;;
+;;    C-M-j . * C-M-j S-TAB
+;;
+;;  Or match all bookmarks whose names match `P42' and whose tags
+;;  match `blue':
+;;
+;;    P 4 2 . * C-M-j . * C-M-j . * b l u e S-TAB
+;;
+;;  (Each `C-M-j' inserts `^G\n', which is `icicle-list-join-string'.)
+;;
+;;  `C-M-RET' shows detailed info about the current bookmark
+;;  completion candidate.  `C-u C-M-RET' shows the complete, internal
+;;  info for the bookmark.  Likewise, for the other candidate help
+;;  keys: `C-M-down' etc.  And the mode line always shows summary
+;;  info about the current bookmark.
+;;
+;;  During bookmark completion you can sort the candidates in various
+;;  bookmark-specific ways:
+;;
+;;  * By the current (latest) `*Bookmark List*' order
+;;  * By bookmark name
+;;  * By last access as a bookmark (date + time)
+;;  * By bookmark visit frequency (number of times visited)
+;;  * By last buffer or file access (date + time)
+;;  * With marked bookmarks before unmarked (in `*Bookmark List*')
+;;  * By file name
+;;  * By (local) file type
+;;  * By (local) file size
+;;  * By last (local) file access (date + time)
+;;  * By last (local) file update (date + time)
+;;  * By Info location (manual and node)
+;;  * By Gnus thread
+;;  * By W3M URL
+;;  * By bookmark type
+;;
+;;  The most general Icicles jump commands are `icicle-bookmark' and
+;;  `icicle-bookmark-other-window'.  In Icicle mode these are bound to
+;;  whatever `bookmark-jump' and `bookmark-jump-other-window' are
+;;  normally bound to.  If you use Bookmark+, the default bindings are
+;;  `C-x j j' and `C-x 4 j j', respectively.
+;;
+;;  When you use these commands, you can narrow the completion
+;;  candidates to bookmarks of a specific type using these keys:
+;;
+;;  `C-M-b' - non-file (buffer) bookmarks
+;;  `C-M-B' - bookmark-list bookmarks
+;;  `C-M-d' - Dired bookmarks
+;;  `C-M-f' - file bookmarks
+;;  `C-M-F' - local-file bookmarks
+;;  `C-M-g' - Gnus bookmarks
+;;  `C-M-i' - Info bookmarks
+;;  `C-M-K' - desktop bookmarks
+;;  `C-M-m' - `man' pages
+;;  `C-M-r' - bookmarks with regions
+;;  `C-M-w' - W3m bookmarks
+;;  `C-M-@' - remote-file bookmarks
+;;
+;;  In addition, there are individual jump commands for bookmarks of
+;;  each of each type, and these commands are bound by default to keys
+;;  with the prefix `C-x 4 j' that use the same mnemonic characters as
+;;  for narrowing.  For example, `icicle-bookmark-info-other-window'
+;;  is bound to `C-x 4 j i'.
+;;
+;;  By default, commands `icicle-bookmark' and
+;;  `icicle-bookmark-other-window' use a cache for the set of
+;;  available bookmarks.  This improves performance, especially if you
+;;  have a lot of bookmarks.  The downside is that the list of
+;;  completion candidates is not automatically updated when you add
+;;  new bookmarks.
+;;
+;;  You can turn off this caching by setting option
+;;  `icicle-bookmark-refresh-cache-flag' to non-nil.  Alternatively,
+;;  you can use a prefix argument to reverse the effect of this
+;;  option.  When the cache is temporarily turned off like that, the
+;;  command refreshes (updates) the cache.  Typically, then, you will
+;;  want to leave the option set to nil but update it occasionally by
+;;  using `C-u' for bookmark completion.
+;;
+;;  The type-specific bookmark jump commands
+;;  (e.g. `icicle-bookmark-info-other-window') do not use the cache,
+;;  since they typically use a smaller number of candidates.
+;;
+;;  See Also:
+;;
+;;  * (@file :file-name "icicles-doc1.el" :to "Icicles Tripping")
+;;
+;;(@* "Searching Bookmarked Objects")
+;;  ** Searching Bookmarked Objects **
+;;
+;;  Icicles search (and replace) lets you search across multiple
+;;  buffers, files, or bookmarks.  This is true for nearly all Icicles
+;;  search commands.  You use a plain prefix argument to specify
+;;  bookmark searching.  For command `icicle-search' itself (`C-u C-c
+;;  `'), you can alternatively use the specific command
+;;  `icicle-search-bookmarks-together'.
+;;
+;;  When you do this you first choose the bookmarks to search, using
+;;  completion.  Use `C-RET' and similar multi-command actions to
+;;  choose (use `RET' for the final choice).  Once you have chosen the
+;;  bookmarks, you type a search pattern to narrow the set of
+;;  candidates.
+;;
+;;  (Multi-command `icicle-bookmark-list' similarly lets you choose
+;;  bookmark names.  It returns them as a Lisp list of strings.)
+;;
+;;  When you search the text of a region bookmark, the search is
+;;  limited to the region.
+;;
+;;  In addition to using `C-u' with the general Icicles search
+;;  commands, you can use the following Icicles search commands that
+;;  are specific to bookmarks:
+;;
+;;  * icicle-search-bookmark
+;;  * icicle-search-bookmark-list-bookmark
+;;  * icicle-search-desktop-bookmark
+;;  * icicle-search-dired-bookmark
+;;  * icicle-search-file-bookmark
+;;  * icicle-search-gnus-bookmark
+;;  * icicle-search-info-bookmark
+;;  * icicle-search-local-file-bookmark
+;;  * icicle-search-man-bookmark
+;;  * icicle-search-non-file-bookmark
+;;  * icicle-search-region-bookmark
+;;  * icicle-search-remote-file-bookmark
+;;  * icicle-search-w3m-bookmark
+;;
+;;  All of these except `icicle-search-bookmark' act only on bookmarks
+;;  of a specific type.  But all of them act the same way.  They are
+;;  multi-commands, so you can use them to search multiple bookmarks.
+;;  But unlike `icicle-search-bookmarks-together' (`C-u C-c `'), you
+;;  do not first choose all of the bookmarks and then search them
+;;  together.  Instead, you search them one at a time.
 ;;
 ;;  See Also:
 ;;
@@ -2026,9 +2186,12 @@
 ;;  virtual books, to use at any time.
 ;;
 ;;  See Also:
-;;  (@file :file-name "icicles-doc1.el" :to "Sets of Completion Candidates")
+;;
+;;  * (@file :file-name "icicles-doc1.el" :to "Sets of Completion Candidates")
 ;;  for information about defining, saving, and reusing sets of
 ;;  completion candidates.
+;;
+;;  * (@> "Icicles Bookmark Enhancements") for information about using Info bookmarks.
 ;;
 ;;(@* "Using Icicle-Search With Info")
 ;;  ** Using Icicle-Search With Info **
@@ -2116,11 +2279,49 @@
 ;;  Icicles Support for Projects
 ;;  ----------------------------
 ;;
-;;  This section presents little that is really new.  It mainly
-;;  provides pointers to other sections that describe features that
-;;  can help you work with a project that involves multiple files or
-;;  buffers, or named regions of text (e.g. code) within files and
-;;  buffers.
+;;  This section mainly provides pointers to other sections of the
+;;  Icicles doc that describe features that can help you work with a
+;;  project that involves multiple files, buffers, or bookmarks.
+;;
+;;
+;;(@* "Bookmarks for Project Access and Organization")
+;;  ** Bookmarks for Project Access and Organization **
+;;
+;;  If you use Bookmark+ (library `bookmark+.el'), then you can use
+;;  bookmarks of various types, including the following, to help
+;;  manage software projects:
+;;
+;;  * Dired buffers, with specific sets of files and subdirectories
+;;    that are marked or omitted, and using specific listing switches.
+;;
+;;  * `*Bookmark List*' buffers, with specific sets of bookmarks that
+;;    are marked or hidden.
+;;
+;;  * Multiple alternative bookmark files.  For example, use a
+;;    different one for each project.  Or use different ones for
+;;    subprojects and use them together for a full project.
+;;
+;;  * Desktops, which include sets of variables and visited buffers
+;;    and files.
+;;
+;;  * Composite, or sequence, bookmarks, which combine other
+;;    bookmarks.
+;;
+;;  You can also associate tags, in the del.icio.us sense, with most
+;;  types of bookmarks.  (Such tags are unrelated to the Emacs
+;;  source-code tags that use tags files.)  A bookmark can have any
+;;  number of tags, and multiple bookmarks can have the same tag,
+;;  which means you can use them to organize their target objects.
+;;  And tags can be more than just names: they can be user-defined
+;;  attributes, with Emacs-Lisp objects as their values.
+;;
+;;  These and other Bookmark+ features give you different ways to
+;;  save, restore, filter, access, and otherwise organize projects, as
+;;  collections of information about source-code components and
+;;  related software.
+;;
+;;  Icicles enhances access to such features.
+;;  See (@> "Icicles Bookmark Enhancements").
 ;;
 ;;(@* "A Tags File Can Define a Project")
 ;;  ** A Tags File Can Define a Project **
@@ -2131,8 +2332,8 @@
 ;;  several existing Emacs features.
 ;;
 ;;  Another simple kind of project includes the files that are listed
-;;  in a given tags file.  This is obviously more complex and flexible
-;;  than a directory listing.
+;;  in a given Emacs tags file.  This is obviously more complex and
+;;  flexible than a directory listing.
 ;;
 ;;  Icicles provides multi-commands for visiting one or more files
 ;;  that are listed in the current tags table:
@@ -2170,26 +2371,42 @@
 ;;  See also (@> "Icicles Dired Enhancements") for an easy way to
 ;;  search marked files in Dired with Icicles search.
 ;;
+;;  See also (@> "Searching Bookmarked Objects") for ways to search
+;;  bookmarked objects, including the files that have a given set of
+;;  del.icio.us-style tags and the bookmarks that are marked in a
+;;  given bookmark-list state.
+;;
 ;;  And don't forget that all uses of Icicles search also let you do
 ;;  search-and-replace on the fly.  This applies to `grep' results,
 ;;  searching marked files in Dired, tags navigation, and Imenu
 ;;  navigation.  You can at any time replace the current search hit
 ;;  or just the part of it that matches your current input.
 ;;
-;;(@* "Defining and Saving Sets of Files, Buffers, Regions")
-;;  ** Defining and Saving Sets of Files, Buffers, Regions **
+;;(@* "Defining and Saving Sets of Files or Buffers")
+;;  ** Defining and Saving Sets of Files or Buffers **
 ;;
 ;;  Let's assume that you have one or more sets of files or buffers
-;;  that you use frequently.  You give these sets names and save the
-;;  sets persistently.  Later, you can retrieve a set by name,
-;;  bringing you back to the context of working with just those
-;;  particular files, buffers, or regions that belong to your project.
-;;  You can search these or navigate among their significant parts.
-;;  Icicles has a number of features that can help with these tasks.
+;;  that you use frequently.  For each such set of objects, you create
+;;  an Emacs option whose value is a list of the file or buffer names
+;;  (strings).
 ;;
-;;  But before you can name and save such a set, you must define its
-;;  members: pick the files, buffers, or regions that you want to
-;;  belong to a given project.  Icicles can help with this too.
+;;  Later, you use the option value to refer to those objects by name.
+;;  This brings you back to the context of working with just those
+;;  particular files or buffers that belong to your project.  You can
+;;  search such sets or navigate among their objects.  Icicles has a
+;;  number of features that can help with these tasks.
+;;
+;;  Note: Bookmarks are also persistent references to files and
+;;  buffers, and you can use sets of bookmarks similarly.  Bookmarking
+;;  is a vanilla Emacs feature.  Being able to manipulate explicit
+;;  sets of bookmarks is a Bookmark+ feature (library `bookmark+.el').
+;;  Bookmarking features are described elsewhere, but they work in
+;;  concert with Icicles to offer very good project support.
+;;  See (@> "Icicles Bookmark Enhancements").
+;;
+;;  Before you can name and save a set of file or buffer names, you
+;;  must define its members: pick the file and buffer names that you
+;;  want to belong to a given project.  Icicles can help with this.
 ;;
 ;;  For buffers, use commands `icicle-add-buffer-config' and
 ;;  `icicle-remove-buffer-config' to define one or more buffer
@@ -2197,16 +2414,6 @@
 ;;  and other parameters that control completion of buffer names.
 ;;  Thereafter, you can use command `icicle-buffer-config' to choose a
 ;;  configuration to be current.
-;;
-;;  For multiple regions, use `C-N C-x C-x' (`icicle-add-region'),
-;;  where N is a whole number, to add the current region to
-;;  `icicle-region-alist'.  This user option is saved with your
-;;  customizations.  You can later activate a saved region using `C-u
-;;  C-x C-x' (`icicle-select-region').  You can search the text in one
-;;  or more saved regions using command `icicle-search-region'.  Or
-;;  you can search through all of the saved regions at once using `C-N
-;;  C-c `' (`icicle-search' with a positive prefix argument).
-;;  See Also: (@> "Multiple Regions").
 ;;
 ;;  To define a set of files, you use Icicles completion against file
 ;;  names.  You can use progressive completion, chip away the
@@ -2244,6 +2451,7 @@
 ;;
 ;;  * (@file :file-name "icicles-doc1.el" :to "Sets of Completion Candidates")
 ;;  * (@file :file-name "icicles-doc1.el" :to "Persistent Sets of Completion Candidates")
+;;  * (@> "Icicles Bookmark Enhancements")
 ;;  * (@file :file-name "icicles-doc1.el" :to "Progressive Completion")
 ;;  * (@file :file-name "icicles-doc1.el" :to "Chip Away the Non-Elephant")
 ;;  * (@file :file-name "icicles-doc1.el" :to "File-Name Input and Locating Files Anywhere")
@@ -2270,23 +2478,31 @@
 ;;  information, see
 ;;  (@file :file-name "icicles-doc1.el" :to "Sets of Completion Candidates").
 ;;
+;;  If you use library `bookmark+.el' then you can open a project that
+;;  is defined by a set of bookmarks, by doing one of the following:
+;;
+;;  * Using a project-specific bookmark file.
+;;
+;;  * Using a bookmark-list bookmark (it records a `*Bookmark List*'
+;;    buffer state, including which bookmarks are marked or omitted).
+;;
 ;;  You can also open Dired for a project or for a list of file names
 ;;  saved non-persistently as completion candidates - only those files
 ;;  are listed in the Dired buffer.
 ;;  See (@> "Icicles Dired Enhancements").
 ;;
-;;  You can also run `grep' directly on a saved list of file names
-;;  using command `icicle-grep-saved-file-candidates'.  If you use
-;;  library `dired+.el', then you can also `grep' the files in a
-;;  project or saved list of file names by opening it in Dired and
-;;  then using `M-g' (`diredp-do-grep').
+;;  You can also run `grep' on a saved list of file names using
+;;  command `icicle-grep-saved-file-candidates'.  If you use library
+;;  `dired+.el', then you can also `grep' the files in a project or
+;;  saved list of file names by opening it in Dired and then using
+;;  `M-g' (`diredp-do-grep').
 ;;
 ;;  Finally, note that among the sets of completion candidates that
 ;;  you can save are Icicles search hits.  That's right.  Icicles
-;;  search lets you search multiple buffers, files, or buffer regions,
-;;  and you can save selected search hits or all matching hits for
-;;  later use.  When you save search hits, Icicles records the buffer
-;;  or file names and the hit locations within those buffers or files.
+;;  search lets you search multiple buffers, files, or bookmarks, and
+;;  you can save selected search hits or all matching hits for later
+;;  use.  When you save search hits, Icicles records the buffer or
+;;  file names and the hit locations within those buffers or files.
 ;;  When you retrieve such a saved set to access its hits, Icicles
 ;;  automatically takes you to the proper files.
 ;;
@@ -4563,15 +4779,6 @@
 ;;    whether you move there by `RET', `C-RET', `C-next', or
 ;;    `C-prior'.
 ;;
-;;  * User option `icicle-region-alist' is a list of regions, which
-;;    you can act on individually or together.  The regions can be in
-;;    any buffers.  As an alternative to customizing this option
-;;    directly, you can use command `icicle-add-region' to add the
-;;    current Emacs region to the list.  Option
-;;    `icicle-regions-name-length-max' is the maximum length of the
-;;    region-start string that identifies the region for completion
-;;    purposes.  See (@> "Multiple Regions").
-;;
 ;;  * User option `icicle-bookmark-name-length-max' is the maximum
 ;;    number of characters to use when `icicle-bookmark-cmd' (`C-x r
 ;;    m') with a non-negative numeric prefix argument automatically
@@ -4586,14 +4793,6 @@
 ;;    argument (`C-u') overrides the default setting for the duration
 ;;    of the command.  Thus, if the value is nil, you can use `C-u'
 ;;    occasionally to refresh the list on demand.
-;;
-;;  * Non-nil user option `icicle-region-auto-open-files-flag' means
-;;    that commands that access `icicle-region-alist' first open all
-;;    of the files associated with the recorded regions.  The files
-;;    are not necessarily displayed.  If this option is nil, then
-;;    these commands open the files only as you access them by
-;;    choosing a region candidate.  You can also open all such files
-;;    at any time, using command `icicle-region-open-all-files'.
 ;;
 ;;  * Non-nil user option `icicle-show-multi-completion-flag' means
 ;;    that for some commands additional information is shown along
@@ -5359,7 +5558,6 @@
 ;;  `icicle-add-buffer-config' - Add to `icicle-buffer-configs'
 ;;  `icicle-add-entry-to-saved-completion-set' -
 ;;                          Add a completion candidate to a saved set
-;;  `icicle-add-region' - Add region to `icicle-region-alist'
 ;;  `icicle-add/update-saved-completion-set' - Add a set to
 ;;                          `icicle-saved-completion-sets'
 ;;  `icicle-apply'        - Selectively apply function to alist items
@@ -5367,15 +5565,6 @@
 ;;  `icicle-apropos-command' - Enhanced `apropos-command'
 ;;  `icicle-apropos-variable' - Enhanced `apropos-variable'
 ;;  `icicle-apropos-zippy' - Show matching Zippy quotes
-;;  `icicle-bookmark-dired-other-window' - Jump to a Dired bookmark
-;;  `icicle-bookmark-file-other-window' - Jump to a file bookmark
-;;  `icicle-bookmark-gnus-other-window' - Jump to a Gnus bookmark
-;;  `icicle-bookmark-info-other-window' - Jump to an Info bookmark
-;;  `icicle-bookmark-local-file-other-window' - Jump to local file
-;;  `icicle-bookmark-non-file-other-window' - Jump to buffer bookmark
-;;  `icicle-bookmark-region-other-window' - Jump to a region bookmark
-;;  `icicle-bookmark-remote-file-other-window' - Jump to remote file
-;;  `icicle-bookmark-w3m-other-window' - Jump to a W3M bookmark
 ;;  `icicle-buffer-config' - Pick options for Icicles buffer commands
 ;;  `icicle-buffer-list'  - Choose a list of buffer names
 ;;  `icicle-clear-history' - Clear minibuffer histories
@@ -5404,7 +5593,6 @@
 ;;  `icicle-locate-file'  - Open a file located anywhere
 ;;  `icicle-minibuffer-help' - Show Icicles minibuffer help
 ;;  `icicle-plist'        - Show symbols, property lists
-;;  `icicle-purge-bad-file-regions' - Clean up `icicle-region-alist'
 ;;  `icicle-recent-file'  - Open a recently used file
 ;;  `icicle-recompute-shell-command-candidates' - Update from PATH
 ;;  `icicle-remove-buffer-candidate' -
@@ -5413,21 +5601,34 @@
 ;;  `icicle-remove-entry-from-saved-completion-set' -
 ;;                          Remove a candidate from a saved set
 ;;  `icicle-remove-file-from-recentf-list' - Remove from recent files
-;;  `icicle-remove-region'  - Remove region from `icicle-region-alist'
 ;;  `icicle-remove-saved-completion-set' - Remove a set from
 ;;                          `icicle-saved-completion-sets'
 ;;  `icicle-reset-option-to-nil' -
 ;;                          Set value of binary option to nil
 ;;  `icicle-save-string-to-variable' -
 ;;                          Save text for use with `C-='
+;;  `icicle-search-bookmark' - Search bookmarks
+;;  `icicle-search-bookmark-list-bookmark' - bookmark-list bookmarks
+;;  `icicle-search-buff-menu-marked' - Search marked buffers, in order
+;;  `icicle-search-buffer' - Search multiple buffers
+;;  `icicle-search-char-property' - Search for character properties
+;;  `icicle-search-desktop-bookmark' - Search desktop bookmarks
+;;  `icicle-search-dired-bookmark' - Search Dired bookmarks
+;;  `icicle-search-dired-marked' - Search the marked files in Dired
+;;  `icicle-search-file'  - Search multiple files
 ;;  `icicle-search-file-bookmark' - Search file bookmarks
 ;;  `icicle-search-gnus-bookmark' - Search Gnus bookmarks
+;;  `icicle-search-ibuffer-marked' - Search marked buffers in Ibuffer
 ;;  `icicle-search-info-bookmark' - Search Info bookmarks
 ;;  `icicle-search-local-file-bookmark' - Search local file bookmarks
+;;  `icicle-search-man-bookmark' - Search `man'-page bookmarks
 ;;  `icicle-search-non-file-bookmark' - Search non-file bookmarks
-;;  `icicle-search-region' - Search multiple regions
-;;  `icicle-search-region-bookmark' - Search region bookmarks
+;;  `icicle-search-overlay-property' - Search for overlay properties
+;;  `icicle-search-pages' - Search Emacs pages (delimited by ^L chars)
+;;  `icicle-search-paragraphs' - Search Emacs paragraphs
+;;  `icicle-search-region-bookmark' - Search bookmarked regions
 ;;  `icicle-search-remote-file-bookmark' - Search remote files
+;;  `icicle-search-sentences' - Search using sentences as contexts
 ;;  `icicle-search-w3m-bookmark' - Search W3M bookmarks
 ;;  `icicle-select-window' - Select a window by its buffer name
 ;;  `icicle-set-option-to-t' - Set value of binary option to t
@@ -5867,6 +6068,24 @@
 ;;  result into the minibuffer at point.
 ;;
 ;;    `M-:'     - `icicle-pp-eval-expression-in-minibuffer'
+;;
+;;  Some additional bindings are made available in the minibuffer for
+;;  the duration of specific commands:
+;;
+;;  * During completion of names of some kinds of objects (files,
+;;    buffers, directories, Info nodes), `C-x m' lets you complete
+;;    against bookmarks that have the same type as those objects (file
+;;    bookmarks, buffer bookmarks, Dired bookmarks, Info bookmarks)
+;;    This feature requires use of library `bookmark+.el'.
+;;
+;;  * During completion of file names, `C-backspace' is bound to
+;;    `icicle-up-directory', which navigates to the parent directory
+;;    and completes there instead.
+;;
+;;  * During completion of bookmark names for `icicle-bookmark',
+;;    various keys with the prefix `C-M-' are bound to commands that
+;;    narrow the available candidates to bookmarks of a specific type.
+;;    For example, `C-M-d' narrows the choices to Dired bookmarks.
 ;;
 ;;  The following bindings are made for `completion-list-mode', that
 ;;  is, for buffer `*Completions*', which shows the list of candidate
@@ -6314,8 +6533,8 @@
 ;;  the entire alist element, and your command that calls
 ;;  `completing-read' might well use the chosen candidate (e.g. `foo')
 ;;  to look up the entire element (e.g. ("foo" . 2)) for further
-;;  processing.  Several Icicles commands, including `icicle-search'
-;;  and `icicle-select-region', do that.
+;;  processing.  Several Icicles commands, including `icicle-search',
+;;  do that.
 ;;
 ;;  However, sometimes you might want the user to be able to match
 ;;  against the additional information (e.g. 2 and 3), and you might
@@ -6901,6 +7120,19 @@
 ;;  `icicle-add-buffer-candidate' - Add buffer to those always shown
 ;;  `icicle-add-buffer-config' - Add to `icicle-buffer-configs'
 ;;  `icicle-bookmark'     - Jump to a bookmark
+;;  `icicle-bookmark-bookmark-list-*' - Jump: bookmark-list bookmark
+;;  `icicle-bookmark-desktop-*' - Jump: bookmarked desktop
+;;  `icicle-bookmark-dired-*' - Jump: bookmarked Dired state
+;;  `icicle-bookmark-file-*' - Jump: bookmarked file
+;;  `icicle-bookmark-gnus-*' - Jump: bookmarked Gnus message
+;;  `icicle-bookmark-info-*' - Jump: bookmarked Info node
+;;  `icicle-bookmark-list' - Choose a list of bookmark names
+;;  `icicle-bookmark-local-file-*' - Jump: bookmarked local file
+;;  `icicle-bookmark-man-*' - Jump: bookmarked `man' page
+;;  `icicle-bookmark-non-file-*' - Jump: bookmarked buffer
+;;  `icicle-bookmark-region-*' - Jump: bookmarked region
+;;  `icicle-bookmark-remote-file-*' - Jump: bookmarked remote file
+;;  `icicle-bookmark-w3m-*' - Jump: bookmarked URL
 ;;  `icicle-buffer'       - Switch to another buffer
 ;;  `icicle-buffer-config' - Choose a config for buffer commands
 ;;  `icicle-buffer-list'  - Choose a list of buffer names
@@ -6932,6 +7164,8 @@
 ;;  `icicle-frame-fg'     - Change the frame foreground color
 ;;  `icicle-fundoc'       - Display the doc of a function
 ;;  `icicle-Info-menu'    - Go to an Info menu node
+;;  `icicle-increment-option' - Increment option value using arrows
+;;  `icicle-increment-variable' - Increment variable value
 ;;  `icicle-insert-buffer'- Insert a buffer
 ;;  `icicle-insert-thesaurus-entry' - Insert thesaurus entry
 ;;  `icicle-keyword-list' - Choose a list of keywords (regexps)
@@ -6940,21 +7174,29 @@
 ;;  `icicle-locate-file'  - Open a file located anywhere
 ;;  `icicle-plist'        - Choose a symbol and its property list
 ;;  `icicle-recent-file'  - Open a recently used file
-;;  `icicle-remove-all-regions-in-buffer' -
-;;                          Remove all saved regions for a buffer
 ;;  `icicle-remove-buffer-candidate' -
 ;;                          Remove buffer from those always shown
 ;;  `icicle-remove-buffer-config' -
 ;;                          Remove from `icicle-buffer-configs'
 ;;  `icicle-remove-file-from-recentf-list' - Remove from recent files
-;;  `icicle-remove-region' - Remove a region from saved regions list
 ;;  `icicle-remove-saved-completion-set' - Remove a set from
 ;;                          `icicle-saved-completion-sets'
 ;;  `icicle-reset-option-to-nil' -
 ;;                          Set value of binary option to nil
-;;  `icicle-search-region' - Search a region in saved regions list
+;;  `icicle-search-bookmark' - Search a bookmark
+;;  `icicle-search-bookmark-list-bookmark' - Bookmark-list bookmark
+;;  `icicle-search-desktop-bookmark' - Search a desktop bookmark
+;;  `icicle-search-dired-bookmark' - Search a Dired bookmark
+;;  `icicle-search-file-bookmark' - Search a bookmarked file
+;;  `icicle-search-gnus-bookmark' - Search a bookmarked Gnus message
+;;  `icicle-search-info-bookmark' - Search a bookmarked Info node
+;;  `icicle-search-local-file-bookmark' - Search a local-file bookmark
+;;  `icicle-search-man-bookmark' - Search a bookmarked `man' page
+;;  `icicle-search-non-file-bookmark' - Search a bookmarked buffer
+;;  `icicle-search-region-bookmark' - Search a bookmarked region
+;;  `icicle-search-remote-file-bookmark' - Search a remote bookmark
+;;  `icicle-search-w3m-bookmark' - Search a bookmarked URL
 ;;  `icicle-select-frame' - Select frame by name and raise it
-;;  `icicle-select-region' - Select a region from saved regions list
 ;;  `icicle-select-window' - Select window by its buffer name
 ;;  `icicle-set-option-to-t' - Set the value of a binary option to t
 ;;  `icicle-toggle-option' - Toggle the value of a binary option
@@ -7111,7 +7353,7 @@
 ;;  `icicle-search' is another high-level function for defining
 ;;  tripping commands.  Like `icicle-apply', it calls
 ;;  `icicle-explore', but it also provides features for searching
-;;  regions, buffers, and files.  It takes as arguments the search
+;;  bookmarks, buffers, and files.  It takes as arguments the search
 ;;  limits (region), if any, and either a regexp or a function that
 ;;  determines the unfiltered search hits.  It does everything else
 ;;  needed to define a trip command that uses search hits as
@@ -7285,6 +7527,8 @@
 ;;  select a list of items from a larger list of candidates.  The list
 ;;  is returned, with the items in the order selected.  Examples of
 ;;  this include these multi-commands:
+;;
+;;  * `icicle-bookmark-list' - bookmark names
 ;;
 ;;  * `icicle-buffer-list' - buffer names, selected from `buffer-list'
 ;;    (possibly after filtering)

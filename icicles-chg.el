@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Mar 19 15:31:39 2010 (-0700)
+;; Last-Updated: Fri Apr  2 15:38:06 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 4971
+;;     Update #: 5096
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2010/04/02 dadams
+;;     Added: icicle-bookmark-list.
+;;     icicle-bookmark-cleanup: Clean up both minibuffer maps.
+;; 2010/03/27 dadams
+;;     icicle-define-bookmark-other-window-command: Use optional PROMPT arg.
 ;; 2010/03/19 dadams
 ;;     icicle-define-bookmark-other-window-command: Rich multi-completions per icicle-bookmark.
 ;; 2010/03/16 dadams
@@ -222,6 +227,40 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2010/04/02 dadams
+;;     Removed:
+;;       icicle-add-region, icicle-delete-region-from-alist, icicle-purge-bad-file-regions,
+;;       icicle-region-add-buffers, icicle-region-add-short-help, icicle-region-help,
+;;       icicle-region-open-all-files, icicle-regions, icicle-region-sorted, 
+;;       icicle-remove-all-regions-action, icicle-remove-all-regions-in-buffer, icicle-remove-region,
+;;       icicle-search-all-regions, icicle-search-region(-action), icicle-select-region(-action).
+;;     Added:
+;;       icicle-search-bookmark-list-bookmark, icicle-search-bookmarks-together,
+;;       icicle-search-desktop-bookmark, icicle-search-dired-bookmark, icicle-search-man-bookmark.
+;;     icicle-exchange-point-and-mark, icicle-search(-define-candidates),
+;;       icicle-char-properties-in-buffers:
+;;         Use only region bookmarks, not Icicles saved regions.
+;;     icicle-exchange-point-and-mark: Negative prefix arg prompts for bookmark name.
+;;     icicle-search-define-candidates(-1): Raise the no-candidates error in parent, not in (-1).
+;;     icicle-search-bookmark: Use full multi-completions.  Use bookmark sort orders.
+;;                             Define narrowing keys in both minibuffer maps.
+;;     icicle-search-bookmark-action: Transform multi-completion. Use bookmark posns only for region.
+;;     icicle-define-search-bookmark-command: Added PROMPT arg.  Use multi-completions, bookmark sorts.
+;; 2010/03/28 dadams
+;;     Renamed: icicle-search-all-regions to icicle-search-region.
+;;     Removed: old icicle-search-region (use icicle-search-region-bookmark instead),
+;;              icicle-region-add-buffers, icicle-region-add-short-help, icicle-region-help,
+;;              icicle-region-sorted, icicle-region-open-all-files, icicle-add-region,
+;;              icicle-remove-region, icicle-delete-region-from-alist,
+;;              icicle-purge-bad-file-regions, icicle-remove-all-regions-(in-buffer|action).
+;;     icicle-search-all-regions: Use region bookmarks, not icicle-region-alist.
+;; 2010/03/27 dadams
+;;     Added: icicle-search-(bookmark-list|desktop|dired|man)-bookmark.
+;;     icicle-search-bookmark: Use multi-completions.
+;;     icicle-search-bookmark-action:
+;;       Use icicle-transform-multi-completion.  Use both minibuffer completion maps.
+;;       Search region if region bookmark.
+;;     icicle-define-search-bookmark-command: Added optional PROMPT arg.  Use multi-completions.
 ;; 2010/03/13 dadams
 ;;     Applied renaming of icicle-add-buffer-name-flag to icicle-show-multi-completion-flag.
 ;; 2010/03/09 dadams
@@ -396,6 +435,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2010/04/02/dadams
+;;     icicle-completing-p: Cache t, not the keymap portion.
 ;; 2010/03/16 dadams
 ;;     icicle-display-candidates-in-Completions, treating icicle-candidate-properties-alist:
 ;;       For subsequent matches of join string, skip over the last join string (not 1 char).
@@ -2782,6 +2823,15 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2010/04/02 dadams
+;;     icicle-mode: Update doc string for change from regions to bookmarks.
+;;     icicle-define-icicle-maps:
+;;       Remove Icicles region stuff from menus.
+;;       Added to menus: icicle-search-bookmarks-together, icicle-search-bookmark,
+;;                       icicle-select-bookmarked-region.
+;; 2010/03/28 dadams
+;;     Applied renaming: icicle-search-all-regions to icicle-search-region.
+;;     Use icicle-search-region-bookmark in menus.
 ;; 2010/03/14 dadams
 ;;     icicle-define-minibuffer-maps: Use featurep, not soft-require, for bookmark+.el.
 ;;     Added bookmark+ to final dolist for eval-after-load.
@@ -3659,6 +3709,16 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2010/04/02 dadams
+;;     Removed: icicle-region-alist, icicle-region-auto-open-files-flag,
+;;              icicle-region-bookmarks-flag, icicle-regions-name-length-max.
+;;     icicle-top-level-key-bindings: Removed bookmarkp-bookmark-list-jump-other-window.
+;;       bookmarkp*: Use condition (featurep 'bookmark+).
+;; 2010/03/31 dadams
+;;     Removed extra code redefining some bookmark commands.
+;; 2010/03/28 dadams
+;;     Removed: icicle-region-alist, icicle-region-auto-open-files-flag,
+;;              icicle-region-bookmarks-flag, icicle-regions-name-length-max.
 ;; 2010/03/14 dadams
 ;;     Added: icicle-bookmark-refresh-cache-flag.
 ;; 2010/03/13 sadams
@@ -4133,6 +4193,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2010/04/02 dadams
+;;     Added: icicle-bookmark-types.
+;;     icicle-general-help-string: Updated to reflect move from saved regions to bookmarks.
 ;; 2010/03/13 dadams
 ;;     Added: icicle-transform-before-sort-p.
 ;;     Removed: icicle-sorted-bookmark-alist.

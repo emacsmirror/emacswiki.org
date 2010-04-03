@@ -1177,10 +1177,6 @@ using `M-t' in `##*Bookmark List*##' to toggle showing file names.
 You can make not showing files and tags the default behavior by
 customizing `<tt>[[Icicles - Customization and General Tips#icicle-show-multi-completion-flag|icicle-show-multi-completion-flag]]</tt>'.
 
-
-
-
-
 * You can sort completion candidates using the '''Bookmark+''' sort
   orders.  Use '''`##C-,##'''' to cycle among sort orders.
 
@@ -1204,7 +1200,7 @@ customizing `<tt>[[Icicles - Customization and General Tips#icicle-show-multi-co
   act on their members in various ways.
 
 
-
+'''See Also:''' [[Icicles - Bookmark Enhancements]].
 
 
 

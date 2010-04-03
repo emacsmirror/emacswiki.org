@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Mar 14 14:12:50 2010 (-0700)
+;; Last-Updated: Thu Apr  1 13:20:33 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 3591
+;;     Update #: 3640
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -140,9 +140,7 @@
 ;;    `icicle-read+insert-file-name-keys',
 ;;    `icicle-redefine-standard-commands-flag',
 ;;    `icicle-regexp-quote-flag', `icicle-regexp-search-ring-max',
-;;    `icicle-region-alist', `icicle-region-auto-open-files-flag',
-;;    `icicle-region-background', `icicle-region-bookmarks-flag',
-;;    `icicle-regions-name-length-max', `icicle-require-match-flag',
+;;    `icicle-region-background', `icicle-require-match-flag',
 ;;    `icicle-saved-completion-sets', `icicle-search-cleanup-flag',
 ;;    `icicle-search-context-match-predicate',
 ;;    `icicle-search-from-isearch-keys',
@@ -1838,41 +1836,6 @@ time using `C-`'."
   "*Icicles version of `regexp-search-ring-max'."
   :type 'integer :group 'Icicles-Searching)
 
-;;;###autoload
-(defcustom icicle-region-alist ()
-  "*Alist of saved regions (in any buffers).
-If option `icicle-region-bookmarks-flag' is nil or you do not have
-library `bookmark+.el', then Icicles commands such as
-`icicle-exchange-point-and-mark' use the regions in this list.
-
-Use commands `icicle-add-region' and `icicle-remove-region' to define
-this list.
-
-List elements have the form (STRING BUFFER FILE START END), where:
-STRING is the first `icicle-regions-name-length-max' characters in the
-  region.
-BUFFER is the name of the buffer containing the region.
-FILE is the buffer's `buffer-file-name', or nil if not a file buffer.
-START and END are character positions that delimit the region."
-  :type '(alist
-          :key-type (string :tag "Tag")
-          :value-type (list
-                       (string  :tag "Buffer name")
-                       (file    :tag "File name (absolute)")
-                       (integer :tag "Region start")
-                       (integer :tag "Region end")))
-  :group 'Icicles-Miscellaneous :group 'Icicles-Searching)
-
-;;;###autoload
-(defcustom icicle-region-auto-open-files-flag nil
-  "*Non-nil means commands accessing `icicle-region-alist' open its files.
-That is, the file of each buffer in `icicle-region-alist' that is
-associated with a file is visited, without displaying it.
-
-If this is nil, you can still open all such files at any time, using
-command `icicle-region-open-all-files'."
-  :type 'boolean :group 'Icicles-Miscellaneous :group 'Icicles-Searching)
-
 ;; This is essentially a version of `doremi-increment-color-component' for value only.
 ;; Must be before `icicle-region-background'.
 (defun icicle-increment-color-value (color increment)
@@ -1925,22 +1888,6 @@ region, but it makes the region less conspicuous, so you can more
 easily read your minibuffer input."
   :type (if (and (require 'wid-edit nil t) (get 'color 'widget-type)) 'color 'string)
   :group 'Icicles-Minibuffer-Display)
-
-;;;###autoload
-(defcustom icicle-region-bookmarks-flag (featurep 'bookmark+)
-  "*Non-nil means some Icicles saved-region commands use bookmarks.
-If non-nil and library `bookmark+.el' is available, then commands such
-as `icicle-exchange-point-and-mark' use region bookmarks.  Otherwise,
-they use the regions saved in option `icicle-region-alist'."
-  :type 'boolean :group 'Icicles-Miscellaneous :group 'Icicles-Searching)
-
-;;;###autoload
-(defcustom icicle-regions-name-length-max 80
-  "*Maximum number of characters used to name a region.
-This many characters, maximum, from the beginning of the region, is
-used to name the region. This is used for regions saved to
-option `icicle-region-alist'."
-  :type 'integer :group 'Icicles-Miscellaneous)
 
 ;;;###autoload
 (defcustom icicle-require-match-flag nil
@@ -2678,78 +2625,68 @@ toggle Icicle mode off and then back on."
     (,(kbd "C-h C-o") icicle-describe-option-of-type      t) ; `C-h C-o'
     ,@(and (require 'kmacro nil t)      ; (Emacs 22+)
            `((,(kbd "S-<f4>")    icicle-kmacro            t))) ; `S-f4'
-    (abort-recursive-edit           icicle-abort-recursive-edit     t) ; `C-]'
+    (abort-recursive-edit           icicle-abort-recursive-edit        t) ; `C-]'
+    (bookmark-jump                  icicle-bookmark                    t) ; `C-x r b'
+    (bookmark-jump-other-window     icicle-bookmark-other-window       t) ; `C-x 4 j j'
+    (bookmark-set                   icicle-bookmark-cmd                t) ; `C-x r m'
     (minibuffer-keyboard-quit      icicle-abort-recursive-edit ; `C-g' (minibuffer - `delsel.el')
      (fboundp 'minibuffer-keyboard-quit))
-    (dired                          icicle-dired                    t) ; `C-x d'
-    (dired-other-window             icicle-dired-other-window       t) ; `C-x 4 d'
-    (execute-extended-command       icicle-execute-extended-command t) ; `M-x'
-    (switch-to-buffer               icicle-buffer                   t) ; `C-x b'
-    (switch-to-buffer-other-window  icicle-buffer-other-window      t) ; `C-x 4 b'
+    (delete-window                  icicle-delete-window               t) ; `C-x 0'
+    (delete-windows-for             icicle-delete-window           t) ; `C-x 0' (`frame-cmds.el')
+    (dired                          icicle-dired                       t) ; `C-x d'
+    (dired-other-window             icicle-dired-other-window          t) ; `C-x 4 d'
+    (exchange-point-and-mark        icicle-exchange-point-and-mark     t) ; `C-x C-x'
+    (execute-extended-command       icicle-execute-extended-command    t) ; `M-x'
+    (find-file                      icicle-file                        t) ; `C-x C-f'
+    (find-file-other-window         icicle-file-other-window           t) ; `C-x 4 f'
     ;; There are no key bindings in vanilla Emacs for `insert-buffer'.
     ;; If you use `setup-keys.el', then these are its bindings: `C-S-insert', `M-S-f1'.
-    (insert-buffer                  icicle-insert-buffer            t)
-    (find-file                      icicle-file                     t) ; `C-x C-f'
-    (find-file-other-window         icicle-file-other-window        t) ; `C-x 4 f'
-    (bookmarkp-dired-jump-other-window  icicle-bookmark-dired-other-window  t) ; `C-x 4 j d'
-    (bookmarkp-file-jump-other-window   icicle-bookmark-file-other-window  t) ; `C-x 4 j f'
-    (bookmarkp-gnus-jump-other-window   icicle-bookmark-gnus-other-window  t) ; `C-x 4 j g'
-    (bookmarkp-info-jump-other-window   icicle-bookmark-info-other-window  t) ; `C-x 4 j i'
-    (bookmarkp-man-jump-other-window    icicle-bookmark-man-other-window  t) ; `C-x 4 j m'
-    (bookmarkp-region-jump-other-window icicle-bookmark-region-other-window  t) ; `C-x 4 j r'
-    (bookmarkp-w3m-jump-other-window    icicle-bookmark-w3m-other-window  t) ; `C-x 4 j w'
-    (bookmarkp-non-file-jump-other-window
-     icicle-bookmark-non-file-other-window  t) ; `C-x 4 j b'
-    (bookmarkp-local-file-jump-other-window
-     icicle-bookmark-local-file-other-window  t) ; `C-x 4 j l'
-    (bookmarkp-remote-file-jump-other-window
-     icicle-bookmark-remote-file-other-window  t) ; `C-x 4 j t'
-    (bookmark-set                   icicle-bookmark-cmd             t) ; `C-x r m'
-    (bookmark-jump                  icicle-bookmark                 t) ; `C-x r b'
-    (bookmark-jump-other-window     icicle-bookmark-other-window    t) ; `C-x 4 j j'
+    (insert-buffer                  icicle-insert-buffer               t)
+    (kill-buffer                    icicle-kill-buffer                 t) ; `C-x k'
+    (kill-buffer-and-its-windows    icicle-kill-buffer              t) ; `C-x k' (`misc-cmds.el')
+    (other-window                 icicle-other-window-or-frame         t) ; `C-x o'
+    (other-window-or-frame        icicle-other-window-or-frame     t) ; `C-x o' (`frame-cmds.el')
+    (pop-global-mark
+     icicle-goto-global-marker-or-pop-global-mark                     t) ; `C-x C-@', `C-x C-SPC'
+    (set-mark-command
+     icicle-goto-marker-or-set-mark-command                            t) ; `C-@', `C-SPC'
+    (switch-to-buffer               icicle-buffer                      t) ; `C-x b'
+    (switch-to-buffer-other-window  icicle-buffer-other-window         t) ; `C-x 4 b'
+    (where-is                       icicle-where-is                    t) ; `C-h w'
+    (,icicle-yank-function          icicle-yank-maybe-completing       t) ; `C-y'
     ;; These are available only if you use library `bookmark+.el'.  They are bound to `C-x 4 j'
     ;; followed by: `B', `K', `d', `f', `g', `i', `w', `r', `l', `b', `n'.
-    (bookmarkp-bookmark-list-jump              icicle-bookmark-bookmark-list-other-window
-     (featurep 'bookmark+))             ; "other-window" means nothing for a bookmark list.
-    (bookmarkp-bookmark-list-jump-other-window icicle-bookmark-bookmark-list-other-window
-     (featurep 'bookmark+))
-    (bookmarkp-desktop-jump                    icicle-bookmark-desktop-other-window
-     (featurep 'bookmark+))             ; "other-window" means nothing for a desktop.
-    (bookmarkp-desktop-jump-other-window       icicle-bookmark-desktop-other-window
-     (featurep 'bookmark+))
-    (bookmarkp-dired-jump-other-window  icicle-bookmark-dired-other-window (featurep 'bookmark+))
-    (bookmarkp-file-jump-other-window   icicle-bookmark-file-other-window  (featurep 'bookmark+))
-    (bookmarkp-gnus-jump-other-window   icicle-bookmark-gnus-other-window  (featurep 'bookmark+))
-    (bookmarkp-info-jump-other-window   icicle-bookmark-info-other-window  (featurep 'bookmark+))
-    (bookmarkp-w3m-jump-other-window    icicle-bookmark-w3m-other-window   (featurep 'bookmark+))
-    (bookmarkp-region-jump-other-window icicle-bookmark-region-other-window
-     (featurep 'bookmark+))
-    (bookmarkp-local-file-jump-other-window   icicle-bookmark-local-file-other-window
-     (featurep 'bookmark+))
-    (bookmarkp-non-file-jump-other-window     icicle-bookmark-non-file-other-window
-     (featurep 'bookmark+))
-    (bookmarkp-remote-file-jump-other-window  icicle-bookmark-remote-file-other-window
-     (featurep 'bookmark+))
+    (bookmarkp-bookmark-list-jump       ; "other-window" means nothing for a bookmark list.
+     icicle-bookmark-bookmark-list-other-window (featurep 'bookmark+)) ; `C-x j B'
+    (bookmarkp-desktop-jump             ; "other-window" means nothing for a desktop.
+     icicle-bookmark-desktop-other-window (featurep 'bookmark+)) ; `C-x j K'
+    (bookmarkp-dired-jump-other-window
+     icicle-bookmark-dired-other-window (featurep 'bookmark+)) ; `C-x 4 j d'
+    (bookmarkp-file-jump-other-window
+     icicle-bookmark-file-other-window (featurep 'bookmark+)) ; `C-x 4 j f'
+    (bookmarkp-gnus-jump-other-window
+     icicle-bookmark-gnus-other-window (featurep 'bookmark+)) ; `C-x 4 j g'
+    (bookmarkp-info-jump-other-window
+     icicle-bookmark-info-other-window (featurep 'bookmark+)) ; `C-x 4 j i'
+    (bookmarkp-local-file-jump-other-window
+     icicle-bookmark-local-file-other-window (featurep 'bookmark+)) ; `C-x 4 j l'
+    (bookmarkp-man-jump-other-window
+     icicle-bookmark-man-other-window  (featurep 'bookmark+)) ; `C-x 4 j m'
+    (bookmarkp-non-file-jump-other-window
+     icicle-bookmark-non-file-other-window (featurep 'bookmark+)) ; `C-x 4 j b'
+    (bookmarkp-region-jump-other-window
+     icicle-bookmark-region-other-window (featurep 'bookmark+)) ; `C-x 4 j r'
+    (bookmarkp-remote-file-jump-other-window
+     icicle-bookmark-remote-file-other-window (featurep 'bookmark+)) ; `C-x 4 j n'
+    (bookmarkp-w3m-jump-other-window
+     icicle-bookmark-w3m-other-window (featurep 'bookmark+)) ; `C-x 4 j w'
     ;; Don't let Emacs 20 or 21 use `substitute-key-definition' on `M-.' or `M-*', since we need
     ;; these keys for the minibuffer.  Leave them unbound in `icicle-mode-map' until Emacs 22+.
-    (pop-tag-mark        icicle-pop-tag-mark          (fboundp 'command-remapping)) ; `M-*'
     (find-tag            icicle-find-tag              (fboundp 'command-remapping)) ; `M-.'
+    (find-tag-other-window        icicle-find-first-tag-other-window t) ; `C-x 4 .'
+    (pop-tag-mark        icicle-pop-tag-mark          (fboundp 'command-remapping)) ; `M-*'
     (eval-expression     icicle-pp-eval-expression    (fboundp 'command-remapping)) ; `M-:'
     (pp-eval-expression icicle-pp-eval-expression (fboundp 'command-remapping)) ;`M-:' (`pp+.el')
-    (find-tag-other-window        icicle-find-first-tag-other-window t) ; `C-x 4 .'
-    (kill-buffer                  icicle-kill-buffer                 t) ; `C-x k'
-    (kill-buffer-and-its-windows  icicle-kill-buffer                t) ; `C-x k' (`misc-cmds.el')
-    (delete-window                icicle-delete-window               t) ; `C-x 0'
-    (delete-windows-for           icicle-delete-window             t) ; `C-x 0' (`frame-cmds.el')
-    (other-window-or-frame        icicle-other-window-or-frame     t) ; `C-x o' (`frame-cmds.el')
-    (other-window                 icicle-other-window-or-frame       t) ; `C-x o'
-    (exchange-point-and-mark      icicle-exchange-point-and-mark     t) ; `C-x C-x'
-    (where-is                     icicle-where-is                    t) ; `C-h w'
-    (,icicle-yank-function        icicle-yank-maybe-completing       t) ; `C-y'
-    (set-mark-command
-     icicle-goto-marker-or-set-mark-command                          t) ; `C-@', `C-SPC'
-    (pop-global-mark
-     icicle-goto-global-marker-or-pop-global-mark                    t) ; `C-x C-@', `C-x C-SPC'
     ;; For La Carte (`lacarte.el'), not Icicles, but it's convenient to do this here.
     (,(kbd "ESC M-x")      lacarte-execute-command ; `ESC M-x'
      (fboundp 'lacarte-execute-command))

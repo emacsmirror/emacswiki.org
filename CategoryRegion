@@ -23,10 +23,10 @@ The [[active region]] is essentially what some other programs call the "selectio
 * ShiftSelectMode -- Expand regions with Shift and a navigation command.
 * SwapRegions -- Swapping two regions.
 * Lisp:trans-regions.el -- Transpose regions command.
-* [[Anything]] -- M-x anything-show-kill-ring narrows kill-ring by multiple patterns.
+* [[Anything]] -- `M-x anything-show-kill-ring' narrows kill-ring by multiple patterns.
 
 
-===Emacs Has Multiple Regions===
+===Emacs Has a Second Selection ===
 
 Yes, Virginia, there is a ''second'' selection.  The SecondarySelection is like the region, but is less 
 ephemeral. Learn to use it.
@@ -47,7 +47,7 @@ ephemeral. Learn to use it.
 * EevMode -- `M-x eev' saves region to a temporary script. Later we can execute it.
 * FastNav -- Provides a command to set mark quickly at the next/previous n'th occurence of a character while the point is kept.
 * HideRegion -- Hiding and showing multiple regions.
-* [[Icicles]] -- Icicles provides for persistent, multiple regions handling, possibly in multiple buffers. Select a region, search a region, etc.. See [[Icicles - Multiple Regions]]
+* [[Icicles]] -- Icicles provides for persistent, multiple regions as [[bookmark]]s. You can select a bookmarked region, search one, etc. See [[Icicles - Bookmark Enhancements]]
 * MarkLines -- Keyboard emulation of triple-click line selection. (Incompatible with CUAMode.)
 * ModeLinePosition -- Shows the size of the region in the mode-line, whenever the mark is active in TransientMarkMode.
 * MousePlus -- Highlight the yank position while you press `mouse-2', so you hit the right spot.

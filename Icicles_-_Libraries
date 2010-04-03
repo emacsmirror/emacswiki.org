@@ -32,6 +32,7 @@ When you load (e.g. `load-library' or `require') the driver library, '''<tt>[[ic
 The following libraries are ''optional'' (loaded by <tt>[[icicles.el]]</tt> if
 in your `load-path'), but recommended.
 
+* <tt>[[bookmark+.el]]</tt> -- Many bookmark enhancements. See BookmarkPlus and [[Icicles - Bookmark Enhancements]].
 * <tt>[[col-highlight.el]]</tt> -- Required by ##crosshairs.el## (Emacs 22+). See HighlightCurrentColumn.
 * <tt>[[crosshairs.el]]</tt> -- Highlight target positions -- see CrosshairHighlighting.
 * <tt>[[hexrgb.el]]</tt> -- Color manipulation.

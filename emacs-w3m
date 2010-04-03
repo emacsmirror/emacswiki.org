@@ -456,81 +456,79 @@ Or press "C-c C-x M-w" in w3m buffer.
 Enjoy! :)                                        -- AndyStewart
 
 
-= Bookmark current page to delicious =
+== Bookmarking ==
 
-This code use curl to update delicious.
+* [[Anything]] -- `M-x anything-w3m-bookmarks', narrow the list by typing some patterns(multiple patterns are space-delimited string),
+select with up/down/pgup/pgdown/C-p/C-n/C-v/M-v, choose with enter,
+With `TAB' actions can be selected if the selected bookmark has more than one possible action.
+With `C-z' the contents of bookmark is displayed without quitting anything session.
 
-You have to set login and password in your authinfo file.
+* Regular Emacs bookmarks to URLs, for W3M.
+** [[Bookmark+]] 
+** BookmarkExtension
 
-See auth-source to configure that correctly.
-
-This code is part of:
-
-* Lisp:anything-delicious.el
-
+* Bookmark to delicious using `curl' and Lisp:anything-delicious.el (see `auth-source' to configure).
 
 <pre>
-(defun w3m-add-delicious-bookmark (description tag)
-  "Add a bookmark to delicious from w3m"
-  (interactive (list (read-from-minibuffer "Description: "
-                                           nil nil nil nil
-                                           w3m-current-title)
-                     (completing-read "Tag: "
-                                      (anything-delicious-get-all-tags-from-cache))))
-  (setq description
-        (replace-regexp-in-string " " "+" description))
-  (let* ((url     w3m-current-url)
-         (url-api (format anything-c-delicious-api-url-add
-                          url
-                          description
-                          tag))
-         anything-delicious-user
-         anything-delicious-password
-         auth)
-    (unless (and anything-delicious-user anything-delicious-password)
-      (anything-delicious-authentify))
-    (setq auth (concat anything-delicious-user ":" anything-delicious-password))
-    (with-temp-buffer
-      (apply #'call-process "curl" nil t nil
-             `("-u"
-               ,auth
-               ,url-api))
-      (buffer-string)
-      (goto-char (point-min))
-      (if (re-search-forward "<result code=\"done\" />" nil t)
-          (unwind-protect
-               (progn
-                 (message "%s added to delicious" description)
-                 (when current-prefix-arg
-                   (w3m-bookmark-write-file url
-                                            (replace-regexp-in-string "\+"
-                                                                      " "
-                                                                      description)
-                                            tag)
-                   (message "%s added to delicious and to w3m-bookmarks" description)))
-            (anything-wget-retrieve-delicious))
-          (message "Fail to add bookmark to delicious")
-          (when current-prefix-arg
-            (if (y-or-n-p "Add anyway to w3m-bookmarks?")
-                (progn
-                  (w3m-bookmark-write-file url
-                                           (replace-regexp-in-string "\+" " "
-                                                                     description)
-                                           tag)
-                  (message "%s added to w3m-bookmarks" description))))))))
+        (defun w3m-add-delicious-bookmark (description tag)
+          "Add a bookmark to delicious from w3m"
+          (interactive (list (read-from-minibuffer "Description: "
+                                                   nil nil nil nil
+                                                   w3m-current-title)
+                             (completing-read "Tag: "
+                                              (anything-delicious-get-all-tags-from-cache))))
+          (setq description
+                (replace-regexp-in-string " " "+" description))
+          (let* ((url     w3m-current-url)
+                 (url-api (format anything-c-delicious-api-url-add
+                                  url
+                                  description
+                                  tag))
+                 anything-delicious-user
+                 anything-delicious-password
+                 auth)
+            (unless (and anything-delicious-user anything-delicious-password)
+              (anything-delicious-authentify))
+            (setq auth (concat anything-delicious-user ":" anything-delicious-password))
+            (with-temp-buffer
+              (apply #'call-process "curl" nil t nil
+                     `("-u"
+                       ,auth
+                       ,url-api))
+              (buffer-string)
+              (goto-char (point-min))
+              (if (re-search-forward "<result code=\"done\" />" nil t)
+                  (unwind-protect
+                       (progn
+                         (message "%s added to delicious" description)
+                         (when current-prefix-arg
+                           (w3m-bookmark-write-file url
+                                                    (replace-regexp-in-string "\+"
+                                                                              " "
+                                                                              description)
+                                                    tag)
+                           (message "%s added to delicious and to w3m-bookmarks" description)))
+                    (anything-wget-retrieve-delicious))
+                  (message "Fail to add bookmark to delicious")
+                  (when current-prefix-arg
+                    (if (y-or-n-p "Add anyway to w3m-bookmarks?")
+                        (progn
+                          (w3m-bookmark-write-file url
+                                                   (replace-regexp-in-string "\+" " "
+                                                                             description)
+                                                   tag)
+                          (message "%s added to w3m-bookmarks" description))))))))
 
-(define-key w3m-mode-map "\C-x\C-a" 'w3m-add-delicious-bookmark)
+        (define-key w3m-mode-map "\C-x\C-a" 'w3m-add-delicious-bookmark)
 </pre>
 
 -- ThierryVolpiatto
 
-: Not as simple now that OAuth is used; compare  http://delicious.com/help/api and http://delicious.com/help/oauthapi  --[[jcorneli]]
+:: Not as simple now that OAuth is used; compare  http://delicious.com/help/api and http://delicious.com/help/oauthapi  --[[jcorneli]]
 
 [new]
-Don't know what is OAuth, i will have a look. However the actual above code of Lisp:anything-delicious.el work fine.
-I have updated it.
-
--- ThierryVolpiatto
+::: Don't know what is OAuth, i will have a look. However the actual above code of Lisp:anything-delicious.el work fine.
+I have updated it. -- ThierryVolpiatto
  
 = w3m in Emacs 23 (on Debian and Ubuntu 9.10) =
 

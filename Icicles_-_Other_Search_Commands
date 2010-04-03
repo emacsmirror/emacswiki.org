@@ -1,6 +1,6 @@
 : [[image:iciclesimage]]
 
-|| *Previous:*  [[Icicles - Search-And-Replace]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Multiple Regions]] ||
+|| *Previous:*  [[Icicles - Search-And-Replace]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Bookmark Enhancements]] ||
 
 ----
 
@@ -70,7 +70,7 @@ distinguished by their `face' values.
 
 As with other '''Icicles''' search commands, a [[prefix argument]] controls
 whether these character-property commands search the current
-[[buffer]], saved [[region]]s, selected files, or selected buffers.
+[[buffer]], selected [[bookmark]]s, selected files, or selected buffers.
 However, keep in mind that, since in this case you are searching
 character properties, you will find search hits only for buffers
 that already have such properties, for example, buffers that have
@@ -96,7 +96,7 @@ using `icicle-search' to browse regexp matches. You get all of the features of `
 * You can restrict navigation (search) to a [[region]].
 * You can navigate (browse) among multiple entries, instead of choosing them one by one from a menu.
 * You can restrict the entries to browse using (regexp) pattern matching.
-* As for `icicle-search', you can search multiple saved regions, multiple buffers, or multiple files.    
+* As for `icicle-search', you can search multiple bookmarks, multiple buffers, or multiple files.    
 
 In addition, for EmacsLisp function definitions, '''Icicles''' provides
 two specializations of `icicle-imenu', to find only Emacs ''[[command]]''
@@ -111,7 +111,7 @@ a predicate argument.
 * [[ImenuMode|Imenu]] lets you navigate among definitions in a single buffer.
 * EmacsTags let you navigate among definitions in multiple files, but you must build and update the TagsFile that identifies the definitions.
 
-Like Emacs [[tags]], `icicle-imenu' lets you navigate among definitions in multiple files -- and also multiple saved regions and non-file buffers. Like Imenu, you need not build a tags file.  Unlike Imenu, '''Icicles''' provides regexp completion that lets you filter Imenu hits that you want to visit.
+Like Emacs [[tags]], `icicle-imenu' lets you navigate among definitions in multiple files -- and also multiple bookmarks and multiple non-file buffers. Like Imenu, you need not build a tags file.  Unlike Imenu, '''Icicles''' provides regexp completion that lets you filter Imenu hits that you want to visit.
 
 Another difference from Emacs tags, besides the need for a tags file, is that, since '''Icicles''' locates definitions using Imenu regexps, you can only navigate among definitions in buffers that you are visiting. This is both an advantage and a disadvantage: you can narrow the search to certain files, but you must know which files to search. And if you want to search all files, then you must open them all (e.g. by matching a project regexp), 
 
@@ -222,7 +222,7 @@ number of search regexps with `##M-*##' and any number of search predicates with
 ----
 
 
-|| *Previous:*  [[Icicles - Search-And-Replace]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Multiple Regions]] ||
+|| *Previous:*  [[Icicles - Search-And-Replace]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Bookmark Enhancements]] ||
 
 
 

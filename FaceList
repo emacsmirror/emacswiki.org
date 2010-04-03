@@ -1,8 +1,15 @@
-List [[Face]]s using `M-x list-faces-display' and edit them by hitting
-enter.  This is useful for Emacs 20.  Emacs 21 already comes with
-something similar.
+List [[face]]s using `M-x list-faces-display' and customize them by hitting
+enter. This is a standard Emacs command.
 
-* Lisp:face-list.el
+== Alternatives ==
+
+* Lisp:face-list.el -- Provides the hit-enter-to-customize behavior for Emacs 20. Not needed for Emacs 21 or later.
+
+* Choose a face from a list with dynamic filtering (pattern matching).
+** [[Anything]] -- `M-x anything-colors', narrow the face list by typing some patterns(multiple patterns are space-delimited string),
+select with up/down/pgup/pgdown/C-p/C-n/C-v/M-v, choose with enter to customize selected face.
+** [[Icicles]] -- Whenever you use a command that reads a face name (e.g. `set-face-foreground', `customize-face', `describe-face' etc.), you can complete against the name or its RGB values, or both. Match using multiple patterns, substrings, regexps, etc.) 
+
 
 ----
 CategoryFaces

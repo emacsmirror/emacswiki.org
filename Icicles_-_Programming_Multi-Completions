@@ -144,8 +144,7 @@ However, the ''##PREDICATE##'' argument to `completing-read' applies to
 the entire alist element, and your command that calls
 `completing-read' might well use the chosen candidate (e.g. `foo')
 to look up the entire element (e.g. ##("foo" . 2)##) for further
-processing.  Several '''Icicles''' commands, including `icicle-search'
-and `icicle-select-region', do that.
+processing.  Several '''Icicles''' commands, including `icicle-search', do that.
 
 However, sometimes you might want the user to be able to match
 against the additional information (e.g. ##2## and ##3##), and you might

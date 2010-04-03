@@ -28,7 +28,12 @@ Naturally, these keys work only during minibuffer input.
 
 == Packages that Extend Minibuffer History Behavior ==
 
-In [[Icicles]] you can match a [[regexp]] against items in each of the minibuffer history lists, without having to search the list match by match. See [[Icicles - History Enhancements]], and you can [[Icicles - Cycling Completions|cycle]] among [[completion]] candidates for minibuffer input (including history items).
+* In [[Icicles]] you can match a [[regexp]] against items in each of the minibuffer history lists, without having to search the list match by match. See [[Icicles - History Enhancements]], and you can [[Icicles - Cycling Completions|cycle]] among [[completion]] candidates for minibuffer input (including history items).
+
+* [[Anything]] is a candidate selection framework.
+Press `C-r' in minibuffer, narrow the list by typing some patterns(multiple patterns are space-delimited string),
+select with up/down/pgup/pgdown/C-p/C-n/C-v/M-v, choose with enter.
+
 
 ----
 CategoryCommands

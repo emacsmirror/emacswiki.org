@@ -41,6 +41,8 @@ all of that into one.  And you use the same keys, always, to
 navigate.
 
 [:icicle-bookmark]
+[:icicle-bookmark-bookmark-list-other-window]
+[:icicle-bookmark-desktop-other-window]
 [:icicle-bookmark-dired-other-window]
 [:icicle-bookmark-file-other-window]
 [:icicle-bookmark-gnus-other-window]
@@ -83,59 +85,64 @@ navigate.
 
 Here are some of the '''Icicles''' tripping commands:
 
-* '''`icicle-bookmark'''' (`C-- C-x r m') -- Trip among [[bookmark]]s.
+* '''`icicle-bookmark-other-window'''' ('''`C-- C-x r m'''') -- Trip among [[bookmark]]s of all types.  (Also bound to '''`C-x 4 j j'''' if library `bookmark+.el' is used.)
+
 * Type-specific bookmark trips (requires library <tt>[[bookmark+.el]]</tt>):
-** '''`icicle-bookmark-non-file-other-window''''    (`C-x 4 j b') -- Non-file ([[buffer]]) bookmarks.
-** '''`icicle-bookmark-dired-other-window''''       (`C-x 4 j d') -- [[DiredMode|Dired]] bookmarks.
-** '''`icicle-bookmark-file-other-window''''        (`C-x 4 j f') -- File bookmarks.
-** '''`icicle-bookmark-gnus-other-window''''        (`C-x 4 j g') -- [[Gnus]] bookmarks.
-** '''`icicle-bookmark-info-other-window''''        (`C-x 4 j i') -- [[Info]] bookmarks.
-** '''`icicle-bookmark-local-file-other-window''''  (`C-x 4 j l') -- Local-file bookmarks.
-** '''`icicle-bookmark-man-other-window''''         (`C-x 4 j m') -- [[ManMode|man]]-page bookmarks.
-** '''`icicle-bookmark-region-other-window''''      (`C-x 4 j r') -- [[region|Region]] bookmarks.
-** '''`icicle-bookmark-remote-file-other-window'''' (`C-x 4 j t') -- Remote-file ([[TrampMode|Tramp]]) bookmarks.
-** '''`icicle-bookmark-w3m-other-window''''         (`C-x 4 j w') -- [[w3m|W3M]] bookmarks
-* '''`icicle-buffer'''' (`C-x b') -- Trip among [[buffer]]s.
-* '''`icicle-compilation-search'''' (`##C-c `##') -- Trip among `grep' hits.
+** '''`icicle-bookmark-non-file-other-window''''    ('''`C-x 4 j b'''') -- Non-file ([[buffer]]) bookmarks.
+** '''`icicle-bookmark-bookmark-list-other-window'''' ('''`C-x 4 j B'''') -- [[BookmarkPlus#BookmarkListViews|Bookmark-list]] bookmarks.
+** '''`icicle-bookmark-dired-other-window''''       ('''`C-x 4 j d'''') -- [[DiredMode|Dired]] bookmarks.
+** '''`icicle-bookmark-file-other-window''''        ('''`C-x 4 j f'''') -- File bookmarks.
+** '''`icicle-bookmark-gnus-other-window''''        ('''`C-x 4 j g'''') -- [[Gnus]] bookmarks.
+** '''`icicle-bookmark-info-other-window''''        ('''`C-x 4 j i'''') -- [[Info]] bookmarks.
+** '''`icicle-bookmark-desktop-other-window''''       ('''`C-x 4 j K'''') -- [[DeskTop]] bookmarks.
+** '''`icicle-bookmark-local-file-other-window''''  ('''`C-x 4 j l'''') -- Local-file bookmarks.
+** '''`icicle-bookmark-man-other-window''''         ('''`C-x 4 j m'''') -- [[ManMode|man]]-page bookmarks.
+** '''`icicle-bookmark-region-other-window''''      ('''`C-x 4 j r'''', '''`C-u C-x C-x'''') -- [[region|Region]] bookmarks.
+** '''`icicle-bookmark-remote-file-other-window'''' ('''`C-x 4 j n'''') -- Remote-file ([[TrampMode|Tramp]] or AngeFtp) bookmarks.
+** '''`icicle-bookmark-w3m-other-window''''         ('''`C-x 4 j w'''') -- [[w3m|W3M]] bookmarks
+* '''`icicle-buffer'''' ('''`C-x b'''') -- Trip among [[buffer]]s.
+* '''`icicle-compilation-search'''' ('''`##C-c `##'''') -- Trip among `grep' hits.
 * '''`icicle-dired'''' -- Trip among directories in [[Dired]] mode.
-* '''`icicle-find-file'''' (`C-x C-f') -- Trip among files.
-* '''`icicle-find-file-absolute'''' (`C-u C-x C-f') -- Trip among files.
+* '''`icicle-find-file'''' ('''`C-x C-f'''') -- Trip among files.
+* '''`icicle-find-file-absolute'''' ('''`C-u C-x C-f'''') -- Trip among files.
 * '''`icicle-find-file-in-tags-table'''' -- Trip among the files listed in the current [[TagsFile|tags table]] (think "project")
-* '''`icicle-find-first-tag'''' (`##C-x 4 .##') -- Trip among [[tag]] hits.
-* '''`icicle-find-tag'''' (`##M-.##') -- Trip among tag hits.
-* '''`icicle-goto-global-marker'''' (`C-- C-x C-SPC') -- Trip among
+* '''`icicle-find-first-tag'''' ('''`##C-x 4 .##'''') -- Trip among [[tag]] hits.
+* '''`icicle-find-tag'''' ('''`##M-.##'''') -- Trip among tag hits.
+* '''`icicle-goto-global-marker'''' ('''`C-- C-x C-SPC'''') -- Trip among
   global [[marker]]s.
-* '''`icicle-goto-marker'''' (`C-- C-SPC') -- Trip among local markers.
-* '''`icicle-imenu'''' (`##C-c =##'), '''`icicle-imenu-command'''',
+* '''`icicle-goto-marker'''' ('''`C-- C-SPC'''') -- Trip among local markers.
+* '''`icicle-imenu'''' ('''`##C-c =##''''), '''`icicle-imenu-command'''',
   '''`icicle-imenu-non-interactive-function'''' -- Trip among
   definitions.
-* '''`icicle-Info-goto-node'''' (`g' in Info)-- Trip among [[InfoMode|Info]] nodes.
-* '''`icicle-Info-index'''' (`i' in Info) -- Trip among Info nodes. 
-* '''`icicle-Info-menu'''' (`m' in Info)-- Trip among Info nodes.
+* '''`icicle-Info-goto-node'''' ('''`g'''' in Info)-- Trip among [[InfoMode|Info]] nodes.
+* '''`icicle-Info-index'''' ('''`i'''' in Info) -- Trip among Info nodes. 
+* '''`icicle-Info-menu'''' ('''`m'''' in Info)-- Trip among Info nodes.
 * '''`icicle-locate-file'''' -- Trip among files.
-* '''`icicle-occur'''' (`##C-c '##') -- Trip among `occur' hits
+* '''`icicle-occur'''' ('''`##C-c '##'''') -- Trip among `occur' hits
    (`icicle-search' among single-line hits).
 * '''`icicle-recent-file'''' -- Trip among [[RecentFiles|recent files]].
-* '''`icicle-search'''' (`##C-c `##') -- Trip among [[regexp]] search hits.
+* '''`icicle-search'''' ('''`##C-c `##'''') -- Trip among [[regexp]] search hits.
+* '''`icicles-search-bookmarks-together''' ('''`##C-u C-c `##''''),
+ '''`icicles-search-bookmark'''  -- Search multiple bookmarks.
 * '''`icicle-search-char-property'''' -- Trip among buffer strings with
   some [[text property]] or [[overlay]] property.
-* '''`icicle-search-keywords'''' (`##C-c ^##') -- Trip among keyword search
+* '''`icicle-search-keywords'''' ('''`##C-c ^##'''') -- Trip among keyword search
   hits.
 * '''`icicle-search-overlay-property'''' -- Trip among buffer strings
   with some [[overlay]] property.
-* '''`icicle-search-region'''' -- Trip among saved [[region]]s.
-* '''`icicle-search-text-property'''' (`##C-c "##') -- Trip among buffer
+* '''`icicle-search-text-property'''' ('''`##C-c "##'''') -- Trip among buffer
   strings with some [[text property]].
-* '''`icicle-search-word'''' (`##C-c $##') -- Trip among word-search hits.
-* '''`icicle-select-frame'''' (`C-x 5 o') -- Trip among [[frame]]s, by name.
-* '''`icicle-select-region'''' (`C-u C-x C-x') -- Trip among saved
-  regions.
-* '''`icicle-select-window'''' (`C-0 C-x o') -- Trip among [[window]]s, by
+* '''`icicle-search-word'''' ('''`##C-c $##'''') -- Trip among word-search hits.
+* '''`icicle-select-frame'''' ('''`C-x 5 o'''') -- Trip among [[frame]]s, by name.
+* '''`icicle-select-window'''' ('''`C-0 C-x o'''') -- Trip among [[window]]s, by
   buffer name.
 
 
 [:HighlightingDestination]
 === Highlighting the Destination ===
+
+`icicle-bookmark-region-other-window' activates the bookmarked
+[[region]] (highlighting it) when you visit it, if you use TransientMarkMode (or, e.g., DeleteSelectionMode).
 
 Starting with Emacs 22, most '''Icicles''' commands that have single
 positions as their trip visits (e.g. `icicle-bookmark',
@@ -148,7 +155,6 @@ occurs.  See CrosshairHighlighting. Here's a screenshot showing the effect:
 
 [[image:CrosshairHighlightingImage]]
 
-The commands that have regions as their trip visits (e.g. `icicle-select-region') highlight the currently visited region if you use TransientMarkMode (or, e.g., DeleteSelectionMode).
 
 The commands that employ '''Icicles''' search benefit from its highlighting when you visit a search hit. Here's a screenshot to show the effect.  The current location is in pink; other hits are in cyan:
 
@@ -165,12 +171,10 @@ This page has additional screenshots for '''Icicles''' search commands: [[Icicle
 * [[Icicles - Tags Enhancements]]
   for information about `icicle-find-first-tag' and
   `icicle-find-tag'.
+* [[Icicles - Bookmark Enhancements]] for information about the bookmark browsing commands.
 * [[Icicles - Info Enhancements]]
   for information about `icicle-Info-goto-node',
   `icicle-Info-index', and `icicle-Info-menu'.
-* [[Icicles - Multiple Regions]] for
-  information about `icicle-search-region' and
-  `icicle-select-region'.
 * [[Icicles - Search Commands, Overview]]
   for information about `icicle-occur' and `icicle-search'.
 * [[Icicles - Other Search Commands]]

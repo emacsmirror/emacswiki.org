@@ -1,47 +1,43 @@
-== Basic idea ==
+The idea is to be able to execute a function/command on multiple [[region]]s". An example of usage would be to upcase several portions of a [[buffer]] using a single command.
 
-Execute a function/command on multiple [[region]]s". 
+See also: EmacsIdeasApplyRegionFunctionOnMultipleRegions.
 
-One example of usage could be to upcase several regions in a [[buffer]] using a single command.
+== For XEmacs ==
 
-Original page: EmacsIdeasApplyRegionFunctionOnMultipleRegions
-
-== Implementations ==
-
-=== XEmacs ===
-
-Great idea, I've just implemented thing which does things on multiple
-regions.  It is known to work on [[XEmacs]], I don't know if this will
+This works on [[XEmacs]], I don't know if this will
 work on GnuEmacs.  Simple usage is walk throught text selecting
 region and pressing <code>C-M-m a</code> to add them to list of
 multiple regions, when you are done, just press <code>C-M-m
 ...</code>, where <code>...</code> is normal Emacs command key
 sequence, like <code>C-M-m M-u</code> will uppercase all regions.
-Code available at: http://lgarc.n_a_r_o_d.ru/xemacs-tips/multr.el
+Code available at: http://lgarc.n_a_r_o_d.ru/xemacs-tips/multr.el.
 
-[new]
-I added the underscores in that URL, so the page would save; they are not part of the URL. -- DrewAdams
-[new]
-
-I have in my ~/.emacs:
+ZajcevEvgeny has this in his ~/.emacs:
 
     (require 'multr)
     (define-global-map (kbd "C-M-m") mr-regions-map)
 
---ZajcevEvgeny
 
 
-See also: [http://www.skamphausen.de/cgi-bin/ska/multiselect|multiselect.el]
+== For Gnu Emacs ==
+
+=== Icicles Multiple Regions ===
+
+See [[Icicles - Multiple Regions]] for another treatment of multiple regions. The regions are persistent. You can activate them or search them selectively.
+
+=== multi-select.el ===
+
+Yet another treatment, written a long time ago -- I haven't evaluated how it compares to [[Icicles]]. Available at http://sites.google.com/site/steveyemacsutils/multi-select-el.
+
+Lets you select noncontiguous regions with mouse or by regular expression.  Provides some convenience functions for executing commands over the regions, and also manipulate all the regions as a single region (e.g. kill them all together).
 
 
-
-=== GnuEmacs ===
-
-==== multi-region.el ====
+=== multi-region.el ===
 
 http://purl.org/NET/wence/multi-region.el -- LawrenceMitchell
 
-: Cool, but I tried (in [[XEmacs]] version) to avoid naroving, which causes
+[new]
+Cool, but I tried (in [[XEmacs]] version) to avoid naroving, which causes
 user unexpected things if command you are executing perform some I/O
 in minibuffer, for example <code>C-M-m x M-x ispell-region RET</code>,
 or <code>C-M-m x C-x r t</code>, is it possible for GNU Emacs?
@@ -51,13 +47,10 @@ or <code>C-M-m x C-x r t</code>, is it possible for GNU Emacs?
 You then just have to rely on the goodwill of package authors to perform operations in the marked region if TransientMarkMode is
 active.  The narrowing solution, while ugly, avoids this problem. --LawrenceMitchell
 
-==== Icicles Multiple Regions ====
+[new]
+To do:
 
-See [[Icicles - Multiple Regions]] for another treatment of multiple regions. The regions are persistent. You can activate them or search them selectively.
-
-== To do ==
-
-* Make code work in both [[XEmacs]] and GnuEmacs. Comment from Stefan Monnier in gnu.emacs.sources:
+* Make the code work in both [[XEmacs]] and GnuEmacs. Comment from Stefan Monnier in gnu.emacs.sources:
 
 :: ''Making it work for [[XEmacs]] should be just a (require 'overlay) away, plus or minus some very minor fixups.  Why have two packages when you can have just one?''
 
@@ -68,13 +61,6 @@ See [[Icicles - Multiple Regions]] for another treatment of multiple regions. Th
 ** <code>multi-region-fetch-from-latest-isearch</code> -- use latest isearch string to create regions
 ** and so on... :)
 
-==== multi-select.el ====
-
-Yet another treatment.  Written a long time ago -- I haven't evaluated how it compares to Icicles.
-
-http://sites.google.com/site/steveyemacsutils/multi-select-el
-
-Lets you select noncontiguous regions with mouse or by regular expression.  Provides some convenience functions for executing commands over the regions, and also manipulate all the regions as a single region (e.g. kill them all together).
 
 ----
 EmacsIdeas

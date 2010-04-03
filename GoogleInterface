@@ -8,6 +8,16 @@ Requires json.el:
 
 Share and Enjoy!
 
+== Use with Anything ==
+'''[[Anything]]''' is a candidate selection framework.
+
+Start with M-x anything-google-suggest, narrow the list by typing some patterns(multiple patterns are space-delimited string),
+select with up/down/pgup/pgdown/C-p/C-n/C-v/M-v, choose with enter,
+
+M-x anything-yahoo-suggest is the same except using Yahoo! instead of Google.
+
+== Google Interface Functions == 
+
 Some functions to turn text in an emacs buffer into hyperlinks that are Google searches for that text:
 
 {{{

@@ -1,9 +1,6 @@
-An Emacs buffer must be in exactly one [[major mode]]. It might also be in one or more '''[::minor mode]s''' that provide additional functionality. 
+An Emacs buffer must be in exactly one [[major mode]]. It might also be in one or more '''[::minor mode]s''' that provide additional functionality.
 
-A minor mode is often appropriate for use with more than one major mode. 
-A minor mode sometimes adds functionality that is orthogonal to that provided by the major mode.
-
-For example, font-lock (minor) mode provides syntax-sensitive highlighting; it can be used with most major modes to provide appropriate highlighting -- see EnablingFontLock.
+A minor mode is often appropriate for use with more than one major mode. It sometimes adds functionality that is orthogonal to that provided by the major mode. For example, font-lock (minor) mode provides syntax-sensitive highlighting; it can be used with most major modes to provide appropriate highlighting (see EnablingFontLock).
 
 Most minor modes have a command that turns them on and off. For example:
 
@@ -12,18 +9,19 @@ Most minor modes have a command that turns them on and off. For example:
 * `font-lock-mode' -- see EnablingFontLock
 * `line-number-mode' -- see LineNumbers
 
+== Defining minor modes ==
 
+The easiest way to define a minor mode is with the ##define-minor-mode## macro from ##easy-mmode.el##.
 
 == Discussion ==
 
-[new]
 How do I check whether a given minor mode is active?
 
 [new:DrewAdams:2009-02-25 15:08 UTC]
 Test the value of the mode variable. Example: ##(if delete-selection-mode ...)##
 
 [new:rubikitch:2009-02-25 15:15 UTC]
-But some minor modes don't have variable. eg. auto-fill-mode. -- [[rubikitch]]
+But some minor modes don't have a variable, e.g., auto-fill-mode. -- [[rubikitch]]
 
 [new:DrewAdams:2009-02-25 17:45 UTC]
 True. I was going to say "File a bug", but checking the code defining `auto-fill-mode' I see this comment:
@@ -42,4 +40,3 @@ I filed a bug: [http://emacsbugs.donarmstrong.com/cgi-bin/bugreport.cgi?bug=2470
 
 ----
 CategoryGlossary
-

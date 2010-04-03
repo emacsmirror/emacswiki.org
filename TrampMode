@@ -492,6 +492,15 @@ The above also helped me solve that /bin/sh doesn't expand tilde (~) correctly i
 Getting tramp to work on windows 2000 was a pain!  So, I wrote a tutorial. Hope it helps.
 
 http://www.jeremyenglish.org/docs/tramp_ntmacs.pdf
+
+
+[new]
+FWIW, here is my Windows shortcut target for launching Emacs via Cygwin, and having it inherit Cygwin's environment variables. %APPDATA% is the Windows equivalent of $HOME, and is where NTEmacs would look for .emacs etc by default when launching outside of cygwin, so this keeps things consistent.
+
+  C:\cygwin\bin\bash.exe --login -c "env HOME=\"`cygpath '%APPDATA%'`\" /cygdrive/c/emacs/emacs-23.1/bin/runemacs.exe"
+
+If your cygwin bash profile manages your ssh-agent for you, then this approach makes TRAMP via the sshx method pretty seamless.
+
 ----
 '''Tramp on emacs, ssh and cygwin/X'''
 

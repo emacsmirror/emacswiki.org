@@ -52,8 +52,9 @@ I'd like to have a package for emacs which can give the full control over portag
 * and of course install/uninstall package, here the  [http://www.emacswiki.org/cgi-bin/wiki/portage.el portage.el] package can be used.
 You see there are plenty tools for different operations, but using them separately is bit inconvenient and time consuming, it is worthwhile to integrate them into one package. Unfortunately, my current elisp knowledge is poor (I'm going to improve it :-), maybe somebody else is interested in such package?
 
-[new] Lisp:anything-config.el provide sources to browse gentoo package and do differents actions on it.
+[new] M-x anything-gentoo in Lisp:anything-config.el provide sources to browse gentoo package and do differents actions on it.
 You have of course to install Anything on your emacs.
+
 
 -- ThierryVolpiatto
 ----

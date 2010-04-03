@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Mar 14 13:44:29 2010 (-0700)
+;; Last-Updated: Fri Apr  2 15:33:48 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 6346
+;;     Update #: 6413
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -154,10 +154,11 @@
   ;; icicle-search-refined-overlays
 (require 'icicles-cmd1)
   ;; icicle-add-buffer-candidate, icicle-add-buffer-config, icicle-bbdb-complete-name,
-  ;; icicle-customize-face, icicle-customize-face-other-window, icicle-dabbrev-completion
+  ;; icicle-customize-face, icicle-customize-face-other-window, icicle-dabbrev-completion,
+  ;; icicle-select-bookmarked-region
 (require 'icicles-cmd2)
-  ;; icicle-imenu, icicle-occur, icicle-search, icicle-search-buffer, icicle-search-region,
-  ;; icicle-search-all-regions, icicle-search-file
+  ;; icicle-imenu, icicle-occur, icicle-search, icicle-search-bookmark,
+  ;; icicle-search-bookmarks-together, icicle-search-buffer, icicle-search-file
 
 ;; Use `condition-case' because if `mb-depth.el' can't be found, `mb-depth+.el' is not provided.
 (when (>= emacs-major-version 22) (condition-case nil (require 'mb-depth+ nil t) (error nil)))
@@ -278,7 +279,6 @@ The following top-level commands are also available in Icicle mode:
 `icicle-add-buffer-candidate'          - Add always-candidate buffer
 `icicle-add-buffer-config'             - To `icicle-buffer-configs'
 `icicle-add-entry-to-saved-completion-set' - Add completion to a set
-`icicle-add-region'                    - Add to `icicle-region-alist'
 `icicle-add/update-saved-completion-set' - To
                                         `icicle-saved-completion-sets'
 `icicle-apply'                         - Apply function to alist items
@@ -358,24 +358,35 @@ The following top-level commands are also available in Icicle mode:
 `icicle-occur'                         - `occur' + apropos icompletion
 `icicle-other-window-or-frame'         - Other window/frame or select
 `icicle-plist'                         - Show symbols, property lists
-`icicle-purge-bad-file-regions'        - From `icicle-region-alist'
 `icicle-recent-file'(`-other-window')  - Open recently used file(s)
 `icicle-recompute-shell-command-candidates' - Update from search path
 `icicle-remove-buffer-candidate'       - Remove always-candidate buf
 `icicle-remove-buffer-config'          - From `icicle-buffer-configs'
 `icicle-remove-entry-from-saved-completion-set' - From a saved set
 `icicle-remove-file-from-recentf-list' - Remove from recent files list
-`icicle-remove-region'                 - From `icicle-region-alist'
 `icicle-remove-saved-completion-set'   - From
                                         `icicle-saved-completion-sets'
 `icicle-reset-option-to-nil'           - Set binary option(s) to nil
 `icicle-save-string-to-variable'       - Save text for use with `C-='
 `icicle-search'                        - Search with regexps & cycling
+`icicle-search-bookmark'               - Search bookmarks separately
+`icicle-search-bookmark-list-bookmark' - Search bookmark lists
+`icicle-search-bookmarks-together'     - Search bookmarks together
+`icicle-search-desktop-bookmark'       - Search bookmarked desktops
+`icicle-search-dired-bookmark'         - Search Dired bookmarks
+`icicle-search-file-bookmark'          - Search bookmarked files
+`icicle-search-gnus-bookmark'          - Search bookmarked Gnus msgs
+`icicle-search-info-bookmark'          - Search bookmarked Info nodes
 `icicle-search-keywords'               - Search with regexp keywords
-`icicle-search-region'                 - Search multiple regions
+`icicle-search-local-file-bookmark'    - Search bookmarked local files
+`icicle-search-man-bookmark'           - Search bookmarked `man' pages
+`icicle-search-non-file-bookmark'      - Search buffer bookmarks
+`icicle-search-region-bookmark'        - Search bookmarked regions
+`icicle-search-remote-file-bookmark'   - Search remote bookmarks
+`icicle-search-w3m-bookmark'           - Search bookmarked URLs
 `icicle-search-word'                   - Whole-word search
+`icicle-select-bookmarked-region'      - Select bookmarked regions
 `icicle-select-frame'                  - Select and raise a frame
-`icicle-select-region'                 - Select from multiple regions
 `icicle-select-window'                 - Select window by buffer name
 `icicle-send-bug-report'               - Send Icicles bug report
 `icicle-set-option-to-t'               - Set binary option(s) to t
@@ -509,7 +520,6 @@ The following top-level commands are also available in Icicle mode:
 `icicle-add-buffer-candidate'          - Add always-candidate buffer
 `icicle-add-buffer-config'             - To `icicle-buffer-configs'
 `icicle-add-entry-to-saved-completion-set' - Add completion to a set
-`icicle-add-region'                    - Add to `icicle-region-alist'
 `icicle-add/update-saved-completion-set' - To
                                         `icicle-saved-completion-sets'
 `icicle-apply'                         - Apply function to alist items
@@ -589,24 +599,36 @@ The following top-level commands are also available in Icicle mode:
 `icicle-occur'                         - `occur' + apropos icompletion
 `icicle-other-window-or-frame'         - Other window/frame or select
 `icicle-plist'                         - Show symbols, property lists
-`icicle-purge-bad-file-regions'        - From `icicle-region-alist'
 `icicle-recent-file'(`-other-window')  - Open recently used file(s)
 `icicle-recompute-shell-command-candidates' - Update from search path
 `icicle-remove-buffer-candidate'       - Remove always-candidate buf
 `icicle-remove-buffer-config'          - From `icicle-buffer-configs'
 `icicle-remove-entry-from-saved-completion-set' - From a saved set
 `icicle-remove-file-from-recentf-list' - Remove from recent files list
-`icicle-remove-region'                 - Remove from `icicle-region-alist'
 `icicle-remove-saved-completion-set'   - From
                                         `icicle-saved-completion-sets'
 `icicle-reset-option-to-nil'           - Set binary option(s) to nil
 `icicle-save-string-to-variable'       - Save text for use with `C-='
 `icicle-search'                        - Search with regexps & cycling
+`icicle-search-bookmark'               - Search bookmarks separately
+`icicle-search-bookmark-list-bookmark' - Search bookmark lists
+`icicle-search-desktop-bookmark'       - Search bookmarked desktops
+`icicle-search-bookmarks-together'     - Search bookmarks together
+`icicle-search-desktop-bookmark'       - Search bookmarked desktops
+`icicle-search-dired-bookmark'         - Search Dired bookmarks
+`icicle-search-file-bookmark'          - Search bookmarked files
+`icicle-search-gnus-bookmark'          - Search bookmarked Gnus msgs
+`icicle-search-info-bookmark'          - Search bookmarked Info nodes
 `icicle-search-keywords'               - Search with regexp keywords
-`icicle-search-region'                 - Search multiple regions
+`icicle-search-local-file-bookmark'    - Search bookmarked local files
+`icicle-search-man-bookmark'           - Search bookmarked `man' pages
+`icicle-search-non-file-bookmark'      - Search buffer bookmarks
+`icicle-search-region-bookmark'        - Search bookmarked regions
+`icicle-search-remote-file-bookmark'   - Search remote bookmarks
+`icicle-search-w3m-bookmark'           - Search bookmarked URLs
 `icicle-search-word'                   - Whole-word search
+`icicle-select-bookmarked-region'      - Select bookmarked regions
 `icicle-select-frame'                  - Select and raise a frame
-`icicle-select-region'                 - Select from multiple regions
 `icicle-select-window'                 - Select window by buffer name
 `icicle-send-bug-report'               - Send Icicles bug report
 `icicle-set-option-to-t'               - Set binary option(s) to t
@@ -920,19 +942,15 @@ Used on `pre-command-hook'."
       '(menu-item "+ Go To Marker..." icicle-goto-marker
         :enable (consp (icicle-markers mark-ring)) :keys "C-- C-SPC"))
     (define-key icicle-menu-map [icicle-separator-goto] '("--"))
-
-    (define-key icicle-menu-map [icicle-remove-region]
-      '(menu-item "+ Remove Saved Region from List..." icicle-remove-region
-        :enable icicle-region-alist))
-    (define-key icicle-menu-map [icicle-add-region]
-      '(menu-item "Save Current Region" icicle-add-region
-        :enable mark-active :keys "C-9 C-x C-x"))
-    (define-key icicle-menu-map [icicle-search-region]
-      '(menu-item "+ Search Saved Region..." icicle-search-region
-        :enable icicle-region-alist))
-    (define-key icicle-menu-map [icicle-select-region]
-      '(menu-item "+ Choose Saved Region..." icicle-select-region
-        :enable icicle-region-alist :keys "C-u C-x C-x"))
+    (define-key icicle-menu-map [icicle-search-bookmarks-together]
+      '(menu-item "+ Search Bookmarks Together..." icicle-search-bookmarks-together
+        :enable (featurep 'bookmark+) :keys "C-u C-`"))
+    (define-key icicle-menu-map [icicle-search-bookmark]
+      '(menu-item "+ Search Bookmarks Separately..." icicle-search-bookmark
+        :enable (featurep 'bookmark+)))
+    (define-key icicle-menu-map [icicle-select-bookmarked-region]
+      '(menu-item "+ Select Bookmarked Region..." icicle-select-bookmarked-region
+        :enable (featurep 'bookmark+) :keys "C-u C-x C-x"))
     (define-key icicle-menu-map [icicle-separator-region] '("--"))
 
     (cond ((and (not icicle-touche-pas-aux-menus-flag)
@@ -1607,17 +1625,17 @@ Used on `pre-command-hook'."
                :visible icicle-mode :enable imenu-generic-expression))
            (define-key icicle-search-menu-map [icicle-tags-search]
              '(menu-item "+ Search Tagged Files ..." icicle-tags-search :visible icicle-mode))
-           (define-key icicle-search-menu-map [icicle-search-all-regions]
-             '(menu-item "+ Search All Saved Regions (Regexp)..." icicle-search-all-regions
-               :visible icicle-mode :keys "C-u C-`"))
-           (define-key icicle-search-menu-map [icicle-search-region]
-             '(menu-item "+ Search Saved Region (Regexp)..." icicle-search-region
-               :visible icicle-mode))
+           (define-key icicle-search-menu-map [icicle-search-bookmarks-together]
+             '(menu-item "+ Search Bookmarks Together..." icicle-search-bookmarks-together
+               :visible (and icicle-mode (featurep 'bookmark+)) :keys "C-u C-`"))
+           (define-key icicle-search-menu-map [icicle-search-bookmark]
+             '(menu-item "+ Search Bookmarks Separately..." icicle-search-bookmark
+               :visible (and icicle-mode (featurep 'bookmark+))))
            (define-key icicle-search-menu-map [icicle-search-file]
-             '(menu-item "+ Search File (Regexp)..." icicle-search-file
+             '(menu-item "+ Search Files (Regexp)..." icicle-search-file
                :visible icicle-mode))
            (define-key icicle-search-menu-map [icicle-search-buffer]
-             '(menu-item "+ Search Buffer (Regexp)..." icicle-search-buffer
+             '(menu-item "+ Search Buffers (Regexp)..." icicle-search-buffer
                :visible icicle-mode))
            (define-key icicle-search-menu-map [icicle-search-text-property]
              '(menu-item "+ Search Text Property..." icicle-search-text-property
@@ -1661,14 +1679,16 @@ Used on `pre-command-hook'."
                :enable imenu-generic-expression))
            (define-key icicle-menu-map [icicle-tags-search]
              '(menu-item "+ Search Tagged Files ..." icicle-tags-search))
-           (define-key icicle-menu-map [icicle-search-all-regions]
-             '(menu-item "+ Search All Saved Regions (Regexp)..." icicle-search-all-regions))
-           (define-key icicle-menu-map [icicle-search-region]
-             '(menu-item "+ Search Saved Region (Regexp)..." icicle-search-region))
+           (define-key icicle-menu-map [icicle-search-bookmarks-together]
+             '(menu-item "+ Search Bookmarks Together..." icicle-search-bookmarks-together
+               :visible (featurep 'bookmark+) :keys "C-u C-`"))
+           (define-key icicle-menu-map [icicle-search-bookmark]
+             '(menu-item "+ Search Bookmarks Separately..." icicle-search-bookmark
+               :visible (featurep 'bookmark+)))
            (define-key icicle-menu-map [icicle-search-file]
-             '(menu-item "+ Search File (Regexp)..." icicle-search-file))
+             '(menu-item "+ Search Files (Regexp)..." icicle-search-file))
            (define-key icicle-menu-map [icicle-search-buffer]
-             '(menu-item "+ Search Buffer (Regexp)..." icicle-search-buffer))
+             '(menu-item "+ Search Buffers (Regexp)..." icicle-search-buffer))
            (define-key icicle-menu-map [icicle-search-text-property]
              '(menu-item "+ Search Text Property..." icicle-search-text-property))
            (define-key icicle-menu-map [icicle-search-word]

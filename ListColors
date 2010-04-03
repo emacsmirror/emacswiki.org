@@ -23,5 +23,14 @@ See also '''DoReMi''' and libraries Lisp:hexrgb.el and Lisp:doremi-frm.el.
 
 -- DrewAdams
 
+== Use with Anything ==
+'''[[Anything]]''' is a candidate selection framework.
+
+Start with M-x anything-colors, narrow the list by typing some patterns(multiple patterns are space-delimited string),
+select with up/down/pgup/pgdown/C-p/C-n/C-v/M-v, choose with enter,
+With TAB actions can be selected if the selected color has more than one possible action.
+
+
+
 ----
 CategoryFaces CategoryFrames

@@ -5,6 +5,9 @@
 ----
 
 
+
+
+
 == Icicles Search Commands, Overview ==
 
 This section provides an overview of '''Icicles''' search.
@@ -14,7 +17,7 @@ This section provides an overview of '''Icicles''' search.
 * The ''[[doc string]]'' (`C-h f') of [[command]] '''`icicle-search''''; it provides general information on '''Icicles''' search.
 * [[Icicles - Other Search Commands]] for specialized '''Icicles''' search commands, including search in particular [[buffer]]s.
 * [[Icicles - Info Enhancements]] for information on using '''Icicles''' to search in [[InfoMode|Info]].
-* [[Icicles - Multiple Regions]] for information about searching multiple [[region]]s.
+* [[Icicles - Bookmark Enhancements]] for information about searching bookmarks.
 * [[Icicles - Support for Projects]] for information about using `grep' to search all of the files in a project.
 
 
@@ -111,10 +114,9 @@ There are several '''Icicles''' search commands, some of which are bound to keys
 
 * '''`##C-c '##'''' -- '''`icicle-occur'''' -- An `occur' with [[Icicles - Icompletion|icompletion]].
 * '''`##C-c `##'''' -- '''`icicle-search'''' -- Seach buffer areas that match a regexp.
-* '''`icicle-search-buffer'''' -- Search selected buffers.
-* '''`icicle-search-file'''' -- Search selected files.
-* '''`icicle-search-region'''' -- Search selected saved regions.
-* '''`icicle-search-all-regions'''' -- Search all saved regions.
+* '''`icicle-search-buffer''''  ('''`C-1'''') -- Search selected buffers.
+* '''`icicle-search-file'''' ('''`C--'''') -- Search selected files.
+* '''`icicle-search-bookmarks-together'''' ('''`C-u''''), '''`icicle-search-bookmark'''' -- Search bookmarks.
 * '''`##C-c $##'''' -- '''`icicle-search-word'''' -- Search for a whole word.
 * '''`##C-c ^##'''' -- '''`icicle-search-keywords'''' -- Search with regexp keywords.
 * '''`##C-c `##'''' -- '''`icicle-compilation-search'''' -- Search compilation hits (e.g. `grep' hits).
@@ -128,7 +130,7 @@ All operate in the same general way:
 
 # Unlike standard [[incremental search]], '''Icicles''' search commands search the ''entire buffer'', not just the
 part that follows the [[cursor]].  If the ''[[region]]'' is active, however,
-then the search is confined to the region. Some '''Icicles''' search commands let you search across ''multiple buffers'', ''multiple files'', or ''multiple saved regions''. Searching within one or more regions of text is a '''_first way_''' to ''limit the context'' of a search.
+then the search is confined to the region. Some '''Icicles''' search commands let you search across ''multiple buffers'', ''multiple files'', or ''multiple bookmarks'', including region bookmarks. Searching within one or more such regions of text is a '''_first way_''' to ''limit the context'' of a search.
 
 # You limit the search context in a '''_second way_''', by providing some information, such as a ''regexp'' or a ''[[character property]]'' ([[text property]] or [[overlay]] property), that defines zones of text that you want to search.  You can use ([[lax]]) completion against previous input to enter the regexp or the character property. In some cases, the information (e.g. regexp) to define the search context is provided automatically by the search command; for example, `icicle-occur' assumes that you want to search [[line]]s.
 
@@ -279,43 +281,51 @@ using, say, `##C-s C-w C-w...##'.
 
 
 
-[:SearchMultipleBuffersFilesAndRegions]
-=== Search Multiple Buffers, Files, and Saved Regions ===
 
-If you provide a plain
-[[prefix argument]] (only `C-u') to most '''Icicles''' search functions, then you can search ''multiple [[region]]s'', which can be in multiple buffers.  The regions are those
-in user option '''`<tt>[[Icicles - Customization and General Tips#icicle-region-alist|icicle-region-alist]]</tt>'''', which you have previously
-defined using command `icicle-add-region'.  See [[Icicles - Multiple Regions]].
 
-If you provide a ''non-negative'' [[numeric prefix argument]] (e.g. `C-9')
-to most '''Icicles''' search functions, then you can
-search ''multiple [[buffer]]s'' -- you are
+
+
+[:SearchMultipleBuffersFilesAndBookmarks]
+=== Search Multiple Buffers, Files, and Bookmarks ===
+
+If you provide a [[prefix argument]] to most '''Icicles''' search functions,
+then you can search multiple buffers, files, or bookmarks.
+
+* ''Plain'' prefix argument (`C-u') -- Search multiple bookmarks of
+various kinds.  To use this feature, you must also use '''[[Bookmark+]]''' (library
+<tt>[[bookmark+.el]]</tt>).  See [[Icicles - Bookmark Enhancements]].
+
+* ''Non-negative'' [[numeric prefix argument]] (e.g. `C-9') -- Search multiple [[buffer]]s -- you are
 prompted for the buffers to search.   If the
 prefix argument is '''99''', then only buffers that are visiting ''files''
 are candidates.  You can use `C-RET' and so on to
 choose individual buffers with completion. You can use `##C-!##' to choose all buffers or all buffers that match a regexp. (See [[Icicles - Multi-Commands]].)
 
-: '''Note:''' You can use '''`M-s i'''' in [[IbufferMode|Ibuffer]] or [[BufferMenu|Buffer Menu]] to search all
+:: '''Note:''' You can use '''`M-s i'''' in [[IbufferMode|Ibuffer]] or [[BufferMenu|Buffer Menu]] to search all
 marked buffers using '''Icicles''' search.  In Ibuffer, menu item
 '''Icicles Search (and Replace)''' does the same thing as `M-s i'.
 
-If you provide a ''negative'' numeric prefix argument (e.g. `C--')
-to most '''Icicles''' search functions, then you can
-search ''multiple files'' in the current directory -- you are prompted
+
+* ''Negative'' numeric prefix argument (e.g. `C--') -- 
+Search multiple files in the current directory -- you are prompted
 for the files to search.  As for multiple-buffer searching, you can use `C-RET' and so on.
 
-: '''Note:''' You can use '''`M-s i'''' in [[DiredMode|Dired]] to search all marked files
+:: '''Note:''' You can use '''`M-s i'''' in [[DiredMode|Dired]] to search all marked files
 using '''Icicles''' search.  Menu item '''Search (and Replace)''' is
 added to the '''Icicles''' submenu of menu '''Multiple''' (or '''Operate'''),
 and it does the same thing as `M-s i'.
 
-As a convenience, some specialized '''Icicles''' commands are defined,
-corresponding to `icicle-search' with each of the prefix-argument
-cases: '''`icicle-search-all-regions'''', '''`icicle-search-buffer'''', and
+As a convenience, some specialized '''Icicles''' commands are defined that
+correspond to `icicle-search' with the various prefix-argument
+cases: '''`icicle-search-bookmarks-together'''', '''`icicle-search-buffer'''', and
 '''`icicle-search-file''''.  If you often use `##C-c `##' with one of the
 prefix argument options, then you might want to bind one or more
 of these commands.  These commands are also available in the
 '''Icicles''' [[menu bar]] menu (or the '''Search''' menu, if it exists).
+
+
+
+
 
 
 
@@ -535,7 +545,7 @@ candidate set -- how to match the regexp.
 `icicle-search-*' [[face]]s, which control '''Icicles''' search.
 * [[Icicles - Progressive Completion]] for information about `##M-*##' and `##M-&##'.
 * [[Icicles - Multi-Commands]] for information about `C-RET', `C-mouse-2', `C-next', and `C-prior'.
-* [[Icicles - Multiple Regions]] for information about searching multiple [[region]]s.
+* [[Icicles - Bookmark Enhancements]] for information about searching bookmarks.
 * [[Icicles - Inserting a Regexp from a Variable or Register]] for more about inserting a saved string.
 * [[Icicles - Info Enhancements]] for information on using '''Icicles''' to search in InfoMode.
 

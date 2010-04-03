@@ -102,7 +102,7 @@ them too to define tripping commands.
 '''`icicle-search'''' is another high-level function for defining
 tripping commands.  Like `icicle-apply', it calls
 `icicle-explore', but it also provides features for searching
-regions, buffers, and files.  It takes as arguments the search
+[[bookmark]]s, [[buffer]]s, and files.  It takes as arguments the search
 limits (region), if any, and either a regexp or a function that
 determines the unfiltered search hits.  It does everything else
 needed to define a trip command that uses search hits as
