@@ -35,6 +35,8 @@ Is there a way to get a search that will work across line boundaries as if they 
 == Replace in Buffers ==
 
 * ReplaceRegexp -- Query-replace, evaluating a Lisp sexpr for the replacement text.
+* [[Anything]] -- M-x anything-regexp and M-x anything-query-replace-regexp narrows the matched lines by multiple patterns and replace.
+
 * IncrementalSearchAndReplace -- Query-replace using the last `isearch' string (Emacs 22).
 
 [:IciclesSearchAndReplace]
@@ -54,6 +56,7 @@ Is there a way to get a search that will work across line boundaries as if they 
 
 * GrepMode -- `M-x grep'
 * GrepPlus -- Emacs `grep' enhancements
+* [[Anything]] -- `M-x anything-grep' in Lisp:anything-grep.el narrows the list by multiple patterns.
 * Icicles search [[Icicles - Search Commands, Overview|across multiple files]]. Icicles [[Icicles - Other Search Commands|compilation search]] to visit source-file hits in a ##*grep*## or any compilation buffer. Multiple levels of regexp search. 
 * RecursiveGrep, `grep-find', `find-grep-dired'
 * FindrPackage -- Breadth-first search for files.  Search for regexp within found files.
@@ -70,6 +73,8 @@ How do you avoid grep-find to find matches in backup files and (like *.~* and .#
 
 * `M-x find-name-dired'
 * `M-x grep' -- GrepMode
+* [[Anything]] -- `M-x anything-grep' in Lisp:anything-grep.el narrows the list by multiple patterns.
+
 * RecursiveGrep, `grep-find', `find-grep-dired'
 * DiredSearchAndReplace (`Q' in Dired) -- Mark files, then search and replace in them.
 ** FindGrepDiredSearchAndReplace -- find matches in files with grep and replace them with Dired.

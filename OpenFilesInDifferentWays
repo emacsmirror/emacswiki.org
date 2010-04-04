@@ -23,7 +23,7 @@ There are *many* different ways to find the files you want to open in Emacs. Her
 * IswitchRecentFiles -- open recently used files
 * LocateFilesAnywhere, GlobalFF -- find and open files located anywhere, even if you don't know where they are
 * EmacsClient, GnuClient -- open files from outside of Emacs (or even inside), without starting a new, separate Emacs session
-* [[Anything]] -- open anything
+* [[Anything]] -- open anything `M-x anything-find-files', `M-x anything-find-file', or `M-x anything-for-files'
 * [[Gpicker]] – quickly pick a file in project by typing just few characters of it’s name
 * [[FindFileSuggest]] – create file indexes under certain directories, and navigate them using a convenient autocompletion interface
 

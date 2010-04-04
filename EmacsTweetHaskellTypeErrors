@@ -1,0 +1,20 @@
+Thanks to this handy little script you can let all your buddies know that you suck at Haskell programming by tweeting all your type errors!
+
+Setup a shortcut like this:
+
+    ;; (add-hook 'haskell-mode-hook
+    ;;           '(lambda ()
+    ;;              (load "haskell-tweet-errors.el")
+    ;;              (define-key haskell-mode-map [f5]
+    ;;                (lambda ()
+    ;;                  (interactive)
+    ;;                  (inferior-haskell-load-file-tweet-errors
+    ;;                   "<username>" "<password>")))))
+
+And off you go!
+
+http://www.emacswiki.org/emacs/haskell-tweet-errors.el
+
+Example:
+
+[[image:emacs-haskell-tweet-type-errors.png]]

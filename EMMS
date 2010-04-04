@@ -566,6 +566,11 @@ I just started out with lisp and there can be any better thing to hack on but em
 </pre>
 -- shyam_k
 
+== Use with Anything ==
+'''[[Anything]]''' is a candidate selection framework.
+
+Lisp:anything-config.el has EMMS related sources, `anything-c-source-emms-streams' and `anything-c-source-emms-dired'.
+
 == Discnumber and discsubtitle ==
 
 The discnumber tag is supported by at least mp3 and ogg files, and most players understand it. Is there a special reason EMMS ignores it ? It kinda messes up my media library, since files are played by track number apparently and thus when playing an album with two disc, both first tracks are played, then both second tracks, etc.

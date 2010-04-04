@@ -3,6 +3,7 @@ Click on the title to list all pages in the hypermedia category.
 Examples:
 
 * CategoryWebBrowser -- Browsing in Emacs, interacting with external web browsers.
+* [[Anything]] -- Open URL via `M-x anything-find-files'
 * BrowseURN -- Resolving URNs with Emacs.
 * EevMode -- E-script environment, the ULTIMATE hyperlink and memo system.
 * LangHelp -- Integrated help system in EmacsRuby.

@@ -301,7 +301,6 @@ Several top-level '''Icicles''' commands have been defined using
 * '''`icicle-reset-option-to-nil'''' -- Set the value of a binary option to `nil'
 * '''`icicle-search-bookmark'''' -- Search a bookmark
 * '''`icicle-search-bookmark-list-bookmark'''' -- Search a bookmark-list bookmark
-* '''`icicle-search-desktop-bookmark'''' -- Search a desktop bookmark
 * '''`icicle-search-dired-bookmark'''' -- Search a Dired bookmark
 * '''`icicle-search-file-bookmark'''' -- Search a bookmarked file
 * '''`icicle-search-gnus-bookmark'''' -- Search a bookmarked Gnus message

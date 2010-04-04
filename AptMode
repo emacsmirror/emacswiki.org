@@ -14,5 +14,15 @@ I would like to collect a few ideas to improve this mode to get an real impressi
 * What for killer features were you always wishing for?
 
 * Another ideas?
+
+== Use with Anything ==
+'''[[Anything]]''' is a candidate selection framework.
+
+Start with `M-x anything-apt', narrow the list by typing some patterns(multiple patterns are space-delimited string),
+select with up/down/pgup/pgdown/C-p/C-n/C-v/M-v, choose with enter,
+With TAB actions can be selected if the selected package has more than one possible action.
+With C-z description of selected package is displayed without quitting anything session.
+
+
 ----
 EmacsForDebian | CategoryModes

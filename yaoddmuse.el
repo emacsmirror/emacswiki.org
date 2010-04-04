@@ -3,13 +3,13 @@
 ;; Filename: yaoddmuse.el
 ;; Description: Yet another oddmuse for Emacs
 ;; Author: Andy Stewart lazycat.manatee@gmail.com
-;; Maintainer: Andy Stewart lazycat.manatee@gmail.com
+;; Maintainer: rubikitch <rubikitch@ruby-lang.org>
 ;; Copyright (C) 2009, Andy Stewart, all rights reserved.
 ;; Copyright (C) 2009, 2010 rubikitch, all rights reserved.
 ;; Created: 2009-01-06 12:41:17
 ;; Version: 0.1.1
-;; Last-Updated: 2010-02-24 02:06:20
-;;           By: Andy Stewart
+;; Last-Updated: 2010/03/20 20:53
+;;           By: rubikitch
 ;; URL: http://www.emacswiki.org/emacs/download/yaoddmuse.el
 ;; Keywords: yaoddmuse, oddmuse
 ;; Compatibility: GNU Emacs 22 ~ 23
@@ -223,6 +223,10 @@
 ;;    Toggle image status.
 ;;  `yaoddmuse-save-as'
 ;;    Save as file.
+;;  `emacswiki'
+;;    Edit a page on the EmacsWiki.
+;;  `emacswiki-post'
+;;    Post file to the EmacsWiki.
 ;;
 ;;; Customizable Options:
 ;;
@@ -370,6 +374,10 @@
 ;;
 
 ;;; Change log:
+;; 2010/03/20
+;;      * Add Emacswiki-specific commands for convenience:
+;;        `emacswiki'
+;;        `emacswiki-post'
 ;; 2010/02/24
 ;;      * Please don't use `C-x` key to avoid conflict with Default Emacs binding.
 ;;         If you need that, please customize `yaoddmuse-mode-map`, thanks!
@@ -1310,6 +1318,21 @@ such as picture or compress."
         (insert data)
         (write-file (read-file-name (format "File: (Suffix: %s) " suffix)))))))
 
+(defun emacswiki (&optional pagename prefix)
+  "Edit a page on the EmacsWiki.
+PAGENAME is the pagename of the page you want to edit.
+Use a PREFIX argument to force a reload of the page."
+  (interactive)
+  (yaoddmuse-edit "EmacsWiki" pagename prefix))
+
+(defun emacswiki-post (&optional pagename summary prefix)
+  "Post file to the EmacsWiki.
+PAGENAME is page name for post, whose default is basename of current filename.
+SUMMARY is summary for post.
+If PREFIX is non-nil, will view page after post successful. "
+  (interactive)
+  (let ((file (file-name-nondirectory buffer-file-name)))
+    (yaoddmuse-post-file file "EmacsWiki" (or pagename file) summary prefix)))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Utilities Functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun yaoddmuse-get-pagename (wikiname &optional pagename handle-function forced)
   "Get page name in wiki for completing.
@@ -1407,7 +1430,7 @@ PAGENAME is page name for post."
       ;; Kill retrieve buffer and notify user when retrieve failed.
       (with-current-buffer (get-buffer retrieve-buffer-name)
         (funcall yaoddmuse-notify-function
-                 (format "Get page '%s' form '%s' failed." pagename wikiname))
+                 (format "Get page '%s' from '%s' failed." pagename wikiname))
         (kill-buffer retrieve-buffer-name))
     ;; Otherwise display edit buffer.
     (let ((page-buffer (find-file-noselect

@@ -27,8 +27,9 @@ VM is very well documented. It comes with a fine set of info pages, and there ar
 
 === VM and Other Packages ===
 
-* ViewMailAndBbdb -- using VM with BbdbMode
-* ViewMailAndMailCrypt -- using VM with MailCrypt
+* ViewMailAndBbdb -- using VM with BbdbMode (for an address book functionality)
+* ViewMailAndMailCrypt -- using VM with MailCrypt (for encrypting/decrypting email)
+* ViewMailAndWThreeM -- using VM with [[emacs-w3m]] (for reading HTML mail)
 
 === VM Addons ===
 

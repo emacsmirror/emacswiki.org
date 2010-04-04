@@ -14,38 +14,6 @@ To enable `recentf-mode', put this in your `~/.emacs':
 
 
 [:RecentFilesWithCompletion]
-= Completion =
-
-== Icicles: `icicle-recent-file' ==
-
-The `recentf-mode' of Emacs forces you to open a file using a ''menu'' interface.  Commands `icicle-recent-file' and `icicle-recent-file-other-window' let you use the usual `find-file' MiniBuffer interface, with ''[[Completion]] and cycling''
-among your recent files. See '''[[Icicles]]'''. It is also a ''multi-command'' (see [[Icicles - Multi-Commands]]), so you can use it to open several recently used files at once.
-
-The definition of `icicle-recent-file' is an example of how to leverage '''Icicles''' to define multi-commands. Most of it just makes sure `recentf-mode' is enabled (<code>Initial code</code> argument).
-
-  (icicle-define-command
-    icicle-recent-file                          ; Command name
-    "Open a recently used file."                ; Doc string
-    find-file                                   ; Function to perform the action
-    "Recent file: " (mapcar 'list recentf-list) ; completing-read args
-    nil t (car recentf-list) 'file-name-history
-    (car recentf-list) nil
-    nil                                         ; Additional bindings
-    (progn (unless (boundp 'recentf-list) (require 'recentf)) ; Initial code
-           (when (fboundp 'recentf-mode) (recentf-mode 99))
-           (unless (consp recentf-list) (error "No recently accessed files"))))
-
-Ignoring the behind-the-scenes magic that makes the command work as a multi-command, all this command really does is:
-
-# Call `completing-read', passing it the list of recently used files, to read a filename from the user.
-# Call `find-file' to open the file.
-
-How does this work? '''Icicles''' redefines standard function `completing-read' so that users can:
-
-* Use ''regexps'' to complete to input candidates. (They can also use standard ''prefix'' completion, in addition to the regexp ''apropos'' completion.)
-* ''Cycle'' among input candidates using the <code>[down]</code>/<code>[up]</code> arrow keys (prefix completion candidates) or <code>[next]</code>/<code>[prior]</code> keys (apropos completion candidates).
-
-And lots more.
 
 
 == Recentf Filters (Structured Menu) ==
@@ -135,49 +103,10 @@ Otherwise, show the default maximum number of recent items."
 </pre>
 
 
+== Icicles: `icicle-recent-file' ==
 
-== recent-open-files-compl ==
-
-This command also provides completion for your recent files. It was written by Jerome B. and first posted in an article for http://www.emacsfr.org/:
-
-    (defun recentf-open-files-compl ()
-      (interactive)
-      (let* ((all-files recentf-list)
-        (tocpl (mapcar (function 
-           (lambda (x) (cons (file-name-nondirectory x) x))) all-files))
-        (prompt (append '("File name: ") tocpl))
-        (fname (completing-read (car prompt) (cdr prompt) nil nil)))
-        (find-file (cdr (assoc-ignore-representation fname tocpl))))) 
-
-Jerome binds it to C-x C-r. (He rarely uses `find-file-read-only'.) 
-
-    (global-set-key "\C-x\C-r" 'recentf-open-files-compl)
-
-Jerome uses this function more often than `find-file'.   
-
-This function does not work on XEmacs 21.4.14 nor does it work with XEmacs/TrampMode, but it does with the following modifications:
-
-     
-    (defun recentf-open-files-compl ()
-      (interactive)
-      (let* ((all-files recentf-list)
-    	 (tocpl (mapcar (function 
-    	(lambda (x) (cons (file-name-nondirectory x) x))) all-files))
-    	 (prompt (append '("Recent File name: ") tocpl))
-    	 (fname (completing-read (car prompt) (cdr prompt) nil nil)))
-        (find-file (or (cdr (assoc fname tocpl))
-    		   fname))))
-
-On modern Emacs, assoc-ignore-representation is deprecated and the lisp style of the functions above is somewhat odd. Here's a tidier version of the same (excellent) idea:
-
-    (defun recentf-open-files-compl ()
-      (interactive)
-      (let* ((tocpl (mapcar (lambda (x) (cons (file-name-nondirectory x) x))
-                            recentf-list))
-             (fname (completing-read "File name: " tocpl nil nil)))
-        (when fname
-          (find-file (cdr (assoc-string fname tocpl)))))) 
-
+`recentf-mode' of vanilla Emacs forces you to open a file using a ''menu'' interface.  [[Icicles]] command `icicle-recent-file' lets you use the usual `find-file' [[minibuffer]] interface, with [[completion]] and cycling
+among your recent files. It is also a [[multi-command]], so you can use it to open several recently used files at once.
 
 
 == ido (iswitchb ?) Completion ==
@@ -251,11 +180,68 @@ And this is a version with <code>file-name-nondirectory</code>.
 			     file-assoc-list))))))
 </pre>
 
+
+
+
+== recent-open-files-compl ==
+
+This command also provides completion for your recent files. It was written by Jerome B. and first posted in an article for http://www.emacsfr.org/:
+
+    (defun recentf-open-files-compl ()
+      (interactive)
+      (let* ((all-files recentf-list)
+        (tocpl (mapcar (function 
+           (lambda (x) (cons (file-name-nondirectory x) x))) all-files))
+        (prompt (append '("File name: ") tocpl))
+        (fname (completing-read (car prompt) (cdr prompt) nil nil)))
+        (find-file (cdr (assoc-ignore-representation fname tocpl))))) 
+
+Jerome binds it to C-x C-r. (He rarely uses `find-file-read-only'.) 
+
+    (global-set-key "\C-x\C-r" 'recentf-open-files-compl)
+
+Jerome uses this function more often than `find-file'.   
+
+This function does not work on XEmacs 21.4.14 nor does it work with XEmacs/TrampMode, but it does with the following modifications:
+
+     
+    (defun recentf-open-files-compl ()
+      (interactive)
+      (let* ((all-files recentf-list)
+    	 (tocpl (mapcar (function 
+    	(lambda (x) (cons (file-name-nondirectory x) x))) all-files))
+    	 (prompt (append '("Recent File name: ") tocpl))
+    	 (fname (completing-read (car prompt) (cdr prompt) nil nil)))
+        (find-file (or (cdr (assoc fname tocpl))
+    		   fname))))
+
+On modern Emacs, assoc-ignore-representation is deprecated and the lisp style of the functions above is somewhat odd. Here's a tidier version of the same (excellent) idea:
+
+    (defun recentf-open-files-compl ()
+      (interactive)
+      (let* ((tocpl (mapcar (lambda (x) (cons (file-name-nondirectory x) x))
+                            recentf-list))
+             (fname (completing-read "File name: " tocpl nil nil)))
+        (when fname
+          (find-file (cdr (assoc-string fname tocpl)))))) 
+
+
 == Using iswitch(b) ==
 
-IswitchRecentFiles
+See IswitchRecentFiles for using recent files with IswitchB.
 
-= TrampMode =
+
+== Use with Anything ==
+[[Anything]] is a candidate selection framework.
+
+Start with `M-x anythinf-for-files', narrow the list (including recent files) by typing some patterns(multiple patterns are space-delimited string),
+select with up/down/pgup/pgdown/C-p/C-n/C-v/M-v, choose with enter,
+With TAB actions can be selected if the selected files has more than one possible action.
+With C-z content of files is displayed without quitting anything session.
+
+
+
+== TrampMode ==
 
 When using TrampMode with recentf.el, it's advisable to turn off the cleanup feature of recentf that attempts to stat all the files and remove them from the recently accessed list if they are readable.  Tramp means that this requires recentf to open up a remote site which will block your emacs process at the most inopportune times. 
 
@@ -264,10 +250,9 @@ When using TrampMode with recentf.el, it's advisable to turn off the cleanup fea
     (setq recentf-auto-cleanup 'never) ;; disable before we start recentf!
     (recentf-mode 1)
 
-= Gnus =
+== Gnus ==
 
 I use Gnus in one process, and everything related to plain file editing in another emacs process.  My initial load starts recentf-mode but for gnus, I really needed the recentf to use a different history file.
-
 
    ;; use a different set of recent files for gnus
    ;; cmg@dok.org
@@ -283,31 +268,38 @@ I use Gnus in one process, and everything related to plain file editing in anoth
          (setq cmg:prevent-gnus-recentf-double-init t)))
 
     
-= Picklist =
+== Picklist ==
+
 [http://www.cbrunzema.de/software.html#picklist picklist] was once forked from recent-files when the latter didn't store positions in the file and has evolved since then.  It introduced merging of lists and a regexp based apropos.  
 
 Please note, that it vanished from the internet but if someone wants the code I can still send it via Email -- StefanKamphausen
 
-= Buffer with the list of recently open files. =
+== Buffer with the list of recently open files. ==
 
-EugeneMarkov
-
-Lisp:recentf-buffer.el - creates the buffer with the list of recently open files.
-
-It's addition to recentf.el.
-
-Install.
+Lisp:recentf-buffer.el -- creates a buffer with the list of recently open files. It's an addition to recentf.el. To install:
 
 <pre>
 (load "recentf-buffer")
 (global-set-key [?\C-c ?r ?f] 'recentf-open-files-in-simply-buffer)
 </pre>
 
+-- EugeneMarkov
+
+
 [new:DrewAdams:2005-10-04 17:49 UTC]
 '''[[Icicles]]''' gives you the list when you use `icicle-recent-file' or `icicle-recent-file-other-window' (see [[#RecentFilesWithCompletion]] above). Just hit `TAB' or `S-TAB'. If you type a regexp, `S-TAB' will give you the list of matching recent files. -- DrewAdams
 
 
-= Visited Files Sorted by Access Date/Time =
+== Library `recentf-ext.el' ==
+
+Lisp:recentf-ext.el extends recentf package.
+* `dired' buffers can be handled.
+* Switching to file buffer considers it as most recent file.
+
+-- [[rubikitch]]
+
+
+== Visited Files Sorted by Access Date/Time ==
 
 This concerns buffers visiting files, so it is related to some of the topics on this page. But this does not concern a ''persistent'' visited-files list.
 
@@ -319,9 +311,9 @@ This is especially useful if you have a large number of visited files, and you w
 
 Note that these two kinds of sort are ''not'' inverses. Example: if you opened a file yesterday that you are still visiting, and all other currently visited files were opened today, then that file is at the top (or bottom) when you sort by column '''CRM'''. When you sort by column '''Time''', its position depends on the last time it was accessed. -- DrewAdams
 
-= Merge Lists Of Several Emacsen =
+== Merge Lists Of Several Emacsen ==
 
-A few days ago I wrote to the maintainer of recentf.el but received no feedback til now, so I might as well share my code here.
+I wrote to the maintainer of recentf.el but received no feedback til now, so I might as well share my code here.
 
 I have the habit to start one Emacs dedicated to Gnus first thing in the morning and close it last thing in the evening.  With the standard recentf storage habit this Emacs will always overwrite the list of recent files, thus making it more or less constant.  There are several ways to solve this, one would be to read the list before saving it and merging the list from the file with that in the current instance of Emacs before saving it back.  My code for this, which I have in daily usage for a while now, is listed below.  Somehow I can't just overwrite the functions from recentf but I need to find the right time for that, that's why I put it after the requiring and befor the activation. -- StefanKamphausen
 
@@ -381,7 +373,7 @@ file to write to."
   (recentf-mode 1))
 </pre>
 
-= Entries for files that were never displayed =
+== Entries for files that were never displayed ==
 
 If you, for example, use [[CEDET]], the recentf package may be fairly useless by default.  The problem is that CEDET can scan lots of source files and make files in the process of building a tags database or managing the build system.  The recentf list is then saturated with files you haven't displayed or edited on screen.
 
@@ -416,15 +408,7 @@ FILE has been displayed."
 (setq recentf-keep '(keep-default-and-visible-recentf-p))
 </pre>
 
-= Extension package =
-
-Lisp:recentf-ext.el extends recentf package.
-* `dired' buffers can be handled.
-* Switching to file buffer considers it as most recent file.
-
--- [[rubikitch]]
-
-= Undo kill buffer =
+== Undo kill buffer ==
 The Opera web browser has a surprisingly useful feature called the "trash can".  After you close a tab you can "undo" the close with C-z.  As it turns out when I want a tab reopened it's usually one of the last few I closed, so I almost never end up looking in the history.  I missed this feature in Emacs, so I implemented it on top of recentf.
 
 <pre>

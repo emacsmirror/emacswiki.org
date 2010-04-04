@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:19:43 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Mar 13 13:56:29 2010 (-0800)
+;; Last-Updated: Sat Apr  3 09:03:48 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 513
+;;     Update #: 514
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-face.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -403,7 +403,7 @@ Not used for versions of Emacs before version 21."
     '((((background dark)) (:background "#316B22970000")) ; a very dark brown
       (t (:background "#E1E1EAEAFFFF"   ; A light blue.
           :box (:line-width 2 :color "White" :style released-button))))
-  "*Face used to highlight proxy candidates."
+  "*Face used to highlight proxy candidates in `*Completions*'."
   :group 'Icicles-Completions-Display :group 'faces)
 
 (defface icicle-saved-candidate

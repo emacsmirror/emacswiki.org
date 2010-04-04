@@ -36,6 +36,7 @@ Click the heading to search for all pages related to manipulating files and dire
 		 )
 * FileSets -- Persistent sets of files under given directories
 * [[Icicles]] -- Access files and directories using [[completion]] and cycling. Act on (e.g. delete) files whose names match a regexp.
+* [[Anything]] -- Access files and directories and much more
 * Image directories with thumbnails
 ** ThumbsMode
 ** [[Tumme]]

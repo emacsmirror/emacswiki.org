@@ -63,6 +63,7 @@ EevMode is my partner for years.
 * Lisp:recentf-ext.el -- Extension of RecentFiles package.
 * Lisp:display-hatebu.el -- Display hatena bookmarks (in Japanese)
 * Lisp:open-junk-file.el -- Open a junk file to try-and-error programs
+* [[Yaoddmuse]] (current maintainer) -- Edit Oddmuse wiki
 * I maintained
 ** OddmuseMode -- Edit oddmuse wikis (including EmacsWiki) in Emacs
 

@@ -151,9 +151,9 @@ All your IMAP accounts should be defined in the variable `vm-imap-account-alist'
             )
      )
 
-The first string in each of the inner lists is an IMAP mailbox specification in the format "pop:HOST:PORT:*:AUTH:USER:PASSWORD", and the second string is a short name.  
+The first string in each of the inner lists is an IMAP mailbox specification in the format "imap:HOST:PORT:*:AUTH:USER:PASSWORD", and the second string is a short name.  
 
-You can visit folders on the declared IMAP accounts using `M-x vm-visit-imap-folder'.  When prompted for the folder name, input it in the format ACCOUNT:MAILBOX.  Here, ACCOUNT is the short name declared in the alist, e.g., `becky'.  MAILBOX is the name of a folder on the IMAP server.  File name completion is available for typing the MAILBOX name.
+You can visit folders on the declared IMAP accounts using `M-x vm-visit-imap-folder'.  When prompted for the folder name, input it in the format ACCOUNT:MAILBOX.  Here, ACCOUNT is the short name declared in the alist, e.g., `becky'.  MAILBOX is the name of a folder on the IMAP server.  File name completion is available for typing the ACCOUNT as well as the MAILBOX name.
 
 ----
 == Other Basic Setup ==

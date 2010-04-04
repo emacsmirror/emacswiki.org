@@ -25,6 +25,7 @@ Some keys in the bookmark list (buffer `*Bookmark List*'):
 * `a' -- show annotation for the current bookmark
 * `e' -- edit the annotation for the current bookmark
 
+
 == Info Node Bookmarks - Vanilla ==
 
 You can bookmark [[InfoMode|Info]] nodes also -- just use `C-x r m', as usual. Command `bookmark-bmenu-list', bound to `C-x r l', provides a convenient menu to access bookmarks.
@@ -145,8 +146,19 @@ Or if you use InfoPlus, then `C-u v' in Info will show you such an Info nodes vi
 
 * Command `icicle-bookmark' similarly lets you [[completion|complete]] or [[Icicles - Cycling Completions|cycle]] bookmarks to navigate among them. [[Icicles - Apropos Completions|Apropos]] ([[regexp]], substring) completion is available. See '''[[Icicles]]'''.
 
+== Use with Anything ==
+[[Anything]] is a candidate selection framework.
+
+Start with `M-x anythinf-for-files', narrow the list (including Bookmarks) by typing some patterns(multiple patterns are space-delimited string),
+select with up/down/pgup/pgdown/C-p/C-n/C-v/M-v, choose with enter,
+With TAB actions can be selected if the selected candidate has more than one possible action.
+With C-z content of candidate is displayed without quitting anything session.
+
+`M-x anything-bookmark-ext' unifies bookmark-extensions commands.
+
 
 == See Also ==
+
 * BookMarkIteratorPackage -- iterate through your bookmarks
 * VisibleBookmarks Visible, buffer-local bookmarks (library ##bm.el##)
 * <tt>[[wuxch-bookmark.el]]</tt> -- Extends [[#BookmarkPlus]] and VisibleBookmarks

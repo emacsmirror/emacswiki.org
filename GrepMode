@@ -126,12 +126,15 @@ You can also get it here with Mercurial:
 
     hg clone http://freehg.org/u/thiedlecques/traverselisp/
 
-== Grep with [[Anything]] interface ==
+== Use with Anything ==
+'''[[Anything]]''' is a candidate selection framework.
+Install Lisp:anything-grep.el after installing Anything.
+Start with `M-x anything-grep', narrow matched lines by typing some patterns(multiple patterns are space-delimited string),
+select with up/down/pgup/pgdown/C-p/C-n/C-v/M-v, choose with enter,
 
-Lisp:anything-grep.el
+With C-z the selected line is displayed without quitting anything session.
 
-Anything can narrow candidates. Let's utilize Anything to narrow grep result.
-
+`M-x anything-grep-by-name' greps from predefined location.
 
 == Grep-A-Lot ==
 

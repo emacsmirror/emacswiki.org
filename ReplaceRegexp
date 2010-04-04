@@ -121,6 +121,14 @@ To start from one instead of of zero:
 
 See TexinfoMode.
 
+== Use with Anything ==
+'''[[Anything]]''' is a candidate selection framework.
+
+Start with `M-x anything-query-replace-regexp', show and narrow the matched lines by typing some patterns(multiple patterns are space-delimited string) then replace like M-%,
+select with up/down/pgup/pgdown/C-p/C-n/C-v/M-v, choose with enter,
+With C-z the selected line is displayed without quitting anything session.
+
+You can use `M-x anything-regexp' and press TAB to replace.
 == See also ==
 
 * [http://steve-yegge.blogspot.com/2006/06/shiny-and-new-emacs-22.html Shiny and New: Emacs 22] -- SteveYegge's wonderful blog post about `replace-regexp', which includes many of the examples above.

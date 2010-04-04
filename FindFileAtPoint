@@ -8,6 +8,7 @@ There's various mode-specific features hiding in ffap,
 
 Here are some other libraries and modes extending <code>ffap</code>,
 
+* [[Anything]] -- `M-x anything-find-files' and `M-x anything-for-files' use ffap and much more
 * CPerlMode -- find perl modules in the perl path
 * PerlDevelopEnvironment - another find perl modules
 * PythonMode (the python.el one) -- module file in python path

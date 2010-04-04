@@ -325,7 +325,6 @@ to keys in ''Icicle'' mode -- they are ''not'' bound by '''Icicles''' (except to
 * `icicle-search-buff-menu-marked' -- Search marked buffers, in order
 * `icicle-search-buffer' -- Search multiple buffers
 * `icicle-search-char-property' - Search for character properties
-* `icicle-search-desktop-bookmark-' -- Search desktop bookmarks
 * `icicle-search-dired-bookmark' -- Search Dired bookmarks
 * `icicle-search-dired-marked' -- Search the marked files in Dired
 * `icicle-search-file'  -- Search multiple files

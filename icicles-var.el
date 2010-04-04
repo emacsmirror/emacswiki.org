@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Mar 30 13:11:55 2010 (-0700)
+;; Last-Updated: Sat Apr  3 11:05:55 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 1098
+;;     Update #: 1296
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -485,50 +485,86 @@ noted in parentheses.
   (`C-u') `read-file-name-completion-ignore-case'
                                          - Case sensitivity? (`C-A')
 * `completion-ignored-extensions'        - Ignored filenames (`C-.')
-* `icicle-show-multi-completion-flag'    - Show extra candidate info?
+* `icicle-act-before-cycle-flag'         - Act then cycle or reverse?
 * `icicle-add-proxy-candidates-flag'     - Include proxies? (`C-M-_')
+* `icicle-alternative-actions-alist'     - Overriding alt actions
 * `icicle-alternative-sort-comparer'     - Other sort (`M-,', `C-M-,')
+* `icicle-apropos-complete-keys*'        - Keys to apropos-complete
+* `icicle-apropos-cycle-*-keys'          - Keys to apropos-cycle
+* `icicle-bookmark-name-length-max'      - Max length of bookmark name
+* `icicle-bookmark-refresh-cache-flag'   - Refresh bookmarks cache?
 * `icicle-top-level-key-bindings'        - Bind top-level commands
 * `icicle-buffer-*'                      - `icicle-buffer' options
 * `icicle-candidate-width-factor'        - Width %%, candidate columns
 * `icicle-change-region-background-flag' - Change region color?
 * `icicle-change-sort-order-completion-flag' - Control `C-,' behavior
+* `icicle-C-l-uses-completion-flag'      - `C-l' uses completion?
 * `icicle-color-themes'                  - For `icicle-color-theme'
+* `icicle-comint-dynamic-complete-replacements' - Comint complete fns
+* `icicle-command-abbrev*'               - Command abbrev behavior
+* `icicle-complete-key-anyway-flag'      - `S-TAB' must complete keys
 * `icicle-complete-keys-self-insert-flag'- `S-TAB' for self-insert?
+* `icicle-completing-read+insert-keys'   - Keys for complete-on-demand
+* `icicle-completion-history-max-length' - Completion history length
 * `icicle-Completions-display-min-input-chars' - Remove *Completions*
                                            if fewer chars input
+* `icicle-completions-format'            - *Completions* layout format
 * `icicle-Completions-frame-at-right-flag'- *Completions* at right?
-* `icicle-Completions-window-max-height'  - Max lines in *Completions*
+* `icicle-Completions-text-scale-decrease'- *Completions* text shrink
+* `icicle-Completions-window-max-height' - Max lines in *Completions*
+* `icicle-customize-save-flag'           - Save some options on quit?
 * `icicle-cycle-into-subdirs-flag'       - Explore subdirectories?
 * `icicle-cycling-respects-completion-mode' - Completion mode affects
                                            cycling mode?
 * `icicle-default-thing-insertion'       - Control behavior of \
 \\<minibuffer-local-completion-map>\\[icicle-insert-string-at-point]
 * `icicle-default-value'                 - How to treat default value
+* `icicle-define-alias-commands-flag'    - Define top-level aliases?
+* `icicle-deletion-action-flag'          - `S-delete' deletes?
+* `icicle-dot-show-regexp-flag'          - Show regexp for `.'?
+* `icicle-dot-string'                    - String that `.' inserts
 * `icicle-expand-input-to-common-match-flag'- Expand input? (`C-;')
+* `icicle-file-*'                        - `icicle-file' options
+* `icicle-filesets-as-saved-completion-sets-flag'- Use filesets?
+* `icicle-guess-commands-in-path'        - Shell commands to complete
+* `icicle-help-in-mode-line-flag'        - Candidate mode-line help?
+* `icicle-hide-common-match-in-Completions-flag'- Show common match?
 * `icicle-highlight-historical-candidates-flag'
                                          - Highlight past input?
+* `icicle-highlight-input-completion-failure*'- Input non-match sign
 * `icicle-highlight-input-initial-whitespace-flag'
                                          - Highlight input whitespace?
+* `icicle-highlight-lighter-flag'        - Highlight mode-line `Icy'
 * `icicle-ignore-space-prefix-flag'      - See initial space? (`M-_')
 * `icicle-incremental-completion-delay'  - Before update *Completions*
 * `icicle-incremental-completion-flag'   - Icompletion? (`C-#')
 * `icicle-incremental-completion-threshold'- # of candidates for delay
+* `icicle-inhibit-advice-functions'      - Advice-inhibited functions
+* `icicle-inhibit-ding-flag'             - Suppress audible bell
 * `icicle-input-string'                  - String inserted by `C-='
 * `icicle-inter-candidates-min-spaces'   - Min spaces among candidates
+* `icicle-isearch-complete-keys'         - Keys to complete search
+* `icicle-key-complete-keys'             - Keys to complete keys
 * `icicle-key-descriptions-use-<>-flag'  - Show key names with \"<>\"?
 * `icicle-keymaps-for-key-completion'    - `S-TAB' = key-complete maps
 * `icicle-kmacro-ring-max'               - Icicles `kmacro-ring-max'
+* `icicle-levenshtein-distance'          - Levenshtein match distance
 * `icicle-list-end-string', `icicle-list-join-string'
                                          - Multi-completion join/end
 * `icicle-list-nth-parts-join-string'    - Join split-candidate parts
 * `icicle-mark-position-in-candidate'    - Mark position in cycling
+* `icicle-menu-items-to-history-flag'    - Add menus to history?
 * `icicle-minibuffer-setup-hook'         - Functions run after setup
-* `icicle-modal-cycle-up-keys', `icicle-modal-cycle-down-keys'
-                                         - Keys for modal cycling
-* `icicle-next-S-TAB-completion-method'  - Next `S-TAB' method (`M-(')
-* `icicle-next-TAB-completion-method'    - Next `TAB' method (`C-(')
+* `icicle-modal-cycle-*-keys'            - Keys for modal cycling
+* `icicle-option-type-prefix-arg-list'   - Prefix-args for `C-h C-o'
 * `icicle-point-position-in-candidate'   - Cursor position in cycling
+* `icicle-populate-interactive-history-flag'- Track interactive use?
+* `icicle-pp-eval-expression-print-*'    - Print control for `pp-*'
+* `icicle-prefix-complete-keys*'         - Keys to prefix-complete
+* `icicle-prefix-cycle-*-keys'           - Keys to prefix-cycle
+* `icicle-previous-candidate-keys'       - Back keys for *Completions*
+* `icicle-quote-shell-file-name-flag'    - Quote file name in shell?
+* `icicle-read+insert-file-name-keys'    - Keys for on-demand file
 * `icicle-redefine-standard-commands-flag'- Redefine std commands?
 * `icicle-regexp-quote-flag'             - Escape chars? (`C-`')
 * `icicle-regexp-search-ring-max'        - `regexp-search-ring-max'
@@ -539,6 +575,7 @@ noted in parentheses.
 * `icicle-search-cleanup-flag'           - Remove search highlighting?
                                            (`C-.')
 * `icicle-search-context-match-predicate'- Search-context predicate
+* `icicle-search-from-isearch-keys'      - Isearch-to-Icicles keys
 * `icicle-search-highlight-all-current-flag'- In each hit (`C-^')
 * `icicle-search-highlight-context-levels-flag' -
                                            Highlight match subgroups?
@@ -552,16 +589,22 @@ noted in parentheses.
 * `icicle-search-whole-word-flag'        - Find whole words? (`M-q')
 * `icicle-show-Completions-help-flag'    - Show *Completions* help?
 * `icicle-show-Completions-initially-flag'- Show *Completions* first?
+* `icicle-show-multi-completion-flag'    - Show extra candidate info?
 * `icicle-sort-comparer'                 - Sort candidates (`C-,')
 * `icicle-sort-orders-alist'             - Predicates for sorting
 * `icicle-special-candidate-regexp'      - To highlight special cands
+* `icicle-S-TAB-completion-methods-alist'- `S-TAB' methods (`M-(')
+* `icicle-swank-*'                       - Swank completion control
+* `icicle-TAB-completion-methods'        - `TAB' methods (`C-(')
 * `icicle-TAB-shows-candidates-flag'     - 1st `TAB' shows candidates?
 * `icicle-test-for-remote-files-flag'    - Check remote files? (`C-^')
 * `icicle-thing-at-point-functions'      - Functions to yank things
-* `icicle-top-level-when-sole-completion-flag' -
-                                           Exit if single completion?
+* `icicle-top-level-key-bindings'        - Top-level key bindings
+* `icicle-top-level-when-sole-completion-*'- Exiting if one completion
 * `icicle-touche-pas-aux-menus-flag'     - Add to standard menus?
 * `icicle-transform-function'            - Remove duplicates (`C-$')
+* `icicle-type-actions-alist'            - Objects and their types
+* `icicle-unpropertize-completion-result-flag'- Properties in result?
 * `icicle-update-input-hook'             - Fns run when input changes
 * `icicle-use-~-for-home-dir-flag'       - Use `~' for $HOME? (`M-~')
 * `icicle-use-C-for-actions-flag'        - `C-' for actions? (`M-g')
@@ -573,18 +616,35 @@ noted in parentheses.
 Faces that highlight input in minibuffer.
 
 * `icicle-complete-input'               - Input when it is complete
+* `icicle-completion'                   - Completing?
+* `icicle-input-completion-fail*'       - Non-match part of input
 * `icicle-match-highlight-minibuffer'   - Matched part of input
+* `icicle-multi-command-completion'     - Multi-command completion?
+* `icicle-mustmatch-completion'         - Strict completion?
 * `icicle-whitespace-highlight'         - Initial whitespace in input
 
 Faces that highlight candidates in buffer *Completions*.
 
+* `icicle-candidate-part'               - Part of candidate
 * `icicle-common-match-highlight-Completions' - Max common substring
-* `icicle-current-candidate-highlight'  - Highlight cycle candidate
+* `icicle-current-candidate-highlight'  - Current candidate (cycling)
+* `icicle-extra-candidate'              - Extra candidate
 * `icicle-historical-candidate'         - Highlight candidates used
 * `icicle-match-highlight-Completions'  - Matched part of input
+* `icicle-proxy-candidate'              - Proxy candidate
+* `icicle-saved-candidate'              - Saved candidate
+* `icicle-special-candidate'            - Special candidate
+
+Faces that highlight information in the mode line.
+
+* `icicle-completion'                   - Completing?
+* `icicle-mode-line-help'               - Candidate help
+* `icicle-multi-command-completion'     - Multi-command completion?
+* `icicle-mustmatch-completion'         - Strict completion?
 
 Faces that highlight for command `icicle-search'.
 
+* `icicle-search-context-level-*'       - Regexp subgroup highlighting
 * `icicle-search-current-input'         - What input matches
 * `icicle-search-main-regexp-current'   - Current match of 1st regexp
 * `icicle-search-main-regexp-others'    - Other matches of 1st regexp
@@ -606,24 +666,26 @@ input prompt is prefixed by `+'.
   `icicle-add/update-saved-completion-set' - To
                                         `icicle-saved-completion-sets'
 + `icicle-remove-saved-completion-set' -   From same
+  `icicle-add-entry-to-saved-completion-set' - Add completion to a set
+  `icicle-remove-entry-from-saved-completion-set' - Remove from set
 + `icicle-apply'                       - Apply function to alist items
   `icicle-apropos'                     - `apropos', but shows matches
   `icicle-apropos-command'             - Enhanced `apropos-command'
   `icicle-apropos-variable'            - Enhanced `apropos-variable'
   `icicle-apropos-zippy'               - Show matching Zippy quotes
-+ `icicle-bookmark'(`-other-window')   - Jump to bookmark
-+ `icicle-bookmark-bookmark-list-other-window' - Jump: bookmark list
++ `icicle-bookmark'(`-other-window')   - Jump to a bookmark
++ `icicle-bookmark-bookmark-list-other-window' - Jump to bookmark list
 + `icicle-bookmark-desktop-other-window' - Jump to desktop bookmark
 + `icicle-bookmark-dired-other-window' - Jump to a Dired bookmark
 + `icicle-bookmark-file-other-window'  - Jump to a file bookmark
 + `icicle-bookmark-gnus-other-window'  - Jump to a Gnus bookmark
 + `icicle-bookmark-info-other-window'  - Jump to an Info bookmark
-+ `icicle-bookmark-local-file-other-window' - Jump to local file
++ `icicle-bookmark-local-file-other-window' - Jump to a local file
 + `icicle-bookmark-man-other-window'   - Jump to a `man'-page bookmark
 + `icicle-bookmark-non-file-other-window' - Jump to buffer bookmark
 + `icicle-bookmark-region-other-window' - Jump to a region bookmark
-+ `icicle-bookmark-remote-file-other-window' - Jump to remote file
-+ `icicle-bookmark-w3m-other-window'   - Jump to a W3M bookmark
++ `icicle-bookmark-remote-file-other-window' - Jump to a remote file
++ `icicle-bookmark-w3m-other-window'   - Jump to a W3M (URL) bookmark
 + `icicle-buffer'(`-other-window')     - Switch to buffer (`C-x b')
 + `icicle-buffer-config'               - Pick `icicle-buffer' options
 + `icicle-buffer-list'                 - Choose a list of buffer names
@@ -633,22 +695,28 @@ input prompt is prefixed by `+'.
 + `icicle-clear-history'               - Clear entries from a history
 + `icicle-color-theme'                 - Change color theme
 + `icicle-comint-command'              - Reuse command (`C-c TAB')
+  `icicle-comint-dynamic-complete'     - Text completion in shell
 + `icicle-comint-search'               - Reuse command (`C-c `')
 + `icicle-command-abbrev'              - `M-x' + abbrevs (`C-x SPC')
-+ `icicle-compilation-search'          - Show hits (`C-c `')
++ `icicle-compilation-search'          - Search, show hits (`C-c `')
 + `icicle-complete-keys'               - Complete keys (`S-TAB')
   `icicle-complete-thesaurus-entry'    - Complete word (`C-c /')
 + `icicle-completing-yank'             - `yank' using completion
 + `icicle-customize-face'              - Multi-`customize-face'
   `icicle-customize-icicles-group'     - Customize options and faces
 + `icicle-delete-file'                 - Delete file/directory
+  `icicle-delete-window'               - Delete window (`C-u': buffer)
 + `icicle-delete-windows'              - Delete windows (`C-u C-x 0')
++ `icicle-dired'                       - Multi-command Dired
 + `icicle-doc'                         - Show doc for fn, var, or face
   `icicle-doremi-candidate-width-factor+' - +/- candidate column width
+  `icicle-doremi-increment-variable'   - Increment var using Do Re Mi
   `icicle-doremi-inter-candidates-min-spaces+' - +/- candidate spacing
   `icicle-doremi-zoom-Completions+'    - +/- *Completions* text size
-+ `icicle-execute-extended-command'    - Execute command - multi-`M-x'
++ `icicle-execute-extended-command'    - Multi-command `M-x'
 + `icicle-execute-named-keyboard-macro' - Execute named keyboard macro
+  `icicle-face-list'                   - Choose a list of face names
+  `icicle-file-list'                   - Choose a list of file names
 + `icicle-file'(`-other-window')       - Visit file/dir (`C-x C-f')
 + `icicle-find-file'(`-other-window')  -         same: relative only
 + `icicle-find-file-absolute'(`-other-window') - same: absolute only
@@ -661,11 +729,16 @@ input prompt is prefixed by `+'.
 + `icicle-fundoc'                      - Show function description
 + `icicle-goto-global-marker'          - Go to a global marker
 + `icicle-goto-marker'                 - Go to a marker in this buffer
-+ `icicle-imenu'                       - Navigate among Imenu entries
++ `icicle-imenu*'                      - Navigate among Imenu entries
+  `icicle-increment-option'            - Increment a numeric option
+  `icicle-increment-variable'          - Increment a numeric variable
 + `icicle-Info-goto-node'              - Multi-cmd `Info-goto-node'
 + `icicle-Info-index'                  - Multi-command `Info-index'
 + `icicle-Info-menu'                   - Multi-command `Info-menu'
+  `icicle-Info-virtual-book'           - Open a virtual Info book
+  `icicle-insert-buffer'               - Multi-command `insert-buffer'
 + `icicle-insert-thesaurus-entry'      - Insert thesaurus entry
++ `icicle-keyword-list'                - Choose a list of keywords
 + `icicle-kill-buffer'                 - Kill buffer (`C-x k')
 + `icicle-kmacro'                      - Call keyboard macro (`S-f4')
 + `icicle-locate-file'(`-other-window') - Visit file in a directory
@@ -673,11 +746,11 @@ input prompt is prefixed by `+'.
   `icy-mode' or `icicle-mode'          - Toggle Icicle mode
   `icicle-next-S-TAB-completion-method' - Next `S-TAB' method (`M-(')
   `icicle-next-TAB-completion-method'  - Next `TAB' method (`C-(')
-+ `icicle-occur'                       - Enhanced `occur' (`C-c '')
++ `icicle-occur'                       - Incremental `occur' (`C-c '')
 + `icicle-other-window-or-frame'       - Other window/frame (`C-x o')
 + `icicle-plist'                       - Show symbols, property lists
 + `icicle-recent-file'(`-other-window') - Open recently used file
-  `icicle-recompute-shell-command-candidates' - Update from PATH
+  `icicle-recompute-shell-command-candidates' - Update from $PATH
 + `icicle-remove-file-from-recentf-list' - Remove from recent files
 + `icicle-reset-option-to-nil'         - Set binary option to nil
   `icicle-save-string-to-variable'     - Save text for use with \
@@ -686,18 +759,18 @@ input prompt is prefixed by `+'.
 + `icicle-search-bookmark'             - Search bookmarks separately
 + `icicle-search-bookmark-list-bookmark' - Search bookmark lists
 + `icicle-search-bookmarks-together'   - Search bookmarks together
-+ `icicle-search-desktop-bookmark'     - Search desktop bookmarks
++ `icicle-search-char-property'        - Search for overlay/text props
 + `icicle-search-dired-bookmark'       - Search Dired bookmarks
 + `icicle-search-dired-marked'         - Search marked files in Dired
 + `icicle-search-file'                 - Search multiple files
-+ `icicle-search-file-bookmark'        - Search file bookmarks
-+ `icicle-search-gnus-bookmark'        - Search Gnus bookmarks
++ `icicle-search-file-bookmark'        - Search bookmarked files
++ `icicle-search-gnus-bookmark'        - Search bookmarked Gnus msgs
 + `icicle-search-ibuffer-marked'       - Search marked bufs in Ibuffer
-+ `icicle-search-info-bookmark'        - Search Info bookmarks
++ `icicle-search-info-bookmark'        - Search bookmarked Info nodes
 + `icicle-search-keywords'             - Search for keywords (`C-c ^')
-+ `icicle-search-local-file-bookmark'  - Search local file bookmarks
-+ `icicle-search-man-bookmark'         - Search `man'-page bookmarks
-+ `icicle-search-non-file-bookmark'    - Search non-file bookmarks
++ `icicle-search-local-file-bookmark'  - Search bookmarked local files
++ `icicle-search-man-bookmark'         - Search bookmarked `man' pages
++ `icicle-search-non-file-bookmark'    - Search bookmarked buffers
 + `icicle-search-overlay-property'     - Search for overlay properties
 + `icicle-search-pages'                - Search Emacs pages
 + `icicle-search-paragraphs'           - Search Emacs paragraphs
@@ -705,31 +778,35 @@ input prompt is prefixed by `+'.
 + `icicle-search-remote-file-bookmark' - Search remote bookmarks
 + `icicle-search-sentences'            - Search sentences as contexts
 + `icicle-search-text-property'        - Search for face... (`C-c \"')
-+ `icicle-search-w3m-bookmark'         - Search W3M bookmarks
-+ `icicle-search-word'                 - Search for whole word
++ `icicle-search-w3m-bookmark'         - Search bookmarked URLs
++ `icicle-search-word'                 - Whole-word search
++ `icicle-select-bookmarked-region'    - Select bookmarked regions
 + `icicle-select-frame'                - Select a frame by name
 + `icicle-select-window'               - Select window by buffer name
   `icicle-send-bug-report'             - Send Icicles bug report
 + `icicle-set-option-to-t'             - Set binary option to t
   `icicle-toggle-~-for-home-dir'       - Toggle using `~' for $HOME
   `icicle-toggle-alternative-sorting'  - Swap alternative sort
-  `icicle-toggle-angle-brackets'       - Toggle angle brackets
-  `icicle-toggle-case-sensitivity'     - Toggle case sensitivity
+  `icicle-toggle-angle-brackets'       - Toggle using angle brackets
   `icicle-toggle-C-for-actions'        - Toggle using `C-' for actions
+  `icicle-toggle-case-sensitivity'     - Toggle case sensitivity
+  `icicle-toggle-dot'                  - Toggle `.' matching newlines
   `icicle-toggle-expand-to-common-match' - Toggle input ECM expansion
+  `icicle-toggle-hiding-common-match'  - Toggle match in *Completions*
   `icicle-toggle-highlight-all-current' - Toggle max search highlight
   `icicle-toggle-highlight-historical-candidates'
                                        - Toggle past-input highlight
   `icicle-toggle-ignored-extensions'   - Toggle ignored files
   `icicle-toggle-ignored-space-prefix' - Toggle ignoring space prefix
-  `icicle-toggle-incremental-completion' - Toggle icompletion
+  `icicle-toggle-incremental-completion' - Toggle apropos icompletion
 + `icicle-toggle-option'               - Toggle binary user option
   `icicle-toggle-proxy-candidates'     - Toggle proxy candidates
   `icicle-toggle-regexp-quote'         - Toggle regexp escaping
-  `icicle-toggle-search-cleanup'       - Toggle highlight removal
+  `icicle-toggle-search-cleanup'       - Toggle search highlighting
   `icicle-toggle-search-replace-common-match' - Toggle ECM replacement
   `icicle-toggle-search-whole-word'    - Toggle whole-word searching
-  `icicle-toggle-sorting'              - Toggle sorting
+  `icicle-toggle-show-multi-completion' - Toggle multi-completions
+  `icicle-toggle-sorting'              - Toggle sorting of completions
   `icicle-toggle-transforming'         - Toggle duplicate removal
   `icicle-toggle-WYSIWYG-Completions'  - Toggle WYSIWYG *Completions*
 + `icicle-vardoc'                      - Show variable description

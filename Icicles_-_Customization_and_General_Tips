@@ -265,6 +265,24 @@ User option '''`icicle-redefine-standard-commands-flag'''' controls
 whether '''Icicles''' redefines some standard commands, enhancing them
 to use '''Icicles''' completion.  A non-`nil' value causes redefinition.
 
+
+----
+[:icicle-inhibit-advice-functions]
+==== Option icicle-inhibit-advice-functions ====
+
+Option '''`icicle-inhibit-advice-functions'''' is a list of functions
+that '''Icicles''' redefines, and for which ''Icicle'' mode deactivates
+the advice.  The advice for each is reactivated when you leave
+''Icicle'' mode.  Generally, it is a bad idea to use advice with
+functions that '''Icicles''' redefines, in particular minibuffer
+functions.  If you want to allow some such advice or prohibit
+advice for additional functions, then customize this list.
+
+Note: If you or a library you load advises one of these
+functions while you are in ''Icicle'' mode, then toggle ''Icicle'' mode
+twice, so that this option can have the proper effect.
+
+
 ----
 [:icicle-apropos-cycle-previous-keys]
 [:icicle-apropos-cycle-next-keys]

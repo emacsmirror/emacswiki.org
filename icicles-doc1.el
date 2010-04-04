@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Apr  2 16:39:21 2010 (-0700)
+;; Last-Updated: Sat Apr  3 11:28:48 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 24898
+;;     Update #: 24926
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3977,16 +3977,33 @@
 ;;     (`icicle-search' among single-line hits).
 ;;  * `icicle-recent-file' - Trip among recent files.
 ;;  * `icicle-search' (`C-c `') - Trip among regexp search hits.
-;;  * `icicle-search-char-property' - Trip among buffer strings with
-;;    some text or overlay property.
-;;  * `icicle-search-keywords' (`C-c ^') - Trip among keyword search
-;;    hits.
-;;  * `icicle-search-overlay-property' - Trip among buffer strings
-;;    with some overlay property.
 ;;  * `icicle-search-bookmarks-together' (`C-u C-c `'),
 ;;    `icicle-search-bookmark',  - Search multiple bookmarks.
+;;  * `icicle-search-bookmark-list-bookmark' - Search bookmark lists
+;;  * `icicle-search-char-property' - Trip among buffer strings with
+;;    some text or overlay property.
+;;  * `icicle-search-dired-bookmark'   - Search Dired bookmarks
+;;  * `icicle-search-dired-marked'     - Search marked files in Dired
+;;  * `icicle-search-file'             - Search multiple files
+;;  * `icicle-search-file-bookmark'    - Search file bookmarks
+;;  * `icicle-search-gnus-bookmark'    - Search Gnus bookmarks
+;;  * `icicle-search-ibuffer-marked'   - Search marked bufs in Ibuffer
+;;  * `icicle-search-info-bookmark'    - Search Info bookmarks
+;;  * `icicle-search-keywords' (`C-c ^') - Trip among keyword search
+;;    hits.
+;;  * `icicle-search-local-file-bookmark'- Search local-file bookmarks
+;;  * `icicle-search-man-bookmark'       - Search `man'-page bookmarks
+;;  * `icicle-search-non-file-bookmark'  - Search non-file bookmarks
+;;  * `icicle-search-overlay-property' - Trip among buffer strings
+;;    with some overlay property.
+;;  * `icicle-search-pages'            - Search Emacs pages
+;;  * `icicle-search-paragraphs'       - Search Emacs paragraphs
+;;  * `icicle-search-region-bookmark'  - Search bookmarked regions
+;;  * `icicle-search-remote-file-bookmark' - Search remote bookmarks
+;;  * `icicle-search-sentences'        - Search sentences as contexts
 ;;  * `icicle-search-text-property' (`C-c "') - Trip among buffer
 ;;    strings with some text property.
+;;  * `icicle-search-w3m-bookmark'     - Search W3M (URL) bookmarks
 ;;  * `icicle-search-word' (`C-c $') - Trip among word-search hits.
 ;;  * `icicle-select-frame' (`C-x 5 o') - Trip among frames, by name.
 ;;  * `icicle-select-window' (`C-0 C-x o') - Trip among windows, by

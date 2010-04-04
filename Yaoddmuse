@@ -7,7 +7,7 @@ Yaoddmuse stands for "Yet Another Oddmuse Mode" for Emacs. It is a
 rewrite of the oddmuse.el code with modularity and extensibility in
 mind. 
 
-: I have leave Emacs long time, haven't time maintain this package, please contact me if you want take over it. Thanks -- AndyStewart
+: Please send suggestions and bug reports to [[rubikitch]], he's the new maintainer. Thanks! -- AndyStewart
 
 ==Why yaoddmuse.el ?==
 # *The goal* of yaoddmuse mode is to help increase both the amount and

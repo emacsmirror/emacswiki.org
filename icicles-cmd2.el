@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Fri Apr  2 15:06:34 2010 (-0700)
+;; Last-Updated: Sat Apr  3 10:34:33 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 1606
+;;     Update #: 1608
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -84,7 +84,6 @@
 ;;    (+)`icicle-search-bookmarks-together',
 ;;    (+)`icicle-search-buffer', (+)`icicle-search-buff-menu-marked',
 ;;    (+)`icicle-search-char-property', (+)`icicle-search-defs',
-;;    (+)`icicle-search-desktop-bookmark',
 ;;    (+)`icicle-search-dired-bookmark',
 ;;    (+)`icicle-search-dired-marked', (+)`icicle-search-file',
 ;;    (+)`icicle-search-file-bookmark', (+)`icicle-search-generic',
@@ -3131,7 +3130,6 @@ You need library `bookmark+.el' for this command." type type) ; Doc string
 
 ;; The following sexps macro-expand to define these commands:
 ;;  `icicle-search-bookmark-list-bookmark', 
-;;  `icicle-search-desktop-bookmark', 
 ;;  `icicle-search-dired-bookmark', 
 ;;  `icicle-search-file-bookmark', 
 ;;  `icicle-search-gnus-bookmark', 
@@ -3143,7 +3141,6 @@ You need library `bookmark+.el' for this command." type type) ; Doc string
 ;;  `icicle-search-remote-file-bookmark', 
 ;;  `icicle-search-w3m-bookmark'.
 (icicle-define-search-bookmark-command "bookmark-list")
-(icicle-define-search-bookmark-command "desktop")
 (icicle-define-search-bookmark-command "dired")
 (icicle-define-search-bookmark-command "file")
 (icicle-define-search-bookmark-command "gnus")

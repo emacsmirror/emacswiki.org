@@ -1,33 +1,19 @@
-Command `occur' lists all lines of the current buffer that match a regexp that you give it. The matching lines are listed in buffer `*Occur*', and you can click them there to navigate to the corresponding lines in the original buffer. That is, buffer `*Occur*' acts as a hypertext index to your buffer.
+Standard Emacs command `occur' lists all lines of the current buffer that match a regexp that you give it. The matching lines are listed in buffer `*Occur*', and you can click them there to navigate to the corresponding lines in the original buffer. That is, buffer `*Occur*' acts as a hypertext index to your buffer.
 
 This is so useful that you might want to use a keybinding in your <code>.emacs</code> for it. For example:
 
  (global-set-key (kbd "C-c o") 'occur)
 
-Starting with Emacs 22, you can also use '''`##C-x `##'''' (`next-error') or `M-g p' (`previous-error') to navigate to the next or previous occurrence.
-
-[new:DrewAdams:2007-01-25 21:01 UTC]
-: I've asked that Emacs bind `n' and `p' in Occur mode to `next-error-no-select' and `previous-error-noselect' (and make the buffer read-only). -- DrewAdams
-[new]
-: Or you can turn on `next-error-follow-minor-mode' in the Occur
-buffer. -- SeanO
-
-[new:DrewAdams:2007-01-26 16:02 UTC]
-: Very good. I wasn't aware of that. -- DrewAdams
-
-[new]
-: Seems that will bind 'C-n' and 'C-p'. I prefer to manually bind n/p for compilation-mode-map and  occur-mode-map and leave C-n/C-p as they are.
-
-[new]
+Starting with Emacs 22, you can also use '''`##C-x `##'''' (`next-error') or `M-g p' (`previous-error') to navigate to the next or previous occurrence. You can also turn on `next-error-follow-minor-mode' in the Occur buffer, which binds `C-n' and `C-p'.
 
 See also: OccurKey, OccurFromIsearch, HideSearch.
+
+
 
 [:ReplacePlus]
 == Enhancements to Occur: Replace+ ==
 
-DrewAdams has written library Lisp:replace+.el, which provides some enhancements to the standard Emacs <code>occur</code> command.
-
-The <code>occur</code> enhancements include these:
+Library <tt>[[replace+.el]]</tt> provides some extensions for the standard Emacs `occur' command:
 
 * Occurrences matching the search pattern (regular expression) are highlighted in the <code>*Occur*</code> buffer. The effect is similar to that of highlighting with the Google toolbar. 
 * The currently visited target-buffer occurrence matching the search pattern is also highlighted. This helps you see where you are and where you have been.
@@ -37,11 +23,12 @@ The <code>occur</code> enhancements include these:
 * More user control over highlight [[Face]]s. 
 * Better default value for the string to search for.
 
-Here's a screenshot of the <code>*Occur*</code> buffer and a visited occurrence in the target buffer, showing match-string highlighting, visited-line number highlighting, and full-line mouseover highlighting (underline):
+Here is a screenshot of the `*Occur*' buffer and a visited occurrence in the target buffer, showing match-string highlighting, visited-line number highlighting, and full-line mouseover highlighting (underline):
 
 [[image:DrewsEmacsOccurImage]]
 
 '''See Also:''' ReplacePlus, GrepMode
+
 
 [:IciclesOccur]
 == Icicles Occur and Search: Alternatives to Standard Occur ==
@@ -77,6 +64,15 @@ Commands `icicle-occur' and `icicle-search' are bound to `##C-c '##' and `##C-c 
 
 * [[Icicles - Search Commands, Overview]] for more about `icicle-occur' and `icicle-search'
 * [[Icicles - Multi-Commands]] for more about the multi-command (navigation) bindings -- `next', `C-next', `C-M-next', and so on
+
+
+== Use with Anything ==
+'''[[Anything]]''' is a candidate selection framework.
+
+Start with `M-x anything-occur', narrow the matched lines by typing some patterns(multiple patterns are space-delimited string),
+select with up/down/pgup/pgdown/C-p/C-n/C-v/M-v, choose with enter,
+
+With C-z selected line is displayed without quitting anything session.
 
 
 == A More Interactive `occur' ==

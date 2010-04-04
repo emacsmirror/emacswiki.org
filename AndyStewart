@@ -28,7 +28,7 @@ Free feel to copy any code you like and don't need my permission, just enjoy! :)
 ** Not part of Emacs.
 *** AutoInstall -- Download and install elisp package automatically. (Maintainer: [[rubikitch]]).
 
-*** [[Yaoddmuse]] -- Edit and manage Oddmuse wikis (like EmacsWiki) page.
+*** [[Yaoddmuse]] -- Edit and manage Oddmuse wikis (like EmacsWiki) page. (Maintainer: [[rubikitch]]).
 
 *** OrgOddmuse -- Transform OrgMode text to Oddmuse Wiki format (see TextFormattingRules) for sharing. :)
 

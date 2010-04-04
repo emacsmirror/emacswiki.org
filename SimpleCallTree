@@ -46,6 +46,14 @@ To see which functions are not called:
     ("DoWikiRequest")
 </pre>
 
+== Use with Anything ==
+'''[[Anything]]''' is a candidate selection framework.
+
+Start with `M-x anything-simple-call-tree', narrow the list by typing some patterns(multiple patterns are space-delimited string),
+select with up/down/pgup/pgdown/C-p/C-n/C-v/M-v, choose with enter,
+
+With C-z function definitions (by rotation) are displayed without quitting anything session.
+
 == Discussion ==
 
 Hm, could be that the last function is not analyzed correctly... -- AlexSchroeder

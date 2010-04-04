@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Apr  3 00:10:15 2010 (-0700)
+;; Last-Updated: Sat Apr  3 14:00:12 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 26801
+;;     Update #: 26814
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1623,7 +1623,6 @@
 ;;
 ;;  * icicle-search-bookmark
 ;;  * icicle-search-bookmark-list-bookmark
-;;  * icicle-search-desktop-bookmark
 ;;  * icicle-search-dired-bookmark
 ;;  * icicle-search-file-bookmark
 ;;  * icicle-search-gnus-bookmark
@@ -4172,6 +4171,18 @@
 ;;    whether Icicles redefines some standard commands, enhancing them
 ;;    to use Icicles completion.  A non-nil value causes redefinition.
 ;;
+;;  * Option `icicle-inhibit-advice-functions' is a list of functions
+;;    that Icicles redefines, and for which Icicle mode deactivates
+;;    the advice.  The advice for each is reactivated when you leave
+;;    Icicle mode.  Generally, it is a bad idea to use advice with
+;;    functions that Icicles redefines, in particular minibuffer
+;;    functions.  If you want to allow some such advice or prohibit
+;;    advice for additional functions, then customize this list.
+;;
+;;    Note: If you or a library you load advises one of these
+;;    functions while you are in Icicle mode, then toggle Icicle mode
+;;    twice, so that this option can have the proper effect.
+;;
 ;;  * The following user options specify the keys to use for
 ;;    completion-candidate cycling:
 ;;
@@ -5612,7 +5623,6 @@
 ;;  `icicle-search-buff-menu-marked' - Search marked buffers, in order
 ;;  `icicle-search-buffer' - Search multiple buffers
 ;;  `icicle-search-char-property' - Search for character properties
-;;  `icicle-search-desktop-bookmark' - Search desktop bookmarks
 ;;  `icicle-search-dired-bookmark' - Search Dired bookmarks
 ;;  `icicle-search-dired-marked' - Search the marked files in Dired
 ;;  `icicle-search-file'  - Search multiple files
@@ -7185,7 +7195,6 @@
 ;;                          Set value of binary option to nil
 ;;  `icicle-search-bookmark' - Search a bookmark
 ;;  `icicle-search-bookmark-list-bookmark' - Bookmark-list bookmark
-;;  `icicle-search-desktop-bookmark' - Search a desktop bookmark
 ;;  `icicle-search-dired-bookmark' - Search a Dired bookmark
 ;;  `icicle-search-file-bookmark' - Search a bookmarked file
 ;;  `icicle-search-gnus-bookmark' - Search a bookmarked Gnus message

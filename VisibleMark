@@ -24,6 +24,9 @@ Tip: I find setting a colored underline face less in-your-face than a colored
 background for the visible marks - especially if you're displaying all marks on 
 the mark ring.
 
+[new:rubikitch:2010-04-04 11:44 UTC]
+I use VisibleBookmarks as a visible mark -- [[rubikitch]]
+
 == Visible (Buffer) Order Mark Navigation ==
 
 If you're using visible mark and displaying all the marks on the mark

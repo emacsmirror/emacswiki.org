@@ -1,0 +1,52 @@
+HTML messages can be viewed in VM using the Emacs/W3M package.  Here
+are the steps to get it working.  (''These instructions are for VM versions 8.1 and up.'')
+
+* Check to ensure that you have '''W3M''' installed.  Most Linux
+  distributions and the Cygwin distribution have it pre-packaged.
+  Alternatively, you can install the latest version yourself.  See the
+  [[w3m]] page for help.
+
+* Install '''Emacs/W3M''' package, which is the Emacs interface to W3M.  See
+  the [[emacs-w3m]] page for help.
+
+* It is a good idea to recompile VM with support for W3M included.  In
+  the VM directory, run ./configure with the --with-other-dirs option
+  including the directory /absolute/path/to/emacs-w3m.  (You can put
+  multiple directories in this option separated by ";".)  Then run
+
+          make clean
+          make
+
+* In your .emacs file, add the lines:
+
+          (add-to-list 'load-path "/absolute/path/to/emacs-w3m")
+          (require 'w3m-load)
+
+* Remove any existing settings for vm-mime-text/html-handler in your
+  .emacs and .vm files.
+
+* Ensure that text/html is covered by vm-mime-internal-content-types
+  and not covered by vm-mime-internal-content-type-exceptions.
+
+* Restart Emacs and VM, and go to a message that has HTML content.  If
+  it displays HTML content formatted nicely, you have it working.
+  Otherwise, check the values of these variables inside VM:
+
+** vm-mime-text/html-handler (should be 'emacs-w3m after VM loads the library)
+** vm-mime-internal-content-types (should include text or text/html)
+** vm-mime-internal-content-type-exceptions (should not have text or text/html)
+
+=== Using external browsers ===
+
+Normally, W3M opens URL's in the html pages internally.  To send them
+to an external web browser registered in VM, use:
+
+          (add-hook 'vm-presentation-mode-hook 
+                       (lambda () 
+                         (set (make-local-variable 'w3m-goto-article-function) 
+                              vm-url-browser)))
+
+Customize the variable vm-url-browser as appropriate to your needs.
+
+
+  

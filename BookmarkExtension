@@ -54,6 +54,8 @@ This will import automatically your firefox bookmarks from places.sqlite to book
 * You will find filters to show only the category of bookmarks you want (e.g Gnus, W3m, etc...)
 
 * You will find the support to use it in [[Anything]] in Lisp:anything-config.el
+** `M-x anything-for-files'
+** `M-x anything-bookmark-ext'
 
 * It provide also an incremental searching of bookmarks ala [[Anything]].(no need to have [[Anything]] installed)
 (That is now part of Emacs).

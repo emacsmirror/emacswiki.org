@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Apr  2 15:38:06 2010 (-0700)
+;; Last-Updated: Sat Apr  3 11:45:52 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5096
+;;     Update #: 5102
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -227,6 +227,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2010/04/03 dadams
+;;     Removed: icicle-search-desktop-bookmark (no need).
 ;; 2010/04/02 dadams
 ;;     Removed:
 ;;       icicle-add-region, icicle-delete-region-from-alist, icicle-purge-bad-file-regions,
@@ -2824,6 +2826,8 @@
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
 ;; 2010/04/02 dadams
+;;     icicle-mode: Updated doc string: list of commands.
+;; 2010/04/02 dadams
 ;;     icicle-mode: Update doc string for change from regions to bookmarks.
 ;;     icicle-define-icicle-maps:
 ;;       Remove Icicles region stuff from menus.
@@ -4193,6 +4197,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2010/04/02 dadams
+;;     icicle-general-help-string: Updated.
 ;; 2010/04/02 dadams
 ;;     Added: icicle-bookmark-types.
 ;;     icicle-general-help-string: Updated to reflect move from saved regions to bookmarks.

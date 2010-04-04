@@ -1,6 +1,6 @@
 [::elscreen]
 is a GNU Emacs window session manager modeled after
-[http://www.gnu.org/software/screen/ GNU screen] by NaotoMorishima.
+[http://www.gnu.org/software/screen/ GNU screen] by NaotoMorishima. See ElScreen.
 
 WorkInProgressPage XavierMaillard
 
@@ -17,7 +17,7 @@ to save or restore how windows are located (this is called as
 window-configuration-to-register and jump-to-register, but these are
 too primitive to use on a daily basis.
 
-ElScreen provides the ease-to-use environment to save or restore
+%%ElScreen%% provides the ease-to-use environment to save or restore
 several window-configurations. For instance, you just have to type C-z
 C-a to switch following two window-configurations: 
 
@@ -31,18 +31,18 @@ w3m,
 
 == Features ==
 
-Key features of ElScreen are:
+Key features of %%ElScreen%% are:
 
  - Key bindings are similar to GNU Screen.
  - Screens are tabbed which makes it easier and faster to switch among applications.
- - ElScreen menu is also added to menu-bar to create, select or delete screens.
+ - %%ElScreen%% menu is also added to menu-bar to create, select or delete screens.
  - Each frame keeps up to 10 window-configurations.
  - List of screens can be shown in mini-buffer.
  - You can assign your own name to each window.
 
 == Environments ==
 
-Following emacs variants are confirmed to run ElScreen:
+Following emacs variants are confirmed to run %%ElScreen%%:
 
  - GNU Emacs 23.0.92
  - GNU Emacs 22.0.50 (including Meadow 3.00-dev)
@@ -58,7 +58,7 @@ Following emacs variants are confirmed to run ElScreen:
 === How to iconify (or suspend) Emacs? ===
 
 C-z is assigned to iconify-or-deiconify-frame (or suspend-emacs),
-however ElScreen reassigns this key to its prefix key. How can we
+however %%ElScreen%% reassigns this key to its prefix key. How can we
 iconify (or suspend) our Emacs?
 
 Ask emacs where iconify-or-deiconify-frame on with "C-h C-w
@@ -70,13 +70,13 @@ Of course you can change it by setting elscreen-prefix-key as following:
 
 (setq elscreen-prefix-key "\C-z")
 
-Note: You must set this value before ElScreen is loaded.
+Note: You must set this value before %%ElScreen%% is loaded.
 
-=== How to change prefix-key after ElScreen is loaded? ===
+=== How to change prefix-key after %%ElScreen%% is loaded? ===
 
-As described above, ElScreen prefix key can be changed by setting
+As described above, %%ElScreen%% prefix key can be changed by setting
 elscreen-prefix-key. However, this will not have any effect after
-ElScreen is loaded. Even in this case, you can change it with
+%%ElScreen%% is loaded. Even in this case, you can change it with
 elscreen-set-prefix-key as following:
 
  (elscreen-set-prefix-key "\C-t")
@@ -136,6 +136,14 @@ If you would like each of your elscreens to have independent most-recently-used-
  
 == ElScreen Addons ==
 
+== Use with Anything ==
+[[Anything]], a candidate selection framework, can open files using elscreen .
+
+Start with `M-x anything-for-files' or `anything-find-files', narrow the list by typing some patterns(multiple patterns are space-delimited string),
+select with up/down/pgup/pgdown/C-p/C-n/C-v/M-v, choose with enter,
+With TAB actions can be selected if the selected candidate has more than one possible action.
+With C-z contents of file/buffer is displayed without quitting anything session.
+
 === Interface to GNU ID Utils ===
 
 [http://www.gnu.org/software/idutils/ GNU ID Utils] is a package of
@@ -146,16 +154,16 @@ ElScreen-GF is an Emacs interface to
 [http://www.gnu.org/software/idutils/ GNU ID Utils]. With this add-on,
 you can list tokens with filename and line number in which each token
 apper, select interesting entries, and jump to them more easily,
-making use of ElScreen.
+making use of %%ElScreen%%.
 
 ElScreen-GF 1.5.0 or later also supports [CScopeAndEmacs cscope], and 1.5.2 or later
 supports [http://www.gnu.org/software/global/ GNU GLOBAL]. Moreover, 1.5.0 or later is expected to run on
 XEmacs.
 
-=== [DiredMode dired] integration ===
+=== Dired integration ===
 
-In DiredMod, `dired-find-file-other-window', which is bound to "o",
-opens the entry in another window. With ElScreen DiredMode, new screen
+In [[Dired]], `dired-find-file-other-window', which is bound to "o",
+opens the entry in another window. With %%ElScreen%% Dired, new screen
 is created for the selected entry if it is a regular file.
 
 === ElScreen-server ===
@@ -177,7 +185,7 @@ automatically created for each file.
 Wanderlust is a mail and news client which can manage internet
 messages with IMAP. ElScreen-WL Add-On software provides the
 capability to manage draft buffers of Wanderlust effectively in
-conjunction with ElScreen. When you write new message or reply
+conjunction with %%ElScreen%%. When you write new message or reply
 message, new screen is created for the draft buffer, and when a draft
 buffer is killed or a message is submitted, the screen for this draft
 buffer is automatically closed.
@@ -185,9 +193,9 @@ buffer is automatically closed.
 === ElScreen-W3M ===
 
 Emacs-W3M is the Web browser on Emacs variants using w3m. It supports
-tabbed browsing, so ElScreen's tabbing capability is incompatible with
+tabbed browsing, so %%ElScreen%%'s tabbing capability is incompatible with
 it. ElScreen-W3M resolves this incompatibility by integrating
-Emacs-W3M's tabbing into ElScreen. 
+Emacs-W3M's tabbing into %%ElScreen%%. 
 
 == Opinions ==
 [new]
@@ -195,7 +203,7 @@ Compared to escreen (EmacsScreen) its frame support is better: it spawns a new s
 [new]
 
 [new]
-I had bad time using ElScreen in the past so I can't say I prefer it
+I had bad time using %%ElScreen%% in the past so I can't say I prefer it
 or not. -- XavierMaillard
 [new]
 See also: WindowConfiguration, WindowsAndRegisters, EmacsScreen
