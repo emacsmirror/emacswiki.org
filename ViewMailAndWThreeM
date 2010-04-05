@@ -2,12 +2,15 @@ HTML messages can be viewed in VM using the Emacs/W3M package.  Here
 are the steps to get it working.  (''These instructions are for VM versions 8.1 and up.'')
 
 * Check to ensure that you have '''W3M''' installed.  Most Linux
-  distributions and the Cygwin distribution have it pre-packaged.
-  Alternatively, you can install the latest version yourself.  See the
+  distributions, the Cygwin distribution, and MacPorts for Mac OS X have 
+  it pre-packaged.  Alternatively, you can install the latest version yourself.  See the
   [[w3m]] page for help.
 
 * Install '''Emacs/W3M''' package, which is the Emacs interface to W3M.  See
-  the [[emacs-w3m]] page for help.
+  the [[emacs-w3m]] page for help.  
+
+* In order for Emacs/W3M to work with the most recent GNU Emacs versions, you 
+  need to install the development version of Emacs/W3M from CVS.
 
 * It is a good idea to recompile VM with support for W3M included.  In
   the VM directory, run ./configure with the --with-other-dirs option

@@ -39,5 +39,19 @@ VM is very well documented. It comes with a fine set of info pages, and there ar
 
 * ViewMailWishlist -- discuss ideas for VM and their feasibility.
 
+=== External tutorials and blogs ===
+
+* V. L. Simpson, [[http://linuxgazette.net/109/simpson.html| Emacs and Email: The VM Mail Package]], Linux Gazette, December 2004.  A very nice tutorial, which is still valuable despite its age.
+
+* Phil Sung, [[http://web.psung.name/emacstips/vm.html|VM configuration and workflow]], September 13, 2008.  Nice article on setting up VM.
+
+* arikm, [[http://www.arikm.com/tidbits/?id=6|emacs: VM Mail Reader]], December 29, 2009.  Help for setting up VM.
+
+* Alley Stoughton, [[http://people.cis.ksu.edu/~stough/emacs-vm-mac/|Support for Using Emacs/VM for Reading and Sending Mail on a Mac]], undated.
+
+* Bill Clementson, [[http://bc.tech.coop/blog/061023.html|VM and Gmail Setup for Dummies]], October 23, 2006.  Although a bit dated, and uses POP for Gmail, it has useful information on setting up starttls.
+
+* Andreas Viklund, [[http://obfuscatedcode.wordpress.com/2007/04/26/configuring-emacs-for-gmails-smtp/|Configuring Emacs for GMail's SMTP over SSL]], April 26, 2007.  Another article on configuring Emacs SMTP for GMail starttls.
+
 ----
 CategoryMail

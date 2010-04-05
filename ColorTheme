@@ -426,7 +426,9 @@ You may wish to modify the name of [dark] theme and the key binding.
 I added my tweaked port of ColorThemeInkpot from VIM. -- Per Vognsen
 
 DanielBrockman links to another color-theme on his page.
-I will add it for the next release. -- zeDek
+I will add it for the next release. -- zeDek. 
+
+I've put an updated version of DanielBrockman's theme ('zenburn') on the wiki: ColorThemeZenburn.
 
 I've posted the latest revision of [http://edward.oconnor.cx/elisp/color-theme-hober2.el color-theme-hober2]; it's quite a bit more fleshed out from when I submitted it to you. -- EdwardOConnor
 

@@ -25,6 +25,8 @@ Turning off the fringe was the first thing I did. Because I use OneOnOneEmacs I 
 [new]
 Is there a way to get the "\" end-of-line behavior in X? The little bars on the left and right with arrows showing where text overflows the width of the window are nice, but they take up too much space. -- DanDebertin
 
+[new:JohanBusk:2010-04-04 18:00 UTC]
+While it's not really an answer to your question, you can make the fringes smaller (like what calling it interactively and telling it to be "minimal" does) with (set-fringe-mode '(1 . 1)) which makes the fringe 1px large on each side - enough to see wraps, but small enough to not waste screen real estate. --JohanBusk
 
 
 ----

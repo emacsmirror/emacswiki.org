@@ -220,3 +220,13 @@ non-nil, add `dmj/wl-send-html-message' to
 (add-hook 'wl-draft-send-hook 'dmj/wl-send-html-message-maybe)
 }}}
 
+== When I open a multifolder I get an error: Wrong type argument: arrayp, nil ==
+
+It might be that you've hit the default limit of messages in a
+multifolder that WL will handle properly.  The current limit is 100000
+Messages -- you might have to adjust this limit by setting the
+variable `elmo-multi-divide-number' to an appropriate value.
+
+{{{
+(setq elmo-multi-divide-number 1000000)
+}}}
