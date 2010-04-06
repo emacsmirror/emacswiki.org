@@ -1,0 +1,11 @@
+Wrap Region is a minor mode that wraps regions with punctuations or tags. It can also be customized to insert the "right buddy" to a punctuation and place the cursor between then.
+
+* Source: http://github.com/rejeep/wrap-region
+* Blog post: http://blog.tuxicity.se/emacs/2008/12/08/wrap-region-minor-mode-for-emacs.html
+* Blog post update: http://blog.tuxicity.se/emacs/2010/03/22/wrap-region-updates.html
+
+
+
+
+----
+CategoryRegion

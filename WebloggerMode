@@ -18,6 +18,39 @@ WebloggerMode requires Lisp:xml-rpc.el .
 
 The current version (1.4.4, released on 2010-03-05) is available at https://launchpad.net/weblogger-el
 
+=Usage=
+From comments in the source, here are some docs:
+
+<pre>
+
+;; in .emacs file:
+;;
+;; (load-file "weblogger.el")
+
+then:
+ M-x weblogger-setup-weblog
+ M-x weblogger-start-entry
+
+;; C-x C-s    -- post-and-publish current buffer to the weblog.
+;;               Calling weblogger-publish-entry with an prefix argument
+;;               (i.e. C-u C-x C-s) will prompt for which weblog
+;;               to use.
+;; C-c C-c    -- save as draft and bury the buffer.
+;; C-c C-n    -- post (but not publish) the current entry and
+;;               load the next entry.
+;; C-c C-p    -- post (but not publish) the current entry and
+;;               load the previous entry.
+;; C-c C-k    -- delete the current entry.
+;; M-g        -- synchronise weblogger.el's idea of the entries available
+;;               with the weblog server.
+;; C-c C-t m  -- edit the main template.
+;; C-c C-t a  -- edit the Archive Index template
+;; C-c C-s s  -- Change the server being used.
+;; C-c C-s w  -- Change the weblog.
+;; C-c C-s u  -- Change the user (re-login).
+</pre>
+
+
 =Discussion=
 
 If you run into a bug in WebloggerMode, please report it using Savannah or M-x weblogger-submit-bug-report but make sure that I (MarkHershberger) know about it.  Another good way to get support is to join the Emacs Weblogs mailing list (https://savannah.nongnu.org/mail/?group=emacsweblogs).  Posting rants and fixes on various blogs across the Internet won't get your problem fixed.  (2010-03-09 -- MarkHershberger)
@@ -59,6 +92,7 @@ I made a patch(http://rix3.8.je/blog/2009/12/16/emacs%e7%9a%84weblogger1-4-4%e7%
 [new]
 
 I have applied rix's patch to 1.4.4 and posting to my Wordpress blog is good except for one thing - all my posts are 5 hours early.  Is this a weird interaction between the Date string (which contains -0500, since I'm in the Eastern TZ) and the API?  If I post from weblogger.el at 1pm, the post on the web says it was posted at 8am on the blog.  If I fix the posting time via the web interface to be 1pm and use weblogger-fetch-entries, it shows 8am in the date string of the fetched entry. --duckpuppy
+
 
 
 ----

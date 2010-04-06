@@ -24,9 +24,6 @@ export EDITOR=~/bin/edit
 
 Where "edit" is the small script above. The key is the "" for alternate-editor. emacsclient starts the server for you if and only if it is not already running.
 
-This does not work for me. With emacs 23, I get the message "--alternate-editor ot ALTERNATE_EDITOR variable cannot be an empty string"
-
-
 OweAndersson : Think this works fine, only I get a warning: "Emacsclient ERROR, No connection could be made because the target machine actively refused it"
 
 Under Windows I used someting like this wedit.bat:

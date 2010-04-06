@@ -1,5 +1,5 @@
 ;;; el-expectations.el --- minimalist unit testing framework
-;; $Id: el-expectations.el,v 1.58 2010/04/02 22:01:43 rubikitch Exp $
+;; $Id: el-expectations.el,v 1.59 2010/04/05 21:50:19 rubikitch Exp $
 
 ;; Copyright (C) 2008, 2009, 2010  rubikitch
 
@@ -118,6 +118,9 @@
 ;;; History:
 
 ;; $Log: el-expectations.el,v $
+;; Revision 1.59  2010/04/05 21:50:19  rubikitch
+;; C-M-x executes unit tests only when the current defun is expectations.
+;;
 ;; Revision 1.58  2010/04/02 22:01:43  rubikitch
 ;; Set default `expectations-execute-at-once' to 'all.
 ;; Execute all expectations blocks by C-M-x by default.
@@ -871,18 +874,19 @@ If `expectations-execute-at-once' is non-nil, execute expectations if it is an e
   (interactive "P")
   (setq exps-last-position (point))
   (eval-defun arg)
-  (cond ((eq expectations-execute-at-once 'all)
-         (setq exps-last-testcase nil)
-         (save-excursion
-           (goto-char (point-min))
-           (while (re-search-forward "^\\s-*(expectations\n" nil t)
-             (eval-defun arg)))
-         (expectations-execute))
-        (expectations-execute-at-once
-         (save-excursion
-           (beginning-of-defun)
-           (and (looking-at "(expectations\\|(.+(fboundp 'expectations)\\|(dont-compile\n.*expectations")
-                (expectations-execute))))))
+  (when (exps-current-form-is-expectations)
+    (when (eq expectations-execute-at-once 'all)
+      (setq exps-last-testcase nil)
+      (save-excursion
+        (goto-char (point-min))
+        (while (re-search-forward "^\\s-*(expectations\n" nil t)
+          (eval-defun arg))))
+    (expectations-execute)))
+
+(defun exps-current-form-is-expectations ()
+  (save-excursion
+    (beginning-of-defun)
+    (looking-at "(expectations\\|(.+(fboundp 'expectations)\\|(dont-compile\n.*expectations")))
 
 (substitute-key-definition 'eval-defun 'expectations-eval-defun emacs-lisp-mode-map)
 (substitute-key-definition 'eval-defun 'expectations-eval-defun lisp-interaction-mode-map)
