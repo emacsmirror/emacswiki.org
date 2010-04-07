@@ -45,6 +45,8 @@
 ;; *  Each pane has its own history ring: press M-y / M-u for moving backwards /
 ;; forwards in the history of directories.
 
+;; * Press M-t to swap (transpose) the panes.
+
 ;; * Press C-= for "smart" file comparison using ediff. It compares together the
 ;; first two files marked on each pane or, if no files have been marked, it  as-
 ;; sumes that the second pane contains a file with the same name as the selected
@@ -56,18 +58,18 @@
 
 ;; * Press C-M-= for directory comparison (by date / size / contents of files).
 
-;; * Press y to recursively calculate the total size (in bytes) of all files and
-;;   directories currently selected/marked in the active pane.
-
-;; * Press C-c t to open a terminal into the current pane's directory.
-
-;; * Press M-t to swap (transpose) the panes.
-
 ;; * Press C-c C-s to change the layout of the panes (horizontal/vertical/top)
+
+;; *  Press C-c / to interactively refine the contents of the current pane using
+;; fuzzy matching, then press Return/C-g to accept the current narrowed state or
+;; Backspace/Delete to return to any of the previous ones.
 
 ;; *  Press  C-x C-q   to put the current pane in Editable Dired mode (allows to
 ;; edit the pane as if it were a regular file -- press C-c C-c  to  commit  your
 ;; changes to the filesystem, or C-c C-k to abort).
+
+;; * Press y to recursively calculate the total size (in bytes) of all files and
+;; directories currently selected/marked in the active pane.
 
 ;; *  Sunrise VIRTUAL mode integrates dired-virtual mode to Sunrise, allowing to
 ;; capture find and locate results in regular files and to use them later as  if
@@ -85,6 +87,13 @@
 ;; gation inside compressed archives (*.zip, *.tgz, *.tar.bz2, *.deb, etc. etc.)
 ;; You  need to have AVFS with coda or fuse installed and running on your system
 ;; for this to work, though.
+
+;; * Opening terminals directly from Sunrise:
+;;    - Press C-c C-t to inconditionally open a new terminal into the currently
+;;      selected directory in the active pane.
+;;    - Press C-c t to switch to the last opened terminal.
+;;    - Press C-c T to switch to the last opened terminal and change directory
+;;      to the one in the current directory.
 
 ;; *  Terminal  integration  and Command line expansion: integrates tightly with
 ;; eshell or term-mode to allow interaction between terminal emulators  in  line
@@ -107,11 +116,11 @@
 ;; than  copying, in which all directories are recursively created with the same
 ;; names and structures at the destination, while  what  happens  to  the  files
 ;; within them depends on the option you choose:
-;;   - "(D)irectories only" ignores all files, copies only directories,
-;;   - "(C)opies" performs a regular recursive copy of all files and dirs,
-;;   - "(H)ardlinks" makes every new file a (hard) link to the original one
-;;   - "(S)ymlinks" creates absolute symbolic links for all files in the tree,
-;;   - "(R)elative symlinks” creates relative symbolic links.
+;;    - "(D)irectories only" ignores all files, copies only directories,
+;;    - "(C)opies" performs a regular recursive copy of all files and dirs,
+;;    - "(H)ardlinks" makes every new file a (hard) link to the original one
+;;    - "(S)ymlinks" creates absolute symbolic links for all files in the tree,
+;;    - "(R)elative symlinks” creates relative symbolic links.
 
 ;; * Passive navigation: the usual navigation keys (n, p, Return, U, ;) combined
 ;; with Meta allow to move across the passive pane without  actually  having  to
@@ -130,10 +139,10 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 275 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 276 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
-;; for Linux and on EmacsW32 (version 22) for  Windows.  I  have  also  received
+;; for Linux and on EmacsW32 (version 23) for  Windows.  I  have  also  received
 ;; feedback  from a user reporting it works OK on the Mac (GNU Emacs 22.2 on Mac
 ;; OS X Leopard). I *am* aware that  there  are  several  functions  (including,
 ;; alas,  file  and directory comparison) that simply will not work on GNU Emacs
@@ -232,13 +241,13 @@
   correct format of their entries.
 
   NOTE:  the  default  value  for  these  switches may be incompatible with your
-  installment if you're using Sunrise in  a  non-GNU  environment.  If  you  are
+  installation if you're using Sunrise in a  non-GNU  environment.  If  you  are
   getting error reports of the form ``Listing directory failed but `access-file'
   worked'', then you may try changing this value to -alp (be aware, though, that
   this will cripple sorting in all your VIRTUAL buffers), or much better install
   GNU coreutils in your system and use gls as your ls program.  For  details  on
-  how to do this please consult the GNU Emacs FAQ for MS Windows.
-  (Thanks Vagn Johansen for pointing out this issue)"
+  how  to  do this please consult the GNU Emacs FAQ for MS Windows. (Thanks Vagn
+  Johansen for pointing out this issue)"
   :group 'sunrise
   :type 'string)
 
@@ -1329,7 +1338,7 @@ automatically:
   (eq 'sr-virtual-mode (assoc-default filename auto-mode-alist 'string-match)))
 
 (defun sr-avfs-directory-p (filename)
-  "Tell whether FILENAME is the path to an AVFS virtual directory."
+  "Tell whether FILENAME can be seen as the root of an AVFS virtual directory."
   (let ((mode (assoc-default filename auto-mode-alist 'string-match)))
     (and sr-avfs-root
          (or (eq 'archive-mode mode)
@@ -1346,10 +1355,15 @@ automatically:
       (sr-dired-prev-subdir)
     (sr-goto-dir directory)))
 
-(defun sr-find-avfs-directory (avfs-dir)
-  "Visit the given AVFS virtual directory in the active pane."
-  (sr-goto-dir (sr-avfs-dir avfs-dir))
-  (sr-keep-buffer))
+(defun sr-find-avfs-directory (filename)
+  "Determine whether FILENAME is actually the root of some directory in AVFS,
+  and visit it accordingly as a directory or as a regular file."
+  (let ((dir-path (sr-avfs-dir filename)))
+    (if dir-path
+        (progn
+          (sr-goto-dir dir-path)
+          (sr-keep-buffer))
+      (sr-find-regular-file filename))))
 
 (defun sr-find-virtual-directory (sr-virtual-dir)
   "Visit the given Sunrise VIRTUAL directory in the active pane."
@@ -1981,6 +1995,36 @@ automatically:
   (sr-in-other (dired-unmark-all-marks)))
 
 ;;; ============================================================================
+;;; Progress feedback functions:
+
+(defun sr-progress-prompt (op-name)
+  "Builds the default progress feedback message."
+  (concat "Sunrise: " op-name "... "))
+
+(defun sr-make-progress-reporter (op-name totalsize)
+  "Makes a new Sunrise progress reporter by prepending two integers (accumulator
+  and scale) to a standard progress reporter (built using make-progress-reporter
+  from subr.el): accumulator keeps the  current state of the reporter, and scale
+  is used when the absolute value of 100% is bigger than most-positive-fixnum."
+  (let ((accumulator 0) (scale 1) (maxval totalsize))
+    (when (> totalsize most-positive-fixnum)
+      (setq scale (/ totalsize most-positive-fixnum))
+      (setq maxval most-positive-fixnum))
+    (list accumulator scale
+          (make-progress-reporter
+           (sr-progress-prompt op-name) 0 maxval 0 1 0.5))))
+
+(defun sr-progress-reporter-update (reporter size)
+  "Updates REPORTER (a Sunrise progress reporter) by adding SIZE to its state."
+  (let ((scale (cadr reporter)))
+    (setcar reporter (+ (truncate (/ size scale)) (car reporter)))
+    (progress-reporter-update (caddr reporter) (car reporter))))
+
+(defun sr-progress-reporter-done (reporter)
+  "Prints REPORTER's feedback message followed by word \"done\" in echo area."
+  (progress-reporter-done (caddr reporter)))
+
+;;; ============================================================================
 ;;; File manipulation functions:
 
 (defun sr-editable-pane ()
@@ -2028,15 +2072,22 @@ automatically:
   (interactive)
   (let* ((items (dired-get-marked-files nil))
          (vtarget (sr-virtual-target))
-         (target (or vtarget sr-other-directory)))
+         (target (or vtarget sr-other-directory))
+         (progress))
     (if (and (not vtarget) (sr-equal-dirs default-directory sr-other-directory))
         (dired-do-copy)
       (when (sr-ask "Copy" target items #'y-or-n-p)
         (if vtarget
-            (sr-copy-virtual)
-          (sr-clone items target #'copy-file ?C))
-        (dired-unmark-all-marks)
-        (message "Done: %d items(s) copied" (length items))))))
+            (progn
+              (sr-copy-virtual)
+              (message "Done: %d items(s) copied" (length items)))
+          (progn
+            (setq progress (sr-make-progress-reporter
+                            "copying" (sr-files-size items)))
+            (sr-clone items target #'copy-file progress ?C)
+            (sr-progress-reporter-done progress)))
+        (flet ((message (msg &rest args) (ignore))) 
+          (dired-unmark-all-marks))))))
 
 (defun sr-do-symlink ()
   "Creates  symbolic  links  in  the  passive pane to all the currently selected
@@ -2070,7 +2121,7 @@ automatically:
       (error "Cannot move files to a VIRTUAL buffer, try (C)opying instead."))
   (let* ((selected-items (dired-get-marked-files nil))
          (files-count (length selected-items))
-         (target sr-other-directory))
+         (target sr-other-directory) progress)
     (if (> files-count 0)
         (if (sr-equal-dirs default-directory sr-other-directory)
             (dired-do-rename)
@@ -2078,7 +2129,10 @@ automatically:
             (let ((names (mapcar #'file-name-nondirectory selected-items))
                   (inhibit-read-only t))
               (with-current-buffer (sr-other 'buffer)
-                (sr-move-files selected-items default-directory)
+                (setq progress
+                      (sr-make-progress-reporter
+                       "renaming" (sr-files-size selected-items)))
+                (sr-move-files selected-items default-directory progress)
                 (revert-buffer)
                 (dired-mark-remembered
                  (mapcar (lambda (x) (cons (expand-file-name x) ?R)) names)))
@@ -2124,7 +2178,7 @@ automatically:
       (error "Cannot clone inside one single directory, please select a\
  different one in the passive pane."))
 
-  (let ((target sr-other-directory) clone-op items)
+  (let ((target sr-other-directory) clone-op items progress)
     (if (and mode (>= mode 97)) (setq mode (- mode 32)))
     (cond ((eq ?D mode) (setq clone-op nil))
           ((eq ?C mode) (setq clone-op #'copy-file))
@@ -2133,7 +2187,9 @@ automatically:
           ((eq ?R mode) (setq clone-op #'dired-make-relative-symlink))
           (t (error (format "Invalid cloning mode: %c" mode))))
     (setq items (dired-get-marked-files nil))
-    (sr-clone items target clone-op ?K)
+    (setq progress (sr-make-progress-reporter
+                    "cloning" (sr-files-size items)))
+    (sr-clone items target clone-op progress ?K)
     (dired-unmark-all-marks)
     (message "Done: %d items(s) dispatched" (length items))))
 
@@ -2144,13 +2200,13 @@ automatically:
   (dired-do-copy-regexp "$" ".bak")
   (sr-revert-buffer))
 
-(defun sr-clone (items target clone-op mark-char)
+(defun sr-clone (items target clone-op progress mark-char)
   "Clones  recursively  all given items (files and directories) into the passive
   pane."
   (let ((names (mapcar #'file-name-nondirectory items))
         (inhibit-read-only t))
     (with-current-buffer (sr-other 'buffer)
-      (sr-clone-files items target clone-op))
+      (sr-clone-files items target clone-op progress))
     (if (window-live-p (sr-other 'window))
         (sr-in-other
          (progn
@@ -2159,13 +2215,14 @@ automatically:
             (mapcar (lambda (x) (cons (expand-file-name x) mark-char)) names))
            (sr-focus-filename (car names)))))))
 
-(defun sr-clone-files (file-paths target-dir clone-op &optional do-overwrite)
+(defun sr-clone-files (file-paths target-dir clone-op progress &optional do-overwrite)
   "Clones  all  files  in  file-paths  (list  of full paths) to target dir using
   clone-op to clone all files."
   (setq target-dir (replace-regexp-in-string "/?$" "/" target-dir))
   (mapc
    (function
     (lambda (f)
+      (sr-progress-reporter-update progress (nth 7 (file-attributes f)))
       (let* ((name (file-name-nondirectory f))
              (target-file (concat target-dir name))
              (symlink-to (file-symlink-p (replace-regexp-in-string "/*$" "" f))))
@@ -2180,10 +2237,10 @@ automatically:
           (let ((initial-path (file-name-directory f)))
             (unless (file-symlink-p initial-path)
               (sr-clone-directory
-               initial-path name target-dir clone-op do-overwrite))))
-
+               initial-path name target-dir clone-op progress do-overwrite))))
+         
          (clone-op
-          (message "Cloning: %s => %s" f target-file)
+          ;; (message "[[Cloning: %s => %s]]" f target-file)
           (if (file-exists-p target-file)
               (if (or (eq do-overwrite 'ALWAYS)
                       (setq do-overwrite (sr-ask-overwrite target-file)))
@@ -2191,7 +2248,7 @@ automatically:
             (apply clone-op (list f target-file t))))))))
    file-paths))
 
-(defun sr-clone-directory (in-dir d to-dir clone-op do-overwrite)
+(defun sr-clone-directory (in-dir d to-dir clone-op progress do-overwrite)
   "Clones directory d in in-dir to to-dir, and recursively, all files too.
 indir/d => to-dir/d using clone-op to clone all files."
   (setq d (replace-regexp-in-string "/?$" "/" d))
@@ -2202,9 +2259,9 @@ indir/d => to-dir/d using clone-op to clone all files."
           (mapcar (lambda (f) (concat in-dir d f)) files-in-d)))
     (unless (file-exists-p (concat to-dir d))
       (make-directory (concat to-dir d)))
-    (sr-clone-files file-paths-in-d (concat to-dir d) clone-op do-overwrite)))
+    (sr-clone-files file-paths-in-d (concat to-dir d) clone-op progress do-overwrite)))
 
-(defun sr-move-files (file-path-list target-dir &optional do-overwrite)
+(defun sr-move-files (file-path-list target-dir progress &optional do-overwrite)
   "Moves all files in file-path-list (list of full paths) to target dir."
   (mapc
    (function
@@ -2212,21 +2269,24 @@ indir/d => to-dir/d using clone-op to clone all files."
       (if (file-directory-p f)
           (progn
             (setq f (replace-regexp-in-string "/?$" "/" f))
+            (sr-progress-reporter-update progress (sr-files-size (list f)))
             (let* ((target (concat target-dir (sr-directory-name-proper f))))
               (if (file-exists-p target)
                   (when (or (eq do-overwrite 'ALWAYS)
                             (setq do-overwrite (sr-ask-overwrite target)))
-                    (sr-clone-directory f "" target-dir 'copy-file do-overwrite)
+                    (sr-clone-directory f "" target-dir 'copy-file progress
+                                        do-overwrite)
                     (dired-delete-file f 'always))
                 (dired-rename-file f target do-overwrite))))
         (let* ((name (file-name-nondirectory f))
                (target-file (concat target-dir name)))
-          (message "Renaming: %s => %s" f target-file)
+          ;; (message "Renaming: %s => %s" f target-file)
+          (sr-progress-reporter-update progress (nth 7 (file-attributes f)))
           (if (file-exists-p target-file)
               (if (or (eq do-overwrite 'ALWAYS)
                       (setq do-overwrite (sr-ask-overwrite target-file)))
                   (dired-rename-file f target-file t))
-            (dired-rename-file f target-file t))) )))
+            (dired-rename-file f target-file t)) ))))
    file-path-list))
 
 (defun sr-link (creator action marker)
@@ -2370,20 +2430,26 @@ indir/d => to-dir/d using clone-op to clone all files."
 (defun sr-compare-panes ()
   "Compares the contents of Sunrise panes."
   (interactive)
-  (let* ((predicate (sr-ask-compare-panes-predicate))
-         (file-alist1 (sr-files-attributes))
+  (let* ((file-alist1 (sr-files-attributes))
          (other (sr-other 'buffer))
          (file-alist2 (with-current-buffer other (sr-files-attributes)))
+         (progress
+          (sr-make-progress-reporter
+           "comparing" (+ (length file-alist1) (length file-alist2))))
+         (predicate `(prog1 ,(sr-ask-compare-panes-predicate)
+                            (sr-progress-reporter-update progress 1)))
          (file-list1 (mapcar 'cadr (dired-file-set-difference
                                     file-alist1 file-alist2 predicate)))
          (file-list2 (mapcar 'cadr (dired-file-set-difference
                                     file-alist2 file-alist1 predicate))))
+    (sr-md5 nil)
     (dired-mark-if (member (dired-get-filename nil t) file-list1) nil)
     (with-current-buffer other
       (dired-mark-if (member (dired-get-filename nil t) file-list2) nil))
     (message "Marked in pane1: %s files, in pane2: %s files"
              (length file-list1)
-             (length file-list2))))
+             (length file-list2))
+    (sit-for 0.2)))
 
 (defun sr-ask-compare-panes-predicate ()
   "Prompts for the criterion to use for comparing the contents of the panes."
@@ -2397,19 +2463,15 @@ or (c)ontents? ")
     (if (>= response 97)
         (setq response (- response 32)))
     (cond ((eq response ?D)
-           (list 'not (list '= 'mtime1 'mtime2)))
+           `(not (= mtime1 mtime2)))
           ((eq response ?S)
-           (list 'not (list '= 'size1 'size2)))
+           `(not (= size1 size2)))
           ((eq response ?N)
            nil)
           ((eq response ?C)
-           (list 'not (list 'string=
-                            (list 'sr-md5 'file1)
-                            (list 'sr-md5 'file2))))
+           `(not (string= (sr-md5 file1 t) (sr-md5 file2 t))))
           (t
-           (list 'or
-                 (list 'not (list '= 'mtime1 'mtime2))
-                 (list 'not (list '= 'size1 'size2)))))))
+           `(or (not (= mtime1 mtime2)) (not (= size1 size2)))))))
 
 (defun sr-files-attributes ()
   "Returns  a  list of all file names and attributes from the current pane. This
@@ -2433,16 +2495,26 @@ or (c)ontents? ")
        (sr-buffer-files (current-buffer))
      (directory-files default-directory))))
 
-(defun sr-md5 (file-alist)
-  "Builds  and  executes a shell command to calculate the MD5 sum of the file
-  referred to by the given file list, in which the second element is the name
-  of the file."
-  (let* ((filename (second file-alist))
-        (md5-command
-         (replace-regexp-in-string "%f" filename sr-md5-shell-command)))
-    (if (file-directory-p filename)
-        ""
-      (shell-command-to-string md5-command))))
+(defvar sr-md5 '(nil) "Memoization cache for the sr-md5 function.")
+(defun sr-md5 (file-alist &optional memoize)
+  "Builds and executes a shell command to calculate the MD5 checksum of the file
+  referred to by FILE-ALIST, in which the second element is the absolute path of
+  the file. If MEMOIZE is not nil, then save the result into the sr-md5 alist so
+  it'll be reused the next time this function is called with the same path. This
+  cache can be cleared later calling sr-md5 with nil as its first argument."
+  (if (null file-alist)
+      (setq sr-md5 '(nil))
+    (let* ((filename (second file-alist))
+           (md5-digest (cdr (assoc filename sr-md5)))
+           (md5-command))
+      (unless md5-digest
+        (setq md5-command
+              (replace-regexp-in-string
+               "%f" (format "\"%s\"" filename) sr-md5-shell-command))
+        (setq md5-digest (shell-command-to-string md5-command))
+        (if memoize
+            (push (cons filename md5-digest) sr-md5)))
+      md5-digest)))
 
 (defun sr-diff ()
   "Runs diff on the top two marked files in both panes."
@@ -2509,8 +2581,7 @@ or (c)ontents? ")
     (sr-save-aspect
      (sr-alternate-buffer (apply fun (list default-directory pattern)))
      (sr-virtual-mode)
-     (sr-keep-buffer))
-    (sr-backup-buffer)))
+     (sr-keep-buffer))))
 
 (defun sr-find (pattern)
   "Runs find-dired passing the current directory as first parameter."
@@ -2532,7 +2603,8 @@ or (c)ontents? ")
   (after sr-advice-find-dired-sentinel (proc state))
   (when (eq 'sr-virtual-mode major-mode)
     (rename-uniquely)
-    (sr-revert-buffer)))
+    (sr-revert-buffer)
+    (sr-backup-buffer)))
 (ad-activate 'find-dired-sentinel)
 
 (eval-and-compile
@@ -2692,7 +2764,8 @@ or (c)ontents? ")
           (setq selection (file-name-nondirectory (car selection)))
           (dired-show-file-type selection deref-symlinks)
           (message "%s (%s bytes)" (current-message) size))
-      (message "%s bytes in %d selected items" size items))))
+      (message "%s bytes in %d selected items" size items))
+    (sit-for 0.5)))
 
 (defun sr-files-size (files)
   "Recursively calculates the total size  of all files and directories listed in
@@ -2991,9 +3064,9 @@ or (c)ontents? ")
 ;;; Desktop support:
 
 (defun sr-pure-virtual-p (&optional buffer)
-  "Determines  whether the given buffer (or the current one if none is given) is
-  a pure virtual buffer, i.e. is not attached neither to a directory or  a  file
-  in the filesystem."
+  "Tells if the given BUFFER (or the current one, if none is provided) is purely
+  virtual, ie. it's not attached neither to any directory nor to any file in the
+  file system."
   (with-current-buffer (if (bufferp buffer) buffer (current-buffer))
     (not (or (eq 'sr-mode major-mode)
              (and (eq 'sr-virtual-mode major-mode)

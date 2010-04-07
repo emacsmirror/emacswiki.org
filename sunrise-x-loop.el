@@ -53,7 +53,7 @@
 ;; since in these cases the execution of file transfers in the background should
 ;; be managed directly by the FTP client.
 
-;; This is version 3 $Rev: 250 $ of the Sunrise Commander Loop Extension.
+;; This is version 3 $Rev: 276 $ of the Sunrise Commander Loop Extension.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.
@@ -102,17 +102,17 @@
 (defvar sr-loop-scope nil)
 (defvar sr-loop-queue nil)
 
-(if (boundp 'sr-mode-map)
-    (progn
-      (define-key sr-mode-map "C" 'sr-loop-do-copy)
-      (define-key sr-mode-map "K" 'sr-loop-do-clone)
-      (define-key sr-mode-map "R" 'sr-loop-do-rename)))
+(when (boundp 'sr-mode-map)
+  (define-key sr-mode-map "C" 'sr-loop-do-copy)
+  (define-key sr-mode-map "K" 'sr-loop-do-clone)
+  (define-key sr-mode-map "R" 'sr-loop-do-rename))
 
 (defun sr-loop-start ()
   "Launches   and   initiates  a  new  background  elisp  interpreter.  The  new
   interpreter runs in batch mode and inherits all  functions  from  the  Sunrise
   Commander (sunrise-commander.el) and from this file."
   (let ((process-connection-type nil)
+        (sr-main (symbol-file 'sr-mode))
         (sr-loop (symbol-file 'sr-loop-cmd-loop))
         (emacs (concat invocation-directory invocation-name)))
     (setq sr-loop-process (start-process
@@ -120,7 +120,8 @@
                          (if sr-loop-debug "*SUNRISE-LOOP*" nil)
                          emacs
                          "-batch" "-q" "-no-site-file"
-                         "-l" sr-loop "-eval" "(sr-loop-cmd-loop)"))
+                         "-l" sr-main "-l" sr-loop
+                         "-eval" "(sr-loop-cmd-loop)"))
     (sr-loop-enqueue `(setq load-path (quote ,load-path)))
     (sr-loop-enqueue '(require 'sunrise-commander))
     (if sr-loop-debug
@@ -145,13 +146,17 @@
   (sr-loop-disable-timer)
   (setq sr-loop-timer (run-with-timer sr-loop-timeout nil 'sr-loop-stop)))
 
-(defun sr-loop-stop ()
+(defun sr-loop-stop (&optional interrupt)
   "Shuts down the background elisp interpreter and cleans up after it."
-  (interactive)
+  (interactive "p")
   (sr-loop-disable-timer)
-  (setq sr-loop-queue nil)
-  (when sr-loop-process
-    (message "[[Shutting down background interpreter]]")
+  (if sr-loop-queue
+      (if interrupt
+          (progn
+            (sr-loop-notify "Aborted. Some operations may remain unfinished")
+            (setq sr-loop-queue nil))
+        (sr-loop-enable-timer)))
+  (unless sr-loop-queue
     (delete-process sr-loop-process)
     (setq sr-loop-process nil)))
 
@@ -169,7 +174,9 @@
           (cond ((string-match "^\\[\\[\\*\\([^\]\*]+\\)\\*\\]\\]$" line)
                  (sr-loop-notify (match-string 1 line)))
                  
-                ((and (string-match "^\\[\\[" line) (< 0 (length line)))
+                ((and (or (string-match "^\\[\\[" line)
+                          (string-match "^Sunrise Loop: " line))
+                      (< 0 (length line)))
                  (message "%s" line))
 
                 ((eq ?^ (string-to-char line))
@@ -189,7 +196,7 @@
   (unless sr-loop-process
     (sr-loop-start))
   (let ((command (prin1-to-string form)))
-    (setq sr-loop-queue (append sr-loop-queue (list command)))
+    (setq sr-loop-queue (append sr-loop-queue (list (md5 command))))
     (process-send-string sr-loop-process command)
     (process-send-string sr-loop-process "\n")))
 
@@ -197,9 +204,10 @@
   "Main execution loop for the background elisp interpreter."
   (sr-loop-disengage)
   (defun read-char nil ?y) ;; Always answer "yes" to any prompt
-  (let (command)
+  (let ((command) (signature))
     (while t
       (setq command (read))
+      (setq signature (md5 (prin1-to-string command)))
       (condition-case description
           (progn
             (if sr-loop-debug
@@ -209,7 +217,7 @@
             (message "[[Command successfully invoked in background]]"))
         (error (message "%s" (concat "[[*ERROR IN BACKGROUND JOB: "
                                      (prin1-to-string description) "*]]"))))
-        (message "^%s" (prin1-to-string command)))))
+        (message "^%s" signature))))
 
 (defun sr-loop-applicable-p ()
   "Determines  whether  a  given  operation  may  be  safely  delegated  to  the
@@ -247,6 +255,12 @@
         (sr-do-rename))
     (sr-do-rename)))
 
+(defun sr-progress-prompt (op-name)
+  "Replaces sr-progress-prompt in sunrise-commander.el"
+  (if sr-loop-scope
+      (concat "Sunrise Loop: " op-name "... ")
+    (concat "Sunrise: " op-name "... ")))
+
 ;; This modifies all confirmation request messages inside a loop scope:
 (defadvice y-or-n-p
   (before sr-loop-advice-y-or-n-p (prompt))
@@ -283,21 +297,21 @@
 ;; sr-do-copy inside a loop scope:
 (defadvice sr-clone-files
   (around sr-loop-advice-sr-clone-files
-          (file-path-list target-dir clone-op &optional do-overwrite))
+          (file-path-list target-dir clone-op progress &optional do-overwrite))
   (if sr-loop-scope
       (sr-loop-enqueue
        `(sr-clone-files
-         (quote ,file-path-list) ,target-dir #',clone-op 'ALWAYS))
+         (quote ,file-path-list) ,target-dir #',clone-op ',progress 'ALWAYS))
     ad-do-it))
 
 ;; This  delegates to the background interpreter all rename operations triggered
 ;; by sr-do-rename inside a loop scope:
 (defadvice sr-move-files
   (around sr-loop-advice-sr-move-files
-          (file-path-list target-dir &optional do-overwrite))
+          (file-path-list target-dir progress &optional do-overwrite))
   (if sr-loop-scope
       (sr-loop-enqueue
-       `(sr-move-files (quote ,file-path-list) ,target-dir 'ALWAYS))
+       `(sr-move-files (quote ,file-path-list) ,target-dir ',progress 'ALWAYS))
     ad-do-it))
 
 (defun sr-loop-engage ()

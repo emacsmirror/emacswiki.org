@@ -3126,6 +3126,7 @@ You can set user options `fit-frame-max-width-percent' and
   (declare (warn (unresolved 0)))
   (when (and (require 'fit-frame nil t)
              (boundp 'fit-frame-inhibit-fitting-flag)
+             (not anything-inhibit-fit-frame-flag)
              (not fit-frame-inhibit-fitting-flag)
              (anything-window))
     (ignore-errors
@@ -5957,6 +5958,32 @@ Given pseudo `anything-sources' and `anything-pattern', returns list like
         (anything-require-at-least-version "1.999"))
       (expect (error)
         (anything-require-at-least-version "1.2000"))
+      (desc "anything-once")
+      (expect 2
+        (let ((i 0))
+          (anything-test-candidates
+           '(((name . "1")
+              (init . (lambda () (incf i))))
+             ((name . "2")
+              (init . (lambda () (incf i))))))
+          i))
+      (expect 1
+        (let ((i 0))
+          (anything-test-candidates
+           '(((name . "1")
+              (init . (lambda () (anything-once (lambda () (incf i))))))
+             ((name . "2")
+              (init . (lambda () (anything-once (lambda () (incf i))))))))
+          i))
+      (expect 1
+        (let ((i 0))
+          (flet ((init1 () (anything-once (lambda () (incf i)))))
+            (anything-test-candidates
+             '(((name . "1")
+                (init . init1))
+               ((name . "2")
+                (init . init1)))))
+          i))
       )))
 
 

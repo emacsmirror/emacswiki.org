@@ -285,6 +285,13 @@ You may also use the arrow keys in the MiniBuffer.
 
 [[iflipb]] is a lightweight and no-nonsense way of flipping through the most recently used buffers.
 
+= mybuffers =
+
+Yet another way to do it. It cycles only through the normal text buffers (i.e., excludes special buffers) and visits the most recently used first.
+
+* Author: ChristianRovner
+* Code: Lisp:mybuffers.el
+
 ---- 
 CategoryBufferSwitching
 

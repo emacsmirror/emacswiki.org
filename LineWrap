@@ -64,6 +64,7 @@ the lazy dog.
 
 --- IainDalton
 
+Just fix the second line by hand and then hit M-q or run fill-paragraph. Make sure that the paragraph is surrounded by blank lines (you can add some just to delete them later) so it won’t run two paragraphs together.
 ----
 CategoryFilling
 CategoryGlossary

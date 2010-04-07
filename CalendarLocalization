@@ -43,6 +43,10 @@ Week starts with Monday, use also spanish weekday and month names. Editor specia
 === Swedish ===
 See http://bigwalter.net/daniel/elisp/sv-kalender.el
 
+=== Danish ===
+
+See http://soren.github.com/elisp/index.html
+
 === Chinese ===
 
 Here is how to display the 'celestial-stem' (天干)

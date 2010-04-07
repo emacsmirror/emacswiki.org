@@ -72,7 +72,7 @@
 ;; work  on  Windows.  It was written on GNU Emacs 23 on Linux and tested on GNU
 ;; Emacs 22 and 23 for Linux.
 
-;; This is version 2 $Rev: 258 $ of the Sunrise Commander Mirror Extension.
+;; This is version 2 $Rev: 276 $ of the Sunrise Commander Mirror Extension.
 
 ;;; Installation and Usage:
 
@@ -471,7 +471,7 @@
 ;; directory:
 (defadvice sr-clone-files
   (around sr-mirror-advice-sr-clone-files
-          (file-path-list target-dir clone-op &optional do-overwrite))
+          (file-path-list target-dir clone-op progress &optional do-overwrite))
   (if (null sr-mirror-home)
       ad-do-it
     (let ((orig target-dir))

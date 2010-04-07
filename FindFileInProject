@@ -40,6 +40,8 @@ Link: http://github.com/avvo/fuzzy-find-in-project/tree/master
 
 Another alternative is [[Gpicker]].
 
+Yet another alternative: Lisp:ifind-mode.el
+
 ----
 
 CategoryProgrammerUtils

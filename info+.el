@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 21.1
-;; Last-Updated: Sat Feb 27 07:48:34 2010 (-0800)
+;; Last-Updated: Tue Apr  6 18:11:26 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 4269
+;;     Update #: 4348
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/info+.el
 ;; Keywords: help, docs, internal
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -37,6 +37,7 @@
 ;;
 ;;  Options (user variables) defined here:
 ;;
+;;    `Info-breadcrumbs-in-header-flag' (Emacs 23+),
 ;;    `Info-display-node-header-fn', `Info-fit-frame-flag',
 ;;    `Info-fontify-quotations-flag',
 ;;    `Info-fontify-reference-items-flag',
@@ -45,20 +46,26 @@
 ;;
 ;;  Commands defined here:
 ;;
+;;    `Info-breadcrumbs-in-mode-line-mode' (Emacs 23+),
 ;;    `info-emacs-manual', `Info-follow-nearest-node-new-window',
 ;;    `Info-merge-subnodes',
 ;;    `Info-mouse-follow-nearest-node-new-window',
-;;    `Info-save-current-node', `Info-virtual-book',
-;;    `menu-bar-read-lispref', `menu-bar-read-lispintro',
+;;    `Info-save-current-node', `Info-set-breadcrumbs-depth (Emacs
+;;    23+)', `Info-toggle-breadcrumbs-in-header-line' (Emacs 23+),
+;;    `Info-virtual-book', `menu-bar-read-lispref',
+;;    `menu-bar-read-lispintro',
 ;;
 ;;  Non-interactive functions defined here:
 ;;
 ;;    `Info-display-node-default-header',
 ;;    `Info-display-node-time-header', `info-fontify-quotations',
-;;    `info-fontify-reference-items', `info-quotation-regexp'.
+;;    `info-fontify-reference-items',
+;;    `Info-insert-breadcrumbs-in-mode-line' (Emacs 23+),
+;;    `info-quotation-regexp'.
 ;;
 ;;  Internal variables defined here:
 ;;
+;;    `Info-breadcrumbs-depth-internal' (Emacs 23+),
 ;;    `Info-merged-map', `Info-mode-syntax-table'.
 ;;
 ;;
@@ -75,7 +82,7 @@
 ;;  `Info-find-node', `Info-find-node-2' -
 ;;     Call `fit-frame' if `Info-fit-frame-flag'.
 ;;  `Info-fontify-node' -
-;;     1. Show breadcrumbs.
+;;     1. Show breadcrumbs in header line and/or mode line.
 ;;     2. File name in face `info-file'.
 ;;     3. Node names in face `info-node'.
 ;;     4. Menu items in face `info-menu'.
@@ -170,6 +177,13 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/04/06 dadams
+;;     Added: Info-breadcrumbs-in-header-flag, Info-toggle-breadcrumbs-in-header-line,
+;;            Info-breadcrumbs-in-mode-line-mode, Info-set-breadcrumbs-depth,
+;;            Info-insert-breadcrumbs-in-mode-line, Info-breadcrumbs-depth-internal.
+;;     Added to Info-mode-menu (Emacs 23+): Info-breadcrumbs-in-mode-line-mode.
+;;     Info-find-node-2 (Emacs 23+): Add breadcrumbs to header line & mode line only according to vars.
+;;     Info-fontify-node (Emacs 23+): Handle breadcrumbs in header only if flag says to.
 ;; 2010/01/12 dadams
 ;;     Info-find-node for Emacs 20, Info-find-node-2 for Emacs 21, 22, Info-search:
 ;;       save-excursion + set-buffer -> with-current-buffer.
@@ -451,6 +465,7 @@
   (eval-when-compile
    (defvar desktop-save-buffer)
    (defvar header-line-format)
+   (defvar Info-breadcrumbs-in-mode-line-mode)
    (defvar Info-fontify-visited-nodes)
    (defvar Info-hide-note-references)
    (defvar Info-history-list)
@@ -475,6 +490,8 @@
   (eval-when-compile
    (defvar Info-read-node-completion-table)
    (defvar Info-breadcrumbs-depth)
+   (defvar Info-breadcrumbs-depth-internal)
+   (defvar Info-breadcrumbs-in-header-flag)
    (defvar Info-current-node-virtual)
    (defvar isearch-filter-predicate)))
 
@@ -692,6 +709,12 @@ you want to include, such as form-feed (^L) and newline (^J), with ^Q.
 For example, type `^Q^L^Q^J* ' to set this to \"\\f\\n* \"."
   :type 'string :group 'Info-Plus)
 
+;;;###autoload
+(when (> emacs-major-version 22)
+  (defcustom Info-breadcrumbs-in-header-flag nil
+    "*Non-nil means breadcrumbs are shown in the header line."
+    :type 'boolean :group 'Info-Plus))
+
 
 ;;; NEW COMMANDS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -734,8 +757,7 @@ For example, type `^Q^L^Q^J* ' to set this to \"\\f\\n* \"."
      Info-mode-menu Info-mode-map
      "Menu for info files."
      '("Info"
-       ["Table of Contents" Info-toc
-        :help "Go to table of contents"]
+       ["Table of Contents" Info-toc :help "Go to table of contents"]
        ["Virtual Book" Info-virtual-book
         :help "Open table of contents of a virtual book" :active Info-saved-nodes]
        ["Save Current Node" Info-save-current-node
@@ -761,10 +783,8 @@ For example, type `^Q^L^Q^J* ' to set this to \"\\f\\n* \"."
         :help "Go to menu of visited nodes"]
        "--"
        ["Top" Info-directory :help "Go to the list of manuals (Info top level)"]
-       ["Up" Info-up :active (Info-check-pointer "up")
-        :help "Go up in the Info tree"]
-       ["Next" Info-next :active (Info-check-pointer "next")
-        :help "Go to the next node"]
+       ["Up" Info-up :active (Info-check-pointer "up") :help "Go up in the Info tree"]
+       ["Next" Info-next :active (Info-check-pointer "next") :help "Go to the next node"]
        ["Previous" Info-prev :active (Info-check-pointer "prev[ious]*")
         :help "Go to the previous node"]
        ("Menu Item" ["You should never see this" report-emacs-bug t])
@@ -775,12 +795,9 @@ For example, type `^Q^L^Q^J* ' to set this to \"\\f\\n* \"."
         :help "Go forward one node, considering all as a sequence"]
        ["Backward" Info-backward-node
         :help "Go backward one node, considering all as a sequence"]
-       ["First in File" Info-top-node
-        :help "Go to top node of file"]
-       ["Last in File" Info-final-node
-        :help "Go to final node in this file"]
-       ["Beginning of This Node" beginning-of-buffer
-        :help "Go to beginning of this node"]
+       ["First in File" Info-top-node :help "Go to top node of file"]
+       ["Last in File" Info-final-node :help "Go to final node in this file"]
+       ["Beginning of This Node" beginning-of-buffer :help "Go to beginning of this node"]
        "--"
        ["Clone Info Buffer" clone-buffer
         :help "Create a twin copy of the current Info buffer."]
@@ -788,8 +805,8 @@ For example, type `^Q^L^Q^J* ' to set this to \"\\f\\n* \"."
         :help "Copy the name of the current node into the kill ring"]
        ["Merge Subnodes" Info-merge-subnodes
         :help "Integrate current node with nodes referred to in its Menu"]
-       ["Edit" Info-edit :help "Edit contents of this node"
-        :active Info-enable-edit]
+       ["Edit" Info-edit :help "Edit contents of this node" :active Info-enable-edit]
+       "--"
        ["Quit Info" Info-exit :help "Exit from Info"]))
   (easy-menu-define
    Info-mode-menu
@@ -824,6 +841,24 @@ For example, type `^Q^L^Q^J* ' to set this to \"\\f\\n* \"."
      "--"
      ["Tutorial" Info-help t]
      ["Quit Info" Info-exit t])))
+
+(when (> emacs-major-version 22)
+  (easy-menu-add-item
+   Info-mode-menu nil 
+   ["Toggle Breadcrumbs in Mode Line" Info-breadcrumbs-in-mode-line-mode
+                                      :help "Toggle showing breadcrumbs in the mode line"]
+   "Quit Info")
+  (easy-menu-add-item
+   Info-mode-menu nil 
+   ["Toggle Breadcrumbs in Header Line" Info-toggle-breadcrumbs-in-header-line    
+                                        :help "Toggle showing breadcrumbs in the header line"]
+   "Quit Info"))
+
+(when (> emacs-major-version 22)
+  (defun Info-toggle-breadcrumbs-in-header-line ()
+    "Toggle showing breadcrumbs in a header line."
+    (interactive)
+    (setq Info-breadcrumbs-in-header-flag  (not Info-breadcrumbs-in-header-flag))))
 
 (easy-menu-define
  Info-merged-menu
@@ -1460,7 +1495,6 @@ or file: `%s'"
                             (set-marker Info-tag-table-marker pos)))
                       (set-marker Info-tag-table-marker nil))
                     (setq Info-current-file  filename))))
-
            ;; Use string-equal, not equal, to ignore text props.
            (if (string-equal nodename "*")
                (progn (setq Info-current-node  nodename) (Info-set-mode-line))
@@ -1474,14 +1508,14 @@ or file: `%s'"
              ;; 5. Node *not* in tag table, and *not* in file
              ;;
              ;; *Or* the same, but in an indirect subfile.
-
+             ;;
+             ;;
              ;; Search file for a suitable node.
              (let ((guesspos  (point-min))
                    (regexp    (concat "\\(Node:\\|Ref:\\) *\\("  (if (stringp nodename)
                                                                      (regexp-quote nodename)
                                                                    "")
                                       "\\) *[,\t\n\177]")))
-
                (catch 'foo
                  ;; First, search a tag table, if any
                  (when (marker-position Info-tag-table-marker)
@@ -1490,7 +1524,6 @@ or file: `%s'"
                      (when found
                        ;; FOUND is (ANCHOR POS MODE).
                        (setq guesspos  (nth 1 found))
-
                        ;; If this is an indirect file, determine which
                        ;; file really holds this node and read it in.
                        (unless (eq (nth 2 found) 'Info-mode)
@@ -1498,21 +1531,17 @@ or file: `%s'"
                          ;; *info* buffer on entry to
                          ;; Info-read-subfile.  Thus the hackery above.
                          (setq guesspos  (Info-read-subfile guesspos)))
-
                        ;; Handle anchor
                        (when (nth 0 found)
                          (goto-char (setq anchorpos  guesspos)) (throw 'foo t)))))
-
                  ;; Else we may have a node, which we search for:
                  (goto-char (max (point-min) (- (byte-to-position guesspos) 1000)))
-
                  ;; Now search from our advised position (or from beg of
                  ;; buffer) to find the actual node.  First, check
                  ;; whether the node is right where we are, in case the
                  ;; buffer begins with a node.
                  (let ((pos  (Info-find-node-in-buffer regexp)))
                    (when pos (goto-char pos) (throw 'foo t)))
-
                  (when (string-match "\\([^.]+\\)\\." nodename)
                    (let (Info-point-loc)
                      (Info-find-node-2 filename (match-string 1 nodename) no-going-back))
@@ -1520,11 +1549,11 @@ or file: `%s'"
                    (throw 'foo t))
                  ;; No such anchor in tag table or node in tag table or file
                  (error "No such node or anchor: %s" nodename))
-
                (Info-select-node)
                (goto-char (point-min))
                (forward-line 1)         ; skip header line
-               (when (> Info-breadcrumbs-depth 0) (forward-line 1)) ; skip breadcrumbs line
+               (when (and Info-breadcrumbs-in-header-flag (> Info-breadcrumbs-depth 0))
+                 (forward-line 1))      ; skip breadcrumbs line
                (cond (anchorpos
                       (let ((new-history  (list Info-current-file (substring-no-properties nodename))))
                         ;; Add anchors to the history too
@@ -1547,7 +1576,10 @@ or file: `%s'"
           (let ((hist  (car Info-history)))
             (setq Info-history  (cdr Info-history))
             (Info-find-node (nth 0 hist) (nth 1 hist) t)
-            (goto-char (nth 2 hist)))))))
+            (goto-char (nth 2 hist)))))
+    (if Info-breadcrumbs-in-mode-line-mode
+        (Info-insert-breadcrumbs-in-mode-line)
+      (Info-set-mode-line))))
 
 
 
@@ -2075,14 +2107,11 @@ to search again for `%s'.")
                     ;; node header.  Otherwise, don't show the File: and Node:
                     ;; parts, to avoid wasting precious space on information that
                     ;; is available in the mode line.
-                    (if (re-search-forward
-                         "\\(next\\|up\\|prev[ious]*\\): "
-                         header-end t)
-                        (progn
-                          (goto-char (match-beginning 1))
-                          (buffer-substring (point) header-end))
-                      (if (re-search-forward "node:[ \t]*[^ \t]+[ \t]*"
-                                             header-end t)
+                    (if (re-search-forward "\\(next\\|up\\|prev[ious]*\\): "
+                                           header-end t)
+                        (progn (goto-char (match-beginning 1))
+                               (buffer-substring (point) header-end))
+                      (if (re-search-forward "node:[ \t]*[^ \t]+[ \t]*" header-end t)
                           (concat "No next, prev or up links  --  "
                                   (buffer-substring (point) header-end))
                         (buffer-substring (point) header-end)))))
@@ -2446,7 +2475,8 @@ to search again for `%s'.")
                                      ((string-equal (downcase tag) "prev") Info-prev-link-keymap)
                                      ((string-equal (downcase tag) "next") Info-next-link-keymap)
                                      ((string-equal (downcase tag) "up"  ) Info-up-link-keymap))))))
-          (when (> Info-breadcrumbs-depth 0) (Info-insert-breadcrumbs))
+          (when (and Info-breadcrumbs-in-header-flag (> Info-breadcrumbs-depth 0))
+            (Info-insert-breadcrumbs))
           
           ;; Treat header line.
           (when Info-use-header-line
@@ -2469,9 +2499,8 @@ to search again for `%s'.")
                                                "%"
                                                ;; Preserve text properties on duplicated `%'.
                                                (lambda (s) (concat s s)) header))
-              ;; Hide the part of the first line
-              ;; that is in the header, if it is just part.
-              (cond ((> Info-breadcrumbs-depth 0)
+              ;; Hide the part of the first line that is in the header, if it is just part.
+              (cond ((and Info-breadcrumbs-in-header-flag (> Info-breadcrumbs-depth 0))
                      (put-text-property (point-min) (1+ header-end) 'invisible t))
                     ((not (bobp))
                      ;; Hide the punctuation at the end, too.
@@ -2761,6 +2790,108 @@ to search again for `%s'.")
                                    help-echo "mouse-2: go to this URL"))))
 
         (set-buffer-modified-p nil)))))
+
+(when (> emacs-major-version 22)
+  (defun Info-insert-breadcrumbs-in-mode-line ()
+    (let ((nodes   (Info-toc-nodes Info-current-file))
+          (node    Info-current-node)
+          (crumbs  ())
+          (depth   Info-breadcrumbs-depth-internal)
+          (text    ""))
+      ;; Get ancestors from the cached parent-children node info
+      (while (and (not (equal "Top" node)) (> depth 0))
+        (setq node  (nth 1 (assoc node nodes)))
+        (when node (push node crumbs))
+        (setq depth  (1- depth)))
+      ;; Add bottom node.
+      (setq crumbs  (nconc crumbs (list Info-current-node)))
+      (when crumbs
+        ;; Add top node (and continuation if needed).
+        (setq crumbs  (cons "Top" (if (member (pop crumbs) '(nil "Top"))
+                                      crumbs
+                                    (cons nil crumbs))))
+        (dolist (node  crumbs)
+          (let ((crumbs-map  (make-sparse-keymap))
+                (menu-map    (make-sparse-keymap "Breadcrumbs in Mode Line")))
+            (define-key crumbs-map [mode-line mouse-3] menu-map)
+            (when node
+              (define-key menu-map [Info-prev]
+                `(menu-item "Previous Node" Info-prev
+                  :visible ,(Info-check-pointer "prev[ious]*") :help "Go to the previous node"))
+              (define-key menu-map [Info-next]
+                `(menu-item "Next Node" Info-next
+                  :visible ,(Info-check-pointer "next") :help "Go to the next node"))
+              (define-key menu-map [separator] '("--"))
+              (define-key menu-map [Info-breadcrumbs-in-mode-line-mode]
+                `(menu-item "Toggle Breadcrumbs" Info-breadcrumbs-in-mode-line-mode
+                  :help "Toggle displaying breadcrumbs in the Info mode-line"
+                  :button (:toggle . Info-breadcrumbs-in-mode-line-mode)))
+              (define-key menu-map [Info-set-breadcrumbs-depth]
+                `(menu-item "Set Breadcrumbs Depth" Info-set-breadcrumbs-depth
+                  :help "Set depth of breadcrumbs to show in the mode-line"))
+              (setq node  (if (equal node Info-current-node)
+                              (propertize
+                               (replace-regexp-in-string "%" "%%" Info-current-node)
+                               'face 'mode-line-buffer-id
+                               'help-echo "mouse-1: Scroll back, mouse-2: Scroll forward, mouse-3: Menu"
+                               'mouse-face 'mode-line-highlight
+                               'local-map
+                               (progn
+                                 (define-key crumbs-map [mode-line mouse-1] 'Info-mouse-scroll-down)
+                                 (define-key crumbs-map [mode-line mouse-2] 'Info-mouse-scroll-up)
+                                      crumbs-map))
+                            (propertize
+                             node
+                             'local-map (progn (define-key crumbs-map [mode-line mouse-1]
+                                                 `(lambda () (interactive) (Info-goto-node ,node)))
+                                               (define-key crumbs-map [mode-line mouse-2]
+                                                 `(lambda () (interactive) (Info-goto-node ,node)))
+                                               crumbs-map)
+                             'mouse-face 'mode-line-highlight
+                             'help-echo "mouse-1, mouse-2: Go to this node; mouse-3: Menu")))))
+          (let ((nodetext  (if (not (equal node "Top"))
+                               node
+                             (concat (format "(%s)" (if (stringp Info-current-file)
+                                                        (file-name-nondirectory Info-current-file)
+                                                      ;; Some legacy code can still use a symbol.
+                                                      Info-current-file))
+                                     node))))
+            (setq text  (concat text (if (equal node "Top") "" " > ") (if node nodetext "...")))))
+        (make-local-variable 'mode-line-format) ; Needed for Emacs 21+.
+        (setq mode-line-format  text)))))
+
+(when (> emacs-major-version 22)
+  (defvar Info-breadcrumbs-depth-internal Info-breadcrumbs-depth
+    "Current breadcrumbs depth for Info."))
+
+;; 1. I made this a global minor mode and turned it on by default, contrary to "the rules".
+;;    I did this so (a) users could easily customize it but (b) it would be on by default, otherwise.
+;;
+;; 2. Macro `define-minor-mode' is not defined in Emacs 20, so in order to be able to byte-compile
+;;    this file in Emacs 20, prohibit byte-compiling of the `define-minor-mode' call.
+;;
+(when (> emacs-major-version 22)
+  (eval '(define-minor-mode Info-breadcrumbs-in-mode-line-mode
+          "Toggle the use of breadcrumbs in Info mode line.
+With arg, show breadcrumbs iff arg is positive.
+Change the default behavior by customizing option
+`Info-breadcrumbs-in-mode-line-mode'."
+          :init-value t :global t :group 'mode-line :group 'Info-Plus
+          (if (not Info-breadcrumbs-in-mode-line-mode)
+              (setq Info-breadcrumbs-depth-internal  0
+                    mode-line-format                 default-mode-line-format)
+            (setq Info-breadcrumbs-depth-internal  Info-breadcrumbs-depth)
+            (Info-insert-breadcrumbs-in-mode-line)))))
+
+(when (> emacs-major-version 22)
+  (defun Info-set-breadcrumbs-depth ()
+    "Set current breadcrumbs depth to a value read from user.
+Update breadcrumbs display in mode line accordingly."
+    (interactive)
+    (setq Info-breadcrumbs-depth-internal  (read-number "New breadcrumbs depth: "
+                                                        Info-breadcrumbs-depth-internal))
+    (when Info-breadcrumbs-in-mode-line-mode (Info-insert-breadcrumbs-in-mode-line))))
+
 
 ;; Match has, inside "..." or `...', zero or more of these characters:
 ;;   - any character except " or ', respectively

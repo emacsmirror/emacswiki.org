@@ -316,6 +316,14 @@ Quote from the history section of ido.el:
 
 : This is basically what ido (interactively do) is all about; but I found it awkward to merge my changes into the "iswitchb-" namespace, so I invented a common "ido-" namespace for the merged packages.
 
+=== Preventing auto-searches unless called explicitly ===
+   ;; disable auto searching for files unless called explicitly
+   (setq ido-auto-merge-delay-time 99999)
+
+   (define-key ido-file-dir-completion-map (kbd "C-c C-s") 
+      (lambda() 
+        (interactive)
+        (ido-initiate-auto-merge (current-buffer))))
 
 == Bugs ==
 

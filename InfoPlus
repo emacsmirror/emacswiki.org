@@ -2,7 +2,10 @@ DrewAdams has written library <tt>[[info+.el]]</tt> ('''info+'''), which extends
 
 Library '''info+''' provides:
 
-* Breadcrumbs. See where you are in the Info hierarchy, and access higher nodes directly. (This has now been added to vanilla Emacs 23.)
+* '''''NEW''''' --- Breadcrumbs in the [[mode line]]. See where you are in the Info hierarchy, and access higher nodes directly. Turned on by default. See `##Toggle Breadcrumbs##' in `mouse-3' mode-line menu and `##Toggle Breadcrumbs in Mode Line##' in `Info' menu (e.g. in the minor-mode indicator). You can customize [[option]] '''`Info-breadcrumbs-in-mode-line-mode'''' if you want to turn it off by default. (Available for Emacs 23+ only.)
+
+* Breadcrumbs in the header (just below the header line). This was added to vanilla Emacs 23. Turned off by default. See `##Toggle Breadcrumbs in Header Line##' in `Info' menu. Be aware that unlike breadcrumbs in the mode line, this can occasionally throw off the destination accuracy of cross references and searches slightly. (Available for Emacs 22+ only.)
+
 * New key bindings, commands, and menus.
 * Additional, finer-grained highlighting, with new faces:
 ** Quoted names, like this: `name-stands-out', and strings, like this: "<code>string-stands-out</code>" are highlighted if '''`Info-fontify-quotations-flag'''' is non-`nil'.
