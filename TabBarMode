@@ -196,6 +196,11 @@ Thanks!
 -- Matiyam
 
 [new]
+You could follow the defadvice defined in "Add a buffer modification state indicator in the label", and instead of adding a + sign to mark modified buffers, you could sort the list according to the buffer's last visit time. I don't know if the last visit time is stored somewhere. If not, add a variable to each buffer and hook a function that updates that variable with the current time to the hook that's executed when one leaves a buffer (couldn't find what hook it is).
+
+-- js
+
+[new]
 Is there a way to stop emacs from splitting the window when opening multiple files from the command line?  (i.e. "emacs file1 file2")  The tabbar makes the window splitting unnecessary, but there doesn't seem to be any command line arguments to stop this from happening.  Thanks in advance.
 
 - Kristi

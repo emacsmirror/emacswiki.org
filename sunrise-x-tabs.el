@@ -62,10 +62,10 @@
 ;; Sunrise  panes.  It’s meant to be simple and to work nicely with Sunrise with
 ;; just a few tabs (up to 10‐15 per pane, maybe).
 
-;; This is version 1 $Rev: 276 $ of the Sunrise Commander Tabs Extension.
+;; This is version 1 $Rev: 278 $ of the Sunrise Commander Tabs Extension.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
-;; for Linux and on EmacsW32 (version 22) for  Windows.
+;; for Linux and on EmacsW32 (version 23) for  Windows.
 
 ;;; Installation and Usage:
 
@@ -119,7 +119,7 @@
   "Max number of tab labels cached for reuse.")
 
 (defvar sr-tabs '((left)(right)))
-(defvar sr-tabs-labels-cache nil) 
+(defvar sr-tabs-labels-cache '((left) (right))) 
 (defvar sr-tabs-line-cache '((left)(right)))
 (defvar sr-tabs-mode nil)
 (defvar sr-tabs-on nil)
@@ -132,29 +132,32 @@
   interactively sr-tabs-rename if a tab already exists for the current  buffer."
   (interactive)
   (let ((tab-name (buffer-name))
-        (tab-set (assoc sr-selected-window sr-tabs)))
+        (tab-set (assq sr-selected-window sr-tabs)))
       (if (member tab-name (cdr tab-set))
           (call-interactively 'sr-tabs-rename)
         (setcdr tab-set (cons tab-name (cdr tab-set)))))
   (sr-tabs-refresh))
 
-(defun sr-tabs-remove (&optional tab-buffer)
+(defun sr-tabs-remove (&optional tab-buffer side)
   "Removes  the tab to which the given buffer is assigned in the active pane. If
   the optional argument is nil, removes the tab to which the current  buffer  is
   assigned, if any."
   (interactive)
-  (let ((tab-name (buffer-name tab-buffer)))
-    (setq sr-tabs (mapcar (lambda (x) (delete tab-name x)) sr-tabs)))
+  (let* ((tab-name (buffer-name tab-buffer))
+         (side (or side sr-selected-window))
+         (tab-set (assq side sr-tabs)))
+    (setcdr tab-set (delete tab-name (cdr tab-set))))
   (sr-tabs-refresh))
 
-(defun sr-tabs-kill (&optional name)
-  "Removes  the  tab  with  the  given  name  from the active pane and kills its
-  assigned buffer, unless it's currently visible."
+(defun sr-tabs-kill (&optional name side)
+  "Removes  the tab  with the  given name  from the  active pane  and  kills its
+  assigned buffer, unless it's currently visible or it's assigned to other tab."
   (interactive)
-  (let ((to-kill (or (and name (get-buffer name)) (current-buffer))) (stack))
-    (sr-tabs-remove to-kill)
-    (setq stack (cdr (assoc sr-selected-window sr-tabs)))
-    (if (and stack (not (memq to-kill (list sr-left-buffer sr-right-buffer))))
+  (let ((to-kill (or (and name (get-buffer name)) (current-buffer))) (stack)
+        (side (or side sr-selected-window)))
+    (sr-tabs-remove to-kill side)
+    (if (and (not (memq to-kill (list sr-left-buffer sr-right-buffer)))
+             (not (member to-kill (apply 'append (mapcar 'cdr sr-tabs)))))
         (kill-buffer to-kill))
     (sr-tabs-refresh)))
 
@@ -175,7 +178,7 @@
 (defun sr-tabs-step (count &optional back)
   "Moves  focus from the current tab to the one ``count'' places ahead or behind
   (depending on the value of ``back'')."
-  (let* ((stack (cdr (assoc sr-selected-window sr-tabs)))
+  (let* ((stack (cdr (assq sr-selected-window sr-tabs)))
          (stack (if back (reverse stack) stack))
          (target (member (buffer-name) stack)))
     (unless (null stack)
@@ -212,7 +215,7 @@
   (interactive)
   (let ((to-kill (current-buffer)) (stack))
     (sr-tabs-kill)
-    (setq stack (cdr (assoc sr-selected-window sr-tabs)))
+    (setq stack (cdr (assq sr-selected-window sr-tabs)))
     (sr-tabs-next)
     (unless (or (null stack) (eq to-kill (current-buffer)))
       (kill-buffer to-kill))))
@@ -220,7 +223,8 @@
 (defun sr-tabs-rename (&optional new-name)
   (interactive "sRename current tab to: ")
   (let* ((key (buffer-name))
-         (label (cdr (assoc key sr-tabs-labels-cache))))
+         (cache (assq sr-selected-window sr-tabs-labels-cache))
+         (label (cadr cache)))
     (if label
         (sr-tabs-redefine-label key new-name))))
 
@@ -302,8 +306,9 @@
   (let* ((alias (or alias name))
          (label (cons (sr-tabs-make-tag name t alias)
                       (sr-tabs-make-tag name nil alias)))
-         (entry (list (cons name label))))
-    (setq sr-tabs-labels-cache (append sr-tabs-labels-cache entry))
+         (entry (list (cons name label)))
+         (cache (assq sr-selected-window sr-tabs-labels-cache)))
+    (setcdr cache (append (cdr cache) entry))
     label))
 
 (defun sr-tabs-trim-label (label)
@@ -314,30 +319,33 @@
 
 (defun sr-tabs-redefine-label (name alias)
   "Allows to modify the pretty name (alias) of the label with the given name."
-  (let* ((alias (sr-tabs-trim-label (or alias ""))))
+  (let* ((alias (sr-tabs-trim-label (or alias ""))) (cache))
     (if (string= "" alias)
         (error "Cancelled: invalid tab name")
       (progn
-        (setq sr-tabs-labels-cache
-              (delq nil (mapcar (lambda(x) (and (not (equal (car x) name)) x))
-                                sr-tabs-labels-cache)))
+        (setq cache (assq sr-selected-window sr-tabs-labels-cache))
+        (setcdr cache (delq nil
+                       (mapcar (lambda(x)
+                                 (and (not (equal (car x) name)) x))
+                               (cdr cache))))
         (sr-tabs-make-label name alias)
         (sr-tabs-refresh)))))
 
 (defun sr-tabs-get-tag (name is-active)
   "Retrieves  the  cached tag for the tab with the given name in the given state
   (nil = inactive, t = active), creating new labels when needed."
-  (let ((label (cdr (assoc name sr-tabs-labels-cache))))
+  (let* ((cache (assq sr-selected-window sr-tabs-labels-cache))
+         (label (cdr (assoc name (cdr cache)))))
     (if (null label)
         (setq label (sr-tabs-make-label name)))
-    (if (< sr-tabs-max-cache-length (length sr-tabs-labels-cache))
-        (setq sr-tabs-labels-cache (cdr sr-tabs-labels-cache)))
+    (if (< sr-tabs-max-cache-length (length (cdr cache)))
+        (setcdr cache (cddr cache)))
     (if is-active (car label) (cdr label))))
 
 (defun sr-tabs-make-line ()
   "Assembles a new tab line from cached tags and puts it in the line cache."
   (if (memq major-mode '(sr-mode sr-virtual-mode))
-      (let ((tab-set (cdr (assoc sr-selected-window sr-tabs)))
+      (let ((tab-set (cdr (assq sr-selected-window sr-tabs)))
             (tab-line (if (or (cdr (first sr-tabs))
                               (cdr (second sr-tabs))) "" nil))
             (current-name (buffer-name)))
@@ -346,7 +354,7 @@
                   (setq tab-line (concat tab-line sr-tabs-sep
                                          (sr-tabs-get-tag x is-current)))))
               tab-set)
-        (setcdr (assoc sr-selected-window sr-tabs-line-cache) tab-line)
+        (setcdr (assq sr-selected-window sr-tabs-line-cache) tab-line)
         tab-line)
     nil))
 
@@ -364,6 +372,21 @@
   (or (not (sr-tabs-empty-p (car line-list)))
       (and (cdr line-list) (has-nonempty-p (cdr line-list)))))
 
+(defun sr-tabs-xor (list1 list2)
+  "Replacement for function set-exclusive-or, written exclusively to eliminate
+  a soft dependency on cl-seq.el (isn't this getting a bit ridiculous?)"
+  (cond ((null list1) list2)
+        ((null list2) list1)
+        ((equal list1 list2) nil)
+        (t
+         (let (result)
+           (mapc (lambda (element)
+                   (if (member element result)
+                       (setq result (delete element result))
+                     (setq result (cons element result))))
+                 (append list1 list2))
+           result))))
+
 (defun sr-tabs-refresh ()
   "Updates  the  header-line-format variable in the buffers on both panes, using
   the line cache for the passive one, and assembling a  new  tab  line  for  the
@@ -380,7 +403,7 @@
       (let ((other-buffer (sr-other 'buffer)))
         (if (eq 'right sr-selected-window)
             (setq line-list (nreverse line-list)))
-        (if (apply 'set-exclusive-or (mapcar 'sr-tabs-empty-p line-list))
+        (if (apply 'sr-tabs-xor (mapcar 'sr-tabs-empty-p line-list))
             (setq line-list (mapcar 'sr-tabs-empty-mask line-list))
           (setq line-list (mapcar 'sr-tabs-empty-null line-list)))
 
@@ -511,9 +534,11 @@
   "Returns the additional data for saving the tabs of the current sunrise buffer
   into a desktop file."
   (let* ((left-tab (car (member (buffer-name) (assoc 'left sr-tabs))))
-         (left-label (cadr (assoc left-tab sr-tabs-labels-cache)))
+         (left-cache (cdr (assq 'left sr-tabs-labels-cache)))
+         (left-label (cadr (assoc left-tab left-cache)))
          (right-tab (car (member (buffer-name) (assoc 'right sr-tabs))))
-         (right-label (cadr (assoc right-tab sr-tabs-labels-cache))))
+         (right-cache (cdr (assq 'right sr-tabs-labels-cache)))
+         (right-label (cadr (assoc right-tab right-cache))))
     (delq
      nil
      (list
@@ -525,25 +550,23 @@
                                        desktop-buffer-misc)
   "Restores  all  the  tabs  in  a  Sunrise  (normal  or  VIRTUAL) buffer from a
   description in a desktop file."
-  (let ((label-done nil))
-    (mapc (lambda (side)
-            (let* ((tab-symbol (intern (concat (symbol-name side) "-tab")))
-                   (name (buffer-name))
-                   (label (cdr (assoc tab-symbol desktop-buffer-misc)))
-                   (tab-set (assoc side sr-tabs)))
-              (when label
-                (setcdr tab-set (cons name (cdr tab-set)))
-                (unless label-done
-                  (sr-tabs-make-label name label)
-                  (setq label-done t)))))
-          '(left right))
-    (unless sr-tabs-on
-      (sr-tabs-engage))))
+  (mapc (lambda (side)
+          (let* ((sr-selected-window side)
+                 (tab-symbol (intern (concat (symbol-name side) "-tab")))
+                 (name (buffer-name))
+                 (label (cdr (assq tab-symbol desktop-buffer-misc)))
+                 (tab-set (assq side sr-tabs)))
+            (when label
+              (setcdr tab-set (cons name (cdr tab-set)))
+              (sr-tabs-make-label name label))))
+        '(left right))
+  (unless sr-tabs-on
+    (sr-tabs-engage)))
 
 (defun sr-tabs-reset-state ()
   "Resets  some  environment  variables that control the behavior of tabs in the
   Sunrise Commander (used for desktop support.)"
-  (setq sr-tabs-mode nil sr-tabs-labels-cache nil)
+  (mapc (lambda (x) (setcdr x nil)) sr-tabs-labels-cache)
   (mapc (lambda (x) (setcdr x nil)) sr-tabs)
   nil)
 

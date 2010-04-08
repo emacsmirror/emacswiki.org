@@ -230,3 +230,46 @@ variable `elmo-multi-divide-number' to an appropriate value.
 {{{
 (setq elmo-multi-divide-number 1000000)
 }}}
+
+== WL hangs when I wake from hibernation == 
+
+The problem seems to be that elmo doesn't realize that the connection its IMAP or other connection has timed out on the other side, and so keeps trying it.
+You can wok around it if you use emacs-server by issuing an emacsclient command approximately like this before hibernation:
+
+{{{
+    /usr/bin/emacsclient --socket-name /tmp/emacs1000/server --eval "(wl-toggle-plugged 'off)"
+}}}
+
+and then toggle back on after resume.
+
+If you use the hibernate script for hibernation/suspend, you can also dd a spcriptlet /etc/hibernate/scriptlets.d/wanderlust that will 
+do this for you automatically; here's a very simple example:
+
+{{{
+AddConfigHandler WanderlustOptions
+
+WanderlustSuspend() {
+    /usr/bin/emacsclient --socket-name /tmp/emacs1000/server --eval "(wl-toggle-plugged 'off)"
+}
+
+WanderlustResume() {
+    /usr/bin/emacsclient --socket-name /tmp/emacs1000/server --eval "(wl-toggle-plugged 'on)"
+}
+
+WanderlustOptions() {
+    case $1 in
+        *)
+            return 1
+    esac
+
+    if [ -z "$WANDERLUST_HOOKED" ] ; then
+        AddSuspendHook 01 WanderlustSuspend
+        AddResumeHook 01 WanderlustResume
+        WANDERLUST_HOOKED=1
+    fi
+    return 0
+}
+}}}
+
+A better way to do this would be to check each running emacsserver instance. 
+

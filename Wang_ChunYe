@@ -10,6 +10,8 @@ Hi, my name is Wang Chun Ye (王纯业). here is list of my packages
 (remove-if-not (\. ($ (wlflip >) 10) length) '("hello" "very long string"))
 </pre>
 
+* Lisp:wcy-recentf.el, open recent opened or saved files.
+
 [new:DrewAdams:2009-04-21 06:22 UTC]
 Welcome to the wiki! -- DrewAdams
 

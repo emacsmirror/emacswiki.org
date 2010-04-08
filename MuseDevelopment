@@ -17,8 +17,8 @@ http://repo.or.cz, you will want to do the following.
 git clone ssh://repo.or.cz/srv/git/muse-el.git muse
 </pre>
 
-If you wish to join the Muse development effort, then contact mwolson
-AT gnu.org in order to start the copyright assignment process, and
+If you wish to join the Muse development effort, then contact alexott
+AT gmail.com in order to start the copyright assignment process, and
 register with http://repo.or.cz (being sure to indicate your ssh
 public key).
 

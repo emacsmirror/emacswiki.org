@@ -4,14 +4,17 @@
 ;; This is free software.
 ;; Currently for GNU Emacs 23.0.60.1 (i386-mingw-nt5.1.2600) of 2008-09-09 on LENNART-69DE564 (patched)
 
+(require 'cl)
+
 (add-to-list 'load-path (expand-file-name "elisp" (getenv "HOME")))
 (add-to-list 'exec-path "c:/cygwin/bin")
 (add-to-list 'exec-path "c:/Programme/GnuWin32/bin")
+(add-to-list 'exec-path "~/Eigene Dateien/Eigene Software")
 (add-to-list 'exec-path "C:/oracle/product/10.2.0/db_1/bin")
-(server-start)
 
 (dolist (path '("C:\\Programme\\GnuWin32\\bin"
-		"C:\\cygwin\\bin"))
+		"C:\\cygwin\\bin"
+		"c:\\Dokumente und Einstellungen\\asc\\Eigene Dateien\\Eigene Software"))
   (when (and (file-exists-p path)
 	     (not (string-match (regexp-quote path) (getenv "PATH"))))
     (setenv "PATH" (concat path ";" (getenv "PATH")))))
@@ -21,6 +24,12 @@
 (setenv "CVS_RSH" "ssh")
 (setenv "WikiDataDir" "test-data")
 (setq visible-bell t)
+
+;; Tramp
+;; Download http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html
+;; Docs http://the.earth.li/~sgtatham/putty/0.60/htmldoc/Chapter7.html#plink
+(setq tramp-auto-save-directory (getenv "TEMP"))
+(setq tramp-default-method "plink")
 
 ;;; pink-bliss color-theme
 
@@ -48,8 +57,8 @@
 (setq vc-follow-symlinks t)
 
 ;; Less glaring face for minibuffer prompts.
-(set-face-foreground 'minibuffer-noticeable-prompt "purple")
-(set-face-background 'minibuffer-noticeable-prompt nil)
+;; (set-face-foreground 'minibuffer-noticeable-prompt "purple")
+;; (set-face-background 'minibuffer-noticeable-prompt nil)
 
 (global-set-key (kbd "C-c i") 'indent-region)
 (global-set-key (kbd "C-c c") 'comment-region)
@@ -521,23 +530,29 @@ Each line consists of a lastname, a tab, and a firstname."
       rcirc-default-nick "kensanata"
       rcirc-log-flag t
       rcirc-log-directory "~/IRC Logs"
-      rcirc-keywords '("ken" "kens" "kensa")
+      rcirc-keywords '("ken" "kens" "kensa" "alex")
       rcirc-server-alist
       '(("irc.freenode.net" :channels ("#rcirc" "#wiki" "#oddmuse" "#epfarms"
 	 "#emacs" "#sql"))
 	("irc.perl.org" :channels ("#perlde" "#perl6"))
 	("ircnet.eversible.com" :channels ("#drsrm"))
-	("irc.sorcery.net" :channels ("#rpmn")))
+	("irc.sorcery.net" :channels ("#rpmn"))
+	("irc.otherworlders.org" :channels ("#enworld" "#pathfinder")))
       ;; "#scheme" "#nethack" "#atom" "#microformats" "#barcamp"
       ;; "#emacs-fu" "#haskell" "#openfire" "##jabber" "#tentacle"
       ;; "#openbsd" "#hcoop" "#scrum" "#eclipse" "#eclipse-de" "#osgi"
       rcirc-decode-coding-system 'undecided
-      rcirc-ignore-list '("ams" "consolers")
+      rcirc-ignore-list '("ams" "consolers" "jordanb")
       rcirc-authinfo (let ((file "~/.rcirc-authinfo"))
 		       (when (file-readable-p file)
 			 (with-temp-buffer
 			   (insert-file-contents-literally file)
 			   (read (current-buffer))))))
+
+(defadvice rcirc-handler-JOIN (after rcirc-handler-JOIN-emacs-ops activate)
+  "Automatically join #emacs-ops if we join #emacs."
+  (when (string= (car args) "#emacs")
+    (rcirc-send-string process (concat "JOIN " "#emacs-ops"))))
 
 (defun rcirc-unfill ()
   (interactive)
@@ -545,6 +560,23 @@ Each line consists of a lastname, a tab, and a firstname."
     (goto-char rcirc-prompt-end-marker)
     (while (re-search-forward "\\s-+" nil t)
       (replace-match " "))))
+
+(defun rcirc-only ()
+  (interactive)
+  (let (channels)
+    (dolist (buf (buffer-list))
+      (with-current-buffer buf
+	(when (and (eq major-mode 'rcirc-mode)
+		   rcirc-target)
+	  (setq channels (cons buf channels)))))
+    (delete-other-windows)
+    (let ((win (selected-window))
+	  (size (/ (window-height) (length channels))))
+      (dolist (buf channels)
+	(split-window-vertically (- (window-height) size))
+	(window--display-buffer-2 buf (selected-window)))
+      (delete-window win)))
+  (balance-windows))
 
 ;; operator access /op
 
@@ -1049,3 +1081,5 @@ Use `reverse-region' to reverse the lines in the region."
 	(when chars
 	  (apply 'insert chars))
 	(newline)))))
+
+(server-start)

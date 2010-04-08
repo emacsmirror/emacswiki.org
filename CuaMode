@@ -29,7 +29,7 @@ When cua.el is used:
 
 If you like the rectangle support, global mark mode, and other features, but prefer the standard Emacs keys, add:
 
-    (setq cua-enable-cua-keys nil)
+    (cua-selection-mode t)
 
 or, if using cua.el, add ##(CUA-mode 'emacs)## instead of ##(CUA-mode t)##
 

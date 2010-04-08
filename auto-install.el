@@ -1,5 +1,5 @@
 ;;; auto-install.el --- Auto install elisp file
-;; $Id: auto-install.el,v 1.34 2010/04/05 21:34:07 rubikitch Exp $
+;; $Id: auto-install.el,v 1.35 2010/04/07 20:16:10 rubikitch Exp rubikitch $
 
 ;; Filename: auto-install.el
 ;; Description: Auto install elisp file
@@ -9,7 +9,7 @@
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Copyright (C) 2009, rubikitch, all rights reserved.
 ;; Created: 2008-12-11 13:56:50
-;; Version: $Revision: 1.34 $
+;; Version: $Revision: 1.35 $
 ;; URL: http://www.emacswiki.org/emacs/download/auto-install.el
 ;; Keywords: auto-install
 ;; Compatibility: GNU Emacs 22 ~ 23
@@ -24,7 +24,7 @@
 ;;   `url-util', `url-vars'.
 ;;
 
-(defvar auto-install-version "$Id: auto-install.el,v 1.34 2010/04/05 21:34:07 rubikitch Exp $")
+(defvar auto-install-version "$Id: auto-install.el,v 1.35 2010/04/07 20:16:10 rubikitch Exp rubikitch $")
 ;;; This file is NOT part of GNU Emacs
 
 ;;; License
@@ -275,6 +275,9 @@
 ;;; Change log:
 ;;
 ;; $Log: auto-install.el,v $
+;; Revision 1.35  2010/04/07 20:16:10  rubikitch
+;; Fixed a typo
+;;
 ;; Revision 1.34  2010/04/05 21:34:07  rubikitch
 ;; `auto-install-from-gist' can accept gist URL.
 ;;
@@ -858,12 +861,12 @@ Note that non-elisp can be installed only via `auto-install-batch'"
 (defun auto-install-batch-edit ()
   "Edit auto-install-batch-list.el"
   (interactive)
-  (con ((fboundp 'yaoddmuse-edit)
-        (yaoddmuse-edit "EmacsWiki" "auto-install-batch-list.el"))
-       ((fboundp 'oddmuse-edit)
-        (oddmuse-edit "EmacsWiki" "auto-install-batch-list.el"))
-       (t
-        (browse-url "http://www.emacswiki.org/emacs/?action=edit;id=auto-install-batch-list.el"))))
+  (cond ((fboundp 'yaoddmuse-edit)
+         (yaoddmuse-edit "EmacsWiki" "auto-install-batch-list.el"))
+        ((fboundp 'oddmuse-edit)
+         (oddmuse-edit "EmacsWiki" "auto-install-batch-list.el"))
+        (t
+         (browse-url "http://www.emacswiki.org/emacs/?action=edit;id=auto-install-batch-list.el"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Utilities Functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun auto-install-batch-real (&optional extension-name)

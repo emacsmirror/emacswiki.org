@@ -1290,6 +1290,46 @@ I am finding this very useful, but it would be nice if there was a quicker way t
 [new:DrewAdams:2010-03-25 23:58 UTC]
 Can you describe what you envision? -- DrewAdams
 
+[new]
+I would like to use bookmarks with version control (ClearCase) where i have multiple views (base directories) with the same files/directory structure. What i would like to do is to define file type bookmarks with <i>relative</i> paths where i can easily change the base directory (e.g. select it from a list or keep it stored in a global variable). Is something like this already possible (and i've just not found it)?
+
+I have thought about it a bit and came up with the following ideas:
+
+# Define a new bookmark type. But this use case is maybe not enough to justify another bookmark type.
+# Provide a way to call function type bookmarks with an argument. The argument would then contain the fixed relative path and the function could add the variable base path. Or more general, 
+# if a bookmark function could access its own meta data i.e. its tags, the relative path could be stored in a tag.
+
+Actually 3. sounds like it would provide a very flexible way to extend the built-in functionality of bookmark+.
+
+What do you think? -- KaiTetzlaff
+
+[new:DrewAdams:2010-04-07 16:43 UTC]
+Hi Kai. Each bookmark associated with a file has a ##(filename . "/the/file/name")## entry, where the file name is absolute. Take a look at `C-h v bookmark-alist' to get an idea. Since this info is already part of the bookmark, you don't need to also save such info using tags. And inside every absolute file name (e.g. `##/a/b/c##') hides a relative file name (e.g. `c')! ;-) All you need to do is abstract from the absolute file names to relative names, and for that you have function `file-name-non-directory'.
+
+1. I think what you want is a command that (a) collects all bookmarks whose `filename' entries have files whose relative names match some input pattern, then (b) presents these bookmarks as [[completion]] candidates and (c) jumps to the chosen bookmark. For example:
+
+<pre>
+(defun bookmark-jump-relative-file (relfile &optional localp)
+  "Jump to a bookmark whose file has relative name RELFILE.
+With a prefix arg, only local files are candidates."
+  (interactive "sFile: \nP")
+  (setq relfile  (file-name-nondirectory relfile))
+  (bookmark-jump-other-window
+   (bookmark-completing-read "Jump to bookmark" nil
+                             (if localp
+                                 (bookmarkp-local-file-alist-only)
+                               (bookmarkp-file-alist-only))
+</pre>
+
+2. You can also do something along the lines of what you're looking for without any coding. You can see all of the bookmarks that have a particular relative file name, and choose among them. In the `##*Bookmark List*##':
+
+* You can use `##P F##' to show only the bookmarks whose file names match some [[regexp]], which could be the target relative file name -- e.g. `##foo.el##' (or `##/foo.el$##' if you're worried about excluding extra matches in the same line). You can mark all of these bookmarks using `M-m'.
+
+* Or you can mark all bookmarks with matching file names using `##% m##'. The regexp for `##% m##' matches the entire line, bookmark name plus file name (if you are not yet showing file names, use `M-t'), so use a regexp that also matches the bookmark name (e.g. `##.*/foo.el$##').
+
+After you've marked the bookmarks that have the same relative file name, you can act on that set of bookmarks in various ways. You can save the set or bookmark it (e.g. creating a `bookmark-list' bookmark). Returning to the saved set is like using a multiple-choice command for the files in the set. You can search+replace the marked bookmarks (`M-a', `M-q'). You can open [[Dired]] for just those bookmarked files, which can be in different directories (`##M-d >##'). After `##M-d >##', you can bookmark that Dired buffer -- that's another way to come back to this set of files.
+
+HTH -- DrewAdams
 
 ----
 CategoryHypermedia CategoryPersistence 

@@ -87,6 +87,8 @@ w32-fullscreen at the site for [http://www.martyn.se/code/emacs/darkroom-mode/ d
 
 == Fullscreen on OS X ==
 
+http://www.sanityinc.com/full-screen-support-for-cocoa-emacs-on-osx (Jan 2010) has details of a patch which works well with Emacs 23.1.95 pretest.
+
 The function at the top of the page should work with CarbonEmacs and Aquamacs but fullscreen functionality has not made it into Emacs-23 as of early 2009.
 
 The following line can be added to your .emacs

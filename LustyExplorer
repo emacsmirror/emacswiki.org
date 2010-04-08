@@ -22,6 +22,10 @@ Lisp:lusty-explorer.el
 
 [http://github.com/sjbach/lusty-emacs Development repository]
 
+= Change suggestions =
+
+C-x b RET could select the most recently used buffer like switch-to-buffer, instead of selecting the current buffer.
+
 = Changelist =
 
 Version 2.1:
