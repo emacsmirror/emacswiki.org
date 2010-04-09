@@ -1,5 +1,5 @@
 ;;; anything-complete.el --- completion with anything
-;; $Id: anything-complete.el,v 1.86 2010/03/31 23:14:13 rubikitch Exp $
+;; $Id: anything-complete.el,v 1.86 2010-03-31 23:14:13 rubikitch Exp $
 
 ;; Copyright (C) 2008, 2009, 2010 rubikitch
 
@@ -109,7 +109,7 @@
 ;;; History:
 
 ;; $Log: anything-complete.el,v $
-;; Revision 1.86  2010/03/31 23:14:13  rubikitch
+;; Revision 1.86  2010-03-31 23:14:13  rubikitch
 ;; `anything-completing-read': Fix a case when HIST is a cons.
 ;;
 ;; Revision 1.85  2010/03/31 03:22:29  rubikitch
@@ -395,7 +395,7 @@
 
 ;;; Code:
 
-(defvar anything-complete-version "$Id: anything-complete.el,v 1.86 2010/03/31 23:14:13 rubikitch Exp $")
+(defvar anything-complete-version "$Id: anything-complete.el,v 1.86 2010-03-31 23:14:13 rubikitch Exp $")
 (require 'anything-match-plugin)
 (require 'thingatpt)
 
@@ -1007,10 +1007,11 @@ It accepts one argument, selected candidate.")
 (defun anything-read-buffer (prompt &optional default require-match start matches-set)
   "`anything' replacement for `read-buffer'."
   (let (anything-input-idle-delay)
-    (anything-noresume (arb-sources prompt
-                                    (if (bufferp default) (buffer-name default) default)
-                                    require-match start matches-set)
-                       start prompt nil nil "*anything complete*")))
+    (or (anything-noresume (arb-sources prompt
+                                        (if (bufferp default) (buffer-name default) default)
+                                        require-match start matches-set)
+                           start prompt nil nil "*anything complete*")
+        (keyboard-quit))))
 
 (defun* arb-sources (prompt default require-match start matches-set &optional (additional-attrs '((action . identity))))
   `(,(ac-default-source default t)

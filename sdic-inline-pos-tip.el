@@ -6,7 +6,7 @@
 ;; Maintainer: S. Irie
 ;; Keywords: Tooltip, Dictionary
 
-(defconst sdic-inline-pos-tip-version "0.0.7")
+(defconst sdic-inline-pos-tip-version "0.0.8")
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -30,7 +30,7 @@
 ;; like `rikaichan' Firefox extension, using sdic-inline.el library
 ;; which was written by khiker.
 
-;; *** This program requires pos-tip.el version 0.2.0 or later ***
+;; *** This program requires pos-tip.el version 0.3.0 or later ***
 
 ;;
 ;; Installation:
@@ -48,6 +48,11 @@
 ;;
 
 ;;; History:
+;; 2010-04-08  S. Irie
+;;         * Changed to be available for non-X but graphical frames
+;;              (** Require pos-tip.el ver. 0.3.0 or later **)
+;;         * Version 0.0.8
+;;
 ;; 2010-03-23  S. Irie
 ;;         * Changed to perform full justification
 ;;              (** Require pos-tip.el ver. 0.2.0 or later **)
@@ -117,11 +122,11 @@ See `pos-tip-show' for details.")
 
 (defvar sdic-inline-pos-tip-subst-func-auto
   'sdic-inline-display-minibuffer
-  "Function used as substitute for auto-popup in non-X frame.")
+  "Function used as substitute for auto-popup in text-only frame.")
 
 (defvar sdic-inline-pos-tip-subst-func-man
   'sdic-inline-display-popup
-  "Function used as substitute for manual-popup in non-X frame.")
+  "Function used as substitute for manual-popup in text-only frame.")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Function
@@ -131,7 +136,7 @@ See `pos-tip-show' for details.")
   "Show tooltip which describes the word meanings at current point."
   (interactive)
   (cond
-   ((eq window-system 'x)
+   (window-system
     (if (interactive-p)
 	(setq entry sdic-inline-last-entry))
     (when entry
@@ -173,7 +178,7 @@ See `pos-tip-show' for details.")
 	 ;; Calculate tooltip's pixel size
 	 (pos-tip-tooltip-width width (frame-char-width))
 	 (pos-tip-tooltip-height height (frame-char-height))))))
-   ;; If non-X frame, use substitutive function
+   ;; If text-only frame, use substitutive function
    ((interactive-p)
     (if (commandp sdic-inline-pos-tip-subst-func-man)
 	(call-interactively sdic-inline-pos-tip-subst-func-man)))

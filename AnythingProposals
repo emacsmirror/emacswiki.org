@@ -18,6 +18,10 @@ There may be more practical applications than the file moving example above. One
 
 Isn't this already doable, with anything commands as actions ?
 
+[new:rubikitch:2010-04-08 19:06 UTC]
+Lisp:anything.el itself does not have `details' feature. But some action functions in Lisp:anything-config.el asks details. Details are included in actions in Anything.
+For example, `M-x anything-regexp', `M-x anything-w3m-bookmarks', `M-x anything-bbdb', and so on. -- [[rubikitch]]
+
 === Fuzzy completion ===
 
 see for example: http://mirrors.wikifusion.info/gnu/elisp-archive/packages/fuzzy-match.el.Z

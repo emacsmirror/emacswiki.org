@@ -8,7 +8,9 @@ only once you actually Save.
 
 When a question is answered--and sometimes before it is answered, it is moved to a more appropriate page on ThisWiki (See OpenQuestionsDiscussion).
 The [EmacsWiki:action=rc;rcidonly=OpenQuestions;from=1;showedit=1 change log] should usually say where a question was moved to.
-
+==linum+.el inserts a blank space with a color different from background==
+[new]
+I'm using linum+.el (and subsequently line-num.el) to provde line numbering.  Line numbers are followed a by a pipe ("|") and then a blank space.  This is fine except the blank space is a different color from the buffer's background.  Is there a way I can make these two colors the same?
 ==Newly Created Files are Invisible on Vista (64)==
 
 [new]

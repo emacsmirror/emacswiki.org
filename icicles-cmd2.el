@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sat Apr  3 10:34:33 2010 (-0700)
+;; Last-Updated: Thu Apr  8 11:30:08 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 1608
+;;     Update #: 1609
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4319,22 +4319,22 @@ Cache the candidates if there is not yet a cached value."
     (let* ((candidate-source  (assoc-default 'candidates source))
            (candidates
             (cond ((functionp candidate-source)
-                   `#'(lambda (string pred mode)
-                        (let ((anything-pattern  icicle-current-input))
-                          (setq string  anything-pattern)
-                          (let ((all-cands  (funcall ,candidate-source)))
-                            (setq all-cands
-                                  (icicle-remove-if-not
-                                   #'(lambda (cand)
-                                       (string-match (if (eq 'prefix icicle-current-completion-mode)
-                                                         (concat "^" (regexp-quote string))
-                                                       string)
-                                                     cand))
-                                   all-cands))
-                            (cond ((eq mode t) all-cands)
-                                  ((eq mode nil)
-                                   (icicle-expanded-common-match icicle-current-input all-cands))
-                                  ((eq mode 'lambda) t))))))
+                   `(lambda (string pred mode)
+                     (let ((anything-pattern  icicle-current-input))
+                       (setq string  anything-pattern)
+                       (let ((all-cands  (funcall ,candidate-source)))
+                         (setq all-cands
+                               (icicle-remove-if-not
+                                #'(lambda (cand)
+                                    (string-match (if (eq 'prefix icicle-current-completion-mode)
+                                                      (concat "^" (regexp-quote string))
+                                                    string)
+                                                  cand))
+                                all-cands))
+                         (cond ((eq mode t) all-cands)
+                               ((eq mode nil)
+                                (icicle-expanded-common-match icicle-current-input all-cands))
+                               ((eq mode 'lambda) t))))))
                   ((listp candidate-source) candidate-source)
                   ((and (symbolp candidate-source) (boundp candidate-source))
                    (symbol-value candidate-source))

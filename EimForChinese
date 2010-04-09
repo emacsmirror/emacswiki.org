@@ -85,4 +85,11 @@ vimim提供了相似的功能，特别是可以连接搜狗的云输入法，我
 -- Shaowei.Wang
 
 ----
+
+auto-complete包里面有个popup.el是用Overlay来实现popup菜单的，这个eim的tooltip不是太好用，而且不能支持tty的emacs。
+可以试试用popup.el来代替tooltip。
+
+--Shaowei.Wang
+
+----
 CategoryInternationalization WritingChinese

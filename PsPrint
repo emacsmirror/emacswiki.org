@@ -33,6 +33,41 @@ It seems that (ps-print-buffer-with-faces) requires X11, so using it in --batch 
 
   <command that produces files you want to print, e.g. find> | xargs --max-args 1 -i emacs --file {} --no-desktop --eval '(ps-print-buffer-with-faces)' --eval '(kill-emacs)'
 
+And here's a bash script to print two pages per sheet with no margin, 80 chars/line:
+
+  #!/bin/bash
+
+  if [[ $# != 1 ]]; then
+      echo "usage: $0 FILE" > /dev/stderr
+      exit 2
+  fi
+
+  in="$1"
+  out="/tmp/$(basename "$in").ps"
+  emacs \
+      --quick \
+      --file "$in" \
+      --eval "
+  (let ((ps-top-margin 0)
+  ;; adjust this and font size if enabling line numbers
+        (ps-left-margin 0)
+        (ps-right-margin 0)
+        (ps-inter-column 0)
+        (ps-landscape-mode t)
+        (ps-number-of-columns 2)
+  ;; 80 chars per line
+        (ps-font-size 8.25)
+  ;;      (ps-line-number t)
+        (ps-line-number-font-size 10)
+        (ps-line-number-step 10)
+        (ps-print-color-p 'black-white))
+    (ps-print-buffer-with-faces \"$out\")
+  ;; gives chars per line info, among other things
+  ;;  (ps-line-lengths)
+  ;;  (write-file \"/tmp/line-lengths.txt\")
+    (kill-emacs))
+  " 
+  echo "$in -> $out"
 
 ----
 CategoryPrinting

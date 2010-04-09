@@ -1290,6 +1290,20 @@ I am finding this very useful, but it would be nice if there was a quicker way t
 [new:DrewAdams:2010-03-25 23:58 UTC]
 Can you describe what you envision? -- DrewAdams
 
+[new:JoeBloggs:2010-04-09 02:09 UTC]
+In org-mode when you press C-c C-c C-c to tag a headline a buffer pops up showing you the already defined tags, with corresponding keys. You then press one of the keys to add the tag, or TAB to define a new tag.
+Perhaps the effort is not worth it. However, just removing the first prompt that you get after pressing T + would speed things up a bit, since I think most people will be wanting to tag the bookmark at point in this case. -- JoeBloggs
+
+[new:DrewAdams:2010-04-09 02:20 UTC]
+I think I understand (but not sure). I think you're describing a context where the bookmark that is the target of the tag is known/implicit/obvious, and in that context there is no need to prompt users for the bookmark to tag. Is that it?
+
+The command bound to `##T +##' is general, not specific to, say, buffer `##*Bookmark List*##", where, in effect, the current line corresponds to a specific bookmark. But in that case, the current-line's bookmark is the default value, so you need only hit `RET' to pick it up. I don't see that as a big thing, I guess, so I don't think it's worth trying to take advantage of that specific context. I suspect you disagree. ;-)
+
+Let me know at least if I've understood the suggestion: Since in a context like the buffer list it's predictable that you want to tag the bookmark on the current line, don't bother to prompt for which bookmark to tag. -- DrewAdams
+
+
+----
+
 [new]
 I would like to use bookmarks with version control (ClearCase) where i have multiple views (base directories) with the same files/directory structure. What i would like to do is to define file type bookmarks with <i>relative</i> paths where i can easily change the base directory (e.g. select it from a list or keep it stored in a global variable). Is something like this already possible (and i've just not found it)?
 

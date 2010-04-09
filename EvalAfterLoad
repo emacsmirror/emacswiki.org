@@ -1,0 +1,9 @@
+<pre>
+This package make you can `eval-after-load' by modes, keymaps,
+by    use    `eal-eval-by-modes',   `eal-eval-by-maps',    and
+`define-key'  more convenient  use  function `eal-define-key',
+`eal-define-key',    `eal-define-keys-commonly'.    For   more
+details, see article
+</pre> http://emacser.com/eval-after-load.htm
+
+Download: [http://code.google.com/p/dea/source/browse/trunk/my-lisps/eval-after-load.el eval-after-load]

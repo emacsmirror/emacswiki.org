@@ -20,6 +20,9 @@ Its so big, I put it on google code.
 * **LinumPlus** LinumPlus
 : Extension of Linum
 
+* **EvalAfterLoad** EvalAfterLoad
+: Package use autoload and eval-after-load technique.
+
 * **AutoCompletePlus** AutoCompletePlus
 : Enhancement of AutoComplete
 

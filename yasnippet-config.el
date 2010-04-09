@@ -1,5 +1,5 @@
 ;;;; yasnippet-config.el --- Configuration of yasnippet.el
-;; $Id: yasnippet-config.el,v 1.5 2009/09/16 09:40:08 rubikitch Exp rubikitch $
+;; $Id: yasnippet-config.el,v 1.6 2010/04/09 04:56:00 rubikitch Exp $
 
 ;; Copyright (C) 2009  rubikitch
 
@@ -30,6 +30,8 @@
 ;;
 ;; Below are complete command list:
 ;;
+;;  `yas/oneshot-snippet'
+;;    If `transient-mark-mode' is enabled and region is selected,
 ;;
 ;;; Customizable Options:
 ;;
@@ -37,6 +39,7 @@
 ;;
 
 ;;; Installation:
+
 ;;
 ;; For full install of the normal archive, just download and unpack
 ;; the latest yasnippet-x.y.z.tar.bz2. You'll get a directory named
@@ -59,6 +62,9 @@
 ;;; History:
 
 ;; $Log: yasnippet-config.el,v $
+;; Revision 1.6  2010/04/09 04:56:00  rubikitch
+;; New command: `yas/oneshot-snippet'
+;;
 ;; Revision 1.5  2009/09/16 09:40:08  rubikitch
 ;; Adjust to yasnippet 0.6.1
 ;;
@@ -79,7 +85,7 @@
 
 ;;; Code:
 
-(defvar yasnippet-config-version "$Id: yasnippet-config.el,v 1.5 2009/09/16 09:40:08 rubikitch Exp rubikitch $")
+(defvar yasnippet-config-version "$Id: yasnippet-config.el,v 1.6 2010/04/09 04:56:00 rubikitch Exp $")
 (eval-when-compile (require 'cl))
 
 (require 'yasnippet) ;; not yasnippet-bundle
@@ -178,6 +184,14 @@
   (if (string< "0.6" yas/version)
       (yas/expand-snippet yas/oneshot-snippet)
     (yas/expand-snippet (point) (point) yas/oneshot-snippet)))
+
+(defun yas/oneshot-snippet ()
+  "If `transient-mark-mode' is enabled and region is selected,
+register the region as oneshot snippet, Otherwise expand it."
+  (interactive)
+  (if (region-active-p)
+      (yas/register-oneshot-snippet (region-beginning) (region-end))
+    (yas/expand-oneshot-snippet)))
 
 (provide 'yasnippet-config)
 

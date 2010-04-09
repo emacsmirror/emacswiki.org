@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Apr  3 11:45:52 2010 (-0700)
+;; Last-Updated: Thu Apr  8 11:33:52 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5102
+;;     Update #: 5104
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -227,6 +227,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2010/04/08 dadams
+;;     icicle-get-anything-candidates: Removed #' - it was preventing the fn from being functionp.
 ;; 2010/04/03 dadams
 ;;     Removed: icicle-search-desktop-bookmark (no need).
 ;; 2010/04/02 dadams
@@ -357,6 +359,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-face.el'")
 ;;
+;; 2010/04/08 dadams
+;;     Added autoload cookies.
 ;; 2010/03/13 dadams
 ;;     Made icicle-candidate-part paler (light background): #EF84FFEAF427, not #DB17FFF4E581.
 ;; 2010/02/17 dadams

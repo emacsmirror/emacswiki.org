@@ -16,67 +16,28 @@ Flymake's author is Pavel Kobiakov
 [new]
 Flymake is part of Emacs 23 and some of the tips below works OTB there.
 
+== Language Support ==
 
+||**Language**||||Link||
+||PHP||||[http://sachachua.com/wp/2008/07/emacs-and-php-on-the-fly-syntax-checking-with-flymake/ PHP syntax checking for Flymake]||
+||Ruby||||FlymakeRuby for Ruby||
+||Fortran G95||||[[Flymake Fortran G95]]||
+||JavaScript||||FlymakeJavaScript for JavaScript||
+||Actionscript 3||||FlymakeActionscriptThree for Actionscript 3, more than just syntax checking; full incremental compilation||
+||Haskell||||FlymakeHaskell for Haskell||
+||Erlang ||||FlymakeErlang for Erlang||
+||Lua ||||FlymakeLua for Lua||
+||*nix Shell ||||FlymakeShell for shell programming. Default it uses Bash.||
+||Elisp ||||FlymakeElisp for EmacsLisp||
+||CSS ||||FlymakeCSS for Cascading Style Sheets||
+||Java ||||FlymakeJava with Make or JDEE||
+||C# ||||[http://blogs.msdn.com/dotnetinterop/archive/2008/04/14/getting-flymake-el-to-work-with-c-modules.aspx  C# syntax checking with Flymake]||
+||python-mode ||||Is it possible to use pychecker with flymake? -- Anon.
+You can use it with pylint. See PythonMode||
 
-== PHP ==
+== Hints And Questions ==
 
-[http://sachachua.com/wp/2008/07/emacs-and-php-on-the-fly-syntax-checking-with-flymake/ PHP syntax checking for Flymake]
-
-== Ruby ==
-
-FlymakeRuby for Ruby
-
-
-== Fortran G95 ==
-
-[[Flymake Fortran G95]]
-
-== JavaScript ==
-
-FlymakeJavaScript for JavaScript
-
-== Actionscript 3 ==
-
-FlymakeActionscriptThree for Actionscript 3, more than just syntax checking; full incremental compilation
-
-== Haskell ==
-
-FlymakeHaskell for Haskell
-
-== Erlang ==
-
-FlymakeErlang for Erlang
-
-== Lua ==
-
-FlymakeLua for Lua
-
-== *nix Shell ==
-
-FlymakeShell for shell programming. Default it uses Bash.
-
-== Elisp ==
-
-FlymakeElisp for EmacsLisp
-
-== CSS ==
-
-FlymakeCSS for Cascading Style Sheets
-
-== Java ==
-
-FlymakeJava with Make or JDEE
-
-
-== python-mode ==
-
-Is it possible to use pychecker with flymake? -- Anon.
-
-You can use it with pylint. See PythonMode
-
-----
-== LaTeX ==
-
+=== LaTeX ===
 Is it possible to use latex with flymake on linux machines? I try it today and it seems that the mode works only under miktex.
 
 This mode works on linux machines with customization. The default program (texify) is incorrect, so I used [http://baruch.ev-en.org/proj/chktex/ chktex]:
@@ -164,7 +125,7 @@ on linux (as e.g., included in OpenSuse):
 --Lars
 ----
 
-== Ada ==
+=== Ada ===
 
 The following works with Gnat:
 
@@ -187,7 +148,7 @@ The following works with Gnat:
         flymake-err-line-patterns)
 ----
 
-== SCons/bjam ==
+=== SCons/bjam ===
 
 - Can Flymake work if SCons/bjam is used instead of make? -- Tennis
 
@@ -210,13 +171,13 @@ This is the case if you put VariantDir(obj,src) in your SConstruct.
 
 ----
 
-== CMake ==
+=== CMake ===
 
 Using flymake for CMake is not difficult, the trick is to generate Makefiles using information provided by cmake. This [http://www.opencog.org/wiki/Flymake_help|page] contains explanation and scripts to do that. It is possible the provided scripts would work immediately for your CMake project,  if not you will surely get the idea.
 
 -- Nil Geisweiller
 
-== Mozart/Oz ==
+=== Mozart/Oz ===
 
 Here are instructions how to make flymake work with Mozart/Oz: 
 http://code.google.com/p/oz-code/downloads/list
@@ -225,7 +186,7 @@ http://code.google.com/p/oz-code/downloads/list
 
 ----
 
-== HTML ==
+=== HTML ===
 
 Here are instructions how to make flymake work with HTML:
 
@@ -247,7 +208,7 @@ Here are instructions how to make flymake work with HTML:
 
 ----
 
-== XSL-Mode ==
+=== XSL-Mode ===
 
 Use Flymake's XML syntax-checking on files with a .xsl extension.
 
@@ -255,6 +216,23 @@ Use Flymake's XML syntax-checking on files with a .xsl extension.
     (push '(".+\\.xsl$" flymake-xml-init) flymake-allowed-file-name-masks)
     (add-hook 'xsl-mode-hook
 	      (lambda () (flymake-mode t)))
+
+----
+
+=== C# ===
+
+I was able to implement a monkey-patch to the popup menu presented by flymake-display-err-menu -for-current-line , that presents a list of "quick fixes", as with visual studio.  For example if your code has a CS0246 error (unknown type), then the menu presents a list of fixes including "add a using statement" and "use the fully qualified type".  
+
+Example:
+
+http://i40.tinypic.com/mwryw0.jpg
+
+This works on emacs v22.2.1 on Windows, but requires:
+
+ - changes to flymake.el so that flymake-goto-next-error goes to the *column* as well as the line of the error
+ - CSDEShell - the C# development environment shell - to lookup fully-qualified typenames on short names. 
+
+see [http://stackoverflow.com/questions/2601120/do-overlays-tooltips-work-correctly-in-emacs-for-windows/2604843#2604843 this post] for more.
 
 ----
 

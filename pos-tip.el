@@ -6,7 +6,7 @@
 ;; Maintainer: S. Irie
 ;; Keywords: Tooltip
 
-(defconst pos-tip-version "0.3.1")
+(defconst pos-tip-version "0.3.2")
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -69,6 +69,10 @@
 
 
 ;;; History:
+;; 2010-04-08  S. Irie
+;;         * Bug fix
+;;         * Version 0.3.2
+;;
 ;; 2010-03-31  S. Irie
 ;;         * Bug fix
 ;;         * Version 0.3.1
@@ -535,14 +539,14 @@ SQUEEZE nil means leave whitespaces other than line breaks untouched."
 	   row rows)
       (insert string)
       (untabify (point-min) (point-max))
-      (if word-wrap
+      (if justify
 	  (fill-region (point-min) (point-max) justify (not squeeze))
 	(setq margin (make-string left-margin ?\s)))
       (goto-char (point-min))
       (while (prog2
 		 (let ((line (buffer-substring
 			      (point) (progn (end-of-line) (point)))))
-		   (if word-wrap
+		   (if justify
 		       (push line rows)
 		     (while (progn
 			      (setq line (concat margin line)

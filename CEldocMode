@@ -6,14 +6,14 @@ c-eldoc mode displays the arguments of C functions while one is programming.
 This version takes the function declarations from preprocessor output, thus allowing one to use it with system-dependent functions from any library.  This was developed as a response to [[CEDET]], which I was unable to use.  If you know how to make this feature work in [[CEDET]] (I believe it is called `summary-mode'), please post the method here.  This approach is somewhat simpler than that of [[CEDET]].
 
 === Disadvantages ===
-It currently only works with the C language.  *I am no longer maintaining this project* :(
+It currently only works with the C language.
 
 == Requirements ==
 This file requires the new eldoc functions available in Emacs 22.
 You'll also need a GNU-compatible version of <code>grep</code> and <code>cpp</code>.  This shouldn't be a problem for most people running GNU/Linux systems.  I have not tested this on XEmacs yet.  Please post if it works.
 
 == How do I use it? ==
-# Download Lisp:c-eldoc.el from the ElispArea and save to your emacs-lisp directory.  Eval  <code>(install-elisp-from-emacswiki "c-eldoc.el")</code> if you have InstallElisp.
+# Eval  <code>(install-elisp-from-emacswiki "c-eldoc.el")</code> if you have InstallElisp, or download Lisp:c-eldoc.el from the ElispArea and save to your emacs-lisp directory.  
 # Add the following to your <code>.emacs</code> file.
 <pre>
 ;; add in your commonly used packages/include directories here, for
@@ -31,8 +31,6 @@ The code here makes a few changes to Paul Pogonyshev's c-eldoc mode, originally 
 
 In 2010, Nathaniel Flath added caching to this file to make it usable on large projects, "like the emacs codebase".
 
-*Please mail me if you're interested in maintaining this project, as it seems to still be popular with emacs C hackers.*  I wrote this file in high school and have since graduated moved on to professional work in other languages, so I cannot maintain it further. 
-
 == Bugs ==
 [new]
 I think caching symbol-info into alist or hashtable is better than calculating symbol-info EVERY TIME. It is immutable until the source file and included files are modified. -- [[rubikitch]]
@@ -47,10 +45,6 @@ if you replace the grep command and the function-name pattern (2 times in the co
    function-name "[\s]*('" )) 
 </pre>
 -- clabom
-
-[new]
-Not maintaining this anymore, so feel free to submit your improvements to the file directly, or better yet, take over the project! -- MattStrange
-
 
 == Alternatives ==
 For another take on c-eldoc, see this article[http://tenkan.org/~tim/c-function-signature.html].

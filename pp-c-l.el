@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2010, Drew Adams, all rights reserved.
 ;; Created: Thu Feb 08 20:28:09 2007
 ;; Version: 1.0
-;; Last-Updated: Fri Jan 15 13:34:55 2010 (-0800)
+;; Last-Updated: Thu Apr  8 19:05:24 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 179
+;;     Update #: 193
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/pp-c-l.el
 ;; Keywords: display, convenience, faces
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -45,6 +45,11 @@
 ;;  (~/.emacs or ~/_emacs):
 ;;
 ;;    (require 'pp-c-l)           ; Load this library.
+;;
+;;  To turn on this mode by default, then either customize option
+;;  `pretty-control-l-mode' to non-nil or add this line also to your
+;;  init file:
+;;
 ;;    (pretty-control-l-mode 1)   ; Turn on pretty display of `^L'.
 ;;
 ;;  For most of the user options defined here, if you change the value
@@ -55,6 +60,8 @@
 ;; 
 ;;; Change log:
 ;;
+;; 2010/04/08 dadams
+;;     Added autoload cookies.  Thx to Peter Galbraith.
 ;; 2009/03/02 dadams
 ;;     Enhancement by Andrey Paramonov.
 ;;       pp^L-^L-display-table-entry: Added window argument.
@@ -109,6 +116,7 @@
         (logior char (lsh (face-id face) 19)) ; CHARACTERBITS
       char)))
 
+;;;###autoload
 (defgroup Pretty-Control-L nil
   "Options to define pretty display of Control-l (`^L') characters."
   :prefix "pp^L-" :group 'convenience :group 'wp
@@ -123,6 +131,7 @@ Don't forget to mention your Emacs and library versions."))
           "http://www.emacswiki.org/cgi-bin/wiki/PrettyControlL")
   :link '(emacs-commentary-link :tag "Commentary" "pp-c-l"))
 
+;;;###autoload
 (defface pp^L-highlight
     (if (> emacs-major-version 21)
         '((((type x w32 mac graphic) (class color))
@@ -134,6 +143,7 @@ Don't forget to mention your Emacs and library versions."))
   "*Face used to highlight `pp^L-^L-vector'."
   :group 'Pretty-Control-L :group 'faces)
 
+;;;###autoload
 (defcustom pp^L-^L-string "          Section (Printable Page)          "
   "*Highlighted string displayed in place of each Control-l (^L) character.
 If `pp^L-^L-string-function' is non-nil, then the string that function
@@ -159,6 +169,7 @@ This text is not highlighted."
 This text is not highlighted."
   :type 'string :group 'convenience :group 'wp)
 
+;;;###autoload
 (unless (fboundp 'define-minor-mode)    ; Emacs 20.
   (defcustom pretty-control-l-mode nil
     "*Toggle pretty display of Control-l (`^L') characters.
@@ -184,7 +195,7 @@ and `pp^L-^L-string-post'."
            (mapconcat (lambda (c) (list c)) pp^L-^L-string-post "")))
 
 (defalias 'pp^l 'pretty-control-l-mode)
-
+;;;###autoload
 (if (fboundp 'define-minor-mode)
     ;; Emacs 21 and later.
     ;; We eval this so that even if the library is byte-compiled with Emacs 20,
@@ -237,6 +248,7 @@ With ARG, turn pretty display of `^L' on if and only if ARG is positive."
      'no-minibuf
      'visible)))
 
+;;;###autoload
 (defun refresh-pretty-control-l ()
   "Reinitialize `pretty-control-l-mode', if on, to update the display."
   (interactive)
