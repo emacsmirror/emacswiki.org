@@ -122,7 +122,11 @@ multi-command and any of its individual actions.  The command is
 free to interpret these differently.  For example, a prefix arg
 for `icicle-kmacro' provides a default repeat factor, which can
 then be overridden for any individual action by providing a
-different prefix arg.
+different prefix arg.  As another example, a prefix arg used with
+any file-name candidate for command `icicle-find-file' visits the
+file in read-only mode.  But a prefix arg for the command itself
+reverses this effect: read-only becomes the default so that a
+prefix arg for a candidate means visit ''not'' read-only.
 
 If [[user option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-use-candidates-only-once-flag|icicle-use-candidates-only-once-flag]]</tt>'''' is non-`nil', then, when you act
 on a candidate, it is removed from the list of available

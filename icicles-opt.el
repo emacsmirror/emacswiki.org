@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Apr  1 13:20:33 2010 (-0700)
+;; Last-Updated: Fri Apr  9 14:24:28 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 3640
+;;     Update #: 3644
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1297,7 +1297,7 @@ This threshold is also used to decide when to display the message
     next-history-element read-face-name read-file-name read-number
     shell-command shell-command-on-region switch-to-completions
     completing-read-multiple)
-  "Functions Icicles redefines, and for which advice is deactivated.
+  "Functions that Icicles redefines, and for which advice is deactivated.
 Icicle mode deactivates all advice for such functions.  The advice is
 reactivated when you leave Icicle mode."
   :type '(repeat (function :tag "Function for which Icicles deactivates advice"))
@@ -2639,6 +2639,9 @@ toggle Icicle mode off and then back on."
     (execute-extended-command       icicle-execute-extended-command    t) ; `M-x'
     (find-file                      icicle-file                        t) ; `C-x C-f'
     (find-file-other-window         icicle-file-other-window           t) ; `C-x 4 f'
+    (find-file-read-only            icicle-find-file-read-only         t) ; `C-x C-r'
+    (find-file-read-only-other-window
+     icicle-find-file-read-only-other-window                           t) ; `C-x 4 r'
     ;; There are no key bindings in vanilla Emacs for `insert-buffer'.
     ;; If you use `setup-keys.el', then these are its bindings: `C-S-insert', `M-S-f1'.
     (insert-buffer                  icicle-insert-buffer               t)

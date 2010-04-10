@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Mar 13 14:57:55 2010 (-0800)
+;; Last-Updated: Fri Apr  9 13:11:43 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 15409
+;;     Update #: 15428
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2909,6 +2909,9 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                                      (vanilla "  [No vanilla completions]")
                                      (t       "  [No prefix completions]")))))
             ((null (cdr icicle-completion-candidates)) ; Single candidate.  Update minibuffer.
+             ;; Set current input to sole candidate, to be sure to pick up any `icicle-whole-candidate'
+             ;; property.  Really needed only when `icicle-expand-input-to-common-match-flag' is nil.
+             (setq icicle-current-input  (car icicle-completion-candidates))
              (setq icicle-nb-of-other-cycle-candidates  0)
              (unless icicle-edit-update-p
                (icicle-clear-minibuffer)
@@ -3200,6 +3203,9 @@ message either.  NO-DISPLAY-P is passed to
                                                          icicle-S-TAB-completion-methods-alist))))
                                    (concat "  [No " typ (and typ " ") "completion]")))))
           ((null (cdr icicle-completion-candidates)) ; Single candidate. Update minibuffer.
+           ;; Set current input to sole candidate, to be sure to pick up any `icicle-whole-candidate'
+           ;; property.  Really needed only when `icicle-expand-input-to-common-match-flag' is nil.
+           (setq icicle-current-input  (car icicle-completion-candidates))
            (setq icicle-nb-of-other-cycle-candidates  0)
            (unless icicle-edit-update-p
              (icicle-clear-minibuffer)

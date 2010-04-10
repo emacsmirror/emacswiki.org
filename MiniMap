@@ -119,6 +119,24 @@ It seems linum-mode displays line numbers at normal size and thus only displays 
 [new]
 Done. I also changed the overlay-syncing, so that only the 'face and 'invisible property will be synced - otherwise, linum-mode would still change the line spacing in the minimap buffer.
 
+----
+
+I find the following function handy, maybe it would make sense to add it to minimap.el?
+
+<pre>
+(defun minimap-toggle ()
+  "Show minimap if hidden, hide if present."
+  (interactive)
+  (if (and minimap-bufname
+	       (get-buffer minimap-bufname)
+	       (get-buffer-window (get-buffer minimap-bufname)))
+      (minimap-kill)
+    (minimap-create))
+  )
+</pre>
+
+Then I can bind single shortcut to minimap toggling, it's handy.
+
 
 ----
   

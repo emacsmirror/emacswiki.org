@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Apr  3 14:00:12 2010 (-0700)
+;; Last-Updated: Fri Apr  9 15:53:04 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 26814
+;;     Update #: 26820
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2423,7 +2423,8 @@
 ;;  current `default-directory'.  Or you can use a command that calls
 ;;  `completing-read', and so matches absolute file names - that is,
 ;;  lets you match not only file names but also directory components.
-;;  An example of the former type is `icicle-find-file'.  Examples of
+;;  Examples of the former type are `icicle-find-file' and
+;;  `icicle-find-file-read-only' (`C-x C-r' by default).  Examples of
 ;;  the latter type are `icicle-find-file-absolute',
 ;;  `icicle-find-file-in-tags-table', `icicle-recent-file', and
 ;;  `icicle-locate-file'.  Command `icicle-file' (bound to `C-x C-f'
@@ -5529,6 +5530,8 @@
 ;;  `execute-extended-command'.......`icicle-execute-extended-command'
 ;;  `find-file'........................`icicle-file'
 ;;  `find-file-other-window'...........`icicle-file-other-window'
+;;  `find-file-read-only'..............`icicle-find-file-read-only'
+;;  `find-file-read-only-other-window'.`...read-only-other-window'
 ;;  `find-tag'.........................`icicle-find-tag'
 ;;  `find-tag-other-window'.......`icicle-find-first-tag-other-window'
 ;;  `Info-goto-node'...................`icicle-Info-goto-node'
@@ -7168,6 +7171,7 @@
 ;;  `icicle-find-file'    - Visit a file or directory (relative)
 ;;  `icicle-find-file-absolute' - Visit a file (absolute)
 ;;  `icicle-find-file-in-tags-table' - Visit a file in a tags table
+;;  `icicle-find-file-read-only' - Visit a file in read-only mode
 ;;  `icicle-find-first-tag' - Visit source-code definition with tag
 ;;  `icicle-font'         - Change the frame font
 ;;  `icicle-frame-bg'     - Change the frame background color

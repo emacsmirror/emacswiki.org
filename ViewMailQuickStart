@@ -105,7 +105,7 @@ See ViewMailAndImap for more details.
 To add another spool apart from the primary, simply add another (INBOX-PATH SPOOL CRASH-BOX-PATH) form to the <code>vm-spool-files</code> list.  Multiple spools may go into the same inbox.  Spools that go to different inboxes should use different crash-boxes.
 
 ----
-== Most Important Variables - POP ==
+== Most Important Variables - POP Server Folders ==
 
 === vm-primary-inbox ===
 
@@ -130,7 +130,7 @@ The first string in each of the inner lists is a POP mailbox specification in th
 
 You can visit the folders defined here using `M-x vm-visit-pop-folder'.
 ----
-== Most Important Variables - IMAP ==
+== Most Important Variables - IMAP Server Folders ==
 
 === vm-primary-inbox ===
 

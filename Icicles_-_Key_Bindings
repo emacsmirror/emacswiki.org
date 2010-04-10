@@ -145,6 +145,8 @@ by '''Icicles''' commands:
 [:lacarte-execute-extended-command]
 [:icicle-file]
 [:icicle-file-other-window]
+[:icicle-file-read-only]
+[:icicle-file-read-only-other-window]
 [:icicle-find-tag]
 [:icicle-find-first-tag-other-window]
 [:icicle-goto-global-marker-or-pop-global-mark]
@@ -177,6 +179,8 @@ by '''Icicles''' commands:
  `execute-extended-command'.........`icicle-execute-extended-command'
  `find-file'........................`icicle-file'
  `find-file-other-window'...........`icicle-file-other-window'
+ `find-file-read-only'..............`icicle-find-file-read-only'
+ `find-file-read-only-other-window'.`icicle-find-file-read-only-other-window'
  `find-tag'.........................`icicle-find-tag'
  `find-tag-other-window'............`icicle-find-first-tag-other-window'
  `Info-goto-node'...................`icicle-Info-goto-node'

@@ -1,3 +1,5 @@
+I use Emacs.
+
 Editing my init.el into a work of art.
 
 
@@ -8,32 +10,32 @@ Welcome to the wiki. -- DrewAdams
 
 
 
-== Modes/extensions I use: ==
+== Modes/features/extensions I use: ==
 
 * [[OrgMode]]
 * [[w3m]] and [[WThreeMTypeAhead]]
 * [[NxmlMode]] and [[NxhtmlMode]]
 * [[ParEdit]] and [[ElDoc]] in [[SlimeMode]], [[InferiorEmacsLispMode]] and [[EmacsLisp]] mode
 * [[BrowseKillRing]]
-* [[Ediff]] and [[EdiffTrees]]
+* [EdiffMode Ediff] and [[EdiffTrees]]
 * [[FileSets]] and [[filesets+.el]]
 * [[grep-a-lot.el]], [[grep-ed.el]] and [[grep-o-matic.el]]
 * [[slurp.el]], [[Ack]] and [[TraverseDirectory]]
 * [[modeline-posn.el]]
 * [[DiredPlus]] and [[dired-sort-map.el]]
+* [[DVC]]
+* [[RememberMode]] within [[OrgMode]]
+* [CategoryEshell Eshell]
+* emacs 23
 
 == Still to learn/master/enable: ==
 
-* [[DVC]]
-* [[RememberMode]] within [[OrgMode]]
 * [[DiredSearchAndReplace]]
 * [[Gnus]] (re-enable, in this case)
-* [[BBDB]]
+* [CategoryBbdb BBDB]
 * [[Icicles]]
-* [[JDEE]], [[CEDET]], [[ECB]] and [[toggle.el]]
+* [JavaDevelopmentEnvironment JDEE], [CollectionOfEmacsDevelopmentEnvironmentTools CEDET], [EmacsCodeBrowser ECB] and [[toggle.el]]
 * [[Anything]]
-* [[Eshell]]
-* emacs 23
 * [[Yasnippet]]
 
 == Probably never going to learn/master/enable: ==

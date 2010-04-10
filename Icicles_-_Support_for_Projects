@@ -138,6 +138,10 @@ or just the part of it that matches your current input.
 
 
 
+
+
+
+
 [:DefiningAndSavingSets]
 == Defining and Saving Sets of Files or Buffers ==
 
@@ -176,7 +180,8 @@ non-elephant]], and so on, to get just the file names you want.
 
 For this completion, you can use a command that calls `read-file-name', and so matches ''relative'' file names using the
 the current [[default directory]].  Or you can use a command that calls `completing-read', and so matches ''absolute'' file names -- that is, lets
-you match not only file names but also directory components.  An example of the former type is `icicle-find-file'.  Examples of
+you match not only file names but also directory components.  Examples of the former type are `icicle-find-file' and
+`icicle-find-file-read-only' (`C-x C-r' by default). Examples of
 the latter type are `icicle-find-file-absolute', `icicle-find-file-in-tags-table', 
 `icicle-recent-file', and `icicle-locate-file'.  Command
 '''`icicle-file'''' (bound to '''`C-x C-f'''' by default) lets you do both, depending on the [[prefix argument]].
@@ -203,6 +208,9 @@ use later with commands that operate on directories. Finally, you can also save 
 * [[Icicles - Nutshell View#ChippingAway| Chipping Away the Non-Elephant]]
 * [[Icicles - File-Name Input]]
 * [[Icicles - Dired Enhancements#SaveFilesAsCandidates|Icicles - Save Marked Files as Completion Candidates]]
+
+
+
 
 
 

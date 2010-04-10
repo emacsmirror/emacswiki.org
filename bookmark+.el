@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Mar 30 13:47:20 2010 (-0700)
+;; Last-Updated: Fri Apr  9 16:50:43 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 11876
+;;     Update #: 11885
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -2728,12 +2728,16 @@ BOOKMARK-NAME is the current (old) name of the bookmark."
   (let* ((bookmark-filename  (bookmark-get-filename bookmark-name))
          (new-bmk-name       (read-from-minibuffer "New bookmark name: " nil nil nil nil
                                                    bookmark-name))
-         (new-filename       (read-from-minibuffer "New file name: " nil nil nil nil
+         (new-filename       (read-from-minibuffer "New file name (location): " nil nil nil nil
                                                    bookmark-filename)))
     (when (and (not (equal new-bmk-name "")) (not (equal new-filename ""))
                (y-or-n-p "Save changes? "))
       (bookmark-rename bookmark-name new-bmk-name 'batch)
       (bookmark-set-filename new-bmk-name new-filename)
+      ;; Change location for Dired too, but not if different from original file name (e.g. a cons).
+      (let ((dired-dir  (bookmark-prop-get bookmark-name 'dired-directory)))
+        (when (and dired-dir (equal dired-dir bookmark-filename))
+          (bookmark-prop-set bookmark-name 'dired-directory new-filename)))
       (bookmarkp-maybe-save-bookmarks)
       (list new-bmk-name new-filename))))
 

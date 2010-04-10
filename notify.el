@@ -1,5 +1,9 @@
 ;;; notify.el --- notification frontend
 
+;; as of 4/2010 this library doesn't seem to work - you can use
+;; notify.el from the elim project instead -
+;; http://git.savannah.gnu.org/cgit/elim.git/tree/elisp/notify.el
+
 ;; Copyright (C) 2008  Mark A. Hershberger
 
 ;; Original Author: Mark A. Hershberger <mhersberger@intrahealth.org>

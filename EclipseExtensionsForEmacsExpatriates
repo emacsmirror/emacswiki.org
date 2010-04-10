@@ -1,10 +1,11 @@
 [http://www.mulgasoft.com/emacsplus Emacs+] is an Eclipse plug in by MarkFeber designed to provide a more Emacs like experience in the Eclipse text editors.  Some of the major features are listed below.  In cases where the normal Emacs binding interferes with the default eclipse binding, the Emacs binding is preferred.
 
+* Keyboard macros 
 * M-x command execution
 * C-u universal-argument
-* C-x b with search
+* C-x b (switch to buffer) with search
 * Emacs style point/mark selection with both global and buffer-local mark rings
-* Emacs style search and query/replace with regular expressions
+* Emacs style search and query/replace with regular expressions and subcommands
 * A kill ring for deleted text
 * Balanced expression (s-expression) commands
 * Split editor windows (C-x 2, C-x 3)

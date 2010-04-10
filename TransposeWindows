@@ -1,4 +1,8 @@
-When working with multiple windows it can be annoying if they get out of order. With this function it's easy to fix that. This is a slight rewrite of an original written by ThomasBellman.
+When working with multiple windows it can be annoying if they get out of order.
+
+If you have 2 windows and want to swap the top buffer with the bottom, you could use the sequence of seven keys, `C-x 0 C-x 4 b'.  More likely you are in the bottom buffer and want to be on top.  In that case, use `C-x 0 C-x 2 C-x b RET'.
+
+Alternatively, a simple function could be written in Lisp and assigned to a single key sequence.  This is a slight rewrite of an original written by ThomasBellman.
 
  (defun transpose-windows (arg)
    "Transpose the buffers shown in two windows."
@@ -67,7 +71,7 @@ ChrisWebber provides a similar function, but this one allows you to select which
 Yet another window-altering function by Robert Bost slightly based on Steve Yegge's swap-windows. This one will handle > 1 windows.  
 
  (defun rotate-windows ()
-  "Rotate your windows" (interactive) (cond ((not (> (count-windows) 1)) (message "You can't rotate a sinlge window!"))
+  "Rotate your windows" (interactive) (cond ((not (> (count-windows) 1)) (message "You can't rotate a single window!"))
  (t
   (setq i 1)
   (setq numWindows (count-windows))

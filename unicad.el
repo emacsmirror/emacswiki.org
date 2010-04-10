@@ -1,11 +1,11 @@
 ;;; unicad.el --- an elisp port of Mozilla Universal Charset Auto Detector
 
 ;;;{{{  Copyright and License
-;; Copyright (C) 2006, 2007 Qichen Huang
-;; $Id$	
-;; Author: Qichen Huang <jasonal00@gmail.com>
-;; Time-stamp: <2007-06-11 20:23:32>
-;; Version: v1.0.4
+;; Copyright (C) 2006, 2007, 2008, 2010 Qichen Huang
+;; $Id$
+;; Author: Qichen Huang <unicad.el@gmail.com>
+;; Time-stamp: <2010-04-09 12:53:15>
+;; Version: v1.1.5
 ;; Keywords: coding-system, auto-coding-functions
 ;; URL: http://code.google.com/p/unicad/
 
@@ -26,12 +26,15 @@
 
 ;;;{{{ Commentary:
 
-;; 
+;;
 
 ;; Put this file into your load-path and the following into your ~/.emacs:
 ;;   (require 'unicad)
 ;;
-;; It may take a few seconds to detect some long latin-1 or latin-2 files,
+;; You can disable unicad by M-x `unicad-disable' and enable it by M-x
+;; `unicad-enable' or `unicad'.
+;;
+;; It may take a few seconds to detect some large latin-1 or latin-2 files,
 ;; you can byte-compile this file to speed up detecting process.
 
 ;; Following coding systems can be auto detected:
@@ -48,14 +51,14 @@
 ;;    - utf-16le (also without signature)
 ;;    - utf-16be (also without signature)
 ;;  * singlebyte coding systems:
-;;    - greek 
-;;      > iso-8859-7 
+;;    - greek
+;;      > iso-8859-7
 ;;      > windows-1253
 ;;    - russian
-;;      >koi8-r      
+;;      >koi8-r
 ;;      >windows-1251
-;;      >iso-8859-5  
-;;      >ibm855      
+;;      >iso-8859-5
+;;      >ibm855
 ;;  - bulgarian
 ;;      >iso-8859-5
 ;;      >windows-1251
@@ -64,20 +67,26 @@
 ;;  * latin-2
 
 ;;; TODO:
+;; Endline pattern
 ;; Follows are planned to be involved in next version:
+;;  - iso-8859-9 (turkish, latin-5)
 ;;  - hebrew
 ;;  - thai
 ;;  - x-mac-cyrillic
 ;;  - ibm866
 ;;  - iso-2022 (Emacs itself can detect iso-2022-cn -jp and -kr corretly)
 ;;  - hz
+;; Local Variables
 
 ;;; KNOWN BUGS:
+;; - Conflict with ido when exit Emacs. Add `unicad-disable' to `kill-emacs-hook' to avoid this problem.
 ;; - Some files are too short to be detected.
 ;; - Some don't contain the most frequently characters, so that they can't be detected.
 ;; - If a japanese text file is encoded with gb18030, it's very hard to be detected.
 ;; - GBK characters like "毛(#xC3AB), 狮(#xCAA8)" are similar to utf-8, could be incorrectly detected.
 ;;   So I made the priority of gbk and other charsets higher than utf-8.
+;; - Detecting traditional chinese encoded in gbk is not supported in Emacs 22.1 and below,
+;;   because the function `decode-char' only support `ucs'.
 ;;
 ;; *** If you find undetected files, please send me a bug report and attach the files. Many thanks. ***
 
@@ -94,11 +103,20 @@
 ;;;}}}
 
 ;;;{{{ Changelog
+;; v1.1.5 fixed bug in `unicad-char-after' and `unicad-universal-charset-detect' (size calc was wrong)
+;; v1.1.4 Add function and variable `unicad-version'. small bug fix, correct unicad-eol from unicad-eof.
+;; v1.1.3 detect dos eol-type
+;; v1.1.2 (add-to-hook 'kill-emacs-hook 'unicad-disable) to avoid conflict with ido, session, etc.
+;; v1.1.1 Fixed a bug in `unicad-sjis-sb-prober', added a char2order 256 for impossible char.
+;; v1.1.0 Added interactive functions `unicad-enable', `unicad-disable' and `unicad'.
+;;        Add support for compressed files.
+;; v1.0.6 Fixed a bug in `unicad-gbkcht-analyser' for some incompatitable reason.
+;; v1.0.5 Changed define order to eliminate byte-compile warnings.
 ;; v1.0.4 remove simplified chinese in big5, it's nonsense.
 ;; v1.0.3 fixed charset names of utf-16le and utf-16be (without signature),
 ;;        minor changes for `unicad-ucs2le-prober' and `unicad-ucs2be-prober'
 ;; v1.0.2 changed the sequence of `unicad-multibyte-group-list',
-;;        fixed a bug in `unicad-dist-table-get-confidence'     
+;;        fixed a bug in `unicad-dist-table-get-confidence'
 ;; v1.0.1 add support for simplified chinese encoded in big5
 ;; v1.0.0 minor changes, just some tidy works
 ;; v0.65 fixed a bug in `unicad-gbkcht-analyser'
@@ -124,11 +142,14 @@
 (eval-when-compile
   (require 'cl))
 
+(defvar unicad-version "Unicad v1.1.5")
+(defvar unicad-global-enable t)
+(defvar unicad-eol nil)
 (defvar unicad-quick-size 500)
 (defvar unicad-quick-multibyte-words  50)
 (defvar unicad-quick-singlebyte-words 50)
 (defvar unicad-max-size 10000)
-(defvar unicad-default-coding-system nil)
+(defvar unicad-default-coding-system 'nil)
 
 (defvar unicad-threshold 0.95)
 (defvar unicad-data-threshold 1024)
@@ -140,77 +161,189 @@
 
 (defconst unicad--sure-yes 0.99)
 (defconst unicad--sure-no 0.01)
+
+(defvar unicad-best-guess nil
+  "(MACHINE-BEST-GUESS BEST-CONFIDENCE)")
+
+;; (make-variable-buffer-local 'unicad-best-guess)
+
+(defvar unicad-singlebyte-best-guess nil)
+
+(defvar unicad-singlebyte-group-guess nil)
+
+(defvar unicad-latin-best-guess '(latin-1 0.0))
+
+(defvar unicad-latin1-guess
+  '(latin-1 0.0))
+
+(defvar unicad-latin2-guess
+  '(latin-2 0.0))
+
+(defvar unicad-chosen-gb-coding-system
+  (cond
+   ((coding-system-p 'gb18030)
+    'gb18030)
+   ((coding-system-p 'gbk)
+    'gbk)
+   (t 'gb2312)))
+
+(defvar unicad-multibyte-group-list
+  `([sjis 0 unicad-sjis-prober]
+    [euc-jp 0 unicad-eucjp-prober]
+    [,unicad-chosen-gb-coding-system 0 unicad-gb2312-prober]
+    [euc-kr 0 unicad-euckr-prober]
+    [big5 0 unicad-big5-prober]
+    [euc-tw 0 unicad-euctw-prober]
+    [,unicad-chosen-gb-coding-system 0 unicad-gbkcht-prober]
+    [utf-8 0 unicad-utf8-prober]
+    [utf-16le 0 unicad-ucs2le-prober]
+    [utf-16be 0 unicad-ucs2be-prober])
+  "([CODING-SYSTEM BEST-CONFIDENCE PROBER-FUNCTION] ...)")
+
+;;}}}
+
+;;{{{  unicad-enable, unicad-disable
+(defun unicad-version (&optional here)
+  "Return unicad version.
+If optional argument HERE is non-nil, insert string at point."
+  (interactive "P")
+  (if here
+      (insert unicad-version)
+    (if (interactive-p)
+        (message "%s" unicad-version)
+      unicad-version)))
+
+(defun unicad-enable ()
+  "Enable Unicad function."
+  (interactive)
+  (setq unicad-global-enable t)
+  (message "Unicad enabled."))
+
+(defun unicad-disable ()
+  "Disable Unicad function."
+  (interactive)
+  (setq unicad-global-enable -1)
+  (message "Unicad DISABLED."))
+
+(defalias 'unicad 'unicad-enable)
 ;;}}}
 
 ;;{{{  Auto Coding Function
+
+(defun unicad-char-after (&optional pos)
+  (let (char)
+    (if pos
+        (setq char (char-after pos))
+      (setq char (char-after)))
+    (if (numberp char)
+        (progn
+          (if (> char #xff)
+              (setq char (logand char #xff)))
+          char)
+      nil)))
+
 ;; ePureAscii, eEscAscii -> unicad-default-coding-system
 ;; eHighbyte -> multibyte-group-prober -> latin1->prober
 (defun unicad-universal-charset-detect (size)
   "detect charset"
-  (when (not (local-variable-p 'buffer-file-coding-system))
-    (save-excursion
-      (let ((end (+ (point) (min size unicad-max-size)))
-            (input-state 'ePureAscii)
-            code0 code1 code2 state prober-result
-            start quick-start quick-end)
-        (unless (setq prober-result (unicad-bom-detect))
-          (goto-char (point-min))
-          (while (and (not (eq state 'mDone))
-                      (eq input-state 'ePureAscii)
-                      (< (point) end))
-            (setq code1 (char-after))
-            (forward-char 1)
-            (if (and (>= code1 #x80)
-                     (/= code1 #xA0)) ;; since many Ascii only page contains NBSP
-                ;; we got a non-ascii byte (high-byte)
-                (setq input-state 'eHighbyte
-                      start (1- (point)))
-              ;; OK, just pure ascii so far
-              (if (and (eq input-state 'ePureAscii)
-                       (or (= code1 #x1B) ;; ESC char
-                           (and (= code1 ?{ ) (= code0 ?~ )))) ;; HZ "~{"
-                  ;; found escape character or HZ "~{"
-                  (setq input-state 'eEscAscii
-                        start (1- (point))))
-              (setq code0 code1)))
-          (cond
-           ((eq input-state 'eEscAscii)
-            ;; actually emacs itself can tell the esc charset very well
-            ;; so we don't need to do ourselves
-            ;; (unicad-esc-group-prober (point-min) end)
-            )
-           ((eq input-state 'eHighbyte)
-            (if (> (- end start) unicad-quick-size)
+  ;;(goto-char (point-min))
+  (when (and  (or (and (numberp unicad-global-enable) (> unicad-global-enable 0))
+                  (eq unicad-global-enable t))
+              (not (local-variable-p 'buffer-file-coding-system)))
+    (let ((buf (current-buffer)))
+;;       (make-local-variable 'unicad-best-guess)
+;;       (make-local-variable 'unicad-singlebyte-best-guess)
+;;       (make-local-variable 'unicad-singlebyte-group-guess)
+;;       (make-local-variable 'unicad-latin-best-guess)
+;;       (make-local-variable 'unicad-latin1-guess)
+;;       (make-local-variable 'unicad-latin2-guess)
+;;       (make-local-variable 'unicad-multibyte-group-list)
+      (save-excursion
+        (goto-char (point-min))
+        (let (;;(end (+ (point) (min size unicad-max-size)))
+              (end (min size (+ (point) unicad-max-size)))
+              (input-state 'ePureAscii)
+              (code0 0)
+              prober-result
+              code1 code2 state
+              start quick-start quick-end
+              )
+          (setq unicad-eol nil)
+          (unless (setq prober-result (unicad-bom-detect))
+            (goto-char (point-min))
+            (while (and (not (eq state 'mDone))
+                        (eq input-state 'ePureAscii)
+                        (< (point) end))
+              (setq code1 (unicad-char-after))
+;; 	      (if (not (numberp code1))
+;; 		  (message "code1 nil %d, end point %d" (point) end))
+              (forward-char 1)
+              (if (and (= code0 #x0D) (= code1 #x0A))
+                  (setq unicad-eol 1))
+              (if (and (>= code1 #x80)
+                       (/= code1 #xA0)) ;; since many Ascii only page contains NBSP
+                  ;; we got a non-ascii byte (high-byte)
+                  (setq input-state 'eHighbyte
+                        start (1- (point)))
+                ;; OK, just pure ascii so far
+                (if (and (eq input-state 'ePureAscii)
+                         (or (= code1 #x1B) ;; ESC char
+                             (and (= code1 ?{ ) (= code0 ?~ )))) ;; HZ "~{"
+                    ;; found escape character or HZ "~{"
+                    (setq input-state 'eEscAscii
+                          start (1- (point))))
+                (setq code0 code1)))
+            (cond
+             ((eq input-state 'eEscAscii)
+              ;; actually emacs itself can tell the esc charset very well
+              ;; so we don't need to do ourselves
+              ;; (unicad-esc-group-prober (point-min) end)
+              )
+             ((eq input-state 'eHighbyte)
+              (if (> (- end start) unicad-quick-size)
+                  (setq quick-start start
+                        quick-end (+ unicad-quick-size start))
                 (setq quick-start start
-                      quick-end (+ unicad-quick-size start))
-              (setq quick-start start
-                    quick-end end))
-            (let ((maxConfidence 0.0)
-                  quick-status)
-              (cond
-               ((eq (setq quick-status
-                          (unicad-multibyte-group-prober quick-start quick-end)) 'eFoundIt)
-                (setq prober-result (car unicad-best-guess))
-                (setq maxConfidence unicad--sure-yes))
-               ((and (not (eq quick-status 'eNotMe))
-                     (/= quick-end end)
-                     (eq (unicad-multibyte-group-prober start end) 'eFoundIt))
-                (setq prober-result (car unicad-best-guess))
-                (setq maxConfidence unicad--sure-yes))
-               ((eq (unicad-singlebyte-group-prober start end) 'eFoundIt)
-                (setq prober-result (car unicad-singlebyte-best-guess)))
-               (t
-                (setq maxConfidence (unicad-latin-group-prober start end))
-                (if (> (cadr unicad-singlebyte-best-guess) (cadr unicad-best-guess))
-                    (setq unicad-best-guess unicad-singlebyte-best-guess))
-                (if (> maxConfidence (cadr unicad-best-guess))
-                    (setq prober-result (car unicad-latin-best-guess)
-                          unicad-best-guess unicad-latin-best-guess)
-                  (setq prober-result (car unicad-best-guess)
-                        maxConfidence (cadr unicad-best-guess)))))))))
-        (unless (coding-system-p prober-result)
+                      quick-end end))
+              (let ((maxConfidence 0.0)
+                    quick-status)
+                (cond
+                 ((eq (setq quick-status
+                            (unicad-multibyte-group-prober quick-start quick-end)) 'eFoundIt)
+                  (setq prober-result (car unicad-best-guess))
+                  (setq maxConfidence unicad--sure-yes))
+                 ((and (not (eq quick-status 'eNotMe))
+                       (/= quick-end end)
+                       (eq (unicad-multibyte-group-prober start end) 'eFoundIt))
+                  (setq prober-result (car unicad-best-guess))
+                  (setq maxConfidence unicad--sure-yes))
+                 ((eq (unicad-singlebyte-group-prober start end) 'eFoundIt)
+                  (setq prober-result (car unicad-singlebyte-best-guess)))
+                 (t
+                  (setq maxConfidence (unicad-latin-group-prober start end))
+                  (if (> (cadr unicad-singlebyte-best-guess) (cadr unicad-best-guess))
+;;                       (set (make-local-variable 'unicad-best-guess) unicad-singlebyte-best-guess)
+                      (setq unicad-best-guess unicad-singlebyte-best-guess)
+                    )
+                  (if (> maxConfidence (cadr unicad-best-guess))
+                      (setq prober-result (car unicad-latin-best-guess)
+                            unicad-best-guess unicad-latin-best-guess)
+                    (setq prober-result (car unicad-best-guess)
+                          maxConfidence (cadr unicad-best-guess)))))))))
+;;           (test-foo)
+;;           (message "%S" (current-buffer))
+          (unless (coding-system-p prober-result)
             (setq prober-result unicad-default-coding-system))
-        (or prober-result unicad-default-coding-system)))))
+          (if (null prober-result) (setq prober-result 'undecided))
+          (when (numberp unicad-eol)
+            (if (null (numberp (coding-system-eol-type prober-result)))
+                (if (and unicad-eol (= unicad-eol 1))
+                    ;; i want to skip unix eol
+                    (setq prober-result (aref (coding-system-eol-type prober-result) unicad-eol)))))
+;;           (if (and unicad-eol (= unicad-eol 1))
+;;               (message "unicad dos.")
+;;             (message "unicad unix/mac."))
+          (or prober-result unicad-default-coding-system))))))
 
 (if (>= emacs-major-version 22)
     (add-to-list 'auto-coding-functions 'unicad-universal-charset-detect)
@@ -223,6 +356,8 @@
       (setq coding-system (unicad-universal-charset-detect size)))
     coding-system))
 
+(add-hook 'kill-emacs-hook 'unicad-disable)
+
 ;;}}}
 
 ;;{{{  BOM detector
@@ -231,16 +366,15 @@
 utf-16be ..."
   (save-excursion
     (goto-char (point-min))
-    (setq debug-code 'bom-detecting)
     (when (> (point-max) 3)
       (let (code0 code1 code2 code3)
-        (setq code0 (char-after))
+        (setq code0 (unicad-char-after))
         (forward-char)
-        (setq code1 (char-after))
+        (setq code1 (unicad-char-after))
         (forward-char)
-        (setq code2 (char-after))
+        (setq code2 (unicad-char-after))
         (forward-char)
-        (setq code3 (char-after))
+        (setq code3 (unicad-char-after))
         (forward-char)
         (cond
          ((and (= code0 #xEF)
@@ -309,6 +443,978 @@ utf-16be ..."
     chardet))
 ;;}}}
 
+;;{{{  Greek Model
+;; ****************************************************************
+;; 255: Control characters that usually does not exist in any text
+;; 254: Carriage/Return
+;; 253: symbol (punctuation) that does not belong to word
+;; 252: 0 - 9
+
+;; *****************************************************************/
+
+;;Character Mapping Table:
+(defvar unicad-latin7-char2order-map
+  [
+   255 255 255 255 255 255 255 255 255 255 254 255 255 254 255 255 ;;00
+   255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 ;;10
+   253 253 253 253 253 253 253 253 253 253 253 253 253 253 253 253 ;;20
+   252 252 252 252 252 252 252 252 252 252 253 253 253 253 253 253 ;;30
+   253  82 100 104  94  98 101 116 102 111 187 117  92  88 113  85 ;;40
+   79 118 105  83  67 114 119  95  99 109 188 253 253 253 253 253 ;;50
+   253  72  70  80  81  60  96  93  89  68 120  97  77  86  69  55 ;;60
+   78 115  65  66  58  76 106 103  87 107 112 253 253 253 253 253 ;;70
+   255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 ;;80
+   255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 ;;90
+   253 233  90 253 253 253 253 253 253 253 253 253 253  74 253 253 ;;a0
+   253 253 253 253 247 248  61  36  46  71  73 253  54 253 108 123 ;;b0
+   110  31  51  43  41  34  91  40  52  47  44  53  38  49  59  39 ;;c0
+   35  48 250  37  33  45  56  50  84  57 120 121  17  18  22  15 ;;d0
+   124   1  29  20  21   3  32  13  25   5  11  16  10   6  30   4 ;;e0
+   9   8  14   7   2  12  28  23  42  24  64  75  19  26  27 253 ;;f0
+   ])
+
+
+
+(defvar unicad-win1253-char2order-map
+  [
+   255 255 255 255 255 255 255 255 255 255 254 255 255 254 255 255 ;;00
+   255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 ;;10
+   253 253 253 253 253 253 253 253 253 253 253 253 253 253 253 253 ;;20
+   252 252 252 252 252 252 252 252 252 252 253 253 253 253 253 253 ;;30
+   253  82 100 104  94  98 101 116 102 111 187 117  92  88 113  85 ;;40
+   79 118 105  83  67 114 119  95  99 109 188 253 253 253 253 253 ;;50
+   253  72  70  80  81  60  96  93  89  68 120  97  77  86  69  55 ;;60
+   78 115  65  66  58  76 106 103  87 107 112 253 253 253 253 253 ;;70
+   255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 ;;80
+   255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 ;;90
+   253 233  61 253 253 253 253 253 253 253 253 253 253  74 253 253 ;;a0
+   253 253 253 253 247 253 253  36  46  71  73 253  54 253 108 123 ;;b0
+   110  31  51  43  41  34  91  40  52  47  44  53  38  49  59  39 ;;c0
+   35  48 250  37  33  45  56  50  84  57 120 121  17  18  22  15 ;;d0
+   124   1  29  20  21   3  32  13  25   5  11  16  10   6  30   4 ;;e0
+   9   8  14   7   2  12  28  23  42  24  64  75  19  26  27 253 ;;f0
+   ])
+
+;;Model Table:
+;;total sequences: 100%
+;;first 512 sequences: 98.2851%
+;;first 1024 sequences:1.7001%
+;;rest  sequences:     0.0359%
+;;negative sequences:  0.0148%
+(defvar unicad-greek-lang-model
+  [
+   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 0 3 2 2 3 3 3 3 3 3 3 3 1 3 3 3 0 2 2 3 3 0 3 0 3 2 0 3 3 3 0
+   3 0 0 0 2 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 3 3 3 3 3 0 3 3 0 3 2 3 3 0 3 2 3 3 3 0 0 3 0 3 0 3 3 2 0 0 0
+   2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0
+   0 2 3 2 2 3 3 3 3 3 3 3 3 0 3 3 3 3 0 2 3 3 0 3 3 3 3 2 3 3 3 0
+   2 0 0 0 2 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 2 3 3 2 3 3 3 3 3 3 3 3 3 3 3 3 0 2 1 3 3 3 3 2 3 3 2 3 3 2 0
+   0 0 0 0 2 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 3 3 3 3 0 3 3 3 3 3 3 0 3 3 0 3 3 3 3 3 3 3 3 3 3 0 3 2 3 3 0
+   2 0 1 0 2 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0
+   0 3 3 3 3 3 2 3 0 0 0 0 3 3 0 3 1 3 3 3 0 3 3 0 3 3 3 3 0 0 0 0
+   2 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 3 3 3 3 3 0 3 0 3 3 3 3 3 0 3 2 2 2 3 0 2 3 3 3 3 3 2 3 3 0 0
+   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 3 3 3 3 3 3 2 2 2 3 3 3 3 0 3 1 3 3 3 3 2 3 3 3 3 3 3 3 2 2 0
+   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 3 3 3 3 3 2 0 3 0 0 0 3 3 2 3 3 3 3 3 0 0 3 2 3 0 2 3 0 0 0 0
+   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 3 0 3 3 3 3 0 0 3 3 0 2 3 0 3 0 3 3 3 0 0 3 0 3 0 2 2 3 3 0 0
+   0 0 1 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 3 3 3 3 3 2 0 3 2 3 3 3 3 0 3 3 3 3 3 0 3 3 2 3 2 3 3 2 0 0 0
+   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 3 3 2 3 2 3 3 3 3 3 3 0 2 3 2 3 2 2 2 3 2 3 3 2 3 0 2 2 2 3 0
+   2 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 0 3 0 0 0 3 3 3 2 3 3 0 0 3 0 3 0 0 0 3 2 0 3 0 3 0 0 2 0 2 0
+   0 0 0 0 2 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 3 3 3 3 0 3 3 3 3 3 3 0 3 3 0 3 0 0 0 3 3 0 3 3 3 0 0 1 2 3 0
+   3 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 3 3 3 3 3 2 0 0 3 2 2 3 3 0 3 3 3 3 3 2 1 3 0 3 2 3 3 2 1 0 0
+   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 0 3 3 0 2 3 3 3 3 3 3 0 0 3 0 3 0 0 0 3 3 0 3 2 3 0 0 3 3 3 0
+   3 0 0 0 2 0 0 0 0 0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 3 3 3 3 0 3 3 3 3 3 3 0 0 3 0 3 0 0 0 3 2 0 3 2 3 0 0 3 2 3 0
+   2 0 0 0 0 0 0 0 0 0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 0 3 1 2 2 3 3 3 3 3 3 0 2 3 0 3 0 0 0 3 3 0 3 0 2 0 0 2 3 1 0
+   2 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 3 0 3 3 3 3 0 3 0 3 3 2 3 0 3 3 3 3 3 3 0 3 3 3 0 2 3 0 0 3 0
+   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 3 0 3 3 3 0 0 3 0 0 0 3 3 0 3 0 2 3 3 0 0 3 0 3 0 3 3 0 0 0 0
+   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 0 3 0 0 0 3 3 3 3 3 3 0 0 3 0 2 0 0 0 3 3 0 3 0 3 0 0 2 0 2 0
+   0 0 0 0 1 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 3 3 3 3 3 3 0 3 0 2 0 3 2 0 3 2 3 2 3 0 0 3 2 3 2 3 3 0 0 0 0
+   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 0 3 0 0 2 3 3 3 3 3 0 0 0 3 0 2 1 0 0 3 2 2 2 0 3 0 0 2 2 0 0
+   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 3 0 3 3 3 2 0 3 0 3 0 3 3 0 2 1 2 3 3 0 0 3 0 3 0 3 3 0 0 0 0
+   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 2 3 3 3 0 3 3 3 3 3 3 0 2 3 0 3 0 0 0 2 1 0 2 2 3 0 0 2 2 2 0
+   0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 0 3 0 0 2 3 3 3 2 3 0 0 1 3 0 2 0 0 0 0 3 0 1 0 2 0 0 1 1 1 0
+   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 3 3 3 3 3 1 0 3 0 0 0 3 2 0 3 2 3 3 3 0 0 3 0 3 2 2 2 1 0 0 0
+   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 3 0 3 3 3 0 0 3 0 0 0 0 2 0 2 3 3 2 2 2 2 3 0 2 0 2 2 0 0 0 0
+   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 3 3 3 3 2 0 0 0 0 0 0 2 3 0 2 0 2 3 2 0 0 3 0 3 0 3 1 0 0 0 0
+   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 0 0 0 0 0 3 2 3 3 2 2 3 0 2 0 3 0 0 0 2 0 0 0 0 1 2 0 2 0 2 0
+   0 2 0 2 0 2 2 0 0 1 0 2 2 2 0 2 2 2 0 2 2 2 0 0 2 0 0 1 0 0 0 0
+   0 2 0 3 3 2 0 0 0 0 0 0 1 3 0 2 0 2 2 2 0 0 2 0 3 0 0 2 0 0 0 0
+   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 3 0 2 3 2 0 2 2 0 2 0 2 2 0 2 0 2 2 2 0 0 0 0 0 0 2 3 0 0 0 2
+   0 1 2 0 0 0 0 2 2 0 0 0 2 1 0 2 2 0 0 0 0 0 0 1 0 2 0 0 0 0 0 0
+   0 0 2 1 0 2 3 2 2 3 2 3 2 0 0 3 3 3 0 0 3 2 0 0 0 1 1 0 2 0 2 2
+   0 2 0 2 0 2 2 0 0 2 0 2 2 2 0 2 2 2 2 0 0 2 0 0 0 2 0 1 0 0 0 0
+   0 3 0 3 3 2 2 0 3 0 0 0 2 2 0 2 2 2 1 2 0 0 1 2 2 0 0 3 0 0 0 2
+   0 1 2 0 0 0 1 2 0 0 0 0 0 0 0 2 2 0 1 0 0 2 0 0 0 2 0 0 0 0 0 0
+   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 2 3 3 2 2 0 0 0 2 0 2 3 3 0 2 0 0 0 0 0 0 2 2 2 0 2 2 0 2 0 2
+   0 2 2 0 0 2 2 2 2 1 0 0 2 2 0 2 0 0 2 0 0 0 0 0 0 2 0 0 0 0 0 0
+   0 2 0 3 2 3 0 0 0 3 0 0 2 2 0 2 0 2 2 2 0 0 2 0 0 0 0 0 0 0 0 2
+   0 0 2 2 0 0 2 2 2 0 0 0 0 0 0 2 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0
+   0 0 2 0 0 3 2 0 2 2 2 2 2 0 0 0 2 0 0 0 0 2 0 1 0 0 2 0 1 0 0 0
+   0 2 2 2 0 2 2 0 1 2 0 2 2 2 0 2 2 2 2 1 2 2 0 0 2 0 0 0 0 0 0 0
+   0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0
+   0 2 0 2 0 2 2 0 0 0 0 1 2 1 0 0 2 2 0 0 2 0 0 0 0 0 0 0 0 0 0 0
+   0 0 0 3 2 3 0 0 2 0 0 0 2 2 0 2 0 0 0 1 0 0 2 0 2 0 2 2 0 0 0 0
+   0 0 2 0 0 0 0 2 2 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0
+   0 2 2 3 2 2 0 0 0 0 0 0 1 3 0 2 0 2 2 0 0 0 1 0 2 0 0 0 0 0 0 0
+   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 2 0 2 0 3 2 0 2 0 0 0 0 0 0 2 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1
+   0 0 2 0 0 0 0 1 1 0 0 2 1 2 0 2 2 0 1 0 0 1 0 0 0 2 0 0 0 0 0 0
+   0 3 0 2 2 2 0 0 2 0 0 0 2 0 0 0 2 3 0 2 0 0 0 0 0 0 2 2 0 0 0 2
+   0 1 2 0 0 0 1 2 2 1 0 0 0 2 0 0 2 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0
+   0 0 0 0 0 0 0 0 0 3 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 2 1 2 0 2 2 0 2 0 0 2 0 0 0 0 1 2 1 0 2 1 0 0 0 0 0 0 0 0 0 0
+   0 0 2 0 0 0 3 1 2 2 0 2 0 0 0 0 2 0 0 0 2 0 0 3 0 0 0 0 2 2 2 0
+   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 2 1 0 2 0 1 2 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 1 0 0 0 0 0 0 2
+   0 2 2 0 0 2 2 2 2 2 0 1 2 0 0 0 2 2 0 1 0 2 0 0 2 2 0 0 0 0 0 0
+   0 0 0 0 1 0 0 0 0 0 0 0 3 0 0 2 0 0 0 0 0 0 0 0 2 0 2 0 0 0 0 2
+   0 1 2 0 0 0 0 2 2 1 0 1 0 1 0 2 2 2 1 0 0 0 0 0 0 1 0 0 0 0 0 0
+   0 2 0 1 2 0 0 0 0 0 0 0 0 0 0 2 0 0 2 2 0 0 0 0 1 0 0 0 0 0 0 2
+   0 2 2 0 0 0 0 2 2 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 2 0 0 2 0 0 0
+   0 2 2 2 2 0 0 0 3 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 2 0 0 0 0 0 0 1
+   0 0 2 0 0 0 0 1 2 0 0 0 0 0 0 2 2 1 1 0 0 0 0 0 0 1 0 0 0 0 0 0
+   0 2 0 2 2 2 0 0 2 0 0 0 0 0 0 0 2 2 2 0 0 0 2 0 0 0 0 0 0 0 0 2
+   0 0 1 0 0 0 0 2 1 0 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0
+   0 3 0 2 0 0 0 0 0 0 0 0 2 0 0 0 0 0 2 0 0 0 0 0 0 0 2 0 0 0 0 2
+   0 0 2 0 0 0 0 2 2 0 0 0 0 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 2 0 2 2 1 0 0 0 0 0 0 2 0 0 2 0 2 2 2 0 0 0 0 0 0 2 0 0 0 0 2
+   0 0 2 0 0 2 0 2 2 0 0 0 0 2 0 2 0 0 0 0 0 2 0 0 0 2 0 0 0 0 0 0
+   0 0 3 0 0 0 2 2 0 2 2 0 0 0 0 0 2 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0
+   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 2 0 0 0 0 0
+   0 2 2 2 2 2 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 0 0 0 1
+   0 0 0 0 0 0 0 2 1 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 0 0 0 0 0 0 2 2 0 0 0 0 0 2 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0
+   0 2 0 0 0 2 0 0 0 0 0 1 0 0 0 0 2 2 0 0 0 1 0 0 0 0 0 0 0 0 0 0
+   0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 1 0 2 0 0 0
+   0 2 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 0 1 0 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 1 0 0 2 0 2 0 0 0
+   0 0 0 0 0 0 0 0 2 1 0 0 0 0 0 0 2 0 0 0 1 2 0 0 0 0 0 0 0 0 0 0
+   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   ])
+
+;;}}}
+;;{{{  Russian Model
+
+;;KOI8-R language model
+;;Character Mapping Table:
+(defvar unicad-koi8r-char2order-map
+  `[
+    255 255 255 255 255 255 255 255 255 255 254 255 255 254 255 255 ;;00
+    255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 ;;10
+    +253 253 253 253 253 253 253 253 253 253 253 253 253 253 253 253 ;;20
+    252 252 252 252 252 252 252 252 252 252 253 253 253 253 253 253 ;;30
+    253 142 143 144 145 146 147 148 149 150 151 152  74 153  75 154 ;;40
+    155 156 157 158 159 160 161 162 163 164 165 253 253 253 253 253 ;;50
+    253  71 172  66 173  65 174  76 175  64 176 177  77  72 178  69 ;;60
+    67 179  78  73 180 181  79 182 183 184 185 253 253 253 253 253 ;;70
+    191 192 193 194 195 196 197 198 199 200 201 202 203 204 205 206 ;;80
+    207 208 209 210 211 212 213 214 215 216 217 218 219 220 221 222 ;;90
+    223 224 225  68 226 227 228 229 230 231 232 233 234 235 236 237 ;;a0
+    238 239 240 241 242 243 244 245 246 247 248 249 250 251 252 253 ;;b0
+    27   3  21  28  13   2  39  19  26   4  23  11   8  12   5   1 ;;c0
+    15  16   9   7   6  14  24  10  17  18  20  25  30  29  22  54 ;;d0
+    59  37  44  58  41  48  53  46  55  42  60  36  49  38  31  34 ;;e0
+    35  43  45  32  40  52  56  33  61  62  51  57  47  63  50  70 ;;f0
+    ])
+
+(defvar unicad-win1251-char2order-map
+  `[
+    255 255 255 255 255 255 255 255 255 255 254 255 255 254 255 255 ;;00
+    255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 ;;10
+    +253 253 253 253 253 253 253 253 253 253 253 253 253 253 253 253 ;;20
+    252 252 252 252 252 252 252 252 252 252 253 253 253 253 253 253 ;;30
+    253 142 143 144 145 146 147 148 149 150 151 152  74 153  75 154 ;;40
+    155 156 157 158 159 160 161 162 163 164 165 253 253 253 253 253 ;;50
+    253  71 172  66 173  65 174  76 175  64 176 177  77  72 178  69 ;;60
+    67 179  78  73 180 181  79 182 183 184 185 253 253 253 253 253 ;;70
+    191 192 193 194 195 196 197 198 199 200 201 202 203 204 205 206
+    207 208 209 210 211 212 213 214 215 216 217 218 219 220 221 222
+    223 224 225 226 227 228 229 230 231 232 233 234 235 236 237 238
+    239 240 241 242 243 244 245 246  68 247 248 249 250 251 252 253
+    37  44  33  46  41  48  56  51  42  60  36  49  38  31  34  35
+    45  32  40  52  53  55  58  50  57  63  70  62  61  47  59  43
+    3  21  10  19  13   2  24  20   4  23  11   8  12   5   1  15
+    9   7   6  14  39  26  28  22  25  29  54  18  17  30  27  16
+    ])
+
+(defvar unicad-latin5-char2order-map
+  `[
+    255 255 255 255 255 255 255 255 255 255 254 255 255 254 255 255 ;;00
+    255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 ;;10
+    +253 253 253 253 253 253 253 253 253 253 253 253 253 253 253 253 ;;20
+    252 252 252 252 252 252 252 252 252 252 253 253 253 253 253 253 ;;30
+    253 142 143 144 145 146 147 148 149 150 151 152  74 153  75 154 ;;40
+    155 156 157 158 159 160 161 162 163 164 165 253 253 253 253 253 ;;50
+    253  71 172  66 173  65 174  76 175  64 176 177  77  72 178  69 ;;60
+    67 179  78  73 180 181  79 182 183 184 185 253 253 253 253 253 ;;70
+    191 192 193 194 195 196 197 198 199 200 201 202 203 204 205 206
+    207 208 209 210 211 212 213 214 215 216 217 218 219 220 221 222
+    223 224 225 226 227 228 229 230 231 232 233 234 235 236 237 238
+    37  44  33  46  41  48  56  51  42  60  36  49  38  31  34  35
+    45  32  40  52  53  55  58  50  57  63  70  62  61  47  59  43
+    3  21  10  19  13   2  24  20   4  23  11   8  12   5   1  15
+    9   7   6  14  39  26  28  22  25  29  54  18  17  30  27  16
+    239  68 240 241 242 243 244 245 246 247 248 249 250 251 252 255
+    ])
+
+(defvar unicad-maccyrillic-char2order-map
+  `[
+    255 255 255 255 255 255 255 255 255 255 254 255 255 254 255 255 ;;00
+    255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 ;;10
+    +253 253 253 253 253 253 253 253 253 253 253 253 253 253 253 253 ;;20
+    252 252 252 252 252 252 252 252 252 252 253 253 253 253 253 253 ;;30
+    253 142 143 144 145 146 147 148 149 150 151 152  74 153  75 154 ;;40
+    155 156 157 158 159 160 161 162 163 164 165 253 253 253 253 253 ;;50
+    253  71 172  66 173  65 174  76 175  64 176 177  77  72 178  69 ;;60
+    67 179  78  73 180 181  79 182 183 184 185 253 253 253 253 253 ;;70
+    37  44  33  46  41  48  56  51  42  60  36  49  38  31  34  35
+    45  32  40  52  53  55  58  50  57  63  70  62  61  47  59  43
+    191 192 193 194 195 196 197 198 199 200 201 202 203 204 205 206
+    207 208 209 210 211 212 213 214 215 216 217 218 219 220 221 222
+    223 224 225 226 227 228 229 230 231 232 233 234 235 236 237 238
+    239 240 241 242 243 244 245 246 247 248 249 250 251 252  68  16
+    3  21  10  19  13   2  24  20   4  23  11   8  12   5   1  15
+    9   7   6  14  39  26  28  22  25  29  54  18  17  30  27 255
+    ])
+
+(defvar unicad-ibm855-char2order-map
+  `[
+    255 255 255 255 255 255 255 255 255 255 254 255 255 254 255 255 ;;00
+    255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 ;;10
+    +253 253 253 253 253 253 253 253 253 253 253 253 253 253 253 253 ;;20
+    252 252 252 252 252 252 252 252 252 252 253 253 253 253 253 253 ;;30
+    253 142 143 144 145 146 147 148 149 150 151 152  74 153  75 154 ;;40
+    155 156 157 158 159 160 161 162 163 164 165 253 253 253 253 253 ;;50
+    253  71 172  66 173  65 174  76 175  64 176 177  77  72 178  69 ;;60
+    67 179  78  73 180 181  79 182 183 184 185 253 253 253 253 253 ;;70
+    191 192 193 194  68 195 196 197 198 199 200 201 202 203 204 205
+    206 207 208 209 210 211 212 213 214 215 216 217  27  59  54  70
+    3  37  21  44  28  58  13  41   2  48  39  53  19  46 218 219
+    220 221 222 223 224  26  55   4  42 225 226 227 228  23  60 229
+    230 231 232 233 234 235  11  36 236 237 238 239 240 241 242 243
+    8  49  12  38   5  31   1  34  15 244 245 246 247  35  16 248
+    43   9  45   7  32   6  40  14  52  24  56  10  33  17  61 249
+    250  18  62  20  51  25  57  30  47  29  63  22  50 251 252 255
+    ])
+
+(defvar unicad-ibm866-char2order-map
+  `[
+    255 255 255 255 255 255 255 255 255 255 254 255 255 254 255 255 ;;00
+    255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 ;;10
+    +253 253 253 253 253 253 253 253 253 253 253 253 253 253 253 253 ;;20
+    252 252 252 252 252 252 252 252 252 252 253 253 253 253 253 253 ;;30
+    253 142 143 144 145 146 147 148 149 150 151 152  74 153  75 154 ;;40
+    155 156 157 158 159 160 161 162 163 164 165 253 253 253 253 253 ;;50
+    253  71 172  66 173  65 174  76 175  64 176 177  77  72 178  69 ;;60
+    67 179  78  73 180 181  79 182 183 184 185 253 253 253 253 253 ;;70
+    37  44  33  46  41  48  56  51  42  60  36  49  38  31  34  35
+    45  32  40  52  53  55  58  50  57  63  70  62  61  47  59  43
+    3  21  10  19  13   2  24  20   4  23  11   8  12   5   1  15
+    191 192 193 194 195 196 197 198 199 200 201 202 203 204 205 206
+    207 208 209 210 211 212 213 214 215 216 217 218 219 220 221 222
+    223 224 225 226 227 228 229 230 231 232 233 234 235 236 237 238
+    9   7   6  14  39  26  28  22  25  29  54  18  17  30  27  16
+    239  68 240 241 242 243 244 245 246 247 248 249 250 251 252 255
+    ])
+
+;;Model Table:
+;;total sequences: 100%
+;;first 512 sequences: 97.6601%
+;;first 1024 sequences: 2.3389%
+;;rest  sequences:      0.1237%
+;;negative sequences:   0.0009%
+(defvar unicad-russian-lang-model
+  `[
+    0 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 1 1 3 3 3 3 1 3 3 3 2 3 2 3 3
+    3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 0 3 2 2 2 2 2 0 0 2
+    3 3 3 2 3 3 3 3 3 3 3 3 3 3 2 3 3 0 0 3 3 3 3 3 3 3 3 3 2 3 2 0
+    0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    3 3 3 2 2 3 3 3 3 3 3 3 3 3 2 3 3 0 0 3 3 3 3 3 3 3 3 2 3 3 1 0
+    0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    3 2 3 2 3 3 3 3 3 3 3 3 3 3 3 3 3 0 0 3 3 3 3 3 3 3 3 3 3 3 2 1
+    0 0 0 0 0 0 0 2 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    3 3 3 3 3 3 3 3 3 3 3 3 3 3 2 3 3 0 0 3 3 3 3 3 3 3 3 3 3 3 2 1
+    0 0 0 0 0 1 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    3 3 3 3 3 3 3 3 2 2 2 3 1 3 3 1 3 3 3 3 2 2 3 0 2 2 2 3 3 2 1 0
+    0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0
+    3 3 3 3 3 3 2 3 3 3 3 3 2 2 3 2 3 3 3 2 1 2 2 0 1 2 2 2 2 2 2 0
+    0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0
+    3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 2 2 2 3 0 2 2 3 3 2 1 2 0
+    0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 1 0 0 2 0 0 0 0 0 0 0 0 0
+    3 3 3 3 3 3 2 3 3 1 2 3 2 2 3 2 3 3 3 3 2 2 3 0 3 2 2 3 1 1 1 0
+    0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    3 3 3 3 3 3 3 3 2 2 3 3 3 3 3 2 3 3 3 3 2 2 2 0 3 3 3 2 2 2 2 0
+    0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    3 3 3 3 3 3 3 3 3 3 2 3 2 3 3 3 3 3 3 2 3 2 2 0 1 3 2 1 2 2 1 0
+    0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0
+    3 3 3 3 3 3 3 3 3 3 3 2 1 1 3 0 1 1 1 1 2 1 1 0 2 2 2 1 2 0 1 0
+    0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    3 3 3 3 3 3 2 3 3 2 2 2 2 1 3 2 3 2 3 2 1 2 2 0 1 1 2 1 2 1 2 0
+    0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    3 3 3 3 3 3 3 3 3 3 3 3 2 2 3 2 3 3 3 2 2 2 2 0 2 2 2 2 3 1 1 0
+    0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0
+    3 2 3 2 2 3 3 3 3 3 3 3 3 3 1 3 2 0 0 3 3 3 3 2 3 3 3 3 2 3 2 0
+    0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    2 3 3 3 3 3 2 2 3 3 0 2 1 0 3 2 3 2 3 0 0 1 2 0 0 1 0 1 2 1 1 0
+    0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    3 0 3 0 2 3 3 3 3 2 3 3 3 3 1 2 2 0 0 2 3 2 2 2 3 2 3 2 2 3 0 0
+    0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    3 2 3 0 2 3 2 3 0 1 2 3 3 2 0 2 3 0 0 2 3 2 2 0 1 3 1 3 2 2 1 0
+    0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    3 1 3 0 2 3 3 3 3 3 3 3 3 2 1 3 2 0 0 2 2 3 3 3 2 3 3 0 2 2 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    3 3 3 3 3 3 2 2 3 3 2 2 2 3 3 0 0 1 1 1 1 1 2 0 0 1 1 1 1 0 1 0
+    0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    3 3 3 3 3 3 2 2 3 3 3 3 3 3 3 0 3 2 3 3 2 3 2 0 2 1 0 1 1 0 1 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0
+    3 3 3 3 3 3 2 3 3 3 2 2 2 2 3 1 3 2 3 1 1 2 1 0 2 2 2 2 1 3 1 0
+    0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0
+    2 2 3 3 3 3 3 1 2 2 1 3 1 0 3 0 0 3 0 0 0 1 1 0 1 2 1 0 0 0 0 0
+    0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    3 2 2 1 1 3 3 3 2 2 1 2 2 3 1 1 2 0 0 2 2 1 3 0 0 2 1 1 2 1 1 0
+    0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    3 2 3 3 3 3 1 2 2 2 1 2 1 3 3 1 1 2 1 2 1 2 2 0 2 0 0 1 1 0 1 0
+    0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    2 3 3 3 3 3 2 1 3 2 2 3 2 0 3 2 0 3 0 1 0 1 1 0 0 1 1 1 1 0 1 0
+    0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    3 3 2 3 3 3 2 2 2 3 3 1 2 1 2 1 0 1 0 1 1 0 1 0 0 2 1 1 1 0 1 0
+    0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0
+    3 1 1 2 1 2 3 3 2 2 1 2 2 3 0 2 1 0 0 2 2 3 2 1 2 2 2 2 2 3 1 0
+    0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    3 3 3 3 3 1 1 0 1 1 2 2 1 1 3 0 0 1 3 1 1 1 0 0 0 1 0 1 1 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    2 1 3 3 3 2 0 0 0 2 1 0 1 0 2 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    2 0 1 0 0 2 3 2 2 2 1 2 2 2 1 2 1 0 0 1 1 1 0 2 0 1 1 1 0 0 1 1
+    1 0 0 0 0 0 1 2 0 0 0 0 0 1 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0
+    2 3 3 3 3 0 0 0 0 1 0 0 0 0 3 0 1 2 1 0 0 0 0 0 0 0 1 1 0 0 1 1
+    1 0 1 0 1 2 0 0 1 1 2 1 0 1 1 1 1 0 1 1 1 1 0 1 0 0 1 0 0 1 1 0
+    2 2 3 2 2 2 3 1 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 0 1 0 1 1 1 0 2 1
+    1 1 1 1 1 1 1 1 2 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 0 1 1 1 0 1 1 0
+    3 3 3 2 2 2 2 3 2 2 1 1 2 2 2 2 1 1 3 1 2 1 2 0 0 1 1 0 1 0 2 1
+    1 1 1 1 1 2 1 0 1 1 1 1 0 1 0 0 1 1 0 0 1 0 1 0 0 1 0 0 0 1 1 0
+    2 0 0 1 0 3 2 2 2 2 1 2 1 2 1 2 0 0 0 2 1 2 2 1 1 2 2 0 1 1 0 2
+    1 1 1 1 1 0 1 1 1 2 1 1 1 2 1 0 1 2 1 1 1 1 0 1 1 1 0 0 1 0 0 1
+    1 3 2 2 2 1 1 1 2 3 0 0 0 0 2 0 2 2 1 0 0 0 0 0 0 1 0 0 0 0 1 1
+    1 0 1 1 0 1 0 1 1 0 1 1 0 2 0 0 1 1 0 0 1 0 0 0 0 0 0 0 0 1 1 0
+    2 3 2 3 2 1 2 2 2 2 1 0 0 0 2 0 0 1 1 0 0 0 0 0 0 0 1 1 0 0 2 1
+    1 1 2 1 0 2 0 0 1 0 1 0 0 1 0 0 1 1 0 1 1 0 0 0 0 0 1 0 0 0 0 0
+    3 0 0 1 0 2 2 2 3 2 2 2 2 2 2 2 0 0 0 2 1 2 1 1 1 2 2 0 0 0 1 2
+    1 1 1 1 1 0 1 2 1 1 1 1 1 1 1 0 1 1 1 1 1 1 0 1 1 1 1 1 1 0 0 1
+    2 3 2 3 3 2 0 1 1 1 0 0 1 0 2 0 1 1 3 1 0 0 0 0 0 0 0 1 0 0 2 1
+    1 1 1 1 1 1 1 0 1 0 1 1 1 1 0 1 1 1 0 0 1 1 0 1 0 0 0 0 0 0 1 0
+    2 3 3 3 3 1 2 2 2 2 0 1 1 0 2 1 1 1 2 1 0 1 1 0 0 1 0 1 0 0 2 0
+    0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    2 3 3 3 2 0 0 1 1 2 2 1 0 0 2 0 1 1 3 0 0 1 0 0 0 0 0 1 0 1 2 1
+    1 1 2 0 1 1 1 0 1 0 1 1 0 1 0 1 1 1 1 0 1 0 0 0 0 0 0 1 0 1 1 0
+    1 3 2 3 2 1 0 0 2 2 2 0 1 0 2 0 1 1 1 0 1 0 0 0 3 0 1 1 0 0 2 1
+    1 1 1 0 1 1 0 0 0 0 1 1 0 1 0 0 2 1 1 0 1 0 0 0 1 0 1 0 0 1 1 0
+    3 1 2 1 1 2 2 2 2 2 2 1 2 2 1 1 0 0 0 2 2 2 0 0 0 1 2 1 0 1 0 1
+    2 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 2 1 1 1 0 1 0 1 1 0 1 1 1 0 0 1
+    3 0 0 0 0 2 0 1 1 1 1 1 1 1 0 1 0 0 0 1 1 1 0 1 0 1 1 0 0 1 0 1
+    1 1 0 0 1 0 0 0 1 0 1 1 0 0 1 0 1 0 1 0 0 0 0 1 0 0 0 1 0 0 0 1
+    1 3 3 2 2 0 0 0 2 2 0 0 0 1 2 0 1 1 2 0 0 0 0 0 0 0 0 1 0 0 2 1
+    0 1 1 0 0 1 1 0 0 0 1 1 0 1 1 0 1 1 0 0 1 0 0 0 0 0 0 0 0 0 1 0
+    2 3 2 3 2 0 0 0 0 1 1 0 0 0 2 0 2 0 2 0 0 0 0 0 1 0 0 1 0 0 1 1
+    1 1 2 0 1 2 1 0 1 1 2 1 1 1 1 1 2 1 1 0 1 0 0 1 1 1 1 1 0 1 1 0
+    1 3 2 2 2 1 0 0 2 2 1 0 1 2 2 0 0 1 0 0 0 0 0 0 0 0 0 1 0 0 1 1
+    0 0 1 1 0 1 1 0 0 1 1 0 1 1 0 0 1 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0
+    1 0 0 1 0 2 3 1 2 2 2 2 2 2 1 1 0 0 0 1 0 1 0 2 1 1 1 0 0 0 0 1
+    1 1 0 1 1 0 1 1 1 1 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 1 0 0 0
+    2 0 2 0 0 1 0 3 2 1 2 1 2 2 0 1 0 0 0 2 1 0 0 2 1 1 1 1 0 2 0 2
+    2 1 1 1 1 1 1 1 1 1 1 1 1 2 1 0 1 1 1 1 0 0 0 1 1 1 1 0 1 0 0 1
+    1 2 2 2 2 1 0 0 1 0 0 0 0 0 2 0 1 1 1 1 0 0 0 0 1 0 1 2 0 0 2 0
+    1 0 1 1 1 2 1 0 1 0 1 1 0 0 1 0 1 1 1 0 1 0 0 0 1 0 0 1 0 1 1 0
+    2 1 2 2 2 0 3 0 1 1 0 0 0 0 2 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 1
+    0 0 0 1 1 1 0 0 1 0 1 0 0 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 1 0 0
+    1 2 2 3 2 2 0 0 1 1 2 0 1 2 1 0 1 0 1 0 0 1 0 0 0 0 0 0 0 0 0 1
+    0 1 1 0 0 1 1 0 0 1 1 0 0 1 1 0 1 1 0 0 1 0 0 0 0 0 0 0 0 1 1 0
+    2 2 1 1 2 1 2 2 2 2 2 1 2 2 0 1 0 0 0 1 2 2 2 1 2 1 1 1 1 1 2 1
+    1 1 1 1 1 1 1 1 1 1 0 0 1 1 1 0 1 1 1 0 0 0 0 1 1 1 0 1 1 0 0 1
+    1 2 2 2 2 0 1 0 2 2 0 0 0 0 2 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 2 0
+    0 0 1 0 0 1 0 0 0 0 1 0 1 1 0 0 1 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0
+    0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    1 2 2 2 2 0 0 0 2 2 2 0 1 0 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 1 1
+    0 1 1 0 0 1 1 0 0 0 1 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    1 2 2 2 2 0 0 0 0 1 0 0 1 1 2 0 0 0 0 1 0 1 0 0 1 0 0 2 0 0 0 1
+    0 0 1 0 0 1 0 0 0 1 1 0 0 0 0 0 1 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0
+    1 2 2 2 1 1 2 0 2 1 1 1 1 0 2 2 0 0 0 0 0 0 0 0 0 1 1 0 0 0 1 1
+    0 0 1 0 1 1 0 0 0 0 1 0 0 0 0 0 1 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0
+    1 0 2 1 2 0 0 0 0 0 1 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 1 0 0 0 0
+    0 0 1 0 1 1 0 0 0 0 1 0 0 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 1 0
+    1 0 0 0 0 2 0 1 2 1 0 1 1 1 0 1 0 0 0 1 0 1 0 0 1 0 1 0 0 0 0 1
+    0 0 0 0 0 1 0 0 1 1 0 0 1 1 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 1
+    2 2 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1
+    1 0 0 0 1 0 0 0 1 1 0 0 0 0 0 0 0 1 0 0 0 0 0 1 0 0 1 0 0 0 0 0
+    2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1
+    1 1 1 0 1 0 1 0 0 1 1 1 1 0 0 0 1 0 0 0 0 1 0 0 0 1 0 1 0 0 0 0
+    1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1
+    1 1 0 1 1 0 1 0 1 0 0 0 0 1 1 0 1 1 0 0 0 0 0 1 0 1 1 0 1 0 0 0
+    0 1 1 1 1 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0
+    ])
+
+;;}}}
+;;{{{  Bulgarian Model
+
+;; ****************************************************************
+;; 255: Control characters that usually does not exist in any text
+;; 254: Carriage/Return
+;; 253: symbol (punctuation) that does not belong to word
+;; 252: 0 - 9
+;; *****************************************************************
+
+;;Character Mapping Table:
+;;this talbe is modified base on win1251BulgarianCharToOrderMap, so
+;;only number <64 is sure valid
+
+(defconst unicad-latin5-bulgarian-char2order-map
+  `[
+    255 255 255 255 255 255 255 255 255 255 254 255 255 254 255 255 ;;00
+    255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 ;;10
+    +253 253 253 253 253 253 253 253 253 253 253 253 253 253 253 253 ;;20
+    252 252 252 252 252 252 252 252 252 252 253 253 253 253 253 253 ;;30
+    253  77  90  99 100  72 109 107 101  79 185  81 102  76  94  82 ;;40
+    110 186 108  91  74 119  84  96 111 187 115 253 253 253 253 253 ;;50
+    253  65  69  70  66  63  68 112 103  92 194 104  95  86  87  71 ;;60
+    116 195  85  93  97 113 196 197 198 199 200 253 253 253 253 253 ;;70
+    194 195 196 197 198 199 200 201 202 203 204 205 206 207 208 209 ;;80
+    210 211 212 213 214 215 216 217 218 219 220 221 222 223 224 225 ;;90
+    81 226 227 228 229 230 105 231 232 233 234 235 236  45 237 238 ;;a0
+    31  32  35  43  37  44  55  47  40  59  33  46  38  36  41  30 ;;b0
+    39  28  34  51  48  49  53  50  54  57  61 239  67 240  60  56 ;;c0
+    1  18   9  20  11   3  23  15   2  26  12  10  14   6   4  13 ;;d0
+    7   8   5  19  29  25  22  21  27  24  17  75  52 241  42  16 ;;e0
+    62 242 243 244  58 245  98 246 247 248 249 250 251  91 252 253 ;;f0
+    ])
+
+(defconst unicad-win1251-bulgarian-char2order-map
+  `[
+    255 255 255 255 255 255 255 255 255 255 254 255 255 254 255 255 ;;00
+    255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 ;;10
+    +253 253 253 253 253 253 253 253 253 253 253 253 253 253 253 253 ;;20
+    252 252 252 252 252 252 252 252 252 252 253 253 253 253 253 253 ;;30
+    253  77  90  99 100  72 109 107 101  79 185  81 102  76  94  82 ;;40
+    110 186 108  91  74 119  84  96 111 187 115 253 253 253 253 253 ;;50
+    253  65  69  70  66  63  68 112 103  92 194 104  95  86  87  71 ;;60
+    116 195  85  93  97 113 196 197 198 199 200 253 253 253 253 253 ;;70
+    206 207 208 209 210 211 212 213 120 214 215 216 217 218 219 220 ;;80
+    221  78  64  83 121  98 117 105 222 223 224 225 226 227 228 229 ;;90
+    88 230 231 232 233 122  89 106 234 235 236 237 238  45 239 240 ;;a0
+    73  80 118 114 241 242 243 244 245  62  58 246 247 248 249 250 ;;b0
+    31  32  35  43  37  44  55  47  40  59  33  46  38  36  41  30 ;;c0
+    39  28  34  51  48  49  53  50  54  57  61 251  67 252  60  56 ;;d0
+    1  18   9  20  11   3  23  15   2  26  12  10  14   6   4  13 ;;e0
+    7   8   5  19  29  25  22  21  27  24  17  75  52 253  42  16 ;;f0
+    ])
+
+;;Model Table:
+;;total sequences: 100%
+;;first 512 sequences: 96.9392%
+;;first 1024 sequences:3.0618%
+;;rest  sequences:     0.2992%
+;;negative sequences:  0.0020%
+(defconst unicad-bulgarian-lang-model
+  `[
+    0 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 2 3 3 3 3 3 3 3 3 2 3 3 3 3 3
+    3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 0 3 3 3 2 2 3 2 2 1 2 2
+    3 1 3 3 2 3 3 3 3 3 3 3 3 3 3 3 3 0 3 3 3 3 3 3 3 3 3 3 0 3 0 1
+    0 0 0 0 0 0 0 0 0 0 1 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1
+    3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 2 3 2 3 3 3 3 3 3 3 3 0 3 1 0
+    0 1 0 0 0 0 0 0 0 0 1 1 0 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1
+    3 2 2 2 3 3 3 3 3 3 3 3 3 3 3 3 3 1 3 2 3 3 3 3 3 3 3 3 0 3 0 0
+    0 0 0 0 0 0 0 0 0 0 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    3 2 3 3 2 3 3 3 3 3 3 3 3 3 3 3 3 1 3 2 3 3 3 3 3 3 3 3 0 3 0 0
+    0 0 0 0 0 0 0 0 0 0 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    3 3 3 3 3 3 3 3 3 3 3 2 3 2 2 1 3 3 3 3 2 2 2 1 1 2 0 1 0 1 0 0
+    0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 1
+    3 3 3 3 3 3 3 2 3 2 2 3 3 1 1 2 3 3 2 3 3 3 3 2 1 2 0 2 0 3 0 0
+    0 0 0 0 0 0 0 1 0 0 2 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 1
+    3 3 3 3 3 3 3 1 3 3 3 3 3 2 3 2 3 3 3 3 3 2 3 3 1 3 0 3 0 2 0 0
+    0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 1
+    3 3 3 3 3 3 3 3 1 3 3 2 3 3 3 1 3 3 2 3 2 2 2 0 0 2 0 2 0 2 0 0
+    0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 1
+    3 3 3 3 3 3 3 3 3 0 3 3 3 2 2 3 3 3 1 2 2 3 2 1 1 2 0 2 0 0 0 0
+    1 0 0 0 0 0 0 0 0 0 2 0 0 1 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 1
+    3 3 3 3 3 3 3 2 3 3 1 2 3 2 2 2 3 3 3 3 3 2 2 3 1 2 0 2 1 2 0 0
+    0 0 0 0 0 0 0 0 0 0 3 0 0 1 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 1
+    3 3 3 3 3 1 3 3 3 3 3 2 3 3 3 2 3 3 2 3 2 2 2 3 1 2 0 1 0 1 0 0
+    0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 1
+    3 3 3 3 3 3 3 3 3 3 3 1 1 1 2 2 1 3 1 3 2 2 3 0 0 1 0 1 0 1 0 0
+    0 0 0 1 0 0 0 0 1 0 2 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 1
+    3 3 3 3 3 2 2 3 2 2 3 1 2 1 1 1 2 3 1 3 1 2 2 0 1 1 1 1 0 1 0 0
+    0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 1
+    3 3 3 3 3 1 3 2 2 3 3 1 2 3 1 1 3 3 3 3 1 2 2 1 1 1 0 2 0 2 0 1
+    0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 1
+    3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 1 2 2 3 3 3 2 2 1 1 2 0 2 0 1 0 0
+    0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 1
+    3 0 1 2 1 3 3 2 3 3 3 3 3 2 3 2 1 0 3 1 2 1 2 1 2 3 2 1 0 1 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    1 1 1 2 3 3 3 3 3 3 3 3 3 3 3 3 0 0 3 1 3 3 2 3 3 2 2 2 0 1 0 0
+    0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    2 3 3 3 3 0 3 3 3 3 3 2 1 1 2 1 3 3 0 3 1 1 1 1 3 2 0 1 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 1
+    3 3 2 2 2 3 3 3 3 3 3 3 3 3 3 3 1 1 3 1 3 3 2 3 2 2 2 3 0 2 0 0
+    0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    3 3 3 3 3 2 3 3 2 2 3 2 1 1 1 1 1 3 1 3 1 1 0 0 0 1 0 0 0 1 0 0
+    0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0
+    3 3 3 3 3 2 3 2 0 3 2 0 3 0 2 0 0 2 1 3 1 0 0 1 0 0 0 1 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1
+    3 3 3 3 2 1 1 1 1 2 1 1 2 1 1 1 2 2 1 2 1 1 1 0 1 1 0 1 0 1 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 1
+    3 3 3 3 2 1 3 1 1 2 1 3 2 1 1 0 1 2 3 2 1 1 1 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    2 3 3 3 3 2 2 1 0 1 0 0 1 0 0 0 2 1 0 3 0 0 1 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1
+    3 3 3 2 3 2 3 3 1 3 2 1 1 1 2 1 1 2 1 3 0 1 0 0 0 1 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    3 1 1 2 2 3 3 2 3 2 2 2 3 1 2 2 1 1 2 1 1 2 2 0 1 1 0 1 0 2 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    3 3 3 3 2 1 3 1 0 2 2 1 3 2 1 0 0 2 0 2 0 1 0 0 0 0 0 0 0 1 0 0
+    0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 1
+    3 3 3 3 3 3 1 2 0 2 3 1 2 3 2 0 1 3 1 2 1 1 1 0 0 1 0 0 2 2 2 3
+    2 2 2 2 1 2 1 1 2 2 1 1 2 0 1 1 1 0 0 1 1 0 0 1 1 0 0 0 1 1 0 1
+    3 3 3 3 3 2 1 2 2 1 2 0 2 0 1 0 1 2 1 2 1 1 0 0 0 1 0 1 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 1
+    3 3 2 3 3 1 1 3 1 0 3 2 1 0 0 0 1 2 0 2 0 1 0 0 0 1 0 1 2 1 2 2
+    1 1 1 1 1 1 1 2 2 2 1 1 1 1 1 1 1 0 1 2 1 1 1 0 0 0 0 0 1 1 0 0
+    3 1 0 1 0 2 3 2 2 2 3 2 2 2 2 2 1 0 2 1 2 1 1 1 0 1 2 1 2 2 2 1
+    1 1 2 2 2 2 1 2 1 1 0 1 2 1 2 2 2 1 1 1 0 1 1 1 1 2 0 1 0 0 0 0
+    2 3 2 3 3 0 0 2 1 0 2 1 0 0 0 0 2 3 0 2 0 0 0 0 0 1 0 0 2 0 1 2
+    2 1 2 1 2 2 1 1 1 2 1 1 1 0 1 2 2 1 1 1 1 1 0 1 1 1 0 0 1 2 0 0
+    3 3 2 2 3 0 2 3 1 1 2 0 0 0 1 0 0 2 0 2 0 0 0 1 0 1 0 1 2 0 2 2
+    1 1 1 1 2 1 0 1 2 2 2 1 1 1 1 1 1 1 0 1 1 1 0 0 0 0 0 0 1 1 0 0
+    2 3 2 3 3 0 0 3 0 1 1 0 1 0 0 0 2 2 1 2 0 0 0 0 0 0 0 0 2 0 1 2
+    2 2 1 1 1 1 1 2 2 2 1 0 2 0 1 0 1 0 0 1 0 1 0 0 1 0 0 0 0 1 0 0
+    3 3 3 3 2 2 2 2 2 0 2 1 1 1 1 2 1 2 1 1 0 2 0 1 0 1 0 0 2 0 1 2
+    1 1 1 1 1 1 1 2 2 1 1 0 2 0 1 0 2 0 0 1 1 1 0 0 2 0 0 0 1 1 0 0
+    2 3 3 3 3 1 0 0 0 0 0 0 0 0 0 0 2 0 0 1 1 0 0 0 0 0 0 1 2 0 1 2
+    2 2 2 1 1 2 1 1 2 2 2 1 2 0 1 1 1 1 1 1 0 1 1 1 1 0 0 1 1 1 0 0
+    2 3 3 3 3 0 2 2 0 2 1 0 0 0 1 1 1 2 0 2 0 0 0 3 0 0 0 0 2 0 2 2
+    1 1 1 2 1 2 1 1 2 2 2 1 2 0 1 1 1 0 1 1 1 1 0 2 1 0 0 0 1 1 0 0
+    2 3 3 3 3 0 2 1 0 0 2 0 0 0 0 0 1 2 0 2 0 0 0 0 0 0 0 0 2 0 1 2
+    1 1 1 2 1 1 1 1 2 2 2 0 1 0 1 1 1 0 0 1 1 1 0 0 1 0 0 0 0 1 0 0
+    3 3 2 2 3 0 1 0 1 0 0 0 0 0 0 0 1 1 0 3 0 0 0 0 0 0 0 0 1 0 2 2
+    1 1 1 1 1 2 1 1 2 2 1 2 2 1 0 1 1 1 1 1 0 1 0 0 1 0 0 0 1 1 0 0
+    3 1 0 1 0 2 2 2 2 3 2 1 1 1 2 3 0 0 1 0 2 1 1 0 1 1 1 1 2 1 1 1
+    1 2 2 1 2 1 2 2 1 1 0 1 2 1 2 2 1 1 1 0 0 1 1 1 2 1 0 1 0 0 0 0
+    2 1 0 1 0 3 1 2 2 2 2 1 2 2 1 1 1 0 2 1 2 2 1 1 2 1 1 0 2 1 1 1
+    1 2 2 2 2 2 2 2 1 2 0 1 1 0 2 1 1 1 1 1 0 0 1 1 1 1 0 1 0 0 0 0
+    2 1 1 1 1 2 2 2 2 1 2 2 2 1 2 2 1 1 2 1 2 3 2 2 1 1 1 1 0 1 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    2 2 2 3 2 0 1 2 0 1 2 1 1 0 1 0 1 2 1 2 0 0 0 1 1 0 0 0 1 0 0 2
+    1 1 0 0 1 1 0 1 1 1 1 0 2 0 1 1 1 0 0 1 1 0 0 0 0 1 0 0 0 1 0 0
+    2 0 0 0 0 1 2 2 2 2 2 2 2 1 2 1 1 1 1 1 1 1 0 1 1 1 1 1 2 1 1 1
+    1 2 2 2 2 1 1 2 1 2 1 1 1 0 2 1 2 1 1 1 0 2 1 1 1 1 0 1 0 0 0 0
+    3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 1 0
+    1 1 0 1 0 1 1 1 1 1 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    2 2 2 3 2 0 0 0 0 1 0 0 0 0 0 0 1 1 0 2 0 0 0 0 0 0 0 0 1 0 1 2
+    1 1 1 1 1 1 0 0 2 2 2 2 2 0 1 1 0 1 1 1 1 1 0 0 1 0 0 0 1 1 0 1
+    2 3 1 2 1 0 1 1 0 2 2 2 0 0 1 0 0 1 1 1 1 0 0 0 0 0 0 0 1 0 1 2
+    1 1 1 1 2 1 1 1 1 1 1 1 1 0 1 1 0 1 0 1 0 1 0 0 1 0 0 0 0 1 0 0
+    2 2 2 2 2 0 0 2 0 0 2 0 0 0 0 0 0 1 0 1 0 0 0 0 0 0 0 0 2 0 2 2
+    1 1 1 1 1 0 0 1 2 1 1 0 1 0 1 0 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0
+    1 2 2 2 2 0 0 2 0 1 1 0 0 0 1 0 0 2 0 2 0 0 0 0 0 0 0 0 0 0 1 1
+    0 0 0 1 1 1 1 1 1 1 1 1 1 0 1 0 0 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0
+    1 2 2 3 2 0 0 1 0 0 1 0 0 0 0 0 0 1 0 2 0 0 0 1 0 0 0 0 0 0 0 2
+    1 1 0 0 1 0 0 0 1 1 0 0 1 0 1 1 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0
+    2 1 2 2 2 1 2 1 2 2 1 1 2 1 1 1 0 1 1 1 1 2 0 1 0 1 1 1 1 0 1 1
+    1 1 2 1 1 1 1 1 1 0 0 1 2 1 1 1 1 1 1 0 0 1 1 1 0 0 0 0 0 0 0 0
+    1 0 0 1 3 1 1 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    2 2 2 2 1 0 0 1 0 2 0 0 0 0 0 1 1 1 0 1 0 0 0 0 0 0 0 0 2 0 0 1
+    0 2 0 1 0 0 1 1 2 0 1 0 1 0 1 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0
+    1 2 2 2 2 0 1 1 0 2 1 0 1 1 1 0 0 1 0 2 0 1 0 0 0 0 0 0 0 0 0 1
+    0 1 0 0 1 0 0 0 1 1 0 0 1 0 0 1 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0
+    2 2 2 2 2 0 0 1 0 0 0 1 0 1 0 0 0 1 0 1 0 0 0 0 0 0 0 0 0 0 0 1
+    0 1 0 1 1 1 0 0 1 1 1 0 1 0 0 0 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0
+    2 0 1 0 0 1 2 1 1 1 1 1 1 2 2 1 0 0 1 0 1 0 0 0 0 1 1 1 1 0 0 0
+    1 1 2 1 1 1 1 0 0 0 1 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    2 2 1 2 1 0 0 1 0 0 0 0 0 0 0 0 1 1 0 1 0 0 0 0 0 0 0 0 0 0 0 1
+    0 0 0 0 0 0 0 0 1 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    1 0 0 1 2 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 1 0 0 0
+    0 1 1 0 1 1 1 0 0 1 0 0 1 0 1 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0 0
+    1 0 1 0 0 1 1 1 1 1 1 1 1 1 1 1 0 0 1 0 2 0 0 2 0 1 0 0 1 0 0 1
+    1 1 0 0 1 1 0 1 0 0 0 1 0 0 1 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 1 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 1 0
+    1 1 1 1 1 1 1 2 0 0 0 0 0 0 2 1 0 1 1 0 0 1 1 1 0 1 0 0 0 0 0 0
+    2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    1 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 0 1 1 1 1 1 0 1 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1
+    ])
+
+;;;}}}
+;;{{{  Hebrew Model
+;; ****************************************************************
+;; 255: Control characters that usually does not exist in any text
+;; 254: Carriage/Return
+;; 253: symbol (punctuation) that does not belong to word
+;; 252: 0 - 9
+
+;; *****************************************************************
+
+;; Windows-1255 language model
+;; Character Mapping Table:
+(defvar unicad-win1255-char2order-map
+  `[
+    255 255 255 255 255 255 255 255 255 255 254 255 255 254 255 255 ;;00
+    255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 ;;10
+    +253 253 253 253 253 253 253 253 253 253 253 253 253 253 253 253 ;;20
+    252 252 252 252 252 252 252 252 252 252 253 253 253 253 253 253 ;;30
+    253  69  91  79  80  92  89  97  90  68 111 112  82  73  95  85 ;;40
+    78 121  86  71  67 102 107  84 114 103 115 253 253 253 253 253 ;;50
+    253  50  74  60  61  42  76  70  64  53 105  93  56  65  54  49 ;;60
+    66 110  51  43  44  63  81  77  98  75 108 253 253 253 253 253 ;;70
+    124 202 203 204 205  40  58 206 207 208 209 210 211 212 213 214
+    215  83  52  47  46  72  32  94 216 113 217 109 218 219 220 221
+    34 116 222 118 100 223 224 117 119 104 125 225 226  87  99 227
+    106 122 123 228  55 229 230 101 231 232 120 233  48  39  57 234
+    30  59  41  88  33  37  36  31  29  35 235  62  28 236 126 237
+    238  38  45 239 240 241 242 243 127 244 245 246 247 248 249 250
+    9   8  20  16   3   2  24  14  22   1  25  15   4  11   6  23
+    12  19  13  26  18  27  21  17   7  10   5 251 252 128  96 253
+    ])
+
+;;Model Table:
+;;total sequences: 100%
+;;first 512 sequences: 98.4004%
+;;first 1024 sequences: 1.5981%
+;;rest  sequences:      0.087%
+;;negative sequences:   0.0015%
+(defvar unicad-hebrew-lang-model
+  `[
+    0 3 3 3 3 3 3 3 3 3 3 2 3 3 3 3 3 3 3 3 3 3 3 2 3 2 1 2 0 1 0 0
+    3 0 3 1 0 0 1 3 2 0 1 1 2 0 2 2 2 1 1 1 1 2 1 1 1 2 0 0 2 2 0 1
+    3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 2 2 2 2
+    1 2 1 2 1 2 0 0 2 0 0 0 0 0 1 0 1 0 0 0 0 0 0 1 0 0 0 0 0 0 1 0
+    3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 2 2 2
+    1 2 1 3 1 1 0 0 2 0 0 0 1 0 1 0 1 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0
+    3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 1 0 1 2 2 1 3
+    1 2 1 1 2 2 0 0 2 2 0 0 0 0 1 0 1 0 0 0 1 0 0 0 0 0 0 1 0 1 1 0
+    3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 2 3 3 2 2 2 2 3 2
+    1 2 1 2 2 2 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 1 0
+    3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 2 3 3 2 3 2 2 3 2 2 2 1 2 2 2 2
+    1 2 1 1 2 2 0 1 2 0 0 0 0 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 1 0
+    3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 2 0 2 2 2 2 2
+    0 2 0 2 2 2 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 1 0
+    3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 2 3 0 2 2 2
+    0 2 1 2 2 2 0 0 2 1 0 0 0 0 1 0 1 0 0 0 0 0 0 2 0 0 0 0 0 0 1 0
+    3 3 3 3 3 3 3 3 3 3 3 2 3 3 3 3 3 3 3 3 3 3 3 3 3 2 1 2 3 2 2 2
+    1 2 1 2 2 2 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0 0 0 1 0 0 0 0 0 1 1 0
+    3 3 3 3 3 3 3 3 3 2 3 3 3 2 3 3 3 3 3 3 3 3 3 3 3 3 3 1 0 2 0 2
+    0 2 1 2 2 2 0 0 1 2 0 0 0 0 1 0 1 0 0 0 0 0 0 1 0 0 0 2 0 0 1 0
+    3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 2 3 2 3 2 2 3 2 1 2 1 1 1
+    0 1 1 1 1 1 3 0 1 0 0 0 0 2 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0
+    3 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 0 1 1 0 0 1 0 0 1 0 0 0 0
+    0 0 1 0 0 0 0 0 2 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 2 2 2 2 2 2 2
+    0 2 0 1 2 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0
+    3 3 3 3 3 3 3 3 3 2 3 3 3 2 1 2 3 3 2 3 3 3 3 2 3 2 1 2 0 2 1 2
+    0 2 0 2 2 2 0 0 1 2 0 0 0 0 1 0 1 0 0 0 0 0 0 0 0 0 0 1 0 0 1 0
+    3 3 3 3 3 3 3 3 3 2 3 3 3 1 2 2 3 3 2 3 2 3 2 2 3 1 2 2 0 2 2 2
+    0 2 1 2 2 2 0 0 1 2 0 0 0 0 1 0 0 0 0 0 1 0 0 1 0 0 0 1 0 0 1 0
+    3 3 3 3 3 3 3 3 3 3 3 3 3 2 3 3 3 2 3 3 2 2 2 3 3 3 3 1 3 2 2 2
+    0 2 0 1 2 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0
+    3 3 3 3 3 3 3 3 3 3 3 3 3 3 2 2 3 3 3 2 3 2 2 2 1 2 2 0 2 2 2 2
+    0 2 0 2 2 2 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0
+    3 3 3 3 3 3 3 3 3 3 3 2 3 3 3 1 3 2 3 3 2 3 3 2 2 1 2 2 2 2 2 2
+    0 2 1 2 1 2 0 0 1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 1 0 0 0 0 0 0 1 0
+    3 3 3 3 3 3 2 3 2 3 3 2 3 3 3 3 2 3 2 3 3 3 3 3 2 2 2 2 2 2 2 1
+    0 2 0 1 2 1 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 1 0
+    3 3 3 3 3 3 3 3 3 2 1 2 3 3 3 3 3 3 3 2 3 2 3 2 1 2 3 0 2 1 2 2
+    0 2 1 1 2 1 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 2 0
+    3 3 3 3 3 3 3 3 3 2 3 3 3 3 2 1 3 1 2 2 2 1 2 3 3 1 2 1 2 2 2 2
+    0 1 1 1 1 1 0 0 0 0 0 0 0 0 1 0 0 0 0 0 1 0 0 2 0 0 0 0 0 0 0 0
+    3 3 3 3 3 3 3 3 3 3 0 2 3 3 3 1 3 3 3 1 2 2 2 2 1 1 2 2 2 2 2 2
+    0 2 0 1 1 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 1 0
+    3 3 3 3 3 3 2 3 3 3 2 2 3 3 3 2 1 2 3 2 3 2 2 2 2 1 2 1 1 1 2 2
+    0 2 1 1 1 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0
+    3 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 0 0 1 0 0 0 0 0
+    1 0 1 0 0 0 0 0 2 0 0 0 0 0 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    3 3 3 3 3 2 3 3 2 3 1 2 2 2 2 3 2 3 1 1 2 2 1 2 2 1 1 0 2 2 2 2
+    0 1 0 1 2 2 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 1 0
+    3 0 0 1 1 0 1 0 0 1 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 1 2 2 0
+    0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    3 0 1 0 1 0 1 1 0 1 1 0 0 0 1 1 0 1 1 1 0 0 0 0 0 0 1 0 0 0 0 0
+    0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    3 0 0 0 1 1 0 1 0 1 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0
+    3 2 2 1 2 2 2 2 2 2 2 1 2 2 1 2 2 1 1 1 1 1 1 1 1 2 1 1 0 3 3 3
+    0 3 0 2 2 2 2 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0
+    2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 1 2 2 2 1 1 1 2 0 1
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 0 2 2 0 0 0 0 0 0
+    0 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    2 3 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 1 0 2 1 0
+    0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    3 1 1 1 1 1 1 1 1 1 1 0 0 1 1 1 1 0 1 1 1 1 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0
+    0 3 1 1 2 2 2 2 2 1 2 2 2 1 1 2 2 2 2 2 2 2 1 2 2 1 0 1 1 1 1 0
+    0 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    3 2 1 1 1 1 2 1 1 2 1 0 1 1 1 1 1 1 1 1 1 1 1 0 1 0 0 0 0 0 0 0
+    0 0 2 0 0 0 0 0 0 0 0 1 1 0 0 0 0 1 1 0 0 1 1 0 0 0 0 0 0 1 0 0
+    2 1 1 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 1 2 1 2 1 1 1 1 0 0 0 0
+    0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    1 2 1 2 2 2 2 2 2 2 2 2 2 1 2 1 2 1 1 2 1 1 1 2 1 2 1 2 0 1 0 1
+    0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 3 1 2 2 2 1 2 2 2 2 2 2 2 2 1 2 1 1 1 1 1 1 2 1 2 1 1 0 1 0 1
+    0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    2 1 2 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 2 2
+    0 2 0 1 2 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0
+    3 0 0 0 1 0 0 0 0 0 0 0 0 0 0 1 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    2 1 1 1 1 1 1 1 0 1 1 0 1 0 0 1 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 2 0 1 1 1 0 1 0 0 0 1 1 0 1 1 0 0 0 0 0 1 1 0 0
+    0 1 1 1 2 1 2 2 2 0 2 0 2 0 1 1 2 1 1 1 1 2 1 0 1 1 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0
+    1 0 1 0 0 0 0 0 1 0 1 2 2 0 1 0 0 1 1 2 2 1 2 0 2 0 0 0 1 2 0 1
+    2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 2 0 2 1 2 0 2 0 0 1 1 1 1 1 1 0 1 0 0 0 1 0 0 1
+    2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 1 0 0 0 0 0 1 0 2 1 1 0 1 0 0 1 1 1 2 2 0 0 1 0 0 0 1 0 0 1
+    1 1 2 1 0 1 1 1 0 1 0 1 1 1 1 0 0 0 1 0 1 0 0 0 0 0 0 0 0 2 2 1
+    0 2 0 1 2 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    2 1 0 0 1 0 1 1 1 1 0 0 0 0 0 1 0 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    1 1 1 1 1 1 1 1 1 2 1 0 1 1 1 1 1 1 1 1 1 1 1 0 1 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 1 1 1 0 1 1 0 1 0 0 0 1 1 0 1
+    2 0 1 0 1 0 1 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 1 0 1 1 1 0 1 0 0 1 1 2 1 1 2 0 1 0 0 0 1 1 0 1
+    1 0 0 1 0 0 1 0 0 0 1 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 1 0 1 1 2 0 1 0 0 0 0 2 1 1 2 0 2 0 0 0 1 1 0 1
+    1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 1 0 2 1 1 0 1 0 0 2 2 1 2 1 1 0 1 0 0 0 1 1 0 1
+    2 0 1 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 1 2 2 0 0 0 0 0 1 1 0 1 0 0 1 0 0 0 0 1 0 1
+    1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 1 2 2 0 0 0 0 2 1 1 1 0 2 1 1 0 0 0 2 1 0 1
+    1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 1 0 1 1 2 0 1 0 0 1 1 0 2 1 1 0 1 0 0 0 1 1 0 1
+    2 2 1 1 1 0 1 1 0 1 1 0 1 0 0 0 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 1 0 2 1 1 0 1 0 0 1 1 0 1 2 1 0 2 0 0 0 1 1 0 1
+    2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0
+    0 1 0 0 2 0 2 1 1 0 1 0 1 0 0 1 0 0 0 0 1 0 0 0 1 0 0 0 0 0 1 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 1 0 1 1 2 0 1 0 0 1 1 1 0 1 0 0 1 0 0 0 1 0 0 1
+    1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    1 0 0 0 0 0 0 0 1 0 1 1 0 0 1 0 0 2 1 1 1 1 1 0 1 0 0 0 0 1 0 1
+    0 1 1 1 2 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 1 2 1 0 0 0 0 0 1 1 1 1 1 0 1 0 0 0 1 1 0 0
+    ])
+
+(defvar unicad-win1255-model
+  (list
+   (cons 'char2order-map unicad-win1255-char2order-map)
+   (cons 'precedence-matrix unicad-hebrew-lang-model)
+   (cons 'typ-positive-ratio 0.984004)
+   (cons 'keep-english-letter nil)
+   (cons 'charset-name 'windows-1255)
+   ))
+
+;;;}}}
+;;{{{  sjis single byte Model
+
+(defvar unicad-sjis-sb-char2order-map
+  `[
+    255 255 255 255 255 255 255 255 255 255 254 255 255 254 255 255 ;;00
+    255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 ;;10
+    +253 253 253 253 253 253 253 253 253 253 253 253 253 253 253 253 ;;20
+    252 252 252 252 252 252 252 252 252 252 253 253 253 253 253 253 ;;30
+    253 142 143 144 145 146 147 148 149 150 151 152  74 153  75 154 ;;40
+    155 156 157 158 159 160 161 162 163 164 165 253 253 253 253 253 ;;50
+    253  71 172  66 173  65 174  76 175  64 176 177  77  72 178  69 ;;60
+    67 179  78  73 180 181  79 182 183 184 185 253 253 253 253 253 ;;70
+    256 256 256 256 256 256 256 256 256 256 256 256 256 256 256 256 ;;80
+    256 256 256 256 256 256 256 256 256 256 256 256 256 256 256 256 ;;90
+    256 252 254 254 254  16  59  37  17  58  31  53  49  33  40  24;;a0
+      2  13   8  22  34  43  27  19   7  38  23  35  14   6  44  29;;b0
+     10  48  50  12   3  46  39  57  47  54  25  28   5  32  41  21;;c0
+     45  30  26  42  55  52  56  20  15  11  36  18  51   4   1   9;;d0
+    256 256 256 256 256 256 256 256 256 256 256 256 256 256 256 256;;e0
+    256 256 256 256 256 256 256 256 256 256 256 256 256 256 256 256;;f0
+    ])
+
+(defvar unicad-sjis-sb-lang-model
+  `[
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 3 2 3 3 3 3 3 0 3 3 3 3 3 3 3 3 2 3 3 0 3 0 3 2 2 2 2 2 3 2
+    2 3 0 3 3 3 3 2 3 2 2 3 2 2 3 3 0 3 2 2 0 0 0 2 0 2 2 0 0 0 0 0
+    0 3 0 3 0 0 3 0 0 0 3 3 0 0 2 0 0 0 0 0 0 0 2 0 0 0 0 2 0 0 0 2
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 2 2 0 0 0 0 2 0 0 0 0 0 0 0
+    0 3 0 2 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 3 0 3 0 0 3 3 0 0 3 3 0 0 3 0 0 0 0 0 3 0 0 0 0 0 0 0 0 3 0 0
+    0 0 0 3 0 0 0 0 0 0 0 0 0 0 2 2 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 3 3 3 0 0 0 0 0 3 0 0 2 0 0 3 2 3 2 0 3 0 0 0 0 0 0 0 0 0 3 0
+    0 0 0 0 2 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 0 0 0 0 0 0 0 0 0 0
+    0 3 0 3 0 0 2 0 0 0 3 3 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 3 0 3 0 0 3 0 0 0 2 0 3 0 3 3 2 0 3 0 3 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 2 0 0 0 0 0 0 0 2 0 0 0 0 0 2 2 0 2 2 0 0 0 0 0 0 0 0 0
+    0 3 3 3 3 0 3 3 0 0 3 2 3 0 2 3 3 0 2 0 0 0 0 2 0 0 3 0 0 2 0 2
+    0 0 0 0 0 0 0 0 0 0 0 2 3 0 2 2 0 0 0 3 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 3 0 3 0 2 2 3 0 2 0 3 0 2 3 0 0 3 0 3 0 0 0 3 0 0 0 0 3 0 0
+    0 3 0 2 3 0 0 0 0 0 0 0 0 0 0 0 2 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 3 2 0 0 2 0 0 0 0 0 2 2 0 0 2 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 3 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 3 3 3 0 2 3 0 0 2 3 2 0 0 2 0 0 0 0 0 0 0 2 0 2 0 0 0 0 0 0 0
+    0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 2 0 2 0 2 0 0 0 0 0 0 0 0 0 0 0
+    0 3 3 3 3 3 3 2 3 3 2 0 3 0 2 0 3 0 2 0 2 0 2 0 3 0 3 2 2 0 0 0
+    0 0 0 0 2 0 0 3 0 0 2 2 0 0 2 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 3 3 0 0 0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 2 0
+    0 2 0 0 0 0 0 0 3 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 2 3 2 0 0 3 0 0 0 3 2 0 0 3 3 0 0 0 0 0 0 0 0 3 0 0 0 0 0 0 0
+    0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0
+    0 2 0 2 0 0 3 0 0 0 0 2 2 0 3 2 0 0 0 0 2 0 2 0 0 0 0 0 0 2 0 2
+    0 0 0 2 3 0 0 2 0 0 2 2 2 0 0 0 0 0 0 2 2 0 0 0 0 0 0 0 0 0 0 0
+    0 0 3 0 0 0 3 0 0 0 3 0 0 3 0 0 0 0 0 2 0 0 0 0 3 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 3 3 0 0 0 3 0 0 0 2 0 0 0 3 0 0 0 0 0 0 0 2 0 3 0 0 0 0 3 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 2 3 0 2 0 3 2 0 0 0 0 0 0 3 2 0 0 0 0 0 0 0 0 2 0 3 0 0 2 0 0
+    0 3 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 3 2 2 0 0 2 0 0 0 0 2 0 0 3 3 0 0 0 0 0 0 3 0 3 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 2 3 0 3 0 2 0 0 0 2 0 2 0 2 0 0 0 0 0 0 0 2 0 3 0 0 0 0 0 0 0
+    0 0 0 2 2 0 0 3 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 3 3 0 3 0 0 0 0 0 0 0 2 0 0 2 0 0 0 0 0 3 0 0 0 0 3 0 0 0 0 0
+    0 0 0 0 2 0 0 0 0 0 2 0 0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 3 0 3 0 2 2 2 0 2 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 3 3 0 2 0 0 0 3 3 0 0 0 0 0 0 0 0 2 0 0 0 2 0 2 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 3 3 2 3 0 0 0 0 0 2 3 0 0 2 3 0 0 0 0 2 0 0 0 2 0 0 0 0 2 0 0
+    0 0 0 0 0 0 0 2 0 0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 3 3 2 2 0 3 0 0 0 2 3 3 0 2 0 0 0 0 0 0 0 0 0 2 0 2 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 2 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 3 0 0 0 0 2 0 0 3 0 0 2 0 0 0 0 0 2 0 2 0 0 0 2 0 0 0 0 0 0 0
+    0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 3 0 0 0 0 0 0 0 0 0 0 3 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 2 2 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 3 0 0 0 2 0 0 0 3 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 3 2 2 2 2 2 0 2 2 2 3 2 0 0 3 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0
+    0 0 0 0 2 0 0 0 0 2 0 0 2 3 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 3 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0
+    0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 3 3 2 2 0 2 0 2 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 3 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 3 3 0 2 0 0 0 0 0 0 2 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 3 3 0 0 0 0 0 0 0 3 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 2 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 3 3 0 0 0 0 0 2 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 2 3 0 3 0 2 0 0 0 2 2 2 0 0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 2 3 0 0 0 0 0 0 0 0 2 2 0 0 2 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 3 2 0 0 0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 2 2 2 3 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 2 0 0 0 0 0 0 0
+    0 3 0 2 0 0 0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 2 2 0 0 0 2 0 0 0 2 0 3 0 2 2 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 2 2 0 0 0 3 0 0 0 2 0 3 0 2 0 0 0 0 0 0 0 2 0 3 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 3 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 2 0 0 0 0 0 0 0 0 0 3 0 2 0 0 0 2 0 0 0 2 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    ])
+;;;}}}
+
 ;;{{{  SingleByte Prober
 
 (defconst unicad-sample-size 64)
@@ -321,20 +1427,16 @@ utf-16be ..."
 (defconst unicad-negative-cat 0)
 
 (defvar unicad-singlebyte-group-list
-  '(unicad-latin7-prober           
-    unicad-win1253-prober          
-    unicad-koi8r-prober            
-    unicad-win1251-prober          
-    unicad-latin5-prober           
-    unicad-ibm855-prober           
-    unicad-latin5-bulgarian-prober 
+  '(unicad-latin7-prober
+    unicad-win1253-prober
+    unicad-koi8r-prober
+    unicad-win1251-prober
+    unicad-latin5-prober
+    unicad-ibm855-prober
+    unicad-latin5-bulgarian-prober
     unicad-win1251-bulgarian-prober
     unicad-sjis-sb-prober)
   "a list of singlebyte prober functions")
-
-(defvar unicad-singlebyte-best-guess nil)
-
-(defvar unicad-singlebyte-group-guess nil)
 
 (defsubst unicad-sb-dist-table-reset (dist-table)
   (fillarray dist-table 0))
@@ -394,30 +1496,33 @@ chardet and return the best guess."
         (freq-char 0)
         (total-seqs 0)
         (seq-counters [0 0 0 0])
-        code cf order1)
+        (code0 0)
+        code1 cf order1)
     (fillarray seq-counters 0)
     (save-excursion
       (while (and (< (point) end)
                   (eq mState 'eDetecting)
                   (< words unicad-quick-singlebyte-words)
                   )
-        (setq code (char-after))
+        (setq code1 (unicad-char-after))
         (forward-char)
-        (when (and (>= code #x80) (not meetMSB))
+        (if (and (= code0 #x0D) (= code1 #x0A))
+            (setq unicad-eol 1))
+        (when (and (>= code1 #x80) (not meetMSB))
           (setq meetMSB t)
           (goto-char word-mark)
-          (setq code (char-after))
+          (setq code1 (unicad-char-after))
           (forward-char)
           )
-        (if (and 
-             (< code #x80)
-             (not (or (and (> code ?a) (< code ?z))
-                      (and (> code ?A) (< code ?Z)))))
+        (if (and
+             (< code1 #x80)
+             (not (or (and (> code1 ?a) (< code1 ?z))
+                      (and (> code1 ?A) (< code1 ?Z)))))
             (setq meetMSB nil
                   word-mark (point)
                   words (1+ words)))
         (when meetMSB
-          (setq order1 (aref char2order-map code))
+          (setq order1 (aref char2order-map code1))
           (if (< order1 unicad-symbol-cat-order)
               (setq total-char (1+ total-char)))
           (when (< order1 unicad-sample-size)
@@ -432,18 +1537,21 @@ chardet and return the best guess."
                  seq-counters
                  (aref lang-model (+ order0 (* order1 unicad-sample-size)))))
               ))
-          (setq order0 order1))))
-    (setq cf (unicad-singlebyte-get-confidence 
+          (if (> order1 255)
+              (setq mState 'eNotMe))
+          (setq order0 order1))
+        (setq code0 code1)))
+    (setq cf (unicad-singlebyte-get-confidence
               positive-ratio total-char freq-char total-seqs seq-counters))
     (cond
-     ((and (> total-seqs unicad-sb-enough-rel-threshold) 
+     ((and (> total-seqs unicad-sb-enough-rel-threshold)
            (> cf unicad-positive-shortcut-threshold))
       (setq mState 'eFoundIt)
       (push (cons charset-name unicad--sure-yes) unicad-singlebyte-group-guess))
      ((< cf unicad-negative-shortcut-threshold)
       (setq mState 'eNotMe)
       (push (cons charset-name unicad--sure-no) unicad-singlebyte-group-guess))
-     (t 
+     (t
       (push (cons charset-name cf) unicad-singlebyte-group-guess)))
     mState))
 
@@ -460,6 +1568,11 @@ chardet and return the best guess."
       (setq confidence (min 0.99 r)))
     confidence))
 
+(defconst unicad-latin7-name 'iso-8859-7
+  "The charset name for latin7-prober")
+
+(defconst unicad-latin7-positive-ratio 0.982851)
+
 (defsubst unicad-latin7-prober (start end)
   (unicad-singlebyte-prober start end
                             unicad-latin7-name
@@ -467,10 +1580,10 @@ chardet and return the best guess."
                             unicad-latin7-char2order-map
                             unicad-greek-lang-model))
 
-(defconst unicad-latin7-name 'iso-8859-7
-  "The charset name for latin7-prober")
+(defconst unicad-win1253-name 'windows-1253
+  "The charset name for win1253-prober")
 
-(defconst unicad-latin7-positive-ratio 0.982851)
+(defconst unicad-win1253-positive-ratio 0.982851)
 
 (defsubst unicad-win1253-prober (start end)
   (unicad-singlebyte-prober start end
@@ -479,10 +1592,10 @@ chardet and return the best guess."
                             unicad-win1253-char2order-map
                             unicad-greek-lang-model))
 
-(defconst unicad-win1253-name 'windows-1253
-  "The charset name for win1253-prober")
+(defconst unicad-koi8r-name 'koi8-r
+  "The charset name for koi8r-prober")
 
-(defconst unicad-win1253-positive-ratio 0.982851)
+(defconst unicad-koi8r-positive-ratio 0.976601)
 
 (defsubst unicad-koi8r-prober (start end)
   (unicad-singlebyte-prober start end
@@ -491,10 +1604,10 @@ chardet and return the best guess."
                             unicad-koi8r-char2order-map
                             unicad-russian-lang-model))
 
-(defconst unicad-koi8r-name 'koi8-r
-  "The charset name for koi8r-prober")
+(defconst unicad-win1251-name 'windows-1251
+  "The charset name for win1251-prober")
 
-(defconst unicad-koi8r-positive-ratio 0.976601)
+(defconst unicad-win1251-positive-ratio 0.976601)
 
 (defsubst unicad-win1251-prober (start end)
   (unicad-singlebyte-prober start end
@@ -503,10 +1616,10 @@ chardet and return the best guess."
                             unicad-win1251-char2order-map
                             unicad-russian-lang-model))
 
-(defconst unicad-win1251-name 'windows-1251
-  "The charset name for win1251-prober")
+(defconst unicad-latin5-name 'iso-8859-5
+  "The charset name for latin5-prober")
 
-(defconst unicad-win1251-positive-ratio 0.976601)
+(defconst unicad-latin5-positive-ratio 0.976601)
 
 (defsubst unicad-latin5-prober (start end)
   (unicad-singlebyte-prober start end
@@ -515,10 +1628,10 @@ chardet and return the best guess."
                             unicad-latin5-char2order-map
                             unicad-russian-lang-model))
 
-(defconst unicad-latin5-name 'iso-8859-5
-  "The charset name for latin5-prober")
+(defconst unicad-ibm855-name 'ibm855
+  "The charset name for ibm855-prober")
 
-(defconst unicad-latin5-positive-ratio 0.976601)
+(defconst unicad-ibm855-positive-ratio 0.976601)
 
 (defsubst unicad-ibm855-prober (start end)
   (unicad-singlebyte-prober start end
@@ -527,10 +1640,10 @@ chardet and return the best guess."
                             unicad-ibm855-char2order-map
                             unicad-russian-lang-model))
 
-(defconst unicad-ibm855-name 'ibm855
-  "The charset name for ibm855-prober")
+(defconst unicad-latin5-bulgarian-name 'iso-8859-5
+  "The charset name for latin5-bulgarian-prober")
 
-(defconst unicad-ibm855-positive-ratio 0.976601)
+(defconst unicad-latin5-bulgarian-positive-ratio 0.976601)
 
 (defsubst unicad-latin5-bulgarian-prober (start end)
   (unicad-singlebyte-prober start end
@@ -539,10 +1652,10 @@ chardet and return the best guess."
                             unicad-latin5-bulgarian-char2order-map
                             unicad-russian-lang-model))
 
-(defconst unicad-latin5-bulgarian-name 'iso-8859-5
-  "The charset name for latin5-bulgarian-prober")
+(defconst unicad-win1251-bulgarian-name 'windows-1251
+  "The charset name for win1251-bulgarian-prober")
 
-(defconst unicad-latin5-bulgarian-positive-ratio 0.976601)
+(defconst unicad-win1251-bulgarian-positive-ratio 0.969392)
 
 (defsubst unicad-win1251-bulgarian-prober (start end)
   (unicad-singlebyte-prober start end
@@ -551,10 +1664,10 @@ chardet and return the best guess."
                             unicad-win1251-bulgarian-char2order-map
                             unicad-russian-lang-model))
 
-(defconst unicad-win1251-bulgarian-name 'windows-1251
-  "The charset name for win1251-bulgarian-prober")
+(defconst unicad-sjis-sb-name 'sjis
+  "The charset name for sjis-sb-prober")
 
-(defconst unicad-win1251-bulgarian-positive-ratio 0.969392)
+(defconst unicad-sjis-sb-positive-ratio 0.95)
 
 (defsubst unicad-sjis-sb-prober (start end)
   (unicad-singlebyte-prober start end
@@ -562,1353 +1675,6 @@ chardet and return the best guess."
                             unicad-sjis-sb-positive-ratio
                             unicad-sjis-sb-char2order-map
                             unicad-sjis-sb-lang-model))
-
-(defconst unicad-sjis-sb-name 'sjis
-  "The charset name for sjis-sb-prober")
-
-(defconst unicad-sjis-sb-positive-ratio 0.95)
-
-;;}}}
-
-;;{{{  Multibyte Prober
-
-(defvar unicad-best-guess nil
-  "(MACHINE-BEST-GUESS BEST-CONFIDENCE)")
-
-(defvar unicad-chosen-gb-coding-system 
-  (cond 
-   ((coding-system-p 'gb18030)
-    'gb18030)
-   ((coding-system-p 'gbk)
-    'gbk)
-   (t 'gb2312)))
-
-(defvar unicad-multibyte-group-list
-  `([sjis 0 unicad-sjis-prober]
-    [euc-jp 0 unicad-eucjp-prober]
-    [,unicad-chosen-gb-coding-system 0 unicad-gb2312-prober]
-    [euc-kr 0 unicad-euckr-prober]
-    [big5 0 unicad-big5-prober]
-    [euc-tw 0 unicad-euctw-prober]
-    [,unicad-chosen-gb-coding-system 0 unicad-gbkcht-prober]
-    [utf-8 0 unicad-utf8-prober]
-    [utf-16le 0 unicad-ucs2le-prober]
-    [utf-16be 0 unicad-ucs2be-prober])
-  "([CODING-SYSTEM BEST-CONFIDENCE PROBER-FUNCTION] ...)")
-
-(defun unicad-multibyte-group-prober (start end)
-  "extract the multibyte chardet prober functions from
-`unicad-multibyte-group-list', compare the confidence of each
-chardet and return the best guess."
-  (let ((lists unicad-multibyte-group-list)
-        (mState 'eDetecting)
-        (bestConf 0.0)
-        state chardet mBestGuess cf)
-    (setq unicad-best-guess '(nil 0.0))
-    (while (and lists (eq mState 'eDetecting))
-      (setq chardet (pop lists))
-      (setq state (funcall (unicad-chardet-prober chardet)
-                           start end))
-      (cond
-       ((eq state 'eFoundIt)
-        (setq mBestGuess (unicad-chardet-name chardet))
-        (setq bestConf unicad--sure-yes)
-        (setq mState 'eFoundIt))
-       ((eq state 'eNotMe) nil)
-       (t
-        (setq cf (unicad-chardet-confidence chardet))
-        (if (> cf bestConf)
-            (progn
-              (setq mBestGuess (unicad-chardet-name chardet))
-              (setq bestConf cf))))))
-    (if (or (<= bestConf unicad--sure-no) (null mBestGuess))
-        (setq mState 'eNotMe)
-      (setq unicad-best-guess (list mBestGuess bestConf)))
-    mState))
-
-(defun unicad-cjk-prober (start end chardet model dist-table dist-ratio analyser)
-  "A generic prober for two byte coding system. e.g. chinese,
-japanese, korean"
-  (let ((mState 'eDetecting)
-        (mConfidence 0.0)
-        (code0 0) (code1 0)
-        (size (- end start))
-        (mb-num 0)                      ;number of multi-byte words
-        (mCodingSystem (cdr (assoc 'name model)))
-        codingState charlen)
-    (unicad-sm-reset)
-    (unicad-dist-table-reset dist-table)
-    (save-excursion
-      (goto-char start)
-      (setq code1 (char-after))
-      (while (and (< (point) end)
-                  (eq mState 'eDetecting)
-                  (< mb-num unicad-quick-multibyte-words))
-        (setq code1 (char-after)
-              codingState (unicad-next-state code1 model))
-        (forward-char 1)
-        (cond
-         ;; we are interested only in 2-byte
-         ((= codingState unicad--eStart)
-          (setq charlen (unicad-sm-get 'mCharLen))
-          (if (> charlen 1)
-                (setq mb-num  (1+ mb-num)))
-          ;; we need the analyser, only when charlen > 1
-          (and (> charlen 1) (funcall analyser code0 code1)))
-         ((= codingState unicad--eError)
-          (setq mState 'eNotMe)
-          (unicad-chardet-set-confidence chardet unicad--sure-no))
-         ((= codingState unicad--eItsMe)
-          (setq mState 'eFoundIt)
-          (unicad-chardet-set-confidence chardet unicad--sure-yes))
-         (t nil))
-        (setq code0 code1))
-      (if (eq mState 'eDetecting)
-          (if (and (> (setq mConfidence (unicad-dist-table-get-confidence dist-table dist-ratio size
-                                                                          (eq unicad-cjk-prefer mCodingSystem)))
-                      unicad-threshold)
-                   (> (unicad-dist-table-total-chars dist-table)
-                      unicad-data-threshold))
-              (progn
-                (setq mState 'eFoundIt)
-                (unicad-chardet-set-confidence chardet unicad--sure-yes))
-            (if (= (unicad-chardet-set-confidence chardet mConfidence) unicad--sure-yes)
-                (setq mState 'eFoundIt))))
-      mState)))
-;;}}}
-
-;;{{{  utf8 prober
-(defvar unicad-utf8-list (unicad-chardet unicad-multibyte-group-list 'unicad-utf8-prober))
-
-(defun unicad-utf8-prober (start end)
-  "Detect for utf-8 coding-system by state
-machine (`unicad-next-state') and get the confidence"
-  (let ((mState 'eDetecting)
-        (mNumOfMBChar 0)
-        codingState charlen (mConfidence 0.0))
-    (unicad-sm-reset)
-    (save-excursion
-      (goto-char start)
-      (while (and (< (point) end)
-                  (eq mState 'eDetecting))
-        (setq codingState (unicad-next-state (char-after)
-                                           unicad-utf8-sm-model))
-        (setq charlen (unicad-sm-get 'mCharLen))
-        (forward-char 1)
-        (cond
-         ((= codingState unicad--eStart)
-          (if (>= charlen 2)
-              (setq mNumOfMBChar (1+ mNumOfMBChar))))
-         ((= codingState unicad--eError)
-          (setq mState 'eNotMe)
-          (unicad-chardet-set-confidence unicad-utf8-list unicad--sure-no))
-         ((= codingState unicad--eItsMe)
-          (setq mState 'eFoundIt)
-          (unicad-chardet-set-confidence unicad-utf8-list unicad--sure-yes))
-         (t nil)))
-      (if (eq mState 'eDetecting)
-          (if (> (setq mConfidence (unicad-utf8-get-confidence mNumOfMBChar)) unicad-threshold)
-              (progn
-                (setq mState 'eFoundIt)
-                (unicad-chardet-set-confidence unicad-utf8-list unicad--sure-yes))
-            (unicad-chardet-set-confidence unicad-utf8-list mConfidence)))
-      mState)))
-
-(defun unicad-utf8-get-confidence (mNumOfMBChar)
-  "calculate the confidence for utf-8"
-  (let ((unlike unicad--sure-yes)
-        (one-char-prob 0.5))
-    (if (< mNumOfMBChar 6)
-        (setq unlike (* (expt one-char-prob mNumOfMBChar) unlike))
-      (setq unlike unicad--sure-no))
-    (- 1 unlike)))
-
-;;}}}
-;;{{{  ucs2be and ucs2le prober
-
-(defvar unicad-ucs2be-list (unicad-chardet unicad-multibyte-group-list 'unicad-ucs2be-prober))
-
-(defun unicad-ucs2be-prober (start end)
-  "A simple prober function for utf-16-be. It only counts the
-newline, space, numbers and english letters."
-  (let ((mState 'eNotMe)
-        (count 0)
-        code0 code1)
-    (setq start (point-min)
-          end (min (point-max) 1000))
-    (if (% end 2)
-        (setq end (1- end)))
-    (save-excursion
-      (goto-char start)
-      (while (and (< (point) end)
-                  (eq mState 'eNotMe))
-        (setq code0 (char-after))
-        (forward-char 1)
-        (setq code1 (char-after))
-        (forward-char 1)
-        (when (= code0 0)
-          (if (or (= code1 #x0d)
-                  (= code1 #x0a)
-                  (= code1 #x20)
-                  (and (> code1 ?0) (< code1 ?9))
-                  (and (> code1 ?a) (< code1 ?z))
-                  (and (> code1 ?A) (< code1 ?Z)))
-              (setq count (1+ count)))
-          (if (> count 10)
-              (progn
-                (setq mState 'eFoundIt)
-                (unicad-chardet-set-confidence unicad-ucs2be-list unicad--sure-yes))
-            (unicad-chardet-set-confidence unicad-ucs2be-list unicad--sure-no)))))
-    mState))
-
-(defvar unicad-ucs2le-list (unicad-chardet unicad-multibyte-group-list 'unicad-ucs2le-prober))
-
-(defun unicad-ucs2le-prober (start end)
-  "A simple prober function for utf-16-le. It only counts the
-newline, space, numbers and english letters."
-  (let ((mState 'eNotMe)
-        (count 0)
-        code0 code1)
-    (setq start (point-min)
-          end (min (point-max) 1000))
-    (if (% end 2)
-        (setq end (1- end)))
-    (save-excursion
-      (goto-char start)
-      (while (and (< (point) end)
-                  (eq mState 'eNotMe))
-        (setq code0 (char-after))
-        (forward-char 1)
-        (setq code1 (char-after))
-        (forward-char 1)
-        (when (= code1 0)
-          (if (or (= code0 #x0d)
-                  (= code0 #x0a)
-                  (= code0 #x20)
-                  (and (> code0 ?0) (< code0 ?9))
-                  (and (> code0 ?a) (< code0 ?z))
-                  (and (> code0 ?A) (< code0 ?Z)))
-              (setq count (1+ count)))
-          (if (> count 10)
-              (progn
-                (setq mState 'eFoundIt)
-                (unicad-chardet-set-confidence unicad-ucs2le-list unicad--sure-yes))
-            (unicad-chardet-set-confidence unicad-ucs2le-list unicad--sure-no)))))
-    mState))
-
-;;}}}
-;;{{{  ucs2 state machine
-;; the state machine for ucs2 seems doesn't work.
-;; so I use the simple prober above to detect ucs2
-
-(defconst unicad-ucs2be-class-table
-  [
-   0 0 0 0 0 0 0 0 ;; 00 - 07 
-   0 0 1 0 0 2 0 0 ;; 08 - 0f 
-   0 0 0 0 0 0 0 0 ;; 10 - 17 
-   0 0 0 3 0 0 0 0 ;; 18 - 1f 
-   0 0 0 0 0 0 0 0 ;; 20 - 27 
-   0 3 3 3 3 3 0 0 ;; 28 - 2f 
-   0 0 0 0 0 0 0 0 ;; 30 - 37 
-   0 0 0 0 0 0 0 0 ;; 38 - 3f 
-   0 0 0 0 0 0 0 0 ;; 40 - 47 
-   0 0 0 0 0 0 0 0 ;; 48 - 4f 
-   0 0 0 0 0 0 0 0 ;; 50 - 57 
-   0 0 0 0 0 0 0 0 ;; 58 - 5f 
-   0 0 0 0 0 0 0 0 ;; 60 - 67 
-   0 0 0 0 0 0 0 0 ;; 68 - 6f 
-   0 0 0 0 0 0 0 0 ;; 70 - 77 
-   0 0 0 0 0 0 0 0 ;; 78 - 7f 
-   0 0 0 0 0 0 0 0 ;; 80 - 87 
-   0 0 0 0 0 0 0 0 ;; 88 - 8f 
-   0 0 0 0 0 0 0 0 ;; 90 - 97 
-   0 0 0 0 0 0 0 0 ;; 98 - 9f 
-   0 0 0 0 0 0 0 0 ;; a0 - a7 
-   0 0 0 0 0 0 0 0 ;; a8 - af 
-   0 0 0 0 0 0 0 0 ;; b0 - b7 
-   0 0 0 0 0 0 0 0 ;; b8 - bf 
-   0 0 0 0 0 0 0 0 ;; c0 - c7 
-   0 0 0 0 0 0 0 0 ;; c8 - cf 
-   0 0 0 0 0 0 0 0 ;; d0 - d7 
-   0 0 0 0 0 0 0 0 ;; d8 - df 
-   0 0 0 0 0 0 0 0 ;; e0 - e7 
-   0 0 0 0 0 0 0 0 ;; e8 - ef 
-   0 0 0 0 0 0 0 0 ;; f0 - f7 
-   0 0 0 0 0 0 4 5 ;; f8 - ff 
-   ])
-
-
-(defconst unicad-ucs2be-state-table
-  (let ((eStart 0)
-        (eError 1)
-        (eItsMe 2))
-    (vector
-     5      7      7 eError      4      3 eError eError ;;00-07 
-     eError eError eError eError eItsMe eItsMe eItsMe eItsMe ;;08-0f 
-     eItsMe eItsMe      6      6      6      6 eError eError ;;10-17 
-     6      6      6      6      6 eItsMe      6      6      ;;18-1f 
-     6      6      6      6      5      7      7 eError      ;;20-27 
-     5      8      6      6 eError      6      6      6      ;;28-2f 
-     6      6      6      6 eError eError eStart eStart      ;;30-37 
-     )))
-
-(defconst unicad-ucs2be-charlen-table
-  [2  2  2  0  2  2])
-
-(defvar unicad-ucs2be-sm-model
-  (list
-   (cons 'classTable unicad-ucs2be-class-table)
-   (cons 'classFactor 6)
-   (cons 'stateTable unicad-ucs2be-state-table)
-   (cons 'charLenTable unicad-ucs2be-charlen-table)
-   (cons 'name "UTF-16-BE")))
-
-(defconst unicad-ucs2le-class-table
-  [
-   0 0 0 0 0 0 0 0 ;; 00 - 07 
-   0 0 1 0 0 2 0 0 ;; 08 - 0f 
-   0 0 0 0 0 0 0 0 ;; 10 - 17 
-   0 0 0 3 0 0 0 0 ;; 18 - 1f 
-   0 0 0 0 0 0 0 0 ;; 20 - 27 
-   0 3 3 3 3 3 0 0 ;; 28 - 2f 
-   0 0 0 0 0 0 0 0 ;; 30 - 37 
-   0 0 0 0 0 0 0 0 ;; 38 - 3f 
-   0 0 0 0 0 0 0 0 ;; 40 - 47 
-   0 0 0 0 0 0 0 0 ;; 48 - 4f 
-   0 0 0 0 0 0 0 0 ;; 50 - 57 
-   0 0 0 0 0 0 0 0 ;; 58 - 5f 
-   0 0 0 0 0 0 0 0 ;; 60 - 67 
-   0 0 0 0 0 0 0 0 ;; 68 - 6f 
-   0 0 0 0 0 0 0 0 ;; 70 - 77 
-   0 0 0 0 0 0 0 0 ;; 78 - 7f 
-   0 0 0 0 0 0 0 0 ;; 80 - 87 
-   0 0 0 0 0 0 0 0 ;; 88 - 8f 
-   0 0 0 0 0 0 0 0 ;; 90 - 97 
-   0 0 0 0 0 0 0 0 ;; 98 - 9f 
-   0 0 0 0 0 0 0 0 ;; a0 - a7 
-   0 0 0 0 0 0 0 0 ;; a8 - af 
-   0 0 0 0 0 0 0 0 ;; b0 - b7 
-   0 0 0 0 0 0 0 0 ;; b8 - bf 
-   0 0 0 0 0 0 0 0 ;; c0 - c7 
-   0 0 0 0 0 0 0 0 ;; c8 - cf 
-   0 0 0 0 0 0 0 0 ;; d0 - d7 
-   0 0 0 0 0 0 0 0 ;; d8 - df 
-   0 0 0 0 0 0 0 0 ;; e0 - e7 
-   0 0 0 0 0 0 0 0 ;; e8 - ef 
-   0 0 0 0 0 0 0 0 ;; f0 - f7 
-   0 0 0 0 0 0 4 5 ;; f8 - ff 
-   ])
-
-
-(defconst unicad-ucs2le-state-table
-  (let ((eStart 0)
-        (eError 1)
-        (eItsMe 2))
-    (vector
-     6      6      7      6      4      3 eError eError ;;00-07 
-     eError eError eError eError eItsMe eItsMe eItsMe eItsMe ;;08-0f 
-     eItsMe eItsMe      5      5      5 eError eItsMe eError ;;10-17 
-     5      5      5 eError      5 eError      6      6      ;;18-1f 
-     7      6      8      8      5      5      5 eError      ;;20-27 
-     5      5      5 eError eError eError      5      5      ;;28-2f 
-     5      5      5 eError      5 eError eStart eStart      ;;30-37 
-     )))
-
-(defconst unicad-ucs2le-charlen-table
-  [2  2  2  2  2  2])
-
-(defvar unicad-ucs2le-sm-model
-  (list
-   (cons 'classTable unicad-ucs2le-class-table)
-   (cons 'classFactor 6)
-   (cons 'stateTable unicad-ucs2le-state-table)
-   (cons 'charLenTable unicad-ucs2le-charlen-table)
-   (cons 'name "UTF-16-LE")))
-
-;;}}}
-
-;;{{{  gb2312 prober
-(defvar unicad-gb2312-list (unicad-chardet unicad-multibyte-group-list 'unicad-gb2312-prober))
-(defvar unicad-gb2312-dist-table '(0 . 0))
-
-(defsubst unicad-gb2312-prober (start end)
-  (unicad-cjk-prober start end unicad-gb2312-list
-                   unicad-gb18030-sm-model unicad-gb2312-dist-table
-                   unicad-gb2312-dist-ratio 'unicad-gb2312-analyser))
-
-(defun unicad-gb2312-analyser (ch0 ch1)
-  "for GB2312 encoding, we are interested 
-first  byte range: 0xb0 -- 0xfe 
-second byte range: 0xa1 -- 0xfe 
-no validation needed here.  State machine has done that"
-  (when (and (>= ch0 #xb0) (>= ch1 #xa1))
-    (let (order)
-      (setq order (- (+ (* 94 (- ch0 #xb0)) ch1) #xa1))
-      (when (>= order 0)
-        (unicad-dist-table-total-chars++ unicad-gb2312-dist-table)
-        (if (and (< order unicad-gb2312-table-size)
-                 (<= (aref unicad-gb2312-char-freq-order order) 512))
-            (unicad-dist-table-freq-chars++ unicad-gb2312-dist-table))))))
-
-;;}}}
-;;{{{  gbkcht prober
-;; use gbk state machine but use big5 analyser
-
-(defvar unicad-gbkcht-list (unicad-chardet unicad-multibyte-group-list 'unicad-gbkcht-prober))
-(defvar unicad-big5-dist-table '(0 . 0))
-(defsubst unicad-gbkcht-prober (start end)
-  (unicad-cjk-prober start end unicad-gbkcht-list
-                   unicad-gb18030-sm-model unicad-big5-dist-table
-                   unicad-big5-dist-ratio 'unicad-gbkcht-analyser))
-
-
-(defun unicad-gbkcht-analyser (ch0 ch1)
-  "we convert the gbk code into big5, than use `unicad-big5-analyser' to get the order"
-  (let ((bar (encode-coding-char (decode-char 'chinese-gbk (+ (* 256 ch0) ch1)) 'big5)))
-    (if bar
-        (let ((chr0 (string-to-char (substring bar 0)))
-              (chr1 (string-to-char (substring bar 1))))
-          (unicad-big5-analyser chr0 chr1)))))
-
-;;;}}}
-;;{{{  big5 prober
-
-(defvar unicad-big5-list (unicad-chardet unicad-multibyte-group-list 'unicad-big5-prober))
-(defvar unicad-big5-dist-table '(0 . 0))
-(defsubst unicad-big5-prober (start end)
-  (unicad-cjk-prober start end unicad-big5-list
-                   unicad-big5-sm-model unicad-big5-dist-table
-                   unicad-big5-dist-ratio 'unicad-big5-analyser))
-
-(defun unicad-big5-analyser (ch0 ch1)
-  "for big5 encoding, we are interested 
-  first  byte range: 0xa4 -- 0xfe
-  second byte range: 0x40 -- 0x7e , 0xa1 -- 0xfe
-no validation needed here. State machine has done that"
-  (when (>= ch0 #xa4)
-    (let ((order -1))
-      (if (>= ch1 #xa1)
-          (setq order (- (+ (* 157 (- ch0 #xa4)) ch1 63) #xa1))
-        (setq order (- (+ (* 157 (- ch0 #xa4)) ch1) #x40)))
-      (when (>= order 0)
-        (unicad-dist-table-total-chars++ unicad-big5-dist-table)
-        (if (and (< order unicad-big5-table-size)
-                 (<= (aref unicad-big5-char-freq-order order) 512))
-            (unicad-dist-table-freq-chars++ unicad-big5-dist-table))))))
-
-;;}}}
-;;{{{  sjis prober
-
-(defvar unicad-sjis-list (unicad-chardet unicad-multibyte-group-list 'unicad-sjis-prober))
-(defvar unicad-sjis-dist-table '(0 . 0))
-(defsubst unicad-sjis-prober (start end)
-  (unicad-cjk-prober start end unicad-sjis-list
-                   unicad-sjis-sm-model unicad-sjis-dist-table
-                   unicad-jis-dist-ratio 'unicad-sjis-analyser))
-
-(defun unicad-sjis-analyser (ch0 ch1)
-  "for sjis encoding, we are interested 
-  first  byte range: 0x81 -- 0x9f , 0xe0 -- 0xfe
-  second byte range: 0x40 -- 0x7e,  0x80 -- 0xfc
-no validation needed here. State machine has done that
- !NOTE! 0xA1 -- 0xDF are valid halfwidth katakana!!!"
-  (let ((order -1))
-    (cond
-     ((and (>= ch0 #x81) (<= ch0 #x9f))
-      (setq order (* 188 (- ch0 #x81))))
-     ((and (>= ch0 #xe0) (<= ch0 #xef))
-      (setq order (* 188 (+ (- ch0 #xe0) 31)))))
-    (when (>= order 0)
-      (setq order (+ order (- ch1 #x40)))
-      (if (> ch1 #x7f)
-          (setq order (1- order))))
-    (when (>= order 0)
-      (unicad-dist-table-total-chars++ unicad-sjis-dist-table)
-      (if (and (< order unicad-jis-table-size)
-               (<= (aref unicad-jis-char-freq-order order) 512))
-          (unicad-dist-table-freq-chars++ unicad-sjis-dist-table)))))
-
-;;}}}
-;;{{{  eucjp prober
-
-(defvar unicad-eucjp-list (unicad-chardet unicad-multibyte-group-list 'unicad-eucjp-prober))
-(defvar unicad-eucjp-dist-table '(0 . 0))
-(defsubst unicad-eucjp-prober (start end)
-  (unicad-cjk-prober start end unicad-eucjp-list
-                   unicad-eucjp-sm-model unicad-eucjp-dist-table
-                   unicad-jis-dist-ratio 'unicad-eucjp-analyser))
-
-(defun unicad-eucjp-analyser (ch0 ch1)
-  "for EUCJP encoding, we are interested 
-  first  byte range: 0xa0 -- 0xfe
-  second byte range: 0xa1 -- 0xfe
-no validation needed here. State machine has done that"
-  (when (>= ch0 #xa0)
-    (let (order)
-      (setq order (- (+ (* 94 (- ch0 #xa1)) ch1) #xa1))
-      (when (>= order 0)
-        (unicad-dist-table-total-chars++ unicad-eucjp-dist-table)
-        (if (and (< order unicad-jis-table-size)
-                 (<= (aref unicad-jis-char-freq-order order) 512))
-            (unicad-dist-table-freq-chars++ unicad-eucjp-dist-table))))))
-
-;;}}}
-;;{{{  euckr prober
-
-(defvar unicad-euckr-list (unicad-chardet unicad-multibyte-group-list 'unicad-euckr-prober))
-(defvar unicad-euckr-dist-table '(0 . 0))
-(defsubst unicad-euckr-prober (start end)
-  (unicad-cjk-prober start end unicad-euckr-list
-                   unicad-euckr-sm-model unicad-euckr-dist-table
-                   unicad-jis-dist-ratio 'unicad-euckr-analyser))
-
-(defun unicad-euckr-analyser (ch0 ch1)
-  "for euc-KR encoding, we are interested 
-  first  byte range: 0xb0 -- 0xfe
-  second byte range: 0xa1 -- 0xfe
-no validation needed here. State machine has done that"
-  (when (>= ch0 #xb0)
-    (let (order)
-      (setq order (- (+ (* 94 (- ch0 #xb0)) ch1) #xa1))
-      (when (>= order 0)
-        (unicad-dist-table-total-chars++ unicad-euckr-dist-table)
-        (if (and (< order unicad-euckr-table-size)
-                 (<= (aref unicad-euckr-char-freq-order order) 512))
-            (unicad-dist-table-freq-chars++ unicad-euckr-dist-table))))))
-
-;;}}}
-;;{{{  euctw prober
-
-(defvar unicad-euctw-list (unicad-chardet unicad-multibyte-group-list 'unicad-euctw-prober))
-(defvar unicad-euctw-dist-table '(0 . 0))
-(defsubst unicad-euctw-prober (start end)
-  (unicad-cjk-prober start end unicad-euctw-list
-                   unicad-euctw-sm-model unicad-euctw-dist-table
-                   unicad-euctw-dist-ratio 'unicad-euctw-analyser))
-
-(defun unicad-euctw-analyser (ch0 ch1)
-  "for euc-TW encoding, we are interested 
-  first  byte range: 0xc4 -- 0xfe
-  second byte range: 0xa1 -- 0xfe
-no validation needed here. State machine has done that"
-  (when (>= ch0 #xc4)
-    (let (order)
-      (setq order (- (+ (* 94 (- ch0 #xc4)) ch1) #xa1))
-      (when (>= order 0)
-        (unicad-dist-table-total-chars++ unicad-euctw-dist-table)
-        (if (and (< order unicad-euctw-table-size)
-                 (<= (aref unicad-euctw-char-freq-order order) 512))
-            (unicad-dist-table-freq-chars++ unicad-euctw-dist-table))))))
-;;}}}
-
-;;{{{  latin1 prober
-
-(defvar unicad-latin-best-guess '(windows-1252 0.0))
-
-(defvar unicad-latin1-guess
-  '(windows-1252 0.0))
-
-(defvar unicad-latin2-guess
-  '(latin-2 0.0))
-
-(defun unicad-latin-group-prober (start end)
-  "for latin-1 and latin-2"
-  (let (latin1-conf latin2-conf)
-    (save-excursion
-      (setq latin1-conf
-            (unicad-latin-prober start end 
-                                 unicad-latin1-class-table unicad-latin1-class-num unicad-latin1-model))
-      (if (>= latin1-conf 0.5)
-          (setq unicad-latin-best-guess (list 'windows-1252 latin1-conf))
-        (setq latin2-conf
-              (unicad-latin-prober start end 
-                                   unicad-latin2-class-table unicad-latin2-class-num unicad-latin2-model))
-        (if (> latin1-conf latin2-conf)
-            (setq unicad-latin-best-guess (list 'windows-1252 latin1-conf))
-          (setq unicad-latin-best-guess (list 'latin-2 latin2-conf)))))
-    (cadr unicad-latin-best-guess)))
-
-(defun unicad-latin-prober (start end class-table class-num latin-model)
-  (let ((mState 'eDetecting)
-        (code0-class 1)                 ; OTH
-        (mFreqCounter [0 0 0 0])
-        code1-class code0 code1 freq)
-    (fillarray mFreqCounter 0)
-    (save-excursion
-      (goto-char start)
-      (setq unicad-latin-best-guess '(windows-1252 0.0))
-      (while (and (< (point) end)
-                  (not (eq mState 'eNotMe))
-                  (< (aref mFreqCounter 3) 2000))
-        (setq code1 (char-after))
-        (forward-char 1)
-        (setq code1-class (aref class-table code1))
-        (setq freq (aref latin-model
-                         (+ (* code0-class class-num)
-                            code1-class)))
-        (if (= freq 0)
-            (setq mState 'eNotMe)
-          (aset mFreqCounter freq (1+ (aref mFreqCounter freq)))
-          )
-        (setq code0-class code1-class
-                code0 code1)))
-    (unicad-latin-get-confidence mState mFreqCounter)))
-
-(defun unicad-latin-get-confidence (mState mFreqCounter)
-  (let ((confidence 0.0)
-        (total 0))
-    (if (eq mState 'eNotMe)
-        unicad--sure-no
-      (setq total (apply '+ (append mFreqCounter nil)))
-      (when (> total 0)
-        (setq confidence (- (/ (* (aref mFreqCounter 3) 1.0) total)
-                            (/ (* (aref mFreqCounter 1) 20.0) total))))
-      (max unicad--sure-no (* confidence 0.5)))))
-
-
-;;}}}
-
-;;{{{  State Machine functions
-(defvar unicad-sm-coding-state nil
-  "Init state:
-   ((mState . eStart)
-    (mCharLen . 0)
-    (mBytePos . 0))")
-
-(defconst unicad--eStart 0)
-(defconst unicad--eError 1)
-(defconst unicad--eItsMe 2)
-
-(defsubst unicad-sm-reset ()
-  (setq unicad-sm-coding-state `((mState . ,unicad--eStart)
-                               (mCharLen . 0)
-                               (mBytePos . 0))))
-
-(defsubst unicad-sm-set (name value)
-  (setcdr (assoc name unicad-sm-coding-state) value))
-
-(defsubst unicad-sm-get (name)
-  "To get mState mCharlen or mByte"
-  (cdr (assoc name unicad-sm-coding-state)))
-
-(defun unicad-next-state (ch model)
-  "Verificate multibyte codings by class-table and state-table"
-  (let ((current-state (unicad-sm-get 'mState))
-        (current-bytepos (unicad-sm-get 'mBytePos))
-        (byteCls (aref (cdr (assoc 'classTable model))  ch))
-        (next-charlen (unicad-sm-get 'mCharLen))
-        next-state next-bytepos)
-    (when (= current-state unicad--eStart)
-      (setq next-bytepos 0)
-      (setq next-charlen (aref (cdr (assoc 'charLenTable model)) byteCls)))
-    (setq next-state
-          (aref (cdr (assoc 'stateTable model))
-                (+ (* current-state (cdr (assoc 'classFactor model)))
-                   byteCls))
-          next-bytepos (1+ current-bytepos)
-          unicad-sm-coding-state `((mState . ,next-state)
-                                 (mCharLen . ,next-charlen)
-                                 (mBytePos . ,next-bytepos)))
-    next-state))
-
-;;}}}
-;;{{{  utf8 state machine
-
-(defvar unicad-utf8-class-table
-  `[
-    1 1 1 1 1 1 1 1         ;; 00 - 07 0 
-    1 1 1 1 1 1 0 0         ;; 08 - 0f 1
-    1 1 1 1 1 1 1 1         ;; 10 - 17 2
-    1 1 1 1 1 1 1 1        ;; 1 1 1 0 1 1 1 1        ;; 18 - 1f
-    1 1 1 1 1 1 1 1         ;; 20 - 27 4
-    1 1 1 1 1 1 1 1         ;; 28 - 2f 5
-    1 1 1 1 1 1 1 1         ;; 30 - 37 6
-    1 1 1 1 1 1 1 1         ;; 38 - 3f 7
-    1 1 1 1 1 1 1 1         ;; 40 - 47 8
-    1 1 1 1 1 1 1 1         ;; 48 - 4f 9
-    1 1 1 1 1 1 1 1         ;; 50 - 57 10
-    1 1 1 1 1 1 1 1         ;; 58 - 5f 11
-    1 1 1 1 1 1 1 1         ;; 60 - 67 12
-    1 1 1 1 1 1 1 1         ;; 68 - 6f 13
-    1 1 1 1 1 1 1 1         ;; 70 - 77 14
-    1 1 1 1 1 1 1 1         ;; 78 - 7f 15
-    2 2 2 2 3 3 3 3         ;; 80 - 87 16
-    4 4 4 4 4 4 4 4         ;; 88 - 8f 17
-    4 4 4 4 4 4 4 4         ;; 90 - 97 18
-    4 4 4 4 4 4 4 4         ;; 98 - 9f 19
-    5 5 5 5 5 5 5 5         ;; a0 - a7 20
-    5 5 5 5 5 5 5 5         ;; a8 - af 21
-    5 5 5 5 5 5 5 5         ;; b0 - b7 22
-    5 5 5 5 5 5 5 5         ;; b8 - bf 23
-    0 0 6 6 6 6 6 6         ;; c0 - c7 24
-    6 6 6 6 6 6 6 6         ;; c8 - cf 25
-    6 6 6 6 6 6 6 6         ;; d0 - d7 26
-    6 6 6 6 6 6 6 6         ;; d8 - df 27
-    7 8 8 8 8 8 8 8         ;; e0 - e7 28
-    8 8 8 8 8 9 8 8         ;; e8 - ef 29
-    10 11 11 11 11 11 11 11 ;; f0 - f7 30
-    12 13 13 13 14 15 0 0   ;; f8 - ff 31
-    ])
-
-
-(defvar unicad-utf8-state-table
-  (let ((eStart 0)
-        (eError 1)
-        (eItsMe 2))
-    (vector
-     eError eStart eError eError eError eError 12     10  ;; 00-07  0
-     9      11     8      7      6      5      4      3   ;; 08-0f  1
-     eError eError eError eError eError eError eError eError ;; 10-17  2
-     eError eError eError eError eError eError eError eError ;; 18-1f  3
-     eItsMe eItsMe eItsMe eItsMe eItsMe eItsMe eItsMe eItsMe ;; 20-27  4
-     eItsMe eItsMe eItsMe eItsMe eItsMe eItsMe eItsMe eItsMe ;; 28-2f  5
-     eError eError      5      5      5      5 eError eError ;; 30-37  6
-     eError eError eError eError eError eError eError eError ;; 38-3f  7
-     eError eError eError      5      5      5 eError eError ;; 40-47  8
-     eError eError eError eError eError eError eError eError ;; 48-4f  9
-     eError eError      7      7      7      7 eError eError ;; 50-57  10
-     eError eError eError eError eError eError eError eError ;; 58-5f  11
-     eError eError eError eError      7      7 eError eError ;; 60-67  12
-     eError eError eError eError eError eError eError eError ;; 68-6f  13
-     eError eError      9      9      9      9 eError eError ;; 70-77  14
-     eError eError eError eError eError eError eError eError ;; 78-7f  15
-     eError eError eError eError eError      9 eError eError ;; 80-87  16
-     eError eError eError eError eError eError eError eError ;; 88-8f  17
-     eError eError     12     12     12     12 eError eError ;; 90-97  18
-     eError eError eError eError eError eError eError eError ;; 98-9f  19
-     eError eError eError eError eError     12 eError eError ;; a0-a7  20
-     eError eError eError eError eError eError eError eError ;; a8-af  21
-     eError eError     12     12     12 eError eError eError ;; b0-b7  22
-     eError eError eError eError eError eError eError eError ;; b8-bf  23
-     eError eError eStart eStart eStart eStart eError eError ;; c0-c7  24
-     eError eError eError eError eError eError eError eError ;; c8-cf  25
-     )))
-
-(defvar unicad-utf8-charlen-table
-;; 0  1  2  3  4  5  6  7
-  [0  1  0  0  0  0  2  3
-   3  3  4  4  5  5  6  6 ])
-
-(defvar unicad-utf8-sm-model
-  (list
-   (cons 'classTable unicad-utf8-class-table)
-   (cons 'classFactor 16)
-   (cons 'stateTable unicad-utf8-state-table)
-   (cons 'charLenTable unicad-utf8-charlen-table)
-   (cons 'name 'utf-8)))
-
-;;}}}
-;;{{{  gb18030 state machine
-
-(defvar unicad-gb18030-class-table
-  [
-   1 1 1 1 1 1 1 1        ;; 00 - 07
-   1 1 1 1 1 1 0 0        ;; 08 - 0f
-   1 1 1 1 1 1 1 1        ;; 10 - 17
-   1 1 1 1 1 1 1 1        ;; 18 - 2f allow esc as legal value
-   1 1 1 1 1 1 1 1        ;; 20 - 27
-   1 1 1 1 1 1 1 1        ;; 28 - 2f
-   3 3 3 3 3 3 3 3        ;; 30 - 37
-   3 3 1 1 1 1 1 1        ;; 38 - 3f
-   2 2 2 2 2 2 2 2        ;; 40 - 47
-   2 2 2 2 2 2 2 2        ;; 48 - 4f
-   2 2 2 2 2 2 2 2        ;; 50 - 57
-   2 2 2 2 2 2 2 2        ;; 58 - 5f
-   2 2 2 2 2 2 2 2        ;; 60 - 67
-   2 2 2 2 2 2 2 2        ;; 68 - 6f
-   2 2 2 2 2 2 2 2        ;; 70 - 77
-   2 2 2 2 2 2 2 4        ;; 78 - 7f
-   5 6 6 6 6 6 6 6        ;; 80 - 87
-   6 6 6 6 6 6 6 6        ;; 88 - 8f
-   6 6 6 6 6 6 6 6        ;; 90 - 97
-   6 6 6 6 6 6 6 6        ;; 98 - 9f
-   6 6 6 6 6 6 6 6        ;; a0 - a7
-   6 6 6 6 6 6 6 6        ;; a8 - af
-   6 6 6 6 6 6 6 6        ;; b0 - b7
-   6 6 6 6 6 6 6 6        ;; b8 - bf
-   6 6 6 6 6 6 6 6        ;; c0 - c7
-   6 6 6 6 6 6 6 6        ;; c8 - cf
-   6 6 6 6 6 6 6 6        ;; d0 - d7
-   6 6 6 6 6 6 6 6        ;; d8 - df
-   6 6 6 6 6 6 6 6        ;; e0 - e7
-   6 6 6 6 6 6 6 6        ;; e8 - ef
-   6 6 6 6 6 6 6 6        ;; f0 - f7
-   6 6 6 6 6 6 6 0        ;; f8 - ff
-   ])
-
-(defvar unicad-gb18030-state-table
-  (let ((eStart 0)
-        (eError 1)
-        (eItsMe 2))
-    (vector
-     ;;   0      1      2      3      4      5      6
-     eError eStart eStart eStart eStart eStart      3
-     eError eError eError eError eError eError eError
-     eItsMe eItsMe eItsMe eItsMe eItsMe eItsMe eItsMe
-     eError eError eStart      4 eError eStart eStart
-     eError eError eError eError eError eError      5
-     eError eError eError eItsMe eError eError eError)))
-
-  ;; To be accurate  the length of class 6 can be either 2 or 4.
-  ;; But it is not necessary to discriminate between the two since
-  ;; it is used for frequency analysis only  and we are validing
-  ;; each code range there as well. So it is safe to set it to be
-  ;; 2 here.
-(defvar unicad-gb18030-charlen-table
-      [0  1  1  1  1  1  2])
-
-(defvar unicad-gb18030-sm-model
-  (list
-   (cons 'classTable  unicad-gb18030-class-table)
-   (cons 'classFactor  7 )
-   (cons 'stateTable  unicad-gb18030-state-table)
-   (cons 'charLenTable  unicad-gb18030-charlen-table)
-   (cons 'name 'gb18030)))
-
-;;}}}
-;;{{{  big5 state machine
-(defvar unicad-big5-class-table
-      `[
-        1 1 1 1 1 1 1 1 ;; 00 - 07    ;;allow #x00 as legal value
-        1 1 1 1 1 1 0 0 ;; 08 - 0f
-        1 1 1 1 1 1 1 1 ;; 10 - 17
-        1 1 1 1 1 1 1 1 ;; 18 - 1f    ;;allow esc as legal value
-        1 1 1 1 1 1 1 1 ;; 20 - 27
-        1 1 1 1 1 1 1 1 ;; 28 - 2f
-        1 1 1 1 1 1 1 1 ;; 30 - 37
-        1 1 1 1 1 1 1 1 ;; 38 - 3f
-        2 2 2 2 2 2 2 2 ;; 40 - 47
-        2 2 2 2 2 2 2 2 ;; 48 - 4f
-        2 2 2 2 2 2 2 2 ;; 50 - 57
-        2 2 2 2 2 2 2 2 ;; 58 - 5f
-        2 2 2 2 2 2 2 2 ;; 60 - 67
-        2 2 2 2 2 2 2 2 ;; 68 - 6f
-        2 2 2 2 2 2 2 2 ;; 70 - 77
-        2 2 2 2 2 2 2 1 ;; 78 - 7f
-        4 4 4 4 4 4 4 4 ;; 80 - 87
-        4 4 4 4 4 4 4 4 ;; 88 - 8f
-        4 4 4 4 4 4 4 4 ;; 90 - 97
-        4 4 4 4 4 4 4 4 ;; 98 - 9f
-        4 3 3 3 3 3 3 3 ;; a0 - a7
-        3 3 3 3 3 3 3 3 ;; a8 - af
-        3 3 3 3 3 3 3 3 ;; b0 - b7
-        3 3 3 3 3 3 3 3 ;; b8 - bf
-        3 3 3 3 3 3 3 3 ;; c0 - c7
-        3 3 3 3 3 3 3 3 ;; c8 - cf
-        3 3 3 3 3 3 3 3 ;; d0 - d7
-        3 3 3 3 3 3 3 3 ;; d8 - df
-        3 3 3 3 3 3 3 3 ;; e0 - e7
-        3 3 3 3 3 3 3 3 ;; e8 - ef
-        3 3 3 3 3 3 3 3 ;; f0 - f7
-        3 3 3 3 3 3 3 0 ;; f8 - ff
-        ])
-
-(defvar unicad-big5-state-table
-  (let ((eStart 0)
-        (eError 1)
-        (eItsMe 2))
-    (vector
-     ;;   0      1      2      3      4     
-     eError eStart eStart      3 eError
-     eError eError eError eError eError
-     eItsMe eItsMe eItsMe eItsMe eItsMe
-     eError eError eStart eStart eStart)))
-
-(defvar unicad-big5-charlen-table
-  [0  1  1  2  0])
-
-(defvar unicad-big5-sm-model
-  (list
-   (cons 'classTable  unicad-big5-class-table)
-   (cons 'classFactor  5)
-   (cons 'stateTable  unicad-big5-state-table)
-   (cons 'charLenTable  unicad-big5-charlen-table)
-   (cons 'name  'big5)))
-;;}}}
-;;{{{  sjis state machine
-(defvar unicad-sjis-class-table
-  `[
-    ;;,(PCK4BITS 0 1 1 1 1 1 1 1)   ;; 00 - 07
-    1 1 1 1 1 1 1 1       ;; 00 - 07
-    1 1 1 1 1 1 0 0       ;; 08 - 0f
-    1 1 1 1 1 1 1 1       ;; 10 - 17
-    1 1 1 1 1 1 1 1       ;; 18 - 1f  allow esc as legal value
-    1 1 1 1 1 1 1 1       ;; 20 - 27
-    1 1 1 1 1 1 1 1       ;; 28 - 2f
-    1 1 1 1 1 1 1 1       ;; 30 - 37
-    1 1 1 1 1 1 1 1       ;; 38 - 3f
-    2 2 2 2 2 2 2 2       ;; 40 - 47
-    2 2 2 2 2 2 2 2       ;; 48 - 4f
-    2 2 2 2 2 2 2 2       ;; 50 - 57
-    2 2 2 2 2 2 2 2       ;; 58 - 5f
-    2 2 2 2 2 2 2 2       ;; 60 - 67
-    2 2 2 2 2 2 2 2       ;; 68 - 6f
-    2 2 2 2 2 2 2 2       ;; 70 - 77
-    2 2 2 2 2 2 2 1       ;; 78 - 7f
-    3 3 3 3 3 3 3 3       ;; 80 - 87
-    3 3 3 3 3 3 3 3       ;; 88 - 8f
-    3 3 3 3 3 3 3 3       ;; 90 - 97
-    3 3 3 3 3 3 3 3       ;; 98 - 9f
-    ;;#xa0 is illegal in sjis encoding  but some pages does
-    ;;contain such byte. We need to be more error forgiven.
-    2 2 2 2 2 2 2 2       ;; a0 - a7
-    2 2 2 2 2 2 2 2       ;; a8 - af
-    2 2 2 2 2 2 2 2       ;; b0 - b7
-    2 2 2 2 2 2 2 2       ;; b8 - bf
-    2 2 2 2 2 2 2 2       ;; c0 - c7
-    2 2 2 2 2 2 2 2       ;; c8 - cf
-    2 2 2 2 2 2 2 2       ;; d0 - d7
-    2 2 2 2 2 2 2 2       ;; d8 - df
-    3 3 3 3 3 3 3 3       ;; e0 - e7
-    3 3 3 3 3 4 4 4       ;; e8 - ef
-    4 4 4 4 4 4 4 4       ;; f0 - f7
-    4 4 4 4 4 0 0 0       ;; f8 - ff
-    ])
-
-
-(defvar unicad-sjis-state-table
-  (let ((eStart 0)
-        (eError 1)
-        (eItsMe 2))
-    (vector
-     eError eStart eStart      3 eError eError eError eError ;;00-07
-     eError eError eError eError eItsMe eItsMe eItsMe eItsMe ;;08-0f
-     eItsMe eItsMe eError eError eStart eStart eStart eStart ;;10-17
-     )))
-
-(defvar unicad-sjis-charlen-table
-  [0  1  1  2  0  0])
-
-(defvar unicad-sjis-sm-model
-  (list
-   (cons 'classTable  unicad-sjis-class-table)
-   (cons 'classFactor  6 )
-   (cons 'stateTable  unicad-sjis-state-table)
-   (cons 'charLenTable  unicad-sjis-charlen-table)
-   (cons 'name 'sjis)))
-
-;;}}}
-;;{{{  eucjp state machine
-
-(defvar unicad-eucjp-class-table
-      `[
-        ;;,(PCK4BITS 5 4 4 4 4 4 4 4)   ;; 00 - 07
-        4 4 4 4 4 4 4 4   ;; 00 - 07
-        4 4 4 4 4 4 5 5   ;; 08 - 0f
-        4 4 4 4 4 4 4 4   ;; 10 - 17
-        4 4 4 5 4 4 4 4   ;; 18 - 1f
-        4 4 4 4 4 4 4 4   ;; 20 - 27
-        4 4 4 4 4 4 4 4   ;; 28 - 2f
-        4 4 4 4 4 4 4 4   ;; 30 - 37
-        4 4 4 4 4 4 4 4   ;; 38 - 3f
-        4 4 4 4 4 4 4 4   ;; 40 - 47
-        4 4 4 4 4 4 4 4   ;; 48 - 4f
-        4 4 4 4 4 4 4 4   ;; 50 - 57
-        4 4 4 4 4 4 4 4   ;; 58 - 5f
-        4 4 4 4 4 4 4 4   ;; 60 - 67
-        4 4 4 4 4 4 4 4   ;; 68 - 6f
-        4 4 4 4 4 4 4 4   ;; 70 - 77
-        4 4 4 4 4 4 4 4   ;; 78 - 7f
-        5 5 5 5 5 5 5 5   ;; 80 - 87
-        5 5 5 5 5 5 1 3   ;; 88 - 8f
-        5 5 5 5 5 5 5 5   ;; 90 - 97
-        5 5 5 5 5 5 5 5   ;; 98 - 9f
-        5 2 2 2 2 2 2 2   ;; a0 - a7
-        2 2 2 2 2 2 2 2   ;; a8 - af
-        2 2 2 2 2 2 2 2   ;; b0 - b7
-        2 2 2 2 2 2 2 2   ;; b8 - bf
-        2 2 2 2 2 2 2 2   ;; c0 - c7
-        2 2 2 2 2 2 2 2   ;; c8 - cf
-        2 2 2 2 2 2 2 2   ;; d0 - d7
-        2 2 2 2 2 2 2 2   ;; d8 - df
-        0 0 0 0 0 0 0 0   ;; e0 - e7
-        0 0 0 0 0 0 0 0   ;; e8 - ef
-        0 0 0 0 0 0 0 0   ;; f0 - f7
-        0 0 0 0 0 0 0 5   ;; f8 - ff
-        ])
-
-(defvar unicad-eucjp-state-table
-  (let ((eStart 0)
-        (eError 1)
-        (eItsMe 2))
-    (vector
-     ;; 0   1      2      3      4      5
-     3      4      3      5      eStart eError
-     eError eError eError eError eError eError
-     eItsMe eItsMe eItsMe eItsMe eItsMe eItsMe
-     eStart eError eStart eError eError eError
-     eError eError eStart eError eError eError
-     3      eError 3      eError eError eError)))
-
-(defvar unicad-eucjp-charlen-table
-  [2  2  2  3  1  0])
-
-(defvar unicad-eucjp-sm-model
-  (list
-   (cons 'classTable  unicad-eucjp-class-table)
-   (cons 'classFactor  6 )
-   (cons 'stateTable  unicad-eucjp-state-table)
-   (cons 'charLenTable  unicad-eucjp-charlen-table)
-   (cons 'name 'euc-jp)))
-
-;;}}}
-;;{{{  euckr state machine
-(defvar unicad-euckr-class-table
-  `[
-    ;;,(PCK4BITS 0 1 1 1 1 1 1 1)   ;; 00 - 07
-    1 1 1 1 1 1 1 1       ;; 00 - 07
-    1 1 1 1 1 1 0 0       ;; 08 - 0f
-    1 1 1 1 1 1 1 1       ;; 10 - 17
-    1 1 1 1 1 1 1 1       ;; 18 - 1f ;; allow esc as legal char
-    1 1 1 1 1 1 1 1       ;; 20 - 27
-    1 1 1 1 1 1 1 1       ;; 28 - 2f
-    1 1 1 1 1 1 1 1       ;; 30 - 37
-    1 1 1 1 1 1 1 1       ;; 38 - 3f
-    1 1 1 1 1 1 1 1       ;; 40 - 47
-    1 1 1 1 1 1 1 1       ;; 48 - 4f
-    1 1 1 1 1 1 1 1       ;; 50 - 57
-    1 1 1 1 1 1 1 1       ;; 58 - 5f
-    1 1 1 1 1 1 1 1       ;; 60 - 67
-    1 1 1 1 1 1 1 1       ;; 68 - 6f
-    1 1 1 1 1 1 1 1       ;; 70 - 77
-    1 1 1 1 1 1 1 1       ;; 78 - 7f
-    0 0 0 0 0 0 0 0       ;; 80 - 87
-    0 0 0 0 0 0 0 0       ;; 88 - 8f
-    0 0 0 0 0 0 0 0       ;; 90 - 97
-    0 0 0 0 0 0 0 0       ;; 98 - 9f
-    0 2 2 2 2 2 2 2       ;; a0 - a7
-    2 2 2 2 2 3 3 3       ;; a8 - af
-    2 2 2 2 2 2 2 2       ;; b0 - b7
-    2 2 2 2 2 2 2 2       ;; b8 - bf
-    2 2 2 2 2 2 2 2       ;; c0 - c7
-    2 3 2 2 2 2 2 2       ;; c8 - cf
-    2 2 2 2 2 2 2 2       ;; d0 - d7
-    2 2 2 2 2 2 2 2       ;; d8 - df
-    2 2 2 2 2 2 2 2       ;; e0 - e7
-    2 2 2 2 2 2 2 2       ;; e8 - ef
-    2 2 2 2 2 2 2 2       ;; f0 - f7
-    2 2 2 2 2 2 2 0       ;; f8 - ff
-    ])
-
-(defvar unicad-euckr-state-table
-  (let ((eStart 0)
-        (eError 1)
-        (eItsMe 2))
-    (vector
-     ;; 0   1      2      3
-     eError eStart 3      eError
-     eError eError eError eError
-     eItsMe eItsMe eItsMe eItsMe
-     eError eError eStart eStart)))
-
-(defvar unicad-euckr-charlen-table
-  [0  1  2  0])
-
-(defvar unicad-euckr-sm-model
-  (list
-   (cons 'classTable  unicad-euckr-class-table)
-   (cons 'classFactor  4 )
-   (cons 'stateTable  unicad-euckr-state-table)
-   (cons 'charLenTable  unicad-euckr-charlen-table)
-   (cons 'name 'euc-kr)))
-
-;;}}}
-;;{{{  euctw state machine
-(defvar unicad-euctw-class-table
-  `[
-    ;;,(PCK4BITS 0 2 2 2 2 2 2 2)   ;; 00 - 07
-    2 2 2 2 2 2 2 2       ;; 00 - 07
-    2 2 2 2 2 2 0 0       ;; 08 - 0f
-    2 2 2 2 2 2 2 2       ;; 10 - 17
-    2 2 2 2 2 2 2 2       ;; 2 2 2 0 2 2 2 2       ;; 18 - 1f
-    2 2 2 2 2 2 2 2       ;; 20 - 27
-    2 2 2 2 2 2 2 2       ;; 28 - 2f
-    2 2 2 2 2 2 2 2       ;; 30 - 37
-    2 2 2 2 2 2 2 2       ;; 38 - 3f
-    2 2 2 2 2 2 2 2       ;; 40 - 47
-    2 2 2 2 2 2 2 2       ;; 48 - 4f
-    2 2 2 2 2 2 2 2       ;; 50 - 57
-    2 2 2 2 2 2 2 2       ;; 58 - 5f
-    2 2 2 2 2 2 2 2       ;; 60 - 67
-    2 2 2 2 2 2 2 2       ;; 68 - 6f
-    2 2 2 2 2 2 2 2       ;; 70 - 77
-    2 2 2 2 2 2 2 2       ;; 78 - 7f
-    0 0 0 0 0 0 0 0       ;; 80 - 87
-    0 0 0 0 0 0 6 0       ;; 88 - 8f
-    0 0 0 0 0 0 0 0       ;; 90 - 97
-    0 0 0 0 0 0 0 0       ;; 98 - 9f
-    0 3 4 4 4 4 4 4       ;; a0 - a7
-    5 5 1 1 1 1 1 1       ;; a8 - af
-    1 1 1 1 1 1 1 1       ;; b0 - b7
-    1 1 1 1 1 1 1 1       ;; b8 - bf
-    1 1 3 1 3 3 3 3       ;; c0 - c7
-    3 3 3 3 3 3 3 3       ;; c8 - cf
-    3 3 3 3 3 3 3 3       ;; d0 - d7
-    3 3 3 3 3 3 3 3       ;; d8 - df
-    3 3 3 3 3 3 3 3       ;; e0 - e7
-    3 3 3 3 3 3 3 3       ;; e8 - ef
-    3 3 3 3 3 3 3 3       ;; f0 - f7
-    3 3 3 3 3 3 3 0       ;; f8 - ff
-    ])
-
-(defvar unicad-euctw-state-table
-  (let ((eStart 0)
-        (eError 1)
-        (eItsMe 2))
-    (vector
-     ;;  0   1     2      3      4      5      6
-     eError eError eStart 3      3      3      4
-     eError eError eError eError eError eError eError
-     eItsMe eItsMe eItsMe eItsMe eItsMe eItsMe eItsMe
-     eError eStart eError eStart eStart eStart eError
-     eError eError eError eError 5      eError eError
-     eError eStart eError eStart eStart eStart eError)))
-
-(defvar unicad-euctw-charlen-table
-      [0  0  1  2  2  2  3])
-
-(defvar unicad-euctw-sm-model
-  (list
-   (cons 'classTable  unicad-euctw-class-table)
-   (cons 'classFactor  7 )
-   (cons 'stateTable  unicad-euctw-state-table)
-   (cons 'charLenTable  unicad-euctw-charlen-table)
-   (cons 'name  'euc-tw)))
-
-;;}}}
-;;{{{  latin1 state machine
-(defvar unicad-latin1-class-num  9)   ;; total classes
-(defvar unicad-latin1-class-table
-  (let ((UDF 0) ;; undefined
-        (OTH 1) ;; other
-        (ASC 2) ;; ascii capital letter
-        (ASS 3) ;; ascii small letter
-        (ACV 4) ;; accent capital vowel
-        (ACO 5) ;; accent capital other
-        (ASV 6) ;; accent small vowel
-        (ASO 7) ;; accent small other
-        (OTS 8) ;; Other Symbol (>= #xA0)
-        )
-    (vector
-     OTH  OTH  OTH  OTH  OTH  OTH  OTH  OTH ;; 00 - 07
-     OTH  OTH  OTH  OTH  OTH  OTH  OTH  OTH ;; 08 - 0F
-     OTH  OTH  OTH  OTH  OTH  OTH  OTH  OTH ;; 10 - 17
-     OTH  OTH  OTH  OTH  OTH  OTH  OTH  OTH ;; 18 - 1F
-     OTH  OTH  OTH  OTH  OTH  OTH  OTH  OTH ;; 20 - 27
-     OTH  OTH  OTH  OTH  OTH  OTH  OTH  OTH ;; 28 - 2F
-     OTH  OTH  OTH  OTH  OTH  OTH  OTH  OTH ;; 30 - 37
-     OTH  OTH  OTH  OTH  OTH  OTH  OTH  OTH ;; 38 - 3F
-     OTH  ASC  ASC  ASC  ASC  ASC  ASC  ASC ;; 40 - 47
-     ASC  ASC  ASC  ASC  ASC  ASC  ASC  ASC ;; 48 - 4F
-     ASC  ASC  ASC  ASC  ASC  ASC  ASC  ASC ;; 50 - 57
-     ASC  ASC  ASC  OTH  OTH  OTH  OTH  OTH ;; 58 - 5F
-     OTH  ASS  ASS  ASS  ASS  ASS  ASS  ASS ;; 60 - 67
-     ASS  ASS  ASS  ASS  ASS  ASS  ASS  ASS ;; 68 - 6F
-     ASS  ASS  ASS  ASS  ASS  ASS  ASS  ASS ;; 70 - 77
-     ASS  ASS  ASS  OTH  OTH  OTH  OTH  OTH ;; 78 - 7F
-     OTH  UDF  OTH  ASO  OTH  OTH  OTH  OTH ;; 80 - 87
-     OTH  OTH  ACO  OTH  ACO  UDF  ACO  UDF ;; 88 - 8F
-     UDF  OTH  OTH  OTH  OTH  OTH  OTH  OTH ;; 90 - 97
-     OTH  OTH  ASO  OTH  ASO  UDF  ASO  ACO ;; 98 - 9F
-     OTS  OTS  OTS  OTS  OTS  OTS  OTS  OTS ;; A0 - A7
-     OTS  OTS  OTS  OTS  OTS  OTS  OTS  OTS ;; A8 - AF
-     OTS  OTS  OTS  OTS  OTS  OTS  OTS  OTS ;; B0 - B7
-     OTS  OTS  OTS  OTS  OTS  OTS  OTS  OTS ;; B8 - BF
-     ACV  ACV  ACV  ACV  ACV  ACV  ACO  ACO ;; C0 - C7
-     ACV  ACV  ACV  ACV  ACV  ACV  ACV  ACV ;; C8 - CF
-     ACO  ACO  ACV  ACV  ACV  ACV  ACV  OTS ;; D0 - D7
-     ACV  ACV  ACV  ACV  ACV  ACO  ACO  ASO ;; D8 - DF
-     ASV  ASV  ASV  ASV  ASV  ASV  ASO  ASO ;; E0 - E7
-     ASV  ASV  ASV  ASV  ASV  ASV  ASV  ASV ;; E8 - EF
-     ASO  ASO  ASV  ASV  ASV  ASV  ASV  OTS ;; F0 - F7
-     ASV  ASV  ASV  ASV  ASV  ASO  ASO  ASO ;; F8 - FF
-     )))
-
-(defvar unicad-latin1-model
-  [
-;; UDF OTH ASC ASS ACV ACO ASV ASO OTS
-   0   0   0   0   0   0   0   0   0 ;; UDF last char
-   0   3   3   3   3   3   3   3   3 ;; OTH
-   0   3   3   3   3   3   3   3   2 ;; ASC
-   0   3   3   3   1   1   3   3   2 ;; ASS
-   0   3   3   3   1   2   1   2   1 ;; ACV
-   0   3   3   3   3   3   3   3   1 ;; ACO
-   0   3   1   3   1   1   1   3   1 ;; ASV
-   0   3   1   3   1   1   3   3   1 ;; ASO
-   0   3   2   2   2   2   1   1   1 ;; OTS
-   ])
-;;}}}
-
-;;{{{  Esc CharSet Prober
-
-(defvar unicad-esc-group-list
-  (list
-   'unicad-hz-prober
-   'unicad-iso2022cn-prober
-   'unicad-iso2022jp-prober
-   'unicad-iso2022kr-prober))
-
-(defvar unicad-esc-group-guess nil)
-
-(defun unicad-esc-group-prober (start end)
-  (let ((lists unicad-esc-group-list)
-        (mState 'eDetecting)
-        (mBestGuess nil)
-        (bestConf 0.0)
-        state)
-    (setq unicad-esc-group-guess nil)
-    (while (and lists (eq mState 'eDetecting))
-      (setq state (funcall (pop lists)
-                           start end))
-      (cond
-       ((eq state 'eItsMe)
-        (setq mState 'eFoundIt)
-        (setq mBestGuess (car (nth 0 unicad-esc-group-guess)))
-        (setq bestConf   (cdr (nth 0 unicad-esc-group-guess)))
-        )
-       ((eq state 'eNotMe) nil)
-       ))
-    ))
-
-(defvar unicad-hz-name 'hz-gb-2312)
-(defvar unicad-iso2022cn-name 'iso-2022-cn)
-(defvar unicad-iso2022jp-name 'iso-2022-jp)
-(defvar unicad-iso2022kr-name 'iso-2022-kr)
-
-(defsubst unicad-hz-prober (start end)
-  (unicad-esc-charset-prober
-   start end unicad-hz-name unicad-hz-sm-model))
-
-(defsubst unicad-iso2022cn-prober (start end)
-  (unicad-esc-charset-prober
-   start end unicad-iso2022cn-name unicad-iso2022cn-sm-model))
-
-(defsubst unicad-iso2022jp-prober (start end)
-  (unicad-esc-charset-prober
-   start end unicad-iso2022jp-name unicad-iso2022jp-sm-model))
-
-(defsubst unicad-iso2022kr-prober (start end)
-  (unicad-esc-charset-prober
-   start end unicad-iso2022kr-name unicad-iso2022kr-sm-model))
-
-(defun unicad-esc-charset-prober (start end charset-name model)
-  (let ((mState 'eDetecting)
-        (code0 0)
-        (code1 0)
-        codingState)
-    (unicad-sm-reset)
-    (save-excursion
-      (goto-char start)
-      (while (and (< (point) end)
-                  (eq mState 'eDetecting))
-        (setq code1 (char-after))
-        (forward-char 1)
-        (setq codingState (unicad-next-state code1 model))
-        (cond
-         ((= codingState unicad--eError)
-          (setq mState 'eNotMe)
-          (push (cons charset-name unicad--sure-no) unicad-esc-group-guess))
-         ((= codingState unicad--eItsMe)
-          (setq mState 'eItsMe)
-          (push (cons charset-name unicad--sure-yes) unicad-esc-group-guess))))
-      )))
-
-;;}}}
-
-;;{{{  Latin2
-
-(defvar unicad-latin2-class-num 9)   ;; total classes
-
-(defvar unicad-latin2-class-table
-  (let ((UDF 0) ;; undefined
-        (OTH 1) ;; other
-        (ASC 2) ;; ascii capital letter
-        (ASS 3) ;; ascii small letter
-        (ACV 4) ;; accent capital vowel
-        (ACO 5) ;; accent capital other
-        (ASV 6) ;; accent small vowel
-        (ASO 7) ;; accent small other
-        (OTS 8) ;; Other Symbol (> #xA0)
-        )
-    (vector
-     OTH  OTH  OTH  OTH  OTH  OTH  OTH  OTH ;; 00 - 07
-     OTH  OTH  OTH  OTH  OTH  OTH  OTH  OTH ;; 08 - 0F
-     OTH  OTH  OTH  OTH  OTH  OTH  OTH  OTH ;; 10 - 17
-     OTH  OTH  OTH  OTH  OTH  OTH  OTH  OTH ;; 18 - 1F
-     OTH  OTH  OTH  OTH  OTH  OTH  OTH  OTH ;; 20 - 27
-     OTH  OTH  OTH  OTH  OTH  OTH  OTH  OTH ;; 28 - 2F
-     OTH  OTH  OTH  OTH  OTH  OTH  OTH  OTH ;; 30 - 37
-     OTH  OTH  OTH  OTH  OTH  OTH  OTH  OTH ;; 38 - 3F
-     OTH  ASC  ASC  ASC  ASC  ASC  ASC  ASC ;; 40 - 47
-     ASC  ASC  ASC  ASC  ASC  ASC  ASC  ASC ;; 48 - 4F
-     ASC  ASC  ASC  ASC  ASC  ASC  ASC  ASC ;; 50 - 57
-     ASC  ASC  ASC  OTH  OTH  OTH  OTH  OTH ;; 58 - 5F
-     OTH  ASS  ASS  ASS  ASS  ASS  ASS  ASS ;; 60 - 67
-     ASS  ASS  ASS  ASS  ASS  ASS  ASS  ASS ;; 68 - 6F
-     ASS  ASS  ASS  ASS  ASS  ASS  ASS  ASS ;; 70 - 77
-     ASS  ASS  ASS  OTH  OTH  OTH  OTH  OTH ;; 78 - 7F
-     OTH  UDF  OTH  ASO  OTH  OTH  OTH  OTH ;; 80 - 87
-     OTH  OTH  ACO  OTH  ACO  UDF  ACO  UDF ;; 88 - 8F
-     UDF  OTH  OTH  OTH  OTH  OTH  OTH  OTH ;; 90 - 97
-     OTH  OTH  ASO  OTH  ASO  UDF  ASO  ACO ;; 98 - 9F
-     OTS  ACV  OTS  ACO  OTS  ACO  ACO  OTS ;; A0 - A7
-     OTS  ACO  ACO  ACO  ACO  OTS  ACO  ACO ;; A8 - AF
-     OTS  ASV  OTS  ASO  OTS  ASO  ASO  OTS ;; B0 - B7
-     OTS  ASO  ASO  ASO  ASO  OTS  ASO  ASO ;; B8 - BF
-     ACO  ACV  ACV  ACV  ACV  ACO  ACO  ACO ;; C0 - C7
-     ACO  ACV  ACV  ACV  ACV  ACV  ACV  ACO ;; C8 - CF
-     ACO  ACO  ACO  ACV  ACV  ACV  ACV  OTS ;; D0 - D7
-     ACO  ACV  ACV  ACV  ACV  ACO  ACO  ASO ;; D8 - DF
-     ASO  ASV  ASV  ASV  ASV  ASO  ASO  ASO ;; E0 - E7
-     ASO  ASV  ASV  ASV  ASV  ASV  ASV  ASO ;; E8 - EF
-     ASO  ASO  ASO  ASV  ASV  ASV  ASV  OTS ;; F0 - F7
-     ASO  ASV  ASV  ASV  ASV  ASO  ASO  OTS ;; F8 - FF
-     )))
-
-(defvar unicad-latin2-model
-  [
-;; UDF OTH ASC ASS ACV ACO ASV ASO OTS
-   0   0   0   0   0   0   0   0   0 ;; UDF last char
-   0   3   3   3   3   3   3   3   3 ;; OTH
-   0   3   3   3   3   3   3   3   2 ;; ASC
-   0   3   3   3   1   1   3   3   2 ;; ASS
-   0   3   3   3   1   2   1   2   1 ;; ACV
-   0   3   3   3   3   3   3   3   1 ;; ACO
-   0   3   1   3   1   1   1   3   1 ;; ASV
-   0   3   1   3   1   1   3   3   1 ;; ASO
-   0   3   2   2   2   2   1   1   1 ;; OTS
-   ])
-
-;;;}}}
-
-;;{{{  Dist Table functions
-(defsubst unicad-dist-table-reset (dist-table)
-  (setcar dist-table 0)
-  (setcdr dist-table 0))
-
-(defalias 'unicad-dist-table-total-chars 'car)
-(defalias 'unicad-dist-table-freq-chars 'cdr)
-
-(defsubst unicad-dist-table-total-chars++ (dist-table)
-  (setcar dist-table (1+ (car dist-table))))
-(defsubst unicad-dist-table-freq-chars++ (dist-table)
-  (setcdr dist-table (1+ (cdr dist-table))))
-
-(defun unicad-dist-table-get-confidence (dist-table dist-ratio size &optional prefer)
-  (let ((Confidence 0.0)
-        (total-chars (unicad-dist-table-total-chars dist-table))
-        (freq-chars (unicad-dist-table-freq-chars dist-table)))
-    (cond
-     ((and (> size unicad-minimum-size-threshold)
-           (or (<= total-chars (- (/ unicad-minimum-size-threshold 2) 4))    ;; this was `0'
-               (< freq-chars unicad-minimum-data-threshold)))
-      (setq Confidence unicad--sure-no))
-     ((<= total-chars 0)
-      (setq Confidence unicad--sure-no))
-     ((/= total-chars freq-chars)
-      (setq Confidence (min (/ freq-chars (* (- total-chars freq-chars) dist-ratio))
-                            unicad--sure-yes)))
-     (t (setq Confidence unicad--sure-yes)))))
 
 ;;}}}
 
@@ -3332,977 +3098,1311 @@ no validation needed here. State machine has done that"
 ])
 ;;}}}
 
-;;{{{  Greek Model
-;; ****************************************************************
-;; 255: Control characters that usually does not exist in any text
-;; 254: Carriage/Return
-;; 253: symbol (punctuation) that does not belong to word
-;; 252: 0 - 9
+;;{{{  Dist Table functions
+(defsubst unicad-dist-table-reset (dist-table)
+  (setcar dist-table 0)
+  (setcdr dist-table 0))
 
-;; *****************************************************************/
+(defalias 'unicad-dist-table-total-chars 'car)
+(defalias 'unicad-dist-table-freq-chars 'cdr)
 
-;;Character Mapping Table:
-(defvar unicad-latin7-char2order-map
-  [
-   255 255 255 255 255 255 255 255 255 255 254 255 255 254 255 255 ;;00
-   255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 ;;10
-   253 253 253 253 253 253 253 253 253 253 253 253 253 253 253 253 ;;20
-   252 252 252 252 252 252 252 252 252 252 253 253 253 253 253 253 ;;30
-   253  82 100 104  94  98 101 116 102 111 187 117  92  88 113  85 ;;40
-   79 118 105  83  67 114 119  95  99 109 188 253 253 253 253 253 ;;50
-   253  72  70  80  81  60  96  93  89  68 120  97  77  86  69  55 ;;60
-   78 115  65  66  58  76 106 103  87 107 112 253 253 253 253 253 ;;70
-   255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 ;;80
-   255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 ;;90
-   253 233  90 253 253 253 253 253 253 253 253 253 253  74 253 253 ;;a0
-   253 253 253 253 247 248  61  36  46  71  73 253  54 253 108 123 ;;b0
-   110  31  51  43  41  34  91  40  52  47  44  53  38  49  59  39 ;;c0
-   35  48 250  37  33  45  56  50  84  57 120 121  17  18  22  15 ;;d0
-   124   1  29  20  21   3  32  13  25   5  11  16  10   6  30   4 ;;e0
-   9   8  14   7   2  12  28  23  42  24  64  75  19  26  27 253 ;;f0
-   ])
+(defsubst unicad-dist-table-total-chars++ (dist-table)
+  (setcar dist-table (1+ (car dist-table))))
+(defsubst unicad-dist-table-freq-chars++ (dist-table)
+  (setcdr dist-table (1+ (cdr dist-table))))
 
-
-
-(defvar unicad-win1253-char2order-map
-  [
-   255 255 255 255 255 255 255 255 255 255 254 255 255 254 255 255 ;;00
-   255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 ;;10
-   253 253 253 253 253 253 253 253 253 253 253 253 253 253 253 253 ;;20
-   252 252 252 252 252 252 252 252 252 252 253 253 253 253 253 253 ;;30
-   253  82 100 104  94  98 101 116 102 111 187 117  92  88 113  85 ;;40
-   79 118 105  83  67 114 119  95  99 109 188 253 253 253 253 253 ;;50
-   253  72  70  80  81  60  96  93  89  68 120  97  77  86  69  55 ;;60
-   78 115  65  66  58  76 106 103  87 107 112 253 253 253 253 253 ;;70
-   255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 ;;80
-   255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 ;;90
-   253 233  61 253 253 253 253 253 253 253 253 253 253  74 253 253 ;;a0
-   253 253 253 253 247 253 253  36  46  71  73 253  54 253 108 123 ;;b0
-   110  31  51  43  41  34  91  40  52  47  44  53  38  49  59  39 ;;c0
-   35  48 250  37  33  45  56  50  84  57 120 121  17  18  22  15 ;;d0
-   124   1  29  20  21   3  32  13  25   5  11  16  10   6  30   4 ;;e0
-   9   8  14   7   2  12  28  23  42  24  64  75  19  26  27 253 ;;f0
-   ])
-
-;;Model Table: 
-;;total sequences: 100%
-;;first 512 sequences: 98.2851%
-;;first 1024 sequences:1.7001%
-;;rest  sequences:     0.0359%
-;;negative sequences:  0.0148% 
-(defvar unicad-greek-lang-model
-  [
-   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 0 3 2 2 3 3 3 3 3 3 3 3 1 3 3 3 0 2 2 3 3 0 3 0 3 2 0 3 3 3 0 
-   3 0 0 0 2 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 3 3 3 3 3 0 3 3 0 3 2 3 3 0 3 2 3 3 3 0 0 3 0 3 0 3 3 2 0 0 0 
-   2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 
-   0 2 3 2 2 3 3 3 3 3 3 3 3 0 3 3 3 3 0 2 3 3 0 3 3 3 3 2 3 3 3 0 
-   2 0 0 0 2 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 2 3 3 2 3 3 3 3 3 3 3 3 3 3 3 3 0 2 1 3 3 3 3 2 3 3 2 3 3 2 0 
-   0 0 0 0 2 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 3 3 3 3 0 3 3 3 3 3 3 0 3 3 0 3 3 3 3 3 3 3 3 3 3 0 3 2 3 3 0 
-   2 0 1 0 2 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 
-   0 3 3 3 3 3 2 3 0 0 0 0 3 3 0 3 1 3 3 3 0 3 3 0 3 3 3 3 0 0 0 0 
-   2 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 3 3 3 3 3 0 3 0 3 3 3 3 3 0 3 2 2 2 3 0 2 3 3 3 3 3 2 3 3 0 0 
-   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 3 3 3 3 3 3 2 2 2 3 3 3 3 0 3 1 3 3 3 3 2 3 3 3 3 3 3 3 2 2 0 
-   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 3 3 3 3 3 2 0 3 0 0 0 3 3 2 3 3 3 3 3 0 0 3 2 3 0 2 3 0 0 0 0 
-   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 3 0 3 3 3 3 0 0 3 3 0 2 3 0 3 0 3 3 3 0 0 3 0 3 0 2 2 3 3 0 0 
-   0 0 1 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 3 3 3 3 3 2 0 3 2 3 3 3 3 0 3 3 3 3 3 0 3 3 2 3 2 3 3 2 0 0 0 
-   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 3 3 2 3 2 3 3 3 3 3 3 0 2 3 2 3 2 2 2 3 2 3 3 2 3 0 2 2 2 3 0 
-   2 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 0 3 0 0 0 3 3 3 2 3 3 0 0 3 0 3 0 0 0 3 2 0 3 0 3 0 0 2 0 2 0 
-   0 0 0 0 2 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 3 3 3 3 0 3 3 3 3 3 3 0 3 3 0 3 0 0 0 3 3 0 3 3 3 0 0 1 2 3 0 
-   3 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 3 3 3 3 3 2 0 0 3 2 2 3 3 0 3 3 3 3 3 2 1 3 0 3 2 3 3 2 1 0 0 
-   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 0 3 3 0 2 3 3 3 3 3 3 0 0 3 0 3 0 0 0 3 3 0 3 2 3 0 0 3 3 3 0 
-   3 0 0 0 2 0 0 0 0 0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 3 3 3 3 0 3 3 3 3 3 3 0 0 3 0 3 0 0 0 3 2 0 3 2 3 0 0 3 2 3 0 
-   2 0 0 0 0 0 0 0 0 0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 0 3 1 2 2 3 3 3 3 3 3 0 2 3 0 3 0 0 0 3 3 0 3 0 2 0 0 2 3 1 0 
-   2 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 3 0 3 3 3 3 0 3 0 3 3 2 3 0 3 3 3 3 3 3 0 3 3 3 0 2 3 0 0 3 0 
-   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 3 0 3 3 3 0 0 3 0 0 0 3 3 0 3 0 2 3 3 0 0 3 0 3 0 3 3 0 0 0 0 
-   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 0 3 0 0 0 3 3 3 3 3 3 0 0 3 0 2 0 0 0 3 3 0 3 0 3 0 0 2 0 2 0 
-   0 0 0 0 1 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 3 3 3 3 3 3 0 3 0 2 0 3 2 0 3 2 3 2 3 0 0 3 2 3 2 3 3 0 0 0 0 
-   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 0 3 0 0 2 3 3 3 3 3 0 0 0 3 0 2 1 0 0 3 2 2 2 0 3 0 0 2 2 0 0 
-   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 3 0 3 3 3 2 0 3 0 3 0 3 3 0 2 1 2 3 3 0 0 3 0 3 0 3 3 0 0 0 0 
-   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 2 3 3 3 0 3 3 3 3 3 3 0 2 3 0 3 0 0 0 2 1 0 2 2 3 0 0 2 2 2 0 
-   0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 0 3 0 0 2 3 3 3 2 3 0 0 1 3 0 2 0 0 0 0 3 0 1 0 2 0 0 1 1 1 0 
-   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 3 3 3 3 3 1 0 3 0 0 0 3 2 0 3 2 3 3 3 0 0 3 0 3 2 2 2 1 0 0 0 
-   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 3 0 3 3 3 0 0 3 0 0 0 0 2 0 2 3 3 2 2 2 2 3 0 2 0 2 2 0 0 0 0 
-   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 3 3 3 3 2 0 0 0 0 0 0 2 3 0 2 0 2 3 2 0 0 3 0 3 0 3 1 0 0 0 0 
-   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 0 0 0 0 0 3 2 3 3 2 2 3 0 2 0 3 0 0 0 2 0 0 0 0 1 2 0 2 0 2 0 
-   0 2 0 2 0 2 2 0 0 1 0 2 2 2 0 2 2 2 0 2 2 2 0 0 2 0 0 1 0 0 0 0 
-   0 2 0 3 3 2 0 0 0 0 0 0 1 3 0 2 0 2 2 2 0 0 2 0 3 0 0 2 0 0 0 0 
-   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 3 0 2 3 2 0 2 2 0 2 0 2 2 0 2 0 2 2 2 0 0 0 0 0 0 2 3 0 0 0 2 
-   0 1 2 0 0 0 0 2 2 0 0 0 2 1 0 2 2 0 0 0 0 0 0 1 0 2 0 0 0 0 0 0 
-   0 0 2 1 0 2 3 2 2 3 2 3 2 0 0 3 3 3 0 0 3 2 0 0 0 1 1 0 2 0 2 2 
-   0 2 0 2 0 2 2 0 0 2 0 2 2 2 0 2 2 2 2 0 0 2 0 0 0 2 0 1 0 0 0 0 
-   0 3 0 3 3 2 2 0 3 0 0 0 2 2 0 2 2 2 1 2 0 0 1 2 2 0 0 3 0 0 0 2 
-   0 1 2 0 0 0 1 2 0 0 0 0 0 0 0 2 2 0 1 0 0 2 0 0 0 2 0 0 0 0 0 0 
-   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 2 3 3 2 2 0 0 0 2 0 2 3 3 0 2 0 0 0 0 0 0 2 2 2 0 2 2 0 2 0 2 
-   0 2 2 0 0 2 2 2 2 1 0 0 2 2 0 2 0 0 2 0 0 0 0 0 0 2 0 0 0 0 0 0 
-   0 2 0 3 2 3 0 0 0 3 0 0 2 2 0 2 0 2 2 2 0 0 2 0 0 0 0 0 0 0 0 2 
-   0 0 2 2 0 0 2 2 2 0 0 0 0 0 0 2 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 0 2 0 0 3 2 0 2 2 2 2 2 0 0 0 2 0 0 0 0 2 0 1 0 0 2 0 1 0 0 0 
-   0 2 2 2 0 2 2 0 1 2 0 2 2 2 0 2 2 2 2 1 2 2 0 0 2 0 0 0 0 0 0 0 
-   0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 
-   0 2 0 2 0 2 2 0 0 0 0 1 2 1 0 0 2 2 0 0 2 0 0 0 0 0 0 0 0 0 0 0 
-   0 0 0 3 2 3 0 0 2 0 0 0 2 2 0 2 0 0 0 1 0 0 2 0 2 0 2 2 0 0 0 0 
-   0 0 2 0 0 0 0 2 2 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 
-   0 2 2 3 2 2 0 0 0 0 0 0 1 3 0 2 0 2 2 0 0 0 1 0 2 0 0 0 0 0 0 0 
-   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 2 0 2 0 3 2 0 2 0 0 0 0 0 0 2 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 
-   0 0 2 0 0 0 0 1 1 0 0 2 1 2 0 2 2 0 1 0 0 1 0 0 0 2 0 0 0 0 0 0 
-   0 3 0 2 2 2 0 0 2 0 0 0 2 0 0 0 2 3 0 2 0 0 0 0 0 0 2 2 0 0 0 2 
-   0 1 2 0 0 0 1 2 2 1 0 0 0 2 0 0 2 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 
-   0 0 0 0 0 0 0 0 0 3 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 2 1 2 0 2 2 0 2 0 0 2 0 0 0 0 1 2 1 0 2 1 0 0 0 0 0 0 0 0 0 0 
-   0 0 2 0 0 0 3 1 2 2 0 2 0 0 0 0 2 0 0 0 2 0 0 3 0 0 0 0 2 2 2 0 
-   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 2 1 0 2 0 1 2 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 1 0 0 0 0 0 0 2 
-   0 2 2 0 0 2 2 2 2 2 0 1 2 0 0 0 2 2 0 1 0 2 0 0 2 2 0 0 0 0 0 0 
-   0 0 0 0 1 0 0 0 0 0 0 0 3 0 0 2 0 0 0 0 0 0 0 0 2 0 2 0 0 0 0 2 
-   0 1 2 0 0 0 0 2 2 1 0 1 0 1 0 2 2 2 1 0 0 0 0 0 0 1 0 0 0 0 0 0 
-   0 2 0 1 2 0 0 0 0 0 0 0 0 0 0 2 0 0 2 2 0 0 0 0 1 0 0 0 0 0 0 2 
-   0 2 2 0 0 0 0 2 2 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 2 0 0 2 0 0 0 
-   0 2 2 2 2 0 0 0 3 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 2 0 0 0 0 0 0 1 
-   0 0 2 0 0 0 0 1 2 0 0 0 0 0 0 2 2 1 1 0 0 0 0 0 0 1 0 0 0 0 0 0 
-   0 2 0 2 2 2 0 0 2 0 0 0 0 0 0 0 2 2 2 0 0 0 2 0 0 0 0 0 0 0 0 2 
-   0 0 1 0 0 0 0 2 1 0 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 
-   0 3 0 2 0 0 0 0 0 0 0 0 2 0 0 0 0 0 2 0 0 0 0 0 0 0 2 0 0 0 0 2 
-   0 0 2 0 0 0 0 2 2 0 0 0 0 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 2 0 2 2 1 0 0 0 0 0 0 2 0 0 2 0 2 2 2 0 0 0 0 0 0 2 0 0 0 0 2 
-   0 0 2 0 0 2 0 2 2 0 0 0 0 2 0 2 0 0 0 0 0 2 0 0 0 2 0 0 0 0 0 0 
-   0 0 3 0 0 0 2 2 0 2 2 0 0 0 0 0 2 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 
-   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 2 0 0 0 0 0 
-   0 2 2 2 2 2 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 0 0 0 1 
-   0 0 0 0 0 0 0 2 1 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 0 0 0 0 0 0 2 2 0 0 0 0 0 2 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 
-   0 2 0 0 0 2 0 0 0 0 0 1 0 0 0 0 2 2 0 0 0 1 0 0 0 0 0 0 0 0 0 0 
-   0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 1 0 2 0 0 0 
-   0 2 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 0 1 0 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 1 0 0 2 0 2 0 0 0 
-   0 0 0 0 0 0 0 0 2 1 0 0 0 0 0 0 2 0 0 0 1 2 0 0 0 0 0 0 0 0 0 0 
-   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-   ])
+(defun unicad-dist-table-get-confidence (dist-table dist-ratio size &optional prefer)
+  (let ((Confidence 0.0)
+        (total-chars (unicad-dist-table-total-chars dist-table))
+        (freq-chars (unicad-dist-table-freq-chars dist-table)))
+    (cond
+     ((and (> size unicad-minimum-size-threshold)
+           (or (<= total-chars (- (/ unicad-minimum-size-threshold 2) 4))    ;; this was `0'
+               (< freq-chars unicad-minimum-data-threshold)))
+      (setq Confidence unicad--sure-no))
+     ((<= total-chars 0)
+      (setq Confidence unicad--sure-no))
+     ((/= total-chars freq-chars)
+      (setq Confidence (min (/ freq-chars (* (- total-chars freq-chars) dist-ratio))
+                            unicad--sure-yes)))
+     (t (setq Confidence unicad--sure-yes)))))
 
 ;;}}}
-;;{{{  Russian Model
 
-;;KOI8-R language model
-;;Character Mapping Table:
-(defvar unicad-koi8r-char2order-map
-  `[
-    255 255 255 255 255 255 255 255 255 255 254 255 255 254 255 255 ;;00
-    255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 ;;10
-    +253 253 253 253 253 253 253 253 253 253 253 253 253 253 253 253 ;;20
-    252 252 252 252 252 252 252 252 252 252 253 253 253 253 253 253 ;;30
-    253 142 143 144 145 146 147 148 149 150 151 152  74 153  75 154 ;;40
-    155 156 157 158 159 160 161 162 163 164 165 253 253 253 253 253 ;;50
-    253  71 172  66 173  65 174  76 175  64 176 177  77  72 178  69 ;;60
-    67 179  78  73 180 181  79 182 183 184 185 253 253 253 253 253 ;;70
-    191 192 193 194 195 196 197 198 199 200 201 202 203 204 205 206 ;;80
-    207 208 209 210 211 212 213 214 215 216 217 218 219 220 221 222 ;;90
-    223 224 225  68 226 227 228 229 230 231 232 233 234 235 236 237 ;;a0
-    238 239 240 241 242 243 244 245 246 247 248 249 250 251 252 253 ;;b0
-    27   3  21  28  13   2  39  19  26   4  23  11   8  12   5   1 ;;c0
-    15  16   9   7   6  14  24  10  17  18  20  25  30  29  22  54 ;;d0
-    59  37  44  58  41  48  53  46  55  42  60  36  49  38  31  34 ;;e0
-    35  43  45  32  40  52  56  33  61  62  51  57  47  63  50  70 ;;f0
-    ])
+;;{{{  State Machine functions
+(defvar unicad-sm-coding-state nil
+  "Init state:
+   ((mState . eStart)
+    (mCharLen . 0)
+    (mBytePos . 0))")
 
-(defvar unicad-win1251-char2order-map
-  `[
-    255 255 255 255 255 255 255 255 255 255 254 255 255 254 255 255 ;;00
-    255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 ;;10
-    +253 253 253 253 253 253 253 253 253 253 253 253 253 253 253 253 ;;20
-    252 252 252 252 252 252 252 252 252 252 253 253 253 253 253 253 ;;30
-    253 142 143 144 145 146 147 148 149 150 151 152  74 153  75 154 ;;40
-    155 156 157 158 159 160 161 162 163 164 165 253 253 253 253 253 ;;50
-    253  71 172  66 173  65 174  76 175  64 176 177  77  72 178  69 ;;60
-    67 179  78  73 180 181  79 182 183 184 185 253 253 253 253 253 ;;70
-    191 192 193 194 195 196 197 198 199 200 201 202 203 204 205 206 
-    207 208 209 210 211 212 213 214 215 216 217 218 219 220 221 222 
-    223 224 225 226 227 228 229 230 231 232 233 234 235 236 237 238 
-    239 240 241 242 243 244 245 246  68 247 248 249 250 251 252 253 
-    37  44  33  46  41  48  56  51  42  60  36  49  38  31  34  35 
-    45  32  40  52  53  55  58  50  57  63  70  62  61  47  59  43 
-    3  21  10  19  13   2  24  20   4  23  11   8  12   5   1  15 
-    9   7   6  14  39  26  28  22  25  29  54  18  17  30  27  16 
-    ])
+(defconst unicad--eStart 0)
+(defconst unicad--eError 1)
+(defconst unicad--eItsMe 2)
 
-(defvar unicad-latin5-char2order-map
-  `[
-    255 255 255 255 255 255 255 255 255 255 254 255 255 254 255 255 ;;00
-    255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 ;;10
-    +253 253 253 253 253 253 253 253 253 253 253 253 253 253 253 253 ;;20
-    252 252 252 252 252 252 252 252 252 252 253 253 253 253 253 253 ;;30
-    253 142 143 144 145 146 147 148 149 150 151 152  74 153  75 154 ;;40
-    155 156 157 158 159 160 161 162 163 164 165 253 253 253 253 253 ;;50
-    253  71 172  66 173  65 174  76 175  64 176 177  77  72 178  69 ;;60
-    67 179  78  73 180 181  79 182 183 184 185 253 253 253 253 253 ;;70
-    191 192 193 194 195 196 197 198 199 200 201 202 203 204 205 206 
-    207 208 209 210 211 212 213 214 215 216 217 218 219 220 221 222 
-    223 224 225 226 227 228 229 230 231 232 233 234 235 236 237 238 
-    37  44  33  46  41  48  56  51  42  60  36  49  38  31  34  35 
-    45  32  40  52  53  55  58  50  57  63  70  62  61  47  59  43 
-    3  21  10  19  13   2  24  20   4  23  11   8  12   5   1  15 
-    9   7   6  14  39  26  28  22  25  29  54  18  17  30  27  16 
-    239  68 240 241 242 243 244 245 246 247 248 249 250 251 252 255 
-    ])
+(defsubst unicad-sm-reset ()
+  (setq unicad-sm-coding-state `((mState . ,unicad--eStart)
+                               (mCharLen . 0)
+                               (mBytePos . 0))))
 
-(defvar unicad-maccyrillic-char2order-map
-  `[
-    255 255 255 255 255 255 255 255 255 255 254 255 255 254 255 255 ;;00
-    255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 ;;10
-    +253 253 253 253 253 253 253 253 253 253 253 253 253 253 253 253 ;;20
-    252 252 252 252 252 252 252 252 252 252 253 253 253 253 253 253 ;;30
-    253 142 143 144 145 146 147 148 149 150 151 152  74 153  75 154 ;;40
-    155 156 157 158 159 160 161 162 163 164 165 253 253 253 253 253 ;;50
-    253  71 172  66 173  65 174  76 175  64 176 177  77  72 178  69 ;;60
-    67 179  78  73 180 181  79 182 183 184 185 253 253 253 253 253 ;;70
-    37  44  33  46  41  48  56  51  42  60  36  49  38  31  34  35 
-    45  32  40  52  53  55  58  50  57  63  70  62  61  47  59  43 
-    191 192 193 194 195 196 197 198 199 200 201 202 203 204 205 206 
-    207 208 209 210 211 212 213 214 215 216 217 218 219 220 221 222 
-    223 224 225 226 227 228 229 230 231 232 233 234 235 236 237 238 
-    239 240 241 242 243 244 245 246 247 248 249 250 251 252  68  16 
-    3  21  10  19  13   2  24  20   4  23  11   8  12   5   1  15 
-    9   7   6  14  39  26  28  22  25  29  54  18  17  30  27 255 
-    ])
+(defsubst unicad-sm-set (name value)
+  (setcdr (assoc name unicad-sm-coding-state) value))
 
-(defvar unicad-ibm855-char2order-map
-  `[
-    255 255 255 255 255 255 255 255 255 255 254 255 255 254 255 255 ;;00
-    255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 ;;10
-    +253 253 253 253 253 253 253 253 253 253 253 253 253 253 253 253 ;;20
-    252 252 252 252 252 252 252 252 252 252 253 253 253 253 253 253 ;;30
-    253 142 143 144 145 146 147 148 149 150 151 152  74 153  75 154 ;;40
-    155 156 157 158 159 160 161 162 163 164 165 253 253 253 253 253 ;;50
-    253  71 172  66 173  65 174  76 175  64 176 177  77  72 178  69 ;;60
-    67 179  78  73 180 181  79 182 183 184 185 253 253 253 253 253 ;;70
-    191 192 193 194  68 195 196 197 198 199 200 201 202 203 204 205 
-    206 207 208 209 210 211 212 213 214 215 216 217  27  59  54  70 
-    3  37  21  44  28  58  13  41   2  48  39  53  19  46 218 219 
-    220 221 222 223 224  26  55   4  42 225 226 227 228  23  60 229 
-    230 231 232 233 234 235  11  36 236 237 238 239 240 241 242 243 
-    8  49  12  38   5  31   1  34  15 244 245 246 247  35  16 248 
-    43   9  45   7  32   6  40  14  52  24  56  10  33  17  61 249 
-    250  18  62  20  51  25  57  30  47  29  63  22  50 251 252 255 
-    ])
+(defsubst unicad-sm-get (name)
+  "To get mState mCharlen or mByte"
+  (cdr (assoc name unicad-sm-coding-state)))
 
-(defvar unicad-ibm866-char2order-map
-  `[
-    255 255 255 255 255 255 255 255 255 255 254 255 255 254 255 255 ;;00
-    255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 ;;10
-    +253 253 253 253 253 253 253 253 253 253 253 253 253 253 253 253 ;;20
-    252 252 252 252 252 252 252 252 252 252 253 253 253 253 253 253 ;;30
-    253 142 143 144 145 146 147 148 149 150 151 152  74 153  75 154 ;;40
-    155 156 157 158 159 160 161 162 163 164 165 253 253 253 253 253 ;;50
-    253  71 172  66 173  65 174  76 175  64 176 177  77  72 178  69 ;;60
-    67 179  78  73 180 181  79 182 183 184 185 253 253 253 253 253 ;;70
-    37  44  33  46  41  48  56  51  42  60  36  49  38  31  34  35 
-    45  32  40  52  53  55  58  50  57  63  70  62  61  47  59  43 
-    3  21  10  19  13   2  24  20   4  23  11   8  12   5   1  15 
-    191 192 193 194 195 196 197 198 199 200 201 202 203 204 205 206 
-    207 208 209 210 211 212 213 214 215 216 217 218 219 220 221 222 
-    223 224 225 226 227 228 229 230 231 232 233 234 235 236 237 238 
-    9   7   6  14  39  26  28  22  25  29  54  18  17  30  27  16 
-    239  68 240 241 242 243 244 245 246 247 248 249 250 251 252 255 
-    ])
-
-;;Model Table: 
-;;total sequences: 100%
-;;first 512 sequences: 97.6601%
-;;first 1024 sequences: 2.3389%
-;;rest  sequences:      0.1237%
-;;negative sequences:   0.0009% 
-(defvar unicad-russian-lang-model
-  `[
-    0 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 1 1 3 3 3 3 1 3 3 3 2 3 2 3 3 
-    3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 0 3 2 2 2 2 2 0 0 2 
-    3 3 3 2 3 3 3 3 3 3 3 3 3 3 2 3 3 0 0 3 3 3 3 3 3 3 3 3 2 3 2 0 
-    0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    3 3 3 2 2 3 3 3 3 3 3 3 3 3 2 3 3 0 0 3 3 3 3 3 3 3 3 2 3 3 1 0 
-    0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    3 2 3 2 3 3 3 3 3 3 3 3 3 3 3 3 3 0 0 3 3 3 3 3 3 3 3 3 3 3 2 1 
-    0 0 0 0 0 0 0 2 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    3 3 3 3 3 3 3 3 3 3 3 3 3 3 2 3 3 0 0 3 3 3 3 3 3 3 3 3 3 3 2 1 
-    0 0 0 0 0 1 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    3 3 3 3 3 3 3 3 2 2 2 3 1 3 3 1 3 3 3 3 2 2 3 0 2 2 2 3 3 2 1 0 
-    0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 
-    3 3 3 3 3 3 2 3 3 3 3 3 2 2 3 2 3 3 3 2 1 2 2 0 1 2 2 2 2 2 2 0 
-    0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 
-    3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 2 2 2 3 0 2 2 3 3 2 1 2 0 
-    0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 1 0 0 2 0 0 0 0 0 0 0 0 0 
-    3 3 3 3 3 3 2 3 3 1 2 3 2 2 3 2 3 3 3 3 2 2 3 0 3 2 2 3 1 1 1 0 
-    0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    3 3 3 3 3 3 3 3 2 2 3 3 3 3 3 2 3 3 3 3 2 2 2 0 3 3 3 2 2 2 2 0 
-    0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    3 3 3 3 3 3 3 3 3 3 2 3 2 3 3 3 3 3 3 2 3 2 2 0 1 3 2 1 2 2 1 0 
-    0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 
-    3 3 3 3 3 3 3 3 3 3 3 2 1 1 3 0 1 1 1 1 2 1 1 0 2 2 2 1 2 0 1 0 
-    0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    3 3 3 3 3 3 2 3 3 2 2 2 2 1 3 2 3 2 3 2 1 2 2 0 1 1 2 1 2 1 2 0 
-    0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    3 3 3 3 3 3 3 3 3 3 3 3 2 2 3 2 3 3 3 2 2 2 2 0 2 2 2 2 3 1 1 0 
-    0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 
-    3 2 3 2 2 3 3 3 3 3 3 3 3 3 1 3 2 0 0 3 3 3 3 2 3 3 3 3 2 3 2 0 
-    0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    2 3 3 3 3 3 2 2 3 3 0 2 1 0 3 2 3 2 3 0 0 1 2 0 0 1 0 1 2 1 1 0 
-    0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    3 0 3 0 2 3 3 3 3 2 3 3 3 3 1 2 2 0 0 2 3 2 2 2 3 2 3 2 2 3 0 0 
-    0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    3 2 3 0 2 3 2 3 0 1 2 3 3 2 0 2 3 0 0 2 3 2 2 0 1 3 1 3 2 2 1 0 
-    0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    3 1 3 0 2 3 3 3 3 3 3 3 3 2 1 3 2 0 0 2 2 3 3 3 2 3 3 0 2 2 0 0 
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    3 3 3 3 3 3 2 2 3 3 2 2 2 3 3 0 0 1 1 1 1 1 2 0 0 1 1 1 1 0 1 0 
-    0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    3 3 3 3 3 3 2 2 3 3 3 3 3 3 3 0 3 2 3 3 2 3 2 0 2 1 0 1 1 0 1 0 
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 
-    3 3 3 3 3 3 2 3 3 3 2 2 2 2 3 1 3 2 3 1 1 2 1 0 2 2 2 2 1 3 1 0 
-    0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 
-    2 2 3 3 3 3 3 1 2 2 1 3 1 0 3 0 0 3 0 0 0 1 1 0 1 2 1 0 0 0 0 0 
-    0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    3 2 2 1 1 3 3 3 2 2 1 2 2 3 1 1 2 0 0 2 2 1 3 0 0 2 1 1 2 1 1 0 
-    0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    3 2 3 3 3 3 1 2 2 2 1 2 1 3 3 1 1 2 1 2 1 2 2 0 2 0 0 1 1 0 1 0 
-    0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    2 3 3 3 3 3 2 1 3 2 2 3 2 0 3 2 0 3 0 1 0 1 1 0 0 1 1 1 1 0 1 0 
-    0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    3 3 2 3 3 3 2 2 2 3 3 1 2 1 2 1 0 1 0 1 1 0 1 0 0 2 1 1 1 0 1 0 
-    0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 
-    3 1 1 2 1 2 3 3 2 2 1 2 2 3 0 2 1 0 0 2 2 3 2 1 2 2 2 2 2 3 1 0 
-    0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    3 3 3 3 3 1 1 0 1 1 2 2 1 1 3 0 0 1 3 1 1 1 0 0 0 1 0 1 1 0 0 0 
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    2 1 3 3 3 2 0 0 0 2 1 0 1 0 2 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    2 0 1 0 0 2 3 2 2 2 1 2 2 2 1 2 1 0 0 1 1 1 0 2 0 1 1 1 0 0 1 1 
-    1 0 0 0 0 0 1 2 0 0 0 0 0 1 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 
-    2 3 3 3 3 0 0 0 0 1 0 0 0 0 3 0 1 2 1 0 0 0 0 0 0 0 1 1 0 0 1 1 
-    1 0 1 0 1 2 0 0 1 1 2 1 0 1 1 1 1 0 1 1 1 1 0 1 0 0 1 0 0 1 1 0 
-    2 2 3 2 2 2 3 1 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 0 1 0 1 1 1 0 2 1 
-    1 1 1 1 1 1 1 1 2 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 0 1 1 1 0 1 1 0 
-    3 3 3 2 2 2 2 3 2 2 1 1 2 2 2 2 1 1 3 1 2 1 2 0 0 1 1 0 1 0 2 1 
-    1 1 1 1 1 2 1 0 1 1 1 1 0 1 0 0 1 1 0 0 1 0 1 0 0 1 0 0 0 1 1 0 
-    2 0 0 1 0 3 2 2 2 2 1 2 1 2 1 2 0 0 0 2 1 2 2 1 1 2 2 0 1 1 0 2 
-    1 1 1 1 1 0 1 1 1 2 1 1 1 2 1 0 1 2 1 1 1 1 0 1 1 1 0 0 1 0 0 1 
-    1 3 2 2 2 1 1 1 2 3 0 0 0 0 2 0 2 2 1 0 0 0 0 0 0 1 0 0 0 0 1 1 
-    1 0 1 1 0 1 0 1 1 0 1 1 0 2 0 0 1 1 0 0 1 0 0 0 0 0 0 0 0 1 1 0 
-    2 3 2 3 2 1 2 2 2 2 1 0 0 0 2 0 0 1 1 0 0 0 0 0 0 0 1 1 0 0 2 1 
-    1 1 2 1 0 2 0 0 1 0 1 0 0 1 0 0 1 1 0 1 1 0 0 0 0 0 1 0 0 0 0 0 
-    3 0 0 1 0 2 2 2 3 2 2 2 2 2 2 2 0 0 0 2 1 2 1 1 1 2 2 0 0 0 1 2 
-    1 1 1 1 1 0 1 2 1 1 1 1 1 1 1 0 1 1 1 1 1 1 0 1 1 1 1 1 1 0 0 1 
-    2 3 2 3 3 2 0 1 1 1 0 0 1 0 2 0 1 1 3 1 0 0 0 0 0 0 0 1 0 0 2 1 
-    1 1 1 1 1 1 1 0 1 0 1 1 1 1 0 1 1 1 0 0 1 1 0 1 0 0 0 0 0 0 1 0 
-    2 3 3 3 3 1 2 2 2 2 0 1 1 0 2 1 1 1 2 1 0 1 1 0 0 1 0 1 0 0 2 0 
-    0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    2 3 3 3 2 0 0 1 1 2 2 1 0 0 2 0 1 1 3 0 0 1 0 0 0 0 0 1 0 1 2 1 
-    1 1 2 0 1 1 1 0 1 0 1 1 0 1 0 1 1 1 1 0 1 0 0 0 0 0 0 1 0 1 1 0 
-    1 3 2 3 2 1 0 0 2 2 2 0 1 0 2 0 1 1 1 0 1 0 0 0 3 0 1 1 0 0 2 1 
-    1 1 1 0 1 1 0 0 0 0 1 1 0 1 0 0 2 1 1 0 1 0 0 0 1 0 1 0 0 1 1 0 
-    3 1 2 1 1 2 2 2 2 2 2 1 2 2 1 1 0 0 0 2 2 2 0 0 0 1 2 1 0 1 0 1 
-    2 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 2 1 1 1 0 1 0 1 1 0 1 1 1 0 0 1 
-    3 0 0 0 0 2 0 1 1 1 1 1 1 1 0 1 0 0 0 1 1 1 0 1 0 1 1 0 0 1 0 1 
-    1 1 0 0 1 0 0 0 1 0 1 1 0 0 1 0 1 0 1 0 0 0 0 1 0 0 0 1 0 0 0 1 
-    1 3 3 2 2 0 0 0 2 2 0 0 0 1 2 0 1 1 2 0 0 0 0 0 0 0 0 1 0 0 2 1 
-    0 1 1 0 0 1 1 0 0 0 1 1 0 1 1 0 1 1 0 0 1 0 0 0 0 0 0 0 0 0 1 0 
-    2 3 2 3 2 0 0 0 0 1 1 0 0 0 2 0 2 0 2 0 0 0 0 0 1 0 0 1 0 0 1 1 
-    1 1 2 0 1 2 1 0 1 1 2 1 1 1 1 1 2 1 1 0 1 0 0 1 1 1 1 1 0 1 1 0 
-    1 3 2 2 2 1 0 0 2 2 1 0 1 2 2 0 0 1 0 0 0 0 0 0 0 0 0 1 0 0 1 1 
-    0 0 1 1 0 1 1 0 0 1 1 0 1 1 0 0 1 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 
-    1 0 0 1 0 2 3 1 2 2 2 2 2 2 1 1 0 0 0 1 0 1 0 2 1 1 1 0 0 0 0 1 
-    1 1 0 1 1 0 1 1 1 1 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 1 0 0 0 
-    2 0 2 0 0 1 0 3 2 1 2 1 2 2 0 1 0 0 0 2 1 0 0 2 1 1 1 1 0 2 0 2 
-    2 1 1 1 1 1 1 1 1 1 1 1 1 2 1 0 1 1 1 1 0 0 0 1 1 1 1 0 1 0 0 1 
-    1 2 2 2 2 1 0 0 1 0 0 0 0 0 2 0 1 1 1 1 0 0 0 0 1 0 1 2 0 0 2 0 
-    1 0 1 1 1 2 1 0 1 0 1 1 0 0 1 0 1 1 1 0 1 0 0 0 1 0 0 1 0 1 1 0 
-    2 1 2 2 2 0 3 0 1 1 0 0 0 0 2 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 1 
-    0 0 0 1 1 1 0 0 1 0 1 0 0 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 1 0 0 
-    1 2 2 3 2 2 0 0 1 1 2 0 1 2 1 0 1 0 1 0 0 1 0 0 0 0 0 0 0 0 0 1 
-    0 1 1 0 0 1 1 0 0 1 1 0 0 1 1 0 1 1 0 0 1 0 0 0 0 0 0 0 0 1 1 0 
-    2 2 1 1 2 1 2 2 2 2 2 1 2 2 0 1 0 0 0 1 2 2 2 1 2 1 1 1 1 1 2 1 
-    1 1 1 1 1 1 1 1 1 1 0 0 1 1 1 0 1 1 1 0 0 0 0 1 1 1 0 1 1 0 0 1 
-    1 2 2 2 2 0 1 0 2 2 0 0 0 0 2 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 2 0 
-    0 0 1 0 0 1 0 0 0 0 1 0 1 1 0 0 1 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 
-    0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    1 2 2 2 2 0 0 0 2 2 2 0 1 0 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 1 1 
-    0 1 1 0 0 1 1 0 0 0 1 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    1 2 2 2 2 0 0 0 0 1 0 0 1 1 2 0 0 0 0 1 0 1 0 0 1 0 0 2 0 0 0 1 
-    0 0 1 0 0 1 0 0 0 1 1 0 0 0 0 0 1 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 
-    1 2 2 2 1 1 2 0 2 1 1 1 1 0 2 2 0 0 0 0 0 0 0 0 0 1 1 0 0 0 1 1 
-    0 0 1 0 1 1 0 0 0 0 1 0 0 0 0 0 1 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 
-    1 0 2 1 2 0 0 0 0 0 1 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 1 0 0 0 0 
-    0 0 1 0 1 1 0 0 0 0 1 0 0 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 1 0 
-    1 0 0 0 0 2 0 1 2 1 0 1 1 1 0 1 0 0 0 1 0 1 0 0 1 0 1 0 0 0 0 1 
-    0 0 0 0 0 1 0 0 1 1 0 0 1 1 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 1 
-    2 2 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 
-    1 0 0 0 1 0 0 0 1 1 0 0 0 0 0 0 0 1 0 0 0 0 0 1 0 0 1 0 0 0 0 0 
-    2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 
-    1 1 1 0 1 0 1 0 0 1 1 1 1 0 0 0 1 0 0 0 0 1 0 0 0 1 0 1 0 0 0 0 
-    1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 
-    1 1 0 1 1 0 1 0 1 0 0 0 0 1 1 0 1 1 0 0 0 0 0 1 0 1 1 0 1 0 0 0 
-    0 1 1 1 1 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    0 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 
-    ])
+(defun unicad-next-state (ch model)
+  "Verificate multibyte codings by class-table and state-table"
+  (let ((current-state (unicad-sm-get 'mState))
+        (current-bytepos (unicad-sm-get 'mBytePos))
+        (byteCls (aref (cdr (assoc 'classTable model))  ch))
+        (next-charlen (unicad-sm-get 'mCharLen))
+        next-state next-bytepos)
+    (when (= current-state unicad--eStart)
+      (setq next-bytepos 0)
+      (setq next-charlen (aref (cdr (assoc 'charLenTable model)) byteCls)))
+    (setq next-state
+          (aref (cdr (assoc 'stateTable model))
+                (+ (* current-state (cdr (assoc 'classFactor model)))
+                   byteCls))
+          next-bytepos (1+ current-bytepos)
+          unicad-sm-coding-state `((mState . ,next-state)
+                                 (mCharLen . ,next-charlen)
+                                 (mBytePos . ,next-bytepos)))
+    next-state))
 
 ;;}}}
-;;{{{  Bulgarian Model
+;;{{{  utf8 state machine
 
-;; ****************************************************************
-;; 255: Control characters that usually does not exist in any text
-;; 254: Carriage/Return
-;; 253: symbol (punctuation) that does not belong to word
-;; 252: 0 - 9
-;; *****************************************************************
-
-;;Character Mapping Table:
-;;this talbe is modified base on win1251BulgarianCharToOrderMap, so 
-;;only number <64 is sure valid
-
-(defconst unicad-latin5-bulgarian-char2order-map
+(defvar unicad-utf8-class-table
   `[
-    255 255 255 255 255 255 255 255 255 255 254 255 255 254 255 255 ;;00
-    255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 ;;10
-    +253 253 253 253 253 253 253 253 253 253 253 253 253 253 253 253 ;;20
-    252 252 252 252 252 252 252 252 252 252 253 253 253 253 253 253 ;;30
-    253  77  90  99 100  72 109 107 101  79 185  81 102  76  94  82 ;;40
-    110 186 108  91  74 119  84  96 111 187 115 253 253 253 253 253 ;;50
-    253  65  69  70  66  63  68 112 103  92 194 104  95  86  87  71 ;;60
-    116 195  85  93  97 113 196 197 198 199 200 253 253 253 253 253 ;;70
-    194 195 196 197 198 199 200 201 202 203 204 205 206 207 208 209 ;;80
-    210 211 212 213 214 215 216 217 218 219 220 221 222 223 224 225 ;;90
-    81 226 227 228 229 230 105 231 232 233 234 235 236  45 237 238 ;;a0
-    31  32  35  43  37  44  55  47  40  59  33  46  38  36  41  30 ;;b0
-    39  28  34  51  48  49  53  50  54  57  61 239  67 240  60  56 ;;c0
-    1  18   9  20  11   3  23  15   2  26  12  10  14   6   4  13 ;;d0
-    7   8   5  19  29  25  22  21  27  24  17  75  52 241  42  16 ;;e0
-    62 242 243 244  58 245  98 246 247 248 249 250 251  91 252 253 ;;f0
+    1 1 1 1 1 1 1 1         ;; 00 - 07 0
+    1 1 1 1 1 1 0 0         ;; 08 - 0f 1
+    1 1 1 1 1 1 1 1         ;; 10 - 17 2
+    1 1 1 1 1 1 1 1        ;; 1 1 1 0 1 1 1 1        ;; 18 - 1f
+    1 1 1 1 1 1 1 1         ;; 20 - 27 4
+    1 1 1 1 1 1 1 1         ;; 28 - 2f 5
+    1 1 1 1 1 1 1 1         ;; 30 - 37 6
+    1 1 1 1 1 1 1 1         ;; 38 - 3f 7
+    1 1 1 1 1 1 1 1         ;; 40 - 47 8
+    1 1 1 1 1 1 1 1         ;; 48 - 4f 9
+    1 1 1 1 1 1 1 1         ;; 50 - 57 10
+    1 1 1 1 1 1 1 1         ;; 58 - 5f 11
+    1 1 1 1 1 1 1 1         ;; 60 - 67 12
+    1 1 1 1 1 1 1 1         ;; 68 - 6f 13
+    1 1 1 1 1 1 1 1         ;; 70 - 77 14
+    1 1 1 1 1 1 1 1         ;; 78 - 7f 15
+    2 2 2 2 3 3 3 3         ;; 80 - 87 16
+    4 4 4 4 4 4 4 4         ;; 88 - 8f 17
+    4 4 4 4 4 4 4 4         ;; 90 - 97 18
+    4 4 4 4 4 4 4 4         ;; 98 - 9f 19
+    5 5 5 5 5 5 5 5         ;; a0 - a7 20
+    5 5 5 5 5 5 5 5         ;; a8 - af 21
+    5 5 5 5 5 5 5 5         ;; b0 - b7 22
+    5 5 5 5 5 5 5 5         ;; b8 - bf 23
+    0 0 6 6 6 6 6 6         ;; c0 - c7 24
+    6 6 6 6 6 6 6 6         ;; c8 - cf 25
+    6 6 6 6 6 6 6 6         ;; d0 - d7 26
+    6 6 6 6 6 6 6 6         ;; d8 - df 27
+    7 8 8 8 8 8 8 8         ;; e0 - e7 28
+    8 8 8 8 8 9 8 8         ;; e8 - ef 29
+    10 11 11 11 11 11 11 11 ;; f0 - f7 30
+    12 13 13 13 14 15 0 0   ;; f8 - ff 31
     ])
 
-(defconst unicad-win1251-bulgarian-char2order-map
-  `[
-    255 255 255 255 255 255 255 255 255 255 254 255 255 254 255 255 ;;00
-    255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 ;;10
-    +253 253 253 253 253 253 253 253 253 253 253 253 253 253 253 253 ;;20
-    252 252 252 252 252 252 252 252 252 252 253 253 253 253 253 253 ;;30
-    253  77  90  99 100  72 109 107 101  79 185  81 102  76  94  82 ;;40
-    110 186 108  91  74 119  84  96 111 187 115 253 253 253 253 253 ;;50
-    253  65  69  70  66  63  68 112 103  92 194 104  95  86  87  71 ;;60
-    116 195  85  93  97 113 196 197 198 199 200 253 253 253 253 253 ;;70
-    206 207 208 209 210 211 212 213 120 214 215 216 217 218 219 220 ;;80
-    221  78  64  83 121  98 117 105 222 223 224 225 226 227 228 229 ;;90
-    88 230 231 232 233 122  89 106 234 235 236 237 238  45 239 240 ;;a0
-    73  80 118 114 241 242 243 244 245  62  58 246 247 248 249 250 ;;b0
-    31  32  35  43  37  44  55  47  40  59  33  46  38  36  41  30 ;;c0
-    39  28  34  51  48  49  53  50  54  57  61 251  67 252  60  56 ;;d0
-    1  18   9  20  11   3  23  15   2  26  12  10  14   6   4  13 ;;e0
-    7   8   5  19  29  25  22  21  27  24  17  75  52 253  42  16 ;;f0
-    ])
 
-;;Model Table: 
-;;total sequences: 100%
-;;first 512 sequences: 96.9392%
-;;first 1024 sequences:3.0618%
-;;rest  sequences:     0.2992%
-;;negative sequences:  0.0020% 
-(defconst unicad-bulgarian-lang-model
-  `[
-    0 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 2 3 3 3 3 3 3 3 3 2 3 3 3 3 3 
-    3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 0 3 3 3 2 2 3 2 2 1 2 2 
-    3 1 3 3 2 3 3 3 3 3 3 3 3 3 3 3 3 0 3 3 3 3 3 3 3 3 3 3 0 3 0 1 
-    0 0 0 0 0 0 0 0 0 0 1 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 
-    3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 2 3 2 3 3 3 3 3 3 3 3 0 3 1 0 
-    0 1 0 0 0 0 0 0 0 0 1 1 0 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 
-    3 2 2 2 3 3 3 3 3 3 3 3 3 3 3 3 3 1 3 2 3 3 3 3 3 3 3 3 0 3 0 0 
-    0 0 0 0 0 0 0 0 0 0 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    3 2 3 3 2 3 3 3 3 3 3 3 3 3 3 3 3 1 3 2 3 3 3 3 3 3 3 3 0 3 0 0 
-    0 0 0 0 0 0 0 0 0 0 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    3 3 3 3 3 3 3 3 3 3 3 2 3 2 2 1 3 3 3 3 2 2 2 1 1 2 0 1 0 1 0 0 
-    0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 1 
-    3 3 3 3 3 3 3 2 3 2 2 3 3 1 1 2 3 3 2 3 3 3 3 2 1 2 0 2 0 3 0 0 
-    0 0 0 0 0 0 0 1 0 0 2 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 1 
-    3 3 3 3 3 3 3 1 3 3 3 3 3 2 3 2 3 3 3 3 3 2 3 3 1 3 0 3 0 2 0 0 
-    0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 1 
-    3 3 3 3 3 3 3 3 1 3 3 2 3 3 3 1 3 3 2 3 2 2 2 0 0 2 0 2 0 2 0 0 
-    0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 1 
-    3 3 3 3 3 3 3 3 3 0 3 3 3 2 2 3 3 3 1 2 2 3 2 1 1 2 0 2 0 0 0 0 
-    1 0 0 0 0 0 0 0 0 0 2 0 0 1 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 1 
-    3 3 3 3 3 3 3 2 3 3 1 2 3 2 2 2 3 3 3 3 3 2 2 3 1 2 0 2 1 2 0 0 
-    0 0 0 0 0 0 0 0 0 0 3 0 0 1 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 1 
-    3 3 3 3 3 1 3 3 3 3 3 2 3 3 3 2 3 3 2 3 2 2 2 3 1 2 0 1 0 1 0 0 
-    0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 1 
-    3 3 3 3 3 3 3 3 3 3 3 1 1 1 2 2 1 3 1 3 2 2 3 0 0 1 0 1 0 1 0 0 
-    0 0 0 1 0 0 0 0 1 0 2 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 1 
-    3 3 3 3 3 2 2 3 2 2 3 1 2 1 1 1 2 3 1 3 1 2 2 0 1 1 1 1 0 1 0 0 
-    0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 1 
-    3 3 3 3 3 1 3 2 2 3 3 1 2 3 1 1 3 3 3 3 1 2 2 1 1 1 0 2 0 2 0 1 
-    0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 1 
-    3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 1 2 2 3 3 3 2 2 1 1 2 0 2 0 1 0 0 
-    0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 1 
-    3 0 1 2 1 3 3 2 3 3 3 3 3 2 3 2 1 0 3 1 2 1 2 1 2 3 2 1 0 1 0 0 
-    0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    1 1 1 2 3 3 3 3 3 3 3 3 3 3 3 3 0 0 3 1 3 3 2 3 3 2 2 2 0 1 0 0 
-    0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    2 3 3 3 3 0 3 3 3 3 3 2 1 1 2 1 3 3 0 3 1 1 1 1 3 2 0 1 0 0 0 0 
-    0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 1 
-    3 3 2 2 2 3 3 3 3 3 3 3 3 3 3 3 1 1 3 1 3 3 2 3 2 2 2 3 0 2 0 0 
-    0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    3 3 3 3 3 2 3 3 2 2 3 2 1 1 1 1 1 3 1 3 1 1 0 0 0 1 0 0 0 1 0 0 
-    0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 
-    3 3 3 3 3 2 3 2 0 3 2 0 3 0 2 0 0 2 1 3 1 0 0 1 0 0 0 1 0 0 0 0 
-    0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 
-    3 3 3 3 2 1 1 1 1 2 1 1 2 1 1 1 2 2 1 2 1 1 1 0 1 1 0 1 0 1 0 0 
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 1 
-    3 3 3 3 2 1 3 1 1 2 1 3 2 1 1 0 1 2 3 2 1 1 1 0 0 0 0 0 0 0 0 0 
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    2 3 3 3 3 2 2 1 0 1 0 0 1 0 0 0 2 1 0 3 0 0 1 0 0 0 0 0 0 0 0 0 
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 
-    3 3 3 2 3 2 3 3 1 3 2 1 1 1 2 1 1 2 1 3 0 1 0 0 0 1 0 0 0 0 0 0 
-    0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    3 1 1 2 2 3 3 2 3 2 2 2 3 1 2 2 1 1 2 1 1 2 2 0 1 1 0 1 0 2 0 0 
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    3 3 3 3 2 1 3 1 0 2 2 1 3 2 1 0 0 2 0 2 0 1 0 0 0 0 0 0 0 1 0 0 
-    0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 1 
-    3 3 3 3 3 3 1 2 0 2 3 1 2 3 2 0 1 3 1 2 1 1 1 0 0 1 0 0 2 2 2 3 
-    2 2 2 2 1 2 1 1 2 2 1 1 2 0 1 1 1 0 0 1 1 0 0 1 1 0 0 0 1 1 0 1 
-    3 3 3 3 3 2 1 2 2 1 2 0 2 0 1 0 1 2 1 2 1 1 0 0 0 1 0 1 0 0 0 0 
-    0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 1 
-    3 3 2 3 3 1 1 3 1 0 3 2 1 0 0 0 1 2 0 2 0 1 0 0 0 1 0 1 2 1 2 2 
-    1 1 1 1 1 1 1 2 2 2 1 1 1 1 1 1 1 0 1 2 1 1 1 0 0 0 0 0 1 1 0 0 
-    3 1 0 1 0 2 3 2 2 2 3 2 2 2 2 2 1 0 2 1 2 1 1 1 0 1 2 1 2 2 2 1 
-    1 1 2 2 2 2 1 2 1 1 0 1 2 1 2 2 2 1 1 1 0 1 1 1 1 2 0 1 0 0 0 0 
-    2 3 2 3 3 0 0 2 1 0 2 1 0 0 0 0 2 3 0 2 0 0 0 0 0 1 0 0 2 0 1 2 
-    2 1 2 1 2 2 1 1 1 2 1 1 1 0 1 2 2 1 1 1 1 1 0 1 1 1 0 0 1 2 0 0 
-    3 3 2 2 3 0 2 3 1 1 2 0 0 0 1 0 0 2 0 2 0 0 0 1 0 1 0 1 2 0 2 2 
-    1 1 1 1 2 1 0 1 2 2 2 1 1 1 1 1 1 1 0 1 1 1 0 0 0 0 0 0 1 1 0 0 
-    2 3 2 3 3 0 0 3 0 1 1 0 1 0 0 0 2 2 1 2 0 0 0 0 0 0 0 0 2 0 1 2 
-    2 2 1 1 1 1 1 2 2 2 1 0 2 0 1 0 1 0 0 1 0 1 0 0 1 0 0 0 0 1 0 0 
-    3 3 3 3 2 2 2 2 2 0 2 1 1 1 1 2 1 2 1 1 0 2 0 1 0 1 0 0 2 0 1 2 
-    1 1 1 1 1 1 1 2 2 1 1 0 2 0 1 0 2 0 0 1 1 1 0 0 2 0 0 0 1 1 0 0 
-    2 3 3 3 3 1 0 0 0 0 0 0 0 0 0 0 2 0 0 1 1 0 0 0 0 0 0 1 2 0 1 2 
-    2 2 2 1 1 2 1 1 2 2 2 1 2 0 1 1 1 1 1 1 0 1 1 1 1 0 0 1 1 1 0 0 
-    2 3 3 3 3 0 2 2 0 2 1 0 0 0 1 1 1 2 0 2 0 0 0 3 0 0 0 0 2 0 2 2 
-    1 1 1 2 1 2 1 1 2 2 2 1 2 0 1 1 1 0 1 1 1 1 0 2 1 0 0 0 1 1 0 0 
-    2 3 3 3 3 0 2 1 0 0 2 0 0 0 0 0 1 2 0 2 0 0 0 0 0 0 0 0 2 0 1 2 
-    1 1 1 2 1 1 1 1 2 2 2 0 1 0 1 1 1 0 0 1 1 1 0 0 1 0 0 0 0 1 0 0 
-    3 3 2 2 3 0 1 0 1 0 0 0 0 0 0 0 1 1 0 3 0 0 0 0 0 0 0 0 1 0 2 2 
-    1 1 1 1 1 2 1 1 2 2 1 2 2 1 0 1 1 1 1 1 0 1 0 0 1 0 0 0 1 1 0 0 
-    3 1 0 1 0 2 2 2 2 3 2 1 1 1 2 3 0 0 1 0 2 1 1 0 1 1 1 1 2 1 1 1 
-    1 2 2 1 2 1 2 2 1 1 0 1 2 1 2 2 1 1 1 0 0 1 1 1 2 1 0 1 0 0 0 0 
-    2 1 0 1 0 3 1 2 2 2 2 1 2 2 1 1 1 0 2 1 2 2 1 1 2 1 1 0 2 1 1 1 
-    1 2 2 2 2 2 2 2 1 2 0 1 1 0 2 1 1 1 1 1 0 0 1 1 1 1 0 1 0 0 0 0 
-    2 1 1 1 1 2 2 2 2 1 2 2 2 1 2 2 1 1 2 1 2 3 2 2 1 1 1 1 0 1 0 0 
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    2 2 2 3 2 0 1 2 0 1 2 1 1 0 1 0 1 2 1 2 0 0 0 1 1 0 0 0 1 0 0 2 
-    1 1 0 0 1 1 0 1 1 1 1 0 2 0 1 1 1 0 0 1 1 0 0 0 0 1 0 0 0 1 0 0 
-    2 0 0 0 0 1 2 2 2 2 2 2 2 1 2 1 1 1 1 1 1 1 0 1 1 1 1 1 2 1 1 1 
-    1 2 2 2 2 1 1 2 1 2 1 1 1 0 2 1 2 1 1 1 0 2 1 1 1 1 0 1 0 0 0 0 
-    3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 1 0 
-    1 1 0 1 0 1 1 1 1 1 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    2 2 2 3 2 0 0 0 0 1 0 0 0 0 0 0 1 1 0 2 0 0 0 0 0 0 0 0 1 0 1 2 
-    1 1 1 1 1 1 0 0 2 2 2 2 2 0 1 1 0 1 1 1 1 1 0 0 1 0 0 0 1 1 0 1 
-    2 3 1 2 1 0 1 1 0 2 2 2 0 0 1 0 0 1 1 1 1 0 0 0 0 0 0 0 1 0 1 2 
-    1 1 1 1 2 1 1 1 1 1 1 1 1 0 1 1 0 1 0 1 0 1 0 0 1 0 0 0 0 1 0 0 
-    2 2 2 2 2 0 0 2 0 0 2 0 0 0 0 0 0 1 0 1 0 0 0 0 0 0 0 0 2 0 2 2 
-    1 1 1 1 1 0 0 1 2 1 1 0 1 0 1 0 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 
-    1 2 2 2 2 0 0 2 0 1 1 0 0 0 1 0 0 2 0 2 0 0 0 0 0 0 0 0 0 0 1 1 
-    0 0 0 1 1 1 1 1 1 1 1 1 1 0 1 0 0 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 
-    1 2 2 3 2 0 0 1 0 0 1 0 0 0 0 0 0 1 0 2 0 0 0 1 0 0 0 0 0 0 0 2 
-    1 1 0 0 1 0 0 0 1 1 0 0 1 0 1 1 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 
-    2 1 2 2 2 1 2 1 2 2 1 1 2 1 1 1 0 1 1 1 1 2 0 1 0 1 1 1 1 0 1 1 
-    1 1 2 1 1 1 1 1 1 0 0 1 2 1 1 1 1 1 1 0 0 1 1 1 0 0 0 0 0 0 0 0 
-    1 0 0 1 3 1 1 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 
-    0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    2 2 2 2 1 0 0 1 0 2 0 0 0 0 0 1 1 1 0 1 0 0 0 0 0 0 0 0 2 0 0 1 
-    0 2 0 1 0 0 1 1 2 0 1 0 1 0 1 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 
-    1 2 2 2 2 0 1 1 0 2 1 0 1 1 1 0 0 1 0 2 0 1 0 0 0 0 0 0 0 0 0 1 
-    0 1 0 0 1 0 0 0 1 1 0 0 1 0 0 1 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 
-    2 2 2 2 2 0 0 1 0 0 0 1 0 1 0 0 0 1 0 1 0 0 0 0 0 0 0 0 0 0 0 1 
-    0 1 0 1 1 1 0 0 1 1 1 0 1 0 0 0 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 
-    2 0 1 0 0 1 2 1 1 1 1 1 1 2 2 1 0 0 1 0 1 0 0 0 0 1 1 1 1 0 0 0 
-    1 1 2 1 1 1 1 0 0 0 1 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    2 2 1 2 1 0 0 1 0 0 0 0 0 0 0 0 1 1 0 1 0 0 0 0 0 0 0 0 0 0 0 1 
-    0 0 0 0 0 0 0 0 1 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    1 0 0 1 2 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 1 0 0 0 
-    0 1 1 0 1 1 1 0 0 1 0 0 1 0 1 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0 0 
-    1 0 1 0 0 1 1 1 1 1 1 1 1 1 1 1 0 0 1 0 2 0 0 2 0 1 0 0 1 0 0 1 
-    1 1 0 0 1 1 0 1 0 0 0 1 0 0 1 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 
-    0 0 0 0 0 0 1 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 1 0 
-    1 1 1 1 1 1 1 2 0 0 0 0 0 0 2 1 0 1 1 0 0 1 1 1 0 1 0 0 0 0 0 0 
-    2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    1 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 0 1 1 1 1 1 0 1 0 0 
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 
-    ])
+(defvar unicad-utf8-state-table
+  (let ((eStart 0)
+        (eError 1)
+        (eItsMe 2))
+    (vector
+     eError eStart eError eError eError eError 12     10  ;; 00-07  0
+     9      11     8      7      6      5      4      3   ;; 08-0f  1
+     eError eError eError eError eError eError eError eError ;; 10-17  2
+     eError eError eError eError eError eError eError eError ;; 18-1f  3
+     eItsMe eItsMe eItsMe eItsMe eItsMe eItsMe eItsMe eItsMe ;; 20-27  4
+     eItsMe eItsMe eItsMe eItsMe eItsMe eItsMe eItsMe eItsMe ;; 28-2f  5
+     eError eError      5      5      5      5 eError eError ;; 30-37  6
+     eError eError eError eError eError eError eError eError ;; 38-3f  7
+     eError eError eError      5      5      5 eError eError ;; 40-47  8
+     eError eError eError eError eError eError eError eError ;; 48-4f  9
+     eError eError      7      7      7      7 eError eError ;; 50-57  10
+     eError eError eError eError eError eError eError eError ;; 58-5f  11
+     eError eError eError eError      7      7 eError eError ;; 60-67  12
+     eError eError eError eError eError eError eError eError ;; 68-6f  13
+     eError eError      9      9      9      9 eError eError ;; 70-77  14
+     eError eError eError eError eError eError eError eError ;; 78-7f  15
+     eError eError eError eError eError      9 eError eError ;; 80-87  16
+     eError eError eError eError eError eError eError eError ;; 88-8f  17
+     eError eError     12     12     12     12 eError eError ;; 90-97  18
+     eError eError eError eError eError eError eError eError ;; 98-9f  19
+     eError eError eError eError eError     12 eError eError ;; a0-a7  20
+     eError eError eError eError eError eError eError eError ;; a8-af  21
+     eError eError     12     12     12 eError eError eError ;; b0-b7  22
+     eError eError eError eError eError eError eError eError ;; b8-bf  23
+     eError eError eStart eStart eStart eStart eError eError ;; c0-c7  24
+     eError eError eError eError eError eError eError eError ;; c8-cf  25
+     )))
 
-;;;}}}
-;;{{{  Hebrew Model
-;; ****************************************************************
-;; 255: Control characters that usually does not exist in any text
-;; 254: Carriage/Return
-;; 253: symbol (punctuation) that does not belong to word
-;; 252: 0 - 9
+(defvar unicad-utf8-charlen-table
+;; 0  1  2  3  4  5  6  7
+  [0  1  0  0  0  0  2  3
+   3  3  4  4  5  5  6  6 ])
 
-;; *****************************************************************
-
-;; Windows-1255 language model
-;; Character Mapping Table:
-(defvar unicad-win1255-char2order-map
-  `[
-    255 255 255 255 255 255 255 255 255 255 254 255 255 254 255 255 ;;00
-    255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 ;;10
-    +253 253 253 253 253 253 253 253 253 253 253 253 253 253 253 253 ;;20
-    252 252 252 252 252 252 252 252 252 252 253 253 253 253 253 253 ;;30
-    253  69  91  79  80  92  89  97  90  68 111 112  82  73  95  85 ;;40
-    78 121  86  71  67 102 107  84 114 103 115 253 253 253 253 253 ;;50
-    253  50  74  60  61  42  76  70  64  53 105  93  56  65  54  49 ;;60
-    66 110  51  43  44  63  81  77  98  75 108 253 253 253 253 253 ;;70
-    124 202 203 204 205  40  58 206 207 208 209 210 211 212 213 214 
-    215  83  52  47  46  72  32  94 216 113 217 109 218 219 220 221 
-    34 116 222 118 100 223 224 117 119 104 125 225 226  87  99 227 
-    106 122 123 228  55 229 230 101 231 232 120 233  48  39  57 234 
-    30  59  41  88  33  37  36  31  29  35 235  62  28 236 126 237 
-    238  38  45 239 240 241 242 243 127 244 245 246 247 248 249 250 
-    9   8  20  16   3   2  24  14  22   1  25  15   4  11   6  23 
-    12  19  13  26  18  27  21  17   7  10   5 251 252 128  96 253 
-    ])
-
-;;Model Table: 
-;;total sequences: 100%
-;;first 512 sequences: 98.4004%
-;;first 1024 sequences: 1.5981%
-;;rest  sequences:      0.087%
-;;negative sequences:   0.0015% 
-(defvar unicad-hebrew-lang-model
-  `[
-    0 3 3 3 3 3 3 3 3 3 3 2 3 3 3 3 3 3 3 3 3 3 3 2 3 2 1 2 0 1 0 0 
-    3 0 3 1 0 0 1 3 2 0 1 1 2 0 2 2 2 1 1 1 1 2 1 1 1 2 0 0 2 2 0 1 
-    3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 2 2 2 2 
-    1 2 1 2 1 2 0 0 2 0 0 0 0 0 1 0 1 0 0 0 0 0 0 1 0 0 0 0 0 0 1 0 
-    3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 2 2 2 
-    1 2 1 3 1 1 0 0 2 0 0 0 1 0 1 0 1 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 
-    3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 1 0 1 2 2 1 3 
-    1 2 1 1 2 2 0 0 2 2 0 0 0 0 1 0 1 0 0 0 1 0 0 0 0 0 0 1 0 1 1 0 
-    3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 2 3 3 2 2 2 2 3 2 
-    1 2 1 2 2 2 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 1 0 
-    3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 2 3 3 2 3 2 2 3 2 2 2 1 2 2 2 2 
-    1 2 1 1 2 2 0 1 2 0 0 0 0 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 1 0 
-    3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 2 0 2 2 2 2 2 
-    0 2 0 2 2 2 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 1 0 
-    3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 2 3 0 2 2 2 
-    0 2 1 2 2 2 0 0 2 1 0 0 0 0 1 0 1 0 0 0 0 0 0 2 0 0 0 0 0 0 1 0 
-    3 3 3 3 3 3 3 3 3 3 3 2 3 3 3 3 3 3 3 3 3 3 3 3 3 2 1 2 3 2 2 2 
-    1 2 1 2 2 2 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0 0 0 1 0 0 0 0 0 1 1 0 
-    3 3 3 3 3 3 3 3 3 2 3 3 3 2 3 3 3 3 3 3 3 3 3 3 3 3 3 1 0 2 0 2 
-    0 2 1 2 2 2 0 0 1 2 0 0 0 0 1 0 1 0 0 0 0 0 0 1 0 0 0 2 0 0 1 0 
-    3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 2 3 2 3 2 2 3 2 1 2 1 1 1 
-    0 1 1 1 1 1 3 0 1 0 0 0 0 2 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 
-    3 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 0 1 1 0 0 1 0 0 1 0 0 0 0 
-    0 0 1 0 0 0 0 0 2 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 2 2 2 2 2 2 2 
-    0 2 0 1 2 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 
-    3 3 3 3 3 3 3 3 3 2 3 3 3 2 1 2 3 3 2 3 3 3 3 2 3 2 1 2 0 2 1 2 
-    0 2 0 2 2 2 0 0 1 2 0 0 0 0 1 0 1 0 0 0 0 0 0 0 0 0 0 1 0 0 1 0 
-    3 3 3 3 3 3 3 3 3 2 3 3 3 1 2 2 3 3 2 3 2 3 2 2 3 1 2 2 0 2 2 2 
-    0 2 1 2 2 2 0 0 1 2 0 0 0 0 1 0 0 0 0 0 1 0 0 1 0 0 0 1 0 0 1 0 
-    3 3 3 3 3 3 3 3 3 3 3 3 3 2 3 3 3 2 3 3 2 2 2 3 3 3 3 1 3 2 2 2 
-    0 2 0 1 2 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 
-    3 3 3 3 3 3 3 3 3 3 3 3 3 3 2 2 3 3 3 2 3 2 2 2 1 2 2 0 2 2 2 2 
-    0 2 0 2 2 2 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 
-    3 3 3 3 3 3 3 3 3 3 3 2 3 3 3 1 3 2 3 3 2 3 3 2 2 1 2 2 2 2 2 2 
-    0 2 1 2 1 2 0 0 1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 1 0 0 0 0 0 0 1 0 
-    3 3 3 3 3 3 2 3 2 3 3 2 3 3 3 3 2 3 2 3 3 3 3 3 2 2 2 2 2 2 2 1 
-    0 2 0 1 2 1 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 1 0 
-    3 3 3 3 3 3 3 3 3 2 1 2 3 3 3 3 3 3 3 2 3 2 3 2 1 2 3 0 2 1 2 2 
-    0 2 1 1 2 1 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 2 0 
-    3 3 3 3 3 3 3 3 3 2 3 3 3 3 2 1 3 1 2 2 2 1 2 3 3 1 2 1 2 2 2 2 
-    0 1 1 1 1 1 0 0 0 0 0 0 0 0 1 0 0 0 0 0 1 0 0 2 0 0 0 0 0 0 0 0 
-    3 3 3 3 3 3 3 3 3 3 0 2 3 3 3 1 3 3 3 1 2 2 2 2 1 1 2 2 2 2 2 2 
-    0 2 0 1 1 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 1 0 
-    3 3 3 3 3 3 2 3 3 3 2 2 3 3 3 2 1 2 3 2 3 2 2 2 2 1 2 1 1 1 2 2 
-    0 2 1 1 1 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 
-    3 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 0 0 1 0 0 0 0 0 
-    1 0 1 0 0 0 0 0 2 0 0 0 0 0 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    3 3 3 3 3 2 3 3 2 3 1 2 2 2 2 3 2 3 1 1 2 2 1 2 2 1 1 0 2 2 2 2 
-    0 1 0 1 2 2 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 1 0 
-    3 0 0 1 1 0 1 0 0 1 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 1 2 2 0 
-    0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    3 0 1 0 1 0 1 1 0 1 1 0 0 0 1 1 0 1 1 1 0 0 0 0 0 0 1 0 0 0 0 0 
-    0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    3 0 0 0 1 1 0 1 0 1 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 
-    0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 
-    3 2 2 1 2 2 2 2 2 2 2 1 2 2 1 2 2 1 1 1 1 1 1 1 1 2 1 1 0 3 3 3 
-    0 3 0 2 2 2 2 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 
-    2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 1 2 2 2 1 1 1 2 0 1 
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 0 2 2 0 0 0 0 0 0 
-    0 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    2 3 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 1 0 2 1 0 
-    0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    3 1 1 1 1 1 1 1 1 1 1 0 0 1 1 1 1 0 1 1 1 1 0 0 0 0 0 0 0 0 0 0 
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 
-    0 3 1 1 2 2 2 2 2 1 2 2 2 1 1 2 2 2 2 2 2 2 1 2 2 1 0 1 1 1 1 0 
-    0 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    3 2 1 1 1 1 2 1 1 2 1 0 1 1 1 1 1 1 1 1 1 1 1 0 1 0 0 0 0 0 0 0 
-    0 0 2 0 0 0 0 0 0 0 0 1 1 0 0 0 0 1 1 0 0 1 1 0 0 0 0 0 0 1 0 0 
-    2 1 1 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 1 2 1 2 1 1 1 1 0 0 0 0 
-    0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    1 2 1 2 2 2 2 2 2 2 2 2 2 1 2 1 2 1 1 2 1 1 1 2 1 2 1 2 0 1 0 1 
-    0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    0 3 1 2 2 2 1 2 2 2 2 2 2 2 2 1 2 1 1 1 1 1 1 2 1 2 1 1 0 1 0 1 
-    0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    2 1 2 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 2 2 
-    0 2 0 1 2 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 
-    3 0 0 0 1 0 0 0 0 0 0 0 0 0 0 1 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    2 1 1 1 1 1 1 1 0 1 1 0 1 0 0 1 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0 0 
-    0 0 0 0 0 0 0 0 2 0 1 1 1 0 1 0 0 0 1 1 0 1 1 0 0 0 0 0 1 1 0 0 
-    0 1 1 1 2 1 2 2 2 0 2 0 2 0 1 1 2 1 1 1 1 2 1 0 1 1 0 0 0 0 0 0 
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    1 0 1 0 0 0 0 0 1 0 1 2 2 0 1 0 0 1 1 2 2 1 2 0 2 0 0 0 1 2 0 1 
-    2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    0 0 0 0 0 0 0 0 2 0 2 1 2 0 2 0 0 1 1 1 1 1 1 0 1 0 0 0 1 0 0 1 
-    2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    0 0 1 0 0 0 0 0 1 0 2 1 1 0 1 0 0 1 1 1 2 2 0 0 1 0 0 0 1 0 0 1 
-    1 1 2 1 0 1 1 1 0 1 0 1 1 1 1 0 0 0 1 0 1 0 0 0 0 0 0 0 0 2 2 1 
-    0 2 0 1 2 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    2 1 0 0 1 0 1 1 1 1 0 0 0 0 0 1 0 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0 
-    0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    1 1 1 1 1 1 1 1 1 2 1 0 1 1 1 1 1 1 1 1 1 1 1 0 1 0 0 0 0 0 0 0 
-    0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 1 1 1 0 1 1 0 1 0 0 0 1 1 0 1 
-    2 0 1 0 1 0 1 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    0 0 0 0 0 0 0 0 1 0 1 1 1 0 1 0 0 1 1 2 1 1 2 0 1 0 0 0 1 1 0 1 
-    1 0 0 1 0 0 1 0 0 0 1 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    0 0 0 0 0 0 0 0 1 0 1 1 2 0 1 0 0 0 0 2 1 1 2 0 2 0 0 0 1 1 0 1 
-    1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    0 0 0 0 0 0 0 0 1 0 2 1 1 0 1 0 0 2 2 1 2 1 1 0 1 0 0 0 1 1 0 1 
-    2 0 1 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    0 0 0 0 0 0 0 0 0 0 1 2 2 0 0 0 0 0 1 1 0 1 0 0 1 0 0 0 0 1 0 1 
-    1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    0 0 0 0 0 0 0 0 0 0 1 2 2 0 0 0 0 2 1 1 1 0 2 1 1 0 0 0 2 1 0 1 
-    1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    0 0 0 0 0 0 0 0 1 0 1 1 2 0 1 0 0 1 1 0 2 1 1 0 1 0 0 0 1 1 0 1 
-    2 2 1 1 1 0 1 1 0 1 1 0 1 0 0 0 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 
-    0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    0 0 0 0 0 0 0 0 1 0 2 1 1 0 1 0 0 1 1 0 1 2 1 0 2 0 0 0 1 1 0 1 
-    2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 
-    0 1 0 0 2 0 2 1 1 0 1 0 1 0 0 1 0 0 0 0 1 0 0 0 1 0 0 0 0 0 1 0 
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    0 0 0 0 0 0 0 0 1 0 1 1 2 0 1 0 0 1 1 1 0 1 0 0 1 0 0 0 1 0 0 1 
-    1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    1 0 0 0 0 0 0 0 1 0 1 1 0 0 1 0 0 2 1 1 1 1 1 0 1 0 0 0 0 1 0 1 
-    0 1 1 1 2 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 0 0 0 0 0 0 0 
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-    0 0 0 0 0 0 0 0 0 0 1 2 1 0 0 0 0 0 1 1 1 1 1 0 1 0 0 0 1 1 0 0 
-    ])
-
-(defvar unicad-win1255-model
+(defvar unicad-utf8-sm-model
   (list
-   (cons 'char2order-map unicad-win1255-char2order-map)
-   (cons 'precedence-matrix unicad-hebrew-lang-model)
-   (cons 'typ-positive-ratio 0.984004)
-   (cons 'keep-english-letter nil)
-   (cons 'charset-name 'windows-1255)
-   ))
+   (cons 'classTable unicad-utf8-class-table)
+   (cons 'classFactor 16)
+   (cons 'stateTable unicad-utf8-state-table)
+   (cons 'charLenTable unicad-utf8-charlen-table)
+   (cons 'name 'utf-8)))
 
-;;;}}}
-;;{{{  sjis single byte Model
+;;}}}
+;;{{{  gb18030 state machine
 
-(defvar unicad-sjis-sb-char2order-map
+(defvar unicad-gb18030-class-table
+  [
+   1 1 1 1 1 1 1 1        ;; 00 - 07
+   1 1 1 1 1 1 0 0        ;; 08 - 0f
+   1 1 1 1 1 1 1 1        ;; 10 - 17
+   1 1 1 1 1 1 1 1        ;; 18 - 2f allow esc as legal value
+   1 1 1 1 1 1 1 1        ;; 20 - 27
+   1 1 1 1 1 1 1 1        ;; 28 - 2f
+   3 3 3 3 3 3 3 3        ;; 30 - 37
+   3 3 1 1 1 1 1 1        ;; 38 - 3f
+   2 2 2 2 2 2 2 2        ;; 40 - 47
+   2 2 2 2 2 2 2 2        ;; 48 - 4f
+   2 2 2 2 2 2 2 2        ;; 50 - 57
+   2 2 2 2 2 2 2 2        ;; 58 - 5f
+   2 2 2 2 2 2 2 2        ;; 60 - 67
+   2 2 2 2 2 2 2 2        ;; 68 - 6f
+   2 2 2 2 2 2 2 2        ;; 70 - 77
+   2 2 2 2 2 2 2 4        ;; 78 - 7f
+   5 6 6 6 6 6 6 6        ;; 80 - 87
+   6 6 6 6 6 6 6 6        ;; 88 - 8f
+   6 6 6 6 6 6 6 6        ;; 90 - 97
+   6 6 6 6 6 6 6 6        ;; 98 - 9f
+   6 6 6 6 6 6 6 6        ;; a0 - a7
+   6 6 6 6 6 6 6 6        ;; a8 - af
+   6 6 6 6 6 6 6 6        ;; b0 - b7
+   6 6 6 6 6 6 6 6        ;; b8 - bf
+   6 6 6 6 6 6 6 6        ;; c0 - c7
+   6 6 6 6 6 6 6 6        ;; c8 - cf
+   6 6 6 6 6 6 6 6        ;; d0 - d7
+   6 6 6 6 6 6 6 6        ;; d8 - df
+   6 6 6 6 6 6 6 6        ;; e0 - e7
+   6 6 6 6 6 6 6 6        ;; e8 - ef
+   6 6 6 6 6 6 6 6        ;; f0 - f7
+   6 6 6 6 6 6 6 0        ;; f8 - ff
+   ])
+
+(defvar unicad-gb18030-state-table
+  (let ((eStart 0)
+        (eError 1)
+        (eItsMe 2))
+    (vector
+     ;;   0      1      2      3      4      5      6
+     eError eStart eStart eStart eStart eStart      3
+     eError eError eError eError eError eError eError
+     eItsMe eItsMe eItsMe eItsMe eItsMe eItsMe eItsMe
+     eError eError eStart      4 eError eStart eStart
+     eError eError eError eError eError eError      5
+     eError eError eError eItsMe eError eError eError)))
+
+  ;; To be accurate  the length of class 6 can be either 2 or 4.
+  ;; But it is not necessary to discriminate between the two since
+  ;; it is used for frequency analysis only  and we are validing
+  ;; each code range there as well. So it is safe to set it to be
+  ;; 2 here.
+(defvar unicad-gb18030-charlen-table
+      [0  1  1  1  1  1  2])
+
+(defvar unicad-gb18030-sm-model
+  (list
+   (cons 'classTable  unicad-gb18030-class-table)
+   (cons 'classFactor  7 )
+   (cons 'stateTable  unicad-gb18030-state-table)
+   (cons 'charLenTable  unicad-gb18030-charlen-table)
+   (cons 'name 'gb18030)))
+
+;;}}}
+;;{{{  big5 state machine
+(defvar unicad-big5-class-table
+      `[
+        1 1 1 1 1 1 1 1 ;; 00 - 07    ;;allow #x00 as legal value
+        1 1 1 1 1 1 0 0 ;; 08 - 0f
+        1 1 1 1 1 1 1 1 ;; 10 - 17
+        1 1 1 1 1 1 1 1 ;; 18 - 1f    ;;allow esc as legal value
+        1 1 1 1 1 1 1 1 ;; 20 - 27
+        1 1 1 1 1 1 1 1 ;; 28 - 2f
+        1 1 1 1 1 1 1 1 ;; 30 - 37
+        1 1 1 1 1 1 1 1 ;; 38 - 3f
+        2 2 2 2 2 2 2 2 ;; 40 - 47
+        2 2 2 2 2 2 2 2 ;; 48 - 4f
+        2 2 2 2 2 2 2 2 ;; 50 - 57
+        2 2 2 2 2 2 2 2 ;; 58 - 5f
+        2 2 2 2 2 2 2 2 ;; 60 - 67
+        2 2 2 2 2 2 2 2 ;; 68 - 6f
+        2 2 2 2 2 2 2 2 ;; 70 - 77
+        2 2 2 2 2 2 2 1 ;; 78 - 7f
+        4 4 4 4 4 4 4 4 ;; 80 - 87
+        4 4 4 4 4 4 4 4 ;; 88 - 8f
+        4 4 4 4 4 4 4 4 ;; 90 - 97
+        4 4 4 4 4 4 4 4 ;; 98 - 9f
+        4 3 3 3 3 3 3 3 ;; a0 - a7
+        3 3 3 3 3 3 3 3 ;; a8 - af
+        3 3 3 3 3 3 3 3 ;; b0 - b7
+        3 3 3 3 3 3 3 3 ;; b8 - bf
+        3 3 3 3 3 3 3 3 ;; c0 - c7
+        3 3 3 3 3 3 3 3 ;; c8 - cf
+        3 3 3 3 3 3 3 3 ;; d0 - d7
+        3 3 3 3 3 3 3 3 ;; d8 - df
+        3 3 3 3 3 3 3 3 ;; e0 - e7
+        3 3 3 3 3 3 3 3 ;; e8 - ef
+        3 3 3 3 3 3 3 3 ;; f0 - f7
+        3 3 3 3 3 3 3 0 ;; f8 - ff
+        ])
+
+(defvar unicad-big5-state-table
+  (let ((eStart 0)
+        (eError 1)
+        (eItsMe 2))
+    (vector
+     ;;   0      1      2      3      4
+     eError eStart eStart      3 eError
+     eError eError eError eError eError
+     eItsMe eItsMe eItsMe eItsMe eItsMe
+     eError eError eStart eStart eStart)))
+
+(defvar unicad-big5-charlen-table
+  [0  1  1  2  0])
+
+(defvar unicad-big5-sm-model
+  (list
+   (cons 'classTable  unicad-big5-class-table)
+   (cons 'classFactor  5)
+   (cons 'stateTable  unicad-big5-state-table)
+   (cons 'charLenTable  unicad-big5-charlen-table)
+   (cons 'name  'big5)))
+;;}}}
+;;{{{  sjis state machine
+(defvar unicad-sjis-class-table
   `[
-    255 255 255 255 255 255 255 255 255 255 254 255 255 254 255 255 ;;00
-    255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 ;;10
-    +253 253 253 253 253 253 253 253 253 253 253 253 253 253 253 253 ;;20
-    252 252 252 252 252 252 252 252 252 252 253 253 253 253 253 253 ;;30
-    253 142 143 144 145 146 147 148 149 150 151 152  74 153  75 154 ;;40
-    155 156 157 158 159 160 161 162 163 164 165 253 253 253 253 253 ;;50
-    253  71 172  66 173  65 174  76 175  64 176 177  77  72 178  69 ;;60
-    67 179  78  73 180 181  79 182 183 184 185 253 253 253 253 253 ;;70
-    255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 ;;80
-    255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 ;;90
-    255 252 254 254 254  16  59  37  17  58  31  53  49  33  40  24;;a0
-      2  13   8  22  34  43  27  19   7  38  23  35  14   6  44  29;;b0
-     10  48  50  12   3  46  39  57  47  54  25  28   5  32  41  21;;c0
-     45  30  26  42  55  52  56  20  15  11  36  18  51   4   1   9;;d0
-    255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255;;e0
-    255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255;;f0
+    ;;,(PCK4BITS 0 1 1 1 1 1 1 1)   ;; 00 - 07
+    1 1 1 1 1 1 1 1       ;; 00 - 07
+    1 1 1 1 1 1 0 0       ;; 08 - 0f
+    1 1 1 1 1 1 1 1       ;; 10 - 17
+    1 1 1 1 1 1 1 1       ;; 18 - 1f  allow esc as legal value
+    1 1 1 1 1 1 1 1       ;; 20 - 27
+    1 1 1 1 1 1 1 1       ;; 28 - 2f
+    1 1 1 1 1 1 1 1       ;; 30 - 37
+    1 1 1 1 1 1 1 1       ;; 38 - 3f
+    2 2 2 2 2 2 2 2       ;; 40 - 47
+    2 2 2 2 2 2 2 2       ;; 48 - 4f
+    2 2 2 2 2 2 2 2       ;; 50 - 57
+    2 2 2 2 2 2 2 2       ;; 58 - 5f
+    2 2 2 2 2 2 2 2       ;; 60 - 67
+    2 2 2 2 2 2 2 2       ;; 68 - 6f
+    2 2 2 2 2 2 2 2       ;; 70 - 77
+    2 2 2 2 2 2 2 1       ;; 78 - 7f
+    3 3 3 3 3 3 3 3       ;; 80 - 87
+    3 3 3 3 3 3 3 3       ;; 88 - 8f
+    3 3 3 3 3 3 3 3       ;; 90 - 97
+    3 3 3 3 3 3 3 3       ;; 98 - 9f
+    ;;#xa0 is illegal in sjis encoding  but some pages does
+    ;;contain such byte. We need to be more error forgiven.
+    2 2 2 2 2 2 2 2       ;; a0 - a7
+    2 2 2 2 2 2 2 2       ;; a8 - af
+    2 2 2 2 2 2 2 2       ;; b0 - b7
+    2 2 2 2 2 2 2 2       ;; b8 - bf
+    2 2 2 2 2 2 2 2       ;; c0 - c7
+    2 2 2 2 2 2 2 2       ;; c8 - cf
+    2 2 2 2 2 2 2 2       ;; d0 - d7
+    2 2 2 2 2 2 2 2       ;; d8 - df
+    3 3 3 3 3 3 3 3       ;; e0 - e7
+    3 3 3 3 3 4 4 4       ;; e8 - ef
+    4 4 4 4 4 4 4 4       ;; f0 - f7
+    4 4 4 4 4 0 0 0       ;; f8 - ff
     ])
 
-(defvar unicad-sjis-sb-lang-model
+
+(defvar unicad-sjis-state-table
+  (let ((eStart 0)
+        (eError 1)
+        (eItsMe 2))
+    (vector
+     eError eStart eStart      3 eError eError eError eError ;;00-07
+     eError eError eError eError eItsMe eItsMe eItsMe eItsMe ;;08-0f
+     eItsMe eItsMe eError eError eStart eStart eStart eStart ;;10-17
+     )))
+
+(defvar unicad-sjis-charlen-table
+  [0  1  1  2  0  0])
+
+(defvar unicad-sjis-sm-model
+  (list
+   (cons 'classTable  unicad-sjis-class-table)
+   (cons 'classFactor  6 )
+   (cons 'stateTable  unicad-sjis-state-table)
+   (cons 'charLenTable  unicad-sjis-charlen-table)
+   (cons 'name 'sjis)))
+
+;;}}}
+;;{{{  eucjp state machine
+
+(defvar unicad-eucjp-class-table
+      `[
+        ;;,(PCK4BITS 5 4 4 4 4 4 4 4)   ;; 00 - 07
+        4 4 4 4 4 4 4 4   ;; 00 - 07
+        4 4 4 4 4 4 5 5   ;; 08 - 0f
+        4 4 4 4 4 4 4 4   ;; 10 - 17
+        4 4 4 5 4 4 4 4   ;; 18 - 1f
+        4 4 4 4 4 4 4 4   ;; 20 - 27
+        4 4 4 4 4 4 4 4   ;; 28 - 2f
+        4 4 4 4 4 4 4 4   ;; 30 - 37
+        4 4 4 4 4 4 4 4   ;; 38 - 3f
+        4 4 4 4 4 4 4 4   ;; 40 - 47
+        4 4 4 4 4 4 4 4   ;; 48 - 4f
+        4 4 4 4 4 4 4 4   ;; 50 - 57
+        4 4 4 4 4 4 4 4   ;; 58 - 5f
+        4 4 4 4 4 4 4 4   ;; 60 - 67
+        4 4 4 4 4 4 4 4   ;; 68 - 6f
+        4 4 4 4 4 4 4 4   ;; 70 - 77
+        4 4 4 4 4 4 4 4   ;; 78 - 7f
+        5 5 5 5 5 5 5 5   ;; 80 - 87
+        5 5 5 5 5 5 1 3   ;; 88 - 8f
+        5 5 5 5 5 5 5 5   ;; 90 - 97
+        5 5 5 5 5 5 5 5   ;; 98 - 9f
+        5 2 2 2 2 2 2 2   ;; a0 - a7
+        2 2 2 2 2 2 2 2   ;; a8 - af
+        2 2 2 2 2 2 2 2   ;; b0 - b7
+        2 2 2 2 2 2 2 2   ;; b8 - bf
+        2 2 2 2 2 2 2 2   ;; c0 - c7
+        2 2 2 2 2 2 2 2   ;; c8 - cf
+        2 2 2 2 2 2 2 2   ;; d0 - d7
+        2 2 2 2 2 2 2 2   ;; d8 - df
+        0 0 0 0 0 0 0 0   ;; e0 - e7
+        0 0 0 0 0 0 0 0   ;; e8 - ef
+        0 0 0 0 0 0 0 0   ;; f0 - f7
+        0 0 0 0 0 0 0 5   ;; f8 - ff
+        ])
+
+(defvar unicad-eucjp-state-table
+  (let ((eStart 0)
+        (eError 1)
+        (eItsMe 2))
+    (vector
+     ;; 0   1      2      3      4      5
+     3      4      3      5      eStart eError
+     eError eError eError eError eError eError
+     eItsMe eItsMe eItsMe eItsMe eItsMe eItsMe
+     eStart eError eStart eError eError eError
+     eError eError eStart eError eError eError
+     3      eError 3      eError eError eError)))
+
+(defvar unicad-eucjp-charlen-table
+  [2  2  2  3  1  0])
+
+(defvar unicad-eucjp-sm-model
+  (list
+   (cons 'classTable  unicad-eucjp-class-table)
+   (cons 'classFactor  6 )
+   (cons 'stateTable  unicad-eucjp-state-table)
+   (cons 'charLenTable  unicad-eucjp-charlen-table)
+   (cons 'name 'euc-jp)))
+
+;;}}}
+;;{{{  euckr state machine
+(defvar unicad-euckr-class-table
   `[
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 0 3 2 3 3 3 3 3 0 3 3 3 3 3 3 3 3 2 3 3 0 3 0 3 2 2 2 2 2 3 2
-    2 3 0 3 3 3 3 2 3 2 2 3 2 2 3 3 0 3 2 2 0 0 0 2 0 2 2 0 0 0 0 0
-    0 3 0 3 0 0 3 0 0 0 3 3 0 0 2 0 0 0 0 0 0 0 2 0 0 0 0 2 0 0 0 2
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 2 2 0 0 0 0 2 0 0 0 0 0 0 0
-    0 3 0 2 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 0 0 0 0 0 0 0 0 0
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 3 0 3 0 0 3 3 0 0 3 3 0 0 3 0 0 0 0 0 3 0 0 0 0 0 0 0 0 3 0 0
-    0 0 0 3 0 0 0 0 0 0 0 0 0 0 2 2 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 3 3 3 0 0 0 0 0 3 0 0 2 0 0 3 2 3 2 0 3 0 0 0 0 0 0 0 0 0 3 0
-    0 0 0 0 2 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 0 0 0 0 0 0 0 0 0 0
-    0 3 0 3 0 0 2 0 0 0 3 3 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 3 0 3 0 0 3 0 0 0 2 0 3 0 3 3 2 0 3 0 3 0 0 0 0 0 0 0 0 0 0 0
-    0 0 0 0 2 0 0 0 0 0 0 0 2 0 0 0 0 0 2 2 0 2 2 0 0 0 0 0 0 0 0 0
-    0 3 3 3 3 0 3 3 0 0 3 2 3 0 2 3 3 0 2 0 0 0 0 2 0 0 3 0 0 2 0 2
-    0 0 0 0 0 0 0 0 0 0 0 2 3 0 2 2 0 0 0 3 0 0 0 0 0 0 0 0 0 0 0 0
-    0 0 3 0 3 0 2 2 3 0 2 0 3 0 2 3 0 0 3 0 3 0 0 0 3 0 0 0 0 3 0 0
-    0 3 0 2 3 0 0 0 0 0 0 0 0 0 0 0 2 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 3 2 0 0 2 0 0 0 0 0 2 2 0 0 2 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 3 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 3 3 3 0 2 3 0 0 2 3 2 0 0 2 0 0 0 0 0 0 0 2 0 2 0 0 0 0 0 0 0
-    0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 2 0 2 0 2 0 0 0 0 0 0 0 0 0 0 0
-    0 3 3 3 3 3 3 2 3 3 2 0 3 0 2 0 3 0 2 0 2 0 2 0 3 0 3 2 2 0 0 0
-    0 0 0 0 2 0 0 3 0 0 2 2 0 0 2 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 3 3 0 0 0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 2 0
-    0 2 0 0 0 0 0 0 3 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 2 3 2 0 0 3 0 0 0 3 2 0 0 3 3 0 0 0 0 0 0 0 0 3 0 0 0 0 0 0 0
-    0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0
-    0 2 0 2 0 0 3 0 0 0 0 2 2 0 3 2 0 0 0 0 2 0 2 0 0 0 0 0 0 2 0 2
-    0 0 0 2 3 0 0 2 0 0 2 2 2 0 0 0 0 0 0 2 2 0 0 0 0 0 0 0 0 0 0 0
-    0 0 3 0 0 0 3 0 0 0 3 0 0 3 0 0 0 0 0 2 0 0 0 0 3 0 0 0 0 0 0 0
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 3 3 0 0 0 3 0 0 0 2 0 0 0 3 0 0 0 0 0 0 0 2 0 3 0 0 0 0 3 0 0
-    0 0 0 0 0 0 0 0 0 0 0 0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 2 3 0 2 0 3 2 0 0 0 0 0 0 3 2 0 0 0 0 0 0 0 0 2 0 3 0 0 2 0 0
-    0 3 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 3 2 2 0 0 2 0 0 0 0 2 0 0 3 3 0 0 0 0 0 0 3 0 3 0 0 0 0 0 0 0
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 2 3 0 3 0 2 0 0 0 2 0 2 0 2 0 0 0 0 0 0 0 2 0 3 0 0 0 0 0 0 0
-    0 0 0 2 2 0 0 3 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 3 3 0 3 0 0 0 0 0 0 0 2 0 0 2 0 0 0 0 0 3 0 0 0 0 3 0 0 0 0 0
-    0 0 0 0 2 0 0 0 0 0 2 0 0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 3 0 3 0 2 2 2 0 2 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 3 3 0 2 0 0 0 3 3 0 0 0 0 0 0 0 0 2 0 0 0 2 0 2 0 0 0 0 0 0 0
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 3 3 2 3 0 0 0 0 0 2 3 0 0 2 3 0 0 0 0 2 0 0 0 2 0 0 0 0 2 0 0
-    0 0 0 0 0 0 0 2 0 0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 3 3 2 2 0 3 0 0 0 2 3 3 0 2 0 0 0 0 0 0 0 0 0 2 0 2 0 0 0 0 0
-    0 0 0 0 0 0 0 0 0 0 0 0 2 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 3 0 0 0 0 2 0 0 3 0 0 2 0 0 0 0 0 2 0 2 0 0 0 2 0 0 0 0 0 0 0
-    0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 0 3 0 0 0 0 0 0 0 0 0 0 3 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 2 2 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 3 0 0 0 2 0 0 0 3 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 3 2 2 2 2 2 0 2 2 2 3 2 0 0 3 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0
-    0 0 0 0 2 0 0 0 0 2 0 0 2 3 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 3 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0
-    0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 3 3 2 2 0 2 0 2 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 0 3 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 3 3 0 2 0 0 0 0 0 0 2 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 3 3 0 0 0 0 0 0 0 3 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 0 2 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 3 3 0 0 0 0 0 2 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 2 3 0 3 0 2 0 0 0 2 2 2 0 0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 2 3 0 0 0 0 0 0 0 0 2 2 0 0 2 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0
-    0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 3 2 0 0 0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 0 0 0 0 0 0 0
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 2 2 2 3 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 2 0 0 0 0 0 0 0
-    0 3 0 2 0 0 0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 2 2 0 0 0 2 0 0 0 2 0 3 0 2 2 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 2 2 0 0 0 3 0 0 0 2 0 3 0 2 0 0 0 0 0 0 0 2 0 3 0 0 0 0 0 0 0
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 0 3 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 0 2 0 0 0 0 0 0 0 0 0 3 0 2 0 0 0 2 0 0 0 2 0 0 0 0 0 0 0 0 0
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    ;;,(PCK4BITS 0 1 1 1 1 1 1 1)   ;; 00 - 07
+    1 1 1 1 1 1 1 1       ;; 00 - 07
+    1 1 1 1 1 1 0 0       ;; 08 - 0f
+    1 1 1 1 1 1 1 1       ;; 10 - 17
+    1 1 1 1 1 1 1 1       ;; 18 - 1f ;; allow esc as legal char
+    1 1 1 1 1 1 1 1       ;; 20 - 27
+    1 1 1 1 1 1 1 1       ;; 28 - 2f
+    1 1 1 1 1 1 1 1       ;; 30 - 37
+    1 1 1 1 1 1 1 1       ;; 38 - 3f
+    1 1 1 1 1 1 1 1       ;; 40 - 47
+    1 1 1 1 1 1 1 1       ;; 48 - 4f
+    1 1 1 1 1 1 1 1       ;; 50 - 57
+    1 1 1 1 1 1 1 1       ;; 58 - 5f
+    1 1 1 1 1 1 1 1       ;; 60 - 67
+    1 1 1 1 1 1 1 1       ;; 68 - 6f
+    1 1 1 1 1 1 1 1       ;; 70 - 77
+    1 1 1 1 1 1 1 1       ;; 78 - 7f
+    0 0 0 0 0 0 0 0       ;; 80 - 87
+    0 0 0 0 0 0 0 0       ;; 88 - 8f
+    0 0 0 0 0 0 0 0       ;; 90 - 97
+    0 0 0 0 0 0 0 0       ;; 98 - 9f
+    0 2 2 2 2 2 2 2       ;; a0 - a7
+    2 2 2 2 2 3 3 3       ;; a8 - af
+    2 2 2 2 2 2 2 2       ;; b0 - b7
+    2 2 2 2 2 2 2 2       ;; b8 - bf
+    2 2 2 2 2 2 2 2       ;; c0 - c7
+    2 3 2 2 2 2 2 2       ;; c8 - cf
+    2 2 2 2 2 2 2 2       ;; d0 - d7
+    2 2 2 2 2 2 2 2       ;; d8 - df
+    2 2 2 2 2 2 2 2       ;; e0 - e7
+    2 2 2 2 2 2 2 2       ;; e8 - ef
+    2 2 2 2 2 2 2 2       ;; f0 - f7
+    2 2 2 2 2 2 2 0       ;; f8 - ff
     ])
+
+(defvar unicad-euckr-state-table
+  (let ((eStart 0)
+        (eError 1)
+        (eItsMe 2))
+    (vector
+     ;; 0   1      2      3
+     eError eStart 3      eError
+     eError eError eError eError
+     eItsMe eItsMe eItsMe eItsMe
+     eError eError eStart eStart)))
+
+(defvar unicad-euckr-charlen-table
+  [0  1  2  0])
+
+(defvar unicad-euckr-sm-model
+  (list
+   (cons 'classTable  unicad-euckr-class-table)
+   (cons 'classFactor  4 )
+   (cons 'stateTable  unicad-euckr-state-table)
+   (cons 'charLenTable  unicad-euckr-charlen-table)
+   (cons 'name 'euc-kr)))
+
+;;}}}
+;;{{{  euctw state machine
+(defvar unicad-euctw-class-table
+  `[
+    ;;,(PCK4BITS 0 2 2 2 2 2 2 2)   ;; 00 - 07
+    2 2 2 2 2 2 2 2       ;; 00 - 07
+    2 2 2 2 2 2 0 0       ;; 08 - 0f
+    2 2 2 2 2 2 2 2       ;; 10 - 17
+    2 2 2 2 2 2 2 2       ;; 2 2 2 0 2 2 2 2       ;; 18 - 1f
+    2 2 2 2 2 2 2 2       ;; 20 - 27
+    2 2 2 2 2 2 2 2       ;; 28 - 2f
+    2 2 2 2 2 2 2 2       ;; 30 - 37
+    2 2 2 2 2 2 2 2       ;; 38 - 3f
+    2 2 2 2 2 2 2 2       ;; 40 - 47
+    2 2 2 2 2 2 2 2       ;; 48 - 4f
+    2 2 2 2 2 2 2 2       ;; 50 - 57
+    2 2 2 2 2 2 2 2       ;; 58 - 5f
+    2 2 2 2 2 2 2 2       ;; 60 - 67
+    2 2 2 2 2 2 2 2       ;; 68 - 6f
+    2 2 2 2 2 2 2 2       ;; 70 - 77
+    2 2 2 2 2 2 2 2       ;; 78 - 7f
+    0 0 0 0 0 0 0 0       ;; 80 - 87
+    0 0 0 0 0 0 6 0       ;; 88 - 8f
+    0 0 0 0 0 0 0 0       ;; 90 - 97
+    0 0 0 0 0 0 0 0       ;; 98 - 9f
+    0 3 4 4 4 4 4 4       ;; a0 - a7
+    5 5 1 1 1 1 1 1       ;; a8 - af
+    1 1 1 1 1 1 1 1       ;; b0 - b7
+    1 1 1 1 1 1 1 1       ;; b8 - bf
+    1 1 3 1 3 3 3 3       ;; c0 - c7
+    3 3 3 3 3 3 3 3       ;; c8 - cf
+    3 3 3 3 3 3 3 3       ;; d0 - d7
+    3 3 3 3 3 3 3 3       ;; d8 - df
+    3 3 3 3 3 3 3 3       ;; e0 - e7
+    3 3 3 3 3 3 3 3       ;; e8 - ef
+    3 3 3 3 3 3 3 3       ;; f0 - f7
+    3 3 3 3 3 3 3 0       ;; f8 - ff
+    ])
+
+(defvar unicad-euctw-state-table
+  (let ((eStart 0)
+        (eError 1)
+        (eItsMe 2))
+    (vector
+     ;;  0   1     2      3      4      5      6
+     eError eError eStart 3      3      3      4
+     eError eError eError eError eError eError eError
+     eItsMe eItsMe eItsMe eItsMe eItsMe eItsMe eItsMe
+     eError eStart eError eStart eStart eStart eError
+     eError eError eError eError 5      eError eError
+     eError eStart eError eStart eStart eStart eError)))
+
+(defvar unicad-euctw-charlen-table
+      [0  0  1  2  2  2  3])
+
+(defvar unicad-euctw-sm-model
+  (list
+   (cons 'classTable  unicad-euctw-class-table)
+   (cons 'classFactor  7 )
+   (cons 'stateTable  unicad-euctw-state-table)
+   (cons 'charLenTable  unicad-euctw-charlen-table)
+   (cons 'name  'euc-tw)))
+
+;;}}}
+
+;;{{{  Multibyte Prober
+
+(defun unicad-multibyte-group-prober (start end)
+  "extract the multibyte chardet prober functions from
+`unicad-multibyte-group-list', compare the confidence of each
+chardet and return the best guess."
+  (let ((lists unicad-multibyte-group-list)
+        (mState 'eDetecting)
+        (bestConf 0.0)
+        state chardet mBestGuess cf)
+    (setq unicad-best-guess '(nil 0.0))
+    (while (and lists (eq mState 'eDetecting))
+      (setq chardet (pop lists))
+      (setq state (funcall (unicad-chardet-prober chardet)
+                           start end))
+      (cond
+       ((eq state 'eFoundIt)
+        (setq mBestGuess (unicad-chardet-name chardet))
+        (setq bestConf unicad--sure-yes)
+        (setq mState 'eFoundIt))
+       ((eq state 'eNotMe) nil)
+       (t
+        (setq cf (unicad-chardet-confidence chardet))
+        (if (> cf bestConf)
+            (progn
+              (setq mBestGuess (unicad-chardet-name chardet))
+              (setq bestConf cf))))))
+    (if (or (<= bestConf unicad--sure-no) (null mBestGuess))
+        (setq mState 'eNotMe)
+      (setq unicad-best-guess (list mBestGuess bestConf)))
+    mState))
+
+(defun unicad-cjk-prober (start end chardet model dist-table dist-ratio analyser)
+  "A generic prober for two byte coding system. e.g. chinese,
+japanese, korean"
+  (let ((mState 'eDetecting)
+        (mConfidence 0.0)
+        (code0 0) (code1 0)
+        (size (- end start))
+        (mb-num 0)                      ;number of multi-byte words
+        (mCodingSystem (cdr (assoc 'name model)))
+        codingState charlen)
+    (unicad-sm-reset)
+    (unicad-dist-table-reset dist-table)
+    (save-excursion
+      (goto-char start)
+      (setq code1 (unicad-char-after))
+      (while (and (< (point) end)
+                  (eq mState 'eDetecting)
+                  (< mb-num unicad-quick-multibyte-words))
+        (setq code1 (unicad-char-after))
+        (setq codingState (unicad-next-state code1 model))
+        (forward-char 1)
+        (if (and (= code0 #x0D) (= code1 #x0A))
+            (setq unicad-eol 1))
+        (cond
+         ;; we are interested only in 2-byte
+         ((= codingState unicad--eStart)
+          (setq charlen (unicad-sm-get 'mCharLen))
+          (if (> charlen 1)
+                (setq mb-num  (1+ mb-num)))
+          ;; we need the analyser, only when charlen > 1
+          (and (> charlen 1) (funcall analyser code0 code1)))
+         ((= codingState unicad--eError)
+          (setq mState 'eNotMe)
+          (unicad-chardet-set-confidence chardet unicad--sure-no))
+         ((= codingState unicad--eItsMe)
+          (setq mState 'eFoundIt)
+          (unicad-chardet-set-confidence chardet unicad--sure-yes))
+         (t nil))
+        (setq code0 code1))
+      (if (eq mState 'eDetecting)
+          (if (and (> (setq mConfidence (unicad-dist-table-get-confidence dist-table dist-ratio size
+                                                                          (eq unicad-cjk-prefer mCodingSystem)))
+                      unicad-threshold)
+                   (> (unicad-dist-table-total-chars dist-table)
+                      unicad-data-threshold))
+              (progn
+                (setq mState 'eFoundIt)
+                (unicad-chardet-set-confidence chardet unicad--sure-yes))
+            (if (= (unicad-chardet-set-confidence chardet mConfidence) unicad--sure-yes)
+                (setq mState 'eFoundIt))))
+      mState)))
+;;}}}
+
+;;{{{  utf8 prober
+(defvar unicad-utf8-list (unicad-chardet unicad-multibyte-group-list 'unicad-utf8-prober))
+
+(defun unicad-utf8-prober (start end)
+  "Detect for utf-8 coding-system by state
+machine (`unicad-next-state') and get the confidence"
+  (let ((mState 'eDetecting)
+        (mNumOfMBChar 0)
+        codingState charlen (mConfidence 0.0))
+    (unicad-sm-reset)
+    (save-excursion
+      (goto-char start)
+      (while (and (< (point) end)
+                  (eq mState 'eDetecting))
+        (setq codingState (unicad-next-state (unicad-char-after)
+                                           unicad-utf8-sm-model))
+        (setq charlen (unicad-sm-get 'mCharLen))
+        (forward-char 1)
+        (cond
+         ((= codingState unicad--eStart)
+          (if (>= charlen 2)
+              (setq mNumOfMBChar (1+ mNumOfMBChar))))
+         ((= codingState unicad--eError)
+          (setq mState 'eNotMe)
+          (unicad-chardet-set-confidence unicad-utf8-list unicad--sure-no))
+         ((= codingState unicad--eItsMe)
+          (setq mState 'eFoundIt)
+          (unicad-chardet-set-confidence unicad-utf8-list unicad--sure-yes))
+         (t nil)))
+      (if (eq mState 'eDetecting)
+          (if (> (setq mConfidence (unicad-utf8-get-confidence mNumOfMBChar)) unicad-threshold)
+              (progn
+                (setq mState 'eFoundIt)
+                (unicad-chardet-set-confidence unicad-utf8-list unicad--sure-yes))
+            (unicad-chardet-set-confidence unicad-utf8-list mConfidence)))
+      mState)))
+
+(defun unicad-utf8-get-confidence (mNumOfMBChar)
+  "calculate the confidence for utf-8"
+  (let ((unlike unicad--sure-yes)
+        (one-char-prob 0.5))
+    (if (< mNumOfMBChar 6)
+        (setq unlike (* (expt one-char-prob mNumOfMBChar) unlike))
+      (setq unlike unicad--sure-no))
+    (- 1 unlike)))
+
+;;}}}
+;;{{{  ucs2be and ucs2le prober
+
+(defvar unicad-ucs2be-list (unicad-chardet unicad-multibyte-group-list 'unicad-ucs2be-prober))
+
+(defun unicad-ucs2be-prober (start end)
+  "A simple prober function for utf-16-be. It only counts the
+eol, space, numbers and english letters."
+  (let ((mState 'eNotMe)
+        (count 0)
+        code0 code1)
+    (setq start (point-min)
+          end (min (point-max) 1000))
+    (if (% end 2)
+        (setq end (1- end)))
+    (save-excursion
+      (goto-char start)
+      (while (and (< (point) end)
+                  (eq mState 'eNotMe))
+        (setq code0 (unicad-char-after))
+        (forward-char 1)
+        (setq code1 (unicad-char-after))
+        (forward-char 1)
+        (when (= code0 0)
+          (if (or (= code1 #x0d)
+                  (= code1 #x0a)
+                  (= code1 #x20)
+                  (and (> code1 ?0) (< code1 ?9))
+                  (and (> code1 ?a) (< code1 ?z))
+                  (and (> code1 ?A) (< code1 ?Z)))
+              (setq count (1+ count)))
+          (if (> count 10)
+              (progn
+                (setq mState 'eFoundIt)
+                (unicad-chardet-set-confidence unicad-ucs2be-list unicad--sure-yes))
+            (unicad-chardet-set-confidence unicad-ucs2be-list unicad--sure-no)))))
+    mState))
+
+(defvar unicad-ucs2le-list (unicad-chardet unicad-multibyte-group-list 'unicad-ucs2le-prober))
+
+(defun unicad-ucs2le-prober (start end)
+  "A simple prober function for utf-16-le. It only counts the
+eol, space, numbers and english letters."
+  (let ((mState 'eNotMe)
+        (count 0)
+        code0 code1)
+    (setq start (point-min)
+          end (min (point-max) 1000))
+    (if (% end 2)
+        (setq end (1- end)))
+    (save-excursion
+      (goto-char start)
+      (while (and (< (point) end)
+                  (eq mState 'eNotMe))
+        (setq code0 (unicad-char-after))
+        (forward-char 1)
+        (setq code1 (unicad-char-after))
+        (forward-char 1)
+        (when (= code1 0)
+          (if (or (= code0 #x0d)
+                  (= code0 #x0a)
+                  (= code0 #x20)
+                  (and (> code0 ?0) (< code0 ?9))
+                  (and (> code0 ?a) (< code0 ?z))
+                  (and (> code0 ?A) (< code0 ?Z)))
+              (setq count (1+ count)))
+          (if (> count 10)
+              (progn
+                (setq mState 'eFoundIt)
+                (unicad-chardet-set-confidence unicad-ucs2le-list unicad--sure-yes))
+            (unicad-chardet-set-confidence unicad-ucs2le-list unicad--sure-no)))))
+    mState))
+
+;;}}}
+;;{{{  ucs2 state machine
+;; the state machine for ucs2 seems doesn't work.
+;; so I use the simple prober above to detect ucs2
+
+(defconst unicad-ucs2be-class-table
+  [
+   0 0 0 0 0 0 0 0 ;; 00 - 07
+   0 0 1 0 0 2 0 0 ;; 08 - 0f
+   0 0 0 0 0 0 0 0 ;; 10 - 17
+   0 0 0 3 0 0 0 0 ;; 18 - 1f
+   0 0 0 0 0 0 0 0 ;; 20 - 27
+   0 3 3 3 3 3 0 0 ;; 28 - 2f
+   0 0 0 0 0 0 0 0 ;; 30 - 37
+   0 0 0 0 0 0 0 0 ;; 38 - 3f
+   0 0 0 0 0 0 0 0 ;; 40 - 47
+   0 0 0 0 0 0 0 0 ;; 48 - 4f
+   0 0 0 0 0 0 0 0 ;; 50 - 57
+   0 0 0 0 0 0 0 0 ;; 58 - 5f
+   0 0 0 0 0 0 0 0 ;; 60 - 67
+   0 0 0 0 0 0 0 0 ;; 68 - 6f
+   0 0 0 0 0 0 0 0 ;; 70 - 77
+   0 0 0 0 0 0 0 0 ;; 78 - 7f
+   0 0 0 0 0 0 0 0 ;; 80 - 87
+   0 0 0 0 0 0 0 0 ;; 88 - 8f
+   0 0 0 0 0 0 0 0 ;; 90 - 97
+   0 0 0 0 0 0 0 0 ;; 98 - 9f
+   0 0 0 0 0 0 0 0 ;; a0 - a7
+   0 0 0 0 0 0 0 0 ;; a8 - af
+   0 0 0 0 0 0 0 0 ;; b0 - b7
+   0 0 0 0 0 0 0 0 ;; b8 - bf
+   0 0 0 0 0 0 0 0 ;; c0 - c7
+   0 0 0 0 0 0 0 0 ;; c8 - cf
+   0 0 0 0 0 0 0 0 ;; d0 - d7
+   0 0 0 0 0 0 0 0 ;; d8 - df
+   0 0 0 0 0 0 0 0 ;; e0 - e7
+   0 0 0 0 0 0 0 0 ;; e8 - ef
+   0 0 0 0 0 0 0 0 ;; f0 - f7
+   0 0 0 0 0 0 4 5 ;; f8 - ff
+   ])
+
+
+(defconst unicad-ucs2be-state-table
+  (let ((eStart 0)
+        (eError 1)
+        (eItsMe 2))
+    (vector
+     5      7      7 eError      4      3 eError eError ;;00-07
+     eError eError eError eError eItsMe eItsMe eItsMe eItsMe ;;08-0f
+     eItsMe eItsMe      6      6      6      6 eError eError ;;10-17
+     6      6      6      6      6 eItsMe      6      6      ;;18-1f
+     6      6      6      6      5      7      7 eError      ;;20-27
+     5      8      6      6 eError      6      6      6      ;;28-2f
+     6      6      6      6 eError eError eStart eStart      ;;30-37
+     )))
+
+(defconst unicad-ucs2be-charlen-table
+  [2  2  2  0  2  2])
+
+(defvar unicad-ucs2be-sm-model
+  (list
+   (cons 'classTable unicad-ucs2be-class-table)
+   (cons 'classFactor 6)
+   (cons 'stateTable unicad-ucs2be-state-table)
+   (cons 'charLenTable unicad-ucs2be-charlen-table)
+   (cons 'name "UTF-16-BE")))
+
+(defconst unicad-ucs2le-class-table
+  [
+   0 0 0 0 0 0 0 0 ;; 00 - 07
+   0 0 1 0 0 2 0 0 ;; 08 - 0f
+   0 0 0 0 0 0 0 0 ;; 10 - 17
+   0 0 0 3 0 0 0 0 ;; 18 - 1f
+   0 0 0 0 0 0 0 0 ;; 20 - 27
+   0 3 3 3 3 3 0 0 ;; 28 - 2f
+   0 0 0 0 0 0 0 0 ;; 30 - 37
+   0 0 0 0 0 0 0 0 ;; 38 - 3f
+   0 0 0 0 0 0 0 0 ;; 40 - 47
+   0 0 0 0 0 0 0 0 ;; 48 - 4f
+   0 0 0 0 0 0 0 0 ;; 50 - 57
+   0 0 0 0 0 0 0 0 ;; 58 - 5f
+   0 0 0 0 0 0 0 0 ;; 60 - 67
+   0 0 0 0 0 0 0 0 ;; 68 - 6f
+   0 0 0 0 0 0 0 0 ;; 70 - 77
+   0 0 0 0 0 0 0 0 ;; 78 - 7f
+   0 0 0 0 0 0 0 0 ;; 80 - 87
+   0 0 0 0 0 0 0 0 ;; 88 - 8f
+   0 0 0 0 0 0 0 0 ;; 90 - 97
+   0 0 0 0 0 0 0 0 ;; 98 - 9f
+   0 0 0 0 0 0 0 0 ;; a0 - a7
+   0 0 0 0 0 0 0 0 ;; a8 - af
+   0 0 0 0 0 0 0 0 ;; b0 - b7
+   0 0 0 0 0 0 0 0 ;; b8 - bf
+   0 0 0 0 0 0 0 0 ;; c0 - c7
+   0 0 0 0 0 0 0 0 ;; c8 - cf
+   0 0 0 0 0 0 0 0 ;; d0 - d7
+   0 0 0 0 0 0 0 0 ;; d8 - df
+   0 0 0 0 0 0 0 0 ;; e0 - e7
+   0 0 0 0 0 0 0 0 ;; e8 - ef
+   0 0 0 0 0 0 0 0 ;; f0 - f7
+   0 0 0 0 0 0 4 5 ;; f8 - ff
+   ])
+
+
+(defconst unicad-ucs2le-state-table
+  (let ((eStart 0)
+        (eError 1)
+        (eItsMe 2))
+    (vector
+     6      6      7      6      4      3 eError eError ;;00-07
+     eError eError eError eError eItsMe eItsMe eItsMe eItsMe ;;08-0f
+     eItsMe eItsMe      5      5      5 eError eItsMe eError ;;10-17
+     5      5      5 eError      5 eError      6      6      ;;18-1f
+     7      6      8      8      5      5      5 eError      ;;20-27
+     5      5      5 eError eError eError      5      5      ;;28-2f
+     5      5      5 eError      5 eError eStart eStart      ;;30-37
+     )))
+
+(defconst unicad-ucs2le-charlen-table
+  [2  2  2  2  2  2])
+
+(defvar unicad-ucs2le-sm-model
+  (list
+   (cons 'classTable unicad-ucs2le-class-table)
+   (cons 'classFactor 6)
+   (cons 'stateTable unicad-ucs2le-state-table)
+   (cons 'charLenTable unicad-ucs2le-charlen-table)
+   (cons 'name "UTF-16-LE")))
+
+;;}}}
+
+;;{{{  gb2312 prober
+(defvar unicad-gb2312-list (unicad-chardet unicad-multibyte-group-list 'unicad-gb2312-prober))
+(defvar unicad-gb2312-dist-table '(0 . 0))
+
+(defsubst unicad-gb2312-prober (start end)
+  (unicad-cjk-prober start end unicad-gb2312-list
+                   unicad-gb18030-sm-model unicad-gb2312-dist-table
+                   unicad-gb2312-dist-ratio 'unicad-gb2312-analyser))
+
+(defun unicad-gb2312-analyser (ch0 ch1)
+  "for GB2312 encoding, we are interested
+first  byte range: 0xb0 -- 0xfe
+second byte range: 0xa1 -- 0xfe
+no validation needed here.  State machine has done that"
+  (when (and (>= ch0 #xb0) (>= ch1 #xa1))
+    (let (order)
+      (setq order (- (+ (* 94 (- ch0 #xb0)) ch1) #xa1))
+      (when (>= order 0)
+        (unicad-dist-table-total-chars++ unicad-gb2312-dist-table)
+        (if (and (< order unicad-gb2312-table-size)
+                 (<= (aref unicad-gb2312-char-freq-order order) 512))
+            (unicad-dist-table-freq-chars++ unicad-gb2312-dist-table))))))
+
+;;}}}
+;;{{{  gbkcht prober
+;; use gbk state machine but use big5 analyser
+
+(defvar unicad-gbkcht-list (unicad-chardet unicad-multibyte-group-list 'unicad-gbkcht-prober))
+(defvar unicad-big5-dist-table '(0 . 0))
+(defsubst unicad-gbkcht-prober (start end)
+  (unicad-cjk-prober start end unicad-gbkcht-list
+                   unicad-gb18030-sm-model unicad-big5-dist-table
+                   unicad-big5-dist-ratio 'unicad-gbkcht-analyser))
+
+
+(defun unicad-gbkcht-analyser (ch0 ch1)
+  "we convert the gbk code into big5, than use `unicad-big5-analyser' to get the order"
+  (let ((chargbk (decode-char 'chinese-gbk (+ (* 256 ch0) ch1))))
+    (when chargbk
+      (let ((bar (encode-coding-char chargbk 'big5)))
+        (if bar
+            (let ((chr0 (string-to-char (substring bar 0)))
+                  (chr1 (string-to-char (substring bar 1))))
+              (unicad-big5-analyser chr0 chr1)))))))
+
 ;;;}}}
+;;{{{  big5 prober
+
+(defvar unicad-big5-list (unicad-chardet unicad-multibyte-group-list 'unicad-big5-prober))
+(defvar unicad-big5-dist-table '(0 . 0))
+(defsubst unicad-big5-prober (start end)
+  (unicad-cjk-prober start end unicad-big5-list
+                   unicad-big5-sm-model unicad-big5-dist-table
+                   unicad-big5-dist-ratio 'unicad-big5-analyser))
+
+(defun unicad-big5-analyser (ch0 ch1)
+  "for big5 encoding, we are interested
+  first  byte range: 0xa4 -- 0xfe
+  second byte range: 0x40 -- 0x7e , 0xa1 -- 0xfe
+no validation needed here. State machine has done that"
+  (when (>= ch0 #xa4)
+    (let ((order -1))
+      (if (>= ch1 #xa1)
+          (setq order (- (+ (* 157 (- ch0 #xa4)) ch1 63) #xa1))
+        (setq order (- (+ (* 157 (- ch0 #xa4)) ch1) #x40)))
+      (when (>= order 0)
+        (unicad-dist-table-total-chars++ unicad-big5-dist-table)
+        (if (and (< order unicad-big5-table-size)
+                 (<= (aref unicad-big5-char-freq-order order) 512))
+            (unicad-dist-table-freq-chars++ unicad-big5-dist-table))))))
+
+;;}}}
+;;{{{  sjis prober
+
+(defvar unicad-sjis-list (unicad-chardet unicad-multibyte-group-list 'unicad-sjis-prober))
+(defvar unicad-sjis-dist-table '(0 . 0))
+(defsubst unicad-sjis-prober (start end)
+  (unicad-cjk-prober start end unicad-sjis-list
+                   unicad-sjis-sm-model unicad-sjis-dist-table
+                   unicad-jis-dist-ratio 'unicad-sjis-analyser))
+
+(defun unicad-sjis-analyser (ch0 ch1)
+  "for sjis encoding, we are interested
+  first  byte range: 0x81 -- 0x9f , 0xe0 -- 0xfe
+  second byte range: 0x40 -- 0x7e,  0x80 -- 0xfc
+no validation needed here. State machine has done that
+ !NOTE! 0xA1 -- 0xDF are valid halfwidth katakana!!!"
+  (let ((order -1))
+    (cond
+     ((and (>= ch0 #x81) (<= ch0 #x9f))
+      (setq order (* 188 (- ch0 #x81))))
+     ((and (>= ch0 #xe0) (<= ch0 #xef))
+      (setq order (* 188 (+ (- ch0 #xe0) 31)))))
+    (when (>= order 0)
+      (setq order (+ order (- ch1 #x40)))
+      (if (> ch1 #x7f)
+          (setq order (1- order))))
+    (when (>= order 0)
+      (unicad-dist-table-total-chars++ unicad-sjis-dist-table)
+      (if (and (< order unicad-jis-table-size)
+               (<= (aref unicad-jis-char-freq-order order) 512))
+          (unicad-dist-table-freq-chars++ unicad-sjis-dist-table)))))
+
+;;}}}
+;;{{{  eucjp prober
+
+(defvar unicad-eucjp-list (unicad-chardet unicad-multibyte-group-list 'unicad-eucjp-prober))
+(defvar unicad-eucjp-dist-table '(0 . 0))
+(defsubst unicad-eucjp-prober (start end)
+  (unicad-cjk-prober start end unicad-eucjp-list
+                   unicad-eucjp-sm-model unicad-eucjp-dist-table
+                   unicad-jis-dist-ratio 'unicad-eucjp-analyser))
+
+(defun unicad-eucjp-analyser (ch0 ch1)
+  "for EUCJP encoding, we are interested
+  first  byte range: 0xa0 -- 0xfe
+  second byte range: 0xa1 -- 0xfe
+no validation needed here. State machine has done that"
+  (when (>= ch0 #xa0)
+    (let (order)
+      (setq order (- (+ (* 94 (- ch0 #xa1)) ch1) #xa1))
+      (when (>= order 0)
+        (unicad-dist-table-total-chars++ unicad-eucjp-dist-table)
+        (if (and (< order unicad-jis-table-size)
+                 (<= (aref unicad-jis-char-freq-order order) 512))
+            (unicad-dist-table-freq-chars++ unicad-eucjp-dist-table))))))
+
+;;}}}
+;;{{{  euckr prober
+
+(defvar unicad-euckr-list (unicad-chardet unicad-multibyte-group-list 'unicad-euckr-prober))
+(defvar unicad-euckr-dist-table '(0 . 0))
+(defsubst unicad-euckr-prober (start end)
+  (unicad-cjk-prober start end unicad-euckr-list
+                   unicad-euckr-sm-model unicad-euckr-dist-table
+                   unicad-jis-dist-ratio 'unicad-euckr-analyser))
+
+(defun unicad-euckr-analyser (ch0 ch1)
+  "for euc-KR encoding, we are interested
+  first  byte range: 0xb0 -- 0xfe
+  second byte range: 0xa1 -- 0xfe
+no validation needed here. State machine has done that"
+  (when (>= ch0 #xb0)
+    (let (order)
+      (setq order (- (+ (* 94 (- ch0 #xb0)) ch1) #xa1))
+      (when (>= order 0)
+        (unicad-dist-table-total-chars++ unicad-euckr-dist-table)
+        (if (and (< order unicad-euckr-table-size)
+                 (<= (aref unicad-euckr-char-freq-order order) 512))
+            (unicad-dist-table-freq-chars++ unicad-euckr-dist-table))))))
+
+;;}}}
+;;{{{  euctw prober
+
+(defvar unicad-euctw-list (unicad-chardet unicad-multibyte-group-list 'unicad-euctw-prober))
+(defvar unicad-euctw-dist-table '(0 . 0))
+(defsubst unicad-euctw-prober (start end)
+  (unicad-cjk-prober start end unicad-euctw-list
+                   unicad-euctw-sm-model unicad-euctw-dist-table
+                   unicad-euctw-dist-ratio 'unicad-euctw-analyser))
+
+(defun unicad-euctw-analyser (ch0 ch1)
+  "for euc-TW encoding, we are interested
+  first  byte range: 0xc4 -- 0xfe
+  second byte range: 0xa1 -- 0xfe
+no validation needed here. State machine has done that"
+  (when (>= ch0 #xc4)
+    (let (order)
+      (setq order (- (+ (* 94 (- ch0 #xc4)) ch1) #xa1))
+      (when (>= order 0)
+        (unicad-dist-table-total-chars++ unicad-euctw-dist-table)
+        (if (and (< order unicad-euctw-table-size)
+                 (<= (aref unicad-euctw-char-freq-order order) 512))
+            (unicad-dist-table-freq-chars++ unicad-euctw-dist-table))))))
+;;}}}
+
+;;{{{  Latin2
+
+(defvar unicad-latin2-class-num 9)   ;; total classes
+
+(defvar unicad-latin2-class-table
+  (let ((UDF 0) ;; undefined
+        (OTH 1) ;; other
+        (ASC 2) ;; ascii capital letter
+        (ASS 3) ;; ascii small letter
+        (ACV 4) ;; accent capital vowel
+        (ACO 5) ;; accent capital other
+        (ASV 6) ;; accent small vowel
+        (ASO 7) ;; accent small other
+        (OTS 8) ;; Other Symbol (> #xA0)
+        )
+    (vector
+     OTH  OTH  OTH  OTH  OTH  OTH  OTH  OTH ;; 00 - 07
+     OTH  OTH  OTH  OTH  OTH  OTH  OTH  OTH ;; 08 - 0F
+     OTH  OTH  OTH  OTH  OTH  OTH  OTH  OTH ;; 10 - 17
+     OTH  OTH  OTH  OTH  OTH  OTH  OTH  OTH ;; 18 - 1F
+     OTH  OTH  OTH  OTH  OTH  OTH  OTH  OTH ;; 20 - 27
+     OTH  OTH  OTH  OTH  OTH  OTH  OTH  OTH ;; 28 - 2F
+     OTH  OTH  OTH  OTH  OTH  OTH  OTH  OTH ;; 30 - 37
+     OTH  OTH  OTH  OTH  OTH  OTH  OTH  OTH ;; 38 - 3F
+     OTH  ASC  ASC  ASC  ASC  ASC  ASC  ASC ;; 40 - 47
+     ASC  ASC  ASC  ASC  ASC  ASC  ASC  ASC ;; 48 - 4F
+     ASC  ASC  ASC  ASC  ASC  ASC  ASC  ASC ;; 50 - 57
+     ASC  ASC  ASC  OTH  OTH  OTH  OTH  OTH ;; 58 - 5F
+     OTH  ASS  ASS  ASS  ASS  ASS  ASS  ASS ;; 60 - 67
+     ASS  ASS  ASS  ASS  ASS  ASS  ASS  ASS ;; 68 - 6F
+     ASS  ASS  ASS  ASS  ASS  ASS  ASS  ASS ;; 70 - 77
+     ASS  ASS  ASS  OTH  OTH  OTH  OTH  OTH ;; 78 - 7F
+     OTH  UDF  OTH  ASO  OTH  OTH  OTH  OTH ;; 80 - 87
+     OTH  OTH  ACO  OTH  ACO  UDF  ACO  UDF ;; 88 - 8F
+     UDF  OTH  OTH  OTH  OTH  OTH  OTH  OTH ;; 90 - 97
+     OTH  OTH  ASO  OTH  ASO  UDF  ASO  ACO ;; 98 - 9F
+     OTS  ACV  OTS  ACO  OTS  ACO  ACO  OTS ;; A0 - A7
+     OTS  ACO  ACO  ACO  ACO  OTS  ACO  ACO ;; A8 - AF
+     OTS  ASV  OTS  ASO  OTS  ASO  ASO  OTS ;; B0 - B7
+     OTS  ASO  ASO  ASO  ASO  OTS  ASO  ASO ;; B8 - BF
+     ACO  ACV  ACV  ACV  ACV  ACO  ACO  ACO ;; C0 - C7
+     ACO  ACV  ACV  ACV  ACV  ACV  ACV  ACO ;; C8 - CF
+     ACO  ACO  ACO  ACV  ACV  ACV  ACV  OTS ;; D0 - D7
+     ACO  ACV  ACV  ACV  ACV  ACO  ACO  ASO ;; D8 - DF
+     ASO  ASV  ASV  ASV  ASV  ASO  ASO  ASO ;; E0 - E7
+     ASO  ASV  ASV  ASV  ASV  ASV  ASV  ASO ;; E8 - EF
+     ASO  ASO  ASO  ASV  ASV  ASV  ASV  OTS ;; F0 - F7
+     ASO  ASV  ASV  ASV  ASV  ASO  ASO  OTS ;; F8 - FF
+     )))
+
+(defvar unicad-latin2-model
+  [
+;; UDF OTH ASC ASS ACV ACO ASV ASO OTS
+   0   0   0   0   0   0   0   0   0 ;; UDF last char
+   0   3   3   3   3   3   3   3   3 ;; OTH
+   0   3   3   3   3   3   3   3   2 ;; ASC
+   0   3   3   3   1   1   3   3   2 ;; ASS
+   0   3   3   3   1   2   1   2   1 ;; ACV
+   0   3   3   3   3   3   3   3   1 ;; ACO
+   0   3   1   3   1   1   1   3   1 ;; ASV
+   0   3   1   3   1   1   3   3   1 ;; ASO
+   0   3   2   2   2   2   1   1   1 ;; OTS
+   ])
+
+;;;}}}
+
+;;{{{  Latin5 iso-8859-9 Turkish
+
+(defvar unicad-latin5-class-num  9)   ;; total classes
+(defvar unicad-latin5-class-table
+  (let ((UDF 0) ;; undefined
+        (OTH 1) ;; other
+        (ASC 2) ;; ascii capital letter
+        (ASS 3) ;; ascii small letter
+        (ACV 4) ;; accent capital vowel
+        (ACO 5) ;; accent capital other
+        (ASV 6) ;; accent small vowel
+        (ASO 7) ;; accent small other
+        (OTS 8) ;; Other Symbol (>= #xA0)
+        )
+    (vector
+     OTH  OTH  OTH  OTH  OTH  OTH  OTH  OTH ;; 00 - 07
+     OTH  OTH  OTH  OTH  OTH  OTH  OTH  OTH ;; 08 - 0F
+     OTH  OTH  OTH  OTH  OTH  OTH  OTH  OTH ;; 10 - 17
+     OTH  OTH  OTH  OTH  OTH  OTH  OTH  OTH ;; 18 - 1F
+     OTH  OTH  OTH  OTH  OTH  OTH  OTH  OTH ;; 20 - 27
+     OTH  OTH  OTH  OTH  OTH  OTH  OTH  OTH ;; 28 - 2F
+     OTH  OTH  OTH  OTH  OTH  OTH  OTH  OTH ;; 30 - 37
+     OTH  OTH  OTH  OTH  OTH  OTH  OTH  OTH ;; 38 - 3F
+     OTH  ASC  ASC  ASC  ASC  ASC  ASC  ASC ;; 40 - 47
+     ASC  ASC  ASC  ASC  ASC  ASC  ASC  ASC ;; 48 - 4F
+     ASC  ASC  ASC  ASC  ASC  ASC  ASC  ASC ;; 50 - 57
+     ASC  ASC  ASC  OTH  OTH  OTH  OTH  OTH ;; 58 - 5F
+     OTH  ASS  ASS  ASS  ASS  ASS  ASS  ASS ;; 60 - 67
+     ASS  ASS  ASS  ASS  ASS  ASS  ASS  ASS ;; 68 - 6F
+     ASS  ASS  ASS  ASS  ASS  ASS  ASS  ASS ;; 70 - 77
+     ASS  ASS  ASS  OTH  OTH  OTH  OTH  OTH ;; 78 - 7F
+     OTH  UDF  OTH  ASO  OTH  OTH  OTH  OTH ;; 80 - 87
+     OTH  OTH  ACO  OTH  ACO  UDF  ACO  UDF ;; 88 - 8F
+     UDF  OTH  OTH  OTH  OTH  OTH  OTH  OTH ;; 90 - 97
+     OTH  OTH  ASO  OTH  ASO  UDF  ASO  ACO ;; 98 - 9F
+     OTS  OTS  OTS  OTS  OTS  OTS  OTS  OTS ;; A0 - A7
+     OTS  OTS  OTS  OTS  OTS  OTS  OTS  OTS ;; A8 - AF
+     OTS  OTS  OTS  OTS  OTS  OTS  OTS  OTS ;; B0 - B7
+     OTS  OTS  OTS  OTS  OTS  OTS  OTS  OTS ;; B8 - BF
+     ACV  ACV  ACV  ACV  ACV  ACV  ACO  ACO ;; C0 - C7
+     ACV  ACV  ACV  ACV  ACV  ACV  ACV  ACV ;; C8 - CF
+     ACO  ACO  ACV  ACV  ACV  ACV  ACV  OTS ;; D0 - D7
+     ACV  ACV  ACV  ACV  ACV  ACO  ACO  ASO ;; D8 - DF
+     ASV  ASV  ASV  ASV  ASV  ASV  ASO  ASO ;; E0 - E7
+     ASV  ASV  ASV  ASV  ASV  ASV  ASV  ASV ;; E8 - EF
+     ASO  ASO  ASV  ASV  ASV  ASV  ASV  OTS ;; F0 - F7
+     ASV  ASV  ASV  ASV  ASV  ASO  ASO  ASO ;; F8 - FF
+     )))
+
+(defvar unicad-latin5-model
+  [
+;; UDF OTH ASC ASS ACV ACO ASV ASO OTS
+   0   0   0   0   0   0   0   0   0 ;; UDF last char
+   0   3   3   3   3   3   3   3   3 ;; OTH
+   0   3   3   3   3   3   3   3   2 ;; ASC
+   0   3   3   3   1   1   3   3   2 ;; ASS
+   0   3   3   3   1   2   1   2   1 ;; ACV
+   0   3   3   3   3   3   3   3   1 ;; ACO
+   0   3   1   3   1   1   1   3   1 ;; ASV
+   0   3   1   3   1   1   3   3   1 ;; ASO
+   0   3   2   2   2   2   1   1   1 ;; OTS
+   ])
+;;;}}}
+
+;;{{{  latin1 state machine
+(defvar unicad-latin1-class-num  9)   ;; total classes
+(defvar unicad-latin1-class-table
+  (let ((UDF 0) ;; undefined
+        (OTH 1) ;; other
+        (ASC 2) ;; ascii capital letter
+        (ASS 3) ;; ascii small letter
+        (ACV 4) ;; accent capital vowel
+        (ACO 5) ;; accent capital other
+        (ASV 6) ;; accent small vowel
+        (ASO 7) ;; accent small other
+        (OTS 8) ;; Other Symbol (>= #xA0)
+        )
+    (vector
+     OTH  OTH  OTH  OTH  OTH  OTH  OTH  OTH ;; 00 - 07
+     OTH  OTH  OTH  OTH  OTH  OTH  OTH  OTH ;; 08 - 0F
+     OTH  OTH  OTH  OTH  OTH  OTH  OTH  OTH ;; 10 - 17
+     OTH  OTH  OTH  OTH  OTH  OTH  OTH  OTH ;; 18 - 1F
+     OTH  OTH  OTH  OTH  OTH  OTH  OTH  OTH ;; 20 - 27
+     OTH  OTH  OTH  OTH  OTH  OTH  OTH  OTH ;; 28 - 2F
+     OTH  OTH  OTH  OTH  OTH  OTH  OTH  OTH ;; 30 - 37
+     OTH  OTH  OTH  OTH  OTH  OTH  OTH  OTH ;; 38 - 3F
+     OTH  ASC  ASC  ASC  ASC  ASC  ASC  ASC ;; 40 - 47
+     ASC  ASC  ASC  ASC  ASC  ASC  ASC  ASC ;; 48 - 4F
+     ASC  ASC  ASC  ASC  ASC  ASC  ASC  ASC ;; 50 - 57
+     ASC  ASC  ASC  OTH  OTH  OTH  OTH  OTH ;; 58 - 5F
+     OTH  ASS  ASS  ASS  ASS  ASS  ASS  ASS ;; 60 - 67
+     ASS  ASS  ASS  ASS  ASS  ASS  ASS  ASS ;; 68 - 6F
+     ASS  ASS  ASS  ASS  ASS  ASS  ASS  ASS ;; 70 - 77
+     ASS  ASS  ASS  OTH  OTH  OTH  OTH  OTH ;; 78 - 7F
+     OTH  UDF  OTH  ASO  OTH  OTH  OTH  OTH ;; 80 - 87
+     OTH  OTH  ACO  OTH  ACO  UDF  ACO  UDF ;; 88 - 8F
+     UDF  OTH  OTH  OTH  OTH  OTH  OTH  OTH ;; 90 - 97
+     OTH  OTH  ASO  OTH  ASO  UDF  ASO  ACO ;; 98 - 9F
+     OTS  OTS  OTS  OTS  OTS  OTS  OTS  OTS ;; A0 - A7
+     OTS  OTS  OTS  OTS  OTS  OTS  OTS  OTS ;; A8 - AF
+     OTS  OTS  OTS  OTS  OTS  OTS  OTS  OTS ;; B0 - B7
+     OTS  OTS  OTS  OTS  OTS  OTS  OTS  OTS ;; B8 - BF
+     ACV  ACV  ACV  ACV  ACV  ACV  ACO  ACO ;; C0 - C7
+     ACV  ACV  ACV  ACV  ACV  ACV  ACV  ACV ;; C8 - CF
+     ACO  ACO  ACV  ACV  ACV  ACV  ACV  OTS ;; D0 - D7
+     ACV  ACV  ACV  ACV  ACV  ACO  ACO  ASO ;; D8 - DF
+     ASV  ASV  ASV  ASV  ASV  ASV  ASO  ASO ;; E0 - E7
+     ASV  ASV  ASV  ASV  ASV  ASV  ASV  ASV ;; E8 - EF
+     ASO  ASO  ASV  ASV  ASV  ASV  ASV  OTS ;; F0 - F7
+     ASV  ASV  ASV  ASV  ASV  ASO  ASO  ASO ;; F8 - FF
+     )))
+
+(defvar unicad-latin1-model
+  [
+;; UDF OTH ASC ASS ACV ACO ASV ASO OTS
+   0   0   0   0   0   0   0   0   0 ;; UDF last char
+   0   3   3   3   3   3   3   3   3 ;; OTH
+   0   3   3   3   3   3   3   3   2 ;; ASC
+   0   3   3   3   1   1   3   3   2 ;; ASS
+   0   3   3   3   1   2   1   2   1 ;; ACV
+   0   3   3   3   3   3   3   3   1 ;; ACO
+   0   3   1   3   1   1   1   3   1 ;; ASV
+   0   3   1   3   1   1   3   3   1 ;; ASO
+   0   3   2   2   2   2   1   1   1 ;; OTS
+   ])
+;;}}}
+
+;;{{{  latin prober
+
+(defun unicad-latin-group-prober (start end)
+  "for latin-1 and latin-2"
+  (let (latin1-conf latin2-conf)
+    (save-excursion
+      (setq latin1-conf
+            (unicad-latin-prober start end
+                                 unicad-latin1-class-table unicad-latin1-class-num unicad-latin1-model))
+      (if (>= latin1-conf 0.5)
+          (setq unicad-latin-best-guess (list 'latin-1 latin1-conf))
+        (setq latin2-conf
+              (unicad-latin-prober start end
+                                   unicad-latin2-class-table unicad-latin2-class-num unicad-latin2-model))
+        (if (> latin1-conf latin2-conf)
+            (setq unicad-latin-best-guess (list 'latin-1 latin1-conf))
+          (setq unicad-latin-best-guess (list 'latin-2 latin2-conf)))))
+    (cadr unicad-latin-best-guess)))
+
+(defun unicad-latin-prober (start end class-table class-num latin-model)
+  (let ((mState 'eDetecting)
+        (code0-class 1)                 ; OTH
+        (mFreqCounter [0 0 0 0])
+        (code0 0)
+        code1-class code1 freq)
+    (fillarray mFreqCounter 0)
+    (save-excursion
+      (goto-char start)
+      (setq unicad-latin-best-guess '(latin-1 0.0))
+      (while (and (< (point) end)
+                  (not (eq mState 'eNotMe))
+                  (< (aref mFreqCounter 3) 2000))
+        (setq code1 (unicad-char-after))
+        (forward-char 1)
+        (if (and (= code0 #x0D) (= code1 #x0A))
+            (setq unicad-eol 1))
+        (setq code1-class (aref class-table code1))
+        (setq freq (aref latin-model
+                         (+ (* code0-class class-num)
+                            code1-class)))
+        (if (= freq 0)
+            (setq mState 'eNotMe)
+          (aset mFreqCounter freq (1+ (aref mFreqCounter freq)))
+          )
+        (setq code0-class code1-class
+                code0 code1)))
+    (unicad-latin-get-confidence mState mFreqCounter)))
+
+(defun unicad-latin-get-confidence (mState mFreqCounter)
+  (let ((confidence 0.0)
+        (total 0))
+    (if (eq mState 'eNotMe)
+        unicad--sure-no
+      (setq total (apply '+ (append mFreqCounter nil)))
+      (when (> total 0)
+        (setq confidence (- (/ (* (aref mFreqCounter 3) 1.0) total)
+                            (/ (* (aref mFreqCounter 1) 20.0) total))))
+      (max unicad--sure-no (* confidence 0.5)))))
+
+
+;;}}}
 
 ;;{{{  HZ state machine
 
@@ -4311,38 +4411,38 @@ no validation needed here. State machine has done that"
 ;; static PRUint32 HZ-cls
 (defconst unicad-hz-class-table
   [
-   1 0 0 0 0 0 0 0 ;; 00 - 07 
-   0 0 0 0 0 0 0 0 ;; 08 - 0f 
-   0 0 0 0 0 0 0 0 ;; 10 - 17 
-   0 0 0 1 0 0 0 0 ;; 18 - 1f 
-   0 0 0 0 0 0 0 0 ;; 20 - 27 
-   0 0 0 0 0 0 0 0 ;; 28 - 2f 
-   0 0 0 0 0 0 0 0 ;; 30 - 37 
-   0 0 0 0 0 0 0 0 ;; 38 - 3f 
-   0 0 0 0 0 0 0 0 ;; 40 - 47 
-   0 0 0 0 0 0 0 0 ;; 48 - 4f 
-   0 0 0 0 0 0 0 0 ;; 50 - 57 
-   0 0 0 0 0 0 0 0 ;; 58 - 5f 
-   0 0 0 0 0 0 0 0 ;; 60 - 67 
-   0 0 0 0 0 0 0 0 ;; 68 - 6f 
-   0 0 0 0 0 0 0 0 ;; 70 - 77 
-   0 0 0 4 0 5 2 0 ;; 78 - 7f 
-   1 1 1 1 1 1 1 1 ;; 80 - 87 
-   1 1 1 1 1 1 1 1 ;; 88 - 8f 
-   1 1 1 1 1 1 1 1 ;; 90 - 97 
-   1 1 1 1 1 1 1 1 ;; 98 - 9f 
-   1 1 1 1 1 1 1 1 ;; a0 - a7 
-   1 1 1 1 1 1 1 1 ;; a8 - af 
-   1 1 1 1 1 1 1 1 ;; b0 - b7 
-   1 1 1 1 1 1 1 1 ;; b8 - bf 
-   1 1 1 1 1 1 1 1 ;; c0 - c7 
-   1 1 1 1 1 1 1 1 ;; c8 - cf 
-   1 1 1 1 1 1 1 1 ;; d0 - d7 
-   1 1 1 1 1 1 1 1 ;; d8 - df 
-   1 1 1 1 1 1 1 1 ;; e0 - e7 
-   1 1 1 1 1 1 1 1 ;; e8 - ef 
-   1 1 1 1 1 1 1 1 ;; f0 - f7 
-   1 1 1 1 1 1 1 1 ;; f8 - ff 
+   1 0 0 0 0 0 0 0 ;; 00 - 07
+   0 0 0 0 0 0 0 0 ;; 08 - 0f
+   0 0 0 0 0 0 0 0 ;; 10 - 17
+   0 0 0 1 0 0 0 0 ;; 18 - 1f
+   0 0 0 0 0 0 0 0 ;; 20 - 27
+   0 0 0 0 0 0 0 0 ;; 28 - 2f
+   0 0 0 0 0 0 0 0 ;; 30 - 37
+   0 0 0 0 0 0 0 0 ;; 38 - 3f
+   0 0 0 0 0 0 0 0 ;; 40 - 47
+   0 0 0 0 0 0 0 0 ;; 48 - 4f
+   0 0 0 0 0 0 0 0 ;; 50 - 57
+   0 0 0 0 0 0 0 0 ;; 58 - 5f
+   0 0 0 0 0 0 0 0 ;; 60 - 67
+   0 0 0 0 0 0 0 0 ;; 68 - 6f
+   0 0 0 0 0 0 0 0 ;; 70 - 77
+   0 0 0 4 0 5 2 0 ;; 78 - 7f
+   1 1 1 1 1 1 1 1 ;; 80 - 87
+   1 1 1 1 1 1 1 1 ;; 88 - 8f
+   1 1 1 1 1 1 1 1 ;; 90 - 97
+   1 1 1 1 1 1 1 1 ;; 98 - 9f
+   1 1 1 1 1 1 1 1 ;; a0 - a7
+   1 1 1 1 1 1 1 1 ;; a8 - af
+   1 1 1 1 1 1 1 1 ;; b0 - b7
+   1 1 1 1 1 1 1 1 ;; b8 - bf
+   1 1 1 1 1 1 1 1 ;; c0 - c7
+   1 1 1 1 1 1 1 1 ;; c8 - cf
+   1 1 1 1 1 1 1 1 ;; d0 - d7
+   1 1 1 1 1 1 1 1 ;; d8 - df
+   1 1 1 1 1 1 1 1 ;; e0 - e7
+   1 1 1 1 1 1 1 1 ;; e8 - ef
+   1 1 1 1 1 1 1 1 ;; f0 - f7
+   1 1 1 1 1 1 1 1 ;; f8 - ff
    ])
 
 
@@ -4353,12 +4453,12 @@ no validation needed here. State machine has done that"
         (eError 1)
         (eItsMe 2))
     (vector
-     eStart eError      3 eStart eStart eStart eError eError ;;00-07 
-     eError eError eError eError eItsMe eItsMe eItsMe eItsMe ;;08-0f 
-     eItsMe eItsMe eError eError eStart eStart      4 eError ;;10-17 
-          5 eError      6 eError      5      5      4 eError ;;18-1f 
-          4 eError      4      4      4 eError      4 eError ;;20-27 
-          4 eItsMe eStart eStart eStart eStart eStart eStart ;;28-2f 
+     eStart eError      3 eStart eStart eStart eError eError ;;00-07
+     eError eError eError eError eItsMe eItsMe eItsMe eItsMe ;;08-0f
+     eItsMe eItsMe eError eError eStart eStart      4 eError ;;10-17
+          5 eError      6 eError      5      5      4 eError ;;18-1f
+          4 eError      4      4      4 eError      4 eError ;;20-27
+          4 eItsMe eStart eStart eStart eStart eStart eStart ;;28-2f
      )))
 
 ;; static const PRUint32 HZCharLenTable[] = {0  0  0  0  0  0};
@@ -4379,38 +4479,38 @@ no validation needed here. State machine has done that"
 
 (defconst unicad-iso2022cn-class-table
   [
-   2 0 0 0 0 0 0 0 ;; 00 - 07 
-   0 0 0 0 0 0 0 0 ;; 08 - 0f 
-   0 0 0 0 0 0 0 0 ;; 10 - 17 
-   0 0 0 1 0 0 0 0 ;; 18 - 1f 
-   0 0 0 0 0 0 0 0 ;; 20 - 27 
-   0 3 0 0 0 0 0 0 ;; 28 - 2f 
-   0 0 0 0 0 0 0 0 ;; 30 - 37 
-   0 0 0 0 0 0 0 0 ;; 38 - 3f 
-   0 0 0 4 0 0 0 0 ;; 40 - 47 
-   0 0 0 0 0 0 0 0 ;; 48 - 4f 
-   0 0 0 0 0 0 0 0 ;; 50 - 57 
-   0 0 0 0 0 0 0 0 ;; 58 - 5f 
-   0 0 0 0 0 0 0 0 ;; 60 - 67 
-   0 0 0 0 0 0 0 0 ;; 68 - 6f 
-   0 0 0 0 0 0 0 0 ;; 70 - 77 
-   0 0 0 0 0 0 0 0 ;; 78 - 7f 
-   2 2 2 2 2 2 2 2 ;; 80 - 87 
-   2 2 2 2 2 2 2 2 ;; 88 - 8f 
-   2 2 2 2 2 2 2 2 ;; 90 - 97 
-   2 2 2 2 2 2 2 2 ;; 98 - 9f 
-   2 2 2 2 2 2 2 2 ;; a0 - a7 
-   2 2 2 2 2 2 2 2 ;; a8 - af 
-   2 2 2 2 2 2 2 2 ;; b0 - b7 
-   2 2 2 2 2 2 2 2 ;; b8 - bf 
-   2 2 2 2 2 2 2 2 ;; c0 - c7 
-   2 2 2 2 2 2 2 2 ;; c8 - cf 
-   2 2 2 2 2 2 2 2 ;; d0 - d7 
-   2 2 2 2 2 2 2 2 ;; d8 - df 
-   2 2 2 2 2 2 2 2 ;; e0 - e7 
-   2 2 2 2 2 2 2 2 ;; e8 - ef 
-   2 2 2 2 2 2 2 2 ;; f0 - f7 
-   2 2 2 2 2 2 2 2 ;; f8 - ff 
+   2 0 0 0 0 0 0 0 ;; 00 - 07
+   0 0 0 0 0 0 0 0 ;; 08 - 0f
+   0 0 0 0 0 0 0 0 ;; 10 - 17
+   0 0 0 1 0 0 0 0 ;; 18 - 1f
+   0 0 0 0 0 0 0 0 ;; 20 - 27
+   0 3 0 0 0 0 0 0 ;; 28 - 2f
+   0 0 0 0 0 0 0 0 ;; 30 - 37
+   0 0 0 0 0 0 0 0 ;; 38 - 3f
+   0 0 0 4 0 0 0 0 ;; 40 - 47
+   0 0 0 0 0 0 0 0 ;; 48 - 4f
+   0 0 0 0 0 0 0 0 ;; 50 - 57
+   0 0 0 0 0 0 0 0 ;; 58 - 5f
+   0 0 0 0 0 0 0 0 ;; 60 - 67
+   0 0 0 0 0 0 0 0 ;; 68 - 6f
+   0 0 0 0 0 0 0 0 ;; 70 - 77
+   0 0 0 0 0 0 0 0 ;; 78 - 7f
+   2 2 2 2 2 2 2 2 ;; 80 - 87
+   2 2 2 2 2 2 2 2 ;; 88 - 8f
+   2 2 2 2 2 2 2 2 ;; 90 - 97
+   2 2 2 2 2 2 2 2 ;; 98 - 9f
+   2 2 2 2 2 2 2 2 ;; a0 - a7
+   2 2 2 2 2 2 2 2 ;; a8 - af
+   2 2 2 2 2 2 2 2 ;; b0 - b7
+   2 2 2 2 2 2 2 2 ;; b8 - bf
+   2 2 2 2 2 2 2 2 ;; c0 - c7
+   2 2 2 2 2 2 2 2 ;; c8 - cf
+   2 2 2 2 2 2 2 2 ;; d0 - d7
+   2 2 2 2 2 2 2 2 ;; d8 - df
+   2 2 2 2 2 2 2 2 ;; e0 - e7
+   2 2 2 2 2 2 2 2 ;; e8 - ef
+   2 2 2 2 2 2 2 2 ;; f0 - f7
+   2 2 2 2 2 2 2 2 ;; f8 - ff
    ])
 
 
@@ -4419,14 +4519,14 @@ no validation needed here. State machine has done that"
         (eError 1)
         (eItsMe 2))
     (vector
-     eStart      3 eError eStart eStart eStart eStart eStart ;;00-07 
-     eStart eError eError eError eError eError eError eError ;;08-0f 
-     eError eError eItsMe eItsMe eItsMe eItsMe eItsMe eItsMe ;;10-17 
-     eItsMe eItsMe eItsMe eError eError eError      4 eError ;;18-1f 
-     eError eError eError eItsMe eError eError eError eError ;;20-27 
-     5      6 eError eError eError eError eError eError      ;;28-2f 
-     eError eError eError eItsMe eError eError eError eError ;;30-37 
-     eError eError eError eError eError eItsMe eError eStart ;;38-3f 
+     eStart      3 eError eStart eStart eStart eStart eStart ;;00-07
+     eStart eError eError eError eError eError eError eError ;;08-0f
+     eError eError eItsMe eItsMe eItsMe eItsMe eItsMe eItsMe ;;10-17
+     eItsMe eItsMe eItsMe eError eError eError      4 eError ;;18-1f
+     eError eError eError eItsMe eError eError eError eError ;;20-27
+     5      6 eError eError eError eError eError eError      ;;28-2f
+     eError eError eError eItsMe eError eError eError eError ;;30-37
+     eError eError eError eError eError eItsMe eError eStart ;;38-3f
      )))
 
 (defconst unicad-iso2022cn-charlen-table
@@ -4445,38 +4545,38 @@ no validation needed here. State machine has done that"
 
 (defconst unicad-iso2022jp-class-table
   [
-   2 0 0 0 0 0 0 0 ;; 00 - 07 
-   0 0 0 0 0 0 2 2 ;; 08 - 0f 
-   0 0 0 0 0 0 0 0 ;; 10 - 17 
-   0 0 0 1 0 0 0 0 ;; 18 - 1f 
-   0 0 0 0 7 0 0 0 ;; 20 - 27 
-   3 0 0 0 0 0 0 0 ;; 28 - 2f 
-   0 0 0 0 0 0 0 0 ;; 30 - 37 
-   0 0 0 0 0 0 0 0 ;; 38 - 3f 
-   6 0 4 0 8 0 0 0 ;; 40 - 47 
-   0 9 5 0 0 0 0 0 ;; 48 - 4f 
-   0 0 0 0 0 0 0 0 ;; 50 - 57 
-   0 0 0 0 0 0 0 0 ;; 58 - 5f 
-   0 0 0 0 0 0 0 0 ;; 60 - 67 
-   0 0 0 0 0 0 0 0 ;; 68 - 6f 
-   0 0 0 0 0 0 0 0 ;; 70 - 77 
-   0 0 0 0 0 0 0 0 ;; 78 - 7f 
-   2 2 2 2 2 2 2 2 ;; 80 - 87 
-   2 2 2 2 2 2 2 2 ;; 88 - 8f 
-   2 2 2 2 2 2 2 2 ;; 90 - 97 
-   2 2 2 2 2 2 2 2 ;; 98 - 9f 
-   2 2 2 2 2 2 2 2 ;; a0 - a7 
-   2 2 2 2 2 2 2 2 ;; a8 - af 
-   2 2 2 2 2 2 2 2 ;; b0 - b7 
-   2 2 2 2 2 2 2 2 ;; b8 - bf 
-   2 2 2 2 2 2 2 2 ;; c0 - c7 
-   2 2 2 2 2 2 2 2 ;; c8 - cf 
-   2 2 2 2 2 2 2 2 ;; d0 - d7 
-   2 2 2 2 2 2 2 2 ;; d8 - df 
-   2 2 2 2 2 2 2 2 ;; e0 - e7 
-   2 2 2 2 2 2 2 2 ;; e8 - ef 
-   2 2 2 2 2 2 2 2 ;; f0 - f7 
-   2 2 2 2 2 2 2 2 ;; f8 - ff 
+   2 0 0 0 0 0 0 0 ;; 00 - 07
+   0 0 0 0 0 0 2 2 ;; 08 - 0f
+   0 0 0 0 0 0 0 0 ;; 10 - 17
+   0 0 0 1 0 0 0 0 ;; 18 - 1f
+   0 0 0 0 7 0 0 0 ;; 20 - 27
+   3 0 0 0 0 0 0 0 ;; 28 - 2f
+   0 0 0 0 0 0 0 0 ;; 30 - 37
+   0 0 0 0 0 0 0 0 ;; 38 - 3f
+   6 0 4 0 8 0 0 0 ;; 40 - 47
+   0 9 5 0 0 0 0 0 ;; 48 - 4f
+   0 0 0 0 0 0 0 0 ;; 50 - 57
+   0 0 0 0 0 0 0 0 ;; 58 - 5f
+   0 0 0 0 0 0 0 0 ;; 60 - 67
+   0 0 0 0 0 0 0 0 ;; 68 - 6f
+   0 0 0 0 0 0 0 0 ;; 70 - 77
+   0 0 0 0 0 0 0 0 ;; 78 - 7f
+   2 2 2 2 2 2 2 2 ;; 80 - 87
+   2 2 2 2 2 2 2 2 ;; 88 - 8f
+   2 2 2 2 2 2 2 2 ;; 90 - 97
+   2 2 2 2 2 2 2 2 ;; 98 - 9f
+   2 2 2 2 2 2 2 2 ;; a0 - a7
+   2 2 2 2 2 2 2 2 ;; a8 - af
+   2 2 2 2 2 2 2 2 ;; b0 - b7
+   2 2 2 2 2 2 2 2 ;; b8 - bf
+   2 2 2 2 2 2 2 2 ;; c0 - c7
+   2 2 2 2 2 2 2 2 ;; c8 - cf
+   2 2 2 2 2 2 2 2 ;; d0 - d7
+   2 2 2 2 2 2 2 2 ;; d8 - df
+   2 2 2 2 2 2 2 2 ;; e0 - e7
+   2 2 2 2 2 2 2 2 ;; e8 - ef
+   2 2 2 2 2 2 2 2 ;; f0 - f7
+   2 2 2 2 2 2 2 2 ;; f8 - ff
    ])
 
 
@@ -4485,15 +4585,15 @@ no validation needed here. State machine has done that"
         (eError 1)
         (eItsMe 2))
     (vector
-     eStart      3 eError eStart eStart eStart eStart eStart ;;00-07 
-     eStart eStart eError eError eError eError eError eError ;;08-0f 
-     eError eError eError eError eItsMe eItsMe eItsMe eItsMe ;;10-17 
-     eItsMe eItsMe eItsMe eItsMe eItsMe eItsMe eError eError ;;18-1f 
-     eError      5 eError eError eError      4 eError eError ;;20-27 
-     eError eError eError      6 eItsMe eError eItsMe eError ;;28-2f 
-     eError eError eError eError eError eError eItsMe eItsMe ;;30-37 
-     eError eError eError eItsMe eError eError eError eError ;;38-3f 
-     eError eError eError eError eItsMe eError eStart eStart ;;40-47 
+     eStart      3 eError eStart eStart eStart eStart eStart ;;00-07
+     eStart eStart eError eError eError eError eError eError ;;08-0f
+     eError eError eError eError eItsMe eItsMe eItsMe eItsMe ;;10-17
+     eItsMe eItsMe eItsMe eItsMe eItsMe eItsMe eError eError ;;18-1f
+     eError      5 eError eError eError      4 eError eError ;;20-27
+     eError eError eError      6 eItsMe eError eItsMe eError ;;28-2f
+     eError eError eError eError eError eError eItsMe eItsMe ;;30-37
+     eError eError eError eItsMe eError eError eError eError ;;38-3f
+     eError eError eError eError eItsMe eError eStart eStart ;;40-47
      )))
 
 (defconst unicad-iso2022jp-charlen-table
@@ -4512,38 +4612,38 @@ no validation needed here. State machine has done that"
 
 (defconst unicad-iso2022kr-class-table
   [
-   2 0 0 0 0 0 0 0 ;; 00 - 07 
-   0 0 0 0 0 0 0 0 ;; 08 - 0f 
-   0 0 0 0 0 0 0 0 ;; 10 - 17 
-   0 0 0 1 0 0 0 0 ;; 18 - 1f 
-   0 0 0 0 3 0 0 0 ;; 20 - 27 
-   0 4 0 0 0 0 0 0 ;; 28 - 2f 
-   0 0 0 0 0 0 0 0 ;; 30 - 37 
-   0 0 0 0 0 0 0 0 ;; 38 - 3f 
-   0 0 0 5 0 0 0 0 ;; 40 - 47 
-   0 0 0 0 0 0 0 0 ;; 48 - 4f 
-   0 0 0 0 0 0 0 0 ;; 50 - 57 
-   0 0 0 0 0 0 0 0 ;; 58 - 5f 
-   0 0 0 0 0 0 0 0 ;; 60 - 67 
-   0 0 0 0 0 0 0 0 ;; 68 - 6f 
-   0 0 0 0 0 0 0 0 ;; 70 - 77 
-   0 0 0 0 0 0 0 0 ;; 78 - 7f 
-   2 2 2 2 2 2 2 2 ;; 80 - 87 
-   2 2 2 2 2 2 2 2 ;; 88 - 8f 
-   2 2 2 2 2 2 2 2 ;; 90 - 97 
-   2 2 2 2 2 2 2 2 ;; 98 - 9f 
-   2 2 2 2 2 2 2 2 ;; a0 - a7 
-   2 2 2 2 2 2 2 2 ;; a8 - af 
-   2 2 2 2 2 2 2 2 ;; b0 - b7 
-   2 2 2 2 2 2 2 2 ;; b8 - bf 
-   2 2 2 2 2 2 2 2 ;; c0 - c7 
-   2 2 2 2 2 2 2 2 ;; c8 - cf 
-   2 2 2 2 2 2 2 2 ;; d0 - d7 
-   2 2 2 2 2 2 2 2 ;; d8 - df 
-   2 2 2 2 2 2 2 2 ;; e0 - e7 
-   2 2 2 2 2 2 2 2 ;; e8 - ef 
-   2 2 2 2 2 2 2 2 ;; f0 - f7 
-   2 2 2 2 2 2 2 2 ;; f8 - ff 
+   2 0 0 0 0 0 0 0 ;; 00 - 07
+   0 0 0 0 0 0 0 0 ;; 08 - 0f
+   0 0 0 0 0 0 0 0 ;; 10 - 17
+   0 0 0 1 0 0 0 0 ;; 18 - 1f
+   0 0 0 0 3 0 0 0 ;; 20 - 27
+   0 4 0 0 0 0 0 0 ;; 28 - 2f
+   0 0 0 0 0 0 0 0 ;; 30 - 37
+   0 0 0 0 0 0 0 0 ;; 38 - 3f
+   0 0 0 5 0 0 0 0 ;; 40 - 47
+   0 0 0 0 0 0 0 0 ;; 48 - 4f
+   0 0 0 0 0 0 0 0 ;; 50 - 57
+   0 0 0 0 0 0 0 0 ;; 58 - 5f
+   0 0 0 0 0 0 0 0 ;; 60 - 67
+   0 0 0 0 0 0 0 0 ;; 68 - 6f
+   0 0 0 0 0 0 0 0 ;; 70 - 77
+   0 0 0 0 0 0 0 0 ;; 78 - 7f
+   2 2 2 2 2 2 2 2 ;; 80 - 87
+   2 2 2 2 2 2 2 2 ;; 88 - 8f
+   2 2 2 2 2 2 2 2 ;; 90 - 97
+   2 2 2 2 2 2 2 2 ;; 98 - 9f
+   2 2 2 2 2 2 2 2 ;; a0 - a7
+   2 2 2 2 2 2 2 2 ;; a8 - af
+   2 2 2 2 2 2 2 2 ;; b0 - b7
+   2 2 2 2 2 2 2 2 ;; b8 - bf
+   2 2 2 2 2 2 2 2 ;; c0 - c7
+   2 2 2 2 2 2 2 2 ;; c8 - cf
+   2 2 2 2 2 2 2 2 ;; d0 - d7
+   2 2 2 2 2 2 2 2 ;; d8 - df
+   2 2 2 2 2 2 2 2 ;; e0 - e7
+   2 2 2 2 2 2 2 2 ;; e8 - ef
+   2 2 2 2 2 2 2 2 ;; f0 - f7
+   2 2 2 2 2 2 2 2 ;; f8 - ff
    ])
 
 
@@ -4552,11 +4652,11 @@ no validation needed here. State machine has done that"
         (eError 1)
         (eItsMe 2))
     (vector
-     eStart      3 eError eStart eStart eStart eError eError ;;00-07 
-     eError eError eError eError eItsMe eItsMe eItsMe eItsMe ;;08-0f 
-     eItsMe eItsMe eError eError eError      4 eError eError ;;10-17 
-     eError eError eError eError      5 eError eError eError ;;18-1f 
-     eError eError eError eItsMe eStart eStart eStart eStart ;;20-27 
+     eStart      3 eError eStart eStart eStart eError eError ;;00-07
+     eError eError eError eError eItsMe eItsMe eItsMe eItsMe ;;08-0f
+     eItsMe eItsMe eError eError eError      4 eError eError ;;10-17
+     eError eError eError eError      5 eError eError eError ;;18-1f
+     eError eError eError eItsMe eStart eStart eStart eStart ;;20-27
      )))
 
 (defconst unicad-iso2022kr-charlen-table
@@ -4572,9 +4672,87 @@ no validation needed here. State machine has done that"
 
 ;;}}}
 
+;;{{{  Esc CharSet Prober
+
+(defvar unicad-esc-group-list
+  (list
+   'unicad-hz-prober
+   'unicad-iso2022cn-prober
+   'unicad-iso2022jp-prober
+   'unicad-iso2022kr-prober))
+
+(defvar unicad-esc-group-guess nil)
+
+(defun unicad-esc-group-prober (start end)
+  (let ((lists unicad-esc-group-list)
+        (mState 'eDetecting)
+        (mBestGuess nil)
+        (bestConf 0.0)
+        state)
+    (setq unicad-esc-group-guess nil)
+    (while (and lists (eq mState 'eDetecting))
+      (setq state (funcall (pop lists)
+                           start end))
+      (cond
+       ((eq state 'eItsMe)
+        (setq mState 'eFoundIt)
+        (setq mBestGuess (car (nth 0 unicad-esc-group-guess)))
+        (setq bestConf   (cdr (nth 0 unicad-esc-group-guess)))
+        )
+       ((eq state 'eNotMe) nil)
+       ))
+    ))
+
+(defvar unicad-hz-name 'hz-gb-2312)
+(defvar unicad-iso2022cn-name 'iso-2022-cn)
+(defvar unicad-iso2022jp-name 'iso-2022-jp)
+(defvar unicad-iso2022kr-name 'iso-2022-kr)
+
+(defsubst unicad-hz-prober (start end)
+  (unicad-esc-charset-prober
+   start end unicad-hz-name unicad-hz-sm-model))
+
+(defsubst unicad-iso2022cn-prober (start end)
+  (unicad-esc-charset-prober
+   start end unicad-iso2022cn-name unicad-iso2022cn-sm-model))
+
+(defsubst unicad-iso2022jp-prober (start end)
+  (unicad-esc-charset-prober
+   start end unicad-iso2022jp-name unicad-iso2022jp-sm-model))
+
+(defsubst unicad-iso2022kr-prober (start end)
+  (unicad-esc-charset-prober
+   start end unicad-iso2022kr-name unicad-iso2022kr-sm-model))
+
+(defun unicad-esc-charset-prober (start end charset-name model)
+  (let ((mState 'eDetecting)
+        (code0 0)
+        (code1 0)
+        codingState)
+    (unicad-sm-reset)
+    (save-excursion
+      (goto-char start)
+      (while (and (< (point) end)
+                  (eq mState 'eDetecting))
+        (setq code1 (unicad-char-after))
+        (forward-char 1)
+        (if (and (= code0 #x0D) (= code1 #x0A))
+            (setq unicad-eol 1))
+        (setq codingState (unicad-next-state code1 model))
+        (cond
+         ((= codingState unicad--eError)
+          (setq mState 'eNotMe)
+          (push (cons charset-name unicad--sure-no) unicad-esc-group-guess))
+         ((= codingState unicad--eItsMe)
+          (setq mState 'eItsMe)
+          (push (cons charset-name unicad--sure-yes) unicad-esc-group-guess))))
+      )))
+
+;;}}}
+
 (provide 'unicad)
 
 ;;; unicad.el ends here
 ;;; Local Variables:
-;;; coding: utf-8
+;;; coding: utf-8-unix
 ;;; End:

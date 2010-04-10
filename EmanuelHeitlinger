@@ -1,0 +1,28 @@
+I am 
+
+* a biologist using emacs since Summer 2009.
+* derele on #emacs
+* blogging on [http://www.scienceblogs.de/alles-was-lebt/] (in German, together with a second author: Alex)
+
+I use emacs mainly for 
+
+* bioinformatics in perl ([http://www.emacswiki.org/emacs/CPerlMode cperl-mode], [http://obsidianrook.com/perlnow/emacs_as_perl_ide.html perlnow] and [http://www.bioperl.org/wiki/Emacs bioperl-mode])
+* statistics and bioinformatics in R ([http://ess.r-project.org/ emacs-ess])
+* LaTeX (well... most the commonly used packages)
+
+
+I keep track of my emacs customisation on[http://github.com/derele/dotemacs  Github] (through [http://zagadka.vm.bytemark.co.uk/magit/ magit])
+
+
+
+[new:DrewAdams:2010-04-09 13:38 UTC]
+Welcome to the wiki. -- DrewAdams
+
+
+
+
+
+
+
+----
+CategoryHomepage

@@ -60,6 +60,7 @@ navigate.
 [:icicle-find-file]
 [:icicle-find-file-absolute]
 [:icicle-find-file-in-tags-table]
+[:icicle-find-file-read-only]
 [:icicle-find-first-tag]
 [:icicle-find-tag]
 [:icicle-goto-global-marker]
@@ -124,6 +125,7 @@ Here are some of the '''Icicles''' tripping commands:
 * '''`icicle-find-file'''' ('''`C-x C-f'''') -- Trip among files.
 * '''`icicle-find-file-absolute'''' ('''`C-u C-x C-f'''') -- Trip among files.
 * '''`icicle-find-file-in-tags-table'''' -- Trip among the files listed in the current [[TagsFile|tags table]] (think "project")
+* '''`icicle-find-file-read-only'''' ('''`C-x C-r'''') - Visit files in read-only mode (`C-u' to flip).
 * '''`icicle-find-first-tag'''' ('''`##C-x 4 .##'''') -- Trip among [[tag]] hits.
 * '''`icicle-find-tag'''' ('''`##M-.##'''') -- Trip among tag hits.
 * '''`icicle-goto-global-marker'''' ('''`C-- C-x C-SPC'''') -- Trip among

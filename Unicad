@@ -53,11 +53,18 @@ You may byte compile this file to speed up the charset detecting process.
 Emacs already comes with a heuristic to determine the encoding of files opened.
 This heuristic is influenced by the list of preferred coding systems, which in
 turn is determined by the locale (and users calling `prefer-coding-system' in their
-init file).
+init file). 
 
-Unicad offers ...
+However, if your locale is e.g. Chinese or `prefer-coding-system' includes chinese-iso-8bit, 
+and you open a source code written by a German, you'll find Emacs has chosen the 
+wrong coding system in most of cases. In this case, Mule is actually not for real 
+Multilingual environment but for multiple single lingual environment. 
 
-* ?
+On the other hand, Unicad can "guess" the coding system based on charset distribution tables 
+provided by Mozilla Universal Charset Detector, that are sampled from many mega-byte text
+materials. The detection accuracy is well proven in Mozilla Firefox. Unicad.el is trying to bring 
+this ability into Emacs for real multilingual users, especially who uses multibyte coding systems. 
+
 
 ----
 CategoryInternationalization

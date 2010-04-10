@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Apr  3 11:28:48 2010 (-0700)
+;; Last-Updated: Fri Apr  9 15:46:08 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 24926
+;;     Update #: 24931
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3574,7 +3574,11 @@
 ;;  free to interpret these differently.  For example, a prefix arg
 ;;  for `icicle-kmacro' provides a default repeat factor, which can
 ;;  then be overridden for any individual action by providing a
-;;  different prefix arg.
+;;  different prefix arg.  As another example, a prefix arg used with
+;;  any file-name candidate for command `icicle-find-file' visits the
+;;  file in read-only mode.  But a prefix arg for the command itself
+;;  reverses this effect: read-only becomes the default so that a
+;;  prefix arg for a candidate means visit not read-only.
 ;;
 ;;  If user option `icicle-use-candidates-only-once-flag' is non-nil,
 ;;  then, when you act on a candidate, it is removed from the list of
@@ -3961,6 +3965,7 @@
 ;;  * `icicle-find-file-absolute' (`C-u C-x C-f') - Trip among files.
 ;;  * `icicle-find-file-in-tags-table' - Trip among the files listed
 ;;    in the current tags table (think "project")
+;;  * `icicle-find-file-read-only' (`C-x C-r') - Visit read-only.
 ;;  * `icicle-find-first-tag' (`C-x 4 .') - Trip among tag hits.
 ;;  * `icicle-find-tag' (`M-.') - Trip among tag hits.
 ;;  * `icicle-goto-global-marker' (`C-- C-x C-SPC') - Trip among

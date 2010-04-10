@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Apr  3 10:34:54 2010 (-0700)
+;; Last-Updated: Fri Apr  9 14:34:32 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 22682
+;;     Update #: 22683
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -168,9 +168,11 @@
 ;;    `icicle-find-file-absolute-other-window',
 ;;    `icicle-find-file-in-tags-table',
 ;;    `icicle-find-file-in-tags-table-other-window',
-;;    `icicle-find-file-other-window', `icicle-find-tag',
-;;    `icicle-font', `icicle-frame-bg', `icicle-frame-fg',
-;;    `icicle-fundoc', `icicle-goto-global-marker',
+;;    `icicle-find-file-other-window', `icicle-find-file-read-only',
+;;    `icicle-find-file-read-only-other-window',
+;;    `icicle-find-first-tag', `icicle-find-first-tag-other-window',
+;;    `icicle-find-tag', `icicle-font', `icicle-frame-bg',
+;;    `icicle-frame-fg', `icicle-fundoc', `icicle-goto-global-marker',
 ;;    `icicle-goto-global-marker-or-pop-global-mark',
 ;;    `icicle-goto-marker', `icicle-goto-marker-or-set-mark-command',
 ;;    `icicle-grep-saved-file-candidates',
