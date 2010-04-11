@@ -418,7 +418,7 @@
 ;;     `anything-c-source-gentoo'			(Portage sources)
 ;;     `anything-c-source-use-flags'			(Use Flags)
 ;;     `anything-c-source-emacs-process'		(Emacs Process)
-;;     `anything-c-source-info-elisp'    (;;     `anything-c-source-info-elisp'    (;;     `anything-c-source-info-elisp'    (;;     `anything-c-source-info-elisp'    (;;     `anything-c-source-info-elisp'    (;;     `anything-c-source-info-elisp'    (;;     `anything-c-source-info-elisp'    (
+
 ;;; Change log:
 ;;
 ;;  Change log of this file is found at
@@ -457,9 +457,6 @@
 
 
 ;;; TODO
-;;
-;; - anything-c-adaptive stores infos for sources/types that don't have
-;;   set it as `filtered-candidate-transformer'.
 ;;
 ;; - Fix documentation, now many functions haven't documentations.
 ;;
@@ -1661,7 +1658,7 @@ If CANDIDATE is alone, open file CANDIDATE filename."
   (interactive)
   (anything 'anything-c-source-insert-file
             (expand-file-name default-directory)
-            "Insert file here: " nil nil "*Anything insert file*"))
+            "Insert file: " nil nil "*Anything insert file*"))
 
 ;;; Anything completion for copy, rename and (rel)sym/hard/link files from dired.
 (defvar anything-c-source-copy-files
@@ -5952,7 +5949,7 @@ the center of window, otherwise at the top of window.
 ;;; End:
 
 ;; How to save (DO NOT REMOVE!!)
-;; (emacswiki-post "anything-config.el")
+;; (progn (magit-push) (emacswiki-post "anything-config.el"))
 ;;; anything-config.el ends here
 
 ;;; LocalWords:  Tassilo Patrovics Vagn Johansen Dahl Clementson infos

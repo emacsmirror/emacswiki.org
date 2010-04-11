@@ -1,5 +1,5 @@
 ;;; el-expectations.el --- minimalist unit testing framework
-;; $Id: el-expectations.el,v 1.59 2010/04/05 21:50:19 rubikitch Exp $
+;; $Id: el-expectations.el,v 1.60 2010/04/10 22:00:51 rubikitch Exp $
 
 ;; Copyright (C) 2008, 2009, 2010  rubikitch
 
@@ -118,6 +118,9 @@
 ;;; History:
 
 ;; $Log: el-expectations.el,v $
+;; Revision 1.60  2010/04/10 22:00:51  rubikitch
+;; avoid test duplication
+;;
 ;; Revision 1.59  2010/04/05 21:50:19  rubikitch
 ;; C-M-x executes unit tests only when the current defun is expectations.
 ;;
@@ -891,6 +894,17 @@ If `expectations-execute-at-once' is non-nil, execute expectations if it is an e
 (substitute-key-definition 'eval-defun 'expectations-eval-defun emacs-lisp-mode-map)
 (substitute-key-definition 'eval-defun 'expectations-eval-defun lisp-interaction-mode-map)
 
+;;;; To avoid test duplication
+(defadvice load (before el-expectations activate)
+  (and (equal exps-last-filename (locate-library (ad-get-arg 0)))
+       (setq exps-last-testcase nil)))
+;; (progn (ad-disable-advice 'load 'before 'el-expectations) (ad-update 'load))
+
+(defadvice eval-buffer (before el-expectations activate)
+  (and buffer-file-name
+       (equal exps-last-filename buffer-file-name)
+       (setq exps-last-testcase nil)))
+;; (progn (ad-disable-advice 'eval-buffer 'before 'el-expectations) (ad-update 'eval-buffer))
 ;;;; batch mode
 (defun batch-expectations ()
   (if (not noninteractive)

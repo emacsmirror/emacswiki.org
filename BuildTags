@@ -46,7 +46,7 @@ To recurse through directories, run something like this:
   cd /path/to/my/project
   find . -type f -iname "*.[ch]" | etags -L -
 
-FYI: Avoid using `xargs' with `etags' (e.g. ##find . -type f -iname "*.[ch]" | xargs etags##).  For source trees with many files, xargs may execute etags multiple times, overwriting the previous tags file on each execution.
+FYI: If you want to use `xargs' with `etags', you have to use the --append flag (e.g. ##find . -type f -iname "*.[ch]" | xargs etags --append##).  Otherwise, etags will overwrite the tags file for each file it gets from xargs.
 
 === From within emacs ===
 

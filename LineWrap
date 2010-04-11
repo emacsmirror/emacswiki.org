@@ -65,6 +65,8 @@ the lazy dog.
 --- IainDalton
 
 Just fix the second line by hand and then hit M-q or run fill-paragraph. Make sure that the paragraph is surrounded by blank lines (you can add some just to delete them later) so it won’t run two paragraphs together.
+
+Response to statement about fill-paragraph: doesn't fill-paragraph modify the buffer?  If I understand correctly, IainDalton's idea is that the original buffer contains one long line, but the display of that line should wrap the line *and* indent the subsequent lines according to syntax.  So the virtual indenting I'm interested in is effectively fill-paragraph on the display only, not the underlying buffer.  --- Spezzer 
 ----
 CategoryFilling
 CategoryGlossary

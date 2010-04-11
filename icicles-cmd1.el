@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Apr  9 15:18:38 2010 (-0700)
+;; Last-Updated: Sat Apr 10 09:57:48 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 20650
+;;     Update #: 20676
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4953,6 +4953,12 @@ Same as `icicle-find-file-absolute' except uses a different window." ; Doc strin
 If you use a prefix argument when you act on a candidate file name,
 then you visit the file in read-only mode.
 
+If you use a prefix arg for the command itself, this reverses the
+effect of using a prefix arg on individual candidates.  That is, with
+a prefix arg for the command, files are visited in read-only mode by
+default and a prefix arg for an individual file visits it without
+read-only mode.
+
 During completion:
  You can use `C-x m' to access file bookmarks, if you use library
   `bookmark+.el'.
@@ -4976,9 +4982,13 @@ For example, to show only names of files larger than 5000 bytes, set
 Option `icicle-file-require-match-flag' can be used to override
 option `icicle-require-match-flag'."    ; Doc string
   (lambda (file)                        ; Function to perform the action
-    (when init-pref-arg  (setq current-prefix-arg  (not current-prefix-arg)))
-    (if current-prefix-arg (find-file-read-only file 'wildcards) (find-file file 'wildcards)))
-  (concat "File or directory " (and init-pref-arg "(read-only)") ": ") ; `read-file-name' args
+    (let* ((r-o  (if (eq this-command 'icicle-candidate-action)
+                     (or (and init-pref-arg        (not current-prefix-arg))
+                         (and (not init-pref-arg)  current-prefix-arg))
+                   init-pref-arg))
+           (fn   (if r-o 'find-file-read-only 'find-file)))
+      (funcall fn file 'wildcards)))
+  (concat "File or directory" (and init-pref-arg " (read-only)") ": ") ; `read-file-name' args
   nil (and (eq major-mode 'dired-mode) (fboundp 'dired-get-file-for-visit) ; Emacs 22+.
            (condition-case nil          ; E.g. error because not on file line (ignore)
                (abbreviate-file-name (dired-get-file-for-visit))
@@ -5015,11 +5025,13 @@ directory of the current line, you should use `\\<minibuffer-local-completion-ma
 minibuffer.  Or you can just use a different command, such as `\\[dired]',
 to visit the current directory."        ; Doc string
   (lambda (file)                        ; Function to perform the action
-    (when init-pref-arg (setq current-prefix-arg  (not current-prefix-arg)))
-    (if current-prefix-arg
-        (find-file-read-only-other-window file 'wildcards)
-      (find-file-other-window file 'wildcards)))
-  (concat "File or directory " (and init-pref-arg "(read-only)") ": ") ; `read-file-name' args
+    (let* ((r-o  (if (eq this-command 'icicle-candidate-action)
+                     (or (and init-pref-arg        (not current-prefix-arg))
+                         (and (not init-pref-arg)  current-prefix-arg))
+                   init-pref-arg))
+           (fn   (if r-o 'find-file-read-only-other-window 'find-file-other-window)))
+      (funcall fn file 'wildcards)))
+  (concat "File or directory" (and init-pref-arg " (read-only)") ": ") ; `read-file-name' args
   nil (and (eq major-mode 'dired-mode) (fboundp 'dired-get-file-for-visit) ; Emacs 22+.
            (condition-case nil          ; E.g. error because not on file line (ignore)
                (abbreviate-file-name (dired-get-file-for-visit))
@@ -5046,16 +5058,24 @@ to visit the current directory."        ; Doc string
 (defun icicle-find-file-read-only ()    ; Bound to `C-x C-r' in Icicle mode.
   "Visit a file or directory in read-only mode.
 If you use a prefix argument when you act on a candidate file name,
-then visit the file without read-only mode."
+then visit the file without read-only mode.
+
+If you use a prefix arg for the command itself, this reverses the
+effect of using a prefix arg on individual candidates.  That is, with
+a prefix arg for the command, files are not visited in read-only mode
+by default and a prefix arg for an individual file visits it in
+read-only mode."
   (interactive)
-  (let ((current-prefix-arg  t)) (icicle-find-file)))
+  (let ((current-prefix-arg  (not current-prefix-arg)))
+    (icicle-find-file)))
 
 ;;;###autoload
 (defun icicle-find-file-read-only-other-window ()    ; Bound to `C-x 4 r' in Icicle mode.
   "Visit a file or directory in read-only mode in another window.
 Same as `icicle-find-file-read-only' except use a different window."
   (interactive)
-  (let ((current-prefix-arg  t)) (icicle-find-file-other-window)))
+  (let ((current-prefix-arg  (not current-prefix-arg)))
+    (icicle-find-file-other-window)))
 
 
 (put 'icicle-recent-file 'icicle-Completions-window-max-height 200)

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Apr  9 15:31:41 2010 (-0700)
+;; Last-Updated: Sat Apr 10 09:16:13 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5114
+;;     Update #: 5115
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2010/04/10 dadams
+;;     Corrected prefix arg use for icicle-find-file(-read-only)(-other-window).  Thx to M. Heerdegen.
 ;; 2010/04/09 dadams
 ;;     Added: icicle-find-file-read-only(-other-window).
 ;;     icicle-find-file(-other-window):
