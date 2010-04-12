@@ -1,15 +1,28 @@
-
 == Description ==
 
-http://Microsoft.com/powershell ''Microsoft Windows PowerShell command line shell and scripting language helps IT professionals achieve greater control and productivity. Using a new admin-focused scripting language, more than 130 standard command line tools, and consistent syntax and utilities, Windows PowerShell allows IT professionals to more easily control system administration and accelerate automation. Windows PowerShell is easy to adopt, learn, and use, because it works with your existing IT infrastructure and existing script investments, and because it runs on Windows XP, Windows Vista, and Windows Server 2003. Windows PowerShell is now included as part of Windows Server 2008 and can be evaluated in Windows Server 2008 Beta 3. Exchange Server 2007, System Center Operations Manager 2007, System Center Data Protection Manager V2, and System Center Virtual Machine Manager also leverage Windows PowerShell to improve administrator control, efficiency, and productivity.''
+http://Microsoft.com/powershell 
+
+''Microsoft Windows PowerShell command line shell and scripting language helps IT professionals achieve greater control and productivity. Using a new admin-focused scripting language, more than 130 standard command line tools, and consistent syntax and utilities, Windows PowerShell allows IT professionals to more easily control system administration and accelerate automation. Windows PowerShell is easy to adopt, learn, and use, because it works with your existing IT infrastructure and existing script investments, and because it runs on Windows XP, Windows Vista, and Windows Server 2003. Windows PowerShell is now included as part of Windows Server 2008 and can be evaluated in Windows Server 2008 Beta 3. Exchange Server 2007, System Center Operations Manager 2007, System Center Data Protection Manager V2, and System Center Virtual Machine Manager also leverage Windows PowerShell to improve administrator control, efficiency, and productivity.''
 
 
-== Modes ==
+== Editing Mode ==
 
-http://VivekSharma.com/techlog/attache/powershell-mode.el.txt >>Version: 0.5, Author: Vivek Sharma, Date: Oct 2008 
+[http://VivekSharma.com/techlog/attache/powershell-mode.el.txt Powershell-mode]
+Version: 0.5, Author: Vivek Sharma, Date: Oct 2008 
 
-http://Nabble.com/Run-powershell-as-a-shell-within-Emacs-on-Windows-td17504130.html and http://Blogs.MSDN.com/dotnetinterop/archive/2008/04/10/run-powershell-as-a-shell-within-emacs.aspx >>Version: 0.1, Author: Dino Chiesa, Date: Apr 2008
+== Powershell as an Inferior Shell == 
+
+Download Lisp:Powershell.el 
+
+* [http://Nabble.com/Run-powershell-as-a-shell-within-Emacs-on-Windows-td17504130.html News Item]
+* [http://Blogs.MSDN.com/dotnetinterop/archive/2008/04/10/run-powershell-as-a-shell-within-emacs.aspx Blog post]
+
+
+http://i40.tinypic.com/16i8bc8.jpg
 
 
 == Discussion ==
 Just beginning to collect resources.  I couldn't archive copies of these files into the ElispArea, as there is no copyright info in either of them! -- PatrickAnderson
+
+[new]
+FYI, there are copies of these files in [[EmacsW32]] (which I am going to upload to Launchpad when I get time).

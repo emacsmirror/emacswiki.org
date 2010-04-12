@@ -31,7 +31,7 @@ Flymake is part of Emacs 23 and some of the tips below works OTB there.
 ||Elisp ||||FlymakeElisp for EmacsLisp||
 ||CSS ||||FlymakeCSS for Cascading Style Sheets||
 ||Java ||||FlymakeJava with Make or JDEE||
-||C# ||||[http://blogs.msdn.com/dotnetinterop/archive/2008/04/14/getting-flymake-el-to-work-with-c-modules.aspx  C# syntax checking with Flymake]||
+||C# ||||[FlymakeCsharp C# syntax checking with Flymake]||
 ||python-mode ||||Is it possible to use pychecker with flymake? -- Anon.
 You can use it with pylint. See PythonMode||
 

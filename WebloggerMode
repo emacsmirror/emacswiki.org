@@ -93,6 +93,9 @@ I made a patch(http://rix3.8.je/blog/2009/12/16/emacs%e7%9a%84weblogger1-4-4%e7%
 
 I have applied rix's patch to 1.4.4 and posting to my Wordpress blog is good except for one thing - all my posts are 5 hours early.  Is this a weird interaction between the Date string (which contains -0500, since I'm in the Eastern TZ) and the API?  If I post from weblogger.el at 1pm, the post on the web says it was posted at 8am on the blog.  If I fix the posting time via the web interface to be 1pm and use weblogger-fetch-entries, it shows 8am in the date string of the fetched entry. --duckpuppy
 
+[new]
+
+I have made a patch to both weblogger.el and xml-rpc.el, to make it work with M$ Windows Live space which is basically metaWeblog, with some quirks in its xml content. You can get my code at http://windows-config.googlecode.com/svn/trunk/.emacs_d/weblogger, both .el files under there (this abused personal google code project is not meant to fork weblogger.el or any other OSS software, it's only for my own convenience). --baohaojun
 
 
 ----

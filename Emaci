@@ -1,0 +1,24 @@
+<pre>
+emaci-mode make  you browse and  edit your file  quickly.  Use
+it, you  can browse file like  vi, but more  quickly, and when
+you  browe file, you  can also  edit your  file use  Emacs key
+bindings.  It's name  "emaci" is combine of EMACs  and vI. Its
+screenshots is 
+</pre>
+http://emacser.com/screenshots/emaci.png . 
+<pre>
+This
+package          is         depend          on         package
+http://code.google.com/p/dea/source/browse/trunk/my-lisps/ahei-misc.el
+and                                                     package
+http://code.google.com/p/dea/source/browse/trunk/my-lisps/eval-after-load.el
+. For more details, see article
+</pre> http://emacser.com/emaci.htm
+
+Download: [http://code.google.com/p/dea/source/browse/trunk/my-lisps/emaci.el Emaci]
+
+See also: ViperMode
+
+----
+CategoryEmulation
+CategoryKeys

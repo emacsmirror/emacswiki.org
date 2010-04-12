@@ -75,3 +75,6 @@ This is great! However, I have a small problem: when trying to expand an underli
 [new]
 Yes, it's really great! It behaves a bit funny wrt indentation, though. If I insert the snippet "{$>\n$>$.\n}$>" in a C mode buffer, the last brace is indented incorrectly. If I let the $. out of the snippet, it works as expected. Does anyone know why?
 -- JonasOster
+
+----
+CategoryTemplates

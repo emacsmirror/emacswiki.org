@@ -16,3 +16,6 @@ Tools in SRecode:
 * Comment insert/rewrite - Reads your code and fills out the comment template from the local context.
 * Add a field with get/set methods into a class
 * Copy a tag from a language buffer (Such as Emacs lisp, C, whatever) and insert into a texinfo document using texinfo syntax. 
+
+----
+CategoryTemplates

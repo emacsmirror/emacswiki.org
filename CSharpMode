@@ -1,17 +1,35 @@
 = CSharpMode (CSharp, C#) =
 
+Provides an editing mode for C# code.  Includes code indentation, fontification, codedoc generation. 
+
 [new]
 The latest version is available at Lisp:csharp-mode.el. -- danielpoe
 
 ----
 
+Note:
+
+Be aware: [NxhtmlMode nXhtml] includes csharp-mode.el v0.7.0, and other versions of csharp-mode.el may be delivered in other packages.  For now, the latest csharp-mode.el is available here.  
+You will want to replace the older 0.7.0 csharp-mode.el that is included in any other package.
+
+
+== Complementary Stuff / Minor Modes ==
+
+||[http://code.google.com/p/yasnippet/v yasnippet.el]||||dynamically expand snippets, like dabbrev on steroids. [http://blogs.msdn.com/dotnetinterop/archive/2008/04/15/c-snippets-for-yasnippet-el-emacs-snippets.aspx How to use yasnippet with C#.]||
+||HideShow||||hide and show regions of code.[http://blogs.msdn.com/dotnetinterop/archive/2008/04/14/making-hideshow-el-work-with-csharp-mode-el-and-region-endregion.aspx How to use hideshow.el with C#]||
+||FlymakeCsharp||||check syntax more-or-less continually, and use overlays to highlight syntax problems in the code. ||
+||[http://www.emacswiki.org/emacs/MSTFS MSTFS]||||Emacs integration with Team foundation server, via the tf.exe tool||
+||[http://stud4.tuwien.ac.at/~e0225855/linum/linum.html Linum.el]||||line numbers||
+||[http://ozymandias.dk/emacs/emacs.html#vj-complete vj-complete] ||||Is C# Code Completion in emacs really possible?||
+||[http://code.google.com/p/idebridge/ ide-bridge]|||| C# Code Completion/refactoring/navigation/compilation.  Integrates Emacs with SharpDevelop ||
+
+
+
+== Some History: previous attempts at C# mode ==
+
 ; http://mfgames.com/csharp-mode/start
-:Work by DylanMoonfire on a derived cc-mode. See these threads on sourceforge [http://sourceforge.net/mailarchive/forum.php?thread_id=6676996&forum_id=6827], [http://sourceforge.net/mailarchive/forum.php?thread_id=6596410&forum_id=6827] for more info. The current version (December 2009) is  0.7.1. [http://cinki.mfgames.com/buglist.cgi?bug_status=__all__&product=csharp-mode Bug Tracking] (Broken link as of December 2009)
+:Work by DylanMoonfire on a derived cc-mode. See these threads on sourceforge [http://sourceforge.net/mailarchive/forum.php?thread_id=6676996&forum_id=6827], [http://sourceforge.net/mailarchive/forum.php?thread_id=6596410&forum_id=6827] for more info. [http://cinki.mfgames.com/buglist.cgi?bug_status=__all__&product=csharp-mode Bug Tracking] (Broken link as of December 2009)
 
-[NxhtmlMode nXhtml] includes csharp-mode.el v0.7.0. 
-If you grab the latest here, you will want to replace the older 0.7.0 csharp-mode.el that is included in [nXhtmlMode nXhtml]
-
-== Other, previous attempts at C# mode ==
 
 ; http://www.cybercom.net/~zbrad/DotNet/Emacs/
 :This is the original.  It involves changes to a set of standard elisp files.  It apparently doesn't handle @"\" correctly.
@@ -30,28 +48,25 @@ If you grab the latest here, you will want to replace the older 0.7.0 csharp-mod
 ; http://www.loveshack.ukfsn.org/emacs/index.html#cc-php-js
 :A modified CC mode from Emacs 22, with .elcs for Emacs 21.  Done by someone who doesn't use C#, but reported deficiencies will probably get fixed.
 
-==Complementary Stuff / Minor Modes==
-
-yasnippet.el - dynamically expand snippets, like dabbrev on steroids. See this writeup for how to use yasnippet with C#.[http://blogs.msdn.com/dotnetinterop/archive/2008/04/15/c-snippets-for-yasnippet-el-emacs-snippets.aspx]
-
-hideshow.el - hide and show regions of code.  How to use with C# [http://blogs.msdn.com/dotnetinterop/archive/2008/04/14/making-hideshow-el-work-with-csharp-mode-el-and-region-endregion.aspx]
-
-http://flymake.sourceforge.net/ - check syntax more-or-less continually, and use overlays to highlight syntax problems in the code. How to use with C#:
-[http://blogs.msdn.com/dotnetinterop/archive/2008/04/14/getting-flymake-el-to-work-with-c-modules.aspx] Or see Lisp:flymake-for-csharp.el
-
-vj-complete - C# Code Completion [http://ozymandias.dk/emacs/emacs.html#vj-complete]
-
-ide-bridge - C# Code Completion/refactoring/navigation/compilation [http://code.google.com/p/idebridge/]
-
-
 
 == Comments/Remarks ==
 
 === Works Well ===
 
-I currently use csharp-mode 0.7.1, on GNU emacs 22.2, on Windows (Vista). Every day.  It works very well.
+I currently use csharp-mode 0.7.2, on GNU emacs 22.2, on Windows (Vista). Every day.  It works very well.
 
 --DinoChiesa
+
+=== Interested in Maintaining? ===
+
+The mode works well, but there are plenty of opportunities for improvement.  Among them: bbetter codedoc generation - for example automatically emit <param> elements for each parameter.  Indentation of object initializer syntax is not quite right, in v0.7.2.  
+
+This thing ought to be hosted in a community project.  Dylan Moonfire had the right idea but I don't think he's maintaining it.  Suggestions on where to host csharp-mode.el?   Does googlecode make sense?  People would need to be able to file bugs and change requests easily. 
+
+An even better idea is to get this included into emacs formally. I don't know how to do that.  I'm interested in assistance on that. 
+Respond here, or to my email, dpchiesa at hotmail. 
+
+
 
 === Trouble on Xemacs ===
 
@@ -275,7 +290,32 @@ I don't know why (define-key csharp-mode-map ...) doesn't work but c-mode-map do
 
 -- Risto Saarelma
 
+[new]
+
+There's codedoc support in the v0.7.2 version.  Type three slashes and you get a codedoc template, similar to the effect in VisualStudio.  -- DinoChiesa
+
+type two slashes:
+
+http://i40.tinypic.com/mws569.jpg
+
+...and with the third slash, the template appears: 
+
+http://i42.tinypic.com/mtl8i0.jpg
+
+two more slashes:
+
+http://i42.tinypic.com/dn291t.jpg
+
+..and again, with the third slash, a new template appears: 
+
+http://i44.tinypic.com/qywd8n.jpg
+
+It tries to be smart about which template to insert.  If you type 3 slashes after a closing </para>, then you'll get another set of <para></para> . 
+
+http://i44.tinypic.com/zl99bc.jpg
+
 ----
+
 === Load-time error under Emacs 23 ===
 
 <pre>
@@ -306,6 +346,26 @@ This is still true with csharp-mode 0.7.2.
 
 -- Richard Kettlewell.
 
+
+[new]
+
+This is noted in the elisp file: 
+
+    ;;   This code doesn't seem to work when you compile it, then
+    ;;   load/require in the emacs file. You will get an error (error
+    ;;   "`c-lang-defconst' must be used in a file") which happens because
+    ;;   cc-mode doesn't think it is in a buffer while loading directly
+    ;;   from the init. However, if you call it based on a file extension,
+    ;;   it works properly. Interestingly enough, this doesn't happen if
+    ;;   you don't byte-compile cc-mode.
+
+I think if you put (require 'cc-mode) in your .emacs, or possibly at the top of csharp-mode.el, 
+it may solve this problem.
+
+Also see above, where a comment from AZ says that there was a problem fixed in cc-mode to correct this. 
+
+
+
 === VJ Complete and XEmacs===
 
 vj-complete does not seem to work with XEmacs.
@@ -313,6 +373,10 @@ vj-complete does not seem to work with XEmacs.
 ide-complete do work under windows only (funny to read that it has to be "ported" to Linux, whereas it's written in C#!)
 
 --GM/LIAR
+
+=== Works with Linum.el ===
+
+http://i42.tinypic.com/29pdmjd.jpg
 
 
 ----

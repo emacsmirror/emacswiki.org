@@ -5,7 +5,7 @@
 ;; Author: ahei <ahei0802@gmail.com>
 ;; Keywords: line number
 ;; URL: http://code.google.com/p/dea/source/browse/trunk/my-lisps/linum%2B.el
-;; Time-stamp: <2010-04-05 21:45:29 Monday by ahei>
+;; Time-stamp: <2010-04-08 10:55:43 Thursday by ahei>
 
 ;; This  file is free  software; you  can redistribute  it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -25,12 +25,12 @@
 ;;; Commentary:
 ;;
 ;; This extension of linum can smart control width of line number
-;; displayed, If line  number can be viewed of  current buffer is
-;; from 1 to 50, then width  of line number is 2, and line number
-;; can be viewed of current buffer is from 100 to 150, then width
-;; of line number is 3. and use it, you can customize line number
-;; format  with  linum+-dynamic-format  even if  linum-format  is
-;; 'dynamic.             Its            screenshots            is
+;; displayed, If visible line number  of current buffer is from 1
+;; to 50, then width of line number is 2, and visible line number
+;; of  current buffer  is from  100 to  150, then  width  of line
+;; number is 3. and use  it, you can customize line number format
+;; with linum+-dynamic-format  even if linum-format  is 'dynamic.
+;; Its                       screenshots                       is
 ;; http://emacser.com/screenshots/linum+/linum+1.png           and
 ;; http://emacser.com/screenshots/linum+/linum+2.png  .  For more
 ;; details,  see article  Use  linum+ smart  display line  number
@@ -64,12 +64,11 @@
   "Format used to display line numbers.
 
 + Either a format string like \"%7d\",
-+ or `smart' to smart adapt the width by current max line
-  number can be viewd,
++ or `smart' to smart adapt the width by current max visible line number.
 + or `dynamic' to adapt the width as needed,
 + or a vector with one string element which uesed to generate
-  line number format by `format' with argument max line number can be viewd
-  in current buffer, see example `linum+-smart-format'
+  line number format by `format' with argument max visible line number 
+  of current buffer, see example `linum+-smart-format'
 + or a list with one string element which uesed to generate
   line number format by `format' with argument max line number of current buffer,
   see example `linum+-dynamic-format'

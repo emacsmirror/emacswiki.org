@@ -1,5 +1,3 @@
-This page is about library Lisp:linun+.el.
-
 == Linum Plus ==
 
 <pre>
@@ -40,8 +38,19 @@ See also: LineNumbers
 
 === linum+.el inserts a blank space with a color different from background ===
 
+[new]
+
 I'm using Lisp:linum+.el (and subsequently line-num.el) to provde line numbering.  Line numbers are followed a by a pipe ("|") and then a blank space.  This is fine except the blank space is a different color from the buffer's background.  Is there a way I can make these two colors the same? --  [[frznchckn]] 
 
+[new]
+
+Hi, frznchckn, thanks for using my linum+.
+
+what's your linum-format, and what's your face linum?
+
+If you just use linum+ use (require 'linum+) and do not change any configuration, line numbers are followed by a pipe (”|”), but no blank space following pipe, that gap you saw is just fringe if you use emacs gui version, you can toggle it use M-x fringe-mode RET RET, and if you use emacs in console or term, you should can not see any blank spaces or gap following pipe ("|"). 
+
+If your linum-format end with blank spaces, its face (and spaces's face) will be controled by face linum, and you should set its background color same as your emacs background color if you want make these two colors the same.                        -- [[ahei]]
 
 ----
 CategoryDisplay

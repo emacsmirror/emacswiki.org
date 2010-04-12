@@ -1,6 +1,8 @@
 Team Foundation Server is a proprietary, commercial version control system from Microsoft.
 
-This elisp module provides basic integration. 
+This elisp module provides basic integration.  It works with regular TFS, and also with codeplex.com.
+
+Here's the source:
 
 : Lisp:tfs.el
 

@@ -18,9 +18,13 @@ With '''Bookmark+''' you can use bookmarks that were created with any Emacs vers
 Here is an overview of the features that '''Bookmark+''' provides.  Some of
 these are detailed further below.
 
+
+
+
+
 === Richer bookmarks.  They record more.  They are more accurate. ===
 
-* You can ''tag'' bookmarks, a la [[http://delicious.com|del.icio.us]].
+* You can ''[[#BookmarkTags|tag]]'' bookmarks, a la [[http://delicious.com|del.icio.us]].
 This is perhaps the
      most important '''Bookmark+''' feature.  In effect, '''[::bookmark tag]s''' define
      bookmark ''sets''.  A bookmark can have any number of tags, and
@@ -28,14 +32,14 @@ This is perhaps the
      show just the bookmarks with a given tag or a set of tags.
 
 * Bookmark tags can in fact be more than just names.  They can
-be full-fledged user-defined ''attributes'', with EmacsLisp
+be full-fledged user-defined ''[[#TagsAsAttributes|attributes]]'', with EmacsLisp
 objects as their values.
 
 * Bookmarks record the ''number of visits'' and the ''time'' of the last
      visit.  You can sort, show/hide, or mark bookmarks based on
      this info.
 
-* You can ''combine bookmarks'', to make composite, or sequence,
+* You can ''combine bookmarks'', to make composite, or [[#FunctionAndSequenceBookmarks|sequence]],
   bookmarks.  Invoking a sequence bookmark invokes each of its
   component bookmarks in turn.  A component bookmark can itself
   be a sequence bookmark.
@@ -76,7 +80,7 @@ saved desktop.  A desktop includes:
 * A bookmark can represent a function, which is invoked when
 you "jump" to the bookmark.
 
-* As mentioned above, a bookmark can represent a sequence of
+* As mentioned above, a bookmark can represent a [[#FunctionAndSequenceBookmarks|sequence]] of
 other bookmarks.
 
 * You can bookmark buffer `##*Bookmark List*##' itself.  Jumping to such a
@@ -148,7 +152,7 @@ directory bookmarks that are marked (`##>##').
 according to Windows file associations.  (You will also need
 library <tt>[[w32-browser.el]]</tt>.)
 
-* You can edit a bookmark (its name and file name).
+* You can edit a bookmark (its name and file name/location).
 
 * A popup menu is available on '''`mouse-3'''', with actions for the
 individual bookmark you point to.
@@ -390,7 +394,7 @@ command '''`bookmarkp-set-tag-value'''', bound to '''`##T v##'''' in the bookmar
 list.  You are prompted for the bookmark, the tag, and the new
 value.
 
-A tag value can be a number, symbol, string, list, vector, and so
+A tag value can be a number, [[symbol]], string, list, vector, and so
 on.  It can be as complex as you like.  It can be any EmacsLisp object that has read syntax, that is, that
 is readable by the Lisp reader.  (Everything that is saved as part
 of a bookmark must be readable; otherwise, your bookmark file

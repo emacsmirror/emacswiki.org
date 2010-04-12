@@ -14,19 +14,19 @@ There are a few kinds of what might be called "fuzzy" matching used in
 '''Icicles''' [[completion]], in addition to [[apropos completion|apropos]] ([[regexp]]) matching and [[prefix completion|prefix]]
 matching.
 
-* '''Fuzzy''' -- This method uses a fairly sophisticated matching algorithm that seems to
+* '''[[#FuzzyMatchCompletion|Fuzzy]]''' -- This method uses a fairly sophisticated matching algorithm that seems to
 account for various typing mistakes.  This algorithm is provided
 by library <tt>[[fuzzy-match.el]]</tt>, so I call its use in '''Icicles''' "'''[::fuzzy completion]'''".  You must have library ##fuzzy-match.el## to use this.
 
-* '''Swank''' -- [[symbol|Symbols]] are completed using the algorithm of
+* '''[[#SwankCompletion|Swank]]''' -- [[symbol|Symbols]] are completed using the algorithm of
 <tt>[[el-swank-fuzzy.el]]</tt> -- see that library for details.
 
-* '''Scatter''' -- This is a simple, poor man's fuzzy matching that I call
+* '''[[#ScatterMatchCompletion|Scatter]]''' -- This is a simple, poor man's fuzzy matching that I call
 "'''[::scatter matching]'''".  [[Ido]] calls it "flex" matching.  The
 TextMate editor has the same thing for file-name
 matching (only), without naming it.
 
-* '''Levenshtein''' -- This method checks whether two strings differ by
+* '''[[#LevenshteinMatchCompletion|Levenshtein]]''' -- This method checks whether two strings differ by
 at most a given number of character operations, the so-called
 [[LevenshteinDistance|Levenshtein distance]].
 

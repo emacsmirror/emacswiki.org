@@ -1,0 +1,83 @@
+== Flymake for C# ==
+
+Flymake-for-csharp.el is a small elisp module that makes using flymake with C# modules, nicer. 
+
+http://i40.tinypic.com/ifze6c.jpg
+
+For those who are unaware, 
+Flymake is built-in to emacs, at least with v22 and later.  It periodically compiles an active
+buffer when the minor mode is enabled, and then flags or highlights
+lines that cause errors or warnings during the compile as you
+edit. It is analogous to the red-squigglies you get in Visual Studio,
+highlighting syntax errors or other compile problems.
+
+
+== Download ==
+
+The latest version is available at Lisp:flymake-for-csharp.el 
+
+
+== Rationale ==
+
+Flymake often works "out of the box" with other languages.  But C# has a few differences that mean it doesn't work right out of the box, with flymake.   
+
+flymake is set up to use makefiles. But many C# modules are compiled as part of a project defined in a .csproj file, or an msbuild build file.  Some C# modules are small and don't use a makefile at all.   Most developers use a mixture of these build environments, so ideally, flymake would be able to use any of them. 
+
+
+== History ==
+
+The original flymake-for-csharp came from 
+[http://blogs.msdn.com/dotnetinterop/archive/2008/04/14/getting-flymake-el-to-work-with-c-modules.aspx a Blog Post on MSDN].
+
+It has since been generalized, updated, and made more reliable and flexible.
+
+
+== Basic Usage ==
+
+
+Flymake-for-csharp can do syntax-checking builds, on-the-fly, via flymake, using either 
+
+* makefile
+* msbuild or .csproj file
+* directly invoking the csc.exe compiler 
+
+
+To use it:
+
+1) put flymake-for-csharp.el on your load path.
+
+2) somewhere in your .emacs, place this:
+
+      (require 'flymake-for-csharp)
+
+3) Add this to your csharp-mode-hook function:
+
+      (flymake-mode)
+
+4) specify how you want to use flymake, via these variables:
+
+      flymake-for-csharp-netsdk-location
+      flymake-for-csharp-dotnet-location
+      flymake-for-csharp-buildfile-alist
+      flymake-for-csharp-grep-pgm
+      flymake-for-csharp-csc-arguments
+ 
+
+For More Detail, see the source code. 
+
+
+
+
+== Complementary stuff ==
+
+Don't forget:
+
+* CSharpMode -  mode for editing C#
+* PowerShell - Two things: 
+** a mode for running powershell as an inferior shell. 
+** A separate powershell-mode, which is for *editing* powershell code.
+
+
+
+----
+FlyMake
