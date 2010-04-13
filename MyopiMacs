@@ -1,0 +1,20 @@
+MyopiMacs -- View small portions of extremely large files using little memory or bandwidth.
+
+* Retrieve only enough data to fill screen (or maybe 3 screens to pre-cache the preceeding and following screens for quicker navigation)
+* Use ideas from HexviewMode for local files.
+* Use ‘Range’ specifier with HTTP ‘GET’ verb.
+* Use ‘REST’ verb for FTP.
+
+
+==Notes=
+
+http://litchie.net/programs/binview.html
+
+http://www.ietf.org/rfc/rfc2616.txt
+
+<pre>
+GET /Images/MassiveFile.zzz HTTP/1.1\r\n
+User-agent: MyopiMacs\r\n
+Host: SomeWhere.com\r\n
+Range: bytes=0-1024\r\n\r\n
+</pre>

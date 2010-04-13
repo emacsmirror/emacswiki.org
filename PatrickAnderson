@@ -5,9 +5,11 @@ I started using GNU Emacs in 1993.
 == Wish list ==
 : PlainTextWiki minor-mode to navigate within emacs and to generate AutoLink-ed HTML.
 : ConcurrentEmacs: Some buffers may be locked, but general input is never blocked.
-: MemMapEmacs: Low memory, low bandwidth incremental mapping of files.
-:: Retrieve only enough data to fill screen.  Memory-map sections if possible.
-::: Use the FTP 'REST' command if available.  Any alternatives?
+: MyopiMacs: View small portions of extremely large files using little memory or bandwidth.
+:: Retrieve only enough data to fill screen (or maybe 3 screens to pre-cache the preceeding and following screens for quicker navigation)
+::: Use ideas from HexviewMode for local files.
+::: Use 'Range' specifier with HTTP 'GET' verb.
+::: Use 'REST' verb for FTP.
 :: Network writes sent with something like xdiff, rsync if available.
 : MinEmacs: Minimal subset of license, doc, c, lisp, data files competetive with other small editors.
 :: Signed and unsigned plugins and EmacsLisp are installed on demand via TCP or removable media.

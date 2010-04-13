@@ -10,9 +10,9 @@
 ;; Copyright (C) 1988 Lynn Randolph Slater, Jr.
 ;; Created: Tue Aug  4 17:06:46 1987
 ;; Version: 21.0
-;; Last-Updated: Fri Jan 15 13:13:27 2010 (-0800)
+;; Last-Updated: Mon Apr 12 12:53:02 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 1711
+;;     Update #: 1718
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/header2.el
 ;; Keywords: tools, docs, maint, abbrev, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -163,6 +163,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/04/12 dadams
+;;     header-history-label: Change log -> Change Log.
 ;; 2009/10/25 dadams
 ;;     Renamings from lib-require.el.  If you use that library, you must update it.
 ;;       lib-requires-header -> libreq-file-header
@@ -442,7 +444,7 @@ and `header-shell' might only apply to shell scripts.  See instructions in
 file `header2.el' to do this."
   :type 'hook :group 'Automatic-File-Header)
 
-(defcustom header-history-label "Change log:" ; Was "HISTORY:" before.
+(defcustom header-history-label "Change Log:" ; Was "HISTORY:" before.
   "*Label introducing change log history."
   :type 'string :group 'Automatic-File-Header)
 
@@ -838,7 +840,7 @@ the comment."
          (comment-start-p (and comment-start (not (string= "" comment-start))))
          (comment-end-p (and comment-end (not (string= "" comment-end))))
          (header-prefix-string (header-prefix-string))) ; Cache result.
-    (mapcar (function funcall) make-header-hook)
+    (mapcar #'funcall make-header-hook)
     (when return-to (goto-char return-to))))
 
 ;;;###autoload
@@ -1050,12 +1052,12 @@ read only then call `update-file-header."
 This uses function `libreq-insert-lib-requires-as-comment' from
 library `lib-requires.el'.
 
-Note: If a byte-compiled (`*.el') of the library is available, it is
-used when determining library dependencies, in preference to the
-source library - this is the standard behavior of `load-library'.
-The list of required libraries reflects the dependencies indicated in
-the byte-compiled file, not the source file.  If the bye-compiled file
-is out-of-date with respect to its required libraries, so will be the
+Note: If a byte-compiled file (`*.elc') for the library is available,
+it is used when determining library dependencies, in preference to the
+source library - this is the standard behavior of `load-library'.  The
+list of required libraries reflects the dependencies indicated in the
+byte-compiled file, not the source file.  If the byte-compiled file is
+out-of-date with respect to its required libraries, so will be the
 result of `update-lib-requires'."
   (when (buffer-file-name)              ; Do nothing if not a file buffer.
     (let ((lib (file-name-sans-extension

@@ -37,7 +37,9 @@ As Emacs needs some of the improvements provided by 1.17 release, this quick-sta
 [:WhereIsEmacs]
 === Where is Emacs? ===
 
-You can browse Emacs in loggerhead (the Bazaar web front-end) here: http://bzr.savannah.gnu.org/lh/emacs/ .  Unfortunately, the Savannah installation of loggerhead is broken sometimes; see [[https://savannah.gnu.org/support/index.php?107142 sr #107142]].  Fortunately, you can [http://bazaar.launchpad.net/~vcs-imports/emacs/trunk/files browse the Emacs sources at Launchpad] too; the Launchpad copy is kept up-to-date by automated means.
+You can browse just the top level of the Emacs repository (to see the branches) here: http://bzr.savannah.gnu.org/r/emacs/ . 
+ To browse the entire repository there is a web front-end called "loggerhead" which may eventually be installed at
+ http://bzr.savannah.gnu.org/lh/emacs/ (see [[https://savannah.gnu.org/support/index.php?107142 sr #107142]]). For now you can see it at [http://bazaar.launchpad.net/~vcs-imports/emacs/trunk/files Launchpad], however note this is a mirror of the trunk only.
 
 To make a local branch or branches based on upstream Emacs, start at [[#InitializingYourBzrRepo]] and follow instructions from there.  (This is the Bazaar equivalent of `cvs checkout`.)
 

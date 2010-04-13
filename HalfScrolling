@@ -34,7 +34,7 @@ and the appropriate for scroll-down...
 
 (please note that I did not test this thoroughly...please remove this note whenever this code was tested)
 
-== Another Possibile Solution ===
+== Another Possibile Solution ==
 I bind this to shift-space. It's main feature is that your attention always goes to two fixed locations on the screen so as to avoid dizzy feelings (exceptions when you are at the top or bottom of buffer). -- MaverickWoo
 
   (defvar scroll-half-window-was-up nil "Was the last half-scrolling going up?")
@@ -78,6 +78,15 @@ I bind this to shift-space. It's main feature is that your attention always goes
         ;; done, remember last direction before exit
         (setq scroll-half-window-was-up should-up))))
 
-  
+== Solution using built-in commands ==
+I've used:
+
+  move-to-window-line (moves the point to center by default)
+  recenter-top-bottom 
+  recenter-top-bottom (second invocation scrolls line with point to top)
+
+which in most cases is bound to M-r C-l C-l
+
+(note, recenter-top-bottom seems only to exhibit the desired behavior when invoked using a key binding)
 ----
 CategoryDisplay

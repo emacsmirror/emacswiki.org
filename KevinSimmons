@@ -1,1 +1,17 @@
 I use EMACS but I am an EMACS newbie. After twelve years, I'm fairly proficient at vi and look forward to learning the richness of emacs. No worthy init file yet.
+
+One thing I'd like to try in emacs: I use vim to open a gnupg encrypted file with folding enabled to store secret information. The folding is handy so that I can open the file with someone looking over-my-shoulder without revealing any sensitive information. When I close the file it is re-encrypted. There is no backup or file created while editing, its all in memory only while decrypted.
+
+
+
+[new:DrewAdams:2010-04-12 14:49 UTC]
+Welcome to the wiki. -- DrewAdams
+
+
+
+
+
+
+
+----
+CategoryHomepage

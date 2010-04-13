@@ -153,6 +153,9 @@ shared repository and
 
 : ##bzr checkout URL_TO_UPSTREAM_branch_name your_branch_name##
 
+(Note, get a list of branches by browsing http://bzr.savannah.gnu.org/r/emacs/ ;
+see BzrForEmacsDevs for more information.)
+
 This is one of the operations where having a shared repository helps:
 Bazaar will download only those revisions which are not on /trunk/, so
 the process will be much faster.

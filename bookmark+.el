@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Apr  9 16:50:43 2010 (-0700)
+;; Last-Updated: Mon Apr 12 06:50:14 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 11885
+;;     Update #: 11888
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -790,7 +790,8 @@ You can then mark some of them and use `\\[bookmarkp-bmenu-omit/unomit-marked]'
 ;;;###autoload
 (defcustom bookmarkp-bmenu-commands-file (convert-standard-filename "~/.emacs-bmk-bmenu-commands.el")
   "*File for saving user-defined bookmark-list commands.
-This must be an absolute file name or nil (it is not expanded).
+This must be an absolute file name (possibly containing `~') or nil
+\(it is not expanded).
 
 You can use `\\[bookmarkp-list-defuns-in-commands-file]' to list the
 commands defined in the file and how many times each is defined.
@@ -809,7 +810,8 @@ because such command definitions can be very large."
 ;;;###autoload
 (defcustom bookmarkp-bmenu-state-file (convert-standard-filename "~/.emacs-bmk-bmenu-state.el")
   "*File for saving `*Bookmark List*' state when you quit bookmark list.
-This must be an absolute file name or nil (it is not expanded).
+This must be an absolute file name (possibly containing `~') or nil
+\(it is not expanded).
 
 The state is also saved when you quit Emacs, even if you don't quit
 the bookmark list first (using \\<bookmark-bmenu-mode-map>`\\[bookmarkp-bmenu-quit]').
@@ -883,7 +885,7 @@ If nil show only beginning of region."
 
 ;;;###autoload
 (defcustom bookmarkp-menu-popup-max-length 20
-  "*Max number bookmarks for `bookmark-completing-read' to use a menu.
+  "*Max number of bookmarks for `bookmark-completing-read' to use a menu.
 When choosing a bookmark from a list of bookmarks using
 `bookmark-completing-read', this controls whether to use a menu or
 minibuffer input with completion.
