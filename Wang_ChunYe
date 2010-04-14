@@ -12,6 +12,18 @@ Hi, my name is Wang Chun Ye (王纯业). here is list of my packages
 
 * Lisp:wcy-recentf.el, open recent opened or saved files.
 
+* I find I use this small function, wcy-backup-buffer() to explicitly backup a buffer with a time stamp as part of file name.
+<pre>
+(defun wcy-backup-buffer()
+  (interactive)
+  (if (buffer-file-name)
+    (write-region 1 (1+ (buffer-size)) 
+                  (concat (file-name-sans-extension (buffer-file-name))
+			  (format-time-string "_%Y_%m_%d.%H.%M.%S")
+			  "."
+			  (file-name-extension (buffer-file-name))))
+    (message "buffer has no file associate.")))
+</pre>
 [new:DrewAdams:2009-04-21 06:22 UTC]
 Welcome to the wiki! -- DrewAdams
 

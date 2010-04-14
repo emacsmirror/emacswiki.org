@@ -1,7 +1,7 @@
 ;;; color-moccur.el ---  multi-buffer occur (grep) mode
 ;; -*- Mode: Emacs-Lisp -*-
 
-;; $Id: color-moccur.el,v 2.66 2010-02-23 14:17:11 Akihisa Exp $
+;; $Id: color-moccur.el,v 2.67 2010-04-13 14:10:07 Akihisa Exp $
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -2166,11 +2166,10 @@ It serves as a menu to find any of the occurrences in this buffer.
     ))
 
 (defun moccur-grep-find-subdir (dir mask)
-  (let ((files (cdr (cdr (directory-files dir t)))) (list))
+  (let ((files (cdr (cdr (directory-files dir t)))) (list) (plist))
     (if (not (moccur-search-file-p dir))
         (setq list nil)
       (dolist (elt files)
-        (message "Listing %s ..." (file-name-directory elt))
         (cond
          ((and
            (not (string-match "^[.]+$" (file-name-nondirectory elt)))
@@ -2180,7 +2179,10 @@ It serves as a menu to find any of the occurrences in this buffer.
           ())
          ((string-match mask (file-name-nondirectory elt))
           (push elt list))
-         (t ()))))
+         (t ()))
+        (if (not (eq list plist))
+            (message "Listing %s ..." (file-name-directory elt)))
+        (setq plist list)))
     list))
 
 (defun moccur-grep-find (dir inputs)

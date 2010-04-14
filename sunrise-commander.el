@@ -139,7 +139,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 280 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 281 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 23) for  Windows.  I  have  also  received
@@ -1109,33 +1109,46 @@ automatically:
         (overlay-put (make-overlay bol eol) 'face 'sr-broken-link-face))
       (setq pos (search-forward-regexp dired-re-sym nil t)))))
 
+(defsubst sr-invalid-overlayp ()
+  "Tells whether the overlay used to highlight the graphical path line in the
+  current buffer is no longer valid and should be replaced."
+  (or (eq sr-left-buffer sr-right-buffer)
+      (null sr-current-window-overlay)
+      (and (overlayp sr-current-window-overlay)
+           (eq (overlay-start sr-current-window-overlay)
+               (overlay-end sr-current-window-overlay)))))
+
 (defun sr-graphical-highlight (&optional face)
   "Sets up the graphical path line in the current buffer (fancy fonts and
   clickable path)."
   (let ((my-face (or face sr-current-path-face))
         (begin) (end))
-    ;;determine begining and end
-    (save-excursion
-      (goto-char (point-min))
-      (search-forward-regexp "\\S " nil t)
-      (setq begin (1- (point)))
-      (end-of-line)
-      (setq end (1- (point))))
+    (when (sr-invalid-overlayp)
+      ;;determine begining and end
+      (save-excursion
+        (goto-char (point-min))
+        (search-forward-regexp "\\S " nil t)
+        (setq begin (1- (point)))
+        (end-of-line)
+        (setq end (1- (point))))
 
-    ;;setup overlay
-    (setq sr-current-window-overlay (make-overlay begin end))
-    (overlay-put sr-current-window-overlay 'face my-face)
+      ;;build overlay
+      (set (make-local-variable 'sr-current-window-overlay)
+           (make-overlay begin end))
+
+      ;;make path line clickable
+      (toggle-read-only -1)
+      (add-text-properties
+       begin
+       end
+       '(mouse-face sr-highlight-path-face
+                    help-echo "mouse-2: move up")
+       nil)
+      (toggle-read-only 1))
+
+    ;;only refresh existing overlay:
     (overlay-put sr-current-window-overlay 'window (selected-window))
-
-    ;;make path line clickable
-    (toggle-read-only -1)
-    (add-text-properties
-     begin
-     end
-     '(mouse-face sr-highlight-path-face
-                  help-echo "mouse-2: move up")
-     nil)
-    (toggle-read-only 1)))
+    (overlay-put sr-current-window-overlay 'face my-face)))
 
 (defun sr-force-passive-highlight (&optional revert)
   "Sets  up  the graphical path line in the passive pane. With optional argument

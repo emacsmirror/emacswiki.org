@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Apr 10 09:16:13 2010 (-0700)
+;; Last-Updated: Tue Apr 13 11:09:31 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5115
+;;     Update #: 5127
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1851,6 +1851,14 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2010/04/13 dadams
+;;     icicle-(apropos|prefix)-complete-1: Fixed recent file-name completion bugs.
+;;       When icicle-whole-candidate-as-text-prop-p is t and icicle-expand-input-to-common-match-flag
+;;         is nil, expand the input, unless it is a directory.
+;;       Expand file-name input to the common match for the current candidate.
+;; 2010/04/11 dadams
+;;     icicle-(apropos|prefix)-complete-1: Fix last fix:
+;;       Put whole-cand prop on sole candidate only if not a dir, and use icicle-expanded-common-match.
 ;; 2010/04/09 dadams
 ;;     icicle-(apropos|prefix)-complete-1: When sole candidate, set icicle-current-input to it.
 ;;       Needed, in order to get icicle-whole-candidate property when

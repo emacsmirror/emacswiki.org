@@ -151,7 +151,7 @@
 ;;  `anything-find-files-down-one-level'
 ;;    Go down one level like unix command `cd ..'.
 ;;  `anything-find-files'
-;;    Preconfigured `anything' for `find-file'.
+;;    Preconfigured `anything' for anything implementation of `find-file'.
 ;;  `anything-write-file'
 ;;    Preconfigured `anything' providing completion for `write-file'.
 ;;  `anything-insert-file'
@@ -1417,6 +1417,8 @@ buffer that is not the current buffer."
 
 (defvar anything-c-source-find-files
   `((name . ,(concat "Find Files" anything-c-find-files-doc-header))
+    ;; It is needed for filenames with capital letters
+    (disable-shortcuts)
     (init . (lambda ()
               (setq ffap-newfile-prompt t)))
     (candidates . anything-find-files-get-candidates)
@@ -1502,18 +1504,16 @@ If prefix numeric arg is given go ARG level down."
   
 (defun anything-find-files-get-candidates ()
   "Create candidate list for `anything-c-source-find-files'."
-  (let ((path (cond ((string-match "^~" anything-pattern)
-                     (replace-match (getenv "HOME") nil t anything-pattern))
-                    ((string-match "/su::" anything-pattern)
-                     (let ((tramp-name (anything-create-tramp-name "/su::")))
-                       (replace-match tramp-name nil t anything-pattern)))
-                    ((string-match "/sudo::" anything-pattern)
-                     (let ((tramp-name (anything-create-tramp-name "/sudo::")))
-                       (replace-match tramp-name nil t anything-pattern)))
-                    (t anything-pattern)))
-        (tramp-verbose anything-tramp-verbose) ; No tramp message when 0.
-        ;; Don't try to tramp connect before entering the second ":".
-        (tramp-file-name-regexp "\\`/\\([^[/:]+\\|[^/]+]\\):.*:"))
+  (let* ( ; Don't try to tramp connect before entering the second ":".
+         (tramp-file-name-regexp "\\`/\\([^[/:]+\\|[^/]+]\\):.*:?")
+         (path (cond ((string-match "^~" anything-pattern)
+                      (replace-match (getenv "HOME") nil t anything-pattern))
+                     ((string-match tramp-file-name-regexp anything-pattern)
+                      (let ((tramp-name (anything-create-tramp-name
+                                         (match-string 0 anything-pattern))))
+                        (replace-match tramp-name nil t anything-pattern)))
+                     (t anything-pattern)))
+         (tramp-verbose anything-tramp-verbose)) ; No tramp message when 0.
     ;; Inlined version (<2010-02-18 Jeu.>.) of `tramp-handle-directory-files'
     ;; to fix bug in tramp that doesn't show the dot file names(i.e "." "..")
     ;; and sorting.
@@ -1600,25 +1600,27 @@ If CANDIDATE is alone, open file CANDIDATE filename."
          (guess       (thing-at-point 'filename))
          (full-path-p (string-match (concat "^" (getenv "HOME")) guess)))
     (set-text-properties 0 (length candidate) nil candidate)
-    (condition-case nil
-        (when (file-exists-p (file-name-directory guess))
-          (search-backward guess (- (point) (length guess)))
-          (delete-region (point) end)
-          (if full-path-p
-              (insert (expand-file-name candidate))
-              (insert (abbreviate-file-name candidate))))
-      (error nil))))
+    (when guess
+      (search-backward guess (- (point) (length guess)))
+      (delete-region (point) end)
+      (if full-path-p
+          (insert (expand-file-name candidate))
+          (insert (abbreviate-file-name candidate))))))
 
 (defun anything-find-files ()
-  "Preconfigured `anything' for `find-file'."
+  "Preconfigured `anything' for anything implementation of `find-file'."
   (interactive)
-  (let* ((fap    (ffap-guesser))
-         (file-p (and fap (file-exists-p fap)))
-         (tap    (thing-at-point 'filename))
-         (input  (if file-p (expand-file-name tap) fap))) 
-    (anything 'anything-c-source-find-files
-              (or input (expand-file-name default-directory))
-              "Find Files or Url: " nil nil "*Anything Find Files*")))
+  (anything 'anything-c-source-find-files
+            (anything-find-files-input (ffap-guesser) (thing-at-point 'filename))
+            "Find Files or Url: " nil nil "*Anything Find Files*"))
+
+(defun anything-find-files-input (fap tap)
+  "Default input of `anything-find-files'."
+  (let* ((file-p (and fap (file-exists-p fap)
+                      (file-exists-p
+                       (file-name-directory (expand-file-name tap)))))
+         (input (if file-p (expand-file-name tap) fap)))
+    (or input (expand-file-name default-directory))))
 
 ;;; Anything completion for `write-file'.==> C-x C-w
 (defvar anything-c-source-write-file
