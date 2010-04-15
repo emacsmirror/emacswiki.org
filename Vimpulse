@@ -2,7 +2,7 @@
 
 : '''Latest release: [[vimpulse.el|Vimpulse 0.3.1]]''' (always on !EmacsWiki)
 
-If you want bleeding edge, you can check out the [http://my-svn.assembla.com/svn/vimpulse/trunk/ current SVN revision].
+If you want bleeding edge, you can [http://www.assembla.com/spaces/vimpulse/trac_git_tool clone the Git repository].
 
 == Installation ==
 
@@ -16,6 +16,7 @@ Vimpulse automatically enables [ViperMode Viper]. You can temporarily disable Vi
 
 == News ==
 
+* By popular request, we have moved to [http://www.assembla.com/spaces/vimpulse/trac_git_tool Git] as our version control system.
 * Emacs-compatible Visual selection (normal, line and block).
 * New movement keys: `C-o', `C-i', `C-w hjkl', `gb', `gd', `N%', `+', `_'.
 * Modal keybinding functions: `vimpulse-map', `vimpulse-imap' and `vimpulse-vmap'.
@@ -23,14 +24,14 @@ Vimpulse automatically enables [ViperMode Viper]. You can temporarily disable Vi
 
 == Feedback ==
 
-Feel free to edit this page with bug reports, suggestions and improvements. You can also [https://www.assembla.com/user/signup sign up] with our '''[http://my-trac.assembla.com/vimpulse/report/1 bug tracker]''' and create a ticket there.
+Feel free to edit this page with bug reports, suggestions and improvements. You can also [https://www.assembla.com/user/signup sign up] with our '''[http://trac-git.assembla.com/vimpulse/report/1 bug tracker]''' and create a ticket there.
 
 == External links ==
 
 * [http://www.assembla.com/spaces/vimpulse/ Vimpulse's Assembla space]
-** [http://my-svn.assembla.com/svn/vimpulse SVN repository]
-** [http://my-trac.assembla.com/vimpulse/report/1 Bug tracker]
-** [http://my-trac.assembla.com/vimpulse/wiki/Documentation Documentation wiki]
+** [http://www.assembla.com/spaces/vimpulse/trac_git_tool Git repository]
+** [http://trac-git.assembla.com/vimpulse/report/1 Bug tracker]
+** [http://trac-git.assembla.com/vimpulse/wiki/Documentation Documentation wiki]
 * [http://lists.ourproject.org/cgi-bin/mailman/listinfo/implementations-list Mailing list]
 
 ----

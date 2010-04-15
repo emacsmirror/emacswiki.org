@@ -13,7 +13,7 @@ Running this command will give something like:
 
 == Using the Emacs Calendar ==
 
-CalendarMode can determine the proper date format for your locale, therefore a command can be written for inserting today's date. This method gives you the most control over the language and format.  Change the calendar interpretation in Emacs--if you haven't already--with `M-x american-calendar' or `M-x european-calendar'.  Fine tune the date format by customizing `calendar-date-display-form' variable with `M-x customize-variable'.
+CalendarMode can determine the proper date format for your locale, therefore a command can be written for inserting today's date. This method gives you the most control over the language and format.  Change the calendar interpretation in Emacs--if you haven't already--with `M-x calendar-set-date-style RET american or `M-x calendar-set-date-style european.  Fine tune the date format by customizing `calendar-date-display-form' variable with `M-x customize-variable'.
 
   (require 'calendar)
 

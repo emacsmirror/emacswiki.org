@@ -2,6 +2,15 @@
 razvanm: FWIW vim supports Perl, Python, PLT Scheme, Tcl, Ruby, its own script language and probably others. Emacs should do the same. It should provide a plug-in framework where people can use their favourite language to script Emacs.
 
 [new]
+I have written such a plug-in framework (actually as part of another project): Muesli (Multiple Utility, Evaluation and Scripting Language Interface).  I'm in the process of integrating it and Emacs with each other. It's available at http://www.nongnu.org/muesli/ and the beginnings of its Emacs interface are at http://cvs.savannah.gnu.org/viewvc/muesli/apps/GNUEmacs/?root=muesli  As well as allowing the languages it supports to use some Emacs primitives, it also allows the languages to call each other (and it adds elisp to its language collection at the same time, so the other languages can call elisp for the functions that they don't have direct access to).
+
+Not all of its interfaces are yet solid (as of 2010-04), and I was going to hold off announcing it for a couple of weeks, but on seeing this page again, I think I might as well go for "release early, release often."  It already has support in varying amounts for Guile, SIOD, JavaScript, Lua, Python, Perl, Octave, R, Tcl, and s-lang; and Erlang, ECL (Embeddable Common Lisp), Smalltalk (2 implementations), Prolog, Ruby, Elk, KSI, TinyScheme, PLT Scheme, GhostScript and tcc are on the way.  It can also exec external programs, and talk to external processes with pipes, but doesn't support adding application-specific primitives to the piped languages.
+
+In its current form, Muesli can only pass around simple types and strings; I expect sometime I'll add various container types (and sit back and watch what someone will surely do with highly-integrated Elisp and Octave!)
+
+Please feel welcome to join in with this project!
+
+[new]
 AlexSchroeder: Some have one namespace, some have several, some have objects, some do not, some have fancy number types, other do not, some have fancy error report systems, others do not.  I think this means that we either don't use fancy features, or implement all the fancy features in the Emacs core.  If I understood this correctly, all these languages for vim just bind stuff available to vim-script, and vim-script doesn't have fancy features.  Therefore, all these powerful extension languages are crippled by vim-script.
 
 [new]

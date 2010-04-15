@@ -50,6 +50,29 @@ It worked very nicely. -- AlexSchroeder
 I'm trying to write a simple eLisp function to automaticaly open an SES file and export its whole content to value. I'm facing problems of ses-export-tsv and region. Does anyone know how to write a lisp function to export the whole content ? Thanks.
 
 [new]
+This is what I use to write out a tsv file each time I save a ses buffer (PeterJones):
+
+  (defun pmade:ses-export-buffer-to-tsv nil
+    "Export the current SES buffer to a TSV file.  The file name
+    will be derived from the current buffer name."
+    (interactive)
+    (let* ((fname (or (buffer-file-name) "export"))
+           (bcell (get-text-property (point-min) 'intangible))
+           (ecell (get-text-property (- (point-max) 2) 'intangible))
+           (ses--curcell (cons bcell ecell)))
+      (setq fname
+            (if (string-match "\\..*$" fname)
+                (replace-match ".tsv" nil nil fname)
+              (concat fname ".tsv")))
+      (ses-export-tab nil)
+      (with-temp-file fname (insert (car kill-ring)))))
+
+  (add-hook 'ses-mode-hook
+    (lambda () 
+      (add-hook 'after-save-hook 'pmade:ses-export-buffer-to-tsv)))
+
+
+[new]
 So I have numerous files that were manually indented into a tree structure, an outline, by hand. Attempting to paste these into SES failed, with an “inconsistent row lengths” error. I'm not surprised that the rows have inconsistent lengths.  I'd just like to get the data imported, and have enough columns to hold the line with the most tabs.  Only one cell should be filled in each row. Any solutions?
 
 Well, I worked around the problem by appending 22 tabs to the end of each line, and then writing a keyboard macro that searched for the 20th tab on a line, deleting the rest of the line, and repeated that for each row in the file. That gave me a consistent number of tabs on each line, and then the yank into the spreadsheet worked... well, at least it didn't complain about inconsistent row lengths.  It still hasn't shown me the spreadsheet yet... pegging out the CPU... but the file does have 5000+ lines... still going... guess this spreadsheet is for puny data sets... After a two hours, I killed the emacs because it never finished, and never showed me a spreadsheet, other than the one cell one that I tried to paste into..

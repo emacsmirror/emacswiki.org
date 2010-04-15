@@ -232,6 +232,15 @@ It's a lot easier to scan long path names if they're displayed vertically, inste
 
 -- [[timcharper]]
 
+[new:jpkotta:2010-04-15 00:21 UTC]
+You'll want to set truncate-lines to nil if you do this.
+
+  (defun my-ido-minibuffer-setup-hook ()
+    ;; allow wrapping in the minibuffer
+    (make-local-variable 'truncate-lines)
+    (setq truncate-lines nil))
+  (add-hook 'ido-minibuffer-setup-hook 'my-ido-minibuffer-setup-hook)
+
 === Control-TAB buffer switching with Ido ===
 
 [NxhtmlMode nXhtml] tweaks Ido to do ControlTABbufferCycling combined with Ido's normal buffer switching.

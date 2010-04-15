@@ -279,5 +279,10 @@ the released package?
 No, I have forgotten to remove it. Thanks George.
 
 
+==== Does it work in GNU Emacs? ====
+
+Emacs 23.1 and the latest (2.05) official nXhtml release play havoc with my setup :(
+"Invalid function: mumamo-save-buffer-state" all over the *Messages* buffer, seemingly random colouring of regions, expecially in php files, not to mention looping "Back to top level" messages when used with emacsclient.
+
 ----
 See also MultipleModes MuMaMo CategoryHypermedia HtmlMode

@@ -17,8 +17,6 @@ See also:
 * IciclesDiscussion -- General discussion about the library, feedback, possible uses, and possible enhancements.
 
 
-
-
 === How To Report an Icicles Issue ===
 
 You can report an '''Icicles''' issue (bug) on this page -- please follow the formatting suggestion provided below ([[#HowToUseThisPage]]).
@@ -77,12 +75,6 @@ Better yet, use this to separate threads (puts space before and after the horizo
 
 
 ''Enter your report below.''
-
-
-
-
-
-
 
 
 
@@ -173,17 +165,36 @@ Sorry it took a while, but I think this is fixed now. Please try the latest vers
 
 
 
+<pre>
+
+</pre>
+----
 
 
+I have a problem with apropos completion, as described in the Closed Issues page (http://www.emacswiki.org/emacs/IciclesIssuesClosed), but I do not quite understand the discussion there. I would appreciate any help or a suggestion of where to look for help, and I can move this question to the thread in the Closed Issues page. 
+
+I put the Icicles libraries on my load path, add ##(require 'icicles)## to my file ~/.emacs, start emacs, and execute ##M-x icy-mode##; The echo area shows "Turning ON Icicle mode...done". Then I type ##M-x buffer S-Tab##, and the echo area shows ##<backtab> is undefined##. I use Emacs 22.2.1. File icicles-opt.el says:
+
+In Emacs 22 and later, `backtab' is the canonical key that represents
+both `S-tab' and `S-iso-lefttab', so that is used in the default
+value.  If, for some reason, `backtab' is not being translated to
+`S-tab' and `S-iso-lefttab' on your platform, you might want to
+customize the value to ([S-tab] [S-iso-lefttab]).  And if your Emacs
+version is 22 or later, please file an Emacs bug about the lack of
+translation.
+
+I did not find a way to customize "backtab" to the value "([S-tab] [S-iso-lefttab])". Also, putting ##(setq icicle-generic-S-tab-keys '([S-tab] [S-iso-lefttab]))## in my init files did not help.
 
 <pre>
 
 </pre>
 ----
+
 <pre>
 
 </pre>
 ----
+
 
 || *Previous:*  IciclesIssues || '''[[Icicles]]''' || IciclesIssuesStale || IciclesIssuesClosed || 
 

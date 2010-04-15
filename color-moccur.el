@@ -1,7 +1,7 @@
 ;;; color-moccur.el ---  multi-buffer occur (grep) mode
 ;; -*- Mode: Emacs-Lisp -*-
 
-;; $Id: color-moccur.el,v 2.67 2010-04-13 14:10:07 Akihisa Exp $
+;; $Id: color-moccur.el,v 2.69 2010-04-14 13:53:22 Akihisa Exp $
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -348,7 +348,10 @@
 ;;       with many buffers, buffer-menu overflow.
 
 ;;; History:
-;;
+
+;; 2010/04/14
+;; Bug fix
+;; I changed next-line to forward-line in moccur-prev and moccur-next
 
 ;; 2010/02/23
 ;; Bug fix.
@@ -2950,8 +2953,8 @@ It serves as a menu to find any of the occurrences in this buffer.
   (interactive "p")
   (setq moccur-mocur-buffer (current-buffer))
   (if arg
-      (next-line arg)
-    (next-line 1))
+      (forward-line arg)
+    (forward-line 1))
   (beginning-of-line)
 
   (if (and moccur-use-ee (not (featurep 'allout))
@@ -2980,8 +2983,8 @@ It serves as a menu to find any of the occurrences in this buffer.
   (interactive "p")
   (setq moccur-mocur-buffer (current-buffer))
   (if arg
-      (next-line (* -1 arg))
-    (next-line -1))
+      (forward-line (* -1 arg))
+    (forward-line -1))
   (end-of-line)
 
   (if (and moccur-use-ee

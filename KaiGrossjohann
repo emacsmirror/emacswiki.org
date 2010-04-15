@@ -1,24 +1,18 @@
-Kai is one of the uber-lispers.  He's very active on various emacs mailing list and news groups.  He's quick to lend a hand and patient with explanations.  -- DougAlcorn
+: Kai is one of the uber-lispers.  He's very active on various emacs mailing list and news groups.  He's quick to lend a hand and patient with explanations.  -- DougAlcorn
 
-His home page can be found at http://ls6-www.informatik.uni-dortmund.de/~grossjoh/.
+: He's great fun to talk to on the #emacs irc channel as well -- ShaeErisson
 
-: I'm getting 403, Permission Denied, on that url.
+: I like him too -- artist
 
-: It's archived here: http://web.archive.org/web/20010516025950/ls6-www.cs.uni-dortmund.de/~grossjoh/
+: He rules. Also, he posted his [http://groups.google.com/groups?selm=vafr8g3wllt.fsf%40lucy.cs.uni-dortmund.de&output=gplain ~/.viper] file to comp.emacs the other day.
 
-A more formal web page is here: http://www.is.informatik.uni-duisburg.de/staff/kai.html
+An archive of his home page can be found [http://web.archive.org/web/20010516025950/ls6-www.cs.uni-dortmund.de/~grossjoh/ in the big archive]. There's also [http://www.is.informatik.uni-duisburg.de/staff/kai.html a more formal web page].
 
 He uses Emacs.
 
 One of the things you'll find there is TrampMode (formerly rcp.el).
 
 Also, he's written the IndentationTutorial, a precursor to the GnusTutorial, and others.
-
-He's great fun to talk to on the #emacs irc channel as well -- ShaeErisson
-
-I like him too -- artist
-
-He rules. Also, he posted his ~/.viper[http://groups.google.com/groups?selm=vafr8g3wllt.fsf%40lucy.cs.uni-dortmund.de&output=gplain] file to comp.emacs the other day.
 
 He also did nnir.el.
 

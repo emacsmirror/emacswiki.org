@@ -1,9 +1,34 @@
-'''[::Dired X]''' is the GnuEmacs library ##dired-x.el##. It provides extra functionality for [[DiredMode|Dired]]. It comes with Emacs.
+The GnuEmacs library '''[::dired-x]''' provides extra functionality for DiredMode. It comes with Emacs.
+
+A manual comes with Emacs documenting these _extra_ features for Dired Mode.  Origanally written by SebastianKremer.
 
 To use this mode run `M-x load-library RET dired-x RET' or add the following to your InitFile.
 
-  (add-hook 'dired-load-hook (function (lambda () (load "dired-x"))))
+  (add-hook 'dired-load-hook
+            (function (lambda () (load "dired-x"))))
 
+Features include:
+
+* Omitting "uninteresting" files from Dired listings
+* Dired local variables file (##.dired##)
+* Shell command guessing
+* "Virtual Dired" allows you to view directories based on command output
+* Cleaning commands
+* Dired current file and file at point commands
+
+If you want parts of dired-x and not the whole thing, consider
+loading only parts of the system.
+
+  (autoload 'dired-jump "dired-x"
+    "Jump to dired buffer corresponding to current buffer."
+    'interactive)
+  (autoload 'dired-jump-other-window "dired-x"
+    "Like \\[dired-jump] (`dired-jump') but in other window."
+    'interactive)
+  (global-set-key "\C-x\C-j" 'dired-jump)
+  (global-set-key "\C-x4\C-j" 'dired-jump-other-window)
+
+See also DiredPower.
 
 ----
 CategoryDirectories

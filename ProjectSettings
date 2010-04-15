@@ -1,4 +1,4 @@
-ProjectSettings are settings for Emacs that apply to all files in a directory (``project'') and are distributed along with said directory. This is a very useful feature for working in a team of people who have to agree on coding standards for source code, character coding systems for text documents (see SelectingTheRightCodingSystem), and so on.
+ProjectSettings are settings for Emacs that apply to all files in a directory ("project") and are distributed along with said directory. This is a very useful feature for working in a team of people who have to agree on coding standards for source code, character coding systems for text documents (see SelectingTheRightCodingSystem), and so on.
 
 The information on this page started with a thread on one of the
 EmacsNewsgroups:
