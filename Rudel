@@ -136,6 +136,25 @@ project is more appropriate.
 
 /Paste questions and feedback here./
 
+[new]
+I would like to use rudel with auctex (with inline preview) for collaborative LaTeX documents.  Unfortunately, this is too hard for most mathematicians (me for example) to install.  How can this be simplified?  With a script or package of some kind?  reply here or something.
+[new]
+
+[new]
+Probably not the answer you are looking for, but with regard to installing Rudel, the procedure depends on your operating system, the Emacs version and desired install location. 
+
+In case you are on a Debian GNU/Linux system (Ubuntu Linux should be equivalent in this case, I suppose), you could try to use the packages provided here: http://www.gergely.risko.hu/cedet/. I have not tried these myself, though.
+
+Alternatively, for a recent version (23) of Emacs, downloading Rudel from http://sourceforge.net/projects/rudel/files/rudel/0.2-4/rudel-0.2-4.tar.gz/download and extracting it somewhere should work. The only additional work in this case is adding
+
+ (load-file "/PATH/TO/EXTRACTED_RUDEL_FILES/rudel-loaddefs.el")
+ (global-rudel-minor-mode 1)
+
+to the .emacs init file. After the next restart of Emacs, a "Rudel" menu item should appear. 
+
+In case you need additional assistance, try the #rudel IRC channel periodically. Sooner or later somebody who can help should be there. -- JanMoringen
+[new]
+
 == Contributed Code ==
 
 === Send Chat Messages (obby Protocol only) ===

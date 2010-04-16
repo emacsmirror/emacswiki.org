@@ -25,6 +25,8 @@ directory tree you accumulate Dired buffers, one for each directory you visit.
 
 * http://www.northbound-train.com/emacs/dired-single.el
 
+* The [[Sunrise_Commander]] kills automatically all unused Dired buffers (though selected buffers can be prevented from being disposed using tabs).
+
 == Advise `dired-find-file' ==
 
 Here are two ways to advise `dired-find-file', so it reuses a directory buffer. (But see AdviceVsHooks.)

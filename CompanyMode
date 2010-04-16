@@ -85,6 +85,27 @@ Yes, set company-begin-commands
 Company does interfere with Yasnippet's native behaviour.
 Here's a quick fix: http://gist.github.com/265010
 
+[new]
+Another code for solving conflicts in Company and Yasnippet.
+
+{{{
+  (if (boundp 'yas/fallback-behavior)
+      (setq yas/fallback-behavior 'return-nil))
+  
+  (defun tab-indent-or-complete ()
+    (interactive)
+    (if (minibufferp)
+        (minibuffer-complete)
+      (if (or (not (fboundp 'yas/expand))
+               (null (yas/expand)))
+          (if (looking-at "\\_>")
+              (company-complete-common)
+            (indent-for-tab-command)))))
+  (global-set-key [tab] 'tab-indent-or-complete)
+}}}
+
+-- YoungtaekOh
+
 == Discussion ==
 
 How does this compare to CompletionUI and AutoComplete? -- TobyCubitt

@@ -1,3 +1,6 @@
+: **Similar functionality has been integrated into current Emacs.**
+: See DirectoryVariables.
+
 This package by MattArmstrong implements ProjectSettings as follows: You can stick an .emacs-dirvars file in a directory and all files under that directory will get its settings.  But the .emacs-dirvars file is even more restrictive than a Local Variables section -- you can't set the special mode or eval variables to change the mode or eval code.
 
 Lisp:dirvars.el -- modified version by BenjaminRutt

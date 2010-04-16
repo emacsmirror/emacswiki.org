@@ -1,0 +1,25 @@
+From the manual, Manual:directory-variables:
+
+: If you put a file with a special name ##.dir-locals.el## in a
+directory, Emacs will read it when it visits any file in that directory
+or any of its subdirectories, and apply the settings it specifies to
+the file's buffer.  Emacs searches for `.dir-locals.el' starting in the
+directory of the visited file, and moving up the directory tree.
+
+The `.dir-locals.el' file should hold a specially-constructed list.
+This list maps Emacs mode names (symbols) to alists; each alist
+specifies values for variables to use when the respective mode is
+turned on.  The special mode name `nil' means that its alist applies to
+any mode.  Instead of a mode name, you can specify a string that is a
+name of a subdirectory of the project's directory; then the
+corresponding alist applies to all the files in that subdirectory.
+
+Here's an example of a `.dir-locals.el' file:
+
+     ((nil . ((indent-tabs-mode . t)
+              (tab-width . 4)
+              (fill-column . 80)))
+      (c-mode . ((c-file-style . "BSD")))
+      (java-mode . ((c-file-style . "BSD")))
+      ("src/imported"
+       . ((nil . ((change-log-default-name . "ChangeLog.local"))))))

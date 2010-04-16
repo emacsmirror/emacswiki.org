@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Apr  9 14:24:28 2010 (-0700)
+;; Last-Updated: Thu Apr 15 10:51:53 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 3644
+;;     Update #: 3647
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -334,22 +334,20 @@ This option has no effect if library `anything.el' cannot be loaded."
 
 ;;;###autoload
 (defcustom icicle-apropos-complete-keys '([S-tab] [S-iso-lefttab])
-  ;; $$$$$ The following should be sufficient, but some Emacs 22+ libraries, such as `info.el',
-  ;; are brain-dead and explicitly bind both `backtab' and `S-tab'.  I filed Emacs bug #1281.
+  ;; In Emacs 22 and later, `backtab' is the canonical key that represents both `S-tab' and
+  ;; `S-iso-lefttab', so in principle that could be used in the default value for Emacs 22+.
+  ;;
+  ;; In other words, the following should be sufficient:
   ;;   (if (> emacs-major-version 21)
   ;;       '([backtab])
   ;;     '([S-tab] [S-iso-lefttab]))
+  ;;
+  ;; However, some Emacs 22+ libraries, such as `info.el', are brain-dead and explicitly
+  ;; bind both `backtab' and `S-tab'.  I filed Emacs bug #1281.
   "*Key sequences to use for `icicle-apropos-complete'.
 A list of values that each has the same form as a key-sequence
 argument to `define-key'.  It is a list mainly in order to accommodate
 different keyboards - for example, `S-tab' and `S-iso-lefttab'."
-;; In Emacs 22 and later, `backtab' is the canonical key that represents
-;; both `S-tab' and `S-iso-lefttab', so that is used in the default
-;; value.  If, for some reason, `backtab' is not being translated to
-;; `S-tab' and `S-iso-lefttab' on your platform, you might want to
-;; customize the value to ([S-tab] [S-iso-lefttab]).  And if your Emacs
-;; version is 22 or later, please file an Emacs bug about the lack of
-;; translation.
   :type '(repeat sexp) :group 'Icicles-Key-Bindings)
 
 ;;;###autoload

@@ -17,7 +17,7 @@
 ;; along with this program; if not, write to the Free Software
 ;; Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
 
-;; Version: 0.1.0
+;; Version: 0.1.1
 ;; Author: k1LoW (Kenichirou Oyama), <k1lowxb [at] gmail [dot] com> <k1low [at] 101000lab [dot] org>
 ;; URL: http://code.101000lab.org, http://trac.codecheck.in
 
@@ -36,8 +36,9 @@
 ;;
 
 ;;; Change Log
+;; 0.1.1: Fix advice bug
 ;; 0.1.0: display error line (it's fuzzy).
-;; 0.0.9: bug fix.
+;; 0.0.9: Fix bug.
 ;; 0.0.8: new function fuzzy-format-check-pair.
 ;; 0.0.7: fuzzy-format-set-indent-mode bug fix.
 ;; 0.0.6: fuzzy-format-auto-format bug fix.
@@ -165,14 +166,16 @@
   (interactive)
   (setq indent-tabs-mode t)
   (setq mode-line-buffer-identification (concat (buffer-name) " [T]"))
-  (force-mode-line-update))
+  (force-mode-line-update)
+  t)
 
 (defun fuzzy-format-set-spaces-mode()
   "Set spaces mode."
   (interactive)
   (setq indent-tabs-mode nil)
   (setq mode-line-buffer-identification (concat (buffer-name) " [S]"))
-  (force-mode-line-update))
+  (force-mode-line-update)
+  t)
 
 (defadvice switch-to-buffer (after fuzzy-format-switch-to-buffer disable)
   "fuzzy-format-switch-to-buffer"
@@ -194,12 +197,18 @@
       (progn
         (fuzzy-format-auto-format)
         (ad-enable-advice 'switch-to-buffer 'after 'fuzzy-format-switch-to-buffer)
+        (ad-activate 'switch-to-buffer)
         (ad-enable-advice 'other-window 'after 'fuzzy-format-other-window)
+        (ad-activate 'other-window)
         (ad-enable-advice 'split-window 'after 'fuzzy-format-split-window)
+        (ad-activate 'split-window)
         (add-hook 'after-save-hook 'fuzzy-format-set-indent-mode))
     (ad-disable-advice 'switch-to-buffer 'after 'fuzzy-format-switch-to-buffer)
+    (ad-activate 'switch-to-buffer)
     (ad-disable-advice 'other-window 'after 'fuzzy-format-other-window)
+    (ad-activate 'other-window)
     (ad-disable-advice 'split-window 'after 'fuzzy-format-split-window)
+    (ad-activate 'split-window)
     (remove-hook 'after-save-hook 'fuzzy-format-set-indent-mode)))
 
 (define-global-minor-mode global-fuzzy-format-mode

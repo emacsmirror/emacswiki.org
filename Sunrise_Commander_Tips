@@ -121,6 +121,26 @@ Once you've  installed OpenWith, customize  the /openwith-associations/ variable
 as needed.
 
 ----
+[:OpenWithInRecentf]
+==Adding files opened with external apps to the history of recent files.==
+
+When you start using Openwith to open different files with external applications
+it's an annoyance not having them included in the list of recently visited files
+-- fortunately an easy to fix one, just add the following snippet to your .emacs
+configuration:
+
+<pre>
+        (defadvice openwith-file-handler
+          (around advice-openwith-file-handler (operation &rest args))
+          (condition-case description
+              ad-do-it
+            (error (progn
+                     (recentf-add-file (car args))
+                     (error (second description))))))
+        (ad-activate 'openwith-file-handler)
+</pre>
+
+----
 [:MouseSupport]
 ==Better mouse support?==
 
@@ -154,7 +174,7 @@ for DiredPlus to add it. See the Emacs manual,  node  Drag  and  Drop
 
 ----
 [:HighlightingPermissions]
-==Highlighting files with inappropriate permissions==
+==Highlighting files with inappropriate permissions.==
 
 The  sr-rainbow  macro  allows to easily manipulate the font locking of file and
 directory names in Sunrise using
@@ -175,7 +195,7 @@ file a snippet like the following:
 
 ----
 [:AvfsSetup]
-==Setting up transparent navigation in compressed archives==
+==Setting up transparent navigation in compressed archives.==
 
 Sunrise   integrates   with   [http://avf.sourceforge.net/   AVFS]   to  provide
 transparent navigation inside compressed  archives  with  a  minimal  amount  of

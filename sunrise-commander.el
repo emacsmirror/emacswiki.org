@@ -139,7 +139,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 281 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 282 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 23) for  Windows.  I  have  also  received
@@ -1731,10 +1731,12 @@ automatically:
   is one) to do so. If the buffer is non-virtual the back-up buffer is killed."
   (interactive)
   (if (buffer-live-p sr-backup-buffer)
-      (let ((inhibit-read-only t))
+      (let ((marks (dired-remember-marks (point-min) (point-max)))
+            (inhibit-read-only t))
         (erase-buffer)
         (insert-buffer-substring sr-backup-buffer)
         (sr-beginning-of-buffer)
+        (dired-mark-remembered marks)
         (sr-highlight)
         (if (eq 'sr-mode major-mode) (sr-kill-backup-buffer)))
     (sr-save-aspect (revert-buffer))))

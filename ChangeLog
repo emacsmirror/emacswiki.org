@@ -3,7 +3,7 @@ create a ChangeLog automatically.  `C-x v a' may do
 what you need.
 
 If you maintain the log manually, use `C-x 4 a' to add a new !ChangeLog entry.
-If you run `C-x 4 a' in a hunk of a patch generated with `M-x vc-diff', `M-x diff', `M-x diff-backup' -- or any of the DiffMode producing commands, AddLog will automatically determine and insert the function name into the !ChangeLog entry.  Repeatedly type `C-x 4 a' for each hunk of the patch, and write an entry in the !ChangeLog file.
+If you run `C-x 4 a' in a hunk of a patch generated with `M-x vc-diff', `M-x diff', `M-x diff-backup' -- or any of the DiffMode producing commands, it will automatically determine and insert the function name into the !ChangeLog entry.  Repeatedly type `C-x 4 a' for each hunk of the patch, and write an entry in the !ChangeLog file.
 
 A !ChangeLog file itself is edited in Emacs using ChangeLogMode.
 

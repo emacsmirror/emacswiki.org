@@ -1,22 +1,9 @@
 ProjectSettings are settings for Emacs that apply to all files in a directory ("project") and are distributed along with said directory. This is a very useful feature for working in a team of people who have to agree on coding standards for source code, character coding systems for text documents (see SelectingTheRightCodingSystem), and so on.
 
-The information on this page started with a thread on one of the
-EmacsNewsgroups:
+: **Similar functionality has been integrated into current Emacs.**
+: See DirectoryVariables.
 
- Subject: Has anybody implemented project settings files?
- Newsgroups: comp.emacs
- Date: Tue, 08 Jan 2002 13:01:10 -070
-
-== Built In ==
-
-Emacs 23 onward has built-in support for directory-local variables.  Settings are stored as a specially formatted list in a file named .dir-locals.el.  See [http://www.gnu.org/software/emacs/manual/html_node/emacs/Directory-Variables.html#Directory-Variables the page in the Emacs Manual] to learn how to use this.
-
-There is also the function locate-dominating-file:
-
-  (locate-dominating-file file regexp)
-
-  Look up the directory hierarchy from file for a file matching regexp.
-
+This makes solutions like ProjectLocalVariables and DirVarsPackage obsolete.
 
 == Project Settings in Lisp ==
 
@@ -44,9 +31,10 @@ KimStorm suggested to store the stuff in a function.
 
 Note how the function executes everytime C mode runs.
 
-=== project-root.el ===
+== Helper code based on existing files and subdirectories: project-root.el ==
 
-[http://www.shellarchive.co.uk/content/emacs.html project-root.el] (Updated version with new features: [http://piranha.org.ua/project-root/ project-root.el])
+[http://www.shellarchive.co.uk/content/emacs.html project-root.el]
+(Updated version with new features: [http://piranha.org.ua/project-root/ project-root.el])
 
 Project-root is a very simple module that allows you to define
 projects like this:
@@ -58,8 +46,8 @@ projects like this:
 </pre>
 
 With this configuration, anytime you are in a project with t and lib
-at the root level you will have access to the project-root functions
-like:
+at the root level you will have access to the project-root functions.
+This will allow you to write project-specific code.
 
 When ever you are in a project you will have access to
 `project-details' that will look look like this:
@@ -80,9 +68,7 @@ Which will run grep as if it had been called from the root directory.
 There are several helpers already defined in the module and the option
 to use the provided anything.el integration should one wish.
 
-==== tips ====
-
-===== Open a shell at current root =====
+=== Open a shell at current root ===
 
 <pre>
 (global-set-key (kbd "C-c p s")
@@ -94,8 +80,7 @@ to use the provided anything.el integration should one wish.
                        (concat (car project-details) "-shell")))
 </pre>
 
-===== Start a vc interface at root =====
-
+=== Start a vc interface at root ===
 
 <pre>
 (global-set-key (Kbd "C-c p v")
@@ -112,10 +97,9 @@ to use the provided anything.el integration should one wish.
                            (vc-directory root nil)))))))
 </pre>
 
+== Get hook and minor mode based on relevant files: eproject.el ==
 
-=== eproject.el ===
-
-[http://github.com/jrockway/eproject eproject.el]
+Download: [http://github.com/jrockway/eproject eproject.el]
 
 eproject is similar to project-root.el, but less invasive and more customizable.  The docs
 in the file are pretty descriptive, as is [http://blog.jrock.us/articles/eproject.pod this blog post].
@@ -130,55 +114,7 @@ Basically, you can declare project types like:
 
 then you get a hook and minor mode that you can customize further.
 
-== Project Settings in Files ==
-
-In order to save settings in a file per project, try the following by
-KaiGrossjohann.
-
-<pre>
- (defvar kai-project-file ".emacs-prj-"
-   "Name prefix for project files.
- Emacs appends name of major mode and looks for such a file in the current
- directory and its parents.")
-
- (defun kai-find-project-file (dir mode-name)
-   (let ((f (expand-file-name (concat kai-project-file mode-name) dir))
-	 (parent (file-truename (expand-file-name ".." dir))))
-     (cond ((string= dir parent) nil)
-	   ((file-exists-p f) f)
-	   (t (kai-find-project-file parent mode-name)))))
-
- (defun kai-eval-project-file ()
-   (let* ((mfull (symbol-name major-mode))
-	  (mode-name (if (string-match "\\`\\(.*\\)-mode\\'" mfull)
-			 (match-string 1 mfull)
-		       mfull))
-	  (pfile (kai-find-project-file default-directory mode-name)))
-     (when pfile
-       (load pfile))))
-</pre>
-
-You can then do things like (add-hook 'c-mode-hook
-'kai-eval-project-file) to do it for C mode.  Everytime you enter C
-mode, ie. every time you open a C file, the project file will be
-loaded and evaluated.
-
-This is, of course, a potential security risk, since that project file
-is just plain elisp and could contain malicious code.  Thus, use with
-care on a multi-user system!  People have suggested changes which test
-for UID before loading the files.
-
-== Project Settings in Files (another option) ==
-
-See DirVarsPackage.
-
-There is an alternative: dir-locals.el, http://thread.gmane.org/gmane.emacs.devel/56027
-
-== Yet Another Separate File Option ==
-
-See ProjectLocalVariables.
-
-== EDE ===
+== Project management using EDE ===
 
 The EDE tool EricLudlam wrote tries to do project management.  It has
 a concept of project local variables which it will set for you in your
@@ -189,13 +125,13 @@ to build Makefiles for you, and nifty stuff like that.
 
 * http://cedet.sourceforge.net/ede.shtml
 
-== pgrok ==
+== A simple package: pgrok ==
 
-pgrok is a simple package based on Kai Grossjohan's code above for loading project setting files (both generic and mode specific) and containing a couple of functions for operating on projects (wrappers for find-dired and rgrep at the moment.)
+pgrok is a simple package for loading project setting files (both generic and mode specific) and containing a couple of functions for operating on projects (wrappers for find-dired and rgrep at the moment.)
 
 * http://launchpad.net/pgrok/
 
-== Desktop ==
+== Using an existing package: desktop ==
 
 You can also create a little project-management tool out of DeskTop. Provided that you've got
 a directory with a subdirectory for every single project you work on (it doesn't have to contain
@@ -203,7 +139,7 @@ the project's source code), you can switch between desktops ("workspaces" or "pr
 IDEs' terminology). DeskTop will remember paths of open files and values of variables (you can
 customize which variables you want).
 
-== projany ==
+== A unified interface to the project manager libraries using projany ==
 
 The purpose of projany is to provide a unified interface to the half a
 dozen emacs project manager libraries out there.  It is intended to
