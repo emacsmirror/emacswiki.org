@@ -16,8 +16,9 @@ Features include:
 * Cleaning commands
 * Dired current file and file at point commands
 
-If you want parts of dired-x and not the whole thing, consider
-loading only parts of the system.
+There is no way to get only parts of dired-x and not the whole
+thing.  Though, you can try with `autoload', it will eventually
+take over.
 
   (autoload 'dired-jump "dired-x"
     "Jump to dired buffer corresponding to current buffer."
@@ -25,8 +26,17 @@ loading only parts of the system.
   (autoload 'dired-jump-other-window "dired-x"
     "Like \\[dired-jump] (`dired-jump') but in other window."
     'interactive)
+  (setq dired-bind-jump t)
   (global-set-key "\C-x\C-j" 'dired-jump)
   (global-set-key "\C-x4\C-j" 'dired-jump-other-window)
+  
+  (setq dired-x-hands-off-my-keys t)
+  (setq dired-bind-man nil)
+  (setq dired-bind-info nil)
+  (eval-after-load "dired"
+    '(setq dired-mode-map-orig dired-mode-map))
+  (eval-after-load "dired-x"
+    '(setq dired-mode-map dired-mode-map-orig))
 
 See also DiredPower.
 

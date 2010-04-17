@@ -6,7 +6,7 @@
 ;; Maintainer: S. Irie
 ;; Keywords: Tooltip
 
-(defconst pos-tip-version "0.3.2")
+(defconst pos-tip-version "0.3.3")
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -69,6 +69,10 @@
 
 
 ;;; History:
+;; 2010-04-16  S. Irie
+;;         * Changed `pos-tip-show' not to fill paragraph unless exceeding WIDTH
+;;         * Version 0.3.3
+;;
 ;; 2010-04-08  S. Irie
 ;;         * Bug fix
 ;;         * Version 0.3.2
@@ -676,10 +680,12 @@ without considering the height of object at POS, so the object might be
 hidden by the tooltip.
 
 See also `pos-tip-show-no-propertize'."
-  (if width
-      (setq string (pos-tip-fill-string string width nil 'none)))
   (let ((frame (window-frame (or window (selected-window))))
 	(w-h (pos-tip-string-width-height string)))
+    (if (and width
+	     (> (car w-h) width))
+	(setq string (pos-tip-fill-string string width nil 'none)
+	      w-h (pos-tip-string-width-height string)))
     (face-spec-reset-face 'pos-tip-temp)
     (set-face-font 'pos-tip-temp (frame-parameter frame 'font))
     (pos-tip-show-no-propertize

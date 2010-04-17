@@ -5,6 +5,7 @@ On the following platforms,
 * Emacs 23
 ** X Window System and a compositing window manager (e.g. Compiz, Beryl and Compiz Fusion)
 ** Mac OS X; MacPorts.
+** EmacsNT - GNU Emacs 23.1.50.1 (i386-mingw-nt6.1.7600) works, can't confirm any other versions.
 * Emacs 22 with transparency patch
 ** X Window System and a compositing window manager (e.g. Compiz, Beryl and Compiz Fusion)
 ** Mac OS X; AquamacsEmacs, CarbonEmacsPackage and Fink's emacs

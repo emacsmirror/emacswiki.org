@@ -5,6 +5,7 @@ This program is tested on GNU Emacs 22, 23 under X window system and Emacs 23 fo
 == Downloading ==
 
 : Lisp:pos-tip.el
+: [[https://code.launchpad.net/~irie/+junk/pos-tip.el Bazaar branch in Launchpad]]
 
 == Installation ==
 
@@ -34,7 +35,8 @@ or
         "** You didn't specify a function! **" '("red"))
      (pos-tip-show
       (with-temp-buffer
-        (let ((standard-output (current-buffer)))
+        (let ((standard-output (current-buffer))
+              (help-xref-following t))
           (prin1 function)
           (princ " is ")
           (describe-function-1 function)

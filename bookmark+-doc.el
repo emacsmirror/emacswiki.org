@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Mar 30 13:47:59 2010 (-0700)
+;; Last-Updated: Fri Apr 16 16:33:07 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 11935
+;;     Update #: 11963
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -198,7 +198,12 @@
 ;;       according to Windows file associations.  (You will also need
 ;;       library `w32-browser.el'.)
 ;;
-;;     - You can edit a bookmark (its name and file name).
+;;     - You can use (lax) completion when you set a bookmark using
+;;       `bookmark-set' (`C-x r m'), choosing from existing bookmarks
+;;       in the same buffer.  This makes it easy to update a nearby
+;;       bookmark.
+;;
+;;     - You can edit a bookmark (its name and file name/location).
 ;;
 ;;     - A popup menu is available on `mouse-3', with actions for the
 ;;       individual bookmark you point to when you click the mouse.
@@ -1226,6 +1231,14 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2010/04/16 dadams
+;;
+;;     Added: bookmarkp-completing-read-1, bookmarkp-completing-read-lax,
+;;            bookmarkp-selected-buffers-alist-only.
+;;     bookmark-set: Use bookmark-completing-read-lax w/ buffer's bookmarks, not read-from-minibuffer.
+;;     bookmark-completing-read: Define using bookmarkp-completing-read-1.
+;; 2010/04/09 dadams
+;;     bookmarkp-edit-bookmark: Update dired-directory property along with filename property. 
 ;; 2010/03/28 dadams
 ;;     bookmarkp-goto-position: Don't funcall bookmarkp-jump-display-function if it is nil.
 ;; 2010/03/28 dadams

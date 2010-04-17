@@ -1,5 +1,5 @@
 ;;; lispxmp.el --- Automagic emacs lisp code annotation
-;; $Id: lispxmp.el,v 1.14 2010/03/28 04:52:56 rubikitch Exp $
+;; $Id: lispxmp.el,v 1.19 2010/04/16 12:07:26 rubikitch Exp $
 
 ;; Copyright (C) 2009, 2010  rubikitch
 
@@ -88,6 +88,21 @@
 ;;; History:
 
 ;; $Log: lispxmp.el,v $
+;; Revision 1.19  2010/04/16 12:07:26  rubikitch
+;; New algorithm. Fix result compound object such as rings.
+;;
+;; Revision 1.18  2010/04/16 12:01:02  rubikitch
+;; refined test
+;;
+;; Revision 1.17  2010/04/01 01:21:49  rubikitch
+;; `%lispxmp-prin1-to-string-no-properties': newline -> \n
+;;
+;; Revision 1.16  2010/04/01 01:14:37  rubikitch
+;; Fix a testcase
+;;
+;; Revision 1.15  2010/04/01 00:58:58  rubikitch
+;; Fix an bug in cons cell
+;;
 ;; Revision 1.14  2010/03/28 04:52:56  rubikitch
 ;; * Fix destructive function bug
 ;; * New command: `lispxmp-debug-buffer'
@@ -135,7 +150,7 @@
 
 ;;; Code:
 
-(defvar lispxmp-version "$Id: lispxmp.el,v 1.14 2010/03/28 04:52:56 rubikitch Exp $")
+(defvar lispxmp-version "$Id: lispxmp.el,v 1.19 2010/04/16 12:07:26 rubikitch Exp $")
 (require 'cl)
 (require 'newcomment)
 (defgroup lispxmp nil
@@ -219,8 +234,7 @@ http://mumble.net/~campbell/emacs/paredit.el"
 
 (defvar lispxmp-results nil)
 (defun %lispxmp-out (index result)
-  (push (cons index (if (sequencep result) (copy-sequence result) result))
-        lispxmp-results)
+  (push (cons index (%lispxmp-prin1-to-string result)) lispxmp-results)
   result)
 
 (defun %lispxmp-prin1-to-string (object)
@@ -233,11 +247,15 @@ http://mumble.net/~campbell/emacs/paredit.el"
   (with-temp-buffer
     (let ((standard-output (current-buffer)))
       (save-excursion (prin1 object)))
-    (while (search-forward "#(\"" nil t)
-      (forward-char -1)
-      (paredit-raise-sexp)
-      (delete-backward-char 1)
-      (forward-sexp 1))
+    (save-excursion
+      (while (search-forward "#(\"" nil t)
+        (forward-char -1)
+        (paredit-raise-sexp)
+        (delete-backward-char 1)
+        (forward-sexp 1)))
+    (save-excursion
+      (while (search-forward "\n" nil t)
+        (replace-match "\\\\n")))
     (buffer-string)))
 
 
@@ -254,7 +272,7 @@ http://mumble.net/~campbell/emacs/paredit.el"
         (insert semicolons
                 " => "
                 ;; pair := (INDEX . VALUE)
-                (mapconcat (lambda (pair) (%lispxmp-prin1-to-string (cdr pair)))
+                (mapconcat 'cdr
                            (remove-if-not (lambda (pair) (= index (car pair)))
                                           (reverse results))
                            ", ")))))
@@ -278,28 +296,51 @@ http://mumble.net/~campbell/emacs/paredit.el"
 ;; (install-elisp "http://www.emacswiki.org/cgi-bin/wiki/download/el-mock.el")
 (dont-compile
   (when (fboundp 'expectations)
+    (defun lispxmp-to-string (from)
+      (with-temp-buffer
+        (insert from)
+        (lispxmp)
+        (buffer-string)))
     (expectations
       (desc "%lispxmp-prin1-to-string")
+      (expect "\"a\\nb\""
+        (%lispxmp-prin1-to-string-no-properties "a\nb"))
       (expect "\"aaaa\""
         (%lispxmp-prin1-to-string-no-properties (propertize "aaaa" 'face 'match)))
       (expect "(\"a\" \"b\")"
         (%lispxmp-prin1-to-string-no-properties
          (list (propertize "a" 'face 'match) (propertize "b" 'face 'match))))
       (desc "destructive annotation test")
-      (expect '(1 2)
-        (let (l)
-          (setq lispxmp-results nil)
-          (%lispxmp-out 0 (setq l (list 1 2)))
-          (%lispxmp-out 1 (setcar l 100))
-          (%lispxmp-out 2 l)
-          (cdr (assq 0 lispxmp-results))))
-      (expect "abcd"
-        (let (s)
-          (setq lispxmp-results nil)
-          (%lispxmp-out 0 (setq s "abcd"))
-          (%lispxmp-out 1 (aset s 0 ?A))
-          (%lispxmp-out 2 s)
-          (cdr (assq 0 lispxmp-results))))
+      (expect "
+         (setq l (list 1 2)) ; => (1 2)
+         (setcar l 100)      ; => 100
+         l                   ; => (100 2)
+        "
+        (lispxmp-to-string "
+         (setq l (list 1 2)) ; =>
+         (setcar l 100)      ; =>
+         l                   ; =>
+        "))
+      (expect "
+         (setq s (copy-sequence \"abcd\")) ; => \"abcd\"
+         (aset s 0 ?A)                     ; => 65
+         s                                 ; => \"Abcd\"
+        "
+        (lispxmp-to-string "
+         (setq s (copy-sequence \"abcd\")) ; =>
+         (aset s 0 ?A)                     ; =>
+         s                                 ; =>
+        "))
+      (expect "
+         (setq c (cons 1 2)) ; => (1 . 2)
+         (setcar c 100)      ; => 100
+         c                   ; => (100 . 2)
+        "
+        (lispxmp-to-string "
+         (setq c (cons 1 2)) ; =>
+         (setcar c 100)      ; =>
+         c                   ; =>
+        "))
       )))
 
 (provide 'lispxmp)

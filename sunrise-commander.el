@@ -139,7 +139,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 282 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 283 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 23) for  Windows.  I  have  also  received
@@ -1321,18 +1321,19 @@ automatically:
   "Handles the cases when the user presses  return, f or clicks on the path line
   to access some object in the file system."
   (interactive)
-  (save-excursion
-    (unless filename
-      (if (eq 1 (line-number-at-pos)) ;; <- Click or Enter on path line
-          (let* ((eol (save-excursion (end-of-line) (point)))
-                 (slash (re-search-forward "/" eol t)))
-            (if slash
-                (setq filename (buffer-substring (+ 2 (point-min)) slash))
-              (setq filename default-directory)))
-        (setq filename (expand-file-name (dired-get-filename nil t)))))
-    (if (file-exists-p filename)
-        (sr-find-file filename)
-      (error "ERROR: Nonexistent target"))))
+  (unless filename
+    (if (eq 1 (line-number-at-pos)) ;; <- Click or Enter on path line.
+        (let* ((path (buffer-substring (point) (point-at-eol)))
+               (levels (1- (length (split-string path "/")))))
+          (if (< 0 levels)
+              (sr-dired-prev-subdir levels)
+            (sr-beginning-of-buffer)))
+      (setq filename (dired-get-filename nil t)
+            filename (and filename (expand-file-name filename)))))
+  (if filename
+      (if (file-exists-p filename)
+          (sr-find-file filename)
+        (error "Sunrise: ERROR - nonexistent target"))))
 
 (defun sr-find-file (filename &optional wildcards)
   "Determines the proper way of handling an object in the file system, which can
@@ -1443,7 +1444,7 @@ automatically:
            (to (replace-regexp-in-string "x" "../" (make-string count ?x)))
            (from (expand-file-name (substring to 1)))
            (from (sr-directory-name-proper from))
-           (from (replace-regexp-in-string "#.*/?$" "" from))
+           (from (replace-regexp-in-string "\\(?:#.*/?$\\|/$\\)" "" from))
            (to (replace-regexp-in-string "\\.\\./$" "" (expand-file-name to))))
       (sr-goto-dir to)
       (unless (sr-equal-dirs from to)

@@ -1,4 +1,4 @@
-This picks the last message somebody said in the channel buffer and
+This [[ERC]] command picks the last message somebody said in the channel buffer and
 runs doctor on it, when you type the /DOCTOR command.
 
 Features:
@@ -11,17 +11,13 @@ Features:
 
 * Keep a separate buffer for each patient of the doctor.
 
-[new:DrewAdams:2005-01-12 16:27 UTC]
-Kind of reminds me -- back in the 80s, I wrote a command that made `doctor' communicate with Zippy (`yow'!). I won't say who was consulting whom, but it was quite enlightening either way you looked at it. :D. -- DrewAdams
-* `M-x psychoanalyze-pinhead' is part of the standard `yow' package, and has been for a long time. -- EraEriksson
-[new]
+{{{
+(setq erc-remove-parsed-property nil)
 
-<pre>
 (autoload 'doctor-doc "doctor")
 (autoload 'make-doctor-variables "doctor")
 
 (defvar erc-doctor-id "{Emacs doctor} ")
-
 (defun erc-cmd-DOCTOR (&optional last-sender &rest ignore)
   "Get the last message in the channel and doctor it."
   (let ((limit (- (point) 1000))
@@ -75,7 +71,7 @@ Kind of reminds me -- back in the 80s, I wrote a command that made `doctor' comm
                (erase-buffer)
                (doctor-doc text)
                (buffer-string))))))
-</pre>
+}}}
 
 ----
-[[ERC]]
+CategoryChatClient

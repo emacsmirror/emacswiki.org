@@ -152,6 +152,10 @@ directory bookmarks that are marked (`##>##').
 according to Windows file associations.  (You will also need
 library <tt>[[w32-browser.el]]</tt>.)
 
+* You can use (lax) [[completion]] when you set a bookmark using `bookmark-set' (`C-x r m'),
+choosing from existing bookmarks in the same buffer.  This
+makes it easy to update a nearby bookmark.
+
 * You can edit a bookmark (its name and file name/location).
 
 * A popup menu is available on '''`mouse-3'''', with actions for the

@@ -4,7 +4,7 @@
 
 ;; Author: S. Irie
 ;; Keywords: Tooltip
-;; Version: 0.1.0
+;; Version: 0.1.1
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -38,9 +38,13 @@
 ;;     ad-do-it))
 
 ;; History:
+;; 2010-04-16  S. Irie
+;;         * Changed `popup-pos-tip' not to fill paragraph unless exceeding :width
+;;         * Version 0.1.1
+;;
 ;; 2010-03-29  S. Irie
-;;         * Version 0.1.0
 ;;         * First release
+;;         * Version 0.1.0
 
 ;;; Code:
 
@@ -70,6 +74,7 @@
   (if (bufferp string)
       (setq string (with-current-buffer string (buffer-string))))
 
+  (or width (setq width popup-tip-max-width))
   (and (eq margin t) (setq margin 1))
   (or margin-left (setq margin-left (or margin 0)))
   (or margin-right (setq margin-right (or margin 0)))
@@ -77,10 +82,11 @@
        (setq point (popup-child-point parent parent-offset)))
 
   (setq rows (pos-tip-split-string string
-                                   (+ margin-left
-                                      (or width popup-tip-max-width))
+                                   (+ margin-left width)
                                    margin-left
-                                   'none)
+                                   (and (> (car (pos-tip-string-width-height string))
+                                           width)
+                                        'none))
         string (let ((rmargin-str (make-string margin-right ?\s)))
                  (propertize (concat (mapconcat 'identity
                                                 rows

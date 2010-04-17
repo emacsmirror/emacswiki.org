@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Apr 12 06:50:14 2010 (-0700)
+;; Last-Updated: Fri Apr 16 17:15:56 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 11888
+;;     Update #: 11916
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -268,11 +268,13 @@
 ;;    `bookmarkp-bookmark-last-access-cp',
 ;;    `bookmarkp-bookmark-list-alist-only',
 ;;    `bookmarkp-bookmark-list-bookmark-p',
-;;    `bookmarkp-buffer-last-access-cp', `bookmarkp-cp-not',
-;;    `bookmarkp-current-sort-order', `bookmarkp-desktop-alist-only',
-;;    `bookmarkp-desktop-bookmark-p', `bookmarkp-desktop-kill',
-;;    `bookmarkp-dired-alist-only', `bookmarkp-dired-bookmark-p',
-;;    `bookmarkp-dired-subdirs', `bookmarkp-edit-bookmark',
+;;    `bookmarkp-buffer-last-access-cp',
+;;    `bookmarkp-completing-read-1', `bookmarkp-completing-read-lax',
+;;    `bookmarkp-cp-not', `bookmarkp-current-sort-order',
+;;    `bookmarkp-desktop-alist-only', `bookmarkp-desktop-bookmark-p',
+;;    `bookmarkp-desktop-kill', `bookmarkp-dired-alist-only',
+;;    `bookmarkp-dired-bookmark-p', `bookmarkp-dired-subdirs',
+;;    `bookmarkp-edit-bookmark',
 ;;    `bookmarkp-end-position-post-context',
 ;;    `bookmarkp-end-position-pre-context', `bookmarkp-every',
 ;;    `bookmarkp-face-prop', `bookmarkp-file-alist-only',
@@ -348,6 +350,7 @@
 ;;    `bookmarkp-root-or-sudo-logged-p', `bookmarkp-same-file-p',
 ;;    `bookmarkp-save-menu-list-state',
 ;;    `bookmarkp-save-new-region-location',
+;;    `bookmarkp-selected-buffers-alist-only',
 ;;    `bookmarkp-sequence-bookmark-p', `bookmarkp-set-union',
 ;;    `bookmarkp-some', `bookmarkp-some-marked-p',
 ;;    `bookmarkp-some-unmarked-p' `bookmarkp-sort-and-remove-dups',
@@ -1521,8 +1524,9 @@ The names are those of the bookmarks in ALIST or, if nil,
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; 1. Added optional args ALIST and PRED.
-;; 2. Bind `icicle-delete-candidate-object' to `bookmark-delete'.
+;; 1. Added optional args ALIST, PRED, and HIST.
+;; 2. Define using helper function `bookmarkp-completing-read-1',
+;;    which binds `icicle-delete-candidate-object' to `bookmark-delete'.
 ;;
 (defun bookmark-completing-read (prompt &optional default alist pred hist)
   "Read a bookmark name, prompting with PROMPT.
@@ -1544,26 +1548,7 @@ completion.
 If you use Icicles, then you can use `S-delete' during completion of a
 bookmark name to delete the bookmark named by the current completion
 candidate."
-  (bookmark-maybe-load-default-file)
-  (setq alist  (or alist bookmark-alist))
-  (if (and (listp last-nonmenu-event)
-           (or (eq t bookmarkp-menu-popup-max-length)
-               (and (integerp bookmarkp-menu-popup-max-length)
-                    (< (length alist) bookmarkp-menu-popup-max-length))))
-      (bookmark-menu-popup-paned-menu
-       t prompt
-       (if bookmarkp-sort-comparer      ; Test whether to sort, but always use `string-lessp'.
-           (sort (bookmark-all-names alist) 'string-lessp)
-         (bookmark-all-names alist)))
-    (let* ((icicle-delete-candidate-object  'bookmark-delete) ; For `S-delete'.
-           (completion-ignore-case          bookmark-completion-ignore-case)
-           (default                         default)
-           (prompt                          (if default
-                                                (concat prompt (format " (%s): " default))
-                                              (concat prompt ": ")))
-           (str                             (completing-read prompt alist pred 0 nil
-                                                             (or hist 'bookmark-history))))
-      (if (string-equal "" str) default str))))
+  (bookmarkp-completing-read-1 prompt default alist pred hist nil))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -1611,6 +1596,7 @@ pertains to the location within the buffer."
 ;;
 ;; 1. Use `bookmark-make-record'.
 ;; 2. Use special default prompts for active region, W3M, and Gnus.
+;; 3. Use `bookmarkp-completing-read-lax', choosing from current buffer's bookmarks.
 ;;
 (defun bookmark-set (&optional name parg) ; `C-x r m'
   "Set a bookmark named NAME, then run `bookmarkp-after-set-hook'.
@@ -1633,6 +1619,10 @@ for prompting is as follows (in order of priority):
  * Otherwise, the current buffer name.
 
 While entering a bookmark name at the prompt:
+
+ * You can use (lax) completion against bookmarks in the same buffer.
+   If there are no bookmarks in the current buffer, then all bookmarks
+   are completion candidates.
 
  * You can use `C-w' to yank words from the buffer to the minibuffer.
    Repeating `C-w' yanks successive words.
@@ -1681,18 +1671,14 @@ bookmarks)."
                                                            (skip-syntax-forward "^ ")
                                                            (point))))
                           (t (car record)))))
-         (doc-cmd  "`\\<minibuffer-local-map>\\[next-history-element]' \ for default")
+         (doc-cmd  "`\\<minibuffer-local-map>\\[next-history-element]' for default")
          (bname    (or name
-                       (read-from-minibuffer
-                        (format "Set bookmark (%s): " (if (> emacs-major-version 21)
-                                                          (substitute-command-keys doc-cmd)
-                                                        defname))
-                        nil
-                        (let ((map  (copy-keymap minibuffer-local-map)))
-                          (define-key map "\C-w" 'bookmark-yank-word)
-                          (define-key map "\C-u" 'bookmark-insert-current-bookmark)
-                          map)
-                        nil nil defname))))
+                       (bookmarkp-completing-read-lax
+                        (format "Set bookmark " (if (> emacs-major-version 21)
+                                                     (substitute-command-keys doc-cmd)
+                                                   defname))
+                        defname (bookmarkp-selected-buffers-alist-only)
+                        nil bookmark-history))))
     (when (string-equal bname "") (setq bname  defname))
     (bookmark-store bname (cdr record) parg)
     (run-hooks 'bookmarkp-after-set-hook)
@@ -2709,6 +2695,40 @@ only if that option is non-nil."
  
 ;;(@* "Bookmark+ Functions (`bookmarkp-*')")
 ;;; Bookmark+ Functions (`bookmarkp-*') ------------------------------
+
+(defun bookmarkp-completing-read-lax (prompt &optional default alist pred hist)
+  "Same as `bookmark-completing-read', but completion is lax."
+  (unwind-protect
+       (progn
+         (define-key minibuffer-local-completion-map "\C-w" 'bookmark-yank-word)
+         (define-key minibuffer-local-completion-map "\C-u" 'bookmark-insert-current-bookmark)
+         (bookmarkp-completing-read-1 prompt default alist pred hist t))
+    (define-key minibuffer-local-completion-map "\C-w" nil)
+    (define-key minibuffer-local-completion-map "\C-u" nil)))
+
+(defun bookmarkp-completing-read-1 (prompt default alist pred hist laxp)
+  "Helper for `bookmark-completing-read(-lax)'.
+LAXP non-nil means use lax completion."
+  (bookmark-maybe-load-default-file)
+  (setq alist  (or alist bookmark-alist))
+  (if (and (listp last-nonmenu-event)
+           (or (eq t bookmarkp-menu-popup-max-length)
+               (and (integerp bookmarkp-menu-popup-max-length)
+                    (< (length alist) bookmarkp-menu-popup-max-length))))
+      (bookmark-menu-popup-paned-menu
+       t prompt
+       (if bookmarkp-sort-comparer      ; Test whether to sort, but always use `string-lessp'.
+           (sort (bookmark-all-names alist) 'string-lessp)
+         (bookmark-all-names alist)))
+    (let* ((icicle-delete-candidate-object  'bookmark-delete) ; For `S-delete'.
+           (completion-ignore-case          bookmark-completion-ignore-case)
+           (default                         default)
+           (prompt                          (if default
+                                                (concat prompt (format " (%s): " default))
+                                              (concat prompt ": ")))
+           (str                             (completing-read prompt alist pred (and (not laxp) 0)
+                                                             nil (or hist 'bookmark-history))))
+      (if (string-equal "" str) default str))))
 
 (defun bookmarkp-jump-1 (bookmark-name display-function use-region-p)
   "Helper function for `bookmark-jump' commands."
@@ -4919,6 +4939,20 @@ A new list is returned (no side effects)."
 A new list is returned (no side effects)."
   (bookmark-maybe-load-default-file)
   (bookmarkp-remove-if-not #'bookmarkp-w3m-bookmark-p bookmark-alist))
+
+(defun bookmarkp-selected-buffers-alist-only (&optional buffers)
+  "`bookmark-alist', filtered to retain only bookmarks to buffers BUFFERS.
+BUFFERS is a list of buffer names.
+It defaults to a singleton list with the current buffer's name.
+A new list is returned (no side effects).
+
+Note: Bookmarks created by vanilla Emacs do not record the buffer
+name.  They are therefore excluded from the returned alist."
+  (unless buffers  (setq buffers (list (buffer-name))))
+  (bookmark-maybe-load-default-file)
+  (bookmarkp-remove-if-not
+   (lambda (bmk) (member (bookmarkp-get-buffer-name bmk) buffers))
+   bookmark-alist))
 
 
 ;;; Marked bookmarks

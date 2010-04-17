@@ -1,9 +1,9 @@
-Reverse what you type, or reverse what other people typed:
+Reverse what you type in [[ERC]], or reverse what other people typed:
 
 This is a good example of a command that does two different things, depending on the arguments.
 If any arguments are provided, send them reversed, but if the command is sent without any
 additional text, reverse the last message in the buffer and display it as a notice.
-
+    (setq erc-remove-parsed-property nil)
     (defun erc-cmd-REVERSE (&rest words)
       (if words
           (erc-send-message (apply 'concat (reverse (split-string (mapconcat 'identity words " ") ""))))
@@ -27,4 +27,4 @@ Usage:
      14:33 *** no way
 
 -----
-[[ERC]]
+CategoryChatClient

@@ -1,9 +1,9 @@
 ;;; dos.el --- major mode for editing Dos scripts (batch files)
 
-;; Copyright (C) 2003, 2008, 2009 Arni Magnusson
+;; Copyright (C) 2003, 2008, 2009, 2010 Arni Magnusson
 
 ;; Author:   Arni Magnusson
-;; Version:  2.11
+;; Version:  2.12
 ;; Keywords: languages
 ;; URL:      http://emacswiki.org/emacs/dos.el
 
@@ -46,6 +46,7 @@
 
 ;;; History:
 ;;
+;; 16 Apr 2010  2.12 Added ;;;###autoload cookie.
 ;; 29 Sep 2009  2.11 Improved highlighting of strings.
 ;; 18 Sep 2009  2.10 Improved highlighting of comments.
 ;; 27 May 2009  2.9  Improved documentation.
@@ -57,15 +58,15 @@
 ;; 24 Mar 2009  2.4  Improved highlighting of scripts/labels following call and goto.
 ;; 18 Mar 2009  2.3  Added support for @rem highlighting. Improved highlighting of -options and scripts/labels following
 ;;                   call and goto.
-;; 11 Mar 2009  2.2  Added user functions `dos-help', `dos-run', and `dos-run-args'. Improved highlighting of scripts and
-;;                   labels following call and goto.
+;; 11 Mar 2009  2.2  Added user functions `dos-help', `dos-run', and `dos-run-args'. Improved highlighting of scripts
+;;                   and labels following call and goto.
 ;; 10 Mar 2009  2.1  Added keywords "at", "attrib", "cd", "cmd", "color", "doskey", "path", "popd", "prompt", "pushd",
 ;;                   "sort", and "start". Added support for highlighting /options.
 ;;  9 Mar 2009  2.0  Complete rewrite. Added user functions `dos-outline' and `dos-sep'. Added internal variables
-;;                   `dos-font-lock-keywords', `dos-mode-abbrev-table', `dos-mode-map', and `dos-mode-syntax-table'. Added
-;;                   local variables `comment-start', `imenu-generic-expression', and `outline-regexp'. Added keyword
-;;                   "copy". Added support for ::comment highlighting. Added commentary on installation, customization, and
-;;                   usage.
+;;                   `dos-font-lock-keywords', `dos-mode-abbrev-table', `dos-mode-map', and `dos-mode-syntax-table'.
+;;                   Added local variables `comment-start', `imenu-generic-expression', and `outline-regexp'. Added
+;;                   keyword "copy". Added support for ::comment highlighting. Added commentary on installation,
+;;                   customization, and usage.
 ;; 18 Feb 2009  1.1  Changed face names, added keyword "cls", and removed `dos-template' line containing "[-help]".
 ;;  5 Dec 2008  1.0  Added support for underscored_variable highlighting.
 ;; 22 Aug 2003  0.9  Created main function `dos-mode', user variable `dos-mode-hook', user functions `dos-template' and
@@ -183,23 +184,23 @@ that makes it easy to return to `dos-mode':
 setlocal
 if [%1]==[] goto HELP
 if [%1]==[--help] goto HELP
-REM #######################################################################################################################
-REM                                                                                                                       #
-REM Script:                                                                                                               #
-REM                                                                                                                       #
-REM Purpose:                                                                                                              #
-REM                                                                                                                       #
-REM Args:                                                                                                                 #
-REM                                                                                                                       #
-REM Notes:                                                                                                                #
-REM                                                                                                                       #
-REM Warning:                                                                                                              #
-REM                                                                                                                       #
-REM Requires:                                                                                                             #
-REM                                                                                                                       #
-REM Returns:                                                                                                              #
-REM                                                                                                                       #
-REM #######################################################################################################################
+REM ####################################################################################################################
+REM                                                                                                                    #
+REM Script:                                                                                                            #
+REM                                                                                                                    #
+REM Purpose:                                                                                                           #
+REM                                                                                                                    #
+REM Args:                                                                                                              #
+REM                                                                                                                    #
+REM Notes:                                                                                                             #
+REM                                                                                                                    #
+REM Warning:                                                                                                           #
+REM                                                                                                                    #
+REM Requires:                                                                                                          #
+REM                                                                                                                    #
+REM Returns:                                                                                                           #
+REM                                                                                                                    #
+REM ####################################################################################################################
 \nrem Pop args until file=%1
 set par=default
 :STARTLOOP
@@ -217,6 +218,7 @@ echo.\n
 
 ;; 5  Main function
 
+;;;###autoload
 (defun dos-mode () "Major mode for editing Dos scripts.\n
 The `dos-help-mode' command shows this page.\n
 Start a new script from `dos-template' or `dos-template-mini'. Navigate between

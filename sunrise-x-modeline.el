@@ -33,7 +33,7 @@
 ;; The  extension  is  provided  as a minor mode, so you can enable / disable it
 ;; totally by issuing the command (M-x) sr-modeline.
 
-;; This is version 2 $Rev: 274 $ of the Sunrise Commander Modeline Extension.
+;; This is version 2 $Rev: 283 $ of the Sunrise Commander Modeline Extension.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.
@@ -55,10 +55,10 @@
 (require 'easymenu)
 (eval-when-compile (require 'cl))
 
-(defconst sr-modeline-norm-mark " * ") ;; ☼ 
-(defconst sr-modeline-sync-mark " & ") ;; ⚓
-(defconst sr-modeline-edit-mark " ! ") ;; ⚡
-(defconst sr-modeline-virt-mark " @ ") ;; ☯
+(defconst sr-modeline-norm-mark " ☼ ") ;; * 
+(defconst sr-modeline-sync-mark " ⚓ ") ;; &
+(defconst sr-modeline-edit-mark " ⚡ ") ;; !
+(defconst sr-modeline-virt-mark " ☯ ") ;; @
 
 ;;; ============================================================================
 ;;; Core functions:
@@ -128,15 +128,14 @@
   accordingly the current directory of the corresponding panel."
   (interactive)
   (let* ((event (caddr (cddadr last-input-event)))
-         (path (car event)) (pos (cdr event)))
-    (unless (eq sr-selected-window (get-text-property 0 'sr-selected-window path))
-      (sr-change-window))
-    (let* ((tail-length (- (length (substring-no-properties path)) pos))
-           (max-length (length default-directory))
-           (target-click (- max-length tail-length))
-           (target-end (string-match "/\\|$" default-directory target-click)))
-      (when (< target-end max-length)
-        (sr-advertised-find-file (substring default-directory 0 target-end))))))
+         (path (car event)) (pos (cdr event)) (slash) (levels))
+    (or (eq sr-selected-window (get-text-property 0 'sr-selected-window path))
+        (sr-change-window))
+    (setq slash (string-match "/" path pos)
+          levels (- (length (split-string (substring path slash) "/")) 2))
+    (if (< 0 levels)
+        (sr-dired-prev-subdir levels)
+      (sr-beginning-of-buffer))))
 
 ;;; ============================================================================
 ;;; Private interface:

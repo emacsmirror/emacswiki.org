@@ -1,8 +1,8 @@
 The following command will issue two /NAMES commands, wait for 3 seconds of idle time, and then figure out who is on both channels.
 
-== Example ==
+Example:
 
-<pre>
+{{{
 15:43 ERC> /spies #emacs #vim
 15:43 *** Users on #emacs: rw elf` oogie Erwin forcer CrazyEddy
       deego buggs EliasREC dotz lg_ Zenton kensanata giuppi
@@ -21,12 +21,14 @@ The following command will issue two /NAMES commands, wait for 3 seconds of idle
       GwaiLo smoser__ Magnade Nex6 ThunderChicken mbp ra3vat
       skimpIzu cloaked rox NotHere sphere
 15:44 *** Spies: buggs|wrk buggs
-</pre>
+}}}
 
-== Code ==
+Code:
 
-<pre>
+{{{
 (require 'cl)
+
+(setq erc-remove-parsed-property nil)
 
 (defvar erc-spies-pos nil)
 (defvar erc-spies-channel-1 nil)
@@ -79,7 +81,7 @@ The following command will issue two /NAMES commands, wait for 3 seconds of idle
 					(mapconcat 'identity
 						   result
 						   " ")))))))
-</pre>
+}}}
 
 ----
 [[ERC]]

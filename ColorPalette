@@ -2,7 +2,7 @@
 
 Forget about `list-colors-display'! If you really want to look up a color by name or RGB components, then you want to see what it looks like in context -- either in the context of a palette of all colors or in the context of your work, as text foreground or background. And most of the time you don't want to deal with color names at all. 
 
-(Most of the time you don't want to deal with [[Face]] names either -- see '''FaceMenuPlus''' for point-and-click access to faces and their colors, including access to the color palette described here.)
+(Most of the time you don't want to deal with [[face]] names either -- see '''FaceMenuPlus''' for point-and-click access to faces and their colors, including access to the color palette described here.)
 
 Library '''<tt>[[palette.el]]</tt>''' provides a general color palette that you can use to examine color properties or choose colors. You can input colors using color names, RGB components (red, green, blue), or HSV components (hue, saturation, value). [[Completion]] is available for color names. If you also use '''[[Icicles]]''', then you can match any part(s) of the color name, and you can browse multiple colors by name successively -- `c' is then a multi-command (see '''[[Icicles - Multi-Commands]]''').
 
@@ -10,7 +10,7 @@ Library '''<tt>[[palette.el]]</tt>''' provides a general color palette that you 
 
 '''Hue''' means tint; '''saturation''' means color purity or intenseness (opposite of grayness); and '''value''' means brightness. Saturation=0 is grayscale; saturation=1 is pure color (no gray). Value=0 is black (no light); value=1 is as bright as possible (100% color).
 Hue 0.0 and hue 1.0 are the same: pure red.  The hue x
-saturation palette shows this discontinuity.  Move the TextCursor horizontally near the right side of this palette and you will
+saturation palette shows this discontinuity.  Move the [[cursor]] horizontally near the right side of this palette and you will
 see the hue value jump between 0.0 and 1.0 at a certain point.
 
 You can navigate the HSV and RGB color spaces interactively. Hit '''`##?##'''' at any time to examine the color under the text cursor -- the HSV and RGB components are displayed in the echo area. Click `mouse-1' or move the text cursor to examine other colors. 
@@ -18,11 +18,11 @@ You can navigate the HSV and RGB color spaces interactively. Hit '''`##?##'''' a
 Use ``RET' or `mouse-2' to ''choose'' the color under the cursor, making it the "'''current color'''". The current color is displayed with a large swatch to the right of the hue x saturation palette. You can also hold the Shift key down while you move the cursor, to continually update the current color. You can hit '''`##~##'''' to set the current color to its ''complement''. (Again, `##?##' shows you the components of that complement color.) Use `C-h m' for more info. A popup menu of the palette commands is available on `mouse-3'.
 
 Once you find a color you like, you can use its RGB string
-anywhere in Emacs as the color definition of a [[Face]] or a [[Frame]].
+anywhere in Emacs as the color definition of a [[face]] or a [[frame]].
 Its RGB string is the value of '''`palette-current-color''''.
 
 
-This palette is similar to many that exist outside Emacs -- a good example is the palette available in Microsoft Word (A > More Colors > Custom). You will need Emacs 22 for '''<tt>[[palette.el]]</tt>''' to be useful, because it makes heavy use of Emacs faces, and the display engine of Emacs 20 and 21 is not up to the task. ''Have fun!''
+This palette is similar to many that exist outside Emacs -- a good example is the palette available in Microsoft Word (A > More Colors > Custom). You will need Emacs 22 or later for '''<tt>[[palette.el]]</tt>''' to be useful, because it makes heavy use of Emacs faces, and the display engine of Emacs 20 and 21 is not up to the task. ''Have fun!''
 
 Here is a screenshot of the palette frame:
 

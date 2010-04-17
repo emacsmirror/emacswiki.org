@@ -89,16 +89,23 @@ Here's a quick fix: http://gist.github.com/265010
 Another code for solving conflicts in Company and Yasnippet.
 
 {{{
-  (if (boundp 'yas/fallback-behavior)
-      (setq yas/fallback-behavior 'return-nil))
-  
   (defun tab-indent-or-complete ()
     (interactive)
+    (defun check-expansion ()
+      (save-excursion
+        (if (looking-at "\\_>") t
+          (progn (backward-char 1)
+                 (if (looking-at "\\.") t
+                   (progn (backward-char 1)
+                          (if (looking-at "->") t nil)))))))
+    (defun do-yas-expand ()  
+      (let ((yas/fallback-behavior 'return-nil))
+        (yas/expand)))
     (if (minibufferp)
         (minibuffer-complete)
-      (if (or (not (fboundp 'yas/expand))
-               (null (yas/expand)))
-          (if (looking-at "\\_>")
+      (if (or (not yas/minor-mode)
+              (null (do-yas-expand)))
+          (if (check-expansion)
               (company-complete-common)
             (indent-for-tab-command)))))
   (global-set-key [tab] 'tab-indent-or-complete)
